@@ -1,0 +1,59 @@
+#presint-row .table-okc-view thead,
+#presint-row .table-okc-view tbody{
+    display: block;
+}
+tbody#fila_item{
+    width: 100%;
+    max-height: 200px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+tbody#fila_item_cron{
+    width: 100%;
+    max-height: 300px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+.okc-flex{
+    display: flex;
+    justify-content: space-around;
+}
+.rowBase-okc table{
+    margin-bottom: 0;
+}
+#fila_item td input.okc-td-date{
+    width: 130px;
+}
+#fila_item td input.okc-td-input{
+    width: 70px;
+}
+#fila_item td input.okc-td-input-pq{
+    width: 40px;
+}
+.okc-btn-margin{
+    margin-top:25px;
+}
+#desem tbody tr td{
+    // display: block;
+    widows: auto;
+}
+#presint-row #desem{
+    width: auto;
+}
+.table-okc-view input[type="number"]{
+    text-align: right;
+}
+////Proyecto
+#proyecto .input-group-append .btn{
+    z-index:0;
+}
+//Relacion Insumos
+// table.table-okc-view tbody tr td #suma{
+//     border-top: 2px solid #000;
+//     text-align: right;
+// }
+
+.table-seg tbody tr td{
+    padding: 2px;
+    border: 0px;
+}

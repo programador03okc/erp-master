@@ -1,0 +1,125 @@
+table.table-acu{
+    width: 100%;
+    padding: 2px;
+    background-color: transparent;
+}
+table.table-acu tbody tr td{
+    padding: 3px;
+}
+table.table-acu tbody tr:last-child td{
+    padding: 5px 3px 10px 3px;
+}
+table.table-acu tr td:first-child{
+    width: 200px;
+}
+table.table-acu tr #porcentaje input{
+    width: 50px;
+    text-align: right;
+}
+table.table-acu tr #input input{
+    width: 80px;
+    text-align: right;
+}
+
+table.table-acu tr #suma{
+    width: 130px;
+    text-align: right;
+}
+#acu #okc-col-3{
+    padding-right: 0;
+}
+table.table-acu tfoot{
+    border-top: 1px solid #000;
+    font-family: 'Calibri';
+}
+table.table-acu tfoot tr td{
+    padding: 10px 3px;
+}
+.group-importes{
+    border: 1px solid #ddd;
+    background-color: #fff;
+    padding: 0 5px;
+}
+.group-importes legend{
+    margin-bottom: 0;
+    margin-left: 15px;
+    padding: 0 10px;
+    width: 80px;
+    border: 0;
+}
+.modulo .page-item.active .page-link{
+    z-index: 0;
+}
+//Modal
+body .ReactModal__Content.ReactModal__Content--after-open{
+    top: 40px;
+    left: 450px;
+    right: 450px;
+    height: auto;
+}
+.modal-okc{
+    position: relative;
+}
+.modal-okc-header{
+    padding: 15px;
+    border-bottom: 1px solid #e5e5e5;
+}
+.modal-okc-header h5{
+    margin: 0;
+    line-height: 1.42857143;
+}
+.modal-okc-body{
+    position: relative;
+    padding: 15px;
+}
+.modal-okc-footer{
+    padding: 10px;
+    border-top: 1px solid #e5e5e5;
+    text-align: right;
+}
+// .modal-okc-body .acu-fc-sm{
+//     width: 150px;
+// }
+// .modal-okc-body .acu-fc-pq{
+//     width: 80px;
+// }
+.modal-okc-body input.acu-fc-la,
+.table-okc-view .acu-fc-largo{
+    height: 27px;
+    width: 100% !important;
+    border-radius: 0;
+}
+.modal-okc-body input.acu-fc-pq,
+.table-okc-view .acu-fc-p{
+    height: 27px;
+    width: 80px !important;
+    border-radius: 0;
+}
+
+.table-okc-view .acu-fc-pcant{
+    height: 27px;
+    width: 60px !important;
+    border-radius: 0;
+}
+.modal-okc-body .mb-3{
+    margin-bottom: 0 !important;
+}
+.tab-acu{
+    width: 100%;
+}
+
+.okc-tabs .table{
+    margin-bottom: 0;
+}
+
+.modal-okc-body #part select.form-control:not([size]):not([multiple]){
+    font-size: 12px;
+    padding: 0 4px;
+    height: 27px;
+    width: 100% !important;
+    border-radius: 0;
+}
+
+#part .input-group-text{
+    padding: 0;
+}

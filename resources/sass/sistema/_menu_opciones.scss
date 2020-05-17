@@ -1,0 +1,39 @@
+.base-options {
+  width: 100%;
+  background: #fff;
+  -webkit-box-shadow: 1px 1px 2px .5px #ddd;
+          box-shadow: 1px 1px 2px .5px #ddd;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+.btn-okc-menu {
+  color: #000;
+  background: #fff;
+  outline: 0;
+  width: 80px;
+  padding: 3px;
+  cursor: pointer;
+  border: none;
+  border-right: 1px solid #ddd;
+  font-size: 13px;
+  text-align: center;
+}
+.btn-okc-menu i{
+  padding: 8px;
+}
+.btn-okc-menu:active,
+.btn-okc-menu:focus{
+  outline: 0;
+}
+
+.btn-okc-menu:hover {
+  background: rgba(0, 0, 0, 0.02);
+}
+.btn-okc-menu:disabled{
+  cursor: no-drop;
+  color: #adabab;
+}
+ .btn-okc-menu:disabled:hover{
+  background: #fff;
+ }

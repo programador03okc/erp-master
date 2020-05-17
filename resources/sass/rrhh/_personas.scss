@@ -1,0 +1,481 @@
+.form-rrhh,
+.form-rrhh-horarios{
+    width: 80%;
+    font-size: 13px;
+    margin-top: 10px;
+}
+#persona legend,
+#postulante legend{
+    padding: 5px 0;
+    border-bottom: 2px solid #ddd;
+}
+.form-rrhh-derechohab .btn-dark{
+    margin-top: 27px;
+}
+.form-rrhh-asistencia .btn-dark,
+.form-rrhh-asistencia .btn-danger,
+.form-rrhh-tareo .btn-dark,
+.form-rrhh-tareo .btn-danger,
+.form-rrhh-calculo .btn-dark,
+.form-rrhh-calculo .btn-danger{
+    margin-top: 29px;
+}
+button.btn-dark i.material-icons,
+button.btn-danger i.material-icons{
+    padding: 0;
+    font-size: 17px;
+    vertical-align: middle;
+    margin-top: -5px;
+}
+.form-rrhh-po,
+.form-rrhh-seleccion,
+.form-rrhh-derechohab,
+.form-prestamo,
+.form-permiso,
+.form-comision-saldia,
+.form-rrhh-cargo,
+.form-rrhh-asistencia,
+.form-rrhh-vacaciones,
+.form-aporte,
+.form-bonificacion,
+.form-descuento,
+.form-comision-salida,
+.form-reintegro,
+.form-horas-extras,
+#docs_rrhh{
+    font-size: 13px;
+    margin-top: 10px;
+}
+.form-rrhh-po,
+.form-rrhh-seleccion,
+.form-horas-extras{
+    width: 100%;
+}
+.form-rrhh-derechohab{
+    width: 85%;
+}
+.form-prestamo{
+    width: 84%;
+}
+.form-permiso,
+.form-comision-salida{
+    width: 98%;
+}
+.form-aporte{
+    width: 90%;
+}
+.mostrar{
+    display: block;
+}
+.ocultar{
+    display: none;
+}
+
+.form-rrhh-content{
+    width: 100%;
+    background-color: #fff;
+}
+#content-rrhh{
+    padding: 20px;
+}
+.content-rrhh1,
+.content-rrhh4{
+    width: 84%;
+}
+.content-rrhh2{
+    width: 100%;
+}
+.content-rrhh3{
+    width: 90%;
+}
+.content-rrhh .alert{
+    padding: .6rem 1.25rem;
+    margin-bottom: 0;
+}
+
+/*Postulante*/
+.modulo .id-oculto,
+.modal-okc .id-oculto{
+    display: none;
+}
+.form-rrhh input[type="number"],
+.form-rrhh-seleccion input[type="number"],
+.content-rrhh3 input[type="number"],
+.form-descuento input[type="number"],
+.form-aporte input[type="number"],
+.form-reintegro input[type="number"]{
+    text-align: right;
+}
+body textarea{
+    resize: none;
+}
+.form-rrhh-seleccion textarea,
+.form-horas-extras textarea{
+    height: 100px;
+}
+.input-group .input-group-append button i{
+    font-size: 20px;
+}
+
+/////////// MODAL'S
+// body .ReactModal__Content.ReactModal__Content--after-open{
+//     top: 20px;
+//     height: auto;
+//     left: 420px;
+//     right: 420px;
+// }
+// body .ReactModalPortal1 .ReactModal__Content.ReactModal__Content--after-open{
+//     top: 40px;
+//     height: auto;
+//     left: 150px;
+//     right: 150px;
+// }
+.modal-okc{
+    position: relative;
+}
+.modal-okc-header{
+    padding: 15px;
+    border-bottom: 1px solid #e5e5e5;
+}
+.modal-okc-header h5{
+    margin: 0;
+    line-height: 1.42857143;
+}
+.modal-okc-body{
+    position: relative;
+    padding: 15px;
+}
+.modal-okc-footer{
+    position: relative;
+    padding: 10px;
+    border-top: 1px solid #e5e5e5;
+    text-align: right;
+}
+///////// TABLE RESULTADOS
+body .table-okc-result,
+.table-okc-form{
+    font-size: 13px;
+    font-family: 'Calibri';
+}
+// aki cambie
+.table-okc-result tbody{
+    display: block;
+	overflow-x: hidden;
+    overflow-y: scroll;
+}
+.table-okc-result tbody{
+    max-height: 300px;
+}
+.table-okc-result thead,
+.table-okc-result tbody tr{
+	display: table;
+	width: 100%;
+	table-layout: fixed;
+}
+.table-okc-result thead{
+    background-color: #e5e5e5;
+}
+.table-okc-result thead th,
+.table-okc-result tbody td{
+    padding: 5px;
+}
+
+.table-okc-result tbody tr td ul{
+    list-style: square;
+    margin: 0;
+    margin-left: 10px;
+    padding: 0;
+    padding-left: 10px;
+}
+
+.table-okc-view,
+.table-okc-report{
+    font-size: 14px;
+    font-family: 'Calibri';
+}
+.table-okc-view thead,
+.table-okc-report{
+    background-color: #e5e5e5;
+}
+// .container-fluid table tr th,
+// .container-fluid table tr td{
+//   padding: 5px;
+// }
+.table-okc-view thead tr th{
+    padding: 4px;
+}
+.table-okc-view tbody,
+.table-okc-report tbody{
+    background-color: #fff;
+}
+.table-okc-view tbody tr td,
+.table-okc-report tbody tr td{
+    padding: 3px;
+}
+.table-okc-report tbody tr th{
+    padding: 3px 5px;
+}
+.table-okc-view tbody tr td label,
+.table-okc-report tbody tr td label{
+    margin: 0;
+}
+
+///////// TABLE BUSCADORES
+.table-okc-form .mb-3{
+    margin-bottom: 0 !important;
+}
+.table-okc-form{
+    margin-bottom: 10px;
+}
+
+// TABLE ASISTENCIA
+.table-okc-asistencia{
+    background-color: #fff;
+    font-size: 14px;
+    font-family: 'Calibri';
+}
+
+.div-uploader{
+    border: 1px solid #ccc;
+    width: 100%;
+    position: relative;
+    height: 32px;
+    display: flex;
+    border-radius: 4px;
+}
+.input-value{
+    width: 90%;
+    padding: 5px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 25px;
+    font-family: sans-serif;
+    font-size: 16px;
+    border-right: 1px solid #ccc;
+    background-color: #e9ecef;
+}
+.input-lbl-inp{
+    width: 10%;
+    background-color: #343a40;
+    border-top-right-radius: 4px;
+    border-bottom-right-radius: 4px;
+}
+.div-uploader label{
+    cursor: pointer;
+    margin: 0;
+    width: 30px;
+    height: 30px;
+    position: absolute;
+    right: 2px;
+    top: -4px;
+}
+.div-uploader label:before {
+    content: "folder_open";
+    font-size: 26px;
+    color: #fff;
+    font-family: 'Material Icons';
+}
+.upload{
+    display: none;
+}
+.table-okc-asistencia thead{
+    text-align: center;
+}
+.okc-fs{
+    font-size: 13px;
+    text-align: left;
+    padding: 0 10px;
+}
+.okc-fsl{
+    font-weight: bold;
+    margin: 0 2px;
+}
+.table-okc-asistencia tbody{
+    text-align: center;
+}
+// body .table-okc-asistencia tbody td {
+//     padding: 0;
+// }
+.form-rrhh-tareo .table-okc-asistencia tbody input[type="text"]{
+    width: 50px;
+}
+.table-okc-asistencia tbody input[type="text"]{
+    width: 68px;
+    margin-left: 2px;
+    text-align: center;
+}
+.table-okc-asistencia .input-group-prepend{
+    position: relative;
+    width: 30px;
+}
+.table-okc-asistencia .input-group-prepend .input-group-text{
+    text-align: center;
+    width: 100%;
+}
+.table-okc-asistencia .input-group-prepend .input-group-text input[type="checkbox"]{
+    position: absolute;
+    margin-left: -3px;
+}
+.content-rrhh3 textarea{
+    resize: none;
+    height: 120px;
+}
+#prestamo textarea{
+    resize: none;
+    height: 80px;
+}
+#permiso textarea{
+    resize: none;
+    height: 60px;
+}
+
+.form-rrhh-vacaciones{
+    width: 90%;
+}
+.form-rrhh-asistencia input[type="number"],
+.form-rrhh-vacaciones input[type="number"],
+.form-rrhh-cargo input[type="number"],
+.form-horas-extras input[type="number"],
+.form-rrhh-fondopensi input[type="number"]{
+    text-align: right;
+}
+
+.form-rrhh-asistencia input[type="number"]{
+    width: 70px;
+}
+
+.form-rrhh-modalidad .min-tm-okc{
+    width: 148px;
+}
+
+.okc-checkbox{
+    margin-top: 6px;
+    text-align: center;
+}
+#content-rrhh .row #col-check{
+    text-align: center;
+}
+.base-btn-okc{
+    display: flex;
+    justify-content: center;
+    margin-top: 22px;
+}
+.base-btn-okc button{
+    margin-left: 5px;
+}
+#docs_rrhh .form-control{
+    height: calc(2rem + 1px);
+}
+#docs_rrhh .okc-excel,
+#docs_rrhh .okc-pdf{
+    min-width: 100px;
+    color:white;
+    border: none;
+    padding: 6px 10px;
+    font-size: 13px;
+    cursor: pointer;
+    margin: 0 8px;
+}
+#docs_rrhh .okc-excel i,
+#docs_rrhh .okc-pdf i{
+    margin-left: 3px;
+}
+#docs_rrhh .okc-excel{
+    background-color: #138496;
+}
+#docs_rrhh .okc-pdf{
+    background-color:#d9534f;
+}
+.okc-ctas{
+    width: 100%;
+    display: block;
+}
+.okc-ctas-2,
+.okc-ctas-3{
+    display: inline-block;
+}
+.okc-ctas-2{
+    width: 28%;
+    margin-right: 2%;
+}
+.okc-ctas-3{
+    width: 70%;
+}
+.table-okc-asistencia tbody input[type="text"].okc-input-asis{
+    width: 100%;
+    border: 0;
+    outline: 0;
+    text-align: left;
+}
+.okc-autocomplete{
+    position: absolute;
+    width: 320px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    z-index: 1000;
+    padding: 0;
+}
+.okc-autocomplete li{
+    list-style: none;
+    width: 100%;
+    color: #343a40;
+    padding: 5px 10px;
+}
+.okc-autocomplete li:hover{
+    background-color: #ccc;
+}
+#table-docs-rrhh{
+    width: 100%;
+    background-color: #fff;
+    font-size: 13px;
+}
+#table-docs-rrhh tr th,
+#table-docs-rrhh tr td{
+    padding: 4px 10px;
+}
+/////////////////
+.card-okc-obs{
+    width: 100%;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-shadow: 0px 0px 3px 2px #ddd;
+}
+.card-okc-obs label{
+    font-weight: bold;
+    font-style: italic;
+    padding: 4px 10px;
+    width: 100%;
+    margin: 0;
+}
+.card-okc-obs-title{
+    border-bottom: 1px solid #ddd;
+}
+.card-okc-obs-footer{
+    border-top: 1px solid #ddd;
+    display: flex;
+    justify-content: space-between;
+}
+.card-okc-obs-text{
+    padding: 5px 10px;
+    min-height: 150px;
+    max-height: 150px;
+}
+.btn-okc-select, #check-okc .input-group-text{
+    background-color: #17a2b8;
+    border: #17a2b8;
+    color: #fff;
+    padding: 3px 10px;
+    cursor: pointer;
+}
+.btn-okc-select:hover, #check-okc .input-group-text:hover{
+    color: #fff;
+    background-color: #138496;
+    border-color: #117a8b;
+  }
+////////////////
+@media (max-width:360px){
+    .form-rrhh{
+      width: 100%;
+    }
+  }

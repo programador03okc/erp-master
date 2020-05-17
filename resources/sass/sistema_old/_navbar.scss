@@ -1,0 +1,47 @@
+.container-fluid .form-control,
+.container-fluid button{
+  font-size: 12px;
+}
+.container-fluid .form-control::placeholder{
+  font-size: 12px;
+  color: rgba(0,0,0,.25);
+}
+.container-fluid .form-control:focus {
+  border-color: #ddd;
+  -webkit-box-shadow: 0 0 0 0.1rem rgba(0, 0, 0, 0.1);
+          box-shadow: 0 0 0 0.1rem rgba(0, 0, 0, 0.1);
+}
+
+.navbar-laravel {
+  background-color: #fff;
+  -webkit-box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+}
+
+.navbar-okc {
+  width: 100%;
+  background-color: #fff;
+  border-bottom: 1px solid #ddd;
+}
+.card-pointer {
+  cursor: pointer;
+}
+.navbar-okc .nav-item {
+  width: 120px;
+  text-align: center;
+  border-right: 1px solid #ddd;
+}
+.navbar-okc .nav-item:first-child {
+  border-left: 1px solid #ddd;
+}
+.base-module{
+  padding: 50px 0;
+}
+
+.icon-align {
+  vertical-align: text-bottom;
+  
+}
+.container-okc{
+  width: 100%;
+}

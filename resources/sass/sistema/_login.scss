@@ -1,0 +1,82 @@
+body{
+  background-size: 100vh 100vw;
+  margin: 0;
+}
+.login{
+  width: 450px;
+  margin: auto;
+  display: block;
+}
+.box-login{
+  position: absolute;
+  width: 28%;
+  left: 50%;
+  top: 50%;
+  transform:translate(-50%, -50%);
+  text-align: center;
+}
+.header-login {
+  color: #db2828;
+  font-weight: bold;
+}
+.form-login {
+  text-align: center;
+  background: #fff;
+  padding: 20px;
+  border: 1px solid #eaeced;
+}
+.footer-login{
+  background: #f8f8f9;
+  line-height: 1.5em;
+  padding: 1em 1.5em;
+  margin: 1em 0;
+  border: 1px solid #ddd;
+  border-radius: .28571429rem;
+  text-align: center;
+}
+.footer-login a{
+  margin-left: 10px;
+}
+.form-login .input-group-text {
+  background-color: #fff;
+  border: none;
+  border-top: 1px solid #ced4da;
+  border-left: 1px solid #ced4da;
+  border-bottom: 1px solid #ced4da;
+}
+.form-login .form-control {
+  border: none;
+  border-top: 1px solid #ced4da;
+  border-right: 1px solid #ced4da;
+  border-bottom: 1px solid #ced4da;
+  font-size: 12px;
+}
+.form-login select.form-control:not([size]):not([multiple]){
+  height: calc(2.25rem + 2px);
+  margin-top: 0;
+}
+
+@media (min-width:320px) and (max-width: 480px){
+  .box-login{
+    width: 95%;
+  }
+}
+
+#ddb a,
+#ddb .dropdown .dropdown-menu li a{
+  color: #1f2226;
+  font-size: 13px;
+}
+#ddb .dropdown i{
+  margin-right: 5px;
+}
+#ddb .dropdown .dropdown-menu{
+  padding: 3px 15px;
+  min-width: 11rem;
+}
+#ddb .dropdown .dropdown-menu li{
+  padding: 5px;
+}
+#ddb .dropdown .dropdown-menu li a:hover{
+  text-decoration: none
+}

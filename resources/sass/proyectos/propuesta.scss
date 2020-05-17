@@ -1,0 +1,117 @@
+.table-totales{
+    font-family: 'Arial';
+}
+.table-totales .okc-tp-2{
+    width: 120px;
+    text-align: right;
+    color: #464646;
+}
+.table-totales .okc-tp-2n{
+    width: 120px;
+    text-align: right;
+    color: #464646;
+    font-weight: bold;
+}
+.table-totales .okc-tp-1{
+    width: 50px;
+    text-align: right;
+    color: #464646;
+    font-weight: bold;
+    margin-right: 3px;
+}
+.table-totales label{
+    margin-bottom: 0;
+}
+.table-totales tbody tr td,
+.table-totales tfoot tr td{
+    padding: 2px;
+}
+// .table-totales tbody tr:last-child td{
+//     padding-bottom: 7px;
+// }
+// .table-totales tfoot tr td{
+//     padding-top: 7px;
+// }
+.table-totales tfoot{
+    margin: 5px 0;
+    border-top: 1px solid #000;
+}
+.option-td{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+.option-td button{
+    box-sizing: border-box;
+    cursor: pointer;
+}
+button.okc-btn-green{
+    color: #1CB84B;
+}
+button.okc-btn-orange{
+    color:orange;
+}
+button.okc-btn-blue{
+    color:blue;
+}
+button.okc-btn-red{
+    color:red;
+}
+button.okc-btn-purple{
+    color:purple;
+}
+.tp{
+    background: black;
+}
+.okc-comment{
+    width: 100%;
+    display: flex;
+    padding: 5px;
+    font-family: 'Calibri';
+    // background-color: #fff;
+    border-bottom: 1px solid #ddd;
+}
+.okc-comment-img{
+    width: 15%;
+    text-align: right;
+}
+.okc-comment-img img{
+    // border: 1px solid red;
+    width: 50px;
+    height: 50px;
+}
+.okc-comment-text{
+    width: 80%;
+    text-align: justify
+}
+.okc-comment-img,
+.okc-comment-text{
+    padding: 5px;
+}
+.okc-ct-header{
+    display: flex;
+}
+.okc-cth-name{
+    width: 150px;
+    font-weight: bold;
+}
+.okc-cth-date{
+    font-style: italic;
+    color: #8E8E8E;
+}
+.okc-ct-body{
+    text-align: justify;
+}
+.okc-col-txt h6{
+    text-align: right;
+}
+.modal-okc-body .table-okc-result input,
+.modal-okc-body .table-okc-result select{
+    font-size: 14px;
+}
+.table-totales .input-blue{
+    color:#1717b6;
+}
+.table-totales .input-green{
+    color:#039e03;
+}

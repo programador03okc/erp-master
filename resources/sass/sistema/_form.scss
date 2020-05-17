@@ -1,0 +1,131 @@
+
+.modulo{
+  padding: 10px 0;
+}
+.modulo legend {
+  padding: 5px 0;
+  border-bottom: 2px solid #ddd;
+}
+.navbar-laravel {
+  background-color: #fff;
+  -webkit-box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+}
+.module-okc{
+  margin-top: 40px;
+}
+.module-okc .card-title a{
+  color: #007bff;
+  text-decoration: none;
+}
+.module-okc .card-body{
+  height: 80px;
+}
+.modulo legend{
+  padding: 5px 0;
+  border-bottom: 2px solid #ddd;
+}
+.okc-tabs .nav-tabs{
+  background-color: #f5f8fa;
+  border-right: 0;
+  border-bottom: 1px solid #dee2e6;
+}
+.tabs .nav-tabs .nav-item,
+.nav-tabs .nav-link{
+  cursor: pointer;
+  margin-bottom: -1px;
+}
+.nav-tabs .nav-link:hover{
+  border-bottom: 0px;
+}
+.tabs .nav-tabs .nav-link.active,
+.nav-tabs .nav-link.react-tabs__tab--selected{
+  color: #000;
+  font-weight: bold;
+  background: #fff;
+  border-color: #dee2e6 #dee2e6 #fff;
+}
+.okc-tabs .react-tabs__tab-panel{
+  background-color: #fff;
+}
+.tabs .tab-content,
+.okc-tabs .react-tabs__tab-panel.react-tabs__tab-panel--selected{
+  border: 1px solid #dee2e6;
+  border-top: 0;
+  border-bottom-left-radius: .25rem;
+  border-bottom-right-radius: .25rem;
+  border-top-right-radius: .25rem;
+}
+.container-fluid select.form-control{
+  margin-top: -1px;
+}
+.container-fluid select.form-control:not([size]):not([multiple]){
+  height: calc(2rem + 1px);
+}
+.table-okc tr td{
+  padding: 10px;
+}
+.table-okc tr td:first-child{
+  padding-left: 0;
+}
+.container-fluid input[type="date"].form-control{
+  padding: 5px 10px;
+}
+.container-fluid .input-group-text{
+  padding: 0px 10px;
+}
+// .container-fluid ul.pagination .page-item a.page-link{
+//   font-size: 13px;
+//   padding: 5px 10px;
+// }
+// .container-fluid h6 span.badge{
+//   padding: 5px;
+// }
+button{
+  text-align: center;
+}
+button.btn-dark i.material-icons{
+  padding: 0;
+  font-size: 17px;
+  vertical-align: middle;
+  margin-top: -5px;
+}
+.modal-content{
+  font-size: 13px;
+}
+.modal-content .form-control,
+.modal-content button{
+  font-size: 12px;
+}
+.modal-content .form-control::placeholder{
+  font-size: 12px;
+  color: rgba(0,0,0,.25);
+}
+.modal-content .form-control:focus {
+  border-color: #ddd;
+  -webkit-box-shadow: 0 0 0 0.1rem rgba(0, 0, 0, 0.1);
+          box-shadow: 0 0 0 0.1rem rgba(0, 0, 0, 0.1);
+}
+.modal-content .input-group-text{
+  padding: 5px 10px;
+}
+.modal-content .input-group-text .material-icons{
+  font-size: 18px;
+}
+.modal-content .alert{
+  padding: 0.50rem 1.25rem;
+  margin-top: 10px;
+}
+.modal-content .modal-header button.close span{
+  font-size: 20px;
+}
+
+ 
+.tab{
+  padding: 20px;
+  width: 90%;
+}
+
+body table tbody{
+  font-family: 'Calibri';
+}
