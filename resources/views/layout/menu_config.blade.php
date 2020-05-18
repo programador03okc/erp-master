@@ -23,6 +23,7 @@
                 <li><a href="accesos"> Accesos </a></li>
                 <li><a href="notas_lanzamiento"> Notas de Lanzamiento</a></li>
                 <li><a href="correo_coorporativo"> Correo Corporativo</a></li>
+                <li><a href="configuracion_socket">Socket</a></li>
             </ul>
         </li>
         <li class="treeview">

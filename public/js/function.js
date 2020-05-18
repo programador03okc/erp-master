@@ -249,6 +249,9 @@ function eventRegister(type, data, action, frm_active){
         case 'correo_coorporativo':
             save_correo_coorporativo(data, action);
         break;
+        case 'configuracion_socket':
+            save_configuracion_socket(data, action);
+        break;
         case 'documento':
             save_documento(data, action);
         break;
@@ -547,6 +550,9 @@ function anularRegister(type, ids, active){
         break;
         case 'correo_coorporativo':
             anular_correo_coorporativo(ids);
+        break;
+        case 'configuracion_socket':
+            anular_configuracion_socket(ids);
         break;
         case 'documento':
             anular_documento(ids);

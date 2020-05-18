@@ -56,6 +56,7 @@ Route::get('modulos', 'LoginController@index')->name('modulos');
 Route::get('cargar_usuarios/{user}', 'LoginController@mostrar_roles');
 //Route::get('logout', 'LoginController@cerrar_sesion');
 Route::get('mostrar_version_actual', 'ConfiguracionController@mostrarVersionActual');
+Route::get('socket_setting/{option}', 'ConfiguracionController@socket_setting');
 
 Auth::routes();
 
@@ -199,6 +200,12 @@ Route::get('mostrar_correo_coorporativo/{id}', 'ConfiguracionController@mostrar_
 Route::put('actualizar_correo_coorporativo', 'ConfiguracionController@actualizar_correo_coorporativo');
 Route::post('guardar_correo_coorporativo', 'ConfiguracionController@guardar_correo_coorporativo');
 Route::delete('anular_correo_coorporativo/{id}', 'ConfiguracionController@anular_correo_coorporativo');
+Route::get('configuracion_socket', 'ConfiguracionController@view_configuracion_socket');
+Route::put('actualizar_configuracion_socket', 'ConfiguracionController@actualizar_configuracion_socket');
+Route::post('guardar_configuracion_socket', 'ConfiguracionController@guardar_configuracion_socket');
+Route::delete('anular_configuracion_socket/{id}', 'ConfiguracionController@anular_configuracion_socket');
+
+
 Route::get('mostrar_nota_lanzamiento/{id}', 'ConfiguracionController@mostrar_nota_lanzamiento');
 Route::get('listar_detalle_notas_lanzamiento/{id}', 'ConfiguracionController@mostrar_detalle_notas_lanzamiento_table');
 Route::put('actualizar_nota_lanzamiento', 'ConfiguracionController@updateNotaLanzamiento');
