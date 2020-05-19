@@ -289,336 +289,350 @@ Route::put('grupo_criterio', 'ConfiguracionController@updateGrupoCriterio');
 
 
 /* Recursos Humanos */
-	Route::get('rrhh', 'RecursosHumanosController@view_main');
-	Route::get('persona', 'RecursosHumanosController@view_persona');
-	Route::get('postulante', 'RecursosHumanosController@view_postulante');
-	Route::get('trabajador', 'RecursosHumanosController@view_trabajador');
-	Route::get('cargo', 'RecursosHumanosController@view_cargo');
+Route::get('rrhh', 'RecursosHumanosController@view_main');
+Route::get('persona', 'RecursosHumanosController@view_persona');
+Route::get('postulante', 'RecursosHumanosController@view_postulante');
+Route::get('trabajador', 'RecursosHumanosController@view_trabajador');
+Route::get('cargo', 'RecursosHumanosController@view_cargo');
 
-	Route::get('periodo', 'RecursosHumanosController@view_periodo');
-	Route::get('tareo', 'RecursosHumanosController@view_tareo');
-	Route::get('asistencia', 'RecursosHumanosController@view_asistencia');
-	Route::get('planilla', 'RecursosHumanosController@view_planilla');
-	Route::get('horario', 'RecursosHumanosController@view_horario');
-	Route::get('tolerancia', 'RecursosHumanosController@view_tolerancia');
-	Route::get('est_civil', 'RecursosHumanosController@view_est_civil');
-	Route::get('cond_derecho_hab', 'RecursosHumanosController@view_cond_derecho_hab');
-	Route::get('niv_estudios', 'RecursosHumanosController@view_niv_estudio');
-	Route::get('carreras', 'RecursosHumanosController@view_carrera');
-	Route::get('tipo_trabajador', 'RecursosHumanosController@view_tipo_trabajador');
-	Route::get('tipo_contrato', 'RecursosHumanosController@view_tipo_contrato');
-	Route::get('modalidad', 'RecursosHumanosController@view_modalidad');
-	Route::get('concepto_rol', 'RecursosHumanosController@view_concepto_rol');
-	Route::get('cat_ocupacional', 'RecursosHumanosController@view_cat_ocupacional');
-	Route::get('tipo_planilla', 'RecursosHumanosController@view_tipo_planilla');
-	Route::get('tipo_merito', 'RecursosHumanosController@view_tipo_merito');
-	Route::get('tipo_demerito', 'RecursosHumanosController@view_tipo_demerito');
-	Route::get('tipo_bonificacion', 'RecursosHumanosController@view_tipo_bonificacion');
-	Route::get('tipo_descuento', 'RecursosHumanosController@view_tipo_descuento');
-	Route::get('tipo_retencion', 'RecursosHumanosController@view_tipo_retencion');
-	Route::get('tipo_aportes', 'RecursosHumanosController@view_tipo_aportes');
-	Route::get('derecho_hab', 'RecursosHumanosController@view_derecho_hab');
-	Route::get('pension', 'RecursosHumanosController@view_pension');
-	Route::get('merito', 'RecursosHumanosController@view_merito');
-	Route::get('demerito', 'RecursosHumanosController@view_sancion');
-	Route::get('salidas', 'RecursosHumanosController@view_salidas');
-	Route::get('prestamos', 'RecursosHumanosController@view_prestamo');
-	Route::get('vacaciones', 'RecursosHumanosController@view_vacaciones');
-	Route::get('horas_ext', 'RecursosHumanosController@view_horas_ext');
-	Route::get('cese', 'RecursosHumanosController@view_cese');
+Route::get('periodo', 'RecursosHumanosController@view_periodo');
+Route::get('tareo', 'RecursosHumanosController@view_tareo');
+Route::get('asistencia', 'RecursosHumanosController@view_asistencia');
+Route::get('planilla', 'RecursosHumanosController@view_planilla');
+Route::get('horario', 'RecursosHumanosController@view_horario');
+Route::get('tolerancia', 'RecursosHumanosController@view_tolerancia');
+Route::get('est_civil', 'RecursosHumanosController@view_est_civil');
+Route::get('cond_derecho_hab', 'RecursosHumanosController@view_cond_derecho_hab');
+Route::get('niv_estudios', 'RecursosHumanosController@view_niv_estudio');
+Route::get('carreras', 'RecursosHumanosController@view_carrera');
+Route::get('tipo_trabajador', 'RecursosHumanosController@view_tipo_trabajador');
+Route::get('tipo_contrato', 'RecursosHumanosController@view_tipo_contrato');
+Route::get('modalidad', 'RecursosHumanosController@view_modalidad');
+Route::get('concepto_rol', 'RecursosHumanosController@view_concepto_rol');
+Route::get('cat_ocupacional', 'RecursosHumanosController@view_cat_ocupacional');
+Route::get('tipo_planilla', 'RecursosHumanosController@view_tipo_planilla');
+Route::get('tipo_merito', 'RecursosHumanosController@view_tipo_merito');
+Route::get('tipo_demerito', 'RecursosHumanosController@view_tipo_demerito');
+Route::get('tipo_bonificacion', 'RecursosHumanosController@view_tipo_bonificacion');
+Route::get('tipo_descuento', 'RecursosHumanosController@view_tipo_descuento');
+Route::get('tipo_retencion', 'RecursosHumanosController@view_tipo_retencion');
+Route::get('tipo_aportes', 'RecursosHumanosController@view_tipo_aportes');
+Route::get('derecho_hab', 'RecursosHumanosController@view_derecho_hab');
+Route::get('pension', 'RecursosHumanosController@view_pension');
+Route::get('merito', 'RecursosHumanosController@view_merito');
+Route::get('demerito', 'RecursosHumanosController@view_sancion');
+Route::get('salidas', 'RecursosHumanosController@view_salidas');
+Route::get('prestamos', 'RecursosHumanosController@view_prestamo');
+Route::get('vacaciones', 'RecursosHumanosController@view_vacaciones');
+Route::get('licencia', 'RecursosHumanosController@view_licencia');
+Route::get('horas_ext', 'RecursosHumanosController@view_horas_ext');
+Route::get('cese', 'RecursosHumanosController@view_cese');
 
-	Route::get('bonificacion', 'RecursosHumanosController@view_bonificacion');
-	Route::get('descuento', 'RecursosHumanosController@view_descuento');
-	Route::get('retencion', 'RecursosHumanosController@view_retencion');
-	Route::get('aportacion', 'RecursosHumanosController@view_aportacion');
-	Route::get('reintegro', 'RecursosHumanosController@view_reintegro');
+Route::get('bonificacion', 'RecursosHumanosController@view_bonificacion');
+Route::get('descuento', 'RecursosHumanosController@view_descuento');
+Route::get('retencion', 'RecursosHumanosController@view_retencion');
+Route::get('aportacion', 'RecursosHumanosController@view_aportacion');
+Route::get('reintegro', 'RecursosHumanosController@view_reintegro');
 
-	Route::get('buscar_trabajador_id/{id}/{emp}/{sede}', 'RecursosHumanosController@buscar_trabajador_id');
+Route::get('buscar_trabajador_id/{id}/{emp}/{sede}', 'RecursosHumanosController@buscar_trabajador_id');
 
-	Route::post('cargar_csv', 'RecursosHumanosController@cargar_horario_reloj');
-	Route::get('cargar_data_diaria/{empre}/{sede}/{tipo}/{fecha}', 'RecursosHumanosController@cargar_horario_diario');
-	Route::post('grabar_asistencia', 'RecursosHumanosController@grabar_asistencia_diaria');
-	Route::post('grabar_asistencia_final', 'RecursosHumanosController@grabar_asistencia_final');
-	Route::get('cargar_asistencia/{empre}/{sede}/{tipo}/{ini}/{fin}', 'RecursosHumanosController@cargar_asistencia');
-	Route::get('mostrar_permiso_asistencia/{id}/{fecha}', 'RecursosHumanosController@permisos_asistencia');
-	Route::get('reporte_tardanzas/{from}/{to}/{empresa}/{sede}', 'RecursosHumanosController@reporte_tardanza');
-	Route::get('cargar_data_remun/{emp}/{plani}/{mes}/{anio}/{type}/{empleado}', 'RecursosHumanosController@cargar_remuneraciones'); // SOLO PRUEBAS
-	Route::get('procesar_planilla/{emp}/{plani}/{mes}', 'RecursosHumanosController@procesar_planilla'); ///// PLANILLA
-	Route::get('generar_planilla_pdf/{emp}/{plani}/{mes}/{anio}', 'RecursosHumanosController@generar_planilla_pdf');
-	Route::get('reporte_planilla_xls/{emp}/{plani}/{mes}/{anio}', 'RecursosHumanosController@reporte_planilla_xls');
-	Route::get('generar_vacaciones/{id}', 'RecursosHumanosController@generar_vacaciones_pdf');
-	Route::get('reporte_planilla_trabajador_xls/{emp}/{plani}/{mes}/{anio}/{trab}', 'RecursosHumanosController@reporte_planilla_trabajador_xls');
+Route::post('cargar_csv', 'RecursosHumanosController@cargar_horario_reloj');
+Route::get('cargar_data_diaria/{empre}/{sede}/{tipo}/{fecha}', 'RecursosHumanosController@cargar_horario_diario');
+Route::post('grabar_asistencia', 'RecursosHumanosController@grabar_asistencia_diaria');
+Route::post('grabar_asistencia_final', 'RecursosHumanosController@grabar_asistencia_final');
+Route::get('cargar_asistencia/{empre}/{sede}/{tipo}/{ini}/{fin}', 'RecursosHumanosController@cargar_asistencia');
+Route::get('mostrar_permiso_asistencia/{id}/{fecha}', 'RecursosHumanosController@permisos_asistencia');
+Route::get('reporte_tardanzas/{from}/{to}/{empresa}/{sede}', 'RecursosHumanosController@reporte_tardanza');
+Route::get('cargar_data_remun/{emp}/{plani}/{mes}/{anio}/{type}/{empleado}/{grupal}', 'RecursosHumanosController@cargar_remuneraciones'); // SOLO PRUEBAS
+Route::get('cargar_data_spcc/{emp}/{plani}/{mes}/{anio}', 'RecursosHumanosController@remuneracion_spcc'); // SOLO SPCC
+Route::get('procesar_planilla/{emp}/{plani}/{mes}', 'RecursosHumanosController@procesar_planilla'); ///// PLANILLA
+Route::get('generar_planilla_pdf/{emp}/{plani}/{mes}/{anio}', 'RecursosHumanosController@generar_planilla_pdf');
+Route::get('generar_planilla_spcc_pdf/{emp}/{plani}/{mes}/{anio}', 'RecursosHumanosController@generar_planilla_spcc_pdf');
 
-	Route::get('listar_personas', 'RecursosHumanosController@mostrar_persona_table');
-	Route::get('cargar_persona/{id}', 'RecursosHumanosController@mostrar_persona_id');
-	Route::post('guardar_persona', 'RecursosHumanosController@guardar_persona');
-	Route::post('editar_persona', 'RecursosHumanosController@actualizar_persona');
-	Route::get('anular_persona/{id}', 'RecursosHumanosController@anular_persona');
-	Route::get('digitos_documento/{id}', 'RecursosHumanosController@mostrar_longitud_doc');
+Route::get('reporte_planilla_xls/{emp}/{plani}/{mes}/{anio}/{filter}/{grupal}', 'RecursosHumanosController@reporte_planilla_xls');
+Route::get('reporte_planilla_spcc_xls/{emp}/{plani}/{mes}/{anio}', 'RecursosHumanosController@reporte_planilla_spcc_xls'); // SOLO SPCC
+Route::get('reporte_planilla_grupal_xls/{plani}/{mes}/{anio}/{grupo}', 'RecursosHumanosController@reporte_planilla_grupal_xls');//nueva planilla
+Route::get('generar_vacaciones/{id}', 'RecursosHumanosController@generar_vacaciones_pdf');
+Route::get('reporte_planilla_trabajador_pdf/{emp}/{plani}/{mes}/{anio}/{trab}', 'RecursosHumanosController@reporte_planilla_trabajador_xls');
+Route::get('generar_pdf_trabajdor/{emp}/{plani}/{mes}/{anio}', 'RecursosHumanosController@generar_pdf_trabajdor'); // correo rrhh
+Route::get('reporte_gastos/{plani}/{mes}/{anio}', 'RecursosHumanosController@reporte_gastos');
 
-	Route::get('listar_postulantes', 'RecursosHumanosController@mostrar_postulante_table');
-	Route::get('cargar_postulante/{id}', 'RecursosHumanosController@mostrar_postulante_id');
-	Route::get('cargar_postulante_dni/{dni}', 'RecursosHumanosController@mostrar_postulante_dni');
-	Route::post('guardar_informacion_postulante', 'RecursosHumanosController@guardar_informacion_postulante');
-	Route::post('editar_informacion_postulante', 'RecursosHumanosController@actualizar_informacion_postulante');
-	Route::get('listar_formacion_acad/{id}', 'RecursosHumanosController@mostrar_formacion_acad');
-	Route::post('guardar_formacion_academica', 'RecursosHumanosController@guardar_formacion_academica');
-	Route::post('editar_formacion_academica', 'RecursosHumanosController@actualizar_formacion_academica'); //FALTA ANULAR
-	Route::get('cargar_formacion_click/{id}', 'RecursosHumanosController@mostrar_formacion_click');
-	Route::get('listar_experiencia_lab/{id}', 'RecursosHumanosController@mostrar_experiencia_lab');
-	Route::post('guardar_experiencia_laboral', 'RecursosHumanosController@guardar_experiencia_laboral');
-	Route::post('editar_experiencia_laboral', 'RecursosHumanosController@actualizar_experiencia_laboral'); //FALTA ANULAR
-	Route::get('cargar_experiencia_click/{id}', 'RecursosHumanosController@mostrar_experiencia_click');
-	Route::get('listar_datos_extras/{id}', 'RecursosHumanosController@mostrar_datos_extras');
-	Route::post('guardar_datos_extras', 'RecursosHumanosController@guardar_dextra_postulante'); //FALTA ANULAR
-	Route::get('listar_observaciones/{id}', 'RecursosHumanosController@mostrar_observaciones');
-	Route::post('guardar_observacion', 'RecursosHumanosController@guardar_observacion_postulante');
-	Route::post('editar_observacion', 'RecursosHumanosController@actualizar_observacion_postulante'); //FALTA ANULAR
-	Route::get('cargar_observacion_click/{id}', 'RecursosHumanosController@mostrar_observacion_click');
+Route::get('listar_personas', 'RecursosHumanosController@mostrar_persona_table');
+Route::get('cargar_persona/{id}', 'RecursosHumanosController@mostrar_persona_id');
+Route::post('guardar_persona', 'RecursosHumanosController@guardar_persona');
+Route::post('editar_persona', 'RecursosHumanosController@actualizar_persona');
+Route::get('anular_persona/{id}', 'RecursosHumanosController@anular_persona');
+Route::get('digitos_documento/{id}', 'RecursosHumanosController@mostrar_longitud_doc');
 
-	Route::get('listar_trabajador', 'RecursosHumanosController@mostrar_trabajador_table');
-	Route::get('cargar_trabajador/{id}', 'RecursosHumanosController@mostrar_trabajador_id');
-	Route::get('cargar_trabajador_dni/{dni}', 'RecursosHumanosController@mostrar_trabajador_dni');
-	Route::post('guardar_alta_trabajador', 'RecursosHumanosController@guardar_alta_trabajador');
-	Route::post('editar_alta_trabajador', 'RecursosHumanosController@actualizar_alta_trabajador'); //FALTA ANULAR
-	Route::get('listar_contrato_trab/{id}', 'RecursosHumanosController@mostrar_contrato_trab');
-	Route::post('guardar_contrato_trabajador', 'RecursosHumanosController@guardar_contrato_trabajador');
-	Route::post('editar_contrato_trabajador', 'RecursosHumanosController@actualizar_contrato_trabajador'); //FALTA ANULAR
-	Route::get('cargar_contrato_click/{id}', 'RecursosHumanosController@mostrar_contrato_click');
-	Route::get('listar_rol_trab/{id}', 'RecursosHumanosController@mostrar_rol_trab');
-	Route::post('guardar_rol_trabajador', 'RecursosHumanosController@guardar_rol_trabajador');
-	Route::post('editar_rol_trabajador', 'RecursosHumanosController@actualizar_rol_trabajador'); //FALTA ANULAR
-	Route::get('actualizar_cierre_rol/{id}/{fecha}', 'RecursosHumanosController@actualizar_cierre_rol');
-	Route::get('cargar_rol_click/{id}', 'RecursosHumanosController@mostrar_rol_click');
-	Route::get('listar_cuentas_trab/{id}', 'RecursosHumanosController@mostrar_cuentas_trab');
-	Route::post('guardar_cuentas_trabajador', 'RecursosHumanosController@guardar_cuentas_trabajador');
-	Route::post('editar_cuentas_trabajador', 'RecursosHumanosController@actualizar_cuentas_trabajador'); //FALTA ANULAR
-	Route::get('cargar_cuenta_click/{id}', 'RecursosHumanosController@mostrar_cuenta_click');
+Route::get('listar_postulantes', 'RecursosHumanosController@mostrar_postulante_table');
+Route::get('cargar_postulante/{id}', 'RecursosHumanosController@mostrar_postulante_id');
+Route::get('cargar_postulante_dni/{dni}', 'RecursosHumanosController@mostrar_postulante_dni');
+Route::post('guardar_informacion_postulante', 'RecursosHumanosController@guardar_informacion_postulante');
+Route::post('editar_informacion_postulante', 'RecursosHumanosController@actualizar_informacion_postulante');
+Route::get('listar_formacion_acad/{id}', 'RecursosHumanosController@mostrar_formacion_acad');
+Route::post('guardar_formacion_academica', 'RecursosHumanosController@guardar_formacion_academica');
+Route::post('editar_formacion_academica', 'RecursosHumanosController@actualizar_formacion_academica'); //FALTA ANULAR
+Route::get('cargar_formacion_click/{id}', 'RecursosHumanosController@mostrar_formacion_click');
+Route::get('listar_experiencia_lab/{id}', 'RecursosHumanosController@mostrar_experiencia_lab');
+Route::post('guardar_experiencia_laboral', 'RecursosHumanosController@guardar_experiencia_laboral');
+Route::post('editar_experiencia_laboral', 'RecursosHumanosController@actualizar_experiencia_laboral'); //FALTA ANULAR
+Route::get('cargar_experiencia_click/{id}', 'RecursosHumanosController@mostrar_experiencia_click');
+Route::get('listar_datos_extras/{id}', 'RecursosHumanosController@mostrar_datos_extras');
+Route::post('guardar_datos_extras', 'RecursosHumanosController@guardar_dextra_postulante'); //FALTA ANULAR
+Route::get('listar_observaciones/{id}', 'RecursosHumanosController@mostrar_observaciones');
+Route::post('guardar_observacion', 'RecursosHumanosController@guardar_observacion_postulante');
+Route::post('editar_observacion', 'RecursosHumanosController@actualizar_observacion_postulante'); //FALTA ANULAR
+Route::get('cargar_observacion_click/{id}', 'RecursosHumanosController@mostrar_observacion_click');
 
-	Route::get('mostrar_combos_emp/{id}', 'RecursosHumanosController@buscar_sede');
-	Route::get('mostrar_grupo_sede/{id}', 'RecursosHumanosController@buscar_grupo');
-	Route::get('mostrar_area_grupo/{id}', 'RecursosHumanosController@buscar_area');
+Route::get('listar_trabajador', 'RecursosHumanosController@mostrar_trabajador_table');
+Route::get('cargar_trabajador/{id}', 'RecursosHumanosController@mostrar_trabajador_id');
+Route::get('cargar_trabajador_dni/{dni}', 'RecursosHumanosController@mostrar_trabajador_dni');
+Route::post('guardar_alta_trabajador', 'RecursosHumanosController@guardar_alta_trabajador');
+Route::post('editar_alta_trabajador', 'RecursosHumanosController@actualizar_alta_trabajador'); //FALTA ANULAR
+Route::get('listar_contrato_trab/{id}', 'RecursosHumanosController@mostrar_contrato_trab');
+Route::post('guardar_contrato_trabajador', 'RecursosHumanosController@guardar_contrato_trabajador');
+Route::post('editar_contrato_trabajador', 'RecursosHumanosController@actualizar_contrato_trabajador'); //FALTA ANULAR
+Route::get('cargar_contrato_click/{id}', 'RecursosHumanosController@mostrar_contrato_click');
+Route::get('listar_rol_trab/{id}', 'RecursosHumanosController@mostrar_rol_trab');
+Route::post('guardar_rol_trabajador', 'RecursosHumanosController@guardar_rol_trabajador');
+Route::post('editar_rol_trabajador', 'RecursosHumanosController@actualizar_rol_trabajador'); //FALTA ANULAR
+Route::get('actualizar_cierre_rol/{id}/{fecha}', 'RecursosHumanosController@actualizar_cierre_rol');
+Route::get('cargar_rol_click/{id}', 'RecursosHumanosController@mostrar_rol_click');
+Route::get('listar_cuentas_trab/{id}', 'RecursosHumanosController@mostrar_cuentas_trab');
+Route::post('guardar_cuentas_trabajador', 'RecursosHumanosController@guardar_cuentas_trabajador');
+Route::post('editar_cuentas_trabajador', 'RecursosHumanosController@actualizar_cuentas_trabajador'); //FALTA ANULAR
+Route::get('cargar_cuenta_click/{id}', 'RecursosHumanosController@mostrar_cuenta_click');
 
-	Route::get('listar_cargo', 'RecursosHumanosController@mostrar_cargo_table');
-	Route::get('cargar_cargo/{id}', 'RecursosHumanosController@mostrar_cargo_id');
-	Route::post('guardar_cargo', 'RecursosHumanosController@guardar_cargo');
-	Route::post('editar_cargo', 'RecursosHumanosController@actualizar_cargo');
-	Route::get('anular_cargo/{id}', 'RecursosHumanosController@anular_cargo');
+Route::get('mostrar_combos_emp/{id}', 'RecursosHumanosController@buscar_sede');
+Route::get('mostrar_grupo_sede/{id}', 'RecursosHumanosController@buscar_grupo');
+Route::get('mostrar_area_grupo/{id}', 'RecursosHumanosController@buscar_area');
 
-	Route::get('cargar_trabajador_dni_esc/{dni}', 'RecursosHumanosController@buscar_trab_dni');
-	Route::get('cargar_persona_dni_esc/{dni}', 'RecursosHumanosController@buscar_persona_dni');
+Route::get('listar_cargo', 'RecursosHumanosController@mostrar_cargo_table');
+Route::get('cargar_cargo/{id}', 'RecursosHumanosController@mostrar_cargo_id');
+Route::post('guardar_cargo', 'RecursosHumanosController@guardar_cargo');
+Route::post('editar_cargo', 'RecursosHumanosController@actualizar_cargo');
+Route::get('anular_cargo/{id}', 'RecursosHumanosController@anular_cargo');
 
-	Route::get('listar_merito/{id}', 'RecursosHumanosController@mostrar_merito_table');
-	Route::get('cargar_merito/{id}', 'RecursosHumanosController@mostrar_merito_id');
-	Route::post('guardar_merito', 'RecursosHumanosController@guardar_merito');
-	Route::post('editar_merito', 'RecursosHumanosController@actualizar_merito');
-	Route::get('anular_merito/{id}', 'RecursosHumanosController@anular_merito');
+Route::get('cargar_trabajador_dni_esc/{dni}', 'RecursosHumanosController@buscar_trab_dni');
+Route::get('cargar_persona_dni_esc/{dni}', 'RecursosHumanosController@buscar_persona_dni');
 
-	Route::get('listar_sancion/{id}', 'RecursosHumanosController@mostrar_sancion_table');
-	Route::get('listar_sancion', 'RecursosHumanosController@mostrar_sancion_table');
-	Route::get('cargar_sancion/{id}', 'RecursosHumanosController@mostrar_sancion_id');
-	Route::post('guardar_sancion', 'RecursosHumanosController@guardar_sancion');
-	Route::post('editar_sancion', 'RecursosHumanosController@actualizar_sancion');
-	Route::get('anular_sancion/{id}', 'RecursosHumanosController@anular_sancion');
+Route::get('listar_merito/{id}', 'RecursosHumanosController@mostrar_merito_table');
+Route::get('cargar_merito/{id}', 'RecursosHumanosController@mostrar_merito_id');
+Route::post('guardar_merito', 'RecursosHumanosController@guardar_merito');
+Route::post('editar_merito', 'RecursosHumanosController@actualizar_merito');
+Route::get('anular_merito/{id}', 'RecursosHumanosController@anular_merito');
 
-	Route::get('listar_derecho_hab/{id}', 'RecursosHumanosController@mostrar_derechohabiente_table');
-	Route::get('cargar_derecho_hab/{id}', 'RecursosHumanosController@mostrar_derechohabiente_id');
-	Route::post('guardar_derecho_hab', 'RecursosHumanosController@guardar_derecho_habiente');
-	Route::post('editar_derecho_hab', 'RecursosHumanosController@actualizar_derecho_habiente');
-	Route::get('anular_derecho_hab/{id}', 'RecursosHumanosController@anular_derecho_habiente');
+Route::get('listar_sancion/{id}', 'RecursosHumanosController@mostrar_sancion_table');
+Route::get('listar_sancion', 'RecursosHumanosController@mostrar_sancion_table');
+Route::get('cargar_sancion/{id}', 'RecursosHumanosController@mostrar_sancion_id');
+Route::post('guardar_sancion', 'RecursosHumanosController@guardar_sancion');
+Route::post('editar_sancion', 'RecursosHumanosController@actualizar_sancion');
+Route::get('anular_sancion/{id}', 'RecursosHumanosController@anular_sancion');
 
-	Route::get('listar_salidas/{id}', 'RecursosHumanosController@mostrar_salidas_table');
-	Route::get('cargar_salidas/{id}', 'RecursosHumanosController@mostrar_salidas_id');
-	Route::post('guardar_salidas', 'RecursosHumanosController@guardar_salidas');
-	Route::post('editar_salidas', 'RecursosHumanosController@actualizar_salidas');
-	Route::get('anular_salidas/{id}', 'RecursosHumanosController@anular_salidas');
+Route::get('listar_derecho_hab/{id}', 'RecursosHumanosController@mostrar_derechohabiente_table');
+Route::get('cargar_derecho_hab/{id}', 'RecursosHumanosController@mostrar_derechohabiente_id');
+Route::post('guardar_derecho_hab', 'RecursosHumanosController@guardar_derecho_habiente');
+Route::post('editar_derecho_hab', 'RecursosHumanosController@actualizar_derecho_habiente');
+Route::get('anular_derecho_hab/{id}', 'RecursosHumanosController@anular_derecho_habiente');
 
-	Route::get('listar_prestamo/{id}', 'RecursosHumanosController@mostrar_prestamo_table');
-	Route::get('cargar_prestamo/{id}', 'RecursosHumanosController@mostrar_prestamo_id');
-	Route::post('guardar_prestamo', 'RecursosHumanosController@guardar_prestamo');
-	Route::post('editar_prestamo', 'RecursosHumanosController@actualizar_prestamo');
-	Route::get('anular_prestamo/{id}', 'RecursosHumanosController@anular_prestamo');
+Route::get('listar_salidas/{id}', 'RecursosHumanosController@mostrar_salidas_table');
+Route::get('cargar_salidas/{id}', 'RecursosHumanosController@mostrar_salidas_id');
+Route::post('guardar_salidas', 'RecursosHumanosController@guardar_salidas');
+Route::post('editar_salidas', 'RecursosHumanosController@actualizar_salidas');
+Route::get('anular_salidas/{id}', 'RecursosHumanosController@anular_salidas');
 
-	Route::get('listar_vacaciones/{id}', 'RecursosHumanosController@mostrar_vacaciones_table');
-	Route::get('cargar_vacaciones/{id}', 'RecursosHumanosController@mostrar_vacaciones_id');
-	Route::post('guardar_vacaciones', 'RecursosHumanosController@guardar_vacaciones');
-	Route::post('editar_vacaciones', 'RecursosHumanosController@actualizar_vacaciones');
-	Route::get('anular_vacaciones/{id}', 'RecursosHumanosController@anular_vacaciones');
+Route::get('listar_prestamo/{id}', 'RecursosHumanosController@mostrar_prestamo_table');
+Route::get('cargar_prestamo/{id}', 'RecursosHumanosController@mostrar_prestamo_id');
+Route::post('guardar_prestamo', 'RecursosHumanosController@guardar_prestamo');
+Route::post('editar_prestamo', 'RecursosHumanosController@actualizar_prestamo');
+Route::get('anular_prestamo/{id}', 'RecursosHumanosController@anular_prestamo');
 
-	Route::get('listar_horas_ext/{id}', 'RecursosHumanosController@mostrar_horas_ext_table');
-	Route::get('cargar_horas_ext/{id}', 'RecursosHumanosController@mostrar_horas_ext_id');
-	Route::post('guardar_horas_ext', 'RecursosHumanosController@guardar_horas_ext');
-	Route::post('editar_horas_ext', 'RecursosHumanosController@actualizar_horas_ext');
-	Route::get('anular_horas_ext/{id}', 'RecursosHumanosController@anular_horas_ext');
+Route::get('listar_vacaciones/{id}', 'RecursosHumanosController@mostrar_vacaciones_table');
+Route::get('cargar_vacaciones/{id}', 'RecursosHumanosController@mostrar_vacaciones_id');
+Route::post('guardar_vacaciones', 'RecursosHumanosController@guardar_vacaciones');
+Route::post('editar_vacaciones', 'RecursosHumanosController@actualizar_vacaciones');
+Route::get('anular_vacaciones/{id}', 'RecursosHumanosController@anular_vacaciones');
 
-	Route::post('guardar_cese', 'RecursosHumanosController@guardar_cese');
+Route::get('listar_licencia/{id}', 'RecursosHumanosController@mostrar_licencia_table');
+Route::get('cargar_licencia/{id}', 'RecursosHumanosController@mostrar_licencia_id');
+Route::post('guardar_licencia', 'RecursosHumanosController@guardar_licencia');
+Route::post('editar_licencia', 'RecursosHumanosController@actualizar_licencia');
+Route::get('anular_licencia/{id}', 'RecursosHumanosController@anular_licencia');
 
-	Route::get('listar_periodo', 'RecursosHumanosController@mostrar_periodo_table');
-	Route::get('cargar_periodo/{id}', 'RecursosHumanosController@mostrar_periodo_id');
-	Route::post('guardar_periodo', 'RecursosHumanosController@guardar_periodo');
-	Route::post('editar_periodo', 'RecursosHumanosController@actualizar_periodo');
-	Route::get('anular_periodo/{id}', 'RecursosHumanosController@anular_periodo');
+Route::get('listar_horas_ext/{id}', 'RecursosHumanosController@mostrar_horas_ext_table');
+Route::get('cargar_horas_ext/{id}', 'RecursosHumanosController@mostrar_horas_ext_id');
+Route::post('guardar_horas_ext', 'RecursosHumanosController@guardar_horas_ext');
+Route::post('editar_horas_ext', 'RecursosHumanosController@actualizar_horas_ext');
+Route::get('anular_horas_ext/{id}', 'RecursosHumanosController@anular_horas_ext');
 
-	Route::get('listar_horarios', 'RecursosHumanosController@mostrar_horarios_table');
-	Route::get('cargar_horario/{id}', 'RecursosHumanosController@mostrar_horario_id');
-	Route::post('guardar_horario', 'RecursosHumanosController@guardar_horario');
-	Route::post('editar_horario', 'RecursosHumanosController@actualizar_horario');
-	Route::get('anular_horario/{id}', 'RecursosHumanosController@anular_horario');
+Route::post('guardar_cese', 'RecursosHumanosController@guardar_cese');
 
-	Route::get('listar_tolerancias', 'RecursosHumanosController@mostrar_tolerancia_table');
-	Route::get('cargar_tolerancia/{id}', 'RecursosHumanosController@mostrar_tolerancia_id');
-	Route::post('guardar_tolerancia', 'RecursosHumanosController@guardar_tolerancia');
-	Route::post('editar_tolerancia', 'RecursosHumanosController@actualizar_tolerancia');
-	Route::get('anular_tolerancia/{id}', 'RecursosHumanosController@anular_tolerancia');
+Route::get('listar_periodo', 'RecursosHumanosController@mostrar_periodo_table');
+Route::get('cargar_periodo/{id}', 'RecursosHumanosController@mostrar_periodo_id');
+Route::post('guardar_periodo', 'RecursosHumanosController@guardar_periodo');
+Route::post('editar_periodo', 'RecursosHumanosController@actualizar_periodo');
+Route::get('anular_periodo/{id}', 'RecursosHumanosController@anular_periodo');
 
-	Route::get('listar_estado_civil', 'RecursosHumanosController@mostrar_estado_civil_table');
-	Route::get('cargar_est_civil/{id}', 'RecursosHumanosController@mostrar_est_civil_id');
-	Route::post('guardar_est_civil', 'RecursosHumanosController@guardar_estado_civil');
-	Route::post('editar_est_civil', 'RecursosHumanosController@actualizar_estado_civil');
-	Route::get('anular_est_civil/{id}', 'RecursosHumanosController@anular_estado_civil');
+Route::get('listar_horarios', 'RecursosHumanosController@mostrar_horarios_table');
+Route::get('cargar_horario/{id}', 'RecursosHumanosController@mostrar_horario_id');
+Route::post('guardar_horario', 'RecursosHumanosController@guardar_horario');
+Route::post('editar_horario', 'RecursosHumanosController@actualizar_horario');
+Route::get('anular_horario/{id}', 'RecursosHumanosController@anular_horario');
 
-	Route::get('listar_condi_derecho_hab', 'RecursosHumanosController@mostrar_condiciondh_table');
-	Route::get('cargar_cond_derecho_hab/{id}', 'RecursosHumanosController@mostrar_condiciondh_id');
-	Route::post('guardar_cond_derecho_hab', 'RecursosHumanosController@guardar_condicion_dh');
-	Route::post('editar_cond_derecho_hab', 'RecursosHumanosController@actualizar_condicion_dh');
-	Route::get('anular_cond_derecho_hab/{id}', 'RecursosHumanosController@anular_condicion_dh');
+Route::get('listar_tolerancias', 'RecursosHumanosController@mostrar_tolerancia_table');
+Route::get('cargar_tolerancia/{id}', 'RecursosHumanosController@mostrar_tolerancia_id');
+Route::post('guardar_tolerancia', 'RecursosHumanosController@guardar_tolerancia');
+Route::post('editar_tolerancia', 'RecursosHumanosController@actualizar_tolerancia');
+Route::get('anular_tolerancia/{id}', 'RecursosHumanosController@anular_tolerancia');
 
-	Route::get('listar_nivel_estudio', 'RecursosHumanosController@mostrar_nivel_estudio_table');
-	Route::get('cargar_nivel_estudio/{id}', 'RecursosHumanosController@mostrar_nivel_estudios_id');
-	Route::post('guardar_nivel_estudio', 'RecursosHumanosController@guardar_nivel_estudio');
-	Route::post('editar_nivel_estudio', 'RecursosHumanosController@actualizar_nivel_estudio');
-	Route::get('anular_nivel_estudio/{id}', 'RecursosHumanosController@anular_nivel_estudio');
+Route::get('listar_estado_civil', 'RecursosHumanosController@mostrar_estado_civil_table');
+Route::get('cargar_est_civil/{id}', 'RecursosHumanosController@mostrar_est_civil_id');
+Route::post('guardar_est_civil', 'RecursosHumanosController@guardar_estado_civil');
+Route::post('editar_est_civil', 'RecursosHumanosController@actualizar_estado_civil');
+Route::get('anular_est_civil/{id}', 'RecursosHumanosController@anular_estado_civil');
 
-	Route::get('listar_carrera', 'RecursosHumanosController@mostrar_carrera_table');
-	Route::get('cargar_carrera/{id}', 'RecursosHumanosController@mostrar_carrera_id');
-	Route::post('guardar_carrera', 'RecursosHumanosController@guardar_carrera');
-	Route::post('editar_carrera', 'RecursosHumanosController@actualizar_carrera');
-	Route::get('anular_carrera/{id}', 'RecursosHumanosController@anular_carrera');
+Route::get('listar_condi_derecho_hab', 'RecursosHumanosController@mostrar_condiciondh_table');
+Route::get('cargar_cond_derecho_hab/{id}', 'RecursosHumanosController@mostrar_condiciondh_id');
+Route::post('guardar_cond_derecho_hab', 'RecursosHumanosController@guardar_condicion_dh');
+Route::post('editar_cond_derecho_hab', 'RecursosHumanosController@actualizar_condicion_dh');
+Route::get('anular_cond_derecho_hab/{id}', 'RecursosHumanosController@anular_condicion_dh');
 
-	Route::get('listar_tipo_trabajador', 'RecursosHumanosController@mostrar_tipo_trabajador_table');
-	Route::get('cargar_tipo_trabajador/{id}', 'RecursosHumanosController@mostrar_tipo_trabajador_id');
-	Route::post('guardar_tipo_trabajador', 'RecursosHumanosController@guardar_tipo_trabajador');
-	Route::post('editar_tipo_trabajador', 'RecursosHumanosController@actualizar_tipo_trabajador');
-	Route::get('anular_tipo_trabajador/{id}', 'RecursosHumanosController@anular_tipo_trabajador');
+Route::get('listar_nivel_estudio', 'RecursosHumanosController@mostrar_nivel_estudio_table');
+Route::get('cargar_nivel_estudio/{id}', 'RecursosHumanosController@mostrar_nivel_estudios_id');
+Route::post('guardar_nivel_estudio', 'RecursosHumanosController@guardar_nivel_estudio');
+Route::post('editar_nivel_estudio', 'RecursosHumanosController@actualizar_nivel_estudio');
+Route::get('anular_nivel_estudio/{id}', 'RecursosHumanosController@anular_nivel_estudio');
 
-	Route::get('listar_tipo_contrato', 'RecursosHumanosController@mostrar_tipo_contrato_table');
-	Route::get('cargar_tipo_contrato/{id}', 'RecursosHumanosController@mostrar_tipo_contrato_id');
-	Route::post('guardar_tipo_contrato', 'RecursosHumanosController@guardar_tipo_contrato');
-	Route::post('editar_tipo_contrato', 'RecursosHumanosController@actualizar_tipo_contrato');
-	Route::get('anular_tipo_contrato/{id}', 'RecursosHumanosController@anular_tipo_contrato');
+Route::get('listar_carrera', 'RecursosHumanosController@mostrar_carrera_table');
+Route::get('cargar_carrera/{id}', 'RecursosHumanosController@mostrar_carrera_id');
+Route::post('guardar_carrera', 'RecursosHumanosController@guardar_carrera');
+Route::post('editar_carrera', 'RecursosHumanosController@actualizar_carrera');
+Route::get('anular_carrera/{id}', 'RecursosHumanosController@anular_carrera');
 
-	Route::get('listar_modalidad', 'RecursosHumanosController@mostrar_modalidad_table');
-	Route::get('cargar_modalidad/{id}', 'RecursosHumanosController@mostrar_modalidad_id');
-	Route::post('guardar_modalidad', 'RecursosHumanosController@guardar_modalidad');
-	Route::post('editar_modalidad', 'RecursosHumanosController@actualizar_modalidad');
-	Route::get('anular_modalidad/{id}', 'RecursosHumanosController@anular_modalidad');
+Route::get('listar_tipo_trabajador', 'RecursosHumanosController@mostrar_tipo_trabajador_table');
+Route::get('cargar_tipo_trabajador/{id}', 'RecursosHumanosController@mostrar_tipo_trabajador_id');
+Route::post('guardar_tipo_trabajador', 'RecursosHumanosController@guardar_tipo_trabajador');
+Route::post('editar_tipo_trabajador', 'RecursosHumanosController@actualizar_tipo_trabajador');
+Route::get('anular_tipo_trabajador/{id}', 'RecursosHumanosController@anular_tipo_trabajador');
 
-	Route::get('listar_concepto_rol', 'RecursosHumanosController@mostrar_concepto_rol_table');
-	Route::get('cargar_concepto_rol/{id}', 'RecursosHumanosController@mostrar_concepto_rol_id');
-	Route::post('guardar_concepto_rol', 'RecursosHumanosController@guardar_concepto_rol');
-	Route::post('editar_concepto_rol', 'RecursosHumanosController@actualizar_concepto_rol');
-	Route::get('anular_concepto_rol/{id}', 'RecursosHumanosController@anular_concepto_rol');
+Route::get('listar_tipo_contrato', 'RecursosHumanosController@mostrar_tipo_contrato_table');
+Route::get('cargar_tipo_contrato/{id}', 'RecursosHumanosController@mostrar_tipo_contrato_id');
+Route::post('guardar_tipo_contrato', 'RecursosHumanosController@guardar_tipo_contrato');
+Route::post('editar_tipo_contrato', 'RecursosHumanosController@actualizar_tipo_contrato');
+Route::get('anular_tipo_contrato/{id}', 'RecursosHumanosController@anular_tipo_contrato');
 
-	Route::get('listar_categoria_ocupacional', 'RecursosHumanosController@mostrar_categoria_ocupacional');
-	Route::get('cargar_categoria_ocupacional/{id}', 'RecursosHumanosController@mostrar_categoria_ocupacional_id');
-	Route::post('guardar_categoria_ocupacional', 'RecursosHumanosController@guardar_categoria_ocupacional');
-	Route::post('editar_categoria_ocupacional', 'RecursosHumanosController@actualizar_categoria_ocupacional');
-	Route::get('anular_categoria_ocupacional/{id}', 'RecursosHumanosController@anular_categoria_ocupacional');
+Route::get('listar_modalidad', 'RecursosHumanosController@mostrar_modalidad_table');
+Route::get('cargar_modalidad/{id}', 'RecursosHumanosController@mostrar_modalidad_id');
+Route::post('guardar_modalidad', 'RecursosHumanosController@guardar_modalidad');
+Route::post('editar_modalidad', 'RecursosHumanosController@actualizar_modalidad');
+Route::get('anular_modalidad/{id}', 'RecursosHumanosController@anular_modalidad');
 
-	Route::get('listar_tipo_planilla', 'RecursosHumanosController@mostrar_tipo_planilla_table');
-	Route::get('cargar_tipo_planilla/{id}', 'RecursosHumanosController@mostrar_tipo_planilla_id');
-	Route::post('guardar_tipo_planilla', 'RecursosHumanosController@guardar_tipo_planilla');
-	Route::post('editar_tipo_planilla', 'RecursosHumanosController@actualizar_tipo_planilla');
-	Route::get('anular_tipo_planilla/{id}', 'RecursosHumanosController@anular_tipo_planilla');
+Route::get('listar_concepto_rol', 'RecursosHumanosController@mostrar_concepto_rol_table');
+Route::get('cargar_concepto_rol/{id}', 'RecursosHumanosController@mostrar_concepto_rol_id');
+Route::post('guardar_concepto_rol', 'RecursosHumanosController@guardar_concepto_rol');
+Route::post('editar_concepto_rol', 'RecursosHumanosController@actualizar_concepto_rol');
+Route::get('anular_concepto_rol/{id}', 'RecursosHumanosController@anular_concepto_rol');
 
-	Route::get('listar_tipo_merito', 'RecursosHumanosController@mostrar_tipo_merito_table');
-	Route::get('cargar_tipo_merito/{id}', 'RecursosHumanosController@mostrar_tipo_merito_id');
-	Route::post('guardar_tipo_merito', 'RecursosHumanosController@guardar_tipo_merito');
-	Route::post('editar_tipo_merito', 'RecursosHumanosController@actualizar_tipo_merito');
-	Route::get('anular_tipo_merito/{id}', 'RecursosHumanosController@anular_tipo_merito');
+Route::get('listar_categoria_ocupacional', 'RecursosHumanosController@mostrar_categoria_ocupacional');
+Route::get('cargar_categoria_ocupacional/{id}', 'RecursosHumanosController@mostrar_categoria_ocupacional_id');
+Route::post('guardar_categoria_ocupacional', 'RecursosHumanosController@guardar_categoria_ocupacional');
+Route::post('editar_categoria_ocupacional', 'RecursosHumanosController@actualizar_categoria_ocupacional');
+Route::get('anular_categoria_ocupacional/{id}', 'RecursosHumanosController@anular_categoria_ocupacional');
 
-	Route::get('listar_tipo_demerito', 'RecursosHumanosController@mostrar_tipo_demerito_table');
-	Route::get('cargar_tipo_demerito/{id}', 'RecursosHumanosController@mostrar_tipo_demerito_id');
-	Route::post('guardar_tipo_demerito', 'RecursosHumanosController@guardar_tipo_demerito');
-	Route::post('editar_tipo_demerito', 'RecursosHumanosController@actualizar_tipo_demerito');
-	Route::get('anular_tipo_demerito/{id}', 'RecursosHumanosController@anular_tipo_demerito');
+Route::get('listar_tipo_planilla', 'RecursosHumanosController@mostrar_tipo_planilla_table');
+Route::get('cargar_tipo_planilla/{id}', 'RecursosHumanosController@mostrar_tipo_planilla_id');
+Route::post('guardar_tipo_planilla', 'RecursosHumanosController@guardar_tipo_planilla');
+Route::post('editar_tipo_planilla', 'RecursosHumanosController@actualizar_tipo_planilla');
+Route::get('anular_tipo_planilla/{id}', 'RecursosHumanosController@anular_tipo_planilla');
 
-	Route::get('listar_tipo_bonificacion', 'RecursosHumanosController@mostrar_tipo_bonificacion_table');
-	Route::get('cargar_tipo_bonificacion/{id}', 'RecursosHumanosController@mostrar_tipo_bonificacion_id');
-	Route::post('guardar_tipo_bonificacion', 'RecursosHumanosController@guardar_tipo_bonificacion');
-	Route::post('editar_tipo_bonificacion', 'RecursosHumanosController@actualizar_tipo_bonificacion');
-	Route::get('anular_tipo_bonificacion/{id}', 'RecursosHumanosController@anular_tipo_bonificacion');
+Route::get('listar_tipo_merito', 'RecursosHumanosController@mostrar_tipo_merito_table');
+Route::get('cargar_tipo_merito/{id}', 'RecursosHumanosController@mostrar_tipo_merito_id');
+Route::post('guardar_tipo_merito', 'RecursosHumanosController@guardar_tipo_merito');
+Route::post('editar_tipo_merito', 'RecursosHumanosController@actualizar_tipo_merito');
+Route::get('anular_tipo_merito/{id}', 'RecursosHumanosController@anular_tipo_merito');
 
-	Route::get('listar_tipo_descuento', 'RecursosHumanosController@mostrar_tipo_descuento_table');
-	Route::get('cargar_tipo_descuento/{id}', 'RecursosHumanosController@mostrar_tipo_descuento_id');
-	Route::post('guardar_tipo_descuento', 'RecursosHumanosController@guardar_tipo_descuento');
-	Route::post('editar_tipo_descuento', 'RecursosHumanosController@actualizar_tipo_descuento');
-	Route::get('anular_tipo_descuento/{id}', 'RecursosHumanosController@anular_tipo_descuento');
+Route::get('listar_tipo_demerito', 'RecursosHumanosController@mostrar_tipo_demerito_table');
+Route::get('cargar_tipo_demerito/{id}', 'RecursosHumanosController@mostrar_tipo_demerito_id');
+Route::post('guardar_tipo_demerito', 'RecursosHumanosController@guardar_tipo_demerito');
+Route::post('editar_tipo_demerito', 'RecursosHumanosController@actualizar_tipo_demerito');
+Route::get('anular_tipo_demerito/{id}', 'RecursosHumanosController@anular_tipo_demerito');
 
-	Route::get('listar_tipo_retencion', 'RecursosHumanosController@mostrar_tipo_retencion_table');
-	Route::get('cargar_tipo_retencion/{id}', 'RecursosHumanosController@mostrar_tipo_retencion_id');
-	Route::post('guardar_tipo_retencion', 'RecursosHumanosController@guardar_tipo_retencion');
-	Route::post('editar_tipo_retencion', 'RecursosHumanosController@actualizar_tipo_retencion');
-	Route::get('anular_tipo_retencion/{id}', 'RecursosHumanosController@anular_tipo_retencion');
+Route::get('listar_tipo_bonificacion', 'RecursosHumanosController@mostrar_tipo_bonificacion_table');
+Route::get('cargar_tipo_bonificacion/{id}', 'RecursosHumanosController@mostrar_tipo_bonificacion_id');
+Route::post('guardar_tipo_bonificacion', 'RecursosHumanosController@guardar_tipo_bonificacion');
+Route::post('editar_tipo_bonificacion', 'RecursosHumanosController@actualizar_tipo_bonificacion');
+Route::get('anular_tipo_bonificacion/{id}', 'RecursosHumanosController@anular_tipo_bonificacion');
 
-	Route::get('listar_tipo_aporte', 'RecursosHumanosController@mostrar_tipo_aporte_table');
-	Route::get('cargar_tipo_aporte/{id}', 'RecursosHumanosController@mostrar_tipo_aporte_id');
-	Route::post('guardar_tipo_aporte', 'RecursosHumanosController@guardar_tipo_aporte');
-	Route::post('editar_tipo_aporte', 'RecursosHumanosController@actualizar_tipo_aporte');
-	Route::get('anular_tipo_aporte/{id}', 'RecursosHumanosController@anular_tipo_aporte');
+Route::get('listar_tipo_descuento', 'RecursosHumanosController@mostrar_tipo_descuento_table');
+Route::get('cargar_tipo_descuento/{id}', 'RecursosHumanosController@mostrar_tipo_descuento_id');
+Route::post('guardar_tipo_descuento', 'RecursosHumanosController@guardar_tipo_descuento');
+Route::post('editar_tipo_descuento', 'RecursosHumanosController@actualizar_tipo_descuento');
+Route::get('anular_tipo_descuento/{id}', 'RecursosHumanosController@anular_tipo_descuento');
 
-	Route::get('listar_pension', 'RecursosHumanosController@mostrar_pension_table');
-	Route::get('cargar_pension/{id}', 'RecursosHumanosController@mostrar_pension_id');
-	Route::post('guardar_pension', 'RecursosHumanosController@guardar_pension');
-	Route::post('editar_pension', 'RecursosHumanosController@actualizar_pension');
-	Route::get('anular_pension/{id}', 'RecursosHumanosController@anular_pension');
+Route::get('listar_tipo_retencion', 'RecursosHumanosController@mostrar_tipo_retencion_table');
+Route::get('cargar_tipo_retencion/{id}', 'RecursosHumanosController@mostrar_tipo_retencion_id');
+Route::post('guardar_tipo_retencion', 'RecursosHumanosController@guardar_tipo_retencion');
+Route::post('editar_tipo_retencion', 'RecursosHumanosController@actualizar_tipo_retencion');
+Route::get('anular_tipo_retencion/{id}', 'RecursosHumanosController@anular_tipo_retencion');
 
-	Route::get('cargar_regimen/{id}', 'RecursosHumanosController@cargar_regimen');
-	
-	Route::get('listar_bonificacion/{id}', 'RecursosHumanosController@mostrar_bonificacion_table');
-	Route::get('cargar_bonificacion/{id}', 'RecursosHumanosController@mostrar_bonificacion_id');
-	Route::post('guardar_bonificacion', 'RecursosHumanosController@guardar_bonificacion');
-	Route::post('editar_bonificacion', 'RecursosHumanosController@actualizar_bonificacion');
-	Route::get('anular_bonificacion/{id}', 'RecursosHumanosController@anular_bonificacion');
+Route::get('listar_tipo_aporte', 'RecursosHumanosController@mostrar_tipo_aporte_table');
+Route::get('cargar_tipo_aporte/{id}', 'RecursosHumanosController@mostrar_tipo_aporte_id');
+Route::post('guardar_tipo_aporte', 'RecursosHumanosController@guardar_tipo_aporte');
+Route::post('editar_tipo_aporte', 'RecursosHumanosController@actualizar_tipo_aporte');
+Route::get('anular_tipo_aporte/{id}', 'RecursosHumanosController@anular_tipo_aporte');
 
-	Route::get('listar_descuento/{id}', 'RecursosHumanosController@mostrar_descuento_table');
-	Route::get('cargar_descuento/{id}', 'RecursosHumanosController@mostrar_descuento_id');
-	Route::post('guardar_descuento', 'RecursosHumanosController@guardar_descuento');
-	Route::post('editar_descuento', 'RecursosHumanosController@actualizar_descuento');
-	Route::get('anular_descuento/{id}', 'RecursosHumanosController@anular_descuento');
+Route::get('listar_pension', 'RecursosHumanosController@mostrar_pension_table');
+Route::get('cargar_pension/{id}', 'RecursosHumanosController@mostrar_pension_id');
+Route::post('guardar_pension', 'RecursosHumanosController@guardar_pension');
+Route::post('editar_pension', 'RecursosHumanosController@actualizar_pension');
+Route::get('anular_pension/{id}', 'RecursosHumanosController@anular_pension');
 
-	Route::get('listar_retencion/{id}', 'RecursosHumanosController@mostrar_retencion_table');
-	Route::get('cargar_retencion/{id}', 'RecursosHumanosController@mostrar_retencion_id');
-	Route::post('guardar_retencion', 'RecursosHumanosController@guardar_retencion');
-	Route::post('editar_retencion', 'RecursosHumanosController@actualizar_retencion');
-	Route::get('anular_retencion/{id}', 'RecursosHumanosController@anular_retencion');
+Route::get('cargar_regimen/{id}', 'RecursosHumanosController@cargar_regimen');
 
-	Route::get('listar_aportacion', 'RecursosHumanosController@mostrar_aportacion_table');
-	Route::get('cargar_aportacion/{id}', 'RecursosHumanosController@mostrar_aportacion_id');
-	Route::post('guardar_aportacion', 'RecursosHumanosController@guardar_aportacion');
-	Route::post('editar_aportacion', 'RecursosHumanosController@actualizar_aportacion');
-	Route::get('anular_aportacion/{id}', 'RecursosHumanosController@anular_aportacion');
+Route::get('listar_bonificacion/{id}', 'RecursosHumanosController@mostrar_bonificacion_table');
+Route::get('cargar_bonificacion/{id}', 'RecursosHumanosController@mostrar_bonificacion_id');
+Route::post('guardar_bonificacion', 'RecursosHumanosController@guardar_bonificacion');
+Route::post('editar_bonificacion', 'RecursosHumanosController@actualizar_bonificacion');
+Route::get('anular_bonificacion/{id}', 'RecursosHumanosController@anular_bonificacion');
 
-	Route::get('listar_reintegro/{id}', 'RecursosHumanosController@mostrar_reintegro_table');
-	Route::get('cargar_reintegro/{id}', 'RecursosHumanosController@mostrar_reintegro_id');
-	Route::post('guardar_reintegro', 'RecursosHumanosController@guardar_reintegro');
-	Route::post('editar_reintegro', 'RecursosHumanosController@actualizar_reintegro');
-	Route::get('anular_reintegro/{id}', 'RecursosHumanosController@anular_reintegro');
+Route::get('listar_descuento/{id}', 'RecursosHumanosController@mostrar_descuento_table');
+Route::get('cargar_descuento/{id}', 'RecursosHumanosController@mostrar_descuento_id');
+Route::post('guardar_descuento', 'RecursosHumanosController@guardar_descuento');
+Route::post('editar_descuento', 'RecursosHumanosController@actualizar_descuento');
+Route::get('anular_descuento/{id}', 'RecursosHumanosController@anular_descuento');
 
-	// REPORTE RRHH
-	Route::get('datos_personal', 'RecursosHumanosController@view_cv');
-	Route::get('busqueda_postulante', 'RecursosHumanosController@view_busq_postu');
-	Route::get('grupo_trabajador', 'RecursosHumanosController@view_grupo_trab');
-	Route::get('cumple', 'RecursosHumanosController@view_cumple');
-	Route::get('datos_generales', 'RecursosHumanosController@view_datos_generales');
-	Route::get('reporte_afp', 'RecursosHumanosController@view_reporte_afp');
+Route::get('listar_retencion/{id}', 'RecursosHumanosController@mostrar_retencion_table');
+Route::get('cargar_retencion/{id}', 'RecursosHumanosController@mostrar_retencion_id');
+Route::post('guardar_retencion', 'RecursosHumanosController@guardar_retencion');
+Route::post('editar_retencion', 'RecursosHumanosController@actualizar_retencion');
+Route::get('anular_retencion/{id}', 'RecursosHumanosController@anular_retencion');
 
-	Route::get('buscar_postulantes/{filtro}/{desc}', 'RecursosHumanosController@buscar_postulantes_reporte');
-	Route::get('buscar_grupo_trabajador/{emp}/{grupo}', 'RecursosHumanosController@grupo_trabajador_reporte');
-	Route::get('buscar_cumple/{filtro}', 'RecursosHumanosController@onomastico_reporte');
-	Route::get('cargar_detalle_postulante/{id}', 'RecursosHumanosController@cargar_detalle_postulante');
-	Route::get('buscar_datos_generales/{tipo}', 'RecursosHumanosController@datos_generales_reporte');
-	Route::get('buscar_reporte_afp', 'RecursosHumanosController@reporte_afp');
+Route::get('listar_aportacion', 'RecursosHumanosController@mostrar_aportacion_table');
+Route::get('cargar_aportacion/{id}', 'RecursosHumanosController@mostrar_aportacion_id');
+Route::post('guardar_aportacion', 'RecursosHumanosController@guardar_aportacion');
+Route::post('editar_aportacion', 'RecursosHumanosController@actualizar_aportacion');
+Route::get('anular_aportacion/{id}', 'RecursosHumanosController@anular_aportacion');
+
+Route::get('listar_reintegro/{id}', 'RecursosHumanosController@mostrar_reintegro_table');
+Route::get('cargar_reintegro/{id}', 'RecursosHumanosController@mostrar_reintegro_id');
+Route::post('guardar_reintegro', 'RecursosHumanosController@guardar_reintegro');
+Route::post('editar_reintegro', 'RecursosHumanosController@actualizar_reintegro');
+Route::get('anular_reintegro/{id}', 'RecursosHumanosController@anular_reintegro');
+
+// REPORTE RRHH
+Route::get('datos_personal', 'RecursosHumanosController@view_cv');
+Route::get('busqueda_postulante', 'RecursosHumanosController@view_busq_postu');
+Route::get('grupo_trabajador', 'RecursosHumanosController@view_grupo_trab');
+Route::get('cumple', 'RecursosHumanosController@view_cumple');
+Route::get('datos_generales', 'RecursosHumanosController@view_datos_generales');
+Route::get('reporte_afp', 'RecursosHumanosController@view_reporte_afp');
+
+Route::get('buscar_postulantes/{filtro}/{desc}', 'RecursosHumanosController@buscar_postulantes_reporte');
+Route::get('buscar_grupo_trabajador/{emp}/{grupo}', 'RecursosHumanosController@grupo_trabajador_reporte');
+Route::get('buscar_cumple/{filtro}', 'RecursosHumanosController@onomastico_reporte');
+Route::get('cargar_detalle_postulante/{id}', 'RecursosHumanosController@cargar_detalle_postulante');
+Route::get('buscar_datos_generales/{tipo}', 'RecursosHumanosController@datos_generales_reporte');
+Route::get('buscar_reporte_afp', 'RecursosHumanosController@reporte_afp');
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////

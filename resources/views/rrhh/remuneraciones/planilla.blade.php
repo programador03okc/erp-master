@@ -74,13 +74,82 @@
 	</div>
 	<br>
 	<div class="row">
-		<div class="col-md-8">
-            {{-- <button class="btn btn-flat btn-primary" onclick="procesar();">Procesar Planilla</button> --}}
-            <button class="btn btn-flat btn-success" onclick="reportePlanilla();">Reporte Planilla</button>
-            <button class="btn btn-flat btn-danger" onclick="generar();">Generar Boleta</button>
-            <button class="btn btn-flat btn-warning" onclick="processBoleta();">Generar Boleta Individual</button>
+		<div class="col-md-2">
+			{{-- <button class="btn btn-flat btn-primary" onclick="procesar();">Procesar Planilla</button> --}}
+            <button class="btn btn-flat btn-block btn-danger" onclick="generar();">Generar Boleta</button>
+		</div>
+		<div class="col-md-2">
+            <button class="btn btn-flat btn-block btn-warning" onclick="processBoleta();">Generar Boleta Individual</button>
+		</div>
+		<div class="col-md-2">
+			<button class="btn btn-flat btn-block btn-success" onclick="reportePlanilla();">Reporte Planilla</button>
+		</div>
+		<div class="col-md-4">
+			<div class="input-group">
+				<select class="form-control" name="nameGrupo" id="nameGrupo">
+					<option value="" selected disabled>Elija una opción..</option>
+					<option value="ADMINISTRACION">Administración</option>
+					<option value="COMERCIAL">Comercial</option>
+					<option value="GERENCIA">Gerencia</option>
+					<option value="PROYECTOS">Proyetos</option>
+				</select>
+				<span class="input-group-btn">
+				  <button type="button" class="btn btn-primary btn-flat" onclick="reportePlanillaGrupal();">Reporte Planilla Grupal</button>
+				</span>
+			</div>
+		</div>
+		<div class="col-md-2">
+			<button class="btn btn-flat btn-block btn-info" onclick="reporteGastos();">Reporte de Gastos</button>
 		</div>
 	</div>
+	<br><br>
+	
+	<div class="row">
+		<div class="col-md-4">
+			<fieldset style="padding: 10px; background-color: #fff; border: 1px solid #ddd;">
+				<h2>Adicional SPCC</h2>
+				<hr>
+				<div class="row">
+					<div class="col-md-6">
+						<button class="btn btn-flat btn-block btn-danger" onclick="generarSPCC();">Generar Boleta</button>
+					</div>
+					<div class="col-md-6">
+						<button class="btn btn-flat btn-block btn-success" onclick="reportePlanillaSPCC();">Reporte Planilla</button>
+					</div>
+				</div>
+			</fieldset>
+		</div>
+
+		<div class="col-md-3">
+			<fieldset style="padding: 10px; background-color: #fff; border: 1px solid #ddd;">
+				<h2>Enviar Correos</h2>
+				<hr>
+				<div class="row">
+					<div class="col-md-12">
+						<button class="btn btn-flat btn-block btn-primary" onclick="enviarBoleta();">Enviar Boletas por Correo</button>
+					</div>
+				</div>
+			</fieldset>
+		</div>
+	</div>
+</div>
+
+<!-- modal -->
+<div class="modal fade" tabindex="-1" role="dialog" id="modal-correos">
+    <div class="modal-dialog" style="width: 55%;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="close"><span aria-hidden="true">&times;</span></button>
+                <h3 class="modal-title">Resultado del Envío</h3>
+            </div>
+            <div class="modal-body">
+				<div class="row">
+					<div class="col-md-6 oculto" id="ul-si" style="border-right: 1px solid #ddd;"><ul></ul></div>
+					<div class="col-md-6 oculto" id="ul-no"><ul></ul></div>
+				</div>
+			</div>
+        </div>
+    </div>
 </div>
 
 @include('layout.footer')

@@ -9,6 +9,14 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Auth;
 use DateTime;
+use Mail;
+
+use Swift_Transport;
+use Swift_Message;
+use Swift_Mailer;
+use Swift_Attachment;
+use Swift_IoException;
+use Swift_Preferences;
 
 ini_set('max_execution_time', 3600);
 date_default_timezone_set('America/Lima');
@@ -112,6 +120,9 @@ class RecursosHumanosController extends Controller{
     }
     function view_vacaciones(){
         return view('rrhh/control/vacaciones');
+    }
+    function view_licencia(){
+        return view('rrhh/control/licencia');
     }
     function view_horas_ext(){
         $usuario = $this->select_personal_usuario();
@@ -1908,6 +1919,82 @@ class RecursosHumanosController extends Controller{
     }
     public function anular_vacaciones($id){
         $data = DB::table('rrhh.rrhh_vacac')->where('id_vacaciones', $id)
+        ->update([
+            'estado'    => 2
+        ]);
+        return response()->json($data);
+    }
+
+    /* CONTROL DE LICENCIAS */
+    public function mostrar_licencia_table($id){
+        $html = '';
+        $horext = DB::table('rrhh.rrhh_licenc')
+            ->where([['id_trabajador', '=', $id], ['estado', '=', 1]])->orderBy('fecha_inicio', 'desc')->get();
+
+        if ($horext->count() > 0){
+            foreach ($horext as $row){
+                $tipo = ($row->id_tipo_licencia == 1) ? 'LICENCIA CON GOCE' : 'TELETRABAJO';
+                $html .=
+                '<tr>
+                    <td>'.$row->id_licencia.'</td>
+                    <td>'.$tipo.'</td>
+                    <td>'.date('d/m/Y', strtotime($row->fecha_inicio)).'</td>
+                    <td>'.date('d/m/Y', strtotime($row->fecha_fin)).'</td>
+                    <td>'.$row->dias.'</td>
+                </tr>';
+            }
+        }else{
+            $html.= '<tr><td></td><td colspan="5"> No hay datos registrados</td></tr>';
+        }
+        return response()->json($html);
+    }
+    public function mostrar_licencia_id($id){
+        $horext = DB::table('rrhh.rrhh_licenc')->where('rrhh_licenc.id_licencia', '=', $id)->get();
+        return response()->json($horext);
+    }
+    public function guardar_licencia(Request $request){
+        $fecha_registro = date('Y-m-d H:i:s');
+        $result = array();
+        $id = DB::table('rrhh.rrhh_licenc')->insertGetId(
+            [
+                'id_trabajador'     => $request->id_trabajador,
+                'id_tipo_licencia'  => $request->tipo_licencia,
+                'fecha_inicio'      => $request->fecha_inicio,
+                'fecha_fin'         => $request->fecha_fin,
+                'dias'              => $request->dias,
+                'estado'            => 1,
+                'fecha_registro'    => $fecha_registro
+            ],
+            'id_licencia'
+        );
+        if ($id > 0){
+            $result = array('id_trabajador' => $request->id_trabajador, 'id_licencia' => $id);
+        }else{
+            $result = array('id_trabajador' => $request->id_trabajador, 'id_licencia' => 0);
+        }
+        return response()->json($result);
+    }
+    public function actualizar_licencia(Request $request){
+        $fecha_registro = date('Y-m-d H:i:s');
+        $data = DB::table('rrhh.rrhh_licenc')->where('id_licencia', $request->id_licencia)
+        ->update([
+            'id_trabajador'     => $request->id_trabajador,
+            'id_tipo_licencia'  => $request->tipo_licencia,
+            'fecha_inicio'      => $request->fecha_inicio,
+            'fecha_fin'         => $request->fecha_fin,
+            'dias'              => $request->dias,
+            'estado'            => 1,
+            'fecha_registro'    => $fecha_registro
+        ]);
+        if ($data > 0){
+            $val = $request->id_trabajador;
+        }else{
+            $val = 0;
+        }
+        return response()->json($val);
+    }
+    public function anular_licencia($id){
+        $data = DB::table('rrhh.rrhh_licenc')->where('id_licencia', $id)
         ->update([
             'estado'    => 2
         ]);
@@ -4058,8 +4145,410 @@ class RecursosHumanosController extends Controller{
             return cal_days_in_month(1, $mes, $anio);
         }
     }
+
+    public function remuneracion_spcc($emp, $plani, $mes, $anio){
+        $data_prev = array();
+        $data = array();
+        $dias_compu = 30;
+        $total_dias = cal_days_in_month(1, $mes, $anio);
+        $hora_trab = 8;
+
+        $list_trab = DB::table('rrhh.rrhh_extra_spcc')
+                    ->join('rrhh.rrhh_trab', 'rrhh_trab.id_trabajador', '=', 'rrhh_extra_spcc.id_trabajador')
+                    ->join('rrhh.rrhh_postu', 'rrhh_postu.id_postulante', '=', 'rrhh_trab.id_postulante')
+                    ->join('rrhh.rrhh_perso', 'rrhh_perso.id_persona', '=', 'rrhh_postu.id_persona')
+                    ->join('rrhh.rrhh_rol', 'rrhh_rol.id_trabajador', '=', 'rrhh_trab.id_trabajador')
+                    ->join('administracion.adm_area', 'adm_area.id_area', '=', 'rrhh_rol.id_area')
+                    ->join('administracion.adm_grupo', 'adm_grupo.id_grupo', '=', 'adm_area.id_grupo')
+                    ->join('administracion.sis_sede', 'sis_sede.id_sede', '=', 'adm_grupo.id_sede')
+                    ->join('administracion.adm_empresa', 'adm_empresa.id_empresa', '=', 'sis_sede.id_empresa')
+                    ->select(DB::raw('DISTINCT rrhh_trab.id_trabajador'), 'rrhh_perso.apellido_paterno', 'rrhh_extra_spcc.dias_trabajados',
+                            'rrhh_extra_spcc.dias_feriados', 'rrhh_extra_spcc.extra_retencion')
+                    ->where([
+                        ['rrhh_extra_spcc.mes', '=', $mes], ['rrhh_extra_spcc.periodo', '=', $anio], ['rrhh_extra_spcc.estado', '=', 1]
+                    ])->orderBy('rrhh_perso.apellido_paterno', 'asc')->get();
+        
+        foreach ($list_trab as $row){
+            $ids_trab = $row->id_trabajador;
+            $dias_total = $row->dias_trabajados;
+            $dias_fer = $row->dias_feriados;
+            $q_retenc = $row->extra_retencion;
+
+            // DATOS TRABAJADOR
+            $sqlDatos = DB::table('rrhh.rrhh_trab')
+                ->join('rrhh.rrhh_postu', 'rrhh_postu.id_postulante', '=', 'rrhh_trab.id_postulante')
+                ->join('rrhh.rrhh_perso', 'rrhh_perso.id_persona', '=', 'rrhh_postu.id_persona')
+                ->join('rrhh.rrhh_tp_trab', 'rrhh_tp_trab.id_tipo_trabajador', 'rrhh_trab.id_tipo_trabajador')
+                ->join('rrhh.rrhh_cat_ocupac', 'rrhh_cat_ocupac.id_categoria_ocupacional', 'rrhh_trab.id_categoria_ocupacional')
+                ->join('contabilidad.sis_identi', 'sis_identi.id_doc_identidad', '=', 'rrhh_perso.id_documento_identidad')
+                ->join('rrhh.rrhh_pensi', 'rrhh_pensi.id_pension', 'rrhh_trab.id_pension')
+                ->select('rrhh_perso.nro_documento AS nro_doc_persona', 'rrhh_perso.sexo', 'sis_identi.descripcion AS doc_identidad', 'rrhh_trab.cuspp', 'rrhh_trab.hijos', 'rrhh_trab.marcaje',
+                        'rrhh_pensi.descripcion AS pension', 'rrhh_pensi.id_pension', 'rrhh_tp_trab.descripcion AS tipo_trabajador', 'rrhh_cat_ocupac.descripcion AS categ_trabajador',
+                        DB::raw("CONCAT(rrhh_perso.apellido_paterno,' ',rrhh_perso.apellido_materno,' ',rrhh_perso.nombres) AS datos_trabajador"))
+                ->where('rrhh_trab.id_trabajador', '=', $ids_trab)->first();
+
+            // ROL DEL TRABAJADOR
+            $sqlRol = DB::table('rrhh.rrhh_trab')
+                ->join('rrhh.rrhh_rol', 'rrhh_rol.id_trabajador', '=', 'rrhh_trab.id_trabajador')
+                ->join('rrhh.rrhh_cargo', 'rrhh_cargo.id_cargo', '=', 'rrhh_rol.id_cargo')
+                ->join('administracion.adm_area', 'adm_area.id_area', '=', 'rrhh_rol.id_area')
+                ->join('administracion.adm_grupo', 'adm_grupo.id_grupo', '=', 'adm_area.id_grupo')
+                ->join('administracion.sis_sede', 'sis_sede.id_sede', '=', 'adm_grupo.id_sede')
+                ->join('administracion.adm_empresa', 'adm_empresa.id_empresa', '=', 'sis_sede.id_empresa')
+                ->join('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'adm_empresa.id_contribuyente')
+                ->select('rrhh_cargo.descripcion AS cargo', 'adm_area.descripcion AS area', 'sis_sede.descripcion AS sede',
+                'adm_grupo.id_grupo', 'adm_grupo.descripcion AS grupo', 'rrhh_rol.salario', 'adm_contri.nro_documento AS ruc', 'adm_contri.razon_social AS empresa',
+                'adm_empresa.id_empresa', 'sis_sede.id_sede', 'rrhh_rol.id_area', 'rrhh_rol.id_cargo', 'rrhh_rol.fecha_inicio', 'rrhh_rol.fecha_fin', 'rrhh_rol.sctr')
+                ->where([['rrhh_trab.id_trabajador', '=', $ids_trab], ['rrhh_rol.salario', '>', 0], ['rrhh_rol.id_tipo_planilla', '=', $plani]])
+                ->orderBy('rrhh_rol.id_rol', 'desc')->limit(1)->get();
+
+            if ($sqlRol->count() > 0){
+                $data = $sqlRol->first();
+                $ruc = $data->ruc;
+                $empre = $data->empresa;
+                $id_empre = $data->id_empresa;
+                $cargo = strtoupper($data->cargo);
+                $id_cargo = $data->id_cargo;
+                $sede = strtoupper($data->sede);
+                $id_sede = $data->id_sede;
+                $area = $data->area;
+                $id_area = $data->id_area;
+                $grup = strtoupper($data->grupo);
+                $id_grup = $data->id_grupo;
+                $salario = $data->salario;
+                $ini_contrato = $data->fecha_inicio;
+                $fin_contrato = ($data->fecha_fin != null) ? $data->fecha_fin : null;
+                $sctr = ($data->sctr == true) ? 1 : 0;
+            }else{
+                $ruc = '';
+                $empre = '';
+                $id_empre = 0;
+                $sede = '';
+                $id_sede = 0;
+                $grup = '';
+                $id_grup = 0;
+                $area = '';
+                $id_area = 0;
+                $cargo = '';
+                $id_cargo = 0;
+                $salario = 0;
+                $ini_contrato = '';
+                $fin_contrato = '';
+                $sctr = 0;
+            }
+
+            // CONTRATO DEL TRABAJADOR
+            $sqlContrato = DB::table('rrhh.rrhh_contra')
+                ->join('rrhh.rrhh_trab', 'rrhh_trab.id_trabajador', '=', 'rrhh_contra.id_trabajador')
+                ->join('rrhh.rrhh_tp_contra', 'rrhh_tp_contra.id_tipo_contrato', '=', 'rrhh_contra.id_tipo_contrato')
+                ->join('rrhh.rrhh_modali', 'rrhh_modali.id_modalidad', '=', 'rrhh_contra.id_modalidad')
+                ->join('rrhh.rrhh_horario', 'rrhh_horario.id_horario', '=', 'rrhh_contra.id_horario')
+                ->select('rrhh_modali.descripcion AS modalidad', 'rrhh_tp_contra.descripcion AS tipo_contrato', 'rrhh_contra.tipo_centro_costo',
+                        'rrhh_contra.fecha_inicio AS contra_inicio', 'rrhh_contra.fecha_fin AS contra_fin' , 'rrhh_contra.motivo', 
+                        'rrhh_horario.id_horario', 'rrhh_horario.hora_sem')
+                ->where([['rrhh_trab.id_trabajador', '=', $ids_trab], ['rrhh_contra.estado', '>', 0]])
+                ->limit(1)->orderBy('rrhh_contra.id_contrato', 'desc')->get();
+            
+            if ($sqlContrato->count() > 0){
+                $ctts = $sqlContrato->first();
+                $modalid = $ctts->modalidad;
+                $tpcontra = $ctts->tipo_contrato;
+                $tp_cc = $ctts->tipo_centro_costo;
+                $horas = $ctts->hora_sem;
+                $tp_horario = $ctts->id_horario;
+            }
+
+            $dts_trab = $sqlDatos->datos_trabajador;
+            $doc_iden = $sqlDatos->doc_identidad;
+            $nro_docu = $sqlDatos->nro_doc_persona;
+            $tip_trab = $sqlDatos->tipo_trabajador;
+            $cat_trab = $sqlDatos->categ_trabajador;
+            $nro_cusp = $sqlDatos->cuspp;
+            $ids_pnsi = $sqlDatos->id_pension;
+            if ($ids_trab == 101) {
+                $fnd_pnsi = 'SPP';
+            }else{
+                $fnd_pnsi = $sqlDatos->pension;
+            }
+            
+            $cnt_hijo = $sqlDatos->hijos;
+            $sexo_per = $sqlDatos->sexo;
+            $tare_per = $sqlDatos->marcaje;
+
+            $rol_desc = $cargo;
+            $sede_emp = $sede;
+            $sld_trab = (float) $salario;
+            $dsc_carg = $cargo;
+            $ruc_empr = $ruc;
+            $dts_empr = $empre;
+
+            $ini_ctts = $ini_contrato;
+            $fin_ctts = $fin_contrato;
+            $mod_ctts = $modalid;
+            $tip_ctts = $tpcontra;
+            $tipo_cc = ($tp_cc == 1) ? 'FIJO': 'VARIABLE';
+            $hora_semana = (float) $horas;
+
+            //DATOS PENSIONES
+            $sqlPension = DB::table('rrhh.rrhh_pensi')->where('id_pension', $ids_pnsi)->first();
+            $psn_gral = $sqlPension->porcentaje_general;
+            $psn_apor = $sqlPension->aporte;
+            $psn_prim = $sqlPension->prima_seguro;
+            $psn_comi = $sqlPension->comision;
+            $psn_desc = ($sqlPension->descripcion == 'ONP') ? 1 : 2;
+
+            // ASIGNACION FAMILIAR
+            if ($plani == 1){
+                if ($cnt_hijo == 1){
+                    $sqlAsig = DB::table('rrhh.rrhh_asig_familiar')->where('estado', 1)->limit(1)->orderBy('rrhh_asig_familiar.id_asignacion', 'desc')->first();
+                        $asg_fami = (float) $sqlAsig->valor;
+                }else{
+                    $asg_fami = 0;
+                }
+            }else{
+                $asg_fami = 0;
+            }
+
+            //REINTEGROS
+            $con_reint = 0;
+            $sin_reint = 0;
+            $dts_reint = ['reint_deduc' => $con_reint, 'reint_no_deduc' => $sin_reint];
+            $reint_con = 0;
+            $reint_sin = 0;
+            $tot_reint = $reint_con + $reint_sin;
+
+            // LICENCIA
+            $dias_licenc = 0;
+            $dias_telet = 0;
+
+            //BONIFICACIONES
+            $dts_bonif = [];
+            $sld_dias = (float) ($sld_trab / 30);
+            $ext_spcc = $dias_fer * $sld_dias;
+            
+            if ($ext_spcc > 0) {
+                $con_bonif = $ext_spcc;
+                $sin_bonif = 0;
+                $dts_bonif[] = ['afecto'=> 'SI', 'concepto' => "HORAS EXTRAS", 'importe'=> $con_bonif];
+            }else{
+                $con_bonif = 0;
+                $sin_bonif = 0;
+                $dts_bonif = [];
+            }
+            $bonif_con = $con_bonif;
+            $bonif_sin = $sin_bonif;
+            $tot_bonif = $con_bonif + $sin_bonif;
+
+            //DESCUENTOS
+            $dts_dsct = [];
+            $con_dsct = 0;
+            $sin_dsct = 0;
+            $dscto_con = $con_dsct;
+            $dscto_sin = $sin_dsct;
+            $tot_dsct = $dscto_con + $dscto_sin;
+
+            //RETENCIONES
+            $dts_reten = [];
+            if ($q_retenc > 0) {
+                $con_reten = $q_retenc;
+                $sin_reten = 0;
+                $dts_reten[] = ['concepto'=> '5TA CATEGORIA', 'importe'=> $con_reten];
+            }else{
+                $con_reten = 0;
+                $sin_reten = 0;
+                $dts_reten = [];
+            }
+            $reten_con = $con_reten;
+            $reten_sin = $sin_reten;
+            $tot_reten = $con_reten + $sin_reten;
+
+            /* TARDANZAS */
+            $hor_perm = 0;
+            $min_tard = 0;
+            $min_tard_time = 0;
+            $min_tard_dsct = 0;
+            $min_inas = 0;
+
+            /* VACACIONES - TOTAL DIAS */
+            $dias_vac = 0;
+            $dias_max_cont = 12;
+            $dias_contables = 12;
+
+            $dias_trab = (int) ($dias_max_cont - $min_inas - $dias_vac - $dias_licenc - $dias_telet); //se agrego licencias
+            $dias_lab = (int) $dias_total - $min_inas - $dias_vac - $dias_licenc - $dias_telet;
+            $dias_laborados = (int) ($dias_max_cont - $min_inas - $dias_vac - $dias_licenc - $dias_telet);
+
+            if ($dias_lab < 0){
+                $dias_lab = 0;
+                $min_fin_efe =  (float) 0;
+                $horas_pre_efec = (float) 0;
+                $horas_efectivas = (float) 0;
+                $hor_efectivos = round(0);
+                $min_efectivos = round(0);
+            }else{
+                $min_fin_efe =  (float) ($min_tard_time / 60);
+                $horas_pre_efec = (float) ($dias_laborados * $hora_semana);
+                $horas_efectivas = (float) ($horas_pre_efec - $min_fin_efe);
+                $hor_efectivos = round(intval($horas_efectivas));
+                $min_efectivos = round(floatval(($horas_efectivas - $hor_efectivos) * 60));
+            }
+
+            $sld_dias = (float) ($sld_trab / 30);
+            $sld_hora = $sld_dias / 8;
+            $sld_minu = $sld_hora / 60;
+
+            /// TOTALES
+            if ($plani == 1){
+                $sueldo_vacac = ($dias_vac > 0) ? (($sld_trab / 30) * $dias_vac) : 0;
+            }else{
+                $sueldo_vacac = 0;
+            }
+            $sueldo_lice = ($dias_licenc > 0) ? (($sld_trab / 30) * $dias_licenc) : 0;
+            $sueldo_tltb = ($dias_telet > 0) ? (($sld_trab / 30) * $dias_telet) : 0;
+            $sueldo_basi = (($sld_trab / 30) * $dias_trab);
+            $sueldo_asig = (($sld_trab / 30) * $dias_trab) + $asg_fami;
+            $total_tndza = $sld_dias * $min_tard_dsct;
+            $total_dscto = $dscto_con + $dscto_sin;
+            $total_bonif = $bonif_con + $bonif_sin;
+            $total_reint = $reint_con + $reint_sin;
+            $tot_sueldo = ($sueldo_asig + ($bonif_con + $reint_con) - ($dscto_con + $total_tndza) + $sueldo_vacac + $sueldo_lice + $sueldo_tltb); // se agrego licencia
+
+            if ($plani == 1){
+                if ($psn_desc == 1){ //ONP
+                    $tot_pensi = $tot_sueldo * ($psn_gral / 100);
+                    $dts_pensi = array('tipo' => 'onp', 'snp' => $tot_pensi, 'spp' => 0, 'prima' => 0, 'comision' => 0, 'total_aportes' => $tot_pensi);
+                }else{ //AFP
+                    $limit_afp = 9788.95;
+
+                    if ($mes == 4 and $anio == 2020) {
+                        $total_obli = 0;
+                        $total_prim = ($tot_sueldo >= $limit_afp) ? round($limit_afp * ($psn_prim / 100), 2) : round($tot_sueldo * ($psn_prim / 100), 2);
+                        $total_comi = 0;
+                    }else{
+                        $total_obli = round($tot_sueldo * ($psn_apor / 100), 2);
+                        $total_prim = ($tot_sueldo >= $limit_afp) ? round($limit_afp * ($psn_prim / 100), 2) : round($tot_sueldo * ($psn_prim / 100), 2);
+                        $total_comi = round($tot_sueldo * ($psn_comi / 100), 2);
+                    }
+
+                    $tot_pensi = $total_obli + $total_prim + $total_comi;
+                    $dts_pensi = array('tipo' => 'afp', 'snp' => 0, 'spp' => $total_obli, 'prima' => $total_prim, 'comision' => $total_comi, 'total_aportes' => $tot_pensi);
+                }
+            }elseif ($plani == 2){
+                $tot_pensi = 0;
+                $dts_pensi = array('tipo' => 'na', 'snp' => 0, 'spp' => 0, 'prima' => 0, 'comision' => 0, 'total_aportes' => 0);
+            }
+
+            //APORTES DEL EMPLEADOR
+            $dts_apor = [];
+            $tot_aport = 0;
+            if ($plani == 1){
+                $sqlAporta = DB::table('rrhh.rrhh_aport')->where('estado', '=', 1)->get();
+
+                foreach ($sqlAporta as $keyAporta){
+                    $apt_valor = $keyAporta->valor;
+                    $apt_desc = $keyAporta->concepto;
+                    if ($apt_desc == 'ESSALUD (REGULAR CBSSP AGRAR/AC) TRAB') {
+                        if ($tot_sueldo <= 930){
+                            $tot_aport = 83.70;
+                        }else{
+                            $tot_aport = $tot_sueldo * ($apt_valor / 100);
+                        }
+                    }else{
+                        $tot_aport = $tot_sueldo * ($apt_valor / 100);
+                    }
+                    $dts_apor[] = ['concepto'=> $apt_desc, 'importe'=> $tot_aport];
+                }
+
+            }elseif ($plani == 2){
+                $tot_aport = 0;
+                $dts_apor[] = ['concepto'=> 'na', 'importe'=> 0];
+            }
+
+            $total_ingresos = $sueldo_asig + $total_reint + $total_bonif + $sueldo_vacac + $sueldo_lice + $sueldo_tltb;
+            $pago_final = $sueldo_asig + $total_reint + $total_bonif + $sueldo_vacac + $sueldo_lice + $sueldo_tltb - $total_dscto - $tot_pensi - $total_tndza - $tot_reten;
+
+            $data_prev[] = array(
+                'id_empresa'            => $id_empre,
+                'empresa'               => $dts_empr,
+                'ruc'                   => $ruc_empr,
+                'sede'                  => $sede_emp,
+                'id_sede'               => $id_sede,
+                'grupo'                 => $grup,
+                'id_grupo'              => $id_grup,
+                'area'                  => $area,
+                'id_area'               => $id_area,
+                'id_trabajador'         => $ids_trab,
+                'datos_trabajador'      => $dts_trab,
+                'tipo_documento'        => $doc_iden,
+                'dni_trabajador'        => $nro_docu,
+                'sexo_trabajador'       => $sexo_per,
+                'fecha_contrato_ini'    => $ini_ctts,
+                'fecha_contrato_fin'    => $fin_ctts,
+                'modalidad_contrato'    => $mod_ctts,
+                'tipo_contrato'         => $tip_ctts,
+                'tipo_trabajador'       => $tip_trab,
+                'categoria_trabajador'  => $cat_trab,
+                'tipo_planilla'         => $plani,
+                'rol_trabajador'        => $rol_desc,
+                'id_cargo'              => $id_cargo,
+                'numero_cussp'          => $nro_cusp,
+                'tipo_centro_costo'     => $tipo_cc,
+                'fondo_pension'         => $fnd_pnsi,
+                'sctr'                  => $sctr,
+                'salario'               => $sld_trab,
+                'sueldo_basico'         => $sueldo_basi,
+                'sueldo_dia'            => $sld_dias,
+                'sueldo_hora'           => $sld_hora,
+                'sueldo_minuto'         => $sld_minu,
+                'sueldo_asigna'         => $sueldo_asig,
+                'minutos_tardanza'      => $min_tard_time,
+                'descuento_tardanza'    => $min_tard_dsct,
+                'monto_tardanza'        => $total_tndza,
+                'asignacion_familiar'   => $asg_fami,
+                'horas_permisos'        => $hor_perm,
+                'bonificaciones'        => $dts_bonif,
+                'monto_bonif_con'       => $con_bonif,
+                'monto_bonif_sin'       => $sin_bonif,
+                'total_bonificacion'    => $tot_bonif,
+                'descuentos'            => $dts_dsct,
+                'monto_dscto_con'       => $con_dsct,
+                'monto_dscto_sin'       => $sin_dsct,
+                'total_dscto'           => $tot_dsct,
+                'retenciones'           => $dts_reten,
+                'monto_reten_con'       => $con_reten,
+                'monto_reten_sin'       => $sin_reten,
+                'total_reten'           => $tot_reten,
+                'reintegros'            => $dts_reint,
+                'monto_reintegro'       => $tot_reint,
+                'dias_vacaciones'       => $dias_vac,
+                'sueldo_vacaciones'     => $sueldo_vacac,
+                'dias_licencia'         => $dias_licenc,
+                'sueldo_licencia'       => $sueldo_lice,
+                'dias_teletrabajo'      => $dias_telet,
+                'sueldo_teletrabajo'    => $sueldo_tltb,
+                'aporte_pension'        => $dts_pensi,
+                'aporte_empleador'      => $dts_apor,
+                'total_remun'           => $tot_sueldo,
+                'total_ingreso'         => $total_ingresos,
+                'total_pago'            => $pago_final,
+                'dias_mes'              => $total_dias,
+                'dias_compu'            => $dias_compu,
+                'regimen'               => $hora_trab,
+                'hora_regimen'          => $hora_semana,
+                'dias_total'            => $dias_lab,
+                'dias_laborados'        => $dias_laborados,
+                'total_regimen'         => $horas_pre_efec,
+                'total_efectivas'       => $horas_efectivas,
+                'horas_efectivas'       => $hor_efectivos,
+                'minutos_efectivas'     => $min_efectivos,
+                'valor_final'           => $dias_contables
+            );
+        }
+        $data = ['data' =>$data_prev];
+        return $data;            
+    }
     
-    public function cargar_remuneraciones($emp, $plani, $mes, $anio, $type, $empleado){
+    public function cargar_remuneraciones($emp, $plani, $mes, $anio, $type, $empleado, $areaGRupal){
         $dmY_primer = $this->primerDia($mes, $anio);
         $dmY_ultimo = $this->ultimoDia($mes, $anio);
         $data_prev = array();
@@ -4072,7 +4561,6 @@ class RecursosHumanosController extends Controller{
         $total_dias = cal_days_in_month(1, $mes, $anio);
         $hora_trab = 8;
         $dias_total = $this->dias_total($mes, $anio);
-        // $dias_efect = $this->dias_efectivos($dmY_primer, $dmY_ultimo);
 
         if ($empleado > 0) {
             $list_trab = DB::table('rrhh.rrhh_trab')
@@ -4100,9 +4588,8 @@ class RecursosHumanosController extends Controller{
                     ->select(DB::raw('DISTINCT rrhh_trab.id_trabajador'), 'rrhh_perso.apellido_paterno')
                     ->where([['rrhh_trab.estado', '=', 1], ['adm_empresa.id_empresa', '=', $emp], ['rrhh_rol.id_tipo_planilla', '=', $plani],
                             ['rrhh_rol.salario', '>', 0], ['rrhh_rol.estado', '=', 1]])
-                    ->orderBy('rrhh_perso.apellido_paterno', 'asc')
-                    ->get();
-            }else{
+                    ->orderBy('rrhh_perso.apellido_paterno', 'asc')->get();
+            }elseif($type == 2){
                 $list_trab = DB::table('rrhh.rrhh_trab')
                     ->join('rrhh.rrhh_postu', 'rrhh_postu.id_postulante', '=', 'rrhh_trab.id_postulante')
                     ->join('rrhh.rrhh_perso', 'rrhh_perso.id_persona', '=', 'rrhh_postu.id_persona')
@@ -4113,8 +4600,21 @@ class RecursosHumanosController extends Controller{
                     ->join('administracion.adm_empresa', 'adm_empresa.id_empresa', '=', 'sis_sede.id_empresa')
                     ->select(DB::raw('DISTINCT rrhh_trab.id_trabajador'), 'rrhh_perso.apellido_paterno')
                     ->where([['rrhh_trab.estado', '=', 1], ['rrhh_rol.salario', '>', 0], ['rrhh_rol.id_tipo_planilla', '=', $plani], ['rrhh_rol.estado', '=', 1]])
-                    ->orderBy('rrhh_trab.id_trabajador', 'asc')
-                    ->get();
+                    ->orderBy('rrhh_trab.id_trabajador', 'asc')->get();
+            }elseif($type == 3){
+                $list_trab = DB::table('rrhh.rrhh_trab')
+                    ->join('rrhh.rrhh_postu', 'rrhh_postu.id_postulante', '=', 'rrhh_trab.id_postulante')
+                    ->join('rrhh.rrhh_perso', 'rrhh_perso.id_persona', '=', 'rrhh_postu.id_persona')
+                    ->join('rrhh.rrhh_rol', 'rrhh_rol.id_trabajador', '=', 'rrhh_trab.id_trabajador')
+                    ->join('administracion.adm_area', 'adm_area.id_area', '=', 'rrhh_rol.id_area')
+                    ->join('administracion.adm_grupo', 'adm_grupo.id_grupo', '=', 'adm_area.id_grupo')
+                    ->join('administracion.sis_sede', 'sis_sede.id_sede', '=', 'adm_grupo.id_sede')
+                    ->join('administracion.adm_empresa', 'adm_empresa.id_empresa', '=', 'sis_sede.id_empresa')
+                    ->select(DB::raw('DISTINCT rrhh_trab.id_trabajador'), 'rrhh_perso.apellido_paterno')
+                    ->where([
+                        ['rrhh_trab.estado', '=', 1], ['adm_empresa.id_empresa', '=', $emp], ['rrhh_rol.id_tipo_planilla', '=', $plani],
+                        ['rrhh_rol.salario', '>', 0], ['rrhh_rol.estado', '=', 1], [DB::raw('upper(adm_grupo.descripcion)'), '=', $areaGRupal]
+                    ])->orderBy('rrhh_perso.apellido_paterno', 'asc')->get();
             }
         }
 
@@ -4144,8 +4644,8 @@ class RecursosHumanosController extends Controller{
                 ->join('administracion.adm_empresa', 'adm_empresa.id_empresa', '=', 'sis_sede.id_empresa')
                 ->join('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'adm_empresa.id_contribuyente')
                 ->select('rrhh_cargo.descripcion AS cargo', 'adm_area.descripcion AS area', 'sis_sede.descripcion AS sede',
-                'adm_grupo.descripcion AS grupo', 'rrhh_rol.salario', 'adm_contri.nro_documento AS ruc', 'adm_contri.razon_social AS empresa',
-                'adm_empresa.id_empresa', 'sis_sede.id_sede', 'rrhh_rol.id_area', 'rrhh_rol.id_cargo', 'rrhh_rol.fecha_inicio', 'rrhh_rol.fecha_fin')
+                'adm_grupo.id_grupo', 'adm_grupo.descripcion AS grupo', 'rrhh_rol.salario', 'adm_contri.nro_documento AS ruc', 'adm_contri.razon_social AS empresa',
+                'adm_empresa.id_empresa', 'sis_sede.id_sede', 'rrhh_rol.id_area', 'rrhh_rol.id_cargo', 'rrhh_rol.fecha_inicio', 'rrhh_rol.fecha_fin', 'rrhh_rol.sctr')
                 ->where([['rrhh_trab.id_trabajador', '=', $ids_trab], ['rrhh_rol.salario', '>', 0], ['rrhh_rol.id_tipo_planilla', '=', $plani]])
                 ->orderBy('rrhh_rol.id_rol', 'desc')->limit(1)->get();
 
@@ -4161,9 +4661,11 @@ class RecursosHumanosController extends Controller{
                 $area = $data->area;
                 $id_area = $data->id_area;
                 $grup = strtoupper($data->grupo);
+                $id_grup = $data->id_grupo;
                 $salario = $data->salario;
-                $ini_contrato = date('d/m/Y', strtotime($data->fecha_inicio));
-                $fin_contrato = date('d/m/Y', strtotime($data->fecha_fin));
+                $ini_contrato = $data->fecha_inicio;
+                $fin_contrato = ($data->fecha_fin != null) ? $data->fecha_fin : null;
+                $sctr = ($data->sctr == true) ? 1 : 0;
             }else{
                 $ruc = '';
                 $empre = '';
@@ -4171,6 +4673,7 @@ class RecursosHumanosController extends Controller{
                 $sede = '';
                 $id_sede = 0;
                 $grup = '';
+                $id_grup = 0;
                 $area = '';
                 $id_area = 0;
                 $cargo = '';
@@ -4178,6 +4681,7 @@ class RecursosHumanosController extends Controller{
                 $salario = 0;
                 $ini_contrato = '';
                 $fin_contrato = '';
+                $sctr = 0;
             }
 
             // CONTRATO DEL TRABAJADOR
@@ -4292,14 +4796,6 @@ class RecursosHumanosController extends Controller{
             if ($plani == 1) {
                 $sqlVacac = DB::table('rrhh.rrhh_vacac')->where([['id_trabajador', $ids_trab], ['estado', 1]])
                 ->whereBetween('fecha_inicio', [$dmY_primer, $dmY_ultimo])->get();
-                // $dias_vac = 0;
-                // foreach ($sqlVacac as $keyVac){
-                //     if ($keyVac->dias >= 7) {
-                //         $dias_vac = $keyVac->dias;
-                //     }else{
-                //         $dias_vac = 0;
-                //     }
-                // }
     
                 if ($sqlVacac->count() > 0){
                     foreach ($sqlVacac as $keyVac){
@@ -4310,6 +4806,25 @@ class RecursosHumanosController extends Controller{
                 }
             }else{
                 $dias_vac = 0;
+            }
+
+            // LICENCIA
+            $sqlLicenc = DB::table('rrhh.rrhh_licenc')->where([['id_trabajador', $ids_trab], ['estado', 1]])
+            ->whereBetween('fecha_inicio', [$dmY_primer, $dmY_ultimo])->get();
+
+            if ($sqlLicenc->count() > 0){
+                $dias_licenc = 0;
+                $dias_telet = 0;
+                foreach ($sqlLicenc as $keyLicen){
+                    if ($keyLicen->id_tipo_licencia == 1){
+                        $dias_licenc += $keyLicen->dias;
+                    }elseif ($keyLicen->id_tipo_licencia == 2){
+                        $dias_telet += $keyLicen->dias;
+                    }
+                }
+            }else{
+                $dias_licenc = 0;
+                $dias_telet = 0;
             }
 
             //REINTEGROS
@@ -4482,93 +4997,21 @@ class RecursosHumanosController extends Controller{
                 $min_inas = 0;
             }
 
-            /////////// QUITAR ESTAS LINEAS )(IF) - CALCULAR AUTOMATICAMENTE LOS DIAS DE TRABAJO
-            $dias_laborados = 0;
-            $dias_trab = 0;
-            $dias_lab = 0;
-            $dias_efect = 0;
-            if ($mes == 1) {
-                if ($ids_trab == 74) { //more
-                    $dias_trab = 12;
-                    $dias_lab = 12 - $dias_vac;
-                    $dias_efect = $this->dias_efectivos($dmY_primer, '2020-01-19', $tp_horario);
-                    $dias_laborados = (int) ($dias_efect - $min_inas - $dias_vac);
-                }elseif ($ids_trab == 92) {
-                    $dias_trab = 26;
-                    $dias_lab = 26 - $dias_vac;
-                    $dias_efect = $this->dias_efectivos($dmY_primer, '2020-01-24', $tp_horario);
-                    $dias_laborados = (int) ($dias_efect - $min_inas - $dias_vac);
-                }elseif ($ids_trab == 61) {//ericka
-                    $dias_trab = 12;
-                    $dias_lab = 12 - $dias_vac;
-                    $dias_efect = $this->dias_efectivos('2020-01-20', $dmY_ultimo, $tp_horario);
-                    $dias_laborados = (int) ($dias_efect - $min_inas - $dias_vac);
-                }elseif ($ids_trab == 64) {//neyra
-                    $dias_trab = 5;
-                    $dias_lab = 5 - $dias_vac;
-                    $dias_efect = $this->dias_efectivos('2020-01-27', $dmY_ultimo, $tp_horario);
-                    $dias_laborados = (int) ($dias_efect - $min_inas - $dias_vac);
-                }elseif ($ids_trab == 103) {//diana
-                    $dias_trab = 17;
-                    $dias_lab = 17 - $dias_vac;
-                    $dias_efect = $this->dias_efectivos('2020-01-14', $dmY_ultimo, $tp_horario);
-                    $dias_laborados = (int) ($dias_efect - $min_inas - $dias_vac);
-                }elseif ($ids_trab == 104) {//maria jose
-                    $dias_trab = 25;
-                    $dias_lab = 25 - $dias_vac;
-                    $dias_efect = $this->dias_efectivos('2020-01-06', $dmY_ultimo, $tp_horario);
-                    $dias_laborados = (int) ($dias_efect - $min_inas - $dias_vac);
-                }elseif ($ids_trab == 96) {//tello
-                    $dias_trab = 8;
-                    $dias_lab = 8 - $dias_vac;
-                    $dias_efect = $this->dias_efectivos('2020-01-24', $dmY_ultimo, $tp_horario);
-                    $dias_laborados = (int) ($dias_efect - $min_inas - $dias_vac);
-                }else{
-                    // para los regulares
-                    $dias_trab = (int) (30 - $min_inas - $dias_vac);
-                    $dias_lab = (int) $dias_total - $min_inas - $dias_vac;
-                    $dias_efect = $this->dias_efectivos($dmY_primer, $dmY_ultimo, $tp_horario);
-                    $dias_laborados = (int) ($dias_efect - $min_inas - $dias_vac);
-                }
-            }elseif($mes == 2){
-                if ($ids_trab == 106) { //casapia
-                    $dias_trab = 13;
-                    $dias_lab = 13 - $dias_vac;
-                    $dias_efect = $this->dias_efectivos('2020-02-17', $dmY_ultimo, $tp_horario);
-                    $dias_laborados = (int) ($dias_efect - $min_inas - $dias_vac);
-                }elseif ($ids_trab == 57) {//richard
-                    $dias_trab = 9;
-                    $dias_lab = 9 - $dias_vac;
-                    $dias_efect = $this->dias_efectivos($dmY_primer, '2020-02-09', $tp_horario);
-                    $dias_laborados = (int) ($dias_efect - $min_inas - $dias_vac);
-                }elseif ($ids_trab == 58) {//wendy
-                    $dias_trab = 20;
-                    $dias_lab = 20 - $dias_vac;
-                    $dias_efect = $this->dias_efectivos('2020-02-03', $dmY_ultimo, $tp_horario);
-                    $dias_laborados = (int) ($dias_efect - $min_inas - $dias_vac);
-                }elseif ($ids_trab == 60) {//jarcod
-                    $dias_trab = 28;
-                    $dias_lab = 28 - $dias_vac;
-                    $dias_efect = $this->dias_efectivos('2020-02-03', $dmY_ultimo, $tp_horario);
-                    $dias_laborados = (int) ($dias_efect - $min_inas - $dias_vac);
-                }elseif ($ids_trab == 107) {//alfaro
-                    $dias_trab = 12;
-                    $dias_lab = 12 - $dias_vac;
-                    $dias_efect = $this->dias_efectivos('2020-02-18', $dmY_ultimo, $tp_horario);
-                    $dias_laborados = (int) ($dias_efect - $min_inas - $dias_vac);
-                }else{
-                    // para los regulares
-                    $dias_trab = (int) (30 - $min_inas - $dias_vac);
-                    $dias_lab = (int) $dias_total - $min_inas - $dias_vac;
-                    $dias_efect = $this->dias_efectivos($dmY_primer, $dmY_ultimo, $tp_horario);
-                    $dias_laborados = (int) ($dias_efect - $min_inas - $dias_vac);
-                }
+            // $dias_licenc = 0;
+            // $dias_telet = 0;
+
+            $fi_cont = date('Y-m-d', strtotime($ini_ctts));
+            $ff_cont = ($fin_ctts != null) ? date('Y-m-d', strtotime($fin_ctts)) : null;
+            $dias_contables = $this->calcularDiasEfectivos($mes, $anio, $fi_cont, $ff_cont);
+            if ($dias_contables < $dias_total) {
+                $dias_max_cont = (30 - ($dias_total - $dias_contables));
             }else{
-                $dias_trab = (int) (30 - $min_inas - $dias_vac);
-                $dias_lab = (int) $dias_total - $min_inas - $dias_vac;
-                $dias_efect = $this->dias_efectivos($dmY_primer, $dmY_ultimo, $tp_horario);
-                $dias_laborados = (int) ($dias_efect - $min_inas - $dias_vac);
+                $dias_max_cont = 30;
             }
+            // $dias_max_cont = ($dias_contables >= $dias_total) ? 30 : $dias_contables;
+            $dias_trab = (int) ($dias_max_cont - $min_inas - $dias_vac - $dias_licenc - $dias_telet); //se agrego licencias
+            $dias_lab = (int) $dias_total - $min_inas - $dias_vac - $dias_licenc - $dias_telet;
+            $dias_laborados = (int) ($dias_max_cont - $min_inas - $dias_vac - $dias_licenc - $dias_telet);
 
             if ($dias_lab < 0){
                 $dias_lab = 0;
@@ -4595,24 +5038,33 @@ class RecursosHumanosController extends Controller{
             }else{
                 $sueldo_vacac = 0;
             }
+            $sueldo_lice = ($dias_licenc > 0) ? (($sld_trab / 30) * $dias_licenc) : 0;
+            $sueldo_tltb = ($dias_telet > 0) ? (($sld_trab / 30) * $dias_telet) : 0;
             $sueldo_basi = (($sld_trab / 30) * $dias_trab);
             $sueldo_asig = (($sld_trab / 30) * $dias_trab) + $asg_fami;
             $total_tndza = $sld_dias * $min_tard_dsct;
             $total_dscto = $dscto_con + $dscto_sin;
             $total_bonif = $bonif_con + $bonif_sin;
             $total_reint = $reint_con + $reint_sin;
-            $tot_sueldo = ($sueldo_asig + ($bonif_con + $reint_con) - ($dscto_con + $total_tndza) + $sueldo_vacac);
+            $tot_sueldo = ($sueldo_asig + ($bonif_con + $reint_con) - ($dscto_con + $total_tndza) + $sueldo_vacac + $sueldo_lice + $sueldo_tltb); // se agrego licencia
 
             if ($plani == 1){
                 if ($psn_desc == 1){ //ONP
                     $tot_pensi = $tot_sueldo * ($psn_gral / 100);
                     $dts_pensi = array('tipo' => 'onp', 'snp' => $tot_pensi, 'spp' => 0, 'prima' => 0, 'comision' => 0, 'total_aportes' => $tot_pensi);
                 }else{ //AFP
-                    $limit_afp = 9707.03;
-                    $total_obli = round($tot_sueldo * ($psn_apor / 100), 2);
-                    $total_prim = ($tot_sueldo >= $limit_afp) ? round($limit_afp * ($psn_prim / 100), 2) : round($tot_sueldo * ($psn_prim / 100), 2);
-                    $total_comi = round($tot_sueldo * ($psn_comi / 100), 2);
-    
+                    $limit_afp = 9788.95;
+
+                    if ($mes == 4 and $anio == 2020) {
+                        $total_obli = 0;
+                        $total_prim = ($tot_sueldo >= $limit_afp) ? round($limit_afp * ($psn_prim / 100), 2) : round($tot_sueldo * ($psn_prim / 100), 2);
+                        $total_comi = 0;
+                    }else{
+                        $total_obli = round($tot_sueldo * ($psn_apor / 100), 2);
+                        $total_prim = ($tot_sueldo >= $limit_afp) ? round($limit_afp * ($psn_prim / 100), 2) : round($tot_sueldo * ($psn_prim / 100), 2);
+                        $total_comi = round($tot_sueldo * ($psn_comi / 100), 2);
+                    }
+
                     $tot_pensi = $total_obli + $total_prim + $total_comi;
                     $dts_pensi = array('tipo' => 'afp', 'snp' => 0, 'spp' => $total_obli, 'prima' => $total_prim, 'comision' => $total_comi, 'total_aportes' => $tot_pensi);
                 }
@@ -4647,8 +5099,8 @@ class RecursosHumanosController extends Controller{
                 $dts_apor[] = ['concepto'=> 'na', 'importe'=> 0];
             }
 
-            $total_ingresos = $sueldo_asig + $total_reint + $total_bonif + $sueldo_vacac;
-            $pago_final = $sueldo_asig + $total_reint + $total_bonif + $sueldo_vacac - $total_dscto - $tot_pensi - $total_tndza - $tot_reten;
+            $total_ingresos = $sueldo_asig + $total_reint + $total_bonif + $sueldo_vacac + $sueldo_lice + $sueldo_tltb;
+            $pago_final = $sueldo_asig + $total_reint + $total_bonif + $sueldo_vacac + $sueldo_lice + $sueldo_tltb - $total_dscto - $tot_pensi - $total_tndza - $tot_reten;
 
             $data_prev[] = array(
                 'id_empresa'            => $id_empre,
@@ -4656,6 +5108,8 @@ class RecursosHumanosController extends Controller{
                 'ruc'                   => $ruc_empr,
                 'sede'                  => $sede_emp,
                 'id_sede'               => $id_sede,
+                'grupo'                 => $grup,
+                'id_grupo'              => $id_grup,
                 'area'                  => $area,
                 'id_area'               => $id_area,
                 'id_trabajador'         => $ids_trab,
@@ -4664,6 +5118,7 @@ class RecursosHumanosController extends Controller{
                 'dni_trabajador'        => $nro_docu,
                 'sexo_trabajador'       => $sexo_per,
                 'fecha_contrato_ini'    => $ini_ctts,
+                'fecha_contrato_fin'    => $fin_ctts,
                 'modalidad_contrato'    => $mod_ctts,
                 'tipo_contrato'         => $tip_ctts,
                 'tipo_trabajador'       => $tip_trab,
@@ -4674,6 +5129,7 @@ class RecursosHumanosController extends Controller{
                 'numero_cussp'          => $nro_cusp,
                 'tipo_centro_costo'     => $tipo_cc,
                 'fondo_pension'         => $fnd_pnsi,
+                'sctr'                  => $sctr,
                 'salario'               => $sld_trab,
                 'sueldo_basico'         => $sueldo_basi,
                 'sueldo_dia'            => $sld_dias,
@@ -4701,6 +5157,10 @@ class RecursosHumanosController extends Controller{
                 'monto_reintegro'       => $tot_reint,
                 'dias_vacaciones'       => $dias_vac,
                 'sueldo_vacaciones'     => $sueldo_vacac,
+                'dias_licencia'         => $dias_licenc,
+                'sueldo_licencia'       => $sueldo_lice,
+                'dias_teletrabajo'      => $dias_telet,
+                'sueldo_teletrabajo'    => $sueldo_tltb,
                 'aporte_pension'        => $dts_pensi,
                 'aporte_empleador'      => $dts_apor,
                 'total_remun'           => $tot_sueldo,
@@ -4715,7 +5175,8 @@ class RecursosHumanosController extends Controller{
                 'total_regimen'         => $horas_pre_efec,
                 'total_efectivas'       => $horas_efectivas,
                 'horas_efectivas'       => $hor_efectivos,
-                'minutos_efectivas'     => $min_efectivos
+                'minutos_efectivas'     => $min_efectivos,
+                'valor_final'           => $dias_contables
             );
         }
         $data = ['data' =>$data_prev];
@@ -4725,7 +5186,13 @@ class RecursosHumanosController extends Controller{
     public function generar_planilla_pdf($emp, $plani, $mes, $anio){
         $pdf = \App::make('dompdf.wrapper');
         $pdf->loadHTML($this->exportPlanilla($emp, $plani, $mes, $anio))->setPaper('a4', 'portrait');
-        return $pdf->stream('reporte.pdf');
+        return $pdf->stream('planilla.pdf');
+    }
+
+    public function generar_planilla_spcc_pdf($emp, $plani, $mes, $anio){
+        $pdf = \App::make('dompdf.wrapper');
+        $pdf->loadHTML($this->exportPlanillaSPCC($emp, $plani, $mes, $anio))->setPaper('a4', 'portrait');
+        return $pdf->stream('planilla_spcc.pdf');
     }
 
     public function procesar_planilla($emp, $plani, $mes){
@@ -4735,7 +5202,7 @@ class RecursosHumanosController extends Controller{
         $user = $id_usuario = Auth::user()->id_usuario;
 
         if ($insert > 0){
-            $data = $this->cargar_remuneraciones($emp, $plani, $mes, $anio, 1, 0);
+            $data = $this->cargar_remuneraciones($emp, $plani, $mes, $anio, 1, 0, 0);
             $myData = $data['data'];
             $cont = sizeof($myData);
     
@@ -4846,7 +5313,7 @@ class RecursosHumanosController extends Controller{
     }
 
     public function exportPlanilla($emp, $planiPla, $mesPla, $aniPla){
-        $data = $this->cargar_remuneraciones($emp, $planiPla, $mesPla, $aniPla, 1, 0);
+        $data = $this->cargar_remuneraciones($emp, $planiPla, $mesPla, $aniPla, 1, 0, 0);
         $myData = $data['data'];
         $cont = sizeof($myData);
         $mes = $this->hallarMes($mesPla);
@@ -4900,49 +5367,55 @@ class RecursosHumanosController extends Controller{
             </div>
             <table width="100%">
                 <tr>
-                    <th colspan="2">Documento de Identidad</th>
-                    <th colspan="3">Nombres y Apellidos</th>
+                    <th colspan="3">Doc. de Identidad</th>
+                    <th colspan="6">Nombres y Apellidos</th>
                     <th colspan="2">Situación</th>
                 </tr>
                 <tr>
                     <td>'.$myData[$i]['tipo_documento'].'</td>
-                    <td>'.$myData[$i]['dni_trabajador'].'</td>
-                    <td colspan="3">'.$myData[$i]['datos_trabajador'].'</td>
+                    <td colspan="2">'.$myData[$i]['dni_trabajador'].'</td>
+                    <td colspan="6">'.$myData[$i]['datos_trabajador'].'</td>
                     <td colspan="2">ACTIVO O SUBSIDIADO</td>
                 </tr>
                 <tr>
-                    <th>Fecha Ingreso</th>
-                    <th colspan="3">Cargo</th>
-                    <th>Régimen Pensionario</th>
+                    <th colspan="2">Fecha Ingreso</th>
+                    <th colspan="4">Cargo</th>
+                    <th colspan="3">Régimen Pensionario</th>
                     <th colspan="2">CUSPP</th>
                 </tr>
                 <tr>
-                    <td width="15%">'.$myData[$i]['fecha_contrato_ini'].'</td>
-                    <td width="43%" colspan="3">'.$myData[$i]['rol_trabajador'].'</td>
-                    <td width="22%">'.$myData[$i]['fondo_pension'].'</td>
-                    <td width="20%" colspan="2">'.$myData[$i]['numero_cussp'].'</td>
+                    <td colspan="2" align="center">'.date('d/m/Y', strtotime($myData[$i]['fecha_contrato_ini'])).'</td>
+                    <td colspan="4">'.$myData[$i]['rol_trabajador'].'</td>
+                    <td colspan="3">'.$myData[$i]['fondo_pension'].'</td>
+                    <td colspan="2">'.$myData[$i]['numero_cussp'].'</td>
                 </tr>
                 <tr>
+                    <th colspan="2" rowspan="2" align="center">Remuneración Pactada</th>
                     <th rowspan="2" align="center">Días Efect.</th>
+                    <th rowspan="2" align="center">Días Lic.</th>
+                    <th rowspan="2" align="center">Días Tel.</th>
                     <th colspan="2" align="center">Jornada Ordinaria</th>
                     <th colspan="2" align="center">Sobretiempo</th>
-                    <th rowspan="2" align="center">Días Subsi.</th>
+                    <th rowspan="2" align="center">Días Subs.</th>
                     <th rowspan="2" align="center">Días Vacac.</th>
                 </tr>
                 <tr>
-                    <th align="center">Horas</th>
-                    <th align="center">Minutos</th>
-                    <th align="center">Horas</th>
-                    <th align="center">Minutos</th>
+                    <th align="center">Hrs.</th>
+                    <th align="center">Min.</th>
+                    <th align="center">Hrs.</th>
+                    <th align="center">Min.</th>
                 </tr>
                 <tr>
-                    <td align="center">'.$myData[$i]['dias_total'].'</td>
-                    <td align="center">'.$myData[$i]['horas_efectivas'].'</td>
-                    <td align="center">'.$myData[$i]['minutos_efectivas'].'</td>
-                    <td align="center">0.0</td>
-                    <td align="center">0.0</td>
-                    <td align="center">0.0</td>
-                    <td align="center">'.$myData[$i]['dias_vacaciones'].'</td>
+                    <td align="center" colspan="2" width="18%">'.number_format($myData[$i]['salario'], 2).'</td>
+                    <td align="center" width="10%">'.$myData[$i]['dias_total'].'</td>
+                    <td align="center" width="9%">'.$myData[$i]['dias_licencia'].'</td>
+                    <td align="center" width="9%">'.$myData[$i]['dias_teletrabajo'].'</td>
+                    <td align="center" width="9%">'.$myData[$i]['horas_efectivas'].'</td>
+                    <td align="center" width="9%">'.$myData[$i]['minutos_efectivas'].'</td>
+                    <td align="center" width="9%">0.0</td>
+                    <td align="center" width="9%">0.0</td>
+                    <td align="center" width="9%">0</td>
+                    <td align="center" width="9%">'.$myData[$i]['dias_vacaciones'].'</td>
                 </tr>
             </table>
             <br>
@@ -4961,19 +5434,43 @@ class RecursosHumanosController extends Controller{
                     </tr>
                     <tr>
                         <td width="10"></td>
-                        <td>REMUNERACION VACACIONAL</td>
-                        <td align="right">'.number_format($myData[$i]['sueldo_vacaciones'], 2).'</td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td width="10"></td>
                         <td>REMUNERACION BASICA</td>
                         <td align="right">'.number_format($myData[$i]['sueldo_basico'], 2).'</td>
                         <td></td>
                         <td></td>
                     </tr>
                     <tr>
+                        <td width="10"></td>
+                        <td>REMUNERACION VACACIONAL</td>
+                        <td align="right">'.number_format($myData[$i]['sueldo_vacaciones'], 2).'</td>
+                        <td></td>
+                        <td></td>
+                    </tr>';
+
+                    if ($myData[$i]['dias_licencia'] > 0) {
+                        $html.=
+                        '<tr>
+                            <td width="10"></td>
+                            <td>LICENCIA CON GOCE</td>
+                            <td align="right">'.number_format($myData[$i]['sueldo_licencia'], 2).'</td>
+                            <td></td>
+                            <td></td>
+                        </tr>';
+                    }
+
+                    if ($myData[$i]['dias_teletrabajo'] > 0) {
+                        $html.=
+                        '<tr>
+                            <td width="10"></td>
+                            <td>REMUNERACION TELETRABAJO</td>
+                            <td align="right">'.number_format($myData[$i]['sueldo_teletrabajo'], 2).'</td>
+                            <td></td>
+                            <td></td>
+                        </tr>';
+                    }
+
+                    $html.=
+                    '<tr>
                         <td width="10"></td>
                         <td>ASIGNACION FAMILIAR</td>
                         <td align="right">'.number_format($myData[$i]['asignacion_familiar'], 2).'</td>
@@ -5020,8 +5517,7 @@ class RecursosHumanosController extends Controller{
                 </tr>';
             }   
 
-            $html .=
-                    '<tr><th colspan="5" class="header-tr">Descuentos</th></tr>';
+            $html .= '<tr><th colspan="5" class="header-tr">Descuentos</th></tr>';
             
             $myDscto = $data['data'][$i]['descuentos'];
             $contDescu = sizeof($myDscto);
@@ -5145,8 +5641,345 @@ class RecursosHumanosController extends Controller{
         return $html;
     }
 
-    public function exportPlanillaIndividual($emp, $planiPla, $mesPla, $aniPla, $empleado){
-        $data = $this->cargar_remuneraciones($emp, $planiPla, $mesPla, $aniPla, 1, $empleado);
+    public function exportPlanillaSPCC($emp, $planiPla, $mesPla, $aniPla){
+        $data = $this->remuneracion_spcc($emp, $planiPla, $mesPla, $aniPla);
+        $myData = $data['data'];
+        $cont = sizeof($myData);
+        $mes = $this->hallarMes($mesPla);
+        $html = 
+        '<html>
+            <head>
+                <style type="text/css">
+                    @page{
+                        margin: 30px;
+                    }
+                    body{
+                        background-color: #fff;
+                        font-family: "Helvetica";
+                        font-size: 13px;
+                        box-sizing: border-box;
+                    }
+                    table{
+                        border-spacing: 0;
+                        border-collapse: collapse;
+                        font-size: 14px;
+                    }
+                    table tr th,
+                    table tr td{
+                        border: 1px solid #ccc;
+                        padding: 3px;
+                    }
+                    h3{
+                        margin: 0;
+                    }
+                    .header-planilla{
+                        width: 100%;
+                        padding: 3px;
+                        border: 1px solid #ccc;
+                        margin-bottom: 5px;
+                        box-sizing: border-box;
+                    }
+                    .header-tr{
+                        text-align: left;
+                    }
+                </style>
+            </head>
+            <body>';
+
+        for ($i = 0; $i < $cont; $i++) { 
+            $html .=
+            '<div class="header-planilla">
+                <h2 style="text-align:center; margin: 0;">BOLETA DE PAGO DE REMUNERACIONES</h2>
+                <h3 style="text-align:center; margin-bottom: 10px;">Periodo: '.$mes.' del '.$aniPla.'</h3>
+                <h3>'.$myData[$i]['empresa'].'</h3>
+                <h3>RUC: '.$myData[$i]['ruc'].'</h3>
+            </div>
+            <table width="100%">
+                <tr>
+                    <th colspan="3">Doc. de Identidad</th>
+                    <th colspan="6">Nombres y Apellidos</th>
+                    <th colspan="2">Situación</th>
+                </tr>
+                <tr>
+                    <td>'.$myData[$i]['tipo_documento'].'</td>
+                    <td colspan="2">'.$myData[$i]['dni_trabajador'].'</td>
+                    <td colspan="6">'.$myData[$i]['datos_trabajador'].'</td>
+                    <td colspan="2">ACTIVO O SUBSIDIADO</td>
+                </tr>
+                <tr>
+                    <th colspan="2">Fecha Ingreso</th>
+                    <th colspan="4">Cargo</th>
+                    <th colspan="3">Régimen Pensionario</th>
+                    <th colspan="2">CUSPP</th>
+                </tr>
+                <tr>
+                    <td colspan="2" align="center">'.date('d/m/Y', strtotime($myData[$i]['fecha_contrato_ini'])).'</td>
+                    <td colspan="4">'.$myData[$i]['rol_trabajador'].'</td>
+                    <td colspan="3">'.$myData[$i]['fondo_pension'].'</td>
+                    <td colspan="2">'.$myData[$i]['numero_cussp'].'</td>
+                </tr>
+                <tr>
+                    <th colspan="2" rowspan="2" align="center">Remuneración Pactada</th>
+                    <th rowspan="2" align="center">Días Efect.</th>
+                    <th rowspan="2" align="center">Días Lic.</th>
+                    <th rowspan="2" align="center">Días Tel.</th>
+                    <th colspan="2" align="center">Jornada Ordinaria</th>
+                    <th colspan="2" align="center">Sobretiempo</th>
+                    <th rowspan="2" align="center">Días Subs.</th>
+                    <th rowspan="2" align="center">Días Vacac.</th>
+                </tr>
+                <tr>
+                    <th align="center">Hrs.</th>
+                    <th align="center">Min.</th>
+                    <th align="center">Hrs.</th>
+                    <th align="center">Min.</th>
+                </tr>
+                <tr>
+                    <td align="center" colspan="2" width="18%">'.number_format($myData[$i]['salario'], 2).'</td>
+                    <td align="center" width="10%">'.$myData[$i]['dias_total'].'</td>
+                    <td align="center" width="9%">'.$myData[$i]['dias_licencia'].'</td>
+                    <td align="center" width="9%">'.$myData[$i]['dias_teletrabajo'].'</td>
+                    <td align="center" width="9%">'.$myData[$i]['horas_efectivas'].'</td>
+                    <td align="center" width="9%">'.$myData[$i]['minutos_efectivas'].'</td>
+                    <td align="center" width="9%">0.0</td>
+                    <td align="center" width="9%">0.0</td>
+                    <td align="center" width="9%">0</td>
+                    <td align="center" width="9%">'.$myData[$i]['dias_vacaciones'].'</td>
+                </tr>
+            </table>
+            <br>
+            <table width="100%">
+                <thead>
+                    <tr>
+                        <th colspan="2">Conceptos</th>
+                        <th>Ingresos</th>
+                        <th>Descuentos</th>
+                        <th>Neto</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <th colspan="5" class="header-tr">Ingresos</th>
+                    </tr>
+                    <tr>
+                        <td width="10"></td>
+                        <td>REMUNERACION BASICA</td>
+                        <td align="right">'.number_format($myData[$i]['sueldo_basico'], 2).'</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td width="10"></td>
+                        <td>REMUNERACION VACACIONAL</td>
+                        <td align="right">'.number_format($myData[$i]['sueldo_vacaciones'], 2).'</td>
+                        <td></td>
+                        <td></td>
+                    </tr>';
+
+                    if ($myData[$i]['dias_licencia'] > 0) {
+                        $html.=
+                        '<tr>
+                            <td width="10"></td>
+                            <td>LICENCIA CON GOCE</td>
+                            <td align="right">'.number_format($myData[$i]['sueldo_licencia'], 2).'</td>
+                            <td></td>
+                            <td></td>
+                        </tr>';
+                    }
+
+                    if ($myData[$i]['dias_teletrabajo'] > 0) {
+                        $html.=
+                        '<tr>
+                            <td width="10"></td>
+                            <td>REMUNERACION TELETRABAJO</td>
+                            <td align="right">'.number_format($myData[$i]['sueldo_teletrabajo'], 2).'</td>
+                            <td></td>
+                            <td></td>
+                        </tr>';
+                    }
+
+                    $html.=
+                    '<tr>
+                        <td width="10"></td>
+                        <td>ASIGNACION FAMILIAR</td>
+                        <td align="right">'.number_format($myData[$i]['asignacion_familiar'], 2).'</td>
+                        <td></td>
+                        <td></td>
+                    </tr>';
+
+            $myBoni = $data['data'][$i]['bonificaciones'];
+            $contBoni = sizeof($myBoni);
+
+            if ($contBoni > 0){
+                for ($j = 0; $j < $contBoni; $j++) { 
+                    $html .=
+                        '<tr>
+                            <td width="10%"></td>
+                            <td>'.$myBoni[$j]['concepto'].'</td>
+                            <td width="15%" align="right">'.number_format($myBoni[$j]['importe'], 2).'</td>
+                            <td width="15%"></td>
+                            <td width="15%"></td>
+                        </tr>';
+                }
+            }
+
+            $reint_deduc = $data['data'][$i]['reintegros']['reint_deduc'];
+            $reint_no_deduc = $data['data'][$i]['reintegros']['reint_no_deduc'];
+            if ($reint_deduc > 0){
+                $html.= 
+                '<tr>
+                    <td width="10"></td>
+                    <td>REINTEGRO DEDUCIBLE</td>
+                    <td align="right">'.number_format($reint_deduc, 2).'</td>
+                    <td></td>
+                    <td></td>
+                </tr>';
+            }
+            if ($reint_no_deduc > 0) {
+                $html.=
+                '<tr>
+                    <td width="10"></td>
+                    <td>REINTEGRO NO DEDUCIBLE</td>
+                    <td align="right">'.number_format($reint_no_deduc, 2).'</td>
+                    <td></td>
+                    <td></td>
+                </tr>';
+            }   
+
+            $html .= '<tr><th colspan="5" class="header-tr">Descuentos</th></tr>';
+            
+            $myDscto = $data['data'][$i]['descuentos'];
+            $contDescu = sizeof($myDscto);
+
+            $html .=
+                    '<tr>
+                        <td width="10%"></td>
+                        <td>TARDANZA</td>
+                        <td width="15%"></td>
+                        <td width="15%" align="right">'.number_format($myData[$i]['monto_tardanza'], 2).'</td>
+                        <td width="15%"></td>
+                    </tr>';
+
+            for ($k = 0; $k < $contDescu; $k++) { 
+                $html .=
+                    '<tr>
+                        <td width="10%"></td>
+                        <td>'.$myDscto[$k]['concepto'].'</td>
+                        <td width="15%"></td>
+                        <td width="15%" align="right">'.number_format($myDscto[$k]['importe'], 2).'</td>
+                        <td width="15%"></td>
+                    </tr>';
+            }
+
+            $myPensi = $data['data'][$i]['aporte_pension'];
+            $tpPensi = $data['data'][$i]['aporte_pension']['tipo'];
+            $total_pago = $data['data'][$i]['total_pago'];
+
+            if ($tpPensi == 'onp'){
+                $html .=
+                    '<tr><th colspan="5" class="header-tr">Aportes del Trabajador</th></tr>
+                    <tr>
+                        <td width="10%"></td>
+                        <td>ONP - APORTACION OBLIGATORIA</td>
+                        <td width="15%"></td>
+                        <td width="15%" align="right">'.number_format($myPensi['snp'], 2).'</td>
+                        <td width="15%"></td>
+                    </tr>';
+            }else{
+                $html .=
+                    '<tr><th colspan="5" class="header-tr">Aportes del Trabajador</th></tr>
+                    <tr>
+                        <td width="10%"></td>
+                        <td>COMISION AFP PORCENTUAL</td>
+                        <td width="15%"></td>
+                        <td width="15%" align="right">'.number_format($myPensi['comision'], 2).'</td>
+                        <td width="15%"></td>
+                    </tr>
+                    <tr>
+                        <td width="10%"></td>
+                        <td>PRIMA SEGURO AFP</td>
+                        <td width="15%"></td>
+                        <td width="15%" align="right">'.number_format($myPensi['prima'], 2).'</td>
+                        <td width="15%"></td>
+                    </tr>
+                    <tr>
+                        <td width="10%"></td>
+                        <td>SPP - APORTACION OBLIGATORIA</td>
+                        <td width="15%"></td>
+                        <td width="15%" align="right">'.number_format($myPensi['spp'], 2).'</td>
+                        <td width="15%"></td>
+                    </tr>';
+            }
+            $html .=
+                '<tr>
+                    <td width="10%"></td>
+                    <td>RENTA DE QUINTA CATEGORIA</td>
+                    <td width="15%"></td>';
+                $myRet = $data['data'][$i]['retenciones'];
+                $contRet = sizeof($myRet);
+
+                if ($contRet > 0){
+                    for ($r = 0; $r < $contRet; $r++) {
+                        if ($myRet[$r]['concepto'] == '5TA CATEGORIA'){
+                            $html .= '<td width="15%" align="right">'.number_format($myRet[$r]['importe'], 2).'</td>';
+                        }else{
+                            $html .= '<td width="15%" align="right">0.00</td>';
+                        }
+                    }
+                }else{
+                    $html .= '<td width="15%" align="right">0.00</td>';
+                }
+            $html .= '<td width="15%"></td>
+                </tr>
+                <tr>
+                    <th colspan="4" class="header-tr">NETO A PGAR</th>
+                    <th align="right">'.number_format($total_pago, 2).'</th>
+                </tr>';
+
+            $html .=
+                '</tbody>
+            </table>';
+            if ($planiPla == 1){
+                $html .=
+                '<table width="100%">
+                    <tr>
+                        <th colspan="5" class="header-tr">Aportes del Empleador</th>
+                    </tr>';
+                
+                $myAport = $data['data'][$i]['aporte_empleador'];
+                $contAport = sizeof($myAport);
+    
+                for ($m = 0; $m < $contAport; $m++) { 
+                    $html .=    
+                    '<tr>
+                        <td colspan="4">'.$myAport[$m]['concepto'].'</td>
+                        <td width="15%" align="right">'.number_format($myAport[$m]['importe'], 2).'</td>
+                    </tr>';
+                }
+    
+                $html .=
+                '</table>
+                <div style="page-break-after:always;"></div>';
+            }else{
+                $html .= '<div style="page-break-after:always;"></div>';
+            }
+        }
+        $html .=
+        '</body>
+        </html>';
+        return $html;
+    }
+
+    public function exportPlanillaIndividual($emp, $planiPla, $mesPla, $aniPla, $empleado, $design){
+        $img = '';
+        if ($emp == 1){
+            $img = '<img src="./images/okc.jpg" alt="firma" height="100px">';
+        }else if ($emp == 2){
+            $img = '<img src="./images/pyc.jpg" alt="firma" height="100px">';
+        }else if ($emp == 3){
+            $img = '<img src="./images/svs.jpg" alt="firma" height="100px">';
+        }
+        $data = $this->cargar_remuneraciones($emp, $planiPla, $mesPla, $aniPla, 1, $empleado, 0);
         $myData = $data['data'];
         $cont = sizeof($myData);
         $mes = $this->hallarMes($mesPla);
@@ -5186,6 +6019,10 @@ class RecursosHumanosController extends Controller{
                     .header-tr{
                         text-align: left;
                     }
+                    .firma{
+                        margin-top: 50px;
+                        margin-left: 40px;
+                    }
                 </style>
             </head>
             <body>';
@@ -5200,49 +6037,55 @@ class RecursosHumanosController extends Controller{
             </div>
             <table width="100%">
                 <tr>
-                    <th colspan="2">Documento de Identidad</th>
-                    <th colspan="3">Nombres y Apellidos</th>
+                    <th colspan="3">Doc. de Identidad</th>
+                    <th colspan="6">Nombres y Apellidos</th>
                     <th colspan="2">Situación</th>
                 </tr>
                 <tr>
                     <td>'.$myData[$i]['tipo_documento'].'</td>
-                    <td>'.$myData[$i]['dni_trabajador'].'</td>
-                    <td colspan="3">'.$myData[$i]['datos_trabajador'].'</td>
+                    <td colspan="2">'.$myData[$i]['dni_trabajador'].'</td>
+                    <td colspan="6">'.$myData[$i]['datos_trabajador'].'</td>
                     <td colspan="2">ACTIVO O SUBSIDIADO</td>
                 </tr>
                 <tr>
-                    <th>Fecha Ingreso</th>
-                    <th colspan="3">Cargo</th>
-                    <th>Régimen Pensionario</th>
+                    <th colspan="2">Fecha Ingreso</th>
+                    <th colspan="4">Cargo</th>
+                    <th colspan="3">Régimen Pensionario</th>
                     <th colspan="2">CUSPP</th>
                 </tr>
                 <tr>
-                    <td width="15%">'.$myData[$i]['fecha_contrato_ini'].'</td>
-                    <td width="43%" colspan="3">'.$myData[$i]['rol_trabajador'].'</td>
-                    <td width="22%">'.$myData[$i]['fondo_pension'].'</td>
-                    <td width="20%" colspan="2">'.$myData[$i]['numero_cussp'].'</td>
+                    <td colspan="2" align="center">'.date('d/m/Y', strtotime($myData[$i]['fecha_contrato_ini'])).'</td>
+                    <td colspan="4">'.$myData[$i]['rol_trabajador'].'</td>
+                    <td colspan="3">'.$myData[$i]['fondo_pension'].'</td>
+                    <td colspan="2">'.$myData[$i]['numero_cussp'].'</td>
                 </tr>
                 <tr>
+                    <th colspan="2" rowspan="2" align="center">Remuneración Pactada</th>
                     <th rowspan="2" align="center">Días Efect.</th>
-                    <th colspan="2" align="center">Jornada Ordinaria</th>
+                    <th rowspan="2" align="center">Días Lic.</th>
+                    <th rowspan="2" align="center">Días Tel.</th>
+                    <th colspan="2" align="center">Jornada Ord.</th>
                     <th colspan="2" align="center">Sobretiempo</th>
                     <th rowspan="2" align="center">Días Subs.</th>
                     <th rowspan="2" align="center">Días Vacac.</th>
                 </tr>
                 <tr>
-                    <th align="center">Horas</th>
-                    <th align="center">Minutos</th>
-                    <th align="center">Horas</th>
-                    <th align="center">Minutos</th>
+                    <th align="center">Hrs.</th>
+                    <th align="center">Min.</th>
+                    <th align="center">Hrs.</th>
+                    <th align="center">Min.</th>
                 </tr>
                 <tr>
-                    <td align="center">'.$myData[$i]['dias_total'].'</td>
-                    <td align="center">'.$myData[$i]['horas_efectivas'].'</td>
-                    <td align="center">'.$myData[$i]['minutos_efectivas'].'</td>
-                    <td align="center">0.0</td>
-                    <td align="center">0.0</td>
-                    <td align="center">0.0</td>
-                    <td align="center">'.$myData[$i]['dias_vacaciones'].'</td>
+                    <td align="center" colspan="2" width="18%">'.number_format($myData[$i]['salario'], 2).'</td>
+                    <td align="center" width="10%">'.$myData[$i]['dias_total'].'</td>
+                    <td align="center" width="9%">'.$myData[$i]['dias_licencia'].'</td>
+                    <td align="center" width="9%">'.$myData[$i]['dias_teletrabajo'].'</td>
+                    <td align="center" width="9%">'.$myData[$i]['horas_efectivas'].'</td>
+                    <td align="center" width="9%">'.$myData[$i]['minutos_efectivas'].'</td>
+                    <td align="center" width="9%">0.0</td>
+                    <td align="center" width="9%">0.0</td>
+                    <td align="center" width="9%">0</td>
+                    <td align="center" width="9%">'.$myData[$i]['dias_vacaciones'].'</td>
                 </tr>
             </table>
             <br>
@@ -5261,13 +6104,6 @@ class RecursosHumanosController extends Controller{
                     </tr>
                     <tr>
                         <td width="10"></td>
-                        <td>REMUNERACION VACACIONAL</td>
-                        <td align="right">'.number_format($myData[$i]['sueldo_vacaciones'], 2).'</td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td width="10"></td>
                         <td>REMUNERACION BASICA</td>
                         <td align="right">'.number_format($myData[$i]['sueldo_basico'], 2).'</td>
                         <td></td>
@@ -5275,18 +6111,59 @@ class RecursosHumanosController extends Controller{
                     </tr>
                     <tr>
                         <td width="10"></td>
+                        <td>REMUNERACION VACACIONAL</td>
+                        <td align="right">'.number_format($myData[$i]['sueldo_vacaciones'], 2).'</td>
+                        <td></td>
+                        <td></td>
+                    </tr>';
+
+                    if ($myData[$i]['dias_licencia'] > 0) {
+                        $html.=
+                        '<tr>
+                            <td width="10"></td>
+                            <td>LICENCIA CON GOCE</td>
+                            <td align="right">'.number_format($myData[$i]['sueldo_licencia'], 2).'</td>
+                            <td></td>
+                            <td></td>
+                        </tr>';
+                    }
+
+                    if ($myData[$i]['dias_teletrabajo'] > 0) {
+                        $html.=
+                        '<tr>
+                            <td width="10"></td>
+                            <td>REMUNERACION TELETRABAJO</td>
+                            <td align="right">'.number_format($myData[$i]['sueldo_teletrabajo'], 2).'</td>
+                            <td></td>
+                            <td></td>
+                        </tr>';
+                    }
+                    
+                   $html.= 
+                   '<tr>
+                        <td width="10"></td>
                         <td>ASIGNACION FAMILIAR</td>
                         <td align="right">'.number_format($myData[$i]['asignacion_familiar'], 2).'</td>
                         <td></td>
                         <td></td>
-                    </tr>
-                    <tr>
-                        <td width="10"></td>
-                        <td>CONDICIONES DE TRABAJO</td>
-                        <td align="right">0.00</td>
-                        <td></td>
-                        <td></td>
                     </tr>';
+
+            $myBoni = $data['data'][$i]['bonificaciones'];
+            $contBoni = sizeof($myBoni);
+
+            if ($contBoni > 0){
+                for ($j = 0; $j < $contBoni; $j++) { 
+                    $html .=
+                        '<tr>
+                            <td width="10%"></td>
+                            <td>'.$myBoni[$j]['concepto'].'</td>
+                            <td width="15%" align="right">'.number_format($myBoni[$j]['importe'], 2).'</td>
+                            <td width="15%"></td>
+                            <td width="15%"></td>
+                        </tr>';
+                }
+            }
+
             $reint_deduc = $data['data'][$i]['reintegros']['reint_deduc'];
             $reint_no_deduc = $data['data'][$i]['reintegros']['reint_no_deduc'];
             if ($reint_deduc > 0){
@@ -5308,26 +6185,9 @@ class RecursosHumanosController extends Controller{
                     <td></td>
                     <td></td>
                 </tr>';
-            }   
-
-            $myBoni = $data['data'][$i]['bonificaciones'];
-            $contBoni = sizeof($myBoni);
-
-            if ($contBoni > 0){
-                for ($j = 0; $j < $contBoni; $j++) { 
-                    $html .=
-                        '<tr>
-                            <td width="10%"></td>
-                            <td>'.$myBoni[$j]['concepto'].'</td>
-                            <td width="15%" align="right">'.number_format($myBoni[$j]['importe'], 2).'</td>
-                            <td width="15%"></td>
-                            <td width="15%"></td>
-                        </tr>';
-                }
             }
 
-            $html .=
-                    '<tr><th colspan="5" class="header-tr">Descuentos</th></tr>';
+            $html .= '<tr><th colspan="5" class="header-tr">Descuentos</th></tr>';
             
             $myDscto = $data['data'][$i]['descuentos'];
             $contDescu = sizeof($myDscto);
@@ -5438,27 +6298,979 @@ class RecursosHumanosController extends Controller{
                     </tr>';
                 }
     
-                $html .=
-                '</table>
-                <div style="page-break-after:always;"></div>';
+                $html .= '</table>';
             }else{
                 $html .= '<div style="page-break-after:always;"></div>';
             }
         }
-        $html .=
-        '</body>
-        </html>';
+        if ($design > 0){
+            $html .=
+            '<div class="firma">'.$img.'</div>
+            </body>
+            </html>';
+        }else{
+            $html .=
+            '</body>
+            </html>';
+        }
         return $html;
     }
 
     public function reporte_planilla_trabajador_xls($emp, $plani, $mes, $anio, $empleado){
         $pdf = \App::make('dompdf.wrapper');
-        $pdf->loadHTML($this->exportPlanillaIndividual($emp, $plani, $mes, $anio, $empleado))->setPaper('a4', 'portrait');
+        $pdf->loadHTML($this->exportPlanillaIndividual($emp, $plani, $mes, $anio, $empleado, 1))->setPaper('a4', 'portrait');
         return $pdf->stream('reporte_ind.pdf');
     }
 
-    public function reporte_planilla_xls($emp, $planiRem, $mesRem, $anio){        
-        $data = $this->cargar_remuneraciones($emp, $planiRem, $mesRem, $anio, 1, 0, 0);
+    //nuevo
+    public function generar_pdf_trabajdor($emp, $plani, $mes, $anio){
+        $sql = DB::table('rrhh.rrhh_trab')
+            ->join('rrhh.rrhh_postu', 'rrhh_postu.id_postulante', '=', 'rrhh_trab.id_postulante')
+            ->join('rrhh.rrhh_perso', 'rrhh_perso.id_persona', '=', 'rrhh_postu.id_persona')
+            ->join('rrhh.rrhh_rol', 'rrhh_rol.id_trabajador', '=', 'rrhh_trab.id_trabajador')
+            ->join('administracion.adm_area', 'adm_area.id_area', '=', 'rrhh_rol.id_area')
+            ->join('administracion.adm_grupo', 'adm_grupo.id_grupo', '=', 'adm_area.id_grupo')
+            ->join('administracion.sis_sede', 'sis_sede.id_sede', '=', 'adm_grupo.id_sede')
+            ->join('administracion.adm_empresa', 'adm_empresa.id_empresa', '=', 'sis_sede.id_empresa')
+            ->select(DB::raw('DISTINCT rrhh_trab.id_trabajador'), 'rrhh_perso.nro_documento', 'rrhh_perso.apellido_paterno', 'rrhh_perso.apellido_materno', 'rrhh_postu.correo')
+            ->where([['rrhh_trab.estado', '=', 1], ['adm_empresa.id_empresa', '=', $emp], ['rrhh_rol.id_tipo_planilla', '=', $plani],
+                    ['rrhh_rol.salario', '>', 0], ['rrhh_rol.estado', '=', 1], ['rrhh_postu.correo', '!=', null]])
+            ->orderBy('rrhh_perso.apellido_paterno', 'asc')->get();
+
+        foreach ($sql as $key){
+            $empleado = $key->id_trabajador;
+            $correo = $key->correo;
+            $dni = $key->nro_documento;
+            $name = $key->apellido_paterno.' '.$key->apellido_materno;
+            $nameFile = $dni.'_'.$mes.'_'.$anio;
+            $this->enviar_email($emp, $plani, $mes, $anio, $empleado, $correo, $nameFile, $name);
+        }
+    }
+
+    public function enviar_email($emp, $plani, $mes, $anio, $empleado, $correo, $nameFile, $datos){
+        $data = $this->exportPlanillaIndividual($emp, $plani, $mes, $anio, $empleado, 1);
+        $imgs = $this->exportPlanillaIndividual($emp, $plani, $mes, $anio, $empleado, 0);
+        $myHtml_si = '';
+        $myHtml_no = '';
+        $ruta = '/planillas/'.$nameFile.'.pdf';
+        $atach = asset('files').$ruta;
+        $pdf = \App::make('dompdf.wrapper');
+        $pdf->setPaper('a4', 'portrait');
+        $pdf->loadHTML($data);
+
+	    $output = $pdf->stream();
+        Storage::disk('archivos')->put($ruta, $output);
+
+        $smtpAddress = 'smtp.gmail.com';
+        $port = 587;
+        $encryption = 'tls';
+        $yourEmail = 'rrhh@okcomputer.com.pe';
+        $yourPassword = '12345678';
+
+        Swift_Preferences::getInstance()->setCacheType('null');
+
+        $transport = (new \Swift_SmtpTransport($smtpAddress, $port, $encryption))
+            ->setUsername($yourEmail)
+            ->setPassword($yourPassword);
+        $mailer = new Swift_Mailer($transport);
+
+        $message = (new Swift_Message('Boleta de Pagos'))
+            ->setFrom([$yourEmail => 'Recursos Humanos'])
+            ->setTo([$correo])
+            ->setBody('Boleta de pagos')
+            ->addPart($imgs, 'text/html');
+
+        $message->attach(new Swift_Attachment($pdf->output(), 'boleta.pdf', 'application/pdf'));
+
+        if($mailer->send($message)){
+            $myHtml_si.= '<li>'.$datos.' - Recibió el mensaje</li>';
+        }else{
+            $myHtml_no.= '<li>'.$datos.' - No recibió el mensaje</li>';
+        }
+        $array = array('si' => $myHtml_si, 'no' =>$myHtml_no);
+        echo json_encode($array);
+    }
+
+    public function reporte_gastos($planiRem, $mesRem, $anio){
+        $dataEmp = DB::table('administracion.adm_empresa')->select('id_empresa')->where('estado', '=', 1)->orderBy('id_empresa', 'ASC')->get();
+        $mes = $this->hallarMes($mesRem);
+        $html = '';
+
+        foreach ($dataEmp as $key){
+            $data = $this->cargar_remuneraciones($key->id_empresa, $planiRem, $mesRem, $anio, 1, 0, 0);
+            $myData = $data['data'];
+            $cont = sizeof($myData);
+            
+            $name_empresa = DB::table('administracion.adm_empresa')->select('codigo')->where('id_empresa', '=', $key->id_empresa)->get();
+            $codeEmp = $name_empresa->first()->codigo;
+
+            $html.=
+            '<h2>Gastos de Planilla '.$codeEmp.'</h2>
+            <h4>PERIODO '.$mes.'-'.$anio.'</h4>
+            <table border="1">
+                <thead>
+                    <tr>
+                        <th>Apellidos y Nombre</th>
+                        <th>Cargo</th>
+                        <th>Centro Costo</th>
+                        <th>Tipo Costo</th>
+                        <th>DC. Ley / MyPE</th>
+                        <th>Remun Aseg.</th>
+                        <th>Total Ingresos</th>
+                        <th>Vacac. 1/12</th>
+                        <th>Gratif. 1/6</th>
+                        <th>CTS. 1/2</th>
+                        <th>EsSalud</th>
+                        <th>SCTR</th>
+                        <th>Costo Total</th>
+                        <th>Sobre Costo</th>
+                    </tr>
+                </thead>
+            <tbody>';
+            
+            $vacac = 0;
+            $grati = 0;
+            $micts = 0;
+            $salud = 0;
+            $total = 0;
+            $costo = 0;
+
+            if ($codeEmp == 'OKC' || $codeEmp == 'PYC') {
+                $dcley = 1;
+            }else{
+                $dcley = 2;
+            }
+
+            for ($i = 0; $i < $cont; $i++){
+                $traba = $myData[$i]['datos_trabajador'];
+                $cargo = $myData[$i]['rol_trabajador'];
+                $ccost = $myData[$i]['sede'].' - '.$myData[$i]['area'];
+                $tpcos = $myData[$i]['tipo_centro_costo'];
+                $tsctr = ($myData[$i]['sctr'] == 1) ? 15.13 : 0; 
+                $remun = $myData[$i]['total_remun'];
+                $ingre = $myData[$i]['total_ingreso'];
+
+                $vacac = ($remun/12/$dcley);
+                $grati = ($remun/6*1.09/$dcley);
+                $micts = ($remun/12/$dcley + $remun/12/6/$dcley);
+                $salud = ($remun*0.09);
+                $total = ($ingre + $vacac + $grati + $micts + $salud + $tsctr);
+                $costo = ($total / $ingre);
+                
+                $html.=
+                '<tr>
+                    <td>'.$traba.'</td>
+                    <td>'.$cargo.'</td>
+                    <td>'.$ccost.'</td>
+                    <td>'.$tpcos.'</td>
+                    <td class="okc-order">'.$dcley.'</td>
+                    <td class="okc-numero">'.number_format($remun, 2).'</td>
+                    <td class="okc-numero">'.number_format($ingre, 2).'</td>
+                    <td class="okc-numero">'.number_format($vacac, 2).'</td>
+                    <td class="okc-numero">'.number_format($grati, 2).'</td>
+                    <td class="okc-numero">'.number_format($micts, 2).'</td>
+                    <td class="okc-numero">'.number_format($salud, 2).'</td>
+                    <td class="okc-numero">'.number_format($tsctr, 2).'</td>
+                    <td class="okc-numero">'.number_format($total, 2).'</td>
+                    <td class="okc-numero">'.number_format($costo, 2).'</td>
+                </tr>';
+            }
+            $html .= '</tbody></table>';
+        }
+        $export = $html;
+        return view('rrhh/reportes/Planilla_Gastos', compact('export'));
+    }
+
+    public function reporte_planilla_grupal_xls($planiRem, $mesRem, $anio, $grupo){
+        $dataEmp = DB::table('administracion.adm_empresa')->select('id_empresa')->where('estado', '=', 1)->get();
+        $mes = $this->hallarMes($mesRem);
+        $html = '';
+        foreach ($dataEmp as $key){
+            $data = $this->cargar_remuneraciones($key->id_empresa, $planiRem, $mesRem, $anio, 3, 0, $grupo);
+            $myData = $data['data'];
+            $cont = sizeof($myData);
+            $name_empresa = DB::table('administracion.adm_empresa')->select('codigo')->where('id_empresa', '=', $key->id_empresa)->get();
+            $codeEmp = $name_empresa->first()->codigo;
+
+            $html.=
+            '<h2>Planilla de Remuneraciones '.$codeEmp.'</h2>
+            <h4>PERIODO '.$mes.'-'.$anio.'</h4>
+            <table border="1">
+            <thead>';
+            if ($planiRem == 1){
+                $html .=
+                '<tr>
+                    <th rowspan="3">N°</th>
+                    <th rowspan="3">Apellidos y Nombres</th>
+                    <th rowspan="3">DNI</th>
+                    <th rowspan="3">SEXO</th>
+                    <th rowspan="3">CUSPP</th>
+                    <th rowspan="3">SEDE</th>
+                    <th rowspan="3">AREA</th>
+                    <th rowspan="3">CARGO</th>
+                    <th rowspan="3">Centro Costos</th>
+                    <th rowspan="3">Tipo Costo</th>
+                    <th rowspan="3">Rég. Laboral</th>
+                    <th rowspan="3">Fondo Pensión</th>
+                    <th rowspan="3" width="80">Días No Comp.</th>
+                    <th rowspan="3" width="80">N° Horas Ordinarias</th>
+                    <th rowspan="2" colspan="3">Horas Extras</th>
+                    <th rowspan="3" width="80">Minutos Tardanza</th>
+                    <th rowspan="3" width="80">Acum. Tardanza</th>
+                    <th rowspan="3">Remun. Básica</th>
+                    <th colspan="8">CONCEPTOS BASICOS NO REMUNERATIVOS</th>
+                    <th colspan="10">REMUNERACION ASEGURABLE</th>
+                    <th rowspan="3">Total Ingresos</th>
+                    <th rowspan="3">Total Remun. Asegurable</th>
+                    <th colspan="5">APORTES</th>
+                    <th rowspan="3">Total Aportes</th>
+                    <th colspan="5">DESCUENTOS DEDUCIBLES</th>
+                    <th rowspan="3">Total Descto. Deduc.</th>
+                    <th colspan="6">OTROS DESCUENTOS NO DEDUCIBLES</th>
+                    <th rowspan="3">Total Descto. No Deduc.</th>
+                    <th rowspan="3">Neto a Pagar</th>
+                    <th rowspan="3">EsSalud 9%</th>
+                    <th colspan="2">Horas Efectivas</th>
+                </tr>
+                <tr>
+                    <th colspan="3">LIQUIDACION</th>
+                    <th rowspan="2" width="80">Reint. No Deduc.</th>
+                    <th rowspan="2" width="80">Bonif. x Ventas</th>
+                    <th rowspan="2" width="80">Bono x Cumplim.</th>
+                    <th rowspan="2" width="80">Vivienda Condicion de Trab.</th>
+                    <th rowspan="2" width="80">Devol. 5ta Cat.</th>
+                    <th rowspan="2">Remun. Principal</th>
+                    <th rowspan="2">Asig. Familiar</th>
+                    <th colspan="3">Horas Extras</th>
+                    <th rowspan="2">Reintegro</th>
+                    <th rowspan="2">Otros Ingresos</th>
+                    <th colspan="3">Vacaciones</th>
+                    <th rowspan="2">SNP 13%</th>
+                    <th colspan="3">SPP</th>
+                    <th rowspan="2">I.R. 5ta Categ.</th>
+                    <th rowspan="2" width="80">Tardanzas</th>
+                    <th rowspan="2" width="80">Permiso Sin Goce</th>
+                    <th rowspan="2" width="80">Inasistencia</th>
+                    <th rowspan="2" width="80">Falta Injustif.</th>
+                    <th rowspan="2" width="80">Otros Deducibles</th>
+                    <th rowspan="2" width="80">Préstamos</th>
+                    <th rowspan="2" width="80">Adelantos</th>
+                    <th rowspan="2" width="80">Retenc. Judicial</th>
+                    <th rowspan="2" width="80">Vacac. Pago x Adelant.</th>
+                    <th rowspan="2" width="80">Descuento Autor</th>
+                    <th rowspan="2" width="80">Otros</th>
+                    <th rowspan="2">Horas</th>
+                    <th rowspan="2">Minutos</th>
+                </tr>
+                <tr>
+                    <th>N° 25%</th>
+                    <th>N° 35%</th>
+                    <th>N° 100%</th>
+                    <th>CTS</th>
+                    <th>Gratif.</th>
+                    <th>Bonif. Extra</th>
+                    <th>25%</th>
+                    <th>35%</th>
+                    <th>100%</th>
+                    <th>Truncas</th>
+                    <th>Remun. Vac.</th>
+                    <th>Compen. Vac.</th>
+                    <th>Aporte</th>
+                    <th>Prima</th>
+                    <th>Comisión</th>
+                    
+                </tr>';
+            }else if ($planiRem == 2){
+                $html .=
+                '<tr>
+                    <th>N°</th>
+                    <th>Apellidos y Nombres</th>
+                    <th>DNI</th>
+                    <th>Sexo</th>
+                    <th>Sede</th>
+                    <th>Area</th>
+                    <th>Cargo</th>
+                    <th>Rég. Laboral</th>
+                    <th>Días Comp.</th>
+                    <th>Sueldo Básico</th>
+                    <th>Remun. Principal</th>
+                    <th>Otros Ingresos</th>
+                    <th>Reintegro</th>
+                    <th>Minutos Tardanza</th>
+                    <th>Monto Tardanza</th>
+                    <th>Inasistencia</th>
+                    <th>Monto Inasistencia</th>
+                    <th>Otros Descuentos</th>
+                    <th>Sueldo Neto</th>
+                    <th>Horas Efect.</th>
+                    <th>Minutos Efect.</th>
+                </tr>';
+            }
+            $html.=
+            '</thead>
+            <tbody>';
+            if ($planiRem == 1){
+                for ($i = 0; $i < $cont; $i++){
+                    $a = 0;
+                    $nro = $i + 1;
+                    $datos = $myData[$i]['datos_trabajador'];
+                    $dni = $myData[$i]['dni_trabajador'];
+                    $sexo = $myData[$i]['sexo_trabajador'];
+                    $sede = $myData[$i]['sede'];
+                    $area = $myData[$i]['area'];
+                    $cargo = $myData[$i]['rol_trabajador'];
+                    $pension = $myData[$i]['fondo_pension'];
+                    $ini_cont = $myData[$i]['fecha_contrato_ini'];
+                    $cussp = $myData[$i]['numero_cussp'];
+                    $asig = $myData[$i]['asignacion_familiar'];
+                    $horas = $myData[$i]['horas_efectivas'];
+                    $mints = $myData[$i]['minutos_efectivas'];
+    
+                    $reglab = $myData[$i]['regimen'];
+                    $dias = $myData[$i]['dias_total'];
+                    $cc = $sede.' - '.$area;
+                    $tipo_cc = $myData[$i]['tipo_centro_costo'];
+                    $salario = $myData[$i]['salario'];
+                    $sueldo = $myData[$i]['sueldo_basico'];
+                    $total_remun = $myData[$i]['total_remun'];
+    
+                    $myPensi = $data['data'][$i]['aporte_pension'];
+                    $tpPensi = $myPensi['tipo'];
+                    if ($tpPensi == 'onp') {
+                        $snp = $myPensi['snp'];
+                        $spp = 0;
+                        $prima = 0;
+                        $comision = 0;
+                    }else{
+                        $snp = 0;
+                        $spp = $myPensi['spp'];
+                        $prima = $myPensi['prima'];
+                        $comision = $myPensi['comision'];
+                    }
+    
+                    $reint_deduc = $data['data'][$i]['reintegros']['reint_deduc'];
+                    $reint_no_deduc = $data['data'][$i]['reintegros']['reint_no_deduc'];
+    
+                    $myRetenc = $data['data'][$i]['retenciones'];
+                    $countRetenc = sizeof($myRetenc);
+                    $quinta = 0;
+                    for ($ret = 0; $ret < $countRetenc; $ret++){ 
+                        if ($myRetenc[$ret]['concepto'] == '5TA CATEGORIA'){
+                            $quinta = $myRetenc[$ret]['importe'];
+                        }
+                    }
+    
+                    $myAport = $data['data'][$i]['aporte_empleador'];
+                    $countAport = sizeof($myAport);
+                    $essalud = 0;
+                    for ($apt = 0; $apt < $countAport; $apt++){ 
+                        if ($myAport[$apt]['concepto'] == 'ESSALUD (REGULAR CBSSP AGRAR/AC) TRAB'){
+                            $essalud = $myAport[$apt]['importe'];
+                        }
+                    }
+    
+                    $myPrest = $data['data'][$i]['descuentos'];
+                    $countPrest = sizeof($myPrest);
+                    $prest = 0;
+                    $otrod = 0;
+                    $adela = 0;
+                    for ($ptm = 0; $ptm < $countPrest; $ptm++) { 
+                        if ($myPrest[$ptm]['concepto'] == 'PRESTAMOS'){
+                            $prest += $myPrest[$ptm]['importe'];
+                        }elseif($myPrest[$ptm]['concepto'] == 'OTROS DESCUENTOS NO DEDUC. DE BASE IMPONIBLE'){
+                            $otrod += $myPrest[$ptm]['importe'];
+                        }elseif($myPrest[$ptm]['concepto'] == 'ADELANTOS'){
+                            $adela += $myPrest[$ptm]['importe'];
+                        }
+                    }
+    
+                    $myIna = $data['data'][$i]['descuentos'];
+                    $countIna = sizeof($myIna);
+                    $inas = 0;
+                    for ($ist = 0; $ist < $countIna; $ist++) { 
+                        if ($myIna[$ist]['concepto'] == 'INASISTENCIAS'){
+                            $inas += $myIna[$ist]['importe'];
+                        }
+                    }
+                    
+                    $myBonif = $data['data'][$i]['bonificaciones'];
+                    $countBonif = sizeof($myBonif);
+                    $bnfcmp = 0;
+                    $comis = 0;
+                    $viv = 0;
+                    $cmps = 0;
+                    $otroBon = 0;
+                    for ($bnf = 0; $bnf < $countBonif; $bnf++) { 
+                        if ($myBonif[$bnf]['concepto'] == 'COMISION'){
+                            $comis += $myBonif[$bnf]['importe'];
+                        }elseif ($myBonif[$bnf]['concepto'] == 'VIVIENDA CONDICION DE TRABAJO'){
+                            $viv += $myBonif[$bnf]['importe'];
+                        }elseif($myBonif[$bnf]['concepto'] == 'COMPENSACION VACACIONAL'){
+                            $cmps += $myBonif[$bnf]['importe'];
+                        }elseif ($myBonif[$bnf]['concepto'] == 'BONO POR CUMPLIMIENTO'){
+                            $bnfcmp += $myBonif[$bnf]['importe'];
+                        }else{
+                            $otroBon += $myBonif[$bnf]['importe'];
+                        }
+                    }
+    
+                    $minTa = $myData[$i]['minutos_tardanza'];
+                    $dscTa = $myData[$i]['descuento_tardanza'];
+                    $monTa = $myData[$i]['monto_tardanza'];
+                    $ingreso = $myData[$i]['total_ingreso'];
+                    $aportes = $snp + $spp + $prima + $comision + $quinta;
+                    $descuents = $monTa + $inas;
+                    $dsctos_no = $prest + $otrod + $adela;
+                    $neto = $myData[$i]['total_pago'];
+                    $vacac = $myData[$i]['sueldo_vacaciones'];
+    
+                    $html .=
+                    '<tr>
+                        <td class="okc-order">'.$nro.'</td>
+                        <td>'.$datos.'</td>
+                        <td>'.$dni.'</td>
+                        <td>'.$sexo.'</td>
+                        <td>'.$cussp.'</td>
+                        <td>'.$sede.'</td>
+                        <td>'.$area.'</td>
+                        <td>'.$cargo.'</td>
+                        <td>'.$cc.'</td>
+                        <td>'.$tipo_cc.'</td>
+                        <td>'.$reglab.'</td>
+                        <td>'.$pension.'</td>
+                        <td>'.$dias.'</td>
+                        <td class="okc-numero">'.$horas.'</td>
+                        <td class="okc-numero">0</td>
+                        <td class="okc-numero">0</td>
+                        <td class="okc-numero">0</td>
+                        <td class="okc-numero">'.$minTa.'</td>
+                        <td class="okc-numero">'.$dscTa.'</td>
+                        <td class="okc-numero">'.number_format($salario, 2).'</td>
+                        <td class="okc-numero">'.number_format(0, 2).'</td>
+                        <td class="okc-numero">'.number_format(0, 2).'</td>
+                        <td class="okc-numero">'.number_format(0, 2).'</td>
+                        <td class="okc-numero">'.number_format($reint_no_deduc, 2).'</td>
+                        <td class="okc-numero">'.number_format($comis, 2).'</td>
+                        <td class="okc-numero">'.number_format($bnfcmp, 2).'</td>
+                        <td class="okc-numero">'.number_format($viv, 2).'</td>
+                        <td class="okc-numero">'.number_format(0, 2).'</td>
+                        <td class="okc-numero">'.number_format($sueldo, 2).'</td>
+                        <td class="okc-numero">'.number_format($asig, 2).'</td>
+                        <td class="okc-numero">0</td>
+                        <td class="okc-numero">0</td>
+                        <td class="okc-numero">0</td>
+                        <td class="okc-numero">'.number_format($reint_deduc, 2).'</td>
+                        <td class="okc-numero">'.number_format($otroBon, 2).'</td>
+                        <td class="okc-numero">'.number_format(0, 2).'</td>
+                        <td class="okc-numero">'.number_format($vacac, 2).'</td>
+                        <td class="okc-numero">'.number_format($cmps, 2).'</td>
+                        <td class="okc-numero">'.number_format($ingreso, 2).'</td>
+                        <td class="okc-numero">'.number_format($total_remun, 2).'</td>
+                        <td class="okc-numero">'.number_format($snp, 2).'</td>
+                        <td class="okc-numero">'.number_format($spp, 2).'</td>
+                        <td class="okc-numero">'.number_format($prima, 2).'</td>
+                        <td class="okc-numero">'.number_format($comision, 2).'</td>
+                        <td class="okc-numero">'.number_format($quinta, 2).'</td>
+                        <td class="okc-numero">'.number_format($aportes, 2).'</td>
+                        <td class="okc-numero">'.number_format($monTa, 2).'</td>
+                        <td class="okc-numero">0</td>
+                        <td class="okc-numero">'.number_format($inas, 2).'</td>
+                        <td class="okc-numero">0</td>
+                        <td class="okc-numero">0</td>
+                        <td class="okc-numero">'.number_format($descuents, 2).'</td>
+                        <td class="okc-numero">'.number_format($prest, 2).'</td>
+                        <td class="okc-numero">'.number_format($adela, 2).'</td>
+                        <td class="okc-numero">'.number_format(0, 2).'</td>
+                        <td class="okc-numero">'.number_format(0, 2).'</td>
+                        <td class="okc-numero">'.number_format(0, 2).'</td>
+                        <td class="okc-numero">'.number_format($otrod, 2).'</td>
+                        <td class="okc-numero">'.number_format($dsctos_no, 2).'</td>
+                        <td class="okc-numero">'.number_format($neto, 2).'</td>
+                        <td class="okc-numero">'.number_format($essalud, 2).'</td>
+                        <td class="okc-numero">'.$horas.'</td>
+                        <td class="okc-numero">'.$mints.'</td>
+                    </tr>';
+                }
+            }else if ($planiRem == 2){
+                for ($i = 0; $i < $cont; $i++){
+                    $a = 0;
+                    
+                    $nro = $i + 1;
+                    $datos = $myData[$i]['datos_trabajador'];
+                    $dni = $myData[$i]['dni_trabajador'];
+                    $sede = $myData[$i]['sede'];
+                    $area = $myData[$i]['area'];
+                    $cargo = $myData[$i]['rol_trabajador'];
+                    $reglab = $myData[$i]['regimen'];
+                    $dias = $myData[$i]['dias_total'];
+                    $sueldo = $myData[$i]['sueldo_basico'];
+                    $salario = $myData[$i]['salario'];
+                    $sexo = $myData[$i]['sexo_trabajador'];
+                    $minTa = $myData[$i]['minutos_tardanza'];
+                    $monTa = $myData[$i]['monto_tardanza'];
+                    $neto = $myData[$i]['total_pago'];
+                    $asig = $myData[$i]['asignacion_familiar'];
+                    $horas = $myData[$i]['horas_efectivas'];
+                    $mints = $myData[$i]['minutos_efectivas'];
+    
+                    $myIngres = $data['data'][$i]['bonificaciones'];
+                    $countIngres = sizeof($myIngres);
+                    $bonif = 0;
+                    for ($bon = 0; $bon < $countIngres; $bon++){
+                        $bonif += $myIngres[$bon]['importe'];
+                    }
+    
+                    $myDscto = $data['data'][$i]['descuentos'];
+                    $countDscto = sizeof($myDscto);
+                    $dscto = 0;
+                    for ($des = 0; $des < $countDscto; $des++){
+                        $dscto += $myDscto[$des]['importe'];
+                    }
+    
+                    $myIna = $data['data'][$i]['descuentos'];
+                    $countIna = sizeof($myIna);
+                    $inas = 0;
+                    for ($ist = 0; $ist < $countIna; $ist++) { 
+                        if ($myIna[$ist]['concepto'] == 'INASISTENCIAS'){
+                            $inas += $myIna[$ist]['importe'];
+                        }
+                    }
+    
+                    $reint_no_deduc = $data['data'][$i]['reintegros']['reint_no_deduc'];
+    
+                    $html .=
+                    '<tr>
+                        <td>'.$nro.'</td>
+                        <td>'.$datos.'</td>
+                        <td>'.$dni.'</td>
+                        <td>'.$sexo.'</td>
+                        <td>'.$sede.'</td>
+                        <td>'.$area.'</td>
+                        <td>'.$cargo.'</td>
+                        <td class="okc-numero">'.number_format($reglab).'</td>
+                        <td class="okc-numero">'.number_format($dias).'</td>
+                        <td class="okc-numero">'.number_format($sueldo, 2).'</td>
+                        <td class="okc-numero">'.number_format($salario, 2).'</td>
+                        <td class="okc-numero">'.number_format($bonif, 2).'</td>
+                        <td class="okc-numero">'.number_format($reint_no_deduc, 2).'</td>
+                        <td class="okc-numero">'.number_format($minTa, 2).'</td>
+                        <td class="okc-numero">'.number_format(round($monTa), 2).'</td>
+                        <td class="okc-numero">'.number_format(0).'</td>
+                        <td class="okc-numero">'.number_format(round($inas), 2).'</td>
+                        <td class="okc-numero">'.number_format($dscto, 2).'</td>
+                        <td class="okc-numero">'.number_format(round($neto), 2).'</td>
+                        <td class="okc-numero">'.$horas.'</td>
+                        <td class="okc-numero">'.$mints.'</td>
+                    </tr>';
+                }
+            }
+            $html.='</tbody></table>';
+        }
+        $export = $html;
+        return view('rrhh/reportes/Planilla_Grupal', compact('export'));
+    }
+
+    public function reporte_planilla_xls($emp, $planiRem, $mesRem, $anio, $filter, $valueGroup){
+        $data = $this->cargar_remuneraciones($emp, $planiRem, $mesRem, $anio, 1, 0, 0);    
+        $myData = $data['data'];
+        $cont = sizeof($myData);
+        $mes = $this->hallarMes($mesRem);
+        $thead = '';
+        $tbody = '';
+
+        $dtaEmp = DB::table('administracion.adm_empresa')->select('codigo')->where('id_empresa', '=', $emp)->get();
+        $codeEmp = $dtaEmp->first()->codigo;
+        
+        if ($planiRem == 1){
+            $thead .=
+            '<tr>
+                <th rowspan="3">N°</th>
+                <th rowspan="3">Apellidos y Nombres</th>
+                <th rowspan="3">DNI</th>
+                <th rowspan="3">SEXO</th>
+                <th rowspan="3">CUSPP</th>
+                <th rowspan="3">SEDE</th>
+                <th rowspan="3">AREA</th>
+                <th rowspan="3">CARGO</th>
+                <th rowspan="3">Centro Costos</th>
+                <th rowspan="3">Tipo Costo</th>
+                <th rowspan="3">Rég. Laboral</th>
+                <th rowspan="3">Fondo Pensión</th>
+                <th rowspan="3" width="80">Días No Comp.</th>
+                <th rowspan="3" width="80">Días Tele Trab.</th>
+                <th rowspan="3" width="80">Días Licen.</th>
+                <th rowspan="3" width="80">Días Trab.</th>
+                <th rowspan="3" width="80">N° Horas Ordinarias</th>
+                <th rowspan="2" colspan="3">Horas Extras</th>
+                <th rowspan="3" width="80">Minutos Tardanza</th>
+                <th rowspan="3" width="80">Acum. Tardanza</th>
+                <th rowspan="3">Remun. Básica</th>
+                <th colspan="8">CONCEPTOS BASICOS NO REMUNERATIVOS</th>
+                <th colspan="10">REMUNERACION ASEGURABLE</th>
+                <th rowspan="3">Total Ingresos</th>
+                <th rowspan="3">Total Remun. Asegurable</th>
+                <th colspan="5">APORTES</th>
+                <th rowspan="3">Total Aportes</th>
+                <th colspan="5">DESCUENTOS DEDUCIBLES</th>
+                <th rowspan="3">Total Descto. Deduc.</th>
+                <th colspan="6">OTROS DESCUENTOS NO DEDUCIBLES</th>
+                <th rowspan="3">Total Descto. No Deduc.</th>
+                <th rowspan="3">Neto a Pagar</th>
+                <th rowspan="3">EsSalud 9%</th>
+                <th colspan="2">Horas Efectivas</th>
+            </tr>
+            <tr>
+                <th colspan="3">LIQUIDACION</th>
+                <th rowspan="2" width="80">Reint. No Deduc.</th>
+                <th rowspan="2" width="80">Bonif. x Ventas</th>
+                <th rowspan="2" width="80">Bono x Cumplim.</th>
+                <th rowspan="2" width="80">Vivienda Condicion de Trab.</th>
+                <th rowspan="2" width="80">Devol. 5ta Cat.</th>
+                <th rowspan="2">Remun. Principal</th>
+                <th rowspan="2">Asig. Familiar</th>
+                <th colspan="3">Horas Extras</th>
+                <th rowspan="2">Reintegro</th>
+                <th rowspan="2">Otros Ingresos</th>
+                <th colspan="3">Vacaciones</th>
+                <th rowspan="2">SNP 13%</th>
+                <th colspan="3">SPP</th>
+                <th rowspan="2">I.R. 5ta Categ.</th>
+                <th rowspan="2" width="80">Tardanzas</th>
+                <th rowspan="2" width="80">Permiso Sin Goce</th>
+                <th rowspan="2" width="80">Inasistencia</th>
+                <th rowspan="2" width="80">Falta Injustif.</th>
+                <th rowspan="2" width="80">Otros Deducibles</th>
+                <th rowspan="2" width="80">Préstamos</th>
+                <th rowspan="2" width="80">Adelantos</th>
+                <th rowspan="2" width="80">Retenc. Judicial</th>
+                <th rowspan="2" width="80">Vacac. Pago x Adelant.</th>
+                <th rowspan="2" width="80">Descuento Autor</th>
+                <th rowspan="2" width="80">Otros</th>
+                <th rowspan="2">Horas</th>
+                <th rowspan="2">Minutos</th>
+            </tr>
+            <tr>
+                <th>N° 25%</th>
+                <th>N° 35%</th>
+                <th>N° 100%</th>
+                <th>CTS</th>
+                <th>Gratif.</th>
+                <th>Bonif. Extra</th>
+                <th>25%</th>
+                <th>35%</th>
+                <th>100%</th>
+                <th>Truncas</th>
+                <th>Remun. Vac.</th>
+                <th>Compen. Vac.</th>
+                <th>Aporte</th>
+                <th>Prima</th>
+                <th>Comisión</th>
+                
+            </tr>';
+
+            for ($i = 0; $i < $cont; $i++){
+                $a = 0;
+                $nro = $i + 1;
+                $datos = $myData[$i]['datos_trabajador'];
+                $dni = $myData[$i]['dni_trabajador'];
+                $sexo = $myData[$i]['sexo_trabajador'];
+                $sede = $myData[$i]['sede'];
+                $area = $myData[$i]['area'];
+                $cargo = $myData[$i]['rol_trabajador'];
+                $pension = $myData[$i]['fondo_pension'];
+                $ini_cont = $myData[$i]['fecha_contrato_ini'];
+                $cussp = $myData[$i]['numero_cussp'];
+                $asig = $myData[$i]['asignacion_familiar'];
+                $horas = $myData[$i]['horas_efectivas'];
+                $mints = $myData[$i]['minutos_efectivas'];
+
+                $reglab = $myData[$i]['regimen'];
+                $dias = $myData[$i]['dias_total'];
+                $diat = $myData[$i]['dias_teletrabajo'];
+                $dial = $myData[$i]['dias_licencia'];
+                $dia_lab = $myData[$i]['dias_laborados'];
+                $cc = $sede.' - '.$area;
+                $tipo_cc = $myData[$i]['tipo_centro_costo'];
+                $salario = $myData[$i]['salario'];
+                $sueldo = $myData[$i]['sueldo_basico'];
+                $total_remun = $myData[$i]['total_remun'];
+
+                $myPensi = $data['data'][$i]['aporte_pension'];
+                $tpPensi = $myPensi['tipo'];
+                if ($tpPensi == 'onp') {
+                    $snp = $myPensi['snp'];
+                    $spp = 0;
+                    $prima = 0;
+                    $comision = 0;
+                }else{
+                    $snp = 0;
+                    $spp = $myPensi['spp'];
+                    $prima = $myPensi['prima'];
+                    $comision = $myPensi['comision'];
+                }
+
+                $reint_deduc = $data['data'][$i]['reintegros']['reint_deduc'];
+                $reint_no_deduc = $data['data'][$i]['reintegros']['reint_no_deduc'];
+
+                $myRetenc = $data['data'][$i]['retenciones'];
+                $countRetenc = sizeof($myRetenc);
+                $quinta = 0;
+                for ($ret = 0; $ret < $countRetenc; $ret++){ 
+                    if ($myRetenc[$ret]['concepto'] == '5TA CATEGORIA'){
+                        $quinta = $myRetenc[$ret]['importe'];
+                    }
+                }
+
+                $myAport = $data['data'][$i]['aporte_empleador'];
+                $countAport = sizeof($myAport);
+                $essalud = 0;
+                for ($apt = 0; $apt < $countAport; $apt++){ 
+                    if ($myAport[$apt]['concepto'] == 'ESSALUD (REGULAR CBSSP AGRAR/AC) TRAB'){
+                        $essalud = $myAport[$apt]['importe'];
+                    }
+                }
+
+                $myPrest = $data['data'][$i]['descuentos'];
+                $countPrest = sizeof($myPrest);
+                $prest = 0;
+                $otrod = 0;
+                $adela = 0;
+                for ($ptm = 0; $ptm < $countPrest; $ptm++) { 
+                    if ($myPrest[$ptm]['concepto'] == 'PRESTAMOS'){
+                        $prest += $myPrest[$ptm]['importe'];
+                    }elseif($myPrest[$ptm]['concepto'] == 'OTROS DESCUENTOS NO DEDUC. DE BASE IMPONIBLE'){
+                        $otrod += $myPrest[$ptm]['importe'];
+                    }elseif($myPrest[$ptm]['concepto'] == 'ADELANTOS'){
+                        $adela += $myPrest[$ptm]['importe'];
+                    }
+                }
+
+                $myIna = $data['data'][$i]['descuentos'];
+                $countIna = sizeof($myIna);
+                $inas = 0;
+                for ($ist = 0; $ist < $countIna; $ist++) { 
+                    if ($myIna[$ist]['concepto'] == 'INASISTENCIAS'){
+                        $inas += $myIna[$ist]['importe'];
+                    }
+                }
+                
+                $myBonif = $data['data'][$i]['bonificaciones'];
+                $countBonif = sizeof($myBonif);
+                $bnfcmp = 0;
+                $comis = 0;
+                $viv = 0;
+                $cmps = 0;
+                $otroBon = 0;
+                for ($bnf = 0; $bnf < $countBonif; $bnf++) { 
+                    if ($myBonif[$bnf]['concepto'] == 'COMISION'){
+                        $comis += $myBonif[$bnf]['importe'];
+                    }elseif ($myBonif[$bnf]['concepto'] == 'VIVIENDA CONDICION DE TRABAJO'){
+                        $viv += $myBonif[$bnf]['importe'];
+                    }elseif($myBonif[$bnf]['concepto'] == 'COMPENSACION VACACIONAL'){
+                        $cmps += $myBonif[$bnf]['importe'];
+                    }elseif ($myBonif[$bnf]['concepto'] == 'BONO POR CUMPLIMIENTO'){
+                        $bnfcmp += $myBonif[$bnf]['importe'];
+                    }else{
+                        $otroBon += $myBonif[$bnf]['importe'];
+                    }
+                }
+
+                $minTa = $myData[$i]['minutos_tardanza'];
+                $dscTa = $myData[$i]['descuento_tardanza'];
+                $monTa = $myData[$i]['monto_tardanza'];
+                $ingreso = $myData[$i]['total_ingreso'];
+                $aportes = $snp + $spp + $prima + $comision + $quinta;
+                $descuents = $monTa + $inas;
+                $dsctos_no = $prest + $otrod + $adela;
+                $neto = $myData[$i]['total_pago'];
+                $vacac = $myData[$i]['sueldo_vacaciones'];
+
+                $tbody .=
+                '<tr>
+                    <td class="okc-order">'.$nro.'</td>
+                    <td>'.$datos.'</td>
+                    <td>'.$dni.'</td>
+                    <td>'.$sexo.'</td>
+                    <td>'.$cussp.'</td>
+                    <td>'.$sede.'</td>
+                    <td>'.$area.'</td>
+                    <td>'.$cargo.'</td>
+                    <td>'.$cc.'</td>
+                    <td>'.$tipo_cc.'</td>
+                    <td>'.$reglab.'</td>
+                    <td>'.$pension.'</td>
+                    <td class="okc-numero">'.number_format($dias).'</td>
+                    <td class="okc-numero">'.number_format($diat).'</td>
+                    <td class="okc-numero">'.number_format($dial).'</td>
+                    <td class="okc-numero">'.number_format($dia_lab).'</td>
+                    <td class="okc-numero">'.$horas.'</td>
+                    <td class="okc-numero">0</td>
+                    <td class="okc-numero">0</td>
+                    <td class="okc-numero">0</td>
+                    <td class="okc-numero">'.$minTa.'</td>
+                    <td class="okc-numero">'.$dscTa.'</td>
+                    <td class="okc-numero">'.number_format($salario, 2).'</td>
+                    <td class="okc-numero">'.number_format(0, 2).'</td>
+                    <td class="okc-numero">'.number_format(0, 2).'</td>
+                    <td class="okc-numero">'.number_format(0, 2).'</td>
+                    <td class="okc-numero">'.number_format($reint_no_deduc, 2).'</td>
+                    <td class="okc-numero">'.number_format($comis, 2).'</td>
+                    <td class="okc-numero">'.number_format($bnfcmp, 2).'</td>
+                    <td class="okc-numero">'.number_format($viv, 2).'</td>
+                    <td class="okc-numero">'.number_format(0, 2).'</td>
+                    <td class="okc-numero">'.number_format($sueldo, 2).'</td>
+                    <td class="okc-numero">'.number_format($asig, 2).'</td>
+                    <td class="okc-numero">0</td>
+                    <td class="okc-numero">0</td>
+                    <td class="okc-numero">0</td>
+                    <td class="okc-numero">'.number_format($reint_deduc, 2).'</td>
+                    <td class="okc-numero">'.number_format($otroBon, 2).'</td>
+                    <td class="okc-numero">'.number_format(0, 2).'</td>
+                    <td class="okc-numero">'.number_format($vacac, 2).'</td>
+                    <td class="okc-numero">'.number_format($cmps, 2).'</td>
+                    <td class="okc-numero">'.number_format($ingreso, 2).'</td>
+                    <td class="okc-numero">'.number_format($total_remun, 2).'</td>
+                    <td class="okc-numero">'.number_format($snp, 2).'</td>
+                    <td class="okc-numero">'.number_format($spp, 2).'</td>
+                    <td class="okc-numero">'.number_format($prima, 2).'</td>
+                    <td class="okc-numero">'.number_format($comision, 2).'</td>
+                    <td class="okc-numero">'.number_format($quinta, 2).'</td>
+                    <td class="okc-numero">'.number_format($aportes, 2).'</td>
+                    <td class="okc-numero">'.number_format($monTa, 2).'</td>
+                    <td class="okc-numero">0</td>
+                    <td class="okc-numero">'.number_format($inas, 2).'</td>
+                    <td class="okc-numero">0</td>
+                    <td class="okc-numero">0</td>
+                    <td class="okc-numero">'.number_format($descuents, 2).'</td>
+                    <td class="okc-numero">'.number_format($prest, 2).'</td>
+                    <td class="okc-numero">'.number_format($adela, 2).'</td>
+                    <td class="okc-numero">'.number_format(0, 2).'</td>
+                    <td class="okc-numero">'.number_format(0, 2).'</td>
+                    <td class="okc-numero">'.number_format(0, 2).'</td>
+                    <td class="okc-numero">'.number_format($otrod, 2).'</td>
+                    <td class="okc-numero">'.number_format($dsctos_no, 2).'</td>
+                    <td class="okc-numero">'.number_format($neto, 2).'</td>
+                    <td class="okc-numero">'.number_format($essalud, 2).'</td>
+                    <td class="okc-numero">'.$horas.'</td>
+                    <td class="okc-numero">'.$mints.'</td>
+                </tr>';
+            }
+        }else if ($planiRem == 2){
+            $thead .=
+            '<tr>
+                <th>N°</th>
+                <th>Apellidos y Nombres</th>
+                <th>DNI</th>
+                <th>Sexo</th>
+                <th>Sede</th>
+                <th>Area</th>
+                <th>Cargo</th>
+                <th>Rég. Laboral</th>
+                <th>Días Comp.</th>
+                <th>Días Tele Trab.</th>
+                <th>Días Licen.</th>
+                <th>Días Trab.</th>
+                <th>Sueldo Básico</th>
+                <th>Remun. Principal</th>
+                <th>Otros Ingresos</th>
+                <th>Reintegro</th>
+                <th>Minutos Tardanza</th>
+                <th>Monto Tardanza</th>
+                <th>Inasistencia</th>
+                <th>Monto Inasistencia</th>
+                <th>Otros Descuentos</th>
+                <th>Sueldo Neto</th>
+                <th>Horas Efect.</th>
+                <th>Minutos Efect.</th>
+            </tr>';
+            for ($i = 0; $i < $cont; $i++){
+                $a = 0;
+                
+                $nro = $i + 1;
+                $datos = $myData[$i]['datos_trabajador'];
+                $dni = $myData[$i]['dni_trabajador'];
+                $sede = $myData[$i]['sede'];
+                $area = $myData[$i]['area'];
+                $cargo = $myData[$i]['rol_trabajador'];
+                $reglab = $myData[$i]['regimen'];
+                $dias = $myData[$i]['dias_total'];
+                $diat = $myData[$i]['dias_teletrabajo'];
+                $dial = $myData[$i]['dias_licencia'];
+                $dia_lab = $myData[$i]['dias_laborados'];
+                $sueldo = $myData[$i]['sueldo_basico'];
+                $salario = $myData[$i]['salario'];
+                $sexo = $myData[$i]['sexo_trabajador'];
+                $minTa = $myData[$i]['minutos_tardanza'];
+                $monTa = $myData[$i]['monto_tardanza'];
+                $neto = $myData[$i]['total_pago'];
+                $asig = $myData[$i]['asignacion_familiar'];
+                $horas = $myData[$i]['horas_efectivas'];
+                $mints = $myData[$i]['minutos_efectivas'];
+
+                $myIngres = $data['data'][$i]['bonificaciones'];
+                $countIngres = sizeof($myIngres);
+                $bonif = 0;
+                for ($bon = 0; $bon < $countIngres; $bon++){
+                    $bonif += $myIngres[$bon]['importe'];
+                }
+
+                $myDscto = $data['data'][$i]['descuentos'];
+                $countDscto = sizeof($myDscto);
+                $dscto = 0;
+                for ($des = 0; $des < $countDscto; $des++){
+                    $dscto += $myDscto[$des]['importe'];
+                }
+
+                $myIna = $data['data'][$i]['descuentos'];
+                $countIna = sizeof($myIna);
+                $inas = 0;
+                for ($ist = 0; $ist < $countIna; $ist++) { 
+                    if ($myIna[$ist]['concepto'] == 'INASISTENCIAS'){
+                        $inas += $myIna[$ist]['importe'];
+                    }
+                }
+
+                $reint_no_deduc = $data['data'][$i]['reintegros']['reint_no_deduc'];
+
+                $tbody .=
+                '<tr>
+                    <td>'.$nro.'</td>
+                    <td>'.$datos.'</td>
+                    <td>'.$dni.'</td>
+                    <td>'.$sexo.'</td>
+                    <td>'.$sede.'</td>
+                    <td>'.$area.'</td>
+                    <td>'.$cargo.'</td>
+                    <td class="okc-numero">'.number_format($reglab).'</td>
+                    <td class="okc-numero">'.number_format($dias).'</td>
+                    <td class="okc-numero">'.number_format($diat).'</td>
+                    <td class="okc-numero">'.number_format($dial).'</td>
+                    <td class="okc-numero">'.number_format($dia_lab).'</td>
+                    <td class="okc-numero">'.number_format($sueldo, 2).'</td>
+                    <td class="okc-numero">'.number_format($salario, 2).'</td>
+                    <td class="okc-numero">'.number_format($bonif, 2).'</td>
+                    <td class="okc-numero">'.number_format($reint_no_deduc, 2).'</td>
+                    <td class="okc-numero">'.number_format($minTa, 2).'</td>
+                    <td class="okc-numero">'.number_format(round($monTa), 2).'</td>
+                    <td class="okc-numero">'.number_format(0).'</td>
+                    <td class="okc-numero">'.number_format(round($inas), 2).'</td>
+                    <td class="okc-numero">'.number_format($dscto, 2).'</td>
+                    <td class="okc-numero">'.number_format(round($neto), 2).'</td>
+                    <td class="okc-numero">'.$horas.'</td>
+                    <td class="okc-numero">'.$mints.'</td>
+                </tr>';
+            }
+        }
+
+        $headExport = $thead;
+        $dataExport = $tbody;
+        $perExport = 'PERIODO '.$mes.'-'.$anio;
+        $companyExport = $codeEmp;
+        return view('rrhh/reportes/Planilla_Remuneracion', compact('headExport', 'dataExport', 'perExport', 'companyExport'));
+    }
+
+    public function reporte_planilla_spcc_xls($emp, $planiRem, $mesRem, $anio){
+        $data = $this->remuneracion_spcc($emp, $planiRem, $mesRem, $anio);    
         $myData = $data['data'];
         $cont = sizeof($myData);
         $mes = $this->hallarMes($mesRem);
@@ -6463,7 +8275,7 @@ class RecursosHumanosController extends Controller{
     public function reporte_afp(){
         $anio = date('Y');
 
-        $data = $this->cargar_remuneraciones(0, 1, 9, $anio, 2, 0);
+        $data = $this->cargar_remuneraciones(0, 1, 9, $anio, 2, 0, 0);
         $myData = $data['data'];
         $cont = sizeof($myData);
 
@@ -6569,6 +8381,39 @@ class RecursosHumanosController extends Controller{
         $segundos = strtotime($fechaVen) - strtotime($fechaHoy);
         $diferencia_dias = intval($segundos/60/60/24);
         return $diferencia_dias; 
+    }
+
+    function calcularDiasEfectivos($mes, $anio, $fechaIni, $fechaFin){
+        $diaIni = $this->primerDia($mes, $anio);
+        $diaFin = $this->ultimoDia($mes, $anio);
+
+        if ($fechaIni <= $diaIni){
+            if ($fechaFin == null){//Si la fecha es nula (no tiene fecha fin)
+                $calFecIni = date('Y-m-d', strtotime($diaIni.'- 1 days')); 
+                $final = $this->restaFechasDias($diaFin, $calFecIni);
+            }else{
+                if ($fechaFin >= $diaIni){
+                    if ($fechaFin <= $diaFin){ //fecha de cese dentro del rango
+                        $calFecIni = date('Y-m-d', strtotime($diaIni.'- 1 days')); 
+                        $final = $this->restaFechasDias($fechaFin, $calFecIni);
+                    }else{
+                        $calFecIni = date('Y-m-d', strtotime($diaIni.'- 1 days')); 
+                        $final = $this->restaFechasDias($diaFin, $calFecIni); //fecha esta ingresada adelantando 
+                    }
+                }else{ // cesado antes
+                    $final = 0;
+                }
+            }
+        }else{
+            if ($fechaIni < $diaFin){ //Si ingresó, esta dentro del rango
+                $calFecIni = date('Y-m-d', strtotime($fechaIni.'- 1 days')); 
+                $final = $this->restaFechasDias($diaFin, $calFecIni);
+            }else{
+                $final = 0;
+            }
+        }
+
+        return $final;
     }
 
     function convertDescuents($hora){
