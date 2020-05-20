@@ -21,6 +21,8 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use App\Models\Logistica\Empresa;
 use App\Models\Tesoreria\Usuario;
 use App\Models\Tesoreria\Grupo;
+use DataTables;
+
 date_default_timezone_set('America/Lima');
 
 class LogisticaController extends Controller
@@ -2273,7 +2275,8 @@ class LogisticaController extends Controller
             $userRolConceptoList[]=$us->id_rol_concepto;
         }
 
-        $output['data']=[];
+        // $output['data']=[];
+        $output=[];
         
         // datos del requerimiento
         foreach ($this->get_req_list($id_empresa,$id_sede,$id_grupo) as $row) {
@@ -2316,11 +2319,11 @@ class LogisticaController extends Controller
 
             
             if (strtolower($priori) == 'normal') {
-                $flag = '<center><i class="fas fa-thermometer-empty green"  data-toggle="tooltip" data-placement="right" title="Normal" ></i></center>';
+                $flag = '<center> <i class="fas fa-thermometer-empty green"  data-toggle="tooltip" data-placement="right" title="Normal" ></i></center>';
             } elseif (strtolower($priori) == 'normaaltal') {
-                $flag = '<center><i class="fas fa-thermometer-half orange"  data-toggle="tooltip" data-placement="right" title="Alta"  ></i></center>';
+                $flag = '<center> <i class="fas fa-thermometer-half orange"  data-toggle="tooltip" data-placement="right" title="Alta"  ></i></center>';
             } else {
-                $flag = '<center><i class="fas fa-thermometer-full red"  data-toggle="tooltip" data-placement="right" title="Crítico"  ></i></center>';
+                $flag = '<center> <i class="fas fa-thermometer-full red"  data-toggle="tooltip" data-placement="right" title="Crítico"  ></i></center>';
             }
 
             $usuario = Usuario::find($id_usu)->trabajador->postulante->persona->nombre_completo;
@@ -2656,10 +2659,39 @@ class LogisticaController extends Controller
         $groupAprob = $containerOpenBrackets. $aprobs. $containerCloseBrackets;
         $action = $groupMethod . $groupAprob;
 
-        $output['data'][] = array($flag, $codigo, $concepto,$monto_total_referencial, $fec_rq, $desc_periodo, $tp_req, $empresa, $gral, $usuario, $status.'<center>'.$indicadorCotizacion.$indicadorOrden.'</center>', $action);
+        // $output['data'][] = array($flag, $codigo, $concepto,$monto_total_referencial, $fec_rq, $desc_periodo, $tp_req, $empresa, $gral, $usuario, $status.'<center>'.$indicadorCotizacion.$indicadorOrden.'</center>', $action);
+        $output[] = [
+            'flag'=> $flag, 
+            'codigo'=> $codigo, 
+            'concepto'=> $concepto,
+            'monto_total_referencial'=> $monto_total_referencial,
+            'fec_rq'=> $fec_rq, 
+            'desc_periodo'=> $desc_periodo, 
+            'tp_req'=> $tp_req,
+            'empresa'=> $empresa, 
+            'gral'=> $gral, 
+            'usuario'=> $usuario, 
+            'status'=> $status.'<center>'.$indicadorCotizacion.$indicadorOrden.'</center>', 
+            'action'=> $action
+        ];
         
     }
-        return response()->json($output);
+        // return response()->json($output);
+        return DataTables::of($output)
+        ->addColumn('flag',function($output){
+                $flag = $output['flag'];
+                return $flag;
+        })
+        ->addColumn('status',function($output){
+                $status = $output['status'];
+                return $status;
+        })
+        ->addColumn('action',function($output){
+                $action = $output['action'];
+                return $action;
+        })
+        ->rawColumns(['flag','status','action'])
+        ->make(true);
     }
 
 

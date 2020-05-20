@@ -78,8 +78,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.1/socket.io.js"></script>
 
 <script>
-        var socket = io('http://localhost:8008'); // modo dev
-        // var socket = io('http://192.168.20.2:8008'); // modo dev
+
 
 function get_session_actual(){
     return new Promise(function(resolve, reject) {
@@ -98,32 +97,53 @@ function get_session_actual(){
     });
 }
 
-socket.on('notification', function(response) {
-    //  notifyMe(response);
 
-    let id_area_user_session_array=[];
-
-    get_session_actual().then(function(data) { 
-            if(data.roles.length >0){
-                data.roles.forEach(element => {
-                    id_area_user_session_array.push(parseInt(element.id_area));
-                    
-                });
-                // console.log(id_area_user_session_array);
-                // console.log(response.id_area);
-                // console.log(id_area_user_session_array.includes(parseInt(response.id_area)));
-                
-                if(id_area_user_session_array.includes(parseInt(response.id_area))){
-                    notifyMe(response);
+$.ajax({
+        type: 'GET',
+        url: '/socket_setting/activado',
+        success: function(response){
+            if(response.status == 200){
+                if(response.data.activado == true){
+                    socket_setting(response.data);
                 }
-
             }
-        }).catch(function(err) {
-            // Run this when promise was rejected via reject()
-            console.log(err)
-        })
-
+            
+        }
 });
+
+
+function socket_setting(data){
+    var socket = io(data.host);
+    // var socket = io('http://localhost:8008'); // modo dev
+    // var socket = io('http://192.168.20.2:8008'); // modo dev
+    socket.on('notification', function(response) {
+        //  notifyMe(response);
+
+        let id_area_user_session_array=[];
+
+        get_session_actual().then(function(data) { 
+                if(data.roles.length >0){
+                    data.roles.forEach(element => {
+                        id_area_user_session_array.push(parseInt(element.id_area));
+                        
+                    });
+                    // console.log(id_area_user_session_array);
+                    // console.log(response.id_area);
+                    // console.log(id_area_user_session_array.includes(parseInt(response.id_area)));
+                    
+                    if(id_area_user_session_array.includes(parseInt(response.id_area))){
+                        notifyMe(response);
+                    }
+
+                }
+            }).catch(function(err) {
+                // Run this when promise was rejected via reject()
+                console.log(err)
+            })
+
+    });
+}
+
 
 
 

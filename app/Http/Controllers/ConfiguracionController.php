@@ -34,6 +34,10 @@ class ConfiguracionController extends Controller{
         return view('configuracion/correo_coorporativo', compact('empresas'));
     }
 
+    function view_configuracion_socket(){
+        return view('configuracion/configuracion_socket');
+    }
+
     
  
     function view_docuemtos(){ return view('configuracion/flujo_aprobacion/documentos');}
@@ -1368,6 +1372,40 @@ public function anular_correo_coorporativo($id){
     ]);
     return response()->json($data);
 }
+
+public function guardar_configuracion_socket(Request $request){
+    $save = DB::table('configuracion.socket_setting')
+    ->insertGetId([
+        'modo'   => $request->modo,
+        'host'   => $request->host,
+        'activado' => $request->activado
+    ],
+    'id'
+    );
+
+    return  response()->json($save);
+}
+
+public function actualizar_configuracion_socket(Request $request){
+    $data = DB::table('configuracion.socket_setting')
+    ->where('id', $request->id)
+    ->update([
+        'modo'   => $request->modo,
+        'host'   => $request->host,
+        'activado'        => $request->activado
+    ]);
+    return response()->json($data);
+}
+
+public function anular_configuracion_socket($id){
+    $data = DB::table('configuracion.socket_setting')->where('id', $id)
+    ->update([
+        'activado'    => false
+    ]);
+    return response()->json($data);
+}
+
+
 /* FUNCIONES */
     function leftZero($lenght, $number){
 		$nLen = strlen($number);
@@ -1402,5 +1440,49 @@ public function anular_correo_coorporativo($id){
         }
 
         return $id_estado_doc;
+    }
+    public function socket_setting($option){
+        $data=[];
+        $status=0;
+
+        if($option == 'all'){
+            $socket =  DB::table('configuracion.socket_setting')
+            ->get();
+
+            if($socket->count()>0){
+                $data=  $socket;
+                $status= 200;
+            }else{
+                $status= 500;
+            }
+        }
+        elseif($option == 'activado'){
+            $socket =  DB::table('configuracion.socket_setting')
+            ->where('activado', true)
+            ->get();
+
+            if($socket->count()>0){
+                $data=  $socket->first();
+                $status= 200;
+            }else{
+                $status= 500;
+            }
+        }
+        elseif($option > 0){
+            $socket =  DB::table('configuracion.socket_setting')
+            ->where('id', $option)
+            ->get();
+
+            if($socket->count()>0){
+                $data=  $socket->first();
+                $status= 200;
+            }else{
+                $status= 500;
+            }
+        }
+        $output=['status'=>$status, 'data'=>$data];
+
+        return response()->json($output);
+
     }
 }
