@@ -1,4 +1,4 @@
-function ver_partida_insumo(id_pres, id_insumo, descripcion){
+function ver_partida_insumo(id_pres, id_insumo){
     console.log('id_pres: '+id_pres+' ins:'+ id_insumo);
     if (id_pres !== '' && id_insumo !== ''){
         $('#modal-ver_partida_insumo').modal({
@@ -13,12 +13,12 @@ function ver_partida_insumo(id_pres, id_insumo, descripcion){
             dataType: 'JSON',
             success: function(response){
                 console.log(response);
-                if (response.length > 0){
+                if (response['cd_insumos'].length > 0){
                     var html = '';
                     var total = 0;
                     var i = 1;
     
-                    response.forEach(ins => {
+                    response['cd_insumos'].forEach(ins => {
                         total += parseFloat(ins.importe_parcial);
                         html+='<tr>'+
                         '<td>'+i+'</td>'+
@@ -37,7 +37,7 @@ function ver_partida_insumo(id_pres, id_insumo, descripcion){
                     '</tr>';
                     
                     $('#VerPartidaInsumo tbody').html(html);
-                    $('#nombre_insumo').text(descripcion);
+                    $('#nombre_insumo').text(response['descripcion_insumo']);
                 }
             }
         }).fail( function( jqXHR, textStatus, errorThrown ){

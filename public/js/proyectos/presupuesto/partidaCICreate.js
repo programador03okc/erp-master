@@ -8,7 +8,7 @@ function agrega_partida_ci(cod_compo, titulo){
         $('#modal-partidaCICreate').modal({
             show: true
         });
-
+        $("#btnGuardarPartidaCI").removeAttr("disabled");
         var i = 1;
         var filas = document.querySelectorAll('#listaCI tbody tr');
         filas.forEach(function(e){

@@ -40,6 +40,7 @@ function listar_cus(){
     });
     botones('#listaCu tbody',tabla);
 }
+
 function botones(tbody, tabla){
     $(tbody).on("click","button.editar", function(){
         var data = tabla.row($(this).parents("tr")).data();

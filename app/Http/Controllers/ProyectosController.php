@@ -860,8 +860,8 @@ class ProyectosController extends Controller
             ->select('proy_cu.*','proy_cu_cat.descripcion as cat_descripcion',
             'adm_estado_doc.estado_doc','adm_estado_doc.bootstrap_color','sis_usua.nombre_corto')
             ->leftjoin('proyectos.proy_cu_cat','proy_cu_cat.id_categoria','=','proy_cu.id_categoria')
-            ->join('administracion.adm_estado_doc','adm_estado_doc.id_estado_doc','=','proy_cu.estado')
-            ->join('configuracion.sis_usua','sis_usua.id_usuario','=','proy_cu.usuario_registro')
+            ->leftjoin('administracion.adm_estado_doc','adm_estado_doc.id_estado_doc','=','proy_cu.estado')
+            ->leftjoin('configuracion.sis_usua','sis_usua.id_usuario','=','proy_cu.usuario_registro')
             ->where([['proy_cu.estado', '!=', 7]])
             ->get();
         $output['data'] = $data;
@@ -899,12 +899,12 @@ class ProyectosController extends Controller
     {
         $count = DB::table('proyectos.proy_cu')
         ->where([['descripcion','=',strtoupper($request->cu_descripcion)],
-                 ['estado','=',1],
+                 ['estado','!=',7],
                  ['id_cu','!=',$request->id_cu]])
         ->count();
         $id_cu = 0;
 
-        if ($count == 0){
+        if ($count <= 0){
             $id_cu = DB::table('proyectos.proy_cu')->where('id_cu',$request->id_cu)
             ->update([
                 'descripcion' => strtoupper($request->cu_descripcion),
@@ -912,7 +912,7 @@ class ProyectosController extends Controller
                 'observacion' => $request->observacion,
             ]);
         }
-        return response()->json($id_cu);
+        return response()->json(['id_cu'=>$id_cu]);
     }
     public function anular_cu($id_cu)
     {
@@ -1339,13 +1339,15 @@ class ProyectosController extends Controller
         $data = DB::table('proyectos.proy_op_com')
             ->select('proy_op_com.*', 'proy_tp_proyecto.descripcion as des_tp_proyecto',
             'proy_unid_program.descripcion as des_program','adm_contri.razon_social',
-            'adm_contri.id_contribuyente','sis_usua.nombre_corto','proy_modalidad.descripcion as des_modalidad')
+            'adm_contri.id_contribuyente','sis_usua.nombre_corto','proy_modalidad.descripcion as des_modalidad',
+            'adm_estado_doc.estado_doc')
             ->join('proyectos.proy_tp_proyecto','proy_tp_proyecto.id_tp_proyecto','=','proy_op_com.tp_proyecto')
             ->leftjoin('proyectos.proy_unid_program','proy_unid_program.id_unid_program','=','proy_op_com.unid_program')
             ->leftjoin('proyectos.proy_modalidad','proy_modalidad.id_modalidad','=','proy_op_com.modalidad')
             ->join('comercial.com_cliente','com_cliente.id_cliente','=','proy_op_com.cliente')
             ->join('contabilidad.adm_contri','adm_contri.id_contribuyente','=','com_cliente.id_contribuyente')
             ->join('configuracion.sis_usua','sis_usua.id_usuario','=','proy_op_com.elaborado_por')
+            ->join('administracion.adm_estado_doc','adm_estado_doc.id_estado_doc','=','proy_op_com.estado')
                 ->where([['proy_op_com.estado', '!=', 7]])
                 ->orderBy('proy_op_com.codigo','desc')
                 ->get();
@@ -2552,6 +2554,7 @@ class ProyectosController extends Controller
 
         return response()->json($id_portafolio);
     }
+    /*
     //construye la valorizacion
     public function mostrar_pres_valorizacion($id_presupuesto)
     {
@@ -2731,7 +2734,7 @@ class ProyectosController extends Controller
         $gg = ["id_gg"=>$presupuesto->id_gg,"componentes_gg"=>$componentes_gg,"partidas_gg"=>$part_gg];
 
         return response()->json(["presupuesto"=>$presupuesto,"cd"=>$cd,"ci"=>$ci,"gg"=>$gg]);
-    }
+    }*/
     
     //NUEVO ERP
     public function listar_contratos_proy($id){
@@ -4430,7 +4433,10 @@ class ProyectosController extends Controller
                     ['proy_cu_detalle.id_insumo','=',$id_insumo],
                     ['proy_cu_detalle.estado','=',1]])
             ->get();
-        return response()->json($cd_insumos);
+
+        $insumo = DB::table('proyectos.proy_insumo')
+        ->where('id_insumo',$id_insumo)->first();
+        return response()->json(['cd_insumos'=>$cd_insumos,'descripcion_insumo'=>$insumo->codigo.' - '.$insumo->descripcion]);
     }
 
     public function solo_cd($id_pres){
@@ -5599,6 +5605,8 @@ class ProyectosController extends Controller
         ->first();
         $msj = '';
         $id_pres = 0;
+        $tp_pres = 1;// 1 Presupuesto Interno
+        $estado = 8;
 
         if (isset($proy)){
             $fecha_emision = date('Y-m-d');
@@ -5610,8 +5618,8 @@ class ProyectosController extends Controller
                 ->select('proy_presup.*','proy_presup_importe.*')
                 ->join('proyectos.proy_presup_importe','proy_presup_importe.id_presupuesto','=','proy_presup.id_presupuesto')
                 ->where([['proy_presup.id_op_com','=',$proy->id_op_com],
-                        ['proy_presup.id_tp_presupuesto','=',1],// 1 Presupuesto Interno
-                        ['proy_presup.estado','=',8]])
+                        ['proy_presup.id_tp_presupuesto','=',$tp_pres],// 1 Presupuesto Interno
+                        ['proy_presup.estado','=',$estado]])
                 ->orderBy('proy_presup.id_presupuesto','desc')
                 ->first();
 
@@ -5801,7 +5809,7 @@ class ProyectosController extends Controller
                 ->where([['id_presint','=',$presint->id_presupuesto],['estado','!=',7]])
                 ->first();
 
-                if (isset($id_propuesta)){
+                if (isset($propuesta)){
                     DB::table('finanzas.presup')->where('id_presup',$propuesta->id_presup)
                     ->update(['id_proyecto'=>$id_proyecto]);
                 }

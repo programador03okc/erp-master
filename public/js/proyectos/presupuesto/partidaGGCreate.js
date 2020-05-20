@@ -9,7 +9,7 @@ function agrega_partida_gg(cod_compo, titulo){
         $('#modal-partidaGGCreate').modal({
             show: true
         });
-
+        $("#btnGuardarPartidaGG").removeAttr("disabled");
         var i = 1;
         var filas = document.querySelectorAll('#listaGG tbody tr');
         filas.forEach(function(e){

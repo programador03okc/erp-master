@@ -20,11 +20,12 @@ $(function(){
             {'data': 'des_program'},
             {'data': 'des_modalidad'},
             {'data': 'nombre_corto'},
-            {'render':
-                function (data, type, row){
-                    return ((row['estado'] == 1) ? 'Activo' : 'Inactivo');
-                }
-            },
+            {'data': 'estado_doc'},
+            // {'render':
+            //     function (data, type, row){
+            //         return ((row['estado'] == 1) ? 'Activo' : 'Inactivo');
+            //     }
+            // },
             {'defaultContent': 
             '<button type="button" class="editar btn btn-primary boton" data-toggle="tooltip" '+
                 'data-placement="bottom" title="Editar" >'+

@@ -89,6 +89,12 @@ $(document).ready(function(){
 				else if (page == 'presint'){
 					nuevo_presint();
 				}
+				else if (page == 'cronoint'){
+					nuevo_cronoint();
+				}
+				else if (page == 'cronovalint'){
+					nuevo_cronovalint();
+				}
 				else if (page == 'preseje'){
 					nuevo_preseje();
 				}
@@ -100,6 +106,9 @@ $(document).ready(function(){
 				}
 				else if (page == 'cronoval'){
 					nuevo_cronoval();
+				}
+				else if (page == 'cronovaleje'){
+					nuevo_cronovaleje();
 				}
 				else if (page == 'cronovalpro'){
 					nuevo_cronovalpro();
@@ -127,7 +136,8 @@ $(document).ready(function(){
 				 && forms!=="form-tipo" && forms!=="form-categoria" && forms!=="form-clasificacion" 
 				 && forms!=="form-producto" && forms!=="form-requerimiento" && forms!=="form-general"
 				 && forms!=="form-doc_venta" && forms!=="form-presint" && forms!=="form-preseje"
-				 && forms!=="form-cronopro" && forms!=="form-cronoeje"){
+				 && forms!=="form-cronopro" && forms!=="form-cronoeje" && forms!=="form-cronoint" 
+				 && forms!=="form-cronovalint" && forms!=="form-cronovaleje"){
 					changeStateButton('guardar');
 					$('#'+forms).attr('type', 'register');
 					changeStateInput(frm_active, true);

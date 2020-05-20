@@ -11,6 +11,8 @@ function mostrarResidentes(){
         'dom': vardataTables[1],
         'buttons': vardataTables[2],
         'language' : vardataTables[0],
+        'bDestroy': true,
+        'retrieve': true,
         'ajax': 'listar_residentes',
         'columns': [
             {'data': 'id_residente'},
@@ -181,7 +183,7 @@ function guardar_residente(){
                 if (response > 0){
                     alert('Residente registrado con éxito');
                     $('#modal-residente_create').modal('hide');
-                    $('#listaResidentes').DataTable().ajax.reload();
+                    mostrarResidentes();
                 } else {
                     alert('Ya existe el residente ingresado!');
                 }

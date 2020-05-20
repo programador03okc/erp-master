@@ -18,7 +18,7 @@ function open_acu_partida_create(data){
         $('[name=rendimiento]').val(data.rendimiento);
         $('[name=unid_medida_cu]').val(data.unid_medida);
         $('[name=id_categoria]').val(data.id_categoria);
-        $('[name=total_acu]').val(formatNumber.decimal(data.total,'',-4));
+        $('[name=total_acu]').val(formatDecimalDigitos(data.total,4));
         $('[name=observacion]').val(data.observacion);
         unid_abrev();
         listar_acu_detalle(data.id_cu_partida);
@@ -77,7 +77,7 @@ function guardar_acu(){
     var cu = $('[name=id_cu]').val();
     var ren = $('[name=rendimiento]').val();
     var und = $('[name=unid_medida_cu]').val();
-    var tot = $('[name=total_acu]').val();
+    var tot = parseFloat($('[name=total_acu]').val());
 
     var id_det = [];
     var id_insumo = [];
@@ -218,7 +218,7 @@ function actualizaTotal(){
         total += parseFloat(element.total);
     });
     console.log('total: '+total);
-    $('[name=total_acu]').val(formatNumber.decimal(total,'',-4));
+    $('[name=total_acu]').val(formatDecimalDigitos(total,4));
 }
 
 function agregar(){
@@ -350,7 +350,7 @@ function change_rendimiento(){
             $('#AcuInsumos tbody').append(fila);
             total += parseFloat(element.total);
         });
-        $('[name=total_acu]').val(total.toFixed(6));
+        $('[name=total_acu]').val(formatDecimalDigitos(total,4));
     } else {
         alert('El rendimiento debe ser mayor a 0');
     }

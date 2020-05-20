@@ -55,13 +55,19 @@ function openModal(type, active){
         break;
         /////Proyectos
         case 'presint':
-            presintModal();
+            presintModal('');
         break;
         case 'propuesta':
             propuestaModal('');
         break;
         case 'preseje':
             presejeModal('');
+        break;
+        case 'cronoint':
+            presintModal('modal');
+        break;
+        case 'cronovalint':
+            presintModal('cronomodal');
         break;
         case 'cronoeje':
             presejeModal('modal');
@@ -360,6 +366,12 @@ function eventRegister(type, data, action, frm_active){
         case 'preseje':
             save_preseje(data, action);
         break;
+        case 'cronoint':
+            save_cronoint();
+        break;
+        case 'cronovalint':
+            save_cronovalint();
+        break;
         case 'cronoeje':
             save_cronoeje();
         break;
@@ -368,6 +380,9 @@ function eventRegister(type, data, action, frm_active){
         break;
         case 'cronopro':
             save_cronopro();
+        break;
+        case 'cronovaleje':
+            save_cronovaleje();
         break;
         case 'cronovalpro':
             save_cronovalpro();

@@ -44,7 +44,7 @@
                                             <h5>Importe / Moneda</h5>
                                             <div style="display:flex;">
                                                 {{-- <input type="text" name="simbolo" class="form-control group-elemento" style="width:40px;text-align:center;" readOnly/> --}}
-                                                <input type="number" name="importe_contrato" class="form-control group-elemento" style="text-align:right;"/>
+                                                <input type="number" name="importe_contrato" class="form-control group-elemento" step="0.01" min="0" style="text-align:right;"/>
                                                 <select class="form-control group-elemento" name="moneda_con">
                                                     <option value="0">Elija una opción</option>
                                                     @foreach ($monedas as $mon)

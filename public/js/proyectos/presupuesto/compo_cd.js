@@ -35,7 +35,7 @@ function listar_cd(id_pres){
                     html+='<td class="right">'+formatNumber.decimal(ins.importe_parcial,'',-6)+'</td>'+
                     '<td>'+
                     '<i class="fas fa-list-alt btn btn-'+color+' visible boton" data-toggle="tooltip" '+
-                    'data-placement="bottom" title="Ver partidas enlazadas" onClick="ver_partida_insumo('+id_pres+','+ins.id_insumo+','+"'"+ins.codigo+' - '+ins.descripcion+"'"+');"></i>'+
+                    'data-placement="bottom" title="Ver partidas enlazadas" onClick="ver_partida_insumo('+id_pres+','+ins.id_insumo+');"></i>'+
                     // '<button type="button" class="ver btn btn-'+color+' boton" data-toggle="tooltip" '+
                     // 'data-placement="bottom" title="Ver Precios"><i class="fas fa-list-alt"></i></button>'+
                     '</td>'+
