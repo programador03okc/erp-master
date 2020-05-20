@@ -54,7 +54,6 @@
                         <th width="90">ACCIÓN</th>
                     </tr>
                 </thead>
-                <tbody></tbody>
             </table>
         </div>
     </div>

@@ -18,7 +18,8 @@
         "laravel/tinker": "^1.0",
         "laraveles/spanish": "^1.2",
         "phpoffice/phpspreadsheet": "^1.10",
-        "swiftmailer/swiftmailer": "^6.0"
+        "swiftmailer/swiftmailer": "^6.0",
+        "yajra/laravel-datatables-oracle": "~9.0"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.3",

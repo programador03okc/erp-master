@@ -130,22 +130,82 @@ function vista_extendida(){
 }
 
 function listarTablaReq(id_empresa =null,id_sede =null, id_grupo=null){
-    var vardataTables = funcDatatables();
-
+    // var vardataTables = funcDatatables();
     $('#ListaReq').dataTable({
-        'dom': 'frtip',
-        'language' : vardataTables[0],
-        'processing': true,
-        'bDestroy': true,
-        'ajax': '/logistica/listar_requerimientos/'+id_empresa+'/'+id_sede+'/'+id_grupo,
-        'order' : [],
-        "columnDefs": [
-            { className: "text-right", "targets": [ 3 ] }
-        ],
-        'initComplete': function () {
-            $('#ListaReq_filter label input').focus();
+        processing: true,
+        serverSide: true,
+        ajax: {
+            url:'/logistica/listar_requerimientos/'+id_empresa+'/'+id_sede+'/'+id_grupo,
+            // url:"{{ router('listar_requerimientos3') }}",
+            type:'GET',
+            data: {_token: "{{csrf_token()}}"}
+        },
+        columns:[
+
+            {
+                data:'flag',
+                name:'flag'
+            },
+            {
+                data:'codigo',
+                name:'codigo'
+            },
+            {
+                data:'concepto',
+                name:'concepto'
+            },
+            {
+                data:'monto_total_referencial',
+                name:'monto_total_referencial'
+            },
+            {
+                data:'fec_rq',
+                name:'fec_rq'
+            },
+            {
+                data:'desc_periodo',
+                name:'desc_periodo'
+            },
+            {
+                data:'tp_req',
+                name:'tp_req'
+            },
+            {
+                data:'empresa',
+                name:'empresa'
+            },
+            {
+                data:'gral',
+                name:'gral'
+            },
+            {
+                data:'usuario',
+                name:'usuario'
+            },
+            {
+                data:'status',
+                name:'status'
+            },
+            {
+                data:'action',
+                name:'action'
             }
+        ]
     });
+    // $('#ListaReq').dataTable({
+    //     'dom': 'frtip',
+    //     'language' : vardataTables[0],
+    //     'processing': true,
+    //     'bDestroy': true,
+    //     'ajax': '/logistica/listar_requerimientos/'+id_empresa+'/'+id_sede+'/'+id_grupo,
+    //     'order' : [],
+    //     "columnDefs": [
+    //         { className: "text-right", "targets": [ 3 ] }
+    //     ],
+    //     'initComplete': function () {
+    //         $('#ListaReq_filter label input').focus();
+    //         }
+    // });
     $('#ListaReq').DataTable().on("draw", function(){
         resizeSide();
     });
