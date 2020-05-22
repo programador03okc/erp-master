@@ -293,7 +293,7 @@ function edit_acu(id_cu_partida, id_partida){
                         $('[name=des_acu]').val(response['acu'][0].descripcion);
                         $('[name=rendimiento]').val(response['acu'][0].rendimiento);
                         $('[name=unid_medida_cu]').val(response['acu'][0].unid_medida);
-                        $('[name=total_acu]').val(formatNumber.decimal(response['acu'][0].total,'',-4));
+                        $('[name=total_acu]').val(formatDecimalDigitos(response['acu'][0].total,4));
                         // $('[name=id_categoria]').val(response['acu'][0].id_categoria);
                         // $('[name=observacion]').val(response['acu'][0].observacion);
                         unid_abrev();

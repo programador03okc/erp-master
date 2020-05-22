@@ -1322,7 +1322,7 @@ class ProyectosController extends Controller
                 ->update([ 'estado' => 7 ]);
             }
         }
-        return response()->json($update);
+        return response()->json(['id_cu_partida'=>$update]);
     }
 
     public function anular_acu($id){
@@ -9246,6 +9246,8 @@ class ProyectosController extends Controller
 
     public function getProgramadoValorizado($id_presup, $id_presupuesto)
     {
+        // Debugbar::info($id_presup);
+        // Debugbar::info($id_presupuesto);
         $pro_programado = DB::table('proyectos.presup_periodos')
         ->where([['id_presup','=',$id_presup],['estado','!=',7]])
         ->orderBy('numero','asc')
