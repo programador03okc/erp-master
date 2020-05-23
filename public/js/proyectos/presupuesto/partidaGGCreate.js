@@ -147,7 +147,7 @@ function editar_partida_gg(id_gg_detalle){
         $('#modal-partidaGGCreate').modal({
             show: true
         });
-
+        $("#btnGuardarPartidaGG").removeAttr("disabled");
         var id_gg = $('[name=id_presupuesto]').val();
         $('[name=id_gg]').val(id_gg);
 

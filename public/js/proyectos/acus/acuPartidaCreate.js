@@ -155,7 +155,7 @@ function guardar_acu(){
                     }
                     $('#modal-acu_partida_create').modal('hide');
                 } else {
-                    alert('Ya existe un A.C.U. con dicha descripción!');
+                    alert('Ocurrio un error interno!');
                 }
             }
         }).fail( function( jqXHR, textStatus, errorThrown ){

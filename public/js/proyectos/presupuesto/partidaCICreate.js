@@ -136,7 +136,7 @@ function editar_partida_ci(id_ci_detalle){
         $('#modal-partidaCICreate').modal({
             show: true
         });
-    
+        $("#btnGuardarPartidaCI").removeAttr("disabled");
         var id_ci = $('[name=id_presupuesto]').val();
         $('[name=id_ci]').val(id_ci);
     

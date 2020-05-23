@@ -72,7 +72,7 @@ function openModal(type, active){
         case 'cronoeje':
             presejeModal('modal');
         break;
-        case 'cronoval':
+        case 'cronovaleje':
             presejeModal('cronomodal');
         break;
         case 'cronopro':
