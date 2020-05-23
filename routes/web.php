@@ -1430,7 +1430,7 @@ Route::get('decode5t/{id}', 'EquipoController@decode5t');
 	Route::get('gestionar_cotizaciones', 'LogisticaController@view_gestionar_cotizaciones');
 	Route::get('listaCotizacionesPorGrupo/{id_cotizacion}', 'LogisticaController@listaCotizacionesPorGrupo');
 	Route::get('requerimientos_entrante_a_cotizacion', 'LogisticaController@requerimientos_entrante_a_cotizacion');
-	Route::get('requerimientos_entrante_a_cotizacion_v2/{id_empresa}', 'LogisticaController@requerimientos_entrante_a_cotizacion_v2');
+	Route::get('requerimientos_entrante_a_cotizacion_v2/{id_empresa}/{id_sede}', 'LogisticaController@requerimientos_entrante_a_cotizacion_v2');
 	Route::get('detalle_requerimiento', 'LogisticaController@detalle_requerimiento');
 	Route::post('guardar_cotizacion/{id_gru}', 'LogisticaController@guardar_cotizacion');
 	Route::post('agregar-item-cotizacion/{id_cotizacion}', 'LogisticaController@agregar_item_a_cotizacion');

@@ -5023,6 +5023,7 @@ class LogisticaController extends Controller
         $id_cotizacion = DB::table('logistica.log_cotizacion')->insertGetId(
             [
                 'id_empresa' => $dataFormCotiza['formdata']['id_empresa'],
+                'id_sede' => $dataFormCotiza['formdata']['id_sede'],
                 'id_proveedor' => $dataFormCotiza['formdata']['id_proveedor'],
                 'id_contacto' => $dataFormCotiza['formdata']['id_contacto'],
                 'email_proveedor' => $dataFormCotiza['formdata']['email_contacto'],
@@ -6743,7 +6744,7 @@ class LogisticaController extends Controller
         return response()->json($output);
     }
 
-    public function requerimientos_entrante_a_cotizacion_v2($id_empresa = null)
+    public function requerimientos_entrante_a_cotizacion_v2($id_empresa = null,$id_sede=null)
     {
         $estado_aprobado = $this->get_estado_doc('Aprobado');
         $estado_anulado = $this->get_estado_doc('Anulado');
@@ -6772,7 +6773,10 @@ class LogisticaController extends Controller
             // $id_empresa = 2; //enviar como parametro el id_empresa
             $whereIdEmpresa=[];
             if($id_empresa != null && $id_empresa >0){
-                $whereIdEmpresa =[['sis_sede.id_empresa','=',$id_empresa]];
+                $whereIdEmpresa[] =['sis_sede.id_empresa','=',$id_empresa];
+            }
+            if($id_sede != null && $id_sede >0){
+                $whereIdEmpresa[] =['sis_sede.id_sede','=',$id_sede];
             }
             $gruposByEmpresa=[];
 
