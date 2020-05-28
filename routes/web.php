@@ -795,6 +795,13 @@ Route::get('listar_series_guia_ven/{id}', 'AlmacenController@listar_series_guia_
 Route::get('listar_series_almacen/{prod}/{alm}', 'AlmacenController@listar_series_almacen');
 Route::get('buscar_serie/{serie}', 'AlmacenController@buscar_serie');
 
+Route::get('ordenesPendientes', 'AlmacenController@view_ordenesPendientes');
+Route::get('listarOrdenesPendientes', 'AlmacenController@listarOrdenesPendientes');
+Route::get('listarOrdenesEntregadas', 'AlmacenController@listarOrdenesEntregadas');
+Route::get('detalleOrden/{id}', 'AlmacenController@detalleOrden');
+Route::post('guardar_guia_com_oc', 'AlmacenController@guardar_guia_com_oc');
+Route::get('verGuiasOrden/{id}', 'AlmacenController@verGuiasOrden');
+
 Route::get('tipo_doc_almacen', 'AlmacenController@view_tipo_doc_almacen');
 Route::get('listar_tp_docs', 'AlmacenController@listar_tp_docs');
 Route::get('mostrar_tp_doc/{id}', 'AlmacenController@mostrar_tp_doc');

@@ -633,69 +633,9 @@ class ProyectosController extends Controller
                      ['proy_presup.estado','!=',7]])
                      ->groupBy('proy_cu_detalle.precio_unit','proy_presup.codigo','proy_presup.fecha_emision','proy_op_com.descripcion')
                      ->get();
-
-        /*$data = DB::table('proyectos.proy_insumo_precio')
-        ->select('proy_insumo_precio.*','proy_insumo.descripcion','sis_usua.nombre_corto')
-        ->join('proyectos.proy_insumo','proy_insumo.id_insumo','=','proy_insumo_precio.id_insumo')
-        ->join('configuracion.sis_usua','sis_usua.id_usuario','=','proy_insumo_precio.usuario_registro')
-        ->where([['proy_insumo_precio.estado', '!=', 7],
-                 ['proy_insumo_precio.id_insumo', '=', $id]])
-            ->orderBy('fecha_registro','desc')
-            ->get();
-
-        $lista = [];
-        foreach($data as $d){
-            $presupuestos = DB::table('proyectos.proy_insumo_precio')
-            ->select('proy_presup.codigo')
-            ->join('proyectos.proy_cu_detalle','proy_cu_detalle.id_precio','=','proy_insumo_precio.id_precio')
-            ->join('proyectos.proy_cd_partida','proy_cd_partida.id_cu_partida','=','proy_cu_detalle.id_cu_partida')
-            ->join('proyectos.proy_presup','proy_presup.id_presupuesto','=','proy_cd_partida.id_cd')
-            ->where([['proy_insumo_precio.id_precio', '=', $d->id_precio],
-                     ['proy_cu_detalle.estado','!=',7],
-                     ['proy_cd_partida.estado','!=',7],
-                     ['proy_presup.estado','!=',7]])
-                     ->distinct()
-                     ->get();
-            $cod_pres = '';
-            if (isset($presupuestos)){
-                foreach($presupuestos as $p){
-                    if ($cod_pres !== ''){
-                        $cod_pres .= ', '.$p->codigo;
-                    } else {
-                        $cod_pres .= $p->codigo;
-                    }
-                }
-            }
-            $nuevo = [
-                'id_precio'=>$d->id_precio,
-                'id_insumo'=>$d->id_insumo,
-                'descripcion'=>$d->descripcion,
-                'precio'=>$d->precio,
-                'fecha_registro'=>$d->fecha_registro,
-                'nombre_corto'=>$d->nombre_corto,
-                'presupuestos'=>$cod_pres,
-            ];
-            array_push($lista,$nuevo);
-        }*/
         $output['data'] = $lista;
         return response()->json($output);
     }
-/*
-    public function guardar_precio(Request $request)
-    {
-        $id_usuario = Auth::user()->id_usuario;
-        $id_precio = DB::table('proyectos.proy_insumo_precio')->insertGetId(
-            [
-                'id_insumo' => $request->id_insumo,
-                'precio' => $request->precio,
-                'estado' => 1,
-                'fecha_registro' => date('Y-m-d H:i:s'),
-                'usuario_registro' => $id_usuario,
-            ],
-                'id_precio'
-            );
-        return response()->json($id_precio);
-    }*/
     public function mostrar_insumo($id)
     {
         $data = DB::table('proyectos.proy_insumo')
@@ -1370,17 +1310,6 @@ class ProyectosController extends Controller
                 ->where([['proy_op_com.estado', '!=', 7]])
                 ->orderBy('proy_op_com.codigo','desc')
                 ->get();
-        
-        // $lista = [];
-        // foreach($opciones as $d){
-        //     $presint = DB::table('proyectos.proy_presup')
-        //     ->where([['id_op_com','=',$d->id_op_com],['estado','!=',7], //['estado','!=',1],
-        //              ['id_tp_presupuesto','=',1]])//Presupuesto Interno
-        //              ->first();
-        //     if (!isset($presint)){
-        //         array_push($lista, $d);
-        //     }
-        // }
         $output['data'] = $opciones;
         return response()->json($output);
     }

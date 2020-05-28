@@ -11,14 +11,17 @@
                 <button type="submit" class="btn btn-success" data-toggle="tooltip" 
                 data-placement="bottom" title="Generar Ingreso a Almacén" 
                 onClick="generar_ingreso();"><i class="fas fa-angle-double-right"></i> Ingreso </button>
-                <a onClick="generar_factura();">
+                <button type="submit" class="btn btn-warning" data-toggle="tooltip" 
+                data-placement="bottom" title="Generar Orden de Despacho" 
+                onClick="generar_orden_despacho();"><i class="fas fa-angle-double-right"></i> Ord. Despacho </button>
+                <!-- <a onClick="generar_factura();">
                     <input type="button" class="btn btn-primary" data-toggle="tooltip" 
                     data-placement="bottom" title="Generar Factura de Compra" 
                     value="Factura"/>
-                </a>
-                <button type="button" class="btn btn-warning" data-toggle="tooltip" 
+                </a> -->
+                <!-- <button type="button" class="btn btn-warning" data-toggle="tooltip" 
                     data-placement="bottom" title="Ver Factura" 
-                    onClick="abrir_doc();"><i class="fas fa-file-alt"></i></button>
+                    onClick="abrir_doc();"><i class="fas fa-file-alt"></i></button> -->
                 <button type="button" class="btn btn-info" data-toggle="tooltip" 
                     data-placement="bottom" title="Ver Ingreso a Almacén" 
                     onClick="abrir_ingreso();"><i class="fas fa-file-alt"></i></button>
@@ -101,15 +104,6 @@
                                 @endforeach
                             </select>
                         </div>
-                        {{-- <div class="col-md-5">
-                            <h5>Motivo del Traslado</h5>
-                            <select class="form-control activation js-example-basic-single" name="id_motivo" disabled="true">
-                                <option value="0">Elija una opción</option>
-                                @foreach ($motivos as $mot)
-                                    <option value="{{$mot->id_motivo}}">{{$mot->descripcion}}</option>
-                                @endforeach
-                            </select>
-                        </div> --}}
                         <div class="col-md-5">
                             <h5>Clasif. de los Bienes y Servicios</h5>
                             <select class="form-control activation" name="id_guia_clas" disabled="true">
@@ -199,32 +193,11 @@
                             <fieldset class="group-importes"><legend><h6>Documento(s) de Sustento</h6></legend>
                                 <table id="oc" class="table-group">
                                     <thead>
-                                        {{-- <tr>
-                                            <td colSpan="7">
-                                                <div style="width: 100%; display:flex;">
-                                                    <div style="width:90%;">
-                                                        <select class="form-control js-example-basic-single" name="id_orden_compra">
-                                                        </select>
-                                                    </div>
-                                                    <div style="width:10%;">
-                                                        <button type="button" class="btn btn-success boton"  
-                                                            style="padding:5px;height:29px;width:100px;font-size:12px;" 
-                                                            data-toggle="tooltip" data-placement="bottom" title="Agregar"
-                                                            onClick="agrega_oc();">
-                                                            Agregar
-                                                        </button>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                        </tr> --}}
                                         <tr>
                                             <th width="13%">Código</th>
                                             <th width="10%">Fecha Emisión</th>
                                             <th>Proveedor</th>
                                             <th>Tramitado por</th>
-                                            {{-- <th>Condición</th>
-                                            <th>Fecha Entrega</th>
-                                            <th>Lugar Entrega</th> --}}
                                             <th width="10%">
                                                 <i class="fas fa-plus-square icon-tabla green boton" 
                                                     data-toggle="tooltip" data-placement="bottom" 
@@ -461,7 +434,7 @@
 @include('almacen.documentos.doc_com_guiaModal')
 @include('almacen.documentos.doc_com_create')
 @include('almacen.producto.productoModal')
-@include('almacen.guias.ocModal')
+<!-- @include('almacen.guias.ocModal') -->
 @include('logistica.cotizaciones.proveedorModal')
 @include('logistica.cotizaciones.add_proveedor')
 @include('logistica.ordenes.ordenesModal')
@@ -476,7 +449,7 @@
 <script src="{{('/js/almacen/doc_com_guiaModal.js')}}"></script>
 <script src="{{('/js/almacen/doc_com_create.js')}}"></script>
 <script src="{{('/js/almacen/productoModal.js')}}"></script>
-<script src="{{('/js/almacen/ocModal.js')}}"></script>
+<!-- <script src="{{('/js/almacen/ocModal.js')}}"></script> -->
 <script src="{{('/js/logistica/proveedorModal.js')}}"></script>
 <script src="{{('/js/logistica/add_proveedor.js')}}"></script>
 <script src="{{('/js/logistica/ordenesModal.js')}}"></script>

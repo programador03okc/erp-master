@@ -7273,6 +7273,7 @@ class LogisticaController extends Controller
                     'id_cta_alternativa' => $request->id_cta_alternativa,
                     'id_cta_detraccion' => $request->id_cta_detraccion,
                     'personal_responsable' => $request->contacto_responsable,
+                    'en_almacen' => false,
                     'estado' => 1
                 ],
                 'id_orden_compra'
@@ -7572,7 +7573,9 @@ class LogisticaController extends Controller
             ->join('logistica.log_prove', 'log_prove.id_proveedor', '=', 'log_ord_compra.id_proveedor')
             ->join('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'log_prove.id_contribuyente')
             ->where([['log_ord_compra.estado', '!=', 7],
-                     ['log_ord_compra.id_proveedor','=',$id_proveedor]])
+                     ['log_ord_compra.id_proveedor','=',$id_proveedor],
+                     ['log_ord_compra.en_almacen','=',false],
+                     ['log_ord_compra.id_tp_documento','=',2]])
             ->orderBy('log_ord_compra.fecha','desc')
             ->get();
         $output['data'] = $data;

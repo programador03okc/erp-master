@@ -1059,7 +1059,8 @@ span.select2-selection{
 #listaKardexSeries_filter,
 #listaOpcionesTodo_filter,
 #listaResidentes_filter,
-#listaDocsProrrateo_filter{
+#listaDocsProrrateo_filter,
+#ordenesPendientes_filter{
     margin: 0;
 }
 #listaPendientes_filter label input[type="search"],
@@ -1085,7 +1086,8 @@ span.select2-selection{
 #listaKardexSeries_filter label input[type="search"],
 #listaOpcionesTodo_filter label input[type="search"],
 #listaResidentes_filter label input[type="search"],
-#listaDocsProrrateo_filter label input[type="search"]{
+#listaDocsProrrateo_filter label input[type="search"],
+#ordenesPendientes_filter label input[type="search"]{
     width: 95%;
 }
 .subtitulo_blue{

@@ -22,10 +22,8 @@ $(function(){
 });
 
 function ordenModal(){
-    $('#modal-ordenes').modal({
-        show: true
-    });
     clearDataTable();
+    var abrir = true;
     let formName = document.getElementsByClassName('page-main')[0].getAttribute('type');
     if (formName =='orden'){
         listar_ordenes();
@@ -36,7 +34,13 @@ function ordenModal(){
             listar_ordenes_proveedor(id_proveedor);
         } else {
             alert('No ha ingresado un proveedor!');
+            abrir = false;
         }
+    }
+    if (abrir){
+        $('#modal-ordenes').modal({
+            show: true
+        });    
     }
 }
 

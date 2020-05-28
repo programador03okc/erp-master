@@ -14,7 +14,7 @@
         <li class="okc-menu-title"><label>Almacén</label><p>AL</p></li>
         <li class="treeview">
             <a href="#">
-                <i class="fas fa-tachometer-alt"></i> <span>Catálogos</span> <i class="fa fa-angle-left pull-right"></i>
+                <i class="fas fa-book"></i> <span>Catálogos</span> <i class="fa fa-angle-left pull-right"></i>
             </a>
             <ul class="treeview-menu">
                 <li><a href="tipo"> Tipo de Producto </a></li>
@@ -25,16 +25,9 @@
                 <li><a href="prod_catalogo"> Catálogo de Productos</a></li>
             </ul>
         </li>
-        {{-- <li class="treeview">
-            <a href="#">
-                <i class="fas fa-tachometer-alt"></i> <span>Servicios</span> <i class="fa fa-angle-left pull-right"></i>
-            </a>
-            <ul class="treeview-menu">
-            </ul>
-        </li> --}}
         <li class="treeview">
             <a href="#">
-                <i class="fas fa-tachometer-alt"></i> <span>Ubicación de Productos</span> <i class="fa fa-angle-left pull-right"></i>
+                <i class="fas fa-map-marker-alt"></i> <span>Ubicación de Productos</span> <i class="fa fa-angle-left pull-right"></i>
             </a>
             <ul class="treeview-menu">
                 <li><a href="tipo_almacen"> Tipo Almacén </a></li>
@@ -44,28 +37,40 @@
         </li>
         <li class="treeview">
             <a href="#">
-                <i class="fas fa-tachometer-alt"></i> <span>Movimientos de Almacén</span> <i class="fa fa-angle-left pull-right"></i>
+                <i class="fab fa-medium-m"></i> <span>Movimientos de Almacén</span> <i class="fa fa-angle-left pull-right"></i>
             </a>
             <ul class="treeview-menu">
+                <li><a href="ordenesPendientes"> Pendientes de Ingreso </a></li>
                 <li><a href="guia_compra"> Compras / Ingresos </a></li>
                 <li><a href="guia_venta"> Ventas / Salidas </a></li>
                 <li><a href="listar_transferencias"> Transferencias </a></li>
-                <li><a href="transformacion"> Transformación </a></li>
+                <li><a href="transformacion"> Customización </a></li>
                 {{-- <li><a href="cola_atencion"> Pendientes de Atención </a></li> --}}
             </ul>
         </li>
         <li class="treeview">
             <a href="#">
-                <i class="fas fa-tachometer-alt"></i> <span>Gestión de Comprobantes</span> <i class="fa fa-angle-left pull-right"></i>
+                <i class="fas fa-truck"></i> <span>Distribución</span> <i class="fa fa-angle-left pull-right"></i>
+            </a>
+            <ul class="treeview-menu">
+                <li><a href="#"> Orden de Despacho </a></li>
+                <li><a href="#"> Despachos Pendientes </a></li>
+                <li><a href="#"> Grupo de Orden de Despacho </a></li>
+                <li><a href="#"> Entregas Pendientes </a></li>
+            </ul>
+        </li>
+        <!-- <li class="treeview">
+            <a href="#">
+                <i class="fas fa-truck"></i> <span>Comprobantes</span> <i class="fa fa-angle-left pull-right"></i>
             </a>
             <ul class="treeview-menu">
                 <li><a href="doc_compra"> Comprobantes de Compra </a></li>
                 <li><a href="doc_venta"> Comprobantes de Venta </a></li>
             </ul>
-        </li>
+        </li> -->
         <li class="treeview">
             <a href="#">
-                <i class="fas fa-tachometer-alt"></i> <span>Reportes</span> <i class="fa fa-angle-left pull-right"></i>
+                <i class="fas fa-chart-bar"></i> <span>Reportes</span> <i class="fa fa-angle-left pull-right"></i>
             </a>
             <ul class="treeview-menu">
                 <li><a href="lista_ingresos"> Reporte de Ingresos </a></li>
@@ -82,7 +87,7 @@
         </li>
         <li class="treeview">
             <a href="#">
-                <i class="fas fa-tachometer-alt"></i> <span>Variables</span> <i class="fa fa-angle-left pull-right"></i>
+                <i class="fas fa-stream"></i> <span>Variables</span> <i class="fa fa-angle-left pull-right"></i>
             </a>
             <ul class="treeview-menu">
                 <li><a href="serie_numero"> Series-Números </a></li>
