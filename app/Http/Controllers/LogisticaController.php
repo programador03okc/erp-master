@@ -22,6 +22,7 @@ use App\Models\Logistica\Empresa;
 use App\Models\Tesoreria\Usuario;
 use App\Models\Tesoreria\Grupo;
 use DataTables;
+// use Debugbar;
 
 date_default_timezone_set('America/Lima');
 
@@ -1201,7 +1202,7 @@ class LogisticaController extends Controller
         $data = DB::table('logistica.log_cotizacion')
             ->select(
                 'alm_req_archivos.id_archivo',
-                'log_valorizacion_cotizacion.id_detalle_requerimiento',
+                'valoriza_coti_detalle.id_detalle_requerimiento',
                 'alm_req_archivos.archivo',
                 'alm_req_archivos.fecha_registro',
                 'alm_req_archivos.estado'
@@ -7277,6 +7278,7 @@ class LogisticaController extends Controller
                     'id_cta_alternativa' => $request->id_cta_alternativa,
                     'id_cta_detraccion' => $request->id_cta_detraccion,
                     'personal_responsable' => $request->contacto_responsable,
+                    'en_almacen' => false,
                     'estado' => 1
                 ],
                 'id_orden_compra'
@@ -7328,7 +7330,8 @@ class LogisticaController extends Controller
         ->select(
             'alm_det_req.id_requerimiento'
         )
-        ->join('almacen.alm_det_req', 'alm_det_req.id_detalle_requerimiento', '=', 'log_valorizacion_cotizacion.id_detalle_requerimiento')
+        ->join('logistica.valoriza_coti_detalle', 'valoriza_coti_detalle.id_valorizacion_cotizacion', '=', 'log_valorizacion_cotizacion.id_valorizacion_cotizacion')
+        ->join('almacen.alm_det_req', 'alm_det_req.id_detalle_requerimiento', '=', 'valoriza_coti_detalle.id_detalle_requerimiento')
         ->join('almacen.alm_req', 'alm_det_req.id_requerimiento', '=', 'alm_det_req.id_requerimiento')
         ->where([
             ['log_valorizacion_cotizacion.id_cotizacion', '=', $id_cotizacion]
@@ -8520,7 +8523,7 @@ class LogisticaController extends Controller
 
 
     public function actualizar_item_det_req($id_item,$id_detalle_requerimiento){
-        $statusOption=['success','fail'];
+        $statusOption=[200,400];
         $status='';
 
         if(isset($id_item) && isset($id_detalle_requerimiento)){ // actualizar item en alm_det_req
@@ -8570,13 +8573,16 @@ class LogisticaController extends Controller
     }
 
     public function actualizar_item_sin_codigo(Request $request, $id_detalle_orden, $id_valorizacion){
-        
+        if($id_detalle_orden == 0){
+            $status=204; //no content (sin id_detalle_orden)
+            return ['status'=>$status];
+        }
         $status=0;
         $id_item = $request->id_item;
-        $sql1='sin cambios';
-        $sql2='sin cambios';
+        $sql1='';
+        $sql2='';
         $log_valorizacion_cotizacion = DB::table('logistica.log_valorizacion_cotizacion')
-        ->select('log_valorizacion_cotizacion.id_valorizacion_cotizacion','log_valorizacion_cotizacion.id_detalle_requerimiento','log_valorizacion_cotizacion.id_cotizacion')
+        ->select('log_valorizacion_cotizacion.id_valorizacion_cotizacion','log_valorizacion_cotizacion.id_cotizacion')
         ->where('id_valorizacion_cotizacion', '=', $id_valorizacion)
         ->first();
 
@@ -8597,26 +8603,19 @@ class LogisticaController extends Controller
         ->where('alm_item.id_item', '=', $id_item)
         ->first();
 
+        
         if($alm_item){
             if($alm_item->id_producto !=null){
-                    // $sql1 = $this->actualizar_item_det_req($id_item,$valoriza_coti_detalle->id_detalle_requerimiento);
-                if($id_detalle_orden >0){
                     $sql2 = $this->actualizar_item_det_orden($id_item,$id_detalle_orden);
-                }
                 
             }else if($alm_item->id_servicio !=null){
-                if($id_detalle_orden >0){
                     $sql2 = $this->actualizar_item_det_orden($id_item,$id_detalle_orden);
-                }                    
             }else if($alm_item->id_equipo !=null){
-                if($id_detalle_orden >0){
                     $sql2 = $this->actualizar_item_det_orden($id_item,$id_detalle_orden);
-                }
             }
         }
 
-
-        $output = [ 'update_det_orden'=>$sql2['status'],'id_orden_compra'=>$sql2['id_orden_compra']];
+        $output = [ 'status'=>$sql2['status'],'id_orden_compra'=>$sql2['id_orden_compra']];
 
         return $output;
     }
@@ -8687,127 +8686,126 @@ class LogisticaController extends Controller
 
     // cuadro comparativo
 
-    public function only_valorizaciones($id_grupo){
-        $hasWhere = null;
+    // public function only_valorizaciones($id_grupo){
+    //     $hasWhere = null;
 
-        if ($id_grupo > 0) {
-            $hasWhere = ['log_grupo_cotizacion.id_grupo_cotizacion', '=', $id_grupo];
-        }
+    //     if ($id_grupo > 0) {
+    //         $hasWhere = ['log_grupo_cotizacion.id_grupo_cotizacion', '=', $id_grupo];
+    //     }
 
-        $log_cotizacion = DB::table('logistica.log_cotizacion')
-            ->select(
-                'log_cotizacion.id_cotizacion',
-                'log_grupo_cotizacion.id_grupo_cotizacion',
-                'log_grupo_cotizacion.codigo_grupo',
-                'log_cotizacion.codigo_cotizacion',
-                'cont_tp_doc.descripcion as tipo_documento',
-                'log_cdn_pago.descripcion AS condicion_pago',
-                'log_cotizacion.nro_cuenta_principal',
-                'log_cotizacion.nro_cuenta_alternativa',
-                'log_cotizacion.nro_cuenta_detraccion',
-                'log_prove.id_proveedor',
-                'adm_contri.razon_social',
-                'adm_contri.nro_documento',
-                'adm_contri.id_doc_identidad',
-                'sis_identi.descripcion as nombre_doc_identidad'
-            )
-            ->leftJoin('logistica.log_detalle_grupo_cotizacion', 'log_detalle_grupo_cotizacion.id_cotizacion', '=', 'log_cotizacion.id_cotizacion')
+    //     $log_cotizacion = DB::table('logistica.log_cotizacion')
+    //         ->select(
+    //             'log_cotizacion.id_cotizacion',
+    //             'log_grupo_cotizacion.id_grupo_cotizacion',
+    //             'log_grupo_cotizacion.codigo_grupo',
+    //             'log_cotizacion.codigo_cotizacion',
+    //             'cont_tp_doc.descripcion as tipo_documento',
+    //             'log_cdn_pago.descripcion AS condicion_pago',
+    //             'log_cotizacion.nro_cuenta_principal',
+    //             'log_cotizacion.nro_cuenta_alternativa',
+    //             'log_cotizacion.nro_cuenta_detraccion',
+    //             'log_prove.id_proveedor',
+    //             'adm_contri.razon_social',
+    //             'adm_contri.nro_documento',
+    //             'adm_contri.id_doc_identidad',
+    //             'sis_identi.descripcion as nombre_doc_identidad'
+    //         )
+    //         ->leftJoin('logistica.log_detalle_grupo_cotizacion', 'log_detalle_grupo_cotizacion.id_cotizacion', '=', 'log_cotizacion.id_cotizacion')
 
-            ->leftJoin('logistica.log_grupo_cotizacion', 'log_grupo_cotizacion.id_grupo_cotizacion', '=', 'log_detalle_grupo_cotizacion.id_grupo_cotizacion')
-            ->leftJoin('logistica.log_prove', 'log_prove.id_proveedor', '=', 'log_cotizacion.id_proveedor')
-            ->leftJoin('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'log_prove.id_contribuyente')
-            ->leftJoin('contabilidad.sis_identi', 'sis_identi.id_doc_identidad', '=', 'adm_contri.id_doc_identidad')
-            ->leftJoin('contabilidad.cont_tp_doc', 'cont_tp_doc.id_tp_doc', '=', 'log_cotizacion.id_tp_doc')
-            ->leftJoin('logistica.log_cdn_pago', 'log_cdn_pago.id_condicion_pago', '=', 'log_cotizacion.id_condicion_pago')
-            ->where(
-                [
-                    ['log_cotizacion.estado', '>', 0],
-                    ['log_cotizacion.estado', '!=', 7], // 7 =anulados
-                    $hasWhere
-                ]
-            )
-            ->get();
-        if (sizeof($log_cotizacion) > 0) {
-            foreach ($log_cotizacion as $data) {
-                $id_cotizaciones[] = $data->id_cotizacion;
-                $cotizacionArray[] = [
+    //         ->leftJoin('logistica.log_grupo_cotizacion', 'log_grupo_cotizacion.id_grupo_cotizacion', '=', 'log_detalle_grupo_cotizacion.id_grupo_cotizacion')
+    //         ->leftJoin('logistica.log_prove', 'log_prove.id_proveedor', '=', 'log_cotizacion.id_proveedor')
+    //         ->leftJoin('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'log_prove.id_contribuyente')
+    //         ->leftJoin('contabilidad.sis_identi', 'sis_identi.id_doc_identidad', '=', 'adm_contri.id_doc_identidad')
+    //         ->leftJoin('contabilidad.cont_tp_doc', 'cont_tp_doc.id_tp_doc', '=', 'log_cotizacion.id_tp_doc')
+    //         ->leftJoin('logistica.log_cdn_pago', 'log_cdn_pago.id_condicion_pago', '=', 'log_cotizacion.id_condicion_pago')
+    //         ->where(
+    //             [
+    //                 ['log_cotizacion.estado', '>', 0],
+    //                 ['log_cotizacion.estado', '!=', 7], // 7 =anulados
+    //                 $hasWhere
+    //             ]
+    //         )
+    //         ->get();
+    //     if (sizeof($log_cotizacion) > 0) {
+    //         foreach ($log_cotizacion as $data) {
+    //             $id_cotizaciones[] = $data->id_cotizacion;
+    //             $cotizacionArray[] = [
 
-                    'id_cotizacion' => $data->id_cotizacion,
-                    'id_grupo_cotizacion' => $data->id_grupo_cotizacion,
-                    'codigo_grupo' => $data->codigo_grupo,
-                    'codigo_cotizacion' => $data->codigo_cotizacion,
-                    'tipo_documento' => $data->tipo_documento,
-                    'condicion_pago' => $data->condicion_pago,
-                    'nro_cuenta_principal' => $data->nro_cuenta_principal,
-                    'nro_cuenta_alternativa' => $data->nro_cuenta_alternativa,
-                    'nro_cuenta_detraccion' => $data->nro_cuenta_detraccion,
-                    'proveedor' => [
-                        "id_proveedor" => $data->id_proveedor,
-                        "razon_social" => $data->razon_social,
-                        "nro_documento" => $data->nro_documento,
-                        "id_doc_identidad" => $data->id_doc_identidad,
-                        "nombre_doc_identidad" => $data->nombre_doc_identidad
-                    ],
-                    'requerimientos' => []
-                ];
-            }
+    //                 'id_cotizacion' => $data->id_cotizacion,
+    //                 'id_grupo_cotizacion' => $data->id_grupo_cotizacion,
+    //                 'codigo_grupo' => $data->codigo_grupo,
+    //                 'codigo_cotizacion' => $data->codigo_cotizacion,
+    //                 'tipo_documento' => $data->tipo_documento,
+    //                 'condicion_pago' => $data->condicion_pago,
+    //                 'nro_cuenta_principal' => $data->nro_cuenta_principal,
+    //                 'nro_cuenta_alternativa' => $data->nro_cuenta_alternativa,
+    //                 'nro_cuenta_detraccion' => $data->nro_cuenta_detraccion,
+    //                 'proveedor' => [
+    //                     "id_proveedor" => $data->id_proveedor,
+    //                     "razon_social" => $data->razon_social,
+    //                     "nro_documento" => $data->nro_documento,
+    //                     "id_doc_identidad" => $data->id_doc_identidad,
+    //                     "nombre_doc_identidad" => $data->nombre_doc_identidad
+    //                 ],
+    //                 'requerimientos' => []
+    //             ];
+    //         }
 
 
-            $log_valorizacion_cotizacion = DB::table('logistica.log_valorizacion_cotizacion')
-                ->select(
-                    'log_valorizacion_cotizacion.id_valorizacion_cotizacion',
-                    'log_valorizacion_cotizacion.id_cotizacion',
-                    'log_valorizacion_cotizacion.id_detalle_requerimiento',
-                    'log_valorizacion_cotizacion.id_requerimiento',
-                    'alm_req.codigo as codigo_requerimiento'
-                )
-                ->join('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'log_valorizacion_cotizacion.id_requerimiento')
-                ->where(
-                    [
-                        ['log_valorizacion_cotizacion.cantidad_cotizada', '<>', null],
-                        ['log_valorizacion_cotizacion.precio_cotizado', '<>', null],
-                        ['log_valorizacion_cotizacion.estado', '>', 0]
-                    ]
-                )
-                ->whereIn('log_valorizacion_cotizacion.id_cotizacion', $id_cotizaciones)
-                ->get();
+    //         $log_valorizacion_cotizacion = DB::table('logistica.log_valorizacion_cotizacion')
+    //             ->select(
+    //                 'log_valorizacion_cotizacion.id_valorizacion_cotizacion',
+    //                 'log_valorizacion_cotizacion.id_cotizacion',
+    //                 'log_valorizacion_cotizacion.id_requerimiento',
+    //                 'alm_req.codigo as codigo_requerimiento'
+    //             )
+    //             ->join('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'log_valorizacion_cotizacion.id_requerimiento')
+    //             ->where(
+    //                 [
+    //                     ['log_valorizacion_cotizacion.cantidad_cotizada', '<>', null],
+    //                     ['log_valorizacion_cotizacion.precio_cotizado', '<>', null],
+    //                     ['log_valorizacion_cotizacion.estado', '>', 0]
+    //                 ]
+    //             )
+    //             ->whereIn('log_valorizacion_cotizacion.id_cotizacion', $id_cotizaciones)
+    //             ->get();
 
-            $idCotizaciones = [];
-            $idRequerimientos = [];
-            $tam_log_valorizacion = count($log_valorizacion_cotizacion);
-            if($tam_log_valorizacion >0){
-                foreach ($log_valorizacion_cotizacion as $data) {
-                    $valorizacionArray[] = [
-                        'id_cotizacion' => $data->id_cotizacion,
-                        'id_requerimiento' => $data->id_requerimiento,
-                        'codigo_requerimiento' => $data->codigo_requerimiento
-                    ];
-                    // }
+    //         $idCotizaciones = [];
+    //         $idRequerimientos = [];
+    //         $tam_log_valorizacion = count($log_valorizacion_cotizacion);
+    //         if($tam_log_valorizacion >0){
+    //             foreach ($log_valorizacion_cotizacion as $data) {
+    //                 $valorizacionArray[] = [
+    //                     'id_cotizacion' => $data->id_cotizacion,
+    //                     'id_requerimiento' => $data->id_requerimiento,
+    //                     'codigo_requerimiento' => $data->codigo_requerimiento
+    //                 ];
+    //                 // }
     
-                }
-                // add codigo de requerimiento
-                $storageIdRequerimiento = [];
-                for ($i = 0; $i < sizeof($cotizacionArray); $i++) {
-                    for ($j = 0; $j < sizeof($valorizacionArray); $j++) {
-                        if ($cotizacionArray[$i]['id_cotizacion'] == $valorizacionArray[$j]['id_cotizacion']) {
-                            if (in_array($valorizacionArray[$j]['id_requerimiento'], $storageIdRequerimiento) == false) {
-                                array_push($storageIdRequerimiento, $valorizacionArray[$j]['id_requerimiento']);
-                                $cotizacionArray[$i]['requerimientos'][] = $valorizacionArray[$j];
-                            }
-                        }
-                    }
-                    $storageIdRequerimiento = [];
-                }
-            }else{
-                $cotizacionArray = [];
-            }
+    //             }
+    //             // add codigo de requerimiento
+    //             $storageIdRequerimiento = [];
+    //             for ($i = 0; $i < sizeof($cotizacionArray); $i++) {
+    //                 for ($j = 0; $j < sizeof($valorizacionArray); $j++) {
+    //                     if ($cotizacionArray[$i]['id_cotizacion'] == $valorizacionArray[$j]['id_cotizacion']) {
+    //                         if (in_array($valorizacionArray[$j]['id_requerimiento'], $storageIdRequerimiento) == false) {
+    //                             array_push($storageIdRequerimiento, $valorizacionArray[$j]['id_requerimiento']);
+    //                             $cotizacionArray[$i]['requerimientos'][] = $valorizacionArray[$j];
+    //                         }
+    //                     }
+    //                 }
+    //                 $storageIdRequerimiento = [];
+    //             }
+    //         }else{
+    //             $cotizacionArray = [];
+    //         }
 
-        } else {
-            $cotizacionArray = [];
-            return response()->json($cotizacionArray);
-        }
-        return response()->json($cotizacionArray);
-    }
+    //     } else {
+    //         $cotizacionArray = [];
+    //         return response()->json($cotizacionArray);
+    //     }
+    //     return response()->json($cotizacionArray);
+    // }
 
     public function grupo_cotizaciones($codigo_cotiazacion, $codigo_cuadro_comparativo, $id_grupo, $estado_envio, $id_empresa, $valorizacion_completa_incompleta, $id_cotizacion_alone)
     {
@@ -9488,82 +9486,82 @@ class LogisticaController extends Controller
         return response()->json($log_grupo_cotizacion);
     }
 
-    public function itemValorizacion($id_valorizacion_cotizacion)
-    {
-        $valorizacion = DB::table('logistica.log_valorizacion_cotizacion')
-            ->leftJoin('almacen.alm_det_req', 'alm_det_req.id_detalle_requerimiento', '=', 'log_valorizacion_cotizacion.id_detalle_requerimiento')
-            ->leftJoin('almacen.alm_item', 'alm_item.id_item', '=', 'alm_det_req.id_item')
-            ->leftJoin('almacen.alm_prod', 'alm_prod.id_producto', '=', 'alm_item.id_producto')
-            ->leftJoin('logistica.log_servi', 'log_servi.id_servicio', '=', 'alm_item.id_servicio')
-            ->leftJoin('logistica.equipo', 'equipo.id_equipo', '=', 'alm_item.id_equipo')
-            ->leftJoin('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'alm_prod.id_unidad_medida')
-            ->leftJoin('almacen.alm_und_medida as alm_und_medida_prov', 'alm_und_medida_prov.id_unidad_medida', '=', 'log_valorizacion_cotizacion.id_unidad_medida')
-            ->leftJoin('logistica.log_cotizacion', 'log_cotizacion.id_cotizacion', '=', 'log_valorizacion_cotizacion.id_cotizacion')
-            ->leftJoin('logistica.log_prove', 'log_prove.id_proveedor', '=', 'log_cotizacion.id_proveedor')
-            ->leftJoin('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'log_prove.id_contribuyente')
+    // public function itemValorizacion($id_valorizacion_cotizacion)
+    // {
+    //     $valorizacion = DB::table('logistica.log_valorizacion_cotizacion')
+    //         ->leftJoin('almacen.alm_det_req', 'alm_det_req.id_detalle_requerimiento', '=', 'log_valorizacion_cotizacion.id_detalle_requerimiento')
+    //         ->leftJoin('almacen.alm_item', 'alm_item.id_item', '=', 'alm_det_req.id_item')
+    //         ->leftJoin('almacen.alm_prod', 'alm_prod.id_producto', '=', 'alm_item.id_producto')
+    //         ->leftJoin('logistica.log_servi', 'log_servi.id_servicio', '=', 'alm_item.id_servicio')
+    //         ->leftJoin('logistica.equipo', 'equipo.id_equipo', '=', 'alm_item.id_equipo')
+    //         ->leftJoin('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'alm_prod.id_unidad_medida')
+    //         ->leftJoin('almacen.alm_und_medida as alm_und_medida_prov', 'alm_und_medida_prov.id_unidad_medida', '=', 'log_valorizacion_cotizacion.id_unidad_medida')
+    //         ->leftJoin('logistica.log_cotizacion', 'log_cotizacion.id_cotizacion', '=', 'log_valorizacion_cotizacion.id_cotizacion')
+    //         ->leftJoin('logistica.log_prove', 'log_prove.id_proveedor', '=', 'log_cotizacion.id_proveedor')
+    //         ->leftJoin('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'log_prove.id_contribuyente')
 
-            ->select(
-                'alm_det_req.id_detalle_requerimiento',
-                            DB::raw("(CASE 
-                WHEN alm_item.id_item isNUll THEN alm_det_req.descripcion_adicional 
-                WHEN alm_item.id_servicio isNUll AND alm_item.id_equipo isNull THEN alm_prod.descripcion 
-                WHEN alm_item.id_producto isNUll AND alm_item.id_equipo isNull THEN log_servi.descripcion 
-                WHEN alm_item.id_servicio isNUll AND alm_item.id_producto isNull THEN equipo.descripcion 
+    //         ->select(
+    //             'alm_det_req.id_detalle_requerimiento',
+    //                         DB::raw("(CASE 
+    //             WHEN alm_item.id_item isNUll THEN alm_det_req.descripcion_adicional 
+    //             WHEN alm_item.id_servicio isNUll AND alm_item.id_equipo isNull THEN alm_prod.descripcion 
+    //             WHEN alm_item.id_producto isNUll AND alm_item.id_equipo isNull THEN log_servi.descripcion 
+    //             WHEN alm_item.id_servicio isNUll AND alm_item.id_producto isNull THEN equipo.descripcion 
 
-                ELSE 'nulo' END) AS descripcion
-                "),
-                            DB::raw("(CASE 
-                WHEN alm_item.id_item isNUll THEN 'SIN CODIGO' 
-                WHEN alm_item.id_servicio isNUll AND alm_item.id_equipo isNull THEN alm_prod.codigo 
-                WHEN alm_item.id_producto isNUll AND alm_item.id_equipo isNull THEN log_servi.codigo 
-                WHEN alm_item.id_servicio isNUll AND alm_item.id_producto isNull THEN equipo.codigo 
-                ELSE 'nulo' END) AS codigo
-                "),
-                            DB::raw("(CASE 
-                WHEN alm_item.id_item isNUll THEN '-' 
-                WHEN alm_item.id_servicio isNUll AND alm_item.id_equipo isNull THEN alm_und_medida.abreviatura
-                WHEN alm_item.id_producto isNUll AND alm_item.id_equipo isNull THEN 'serv' 
-                WHEN alm_item.id_servicio isNUll AND alm_item.id_producto isNull THEN 'und' 
-                ELSE 'nulo' END) AS unidad_medida
-                "),
-                'alm_item.id_item',
-                'alm_item.id_producto',
-                'alm_item.id_servicio',
-                'alm_item.id_equipo',
-                'alm_det_req.cantidad',
-                'alm_det_req.precio_referencial',
-                'log_valorizacion_cotizacion.id_valorizacion_cotizacion',
-                'log_valorizacion_cotizacion.id_cotizacion',
-                'log_valorizacion_cotizacion.id_detalle_requerimiento',
-                'log_valorizacion_cotizacion.id_detalle_oc_cliente',
-                'log_valorizacion_cotizacion.precio_cotizado',
-                'log_valorizacion_cotizacion.cantidad_cotizada',
-                'log_valorizacion_cotizacion.precio_sin_igv',
-                'alm_und_medida_prov.abreviatura as abrev_unidad_medida_cotizado',
-                'log_valorizacion_cotizacion.id_unidad_medida as id_unidad_medida_cotizado',
-                'log_valorizacion_cotizacion.subtotal',
-                'log_valorizacion_cotizacion.flete',
-                'log_valorizacion_cotizacion.porcentaje_descuento',
-                'log_valorizacion_cotizacion.monto_descuento',
-                'log_valorizacion_cotizacion.subtotal',
-                'log_valorizacion_cotizacion.estado',
-                'log_valorizacion_cotizacion.incluye_igv',
-                'log_valorizacion_cotizacion.garantia',
-                'log_valorizacion_cotizacion.plazo_entrega',
-                'log_valorizacion_cotizacion.lugar_despacho',
-                'log_valorizacion_cotizacion.detalle',
-                'adm_contri.razon_social'
+    //             ELSE 'nulo' END) AS descripcion
+    //             "),
+    //                         DB::raw("(CASE 
+    //             WHEN alm_item.id_item isNUll THEN 'SIN CODIGO' 
+    //             WHEN alm_item.id_servicio isNUll AND alm_item.id_equipo isNull THEN alm_prod.codigo 
+    //             WHEN alm_item.id_producto isNUll AND alm_item.id_equipo isNull THEN log_servi.codigo 
+    //             WHEN alm_item.id_servicio isNUll AND alm_item.id_producto isNull THEN equipo.codigo 
+    //             ELSE 'nulo' END) AS codigo
+    //             "),
+    //                         DB::raw("(CASE 
+    //             WHEN alm_item.id_item isNUll THEN '-' 
+    //             WHEN alm_item.id_servicio isNUll AND alm_item.id_equipo isNull THEN alm_und_medida.abreviatura
+    //             WHEN alm_item.id_producto isNUll AND alm_item.id_equipo isNull THEN 'serv' 
+    //             WHEN alm_item.id_servicio isNUll AND alm_item.id_producto isNull THEN 'und' 
+    //             ELSE 'nulo' END) AS unidad_medida
+    //             "),
+    //             'alm_item.id_item',
+    //             'alm_item.id_producto',
+    //             'alm_item.id_servicio',
+    //             'alm_item.id_equipo',
+    //             'alm_det_req.cantidad',
+    //             'alm_det_req.precio_referencial',
+    //             'log_valorizacion_cotizacion.id_valorizacion_cotizacion',
+    //             'log_valorizacion_cotizacion.id_cotizacion',
+    //             'log_valorizacion_cotizacion.id_detalle_requerimiento',
+    //             'log_valorizacion_cotizacion.id_detalle_oc_cliente',
+    //             'log_valorizacion_cotizacion.precio_cotizado',
+    //             'log_valorizacion_cotizacion.cantidad_cotizada',
+    //             'log_valorizacion_cotizacion.precio_sin_igv',
+    //             'alm_und_medida_prov.abreviatura as abrev_unidad_medida_cotizado',
+    //             'log_valorizacion_cotizacion.id_unidad_medida as id_unidad_medida_cotizado',
+    //             'log_valorizacion_cotizacion.subtotal',
+    //             'log_valorizacion_cotizacion.flete',
+    //             'log_valorizacion_cotizacion.porcentaje_descuento',
+    //             'log_valorizacion_cotizacion.monto_descuento',
+    //             'log_valorizacion_cotizacion.subtotal',
+    //             'log_valorizacion_cotizacion.estado',
+    //             'log_valorizacion_cotizacion.incluye_igv',
+    //             'log_valorizacion_cotizacion.garantia',
+    //             'log_valorizacion_cotizacion.plazo_entrega',
+    //             'log_valorizacion_cotizacion.lugar_despacho',
+    //             'log_valorizacion_cotizacion.detalle',
+    //             'adm_contri.razon_social'
 
-            )
-            ->where([
-                ['log_valorizacion_cotizacion.estado', '>', 0],
-                ['log_valorizacion_cotizacion.id_valorizacion_cotizacion', '=', $id_valorizacion_cotizacion]
-            ])
-            ->orderBy('log_valorizacion_cotizacion.id_valorizacion_cotizacion', 'asc')
-            ->first();
+    //         )
+    //         ->where([
+    //             ['log_valorizacion_cotizacion.estado', '>', 0],
+    //             ['log_valorizacion_cotizacion.id_valorizacion_cotizacion', '=', $id_valorizacion_cotizacion]
+    //         ])
+    //         ->orderBy('log_valorizacion_cotizacion.id_valorizacion_cotizacion', 'asc')
+    //         ->first();
 
-        return response()->json($valorizacion);
-    }
+    //     return response()->json($valorizacion);
+    // }
 
     
     public function condicion_valorizacion(Request $request){
@@ -9655,8 +9653,7 @@ class LogisticaController extends Controller
             ->leftJoin('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'log_prove.id_contribuyente')
 
             ->select(
-                'log_valorizacion_cotizacion.id_detalle_requerimiento',
-                            DB::raw("(CASE 
+                DB::raw("(CASE 
                 WHEN alm_item.id_item isNUll THEN alm_det_req.descripcion_adicional 
                 WHEN alm_item.id_servicio isNUll AND alm_item.id_equipo isNull THEN alm_prod.descripcion 
                 WHEN alm_item.id_producto isNUll AND alm_item.id_equipo isNull THEN log_servi.descripcion 
@@ -9779,7 +9776,8 @@ class LogisticaController extends Controller
     {
         $item_cotizacion = DB::table('logistica.log_cotizacion')
             ->leftJoin('logistica.log_valorizacion_cotizacion', 'log_valorizacion_cotizacion.id_cotizacion', '=', 'log_cotizacion.id_cotizacion')
-            ->leftJoin('almacen.alm_det_req', 'alm_det_req.id_detalle_requerimiento', '=', 'log_valorizacion_cotizacion.id_detalle_requerimiento')
+            ->leftJoin('logistica.valoriza_coti_detalle', 'valoriza_coti_detalle.id_valorizacion_cotizacion', '=', 'log_valorizacion_cotizacion.id_valorizacion_cotizacion')
+            ->leftJoin('almacen.alm_det_req', 'alm_det_req.id_detalle_requerimiento', '=', 'valoriza_coti_detalle.id_detalle_requerimiento')
             ->leftJoin('almacen.alm_item', 'alm_item.id_item', '=', 'alm_det_req.id_item')
             ->leftJoin('almacen.alm_prod', 'alm_prod.id_producto', '=', 'alm_item.id_producto')
             ->leftJoin('logistica.log_servi', 'log_servi.id_servicio', '=', 'alm_item.id_servicio')
@@ -9825,7 +9823,7 @@ class LogisticaController extends Controller
                 'alm_det_req.descripcion_adicional as descripcion_adicional_detalle_requerimiento',
                 'log_valorizacion_cotizacion.id_valorizacion_cotizacion',
                 'log_valorizacion_cotizacion.id_cotizacion',
-                'log_valorizacion_cotizacion.id_detalle_requerimiento',
+                'valoriza_coti_detalle.id_detalle_requerimiento',
                 'log_valorizacion_cotizacion.id_detalle_oc_cliente',
                 'log_valorizacion_cotizacion.precio_cotizado',
                 'log_valorizacion_cotizacion.cantidad_cotizada',
@@ -10288,8 +10286,8 @@ class LogisticaController extends Controller
                             'codigo_item' => $data->codigo,
                             'descripcion_item' => $data->descripcion_item,
                             'fecha_registro' => $data->fecha_registro,
-                            'precio_cotizado' => $data->precio_cotizado,
-                            'cantidad_cotizada' => $data->cantidad_cotizada,
+                            'precio_cotizado' => $data->precio_cotizado?$data->precio_cotizado:0,
+                            'cantidad_cotizada' => $data->cantidad_cotizada?$data->cantidad_cotizada:0,
                             'id_unidad_medida' => $data->id_unidad_medida,
                             'unidad_medida_cotizada' => $data->unidad_medida_descripcion,
                             'id_proveedor' => $data->id_proveedor,
@@ -10315,18 +10313,18 @@ class LogisticaController extends Controller
                         'id_item' => $data->id_item,
                         'id_detalle_oc_cliente' => $data->id_detalle_oc_cliente,
                         'precio_cotizado' => is_numeric($data->precio_cotizado) == 1 ? $data->precio_cotizado : '',
-                        'incluye_igv' => $data->incluye_igv,
-                        'cantidad_cotizada' => $data->cantidad_cotizada,
+                        'incluye_igv' => $data->incluye_igv?$data->incluye_igv:'',
+                        'cantidad_cotizada' => $data->cantidad_cotizada?$data->cantidad_cotizada:0,
                         'id_unidad_medida' => $data->id_unidad_medida,
                         'unidad_medida_cotizada' => $data->unidad_medida_descripcion,
-                        'subtotal' => $data->subtotal,
-                        'flete' => $data->flete,
-                        'lugar_despacho' => $data->lugar_despacho,
-                        'plazo_entrega' => $data->plazo_entrega,
-                        'garantia' => $data->garantia,
-                        'porcentaje_descuento' => $data->porcentaje_descuento,
-                        'monto_descuento' => $data->monto_descuento,
-                        'justificacion' => $data->justificacion,
+                        'subtotal' => $data->subtotal?$data->subtotal:0,
+                        'flete' => $data->flete?$data->flete:0,
+                        'lugar_despacho' => $data->lugar_despacho?$data->lugar_despacho:'',
+                        'plazo_entrega' => $data->plazo_entrega?$data->plazo_entrega:0,
+                        'garantia' => $data->garantia?$data->garantia:'',
+                        'porcentaje_descuento' => $data->porcentaje_descuento?$data->porcentaje_descuento:0,
+                        'monto_descuento' => $data->monto_descuento?$data->monto_descuento:0,
+                        'justificacion' => $data->justificacion?$data->justificacion:'',
                         'estado' => $data->estado_valorizacion,
                         'id_empresa' => $data->id_empresa
                     ];

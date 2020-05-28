@@ -220,8 +220,8 @@
                                                                 <button class="btn btn-info" role="button" id="btnOpenModalEnviarCoti"  onClick="openModalEnviarCoti(event);" disabled>
                                                                         Enviar Cotización <i class="far fa-envelope"></i>
                                                                 </button>
-                                                                <button class="btn btn-danger" role="button"   id="btnResetProcessCreateCoti" onClick="resetProcessCreateCoti(event);" disabled>
-                                                                    Terminar <i class="fas fa-fire"></i>
+                                                                <button class="btn btn-default" role="button"   id="btnResetProcessCreateCoti" onClick="resetProcessCreateCoti(event);" disabled>
+                                                                    Reiniciar & Volver a Paso 1 <i class="fas fa-redo-alt"></i></i>
                                                                 </button>
                                                                 </div>
                                                             </div>

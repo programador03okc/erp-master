@@ -1503,7 +1503,7 @@ Route::get('decode5t/{id}', 'EquipoController@decode5t');
 	Route::get('logistica/cuadro_comparativos', 'LogisticaController@mostrar_cuadro_comparativos');
 	Route::get('logistica/cuadro_comparativo/{id}', 'LogisticaController@mostrar_cuadro_comparativo');
 	Route::get('logistica/valorizacion/grupo_cotizaciones/{codigo_cotizacion}/{codigo_cuadro_comparativo}/{id_grupo_cotizacion}/{estado_envio}/{id_empresa}/{valorizacion_completa_incompleta}/{id_cotizacion_alone}', 'LogisticaController@grupo_cotizaciones')->where('id', '(.*)');
-	Route::get('logistica/only_valorizaciones/{id_grupo}', 'LogisticaController@only_valorizaciones');
+	// Route::get('logistica/only_valorizaciones/{id_grupo}', 'LogisticaController@only_valorizaciones');
 	Route::post('logistica/cuadro_comparativo/guardar_buenas_pro', 'LogisticaController@guardar_buenas_pro');
 	Route::put('logistica/cuadro_comparativo/eliminar_buena_pro/{id_valorizacion}', 'LogisticaController@eliminar_buena_pro');
 	Route::get('logistica/cuadro_comparativo/exportar_excel/{id_grupo}', 'LogisticaController@solicitud_cuadro_comparativo_excel');
