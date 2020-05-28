@@ -209,8 +209,8 @@ $(function () {
                     .setAttribute('disabled', true)
             }
         }
-        console.log('listaItemsRequerimiento click');
-        console.log(listCheckReqDet);
+        // console.log('listaItemsRequerimiento click');
+        // console.log(listCheckReqDet);
     })
 
     $('#listaItemsRequerimientoModalEditCoti tbody').on('click', 'tr', function () {
@@ -331,8 +331,88 @@ $(function () {
     listarRequerimiento(defaultIdEmpresa)
 })
 
+
+function handleChangeIncluirSede(event){
+    
+    let selectEmpresa = document.querySelector("div[id='requerimiento'] select[id='id_empresa_select_req']");
+    let id_empresa = selectEmpresa.value;
+
+    if(event.target.checked == true){
+        document.querySelector("div[id='requerimiento'] select[id='id_sede_select_req']").removeAttribute('disabled');
+        getDataSelectSede(id_empresa,"requerimiento","id_sede_select_req");
+
+    }else{
+        document.querySelector("div[id='requerimiento'] select[id='id_sede_select_req']").setAttribute('disabled',true);
+        let selectElement = document.querySelector("div[id='requerimiento'] select[id='id_sede_select_req']");
+        var i, L = selectElement.options.length - 1;
+        for(i = L; i >= 0; i--) {
+            selectElement.remove(i);
+        }
+        listar_requerimientos(id_empresa,null,null);
+
+    }
+
+}
+function getDataSelectSede(id_empresa = null, tabId ,selector){
+    if(id_empresa >0){
+        $.ajax({
+            type: 'GET',
+            headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+            url: '/logistica/select_sede_by_empresa/' + id_empresa,
+            dataType: 'JSON',
+            success: function(response){
+                llenarSelectSede(response,tabId,selector);
+            }
+        });
+    }
+    return false;
+}
+
+function llenarSelectSede(array, tabId,selector){
+
+    let selectElement = document.querySelector("div[id='"+tabId+"'] select[id='"+selector+"']");
+    // console.log(tabId);
+    // console.log(selector);
+    // console.log(selectElement);
+    
+    if(selectElement.options.length>0){
+        var i, L = selectElement.options.length - 1;
+        for(i = L; i >= 0; i--) {
+            selectElement.remove(i);
+        }
+    }
+
+    array.forEach(element => {
+        let option = document.createElement("option");
+        option.text = element.descripcion;
+        option.value = element.id_sede;
+        selectElement.add(option);
+    });
+
+    // console.log(selectElement.value);
+    let id_empresa = document.querySelector("div[id='requerimiento'] select[id='id_empresa_select_req']");
+    let id_sede= selectElement.value;
+    listar_requerimientos(id_empresa,id_sede,null);
+
+}
+
+function handleChangeFilterCrearCotiByEmpresa(e){
+    let id_empresa =e.target.value;
+    getDataSelectSede(id_empresa, "crear_coti","id_sede_crear_coti");
+
+}
+
+function handleChangeFilterReqBySede(e){
+    let id_sede =e.target.value;
+    let id_empresa = document.querySelector("div[id='requerimiento'] select[id='id_empresa_select_req']");
+    listar_requerimientos(id_empresa,id_sede,null);
+
+    
+}
+
 function handleChangeFilterReqByEmpresa(e) {
-    listar_requerimientos(e.target.value,null)
+    getDataSelectSede(e.target.value,"requerimiento", "id_sede_select_req");
+    listar_requerimientos(e.target.value,null,null);
 }
 
 // if(value.id_det_req == checkDetReq.id_det_req){
@@ -426,10 +506,19 @@ function gotToThirdTab(e) {
     // console.log('gotToThirdTab');
     // console.log(listCheckReqDet);
 
-    
-    document.getElementsByName('id_empresa')[0].value = document.getElementById(
-        'id_empresa_select_req'
-    ).value
+    let id_empresa =document.getElementById('id_empresa_select_req').value;
+    document.querySelector("div[id='crear_coti'] select[name='id_empresa']").value = id_empresa;
+
+    getDataSelectSede(id_empresa, "crear_coti","id_sede_crear_coti");
+
+    let id_sede =document.getElementById('id_sede_select_req').value;
+    if(id_sede > 0){
+        document.querySelector("div[id='crear_coti'] select[id='id_sede_crear_coti']").value = id_sede;
+    }
+
+    // document.getElementsByName('id_sede')[0].value = document.getElementById(
+    //     'id_sede_select_req'
+    // ).value
 
     document
         .getElementById('menu_tab_crear_coti')
@@ -484,7 +573,7 @@ function resetProcessCreateCoti(e){
 	limpiarTabla('listaItemsRequerimiento');
 	document.getElementById('btnGotToSecondTab').setAttribute('disabled',true);
     document.getElementById('btnGotToThirdTab').setAttribute('disabled',true);
-    listar_requerimientos(null,null);
+    listar_requerimientos(null,null,null);
 
 	
 	document.getElementById('menu_tab_crear_coti').childNodes[5].children[0].setAttribute('data-toggle', 'notab')
@@ -556,7 +645,7 @@ function gotToThirdToSecondTab(e) {
 
 function getAllDetalleReqOfList(tableName) {
     // console.log("cargar todo los detalles requerimientos cargados");
-     console.log(listCheckReq);
+    //  console.log(listCheckReq);
     mostrar_detalle_requerimiento(listCheckReq, tableName)
 }
 
@@ -773,9 +862,7 @@ function generar_cotizacion(e) {
         alert('para seguir Debe completar todo los campos');
     } else {
         // validar input stock comprometido
-        let inputsStockComprometido = document.querySelectorAll(
-            '.stock_comprometido'
-        )
+        let inputsStockComprometido = document.querySelectorAll('.stock_comprometido')
         let countExceed = 0
         inputsStockComprometido.forEach(function (element) {
             let MaxValue = parseInt(element.max)
@@ -795,6 +882,7 @@ function generar_cotizacion(e) {
 }
 function get_data_form_generar_cotizacion() {
     let id_empresa = document.getElementsByName('id_empresa')[0].value
+    let id_sede = document.getElementById('id_sede_crear_coti').value
     let id_proveedor = document.getElementsByName('id_proveedor')[0].value
     let id_contacto = document.getElementsByName('id_contacto')[0].value
     let text_contacto = document.getElementsByName('id_contacto')[0].textContent
@@ -803,6 +891,7 @@ function get_data_form_generar_cotizacion() {
 
     let data = {
         id_empresa: id_empresa,
+        id_sede: id_sede,
         id_proveedor: id_proveedor,
         id_contacto: id_contacto,
         email_contacto: email_contacto,
@@ -1411,7 +1500,7 @@ function botones(tbody, tabla) {
 //     })
 // }
 
-function listar_requerimientos(id_empresa = null,loadTo=null) {
+function listar_requerimientos(id_empresa = null,id_sede = null,loadTo=null) {
 
     let nameTableLitaRequerimientoPendientes= '#listaRequerimientoPendientes';
     if(loadTo != null){
@@ -1427,7 +1516,7 @@ function listar_requerimientos(id_empresa = null,loadTo=null) {
         bDestroy: true,
         order: [[8, 'desc']],
         language: vardataTables[0],
-        ajax: '/requerimientos_entrante_a_cotizacion_v2/' + id_empresa,
+        ajax: '/requerimientos_entrante_a_cotizacion_v2/' + id_empresa+'/'+id_sede,
         columns: [
             { data: 'id_requerimiento' },
             {
@@ -1524,7 +1613,7 @@ function verDetReqACotizar(event) {
 
 function listarRequerimiento(id_empresa) {
     clearDataTable()
-    listar_requerimientos(id_empresa,null)
+    listar_requerimientos(id_empresa,null,null)
     document
         .getElementById('menu_tab_crear_coti')
         .childNodes[3].children[0].setAttribute('data-toggle', 'notab')
@@ -2614,7 +2703,7 @@ function agregarItemACotizacion(){
             backdrop: 'static'
         });
         
-        listar_requerimientos(id_empresa,'#listaRequerimientoPendientesAgregar');
+        listar_requerimientos(id_empresa,null,'#listaRequerimientoPendientesAgregar');
 
     }
 }

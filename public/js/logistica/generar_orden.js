@@ -118,17 +118,23 @@ function detalle_cotizacion(id_cotizacion){
 function checkStatusActualizarCodigo(){    
             // var btnActualizarcodigo =  document.getElementsByTagName('button')["btnActualizarCodigoItem"];
         var btnActualizarcodigo = document.getElementsByName('btnActualizarCodigoItem');
+        let id_oc = document.querySelector("form[id='form-orden'] input[name='id_orden_compra']").value;
         if(btnActualizarcodigo){
-            for (let i = 0; i < btnActualizarcodigo.length; i++) {
-                if(typeof document.getElementById('id_orden_compra').innerText == 'string' || typeof document.getElementById('id_orden_compra').innerText == 'number'){
+            if(id_oc.length > 0 && parseInt(id_oc) > 0){
+                for (let i = 0; i < btnActualizarcodigo.length; i++) {
                     btnActualizarcodigo.item(i).removeAttribute('disabled');
                     btnActualizarcodigo.item(i).setAttribute('title','Actualizar Código');
-                }else{
+                }
+
+            }else{
+                for (let i = 0; i < btnActualizarcodigo.length; i++) {
                     btnActualizarcodigo.item(i).setAttribute('disabled',true);
                     btnActualizarcodigo.item(i).setAttribute('title','Para actualizar, Primero debe generarse la orden!');
 
                 }
+
             }
+ 
     }
 }
 
@@ -446,7 +452,7 @@ function actualizarCodigoItem(){
                 dataType: 'JSON',
                 success: function(response){
                     // console.log(response);                  
-                    if (response.update_det_orden =='success' ){
+                    if (response.status ==200 ){
                         // console.log("Actualizacion de codigo de item de requerimiento: "+response.update_det_req+", item de orden: "+response.update_det_orden);
                         if(response.id_orden_compra >0){
                             mostrar_orden(response.id_orden_compra);                            
@@ -457,8 +463,10 @@ function actualizarCodigoItem(){
                         }else{
                             alert("error en registro");
                         } 
-                    }else{
-                        alert("ERROR al actualizar");
+                    }else if(response.status == 204){
+                        alert("Antes de actualizar el código de item, primero debe guardar la Orden");
+                    }else if(response.status == 400){
+                        alert("hubo un problema al intentar actualizar");
                     }
                 }
             }).fail( function( jqXHR, textStatus, errorThrown ){

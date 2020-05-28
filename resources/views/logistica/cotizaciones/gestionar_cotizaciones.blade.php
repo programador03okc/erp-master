@@ -50,6 +50,18 @@
                                                                         </select>
                                                                     </div>
                                                                 </div>
+                                                                <div class="col-md-3">
+                                                                    <h5>Sede</h5>
+                                                                    <div style="display:flex;">
+                                                                    <select class="form-control" id="id_sede_select_req" onChange="handleChangeFilterReqBySede(event);" disabled>
+                                                                            <option value="0">Elija una opción</option>
+                                                                        </select>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-3">
+                                                                    <h5>&nbsp;</h5>
+                                                                        <input type="checkbox" id="incluir_sede" onchange="handleChangeIncluirSede(event)" /> Inlcuir Sede
+                                                                </div>
                                                             </div>
                                                             <table class="mytable table table-condensed table-bordered table-okc-view" 
                                                             id="listaRequerimientoPendientes">
@@ -132,16 +144,24 @@
                                                                             <input class="oculto" name="id_cotizacion"/>
                                                                             <input type="hidden" name="id_grupo_cotizacion" value="0" primary="ids">
 
-                                                                            <div class="col-md-4">
+                                                                            <div class="col-md-5">
                                                                                 <div class="row">
-                                                                                    <div class="col-md-12">
+                                                                                    <div class="col-md-8">
                                                                                         <h5>Empresa</h5>
                                                                                         <div style="display:flex;">
-                                                                                            <select class="form-control" name="id_empresa" onChange="cargar_imagen();" >
+                                                                                            <select class="form-control" name="id_empresa" onChange="cargar_imagen(); handleChangeFilterCrearCotiByEmpresa(event);">
                                                                                                 <option value="0" disabled>Elija una opción</option>
                                                                                                 @foreach ($empresas as $emp)
                                                                                                     <option value="{{$emp->id_empresa}}" data-url-logo="{{$emp->logo_empresa}}">{{$emp->razon_social}}</option>
                                                                                                 @endforeach
+                                                                                            </select>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div class="col-md-4">
+                                                                                        <h5>Sede</h5>
+                                                                                        <div style="display:flex;">
+                                                                                            <select class="form-control" id="id_sede_crear_coti" >
+                                                                                                <option value="0" disabled>Elija una opción</option>
                                                                                             </select>
                                                                                         </div>
                                                                                     </div>
@@ -152,7 +172,7 @@
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
-                                                                            <div class="col-md-8">
+                                                                            <div class="col-md-7">
                                                                                 <div class="row">
                                                                                     <div class="col-md-12">
                                                                                         <h5>Proveedor</h5>
@@ -200,8 +220,8 @@
                                                                 <button class="btn btn-info" role="button" id="btnOpenModalEnviarCoti"  onClick="openModalEnviarCoti(event);" disabled>
                                                                         Enviar Cotización <i class="far fa-envelope"></i>
                                                                 </button>
-                                                                <button class="btn btn-danger" role="button"   id="btnResetProcessCreateCoti" onClick="resetProcessCreateCoti(event);" disabled>
-                                                                    Terminar <i class="fas fa-fire"></i>
+                                                                <button class="btn btn-default" role="button"   id="btnResetProcessCreateCoti" onClick="resetProcessCreateCoti(event);" disabled>
+                                                                    Reiniciar & Volver a Paso 1 <i class="fas fa-redo-alt"></i></i>
                                                                 </button>
                                                                 </div>
                                                             </div>
