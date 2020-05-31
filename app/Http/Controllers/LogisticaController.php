@@ -111,7 +111,7 @@ class LogisticaController extends Controller
                 'adm_contri.*',
                 'estado_ruc.descripcion as descripcion_estado_ruc',
                 'adm_tp_contri.descripcion as tipo_contribuyente',
-                DB::raw("CONCAT(sis_identi.descripcion,' ',adm_contri.nro_documento) as documento"),
+                DB::raw("(sis_identi.descripcion) || ' ' || (adm_contri.nro_documento) AS documento"),
                 DB::raw("(CASE WHEN adm_contri.estado = 1 THEN 'Habilitado' ELSE 'Deshabilitado' END) AS estado_contri")
 
             )
@@ -317,7 +317,7 @@ class LogisticaController extends Controller
     {
         $data = DB::table('configuracion.sis_usua')
             ->select('sis_usua.id_usuario as id_responsable',
-            DB::raw("CONCAT(rrhh_perso.nombres,' ',rrhh_perso.apellido_paterno,' ',rrhh_perso.apellido_materno) as nombre_responsable")
+            DB::raw("(rrhh_perso.nombres) || ' ' || (rrhh_perso.apellido_paterno) || ' ' || (rrhh_perso.apellido_materno)  AS nombre_responsable ")
 
             )
             ->leftJoin('rrhh.rrhh_trab', 'rrhh_trab.id_trabajador', '=', 'sis_usua.id_trabajador')
@@ -466,7 +466,7 @@ class LogisticaController extends Controller
                 'alm_req.observacion',
                 'alm_tp_req.descripcion AS tp_req_descripcion',
                 'alm_req.id_usuario',
-                DB::raw("CONCAT(rrhh_perso.nombres,' ',rrhh_perso.apellido_paterno,' ',rrhh_perso.apellido_materno) as persona"),
+                DB::raw("(rrhh_perso.nombres) || ' ' || (rrhh_perso.apellido_paterno) || ' ' || (rrhh_perso.apellido_materno)  AS persona"),
                 'sis_usua.usuario',
                 'alm_req.id_rol',
                 'rrhh_rol.id_rol_concepto',
@@ -3408,7 +3408,10 @@ class LogisticaController extends Controller
 
     function get_header_observacion($id_req){
         
-        $sql_obs_req = DB::select("SELECT req_obs.id_observacion, req_obs.id_usuario, CONCAT(rrhh_perso.nombres,' ' ,rrhh_perso.apellido_paterno,' ' ,rrhh_perso.apellido_materno) as nombre_completo, req_obs.descripcion, req_obs.estado FROM almacen.req_obs
+        $sql_obs_req = DB::select("SELECT req_obs.id_observacion, req_obs.id_usuario, 
+        (rrhh_perso.nombres) || ' ' || (rrhh_perso.apellido_paterno) || ' ' || (rrhh_perso.apellido_materno) as nombre_completo, 
+        req_obs.descripcion, req_obs.estado 
+        FROM almacen.req_obs
         LEFT JOIN configuracion.sis_usua on sis_usua.id_usuario = req_obs.id_usuario 
         LEFT JOIN rrhh.rrhh_trab on rrhh_trab.id_trabajador = sis_usua.id_trabajador 
         LEFT JOIN rrhh.rrhh_postu on rrhh_postu.id_postulante = rrhh_trab.id_postulante 
@@ -3729,7 +3732,7 @@ class LogisticaController extends Controller
         $ouput=[];
         $sql = DB::table('configuracion.sis_usua')
         ->select('rrhh_postu.*',
-        DB::raw("CONCAT(rrhh_perso.nombres,' ',rrhh_perso.apellido_paterno,' ',rrhh_perso.apellido_materno) as nombre_completo")
+        DB::raw("(rrhh_perso.nombres) || ' ' || (rrhh_perso.apellido_paterno) || ' ' || (rrhh_perso.apellido_materno)  AS nombre_completo ")
         )
         ->leftJoin('rrhh.rrhh_trab', 'rrhh_trab.id_trabajador', '=', 'sis_usua.id_trabajador')
         ->leftJoin('rrhh.rrhh_postu', 'rrhh_postu.id_postulante', '=', 'rrhh_trab.id_postulante')
@@ -3863,7 +3866,7 @@ class LogisticaController extends Controller
     function consulta_nombre_usuario($id_rol){
         $query = DB::table('administracion.rol_aprobacion')
         ->select(
-        DB::raw("CONCAT(rrhh_perso.nombres,' ',rrhh_perso.apellido_paterno,' ',rrhh_perso.apellido_materno) as nombre_completo")
+        DB::raw("(rrhh_perso.nombres) || ' ' || (rrhh_perso.apellido_paterno) || ' ' || (rrhh_perso.apellido_materno)  AS nombre_completo")
         )
         ->where([
             ['rol_aprobacion.id_rol_concepto', '=', $id_rol],
@@ -7636,7 +7639,7 @@ class LogisticaController extends Controller
         $detalle = DB::table('logistica.log_det_ord_compra')
             ->select(
                 'log_det_ord_compra.*',
-                DB::raw("CONCAT(pers_aut.nombres,' ',pers_aut.apellido_paterno,' ',pers_aut.apellido_materno) as nombre_personal_autorizado"),
+                DB::raw("(pers_aut.nombres) || ' ' || (pers_aut.apellido_paterno) || ' ' || (pers_aut.apellido_materno)  AS nombre_personal_autorizado"),
 
                 DB::raw("(CASE 
                 WHEN alm_item.id_item isNUll THEN alm_det_req.descripcion_adicional 
@@ -7839,9 +7842,9 @@ class LogisticaController extends Controller
             'adm_contri.nro_documento AS nro_documento_proveedor',
             'log_ord_compra.fecha',
             'log_ord_compra.id_usuario',
-            DB::raw("CONCAT(pers.nombres,' ',pers.apellido_paterno,' ',pers.apellido_materno) as nombre_usuario"),
+            DB::raw("(pers.nombres) || ' ' || (pers.apellido_paterno) || ' ' || (pers.apellido_materno) as nombre_usuario"),
             'log_ord_compra.personal_responsable',
-            DB::raw("CONCAT(pers_res.nombres,' ',pers_res.apellido_paterno,' ',pers_res.apellido_materno) as nombre_personal_responsable"),
+            DB::raw("(pers_res.nombres) || ' ' || (pers_res.apellido_paterno) || ' ' || (pers_res.apellido_materno) as nombre_personal_responsable"),
             'log_ord_compra.monto_total',
             'log_ord_compra.estado'
         )
@@ -7966,10 +7969,10 @@ class LogisticaController extends Controller
                 'sis_moneda.descripcion as moneda_descripcion',
                 'log_ord_compra.monto_igv',
                 'log_ord_compra.monto_total',
-                DB::raw("CONCAT(pers.nombres,' ',pers.apellido_paterno,' ',pers.apellido_materno) as nombre_usuario"),
+                DB::raw("(pers.nombres) || ' ' || (pers.apellido_paterno) || ' ' || (pers.apellido_materno) as nombre_usuario"),
                 
                 'log_ord_compra.personal_responsable',
-                DB::raw("CONCAT(adm_ctb_contac.nombre,' - ',adm_ctb_contac.cargo) as nombre_personal_responsable"),
+                DB::raw("(adm_ctb_contac.nombre) || ' - ' || (adm_ctb_contac.cargo) as nombre_personal_responsable"),
                 // DB::raw("CONCAT(pers_res.nombres,' ',pers_res.apellido_paterno,' ',pers_res.apellido_materno) as nombre_personal_responsable"),
 
                 'adm_tp_docum.descripcion AS tipo_documento',
@@ -7995,7 +7998,7 @@ class LogisticaController extends Controller
                 // 'log_det_ord_compra.*',
                 'log_det_ord_compra.personal_autorizado',
                 'log_det_ord_compra.lugar_despacho as lugar_despacho_orden',
-                DB::raw("CONCAT(pers_aut.nombres,' ',pers_aut.apellido_paterno,' ',pers_aut.apellido_materno) as nombre_personal_autorizado"),
+                DB::raw("(pers_aut.nombres) || ' ' || (pers_aut.apellido_paterno) || ' ' || (pers_aut.apellido_materno) AS nombre_personal_autorizado"),
                 'log_det_ord_compra.descripcion_adicional AS descripcion_detalle_orden',
                 
 
@@ -9250,7 +9253,7 @@ class LogisticaController extends Controller
         $log_grupo_cotizacion = DB::table('logistica.log_grupo_cotizacion')
         ->select(
             'log_grupo_cotizacion.*',
-            DB::raw("CONCAT(rrhh_perso.nombres,' ',rrhh_perso.apellido_paterno,' ',rrhh_perso.apellido_materno) AS nombre_usuario")
+            DB::raw("(rrhh_perso.nombres) || ' ' || (rrhh_perso.apellido_paterno) || ' ' || (rrhh_perso.apellido_materno) AS nombre_usuario")
 
         )
         ->leftJoin('configuracion.sis_usua', 'log_grupo_cotizacion.id_usuario', '=', 'sis_usua.id_usuario')
@@ -10074,7 +10077,7 @@ class LogisticaController extends Controller
                 'log_grupo_cotizacion.id_usuario',
                 'log_grupo_cotizacion.fecha_inicio',
                 'log_grupo_cotizacion.fecha_fin',
-                DB::raw("CONCAT(rrhh_perso.nombres,' ',rrhh_perso.apellido_paterno,' ',rrhh_perso.apellido_materno) AS full_name"),
+                DB::raw("(rrhh_perso.nombres) || ' ' || (rrhh_perso.apellido_paterno) || ' ' || (rrhh_perso.apellido_materno) AS full_name"),
                 // 'log_cotizacion.codigo_cotizacion',
                 'cont_tp_doc.descripcion as tipo_documento',
                 'log_cotizacion.id_condicion_pago',
@@ -10907,7 +10910,7 @@ class LogisticaController extends Controller
             'adm_flujo.id_flujo',
             'adm_flujo.id_operacion',
             'adm_flujo.id_rol',
-            DB::raw("CONCAT(rrhh_perso.nombres,' ',rrhh_perso.apellido_paterno,' ',rrhh_perso.apellido_materno) as nombre_responsable"),
+            DB::raw("(rrhh_perso.nombres) || ' ' || (rrhh_perso.apellido_paterno) || ' ' || (rrhh_perso.apellido_materno) AS nombre_responsable"),
             'rol_aprobacion.id_area',
             'rrhh_rol_concepto.descripcion as descripcion_rol',
             'adm_flujo.nombre as nombre_fase',
@@ -11038,7 +11041,7 @@ class LogisticaController extends Controller
             'alm_req.id_tipo_requerimiento',
             'alm_tp_req.descripcion AS tipo_req_desc',
             'sis_usua.usuario',
-            DB::raw("CONCAT(rrhh_perso.nombres,' ',rrhh_perso.apellido_paterno,' ',rrhh_perso.apellido_materno) as nombre_responsable"),
+            DB::raw("(rrhh_perso.nombres) || ' ' || (rrhh_perso.apellido_paterno) || ' ' || (rrhh_perso.apellido_materno) AS nombre_responsable"),
 
             'alm_req.id_area',
             'adm_area.descripcion AS area_desc',
@@ -11259,7 +11262,7 @@ class LogisticaController extends Controller
                 'adm_flujo.id_flujo',
                 'adm_flujo.id_operacion',
                 'adm_flujo.id_rol',
-                DB::raw("CONCAT(rrhh_perso.nombres,' ',rrhh_perso.apellido_paterno,' ',rrhh_perso.apellido_materno) as nombre_responsable"),
+                DB::raw("(rrhh_perso.nombres) || ' ' || (rrhh_perso.apellido_paterno) || ' ' || (rrhh_perso.apellido_materno) AS nombre_responsable"),
                 'rol_aprobacion.id_area',
                 'rrhh_rol_concepto.descripcion as descripcion_rol',
                 'adm_flujo.nombre as nombre_fase',
@@ -12140,10 +12143,10 @@ class LogisticaController extends Controller
                 'sis_moneda.descripcion as moneda_descripcion',
                 'log_ord_compra.monto_igv',
                 'log_ord_compra.monto_total',
-                DB::raw("CONCAT(pers.nombres,' ',pers.apellido_paterno,' ',pers.apellido_materno) as nombre_usuario"),
+                DB::raw("(pers.nombres) || ' ' || (pers.apellido_paterno) || ' ' || (pers.apellido_materno) as nombre_usuario"),
                 
                 'log_ord_compra.personal_responsable',
-                DB::raw("CONCAT(pers_res.nombres,' ',pers_res.apellido_paterno,' ',pers_res.apellido_materno) as nombre_personal_responsable"),
+                DB::raw("(pers_res.nombres) || ' ' || (pers_res.apellido_paterno) || ' ' || (pers_res.apellido_materno) as nombre_personal_responsable"),
 
                 'adm_tp_docum.descripcion AS tipo_documento',
                 'sis_identi.descripcion AS tipo_doc_proveedor',
@@ -12167,7 +12170,7 @@ class LogisticaController extends Controller
                 'log_cotizacion.email_proveedor',
                 'log_det_ord_compra.personal_autorizado',
                 'log_det_ord_compra.lugar_despacho as lugar_despacho_orden',
-                DB::raw("CONCAT(pers_aut.nombres,' ',pers_aut.apellido_paterno,' ',pers_res.apellido_materno) as nombre_personal_autorizado"),
+                DB::raw("(pers_aut.nombres) ||' ' || (pers_aut.apellido_paterno) || ' ' || (pers_res.apellido_materno) AS nombre_personal_autorizado"),
                 'log_det_ord_compra.descripcion_adicional AS descripcion_detalle_orden',
 
                 'valoriza_coti_detalle.id_detalle_requerimiento',
@@ -12297,7 +12300,7 @@ class LogisticaController extends Controller
             'adm_flujo.id_flujo',
             'adm_flujo.id_operacion',
             'adm_flujo.id_rol',
-            DB::raw("CONCAT(rrhh_perso.nombres,' ',rrhh_perso.apellido_paterno,' ',rrhh_perso.apellido_materno) as nombre_responsable"),
+            DB::raw("(rrhh_perso.nombres) || ' ' || (rrhh_perso.apellido_paterno) || ' ' || (rrhh_perso.apellido_materno) AS nombre_responsable"),
             'rrhh_rol.id_area',
             'rrhh_rol_concepto.descripcion as descripcion_rol',
             'adm_flujo.nombre as nombre_fase',
@@ -12364,7 +12367,7 @@ class LogisticaController extends Controller
         $sql = DB::table('logistica.log_ord_compra_pago')
         ->select(
             'log_ord_compra_pago.*',
-            DB::raw("CONCAT(rrhh_perso.nombres,' ',rrhh_perso.apellido_paterno, rrhh_perso.apellido_materno) as nombre_responsable")
+            DB::raw("(rrhh_perso.nombres) || ' ' || (rrhh_perso.apellido_paterno) || ' ' || (rrhh_perso.apellido_materno) as nombre_responsable")
             )
         ->leftJoin('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'log_ord_compra_pago.registrado_por')
         ->leftJoin('rrhh.rrhh_trab', 'rrhh_trab.id_trabajador', '=', 'sis_usua.id_trabajador')
@@ -12389,7 +12392,7 @@ class LogisticaController extends Controller
             'guia_com_det.unitario',
             'guia_com_det.total',
             'guia_com.id_guia',
-            DB::raw("CONCAT(guia_com.serie,' ',guia_com.numero) as serie_numero"),
+            DB::raw("(guia_com.serie) || ' ' || (guia_com.numero) as serie_numero"),
             'guia_com.fecha_emision',
             'guia_com.fecha_almacen',
             'guia_com.id_almacen',
@@ -12424,7 +12427,7 @@ class LogisticaController extends Controller
             'alm_und_medida.abreviatura',
             'guia_ven_det.cantidad',
             'guia_ven.id_guia_ven',
-            DB::raw("CONCAT(guia_ven.serie,' ',guia_ven.numero) as serie_numero"),
+            DB::raw("(guia_ven.serie) || ' ' || (guia_ven.numero) AS serie_numero"),
             'guia_ven.fecha_emision',
             'guia_ven.fecha_almacen',
             'guia_ven.id_almacen',

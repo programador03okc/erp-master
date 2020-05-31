@@ -1430,7 +1430,7 @@ Route::get('decode5t/{id}', 'EquipoController@decode5t');
 	Route::get('logistica/get_cuadro_costos_comercial', 'LogisticaController@get_cuadro_costos_comercial');
 
 	/**Logistica Cotizaciones */
- 	Route::get('select_responsables', 'LogisticaController@select_responsables');
+ 	// Route::get('select_responsables', 'LogisticaController@select_responsables');
  	Route::get('get_estado_doc/{nombreEstadoDoc}', 'LogisticaController@get_estado_doc');
 	Route::get('logistica/mostrar-archivos-adjuntos-proveedor/{id}', 'LogisticaController@mostrar_archivos_adjuntos_proveedor');
 	Route::post('logistica/guardar-archivos-adjuntos-proveedor', 'LogisticaController@guardar_archivos_adjuntos_proveedor');
