@@ -117,7 +117,7 @@ class AlmacenController extends Controller
         return view('almacen/guias/guia_venta', compact('almacenes','posiciones','motivos','clasificaciones','sedes','proveedores','tp_doc_almacen','tp_operacion','tp_contribuyente','sis_identidad','usuarios','motivos_anu'));
     }
     function view_doc_compra(){
-        // $proveedores = $this->mostrar_proveedores_cbo();
+        $proveedores = $this->mostrar_proveedores_cbo();
         $clasificaciones = $this->mostrar_guia_clas_cbo();
         $condiciones = $this->mostrar_condiciones_cbo();
         $tp_doc = $this->mostrar_tp_doc_cbo();

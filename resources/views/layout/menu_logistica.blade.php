@@ -114,6 +114,14 @@
                 </li>
                 <li class="treeview">
                     <a href="#">
+                        <i class="fas fa-truck"></i> <span>Comprobantes</span> <i class="fa fa-angle-left pull-right"></i>
+                    </a>
+                    <ul class="treeview-menu">
+                        <li><a href="doc_compra"> Comprobantes de Compra </a></li>
+                    </ul>
+                </li>
+                <li class="treeview">
+                    <a href="#">
                         <i class="fas fa-tachometer-alt"></i> <span>Reportes</span> <i class="fa fa-angle-left pull-right"></i>
                     </a>
                     <ul class="treeview-menu">
