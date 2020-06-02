@@ -334,13 +334,13 @@
 @include('logistica.servicioModal')
 @include('layout.footer')
 @include('layout.scripts')
-<script src="{{('/js/almacen/transformacion.js')}}"></script>
-<script src="{{('/js/almacen/transformacionModal.js')}}"></script>
-<script src="{{('/js/almacen/productoModal.js')}}"></script>
-<script src="{{('/js/almacen/transfor_materia.js')}}"></script>
-<script src="{{('/js/almacen/transfor_directo.js')}}"></script>
-<script src="{{('/js/almacen/transfor_indirecto.js')}}"></script>
-<script src="{{('/js/almacen/transfor_sobrante.js')}}"></script>
-<script src="{{('/js/almacen/transfor_transformado.js')}}"></script>
+<script src="{{('/js/almacen/transformacion/transformacion.js')}}"></script>
+<script src="{{('/js/almacen/transformacion/transformacionModal.js')}}"></script>
+<script src="{{('/js/almacen/producto/productoModal.js')}}"></script>
+<script src="{{('/js/almacen/transformacion/transfor_materia.js')}}"></script>
+<script src="{{('/js/almacen/transformacion/transfor_directo.js')}}"></script>
+<script src="{{('/js/almacen/transformacion/transfor_indirecto.js')}}"></script>
+<script src="{{('/js/almacen/transformacion/transfor_sobrante.js')}}"></script>
+<script src="{{('/js/almacen/transformacion/transfor_transformado.js')}}"></script>
 <script src="{{('/js/logistica/servicioModal.js')}}"></script>
 @include('layout.fin_html')

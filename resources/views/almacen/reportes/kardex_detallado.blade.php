@@ -139,6 +139,6 @@
 @include('almacen.producto.productoModal')
 @include('layout.footer')
 @include('layout.scripts')
-<script src="{{('/js/almacen/kardex_detallado.js')}}"></script>
-<script src="{{('/js/almacen/productoModal.js')}}"></script>
+<script src="{{('/js/almacen/reporte/kardex_detallado.js')}}"></script>
+<script src="{{('/js/almacen/producto/productoModal.js')}}"></script>
 @include('layout.fin_html')

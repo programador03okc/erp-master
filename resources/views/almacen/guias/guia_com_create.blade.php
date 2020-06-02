@@ -61,7 +61,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                <input type="submit" class="btn btn-success" value="Guardar"/>
+                <input type="submit" id="submit_guia" class="btn btn-success" value="Guardar"/>
                     <!-- <label id="mid_doc_com" style="display: none;"></label>
                     <button class="btn btn-sm btn-success" onClick="guardar_guia_create();">Guardar</button> -->
                 </div>

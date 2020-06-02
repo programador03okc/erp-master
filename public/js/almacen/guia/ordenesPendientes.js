@@ -122,7 +122,7 @@ function open_guia_create(data){
     $('#modal-guia_create').modal({
         show: true
     });
-    // $('[name=id_tp_doc_almacen]').val(1).trigger('change.select2');
+    $("#submit_guia").removeAttr("disabled");
     $('[name=id_operacion]').val(2).trigger('change.select2');
     $('[name=id_guia_clas]').val(1);
     $('[name=id_orden_compra]').val(data.id_orden_compra);
@@ -186,7 +186,7 @@ function listar_guias_orden(id_orden){
             response.forEach(element => {
                 html+='<tr id="'+element.id_guia_com_oc+'">'+
                 '<td>'+i+'</td>'+
-                '<td>'+element.serie+'-'+element.numero+'</td>'+
+                '<td><label class="lbl-codigo" title="Abrir Guía" onClick="abrir_guia_compra('+element.id_guia_com+')">'+element.serie+'-'+element.numero+'</label></td>'+
                 '<td>'+element.fecha_emision+'</td>'+
                 '<td>'+element.almacen+'</td>'+
                 '<td>'+element.operacion+'</td>'+
@@ -205,6 +205,12 @@ function listar_guias_orden(id_orden){
     });
 }
 
+function abrir_guia_compra(id_guia_compra){
+    console.log('abrir_guia_compra()');
+    localStorage.setItem("id_guia_com",id_guia_compra);
+    location.assign("guia_compra");
+}
+
 $("#form-guia_create").on("submit", function(e){
     console.log('submit');
     e.preventDefault();
@@ -214,6 +220,7 @@ $("#form-guia_create").on("submit", function(e){
 });
 
 function guardar_guia_create(data){
+    $("#submit_guia").attr('disabled','true');
     $.ajax({
         type: 'POST',
         url: 'guardar_guia_com_oc',

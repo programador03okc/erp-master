@@ -219,11 +219,11 @@
 @include('almacen.ubicacion.nivelModal')
 @include('layout.footer')
 @include('layout.scripts')
-<script src="{{('/js/almacen/ubicacion.js')}}"></script>
-<script src="{{('/js/almacen/estante.js')}}"></script>
-<script src="{{('/js/almacen/nivel.js')}}"></script>
-<script src="{{('/js/almacen/posicion.js')}}"></script>
-<script src="{{('/js/almacen/almacenModal.js')}}"></script>
-<script src="{{('/js/almacen/estanteModal.js')}}"></script>
-<script src="{{('/js/almacen/nivelModal.js')}}"></script>
+<script src="{{('/js/almacen/ubicacion/ubicacion.js')}}"></script>
+<script src="{{('/js/almacen/ubicacion/estante.js')}}"></script>
+<script src="{{('/js/almacen/ubicacion/nivel.js')}}"></script>
+<script src="{{('/js/almacen/ubicacion/posicion.js')}}"></script>
+<script src="{{('/js/almacen/ubicacion/almacenModal.js')}}"></script>
+<script src="{{('/js/almacen/ubicacion/estanteModal.js')}}"></script>
+<script src="{{('/js/almacen/ubicacion/nivelModal.js')}}"></script>
 @include('layout.fin_html')

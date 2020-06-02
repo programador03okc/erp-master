@@ -231,13 +231,15 @@
     </div>
 @include('almacen.documentos.doc_compraModal')
 @include('almacen.documentos.doc_com_detalle')
+@include('almacen.guias.guia_compraModal')
 @include('logistica.cotizaciones.proveedorModal')
 @include('logistica.cotizaciones.add_proveedor')
 @include('layout.footer')
 @include('layout.scripts')
-<script src="{{('/js/almacen/doc_compra.js')}}"></script>
-<script src="{{('/js/almacen/doc_compraModal.js')}}"></script>
-<script src="{{('/js/almacen/doc_com_detalle.js')}}"></script>
+<script src="{{('/js/almacen/documentos/doc_compra.js')}}"></script>
+<script src="{{('/js/almacen/documentos/doc_compraModal.js')}}"></script>
+<script src="{{('/js/almacen/documentos/doc_com_detalle.js')}}"></script>
+<script src="{{('/js/almacen/guia/guia_compraModal.js')}}"></script>
 <script src="{{('/js/logistica/proveedorModal.js')}}"></script>
 <script src="{{('/js/logistica/add_proveedor.js')}}"></script>
 @include('layout.fin_html')

@@ -50,5 +50,5 @@
 @include('almacen.reportes.kardex_filtro')
 @include('layout.footer')
 @include('layout.scripts')
-<script src="{{('/js/almacen/kardex_general.js')}}"></script>
+<script src="{{('/js/almacen/reporte/kardex_general.js')}}"></script>
 @include('layout.fin_html')

@@ -64,5 +64,5 @@
 </div>
 @include('layout.footer')
 @include('layout.scripts')
-<script src="{{('/js/almacen/tipo_doc_almacen.js')}}"></script>
+<script src="{{('/js/almacen/variables/tipo_doc_almacen.js')}}"></script>
 @include('layout.fin_html')

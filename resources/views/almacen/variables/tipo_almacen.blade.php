@@ -36,5 +36,5 @@
 </div>
 @include('layout.footer')
 @include('layout.scripts')
-<script src="{{('/js/almacen/tipo_almacen.js')}}"></script>
+<script src="{{('/js/almacen/ubicacion/tipo_almacen.js')}}"></script>
 @include('layout.fin_html')

@@ -69,5 +69,5 @@
 {{-- @include('almacen.kardex_filtro') --}}
 @include('layout.footer')
 @include('layout.scripts')
-<script src="{{('/js/almacen/saldos.js')}}"></script>
+<script src="{{('/js/almacen/reporte/saldos.js')}}"></script>
 @include('layout.fin_html')

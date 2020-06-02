@@ -85,6 +85,6 @@
 @include('layout.footer')
 @include('layout.scripts')
 @include('publico.ubigeoModal')
-<script src="{{('/js/almacen/almacenes.js')}}"></script>
+<script src="{{('/js/almacen/ubicacion/almacenes.js')}}"></script>
 <script src="{{('/js/publico/ubigeoModal.js')}}"></script>
 @include('layout.fin_html')

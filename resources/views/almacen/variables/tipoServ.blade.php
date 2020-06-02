@@ -55,5 +55,5 @@
 </div>
 @include('layout.footer')
 @include('layout.scripts')
-<script src="{{('/js/almacen/tipoServ.js')}}"></script>
+<script src="{{('/js/almacen/variables/tipoServ.js')}}"></script>
 @include('layout.fin_html')

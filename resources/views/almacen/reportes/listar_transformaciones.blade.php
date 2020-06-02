@@ -45,11 +45,7 @@
         </div>
     </div>
 </div>
-{{-- @include('almacen.reportes.transferencia_detalle') --}}
-{{-- @include('almacen.guias.guia_venta') --}}
 @include('layout.footer')
 @include('layout.scripts')
-<script src="{{('/js/almacen/listar_transformaciones.js')}}"></script>
-{{-- <script src="{{('/js/almacen/transferencia_detalle.js')}}"></script> --}}
-{{-- <script src="{{('/js/almacen/guia_venta.js')}}"></script> --}}
+<script src="{{('/js/almacen/reporte/listar_transformaciones.js')}}"></script>
 @include('layout.fin_html')

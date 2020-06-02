@@ -2241,6 +2241,17 @@ class AlmacenController extends Controller
                     ->where('id_guia_com', $request->id_guia_com)
                     ->update([ 'estado' => 7 ]);
                 //Anula la Guia OC
+                $ordenes = DB::table('almacen.guia_com_oc')
+                    ->where([['id_guia_com','=',$request->id_guia_com],
+                             ['estado','!=',7]])
+                    ->get();
+
+                foreach($ordenes as $oc){
+                    DB::table('logistica.log_ord_compra')
+                    ->where('id_orden_compra',$oc->id_oc)
+                    ->update(['en_almacen' => false]);
+                }
+
                 $ocs = DB::table('almacen.guia_com_oc')
                     ->where('id_guia_com',$request->id_guia_com)
                     ->update([ 'estado' => 7 ]);
@@ -2309,6 +2320,17 @@ class AlmacenController extends Controller
                 ->where('id_guia_com', $request->id_guia_com)
                 ->update([ 'estado' => 7 ]);
             //Anula la Guia OC
+            $ordenes = DB::table('almacen.guia_com_oc')
+                    ->where([['id_guia_com','=',$request->id_guia_com],
+                             ['estado','!=',7]])
+                    ->get();
+
+            foreach($ordenes as $oc){
+                DB::table('logistica.log_ord_compra')
+                ->where('id_orden_compra',$oc->id_oc)
+                ->update(['en_almacen' => false]);
+            }
+            
             $ocs = DB::table('almacen.guia_com_oc')
                 ->where('id_guia_com',$request->id_guia_com)
                 ->update([ 'estado' => 7 ]);
@@ -2323,10 +2345,6 @@ class AlmacenController extends Controller
             foreach($detalle as $det){
                 //cambiar estado OC detalle
                 if ($det->id_oc_det !== null){
-                    DB::table('logistica.log_det_ord_compra')
-                    ->where('id_detalle_orden',$det->id_oc_det)
-                    ->update([ 'estado' => 1 ]);//Elaborado
-
                     //cambiar estado OC en_almacen = false
                     DB::table('logistica.log_det_ord_compra')
                     ->where('id_detalle_orden',$det->id_oc_det)

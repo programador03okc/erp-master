@@ -284,14 +284,14 @@
 @include('proyectos.variables.add_cliente')
 @include('layout.footer')
 @include('layout.scripts')
-<script src="{{('/js/almacen/guia_venta.js')}}"></script>
-<script src="{{('/js/almacen/guia_venta_oc.js')}}"></script>
-<script src="{{('/js/almacen/guia_venta_detalle.js')}}"></script>
-<script src="{{('/js/almacen/guia_ventaModal.js')}}"></script>
-<script src="{{('/js/almacen/guia_ven_series.js')}}"></script>
-<script src="{{('/js/almacen/seriesModal.js')}}"></script>
+<script src="{{('/js/almacen/guia/guia_venta.js')}}"></script>
+<script src="{{('/js/almacen/guia/guia_venta_oc.js')}}"></script>
+<script src="{{('/js/almacen/guia/guia_venta_detalle.js')}}"></script>
+<script src="{{('/js/almacen/guia/guia_ventaModal.js')}}"></script>
+<script src="{{('/js/almacen/guia/guia_ven_series.js')}}"></script>
+<script src="{{('/js/almacen/variables/seriesModal.js')}}"></script>
 <script src="{{('/js/almacen/transferencia.js')}}"></script>
-<script src="{{('/js/almacen/productoModal.js')}}"></script>
+<script src="{{('/js/almacen/producto/productoModal.js')}}"></script>
 <script src="{{('/js/logistica/clienteModal.js')}}"></script>
 <script src="{{('/js/logistica/occModal.js')}}"></script>
 <script src="{{('/js/proyectos/variables/add_cliente.js')}}"></script>

@@ -79,5 +79,5 @@
 </div>
 @include('layout.footer')
 @include('layout.scripts')
-<script src="{{('/js/almacen/serie_numero.js')}}"></script>
+<script src="{{('/js/almacen/variables/serie_numero.js')}}"></script>
 @include('layout.fin_html')

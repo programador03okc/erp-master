@@ -247,8 +247,8 @@
 @include('logistica.cotizaciones.transportistaModal')
 @include('layout.footer')
 @include('layout.scripts')
-<script src="{{('/js/almacen/lista_salidas.js')}}"></script>
-<script src="{{('/js/almacen/filtros.js')}}"></script>
+<script src="{{('/js/almacen/reporte/lista_salidas.js')}}"></script>
+<script src="{{('/js/almacen/reporte/filtros.js')}}"></script>
 <script src="{{('/js/logistica/clienteModal.js')}}"></script>
 <script src="{{('/js/logistica/transportistaModal.js')}}"></script>
 @include('layout.fin_html')

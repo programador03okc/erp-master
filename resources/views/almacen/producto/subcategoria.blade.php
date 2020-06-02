@@ -76,11 +76,7 @@
         </div>
     </div>
 </div>
-{{-- @include('almacen.producto.subcategoriaModal') --}}
-{{-- @include('almacen.producto.categoriaModal') --}}
 @include('layout.footer')
 @include('layout.scripts')
-{{-- <script src="{{('/js/almacen/categoriaModal.js')}}"></script> --}}
-<script src="{{('/js/almacen/subcategoria_producto.js')}}"></script>
-{{-- <script src="{{('/js/almacen/subcategoriaModal.js')}}"></script> --}}
+<script src="{{('/js/almacen/producto/subcategoria_producto.js')}}"></script>
 @include('layout.fin_html')

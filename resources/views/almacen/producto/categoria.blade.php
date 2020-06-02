@@ -53,6 +53,6 @@
 @include('almacen.producto.categoriaModal')
 @include('layout.footer')
 @include('layout.scripts')
-<script src="{{('/js/almacen/categoriaModal.js')}}"></script>
-<script src="{{('/js/almacen/categoria_producto.js')}}"></script>
+<script src="{{('/js/almacen/producto/categoriaModal.js')}}"></script>
+<script src="{{('/js/almacen/producto/categoria_producto.js')}}"></script>
 @include('layout.fin_html')

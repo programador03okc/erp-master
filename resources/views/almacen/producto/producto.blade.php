@@ -299,9 +299,9 @@
 @include('almacen.producto.productoModal')
 @include('layout.footer')
 @include('layout.scripts')
-<script src="{{('/js/almacen/producto.js')}}"></script>
-<script src="{{('/js/almacen/subcategoriaModal.js')}}"></script>
-<script src="{{('/js/almacen/productoModal.js')}}"></script>
-<script src="{{('/js/almacen/producto_ubicacion.js')}}"></script>
-<script src="{{('/js/almacen/producto_serie.js')}}"></script>
+<script src="{{('/js/almacen/producto/producto.js')}}"></script>
+<script src="{{('/js/almacen/producto/subcategoriaModal.js')}}"></script>
+<script src="{{('/js/almacen/producto/productoModal.js')}}"></script>
+<script src="{{('/js/almacen/producto/producto_ubicacion.js')}}"></script>
+<script src="{{('/js/almacen/producto/producto_serie.js')}}"></script>
 @include('layout.fin_html')

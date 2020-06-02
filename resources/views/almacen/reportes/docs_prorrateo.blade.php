@@ -69,5 +69,5 @@
 {{-- @include('almacen.kardex_filtro') --}}
 @include('layout.footer')
 @include('layout.scripts')
-<script src="{{('/js/almacen/docs_prorrateo.js')}}"></script>
+<script src="{{('/js/almacen/reporte/docs_prorrateo.js')}}"></script>
 @include('layout.fin_html')

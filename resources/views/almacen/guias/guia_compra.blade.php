@@ -11,9 +11,9 @@
                 <button type="submit" class="btn btn-success" data-toggle="tooltip" 
                 data-placement="bottom" title="Generar Ingreso a Almacén" 
                 onClick="generar_ingreso();"><i class="fas fa-angle-double-right"></i> Ingreso </button>
-                <button type="submit" class="btn btn-warning" data-toggle="tooltip" 
+                <!-- <button type="submit" class="btn btn-warning" data-toggle="tooltip" 
                 data-placement="bottom" title="Generar Orden de Despacho" 
-                onClick="generar_orden_despacho();"><i class="fas fa-angle-double-right"></i> Ord. Despacho </button>
+                onClick="generar_orden_despacho();"><i class="fas fa-angle-double-right"></i> Ord. Despacho </button> -->
                 <!-- <a onClick="generar_factura();">
                     <input type="button" class="btn btn-primary" data-toggle="tooltip" 
                     data-placement="bottom" title="Generar Factura de Compra" 
@@ -440,15 +440,15 @@
 @include('logistica.ordenes.ordenesModal')
 @include('layout.footer')
 @include('layout.scripts')
-<script src="{{('/js/almacen/guia_compra.js')}}"></script>
-<script src="{{('/js/almacen/guia_compraModal.js')}}"></script>
-<script src="{{('/js/almacen/guia_detalle.js')}}"></script>
-<script src="{{('/js/almacen/guia_transportista.js')}}"></script>
-<script src="{{('/js/almacen/guia_com_oc.js')}}"></script>
-<script src="{{('/js/almacen/guia_com_series.js')}}"></script>
-<script src="{{('/js/almacen/doc_com_guiaModal.js')}}"></script>
-<script src="{{('/js/almacen/doc_com_create.js')}}"></script>
-<script src="{{('/js/almacen/productoModal.js')}}"></script>
+<script src="{{('/js/almacen/guia/guia_compra.js')}}"></script>
+<script src="{{('/js/almacen/guia/guia_compraModal.js')}}"></script>
+<script src="{{('/js/almacen/guia/guia_detalle.js')}}"></script>
+<script src="{{('/js/almacen/guia/guia_transportista.js')}}"></script>
+<script src="{{('/js/almacen/guia/guia_com_oc.js')}}"></script>
+<script src="{{('/js/almacen/guia/guia_com_series.js')}}"></script>
+<script src="{{('/js/almacen/documentos/doc_com_guiaModal.js')}}"></script>
+<script src="{{('/js/almacen/documentos/doc_com_create.js')}}"></script>
+<script src="{{('/js/almacen/producto/productoModal.js')}}"></script>
 <!-- <script src="{{('/js/almacen/ocModal.js')}}"></script> -->
 <script src="{{('/js/logistica/proveedorModal.js')}}"></script>
 <script src="{{('/js/logistica/add_proveedor.js')}}"></script>

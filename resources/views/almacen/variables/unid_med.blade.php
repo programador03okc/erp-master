@@ -59,5 +59,5 @@
 </div>
 @include('layout.footer')
 @include('layout.scripts')
-<script src="{{('/js/almacen/unid_med.js')}}"></script>
+<script src="{{('/js/almacen/variables/unid_med.js')}}"></script>
 @include('layout.fin_html')

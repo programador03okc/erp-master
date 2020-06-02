@@ -63,5 +63,5 @@
 @include('layout.scripts')
 <script src="{{('/js/almacen/listar_transferencias.js')}}"></script>
 <script src="{{('/js/almacen/transferencia_detalle.js')}}"></script>
-<script src="{{('/js/almacen/guia_venta.js')}}"></script>
+<script src="{{('/js/almacen/guia/guia_venta.js')}}"></script>
 @include('layout.fin_html')

@@ -5,7 +5,7 @@ function nuevo_guia_venta(){
 
     $('[name=id_guia_ven]').val('');
     $('[name=usuario]').val(auth_user.id_usuario).trigger('change.select2');
-    $('[name=id_tp_doc_almacen]').val(5).trigger('change.select2');
+    $('[name=id_tp_doc_almacen]').val(2).trigger('change.select2');
     $('#nombre_usuario label').text(auth_user.nombres);
 
     $('#tp_doc_almacen').text('');
@@ -110,7 +110,6 @@ function mostrar_guia_ven(id){
             $('[name=transportista]').val(response[0].transportista).trigger('change.select2');
             $('[name=placa]').val(response[0].placa);
             $('[name=cod_estado]').val(response[0].estado);
-            $('[name=usuario]').val(response[0].usuario);
             $('#nombre_usuario label').text(response[0].nombre_trabajador);
             $('#fecha_registro label').text('');
             $('#fecha_registro label').append(formatDateHour(response[0].fecha_registro));

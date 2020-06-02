@@ -8,7 +8,6 @@
             <li><label id="tipo_descripcion"> </li>
         </ol>
     </legend>
-    {{-- <div class="container-okc"> --}}
     <div class="row">
         <div class="col-md-6">
             <fieldset class="group-table">
@@ -62,15 +61,6 @@
                         </select>
                     </div>
                 </div>
-                {{-- <div class="row">
-                    <div class="col-md-4">
-                    <h5>Estado</h5>
-                    <select class="form-control activation" name="estado" readonly>
-                        <option value="1" selected>Activo</option>
-                        <option value="2">Inactivo</option>
-                    </select>
-                    </div>
-                </div> --}}
                 <div class="row">
                     <div class="col-md-12">
                     <h5 id="fecha_registro">Fecha Registro: <label></label></h5>
@@ -78,13 +68,9 @@
                 </div>                  
             </div>
         </div>
-        {{-- <div id="tree"></div> --}}
     </form>
-    {{-- </div> --}}
 </div>
-{{-- @include('almacen.servicioModal') --}}
 @include('layout.footer')
 @include('layout.scripts')
-<script src="{{('/js/almacen/servicio.js')}}"></script>
-{{-- <script src="{{('/js/almacen/servicioModal.js')}}"></script> --}}
+<script src="{{('/js/almacen/variables/servicio.js')}}"></script>
 @include('layout.fin_html')

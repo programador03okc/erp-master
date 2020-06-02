@@ -205,5 +205,5 @@
 </div>
 @include('layout.footer')
 @include('layout.scripts')
-<script src="{{('/js/almacen/busqueda_ingresos.js')}}"></script>
+<script src="{{('/js/almacen/reporte/busqueda_ingresos.js')}}"></script>
 @include('layout.fin_html')
