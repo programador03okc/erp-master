@@ -1,68 +1,71 @@
 $(function(){
     // clearDataTable();
-    $('[name=id_almacen_ori]').val(1).trigger('change.select2');
+    $('[name=id_almacen_ori]').val(1);
     listarTransferenciasPendientes();
 });
 function listarTransferenciasPendientes(){
     var alm_origen = $('[name=id_almacen_ori]').val();
-    var alm_destino = $('[name=id_almacen_des]').val();
-    console.log('ori'+alm_origen+' des'+alm_destino);
-    var vardataTables = funcDatatables();
-    var tabla = $('#listaTransferenciasPendientes').DataTable({
-        'destroy':true,
-        'dom': vardataTables[1],
-        'buttons': vardataTables[2],
-        'language' : vardataTables[0],
-        'ajax' : 'listar_transferencias_pendientes/'+alm_origen+'/'+alm_destino,
-        // 'ajax': {
-        //     url:'listar_transferencias_pendientes/'+alm_origen+'/'+alm_destino,
-        //     dataSrc:''
-        // },
-        'columns': [
-            {'data': 'id_transferencia'},
-            // {'data': 'codigo_transferencia'},
-            {'render':
-                function (data, type, row){
-                    return (formatDate(row['fecha_transferencia']));
-                }
-            },
-            {'data': 'codigo'},
-            {'render':
-                function (data, type, row){
-                    return ('<label class="lbl-codigo" title="Abrir Guía" onClick="abrir_guia_venta('+row['id_guia_ven']+')">'+row['guia_ven']+'</label>');
-                }
-            },
-            {'render':
-                function (data, type, row){
-                    return ('<label class="lbl-codigo" title="Abrir Guía" onClick="abrir_guia_compra('+row['id_guia_com']+')">'+row['guia_com']+'</label>');
-                }
-            },
-            // {'data': 'guia'},
-            {'data': 'fecha_guia'},
-            {'data': 'alm_origen_descripcion'},
-            {'data': 'alm_destino_descripcion'},
-            {'data': 'nombre_origen'},
-            {'data': 'nombre_destino'},
-            {'data': 'nombre_registro'},
-            // {'data': 'estado_doc'},
-            {'render':
-                function (data, type, row){
-                    return ('<span class="label label-'+row['bootstrap_color']+'">'+row['estado_doc']+'</span>');
-                }
-            },
-            {'defaultContent': 
-                '<button type="button" class="ver btn btn-primary boton" data-toggle="tooltip" '+
-                    'data-placement="bottom" title="Ver Ingreso" >'+
-                    '<i class="fas fa-search-plus"></i></button>'+
-                '<button type="button" class="atender btn btn-success boton" data-toggle="tooltip" '+
-                    'data-placement="bottom" title="Atender" >'+
-                    '<i class="fas fa-share"></i></button>'+
-                '<button type="button" class="anular btn btn-danger boton" data-toggle="tooltip" '+
-                    'data-placement="bottom" title="Anular" >'+
-                    '<i class="fas fa-trash"></i></button>'},
-        ],
-        'columnDefs': [{ 'aTargets': [0], 'sClass': 'invisible'}],
-    });
+    // var alm_destino = $('[name=id_almacen_des]').val();
+    console.log('ori'+alm_origen);
+    
+    if (alm_origen !== '' && alm_origen !== ''){
+        var vardataTables = funcDatatables();
+        var tabla = $('#listaTransferenciasPendientes').DataTable({
+            'destroy':true,
+            'dom': vardataTables[1],
+            'buttons': vardataTables[2],
+            'language' : vardataTables[0],
+            'ajax' : 'listar_transferencias_pendientes/'+alm_origen,
+            // 'ajax': {
+            //     url:'listar_transferencias_pendientes/'+alm_origen+'/'+alm_destino,
+            //     dataSrc:''
+            // },
+            'columns': [
+                {'data': 'id_transferencia'},
+                // {'data': 'codigo_transferencia'},
+                {'render':
+                    function (data, type, row){
+                        return (formatDate(row['fecha_transferencia']));
+                    }
+                },
+                {'data': 'codigo'},
+                {'render':
+                    function (data, type, row){
+                        return ('<label class="lbl-codigo" title="Abrir Guía" onClick="abrir_guia_venta('+row['id_guia_ven']+')">'+row['guia_ven']+'</label>');
+                    }
+                },
+                {'render':
+                    function (data, type, row){
+                        return ('<label class="lbl-codigo" title="Abrir Guía" onClick="abrir_guia_compra('+row['id_guia_com']+')">'+row['guia_com']+'</label>');
+                    }
+                },
+                // {'data': 'guia'},
+                {'data': 'fecha_guia'},
+                {'data': 'alm_origen_descripcion'},
+                {'data': 'alm_destino_descripcion'},
+                {'data': 'nombre_origen'},
+                {'data': 'nombre_destino'},
+                {'data': 'nombre_registro'},
+                // {'data': 'estado_doc'},
+                {'render':
+                    function (data, type, row){
+                        return ('<span class="label label-'+row['bootstrap_color']+'">'+row['estado_doc']+'</span>');
+                    }
+                },
+                {'defaultContent': 
+                    '<button type="button" class="ver btn btn-primary boton" data-toggle="tooltip" '+
+                        'data-placement="bottom" title="Ver Ingreso" >'+
+                        '<i class="fas fa-search-plus"></i></button>'+
+                    '<button type="button" class="atender btn btn-success boton" data-toggle="tooltip" '+
+                        'data-placement="bottom" title="Atender" >'+
+                        '<i class="fas fa-share"></i></button>'+
+                    '<button type="button" class="anular btn btn-danger boton" data-toggle="tooltip" '+
+                        'data-placement="bottom" title="Anular" >'+
+                        '<i class="fas fa-trash"></i></button>'},
+            ],
+            'columnDefs': [{ 'aTargets': [0], 'sClass': 'invisible'}],
+        });
+    }
     ver("#listaTransferenciasPendientes tbody", tabla);
     atender("#listaTransferenciasPendientes tbody", tabla);
     anular("#listaTransferenciasPendientes tbody", tabla);

@@ -15,6 +15,7 @@ function nuevo_guia_venta(){
 
     $('#listaDetalle tbody').html('');
     $('#oc tbody').html('');
+    $('[name=modo]').val('edicion');
 }
 $(function(){
     var id_guia_ven = localStorage.getItem("id_guia_ven");
@@ -74,6 +75,7 @@ function actualizar_tab(activeForm, id){
     }
 }
 function mostrar_guia_ven(id){
+    $('[name=modo]').val("");
     $.ajax({
         type: 'GET',
         // headers: {'X-CSRF-TOKEN': token},
@@ -81,7 +83,7 @@ function mostrar_guia_ven(id){
         dataType: 'JSON',
         success: function(response){
             console.log(response);
-            id_almacen = response[0].id_almacen;
+            // id_almacen = response[0].id_almacen;
             $('[name=id_guia_ven]').val(response[0].id_guia_ven);
             // $('[name=id_tp_doc]').val(response[0].id_tp_doc);
             $('[name=id_tp_doc_almacen]').val(response[0].id_tp_doc_almacen).trigger('change.select2');
@@ -93,7 +95,7 @@ function mostrar_guia_ven(id){
             $('#codigo_trans').text(response[0].codigo_trans);
             $('[name=id_transferencia]').val(response[0].id_transferencia);
             $('[name=id_sede]').val(response[0].id_sede).trigger('change.select2');
-            $('[name=id_almacen]').val(response[0].id_almacen).trigger('change.select2');
+            $('[name=id_almacen]').val(response[0].id_almacen);
             $('[name=id_motivo]').val(response[0].id_motivo).trigger('change.select2');
             $('[name=id_operacion]').val(response[0].id_operacion).trigger('change.select2');
             $('[name=fecha_emision]').val(response[0].fecha_emision);
@@ -414,8 +416,9 @@ function validaItems(){
 }
 function cargar_almacenes(){
     var id_sede = $('[name=id_sede]').val();
+    var modo = $('[name=modo]').val();
     console.log(id_sede);
-    if (id_sede !== ''){
+    if (id_sede !== '' && modo == "edicion"){
         $.ajax({
             type: 'GET',
             // headers: {'X-CSRF-TOKEN': token},

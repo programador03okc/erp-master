@@ -85,7 +85,7 @@ function listarOrdenesEntregadas(){
                 '<i class="fas fa-list-ul"></i></button>'+
             '<button type="button" class="ver_guias btn btn-warning boton" data-toggle="tooltip" '+
                 'data-placement="bottom" title="Ver Guías" >'+
-                '<i class="fas fa-sign-in-alt"></i></button>'}
+                '<i class="fas fa-file-alt"></i></button>'}
         ],
         'columnDefs': [{ 'aTargets': [0], 'sClass': 'invisible'}],
     });

@@ -3,7 +3,7 @@
 @include('layout.body_sin_option')
 <div class="page-main" type="transferencias_pendientes">
     <legend class="mylegend">
-        <h2>Transferencias entre Almacenes</h2>
+        <h2>Gestión de Transferencias entre Almacenes</h2>
     </legend>
     <div class="row">
         <div class="col-md-4">
@@ -15,7 +15,7 @@
                 @endforeach
             </select>
         </div>
-        <div class="col-md-4">
+        <!-- <div class="col-md-4">
             <h5>Almacén Destino</h5>
             <select class="form-control activation" name="id_almacen_des">
                 <option value="0">Elija una opción</option>
@@ -23,7 +23,7 @@
                     <option value="{{$alm->id_almacen}}">{{$alm->descripcion}}</option>
                 @endforeach
             </select>
-        </div>
+        </div> -->
         <div class="col-md-4">
             <h5>Actualizar</h5>
             <button type="button" class="btn btn-primary" data-toggle="tooltip" 
@@ -61,7 +61,7 @@
 {{-- @include('almacen.guias.guia_venta') --}}
 @include('layout.footer')
 @include('layout.scripts')
-<script src="{{('/js/almacen/listar_transferencias.js')}}"></script>
+<script src="{{('/js/almacen/reporte/listar_transferencias.js')}}"></script>
 <script src="{{('/js/almacen/transferencia_detalle.js')}}"></script>
 <script src="{{('/js/almacen/guia/guia_venta.js')}}"></script>
 @include('layout.fin_html')

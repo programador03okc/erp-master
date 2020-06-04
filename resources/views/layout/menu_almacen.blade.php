@@ -53,6 +53,7 @@
                 <i class="fas fa-truck"></i> <span>Distribución</span> <i class="fa fa-angle-left pull-right"></i>
             </a>
             <ul class="treeview-menu">
+                <li><a href="requerimientosPendientes"> Requerimientos Pendientes </a></li>
                 <li><a href="#"> Orden de Despacho </a></li>
                 <li><a href="#"> Despachos Pendientes </a></li>
                 <li><a href="#"> Grupo de Orden de Despacho </a></li>

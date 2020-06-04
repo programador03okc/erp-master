@@ -802,6 +802,10 @@ Route::get('detalleOrden/{id}', 'AlmacenController@detalleOrden');
 Route::post('guardar_guia_com_oc', 'AlmacenController@guardar_guia_com_oc');
 Route::get('verGuiasOrden/{id}', 'AlmacenController@verGuiasOrden');
 
+Route::get('requerimientosPendientes', 'DistribucionController@view_requerimientosPendientes');
+Route::get('listarRequerimientosPendientes', 'DistribucionController@listarRequerimientosPendientes');
+Route::get('verDetalleRequerimiento/{id}', 'DistribucionController@verDetalleRequerimiento');
+
 Route::get('tipo_doc_almacen', 'AlmacenController@view_tipo_doc_almacen');
 Route::get('listar_tp_docs', 'AlmacenController@listar_tp_docs');
 Route::get('mostrar_tp_doc/{id}', 'AlmacenController@mostrar_tp_doc');
@@ -837,7 +841,7 @@ Route::get('mostrar_clientes', 'AlmacenController@mostrar_clientes');
 Route::post('guardar_transferencia', 'AlmacenController@guardar_transferencia');
 Route::get('next_correlativo_prod/{subcat}/{clas}', 'AlmacenController@next_correlativo_prod');
 Route::get('listar_transferencias', 'AlmacenController@view_listar_transferencias');
-Route::get('listar_transferencias_pendientes/{ori}/{des}', 'AlmacenController@listar_transferencias_pendientes');
+Route::get('listar_transferencias_pendientes/{ori}', 'AlmacenController@listar_transferencias_pendientes');
 Route::get('listar_transferencia_detalle/{id}', 'AlmacenController@listar_transferencia_detalle');
 Route::get('proveedor/{id}', 'AlmacenController@proveedor');
 Route::post('guardar_ingreso_transferencia', 'AlmacenController@guardar_ingreso_transferencia');

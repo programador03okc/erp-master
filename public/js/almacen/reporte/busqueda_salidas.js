@@ -1,8 +1,10 @@
 $(function(){
     $('[name=id_empresa]').val(4);
     $('[name=almacen]').val(1);
-    $('[name=fecha_inicio]').val('2019-01-01');
-    $('[name=fecha_fin]').val('2019-12-31');
+    var fecha = new Date();
+    var yyyy = fecha.getFullYear();
+    $('[name=fecha_inicio]').val(yyyy+'-01-01');
+    $('[name=fecha_fin]').val(yyyy+'-12-31');
     
     $('[name=todos_documentos]').prop('checked', true);
     $('[name=documento] option').each(function(){

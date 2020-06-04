@@ -1291,7 +1291,9 @@ span.select2-selection {
 #listaOpcionesTodo_filter,
 #listaResidentes_filter,
 #listaDocsProrrateo_filter,
-#ordenesPendientes_filter {
+#ordenesPendientes_filter,
+#ordenesEntregadas_filter,
+#requerimientosPendientes_filter {
   margin: 0;
 }
 
@@ -1319,7 +1321,9 @@ span.select2-selection {
 #listaOpcionesTodo_filter label input[type=search],
 #listaResidentes_filter label input[type=search],
 #listaDocsProrrateo_filter label input[type=search],
-#ordenesPendientes_filter label input[type=search] {
+#ordenesPendientes_filter label input[type=search],
+#ordenesEntregadas_filter label input[type=search],
+#requerimientosPendientes_filter label input[type=search] {
   width: 95%;
 }
 

@@ -112,7 +112,8 @@ class AlmacenController extends Controller
         $tp_operacion = $this->tp_operacion_cbo_sal();
         $tp_contribuyente = $this->tp_contribuyente_cbo();
         $sis_identidad = $this->sis_identidad_cbo();
-        $usuarios = $this->select_usuarios_almacen();
+        // $usuarios = $this->select_usuarios_almacen();
+        $usuarios = $this->select_usuarios();
         $motivos_anu = $this->select_motivo_anu();
         return view('almacen/guias/guia_venta', compact('almacenes','posiciones','motivos','clasificaciones','sedes','proveedores','tp_doc_almacen','tp_operacion','tp_contribuyente','sis_identidad','usuarios','motivos_anu'));
     }
@@ -195,18 +196,21 @@ class AlmacenController extends Controller
         $motivos = $this->mostrar_motivos_cbo();
         $clasificaciones = $this->mostrar_guia_clas_cbo();
         $almacenes = $this->mostrar_almacenes_cbo();
-        $usuarios = $this->select_usuarios_almacen();
+        // $usuarios = $this->select_usuarios_almacen();
+        $usuarios = $this->select_usuarios();
         return view('almacen/reportes/listar_transferencias', compact('motivos','clasificaciones','almacenes','usuarios'));
     }
     function view_transformacion(){
         $almacenes = $this->mostrar_almacenes_cbo();
         $empresas = $this->select_empresa();
-        $usuarios = $this->select_usuarios_almacen();
+        // $usuarios = $this->select_usuarios_almacen();
+        $usuarios = $this->select_usuarios();
         return view('almacen/guias/transformacion', compact('almacenes','empresas','usuarios'));
     }
     function view_listar_transformaciones(){
         $almacenes = $this->mostrar_almacenes_cbo();
-        $usuarios = $this->select_usuarios_almacen();
+        // $usuarios = $this->select_usuarios_almacen();
+        $usuarios = $this->select_usuarios();
         return view('almacen/reportes/listar_transformaciones', compact('almacenes','usuarios'));
     }
     function view_serie_numero(){
@@ -3614,7 +3618,7 @@ class AlmacenController extends Controller
             ->join('logistica.log_prove','log_prove.id_proveedor','=','guia_com.id_proveedor')
             ->join('contabilidad.adm_contri','adm_contri.id_contribuyente','=','log_prove.id_contribuyente')
             // ->join('logistica.guia_motivo','guia_motivo.id_motivo','=','guia_com.id_motivo')
-            ->where([['guia_com.id_almacen','=',$id_almacen]])
+            ->where([['guia_com.id_almacen','=',$id_almacen],['guia_com.estado','!=',7]])
             ->get();
         return response()->json($data);
         // return json_encode($html);
@@ -4755,20 +4759,20 @@ class AlmacenController extends Controller
             'alm_subcat.descripcion as des_subcategoria','alm_clasif.descripcion as des_clasificacion',
             'alm_prod_antiguo.cod_antiguo','alm_prod.id_moneda')
             ->join('almacen.alm_ubi_posicion','alm_ubi_posicion.id_posicion','=','alm_prod_ubi.id_posicion')
-            ->join('almacen.alm_ubi_nivel','alm_ubi_nivel.id_nivel','=','alm_ubi_posicion.id_nivel')
-            ->join('almacen.alm_ubi_estante','alm_ubi_estante.id_estante','=','alm_ubi_nivel.id_estante')
-            ->join('almacen.alm_almacen','alm_almacen.id_almacen','=','alm_ubi_estante.id_almacen')
+            // ->join('almacen.alm_ubi_nivel','alm_ubi_nivel.id_nivel','=','alm_ubi_posicion.id_nivel')
+            // ->join('almacen.alm_ubi_estante','alm_ubi_estante.id_estante','=','alm_ubi_nivel.id_estante')
+            ->join('almacen.alm_almacen','alm_almacen.id_almacen','=','alm_prod_ubi.id_almacen')
             ->join('almacen.alm_prod','alm_prod.id_producto','=','alm_prod_ubi.id_producto')
             ->join('almacen.alm_und_medida','alm_und_medida.id_unidad_medida','=','alm_prod.id_unidad_medida')
             ->leftjoin('configuracion.sis_moneda','sis_moneda.id_moneda','=','alm_prod.id_moneda')
-            ->join('almacen.alm_clasif','alm_clasif.id_clasificacion','=','alm_prod.id_clasif')
-            ->join('almacen.alm_subcat','alm_subcat.id_subcategoria','=','alm_prod.id_subcategoria')
-            ->join('almacen.alm_cat_prod','alm_cat_prod.id_categoria','=','alm_prod.id_categoria')
+            ->leftjoin('almacen.alm_clasif','alm_clasif.id_clasificacion','=','alm_prod.id_clasif')
+            ->leftjoin('almacen.alm_subcat','alm_subcat.id_subcategoria','=','alm_prod.id_subcategoria')
+            ->leftjoin('almacen.alm_cat_prod','alm_cat_prod.id_categoria','=','alm_prod.id_categoria')
             ->leftjoin('almacen.alm_prod_antiguo','alm_prod_antiguo.id_producto','=','alm_prod.id_producto')
             ->where([['alm_almacen.id_almacen','=',$almacen],
                     ['alm_prod_ubi.estado','=',1]])
             ->get();
-
+        
         $nueva_data = [];
         $tipo_cambio_compra = $this->tipo_cambio_compra($fecha);
 
@@ -4817,7 +4821,7 @@ class AlmacenController extends Controller
             // ->join('almacen.tp_mov','tp_mov.id_tp_mov','=','mov_alm.id_tp_mov')
             ->where([['mov_alm_det.id_producto','=',$id_producto],
                      ['mov_alm_det.id_posicion','=',$id_posicion],
-                     ['id_tp_mov','<=',1],//ingreso o carga inicial
+                     ['mov_alm.id_tp_mov','<=',1],//ingreso o carga inicial
                      ['mov_alm_det.estado','=',1]])
             ->first();
 
@@ -4827,7 +4831,7 @@ class AlmacenController extends Controller
             // ->join('almacen.tp_mov','tp_mov.id_tp_mov','=','mov_alm.id_tp_mov')
             ->where([['mov_alm_det.id_producto','=',$id_producto],
                      ['mov_alm_det.id_posicion','=',$id_posicion],
-                     ['id_tp_mov','=',2],//salida
+                     ['mov_alm.id_tp_mov','=',2],//salida
                      ['mov_alm_det.estado','=',1]])
             ->first();
 
@@ -4876,7 +4880,7 @@ class AlmacenController extends Controller
             ->join('administracion.adm_empresa','adm_empresa.id_empresa','=','sis_sede.id_empresa')
             ->join('contabilidad.adm_contri','adm_contri.id_contribuyente','=','adm_empresa.id_contribuyente')
             ->join('administracion.adm_estado_doc','adm_estado_doc.id_estado_doc','=','guia_ven.estado')
-            ->join('configuracion.sis_usua','sis_usua.id_usuario','=','guia_ven.usuario')
+            ->leftJoin('configuracion.sis_usua','sis_usua.id_usuario','=','guia_ven.usuario')
             ->join('almacen.tp_ope','tp_ope.id_operacion','=','guia_ven.id_operacion')
             ->join('almacen.tp_doc_almacen','tp_doc_almacen.id_tp_doc_almacen','=','guia_ven.id_tp_doc_almacen')
             ->get();
@@ -7464,14 +7468,21 @@ class AlmacenController extends Controller
         $fecha = date('Y-m-d H:i:s');
         $codigo = $this->transferencia_nextId($request->id_almacen_origen);
         $id_usuario = Auth::user()->id_usuario;
+        $guardar = false;
 
-        $trans = DB::table('almacen.trans')
-        ->where([['id_guia_ven','=',$request->id_guia_ven],['estado','=',1]])
-        ->first();
-
-        if (isset($trans)){
-            $id_trans = $trans->id_transferencia;
+        if ($request->id_guia_ven !== null){
+            $trans = DB::table('almacen.trans')
+            ->where([['id_guia_ven','=',$request->id_guia_ven],['estado','!=',7]])
+            ->first();
+            if (isset($trans)){
+                $id_trans = $trans->id_transferencia;
+            } else {
+                $guardar = true;
+            }
         } else {
+            $guardar = true;
+        }
+        if ($guardar){
             $id_trans = DB::table('almacen.trans')->insertGetId(
                 [
                     'id_almacen_origen' => $request->id_almacen_origen,
@@ -7496,7 +7507,7 @@ class AlmacenController extends Controller
             ->update([ 'estado' => 7 ]);
         return response()->json($data);
     }
-    public function listar_transferencias_pendientes($ori, $des){
+    public function listar_transferencias_pendientes($ori){
         $data = DB::table('almacen.trans')
         ->select('trans.*','guia_ven.fecha_emision as fecha_guia',
         DB::raw("CONCAT(guia_ven.serie,'-',guia_ven.numero) as guia_ven"),
@@ -7507,15 +7518,15 @@ class AlmacenController extends Controller
         'usu_destino.nombre_corto as nombre_destino',
         'usu_registro.nombre_corto as nombre_registro',
         'adm_estado_doc.estado_doc','adm_estado_doc.bootstrap_color')
-        ->join('almacen.guia_ven','guia_ven.id_guia_ven','=','trans.id_guia_ven')
-        ->leftjoin('almacen.guia_com','guia_com.id_guia','=','trans.id_guia_com')
+        ->leftJoin('almacen.guia_ven','guia_ven.id_guia_ven','=','trans.id_guia_ven')
+        ->leftJoin('almacen.guia_com','guia_com.id_guia','=','trans.id_guia_com')
         ->join('almacen.alm_almacen as alm_origen','alm_origen.id_almacen','=','trans.id_almacen_origen')
-        ->join('almacen.alm_almacen as alm_destino','alm_destino.id_almacen','=','trans.id_almacen_destino')
-        ->join('configuracion.sis_usua as usu_origen','usu_origen.id_usuario','=','trans.responsable_origen')
-        ->join('configuracion.sis_usua as usu_destino','usu_destino.id_usuario','=','trans.responsable_destino')
+        ->leftJoin('almacen.alm_almacen as alm_destino','alm_destino.id_almacen','=','trans.id_almacen_destino')
+        ->leftJoin('configuracion.sis_usua as usu_origen','usu_origen.id_usuario','=','trans.responsable_origen')
+        ->leftJoin('configuracion.sis_usua as usu_destino','usu_destino.id_usuario','=','trans.responsable_destino')
         ->join('configuracion.sis_usua as usu_registro','usu_registro.id_usuario','=','trans.registrado_por')
         ->join('administracion.adm_estado_doc','adm_estado_doc.id_estado_doc','=','trans.estado')
-        ->where([['trans.id_almacen_origen','=',$ori],['trans.id_almacen_destino','=',$des]])
+        ->where([['trans.id_almacen_origen','=',$ori]])
         ->get();
         $output['data'] = $data;
         return response()->json($output);

@@ -51,7 +51,7 @@ function agrega_sustento(){
 function listar_guias_almacen(id_almacen){
     $.ajax({
         type: 'GET',
-        headers: {'X-CSRF-TOKEN': token},
+        // headers: {'X-CSRF-TOKEN': token},
         url: 'listar_guias_almacen/'+id_almacen,
         dataType: 'JSON',
         success: function(response){

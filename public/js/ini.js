@@ -160,8 +160,10 @@ $(document).ready(function(){
 						editValorizaciones();
 					}
 					else if (page == 'categoria'){
-						// console.log('catgoeri');
 						$('[name=id_tipo_producto]').attr('disabled',true);
+					}
+					else if (page == 'guia_venta'){
+						$('[name=modo]').val('edicion');
 					}
 				}
             break;

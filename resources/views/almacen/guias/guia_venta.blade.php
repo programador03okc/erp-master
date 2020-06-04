@@ -26,7 +26,7 @@
             </li>
         </ol>
     </legend>
-    {{-- <input type="hidden" name="id_guia" primary="ids"> --}}
+    <input type="text" class="oculto" name="modo">
     <div class="col-md-12" id="tab-guia_venta">
         <ul class="nav nav-tabs" id="myTab">
             <li class="active"><a type="#general">Datos Generales</a></li>
