@@ -14,8 +14,10 @@
     <link rel="stylesheet" href="{{ asset('template/dist/css/AdminLTE.css') }}">
     <link rel="stylesheet" href="{{ asset('template/dist/css/skins/_all-skins.min.css') }}">
     <link rel="stylesheet" href="{{ asset('template/plugins/iCheck/all.css') }}">
+    <!-- <link rel="stylesheet" href="{{ asset('template/plugins/iCheck/line/blue.css') }}"> -->
     <link rel="stylesheet" href="{{ asset('template/plugins/select2/select2.css') }}">
     <link rel="stylesheet" href="{{ asset('template/plugins/gantt/dhtmlxgantt.css') }}">
+    <link rel="stylesheet" href="{{ asset('template/plugins/jquery-datatables-checkboxes/css/dataTables.checkboxes.css') }}">
     <link rel="stylesheet" href="{{ asset('css/app.css')}}">
     @yield('styles_modulo')
     @yield('styles_seccion')

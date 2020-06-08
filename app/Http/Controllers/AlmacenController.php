@@ -366,7 +366,7 @@ class AlmacenController extends Controller
             ->get();
         return $data;
     }
-    public function select_usuarios(){
+    public static function select_usuarios(){
         $data = DB::table('configuracion.sis_usua')
             ->select('sis_usua.id_usuario','sis_usua.nombre_corto')
             ->where([['sis_usua.estado', '=', 1],['sis_usua.nombre_corto', '<>', null]])
@@ -2096,7 +2096,7 @@ class AlmacenController extends Controller
         ->leftjoin('logistica.log_prove','log_prove.id_proveedor','=','guia_com.id_proveedor')
         ->leftjoin('contabilidad.adm_contri','adm_contri.id_contribuyente','=','log_prove.id_contribuyente')
         ->leftjoin('administracion.adm_estado_doc','adm_estado_doc.id_estado_doc','=','guia_com.estado')
-            ->where([['guia_com.estado','<>',7]])
+            ->where([['guia_com.estado','!=',7]])
             ->orderBy('fecha_emision','desc')
             ->get();
         $output['data'] = $data;
@@ -6605,6 +6605,7 @@ class AlmacenController extends Controller
         // ->whereIn('doc_com.id_tp_doc',$docs)
         ->whereIn('mov_alm.id_operacion',$con_array)
         ->whereBetween('mov_alm.fecha_emision',[$fecha_inicio, $fecha_fin])
+        ->where([['mov_alm.estado','!=',7]])
         ->where($hasWhere)
         ->get();
 
@@ -6702,6 +6703,7 @@ class AlmacenController extends Controller
         // ->whereIn('guia_ven.id_tp_doc_almacen',$doc_array)
         ->whereIn('mov_alm.id_operacion',$con_array)
         ->whereBetween('mov_alm.fecha_emision',[$fecha_inicio, $fecha_fin])
+        ->where([['mov_alm.estado','!=',7]])
         ->where($hasWhere)
         ->get();
 
@@ -9394,7 +9396,7 @@ class AlmacenController extends Controller
         return response()->json($guias);
     }
     ////////////////////////////////////////
-    public function leftZero($lenght, $number){
+    public static function leftZero($lenght, $number){
         $nLen = strlen($number);
         $zeros = '';
         for($i=0; $i<($lenght-$nLen); $i++){

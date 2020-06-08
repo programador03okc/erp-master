@@ -1293,7 +1293,9 @@ span.select2-selection {
 #listaDocsProrrateo_filter,
 #ordenesPendientes_filter,
 #ordenesEntregadas_filter,
-#requerimientosPendientes_filter {
+#requerimientosPendientes_filter,
+#ordenesDespacho_filter,
+#gruposDespachados_filter {
   margin: 0;
 }
 
@@ -1323,7 +1325,9 @@ span.select2-selection {
 #listaDocsProrrateo_filter label input[type=search],
 #ordenesPendientes_filter label input[type=search],
 #ordenesEntregadas_filter label input[type=search],
-#requerimientosPendientes_filter label input[type=search] {
+#requerimientosPendientes_filter label input[type=search],
+#ordenesDespacho_filter label input[type=search],
+#gruposDespachados_filter label input[type=search] {
   width: 95%;
 }
 

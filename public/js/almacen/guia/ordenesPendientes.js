@@ -115,7 +115,7 @@ function open_detalle(data){
         show: true
     });
     $('#cabecera_orden').text(data.codigo+' - '+data.razon_social+' - Total: '+data.simbolo+data.monto_total);
-    listar_detalle_orden(data.id_orden_compra);
+    listar_detalle_orden(data.id_orden_compra, data.simbolo);
 }
 
 function open_guia_create(data){
@@ -138,7 +138,7 @@ function open_guias(data){
     listar_guias_orden(data.id_orden_compra);
 }
 
-function listar_detalle_orden(id_orden){
+function listar_detalle_orden(id_orden, simbolo){
     $.ajax({
         type: 'GET',
         url: '/detalleOrden/'+id_orden,
@@ -149,9 +149,11 @@ function listar_detalle_orden(id_orden){
             var i = 1;
             var dscto = 0;
             var sub_total = 0;
+            var total = 0;
             response.forEach(element => {
                 dscto = (element.monto_descuento !== null ? element.monto_descuento : 0);
                 sub_total = (element.cantidad_cotizada * element.precio_cotizado);
+                total += (sub_total - dscto);
                 html+='<tr id="'+element.id_detalle_orden+'">'+
                 '<td>'+i+'</td>'+
                 '<td>'+element.codigo+'</td>'+
@@ -159,13 +161,15 @@ function listar_detalle_orden(id_orden){
                 '<td>'+element.cantidad_cotizada+'</td>'+
                 '<td>'+element.unidad_medida+'</td>'+
                 '<td>'+element.precio_cotizado+'</td>'+
-                '<td>'+sub_total+'</td>'+
-                '<td>'+dscto+'</td>'+
-                '<td>'+(sub_total - dscto)+'</td>'+
+                '<td class="right">'+formatNumber.decimal(sub_total,'',-2)+'</td>'+
+                '<td class="right">'+formatNumber.decimal(dscto,'',-2)+'</td>'+
+                '<td class="right">'+formatNumber.decimal((sub_total - dscto),'',-2)+'</td>'+
                 '</tr>';
                 i++;
             });
+            var html_foot = '<tr><td class="right" colSpan="8">'+simbolo+'</td><td class="right">'+formatNumber.decimal(total,'',-2)+'</td></tr>';
             $('#detalleOrden tbody').html(html);
+            $('#detalleOrden tfoot').html(html_foot);
         }
     }).fail( function( jqXHR, textStatus, errorThrown ){
         console.log(jqXHR);
