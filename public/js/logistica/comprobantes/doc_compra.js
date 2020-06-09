@@ -1,5 +1,5 @@
 function nuevo_doc_compra(){
-    console.log(auth_user);
+    // console.log(auth_user);
     $('#form-doc_compra')[0].reset();
     $('[name=usuario]').val(auth_user.id_usuario);
     $('[name=id_tp_doc]').val(2).trigger('change.select2');
@@ -18,10 +18,10 @@ function mostrar_doc_compra(id_doc_com){
         $.ajax({
             type: 'GET',
             headers: {'X-CSRF-TOKEN': token},
-            url: 'mostrar_doc_com/'+id_doc_com,
+            url: '/mostrar_doc_com/'+id_doc_com,
             dataType: 'JSON',
             success: function(response){
-                console.log(response);
+                // console.log(response);
                 $('[name=id_doc_com]').val(response[0].id_doc_com);
                 $('[name=serie]').val(response[0].serie);
                 $('#serie').text(response[0].serie);
@@ -71,7 +71,7 @@ function listar_doc_guias(id_doc){
     $.ajax({
         type: 'GET',
         headers: {'X-CSRF-TOKEN': token},
-        url: 'listar_doc_guias/'+id_doc,
+        url: '/listar_doc_guias/'+id_doc,
         dataType: 'JSON',
         success: function(response){
             $('#guias tbody').html(response);
@@ -87,7 +87,7 @@ function listar_doc_items(id_doc){
     $.ajax({
         type: 'GET',
         // headers: {'X-CSRF-TOKEN': token},
-        url: 'listar_doc_items/'+id_doc,
+        url: '/listar_doc_items/'+id_doc,
         dataType: 'JSON',
         success: function(response){
             $('#listaDetalle tbody').html(response);
@@ -99,14 +99,14 @@ function listar_doc_items(id_doc){
     });
 }
 function save_doc_compra(data, action){
-    console.log(data);
+    // console.log(data);
     if (action == 'register'){
-        baseUrl = 'guardar_doc_compra';
+        baseUrl = '/guardar_doc_compra';
     } else if (action == 'edition'){
-        baseUrl = 'actualizar_doc_compra';
+        baseUrl = '/actualizar_doc_compra';
     }
     var s = $('[name=total_a_pagar]').val();
-    console.log('total a pagar:'+s);
+    // console.log('total a pagar:'+s);
     $.ajax({
         type: 'POST',
         headers: {'X-CSRF-TOKEN': token},
@@ -138,14 +138,14 @@ function save_doc_compra(data, action){
 }
 
 function listar_guias_prov(id_proveedor){
-    console.log('id_proveedor'+id_proveedor);
+    // console.log('id_proveedor'+id_proveedor);
     $.ajax({
         type: 'GET',
         headers: {'X-CSRF-TOKEN': token},
-        url: 'listar_guias_prov/'+id_proveedor,
+        url: '/listar_guias_prov/'+id_proveedor,
         dataType: 'JSON',
         success: function(response){
-            console.log(response);
+            // console.log(response);
             var option = '';
             for (var i=0;i<response.length;i++){
                 option +='<option value="'+response[i].id_guia+'">'+
@@ -165,17 +165,17 @@ function agrega_guia(id_guia){
     // var id_guia = $('[name=id_guia]').val();
     // var id_proveedor = $('[name=id_proveedor]').val();
     var id_doc_com = $('[name=id_doc_com]').val();
-    console.log('id_guia'+id_guia+' id_doc_com'+id_doc_com);
+    // console.log('id_guia'+id_guia+' id_doc_com'+id_doc_com);
     
     if (id_guia !== null){
         var rspta = confirm('¿Esta seguro que desea agregar los items de ésta guía?');
         if (rspta){
             $.ajax({
                 type: 'GET',
-                url: 'guardar_doc_items_guia/'+id_guia+'/'+id_doc_com,
+                url: '/guardar_doc_items_guia/'+id_guia+'/'+id_doc_com,
                 dataType: 'JSON',
                 success: function(response){
-                    console.log('response'+response);
+                    // console.log('response'+response);
                     if (response > 0){
                         alert('Items registrados con éxito');
                         listar_doc_items(id_doc_com);
@@ -197,7 +197,7 @@ function agrega_guia(id_guia){
 }
 
 function anular_doc_compra(ids){
-    baseUrl = 'anular_doc_compra/'+ids;
+    baseUrl = '/anular_doc_compra/'+ids;
     $.ajax({
         type: 'GET',
         headers: {'X-CSRF-TOKEN': token},
@@ -222,13 +222,13 @@ function anular_doc_compra(ids){
 
 function anular_guia(id_guia,id_doc_com_guia){
     var id_doc = $('[name=id_doc_com]').val();
-    console.log('id_guia'+id_guia+'id_doc'+id_doc);
+    // console.log('id_guia'+id_guia+'id_doc'+id_doc);
     var anula = confirm("¿Esta seguro que desea anular ésta OC?\nSe quitará también la relación de sus Items");
     if (anula){
         $.ajax({
             type: 'GET',
             headers: {'X-CSRF-TOKEN': token},
-            url: 'anular_guia/'+id_doc+'/'+id_guia,
+            url: '/anular_guia/'+id_doc+'/'+id_guia,
             dataType: 'JSON',
             success: function(response){
                 console.log(response);
@@ -271,7 +271,7 @@ function ceros_numero(){
 function change_dias(){
     var condicion = $('[name=id_condicion]').val();
     var edi = $('[name=id_condicion]').attr('disabled');
-    console.log('edi'+edi);
+    // console.log('edi'+edi);
     if (condicion == 2){
         $('[name=credito_dias]').attr('disabled',false);
     } else {
@@ -284,10 +284,10 @@ function actualiza_totales(){
     var fecha = $('[name=fecha_emision]').val();
     $.ajax({
         type: 'GET',
-        url: 'actualiza_totales_doc/'+por+'/'+id+'/'+fecha,
+        url: '/actualiza_totales_doc/'+por+'/'+id+'/'+fecha,
         dataType: 'JSON',
         success: function(response){
-            console.log(response);
+            // console.log(response);
             if (response > 0){
                 mostrar_doc_compra(id);
             }

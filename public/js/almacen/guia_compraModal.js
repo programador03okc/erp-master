@@ -40,7 +40,7 @@ function listarGuiasCompra(){
         'language' : vardataTables[0],
         'bDestroy': true,
         'retrieve': true,
-        'ajax': 'listar_guias_compra',
+        'ajax': '/listar_guias_compra',
         'columns': [
             {'data': 'id_guia'},
             {'data': 'razon_social'},
@@ -69,7 +69,7 @@ function listarGuiasProveedor(id_proveedor){
         'language' : vardataTables[0],
         'bDestroy': true,
         'retrieve': true,
-        'ajax': 'listar_guias_proveedor/'+id_proveedor,
+        'ajax': '/listar_guias_proveedor/'+id_proveedor,
         'columns': [
             {'data': 'id_guia'},
             {'data': 'razon_social'},

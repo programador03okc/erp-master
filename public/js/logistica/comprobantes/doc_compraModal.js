@@ -1,6 +1,6 @@
 $(function(){
     $('#listaDocsCompra tbody').on('click', 'tr', function(){
-        console.log($(this));
+        // console.log($(this));
         if ($(this).hasClass('eventClick')){
             $(this).removeClass('eventClick');
         } else {
@@ -20,7 +20,7 @@ function listarDocsCompra(){
         'dom': vardataTables[1],
         'buttons': vardataTables[2],
         'language' : vardataTables[0],
-        'ajax': 'listar_docs_compra',
+        'ajax': '/listar_docs_compra',
         'columns': [
             {'data': 'id_doc_com'},
             {'data': 'razon_social'},
@@ -53,7 +53,7 @@ function selectDocCompra(){
     var page = $('.page-main').attr('type');
 
     if (page == "doc_compra"){
-        console.log(myId);
+        // console.log(myId);
         mostrar_doc_compra(myId);
     }    
     $('#modal-doc_compra').modal('hide');
