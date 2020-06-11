@@ -43,9 +43,24 @@
                 <li><a href="ordenesPendientes"> Pendientes de Ingreso </a></li>
                 <li><a href="guia_compra"> Compras / Ingresos </a></li>
                 <li><a href="guia_venta"> Ventas / Salidas </a></li>
-                <li><a href="listar_transferencias"> Transferencias </a></li>
-                <li><a href="transformacion"> Customización </a></li>
-                {{-- <li><a href="cola_atencion"> Pendientes de Atención </a></li> --}}
+            </ul>
+        </li>
+        <li class="treeview">
+            <a href="#">
+            <i class="fas fa-exchange-alt"></i> <span>Transferencias</span> <i class="fa fa-angle-left pull-right"></i>
+            </a>
+            <ul class="treeview-menu">
+                <li><a href="listar_transferencias"> Gestión de Transferencias </a></li>
+                <!-- <li><a href="#"> Despachos Pendientes </a></li> -->
+            </ul>
+        </li>
+        <li class="treeview">
+            <a href="#">
+            <i class="fas fa-code-branch"></i> <span>Customización</span> <i class="fa fa-angle-left pull-right"></i>
+            </a>
+            <ul class="treeview-menu">
+                <li><a href="listar_transformaciones"> Gestión de Customizaciones </a></li>
+                <li><a href="transformacion"> Hoja de Transformación </a></li>
             </ul>
         </li>
         <li class="treeview">
@@ -72,7 +87,6 @@
                 <li><a href="kardex_series"> Kardex de Series </a></li>
                 <li><a href="saldos"> Saldos Físicos Valorizados </a></li>
                 <li><a href="docs_prorrateo"> Documentos de Prorrateo </a></li>
-                {{-- <li><a href="listar_transformaciones"> Lista de Transformaciones </a></li> --}}
             </ul>
         </li>
         <li class="treeview">

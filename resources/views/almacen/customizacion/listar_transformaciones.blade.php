@@ -47,5 +47,5 @@
 </div>
 @include('layout.footer')
 @include('layout.scripts')
-<script src="{{('/js/almacen/reporte/listar_transformaciones.js')}}"></script>
+<script src="{{('/js/almacen/customizacion/listar_transformaciones.js')}}"></script>
 @include('layout.fin_html')

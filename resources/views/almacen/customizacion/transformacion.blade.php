@@ -1,9 +1,14 @@
 @include('layout.head')
 @include('layout.menu_almacen')
 @include('layout.body')
+
+@section('cabecera')
+Hoja de Transformación
+@endsection
+
 <div class="page-main" type="transformacion">
     <legend class="mylegend">
-        <h2 id="titulo">Hoja de Transformación</h2>
+        <h2 id="titulo">@yield('cabecera')</h2>
         <ol class="breadcrumb">
             {{-- <li><label id="tp_doc_almacen"></label> - <label id="serie"></label> - <label id="numero"></label></li> --}}
             <li><label id="codigo_transformacion"></label>
@@ -329,18 +334,18 @@
         </div>
     </div>
 </div>
-@include('almacen.guias.transformacionModal')
+@include('almacen.customizacion.transformacionModal')
 @include('almacen.producto.productoModal')
 @include('logistica.servicioModal')
 @include('layout.footer')
 @include('layout.scripts')
-<script src="{{('/js/almacen/transformacion/transformacion.js')}}"></script>
-<script src="{{('/js/almacen/transformacion/transformacionModal.js')}}"></script>
+<script src="{{('/js/almacen/customizacion/transformacion.js')}}"></script>
+<script src="{{('/js/almacen/customizacion/transformacionModal.js')}}"></script>
 <script src="{{('/js/almacen/producto/productoModal.js')}}"></script>
-<script src="{{('/js/almacen/transformacion/transfor_materia.js')}}"></script>
-<script src="{{('/js/almacen/transformacion/transfor_directo.js')}}"></script>
-<script src="{{('/js/almacen/transformacion/transfor_indirecto.js')}}"></script>
-<script src="{{('/js/almacen/transformacion/transfor_sobrante.js')}}"></script>
-<script src="{{('/js/almacen/transformacion/transfor_transformado.js')}}"></script>
+<script src="{{('/js/almacen/customizacion/transfor_materia.js')}}"></script>
+<script src="{{('/js/almacen/customizacion/transfor_directo.js')}}"></script>
+<script src="{{('/js/almacen/customizacion/transfor_indirecto.js')}}"></script>
+<script src="{{('/js/almacen/customizacion/transfor_sobrante.js')}}"></script>
+<script src="{{('/js/almacen/customizacion/transfor_transformado.js')}}"></script>
 <script src="{{('/js/logistica/servicioModal.js')}}"></script>
 @include('layout.fin_html')

@@ -277,7 +277,7 @@
 @include('almacen.guias.guia_ven_series')
 @include('almacen.guias.seriesModal')
 @include('almacen.guias.guia_ven_obs')
-@include('almacen.guias.transferencia')
+@include('almacen.transferencias.transferencia')
 @include('almacen.producto.productoModal')
 @include('logistica.cotizaciones.clienteModal')
 @include('logistica.ordenes.occModal')
@@ -290,7 +290,7 @@
 <script src="{{('/js/almacen/guia/guia_ventaModal.js')}}"></script>
 <script src="{{('/js/almacen/guia/guia_ven_series.js')}}"></script>
 <script src="{{('/js/almacen/variables/seriesModal.js')}}"></script>
-<script src="{{('/js/almacen/transferencia.js')}}"></script>
+<script src="{{('/js/almacen/transferencias/transferencia.js')}}"></script>
 <script src="{{('/js/almacen/producto/productoModal.js')}}"></script>
 <script src="{{('/js/logistica/clienteModal.js')}}"></script>
 <script src="{{('/js/logistica/occModal.js')}}"></script>

@@ -3,23 +3,23 @@
 @include('layout.body_sin_option')
 <div class="page-main" type="saldos">
     <legend class="mylegend">
-        <h2>Reporte de Saldos por Almacén</h2>
+        <h2>Reporte de Saldos Actuales por Almacén</h2>
         <ol class="breadcrumb">
             <li>
-                {{-- <button type="submit" class="btn btn-success" data-toggle="tooltip" 
+                <!-- {{-- <button type="submit" class="btn btn-success" data-toggle="tooltip" 
                     data-placement="bottom" title="Descargar Saldos" 
                     onClick="downloadKardexSunat();">Saldos por Almacén</button>
                 <button type="button" class="btn btn-primary" data-toggle="tooltip" 
                     data-placement="bottom" title="Ingrese los filtros" 
-                    onClick="open_filtros();">Filtros</button> --}}
+                    onClick="open_filtros();">Filtros</button> --}} -->
             </li>
         </ol>
     </legend>
     <div class="row">
-        <div class="col-md-3">
+        <!-- <div class="col-md-3">
             <h5>Saldo al:</h5>
             <input type="date" class="form-control" name="fecha">
-        </div>
+        </div> -->
         <div class="col-md-6">
             <h5>Almacén</h5>
             <div style="display:flex;">
@@ -54,7 +54,8 @@
                         <th>Mnd</th>
                         <th>Soles</th>
                         <th>Dolar</th>
-                        <th>Ult.Costo</th>
+                        <th>Costo Promedio</th>
+                        <th>Reserva</th>
                         <th>Ubicación</th>
                         <th>Clasificación</th>
                         <th>Categoría</th>

@@ -1,9 +1,10 @@
 $(function(){
-    $('[name=fecha]').val(fecha_actual());
+//     $('[name=fecha]').val(fecha_actual());
+    tipo_cambio();
 });
 function listarSaldos(){
     var almacen = $('[name=almacen]').val();
-    var fecha = $('[name=fecha]').val();
+    // var fecha = $('[name=fecha]').val();
     
     var vardataTables = funcDatatables();
     $('#listaSaldos').dataTable({
@@ -12,7 +13,7 @@ function listarSaldos(){
         'buttons': vardataTables[2],
         'language' : vardataTables[0],
         'ajax': {
-            url:'listar_saldos/'+almacen+'/'+fecha,
+            url:'listar_saldos/'+almacen,
             dataSrc:''
         },
         'columns': [
@@ -22,12 +23,16 @@ function listarSaldos(){
             {'data': 'cod_antiguo'},
             {'data': 'descripcion'},
             {'data': 'abreviatura'},
-            {'data': 'stock'},
+            {'data': 'stock', 'class': 'right'},
             {'data': 'simbolo'},
-            {'data': 'soles'},
-            {'data': 'dolares'},
-            {'data': 'costo_promedio'},
-            {'data': 'cod_posicion'},
+            {'data': 'soles', 'class': 'right'},
+            {'data': 'dolares', 'class': 'right'},
+            {'data': 'costo_promedio', 'class': 'right'},
+            {'data': 'cantidad_reserva', 'class': 'right'},
+            {'render': function (data, type, row) {
+                    return (row['cod_posicion'] !== undefined ? row['cod_posicion'] : '');
+                }
+            },
             {'data': 'des_clasificacion'},
             {'data': 'des_categoria'},
             {'data': 'des_subcategoria'},
@@ -36,16 +41,13 @@ function listarSaldos(){
         "order": [[4, "asc"]]
     });
     vista_extendida();
-    tipo_cambio(fecha);
+    // tipo_cambio(fecha);
 }
-function vista_extendida(){
-    let body=document.getElementsByTagName('body')[0];
-    body.classList.add("sidebar-collapse"); 
-}
-function tipo_cambio(fecha){
+
+function tipo_cambio(){
     $.ajax({
         type: 'GET',
-        url: 'tipo_cambio_compra/'+fecha,
+        url: 'tipo_cambio_compra/'+fecha_actual(),
         dataType: 'JSON',
         success: function(response){
             console.log(response);

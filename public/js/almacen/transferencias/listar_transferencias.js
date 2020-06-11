@@ -53,12 +53,12 @@ function listarTransferenciasPendientes(){
                     }
                 },
                 {'defaultContent': 
-                    '<button type="button" class="ver btn btn-primary boton" data-toggle="tooltip" '+
-                        'data-placement="bottom" title="Ver Ingreso" >'+
-                        '<i class="fas fa-search-plus"></i></button>'+
                     '<button type="button" class="atender btn btn-success boton" data-toggle="tooltip" '+
                         'data-placement="bottom" title="Atender" >'+
                         '<i class="fas fa-share"></i></button>'+
+                    '<button type="button" class="ver btn btn-primary boton" data-toggle="tooltip" '+
+                        'data-placement="bottom" title="Ver Ingreso" >'+
+                        '<i class="fas fa-search-plus"></i></button>'+
                     '<button type="button" class="anular btn btn-danger boton" data-toggle="tooltip" '+
                         'data-placement="bottom" title="Anular" >'+
                         '<i class="fas fa-trash"></i></button>'},

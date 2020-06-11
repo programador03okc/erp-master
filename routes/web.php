@@ -804,24 +804,24 @@ Route::get('anular_tp_doc/{id}', 'AlmacenController@anular_tp_doc');
 Route::get('mostrar_guia_detalle/{id}/{pro}', 'AlmacenController@mostrar_guia_detalle');
 Route::post('guardar_prorrateo_detalle', 'AlmacenController@guardar_prorrateo_detalle');
 
-Route::get('ordenesPendientes', 'AlmacenController@view_ordenesPendientes');
-Route::get('listarOrdenesPendientes', 'AlmacenController@listarOrdenesPendientes');
-Route::get('listarOrdenesEntregadas', 'AlmacenController@listarOrdenesEntregadas');
-Route::get('detalleOrden/{id}', 'AlmacenController@detalleOrden');
-Route::post('guardar_guia_com_oc', 'AlmacenController@guardar_guia_com_oc');
-Route::get('verGuiasOrden/{id}', 'AlmacenController@verGuiasOrden');
+Route::get('ordenesPendientes', 'OrdenesPendientesController@view_ordenesPendientes');
+Route::post('listarOrdenesPendientes', 'OrdenesPendientesController@listarOrdenesPendientes');
+Route::post('listarOrdenesEntregadas', 'OrdenesPendientesController@listarOrdenesEntregadas');
+Route::get('detalleOrden/{id}', 'OrdenesPendientesController@detalleOrden');
+Route::post('guardar_guia_com_oc', 'OrdenesPendientesController@guardar_guia_com_oc');
+Route::get('verGuiasOrden/{id}', 'OrdenesPendientesController@verGuiasOrden');
 
 // Route::get('requerimientosPendientes', 'DistribucionController@view_requerimientosPendientes');
 Route::get('ordenesDespacho', 'DistribucionController@view_ordenesDespacho');
-Route::get('listarRequerimientosPendientes', 'DistribucionController@listarRequerimientosPendientes');
+Route::post('listarRequerimientosPendientes', 'DistribucionController@listarRequerimientosPendientes');
 Route::get('verDetalleRequerimiento/{id}', 'DistribucionController@verDetalleRequerimiento');
 Route::post('guardar_orden_despacho', 'DistribucionController@guardar_orden_despacho');
-Route::get('listarOrdenesDespacho', 'DistribucionController@listarOrdenesDespacho');
+Route::post('listarOrdenesDespacho', 'DistribucionController@listarOrdenesDespacho');
 Route::get('verDetalleDespacho/{id}', 'DistribucionController@verDetalleDespacho');
 Route::post('guardar_grupo_despacho', 'DistribucionController@guardar_grupo_despacho');
 
 Route::get('grupoDespachos', 'DistribucionController@view_grupoDespachos');
-Route::get('listarGruposDespachados', 'DistribucionController@listarGruposDespachados');
+Route::post('listarGruposDespachados', 'DistribucionController@listarGruposDespachados');
 Route::get('verDetalleGrupoDespacho/{id}', 'DistribucionController@verDetalleGrupoDespacho');
 
 /**Guia Venta */
@@ -890,7 +890,7 @@ Route::get('anular_indirecto/{id}', 'AlmacenController@anular_indirecto');
 Route::get('anular_sobrante/{id}', 'AlmacenController@anular_sobrante');
 Route::get('anular_transformado/{id}', 'AlmacenController@anular_transformado');
 
-Route::get('listado_transformaciones', 'AlmacenController@view_listado_transformaciones');
+Route::get('listar_transformaciones', 'AlmacenController@view_listar_transformaciones');
 Route::get('listar_todas_transformaciones/{id}', 'AlmacenController@listar_todas_transformaciones');
 
 Route::get('listar_occ', 'AlmacenController@listar_occ');
@@ -995,7 +995,7 @@ Route::get('kardex_detallado', 'AlmacenController@view_kardex_detallado');
 Route::get('kardex_producto/{id}/{alm}/{fini}/{ffin}', 'AlmacenController@kardex_producto');
 Route::get('kardex_detallado/{id}/{alm}/{fini}/{ffin}', 'AlmacenController@download_kardex_producto');
 Route::get('saldos', 'AlmacenController@view_saldos');
-Route::get('listar_saldos/{id}/{fec}', 'AlmacenController@listar_saldos');
+Route::get('listar_saldos/{id}', 'AlmacenController@listar_saldos');
 Route::get('saldo_producto/{id}/{prod}/{fec}', 'AlmacenController@saldo_producto');
 Route::get('lista_ingresos', 'AlmacenController@view_ingresos');
 Route::get('listar_ingresos/{alm}/{docs}/{cond}/{fini}/{ffin}/{prov}/{usu}/{mon}/{tra}', 'AlmacenController@listar_ingresos');

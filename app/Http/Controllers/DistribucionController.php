@@ -28,16 +28,15 @@ class DistribucionController extends Controller
         return view('almacen/distribucion/grupoDespachos');
     }
 
-    public function listarRequerimientosPendientes(){
+    public function listarRequerimientosPendientes(Request $request){
         $data = DB::table('almacen.alm_req')
-            ->select('alm_req.*','sis_usua.nombre_corto','adm_grupo.descripcion as grupo',
+            ->select('alm_req.*','sis_usua.nombre_corto as responsable','adm_grupo.descripcion as grupo',
             'adm_grupo.id_sede')
             ->join('configuracion.sis_usua','sis_usua.id_usuario','=','alm_req.id_usuario')
             ->join('administracion.adm_grupo','adm_grupo.id_grupo','=','alm_req.id_grupo')
-            ->where('alm_req.estado',5)
+            ->where('alm_req.estado',19)//muestra todos los reservados
             ->get();
-            $output['data'] = $data;
-        return response()->json($output);
+        return datatables($data)->toJson();
     }
 
     public function verDetalleRequerimiento($id_requerimiento){
@@ -214,7 +213,7 @@ class DistribucionController extends Controller
         return response()->json($id_od);
     }
 
-    public function listarOrdenesDespacho(){
+    public function listarOrdenesDespacho(Request $request){
         $data = DB::table('almacen.orden_despacho')
         ->select('orden_despacho.*','adm_contri.nro_documento','adm_contri.razon_social',
         'alm_req.codigo as codigo_req','alm_req.concepto','ubi_dis.descripcion as ubigeo_descripcion',
@@ -227,8 +226,7 @@ class DistribucionController extends Controller
         ->join('administracion.adm_estado_doc','adm_estado_doc.id_estado_doc','=','orden_despacho.estado')
         ->where([['orden_despacho.estado','!=',7]])
         ->get();
-        $output['data'] = $data;
-        return response()->json($output);
+        return datatables($data)->toJson();
     }
 
     public function verDetalleDespacho($id_od){
@@ -271,7 +269,7 @@ class DistribucionController extends Controller
         return response()->json($id_od_grupo);
     }
 
-    public function listarGruposDespachados(){
+    public function listarGruposDespachados(Request $request){
         $data = DB::table('almacen.orden_despacho_grupo')
         ->select('orden_despacho_grupo.*','sis_usua.nombre_corto',
         'adm_estado_doc.estado_doc','adm_estado_doc.bootstrap_color')
@@ -279,8 +277,7 @@ class DistribucionController extends Controller
         ->join('administracion.adm_estado_doc','adm_estado_doc.id_estado_doc','=','orden_despacho_grupo.estado')
         ->where([['orden_despacho_grupo.estado','!=',7]])
         ->get();
-        $output['data'] = $data;
-        return response()->json($output);
+        return datatables($data)->toJson();
     }
 
     public function verDetalleGrupoDespacho($id_od_grupo){

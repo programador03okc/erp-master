@@ -134,6 +134,7 @@ function actualizar_tab(activeForm, id, id_prov){
             listar_docs_prorrateo(id);
             $('[name=prorrateo]').val(1);
             limpiarCampos();
+            $('.boton').removeClass('desactiva');
         }
     }
 }
@@ -193,6 +194,7 @@ function mostrar_guia_com(id){
             if (response[0].id_proveedor !== null){
                 listar_ordenes(response[0].id_proveedor);
             }
+            $('.boton').removeClass('desactiva');
         }
     }).fail( function( jqXHR, textStatus, errorThrown ){
         console.log(jqXHR);

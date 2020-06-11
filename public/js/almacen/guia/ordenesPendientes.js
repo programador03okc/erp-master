@@ -30,11 +30,16 @@ $(function(){
 
 function listarOrdenesPendientes(){
     var vardataTables = funcDatatables();
-    var tabla = $('#ordenesPendientes').DataTable({
+    $('#ordenesPendientes').DataTable({
         'dom': vardataTables[1],
         'buttons': vardataTables[2],
         'language' : vardataTables[0],
-        'ajax': 'listarOrdenesPendientes',
+        'destroy' : true,
+        'serverSide' : true,
+        'ajax': {
+            url: 'listarOrdenesPendientes',
+            type: 'POST'
+        },
         'columns': [
             {'data': 'id_orden_compra'},
             {'data': 'codigo'},
@@ -46,27 +51,47 @@ function listarOrdenesPendientes(){
             {'data': 'simbolo'},
             {'data': 'monto_subtotal'},
             {'data': 'monto_igv'},
-            {'data': 'monto_total'},
-            {'defaultContent': 
-            '<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" '+
-                'data-placement="bottom" title="Ver Detalle" >'+
-                '<i class="fas fa-list-ul"></i></button>'+
-            '<button type="button" class="guia btn btn-info boton" data-toggle="tooltip" '+
-                'data-placement="bottom" title="Generar Guía" >'+
-                '<i class="fas fa-sign-in-alt"></i></button>'}
+            {'data': 'monto_total'}
         ],
-        'columnDefs': [{ 'aTargets': [0], 'sClass': 'invisible'}],
+        'columnDefs': [
+            {'aTargets': [0], 'sClass': 'invisible'},
+            {'render': function (data, type, row){
+                return '<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" '+
+                    'data-placement="bottom" title="Ver Detalle" >'+
+                    '<i class="fas fa-list-ul"></i></button>'+
+                '<button type="button" class="guia btn btn-info boton" data-toggle="tooltip" '+
+                    'data-placement="bottom" title="Generar Guía" >'+
+                    '<i class="fas fa-sign-in-alt"></i></button>';
+                }, targets: 11
+            }
+        ],
     });
-    botones('#ordenesPendientes tbody',tabla);
 }
+// botones('#ordenesPendientes tbody',$('#ordenesPendientes').DataTable());
+$('#ordenesPendientes tbody').on("click","button.detalle", function(){
+    var data = $('#ordenesPendientes').DataTable().row($(this).parents("tr")).data();
+    console.log('data.id_orden_compra'+data.id_orden_compra);
+    // var data = $(this).data('id');
+    open_detalle(data);
+});
+$('#ordenesPendientes tbody').on("click","button.guia", function(){
+    var data = $('#ordenesPendientes').DataTable().row($(this).parents("tr")).data();
+    console.log('data.id_orden_compra'+data.id_orden_compra);
+    open_guia_create(data);
+});
 
 function listarOrdenesEntregadas(){
     var vardataTables = funcDatatables();
-    var tabla = $('#ordenesEntregadas').DataTable({
+    $('#ordenesEntregadas').DataTable({
         'dom': vardataTables[1],
         'buttons': vardataTables[2],
         'language' : vardataTables[0],
-        'ajax': 'listarOrdenesEntregadas',
+        'destroy' : true,
+        'serverSide' : true,
+        'ajax': {
+            url: 'listarOrdenesEntregadas',
+            type: 'POST'
+        },
         'columns': [
             {'data': 'id_orden_compra'},
             {'data': 'codigo'},
@@ -79,36 +104,33 @@ function listarOrdenesEntregadas(){
             {'data': 'monto_subtotal'},
             {'data': 'monto_igv'},
             {'data': 'monto_total'},
-            {'defaultContent': 
-            '<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" '+
-                'data-placement="bottom" title="Ver Detalle" >'+
-                '<i class="fas fa-list-ul"></i></button>'+
-            '<button type="button" class="ver_guias btn btn-warning boton" data-toggle="tooltip" '+
-                'data-placement="bottom" title="Ver Guías" >'+
-                '<i class="fas fa-file-alt"></i></button>'}
         ],
-        'columnDefs': [{ 'aTargets': [0], 'sClass': 'invisible'}],
-    });
-    botones('#ordenesEntregadas tbody',tabla);
-}
-
-function botones(tbody, tabla){
-    $(tbody).on("click","button.detalle", function(){
-        var data = tabla.row($(this).parents("tr")).data();
-        console.log('data.id_orden_compra'+data.id_orden_compra);
-        open_detalle(data);
-    });
-    $(tbody).on("click","button.guia", function(){
-        var data = tabla.row($(this).parents("tr")).data();
-        console.log('data.id_orden_compra'+data.id_orden_compra);
-        open_guia_create(data);
-    });
-    $(tbody).on("click","button.ver_guias", function(){
-        var data = tabla.row($(this).parents("tr")).data();
-        console.log('data.id_orden_compra'+data.id_orden_compra);
-        open_guias(data);
+        'columnDefs': [
+            {'aTargets': [0], 'sClass': 'invisible'},
+            {'render': function (data, type, row){
+                return '<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" '+
+                    'data-placement="bottom" title="Ver Detalle" data-id="'+row.id_orden_compra+'">'+
+                    '<i class="fas fa-list-ul"></i></button>'+
+                '<button type="button" class="ver_guias btn btn-warning boton" data-toggle="tooltip" '+
+                    'data-placement="bottom" title="Ver Guías" data-id="'+row.id_orden_compra+'">'+
+                    '<i class="fas fa-file-alt"></i></button>';
+                }, targets: 11
+            }    
+        ],
     });
 }
+$('#ordenesEntregadas tbody').on("click","button.detalle", function(){
+    var data = $('#ordenesEntregadas').DataTable().row($(this).parents("tr")).data();
+    console.log('data.id_orden_compra'+data.id_orden_compra);
+    // var data = $(this).data('id');
+    open_detalle(data);
+});
+$('#ordenesEntregadas tbody').on("click","button.ver_guias", function(){
+    var data = $('#ordenesEntregadas').DataTable().row($(this).parents("tr")).data();
+    console.log('data.id_orden_compra'+data.id_orden_compra);
+    // var data = $(this).data('id');
+    open_guias(data);
+});
 
 function open_detalle(data){
     $('#modal-ordenDetalle').modal({
@@ -230,13 +252,15 @@ function guardar_guia_create(data){
         url: 'guardar_guia_com_oc',
         data: data,
         dataType: 'JSON',
-        success: function(response){
-            console.log(response);
-            if (response > 0){
-                alert('La Guía se generó correctamente.');
+        success: function(id_ingreso){
+            console.log(id_ingreso);
+            if (id_ingreso > 0){
+                alert('Ingreso Almacén generado con éxito');
                 $('#modal-guia_create').modal('hide');
-                localStorage.setItem("id_guia_com",response);
-                location.assign("guia_compra");
+                var id = encode5t(id_ingreso);
+                window.open('imprimir_ingreso/'+id);                
+                // localStorage.setItem("id_guia_com",response);
+                // location.assign("guia_compra");
             }
         }
     }).fail( function( jqXHR, textStatus, errorThrown ){

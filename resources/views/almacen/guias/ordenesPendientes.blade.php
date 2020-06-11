@@ -1,6 +1,6 @@
 @include('layout.head')
 @include('layout.menu_almacen')
-@include('layout.body')
+@include('layout.body_sin_option')
 <div class="page-main" type="ordenesPendientes">
     <legend class="mylegend">
         <h2 id="titulo">Ordenes Pendientes de Ingreso</h2>
@@ -16,7 +16,7 @@
                     <div class="row">
                         <div class="col-md-12">
                             <table class="mytable table table-condensed table-bordered table-okc-view" 
-                                id="ordenesPendientes">
+                                id="ordenesPendientes" style="width:100px;">
                                 <thead>
                                     <tr>
                                         <th hidden></th>

@@ -137,7 +137,7 @@
                     </div>
                     <div class="row">
                         <div class="col-md-12">
-                            <div class="panel panel-primary" style="margin-bottom: 0px;">
+                            <div class="panel panel-default" style="margin-bottom: 0px;">
                                 <div class="panel-heading">Datos del Transportista</div>
                                 <div class="panel-body">
                                     <div class="row">
@@ -247,7 +247,7 @@
                 </form>
             </section>
             <section id="prorrateo" hidden>
-                {{-- <div class="row">
+                <!-- {{-- <div class="row">
                     <div class="col-md-12">
                         <form id="form-datos-prorrateo" method="post">
                             <input type="hidden" name="id_guia">
@@ -329,7 +329,7 @@
                             </table>
                         </form>
                     </div>
-                </div> --}}
+                </div> --}} -->
                 <div class="row">
                     <div class="col-md-12">
                         <table class="mytable table table-condensed table-bordered table-okc-view" width="100%"
@@ -420,7 +420,7 @@
                         </table>
                     </div>
                 </div>
-                {{-- </form> --}}
+                <!-- {{-- </form> --}} -->
             </section>
         </div>
     </div>
