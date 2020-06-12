@@ -1547,6 +1547,8 @@ Route::get('decode5t/{id}', 'EquipoController@decode5t');
 	Route::get('listar_ordenes_sin_comprobante/{id_proveedor}', 'LogisticaController@listar_ordenes_sin_comprobante'); 
 	Route::post('guardar_doc_com_det_orden/{id_doc}', 'LogisticaController@guardar_doc_com_det_orden');
 	Route::get('listar_doc_com_orden/{id_doc}', 'LogisticaController@listar_doc_com_orden');
+	Route::get('getOrdenByDetOrden/{id_det_orden}', 'LogisticaController@getOrdenByDetOrden');
+	Route::get('anular_orden_doc_com/{id_doc_com}/{id_orden_compra}', 'LogisticaController@anular_orden_doc_com');
 
 
 	/** Logistica - reportes  */

@@ -213,6 +213,7 @@
                                                                                             </td>
                                                                                         </tr> --}}
                                                                                         <tr>
+                                                                                            <th hidden>Id Orden</th>
                                                                                             <th>Código Orden</th>
                                                                                             <th>Fecha Emisión</th>
                                                                                             <th>Proveedor</th>
@@ -236,16 +237,16 @@
                                                                                 <table class="table-group" width="100%" id="listaDetalle">
                                                                                     <thead>
                                                                                         <tr>
-                                                                                            <th width='10%'>Guía Nro.</th>
-                                                                                            <th width='10%'>Código</th>
-                                                                                            <th width='30%'>Descripción</th>
+                                                                                            <th>Guía Nro.</th>
+                                                                                            <th>Código</th>
+                                                                                            <th>Descripción</th>
                                                                                             <th>Cantidad</th>
                                                                                             <th>Unidad</th>
                                                                                             <th>Unitario</th>
                                                                                             <th>%Dscto</th>
                                                                                             <th>Total Dscto</th>
                                                                                             <th>Precio Total</th>
-                                                                                            <th width='5%'>Acción</th>
+                                                                                            <th>Acción</th>
                                                                                         </tr>
                                                                                     </thead>
                                                                                     <tbody></tbody>

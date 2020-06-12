@@ -54,8 +54,14 @@ function mostrar_doc_compra(id_doc_com){
                 $('[name=simbolo_moneda]').text(response[0].simbolo)
 
                 listar_guias_prov(response[0].id_proveedor);
-                listar_doc_guias(response[0].id_doc_com);
-                listar_doc_items(response[0].id_doc_com);
+                // console.log(response[0].doc_com_det);
+                
+                if(response[0].doc_com_det.length > 0){
+                    listar_doc_com_orden(response[0].id_doc_com)
+                }else{
+                    listar_doc_guias(response[0].id_doc_com);
+                    listar_doc_items(response[0].id_doc_com);
+                }
                 
                 localStorage.removeItem("id_doc_com");
             }

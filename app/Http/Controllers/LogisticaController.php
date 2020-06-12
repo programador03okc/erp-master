@@ -12581,6 +12581,25 @@ class LogisticaController extends Controller
         return json_encode($html);
     }
 
+    public function anular_orden_doc_com($id_doc_com,$id_orden_compra)
+    {
+        $data=0;
+        $ordenes = DB::table('logistica.log_det_ord_compra')
+            ->select('log_det_ord_compra.id_detalle_orden')
+            ->join('logistica.log_ord_compra','log_ord_compra.id_orden_compra','=','log_det_ord_compra.id_orden_compra')
+            ->where([
+                ['log_det_ord_compra.id_orden_compra','=',$id_orden_compra]
+                ])
+            ->get()->toArray();
+
+        foreach($ordenes as $orden){
+            $data= DB::table('almacen.doc_com_det')
+            ->where('id_detalle_orden', $orden->id_detalle_orden)
+            ->update([ 'estado' => 7 ]);
+        }
+
+        return response()->json($data);
+    }
 
     public function listar_doc_items($id_doc){
         $detalle = DB::table('almacen.doc_com_det')
@@ -12890,13 +12909,28 @@ class LogisticaController extends Controller
             ->select('doc_com.*','adm_estado_doc.estado_doc','sis_usua.nombre_corto','sis_moneda.simbolo',
             'adm_contri.nro_documento','adm_contri.razon_social')
             ->join('administracion.adm_estado_doc','adm_estado_doc.id_estado_doc','=','doc_com.estado')
-            ->join('configuracion.sis_usua','sis_usua.id_usuario','=','doc_com.registrado_por')
+            ->leftJoin('configuracion.sis_usua','sis_usua.id_usuario','=','doc_com.registrado_por')
             ->join('configuracion.sis_moneda','sis_moneda.id_moneda','=','doc_com.moneda')
             ->join('logistica.log_prove','log_prove.id_proveedor','=','doc_com.id_proveedor')
             ->join('contabilidad.adm_contri','adm_contri.id_contribuyente','=','log_prove.id_contribuyente')
             ->where('doc_com.id_doc_com',$id)
             ->get();
-        return response()->json($doc);
+
+        $doc_det = DB::table('almacen.doc_com_det')
+        ->select('doc_com_det.id_detalle_orden')
+        ->where('doc_com_det.id_doc',$id)
+        ->get();
+        
+
+        $collect = collect($doc->first());
+        
+        if(count($doc_det)>0){
+            $collect->put('doc_com_det',$doc_det);
+        }else{
+            $collect->put('doc_com_det',[]);
+        }
+
+        return response()->json([$collect]);
     }
 
     public function mostrar_ingreso($id){
@@ -13264,7 +13298,112 @@ class LogisticaController extends Controller
 
     public function listar_doc_com_orden($id_doc){
         $status=0;
-        return response()->json($status);
+        $doc_com_doc_com_det=[];
+        $ordenes=[];
+        $doc_com = DB::table('almacen.doc_com')
+        ->select(
+            'doc_com.*'
+        )
+        ->where([
+            ['doc_com.id_doc_com','=',$id_doc],
+            ['doc_com.estado','=',1]
+            ])
+        ->get();
+
+        $doc_com_det = DB::table('almacen.doc_com_det')
+        ->select('doc_com_det.*','alm_prod.codigo','alm_prod.descripcion',
+        DB::raw("CONCAT('GR-',guia_com.serie,'-',guia_com.numero) as guia"),
+        'alm_und_medida.abreviatura',
+        'log_ord_compra.codigo as codigo_orden'
+        )
+        ->join('almacen.alm_item','alm_item.id_item','=','doc_com_det.id_item')
+        ->join('almacen.alm_prod','alm_prod.id_producto','=','alm_item.id_producto')
+        ->join('almacen.guia_com_det','guia_com_det.id_guia_com_det','=','doc_com_det.id_guia_com_det')
+        ->join('almacen.guia_com','guia_com.id_guia','=','guia_com_det.id_guia_com')
+        ->join('almacen.alm_und_medida','alm_und_medida.id_unidad_medida','=','doc_com_det.id_unid_med')
+        ->join('logistica.log_det_ord_compra','log_det_ord_compra.id_detalle_orden','=','doc_com_det.id_detalle_orden')
+        ->join('logistica.log_ord_compra','log_ord_compra.id_orden_compra','=','log_det_ord_compra.id_orden_compra')
+        ->where([['doc_com_det.id_doc','=',$id_doc],['doc_com_det.estado','=',1]])
+        ->get();
+
+        foreach($doc_com as $data){
+            $doc_com_doc_com_det[]=[
+                'id_doc_com'=>$data->id_doc_com,
+                'serie'=>$data->serie,
+                'numero'=>$data->numero,
+                'id_tp_doc'=>$data->id_tp_doc,
+                'id_proveedor'=>$data->id_proveedor,
+                'fecha_emision'=>$data->fecha_emision,
+                'fecha_vcmto'=>$data->fecha_vcmto,
+                'id_condicion'=>$data->id_condicion,
+                'moneda'=>$data->moneda,
+                'tipo_cambio'=>$data->tipo_cambio,
+                'sub_total'=>$data->sub_total,
+                'total_descuento'=>$data->total_descuento,
+                'porcen_descuento'=>$data->porcen_descuento,
+                'total'=>$data->total,
+                'total_igv'=>$data->total_igv,
+                'total_ant_igv'=>$data->total_ant_igv,
+                'total_a_pagar'=>$data->total_a_pagar,
+                'usuario'=>$data->usuario,
+                'estado'=>$data->estado,
+                'fecha_registro'=>$data->fecha_registro,
+                'credito_dias'=>$data->credito_dias,
+                'porcen_igv'=>$data->porcen_igv,
+                'porcen_anticipo'=>$data->porcen_anticipo,
+                'total_otros'=>$data->total_otros,
+                'registrado_por'=>$data->registrado_por,
+                'id_sede'=>$data->id_sede,
+                'doc_com_det'=>$doc_com_det
+            ];
+        }
+
+        //listar y almacenar en una array todo los id_detalle_orden para obtener la cabecera de la orden
+        $id_det_orden_list=[];
+        foreach($doc_com_det as $data){
+            if($data->id_detalle_orden != null){
+                $id_det_orden_list[]= $data->id_detalle_orden;
+            }
+        }
+        if(count($id_det_orden_list) > 0 ){
+            $ordenes=$this->getOrdenByDetOrden($id_det_orden_list);
+        }
+
+        if(count($ordenes)> 0){
+            $status = 200;
+        }
+
+        $output=[
+                'doc_com_doc_com_det'=>$doc_com_doc_com_det,
+                'ordenes'=>$ordenes,
+                'status'=>$status
+        ];
+        return response()->json($output);
+    }
+
+   public function getOrdenByDetOrden($id_det_orden_list){
+        $ord = DB::table('logistica.log_det_ord_compra')
+        ->select(
+            'log_ord_compra.id_orden_compra',
+            'log_ord_compra.codigo',
+            'log_ord_compra.fecha',
+            'log_ord_compra.id_proveedor',
+            'log_ord_compra.id_sede',
+            'adm_contri.id_contribuyente',
+            'adm_contri.razon_social',
+            'adm_contri.nro_documento',
+            'adm_tp_docum.descripcion AS tipo_documento'
+
+        )
+        ->join('logistica.log_ord_compra','log_ord_compra.id_orden_compra','=','log_det_ord_compra.id_orden_compra')
+        ->join('logistica.log_prove', 'log_prove.id_proveedor', '=', 'log_ord_compra.id_proveedor')
+        ->join('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'log_prove.id_contribuyente')
+        ->Join('administracion.adm_tp_docum', 'adm_tp_docum.id_tp_documento', '=', 'log_ord_compra.id_tp_documento')
+
+
+        ->whereIn('log_det_ord_compra.id_detalle_orden',[$id_det_orden_list])
+        ->get();
+        return $ord;
     }
 
     public function mostrar_doc_detalle($id_doc_det){

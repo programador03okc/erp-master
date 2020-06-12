@@ -181,7 +181,7 @@ function guardar_doc_com_det(data){
         dataType: 'JSON',
         data: data,
         success: function(response){
-            console.log(response);
+            // console.log(response);
             if (response > 0){
                 alert('Items registrados con éxito');
                 listar_doc_com_orden(id_doc_com);
@@ -203,10 +203,13 @@ function listar_doc_com_orden(id_doc_com){
             url: '/listar_doc_com_orden/'+id_doc_com,
             dataType: 'JSON',
             success: function(response){
-                console.log(response);
-                // if (response > 0){
-                //     listar_doc_com_orden(id_doc_com);
-                // }
+                // console.log(response);
+                if (response.status == 200){
+                    listar_ordenes(id_doc_com,response.ordenes);
+                    // console.log(response.doc_com_doc_com_det[0].doc_com_det);
+                    
+                    listar_detalle(id_doc_com,response.doc_com_doc_com_det[0].doc_com_det);
+                }
             }
         }).fail( function( jqXHR, textStatus, errorThrown ){
             console.log(jqXHR);
@@ -215,35 +218,121 @@ function listar_doc_com_orden(id_doc_com){
         });
     }
 }
-// function listar_orden(id_orden){
-//     var id_doc_com = $('[name=id_doc_com]').val();
-//     if (id_orden !== null){
-//         var rspta = confirm('¿Esta seguro que desea agregar los items de ésta Orden?');
-//         if (rspta){
-//             $.ajax({
-//                 type: 'GET',
-//                 url: '/guardar_doc_items_orden/'+id_orden+'/'+id_doc_com,
-//                 dataType: 'JSON',
-//                 success: function(response){
-//                     console.log(response);
-//                     // if (response > 0){
-//                     //     alert('Items registrados con éxito');
-//                     //     listar_doc_items(id_doc_com);
-//                     //     listar_doc_guias(id_doc_com);
-//                     //     actualiza_totales();
-//                     // }
-//                 }
-//             }).fail( function( jqXHR, textStatus, errorThrown ){
-//                 console.log(jqXHR);
-//                 console.log(textStatus);
-//                 console.log(errorThrown);
-//             });
-//         }
-//     } else {
-//         alert('Debe seleccionar una Orden');
-//     }
-// }
 
-function agregar_orden(data){
+function listar_ordenes(id_doc_com,data){
+    var vardataTables = funcDatatables();
+    $('#ordenes').DataTable({
+        'dom': 'rt',
+        // 'buttons': vardataTables[2],
+        'language' : vardataTables[0],
+        'bDestroy': true,
+        'retrieve': true,
+        // 'scrollX': true,
+        'data': data,
+        'columns': [
+            {'data': 'id_orden_compra'},
+            {'data': 'codigo'},
+            {'render':
+                function (data, type, row){
+                    return (formatDate(row.fecha));
+                }
+            },
+            {'render':
+                function (data, type, row){
+                    return (row.razon_social+' RUC:'+row.nro_documento);
+                }
+            },
+            {'data': 'tipo_documento'},
+            {'render':
+            function (data, type, row){
+                let icon =
+                '<i class="fas fa-trash icon-tabla red boton" data-toggle="tooltip" data-placement="bottom" title="" onclick="anular_orden('+id_doc_com+', '+row.id_orden_compra+');" data-original-title="Anular Orden"></i>';
+                return icon;            
+            }
+        }
+        ],
+        'columnDefs': [{ 'aTargets': [0], 'sClass': 'invisible'}],
+    });
+}
 
+function anular_orden(id_doc_com,id_orden_compra){
+    var anula = confirm("¿Esta seguro que desea anular ésta OC?\nSe quitará también la relación de sus Items");
+    if (anula){
+        $.ajax({
+            type: 'GET',
+            headers: {'X-CSRF-TOKEN': token},
+            url: '/anular_orden_doc_com/'+id_doc_com+'/'+id_orden_compra,
+            dataType: 'JSON',
+            success: function(response){
+                // console.log(response);
+                if (response > 0){
+                    alert('Orden anulada con éxito');
+                    // $("#doc-"+id_doc_com_guia).remove();
+                    listar_doc_com_orden(id_doc_com);
+                }
+            }
+        }).fail( function( jqXHR, textStatus, errorThrown ){
+            console.log(jqXHR);
+            console.log(textStatus);
+            console.log(errorThrown);
+        });
+    }
+}
+
+function listar_detalle(id_doc_com,data){
+    document.querySelector("table[id='listaDetalle']").firstElementChild.children[0].children[0].textContent = "Código Orden";
+    var vardataTables = funcDatatables();
+    $('#listaDetalle').DataTable({
+        'dom': 'rt',
+        // 'buttons': vardataTables[2],
+        'language' : vardataTables[0],
+        'bDestroy': true,
+        'retrieve': true,
+        // 'scrollX': true,
+        'data': data,
+        'columns': [
+            {'data': 'codigo_orden'},
+            {'data': 'codigo'},
+            {'data': 'descripcion'},
+            {'render':
+            function (data, type, row){
+                let cantidad = '<input type="number" class="input-data right" name="cantidad"  onChange="calcula_total('+row.id_doc_det+')" value="'+row.cantidad+'" disabled="true"/>';
+                return cantidad;            
+            }
+        },
+            {'data': 'abreviatura'},
+            {'render':
+                function (data, type, row){
+                    let precio_unitario = '<input type="number" class="input-data right" name="precio_unitario"  onChange="calcula_total('+row.id_doc_det+')" value="'+row.precio_unitario+'" disabled="true"/>';
+                    return precio_unitario;            
+                }
+            },
+            {'render':
+                function (data, type, row){
+                    let porcen_dscto = '<input type="number" class="input-data right" name="porcen_dscto"  onChange="calcula_dscto('+row.id_doc_det+')" value="'+row.porcen_dscto+'" disabled="true"/>';
+                    return porcen_dscto;            
+                }
+            },
+            {'render':
+                function (data, type, row){
+                    let total_dscto = '<input type="number" class="input-data right" name="total_dscto"  onChange="calcula_total('+row.id_doc_det+')" value="'+row.total_dscto+'" disabled="true"/>';
+                    return total_dscto;            
+                }
+            },
+            {'render':
+                function (data, type, row){
+                    let precio_total = '<input type="number" class="input-data right" name="precio_total" value="'+row.precio_total+'" disabled="true"/>';
+                    return precio_total;            
+                }
+            },
+            {'render':
+                function (data, type, row){
+                    let icon ='<div style="display:flex;"><i class="fas fa-pen-square icon-tabla blue boton" data-toggle="tooltip" data-placement="bottom" title="Editar Item" onClick="editar_detalle('+row.id_doc_det+');"></i>'+
+                    '<i class="fas fa-trash icon-tabla red boton" data-toggle="tooltip" data-placement="bottom" title="Anular Item" onClick="anular_detalle('+row.id_doc_det+');"></i></div>';
+                    return icon;            
+                }
+            }
+        ],
+        // 'columnDefs': [{ 'aTargets': [0], 'sClass': 'invisible'}],
+    });
 }
