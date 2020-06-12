@@ -917,27 +917,6 @@ Route::get('next_serie_numero_doc/{id}/{tp}', 'AlmacenController@next_serie_nume
 Route::get('actualiza_totales_doc_ven/{id}', 'AlmacenController@actualiza_totales_doc_ven');
 
 
-/**Doc Compra */
-
-Route::get('doc_compra', 'AlmacenController@view_doc_compra');
-Route::get('listar_docs_compra', 'AlmacenController@listar_docs_compra');
-Route::get('listar_doc_guias/{id}', 'AlmacenController@listar_doc_guias');
-Route::get('listar_doc_items/{id}', 'AlmacenController@listar_doc_items');
-Route::post('guardar_doc_compra', 'AlmacenController@guardar_doc_compra');
-Route::post('actualizar_doc_compra', 'AlmacenController@update_doc_compra');
-Route::post('update_doc_detalle', 'AlmacenController@update_doc_detalle');
-Route::get('anular_doc_detalle/{id}', 'AlmacenController@anular_doc_detalle');
-Route::get('anular_doc_compra/{id}', 'AlmacenController@anular_doc_compra');
-Route::post('guardar_doc_guia', 'AlmacenController@guardar_doc_guia');
-Route::post('actualizar_doc_guia', 'AlmacenController@actualizar_doc_guia');
-Route::get('mostrar_doc_com/{id}', 'AlmacenController@mostrar_doc_com');
-Route::get('mostrar_ingreso/{id}', 'AlmacenController@mostrar_ingreso');
-Route::get('imprimir_ingreso/{id}', 'AlmacenController@imprimir_ingreso');
-Route::get('id_ingreso/{id}', 'AlmacenController@id_ingreso');
-Route::get('listar_guias_prov/{id}', 'AlmacenController@listar_guias_prov');
-Route::get('guardar_doc_items_guia/{id}/{id_doc}', 'AlmacenController@guardar_doc_items_guia');
-Route::get('mostrar_doc_detalle/{id}', 'AlmacenController@mostrar_doc_detalle');
-Route::get('actualiza_totales_doc/{por}/{id}/{fec}', 'AlmacenController@actualiza_totales_doc'); 
 
 /**Doc Venta */
 
@@ -1556,6 +1535,34 @@ Route::get('decode5t/{id}', 'EquipoController@decode5t');
 	Route::get('getReqOperacionFlujoAprob/{id}/{tipo_id}', 'LogisticaController@getReqOperacionFlujoAprob'); 
 	Route::get('get_current_user/', 'LogisticaController@get_current_user'); 
 	Route::get('/logistica/explorar-orden/{id_orden}', 'LogisticaController@explorar_orden'); 
+
+	/** logistica - Comprobante de Compra */
+
+	Route::get('doc_compra', 'LogisticaController@view_doc_compra');
+	Route::get('listar_docs_compra', 'LogisticaController@listar_docs_compra');
+	Route::get('listar_doc_guias/{id}', 'LogisticaController@listar_doc_guias');
+	Route::get('listar_doc_items/{id}', 'LogisticaController@listar_doc_items');
+	Route::post('guardar_doc_compra', 'LogisticaController@guardar_doc_compra');
+	Route::post('actualizar_doc_compra', 'LogisticaController@update_doc_compra');
+	Route::post('update_doc_detalle', 'LogisticaController@update_doc_detalle');
+	Route::get('anular_doc_detalle/{id}', 'LogisticaController@anular_doc_detalle');
+	Route::get('anular_doc_compra/{id}', 'LogisticaController@anular_doc_compra');
+	Route::post('guardar_doc_guia', 'LogisticaController@guardar_doc_guia');
+	Route::post('actualizar_doc_guia', 'LogisticaController@actualizar_doc_guia');
+	Route::get('mostrar_doc_com/{id}', 'LogisticaController@mostrar_doc_com');
+	Route::get('mostrar_ingreso/{id}', 'LogisticaController@mostrar_ingreso');
+	Route::get('imprimir_ingreso/{id}', 'LogisticaController@imprimir_ingreso');
+	Route::get('id_ingreso/{id}', 'LogisticaController@id_ingreso');
+	Route::get('listar_guias_prov/{id}', 'LogisticaController@listar_guias_prov');
+	Route::get('guardar_doc_items_guia/{id}/{id_doc}', 'LogisticaController@guardar_doc_items_guia');
+	Route::get('mostrar_doc_detalle/{id}', 'LogisticaController@mostrar_doc_detalle');
+	Route::get('actualiza_totales_doc/{por}/{id}/{fec}', 'LogisticaController@actualiza_totales_doc'); 
+	Route::get('listar_ordenes_sin_comprobante/{id_proveedor}', 'LogisticaController@listar_ordenes_sin_comprobante'); 
+	Route::post('guardar_doc_com_det_orden/{id_doc}', 'LogisticaController@guardar_doc_com_det_orden');
+	Route::get('listar_doc_com_orden/{id_doc}', 'LogisticaController@listar_doc_com_orden');
+	Route::get('getOrdenByDetOrden/{id_det_orden}', 'LogisticaController@getOrdenByDetOrden');
+	Route::get('anular_orden_doc_com/{id_doc_com}/{id_orden_compra}', 'LogisticaController@anular_orden_doc_com');
+
 
 	/** Logistica - reportes  */
 	Route::get('/logistica/reportes/productos_comprados', 'LogisticaController@view_reporte_productos_comprados');

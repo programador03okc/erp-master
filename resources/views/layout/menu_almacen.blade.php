@@ -68,9 +68,14 @@
                 <i class="fas fa-truck"></i> <span>Distribución</span> <i class="fa fa-angle-left pull-right"></i>
             </a>
             <ul class="treeview-menu">
+<<<<<<< HEAD
                 <li><a href="ordenesDespacho"> Gestión de Despachos </a></li>
                 <li><a href="grupoDespachos"> Despachos </a></li>
                 <!-- <li><a href="#"> Despachos Pendientes </a></li> -->
+=======
+                <li><a href="/doc_compra"> Comprobantes de Compra </a></li>
+                <li><a href="doc_venta"> Comprobantes de Venta </a></li>
+>>>>>>> raul-dev
             </ul>
         </li>
         <li class="treeview">
