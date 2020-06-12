@@ -14,7 +14,7 @@ $(document).ready(function(){
 		checkboxClass: 'icheckbox_flat-green',
 		radioClass: 'iradio_flat-green'
 	});
-	$('.js-example-basic-single').select2();
+
 
     page = $('.page-main').attr('type');
 	var form = $('.page-main form[type=register]').attr('id');
@@ -31,12 +31,12 @@ $(document).ready(function(){
 	$('.page-main section form').removeAttr('type');
 	$("#tab-"+page+" section:first").attr('hidden', false);
 	$("#tab-"+page+" section:first form").attr('type', 'register');
-    
+
 	$('.mytable').css('width', '100%');
 
     changeStateInput(form, true);
 	changeStateButton('inicio');
-	
+
     $('.btn-okc').on('click', function(){
 		var forms = $('.page-main form[form=formulario]').attr('id');
 		var frm_active = $('.page-main form[type=register]').attr('id');
@@ -44,7 +44,7 @@ $(document).ready(function(){
 			var frm_active = $('.page-main form[type=edition]').attr('id');
 		}
 		var element = $(this).attr('id');
-        
+
         switch (element){
             case 'btnNuevo':
 				if (page !== 'ubicacion'){
@@ -122,7 +122,7 @@ $(document).ready(function(){
 				else if (page == 'propuesta'){
 					nuevo_propuesta();
 				}
-				
+
             break;
             case 'btnGuardar':
 				var data = $("#"+forms).serialize();
@@ -133,10 +133,10 @@ $(document).ready(function(){
 
 				if (forms!=="form-equi_cat" && forms!=="form-equi_sol" && forms!=="form-equi_tipo"
 				 && forms!=="form-mtto" && forms!=="form-tp_combustible" && forms!=="form-almacenes"
-				 && forms!=="form-tipo" && forms!=="form-categoria" && forms!=="form-clasificacion" 
+				 && forms!=="form-tipo" && forms!=="form-categoria" && forms!=="form-clasificacion"
 				 && forms!=="form-producto" && forms!=="form-requerimiento" && forms!=="form-general"
 				 && forms!=="form-doc_venta" && forms!=="form-presint" && forms!=="form-preseje"
-				 && forms!=="form-cronopro" && forms!=="form-cronoeje" && forms!=="form-cronoint" 
+				 && forms!=="form-cronopro" && forms!=="form-cronoeje" && forms!=="form-cronoint"
 				 && forms!=="form-cronovalint" && forms!=="form-cronovaleje"){
 					changeStateButton('guardar');
 					$('#'+forms).attr('type', 'register');
@@ -146,13 +146,13 @@ $(document).ready(function(){
             case 'btnEditar':
                 if (page == 'equi_sol'){
 					edit_equi_sol();
-				} 
+				}
 				else {
 					changeStateInput(frm_active, false);
 					changeStateButton('editar');
 					$('#'+forms).attr('type', 'edition');
 					// console.log(page);
-					
+
 					if (page == 'requerimiento'){
 						editRequerimiento();
 					}
@@ -195,7 +195,7 @@ $(document).ready(function(){
 					document.getElementById('btnGuardar').setAttribute("disabled","true");
 				}
 				else if (page == 'proveedores'){
-					
+
 				}
 				else if (page == 'categoria'){
 					$('[name=id_tipo_producto]').attr('disabled',true);
@@ -220,7 +220,7 @@ $(document).ready(function(){
 function resizeSide(){
 	var wrapper = document.getElementById("wrapper-okc");
 	var altura;
-	if (page == 'guia_compra' || page == 'guia_venta' || 
+	if (page == 'guia_compra' || page == 'guia_venta' ||
 		page == 'doc_compra' || page == 'doc_venta'){
 		altura = wrapper.offsetHeight + 400;
 		// console.log(altura);

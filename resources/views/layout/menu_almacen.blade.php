@@ -1,4 +1,4 @@
-
+@section('sidebar')
 <section class="sidebar">
     <div class="user-panel">
         <div class="pull-left image">
@@ -88,3 +88,4 @@
         </li>
     </ul>
 </section>
+@endsection

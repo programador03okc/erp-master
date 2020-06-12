@@ -1,7 +1,5 @@
-@include('layout.head')
+@extends('layout.head')
 @include('layout.menu_almacen')
-@include('layout.body')
+@section('content')
     <div>Hola...</div>
-@include('layout.footer')
-@include('layout.scripts')
-@include('layout.fin_html')
+@endsection
