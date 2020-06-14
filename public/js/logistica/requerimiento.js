@@ -416,7 +416,7 @@ function mostrar_requerimiento(IdorCode){
                 if(detalle_requerimiento.length === 0){
                     alert("El Requerimiento No Tiene Item");
                 }
-                // console.log(detalle_requerimiento);                
+                console.log(detalle_requerimiento);                
                 for (x=0; x<detalle_requerimiento.length; x++){
                     let adjunto=[];
                         items ={
@@ -598,17 +598,17 @@ function agregarItem(){
         return null;
     }
     
-    if(parseInt(item.id_partida) <= 0 ||  (Number.isNaN(item.id_partida) ==true) ){
-        alert("Debe seleccionar una partida");
-        return null;
-    }
+    // if(parseInt(item.id_partida) <= 0 ||  (Number.isNaN(item.id_partida) ==true) ){
+    //     alert("Debe seleccionar una partida");
+    //     return null;
+    // }
 
-    let = passMount=calcMontoLimiteDePartida();
+    // let = passMount=calcMontoLimiteDePartida();
     // console.log(passMount);
     
-    if(passMount == false){
+    // if(passMount == false){
 
-        /////////////////////////////////////////
+    //     /////////////////////////////////////////
         let tam_data_item = data_item.length;
         data_item.push(item);
         let update_tam_data_item= data_item.length;
@@ -619,10 +619,10 @@ function agregarItem(){
         }else{
             setTextInfoAnimation("Error!");
         }
-    }else{
-        setTextInfoAnimation("Excede el monto de la partida");
+    // }else{
+    //     setTextInfoAnimation("Excede el monto de la partida");
 
-    }
+    // }
 
 
         llenar_tabla_detalle_requerimiento(data_item);
@@ -818,24 +818,81 @@ function llenar_tabla_detalle_requerimiento(data_item){
 
 
 function get_data_requerimiento(){
-    let requerimiento = {
-        'id_requerimiento':$('[name=id_requerimiento]').val(),
-        'codigo':$('[name=codigo]').val(),
-        'concepto':$('[name=concepto]').val(),
-        'fecha_requerimiento':$('[name=fecha_requerimiento]').val(),
-        'id_prioridad':$('[name=prioridad]').val(),
-        'id_empresa':$('[name=empresa]').val(),
-        'id_grupo':$('[name=id_grupo]').val(),
-        'id_area':$('[name=id_area]').val(),
-        'nombre_area':$('[name=nombre_area]').val(),
-        'id_moneda':$('[name=moneda]').val(),
-        'id_periodo':$('[name=periodo]').val(),
-        'id_op_com':$('[name=id_op_com]').val(),
-        // 'id_tipo_requerimiento':$('[name=tipo]').val(),
-        'descripcion_presupuesto':$('[name=presupuesto]').val(),
-        'id_rol':$('[name=rol_usuario]').val(),
-        'codigo_occ':$('[name=codigo_occ]').val()
+    let tipo_req = document.querySelector("select[name='tipo_requerimiento']").value;
+    let requerimiento = {};
+    if(tipo_req == 1){
+        tipo_requerimiento = tipo_req;
+        id_requerimiento = document.querySelector("form[id='form-requerimiento'] input[name='id_requerimiento']").value;
+        codigo = document.querySelector("form[id='form-requerimiento'] input[name='codigo']").value;
+        concepto = document.querySelector("form[id='form-requerimiento'] input[name='concepto']").value;
+        fecha_requerimiento = document.querySelector("form[id='form-requerimiento'] input[name='fecha_requerimiento']").value;
+        id_prioridad = document.querySelector("form[id='form-requerimiento'] select[name='prioridad']").value;
+        id_empresa = document.querySelector("form[id='form-requerimiento'] select[name='empresa']").value;
+        id_grupo = document.querySelector("form[id='form-requerimiento'] input[name='id_grupo']").value;
+        id_area = document.querySelector("form[id='form-requerimiento'] input[name='id_area']").value;
+        nombre_area = document.querySelector("form[id='form-requerimiento'] input[name='nombre_area']").value;
+        id_moneda = document.querySelector("form[id='form-requerimiento'] select[name='moneda']").value;
+        id_periodo = document.querySelector("form[id='form-requerimiento'] select[name='periodo']").value;
+        id_op_com = document.querySelector("form[id='form-requerimiento'] input[name='id_op_com']").value;
+        descripcion_presupuesto = document.querySelector("form[id='form-requerimiento'] input[name='presupuesto']").value;
+        id_rol = document.querySelector("form[id='form-requerimiento'] select[name='rol_usuario']").value;
+        codigo_occ = document.querySelector("form[id='form-requerimiento'] input[name='codigo_occ']").value;
+        requerimiento = {
+            id_requerimiento,
+            tipo_requerimiento,
+            codigo,
+            concepto,
+            fecha_requerimiento,
+            id_prioridad,
+            id_empresa,
+            id_grupo,
+            id_area,
+            nombre_area,
+            id_moneda,
+            id_periodo,
+            id_op_com,
+            descripcion_presupuesto,
+            id_rol,
+            codigo_occ
+        };
+    }else if(tipo_req == 2){
+        tipo_requerimiento = tipo_req;
+        id_requerimiento = document.querySelector("form[id='form-requerimiento'] input[name='id_requerimiento']").value;
+        fecha_requerimiento = document.querySelector("form[id='form-requerimiento'] input[name='fecha_requerimiento']").value;
+        concepto = document.querySelector("form[id='form-requerimiento'] input[name='concepto']").value;
+        id_prioridad = document.querySelector("form[id='form-requerimiento'] select[name='prioridad']").value;
+        id_periodo = document.querySelector("form[id='form-requerimiento'] select[name='periodo']").value;
+        id_moneda = document.querySelector("form[id='form-requerimiento'] select[name='moneda']").value;
+        id_empresa = document.querySelector("form[id='form-requerimiento'] select[name='empresa']").value;
+        id_sede = document.querySelector("form[id='form-requerimiento'] select[name='sede']").value;
+        tipo_cliente = document.querySelector("form[id='form-requerimiento'] select[name='tipo_cliente']").value;
+        id_persona = document.querySelector("form[id='form-requerimiento'] input[name='id_persona']").value;
+        direccion_entrega = document.querySelector("form[id='form-requerimiento'] input[name='direccion_entrega']").value;
+        ubigeo = document.querySelector("form[id='form-requerimiento'] input[name='ubigeo']").value;
+        id_almacen = document.querySelector("form[id='form-requerimiento'] select[name='id_almacen']").value;
+        almacen_id_sede =document.querySelector("select[name='id_almacen']").options[document.querySelector("select[name='id_almacen']").selectedIndex].dataset.idSede;
+        almacen_id_empresa =document.querySelector("select[name='id_almacen']").options[document.querySelector("select[name='id_almacen']").selectedIndex].dataset.idEmpresa;
+
+    }
+    requerimiento = {
+        id_requerimiento,
+        tipo_requerimiento,
+        fecha_requerimiento,
+        concepto,
+        id_prioridad,
+        id_periodo,
+        id_moneda,
+        id_empresa,
+        id_sede,
+        tipo_cliente,
+        id_persona,
+        direccion_entrega,
+        ubigeo,
+        id_almacen,
+        almacen_id_sede,
+        almacen_id_empresa
     };
+    
 
 return requerimiento;
 }
@@ -972,9 +1029,8 @@ function detalleRequerimientoModal(event,index){
                 backdrop: 'static'
             });
             $('[name=id_almacen]').show();
-            document.querySelector("div[id='modal-detalle-requerimiento'] div[id='input-group-almacen']").removeAttribute('hidden');
 
-            cargar_almacenes(sede);
+            // cargar_almacenes(sede);
             document.querySelector("div[id='modal-detalle-requerimiento'] input[name='fecha_entrega_item']").value='';
             document.querySelector("div[id='modal-detalle-requerimiento'] input[name='lugar_entrega_item']").value='';
             document.querySelector("div[id='modal-detalle-requerimiento'] input[name='des_partida']").value='';
@@ -995,7 +1051,6 @@ function detalleRequerimientoModal(event,index){
         document.querySelector("div[id='modal-detalle-requerimiento'] div[name='lugar_entrega_item']").value='';
         document.querySelector("div[id='modal-detalle-requerimiento'] div[name='des_partida']").value='';
         document.querySelector("div[id='modal-detalle-requerimiento'] div[name='id_partida']").value='';
-        document.querySelector("div[id='modal-detalle-requerimiento'] div[id='input-group-almacen']").setAttribute('hidden',true);
         document.querySelector("div[id='modal-detalle-requerimiento'] div[id='input-group-fecha_entrega']").removeAttribute('hidden');
         document.querySelector("div[id='modal-detalle-requerimiento'] div[id='input-group-lugar_entrega']").removeAttribute('hidden');
         document.querySelector("div[id='modal-detalle-requerimiento'] div[id='input-group-partida']").removeAttribute('hidden');
@@ -1405,31 +1460,54 @@ function catalogoItemsModal(){
     }
 }
 
-function cargar_almacenes(sede){
-    if (sede !== ''){
-        $.ajax({
-            type: 'GET',
-            url: '/cargar_almacenes/'+sede,
-            dataType: 'JSON',
-            success: function(response){
-                console.log(response);
-                var option = '';
-                for (var i=0; i<response.length; i++){
-                    if (response.length == 1){
-                        option+='<option value="'+response[i].id_almacen+'" selected>'+response[i].codigo+' - '+response[i].descripcion+'</option>';
-                    } else {
-                        option+='<option value="'+response[i].id_almacen+'">'+response[i].codigo+' - '+response[i].descripcion+'</option>';
-                    }
+function listar_almacenes(){
+    $.ajax({
+        type: 'GET',
+        url: '/listar_almacenes',
+        dataType: 'JSON',
+        success: function(response){
+            // console.log(response.data);
+            var option = '';
+            for (var i=0; i<response.data.length; i++){
+                if (response.data.length == 1){
+                    option+='<option data-id-sede="'+response.data[i].id_sede+'" data-id-empresa="'+response.data[i].id_empresa+'" value="'+response.data[i].id_almacen+'" selected>'+response.data[i].codigo+' - '+response.data[i].descripcion+'</option>';
+                } else {
+                    option+='<option data-id-sede="'+response.data[i].id_sede+'" data-id-empresa="'+response.data[i].id_empresa+'" value="'+response.data[i].id_almacen+'">'+response.data[i].codigo+' - '+response.data[i].descripcion+'</option>';
                 }
-                $('[name=id_almacen]').html('<option value="0" disabled selected>Elija una opción</option>'+option);
             }
-        }).fail( function( jqXHR, textStatus, errorThrown ){
-            console.log(jqXHR);
-            console.log(textStatus);
-            console.log(errorThrown);
-        });
-    }
+            $('[name=id_almacen]').html('<option value="0" disabled selected>Elija una opción</option>'+option);
+        }
+    }).fail( function( jqXHR, textStatus, errorThrown ){
+        console.log(jqXHR);
+        console.log(textStatus);
+        console.log(errorThrown);
+    });
 }
+// function cargar_almacenes(sede){
+//     if (sede !== ''){
+//         $.ajax({
+//             type: 'GET',
+//             url: '/cargar_almacenes/'+sede,
+//             dataType: 'JSON',
+//             success: function(response){
+//                 console.log(response);
+//                 var option = '';
+//                 for (var i=0; i<response.length; i++){
+//                     if (response.length == 1){
+//                         option+='<option value="'+response[i].id_almacen+'" selected>'+response[i].codigo+' - '+response[i].descripcion+'</option>';
+//                     } else {
+//                         option+='<option value="'+response[i].id_almacen+'">'+response[i].codigo+' - '+response[i].descripcion+'</option>';
+//                     }
+//                 }
+//                 $('[name=id_almacen]').html('<option value="0" disabled selected>Elija una opción</option>'+option);
+//             }
+//         }).fail( function( jqXHR, textStatus, errorThrown ){
+//             console.log(jqXHR);
+//             console.log(textStatus);
+//             console.log(errorThrown);
+//         });
+//     }
+// }
 
 $(function(){
     /* Seleccionar valor del DataTable */
@@ -1691,9 +1769,10 @@ function selectPartida(id_partida){
 // }
 
 function save_requerimiento(action){
-     let actual_id_usuario = userSession.id_usuario;
-   
+    let actual_id_usuario = userSession.id_usuario;
     let requerimiento = get_data_requerimiento();
+    console.log(requerimiento);
+    
     let detalle_requerimiento = data_item;
 
     requerimiento.id_usuario = actual_id_usuario; //update -> usuario actual
@@ -1709,6 +1788,8 @@ function save_requerimiento(action){
 
         data.requerimiento.id_estado_doc =1  // estado elaborado 
         data.requerimiento.estado = 1  // estado 
+        
+        console.log(data);
         
         baseUrl = '/logistica/guardar_requerimiento';
         $.ajax({
@@ -2038,12 +2119,16 @@ function changeOptTipoReqSelect(e){
         document.querySelector("form[id='form-requerimiento'] select[name='rol_usuario']").value='';
         document.querySelector("div[id='input-group-area']").setAttribute('hidden',true);
         document.querySelector("div[id='input-group-rol-usuario']").setAttribute('hidden',true);
+        document.querySelector("div[id='input-group-almacen']").removeAttribute('hidden');
         document.querySelector("div[id='input-group-sede']").removeAttribute('hidden');
         document.querySelector("div[id='input-group-tipo-cliente']").removeAttribute('hidden');
         document.querySelector("div[id='input-group-cliente']").removeAttribute('hidden');
         document.querySelector("div[id='input-group-direccion-entrega']").removeAttribute('hidden');
         document.querySelector("div[id='input-group-ubigeo-entrega']").removeAttribute('hidden');
+        listar_almacenes();
+
     }else if(e.target.value == 1){
+        document.querySelector("form[id='form-requerimiento'] select[name='almacen']").value='';
         document.querySelector("form[id='form-requerimiento'] select[name='sede']").value='';
         document.querySelector("form[id='form-requerimiento'] select[name='tipo_cliente']").value = '';      
         document.querySelector("form[id='form-requerimiento'] input[name='dni_persona']").value='';
@@ -2053,6 +2138,7 @@ function changeOptTipoReqSelect(e){
         document.querySelector("form[id='form-requerimiento'] input[name='name_ubigeo']").value='';
         document.querySelector("div[id='input-group-area']").removeAttribute('hidden');
         document.querySelector("div[id='input-group-rol-usuario']").removeAttribute('hidden');
+        document.querySelector("div[id='input-group-almacen']").setAttribute('hidden',true);
         document.querySelector("div[id='input-group-sede']").setAttribute('hidden',true);
         document.querySelector("div[id='input-group-tipo-cliente']").setAttribute('hidden',true);
         document.querySelector("div[id='input-group-cliente']").setAttribute('hidden',true);

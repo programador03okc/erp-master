@@ -1276,54 +1276,64 @@ class LogisticaController extends Controller
 
     public function guardar_requerimiento(Request $request)
     {
-        // $abreviatura_documento = DB::table('administracion.adm_tp_docum')
-        // ->select('adm_tp_docum.*')
-        // ->where('adm_tp_docum.id_tp_documento', $request->requerimiento['id_tipo_requerimiento'])
-        // ->first();
-        $sql_grupo = DB::table('administracion.adm_grupo')
-        ->select('adm_grupo.id_grupo','adm_grupo.descripcion')
-        ->where('adm_grupo.id_grupo', $request->requerimiento['id_grupo'])
-        ->get();
+        if($request->requerimiento['tipo_requerimiento'] == 2){
+            $mes = date('m', strtotime("now"));
+            $yy = date('y', strtotime("now"));
+            $yyyy = date('Y', strtotime("now"));
+            $documento = 'RQ';
+            $num = DB::table('almacen.alm_req')
+            ->whereYear('fecha_registro', '=', $yyyy)
+            ->count();
+            $correlativo = $this->leftZero(4, ($num + 1));
+            $codigo = "{$documento}-CO-{$yy}-{$correlativo}";
+        }else{
+            $sql_grupo = DB::table('administracion.adm_grupo')
+            ->select('adm_grupo.id_grupo','adm_grupo.descripcion')
+            ->where('adm_grupo.id_grupo', $request->requerimiento['id_grupo'])
+            ->get();
+    
+            $id_grupo = $sql_grupo->first()->id_grupo;
+            $descripcion_grupo = $sql_grupo->first()->descripcion;
+    
+            //---------------------GENERANDO CODIGO REQUERIMIENTO--------------------------
+            $mes = date('m', strtotime("now"));
+            $yy = date('y', strtotime("now"));
+            $yyyy = date('Y', strtotime("now"));
+            $documento = 'RQ';
+            $grupo = $descripcion_grupo[0];
+            $num = DB::table('almacen.alm_req')
+            ->whereYear('fecha_registro', '=', $yyyy)
+            ->where('id_grupo', '=', $id_grupo)
+            ->count();
+            $correlativo = $this->leftZero(4, ($num + 1));
+            $codigo = "{$documento}-{$grupo}-{$yy}-{$correlativo}";
+        }
 
-        $id_grupo = $sql_grupo->first()->id_grupo;
-        $descripcion_grupo = $sql_grupo->first()->descripcion;
-
-        //---------------------GENERANDO CODIGO REQUERIMIENTO--------------------------
-        // $mes = date('m',strtotime($request->requerimiento['fecha_requerimiento']));
-        $mes = date('m', strtotime("now"));
-        // $yyyy = date('Y',strtotime($request->requerimiento['fecha_requerimiento']));
-        $yy = date('y', strtotime("now"));
-        $yyyy = date('Y', strtotime("now"));
-        // $anio = date('y',strtotime($request->requerimiento['fecha_requerimiento']));
-        // $documento = $abreviatura_documento->abreviatura;
-        $documento = 'RQ';
-        $grupo = $descripcion_grupo[0];
-        $num = DB::table('almacen.alm_req')
-        // ->whereMonth('fecha_registro', '=', $mes)
-        ->whereYear('fecha_registro', '=', $yyyy)
-        ->where('id_grupo', '=', $id_grupo)
-        ->count();
-        $correlativo = $this->leftZero(4, ($num + 1));
-        $codigo = "{$documento}{$grupo}-{$yy}{$correlativo}";
         //----------------------------------------------------------------------------
-        $data_req = DB::table('almacen.alm_req')->insertGetId(
+        $id_requerimiento = DB::table('almacen.alm_req')->insertGetId(
             [
                 'codigo'                => $codigo,
-                'id_tipo_requerimiento' => 1,
-                'id_usuario'            => $request->requerimiento['id_usuario'],
-                'id_rol'                => $request->requerimiento['id_rol'],
+                'id_tipo_requerimiento' => $request->requerimiento['tipo_requerimiento'],
+                'id_usuario'            => Auth::user()->id_usuario,
+                'id_rol'                => isset($request->requerimiento['id_rol'])?$request->requerimiento['id_rol']:null,
                 'fecha_requerimiento'   => $request->requerimiento['fecha_requerimiento'],
                 'id_periodo'            => $request->requerimiento['id_periodo'],
                 'concepto'              => $request->requerimiento['concepto'],
                 'id_moneda'             => $request->requerimiento['id_moneda'],
-                'id_grupo'              => $request->requerimiento['id_grupo'],
-                'id_area'               => $request->requerimiento['id_area'],
-                'id_op_com'             => $request->requerimiento['id_op_com'],
+                'id_grupo'              => isset($request->requerimiento['id_grupo'])?$request->requerimiento['id_grupo']:null,
+                'id_area'               => isset($request->requerimiento['id_area'])?$request->requerimiento['id_area']:null,
+                'id_op_com'             => isset($request->requerimiento['id_op_com'])?$request->requerimiento['id_op_com']:null,
                 'id_prioridad'          => $request->requerimiento['id_prioridad'],
                 'fecha_registro'        => date('Y-m-d H:i:s'),
-                'estado'                => $request->requerimiento['estado'],
+                'estado'                => ($request->requerimiento['tipo_requerimiento'] ==2?19:1),
                 'id_estado_doc'         => $request->requerimiento['id_estado_doc'],
-                'codigo_occ'            => $request->requerimiento['codigo_occ']
+                'codigo_occ'            => isset($request->requerimiento['codigo_occ'])?$request->requerimiento['codigo_occ']:null,
+                'id_sede'            => $request->requerimiento['id_sede'],
+                'tipo_cliente'          => $request->requerimiento['tipo_cliente'],
+                'id_persona'            => $request->requerimiento['id_persona'],
+            'direccion_entrega'         => $request->requerimiento['direccion_entrega'],
+                'id_ubigeo_entrega'     => $request->requerimiento['ubigeo'],
+                'id_almacen'            => isset($request->requerimiento['id_almacen'])?$request->requerimiento['id_almacen']:null,
             ],
             'id_requerimiento'
         );
@@ -1332,88 +1342,40 @@ class LogisticaController extends Controller
         $count_detalle_req = count($detalle_reqArray);
         if ($count_detalle_req > 0) {
             for ($i = 0; $i < $count_detalle_req; $i++) {
-                if ($detalle_reqArray[$i]['estado'] > 0) {
                     $alm_det_req = DB::table('almacen.alm_det_req')->insertGetId(
 
                         [
-                            'id_requerimiento'      => $data_req,
+                            'id_requerimiento'      => $id_requerimiento,
                             'id_item'               => is_numeric($detalle_reqArray[$i]['id_item']) == 1 && $detalle_reqArray[$i]['id_item']>0 ? $detalle_reqArray[$i]['id_item']:null,
+                            'id_producto'           => is_numeric($detalle_reqArray[$i]['id_producto']) == 1 && $detalle_reqArray[$i]['id_producto']>0 ? $detalle_reqArray[$i]['id_producto']:null,
                             'precio_referencial'    => is_numeric($detalle_reqArray[$i]['precio_referencial']) == 1 ?$detalle_reqArray[$i]['precio_referencial']:null,
                             'cantidad'              => $detalle_reqArray[$i]['cantidad']?$detalle_reqArray[$i]['cantidad']:null,
-                            'fecha_entrega'         => $detalle_reqArray[$i]['fecha_entrega']?$detalle_reqArray[$i]['fecha_entrega']:null,
-                            'lugar_entrega'         => $detalle_reqArray[$i]['lugar_entrega']?$detalle_reqArray[$i]['lugar_entrega']:null,
-                            'descripcion_adicional' => $detalle_reqArray[$i]['des_item']?$detalle_reqArray[$i]['des_item']:null,
-                            'partida'               => $detalle_reqArray[$i]['id_partida']?$detalle_reqArray[$i]['id_partida']:null,
+                            'fecha_entrega'         => isset($detalle_reqArray[$i]['fecha_entrega'])?$detalle_reqArray[$i]['fecha_entrega']:null,
+                            'lugar_entrega'         => isset($detalle_reqArray[$i]['lugar_entrega'])?$detalle_reqArray[$i]['lugar_entrega']:null,
+                            'descripcion_adicional' => isset($detalle_reqArray[$i]['des_item'])?$detalle_reqArray[$i]['des_item']:null,
+                            // 'partida'               => isset($detalle_reqArray[$i]['id_partida']) && ($detalle_reqArray[$i]['id_partida'] !=NaN) ?$detalle_reqArray[$i]['id_partida']:null,
                             'id_unidad_medida'      => is_numeric($detalle_reqArray[$i]['id_unidad_medida']) == 1 ? $detalle_reqArray[$i]['id_unidad_medida'] : null,
                             'id_tipo_item'          => is_numeric($detalle_reqArray[$i]['id_tipo_item']) == 1 ? $detalle_reqArray[$i]['id_tipo_item']:null,
-                            'estado'                => $detalle_reqArray[$i]['estado']?$detalle_reqArray[$i]['estado']:null,
                             'fecha_registro'        => date('Y-m-d H:i:s'),
-                            'estado'                => 1
+                            'estado'                => ($request->requerimiento['tipo_requerimiento'] ==2?19:1)
                         ],
                         'id_detalle_requerimiento'
                     );
-                    // $count_det_partidas =count($detalle_reqArray[$i]['det_partidas']);
-                    // if($count_det_partidas > 0){
-                    //     for ($j=0; $j< $count_det_partidas; $j++){ 
-                    //         $proy_pdetalle = DB::table('proyectos.proy_pdetalle')->insertGetId(
-                    //             [
-                    //                 'id_det_req'            => $alm_det_req, 
-                    //                 'id_cd_partida'         => $detalle_reqArray[$i]['det_partidas'][$j]['id_cd_partida'],
-                    //                 'id_gg_detalle'         => $detalle_reqArray[$i]['det_partidas'][$j]['id_gg_detalle'],
-                    //                 'id_ci_detalle'         => $detalle_reqArray[$i]['det_partidas'][$j]['id_ci_detalle'],
-                    //                 'cantidad'              => $detalle_reqArray[$i]['det_partidas'][$j]['cantidad'],
-                    //                 'cantidad_anulada'      => $detalle_reqArray[$i]['det_partidas'][$j]['cantidad_anulada'],
-                    //                 'importe_unitario'      => $detalle_reqArray[$i]['det_partidas'][$j]['importe_unitario'],
-                    //                 'id_insumo'             => $detalle_reqArray[$i]['det_partidas'][$j]['id_insumo'],
-                    //                 'id_item'               => $detalle_reqArray[$i]['det_partidas'][$j]['id_item'],
-                    //                 'importe_parcial'       => $detalle_reqArray[$i]['det_partidas'][$j]['importe_parcial'],
-                    //                 'unid_medida'           => $detalle_reqArray[$i]['det_partidas'][$j]['unid_medida'],
-                    //                 'cantidad_ejec'         => $detalle_reqArray[$i]['det_partidas'][$j]['cantidad_ejec'],
-                    //                 'importe_unitario_ejec' => $detalle_reqArray[$i]['det_partidas'][$j]['importe_unitario_ejec'],
-                    //                 'importe_parcial_ejec'  => $detalle_reqArray[$i]['det_partidas'][$j]['importe_parcial_ejec'],
-                    //                 'fecha_requerimiento'   => $detalle_reqArray[$i]['det_partidas'][$j]['fecha_requerimiento'],
-                    //                 'usuario'               => $detalle_reqArray[$i]['det_partidas'][$j]['usuario'],
-                    //                 'fecha_registro'        => $detalle_reqArray[$i]['det_partidas'][$j]['fecha_registro'],
-                    //                 'estado'                => $detalle_reqArray[$i]['det_partidas'][$j]['estado'],
-                    //             ],
-                    //             'id_det_partida'
-                    //         );
-                    //     }
-                    // }
-                }
             }
         }
 
-        $requerimiento_guardado = DB::table('almacen.alm_req')
-            ->select('alm_req.*')
-            ->where([
-                ['alm_req.id_requerimiento', '=', $data_req]
-            ])
-            ->orderBy('alm_req.id_requerimiento', 'asc')
-            ->get();
-        // $req_actual = array();
-        // foreach ($requerimiento_guardado as $data) {
-        //     array_push(
-        //         $req_actual,
-        //         $data->id_requerimiento,
-        //         $data->codigo,
-        //         1
-        //     );
-        // }
-
-
         $data_doc_aprob = DB::table('administracion.adm_documentos_aprob')->insertGetId(
             [
-                'id_tp_documento' => $requerimiento_guardado[0]->id_tipo_requerimiento,
-                'codigo_doc'      => $requerimiento_guardado[0]->codigo,
-                'id_doc'          => $requerimiento_guardado[0]->id_requerimiento
+                'id_tp_documento' => 1,
+                'codigo_doc'      => $codigo,
+                'id_doc'          => $id_requerimiento
 
             ],
             'id_doc_aprob'
         );
 
 
-        return response()->json($data_req);
+        return response()->json($id_requerimiento);
     }
 
     
