@@ -2708,112 +2708,6 @@ class AlmacenController extends Controller
     //             <h3 style="margin:0px; padding:0px;"><center>INGRESO A ALMACÉN</center></h3>
     //             <h5><center>'.$ingreso->id_almacen.' - '.$ingreso->des_almacen.'</center></h5>
                 
-<<<<<<< HEAD
-                <table border="0">
-                    <tr>
-                        <td class="subtitle">Ingreso N°</td>
-                        <td width=10px>:</td>
-                        <td class="verticalTop">'.$ingreso->codigo.'</td>
-                        <td>Fecha Ingreso</td>
-                        <td width=10px>:</td>
-                        <td>'.$ingreso->fecha_emision.'</td>
-                    </tr>
-                ';
-                if ($ingreso->guia !== '--'){
-                    $html.='
-                    <tr>
-                        <td class="subtitle">Guía N°</td>
-                        <td width=10px>:</td>
-                        <td class="verticalTop">'.$ingreso->guia.'</td>
-                        <td>Fecha Guía</td>
-                        <td width=10px>:</td>
-                        <td>'.$ingreso->fecha_guia.'</td>
-                    </tr>';
-                }
-                if ($ingreso->doc !== '--'){
-                    $html.='<tr>
-                        <td width=110px>Documento</td>
-                        <td width=10px>:</td>
-                        <td width=300px>'.$ingreso->doc.'</td>
-                        <td width=120px>Fecha Documento</td>
-                        <td width=10px>:</td>
-                        <td>'.$ingreso->doc_fecha_emision.'</td>
-                    </tr>';
-                }
-                if ($ingreso->cod_transformacion !== null){
-                    $html.='<tr>
-                        <td width=110px>Transformación</td>
-                        <td width=10px>:</td>
-                        <td width=300px>'.$ingreso->cod_transformacion.' ('.$ingreso->serie.'-'.$ingreso->numero.')</td>
-                        <td width=150px>Fecha Transformación</td>
-                        <td width=10px>:</td>
-                        <td>'.$ingreso->fecha_transformacion.'</td>
-                    </tr>';
-                }
-                if ($ingreso->trans_codigo !== null){
-                    $html.='<tr>
-                        <td width=110px>Transferencia</td>
-                        <td width=10px>:</td>
-                        <td width=180px>'.$ingreso->trans_codigo.'</td>
-                        <td width=100px>Almacén Origen</td>
-                        <td width=10px>:</td>
-                        <td width=180px>'.$ingreso->trans_almacen_origen.'</td>
-                    </tr>';
-                }
-                $html.='
-                    <tr>
-                        <td>Proveedor</td>
-                        <td>:</td>
-                    ';
-                    if ($cod_ocs !== ''){
-                        $html.='
-                            <td>'.$ingreso->nro_documento.' - '.$ingreso->razon_social.'</td>
-                            <td>Orden de Compra</td>
-                            <td>:</td>
-                            <td>'.$cod_ocs.'</td>
-                        ';
-                    } else {
-                        $html.='<td colSpan="3">'.$ingreso->nro_documento.' - '.$ingreso->razon_social.'</td>
-                        ';
-                    }
-                    $html.='
-                    </tr>
-                    <tr>
-                        <td class="subtitle">Tipo Movim.</td>
-                        <td>:</td>
-                        <td colSpan="4">'.$ingreso->cod_sunat.' '.$ingreso->ope_descripcion.'</td>
-                    </tr>
-                    <tr>
-                        <td>Responsable</td>
-                        <td>:</td>
-                        <td>'.$ingreso->persona.'</td>
-                    </tr>
-                </table>
-                <br/>
-                <table id="detalle">
-                    <thead>
-                        <tr>
-                            <th>Nro</th>
-                            <th>Código</th>
-                            <th width=40% >Descripción</th>
-                            <th>Posición</th>
-                            <th>Cant.</th>
-                            <th>Unid.</th>
-                            <th>Mnd.</th>
-                            <th>Valor.</th>
-                        </tr>
-                    </thead>
-                    <tbody>';
-                    $i = 1;
-
-                    foreach($detalle as $det){
-                        $series = '';
-                        if ($det->series){
-                            $det_series = DB::table('almacen.alm_prod_serie')
-                            ->where([['alm_prod_serie.id_prod','=',$det->id_producto],
-                                     ['alm_prod_serie.id_guia_det','=',$det->id_guia_com_det]])
-                            ->get();
-=======
     //             <table border="0">
     //                 <tr>
     //                     <td class="subtitle">Ingreso N°</td>
@@ -2918,7 +2812,6 @@ class AlmacenController extends Controller
     //                         ->where([['alm_prod_serie.id_prod','=',$det->id_producto],
     //                                  ['alm_prod_serie.id_guia_det','=',$det->id_guia_com_det]])
     //                         ->get();
->>>>>>> raul-dev
                 
     //                         if (isset($det_series)){
     //                             foreach($det_series as $s){
@@ -4935,7 +4828,9 @@ class AlmacenController extends Controller
             ];
             array_push($nueva_data,$nuevo);
         }
-        return response()->json($nueva_data);
+        // return response()->json($nueva_data);
+        $output['data'] = $data;
+        return response()->json($output);
     }
 
     public function saldo_actual($id_producto, $id_posicion){

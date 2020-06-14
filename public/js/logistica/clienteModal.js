@@ -7,12 +7,19 @@ $(function(){
             $('#listaCliente').dataTable().$('tr.eventClick').removeClass('eventClick');
             $(this).addClass('eventClick');
         }
-        var idTr = $(this)[0].firstChild.innerHTML;
+        var myId = $(this)[0].firstChild.innerHTML;
         var idCo = $(this)[0].childNodes[1].innerHTML;
+        var ruc = $(this)[0].childNodes[2].innerHTML;
         var des = $(this)[0].childNodes[3].innerHTML;
-        $('.modal-footer #id_cliente').text(idTr);
-        $('.modal-footer #id_contribuyente').text(idCo);
-        $('.modal-footer #razon_social').text(des);
+        $('[name=id_cliente]').val(myId);
+        $('[name=id_contrib]').val(idCo);
+        $('[name=cliente_ruc]').val(ruc);
+        $('[name=cliente_razon_social]').val(des);
+        
+        $('#modal-clientes').modal('hide');
+    //     $('.modal-footer #id_cliente').text(idTr);
+    //     $('.modal-footer #id_contribuyente').text(idCo);
+    //     $('.modal-footer #razon_social').text(des);
     });
 });
 
@@ -22,7 +29,7 @@ function listar_clientes(){
         // 'dom': vardataTables[1],
         // 'buttons': vardataTables[2],
         'language' : vardataTables[0],
-        'ajax': 'mostrar_clientes',
+        'ajax': '/mostrar_clientes',
         'bDestroy': true,
         'columns': [
             {'data': 'id_cliente'},
@@ -72,18 +79,18 @@ function clienteModal(){
     }
 }
 
-function selectCliente(){
-    var myId = $('.modal-footer #id_cliente').text();
-    var idCo = $('.modal-footer #id_contribuyente').text();
-    var des = $('.modal-footer #razon_social').text();
-    // var page = $('.page-main').attr('type');
-    // var form = $('.page-main form[type=register]').attr('id');
+// function selectCliente(){
+//     var myId = $('.modal-footer #id_cliente').text();
+//     var idCo = $('.modal-footer #id_contribuyente').text();
+//     var des = $('.modal-footer #razon_social').text();
+//     // var page = $('.page-main').attr('type');
+//     // var form = $('.page-main form[type=register]').attr('id');
 
-    console.log('cliente'+myId+' razon_social'+des+' contribuyente'+idCo);
-    $('[name=id_cliente]').val(myId);
-    $('[name=id_contrib]').val(idCo);
-    $('[name=cliente_razon_social]').val(des);
+//     console.log('cliente'+myId+' razon_social'+des+' contribuyente'+idCo);
+//     $('[name=id_cliente]').val(myId);
+//     $('[name=id_contrib]').val(idCo);
+//     $('[name=cliente_razon_social]').val(des);
     
     
-    $('#modal-clientes').modal('hide');
-}
+//     $('#modal-clientes').modal('hide');
+// }

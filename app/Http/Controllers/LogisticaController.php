@@ -41,14 +41,15 @@ class LogisticaController extends Controller
     {
         $monedas = $this->mostrar_moneda();
         $prioridades = $this->mostrar_prioridad();
-        // $tipos = $this->mostrar_tipo();
+        $tipo_requerimiento = $this->mostrar_tipo();
         $empresas = Empresa::all();
         $areas = $this->mostrar_area();
         $unidades_medida = $this->mostrar_unidad_medida();
         $periodos = $this->mostrar_periodos();
         $roles = $this->userSession()['roles'];
-         return view('logistica/requerimientos/gestionar_requerimiento', compact('monedas', 'prioridades', 'empresas', 'unidades_medida','roles','periodos'));
+        return view('logistica/requerimientos/gestionar_requerimiento', compact('tipo_requerimiento','monedas', 'prioridades', 'empresas', 'unidades_medida','roles','periodos'));
     }
+
     function view_gestionar_cotizaciones()
     {
         $tp_contribuyente = $this->select_tp_contribuyente();
@@ -1576,17 +1577,17 @@ class LogisticaController extends Controller
         return $data;
     }
 
-    // function mostrar_tipo()
-    // {
-    //     $data = DB::table('almacen.alm_tp_req')
-    //         ->select(
-    //             'alm_tp_req.id_tipo_requerimiento',
-    //             'alm_tp_req.descripcion'
-    //         )
-    //         ->orderBy('alm_tp_req.id_tipo_requerimiento', 'asc')
-    //         ->get();
-    //     return $data;
-    // }
+    function mostrar_tipo()
+    {
+        $data = DB::table('almacen.alm_tp_req')
+            ->select(
+                'alm_tp_req.id_tipo_requerimiento',
+                'alm_tp_req.descripcion'
+            )
+            ->orderBy('alm_tp_req.id_tipo_requerimiento', 'asc')
+            ->get();
+        return $data;
+    }
     public function cargar_estructura_org($id)
     {
         $html = '';
@@ -16003,13 +16004,15 @@ function historial_precios_excel(Request $request){
     {
         $data = DB::table('administracion.sis_sede')
             ->select(
-                'sis_sede.*'
+                'sis_sede.*', 'ubi_dis.descripcion as ubigeo_descripcion'
             )
+            ->leftJoin('configuracion.ubi_dis','ubi_dis.id_dis','=','sis_sede.id_ubigeo')
             ->where('sis_sede.id_empresa','=',$id_empresa)
             ->orderBy('sis_sede.id_empresa', 'asc')
             ->get();
         return $data;
     }
+
     public function select_grupo_by_sede($id_sede)
     {
         $data = DB::table('administracion.adm_grupo')
