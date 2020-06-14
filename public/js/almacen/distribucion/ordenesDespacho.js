@@ -30,11 +30,10 @@ $(function(){
         }
         $(activeTab).attr('hidden', false);//inicio botones (estados)
     });
-    
+    vista_extendida();
 });
 
 function listarRequerimientosPendientes(){
-    //alert("Llamado");
     var vardataTables = funcDatatables();
     $('#requerimientosPendientes').DataTable({
         'dom': vardataTables[1],
@@ -51,30 +50,60 @@ function listarRequerimientosPendientes(){
             {'data': 'codigo'},
             {'data': 'concepto'},
             {'data': 'fecha_requerimiento'},
-            {'data': 'observacion'},
-            {'data': 'grupo', 'name': 'adm_grupo.descripcion'},
+            {'render': function (data, type, row){
+                return (row['ubigeo_descripcion'] !== null ? row['ubigeo_descripcion'] : '');
+                }
+            },
+            {'data': 'direccion_entrega'},
+            // {'data': 'grupo', 'name': 'adm_grupo.descripcion'},
             {'data': 'responsable', 'name': 'sis_usua.nombre_corto'},
-            {'defaultContent': 
-            '<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" '+
-            'data-placement="bottom" title="Ver Detalle" >'+
-            '<i class="fas fa-list-ul"></i></button>'+
-            '<button type="button" class="despacho btn btn-success boton" data-toggle="tooltip" '+
-            'data-placement="bottom" title="Generar Orden de Despacho" >'+
-            '<i class="fas fa-sign-in-alt"></i></button>'}
+            // {'data': 'estado_doc', 'name': 'adm_estado_doc.estado_doc'},
+            {'render': function (data, type, row){
+                return '<span class="label label-'+row['bootstrap_color']+'">'+row['estado_doc']+'</span>'
+                }
+            },
+            {'render': function (data, type, row){
+                return (row['codigo_orden'] !== null ? row['codigo_orden'] : '')
+                }
+            },
+            // {'data': 'codigo_orden', 'name': 'log_ord_compra.codigo'},
+            {'render': function (data, type, row){
+                return (row['serie'] !== null ? row['serie']+'-'+row['numero'] : '')
+                }
+            },
+            {'render': function (data, type, row){
+                return (row['codigo_transferencia'] !== null ? row['codigo_transferencia'] : '')
+                }
+            }
+            // {'data': 'codigo_transferencia', 'name': 'trans.codigo'},
         ],
-        'columnDefs': [{ 'aTargets': [0], 'sClass': 'invisible'}],
+        'columnDefs': [
+            {'aTargets': [0], 'sClass': 'invisible'},
+            {'render': function (data, type, row){
+                return '<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" '+
+                'data-placement="bottom" title="Ver Detalle" >'+
+                '<i class="fas fa-list-ul"></i></button>'+
+                (
+                    ((row['estado'] == 19 && row['id_tipo_requerimiento'] == 2) ||
+                     (row['estado'] == 19 && row['id_tipo_requerimiento'] == 1 && row['id_transferencia'] !== null)) ?
+                    ('<button type="button" class="despacho btn btn-success boton" data-toggle="tooltip" '+
+                    'data-placement="bottom" title="Generar Orden de Despacho" >'+
+                    '<i class="fas fa-sign-in-alt"></i></button>') : '')
+                }, targets: 11
+            }
+        ],
     });
    
 }
 
 $('#requerimientosPendientes tbody').on("click","button.detalle", function(){
-    //alert("llamado");
     var data = $('#requerimientosPendientes').DataTable().row($(this).parents("tr")).data();
     console.log(data.id_requerimiento);
     open_detalle_requerimiento(data);
 });
 $('#requerimientosPendientes tbody').on("click","button.despacho", function(){
     var data = $('#requerimientosPendientes').DataTable().row($(this).parents("tr")).data();
+    console.log(data);
     open_despacho_create(data);
 });
 function open_detalle_requerimiento(data){
@@ -149,34 +178,34 @@ function listarOrdenesPendientes(){
         'order': [[1, 'asc']]
     });
     
+    $('#ordenesDespacho tbody').on("click","button.od_detalle", function(){
+        var data = $('#ordenesDespacho').DataTable().row($(this).parents("tr")).data();
+        console.log('data.id_od'+data.id_od);
+        open_detalle_despacho(data);
+    });
+    // Handle iCheck change event for checkboxes in table body
+    $($('#ordenesDespacho').DataTable().table().container()).on('ifChanged', '.dt-checkboxes', function(event){
+        var cell = $('#ordenesDespacho').DataTable().cell($(this).closest('td'));
+        cell.checkboxes.select(this.checked);
+
+        var data = $('#ordenesDespacho').DataTable().row($(this).parents("tr")).data();
+        console.log(this.checked);
+        console.log($('#ordenesDespacho').DataTable().row($(this).parents("tr")).data());
+
+        if (data !== null && data !== undefined){
+            if (this.checked){
+                od_seleccionadas.push(data);
+            }
+            else {
+                var index = od_seleccionadas.findIndex(function(item, i){
+                    return item.id_od == data.id_od;
+                });
+                od_seleccionadas.splice(index,1);
+            }
+        }
+    });
 }
 
-$('#ordenesDespacho tbody').on("click","button.od_detalle", function(){
-    var data = $('#ordenesDespacho').DataTable().row($(this).parents("tr")).data();
-    console.log('data.id_od'+data.id_od);
-    open_detalle_despacho(data);
-});
-// Handle iCheck change event for checkboxes in table body
-$($('#ordenesDespacho').DataTable().table().container()).on('ifChanged', '.dt-checkboxes', function(event){
-    var cell = $('#ordenesDespacho').DataTable().cell($(this).closest('td'));
-    cell.checkboxes.select(this.checked);
-
-    var data = $('#ordenesDespacho').DataTable().row($(this).parents("tr")).data();
-    console.log(this.checked);
-    console.log($('#ordenesDespacho').DataTable().row($(this).parents("tr")).data());
-
-    if (data !== null && data !== undefined){
-        if (this.checked){
-            od_seleccionadas.push(data);
-        }
-        else {
-            var index = od_seleccionadas.findIndex(function(item, i){
-                return item.id_od == data.id_od;
-            });
-            od_seleccionadas.splice(index,1);
-        }
-    }
-});
 
 function open_detalle_despacho(data){
     $('#modal-despachoDetalle').modal({

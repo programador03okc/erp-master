@@ -25,7 +25,7 @@ $(function(){
         }
         $(activeTab).attr('hidden', false);//inicio botones (estados)
     });
-    
+    vista_extendida();
 });
 
 function listarOrdenesPendientes(){
@@ -46,7 +46,8 @@ function listarOrdenesPendientes(){
             {'data': 'nro_documento'},
             {'data': 'razon_social'},
             {'data': 'fecha'},
-            {'data': 'condicion'},
+            {'data': 'codigo_requerimiento'},
+            {'data': 'concepto'},
             {'data': 'nombre_corto'},
             {'data': 'simbolo'},
             {'data': 'monto_subtotal'},
@@ -62,7 +63,7 @@ function listarOrdenesPendientes(){
                 '<button type="button" class="guia btn btn-info boton" data-toggle="tooltip" '+
                     'data-placement="bottom" title="Generar Guía" >'+
                     '<i class="fas fa-sign-in-alt"></i></button>';
-                }, targets: 11
+                }, targets: 12
             }
         ],
     });
@@ -93,17 +94,23 @@ function listarOrdenesEntregadas(){
             type: 'POST'
         },
         'columns': [
-            {'data': 'id_orden_compra'},
-            {'data': 'codigo'},
+            {'data': 'id_mov_alm'},
+            {'data': 'codigo_orden'},
             {'data': 'nro_documento'},
             {'data': 'razon_social'},
-            {'data': 'fecha'},
-            {'data': 'condicion'},
-            {'data': 'nombre_corto'},
             {'data': 'simbolo'},
-            {'data': 'monto_subtotal'},
-            {'data': 'monto_igv'},
-            {'data': 'monto_total'},
+            {'data': 'monto_subtotal', 'class': 'right'},
+            {'data': 'monto_igv', 'class': 'right'},
+            {'data': 'monto_total', 'class': 'right'},
+            {'data': 'codigo_requerimiento'},
+            {'data': 'concepto'},
+            {'render': function (data, type, row){
+                    return row['serie']+'-'+row['numero'];
+                }
+            },
+            {'data': 'codigo'},
+            {'data': 'fecha_emision'},
+            {'data': 'nombre_corto'},
         ],
         'columnDefs': [
             {'aTargets': [0], 'sClass': 'invisible'},
@@ -111,10 +118,21 @@ function listarOrdenesEntregadas(){
                 return '<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" '+
                     'data-placement="bottom" title="Ver Detalle" data-id="'+row.id_orden_compra+'">'+
                     '<i class="fas fa-list-ul"></i></button>'+
-                '<button type="button" class="ver_guias btn btn-warning boton" data-toggle="tooltip" '+
-                    'data-placement="bottom" title="Ver Guías" data-id="'+row.id_orden_compra+'">'+
-                    '<i class="fas fa-file-alt"></i></button>';
-                }, targets: 11
+                '<button type="button" class="ingreso btn btn-warning boton" data-toggle="tooltip" '+
+                    'data-placement="bottom" title="Ver Ingreso" data-id="'+row.id_mov_alm+'">'+
+                    '<i class="fas fa-file-alt"></i></button>'+
+
+                // '<button type="button" class="ver_guias btn btn-warning boton" data-toggle="tooltip" '+
+                //     'data-placement="bottom" title="Ver Guías" data-id="'+row.id_orden_compra+'">'+
+                //     '<i class="fas fa-file-alt"></i></button>'+
+                // '<button type="button" class="anularIngreso btn btn-danger boton" data-toggle="tooltip" '+
+                //     'data-placement="bottom" title="Anular Ingreso" data-id="'+row.id_mov_alm+'">'+
+                //     '<i class="fas fa-trash"></i></button>'+
+                ((row['sede_orden'] !== row['sede_requerimiento'] && row['id_guia_ven'] == null) ? 
+                ('<button type="button" class="transferencia btn btn-success boton" data-toggle="tooltip" '+
+                    'data-placement="bottom" title="Generar Transferencia" >'+
+                    '<i class="fas fa-exchange-alt"></i></button>') : '');
+                }, targets: 14
             }    
         ],
     });
@@ -122,21 +140,31 @@ function listarOrdenesEntregadas(){
 $('#ordenesEntregadas tbody').on("click","button.detalle", function(){
     var data = $('#ordenesEntregadas').DataTable().row($(this).parents("tr")).data();
     console.log('data.id_orden_compra'+data.id_orden_compra);
-    // var data = $(this).data('id');
     open_detalle(data);
 });
-$('#ordenesEntregadas tbody').on("click","button.ver_guias", function(){
+$('#ordenesEntregadas tbody').on("click","button.ingreso", function(){
+    // var data = $('#ordenesEntregadas').DataTable().row($(this).parents("tr")).data();
+    // console.log('data.id_mov_alm'+data.id_mov_alm);
+    var id_mov_alm = $(this).data('id');
+    var id = encode5t(id_mov_alm);
+    window.open('imprimir_ingreso/'+id);
+});
+// $('#ordenesEntregadas tbody').on("click","button.ver_guias", function(){
+//     var data = $('#ordenesEntregadas').DataTable().row($(this).parents("tr")).data();
+//     open_guias(data);
+// });
+$('#ordenesEntregadas tbody').on("click","button.transferencia", function(){
     var data = $('#ordenesEntregadas').DataTable().row($(this).parents("tr")).data();
     console.log('data.id_orden_compra'+data.id_orden_compra);
     // var data = $(this).data('id');
-    open_guias(data);
+    openTransferenciaGuia(data);
 });
 
 function open_detalle(data){
     $('#modal-ordenDetalle').modal({
         show: true
     });
-    $('#cabecera_orden').text(data.codigo+' - '+data.razon_social+' - Total: '+data.simbolo+data.monto_total);
+    $('#cabecera_orden').text(data.codigo_orden+' - '+data.razon_social+' - Total: '+data.simbolo+data.monto_total);
     listar_detalle_orden(data.id_orden_compra, data.simbolo);
 }
 
@@ -150,17 +178,19 @@ function open_guia_create(data){
     $('[name=id_orden_compra]').val(data.id_orden_compra);
     $('#serie').text('');
     $('#numero').text('');
+    cargar_almacenes(data.id_sede, 'id_almacen');
 }
 
 function open_guias(data){
     $('#modal-guias').modal({
         show: true
     });
-    $('#cabecera_orden').text(data.codigo+' - '+data.razon_social+' - Total: '+data.simbolo+data.monto_total);
+    $('#cabecera_orden').text(data.codigo_orden+' - '+data.razon_social+' - Total: '+data.simbolo+data.monto_total);
     listar_guias_orden(data.id_orden_compra);
 }
 
 function listar_detalle_orden(id_orden, simbolo){
+    console.log('id_orden',id_orden);
     $.ajax({
         type: 'GET',
         url: '/detalleOrden/'+id_orden,

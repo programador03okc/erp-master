@@ -5,10 +5,15 @@ function open_despacho_create(data){
     $('#modal-orden_despacho_create').modal({
         show: true
     });
+    console.log('open_despacho_create');
+    console.log(data);
     $("#submit_orden_despacho").removeAttr("disabled");
     $('[name=tipo_entrega]').val('MISMA CIUDAD').trigger('change.select2');
     $('[name=id_requerimiento]').val(data.id_requerimiento);
     $('[name=id_sede]').val(data.id_sede);
+    $('[name=direccion_destino]').val(data.direccion_entrega);
+    $('[name=ubigeo]').val(data.id_ubigeo_entrega);
+    $('[name=name_ubigeo]').val(data.ubigeo_descripcion);
     $("#detalleItemsReq").hide();
 
     var idTabla = 'detalleRequerimientoOD';
@@ -16,9 +21,9 @@ function open_despacho_create(data){
 
     $('[name=id_cliente]').val('');
     $('[name=cliente_razon_social]').val('');
-    $('[name=ubigeo]').val('');
-    $('[name=name_ubigeo]').val('');
-    $('[name=direccion_destino]').val('');
+    // $('[name=ubigeo]').val('');
+    // $('[name=name_ubigeo]').val('');
+    // $('[name=direccion_destino]').val('');
     $('[name=fecha_despacho]').val(fecha_actual());
     $('[name=fecha_entrega]').val(fecha_actual());
     $('[name=aplica_cambios]').prop('checked', false);
@@ -41,16 +46,17 @@ function listar_detalle_requerimiento(id_requerimiento, idTabla){
             response.forEach(element => {
                 html+='<tr id="'+element.id_detalle_requerimiento+'">'+
                 '<td>'+(idTabla == 'detalleRequerimiento' ? i : '<input type="checkbox" onChange="changeCheckIngresa(this,'+element.id_detalle_requerimiento+');"/>')+'</td>'+
-                '<td>'+(element.codigo_item !== null ? element.codigo_item : element.codigo_producto)+'</td>'+
-                '<td>'+(element.descripcion_item !== null ? element.descripcion_item : element.descripcion_producto)+'</td>'+
+                '<td>'+(element.codigo_item !== null ? element.codigo_item : '')+'</td>'+
+                '<td>'+(element.descripcion_item !== null ? element.descripcion_item : '')+'</td>'+
                 '<td>'+element.cantidad+'</td>'+
-                '<td>'+(element.unidad_medida_item !== null ? element.unidad_medida_item : element.unidad_medida_producto)+'</td>'+
-                '<td>'+element.codigo_posicion+'</td>'+
-                '<td>'+(element.lugar_entrega !== null ? element.lugar_entrega : element.lugar_despacho_orden)+'</td>'+
+                '<td>'+(element.unidad_medida_item !== null ? element.unidad_medida_item : element.unidad_medida)+'</td>'+
+                '<td>'+(element.almacen_descripcion !== null ? element.almacen_descripcion : '')+'</td>'+
+                // '<td>'+(element.codigo_posicion !== null ? element.codigo_posicion : '')+'</td>'+
+                // '<td>'+(element.lugar_entrega !== null ? element.lugar_entrega : element.lugar_despacho_orden)+'</td>'+
                 '<td><span class="label label-'+element.bootstrap_color+'">'+element.estado_doc+'</span></td>'+
-                '<td>'+(element.id_almacen !== null ? 
-                    '<button type="button" class="btn btn-info" data-toggle="tooltip" data-placement="bottom" title="Ver Transferencia" onClick="#"><i class="fas fa-file-alt"></i></button>' : '')+
-                '</td>'+
+                // '<td>'+(element.id_almacen !== null ? 
+                //     '<button type="button" class="btn btn-info" data-toggle="tooltip" data-placement="bottom" title="Ver Transferencia" onClick="#"><i class="fas fa-file-alt"></i></button>' : '')+
+                // '</td>'+
                 '</tr>';
                 i++;
             });
