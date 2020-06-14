@@ -4512,7 +4512,7 @@ class AlmacenController extends Controller
             array_push($nueva_data,$nuevo);
         }
         // return response()->json($nueva_data);
-        $output['data'] = $data;
+        $output['data'] = $nueva_data;
         return response()->json($output);
     }
 
