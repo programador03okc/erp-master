@@ -3,14 +3,28 @@
 @include('layout.body')
 <div class="page-main" type="requerimiento">
     <legend>
-        <div class="row">
-            <div class="col-xs-12 col-md-7"><h2>Gestionar Requerimiento</h2></div>
-            <div class="col-xs-8 col-md-3 text-right"><h5>Estado de Documento: <span class="label" id="estado_doc"></span></h5></div>
-            <div class="col-xs-4 col-md-1">
-                <button type="button" name="btn-imprimir-requerimento-pdf" class="btn btn-danger btn-sm" onclick="ImprimirRequerimientoPdf()" disabled><i class="fas fa-file-pdf"></i> Imprimir</button>
+        <div class="row row-no-gutters">
+            <div class="col-xs-12 col-md-5"><h2>Gestionar Requerimiento</h2></div>
+            <div class="col-xs-6 col-md-4">
+                <div class="form-inline">
+                    <div class="form-group" style="display:flex;">
+                        <h5 >Tipo de Requerimiento: </h5> 
+                        <select class="form-control input-sm activation" name="tipo_requerimiento" onChange="changeOptTipoReqSelect(event);">
+                            @foreach ($tipo_requerimiento as $tipo)
+                                <option value="{{$tipo->id_tipo_requerimiento}}">{{$tipo->descripcion}}</option>
+                            @endforeach                
+                        </select>
+                    </div>
+                </div>
             </div>
-     
+            <div class="col-xs-6 col-md-3" style="display:flex;">
+                <h5>Estado de Documento: <span class="label" id="estado_doc"> </span></h5>
+                <button type="button" name="btn-imprimir-requerimento-pdf" class="btn btn-danger btn-sm" onclick="ImprimirRequerimientoPdf()" disabled><i class="fas fa-file-pdf"></i> Imprimir</button>
+
+            </div>
         </div>
+
+ 
     </legend>
     <form id="form-requerimiento" type="register" form="formulario">
         
@@ -36,7 +50,7 @@
                 <input type="text" class="form-control activation" name="concepto">
             </div>
 
-            <div class="col-md-3">
+            <div class="col-md-3" id="input-group-rol-usuario">
                 <h5>Roles del Usuario</h5>
                 <div class="input-group-okc">
                     <select class="form-control input-sm activation" name="rol_usuario">
@@ -46,13 +60,12 @@
                     </select>
                 </div>
             </div>
-
-        </div>
-        <div class="row">
             <div class="col-md-2">
                 <h5>Fecha</h5>
                 <input type="date" class="form-control activation" name="fecha_requerimiento" disabled="true" min={{ date('Y-m-d H:i:s') }} value={{ date('Y-m-d H:i:s') }}>
             </div>
+ 
+
             <div class="col-md-2">
                 <h5>Periodo</h5>
                 <select class="form-control activation" name="periodo" disabled="true">
@@ -80,7 +93,7 @@
             <!-- <div class="form-group row"> -->
             <div class="col-md-4">
                 <h5>Empresa</h5>
-                <select name="empresa" id="empresa" class="form-control activation"
+                <select name="empresa" id="empresa" class="form-control activation" onChange="changeOptEmpresaSelect(event)"
                     required>
                     <option value="">Elija una opción</option>
                     @foreach ($empresas as $empresa)
@@ -88,7 +101,57 @@
                     @endforeach
                 </select>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-2" id="input-group-sede" hidden>
+                <h5>Sede</h5>
+                    <select name="sede" name="sede" class="form-control activation" onChange="changeOptUbigeo(event)"
+                        required>
+                        <option value="">Elija una opción</option>
+                    </select>
+            </div>
+            <div class="col-md-2 form-inline" id="input-group-tipo-cliente" hidden>
+                <h5>Tipo Cliente</h5>
+                <div class="input-group-okc">
+                        <select name="tipo_cliente" name="tipo_cliente" onChange="changeTipoCliente(event);"
+                        class="form-control activation" style="width:100px" required>
+                        <!-- <option value="0">Elija una opción</option> -->
+                        <option value="1" default>Persona Natural</option>
+                        <option value="2">Persona Juridica</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-4 form-inline" id="input-group-cliente" hidden>
+                <h5>Cliente</h5>
+                <div class="input-group-okc">
+                    <input type="text" class="oculto" name="id_cliente" >
+                    <input type="text" class="form-control" name="cliente_ruc" style="display: none;">
+                    <input type="text" class="form-control" name="cliente_razon_social" style="display: none;">
+
+                    <input type="text" class="oculto" name="id_persona" >
+                    <input type="text" class="form-control" name="dni_persona" >
+                    <input type="text" class="form-control" name="nombre_persona" >
+
+                    <div class="input-group-append">        
+                        <button type="button" title="Seleccionar Cliente" name="btnCliente" 
+                        onClick="openCliente();"
+                        class="input-group-text" ><i class="fas fa-user-tie"></i></button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4" id="input-group-direccion-entrega" hidden>
+                <h5>Dirección Entrega</h5>
+                <input type="text" class="form-control activation" name="direccion_entrega"  disabled>
+            </div>
+            <div class="col-md-2" id="input-group-ubigeo-entrega" hidden>
+                <h5>Ubigeo Entrega</h5>
+                <div class="input-group-okc">
+                    <input type="text" class="oculto" name="ubigeo" >
+                    <input type="text" class="form-control" name="name_ubigeo" readOnly>
+                    <div class="input-group-append">
+                        <button type="button" title="Seleccionar Ubigeo" class="input-group-text" onClick="ubigeoModal();" ><i class="far fa-compass"></i></button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3" id="input-group-area">
                 <h5>Area</h5>
                 <input type="hidden" class="form-control" name="id_grupo">
                 <input type="hidden" class="form-control" name="id_area">
@@ -101,6 +164,7 @@
                     </div>
                 </div>
             </div>
+            
             <div class="hidden" id="section-proyectos">
                 <div class="col-md-9">
                     <h5>Proyecto</h5>
@@ -190,10 +254,18 @@
 @include('logistica.requerimientos.modal_empresa_area')
 @include('proyectos.opcion.opcionModal')
 @include('logistica.requerimientos.aprobacion.modal_sustento')
+@include('logistica.cotizaciones.clienteModal')
+@include('publico.personaModal')
+@include('publico.ubigeoModal')
+@include('almacen.producto.saldosModal')
 
 @include('layout.footer')
 @include('layout.scripts')
 <script src="{{ asset('/js/logistica/requerimiento.js') }}"></script>
 <script src="{{ asset('/js/publico/modal_area.js')}}"></script>
 <script src="{{ asset('/js/proyectos/opcion/opcionModal.js')}}"></script>
+<script src="{{ asset('/js/publico/ubigeoModal.js')}}"></script>
+<script src="{{ asset('/js/publico/personaModal.js')}}"></script>
+<script src="{{ asset('/js/logistica/clienteModal.js')}}"></script>
+<script src="{{ asset('/js/almacen/producto/saldosModal.js')}}"></script>
 @include('layout.fin_html')

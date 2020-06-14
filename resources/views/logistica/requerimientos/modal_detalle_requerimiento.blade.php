@@ -8,6 +8,14 @@
             <div class="modal-body">
                 <form id="form-detalle-requerimiento" type="register" form="formulario">
                     <div class="row">
+                        <div class="col-md-4" id="input-group-almacen">
+                            <h5>Almacén</h5>
+                            <select class="form-control " name="id_almacen">
+                                <option value="0">Elija una opción</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
                         <div class="col-md-12">
                             <div class="form-group">
                                 <h5>Item</h5>
@@ -73,13 +81,13 @@
                             </div>
                         </div>
         
-                        <div class="col-md-3">
+                        <div class="col-md-3" id="input-group-fecha_entrega">
                             <div class="form-group">
                                 <h5>Fecha Máx. Entrega</h5>
                                 <input type="date" class="form-control input-sm activation" name="fecha_entrega_item" step="any" min={{ date('Y-m-d H:i:s') }} value={{ date('Y-m-d H:i:s') }}>
                             </div>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-3" id="input-group-lugar_entrega">
                             <div class="form-group">
                                 <h5>Lugar de Entrega</h5>
                                 <input type="text" class="form-control input-sm activation" name="lugar_entrega_item" step="any">
@@ -87,7 +95,7 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-12">
+                        <div class="col-md-12" id="input-group-partida">
                             <div class="form-group"> 
                                 <h5>Partida</h5>
                                 <div style="display:flex;">
