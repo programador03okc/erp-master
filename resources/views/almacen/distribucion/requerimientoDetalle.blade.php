@@ -22,10 +22,10 @@
                                             <th width="40%">Descripción</th>
                                             <th>Cantidad</th>
                                             <th>Unid</th>
-                                            <th>Posición</th>
-                                            <th>Lugar de Entrega</th>
+                                            <th>Almacén</th>
+                                            <!-- <th>Lugar de Entrega</th> -->
                                             <th>Estado</th>
-                                            <th>Acción</th>
+                                            <!-- <th>Acción</th> -->
                                             <!-- <th>Total</th> -->
                                         </tr>
                                     </thead>

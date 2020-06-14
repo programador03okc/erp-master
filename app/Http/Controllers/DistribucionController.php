@@ -28,15 +28,25 @@ class DistribucionController extends Controller
         return view('almacen/distribucion/grupoDespachos');
     }
 
-    public function listarRequerimientosPendientes(Request $request){
+    public function listarRequerimientosPendientes(){
         $data = DB::table('almacen.alm_req')
             ->select('alm_req.*','sis_usua.nombre_corto as responsable','adm_grupo.descripcion as grupo',
-            'adm_grupo.id_sede')
+            'adm_grupo.id_sede','adm_estado_doc.estado_doc','adm_estado_doc.bootstrap_color',
+            'log_ord_compra.codigo as codigo_orden','guia_com.serie','guia_com.numero',
+            'trans.id_transferencia','trans.codigo as codigo_transferencia','ubi_dis.descripcion as ubigeo_descripcion')
             ->join('configuracion.sis_usua','sis_usua.id_usuario','=','alm_req.id_usuario')
             ->join('administracion.adm_grupo','adm_grupo.id_grupo','=','alm_req.id_grupo')
-            ->where('alm_req.estado',19)//muestra todos los reservados
+            ->join('administracion.adm_estado_doc','adm_estado_doc.id_estado_doc','=','alm_req.estado')
+            ->leftJoin('logistica.log_ord_compra','log_ord_compra.id_requerimiento','=','alm_req.id_requerimiento')
+            ->leftJoin('almacen.guia_com','guia_com.id_oc','=','log_ord_compra.id_orden_compra')
+            ->leftJoin('almacen.mov_alm','mov_alm.id_guia_com','=','guia_com.id_guia')
+            ->leftJoin('almacen.guia_ven','guia_ven.id_guia_com','=','guia_com.id_guia')
+            ->leftJoin('almacen.trans','trans.id_guia_ven','=','guia_ven.id_guia_ven')
+            ->leftJoin('configuracion.ubi_dis','ubi_dis.id_dis','=','alm_req.id_ubigeo_entrega')
+            ->where([['alm_req.estado','!=',1], ['alm_req.estado','!=',7]])//muestra todos los reservados
             ->get();
         return datatables($data)->toJson();
+        // return response()->json($data);
     }
 
     public function verDetalleRequerimiento($id_requerimiento){
@@ -72,7 +82,7 @@ class DistribucionController extends Controller
             // ->leftJoin('logistica.valoriza_coti_detalle', 'valoriza_coti_detalle.id_detalle_requerimiento', '=', 'alm_det_req.id_detalle_requerimiento')
             ->where([['alm_det_req.id_requerimiento','=',$id_requerimiento],['alm_det_req.estado','!=',7]])
             ->get();
-
+/*
             $data = [];
 
             foreach ($detalles as $det) {
@@ -124,93 +134,104 @@ class DistribucionController extends Controller
                     // 'valorizaciones'=>$valori
                 ];
                 array_push($data, $nuevo);
-            }
-        return response()->json($data);
+            }*/
+        return response()->json($detalles);
     }
 
     public function guardar_orden_despacho(Request $request){
-        $codigo = $this->ODnextId($request->fecha_despacho,$request->id_sede);
-        $usuario = Auth::user()->id_usuario;
 
-        $id_od = DB::table('almacen.orden_despacho')
-            ->insertGetId([
-                'id_sede'=>$request->id_sede,
-                'id_requerimiento'=>$request->id_requerimiento,
-                'id_cliente'=>$request->id_cliente,
-                'codigo'=>$codigo,
-                'ubigeo_destino'=>$request->ubigeo,
-                'direccion_destino'=>$request->direccion_destino,
-                'fecha_despacho'=>$request->fecha_despacho,
-                'fecha_entrega'=>$request->fecha_entrega,
-                'aplica_cambios'=>($request->aplica_cambios_valor == 'si' ? true : false),
-                'registrado_por'=>$usuario,
-                'tipo_entrega'=>$request->tipo_entrega,
-                'fecha_registro'=>date('Y-m-d H:i:s'),
-                'estado'=>1
-            ],
-                'id_od'
-        );
+        try {
+            DB::beginTransaction();
 
-        if ($request->aplica_cambios_valor == 'si'){
-            $fecha_actual = date('Y-m-d');
-            $codTrans = $this->transformacion_nextId($fecha_actual);
+            $codigo = $this->ODnextId($request->fecha_despacho,$request->id_sede);
+            $usuario = Auth::user()->id_usuario;
 
-            $id_transformacion = DB::table('almacen.transformacion')
+            $id_od = DB::table('almacen.orden_despacho')
                 ->insertGetId([
-                    'fecha_transformacion'=>$fecha_actual,
-                    'codigo'=>$codTrans,
-                    // 'responsable'=>,
-                    'id_moneda'=>1,
-                    // 'id_almacen'=>,
-                    'total_materias'=>0,
-                    'total_directos'=>0,
-                    'costo_primo'=>0,
-                    'total_indirectos'=>0,
-                    'total_sobrantes'=>0,
-                    'costo_transformacion'=>0,
+                    'id_sede'=>$request->id_sede,
+                    'id_requerimiento'=>$request->id_requerimiento,
+                    'id_cliente'=>$request->id_cliente,
+                    'codigo'=>$codigo,
+                    'ubigeo_destino'=>$request->ubigeo,
+                    'direccion_destino'=>$request->direccion_destino,
+                    'fecha_despacho'=>$request->fecha_despacho,
+                    'fecha_entrega'=>$request->fecha_entrega,
+                    'aplica_cambios'=>($request->aplica_cambios_valor == 'si' ? true : false),
                     'registrado_por'=>$usuario,
-                    'tipo_cambio'=>1,
+                    'tipo_entrega'=>$request->tipo_entrega,
                     'fecha_registro'=>date('Y-m-d H:i:s'),
-                    'estado'=>1,
-                    'observacion'=>'SALE: '.$request->sale
+                    'estado'=>1
                 ],
-                    'id_transformacion'
+                    'id_od'
             );
 
-            
-            $data = json_decode($request->detalle_ingresa);
-            
-            foreach ($data as $d) {
-                DB::table('almacen.transfor_materia')
-                ->insert([
-                    'id_transformacion'=>$id_transformacion,
-                    'id_producto'=>$d->id_producto,
-                    'id_posicion'=>$d->id_posicion,
-                    'cantidad'=>$d->cantidad,
-                    'valor_unitario'=>0,
-                    'valor_total'=>0,
-                    'estado'=>1,
-                    'fecha_registro'=>date('Y-m-d H:i:s')
-                ]);
+            if ($request->aplica_cambios_valor == 'si'){
+                $fecha_actual = date('Y-m-d');
+                $codTrans = $this->transformacion_nextId($fecha_actual);
+
+                $id_transformacion = DB::table('almacen.transformacion')
+                    ->insertGetId([
+                        'fecha_transformacion'=>$fecha_actual,
+                        'codigo'=>$codTrans,
+                        // 'responsable'=>,
+                        'id_moneda'=>1,
+                        // 'id_almacen'=>,
+                        'total_materias'=>0,
+                        'total_directos'=>0,
+                        'costo_primo'=>0,
+                        'total_indirectos'=>0,
+                        'total_sobrantes'=>0,
+                        'costo_transformacion'=>0,
+                        'registrado_por'=>$usuario,
+                        'tipo_cambio'=>1,
+                        'fecha_registro'=>date('Y-m-d H:i:s'),
+                        'estado'=>1,
+                        'observacion'=>'SALE: '.$request->sale
+                    ],
+                        'id_transformacion'
+                );
+
+                
+                $data = json_decode($request->detalle_ingresa);
+                
+                foreach ($data as $d) {
+                    DB::table('almacen.transfor_materia')
+                    ->insert([
+                        'id_transformacion'=>$id_transformacion,
+                        'id_producto'=>$d->id_producto,
+                        'id_posicion'=>$d->id_posicion,
+                        'cantidad'=>$d->cantidad,
+                        'valor_unitario'=>0,
+                        'valor_total'=>0,
+                        'estado'=>1,
+                        'fecha_registro'=>date('Y-m-d H:i:s')
+                    ]);
+                }
             }
-        }
-        else {
-            $data = json_decode($request->detalle_requerimiento);
-            
-            foreach ($data as $d) {
-                DB::table('almacen.orden_despacho_det')
-                ->insert([
-                    'id_od'=>$id_od,
-                    'id_producto'=>$d->id_producto,
-                    'id_posicion'=>$d->id_posicion,
-                    'cantidad'=>$d->cantidad,
-                    'descripcion_producto'=>($d->descripcion_item !== null ? $d->descripcion_item : $d->descripcion_producto),
-                    'estado'=>1,
-                    'fecha_registro'=>date('Y-m-d H:i:s')
-                ]);
+            else {
+                $data = json_decode($request->detalle_requerimiento);
+                
+                foreach ($data as $d) {
+                    DB::table('almacen.orden_despacho_det')
+                    ->insert([
+                        'id_od'=>$id_od,
+                        'id_producto'=>$d->id_producto,
+                        'id_posicion'=>($d->id_posicion),
+                        'cantidad'=>$d->cantidad,
+                        'descripcion_producto'=>($d->descripcion_item !== null ? $d->descripcion_item : $d->descripcion_producto),
+                        'estado'=>1,
+                        'fecha_registro'=>date('Y-m-d H:i:s')
+                    ]);
+                }
             }
+            DB::commit();
+            return response()->json($id_od);
+            
+        } catch (\PDOException $e) {
+            // Woopsy
+            DB::rollBack();
+            // return response()->json($e);
         }
-        return response()->json($id_od);
     }
 
     public function listarOrdenesDespacho(Request $request){

@@ -810,6 +810,7 @@ Route::post('listarOrdenesEntregadas', 'OrdenesPendientesController@listarOrdene
 Route::get('detalleOrden/{id}', 'OrdenesPendientesController@detalleOrden');
 Route::post('guardar_guia_com_oc', 'OrdenesPendientesController@guardar_guia_com_oc');
 Route::get('verGuiasOrden/{id}', 'OrdenesPendientesController@verGuiasOrden');
+Route::post('guardar_guia_transferencia', 'OrdenesPendientesController@guardar_guia_transferencia');
 
 // Route::get('requerimientosPendientes', 'DistribucionController@view_requerimientosPendientes');
 Route::get('ordenesDespacho', 'DistribucionController@view_ordenesDespacho');
@@ -823,6 +824,7 @@ Route::post('guardar_grupo_despacho', 'DistribucionController@guardar_grupo_desp
 Route::get('grupoDespachos', 'DistribucionController@view_grupoDespachos');
 Route::post('listarGruposDespachados', 'DistribucionController@listarGruposDespachados');
 Route::get('verDetalleGrupoDespacho/{id}', 'DistribucionController@verDetalleGrupoDespacho');
+Route::get('pruebaa', 'AlmacenController@pruebaa');
 
 /**Guia Venta */
 

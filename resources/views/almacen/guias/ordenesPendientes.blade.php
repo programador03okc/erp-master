@@ -24,13 +24,14 @@
                                         <th>R.U.C.</th>
                                         <th>Razon Social</th>
                                         <th>Fecha Emisión</th>
-                                        <th>Condición</th>
+                                        <th>Req.</th>
+                                        <th>Concepto</th>
                                         <th>Responsable</th>
                                         <th>Mnd</th>
                                         <th>SubTotal</th>
                                         <th>IGV</th>
                                         <th>Total</th>
-                                        <th></th>
+                                        <th width="80px"></th>
                                     </tr>
                                 </thead>
                                 <tbody></tbody>
@@ -52,14 +53,17 @@
                                         <th>Cod.Orden</th>
                                         <th>R.U.C.</th>
                                         <th>Razon Social</th>
-                                        <th>Fecha Emisión</th>
-                                        <th>Condición</th>
-                                        <th>Responsable</th>
                                         <th>Mnd</th>
                                         <th>SubTotal</th>
                                         <th>IGV</th>
                                         <th>Total</th>
-                                        <th></th>
+                                        <th>Req.</th>
+                                        <th>Concepto</th>
+                                        <th>Guía Compra</th>
+                                        <th>Ingreso</th>
+                                        <th>Fecha Ingreso</th>
+                                        <th>Responsable</th>
+                                        <th width="100px"></th>
                                     </tr>
                                 </thead>
                                 <tbody></tbody>
@@ -75,7 +79,9 @@
 @include('almacen.guias.ordenDetalle')
 @include('almacen.guias.ordenesGuias')
 @include('almacen.guias.guia_com_create')
+@include('almacen.transferencias.transferenciaGuia')
 @include('layout.footer')
 @include('layout.scripts')
 <script src="{{('/js/almacen/guia/ordenesPendientes.js')}}"></script>
+<script src="{{('/js/almacen/transferencias/transferenciaGuia.js')}}"></script>
 @include('layout.fin_html')

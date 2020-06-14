@@ -24,9 +24,14 @@
                                         <th>Codigo</th>
                                         <th>Concepto</th>
                                         <th>Fecha Req.</th>
-                                        <th>Observación</th>
-                                        <th>Grupo</th>
+                                        <th>Ubigeo Entrega</th>
+                                        <th>Dirección Entrega</th>
+                                        <!-- <th>Grupo</th> -->
                                         <th>Responsable</th>
+                                        <th>Estado</th>
+                                        <th>OC</th>
+                                        <th>Guía Compra</th>
+                                        <th>Transf.</th>
                                         <th width="90px">Acción</th>
                                     </tr>
                                 </thead>

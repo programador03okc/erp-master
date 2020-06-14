@@ -18,7 +18,7 @@
                                 <input class="oculto" name="id_contrib"/>
                                 <input type="text" class="form-control" name="cliente_razon_social" placeholder="Seleccione un cliente..." 
                                     aria-describedby="basic-addon1" disabled>
-                                <button type="button" class="input-group-text activation btn-primary" id="basic-addon1" onClick="clienteModal();">
+                                <button type="button" class="input-group-text btn-primary" id="basic-addon1" onClick="clienteModal();">
                                     <i class="fa fa-search"></i>
                                 </button>
                                 <!-- <button type="button" class="input-group-text activation btn-success" id="basic-addon1" onClick="agregar_cliente();">
@@ -28,31 +28,31 @@
                         </div>
                         <div class="col-md-3">
                             <h5>Fecha de Despacho</h5>
-                            <input type="date" class="form-control activation" name="fecha_despacho" value="<?=date('Y-m-d');?>">
+                            <input type="date" class="form-control" name="fecha_despacho" value="<?=date('Y-m-d');?>">
                         </div>
                         <div class="col-md-3">
                             <h5>Última Fecha de Entrega</h5>
-                            <input type="date" class="form-control activation" name="fecha_entrega" value="<?=date('Y-m-d');?>">
+                            <input type="date" class="form-control" name="fecha_entrega" value="<?=date('Y-m-d');?>">
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-md-6">
                             <h5>Dirección Destino</h5>
-                            <input type="text" class="form-control activation" name="direccion_destino">
+                            <input type="text" class="form-control" name="direccion_destino">
                         </div>
                         <div class="col-md-3">
                             <h5>Ubigeo Destino</h5>
                             <div style="display:flex;">
                                 <input class="oculto" name="ubigeo"/>
-                                <input type="text" class="form-control activation" name="name_ubigeo">
-                                <button type="button" class="input-group-text activation btn-primary" id="basic-addon1" onClick="ubigeoModal();">
+                                <input type="text" class="form-control" name="name_ubigeo">
+                                <button type="button" class="input-group-text btn-primary" id="basic-addon1" onClick="ubigeoModal();">
                                     <i class="fa fa-search"></i>
                                 </button>
                             </div>
                         </div>
                         <div class="col-md-3">
                             <h5>Tipo de Entrega</h5>
-                            <select class="form-control activation js-example-basic-single" name="tipo_entrega">
+                            <select class="form-control" name="tipo_entrega">
                                 <option value="MISMA CIUDAD">MISMA CIUDAD</option>
                                 <option value="OTRAS CIUDADES">OTRAS CIUDADES</option>
                             </select>
@@ -83,10 +83,10 @@
                                             <th>Descripción</th>
                                             <th>Cantidad</th>
                                             <th>Unid</th>
-                                            <th>Posición</th>
-                                            <th>Lugar de Entrega</th>
+                                            <th>Almacén</th>
+                                            <!-- <th>Lugar de Entrega</th> -->
                                             <th>Estado</th>
-                                            <th>Acción</th>
+                                            <!-- <th>Acción</th> -->
                                             <!-- <th>Total</th> -->
                                         </tr>
                                     </thead>

@@ -46,7 +46,7 @@ function open_transferencia_detalle(data){
         $('#guia').text(data.guia_ven);
         $('[name=id_transferencia]').val(data.id_transferencia);
         $('[name=id_guia_ven]').val(data.id_guia_ven);
-        console.log(data.id_almacen_destino);
+        $('[name=guia_ingreso_compra]').val(data.guia_ingreso_compra);
         $('[name=id_almacen_destino]').val(data.id_almacen_destino);
         $('[name=almacen_destino]').val(data.alm_destino_descripcion);
         $('[name=responsable_destino]').val(data.responsable_destino);
@@ -87,37 +87,44 @@ function recibir(){
         var fecha_almacen = $('[name=fecha_almacen]').val();
         var id_almacen_destino = $('[name=id_almacen_destino]').val();
         var responsable_destino = $('[name=responsable_destino]').val();
-        var id_guia_ven_det = [];
-        var cantidad_recibida = [];
-        var ubicaciones = [];
-        var observacion = [];
-        var falta_ubi = false;
-        var r = 0;
+        var guia_ingreso_compra = $('[name=guia_ingreso_compra]').val();
+        // var id_guia_ven_det = [];
+        // var cantidad_recibida = [];
+        // var ubicaciones = [];
+        // var observacion = [];
+        // var falta_ubi = false;
+        // var r = 0;
+        var detalle = [];
             
         $("input[type=checkbox]:checked").each(function(){
-            id_guia_ven_det[r] = $(this).parent().parent()[0].id;
-            cantidad_recibida[r] = $(this).closest('td').siblings().find("input[name=cantidad_recibida]").val();
-            observacion[r] = $(this).closest('td').siblings().find("input[name=observacion]").val();
-            ubicaciones[r] = $(this).closest('td').siblings().find("select[name=id_posicion]").val();
-            var cant = $(this).closest('tr').find('td:eq(3)').text();
-            console.log(cant+' - '+cantidad_recibida[r]);
-            if (ubicaciones[r] == 0){
-                console.log(ubicaciones[r]);
-                falta_ubi = true;
+            var nuevo = {
+                id_guia_ven_det: $(this).parent().parent()[0].id,
+                cantidad_recibida: $(this).closest('td').siblings().find("input[name=cantidad_recibida]").val(),
+                observacion: $(this).closest('td').siblings().find("input[name=observacion]").val(),
+                ubicacion: $(this).closest('td').siblings().find("select[name=id_posicion]").val()
             }
-            r++;
+            detalle.push(nuevo);
+            // var cant = $(this).closest('tr').find('td:eq(3)').text();
+            // console.log(cant+' - '+cantidad_recibida[r]);
+            // if (ubicaciones[r] == 0){
+            //     console.log(ubicaciones[r]);
+            //     falta_ubi = true;
+            // }
+            // r++;
         });
     
-        if (!falta_ubi){
+        // if (!falta_ubi){
             var data = 'id_transferencia='+id_transferencia+
                     '&id_guia_ven='+id_guia_ven+
                     '&fecha_almacen='+fecha_almacen+
                     '&responsable_destino='+responsable_destino+
                     '&id_almacen_destino='+id_almacen_destino+
-                    '&id_guia_ven_det='+id_guia_ven_det+
-                    '&cantidad_recibida='+cantidad_recibida+
-                    '&ubicaciones='+ubicaciones+
-                    '&observacion='+observacion;
+                    '&guia_ingreso_compra='+guia_ingreso_compra+
+                    '&detalle='+JSON.stringify(detalle);
+                    // '&id_guia_ven_det='+id_guia_ven_det+
+                    // '&cantidad_recibida='+cantidad_recibida+
+                    // '&ubicaciones='+ubicaciones+
+                    // '&observacion='+observacion;
             console.log(data);
             $.ajax({
                 type: 'POST',
@@ -128,6 +135,8 @@ function recibir(){
                     console.log(response);
                     if (response > 0){
                         alert('Ingreso generado con éxito');
+                        var id = encode5t(response);
+                        window.open('imprimir_ingreso/'+id);
                         $('#modal-transferencia_detalle').modal('hide');
                         listarTransferenciasPendientes();
                     }
@@ -137,9 +146,9 @@ function recibir(){
                 console.log(textStatus);
                 console.log(errorThrown);
             });
-        } else {
-            alert('Es necesario que le asigne ubicaciones!');
-        }
+        // } else {
+        //     alert('Es necesario que le asigne ubicaciones!');
+        // }
     } else {
         $('#modal-transferencia_detalle').modal('hide');
     }
