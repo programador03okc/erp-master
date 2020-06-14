@@ -84,8 +84,8 @@ function listarRequerimientosPendientes(){
                 'data-placement="bottom" title="Ver Detalle" >'+
                 '<i class="fas fa-list-ul"></i></button>'+
                 (
-                    ((row['estado'] == 19 && row['id_tipo_requerimiento'] == 2) ||
-                     (row['estado'] == 19 && row['id_tipo_requerimiento'] == 1 && row['id_transferencia'] !== null)) ?
+                    ((row['estado'] == 19 && row['id_tipo_requerimiento'] == 2) || //venta directa
+                     (row['estado'] == 19 && row['id_tipo_requerimiento'] == 1 && row['id_transferencia'] !== null)) ? //compra con transferencia
                     ('<button type="button" class="despacho btn btn-success boton" data-toggle="tooltip" '+
                     'data-placement="bottom" title="Generar Orden de Despacho" >'+
                     '<i class="fas fa-sign-in-alt"></i></button>') : '')
