@@ -2558,12 +2558,12 @@ class AlmacenController extends Controller
         ->first();
         return $item->id_item;
     }
-    // public function id_ingreso($id_guia){
-    //     $ing = DB::table('almacen.mov_alm')
-    //     ->where('mov_alm.id_guia_com',$id_guia)
-    //     ->first();
-    //     return response()->json((isset($ing) ? $ing->id_mov_alm : 0));
-    // }
+    public function id_ingreso($id_guia){
+        $ing = DB::table('almacen.mov_alm')
+        ->where('mov_alm.id_guia_com',$id_guia)
+        ->first();
+        return response()->json((isset($ing) ? $ing->id_mov_alm : 0));
+    }
     public function id_ingreso_transformacion($id_transformacion){
         $ing = DB::table('almacen.mov_alm')
         ->where([['mov_alm.id_transformacion','=',$id_transformacion],
@@ -2645,232 +2645,232 @@ class AlmacenController extends Controller
         // $ocs = $result->ocs;
         return $ingreso->codigo;
     }
-    // public function imprimir_ingreso($id_ing){
+    public function imprimir_ingreso($id_ing){
 
-    //     $id = $this->decode5t($id_ing);
-    //     $result = $this->get_ingreso($id);
-    //     $ingreso = $result['ingreso'];
-    //     $detalle = $result['detalle'];
-    //     $ocs = $result['ocs'];
+        $id = $this->decode5t($id_ing);
+        $result = $this->get_ingreso($id);
+        $ingreso = $result['ingreso'];
+        $detalle = $result['detalle'];
+        $ocs = $result['ocs'];
 
-    //     $cod_ocs = '';
-    //     foreach($ocs as $oc){
-    //         if ($cod_ocs == ''){
-    //             $cod_ocs .= $oc->codigo;
-    //         } else {
-    //             $cod_ocs .= ', '.$oc->codigo;
-    //         }
-    //     }
-    //     $fecha_actual = date('Y-m-d');
-    //     $hora_actual = date('H:i:s');
+        $cod_ocs = '';
+        foreach($ocs as $oc){
+            if ($cod_ocs == ''){
+                $cod_ocs .= $oc->codigo;
+            } else {
+                $cod_ocs .= ', '.$oc->codigo;
+            }
+        }
+        $fecha_actual = date('Y-m-d');
+        $hora_actual = date('H:i:s');
 
-    //     $html = '
-    //     <html>
-    //         <head>
-    //             <style type="text/css">
-    //             *{ 
-    //                 font-family: "DejaVu Sans";
-    //             }
-    //             table{
-    //                 width:100%;
-    //                 font-size:12px;
-    //             }
-    //             #detalle thead{
-    //                 padding: 4px;
-    //                 background-color: #e5e5e5;
-    //             }
-    //             #detalle tbody tr td{
-    //                 font-size:11px;
-    //                 padding: 4px;
-    //             }
-    //             .right{
-    //                 text-align: right;
-    //             }
-    //             .sup{
-    //                 vertical-align:top;
-    //             }
-    //             </style>
-    //         </head>
-    //         <body>
-    //             <table width="100%">
-    //                 <tr>
-    //                     <td>
-    //                         <p style="text-align:left;font-size:10px;margin:0px;">'.$ingreso->ruc_empresa.'</p>
-    //                         <p style="text-align:left;font-size:10px;margin:0px;">'.$ingreso->empresa_razon_social.'</p>
-    //                         <p style="text-align:left;font-size:10px;margin:0px;">.::Sistema ERP v1.0::.</p>
-    //                     </td>
-    //                     <td>
-    //                         <p style="text-align:right;font-size:10px;margin:0px;">Fecha: '.$fecha_actual.'</p>
-    //                         <p style="text-align:right;font-size:10px;margin:0px;">Hora : '.$hora_actual.'</p>
-    //                     </td>
-    //                 </tr>
-    //             </table>
-    //             <h3 style="margin:0px; padding:0px;"><center>INGRESO A ALMACÉN</center></h3>
-    //             <h5><center>'.$ingreso->id_almacen.' - '.$ingreso->des_almacen.'</center></h5>
+        $html = '
+        <html>
+            <head>
+                <style type="text/css">
+                *{ 
+                    font-family: "DejaVu Sans";
+                }
+                table{
+                    width:100%;
+                    font-size:12px;
+                }
+                #detalle thead{
+                    padding: 4px;
+                    background-color: #e5e5e5;
+                }
+                #detalle tbody tr td{
+                    font-size:11px;
+                    padding: 4px;
+                }
+                .right{
+                    text-align: right;
+                }
+                .sup{
+                    vertical-align:top;
+                }
+                </style>
+            </head>
+            <body>
+                <table width="100%">
+                    <tr>
+                        <td>
+                            <p style="text-align:left;font-size:10px;margin:0px;">'.$ingreso->ruc_empresa.'</p>
+                            <p style="text-align:left;font-size:10px;margin:0px;">'.$ingreso->empresa_razon_social.'</p>
+                            <p style="text-align:left;font-size:10px;margin:0px;">.::Sistema ERP v1.0::.</p>
+                        </td>
+                        <td>
+                            <p style="text-align:right;font-size:10px;margin:0px;">Fecha: '.$fecha_actual.'</p>
+                            <p style="text-align:right;font-size:10px;margin:0px;">Hora : '.$hora_actual.'</p>
+                        </td>
+                    </tr>
+                </table>
+                <h3 style="margin:0px; padding:0px;"><center>INGRESO A ALMACÉN</center></h3>
+                <h5><center>'.$ingreso->id_almacen.' - '.$ingreso->des_almacen.'</center></h5>
                 
-    //             <table border="0">
-    //                 <tr>
-    //                     <td class="subtitle">Ingreso N°</td>
-    //                     <td width=10px>:</td>
-    //                     <td class="verticalTop">'.$ingreso->codigo.'</td>
-    //                     <td>Fecha Ingreso</td>
-    //                     <td width=10px>:</td>
-    //                     <td>'.$ingreso->fecha_emision.'</td>
-    //                 </tr>
-    //             ';
-    //             if ($ingreso->guia !== '--'){
-    //                 $html.='
-    //                 <tr>
-    //                     <td class="subtitle">Guía N°</td>
-    //                     <td width=10px>:</td>
-    //                     <td class="verticalTop">'.$ingreso->guia.'</td>
-    //                     <td>Fecha Guía</td>
-    //                     <td width=10px>:</td>
-    //                     <td>'.$ingreso->fecha_guia.'</td>
-    //                 </tr>';
-    //             }
-    //             if ($ingreso->doc !== '--'){
-    //                 $html.='<tr>
-    //                     <td width=110px>Documento</td>
-    //                     <td width=10px>:</td>
-    //                     <td width=300px>'.$ingreso->doc.'</td>
-    //                     <td width=120px>Fecha Documento</td>
-    //                     <td width=10px>:</td>
-    //                     <td>'.$ingreso->doc_fecha_emision.'</td>
-    //                 </tr>';
-    //             }
-    //             if ($ingreso->cod_transformacion !== null){
-    //                 $html.='<tr>
-    //                     <td width=110px>Transformación</td>
-    //                     <td width=10px>:</td>
-    //                     <td width=300px>'.$ingreso->cod_transformacion.' ('.$ingreso->serie.'-'.$ingreso->numero.')</td>
-    //                     <td width=150px>Fecha Transformación</td>
-    //                     <td width=10px>:</td>
-    //                     <td>'.$ingreso->fecha_transformacion.'</td>
-    //                 </tr>';
-    //             }
-    //             if ($ingreso->trans_codigo !== null){
-    //                 $html.='<tr>
-    //                     <td width=110px>Transferencia</td>
-    //                     <td width=10px>:</td>
-    //                     <td width=300px>'.$ingreso->trans_codigo.'</td>
-    //                     <td width=150px>Almacén Origen</td>
-    //                     <td width=10px>:</td>
-    //                     <td>'.$ingreso->trans_almacen_origen.'</td>
-    //                 </tr>';
-    //             }
-    //             $html.='
-    //                 <tr>
-    //                     <td>Proveedor</td>
-    //                     <td>:</td>
-    //                 ';
-    //                 if ($cod_ocs !== ''){
-    //                     $html.='
-    //                         <td>'.$ingreso->nro_documento.' - '.$ingreso->razon_social.'</td>
-    //                         <td>Orden de Compra</td>
-    //                         <td>:</td>
-    //                         <td>'.$cod_ocs.'</td>
-    //                     ';
-    //                 } else {
-    //                     $html.='<td colSpan="3">'.$ingreso->nro_documento.' - '.$ingreso->razon_social.'</td>
-    //                     ';
-    //                 }
-    //                 $html.='
-    //                 </tr>
-    //                 <tr>
-    //                     <td class="subtitle">Tipo Movim.</td>
-    //                     <td>:</td>
-    //                     <td colSpan="4">'.$ingreso->cod_sunat.' '.$ingreso->ope_descripcion.'</td>
-    //                 </tr>
-    //                 <tr>
-    //                     <td>Responsable</td>
-    //                     <td>:</td>
-    //                     <td>'.$ingreso->persona.'</td>
-    //                 </tr>
-    //             </table>
-    //             <br/>
-    //             <table id="detalle">
-    //                 <thead>
-    //                     <tr>
-    //                         <th>Nro</th>
-    //                         <th>Código</th>
-    //                         <th width=40% >Descripción</th>
-    //                         <th>Posición</th>
-    //                         <th>Cant.</th>
-    //                         <th>Unid.</th>
-    //                         <th>Mnd.</th>
-    //                         <th>Valor.</th>
-    //                     </tr>
-    //                 </thead>
-    //                 <tbody>';
-    //                 $i = 1;
+                <table border="0">
+                    <tr>
+                        <td class="subtitle">Ingreso N°</td>
+                        <td width=10px>:</td>
+                        <td class="verticalTop">'.$ingreso->codigo.'</td>
+                        <td>Fecha Ingreso</td>
+                        <td width=10px>:</td>
+                        <td>'.$ingreso->fecha_emision.'</td>
+                    </tr>
+                ';
+                if ($ingreso->guia !== '--'){
+                    $html.='
+                    <tr>
+                        <td class="subtitle">Guía N°</td>
+                        <td width=10px>:</td>
+                        <td class="verticalTop">'.$ingreso->guia.'</td>
+                        <td>Fecha Guía</td>
+                        <td width=10px>:</td>
+                        <td>'.$ingreso->fecha_guia.'</td>
+                    </tr>';
+                }
+                if ($ingreso->doc !== '--'){
+                    $html.='<tr>
+                        <td width=110px>Documento</td>
+                        <td width=10px>:</td>
+                        <td width=300px>'.$ingreso->doc.'</td>
+                        <td width=120px>Fecha Documento</td>
+                        <td width=10px>:</td>
+                        <td>'.$ingreso->doc_fecha_emision.'</td>
+                    </tr>';
+                }
+                if ($ingreso->cod_transformacion !== null){
+                    $html.='<tr>
+                        <td width=110px>Transformación</td>
+                        <td width=10px>:</td>
+                        <td width=300px>'.$ingreso->cod_transformacion.' ('.$ingreso->serie.'-'.$ingreso->numero.')</td>
+                        <td width=150px>Fecha Transformación</td>
+                        <td width=10px>:</td>
+                        <td>'.$ingreso->fecha_transformacion.'</td>
+                    </tr>';
+                }
+                if ($ingreso->trans_codigo !== null){
+                    $html.='<tr>
+                        <td width=110px>Transferencia</td>
+                        <td width=10px>:</td>
+                        <td width=300px>'.$ingreso->trans_codigo.'</td>
+                        <td width=150px>Almacén Origen</td>
+                        <td width=10px>:</td>
+                        <td>'.$ingreso->trans_almacen_origen.'</td>
+                    </tr>';
+                }
+                $html.='
+                    <tr>
+                        <td>Proveedor</td>
+                        <td>:</td>
+                    ';
+                    if ($cod_ocs !== ''){
+                        $html.='
+                            <td>'.$ingreso->nro_documento.' - '.$ingreso->razon_social.'</td>
+                            <td>Orden de Compra</td>
+                            <td>:</td>
+                            <td>'.$cod_ocs.'</td>
+                        ';
+                    } else {
+                        $html.='<td colSpan="3">'.$ingreso->nro_documento.' - '.$ingreso->razon_social.'</td>
+                        ';
+                    }
+                    $html.='
+                    </tr>
+                    <tr>
+                        <td class="subtitle">Tipo Movim.</td>
+                        <td>:</td>
+                        <td colSpan="4">'.$ingreso->cod_sunat.' '.$ingreso->ope_descripcion.'</td>
+                    </tr>
+                    <tr>
+                        <td>Responsable</td>
+                        <td>:</td>
+                        <td>'.$ingreso->persona.'</td>
+                    </tr>
+                </table>
+                <br/>
+                <table id="detalle">
+                    <thead>
+                        <tr>
+                            <th>Nro</th>
+                            <th>Código</th>
+                            <th width=40% >Descripción</th>
+                            <th>Posición</th>
+                            <th>Cant.</th>
+                            <th>Unid.</th>
+                            <th>Mnd.</th>
+                            <th>Valor.</th>
+                        </tr>
+                    </thead>
+                    <tbody>';
+                    $i = 1;
 
-    //                 foreach($detalle as $det){
-    //                     $series = '';
-    //                     if ($det->series){
-    //                         $det_series = DB::table('almacen.alm_prod_serie')
-    //                         ->where([['alm_prod_serie.id_prod','=',$det->id_producto],
-    //                                  ['alm_prod_serie.id_guia_det','=',$det->id_guia_com_det]])
-    //                         ->get();
+                    foreach($detalle as $det){
+                        $series = '';
+                        if ($det->series){
+                            $det_series = DB::table('almacen.alm_prod_serie')
+                            ->where([['alm_prod_serie.id_prod','=',$det->id_producto],
+                                     ['alm_prod_serie.id_guia_det','=',$det->id_guia_com_det]])
+                            ->get();
                 
-    //                         if (isset($det_series)){
-    //                             foreach($det_series as $s){
-    //                                 if ($series !== ''){
-    //                                     $series.= ', '.$s->serie;
-    //                                 } else {
-    //                                     $series = 'Serie(s): '.$s->serie;
-    //                                 }
-    //                             }
-    //                         }
-    //                     }
-    //                     $html.='
-    //                     <tr>
-    //                         <td class="right">'.$i.'</td>
-    //                         <td>'.$det->codigo.'</td>
-    //                         <td>'.$det->descripcion.' '.$series.'</td>
-    //                         <td>'.$det->cod_posicion.'</td>
-    //                         <td class="right">'.$det->cantidad.'</td>
-    //                         <td>'.$det->abreviatura.'</td>
-    //                         <td>'.$det->simbolo.'</td>
-    //                         <td class="right">'.$det->valorizacion.'</td>
-    //                     </tr>';
-    //                     $i++;
-    //                 }
-    //                 $html.='</tbody>
-    //             </table>
-    //             <p style="text-align:right;font-size:11px;">Elaborado por: '.$ingreso->nom_usuario.' '.$ingreso->fecha_registro.'</p>
+                            if (isset($det_series)){
+                                foreach($det_series as $s){
+                                    if ($series !== ''){
+                                        $series.= ', '.$s->serie;
+                                    } else {
+                                        $series = 'Serie(s): '.$s->serie;
+                                    }
+                                }
+                            }
+                        }
+                        $html.='
+                        <tr>
+                            <td class="right">'.$i.'</td>
+                            <td>'.$det->codigo.'</td>
+                            <td>'.$det->descripcion.' '.$series.'</td>
+                            <td>'.$det->cod_posicion.'</td>
+                            <td class="right">'.$det->cantidad.'</td>
+                            <td>'.$det->abreviatura.'</td>
+                            <td>'.$det->simbolo.'</td>
+                            <td class="right">'.$det->valorizacion.'</td>
+                        </tr>';
+                        $i++;
+                    }
+                    $html.='</tbody>
+                </table>
+                <p style="text-align:right;font-size:11px;">Elaborado por: '.$ingreso->nom_usuario.' '.$ingreso->fecha_registro.'</p>
 
-    //         </body>
-    //     </html>';
+            </body>
+        </html>';
         
-    //     $pdf = \App::make('dompdf.wrapper');
-    //     $pdf->loadHTML($html);
+        $pdf = \App::make('dompdf.wrapper');
+        $pdf->loadHTML($html);
 
-    //     return $pdf->stream();
-    //     return $pdf->download('ingreso.pdf');
-    // }
-    // public function mostrar_ingreso($id){
-    //     $ingreso = DB::table('almacen.mov_alm')
-    //         ->select('mov_alm.*','alm_almacen.descripcion as des_almacen',
-    //         DB::raw("CONCAT('GR-',guia_com.serie,'-',guia_com.numero) as guia"),
-    //         'guia_com.fecha_emision as fecha_guia','sis_usua.usuario as nom_usuario')
-    //         ->join('almacen.alm_almacen','alm_almacen.id_almacen','=','mov_alm.id_almacen')
-    //         ->join('almacen.tp_mov','tp_mov.id_tp_mov','=','mov_alm.id_tp_mov')
-    //         ->join('almacen.guia_com','guia_com.id_guia','=','mov_alm.id_guia_com')
-    //         ->join('configuracion.sis_usua','sis_usua.id_usuario','=','mov_alm.usuario')
-    //         ->where('mov_alm.id_mov_alm',$id)
-    //         ->first();
+        return $pdf->stream();
+        return $pdf->download('ingreso.pdf');
+    }
+    public function mostrar_ingreso($id){
+        $ingreso = DB::table('almacen.mov_alm')
+            ->select('mov_alm.*','alm_almacen.descripcion as des_almacen',
+            DB::raw("CONCAT('GR-',guia_com.serie,'-',guia_com.numero) as guia"),
+            'guia_com.fecha_emision as fecha_guia','sis_usua.usuario as nom_usuario')
+            ->join('almacen.alm_almacen','alm_almacen.id_almacen','=','mov_alm.id_almacen')
+            ->join('almacen.tp_mov','tp_mov.id_tp_mov','=','mov_alm.id_tp_mov')
+            ->join('almacen.guia_com','guia_com.id_guia','=','mov_alm.id_guia_com')
+            ->join('configuracion.sis_usua','sis_usua.id_usuario','=','mov_alm.usuario')
+            ->where('mov_alm.id_mov_alm',$id)
+            ->first();
 
-    //     $detalle = DB::table('almacen.mov_alm_det')
-    //         ->select('mov_alm_det.*','alm_prod.codigo','alm_prod.descripcion',
-    //         'alm_ubi_posicion.codigo as cod_posicion')
-    //         ->join('almacen.alm_prod','alm_prod.id_producto','=','mov_alm_det.id_producto')
-    //         ->join('almacen.alm_ubi_posicion','alm_ubi_posicion.id_posicion','=','mov_alm_det.id_posicion')
-    //         ->where('mov_alm_det.estado',1)
-    //         ->get();
+        $detalle = DB::table('almacen.mov_alm_det')
+            ->select('mov_alm_det.*','alm_prod.codigo','alm_prod.descripcion',
+            'alm_ubi_posicion.codigo as cod_posicion')
+            ->join('almacen.alm_prod','alm_prod.id_producto','=','mov_alm_det.id_producto')
+            ->join('almacen.alm_ubi_posicion','alm_ubi_posicion.id_posicion','=','mov_alm_det.id_posicion')
+            ->where('mov_alm_det.estado',1)
+            ->get();
 
-    //     return response()->json(['ingreso'=>$ingreso,'detalle'=>$detalle]);
-    // }
+        return response()->json(['ingreso'=>$ingreso,'detalle'=>$detalle]);
+    }
     /**Guia Compra Transportista */
     public function mostrar_transportistas($id){
         $data = DB::table('almacen.guia_com_tra')
@@ -3500,9 +3500,9 @@ class AlmacenController extends Controller
         ->join('almacen.guia_com','guia_com.id_guia','=','guia_com_det.id_guia_com')
         ->join('almacen.tp_doc_almacen','tp_doc_almacen.id_tp_doc_almacen','=','guia_com.id_tp_doc_almacen')
         ->where([['alm_prod_serie.id_prod','=',$id_prod],
-                 ['alm_prod_serie.id_almacen','=',$id_almacen],
-                 ['alm_prod_serie.id_guia_ven_det','=',null],
-                 ['alm_prod_serie.estado','=',1]])
+                ['alm_prod_serie.id_almacen','=',$id_almacen],
+                ['alm_prod_serie.id_guia_ven_det','=',null],
+                ['alm_prod_serie.estado','=',1]])
         ->get();
         $output['data'] = $series;
         return response()->json($output);
@@ -3522,58 +3522,10 @@ class AlmacenController extends Controller
         ->first();
         return response()->json($data);
     }
+
     /**Comprobante de Compra */
-    // public function listar_docs_compra(){
-    //     $data = DB::table('almacen.doc_com')
-    //     ->select('doc_com.*','adm_contri.razon_social','adm_estado_doc.estado_doc as des_estado')
-    //     ->join('logistica.log_prove','log_prove.id_proveedor','=','doc_com.id_proveedor')
-    //     ->join('contabilidad.adm_contri','adm_contri.id_contribuyente','=','log_prove.id_contribuyente')
-    //     ->join('administracion.adm_estado_doc','adm_estado_doc.id_estado_doc','=','doc_com.estado')
-    //     ->where('doc_com.estado','!=',7)
-    //     ->get();
-    //     $output['data'] = $data;
-    //     return response()->json($output);
-    // }
-    // public function mostrar_doc_com($id){
-    //     $doc = DB::table('almacen.doc_com')
-    //         ->select('doc_com.*','adm_estado_doc.estado_doc','sis_usua.nombre_corto','sis_moneda.simbolo',
-    //         'adm_contri.nro_documento','adm_contri.razon_social')
-    //         ->join('administracion.adm_estado_doc','adm_estado_doc.id_estado_doc','=','doc_com.estado')
-    //         ->join('configuracion.sis_usua','sis_usua.id_usuario','=','doc_com.registrado_por')
-    //         ->join('configuracion.sis_moneda','sis_moneda.id_moneda','=','doc_com.moneda')
-    //         ->join('logistica.log_prove','log_prove.id_proveedor','=','doc_com.id_proveedor')
-    //         ->join('contabilidad.adm_contri','adm_contri.id_contribuyente','=','log_prove.id_contribuyente')
-    //         ->where('doc_com.id_doc_com',$id)
-    //         ->get();
-    //     return response()->json($doc);
-    // }
-    // public function listar_doc_guias($id_doc){
-    //     $guias = DB::table('almacen.doc_com_guia')
-    //     ->select('doc_com_guia.*',DB::raw("CONCAT('GR-',guia_com.serie,'-',guia_com.numero) as guia"),
-    //     'guia_com.fecha_emision as fecha_guia','tp_ope.descripcion as des_operacion',
-    //     'adm_contri.razon_social')
-    //     ->join('almacen.guia_com','guia_com.id_guia','=','doc_com_guia.id_guia_com')
-    //     ->join('almacen.tp_ope','tp_ope.id_operacion','=','guia_com.id_operacion')
-    //     ->join('logistica.log_prove','log_prove.id_proveedor','=','guia_com.id_proveedor')
-    //     ->join('contabilidad.adm_contri','adm_contri.id_contribuyente','=','log_prove.id_contribuyente')
-    //     ->where([['doc_com_guia.id_doc_com','=',$id_doc],
-    //             ['doc_com_guia.estado','=',1]])
-    //     ->get();
-    //     $html ='';
-    //     foreach($guias as $guia){
-    //         $html .= '
-    //         <tr id="doc-'.$guia->id_doc_com_guia.'">
-    //             <td>'.$guia->guia.'</td>
-    //             <td>'.$guia->fecha_guia.'</td>
-    //             <td>'.$guia->razon_social.'</td>
-    //             <td>'.$guia->des_operacion.'</td>
-    //             <td><i class="fas fa-trash icon-tabla red boton" data-toggle="tooltip" data-placement="bottom" 
-    //                 title="Anular Guia" onClick="anular_guia('.$guia->id_guia_com.','.$guia->id_doc_com_guia.');"></i>
-    //             </td>
-    //         </tr>';
-    //     }
-    //     return json_encode($html);
-    // }
+    /** */
+
     public function listar_docven_guias($id_doc){
         $guias = DB::table('almacen.doc_ven_guia')
         ->select('doc_ven_guia.*',DB::raw("CONCAT('GR-',guia_ven.serie,'-',guia_ven.numero) as guia"),
@@ -3602,21 +3554,7 @@ class AlmacenController extends Controller
         }
         return json_encode($html);
     }
-    // public function listar_guias_prov($id_proveedor){
-    //     $data = DB::table('almacen.guia_com')
-    //         ->select('guia_com.*',DB::raw("CONCAT('GR-',guia_com.serie,'-',guia_com.numero) as guia"),
-    //         'adm_contri.razon_social','adm_estado_doc.estado_doc')
-    //         ->join('logistica.log_prove','log_prove.id_proveedor','=','guia_com.id_proveedor')
-    //         ->join('contabilidad.adm_contri','adm_contri.id_contribuyente','=','log_prove.id_contribuyente')
-    //         ->join('administracion.adm_estado_doc','adm_estado_doc.id_estado_doc','=','guia_com.estado')
-    //         ->leftjoin('almacen.doc_com_guia','doc_com_guia.id_guia_com','=','guia_com.id_guia')
-    //         ->where([['guia_com.id_proveedor','=',$id_proveedor],
-    //                 // ['guia_com.estado','=',9],//Guias procesadas
-    //                 ['doc_com_guia.id_guia_com','=',null]])
-    //         // ->orWhere('doc_com_guia.estado',2)
-    //         ->get();
-    //     return response()->json($data);
-    // }
+
     public function listar_guias_almacen($id_almacen){
         $data = DB::table('almacen.guia_com')
             ->select('guia_com.*','adm_contri.razon_social')
@@ -3639,68 +3577,7 @@ class AlmacenController extends Controller
             ->get();
         return response()->json($data);
     }
-    // public function mostrar_doc_detalle($id_doc_det){
-    //     $data = DB::table('almacen.doc_com_det')
-    //         ->select('doc_com_det.*','alm_prod.codigo','alm_prod.descripcion',
-    //         DB::raw("CONCAT('GR-',guia_com.serie,'-',guia_com.numero) as guia"),
-    //         'alm_und_medida.abreviatura')
-    //         ->join('almacen.alm_item','alm_item.id_item','=','doc_com_det.id_item')
-    //         ->join('almacen.alm_prod','alm_prod.id_producto','=','alm_item.id_producto')
-    //         ->join('almacen.guia_com_det','guia_com_det.id_guia_com_det','=','doc_com_det.id_guia_com_det')
-    //         ->join('almacen.guia_com','guia_com.id_guia','=','guia_com_det.id_guia_com')
-    //         ->join('almacen.alm_und_medida','alm_und_medida.id_unidad_medida','=','doc_com_det.id_unid_med')
-    //         ->where([['doc_com_det.id_doc_det','=',$id_doc_det]])
-    //         ->first();
-    //     return response()->json($data);
-    // }
-    // public function listar_doc_items($id_doc){
-    //     $detalle = DB::table('almacen.doc_com_det')
-    //         ->select('doc_com_det.*','alm_prod.codigo','alm_prod.descripcion',
-    //         DB::raw("CONCAT('GR-',guia_com.serie,'-',guia_com.numero) as guia"),
-    //         'alm_und_medida.abreviatura')
-    //         ->join('almacen.alm_item','alm_item.id_item','=','doc_com_det.id_item')
-    //         ->join('almacen.alm_prod','alm_prod.id_producto','=','alm_item.id_producto')
-    //         ->join('almacen.guia_com_det','guia_com_det.id_guia_com_det','=','doc_com_det.id_guia_com_det')
-    //         ->join('almacen.guia_com','guia_com.id_guia','=','guia_com_det.id_guia_com')
-    //         ->join('almacen.alm_und_medida','alm_und_medida.id_unidad_medida','=','doc_com_det.id_unid_med')
-    //         ->where([['doc_com_det.id_doc','=',$id_doc],
-    //                 ['doc_com_det.estado','=',1]])
-    //         ->get();
-    //     $html = '';
-    //     foreach($detalle as $det){
-    //         $html .= '
-    //         <tr id="det-'.$det->id_doc_det.'">
-    //             <td>'.$det->guia.'</td>
-    //             <td>'.$det->codigo.'</td>
-    //             <td>'.$det->descripcion.'</td>
-    //             <td><input type="number" class="input-data right" name="cantidad" 
-    //                 value="'.$det->cantidad.'" onChange="calcula_total('.$det->id_doc_det.');" 
-    //                 disabled="true"/>
-    //             </td>
-    //             <td>'.$det->abreviatura.'</td>
-    //             <td><input type="number" class="input-data right" name="precio_unitario" 
-    //                 value="'.$det->precio_unitario.'" onChange="calcula_total('.$det->id_doc_det.');" 
-    //                 disabled="true"/>
-    //             </td>
-    //             <td><input type="number" class="input-data right" name="porcen_dscto" 
-    //                 value="'.$det->porcen_dscto.'" onChange="calcula_dscto('.$det->id_doc_det.');" 
-    //                 disabled="true"/>
-    //             </td>
-    //             <td><input type="number" class="input-data right" name="total_dscto" 
-    //                 value="'.$det->total_dscto.'" onChange="calcula_total('.$det->id_doc_det.');" 
-    //                 disabled="true"/>
-    //             </td>
-    //             <td><input type="number" class="input-data right" name="precio_total" 
-    //                 value="'.$det->precio_total.'" disabled="true"/>
-    //             </td>
-    //             <td style="display:flex;">
-    //                 <i class="fas fa-pen-square icon-tabla blue boton" data-toggle="tooltip" data-placement="bottom" title="Editar Item" onClick="editar_detalle('.$det->id_doc_det.');"></i>
-    //                 <i class="fas fa-trash icon-tabla red boton" data-toggle="tooltip" data-placement="bottom" title="Anular Item" onClick="anular_detalle('.$det->id_doc_det.');"></i>
-    //             </td>
-    //         </tr>';
-    //     }
-    //     return json_encode($html);
-    // }
+    
     public function listar_docven_items($id_doc){
         $detalle = DB::table('almacen.doc_ven_det')
             ->select('doc_ven_det.*','alm_prod.codigo','alm_prod.descripcion',
@@ -3755,328 +3632,134 @@ class AlmacenController extends Controller
         return json_encode($html);
     }
 
-    // public function guardar_doc_compra(Request $request)
-    // {
-    //     $usuario = Auth::user();
-    //     $fecha = date('Y-m-d H:i:s');
-    //     $id_doc = DB::table('almacen.doc_com')->insertGetId(
-    //         [
-    //             'serie' => $request->serie,
-    //             'numero' => $request->numero,
-    //             'id_tp_doc' => $request->id_tp_doc,
-    //             'id_proveedor' => $request->id_proveedor,
-    //             'fecha_emision' => $request->fecha_emision,
-    //             'fecha_vcmto' => $request->fecha_vcmto,
-    //             'id_condicion' => $request->id_condicion,
-    //             'credito_dias' => $request->credito_dias,
-    //             'moneda' => $request->moneda,
-    //             'tipo_cambio' => $request->tipo_cambio,
-    //             'sub_total' => $request->sub_total,
-    //             'total_descuento' => $request->total_descuento,
-    //             'porcen_descuento' => $request->porcen_descuento,
-    //             'total' => $request->total,
-    //             'total_igv' => $request->total_igv,
-    //             'total_ant_igv' => $request->total_ant_igv,
-    //             'porcen_igv' => $request->porcen_igv,
-    //             'porcen_anticipo' => $request->porcen_anticipo,
-    //             'total_otros' => $request->total_otros,
-    //             'total_a_pagar' => $request->total_a_pagar,
-    //             'usuario' => $request->usuario,
-    //             'registrado_por' => $usuario->id_usuario,
-    //             'estado' => 1,
-    //             'fecha_registro' => $fecha,
-    //         ],
-    //             'id_doc_com'
-    //         );
-    //     return response()->json(["id_doc"=>$id_doc,"id_proveedor"=>$request->id_proveedor]);
-    // }
-    // public function update_doc_compra(Request $request)
-    // {
-    //     $fecha = date('Y-m-d H:i:s');
-    //     $usuario = Auth::user();
-    //     $data = DB::table('almacen.doc_com')
-    //         ->where('id_doc_com',$request->id_doc_com)
-    //         ->update([
-    //             'serie' => $request->serie,
-    //             'numero' => $request->numero,
-    //             'id_tp_doc' => $request->id_tp_doc,
-    //             'id_proveedor' => $request->id_proveedor,
-    //             'fecha_emision' => $request->fecha_emision,
-    //             'fecha_vcmto' => $request->fecha_vcmto,
-    //             'id_condicion' => $request->id_condicion,
-    //             'credito_dias' => $request->credito_dias,
-    //             'moneda' => $request->moneda,
-    //             'tipo_cambio' => $request->tipo_cambio,
-    //             'sub_total' => $request->sub_total,
-    //             'total_descuento' => $request->total_descuento,
-    //             'porcen_descuento' => $request->porcen_descuento,
-    //             'total' => $request->total,
-    //             'total_igv' => $request->total_igv,
-    //             'total_ant_igv' => $request->total_ant_igv,
-    //             'porcen_igv' => $request->porcen_igv,
-    //             'porcen_anticipo' => $request->porcen_anticipo,
-    //             'total_otros' => $request->total_otros,
-    //             'total_a_pagar' => $request->total_a_pagar,
-    //             'usuario' => $request->usuario,
-    //             'registrado_por' => $usuario->id_usuario,
-    //         ]);
-    //     return response()->json($data);
-    // }
-    // public function anular_doc_compra($id)
-    // {
-    //     $guias = DB::table('almacen.doc_com_guia')
-    //     ->join('almacen.guia_com','guia_com.id_guia','=','doc_com_guia.id_guia_com')
-    //     ->where([['doc_com_guia.id_doc_com','=', $id],
-    //              ['doc_com_guia.estado','=',1],
-    //              ['guia_com.estado','!=',7]])
-    //              ->count();
+    public function guardar_doc_guia(Request $request){
+        $fecha = date('Y-m-d H:i:s');
+        $usuario = Auth::user();
 
-    //     $rspta = '';
-    //     if ($guias > 0){
-    //         $rspta .= 'El documento esta relacionado con Guias Activas.';
-    //     }
+        $guia = DB::table('almacen.guia_com')
+            ->select('guia_com.*')
+            ->where('id_guia',$request->id_guia)
+            ->first();
 
-    //     $prorrateo = DB::table('almacen.guia_com_prorrateo')
-    //     ->where([['id_doc_com','=',$id]])->count();
+        $oc = DB::table('almacen.guia_com_oc')
+            ->select('log_ord_compra.id_moneda','log_ord_compra.id_condicion','log_ord_compra.plazo_dias')
+            ->join('logistica.log_ord_compra','log_ord_compra.id_orden_compra','=','guia_com_oc.id_oc')
+            ->where('id_guia_com',$request->id_guia)
+            ->first();
 
-    //     if ($prorrateo > 0){
-    //         $rspta .= 'El documento esta como Documento de Prorrateo.';
-    //     }
+        $detalle = DB::table('almacen.guia_com_det')
+            ->select('guia_com_det.*','log_valorizacion_cotizacion.precio_sin_igv')
+            ->leftjoin('logistica.log_det_ord_compra','log_det_ord_compra.id_detalle_orden','=','guia_com_det.id_oc_det')
+            ->leftjoin('logistica.log_valorizacion_cotizacion','log_valorizacion_cotizacion.id_valorizacion_cotizacion','=','log_det_ord_compra.id_valorizacion_cotizacion')
+            ->where([['guia_com_det.id_guia_com','=',$request->id_guia],
+                    ['guia_com_det.estado','=',1 ]])
+            ->get();
 
-    //     if ($guias == 0 && $prorrateo == 0){
-    //         DB::table('almacen.doc_com')->where('id_doc_com', $id)
-    //             ->update([ 'estado' => 7 ]);
-    //         DB::table('almacen.doc_com_det')->where('id_doc', $id)
-    //             ->update([ 'estado' => 7 ]);
-    //         DB::table('almacen.doc_com_guia')->where('id_doc_com', $id)
-    //             ->update([ 'estado' => 7 ]);
-    //     }
-    //     return response()->json($rspta);
-    // }
-    // public function update_doc_detalle(Request $request)
-    // {
-    //     $fecha = date('Y-m-d H:i:s');
-    //     $data = DB::table('almacen.doc_com_det')
-    //         ->where('id_doc_det', $request->id_doc_det)
-    //         ->update([
-    //             'cantidad' => $request->cantidad,
-    //             'precio_unitario' => $request->precio_unitario,
-    //             'porcen_dscto' => $request->porcen_dscto,
-    //             'total_dscto' => $request->total_dscto,
-    //             'precio_total' => $request->precio_total,
-    //         ]);
-    //     return response()->json($data);
-    // }
-    // public function anular_doc_detalle($id_doc_det)
-    // {
-    //     $data = DB::table('almacen.doc_com_det')
-    //         ->where('id_doc_det', $id_doc_det)
-    //         ->update(['estado' => 7]);
-    //     return response()->json($data);
-    // }
-    // public function guardar_doc_items_guia($id_guia, $id_doc){
-    //     $fecha = date('Y-m-d H:i:s');
-    //     $detalle = DB::table('almacen.guia_com_det')
-    //         ->select('guia_com_det.*','log_valorizacion_cotizacion.precio_cotizado as precio')//jalar el precio de la oc o cotizacion
-    //         ->leftjoin('logistica.log_det_ord_compra','log_det_ord_compra.id_detalle_orden','=','guia_com_det.id_oc_det')
-    //         ->leftjoin('logistica.log_valorizacion_cotizacion','log_valorizacion_cotizacion.id_valorizacion_cotizacion','=','log_det_ord_compra.id_valorizacion_cotizacion')
-    //         ->where([['guia_com_det.id_guia_com','=',$id_guia],
-    //                 ['guia_com_det.estado','=',1 ]])
-    //         ->get();
-    //     $nuevo_detalle = [];
-    //     $cant = 0;
-    
-    //     foreach ($detalle as $det){
-    //         $exist = false;
-    //         foreach ($nuevo_detalle as $nue => $value){
-    //             if ($det->id_producto == $value['id_producto'] && $det->id_guia_com == $value['id_guia_com']){
-    //                 $nuevo_detalle[$nue]['cantidad'] = floatval($value['cantidad']) + floatval($det->cantidad);
-    //                 $nuevo_detalle[$nue]['unitario'] = floatval($value['unitario']) + floatval($det->unitario);
-    //                 $nuevo_detalle[$nue]['total'] = floatval($value['total']) + floatval($det->total);
-    //                 $exist = true;
-    //             }
-    //         }
-    //         if ($exist === false){
-    //             $nuevo = [
-    //                 'id_guia_com_det' => $det->id_guia_com_det,
-    //                 'id_guia_com' => $det->id_guia_com,
-    //                 'id_producto' => $det->id_producto,
-    //                 'id_unid_med' => $det->id_unid_med,
-    //                 'cantidad' => floatval($det->cantidad),
-    //                 'unitario' => floatval($det->precio),
-    //                 'total' => (floatval($det->cantidad) * floatval($det->precio))
-    //                 ];
-    //             array_push($nuevo_detalle, $nuevo);
-    //         }
-    //     }
-    //     foreach($nuevo_detalle as $det){
-    //         $item = DB::table('almacen.alm_item')
-    //             ->where('id_producto',$det['id_producto'])
-    //             ->first();
+        $id_doc = DB::table('almacen.doc_com')->insertGetId(
+            [
+                'serie'=>$request->serie,
+                'numero'=>$request->numero,
+                'id_tp_doc'=>$request->id_tp_doc,
+                'id_proveedor'=>$guia->id_proveedor,
+                'fecha_emision'=>$request->fecha_emision,
+                'fecha_vcmto'=>$request->fecha_emision,
+                'id_condicion'=>(($oc !== null && $oc->id_condicion !== null) ? $oc->id_condicion : null),
+                'credito_dias'=>(($oc !== null && $oc->plazo_dias !== null) ? $oc->plazo_dias : null),
+                'moneda'=>(($oc !== null && $oc->id_moneda !== null) ? $oc->id_moneda : null),
+                'usuario'=>$usuario->id_usuario,
+                'registrado_por'=>$usuario->id_usuario,
+                'estado'=>1,
+                'fecha_registro'=>$fecha
+            ],
+                'id_doc_com'
+        );
+        $sub_total = 0;
 
-    //         $id_det = DB::table('almacen.doc_com_det')->insert(
-    //             [
-    //                 'id_doc'=>$id_doc,
-    //                 'id_item'=>$item->id_item,
-    //                 'cantidad'=>$det['cantidad'],
-    //                 'id_unid_med'=>$det['id_unid_med'],
-    //                 'precio_unitario'=>$det['unitario'],
-    //                 'sub_total'=>$det['total'],
-    //                 'porcen_dscto'=>0,
-    //                 'total_dscto'=>0,
-    //                 'precio_total'=>$det['total'],
-    //                 'id_guia_com_det'=>$det['id_guia_com_det'],
-    //                 'estado'=>1,
-    //                 'fecha_registro'=>$fecha
-    //             ]);
-    //     }
-    //     $guia = DB::table('almacen.doc_com_guia')->insert(
-    //         [
-    //             'id_doc_com'=>$id_doc,
-    //             'id_guia_com'=>$id_guia,
-    //             'estado'=>1,
-    //             'fecha_registro'=>$fecha
-    //         ]);
-    //     $ingreso = DB::table('almacen.mov_alm')
-    //         ->where('mov_alm.id_guia_com',$id_guia)
-    //         ->first();
+        foreach($detalle as $det){
+            $total = ($det->precio_sin_igv !== null) ? $det->precio_sin_igv : $det->total;
+            $unitario = $total / $det->cantidad;
+            $sub_total += $total;
 
-    //     if (isset($ingreso->id_mov_alm)){
-    //         DB::table('almacen.mov_alm')
-    //             ->where('id_mov_alm',$ingreso->id_mov_alm)
-    //             ->update(['id_doc_com'=>$id_doc]);
-    //     }
+            $item = DB::table('almacen.alm_item')
+                ->where('id_producto',$det->id_producto)
+                ->first();
 
-    //     return response()->json($guia);
-    // }
-    // public function guardar_doc_guia(Request $request){
-    //     $fecha = date('Y-m-d H:i:s');
-    //     $usuario = Auth::user();
+            $id_det = DB::table('almacen.doc_com_det')->insertGetId(
+                [
+                    'id_doc'=>$id_doc,
+                    'id_item'=>$item->id_item,
+                    'cantidad'=>$det->cantidad,
+                    'id_unid_med'=>$det->id_unid_med,
+                    'precio_unitario'=>$unitario,
+                    'sub_total'=>$total,
+                    'porcen_dscto'=>0,
+                    'total_dscto'=>0,
+                    'precio_total'=>$total,
+                    'id_guia_com_det'=>$det->id_guia_com_det,
+                    'estado'=>1,
+                    'fecha_registro'=>$fecha
+                ],
+                    'id_doc_det'
+            );
+        }
+        //obtiene IGV
+        $impuesto = DB::table('contabilidad.cont_impuesto')
+            ->where([['codigo','=','IGV'],['fecha_inicio','<',$request->fecha_emision]])
+            ->orderBy('fecha_inicio','desc')
+            ->first();
+        $igv = $impuesto->porcentaje * $sub_total / 100;
 
-    //     $guia = DB::table('almacen.guia_com')
-    //         ->select('guia_com.*')
-    //         ->where('id_guia',$request->id_guia)
-    //         ->first();
+        //actualiza totales
+        DB::table('almacen.doc_com')->where('id_doc_com',$id_doc)
+        ->update([
+            'sub_total'=>$sub_total,
+            'total_descuento'=>0,
+            'porcen_descuento'=>0,
+            'total'=>$sub_total,
+            'total_igv'=>$igv,
+            'total_ant_igv'=>0,
+            'porcen_igv' => $request->porcen_igv,
+            'porcen_anticipo' => $request->porcen_anticipo,
+            'total_otros' => $request->total_otros,
+            'total_a_pagar'=>($sub_total + $igv)
+        ]);
 
-    //     $oc = DB::table('almacen.guia_com_oc')
-    //         ->select('log_ord_compra.id_moneda','log_ord_compra.id_condicion','log_ord_compra.plazo_dias')
-    //         ->join('logistica.log_ord_compra','log_ord_compra.id_orden_compra','=','guia_com_oc.id_oc')
-    //         ->where('id_guia_com',$request->id_guia)
-    //         ->first();
+        $guia = DB::table('almacen.doc_com_guia')->insertGetId(
+            [
+                'id_doc_com'=>$id_doc,
+                'id_guia_com'=>$request->id_guia,
+                'estado'=>1,
+                'fecha_registro'=>$fecha
+            ],
+                'id_doc_com_guia'
+        );
+        $ingreso = DB::table('almacen.mov_alm')
+            ->where('mov_alm.id_guia_com',$request->id_guia)
+            ->first();
 
-    //     $detalle = DB::table('almacen.guia_com_det')
-    //         ->select('guia_com_det.*','log_valorizacion_cotizacion.precio_sin_igv')
-    //         ->leftjoin('logistica.log_det_ord_compra','log_det_ord_compra.id_detalle_orden','=','guia_com_det.id_oc_det')
-    //         ->leftjoin('logistica.log_valorizacion_cotizacion','log_valorizacion_cotizacion.id_valorizacion_cotizacion','=','log_det_ord_compra.id_valorizacion_cotizacion')
-    //         ->where([['guia_com_det.id_guia_com','=',$request->id_guia],
-    //                 ['guia_com_det.estado','=',1 ]])
-    //         ->get();
+        if (isset($ingreso->id_mov_alm)){
+            DB::table('almacen.mov_alm')
+                ->where('id_mov_alm',$ingreso->id_mov_alm)
+                ->update(['id_doc_com'=>$id_doc]);
+        }
+        $tp = DB::table('contabilidad.cont_tp_doc')->select('abreviatura')
+            ->where('id_tp_doc',$request->id_tp_doc)->first();
 
-    //     $id_doc = DB::table('almacen.doc_com')->insertGetId(
-    //         [
-    //             'serie'=>$request->serie,
-    //             'numero'=>$request->numero,
-    //             'id_tp_doc'=>$request->id_tp_doc,
-    //             'id_proveedor'=>$guia->id_proveedor,
-    //             'fecha_emision'=>$request->fecha_emision,
-    //             'fecha_vcmto'=>$request->fecha_emision,
-    //             'id_condicion'=>(($oc !== null && $oc->id_condicion !== null) ? $oc->id_condicion : null),
-    //             'credito_dias'=>(($oc !== null && $oc->plazo_dias !== null) ? $oc->plazo_dias : null),
-    //             'moneda'=>(($oc !== null && $oc->id_moneda !== null) ? $oc->id_moneda : null),
-    //             'usuario'=>$usuario->id_usuario,
-    //             'registrado_por'=>$usuario->id_usuario,
-    //             'estado'=>1,
-    //             'fecha_registro'=>$fecha
-    //         ],
-    //             'id_doc_com'
-    //     );
-    //     $sub_total = 0;
+        return response()->json(['id_doc'=>$id_doc,'tp_doc'=>$tp->abreviatura,'doc_serie'=>$request->serie,'doc_numero'=>$request->numero]);
+    }
+    public function actualizar_doc_guia(Request $request){
+        $data = DB::table('almacen.doc_com')->where('id_doc_com',$request->id_doc_com)
+        ->update([  'id_tp_doc'=>$request->id_tp_doc,
+                    'serie'=>$request->serie,
+                    'numero'=>$request->numero,
+                    'fecha_emision'=>$request->fecha_emision,
+                    'id_proveedor'=>$request->id_proveedor,
+                ]);
+        $tp = DB::table('contabilidad.cont_tp_doc')->select('abreviatura')
+            ->where('id_tp_doc',$request->id_tp_doc)->first();
 
-    //     foreach($detalle as $det){
-    //         $total = ($det->precio_sin_igv !== null) ? $det->precio_sin_igv : $det->total;
-    //         $unitario = $total / $det->cantidad;
-    //         $sub_total += $total;
-
-    //         $item = DB::table('almacen.alm_item')
-    //             ->where('id_producto',$det->id_producto)
-    //             ->first();
-
-    //         $id_det = DB::table('almacen.doc_com_det')->insertGetId(
-    //             [
-    //                 'id_doc'=>$id_doc,
-    //                 'id_item'=>$item->id_item,
-    //                 'cantidad'=>$det->cantidad,
-    //                 'id_unid_med'=>$det->id_unid_med,
-    //                 'precio_unitario'=>$unitario,
-    //                 'sub_total'=>$total,
-    //                 'porcen_dscto'=>0,
-    //                 'total_dscto'=>0,
-    //                 'precio_total'=>$total,
-    //                 'id_guia_com_det'=>$det->id_guia_com_det,
-    //                 'estado'=>1,
-    //                 'fecha_registro'=>$fecha
-    //             ],
-    //                 'id_doc_det'
-    //         );
-    //     }
-    //     //obtiene IGV
-    //     $impuesto = DB::table('contabilidad.cont_impuesto')
-    //         ->where([['codigo','=','IGV'],['fecha_inicio','<',$request->fecha_emision]])
-    //         ->orderBy('fecha_inicio','desc')
-    //         ->first();
-    //     $igv = $impuesto->porcentaje * $sub_total / 100;
-
-    //     //actualiza totales
-    //     DB::table('almacen.doc_com')->where('id_doc_com',$id_doc)
-    //     ->update([
-    //         'sub_total'=>$sub_total,
-    //         'total_descuento'=>0,
-    //         'porcen_descuento'=>0,
-    //         'total'=>$sub_total,
-    //         'total_igv'=>$igv,
-    //         'total_ant_igv'=>0,
-    //         'porcen_igv' => $request->porcen_igv,
-    //         'porcen_anticipo' => $request->porcen_anticipo,
-    //         'total_otros' => $request->total_otros,
-    //         'total_a_pagar'=>($sub_total + $igv)
-    //     ]);
-
-    //     $guia = DB::table('almacen.doc_com_guia')->insertGetId(
-    //         [
-    //             'id_doc_com'=>$id_doc,
-    //             'id_guia_com'=>$request->id_guia,
-    //             'estado'=>1,
-    //             'fecha_registro'=>$fecha
-    //         ],
-    //             'id_doc_com_guia'
-    //     );
-    //     $ingreso = DB::table('almacen.mov_alm')
-    //         ->where('mov_alm.id_guia_com',$request->id_guia)
-    //         ->first();
-
-    //     if (isset($ingreso->id_mov_alm)){
-    //         DB::table('almacen.mov_alm')
-    //             ->where('id_mov_alm',$ingreso->id_mov_alm)
-    //             ->update(['id_doc_com'=>$id_doc]);
-    //     }
-    //     $tp = DB::table('contabilidad.cont_tp_doc')->select('abreviatura')
-    //         ->where('id_tp_doc',$request->id_tp_doc)->first();
-
-    //     return response()->json(['id_doc'=>$id_doc,'tp_doc'=>$tp->abreviatura,'doc_serie'=>$request->serie,'doc_numero'=>$request->numero]);
-    // }
-    // public function actualizar_doc_guia(Request $request){
-    //     $data = DB::table('almacen.doc_com')->where('id_doc_com',$request->id_doc_com)
-    //     ->update([  'id_tp_doc'=>$request->id_tp_doc,
-    //                 'serie'=>$request->serie,
-    //                 'numero'=>$request->numero,
-    //                 'fecha_emision'=>$request->fecha_emision,
-    //                 'id_proveedor'=>$request->id_proveedor,
-    //             ]);
-    //     $tp = DB::table('contabilidad.cont_tp_doc')->select('abreviatura')
-    //         ->where('id_tp_doc',$request->id_tp_doc)->first();
-
-    //     return response()->json(['id_doc'=>$request->id_doc_com,'tp_doc'=>$tp->abreviatura,'doc_serie'=>$request->serie,'doc_numero'=>$request->numero]);
-    // }
+        return response()->json(['id_doc'=>$request->id_doc_com,'tp_doc'=>$tp->abreviatura,'doc_serie'=>$request->serie,'doc_numero'=>$request->numero]);
+    }
     public function anular_guia($doc,$guia)
     {
         $detalle = DB::table('almacen.doc_com_det')
