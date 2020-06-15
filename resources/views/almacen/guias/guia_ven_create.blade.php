@@ -1,92 +1,83 @@
 <div class="modal fade" tabindex="-1" role="dialog" id="modal-guia_ven_create">
     <div class="modal-dialog">
-        <div class="modal-content" style="width:450px;">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="close"><span aria-hidden="true">&times;</span></button>
-                <h3 class="modal-title">Generar Guia de Venta</h3>
-            </div>
-            <div class="modal-body">
-                {{-- <div class="row">
-                    <div class="col-md-12">
-                        <h5>Tipo de Documento</h5>
-                        <select class="form-control activation js-example-basic-single" name="id_tp_doc">
-                            <option value="0">Elija una opción</option>
-                            @foreach ($tp_doc as $tp)
-                                <option value="{{$tp->id_tp_doc}}">{{$tp->cod_sunat}} - {{$tp->descripcion}}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                </div> --}}
-                <div class="row">
-                <input type="hidden" name="_token" value="{{csrf_token()}}" id="token_guia">
-                    <div class="col-md-6">
-                        <h5>Serie-Número</h5>
-                        <div class="input-group">
-                            <input type="text" class="form-control activation" 
-                                name="serie_guia" placeholder="G001">
-                            <span class="input-group-addon">-</span>
-                            <input type="text" class="form-control activation" 
-                                name="numero_guia" onBlur="ceros_numero_guia();" placeholder="000000">
+        <div class="modal-content" style="width:600px;">
+            <form id="form-guia_ven_create">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="close"><span aria-hidden="true">&times;</span></button>
+                    <h3 class="modal-title">Generar Guia de Venta</h3>
+                </div>
+                <div class="modal-body">
+                    <input type="text" class="oculto" name="id_od">
+                    <input type="text" class="oculto" name="id_sede">
+                    <input type="text" class="oculto" name="id_cliente">
+                    <input type="text" class="oculto" name="id_persona">
+                    <input type="text" class="oculto" name="id_requerimiento">
+                    <div class="row">
+                        <input type="hidden" name="_token" value="{{csrf_token()}}" id="token_guia">
+                        <div class="col-md-6">
+                            <h5>Serie-Número</h5>
+                            <div class="input-group">
+                                <input type="text" class="oculto" name="id_serie_numero">
+                                <input type="text" class="form-control" name="serie" placeholder="0000" required readOnly>
+                                <span class="input-group-addon">-</span>
+                                <input type="text" class="form-control" name="numero" placeholder="000000" required readOnly>
+                                    <!-- onBlur="ceros_numero_guia();"  -->
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <h5>Fecha de Emisión</h5>
+                            <input type="date" class="form-control" name="fecha_emision" value="<?=date('Y-m-d');?>" required >
                         </div>
                     </div>
-                    <div class="col-md-6">
-                        <h5>Fecha de Emisión</h5>
-                        <input type="date" class="form-control activation" name="fecha_emision_guia">
-                    </div>
-                </div>
-                {{-- <div class="row">
-                    <div class="col-md-12">
-                        <h5>Proveedor</h5>
-                        <select class="form-control js-example-basic-single" name="id_proveedor">
-                            <option value="0">Elija una opción</option>
-                            @foreach ($proveedores as $prov)
-                                <option value="{{$prov->id_proveedor}}">{{$prov->nro_documento}} - {{$prov->razon_social}}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                </div> --}}
-                <div class="row">
-                    <div class="col-md-12">
-                        <h5>Motivo del Traslado</h5>
-                        <select class="form-control activation js-example-basic-single" name="id_motivo">
-                            <option value="0">Elija una opción</option>
-                            @foreach ($motivos as $mot)
-                                <option value="{{$mot->id_motivo}}">{{$mot->descripcion}}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-12">
-                        <h5>Clasif. de los Bienes y Servicios</h5>
-                        <select class="form-control activation" name="id_guia_clas">
-                            <option value="0">Elija una opción</option>
-                            @foreach ($clasificaciones as $clas)
-                                <option value="{{$clas->id_clasificacion}}">{{$clas->descripcion}}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                </div>
-                {{-- <div class="row">
-                    <div class="col-md-12">
-                        <h5>Importe</h5>
-                        <div style="display:flex;">
-                            <input type="text" name="simbolo" class="form-control group-elemento" style="width:40px;text-align:center;" readOnly/>
-                            <input type="number" name="importe" class="form-control group-elemento" style="text-align: right;" />
-                            <select class="form-control group-elemento activation" name="moneda" onChange="moneda();">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h5>Tipo de Operación</h5>
+                            <select class="form-control js-example-basic-single" name="id_operacion" required >
                                 <option value="0">Elija una opción</option>
-                                @foreach ($monedas as $mon)
-                                    <option value="{{$mon->id_moneda}}">{{$mon->descripcion}} - {{$mon->simbolo}}</option>
+                                @foreach ($tp_operacion as $tp)
+                                    <option value="{{$tp->id_operacion}}">{{$tp->cod_sunat}} - {{$tp->descripcion}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <h5>Fecha de Almacén</h5>
+                            <input type="date" class="form-control " name="fecha_almacen" value="<?=date('Y-m-d');?>" required >
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h5>Responsable</h5>
+                            <select class="form-control" name="responsable" required >
+                                <!-- <option value="0">Elija una opción</option> -->
+                                @foreach ($usuarios as $usu)
+                                    <option value="{{$usu->id_usuario}}">{{$usu->nombre_corto}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <h5>Almacén</h5>
+                            <input type="text" class="oculto " name="id_almacen" required >
+                            <input type="text" class="form-control " name="almacen_descripcion" readOnly>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h5>Clasif. de los Bienes y Servicios</h5>
+                            <select class="form-control" name="id_guia_clas" required >
+                                <option value="0">Elija una opción</option>
+                                @foreach ($clasificaciones as $clas)
+                                    <option value="{{$clas->id_clasificacion}}">{{$clas->descripcion}}</option>
                                 @endforeach
                             </select>
                         </div>
                     </div>
-                </div> --}}
-            </div>
-            <div class="modal-footer">
-                <label id="mid_doc_com" style="display: none;"></label>
-                <button class="btn btn-sm btn-success" onClick="guardar_guia_ven_create();">Guardar</button>
-            </div>
+                </div>
+                <div class="modal-footer">
+                    <input type="submit" id="submit_guia" class="btn btn-success" value="Guardar"/>
+                    <!-- <label id="mid_doc_com" style="display: none;"></label>
+                    <button class="btn btn-sm btn-success" onClick="guardar_guia_ven_create();">Guardar</button> -->
+                </div>
+            </form>
         </div>
     </div>
 </div>

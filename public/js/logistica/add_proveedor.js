@@ -18,7 +18,7 @@ function agregar_proveedor(){
     $('#modal-proveedor').modal({
         show: true
     });
-    $('[name=id_cliente]').val('');
+    $('[name=id_proveedor]').val('');
     $('[name=nro_documento]').val('');
     $('[name=id_doc_identidad]').val('');
     $('[name=direccion_fiscal]').val('');
