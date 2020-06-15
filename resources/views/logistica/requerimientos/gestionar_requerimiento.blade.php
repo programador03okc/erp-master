@@ -151,6 +151,12 @@
                     </div>
                 </div>
             </div>
+            <div class="col-md-4" id="input-group-almacen" hidden>
+                <h5>Almacén</h5>
+                <select class="form-control " name="id_almacen">
+                    <option value="0">Elija una opción</option>
+                </select>
+            </div>
             <div class="col-md-3" id="input-group-area">
                 <h5>Area</h5>
                 <input type="hidden" class="form-control" name="id_grupo">

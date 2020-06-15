@@ -8,14 +8,6 @@
             <div class="modal-body">
                 <form id="form-detalle-requerimiento" type="register" form="formulario">
                     <div class="row">
-                        <div class="col-md-4" id="input-group-almacen">
-                            <h5>Almacén</h5>
-                            <select class="form-control " name="id_almacen">
-                                <option value="0">Elija una opción</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="row">
                         <div class="col-md-12">
                             <div class="form-group">
                                 <h5>Item</h5>

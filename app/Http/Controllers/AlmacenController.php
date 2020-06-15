@@ -1443,7 +1443,7 @@ class AlmacenController extends Controller
     public function mostrar_almacenes()
     {
         $data = DB::table('almacen.alm_almacen')
-            ->select('alm_almacen.*', 'sis_sede.descripcion as sede_descripcion',
+            ->select('alm_almacen.*', 'sis_sede.id_empresa', 'sis_sede.descripcion as sede_descripcion',
             'alm_tp_almacen.descripcion as tp_almacen')
             ->leftjoin('administracion.sis_sede','sis_sede.id_sede','=','alm_almacen.id_sede')
             ->join('almacen.alm_tp_almacen','alm_tp_almacen.id_tipo_almacen','=','alm_almacen.id_tipo_almacen')
