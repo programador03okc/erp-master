@@ -41,6 +41,7 @@
             </a>
             <ul class="treeview-menu">
                 <li><a href="ordenesPendientes"> Pendientes de Ingreso </a></li>
+                <li><a href="despachosPendientes"> Pendientes de Despacho </a></li>
                 <li><a href="guia_compra"> Compras / Ingresos </a></li>
                 <li><a href="guia_venta"> Ventas / Salidas </a></li>
             </ul>
@@ -68,14 +69,9 @@
                 <i class="fas fa-truck"></i> <span>Distribución</span> <i class="fa fa-angle-left pull-right"></i>
             </a>
             <ul class="treeview-menu">
-<<<<<<< HEAD
                 <li><a href="ordenesDespacho"> Gestión de Despachos </a></li>
                 <li><a href="grupoDespachos"> Despachos </a></li>
                 <!-- <li><a href="#"> Despachos Pendientes </a></li> -->
-=======
-                <li><a href="/doc_compra"> Comprobantes de Compra </a></li>
-                <li><a href="doc_venta"> Comprobantes de Venta </a></li>
->>>>>>> raul-dev
             </ul>
         </li>
         <li class="treeview">

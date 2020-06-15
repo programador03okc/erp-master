@@ -64,8 +64,7 @@ class OrdenesPendientesController extends Controller
             ->leftjoin('almacen.alm_req','alm_req.id_requerimiento','=','log_ord_compra.id_requerimiento')
             ->join('configuracion.sis_moneda','sis_moneda.id_moneda','=','log_ord_compra.id_moneda')
             ->join('configuracion.sis_usua','sis_usua.id_usuario','=','mov_alm.usuario')
-            ->where([['mov_alm.estado','!=',7],
-                    ['guia_ven.estado','!=',7]])
+            ->where([['mov_alm.estado','!=',7]])
             ->get();
         return datatables($data)->toJson();
     }
@@ -144,7 +143,7 @@ class OrdenesPendientesController extends Controller
         try {
             DB::beginTransaction();
             // database queries here
-            $id_guia = 0;
+            $id_ingreso = null;
         
             if ($request->id_orden_compra !== null){
                 $id_tp_doc_almacen = 1;
@@ -263,7 +262,7 @@ class OrdenesPendientesController extends Controller
                         //Traer stockActual
                         $saldo = AlmacenController::saldo_actual_almacen($det->id_producto, $request->id_almacen);
                         $valor = AlmacenController::valorizacion_almacen($det->id_producto, $request->id_almacen);
-                        $cprom = $valor/$saldo;
+                        $cprom = ($saldo > 0 ? $valor/$saldo : 0);
                         //guardo saldos actualizados
                         if ($ubi !== null){//si no existe -> creo la ubicacion
                             DB::table('almacen.alm_prod_ubi')
@@ -356,7 +355,7 @@ class OrdenesPendientesController extends Controller
             ->where('id_serie_numero',$request->id_serie_numero)
             ->update(['estado' => 8]);//emitido -> 8
 
-            $codigo_trans = AlmacenController::transferencia_nextId($request->id_almacen_origen);
+            $codigo_trans = TransferenciaController::transferencia_nextId($request->id_almacen_origen);
             //crear la transferencia
             $id_trans = DB::table('almacen.trans')->insertGetId([
                 'id_almacen_origen' => $request->id_almacen_origen,

@@ -143,8 +143,6 @@ $('#ordenesEntregadas tbody').on("click","button.detalle", function(){
     open_detalle(data);
 });
 $('#ordenesEntregadas tbody').on("click","button.ingreso", function(){
-    // var data = $('#ordenesEntregadas').DataTable().row($(this).parents("tr")).data();
-    // console.log('data.id_mov_alm'+data.id_mov_alm);
     var id_mov_alm = $(this).data('id');
     var id = encode5t(id_mov_alm);
     window.open('imprimir_ingreso/'+id);

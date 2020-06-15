@@ -1,43 +1,4 @@
-/*function listarItems(id){
-    console.log('listarItems');
-    var vardataTables = funcDatatables();
-    var tabla = $('#listaTransferenciaDetalle').DataTable({
-        'language' : vardataTables[0],
-        'bDestroy': true,
-        'retrieve': true,
-        'ajax': 'listar_transferencia_detalle/'+id,
-        'columns': [
-            {'data': 'id_guia_ven_det'},
-            {'defaultContent':'<input type="checkbox" checked/>'},
-            {'data': 'codigo'},
-            {'data': 'descripcion'},
-            // {'data': 'cod_posicion'},
-            {'data': 'cantidad'},
-            {'render':
-                function (data, type, row){
-                    return ('<input type="number" class="input-data right" name="cantidad_recibida" value="'+row['cantidad']+'"/>');
-                }
-            },
-            {'data': 'abreviatura'},
-            {'defaultContent': 
-                '<button type="button" class="ver btn btn-warning boton" data-toggle="tooltip" '+
-                    'data-placement="bottom" title="Agregar Observaciones" >'+
-                    '<i class="fas fa-clipboard-list"></i></button>'
-            },
-        ],
-        'columnDefs': [{ 'aTargets': [0], 'sClass': 'invisible'}],
-    });
-    ver("#listaTransferenciaDetalle tbody", tabla);
-}
-function ver(tbody, tabla){
-    console.log("obs");
-    $(tbody).on("click","button.ver", function(){
-        var data = tabla.row($(this).parents("tr")).data();
-        console.log(data);
-    });
-}*/
 function open_transferencia_detalle(data){
-    console.log(data);
     if (data !== null){
         $('#modal-transferencia_detalle').modal({
             show: true
@@ -59,6 +20,7 @@ function open_transferencia_detalle(data){
         listarItems(data.id_transferencia);
     }
 }
+
 function listarItems(id_transferencia){
     console.log(id_transferencia);
     $('#listaTransferenciaDetalle tbody').html('');
@@ -77,6 +39,7 @@ function listarItems(id_transferencia){
         console.log(errorThrown);
     });
 }
+
 function recibir(){
     var estado = $('[name=estado]').val();
     console.log('estado: '+estado);
