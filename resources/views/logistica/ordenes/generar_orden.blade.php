@@ -12,6 +12,9 @@
             <li>
                 <input class="oculto" name="id_grupo_cotizacion"/>
                 <input class="oculto" name="id_cotizacion"/>
+                <button type="button" class="btn btn-info activation" onClick="obtenerRequerimientoModal();" >
+                    <i class="fas fa-file-alt"></i> 
+                    Obtener Requerimiento</button>
                 <button type="button" class="btn btn-warning activation" onClick="obtenerCuadroComparativoModal();" >
                     <i class="fas fa-file-invoice"></i> 
                     Obtener Cuadro Comparativo</button>
@@ -46,7 +49,7 @@
             </div>
         </div>
 
-        <div class="row">
+        <div class="row" id="input-group-proveedor">
             <div class="col-md-4">
                 <h5>Proveedor</h5>
                 <div style="display:flex;">
@@ -246,6 +249,7 @@
 @include('logistica.ordenes.modal_despacho')
 @include('logistica.ordenes.modal_actualizar_item')
 @include('logistica.cotizaciones.proveedorModal')
+@include('logistica.ordenes.modal_obtener_requerimiento')
 @include('logistica.ordenes.modal_obtener_cuadro_comparativo')
 @include('logistica.ordenes.ordenesModal')
 @include('logistica.ordenes.add_cta_banco')
@@ -255,4 +259,5 @@
 <script src="{{('/js/logistica/proveedorModal.js')}}"></script>
 <script src="{{('/js/logistica/ordenesModal.js')}}"></script>
 <script src="{{('/js/logistica/add_cta_banco.js')}}"></script>
+<script src="{{('/js/logistica/orden_venta_directa.js')}}"></script>
 @include('layout.fin_html')

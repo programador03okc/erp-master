@@ -107,7 +107,7 @@ function getActualOptComercial(){
 function mostrar_cuadro_costos_modal(){
     // let id_opt_com =getActualOptComercial()['id'];
     
-    console.log(tpOptCom);
+    // console.log(tpOptCom);
 
     switch (tpOptCom.id) {
         case '1': //orden c cliente
@@ -388,6 +388,7 @@ function mostrar_requerimiento(IdorCode){
                 $('[name=rol_usuario]').val(response['requerimiento'][0].id_rol);
                 $('[name=id_estado_doc]').val(response['requerimiento'][0].id_estado_doc);
                 $('[name=id_requerimiento]').val(response['requerimiento'][0].id_requerimiento);
+                $('[name=tipo_requerimiento]').val(response['requerimiento'][0].id_tipo_requerimiento);
                 $('[name=codigo]').val(response['requerimiento'][0].codigo);
                 $('[name=concepto]').val(response['requerimiento'][0].concepto);
                 $('[name=fecha_requerimiento]').val(response['requerimiento'][0].fecha_requerimiento);
@@ -399,10 +400,24 @@ function mostrar_requerimiento(IdorCode){
                 $('[name=nombre_area]').val(response['requerimiento'][0].area_descripcion);
                 $('[name=moneda]').val(response['requerimiento'][0].id_moneda);
                 $('[name=periodo]').val(response['requerimiento'][0].id_periodo);
-                // $('[name=tipo]').val(response['requerimiento'][0].id_tipo_requerimiento);
-                $('[name=id_op_com]').val(response['requerimiento'][0].id_op_com);
+                 $('[name=id_op_com]').val(response['requerimiento'][0].id_op_com);
                 $('[name=codigo_opcion]').val(response['requerimiento'][0].codigo_op_com);
                 $('[name=nombre_opcion]').val(response['requerimiento'][0].descripcion_op_com);
+                
+                $('[name=sede]').val(response['requerimiento'][0].id_sede);
+                $('[name=tipo_cliente]').val(response['requerimiento'][0].tipo_cliente);
+                $('[name=id_persona]').val(response['requerimiento'][0].id_persona);
+                $('[name=dni_persona]').val(response['requerimiento'][0].dni_persona);
+                $('[name=nombre_persona]').val(response['requerimiento'][0].nombre_persona);
+                $('[name=id_cliente]').val(response['requerimiento'][0].id_cliente);
+                $('[name=cliente_ruc]').val(response['requerimiento'][0].cliente_ruc);
+                $('[name=cliente_razon_social]').val(response['requerimiento'][0].cliente_razon_social);
+                $('[name=direccion_entrega]').val(response['requerimiento'][0].direccion_entrega);
+                $('[name=ubigeo]').val(response['requerimiento'][0].id_ubigeo_entrega);
+                $('[name=name_ubigeo]').val(response['requerimiento'][0].name_ubigeo);
+                $('[name=id_almacen]').val(response['requerimiento'][0].id_almacen);
+                
+
                 $('#estado_doc').text(response['requerimiento'][0].estado_doc);
                 $('#estado_doc').removeClass();
                 $('#estado_doc').addClass("label label-"+response['requerimiento'][0].bootstrap_color);
@@ -416,7 +431,7 @@ function mostrar_requerimiento(IdorCode){
                 if(detalle_requerimiento.length === 0){
                     alert("El Requerimiento No Tiene Item");
                 }
-                console.log(detalle_requerimiento);                
+                // console.log(detalle_requerimiento);                
                 for (x=0; x<detalle_requerimiento.length; x++){
                     let adjunto=[];
                         items ={
@@ -479,7 +494,7 @@ function mostrar_requerimiento(IdorCode){
                 obsReq.innerHTML = '<div class="col-sm-12"><legend><h2>OBSERVACIONES POR RESOLVER:</h2></legend></div></br>'+htmlObservacionReq;
 
             }else{
-                alert("Sin resultados");
+                alert("no se puedo obtener el requerimiento para mostrar");
             }
         }
     }).fail( function( jqXHR, textStatus, errorThrown ){
@@ -611,6 +626,8 @@ function agregarItem(){
     //     /////////////////////////////////////////
         let tam_data_item = data_item.length;
         data_item.push(item);
+        console.log(data_item);
+        
         let update_tam_data_item= data_item.length;
         if(update_tam_data_item > tam_data_item  ){
             setTextInfoAnimation("Agregado!");
@@ -820,6 +837,8 @@ function llenar_tabla_detalle_requerimiento(data_item){
 function get_data_requerimiento(){
     let tipo_req = document.querySelector("select[name='tipo_requerimiento']").value;
     let requerimiento = {};
+    // console.log(tipo_req);
+    
     if(tipo_req == 1){
         tipo_requerimiento = tipo_req;
         id_requerimiento = document.querySelector("form[id='form-requerimiento'] input[name='id_requerimiento']").value;
@@ -828,13 +847,13 @@ function get_data_requerimiento(){
         fecha_requerimiento = document.querySelector("form[id='form-requerimiento'] input[name='fecha_requerimiento']").value;
         id_prioridad = document.querySelector("form[id='form-requerimiento'] select[name='prioridad']").value;
         id_empresa = document.querySelector("form[id='form-requerimiento'] select[name='empresa']").value;
+        id_sede = document.querySelector("form[id='form-requerimiento'] select[name='sede']").value;
         id_grupo = document.querySelector("form[id='form-requerimiento'] input[name='id_grupo']").value;
         id_area = document.querySelector("form[id='form-requerimiento'] input[name='id_area']").value;
         nombre_area = document.querySelector("form[id='form-requerimiento'] input[name='nombre_area']").value;
         id_moneda = document.querySelector("form[id='form-requerimiento'] select[name='moneda']").value;
         id_periodo = document.querySelector("form[id='form-requerimiento'] select[name='periodo']").value;
         id_op_com = document.querySelector("form[id='form-requerimiento'] input[name='id_op_com']").value;
-        descripcion_presupuesto = document.querySelector("form[id='form-requerimiento'] input[name='presupuesto']").value;
         id_rol = document.querySelector("form[id='form-requerimiento'] select[name='rol_usuario']").value;
         codigo_occ = document.querySelector("form[id='form-requerimiento'] input[name='codigo_occ']").value;
         requerimiento = {
@@ -851,7 +870,6 @@ function get_data_requerimiento(){
             id_moneda,
             id_periodo,
             id_op_com,
-            descripcion_presupuesto,
             id_rol,
             codigo_occ
         };
@@ -866,6 +884,7 @@ function get_data_requerimiento(){
         id_empresa = document.querySelector("form[id='form-requerimiento'] select[name='empresa']").value;
         id_sede = document.querySelector("form[id='form-requerimiento'] select[name='sede']").value;
         tipo_cliente = document.querySelector("form[id='form-requerimiento'] select[name='tipo_cliente']").value;
+        id_cliente = document.querySelector("form[id='form-requerimiento'] input[name='id_cliente']").value;
         id_persona = document.querySelector("form[id='form-requerimiento'] input[name='id_persona']").value;
         direccion_entrega = document.querySelector("form[id='form-requerimiento'] input[name='direccion_entrega']").value;
         ubigeo = document.querySelector("form[id='form-requerimiento'] input[name='ubigeo']").value;
@@ -873,25 +892,26 @@ function get_data_requerimiento(){
         almacen_id_sede =document.querySelector("select[name='id_almacen']").options[document.querySelector("select[name='id_almacen']").selectedIndex].dataset.idSede;
         almacen_id_empresa =document.querySelector("select[name='id_almacen']").options[document.querySelector("select[name='id_almacen']").selectedIndex].dataset.idEmpresa;
 
+        requerimiento = {
+            id_requerimiento,
+            tipo_requerimiento,
+            fecha_requerimiento,
+            concepto,
+            id_prioridad,
+            id_periodo,
+            id_moneda,
+            id_empresa,
+            id_sede,
+            tipo_cliente,
+            id_persona,
+            direccion_entrega,
+            ubigeo,
+            id_almacen,
+            almacen_id_sede,
+            almacen_id_empresa
+        };
     }
-    requerimiento = {
-        id_requerimiento,
-        tipo_requerimiento,
-        fecha_requerimiento,
-        concepto,
-        id_prioridad,
-        id_periodo,
-        id_moneda,
-        id_empresa,
-        id_sede,
-        tipo_cliente,
-        id_persona,
-        direccion_entrega,
-        ubigeo,
-        id_almacen,
-        almacen_id_sede,
-        almacen_id_empresa
-    };
+
     
 
 return requerimiento;
@@ -1023,21 +1043,29 @@ function detalleRequerimientoModal(event,index){
     
     if (tipo == 2){        
         var sede = $('[name=sede]').val();
-        if (sede !== null && sede !== ''){
-            $('#modal-detalle-requerimiento').modal({
-                show: true,
-                backdrop: 'static'
-            });
-            $('[name=id_almacen]').show();
-
-            // cargar_almacenes(sede);
-            document.querySelector("div[id='modal-detalle-requerimiento'] input[name='fecha_entrega_item']").value='';
-            document.querySelector("div[id='modal-detalle-requerimiento'] input[name='lugar_entrega_item']").value='';
-            document.querySelector("div[id='modal-detalle-requerimiento'] input[name='des_partida']").value='';
-            document.querySelector("div[id='modal-detalle-requerimiento'] input[name='id_partida']").value='';
-            document.querySelector("div[id='modal-detalle-requerimiento'] div[id='input-group-fecha_entrega']").setAttribute('hidden',true);
-            document.querySelector("div[id='modal-detalle-requerimiento'] div[id='input-group-lugar_entrega']").setAttribute('hidden',true);
-            document.querySelector("div[id='modal-detalle-requerimiento'] div[id='input-group-partida']").setAttribute('hidden',true);
+        var almacen = $('select[name=id_almacen]').val();
+        console.log(almacen);
+        
+        if (sede !== null && sede !== '' &&  sede !== undefined ){
+            if (almacen !== null && almacen !== '' && almacen !== undefined ){
+                $('#modal-detalle-requerimiento').modal({
+                    show: true,
+                    backdrop: 'static'
+                });
+                $('[name=id_almacen]').show();
+    
+                // cargar_almacenes(sede);
+                document.querySelector("div[id='modal-detalle-requerimiento'] input[name='fecha_entrega_item']").value='';
+                document.querySelector("div[id='modal-detalle-requerimiento'] input[name='lugar_entrega_item']").value='';
+                document.querySelector("div[id='modal-detalle-requerimiento'] input[name='des_partida']").value='';
+                document.querySelector("div[id='modal-detalle-requerimiento'] input[name='id_partida']").value='';
+                document.querySelector("div[id='modal-detalle-requerimiento'] div[id='input-group-fecha_entrega']").setAttribute('hidden',true);
+                document.querySelector("div[id='modal-detalle-requerimiento'] div[id='input-group-lugar_entrega']").setAttribute('hidden',true);
+                document.querySelector("div[id='modal-detalle-requerimiento'] div[id='input-group-partida']").setAttribute('hidden',true);
+    
+            }else{
+                alert('Debe seleccionar un almacen.');
+            }
         } else {
             alert('Debe seleccionar una sede.');
         }
@@ -1047,10 +1075,10 @@ function detalleRequerimientoModal(event,index){
             show: true,
             backdrop: 'static'
         });
-        document.querySelector("div[id='modal-detalle-requerimiento'] div[name='fecha_entrega_item']").value='';
-        document.querySelector("div[id='modal-detalle-requerimiento'] div[name='lugar_entrega_item']").value='';
-        document.querySelector("div[id='modal-detalle-requerimiento'] div[name='des_partida']").value='';
-        document.querySelector("div[id='modal-detalle-requerimiento'] div[name='id_partida']").value='';
+        document.querySelector("div[id='modal-detalle-requerimiento'] input[name='fecha_entrega_item']").value='';
+        document.querySelector("div[id='modal-detalle-requerimiento'] input[name='lugar_entrega_item']").value='';
+        document.querySelector("div[id='modal-detalle-requerimiento'] input[name='des_partida']").value='';
+        document.querySelector("div[id='modal-detalle-requerimiento'] input[name='id_partida']").value='';
         document.querySelector("div[id='modal-detalle-requerimiento'] div[id='input-group-fecha_entrega']").removeAttribute('hidden');
         document.querySelector("div[id='modal-detalle-requerimiento'] div[id='input-group-lugar_entrega']").removeAttribute('hidden');
         document.querySelector("div[id='modal-detalle-requerimiento'] div[id='input-group-partida']").removeAttribute('hidden');
@@ -1771,7 +1799,7 @@ function selectPartida(id_partida){
 function save_requerimiento(action){
     let actual_id_usuario = userSession.id_usuario;
     let requerimiento = get_data_requerimiento();
-    console.log(requerimiento);
+    // console.log(requerimiento);
     
     let detalle_requerimiento = data_item;
 
@@ -1789,7 +1817,7 @@ function save_requerimiento(action){
         data.requerimiento.id_estado_doc =1  // estado elaborado 
         data.requerimiento.estado = 1  // estado 
         
-        console.log(data);
+        // console.log(data);
         
         baseUrl = '/logistica/guardar_requerimiento';
         $.ajax({
@@ -2034,9 +2062,9 @@ function copiarDatosRequerimiento(){
 
 function verUltimasCompras(event){
     let id_item = $('[name=id_item]').val();
-    console.log('id_item');
-    console.log(id_item);
-    console.log(id_item.length);
+    // console.log('id_item');
+    // console.log(id_item);
+    // console.log(id_item.length);
     
     if(id_item != null && id_item.length > 0){
     $('#modal-ultimas_compras').modal({
@@ -2103,7 +2131,7 @@ function cargarArchivo(){
         },
         // una vez finalizado correctamente
         success(data) {		
-            console.log(data);
+            // console.log(data);
         },
         // si ha ocurrido un error
         error(data) {
@@ -2114,6 +2142,8 @@ function cargarArchivo(){
 
 function changeOptTipoReqSelect(e){
     if(e.target.value == 2){ //venta directa
+        document.querySelector("div[id='input-group-fecha']").setAttribute('class','col-md-3');
+
         document.querySelector("form[id='form-requerimiento'] input[name='nombre_area']").value='';
         document.querySelector("form[id='form-requerimiento'] input[name='id_area']").value='';
         document.querySelector("form[id='form-requerimiento'] select[name='rol_usuario']").value='';
@@ -2128,7 +2158,9 @@ function changeOptTipoReqSelect(e){
         listar_almacenes();
 
     }else if(e.target.value == 1){
-        document.querySelector("form[id='form-requerimiento'] select[name='almacen']").value='';
+        document.querySelector("div[id='input-group-fecha']").setAttribute('class','col-md-2');
+
+        document.querySelector("form[id='form-requerimiento'] select[name='id_almacen']").value='';
         document.querySelector("form[id='form-requerimiento'] select[name='sede']").value='';
         document.querySelector("form[id='form-requerimiento'] select[name='tipo_cliente']").value = '';      
         document.querySelector("form[id='form-requerimiento'] input[name='dni_persona']").value='';
