@@ -626,6 +626,8 @@ function agregarItem(){
     //     /////////////////////////////////////////
         let tam_data_item = data_item.length;
         data_item.push(item);
+        console.log(data_item);
+        
         let update_tam_data_item= data_item.length;
         if(update_tam_data_item > tam_data_item  ){
             setTextInfoAnimation("Agregado!");
@@ -2140,6 +2142,8 @@ function cargarArchivo(){
 
 function changeOptTipoReqSelect(e){
     if(e.target.value == 2){ //venta directa
+        document.querySelector("div[id='input-group-fecha']").setAttribute('class','col-md-3');
+
         document.querySelector("form[id='form-requerimiento'] input[name='nombre_area']").value='';
         document.querySelector("form[id='form-requerimiento'] input[name='id_area']").value='';
         document.querySelector("form[id='form-requerimiento'] select[name='rol_usuario']").value='';
@@ -2154,6 +2158,8 @@ function changeOptTipoReqSelect(e){
         listar_almacenes();
 
     }else if(e.target.value == 1){
+        document.querySelector("div[id='input-group-fecha']").setAttribute('class','col-md-2');
+
         document.querySelector("form[id='form-requerimiento'] select[name='id_almacen']").value='';
         document.querySelector("form[id='form-requerimiento'] select[name='sede']").value='';
         document.querySelector("form[id='form-requerimiento'] select[name='tipo_cliente']").value = '';      

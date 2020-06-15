@@ -1535,6 +1535,8 @@ Route::get('decode5t/{id}', 'EquipoController@decode5t');
 	Route::get('getReqOperacionFlujoAprob/{id}/{tipo_id}', 'LogisticaController@getReqOperacionFlujoAprob'); 
 	Route::get('get_current_user/', 'LogisticaController@get_current_user'); 
 	Route::get('/logistica/explorar-orden/{id_orden}', 'LogisticaController@explorar_orden'); 
+	Route::get('listar_requerimientos_venta_directa', 'LogisticaController@listar_requerimientos_venta_directa'); 
+	Route::get('get_requerimiento_venta_directa/{id}', 'LogisticaController@get_requerimiento_venta_directa'); 
 
 	/** logistica - Comprobante de Compra */
 

@@ -60,7 +60,7 @@
                     </select>
                 </div>
             </div>
-            <div class="col-md-2">
+            <div class="col-md-2"  id="input-group-fecha">
                 <h5>Fecha</h5>
                 <input type="date" class="form-control activation" name="fecha_requerimiento" disabled="true" min={{ date('Y-m-d H:i:s') }} value={{ date('Y-m-d H:i:s') }}>
             </div>
