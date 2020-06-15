@@ -7324,7 +7324,7 @@ class LogisticaController extends Controller
             DB::raw("(CASE WHEN alm_req.estado = 1 THEN 'Habilitado' ELSE 'Deshabilitado' END) AS estado_desc")
         )
         ->where([
-            ['alm_req.estado', '=', 19]
+            ['alm_req.estado', '=', 1]
         ])
         ->orderBy('alm_req.id_requerimiento', 'asc')
         ->get();
@@ -7414,7 +7414,7 @@ class LogisticaController extends Controller
             )
             ->where([
                 ['alm_req.id_requerimiento', '=', $id],
-                ['alm_req.estado', '=', 19]
+                ['alm_req.estado', '=', 1]
             ])
             ->orderBy('alm_req.id_requerimiento', 'asc')
             ->get();
