@@ -48,7 +48,7 @@ class DistribucionController extends Controller
             'adm_contri.nro_documento as cliente_ruc','adm_contri.razon_social as cliente_razon_social')
             ->join('almacen.alm_tp_req','alm_tp_req.id_tipo_requerimiento','=','alm_req.id_tipo_requerimiento')
             ->join('configuracion.sis_usua','sis_usua.id_usuario','=','alm_req.id_usuario')
-            ->join('administracion.adm_grupo','adm_grupo.id_grupo','=','alm_req.id_grupo')
+            ->leftjoin('administracion.adm_grupo','adm_grupo.id_grupo','=','alm_req.id_grupo')
             ->join('administracion.adm_estado_doc','adm_estado_doc.id_estado_doc','=','alm_req.estado')
             ->leftJoin('logistica.log_ord_compra','log_ord_compra.id_requerimiento','=','alm_req.id_requerimiento')
             ->leftJoin('almacen.guia_com','guia_com.id_oc','=','log_ord_compra.id_orden_compra')
@@ -70,34 +70,14 @@ class DistribucionController extends Controller
     public function verDetalleRequerimiento($id_requerimiento){
         $detalles = DB::table('almacen.alm_det_req')
             ->select('alm_det_req.*','alm_almacen.descripcion as almacen_descripcion',
-            DB::raw("(CASE 
-                    WHEN alm_item.id_item isNUll THEN alm_det_req.descripcion_adicional 
-                    WHEN alm_item.id_servicio isNUll AND alm_item.id_equipo isNull THEN alm_prod.descripcion 
-                    WHEN alm_item.id_producto isNUll AND alm_item.id_equipo isNull THEN log_servi.descripcion 
-                    WHEN alm_item.id_servicio isNUll AND alm_item.id_producto isNull THEN equipo.descripcion 
-                    ELSE 'nulo' END) AS descripcion_item
-                    "),
-                DB::raw("(CASE 
-                    WHEN alm_item.id_servicio isNUll AND alm_item.id_equipo isNull THEN alm_prod.codigo 
-                    WHEN alm_item.id_producto isNUll AND alm_item.id_equipo isNull THEN log_servi.codigo 
-                    WHEN alm_item.id_servicio isNUll AND alm_item.id_producto isNull THEN equipo.codigo 
-                    ELSE 'nulo' END) AS codigo_item
-                    "),
-                DB::raw("(CASE 
-                    WHEN alm_item.id_servicio isNUll AND alm_item.id_equipo isNull THEN alm_und_medida.abreviatura
-                    WHEN alm_item.id_producto isNUll AND alm_item.id_equipo isNull THEN 'serv' 
-                    WHEN alm_item.id_servicio isNUll AND alm_item.id_producto isNull THEN 'und' 
-                    ELSE 'nulo' END) AS unidad_medida_item
-                    "),
-                    'adm_estado_doc.estado_doc','adm_estado_doc.bootstrap_color')
-            ->leftJoin('almacen.alm_item', 'alm_item.id_item', '=', 'alm_det_req.id_item')
-            ->leftJoin('almacen.alm_prod', 'alm_prod.id_producto', '=', 'alm_item.id_producto')
-            ->leftJoin('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'alm_prod.id_unidad_medida')
-            ->leftJoin('logistica.log_servi', 'log_servi.id_servicio', '=', 'alm_item.id_servicio')
-            ->leftJoin('logistica.equipo', 'equipo.id_equipo', '=', 'alm_item.id_equipo')
+                    'adm_estado_doc.estado_doc','adm_estado_doc.bootstrap_color',
+                    'alm_prod.descripcion as producto_descripcion','alm_prod.codigo as producto_codigo',
+                    'alm_und_medida.abreviatura')
+            ->leftJoin('almacen.alm_prod', 'alm_prod.id_producto', '=', 'alm_det_req.id_producto')
+            // ->leftJoin('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'alm_prod.id_unidad_medida')
+            ->leftJoin('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'alm_det_req.id_unidad_medida')
             ->leftJoin('almacen.alm_almacen', 'alm_almacen.id_almacen', '=', 'alm_det_req.id_almacen')
             ->join('administracion.adm_estado_doc', 'adm_estado_doc.id_estado_doc', '=', 'alm_det_req.estado')
-            // ->leftJoin('logistica.valoriza_coti_detalle', 'valoriza_coti_detalle.id_detalle_requerimiento', '=', 'alm_det_req.id_detalle_requerimiento')
             ->where([['alm_det_req.id_requerimiento','=',$id_requerimiento],['alm_det_req.estado','!=',7]])
             ->get();
         return response()->json($detalles);
@@ -200,7 +180,7 @@ class DistribucionController extends Controller
                         'id_producto'=>$d->id_producto,
                         // 'id_posicion'=>($d->id_posicion),
                         'cantidad'=>$d->cantidad,
-                        'descripcion_producto'=>($d->descripcion_producto !== null ? $d->descripcion_producto : ''),
+                        'descripcion_producto'=>($d->producto_descripcion !== null ? $d->producto_descripcion : $d->descripcion_adicional),
                         'estado'=>1,
                         'fecha_registro'=>date('Y-m-d H:i:s')
                     ]);
@@ -212,6 +192,26 @@ class DistribucionController extends Controller
         } catch (\PDOException $e) {
             DB::rollBack();
         }
+    }
+
+    public function listarOrdenesDespachoPendientes(Request $request){
+        $data = DB::table('almacen.orden_despacho')
+        ->select('orden_despacho.*','adm_contri.nro_documento','adm_contri.razon_social',
+        'alm_req.codigo as codigo_req','alm_req.concepto','ubi_dis.descripcion as ubigeo_descripcion',
+        'sis_usua.nombre_corto','adm_estado_doc.estado_doc','adm_estado_doc.bootstrap_color',
+        DB::raw("(rrhh_perso.nombres) || ' ' || (rrhh_perso.apellido_paterno) || ' ' || (rrhh_perso.apellido_materno) AS nombre_persona"),
+        'alm_almacen.descripcion as almacen_descripcion')
+        ->leftjoin('comercial.com_cliente','com_cliente.id_cliente','=','orden_despacho.id_cliente')
+        ->leftjoin('contabilidad.adm_contri','adm_contri.id_contribuyente','=','com_cliente.id_contribuyente')
+        ->leftjoin('rrhh.rrhh_perso','rrhh_perso.id_persona','=','orden_despacho.id_persona')
+        ->leftjoin('almacen.alm_almacen','alm_almacen.id_almacen','=','orden_despacho.id_almacen')
+        ->join('almacen.alm_req','alm_req.id_requerimiento','=','orden_despacho.id_requerimiento')
+        ->join('configuracion.ubi_dis','ubi_dis.id_dis','=','orden_despacho.ubigeo_destino')
+        ->join('configuracion.sis_usua','sis_usua.id_usuario','=','orden_despacho.registrado_por')
+        ->join('administracion.adm_estado_doc','adm_estado_doc.id_estado_doc','=','orden_despacho.estado')
+        ->where('orden_despacho.estado',1)
+        ->get();
+        return datatables($data)->toJson();
     }
 
     public function listarOrdenesDespacho(Request $request){

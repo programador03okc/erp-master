@@ -47,7 +47,16 @@ function open_despacho_create(data){
     }
     $("#detalleItemsReq").hide();
 
-    listar_detalle_ingreso(data.id_requerimiento);
+    console.log(data.id_tipo_requerimiento);
+    if (data.id_tipo_requerimiento == 2){
+        var idTabla = 'detalleRequerimientoOD';
+        console.log(idTabla);
+        listar_detalle_requerimiento(data.id_requerimiento, idTabla);
+    } 
+    else if (data.id_tipo_requerimiento == 1){
+        listar_detalle_ingreso(data.id_requerimiento);
+    }
+
     $('[name=fecha_despacho]').val(fecha_actual());
     $('[name=fecha_entrega]').val(fecha_actual());
     $('[name=aplica_cambios]').prop('checked', false);
