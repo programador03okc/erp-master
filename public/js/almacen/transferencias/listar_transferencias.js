@@ -10,7 +10,7 @@ function listarTransferenciasPendientes(){
     
     if (alm_origen !== '' && alm_origen !== ''){
         var vardataTables = funcDatatables();
-        var tabla = $('#listaTransferenciasPendientes').DataTable({
+        $('#listaTransferenciasPendientes').DataTable({
             'destroy':true,
             'dom': vardataTables[1],
             'buttons': vardataTables[2],
@@ -66,11 +66,13 @@ function listarTransferenciasPendientes(){
             'columnDefs': [{ 'aTargets': [0], 'sClass': 'invisible'}],
         });
     }
-    ver("#listaTransferenciasPendientes tbody", tabla);
-    atender("#listaTransferenciasPendientes tbody", tabla);
-    anular("#listaTransferenciasPendientes tbody", tabla);
     vista_extendida();
+    ver("#listaTransferenciasPendientes tbody", $('#listaTransferenciasPendientes').DataTable());
+    atender("#listaTransferenciasPendientes tbody", $('#listaTransferenciasPendientes').DataTable());
+    anular("#listaTransferenciasPendientes tbody", $('#listaTransferenciasPendientes').DataTable());
 }
+
+
 function ver(tbody, tabla){
     console.log("ver");
     $(tbody).on("click","button.ver", function(){

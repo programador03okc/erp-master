@@ -21,12 +21,18 @@
                                 <thead>
                                     <tr>
                                         <th hidden></th>
+                                        <th>Tipo</th>
                                         <th>Codigo</th>
                                         <th>Concepto</th>
                                         <th>Fecha Req.</th>
-                                        <th>Observación</th>
-                                        <th>Grupo</th>
+                                        <th>Ubigeo Entrega</th>
+                                        <th>Dirección Entrega</th>
                                         <th>Responsable</th>
+                                        <th>Estado</th>
+                                        <th>OC</th>
+                                        <th>Guía Compra</th>
+                                        <th>Transf.</th>
+                                        <th>O.Despacho</th>
                                         <th width="90px">Acción</th>
                                     </tr>
                                 </thead>
@@ -50,6 +56,7 @@
                                         <th>Cliente</th>
                                         <th>Requerimiento</th>
                                         <th>Concepto</th>
+                                        <th>Almacén</th>
                                         <th>Ubigeo</th>
                                         <th>Dirección Destino</th>
                                         <th>Fecha Despacho</th>
@@ -79,9 +86,10 @@
                                         <th>Codigo</th>
                                         <th>Fecha Despacho</th>
                                         <th>Responsable</th>
-                                        <th>Guía Venta</th>
+                                        <th>Observaciones</th>
+                                        <th>Confirmación</th>
                                         <th>Estado</th>
-                                        <th width="70px">Acción</th>
+                                        <th width="100px">Acción</th>
                                     </tr>
                                 </thead>
                                 <tbody></tbody>
@@ -99,11 +107,19 @@
 @include('almacen.distribucion.despachoDetalle')
 @include('almacen.distribucion.grupoDespachoDetalle')
 @include('logistica.cotizaciones.clienteModal')
+@include('logistica.cotizaciones.proveedorModal')
+@include('logistica.cotizaciones.add_proveedor')
+@include('publico.personaModal')
 @include('publico.ubigeoModal')
 @include('layout.footer')
 @include('layout.scripts')
 <script src="{{('/js/almacen/distribucion/ordenesDespacho.js')}}"></script>
 <script src="{{('/js/almacen/distribucion/ordenDespachoCreate.js')}}"></script>
+<script src="{{('/js/almacen/distribucion/grupoDespachoCreate.js')}}"></script>
+<script src="{{('/js/almacen/distribucion/despachoDetalle.js')}}"></script>
 <script src="{{('/js/logistica/clienteModal.js')}}"></script>
+<script src="{{('/js/logistica/proveedorModal.js')}}"></script>
+<script src="{{('/js/logistica/add_proveedor.js')}}"></script>
 <script src="{{('/js/publico/ubigeoModal.js')}}"></script>
+<script src="{{ asset('/js/publico/personaModal.js')}}"></script>
 @include('layout.fin_html')

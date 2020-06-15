@@ -85,6 +85,10 @@ function selectProveedor(){
         $('[name=id_contrib]').val(idCo);
         $('[name=prov_razon_social]').val(des);
     }
+    else if (page == "requerimientosPendientes"){
+        $('[name=gd_id_proveedor]').val(myId);
+        $('[name=gd_razon_social]').val(des);            
+    }
     else {
         $('[name=id_proveedor]').val(myId);
         $('[name=id_contrib]').val(idCo);

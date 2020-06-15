@@ -1,14 +1,14 @@
 @include('layout.head')
 @include('layout.menu_almacen')
 @include('layout.body_sin_option')
-<div class="page-main" type="ordenesPendientes">
+<div class="page-main" type="despachosPendientes">
     <legend class="mylegend">
-        <h2 id="titulo">Ordenes Pendientes de Ingreso</h2>
+        <h2 id="titulo">Ordenes de Despacho Pendientes</h2>
     </legend>
     <div class="col-md-12" id="tab-ordenes">
         <ul class="nav nav-tabs" id="myTab">
-            <li class="active"><a type="#pendientes">Ordenes Pendientes</a></li>
-            <li class=""><a type="#ingresadas">Ordenes Ingresadas Almacén</a></li>
+            <li class="active"><a type="#pendientes">Despachos Pendientes</a></li>
+            <li class=""><a type="#salidas">Salidas de Almacén</a></li>
         </ul>
         <div class="content-tabs">
             <section id="pendientes" >
@@ -16,22 +16,22 @@
                     <div class="row">
                         <div class="col-md-12">
                             <table class="mytable table table-condensed table-bordered table-okc-view" 
-                                id="ordenesPendientes" style="width:100px;">
+                                id="despachosPendientes" style="width:100px;">
                                 <thead>
                                     <tr>
                                         <th hidden></th>
-                                        <th>Cod.Orden</th>
-                                        <th>R.U.C.</th>
-                                        <th>Razon Social</th>
-                                        <th>Fecha Emisión</th>
-                                        <th>Req.</th>
+                                        <th>Codigo</th>
+                                        <th>Cliente</th>
+                                        <th>Requerimiento</th>
                                         <th>Concepto</th>
-                                        <th>Responsable</th>
-                                        <th>Mnd</th>
-                                        <th>SubTotal</th>
-                                        <th>IGV</th>
-                                        <th>Total</th>
-                                        <th width="80px"></th>
+                                        <th>Almacén</th>
+                                        <th>Ubigeo</th>
+                                        <th>Dirección Destino</th>
+                                        <th>Fecha Despacho</th>
+                                        <th>Fecha Entrega</th>
+                                        <th>Registrado por</th>
+                                        <th>Estado</th>
+                                        <th width="70px">Acción</th>
                                     </tr>
                                 </thead>
                                 <tbody></tbody>
@@ -41,29 +41,24 @@
                     </div>
                 </form>
             </section>
-            <section id="ingresadas" hidden>
-                <form id="form-ingresadas" type="register">
+            <section id="salidas" hidden>
+                <form id="form-salidas" type="register">
                     <div class="row">
                         <div class="col-md-12">
                             <table class="mytable table table-condensed table-bordered table-okc-view" 
-                                id="ordenesEntregadas">
+                                id="despachosEntregados">
                                 <thead>
                                     <tr>
                                         <th hidden></th>
                                         <th>Cod.Orden</th>
-                                        <th>R.U.C.</th>
-                                        <th>Razon Social</th>
-                                        <th>Mnd</th>
-                                        <th>SubTotal</th>
-                                        <th>IGV</th>
-                                        <th>Total</th>
+                                        <th>Cliente</th>
                                         <th>Req.</th>
                                         <th>Concepto</th>
-                                        <th>Guía Compra</th>
-                                        <th>Ingreso</th>
-                                        <th>Fecha Ingreso</th>
+                                        <th>Almacén</th>
+                                        <th>Guia</th>
+                                        <th>Fecha Salida</th>
                                         <th>Responsable</th>
-                                        <th width="100px"></th>
+                                        <th width="50px"></th>
                                     </tr>
                                 </thead>
                                 <tbody></tbody>
@@ -76,12 +71,11 @@
         </div>
     </div>
 </div>
-@include('almacen.guias.ordenDetalle')
-@include('almacen.guias.ordenesGuias')
-@include('almacen.guias.guia_com_create')
-@include('almacen.transferencias.transferenciaGuia')
+@include('almacen.guias.guia_ven_create')
+@include('almacen.distribucion.despachoDetalle')
 @include('layout.footer')
 @include('layout.scripts')
-<script src="{{('/js/almacen/guia/ordenesPendientes.js')}}"></script>
-<script src="{{('/js/almacen/transferencias/transferenciaGuia.js')}}"></script>
+<script src="{{('/js/almacen/guia/despachosPendientes.js')}}"></script>
+<script src="{{('/js/almacen/guia/guia_ven_create.js')}}"></script>
+<script src="{{('/js/almacen/distribucion/despachoDetalle.js')}}"></script>
 @include('layout.fin_html')

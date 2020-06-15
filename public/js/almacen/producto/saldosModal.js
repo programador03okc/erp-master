@@ -12,11 +12,13 @@ $(function(){
         var codi = $(this)[0].childNodes[1].innerHTML;
         var desc = $(this)[0].childNodes[2].innerHTML;
         var stoc = $(this)[0].childNodes[3].innerHTML;
+        var unid = $(this)[0].childNodes[4].innerHTML;
 
         $('[name=id_producto]').val(myId);
         $('[name=codigo_item]').val(codi);
         $('[name=descripcion_item]').val(desc);
         $('[name=cantidad_item]').val(stoc);
+        $('[name=unidad_medida_item]').val(unid);
 
         $('#modal-saldos').modal('hide');
     });
@@ -42,9 +44,10 @@ function listarSaldos(id_almacen){
                         return (row['stock']);
                     }
                 }
-            }
+            },
+            {'data': 'id_unidad_medida'}
         ],
-        'columnDefs': [{ 'aTargets': [0], 'sClass': 'invisible'}],
+        'columnDefs': [{ 'aTargets': [0,4], 'sClass': 'invisible'}],
     });
 }
 

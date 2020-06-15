@@ -9,6 +9,7 @@
                 <input type="text" class="oculto" name="id_transferencia" >
                 <input type="text" class="oculto" name="id_guia_ven" >
                 <input type="text" class="oculto" name="estado" >
+                <input type="text" class="oculto" name="guia_ingreso_compra" >
                 <div class="row">
                     <div class="col-md-3">
                         <h5>Fecha Almacén</h5>

@@ -81,35 +81,35 @@ class AlmacenController extends Controller
         $proveedores = $this->mostrar_proveedores_cbo();
         $almacenes = $this->mostrar_almacenes_cbo();
         $posiciones = $this->mostrar_posiciones_cbo();
-        $motivos = $this->mostrar_motivos_cbo();
+        // $motivos = $this->mostrar_motivos_cbo();
         $clasificaciones = $this->mostrar_guia_clas_cbo();
         $tp_doc = $this->mostrar_tp_doc_cbo();
         $monedas = $this->mostrar_moneda_cbo();
         $tp_doc_almacen = $this->tp_doc_almacen_cbo_ing();
         $tp_operacion = $this->tp_operacion_cbo_ing();
         $tp_contribuyente = $this->tp_contribuyente_cbo();
-        $sis_identidad = $this->sis_identidad_cbo();
+        $sis_identidad = AlmacenController::sis_identidad_cbo();
         $tp_prorrateo = $this->select_tp_prorrateo();
         $usuarios = $this->select_usuarios();
         $motivos_anu = $this->select_motivo_anu();
-        return view('almacen/guias/guia_compra', compact('proveedores','almacenes','posiciones','motivos','clasificaciones','tp_doc','monedas','tp_doc_almacen','tp_operacion','tp_contribuyente','sis_identidad','tp_prorrateo','usuarios','motivos_anu'));
+        return view('almacen/guias/guia_compra', compact('proveedores','almacenes','posiciones','clasificaciones','tp_doc','monedas','tp_doc_almacen','tp_operacion','tp_contribuyente','sis_identidad','tp_prorrateo','usuarios','motivos_anu'));
     }
     function view_guia_venta(){
         $almacenes = $this->mostrar_almacenes_cbo();
         $posiciones = $this->mostrar_posiciones_cbo();
-        $motivos = $this->mostrar_motivos_cbo();
+        // $motivos = $this->mostrar_motivos_cbo();
         $clasificaciones = $this->mostrar_guia_clas_cbo();
         // $empresas = $this->select_empresa();
         $sedes = $this->mostrar_sedes_cbo();
         $proveedores = $this->mostrar_proveedores_cbo();
         $tp_doc_almacen = $this->tp_doc_almacen_cbo_sal();
-        $tp_operacion = $this->tp_operacion_cbo_sal();
+        $tp_operacion = AlmacenController::tp_operacion_cbo_sal();
         $tp_contribuyente = $this->tp_contribuyente_cbo();
-        $sis_identidad = $this->sis_identidad_cbo();
+        $sis_identidad = AlmacenController::sis_identidad_cbo();
         // $usuarios = $this->select_usuarios_almacen();
         $usuarios = $this->select_usuarios();
         $motivos_anu = $this->select_motivo_anu();
-        return view('almacen/guias/guia_venta', compact('almacenes','posiciones','motivos','clasificaciones','sedes','proveedores','tp_doc_almacen','tp_operacion','tp_contribuyente','sis_identidad','usuarios','motivos_anu'));
+        return view('almacen/guias/guia_venta', compact('almacenes','posiciones','clasificaciones','sedes','proveedores','tp_doc_almacen','tp_operacion','tp_contribuyente','sis_identidad','usuarios','motivos_anu'));
     }
     // function view_doc_compra(){
     //     $proveedores = $this->mostrar_proveedores_cbo();
@@ -121,7 +121,7 @@ class AlmacenController extends Controller
     //     $impuestos = $this->mostrar_impuestos_cbo();
     //     $usuarios = $this->select_usuarios();
     //     $tp_contribuyente = $this->tp_contribuyente_cbo();
-    //     $sis_identidad = $this->sis_identidad_cbo();
+    //     $sis_identidad = AlmacenController::sis_identidad_cbo();
     //     return view('almacen/documentos/doc_compra', compact('proveedores','clasificaciones','condiciones','tp_doc','moneda','detracciones','impuestos','usuarios','tp_contribuyente','sis_identidad'));
     // }
     function view_doc_venta(){
@@ -135,10 +135,10 @@ class AlmacenController extends Controller
         return view('almacen/documentos/doc_venta', compact('sedes','clasificaciones','condiciones','tp_doc','moneda','usuarios'));
     }
     function view_cola_atencion(){
-        $motivos = $this->mostrar_motivos_cbo();
+        // $motivos = $this->mostrar_motivos_cbo();
         $clasificaciones = $this->mostrar_guia_clas_cbo();
         $almacenes = $this->mostrar_almacenes_cbo();
-        return view('almacen/reportes/cola_atencion', compact('motivos','clasificaciones','almacenes'));
+        return view('almacen/reportes/cola_atencion', compact('clasificaciones','almacenes'));
     }
     function view_kardex_general(){
         $empresas = $this->select_empresa();
@@ -170,7 +170,7 @@ class AlmacenController extends Controller
         $empresas = $this->select_empresa();
         $almacenes = $this->mostrar_almacenes_cbo();
         $tp_doc_almacen = $this->tp_doc_almacen_cbo_sal();
-        $tp_operacion = $this->tp_operacion_cbo_sal();
+        $tp_operacion = AlmacenController::tp_operacion_cbo_sal();
         $usuarios = $this->select_almaceneros();
         return view('almacen/reportes/lista_salidas', compact('almacenes','empresas','tp_doc_almacen','tp_operacion','usuarios'));
     }
@@ -186,14 +186,7 @@ class AlmacenController extends Controller
         $tp_doc_almacen = $this->tp_doc_almacen_cbo_sal();
         return view('almacen/reportes/busqueda_salidas', compact('almacenes','empresas','tp_doc_almacen'));
     }
-    function view_listar_transferencias(){
-        $motivos = $this->mostrar_motivos_cbo();
-        $clasificaciones = $this->mostrar_guia_clas_cbo();
-        $almacenes = $this->mostrar_almacenes_cbo();
-        // $usuarios = $this->select_usuarios_almacen();
-        $usuarios = $this->select_usuarios();
-        return view('almacen/transferencias/listar_transferencias', compact('motivos','clasificaciones','almacenes','usuarios'));
-    }
+
     function view_transformacion(){
         $almacenes = $this->mostrar_almacenes_cbo();
         $empresas = $this->select_empresa();
@@ -251,7 +244,7 @@ class AlmacenController extends Controller
             ->orderBy('adm_tp_contri.descripcion', 'asc')->get();
         return $data;
     }
-    public function sis_identidad_cbo(){
+    public static function sis_identidad_cbo(){
         $data = DB::table('contabilidad.sis_identi')
             ->select('sis_identi.id_doc_identidad', 'sis_identi.descripcion')
             ->where('sis_identi.estado', '=', 1)
@@ -293,7 +286,7 @@ class AlmacenController extends Controller
             ->get();
         return $data;
     }
-    public function tp_operacion_cbo_sal(){
+    public static function tp_operacion_cbo_sal(){
         $data = DB::table('almacen.tp_ope')
             ->select('tp_ope.id_operacion','tp_ope.cod_sunat','tp_ope.descripcion')
             ->where('tp_ope.estado', 1)
@@ -600,15 +593,15 @@ class AlmacenController extends Controller
                 ->get();
         return $data;
     }
-    public function mostrar_motivos_cbo()
-    {
-        $data = DB::table('almacen.guia_motivo')
-            ->select('guia_motivo.id_motivo','guia_motivo.descripcion')
-            ->where([['guia_motivo.estado', '=', 1]])
-            ->orderBy('guia_motivo.id_motivo')
-            ->get();
-        return $data;
-    }
+    // public function mostrar_motivos_cbo()
+    // {
+    //     $data = DB::table('almacen.guia_motivo')
+    //         ->select('guia_motivo.id_motivo','guia_motivo.descripcion')
+    //         ->where([['guia_motivo.estado', '=', 1]])
+    //         ->orderBy('guia_motivo.id_motivo')
+    //         ->get();
+    //     return $data;
+    // }
     public static function mostrar_guia_clas_cbo()
     {
         $data = DB::table('almacen.guia_clas')
@@ -2753,10 +2746,10 @@ class AlmacenController extends Controller
                     $html.='<tr>
                         <td width=110px>Transferencia</td>
                         <td width=10px>:</td>
-                        <td width=300px>'.$ingreso->trans_codigo.'</td>
-                        <td width=150px>Almacén Origen</td>
+                        <td width=180px>'.$ingreso->trans_codigo.'</td>
+                        <td width=100px>Almacén Origen</td>
                         <td width=10px>:</td>
-                        <td>'.$ingreso->trans_almacen_origen.'</td>
+                        <td width=180px>'.$ingreso->trans_almacen_origen.'</td>
                     </tr>';
                 }
                 $html.='
@@ -2850,7 +2843,7 @@ class AlmacenController extends Controller
         return $pdf->download('ingreso.pdf');
     }
     public function mostrar_ingreso($id){
-        $ingreso = DB::table('almacen.mov_alm')
+        $ingreso = DB::table('almacen.mov_alm') 
             ->select('mov_alm.*','alm_almacen.descripcion as des_almacen',
             DB::raw("CONCAT('GR-',guia_com.serie,'-',guia_com.numero) as guia"),
             'guia_com.fecha_emision as fecha_guia','sis_usua.usuario as nom_usuario')
@@ -3529,10 +3522,10 @@ class AlmacenController extends Controller
     public function listar_docven_guias($id_doc){
         $guias = DB::table('almacen.doc_ven_guia')
         ->select('doc_ven_guia.*',DB::raw("CONCAT('GR-',guia_ven.serie,'-',guia_ven.numero) as guia"),
-        'guia_ven.fecha_emision as fecha_guia','guia_motivo.descripcion as des_motivo',
+        'guia_ven.fecha_emision as fecha_guia',//'guia_motivo.descripcion as des_motivo',
         'adm_contri.razon_social')
         ->join('almacen.guia_ven','guia_ven.id_guia_ven','=','doc_ven_guia.id_guia_ven')
-        ->join('almacen.guia_motivo','guia_motivo.id_motivo','=','guia_ven.id_motivo')
+        // ->join('almacen.guia_motivo','guia_motivo.id_motivo','=','guia_ven.id_motivo')
         ->join('administracion.sis_sede','sis_sede.id_sede','=','guia_ven.id_sede')
         ->join('administracion.adm_empresa','adm_empresa.id_empresa','=','sis_sede.id_empresa')
         ->join('contabilidad.adm_contri','adm_contri.id_contribuyente','=','adm_empresa.id_contribuyente')
@@ -4022,7 +4015,7 @@ class AlmacenController extends Controller
             'sis_usua.usuario as nom_usuario','tp_ope.cod_sunat','tp_ope.descripcion as ope_descripcion',
             // 'proy_proyecto.descripcion as proy_descripcion','proy_proyecto.codigo as cod_proyecto',
             DB::raw("CONCAT(tp_doc_almacen.abreviatura,'-',guia_ven.serie,'-',guia_ven.numero) as guia"),
-            'guia_motivo.descripcion as motivo_descripcion','trans.codigo as cod_trans',
+            'trans.codigo as cod_trans',
             'alm_destino.descripcion as des_alm_destino','trans.fecha_transferencia',
             DB::raw("CONCAT(cont_tp_doc.abreviatura,'-',doc_ven.serie,'-',doc_ven.numero) as doc"),
             DB::raw("CONCAT(rrhh_perso.nombres,' ',rrhh_perso.apellido_paterno,' ',rrhh_perso.apellido_materno) as persona"),
@@ -4036,7 +4029,7 @@ class AlmacenController extends Controller
             ->leftjoin('almacen.guia_ven','guia_ven.id_guia_ven','=','mov_alm.id_guia_ven')
             ->leftjoin('almacen.tp_ope','tp_ope.id_operacion','=','mov_alm.id_operacion')
             ->leftjoin('almacen.tp_doc_almacen','tp_doc_almacen.id_tp_doc_almacen','=','guia_ven.id_tp_doc_almacen')
-            ->leftjoin('almacen.guia_motivo','guia_motivo.id_motivo','=','guia_ven.id_motivo')
+            // ->leftjoin('almacen.guia_motivo','guia_motivo.id_motivo','=','guia_ven.id_motivo')
             ->leftjoin('almacen.trans','trans.id_guia_ven','=','guia_ven.id_guia_ven')
             ->leftjoin('almacen.alm_almacen as alm_destino','alm_destino.id_almacen','=','trans.id_almacen_destino')
             ->leftjoin('almacen.doc_ven','doc_ven.id_doc_ven','=','mov_alm.id_doc_ven')
@@ -4445,7 +4438,7 @@ class AlmacenController extends Controller
             ->select('alm_prod_ubi.*','alm_prod.codigo','alm_prod.descripcion','alm_ubi_posicion.codigo as cod_posicion',
             'alm_und_medida.abreviatura','alm_prod.codigo_anexo','sis_moneda.simbolo','alm_cat_prod.descripcion as des_categoria',
             'alm_subcat.descripcion as des_subcategoria','alm_clasif.descripcion as des_clasificacion',
-            'alm_prod_antiguo.cod_antiguo','alm_prod.id_moneda',
+            'alm_prod_antiguo.cod_antiguo','alm_prod.id_moneda','alm_prod.id_unidad_medida',
             DB::raw("(SELECT SUM(alm_det_req.cantidad) FROM almacen.alm_det_req 
             WHERE alm_det_req.estado=19 
             AND alm_det_req.id_producto=alm_prod_ubi.id_producto 
@@ -4497,6 +4490,7 @@ class AlmacenController extends Controller
                 'cod_antiguo'=> $d->cod_antiguo,
                 'descripcion'=> $d->descripcion,
                 'abreviatura'=> $d->abreviatura,
+                'id_unidad_medida'=> $d->id_unidad_medida,
                 'stock'=> $d->stock,
                 'simbolo'=> $d->simbolo,
                 'id_moneda'=> $d->id_moneda,
@@ -4512,7 +4506,7 @@ class AlmacenController extends Controller
             array_push($nueva_data,$nuevo);
         }
         // return response()->json($nueva_data);
-        $output['data'] = $data;
+        $output['data'] = $nueva_data;
         return response()->json($output);
     }
 
@@ -4665,6 +4659,7 @@ class AlmacenController extends Controller
             ->get();
         return response()->json($data);
     }
+
     public function guardar_guia_venta(Request $request)
     {
         $usuario = Auth::user();
@@ -4679,7 +4674,7 @@ class AlmacenController extends Controller
                 'fecha_emision' => $request->fecha_emision,
                 'fecha_almacen' => $request->fecha_almacen,
                 'id_almacen' => $request->id_almacen,
-                'id_motivo' => $request->id_motivo,
+                // 'id_motivo' => $request->id_motivo,
                 'id_operacion' => $request->id_operacion,
                 'transportista' => $request->transportista,
                 'tra_serie' => $request->tra_serie,
@@ -5231,7 +5226,6 @@ class AlmacenController extends Controller
                 'id_unid_med' => $request->id_unid_med,
                 // 'unitario' => $request->unitario,
                 // 'total' => $request->total,
-                // 'usuario' => $request->usuario,
                 'estado' => 1,
                 'fecha_registro' => date('Y-m-d H:i:s')
             ],
@@ -7216,15 +7210,7 @@ class AlmacenController extends Controller
     //     ]);
     //     return response()->json($data);
     // }
-    public function transferencia_nextId($id_alm_origen){
-        $cantidad = DB::table('almacen.trans')
-        ->where([['id_almacen_origen','=',$id_alm_origen],
-                ['estado','!=',7]])
-        ->get()->count();
-        $val = AlmacenController::leftZero(3,($cantidad + 1));
-        $nextId = "Tr-".$id_alm_origen."-".$val;
-        return $nextId;
-    }
+
     public function guardar_transferencia(Request $request)
     {
         $fecha = date('Y-m-d H:i:s');
@@ -7433,218 +7419,7 @@ class AlmacenController extends Controller
         }
         return response()->json(['guia_com_det'=>$guia_com_det,'est'=>$est]);
     }
-    public function guardar_ingreso_transferencia(Request $request){
-        $usuario = Auth::user();
-        $fecha = date('Y-m-d H:i:s');
 
-        $guia_ven = DB::table('almacen.guia_ven')
-        ->where('id_guia_ven',$request->id_guia_ven)
-        ->first();
-
-        $id_proveedor = null;
-
-        if ($guia_ven->id_cliente !== null){
-            //verifica si el cliente existe como proveedor
-            $proveedor = DB::table('comercial.com_cliente')
-            ->select('com_cliente.id_contribuyente','log_prove.id_proveedor')
-            ->leftjoin('logistica.log_prove','log_prove.id_contribuyente','=','com_cliente.id_contribuyente')
-            ->where('com_cliente.id_cliente',$guia_ven->id_cliente)
-            ->first();
-
-            //si existe, copia el id_proveedor
-            if ($proveedor !== null && $proveedor->id_proveedor !== null){
-                $id_proveedor = $proveedor->id_proveedor;
-            }
-            else { //si no existe, inserta uno
-                if ($proveedor !== null && 
-                    $proveedor->id_contribuyente !== null){
-                    $id_proveedor = DB::table('logistica.log_prove')->insertGetId([
-                        'id_contribuyente'=>$proveedor->id_contribuyente,
-                        'estado'=>1,
-                        'fecha_registro'=>$fecha,
-                    ], 
-                        'id_proveedor'
-                    );
-                } //si no existe proveedor, id_empresa
-                else {
-                    $empresa = DB::table('administracion.adm_empresa')
-                    ->select('adm_empresa.id_contribuyente','log_prove.id_proveedor')
-                    ->leftjoin('logistica.log_prove','log_prove.id_contribuyente','=','adm_empresa.id_contribuyente')
-                    ->where('adm_empresa.id_empresa',$guia_ven->id_empresa)
-                    ->first();
-                
-                    if ($empresa !== null && $empresa->id_proveedor !== null){
-                        $id_proveedor = $empresa->id_proveedor;
-                    } else {
-                        $id_proveedor = DB::table('logistica.log_prove')->insertGetId([
-                            'id_contribuyente'=>$empresa->id_contribuyente,
-                            'estado'=>1,
-                            'fecha_registro'=>$fecha,
-                        ], 
-                            'id_proveedor'
-                        );
-                    }    
-                }
-            }
-        } 
-        else {
-            $empresa = DB::table('administracion.sis_sede')
-            ->select('log_prove.id_proveedor')
-            ->join('administracion.adm_empresa','adm_empresa.id_empresa','=','sis_sede.id_empresa')
-            ->join('logistica.log_prove','log_prove.id_contribuyente','=','adm_empresa.id_contribuyente')
-            // ->join('contabilidad.adm_contri','adm_contri.id_contribuyente','=','log_prove.id_contribuyente')
-            ->where('sis_sede.id_sede',$guia_ven->id_sede)
-            ->first();
-
-            if (isset($empresa)){
-                $id_proveedor = $empresa->id_proveedor;
-            }
-        }
-
-        $id_guia_com = DB::table('almacen.guia_com')->insertGetId(
-            [
-                'id_tp_doc_almacen' => 1,//Guia Compra
-                'serie' => $guia_ven->serie,
-                'numero' => $guia_ven->numero,
-                'id_proveedor' => $id_proveedor,
-                'fecha_emision' => $guia_ven->fecha_emision,
-                'fecha_almacen' => $request->fecha_almacen,
-                'id_almacen' => $request->id_almacen_destino,
-                // 'id_motivo' => $guia_ven->id_motivo,
-                'id_guia_clas' => 1,
-                'id_operacion' => 21,//entrada por transferencia entre almacenes
-                'punto_partida' => $guia_ven->punto_partida,
-                'punto_llegada' => $guia_ven->punto_llegada,
-                'transportista' => $guia_ven->transportista,
-                'fecha_traslado' => $guia_ven->fecha_traslado,
-                'tra_serie' => $guia_ven->tra_serie,
-                'tra_numero' => $guia_ven->tra_numero,
-                'placa' => $guia_ven->placa,
-                'usuario' => $request->responsable_destino,
-                'registrado_por' => $usuario->id_usuario,
-                'estado' => 9,
-                'fecha_registro' => $fecha
-            ],
-                'id_guia'
-            );
-
-        $codigo = AlmacenController::nextMovimiento(1,
-            $request->fecha_almacen,
-            $request->id_almacen_destino);
-
-        $id_ingreso = DB::table('almacen.mov_alm')->insertGetId(
-            [
-                'id_almacen' => $request->id_almacen_destino,
-                'id_tp_mov' => 1,//Ingresos
-                'codigo' => $codigo,
-                'fecha_emision' => $request->fecha_almacen,
-                'id_guia_com' => $id_guia_com,
-                'id_operacion' => 21,//entrada por transferencia entre almacenes
-                'revisado' => 0,
-                'usuario' => $usuario->id_usuario,
-                'estado' => 1,
-                'fecha_registro' => $fecha,
-            ],
-                'id_mov_alm'
-            );
-
-        $guia_det = explode(',',$request->id_guia_ven_det);
-        $cant_recibida = explode(',',$request->cantidad_recibida);
-        $observacion = explode(',',$request->observacion);
-        $ubicaciones = explode(',',$request->ubicaciones);
-        $count = count($guia_det);
-
-        if (!empty($request->id_guia_ven_det)){
-            for($i=0; $i<$count; $i++){
-                
-                $det = DB::table('almacen.guia_ven_det')
-                ->where('id_guia_ven_det',$guia_det[$i])
-                ->first();
-        
-                $id_guia_com_det = DB::table('almacen.guia_com_det')->insertGetId([
-                    'id_guia_com' => $id_guia_com,
-                    'id_producto' => $det->id_producto,
-                    'id_posicion' => $ubicaciones[$i],
-                    'cantidad' => $cant_recibida[$i],
-                    'id_unid_med' => $det->id_unid_med,
-                    'id_guia_ven_det' => $guia_det[$i],
-                    // 'unitario' => $det->unitario,
-                    // 'unitario_adicional' => 0,
-                    // 'total' => $det->total,
-                    'usuario' => $usuario->id_usuario,
-                    'estado' => 1,
-                    'fecha_registro' => $fecha
-                ],
-                    'id_guia_com_det'
-                );
-
-                if ($ubicaciones[$i] !== null){
-                    
-                    $ubi = DB::table('almacen.alm_prod_ubi')
-                        ->where([['id_producto','=',$det->id_producto],
-                                ['id_posicion','=',$ubicaciones[$i]]])
-                        ->first();
-                    //traer stockActual
-                    $saldo = $this->saldo_actual($det->id_producto, $ubicaciones[$i]);
-                    $costo = $this->costo_promedio($det->id_producto, $ubicaciones[$i]);
-    
-                    if (!isset($ubi->id_posicion)){//si no existe -> creo la ubicacion
-                        DB::table('almacen.alm_prod_ubi')->insert([
-                            'id_producto' => $det->id_producto,
-                            'id_posicion' => $ubicaciones[$i],
-                            'stock' => $saldo,
-                            'costo_promedio' => $costo,
-                            'estado' => 1,
-                            'fecha_registro' => $fecha
-                            ]);
-                    } else {
-                        DB::table('almacen.alm_prod_ubi')
-                        ->where('id_prod_ubi',$ubi->id_prod_ubi)
-                        ->update([  'stock' => $saldo,
-                                    'costo_promedio' => $costo ]);
-                    }
-                }
-
-                if ($observacion[$i] !== ''){
-                    DB::table('almacen.guia_com_det_obs')->insertGetId([
-                        'id_guia_com_det' => $id_guia_com_det,
-                        'observacion' => $observacion[$i],
-                        'registrado_por' => $usuario->id_usuario,
-                        'fecha_registro' => $fecha,
-                    ],
-                        'id_obs'
-                    );
-                }
-                //guarda ingreso detalle
-                DB::table('almacen.mov_alm_det')->insertGetId([
-                    'id_mov_alm' => $id_ingreso,
-                    'id_producto' => $det->id_producto,
-                    'id_posicion' => $ubicaciones[$i],
-                    'cantidad' => $cant_recibida[$i],
-                    // 'valorizacion' => (floatval($det->cantidad) * floatval($prec)),
-                    'usuario' => $usuario->id_usuario,
-                    'id_guia_com_det' => $id_guia_com_det,
-                    'estado' => 1,
-                    'fecha_registro' => $fecha,
-                ],
-                    'id_mov_alm_det'
-                );
-            }
-        }
-
-        // if ($request->estado == 'true'){
-        //     $est = 5;//Atendido
-        // } else {
-        //     $est = 14;//Atención Parcial
-        // }
-        DB::table('almacen.trans')
-        ->where('id_transferencia',$request->id_transferencia)
-        ->update(['estado' => 14,//Recibido
-                  'id_guia_com' => $id_guia_com
-                ]);
-
-        return response()->json($id_ingreso);
-    }
     public function ingreso_transferencia($id_guia_com){
         $data = DB::table('almacen.mov_alm')
         ->where('id_guia_com',$id_guia_com)->get();
@@ -9011,14 +8786,14 @@ class AlmacenController extends Controller
         // }
     //     return json_encode($data);
     // }
-    function encode5t($str){
+    public function encode5t($str){
         for($i=0; $i<5;$i++){
        $str=strrev(base64_encode($str));
         }
         return $str;
     }
    
-    function decode5t($str){
+    public function decode5t($str){
         for($i=0; $i<5;$i++){
        $str=base64_decode(strrev($str));
         }

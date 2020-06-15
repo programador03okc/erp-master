@@ -14,6 +14,7 @@
                             <th>Código</th>
                             <th>Descripción</th>
                             <th>Saldo</th>
+                            <th hidden>unid.medida</th>
                         </tr>
                     </thead>
                     <tbody></tbody>

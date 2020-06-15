@@ -13,7 +13,7 @@
                             <h5>Serie-Número</h5>
                             <div class="input-group">
                                 <input type="text" class="form-control activation" 
-                                    name="serie" onBlur="ceros_numero('serie');" placeholder="0001">
+                                    name="serie" onBlur="ceros_numero('serie');" placeholder="0000">
                                 <span class="input-group-addon">-</span>
                                 <input type="text" class="form-control activation" 
                                     name="numero" onBlur="ceros_numero('numero');" placeholder="0000000">

@@ -9,50 +9,83 @@
                 <div class="modal-body">
                     <input type="text" class="oculto" name="id_orden_despacho">
                     <input type="text" class="oculto" name="id_requerimiento">
-                    <input class="oculto" name="id_sede"/>
+                    <input type="text" class="oculto" name="id_sede"/>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <h5>Tipo Cliente</h5>
+                            <div class="input-group-okc">
+                                    <select name="tipo_cliente" name="tipo_cliente" onChange="changeTipoCliente(event);"
+                                    class="form-control activation" style="width:100px" required>
+                                    <!-- <option value="0">Elija una opción</option> -->
+                                    <option value="1" default>Persona Natural</option>
+                                    <option value="2">Persona Juridica</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-2"></div>
+                        <div class="col-md-6">
+                            <h5>Almacén</h5>
+                            <input type="text" class="oculto" name="id_almacen" >
+                            <input type="text" class="form-control" name="almacen_descripcion">                            
+                        </div>
+                    </div>
                     <div class="row">
                         <div class="col-md-6">
                             <h5>Cliente</h5>
-                            <div style="display:flex;">
+                            <!-- <div style="display:flex;">
                                 <input class="oculto" name="id_cliente"/>
                                 <input class="oculto" name="id_contrib"/>
                                 <input type="text" class="form-control" name="cliente_razon_social" placeholder="Seleccione un cliente..." 
                                     aria-describedby="basic-addon1" disabled>
-                                <button type="button" class="input-group-text activation btn-primary" id="basic-addon1" onClick="clienteModal();">
+                                <button type="button" class="input-group-text btn-primary" id="basic-addon1" onClick="clienteModal();">
                                     <i class="fa fa-search"></i>
                                 </button>
-                                <!-- <button type="button" class="input-group-text activation btn-success" id="basic-addon1" onClick="agregar_cliente();">
-                                    <strong>+</strong>
-                                </button> -->
+                            </div> -->
+                            <!-- class="input-group-okc"  -->
+                            <div style="display:flex;"> 
+                                <input type="text" class="oculto" name="id_cliente" >
+                                <input type="text" class="oculto" name="tipo_cliente" >
+                                <input type="text" class="form-control" name="cliente_ruc" style="display: none; width: 130px;">
+                                <input type="text" class="form-control" name="cliente_razon_social" style="display: none;">
+
+                                <input type="text" class="oculto" name="id_persona" >
+                                <input type="text" class="form-control" name="dni_persona" style="width: 130px;">
+                                <input type="text" class="form-control" name="nombre_persona" >
+
+                                <!-- <div class="input-group-append">         -->
+                                    <button type="button" title="Seleccionar Cliente" name="btnCliente" 
+                                    onClick="openCliente();"
+                                    class="input-group-text btn-primary" ><i class="fas fa-user-tie"></i></button>
+                                <!-- </div> -->
                             </div>
                         </div>
                         <div class="col-md-3">
                             <h5>Fecha de Despacho</h5>
-                            <input type="date" class="form-control activation" name="fecha_despacho" value="<?=date('Y-m-d');?>">
+                            <input type="date" class="form-control" name="fecha_despacho" value="<?=date('Y-m-d');?>">
                         </div>
                         <div class="col-md-3">
                             <h5>Última Fecha de Entrega</h5>
-                            <input type="date" class="form-control activation" name="fecha_entrega" value="<?=date('Y-m-d');?>">
+                            <input type="date" class="form-control" name="fecha_entrega" value="<?=date('Y-m-d');?>">
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-md-6">
                             <h5>Dirección Destino</h5>
-                            <input type="text" class="form-control activation" name="direccion_destino">
+                            <input type="text" class="form-control" name="direccion_destino">
                         </div>
                         <div class="col-md-3">
                             <h5>Ubigeo Destino</h5>
                             <div style="display:flex;">
                                 <input class="oculto" name="ubigeo"/>
-                                <input type="text" class="form-control activation" name="name_ubigeo">
-                                <button type="button" class="input-group-text activation btn-primary" id="basic-addon1" onClick="ubigeoModal();">
+                                <input type="text" class="form-control" name="name_ubigeo">
+                                <button type="button" class="input-group-text btn-primary" id="basic-addon1" onClick="ubigeoModal();">
                                     <i class="fa fa-search"></i>
                                 </button>
                             </div>
                         </div>
                         <div class="col-md-3">
                             <h5>Tipo de Entrega</h5>
-                            <select class="form-control activation js-example-basic-single" name="tipo_entrega">
+                            <select class="form-control" name="tipo_entrega">
                                 <option value="MISMA CIUDAD">MISMA CIUDAD</option>
                                 <option value="OTRAS CIUDADES">OTRAS CIUDADES</option>
                             </select>
@@ -83,10 +116,10 @@
                                             <th>Descripción</th>
                                             <th>Cantidad</th>
                                             <th>Unid</th>
-                                            <th>Posición</th>
-                                            <th>Lugar de Entrega</th>
+                                            <th>Almacén</th>
+                                            <!-- <th>Lugar de Entrega</th> -->
                                             <th>Estado</th>
-                                            <th>Acción</th>
+                                            <!-- <th>Acción</th> -->
                                             <!-- <th>Total</th> -->
                                         </tr>
                                     </thead>

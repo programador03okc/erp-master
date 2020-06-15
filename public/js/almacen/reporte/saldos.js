@@ -40,7 +40,7 @@ function listarSaldos(){
         'columnDefs': [{ 'aTargets': [0], 'sClass': 'invisible'}],
         "order": [[4, "asc"]]
     });
-    vista_extendida();
+    // vista_extendida();
     // tipo_cambio(fecha);
 }
 
