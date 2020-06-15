@@ -4438,7 +4438,7 @@ class AlmacenController extends Controller
             ->select('alm_prod_ubi.*','alm_prod.codigo','alm_prod.descripcion','alm_ubi_posicion.codigo as cod_posicion',
             'alm_und_medida.abreviatura','alm_prod.codigo_anexo','sis_moneda.simbolo','alm_cat_prod.descripcion as des_categoria',
             'alm_subcat.descripcion as des_subcategoria','alm_clasif.descripcion as des_clasificacion',
-            'alm_prod_antiguo.cod_antiguo','alm_prod.id_moneda',
+            'alm_prod_antiguo.cod_antiguo','alm_prod.id_moneda','alm_prod.id_unidad_medida',
             DB::raw("(SELECT SUM(alm_det_req.cantidad) FROM almacen.alm_det_req 
             WHERE alm_det_req.estado=19 
             AND alm_det_req.id_producto=alm_prod_ubi.id_producto 
@@ -4490,6 +4490,7 @@ class AlmacenController extends Controller
                 'cod_antiguo'=> $d->cod_antiguo,
                 'descripcion'=> $d->descripcion,
                 'abreviatura'=> $d->abreviatura,
+                'id_unidad_medida'=> $d->id_unidad_medida,
                 'stock'=> $d->stock,
                 'simbolo'=> $d->simbolo,
                 'id_moneda'=> $d->id_moneda,
