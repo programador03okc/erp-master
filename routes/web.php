@@ -829,6 +829,7 @@ Route::get('verDetalleGrupoDespacho/{id}', 'DistribucionController@verDetalleGru
 Route::get('pruebaa', 'AlmacenController@pruebaa');
 
 Route::get('despachosPendientes', 'DistribucionController@view_despachosPendientes');
+Route::post('listarOrdenesDespachoPendientes', 'DistribucionController@listarOrdenesDespachoPendientes');
 Route::post('guardar_guia_despacho', 'DistribucionController@guardar_guia_despacho');
 Route::post('listarSalidasDespacho', 'DistribucionController@listarSalidasDespacho');
 

@@ -37,7 +37,7 @@ function listarDespachosPendientes(){
         'destroy' : true,
         'serverSide' : true,
         'ajax': {
-            url: 'listarOrdenesDespacho',
+            url: 'listarOrdenesDespachoPendientes',
             type: 'POST'
         },
         'columns': [

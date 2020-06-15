@@ -88,8 +88,8 @@ function listarRequerimientosPendientes(){
                 'data-placement="bottom" title="Ver Detalle" >'+
                 '<i class="fas fa-list-ul"></i></button>'+
                 (
-                    ((row['estado'] == 19 && row['id_tipo_requerimiento'] == 2) || //venta directa
-                     (row['estado'] == 19 && row['id_tipo_requerimiento'] == 1 && row['id_transferencia'] !== null && row['id_od'] == null)) ? //compra con transferencia
+                    ((row['estado'] == 19 && row['id_tipo_requerimiento'] == 1 && row['id_transferencia'] !== null) || //compra con transferencia
+                     (row['estado'] == 19 && row['id_tipo_requerimiento'] == 2 && row['id_od'] == null)) ? //venta directa
                     ('<button type="button" class="despacho btn btn-success boton" data-toggle="tooltip" '+
                     'data-placement="bottom" title="Generar Orden de Despacho" >'+
                     '<i class="fas fa-sign-in-alt"></i></button>') : '')
@@ -115,11 +115,11 @@ function open_detalle_requerimiento(data){
         show: true
     });
     $('#cabecera_orden').text(data.codigo+' - '+data.concepto);
-    // var idTabla = 'detalleRequerimiento';
-    listar_detalle_requerimiento(data.id_requerimiento);
+    var idTabla = 'detalleRequerimiento';
+    listar_detalle_requerimiento(data.id_requerimiento, idTabla);
 }
 
-function listar_detalle_requerimiento(id_requerimiento){
+function listar_detalle_requerimiento(id_requerimiento, idTabla){
     $.ajax({
         type: 'GET',
         url: '/verDetalleRequerimiento/'+id_requerimiento,
@@ -132,12 +132,12 @@ function listar_detalle_requerimiento(id_requerimiento){
             console.log(detalle_requerimiento);
             response.forEach(element => {
                 html+='<tr id="'+element.id_detalle_requerimiento+'">'+
-                '<td>'+i+'</td>'+
-                '<td>'+(element.codigo_item !== null ? element.codigo_item : '')+'</td>'+
-                '<td>'+(element.descripcion_item !== null ? element.descripcion_item : '')+'</td>'+
+                '<td>'+(idTabla == 'detalleRequerimiento' ? i : '<input type="checkbox" onChange="changeCheckIngresa(this,'+element.id_detalle_requerimiento+');"/>')+'</td>'+
+                '<td>'+(element.producto_codigo !== null ? element.producto_codigo : '')+'</td>'+
+                '<td>'+(element.producto_descripcion !== null ? element.producto_descripcion : element.descripcion_adicional)+'</td>'+
                 '<td>'+element.cantidad+'</td>'+
-                '<td>'+(element.unidad_medida_item !== null ? element.unidad_medida_item : element.unidad_medida)+'</td>'+
-                '<td>'+(element.almacen_descripcion !== null ? element.almacen_descripcion : '')+'</td>'+
+                '<td>'+(element.abreviatura !== null ? element.abreviatura : '')+'</td>'+
+                // '<td>'+(element.almacen_descripcion !== null ? element.almacen_descripcion : '')+'</td>'+
                 // '<td>'+(element.codigo_posicion !== null ? element.codigo_posicion : '')+'</td>'+
                 // '<td>'+(element.lugar_entrega !== null ? element.lugar_entrega : element.lugar_despacho_orden)+'</td>'+
                 '<td><span class="label label-'+element.bootstrap_color+'">'+element.estado_doc+'</span></td>'+
@@ -147,7 +147,8 @@ function listar_detalle_requerimiento(id_requerimiento){
                 '</tr>';
                 i++;
             });
-            $('#detalleRequerimiento tbody').html(html);
+            console.log(html);
+            $('#'+idTabla+' tbody').html(html);
         }
     }).fail( function( jqXHR, textStatus, errorThrown ){
         console.log(jqXHR);

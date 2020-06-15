@@ -116,7 +116,7 @@
                                             <th>Descripción</th>
                                             <th>Cantidad</th>
                                             <th>Unid</th>
-                                            <th>Almacén</th>
+                                            <!-- <th>Almacén</th> -->
                                             <!-- <th>Lugar de Entrega</th> -->
                                             <th>Estado</th>
                                             <!-- <th>Acción</th> -->

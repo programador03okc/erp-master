@@ -4485,6 +4485,7 @@ class AlmacenController extends Controller
             }
             $nuevo = [
                 'id_prod_ubi'=> $d->id_prod_ubi,
+                'id_producto'=> $d->id_producto,
                 'codigo'=> $d->codigo,
                 'codigo_anexo'=> $d->codigo_anexo,
                 'cod_antiguo'=> $d->cod_antiguo,
