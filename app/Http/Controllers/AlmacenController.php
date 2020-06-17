@@ -4477,7 +4477,7 @@ class AlmacenController extends Controller
             DB::raw("(SELECT SUM(alm_det_req.cantidad) FROM almacen.alm_det_req 
             WHERE alm_det_req.estado=19 
             AND alm_det_req.id_producto=alm_prod_ubi.id_producto 
-            AND alm_det_req.id_almacen=alm_prod_ubi.id_almacen 
+            AND alm_det_req.id_almacen_reserva=alm_prod_ubi.id_almacen 
             GROUP BY alm_det_req.cantidad) as cantidad_reserva"))
             ->leftjoin('almacen.alm_ubi_posicion','alm_ubi_posicion.id_posicion','=','alm_prod_ubi.id_posicion')
             // ->join('almacen.alm_ubi_nivel','alm_ubi_nivel.id_nivel','=','alm_ubi_posicion.id_nivel')

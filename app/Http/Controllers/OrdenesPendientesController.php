@@ -52,19 +52,19 @@ class OrdenesPendientesController extends Controller
             ->select('mov_alm.*','log_ord_compra.id_orden_compra','log_ord_compra.codigo as codigo_orden',
             'adm_contri.nro_documento','adm_contri.razon_social','log_ord_compra.fecha as fecha_orden',
             'alm_req.codigo as codigo_requerimiento','alm_req.concepto','log_ord_compra.id_sede as sede_orden',
-            'sis_moneda.simbolo','sis_usua.nombre_corto','mov_alm.fecha_emision','mov_alm.id_almacen',
-            'log_ord_compra.monto_subtotal','log_ord_compra.monto_igv','log_ord_compra.monto_total',
-            'alm_req.id_sede as sede_requerimiento','guia_com.serie','guia_com.numero','guia_com.id_guia',
+            'sis_moneda.simbolo','sis_usua.nombre_corto','log_ord_compra.monto_subtotal',
+            'log_ord_compra.monto_igv','log_ord_compra.monto_total',
+            'alm_req.id_sede as sede_requerimiento','guia_com.serie','guia_com.numero',
             'alm_req.id_requerimiento','alm_req.estado as estado_requerimiento','guia_ven.id_guia_ven')
             ->join('almacen.guia_com','guia_com.id_guia','=','mov_alm.id_guia_com')
-            ->leftJoin('almacen.guia_ven','guia_ven.id_guia_com','=','mov_alm.id_guia_com')
             ->join('logistica.log_ord_compra','log_ord_compra.id_orden_compra','=','guia_com.id_oc')
             ->join('logistica.log_prove','log_prove.id_proveedor','=','log_ord_compra.id_proveedor')
             ->join('contabilidad.adm_contri','adm_contri.id_contribuyente','=','log_prove.id_contribuyente')
             ->leftjoin('almacen.alm_req','alm_req.id_requerimiento','=','log_ord_compra.id_requerimiento')
             ->join('configuracion.sis_moneda','sis_moneda.id_moneda','=','log_ord_compra.id_moneda')
             ->join('configuracion.sis_usua','sis_usua.id_usuario','=','mov_alm.usuario')
-            ->where([['mov_alm.estado','!=',7]])
+            ->leftJoin('almacen.guia_ven','guia_ven.id_guia_com','=','mov_alm.id_guia_com')
+            ->where([['mov_alm.estado','!=',7],['mov_alm.id_tp_mov','=',1]])
             ->get();
         return datatables($data)->toJson();
     }
@@ -293,18 +293,27 @@ class OrdenesPendientesController extends Controller
                     ->update(['en_almacen'=>true]);
                     //actualiza estado requerimiento reservado
                     $oc = DB::table('logistica.log_ord_compra')
-                    ->where('id_orden_compra',$request->id_orden_compra)
+                    ->select('log_ord_compra.*','alm_req.id_cliente','alm_req.id_persona','alm_req.id_tipo_requerimiento',
+                    'alm_almacen.id_sede as sede_almacen')
+                    ->join('almacen.alm_req','alm_req.id_requerimiento','=','log_ord_compra.id_requerimiento')
+                    ->leftjoin('almacen.alm_almacen','alm_almacen.id_almacen','=','alm_req.id_almacen')
+                    ->where('log_ord_compra.id_orden_compra',$request->id_orden_compra)
                     ->first();
-                    //si existe un requerimiento actualiza el estado
+                    //si existe un requerimiento por venta directa actualiza el estado
                     if ($oc !== null && $oc->id_requerimiento !== null){
 
-                        DB::table('almacen.alm_req')
-                        ->where('id_requerimiento',$oc->id_requerimiento)
-                        ->update(['estado'=>19]);//Reservado
-
-                        DB::table('almacen.alm_det_req')
-                        ->where('id_requerimiento',$oc->id_requerimiento)
-                        ->update(['estado'=>19]);//Reservado
+                        if (($oc->id_tipo_requerimiento == 1 && ($oc->id_cliente !== null || $oc->id_persona !== null)) ||
+                            ($oc->id_tipo_requerimiento == 3 && ($oc->id_sede !== $oc->sede_almacen))){
+    
+                            DB::table('almacen.alm_req')
+                            ->where('id_requerimiento',$oc->id_requerimiento)
+                            ->update(['estado'=>19]);//Reservado
+    
+                            DB::table('almacen.alm_det_req')
+                            ->where('id_requerimiento',$oc->id_requerimiento)
+                            ->update(['estado'=>19,
+                                      'id_almacen_reserva'=>$request->id_almacen]);//Reservado
+                        }
                     }
                 }
             }    
@@ -351,9 +360,11 @@ class OrdenesPendientesController extends Controller
                 'id_guia_ven'
             );
             //cambia estado serie-numero
-            DB::table('almacen.serie_numero')
-            ->where('id_serie_numero',$request->id_serie_numero)
-            ->update(['estado' => 8]);//emitido -> 8
+            if ($request->id_serie_numero !== null && $request->id_serie_numero !== ''){
+                DB::table('almacen.serie_numero')
+                ->where('id_serie_numero',$request->id_serie_numero)
+                ->update(['estado' => 8]);//emitido -> 8
+            }
 
             $codigo_trans = TransferenciaController::transferencia_nextId($request->id_almacen_origen);
             //crear la transferencia

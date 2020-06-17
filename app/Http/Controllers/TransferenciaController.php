@@ -427,7 +427,8 @@ class TransferenciaController extends Controller
 
                 DB::table('almacen.alm_det_req')
                 ->where('id_requerimiento',$guia_ven->id_requerimiento)
-                ->update(['estado'=>19]);//Reservado
+                ->update(['estado'=>19,
+                          'id_almacen_reserva'=>$request->id_almacen_destino]);//Reservado
             }
             DB::commit();
             return response()->json($id_ingreso);

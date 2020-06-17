@@ -52,7 +52,7 @@ class DistribucionController extends Controller
             ->join('administracion.adm_estado_doc','adm_estado_doc.id_estado_doc','=','alm_req.estado')
             ->leftJoin('logistica.log_ord_compra','log_ord_compra.id_requerimiento','=','alm_req.id_requerimiento')
             ->leftJoin('almacen.guia_com','guia_com.id_oc','=','log_ord_compra.id_orden_compra')
-            ->leftJoin('almacen.mov_alm','mov_alm.id_guia_com','=','guia_com.id_guia')
+            // ->leftJoin('almacen.mov_alm','mov_alm.id_guia_com','=','guia_com.id_guia')
             ->leftJoin('almacen.guia_ven','guia_ven.id_guia_com','=','guia_com.id_guia')
             ->leftJoin('almacen.trans','trans.id_guia_ven','=','guia_ven.id_guia_ven')
             ->leftJoin('almacen.alm_almacen','alm_almacen.id_almacen','=','alm_req.id_almacen')
@@ -506,7 +506,11 @@ class DistribucionController extends Controller
                         ],
                             'id_guia_ven_det'
                         );
-
+                        //obtener costo promedio
+                        $saldos_ubi = DB::table('almacen.alm_prod_ubi')
+                        ->where([['id_producto','=',$det->id_producto],
+                                ['id_almacen','=',$request->id_almacen]])
+                        ->first();
                         //Guardo los items de la salida
                         $id_det = DB::table('almacen.mov_alm_det')->insertGetId(
                             [
@@ -514,7 +518,7 @@ class DistribucionController extends Controller
                                 'id_producto' => $det->id_producto,
                                 // 'id_posicion' => $det->id_posicion,
                                 'cantidad' => $det->cantidad,
-                                'valorizacion' => 0,
+                                'valorizacion' => ($saldos_ubi !== null ? ($saldos_ubi->costo_promedio * $det->cantidad) : 0),
                                 'usuario' => $id_usuario,
                                 'id_guia_ven_det' => $id_guia_ven_det,
                                 'estado' => 1,
