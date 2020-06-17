@@ -74,23 +74,20 @@ $("#form-transferenciaGuia").on("submit", function(e){
 });
 
 function guardar_transferencia(data){
-    // var formData = new FormData($('#form-transferenciaGuia')[0]);
     $("#submit_transferencia").attr('disabled','true');
     $.ajax({
         type: 'POST',
         url: 'guardar_guia_transferencia',
         data: data,
-        // cache: false,
-        // contentType: false,
-        // processData: false,
         dataType: 'JSON',
         success: function(response){
             console.log(response);
             if (response > 0){
                 alert('Salida Almacén generada con éxito');
                 $('#modal-transferenciaGuia').modal('hide');
-                var id = encode5t(response);
-                window.open('imprimir_salida/'+id);
+                $('#ordenesEntregadas').DataTable().ajax.reload();
+                // var id = encode5t(response);
+                // window.open('imprimir_salida/'+id);
             }
         }
     }).fail( function( jqXHR, textStatus, errorThrown ){

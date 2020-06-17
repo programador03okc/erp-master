@@ -81,6 +81,9 @@ function guardar_grupo_despacho(){
             if (response > 0){
                 alert('El Despacho se generó correctamente.'+response);
                 $('#modal-grupo_despacho_create').modal('hide');
+                var id = encode5t(response);
+                window.open('imprimir_despacho/'+id);
+                $('#ordenesDespacho').DataTable().ajax.reload();
             }
         }
     }).fail( function( jqXHR, textStatus, errorThrown ){

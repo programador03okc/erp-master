@@ -119,7 +119,7 @@ function listar_detalle_ingreso(id_requerimiento){
                 html+='<tr id="'+element.id_mov_alm_det+'">'+
                 '<td><input type="checkbox" onChange="changeCheckIngresa(this,'+element.id_mov_alm_det+');"/></td>'+
                 '<td>'+(element.codigo_producto !== null ? element.codigo_producto : '')+'</td>'+
-                '<td>'+(element.descripcion_producto !== null ? element.descripcion_producto : '')+'</td>'+
+                '<td>'+(element.producto_descripcion !== null ? element.producto_descripcion : '')+'</td>'+
                 '<td>'+element.cantidad+'</td>'+
                 '<td>'+(element.unidad_producto !== null ? element.unidad_producto : '')+'</td>'+
                 // '<td>'+(element.almacen_descripcion !== null ? element.almacen_descripcion : '')+'</td>'+
@@ -184,8 +184,7 @@ function guardar_orden_despacho(){
             if (response > 0){
                 alert('La Orden de Despacho se generó correctamente.'+response);
                 $('#modal-orden_despacho_create').modal('hide');
-                // localStorage.setItem("id_guia_com",response);
-                // location.assign("guia_compra");
+                $('#requerimientosPendientes').DataTable().ajax.reload();
             }
         }
     }).fail( function( jqXHR, textStatus, errorThrown ){

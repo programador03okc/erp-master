@@ -65,8 +65,9 @@ function guardar_guia_create(data){
             if (id_salida > 0){
                 alert('Salida de Almacén generada con éxito');
                 $('#modal-guia_ven_create').modal('hide');
-                var id = encode5t(id_salida);
-                window.open('imprimir_salida/'+id);                
+                $('#despachosPendientes').DataTable().ajax.reload();
+                // var id = encode5t(id_salida);
+                // window.open('imprimir_salida/'+id);                
             }
         }
     }).fail( function( jqXHR, textStatus, errorThrown ){

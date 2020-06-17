@@ -12,22 +12,22 @@
                         <div class="col-md-6">
                             <h5>Serie-Número</h5>
                             <div class="input-group">
-                                <input type="text" class="form-control activation" 
-                                    name="serie" onBlur="ceros_numero('serie');" placeholder="0000">
+                                <input type="text" class="form-control" 
+                                    name="serie" onBlur="ceros_numero('serie');" placeholder="0000" required>
                                 <span class="input-group-addon">-</span>
-                                <input type="text" class="form-control activation" 
-                                    name="numero" onBlur="ceros_numero('numero');" placeholder="0000000">
+                                <input type="text" class="form-control" 
+                                    name="numero" onBlur="ceros_numero('numero');" placeholder="0000000" required>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <h5>Fecha de Emisión</h5>
-                            <input type="date" class="form-control activation" name="fecha_emision" value="<?=date('Y-m-d');?>">
+                            <input type="date" class="form-control" name="fecha_emision" value="<?=date('Y-m-d');?>" required>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-md-6">
                             <h5>Almacén</h5>
-                            <select class="form-control activation js-example-basic-single" name="id_almacen">
+                            <select class="form-control js-example-basic-single" name="id_almacen" required>
                                 <option value="0">Elija una opción</option>
                                 @foreach ($almacenes as $alm)
                                     <option value="{{$alm->id_almacen}}">{{$alm->codigo}} - {{$alm->descripcion}}</option>
@@ -36,13 +36,13 @@
                         </div>
                         <div class="col-md-6">
                             <h5>Fecha de Almacén</h5>
-                            <input type="date" class="form-control activation" name="fecha_almacen" value="<?=date('Y-m-d');?>">
+                            <input type="date" class="form-control" name="fecha_almacen" value="<?=date('Y-m-d');?>" required>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-md-6">
                             <h5>Tipo de Operación</h5>
-                            <select class="form-control activation js-example-basic-single" name="id_operacion">
+                            <select class="form-control js-example-basic-single" name="id_operacion" required>
                                 <option value="0">Elija una opción</option>
                                 @foreach ($tp_operacion as $tp)
                                     <option value="{{$tp->id_operacion}}">{{$tp->cod_sunat}} - {{$tp->descripcion}}</option>
@@ -51,7 +51,7 @@
                         </div>
                         <div class="col-md-6">
                             <h5>Clasif. de los Bienes y Servicios</h5>
-                            <select class="form-control activation" name="id_guia_clas">
+                            <select class="form-control" name="id_guia_clas" required>
                                 <option value="0">Elija una opción</option>
                                 @foreach ($clasificaciones as $clas)
                                     <option value="{{$clas->id_clasificacion}}">{{$clas->descripcion}}</option>

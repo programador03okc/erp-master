@@ -85,6 +85,7 @@ Route::group(['middleware' => ['auth']], function () {
 	// 	return view('logistica/main');
 	// });
 	Route::get('logistica', 'LogisticaController@view_main_logistica');
+	Route::get('almacen', 'AlmacenController@view_main_almacen');
 
 
 
@@ -822,16 +823,29 @@ Route::post('guardar_orden_despacho', 'DistribucionController@guardar_orden_desp
 Route::post('listarOrdenesDespacho', 'DistribucionController@listarOrdenesDespacho');
 Route::get('verDetalleDespacho/{id}', 'DistribucionController@verDetalleDespacho');
 Route::post('guardar_grupo_despacho', 'DistribucionController@guardar_grupo_despacho');
+Route::post('despacho_anular_requerimiento', 'DistribucionController@anular_requerimiento');
 
 Route::get('grupoDespachos', 'DistribucionController@view_grupoDespachos');
 Route::post('listarGruposDespachados', 'DistribucionController@listarGruposDespachados');
 Route::get('verDetalleGrupoDespacho/{id}', 'DistribucionController@verDetalleGrupoDespacho');
-Route::get('pruebaa', 'AlmacenController@pruebaa');
+Route::post('despacho_conforme', 'DistribucionController@despacho_conforme');
+Route::post('despacho_no_conforme', 'DistribucionController@despacho_no_conforme');
+Route::get('imprimir_despacho/{id}', 'DistribucionController@imprimir_despacho');
 
 Route::get('despachosPendientes', 'DistribucionController@view_despachosPendientes');
 Route::post('listarOrdenesDespachoPendientes', 'DistribucionController@listarOrdenesDespachoPendientes');
 Route::post('guardar_guia_despacho', 'DistribucionController@guardar_guia_despacho');
 Route::post('listarSalidasDespacho', 'DistribucionController@listarSalidasDespacho');
+
+Route::get('listar_transferencias', 'TransferenciaController@view_listar_transferencias');
+Route::get('listar_transferencias_pendientes/{ori}', 'TransferenciaController@listar_transferencias_pendientes');
+Route::get('listar_transferencias_recibidas/{ori}', 'TransferenciaController@listar_transferencias_recibidas');
+Route::get('listar_transferencia_detalle/{id}', 'TransferenciaController@listar_transferencia_detalle');
+Route::post('guardar_ingreso_transferencia', 'TransferenciaController@guardar_ingreso_transferencia');
+Route::get('anular_transferencia/{id}', 'TransferenciaController@anular_transferencia');
+Route::get('ingreso_transferencia/{id}', 'TransferenciaController@ingreso_transferencia');
+Route::get('transferencia_nextId/{id}', 'TransferenciaController@transferencia_nextId');
+
 
 /**Guia Venta */
 
@@ -859,14 +873,6 @@ Route::get('mostrar_clientes', 'AlmacenController@mostrar_clientes');
 Route::post('guardar_transferencia', 'AlmacenController@guardar_transferencia');
 Route::get('next_correlativo_prod/{subcat}/{clas}', 'AlmacenController@next_correlativo_prod');
 Route::get('proveedor/{id}', 'AlmacenController@proveedor');
-
-Route::get('listar_transferencias', 'TransferenciaController@view_listar_transferencias');
-Route::get('listar_transferencias_pendientes/{ori}', 'TransferenciaController@listar_transferencias_pendientes');
-Route::get('listar_transferencia_detalle/{id}', 'TransferenciaController@listar_transferencia_detalle');
-Route::post('guardar_ingreso_transferencia', 'TransferenciaController@guardar_ingreso_transferencia');
-Route::get('anular_transferencia/{id}', 'TransferenciaController@anular_transferencia');
-Route::get('ingreso_transferencia/{id}', 'TransferenciaController@ingreso_transferencia');
-Route::get('transferencia_nextId/{id}', 'TransferenciaController@transferencia_nextId');
 
 /**Transformacion*/
 

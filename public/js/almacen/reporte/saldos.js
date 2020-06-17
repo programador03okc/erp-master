@@ -7,15 +7,16 @@ function listarSaldos(){
     // var fecha = $('[name=fecha]').val();
     
     var vardataTables = funcDatatables();
-    $('#listaSaldos').dataTable({
-        'destroy':true,
+    $('#listaSaldos').DataTable({
         'dom': vardataTables[1],
         'buttons': vardataTables[2],
         'language' : vardataTables[0],
-        'ajax': {
-            url:'listar_saldos/'+almacen,
-            dataSrc:''
-        },
+        'destroy':true,
+        'ajax': 'listar_saldos/'+almacen,
+        // 'ajax': {
+        //     url:'listar_saldos/'+almacen,
+        //     dataSrc:''
+        // },
         'columns': [
             {'data': 'id_prod_ubi'},
             {'data': 'codigo'},
