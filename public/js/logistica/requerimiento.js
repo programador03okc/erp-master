@@ -314,7 +314,7 @@ function listarRequerimiento(viewAnulados) {
         ],
         'columnDefs': [{ 'aTargets': [0], 'sClass': 'invisible'}],
         'order': [
-            [2, 'asc']
+            [8, 'desc']
         ]
     });
 }
@@ -423,7 +423,9 @@ function mostrar_requerimiento(IdorCode){
                 $('#estado_doc').addClass("label label-"+response['requerimiento'][0].bootstrap_color);
                 
                 if(response['requerimiento'][0].area_descripcion == 'PROYECTOS' || response['requerimiento'][0].area_descripcion == 'DPTO. FORMULACIÓN' || response['requerimiento'][0].area_descripcion == 'DPTO. EJECUCIÓN'){
-                    document.getElementById('section-proyectos').setAttribute('class', 'col');
+                    // document.getElementById('section-proyectos').setAttribute('class', 'col');
+                    document.querySelector("form[id='form-requerimiento'] div[id='input-group-proyecto']").removeAttribute('hidden');
+
                 }
                 $('[name=cantidad_aprobaciones]').val(response['aprobaciones']);
                 /* detalle */
@@ -838,88 +840,22 @@ function get_data_requerimiento(){
     let tipo_req = document.querySelector("select[name='tipo_requerimiento']").value;
     let requerimiento = {};
     // console.log(tipo_req);
-    
-    if(tipo_req == 1){
-        tipo_requerimiento = tipo_req;
-        id_requerimiento = document.querySelector("form[id='form-requerimiento'] input[name='id_requerimiento']").value;
-        codigo = document.querySelector("form[id='form-requerimiento'] input[name='codigo']").value;
-        concepto = document.querySelector("form[id='form-requerimiento'] input[name='concepto']").value;
-        fecha_requerimiento = document.querySelector("form[id='form-requerimiento'] input[name='fecha_requerimiento']").value;
-        id_prioridad = document.querySelector("form[id='form-requerimiento'] select[name='prioridad']").value;
-        id_empresa = document.querySelector("form[id='form-requerimiento'] select[name='empresa']").value;
-        id_sede = document.querySelector("form[id='form-requerimiento'] select[name='sede']").value;
-        id_grupo = document.querySelector("form[id='form-requerimiento'] input[name='id_grupo']").value;
-        id_area = document.querySelector("form[id='form-requerimiento'] input[name='id_area']").value;
-        nombre_area = document.querySelector("form[id='form-requerimiento'] input[name='nombre_area']").value;
-        id_moneda = document.querySelector("form[id='form-requerimiento'] select[name='moneda']").value;
-        id_periodo = document.querySelector("form[id='form-requerimiento'] select[name='periodo']").value;
-        id_op_com = document.querySelector("form[id='form-requerimiento'] input[name='id_op_com']").value;
-        id_rol = document.querySelector("form[id='form-requerimiento'] select[name='rol_usuario']").value;
-        codigo_occ = document.querySelector("form[id='form-requerimiento'] input[name='codigo_occ']").value;
-        requerimiento = {
-            id_requerimiento,
-            tipo_requerimiento,
-            codigo,
-            concepto,
-            fecha_requerimiento,
-            id_prioridad,
-            id_empresa,
-            id_grupo,
-            id_area,
-            nombre_area,
-            id_moneda,
-            id_periodo,
-            id_op_com,
-            id_rol,
-            codigo_occ
-        };
-    }else if(tipo_req == 2){
-        tipo_requerimiento = tipo_req;
-        id_requerimiento = document.querySelector("form[id='form-requerimiento'] input[name='id_requerimiento']").value;
-        fecha_requerimiento = document.querySelector("form[id='form-requerimiento'] input[name='fecha_requerimiento']").value;
-        concepto = document.querySelector("form[id='form-requerimiento'] input[name='concepto']").value;
-        id_prioridad = document.querySelector("form[id='form-requerimiento'] select[name='prioridad']").value;
-        id_periodo = document.querySelector("form[id='form-requerimiento'] select[name='periodo']").value;
-        id_moneda = document.querySelector("form[id='form-requerimiento'] select[name='moneda']").value;
-        id_empresa = document.querySelector("form[id='form-requerimiento'] select[name='empresa']").value;
-        id_sede = document.querySelector("form[id='form-requerimiento'] select[name='sede']").value;
-        tipo_cliente = document.querySelector("form[id='form-requerimiento'] select[name='tipo_cliente']").value;
-        id_cliente = document.querySelector("form[id='form-requerimiento'] input[name='id_cliente']").value;
-        id_persona = document.querySelector("form[id='form-requerimiento'] input[name='id_persona']").value;
-        direccion_entrega = document.querySelector("form[id='form-requerimiento'] input[name='direccion_entrega']").value;
-        ubigeo = document.querySelector("form[id='form-requerimiento'] input[name='ubigeo']").value;
-        id_almacen = document.querySelector("form[id='form-requerimiento'] select[name='id_almacen']").value;
-        almacen_id_sede =document.querySelector("select[name='id_almacen']").options[document.querySelector("select[name='id_almacen']").selectedIndex].dataset.idSede;
-        almacen_id_empresa =document.querySelector("select[name='id_almacen']").options[document.querySelector("select[name='id_almacen']").selectedIndex].dataset.idEmpresa;
-
-        requerimiento = {
-            id_requerimiento,
-            tipo_requerimiento,
-            fecha_requerimiento,
-            concepto,
-            id_prioridad,
-            id_periodo,
-            id_moneda,
-            id_empresa,
-            id_sede,
-            tipo_cliente,
-            id_persona,
-            direccion_entrega,
-            ubigeo,
-            id_almacen,
-            almacen_id_sede,
-            almacen_id_empresa
-        };
-
-    }else if(tipo_req == 3){
     tipo_requerimiento = tipo_req;
     id_requerimiento = document.querySelector("form[id='form-requerimiento'] input[name='id_requerimiento']").value;
-    fecha_requerimiento = document.querySelector("form[id='form-requerimiento'] input[name='fecha_requerimiento']").value;
+    codigo = document.querySelector("form[id='form-requerimiento'] input[name='codigo']").value;
     concepto = document.querySelector("form[id='form-requerimiento'] input[name='concepto']").value;
+    fecha_requerimiento = document.querySelector("form[id='form-requerimiento'] input[name='fecha_requerimiento']").value;
     id_prioridad = document.querySelector("form[id='form-requerimiento'] select[name='prioridad']").value;
-    id_periodo = document.querySelector("form[id='form-requerimiento'] select[name='periodo']").value;
-    id_moneda = document.querySelector("form[id='form-requerimiento'] select[name='moneda']").value;
     id_empresa = document.querySelector("form[id='form-requerimiento'] select[name='empresa']").value;
+    id_sede = document.querySelector("form[id='form-requerimiento'] select[name='sede']").value;
+    id_grupo = document.querySelector("form[id='form-requerimiento'] input[name='id_grupo']").value;
+    id_area = document.querySelector("form[id='form-requerimiento'] input[name='id_area']").value;
+    nombre_area = document.querySelector("form[id='form-requerimiento'] input[name='nombre_area']").value;
+    id_moneda = document.querySelector("form[id='form-requerimiento'] select[name='moneda']").value;
+    id_periodo = document.querySelector("form[id='form-requerimiento'] select[name='periodo']").value;
+    id_op_com = document.querySelector("form[id='form-requerimiento'] input[name='id_op_com']").value;
+    id_rol = document.querySelector("form[id='form-requerimiento'] select[name='rol_usuario']").value;
+    codigo_occ = document.querySelector("form[id='form-requerimiento'] input[name='codigo_occ']").value;
     id_sede = document.querySelector("form[id='form-requerimiento'] select[name='sede']").value;
     tipo_cliente = document.querySelector("form[id='form-requerimiento'] select[name='tipo_cliente']").value;
     id_cliente = document.querySelector("form[id='form-requerimiento'] input[name='id_cliente']").value;
@@ -933,23 +869,30 @@ function get_data_requerimiento(){
     requerimiento = {
         id_requerimiento,
         tipo_requerimiento,
-        fecha_requerimiento,
+        codigo,
         concepto,
+        fecha_requerimiento,
         id_prioridad,
-        id_periodo,
-        id_moneda,
         id_empresa,
         id_sede,
+        id_grupo,
+        id_area,
+        nombre_area,
+        id_moneda,
+        id_periodo,
+        id_op_com,
+        id_rol,
+        codigo_occ,
         tipo_cliente,
+        id_cliente,
         id_persona,
         direccion_entrega,
         ubigeo,
         id_almacen,
         almacen_id_sede,
         almacen_id_empresa
+        
     };
-    
-    }
 return requerimiento;
 }
 
@@ -2204,7 +2147,8 @@ function changeOptTipoReqSelect(e){
         document.querySelector("div[id='input-group-cliente']").removeAttribute('hidden');
         document.querySelector("div[id='input-group-direccion-entrega']").removeAttribute('hidden');
         document.querySelector("div[id='input-group-ubigeo-entrega']").removeAttribute('hidden');
-
+        document.querySelector("div[id='input-group-proyecto']").setAttribute('hidden',true);
+        document.querySelector("form[id='form-requerimiento'] div[id='input-group-comercial']").setAttribute('hidden',true);
 
         listar_almacenes();
 
@@ -2225,6 +2169,9 @@ function changeOptTipoReqSelect(e){
         document.querySelector("div[id='input-group-cliente']").setAttribute('hidden',true);
         document.querySelector("div[id='input-group-direccion-entrega']").setAttribute('hidden',true);
         document.querySelector("div[id='input-group-ubigeo-entrega']").setAttribute('hidden',true);
+        document.querySelector("div[id='input-group-proyecto']").setAttribute('hidden',true);
+        document.querySelector("form[id='form-requerimiento'] div[id='input-group-comercial']").setAttribute('hidden',true);
+
         listar_almacenes();
 
     }else if(e.target.value == 1){
@@ -2250,6 +2197,9 @@ function changeOptTipoReqSelect(e){
         document.querySelector("div[id='input-group-cliente']").removeAttribute('hidden');
         document.querySelector("div[id='input-group-direccion-entrega']").removeAttribute('hidden');
         document.querySelector("div[id='input-group-ubigeo-entrega']").removeAttribute('hidden');
+        document.querySelector("div[id='input-group-proyecto']").setAttribute('hidden',true);
+        document.querySelector("form[id='form-requerimiento'] div[id='input-group-comercial']").setAttribute('hidden',true);
+
     }
 }
 

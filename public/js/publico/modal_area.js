@@ -28,10 +28,14 @@ function areaSelectModal(sede, grupo, area, text){
     
     if (page === 'requerimiento'){
         if(text == 'PROYECTOS' || text == 'DPTO. FORMULACIÓN' || text == 'DPTO. EJECUCIÓN'){
-            document.getElementById('section-proyectos').setAttribute('class', 'col');
+            // document.getElementById('section-proyectos').setAttribute('class', 'col');
+            document.querySelector("form[id='form-requerimiento'] div[id='input-group-proyecto']").removeAttribute('hidden');
+
         }
         if(text == 'COMERCIAL' ||  text == 'DPTO. VENTAS'){
-            document.getElementById('section-comercial').setAttribute('class', 'col');
+            // document.getElementById('section-comercial').setAttribute('class', 'col');
+            document.querySelector("form[id='form-requerimiento'] div[id='input-group-comercial']").removeAttribute('hidden');
+
         }
     }
     else if (page === 'equi_sol'){

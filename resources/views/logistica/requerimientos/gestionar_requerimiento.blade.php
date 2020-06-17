@@ -171,25 +171,24 @@
                 </div>
             </div>
             
-            <div class="hidden" id="section-proyectos">
-                <div class="col-md-9">
-                    <h5>Proyecto</h5>
-                    <div style="display:flex;">
-                        <input hidden="true" type="text" name="id_op_com" class="activation">
-                        <input type="text" name="codigo_opcion" class="form-control group-elemento" style="width:130px; text-align:center;" readonly>
-                        <div class="input-group-okc">
-                            <input type="text" class="form-control" name="nombre_opcion" placeholder="" aria-describedby="basic-addon4" disabled="true">
-                            <div class="input-group-append">
-                                <button type="button" class="input-group-text" id="btnOpenModalProyecto" onClick="open_opcion_modal();">
-                                    <i class="fa fa-search"></i>
-                                </button>
-                            </div>
-                        </div>                            
-                    </div>
+            <div class="col-md-9" id="input-group-proyecto" hidden>
+                <h5>Proyecto</h5>
+                <div style="display:flex;">
+                    <input hidden="true" type="text" name="id_op_com" class="activation">
+                    <input type="text" name="codigo_opcion" class="form-control group-elemento" style="width:130px; text-align:center;" readonly>
+                    <div class="input-group-okc">
+                        <input type="text" class="form-control" name="nombre_opcion" placeholder="" aria-describedby="basic-addon4" disabled="true">
+                        <div class="input-group-append">
+                            <button type="button" class="input-group-text" id="btnOpenModalProyecto" onClick="open_opcion_modal();">
+                                <i class="fa fa-search"></i>
+                            </button>
+                        </div>
+                    </div>                            
                 </div>
             </div>
-            <div class="hidden" id="section-comercial">
-                <div class="col-md-2">
+
+            <div id="input-group-comercial" hidden>
+                <div class="col-md-2" >
                     <h5>Comercial</h5>
                     <select class="form-control activation" name="tpOptCom" disabled="true" onChange="changeOptComercialSelect();">
                         <option value="1">Orden C. Cliente</option>
