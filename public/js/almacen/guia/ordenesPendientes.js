@@ -285,10 +285,9 @@ function guardar_guia_create(data){
             if (id_ingreso > 0){
                 alert('Ingreso Almacén generado con éxito');
                 $('#modal-guia_create').modal('hide');
-                var id = encode5t(id_ingreso);
-                window.open('imprimir_ingreso/'+id);                
-                // localStorage.setItem("id_guia_com",response);
-                // location.assign("guia_compra");
+                $('#ordenesPendientes').DataTable().ajax.reload();
+                // var id = encode5t(id_ingreso);
+                // window.open('imprimir_ingreso/'+id);
             }
         }
     }).fail( function( jqXHR, textStatus, errorThrown ){

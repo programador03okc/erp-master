@@ -83,10 +83,16 @@
                                 <thead>
                                     <tr>
                                         <th hidden></th>
-                                        <th>Codigo</th>
+                                        <th>Despacho</th>
+                                        <th>Orden Despacho</th>
+                                        <th>Requerimiento</th>
+                                        <th>Cliente</th>
+                                        <th>Concepto</th>
+                                        <th>Almacén</th>
+                                        <th>Ubigeo</th>
+                                        <th>Dirección</th>
                                         <th>Fecha Despacho</th>
-                                        <th>Responsable</th>
-                                        <th>Observaciones</th>
+                                        <th>Despachador</th>
                                         <th>Confirmación</th>
                                         <th>Estado</th>
                                         <th width="100px">Acción</th>
@@ -106,6 +112,8 @@
 @include('almacen.distribucion.grupoDespachoCreate')
 @include('almacen.distribucion.despachoDetalle')
 @include('almacen.distribucion.grupoDespachoDetalle')
+@include('almacen.distribucion.ordenDespachoObs')
+@include('almacen.distribucion.requerimientoObs')
 @include('logistica.cotizaciones.clienteModal')
 @include('logistica.cotizaciones.proveedorModal')
 @include('logistica.cotizaciones.add_proveedor')
@@ -117,6 +125,7 @@
 <script src="{{('/js/almacen/distribucion/ordenDespachoCreate.js')}}"></script>
 <script src="{{('/js/almacen/distribucion/grupoDespachoCreate.js')}}"></script>
 <script src="{{('/js/almacen/distribucion/despachoDetalle.js')}}"></script>
+<script src="{{('/js/almacen/distribucion/requerimientoObs.js')}}"></script>
 <script src="{{('/js/logistica/clienteModal.js')}}"></script>
 <script src="{{('/js/logistica/proveedorModal.js')}}"></script>
 <script src="{{('/js/logistica/add_proveedor.js')}}"></script>

@@ -22,6 +22,41 @@ class AlmacenController extends Controller
     public function __construct(){
         // session_start();
     }
+    function view_main_almacen()
+    {
+        $cantidades = $this->cantidades_main();
+        $cantidad_despachos_pendientes = $cantidades['despachos'];
+        $cantidad_ingresos_pendientes = $cantidades['ingresos'];
+        $cantidad_salidas_pendientes = $cantidades['salidas'];
+        $cantidad_transferencias_pendientes = $cantidades['transferencias'];
+
+        return view('almacen/main', compact(
+            'cantidad_despachos_pendientes',
+            'cantidad_ingresos_pendientes',
+            'cantidad_salidas_pendientes',
+            'cantidad_transferencias_pendientes'
+            ));
+    }
+    public function cantidades_main(){
+        $despachos = DB::table('almacen.orden_despacho')
+        ->where('estado',9)
+        ->count();
+
+        $ingresos = DB::table('logistica.log_ord_compra')
+        ->where([['estado','!=',7],['en_almacen','=',false]])
+        ->count();
+
+        $salidas = DB::table('almacen.orden_despacho')
+        ->where('estado',1)
+        ->count();
+
+        $transferencias = DB::table('almacen.trans')
+        ->where('estado',1)
+        ->count();
+
+        return (['despachos'=>$despachos,'ingresos'=>$ingresos, 'salidas'=>$salidas, 'transferencias'=>$transferencias]);
+    }
+
     function view_tipo(){
         return view('almacen/producto/tipo');
     }
@@ -4485,6 +4520,7 @@ class AlmacenController extends Controller
             }
             $nuevo = [
                 'id_prod_ubi'=> $d->id_prod_ubi,
+                'id_producto'=> $d->id_producto,
                 'codigo'=> $d->codigo,
                 'codigo_anexo'=> $d->codigo_anexo,
                 'cod_antiguo'=> $d->cod_antiguo,

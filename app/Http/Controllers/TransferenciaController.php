@@ -36,7 +36,7 @@ class TransferenciaController extends Controller
         'usu_destino.nombre_corto as nombre_destino',
         'usu_registro.nombre_corto as nombre_registro',
         'adm_estado_doc.estado_doc','adm_estado_doc.bootstrap_color',
-        'guia_ven.id_guia_com as guia_ingreso_compra')
+        'guia_ven.id_guia_com as guia_ingreso_compra','mov_alm.id_mov_alm as id_salida')
         ->leftJoin('almacen.mov_alm','mov_alm.id_guia_ven','=','trans.id_guia_ven')
         ->leftJoin('almacen.guia_ven','guia_ven.id_guia_ven','=','trans.id_guia_ven')
         ->leftJoin('almacen.guia_com','guia_com.id_guia','=','trans.id_guia_com')
@@ -46,12 +46,42 @@ class TransferenciaController extends Controller
         ->leftJoin('configuracion.sis_usua as usu_destino','usu_destino.id_usuario','=','trans.responsable_destino')
         ->join('configuracion.sis_usua as usu_registro','usu_registro.id_usuario','=','trans.registrado_por')
         ->join('administracion.adm_estado_doc','adm_estado_doc.id_estado_doc','=','trans.estado')
-        ->where([['trans.id_almacen_origen','=',$ori]])
+        ->where([['trans.id_almacen_origen','=',$ori],
+                 ['trans.estado','=',1]])
         ->get();
         $output['data'] = $data;
         return response()->json($output);
     }
     
+    public function listar_transferencias_recibidas($ori){
+        $data = DB::table('almacen.trans')
+        ->select('trans.*','guia_ven.fecha_emision as fecha_guia',
+        DB::raw("CONCAT(guia_ven.serie,'-',guia_ven.numero) as guia_ven"),
+        DB::raw("CONCAT(guia_com.serie,'-',guia_com.numero) as guia_com"),
+        'alm_origen.descripcion as alm_origen_descripcion',
+        'alm_destino.descripcion as alm_destino_descripcion',
+        'usu_origen.nombre_corto as nombre_origen',
+        'usu_destino.nombre_corto as nombre_destino',
+        'usu_registro.nombre_corto as nombre_registro',
+        'adm_estado_doc.estado_doc','adm_estado_doc.bootstrap_color',
+        'guia_ven.id_guia_com as guia_ingreso_compra','ingreso.id_mov_alm as id_ingreso',
+        'salida.id_mov_alm as id_salida')
+        ->leftJoin('almacen.mov_alm as ingreso','ingreso.id_guia_com','=','trans.id_guia_com')
+        ->leftJoin('almacen.mov_alm as salida','salida.id_guia_ven','=','trans.id_guia_ven')
+        ->leftJoin('almacen.guia_ven','guia_ven.id_guia_ven','=','trans.id_guia_ven')
+        ->leftJoin('almacen.guia_com','guia_com.id_guia','=','trans.id_guia_com')
+        ->join('almacen.alm_almacen as alm_origen','alm_origen.id_almacen','=','trans.id_almacen_origen')
+        ->leftJoin('almacen.alm_almacen as alm_destino','alm_destino.id_almacen','=','trans.id_almacen_destino')
+        ->leftJoin('configuracion.sis_usua as usu_origen','usu_origen.id_usuario','=','trans.responsable_origen')
+        ->leftJoin('configuracion.sis_usua as usu_destino','usu_destino.id_usuario','=','trans.responsable_destino')
+        ->join('configuracion.sis_usua as usu_registro','usu_registro.id_usuario','=','trans.registrado_por')
+        ->join('administracion.adm_estado_doc','adm_estado_doc.id_estado_doc','=','trans.estado')
+        ->where([['trans.id_almacen_origen','=',$ori],['trans.estado','=',14]])
+        ->get();
+        $output['data'] = $data;
+        return response()->json($output);
+    }
+
     public function listar_transferencia_detalle($id_transferencia){
         $detalle = DB::table('almacen.guia_ven_det')
         ->select('guia_ven_det.*','alm_prod.codigo','alm_prod.descripcion','alm_und_medida.abreviatura')

@@ -11,7 +11,7 @@
     </div>
 
     <ul class="sidebar-menu">
-        <li class="okc-menu-title"><label>Almacén</label><p>AL</p></li>
+        <li class="okc-menu-title"><label>Almacén</label><p><a href="almacen">AL</a></p></li>
         <li class="treeview">
             <a href="#">
                 <i class="fas fa-book"></i> <span>Catálogos</span> <i class="fa fa-angle-left pull-right"></i>
@@ -37,11 +37,21 @@
         </li>
         <li class="treeview">
             <a href="#">
+                <i class="fas fa-truck"></i> <span>Distribución</span> <i class="fa fa-angle-left pull-right"></i>
+            </a>
+            <ul class="treeview-menu">
+                <li><a href="ordenesDespacho"> Gestión de Despachos </a></li>
+                <!-- <li><a href="grupoDespachos"> Despachos </a></li> -->
+                <!-- <li><a href="#"> Despachos Pendientes </a></li> -->
+            </ul>
+        </li>
+        <li class="treeview">
+            <a href="#">
                 <i class="fab fa-medium-m"></i> <span>Movimientos de Almacén</span> <i class="fa fa-angle-left pull-right"></i>
             </a>
             <ul class="treeview-menu">
                 <li><a href="ordenesPendientes"> Pendientes de Ingreso </a></li>
-                <li><a href="despachosPendientes"> Pendientes de Despacho </a></li>
+                <li><a href="despachosPendientes"> Pendientes de Salida </a></li>
                 <li><a href="guia_compra"> Compras / Ingresos </a></li>
                 <li><a href="guia_venta"> Ventas / Salidas </a></li>
             </ul>
@@ -62,16 +72,6 @@
             <ul class="treeview-menu">
                 <li><a href="listar_transformaciones"> Gestión de Customizaciones </a></li>
                 <li><a href="transformacion"> Hoja de Transformación </a></li>
-            </ul>
-        </li>
-        <li class="treeview">
-            <a href="#">
-                <i class="fas fa-truck"></i> <span>Distribución</span> <i class="fa fa-angle-left pull-right"></i>
-            </a>
-            <ul class="treeview-menu">
-                <li><a href="ordenesDespacho"> Gestión de Despachos </a></li>
-                <li><a href="grupoDespachos"> Despachos </a></li>
-                <!-- <li><a href="#"> Despachos Pendientes </a></li> -->
             </ul>
         </li>
         <li class="treeview">
