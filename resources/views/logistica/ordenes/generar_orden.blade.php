@@ -29,6 +29,27 @@
     </legend>
         <input type="hidden" name="id_orden_compra" primary="ids">
         <div class="row">
+        
+            <div class="card-body" id="group-requerimiento_seleccionado" style="background: #dbe4ec; height: 85px; position: relative; box-shadow: 0 2px 8px 0 rgba(0,0,0,0.2);" hidden>
+                <input class="oculto" name="id_requerimiento"/>
+                <div class="col-md-2">
+                    <h5>Código Requerimiento</h5>
+                    <input class="form-control" name="codigo_requerimiento" type="text" placeholder="" readonly>
+                </div>
+                <div class="col-md-6">
+                    <h5>Concepto</h5>
+                    <input class="form-control" name="concepto_requerimiento" type="text" placeholder="" readonly>
+                </div>
+                <div class="col-md-2">
+                    <h5>Sede</h5>
+                    <input class="form-control" name="sede_requerimiento" type="text" placeholder="" readonly>
+                </div>
+                <div class="col-md-2">
+                    <h5>Fecha Requerimiento</h5>
+                    <input class="form-control" name="fecha_requerimiento" type="text" placeholder="" readonly>
+                </div>
+            </div>
+    
             <div class="col-md-2">
                 <h5>Tipo</h5>
                 <select class="form-control activation js-example-basic-single" 
@@ -40,8 +61,16 @@
                 </select>
             </div>
             <div class="col-md-2">
-                <h5>Código</h5>
+                <h5>Código Orden</h5>
                 <input class="form-control" id="codigo" type="text" placeholder="OC/OS-####-####" readonly>
+            </div>
+            <div class="col-md-2" id="input-group-sede" hidden>
+                <h5>Sede</h5>
+                    <select name="sede" class="form-control activation"  required>
+                        @foreach ($sedes as $sede)
+                            <option value="{{$sede->id_sede}}">{{ $sede->descripcion}}</option>
+                        @endforeach                    
+                    </select>
             </div>
             <div class="col-md-2">
                 <h5>Fecha</h5>
@@ -57,9 +86,10 @@
                     <input class="oculto" name="id_contrib"/>
                     <input type="text" class="form-control" name="razon_social" disabled
                         aria-describedby="basic-addon1" required>
-                    {{-- <button type="button" class="input-group-text" id="basic-addon1" onClick="proveedorModal();">
+                    <button type="button" class="input-group-text" id="basic-addon1" onClick="proveedorModal();">
                         <i class="fa fa-search"></i>
-                    </button> --}}
+                    </button> 
+                    <button type="button" class="btn-primary activation" title="Agregar Proveedor" onClick="agregar_proveedor();"><i class="fas fa-plus"></i></button>
                 </div>
             </div>
             <div class="col-md-4">
@@ -249,6 +279,7 @@
 @include('logistica.ordenes.modal_despacho')
 @include('logistica.ordenes.modal_actualizar_item')
 @include('logistica.cotizaciones.proveedorModal')
+@include('logistica.cotizaciones.add_proveedor')
 @include('logistica.ordenes.modal_obtener_requerimiento')
 @include('logistica.ordenes.modal_obtener_cuadro_comparativo')
 @include('logistica.ordenes.ordenesModal')
@@ -257,7 +288,8 @@
 @include('layout.scripts')
 <script src="{{('/js/logistica/generar_orden.js')}}"></script>
 <script src="{{('/js/logistica/proveedorModal.js')}}"></script>
+<script src="{{('/js/logistica/add_proveedor.js')}}"></script>
 <script src="{{('/js/logistica/ordenesModal.js')}}"></script>
 <script src="{{('/js/logistica/add_cta_banco.js')}}"></script>
-<script src="{{('/js/logistica/orden_venta_directa.js')}}"></script>
+<script src="{{('/js/logistica/orden_requerimiento.js')}}"></script>
 @include('layout.fin_html')

@@ -1,3 +1,4 @@
+var detalleRequerimientoSelected = [];
 $(function(){
 
     var idOrden = localStorage.getItem('idOrden');
@@ -142,12 +143,14 @@ function checkStatusActualizarCodigo(){
 function save_orden_compra(data, action){
     let id_cotizacion =$('[name=id_cotizacion]').val();
     let id_grupo_cotizacion =$('[name=id_grupo_cotizacion]').val();
-
+    let payload ={};
     if (action == 'register'){
+        console.log(action);
+        
         baseUrl = '/guardar_orden_compra';
-        let id_prod =$('[name=id_producto]').val();
-        let id_serv =$('[name=id_servicio]').val();
-        let id_equi =$('[name=id_equipo]').val();
+        // let id_prod =$('[name=id_producto]').val();
+        // let id_serv =$('[name=id_servicio]').val();
+        // let id_equi =$('[name=id_equipo]').val();
 
         // if(id_prod > 0 ){ // evaluar tipo de documento sera la orden  ( compra , servicio)
         //     id_tipo_doc = 2 // ORDEN DE COMPRA
@@ -174,15 +177,24 @@ function save_orden_compra(data, action){
         i++;
     });
     // console.log('id_val'+id_val+' id_item'+id_item);
-    // console.log(data);
-    
+    payload =data+'&id_val='+id_val+'&id_item='+id_item+'&id_grupo_cotizacion='+id_grupo_cotizacion+'&id_cotizacion='+id_cotizacion;
+    let idRequerimiento = document.querySelector("form[id='form-orden'] input[name='id_requerimiento']").value;
+    if(parseInt(idRequerimiento) > 0 ){
+        // console.log('guardar orden en base a requerimiento');
+        payload = data+'&detalle_requerimiento='+JSON.stringify(detalleRequerimientoSelected);
+        baseUrl ='/guardar_orden_por_requerimiento';
+        
+    }else{
+        'el objeto no tiene data: sin propiedad det_req  y/o det_req';
+    }
+    console.log(payload);
     $.ajax({
         type: 'POST',
         url: baseUrl,
-        data: data+'&id_val='+id_val+'&id_item='+id_item+'&id_grupo_cotizacion='+id_grupo_cotizacion+'&id_cotizacion='+id_cotizacion,
+        data: payload,
         dataType: 'JSON',
         success: function(response){
-            // console.log(response);
+            console.log(response);
             if (response > 0){
                 alert('Orden de registrada con éxito');
                 changeStateButton('guardar');
@@ -197,6 +209,7 @@ function save_orden_compra(data, action){
         console.log(errorThrown);
     });
 }
+
 function mostrar_cuentas_bco(){
     var id_contri = $('[name=id_contrib]').val();
     // console.log('id_contri'+id_contri);
@@ -685,5 +698,53 @@ function selectBuenaPro(){
     $('#modal-obtener-cuadro-comparativo').modal('hide');
 
 
+    
+}
+
+function  handleKeyPrecio(e,t){
+        let index = t.getAttribute('index');
+        updateMontoItem(index);
+        let id_detalle_requerimiento =e.target.dataset.idDetalleRequerimiento;
+        let valor =e.target.value;
+
+        detalleRequerimientoSelected.forEach(element => {
+            if(element.id_detalle_requerimiento == id_detalle_requerimiento){
+                element.precio_referencial=valor;
+            }
+        });
+        console.log(detalleRequerimientoSelected);    
+}
+
+ 
+
+function updateMontoItem(index){
+    let cantidad = document.querySelectorAll("form[id='form-orden'] input[name='cantidad_item']")[index].value;
+    let precio = document.querySelectorAll("form[id='form-orden'] input[name='precio_item']")[index].value;
+    let total = cantidad * precio;
+    document.querySelectorAll("form[id='form-orden'] input[name='monto_total_item']")[index].value = total.toFixed(2);
+    
+    calcularTotales();
+}
+
+function calcularTotales(){
+    let inputTotales = document.querySelectorAll("form[id='form-orden'] input[name='monto_total_item']");
+    let monto_subtotal = 0;
+    inputTotales.forEach(element => {
+        if(isNaN(element.value)==false){
+            if(element.value - Math.floor(element.value) == 0){
+                monto_subtotal+=Math.floor(element.value);
+            }
+        }
+
+    document.querySelector("form[id='form-orden'] input[name='monto_subtotal']").value = monto_subtotal;
+
+    var pigv = parseFloat($('[name=igv_porcentaje]').val());
+    var igv = monto_subtotal * parseFloat(pigv) / 100;
+    $('[name=monto_igv]').val(formatDecimal(igv));
+    var total_a_pagar = monto_subtotal + igv;
+    $('[name=monto_total]').val(formatDecimal(total_a_pagar));
+
+        
+    });
     
 }

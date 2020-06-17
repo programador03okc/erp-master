@@ -1453,7 +1453,7 @@ Route::get('decode5t/{id}', 'EquipoController@decode5t');
 	// Route::get('get_items_cotizaciones_por_grupo/{id}', 'LogisticaController@get_items_cotizaciones_por_grupo');
 	Route::get('mostrar_grupo_cotizacion/{id}', 'LogisticaController@mostrar_grupo_cotizacion');
 	Route::get('mostrar_proveedores', 'LogisticaController@mostrar_proveedores');
-	Route::post('guardar_proveedor/{option}', 'LogisticaController@guardar_proveedor');
+	Route::post('guardar_proveedor', 'LogisticaController@guardar_proveedor');
 	Route::post('registrar_proveedor', 'LogisticaController@registrar_proveedor');
 	Route::put('update_proveedor', 'LogisticaController@update_proveedor');
 	Route::post('registrar_establecimiento', 'LogisticaController@registrar_establecimiento');
@@ -1544,8 +1544,10 @@ Route::get('decode5t/{id}', 'EquipoController@decode5t');
 	Route::get('getReqOperacionFlujoAprob/{id}/{tipo_id}', 'LogisticaController@getReqOperacionFlujoAprob'); 
 	Route::get('get_current_user/', 'LogisticaController@get_current_user'); 
 	Route::get('/logistica/explorar-orden/{id_orden}', 'LogisticaController@explorar_orden'); 
-	Route::get('listar_requerimientos_venta_directa', 'LogisticaController@listar_requerimientos_venta_directa'); 
-	Route::get('get_requerimiento_venta_directa/{id}', 'LogisticaController@get_requerimiento_venta_directa'); 
+
+	Route::get('listar_requerimientos_elaborados', 'LogisticaController@listar_requerimientos_elaborados'); 
+	Route::get('get_requerimiento_orden/{id}', 'LogisticaController@get_requerimiento_orden'); 
+	Route::post('guardar_orden_por_requerimiento', 'LogisticaController@guardar_orden_por_requerimiento');
 
 	/** logistica - Comprobante de Compra */
 
