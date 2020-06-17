@@ -16,7 +16,6 @@
                             <th>CODIGO</th>
                             <th>DESCRIPCION</th>
                             <th width="120">UNIDAD</th>
-                            <th width="100">STOCK</th>
                         </tr>
                     </thead>
                     <tbody></tbody>
