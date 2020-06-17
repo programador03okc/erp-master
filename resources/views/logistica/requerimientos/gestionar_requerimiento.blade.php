@@ -82,7 +82,7 @@
                 @endforeach
                 </select>
             </div>
-            <div class="col-md-2">
+            <div class="col-md-2" id="input-group-moneda">
                 <h5>Moneda</h5>
                 <select class="form-control activation" name="moneda" disabled="true">
                 @foreach ($monedas as $moneda)
@@ -91,7 +91,7 @@
                 </select>
             </div>
             <!-- <div class="form-group row"> -->
-            <div class="col-md-4">
+            <div class="col-md-4" id="input-group-empresa">
                 <h5>Empresa</h5>
                 <select name="empresa" id="empresa" class="form-control activation" onChange="changeOptEmpresaSelect(event)"
                     required>
@@ -101,14 +101,14 @@
                     @endforeach
                 </select>
             </div>
-            <div class="col-md-2" id="input-group-sede" hidden>
+            <div class="col-md-2" id="input-group-sede" >
                 <h5>Sede</h5>
                     <select name="sede" name="sede" class="form-control activation" onChange="changeOptUbigeo(event)"
                         required>
                         <option value="">Elija una opción</option>
                     </select>
             </div>
-            <div class="col-md-2 form-inline" id="input-group-tipo-cliente" hidden>
+            <div class="col-md-2 form-inline" id="input-group-tipo-cliente" >
                 <h5>Tipo Cliente</h5>
                 <div class="input-group-okc">
                         <select name="tipo_cliente" name="tipo_cliente" onChange="changeTipoCliente(event);"
@@ -119,7 +119,7 @@
                     </select>
                 </div>
             </div>
-            <div class="col-md-4 form-inline" id="input-group-cliente" hidden>
+            <div class="col-md-4 form-inline" id="input-group-cliente" >
                 <h5>Cliente</h5>
                 <div class="input-group-okc">
                     <input type="text" class="oculto" name="id_cliente" >
@@ -137,11 +137,11 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-4" id="input-group-direccion-entrega" hidden>
+            <div class="col-md-4" id="input-group-direccion-entrega" >
                 <h5>Dirección Entrega</h5>
                 <input type="text" class="form-control activation" name="direccion_entrega"  disabled>
             </div>
-            <div class="col-md-2" id="input-group-ubigeo-entrega" hidden>
+            <div class="col-md-2" id="input-group-ubigeo-entrega" >
                 <h5>Ubigeo Entrega</h5>
                 <div class="input-group-okc">
                     <input type="text" class="oculto" name="ubigeo" >

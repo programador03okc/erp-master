@@ -84,7 +84,10 @@ class LogisticaController extends Controller
         $contactos = $this->select_contacto();
         $tp_moneda = $this->select_moneda();
         $tp_documento = $this->select_documento();
-        return view('logistica/ordenes/generar_orden', compact('condiciones', 'tp_doc', 'bancos', 'cuentas','contactos', 'responsables', 'tp_moneda','tp_documento'));
+        $sis_identidad = $this->select_sis_identidad();
+        $sedes = $this->select_sedes();
+
+        return view('logistica/ordenes/generar_orden', compact('sedes','sis_identidad','condiciones', 'tp_doc', 'bancos', 'cuentas','contactos', 'responsables', 'tp_moneda','tp_documento'));
     }
     function view_lista_proveedores()
     {
@@ -379,6 +382,7 @@ class LogisticaController extends Controller
             ->select(
                 'alm_req.id_requerimiento',
                 'alm_req.codigo',
+                'alm_req.concepto',
                 'alm_req.fecha_requerimiento',
                 'alm_req.id_tipo_requerimiento',
                 'alm_tp_req.descripcion AS tipo_req_desc',
@@ -1311,31 +1315,53 @@ class LogisticaController extends Controller
             $yyyy = date('Y', strtotime("now"));
             $documento = 'RQ';
             $num = DB::table('almacen.alm_req')
+            ->where('id_tipo_requerimiento',2)
             ->whereYear('fecha_registro', '=', $yyyy)
             ->count();
             $correlativo = $this->leftZero(4, ($num + 1));
-            $codigo = "{$documento}-CO-{$yy}-{$correlativo}";
+            $codigo = "{$documento}-V-{$yy}-{$correlativo}";
         }else{
-            $sql_grupo = DB::table('administracion.adm_grupo')
-            ->select('adm_grupo.id_grupo','adm_grupo.descripcion')
-            ->where('adm_grupo.id_grupo', $request->requerimiento['id_grupo'])
-            ->get();
-    
-            $id_grupo = $sql_grupo->first()->id_grupo;
-            $descripcion_grupo = $sql_grupo->first()->descripcion;
-    
+            if(isset($request->requerimiento['id_grupo'])){
+                $sql_grupo = DB::table('administracion.adm_grupo')
+                ->select('adm_grupo.id_grupo','adm_grupo.descripcion')
+                ->where('adm_grupo.id_grupo', $request->requerimiento['id_grupo'])
+                ->get();
+        
+                $id_grupo = $sql_grupo->first()->id_grupo;
+                $descripcion_grupo = $sql_grupo->first()->descripcion;  
             //---------------------GENERANDO CODIGO REQUERIMIENTO--------------------------
-            $mes = date('m', strtotime("now"));
-            $yy = date('y', strtotime("now"));
-            $yyyy = date('Y', strtotime("now"));
-            $documento = 'RQ';
-            $grupo = $descripcion_grupo[0];
-            $num = DB::table('almacen.alm_req')
-            ->whereYear('fecha_registro', '=', $yyyy)
-            ->where('id_grupo', '=', $id_grupo)
-            ->count();
-            $correlativo = $this->leftZero(4, ($num + 1));
-            $codigo = "{$documento}-{$grupo}-{$yy}-{$correlativo}";
+                $mes = date('m', strtotime("now"));
+                $yy = date('y', strtotime("now"));
+                $yyyy = date('Y', strtotime("now"));
+                $documento = 'RQ';
+                $grupo = $descripcion_grupo[0];
+                $num = DB::table('almacen.alm_req')
+                ->whereYear('fecha_registro', '=', $yyyy)
+                ->where('id_grupo', '=', $id_grupo)
+                ->count();
+                $correlativo = $this->leftZero(4, ($num + 1));
+                $codigo = "{$documento}-{$grupo}-{$yy}-{$correlativo}";
+            }else{
+                $mes = date('m', strtotime("now"));
+                $yy = date('y', strtotime("now"));
+                $yyyy = date('Y', strtotime("now"));
+                $documento = 'RQ';
+                $num = DB::table('almacen.alm_req')
+                ->where('id_tipo_requerimiento',$request->requerimiento['tipo_requerimiento'])
+                ->whereYear('fecha_registro', '=', $yyyy)
+                ->count();
+                $correlativo = $this->leftZero(4, ($num + 1));
+                $tp = '';
+                if ($request->requerimiento['tipo_requerimiento'] == 1){
+                    $tp = 'C';
+                } else if ($request->requerimiento['tipo_requerimiento'] == 3){
+                    $tp = 'S';
+                }
+                $codigo = "{$documento}-{$tp}-{$yy}-{$correlativo}";
+                
+            }
+    
+
         }
 
         //----------------------------------------------------------------------------
@@ -4527,89 +4553,35 @@ class LogisticaController extends Controller
 
     public function guardar_proveedor(Request $request, $option){
         $fecha = date('Y-m-d H:i:s');
-        $contri = DB::table('contabilidad.adm_contri')
-            ->where('nro_documento',$request->nro_documento)
-            ->first();
-        $id_proveedor = '';
-        $id_contribuyente = '';
-
-        if ($contri !== null){
-            $id_contribuyente = $contri->id_contribuyente;
-        } 
-        else {
-            $id_contribuyente = DB::table('contabilidad.adm_contri')->insertGetId(
-                [
-                    'id_tipo_contribuyente' => $request->id_tipo_contribuyente,
-                    'id_doc_identidad' => $request->id_doc_identidad,
-                    'nro_documento' => $request->nro_documento,
-                    'razon_social' => $request->razon_social,
-                    'direccion_fiscal' => $request->direccion_fiscal,
-                    'estado' => 1,
-                    'fecha_registro' => $fecha
-                ],
-                    'id_contribuyente'
+        $output=[];
+        $id_contribuyente = DB::table('contabilidad.adm_contri')->insertGetId(
+            [
+                'id_tipo_contribuyente'=>$request->id_tipo_contribuyente, 
+                'id_doc_identidad'=>$request->id_doc_identidad, 
+                'nro_documento'=>$request->nro_documento, 
+                'razon_social'=>$request->razon_social, 
+                'estado'=>1,
+                'fecha_registro'=>$fecha
+            ],
+                'id_contribuyente'
             );
-        }
-        $prove = DB::table('logistica.log_prove')
-            ->where('id_contribuyente',$id_contribuyente)
-            ->first();
-        
-        if ($prove !== null){
-            $id_proveedor = $prove->id_proveedor;
-        } 
-        else {
-            $id_proveedor = DB::table('logistica.log_prove')->insertGetId(
-                [
-                    'id_contribuyente' => $id_contribuyente,
-                    'estado' => 1,
-                    'fecha_registro' => $fecha
-                ],
-                    'id_proveedor'
-            );    
-        }
-
+        $id_proveedor = DB::table('logistica.log_prove')->insertGetId(
+            [
+                'id_contribuyente'=>$id_contribuyente,
+                'codigo'=>'000',
+                'estado'=>1,
+                'fecha_registro'=>$fecha
+            ],
+                'id_proveedor'
+            );
         $data = DB::table('logistica.log_prove')
-            ->select('log_prove.id_proveedor', 'adm_contri.nro_documento', 'adm_contri.razon_social')
-            ->join('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'log_prove.id_contribuyente')
-            ->where([['adm_contri.estado', '=', 1], ['log_prove.estado', '=', 1]])->get();
+            ->select('log_prove.id_proveedor','adm_contri.nro_documento','adm_contri.razon_social')
+            ->join('contabilidad.adm_contri','adm_contri.id_contribuyente','=','log_prove.id_contribuyente')
+            ->where([['adm_contri.estado','=',1],['log_prove.estado','=',1]])->get();
         $html = '';
 
-        foreach ($data as $d) {
-            if ($id_proveedor == $d->id_proveedor) {
-                $html .= '<option value="' . $d->id_proveedor . '" selected>' . $d->nro_documento . ' - ' . $d->razon_social . '</option>';
-            } else {
-                $html .= '<option value="' . $d->id_proveedor . '">' . $d->nro_documento . ' - ' . $d->razon_social . '</option>';
-            }
-        }
-        
-        $output=[];
-        switch ($option) {
-            case 'HTML_OPTION':
-                # code...
-                $output = $html;
-                break;
-            case 'DATA':
-                # code...
-                $prov = DB::table('logistica.log_prove')
-                ->select('log_prove.id_proveedor', 'adm_contri.nro_documento', 'adm_contri.razon_social')
-                ->join('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'log_prove.id_contribuyente')
-                ->where([
-                    ['adm_contri.estado', '=', 1],
-                    ['log_prove.estado', '=', 1], 
-                    ['log_prove.id_proveedor', '=', $id_proveedor]
-                    ])
-                ->get();
-                foreach($prov as $data){
-                    $output[]=[
-                        'id_proveedor'=>$data->id_proveedor,
-                        'razon_social'=>$data->razon_social
-                    ];
-                }        
-                break;
-            
-            default:
-                # code...
-                break;
+        foreach($data as $d){
+            $output[] = ['id_proveedor'=>$id_proveedor, 'nro_documento'=>$nro_documento, 'razon_social'=>$razon_social];
         }
         return json_encode($output);
     }
@@ -7247,94 +7219,67 @@ class LogisticaController extends Controller
         return response()->json($output);
     }
 
-    public function listar_requerimientos_venta_directa(){
+    public function listar_requerimientos_elaborados(){
         $alm_req = DB::table('almacen.alm_req')
-        ->join('almacen.alm_tp_req', 'alm_req.id_tipo_requerimiento', '=', 'alm_tp_req.id_tipo_requerimiento')
-        ->leftJoin('administracion.adm_grupo', 'adm_grupo.id_grupo', '=', 'alm_req.id_grupo')
-        ->leftJoin('administracion.sis_sede', 'sis_sede.id_sede', '=', 'alm_req.id_sede')
-        ->leftJoin('administracion.adm_empresa', 'adm_empresa.id_empresa', '=', 'sis_sede.id_empresa')
-        ->leftJoin('contabilidad.adm_contri as contrib', 'adm_empresa.id_contribuyente', '=', 'contrib.id_contribuyente')
-        ->leftJoin('administracion.adm_estado_doc', 'alm_req.id_estado_doc', '=', 'adm_estado_doc.id_estado_doc')
-        
-        ->leftJoin('configuracion.sis_usua', 'alm_req.id_usuario', '=', 'sis_usua.id_usuario')
-        ->leftJoin('rrhh.rrhh_trab', 'sis_usua.id_trabajador', '=', 'rrhh_trab.id_trabajador')
-        ->join('rrhh.rrhh_postu', 'rrhh_postu.id_postulante', '=', 'rrhh_trab.id_postulante')
-        ->join('rrhh.rrhh_perso', 'rrhh_perso.id_persona', '=', 'rrhh_postu.id_persona')
-        ->leftJoin('rrhh.rrhh_rol', 'alm_req.id_rol', '=', 'rrhh_rol.id_rol')
-        ->leftJoin('rrhh.rrhh_rol_concepto', 'rrhh_rol_concepto.id_rol_concepto', '=', 'rrhh_rol.id_rol_concepto')
-        ->leftJoin('administracion.adm_area', 'rrhh_rol.id_area', '=', 'adm_area.id_area')
-        ->leftJoin('proyectos.proy_op_com', 'proy_op_com.id_op_com', '=', 'alm_req.id_op_com')
-        ->leftJoin('proyectos.proy_presup', 'alm_req.id_presupuesto', '=', 'proy_presup.id_presupuesto')
-        ->leftJoin('rrhh.rrhh_perso as perso_natural', 'alm_req.id_persona', '=', 'perso_natural.id_persona')
-        ->leftJoin('comercial.com_cliente', 'alm_req.id_cliente', '=', 'com_cliente.id_cliente')
-        ->leftJoin('contabilidad.adm_contri as contri_cliente', 'com_cliente.id_contribuyente', '=', 'contri_cliente.id_contribuyente')
-        ->leftJoin('configuracion.ubi_dis', 'alm_req.id_ubigeo_entrega', '=', 'ubi_dis.id_dis')
-        ->leftJoin('configuracion.ubi_prov', 'ubi_dis.id_prov', '=', 'ubi_prov.id_prov')
-        ->leftJoin('configuracion.ubi_dpto', 'ubi_prov.id_dpto', '=', 'ubi_dpto.id_dpto')
+            ->join('almacen.alm_tp_req', 'alm_req.id_tipo_requerimiento', '=', 'alm_tp_req.id_tipo_requerimiento')
+            ->leftJoin('configuracion.sis_usua', 'alm_req.id_usuario', '=', 'sis_usua.id_usuario')
+            ->leftJoin('administracion.adm_estado_doc', 'alm_req.id_estado_doc', '=', 'adm_estado_doc.id_estado_doc')
+            ->leftJoin('rrhh.rrhh_trab', 'sis_usua.id_trabajador', '=', 'rrhh_trab.id_trabajador')
+            ->leftJoin('rrhh.rrhh_rol', 'alm_req.id_rol', '=', 'rrhh_rol.id_rol')
+            ->leftJoin('rrhh.rrhh_rol_concepto', 'rrhh_rol_concepto.id_rol_concepto', '=', 'rrhh_rol.id_rol_concepto')
+            ->leftJoin('administracion.adm_area', 'alm_req.id_area', '=', 'adm_area.id_area')
+            ->leftJoin('proyectos.proy_op_com', 'proy_op_com.id_op_com', '=', 'alm_req.id_op_com')
+            ->leftJoin('administracion.adm_grupo', 'adm_grupo.id_grupo', '=', 'alm_req.id_grupo')
+            ->leftJoin('administracion.sis_sede', 'sis_sede.id_sede', '=', 'alm_req.id_sede')
 
-        ->select(
-            'alm_req.id_requerimiento',
-            'alm_req.codigo',
-            'alm_req.concepto',
-            'alm_req.id_moneda',
-            'alm_req.id_periodo',
-            'alm_req.id_prioridad',
-            'alm_req.id_estado_doc',
-            'adm_estado_doc.estado_doc',
-            'adm_estado_doc.bootstrap_color',
-            'sis_sede.id_empresa',
-            'alm_req.id_grupo',
-            'contrib.razon_social as razon_social_empresa',
-            'sis_sede.codigo as codigo_sede_empresa',
-            'adm_empresa.logo_empresa',
-            'alm_req.fecha_requerimiento',
-            'alm_req.id_periodo',
-            'alm_req.id_tipo_requerimiento',
-            'alm_req.observacion',
-            'alm_tp_req.descripcion AS tp_req_descripcion',
-            'alm_req.id_usuario',
-            DB::raw("(rrhh_perso.nombres) || ' ' || (rrhh_perso.apellido_paterno) || ' ' || (rrhh_perso.apellido_materno)  AS persona"),
-            'sis_usua.usuario',
-            'alm_req.id_rol',
-            'rrhh_rol.id_rol_concepto',
-            'rrhh_rol_concepto.descripcion AS rrhh_rol_concepto',
-            'alm_req.id_area',
-            'adm_area.descripcion AS area_descripcion',
-            'alm_req.id_op_com',
-            'proy_op_com.codigo as codigo_op_com',
-            'proy_op_com.descripcion as descripcion_op_com',
-            'alm_req.id_presupuesto',
-            'alm_req.objetivo',
-            'alm_req.id_occ',
-            'alm_req.archivo_adjunto',
-            'alm_req.fecha_registro',
-            'alm_req.estado',
-            'alm_req.id_sede',
-            'alm_req.id_persona',
-            'perso_natural.nro_documento as dni_persona',
-            DB::raw("(perso_natural.nombres) || ' ' || (perso_natural.apellido_paterno) || ' ' || (perso_natural.apellido_materno)  AS nombre_persona"),
-            'alm_req.tipo_cliente',
-            'alm_req.id_cliente',
-            'contri_cliente.nro_documento as cliente_ruc',
-            'contri_cliente.razon_social as cliente_razon_social',
-            'alm_req.id_ubigeo_entrega',
-            DB::raw("(ubi_dis.descripcion) || ' ' || (ubi_prov.descripcion) || ' ' || (ubi_dpto.descripcion)  AS name_ubigeo"),
-            'alm_req.direccion_entrega',
-            'alm_req.id_almacen',
-            DB::raw("(CASE WHEN alm_req.estado = 1 THEN 'Habilitado' ELSE 'Deshabilitado' END) AS estado_desc")
-        )
-        ->where([
-            ['alm_req.estado', '=', 1]
-        ])
-        ->orderBy('alm_req.id_requerimiento', 'asc')
-        ->get();
+            // ->leftJoin('logistica.log_detalle_grupo_cotizacion', 'log_detalle_grupo_cotizacion.id_requerimiento', '=', 'alm_req.id_requerimiento')
+            // ->leftJoin('logistica.log_ord_compra', 'log_ord_compra.id_grupo_cotizacion', '=', 'log_detalle_grupo_cotizacion.id_grupo_cotizacion')
+            // ->leftJoin('almacen.guia_com_oc', 'guia_com_oc.id_oc', '=', 'log_ord_compra.id_orden_compra')
+            ->select(
+                'alm_req.id_requerimiento',
+                'alm_req.codigo',
+                'alm_req.concepto',
+                'alm_req.fecha_requerimiento',
+                'alm_req.id_tipo_requerimiento',
+                'alm_tp_req.descripcion AS tipo_req_desc',
+                'sis_usua.usuario',
+                'rrhh_rol.id_area',
+                'adm_area.descripcion AS area_desc',
+                'rrhh_rol.id_rol',
+                'rrhh_rol.id_rol_concepto',
+                'rrhh_rol_concepto.descripcion AS rrhh_rol_concepto',
+                'alm_req.id_grupo',
+                'adm_grupo.descripcion AS adm_grupo_descripcion',
+                'alm_req.id_op_com',
+                'proy_op_com.codigo as codigo_op_com',
+                'proy_op_com.descripcion as descripcion_op_com',
+                'alm_req.concepto AS alm_req_concepto',
+                // 'log_detalle_grupo_cotizacion.id_detalle_grupo_cotizacion',
+                'alm_req.id_prioridad',
+                'alm_req.fecha_registro',
+                'alm_req.estado',
+                'alm_req.id_sede',
+                'sis_sede.codigo as codigo_sede_empresa',
+                'adm_estado_doc.estado_doc',
+                'adm_estado_doc.bootstrap_color',
+                DB::raw("(CASE WHEN alm_req.estado = 1 THEN 'Habilitado' ELSE 'Deshabilitado' END) AS estado_desc")
+        //         DB::raw("(SELECT  COUNT(log_ord_compra.id_orden_compra) FROM logistica.log_ord_compra
+        // WHERE log_ord_compra.id_grupo_cotizacion = log_detalle_grupo_cotizacion.id_grupo_cotizacion)::integer as cantidad_orden"),
+        //         DB::raw("(SELECT  COUNT(mov_alm.id_mov_alm) FROM almacen.mov_alm
+        // WHERE mov_alm.id_guia_com = guia_com_oc.id_guia_com and 
+        // guia_com_oc.id_oc = log_ord_compra.id_orden_compra)::integer as cantidad_entrada_almacen")
 
-        return response()->json(['data'=>$alm_req]);
+            )
+            ->where([['alm_req.estado', '=', 1]])
+            ->orderBy('alm_req.id_requerimiento', 'desc')
+            ->get();
+        return response()->json(["data" => $alm_req]);
 
+ 
     }
 
 
-    public function get_requerimiento_venta_directa($id)
+    public function get_requerimiento_orden($id)
     {
 
         $alm_req = DB::table('almacen.alm_req')
@@ -7416,7 +7361,7 @@ class LogisticaController extends Controller
                 ['alm_req.id_requerimiento', '=', $id],
                 ['alm_req.estado', '=', 1]
             ])
-            ->orderBy('alm_req.id_requerimiento', 'asc')
+            ->orderBy('alm_req.id_requerimiento', 'desc')
             ->get();
 
         if (sizeof($alm_req) <= 0) {
@@ -7481,8 +7426,8 @@ class LogisticaController extends Controller
             };
 
             $alm_det_req = DB::table('almacen.alm_prod')
-                ->rightJoin('almacen.alm_item', 'alm_prod.id_producto', '=', 'alm_item.id_producto')
-                ->rightJoin('almacen.alm_det_req', 'alm_prod.id_producto', '=', 'alm_det_req.id_producto')
+                ->leftJoin('almacen.alm_item', 'alm_prod.id_producto', '=', 'alm_item.id_producto')
+                ->leftJoin('almacen.alm_det_req', 'alm_prod.id_producto', '=', 'alm_det_req.id_producto')
                 ->leftJoin('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'alm_det_req.id_requerimiento')
                 ->leftJoin('almacen.alm_und_medida as und_medida_det_req', 'alm_det_req.id_unidad_medida', '=', 'und_medida_det_req.id_unidad_medida')
                 ->leftJoin('almacen.alm_req_archivos', 'alm_req_archivos.id_detalle_requerimiento', '=', 'alm_det_req.id_detalle_requerimiento')
@@ -7544,12 +7489,14 @@ class LogisticaController extends Controller
                 $detalle_requerimiento_adjunto = [];
             }
 
-
+            $total = 0;
             if (isset($alm_det_req)) {
                 $lastId = "";
                 $detalle_requerimiento = [];
                 foreach ($alm_det_req as $data) {
                     if ($data->id_detalle_requerimiento !== $lastId) {
+                        $subtotal =+ $data->cantidad *  $data->precio_referencial;
+                        $total = $subtotal;
                         $detalle_requerimiento[] = [
                             'id_detalle_requerimiento'  => $data->id_detalle_requerimiento,
                             'id_requerimiento'          => $data->id_requerimiento,
@@ -7570,6 +7517,7 @@ class LogisticaController extends Controller
                             'id_producto'               => $data->id_producto,
                             'codigo_producto'            => $data->alm_prod_codigo,
                             'descripcion'               => $data->descripcion_adicional,
+                            'subtotal'               =>  $subtotal,
                         ];
                         $lastId = $data->id_detalle_requerimiento;
                     }
@@ -7594,14 +7542,87 @@ class LogisticaController extends Controller
             }
         }
 
+        $collect = collect($requerimiento[0]);
+        $collect->put('total',$total);
 
         $data = [
-            "requerimiento" => $requerimiento,
+            "requerimiento" => $collect,
             "det_req" => $detalle_requerimiento
         ];
 
         return $data;
     }
+
+    public function guardar_orden_por_requerimiento(Request $request){
+        try {
+            DB::beginTransaction();
+
+            $usuario = Auth::user()->id_usuario;
+            $codigo = $this->nextCodigoOrden($request->id_tipo_doc);
+
+            $id_orden = DB::table('logistica.log_ord_compra')
+            ->insertGetId(
+                [
+                    'id_grupo_cotizacion' => $request->id_grupo_cotizacion,
+                    'id_tp_documento' =>  $request->id_tipo_doc,
+                    'fecha' => date('Y-m-d H:i:s'),
+                    'id_usuario' => $usuario,
+                    'id_moneda' => $request->id_moneda,
+                    'id_proveedor' => $request->id_proveedor,
+                    'codigo' => $codigo,
+                    'monto_subtotal' => $request->monto_subtotal,
+                    'igv_porcentaje' => $request->igv_porcentaje,
+                    'monto_igv' => $request->monto_igv,
+                    'monto_total' => $request->monto_total,
+                    'plazo_entrega' => $request->plazo_entrega,
+                    'id_condicion' => $request->id_condicion,
+                    'plazo_dias' => $request->plazo_dias,
+                    'id_cotizacion' => $request->id_cotizacion,
+                    'id_cta_principal' => $request->id_cta_principal,
+                    'id_cta_alternativa' => $request->id_cta_alternativa,
+                    'id_cta_detraccion' => $request->id_cta_detraccion,
+                    'personal_responsable' => $request->contacto_responsable,
+                    'id_sede' => $request->sede,
+                    'id_requerimiento' => $request->id_requerimiento,
+                    'en_almacen' => false,
+                    'estado' => 1
+                ],
+                'id_orden_compra'
+            );
+
+            $dataDetalle = json_decode($request->detalle_requerimiento);
+
+
+            foreach ($dataDetalle as $d) {
+                DB::table('logistica.log_det_ord_compra')
+                ->insert([
+                    'id_orden_compra'=>$id_orden,
+                    'id_item'=> ($d->id_item ? $d->id_item : null),
+                    'cantidad'=> $d->cantidad,
+                    'id_unidad_medida'=> $d->id_unidad_medida,
+                    'precio'=> $d->precio_referencial,
+                    'subtotal'=> ($d->precio_referencial * $d->cantidad),
+                    'estado'=> 1
+                    // 'fecha_registro'=> date('Y-m-d H:i:s')
+                ]);
+            }
+
+                DB::table('almacen.alm_req')
+                ->where('id_requerimiento',$request->id_requerimiento)
+                ->update(['estado'=>5]);
+        
+                DB::table('almacen.alm_det_req')
+                ->where('id_requerimiento',$request->id_requerimiento)
+                ->update(['estado'=>5]);
+
+            DB::commit();
+            return response()->json($id_orden);
+
+        } catch (\PDOException $e) {
+            DB::rollBack();
+        }
+
+    }   
 
     public function guardar_orden_compra(Request $request)
     {
@@ -8015,7 +8036,7 @@ class LogisticaController extends Controller
                 'log_valorizacion_cotizacion.cantidad_cotizada',
                 'log_valorizacion_cotizacion.precio_cotizado',
                 'log_valorizacion_cotizacion.monto_descuento',
-                'log_valorizacion_cotizacion.subtotal'
+                'log_valorizacion_cotizacion.subtotal as subtotal_cotizada'
                 // 'alm_det_req.id_item'
             )
             ->leftJoin('configuracion.sis_usua as sis_usua_aut', 'sis_usua_aut.id_usuario', '=', 'log_det_ord_compra.personal_autorizado')
@@ -8023,12 +8044,12 @@ class LogisticaController extends Controller
             ->leftJoin('rrhh.rrhh_postu as post_aut', 'post_aut.id_postulante', '=', 'trab_aut.id_postulante')
             ->leftJoin('rrhh.rrhh_perso as pers_aut', 'pers_aut.id_persona', '=', 'post_aut.id_persona')
 
-            ->join('logistica.log_valorizacion_cotizacion', 'log_valorizacion_cotizacion.id_valorizacion_cotizacion', '=', 'log_det_ord_compra.id_valorizacion_cotizacion')
-            ->join('logistica.valoriza_coti_detalle', 'valoriza_coti_detalle.id_valorizacion_cotizacion', '=', 'log_valorizacion_cotizacion.id_valorizacion_cotizacion')
-            ->join('almacen.alm_det_req', 'alm_det_req.id_detalle_requerimiento', '=', 'valoriza_coti_detalle.id_detalle_requerimiento')
+            ->leftjoin('logistica.log_valorizacion_cotizacion', 'log_valorizacion_cotizacion.id_valorizacion_cotizacion', '=', 'log_det_ord_compra.id_valorizacion_cotizacion')
+            ->leftjoin('logistica.valoriza_coti_detalle', 'valoriza_coti_detalle.id_valorizacion_cotizacion', '=', 'log_valorizacion_cotizacion.id_valorizacion_cotizacion')
+            ->leftjoin('almacen.alm_det_req', 'alm_det_req.id_detalle_requerimiento', '=', 'valoriza_coti_detalle.id_detalle_requerimiento')
             ->leftjoin('almacen.alm_item', 'alm_item.id_item', '=', 'log_det_ord_compra.id_item')
             ->leftjoin('almacen.alm_prod', 'alm_prod.id_producto', '=', 'alm_item.id_producto')
-            ->leftjoin('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'log_valorizacion_cotizacion.id_unidad_medida')
+            ->leftjoin('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'log_det_ord_compra.id_unidad_medida')
             ->leftjoin('logistica.log_servi', 'log_servi.id_servicio', '=', 'alm_item.id_servicio')
             ->leftjoin('logistica.equipo', 'equipo.id_equipo', '=', 'alm_item.id_equipo')
             ->where([
@@ -8064,7 +8085,7 @@ class LogisticaController extends Controller
 
             $html .= '
             <tr>
-                <td><input class="oculto" name="id_valorizacion_cotizacion" value="' . $d->id_valorizacion_cotizacion . '"/>' . $i . '</td>';
+                <td><input class="oculto" name="id_valorizacion_cotizacion" value="' . ($d->id_valorizacion_cotizacion?$d->id_valorizacion_cotizacion:'') . '"/>' . $i . '</td>';
                 
                 if($d->id_item == null || $d->id_item == 0){
                     $html.=$tdActualizarCodigo;
@@ -8073,11 +8094,11 @@ class LogisticaController extends Controller
                 }
 
                 $html.= ' <td>' . $d->descripcion . '</td>
-                <td>' . $d->unidad_medida . '</td>
-                <td>' . $d->cantidad_cotizada . '</td>
-                <td>' . $d->precio_cotizado . '</td>
-                <td>' . $d->monto_descuento . '</td>
-                <td>' . $d->subtotal . '</td>';
+                <td>' . ($d->unidad_medida?$d->unidad_medida:'') . '</td>
+                <td>' . ($d->cantidad?$d->cantidad:$d->cantidad_cotizada) . '</td>
+                <td>' . ($d->precio?$d->precio:$d->precio_cotizado) . '</td>
+                <td>' . ($d->monto_descuento?$d->monto_descuento:'') . '</td>
+                <td>' . ($d->subtotal?$d->subtotal:$d->subtotal_cotizada) . '</td>';
                 
  
                 if($d->descripcion_adicional == null){
