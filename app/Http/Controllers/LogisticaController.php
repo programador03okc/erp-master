@@ -1315,31 +1315,53 @@ class LogisticaController extends Controller
             $yyyy = date('Y', strtotime("now"));
             $documento = 'RQ';
             $num = DB::table('almacen.alm_req')
+            ->where('id_tipo_requerimiento',2)
             ->whereYear('fecha_registro', '=', $yyyy)
             ->count();
             $correlativo = $this->leftZero(4, ($num + 1));
-            $codigo = "{$documento}-CO-{$yy}-{$correlativo}";
+            $codigo = "{$documento}-V-{$yy}-{$correlativo}";
         }else{
-            $sql_grupo = DB::table('administracion.adm_grupo')
-            ->select('adm_grupo.id_grupo','adm_grupo.descripcion')
-            ->where('adm_grupo.id_grupo', $request->requerimiento['id_grupo'])
-            ->get();
-    
-            $id_grupo = $sql_grupo->first()->id_grupo;
-            $descripcion_grupo = $sql_grupo->first()->descripcion;
-    
+            if(isset($request->requerimiento['id_grupo'])){
+                $sql_grupo = DB::table('administracion.adm_grupo')
+                ->select('adm_grupo.id_grupo','adm_grupo.descripcion')
+                ->where('adm_grupo.id_grupo', $request->requerimiento['id_grupo'])
+                ->get();
+        
+                $id_grupo = $sql_grupo->first()->id_grupo;
+                $descripcion_grupo = $sql_grupo->first()->descripcion;  
             //---------------------GENERANDO CODIGO REQUERIMIENTO--------------------------
-            $mes = date('m', strtotime("now"));
-            $yy = date('y', strtotime("now"));
-            $yyyy = date('Y', strtotime("now"));
-            $documento = 'RQ';
-            $grupo = $descripcion_grupo[0];
-            $num = DB::table('almacen.alm_req')
-            ->whereYear('fecha_registro', '=', $yyyy)
-            ->where('id_grupo', '=', $id_grupo)
-            ->count();
-            $correlativo = $this->leftZero(4, ($num + 1));
-            $codigo = "{$documento}-{$grupo}-{$yy}-{$correlativo}";
+                $mes = date('m', strtotime("now"));
+                $yy = date('y', strtotime("now"));
+                $yyyy = date('Y', strtotime("now"));
+                $documento = 'RQ';
+                $grupo = $descripcion_grupo[0];
+                $num = DB::table('almacen.alm_req')
+                ->whereYear('fecha_registro', '=', $yyyy)
+                ->where('id_grupo', '=', $id_grupo)
+                ->count();
+                $correlativo = $this->leftZero(4, ($num + 1));
+                $codigo = "{$documento}-{$grupo}-{$yy}-{$correlativo}";
+            }else{
+                $mes = date('m', strtotime("now"));
+                $yy = date('y', strtotime("now"));
+                $yyyy = date('Y', strtotime("now"));
+                $documento = 'RQ';
+                $num = DB::table('almacen.alm_req')
+                ->where('id_tipo_requerimiento',$request->requerimiento['tipo_requerimiento'])
+                ->whereYear('fecha_registro', '=', $yyyy)
+                ->count();
+                $correlativo = $this->leftZero(4, ($num + 1));
+                $tp = '';
+                if ($request->requerimiento['tipo_requerimiento'] == 1){
+                    $tp = 'C';
+                } else if ($request->requerimiento['tipo_requerimiento'] == 3){
+                    $tp = 'S';
+                }
+                $codigo = "{$documento}-{$tp}-{$yy}-{$correlativo}";
+                
+            }
+    
+
         }
 
         //----------------------------------------------------------------------------
