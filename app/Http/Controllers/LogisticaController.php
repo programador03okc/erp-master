@@ -89,6 +89,22 @@ class LogisticaController extends Controller
 
         return view('logistica/ordenes/generar_orden', compact('sedes','sis_identidad','condiciones', 'tp_doc', 'bancos', 'cuentas','contactos', 'responsables', 'tp_moneda','tp_documento'));
     }
+    function view_generar_orden_requerimiento()
+    {
+        // $condiciones = $this->select_condiciones();
+        // $tp_doc = $this->select_tp_doc();
+        // $bancos = $this->select_bancos();
+        // $cuentas = $this->select_tipos_cuenta();
+        // $responsables = $this->select_responsables();
+        // $contactos = $this->select_contacto();
+        // $tp_moneda = $this->select_moneda();
+        $tp_documento = $this->select_documento();
+        $sis_identidad = $this->select_sis_identidad();
+        $sedes = $this->select_sedes();
+
+        return view('logistica/ordenes/generar_orden_requerimiento', compact('sedes','sis_identidad','tp_documento'));
+    }
+
     function view_lista_proveedores()
     {
         $estado_ruc = $this->estado_ruc();
@@ -1390,6 +1406,7 @@ class LogisticaController extends Controller
                 'direccion_entrega'     => isset($request->requerimiento['direccion_entrega'])?$request->requerimiento['direccion_entrega']:null,
                 'id_ubigeo_entrega'     => isset($request->requerimiento['ubigeo'])?$request->requerimiento['ubigeo']:null,
                 'id_almacen'            => isset($request->requerimiento['id_almacen'])?$request->requerimiento['id_almacen']:null,
+                'confirmacion_pago'     => false
             ],
             'id_requerimiento'
         );
@@ -5827,7 +5844,7 @@ class LogisticaController extends Controller
     public function mostrar_proveedores()
     {
         $data = DB::table('logistica.log_prove')
-            ->select('log_prove.id_proveedor', 'adm_contri.id_contribuyente', 'adm_contri.nro_documento', 'adm_contri.razon_social')
+            ->select('log_prove.id_proveedor', 'adm_contri.id_contribuyente', 'adm_contri.nro_documento', 'adm_contri.razon_social','adm_contri.telefono')
             ->leftjoin('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'log_prove.id_contribuyente')
             ->where([['log_prove.estado', '=', 1]])
             ->orderBy('adm_contri.nro_documento')
@@ -7219,7 +7236,7 @@ class LogisticaController extends Controller
         return response()->json($output);
     }
 
-    public function listar_requerimientos_elaborados(){
+    public function listar_requerimientos_pendientes(){
         $alm_req = DB::table('almacen.alm_req')
             ->join('almacen.alm_tp_req', 'alm_req.id_tipo_requerimiento', '=', 'alm_tp_req.id_tipo_requerimiento')
             ->leftJoin('configuracion.sis_usua', 'alm_req.id_usuario', '=', 'sis_usua.id_usuario')
@@ -7270,7 +7287,57 @@ class LogisticaController extends Controller
         // guia_com_oc.id_oc = log_ord_compra.id_orden_compra)::integer as cantidad_entrada_almacen")
 
             )
-            ->where([['alm_req.estado', '=', 1]])
+            ->where([['alm_req.estado', '=', 1],['alm_req.id_tipo_requerimiento','=',1],['alm_req.confirmacion_pago','=',true]])
+            ->orderBy('alm_req.id_requerimiento', 'desc')
+            ->get();
+        return response()->json(["data" => $alm_req]);
+
+ 
+    }
+    public function listar_requerimientos_atendidos(){
+        $alm_req = DB::table('almacen.alm_req')
+            ->join('almacen.alm_tp_req', 'alm_req.id_tipo_requerimiento', '=', 'alm_tp_req.id_tipo_requerimiento')
+            ->leftJoin('configuracion.sis_usua', 'alm_req.id_usuario', '=', 'sis_usua.id_usuario')
+            ->leftJoin('administracion.adm_estado_doc', 'alm_req.id_estado_doc', '=', 'adm_estado_doc.id_estado_doc')
+            ->leftJoin('rrhh.rrhh_trab', 'sis_usua.id_trabajador', '=', 'rrhh_trab.id_trabajador')
+            ->leftJoin('rrhh.rrhh_rol', 'alm_req.id_rol', '=', 'rrhh_rol.id_rol')
+            ->leftJoin('rrhh.rrhh_rol_concepto', 'rrhh_rol_concepto.id_rol_concepto', '=', 'rrhh_rol.id_rol_concepto')
+            ->leftJoin('administracion.adm_area', 'alm_req.id_area', '=', 'adm_area.id_area')
+            ->leftJoin('proyectos.proy_op_com', 'proy_op_com.id_op_com', '=', 'alm_req.id_op_com')
+            ->leftJoin('administracion.adm_grupo', 'adm_grupo.id_grupo', '=', 'alm_req.id_grupo')
+            ->leftJoin('administracion.sis_sede', 'sis_sede.id_sede', '=', 'alm_req.id_sede')
+
+            ->select(
+                'alm_req.id_requerimiento',
+                'alm_req.codigo',
+                'alm_req.concepto',
+                'alm_req.fecha_requerimiento',
+                'alm_req.id_tipo_requerimiento',
+                'alm_tp_req.descripcion AS tipo_req_desc',
+                'sis_usua.usuario',
+                'rrhh_rol.id_area',
+                'adm_area.descripcion AS area_desc',
+                'rrhh_rol.id_rol',
+                'rrhh_rol.id_rol_concepto',
+                'rrhh_rol_concepto.descripcion AS rrhh_rol_concepto',
+                'alm_req.id_grupo',
+                'adm_grupo.descripcion AS adm_grupo_descripcion',
+                'alm_req.id_op_com',
+                'proy_op_com.codigo as codigo_op_com',
+                'proy_op_com.descripcion as descripcion_op_com',
+                'alm_req.concepto AS alm_req_concepto',
+                // 'log_detalle_grupo_cotizacion.id_detalle_grupo_cotizacion',
+                'alm_req.id_prioridad',
+                'alm_req.fecha_registro',
+                'alm_req.estado',
+                'alm_req.id_sede',
+                'sis_sede.codigo as codigo_sede_empresa',
+                'adm_estado_doc.estado_doc',
+                'adm_estado_doc.bootstrap_color',
+                DB::raw("(CASE WHEN alm_req.estado = 1 THEN 'Habilitado' ELSE 'Deshabilitado' END) AS estado_desc")
+
+            )
+            ->where([['alm_req.estado', '=', 5],['alm_req.id_tipo_requerimiento','=',1],['alm_req.confirmacion_pago','=',true]])
             ->orderBy('alm_req.id_requerimiento', 'desc')
             ->get();
         return response()->json(["data" => $alm_req]);
@@ -7563,29 +7630,30 @@ class LogisticaController extends Controller
             $id_orden = DB::table('logistica.log_ord_compra')
             ->insertGetId(
                 [
-                    'id_grupo_cotizacion' => $request->id_grupo_cotizacion,
+                    'id_grupo_cotizacion' => $request->id_grupo_cotizacion?$request->id_grupo_cotizacion:null,
                     'id_tp_documento' =>  $request->id_tipo_doc,
                     'fecha' => date('Y-m-d H:i:s'),
                     'id_usuario' => $usuario,
-                    'id_moneda' => $request->id_moneda,
+                    'id_moneda' => $request->id_moneda?$request->id_moneda:null,
                     'id_proveedor' => $request->id_proveedor,
                     'codigo' => $codigo,
-                    'monto_subtotal' => $request->monto_subtotal,
-                    'igv_porcentaje' => $request->igv_porcentaje,
-                    'monto_igv' => $request->monto_igv,
-                    'monto_total' => $request->monto_total,
-                    'plazo_entrega' => $request->plazo_entrega,
-                    'id_condicion' => $request->id_condicion,
-                    'plazo_dias' => $request->plazo_dias,
-                    'id_cotizacion' => $request->id_cotizacion,
-                    'id_cta_principal' => $request->id_cta_principal,
-                    'id_cta_alternativa' => $request->id_cta_alternativa,
-                    'id_cta_detraccion' => $request->id_cta_detraccion,
-                    'personal_responsable' => $request->contacto_responsable,
-                    'id_sede' => $request->sede,
+                    'monto_subtotal' => $request->monto_subtotal?$request->monto_subtotal:null,
+                    'igv_porcentaje' => $request->igv_porcentaje?$request->igv_porcentaje:null,
+                    'monto_igv' => $request->monto_igv?$request->monto_igv:null,
+                    'monto_total' => $request->monto_total?$request->monto_total:null,
+                    'plazo_entrega' => $request->plazo_entrega?$request->plazo_entrega:null,
+                    'id_condicion' => $request->id_condicion?$request->id_condicion:null,
+                    'plazo_dias' => $request->plazo_dias?$request->plazo_dias:null,
+                    'id_cotizacion' => $request->id_cotizacion?$request->id_cotizacion:null,
+                    'id_cta_principal' => $request->id_cta_principal?$request->id_cta_principal:null,
+                    'id_cta_alternativa' => $request->id_cta_alternativa?$request->id_cta_alternativa:null,
+                    'id_cta_detraccion' => $request->id_cta_detraccion?$request->id_cta_detraccion:null,
+                    'personal_responsable' => $request->contacto_responsable?$request->contacto_responsable:null,
+                    'id_sede' => $request->sede?$request->sede:null,
                     'id_requerimiento' => $request->id_requerimiento,
                     'en_almacen' => false,
-                    'estado' => 1
+                    'estado' => 1,
+                    'codigo_orden' => $request->codigo_orden_externo?$request->codigo_orden_externo:null,
                 ],
                 'id_orden_compra'
             );

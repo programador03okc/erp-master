@@ -127,8 +127,8 @@
                     <input type="text" class="form-control" name="cliente_razon_social" style="display: none;">
 
                     <input type="text" class="oculto" name="id_persona" >
-                    <input type="text" class="form-control" name="dni_persona" >
-                    <input type="text" class="form-control" name="nombre_persona" >
+                    <input type="text" class="form-control activation" name="dni_persona" >
+                    <input type="text" class="form-control activation" name="nombre_persona" >
 
                     <div class="input-group-append">        
                         <button type="button" title="Seleccionar Cliente" name="btnCliente" 
@@ -151,9 +151,9 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-4" id="input-group-almacen" hidden>
-                <h5>Almacén</h5>
-                <select class="form-control " name="id_almacen">
+            <div class="col-md-4" id="input-group-almacen">
+                <h5>Almacén que solicita</h5>
+                <select class="form-control activation " name="id_almacen">
                     <option value="0">Elija una opción</option>
                 </select>
             </div>

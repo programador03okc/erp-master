@@ -2130,6 +2130,25 @@ function cargarArchivo(){
     })
 }
 
+function controlHiddenInputGroup(option,nombreGrupoList){
+    switch (option) {
+        case 'mostrar':
+            nombreGrupoList.forEach(element => {
+                document.querySelector("form[id='form-requerimiento'] div[id='input-group-"+element+"']").removeAttribute('hidden');
+            });
+            break;
+    
+        case 'ocultar':
+            nombreGrupoList.forEach(element => {
+                document.querySelector("form[id='form-requerimiento'] div[id='input-group-"+element+"']").setAttribute('hidden',true);
+            });
+            break;
+    
+        default:
+            break;
+    }
+}
+
 function changeOptTipoReqSelect(e){
     if(e.target.value == 2){ //venta directa
         document.querySelector("div[id='input-group-almacen'] h5").textContent = 'Almacén';
@@ -2138,17 +2157,20 @@ function changeOptTipoReqSelect(e){
         document.querySelector("form[id='form-requerimiento'] input[name='nombre_area']").value='';
         document.querySelector("form[id='form-requerimiento'] input[name='id_area']").value='';
         document.querySelector("form[id='form-requerimiento'] select[name='rol_usuario']").value='';
-        document.querySelector("div[id='input-group-area']").setAttribute('hidden',true);
-        document.querySelector("div[id='input-group-rol-usuario']").setAttribute('hidden',true);
-        document.querySelector("div[id='input-group-almacen']").removeAttribute('hidden');
-        document.querySelector("div[id='input-group-sede']").removeAttribute('hidden');
-        document.querySelector("div[id='input-group-empresa']").removeAttribute('hidden');
-        document.querySelector("div[id='input-group-tipo-cliente']").removeAttribute('hidden');
-        document.querySelector("div[id='input-group-cliente']").removeAttribute('hidden');
-        document.querySelector("div[id='input-group-direccion-entrega']").removeAttribute('hidden');
-        document.querySelector("div[id='input-group-ubigeo-entrega']").removeAttribute('hidden');
-        document.querySelector("div[id='input-group-proyecto']").setAttribute('hidden',true);
-        document.querySelector("form[id='form-requerimiento'] div[id='input-group-comercial']").setAttribute('hidden',true);
+        controlHiddenInputGroup('ocultar',[
+            'area',
+            'rol-usuario',
+            'proyecto',
+            'comercial'
+        ]);
+        controlHiddenInputGroup('mostrar',[
+            'sede',
+            'tipo-cliente',
+            'empresa',
+            'tipo-cliente',
+            'cliente',
+            'direccion-entrega'
+        ]);
 
         listar_almacenes();
 
@@ -2159,26 +2181,29 @@ function changeOptTipoReqSelect(e){
         document.querySelector("form[id='form-requerimiento'] input[name='nombre_area']").value='';
         document.querySelector("form[id='form-requerimiento'] input[name='id_area']").value='';
         document.querySelector("form[id='form-requerimiento'] select[name='rol_usuario']").value='';
-        document.querySelector("div[id='input-group-moneda']").setAttribute('hidden',true);
-        document.querySelector("div[id='input-group-empresa']").setAttribute('hidden',true);
-        document.querySelector("div[id='input-group-area']").setAttribute('hidden',true);
-        document.querySelector("div[id='input-group-rol-usuario']").setAttribute('hidden',true);
-        document.querySelector("div[id='input-group-almacen']").removeAttribute('hidden');
-        document.querySelector("div[id='input-group-sede']").setAttribute('hidden',true);
-        document.querySelector("div[id='input-group-tipo-cliente']").setAttribute('hidden',true);
-        document.querySelector("div[id='input-group-cliente']").setAttribute('hidden',true);
-        document.querySelector("div[id='input-group-direccion-entrega']").setAttribute('hidden',true);
-        document.querySelector("div[id='input-group-ubigeo-entrega']").setAttribute('hidden',true);
-        document.querySelector("div[id='input-group-proyecto']").setAttribute('hidden',true);
-        document.querySelector("form[id='form-requerimiento'] div[id='input-group-comercial']").setAttribute('hidden',true);
+        controlHiddenInputGroup('ocultar',[
+            'moneda',
+            'empresa',
+            'area',
+            'rol-usuario',
+            'sede',
+            'tipo-cliente',
+            'cliente',
+            'direccion-entrega',
+            'ubigeo-entrega',
+            'proyecto',
+            'comercial'
+        ]);
+        controlHiddenInputGroup('mostrar',[
+            'almacen'
+        ]);
 
         listar_almacenes();
 
     }else if(e.target.value == 1){
-        document.querySelector("div[id='input-group-almacen'] h5").textContent = 'Almacén';
+        document.querySelector("div[id='input-group-almacen'] h5").textContent = 'Almacén que solicita';
 
         document.querySelector("div[id='input-group-fecha']").setAttribute('class','col-md-2');
-
         document.querySelector("form[id='form-requerimiento'] select[name='id_almacen']").value='';
         document.querySelector("form[id='form-requerimiento'] select[name='sede']").value='';
         document.querySelector("form[id='form-requerimiento'] select[name='tipo_cliente']").value = '';      
@@ -2187,18 +2212,23 @@ function changeOptTipoReqSelect(e){
         document.querySelector("form[id='form-requerimiento'] input[name='direccion_entrega']").value='';
         document.querySelector("form[id='form-requerimiento'] input[name='ubigeo']").value='';
         document.querySelector("form[id='form-requerimiento'] input[name='name_ubigeo']").value='';
-        document.querySelector("div[id='input-group-area']").removeAttribute('hidden');
-        document.querySelector("div[id='input-group-rol-usuario']").removeAttribute('hidden');
-        document.querySelector("div[id='input-group-almacen']").setAttribute('hidden',true);
-        document.querySelector("div[id='input-group-moneda']").removeAttribute('hidden');
-        document.querySelector("div[id='input-group-empresa']").removeAttribute('hidden');
-        document.querySelector("div[id='input-group-sede']").removeAttribute('hidden');
-        document.querySelector("div[id='input-group-tipo-cliente']").removeAttribute('hidden');
-        document.querySelector("div[id='input-group-cliente']").removeAttribute('hidden');
-        document.querySelector("div[id='input-group-direccion-entrega']").removeAttribute('hidden');
-        document.querySelector("div[id='input-group-ubigeo-entrega']").removeAttribute('hidden');
-        document.querySelector("div[id='input-group-proyecto']").setAttribute('hidden',true);
-        document.querySelector("form[id='form-requerimiento'] div[id='input-group-comercial']").setAttribute('hidden',true);
+
+        controlHiddenInputGroup('ocultar',[
+            'proyecto',
+            'comercial'
+        ]);
+        controlHiddenInputGroup('mostrar',[
+            'almacen',
+            'area',
+            'rol-usuario',
+            'moneda',
+            'empresa',
+            'sede',
+            'tipo-cliente',
+            'cliente',
+            'direccion-entrega',
+            'ubigeo-entrega'
+        ]);
 
     }
 }

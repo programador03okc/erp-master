@@ -90,6 +90,7 @@
                     </a>
                     <ul class="treeview-menu">
                         <li><a href="/generar_orden"> Generar Orden </a></li>
+                        <li><a href="/generar_orden_requerimiento"> Generar Orden por Requerimiento</a></li>
                         <li><a href="/vista_listar_ordenes"> Listado de Ordenes </a></li>
         
                     </ul>
