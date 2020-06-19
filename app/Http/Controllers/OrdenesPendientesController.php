@@ -31,20 +31,22 @@ class OrdenesPendientesController extends Controller
         $data = DB::table('logistica.log_ord_compra')
             ->select('log_ord_compra.*','log_ord_compra.codigo as codigo_orden',
             'adm_estado_doc.estado_doc','adm_estado_doc.bootstrap_color','adm_contri.razon_social',
-            'adm_contri.nro_documento','sis_usua.nombre_corto','sis_moneda.simbolo',
+            'adm_contri.nro_documento','sis_usua.nombre_corto',
+            // 'sis_moneda.simbolo',
             'alm_req.codigo as codigo_requerimiento','alm_req.concepto')
-            ->join('administracion.adm_tp_docum','adm_tp_docum.id_tp_documento','=','log_ord_compra.id_tp_documento')
+            // ->join('administracion.adm_tp_docum','adm_tp_docum.id_tp_documento','=','log_ord_compra.id_tp_documento')
             ->join('administracion.adm_estado_doc','adm_estado_doc.id_estado_doc','=','log_ord_compra.estado')
             ->join('logistica.log_prove','log_prove.id_proveedor','=','log_ord_compra.id_proveedor')
             ->join('contabilidad.adm_contri','adm_contri.id_contribuyente','=','log_prove.id_contribuyente')
             ->join('configuracion.sis_usua','sis_usua.id_usuario','=','log_ord_compra.id_usuario')
-            ->join('configuracion.sis_moneda','sis_moneda.id_moneda','=','log_ord_compra.id_moneda')
+            // ->join('configuracion.sis_moneda','sis_moneda.id_moneda','=','log_ord_compra.id_moneda')
             ->leftjoin('almacen.alm_req','alm_req.id_requerimiento','=','log_ord_compra.id_requerimiento')
             ->where([['log_ord_compra.estado','!=',7],
                     ['log_ord_compra.en_almacen','=',false],
                     ['log_ord_compra.id_tp_documento','=',2]])//Orden de Compra
             ->get();
         return datatables($data)->toJson();
+        // return response()->json($data);
     }
     
     public function listarOrdenesEntregadas(){
@@ -52,8 +54,9 @@ class OrdenesPendientesController extends Controller
             ->select('mov_alm.*','log_ord_compra.id_orden_compra','log_ord_compra.codigo as codigo_orden',
             'adm_contri.nro_documento','adm_contri.razon_social','log_ord_compra.fecha as fecha_orden',
             'alm_req.codigo as codigo_requerimiento','alm_req.concepto','log_ord_compra.id_sede as sede_orden',
-            'sis_moneda.simbolo','sis_usua.nombre_corto','log_ord_compra.monto_subtotal',
-            'log_ord_compra.monto_igv','log_ord_compra.monto_total','alm_almacen.id_sede as sede_almacen',
+            'sis_usua.nombre_corto',
+            // 'sis_moneda.simbolo','log_ord_compra.monto_subtotal','log_ord_compra.monto_igv','log_ord_compra.monto_total',
+            'alm_almacen.id_sede as sede_almacen',
             'alm_req.id_sede as sede_requerimiento','guia_com.serie','guia_com.numero',
             'alm_req.id_requerimiento','alm_req.estado as estado_requerimiento','guia_ven.id_guia_ven',
             'alm_req.id_tipo_requerimiento','alm_req.id_almacen as almacen_requerimiento')
@@ -63,7 +66,7 @@ class OrdenesPendientesController extends Controller
             ->join('contabilidad.adm_contri','adm_contri.id_contribuyente','=','log_prove.id_contribuyente')
             ->leftjoin('almacen.alm_req','alm_req.id_requerimiento','=','log_ord_compra.id_requerimiento')
             ->leftjoin('almacen.alm_almacen','alm_almacen.id_almacen','=','alm_req.id_almacen')
-            ->join('configuracion.sis_moneda','sis_moneda.id_moneda','=','log_ord_compra.id_moneda')
+            // ->join('configuracion.sis_moneda','sis_moneda.id_moneda','=','log_ord_compra.id_moneda')
             ->join('configuracion.sis_usua','sis_usua.id_usuario','=','mov_alm.usuario')
             ->leftJoin('almacen.guia_ven','guia_ven.id_guia_com','=','mov_alm.id_guia_com')
             ->where([['mov_alm.estado','!=',7],['mov_alm.id_tp_mov','=',1]])

@@ -57,8 +57,8 @@ class AlmacenController extends Controller
         ->count();
 
         $pagos = DB::table('almacen.alm_req')
-        ->where([['id_tipo_requerimiento','=',1],['estado','=',1],['obs_confirmacion','=',null]])
-        ->where([['id_tipo_requerimiento','=',2],['estado','=',19],['obs_confirmacion','=',null]])
+        ->where([['id_tipo_requerimiento','=',1],['estado','=',1],['confirmacion_pago','=',false]])
+        ->orWhere([['id_tipo_requerimiento','=',2],['estado','=',19],['confirmacion_pago','=',false]])
         ->count();
 
         return (['despachos'=>$despachos,'ingresos'=>$ingresos, 'salidas'=>$salidas, 

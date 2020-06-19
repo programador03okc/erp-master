@@ -43,16 +43,16 @@ function listarOrdenesPendientes(){
         'columns': [
             {'data': 'id_orden_compra'},
             {'data': 'codigo'},
-            {'data': 'nro_documento'},
-            {'data': 'razon_social'},
+            {'data': 'nro_documento', 'name': 'adm_contri.nro_documento'},
+            {'data': 'razon_social', 'name': 'adm_contri.razon_social'},
             {'data': 'fecha'},
-            {'data': 'codigo_requerimiento'},
-            {'data': 'concepto'},
-            {'data': 'nombre_corto'},
-            {'data': 'simbolo'},
-            {'data': 'monto_subtotal'},
-            {'data': 'monto_igv'},
-            {'data': 'monto_total'}
+            {'data': 'codigo_requerimiento', 'name': 'alm_req.codigo'},
+            {'data': 'concepto', 'name': 'alm_req.concepto'},
+            {'data': 'nombre_corto', 'name': 'sis_usua.nombre_corto'},
+            // {'data': 'simbolo'},
+            // {'data': 'monto_subtotal'},
+            // {'data': 'monto_igv'},
+            // {'data': 'monto_total'}
         ],
         'columnDefs': [
             {'aTargets': [0], 'sClass': 'invisible'},
@@ -63,7 +63,7 @@ function listarOrdenesPendientes(){
                 '<button type="button" class="guia btn btn-info boton" data-toggle="tooltip" '+
                     'data-placement="bottom" title="Generar Guía" >'+
                     '<i class="fas fa-sign-in-alt"></i></button>';
-                }, targets: 12
+                }, targets: 8
             }
         ],
     });
@@ -96,21 +96,21 @@ function listarOrdenesEntregadas(){
         'columns': [
             {'data': 'id_mov_alm'},
             {'data': 'codigo_orden'},
-            {'data': 'nro_documento'},
-            {'data': 'razon_social'},
-            {'data': 'simbolo'},
-            {'data': 'monto_subtotal', 'class': 'right'},
-            {'data': 'monto_igv', 'class': 'right'},
-            {'data': 'monto_total', 'class': 'right'},
-            {'data': 'codigo_requerimiento'},
-            {'data': 'concepto'},
+            {'data': 'nro_documento', 'name': 'adm_contri.nro_documento'},
+            {'data': 'razon_social', 'name': 'adm_contri.razon_social'},
+            // {'data': 'simbolo'},
+            // {'data': 'monto_subtotal', 'class': 'right'},
+            // {'data': 'monto_igv', 'class': 'right'},
+            // {'data': 'monto_total', 'class': 'right'},
+            {'data': 'codigo_requerimiento', 'name': 'alm_req.codigo'},
+            {'data': 'concepto', 'name': 'alm_req.concepto'},
             {'render': function (data, type, row){
                     return row['serie']+'-'+row['numero'];
                 }
             },
             {'data': 'codigo'},
             {'data': 'fecha_emision'},
-            {'data': 'nombre_corto'},
+            {'data': 'nombre_corto', 'name': 'sis_usua.nombre_corto'},
         ],
         'columnDefs': [
             {'aTargets': [0], 'sClass': 'invisible'},
@@ -133,7 +133,7 @@ function listarOrdenesEntregadas(){
                  ('<button type="button" class="transferencia btn btn-success boton" data-toggle="tooltip" '+
                     'data-placement="bottom" title="Generar Transferencia" >'+
                     '<i class="fas fa-exchange-alt"></i></button>') : '');
-                }, targets: 14
+                }, targets: 10
             }    
         ],
     });
@@ -163,8 +163,8 @@ function open_detalle(data){
     $('#modal-ordenDetalle').modal({
         show: true
     });
-    $('#cabecera_orden').text(data.codigo_orden+' - '+data.razon_social+' - Total: '+data.simbolo+data.monto_total);
-    listar_detalle_orden(data.id_orden_compra, data.simbolo);
+    $('#cabecera_orden').text(data.codigo_orden+' - '+data.razon_social);
+    listar_detalle_orden(data.id_orden_compra);
 }
 
 function open_guia_create(data){
@@ -188,7 +188,7 @@ function open_guias(data){
     listar_guias_orden(data.id_orden_compra);
 }
 
-function listar_detalle_orden(id_orden, simbolo){
+function listar_detalle_orden(id_orden){
     console.log('id_orden',id_orden);
     $.ajax({
         type: 'GET',
@@ -202,25 +202,25 @@ function listar_detalle_orden(id_orden, simbolo){
             var sub_total = 0;
             var total = 0;
             response.forEach(element => {
-                dscto = (element.monto_descuento !== null ? element.monto_descuento : 0);
-                sub_total = (element.cantidad_cotizada * element.precio_cotizado);
-                total += (sub_total - dscto);
+                // dscto = (element.monto_descuento !== null ? element.monto_descuento : 0);
+                // sub_total = (element.cantidad_cotizada * element.precio_cotizado);
+                // total += (sub_total - dscto);
                 html+='<tr id="'+element.id_detalle_orden+'">'+
                 '<td>'+i+'</td>'+
                 '<td>'+element.codigo+'</td>'+
                 '<td>'+element.descripcion+(element.descripcion_adicional !== null ? ' '+element.descripcion_adicional : '')+'</td>'+
                 '<td>'+element.cantidad_cotizada+'</td>'+
                 '<td>'+element.unidad_medida+'</td>'+
-                '<td>'+element.precio_cotizado+'</td>'+
-                '<td class="right">'+formatNumber.decimal(sub_total,'',-2)+'</td>'+
-                '<td class="right">'+formatNumber.decimal(dscto,'',-2)+'</td>'+
-                '<td class="right">'+formatNumber.decimal((sub_total - dscto),'',-2)+'</td>'+
+                // '<td>'+element.precio_cotizado+'</td>'+
+                // '<td class="right">'+formatNumber.decimal(sub_total,'',-2)+'</td>'+
+                // '<td class="right">'+formatNumber.decimal(dscto,'',-2)+'</td>'+
+                // '<td class="right">'+formatNumber.decimal((sub_total - dscto),'',-2)+'</td>'+
                 '</tr>';
                 i++;
             });
-            var html_foot = '<tr><td class="right" colSpan="8">'+simbolo+'</td><td class="right">'+formatNumber.decimal(total,'',-2)+'</td></tr>';
+            // var html_foot = '<tr><td class="right" colSpan="8">'+simbolo+'</td><td class="right">'+formatNumber.decimal(total,'',-2)+'</td></tr>';
             $('#detalleOrden tbody').html(html);
-            $('#detalleOrden tfoot').html(html_foot);
+            // $('#detalleOrden tfoot').html(html_foot);
         }
     }).fail( function( jqXHR, textStatus, errorThrown ){
         console.log(jqXHR);

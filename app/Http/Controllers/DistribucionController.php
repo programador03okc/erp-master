@@ -42,7 +42,9 @@ class DistribucionController extends Controller
             'log_ord_compra.codigo as codigo_orden','guia_com.serie','guia_com.numero',
             'trans.id_transferencia','trans.codigo as codigo_transferencia','ubi_dis.descripcion as ubigeo_descripcion',
             'rrhh_perso.nro_documento as dni_persona','alm_almacen.descripcion as almacen_descripcion',
-            'alm_almacen.id_sede as sede_almacen','orden_despacho.id_od','orden_despacho.codigo as codigo_od',
+            'alm_almacen.id_sede as sede_requerimiento','log_ord_compra.id_sede as sede_orden',
+            'sis_sede.descripcion as sede_descripcion_orden',
+            'orden_despacho.id_od','orden_despacho.codigo as codigo_od',
             'alm_tp_req.descripcion as tipo_req',
             DB::raw("(rrhh_perso.nombres) || ' ' || (rrhh_perso.apellido_paterno) || ' ' || (rrhh_perso.apellido_materno) AS nombre_persona"),
             'adm_contri.nro_documento as cliente_ruc','adm_contri.razon_social as cliente_razon_social')
@@ -54,7 +56,7 @@ class DistribucionController extends Controller
                          {   $join->on('log_ord_compra.id_requerimiento', '=', 'alm_req.id_requerimiento');
                              $join->where('log_ord_compra.estado','!=', 7);
                          })
-            // ->leftJoin('logistica.log_ord_compra','log_ord_compra.id_requerimiento','=','alm_req.id_requerimiento')
+            ->leftJoin('administracion.sis_sede','sis_sede.id_sede','=','log_ord_compra.id_sede')
             // ->leftJoin('almacen.guia_com','guia_com.id_oc','=','log_ord_compra.id_orden_compra')
             // ->leftJoin('almacen.mov_alm','mov_alm.id_guia_com','=','guia_com.id_guia')
             ->leftJoin('almacen.guia_com', function($join)

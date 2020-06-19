@@ -1502,31 +1502,6 @@ function listar_almacenes(){
         console.log(errorThrown);
     });
 }
-// function cargar_almacenes(sede){
-//     if (sede !== ''){
-//         $.ajax({
-//             type: 'GET',
-//             url: '/cargar_almacenes/'+sede,
-//             dataType: 'JSON',
-//             success: function(response){
-//                 console.log(response);
-//                 var option = '';
-//                 for (var i=0; i<response.length; i++){
-//                     if (response.length == 1){
-//                         option+='<option value="'+response[i].id_almacen+'" selected>'+response[i].codigo+' - '+response[i].descripcion+'</option>';
-//                     } else {
-//                         option+='<option value="'+response[i].id_almacen+'">'+response[i].codigo+' - '+response[i].descripcion+'</option>';
-//                     }
-//                 }
-//                 $('[name=id_almacen]').html('<option value="0" disabled selected>Elija una opción</option>'+option);
-//             }
-//         }).fail( function( jqXHR, textStatus, errorThrown ){
-//             console.log(jqXHR);
-//             console.log(textStatus);
-//             console.log(errorThrown);
-//         });
-//     }
-// }
 
 $(function(){
     /* Seleccionar valor del DataTable */
@@ -2345,11 +2320,37 @@ function openCliente(){
 }
 
 function changeOptUbigeo(e){
-    // var ubigeo = $('select[name="sede"] option:selected')[0].dataset.ubigeo;
-    // var name_ubigeo = $('select[name="sede"] option:selected')[0].dataset.nameUbigeo;
     var ubigeo =document.querySelector("select[name='sede']").options[document.querySelector("select[name='sede']").selectedIndex].dataset.ubigeo;
     var name_ubigeo =document.querySelector("select[name='sede']").options[document.querySelector("select[name='sede']").selectedIndex].dataset.nameUbigeo;
+    var sede = $('[name=sede]').val();
 
     document.querySelector("input[name='ubigeo']").value=ubigeo;
     document.querySelector("input[name='name_ubigeo']").value=name_ubigeo;
+    cargar_almacenes(sede);
+}
+
+function cargar_almacenes(sede){
+    if (sede !== ''){
+        $.ajax({
+            type: 'GET',
+            url: '/cargar_almacenes/'+sede,
+            dataType: 'JSON',
+            success: function(response){
+                console.log(response);
+                var option = '';
+                for (var i=0; i<response.length; i++){
+                    if (response.length == 1){
+                        option+='<option value="'+response[i].id_almacen+'" selected>'+response[i].codigo+' - '+response[i].descripcion+'</option>';
+                    } else {
+                        option+='<option value="'+response[i].id_almacen+'">'+response[i].codigo+' - '+response[i].descripcion+'</option>';
+                    }
+                }
+                $('[name=id_almacen]').html('<option value="0" disabled selected>Elija una opción</option>'+option);
+            }
+        }).fail( function( jqXHR, textStatus, errorThrown ){
+            console.log(jqXHR);
+            console.log(textStatus);
+            console.log(errorThrown);
+        });
+    }
 }

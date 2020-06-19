@@ -22,10 +22,10 @@
                                             <th width="40%">Descripción</th>
                                             <th>Cantidad</th>
                                             <th>Unid</th>
-                                            <th>Unitario</th>
+                                            <!-- <th>Unitario</th>
                                             <th>SubTotal</th>
                                             <th>Dscto</th>
-                                            <th>Total</th>
+                                            <th>Total</th> -->
                                         </tr>
                                     </thead>
                                     <tbody></tbody>

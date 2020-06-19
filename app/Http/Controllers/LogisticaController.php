@@ -7625,13 +7625,14 @@ class LogisticaController extends Controller
             DB::beginTransaction();
 
             $usuario = Auth::user()->id_usuario;
-            $codigo = $this->nextCodigoOrden($request->id_tipo_doc);
+            $tp_doc = ($request->id_tipo_doc !== null ? $request->id_tipo_doc : 2);
+            $codigo = $this->nextCodigoOrden($tp_doc);
 
             $id_orden = DB::table('logistica.log_ord_compra')
             ->insertGetId(
                 [
                     'id_grupo_cotizacion' => $request->id_grupo_cotizacion?$request->id_grupo_cotizacion:null,
-                    'id_tp_documento' =>  $request->id_tipo_doc,
+                    'id_tp_documento' =>  $tp_doc,
                     'fecha' => date('Y-m-d H:i:s'),
                     'id_usuario' => $usuario,
                     'id_moneda' => $request->id_moneda?$request->id_moneda:null,
@@ -7653,7 +7654,7 @@ class LogisticaController extends Controller
                     'id_requerimiento' => $request->id_requerimiento,
                     'en_almacen' => false,
                     'estado' => 1,
-                    'codigo_orden' => $request->codigo_orden_externo?$request->codigo_orden_externo:null,
+                    'codigo_softlink' => $request->codigo_orden_externo?$request->codigo_orden_externo:null,
                 ],
                 'id_orden_compra'
             );

@@ -30,6 +30,7 @@
                                         <th>Responsable</th>
                                         <th>Estado</th>
                                         <th>OC</th>
+                                        <th>Sede OC</th>
                                         <th>Guía Compra</th>
                                         <th>Transf.</th>
                                         <th>O.Despacho</th>

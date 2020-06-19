@@ -17,7 +17,7 @@ function open_despacho_create(data){
     $('[name=tipo_cliente]').val(data.tipo_cliente);
     $('[name=id_almacen]').val(data.id_almacen);
     $('[name=almacen_descripcion]').val(data.almacen_descripcion);
-    $('[name=id_sede]').val(data.sede_almacen);
+    $('[name=id_sede]').val(data.sede_requerimiento);
 
     if (data.id_persona !== null){
         $('[name=id_persona]').val(data.id_persona);

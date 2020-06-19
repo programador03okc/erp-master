@@ -31,7 +31,7 @@
                     </div>
                     <div class="row">
                         <div class="col-md-3" id="group-codigo_orden" >
-                            <h5>Código Orden</h5>
+                            <h5>Código Orden Softlink</h5>
                             <input class="form-control" name="codigo_orden" type="text" placeholder="">
                         </div>
                         <div class="col-md-3" id="group-sede">

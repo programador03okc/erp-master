@@ -27,10 +27,10 @@
                                         <th>Req.</th>
                                         <th>Concepto</th>
                                         <th>Responsable</th>
-                                        <th>Mnd</th>
+                                        <!-- <th>Mnd</th>
                                         <th>SubTotal</th>
                                         <th>IGV</th>
-                                        <th>Total</th>
+                                        <th>Total</th> -->
                                         <th width="80px"></th>
                                     </tr>
                                 </thead>
@@ -53,10 +53,10 @@
                                         <th>Cod.Orden</th>
                                         <th>R.U.C.</th>
                                         <th>Razon Social</th>
-                                        <th>Mnd</th>
+                                        <!-- <th>Mnd</th>
                                         <th>SubTotal</th>
                                         <th>IGV</th>
-                                        <th>Total</th>
+                                        <th>Total</th> -->
                                         <th>Req.</th>
                                         <th>Concepto</th>
                                         <th>Guía Compra</th>

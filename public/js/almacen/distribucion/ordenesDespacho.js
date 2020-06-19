@@ -67,7 +67,10 @@ function listarRequerimientosPendientes(){
                 return (row['codigo_orden'] !== null ? row['codigo_orden'] : '')
                 }
             },
-            // {'data': 'codigo_orden', 'name': 'log_ord_compra.codigo'},
+            {'render': function (data, type, row){
+                return (row['sede_descripcion_orden'] !== null ? row['sede_descripcion_orden'] : '')
+                }
+            },            
             {'render': function (data, type, row){
                 return (row['serie'] !== null ? row['serie']+'-'+row['numero'] : '')
                 }
@@ -92,12 +95,13 @@ function listarRequerimientosPendientes(){
                     'data-placement="bottom" data-id="'+row['id_requerimiento']+'" data-cod="'+row['codigo']+'" title="Anular Requerimiento" >'+
                     '<i class="fas fa-trash"></i></button>' : '')+
                 (
-                    ((row['estado'] == 19 && row['id_tipo_requerimiento'] == 1 && row['id_transferencia'] !== null && row['id_od'] == null) || //compra con transferencia
+                    ((row['estado'] == 19 && row['id_tipo_requerimiento'] == 1 && row['sede_requerimiento'] == row['sede_orden'] && row['id_od'] == null) ||
+                     (row['estado'] == 19 && row['id_tipo_requerimiento'] == 1 && row['sede_requerimiento'] !== row['sede_orden'] && row['id_transferencia'] !== null && row['id_od'] == null) || //compra con transferencia
                      (row['estado'] == 19 && row['id_tipo_requerimiento'] == 2 && row['confirmacion_pago'] == true && row['id_od'] == null)) ? //venta directa
                     ('<button type="button" class="despacho btn btn-success boton" data-toggle="tooltip" '+
                     'data-placement="bottom" title="Generar Orden de Despacho" >'+
                     '<i class="fas fa-sign-in-alt"></i></button>') : '')
-                }, targets: 13
+                }, targets: 14
             }
         ],
     });
