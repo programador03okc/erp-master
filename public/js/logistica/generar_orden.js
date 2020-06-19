@@ -1,4 +1,3 @@
-var detalleRequerimientoSelected = [];
 $(function(){
 
     var idOrden = localStorage.getItem('idOrden');
@@ -148,23 +147,7 @@ function save_orden_compra(data, action){
         console.log(action);
         
         baseUrl = '/guardar_orden_compra';
-        // let id_prod =$('[name=id_producto]').val();
-        // let id_serv =$('[name=id_servicio]').val();
-        // let id_equi =$('[name=id_equipo]').val();
 
-        // if(id_prod > 0 ){ // evaluar tipo de documento sera la orden  ( compra , servicio)
-        //     id_tipo_doc = 2 // ORDEN DE COMPRA
-        //     nombre_doc = 'Orden de Compra';
-            
-        // }else if(id_serv > 0){
-        //     id_tipo_doc = 3 // ORDEN DE SERVICIO
-        //     nombre_doc = 'Orden de Servicio';
-            
-        // }else if(id_equi > 0){
-        //     id_tipo_doc = 2 //ORDEN DE COMPRA 
-        //     nombre_doc = 'Orden de Compra';
-        // }
- 
     } else if (action == 'edition'){
         baseUrl = '/update_orden_compra';
     }
@@ -179,15 +162,16 @@ function save_orden_compra(data, action){
     // console.log('id_val'+id_val+' id_item'+id_item);
     payload =data+'&id_val='+id_val+'&id_item='+id_item+'&id_grupo_cotizacion='+id_grupo_cotizacion+'&id_cotizacion='+id_cotizacion;
     let idRequerimiento = document.querySelector("form[id='form-orden'] input[name='id_requerimiento']").value;
-    if(parseInt(idRequerimiento) > 0 ){
-        // console.log('guardar orden en base a requerimiento');
-        payload = data+'&detalle_requerimiento='+JSON.stringify(detalleRequerimientoSelected);
-        baseUrl ='/guardar_orden_por_requerimiento';
+    // if(parseInt(idRequerimiento) > 0 ){
+    //     // console.log('guardar orden en base a requerimiento');
+    //     payload = data+'&detalle_requerimiento='+JSON.stringify(detalleRequerimientoSelected);
+    //     baseUrl ='/guardar_orden_por_requerimiento';
         
-    }else{
-        'el objeto no tiene data: sin propiedad det_req  y/o det_req';
-    }
-    console.log(payload);
+    // }
+    // else{
+    //     console.log('el objeto no tiene data: sin propiedad det_req  y/o det_req');
+    // }
+    // console.log(payload);
     $.ajax({
         type: 'POST',
         url: baseUrl,
@@ -694,7 +678,8 @@ function selectBuenaPro(){
     let id_cotizacion = $('.modal-footer #idCotizacion').text();  
     detalle_cotizacion(id_cotizacion);
     // console.log(id_cotizacion);
-    
+    // controlHiddenInputGroupOCRapida('mostrar',['condicion', 'plazo_entrega', 'moneda', 'tipo_documento', 'cuentas', 'responsable', 'totales']);
+    // controlHiddenInputGroupOCRapida('ocultar',['requerimiento_seleccionado','sede','codigo_orden_externo']);
     $('#modal-obtener-cuadro-comparativo').modal('hide');
 
 

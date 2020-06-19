@@ -1,52 +1,82 @@
+var detalleRequerimientoSelected = [];
 
 $(function(){
-    /* Seleccionar valor del DataTable */
-    $('#ListaRequerimientos tbody').on('click', 'tr', function(){
-        if ($(this).hasClass('eventClick')){
-            $(this).removeClass('eventClick');
-        } else {
-            $('#ListaRequerimientos').dataTable().$('tr.eventClick').removeClass('eventClick');
-            $(this).addClass('eventClick');
-        }
-        var myId = $(this)[0].firstChild.innerHTML;
-        // var codi = $(this)[0].childNodes[1].innerHTML;
-        // $('[name=id_requerimiento]').val(myId);
-        // console.log(myId);
-        obtenerRequerimiento(myId);
-
-        $('#modal-obtener-requerimiento').modal('hide');
-    });
+    listar_requerimientos_pendientes();
+    listar_requerimientos_atendidos();
 });
 
 
-function obtenerRequerimientoModal(){
-    $('#modal-obtener-requerimiento').modal({
-        show: true,
-        backdrop: 'static'
-    });
+ 
 
-    listar_requerimientos_elaborados();
-    document.getElementById('btnNuevo').setAttribute("disabled","true");
-}
-
-function listar_requerimientos_elaborados(){
+function listar_requerimientos_pendientes(){
     var vardataTables = funcDatatables();
-    $('#ListaRequerimientos').dataTable({
+    $('#listaRequerimientosPendientes').dataTable({
         'dom': vardataTables[1],
         'buttons': vardataTables[2],
         'language' : vardataTables[0],
         'order': [[0, 'desc']],
         'destroy' : true,
-        'ajax': '/listar_requerimientos_elaborados',
+        'ajax': '/listar_requerimientos_pendientes',
         'columns': [
             {'data': 'id_requerimiento'},
             {'data': 'codigo'},
             {'data': 'concepto'},
-            {'data': 'fecha_requerimiento'}
- 
+            {'data': 'codigo_sede_empresa'},
+            {'data': 'fecha_requerimiento'},
+            { render: function (data, type, row) {                
+                    let btn =
+                    '<div class="btn-group btn-group-sm" role="group">'+
+                        '<button type="button" class="btn btn-primary btn-sm" name="btnOpenModalOrdenRequerimiento" title="Generar Orden" data-id-requerimiento="'+row.id_requerimiento+'"  onclick="openModalOrdenRequerimiento(this);">'+
+                            '<i class="far fa-file-alt"></i>'+
+                        '</button>'+
+
+                    '</div>';
+                    return (btn);
+                },
+            }
         ],
         'columnDefs': [{ 'aTargets': [0], 'sClass': 'invisible'}],
     });
+}
+
+function listar_requerimientos_atendidos(){
+    var vardataTables = funcDatatables();
+    $('#listaRequerimientosAtendidos').dataTable({
+        'dom': vardataTables[1],
+        'buttons': vardataTables[2],
+        'language' : vardataTables[0],
+        'order': [[0, 'desc']],
+        'destroy' : true,
+        'ajax': '/listar_requerimientos_atendidos',
+        'columns': [
+            {'data': 'id_requerimiento'},
+            {'data': 'codigo'},
+            {'data': 'concepto'},
+            {'data': 'codigo_sede_empresa'},
+            {'data': 'fecha_requerimiento'}
+            // { render: function (data, type, row) {               
+            //         let btn =
+            //         '<div class="btn-group btn-group-sm" role="group">'+
+            //             '<button type="button" class="btn btn-danger btn-sm" name="btnEliminarOrdenRequerimiento" title="Eliminar Atención" data-id-requerimiento="'+row.id_requerimiento+'" onclick="eliminarOrdenRequerimiento(this);">'+
+            //                 '<i class="far fa-trash-alt"></i>'+
+            //             '</button>'+
+
+            //         '</div>';
+            //         return (btn);
+            //     },
+            // }
+        ],
+        'columnDefs': [{ 'aTargets': [0], 'sClass': 'invisible'}],
+    });
+}
+
+function openModalOrdenRequerimiento(obj){
+    // console.log(obj.dataset.idRequerimiento);    
+    $('#modal-orden-requerimiento').modal({
+        show: true,
+        backdrop: 'static'
+    });
+    obtenerRequerimiento(obj.dataset.idRequerimiento);
 }
 
 function obtenerRequerimiento(id){
@@ -55,67 +85,49 @@ function obtenerRequerimiento(id){
         url: '/get_requerimiento_orden/'+id,
         dataType: 'JSON',
         success: function(response){
-            console.log(response);
-            console.log(response.requerimiento.codigo_sede_empresa);
-            
-            document.querySelector("div[id='group-requerimiento_seleccionado']").removeAttribute('hidden');
-            document.querySelector("div[id='input-group-sede']").removeAttribute('hidden');
-            document.querySelector("form[id='form-orden'] input[name='codigo_requerimiento']").value = response.requerimiento.codigo;
-            document.querySelector("form[id='form-orden'] input[name='concepto_requerimiento']").value = response.requerimiento.concepto;
-            // document.querySelector("form[id='form-orden'] input[name='sede_requerimiento']").value = response.requerimiento.codigo_sede_empresa;
-            document.querySelector("form[id='form-orden'] input[name='fecha_requerimiento']").value = response.requerimiento.fecha_requerimiento;
-            document.querySelector("form[id='form-orden'] input[name='id_requerimiento']").value = response.requerimiento.id_requerimiento;
-            document.querySelector("form[id='form-orden'] select[name='sede']").value = response.requerimiento.id_sede;
-            document.querySelector("form[id='form-orden'] input[name='igv_porcentaje']").value = 18;
-            $('[name=id_tipo_doc]').val(2).trigger('change.select2');
-
-            // llenar_tabla_requerimiento_seleccionado(payload);
             detalleRequerimientoSelected=response.det_req;
-            // console.log(response);
-            let id_requerimiento = response.requerimiento.id_requerimiento;
-             // let tipo_cliente = response.requerimiento.tipo_cliente;
-            // let id_persona =  response.requerimiento.id_persona;
-            // let dni_persona = response.requerimiento.dni_persona;
-            // let nombre_persona = response.requerimiento.nombre_persona;
-            // let id_cliente = response.requerimiento.id_cliente;
-            // let cliente_razon_social = response.requerimiento.cliente_razon_social;
-            // let cliente_ruc =response.requerimiento.cliente_ruc;
-            // let total =response.requerimiento.total;
-
-            // document.querySelector("div[id='input-group-proveedor'] h5").textContent = 'Cliente';
-             // $('[name=monto_subtotal]').val(total);
-
-
             listar_detalle_orden_requerimiento(response.det_req);
-            calcularTotales();
+            console.log(response); 
+            document.querySelector("div[id='modal-orden-requerimiento'] span[id='codigo_requeriento_seleccionado']").textContent= ' - Requerimiento: '+ response.requerimiento.codigo;
+            document.querySelector("div[id='modal-orden-requerimiento'] input[name='id_requerimiento']").value= response.requerimiento.id_requerimiento;
+            document.querySelector("div[id='modal-orden-requerimiento'] select[name='sede']").value= response.requerimiento.id_sede;
         }
     }).fail( function( jqXHR, textStatus, errorThrown ){
         console.log(jqXHR);
         console.log(textStatus);
         console.log(errorThrown);
     });
-
 }
 
- 
 
+$("#form-orden-requerimiento").on("submit", function(e){
+    e.preventDefault();
+    var data = $(this).serialize();
+    var payload = data+'&detalle_requerimiento='+JSON.stringify(detalleRequerimientoSelected);
+    guardar_orden_requerimiento(payload);
+});
 
-function actualiza_totales_by_subtotal(){
-    var sub_total = parseFloat($('[name=monto_subtotal]').val());
-    var pigv = parseFloat($('[name=igv_porcentaje]').val());
-    var igv = sub_total * parseFloat(pigv) / 100;
-    $('[name=monto_igv]').val(formatDecimal(igv));
-    var total_a_pagar = sub_total + igv;
-    $('[name=monto_total]').val(formatDecimal(total_a_pagar));
-
-    //     var pigv = parseFloat($('[name=igv_porcentaje]').val());
-    // console.log(pigv);
+function guardar_orden_requerimiento(data){
+    // console.log(data);
+    $.ajax({
+        type: 'POST',
+        url: '/guardar_orden_por_requerimiento',
+        data: data,
+        dataType: 'JSON',
+        success: function(response){
+            console.log(response);
+            if (response > 0){
+                alert('Orden de registrada con éxito');
+                $('#modal-orden-requerimiento').modal('hide');
+                $('#listaRequerimientosPendientes').DataTable().ajax.reload();
+            }
+        }
+    }).fail( function( jqXHR, textStatus, errorThrown ){
+        console.log(jqXHR);
+        console.log(textStatus);
+        console.log(errorThrown);
+    });
     
-    //     var monto_total = parseFloat($('[name=monto_total]').val());
-    //     var monto_subtotal = monto_total/(1+(pigv/100));
-    //     $('[name=monto_subtotal]').val(formatDecimal(monto_subtotal));
-    //     var monto_igv = monto_subtotal*(pigv/100);
-    //     $('[name=monto_igv]').val(formatDecimal(monto_igv));
 }
 
 function listar_detalle_orden_requerimiento(data){
@@ -123,8 +135,9 @@ function listar_detalle_orden_requerimiento(data){
     $('#listaDetalleOrden').dataTable({
         bDestroy: true,
         order: [[1, 'desc']],
-        info:     false,
-        paging:   false,
+        info:     true,
+        iDisplayLength:2,
+        paging:   true,
         searching: false,
         language: vardataTables[0],
         processing: true,
@@ -143,52 +156,9 @@ function listar_detalle_orden_requerimiento(data){
                 }
             },
             { data: 'unidad_medida' },
-            {'render':
-                function (data, type, row, meta){
-                    return '<input type="text" name="cantidad_item" index="'+meta.row+'" style="width: 60px;" data-id-detalle-requerimiento="'+row.id_detalle_requerimiento+'" value="'+row.cantidad+'" oninput="handleKeyPrecio(event,this);" disabled>';
-                }
-            },
-            {'render':
-                function (data, type, row, meta){
-                    return '<input type="text" name="precio_item" index="'+meta.row+'" style="width: 60px;" data-id-detalle-requerimiento="'+row.id_detalle_requerimiento+'" value="'+row.precio_referencial+'" oninput="handleKeyPrecio(event,this);">';
-                }
-            },
-            {'render':
-                function (data, type, row, meta){
-                    return '0';
-                }
-            },
-            {'render':
-                function (data, type, row, meta){
-                    let montoTotalItem = (row.cantidad*row.precio_referencial).toFixed(2);
-                    return '<input type="text" name="monto_total_item" index="'+meta.row+'" style="width: 60px;" data-id-detalle-requerimiento="'+row.id_detalle_requerimiento+'" value="'+montoTotalItem+'" disabled>';
+            { data: 'cantidad' }
+        ],
 
-                    
-                }
-            },
-            {'render':
-                function (data, type, row, meta){
-                    return '';
-                }
-            },
-            {'render':
-                function (data, type, row, meta){
-                    return '';
-                }
-            },
-            {'render': 
-                function (data, type, row) {
-                    // let btn =
-                    // '<div class="btn-group btn-group-sm" role="group">'+
-                    //     '<button class="btn btn-primary btn-sm" name="btnActualizarItem" title="Actualizar" onclick="actualizarItemV(event,'+row.id_detalle_requerimiento+');">'+
-                    //         '<i class="far fa-edit"></i>'+
-                    //     '</button>'+
-                    // '</div>';
-                    // return btn;
-                    return '';
-                },
-            }
-        ]
     })
 
     let tablelistaitem = document.getElementById('listaDetalleOrden_wrapper');

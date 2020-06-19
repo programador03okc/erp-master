@@ -1564,7 +1564,10 @@ Route::get('decode5t/{id}', 'EquipoController@decode5t');
 	Route::get('get_current_user/', 'LogisticaController@get_current_user'); 
 	Route::get('/logistica/explorar-orden/{id_orden}', 'LogisticaController@explorar_orden'); 
 
-	Route::get('listar_requerimientos_elaborados', 'LogisticaController@listar_requerimientos_elaborados'); 
+	// generar oreden por requerimiento
+	Route::get('generar_orden_requerimiento', 'LogisticaController@view_generar_orden_requerimiento'); 
+	Route::get('listar_requerimientos_pendientes', 'LogisticaController@listar_requerimientos_pendientes'); 
+	Route::get('listar_requerimientos_atendidos', 'LogisticaController@listar_requerimientos_atendidos'); 
 	Route::get('get_requerimiento_orden/{id}', 'LogisticaController@get_requerimiento_orden'); 
 	Route::post('guardar_orden_por_requerimiento', 'LogisticaController@guardar_orden_por_requerimiento');
 

@@ -14,6 +14,7 @@
                             <th hidden></th>
                             <th>RUC</th>
                             <th>Razon Social</th>
+                            <th>Telefono</th>
                         </tr>
                     </thead>
                     <tbody></tbody>

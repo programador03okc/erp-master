@@ -39,10 +39,11 @@ function listarPersonas() {
             {'data': 'id_persona',},
             {'data': 'nro_documento'},
             {'render':
-                function (data, type, row){
-                    return (row['apellido_paterno'] + ' ' + row['apellido_materno'] + ' ' + row['nombres']);
-                }
+            function (data, type, row){
+                return (row['apellido_paterno'] + ' ' + row['apellido_materno'] + ' ' + row['nombres']);
             }
+        },
+        {'data': 'telefono','defaultContent': ''},
         ],
         'columnDefs': [{ 'aTargets': [0], 'sClass': 'invisible'}],
         'order': [

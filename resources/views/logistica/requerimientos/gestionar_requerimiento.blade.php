@@ -127,8 +127,8 @@
                     <input type="text" class="form-control" name="cliente_razon_social" style="display: none;">
 
                     <input type="text" class="oculto" name="id_persona" >
-                    <input type="text" class="form-control" name="dni_persona" >
-                    <input type="text" class="form-control" name="nombre_persona" >
+                    <input type="text" class="form-control activation" name="dni_persona" >
+                    <input type="text" class="form-control activation" name="nombre_persona" >
 
                     <div class="input-group-append">        
                         <button type="button" title="Seleccionar Cliente" name="btnCliente" 
@@ -151,9 +151,9 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-4" id="input-group-almacen" hidden>
-                <h5>Almacén</h5>
-                <select class="form-control " name="id_almacen">
+            <div class="col-md-4" id="input-group-almacen">
+                <h5>Almacén que solicita</h5>
+                <select class="form-control activation " name="id_almacen">
                     <option value="0">Elija una opción</option>
                 </select>
             </div>
@@ -171,25 +171,24 @@
                 </div>
             </div>
             
-            <div class="hidden" id="section-proyectos">
-                <div class="col-md-9">
-                    <h5>Proyecto</h5>
-                    <div style="display:flex;">
-                        <input hidden="true" type="text" name="id_op_com" class="activation">
-                        <input type="text" name="codigo_opcion" class="form-control group-elemento" style="width:130px; text-align:center;" readonly>
-                        <div class="input-group-okc">
-                            <input type="text" class="form-control" name="nombre_opcion" placeholder="" aria-describedby="basic-addon4" disabled="true">
-                            <div class="input-group-append">
-                                <button type="button" class="input-group-text" id="btnOpenModalProyecto" onClick="open_opcion_modal();">
-                                    <i class="fa fa-search"></i>
-                                </button>
-                            </div>
-                        </div>                            
-                    </div>
+            <div class="col-md-9" id="input-group-proyecto" hidden>
+                <h5>Proyecto</h5>
+                <div style="display:flex;">
+                    <input hidden="true" type="text" name="id_op_com" class="activation">
+                    <input type="text" name="codigo_opcion" class="form-control group-elemento" style="width:130px; text-align:center;" readonly>
+                    <div class="input-group-okc">
+                        <input type="text" class="form-control" name="nombre_opcion" placeholder="" aria-describedby="basic-addon4" disabled="true">
+                        <div class="input-group-append">
+                            <button type="button" class="input-group-text" id="btnOpenModalProyecto" onClick="open_opcion_modal();">
+                                <i class="fa fa-search"></i>
+                            </button>
+                        </div>
+                    </div>                            
                 </div>
             </div>
-            <div class="hidden" id="section-comercial">
-                <div class="col-md-2">
+
+            <div id="input-group-comercial" hidden>
+                <div class="col-md-2" >
                     <h5>Comercial</h5>
                     <select class="form-control activation" name="tpOptCom" disabled="true" onChange="changeOptComercialSelect();">
                         <option value="1">Orden C. Cliente</option>

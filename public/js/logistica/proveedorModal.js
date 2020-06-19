@@ -31,6 +31,7 @@ function listar_proveedores(){
             {'data': 'id_contribuyente'},
             {'data': 'nro_documento'},
             {'data': 'razon_social'},
+            {'data': 'telefono'}
         ],
         'columnDefs': [{ 'aTargets': [0,1], 'sClass': 'invisible'}],
     });

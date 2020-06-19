@@ -50,7 +50,7 @@
                 </div>
             </div>
     
-            <div class="col-md-2">
+            <div class="col-md-2"  id="group-tipo_orden">
                 <h5>Tipo</h5>
                 <select class="form-control activation js-example-basic-single" 
                     name="id_tipo_doc" disabled="true">
@@ -60,11 +60,15 @@
                     @endforeach
                 </select>
             </div>
-            <div class="col-md-2">
+            <div class="col-md-2"  id="group-codigo_orden">
                 <h5>Código Orden</h5>
-                <input class="form-control" id="codigo" type="text" placeholder="OC/OS-####-####" readonly>
+                <input class="form-control" id="codigo" name="codigo_orden" type="text" placeholder="OC/OS-{sede}-{añoo}-####" readonly>
             </div>
-            <div class="col-md-2" id="input-group-sede" hidden>
+            <div class="col-md-2"  id="group-codigo_orden_externo" hidden>
+                <h5>Código Orden (SoftLink)</h5>
+                <input class="form-control" name="codigo_orden_externo" type="text" placeholder="">
+            </div>
+            <div class="col-md-2" id="group-sede" hidden>
                 <h5>Sede</h5>
                     <select name="sede" class="form-control activation"  required>
                         @foreach ($sedes as $sede)
@@ -72,27 +76,27 @@
                         @endforeach                    
                     </select>
             </div>
-            <div class="col-md-2">
+            <div class="col-md-2" id="group-fecha_orden">
                 <h5>Fecha</h5>
                 <input class="form-control" id="fecha" type="text" placeholder="DD/MM/AA" readonly>
             </div>
         </div>
 
-        <div class="row" id="input-group-proveedor">
-            <div class="col-md-4">
+        <div class="row">
+            <div class="col-md-4" id="group-proveedor">
                 <h5>Proveedor</h5>
                 <div style="display:flex;">
                     <input class="oculto" name="id_proveedor"/>
                     <input class="oculto" name="id_contrib"/>
                     <input type="text" class="form-control" name="razon_social" disabled
                         aria-describedby="basic-addon1" required>
-                    <button type="button" class="input-group-text" id="basic-addon1" onClick="proveedorModal();">
+                    <button type="button" class="group-text" id="basic-addon1" onClick="proveedorModal();">
                         <i class="fa fa-search"></i>
                     </button> 
                     <button type="button" class="btn-primary activation" title="Agregar Proveedor" onClick="agregar_proveedor();"><i class="fas fa-plus"></i></button>
                 </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-4"  id="group-condicion">
                 <h5>Condición</h5>
                 <div style="display:flex;">
                     <select class="form-control group-elemento activation" name="id_condicion" onchange="handlechangeCondicion(event);"
@@ -105,14 +109,14 @@
                     <input type="text" value="días" class="form-control group-elemento" style="width:60px;text-align:center;" disabled/>
                 </div>
             </div>
-            <div class="col-md-2">
+            <div class="col-md-2"  id="group-plazo_entrega">
                 <h5>Plazo Entrega</h5>
                 <div style="display:flex;">
                     <input type="number" name="plazo_entrega" class="form-control activation group-elemento" style="text-align:right;" disabled/>
                     <input type="text" value="días" class="form-control group-elemento" style="width:60px;text-align:center;" disabled/>
                 </div>
             </div>
-            <div class="col-md-2">
+            <div class="col-md-2"  id="group-moneda">
                 <h5>Moneda</h5>
                 <select class="form-control activation js-example-basic-single" 
                     name="id_moneda" disabled="true">
@@ -126,7 +130,7 @@
 
    
         <div class="row">
-            <div class="col-md-3">
+            <div class="col-md-3"  id="group-tipo_documento">
                 <h5>Tipo de Documento</h5>
                 <select class="form-control activation js-example-basic-single" 
                     name="id_tp_documento" disabled="true">
@@ -136,27 +140,29 @@
                     @endforeach
                 </select>
             </div>
-            <div class="col-md-3">
-                <h5>N° Cuenta Principal</h5>
-                <input class="oculto" name="nro_cuenta_principal"/>
-                <div style="display:flex;">
-                    <select class="form-control activation" name="id_cta_principal"></select>
-                    <button type="button" class="btn-primary activation" title="Agregar Cuenta Banco" onClick="agregar_cta_banco(1,1);">
-                        <i class="fas fa-plus"></i></button>
+            <div id="group-cuentas">
+                <div class="col-md-3">
+                    <h5>N° Cuenta Principal</h5>
+                    <input class="oculto" name="nro_cuenta_principal"/>
+                    <div style="display:flex;">
+                        <select class="form-control activation" name="id_cta_principal"></select>
+                        <button type="button" class="btn-primary activation" title="Agregar Cuenta Banco" onClick="agregar_cta_banco(1,1);">
+                            <i class="fas fa-plus"></i></button>
+                    </div>
                 </div>
-            </div>
-            <div class="col-md-3">
-                <h5>N° Cuenta Alternativa</h5>
-                <input class="oculto" name="nro_cuenta_alternativa"/>
-                <select class="form-control activation" name="id_cta_alternativa"></select>
-            </div>
-            <div class="col-md-3">
-                <h5>N° Cuenta Detracción</h5>
-                <div style="display:flex;">
-                    <input class="oculto" name="nro_cuenta_detraccion"/>
-                    <select class="form-control activation" name="id_cta_detraccion"></select>
-                    <button type="button" class="btn-primary activation" title="Agregar Cuenta Detracción" onClick="agregar_cta_banco(2,4);">
-                        <i class="fas fa-plus"></i></button>
+                <div class="col-md-3">
+                    <h5>N° Cuenta Alternativa</h5>
+                    <input class="oculto" name="nro_cuenta_alternativa"/>
+                    <select class="form-control activation" name="id_cta_alternativa"></select>
+                </div>
+                <div class="col-md-3">
+                    <h5>N° Cuenta Detracción</h5>
+                    <div style="display:flex;">
+                        <input class="oculto" name="nro_cuenta_detraccion"/>
+                        <select class="form-control activation" name="id_cta_detraccion"></select>
+                        <button type="button" class="btn-primary activation" title="Agregar Cuenta Detracción" onClick="agregar_cta_banco(2,4);">
+                            <i class="fas fa-plus"></i></button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -212,7 +218,7 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-md-6">
+            <div class="col-md-6" id="group-responsable">
                 <input type="text" name="cod_estado" hidden/>
                 <h5 id="estado">Estado: <label></label></h5>
                 <div class="row">   
@@ -227,7 +233,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-6" id="group-totales">
                 <table class="tabla-totales" width="100%">
                     <tbody>
                         <tr>
