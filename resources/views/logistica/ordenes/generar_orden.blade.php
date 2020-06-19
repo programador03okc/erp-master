@@ -40,10 +40,10 @@
                     <h5>Concepto</h5>
                     <input class="form-control" name="concepto_requerimiento" type="text" placeholder="" readonly>
                 </div>
-                <div class="col-md-2">
+                <!-- <div class="col-md-2">
                     <h5>Sede</h5>
                     <input class="form-control" name="sede_requerimiento" type="text" placeholder="" readonly>
-                </div>
+                </div> -->
                 <div class="col-md-2">
                     <h5>Fecha Requerimiento</h5>
                     <input class="form-control" name="fecha_requerimiento" type="text" placeholder="" readonly>

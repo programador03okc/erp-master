@@ -62,7 +62,7 @@ function obtenerRequerimiento(id){
             document.querySelector("div[id='input-group-sede']").removeAttribute('hidden');
             document.querySelector("form[id='form-orden'] input[name='codigo_requerimiento']").value = response.requerimiento.codigo;
             document.querySelector("form[id='form-orden'] input[name='concepto_requerimiento']").value = response.requerimiento.concepto;
-            document.querySelector("form[id='form-orden'] input[name='sede_requerimiento']").value = response.requerimiento.codigo_sede_empresa;
+            // document.querySelector("form[id='form-orden'] input[name='sede_requerimiento']").value = response.requerimiento.codigo_sede_empresa;
             document.querySelector("form[id='form-orden'] input[name='fecha_requerimiento']").value = response.requerimiento.fecha_requerimiento;
             document.querySelector("form[id='form-orden'] input[name='id_requerimiento']").value = response.requerimiento.id_requerimiento;
             document.querySelector("form[id='form-orden'] select[name='sede']").value = response.requerimiento.id_sede;

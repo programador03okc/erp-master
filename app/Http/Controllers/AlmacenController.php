@@ -29,12 +29,14 @@ class AlmacenController extends Controller
         $cantidad_ingresos_pendientes = $cantidades['ingresos'];
         $cantidad_salidas_pendientes = $cantidades['salidas'];
         $cantidad_transferencias_pendientes = $cantidades['transferencias'];
+        $cantidad_pagos_pendientes = $cantidades['pagos'];
 
         return view('almacen/main', compact(
             'cantidad_despachos_pendientes',
             'cantidad_ingresos_pendientes',
             'cantidad_salidas_pendientes',
-            'cantidad_transferencias_pendientes'
+            'cantidad_transferencias_pendientes',
+            'cantidad_pagos_pendientes'
             ));
     }
     public function cantidades_main(){
@@ -54,7 +56,13 @@ class AlmacenController extends Controller
         ->where('estado',1)
         ->count();
 
-        return (['despachos'=>$despachos,'ingresos'=>$ingresos, 'salidas'=>$salidas, 'transferencias'=>$transferencias]);
+        $pagos = DB::table('almacen.alm_req')
+        ->where([['id_tipo_requerimiento','=',1],['estado','=',1],['obs_confirmacion','=',null]])
+        ->where([['id_tipo_requerimiento','=',2],['estado','=',19],['obs_confirmacion','=',null]])
+        ->count();
+
+        return (['despachos'=>$despachos,'ingresos'=>$ingresos, 'salidas'=>$salidas, 
+        'transferencias'=>$transferencias, 'pagos'=>$pagos]);
     }
 
     function view_tipo(){
@@ -709,14 +717,23 @@ class AlmacenController extends Controller
     public function mostrar_clientes()
     {
         $data = DB::table('comercial.com_cliente')
-            ->select('com_cliente.id_cliente','com_cliente.id_contribuyente',
-                'adm_contri.nro_documento','adm_contri.razon_social')
-            ->join('contabilidad.adm_contri','adm_contri.id_contribuyente','=','com_cliente.id_contribuyente')
-            ->where([['com_cliente.estado', '=', 1]])
-                ->orderBy('adm_contri.nro_documento')
-                ->get();
+        ->select('com_cliente.id_cliente','com_cliente.id_contribuyente',
+            'adm_contri.nro_documento','adm_contri.razon_social', 'adm_contri.telefono')
+        ->join('contabilidad.adm_contri','adm_contri.id_contribuyente','=','com_cliente.id_contribuyente')
+        ->where([['com_cliente.estado', '=', 1]])
+            ->orderBy('adm_contri.nro_documento')
+            ->get();
         $output['data'] = $data;
         return $output;
+        // $data = DB::table('comercial.com_cliente')
+        //     ->select('com_cliente.id_cliente','com_cliente.id_contribuyente',
+        //         'adm_contri.nro_documento','adm_contri.razon_social')
+        //     ->join('contabilidad.adm_contri','adm_contri.id_contribuyente','=','com_cliente.id_contribuyente')
+        //     ->where([['com_cliente.estado', '=', 1]])
+        //         ->orderBy('adm_contri.nro_documento')
+        //         ->get();
+        // $output['data'] = $data;
+        // return $output;
     }
     public function mostrar_clientes_empresa()
     {
@@ -4468,7 +4485,8 @@ class AlmacenController extends Controller
         }
         return response()->json($movimientos);
     }
-    public function listar_saldos($almacen){
+    public function listar_saldos($almacen)
+    {
         $data = DB::table('almacen.alm_prod_ubi')
             ->select('alm_prod_ubi.*','alm_prod.codigo','alm_prod.descripcion','alm_ubi_posicion.codigo as cod_posicion',
             'alm_und_medida.abreviatura','alm_prod.codigo_anexo','sis_moneda.simbolo','alm_cat_prod.descripcion as des_categoria',
@@ -4478,7 +4496,8 @@ class AlmacenController extends Controller
             WHERE alm_det_req.estado=19 
             AND alm_det_req.id_producto=alm_prod_ubi.id_producto 
             AND alm_det_req.id_almacen_reserva=alm_prod_ubi.id_almacen 
-            GROUP BY alm_det_req.cantidad) as cantidad_reserva"))
+            GROUP BY alm_det_req.cantidad) as cantidad_reserva"),
+            'alm_almacen.descripcion as almacen_descripcion')
             ->leftjoin('almacen.alm_ubi_posicion','alm_ubi_posicion.id_posicion','=','alm_prod_ubi.id_posicion')
             // ->join('almacen.alm_ubi_nivel','alm_ubi_nivel.id_nivel','=','alm_ubi_posicion.id_nivel')
             // ->join('almacen.alm_ubi_estante','alm_ubi_estante.id_estante','=','alm_ubi_nivel.id_estante')
@@ -4491,8 +4510,88 @@ class AlmacenController extends Controller
             ->leftjoin('almacen.alm_cat_prod','alm_cat_prod.id_categoria','=','alm_prod.id_categoria')
             ->leftjoin('almacen.alm_prod_antiguo','alm_prod_antiguo.id_producto','=','alm_prod.id_producto')
             // ->leftjoin('almacen.alm_det_req','alm_det_req.id_producto','=','alm_prod.id_producto')
-            ->where([['alm_prod_ubi.id_almacen','=',$almacen],
-                    ['alm_prod_ubi.estado','=',1]])
+            ->where([['alm_prod_ubi.estado','=',1],['alm_prod_ubi.id_almacen','=',$almacen]])
+            ->get();
+        
+        $nueva_data = [];
+        $fecha = date('Y-m-d');
+        $tipo_cambio_compra = $this->tipo_cambio_compra($fecha);
+
+        foreach($data as $d){
+            // $saldos = $this->saldo_producto($almacen, $d->id_producto, $fecha);
+            // $costo = ($saldos['saldo'] !== 0 ? ($saldos['valorizacion'] / $saldos['saldo']) : 0);
+
+            $soles = 0;
+            $dolares = 0;
+
+            if ($d->id_moneda == 1){
+                $dolares = $d->valorizacion * $tipo_cambio_compra;
+                $soles = $d->valorizacion;
+            } 
+            else if ($d->id_moneda == 2){
+                $dolares = $d->valorizacion;
+                $soles = $d->valorizacion / $tipo_cambio_compra;
+            }
+            else {
+                $soles = $d->valorizacion;
+                $dolares = $d->valorizacion * $tipo_cambio_compra;
+            }
+            $nuevo = [
+                'id_prod_ubi'=> $d->id_prod_ubi,
+                'id_producto'=> $d->id_producto,
+                'id_almacen'=> $d->id_almacen,
+                'codigo'=> $d->codigo,
+                'codigo_anexo'=> $d->codigo_anexo,
+                'cod_antiguo'=> $d->cod_antiguo,
+                'descripcion'=> $d->descripcion,
+                'abreviatura'=> $d->abreviatura,
+                'id_unidad_medida'=> $d->id_unidad_medida,
+                'stock'=> $d->stock,
+                'simbolo'=> $d->simbolo,
+                'id_moneda'=> $d->id_moneda,
+                'soles'=> round($soles,4,PHP_ROUND_HALF_UP),
+                'dolares'=> round($dolares,4,PHP_ROUND_HALF_UP),
+                'costo_promedio'=> round($d->costo_promedio,4,PHP_ROUND_HALF_UP),
+                'cantidad_reserva'=> $d->cantidad_reserva,
+                'almacen_descripcion'=> $d->almacen_descripcion,
+                // 'cod_posicion'=> $d->cod_posicion,
+                'des_clasificacion'=> $d->des_clasificacion,
+                'des_categoria'=> $d->des_categoria,
+                'des_subcategoria'=> $d->des_subcategoria,
+            ];
+            array_push($nueva_data,$nuevo);
+        }
+        // return response()->json($nueva_data);
+        $output['data'] = $nueva_data;
+        return response()->json($output);
+    }
+
+    public function listar_saldos_todo()
+    {
+        $data = DB::table('almacen.alm_prod_ubi')
+            ->select('alm_prod_ubi.*','alm_prod.codigo','alm_prod.descripcion','alm_ubi_posicion.codigo as cod_posicion',
+            'alm_und_medida.abreviatura','alm_prod.codigo_anexo','sis_moneda.simbolo','alm_cat_prod.descripcion as des_categoria',
+            'alm_subcat.descripcion as des_subcategoria','alm_clasif.descripcion as des_clasificacion',
+            'alm_prod_antiguo.cod_antiguo','alm_prod.id_moneda','alm_prod.id_unidad_medida',
+            DB::raw("(SELECT SUM(alm_det_req.cantidad) FROM almacen.alm_det_req 
+            WHERE alm_det_req.estado=19 
+            AND alm_det_req.id_producto=alm_prod_ubi.id_producto 
+            AND alm_det_req.id_almacen_reserva=alm_prod_ubi.id_almacen 
+            GROUP BY alm_det_req.cantidad) as cantidad_reserva"),
+            'alm_almacen.descripcion as almacen_descripcion')
+            ->leftjoin('almacen.alm_ubi_posicion','alm_ubi_posicion.id_posicion','=','alm_prod_ubi.id_posicion')
+            // ->join('almacen.alm_ubi_nivel','alm_ubi_nivel.id_nivel','=','alm_ubi_posicion.id_nivel')
+            // ->join('almacen.alm_ubi_estante','alm_ubi_estante.id_estante','=','alm_ubi_nivel.id_estante')
+            ->join('almacen.alm_almacen','alm_almacen.id_almacen','=','alm_prod_ubi.id_almacen')
+            ->join('almacen.alm_prod','alm_prod.id_producto','=','alm_prod_ubi.id_producto')
+            ->join('almacen.alm_und_medida','alm_und_medida.id_unidad_medida','=','alm_prod.id_unidad_medida')
+            ->leftjoin('configuracion.sis_moneda','sis_moneda.id_moneda','=','alm_prod.id_moneda')
+            ->leftjoin('almacen.alm_clasif','alm_clasif.id_clasificacion','=','alm_prod.id_clasif')
+            ->leftjoin('almacen.alm_subcat','alm_subcat.id_subcategoria','=','alm_prod.id_subcategoria')
+            ->leftjoin('almacen.alm_cat_prod','alm_cat_prod.id_categoria','=','alm_prod.id_categoria')
+            ->leftjoin('almacen.alm_prod_antiguo','alm_prod_antiguo.id_producto','=','alm_prod.id_producto')
+            // ->leftjoin('almacen.alm_det_req','alm_det_req.id_producto','=','alm_prod.id_producto')
+            ->where([['alm_prod_ubi.estado','=',1]])
             ->get();
         
         $nueva_data = [];
@@ -4534,6 +4633,7 @@ class AlmacenController extends Controller
                 'dolares'=> round($dolares,4,PHP_ROUND_HALF_UP),
                 'costo_promedio'=> round($d->costo_promedio,4,PHP_ROUND_HALF_UP),
                 'cantidad_reserva'=> $d->cantidad_reserva,
+                'almacen_descripcion'=> $d->almacen_descripcion,
                 // 'cod_posicion'=> $d->cod_posicion,
                 'des_clasificacion'=> $d->des_clasificacion,
                 'des_categoria'=> $d->des_categoria,

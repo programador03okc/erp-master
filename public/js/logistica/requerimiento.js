@@ -856,6 +856,13 @@ function get_data_requerimiento(){
         id_op_com = document.querySelector("form[id='form-requerimiento'] input[name='id_op_com']").value;
         id_rol = document.querySelector("form[id='form-requerimiento'] select[name='rol_usuario']").value;
         codigo_occ = document.querySelector("form[id='form-requerimiento'] input[name='codigo_occ']").value;
+
+        tipo_cliente = document.querySelector("form[id='form-requerimiento'] select[name='tipo_cliente']").value;
+        id_cliente = document.querySelector("form[id='form-requerimiento'] input[name='id_cliente']").value;
+        id_persona = document.querySelector("form[id='form-requerimiento'] input[name='id_persona']").value;
+        direccion_entrega = document.querySelector("form[id='form-requerimiento'] input[name='direccion_entrega']").value;
+        ubigeo = document.querySelector("form[id='form-requerimiento'] input[name='ubigeo']").value;
+
         requerimiento = {
             id_requerimiento,
             tipo_requerimiento,
@@ -864,6 +871,14 @@ function get_data_requerimiento(){
             fecha_requerimiento,
             id_prioridad,
             id_empresa,
+
+            id_sede,
+            tipo_cliente,
+            id_cliente,
+            id_persona,
+            direccion_entrega,
+            ubigeo,
+
             id_grupo,
             id_area,
             nombre_area,
@@ -903,6 +918,7 @@ function get_data_requerimiento(){
             id_empresa,
             id_sede,
             tipo_cliente,
+            id_cliente,
             id_persona,
             direccion_entrega,
             ubigeo,
@@ -941,6 +957,7 @@ function get_data_requerimiento(){
         id_empresa,
         id_sede,
         tipo_cliente,
+        id_cliente,
         id_persona,
         direccion_entrega,
         ubigeo,

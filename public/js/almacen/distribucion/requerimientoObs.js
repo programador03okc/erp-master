@@ -6,6 +6,7 @@ function openRequerimientoObs(id, cod, ori){
     });
     origen = ori;
     $('[name=obs_id_requerimiento]').val(id);
+    $('[name=obs_motivo]').val('');
     $('#cabecera_req').text(cod+' - Anular Requerimiento');
 }
 

@@ -86,6 +86,8 @@ Route::group(['middleware' => ['auth']], function () {
 	// });
 	Route::get('logistica', 'LogisticaController@view_main_logistica');
 	Route::get('almacen', 'AlmacenController@view_main_almacen');
+	Route::get('getEstadosRequerimientos', 'DistribucionController@getEstadosRequerimientos');
+	Route::get('listarEstadosRequerimientos/{id}', 'DistribucionController@listarEstadosRequerimientos');
 
 
 
@@ -847,6 +849,13 @@ Route::get('ingreso_transferencia/{id}', 'TransferenciaController@ingreso_transf
 Route::get('transferencia_nextId/{id}', 'TransferenciaController@transferencia_nextId');
 
 
+Route::get('requerimientoPagos', 'DistribucionController@view_requerimientoPagos');
+Route::post('listarRequerimientosPendientesPagos', 'DistribucionController@listarRequerimientosPendientesPagos');
+Route::post('listarRequerimientosConfirmadosPagos', 'DistribucionController@listarRequerimientosConfirmadosPagos');
+Route::post('pago_confirmado', 'DistribucionController@pago_confirmado');
+Route::post('pago_no_confirmado', 'DistribucionController@pago_no_confirmado');
+
+
 /**Guia Venta */
 
 Route::get('guia_venta', 'AlmacenController@view_guia_venta');
@@ -991,6 +1000,9 @@ Route::get('kardex_producto/{id}/{alm}/{fini}/{ffin}', 'AlmacenController@kardex
 Route::get('kardex_detallado/{id}/{alm}/{fini}/{ffin}', 'AlmacenController@download_kardex_producto');
 Route::get('saldos', 'AlmacenController@view_saldos');
 Route::get('listar_saldos/{id}', 'AlmacenController@listar_saldos');
+Route::get('listar_saldos_todo', 'AlmacenController@listar_saldos_todo');
+Route::get('verRequerimientosReservados/{id}/{alm}', 'DistribucionController@verRequerimientosReservados');
+
 Route::get('saldo_producto/{id}/{prod}/{fec}', 'AlmacenController@saldo_producto');
 Route::get('lista_ingresos', 'AlmacenController@view_ingresos');
 Route::get('listar_ingresos/{alm}/{docs}/{cond}/{fini}/{ffin}/{prov}/{usu}/{mon}/{tra}', 'AlmacenController@listar_ingresos');

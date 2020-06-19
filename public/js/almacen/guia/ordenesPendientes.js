@@ -128,8 +128,9 @@ function listarOrdenesEntregadas(){
                 // '<button type="button" class="anularIngreso btn btn-danger boton" data-toggle="tooltip" '+
                 //     'data-placement="bottom" title="Anular Ingreso" data-id="'+row.id_mov_alm+'">'+
                 //     '<i class="fas fa-trash"></i></button>'+
-                ((row['sede_orden'] !== row['sede_requerimiento'] && row['id_guia_ven'] == null) ? 
-                ('<button type="button" class="transferencia btn btn-success boton" data-toggle="tooltip" '+
+                (((row['id_tipo_requerimiento'] == 1 && (row['sede_orden'] !== row['sede_requerimiento'] && row['id_guia_ven'] == null)) ||
+                  (row['id_tipo_requerimiento'] == 3 && (row['sede_orden'] !== row['sede_almacen'] && row['id_guia_ven'] == null))) ? 
+                 ('<button type="button" class="transferencia btn btn-success boton" data-toggle="tooltip" '+
                     'data-placement="bottom" title="Generar Transferencia" >'+
                     '<i class="fas fa-exchange-alt"></i></button>') : '');
                 }, targets: 14

@@ -2,13 +2,18 @@ function openTransferenciaGuia(data){
     $('#modal-transferenciaGuia').modal({
         show: true
     });
+    console.log();
     $('[name=id_almacen_origen]').val(data.id_almacen);
     $('[name=id_guia_com]').val(data.id_guia_com);
     $('[name=id_sede]').val(data.sede_orden);
     $('[name=id_mov_alm]').val(data.id_mov_alm);
     $('[name=id_requerimiento]').val(data.id_requerimiento);
     $("#submit_transferencia").removeAttr("disabled");
-    cargar_almacenes(data.sede_requerimiento, 'id_almacen_destino');
+    if (data.almacen_requerimiento !== null){
+        $('[name=id_almacen_destino]').val(data.almacen_requerimiento);
+    } else {
+        cargar_almacenes(data.sede_requerimiento, 'id_almacen_destino');
+    }
     var tp_doc_almacen = 2;//guia venta
     next_serie_numero(data.sede_orden,tp_doc_almacen);
 }

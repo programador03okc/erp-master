@@ -1,6 +1,6 @@
 @include('layout.head')
 @include('layout.menu_almacen')
-@include('layout.body')
+@include('layout.body_sin_option')
 <div class="page-main" type="requerimientosPendientes">
     <legend class="mylegend">
         <h2 id="titulo">Gestión de Despachos</h2>
@@ -125,6 +125,7 @@
 <script src="{{('/js/almacen/distribucion/ordenDespachoCreate.js')}}"></script>
 <script src="{{('/js/almacen/distribucion/grupoDespachoCreate.js')}}"></script>
 <script src="{{('/js/almacen/distribucion/despachoDetalle.js')}}"></script>
+<script src="{{('/js/almacen/distribucion/requerimientoDetalle.js')}}"></script>
 <script src="{{('/js/almacen/distribucion/requerimientoObs.js')}}"></script>
 <script src="{{('/js/logistica/clienteModal.js')}}"></script>
 <script src="{{('/js/logistica/proveedorModal.js')}}"></script>

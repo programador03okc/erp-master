@@ -1,18 +1,39 @@
 $(function(){
 //     $('[name=fecha]').val(fecha_actual());
     tipo_cambio();
+    vista_extendida();
+    mostrarSaldos();
 });
-function listarSaldos(){
+
+function mostrarSaldos(){
     var almacen = $('[name=almacen]').val();
-    // var fecha = $('[name=fecha]').val();
-    
+    if (almacen !== null && almacen !== 0 && almacen !== ''){
+        var url = 'listar_saldos/'+almacen;
+        listarSaldos(url);
+    }
+}
+
+$("[name=todos_almacenes]").on( 'change', function() {
+    if( $(this).is(':checked') ) {
+        var url = 'listar_saldos_todo';
+        listarSaldos(url);
+    } else {
+        mostrarSaldos();
+    }
+});
+
+function listarSaldos(url){
+    // var almacen = $('[name=almacen]').val();
+    // // var fecha = $('[name=fecha]').val();
+    // var url = 'listar_saldos/'+almacen;
+
     var vardataTables = funcDatatables();
     $('#listaSaldos').DataTable({
         'dom': vardataTables[1],
         'buttons': vardataTables[2],
         'language' : vardataTables[0],
         'destroy':true,
-        'ajax': 'listar_saldos/'+almacen,
+        'ajax': url,
         // 'ajax': {
         //     url:'listar_saldos/'+almacen,
         //     dataSrc:''
@@ -30,10 +51,11 @@ function listarSaldos(){
             {'data': 'dolares', 'class': 'right'},
             {'data': 'costo_promedio', 'class': 'right'},
             {'data': 'cantidad_reserva', 'class': 'right'},
-            {'render': function (data, type, row) {
-                    return (row['cod_posicion'] !== undefined ? row['cod_posicion'] : '');
-                }
-            },
+            {'data': 'almacen_descripcion'},
+            // {'render': function (data, type, row) {
+            //         return (row['cod_posicion'] !== undefined ? row['cod_posicion'] : '');
+            //     }
+            // },
             {'data': 'des_clasificacion'},
             {'data': 'des_categoria'},
             {'data': 'des_subcategoria'},
@@ -41,8 +63,6 @@ function listarSaldos(){
         'columnDefs': [{ 'aTargets': [0], 'sClass': 'invisible'}],
         "order": [[4, "asc"]]
     });
-    // vista_extendida();
-    // tipo_cambio(fecha);
 }
 
 function tipo_cambio(){

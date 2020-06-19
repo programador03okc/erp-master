@@ -53,14 +53,16 @@ class OrdenesPendientesController extends Controller
             'adm_contri.nro_documento','adm_contri.razon_social','log_ord_compra.fecha as fecha_orden',
             'alm_req.codigo as codigo_requerimiento','alm_req.concepto','log_ord_compra.id_sede as sede_orden',
             'sis_moneda.simbolo','sis_usua.nombre_corto','log_ord_compra.monto_subtotal',
-            'log_ord_compra.monto_igv','log_ord_compra.monto_total',
+            'log_ord_compra.monto_igv','log_ord_compra.monto_total','alm_almacen.id_sede as sede_almacen',
             'alm_req.id_sede as sede_requerimiento','guia_com.serie','guia_com.numero',
-            'alm_req.id_requerimiento','alm_req.estado as estado_requerimiento','guia_ven.id_guia_ven')
+            'alm_req.id_requerimiento','alm_req.estado as estado_requerimiento','guia_ven.id_guia_ven',
+            'alm_req.id_tipo_requerimiento','alm_req.id_almacen as almacen_requerimiento')
             ->join('almacen.guia_com','guia_com.id_guia','=','mov_alm.id_guia_com')
             ->join('logistica.log_ord_compra','log_ord_compra.id_orden_compra','=','guia_com.id_oc')
             ->join('logistica.log_prove','log_prove.id_proveedor','=','log_ord_compra.id_proveedor')
             ->join('contabilidad.adm_contri','adm_contri.id_contribuyente','=','log_prove.id_contribuyente')
             ->leftjoin('almacen.alm_req','alm_req.id_requerimiento','=','log_ord_compra.id_requerimiento')
+            ->leftjoin('almacen.alm_almacen','alm_almacen.id_almacen','=','alm_req.id_almacen')
             ->join('configuracion.sis_moneda','sis_moneda.id_moneda','=','log_ord_compra.id_moneda')
             ->join('configuracion.sis_usua','sis_usua.id_usuario','=','mov_alm.usuario')
             ->leftJoin('almacen.guia_ven','guia_ven.id_guia_com','=','mov_alm.id_guia_com')
@@ -199,12 +201,13 @@ class OrdenesPendientesController extends Controller
                         );
 
                     $detalle = DB::table('logistica.log_det_ord_compra')
-                    ->select('log_det_ord_compra.*','log_valorizacion_cotizacion.precio_cotizado',
-                    'log_valorizacion_cotizacion.id_unidad_medida','log_valorizacion_cotizacion.precio_sin_igv',
-                    'log_valorizacion_cotizacion.cantidad_cotizada',
-                    'log_valorizacion_cotizacion.monto_descuento','alm_item.id_producto')
-                    ->join('logistica.log_valorizacion_cotizacion','log_valorizacion_cotizacion.id_valorizacion_cotizacion','=','log_det_ord_compra.id_valorizacion_cotizacion')
-                    ->join('almacen.alm_item','alm_item.id_item','=','log_det_ord_compra.id_item')
+                    ->select('log_det_ord_compra.*','alm_item.id_producto')
+                    // 'log_valorizacion_cotizacion.precio_cotizado',
+                    // 'log_valorizacion_cotizacion.id_unidad_medida','log_valorizacion_cotizacion.precio_sin_igv',
+                    // 'log_valorizacion_cotizacion.cantidad_cotizada',
+                    // 'log_valorizacion_cotizacion.monto_descuento'
+                    // ->leftjoin('logistica.log_valorizacion_cotizacion','log_valorizacion_cotizacion.id_valorizacion_cotizacion','=','log_det_ord_compra.id_valorizacion_cotizacion')
+                    ->leftjoin('almacen.alm_item','alm_item.id_item','=','log_det_ord_compra.id_item')
                     ->where([['log_det_ord_compra.estado','!=',7],
                              ['log_det_ord_compra.id_orden_compra','=',$request->id_orden_compra]])
                     ->get();
@@ -225,12 +228,12 @@ class OrdenesPendientesController extends Controller
                                 "id_producto" => $det->id_producto,
                                 // "id_posicion" => (isset($posicion) ? $posicion->id_posicion : null),
                                 // "id_posicion" => $posicion->id_posicion,
-                                "cantidad" => $det->cantidad_cotizada,
+                                "cantidad" => $det->cantidad,
                                 "id_unid_med" => $det->id_unidad_medida,
                                 "usuario" => $id_usuario,
                                 "id_oc_det" => $det->id_detalle_orden,
-                                "unitario" => $det->precio_sin_igv,
-                                "total" => ($det->precio_sin_igv * $det->cantidad_cotizada),
+                                "unitario" => $det->precio,
+                                "total" => ($det->precio * $det->cantidad),
                                 "unitario_adicional" => 0,
                                 // "id_guia_ven_det" =>,
                                 'estado' => 1,
@@ -244,8 +247,8 @@ class OrdenesPendientesController extends Controller
                                 'id_mov_alm' => $id_ingreso,
                                 'id_producto' => $det->id_producto,
                                 // 'id_posicion' => $det->id_posicion,
-                                'cantidad' => $det->cantidad_cotizada,
-                                'valorizacion' => (floatval($det->precio_sin_igv) * floatval($det->cantidad_cotizada)),
+                                'cantidad' => $det->cantidad,
+                                'valorizacion' => (floatval($det->precio) * floatval($det->cantidad)),
                                 'usuario' => $id_usuario,
                                 'id_guia_com_det' => $id_guia_com_det,
                                 'estado' => 1,

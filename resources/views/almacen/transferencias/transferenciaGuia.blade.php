@@ -17,10 +17,10 @@
                             <h5>Serie-Número</h5>
                             <input type="text" class="oculto" name="id_serie_numero">
                             <div class="input-group">
-                                <input type="text" class="form-control activation" name="serie" readOnly
+                                <input type="text" class="form-control activation" name="serie"
                                     placeholder="0000" >
                                 <span class="input-group-addon">-</span>
-                                <input type="text" class="form-control activation" name="numero" readOnly
+                                <input type="text" class="form-control activation" name="numero"
                                     placeholder="0000000"> 
                                     <!-- onBlur="ceros_numero('numero');"> -->
                             </div>

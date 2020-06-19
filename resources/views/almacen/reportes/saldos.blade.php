@@ -40,6 +40,11 @@
     </div>
     <div class="row">
         <div class="col-md-12">
+            <input type="checkbox" name="todos_almacenes" style="margin-right: 10px; margin-left: 7px;"/> Todos los almacenes
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
             <table class="mytable table table-condensed table-bordered table-okc-view" 
                 id="listaSaldos">
                 <thead>

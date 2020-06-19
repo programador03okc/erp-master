@@ -264,6 +264,7 @@
 @include('publico.personaModal')
 @include('publico.ubigeoModal')
 @include('almacen.producto.saldosModal')
+@include('almacen.verRequerimientoEstado')
 
 @include('layout.footer')
 @include('layout.scripts')

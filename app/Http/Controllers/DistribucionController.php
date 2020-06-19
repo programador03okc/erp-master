@@ -30,15 +30,15 @@ class DistribucionController extends Controller
         $usuarios = AlmacenController::select_usuarios();
         return view('almacen/guias/despachosPendientes', compact('tp_operacion','clasificaciones','usuarios'));
     }
-    function view_grupoDespachos(){
+    function view_requerimientoPagos(){
         // $usuarios = AlmacenController::select_usuarios();
-        return view('almacen/distribucion/grupoDespachos');
+        return view('almacen/pagos/requerimientoPagos');
     }
 
-    public function listarRequerimientosPendientes(Request $request){
+    public function listarRequerimientosPendientes(){
         $data = DB::table('almacen.alm_req')
             ->select('alm_req.*','sis_usua.nombre_corto as responsable','adm_grupo.descripcion as grupo',
-            'adm_grupo.id_sede','adm_estado_doc.estado_doc','adm_estado_doc.bootstrap_color',
+            'adm_estado_doc.estado_doc','adm_estado_doc.bootstrap_color',
             'log_ord_compra.codigo as codigo_orden','guia_com.serie','guia_com.numero',
             'trans.id_transferencia','trans.codigo as codigo_transferencia','ubi_dis.descripcion as ubigeo_descripcion',
             'rrhh_perso.nro_documento as dni_persona','alm_almacen.descripcion as almacen_descripcion',
@@ -50,21 +50,120 @@ class DistribucionController extends Controller
             ->join('configuracion.sis_usua','sis_usua.id_usuario','=','alm_req.id_usuario')
             ->leftjoin('administracion.adm_grupo','adm_grupo.id_grupo','=','alm_req.id_grupo')
             ->join('administracion.adm_estado_doc','adm_estado_doc.id_estado_doc','=','alm_req.estado')
-            ->leftJoin('logistica.log_ord_compra','log_ord_compra.id_requerimiento','=','alm_req.id_requerimiento')
-            ->leftJoin('almacen.guia_com','guia_com.id_oc','=','log_ord_compra.id_orden_compra')
+            ->leftJoin('logistica.log_ord_compra', function($join)
+                         {   $join->on('log_ord_compra.id_requerimiento', '=', 'alm_req.id_requerimiento');
+                             $join->where('log_ord_compra.estado','!=', 7);
+                         })
+            // ->leftJoin('logistica.log_ord_compra','log_ord_compra.id_requerimiento','=','alm_req.id_requerimiento')
+            // ->leftJoin('almacen.guia_com','guia_com.id_oc','=','log_ord_compra.id_orden_compra')
             // ->leftJoin('almacen.mov_alm','mov_alm.id_guia_com','=','guia_com.id_guia')
-            ->leftJoin('almacen.guia_ven','guia_ven.id_guia_com','=','guia_com.id_guia')
-            ->leftJoin('almacen.trans','trans.id_guia_ven','=','guia_ven.id_guia_ven')
+            ->leftJoin('almacen.guia_com', function($join)
+                         {   $join->on('guia_com.id_oc', '=', 'log_ord_compra.id_orden_compra');
+                             $join->where('guia_com.estado','!=', 7);
+                         })
+            ->leftJoin('almacen.guia_ven', function($join)
+                         {   $join->on('guia_ven.id_guia_com', '=', 'guia_com.id_guia');
+                             $join->where('guia_ven.estado','!=', 7);
+                         })
+            // ->leftJoin('almacen.guia_ven','guia_ven.id_guia_com','=','guia_com.id_guia')
+            ->leftJoin('almacen.trans', function($join)
+                         {   $join->on('trans.id_guia_ven', '=', 'guia_ven.id_guia_ven');
+                             $join->where('trans.estado','!=', 7);
+                         })
+            // ->leftJoin('almacen.trans','trans.id_guia_ven','=','guia_ven.id_guia_ven')
             ->leftJoin('almacen.alm_almacen','alm_almacen.id_almacen','=','alm_req.id_almacen')
             ->leftJoin('configuracion.ubi_dis','ubi_dis.id_dis','=','alm_req.id_ubigeo_entrega')
             ->leftJoin('rrhh.rrhh_perso','rrhh_perso.id_persona','=','alm_req.id_persona')
             ->leftJoin('comercial.com_cliente','com_cliente.id_cliente','=','alm_req.id_cliente')
             ->leftJoin('contabilidad.adm_contri','adm_contri.id_contribuyente','=','com_cliente.id_contribuyente')
             ->leftJoin('almacen.orden_despacho','orden_despacho.id_requerimiento','=','alm_req.id_requerimiento')
-            ->where([['alm_req.estado','!=',1], ['alm_req.estado','!=',7], ['alm_req.estado','!=',20], ['alm_req.estado','!=',21]])//muestra todos los reservados
+            ->where([['alm_req.estado','!=',1], ['alm_req.estado','!=',7], ['alm_req.estado','!=',20], 
+            ['alm_req.estado','!=',21]])//muestra todos los reservados
             ->get();
         return datatables($data)->toJson();
         // return response()->json($data);
+    }
+
+    public function getEstadosRequerimientos(){
+        $data = DB::table('almacen.alm_req')
+        ->select('alm_req.estado','adm_estado_doc.estado_doc','adm_estado_doc.bootstrap_color',
+            DB::raw('count(alm_req.id_requerimiento) as cantidad'))
+        ->join('administracion.adm_estado_doc','adm_estado_doc.id_estado_doc','=','alm_req.estado')
+        ->groupBy('alm_req.estado','adm_estado_doc.estado_doc','adm_estado_doc.bootstrap_color')
+            ->where([['alm_req.estado','!=',7]])
+            ->get();
+        return response()->json($data);
+    }
+
+    public function listarEstadosRequerimientos($estado){
+        $data = DB::table('almacen.alm_req')
+        ->select('alm_req.*','alm_tp_req.descripcion as tipo_descripcion')
+            ->join('almacen.alm_tp_req','alm_tp_req.id_tipo_requerimiento','=','alm_req.id_tipo_requerimiento')
+            ->where([['alm_req.estado','=',$estado]])
+            ->get();
+        return response()->json($data);
+    }
+
+    public function listarRequerimientosPendientesPagos(Request $request){
+        $data = DB::table('almacen.alm_req')
+            ->select('alm_req.*','sis_usua.nombre_corto as responsable','adm_grupo.descripcion as grupo',
+            'adm_grupo.id_sede','adm_estado_doc.estado_doc','adm_estado_doc.bootstrap_color',
+            'ubi_dis.descripcion as ubigeo_descripcion',
+            'rrhh_perso.nro_documento as dni_persona','alm_almacen.descripcion as almacen_descripcion',
+            'alm_almacen.id_sede as sede_almacen',
+            'alm_tp_req.descripcion as tipo_req',
+            DB::raw("(rrhh_perso.nombres) || ' ' || (rrhh_perso.apellido_paterno) || ' ' || (rrhh_perso.apellido_materno) AS nombre_persona"),
+            'adm_contri.nro_documento as cliente_ruc','adm_contri.razon_social as cliente_razon_social')
+            ->join('almacen.alm_tp_req','alm_tp_req.id_tipo_requerimiento','=','alm_req.id_tipo_requerimiento')
+            ->join('configuracion.sis_usua','sis_usua.id_usuario','=','alm_req.id_usuario')
+            ->leftjoin('administracion.adm_grupo','adm_grupo.id_grupo','=','alm_req.id_grupo')
+            ->join('administracion.adm_estado_doc','adm_estado_doc.id_estado_doc','=','alm_req.estado')
+            ->leftJoin('almacen.alm_almacen','alm_almacen.id_almacen','=','alm_req.id_almacen')
+            ->leftJoin('configuracion.ubi_dis','ubi_dis.id_dis','=','alm_req.id_ubigeo_entrega')
+            ->leftJoin('rrhh.rrhh_perso','rrhh_perso.id_persona','=','alm_req.id_persona')
+            ->leftJoin('comercial.com_cliente','com_cliente.id_cliente','=','alm_req.id_cliente')
+            ->leftJoin('contabilidad.adm_contri','adm_contri.id_contribuyente','=','com_cliente.id_contribuyente')
+            ->where([['alm_req.estado','=',1],['alm_req.confirmacion_pago','=',false]])
+            ->orWhere([['alm_req.estado','=',19],['alm_req.id_tipo_requerimiento','=',2],['alm_req.confirmacion_pago','=',false]])//muestra todos los reservados
+            ->get();
+        return datatables($data)->toJson();
+    }
+
+    public function listarRequerimientosConfirmadosPagos(Request $request){
+        $data = DB::table('almacen.alm_req')
+            ->select('alm_req.*','sis_usua.nombre_corto as responsable','adm_grupo.descripcion as grupo',
+            'adm_grupo.id_sede','adm_estado_doc.estado_doc','adm_estado_doc.bootstrap_color',
+            'ubi_dis.descripcion as ubigeo_descripcion',
+            'rrhh_perso.nro_documento as dni_persona','alm_almacen.descripcion as almacen_descripcion',
+            'alm_almacen.id_sede as sede_almacen',
+            'alm_tp_req.descripcion as tipo_req',
+            DB::raw("(rrhh_perso.nombres) || ' ' || (rrhh_perso.apellido_paterno) || ' ' || (rrhh_perso.apellido_materno) AS nombre_persona"),
+            'adm_contri.nro_documento as cliente_ruc','adm_contri.razon_social as cliente_razon_social')
+            ->join('almacen.alm_tp_req','alm_tp_req.id_tipo_requerimiento','=','alm_req.id_tipo_requerimiento')
+            ->join('configuracion.sis_usua','sis_usua.id_usuario','=','alm_req.id_usuario')
+            ->leftjoin('administracion.adm_grupo','adm_grupo.id_grupo','=','alm_req.id_grupo')
+            ->join('administracion.adm_estado_doc','adm_estado_doc.id_estado_doc','=','alm_req.estado')
+            ->leftJoin('almacen.alm_almacen','alm_almacen.id_almacen','=','alm_req.id_almacen')
+            ->leftJoin('configuracion.ubi_dis','ubi_dis.id_dis','=','alm_req.id_ubigeo_entrega')
+            ->leftJoin('rrhh.rrhh_perso','rrhh_perso.id_persona','=','alm_req.id_persona')
+            ->leftJoin('comercial.com_cliente','com_cliente.id_cliente','=','alm_req.id_cliente')
+            ->leftJoin('contabilidad.adm_contri','adm_contri.id_contribuyente','=','com_cliente.id_contribuyente')
+            ->where([['alm_req.estado','=',1],['alm_req.id_tipo_requerimiento','=',1],['alm_req.confirmacion_pago','=',true]])
+            ->orWhere([['alm_req.estado','=',19],['alm_req.id_tipo_requerimiento','=',2],['alm_req.confirmacion_pago','=',true]])
+            ->orWhere([['alm_req.estado','=',7],['alm_req.confirmacion_pago','=',false],['alm_req.obs_confirmacion','!=',null]])
+            ->get();
+        return datatables($data)->toJson();
+    }
+
+    public function verRequerimientosReservados($id,$almacen){
+        $detalles = DB::table('almacen.alm_det_req')
+            ->select('alm_det_req.*','alm_req.codigo','alm_req.concepto')
+            ->join('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'alm_det_req.id_requerimiento')
+            ->where([['alm_det_req.id_producto','=',$id],
+                     ['alm_det_req.id_almacen_reserva','=',$almacen],
+                     ['alm_det_req.estado','=',19]])
+            ->get();
+        return response()->json($detalles);
     }
 
     public function verDetalleRequerimiento($id_requerimiento){
@@ -792,7 +891,7 @@ class DistribucionController extends Controller
             $data = DB::table('almacen.alm_req_obs')
             ->insert(['id_requerimiento'=>$request->obs_id_requerimiento,
                       'accion'=>'ANULAR',
-                      'descripcion'=>$request->obs_anulacion,
+                      'descripcion'=>$request->obs_motivo,
                       'id_usuario'=>$id_usuario,
                       'fecha_registro'=>date('Y-m-d H:i:s')]);
 
@@ -800,12 +899,71 @@ class DistribucionController extends Controller
             return response()->json($data);
             
         } catch (\PDOException $e) {
-            // Woopsy
             DB::rollBack();
-            // return response()->json($e);
         }
 
     }
+
+    public function pago_confirmado(Request $request){
+        try {
+            DB::beginTransaction();
+
+            $data = DB::table('almacen.alm_req')
+            ->where('id_requerimiento',$request->obs_id_requerimiento)
+            ->update(['confirmacion_pago'=>true,
+                      'obs_confirmacion'=>$request->obs_motivo
+                      ]);
+
+            $id_usuario = Auth::user()->id_usuario;
+
+            DB::table('almacen.alm_req_obs')
+            ->insert(['id_requerimiento'=>$request->obs_id_requerimiento,
+                      'accion'=>'PAGO CONFIRMADO',
+                      'descripcion'=>$request->obs_motivo,
+                      'id_usuario'=>$id_usuario,
+                      'fecha_registro'=>date('Y-m-d H:i:s')
+                      ]);
+
+            DB::commit();
+            return response()->json($data);
+            
+        } catch (\PDOException $e) {
+            DB::rollBack();
+        }
+    }
+
+    public function pago_no_confirmado(Request $request){
+        try {
+            DB::beginTransaction();
+
+            $data = DB::table('almacen.alm_req')
+            ->where('id_requerimiento',$request->obs_id_requerimiento)
+            ->update(['confirmacion_pago'=>false,
+                      'estado'=>7,
+                      'obs_confirmacion'=>$request->obs_motivo]);
+
+            $data = DB::table('almacen.alm_det_req')
+            ->where('id_requerimiento',$request->obs_id_requerimiento)
+            ->update(['estado'=>7]);
+
+            $id_usuario = Auth::user()->id_usuario;
+            
+            DB::table('almacen.alm_req_obs')
+            ->insert(['id_requerimiento'=>$request->obs_id_requerimiento,
+                      'accion'=>'PAGO NO CONFIRMADO',
+                      'descripcion'=>$request->obs_motivo,
+                      'id_usuario'=>$id_usuario,
+                      'fecha_registro'=>date('Y-m-d H:i:s')
+                      ]);
+      
+            DB::commit();
+            return response()->json($data);
+            
+        } catch (\PDOException $e) {
+            DB::rollBack();
+        }
+    }
+
 
     public function ODnextId($fecha_despacho,$id_sede){
         $yyyy = date('Y',strtotime($fecha_despacho));

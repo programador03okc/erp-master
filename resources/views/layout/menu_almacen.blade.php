@@ -37,6 +37,14 @@
         </li>
         <li class="treeview">
             <a href="#">
+            <i class="fas fa-hand-holding-usd"></i> <span>Pagos</span> <i class="fa fa-angle-left pull-right"></i>
+            </a>
+            <ul class="treeview-menu">
+                <li><a href="requerimientoPagos"> Confirmación de Pagos </a></li>
+            </ul>
+        </li>
+        <li class="treeview">
+            <a href="#">
                 <i class="fas fa-truck"></i> <span>Distribución</span> <i class="fa fa-angle-left pull-right"></i>
             </a>
             <ul class="treeview-menu">

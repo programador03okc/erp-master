@@ -10,10 +10,11 @@
                 </div>
                 <div class="modal-body">
                     <input type="text" class="oculto" name="obs_id_requerimiento">
+                    <input type="text" class="oculto" name="boton_origen">
                     <div class="row">
                         <div class="col-md-12">
-                            <h5>Ingrese el motivo de la anulación</h5>
-                            <textarea name="obs_anulacion" id="obs_anulacion" cols="95" rows="5" required></textarea>
+                            <h5>Ingrese el motivo</h5>
+                            <textarea name="obs_motivo" id="obs_motivo" cols="95" rows="5" required></textarea>
                         </div>
                     </div>
                 </div>

@@ -195,7 +195,8 @@ class TransferenciaController extends Controller
             $guia_ven = DB::table('almacen.guia_ven')
             ->select('guia_ven.*','adm_empresa.id_contribuyente as empresa_contribuyente',
             'log_prove.id_proveedor as empresa_proveedor','com_cliente.id_contribuyente as cliente_contribuyente',
-            'prove_cliente.id_proveedor as cliente_proveedor','log_ord_compra.id_requerimiento')
+            'prove_cliente.id_proveedor as cliente_proveedor','log_ord_compra.id_requerimiento',
+            'alm_req.id_tipo_requerimiento')
             ->join('administracion.sis_sede','sis_sede.id_sede','=','guia_ven.id_sede')
             ->join('administracion.adm_empresa','adm_empresa.id_empresa','=','sis_sede.id_empresa')
             ->leftJoin('logistica.log_prove','log_prove.id_contribuyente','=','adm_empresa.id_contribuyente')
@@ -421,14 +422,26 @@ class TransferenciaController extends Controller
                     ]);
 
             if ($guia_ven->id_requerimiento !== null) {
-                DB::table('almacen.alm_req')
-                ->where('id_requerimiento',$guia_ven->id_requerimiento)
-                ->update(['estado'=>19]);//Reservdo
-
-                DB::table('almacen.alm_det_req')
-                ->where('id_requerimiento',$guia_ven->id_requerimiento)
-                ->update(['estado'=>19,
-                          'id_almacen_reserva'=>$request->id_almacen_destino]);//Reservado
+                if ($guia_ven->id_tipo_requerimiento == 1){
+                    DB::table('almacen.alm_req')
+                    ->where('id_requerimiento',$guia_ven->id_requerimiento)
+                    ->update(['estado'=>19]);//Reservdo
+    
+                    DB::table('almacen.alm_det_req')
+                    ->where('id_requerimiento',$guia_ven->id_requerimiento)
+                    ->update(['estado'=>19,
+                              'id_almacen_reserva'=>$request->id_almacen_destino]);//Reservado
+                } 
+                else if ($guia_ven->id_tipo_requerimiento == 3){
+                    DB::table('almacen.alm_req')
+                    ->where('id_requerimiento',$guia_ven->id_requerimiento)
+                    ->update(['estado'=>9]);//Procesado
+    
+                    DB::table('almacen.alm_det_req')
+                    ->where('id_requerimiento',$guia_ven->id_requerimiento)
+                    ->update(['estado'=>9,
+                              'id_almacen_reserva'=>null]);//Procesado
+                }
             }
             DB::commit();
             return response()->json($id_ingreso);
