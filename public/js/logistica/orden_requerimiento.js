@@ -52,22 +52,56 @@ function listar_requerimientos_atendidos(){
             {'data': 'id_requerimiento'},
             {'data': 'codigo'},
             {'data': 'concepto'},
+            {'data': 'fecha_requerimiento'},
+            {'data': 'codigo_softlink'},
             {'data': 'codigo_sede_empresa'},
-            {'data': 'fecha_requerimiento'}
-            // { render: function (data, type, row) {               
-            //         let btn =
-            //         '<div class="btn-group btn-group-sm" role="group">'+
-            //             '<button type="button" class="btn btn-danger btn-sm" name="btnEliminarOrdenRequerimiento" title="Eliminar Atención" data-id-requerimiento="'+row.id_requerimiento+'" onclick="eliminarOrdenRequerimiento(this);">'+
-            //                 '<i class="far fa-trash-alt"></i>'+
-            //             '</button>'+
+            {'data': 'fecha_orden'},
+            { render: function (data, type, row) {               
+                    let btn =
+                    '<div class="btn-group btn-group-sm" role="group">'+
+                        '<button type="button" class="btn btn-danger btn-sm" name="btnEliminarAtencionOrdenRequerimiento" title="Revertir Atención" data-id-requerimiento="'+row.id_requerimiento+'"  data-codigo-requerimiento="'+row.codigo+'" data-id-orden-compra="'+row.id_orden_compra+'" onclick="eliminarAtencionOrdenRequerimiento(this);">'+
+                            '<i class="fas fa-backspace"></i>'+
+                        '</button>'+
 
-            //         '</div>';
-            //         return (btn);
-            //     },
-            // }
+                    '</div>';
+                    return (btn);
+                },
+            }
         ],
         'columnDefs': [{ 'aTargets': [0], 'sClass': 'invisible'}],
     });
+}
+
+function eliminarAtencionOrdenRequerimiento(obj){
+    let codigo_requerimiento = obj.dataset.codigoRequerimiento;
+    let id_requerimiento = obj.dataset.idRequerimiento;
+    let id_orden = obj.dataset.idOrdenCompra;
+    // console.log(id_requerimiento,id_orden);
+    var ask = confirm('¿Desea revertir el requerimiento '+codigo_requerimiento+'?');
+    if (ask == true){
+        $.ajax({
+            type: 'PUT',
+            url: '/revertir_orden_requerimiento/'+id_orden+'/'+id_requerimiento,
+            beforeSend: function(){
+            },
+            success: function(response){
+                console.log(response);                
+                if (response.status == 200) {
+                    alert('Se revertió la orden y restablecio el estado del requerimiento');
+                    $('#listaRequerimientosAtendidos').DataTable().ajax.reload();
+                    $('#listaRequerimientosPendientes').DataTable().ajax.reload();
+                }else {
+                    alert('hubo un problema, No se puedo revertir el restablecio el estado del requerimiento y anular la orden');
+                    console.log(response);
+                    
+                }
+            }
+        });
+        return false;
+    }else{
+        return false;
+    }
+    
 }
 
 function openModalOrdenRequerimiento(obj){

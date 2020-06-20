@@ -47,7 +47,9 @@ class LogisticaController extends Controller
         $unidades_medida = $this->mostrar_unidad_medida();
         $periodos = $this->mostrar_periodos();
         $roles = $this->userSession()['roles'];
-        return view('logistica/requerimientos/gestionar_requerimiento', compact('tipo_requerimiento','monedas', 'prioridades', 'empresas', 'unidades_medida','roles','periodos'));
+        $sis_identidad = $this->select_sis_identidad();
+
+        return view('logistica/requerimientos/gestionar_requerimiento', compact('sis_identidad','tipo_requerimiento','monedas', 'prioridades', 'empresas', 'unidades_medida','roles','periodos'));
     }
 
     function view_gestionar_cotizaciones()
@@ -7305,10 +7307,14 @@ class LogisticaController extends Controller
             ->leftJoin('administracion.adm_area', 'alm_req.id_area', '=', 'adm_area.id_area')
             ->leftJoin('proyectos.proy_op_com', 'proy_op_com.id_op_com', '=', 'alm_req.id_op_com')
             ->leftJoin('administracion.adm_grupo', 'adm_grupo.id_grupo', '=', 'alm_req.id_grupo')
-            ->leftJoin('administracion.sis_sede', 'sis_sede.id_sede', '=', 'alm_req.id_sede')
+            ->join('logistica.log_ord_compra', 'alm_req.id_requerimiento', '=', 'log_ord_compra.id_requerimiento')
+            ->leftJoin('administracion.sis_sede', 'sis_sede.id_sede', '=', 'log_ord_compra.id_sede')
 
             ->select(
                 'alm_req.id_requerimiento',
+                'log_ord_compra.id_orden_compra',
+                'log_ord_compra.codigo_softlink',
+                'log_ord_compra.fecha as fecha_orden',
                 'alm_req.codigo',
                 'alm_req.concepto',
                 'alm_req.fecha_requerimiento',
@@ -7330,7 +7336,7 @@ class LogisticaController extends Controller
                 'alm_req.id_prioridad',
                 'alm_req.fecha_registro',
                 'alm_req.estado',
-                'alm_req.id_sede',
+                'log_ord_compra.id_sede',
                 'sis_sede.codigo as codigo_sede_empresa',
                 'adm_estado_doc.estado_doc',
                 'adm_estado_doc.bootstrap_color',
@@ -7618,6 +7624,140 @@ class LogisticaController extends Controller
         ];
 
         return $data;
+    }
+
+    public function revertir_orden_requerimiento($id_orden, $id_requerimiento){
+        try {
+            DB::beginTransaction();
+            $status = 0;
+            $msj = [];
+            $countOrden = DB::table('logistica.log_ord_compra')
+            ->where([
+                    ['id_requerimiento','=',$id_requerimiento],
+                    ['id_orden_compra','=',$id_orden]
+                    ])
+            ->count();
+            if ($countOrden == 1){
+                DB::table('logistica.log_ord_compra')
+                ->where([
+                        ['id_requerimiento',$id_requerimiento],
+                        ['id_orden_compra',$id_orden]])
+                ->update(
+                    [
+                        'estado' => 7,
+                        'codigo_softlink' => null
+                    ]);
+
+                DB::table('logistica.log_det_ord_compra')
+                ->where([['id_orden_compra',$id_orden]])
+                ->update(
+                    [
+                        'estado' => 7
+                    ]);
+
+                $status = 200;
+
+            }else{
+                $msj[] = 'No es posible actualizar. existe '.$count.' orden(s) registrados.';
+                $status = 402;
+            }
+
+            $countReq = DB::table('almacen.alm_req')
+            ->where([
+                    ['id_requerimiento','=',$id_requerimiento]
+                    ])
+            ->count();
+
+            if ($countOrden == 1){
+                DB::table('almacen.alm_req')
+                ->where('id_requerimiento',$id_requerimiento)
+                ->update(['estado'=>1]);
+        
+                DB::table('almacen.alm_det_req')
+                ->where('id_requerimiento',$id_requerimiento)
+                ->update(['estado'=>1]);
+                $status = 200;
+
+            }else{
+                $msj[] = 'No es posible actualizar. existe '.$count.' requerimiento(s) registrados.';
+                $status = 402;
+
+            }
+            $output=['status'=>$status, 'mensaje'=>$msj];
+
+            DB::commit();
+            return response()->json($output);
+
+        } catch (\PDOException $e) {
+            DB::rollBack();
+        }
+    }
+
+    public function save_cliente(Request $request){
+        try {
+            DB::beginTransaction();
+
+        $status=0;
+        $tipo_cliente = $request->tipo_cliente;
+        if($tipo_cliente == 1){ #persona natural
+
+            $id_persona = DB::table('rrhh.rrhh_perso')
+            ->insertGetId(
+                [
+                    'id_documento_identidad' => $request->tipo_documento?$request->tipo_documento:null,
+                    'nro_documento' => $request->nro_documento?$request->nro_documento:null,
+                    'nombres' => $request->nombre?$request->nombre:null,
+                    'apellido_paterno' => $request->apellido_paterno?$request->apellido_paterno:null,
+                    'apellido_materno' => $request->apellido_materno?$request->apellido_materno:null,
+                    'estado' => 1,
+                    'telefono' => $request->telefono?$request->telefono:null,
+                    'direccion' => $request->direccion?$request->direccion:null,
+                    'fecha_registro' => date('Y-m-d H:i:s')
+ 
+                ],
+                'id_persona'
+            );
+            if($id_persona>0){
+                $status=200;
+            }
+
+        }else if($tipo_cliente == 2){ #persona juridica
+            $id_contribuyente = DB::table('contabilidad.adm_contri')
+            ->insertGetId(
+                [
+                    'id_doc_identidad' => $request->tipo_documento?$request->tipo_documento:null,
+                    'nro_documento' => $request->nro_documento?$request->nro_documento:null,
+                    'razon_social' => $request->razon_social?$request->razon_social:null,
+                    'estado' => 1,
+                    'telefono' => $request->telefono?$request->telefono:null,
+                    'direccion_fiscal' => $request->direccion?$request->direccion:null,
+                    'fecha_registro' => date('Y-m-d H:i:s')
+ 
+                ],
+                'id_contribuyente'
+            );
+            if($id_contribuyente>0){
+                $status=200;
+            }
+            $id_cliente = DB::table('comercial.com_cliente')
+            ->insertGetId(
+                [
+                    'id_contribuyente' => $id_contribuyente,
+                    'estado' => 1,
+                    'fecha_registro' => date('Y-m-d H:i:s')
+                ],
+                'id_cliente'
+            );
+            if($id_cliente>0){
+                $status=200;
+            }
+        }
+        DB::commit();
+        return response()->json(['status'=>$status]);
+
+        } catch (\PDOException $e) {
+            DB::rollBack();
+        }
     }
 
     public function guardar_orden_por_requerimiento(Request $request){

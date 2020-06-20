@@ -2141,6 +2141,7 @@ function changeOptTipoReqSelect(e){
         controlHiddenInputGroup('mostrar',[
             'sede',
             'tipo-cliente',
+            'telefono-cliente',
             'empresa',
             'tipo-cliente',
             'cliente',
@@ -2163,6 +2164,7 @@ function changeOptTipoReqSelect(e){
             'rol-usuario',
             'sede',
             'tipo-cliente',
+            'telefono-cliente',
             'cliente',
             'direccion-entrega',
             'ubigeo-entrega',
@@ -2200,6 +2202,7 @@ function changeOptTipoReqSelect(e){
             'empresa',
             'sede',
             'tipo-cliente',
+            'telefono-cliente',
             'cliente',
             'direccion-entrega',
             'ubigeo-entrega'

@@ -11,10 +11,12 @@ $(function(){
         var myId = $(this)[0].firstChild.innerHTML;
         var dni = $(this)[0].childNodes[1].innerHTML;
         var name = $(this)[0].childNodes[2].innerHTML;
+        var tel = $(this)[0].childNodes[3].innerHTML;
 
         $('[name=id_persona]').val(myId);    
         $('[name=dni_persona]').val(dni);    
         $('[name=nombre_persona]').val(name);    
+        $('[name=telefono_persona]').val(tel);    
         $('#modal-personaModal').modal('hide');
     });
 });

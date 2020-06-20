@@ -111,7 +111,7 @@
             <div class="col-md-2 form-inline" id="input-group-tipo-cliente" >
                 <h5>Tipo Cliente</h5>
                 <div class="input-group-okc">
-                        <select name="tipo_cliente" name="tipo_cliente" onChange="changeTipoCliente(event);"
+                        <select name="tipo_cliente" onChange="changeTipoCliente(event);"
                         class="form-control activation" style="width:100px" required>
                         <!-- <option value="0">Elija una opción</option> -->
                         <option value="1" default>Persona Natural</option>
@@ -119,7 +119,7 @@
                     </select>
                 </div>
             </div>
-            <div class="col-md-4 form-inline" id="input-group-cliente" >
+            <div class="col-md-5 form-inline" id="input-group-cliente" >
                 <h5>Cliente</h5>
                 <div class="input-group-okc">
                     <input type="text" class="oculto" name="id_cliente" >
@@ -135,7 +135,16 @@
                         onClick="openCliente();"
                         class="input-group-text" ><i class="fas fa-user-tie"></i></button>
                     </div>
+                    <div class="input-group-append">        
+                        <button type="button" title="Agregar Cliente" name="btnAddCliente" 
+                        onClick="agregar_cliente();"
+                        class="input-group-text" ><i class="fas fa-plus"></i></button>
+                    </div>
                 </div>
+            </div>
+            <div class="col-md-3" id="input-group-telefono-cliente" >
+                <h5>Teléfono Cliente</h5>
+                <input type="text" class="form-control activation" name="telefono_persona"  disabled>
             </div>
             <div class="col-md-4" id="input-group-direccion-entrega" >
                 <h5>Dirección Entrega</h5>
@@ -260,6 +269,7 @@
 @include('proyectos.opcion.opcionModal')
 @include('logistica.requerimientos.aprobacion.modal_sustento')
 @include('logistica.cotizaciones.clienteModal')
+@include('logistica.cotizaciones.add_cliente')
 @include('publico.personaModal')
 @include('publico.ubigeoModal')
 @include('almacen.producto.saldosModal')
@@ -273,5 +283,6 @@
 <script src="{{ asset('/js/publico/ubigeoModal.js')}}"></script>
 <script src="{{ asset('/js/publico/personaModal.js')}}"></script>
 <script src="{{ asset('/js/logistica/clienteModal.js')}}"></script>
+<script src="{{ asset('/js/logistica/add_cliente.js')}}"></script>
 <script src="{{ asset('/js/almacen/producto/saldosModal.js')}}"></script>
 @include('layout.fin_html')

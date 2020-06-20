@@ -1570,6 +1570,8 @@ Route::get('decode5t/{id}', 'EquipoController@decode5t');
 	Route::get('listar_requerimientos_atendidos', 'LogisticaController@listar_requerimientos_atendidos'); 
 	Route::get('get_requerimiento_orden/{id}', 'LogisticaController@get_requerimiento_orden'); 
 	Route::post('guardar_orden_por_requerimiento', 'LogisticaController@guardar_orden_por_requerimiento');
+	Route::put('revertir_orden_requerimiento/{id_orden}/{id_requerimiento}', 'LogisticaController@revertir_orden_requerimiento');
+	Route::post('save_cliente', 'LogisticaController@save_cliente');
 
 	/** logistica - Comprobante de Compra */
 

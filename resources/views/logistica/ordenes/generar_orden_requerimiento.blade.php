@@ -45,11 +45,13 @@
                                             <thead>
                                                 <tr>
                                                 <th hidden></th>
-                                                <th width="50">Código</th>
+                                                <th width="50">Código Requerimiento</th>
                                                 <th width="250">Concepto</th>
+                                                <th width="50">Fecha Requerimiento</th>
+                                                <th width="50">Código Orden Softlink</th>
                                                 <th width="100">Sede</th>
-                                                <th width="50">Fecha Registro</th>
-                                                <!-- <th width="50">ACCIONES</th> -->
+                                                <th width="50">Fecha Orden</th>
+                                                <th width="20">ACCIONES</th>
                                                 </tr>
                                             </thead>
                                             <tbody></tbody>
