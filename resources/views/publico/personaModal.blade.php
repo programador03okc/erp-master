@@ -14,6 +14,7 @@
                             <th>Documento</th>
                             <th>Nombre Completo</th>
                             <th>Telefono</th>
+                            <th>Dirección</th>
                         </tr>
                     </thead>
                     <tbody></tbody>

@@ -144,7 +144,7 @@
             </div>
             <div class="col-md-3" id="input-group-telefono-cliente" >
                 <h5>Teléfono Cliente</h5>
-                <input type="text" class="form-control activation" name="telefono_persona"  disabled>
+                <input type="text" class="form-control activation" name="telefono_cliente"  disabled>
             </div>
             <div class="col-md-4" id="input-group-direccion-entrega" >
                 <h5>Dirección Entrega</h5>

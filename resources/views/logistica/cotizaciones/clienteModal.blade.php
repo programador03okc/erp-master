@@ -15,6 +15,7 @@
                             <th>RUC</th>
                             <th>Razon Social</th>
                             <th>Telefono</th>
+                            <th>Dirección</th>
                         </tr>
                     </thead>
                     <tbody></tbody>

@@ -11,10 +11,14 @@ $(function(){
         var idCo = $(this)[0].childNodes[1].innerHTML;
         var ruc = $(this)[0].childNodes[2].innerHTML;
         var des = $(this)[0].childNodes[3].innerHTML;
+        var tel = $(this)[0].childNodes[4].innerHTML;
+        var dir = $(this)[0].childNodes[5].innerHTML;
         $('[name=id_cliente]').val(myId);
         $('[name=id_contrib]').val(idCo);
         $('[name=cliente_ruc]').val(ruc);
         $('[name=cliente_razon_social]').val(des);
+        $('[name=telefono_cliente]').val(tel);
+        $('[name=direccion_entrega]').val(dir);
         
         $('#modal-clientes').modal('hide');
     //     $('.modal-footer #id_cliente').text(idTr);
@@ -36,7 +40,8 @@ function listar_clientes(){
             {'data': 'id_contribuyente'},
             {'data': 'nro_documento'},
             {'data': 'razon_social'},
-            {'data': 'telefono'}
+            {'data': 'telefono'},
+            {'data': 'direccion_fiscal'}
         ],
         'columnDefs': [{ 'aTargets': [0,1], 'sClass': 'invisible'}],
     });
@@ -54,7 +59,7 @@ function listar_clientes_empresa(){
             {'data': 'id_cliente'},
             {'data': 'id_contribuyente'},
             {'data': 'nro_documento'},
-            {'data': 'razon_social'},
+            {'data': 'razon_social'}
         ],
         'columnDefs': [{ 'aTargets': [0,1], 'sClass': 'invisible'}],
     });
