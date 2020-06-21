@@ -282,6 +282,7 @@
 <script src="{{ asset('/js/proyectos/opcion/opcionModal.js')}}"></script>
 <script src="{{ asset('/js/publico/ubigeoModal.js')}}"></script>
 <script src="{{ asset('/js/publico/personaModal.js')}}"></script>
+<script src="{{ asset('/js/publico/hiddenElement.js')}}"></script>
 <script src="{{ asset('/js/logistica/clienteModal.js')}}"></script>
 <script src="{{ asset('/js/logistica/add_cliente.js')}}"></script>
 <script src="{{ asset('/js/almacen/producto/saldosModal.js')}}"></script>

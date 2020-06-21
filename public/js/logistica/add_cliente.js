@@ -23,25 +23,6 @@ function agregar_cliente(){
     // $('[name=razon_social]').val('');
 }
 
-function controlHiddenInputGroup(option,nombreGrupoList){
-    switch (option) {
-        case 'mostrar':
-            nombreGrupoList.forEach(element => {
-                document.querySelector("form[id='form-agregar-cliente'] div[id='input-group-"+element+"']").removeAttribute('hidden');
-            });
-            break;
-    
-        case 'ocultar':
-            nombreGrupoList.forEach(element => {
-                document.querySelector("form[id='form-agregar-cliente'] div[id='input-group-"+element+"']").setAttribute('hidden',true);
-            });
-            break;
-    
-        default:
-            break;
-    }
-}
-
 function handleChangeTipoCliente(e){
     if (e.target.value == 1){
         habilitarInputPersonaNatural();
@@ -56,16 +37,16 @@ function habilitarInputPersonaNatural(){
     document.querySelector("form[id='form-agregar-cliente'] span[id='nombre_tipo_cliente']").textContent = ': Persona Natural';
     document.querySelector("form[id='form-agregar-cliente'] select[name='tipo_cliente']").value=1;
     document.querySelector("form[id='form-agregar-cliente'] select[name='id_doc_identidad']").value=1;
-    controlHiddenInputGroup('mostrar',['persona-natural']);
-    controlHiddenInputGroup('ocultar',['persona-juridica']);
+    hiddeElement('mostrar','form-agregar-cliente',['input-group-persona-natural']);
+    hiddeElement('ocultar','form-agregar-cliente',['input-group-persona-juridica']);
 }
 
 function habilitarInputPersonaJuridica(){
     document.querySelector("form[id='form-agregar-cliente'] select[name='id_doc_identidad']").value=2;
     document.querySelector("form[id='form-agregar-cliente'] select[name='tipo_cliente']").value=2;
     document.querySelector("form[id='form-agregar-cliente'] span[id='nombre_tipo_cliente']").textContent = ': Persona Juridica';
-    controlHiddenInputGroup('mostrar',['persona-juridica']);
-    controlHiddenInputGroup('ocultar',['persona-natural']);
+    hiddeElement('mostrar','form-agregar-cliente',['input-group-persona-juridica']);
+    hiddeElement('ocultar','form-agregar-cliente',['input-group-persona-natural']);
 }
 
 function get_data_form_agregar_cliente(){

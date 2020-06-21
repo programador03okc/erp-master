@@ -2105,24 +2105,6 @@ function cargarArchivo(){
     })
 }
 
-function controlHiddenInputGroup(option,nombreGrupoList){
-    switch (option) {
-        case 'mostrar':
-            nombreGrupoList.forEach(element => {
-                document.querySelector("form[id='form-requerimiento'] div[id='input-group-"+element+"']").removeAttribute('hidden');
-            });
-            break;
-    
-        case 'ocultar':
-            nombreGrupoList.forEach(element => {
-                document.querySelector("form[id='form-requerimiento'] div[id='input-group-"+element+"']").setAttribute('hidden',true);
-            });
-            break;
-    
-        default:
-            break;
-    }
-}
 
 function changeOptTipoReqSelect(e){
     if(e.target.value == 2){ //venta directa
@@ -2132,20 +2114,20 @@ function changeOptTipoReqSelect(e){
         document.querySelector("form[id='form-requerimiento'] input[name='nombre_area']").value='';
         document.querySelector("form[id='form-requerimiento'] input[name='id_area']").value='';
         document.querySelector("form[id='form-requerimiento'] select[name='rol_usuario']").value='';
-        controlHiddenInputGroup('ocultar',[
-            'area',
-            'rol-usuario',
-            'proyecto',
-            'comercial'
+        hiddeElement('ocultar','form-requerimiento',[
+            'input-group-area',
+            'input-group-rol-usuario',
+            'input-group-proyecto',
+            'input-group-comercial'
         ]);
-        controlHiddenInputGroup('mostrar',[
-            'sede',
-            'tipo-cliente',
-            'telefono-cliente',
-            'empresa',
-            'tipo-cliente',
-            'cliente',
-            'direccion-entrega'
+        hiddeElement('mostrar','form-requerimiento',[
+            'input-group-sede',
+            'input-group-tipo-cliente',
+            'input-group-telefono-cliente',
+            'input-group-empresa',
+            'input-group-tipo-cliente',
+            'input-group-cliente',
+            'input-group-direccion-entrega'
         ]);
 
         listar_almacenes();
@@ -2157,22 +2139,22 @@ function changeOptTipoReqSelect(e){
         document.querySelector("form[id='form-requerimiento'] input[name='nombre_area']").value='';
         document.querySelector("form[id='form-requerimiento'] input[name='id_area']").value='';
         document.querySelector("form[id='form-requerimiento'] select[name='rol_usuario']").value='';
-        controlHiddenInputGroup('ocultar',[
-            'moneda',
-            'empresa',
-            'area',
-            'rol-usuario',
-            'sede',
-            'tipo-cliente',
-            'telefono-cliente',
-            'cliente',
-            'direccion-entrega',
-            'ubigeo-entrega',
-            'proyecto',
-            'comercial'
+        hiddeElement('ocultar','form-requerimiento',[
+            'input-group-moneda',
+            'input-group-empresa',
+            'input-group-area',
+            'input-group-rol-usuario',
+            'input-group-sede',
+            'input-group-tipo-cliente',
+            'input-group-telefono-cliente',
+            'input-group-cliente',
+            'input-group-direccion-entrega',
+            'input-group-ubigeo-entrega',
+            'input-group-proyecto',
+            'input-group-comercial'
         ]);
-        controlHiddenInputGroup('mostrar',[
-            'almacen'
+        hiddeElement('mostrar','form-requerimiento',[
+            'input-group-almacen'
         ]);
 
         listar_almacenes();
@@ -2190,22 +2172,22 @@ function changeOptTipoReqSelect(e){
         document.querySelector("form[id='form-requerimiento'] input[name='ubigeo']").value='';
         document.querySelector("form[id='form-requerimiento'] input[name='name_ubigeo']").value='';
 
-        controlHiddenInputGroup('ocultar',[
-            'proyecto',
-            'comercial'
+        hiddeElement('ocultar','form-requerimiento',[
+            'input-group-proyecto',
+            'input-group-comercial'
         ]);
-        controlHiddenInputGroup('mostrar',[
-            'almacen',
-            'area',
-            'rol-usuario',
-            'moneda',
-            'empresa',
-            'sede',
-            'tipo-cliente',
-            'telefono-cliente',
-            'cliente',
-            'direccion-entrega',
-            'ubigeo-entrega'
+        hiddeElement('mostrar','form-requerimiento',[
+            'input-group-almacen',
+            'input-group-area',
+            'input-group-rol-usuario',
+            'input-group-moneda',
+            'input-group-empresa',
+            'input-group-sede',
+            'input-group-tipo-cliente',
+            'input-group-telefono-cliente',
+            'input-group-cliente',
+            'input-group-direccion-entrega',
+            'input-group-ubigeo-entrega'
         ]);
 
     }
