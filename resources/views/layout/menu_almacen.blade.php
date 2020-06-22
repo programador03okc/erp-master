@@ -87,6 +87,7 @@
                 <i class="fas fa-chart-bar"></i> <span>Reportes</span> <i class="fa fa-angle-left pull-right"></i>
             </a>
             <ul class="treeview-menu">
+                <li><a href="saldos"> Saldos Físicos Valorizados </a></li>
                 <li><a href="lista_ingresos"> Reporte de Ingresos </a></li>
                 <li><a href="lista_salidas"> Reporte de Salidas </a></li>
                 <li><a href="busqueda_ingresos"> Búsq. Avan. de Ingresos </a></li>
@@ -94,7 +95,6 @@
                 <li><a href="kardex_general"> Kardex General </a></li>
                 <li><a href="kardex_detallado"> Kardex por Producto </a></li>
                 <li><a href="kardex_series"> Kardex de Series </a></li>
-                <li><a href="saldos"> Saldos Físicos Valorizados </a></li>
                 <li><a href="docs_prorrateo"> Documentos de Prorrateo </a></li>
             </ul>
         </li>

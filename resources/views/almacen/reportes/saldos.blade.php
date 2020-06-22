@@ -56,11 +56,12 @@
                         <th>Descripción</th>
                         <th>Und</th>
                         <th>Stock</th>
+                        <th>Reserva</th>
+                        <th>Detalle</th>
                         <th>Mnd</th>
                         <th>Soles</th>
                         <th>Dolar</th>
                         <th>Costo Promedio</th>
-                        <th>Reserva</th>
                         <th>Ubicación</th>
                         <th>Clasificación</th>
                         <th>Categoría</th>
@@ -72,6 +73,7 @@
         </div>
     </div>
 </div>
+@include('almacen.verRequerimientoEstado')
 @include('layout.footer')
 @include('layout.scripts')
 <script src="{{('/js/almacen/reporte/saldos.js')}}"></script>

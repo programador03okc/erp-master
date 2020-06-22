@@ -28,7 +28,8 @@ class DistribucionController extends Controller
         $tp_operacion = AlmacenController::tp_operacion_cbo_sal();
         $clasificaciones = AlmacenController::mostrar_guia_clas_cbo();
         $usuarios = AlmacenController::select_usuarios();
-        return view('almacen/guias/despachosPendientes', compact('tp_operacion','clasificaciones','usuarios'));
+        $motivos_anu = AlmacenController::select_motivo_anu();
+        return view('almacen/guias/despachosPendientes', compact('tp_operacion','clasificaciones','usuarios','motivos_anu'));
     }
     function view_requerimientoPagos(){
         // $usuarios = AlmacenController::select_usuarios();
@@ -78,7 +79,11 @@ class DistribucionController extends Controller
             ->leftJoin('rrhh.rrhh_perso','rrhh_perso.id_persona','=','alm_req.id_persona')
             ->leftJoin('comercial.com_cliente','com_cliente.id_cliente','=','alm_req.id_cliente')
             ->leftJoin('contabilidad.adm_contri','adm_contri.id_contribuyente','=','com_cliente.id_contribuyente')
-            ->leftJoin('almacen.orden_despacho','orden_despacho.id_requerimiento','=','alm_req.id_requerimiento')
+            ->leftJoin('almacen.orden_despacho', function($join)
+                         {   $join->on('orden_despacho.id_requerimiento', '=', 'alm_req.id_requerimiento');
+                             $join->where('orden_despacho.estado','!=', 7);
+                         })
+            // ->leftJoin('almacen.orden_despacho','orden_despacho.id_requerimiento','=','alm_req.id_requerimiento')
             ->where([['alm_req.estado','!=',1], ['alm_req.estado','!=',7], ['alm_req.estado','!=',20], 
             ['alm_req.estado','!=',21]])//muestra todos los reservados
             ->get();
@@ -99,8 +104,9 @@ class DistribucionController extends Controller
 
     public function listarEstadosRequerimientos($estado){
         $data = DB::table('almacen.alm_req')
-        ->select('alm_req.*','alm_tp_req.descripcion as tipo_descripcion')
+        ->select('alm_req.*','alm_tp_req.descripcion as tipo_descripcion','sis_usua.nombre_corto')
             ->join('almacen.alm_tp_req','alm_tp_req.id_tipo_requerimiento','=','alm_req.id_tipo_requerimiento')
+            ->join('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'alm_req.id_usuario')
             ->where([['alm_req.estado','=',$estado]])
             ->get();
         return response()->json($data);
@@ -159,8 +165,9 @@ class DistribucionController extends Controller
 
     public function verRequerimientosReservados($id,$almacen){
         $detalles = DB::table('almacen.alm_det_req')
-            ->select('alm_det_req.*','alm_req.codigo','alm_req.concepto')
+            ->select('alm_det_req.*','alm_req.codigo','alm_req.concepto','sis_usua.nombre_corto')
             ->join('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'alm_det_req.id_requerimiento')
+            ->join('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'alm_req.id_usuario')
             ->where([['alm_det_req.id_producto','=',$id],
                      ['alm_det_req.id_almacen_reserva','=',$almacen],
                      ['alm_det_req.estado','=',19]])
@@ -384,19 +391,19 @@ class DistribucionController extends Controller
                 //actualiza estado despachado
                 DB::table('almacen.orden_despacho')
                 ->where('id_od',$d->id_od)
-                ->update(['estado'=>20]);
+                ->update(['estado'=>20]);//Despachado
 
                 DB::table('almacen.orden_despacho_det')
                 ->where('id_od',$d->id_od)
-                ->update(['estado'=>20]);
+                ->update(['estado'=>20]);//Despachado
 
                 DB::table('almacen.alm_req')
                 ->where('id_requerimiento',$d->id_requerimiento)
-                ->update(['estado'=>20]);
+                ->update(['estado'=>20]);//Despachado
 
                 DB::table('almacen.alm_det_req')
                 ->where('id_requerimiento',$d->id_requerimiento)
-                ->update(['estado'=>20]);
+                ->update(['estado'=>20]);//Despachado
 
             }
             DB::commit();
@@ -689,7 +696,7 @@ class DistribucionController extends Controller
 
     public function listarSalidasDespacho(Request $request){
         $data = DB::table('almacen.mov_alm')
-        ->select('mov_alm.*','guia_ven.serie','guia_ven.numero','orden_despacho.codigo as codigo_od',
+        ->select('mov_alm.*','guia_ven.serie','guia_ven.numero','guia_ven.id_od','orden_despacho.codigo as codigo_od',
             DB::raw("(rrhh_perso.nombres) || ' ' || (rrhh_perso.apellido_paterno) || ' ' || (rrhh_perso.apellido_materno) AS nombre_persona"),
             'alm_req.codigo as codigo_requerimiento','adm_contri.razon_social','alm_req.concepto',
             'alm_almacen.descripcion as almacen_descripcion','sis_usua.nombre_corto')
@@ -701,6 +708,7 @@ class DistribucionController extends Controller
             ->leftjoin('configuracion.sis_usua','sis_usua.id_usuario','=','guia_ven.usuario')
             ->join('almacen.orden_despacho','orden_despacho.id_od','=','guia_ven.id_od')
             ->join('almacen.alm_req','alm_req.id_requerimiento','=','orden_despacho.id_requerimiento')
+            ->where([['mov_alm.estado','!=','7']])
             ->get();
         // return response()->json($data);
         return datatables($data)->toJson();
@@ -1008,8 +1016,89 @@ class DistribucionController extends Controller
        
     public function decode5t($str){
         for($i=0; $i<5;$i++){
-       $str=base64_decode(strrev($str));
+            $str=base64_decode(strrev($str));
         }
         return $str;
+    }
+    
+    public function anular_salida(Request $request){
+    
+        try {
+            DB::beginTransaction();
+    
+            $id_usuario = Auth::user()->id_usuario;
+            $msj = '';
+    
+            $sal = DB::table('almacen.mov_alm')
+            ->where('id_mov_alm', $request->id_mov_alm)
+            ->first();
+            //si la salida no esta revisada
+            if ($sal->revisado == 0){
+                //si existe una orden
+                if ($request->id_od !== null) {
+                    //Verifica si ya fue despachado
+                    $od = DB::table('almacen.orden_despacho')
+                    ->select('orden_despacho.*','adm_estado_doc.estado_doc')
+                    ->join('administracion.adm_estado_doc','adm_estado_doc.id_estado_doc','=','orden_despacho.estado')
+                    ->where('id_od',$request->id_od)
+                    ->first();
+                    //si la orden de despacho es Procesado
+                    if ($od->estado == 9){
+                        //Anula salida
+                        $update = DB::table('almacen.mov_alm')
+                        ->where('id_mov_alm', $request->id_mov_alm)
+                        ->update([ 'estado' => 7 ]);
+                        //Anula el detalle
+                        $update = DB::table('almacen.mov_alm_det')
+                        ->where('id_mov_alm', $request->id_mov_alm)
+                        ->update([ 'estado' => 7 ]);
+                        //Agrega motivo anulacion a la guia
+                        DB::table('almacen.guia_ven_obs')->insert(
+                        [
+                            'id_guia_ven'=>$request->id_guia_ven,
+                            'observacion'=>$request->observacion,
+                            'registrado_por'=>$id_usuario,
+                            'id_motivo_anu'=>$request->id_motivo_obs,
+                            'fecha_registro'=>date('Y-m-d H:i:s')
+                        ]);
+                        //Anula la Guia
+                        $update = DB::table('almacen.guia_ven')
+                        ->where('id_guia_ven', $request->id_guia_ven)
+                        ->update([ 'estado' => 7 ]);
+                        //Anula la Guia Detalle
+                        $update = DB::table('almacen.guia_ven_det')
+                        ->where('id_guia_ven', $request->id_guia_ven)
+                        ->update([ 'estado' => 7 ]);
+                        //Quita estado de la orden
+                        DB::table('almacen.orden_despacho')
+                        ->where('id_od',$request->id_od)
+                        ->update(['estado' => 1]);
+
+                        if ($od->id_requerimiento !== null){
+                            //Requerimiento regresa a Reservado
+                            DB::table('almacen.alm_req')
+                            ->where('id_requerimiento',$od->id_requerimiento)
+                            ->update(['estado'=>19]);//Reservado
+    
+                            DB::table('almacen.alm_det_req')
+                            ->where('id_requerimiento',$od->id_requerimiento)
+                            ->update(['estado'=>19]);//Reservado
+                        }
+                    } else {
+                        $msj = 'La Orden de Despacho ya fue '.$od->estado_doc;
+                    }
+                } else {
+                    $msj = 'No existe una orden de despacho enlazada';
+                }
+            } else {
+                $msj = 'La salida ya fue revisada por el Jefe de Almacén';
+            }
+            DB::commit();
+            return response()->json($msj);
+            
+        } catch (\PDOException $e) {
+    
+            DB::rollBack();
+        }
     }
 }

@@ -73,6 +73,7 @@
 </div>
 @include('almacen.guias.guia_ven_create')
 @include('almacen.distribucion.despachoDetalle')
+@include('almacen.guias.guia_ven_obs')
 @include('layout.footer')
 @include('layout.scripts')
 <script src="{{('/js/almacen/guia/despachosPendientes.js')}}"></script>

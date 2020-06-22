@@ -134,7 +134,7 @@ class AlmacenController extends Controller
         $sis_identidad = AlmacenController::sis_identidad_cbo();
         $tp_prorrateo = $this->select_tp_prorrateo();
         $usuarios = $this->select_usuarios();
-        $motivos_anu = $this->select_motivo_anu();
+        $motivos_anu = AlmacenController::select_motivo_anu();
         return view('almacen/guias/guia_compra', compact('proveedores','almacenes','posiciones','clasificaciones','tp_doc','monedas','tp_doc_almacen','tp_operacion','tp_contribuyente','sis_identidad','tp_prorrateo','usuarios','motivos_anu'));
     }
     function view_guia_venta(){
@@ -151,7 +151,7 @@ class AlmacenController extends Controller
         $sis_identidad = AlmacenController::sis_identidad_cbo();
         // $usuarios = $this->select_usuarios_almacen();
         $usuarios = $this->select_usuarios();
-        $motivos_anu = $this->select_motivo_anu();
+        $motivos_anu = AlmacenController::select_motivo_anu();
         return view('almacen/guias/guia_venta', compact('almacenes','posiciones','clasificaciones','sedes','proveedores','tp_doc_almacen','tp_operacion','tp_contribuyente','sis_identidad','usuarios','motivos_anu'));
     }
     // function view_doc_compra(){
@@ -273,7 +273,7 @@ class AlmacenController extends Controller
             ->orderBy('adm_tp_docum.descripcion', 'asc')->get();
         return $data;
     }
-    public function select_motivo_anu(){
+    public static function select_motivo_anu(){
         $data = DB::table('almacen.motivo_anu')
             ->select('motivo_anu.id_motivo', 'motivo_anu.descripcion')
             ->where('motivo_anu.estado', '=', 1)
@@ -2271,6 +2271,7 @@ class AlmacenController extends Controller
                         'id_guia_com'=>$request->id_guia_com,
                         'observacion'=>$obs,
                         'registrado_por'=>$id_usuario,
+                        'id_motivo_anu'=>$request->id_motivo_obs,
                         'fecha_registro'=>date('Y-m-d H:i:s')
                     ],
                         'id_obs'
@@ -4620,6 +4621,7 @@ class AlmacenController extends Controller
             $nuevo = [
                 'id_prod_ubi'=> $d->id_prod_ubi,
                 'id_producto'=> $d->id_producto,
+                'id_almacen'=> $d->id_almacen,
                 'codigo'=> $d->codigo,
                 'codigo_anexo'=> $d->codigo_anexo,
                 'cod_antiguo'=> $d->cod_antiguo,

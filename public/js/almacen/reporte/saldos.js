@@ -46,11 +46,22 @@ function listarSaldos(url){
             {'data': 'descripcion'},
             {'data': 'abreviatura'},
             {'data': 'stock', 'class': 'right'},
+            {'data': 'cantidad_reserva', 'class': 'right'},
+            {'render':
+                function (data, type, row){
+                    if(row['cantidad_reserva'] !== null){
+                        return '<button type="button" class="ver btn btn-info boton" data-toggle="tooltip" '+
+                        'data-placement="bottom" title="Ver Requerimientos" data-id="'+row['id_producto']+'" data-almacen="'+row['id_almacen']+'" >'+
+                        '<i class="fas fa-list-ul"></i></button>';
+                    } else {
+                        return '';
+                    }
+                }
+            },
             {'data': 'simbolo'},
             {'data': 'soles', 'class': 'right'},
             {'data': 'dolares', 'class': 'right'},
             {'data': 'costo_promedio', 'class': 'right'},
-            {'data': 'cantidad_reserva', 'class': 'right'},
             {'data': 'almacen_descripcion'},
             // {'render': function (data, type, row) {
             //         return (row['cod_posicion'] !== undefined ? row['cod_posicion'] : '');
@@ -62,6 +73,47 @@ function listarSaldos(url){
         ],
         'columnDefs': [{ 'aTargets': [0], 'sClass': 'invisible'}],
         "order": [[4, "asc"]]
+    });
+}
+
+$('#listaSaldos tbody').on("click","tr", function(){
+    var data = $('#listaSaldos').DataTable().row(this).data();
+    console.log(data);
+    let id = data.id_producto;
+    let almacen = data.id_almacen;
+    $('#modal-verRequerimientoEstado').modal({
+        show: true
+    });
+    $('#nombreEstado').text('Requerimientos que generan la Reserva');
+    console.log(id+','+ almacen);
+    verRequerimientosReservados(id, almacen);
+});
+
+function verRequerimientosReservados(id_producto,id_almacen){
+    let baseUrl = 'verRequerimientosReservados/'+id_producto+'/'+id_almacen;
+    console.log(baseUrl);
+    $.ajax({
+        type: 'GET',
+        url: baseUrl,
+        dataType: 'JSON',
+        success: function(response){
+            console.log(response);
+            var html = '';
+            var i = 1;
+            response.forEach(element => {
+                html+='<tr id="'+element.id_requerimiento+'">'+
+                '<td>'+element.codigo+'</td>'+
+                '<td>'+element.concepto+'</td>'+
+                '<td>'+element.nombre_corto+'</td>'+
+                '</tr>';
+                i++;
+            });
+            $('#listaRequerimientosEstado tbody').html(html);
+        }
+    }).fail( function( jqXHR, textStatus, errorThrown ){
+        console.log(jqXHR);
+        console.log(textStatus);
+        console.log(errorThrown);
     });
 }
 

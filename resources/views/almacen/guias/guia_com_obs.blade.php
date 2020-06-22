@@ -7,7 +7,9 @@
                     <h3 class="modal-title">Ingrese el Motivo de la Anulación</h3>
                 </div>
                 <div class="modal-body">
+                    <input type="text" class="oculto" name="id_mov_alm"/>
                     <input type="text" class="oculto" name="id_guia_com"/>
+                    <input type="text" class="oculto" name="id_oc"/>
                     <div class="row">
                         <div class="col-md-12">
                             <h5>Seleccione un motivo:</h5>
@@ -27,7 +29,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <input type="submit" class="btn btn-success" value="Guardar"/>
+                    <input type="submit" id="submitGuiaObs" class="btn btn-success" value="Guardar"/>
                 </div>
             </form>
         </div>

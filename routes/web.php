@@ -815,6 +815,7 @@ Route::get('detalleOrden/{id}', 'OrdenesPendientesController@detalleOrden');
 Route::post('guardar_guia_com_oc', 'OrdenesPendientesController@guardar_guia_com_oc');
 Route::get('verGuiasOrden/{id}', 'OrdenesPendientesController@verGuiasOrden');
 Route::post('guardar_guia_transferencia', 'OrdenesPendientesController@guardar_guia_transferencia');
+Route::post('anular_ingreso', 'OrdenesPendientesController@anular_ingreso');
 
 // Route::get('requerimientosPendientes', 'DistribucionController@view_requerimientosPendientes');
 Route::get('ordenesDespacho', 'DistribucionController@view_ordenesDespacho');
@@ -838,6 +839,7 @@ Route::get('despachosPendientes', 'DistribucionController@view_despachosPendient
 Route::post('listarOrdenesDespachoPendientes', 'DistribucionController@listarOrdenesDespachoPendientes');
 Route::post('guardar_guia_despacho', 'DistribucionController@guardar_guia_despacho');
 Route::post('listarSalidasDespacho', 'DistribucionController@listarSalidasDespacho');
+Route::post('anular_salida', 'DistribucionController@anular_salida');
 
 Route::get('listar_transferencias', 'TransferenciaController@view_listar_transferencias');
 Route::get('listar_transferencias_pendientes/{ori}', 'TransferenciaController@listar_transferencias_pendientes');
