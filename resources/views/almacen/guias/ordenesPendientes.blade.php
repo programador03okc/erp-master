@@ -51,13 +51,11 @@
                                     <tr>
                                         <th hidden></th>
                                         <th>Cod.Orden</th>
+                                        <th>Sede Orden</th>
                                         <th>R.U.C.</th>
                                         <th>Razon Social</th>
-                                        <!-- <th>Mnd</th>
-                                        <th>SubTotal</th>
-                                        <th>IGV</th>
-                                        <th>Total</th> -->
                                         <th>Req.</th>
+                                        <th>Sede Req.</th>
                                         <th>Concepto</th>
                                         <th>Guía Compra</th>
                                         <th>Ingreso</th>
@@ -79,6 +77,7 @@
 @include('almacen.guias.ordenDetalle')
 @include('almacen.guias.ordenesGuias')
 @include('almacen.guias.guia_com_create')
+@include('almacen.guias.guia_com_obs')
 @include('almacen.transferencias.transferenciaGuia')
 @include('layout.footer')
 @include('layout.scripts')

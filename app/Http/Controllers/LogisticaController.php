@@ -7831,7 +7831,7 @@ class LogisticaController extends Controller
             DB::rollBack();
         }
 
-    }   
+    }
 
     public function guardar_orden_compra(Request $request)
     {

@@ -95,7 +95,8 @@ function listarOrdenesEntregadas(){
         },
         'columns': [
             {'data': 'id_mov_alm'},
-            {'data': 'codigo_orden'},
+            {'data': 'codigo_orden', 'name': 'log_ord_compra.codigo'},
+            {'data': 'sede_orden_descripcion', 'name': 'sede_oc.descripcion'},
             {'data': 'nro_documento', 'name': 'adm_contri.nro_documento'},
             {'data': 'razon_social', 'name': 'adm_contri.razon_social'},
             // {'data': 'simbolo'},
@@ -103,6 +104,7 @@ function listarOrdenesEntregadas(){
             // {'data': 'monto_igv', 'class': 'right'},
             // {'data': 'monto_total', 'class': 'right'},
             {'data': 'codigo_requerimiento', 'name': 'alm_req.codigo'},
+            {'data': 'sede_requerimiento_descripcion', 'name': 'sede_req.descripcion'},
             {'data': 'concepto', 'name': 'alm_req.concepto'},
             {'render': function (data, type, row){
                     return row['serie']+'-'+row['numero'];
@@ -125,33 +127,49 @@ function listarOrdenesEntregadas(){
                 // '<button type="button" class="ver_guias btn btn-warning boton" data-toggle="tooltip" '+
                 //     'data-placement="bottom" title="Ver Guías" data-id="'+row.id_orden_compra+'">'+
                 //     '<i class="fas fa-file-alt"></i></button>'+
-                // '<button type="button" class="anularIngreso btn btn-danger boton" data-toggle="tooltip" '+
-                //     'data-placement="bottom" title="Anular Ingreso" data-id="'+row.id_mov_alm+'">'+
-                //     '<i class="fas fa-trash"></i></button>'+
+                '<button type="button" class="anular btn btn-danger boton" data-toggle="tooltip" '+
+                    'data-placement="bottom" title="Anular Ingreso" data-id="'+row['id_mov_alm']+'" data-guia="'+row['id_guia_com']+'" data-oc="'+row['id_orden_compra']+'">'+
+                    '<i class="fas fa-trash"></i></button>'+
                 (((row['id_tipo_requerimiento'] == 1 && (row['sede_orden'] !== row['sede_requerimiento'] && row['id_guia_ven'] == null)) ||
                   (row['id_tipo_requerimiento'] == 3 && (row['sede_orden'] !== row['sede_almacen'] && row['id_guia_ven'] == null))) ? 
                  ('<button type="button" class="transferencia btn btn-success boton" data-toggle="tooltip" '+
                     'data-placement="bottom" title="Generar Transferencia" >'+
                     '<i class="fas fa-exchange-alt"></i></button>') : '');
-                }, targets: 10
+                }, targets: 12
             }    
         ],
     });
 }
+
 $('#ordenesEntregadas tbody').on("click","button.detalle", function(){
     var data = $('#ordenesEntregadas').DataTable().row($(this).parents("tr")).data();
     console.log('data.id_orden_compra'+data.id_orden_compra);
     open_detalle(data);
 });
+
 $('#ordenesEntregadas tbody').on("click","button.ingreso", function(){
     var id_mov_alm = $(this).data('id');
     var id = encode5t(id_mov_alm);
     window.open('imprimir_ingreso/'+id);
 });
-// $('#ordenesEntregadas tbody').on("click","button.ver_guias", function(){
-//     var data = $('#ordenesEntregadas').DataTable().row($(this).parents("tr")).data();
-//     open_guias(data);
-// });
+
+$('#ordenesEntregadas tbody').on("click","button.anular", function(){
+    var id_mov_alm = $(this).data('id');
+    var id_guia = $(this).data('guia');
+    var id_oc = $(this).data('oc');
+
+    $('#modal-guia_com_obs').modal({
+        show: true
+    });
+
+    $('[name=id_mov_alm]').val(id_mov_alm);
+    $('[name=id_guia_com]').val(id_guia);
+    $('[name=id_oc]').val(id_oc);
+    $('[name=observacion]').val('');
+
+    $("#submitGuiaObs").removeAttr("disabled");
+});
+
 $('#ordenesEntregadas tbody').on("click","button.transferencia", function(){
     var data = $('#ordenesEntregadas').DataTable().row($(this).parents("tr")).data();
     console.log('data.id_orden_compra'+data.id_orden_compra);
@@ -208,9 +226,9 @@ function listar_detalle_orden(id_orden){
                 html+='<tr id="'+element.id_detalle_orden+'">'+
                 '<td>'+i+'</td>'+
                 '<td>'+element.codigo+'</td>'+
-                '<td>'+element.descripcion+(element.descripcion_adicional !== null ? ' '+element.descripcion_adicional : '')+'</td>'+
+                '<td>'+element.descripcion+'</td>'+
                 '<td>'+element.cantidad_cotizada+'</td>'+
-                '<td>'+element.unidad_medida+'</td>'+
+                '<td>'+element.abreviatura+'</td>'+
                 // '<td>'+element.precio_cotizado+'</td>'+
                 // '<td class="right">'+formatNumber.decimal(sub_total,'',-2)+'</td>'+
                 // '<td class="right">'+formatNumber.decimal(dscto,'',-2)+'</td>'+
@@ -307,4 +325,38 @@ function ceros_numero(numero){
         var num = $('[name=serie]').val();
         $('[name=serie]').val(leftZero(4,num));
     }
+}
+
+
+$("#form-obs").on("submit", function(e){
+    console.log('submit');
+    e.preventDefault();
+    var data = $(this).serialize();
+    console.log(data);
+    anular_ingreso(data);
+});
+
+function anular_ingreso(data){
+    $("#submitGuiaObs").attr('disabled','true');
+    $.ajax({
+        type: 'POST',
+        url: 'anular_ingreso',
+        data: data,
+        dataType: 'JSON',
+        success: function(response){
+            console.log(response);
+            if (response.length > 0){
+                alert(response);
+                $('#modal-guia_com_obs').modal('hide');
+            } else {
+                alert('Ingreso Almacén anulado con éxito');
+                $('#modal-guia_com_obs').modal('hide');
+                $('#ordenesEntregadas').DataTable().ajax.reload();
+            }
+        }
+    }).fail( function( jqXHR, textStatus, errorThrown ){
+        console.log(jqXHR);
+        console.log(textStatus);
+        console.log(errorThrown);
+    });
 }

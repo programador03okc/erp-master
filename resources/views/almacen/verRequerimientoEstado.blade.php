@@ -19,6 +19,7 @@
                                     <tr style="background-color: lightblue;">
                                         <th>Código</th>
                                         <th>Concepto</th>
+                                        <th>RegistradoPor</th>
                                     </tr>
                                 </thead>
                                 <tbody></tbody>

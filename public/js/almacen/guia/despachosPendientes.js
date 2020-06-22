@@ -136,13 +136,15 @@ function listarDespachosEntregados(){
             {'aTargets': [0], 'sClass': 'invisible'},
             {'render': function (data, type, row){
                 return '<button type="button" class="salida btn btn-warning boton" data-toggle="tooltip" '+
-                    'data-placement="bottom" title="Ver Salida" data-id="'+row.id_mov_alm+'">'+
-                    '<i class="fas fa-file-alt"></i></button>';
+                    'data-placement="bottom" title="Ver Salida" data-id="'+row['id_mov_alm']+'">'+
+                    '<i class="fas fa-file-alt"></i></button>'+
+                    '<button type="button" class="anular btn btn-danger boton" data-toggle="tooltip" '+
+                    'data-placement="bottom" title="Anular Salida" data-id="'+row['id_mov_alm']+'" data-guia="'+row['id_guia_ven']+'" data-od="'+row['id_od']+'">'+
+                    '<i class="fas fa-trash"></i></button>';
                 }, targets: 9
                 // '<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" '+
                 //     'data-placement="bottom" title="Ver Detalle" data-id="'+row.id_mov_alm+'">'+
                 //     '<i class="fas fa-list-ul"></i></button>'+
-                
             }
         ],
     });
@@ -153,3 +155,53 @@ $('#despachosEntregados tbody').on("click","button.salida", function(){
     var id = encode5t(id_mov_alm);
     window.open('imprimir_salida/'+id);
 });
+
+$('#despachosEntregados tbody').on("click","button.anular", function(){
+    var id_mov_alm = $(this).data('id');
+    var id_guia = $(this).data('guia');
+    var id_od = $(this).data('od');
+
+    $('#modal-guia_ven_obs').modal({
+        show: true
+    });
+
+    $('[name=id_mov_alm]').val(id_mov_alm);
+    $('[name=id_guia_ven]').val(id_guia);
+    $('[name=id_od]').val(id_od);
+    $('[name=observacion]').val('');
+
+    $("#submitGuiaObs").removeAttr("disabled");
+});
+
+$("#form-obs").on("submit", function(e){
+    console.log('submit');
+    e.preventDefault();
+    var data = $(this).serialize();
+    console.log(data);
+    anular_salida(data);
+});
+
+function anular_salida(data){
+    $("#submitGuiaObs").attr('disabled','true');
+    $.ajax({
+        type: 'POST',
+        url: 'anular_salida',
+        data: data,
+        dataType: 'JSON',
+        success: function(response){
+            console.log(response);
+            if (response.length > 0){
+                alert(response);
+                $('#modal-guia_ven_obs').modal('hide');
+            } else {
+                alert('Salida Almacén anulada con éxito');
+                $('#modal-guia_ven_obs').modal('hide');
+                $('#despachosEntregados').DataTable().ajax.reload();
+            }
+        }
+    }).fail( function( jqXHR, textStatus, errorThrown ){
+        console.log(jqXHR);
+        console.log(textStatus);
+        console.log(errorThrown);
+    });
+}

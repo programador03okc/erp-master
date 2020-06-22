@@ -79,6 +79,7 @@ function listarRequerimientosEstado(estado){
                 html+='<tr id="'+element.id_requerimiento+'">'+
                 '<td>'+element.codigo+'</td>'+
                 '<td>'+element.concepto+'</td>'+
+                '<td>'+element.nombre_corto+'</td>'+
                 '</tr>';
                 i++;
             });
