@@ -67,7 +67,7 @@ function listarTransferenciasPendientes(){
                     }
                 },
                 // {'data': 'guia'},
-                {'data': 'fecha_guia'},
+                // {'data': 'fecha_guia'},
                 {'data': 'alm_origen_descripcion'},
                 {'data': 'alm_destino_descripcion'},
                 {'data': 'nombre_origen'},
@@ -81,15 +81,39 @@ function listarTransferenciasPendientes(){
                 },
                 {'render':
                     function (data, type, row){
+                        if (row['codigo_orden'] !== null){
+                            return (row['codigo_orden']);
+                        } else {
+                            return '';
+                        }
+                    }
+                },
+                {'render':
+                    function (data, type, row){
+                        if (row['codigo_req'] !== null){
+                            return (row['codigo_req']);
+                        } else {
+                            return '';
+                        }
+                    }
+                },
+                {'render':
+                    function (data, type, row){
+                        if (row['concepto_req'] !== null){
+                            return (row['concepto_req']);
+                        } else {
+                            return '';
+                        }
+                    }
+                },
+                {'render':
+                    function (data, type, row){
                         return ('<button type="button" class="atender btn btn-success boton" data-toggle="tooltip" '+
                         'data-placement="bottom" title="Atender" >'+
                         '<i class="fas fa-share"></i></button>'+
                     '<button type="button" class="salida btn btn-primary boton" data-toggle="tooltip" '+
                         'data-placement="bottom" data-id-salida="'+row['id_salida']+'" title="Ver Salida" >'+
-                        '<i class="fas fa-file-alt"></i></button>'+
-                    '<button type="button" class="anular btn btn-danger boton" data-toggle="tooltip" '+
-                        'data-placement="bottom" title="Anular" >'+
-                        '<i class="fas fa-trash"></i></button>');
+                        '<i class="fas fa-file-alt"></i></button>');
                     }
                 }
             ],
@@ -117,37 +141,6 @@ $('#listaTransferenciasPendientes tbody').on("click","button.salida", function()
     }
 });
 
-$('#listaTransferenciasPendientes tbody').on("click","button.anular", function(){
-    var data = $('#listaTransferenciasPendientes').DataTable().row($(this).parents("tr")).data();
-    console.log(data);
-    if (data !== undefined){
-        var c = confirm('¿Está seguro que desea anular la transferencia?');
-        if (c){
-            anular(data);
-        }
-    }
-});
-
-function anular(data){
-    if (data.guia_com == '-'){
-        $.ajax({
-            type: 'GET',
-            url: 'anular_transferencia/'+data.id_transferencia,
-            dataType: 'JSON',
-            success: function(response){
-                if (response > 0){
-                    alert('Transferencia anulada con éxito');
-                }
-            }
-        }).fail( function( jqXHR, textStatus, errorThrown ){
-            console.log(jqXHR);
-            console.log(textStatus);
-            console.log(errorThrown);
-        });
-    } else {
-        alert('No se puede anular por que ya tiene Ingreso a Almacén.');
-    }
-}
 
 function listarTransferenciasRecibidas(){
     var origen = $('[name=id_almacen_ori_recibida]').val();
@@ -184,7 +177,7 @@ function listarTransferenciasRecibidas(){
                         return ('<label class="lbl-codigo" title="Abrir Guía" onClick="abrir_guia_compra('+row['id_guia_com']+')">'+row['guia_com']+'</label>');
                     }
                 },
-                {'data': 'fecha_guia'},
+                // {'data': 'fecha_guia'},
                 {'data': 'alm_origen_descripcion'},
                 {'data': 'alm_destino_descripcion'},
                 {'data': 'nombre_origen'},
@@ -197,12 +190,42 @@ function listarTransferenciasRecibidas(){
                 },
                 {'render':
                     function (data, type, row){
+                        if (row['codigo_orden'] !== null){
+                            return (row['codigo_orden']);
+                        } else {
+                            return '';
+                        }
+                    }
+                },
+                {'render':
+                    function (data, type, row){
+                        if (row['codigo_req'] !== null){
+                            return (row['codigo_req']);
+                        } else {
+                            return '';
+                        }
+                    }
+                },
+                {'render':
+                    function (data, type, row){
+                        if (row['concepto_req'] !== null){
+                            return (row['concepto_req']);
+                        } else {
+                            return '';
+                        }
+                    }
+                },
+                {'render':
+                    function (data, type, row){
                         return ('<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" '+
                         'data-placement="bottom" title="Ver Detalle" >'+
                         '<i class="fas fa-list-ul"></i></button>'+
                     '<button type="button" class="ingreso btn btn-warning boton" data-toggle="tooltip" '+
                         'data-placement="bottom" data-id-ingreso="'+row['id_ingreso']+'" title="Ver Ingreso" >'+
-                        '<i class="fas fa-file-alt"></i></button>');
+                        '<i class="fas fa-file-alt"></i></button>'+
+                    '<button type="button" class="anular btn btn-danger boton" data-toggle="tooltip" '+
+                        'data-placement="bottom" data-id="'+row['id_transferencia']+'" data-guia="'+row['id_guia_com']+'" data-ing="'+row['id_ingreso']+'" title="Anular" >'+
+                        '<i class="fas fa-trash"></i></button>');
                     }
                 }
             ],
@@ -226,6 +249,60 @@ $('#listaTransferenciasRecibidas tbody').on("click","button.detalle", function()
         open_transferencia_detalle(data);
     }
 });
+
+$('#listaTransferenciasRecibidas tbody').on("click","button.anular", function(){
+    var id_transferencia = $(this).data('id');
+    var id_mov_alm = $(this).data('ing');
+    var id_guia = $(this).data('guia');
+
+    if (id_transferencia !== null && id_mov_alm !== null && id_guia !== null){
+        var c = confirm('¿Está seguro que desea anular la transferencia?');
+        if (c){
+            $('#modal-guia_com_obs').modal({
+                show: true
+            });
+
+            $('[name=id_mov_alm]').val(id_mov_alm);
+            $('[name=id_transferencia]').val(id_transferencia);
+            $('[name=id_guia_com]').val(id_guia);
+            $('[name=observacion]').val('');
+
+            $("#submitGuiaObs").removeAttr("disabled");
+        }
+    }
+});
+
+$("#form-obs").on("submit", function(e){
+    console.log('submit');
+    e.preventDefault();
+    var data = $(this).serialize();
+    console.log(data);
+    anular_transferencia(data);
+});
+
+function anular_transferencia(data){
+    $("#submitGuiaObs").attr('disabled','true');
+    $.ajax({
+        type: 'POST',
+        url: 'anular_transferencia_ingreso',
+        data: data,
+        dataType: 'JSON',
+        success: function(response){
+            if (response.length > 0){
+                alert(response);
+                $('#modal-guia_com_obs').modal('hide');
+            } else {
+                alert('Ingreso por Transferencia anulado con éxito');
+                $('#modal-guia_com_obs').modal('hide');
+                $('#listaTransferenciasRecibidas').DataTable().ajax.reload();
+            }
+        }
+    }).fail( function( jqXHR, textStatus, errorThrown ){
+        console.log(jqXHR);
+        console.log(textStatus);
+        console.log(errorThrown);
+    });
+}
 
 function abrir_guia_venta(id_guia_venta){
     console.log('abrir_guia_venta()');

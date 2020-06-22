@@ -165,15 +165,15 @@ $('#despachosEntregados tbody').on("click","button.anular", function(){
         show: true
     });
 
-    $('[name=id_mov_alm]').val(id_mov_alm);
+    $('[name=id_salida]').val(id_mov_alm);
     $('[name=id_guia_ven]').val(id_guia);
     $('[name=id_od]').val(id_od);
-    $('[name=observacion]').val('');
+    $('[name=observacion_guia_ven]').val('');
 
-    $("#submitGuiaObs").removeAttr("disabled");
+    $("#submitGuiaVenObs").removeAttr("disabled");
 });
 
-$("#form-obs").on("submit", function(e){
+$("#form-guia_ven_obs").on("submit", function(e){
     console.log('submit');
     e.preventDefault();
     var data = $(this).serialize();
@@ -182,7 +182,7 @@ $("#form-obs").on("submit", function(e){
 });
 
 function anular_salida(data){
-    $("#submitGuiaObs").attr('disabled','true');
+    $("#submitGuiaVenObs").attr('disabled','true');
     $.ajax({
         type: 'POST',
         url: 'anular_salida',

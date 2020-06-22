@@ -113,29 +113,34 @@ function listarOrdenesEntregadas(){
             {'data': 'codigo'},
             {'data': 'fecha_emision'},
             {'data': 'nombre_corto', 'name': 'sis_usua.nombre_corto'},
+            {'data': 'codigo_trans', 'name': 'trans.codigo'},
         ],
         'columnDefs': [
             {'aTargets': [0], 'sClass': 'invisible'},
             {'render': function (data, type, row){
                 return '<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" '+
-                    'data-placement="bottom" title="Ver Detalle" data-id="'+row.id_orden_compra+'">'+
+                    'data-placement="bottom" title="Ver Detalle" data-id="'+row['id_orden_compra']+'">'+
                     '<i class="fas fa-list-ul"></i></button>'+
                 '<button type="button" class="ingreso btn btn-warning boton" data-toggle="tooltip" '+
-                    'data-placement="bottom" title="Ver Ingreso" data-id="'+row.id_mov_alm+'">'+
+                    'data-placement="bottom" title="Ver Ingreso" data-id="'+row['id_mov_alm']+'">'+
                     '<i class="fas fa-file-alt"></i></button>'+
-
                 // '<button type="button" class="ver_guias btn btn-warning boton" data-toggle="tooltip" '+
                 //     'data-placement="bottom" title="Ver Guías" data-id="'+row.id_orden_compra+'">'+
                 //     '<i class="fas fa-file-alt"></i></button>'+
-                '<button type="button" class="anular btn btn-danger boton" data-toggle="tooltip" '+
+                (row['codigo_trans'] == null ? '<button type="button" class="anular btn btn-danger boton" data-toggle="tooltip" '+
                     'data-placement="bottom" title="Anular Ingreso" data-id="'+row['id_mov_alm']+'" data-guia="'+row['id_guia_com']+'" data-oc="'+row['id_orden_compra']+'">'+
-                    '<i class="fas fa-trash"></i></button>'+
-                (((row['id_tipo_requerimiento'] == 1 && (row['sede_orden'] !== row['sede_requerimiento'] && row['id_guia_ven'] == null)) ||
-                  (row['id_tipo_requerimiento'] == 3 && (row['sede_orden'] !== row['sede_almacen'] && row['id_guia_ven'] == null))) ? 
-                 ('<button type="button" class="transferencia btn btn-success boton" data-toggle="tooltip" '+
-                    'data-placement="bottom" title="Generar Transferencia" >'+
-                    '<i class="fas fa-exchange-alt"></i></button>') : '');
-                }, targets: 12
+                    '<i class="fas fa-trash"></i></button>' : '')+
+                (
+                    ((row['id_tipo_requerimiento'] == 1 && (row['sede_orden'] !== row['sede_requerimiento'] && row['codigo_trans'] == null)) ||
+                     (row['id_tipo_requerimiento'] == 3 && (row['sede_orden'] !== row['sede_almacen'] && row['codigo_trans'] == null))) ? 
+                        ('<button type="button" class="transferencia btn btn-success boton" data-toggle="tooltip" '+
+                        'data-placement="bottom" title="Generar Transferencia" >'+
+                        '<i class="fas fa-exchange-alt"></i></button>') : 
+                        ((row['codigo_trans'] !== null && row['estado_trans'] == 1) ?
+                        '<button type="button" class="anular_sal btn btn-danger boton" data-toggle="tooltip" '+
+                        'data-placement="bottom" title="Anular Salida" data-id="'+row['id_salida_trans']+'" data-guia="'+row['id_guia_ven_trans']+'" data-trans="'+row['id_transferencia']+'">'+
+                        '<i class="fas fa-trash"></i></button>' : ''));
+                }, targets: 13
             }    
         ],
     });
@@ -176,6 +181,56 @@ $('#ordenesEntregadas tbody').on("click","button.transferencia", function(){
     // var data = $(this).data('id');
     openTransferenciaGuia(data);
 });
+
+$('#ordenesEntregadas tbody').on("click","button.anular_sal", function(){
+    var id_mov_alm = $(this).data('id');
+    var id_guia = $(this).data('guia');
+    var id_trans = $(this).data('trans');
+
+    $('#modal-guia_ven_obs').modal({
+        show: true
+    });
+
+    $('[name=id_salida]').val(id_mov_alm);
+    $('[name=id_guia_ven]').val(id_guia);
+    $('[name=id_trans]').val(id_trans);
+    $('[name=observacion_guia_ven]').val('');
+
+    $("#submitGuiaVenObs").removeAttr("disabled");
+});
+
+$("#form-guia_ven_obs").on("submit", function(e){
+    console.log('submit');
+    e.preventDefault();
+    var data = $(this).serialize();
+    console.log(data);
+    anular_transferencia_salida(data);
+});
+
+function anular_transferencia_salida(data){
+    $("#submitGuiaVenObs").attr('disabled','true');
+    $.ajax({
+        type: 'POST',
+        url: 'anular_transferencia_salida',
+        data: data,
+        dataType: 'JSON',
+        success: function(response){
+            console.log(response);
+            if (response.length > 0){
+                alert(response);
+                $('#modal-guia_ven_obs').modal('hide');
+            } else {
+                alert('Salida Almacén anulada con éxito');
+                $('#modal-guia_ven_obs').modal('hide');
+                $('#ordenesEntregadas').DataTable().ajax.reload();
+            }
+        }
+    }).fail( function( jqXHR, textStatus, errorThrown ){
+        console.log(jqXHR);
+        console.log(textStatus);
+        console.log(errorThrown);
+    });
+}
 
 function open_detalle(data){
     $('#modal-ordenDetalle').modal({

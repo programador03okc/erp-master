@@ -59,8 +59,11 @@ class OrdenesPendientesController extends Controller
             // 'sis_moneda.simbolo','log_ord_compra.monto_subtotal','log_ord_compra.monto_igv','log_ord_compra.monto_total',
             'alm_almacen.id_sede as sede_almacen','sede_req.descripcion as sede_requerimiento_descripcion',
             'alm_req.id_sede as sede_requerimiento','guia_com.serie','guia_com.numero',
-            'alm_req.id_requerimiento','alm_req.estado as estado_requerimiento','guia_ven.id_guia_ven',
-            'alm_req.id_tipo_requerimiento','alm_req.id_almacen as almacen_requerimiento')
+            'alm_req.id_requerimiento','alm_req.estado as estado_requerimiento',
+            'alm_req.id_tipo_requerimiento','alm_req.id_almacen as almacen_requerimiento',
+            'trans.id_transferencia','guia_ven_trans.id_guia_ven as id_guia_ven_trans',
+            'trans.codigo as codigo_trans','trans.estado as estado_trans',
+            'salida_trans.id_mov_alm as id_salida_trans')
             ->join('almacen.guia_com','guia_com.id_guia','=','mov_alm.id_guia_com')
             ->join('logistica.log_ord_compra','log_ord_compra.id_orden_compra','=','guia_com.id_oc')
             ->join('administracion.sis_sede as sede_oc','sede_oc.id_sede','=','log_ord_compra.id_sede')
@@ -69,9 +72,22 @@ class OrdenesPendientesController extends Controller
             ->leftjoin('almacen.alm_req','alm_req.id_requerimiento','=','log_ord_compra.id_requerimiento')
             ->leftjoin('administracion.sis_sede as sede_req','sede_req.id_sede','=','alm_req.id_sede')
             ->leftjoin('almacen.alm_almacen','alm_almacen.id_almacen','=','alm_req.id_almacen')
+            // ->leftjoin('almacen.guia_ven','guia_ven.id_guia_com','=','mov_alm.id_guia_com')
+            ->leftJoin('almacen.guia_ven as guia_ven_trans', function($join)
+                         {   $join->on('guia_ven_trans.id_guia_com', '=', 'mov_alm.id_guia_com');
+                             $join->where('guia_ven_trans.estado','!=', 7);
+                         })
+            ->leftJoin('almacen.mov_alm as salida_trans', function($join)
+                         {   $join->on('salida_trans.id_guia_ven', '=', 'guia_ven_trans.id_guia_ven');
+                             $join->where('salida_trans.estado','!=', 7);
+                         })
+            ->leftJoin('almacen.trans', function($join)
+                         {   $join->on('trans.id_guia_ven', '=', 'guia_ven_trans.id_guia_ven');
+                             $join->where('trans.estado','!=', 7);
+                         })
             // ->join('configuracion.sis_moneda','sis_moneda.id_moneda','=','log_ord_compra.id_moneda')
             ->join('configuracion.sis_usua','sis_usua.id_usuario','=','mov_alm.usuario')
-            ->leftJoin('almacen.guia_ven','guia_ven.id_guia_com','=','mov_alm.id_guia_com')
+            // ->leftJoin('almacen.guia_ven','guia_ven.id_guia_com','=','mov_alm.id_guia_com')
             ->where([['mov_alm.estado','!=',7],['mov_alm.id_tp_mov','=',1]])
             ->get();
         return datatables($data)->toJson();

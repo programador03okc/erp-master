@@ -4887,11 +4887,11 @@ class AlmacenController extends Controller
                 if ($sal->revisado == 0){
                     //motivo de la anulación
                     $mot = DB::table('almacen.motivo_anu')
-                    ->where('id_motivo',$request->id_motivo_obs)
+                    ->where('id_motivo',$request->id_motivo_obs_ven)
                     ->first();
             
                     $id_usuario = Auth::user()->id_usuario;
-                    $obs = $mot->descripcion.'. '.$request->observacion;
+                    $obs = $mot->descripcion.'. '.$request->observacion_guia_ven;
                     //Agrega observacion a la guia
                     $id_obs = DB::table('almacen.guia_ven_obs')->insertGetId(
                         [
@@ -4956,11 +4956,11 @@ class AlmacenController extends Controller
             } else {
                 //motivo de la anulación
                 $mot = DB::table('almacen.motivo_anu')
-                ->where('id_motivo',$request->id_motivo_obs)
+                ->where('id_motivo',$request->id_motivo_obs_ven)
                 ->first();
         
                 $id_usuario = Auth::user()->id_usuario;
-                $obs = $mot->descripcion.'. '.$request->observacion;
+                $obs = $mot->descripcion.'. '.$request->observacion_guia_ven;
                 //Agrega observacion a la guia
                 $id_obs = DB::table('almacen.guia_ven_obs')->insertGetId(
                     [
@@ -7386,12 +7386,6 @@ class AlmacenController extends Controller
                 );
         }
         return response()->json(['id_trans'=>$id_trans,'codigo'=>$codigo]);
-    }
-    public function anular_transferencia($id_transferencia){
-        $data = DB::table('almacen.trans')
-            ->where('id_transferencia',$id_transferencia)
-            ->update([ 'estado' => 7 ]);
-        return response()->json($data);
     }
     public function listar_transferencias_pendientes($ori){
         $data = DB::table('almacen.trans')

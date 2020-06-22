@@ -10,6 +10,7 @@
                     <input type="text" class="oculto" name="id_mov_alm"/>
                     <input type="text" class="oculto" name="id_guia_com"/>
                     <input type="text" class="oculto" name="id_oc"/>
+                    <input type="text" class="oculto" name="id_transferencia"/>
                     <div class="row">
                         <div class="col-md-12">
                             <h5>Seleccione un motivo:</h5>

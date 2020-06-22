@@ -827,6 +827,8 @@ Route::post('listarOrdenesDespacho', 'DistribucionController@listarOrdenesDespac
 Route::get('verDetalleDespacho/{id}', 'DistribucionController@verDetalleDespacho');
 Route::post('guardar_grupo_despacho', 'DistribucionController@guardar_grupo_despacho');
 Route::post('despacho_anular_requerimiento', 'DistribucionController@anular_requerimiento');
+Route::get('anular_orden_despacho/{id}', 'DistribucionController@anular_orden_despacho');
+
 
 Route::get('grupoDespachos', 'DistribucionController@view_grupoDespachos');
 Route::post('listarGruposDespachados', 'DistribucionController@listarGruposDespachados');
@@ -846,9 +848,10 @@ Route::get('listar_transferencias_pendientes/{ori}', 'TransferenciaController@li
 Route::get('listar_transferencias_recibidas/{ori}', 'TransferenciaController@listar_transferencias_recibidas');
 Route::get('listar_transferencia_detalle/{id}', 'TransferenciaController@listar_transferencia_detalle');
 Route::post('guardar_ingreso_transferencia', 'TransferenciaController@guardar_ingreso_transferencia');
-Route::get('anular_transferencia/{id}', 'TransferenciaController@anular_transferencia');
+Route::post('anular_transferencia_ingreso', 'TransferenciaController@anular_transferencia_ingreso');
 Route::get('ingreso_transferencia/{id}', 'TransferenciaController@ingreso_transferencia');
 Route::get('transferencia_nextId/{id}', 'TransferenciaController@transferencia_nextId');
+Route::post('anular_transferencia_salida', 'TransferenciaController@anular_transferencia_salida');
 
 
 Route::get('requerimientoPagos', 'DistribucionController@view_requerimientoPagos');

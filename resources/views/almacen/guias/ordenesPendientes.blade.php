@@ -61,6 +61,7 @@
                                         <th>Ingreso</th>
                                         <th>Fecha Ingreso</th>
                                         <th>Responsable</th>
+                                        <th>Trans.</th>
                                         <th width="100px"></th>
                                     </tr>
                                 </thead>
@@ -79,6 +80,7 @@
 @include('almacen.guias.guia_com_create')
 @include('almacen.guias.guia_com_obs')
 @include('almacen.transferencias.transferenciaGuia')
+@include('almacen.guias.guia_ven_obs')
 @include('layout.footer')
 @include('layout.scripts')
 <script src="{{('/js/almacen/guia/ordenesPendientes.js')}}"></script>

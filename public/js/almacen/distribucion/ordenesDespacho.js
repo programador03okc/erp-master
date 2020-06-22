@@ -100,7 +100,11 @@ function listarRequerimientosPendientes(){
                      (row['estado'] == 19 && row['id_tipo_requerimiento'] == 2 && row['confirmacion_pago'] == true && row['id_od'] == null)) ? //venta directa
                     ('<button type="button" class="despacho btn btn-success boton" data-toggle="tooltip" '+
                     'data-placement="bottom" title="Generar Orden de Despacho" >'+
-                    '<i class="fas fa-sign-in-alt"></i></button>') : '')
+                    '<i class="fas fa-sign-in-alt"></i></button>') : 
+                    ( row['id_od'] !== null && row['estado_od'] == 1) ?
+                    '<button type="button" class="anular_od btn btn-danger boton" data-toggle="tooltip" '+
+                    'data-placement="bottom" data-id="'+row['id_od']+'" data-cod="'+row['codigo_od']+'" title="Anular Orden Despacho" >'+
+                    '<i class="fas fa-trash"></i></button>' : '' )
                 }, targets: 14
             }
         ],
@@ -126,6 +130,33 @@ $('#requerimientosPendientes tbody').on("click","button.despacho", function(){
     console.log(data);
     open_despacho_create(data);
 });
+
+$('#requerimientosPendientes tbody').on("click","button.anular_od", function(){
+    var id = $(this).data('id');
+    var cod = $(this).data('cod');
+    var msj = confirm('¿Está seguro que desea anular la '+cod+' ?');
+    if (msj){
+        anularOrdenDespacho(id);
+    }
+});
+
+function anularOrdenDespacho(id){
+    $.ajax({
+        type: 'GET',
+        url: 'anular_orden_despacho/'+id,
+        dataType: 'JSON',
+        success: function(response){
+            console.log(response);
+            if (response > 0){
+                $('#requerimientosPendientes').DataTable().ajax.reload();
+            }
+        }
+    }).fail( function( jqXHR, textStatus, errorThrown ){
+        console.log(jqXHR);
+        console.log(textStatus);
+        console.log(errorThrown);
+    });
+}
 
 function listarOrdenesPendientes(){
     var vardataTables = funcDatatables();

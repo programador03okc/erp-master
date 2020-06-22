@@ -22,7 +22,8 @@ class TransferenciaController extends Controller
         $clasificaciones = AlmacenController::mostrar_guia_clas_cbo();
         $almacenes = AlmacenController::mostrar_almacenes_cbo();
         $usuarios = AlmacenController::select_usuarios();
-        return view('almacen/transferencias/listar_transferencias', compact('clasificaciones','almacenes','usuarios'));
+        $motivos_anu = AlmacenController::select_motivo_anu();
+        return view('almacen/transferencias/listar_transferencias', compact('clasificaciones','almacenes','usuarios','motivos_anu'));
     }
 
     public function listar_transferencias_pendientes($ori){
@@ -36,9 +37,20 @@ class TransferenciaController extends Controller
         'usu_destino.nombre_corto as nombre_destino',
         'usu_registro.nombre_corto as nombre_registro',
         'adm_estado_doc.estado_doc','adm_estado_doc.bootstrap_color',
-        'guia_ven.id_guia_com as guia_ingreso_compra','mov_alm.id_mov_alm as id_salida')
+        'guia_ven.id_guia_com as guia_ingreso_compra','mov_alm.id_mov_alm as id_salida',
+        'log_ord_compra.codigo as codigo_orden','alm_req.codigo as codigo_req',
+        'alm_req.concepto as concepto_req')
         ->leftJoin('almacen.mov_alm','mov_alm.id_guia_ven','=','trans.id_guia_ven')
         ->leftJoin('almacen.guia_ven','guia_ven.id_guia_ven','=','trans.id_guia_ven')
+        ->leftJoin('almacen.guia_com as guia_compra','guia_compra.id_guia','=','guia_ven.id_guia_com')
+        ->leftJoin('logistica.log_ord_compra', function($join)
+        {   $join->on('log_ord_compra.id_orden_compra', '=', 'guia_compra.id_oc');
+            $join->where('log_ord_compra.estado','!=', 7);
+        })
+        ->leftJoin('almacen.alm_req', function($join)
+        {   $join->on('alm_req.id_requerimiento', '=', 'log_ord_compra.id_requerimiento');
+            $join->where('alm_req.estado','!=', 7);
+        })
         ->leftJoin('almacen.guia_com','guia_com.id_guia','=','trans.id_guia_com')
         ->join('almacen.alm_almacen as alm_origen','alm_origen.id_almacen','=','trans.id_almacen_origen')
         ->leftJoin('almacen.alm_almacen as alm_destino','alm_destino.id_almacen','=','trans.id_almacen_destino')
@@ -65,10 +77,21 @@ class TransferenciaController extends Controller
         'usu_registro.nombre_corto as nombre_registro',
         'adm_estado_doc.estado_doc','adm_estado_doc.bootstrap_color',
         'guia_ven.id_guia_com as guia_ingreso_compra','ingreso.id_mov_alm as id_ingreso',
-        'salida.id_mov_alm as id_salida')
+        'salida.id_mov_alm as id_salida',
+        'log_ord_compra.codigo as codigo_orden','alm_req.codigo as codigo_req',
+        'alm_req.concepto as concepto_req')
         ->leftJoin('almacen.mov_alm as ingreso','ingreso.id_guia_com','=','trans.id_guia_com')
         ->leftJoin('almacen.mov_alm as salida','salida.id_guia_ven','=','trans.id_guia_ven')
         ->leftJoin('almacen.guia_ven','guia_ven.id_guia_ven','=','trans.id_guia_ven')
+        ->leftJoin('almacen.guia_com as guia_compra','guia_compra.id_guia','=','guia_ven.id_guia_com')
+        ->leftJoin('logistica.log_ord_compra', function($join)
+        {   $join->on('log_ord_compra.id_orden_compra', '=', 'guia_compra.id_oc');
+            $join->where('log_ord_compra.estado','!=', 7);
+        })
+        ->leftJoin('almacen.alm_req', function($join)
+        {   $join->on('alm_req.id_requerimiento', '=', 'log_ord_compra.id_requerimiento');
+            $join->where('alm_req.estado','!=', 7);
+        })
         ->leftJoin('almacen.guia_com','guia_com.id_guia','=','trans.id_guia_com')
         ->join('almacen.alm_almacen as alm_origen','alm_origen.id_almacen','=','trans.id_almacen_origen')
         ->leftJoin('almacen.alm_almacen as alm_destino','alm_destino.id_almacen','=','trans.id_almacen_destino')
@@ -171,11 +194,190 @@ class TransferenciaController extends Controller
         // return response()->json($detalle);
     }
 
-    public function anular_transferencia($id_transferencia){
-        $data = DB::table('almacen.trans')
-            ->where('id_transferencia',$id_transferencia)
-            ->update([ 'estado' => 7 ]);
-        return response()->json($data);
+    public function anular_transferencia_ingreso(Request $request){
+        try {
+            DB::beginTransaction();
+
+            $ing = DB::table('almacen.mov_alm')
+                ->select('mov_alm.*','log_ord_compra.id_requerimiento','orden_despacho.id_od')
+                ->leftJoin('almacen.trans','trans.id_transferencia','=','mov_alm.id_transferencia')
+                ->leftJoin('almacen.guia_ven', function($join)
+                {   $join->on('guia_ven.id_guia_ven', '=', 'trans.id_guia_ven');
+                    $join->where('guia_ven.estado','!=', 7);
+                })
+                // ->leftJoin('almacen.guia_ven','guia_ven.id_guia_ven','=','trans.id_guia_ven')
+                ->leftJoin('almacen.guia_com', function($join)
+                {   $join->on('guia_com.id_guia', '=', 'guia_ven.id_guia_com');
+                    $join->where('guia_com.estado','!=', 7);
+                })
+                // ->leftJoin('almacen.guia_com','guia_com.id_guia','=','guia_ven.id_guia_com')
+                ->leftJoin('logistica.log_ord_compra', function($join)
+                {   $join->on('log_ord_compra.id_orden_compra', '=', 'guia_com.id_oc');
+                    $join->where('log_ord_compra.estado','!=', 7);
+                })
+                // ->leftJoin('logistica.log_ord_compra','log_ord_compra.id_orden_compra','=','guia_com.id_oc')
+                ->leftJoin('almacen.orden_despacho', function($join)
+                {   $join->on('orden_despacho.id_requerimiento', '=', 'log_ord_compra.id_requerimiento');
+                    $join->where('orden_despacho.estado','!=', 7);
+                })
+                // ->leftJoin('almacen.orden_despacho','orden_despacho.id_requerimiento','=','log_ord_compra.id_requerimiento')
+                    ->where([['mov_alm.id_mov_alm', '=', $request->id_mov_alm]])//ingreso
+                    ->first();
+
+            $msj = '';
+            //si el ingreso no esta revisado
+            if ($ing->revisado == 0){
+
+                if ($ing->id_od == null){
+                    $id_usuario = Auth::user()->id_usuario;
+                    //Anula ingreso
+                    $update = DB::table('almacen.mov_alm')
+                    ->where('id_mov_alm', $request->id_mov_alm)
+                    ->update([ 'estado' => 7 ]);
+                    //Anula el detalle
+                    $update = DB::table('almacen.mov_alm_det')
+                    ->where('id_mov_alm', $request->id_mov_alm)
+                    ->update([ 'estado' => 7 ]);
+                    //Agrega motivo anulacion a la guia
+                    DB::table('almacen.guia_com_obs')->insert(
+                    [
+                        'id_guia_com'=>$request->id_guia_com,
+                        'observacion'=>$request->observacion,
+                        'registrado_por'=>$id_usuario,
+                        'id_motivo_anu'=>$request->id_motivo_obs,
+                        'fecha_registro'=>date('Y-m-d H:i:s')
+                    ]);
+                    //Anula la Guia
+                    $update = DB::table('almacen.guia_com')
+                    ->where('id_guia', $request->id_guia_com)
+                    ->update([ 'estado' => 7 ]);
+                    //Anula la Guia Detalle
+                    $update = DB::table('almacen.guia_com_det')
+                    ->where('id_guia_com', $request->id_guia_com)
+                    ->update([ 'estado' => 7 ]);
+                    //Transferencia cambia estado elaborado
+                    $data = DB::table('almacen.trans')
+                        ->where('id_transferencia',$request->id_transferencia)
+                        ->update([ 'estado' => 1,
+                                   'id_guia_com' => null ]);
+                    //Si existe un requerimiento
+                    if ($ing->id_requerimiento !== null){
+                        //Requerimiento regresa a enviado
+                        DB::table('almacen.alm_req')
+                        ->where('id_requerimiento',$ing->id_requerimiento)
+                        ->update(['estado'=>17]);//Enviado
+
+                        DB::table('almacen.alm_det_req')
+                        ->where('id_requerimiento',$ing->id_requerimiento)
+                        ->update(['estado'=>17]);//Enviado
+                    }
+                } else {
+                    $msj = 'Ya se generó una Orden de Despacho.';
+                }
+            } else {
+                $msj = 'El ingreso ya fue revisado por el Jefe de Almacén.';
+            }
+
+            DB::commit();
+            
+            return response()->json($msj);
+            
+        } catch (\PDOException $e) {
+            // Woopsy
+            DB::rollBack();
+            // return response()->json($e);
+        }
+    }
+
+    public function anular_transferencia_salida(Request $request){
+        try {
+            DB::beginTransaction();
+
+            $sal = DB::table('almacen.mov_alm')
+                ->select('mov_alm.*','log_ord_compra.id_requerimiento',
+                'guia_com.id_almacen as almacen_compra','trans.id_guia_com')
+                ->leftJoin('almacen.trans','trans.id_transferencia','=','mov_alm.id_transferencia')
+                ->leftJoin('almacen.guia_ven', function($join)
+                {   $join->on('guia_ven.id_guia_ven', '=', 'trans.id_guia_ven');
+                    $join->where('guia_ven.estado','!=', 7);
+                })
+                // ->leftJoin('almacen.guia_ven','guia_ven.id_guia_ven','=','trans.id_guia_ven')
+                ->leftJoin('almacen.guia_com', function($join)
+                {   $join->on('guia_com.id_guia', '=', 'guia_ven.id_guia_com');
+                    $join->where('guia_com.estado','!=', 7);
+                })
+                // ->leftJoin('almacen.guia_com','guia_com.id_guia','=','guia_ven.id_guia_com')
+                ->leftJoin('logistica.log_ord_compra', function($join)
+                {   $join->on('log_ord_compra.id_orden_compra', '=', 'guia_com.id_oc');
+                    $join->where('log_ord_compra.estado','!=', 7);
+                })
+                // ->leftJoin('logistica.log_ord_compra','log_ord_compra.id_orden_compra','=','guia_com.id_oc')
+                    ->where([['mov_alm.id_mov_alm', '=', $request->id_salida]])//salida
+                    ->first();
+
+            $msj = '';
+            //si el salida no esta revisado
+            if ($sal->revisado == 0){
+
+                if ($sal->id_guia_com == null){
+                    $id_usuario = Auth::user()->id_usuario;
+                    //Anula salida
+                    $update = DB::table('almacen.mov_alm')
+                    ->where('id_mov_alm', $request->id_salida)
+                    ->update([ 'estado' => 7 ]);
+                    //Anula el detalle
+                    $update = DB::table('almacen.mov_alm_det')
+                    ->where('id_mov_alm', $request->id_salida)
+                    ->update([ 'estado' => 7 ]);
+                    //Agrega motivo anulacion a la guia
+                    DB::table('almacen.guia_ven_obs')->insert(
+                    [
+                        'id_guia_ven'=>$request->id_guia_ven,
+                        'observacion'=>$request->observacion_guia_ven,
+                        'registrado_por'=>$id_usuario,
+                        'id_motivo_anu'=>$request->id_motivo_obs_ven,
+                        'fecha_registro'=>date('Y-m-d H:i:s')
+                    ]);
+                    //Anula la Guia
+                    $update = DB::table('almacen.guia_ven')
+                    ->where('id_guia_ven', $request->id_guia_ven)
+                    ->update([ 'estado' => 7 ]);
+                    //Anula la Guia Detalle
+                    $update = DB::table('almacen.guia_ven_det')
+                    ->where('id_guia_ven', $request->id_guia_ven)
+                    ->update([ 'estado' => 7 ]);
+                    //Transferencia cambia estado anula
+                    $data = DB::table('almacen.trans')
+                        ->where('id_transferencia',$request->id_transferencia)
+                        ->update([ 'estado' => 7 ]);
+                    //Si existe un requerimiento
+                    if ($sal->id_requerimiento !== null){
+                        //Requerimiento regresa a Reservado
+                        DB::table('almacen.alm_req')
+                        ->where('id_requerimiento',$sal->id_requerimiento)
+                        ->update(['estado'=>19]);//Reservado
+
+                        DB::table('almacen.alm_det_req')
+                        ->where('id_requerimiento',$sal->id_requerimiento)
+                        ->update(['estado'=>19,
+                                  'id_almacen_reserva'=>$sal->almacen_compra]);//Reservado
+                    }
+                } else {
+                    $msj = 'Ya se generó el Ingreso en el Almacén Destino.';
+                }
+            } else {
+                $msj = 'La salida ya fue revisado por el Jefe de Almacén.';
+            }
+
+            DB::commit();
+            
+            return response()->json($msj);
+            
+        } catch (\PDOException $e) {
+            // Woopsy
+            DB::rollBack();
+            // return response()->json($e);
+        }
     }
 
     public function ingreso_transferencia($id_guia_com){

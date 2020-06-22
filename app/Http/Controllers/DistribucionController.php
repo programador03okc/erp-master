@@ -45,7 +45,7 @@ class DistribucionController extends Controller
             'rrhh_perso.nro_documento as dni_persona','alm_almacen.descripcion as almacen_descripcion',
             'alm_almacen.id_sede as sede_requerimiento','log_ord_compra.id_sede as sede_orden',
             'sis_sede.descripcion as sede_descripcion_orden',
-            'orden_despacho.id_od','orden_despacho.codigo as codigo_od',
+            'orden_despacho.id_od','orden_despacho.codigo as codigo_od','orden_despacho.estado as estado_od',
             'alm_tp_req.descripcion as tipo_req',
             DB::raw("(rrhh_perso.nombres) || ' ' || (rrhh_perso.apellido_paterno) || ' ' || (rrhh_perso.apellido_materno) AS nombre_persona"),
             'adm_contri.nro_documento as cliente_ruc','adm_contri.razon_social as cliente_razon_social')
@@ -1030,7 +1030,7 @@ class DistribucionController extends Controller
             $msj = '';
     
             $sal = DB::table('almacen.mov_alm')
-            ->where('id_mov_alm', $request->id_mov_alm)
+            ->where('id_mov_alm', $request->id_salida)
             ->first();
             //si la salida no esta revisada
             if ($sal->revisado == 0){
@@ -1046,19 +1046,19 @@ class DistribucionController extends Controller
                     if ($od->estado == 9){
                         //Anula salida
                         $update = DB::table('almacen.mov_alm')
-                        ->where('id_mov_alm', $request->id_mov_alm)
+                        ->where('id_mov_alm', $request->id_salida)
                         ->update([ 'estado' => 7 ]);
                         //Anula el detalle
                         $update = DB::table('almacen.mov_alm_det')
-                        ->where('id_mov_alm', $request->id_mov_alm)
+                        ->where('id_mov_alm', $request->id_salida)
                         ->update([ 'estado' => 7 ]);
                         //Agrega motivo anulacion a la guia
                         DB::table('almacen.guia_ven_obs')->insert(
                         [
                             'id_guia_ven'=>$request->id_guia_ven,
-                            'observacion'=>$request->observacion,
+                            'observacion'=>$request->observacion_guia_ven,
                             'registrado_por'=>$id_usuario,
-                            'id_motivo_anu'=>$request->id_motivo_obs,
+                            'id_motivo_anu'=>$request->id_motivo_obs_ven,
                             'fecha_registro'=>date('Y-m-d H:i:s')
                         ]);
                         //Anula la Guia
@@ -1101,4 +1101,26 @@ class DistribucionController extends Controller
             DB::rollBack();
         }
     }
+    
+    function anular_orden_despacho($id_od){
+        try {
+            DB::beginTransaction();
+
+            $update = DB::table('almacen.orden_despacho')
+            ->where('id_od',$id_od)
+            ->update(['estado'=>7]);
+
+            $update = DB::table('almacen.orden_despacho_det')
+            ->where('id_od',$id_od)
+            ->update(['estado'=>7]);
+
+            DB::commit();
+            return response()->json($update);
+            
+        } catch (\PDOException $e) {
+    
+            DB::rollBack();
+        }
+    }
+
 }

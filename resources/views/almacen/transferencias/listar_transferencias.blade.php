@@ -50,13 +50,16 @@
                                         <th>Nro.Trans.</th>
                                         <th>Guía Venta</th>
                                         <th>Guía Compra</th>
-                                        <th>Fecha de Guía</th>
+                                        <!-- <th>Fecha de Guía</th> -->
                                         <th>Almacén Origen</th>
                                         <th>Almacén Destino</th>
                                         <th>Responsable Origen</th>
                                         <th>Responsable Destino</th>
                                         <th>Registrado por</th>
                                         <th>Estado</th>
+                                        <th>OC</th>
+                                        <th>Req.</th>
+                                        <th>Concepto</th>
                                         <th width="10%">Acción</th>
                                     </tr>
                                 </thead>
@@ -96,13 +99,16 @@
                                         <th>Nro.Trans.</th>
                                         <th>Guía Venta</th>
                                         <th>Guía Compra</th>
-                                        <th>Fecha de Guía</th>
+                                        <!-- <th>Fecha de Guía</th> -->
                                         <th>Almacén Origen</th>
                                         <th>Almacén Destino</th>
                                         <th>Responsable Origen</th>
                                         <th>Responsable Destino</th>
                                         <th>Registrado por</th>
                                         <th>Estado</th>
+                                        <th>OC</th>
+                                        <th>Req.</th>
+                                        <th>Concepto</th>
                                         <th width="7%">Acción</th>
                                     </tr>
                                 </thead>
@@ -116,6 +122,7 @@
     </div>
 </div>
 @include('almacen.transferencias.transferencia_detalle')
+@include('almacen.guias.guia_com_obs')
 @include('layout.footer')
 @include('layout.scripts')
 <script src="{{('/js/almacen/transferencias/listar_transferencias.js')}}"></script>
