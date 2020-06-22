@@ -1,6 +1,11 @@
-@include('layout.head')
+@extends('layout.head')
 @include('layout.menu_admin')
-@include('layout.body')
+
+@section('cabecera')
+    Módulo de administración
+@endsection
+
+@section('content')
 <div class="row">
     <div class="col-md-3 col-sm-6 col-xs-12">
         <div class="info-box">
@@ -43,6 +48,4 @@
         </div>
     </div>
 </div>
-@include('layout.footer')
-@include('layout.scripts')
-@include('layout.fin_html')
+@endsection

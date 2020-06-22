@@ -14,7 +14,7 @@ $(document).ready(function(){
 		checkboxClass: 'icheckbox_flat-green',
 		radioClass: 'iradio_flat-green'
 	});
-	$('.js-example-basic-single').select2();
+	// $('.js-example-basic-single').select2();
 
     page = $('.page-main').attr('type');
 	var form = $('.page-main form[type=register]').attr('id');

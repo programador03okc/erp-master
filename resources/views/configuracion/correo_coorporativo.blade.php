@@ -1,6 +1,11 @@
-@include('layout.head')
+@extends('layout.head')
 @include('layout.menu_config')
-@include('layout.body')
+
+@section('cabecera')
+    Correos Coorporativos
+@endsection
+
+@section('content')
 <div class="page-main" type="correo_coorporativo">
     <legend><h2>Correos Coorporativos</h2></legend>
     <div class="row">
@@ -75,7 +80,9 @@
         </div>
     </div>
 </div>
-@include('layout.footer')
-@include('layout.scripts')
+@endsection
+
+@section('scripts')
+
 <script src="{{('/js/configuracion/correo_coorporativo.js')}}"></script>
-@include('layout.fin_html')
+@endsection

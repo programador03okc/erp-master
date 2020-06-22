@@ -1,6 +1,7 @@
 @include('layout.head')
 @include('layout.menu_admin')
 @include('layout.body')
+
 <div class="page-main" type="empresa">
     <legend><h2>Empresa</h2></legend>
     <div id="tab-empresa">
