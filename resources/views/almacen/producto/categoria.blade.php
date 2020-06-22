@@ -1,6 +1,14 @@
-@include('layout.head')
+@extends('layout.head')
 @include('layout.menu_almacen')
-@include('layout.body')
+@section('option')
+    @include('layout.option')
+@endsection
+
+@section('cabecera')
+    Categoría
+@endsection
+
+@section('content')
 <div class="page-main" type="categoria">
     <legend><h2>Categoría</h2></legend>
     <div class="row">
@@ -51,8 +59,9 @@
     </div>
 </div>
 @include('almacen.producto.categoriaModal')
-@include('layout.footer')
-@include('layout.scripts')
-<script src="{{('/js/almacen/producto/categoriaModal.js')}}"></script>
-<script src="{{('/js/almacen/producto/categoria_producto.js')}}"></script>
-@include('layout.fin_html')
+@endsection
+
+@section('scripts')
+    <script src="{{('/js/almacen/producto/categoriaModal.js')}}"></script>
+    <script src="{{('/js/almacen/producto/categoria_producto.js')}}"></script>
+@endsection

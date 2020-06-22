@@ -1,7 +1,10 @@
-@include('layout.head')
+@extends('layout.head')
 @include('layout.menu_config')
-@include('layout.body')
+
+@section('cabecera')
+    Configuración
+@endsection
+
+@section('content')
     <div></div>
-@include('layout.footer')
-@include('layout.scripts')
-@include('layout.fin_html')
+@endsection

@@ -28,3 +28,4 @@
     <script src="{{ asset('template/bootstrap/js/bootstrap.min.js')}}"></script>
     <script src="{{ asset('template/dist/js/app.min.js')}}"></script>
 </body>
+</html>

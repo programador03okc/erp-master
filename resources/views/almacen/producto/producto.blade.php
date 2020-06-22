@@ -1,6 +1,16 @@
-@include('layout.head')
+@extends('layout.head')
 @include('layout.menu_almacen')
-@include('layout.body')
+
+@section('option')
+    @include('layout.option')
+@endsection
+
+@section('cabecera')
+    Producto
+@endsection
+
+@section('content')
+
 <div class="page-main" type="producto">
     <legend class="mylegend">
         <h2>Producto</h2>
@@ -295,13 +305,23 @@
         </div>
     </div>
 </div>
+
 @include('almacen.producto.subcategoriaModal')
 @include('almacen.producto.productoModal')
-@include('layout.footer')
-@include('layout.scripts')
-<script src="{{('/js/almacen/producto/producto.js')}}"></script>
-<script src="{{('/js/almacen/producto/subcategoriaModal.js')}}"></script>
-<script src="{{('/js/almacen/producto/productoModal.js')}}"></script>
-<script src="{{('/js/almacen/producto/producto_ubicacion.js')}}"></script>
-<script src="{{('/js/almacen/producto/producto_serie.js')}}"></script>
-@include('layout.fin_html')
+@endsection
+@section('scripts')
+    <script src="{{ asset('datatables/DataTables/js/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ asset('datatables/DataTables/js/dataTables.bootstrap.min.js') }}"></script>
+    <script src="{{ asset('datatables/Buttons/js/dataTables.buttons.min.js') }}"></script>
+    <script src="{{ asset('datatables/Buttons/js/buttons.bootstrap.min.js') }}"></script>
+    <script src="{{ asset('datatables/Buttons/js/buttons.print.min.js') }}"></script>
+    <script src="{{ asset('datatables/Buttons/js/buttons.html5.min.js') }}"></script>
+    <script src="{{ asset('datatables/pdfmake/pdfmake.min.js') }}"></script>
+    <script src="{{ asset('datatables/pdfmake/vfs_fonts.js') }}"></script>
+    <script src="{{ asset('datatables/JSZip/jszip.min.js') }}"></script>
+    <script src="{{('/js/almacen/producto/producto.js')}}"></script>
+    <script src="{{('/js/almacen/producto/subcategoriaModal.js')}}"></script>
+    <script src="{{('/js/almacen/producto/productoModal.js')}}"></script>
+    <script src="{{('/js/almacen/producto/producto_ubicacion.js')}}"></script>
+    <script src="{{('/js/almacen/producto/producto_serie.js')}}"></script>
+@endsection

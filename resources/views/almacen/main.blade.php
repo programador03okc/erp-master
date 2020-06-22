@@ -1,6 +1,9 @@
-@include('layout.head')
+@extends('layout.head')
 @include('layout.menu_almacen')
-@include('layout.body_sin_option')
+@section('cabecera')
+    Dashboard Almacén
+@endsection
+@section('content')
 <section class="content">
 
     <div class="row">
@@ -91,8 +94,8 @@
         </div>
     </div>
 </section>
-@include('almacen.verRequerimientoEstado')
-@include('layout.footer')
-@include('layout.scripts')
+@endsection
+@section('scripts')
+<script src="{{ asset('template/plugins/chartjs/Chart.min.js') }}"></script>
 <script src="{{('/js/almacen/dashboardAlmacen.js')}}"></script>
-@include('layout.fin_html')
+@endsection
