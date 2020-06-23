@@ -403,6 +403,7 @@ function mostrar_requerimiento(IdorCode){
                  $('[name=id_op_com]').val(response['requerimiento'][0].id_op_com);
                 $('[name=codigo_opcion]').val(response['requerimiento'][0].codigo_op_com);
                 $('[name=nombre_opcion]').val(response['requerimiento'][0].descripcion_op_com);
+                $('[name=observacion]').val(response['requerimiento'][0].observacion);
                 
                 $('[name=sede]').val(response['requerimiento'][0].id_sede);
                 $('[name=tipo_cliente]').val(response['requerimiento'][0].tipo_cliente);
@@ -865,6 +866,7 @@ function get_data_requerimiento(){
     id_almacen = document.querySelector("form[id='form-requerimiento'] select[name='id_almacen']").value;
     almacen_id_sede =document.querySelector("select[name='id_almacen']").options[document.querySelector("select[name='id_almacen']").selectedIndex].dataset.idSede;
     almacen_id_empresa =document.querySelector("select[name='id_almacen']").options[document.querySelector("select[name='id_almacen']").selectedIndex].dataset.idEmpresa;
+    observacion = document.querySelector("form[id='form-requerimiento'] textarea[name='observacion']").value;
 
     requerimiento = {
         id_requerimiento,
@@ -890,7 +892,8 @@ function get_data_requerimiento(){
         ubigeo,
         id_almacen,
         almacen_id_sede,
-        almacen_id_empresa
+        almacen_id_empresa,
+        observacion
         
     };
 return requerimiento;
@@ -2325,9 +2328,11 @@ function cargar_almacenes(sede){
                 var option = '';
                 for (var i=0; i<response.length; i++){
                     if (response.length == 1){
-                        option+='<option value="'+response[i].id_almacen+'" selected>'+response[i].codigo+' - '+response[i].descripcion+'</option>';
+                        option+='<option data-id-sede="'+response[i].id_sede+'" data-id-empresa="'+response[i].id_empresa+'" value="'+response[i].id_almacen+'" selected>'+response[i].codigo+' - '+response[i].descripcion+'</option>';
+
                     } else {
-                        option+='<option value="'+response[i].id_almacen+'">'+response[i].codigo+' - '+response[i].descripcion+'</option>';
+                        option+='<option data-id-sede="'+response[i].id_sede+'" data-id-empresa="'+response[i].id_empresa+'" value="'+response[i].id_almacen+'">'+response[i].codigo+' - '+response[i].descripcion+'</option>';
+
                     }
                 }
                 $('[name=id_almacen]').html('<option value="0" disabled selected>Elija una opción</option>'+option);

@@ -1393,6 +1393,7 @@ class LogisticaController extends Controller
                 'id_periodo'            => $request->requerimiento['id_periodo'],
                 'concepto'              => $request->requerimiento['concepto'],
                 'id_moneda'             => $request->requerimiento['id_moneda'],
+                'observacion'           => isset($request->requerimiento['observacion'])?$request->requerimiento['observacion']:null,
                 'id_grupo'              => isset($request->requerimiento['id_grupo'])?$request->requerimiento['id_grupo']:null,
                 'id_area'               => isset($request->requerimiento['id_area'])?$request->requerimiento['id_area']:null,
                 'id_op_com'             => isset($request->requerimiento['id_op_com'])?$request->requerimiento['id_op_com']:null,
@@ -1403,7 +1404,7 @@ class LogisticaController extends Controller
                 'codigo_occ'            => isset($request->requerimiento['codigo_occ'])?$request->requerimiento['codigo_occ']:null,
                 'id_sede'               => isset($request->requerimiento['id_sede'])?$request->requerimiento['id_sede']:null,
                 'tipo_cliente'          => isset($request->requerimiento['tipo_cliente'])?$request->requerimiento['tipo_cliente']:null,
-                'id_cliente'          => isset($request->requerimiento['tipo_cliente'])?$request->requerimiento['tipo_cliente']:null,
+                'id_cliente'            => isset($request->requerimiento['id_cliente'])?$request->requerimiento['id_cliente']:null,
                 'id_persona'            => isset($request->requerimiento['id_persona'])?$request->requerimiento['id_persona']:null,
                 'direccion_entrega'     => isset($request->requerimiento['direccion_entrega'])?$request->requerimiento['direccion_entrega']:null,
                 'id_ubigeo_entrega'     => isset($request->requerimiento['ubigeo'])?$request->requerimiento['ubigeo']:null,
@@ -1493,12 +1494,20 @@ class LogisticaController extends Controller
     public function actualizar_requerimiento(Request $request, $id)
     {
         $codigo = $request->requerimiento['codigo'];
+        $tipo_requerimiento = $request->requerimiento['tipo_requerimiento'];
         $usuario = $request->requerimiento['id_usuario'];
         $id_rol = $request->requerimiento['id_rol'];
         $id_grupo = $request->requerimiento['id_grupo'];
         $fecha_req = $request->requerimiento['fecha_requerimiento'];
         $id_periodo = $request->requerimiento['id_periodo'];
         $concepto = $request->requerimiento['concepto'];
+        $observacion = isset($request->requerimiento['observacion'])?$request->requerimiento['observacion']:null;
+        $id_sede =  isset($request->requerimiento['id_sede'])?$request->requerimiento['id_sede']:null;
+        $tipo_cliente = isset($request->requerimiento['tipo_cliente'])?$request->requerimiento['tipo_cliente']:null;
+        $id_persona = isset($request->requerimiento['id_persona'])?$request->requerimiento['id_persona']:null;
+        $direccion_entrega = isset($request->requerimiento['direccion_entrega'])?$request->requerimiento['direccion_entrega']:null;
+        $ubigeo = isset($request->requerimiento['ubigeo'])?$request->requerimiento['ubigeo']:null;
+        $id_almacen = isset($request->requerimiento['id_almacen'])?$request->requerimiento['id_almacen']:null;
         $moneda = $request->requerimiento['id_moneda'];
         $id_area = $request->requerimiento['id_area'];
         $id_op_com = $request->requerimiento['id_op_com'];
@@ -1509,11 +1518,19 @@ class LogisticaController extends Controller
             $data_requerimiento = DB::table('almacen.alm_req')->where('id_requerimiento', $id)
                 ->update([
                     'codigo'                => $codigo,
+                    'id_tipo_requerimiento' => $tipo_requerimiento,
                     'id_usuario'            => $usuario,
                     'id_rol'                => is_numeric($id_rol) == 1 ? $id_rol : null,
                     'fecha_requerimiento'   => $fecha_req,
                     'id_periodo'            => $id_periodo,
                     'concepto'              => $concepto,
+                    'observacion'           => $observacion,
+                    'tipo_cliente'          => $tipo_cliente,
+                    'id_persona'            => $id_persona,
+                    'direccion_entrega'     => $direccion_entrega,
+                    'id_ubigeo_entrega'     => $ubigeo,
+                    'id_sede'               => $id_sede,
+                    'id_almacen'            => $id_almacen,
                     'id_moneda'             => is_numeric($moneda) == 1 ? $moneda : null,
                     'id_grupo'               => is_numeric($id_grupo) == 1 ? $id_grupo : null,
                     'id_area'               => is_numeric($id_area) == 1 ? $id_area : null,
@@ -1526,6 +1543,7 @@ class LogisticaController extends Controller
                 for ($i = 0; $i < $count_detalle; $i++) {
                     $id_det_req = $request->detalle[$i]['id_detalle_requerimiento'];
                     $id_item = $request->detalle[$i]['id_item'];
+                    $id_producto = $request->detalle[$i]['id_producto'];
                     $precio_ref = $request->detalle[$i]['precio_referencial'];
                     $cantidad = $request->detalle[$i]['cantidad'];
                     $fecha_entrega = $request->detalle[$i]['fecha_entrega'];
@@ -1542,6 +1560,7 @@ class LogisticaController extends Controller
                             ->update([
                                 'id_requerimiento'      => $id,
                                 'id_item'               => is_numeric($id_item) == 1 ? $id_item : null,
+                                'id_producto'           => is_numeric($id_producto) == 1 ? $id_producto : null,
                                 'precio_referencial'    => $precio_ref,
                                 'cantidad'              => $cantidad,
                                 'fecha_entrega'         => $fecha_entrega,
@@ -4299,13 +4318,16 @@ class LogisticaController extends Controller
 
     public function cargar_almacenes($id_sede){
         $data = DB::table('almacen.alm_almacen')
-        ->select('alm_almacen.id_almacen','alm_almacen.codigo','alm_almacen.descripcion')
+        ->select('alm_almacen.id_almacen','alm_almacen.id_sede','alm_almacen.codigo','alm_almacen.descripcion',
+        'sis_sede.descripcion as sede_descripcion','alm_tp_almacen.descripcion as tp_almacen')
+        ->leftjoin('administracion.sis_sede','sis_sede.id_sede','=','alm_almacen.id_sede')
+        ->join('almacen.alm_tp_almacen','alm_tp_almacen.id_tipo_almacen','=','alm_almacen.id_tipo_almacen')
         ->where([['alm_almacen.estado', '=', 1],
         ['alm_almacen.id_sede','=',$id_sede]])
         ->orderBy('codigo')
         ->get();
         return $data;
-        }
+    }
 
     public function is_true($val, $return_null=false){
         $boolval = ( is_string($val) ? filter_var($val, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) : (bool) $val );

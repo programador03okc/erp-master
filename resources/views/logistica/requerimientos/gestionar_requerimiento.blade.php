@@ -177,7 +177,7 @@
                     <option value="0">Elija una opción</option>
                 </select>
             </div>
-            <div class="col-md-3" id="input-group-area">
+            <div class="col-md-2" id="input-group-area">
                 <h5>Area</h5>
                 <input type="hidden" class="form-control" name="id_grupo">
                 <input type="hidden" class="form-control" name="id_area">
@@ -190,8 +190,7 @@
                     </div>
                 </div>
             </div>
-            
-            <div class="col-md-9" id="input-group-proyecto" hidden>
+            <div class="col-md-6" id="input-group-proyecto" hidden>
                 <h5>Proyecto</h5>
                 <div style="display:flex;">
                     <input hidden="true" type="text" name="id_op_com" class="activation">
@@ -231,6 +230,10 @@
                         </div>                            
                     </div>
                 </div>
+            </div>
+            <div class="col-md-4" id="input-group-observacion">
+                <h5>Observación:</h5>
+                <textarea class="form-control activation" name="observacion" cols="10" rows="20" disabled></textarea>
             </div>
         </div>
   
