@@ -27,7 +27,7 @@ function listar_estantes(almacen){
         'dom': vardataTables[1],
         'buttons': vardataTables[2],
         'language' : vardataTables[0],
-        'destroy': true,
+        'bDestroy': true,
         'ajax': 'listar_estantes_almacen/'+almacen,
         'columns': [
             {'data': 'id_estante'},

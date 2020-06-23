@@ -1120,9 +1120,9 @@ class AlmacenController extends Controller
         ->select('alm_prod.*', 'alm_subcat.descripcion as subcat_descripcion',
                 'alm_cat_prod.descripcion as cat_descripcion',
                 'alm_tp_prod.descripcion as tipo_descripcion')
-        ->join('almacen.alm_subcat','alm_subcat.id_subcategoria','=','alm_prod.id_subcategoria')
-        ->join('almacen.alm_cat_prod','alm_cat_prod.id_categoria','=','alm_prod.id_categoria')
-        ->join('almacen.alm_tp_prod','alm_tp_prod.id_tipo_producto','=','alm_cat_prod.id_tipo_producto')
+        ->leftjoin('almacen.alm_subcat','alm_subcat.id_subcategoria','=','alm_prod.id_subcategoria')
+        ->leftjoin('almacen.alm_cat_prod','alm_cat_prod.id_categoria','=','alm_prod.id_categoria')
+        ->leftjoin('almacen.alm_tp_prod','alm_tp_prod.id_tipo_producto','=','alm_cat_prod.id_tipo_producto')
         ->where([['alm_prod.id_producto', '=', $id]])
             ->get();
         
@@ -1208,8 +1208,8 @@ class AlmacenController extends Controller
                     'id_clasif' => $request->id_clasif,
                     'id_subcategoria' => $request->id_subcategoria,
                     'descripcion' => $des,
-                    'id_unidad_medida' => $request->id_unidad_medida,
-                    'id_unid_equi' => $request->id_unid_equi,
+                    'id_unidad_medida' => ($request->id_unidad_medida !== 0 ? $request->id_unidad_medida : null),
+                    'id_unid_equi' => ($request->id_unid_equi !== 0 ? $request->id_unid_equi : null),
                     'cant_pres' => $request->cant_pres,
                     'series' => ($request->series == '1')?true:false,
                     'afecto_igv' => ($request->afecto_igv == '1')?true:false,

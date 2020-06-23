@@ -1,6 +1,14 @@
-@include('layout.head')
+@extends('layout.head')
 @include('layout.menu_proyectos')
-@include('layout.body')
+@section('option')
+    @include('layout.option')
+@endsection
+
+@section('cabecera')
+Cronograma de Ejecución
+@endsection
+
+@section('content')
 <div class="page-main" type="cronoeje">
     <form id="form-cronoeje" type="register" form="formulario">
         <div class="thumbnail" style="padding-left: 10px;padding-right: 10px;">
@@ -103,10 +111,22 @@
 @include('proyectos.presupuesto.presejeModal')
 @include('proyectos.presupuesto.verAcu')
 @include('proyectos.presupuesto.presLeccion')
-@include('layout.footer')
-@include('layout.scripts')
-<script src="{{('/js/proyectos/cronograma/cronoeje.js')}}"></script>
-<script src="{{('/js/proyectos/presupuesto/verAcu.js')}}"></script>
-<script src="{{('/js/proyectos/presupuesto/presejeModal.js')}}"></script>
-<script src="{{('/js/proyectos/presupuesto/presLeccion.js')}}"></script>
-@include('layout.fin_html')
+@endsection
+
+@section('scripts')
+    <script src="{{ asset('datatables/DataTables/js/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ asset('datatables/DataTables/js/dataTables.bootstrap.min.js') }}"></script>
+    <script src="{{ asset('datatables/Buttons/js/dataTables.buttons.min.js') }}"></script>
+    <script src="{{ asset('datatables/Buttons/js/buttons.bootstrap.min.js') }}"></script>
+    <script src="{{ asset('datatables/Buttons/js/buttons.print.min.js') }}"></script>
+    <script src="{{ asset('datatables/Buttons/js/buttons.html5.min.js') }}"></script>
+    <script src="{{ asset('datatables/pdfmake/pdfmake.min.js') }}"></script>
+    <script src="{{ asset('datatables/pdfmake/vfs_fonts.js') }}"></script>
+    <script src="{{ asset('datatables/JSZip/jszip.min.js') }}"></script>
+    <script src="{{ asset('template/plugins/moment.min.js') }}"></script>
+
+    <script src="{{('/js/proyectos/cronograma/cronoeje.js')}}"></script>
+    <script src="{{('/js/proyectos/presupuesto/verAcu.js')}}"></script>
+    <script src="{{('/js/proyectos/presupuesto/presejeModal.js')}}"></script>
+    <script src="{{('/js/proyectos/presupuesto/presLeccion.js')}}"></script>
+@endsection

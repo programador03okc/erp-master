@@ -19,7 +19,7 @@ function listarAlmacenes(){
         'dom': vardataTables[1],
         'buttons': vardataTables[2],
         'language' : vardataTables[0],
-        'destroy': true,
+        'bDestroy': true,
         'ajax': 'listar_almacenes',
         'columns': [
             {'data': 'id_almacen'},

@@ -20,7 +20,7 @@ function listar_posiciones(nivel){
         'dom': vardataTables[1],
         'buttons': vardataTables[2],
         'language' : vardataTables[0],
-        'destroy': true,
+        'bDestroy': true,
         'ajax': 'listar_posiciones_nivel/'+nivel,
         'columns': [
             {'data': 'id_posicion'},

@@ -1,9 +1,18 @@
-@include('layout.head')
+@extends('layout.head')
 @include('layout.menu_almacen')
-@include('layout.body_sin_option')
+
+@section('cabecera')
+Transferencias entre Almacenes
+@endsection
+
+@section('estilos')
+<link rel="stylesheet" href="{{ asset('template/plugins/select2/select2.css') }}">
+@endsection
+
+@section('content')
 <div class="page-main" type="transferencias_pendientes">
     <legend class="mylegend">
-        <h2>Gestión de Transferencias entre Almacenes</h2>
+        <h2>Transferencias entre Almacenes</h2>
     </legend>
     <div class="col-md-12" id="tab-transferencias">
         <ul class="nav nav-tabs" id="myTab">
@@ -123,9 +132,21 @@
 </div>
 @include('almacen.transferencias.transferencia_detalle')
 @include('almacen.guias.guia_com_obs')
-@include('layout.footer')
-@include('layout.scripts')
-<script src="{{('/js/almacen/transferencias/listar_transferencias.js')}}"></script>
-<script src="{{('/js/almacen/transferencias/transferencia_detalle.js')}}"></script>
-<script src="{{('/js/almacen/guia/guia_venta.js')}}"></script>
-@include('layout.fin_html')
+@endsection
+
+@section('scripts')
+    <script src="{{ asset('datatables/DataTables/js/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ asset('datatables/DataTables/js/dataTables.bootstrap.min.js') }}"></script>
+    <script src="{{ asset('datatables/Buttons/js/dataTables.buttons.min.js') }}"></script>
+    <script src="{{ asset('datatables/Buttons/js/buttons.bootstrap.min.js') }}"></script>
+    <script src="{{ asset('datatables/Buttons/js/buttons.print.min.js') }}"></script>
+    <script src="{{ asset('datatables/Buttons/js/buttons.html5.min.js') }}"></script>
+    <script src="{{ asset('datatables/pdfmake/pdfmake.min.js') }}"></script>
+    <script src="{{ asset('datatables/pdfmake/vfs_fonts.js') }}"></script>
+    <script src="{{ asset('datatables/JSZip/jszip.min.js') }}"></script>
+    <script src="{{ asset('template/plugins/select2/select2.min.js') }}"></script>
+
+    <script src="{{('/js/almacen/transferencias/listar_transferencias.js')}}"></script>
+    <script src="{{('/js/almacen/transferencias/transferencia_detalle.js')}}"></script>
+    <script src="{{('/js/almacen/guia/guia_venta.js')}}"></script>
+@endsection

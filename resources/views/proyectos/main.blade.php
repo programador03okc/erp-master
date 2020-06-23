@@ -1,6 +1,9 @@
-@include('layout.head')
+@extends('layout.head')
 @include('layout.menu_proyectos')
-@include('layout.body_sin_option')
+@section('cabecera')
+    Dashboard Proyectos
+@endsection
+@section('content')
 <div class="page-main" type="curvas">
     <div class="thumbnail" style="padding-left: 10px;padding-right: 10px;">
         <legend class="mylegend">
@@ -85,7 +88,8 @@
         </div>
     </div>
 </div>
-@include('layout.footer')
-@include('layout.scripts')
+@endsection
+@section('scripts')
+<script src="{{ asset('template/plugins/chartjs/Chart.min.js') }}"></script>
 <script src="{{('/js/proyectos/dashboardProyectos.js')}}"></script>
-@include('layout.fin_html')
+@endsection

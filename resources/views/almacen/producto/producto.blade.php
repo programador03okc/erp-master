@@ -9,6 +9,11 @@
     Producto
 @endsection
 
+@section('estilos')
+<link rel="stylesheet" href="{{ asset('template/plugins/iCheck/all.css') }}">
+<link rel="stylesheet" href="{{ asset('template/plugins/select2/select2.css') }}">
+@endsection
+
 @section('content')
 
 <div class="page-main" type="producto">
@@ -158,7 +163,7 @@
                                                     <td>Unidad de Medida:</td>
                                                     <td>
                                                         <span hidden name="abr_id_unidad_medida"></span>
-                                                        <select class="form-control activation js-example-basic-single" name="id_unidad_medida" 
+                                                        <select class="form-control activation " name="id_unidad_medida" 
                                                             disabled="true" onChange="unid_abrev('id_unidad_medida');">
                                                             <option value="0">Elija una opción</option>
                                                             @foreach ($unidades as $unid)
@@ -179,7 +184,7 @@
                                                 <tr>
                                                     <td>Unidad Equivalente:</td>
                                                     <td>
-                                                        <select class="form-control activation js-example-basic-single" style="font-size:12px;" 
+                                                        <select class="form-control activation " style="font-size:12px;" 
                                                             name="id_unid_equi" disabled="true" onChange="unid_abrev('id_unid_equi');">
                                                             <option value="0">Elija una opción</option>
                                                             @foreach ($unidades as $unid)
@@ -205,7 +210,7 @@
                 <form id="form-ubicacion" type="register">
                     <input type="hidden" name="id_producto">
                     <div class="row">
-                        <div class="col-md-4">
+                        <!-- <div class="col-md-4">
                             <div class="row">
                                 <div class="col-md-12">
                                     <h5>Almacén</h5>
@@ -232,8 +237,8 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-md-8">
+                        </div> -->
+                        <div class="col-md-12">
                             <table class="mytable table table-condensed table-bordered table-okc-view" width="100%"
                                 id="listaUbicacion">
                                 <thead>
@@ -319,6 +324,9 @@
     <script src="{{ asset('datatables/pdfmake/pdfmake.min.js') }}"></script>
     <script src="{{ asset('datatables/pdfmake/vfs_fonts.js') }}"></script>
     <script src="{{ asset('datatables/JSZip/jszip.min.js') }}"></script>
+    <script src="{{ asset('template/plugins/iCheck/icheck.min.js') }}"></script>
+    <script src="{{ asset('template/plugins/select2/select2.min.js') }}"></script>
+
     <script src="{{('/js/almacen/producto/producto.js')}}"></script>
     <script src="{{('/js/almacen/producto/subcategoriaModal.js')}}"></script>
     <script src="{{('/js/almacen/producto/productoModal.js')}}"></script>

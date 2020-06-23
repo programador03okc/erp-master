@@ -1,9 +1,18 @@
-@include('layout.head')
+@extends('layout.head')
 @include('layout.menu_almacen')
-@include('layout.body_sin_option')
+
+@section('cabecera')
+Pendientes de Ingreso
+@endsection
+
+@section('estilos')
+<link rel="stylesheet" href="{{ asset('template/plugins/select2/select2.css') }}">
+@endsection
+
+@section('content')
 <div class="page-main" type="ordenesPendientes">
     <legend class="mylegend">
-        <h2 id="titulo">Ordenes Pendientes de Ingreso</h2>
+        <h2 id="titulo">Pendientes de Ingreso</h2>
     </legend>
     <div class="col-md-12" id="tab-ordenes">
         <ul class="nav nav-tabs" id="myTab">
@@ -81,8 +90,20 @@
 @include('almacen.guias.guia_com_obs')
 @include('almacen.transferencias.transferenciaGuia')
 @include('almacen.guias.guia_ven_obs')
-@include('layout.footer')
-@include('layout.scripts')
-<script src="{{('/js/almacen/guia/ordenesPendientes.js')}}"></script>
-<script src="{{('/js/almacen/transferencias/transferenciaGuia.js')}}"></script>
-@include('layout.fin_html')
+@endsection
+
+@section('scripts')
+    <script src="{{ asset('datatables/DataTables/js/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ asset('datatables/DataTables/js/dataTables.bootstrap.min.js') }}"></script>
+    <script src="{{ asset('datatables/Buttons/js/dataTables.buttons.min.js') }}"></script>
+    <script src="{{ asset('datatables/Buttons/js/buttons.bootstrap.min.js') }}"></script>
+    <script src="{{ asset('datatables/Buttons/js/buttons.print.min.js') }}"></script>
+    <script src="{{ asset('datatables/Buttons/js/buttons.html5.min.js') }}"></script>
+    <script src="{{ asset('datatables/pdfmake/pdfmake.min.js') }}"></script>
+    <script src="{{ asset('datatables/pdfmake/vfs_fonts.js') }}"></script>
+    <script src="{{ asset('datatables/JSZip/jszip.min.js') }}"></script>
+    <script src="{{ asset('template/plugins/select2/select2.min.js') }}"></script>
+
+    <script src="{{('/js/almacen/guia/ordenesPendientes.js')}}"></script>
+    <script src="{{('/js/almacen/transferencias/transferenciaGuia.js')}}"></script>
+@endsection

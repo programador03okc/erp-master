@@ -1,6 +1,15 @@
-@include('layout.head')
+@extends('layout.head')
 @include('layout.menu_almacen')
-@include('layout.body_sin_option')
+
+@section('cabecera')
+Lista de Ingresos
+@endsection
+
+@section('estilos')
+<link rel="stylesheet" href="{{ asset('template/plugins/select2/select2.css') }}">
+@endsection
+
+@section('content')
 <div class="page-main" type="lista_ingresos">
     <legend class="mylegend">
         <h2>Lista de Ingresos</h2>
@@ -255,10 +264,22 @@
 </div>
 @include('logistica.cotizaciones.proveedorModal')
 @include('logistica.cotizaciones.transportistaModal')
-@include('layout.footer')
-@include('layout.scripts')
-<script src="{{('/js/almacen/reporte/lista_ingresos.js')}}"></script>
-<script src="{{('/js/almacen/reporte/filtros.js')}}"></script>
-<script src="{{('/js/logistica/proveedorModal.js')}}"></script>
-<script src="{{('/js/logistica/transportistaModal.js')}}"></script>
-@include('layout.fin_html')
+@endsection
+
+@section('scripts')
+    <script src="{{ asset('datatables/DataTables/js/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ asset('datatables/DataTables/js/dataTables.bootstrap.min.js') }}"></script>
+    <script src="{{ asset('datatables/Buttons/js/dataTables.buttons.min.js') }}"></script>
+    <script src="{{ asset('datatables/Buttons/js/buttons.bootstrap.min.js') }}"></script>
+    <script src="{{ asset('datatables/Buttons/js/buttons.print.min.js') }}"></script>
+    <script src="{{ asset('datatables/Buttons/js/buttons.html5.min.js') }}"></script>
+    <script src="{{ asset('datatables/pdfmake/pdfmake.min.js') }}"></script>
+    <script src="{{ asset('datatables/pdfmake/vfs_fonts.js') }}"></script>
+    <script src="{{ asset('datatables/JSZip/jszip.min.js') }}"></script>
+    <script src="{{ asset('template/plugins/select2/select2.min.js') }}"></script>
+
+    <script src="{{('/js/almacen/reporte/lista_ingresos.js')}}"></script>
+    <script src="{{('/js/almacen/reporte/filtros.js')}}"></script>
+    <script src="{{('/js/logistica/proveedorModal.js')}}"></script>
+    <script src="{{('/js/logistica/transportistaModal.js')}}"></script>
+@endsection

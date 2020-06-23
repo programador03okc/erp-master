@@ -1,6 +1,15 @@
-@include('layout.head')
+@extends('layout.head')
 @include('layout.menu_almacen')
-@include('layout.body_sin_option')
+
+@section('cabecera')
+Kardex por Producto
+@endsection
+
+@section('estilos')
+<link rel="stylesheet" href="{{ asset('template/plugins/select2/select2.css') }}">
+@endsection
+
+@section('content')
 <div class="page-main" type="kardex_detallado">
     <legend class="mylegend">
         <h2>Kardex por Producto</h2>
@@ -137,8 +146,20 @@
     </div> --}}
 </div>
 @include('almacen.producto.productoModal')
-@include('layout.footer')
-@include('layout.scripts')
-<script src="{{('/js/almacen/reporte/kardex_detallado.js')}}"></script>
-<script src="{{('/js/almacen/producto/productoModal.js')}}"></script>
-@include('layout.fin_html')
+@endsection
+
+@section('scripts')
+    <script src="{{ asset('datatables/DataTables/js/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ asset('datatables/DataTables/js/dataTables.bootstrap.min.js') }}"></script>
+    <script src="{{ asset('datatables/Buttons/js/dataTables.buttons.min.js') }}"></script>
+    <script src="{{ asset('datatables/Buttons/js/buttons.bootstrap.min.js') }}"></script>
+    <script src="{{ asset('datatables/Buttons/js/buttons.print.min.js') }}"></script>
+    <script src="{{ asset('datatables/Buttons/js/buttons.html5.min.js') }}"></script>
+    <script src="{{ asset('datatables/pdfmake/pdfmake.min.js') }}"></script>
+    <script src="{{ asset('datatables/pdfmake/vfs_fonts.js') }}"></script>
+    <script src="{{ asset('datatables/JSZip/jszip.min.js') }}"></script>
+    <script src="{{ asset('template/plugins/select2/select2.min.js') }}"></script>
+
+    <script src="{{('/js/almacen/reporte/kardex_detallado.js')}}"></script>
+    <script src="{{('/js/almacen/producto/productoModal.js')}}"></script>
+@endsection

@@ -1,6 +1,14 @@
-@include('layout.head')
+@extends('layout.head')
 @include('layout.menu_proyectos')
-@include('layout.body')
+@section('option')
+    @include('layout.option')
+@endsection
+
+@section('cabecera')
+Cronograma Valorizado Propuesta
+@endsection
+
+@section('content')
 <div class="page-main" type="cronovalpro">
     <form id="form-cronovalpro" type="register" form="formulario">
         <div class="thumbnail" style="padding-left: 10px;padding-right: 10px;">
@@ -69,9 +77,21 @@
 </div>
 @include('proyectos.presupuesto.propuestaModal')
 @include('proyectos.cronograma.cronovalproImportes')
-@include('layout.footer')
-@include('layout.scripts')
-<script src="{{('/js/proyectos/cronograma/cronovalpro.js')}}"></script>
-<script src="{{('/js/proyectos/presupuesto/propuestaModal.js')}}"></script>
-<script src="{{('/js/proyectos/cronograma/cronovalproImportes.js')}}"></script>
-@include('layout.fin_html')
+@endsection
+
+@section('scripts')
+    <script src="{{ asset('datatables/DataTables/js/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ asset('datatables/DataTables/js/dataTables.bootstrap.min.js') }}"></script>
+    <script src="{{ asset('datatables/Buttons/js/dataTables.buttons.min.js') }}"></script>
+    <script src="{{ asset('datatables/Buttons/js/buttons.bootstrap.min.js') }}"></script>
+    <script src="{{ asset('datatables/Buttons/js/buttons.print.min.js') }}"></script>
+    <script src="{{ asset('datatables/Buttons/js/buttons.html5.min.js') }}"></script>
+    <script src="{{ asset('datatables/pdfmake/pdfmake.min.js') }}"></script>
+    <script src="{{ asset('datatables/pdfmake/vfs_fonts.js') }}"></script>
+    <script src="{{ asset('datatables/JSZip/jszip.min.js') }}"></script>
+    <script src="{{ asset('template/plugins/moment.min.js') }}"></script>
+
+    <script src="{{('/js/proyectos/cronograma/cronovalpro.js')}}"></script>
+    <script src="{{('/js/proyectos/presupuesto/propuestaModal.js')}}"></script>
+    <script src="{{('/js/proyectos/cronograma/cronovalproImportes.js')}}"></script>
+@endsection

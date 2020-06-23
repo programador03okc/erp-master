@@ -20,6 +20,7 @@ function listar_series(producto){
         'dom': vardataTables[1],
         'buttons': vardataTables[2],
         'language' : vardataTables[0],
+        'destroy' : true,
         'ajax': 'listar_series_producto/'+producto,
         'columns': [
             {'data': 'id_prod_serie'},

@@ -1,6 +1,11 @@
-@include('layout.head')
+@extends('layout.head')
 @include('layout.menu_proyectos')
-@include('layout.body_sin_option')
+
+@section('cabecera')
+Información General del Proyecto
+@endsection
+
+@section('content')
 <div class="page-main" type="curvas">
     <div class="thumbnail" style="padding-left: 10px;padding-right: 10px;">
         <legend class="mylegend">
@@ -87,8 +92,21 @@
     </div>
 </div>
 @include('proyectos.presupuesto.propuestaModal')
-@include('layout.footer')
-@include('layout.scripts')
-<script src="{{('/js/proyectos/reportes/curvas.js')}}"></script>
-<script src="{{('/js/proyectos/presupuesto/propuestaModal.js')}}"></script>
-@include('layout.fin_html')
+@endsection
+
+@section('scripts')
+    <script src="{{ asset('datatables/DataTables/js/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ asset('datatables/DataTables/js/dataTables.bootstrap.min.js') }}"></script>
+    <script src="{{ asset('datatables/Buttons/js/dataTables.buttons.min.js') }}"></script>
+    <script src="{{ asset('datatables/Buttons/js/buttons.bootstrap.min.js') }}"></script>
+    <script src="{{ asset('datatables/Buttons/js/buttons.print.min.js') }}"></script>
+    <script src="{{ asset('datatables/Buttons/js/buttons.html5.min.js') }}"></script>
+    <script src="{{ asset('datatables/pdfmake/pdfmake.min.js') }}"></script>
+    <script src="{{ asset('datatables/pdfmake/vfs_fonts.js') }}"></script>
+    <script src="{{ asset('datatables/JSZip/jszip.min.js') }}"></script>
+    <script src="{{ asset('template/plugins/moment.min.js') }}"></script>
+    <script src="{{ asset('template/plugins/chartjs/Chart.min.js') }}"></script>
+
+    <script src="{{('/js/proyectos/reportes/curvas.js')}}"></script>
+    <script src="{{('/js/proyectos/presupuesto/propuestaModal.js')}}"></script>
+@endsection

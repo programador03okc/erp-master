@@ -1,6 +1,15 @@
-@include('layout.head')
+@extends('layout.head')
 @include('layout.menu_almacen')
-@include('layout.body_sin_option')
+
+@section('cabecera')
+Documentos de Prorrateo
+@endsection
+
+@section('estilos')
+<link rel="stylesheet" href="{{ asset('template/plugins/select2/select2.css') }}">
+@endsection
+
+@section('content')
 <div class="page-main" type="docs_prorrateo">
     <legend class="mylegend">
         <h2>Reporte de Documentos de Prorrateo </h2>
@@ -67,7 +76,19 @@
     </div>
 </div>
 {{-- @include('almacen.kardex_filtro') --}}
-@include('layout.footer')
-@include('layout.scripts')
-<script src="{{('/js/almacen/reporte/docs_prorrateo.js')}}"></script>
-@include('layout.fin_html')
+@endsection
+
+@section('scripts')
+    <script src="{{ asset('datatables/DataTables/js/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ asset('datatables/DataTables/js/dataTables.bootstrap.min.js') }}"></script>
+    <script src="{{ asset('datatables/Buttons/js/dataTables.buttons.min.js') }}"></script>
+    <script src="{{ asset('datatables/Buttons/js/buttons.bootstrap.min.js') }}"></script>
+    <script src="{{ asset('datatables/Buttons/js/buttons.print.min.js') }}"></script>
+    <script src="{{ asset('datatables/Buttons/js/buttons.html5.min.js') }}"></script>
+    <script src="{{ asset('datatables/pdfmake/pdfmake.min.js') }}"></script>
+    <script src="{{ asset('datatables/pdfmake/vfs_fonts.js') }}"></script>
+    <script src="{{ asset('datatables/JSZip/jszip.min.js') }}"></script>
+    <script src="{{ asset('template/plugins/select2/select2.min.js') }}"></script>
+
+    <script src="{{('/js/almacen/reporte/docs_prorrateo.js')}}"></script>
+@endsection

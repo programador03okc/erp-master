@@ -21,7 +21,7 @@ function listarEstantes(){
         'dom': vardataTables[1],
         'buttons': vardataTables[2],
         'language' : vardataTables[0],
-        'destroy': true,
+        'bDestroy': true,
         'ajax': 'listar_estantes',
         'columns': [
             {'data': 'id_estante'},

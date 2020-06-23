@@ -74,5 +74,6 @@
     <script src="{{ asset('datatables/pdfmake/vfs_fonts.js') }}"></script>
     <script src="{{ asset('datatables/JSZip/jszip.min.js') }}"></script>
     <script src="{{ asset('template/plugins/moment.min.js') }}"></script>
+    
     <script src="{{('/js/almacen/producto/tipo_producto.js')}}"></script>
 @endsection

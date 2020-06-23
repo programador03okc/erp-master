@@ -63,19 +63,21 @@ $(function(){
 function mostrar_producto(id){
     $(":file").filestyle('disabled', false);
     baseUrl = 'mostrar_producto/'+id;
+    console.log(baseUrl);
     $.ajax({
         type: 'GET',
-        headers: {'X-CSRF-TOKEN': token},
+        // headers: {'X-CSRF-TOKEN': token},
         url: baseUrl,
         dataType: 'JSON',
         success: function(response){
+            console.log(response['producto'][0]);
             console.log(response);
             $('[name=id_producto]').val(response['producto'][0].id_producto);
             $('#codigo').text(response['producto'][0].codigo);
             $('[name=codigo_anexo]').val(response['producto'][0].codigo_anexo);
             $('[name=codigo_proveedor]').val(response['producto'][0].codigo_proveedor);
             $('[name=descripcion]').val(response['producto'][0].descripcion);
-            $('[name=id_unidad_medida]').val(response['producto'][0].id_unidad_medida).trigger('change.select2');
+            $('[name=id_unidad_medida]').val(response['producto'][0].id_unidad_medida);
             $('[name=id_subcategoria]').val(response['producto'][0].id_subcategoria).trigger('change.select2');
             $('[name=id_categoria]').val(response['producto'][0].id_categoria).trigger('change.select2');
             $('[name=id_clasif]').val(response['producto'][0].id_clasif).trigger('change.select2');
@@ -83,8 +85,8 @@ function mostrar_producto(id){
             $('#cat_descripcion').text(response['producto'][0].cat_descripcion);
             $('#subcat_descripcion').text(response['producto'][0].subcat_descripcion);
             $('[name=subcat_descripcion]').val(response['producto'][0].subcat_descripcion);
-            $('[name=id_unid_equi]').val(response['producto'][0].id_unid_equi).trigger('change.select2');
-            $('[name=cant_pres]').val(response['producto'][0].cant_pres).trigger('change.select2');
+            $('[name=id_unid_equi]').val(response['producto'][0].id_unid_equi);
+            $('[name=cant_pres]').val(response['producto'][0].cant_pres);
             $('[name=afecto_igv]').iCheck((response['producto'][0].afecto_igv)?'check':'uncheck');
             $('[name=afecto_igv]').val((response['producto'][0].afecto_igv)?'1':'0');
             $('[name=series]').iCheck((response['producto'][0].series)?'check':'uncheck');
@@ -92,12 +94,12 @@ function mostrar_producto(id){
             $('[name=estado]').val(response['producto'][0].estado);
             $('[name=notas]').val(response['producto'][0].notas);
             $('[name=id_moneda]').val(response['producto'][0].id_moneda);
-            if (response['producto'][0].imagen !== "" &&
-                response['producto'][0].imagen !== null){
-                $('#img').attr('src','files/productos/'+response['producto'][0].imagen);
-            } else {
-                $('#img').attr('src','img/product-default.png');
-            }
+            // if (response['producto'][0].imagen !== "" &&
+            //     response['producto'][0].imagen !== null){
+            //     $('#img').attr('src','files/productos/'+response['producto'][0].imagen);
+            // } else {
+            //     $('#img').attr('src','img/product-default.png');
+            // }
             $('[id=fecha_registro] label').text('');
             $('[id=fecha_registro] label').append(formatDateHour(response['producto'][0].fecha_registro));
 

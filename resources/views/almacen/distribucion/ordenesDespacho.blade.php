@@ -1,6 +1,16 @@
-@include('layout.head')
+@extends('layout.head')
 @include('layout.menu_almacen')
-@include('layout.body_sin_option')
+
+@section('cabecera')
+Gestión de Despachos
+@endsection
+
+@section('estilos')
+<link rel="stylesheet" href="{{ asset('template/plugins/iCheck/all.css') }}">
+<link rel="stylesheet" href="{{ asset('template/plugins/select2/select2.css') }}">
+@endsection
+
+@section('content')
 <div class="page-main" type="requerimientosPendientes">
     <legend class="mylegend">
         <h2 id="titulo">Gestión de Despachos</h2>
@@ -120,17 +130,30 @@
 @include('logistica.cotizaciones.add_proveedor')
 @include('publico.personaModal')
 @include('publico.ubigeoModal')
-@include('layout.footer')
-@include('layout.scripts')
-<script src="{{('/js/almacen/distribucion/ordenesDespacho.js')}}"></script>
-<script src="{{('/js/almacen/distribucion/ordenDespachoCreate.js')}}"></script>
-<script src="{{('/js/almacen/distribucion/grupoDespachoCreate.js')}}"></script>
-<script src="{{('/js/almacen/distribucion/despachoDetalle.js')}}"></script>
-<script src="{{('/js/almacen/distribucion/requerimientoDetalle.js')}}"></script>
-<script src="{{('/js/almacen/distribucion/requerimientoObs.js')}}"></script>
-<script src="{{('/js/logistica/clienteModal.js')}}"></script>
-<script src="{{('/js/logistica/proveedorModal.js')}}"></script>
-<script src="{{('/js/logistica/add_proveedor.js')}}"></script>
-<script src="{{('/js/publico/ubigeoModal.js')}}"></script>
-<script src="{{ asset('/js/publico/personaModal.js')}}"></script>
-@include('layout.fin_html')
+@endsection
+
+@section('scripts')
+    <script src="{{ asset('datatables/DataTables/js/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ asset('datatables/DataTables/js/dataTables.bootstrap.min.js') }}"></script>
+    <script src="{{ asset('datatables/Buttons/js/dataTables.buttons.min.js') }}"></script>
+    <script src="{{ asset('datatables/Buttons/js/buttons.bootstrap.min.js') }}"></script>
+    <script src="{{ asset('datatables/Buttons/js/buttons.print.min.js') }}"></script>
+    <script src="{{ asset('datatables/Buttons/js/buttons.html5.min.js') }}"></script>
+    <script src="{{ asset('datatables/pdfmake/pdfmake.min.js') }}"></script>
+    <script src="{{ asset('datatables/pdfmake/vfs_fonts.js') }}"></script>
+    <script src="{{ asset('datatables/JSZip/jszip.min.js') }}"></script>
+    <script src="{{ asset('template/plugins/iCheck/icheck.min.js') }}"></script>
+    <script src="{{ asset('template/plugins/select2/select2.min.js') }}"></script>
+
+    <script src="{{('/js/almacen/distribucion/ordenesDespacho.js')}}"></script>
+    <script src="{{('/js/almacen/distribucion/ordenDespachoCreate.js')}}"></script>
+    <script src="{{('/js/almacen/distribucion/grupoDespachoCreate.js')}}"></script>
+    <script src="{{('/js/almacen/distribucion/despachoDetalle.js')}}"></script>
+    <script src="{{('/js/almacen/distribucion/requerimientoDetalle.js')}}"></script>
+    <script src="{{('/js/almacen/distribucion/requerimientoObs.js')}}"></script>
+    <script src="{{('/js/logistica/clienteModal.js')}}"></script>
+    <script src="{{('/js/logistica/proveedorModal.js')}}"></script>
+    <script src="{{('/js/logistica/add_proveedor.js')}}"></script>
+    <script src="{{('/js/publico/ubigeoModal.js')}}"></script>
+    <script src="{{ asset('/js/publico/personaModal.js')}}"></script>
+@endsection

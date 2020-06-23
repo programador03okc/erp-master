@@ -1,9 +1,14 @@
-@include('layout.head')
+@extends('layout.head')
 @include('layout.menu_almacen')
-@include('layout.body_sin_option')
+
+@section('cabecera')
+Customizaciones en Almacén
+@endsection
+
+@section('content')
 <div class="page-main" type="transformaciones">
     <legend class="mylegend">
-        <h2>Transformaciones en Almacén</h2>
+        <h2>Customizaciones en Almacén</h2>
     </legend>
     <div class="row">
         <div class="col-md-4">
@@ -45,7 +50,19 @@
         </div>
     </div>
 </div>
-@include('layout.footer')
-@include('layout.scripts')
-<script src="{{('/js/almacen/customizacion/listar_transformaciones.js')}}"></script>
-@include('layout.fin_html')
+@endsection
+
+@section('scripts')
+    <script src="{{ asset('datatables/DataTables/js/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ asset('datatables/DataTables/js/dataTables.bootstrap.min.js') }}"></script>
+    <script src="{{ asset('datatables/Buttons/js/dataTables.buttons.min.js') }}"></script>
+    <script src="{{ asset('datatables/Buttons/js/buttons.bootstrap.min.js') }}"></script>
+    <script src="{{ asset('datatables/Buttons/js/buttons.print.min.js') }}"></script>
+    <script src="{{ asset('datatables/Buttons/js/buttons.html5.min.js') }}"></script>
+    <script src="{{ asset('datatables/pdfmake/pdfmake.min.js') }}"></script>
+    <script src="{{ asset('datatables/pdfmake/vfs_fonts.js') }}"></script>
+    <script src="{{ asset('datatables/JSZip/jszip.min.js') }}"></script>
+    <script src="{{ asset('template/plugins/moment.min.js') }}"></script>
+
+    <script src="{{('/js/almacen/customizacion/listar_transformaciones.js')}}"></script>
+@endsection

@@ -1,6 +1,20 @@
-@include('layout.head')
+@extends('layout.head')
 @include('layout.menu_almacen')
-@include('layout.body')
+
+@section('option')
+    @include('layout.option')
+@endsection
+
+@section('cabecera')
+Guía de Venta / Salida
+@endsection
+
+@section('estilos')
+<link rel="stylesheet" href="{{ asset('template/plugins/select2/select2.css') }}">
+@endsection
+
+@section('content')
+
 <div class="page-main" type="guia_venta">
     <legend class="mylegend">
         <h2 id="titulo">Guía de Venta / Salida</h2>
@@ -282,17 +296,30 @@
 @include('logistica.cotizaciones.clienteModal')
 @include('logistica.ordenes.occModal')
 @include('proyectos.variables.add_cliente')
-@include('layout.footer')
-@include('layout.scripts')
-<script src="{{('/js/almacen/guia/guia_venta.js')}}"></script>
-<script src="{{('/js/almacen/guia/guia_venta_oc.js')}}"></script>
-<script src="{{('/js/almacen/guia/guia_venta_detalle.js')}}"></script>
-<script src="{{('/js/almacen/guia/guia_ventaModal.js')}}"></script>
-<script src="{{('/js/almacen/guia/guia_ven_series.js')}}"></script>
-<script src="{{('/js/almacen/variables/seriesModal.js')}}"></script>
-<script src="{{('/js/almacen/transferencias/transferencia.js')}}"></script>
-<script src="{{('/js/almacen/producto/productoModal.js')}}"></script>
-<script src="{{('/js/logistica/clienteModal.js')}}"></script>
-<script src="{{('/js/logistica/occModal.js')}}"></script>
-<script src="{{('/js/proyectos/variables/add_cliente.js')}}"></script>
-@include('layout.fin_html')
+@endsection
+
+@section('scripts')
+    <script src="{{ asset('datatables/DataTables/js/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ asset('datatables/DataTables/js/dataTables.bootstrap.min.js') }}"></script>
+    <script src="{{ asset('datatables/Buttons/js/dataTables.buttons.min.js') }}"></script>
+    <script src="{{ asset('datatables/Buttons/js/buttons.bootstrap.min.js') }}"></script>
+    <script src="{{ asset('datatables/Buttons/js/buttons.print.min.js') }}"></script>
+    <script src="{{ asset('datatables/Buttons/js/buttons.html5.min.js') }}"></script>
+    <script src="{{ asset('datatables/pdfmake/pdfmake.min.js') }}"></script>
+    <script src="{{ asset('datatables/pdfmake/vfs_fonts.js') }}"></script>
+    <script src="{{ asset('datatables/JSZip/jszip.min.js') }}"></script>
+    <script src="{{ asset('template/plugins/select2/select2.min.js') }}"></script>
+    <script src="{{ asset('template/plugins/moment.min.js') }}"></script>
+
+    <script src="{{('/js/almacen/guia/guia_venta.js')}}"></script>
+    <script src="{{('/js/almacen/guia/guia_venta_oc.js')}}"></script>
+    <script src="{{('/js/almacen/guia/guia_venta_detalle.js')}}"></script>
+    <script src="{{('/js/almacen/guia/guia_ventaModal.js')}}"></script>
+    <script src="{{('/js/almacen/guia/guia_ven_series.js')}}"></script>
+    <script src="{{('/js/almacen/variables/seriesModal.js')}}"></script>
+    <script src="{{('/js/almacen/transferencias/transferencia.js')}}"></script>
+    <script src="{{('/js/almacen/producto/productoModal.js')}}"></script>
+    <script src="{{('/js/logistica/clienteModal.js')}}"></script>
+    <script src="{{('/js/logistica/occModal.js')}}"></script>
+    <script src="{{('/js/proyectos/variables/add_cliente.js')}}"></script>
+@endsection

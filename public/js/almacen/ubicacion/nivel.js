@@ -20,7 +20,7 @@ function listar_niveles(estante){
         'dom': vardataTables[1],
         'buttons': vardataTables[2],
         'language' : vardataTables[0],
-        'destroy': true,
+        'bDestroy': true,
         'ajax': 'listar_niveles_estante/'+estante,
         'columns': [
             {'data': 'id_nivel'},

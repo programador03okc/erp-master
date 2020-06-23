@@ -1,10 +1,19 @@
-@include('layout.head')
+@extends('layout.head')
 @include('layout.menu_almacen')
-@include('layout.body')
+
+@section('option')
+    @include('layout.option')
+@endsection
 
 @section('cabecera')
 Hoja de Transformación
 @endsection
+
+@section('estilos')
+<link rel="stylesheet" href="{{ asset('template/plugins/select2/select2.css') }}">
+@endsection
+
+@section('content')
 
 <div class="page-main" type="transformacion">
     <legend class="mylegend">
@@ -337,15 +346,28 @@ Hoja de Transformación
 @include('almacen.customizacion.transformacionModal')
 @include('almacen.producto.productoModal')
 @include('logistica.servicioModal')
-@include('layout.footer')
-@include('layout.scripts')
-<script src="{{('/js/almacen/customizacion/transformacion.js')}}"></script>
-<script src="{{('/js/almacen/customizacion/transformacionModal.js')}}"></script>
-<script src="{{('/js/almacen/producto/productoModal.js')}}"></script>
-<script src="{{('/js/almacen/customizacion/transfor_materia.js')}}"></script>
-<script src="{{('/js/almacen/customizacion/transfor_directo.js')}}"></script>
-<script src="{{('/js/almacen/customizacion/transfor_indirecto.js')}}"></script>
-<script src="{{('/js/almacen/customizacion/transfor_sobrante.js')}}"></script>
-<script src="{{('/js/almacen/customizacion/transfor_transformado.js')}}"></script>
-<script src="{{('/js/logistica/servicioModal.js')}}"></script>
-@include('layout.fin_html')
+@endsection
+
+@section('scripts')
+    <script src="{{ asset('datatables/DataTables/js/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ asset('datatables/DataTables/js/dataTables.bootstrap.min.js') }}"></script>
+    <script src="{{ asset('datatables/Buttons/js/dataTables.buttons.min.js') }}"></script>
+    <script src="{{ asset('datatables/Buttons/js/buttons.bootstrap.min.js') }}"></script>
+    <script src="{{ asset('datatables/Buttons/js/buttons.print.min.js') }}"></script>
+    <script src="{{ asset('datatables/Buttons/js/buttons.html5.min.js') }}"></script>
+    <script src="{{ asset('datatables/pdfmake/pdfmake.min.js') }}"></script>
+    <script src="{{ asset('datatables/pdfmake/vfs_fonts.js') }}"></script>
+    <script src="{{ asset('datatables/JSZip/jszip.min.js') }}"></script>
+    <script src="{{ asset('template/plugins/select2/select2.min.js') }}"></script>
+    <script src="{{ asset('template/plugins/moment.min.js') }}"></script>
+
+    <script src="{{('/js/almacen/customizacion/transformacion.js')}}"></script>
+    <script src="{{('/js/almacen/customizacion/transformacionModal.js')}}"></script>
+    <script src="{{('/js/almacen/producto/productoModal.js')}}"></script>
+    <script src="{{('/js/almacen/customizacion/transfor_materia.js')}}"></script>
+    <script src="{{('/js/almacen/customizacion/transfor_directo.js')}}"></script>
+    <script src="{{('/js/almacen/customizacion/transfor_indirecto.js')}}"></script>
+    <script src="{{('/js/almacen/customizacion/transfor_sobrante.js')}}"></script>
+    <script src="{{('/js/almacen/customizacion/transfor_transformado.js')}}"></script>
+    <script src="{{('/js/logistica/servicioModal.js')}}"></script>
+@endsection

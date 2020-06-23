@@ -23,7 +23,7 @@ function listarNiveles(){
         'dom': vardataTables[1],
         'buttons': vardataTables[2],
         'language' : vardataTables[0],
-        "bDestroy": true,
+        'bDestroy': true,
         'ajax': 'listar_niveles',
         'columns': [
             {'data': 'id_nivel'},
