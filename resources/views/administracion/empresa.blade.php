@@ -1,7 +1,13 @@
-@include('layout.head')
+@extends('layout.head')
 @include('layout.menu_admin')
-@include('layout.body')
+@section('option')
+    @include('layout.option')
+@endsection
+@section('cabecera')
+    Empresa
+@endsection
 
+@section('content')
 <div class="page-main" type="empresa">
     <legend><h2>Empresa</h2></legend>
     <div id="tab-empresa">
@@ -218,9 +224,18 @@
     </div>
 </div>
 @include('publico.ubigeo')
+@endsection
 
-@include('layout.footer')
-@include('layout.scripts')
-<script src="{{('/js/administracion/empresa.js')}}"></script>
-<script src="{{('/js/publico/ubigeo.js')}}"></script>
-@include('layout.fin_html')
+@section('scripts')
+    <script src="{{ asset('datatables/DataTables/js/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ asset('datatables/DataTables/js/dataTables.bootstrap.min.js') }}"></script>
+    <script src="{{ asset('datatables/Buttons/js/dataTables.buttons.min.js') }}"></script>
+    <script src="{{ asset('datatables/Buttons/js/buttons.bootstrap.min.js') }}"></script>
+    <script src="{{ asset('datatables/Buttons/js/buttons.print.min.js') }}"></script>
+    <script src="{{ asset('datatables/Buttons/js/buttons.html5.min.js') }}"></script>
+    <script src="{{ asset('datatables/pdfmake/pdfmake.min.js') }}"></script>
+    <script src="{{ asset('datatables/pdfmake/vfs_fonts.js') }}"></script>
+    <script src="{{ asset('datatables/JSZip/jszip.min.js') }}"></script>
+    <script src="{{('/js/administracion/empresa.js')}}"></script>
+    <script src="{{('/js/publico/ubigeo.js')}}"></script>
+@endsection

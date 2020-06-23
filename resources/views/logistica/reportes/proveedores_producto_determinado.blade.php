@@ -1,6 +1,13 @@
-@include('layout.head')
+@extends('layout.head')
 @include('layout.menu_logistica')
-@include('layout.body_sin_option')
+@section('option')
+@endsection
+
+@section('cabecera')
+    Proveedores con Producto Determinado
+@endsection
+
+@section('content')
 <div class="page-main" type="reporte-proveedores_producto_determinado">
     <legend>
         <div class="row">
@@ -141,6 +148,17 @@
 @include('layout.footer')
 @include('layout.scripts')
 @include('logistica.reportes.modal_catalogo_productos')
+@endsection
 
-<script src="{{ asset('/js/logistica/reportes/proveedores_producto_determinado.js') }}"></script>
- @include('layout.fin_html')
+@section('scripts')
+    <script src="{{ asset('datatables/DataTables/js/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ asset('datatables/DataTables/js/dataTables.bootstrap.min.js') }}"></script>
+    <script src="{{ asset('datatables/Buttons/js/dataTables.buttons.min.js') }}"></script>
+    <script src="{{ asset('datatables/Buttons/js/buttons.bootstrap.min.js') }}"></script>
+    <script src="{{ asset('datatables/Buttons/js/buttons.print.min.js') }}"></script>
+    <script src="{{ asset('datatables/Buttons/js/buttons.html5.min.js') }}"></script>
+    <script src="{{ asset('datatables/pdfmake/pdfmake.min.js') }}"></script>
+    <script src="{{ asset('datatables/pdfmake/vfs_fonts.js') }}"></script>
+    <script src="{{ asset('datatables/JSZip/jszip.min.js') }}"></script>
+    <script src="{{ asset('/js/logistica/reportes/proveedores_producto_determinado.js') }}"></script>
+@endsection

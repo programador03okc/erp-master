@@ -1,6 +1,14 @@
-@include('layout.head')
+@extends('layout.head')
 @include('layout.menu_logistica')
-@include('layout.body_sin_option')
+
+@section('option')
+@endsection
+
+@section('cabecera')
+    Lista Requerimientos
+@endsection
+
+@section('content')
 <div class="page-main" type="lista_requerimiento">
     <legend><h2>Lista de Requerimientos</h2></legend>
 
@@ -91,8 +99,18 @@
 @include('logistica.requerimientos.aprobacion.modal_aprobacion')
 @include('logistica.requerimientos.modal_tracking_requerimiento')
 
-@include('layout.footer')
-@include('layout.scripts')
-<script src="{{('/js/logistica/listar_requerimiento.js')}}"></script>
-<script src="{{('/js/logistica/aprobacion/aprobacion.js')}}"></script>
-@include('layout.fin_html')
+@endsection
+
+@section('scripts')
+    <script src="{{ asset('datatables/DataTables/js/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ asset('datatables/DataTables/js/dataTables.bootstrap.min.js') }}"></script>
+    <script src="{{ asset('datatables/Buttons/js/dataTables.buttons.min.js') }}"></script>
+    <script src="{{ asset('datatables/Buttons/js/buttons.bootstrap.min.js') }}"></script>
+    <script src="{{ asset('datatables/Buttons/js/buttons.print.min.js') }}"></script>
+    <script src="{{ asset('datatables/Buttons/js/buttons.html5.min.js') }}"></script>
+    <script src="{{ asset('datatables/pdfmake/pdfmake.min.js') }}"></script>
+    <script src="{{ asset('datatables/pdfmake/vfs_fonts.js') }}"></script>
+    <script src="{{ asset('datatables/JSZip/jszip.min.js') }}"></script>
+    <script src="{{('/js/logistica/listar_requerimiento.js')}}"></script>
+    <script src="{{('/js/logistica/aprobacion/aprobacion.js')}}"></script>
+@endsection

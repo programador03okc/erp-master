@@ -1,6 +1,10 @@
-@include('layout.head')
+@extends('layout.head')
 @include('layout.menu_logistica')
-@include('layout.body_sin_option')
+@section('cabecera')
+    Dashboard Logística
+@endsection
+@section('content')
+
 <div class="row">
 
     <div class="col-md-3 col-sm-6 col-xs-12">
@@ -44,6 +48,6 @@
         </div>
     </div>
 </div>
-@include('layout.footer')
-@include('layout.scripts')
-@include('layout.fin_html')
+@endsection
+@section('scripts')
+@endsection

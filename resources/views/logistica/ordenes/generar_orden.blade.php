@@ -1,6 +1,14 @@
-@include('layout.head')
+@extends('layout.head')
 @include('layout.menu_logistica')
-@include('layout.body')
+@section('option')
+    @include('layout.option')
+@endsection
+
+@section('cabecera')
+    Generar Orden C/S
+@endsection
+
+@section('content')
 <div class="page-main" type="orden">
     
     <form id="form-orden" type="register" form="formulario">
@@ -290,12 +298,23 @@
 @include('logistica.ordenes.modal_obtener_cuadro_comparativo')
 @include('logistica.ordenes.ordenesModal')
 @include('logistica.ordenes.add_cta_banco')
-@include('layout.footer')
-@include('layout.scripts')
-<script src="{{('/js/logistica/generar_orden.js')}}"></script>
-<script src="{{('/js/logistica/proveedorModal.js')}}"></script>
-<script src="{{('/js/logistica/add_proveedor.js')}}"></script>
-<script src="{{('/js/logistica/ordenesModal.js')}}"></script>
-<script src="{{('/js/logistica/add_cta_banco.js')}}"></script>
-<script src="{{('/js/logistica/orden_requerimiento.js')}}"></script>
-@include('layout.fin_html')
+
+@endsection
+
+@section('scripts')
+    <script src="{{ asset('datatables/DataTables/js/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ asset('datatables/DataTables/js/dataTables.bootstrap.min.js') }}"></script>
+    <script src="{{ asset('datatables/Buttons/js/dataTables.buttons.min.js') }}"></script>
+    <script src="{{ asset('datatables/Buttons/js/buttons.bootstrap.min.js') }}"></script>
+    <script src="{{ asset('datatables/Buttons/js/buttons.print.min.js') }}"></script>
+    <script src="{{ asset('datatables/Buttons/js/buttons.html5.min.js') }}"></script>
+    <script src="{{ asset('datatables/pdfmake/pdfmake.min.js') }}"></script>
+    <script src="{{ asset('datatables/pdfmake/vfs_fonts.js') }}"></script>
+    <script src="{{ asset('datatables/JSZip/jszip.min.js') }}"></script>
+    <script src="{{('/js/logistica/generar_orden.js')}}"></script>
+    <script src="{{('/js/logistica/proveedorModal.js')}}"></script>
+    <script src="{{('/js/logistica/add_proveedor.js')}}"></script>
+    <script src="{{('/js/logistica/ordenesModal.js')}}"></script>
+    <script src="{{('/js/logistica/add_cta_banco.js')}}"></script>
+    <script src="{{('/js/logistica/orden_requerimiento.js')}}"></script>
+@endsection

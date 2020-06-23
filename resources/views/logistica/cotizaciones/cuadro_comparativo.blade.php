@@ -1,6 +1,13 @@
-@include('layout.head')
+@extends('layout.head')
 @include('layout.menu_logistica')
-@include('layout.body_sin_option')
+@section('option')
+@endsection
+
+@section('cabecera')
+    Cuadro Comparativo
+@endsection
+
+@section('content')
 <div class="page-main" type="cuadro_comparativo">
     <legend>
         <h2>Cuadro Comparativo</h2>
@@ -102,8 +109,18 @@
 @include('logistica.cotizaciones.modal_valorizar_cotizacion')
 @include('logistica.cotizaciones.modal_valorizacion_especificacion')
 
-@include('layout.footer')
-@include('layout.scripts')
-<script src="{{ asset('/js/logistica/cuadro_comparativo/index.js')}}"></script>
+@endsection
+
+@section('scripts')
+    <script src="{{ asset('datatables/DataTables/js/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ asset('datatables/DataTables/js/dataTables.bootstrap.min.js') }}"></script>
+    <script src="{{ asset('datatables/Buttons/js/dataTables.buttons.min.js') }}"></script>
+    <script src="{{ asset('datatables/Buttons/js/buttons.bootstrap.min.js') }}"></script>
+    <script src="{{ asset('datatables/Buttons/js/buttons.print.min.js') }}"></script>
+    <script src="{{ asset('datatables/Buttons/js/buttons.html5.min.js') }}"></script>
+    <script src="{{ asset('datatables/pdfmake/pdfmake.min.js') }}"></script>
+    <script src="{{ asset('datatables/pdfmake/vfs_fonts.js') }}"></script>
+    <script src="{{ asset('datatables/JSZip/jszip.min.js') }}"></script>
+    <script src="{{ asset('/js/logistica/cuadro_comparativo/index.js')}}"></script>
 <!-- <script src="{{ asset('/js/logistica/cotizacionModal.js')}}"></script> -->
-@include('layout.fin_html')
+@endsection
