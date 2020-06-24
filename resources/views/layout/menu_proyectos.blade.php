@@ -11,7 +11,7 @@
     </div>
 
     <ul class="sidebar-menu">
-        <li class="okc-menu-title"><label>Proyectos</label><p>PY</p></li>
+        <li class="okc-menu-title"><label>Proyectos</label><p><a href="proyectos">PY</a></p></li>
         <li class="treeview">
             <a href="#">
                 <i class="fas fa-stream"></i> <span>Variables de Entorno</span> <i class="fa fa-angle-left pull-right"></i>
