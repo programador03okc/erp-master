@@ -12,10 +12,11 @@
 
     <div class="box box-default collapsed-box">
         <div class="box-header with-border">
-            <h3 class="box-title okc-box-title">Almacén<p>GC</p></h3>
+            <h3 class="box-title okc-box-title">Almacén</h3>
             <div class="box-tools pull-right">
-                <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-plus"></i></button>
-            </div><!-- /.box-tools -->
+            <p><a href="almacen">AL</a></p>
+                <!-- <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-plus"></i></button> -->
+            </div>
         </div><!-- /.box-header -->
     <div class="box-body" style="display: block;">        
         <ul class="sidebar-menu">

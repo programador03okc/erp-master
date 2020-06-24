@@ -19,6 +19,8 @@ let backgroundColor = [ //Color del segmento
     // "#FFCE56"
 ];
 
+let orden = [1,5,19,17,9,20,21];
+
 function mostrar_tabla(){
     $.ajax({
         type: 'GET',
@@ -27,23 +29,29 @@ function mostrar_tabla(){
         success: function(response){
             console.log(response);
             var html = '';
+            console.log(orden);
             var i = 1;
-
-            response.forEach(function (element) {
-                dataLabel.push(element.estado_doc);
-                dataCantidades.push(element.cantidad);
-                html += '<tr>'+
-                '<td><i class="fas fa-bookmark" style="color:'+backgroundColor[i-1]+';" data-toggle="tooltip" data-placement="bottom" '+
-                'title="'+element.estado_doc+'"></i></td>'+
-                '<td>'+element.estado_doc+'</td>'+
-                '<td class="right">'+element.cantidad+'</td>'+
-                '<td class="center"><button type="button" class="ver btn btn-info boton" data-toggle="tooltip" '+
-                'data-placement="bottom" title="Ver Requerimientos" data-id="'+element.estado+'" data-estado="'+element.estado_doc+'" >'+
-                '<i class="fas fa-list-ul"></i></button></td>'+
-                '</tr>';
-                i++;
-            });
-            
+            for (let index = 0; index < orden.length; index++) {
+                const nro = orden[index];
+                console.log('nro:'+nro);
+                var estado = response.find(element => element.estado == nro);
+                // response.forEach(function (element) {
+                if (estado !== undefined){
+                    dataLabel.push(estado.estado_doc);
+                    dataCantidades.push(estado.cantidad);
+                    html += '<tr>'+
+                    '<td><i class="fas fa-bookmark" style="color:'+backgroundColor[i-1]+';" data-toggle="tooltip" data-placement="bottom" '+
+                    'title="'+estado.estado_doc+'"></i></td>'+
+                    '<td>'+estado.estado_doc+'</td>'+
+                    '<td class="right">'+estado.cantidad+'</td>'+
+                    '<td class="center"><button type="button" class="ver btn btn-info boton" data-toggle="tooltip" '+
+                    'data-placement="bottom" title="Ver Requerimientos" data-id="'+estado.estado+'" data-estado="'+estado.estado_doc+'" >'+
+                    '<i class="fas fa-list-ul"></i></button></td>'+
+                    '</tr>';
+                    i++;
+                }
+                // });
+            }
             $('#listaEstadosRequerimientos tbody').html(html);
             // $('#Proyectos tfoot').html(html_foot);
             mostrar_grafico();
@@ -74,15 +82,15 @@ function listarRequerimientosEstado(estado){
         success: function(response){
             console.log(response);
             var html = '';
-            var i = 1;
+            
             response.forEach(element => {
                 html+='<tr id="'+element.id_requerimiento+'">'+
                 '<td>'+element.codigo+'</td>'+
                 '<td>'+element.concepto+'</td>'+
                 '<td>'+element.nombre_corto+'</td>'+
                 '</tr>';
-                i++;
             });
+            
             $('#listaRequerimientosEstado tbody').html(html);
         }
     }).fail( function( jqXHR, textStatus, errorThrown ){

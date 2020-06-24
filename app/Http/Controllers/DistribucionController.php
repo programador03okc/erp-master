@@ -99,6 +99,7 @@ class DistribucionController extends Controller
         ->join('administracion.adm_estado_doc','adm_estado_doc.id_estado_doc','=','alm_req.estado')
         ->groupBy('alm_req.estado','adm_estado_doc.estado_doc','adm_estado_doc.bootstrap_color')
             ->where([['alm_req.estado','!=',7]])
+            ->orderBy('alm_req.estado','desc')
             ->get();
         return response()->json($data);
     }
@@ -422,7 +423,8 @@ class DistribucionController extends Controller
         'orden_despacho_grupo.observaciones','orden_despacho.direccion_destino','sis_usua.nombre_corto as trabajador_despacho',
         'adm_contri.razon_social as proveedor_despacho','cliente.razon_social as cliente_razon_social',
         DB::raw("(rrhh_perso.nombres) || ' ' || (rrhh_perso.apellido_paterno) || ' ' || (rrhh_perso.apellido_materno) AS cliente_persona"),
-        'alm_req.codigo as codigo_req','alm_req.concepto','ubi_dis.descripcion as ubigeo_descripcion',
+        'alm_req.codigo as codigo_req','alm_req.concepto','alm_req.id_requerimiento',
+        'ubi_dis.descripcion as ubigeo_descripcion',
         'adm_estado_doc.estado_doc','adm_estado_doc.bootstrap_color','alm_almacen.descripcion as almacen_descripcion',
         'orden_despacho_grupo.codigo as codigo_odg','orden_despacho.estado as estado_od')
         ->join('almacen.orden_despacho_grupo','orden_despacho_grupo.id_od_grupo','=','orden_despacho_grupo_det.id_od_grupo')
@@ -487,7 +489,16 @@ class DistribucionController extends Controller
                     'registrado_por'=>$id_usuario,
                     'fecha_registro'=>date('Y-m-d H:i:s')
                     ]);
-                    
+            
+            if ($request->id_requerimiento !== null){
+                DB::table('almacen.alm_req')
+                ->where('id_requerimiento',$request->id_requerimiento)
+                ->update(['estado'=>21]);
+
+                DB::table('almacen.alm_det_req')
+                ->where('id_requerimiento',$request->id_requerimiento)
+                ->update(['estado'=>21]);
+            }
             DB::commit();
             return response()->json($data);
             
