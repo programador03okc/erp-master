@@ -14,8 +14,8 @@ function openTransferenciaGuia(data){
     } else {
         cargar_almacenes(data.sede_requerimiento, 'id_almacen_destino');
     }
-    var tp_doc_almacen = 2;//guia venta
-    next_serie_numero(data.sede_orden,tp_doc_almacen);
+    // var tp_doc_almacen = 2;//guia venta
+    // next_serie_numero(data.sede_orden,tp_doc_almacen);
 }
 
 function cargar_almacenes(sede, campo){
@@ -100,4 +100,15 @@ function guardar_transferencia(data){
         console.log(textStatus);
         console.log(errorThrown);
     });
+}
+
+function ceros_numero_trans(numero){
+    if (numero == 'numero'){
+        var num = $('[name=trans_numero]').val();
+        $('[name=trans_numero]').val(leftZero(7,num));
+    }
+    else if(numero == 'serie'){
+        var num = $('[name=trans_serie]').val();
+        $('[name=trans_serie]').val(leftZero(4,num));
+    }
 }

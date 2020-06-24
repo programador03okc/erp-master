@@ -86,6 +86,7 @@ class DistribucionController extends Controller
             // ->leftJoin('almacen.orden_despacho','orden_despacho.id_requerimiento','=','alm_req.id_requerimiento')
             ->where([['alm_req.estado','!=',1], ['alm_req.estado','!=',7], ['alm_req.estado','!=',20], 
             ['alm_req.estado','!=',21]])//muestra todos los reservados
+            ->orderBy('alm_req.fecha_requerimiento','desc')
             ->get();
         return datatables($data)->toJson();
         // return response()->json($data);
@@ -220,6 +221,7 @@ class DistribucionController extends Controller
                     'id_cliente'=>$request->id_cliente,
                     'id_persona'=>$request->id_persona,
                     'id_almacen'=>$request->id_almacen,
+                    'telefono'=>$request->telefono,
                     'codigo'=>$codigo,
                     'ubigeo_destino'=>$request->ubigeo,
                     'direccion_destino'=>$request->direccion_destino,
@@ -328,7 +330,7 @@ class DistribucionController extends Controller
         'alm_req.codigo as codigo_req','alm_req.concepto','ubi_dis.descripcion as ubigeo_descripcion',
         'sis_usua.nombre_corto','adm_estado_doc.estado_doc','adm_estado_doc.bootstrap_color',
         DB::raw("(rrhh_perso.nombres) || ' ' || (rrhh_perso.apellido_paterno) || ' ' || (rrhh_perso.apellido_materno) AS nombre_persona"),
-        'alm_almacen.descripcion as almacen_descripcion')
+        'alm_almacen.descripcion as almacen_descripcion','rrhh_perso.telefono')
         ->leftjoin('comercial.com_cliente','com_cliente.id_cliente','=','orden_despacho.id_cliente')
         ->leftjoin('contabilidad.adm_contri','adm_contri.id_contribuyente','=','com_cliente.id_contribuyente')
         ->leftjoin('rrhh.rrhh_perso','rrhh_perso.id_persona','=','orden_despacho.id_persona')
@@ -737,7 +739,8 @@ class DistribucionController extends Controller
         ->select('orden_despacho.*','adm_contri.nro_documento','adm_contri.razon_social',
         DB::raw("(rrhh_perso.nombres) || ' ' || (rrhh_perso.apellido_paterno) || ' ' || (rrhh_perso.apellido_materno) AS nombre_persona"),
         'ubi_dis.descripcion as ubigeo_descripcion','alm_almacen.descripcion as almacen_descripcion',
-        'guia_ven.serie','guia_ven.numero','alm_req.codigo as codigo_req','alm_req.concepto')
+        'guia_ven.serie','guia_ven.numero','alm_req.codigo as codigo_req','alm_req.concepto',
+        'rrhh_perso.nro_documento as dni')
         ->join('almacen.orden_despacho','orden_despacho.id_od','=','orden_despacho_grupo_det.id_od')
         ->leftjoin('comercial.com_cliente','com_cliente.id_cliente','=','orden_despacho.id_cliente')
         ->leftjoin('contabilidad.adm_contri','adm_contri.id_contribuyente','=','com_cliente.id_contribuyente')
@@ -809,7 +812,7 @@ class DistribucionController extends Controller
                         <td class="verticalTop">'.$od->codigo.'</td>
                         <td width=100px>Cliente</td>
                         <td width=10px>:</td>
-                        <td>'.($od->razon_social !== null ? ($od->nro_documento.' - '.$od->razon_social) : $od->nombre_persona).'</td>
+                        <td>'.($od->razon_social !== null ? ($od->nro_documento.' - '.$od->razon_social) : (($od->dni!==null ? $od->dni.' - ' : '').$od->nombre_persona)).'</td>
                     </tr>
                     <tr>
                         <td width=100px>Requerimiento</td>
@@ -826,6 +829,14 @@ class DistribucionController extends Controller
                         <td>Dirección</td>
                         <td width=10px>:</td>
                         <td>'.$od->direccion_destino.'</td>
+                    </tr>
+                    <tr>
+                        <td>Teléfono</td>
+                        <td width=10px>:</td>
+                        <td width=170px class="verticalTop">'.($od->telefono!==null ? $od->telefono : '').'</td>
+                        <td></td>
+                        <td width=10px></td>
+                        <td></td>
                     </tr>
                     <tr>
                         <td>Almacén</td>

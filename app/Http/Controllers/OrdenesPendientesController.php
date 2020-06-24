@@ -346,8 +346,8 @@ class OrdenesPendientesController extends Controller
             $id_guia = DB::table('almacen.guia_ven')->insertGetId(
                 [
                     'id_tp_doc_almacen' => $id_tp_doc_almacen,
-                    'serie' => $request->serie,
-                    'numero' => $request->numero,
+                    'serie' => $request->trans_serie,
+                    'numero' => $request->trans_numero,
                     'fecha_emision' => $request->fecha_emision,
                     'fecha_almacen' => $request->fecha_almacen,
                     'id_almacen' => $request->id_almacen_origen,

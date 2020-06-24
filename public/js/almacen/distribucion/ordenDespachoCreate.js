@@ -18,6 +18,7 @@ function open_despacho_create(data){
     $('[name=id_almacen]').val(data.id_almacen);
     $('[name=almacen_descripcion]').val(data.almacen_descripcion);
     $('[name=id_sede]').val(data.sede_requerimiento);
+    $('[name=telefono]').val(data.telefono);
 
     if (data.id_persona !== null){
         $('[name=id_persona]').val(data.id_persona);
@@ -154,6 +155,7 @@ function guardar_orden_despacho(){
     var camb = $('[name=aplica_cambios_valor]').val();
     var tipo = $('[name=tipo_entrega]').val();
     var tpcli = $('[name=tipo_cliente]').val();
+    var telf = $('[name=telefono]').val();
     var sale = $('[name=sale]').val();
 
     var data =  'id_sede='+sede+
@@ -168,6 +170,7 @@ function guardar_orden_despacho(){
                 '&aplica_cambios_valor='+camb+
                 '&tipo_entrega='+tipo+
                 '&tipo_cliente='+tpcli+
+                '&telefono='+telf+
                 '&sale='+sale+
                 '&detalle_ingresa='+JSON.stringify(detalle_ingresa)+
                 '&detalle_requerimiento='+JSON.stringify(detalle_requerimiento);

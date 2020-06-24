@@ -98,8 +98,8 @@ function recibir(){
                     console.log(response);
                     if (response > 0){
                         alert('Ingreso generado con éxito');
-                        var id = encode5t(response);
-                        window.open('imprimir_ingreso/'+id);
+                        // var id = encode5t(response);
+                        // window.open('imprimir_ingreso/'+id);
                         $('#modal-transferencia_detalle').modal('hide');
                         listarTransferenciasPendientes();
                     }
