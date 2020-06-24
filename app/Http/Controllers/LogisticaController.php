@@ -1920,7 +1920,6 @@ class LogisticaController extends Controller
         foreach($grupo as $data){
             $grupoList[]=$data->id_grupo;
         }
-
         $req     = array();
         $det_req = array();
 
@@ -1969,7 +1968,7 @@ class LogisticaController extends Controller
 
 
         )
-        ->where('alm_req.estado', '=', 1)->orderBy('alm_req.id_requerimiento', 'DESC')
+        ->where('alm_req.estado', '>=', 1)->orderBy('alm_req.id_requerimiento', 'DESC')
         ->whereIn('alm_req.id_grupo', $grupoList)
         ->get();
 
@@ -2335,7 +2334,6 @@ class LogisticaController extends Controller
 
         // $output['data']=[];
         $output=[];
-        
         // datos del requerimiento
         foreach ($this->get_req_list($id_empresa,$id_sede,$id_grupo) as $row) {
             $id_req = $row['id_requerimiento'];
@@ -3289,8 +3287,8 @@ class LogisticaController extends Controller
         ->first();
         // $id_prioridad = $req->id_prioridad;
         $id_prioridad = 1;
-        $id_grupo = $req->id_grupo;
-        $id_area = $req->id_area;
+        $id_grupo = isset($req->id_grupo)?$req->id_grupo:0;
+        $id_area = isset($req->id_area)?$req->id_area:0;
 
         $sql_operacion = DB::table('administracion.adm_operacion')
         ->where([

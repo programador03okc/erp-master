@@ -4,7 +4,7 @@ $(function(){
     var vardataTables = funcDatatables();
 
     vista_extendida();
-    defaultValueSelectEmpresa('OK COMPUTER EIRL');
+    defaultValueSelectEmpresa('OK COMPUTER');
 
     $.ajax({
         type: 'GET',
@@ -130,6 +130,10 @@ function vista_extendida(){
 }
 
 function listarTablaReq(id_empresa =null,id_sede =null, id_grupo=null){
+    console.log(id_empresa);
+    console.log(id_sede);
+    console.log(id_grupo);
+    
     // var vardataTables = funcDatatables();
     $('#ListaReq').dataTable({
         processing: true,
