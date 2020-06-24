@@ -7355,7 +7355,8 @@ class LogisticaController extends Controller
                 // 'log_detalle_grupo_cotizacion.id_detalle_grupo_cotizacion',
                 'alm_req.id_prioridad',
                 'alm_req.fecha_registro',
-                'alm_req.estado',
+                'alm_req.estado as estado_requerimiento',
+                'log_ord_compra.estado as estado_orden',
                 'log_ord_compra.id_sede',
                 'sis_sede.codigo as codigo_sede_empresa',
                 'adm_estado_doc.estado_doc',
@@ -7363,7 +7364,7 @@ class LogisticaController extends Controller
                 DB::raw("(CASE WHEN alm_req.estado = 1 THEN 'Habilitado' ELSE 'Deshabilitado' END) AS estado_desc")
 
             )
-            ->where([['alm_req.estado', '=', 5],['alm_req.id_tipo_requerimiento','=',1],['alm_req.confirmacion_pago','=',true]])
+            ->where([['alm_req.estado', '=', 5],['log_ord_compra.estado', '!=', 7],['alm_req.id_tipo_requerimiento','=',1],['alm_req.confirmacion_pago','=',true]])
             ->orderBy('alm_req.id_requerimiento', 'desc')
             ->get();
         return response()->json(["data" => $alm_req]);
@@ -7814,7 +7815,7 @@ class LogisticaController extends Controller
                     'id_requerimiento' => $request->id_requerimiento,
                     'en_almacen' => false,
                     'estado' => 1,
-                    'codigo_softlink' => $request->codigo_orden_externo?$request->codigo_orden_externo:null,
+                    'codigo_softlink' => $request->codigo_orden?$request->codigo_orden:null,
                 ],
                 'id_orden_compra'
             );

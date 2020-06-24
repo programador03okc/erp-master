@@ -116,3 +116,12 @@ function limpiarFormAgregarCliente(){
     document.querySelector("form[id='form-agregar-cliente'] input[name='telefono']").value= '';
     document.querySelector("form[id='form-agregar-cliente'] input[name='direccion']").value= '';
 }
+
+function evaluarDocumentoSeleccionado(event){
+    let valor =event.target.value;
+    if (valor != '2'){ // si tipo de documento no es RUC
+        $('#btnConsultaSunat').addClass('disabled');
+    }else{
+        $('#btnConsultaSunat').removeClass('disabled');
+    }
+}
