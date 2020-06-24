@@ -1,28 +1,46 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Sistema ERP</title>
-    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-    <link rel="stylesheet" href="{{ asset('template/bootstrap/css/bootstrap.min.css')}}">
-    <link rel="stylesheet" href="{{ asset('datatables/Datatables/css/dataTables.bootstrap.min.css')}}">
-    <link rel="stylesheet" href="{{ asset('datatables/Buttons/css/buttons.dataTables.min.css')}}">
-    <link rel="stylesheet" href="{{ asset('fonts/Awesome/css/all.min.css')}}">
-    <link rel="stylesheet" href="{{ asset('template/dist/css/AdminLTE.css')}}">
-    <link rel="stylesheet" href="{{ asset('template/dist/css/skins/_all-skins.min.css')}}">
-    <link rel="stylesheet" href="{{ asset('css/app.css')}}">
-</head>
-<body class="hold-transition skin-okc sidebar-mini">
-    <div class="wrapper">
-        <header class="main-header">
-            @include('layout.navbar')
-        </header>
-        <aside class="main-sidebar">
-            @include('layout.menu')
-        </aside>
-        <!-- contenido -->
-        <div class="content-wrapper">
-            @include('layout.option')
-            <!-- Vistas -->
-            <section class="content">
+<header class="main-header">
+
+    <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+
+    <a href="{{ route('modulos') }}" class="logo">
+        <span class="logo-mini"><b>OKC</b></span>
+        <span class="logo-lg"><b>OK COMPUTER EIRL</b></span>
+    </a>
+
+    <nav class="navbar navbar-static-top" role="navigation">
+        <a href="#" class="sidebar-okc" data-toggle="offcanvas" role="button"><i class="fas fa-bars"></i></a>
+        <div class="navbar-custom-menu">
+            <ul class="nav navbar-nav">
+                <!-- <li class="okc-li-mod"><a href="#" class="btn" id="like" data-name="Espejito espejito...quien es el más bonito">Test Socket</a></li> -->
+                <li><a href="/modulos">Módulos</a></li>
+                <li><a href="/config">Configuración</a></li>
+                <li class="info-docs"><a href="javascript: void(0);" onclick="modalSobreERP();">Sobre el ERP</a></li>
+                <!-- <li><span onclick="modalSobreERP();" style="cursor:pointer;"></span></li> -->
+                <li class="dropdown user user-menu">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        <img src="{{ asset('img/avatar5.png') }}" class="user-image" alt="User Image">
+                        <span class="hidden-xs">{{ Auth::user()->nombre_corto }}</span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li class="user-header">
+                            <img src="{{ asset('img/user2-160x160.jpg') }}" class="img-circle" alt="User Image">
+                            <p>{{ Auth::user()->trabajador->postulante->persona->nombre_completo }}
+                                <small>{{ Auth::user()->cargo }}</small>
+                            </p>
+                        </li>
+                        <li class="user-footer">
+                            <div class="pull-left"><a href="javascript: void(0)" onclick="changePassword();" class="btn btn-default btn-flat">Perfil</a></div>
+                            <div class="pull-right">
+                                <form id="logout-form" action="{{ route('logout') }}" method="POST">
+                                    @csrf
+                                    <button type="submit" class="btn btn-default btn-flat">Salir</button>
+                                </form>
+
+                            </div>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </nav>
+</header>
