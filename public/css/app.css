@@ -183,15 +183,6 @@ body .login-box {
   animation: pace-spinner 400ms linear infinite;
 }
 
-@media (max-width: 767px) {
-  .pace .pace-activity {
-    top: 15px;
-    right: 15px;
-    width: 14px;
-    height: 14px;
-  }
-}
-
 @-webkit-keyframes pace-spinner {
   0% {
     transform: rotate(0deg);
@@ -293,6 +284,36 @@ body .login-box {
 
 .orange {
   color: orange;
+}
+
+.skin-blue .main-header .navbar,
+.skin-blue .main-header .logo,
+.skin-blue .main-header li.user-header {
+  background-color: #fff !important;
+}
+
+.skin-blue .main-header .logo,
+.skin-blue .main-header .navbar .nav > li > a,
+.navbar-nav > .user-menu > .dropdown-menu > li.user-header > p {
+  color: #666 !important;
+}
+
+.skin-blue .wrapper,
+.skin-blue .main-sidebar,
+.skin-blue .left-side,
+.skin-blue .sidebar-menu > li:hover > a,
+.skin-blue .sidebar-menu > li.active > a {
+  background-color: #8f1c1c;
+  border-left-color: transparent;
+}
+
+.skin-blue .sidebar a,
+.skin-blue .treeview-menu > li > a {
+  color: #fff;
+}
+
+.skin-blue .sidebar-menu > li > .treeview-menu {
+  background-color: transparent !important;
 }
 
 .skin-okc {
@@ -1710,22 +1731,6 @@ form .select2-container .select2-selection--single {
   border-color: #efef12;
 }
 
-@media (min-width: 768px) {
-  .skin-okc.sidebar-mini.sidebar-collapse .sidebar-menu > li > .treeview-menu {
-    border-radius: 0;
-    width: 220px;
-  }
-
-  .skin-okc.sidebar-mini.sidebar-collapse .sidebar-menu > li > a > span {
-    margin: 0;
-    background-color: #621313;
-  }
-
-  .skin-okc.sidebar-mini.sidebar-collapse .sidebar-menu > li:hover > a > span:not(.pull-right) {
-    width: 220px;
-  }
-}
-
 .box-header {
   background-color: #621313;
   color: #fff;
@@ -1785,6 +1790,24 @@ form .select2-container .select2-selection--single {
 
 .gantt_layout_cell .grid_cell {
   width: 320px !important;
+}
+
+@media (max-width: 768px) {
+  .main-header > .navbar {
+    border-top: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+  }
+
+  .pace .pace-activity {
+    top: 15px;
+    right: 15px;
+    width: 14px;
+    height: 14px;
+  }
+
+  nav li.info-docs {
+    display: none;
+  }
 }
 
 /*!

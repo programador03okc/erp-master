@@ -15,74 +15,9 @@
     @yield('estilos')
 
 </head>
-<body class="hold-transition skin-okc sidebar-mini">
+<body class="hold-transition skin-blue sidebar-mini">
     <div class="wrapper">
-        <header class="main-header">
-
-            <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
-
-            <a href="{{ route('modulos') }}" class="logo">
-                <span class="logo-mini"><b>OKC</b></span>
-                <span class="logo-lg"><b>OK COMPUTER EIRL</b></span>
-            </a>
-
-            <nav class="navbar navbar-static-top" role="navigation">
-                <a href="#" class="sidebar-okc" data-toggle="offcanvas" role="button"><i class="fas fa-bars"></i></a>
-                <div class="navbar-custom-menu">
-                    <ul class="nav navbar-nav">
-                        <!-- <li class="okc-li-mod"><a href="#" class="btn" id="like" data-name="Espejito espejito...quien es el más bonito">Test Socket</a></li> -->
-                        <li class="okc-li-mod"><a href="/modulos">Módulos</a></li>
-                        <li class="okc-li-mod"><a href="/config">Configuración</a></li>
-                        <li class="okc-li-mod"><span onclick="modalSobreERP();" style="cursor:pointer;">Sobre el ERP</span></li>
-                        <li class="dropdown user user-menu">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                <img src="{{ asset('img/avatar5.png') }}" class="user-image" alt="User Image">
-                                <span class="hidden-xs">{{ Auth::user()->nombre_corto }}</span>
-                            </a>
-                            <ul class="dropdown-menu">
-                                <li class="user-header">
-                                    <img src="{{ asset('img/user2-160x160.jpg') }}" class="img-circle" alt="User Image">
-                                    <p>{{ Auth::user()->trabajador->postulante->persona->nombre_completo }}
-                                        <small>{{ Auth::user()->cargo }}</small>
-                                    </p>
-                                </li>
-                                <li class="user-footer">
-                                    <div class="pull-left"><a href="javascript: void(0)" onclick="changePassword();" class="btn btn-default btn-flat">Perfil</a></div>
-                                    <div class="pull-right">
-                                        <form id="logout-form" action="{{ route('logout') }}" method="POST">
-                                            @csrf
-                                            <button type="submit" class="btn btn-default btn-flat">Salir</button>
-                                        </form>
-
-                                    </div>
-                                </li>
-                            </ul>
-                        </li>
-                    </ul>
-                </div>
-            </nav>
-
-            <div class="modal fade" role="dialog" id="modal-sobre-erp" style="position:relative;">
-                <div class="modal-dialog" style="width: 40%;">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal" aria-label="close"><span aria-hidden="true">&times;</span></button>
-                            <h3 class="modal-title"><strong>Sobre el ERP</strong></h3>
-                        </div>
-                        <div class="modal-body">
-                            <p>Manuales:</p>
-                            <ul>
-                                <li><a href="/files/manuales/Manual de Usuario - Recursos Humanos.pdf" target="_black">Recursos Humanos </a>02/10/2019</li>
-                                <li><a href="/files/manuales/Manual de Usuario - Elaboración de Requerimientos.pdf" target="_black">Logística - Elaboración de Requerimientos </a>17/09/2019</li>
-                                <li><a href="/files/manuales/Manual de Usuario - Gestión Logística.pdf" target="_black">Logística - Gestión Logística </a>17/09/2019</li>
-                            </ul>
-                        </div>
-                        <div class="modal-footer">
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </header>
+        @include('layout.header')
         <aside class="main-sidebar">
             @yield('sidebar')
         </aside>
@@ -95,6 +30,27 @@
             </section>
         </div>
     </div>
+    <div class="modal fade" role="dialog" id="modal-sobre-erp">
+        <div class="modal-dialog" style="width: 40%;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="close"><span aria-hidden="true">&times;</span></button>
+                    <h3 class="modal-title"><strong>Sobre el ERP</strong></h3>
+                </div>
+                <div class="modal-body">
+                    <p>Manuales:</p>
+                    <ul>
+                        <li><a href="/files/manuales/Manual de Usuario - Recursos Humanos.pdf" target="_black">Recursos Humanos </a>02/10/2019</li>
+                        <li><a href="/files/manuales/Manual de Usuario - Elaboración de Requerimientos.pdf" target="_black">Logística - Elaboración de Requerimientos </a>17/09/2019</li>
+                        <li><a href="/files/manuales/Manual de Usuario - Gestión Logística.pdf" target="_black">Logística - Gestión Logística </a>17/09/2019</li>
+                    </ul>
+                </div>
+                <div class="modal-footer">
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="modal fade" tabindex="-1" role="dialog" id="modal-settings">
         <div class="modal-dialog" style="width: 17%;">
             <div class="modal-content">
@@ -238,10 +194,8 @@
         }
 
         function modalSobreERP() {
-
             $('#modal-sobre-erp').modal({
-                show: true,
-                backdrop: false
+                show: true
             });
         }
     </script>
