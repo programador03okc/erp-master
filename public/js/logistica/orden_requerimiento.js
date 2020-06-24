@@ -76,7 +76,7 @@ function eliminarAtencionOrdenRequerimiento(obj){
     let codigo_requerimiento = obj.dataset.codigoRequerimiento;
     let id_requerimiento = obj.dataset.idRequerimiento;
     let id_orden = obj.dataset.idOrdenCompra;
-    // console.log(id_requerimiento,id_orden);
+    console.log(id_requerimiento,id_orden);
     var ask = confirm('¿Desea revertir el requerimiento '+codigo_requerimiento+'?');
     if (ask == true){
         $.ajax({
@@ -142,7 +142,7 @@ $("#form-orden-requerimiento").on("submit", function(e){
 });
 
 function guardar_orden_requerimiento(data){
-    // console.log(data);
+    console.log(data);
     $.ajax({
         type: 'POST',
         url: '/guardar_orden_por_requerimiento',

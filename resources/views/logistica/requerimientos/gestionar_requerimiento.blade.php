@@ -309,4 +309,5 @@
     <script src="{{ asset('/js/logistica/clienteModal.js')}}"></script>
     <script src="{{ asset('/js/logistica/add_cliente.js')}}"></script>
     <script src="{{ asset('/js/almacen/producto/saldosModal.js')}}"></script>
+    <script src="{{ asset('/js/publico/consulta_sunat.js')}}"></script>
 @endsection

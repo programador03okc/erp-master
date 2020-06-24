@@ -1920,7 +1920,6 @@ class LogisticaController extends Controller
         foreach($grupo as $data){
             $grupoList[]=$data->id_grupo;
         }
-
         $req     = array();
         $det_req = array();
 
@@ -1969,7 +1968,7 @@ class LogisticaController extends Controller
 
 
         )
-        ->where('alm_req.estado', '=', 1)->orderBy('alm_req.id_requerimiento', 'DESC')
+        ->where('alm_req.estado', '>=', 1)->orderBy('alm_req.id_requerimiento', 'DESC')
         ->whereIn('alm_req.id_grupo', $grupoList)
         ->get();
 
@@ -2335,7 +2334,6 @@ class LogisticaController extends Controller
 
         // $output['data']=[];
         $output=[];
-        
         // datos del requerimiento
         foreach ($this->get_req_list($id_empresa,$id_sede,$id_grupo) as $row) {
             $id_req = $row['id_requerimiento'];
@@ -3289,8 +3287,8 @@ class LogisticaController extends Controller
         ->first();
         // $id_prioridad = $req->id_prioridad;
         $id_prioridad = 1;
-        $id_grupo = $req->id_grupo;
-        $id_area = $req->id_area;
+        $id_grupo = isset($req->id_grupo)?$req->id_grupo:0;
+        $id_area = isset($req->id_area)?$req->id_area:0;
 
         $sql_operacion = DB::table('administracion.adm_operacion')
         ->where([
@@ -7357,7 +7355,8 @@ class LogisticaController extends Controller
                 // 'log_detalle_grupo_cotizacion.id_detalle_grupo_cotizacion',
                 'alm_req.id_prioridad',
                 'alm_req.fecha_registro',
-                'alm_req.estado',
+                'alm_req.estado as estado_requerimiento',
+                'log_ord_compra.estado as estado_orden',
                 'log_ord_compra.id_sede',
                 'sis_sede.codigo as codigo_sede_empresa',
                 'adm_estado_doc.estado_doc',
@@ -7365,7 +7364,7 @@ class LogisticaController extends Controller
                 DB::raw("(CASE WHEN alm_req.estado = 1 THEN 'Habilitado' ELSE 'Deshabilitado' END) AS estado_desc")
 
             )
-            ->where([['alm_req.estado', '=', 5],['alm_req.id_tipo_requerimiento','=',1],['alm_req.confirmacion_pago','=',true]])
+            ->where([['alm_req.estado', '=', 5],['log_ord_compra.estado', '!=', 7],['alm_req.id_tipo_requerimiento','=',1],['alm_req.confirmacion_pago','=',true]])
             ->orderBy('alm_req.id_requerimiento', 'desc')
             ->get();
         return response()->json(["data" => $alm_req]);
@@ -7816,7 +7815,7 @@ class LogisticaController extends Controller
                     'id_requerimiento' => $request->id_requerimiento,
                     'en_almacen' => false,
                     'estado' => 1,
-                    'codigo_softlink' => $request->codigo_orden_externo?$request->codigo_orden_externo:null,
+                    'codigo_softlink' => $request->codigo_orden?$request->codigo_orden:null,
                 ],
                 'id_orden_compra'
             );

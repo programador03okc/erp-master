@@ -1810,6 +1810,15 @@ form .select2-container .select2-selection--single {
   }
 }
 
+@media (min-width: 768px) {
+  .sidebar-mini.sidebar-collapse .sidebar-menu > li > .treeview-menu {
+    padding-top: 0px;
+    padding-left: 0px;
+    padding-bottom: 5px;
+    border-bottom-right-radius: 4px;
+  }
+}
+
 /*!
  * Font Awesome Free 5.2.0 by @fontawesome - https://fontawesome.com
  * License - https://fontawesome.com/license (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License)

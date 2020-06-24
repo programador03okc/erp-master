@@ -1535,4 +1535,15 @@ form .select2-container .select2-selection--single{
     nav li.info-docs{
         display: none;
     }
+
 }
+@media (min-width: 768px){
+.sidebar-mini.sidebar-collapse .sidebar-menu > li > .treeview-menu {
+    padding-top: 0px;
+    padding-left: 0px;
+    padding-bottom: 5px;
+    border-bottom-right-radius: 4px;
+}
+}
+
+ 
