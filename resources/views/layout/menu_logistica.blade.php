@@ -1,3 +1,5 @@
+@section('sidebar')
+
 <!-- <?php
     if (!is_null(Auth::user())) {
         $roles = Auth::user()->obtenerRoles();
@@ -254,3 +256,4 @@
         </div><!-- /.box-body -->
     </div>
 </section>
+@endsection

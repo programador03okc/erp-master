@@ -1,6 +1,14 @@
-@include('layout.head')
+@extends('layout.head')
 @include('layout.menu_logistica')
-@include('layout.body_sin_option')
+
+@section('option')
+@endsection
+
+@section('cabecera')
+    Gestión de Cotizaciones
+@endsection
+
+@section('content')
 <div class="page-main" type="cotizacion">
     <legend>
         <h2>Gestionar Cotizaciones</h2>
@@ -300,12 +308,22 @@
 @include('logistica.cotizaciones.add_contacto')
 @include('logistica.cotizaciones.modal_saldos_producto')
 @include('logistica.cotizaciones.modal_det_req_a_cotizar')
-@include('layout.footer')
-@include('layout.scripts')
-<script src="{{('/js/logistica/gestionar_cotizaciones.js')}}"></script>
-<script src="{{('/js/logistica/proveedorModal.js')}}"></script>
-<script src="{{('/js/logistica/add_proveedor.js')}}"></script>
-<script src="{{('/js/logistica/add_contacto.js')}}"></script>
-<script src="{{('/js/publico/consulta_sunat.js')}}"></script>
+@endsection
 
-@include('layout.fin_html')
+@section('scripts')
+    <script src="{{ asset('datatables/DataTables/js/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ asset('datatables/DataTables/js/dataTables.bootstrap.min.js') }}"></script>
+    <script src="{{ asset('datatables/Buttons/js/dataTables.buttons.min.js') }}"></script>
+    <script src="{{ asset('datatables/Buttons/js/buttons.bootstrap.min.js') }}"></script>
+    <script src="{{ asset('datatables/Buttons/js/buttons.print.min.js') }}"></script>
+    <script src="{{ asset('datatables/Buttons/js/buttons.html5.min.js') }}"></script>
+    <script src="{{ asset('datatables/pdfmake/pdfmake.min.js') }}"></script>
+    <script src="{{ asset('datatables/pdfmake/vfs_fonts.js') }}"></script>
+    <script src="{{ asset('datatables/JSZip/jszip.min.js') }}"></script>
+    <script src="{{('/js/logistica/gestionar_cotizaciones.js')}}"></script>
+    <script src="{{('/js/logistica/proveedorModal.js')}}"></script>
+    <script src="{{('/js/logistica/add_proveedor.js')}}"></script>
+    <script src="{{('/js/logistica/add_contacto.js')}}"></script>
+    <script src="{{('/js/publico/consulta_sunat.js')}}"></script>
+
+@endsection

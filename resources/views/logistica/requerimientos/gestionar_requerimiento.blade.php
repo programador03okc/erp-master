@@ -1,6 +1,17 @@
-@include('layout.head')
+@extends('layout.head')
 @include('layout.menu_logistica')
-@include('layout.body')
+@section('option')
+    @include('layout.option')
+@endsection
+
+@section('cabecera')
+    Nuevo Requerimiento
+@endsection
+
+@section('estilos')
+@endsection
+
+@section('content')
 <div class="page-main" type="requerimiento">
     <legend>
         <div class="row row-no-gutters">
@@ -166,7 +177,7 @@
                     <option value="0">Elija una opción</option>
                 </select>
             </div>
-            <div class="col-md-3" id="input-group-area">
+            <div class="col-md-2" id="input-group-area">
                 <h5>Area</h5>
                 <input type="hidden" class="form-control" name="id_grupo">
                 <input type="hidden" class="form-control" name="id_area">
@@ -179,8 +190,7 @@
                     </div>
                 </div>
             </div>
-            
-            <div class="col-md-9" id="input-group-proyecto" hidden>
+            <div class="col-md-6" id="input-group-proyecto" hidden>
                 <h5>Proyecto</h5>
                 <div style="display:flex;">
                     <input hidden="true" type="text" name="id_op_com" class="activation">
@@ -220,6 +230,10 @@
                         </div>                            
                     </div>
                 </div>
+            </div>
+            <div class="col-md-4" id="input-group-observacion">
+                <h5>Observación:</h5>
+                <textarea class="form-control activation" name="observacion" cols="10" rows="20" disabled></textarea>
             </div>
         </div>
   
@@ -274,16 +288,25 @@
 @include('publico.ubigeoModal')
 @include('almacen.producto.saldosModal')
 @include('almacen.verRequerimientoEstado')
+@endsection
 
-@include('layout.footer')
-@include('layout.scripts')
-<script src="{{ asset('/js/logistica/requerimiento.js') }}"></script>
-<script src="{{ asset('/js/publico/modal_area.js')}}"></script>
-<script src="{{ asset('/js/proyectos/opcion/opcionModal.js')}}"></script>
-<script src="{{ asset('/js/publico/ubigeoModal.js')}}"></script>
-<script src="{{ asset('/js/publico/personaModal.js')}}"></script>
-<script src="{{ asset('/js/publico/hiddenElement.js')}}"></script>
-<script src="{{ asset('/js/logistica/clienteModal.js')}}"></script>
-<script src="{{ asset('/js/logistica/add_cliente.js')}}"></script>
-<script src="{{ asset('/js/almacen/producto/saldosModal.js')}}"></script>
-@include('layout.fin_html')
+@section('scripts')
+    <script src="{{ asset('datatables/DataTables/js/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ asset('datatables/DataTables/js/dataTables.bootstrap.min.js') }}"></script>
+    <script src="{{ asset('datatables/Buttons/js/dataTables.buttons.min.js') }}"></script>
+    <script src="{{ asset('datatables/Buttons/js/buttons.bootstrap.min.js') }}"></script>
+    <script src="{{ asset('datatables/Buttons/js/buttons.print.min.js') }}"></script>
+    <script src="{{ asset('datatables/Buttons/js/buttons.html5.min.js') }}"></script>
+    <script src="{{ asset('datatables/pdfmake/pdfmake.min.js') }}"></script>
+    <script src="{{ asset('datatables/pdfmake/vfs_fonts.js') }}"></script>
+    <script src="{{ asset('datatables/JSZip/jszip.min.js') }}"></script>
+    <script src="{{ asset('/js/logistica/requerimiento.js') }}"></script>
+    <script src="{{ asset('/js/publico/modal_area.js')}}"></script>
+    <script src="{{ asset('/js/proyectos/opcion/opcionModal.js')}}"></script>
+    <script src="{{ asset('/js/publico/ubigeoModal.js')}}"></script>
+    <script src="{{ asset('/js/publico/personaModal.js')}}"></script>
+    <script src="{{ asset('/js/publico/hiddenElement.js')}}"></script>
+    <script src="{{ asset('/js/logistica/clienteModal.js')}}"></script>
+    <script src="{{ asset('/js/logistica/add_cliente.js')}}"></script>
+    <script src="{{ asset('/js/almacen/producto/saldosModal.js')}}"></script>
+@endsection

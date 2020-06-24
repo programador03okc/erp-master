@@ -1,6 +1,14 @@
-@include('layout.head')
+@extends('layout.head')
 @include('layout.menu_logistica')
-@include('layout.body')
+@section('option')
+    @include('layout.option')
+@endsection
+
+@section('cabecera')
+    Solicitud de Equipo
+@endsection
+
+@section('content')
 <div class="page-main" type="equi_sol">
     <legend><h2>Solicitud de Equipo</h2></legend>
     <form id="form-equi_sol" type="register" form="formulario">
@@ -151,10 +159,20 @@
 @include('equipo.equi_solModal')
 @include('publico.modal_area')
 @include('publico.obs')
-@include('layout.footer')
-@include('layout.scripts')
-<script src="{{('/js/equipo/equi_sol.js')}}"></script>
-<script src="{{('/js/equipo/equi_solModal.js')}}"></script>
-<script src="{{('/js/publico/modal_area.js')}}"></script>
-<script src="{{('/js/publico/obs.js')}}"></script>
-@include('layout.fin_html')
+
+@endsection
+@section('scripts')
+    <script src="{{ asset('datatables/DataTables/js/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ asset('datatables/DataTables/js/dataTables.bootstrap.min.js') }}"></script>
+    <script src="{{ asset('datatables/Buttons/js/dataTables.buttons.min.js') }}"></script>
+    <script src="{{ asset('datatables/Buttons/js/buttons.bootstrap.min.js') }}"></script>
+    <script src="{{ asset('datatables/Buttons/js/buttons.print.min.js') }}"></script>
+    <script src="{{ asset('datatables/Buttons/js/buttons.html5.min.js') }}"></script>
+    <script src="{{ asset('datatables/pdfmake/pdfmake.min.js') }}"></script>
+    <script src="{{ asset('datatables/pdfmake/vfs_fonts.js') }}"></script>
+    <script src="{{ asset('datatables/JSZip/jszip.min.js') }}"></script>
+    <script src="{{('/js/equipo/equi_sol.js')}}"></script>
+    <script src="{{('/js/equipo/equi_solModal.js')}}"></script>
+    <script src="{{('/js/publico/modal_area.js')}}"></script>
+    <script src="{{('/js/publico/obs.js')}}"></script>
+@endsection
