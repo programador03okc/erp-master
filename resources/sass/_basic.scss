@@ -1036,7 +1036,6 @@ span.select2-selection{
 #kardexGeneral tbody td:nth-last-child(8),
 #kardexGeneral tbody td:nth-last-child(9),
 #listaDetalleProrrateo tbody td:nth-last-child(2),
-#listaSaldos tbody td:nth-last-child(5),
 #listaTransferenciasPendientes tbody td:nth-last-child(10),
 #listaTransferenciasPendientes tbody td:nth-last-child(9),
 #listaTransferenciasRecibidas tbody td:nth-last-child(10),
@@ -1049,7 +1048,8 @@ span.select2-selection{
 #listaOpcionesTodo tbody td:nth-last-child(10),
 #listaOpcionesTodo tbody td:nth-last-child(11),
 #listaOpcionesTodo tbody td:nth-last-child(12),
-#listaDocsProrrateo tbody td:nth-last-child(12)
+#listaDocsProrrateo tbody td:nth-last-child(12),
+#listaSaldos tbody td:nth-last-child(11)
 {
     background: #d8fcfc;
 }

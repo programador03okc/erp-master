@@ -415,7 +415,7 @@ class AlmacenController extends Controller
     }
     public function mostrar_area_cbo(){
         $data = DB::table('administracion.adm_area')
-            ->select('adm_area.id_area',DB::raw("CONCAT(adm_grupo.descripcion,' - ',adm_area.descripcion) as area_descripcion"))
+            ->select('adm_area.id_area',DB::raw("(adm_grupo.descripcion) || ' ' || (adm_area.descripcion) as area_descripcion"))
             ->join('administracion.adm_grupo','adm_grupo.id_grupo','=','adm_area.id_grupo')
             ->where('adm_area.estado', '=', 1)
             ->get();
@@ -424,7 +424,7 @@ class AlmacenController extends Controller
     public function mostrar_trabajadores_cbo(){
         $data = DB::table('rrhh.rrhh_trab')
             ->select('rrhh_trab.id_trabajador',
-            DB::raw("CONCAT(rrhh_perso.nombres,' ',rrhh_perso.apellido_paterno,' ',rrhh_perso.apellido_materno) as nombre_trabajador"))
+            DB::raw("(rrhh_perso.nombres) || ' ' || (rrhh_perso.apellido_paterno) || ' ' || (rrhh_perso.apellido_materno) as nombre_trabajador"))
             ->join('rrhh.rrhh_postu','rrhh_postu.id_postulante','=','rrhh_trab.id_postulante')
             ->join('rrhh.rrhh_perso','rrhh_perso.id_persona','=','rrhh_postu.id_persona')
             ->where('rrhh_trab.estado', '=', 1)
@@ -449,7 +449,7 @@ class AlmacenController extends Controller
     public function select_almaceneros(){
         $data = DB::table('rrhh.rrhh_rol')
             ->select('sis_usua.id_usuario','rrhh_rol.id_trabajador',
-            DB::raw("CONCAT(rrhh_perso.nombres,' ',rrhh_perso.apellido_paterno,' ',rrhh_perso.apellido_materno) as nombre_trabajador"))
+            DB::raw("(rrhh_perso.nombres) || ' ' || (rrhh_perso.apellido_paterno) || ' ' || (rrhh_perso.apellido_materno) as nombre_trabajador"))
             ->join('rrhh.rrhh_trab','rrhh_trab.id_trabajador','=','rrhh_rol.id_trabajador')
             ->join('configuracion.sis_usua','sis_usua.id_trabajador','=','rrhh_rol.id_trabajador')
             ->join('rrhh.rrhh_postu','rrhh_postu.id_postulante','=','rrhh_trab.id_postulante')
@@ -1542,7 +1542,7 @@ class AlmacenController extends Controller
     {
         $data = DB::table('almacen.alm_almacen')
         ->select('alm_almacen.*', 'sis_sede.descripcion as sede_descripcion',
-        DB::raw("CONCAT(ubi_dis.descripcion,' - ',ubi_prov.descripcion,' - ',ubi_dpto.descripcion) as name_ubigeo"))
+        DB::raw("(ubi_dis.descripcion) || ' ' || (ubi_prov.descripcion) || ' ' || (ubi_dpto.descripcion) as name_ubigeo"))
         ->leftjoin('administracion.sis_sede','sis_sede.id_sede','=','alm_almacen.id_sede')
         ->leftjoin('configuracion.ubi_dis','ubi_dis.id_dis','=','alm_almacen.ubigeo')
         ->leftjoin('configuracion.ubi_prov','ubi_prov.id_prov','=','ubi_dis.id_prov')
@@ -1947,8 +1947,8 @@ class AlmacenController extends Controller
     {
         $data = DB::table('almacen.alm_prod_serie')
             ->select('alm_prod_serie.*', 'alm_almacen.descripcion as alm_descripcion',
-            DB::raw("CONCAT('GR-',guia_com.serie,'-',guia_com.numero) as guia_com"),
-            DB::raw("CONCAT('GR-',guia_ven.serie,'-',guia_ven.numero) as guia_ven"))
+            DB::raw("('GR') || '-' || (guia_com.serie) || '-' || (guia_com.numero) as guia_com"),
+            DB::raw("('GR') || '-' || (guia_ven.serie) || '-' || (guia_ven.numero) as guia_ven"))
             ->join('almacen.alm_almacen','alm_almacen.id_almacen','=','alm_prod_serie.id_almacen')
             ->join('almacen.guia_com_det','guia_com_det.id_guia_com_det','=','alm_prod_serie.id_guia_det')
             ->join('almacen.guia_com','guia_com.id_guia','=','guia_com_det.id_guia_com')
@@ -2668,8 +2668,8 @@ class AlmacenController extends Controller
     public function get_ingreso($id){
         $ingreso = DB::table('almacen.mov_alm')
             ->select('mov_alm.*','alm_almacen.descripcion as des_almacen',
-            DB::raw("CONCAT(tp_doc_almacen.abreviatura,'-',guia_com.serie,'-',guia_com.numero) as guia"),
-            DB::raw("CONCAT(cont_tp_doc.abreviatura,'-',doc_com.serie,'-',doc_com.numero) as doc"),
+            DB::raw("(tp_doc_almacen.abreviatura) || ' ' || (guia_com.serie) || ' ' || (guia_com.numero) as guia"),
+            DB::raw("(cont_tp_doc.abreviatura) || ' ' || (doc_com.serie) || ' ' || (doc_com.numero) as doc"),
             'doc_com.fecha_emision as doc_fecha_emision','tp_doc_almacen.descripcion as tp_doc_descripcion',
             'guia_com.fecha_emision as fecha_guia','sis_usua.usuario as nom_usuario',
             'adm_contri.razon_social','adm_contri.direccion_fiscal','adm_contri.nro_documento','tp_ope.cod_sunat',
@@ -2937,7 +2937,7 @@ class AlmacenController extends Controller
     public function mostrar_ingreso($id){
         $ingreso = DB::table('almacen.mov_alm') 
             ->select('mov_alm.*','alm_almacen.descripcion as des_almacen',
-            DB::raw("CONCAT('GR-',guia_com.serie,'-',guia_com.numero) as guia"),
+            DB::raw("('GR') || ' ' || (guia_com.serie) || ' ' || (guia_com.numero) as guia"),
             'guia_com.fecha_emision as fecha_guia','sis_usua.usuario as nom_usuario')
             ->join('almacen.alm_almacen','alm_almacen.id_almacen','=','mov_alm.id_almacen')
             ->join('almacen.tp_mov','tp_mov.id_tp_mov','=','mov_alm.id_tp_mov')
@@ -3032,7 +3032,7 @@ class AlmacenController extends Controller
         $data = DB::table('almacen.guia_com_det')
         ->select('guia_com_det.*','alm_prod.codigo','alm_prod.descripcion',
         'alm_und_medida.abreviatura','alm_prod.series','log_ord_compra.codigo AS cod_orden',
-        DB::raw("CONCAT(guia_ven.serie,'-',guia_ven.numero) as guia_ven"))
+        DB::raw("(guia_ven.serie) || ' ' || (guia_ven.numero) as guia_ven"))
         ->leftjoin('almacen.alm_prod','alm_prod.id_producto','=','guia_com_det.id_producto')
         ->leftjoin('almacen.alm_ubi_posicion','alm_ubi_posicion.id_posicion','=','guia_com_det.id_posicion')
         ->leftjoin('almacen.alm_und_medida','alm_und_medida.id_unidad_medida','=','guia_com_det.id_unid_med')
@@ -3158,8 +3158,7 @@ class AlmacenController extends Controller
     }
     public function mostrar_detalle($id){
         $data = DB::table('almacen.guia_com_det')
-            ->select('guia_com_det.*',DB::raw("CONCAT(alm_prod.codigo,'-',
-            alm_prod.descripcion) as producto"),'alm_und_medida.abreviatura')
+            ->select('guia_com_det.*',DB::raw("(alm_prod.codigo) || ' ' || (alm_prod.descripcion) as producto"),'alm_und_medida.abreviatura')
             ->leftjoin('almacen.alm_prod','alm_prod.id_producto','=','guia_com_det.id_producto')
             ->leftjoin('almacen.alm_und_medida','alm_und_medida.id_unidad_medida','=','guia_com_det.id_unid_med')
             ->where([['guia_com_det.id_guia_com_det', '=', $id]])
@@ -3389,8 +3388,8 @@ class AlmacenController extends Controller
         $data = DB::table('almacen.guia_com_oc')
         ->select('guia_com_oc.id_oc','log_ord_compra.codigo','adm_contri.razon_social','log_ord_compra.fecha',
         //'log_cdn_pago.descripcion as condicion','log_esp_compra.forma_pago_credito','log_esp_compra.fecha_entrega','log_esp_compra.lugar_entrega',
-        DB::raw("CONCAT(log_ord_compra.codigo,' - ',adm_contri.razon_social) as orden"),
-        DB::raw("CONCAT(rrhh_perso.nombres,' ',rrhh_perso.apellido_paterno,' ',rrhh_perso.apellido_materno) as nombre_trabajador"))
+        DB::raw("(log_ord_compra.codigo) || '-' || (adm_contri.razon_social) as orden"),
+        DB::raw("(rrhh_perso.nombres) || ' ' || (rrhh_perso.apellido_paterno) || ' ' || (rrhh_perso.apellido_materno) as nombre_trabajador"))
         ->join('logistica.log_ord_compra','log_ord_compra.id_orden_compra','=','guia_com_oc.id_oc')
         ->join('logistica.log_prove','log_prove.id_proveedor','=','log_ord_compra.id_proveedor')
         ->join('contabilidad.adm_contri','adm_contri.id_contribuyente','=','log_prove.id_contribuyente')
@@ -3408,7 +3407,7 @@ class AlmacenController extends Controller
     public function listar_ordenes($id_proveedor){
         $data = DB::table('logistica.log_ord_compra')
             ->select('log_ord_compra.id_orden_compra',
-            DB::raw("CONCAT(log_ord_compra.codigo,' - ',adm_contri.razon_social) AS orden"))
+            DB::raw("(log_ord_compra.codigo) || ' ' || (adm_contri.razon_social) AS orden"))
             ->join('administracion.adm_tp_docum','adm_tp_docum.id_tp_documento','=','log_ord_compra.id_tp_documento')
             ->join('logistica.log_prove','log_prove.id_proveedor','=','log_ord_compra.id_proveedor')
             ->join('contabilidad.adm_contri','adm_contri.id_contribuyente','=','log_prove.id_contribuyente')
@@ -3568,7 +3567,7 @@ class AlmacenController extends Controller
     public function listar_series_guia_ven($id_guia_ven_det){
         $series = DB::table('almacen.alm_prod_serie')
         ->select('alm_prod_serie.*',
-        DB::raw("CONCAT(tp_doc_almacen.abreviatura,'-',guia_com.serie,'-',guia_com.numero) as guia_com"))
+        DB::raw("(tp_doc_almacen.abreviatura) || '-' || (guia_com.serie) || '-' || (guia_com.numero) as guia_com"))
         ->join('almacen.guia_com_det','guia_com_det.id_guia_com_det','=','alm_prod_serie.id_guia_det')
         ->join('almacen.guia_com','guia_com.id_guia','=','guia_com_det.id_guia_com')
         ->join('almacen.tp_doc_almacen','tp_doc_almacen.id_tp_doc_almacen','=','guia_com.id_tp_doc_almacen')
@@ -3580,7 +3579,7 @@ class AlmacenController extends Controller
     public function listar_series_almacen($id_prod, $id_almacen){
         $series = DB::table('almacen.alm_prod_serie')
         ->select('alm_prod_serie.*','guia_com.fecha_emision',
-        DB::raw("CONCAT(tp_doc_almacen.abreviatura,'-',guia_com.serie,'-',guia_com.numero) as guia_com"))
+        DB::raw("(tp_doc_almacen.abreviatura) || '-' || (guia_com.serie) || '-' || (guia_com.numero) as guia_com"))
         ->join('almacen.guia_com_det','guia_com_det.id_guia_com_det','=','alm_prod_serie.id_guia_det')
         ->join('almacen.guia_com','guia_com.id_guia','=','guia_com_det.id_guia_com')
         ->join('almacen.tp_doc_almacen','tp_doc_almacen.id_tp_doc_almacen','=','guia_com.id_tp_doc_almacen')
@@ -3595,8 +3594,8 @@ class AlmacenController extends Controller
     public function buscar_serie($serie){
         $data = DB::table('almacen.alm_prod_serie')
         ->select('alm_prod_serie.*',
-        DB::raw("CONCAT(tp_doc_com.abreviatura,'-',guia_com.serie,'-',guia_com.numero) as guia_com"),
-        DB::raw("CONCAT(tp_doc_ven.abreviatura,'-',guia_ven.serie,'-',guia_ven.numero) as guia_ven"))
+        DB::raw("(tp_doc_com.abreviatura) || '-' || (guia_com.serie) || '-' || (guia_com.numero) as guia_com"),
+        DB::raw("(tp_doc_ven.abreviatura) || '-' || (guia_ven.serie) || '-' || (guia_ven.numero) as guia_ven"))
         ->leftjoin('almacen.guia_ven_det','guia_ven_det.id_guia_ven_det','=','alm_prod_serie.id_guia_ven_det')
         ->leftjoin('almacen.guia_ven','guia_ven.id_guia_ven','=','guia_ven_det.id_guia_ven')
         ->leftjoin('almacen.tp_doc_almacen as tp_doc_ven','tp_doc_ven.id_tp_doc_almacen','=','guia_ven.id_tp_doc_almacen')
@@ -3613,7 +3612,7 @@ class AlmacenController extends Controller
 
     public function listar_docven_guias($id_doc){
         $guias = DB::table('almacen.doc_ven_guia')
-        ->select('doc_ven_guia.*',DB::raw("CONCAT('GR-',guia_ven.serie,'-',guia_ven.numero) as guia"),
+        ->select('doc_ven_guia.*',DB::raw("('GR') || '-' || (guia_ven.serie) || '-' || (guia_ven.numero) as guia"),
         'guia_ven.fecha_emision as fecha_guia',//'guia_motivo.descripcion as des_motivo',
         'adm_contri.razon_social')
         ->join('almacen.guia_ven','guia_ven.id_guia_ven','=','doc_ven_guia.id_guia_ven')
@@ -3894,7 +3893,7 @@ class AlmacenController extends Controller
             ->select('alm_req.*','proy_proyecto.descripcion as proy_descripcion',
             'adm_area.descripcion as area_descripcion',
             'adm_prioridad.descripcion as des_prioridad','adm_grupo.descripcion as des_grupo',
-            DB::raw("concat(rrhh_perso.nombres,' ',rrhh_perso.apellido_paterno,' ',rrhh_perso.apellido_materno) as responsable"))
+            DB::raw("(rrhh_perso.nombres) || ' ' || (rrhh_perso.apellido_paterno) || ' ' || (rrhh_perso.apellido_materno) as responsable"))
             ->join('configuracion.sis_usua','sis_usua.id_usuario','=','alm_req.id_usuario')
             ->join('rrhh.rrhh_trab','rrhh_trab.id_trabajador','=','sis_usua.id_trabajador')
             ->join('rrhh.rrhh_postu','rrhh_postu.id_postulante','=','rrhh_trab.id_postulante')
@@ -4106,11 +4105,11 @@ class AlmacenController extends Controller
             ->select('mov_alm.*','alm_almacen.descripcion as des_almacen',
             'sis_usua.usuario as nom_usuario','tp_ope.cod_sunat','tp_ope.descripcion as ope_descripcion',
             // 'proy_proyecto.descripcion as proy_descripcion','proy_proyecto.codigo as cod_proyecto',
-            DB::raw("CONCAT(tp_doc_almacen.abreviatura,'-',guia_ven.serie,'-',guia_ven.numero) as guia"),
+            DB::raw("(tp_doc_almacen.abreviatura) || '-' || (guia_ven.serie) || '-' || (guia_ven.numero) as guia"),
             'trans.codigo as cod_trans',
             'alm_destino.descripcion as des_alm_destino','trans.fecha_transferencia',
-            DB::raw("CONCAT(cont_tp_doc.abreviatura,'-',doc_ven.serie,'-',doc_ven.numero) as doc"),
-            DB::raw("CONCAT(rrhh_perso.nombres,' ',rrhh_perso.apellido_paterno,' ',rrhh_perso.apellido_materno) as persona"),
+            DB::raw("(cont_tp_doc.abreviatura) || '-' || (doc_ven.serie) || '-' || (doc_ven.numero) as doc"),
+            DB::raw("(rrhh_perso.nombres,' ',rrhh_perso.apellido_paterno,' ',rrhh_perso.apellido_materno) as persona"),
             'transformacion.codigo as cod_transformacion',//'transformacion.serie','transformacion.numero',
             'transformacion.fecha_transformacion','guia_ven.fecha_emision as fecha_guia',
             'adm_contri.nro_documento as ruc_empresa','adm_contri.razon_social as empresa_razon_social')
@@ -4419,10 +4418,10 @@ class AlmacenController extends Controller
             'alm_prod.codigo_anexo','alm_und_medida.abreviatura','alm_ubi_posicion.codigo as posicion',
             'tp_ope_com.cod_sunat as cod_sunat_com','tp_ope_com.descripcion as tp_com_descripcion',
             'tp_ope_ven.cod_sunat as cod_sunat_ven','tp_ope_ven.descripcion as tp_ven_descripcion',
-            DB::raw("CONCAT(tp_guia_com.abreviatura,'-',guia_com.serie,'-',guia_com.numero) as guia_com"),
-            DB::raw("CONCAT(tp_guia_ven.abreviatura,'-',guia_ven.serie,'-',guia_ven.numero) as guia_ven"),
-            DB::raw("CONCAT(tp_doc_com.abreviatura,'-',doc_com.serie,'-',doc_com.numero) as doc_com"),
-            DB::raw("CONCAT(tp_doc_ven.abreviatura,'-',doc_ven.serie,'-',doc_ven.numero) as doc_ven"),
+            DB::raw("(tp_guia_com.abreviatura) || '-' || (guia_com.serie) || '-' || (guia_com.numero) as guia_com"),
+            DB::raw("(tp_guia_ven.abreviatura) || '-' || (guia_ven.serie) || '-' || (guia_ven.numero) as guia_ven"),
+            DB::raw("(tp_doc_com.abreviatura) || '-' || (doc_com.serie) || '-' || (doc_com.numero) as doc_com"),
+            DB::raw("(tp_doc_ven.abreviatura) || '-' || (doc_ven.serie) || '-' || (doc_ven.numero) as doc_ven"),
             'guia_com.id_guia','guia_ven.id_guia_ven',
             'doc_com.id_doc_com','doc_ven.id_doc_ven','transformacion.codigo as cod_transformacion')
             ->join('almacen.mov_alm','mov_alm.id_mov_alm','=','mov_alm_det.id_mov_alm')
@@ -6350,11 +6349,11 @@ class AlmacenController extends Controller
         $data = DB::table('almacen.mov_alm_det')
             ->select('mov_alm_det.*','alm_ubi_posicion.codigo as cod_posicion',
             'mov_alm.fecha_emision','mov_alm.id_tp_mov','mov_alm.codigo',
-            DB::raw("CONCAT(tp_doc_com.abreviatura,'-',guia_com.serie,'-',guia_com.numero) as guia_com"),
+            DB::raw("(tp_doc_com.abreviatura) || '-' || (guia_com.serie) || '-' || (guia_com.numero) as guia_com"),
             'tp_doc_com.cod_sunat as cod_sunat_doc_com',
             'tp_ope_com.cod_sunat as cod_sunat_ope_com',
             'tp_ope_com.descripcion as des_ope_com',
-            DB::raw("CONCAT(tp_doc_ven.abreviatura,'-',guia_ven.serie,'-',guia_ven.numero) as guia_ven"),
+            DB::raw("(tp_doc_ven.abreviatura) || '-' || (guia_ven.serie) || '-' || (guia_ven.numero) as guia_ven"),
             // 'tp_doc_ven.descripcion as des_doc_ven',
             'tp_doc_ven.cod_sunat as cod_sunat_doc_ven',
             'tp_ope_ven.cod_sunat as cod_sunat_ope_ven',
@@ -6512,8 +6511,8 @@ class AlmacenController extends Controller
             'doc_com.credito_dias','log_cdn_pago.descripcion as des_condicion',
             'doc_com.fecha_emision as fecha_doc','alm_almacen.descripcion as des_almacen',
             'doc_com.tipo_cambio','doc_com.moneda',
-            DB::raw("CONCAT(doc_com.serie,'-',doc_com.numero) as doc"),
-            DB::raw("CONCAT(guia_com.serie,'-',guia_com.numero) as guia"),
+            DB::raw("(doc_com.serie) || '-' || (doc_com.numero) as doc"),
+            DB::raw("(guia_com.serie) || '-' || (guia_com.numero) as guia"),
             'guia_com.fecha_emision as fecha_guia','adm_contri.nro_documento',
             'adm_contri.razon_social','tp_ope.descripcion as des_operacion',
             'sis_usua.nombre_corto as nombre_trabajador')
@@ -6611,8 +6610,8 @@ class AlmacenController extends Controller
                 'doc_ven.credito_dias','log_cdn_pago.descripcion as des_condicion',
                 'doc_ven.fecha_emision as fecha_doc','alm_almacen.descripcion as des_almacen',
                 'doc_ven.tipo_cambio','doc_ven.moneda',
-                DB::raw("CONCAT(doc_ven.serie,'-',doc_ven.numero) as doc"),
-                DB::raw("CONCAT(guia_ven.serie,'-',guia_ven.numero) as guia"),
+                DB::raw("(doc_ven.serie) || '-' || (doc_ven.numero) as doc"),
+                DB::raw("(guia_ven.serie) || '-' || (guia_ven.numero) as guia"),
                 'guia_ven.fecha_emision as fecha_guia','adm_contri.nro_documento',
                 'adm_contri.razon_social','tp_ope.descripcion as des_operacion',
                 'sis_usua.nombre_corto as nombre_trabajador')
@@ -6667,7 +6666,7 @@ class AlmacenController extends Controller
             $data = DB::table('almacen.mov_alm_det')
             ->select('mov_alm_det.*','mov_alm.fecha_emision',
             'tp_doc_almacen.abreviatura as tp_doc','guia_com.fecha_emision as fecha_guia',
-            DB::raw("CONCAT(guia_com.serie,'-',guia_com.numero) as guia"),
+            DB::raw("(guia_com.serie) || '-' || (guia_com.numero) as guia"),
             'adm_contri.razon_social','adm_contri.nro_documento','alm_almacen.descripcion as alm_descripcion',
             'alm_prod.codigo_anexo','alm_prod.codigo','alm_prod.descripcion',
             'tp_ope.descripcion as ope_descripcion','adm_estado_doc.estado_doc')
@@ -6692,7 +6691,7 @@ class AlmacenController extends Controller
             $data = DB::table('almacen.mov_alm_det')
             ->select('mov_alm_det.*','mov_alm.fecha_emision',
             'tp_doc_almacen.abreviatura as tp_doc','guia_com.fecha_emision as fecha_guia',
-            DB::raw("CONCAT(guia_com.serie,'-',guia_com.numero) as guia"),
+            DB::raw("(guia_com.serie) || '-' || (guia_com.numero) as guia"),
             'adm_contri.razon_social','adm_contri.nro_documento','alm_almacen.descripcion as alm_descripcion',
             'alm_prod.codigo_anexo','alm_prod.codigo','alm_prod.descripcion',
             'tp_ope.descripcion as ope_descripcion','adm_estado_doc.estado_doc')
@@ -6939,7 +6938,7 @@ class AlmacenController extends Controller
             $data = DB::table('almacen.mov_alm_det')
             ->select('mov_alm_det.*','mov_alm.fecha_emision',
             'tp_doc_almacen.abreviatura as tp_doc','guia_ven.fecha_emision as fecha_guia',
-            DB::raw("CONCAT(guia_ven.serie,'-',guia_ven.numero) as guia"),
+            DB::raw("(guia_ven.serie) || '-' || (guia_ven.numero) as guia"),
             'adm_contri.razon_social','adm_contri.nro_documento','alm_almacen.descripcion as alm_descripcion',
             'alm_prod.codigo_anexo','alm_prod.codigo','alm_prod.descripcion',
             'tp_ope.descripcion as ope_descripcion','adm_estado_doc.estado_doc')
@@ -6964,7 +6963,7 @@ class AlmacenController extends Controller
             $data = DB::table('almacen.mov_alm_det')
             ->select('mov_alm_det.*','mov_alm.fecha_emision',
             'tp_doc_almacen.abreviatura as tp_doc','guia_ven.fecha_emision as fecha_guia',
-            DB::raw("CONCAT(guia_ven.serie,'-',guia_ven.numero) as guia"),
+            DB::raw("(guia_ven.serie) || '-' || (guia_ven.numero) as guia"),
             'adm_contri.razon_social','adm_contri.nro_documento','alm_almacen.descripcion as alm_descripcion',
             'alm_prod.codigo_anexo','alm_prod.codigo','alm_prod.descripcion',
             'tp_ope.descripcion as ope_descripcion','adm_estado_doc.estado_doc')
@@ -7429,8 +7428,8 @@ class AlmacenController extends Controller
     public function listar_transferencias_pendientes($ori){
         $data = DB::table('almacen.trans')
         ->select('trans.*','guia_ven.fecha_emision as fecha_guia',
-        DB::raw("CONCAT(guia_ven.serie,'-',guia_ven.numero) as guia_ven"),
-        DB::raw("CONCAT(guia_com.serie,'-',guia_com.numero) as guia_com"),
+        DB::raw("(guia_ven.serie) || '-' || (guia_ven.numero) as guia_ven"),
+        DB::raw("(guia_com.serie) || '-' || (guia_com.numero) as guia_com"),
         'alm_origen.descripcion as alm_origen_descripcion',
         'alm_destino.descripcion as alm_destino_descripcion',
         'usu_origen.nombre_corto as nombre_origen',
@@ -8195,7 +8194,7 @@ class AlmacenController extends Controller
     public function listar_series_numeros(){
         $data = DB::table('almacen.serie_numero')
         ->select('serie_numero.*','sis_usua.nombre_corto','adm_estado_doc.estado_doc',
-        DB::raw("CONCAT(adm_contri.razon_social,'-',sis_sede.codigo) as empresa_sede"),
+        DB::raw("(adm_contri.razon_social) || ' - ' || (sis_sede.codigo) as empresa_sede"),
         'cont_tp_doc.descripcion as tipo_doc')
         ->join('administracion.sis_sede','sis_sede.id_sede','=','serie_numero.id_sede')
         ->join('administracion.adm_empresa','adm_empresa.id_empresa','=','sis_sede.id_empresa')
@@ -8210,7 +8209,7 @@ class AlmacenController extends Controller
     public function mostrar_serie_numero($id){
         $data = DB::table('almacen.serie_numero')
         ->select('serie_numero.*','sis_usua.nombre_corto',
-        DB::raw("CONCAT(adm_contri.razon_social,'-',sis_sede.codigo)"))
+        DB::raw("(adm_contri.razon_social) || ' ' || (sis_sede.codigo) as sede_descripcion"))
         ->join('administracion.sis_sede','sis_sede.id_sede','=','serie_numero.id_sede')
         ->join('administracion.adm_empresa','adm_empresa.id_empresa','=','sis_sede.id_empresa')
         ->join('contabilidad.adm_contri','adm_contri.id_contribuyente','=','adm_empresa.id_contribuyente')
@@ -8592,7 +8591,7 @@ class AlmacenController extends Controller
                 ->select('guia_ven.*','adm_contri.razon_social as cli_razon_social',
                 'contri.nro_documento as emp_ruc','adm_contri.nro_documento as cli_ruc',
                 'adm_empresa.id_empresa',
-                DB::raw("CONCAT(ubi_dis.descripcion,'-',ubi_prov.descripcion,'-',ubi_dpto.descripcion) as ubigeo_cliente"))
+                DB::raw("(ubi_dis.descripcion) || '-' || (ubi_prov.descripcion) || '-' || (ubi_dpto.descripcion) as ubigeo_cliente"))
                 ->leftjoin('comercial.com_cliente','com_cliente.id_cliente','=','guia_ven.id_cliente')
                 ->leftjoin('contabilidad.adm_contri','adm_contri.id_contribuyente','=','com_cliente.id_contribuyente')
                 ->leftjoin('configuracion.ubi_dis','ubi_dis.id_dis','=','adm_contri.ubigeo')
@@ -8892,8 +8891,8 @@ class AlmacenController extends Controller
         'contri_cliente.razon_social as razon_social_cliente',
         'contri_prove.razon_social as razon_social_prove',
         'alm_com.descripcion as almacen_compra','alm_ven.descripcion as almacen_venta',
-        DB::raw("CONCAT(tp_doc_com.abreviatura,'-',guia_com.serie,'-',guia_com.numero) as guia_com"),
-        DB::raw("CONCAT(tp_doc_ven.abreviatura,'-',guia_ven.serie,'-',guia_ven.numero) as guia_ven"))
+        DB::raw("(tp_doc_com.abreviatura) || '-' || (guia_com.serie) || '-' || (guia_com.numero) as guia_com"),
+        DB::raw("(tp_doc_ven.abreviatura) || '-' || (guia_ven.serie) || '-' || (guia_ven.numero) as guia_ven"))
         ->leftjoin('almacen.guia_ven_det','guia_ven_det.id_guia_ven_det','=','alm_prod_serie.id_guia_ven_det')
         ->leftjoin('almacen.guia_ven','guia_ven.id_guia_ven','=','guia_ven_det.id_guia_ven')
         ->leftjoin('comercial.com_cliente','com_cliente.id_cliente','=','guia_ven.id_cliente')

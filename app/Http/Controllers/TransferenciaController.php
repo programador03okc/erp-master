@@ -29,8 +29,8 @@ class TransferenciaController extends Controller
     public function listar_transferencias_pendientes($ori){
         $data = DB::table('almacen.trans')
         ->select('trans.*','guia_ven.fecha_emision as fecha_guia',
-        DB::raw("CONCAT(guia_ven.serie,'-',guia_ven.numero) as guia_ven"),
-        DB::raw("CONCAT(guia_com.serie,'-',guia_com.numero) as guia_com"),
+        DB::raw("(guia_ven.serie) || ' ' || (guia_ven.numero) as guia_ven"),
+        DB::raw("(guia_com.serie) || ' ' || (guia_com.numero) as guia_com"),
         'alm_origen.descripcion as alm_origen_descripcion',
         'alm_destino.descripcion as alm_destino_descripcion',
         'usu_origen.nombre_corto as nombre_origen',
@@ -68,8 +68,8 @@ class TransferenciaController extends Controller
     public function listar_transferencias_recibidas($ori){
         $data = DB::table('almacen.trans')
         ->select('trans.*','guia_ven.fecha_emision as fecha_guia',
-        DB::raw("CONCAT(guia_ven.serie,'-',guia_ven.numero) as guia_ven"),
-        DB::raw("CONCAT(guia_com.serie,'-',guia_com.numero) as guia_com"),
+        DB::raw("(guia_ven.serie) || ' ' || (guia_ven.numero) as guia_ven"),
+        DB::raw("(guia_com.serie) || ' ' || (guia_com.numero) as guia_com"),
         'alm_origen.descripcion as alm_origen_descripcion',
         'alm_destino.descripcion as alm_destino_descripcion',
         'usu_origen.nombre_corto as nombre_origen',
