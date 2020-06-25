@@ -862,6 +862,7 @@ function get_data_requerimiento(){
     id_cliente = document.querySelector("form[id='form-requerimiento'] input[name='id_cliente']").value;
     id_persona = document.querySelector("form[id='form-requerimiento'] input[name='id_persona']").value;
     direccion_entrega = document.querySelector("form[id='form-requerimiento'] input[name='direccion_entrega']").value;
+    telefono = document.querySelector("form[id='form-requerimiento'] input[name='telefono_cliente']").value;
     ubigeo = document.querySelector("form[id='form-requerimiento'] input[name='ubigeo']").value;
     id_almacen = document.querySelector("form[id='form-requerimiento'] select[name='id_almacen']").value;
     almacen_id_sede =document.querySelector("select[name='id_almacen']").options[document.querySelector("select[name='id_almacen']").selectedIndex].dataset.idSede;
@@ -889,6 +890,7 @@ function get_data_requerimiento(){
         id_cliente,
         id_persona,
         direccion_entrega,
+        telefono,
         ubigeo,
         id_almacen,
         almacen_id_sede,
@@ -2211,10 +2213,18 @@ function getDataSelectSede(id_empresa = null){
             dataType: 'JSON',
             success: function(response){
                 llenarSelectSede(response);
+                llenarUbigeo();
             }
         });
     }
     return false;
+}
+
+function llenarUbigeo(){
+    var ubigeo =document.querySelector("select[name='sede']").options[document.querySelector("select[name='sede']").selectedIndex].dataset.ubigeo;
+    var name_ubigeo =document.querySelector("select[name='sede']").options[document.querySelector("select[name='sede']").selectedIndex].dataset.nameUbigeo;
+    document.querySelector("input[name='ubigeo']").value=ubigeo;
+    document.querySelector("input[name='name_ubigeo']").value=name_ubigeo;
 }
 
 function llenarSelectSede(array){

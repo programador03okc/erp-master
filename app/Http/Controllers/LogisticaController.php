@@ -1324,6 +1324,32 @@ class LogisticaController extends Controller
         // }
         return response()->json($alm_req_archivos);
     }
+    public function telefonos_cliente($id_cliente){
+        $id=$id_cliente;
+        $tel_req = DB::table('almacen.alm_req')
+        ->select(
+            'alm_req.telefono',
+            'alm_req.direccion_entrega',
+            'alm_req.fecha_registro'
+        )
+        // ->where('alm_req.id_cliente',$id_cliente)
+    
+        ->whereIn('id_requerimiento',function ($query) use ($id_cliente)
+        {
+            $query->select(DB::raw('alm_req.id_requerimiento','alm_req.telefono'))
+                ->from('almacen.alm_req')
+                ->where('alm_req.id_cliente',$id_cliente)
+                ->whereNotNull('telefono')
+                ->groupBy('id_requerimiento','telefono')
+                ->distinct(['id_requerimiento','telefono']);
+    
+        })
+        // ->distinct(['telefono'])
+        ->get();
+
+        return response()->json($tel_req);
+
+    }
 
     public function guardar_requerimiento(Request $request)
     {
@@ -1407,6 +1433,7 @@ class LogisticaController extends Controller
                 'id_cliente'            => isset($request->requerimiento['id_cliente'])?$request->requerimiento['id_cliente']:null,
                 'id_persona'            => isset($request->requerimiento['id_persona'])?$request->requerimiento['id_persona']:null,
                 'direccion_entrega'     => isset($request->requerimiento['direccion_entrega'])?$request->requerimiento['direccion_entrega']:null,
+                'telefono'              => isset($request->requerimiento['telefono'])?$request->requerimiento['telefono']:null,
                 'id_ubigeo_entrega'     => isset($request->requerimiento['ubigeo'])?$request->requerimiento['ubigeo']:null,
                 'id_almacen'            => isset($request->requerimiento['id_almacen'])?$request->requerimiento['id_almacen']:null,
                 'confirmacion_pago'     => false
