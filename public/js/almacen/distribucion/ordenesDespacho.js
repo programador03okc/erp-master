@@ -317,7 +317,7 @@ function listarGruposDespachados(){
                     '<i class="fas fa-file-alt"></i></button>'+
                     ((row['confirmacion'] == false && row['estado_od'] == 20)? 
                     ('<button type="button" class="conforme btn btn-success boton" data-toggle="tooltip" '+
-                    'data-placement="bottom" data-id="'+row['id_od_grupo_detalle']+'" data-od="'+row['id_od']+'" title="Confirmar Entrega" >'+
+                    'data-placement="bottom" data-id="'+row['id_od_grupo_detalle']+'" data-od="'+row['id_od']+'" data-idreq="'+row['id_requerimiento']+'" title="Confirmar Entrega" >'+
                     '<i class="fas fa-check"></i></button>'+
                     '<button type="button" class="no_conforme btn btn-danger boton" data-toggle="tooltip" '+
                     'data-placement="bottom" data-id="'+row['id_od_grupo_detalle']+'" data-od="'+row['id_od']+'" data-cod-od="'+row['codigo_od']+'" data-concepto="'+row['concepto']+'" title="No Entregado" >'+
@@ -344,8 +344,10 @@ $('#gruposDespachados tbody').on("click","button.imprimir", function(){
 $('#gruposDespachados tbody').on("click","button.conforme", function(){
     var id_od_grupo_detalle = $(this).data('id');
     var id_od = $(this).data('od');
+    var id_req = $(this).data('idreq');
     var data = 'id_od_grupo_detalle='+id_od_grupo_detalle+
-               '&id_od='+id_od;
+               '&id_od='+id_od+
+               '&id_requerimiento='+id_req;
     despacho_conforme(data);
 });
 

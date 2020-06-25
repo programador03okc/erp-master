@@ -8,6 +8,7 @@ Gestión de Despachos
 @section('estilos')
 <link rel="stylesheet" href="{{ asset('template/plugins/iCheck/all.css') }}">
 <link rel="stylesheet" href="{{ asset('template/plugins/select2/select2.css') }}">
+<link rel="stylesheet" href="{{ asset('template/plugins/jquery-datatables-checkboxes/css/dataTables.checkboxes.css') }}">
 @endsection
 
 @section('content')
@@ -144,7 +145,8 @@ Gestión de Despachos
     <script src="{{ asset('datatables/JSZip/jszip.min.js') }}"></script>
     <script src="{{ asset('template/plugins/iCheck/icheck.min.js') }}"></script>
     <script src="{{ asset('template/plugins/select2/select2.min.js') }}"></script>
-
+    <script src="{{ asset('template/plugins/jquery-datatables-checkboxes/js/dataTables.checkboxes.min.js') }}"></script>
+    
     <script src="{{('/js/almacen/distribucion/ordenesDespacho.js')}}"></script>
     <script src="{{('/js/almacen/distribucion/ordenDespachoCreate.js')}}"></script>
     <script src="{{('/js/almacen/distribucion/grupoDespachoCreate.js')}}"></script>

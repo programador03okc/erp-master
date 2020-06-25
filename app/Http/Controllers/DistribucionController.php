@@ -86,6 +86,7 @@ class DistribucionController extends Controller
             // ->leftJoin('almacen.orden_despacho','orden_despacho.id_requerimiento','=','alm_req.id_requerimiento')
             ->where([['alm_req.estado','!=',1], ['alm_req.estado','!=',7], ['alm_req.estado','!=',20], 
             ['alm_req.estado','!=',21]])//muestra todos los reservados
+            ->orderBy('alm_req.fecha_requerimiento','desc')
             ->get();
         return datatables($data)->toJson();
         // return response()->json($data);
@@ -98,6 +99,7 @@ class DistribucionController extends Controller
         ->join('administracion.adm_estado_doc','adm_estado_doc.id_estado_doc','=','alm_req.estado')
         ->groupBy('alm_req.estado','adm_estado_doc.estado_doc','adm_estado_doc.bootstrap_color')
             ->where([['alm_req.estado','!=',7]])
+            ->orderBy('alm_req.estado','desc')
             ->get();
         return response()->json($data);
     }
@@ -220,6 +222,7 @@ class DistribucionController extends Controller
                     'id_cliente'=>$request->id_cliente,
                     'id_persona'=>$request->id_persona,
                     'id_almacen'=>$request->id_almacen,
+                    'telefono'=>$request->telefono,
                     'codigo'=>$codigo,
                     'ubigeo_destino'=>$request->ubigeo,
                     'direccion_destino'=>$request->direccion_destino,
@@ -328,7 +331,7 @@ class DistribucionController extends Controller
         'alm_req.codigo as codigo_req','alm_req.concepto','ubi_dis.descripcion as ubigeo_descripcion',
         'sis_usua.nombre_corto','adm_estado_doc.estado_doc','adm_estado_doc.bootstrap_color',
         DB::raw("(rrhh_perso.nombres) || ' ' || (rrhh_perso.apellido_paterno) || ' ' || (rrhh_perso.apellido_materno) AS nombre_persona"),
-        'alm_almacen.descripcion as almacen_descripcion')
+        'alm_almacen.descripcion as almacen_descripcion','rrhh_perso.telefono')
         ->leftjoin('comercial.com_cliente','com_cliente.id_cliente','=','orden_despacho.id_cliente')
         ->leftjoin('contabilidad.adm_contri','adm_contri.id_contribuyente','=','com_cliente.id_contribuyente')
         ->leftjoin('rrhh.rrhh_perso','rrhh_perso.id_persona','=','orden_despacho.id_persona')
@@ -420,7 +423,8 @@ class DistribucionController extends Controller
         'orden_despacho_grupo.observaciones','orden_despacho.direccion_destino','sis_usua.nombre_corto as trabajador_despacho',
         'adm_contri.razon_social as proveedor_despacho','cliente.razon_social as cliente_razon_social',
         DB::raw("(rrhh_perso.nombres) || ' ' || (rrhh_perso.apellido_paterno) || ' ' || (rrhh_perso.apellido_materno) AS cliente_persona"),
-        'alm_req.codigo as codigo_req','alm_req.concepto','ubi_dis.descripcion as ubigeo_descripcion',
+        'alm_req.codigo as codigo_req','alm_req.concepto','alm_req.id_requerimiento',
+        'ubi_dis.descripcion as ubigeo_descripcion',
         'adm_estado_doc.estado_doc','adm_estado_doc.bootstrap_color','alm_almacen.descripcion as almacen_descripcion',
         'orden_despacho_grupo.codigo as codigo_odg','orden_despacho.estado as estado_od')
         ->join('almacen.orden_despacho_grupo','orden_despacho_grupo.id_od_grupo','=','orden_despacho_grupo_det.id_od_grupo')
@@ -485,7 +489,16 @@ class DistribucionController extends Controller
                     'registrado_por'=>$id_usuario,
                     'fecha_registro'=>date('Y-m-d H:i:s')
                     ]);
-                    
+            
+            if ($request->id_requerimiento !== null){
+                DB::table('almacen.alm_req')
+                ->where('id_requerimiento',$request->id_requerimiento)
+                ->update(['estado'=>21]);
+
+                DB::table('almacen.alm_det_req')
+                ->where('id_requerimiento',$request->id_requerimiento)
+                ->update(['estado'=>21]);
+            }
             DB::commit();
             return response()->json($data);
             
@@ -737,7 +750,8 @@ class DistribucionController extends Controller
         ->select('orden_despacho.*','adm_contri.nro_documento','adm_contri.razon_social',
         DB::raw("(rrhh_perso.nombres) || ' ' || (rrhh_perso.apellido_paterno) || ' ' || (rrhh_perso.apellido_materno) AS nombre_persona"),
         'ubi_dis.descripcion as ubigeo_descripcion','alm_almacen.descripcion as almacen_descripcion',
-        'guia_ven.serie','guia_ven.numero','alm_req.codigo as codigo_req','alm_req.concepto')
+        'guia_ven.serie','guia_ven.numero','alm_req.codigo as codigo_req','alm_req.concepto',
+        'rrhh_perso.nro_documento as dni')
         ->join('almacen.orden_despacho','orden_despacho.id_od','=','orden_despacho_grupo_det.id_od')
         ->leftjoin('comercial.com_cliente','com_cliente.id_cliente','=','orden_despacho.id_cliente')
         ->leftjoin('contabilidad.adm_contri','adm_contri.id_contribuyente','=','com_cliente.id_contribuyente')
@@ -809,7 +823,7 @@ class DistribucionController extends Controller
                         <td class="verticalTop">'.$od->codigo.'</td>
                         <td width=100px>Cliente</td>
                         <td width=10px>:</td>
-                        <td>'.($od->razon_social !== null ? ($od->nro_documento.' - '.$od->razon_social) : $od->nombre_persona).'</td>
+                        <td>'.($od->razon_social !== null ? ($od->nro_documento.' - '.$od->razon_social) : (($od->dni!==null ? $od->dni.' - ' : '').$od->nombre_persona)).'</td>
                     </tr>
                     <tr>
                         <td width=100px>Requerimiento</td>
@@ -826,6 +840,14 @@ class DistribucionController extends Controller
                         <td>Dirección</td>
                         <td width=10px>:</td>
                         <td>'.$od->direccion_destino.'</td>
+                    </tr>
+                    <tr>
+                        <td>Teléfono</td>
+                        <td width=10px>:</td>
+                        <td width=170px class="verticalTop">'.($od->telefono!==null ? $od->telefono : '').'</td>
+                        <td></td>
+                        <td width=10px></td>
+                        <td></td>
                     </tr>
                     <tr>
                         <td>Almacén</td>

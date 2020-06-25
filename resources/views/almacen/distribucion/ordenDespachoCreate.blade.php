@@ -22,7 +22,10 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="col-md-2"></div>
+                        <div class="col-md-2">
+                            <h5>Teléfono</h5>
+                            <input type="text" class="form-control" name="telefono">
+                        </div>
                         <div class="col-md-6">
                             <h5>Almacén</h5>
                             <input type="text" class="oculto" name="id_almacen" >

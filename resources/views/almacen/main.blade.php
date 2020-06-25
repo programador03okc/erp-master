@@ -73,9 +73,6 @@
                     <tbody></tbody>
                 </table>
             </div>
-
-            
-
         </div>
         <div class="col-md-6">
             <canvas id="chartRequerimientos" width="600" height="300"></canvas>
@@ -94,6 +91,7 @@
         </div>
     </div>
 </section>
+@include('almacen.verRequerimientoEstado')
 @endsection
 @section('scripts')
 <script src="{{ asset('template/plugins/chartjs/Chart.min.js') }}"></script>

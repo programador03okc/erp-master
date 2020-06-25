@@ -7823,7 +7823,7 @@ class LogisticaController extends Controller
                     'id_tp_documento' =>  $tp_doc,
                     'fecha' => date('Y-m-d H:i:s'),
                     'id_usuario' => $usuario,
-                    'id_moneda' => $request->id_moneda?$request->id_moneda:null,
+                    'id_moneda' => ($request->id_moneda?$request->id_moneda:null),
                     'id_proveedor' => $request->id_proveedor,
                     'codigo' => $codigo,
                     'monto_subtotal' => $request->monto_subtotal?$request->monto_subtotal:null,
@@ -7842,7 +7842,7 @@ class LogisticaController extends Controller
                     'id_requerimiento' => $request->id_requerimiento,
                     'en_almacen' => false,
                     'estado' => 1,
-                    'codigo_softlink' => $request->codigo_orden?$request->codigo_orden:null,
+                    'codigo_softlink' => ($request->codigo_orden!==null ? $request->codigo_orden : ''),
                 ],
                 'id_orden_compra'
             );

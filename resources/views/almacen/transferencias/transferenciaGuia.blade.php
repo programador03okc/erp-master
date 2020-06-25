@@ -17,11 +17,11 @@
                             <h5>Serie-Número</h5>
                             <input type="text" class="oculto" name="id_serie_numero">
                             <div class="input-group">
-                                <input type="text" class="form-control activation" name="serie"
-                                    placeholder="0000" >
+                                <input type="text" class="form-control activation" name="trans_serie"
+                                    placeholder="0000" onBlur="ceros_numero_trans('serie');">
                                 <span class="input-group-addon">-</span>
-                                <input type="text" class="form-control activation" name="numero"
-                                    placeholder="0000000"> 
+                                <input type="text" class="form-control activation" name="trans_numero"
+                                    placeholder="0000000" onBlur="ceros_numero_trans('numero');"> 
                                     <!-- onBlur="ceros_numero('numero');"> -->
                             </div>
                         </div>

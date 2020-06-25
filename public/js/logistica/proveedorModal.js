@@ -11,6 +11,8 @@ $(function(){
         var idCo = $(this)[0].childNodes[1].innerHTML;
         var ruc = $(this)[0].childNodes[2].innerHTML;
         var des = $(this)[0].childNodes[3].innerHTML;
+        $('.modal-footer #razon_social').text('');
+
         $('.modal-footer #id_proveedor').text(idTr);
         $('.modal-footer #id_contribuyente').text(idCo);
         $('.modal-footer #ruc').text(ruc);
