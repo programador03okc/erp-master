@@ -49,6 +49,7 @@
                 array_push($idRolConceptoHabilitadoList,3); // GERENTE COMERCIAL
                 array_push($idRolConceptoHabilitadoList,15); // GERENTE DE PROYECTOS
                 array_push($idRolConceptoHabilitadoList,4); // JEFE DE PERSONAL
+                array_push($idRolConceptoHabilitadoList,29); // EJECUTIVO VENTAS
                 array_push($idAreaHabilitadaList,62); // // AREA DE FINANZAS Y TESORERÍA 
                 array_push($idAreaHabilitadaList,2); // // AREA DE contabilidad 
 
@@ -62,11 +63,13 @@
                         <i class="fas fa-tachometer-alt"></i> <span>Ordenes</span> <i class="fa fa-angle-left pull-right"></i>
                     </a>
                     <ul class="treeview-menu">
+                    @if($rol->id_rol_concepto == 29) <!--- ejecutivo de ventas --->
+                        <li><a href="/generar_orden"> Generar Orden </a></li>
+                        <li><a href="/generar_orden_requerimiento"> Generar Orden por Requerimiento</a></li>
+                    @endif
                     <li><a href="/vista_listar_ordenes"> Listado de Ordenes </a></li>
-        
                     </ul>
                 </li>
-                @break
                     @endif
 
                 @endforeach

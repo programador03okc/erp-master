@@ -1324,28 +1324,48 @@ class LogisticaController extends Controller
         // }
         return response()->json($alm_req_archivos);
     }
-    public function telefonos_cliente($id_cliente){
-        $id=$id_cliente;
+    public function telefonos_cliente($id_persona=null,$id_cliente=null){
+        $data=[];
+        if($id_persona > 0){
+            $whereSelected = ['alm_req.id_persona','=',$id_persona];
+        }
+        if($id_cliente > 0){
+            $whereSelected = ['alm_req.id_cliente','=',$id_cliente];
+
+        }
         $tel_req = DB::table('almacen.alm_req')
         ->select(
-            'alm_req.telefono',
-            'alm_req.direccion_entrega',
-            'alm_req.fecha_registro'
+            'alm_req.telefono'
         )
-        ->whereIn('id_requerimiento',function ($query) use ($id_cliente)
-        {
-            $query->select(DB::raw('alm_req.id_requerimiento','alm_req.telefono'))
-                ->from('almacen.alm_req')
-                ->where('alm_req.id_cliente',$id_cliente)
-                ->whereNotNull('telefono')
-                ->groupBy('id_requerimiento','telefono')
-                ->distinct(['id_requerimiento','telefono']);
-        })
-        ->get()
-        ->unique('telefono');
+        ->where([$whereSelected])
+        ->whereNotNull('alm_req.telefono')
+        ->distinct()
+        ->get();
 
-        return response()->json($tel_req);
+        $data['data']=$tel_req;
+        return response()->json($data);
+    }
 
+    public function direcciones_cliente($id_persona=null,$id_cliente=null){
+        $data=[];
+        if($id_persona > 0){
+            $whereSelected = ['alm_req.id_persona','=',$id_persona];
+        }
+        if($id_cliente > 0){
+            $whereSelected = ['alm_req.id_cliente','=',$id_cliente];
+
+        }
+        $tel_req = DB::table('almacen.alm_req')
+        ->select(
+            'alm_req.direccion_entrega as direccion'
+        )
+        ->where([$whereSelected])
+        ->whereNotNull('alm_req.direccion_entrega')
+        ->distinct()
+        ->get();
+
+        $data['data']=$tel_req;
+        return response()->json($data);
     }
 
     public function guardar_requerimiento(Request $request)
@@ -1401,8 +1421,6 @@ class LogisticaController extends Controller
                 $codigo = "{$documento}-{$tp}-{$yy}-{$correlativo}";
                 
             }
-    
-
         }
 
         //----------------------------------------------------------------------------
@@ -1437,6 +1455,12 @@ class LogisticaController extends Controller
             ],
             'id_requerimiento'
         );
+
+        // guardar telefono cliente 
+        if($request->requerimiento['telefono'] != null || $request->requerimiento['telefono'] != ''){
+            $this->actualizar_telefono_cliente($request->requerimiento['tipo_cliente'],$request->requerimiento['id_persona'],$request->requerimiento['id_cliente'],$request->requerimiento['telefono']);
+            $this->actualizar_direccion_cliente($request->requerimiento['tipo_cliente'],$request->requerimiento['id_persona'],$request->requerimiento['id_cliente'],$request->requerimiento['direccion_entrega']);
+        }
 
         $detalle_reqArray = $request->detalle;
         $count_detalle_req = count($detalle_reqArray);
@@ -1478,6 +1502,94 @@ class LogisticaController extends Controller
         return response()->json($id_requerimiento);
     }
 
+    public function  actualizar_telefono_cliente($tipo_cliente,$id_persona,$id_cliente,$telefono){
+        if($tipo_cliente ==1){ // persona natural
+            $req_tel_pers = DB::table('rrhh.rrhh_perso')
+            ->select(
+                'rrhh_perso.telefono'
+            )
+            ->where('rrhh_perso.id_persona',$id_persona)
+            ->get();
+
+            if($req_tel_pers->count() > 0){
+                if(trim($req_tel_pers->first()->telefono) !== trim($telefono)){
+                    // actualizar telefono
+                    $update_tel_persona = DB::table('rrhh.rrhh_perso')
+                    ->where('id_persona', $id_persona)
+                    ->update([               
+                        'telefono' => trim($telefono)
+                    ]);
+                    
+                }
+            }
+
+        }else if($tipo_cliente == 2){ // persona juridica
+            $req_tel_cli = DB::table('comercial.com_cliente')
+            ->select(
+                'adm_contri.id_contribuyente',
+                'adm_contri.telefono'
+            )
+            ->join('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'com_cliente.id_contribuyente')
+            ->where('com_cliente.id_cliente',$id_cliente)
+            ->get();
+            
+            if($req_tel_cli->count() > 0){
+                if(trim($req_tel_cli->first()->telefono) !== trim($telefono)){
+                    // actualizar telefono
+                    $update_tel_persona = DB::table('contabilidad.adm_contri')
+                    ->where('id_contribuyente', $req_tel_cli->first()->id_contribuyente)
+                    ->update([               
+                        'telefono' => trim($telefono)
+                    ]);
+                }
+            }
+        }
+    }
+
+    public function  actualizar_direccion_cliente($tipo_cliente,$id_persona,$id_cliente,$direccion){
+        if($tipo_cliente ==1){ // persona natural
+            $req_dir_pers = DB::table('rrhh.rrhh_perso')
+            ->select(
+                'rrhh_perso.direccion' 
+            )
+            ->where('rrhh_perso.id_persona',$id_persona)
+            ->get();
+
+            if($req_dir_pers->count() > 0){
+                if(trim($req_dir_pers->first()->direccion) !== trim($direccion)){
+                    // actualizar telefono
+                    $update_dir_persona = DB::table('rrhh.rrhh_perso')
+                    ->where('id_persona', $id_persona)
+                    ->update([               
+                        'direccion' => trim($direccion)
+                    ]);
+                    
+                }
+            }
+
+        }else if($tipo_cliente == 2){ // persona juridica
+            $req_dir_pers = DB::table('comercial.com_cliente')
+            ->select(
+                'adm_contri.id_contribuyente',
+                'adm_contri.direccion_fiscal'
+            )
+            ->join('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'com_cliente.id_contribuyente')
+            ->where('com_cliente.id_cliente',$id_cliente)
+            ->get();
+            
+            if($req_dir_cli->count() > 0){
+                if(trim($req_dir_cli->first()->direccion_fiscal) !== trim($direccion)){
+                    // actualizar telefono
+                    $update_dir_persona = DB::table('contabilidad.adm_contri')
+                    ->where('id_contribuyente', $req_dir_cli->first()->id_contribuyente)
+                    ->update([               
+                        'direccion_fiscal' => trim($direccion)
+                    ]);
+                }
+            }
+        }
+
+    }
     
 
     public function anular_requerimiento($id){
@@ -12400,10 +12512,10 @@ class LogisticaController extends Controller
 
 
                 $dataReq = $this->get_data_req_by_id_orden($id_orden_compra);
-            
+                // return $dataReq['data'];
                 $id_est =  $estado;
-                $grupoReq = array_unique($dataReq['data']['grupo']); //  lista de id_grupo de todo los requerimientos de la orden
-                $idReqList = array_unique($dataReq['data']['requerimiento']); // lista de id_requerimiento de todos los req. de la orden
+                $grupoReq = $dataReq['data']?array_unique($dataReq['data']['grupo']):0; //  lista de id_grupo de todo los requerimientos de la orden
+                $idReqList = $dataReq['data']?array_unique($dataReq['data']['requerimiento']):0; // lista de id_requerimiento de todos los req. de la orden
 
 
                 $payLoadReq = $this->getReqOperacionFlujoAprob($id_orden_compra,'ORDEN'); // {ORDEN},{REQUERIMIENTO}

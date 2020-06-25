@@ -15,24 +15,48 @@
 <div class="page-main" type="requerimiento">
     <legend>
         <div class="row row-no-gutters">
-            <div class="col-xs-12 col-md-5"><h2>Gestionar Requerimiento</h2></div>
-            <div class="col-xs-6 col-md-4">
+            <div class="col-md-12">
                 <div class="form-inline">
-                    <div class="form-group" style="display:flex;">
-                        <h5 >Tipo de Requerimiento: </h5> 
+                    <div class="form-group">
+                        <h2>Generar Requerimiento</h2>
+                    </div>
+
+                    <div class="form-group col-sm-offset-4">
+                        <h5 >Tipo de Requerimiento:</h5> 
                         <select class="form-control input-sm activation" name="tipo_requerimiento" onChange="changeOptTipoReqSelect(event);">
                             @foreach ($tipo_requerimiento as $tipo)
                                 <option value="{{$tipo->id_tipo_requerimiento}}">{{$tipo->descripcion}}</option>
                             @endforeach                
                         </select>
                     </div>
+                    <div class="form-group">
+                        <h5>Periodo</h5>
+                        <select class="form-control activation" name="periodo" disabled="true">
+                            @foreach ($periodos as $periodo)
+                                <option value="{{$periodo->id_periodo}}">{{$periodo->descripcion}}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="form-group">
+                            <h5>Prioridad</h5>
+                            <select class="form-control activation" name="prioridad" disabled="true">
+                            @foreach ($prioridades as $prioridad)
+                            <option value="{{$prioridad->id_prioridad}}">{{$prioridad->descripcion}}</option>
+                        @endforeach
+                        </select>
+                    </div>
+                    <div class="form-group">
+                            <h5>&nbsp;</h5>
+                            <button type="button" name="btn-imprimir-requerimento-pdf" class="btn btn-danger btn-sm" onclick="ImprimirRequerimientoPdf()" disabled><i class="fas fa-file-pdf"></i> Imprimir</button>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                            <h5>Estado</h5>
+                            <span class="label" id="estado_doc">&nbsp;</span>
+                    </div>
                 </div>
             </div>
-            <div class="col-xs-6 col-md-3" style="display:flex;">
-                <h5>Estado de Documento: <span class="label" id="estado_doc"> </span></h5>
-                <button type="button" name="btn-imprimir-requerimento-pdf" class="btn btn-danger btn-sm" onclick="ImprimirRequerimientoPdf()" disabled><i class="fas fa-file-pdf"></i> Imprimir</button>
 
-            </div>
         </div>
 
  
@@ -75,24 +99,7 @@
                 <h5>Fecha</h5>
                 <input type="date" class="form-control activation" name="fecha_requerimiento" disabled="true" min={{ date('Y-m-d H:i:s') }} value={{ date('Y-m-d H:i:s') }}>
             </div>
- 
 
-            <div class="col-md-2">
-                <h5>Periodo</h5>
-                <select class="form-control activation" name="periodo" disabled="true">
-                @foreach ($periodos as $periodo)
-                    <option value="{{$periodo->id_periodo}}">{{$periodo->descripcion}}</option>
-                @endforeach
-                </select>
-            </div>
-            <div class="col-md-2">
-                <h5>Prioridad</h5>
-                <select class="form-control activation" name="prioridad" disabled="true">
-                @foreach ($prioridades as $prioridad)
-                    <option value="{{$prioridad->id_prioridad}}">{{$prioridad->descripcion}}</option>
-                @endforeach
-                </select>
-            </div>
             <div class="col-md-2" id="input-group-moneda">
                 <h5>Moneda</h5>
                 <select class="form-control activation" name="moneda" disabled="true">
@@ -153,13 +160,27 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-3" id="input-group-telefono-cliente" >
+            <div class="col-md-3 form-inline" id="input-group-telefono-cliente" >
                 <h5>Teléfono Cliente</h5>
-                <input type="text" class="form-control activation" name="telefono_cliente"  disabled>
+                <div class="input-group-okc">
+                    <input type="text" class="form-control activation" name="telefono_cliente"  disabled>
+                    <div class="input-group-append">        
+                            <button type="button" title="Buscar Teléfonos" name="btnSearchPhone" 
+                            onClick="telefonosClienteModal();"
+                            class="input-group-text" ><i class="fas fa-address-book"></i></button>
+                    </div>
+                </div>
             </div>
             <div class="col-md-4" id="input-group-direccion-entrega" >
                 <h5>Dirección Entrega</h5>
-                <input type="text" class="form-control activation" name="direccion_entrega"  disabled>
+                <div class="input-group-okc">
+                    <input type="text" class="form-control activation" name="direccion_entrega"  disabled>
+                    <div class="input-group-append">        
+                            <button type="button" title="Buscar Dirección" name="btnSearchAddress" 
+                            onClick="direccionesClienteModal();"
+                            class="input-group-text" ><i class="fas fa-location-arrow"></i></button>
+                    </div>
+                </div>
             </div>
             <div class="col-md-2" id="input-group-ubigeo-entrega" >
                 <h5>Ubigeo Entrega</h5>
@@ -274,6 +295,8 @@
         <div class="row" id="observaciones_item_requerimiento"></div> 
     </form>
 </div>
+@include('logistica.requerimientos.modal_direcciones_cliente')
+@include('logistica.requerimientos.modal_telefonos_cliente')
 @include('logistica.requerimientos.modal_cuadro_costos_comercial')
 @include('logistica.requerimientos.modal_copiar_documento')
 @include('logistica.requerimientos.modal_adjuntar_archivos_requerimiento')

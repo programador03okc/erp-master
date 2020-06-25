@@ -1,4 +1,5 @@
 $(function(){
+    $('.js-example-basic-single').select2();
 
     var idOrden = localStorage.getItem('idOrden');
     if (idOrden != null){    

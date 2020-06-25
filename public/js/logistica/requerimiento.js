@@ -298,6 +298,7 @@ function listarRequerimiento(viewAnulados) {
         'buttons': vardataTables[2],
         'language' : vardataTables[0],
         'processing': true,
+        "scrollX": true,
         "bDestroy": true,
         'ajax': url,
         'columns': [
@@ -1542,6 +1543,7 @@ function listarItems() {
         'language' : vardataTables[0],
         'processing': true,
         "bDestroy": true,
+        "scrollX": true,
         'ajax': '/logistica/mostrar_items',
         'columns': [
             {'data': 'id_item'},
@@ -2353,4 +2355,127 @@ function cargar_almacenes(sede){
             console.log(errorThrown);
         });
     }
+}
+
+function telefonosClienteModal(){
+    let id_cliente = document.querySelector("form[id='form-requerimiento'] input[name='id_cliente']").value?parseInt(document.querySelector("form[id='form-requerimiento'] input[name='id_cliente']").value):0;
+    let id_persona = document.querySelector("form[id='form-requerimiento'] input[name='id_persona']").value?parseInt(document.querySelector("form[id='form-requerimiento'] input[name='id_persona']").value):0;
+    
+    if(id_cliente>0){
+        openModalTelefonosCliente();
+        llenarListaTelefonoCliente(null,id_cliente);
+    }
+    if(id_persona>0){
+        openModalTelefonosCliente();
+        llenarListaTelefonoCliente(id_persona,null);
+    }
+
+}
+
+function direccionesClienteModal(){
+    let id_cliente = document.querySelector("form[id='form-requerimiento'] input[name='id_cliente']").value?parseInt(document.querySelector("form[id='form-requerimiento'] input[name='id_cliente']").value):0;
+    let id_persona = document.querySelector("form[id='form-requerimiento'] input[name='id_persona']").value?parseInt(document.querySelector("form[id='form-requerimiento'] input[name='id_persona']").value):0;
+
+    if(id_cliente>0){
+        openModalDireccionesCliente();
+        llenarListaDireccionesCliente(null,id_cliente);
+    }
+    if(id_persona>0){
+        openModalDireccionesCliente();
+        llenarListaDireccionesCliente(id_persona,null);
+    }
+
+}
+
+function openModalTelefonosCliente(){
+    $('#modal-telefonos-cliente').modal({
+        show: true
+    });
+}
+function openModalDireccionesCliente(){
+    $('#modal-direcciones-cliente').modal({
+        show: true
+    });
+}
+
+$(function(){
+    $('#listaTelefonosCliente tbody').on('click', 'tr', function(){
+        // console.log($(this));
+        if ($(this).hasClass('eventClick')){
+            $(this).removeClass('eventClick');
+        } else {
+            $('#listaPersonas').dataTable().$('tr.eventClick').removeClass('eventClick');
+            $(this).addClass('eventClick');
+        }
+        var tel = $(this)[0].firstChild.innerHTML;
+        $('[name=telefono_cliente]').val(tel);    
+        $('#modal-telefonos-cliente').modal('hide');
+    });
+
+    $('#listaDireccionesCliente tbody').on('click', 'tr', function(){
+        // console.log($(this));
+        if ($(this).hasClass('eventClick')){
+            $(this).removeClass('eventClick');
+        } else {
+            $('#listaPersonas').dataTable().$('tr.eventClick').removeClass('eventClick');
+            $(this).addClass('eventClick');
+        }
+        var dir = $(this)[0].firstChild.innerHTML;
+        $('[name=direccion_entrega]').val(dir);    
+        $('#modal-direcciones-cliente').modal('hide');
+    });
+});
+
+function llenarListaTelefonoCliente(id_persona=null,id_cliente=null){
+
+    var vardataTables = funcDatatables();
+    $('#listaTelefonosCliente').dataTable({
+        bDestroy: true,
+        info:     false,
+        iDisplayLength:2,
+        paging:   true,
+        searching: true,
+        language: vardataTables[0],
+        processing: true,
+        ajax:'/telefonos_cliente/'+id_persona+'/'+id_cliente,
+        columns: [
+            {'render':
+                function (data, type, row, meta){
+                    return row.telefono;
+                }
+            }
+        ],
+    })
+
+    let tablelistaitem = document.getElementById(
+        'listaTelefonosCliente_wrapper'
+    )
+    tablelistaitem.childNodes[0].childNodes[0].hidden = true
+}
+
+function llenarListaDireccionesCliente(id_persona=null,id_cliente=null){
+
+    var vardataTables = funcDatatables();
+    $('#listaDireccionesCliente').dataTable({
+        bDestroy: true,
+        info:     false,
+        iDisplayLength:2,
+        paging:   true,
+        searching: true,
+        language: vardataTables[0],
+        processing: true,
+        ajax:'/direcciones_cliente/'+id_persona+'/'+id_cliente,
+        columns: [
+            {'render':
+                function (data, type, row, meta){
+                    return row.direccion;
+                }
+            }
+        ],
+    })
+
+    let tablelistaitem = document.getElementById(
+        'listaDireccionesCliente_wrapper'
+    )
+    tablelistaitem.childNodes[0].childNodes[0].hidden = true
 }
