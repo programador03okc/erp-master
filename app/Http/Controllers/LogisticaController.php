@@ -1332,8 +1332,6 @@ class LogisticaController extends Controller
             'alm_req.direccion_entrega',
             'alm_req.fecha_registro'
         )
-        // ->where('alm_req.id_cliente',$id_cliente)
-    
         ->whereIn('id_requerimiento',function ($query) use ($id_cliente)
         {
             $query->select(DB::raw('alm_req.id_requerimiento','alm_req.telefono'))
@@ -1342,10 +1340,9 @@ class LogisticaController extends Controller
                 ->whereNotNull('telefono')
                 ->groupBy('id_requerimiento','telefono')
                 ->distinct(['id_requerimiento','telefono']);
-    
         })
-        // ->distinct(['telefono'])
-        ->get();
+        ->get()
+        ->unique('telefono');
 
         return response()->json($tel_req);
 
