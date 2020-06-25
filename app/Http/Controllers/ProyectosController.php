@@ -2132,7 +2132,7 @@ class ProyectosController extends Controller
     {
         $data = DB::table('rrhh.rrhh_trab')
                 ->select('rrhh_trab.*', 'rrhh_perso.nro_documento', 
-                DB::raw("CONCAT(rrhh_perso.nombres,' ',rrhh_perso.apellido_paterno,' ',rrhh_perso.apellido_materno) AS nombre_trabajador"))
+                DB::raw("(rrhh_perso.nombres) || ' ' || (rrhh_perso.apellido_paterno) || ' ' || (rrhh_perso.apellido_materno) AS nombre_trabajador"))
                 ->join('rrhh.rrhh_postu', 'rrhh_postu.id_postulante', '=', 'rrhh_trab.id_postulante')
                 ->join('rrhh.rrhh_perso', 'rrhh_perso.id_persona', '=', 'rrhh_postu.id_persona')
                 ->where([['rrhh_trab.estado', '=', 1]])
@@ -2146,7 +2146,7 @@ class ProyectosController extends Controller
         $data = DB::table('proyectos.proy_residente')
                 ->select('proy_residente.*','rrhh_perso.nro_documento','adm_estado_doc.estado_doc',
                 'adm_estado_doc.bootstrap_color',
-                DB::raw("CONCAT(rrhh_perso.nombres,' ',rrhh_perso.apellido_paterno,' ',rrhh_perso.apellido_materno) AS nombre_trabajador"))
+                DB::raw("(rrhh_perso.nombres) || ' ' || (rrhh_perso.apellido_paterno) || ' ' || (rrhh_perso.apellido_materno) AS nombre_trabajador"))
                 ->join('rrhh.rrhh_trab', 'rrhh_trab.id_trabajador', '=', 'proy_residente.id_trabajador')
                 ->join('rrhh.rrhh_postu', 'rrhh_postu.id_postulante', '=', 'rrhh_trab.id_postulante')
                 ->join('rrhh.rrhh_perso', 'rrhh_perso.id_persona', '=', 'rrhh_postu.id_persona')
@@ -2323,8 +2323,7 @@ class ProyectosController extends Controller
     public function mostrar_portafolios()
     {
         $data = DB::table('proyectos.proy_portafolio')
-                ->select('proy_portafolio.*', DB::raw("CONCAT(rrhh_perso.nombres,' ',
-                rrhh_perso.apellido_paterno,' ',rrhh_perso.apellido_materno) AS nombre_trabajador"))
+                ->select('proy_portafolio.*', DB::raw("(rrhh_perso.nombres) || ' ' || (rrhh_perso.apellido_paterno) || ' ' || (rrhh_perso.apellido_materno) AS nombre_trabajador"))
                 ->join('rrhh.rrhh_trab', 'rrhh_trab.id_trabajador', '=', 'proy_portafolio.responsable')
                 ->join('rrhh.rrhh_postu', 'rrhh_postu.id_postulante', '=', 'rrhh_trab.id_postulante')
                 ->join('rrhh.rrhh_perso', 'rrhh_perso.id_persona', '=', 'rrhh_postu.id_persona')
@@ -2336,8 +2335,7 @@ class ProyectosController extends Controller
     public function mostrar_portafolio($id)
     {
         $data = DB::table('proyectos.proy_portafolio')
-            ->select('proy_portafolio.*',DB::raw("CONCAT(rrhh_perso.nombres,' ',
-            rrhh_perso.apellido_paterno,' ',rrhh_perso.apellido_materno) AS nombre_trabajador"))
+            ->select('proy_portafolio.*',DB::raw("(rrhh_perso.nombres) || ' ' || (rrhh_perso.apellido_paterno) || ' ' || (rrhh_perso.apellido_materno) AS nombre_trabajador"))
             ->join('rrhh.rrhh_trab', 'rrhh_trab.id_trabajador', '=', 'proy_portafolio.responsable')
             ->join('rrhh.rrhh_postu', 'rrhh_postu.id_postulante', '=', 'rrhh_trab.id_postulante')
             ->join('rrhh.rrhh_perso', 'rrhh_perso.id_persona', '=', 'rrhh_postu.id_persona')
@@ -8802,8 +8800,7 @@ class ProyectosController extends Controller
     public function nueva_valorizacion($id_presup){
         $presup = DB::table('finanzas.presup')
         ->select('presup.*','sis_moneda.simbolo','proy_res_proy.id_residente',
-        DB::raw("CONCAT(rrhh_perso.nombres,' ',rrhh_perso.apellido_paterno,' ',
-        rrhh_perso.apellido_materno) AS nombre_residente"))
+        DB::raw("(rrhh_perso.nombres) || ' ' || (rrhh_perso.apellido_paterno) || ' ' || (rrhh_perso.apellido_materno) AS nombre_residente"))
         ->join('configuracion.sis_moneda','sis_moneda.id_moneda','=','presup.moneda')
         ->leftjoin('proyectos.proy_res_proy','proy_res_proy.id_proyecto','=','presup.id_proyecto')
         ->leftjoin('proyectos.proy_residente','proy_residente.id_residente','=','proy_res_proy.id_residente')
@@ -8921,8 +8918,7 @@ class ProyectosController extends Controller
     {
         $presup = DB::table('proyectos.proy_valori')
         ->select('proy_valori.*','presup.codigo','presup.descripcion','sis_moneda.simbolo','proy_res_proy.id_residente',
-        DB::raw("CONCAT(rrhh_perso.nombres,' ',rrhh_perso.apellido_paterno,' ',
-        rrhh_perso.apellido_materno) AS nombre_residente"))
+        DB::raw("(rrhh_perso.nombres) || ' ' || (rrhh_perso.apellido_paterno) || ' ' || (rrhh_perso.apellido_materno) AS nombre_residente"))
         ->join('finanzas.presup','presup.id_presup','=','proy_valori.id_presup')
         ->join('configuracion.sis_moneda','sis_moneda.id_moneda','=','presup.moneda')
         ->leftjoin('proyectos.proy_res_proy','proy_res_proy.id_proyecto','=','presup.id_proyecto')

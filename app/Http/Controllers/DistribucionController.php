@@ -106,8 +106,8 @@ class DistribucionController extends Controller
 
     public function listarEstadosRequerimientos($estado){
         $data = DB::table('almacen.alm_req')
-        ->select('alm_req.*','alm_tp_req.descripcion as tipo_descripcion','sis_usua.nombre_corto')
-            ->join('almacen.alm_tp_req','alm_tp_req.id_tipo_requerimiento','=','alm_req.id_tipo_requerimiento')
+        ->select('alm_req.id_requerimiento','alm_req.codigo','alm_req.concepto','sis_usua.nombre_corto')
+            // ->join('almacen.alm_tp_req','alm_tp_req.id_tipo_requerimiento','=','alm_req.id_tipo_requerimiento')
             ->join('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'alm_req.id_usuario')
             ->where([['alm_req.estado','=',$estado]])
             ->get();
