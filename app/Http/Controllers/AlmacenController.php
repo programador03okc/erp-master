@@ -757,7 +757,7 @@ class AlmacenController extends Controller
     {
         $data = DB::table('comercial.com_cliente')
         ->select('com_cliente.id_cliente','com_cliente.id_contribuyente',
-            'adm_contri.nro_documento','adm_contri.razon_social', 'adm_contri.telefono')
+            'adm_contri.nro_documento','adm_contri.razon_social', 'adm_contri.telefono', 'adm_contri.direccion_fiscal')
         ->join('contabilidad.adm_contri','adm_contri.id_contribuyente','=','com_cliente.id_contribuyente')
         ->where([['com_cliente.estado', '=', 1]])
             ->orderBy('adm_contri.nro_documento')
