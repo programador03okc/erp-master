@@ -3,7 +3,6 @@ $(function() {
     vista_extendida();
     mostrar_nota_lanzamiento_select();
 
-   
 
 })
 

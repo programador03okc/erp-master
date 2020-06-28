@@ -1,8 +1,6 @@
-@extends('layout.head')
+@extends('layout.main')
 @include('layout.menu_proyectos')
-@section('option')
-    @include('layout.option')
-@endsection
+@include('layout.option')
 
 @section('cabecera')
 Tipo de Insumos
@@ -14,7 +12,7 @@ Tipo de Insumos
     <div class="row">
         <div class="col-md-6">
             <fieldset class="group-table">
-                <table class="mytable table table-condensed table-bordered table-okc-view" 
+                <table class="mytable table table-condensed table-bordered table-okc-view"
                 id="listaTipoInsumo">
                     <thead>
                         <tr>
@@ -77,5 +75,10 @@ Tipo de Insumos
     <script src="{{ asset('datatables/JSZip/jszip.min.js') }}"></script>
     <script src="{{ asset('template/plugins/moment.min.js') }}"></script>
 
-    <script src="{{('/js/proyectos/variables/tipo_insumo.js')}}"></script>
+    <script src="{{asset('js/proyectos/variables/tipo_insumo.js')}}"></script>
+    <script>
+    $(document).ready(function(){
+        seleccionarMenu(window.location);
+    });
+    </script>
 @endsection

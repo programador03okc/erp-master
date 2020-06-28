@@ -1,14 +1,14 @@
 $(function() {
-    get_notas_lanzamiento()
+    //get_notas_lanzamiento()
 })
 
-function get_notas_lanzamiento() {
+function get_notas_lanzamiento(url) {
     $.ajax({
         type: 'GET',
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
         },
-        url: '/mostrar_version_actual',
+        url: url,
         dataType: 'JSON',
         success: function(response) {
             if (response.length > 0) {

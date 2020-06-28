@@ -5,18 +5,19 @@
     <title>Sistema ERP</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <link rel="icon" type="image/ico" href="{{ asset('images/icono.ico')}}" />
-	<link rel="stylesheet" href="{{ asset('template/bootstrap/css/bootstrap.min.css') }}">
-	<link rel="stylesheet" href="{{ asset('template/fonts/ionicons.min.css') }}">
-	<link rel="stylesheet" href="{{ asset('template/dist/css/AdminLTE.min.css') }}">
-	<link rel="stylesheet" href="{{ asset('template/plugins/iCheck/square/blue.css') }}">
+
+    <link rel="stylesheet" href="{{ asset('template/bootstrap/css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('template/fontawesome/css/all.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('template/adminlte/css/adminlte.min.css') }}">
+
     <link rel="stylesheet" href="{{ asset('css/app.css')}}">
 </head>
 <body>
     <div class="hold-transition login-page">
         <div class="login-box">
             <div class="login-header">
-                <code class="text-success">Última Actualización: 
-                @php 
+                <code class="text-success">Última Actualización:
+                @php
                 $mostRecent='';
                 $lastVersion='';
 
@@ -24,11 +25,11 @@
                 foreach($notasLanzamiento as $date){
                     $arrDate[] = $date->fecha_detalle_nota_lanzamiento;
                     $lastVersion=$date->version;
-                }   
+                }
                 $max = max(array_map('strtotime', $arrDate));
                 $mostRecent = date('Y-m-j H:i:s', $max);
                 @endphp
-                
+
                 {{$mostRecent}}
                 </code>
             </div>
@@ -41,10 +42,9 @@
                 <form id="formLogin" action="{{ route('login') }}">
                 @csrf
                     <div class="form-group has-feedback">
-                        <input type="hidden" name="role">
                         <input type="hidden" name="_token" id="csrf-token" value="{{ Session::token() }}" />
 
-                        <input type="text" name="usuario" class="form-control" placeholder="Nombre de usuario" onblur="cargarRol(this.value);">
+                        <input type="text" name="usuario" class="form-control" placeholder="Nombre de usuario">
                         <span class="glyphicon glyphicon-user form-control-feedback"></span>
                     </div>
                     <div class="form-group has-feedback">
@@ -65,14 +65,19 @@
 
         </div>
     </div>
-    <script src="{{ asset('js/jquery.min.js')}}"></script>
-    <script src="{{ asset('template/bootstrap/js/bootstrap.min.js')}}"></script>
-    <script src="{{ asset('template/plugins/iCheck/icheck.min.js')}}"></script>
-    <script src="{{ asset('addons/sweetalert/sweetalert2@8.js') }}"></script>
+    <script src="{{ asset('template/plugins/jQuery/jquery.min.js') }}"></script>
+    <script src="{{ asset('template/bootstrap/js/bootstrap.min.js') }}"></script>
+    <script src="{{ asset('template/adminlte/js/adminlte.min.js') }}"></script>
+    <script src="{{ asset('template/plugins/iCheck/icheck.min.js') }}"></script>
+    <script src="{{ asset('template/plugins/sweetalert/sweetalert2@8.js') }}"></script>
     <script src="{{ asset('js/app.js')}}"></script>
+
     <script src="{{ asset('js/publico/notas_lanzamiento.js')}}"></script>
     <script>
-        function cargarRol(value){
+      $(document).ready(function(){
+        get_notas_lanzamiento("{{route('mostrar-version-actual')}}");
+      });
+        /*function cargarRol(value){
             baseUrl = 'cargar_usuarios/'+value;
             var opt ='';
             $.ajax({
@@ -88,7 +93,7 @@
                 console.log(textStatus);
                 console.log(errorThrown);
             });
-        }
+        }*/
     </script>
 
 
@@ -110,5 +115,3 @@
 
 </body>
 </html>
-
-

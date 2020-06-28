@@ -1,4 +1,4 @@
-@extends('layout.head')
+@extends('layout.main')
 @include('layout.menu_proyectos')
 @section('option')
     @include('layout.option')
@@ -61,4 +61,9 @@ Categoría de Insumos
     <script src="{{ asset('template/plugins/moment.min.js') }}"></script>
 
     <script src="{{('/js/proyectos/variables/cat_insumo.js')}}"></script>
+    <script>
+    $(document).ready(function(){
+        seleccionarMenu(window.location);
+    });
+    </script>
 @endsection

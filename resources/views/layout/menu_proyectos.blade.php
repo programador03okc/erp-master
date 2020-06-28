@@ -1,24 +1,13 @@
 @section('sidebar')
-<section class="sidebar">
-    <div class="user-panel">
-        <div class="pull-left image">
-            <img src="img/user2-160x160.jpg" class="img-circle" alt="User Image">
-        </div>
-        <div class="pull-left info">
-            <p>Usuario: {{ Auth::user()->nombre_corto }}</p>
-            <a href="#"><i class="fa fa-circle"></i> Jefe de Proyectos</a>
-        </div>
-    </div>
-
-    <ul class="sidebar-menu">
-        <li class="okc-menu-title"><label>Proyectos</label><p><a href="proyectos">PY</a></p></li>
+    <ul class="sidebar-menu" data-widget="tree">
+        <li><a href="{{route('proyectos.index')}}"><i class="fas fa-tachometer-alt"></i> <span>Proyectos</span></a></li>
         <li class="treeview">
             <a href="#">
                 <i class="fas fa-stream"></i> <span>Variables de Entorno</span> <i class="fa fa-angle-left pull-right"></i>
             </a>
             <ul class="treeview-menu">
-                <li><a href="tipo_insumo"> Tipos de Insumo </a></li>
-                <li><a href="sis_contrato"> Sistemas de Contrato </a></li>
+                <li><a href="{{route('proyectos.variables-entorno.tipos-insumo.index')}}"> Tipos de Insumo </a></li>
+                <li><a href="{{route('proyectos.variables-entorno.sistemas-contrato.index')}}"> Sistemas de Contrato </a></li>
                 <li><a href="iu"> Indices Unificados </a></li>
                 <li><a href="cat_insumo"> Categoría de Insumos </a></li>
                 <li><a href="cat_acu"> Categoría de A.C.U. </a></li>
@@ -88,5 +77,4 @@
             </ul>
         </li>
     </ul>
-</section>
 @endsection

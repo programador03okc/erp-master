@@ -55,7 +55,7 @@ class LoginController extends Controller
 	{
 		$request->validate([
 			$this->username() => 'required|string',
-			'role' => 'required',
+			//'role' => 'required',
 			'password' => 'required|string',
 		]);
 	}
@@ -70,7 +70,7 @@ class LoginController extends Controller
 			])
 			->orderBy('detalle_nota_lanzamiento.fecha_detalle_nota_lanzamiento', 'desc')
 			->get();
-		return $data;    
+		return $data;
 	}
 
 
@@ -89,7 +89,7 @@ class LoginController extends Controller
 
 
 	public function login(Request $request){
-		
+
 		// return ['login'=>$request];
 		$this->validateLogin($request);
 
@@ -102,7 +102,7 @@ class LoginController extends Controller
 			return $this->sendLockoutResponse($request);
 		}
 
-		$usuarioRol = Rol::find($request->get('role'));
+		//$usuarioRol = Rol::find($request->get('role'));
 		if ($this->attemptLogin($request)) {
 			return $this->sendLoginResponse($request);
 		}
@@ -119,9 +119,9 @@ class LoginController extends Controller
 		$request->session()->regenerate();
 		$this->clearLoginAttempts($request);
 		// session(['login_empresa' => $request->company]);
-		session(['login_rol' => $request->role]);
+		session(['login_rol' => 0]);
 
-		return $this->authenticated($request, $this->guard()->user()) ? : 
+		return $this->authenticated($request, $this->guard()->user()) ? :
 		response()->json(['success' => true, 'redirectto' => 'modulos']);
 	}
 

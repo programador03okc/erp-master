@@ -1,8 +1,7 @@
-@extends('layout.head')
+@extends('layout.main')
 @include('layout.menu_admin')
-@section('option')
-    @include('layout.option')
-@endsection
+@include('layout.option')
+
 @section('cabecera')
     Empresa
 @endsection
@@ -227,15 +226,20 @@
 @endsection
 
 @section('scripts')
-    <script src="{{ asset('datatables/DataTables/js/jquery.dataTables.min.js') }}"></script>
-    <script src="{{ asset('datatables/DataTables/js/dataTables.bootstrap.min.js') }}"></script>
-    <script src="{{ asset('datatables/Buttons/js/dataTables.buttons.min.js') }}"></script>
-    <script src="{{ asset('datatables/Buttons/js/buttons.bootstrap.min.js') }}"></script>
-    <script src="{{ asset('datatables/Buttons/js/buttons.print.min.js') }}"></script>
-    <script src="{{ asset('datatables/Buttons/js/buttons.html5.min.js') }}"></script>
-    <script src="{{ asset('datatables/pdfmake/pdfmake.min.js') }}"></script>
-    <script src="{{ asset('datatables/pdfmake/vfs_fonts.js') }}"></script>
-    <script src="{{ asset('datatables/JSZip/jszip.min.js') }}"></script>
-    <script src="{{('/js/administracion/empresa.js')}}"></script>
-    <script src="{{('/js/publico/ubigeo.js')}}"></script>
+    <script src="{{asset('datatables/DataTables/js/jquery.dataTables.min.js')}}"></script>
+    <script src="{{asset('datatables/DataTables/js/dataTables.bootstrap.min.js')}}"></script>
+    <script src="{{asset('datatables/Buttons/js/dataTables.buttons.min.js')}}"></script>
+    <script src="{{asset('datatables/Buttons/js/buttons.bootstrap.min.js')}}"></script>
+    <script src="{{asset('datatables/Buttons/js/buttons.print.min.js')}}"></script>
+    <script src="{{asset('datatables/Buttons/js/buttons.html5.min.js')}}"></script>
+    <script src="{{asset('datatables/pdfmake/pdfmake.min.js') }}"></script>
+    <script src="{{asset('datatables/pdfmake/vfs_fonts.js') }}"></script>
+    <script src="{{asset('datatables/JSZip/jszip.min.js') }}"></script>
+    <script src="{{asset('js/administracion/empresa.js')}}"></script>
+    <script src="{{asset('js/publico/ubigeo.js')}}"></script>
+    <script>
+      $(document).ready(function(){
+        seleccionarMenu(window.location);
+      });
+    </script>
 @endsection

@@ -22,9 +22,9 @@ class LoginController extends Controller{
 			])
 			->orderBy('detalle_nota_lanzamiento.fecha_detalle_nota_lanzamiento', 'desc')
 			->get();
-		return $data;    
+		return $data;
     }
-    
+
     function index(){
 
         $mods = $this->select_modules();
@@ -47,21 +47,21 @@ class LoginController extends Controller{
                 <div class="panel panel-default">
                     <div class="panel-heading">Módulo</div>
                     <div class="panel-body">
-                        <h4><a class="panel-link" href="'.$link.'">'.$name.'</a></h4>
+                        <h4><a class="panel-link" href="'.$link.'/index">'.$name.'</a></h4>
                     </div>
                 </div>
             </div>';
         }
         return $html;
     }
-    
+
     public function encode5t($str){
         for($i=0; $i<5;$i++){
             $str=strrev(base64_encode($str));
         }
         return $str;
     }
-    
+
     public function decode5t($str){
         for($i=0; $i<5;$i++){
             $str=base64_decode(strrev($str));
@@ -83,11 +83,11 @@ class LoginController extends Controller{
             ->orderBy('adm_contri.razon_social', 'asc')->get();
         return $data;
     }
-    
+
     public function mostrar_roles($user){
         $prev = DB::table('configuracion.sis_usua')->where('usuario', '=', $user)->get();
         $sql = '';
-        
+
         if ($prev->count() > 0){
             $trab = $prev->first()->id_trabajador;
             $sql = DB::table('rrhh.rrhh_rol')

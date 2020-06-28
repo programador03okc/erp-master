@@ -55,13 +55,74 @@ Route::get('modulos', 'LoginController@index')->name('modulos');
 //Route::post('iniciar_sesion', 'LoginController@iniciar_sesion');
 Route::get('cargar_usuarios/{user}', 'LoginController@mostrar_roles');
 //Route::get('logout', 'LoginController@cerrar_sesion');
-Route::get('mostrar_version_actual', 'ConfiguracionController@mostrarVersionActual');
+Route::get('mostrar-version-actual', 'ConfiguracionController@mostrarVersionActual')->name('mostrar-version-actual');
 Route::get('socket_setting/{option}', 'ConfiguracionController@socket_setting');
 
 Auth::routes();
 
 Route::group(['middleware' => ['auth']], function () {
 
+	Route::group(['as' => 'proyectos.', 'prefix' => 'proyectos'], function(){
+		// Proyetos
+		Route::get('getProyectosActivos', 'ProyectosController@getProyectosActivos');
+
+		Route::get('index', function () {
+			return view('proyectos/main');
+		})->name('index');
+		Route::group(['as' => 'variables-entorno.', 'prefix' => 'variables-entorno'], function(){
+			Route::group(['as' => 'sistemas-contrato.', 'prefix' => 'sistemas-contrato'], function(){
+
+				// Sistema de Contrato
+				Route::get('index', 'ProyectosController@view_sis_contrato')->name('index');
+				Route::get('listar', 'ProyectosController@mostrar_sis_contratos')->name('listar');
+				Route::get('mostrar/{id?}', 'ProyectosController@mostrar_sis_contrato')->name('mostrar');
+				Route::post('guardar', 'ProyectosController@guardar_sis_contrato')->name('guardar');
+				Route::post('actualizar', 'ProyectosController@update_sis_contrato')->name('actualizar');
+				Route::get('anular/{id}', 'ProyectosController@anular_sis_contrato')->name('anular');
+				
+				// Indices Unificados
+				Route::get('iu', 'ProyectosController@view_iu');
+				Route::get('listar_ius', 'ProyectosController@mostrar_ius');
+				Route::get('mostrar_iu/{id}', 'ProyectosController@mostrar_iu');
+				Route::post('guardar_iu', 'ProyectosController@guardar_iu');
+				Route::post('actualizar_iu', 'ProyectosController@update_iu');
+				Route::get('anular_iu/{id}', 'ProyectosController@anular_iu');
+				Route::get('revisar_iu/{id}', 'ProyectosController@buscar_iu');
+
+				// Categoría de Insumos
+				Route::get('cat_insumo', 'ProyectosController@view_cat_insumo');
+				Route::get('listar_cat_insumos', 'ProyectosController@listar_cat_insumos');
+				Route::get('mostrar_cat_insumo/{id}', 'ProyectosController@mostrar_cat_insumo');
+				Route::post('guardar_cat_insumo', 'ProyectosController@guardar_cat_insumo');
+				Route::post('update_cat_insumo', 'ProyectosController@update_cat_insumo');
+				Route::get('anular_cat_insumo/{id}', 'ProyectosController@anular_cat_insumo');
+
+				// Categoría de A.C.U
+				Route::get('cat_acu', 'ProyectosController@view_cat_acu');
+				Route::get('listar_cat_acus', 'ProyectosController@listar_cat_acus');
+				Route::get('mostrar_cat_acu/{id}', 'ProyectosController@mostrar_cat_acu');
+				Route::post('guardar_cat_acu', 'ProyectosController@guardar_cat_acu');
+				Route::post('update_cat_acu', 'ProyectosController@update_cat_acu');
+				Route::get('anular_cat_acu/{id}', 'ProyectosController@anular_cat_acu');
+
+
+		});
+			Route::group(['as' => 'tipos-insumo.', 'prefix' => 'tipos-insumo'], function(){
+				
+				// Tipo de Insumos
+				Route::get('index', 'ProyectosController@view_tipo_insumo')->name('index');
+				Route::get('listar_tipo_insumos', 'ProyectosController@mostrar_tipos_insumos');
+				Route::get('tipo_insumo', 'ProyectosController@view_tipo_insumo');
+				Route::get('mostrar_tipo_insumo/{id}', 'ProyectosController@mostrar_tp_insumo');
+				Route::post('guardar_tipo_insumo', 'ProyectosController@guardar_tp_insumo');
+				Route::post('actualizar_tipo_insumo', 'ProyectosController@update_tp_insumo');
+				Route::get('anular_tipo_insumo/{id}', 'ProyectosController@anular_tp_insumo');
+				Route::get('revisar_tipo_insumo/{id}', 'ProyectosController@buscar_tp_insumo');
+
+
+			});
+		});
+	});
 
 	Route::get('config', function () {
 		return view('configuracion/main');
@@ -197,7 +258,7 @@ Route::post('guardar_modulo', 'ConfiguracionController@guardar_modulo');
 Route::post('editar_modulo', 'ConfiguracionController@actualizar_modulo');
 Route::get('anular_modulo/{id}', 'ConfiguracionController@anular_modulo');
 Route::get('cargar_modulos', 'ConfiguracionController@mostrar_modulos_combo');
-Route::get('notas_lanzamiento', 'ConfiguracionController@view_notas_lanzamiento');
+Route::get('notas-lanzamiento', 'ConfiguracionController@view_notas_lanzamiento')->name('notas-lanzamiento');
 Route::get('correo_coorporativo', 'ConfiguracionController@view_correo_coorporativo');
 Route::get('mostrar_correo_coorporativo/{id}', 'ConfiguracionController@mostrar_correo_coorporativo');
 Route::put('actualizar_correo_coorporativo', 'ConfiguracionController@actualizar_correo_coorporativo');
@@ -1030,35 +1091,6 @@ Route::get('mostrar_clientes_empresa', 'AlmacenController@mostrar_clientes_empre
 
 /* Proyectos */
 /* Proyectos */
-Route::get('sis_contrato', 'ProyectosController@view_sis_contrato');
-Route::get('listar_sis_contratos', 'ProyectosController@mostrar_sis_contratos');
-Route::get('mostrar_sis_contrato/{id}', 'ProyectosController@mostrar_sis_contrato');
-Route::post('guardar_sis_contrato', 'ProyectosController@guardar_sis_contrato');
-Route::post('actualizar_sis_contrato', 'ProyectosController@update_sis_contrato');
-Route::get('anular_sis_contrato/{id}', 'ProyectosController@anular_sis_contrato');
-
-Route::get('tipo_insumo', 'ProyectosController@view_tipo_insumo');
-Route::get('listar_tipo_insumos', 'ProyectosController@mostrar_tipos_insumos');
-Route::get('mostrar_tipo_insumo/{id}', 'ProyectosController@mostrar_tp_insumo');
-Route::post('guardar_tipo_insumo', 'ProyectosController@guardar_tp_insumo');
-Route::post('actualizar_tipo_insumo', 'ProyectosController@update_tp_insumo');
-Route::get('anular_tipo_insumo/{id}', 'ProyectosController@anular_tp_insumo');
-Route::get('revisar_tipo_insumo/{id}', 'ProyectosController@buscar_tp_insumo');
-
-Route::get('cat_insumo', 'ProyectosController@view_cat_insumo');
-Route::get('listar_cat_insumos', 'ProyectosController@listar_cat_insumos');
-Route::get('mostrar_cat_insumo/{id}', 'ProyectosController@mostrar_cat_insumo');
-Route::post('guardar_cat_insumo', 'ProyectosController@guardar_cat_insumo');
-Route::post('update_cat_insumo', 'ProyectosController@update_cat_insumo');
-Route::get('anular_cat_insumo/{id}', 'ProyectosController@anular_cat_insumo');
-
-Route::get('iu', 'ProyectosController@view_iu');
-Route::get('listar_ius', 'ProyectosController@mostrar_ius');
-Route::get('mostrar_iu/{id}', 'ProyectosController@mostrar_iu');
-Route::post('guardar_iu', 'ProyectosController@guardar_iu');
-Route::post('actualizar_iu', 'ProyectosController@update_iu');
-Route::get('anular_iu/{id}', 'ProyectosController@anular_iu');
-Route::get('revisar_iu/{id}', 'ProyectosController@buscar_iu');
 
 Route::get('insumo', 'ProyectosController@view_insumo');
 Route::get('listar_insumos', 'ProyectosController@listar_insumos');
@@ -1067,12 +1099,6 @@ Route::post('guardar_insumo', 'ProyectosController@guardar_insumo');
 Route::post('actualizar_insumo', 'ProyectosController@update_insumo');
 Route::get('anular_insumo/{id}', 'ProyectosController@anular_insumo');
 
-Route::get('cat_acu', 'ProyectosController@view_cat_acu');
-Route::get('listar_cat_acus', 'ProyectosController@listar_cat_acus');
-Route::get('mostrar_cat_acu/{id}', 'ProyectosController@mostrar_cat_acu');
-Route::post('guardar_cat_acu', 'ProyectosController@guardar_cat_acu');
-Route::post('update_cat_acu', 'ProyectosController@update_cat_acu');
-Route::get('anular_cat_acu/{id}', 'ProyectosController@anular_cat_acu');
 
 Route::get('acu', 'ProyectosController@view_acu');
 Route::get('listar_acus', 'ProyectosController@listar_acus');
@@ -1259,7 +1285,6 @@ Route::post('guardar_obs_partida', 'ProyectosController@guardar_obs_partida');
 Route::get('mostrar_presupuestos_acu/{id}', 'ProyectosController@mostrar_presupuestos_acu');
 Route::get('html_presupuestos_acu/{id}', 'ProyectosController@html_presupuestos_acu');
 
-Route::get('getProyectosActivos', 'ProyectosController@getProyectosActivos');
 
 Route::get('listar_acus_cd/{id}', 'ProyectosController@listar_acus_cd');
 
@@ -1449,8 +1474,8 @@ Route::get('decode5t/{id}', 'EquipoController@decode5t');
 	Route::get('get_flujo_aprobacion/{req}/{doc}', 'LogisticaController@get_flujo_aprobacion');
 	Route::post('logistica/guardar_sustento', 'LogisticaController@guardar_sustento');
 	// Route::post('logistica/aceptar_sustento', 'LogisticaController@aceptar_sustento'); 
-	Route::get('verSession', 'LogisticaController@verSession'); 
-	Route::get('verUsuario', 'EquipoController@verUsuario'); 
+	// Route::get('verSession', 'LogisticaController@verSession'); 
+	// Route::get('verUsuario', 'EquipoController@verUsuario'); 
 	
 	Route::get('logistica/get_cuadro_costos_comercial', 'LogisticaController@get_cuadro_costos_comercial');
 

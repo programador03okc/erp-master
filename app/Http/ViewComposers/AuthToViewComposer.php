@@ -13,16 +13,16 @@ class AuthToViewComposer {
 		$autenticado = [];
 		if (Auth::check()){
 			$autIni = Auth::user();
-			$area = Area::findorFail($autIni->trabajador->roles->first()->pivot->id_area);
+			$area = 'CAMBIAR';//Area::findorFail($autIni->trabajador->roles->first()->pivot->id_area);
 			$autenticado = $autIni->toArray();
-			$autenticado['id_rol'] = $autIni->trabajador->roles->first()->pivot->id_rol;
-			$autenticado['id_rol_concepto'] = $autIni->trabajador->roles->first()->id_rol_concepto;
-			$autenticado['rol'] = $autIni->trabajador->roles->first()->descripcion;
-			$autenticado['cargo'] = $autIni->cargo;
-			$autenticado['nombres'] = $autIni->trabajador->postulante->persona->nombre_completo;
-			$autenticado['id_area'] = $autIni->trabajador->roles->first()->pivot->id_area;
-			$autenticado['id_grupo'] = $area->id_grupo;
-			$autenticado['area'] = $area->descripcion;
+			$autenticado['id_rol'] = 'CAMBIAR';//$autIni->trabajador->roles->first()->pivot->id_rol;
+			$autenticado['id_rol_concepto'] = 'CAMBIAR';//$autIni->trabajador->roles->first()->id_rol_concepto;
+			$autenticado['rol'] = 'CAMBIAR';//$autIni->trabajador->roles->first()->descripcion;
+			$autenticado['cargo'] = 'CAMBIAR';//$autIni->cargo;
+			$autenticado['nombres'] = 'CAMBIAR';//$autIni->trabajador->postulante->persona->nombre_completo;
+			$autenticado['id_area'] = 'CAMBIAR';//$autIni->trabajador->roles->first()->pivot->id_area;
+			$autenticado['id_grupo'] = 'CAMBIAR';//$area->id_grupo;
+			$autenticado['area'] = 'CAMBIAR';//$area->descripcion;
 		}
 		$view->with('auth_user', json_encode($autenticado));
 	}

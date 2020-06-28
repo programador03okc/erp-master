@@ -80,7 +80,7 @@ return [
         ],
         'usuario' => [
             'driver' => 'eloquent',
-            'model' => App\Models\Tesoreria\Usuario::class,
+            'model' => App\Models\Configuracion\Usuario::class,
         ],
 
         // 'users' => [

@@ -1,32 +1,41 @@
-$(function(){
+var rutaLista, rutaMostrar, rutaGuardar;
+
+function inicializar(_rutaLista, _rutaMostrar, _rutaGuardar) {
+    rutaLista = _rutaLista;
+    rutaMostrar = _rutaMostrar;
+    rutaGuardar = _rutaGuardar;
+}
+
+function listar() {
     var vardataTables = funcDatatables();
     var form = $('.page-main form[type=register]').attr('id');
-
     $('#listaSisContrato').dataTable({
         'dom': vardataTables[1],
         'buttons': vardataTables[2],
-        'language' : vardataTables[0],
-        'ajax': 'listar_sis_contratos',
+        'language': vardataTables[0],
+        'ajax': rutaLista,
         'columns': [
-            {'data': 'id_sis_contrato'},
-            {'data': 'codigo'},
-            {'data': 'descripcion'},
-            {'render':
-                function (data, type, row){
-                    return ((row['estado'] == 1) ? 'Activo' : 'Inactivo');
-                }
+            { 'data': 'id_sis_contrato' },
+            { 'data': 'codigo' },
+            { 'data': 'descripcion' },
+            {
+                'render':
+                    function (data, type, row) {
+                        return ((row['estado'] == 1) ? 'Activo' : 'Inactivo');
+                    }
             },
-            {'render':
-                function (data, type, row){
-                    return (formatDate(row['fecha_registro']));
-                }
+            {
+                'render':
+                    function (data, type, row) {
+                        return (formatDate(row['fecha_registro']));
+                    }
             }
         ],
-        'columnDefs': [{ 'aTargets': [0], 'sClass': 'invisible'}],
+        'columnDefs': [{ 'aTargets': [0], 'sClass': 'invisible' }],
     });
 
-    $('.group-table .mytable tbody').on('click', 'tr', function(){
-        if ($(this).hasClass('eventClick')){
+    $('.group-table .mytable tbody').on('click', 'tr', function () {
+        if ($(this).hasClass('eventClick')) {
             $(this).removeClass('eventClick');
         } else {
             $('.dataTable').dataTable().$('tr.eventClick').removeClass('eventClick');
@@ -37,18 +46,18 @@ $(function(){
         mostrar_sis_contrato(id);
         changeStateButton('historial');
     });
+}
 
-    
-});
 
-function mostrar_sis_contrato(id){
-    baseUrl = 'mostrar_sis_contrato/'+id;
+
+function mostrar_sis_contrato(id) {
+    baseUrl = rutaMostrar + '/' + id;
     $.ajax({
         type: 'GET',
-        headers: {'X-CSRF-TOKEN': token},
+        headers: { 'X-CSRF-TOKEN': token },
         url: baseUrl,
         dataType: 'JSON',
-        success: function(response){
+        success: function (response) {
             $('[name=id_sis_contrato]').val(response[0].id_sis_contrato);
             $('[name=descripcion]').val(response[0].descripcion);
             $('[name=codigo]').val(response[0].codigo);
@@ -56,42 +65,47 @@ function mostrar_sis_contrato(id){
             $('[id=fecha_registro] label').text('');
             $('[id=fecha_registro] label').append(formatDateHour(response[0].fecha_registro));
         }
-    }).fail( function( jqXHR, textStatus, errorThrown ){
+    }).fail(function (jqXHR, textStatus, errorThrown) {
         console.log(jqXHR);
         console.log(textStatus);
         console.log(errorThrown);
     });
 }
 
-function save_sis_contrato(data, action){
-    if (action == 'register'){
-        baseUrl = 'guardar_sis_contrato';
-    } else if (action == 'edition'){
+function save_sis_contrato(data, action) {
+    if (action == 'register') {
+        baseUrl = rutaGuardar;
+    } else if (action == 'edition') {
         baseUrl = 'actualizar_sis_contrato';
     }
     $.ajax({
         type: 'POST',
-        headers: {'X-CSRF-TOKEN': token},
+        headers: { 'X-CSRF-TOKEN': token },
         url: baseUrl,
         data: data,
         dataType: 'JSON',
-        success: function(response){
-            console.log(response);
+        success: function (response) {
+            alert(response.mensaje);
+            if (response.id > 0) {
+                $('#listaSisContrato').DataTable().ajax.reload();
+                changeStateButton('guardar');
+            }
+            /*console.log(response);
             if (response > 0){
                 alert('Sistema de Contrato registrado con exito');
                 $('#listaSisContrato').DataTable().ajax.reload();
                 changeStateButton('guardar');
-            }
+            }*/
         }
-    }).fail( function( jqXHR, textStatus, errorThrown ){
+    }).fail(function (jqXHR, textStatus, errorThrown) {
         console.log(jqXHR);
         console.log(textStatus);
         console.log(errorThrown);
     });
 }
 
-function anular_sis_contrato(ids){
-    baseUrl = 'anular_sis_contrato/'+ids;
+function anular_sis_contrato(ids) {
+    baseUrl = 'anular_sis_contrato/' + ids;
     // $.ajax({
     //     type: 'GET',
     //     headers: {'X-CSRF-TOKEN': token},
@@ -104,25 +118,25 @@ function anular_sis_contrato(ids){
     //             +response+' categoría(s).');
     //         }
     //         else {
-                $.ajax({
-                    type: 'GET',
-                    headers: {'X-CSRF-TOKEN': token},
-                    url: baseUrl,
-                    dataType: 'JSON',
-                    success: function(response){
-                        console.log(response);
-                        if (response > 0){
-                            alert('Sistema de Contrato anulado con exito');
-                            $('#listaSisContrato').DataTable().ajax.reload();
-                            changeStateButton('anular');
-                            clearForm('form-sis_contrato');
-                        }
-                    }
-                }).fail( function( jqXHR, textStatus, errorThrown ){
-                    console.log(jqXHR);
-                    console.log(textStatus);
-                    console.log(errorThrown);
-                });
+    $.ajax({
+        type: 'GET',
+        headers: { 'X-CSRF-TOKEN': token },
+        url: baseUrl,
+        dataType: 'JSON',
+        success: function (response) {
+            console.log(response);
+            if (response > 0) {
+                alert('Sistema de Contrato anulado con exito');
+                $('#listaSisContrato').DataTable().ajax.reload();
+                changeStateButton('anular');
+                clearForm('form-sis_contrato');
+            }
+        }
+    }).fail(function (jqXHR, textStatus, errorThrown) {
+        console.log(jqXHR);
+        console.log(textStatus);
+        console.log(errorThrown);
+    });
     //         }
     //     }
     // }).fail( function( jqXHR, textStatus, errorThrown ){
@@ -130,5 +144,5 @@ function anular_sis_contrato(ids){
     //     console.log(textStatus);
     //     console.log(errorThrown);
     // });
-    
+
 }

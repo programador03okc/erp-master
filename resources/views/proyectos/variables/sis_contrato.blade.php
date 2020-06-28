@@ -1,20 +1,26 @@
-@extends('layout.head')
+@extends('layout.main')
 @include('layout.menu_proyectos')
-@section('option')
-    @include('layout.option')
-@endsection
+@include('layout.option')
 
 @section('cabecera')
-Sistema de Contrato
+Sistemas de contrato
+@endsection
+
+@section('breadcrumb')
+<ol class="breadcrumb">
+  <li><a href="{{route('proyectos.index')}}"><i class="fas fa-tachometer-alt"></i> Proyectos</a></li>
+  <li>Variables de Entorno</li>
+  <li class="active">Sistemas de Contrato</li>
+</ol>
 @endsection
 
 @section('content')
 <div class="page-main" type="sis_contrato">
-    <legend><h2>Sistema de Contrato</h2></legend>
+
     <div class="row">
         <div class="col-md-6">
             <fieldset class="group-table">
-                <table class="mytable table table-condensed table-bordered table-okc-view" 
+                <table class="mytable table table-condensed table-bordered table-okc-view"
                 id="listaSisContrato">
                     <thead>
                         <tr>
@@ -77,5 +83,19 @@ Sistema de Contrato
     <script src="{{ asset('datatables/JSZip/jszip.min.js') }}"></script>
     <script src="{{ asset('template/plugins/moment.min.js') }}"></script>
 
-    <script src="{{('/js/proyectos/variables/sis_contrato.js')}}"></script>
+    <script src="{{asset('js/proyectos/variables/sis_contrato.js')}}"></script>
+    <script>
+    $(document).ready(function(){
+        seleccionarMenu(window.location);
+        inicializar("{{route('proyectos.variables-entorno.sistemas-contrato.listar')}}","{{route('proyectos.variables-entorno.sistemas-contrato.mostrar')}}","{{route('proyectos.variables-entorno.sistemas-contrato.guardar')}}");
+        listar();
+
+        const tieneNuevo='{{Auth::user()->tieneAccion(10)}}';
+        if (tieneNuevo!='1')
+        {
+            $('#btnNuevo').prop('disabled',true);
+        }
+
+    });
+    </script>
 @endsection

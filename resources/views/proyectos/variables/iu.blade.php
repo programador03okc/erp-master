@@ -1,4 +1,4 @@
-@extends('layout.head')
+@extends('layout.main')
 @include('layout.menu_proyectos')
 @section('option')
     @include('layout.option')
@@ -78,4 +78,9 @@ Indices Unificados
     <script src="{{ asset('template/plugins/moment.min.js') }}"></script>
 
     <script src="{{('/js/proyectos/variables/iu.js')}}"></script>
+    <script>
+    $(document).ready(function(){
+        seleccionarMenu(window.location);
+    });
+    </script>
 @endsection

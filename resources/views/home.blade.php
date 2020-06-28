@@ -14,7 +14,7 @@
 <body class="hold-transition skin-okc sidebar-mini">
     <div class="wrapper">
         <header class="main-header">
-            @include('layout.navbar')
+            
         </header>
         <div class="okc-content">
             <section class="content">

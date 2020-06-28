@@ -1,4 +1,4 @@
-@extends('layout.head')
+@extends('layout.main')
 @include('layout.menu_proyectos')
 @section('cabecera')
     Dashboard Proyectos
@@ -58,7 +58,7 @@
         <div class="row">
             <div class="col-md-7">
                 <label>AÑO - MES : </label> <span class="label label-primary" id="anio_mes"></span>
-                <table class="mytable table table-condensed table-bordered table-okc-view" width="100%" 
+                <table class="mytable table table-condensed table-bordered table-okc-view" width="100%"
                     id="Proyectos" style="margin-top:10px;">
                     <thead>
                         <tr>
@@ -91,5 +91,10 @@
 @endsection
 @section('scripts')
 <script src="{{ asset('template/plugins/chartjs/Chart.min.js') }}"></script>
-<script src="{{('/js/proyectos/dashboardProyectos.js')}}"></script>
+<script src="{{asset('js/proyectos/dashboardProyectos.js')}}"></script>
+<script>
+    $(document).ready(function(){
+        seleccionarMenu(window.location);
+    });
+</script>
 @endsection
