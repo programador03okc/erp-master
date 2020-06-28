@@ -1,7 +1,6 @@
 /.vscode
 /vendor
 /storage
-/public/template
 /node_modules
 .env
 public/js/app.js
