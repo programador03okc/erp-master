@@ -1,24 +1,27 @@
-@extends('layout.head')
+@extends('layout.main')
 @include('layout.menu_proyectos')
 
 @section('cabecera')
 Proyectos
 @endsection
 
+@section('breadcrumb')
+<ol class="breadcrumb">
+  <li><a href="{{route('proyectos.index')}}"><i class="fas fa-tachometer-alt"></i> Proyectos</a></li>
+  <li>Ejecución</li>
+  <li class="active">@yield('cabecera')</li>
+</ol>
+@endsection
+
 @section('content')
 <div class="page-main" type="proyecto">
-    <legend class="mylegend">
-        <h2>Gestión de Proyectos</h2>
-        <ol class="breadcrumb">
-            <li>
-                <button type="submit" class="btn btn-success" data-toggle="tooltip" 
-                data-placement="bottom" title="Crear Proyecto" 
-                onClick="open_proyecto_create();">Crear Proyecto</button>
-            </li>
-        </ol>
-    </legend>
     <div class="row">
         <div class="col-md-12">
+            <div style="text-align: right;">
+                <button type="submit" class="btn btn-success" data-toggle="tooltip" 
+                    data-placement="bottom" title="Crear Proyecto" 
+                    onClick="open_proyecto_create();">Crear Proyecto</button>
+            </div>
             <table class="mytable table table-condensed table-bordered table-okc-view" 
                 id="listaProyecto">
                 <thead>
@@ -35,7 +38,7 @@ Proyectos
                         <th>Usuario</th>
                         <th>Duración</th>
                         <th>Estado</th>
-                        <th width="100px">Acción</th>
+                        <th width="110px">Acción</th>
                     </tr>
                 </thead>
                 <tbody></tbody>
@@ -61,8 +64,13 @@ Proyectos
     <script src="{{ asset('datatables/JSZip/jszip.min.js') }}"></script>
     <script src="{{ asset('template/plugins/moment.min.js') }}"></script>
 
-    <script src="{{('/js/proyectos/proyecto/proyecto.js')}}"></script>
-    <script src="{{('/js/proyectos/opcion/opcionModal.js')}}"></script>
-    <script src="{{('/js/proyectos/proyecto/proyectoContrato.js')}}"></script>
-    <script src="{{('/js/logistica/clienteModal.js')}}"></script>
+    <script src="{{ asset('js/proyectos/proyecto/proyecto.js')}}"></script>
+    <script src="{{ asset('js/proyectos/opcion/opcionModal.js')}}"></script>
+    <script src="{{ asset('js/proyectos/proyecto/proyectoContrato.js')}}"></script>
+    <script src="{{ asset('js/logistica/clienteModal.js')}}"></script>
+    <script>
+    $(document).ready(function(){
+        seleccionarMenu(window.location);
+    });
+    </script>
 @endsection

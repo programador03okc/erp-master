@@ -8,9 +8,16 @@
 Categoría de A.C.U.
 @endsection
 
+@section('breadcrumb')
+<ol class="breadcrumb">
+  <li><a href="{{route('proyectos.index')}}"><i class="fas fa-tachometer-alt"></i> Proyectos</a></li>
+  <li>Variables de Entorno</li>
+  <li class="active">@yield('cabecera')</li>
+</ol>
+@endsection
+
 @section('content')
 <div class="page-main" type="cat_acu">
-    <legend><h2>Categoría de A.C.U.</h2></legend>
     <div class="row">
         <div class="col-md-6">
             <fieldset class="group-table">
@@ -60,7 +67,7 @@ Categoría de A.C.U.
     <script src="{{ asset('datatables/JSZip/jszip.min.js') }}"></script>
     <script src="{{ asset('template/plugins/moment.min.js') }}"></script>
 
-    <script src="{{('/js/proyectos/variables/cat_acu.js')}}"></script>
+    <script src="{{ asset('js/proyectos/variables/cat_acu.js')}}"></script>
     <script>
     $(document).ready(function(){
         seleccionarMenu(window.location);

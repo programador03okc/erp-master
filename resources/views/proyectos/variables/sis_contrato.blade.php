@@ -83,7 +83,7 @@ Sistemas de contrato
     <script src="{{ asset('datatables/JSZip/jszip.min.js') }}"></script>
     <script src="{{ asset('template/plugins/moment.min.js') }}"></script>
 
-    <script src="{{asset('js/proyectos/variables/sis_contrato.js')}}"></script>
+    <script src="{{ asset('js/proyectos/variables/sis_contrato.js')}}"></script>
     <script>
     $(document).ready(function(){
         seleccionarMenu(window.location);

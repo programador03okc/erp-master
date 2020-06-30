@@ -35,7 +35,7 @@
 		</aside>
 		<!-- contenido -->
 		<div class="content-wrapper" id="wrapper-okc" style="min-height: 100vh;">
-		@yield('option')
+			@yield('option')
 		<!-- Vistas -->
 		<section class="content-header">
 			<h1>@yield('cabecera')</h1>

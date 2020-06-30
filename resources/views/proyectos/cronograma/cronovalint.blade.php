@@ -1,4 +1,4 @@
-@extends('layout.head')
+@extends('layout.main')
 @include('layout.menu_proyectos')
 @section('option')
     @include('layout.option')
@@ -8,21 +8,18 @@
 Cronograma Valorizado Interno
 @endsection
 
+@section('breadcrumb')
+<ol class="breadcrumb">
+  <li><a href="{{route('proyectos.index')}}"><i class="fas fa-tachometer-alt"></i> Proyectos</a></li>
+  <li>Opción Comercial</li>
+  <li class="active">@yield('cabecera')</li>
+</ol>
+@endsection
+
 @section('content')
 <div class="page-main" type="cronovalint">
     <form id="form-cronovalint" type="register" form="formulario">
-        <div class="thumbnail" style="padding-left: 10px;padding-right: 10px;">
-            <legend class="mylegend">
-                <h2>Cronograma Valorizado Interno</h2>
-                <ol class="breadcrumb" style="background-color: white;">
-                    <li><label id="codigo"></label></li>
-                    <li>Duración Total: <label id="duracion"></label></li>
-                    <li>Sub Total: <label id="importe"></label></li>
-                    <li><i class="fas fa-file-excel icon-tabla green boton"
-                        data-toggle="tooltip" data-placement="bottom" 
-                        title="Exportar a Excel" onclick="exportTableToExcel('listaPartidas','CronogramaValorizado')"></i></li>
-                </ol>
-            </legend>
+        <div class="thumbnail" style="padding-left: 20px;padding-right: 10px;padding-top: 20px;">
             <div class="row">
                 <div class="col-md-1">
                     <h5>Presupuesto:</h5>
@@ -62,6 +59,22 @@ Cronograma Valorizado Interno
                 </div>
             </div>
             <div class="row">
+                <div class="col-md-3">
+                    Código del Presupuesto: <label id="codigo"></label>
+                </div>
+                <div class="col-md-3">
+                    Duración Total: <label id="duracion"></label>
+                </div>
+                <div class="col-md-3">
+                    Sub Total: <label id="importe"></label>
+                </div>
+                <div class="col-md-3">
+                    Descargar <i class="fas fa-file-excel icon-tabla green boton"
+                        data-toggle="tooltip" data-placement="bottom" 
+                        title="Exportar a Excel" onclick="exportTableToExcel('listaPartidas','CronogramaValorizado')"></i>
+                </div>
+            </div>
+            <div class="row">
                 <div class="col-md-12">
                     <table class="mytable table table-condensed table-bordered table-okc-view" width="100%" 
                         id="listaPartidas" style="margin-top:10px;">
@@ -95,7 +108,13 @@ Cronograma Valorizado Interno
     <script src="{{ asset('datatables/pdfmake/vfs_fonts.js') }}"></script>
     <script src="{{ asset('datatables/JSZip/jszip.min.js') }}"></script>
     <script src="{{ asset('template/plugins/moment.min.js') }}"></script>
-    
-    <script src="{{('/js/proyectos/cronograma/cronovalint.js')}}"></script>
-    <script src="{{('/js/proyectos/presupuesto/presintModal.js')}}"></script>
+    <script src="{{ asset('template/plugins/js-xlsx/xlsx.full.min.js') }}"></script>
+
+    <script src="{{ asset('js/proyectos/cronograma/cronovalint.js')}}"></script>
+    <script src="{{ asset('js/proyectos/presupuesto/presintModal.js')}}"></script>
+    <script>
+    $(document).ready(function(){
+        seleccionarMenu(window.location);
+    });
+    </script>
 @endsection

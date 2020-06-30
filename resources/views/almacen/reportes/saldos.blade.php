@@ -1,4 +1,4 @@
-@extends('layout.head')
+@extends('layout.main')
 @include('layout.menu_almacen')
 
 @section('cabecera')
@@ -11,19 +11,6 @@ Saldos Actuales
 
 @section('content')
 <div class="page-main" type="saldos">
-    <legend class="mylegend">
-        <h2>Saldos Actuales</h2>
-        <ol class="breadcrumb">
-            <li>
-                <!-- {{-- <button type="submit" class="btn btn-success" data-toggle="tooltip" 
-                    data-placement="bottom" title="Descargar Saldos" 
-                    onClick="downloadKardexSunat();">Saldos por Almacén</button>
-                <button type="button" class="btn btn-primary" data-toggle="tooltip" 
-                    data-placement="bottom" title="Ingrese los filtros" 
-                    onClick="open_filtros();">Filtros</button> --}} -->
-            </li>
-        </ol>
-    </legend>
     <div class="row">
         <!-- <div class="col-md-3">
             <h5>Saldo al:</h5>
@@ -97,5 +84,10 @@ Saldos Actuales
     <script src="{{ asset('datatables/JSZip/jszip.min.js') }}"></script>
     <script src="{{ asset('template/plugins/moment.min.js') }}"></script>
 
-    <script src="{{('/js/almacen/reporte/saldos.js')}}"></script>
+    <script src="{{ asset('js/almacen/reporte/saldos.js')}}"></script>
+    <script>
+    $(document).ready(function(){
+        seleccionarMenu(window.location);
+    });
+    </script>
 @endsection

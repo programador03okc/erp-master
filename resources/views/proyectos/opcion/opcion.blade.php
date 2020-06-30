@@ -1,24 +1,27 @@
-@extends('layout.head')
+@extends('layout.main')
 @include('layout.menu_proyectos')
 
 @section('cabecera')
 Opciones Comerciales
 @endsection
 
+@section('breadcrumb')
+<ol class="breadcrumb">
+  <li><a href="{{route('proyectos.index')}}"><i class="fas fa-tachometer-alt"></i> Proyectos</a></li>
+  <li>Opción Comercial</li>
+  <li class="active">@yield('cabecera')</li>
+</ol>
+@endsection
+
 @section('content')
 <div class="page-main" type="opcion">
-    <legend class="mylegend">
-        <h2>Gestión de Opciones Comerciales</h2>
-        <ol class="breadcrumb">
-            <li>
-                <button type="submit" class="btn btn-success" data-toggle="tooltip" 
-                data-placement="bottom" title="Crear Opción" 
-                onClick="open_opcion_create();">Crear Opción</button>
-            </li>
-        </ol>
-    </legend>
     <div class="row">
         <div class="col-md-12">
+            <div style="text-align: right;">
+                <button type="submit" class="btn btn-success" data-toggle="tooltip" 
+                    data-placement="bottom" title="Crear Opción" 
+                    onClick="open_opcion_create();">Crear Opción</button>
+            </div>
             <table class="mytable table table-condensed table-bordered table-okc-view" 
                 id="listaOpcion">
                 <thead>
@@ -59,7 +62,12 @@ Opciones Comerciales
     <script src="{{ asset('datatables/JSZip/jszip.min.js') }}"></script>
     <script src="{{ asset('template/plugins/moment.min.js') }}"></script>
 
-    <script src="{{('/js/proyectos/opcion/opcion.js')}}"></script>
-    <script src="{{('/js/logistica/clienteModal.js')}}"></script>
-    <script src="{{('/js/proyectos/variables/add_cliente.js')}}"></script>
+    <script src="{{ asset('js/proyectos/opcion/opcion.js')}}"></script>
+    <script src="{{ asset('js/logistica/clienteModal.js')}}"></script>
+    <script src="{{ asset('js/proyectos/variables/add_cliente.js')}}"></script>
+    <script>
+    $(document).ready(function(){
+        seleccionarMenu(window.location);
+    });
+    </script>
 @endsection

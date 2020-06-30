@@ -1,4 +1,4 @@
-@extends('layout.head')
+@extends('layout.main')
 @include('layout.menu_proyectos')
 @section('option')
     @include('layout.option')
@@ -8,11 +8,19 @@
 Propuesta Cliente
 @endsection
 
+@section('breadcrumb')
+<ol class="breadcrumb">
+  <li><a href="{{route('proyectos.index')}}"><i class="fas fa-tachometer-alt"></i> Proyectos</a></li>
+  <li>Propuestas</li>
+  <li class="active">@yield('cabecera')</li>
+</ol>
+@endsection
+
 @section('content')
 <div class="page-main" type="propuesta">
     <div class="thumbnail" style="padding-left: 10px;padding-right: 10px;">
     <legend class="mylegend">
-        <h2>Propuesta Cliente</h2>
+        <h2>Datos Generales</h2>
         <ol class="breadcrumb" style="background-color: white;">
             <li><label id="codigo"></label></li>
             <li><label id="cod_presint"></label></li>
@@ -186,10 +194,15 @@ Propuesta Cliente
     <script src="{{ asset('datatables/JSZip/jszip.min.js') }}"></script>
     <script src="{{ asset('template/plugins/moment.min.js') }}"></script>
     
-    <script src="{{('/js/proyectos/presupuesto/propuestaModal.js')}}"></script>
-    <script src="{{('/js/proyectos/presupuesto/propuesta.js')}}"></script>
-    <script src="{{('/js/proyectos/presupuesto/titulos.js')}}"></script>
-    <script src="{{('/js/proyectos/opcion/opcionModal.js')}}"></script>
-    <script src="{{('/js/proyectos/presupuesto/presLeccion.js')}}"></script>
-    <script src="{{('/js/proyectos/presupuesto/pardetModal.js')}}"></script>
+    <script src="{{ asset('js/proyectos/presupuesto/propuestaModal.js')}}"></script>
+    <script src="{{ asset('js/proyectos/presupuesto/propuesta.js')}}"></script>
+    <script src="{{ asset('js/proyectos/presupuesto/titulos.js')}}"></script>
+    <script src="{{ asset('js/proyectos/opcion/opcionModal.js')}}"></script>
+    <script src="{{ asset('js/proyectos/presupuesto/presLeccion.js')}}"></script>
+    <script src="{{ asset('js/proyectos/presupuesto/pardetModal.js')}}"></script>
+    <script>
+    $(document).ready(function(){
+        seleccionarMenu(window.location);
+    });
+    </script>
 @endsection

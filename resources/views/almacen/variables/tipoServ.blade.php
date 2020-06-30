@@ -1,5 +1,5 @@
 
-@extends('layout.head')
+@extends('layout.main')
 @include('layout.menu_logistica')
 @section('option')
     @include('layout.option')

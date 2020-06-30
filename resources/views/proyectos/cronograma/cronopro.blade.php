@@ -1,4 +1,4 @@
-@extends('layout.head')
+@extends('layout.main')
 @include('layout.menu_proyectos')
 
 @section('option')
@@ -9,17 +9,18 @@
 Cronograma Propuesta
 @endsection
 
+@section('breadcrumb')
+<ol class="breadcrumb">
+  <li><a href="{{route('proyectos.index')}}"><i class="fas fa-tachometer-alt"></i> Proyectos</a></li>
+  <li>Propuestas</li>
+  <li class="active">@yield('cabecera')</li>
+</ol>
+@endsection
+
 @section('content')
 <div class="page-main" type="cronopro">
     <form id="form-cronopro" type="register" form="formulario">
-        <div class="thumbnail" style="padding-left: 10px;padding-right: 10px;">
-            <legend class="mylegend">
-                <h2>Cronograma de Propuesta Cliente</h2>
-                <ol class="breadcrumb" style="background-color: white;">
-                    <li><label id="codigo"></label></li>
-                    <li><label id="descripcion"></label></li>
-                </ol>
-            </legend>
+        <!-- <div class="thumbnail" style="padding-left: 10px;padding-right: 10px;"> -->
             <div class="row">
                 <input type="text" class="oculto" name="id_presupuesto" primary="ids">
                 <input type="text" class="oculto" name="modo">
@@ -36,13 +37,20 @@ Cronograma Propuesta
                                     <div class="col-md-2">
                                         <h5>Mostrar cronograma en:</h5>
                                     </div>
-                                    <div class="col-md-3">
+                                    <div class="col-md-2">
                                         <select class="form-control group-elemento activation" name="unid_program" disabled="true">
                                             <option value="0">Elija una opción</option>
                                             @foreach ($unid_program as $unid)
                                                 <option value="{{$unid->id_unid_program}}">{{$unid->descripcion}}</option>
                                             @endforeach
                                         </select>
+                                    </div>
+                                    <div class="col-md-1"></div>
+                                    <div class="col-md-2">
+                                        <label id="codigo"></label>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label id="descripcion"></label>
                                     </div>
                                 </div>
                                 <table class="mytable table table-condensed table-bordered table-okc-view" width="100%" 
@@ -96,7 +104,7 @@ Cronograma Propuesta
                     </div>
                 </div>
             </div>
-        </div>
+        <!-- </div> -->
     </form>
 </div>
 @include('proyectos.presupuesto.propuestaModal')
@@ -116,8 +124,13 @@ Cronograma Propuesta
     <script src="{{ asset('datatables/JSZip/jszip.min.js') }}"></script>
     <script src="{{ asset('template/plugins/moment.min.js') }}"></script>
 
-    <script src="{{('/js/proyectos/cronograma/cronopro.js')}}"></script>
-    <script src="{{('/js/proyectos/presupuesto/verAcu.js')}}"></script>
-    <script src="{{('/js/proyectos/presupuesto/propuestaModal.js')}}"></script>
-    <script src="{{('/js/proyectos/presupuesto/presLeccion.js')}}"></script>
+    <script src="{{ asset('js/proyectos/cronograma/cronopro.js')}}"></script>
+    <script src="{{ asset('js/proyectos/presupuesto/verAcu.js')}}"></script>
+    <script src="{{ asset('js/proyectos/presupuesto/propuestaModal.js')}}"></script>
+    <script src="{{ asset('js/proyectos/presupuesto/presLeccion.js')}}"></script>
+    <script>
+    $(document).ready(function(){
+        seleccionarMenu(window.location);
+    });
+    </script>
 @endsection

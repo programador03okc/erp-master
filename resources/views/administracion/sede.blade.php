@@ -1,4 +1,4 @@
-@extends('layout.head')
+@extends('layout.main')
 @include('layout.menu_admin')
 @section('option')
     @include('layout.option')

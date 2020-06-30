@@ -1,4 +1,4 @@
-@extends('layout.head')
+@extends('layout.main')
 @include('layout.menu_proyectos')
 @section('option')
     @include('layout.option')
@@ -8,17 +8,29 @@
 Cronograma de Ejecución
 @endsection
 
+@section('breadcrumb')
+<ol class="breadcrumb">
+  <li><a href="{{route('proyectos.index')}}"><i class="fas fa-tachometer-alt"></i> Proyectos</a></li>
+  <li>Ejecución</li>
+  <li class="active">@yield('cabecera')</li>
+</ol>
+@endsection
+
+@section('estilos')
+<link rel="stylesheet" href="{{ asset('template/plugins/gantt/dhtmlxgantt.css') }}">
+@endsection
+
 @section('content')
 <div class="page-main" type="cronoeje">
     <form id="form-cronoeje" type="register" form="formulario">
-        <div class="thumbnail" style="padding-left: 10px;padding-right: 10px;">
-            <legend class="mylegend">
-                <h2>Cronograma de Ejecución</h2>
+        <!-- <div class="thumbnail" style="padding-left: 10px;padding-right: 10px;"> -->
+            <!-- <legend class="mylegend">
+                <h2>Datos Generales</h2>
                 <ol class="breadcrumb" style="background-color: white;">
                     <li><label id="codigo"></label></li>
                     <li><label id="descripcion"></label></li>
                 </ol>
-            </legend>
+            </legend> -->
             <div class="row">
                 <input type="text" class="oculto" name="id_presupuesto" primary="ids">
                 <input type="text" class="oculto" name="modo">
@@ -43,12 +55,13 @@ Cronograma de Ejecución
                                             @endforeach
                                         </select>
                                     </div>
-                                    {{-- <div class="col-md-2">
-                                        <h5>Fecha de Inicio:</h5>
+                                    <div class="col-md-1"></div>
+                                    <div class="col-md-2">
+                                        <label id="codigo"></label>
                                     </div>
                                     <div class="col-md-2">
-                                        <input type="date" class="form-control activation" name="fecha_inicio_crono"/>
-                                    </div> --}}
+                                        <label id="descripcion"></label>
+                                    </div>
                                 </div>
                                 <table class="mytable table table-condensed table-bordered table-okc-view" width="100%" 
                                     id="listaPartidas" style="margin-top:10px;">
@@ -105,7 +118,7 @@ Cronograma de Ejecución
                     </div>
                 </div>
             </div>
-        </div>
+        <!-- </div> -->
     </form>
 </div>
 @include('proyectos.presupuesto.presejeModal')
@@ -124,9 +137,15 @@ Cronograma de Ejecución
     <script src="{{ asset('datatables/pdfmake/vfs_fonts.js') }}"></script>
     <script src="{{ asset('datatables/JSZip/jszip.min.js') }}"></script>
     <script src="{{ asset('template/plugins/moment.min.js') }}"></script>
+    <script src="{{ asset('template/plugins/gantt/dhtmlxgantt.js') }}"></script>
 
     <script src="{{('/js/proyectos/cronograma/cronoeje.js')}}"></script>
     <script src="{{('/js/proyectos/presupuesto/verAcu.js')}}"></script>
     <script src="{{('/js/proyectos/presupuesto/presejeModal.js')}}"></script>
     <script src="{{('/js/proyectos/presupuesto/presLeccion.js')}}"></script>
+    <script>
+    $(document).ready(function(){
+        seleccionarMenu(window.location);
+    });
+    </script>
 @endsection

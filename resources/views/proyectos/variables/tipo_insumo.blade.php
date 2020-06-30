@@ -6,9 +6,16 @@
 Tipo de Insumos
 @endsection
 
+@section('breadcrumb')
+<ol class="breadcrumb">
+  <li><a href="{{route('proyectos.index')}}"><i class="fas fa-tachometer-alt"></i> Proyectos</a></li>
+  <li>Variables de Entorno</li>
+  <li class="active">Tipo de Insumos</li>
+</ol>
+@endsection
+
 @section('content')
 <div class="page-main" type="tipo_insumo">
-    <legend><h2>Tipo de Insumos</h2></legend>
     <div class="row">
         <div class="col-md-6">
             <fieldset class="group-table">
@@ -75,7 +82,7 @@ Tipo de Insumos
     <script src="{{ asset('datatables/JSZip/jszip.min.js') }}"></script>
     <script src="{{ asset('template/plugins/moment.min.js') }}"></script>
 
-    <script src="{{asset('js/proyectos/variables/tipo_insumo.js')}}"></script>
+    <script src="{{ asset('js/proyectos/variables/tipo_insumo.js') }}"></script>
     <script>
     $(document).ready(function(){
         seleccionarMenu(window.location);

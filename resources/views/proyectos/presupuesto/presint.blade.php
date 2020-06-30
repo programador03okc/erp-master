@@ -1,4 +1,4 @@
-@extends('layout.head')
+@extends('layout.main')
 @include('layout.menu_proyectos')
 @section('option')
     @include('layout.option')
@@ -8,20 +8,24 @@
 Presupuesto Interno
 @endsection
 
+@section('breadcrumb')
+<ol class="breadcrumb">
+  <li><a href="{{route('proyectos.index')}}"><i class="fas fa-tachometer-alt"></i> Proyectos</a></li>
+  <li>Opción Comercial</li>
+  <li class="active">@yield('cabecera')</li>
+</ol>
+@endsection
+
 @section('content')
 <div class="page-main" type="presint">
     <form id="form-presint" type="register" form="formulario">
         <div class="thumbnail" style="padding-left: 10px;padding-right: 10px;">
             <legend class="mylegend">
-                <h2>Presupuesto Interno</h2>
+                <h2>Datos Generales</h2>
                 <ol class="breadcrumb" style="background-color: white;">
                     <li><label id="codigo"></label></li>
                     <li><label id="version" class="label label-default"></label></li>
                     <li><label>Estado:  <span id="des_estado"></span></h5></li>
-                    {{-- <li><i id="cronograma" class="fas fa-calendar-alt blue" id="basic-addon2" 
-                        data-toggle="tooltip" data-placement="bottom" title="Cronograma generado" ></i></li>
-                    <li><i id="cronoval" class="fas fa-donate green" id="basic-addon2" 
-                        data-toggle="tooltip" data-placement="bottom" title="Cronograma Valorizado generado" ></i></li> --}}
                 </ol>
             </legend>
             <div class="row">
@@ -327,26 +331,31 @@ Presupuesto Interno
     <script src="{{ asset('datatables/JSZip/jszip.min.js') }}"></script>
     <script src="{{ asset('template/plugins/moment.min.js') }}"></script>
 
-    <script src="{{('/js/proyectos/presupuesto/presint.js')}}"></script>
-    <script src="{{('/js/proyectos/presupuesto/presintModal.js')}}"></script>
-    <script src="{{('/js/proyectos/presupuesto/presintCopiaModal.js')}}"></script>
-    <script src="{{('/js/proyectos/presupuesto/partidaCDCreate.js')}}"></script>
-    <script src="{{('/js/proyectos/presupuesto/verAcu.js')}}"></script>
-    <script src="{{('/js/proyectos/presupuesto/verPartidaInsumo.js')}}"></script>
-    <script src="{{('/js/proyectos/variables/add_unid_med.js')}}"></script>
+    <script src="{{ asset('js/proyectos/presupuesto/presint.js')}}"></script>
+    <script src="{{ asset('js/proyectos/presupuesto/presintModal.js')}}"></script>
+    <script src="{{ asset('js/proyectos/presupuesto/presintCopiaModal.js')}}"></script>
+    <script src="{{ asset('js/proyectos/presupuesto/partidaCDCreate.js')}}"></script>
+    <script src="{{ asset('js/proyectos/presupuesto/verAcu.js')}}"></script>
+    <script src="{{ asset('js/proyectos/presupuesto/verPartidaInsumo.js')}}"></script>
+    <script src="{{ asset('js/proyectos/variables/add_unid_med.js')}}"></script>
     
-    <script src="{{('/js/proyectos/presupuesto/partidaCICreate.js')}}"></script>
-    <script src="{{('/js/proyectos/presupuesto/partidaGGCreate.js')}}"></script>
-    <script src="{{('/js/proyectos/presupuesto/compo_cd.js')}}"></script>
-    <script src="{{('/js/proyectos/presupuesto/compo_ci.js')}}"></script>
-    <script src="{{('/js/proyectos/presupuesto/compo_gg.js')}}"></script>
-    <script src="{{('/js/proyectos/acus/acuPartidaModal.js')}}"></script>
-    <script src="{{('/js/proyectos/acus/acuPartidaCreate.js')}}"></script>
-    <script src="{{('/js/proyectos/acus/acuCreate.js')}}"></script>
-    <script src="{{('/js/proyectos/acus/acuModal.js')}}"></script>
-    <script src="{{('/js/proyectos/insumos/insumoModal.js')}}"></script>
-    <script src="{{('/js/proyectos/insumos/insumoPrecioModal.js')}}"></script>
-    <script src="{{('/js/proyectos/insumos/insumoCreate.js')}}"></script>
-    <script src="{{('/js/proyectos/opcion/opcionModal.js')}}"></script>
-    <script src="{{('/js/proyectos/presupuesto/presLeccion.js')}}"></script>
+    <script src="{{ asset('js/proyectos/presupuesto/partidaCICreate.js')}}"></script>
+    <script src="{{ asset('js/proyectos/presupuesto/partidaGGCreate.js')}}"></script>
+    <script src="{{ asset('js/proyectos/presupuesto/compo_cd.js')}}"></script>
+    <script src="{{ asset('js/proyectos/presupuesto/compo_ci.js')}}"></script>
+    <script src="{{ asset('js/proyectos/presupuesto/compo_gg.js')}}"></script>
+    <script src="{{ asset('js/proyectos/acus/acuPartidaModal.js')}}"></script>
+    <script src="{{ asset('js/proyectos/acus/acuPartidaCreate.js')}}"></script>
+    <script src="{{ asset('js/proyectos/acus/acuCreate.js')}}"></script>
+    <script src="{{ asset('js/proyectos/acus/acuModal.js')}}"></script>
+    <script src="{{ asset('js/proyectos/insumos/insumoModal.js')}}"></script>
+    <script src="{{ asset('js/proyectos/insumos/insumoPrecioModal.js')}}"></script>
+    <script src="{{ asset('js/proyectos/insumos/insumoCreate.js')}}"></script>
+    <script src="{{ asset('js/proyectos/opcion/opcionModal.js')}}"></script>
+    <script src="{{ asset('js/proyectos/presupuesto/presLeccion.js')}}"></script>
+    <script>
+    $(document).ready(function(){
+        seleccionarMenu(window.location);
+    });
+    </script>
 @endsection

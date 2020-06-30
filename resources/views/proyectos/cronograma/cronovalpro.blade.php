@@ -1,4 +1,4 @@
-@extends('layout.head')
+@extends('layout.main')
 @include('layout.menu_proyectos')
 @section('option')
     @include('layout.option')
@@ -8,11 +8,19 @@
 Cronograma Valorizado Propuesta
 @endsection
 
+@section('breadcrumb')
+<ol class="breadcrumb">
+  <li><a href="{{route('proyectos.index')}}"><i class="fas fa-tachometer-alt"></i> Proyectos</a></li>
+  <li>Propuestas</li>
+  <li class="active">@yield('cabecera')</li>
+</ol>
+@endsection
+
 @section('content')
 <div class="page-main" type="cronovalpro">
     <form id="form-cronovalpro" type="register" form="formulario">
-        <div class="thumbnail" style="padding-left: 10px;padding-right: 10px;">
-            <legend class="mylegend">
+    <div class="thumbnail" style="padding-left: 20px;padding-right: 10px;padding-top: 20px;">
+            <!-- <legend class="mylegend">
                 <h2>Cronograma Valorizado de la Propuesta</h2>
                 <ol class="breadcrumb" style="background-color: white;">
                     <li><label id="codigo"></label></li>
@@ -22,7 +30,7 @@ Cronograma Valorizado Propuesta
                         data-toggle="tooltip" data-placement="bottom" 
                         title="Exportar a Excel" onclick="exportTableToExcel('listaPartidas','CronogramaValorizado')"></i></li>
                 </ol>
-            </legend>
+            </legend> -->
             <div class="row">
                 <div class="col-md-1">
                     <h5>Propuesta:</h5>
@@ -52,6 +60,22 @@ Cronograma Valorizado Propuesta
                 <div class="col-md-1">
                     <input type="button" class="form-control btn btn-success" name="btn_actualizar" disabled="true"
                     onClick="mostrar_cronoval_propuesta();" style="width:100px;" value="Actualizar"/>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-3">
+                    Código de la Propuesta: <label id="codigo"></label>
+                </div>
+                <div class="col-md-3">
+                    Duración Total: <label id="duracion"></label>
+                </div>
+                <div class="col-md-3">
+                    Sub Total: <label id="importe"></label>
+                </div>
+                <div class="col-md-3">
+                    Descargar <i class="fas fa-file-excel icon-tabla green boton"
+                        data-toggle="tooltip" data-placement="bottom" 
+                        title="Exportar a Excel" onclick="exportTableToExcel('listaPartidas','CronogramaValorizado')"></i>
                 </div>
             </div>
             <div class="row">
@@ -90,8 +114,14 @@ Cronograma Valorizado Propuesta
     <script src="{{ asset('datatables/pdfmake/vfs_fonts.js') }}"></script>
     <script src="{{ asset('datatables/JSZip/jszip.min.js') }}"></script>
     <script src="{{ asset('template/plugins/moment.min.js') }}"></script>
+    <script src="{{ asset('template/plugins/js-xlsx/xlsx.full.min.js') }}"></script>
 
-    <script src="{{('/js/proyectos/cronograma/cronovalpro.js')}}"></script>
-    <script src="{{('/js/proyectos/presupuesto/propuestaModal.js')}}"></script>
-    <script src="{{('/js/proyectos/cronograma/cronovalproImportes.js')}}"></script>
+    <script src="{{ asset('js/proyectos/cronograma/cronovalpro.js')}}"></script>
+    <script src="{{ asset('js/proyectos/presupuesto/propuestaModal.js')}}"></script>
+    <script src="{{ asset('js/proyectos/cronograma/cronovalproImportes.js')}}"></script>
+    <script>
+    $(document).ready(function(){
+        seleccionarMenu(window.location);
+    });
+    </script>
 @endsection

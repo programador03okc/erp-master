@@ -1,24 +1,27 @@
-@extends('layout.head')
+@extends('layout.main')
 @include('layout.menu_proyectos')
 
 @section('cabecera')
 Residentes
 @endsection
 
+@section('breadcrumb')
+<ol class="breadcrumb">
+  <li><a href="{{route('proyectos.index')}}"><i class="fas fa-tachometer-alt"></i> Proyectos</a></li>
+  <li>Ejecución</li>
+  <li class="active">@yield('cabecera')</li>
+</ol>
+@endsection
+
 @section('content')
 <div class="page-main" type="residente">
-    <legend class="mylegend">
-        <h2>Gestión de Residentes</h2>
-        <ol class="breadcrumb">
-            <li>
-                <button type="submit" class="btn btn-success" data-toggle="tooltip" 
-                data-placement="bottom" title="Crear Residente" 
-                onClick="open_residente_create('');">Crear Residente</button>
-            </li>
-        </ol>
-    </legend>
     <div class="row">
         <div class="col-md-12">
+            <div style="text-align: right;">
+                <button type="submit" class="btn btn-success" data-toggle="tooltip" 
+                    data-placement="bottom" title="Crear Residente" 
+                    onClick="open_residente_create('');">Crear Residente</button>
+            </div>
             <table class="mytable table table-condensed table-bordered table-okc-view" 
                 id="listaResidentes">
                 <thead>
@@ -54,7 +57,12 @@ Residentes
     <script src="{{ asset('datatables/JSZip/jszip.min.js') }}"></script>
     <script src="{{ asset('template/plugins/moment.min.js') }}"></script>
 
-    <script src="{{('/js/proyectos/residentes/residentes.js')}}"></script>
-    <script src="{{('/js/proyectos/residentes/trabajadorModal.js')}}"></script>
-    <script src="{{('/js/proyectos/proyecto/proyectoModal.js')}}"></script>
+    <script src="{{ asset('js/proyectos/residentes/residentes.js')}}"></script>
+    <script src="{{ asset('js/proyectos/residentes/trabajadorModal.js')}}"></script>
+    <script src="{{ asset('js/proyectos/proyecto/proyectoModal.js')}}"></script>
+    <script>
+    $(document).ready(function(){
+        seleccionarMenu(window.location);
+    });
+    </script>
 @endsection
