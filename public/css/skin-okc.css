@@ -61,7 +61,8 @@
 }
 .skin-okc .wrapper,
 .skin-okc .main-sidebar,
-.skin-okc .left-side {
+.skin-okc .left-side,
+.box-body {
   background-color: #8f1c1c;
 }
 .skin-okc .user-panel > .info,

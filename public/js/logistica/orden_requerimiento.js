@@ -1,12 +1,30 @@
-var detalleRequerimientoSelected = [];
+var rutaRequerimientosPendientes, 
+rutaRequerimientosAtendidos,
+rutaRequerimientoOrden,
+rutaGuardarOrdenPorRequerimiento,
+rutaRevertirOrdenPorRequerimiento
+;
 
-$(function(){
+function inicializar(
+    _rutaRequerimientosPendientes,
+    _rutaRequerimientosAtendidos,
+    _rutaRequerimientoOrden,
+    _rutaGuardarOrdenPorRequerimiento,
+    _rutaRevertirOrdenPorRequerimiento
+    ) {
+    
+    rutaRequerimientosPendientes = _rutaRequerimientosPendientes;
+    rutaRequerimientosAtendidos = _rutaRequerimientosAtendidos;
+    rutaRequerimientoOrden = _rutaRequerimientoOrden;
+    rutaGuardarOrdenPorRequerimiento = _rutaGuardarOrdenPorRequerimiento;
+    rutaRevertirOrdenPorRequerimiento = _rutaRevertirOrdenPorRequerimiento;
+
     listar_requerimientos_pendientes();
     listar_requerimientos_atendidos();
-});
+}
 
+var detalleRequerimientoSelected = [];
 
- 
 
 function listar_requerimientos_pendientes(){
     var vardataTables = funcDatatables();
@@ -16,7 +34,7 @@ function listar_requerimientos_pendientes(){
         'language' : vardataTables[0],
         'order': [[0, 'desc']],
         'destroy' : true,
-        'ajax': '/listar_requerimientos_pendientes',
+        'ajax': rutaRequerimientosPendientes,
         'columns': [
             {'data': 'id_requerimiento'},
             {'data': 'codigo'},
@@ -47,7 +65,7 @@ function listar_requerimientos_atendidos(){
         'language' : vardataTables[0],
         'order': [[0, 'desc']],
         'destroy' : true,
-        'ajax': '/listar_requerimientos_atendidos',
+        'ajax': rutaRequerimientosAtendidos,
         'columns': [
             {'data': 'id_requerimiento'},
             {'data': 'codigo'},
@@ -81,7 +99,7 @@ function eliminarAtencionOrdenRequerimiento(obj){
     if (ask == true){
         $.ajax({
             type: 'PUT',
-            url: '/revertir_orden_requerimiento/'+id_orden+'/'+id_requerimiento,
+            url: rutaRevertirOrdenPorRequerimiento+'/'+id_orden+'/'+id_requerimiento,
             beforeSend: function(){
             },
             success: function(response){
@@ -116,7 +134,7 @@ function openModalOrdenRequerimiento(obj){
 function obtenerRequerimiento(id){
     $.ajax({
         type: 'GET',
-        url: '/get_requerimiento_orden/'+id,
+        url: rutaRequerimientoOrden+'/'+id,
         dataType: 'JSON',
         success: function(response){
             detalleRequerimientoSelected=response.det_req;
@@ -145,7 +163,7 @@ function guardar_orden_requerimiento(data){
     console.log(data);
     $.ajax({
         type: 'POST',
-        url: '/guardar_orden_por_requerimiento',
+        url: rutaGuardarOrdenPorRequerimiento,
         data: data,
         dataType: 'JSON',
         success: function(response){
@@ -154,6 +172,7 @@ function guardar_orden_requerimiento(data){
                 alert('Orden de registrada con éxito');
                 $('#modal-orden-requerimiento').modal('hide');
                 $('#listaRequerimientosPendientes').DataTable().ajax.reload();
+                $('#listaRequerimientosAtendidos').DataTable().ajax.reload();
             }
         }
     }).fail( function( jqXHR, textStatus, errorThrown ){

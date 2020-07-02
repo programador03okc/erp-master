@@ -13,6 +13,8 @@
 
 @section('content')
 <div class="page-main" type="requerimiento">
+<form id="form-requerimiento" type="register" form="formulario">
+
     <legend>
         <div class="row row-no-gutters">
             <div class="col-md-12">
@@ -61,7 +63,6 @@
 
  
     </legend>
-    <form id="form-requerimiento" type="register" form="formulario">
         
         <input type="hidden" name="id_usuario_session">
         <input type="hidden" name="id_usuario_req">
@@ -323,14 +324,29 @@
     <script src="{{ asset('datatables/pdfmake/pdfmake.min.js') }}"></script>
     <script src="{{ asset('datatables/pdfmake/vfs_fonts.js') }}"></script>
     <script src="{{ asset('datatables/JSZip/jszip.min.js') }}"></script>
-    <script src="{{ asset('/js/logistica/requerimiento.js') }}"></script>
-    <script src="{{ asset('/js/publico/modal_area.js')}}"></script>
-    <script src="{{ asset('/js/proyectos/opcion/opcionModal.js')}}"></script>
-    <script src="{{ asset('/js/publico/ubigeoModal.js')}}"></script>
-    <script src="{{ asset('/js/publico/personaModal.js')}}"></script>
-    <script src="{{ asset('/js/publico/hiddenElement.js')}}"></script>
-    <script src="{{ asset('/js/logistica/clienteModal.js')}}"></script>
-    <script src="{{ asset('/js/logistica/add_cliente.js')}}"></script>
-    <script src="{{ asset('/js/almacen/producto/saldosModal.js')}}"></script>
-    <script src="{{ asset('/js/publico/consulta_sunat.js')}}"></script>
+    <script src="{{ asset('js/logistica/requerimiento.js') }}"></script>
+    <script src="{{ asset('js/publico/modal_area.js')}}"></script>
+    <script src="{{ asset('js/proyectos/opcion/opcionModal.js')}}"></script>
+    <script src="{{ asset('js/publico/ubigeoModal.js')}}"></script>
+    <script src="{{ asset('js/publico/personaModal.js')}}"></script>
+    <script src="{{ asset('js/publico/hiddenElement.js')}}"></script>
+    <script src="{{ asset('js/logistica/clienteModal.js')}}"></script>
+    <script src="{{ asset('js/logistica/add_cliente.js')}}"></script>
+    <script src="{{ asset('js/almacen/producto/saldosModal.js')}}"></script>
+    <script src="{{ asset('js/publico/consulta_sunat.js')}}"></script>
+    <script>
+    $(document).ready(function(){
+        seleccionarMenu(window.location);
+        inicializar(
+            "{{route('logistica.gestion-logistica.requerimiento.elaboracion.lista-modal')}}",
+            "{{route('logistica.gestion-logistica.requerimiento.elaboracion.mostrar-requerimiento')}}",
+            "{{route('logistica.gestion-logistica.requerimiento.elaboracion.guardar')}}",
+            "{{route('logistica.gestion-logistica.requerimiento.elaboracion.actualizar')}}",
+            "{{route('logistica.gestion-logistica.requerimiento.elaboracion.anular')}}",
+            "{{route('logistica.gestion-logistica.requerimiento.elaboracion.select-sede-by-empresa')}}",
+            "{{route('logistica.gestion-logistica.requerimiento.elaboracion.copiar-requerimiento')}}"
+            );
+        
+    });
+    </script>
 @endsection

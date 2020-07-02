@@ -325,5 +325,14 @@
     <script src="{{('/js/logistica/add_proveedor.js')}}"></script>
     <script src="{{('/js/logistica/add_contacto.js')}}"></script>
     <script src="{{('/js/publico/consulta_sunat.js')}}"></script>
-
+    <script>
+    $(document).ready(function(){
+        seleccionarMenu(window.location);
+        inicializar(
+            "{{route('logistica.gestion-logistica.cotizacion.gestionar.select-sede-by-empresa')}}",
+            "{{route('logistica.gestion-logistica.cotizacion.gestionar.telefonos-cliente')}}",
+            "{{route('logistica.gestion-logistica.cotizacion.gestionar.direcciones-cliente')}}"
+            );
+    });
+    </script>
 @endsection

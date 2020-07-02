@@ -111,6 +111,21 @@
     <script src="{{ asset('datatables/pdfmake/pdfmake.min.js') }}"></script>
     <script src="{{ asset('datatables/pdfmake/vfs_fonts.js') }}"></script>
     <script src="{{ asset('datatables/JSZip/jszip.min.js') }}"></script>
-    <script src="{{('/js/logistica/listar_requerimiento.js')}}"></script>
-    <script src="{{('/js/logistica/aprobacion/aprobacion.js')}}"></script>
+
+    <script src="{{asset('js/logistica/listar_requerimiento.js')}}"></script>
+    <script src="{{asset('js/logistica/aprobacion/aprobacion.js')}}"></script>
+
+    <script>
+    $(document).ready(function(){
+        seleccionarMenu(window.location);
+        inicializar(
+            "{{route('logistica.gestion-logistica.requerimiento.gestionar.listar')}}",
+            "{{route('logistica.gestion-logistica.requerimiento.gestionar.empresa')}}",
+            "{{route('logistica.gestion-logistica.requerimiento.gestionar.select-sede-by-empresa')}}",
+            "{{route('logistica.gestion-logistica.requerimiento.gestionar.select-grupo-by-sede')}}",
+            "{{route('logistica.gestion-logistica.requerimiento.gestionar.ver-flujos')}}",
+            "{{route('logistica.gestion-logistica.requerimiento.gestionar.explorar-requerimiento')}}"
+            );
+     });
+    </script>
 @endsection

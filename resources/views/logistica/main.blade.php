@@ -50,4 +50,9 @@
 </div>
 @endsection
 @section('scripts')
+<script>
+    $(document).ready(function(){
+        seleccionarMenu(window.location);
+    });
+</script>
 @endsection
