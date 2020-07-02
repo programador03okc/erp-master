@@ -9,11 +9,6 @@
 
 @section('content')
 <div class="page-main" type="orden-requerimiento">
-
-    <legend class="mylegend">
-        <h2>Generar Orden</h2>
-    </legend>
-
         <div class="row">
             <div class="col-md-12">
                 <div>
