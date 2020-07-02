@@ -1114,6 +1114,7 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::post('copiar-requerimiento/{id?}', 'LogisticaController@copiar_requerimiento')->name('copiar-requerimiento');
 					Route::get('telefonos-cliente/{id_persona?}/{id_cliente?}', 'LogisticaController@telefonos_cliente')->name('telefonos-cliente');
 					Route::get('direcciones-cliente/{id_persona?}/{id_cliente?}', 'LogisticaController@direcciones_cliente')->name('direcciones-cliente');
+					Route::get('listar_ubigeos', 'AlmacenController@listar_ubigeos');
 
 				});
 				Route::group(['as' => 'gestionar.', 'prefix' => 'gestionar'], function(){
@@ -1143,6 +1144,8 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::get('requerimiento-orden/{id?}', 'LogisticaController@get_requerimiento_orden')->name('requerimiento-orden'); 
 					Route::post('guardar', 'LogisticaController@guardar_orden_por_requerimiento')->name('guardar');
 					Route::put('revertir/{id_orden?}/{id_requerimiento?}', 'LogisticaController@revertir_orden_requerimiento')->name('revertir');
+					Route::get('mostrar_proveedores', 'LogisticaController@mostrar_proveedores');
+
 				
 					});
 				});
