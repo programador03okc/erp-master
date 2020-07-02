@@ -1070,7 +1070,7 @@ function detalleRequerimientoModal(event,index){
                 });
                 $('[name=id_almacen]').show();
     
-                // cargar_almacenes(sede);
+                cargar_almacenes(sede);
                 document.querySelector("div[id='modal-detalle-requerimiento'] input[name='fecha_entrega_item']").value='';
                 document.querySelector("div[id='modal-detalle-requerimiento'] input[name='lugar_entrega_item']").value='';
                 document.querySelector("div[id='modal-detalle-requerimiento'] input[name='des_partida']").value='';
@@ -2258,6 +2258,9 @@ function llenarUbigeo(){
     var name_ubigeo =document.querySelector("select[name='sede']").options[document.querySelector("select[name='sede']").selectedIndex].dataset.nameUbigeo;
     document.querySelector("input[name='ubigeo']").value=ubigeo;
     document.querySelector("input[name='name_ubigeo']").value=name_ubigeo;
+    
+    var sede = $('[name=sede]').val();
+    cargar_almacenes(sede);
 }
 
 function llenarSelectSede(array){
@@ -2364,7 +2367,7 @@ function cargar_almacenes(sede){
     if (sede !== ''){
         $.ajax({
             type: 'GET',
-            url: '/cargar_almacenes/'+sede,
+            url: 'cargar_almacenes/'+sede,
             dataType: 'JSON',
             success: function(response){
                 console.log(response);

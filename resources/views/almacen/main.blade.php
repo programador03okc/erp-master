@@ -17,7 +17,7 @@
                         <h3>{{$cantidad_despachos_pendientes}}</h3>
                         <p style="font-size:15px;display:flex;width:20px;">Despachos Pendientes</p>
                     </div>
-                    <a href="ordenesDespacho" class="small-box-footer">Ir <i class="fa fa-arrow-circle-right"></i></a>
+                    <a href="{{route('almacen.distribucion.despachos.index')}}" class="small-box-footer">Ir <i class="fa fa-arrow-circle-right"></i></a>
                 <!-- </div> -->
             </div>
         </div>
@@ -30,7 +30,7 @@
                         <h3>{{$cantidad_ingresos_pendientes}}</h3>
                         <p style="font-size:15px;display:flex;width:20px;">Ingresos Pendientes</p>
                     </div>
-                    <a href="ordenesPendientes" class="small-box-footer">Ir <i class="fa fa-arrow-circle-right"></i></a>
+                    <a href="{{route('almacen.movimientos.pendientes-ingreso.index')}}" class="small-box-footer">Ir <i class="fa fa-arrow-circle-right"></i></a>
                 <!-- </div> -->
             </div>
         </div>
@@ -43,7 +43,7 @@
                         <h3>{{$cantidad_salidas_pendientes}}</h3>
                         <p style="font-size:15px;display:flex;width:20px;">Salidas Pendientes</p>
                     </div>
-                    <a href="despachosPendientes" class="small-box-footer">Ir <i class="fa fa-arrow-circle-right"></i></a>
+                    <a href="{{route('almacen.movimientos.pendientes-salida.index')}}" class="small-box-footer">Ir <i class="fa fa-arrow-circle-right"></i></a>
                 <!-- </div> -->
             </div>
         </div>
@@ -56,7 +56,7 @@
                     <h3>{{$cantidad_transferencias_pendientes}}</h3>
                     <p style="font-size:15px;display:flex;width:20px;">Transferencias Pendientes</p>
                 </div>
-                <a href="listar_transferencias" class="small-box-footer">Ir <i class="fa fa-arrow-circle-right"></i></a>
+                <a href="{{route('almacen.transferencias.gestion-transferencias.index')}}" class="small-box-footer">Ir <i class="fa fa-arrow-circle-right"></i></a>
                 <!-- </div> -->
             </div>
         </div>
@@ -86,7 +86,7 @@
                         <h3>{{$cantidad_pagos_pendientes}}</h3>
                         <p style="font-size:15px;display:flex;width:20px;">Confirmaciones de Pago</p>
                     </div>
-                    <a href="requerimientoPagos" class="small-box-footer">Ir <i class="fa fa-arrow-circle-right"></i></a>
+                    <a href="{{route('almacen.pagos.confirmacion-pagos.index')}}" class="small-box-footer">Ir <i class="fa fa-arrow-circle-right"></i></a>
             </div>
         </div>
     </div>

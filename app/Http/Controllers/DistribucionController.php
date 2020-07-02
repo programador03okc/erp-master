@@ -202,6 +202,7 @@ class DistribucionController extends Controller
         ->join('almacen.mov_alm','mov_alm.id_mov_alm','=','mov_alm_det.id_mov_alm')
         ->join('almacen.guia_com','guia_com.id_guia','=','mov_alm.id_guia_com')
         ->join('logistica.log_ord_compra','log_ord_compra.id_orden_compra','=','guia_com.id_oc')
+        ->join('almacen.alm_req','alm_req.id_requerimiento','=','log_ord_compra.id_requerimiento')
         ->where([['log_ord_compra.id_requerimiento','=',$id_requerimiento]])
         ->get();
         return response()->json($data);
