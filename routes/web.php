@@ -739,6 +739,8 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::post('listarRequerimientosConfirmadosPagos', 'DistribucionController@listarRequerimientosConfirmadosPagos');
 				Route::post('pago_confirmado', 'DistribucionController@pago_confirmado');
 				Route::post('pago_no_confirmado', 'DistribucionController@pago_no_confirmado');
+				Route::get('verDetalleRequerimiento/{id}', 'DistribucionController@verDetalleRequerimiento');
+
 
 			});
 

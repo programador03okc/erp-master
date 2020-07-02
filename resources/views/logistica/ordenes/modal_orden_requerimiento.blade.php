@@ -12,7 +12,7 @@
                     <div class="row">
                         <div class="col-md-4"  id="group-tipo_orden">
                             <h5>Tipo</h5>
-                            <select class="form-control js-example-basic-single" 
+                            <select class="form-control" 
                                 name="id_tipo_doc" disabled>
                                 <option value="0">Elija una opción</option>
                                 @foreach ($tp_documento as $tp)

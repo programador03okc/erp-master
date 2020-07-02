@@ -10,7 +10,7 @@ function open_detalle_requerimiento(data){
 function listar_detalle_requerimiento(id_requerimiento, idTabla){
     $.ajax({
         type: 'GET',
-        url: '/verDetalleRequerimiento/'+id_requerimiento,
+        url: 'verDetalleRequerimiento/'+id_requerimiento,
         dataType: 'JSON',
         success: function(response){
             console.log(response);
