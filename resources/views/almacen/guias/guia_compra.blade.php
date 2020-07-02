@@ -1,4 +1,4 @@
-@extends('layout.head')
+@extends('layout.main')
 @include('layout.menu_almacen')
 
 @section('option')
@@ -6,25 +6,31 @@
 @endsection
 
 @section('cabecera')
-Guía de Compra / Ingreso
+Guía de Compra - Ingreso
 @endsection
 
 @section('estilos')
 <link rel="stylesheet" href="{{ asset('template/plugins/select2/select2.css') }}">
 @endsection
 
+@section('breadcrumb')
+<ol class="breadcrumb">
+  <li><a href="{{route('almacen.index')}}"><i class="fas fa-tachometer-alt"></i> Almacén</a></li>
+  <li>Movimientos</li>
+  <li class="active">@yield('cabecera')</li>
+</ol>
+@endsection
+
 @section('content')
 
 <div class="page-main" type="guia_compra">
-    <legend class="mylegend">
-        <h2 id="titulo">Guía de Compra / Ingreso</h2>
+    <!-- <legend class="mylegend">
+        <h2 id="titulo">Datos Generales</h2>
         <ol class="breadcrumb">
-            <li><h5>Estado:  <span id="des_estado"></span></h5></li>
+            <li></li>
             <li><label id="tp_doc_abreviatura"></label> - <label id="serie"></label> - <label id="numero"></label></li>
-            <li><label id="tp_doc"></label> - <label id="doc_serie"></label> - <label id="doc_numero"></label>
-                <button type="submit" class="btn btn-success" data-toggle="tooltip" 
-                data-placement="bottom" title="Generar Ingreso a Almacén" 
-                onClick="generar_ingreso();"><i class="fas fa-angle-double-right"></i> Ingreso </button>
+            <li> -->
+                
                 <!-- <button type="submit" class="btn btn-warning" data-toggle="tooltip" 
                 data-placement="bottom" title="Generar Orden de Despacho" 
                 onClick="generar_orden_despacho();"><i class="fas fa-angle-double-right"></i> Ord. Despacho </button> -->
@@ -36,13 +42,11 @@ Guía de Compra / Ingreso
                 <!-- <button type="button" class="btn btn-warning" data-toggle="tooltip" 
                     data-placement="bottom" title="Ver Factura" 
                     onClick="abrir_doc();"><i class="fas fa-file-alt"></i></button> -->
-                <button type="button" class="btn btn-info" data-toggle="tooltip" 
-                    data-placement="bottom" title="Ver Ingreso a Almacén" 
-                    onClick="abrir_ingreso();"><i class="fas fa-file-alt"></i></button>
-            </li>
+                
+            <!-- </li>
         </ol>
-    </legend>
-    <div class="col-md-12" id="tab-guia_compra">
+    </legend> -->
+    <div class="col-md-12" id="tab-guia_compra" style="padding-left:0px;padding-right:0px;">
         <ul class="nav nav-tabs" id="myTab">
             <li class="active"><a type="#general">Datos Generales</a></li>
             <li class=""><a type="#detalle">Detalle de Items</a></li>
@@ -54,6 +58,23 @@ Guía de Compra / Ingreso
                 <input type="hidden" name="_token" value="{{csrf_token()}}" id="token">
                 <input type="text" class="oculto" name="id_guia" primary="ids">
                 <input type="text" class="oculto" name="id_doc_com">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <h5>Estado:  <span id="des_estado"></span></h5>
+                        </div>
+                        <div class="col-md-3">
+                            <label id="tp_doc"></label> - <label id="doc_serie"></label> - <label id="doc_numero"></label>
+                        </div>
+                        <div class="col-md-4"></div>
+                        <div class="col-md-2" style="text-align:right;">
+                            <button type="submit" class="btn btn-success" data-toggle="tooltip" 
+                                data-placement="bottom" title="Generar Ingreso a Almacén" 
+                                onClick="generar_ingreso();"><i class="fas fa-angle-double-right"></i> Ingreso </button>
+                            <button type="button" class="btn btn-info" data-toggle="tooltip" 
+                                data-placement="bottom" title="Ver Ingreso a Almacén" 
+                                onClick="abrir_ingreso();"><i class="fas fa-file-alt"></i></button>
+                        </div>
+                    </div>
                     <div class="row">
                         <div class="col-md-4">
                             <h5>Tipo de Documento</h5>
@@ -445,8 +466,8 @@ Guía de Compra / Ingreso
 @include('almacen.guias.guia_com_det')
 @include('almacen.guias.guia_com_obs')
 @include('almacen.guias.doc_prorrateo')
-@include('almacen.documentos.doc_com_guiaModal')
-@include('almacen.documentos.doc_com_create')
+<!-- @include('almacen.documentos.doc_com_guiaModal')
+@include('almacen.documentos.doc_com_create') -->
 @include('almacen.producto.productoModal')
 <!-- @include('almacen.guias.ocModal') -->
 @include('logistica.cotizaciones.proveedorModal')
@@ -467,17 +488,22 @@ Guía de Compra / Ingreso
     <script src="{{ asset('template/plugins/select2/select2.min.js') }}"></script>
     <script src="{{ asset('template/plugins/moment.min.js') }}"></script>
 
-    <script src="{{('/js/almacen/guia/guia_compra.js')}}"></script>
-    <script src="{{('/js/almacen/guia/guia_compraModal.js')}}"></script>
-    <script src="{{('/js/almacen/guia/guia_detalle.js')}}"></script>
-    <script src="{{('/js/almacen/guia/guia_transportista.js')}}"></script>
-    <script src="{{('/js/almacen/guia/guia_com_oc.js')}}"></script>
-    <script src="{{('/js/almacen/guia/guia_com_series.js')}}"></script>
-    <script src="{{('/js/almacen/documentos/doc_com_guiaModal.js')}}"></script>
-    <script src="{{('/js/almacen/documentos/doc_com_create.js')}}"></script>
-    <script src="{{('/js/almacen/producto/productoModal.js')}}"></script>
-    <!-- <script src="{{('/js/almacen/ocModal.js')}}"></script> -->
-    <script src="{{('/js/logistica/proveedorModal.js')}}"></script>
-    <script src="{{('/js/logistica/add_proveedor.js')}}"></script>
-    <script src="{{('/js/logistica/ordenesModal.js')}}"></script>
+    <script src="{{ asset('js/almacen/guia/guia_compra.js')}}"></script>
+    <script src="{{ asset('js/almacen/guia/guia_compraModal.js')}}"></script>
+    <script src="{{ asset('js/almacen/guia/guia_detalle.js')}}"></script>
+    <!-- <script src="{{ asset('js/almacen/guia/guia_transportista.js')}}"></script> -->
+    <script src="{{ asset('js/almacen/guia/guia_com_oc.js')}}"></script>
+    <script src="{{ asset('js/almacen/guia/guia_com_series.js')}}"></script>
+    <!-- <script src="{{ asset('js/almacen/documentos/doc_com_guiaModal.js')}}"></script> -->
+    <!-- <script src="{{ asset('js/almacen/documentos/doc_com_create.js')}}"></script> -->
+    <script src="{{ asset('js/almacen/producto/productoModal.js')}}"></script>
+    <!-- <script src="{{ asset('js/almacen/ocModal.js')}}"></script> -->
+    <script src="{{ asset('js/logistica/proveedorModal.js')}}"></script>
+    <script src="{{ asset('js/logistica/add_proveedor.js')}}"></script>
+    <script src="{{ asset('js/logistica/ordenesModal.js')}}"></script>
+    <script>
+    $(document).ready(function(){
+        seleccionarMenu(window.location);
+    });
+    </script>
 @endsection

@@ -1,4 +1,4 @@
-@extends('layout.head')
+@extends('layout.main')
 @include('layout.menu_almacen')
 @section('option')
     @include('layout.option')
@@ -8,9 +8,16 @@
     Almacenes
 @endsection
 
+@section('breadcrumb')
+<ol class="breadcrumb">
+  <li><a href="{{route('almacen.index')}}"><i class="fas fa-tachometer-alt"></i> Almacén</a></li>
+  <li>Ubicaciones</li>
+  <li class="active">@yield('cabecera')</li>
+</ol>
+@endsection
+
 @section('content')
 <div class="page-main" type="almacenes">
-    <legend><h2>Almacenes</h2></legend>
     <div class="row">
         <div class="col-md-7">
             <fieldset class="group-table">
@@ -104,6 +111,11 @@
     <script src="{{ asset('datatables/pdfmake/vfs_fonts.js') }}"></script>
     <script src="{{ asset('datatables/JSZip/jszip.min.js') }}"></script>
 
-    <script src="{{('/js/almacen/ubicacion/almacenes.js')}}"></script>
-    <script src="{{('/js/publico/ubigeoModal.js')}}"></script>
+    <script src="{{ asset('js/almacen/ubicacion/almacenes.js')}}"></script>
+    <script src="{{ asset('js/publico/ubigeoModal.js')}}"></script>
+    <script>
+    $(document).ready(function(){
+        seleccionarMenu(window.location);
+    });
+    </script>
 @endsection

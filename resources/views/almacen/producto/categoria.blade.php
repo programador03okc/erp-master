@@ -1,4 +1,4 @@
-@extends('layout.head')
+@extends('layout.main')
 @include('layout.menu_almacen')
 @section('option')
     @include('layout.option')
@@ -8,9 +8,16 @@
     Categoría
 @endsection
 
+@section('breadcrumb')
+<ol class="breadcrumb">
+  <li><a href="{{route('almacen.index')}}"><i class="fas fa-tachometer-alt"></i> Almacén</a></li>
+  <li>Catálogo</li>
+  <li class="active">@yield('cabecera')</li>
+</ol>
+@endsection
+
 @section('content')
 <div class="page-main" type="categoria">
-    <legend><h2>Categoría</h2></legend>
     <div class="row">
         <div class="col-md-12">
             <form id="form-categoria" type="register" form="formulario">
@@ -73,6 +80,11 @@
     <script src="{{ asset('datatables/JSZip/jszip.min.js') }}"></script>
     <script src="{{ asset('template/plugins/moment.min.js') }}"></script>
 
-    <script src="{{('/js/almacen/producto/categoriaModal.js')}}"></script>
-    <script src="{{('/js/almacen/producto/categoria_producto.js')}}"></script>
+    <script src="{{ asset('js/almacen/producto/categoriaModal.js')}}"></script>
+    <script src="{{ asset('js/almacen/producto/categoria_producto.js')}}"></script>
+    <script>
+    $(document).ready(function(){
+        seleccionarMenu(window.location);
+    });
+    </script>
 @endsection

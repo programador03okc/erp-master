@@ -81,7 +81,7 @@ function guardar_cliente(){
     // console.log(payload);
     $.ajax({
         type: 'POST',
-        url: '/save_cliente',
+        url: 'save_cliente',
         data: payload,
         dataType: 'JSON',
         success: function(response){

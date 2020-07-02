@@ -1,4 +1,4 @@
-@extends('layout.head')
+@extends('layout.main')
 @include('layout.menu_almacen')
 
 @section('cabecera')
@@ -9,22 +9,35 @@ Lista de Ingresos
 <link rel="stylesheet" href="{{ asset('template/plugins/select2/select2.css') }}">
 @endsection
 
+@section('breadcrumb')
+<ol class="breadcrumb">
+  <li><a href="{{route('almacen.index')}}"><i class="fas fa-tachometer-alt"></i> Almacén</a></li>
+  <li>Reportes</li>
+  <li class="active">@yield('cabecera')</li>
+</ol>
+@endsection
+
 @section('content')
 <div class="page-main" type="lista_ingresos">
-    <legend class="mylegend">
+    <!-- <legend class="mylegend">
         <h2>Lista de Ingresos</h2>
         <ol class="breadcrumb">
             <li>
                 {{-- <button type="submit" class="btn btn-success" data-toggle="tooltip" 
                     data-placement="bottom" title="Descargar Kardex Sunat" 
                     onClick="downloadKardexSunat();">Kardex Sunat</button> --}}
-                <button type="button" class="btn btn-primary" data-toggle="tooltip" 
-                    data-placement="bottom" title="Ingrese los filtros" 
-                    onClick="open_filtros();">
-                    <i class="fas fa-search"></i>  Filtros</button>
+                
             </li>
         </ol>
-    </legend>
+    </legend> -->
+    <div class="row" style="padding-left:0px;padding-right:0px;">
+        <div class="col-md-12">
+            <button type="button" class="btn btn-primary" data-toggle="tooltip" 
+                data-placement="bottom" title="Ingrese los filtros" 
+                onClick="open_filtros();">
+                <i class="fas fa-search"></i>  Filtros</button>
+        </div>
+    </div>
     <div class="row">
         <input type="hidden" name="_token" value="{{csrf_token()}}" id="token">
         <div class="col-md-12">
@@ -278,8 +291,13 @@ Lista de Ingresos
     <script src="{{ asset('datatables/JSZip/jszip.min.js') }}"></script>
     <script src="{{ asset('template/plugins/select2/select2.min.js') }}"></script>
 
-    <script src="{{('/js/almacen/reporte/lista_ingresos.js')}}"></script>
-    <script src="{{('/js/almacen/reporte/filtros.js')}}"></script>
-    <script src="{{('/js/logistica/proveedorModal.js')}}"></script>
-    <script src="{{('/js/logistica/transportistaModal.js')}}"></script>
+    <script src="{{ asset('js/almacen/reporte/lista_ingresos.js')}}"></script>
+    <script src="{{ asset('js/almacen/reporte/filtros.js')}}"></script>
+    <script src="{{ asset('js/logistica/proveedorModal.js')}}"></script>
+    <script src="{{ asset('js/logistica/transportistaModal.js')}}"></script>
+    <script>
+    $(document).ready(function(){
+        seleccionarMenu(window.location);
+    });
+    </script>
 @endsection

@@ -1,3 +1,4 @@
+@section('option')
 <div class="option-function">
     <button type="button" class="btn-okc" id="btnNuevo"><i class="fas fa-file fa-lg"></i> Nuevo</button>
     <button type="submit" class="btn-okc" id="btnGuardar"><i class="fas fa-save fa-lg"></i> Guardar</button>
@@ -7,3 +8,4 @@
     <button type="button" class="btn-okc" id="btnCopiar" disabled ><i class="fas fa-copy fa-lg"></i> Copiar</button>
     <button type="button" class="btn-okc" id="btnCancelar"><i class="fas fa-times fa-lg"></i> Cancelar</button>
 </div>
+@endsection

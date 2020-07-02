@@ -1,15 +1,20 @@
-@extends('layout.head')
+@extends('layout.main')
 @include('layout.menu_almacen')
 
 @section('cabecera')
-Customizaciones en Almacén
+Gestión de Customizaciones
+@endsection
+
+@section('breadcrumb')
+<ol class="breadcrumb">
+  <li><a href="{{route('almacen.index')}}"><i class="fas fa-tachometer-alt"></i> Almacén</a></li>
+  <li>Customización</li>
+  <li class="active">@yield('cabecera')</li>
+</ol>
 @endsection
 
 @section('content')
 <div class="page-main" type="transformaciones">
-    <legend class="mylegend">
-        <h2>Customizaciones en Almacén</h2>
-    </legend>
     <div class="row">
         <div class="col-md-4">
             <h5>Almacén</h5>
@@ -64,5 +69,10 @@ Customizaciones en Almacén
     <script src="{{ asset('datatables/JSZip/jszip.min.js') }}"></script>
     <script src="{{ asset('template/plugins/moment.min.js') }}"></script>
 
-    <script src="{{('/js/almacen/customizacion/listar_transformaciones.js')}}"></script>
+    <script src="{{ asset('js/almacen/customizacion/listar_transformaciones.js')}}"></script>
+    <script>
+    $(document).ready(function(){
+        seleccionarMenu(window.location);
+    });
+    </script>
 @endsection

@@ -1,4 +1,4 @@
-@extends('layout.head')
+@extends('layout.main')
 @include('layout.menu_proyectos')
 @section('option')
     @include('layout.option')
@@ -8,40 +8,47 @@
 Estructura del Presupuesto
 @endsection
 
+@section('breadcrumb')
+<ol class="breadcrumb">
+  <li><a href="{{route('proyectos.index')}}"><i class="fas fa-tachometer-alt"></i> Proyectos</a></li>
+  <li>Opción Comercial</li>
+  <li class="active">@yield('cabecera')</li>
+</ol>
+@endsection
+
 @section('content')
 <div class="page-main" type="presEstructura">
-    <legend class="mylegend">
-        <h2>Estructura del Presupuesto</h2>
-        <ol class="breadcrumb">
-            <li><label id="codigo"></label></li>
-        </ol>
-    </legend>
     <form id="form-presEstructura" type="register" form="formulario">
-        <div class="row">
-            <input type="hidden" name="_token" value="{{csrf_token()}}" id="token">
-            <input type="text" class="oculto" name="id_presup" primary="ids">
-            <div class="col-md-2">
-                <h5>Fecha Emisión</h5>
-                <input type="date" class="form-control activation" name="fecha_emision" value="<?=date('Y-m-d');?>"  disabled="true"/>
+        <div class="thumbnail" style="padding-left: 10px;padding-right: 10px;padding-top: 10px;">
+            <div class="row">
+                <input type="hidden" name="_token" value="{{csrf_token()}}" id="token">
+                <input type="text" class="oculto" name="id_presup" primary="ids">
+                <div class="col-md-2">
+                    <h5>Fecha Emisión</h5>
+                    <input type="date" class="form-control activation" name="fecha_emision" value="<?=date('Y-m-d');?>"  disabled="true"/>
+                </div>
+                <div class="col-md-10">  
+                    <h5>Descripción</h5>
+                    <input type="text" class="form-control activation" name="descripcion"/>
+                </div>
             </div>
-            <div class="col-md-10">  
-                <h5>Descripción</h5>
-                <input type="text" class="form-control activation" name="descripcion"/>
+            <div class="row">
+                <div class="col-md-2">
+                    Código: <label id="codigo"></label>
+                </div>
+                <div class="col-md-3">
+                    <h5 id="fecha_registro">Fecha Registro: <label></label></h5>
+                </div>
+                <div class="col-md-4">
+                    <h5 id="responsable">Registrado por: <label></label></h5>
+                </div>
+                <div class="col-md-3">
+                    <input type="text" name="id_estado" hidden/>
+                    <h5 id="des_estado">Estado: <label></label></h5>
+                </div>
             </div>
-        </div>
-        <div class="row">
-            <div class="col-md-4">
-                <h5 id="fecha_registro">Fecha Registro: <label></label></h5>
-            </div>
-            <div class="col-md-5">
-                <h5 id="responsable">Registrado por: <label></label></h5>
-            </div>
-            <div class="col-md-3">
-                <input type="text" name="id_estado" hidden/>
-                <h5 id="des_estado">Estado: <label></label></h5>
-            </div>
-        </div>
-    </form>
+        </form>
+    </div>
     <div class="row">
         <div class="col-md-12">
             <table class="mytable table table-condensed table-bordered table-okc-view" width="100%"
@@ -85,8 +92,13 @@ Estructura del Presupuesto
     <script src="{{ asset('datatables/JSZip/jszip.min.js') }}"></script>
     <script src="{{ asset('template/plugins/moment.min.js') }}"></script>
 
-    <script src="{{('/js/proyectos/presupuesto/presEstructura.js')}}"></script>
-    <script src="{{('/js/proyectos/presupuesto/presEstructuraModal.js')}}"></script>
-    <script src="{{('/js/proyectos/presupuesto/partidaEstructura.js')}}"></script>
-    <script src="{{('/js/proyectos/presupuesto/pardetModal.js')}}"></script>
+    <script src="{{ asset('js/proyectos/presupuesto/presEstructura.js')}}"></script>
+    <script src="{{ asset('js/proyectos/presupuesto/presEstructuraModal.js')}}"></script>
+    <script src="{{ asset('js/proyectos/presupuesto/partidaEstructura.js')}}"></script>
+    <script src="{{ asset('js/proyectos/presupuesto/pardetModal.js')}}"></script>
+    <script>
+    $(document).ready(function(){
+        seleccionarMenu(window.location);
+    });
+    </script>
 @endsection

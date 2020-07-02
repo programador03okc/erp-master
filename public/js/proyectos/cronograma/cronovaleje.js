@@ -436,7 +436,6 @@ function mostrar_tabla(){
 
 function exportar_cronoval(){
     var id_presup = $('[name=id_presupuesto]').val();
-    console.log('download_presupuesto id_presup: '+id_presup);
     if (id_presup !== ''){
         window.open('download_cronoval/'+id_presup);
     }

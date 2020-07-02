@@ -1,4 +1,4 @@
-@extends('layout.head')
+@extends('layout.main')
 @include('layout.menu_almacen')
 
 @section('cabecera')
@@ -9,21 +9,16 @@ Documentos de Prorrateo
 <link rel="stylesheet" href="{{ asset('template/plugins/select2/select2.css') }}">
 @endsection
 
+@section('breadcrumb')
+<ol class="breadcrumb">
+  <li><a href="{{route('almacen.index')}}"><i class="fas fa-tachometer-alt"></i> Almacén</a></li>
+  <li>Reportes</li>
+  <li class="active">@yield('cabecera')</li>
+</ol>
+@endsection
+
 @section('content')
 <div class="page-main" type="docs_prorrateo">
-    <legend class="mylegend">
-        <h2>Reporte de Documentos de Prorrateo </h2>
-        <ol class="breadcrumb">
-            <li>
-                {{-- <button type="submit" class="btn btn-success" data-toggle="tooltip" 
-                    data-placement="bottom" title="Descargar Saldos" 
-                    onClick="downloadKardexSunat();">Saldos por Almacén</button>
-                <button type="button" class="btn btn-primary" data-toggle="tooltip" 
-                    data-placement="bottom" title="Ingrese los filtros" 
-                    onClick="open_filtros();">Filtros</button> --}}
-            </li>
-        </ol>
-    </legend>
     {{-- <div class="row">
         <div class="col-md-3">
             <h5>Saldo al:</h5>
@@ -90,5 +85,10 @@ Documentos de Prorrateo
     <script src="{{ asset('datatables/JSZip/jszip.min.js') }}"></script>
     <script src="{{ asset('template/plugins/select2/select2.min.js') }}"></script>
 
-    <script src="{{('/js/almacen/reporte/docs_prorrateo.js')}}"></script>
+    <script src="{{ asset('js/almacen/reporte/docs_prorrateo.js')}}"></script>
+    <script>
+    $(document).ready(function(){
+        seleccionarMenu(window.location);
+    });
+    </script>
 @endsection

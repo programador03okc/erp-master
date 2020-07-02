@@ -1,8 +1,16 @@
-@extends('layout.head')
+@extends('layout.main')
 @include('layout.menu_proyectos')
 
 @section('cabecera')
-Información General del Proyecto
+Curvas S 
+@endsection
+
+@section('breadcrumb')
+<ol class="breadcrumb">
+  <li><a href="{{route('proyectos.index')}}"><i class="fas fa-tachometer-alt"></i> Proyectos</a></li>
+  <li>Reportes</li>
+  <li class="active">@yield('cabecera')</li>
+</ol>
 @endsection
 
 @section('content')
@@ -107,6 +115,11 @@ Información General del Proyecto
     <script src="{{ asset('template/plugins/moment.min.js') }}"></script>
     <script src="{{ asset('template/plugins/chartjs/Chart.min.js') }}"></script>
 
-    <script src="{{('/js/proyectos/reportes/curvas.js')}}"></script>
-    <script src="{{('/js/proyectos/presupuesto/propuestaModal.js')}}"></script>
+    <script src="{{ asset('js/proyectos/reportes/curvas.js')}}"></script>
+    <script src="{{ asset('js/proyectos/presupuesto/propuestaModal.js')}}"></script>
+    <script>
+    $(document).ready(function(){
+        seleccionarMenu(window.location);
+    });
+    </script>
 @endsection

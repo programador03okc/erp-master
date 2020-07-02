@@ -1,4 +1,4 @@
-@extends('layout.head')
+@extends('layout.main')
 @include('layout.menu_almacen')
 
 @section('cabecera')
@@ -9,11 +9,16 @@ Kardex de Series
 <link rel="stylesheet" href="{{ asset('template/plugins/select2/select2.css') }}">
 @endsection
 
+@section('breadcrumb')
+<ol class="breadcrumb">
+  <li><a href="{{route('almacen.index')}}"><i class="fas fa-tachometer-alt"></i> Almacén</a></li>
+  <li>Reportes</li>
+  <li class="active">@yield('cabecera')</li>
+</ol>
+@endsection
+
 @section('content')
 <div class="page-main" type="kardex_series">
-    <legend class="mylegend">
-        <h2>Kardex de Series</h2>
-    </legend>
     <div class="row">
         <div class="col-md-5">
             <h5>Ingrese el Número de Serie</h5>
@@ -87,6 +92,11 @@ Kardex de Series
     <script src="{{ asset('datatables/JSZip/jszip.min.js') }}"></script>
     <script src="{{ asset('template/plugins/select2/select2.min.js') }}"></script>
 
-    <script src="{{('/js/almacen/reporte/kardex_series.js')}}"></script>
-    <script src="{{('/js/almacen/producto/productoModal.js')}}"></script>
+    <script src="{{ asset('js/almacen/reporte/kardex_series.js')}}"></script>
+    <script src="{{ asset('js/almacen/producto/productoModal.js')}}"></script>
+    <script>
+    $(document).ready(function(){
+        seleccionarMenu(window.location);
+    });
+    </script>
 @endsection

@@ -1,4 +1,4 @@
-@extends('layout.head')
+@extends('layout.main')
 @include('layout.menu_almacen')
 
 @section('option')
@@ -14,18 +14,21 @@
 <link rel="stylesheet" href="{{ asset('template/plugins/select2/select2.css') }}">
 @endsection
 
+@section('breadcrumb')
+<ol class="breadcrumb">
+  <li><a href="{{route('almacen.index')}}"><i class="fas fa-tachometer-alt"></i> Almacén</a></li>
+  <li>Catálogo</li>
+  <li class="active">@yield('cabecera')</li>
+</ol>
+@endsection
+
 @section('content')
 
 <div class="page-main" type="producto">
-    <legend class="mylegend">
+    <!-- <legend class="mylegend">
         <h2>Producto</h2>
-        <ol class="breadcrumb">
-            <li><label id="codigo"></label></li>
-            <li><label id="tipo_descripcion"></label></li>
-            <li><label id="cat_descripcion"></label></li>
-            <li><label id="subcat_descripcion"></label></li>
-        </ol>
-    </legend>
+        
+    </legend> -->
     <input type="hidden" name="id_producto" primary="ids">
     <div class="col-md-12" id="tab-producto">
         <ul class="nav nav-tabs" id="myTab">
@@ -43,7 +46,7 @@
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="row">
-                                        <img id="img" src="{{('img/product-default.png')}}">
+                                        <img id="img" src="{{ asset('images/product-default.png')}}">
                                     </div>
                                     <div class="row">
                                         <input type="file" name="imagen" id="imagen" class="filestyle"
@@ -83,10 +86,14 @@
                         <div class="col-md-9">
                             <input type="hidden" name="_token" value="{{csrf_token()}}" id="token">
                             <div class="row" style="margin-bottom: 0;margin-top: 0;">
-                                {{-- <div class="col-md-4">
-                                    <h5>Código</h5>
-                                    <input type="text" class="form-control" readonly name="codigo">
-                                </div> --}}
+                                <div class="col-md-12">
+                                    <ol class="breadcrumb"  style="padding-left: 20px;padding-right: 10px;">
+                                        <li><label id="codigo"></label></li>
+                                        <li><label id="tipo_descripcion"></label></li>
+                                        <li><label id="cat_descripcion"></label></li>
+                                        <li><label id="subcat_descripcion"></label></li>
+                                    </ol>
+                                </div>
                                 <div class="col-md-4">
                                     <h5>Categoría</h5>
                                     <select class="form-control activation js-example-basic-single" name="id_categoria" disabled="true">
@@ -327,9 +334,14 @@
     <script src="{{ asset('template/plugins/iCheck/icheck.min.js') }}"></script>
     <script src="{{ asset('template/plugins/select2/select2.min.js') }}"></script>
 
-    <script src="{{('/js/almacen/producto/producto.js')}}"></script>
-    <script src="{{('/js/almacen/producto/subcategoriaModal.js')}}"></script>
-    <script src="{{('/js/almacen/producto/productoModal.js')}}"></script>
-    <script src="{{('/js/almacen/producto/producto_ubicacion.js')}}"></script>
-    <script src="{{('/js/almacen/producto/producto_serie.js')}}"></script>
+    <script src="{{ asset('js/almacen/producto/producto.js')}}"></script>
+    <!-- <script src="{{ asset('js/almacen/producto/subcategoriaModal.js')}}"></script> -->
+    <script src="{{ asset('js/almacen/producto/productoModal.js')}}"></script>
+    <script src="{{ asset('js/almacen/producto/producto_ubicacion.js')}}"></script>
+    <script src="{{ asset('js/almacen/producto/producto_serie.js')}}"></script>
+    <script>
+    $(document).ready(function(){
+        seleccionarMenu(window.location);
+    });
+    </script>
 @endsection

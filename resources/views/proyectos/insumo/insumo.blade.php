@@ -1,28 +1,27 @@
-@include('layout.head')
+@extends('layout.main')
 @include('layout.menu_proyectos')
-@include('layout.body_sin_option')
+
+@section('cabecera')
+Lista de Insumos
+@endsection
+
+@section('breadcrumb')
+<ol class="breadcrumb">
+  <li><a href="{{route('proyectos.index')}}"><i class="fas fa-tachometer-alt"></i> Proyectos</a></li>
+  <li>Catálogos</li>
+  <li class="active">@yield('cabecera')</li>
+</ol>
+@endsection
+
+@section('content')
 <div class="page-main" type="insumo">
-    <legend class="mylegend">
-        <h2>Lista de Insumos</h2>
-        <ol class="breadcrumb">
-            <li>
-                <button type="submit" class="btn btn-success" data-toggle="tooltip" 
-                data-placement="bottom" title="Crear un Insumo Base" 
-                onClick="open_insumo_create();">Crear Insumo</button>
-                {{-- <a onClick="generar_factura();">
-                    <input type="button" class="btn btn-primary" data-toggle="tooltip" 
-                    data-placement="bottom" title="Generar Factura de Compra" 
-                    value="Generar Factura"/>
-                </a>
-                <button type="button" class="btn btn-secondary" data-toggle="tooltip" 
-                data-placement="bottom" title="Ver Ingreso a Almacén" 
-                onClick="abrir_ingreso();">Ver Ingreso </button> --}}
-            </li>
-        </ol>
-    </legend>
     <div class="row">
         <div class="col-md-12">
-
+        <div style="text-align: right;">
+            <button type="submit" class="btn btn-success" data-toggle="tooltip" 
+                data-placement="bottom" title="Crear un Insumo Base" 
+                onClick="open_insumo_create();">Crear Insumo</button>
+        </div>
             <table class="mytable table table-condensed table-bordered table-okc-view" 
             id="listaInsumo">
                 <thead>
@@ -37,7 +36,7 @@
                         <th>Flete</th>
                         <th>Peso</th>
                         <th>IU</th>
-                        <th width='90px'>Acción</th>
+                        <th width='120px'>Acción</th>
                     </tr>
                 </thead>
                 <tbody></tbody>
@@ -49,10 +48,27 @@
 @include('proyectos.insumo.insumoCreate')
 @include('proyectos.variables.add_unid_med')
 @include('proyectos.insumo.insumoPrecioModal')
-@include('layout.footer')
-@include('layout.scripts')
-<script src="{{('/js/proyectos/insumos/insumo.js')}}"></script>
-<script src="{{('/js/proyectos/insumos/insumoCreate.js')}}"></script>
-<script src="{{('/js/proyectos/variables/add_unid_med.js')}}"></script>
-<script src="{{('/js/proyectos/insumos/insumoPrecioModal.js')}}"></script>
-@include('layout.fin_html')
+@endsection
+
+@section('scripts')
+<script src="{{ asset('datatables/DataTables/js/jquery.dataTables.min.js') }}"></script>
+<script src="{{ asset('datatables/DataTables/js/dataTables.bootstrap.min.js') }}"></script>
+<script src="{{ asset('datatables/Buttons/js/dataTables.buttons.min.js') }}"></script>
+<script src="{{ asset('datatables/Buttons/js/buttons.bootstrap.min.js') }}"></script>
+<script src="{{ asset('datatables/Buttons/js/buttons.print.min.js') }}"></script>
+<script src="{{ asset('datatables/Buttons/js/buttons.html5.min.js') }}"></script>
+<script src="{{ asset('datatables/pdfmake/pdfmake.min.js') }}"></script>
+<script src="{{ asset('datatables/pdfmake/vfs_fonts.js') }}"></script>
+<script src="{{ asset('datatables/JSZip/jszip.min.js') }}"></script>
+<script src="{{ asset('template/plugins/moment.min.js') }}"></script>
+
+<script src="{{ asset('js/proyectos/insumos/insumo.js')}}"></script>
+<script src="{{ asset('js/proyectos/insumos/insumoCreate.js')}}"></script>
+<script src="{{ asset('js/proyectos/variables/add_unid_med.js')}}"></script>
+<script src="{{ asset('js/proyectos/insumos/insumoPrecioModal.js')}}"></script>
+<script>
+    $(document).ready(function(){
+        seleccionarMenu(window.location);
+    });
+    </script>
+@endsection

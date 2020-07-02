@@ -1,4 +1,4 @@
-@extends('layout.head')
+@extends('layout.main')
 @include('layout.menu_almacen')
 @section('option')
     @include('layout.option')
@@ -8,9 +8,16 @@
     Unidades de Medida
 @endsection
 
+@section('breadcrumb')
+<ol class="breadcrumb">
+  <li><a href="{{route('almacen.index')}}"><i class="fas fa-tachometer-alt"></i> Almacén</a></li>
+  <li>Variables</li>
+  <li class="active">@yield('cabecera')</li>
+</ol>
+@endsection
+
 @section('content')
 <div class="page-main" type="unidmed">
-    <legend><h2>Unidades de Medida</h2></legend>
     <div class="row">
         <div class="col-md-6">
             <fieldset class="group-table">
@@ -79,5 +86,10 @@
     <script src="{{ asset('datatables/JSZip/jszip.min.js') }}"></script>
     <script src="{{ asset('template/plugins/moment.min.js') }}"></script>
 
-    <script src="{{('/js/almacen/variables/unid_med.js')}}"></script>
+    <script src="{{ asset('js/almacen/variables/unid_med.js')}}"></script>
+    <script>
+    $(document).ready(function(){
+        seleccionarMenu(window.location);
+    });
+    </script>
 @endsection

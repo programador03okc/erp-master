@@ -1,4 +1,4 @@
-$(function(){
+$(document).ready(function(){
     $('[name=almacen]').val(1);
     var fecha = new Date();
     var yyyy = fecha.getFullYear();

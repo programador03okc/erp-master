@@ -1,4 +1,4 @@
-@extends('layout.head')
+@extends('layout.main')
 @include('layout.menu_proyectos')
 @section('option')
     @include('layout.option')
@@ -8,17 +8,22 @@
 Cronograma Interno
 @endsection
 
+@section('breadcrumb')
+<ol class="breadcrumb">
+  <li><a href="{{route('proyectos.index')}}"><i class="fas fa-tachometer-alt"></i> Proyectos</a></li>
+  <li>Opción Comercial</li>
+  <li class="active">@yield('cabecera')</li>
+</ol>
+@endsection
+
+@section('estilos')
+<link rel="stylesheet" href="{{ asset('template/plugins/gantt/dhtmlxgantt.css') }}">
+@endsection
+
 @section('content')
 <div class="page-main" type="cronoint">
     <form id="form-cronoint" type="register" form="formulario">
-        <div class="thumbnail" style="padding-left: 10px;padding-right: 10px;">
-            <legend class="mylegend">
-                <h2>Cronograma Interno</h2>
-                <ol class="breadcrumb" style="background-color: white;">
-                    <li><label id="codigo"></label></li>
-                    <li><label id="descripcion"></label></li>
-                </ol>
-            </legend>
+        <!-- <div class="thumbnail" style="padding-left: 10px;padding-right: 10px;"> -->
             <div class="row">
                 <input type="text" class="oculto" name="id_presupuesto" primary="ids">
                 <input type="text" class="oculto" name="modo">
@@ -35,7 +40,7 @@ Cronograma Interno
                                     <div class="col-md-2">
                                         <h5>Mostrar cronograma en:</h5>
                                     </div>
-                                    <div class="col-md-3">
+                                    <div class="col-md-2">
                                         <select class="form-control group-elemento activation" name="unid_program" disabled="true">
                                             <option value="0">Elija una opción</option>
                                             @foreach ($unid_program as $unid)
@@ -43,12 +48,13 @@ Cronograma Interno
                                             @endforeach
                                         </select>
                                     </div>
-                                    {{-- <div class="col-md-2">
-                                        <h5>Fecha de Inicio:</h5>
+                                    <div class="col-md-1"></div>
+                                    <div class="col-md-2">
+                                        <label id="codigo"></label>
                                     </div>
                                     <div class="col-md-2">
-                                        <input type="date" class="form-control activation" name="fecha_inicio_crono"/>
-                                    </div> --}}
+                                        <label id="descripcion"></label>
+                                    </div>
                                 </div>
                                 <table class="mytable table table-condensed table-bordered table-okc-view" width="100%" 
                                     id="listaPartidas" style="margin-top:10px;">
@@ -105,7 +111,7 @@ Cronograma Interno
                     </div>
                 </div>
             </div>
-        </div>
+        <!-- </div> -->
     </form>
 </div>
 @include('proyectos.presupuesto.presintModal')
@@ -124,10 +130,15 @@ Cronograma Interno
     <script src="{{ asset('datatables/pdfmake/vfs_fonts.js') }}"></script>
     <script src="{{ asset('datatables/JSZip/jszip.min.js') }}"></script>
     <script src="{{ asset('template/plugins/moment.min.js') }}"></script>
+    <script src="{{ asset('template/plugins/gantt/dhtmlxgantt.js') }}"></script>
 
-    <script src="{{('/js/proyectos/cronograma/cronoint.js')}}"></script>
-    <script src="{{('/js/proyectos/presupuesto/verAcu.js')}}"></script>
-    <script src="{{('/js/proyectos/presupuesto/presintModal.js')}}"></script>
-    <script src="{{('/js/proyectos/presupuesto/presLeccion.js')}}"></script>
-
+    <script src="{{ asset('js/proyectos/cronograma/cronoint.js')}}"></script>
+    <script src="{{ asset('js/proyectos/presupuesto/verAcu.js')}}"></script>
+    <script src="{{ asset('js/proyectos/presupuesto/presintModal.js')}}"></script>
+    <script src="{{ asset('js/proyectos/presupuesto/presLeccion.js')}}"></script>
+    <script>
+    $(document).ready(function(){
+        seleccionarMenu(window.location);
+    });
+    </script>
 @endsection

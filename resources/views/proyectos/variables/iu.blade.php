@@ -8,9 +8,16 @@
 Indices Unificados
 @endsection
 
+@section('breadcrumb')
+<ol class="breadcrumb">
+  <li><a href="{{route('proyectos.index')}}"><i class="fas fa-tachometer-alt"></i> Proyectos</a></li>
+  <li>Variables de Entorno</li>
+  <li class="active">Indices Unificados</li>
+</ol>
+@endsection
+
 @section('content')
 <div class="page-main" type="iu">
-    <legend><h2>Indices Unificados</h2></legend>
     <div class="row">
         <div class="col-md-6">
             <fieldset class="group-table">
@@ -77,7 +84,7 @@ Indices Unificados
     <script src="{{ asset('datatables/JSZip/jszip.min.js') }}"></script>
     <script src="{{ asset('template/plugins/moment.min.js') }}"></script>
 
-    <script src="{{('/js/proyectos/variables/iu.js')}}"></script>
+    <script src="{{ asset('js/proyectos/variables/iu.js') }}"></script>
     <script>
     $(document).ready(function(){
         seleccionarMenu(window.location);
