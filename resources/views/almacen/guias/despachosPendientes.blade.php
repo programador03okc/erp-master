@@ -9,12 +9,17 @@ Pendientes de Salida
 <link rel="stylesheet" href="{{ asset('template/plugins/select2/select2.css') }}">
 @endsection
 
+@section('breadcrumb')
+<ol class="breadcrumb">
+  <li><a href="{{route('almacen.index')}}"><i class="fas fa-tachometer-alt"></i> Almacén</a></li>
+  <li>Movimientos</li>
+  <li class="active">@yield('cabecera')</li>
+</ol>
+@endsection
+
 @section('content')
 <div class="page-main" type="despachosPendientes">
-    <legend class="mylegend">
-        <h2 id="titulo">Pendientes de Salida</h2>
-    </legend>
-    <div class="col-md-12" id="tab-ordenes">
+    <div class="col-md-12" id="tab-ordenes"  style="padding-left:0px;padding-right:0px;">
         <ul class="nav nav-tabs" id="myTab">
             <li class="active"><a type="#pendientes">Despachos Pendientes</a></li>
             <li class=""><a type="#salidas">Salidas de Almacén</a></li>
@@ -97,7 +102,12 @@ Pendientes de Salida
     <script src="{{ asset('datatables/JSZip/jszip.min.js') }}"></script>
     <script src="{{ asset('template/plugins/select2/select2.min.js') }}"></script>
 
-    <script src="{{('/js/almacen/guia/despachosPendientes.js')}}"></script>
-    <script src="{{('/js/almacen/guia/guia_ven_create.js')}}"></script>
-    <script src="{{('/js/almacen/distribucion/despachoDetalle.js')}}"></script>
+    <script src="{{ asset('js/almacen/guia/despachosPendientes.js')}}"></script>
+    <script src="{{ asset('js/almacen/guia/guia_ven_create.js')}}"></script>
+    <script src="{{ asset('js/almacen/distribucion/despachoDetalle.js')}}"></script>
+    <script>
+    $(document).ready(function(){
+        seleccionarMenu(window.location);
+    });
+    </script>
 @endsection

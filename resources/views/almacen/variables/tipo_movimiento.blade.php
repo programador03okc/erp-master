@@ -13,9 +13,16 @@ Documentos de Prorrateo
 <link rel="stylesheet" href="{{ asset('template/plugins/select2/select2.css') }}">
 @endsection
 
+@section('breadcrumb')
+<ol class="breadcrumb">
+  <li><a href="{{route('almacen.index')}}"><i class="fas fa-tachometer-alt"></i> Almacén</a></li>
+  <li>Variables</li>
+  <li class="active">@yield('cabecera')</li>
+</ol>
+@endsection
+
 @section('content')
 <div class="page-main" type="tipoMov">
-    <legend><h2>Tipos de Operación en Almacén</h2></legend>
     <div class="row">
         <div class="col-md-6">
             <fieldset class="group-table">
@@ -86,5 +93,10 @@ Documentos de Prorrateo
     <script src="{{ asset('datatables/JSZip/jszip.min.js') }}"></script>
     <script src="{{ asset('template/plugins/moment.min.js') }}"></script>
 
-    <script src="{{('/js/almacen/variables/tipo_movimiento.js')}}"></script>
+    <script src="{{ asset('js/almacen/variables/tipo_movimiento.js')}}"></script>
+    <script>
+    $(document).ready(function(){
+        seleccionarMenu(window.location);
+    });
+    </script>
 @endsection

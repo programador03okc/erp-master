@@ -95,5 +95,10 @@
 @endsection
 @section('scripts')
 <script src="{{ asset('template/plugins/chartjs/Chart.min.js') }}"></script>
-<script src="{{('/js/almacen/dashboardAlmacen.js')}}"></script>
+<script src="{{ asset('js/almacen/dashboardAlmacen.js')}}"></script>
+<script>
+    $(document).ready(function(){
+        seleccionarMenu(window.location);
+    });
+</script>
 @endsection

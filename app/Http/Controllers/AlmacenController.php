@@ -4473,9 +4473,9 @@ class AlmacenController extends Controller
                     ->select('alm_req.codigo as cod_req','log_ord_compra.codigo as cod_orden')
                     ->join('logistica.log_det_ord_compra','log_det_ord_compra.id_detalle_orden','=','guia_com_det.id_oc_det')
                     ->join('logistica.log_ord_compra','log_ord_compra.id_orden_compra','=','log_det_ord_compra.id_orden_compra')
-                    ->join('logistica.log_valorizacion_cotizacion','log_valorizacion_cotizacion.id_valorizacion_cotizacion','=','log_det_ord_compra.id_valorizacion_cotizacion')
-                    ->join('almacen.alm_det_req','alm_det_req.id_detalle_requerimiento','=','log_valorizacion_cotizacion.id_detalle_requerimiento')
-                    ->join('almacen.alm_req','alm_req.id_requerimiento','=','alm_det_req.id_requerimiento')
+                    // ->join('logistica.log_valorizacion_cotizacion','log_valorizacion_cotizacion.id_valorizacion_cotizacion','=','log_det_ord_compra.id_valorizacion_cotizacion')
+                    // ->join('almacen.alm_det_req','alm_det_req.id_detalle_requerimiento','=','log_valorizacion_cotizacion.id_detalle_requerimiento')
+                    ->join('almacen.alm_req','alm_req.id_requerimiento','=','log_ord_compra.id_requerimiento')
                     ->where('guia_com_det.id_guia_com_det',$d->id_guia_com_det)
                     ->first();
                     if (isset($ocs)){

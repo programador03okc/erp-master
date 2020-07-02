@@ -6,42 +6,25 @@
 @endsection
 
 @section('cabecera')
-Guía de Venta / Salida
+Guía de Venta - Salida
 @endsection
 
 @section('estilos')
 <link rel="stylesheet" href="{{ asset('template/plugins/select2/select2.css') }}">
 @endsection
 
-@section('content')
+@section('breadcrumb')
+<ol class="breadcrumb">
+  <li><a href="{{route('almacen.index')}}"><i class="fas fa-tachometer-alt"></i> Almacén</a></li>
+  <li>Movimientos</li>
+  <li class="active">@yield('cabecera')</li>
+</ol>
+@endsection
 
+@section('content')
 <div class="page-main" type="guia_venta">
-    <legend class="mylegend">
-        <h2 id="titulo">Guía de Venta / Salida</h2>
-        <ol class="breadcrumb">
-            <li><h5>Estado:  <span id="des_estado"></span></h5></li>
-            <li><label id="tp_doc_almacen"></label> - <label id="serie"></label> - <label id="numero"></label></li>
-            <li><label id="codigo_trans"></label>
-                <button type="submit" class="btn btn-success" onClick="generar_salida();" data-toggle="tooltip" 
-                data-placement="bottom" title="Generar Salida de Almacén" >Generar Salida </button>
-                {{-- <button type="submit" class="btn btn-primary">Imprimir </button> --}}
-                <button type="button" class="btn btn-primary" data-toggle="tooltip" 
-                    data-placement="bottom" title="Imprimir Guia de Venta" 
-                    onClick="imprimir_guia();"><i class="fas fa-print"></i></button>
-                <button type="button" class="btn btn-info" data-toggle="tooltip" 
-                    data-placement="bottom" title="Ver Salida de Almacén" 
-                    onClick="abrir_salida();"><i class="fas fa-file-alt"></i></button>
-                <button type="button" class="btn btn-warning" data-toggle="tooltip" 
-                    data-placement="bottom" title="Generar Transferencia" 
-                    onClick="open_transferencia();"><i class="fas fa-file-alt"></i></button>
-                {{-- <button type="button" class="btn btn-primary" data-toggle="tooltip" 
-                    data-placement="bottom" title="Verifica Items" 
-                    onClick="openOccModal();"><i class="fas fa-file-alt"></i></button> --}}
-            </li>
-        </ol>
-    </legend>
     <input type="text" class="oculto" name="modo">
-    <div class="col-md-12" id="tab-guia_venta">
+    <div class="col-md-12" id="tab-guia_venta" style="padding-left:0px;padding-right:0px;">
         <ul class="nav nav-tabs" id="myTab">
             <li class="active"><a type="#general">Datos Generales</a></li>
             <li class=""><a type="#detalle">Detalle de Items</a></li>
@@ -53,6 +36,27 @@ Guía de Venta / Salida
                 <input type="hidden" name="id_guia_ven" primary="ids">
                 <input type="hidden" name="id_transferencia">
                 <input type="hidden" name="id_tp_doc">
+                <div class="row">
+                    <div class="col-md-3">
+                        <h5>Estado:  <span id="des_estado"></span></h5>
+                    </div>
+                    <div class="col-md-2">
+                        <label id="codigo_trans"></label>
+                    </div>
+                    <div class="col-md-7" style="text-align:right;">
+                        <button type="submit" class="btn btn-success" onClick="generar_salida();" data-toggle="tooltip" 
+                            data-placement="bottom" title="Generar Salida de Almacén" >Generar Salida </button>
+                        <button type="button" class="btn btn-primary" data-toggle="tooltip" 
+                            data-placement="bottom" title="Imprimir Guia de Venta" 
+                            onClick="imprimir_guia();"><i class="fas fa-print"></i></button>
+                        <button type="button" class="btn btn-info" data-toggle="tooltip" 
+                            data-placement="bottom" title="Ver Salida de Almacén" 
+                            onClick="abrir_salida();"><i class="fas fa-file-alt"></i></button>
+                        <button type="button" class="btn btn-warning" data-toggle="tooltip" 
+                            data-placement="bottom" title="Generar Transferencia" 
+                            onClick="open_transferencia();"><i class="fas fa-file-alt"></i></button>
+                    </div>
+                </div>
                     <div class="row">
                         <div class="col-md-4">
                             <h5>Tipo de Documento</h5>
@@ -311,15 +315,20 @@ Guía de Venta / Salida
     <script src="{{ asset('template/plugins/select2/select2.min.js') }}"></script>
     <script src="{{ asset('template/plugins/moment.min.js') }}"></script>
 
-    <script src="{{('/js/almacen/guia/guia_venta.js')}}"></script>
-    <script src="{{('/js/almacen/guia/guia_venta_oc.js')}}"></script>
-    <script src="{{('/js/almacen/guia/guia_venta_detalle.js')}}"></script>
-    <script src="{{('/js/almacen/guia/guia_ventaModal.js')}}"></script>
-    <script src="{{('/js/almacen/guia/guia_ven_series.js')}}"></script>
-    <script src="{{('/js/almacen/variables/seriesModal.js')}}"></script>
-    <script src="{{('/js/almacen/transferencias/transferencia.js')}}"></script>
-    <script src="{{('/js/almacen/producto/productoModal.js')}}"></script>
-    <script src="{{('/js/logistica/clienteModal.js')}}"></script>
-    <script src="{{('/js/logistica/occModal.js')}}"></script>
-    <script src="{{('/js/proyectos/variables/add_cliente.js')}}"></script>
+    <script src="{{ asset('js/almacen/guia/guia_venta.js')}}"></script>
+    <script src="{{ asset('js/almacen/guia/guia_venta_oc.js')}}"></script>
+    <script src="{{ asset('js/almacen/guia/guia_venta_detalle.js')}}"></script>
+    <script src="{{ asset('js/almacen/guia/guia_ventaModal.js')}}"></script>
+    <script src="{{ asset('js/almacen/guia/guia_ven_series.js')}}"></script>
+    <script src="{{ asset('js/almacen/variables/seriesModal.js')}}"></script>
+    <script src="{{ asset('js/almacen/transferencias/transferencia.js')}}"></script>
+    <script src="{{ asset('js/almacen/producto/productoModal.js')}}"></script>
+    <script src="{{ asset('js/logistica/clienteModal.js')}}"></script>
+    <script src="{{ asset('js/logistica/occModal.js')}}"></script>
+    <script src="{{ asset('js/proyectos/variables/add_cliente.js')}}"></script>
+    <script>
+    $(document).ready(function(){
+        seleccionarMenu(window.location);
+    });
+    </script>
 @endsection

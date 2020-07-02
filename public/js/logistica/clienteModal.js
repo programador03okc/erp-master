@@ -33,7 +33,7 @@ function listar_clientes(){
         // 'dom': vardataTables[1],
         // 'buttons': vardataTables[2],
         'language' : vardataTables[0],
-        'ajax': '/mostrar_clientes',
+        'ajax': 'mostrar_clientes',
         'bDestroy': true,
         'columns': [
             {'data': 'id_cliente'},

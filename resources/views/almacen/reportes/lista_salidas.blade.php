@@ -2,26 +2,31 @@
 @include('layout.menu_almacen')
 
 @section('cabecera')
-Lista de Ingresos
+Lista de Salidas
 @endsection
 
 @section('estilos')
 <link rel="stylesheet" href="{{ asset('template/plugins/select2/select2.css') }}">
 @endsection
 
+@section('breadcrumb')
+<ol class="breadcrumb">
+  <li><a href="{{route('almacen.index')}}"><i class="fas fa-tachometer-alt"></i> Almacén</a></li>
+  <li>Reportes</li>
+  <li class="active">@yield('cabecera')</li>
+</ol>
+@endsection
+
 @section('content')
 <div class="page-main" type="lista_salidas">
-    <legend class="mylegend">
-        <h2>Lista de Salidas</h2>
-        <ol class="breadcrumb">
-            <li>
-                <button type="button" class="btn btn-primary" data-toggle="tooltip" 
-                    data-placement="bottom" title="Ingrese los filtros" 
-                    onClick="open_filtros();">
-                    <i class="fas fa-search"></i>  Filtros</button>
-            </li>
-        </ol>
-    </legend>
+    <div class="row" style="padding-left:0px;padding-right:0px;">
+        <div class="col-md-12">
+            <button type="button" class="btn btn-primary" data-toggle="tooltip" 
+                data-placement="bottom" title="Ingrese los filtros" 
+                onClick="open_filtros();">
+                <i class="fas fa-search"></i>  Filtros</button>
+        </div>
+    </div>
     <div class="row">
         <input type="hidden" name="_token" value="{{csrf_token()}}" id="token">
         <div class="col-md-12">
@@ -268,8 +273,13 @@ Lista de Ingresos
     <script src="{{ asset('datatables/JSZip/jszip.min.js') }}"></script>
     <script src="{{ asset('template/plugins/select2/select2.min.js') }}"></script>
 
-    <script src="{{('/js/almacen/reporte/lista_salidas.js')}}"></script>
-    <script src="{{('/js/almacen/reporte/filtros.js')}}"></script>
-    <script src="{{('/js/logistica/clienteModal.js')}}"></script>
-    <script src="{{('/js/logistica/transportistaModal.js')}}"></script>
+    <script src="{{ asset('js/almacen/reporte/lista_salidas.js')}}"></script>
+    <script src="{{ asset('js/almacen/reporte/filtros.js')}}"></script>
+    <script src="{{ asset('js/logistica/clienteModal.js')}}"></script>
+    <script src="{{ asset('js/logistica/transportistaModal.js')}}"></script>
+    <script>
+    $(document).ready(function(){
+        seleccionarMenu(window.location);
+    });
+    </script>
 @endsection

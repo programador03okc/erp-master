@@ -8,10 +8,17 @@
     Tipos de Almacén
 @endsection
 
+@section('breadcrumb')
+<ol class="breadcrumb">
+  <li><a href="{{route('almacen.index')}}"><i class="fas fa-tachometer-alt"></i> Almacén</a></li>
+  <li>Ubicaciones</li>
+  <li class="active">@yield('cabecera')</li>
+</ol>
+@endsection
+
 @section('content')
 <div class="page-main" type="tipo_almacen">
-    <legend><h2>Tipos de Almacén</h2></legend>
-    {{-- <div class="container-okc"> --}}
+    <!-- <div class="thumbnail" > -->
         <div class="row">
             <div class="col-md-7">
                 <fieldset class="group-table">
@@ -40,7 +47,7 @@
                 </form>
             </div>
         </div>
-    {{-- </div> --}}
+    <!-- </div> -->
 </div>
 @endsection
 
@@ -55,5 +62,10 @@
     <script src="{{ asset('datatables/pdfmake/vfs_fonts.js') }}"></script>
     <script src="{{ asset('datatables/JSZip/jszip.min.js') }}"></script>
 
-    <script src="{{('/js/almacen/ubicacion/tipo_almacen.js')}}"></script>
+    <script src="{{ asset('js/almacen/ubicacion/tipo_almacen.js')}}"></script>
+    <script>
+    $(document).ready(function(){
+        seleccionarMenu(window.location);
+    });
+    </script>
 @endsection

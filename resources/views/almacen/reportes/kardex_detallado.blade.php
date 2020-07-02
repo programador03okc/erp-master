@@ -9,21 +9,16 @@ Kardex por Producto
 <link rel="stylesheet" href="{{ asset('template/plugins/select2/select2.css') }}">
 @endsection
 
+@section('breadcrumb')
+<ol class="breadcrumb">
+  <li><a href="{{route('almacen.index')}}"><i class="fas fa-tachometer-alt"></i> Almacén</a></li>
+  <li>Reportes</li>
+  <li class="active">@yield('cabecera')</li>
+</ol>
+@endsection
+
 @section('content')
 <div class="page-main" type="kardex_detallado">
-    <legend class="mylegend">
-        <h2>Kardex por Producto</h2>
-        {{-- <ol class="breadcrumb">
-            <li>
-                <button type="submit" class="btn btn-success" data-toggle="tooltip" 
-                    data-placement="bottom" title="Descargar Kardex Sunat" 
-                    onClick="downloadKardexSunat();">Kardex Sunat</button>
-                <button type="button" class="btn btn-primary" data-toggle="tooltip" 
-                    data-placement="bottom" title="Ingrese los filtros" 
-                    onClick="open_filtros();">Filtros</button>
-            </li>
-        </ol> --}}
-    </legend>
     <div class="row">
         <div class="col-md-12">
             <div class="input-group-okc">
@@ -160,6 +155,11 @@ Kardex por Producto
     <script src="{{ asset('datatables/JSZip/jszip.min.js') }}"></script>
     <script src="{{ asset('template/plugins/select2/select2.min.js') }}"></script>
 
-    <script src="{{('/js/almacen/reporte/kardex_detallado.js')}}"></script>
-    <script src="{{('/js/almacen/producto/productoModal.js')}}"></script>
+    <script src="{{ asset('js/almacen/reporte/kardex_detallado.js')}}"></script>
+    <script src="{{ asset('js/almacen/producto/productoModal.js')}}"></script>
+    <script>
+    $(document).ready(function(){
+        seleccionarMenu(window.location);
+    });
+    </script>
 @endsection

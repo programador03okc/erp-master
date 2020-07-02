@@ -11,12 +11,17 @@ Gestión de Despachos
 <link rel="stylesheet" href="{{ asset('template/plugins/jquery-datatables-checkboxes/css/dataTables.checkboxes.css') }}">
 @endsection
 
+@section('breadcrumb')
+<ol class="breadcrumb">
+  <li><a href="{{route('almacen.index')}}"><i class="fas fa-tachometer-alt"></i> Almacén</a></li>
+  <li>Distribución</li>
+  <li class="active">@yield('cabecera')</li>
+</ol>
+@endsection
+
 @section('content')
 <div class="page-main" type="requerimientosPendientes">
-    <legend class="mylegend">
-        <h2 id="titulo">Gestión de Despachos</h2>
-    </legend>
-    <div class="col-md-12" id="tab-reqPendientes">
+    <div class="col-md-12" id="tab-reqPendientes" style="padding-left:0px;padding-right:0px;">
         <ul class="nav nav-tabs" id="myTab">
             <li class="active"><a type="#pendientes">Requerimientos Pendientes</a></li>
             <li class=""><a type="#despachos">Despachos Pendientes</a></li>
@@ -147,15 +152,20 @@ Gestión de Despachos
     <script src="{{ asset('template/plugins/select2/select2.min.js') }}"></script>
     <script src="{{ asset('template/plugins/jquery-datatables-checkboxes/js/dataTables.checkboxes.min.js') }}"></script>
     
-    <script src="{{('/js/almacen/distribucion/ordenesDespacho.js')}}"></script>
-    <script src="{{('/js/almacen/distribucion/ordenDespachoCreate.js')}}"></script>
-    <script src="{{('/js/almacen/distribucion/grupoDespachoCreate.js')}}"></script>
-    <script src="{{('/js/almacen/distribucion/despachoDetalle.js')}}"></script>
-    <script src="{{('/js/almacen/distribucion/requerimientoDetalle.js')}}"></script>
-    <script src="{{('/js/almacen/distribucion/requerimientoObs.js')}}"></script>
-    <script src="{{('/js/logistica/clienteModal.js')}}"></script>
-    <script src="{{('/js/logistica/proveedorModal.js')}}"></script>
-    <script src="{{('/js/logistica/add_proveedor.js')}}"></script>
-    <script src="{{('/js/publico/ubigeoModal.js')}}"></script>
-    <script src="{{ asset('/js/publico/personaModal.js')}}"></script>
+    <script src="{{ asset('js/almacen/distribucion/ordenesDespacho.js')}}"></script>
+    <script src="{{ asset('js/almacen/distribucion/ordenDespachoCreate.js')}}"></script>
+    <script src="{{ asset('js/almacen/distribucion/grupoDespachoCreate.js')}}"></script>
+    <script src="{{ asset('js/almacen/distribucion/despachoDetalle.js')}}"></script>
+    <script src="{{ asset('js/almacen/distribucion/requerimientoDetalle.js')}}"></script>
+    <script src="{{ asset('js/almacen/distribucion/requerimientoObs.js')}}"></script>
+    <script src="{{ asset('js/logistica/clienteModal.js')}}"></script>
+    <script src="{{ asset('js/logistica/proveedorModal.js')}}"></script>
+    <script src="{{ asset('js/logistica/add_proveedor.js')}}"></script>
+    <script src="{{ asset('js/publico/ubigeoModal.js')}}"></script>
+    <script src="{{ asset('js/publico/personaModal.js')}}"></script>
+    <script>
+    $(document).ready(function(){
+        seleccionarMenu(window.location);
+    });
+    </script>
 @endsection

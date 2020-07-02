@@ -19,7 +19,7 @@ function listar_occ(){
         'buttons': vardataTables[2],
         'language' : vardataTables[0],
         'destroy': true,
-        'ajax': '/listar_occ_pendientes',
+        'ajax': 'listar_occ_pendientes',
         'columns': [
             {'data': 'id'},
             {'data': 'orden_compra'},

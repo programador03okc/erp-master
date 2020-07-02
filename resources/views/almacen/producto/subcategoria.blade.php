@@ -8,9 +8,16 @@
     SubCategoría
 @endsection
 
+@section('breadcrumb')
+<ol class="breadcrumb">
+  <li><a href="{{route('almacen.index')}}"><i class="fas fa-tachometer-alt"></i> Almacén</a></li>
+  <li>Catálogo</li>
+  <li class="active">@yield('cabecera')</li>
+</ol>
+@endsection
+
 @section('content')
 <div class="page-main" type="subcategoria">
-    <legend><h2>SubCategoría</h2></legend>
     <div class="row">
         <div class="col-md-6">
             <fieldset class="group-table">
@@ -96,5 +103,11 @@
     <script src="{{ asset('datatables/pdfmake/pdfmake.min.js') }}"></script>
     <script src="{{ asset('datatables/pdfmake/vfs_fonts.js') }}"></script>
     <script src="{{ asset('datatables/JSZip/jszip.min.js') }}"></script>
-    <script src="{{('/js/almacen/producto/subcategoria_producto.js')}}"></script>
+    
+    <script src="{{ asset('js/almacen/producto/subcategoria_producto.js')}}"></script>
+    <script>
+    $(document).ready(function(){
+        seleccionarMenu(window.location);
+    });
+    </script>
 @endsection

@@ -27,7 +27,7 @@ function listar_proveedores(){
         'buttons': vardataTables[2],
         'language' : vardataTables[0],
         'bDestroy' : true,
-        'ajax': '/mostrar_proveedores',
+        'ajax': 'mostrar_proveedores',
         'columns': [
             {'data': 'id_proveedor'},
             {'data': 'id_contribuyente'},

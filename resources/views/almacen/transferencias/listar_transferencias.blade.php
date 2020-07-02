@@ -2,19 +2,24 @@
 @include('layout.menu_almacen')
 
 @section('cabecera')
-Transferencias entre Almacenes
+Gestión de Transferencias
 @endsection
 
 @section('estilos')
 <link rel="stylesheet" href="{{ asset('template/plugins/select2/select2.css') }}">
 @endsection
 
+@section('breadcrumb')
+<ol class="breadcrumb">
+  <li><a href="{{route('almacen.index')}}"><i class="fas fa-tachometer-alt"></i> Almacén</a></li>
+  <li>Transferencias</li>
+  <li class="active">@yield('cabecera')</li>
+</ol>
+@endsection
+
 @section('content')
 <div class="page-main" type="transferencias_pendientes">
-    <legend class="mylegend">
-        <h2>Transferencias entre Almacenes</h2>
-    </legend>
-    <div class="col-md-12" id="tab-transferencias">
+    <div class="col-md-12" id="tab-transferencias"  style="padding-left:0px;padding-right:0px;">
         <ul class="nav nav-tabs" id="myTab">
             <li class="active"><a type="#pendientes">Transferencias Pendientes</a></li>
             <li class=""><a type="#recibidas">Transferencias Recibidas</a></li>
@@ -147,7 +152,12 @@ Transferencias entre Almacenes
     <script src="{{ asset('template/plugins/moment.min.js') }}"></script>
     <script src="{{ asset('template/plugins/select2/select2.min.js') }}"></script>
 
-    <script src="{{('/js/almacen/transferencias/listar_transferencias.js')}}"></script>
-    <script src="{{('/js/almacen/transferencias/transferencia_detalle.js')}}"></script>
-    <script src="{{('/js/almacen/guia/guia_venta.js')}}"></script>
+    <script src="{{ asset('js/almacen/transferencias/listar_transferencias.js')}}"></script>
+    <script src="{{ asset('js/almacen/transferencias/transferencia_detalle.js')}}"></script>
+    <script src="{{ asset('js/almacen/guia/guia_venta.js')}}"></script>
+    <script>
+    $(document).ready(function(){
+        seleccionarMenu(window.location);
+    });
+    </script>
 @endsection

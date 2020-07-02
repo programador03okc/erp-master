@@ -5,12 +5,17 @@
 Confirmación de Pagos
 @endsection
 
+@section('breadcrumb')
+<ol class="breadcrumb">
+  <li><a href="{{route('almacen.index')}}"><i class="fas fa-tachometer-alt"></i> Almacén</a></li>
+  <li>Pagos</li>
+  <li class="active">@yield('cabecera')</li>
+</ol>
+@endsection
+
 @section('content')
 <div class="page-main" type="requerimientoPagos">
-    <legend class="mylegend">
-        <h2 id="titulo">Confirmación de Pagos</h2>
-    </legend>
-    <div class="col-md-12" id="tab-reqPendientes">
+    <div class="col-md-12" id="tab-reqPendientes" style="padding-left:0px;padding-right:0px;">
         <ul class="nav nav-tabs" id="myTab">
             <li class="active"><a type="#pendientes">Requerimientos Pendientes</a></li>
             <li class=""><a type="#confirmados">Requerimientos Confirmados</a></li>
@@ -88,6 +93,11 @@ Confirmación de Pagos
     <script src="{{ asset('datatables/pdfmake/vfs_fonts.js') }}"></script>
     <script src="{{ asset('datatables/JSZip/jszip.min.js') }}"></script>
 
-    <script src="{{('/js/almacen/pagos/requerimientoPagos.js')}}"></script>
-    <script src="{{('/js/almacen/distribucion/requerimientoDetalle.js')}}"></script>
+    <script src="{{ asset('js/almacen/pagos/requerimientoPagos.js')}}"></script>
+    <script src="{{ asset('js/almacen/distribucion/requerimientoDetalle.js')}}"></script>
+    <script>
+    $(document).ready(function(){
+        seleccionarMenu(window.location);
+    });
+    </script>
 @endsection
