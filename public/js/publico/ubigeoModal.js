@@ -24,7 +24,7 @@ function listarUbigeos(){
         'buttons': vardataTables[2],
         'language' : vardataTables[0],
         'bDestroy': true,
-        'ajax': '/listar_ubigeos',
+        'ajax': 'listar_ubigeos',
         'columns': [
             {'data': 'id_dis'},
             {'data': 'codigo'},

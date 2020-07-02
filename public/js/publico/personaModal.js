@@ -38,7 +38,7 @@ function listarPersonas() {
         'language' : vardataTables[0],
         'processing': true,
         'bDestroy': true,
-        'ajax': '/listar_personas',
+        'ajax': 'listar_personas',
         'columns': [
             {'data': 'id_persona',},
             {'data': 'nro_documento'},
