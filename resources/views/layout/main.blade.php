@@ -121,11 +121,27 @@
 		{
 		$('ul.sidebar-menu a').filter(function () {
 			return this.href == url;
+			
 		}).parent().addClass('active');
 
 		$('ul.treeview-menu a').filter(function () {
 			return this.href == url;
 		}).parentsUntil(".sidebar-menu > .treeview-menu").addClass('active');
+		
+		// sidebar with box collapsed-box
+		$('ul.treeview-menu a').filter(function () {
+			return this.href == url;
+		}).parents("div.box.collapsed-box.active").find('div.box-body.active').removeAttr('style');;
+		
+		$('ul.treeview-menu a').filter(function () {
+			return this.href == url;
+		}).parents("div.box.collapsed-box.active").removeClass('collapsed-box');
+		
+		$('ul.treeview-menu a').filter(function () {
+			return this.href == url;
+		}).parents('div.box.active').find("button.btn.btn-box-tool i").attr("class","fa fa-minus");		
+
+
 		}
 	/*function get_session_actual(){
 	return new Promise(function(resolve, reject) {

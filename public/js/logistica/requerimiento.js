@@ -1,3 +1,34 @@
+var rutaListaRequerimientoModal, 
+rutaMostrarRequerimiento,
+rutaGuardarRequerimiento,
+rutaActualizarRequerimiento,
+rutaAnularRequerimiento,
+rutaSedeByEmpresa,
+rutaCopiarRequerimiento,
+rutaTelefonosCliente,
+rutaDireccionesCliente;
+
+function inicializar( _rutaLista,
+    _rutaMostrarRequerimiento,
+    _rutaGuardarRequerimiento,
+    _rutaActualizarRequerimiento,
+    _rutaAnularRequerimiento,
+    _rutaSedeByEmpresa,
+    _rutaCopiarRequerimiento,
+    _rutaTelefonosCliente,
+    _rutaDireccionesCliente
+    ) {
+    rutaListaRequerimientoModal = _rutaLista;
+    rutaMostrarRequerimiento = _rutaMostrarRequerimiento;
+    rutaGuardarRequerimiento = _rutaGuardarRequerimiento;
+    rutaActualizarRequerimiento = _rutaActualizarRequerimiento;
+    rutaAnularRequerimiento = _rutaAnularRequerimiento;
+    rutaSedeByEmpresa = _rutaSedeByEmpresa;
+    rutaCopiarRequerimiento = _rutaCopiarRequerimiento;
+    rutaTelefonosCliente = _rutaTelefonosCliente;
+    rutaDireccionesCliente = _rutaDireccionesCliente;
+}
+
 let data = [];
 let data_item=[];
 var adjuntos=[];
@@ -287,7 +318,7 @@ function modalRequerimiento(){
 }
 
 function listarRequerimiento(viewAnulados) {
-    let url='/logistica/requerimientos/'+viewAnulados;
+    let url=rutaListaRequerimientoModal+'/'+viewAnulados;
     // if(viewAnulados == true){
     //     url='/logistica/requerimientos_sin_estado';
     // }
@@ -366,9 +397,9 @@ function mostrar_requerimiento(IdorCode){
     document.getElementById('btnCopiar').removeAttribute("disabled");
 
     if (! /^[a-zA-Z0-9]+$/.test(IdorCode)) { // si tiene texto
-        url = '/logistica/requerimiento/0/'+IdorCode;
+        url = rutaMostrarRequerimiento+'/'+0+'/'+IdorCode;
     }else{
-        url = '/logistica/requerimiento/'+IdorCode+'/0';
+        url = rutaMostrarRequerimiento+'/'+IdorCode+'/'+0;
     }
 
     let items={};
@@ -1791,7 +1822,7 @@ function save_requerimiento(action){
         
         // console.log(data);
         
-        baseUrl = '/logistica/guardar_requerimiento';
+        baseUrl = rutaGuardarRequerimiento;
         $.ajax({
             type: 'POST',
             url: baseUrl,
@@ -1816,7 +1847,7 @@ function save_requerimiento(action){
         
     }else if(action == 'edition'){
         // funcion editar
-        baseUrl = '/logistica/actualizar_requerimiento/'+data.requerimiento.id_requerimiento;
+        baseUrl = rutaActualizarRequerimiento+'/'+data.requerimiento.id_requerimiento;
         $.ajax({
             type: 'PUT',
             url: baseUrl,
@@ -1885,7 +1916,7 @@ function cancelarRequerimiento(){
 }
 function anular_requerimiento(id_req){
     if(id_req > 0){
-        baseUrl = '/logistica/anular_requerimiento/'+id_req;
+        baseUrl = rutaAnularRequerimiento+'/'+id_req;
         $.ajax({
             type: 'PUT',
             url: baseUrl,
@@ -1994,7 +2025,7 @@ function copiarDatosRequerimiento(){
 
     var id = $('#id_requerimiento').text();
 
-    baseUrl = '/logistica/copiar_requerimiento/'+id;
+    baseUrl = rutaCopiarRequerimiento+'/'+id;
     let actual_id_usuario = userSession.id_usuario;
     let requerimiento = get_data_requerimiento();
     let detalle_requerimiento = data_item;
@@ -2211,7 +2242,7 @@ function getDataSelectSede(id_empresa = null){
         $.ajax({
             type: 'GET',
             headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-            url: '/logistica/select_sede_by_empresa/' + id_empresa,
+            url: rutaSedeByEmpresa+'/' + id_empresa,
             dataType: 'JSON',
             success: function(response){
                 llenarSelectSede(response);
@@ -2437,7 +2468,7 @@ function llenarListaTelefonoCliente(id_persona=null,id_cliente=null){
         searching: true,
         language: vardataTables[0],
         processing: true,
-        ajax:'/telefonos_cliente/'+id_persona+'/'+id_cliente,
+        ajax: rutaTelefonosCliente+'/'+id_persona+'/'+id_cliente,
         columns: [
             {'render':
                 function (data, type, row, meta){
@@ -2464,7 +2495,7 @@ function llenarListaDireccionesCliente(id_persona=null,id_cliente=null){
         searching: true,
         language: vardataTables[0],
         processing: true,
-        ajax:'/direcciones_cliente/'+id_persona+'/'+id_cliente,
+        ajax: rutaDireccionesCliente+'/'+id_persona+'/'+id_cliente,
         columns: [
             {'render':
                 function (data, type, row, meta){

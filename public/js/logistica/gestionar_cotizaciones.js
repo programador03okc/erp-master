@@ -1,3 +1,9 @@
+var rutaSedeByEmpresa;
+
+function inicializar(_rutaSedeByEmpresa) {
+    rutaSedeByEmpresa = _rutaSedeByEmpresa;
+}
+
 var listCheckReq = [];
 var listCheckReqDet = [];
 var adjuntoList = [];
@@ -358,7 +364,7 @@ function getDataSelectSede(id_empresa = null, tabId ,selector){
         $.ajax({
             type: 'GET',
             headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-            url: '/logistica/select_sede_by_empresa/' + id_empresa,
+            url: rutaSedeByEmpresa+ '/' + id_empresa,
             dataType: 'JSON',
             success: function(response){
                 llenarSelectSede(response,tabId,selector);

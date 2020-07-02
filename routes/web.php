@@ -123,6 +123,59 @@ Route::group(['middleware' => ['auth']], function () {
 			});
 		});
 	});
+	
+	Route::group(['as' => 'logistica.', 'prefix' => 'logistica'], function(){
+		// Logística
+		Route::get('index', 'LogisticaController@view_main_logistica')->name('index');
+		Route::group(['as' => 'gestion-logistica.', 'prefix' => 'gestion-logistica'], function(){
+			Route::group(['as' => 'requerimiento.', 'prefix' => 'requerimiento'], function(){
+				Route::group(['as' => 'elaboracion.', 'prefix' => 'elaboracion'], function(){
+					Route::get('index', 'LogisticaController@view_gestionar_requerimiento')->name('index');
+					Route::get('lista-modal/{option?}', 'LogisticaController@mostrar_requerimientos')->name('lista-modal');
+					Route::get('mostrar-requerimiento/{id?}/{codigo?}', 'LogisticaController@mostrar_requerimiento')->name('mostrar-requerimiento');
+					Route::post('guardar', 'LogisticaController@guardar_requerimiento')->name('guardar');
+					Route::put('actualizar/{id?}', 'LogisticaController@actualizar_requerimiento')->name('actualizar');
+					Route::put('anular/{id_requerimiento?}', 'LogisticaController@anular_requerimiento')->name('anular');
+					Route::get('select-sede-by-empresa/{id?}', 'LogisticaController@select_sede_by_empresa')->name('select-sede-by-empresa');
+					Route::post('copiar-requerimiento/{id?}', 'LogisticaController@copiar_requerimiento')->name('copiar-requerimiento');
+					Route::get('telefonos-cliente/{id_persona?}/{id_cliente?}', 'LogisticaController@telefonos_cliente')->name('telefonos-cliente');
+					Route::get('direcciones-cliente/{id_persona?}/{id_cliente?}', 'LogisticaController@direcciones_cliente')->name('direcciones-cliente');
+
+				});
+				Route::group(['as' => 'gestionar.', 'prefix' => 'gestionar'], function(){
+					Route::get('index', 'LogisticaController@view_lista_requerimientos')->name('index');
+					Route::get('listar/{empresa?}/{sede?}/{grupo?}', 'LogisticaController@listar_requerimiento_v2')->name('listar');
+					Route::get('empresa', 'LogisticaController@getIdEmpresa')->name('empresa');
+					Route::get('select-sede-by-empresa/{id?}', 'LogisticaController@select_sede_by_empresa')->name('select-sede-by-empresa');
+					Route::get('select-grupo-by-sede/{id?}', 'LogisticaController@select_grupo_by_sede')->name('select-grupo-by-sede');
+					Route::get('ver-flujos/{req?}/{doc?}', 'LogisticaController@flujo_aprobacion')->name('ver-flujos');
+					Route::get('explorar-requerimiento/{id_requerimiento?}', 'LogisticaController@explorar_requerimiento')->name('explorar-requerimiento');
+				});
+			});
+			
+			Route::group(['as' => 'cotizacion.', 'prefix' => 'cotizacion'], function(){
+				Route::group(['as' => 'gestionar.', 'prefix' => 'gestionar'], function(){
+					Route::get('index', 'LogisticaController@view_gestionar_cotizaciones')->name('index');
+					Route::get('select-sede-by-empresa/{id?}', 'LogisticaController@select_sede_by_empresa')->name('select-sede-by-empresa');
+
+					});
+				});
+			Route::group(['as' => 'orden.', 'prefix' => 'orden'], function(){
+				Route::group(['as' => 'por-requerimiento.', 'prefix' => 'por-requerimiento'], function(){
+					Route::get('index', 'LogisticaController@view_generar_orden_requerimiento')->name('index');
+					// generar oreden por requerimiento
+					Route::get('requerimientos-pendientes', 'LogisticaController@listar_requerimientos_pendientes')->name('requerimientos-pendientes'); 
+					Route::get('requerimientos-atendidos', 'LogisticaController@listar_requerimientos_atendidos')->name('requerimientos-atendidos'); 
+					Route::get('requerimiento-orden/{id?}', 'LogisticaController@get_requerimiento_orden')->name('requerimiento-orden'); 
+					Route::post('guardar', 'LogisticaController@guardar_orden_por_requerimiento')->name('guardar');
+					Route::put('revertir/{id_orden?}/{id_requerimiento?}', 'LogisticaController@revertir_orden_requerimiento')->name('revertir');
+				
+					});
+				});
+
+
+		});
+	});
 
 	Route::get('config', function () {
 		return view('configuracion/main');
@@ -1424,13 +1477,10 @@ Route::get('select_programaciones/{id}', 'EquipoController@select_programaciones
 Route::get('decode5t/{id}', 'EquipoController@decode5t');
 	/* Logistica */
 
-	Route::get('logistica/select_sede_by_empresa/{id}', 'LogisticaController@select_sede_by_empresa');
-	Route::get('logistica/select_grupo_by_sede/{id}', 'LogisticaController@select_grupo_by_sede');
-	Route::get('logistica/get_id_empresa', 'LogisticaController@getIdEmpresa');
+	Route::post('save_cliente', 'LogisticaController@save_cliente');
 
 	Route::get('get_id_operacion/{id1}/{id2}/{id23}', 'LogisticaController@get_id_operacion');
 	Route::get('session-rol-aprob', 'LogisticaController@userSession');
-	Route::get('logistica/explorar-requerimiento/{id_requerimiento}', 'LogisticaController@explorar_requerimiento');
 	// Route::get('logistica/reqHasQuotation/{id_ope}', 'LogisticaController@reqHasQuotation');
 	Route::get('logistica/cantidad_requerimientos_generados', 'LogisticaController@cantidad_requerimientos_generados');
 
@@ -1439,7 +1489,6 @@ Route::get('decode5t/{id}', 'EquipoController@decode5t');
 	Route::get('logistica/mostrar_items', 'LogisticaController@mostrar_items');
 	Route::get('logistica/mostrar_item/{id_item}', 'LogisticaController@mostrar_item');
 	Route::get('logistica/get_requerimiento/{id}/{doc}', 'LogisticaController@get_requerimiento');
-	Route::get('logistica/requerimientos/{option}', 'LogisticaController@mostrar_requerimientos');
 	Route::post('logistica/guardar-archivos-adjuntos', 'LogisticaController@guardar_archivos_adjuntos');
 	Route::put('logistica/eliminar-archivo-adjunto/{id_archivo}', 'LogisticaController@eliminar_archivo_adjunto');
 	Route::get('/mostrar_nombre_grupo/{id}', 'EquipoController@mostrar_nombre_grupo');
@@ -1449,19 +1498,12 @@ Route::get('decode5t/{id}', 'EquipoController@decode5t');
 	Route::get('logistica/mostrar-adjuntos/{id_requerimiento}', 'LogisticaController@mostrar_adjuntos');
 	Route::get('logistica/imprimir-requerimiento-pdf/{id}/{codigo}', 'LogisticaController@generar_requerimiento_pdf');
 	Route::get('logistica/requerimiento/lista', 'LogisticaController@view_lista_requerimientos');
-	Route::get('logistica/requerimiento/{id}/{codigo}', 'LogisticaController@mostrar_requerimiento')->where('id', '(.*)');
 	Route::post('logistica/copiar_requerimiento/{id}', 'LogisticaController@copiar_requerimiento');
 
-	Route::get('logistica/requerimiento/gestionar', 'LogisticaController@view_gestionar_requerimiento');
-	Route::get('logistica/cotizacion/gestionar', 'LogisticaController@view_gestionar_cotizaciones');
 	Route::get('logistica/cotizacion/cuadro-comparativo', 'LogisticaController@view_cuadro_comparativo');
 	Route::get('logistica/cotizacion/valorizacion', 'LogisticaController@view_valoriacion');
 	Route::get('logistica/orden/generar', 'LogisticaController@view_generar_orden');
-	Route::post('logistica/guardar_requerimiento', 'LogisticaController@guardar_requerimiento');
-	Route::put('logistica/anular_requerimiento/{id_requerimiento}', 'LogisticaController@anular_requerimiento');
-	Route::put('logistica/actualizar_requerimiento/{id}', 'LogisticaController@actualizar_requerimiento');
 	// Route::get('logistica/get_req_list/{id_empresa}', 'LogisticaController@get_req_list');
-	Route::get('logistica/listar_requerimientos/{id_empresa}/{id_sede}/{id_grupo}', 'LogisticaController@listar_requerimiento_v2');
 	// Route::get('getCriterioMonto/{id}', 'LogisticaController@getCriterioMonto');
 
 	Route::get('logistica/observar_req/{req}/{doc}', 'LogisticaController@observar_requerimiento_vista');
@@ -1470,7 +1512,6 @@ Route::get('decode5t/{id}', 'EquipoController@decode5t');
 	Route::post('logistica/aprobar_documento', 'LogisticaController@aprobar_requerimiento');
 	Route::post('logistica/observar_contenido', 'LogisticaController@observar_requerimiento');
 	Route::post('logistica/denegar_documento', 'LogisticaController@denegar_requerimiento');
-	Route::get('logistica/ver_flujos/{req}/{doc}', 'LogisticaController@flujo_aprobacion');
 	Route::get('get_flujo_aprobacion/{req}/{doc}', 'LogisticaController@get_flujo_aprobacion');
 	Route::post('logistica/guardar_sustento', 'LogisticaController@guardar_sustento');
 	// Route::post('logistica/aceptar_sustento', 'LogisticaController@aceptar_sustento'); 
@@ -1594,16 +1635,6 @@ Route::get('decode5t/{id}', 'EquipoController@decode5t');
 	Route::get('get_current_user/', 'LogisticaController@get_current_user'); 
 	Route::get('/logistica/explorar-orden/{id_orden}', 'LogisticaController@explorar_orden'); 
 
-	// generar oreden por requerimiento
-	Route::get('generar_orden_requerimiento', 'LogisticaController@view_generar_orden_requerimiento'); 
-	Route::get('listar_requerimientos_pendientes', 'LogisticaController@listar_requerimientos_pendientes'); 
-	Route::get('listar_requerimientos_atendidos', 'LogisticaController@listar_requerimientos_atendidos'); 
-	Route::get('get_requerimiento_orden/{id}', 'LogisticaController@get_requerimiento_orden'); 
-	Route::post('guardar_orden_por_requerimiento', 'LogisticaController@guardar_orden_por_requerimiento');
-	Route::put('revertir_orden_requerimiento/{id_orden}/{id_requerimiento}', 'LogisticaController@revertir_orden_requerimiento');
-	Route::post('save_cliente', 'LogisticaController@save_cliente');
-	Route::get('telefonos_cliente/{id_persona}/{id_cliente}', 'LogisticaController@telefonos_cliente');
-	Route::get('direcciones_cliente/{id_persona}/{id_cliente}', 'LogisticaController@direcciones_cliente');
 
 	/** logistica - Comprobante de Compra */
 

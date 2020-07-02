@@ -6,7 +6,7 @@
 <title>Sistema ERP</title>
 <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
 <link rel="stylesheet" href="{{ asset('template/bootstrap/css/bootstrap.min.css')}}">
-<link rel="stylesheet" href="{{ asset('fonts/awesome/css/all.min.css')}}">
+<link rel="stylesheet" href="{{ asset('template/fontawesome/css/all.min.css')}}">
 <link rel="stylesheet" href="{{ asset('template/dist/css/AdminLTE.min.css')}}">
 <link rel="stylesheet" href="{{ asset('template/dist/css/skins/_all-skins.min.css')}}">
 <link rel="stylesheet" href="{{ asset('css/app.css')}}">

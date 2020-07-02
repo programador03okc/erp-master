@@ -1,10 +1,36 @@
+var rutaLista,
+rutaGetIdEmpresa,
+rutaSedeByEmpresa,
+rutaGrupoBySede,
+rutaVerFlujos,
+rutaExplorarRequerimiento;
+
+function inicializar(
+    _rutaLista,
+    _rutaGetIdEmpresa,
+    _rutaSedeByEmpresa,
+    _rutaGrupoBySede,
+    _rutaVerFlujos,
+    _rutaExplorarRequerimiento
+    ) {
+    
+    rutaLista = _rutaLista;
+    rutaGetIdEmpresa = _rutaGetIdEmpresa;
+    rutaSedeByEmpresa = _rutaSedeByEmpresa;
+    rutaGrupoBySede = _rutaGrupoBySede;
+    rutaVerFlujos = _rutaVerFlujos;
+    rutaExplorarRequerimiento = _rutaExplorarRequerimiento;
+    
+    defaultValueSelectEmpresa('OK COMPUTER');
+
+}
+
 var userSession =[];
 var disabledBtn=true;
 $(function(){
     var vardataTables = funcDatatables();
 
-    vista_extendida();
-    defaultValueSelectEmpresa('OK COMPUTER');
+    // vista_extendida();
 
     $.ajax({
         type: 'GET',
@@ -26,15 +52,17 @@ $(function(){
 
 });
 
-function defaultValueSelectEmpresa(name){
+function defaultValueSelectEmpresa(name){    
     let data={nombre:name};
     $.ajax({
         type: 'GET',
+        bDestroy: true,
+
         headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-        url: '/logistica/get_id_empresa',
+        url: rutaGetIdEmpresa,
         dataType: 'JSON',
         data:data,
-        success: function(response){
+        success: function(response){            
             document.querySelector('div[type="lista_requerimiento"] select[id="id_empresa_select"]').value = response;
             listarTablaReq(response,null, null)
             getDataSelectSede(response);
@@ -56,7 +84,7 @@ function getDataSelectSede(id_empresa = null){
         $.ajax({
             type: 'GET',
             headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-            url: '/logistica/select_sede_by_empresa/' + id_empresa,
+            url: rutaSedeByEmpresa+'/' + id_empresa,
             dataType: 'JSON',
             success: function(response){
                 // console.log(response);
@@ -95,7 +123,7 @@ function getDataSelectGrupo(id_sede){
         $.ajax({
             type: 'GET',
             headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-            url: '/logistica/select_grupo_by_sede/' + id_sede,
+            url: rutaGrupoBySede+'/' + id_sede,
             dataType: 'JSON',
             success: function(response){
                 // console.log(response);
@@ -130,17 +158,19 @@ function vista_extendida(){
 }
 
 function listarTablaReq(id_empresa =null,id_sede =null, id_grupo=null){
-    console.log(id_empresa);
-    console.log(id_sede);
-    console.log(id_grupo);
+    // console.log(id_empresa);
+    // console.log(id_sede);
+    // console.log(id_grupo);
     
     // var vardataTables = funcDatatables();
     $('#ListaReq').dataTable({
         processing: true,
         serverSide: true,
+        bDestroy: true,
+
         ajax: {
-            url:'/logistica/listar_requerimientos/'+id_empresa+'/'+id_sede+'/'+id_grupo,
-            // url:"{{ router('listar_requerimientos3') }}",
+            // url:'/logistica/requerimiento/lista/'+id_empresa+'/'+id_sede+'/'+id_grupo,
+            url:rutaLista+'/'+id_empresa+'/'+id_sede+'/'+id_grupo,
             type:'GET',
             data: {_token: "{{csrf_token()}}"}
         },
@@ -301,7 +331,7 @@ function viewFlujo(req, doc){
     $.ajax({
         type: 'GET',
         headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-        url: '/logistica/ver_flujos/' + req + '/' + doc,
+        url: rutaVerFlujos+'/' + req + '/' + doc,
         dataType: 'JSON',
         beforeSend: function(){
             $(document.body).append('<span class="loading"><div></div></span>');
@@ -418,7 +448,7 @@ function verArchivosAdjuntosRequerimiento(id){
     
 
     function get_data_tracking(id_req){
-        baseUrl = '/logistica/explorar-requerimiento/'+id_req;
+        baseUrl = rutaExplorarRequerimiento+'/'+id_req;
         $.ajax({
             type: 'GET',
             url: baseUrl,
