@@ -1,11 +1,10 @@
 @extends('layout.main')
-@include('layout.menu_proyectos')
+@include('layout.menu_almacen')
 @section('cabecera')
     Sin acceso
 @endsection
 @section('content')
-<div class="page-main" type="sis_contrato">
-
+<div class="page-main" type="sin_acceso">
     <div class="row">
         <div class="col-md-6">
           Su usuario no tiene acceso para acceder a este formulario
