@@ -18,9 +18,9 @@
                             <h5>Serie-Número</h5>
                             <div class="input-group">
                                 <input type="text" class="oculto" name="id_serie_numero">
-                                <input type="text" class="form-control" name="serie" placeholder="0000" required >
+                                <input type="text" class="form-control" name="serie" onBlur="ceros_numero_ven('serie');" placeholder="0000" required >
                                 <span class="input-group-addon">-</span>
-                                <input type="text" class="form-control" name="numero" placeholder="000000" required >
+                                <input type="text" class="form-control" name="numero" onBlur="ceros_numero_ven('numero');" placeholder="000000" required >
                                     <!-- onBlur="ceros_numero_guia();"  -->
                             </div>
                         </div>

@@ -758,6 +758,12 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::post('guardar_grupo_despacho', 'DistribucionController@guardar_grupo_despacho');
 				Route::post('despacho_anular_requerimiento', 'DistribucionController@anular_requerimiento');
 				Route::get('anular_orden_despacho/{id}', 'DistribucionController@anular_orden_despacho');
+				Route::get('mostrar_proveedores', 'LogisticaController@mostrar_proveedores');
+				Route::post('listarGruposDespachados', 'DistribucionController@listarGruposDespachados');
+				Route::get('verDetalleGrupoDespacho/{id}', 'DistribucionController@verDetalleGrupoDespacho');
+				Route::post('despacho_conforme', 'DistribucionController@despacho_conforme');
+				Route::post('despacho_no_conforme', 'DistribucionController@despacho_no_conforme');
+				Route::get('imprimir_despacho/{id}', 'DistribucionController@imprimir_despacho');
 
 			});
 
@@ -775,6 +781,7 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('verGuiasOrden/{id}', 'OrdenesPendientesController@verGuiasOrden');
 				Route::post('guardar_guia_transferencia', 'OrdenesPendientesController@guardar_guia_transferencia');
 				Route::post('anular_ingreso', 'OrdenesPendientesController@anular_ingreso');
+				Route::get('cargar_almacenes/{id}', 'AlmacenController@cargar_almacenes');
 
 			});
 
@@ -1104,6 +1111,7 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::group(['as' => 'gestion-logistica.', 'prefix' => 'gestion-logistica'], function(){
 			Route::group(['as' => 'requerimiento.', 'prefix' => 'requerimiento'], function(){
 				Route::group(['as' => 'elaboracion.', 'prefix' => 'elaboracion'], function(){
+
 					Route::get('index', 'LogisticaController@view_gestionar_requerimiento')->name('index');
 					Route::get('lista-modal/{option?}', 'LogisticaController@mostrar_requerimientos')->name('lista-modal');
 					Route::get('mostrar-requerimiento/{id?}/{codigo?}', 'LogisticaController@mostrar_requerimiento')->name('mostrar-requerimiento');
@@ -1771,11 +1779,6 @@ Route::get('anular_servicio/{id}', 'AlmacenController@anular_servicio');
 
 
 Route::get('grupoDespachos', 'DistribucionController@view_grupoDespachos');
-Route::post('listarGruposDespachados', 'DistribucionController@listarGruposDespachados');
-Route::get('verDetalleGrupoDespacho/{id}', 'DistribucionController@verDetalleGrupoDespacho');
-Route::post('despacho_conforme', 'DistribucionController@despacho_conforme');
-Route::post('despacho_no_conforme', 'DistribucionController@despacho_no_conforme');
-Route::get('imprimir_despacho/{id}', 'DistribucionController@imprimir_despacho');
 
 
 

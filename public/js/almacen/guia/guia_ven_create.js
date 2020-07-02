@@ -76,3 +76,13 @@ function guardar_guia_create(data){
         console.log(errorThrown);
     });
 }
+function ceros_numero_ven(numero){
+    if (numero == 'numero'){
+        var num = $('[name=numero]').val();
+        $('[name=numero]').val(leftZero(7,num));
+    }
+    else if(numero == 'serie'){
+        var num = $('[name=serie]').val();
+        $('[name=serie]').val(leftZero(4,num));
+    }
+}

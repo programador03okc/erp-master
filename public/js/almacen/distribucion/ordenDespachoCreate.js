@@ -108,7 +108,7 @@ function changeTipoCliente(e){
 function listar_detalle_ingreso(id_requerimiento){
     $.ajax({
         type: 'GET',
-        url: '/verDetalleIngreso/'+id_requerimiento,
+        url: 'verDetalleIngreso/'+id_requerimiento,
         dataType: 'JSON',
         success: function(response){
             console.log(response);
