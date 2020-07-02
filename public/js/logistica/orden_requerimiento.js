@@ -21,6 +21,7 @@ function inicializar(
 
     listar_requerimientos_pendientes();
     listar_requerimientos_atendidos();
+
 }
 
 var detalleRequerimientoSelected = [];
@@ -90,6 +91,10 @@ function listar_requerimientos_atendidos(){
     });
 }
 
+function updateTableRequerimientoAtendidos(){    
+    $('#listaRequerimientosAtendidos').DataTable().ajax.reload();
+}
+
 function eliminarAtencionOrdenRequerimiento(obj){
     let codigo_requerimiento = obj.dataset.codigoRequerimiento;
     let id_requerimiento = obj.dataset.idRequerimiento;
@@ -123,7 +128,8 @@ function eliminarAtencionOrdenRequerimiento(obj){
 }
 
 function openModalOrdenRequerimiento(obj){
-    // console.log(obj.dataset.idRequerimiento);    
+    // console.log(obj.dataset.idRequerimiento);   
+ 
     $('#modal-orden-requerimiento').modal({
         show: true,
         backdrop: 'static'

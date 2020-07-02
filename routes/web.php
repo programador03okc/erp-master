@@ -1115,6 +1115,8 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::get('telefonos-cliente/{id_persona?}/{id_cliente?}', 'LogisticaController@telefonos_cliente')->name('telefonos-cliente');
 					Route::get('direcciones-cliente/{id_persona?}/{id_cliente?}', 'LogisticaController@direcciones_cliente')->name('direcciones-cliente');
 					Route::get('listar_ubigeos', 'AlmacenController@listar_ubigeos');
+					Route::get('listar_personas', 'RecursosHumanosController@mostrar_persona_table');
+					Route::get('cargar_almacenes/{id_sede}', 'LogisticaController@cargar_almacenes');
 
 				});
 				Route::group(['as' => 'gestionar.', 'prefix' => 'gestionar'], function(){

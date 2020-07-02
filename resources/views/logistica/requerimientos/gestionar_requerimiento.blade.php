@@ -15,23 +15,20 @@
 <div class="page-main" type="requerimiento">
 <form id="form-requerimiento" type="register" form="formulario">
 
-    <legend>
-        <div class="row row-no-gutters">
-            <div class="col-md-12">
-                <div class="form-inline">
-                    <div class="form-group">
-                        <h2>Generar Requerimiento</h2>
-                    </div>
 
-                    <div class="form-group col-sm-offset-4">
-                        <h5 >Tipo de Requerimiento:</h5> 
-                        <select class="form-control input-sm activation" name="tipo_requerimiento" onChange="changeOptTipoReqSelect(event);">
-                            @foreach ($tipo_requerimiento as $tipo)
-                                <option value="{{$tipo->id_tipo_requerimiento}}">{{$tipo->descripcion}}</option>
-                            @endforeach                
-                        </select>
+
+
+    <fieldset class="group-table">   
+        <input type="hidden" name="id_usuario_session">
+        <input type="hidden" name="id_usuario_req">
+        <input type="hidden" name="id_estado_doc">
+        <input type="hidden" name="id_requerimiento" primary="ids">
+        <input type="hidden" name="cantidad_aprobaciones">        
+        <div class="row">
+                    <div class="col-md-7">
+                        <h5>Estado: <span class="label" id="estado_doc">&nbsp;</span> </h5>
                     </div>
-                    <div class="form-group">
+                    <div class="col-md-2">
                         <h5>Periodo</h5>
                         <select class="form-control activation" name="periodo" disabled="true">
                             @foreach ($periodos as $periodo)
@@ -39,37 +36,29 @@
                             @endforeach
                         </select>
                     </div>
-                    <div class="form-group">
+                    <div class="col-md-2">
                             <h5>Prioridad</h5>
                             <select class="form-control activation" name="prioridad" disabled="true">
-                            @foreach ($prioridades as $prioridad)
-                            <option value="{{$prioridad->id_prioridad}}">{{$prioridad->descripcion}}</option>
-                        @endforeach
-                        </select>
+                                @foreach ($prioridades as $prioridad)
+                                    <option value="{{$prioridad->id_prioridad}}">{{$prioridad->descripcion}}</option>
+                                @endforeach
+                            </select>
                     </div>
-                    <div class="form-group">
+                    <div class="col-md-1">
                             <h5>&nbsp;</h5>
                             <button type="button" name="btn-imprimir-requerimento-pdf" class="btn btn-danger btn-sm" onclick="ImprimirRequerimientoPdf()" disabled><i class="fas fa-file-pdf"></i> Imprimir</button>
-                        </select>
                     </div>
-                    <div class="form-group">
-                            <h5>Estado</h5>
-                            <span class="label" id="estado_doc">&nbsp;</span>
-                    </div>
-                </div>
-            </div>
-
         </div>
 
- 
-    </legend>
-        
-        <input type="hidden" name="id_usuario_session">
-        <input type="hidden" name="id_usuario_req">
-        <input type="hidden" name="id_estado_doc">
-        <input type="hidden" name="id_requerimiento" primary="ids">
-        <input type="hidden" name="cantidad_aprobaciones">        
         <div class="row">
+            <div class="col-md-2">
+                <h5 >Tipo de Requerimiento:</h5> 
+                <select class="form-control input-sm activation" name="tipo_requerimiento" onChange="changeOptTipoReqSelect(event);">
+                    @foreach ($tipo_requerimiento as $tipo)
+                        <option value="{{$tipo->id_tipo_requerimiento}}">{{$tipo->descripcion}}</option>
+                    @endforeach                
+                </select>
+            </div>
             <div class="col-md-2">
                 <h5>Buscar Requerimiento</h5>
                 <div class="input-group-okc">
@@ -81,12 +70,12 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-7">
+            <div class="col-md-6">
                 <h5>Concepto/Motivo</h5>
                 <input type="text" class="form-control activation" name="concepto">
             </div>
 
-            <div class="col-md-3" id="input-group-rol-usuario">
+            <div class="col-md-2" id="input-group-rol-usuario">
                 <h5>Roles del Usuario</h5>
                 <div class="input-group-okc">
                     <select class="form-control input-sm activation" name="rol_usuario">
@@ -294,7 +283,9 @@
 
         <div class="row" id="observaciones_requerimiento"></div> 
         <div class="row" id="observaciones_item_requerimiento"></div> 
+    </fieldset>
     </form>
+
 </div>
 @include('logistica.requerimientos.modal_direcciones_cliente')
 @include('logistica.requerimientos.modal_telefonos_cliente')
