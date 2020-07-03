@@ -55,7 +55,7 @@ class CorreoController extends Controller
 			if(count($item['adjuntos']) >0 ){
 				foreach($item['adjuntos'] as $adjunto){
 					
-					$adjuntosReq[]=['id'=>$adjunto->id_archivo, 'ruta'=>$folderRequerimiento.$adjunto->archivo, 'active'=>true];
+					$adjuntosReq[]=['id'=>$adjunto->id_adjunto, 'ruta'=>$folderRequerimiento.$adjunto->archivo, 'active'=>true];
 				}
 			}
 		}
@@ -132,14 +132,14 @@ class CorreoController extends Controller
                 $name_file = "co".$id_cotizacion. time() . $file->getClientOriginalName();
                 if ($infoFile[0]->active == true) {
 
-                    $alm_req_archivos = DB::table('logistica.cotizacion_archivos')->insertGetId(
+                    $alm_det_req_adjuntos = DB::table('logistica.cotizacion_archivos')->insertGetId(
                         [
                             'id_cotizacion'             => $id_cotizacion,
                             'archivo'                   => $name_file,
                             'estado'                    => 1,
                             'fecha_registro'            => date('Y-m-d H:i:s')
                         ],
-                        'id_archivo'
+                        'id_adjunto'
                     );
                     Storage::disk('archivos')->put("logistica/cotizacion/" . $name_file, \File::get($file));
                 }
@@ -148,7 +148,7 @@ class CorreoController extends Controller
             }
         }
 
-        return response()->json($alm_req_archivos);
+        return response()->json($alm_det_req_adjuntos);
     }
 
 
@@ -156,12 +156,12 @@ class CorreoController extends Controller
     //     $exists='';
     //     switch($typeDoc){
     //         case 'DETALLE_REQUERIMIENTO':
-    //             $data = DB::table('almacen.alm_req_archivos')
+    //             $data = DB::table('almacen.alm_det_req_adjuntos')
     //             ->select(
-    //                 'alm_req_archivos.*'
+    //                 'alm_det_req_adjuntos.*'
     //             )
-    //             ->where('alm_req_archivos.id_archivo',$id)
-    //             ->orderBy('alm_req_archivos.id_archivo', 'desc')
+    //             ->where('alm_det_req_adjuntos.id_adjunto',$id)
+    //             ->orderBy('alm_det_req_adjuntos.id_adjunto', 'desc')
     //             ->get();
 
     //             if($data){

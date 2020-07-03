@@ -1224,7 +1224,7 @@ function listar_archivos_adjuntos_cotizacion(id_cotizacion) {
             if (response.length > 0) {
                 for (x = 0; x < response.length; x++) {
                     adjuntos_cotizacion.push({
-                        id_archivo: response[x].id_archivo,
+                        id_adjunto: response[x].id_adjunto,
                         id_detalle_requerimiento:
                             response[x].id_detalle_requerimiento,
                         archivo: response[x].archivo,
@@ -1253,8 +1253,8 @@ function llenar_tabla_archivos_adjuntos_cotizacion(adjuntos) {
         var row = table.insertRow(a + 1)
         var tdIdArchivo = row.insertCell(0)
         tdIdArchivo.setAttribute('class', 'hidden')
-        tdIdArchivo.innerHTML = adjuntos[a].id_archivo
-            ? adjuntos[a].id_archivo
+        tdIdArchivo.innerHTML = adjuntos[a].id_adjunto
+            ? adjuntos[a].id_adjunto
             : '0'
         var tdIdDetalleReq = row.insertCell(1)
         tdIdDetalleReq.setAttribute('class', 'hidden')
@@ -2402,13 +2402,13 @@ function agregarAdjuntosItemReq(id_requerimiento,id_detalle_requerimiento){
 
     }else{
         
-        $('#modal-adjuntar-archivos-requerimiento').modal({
+        $('#modal-adjuntar-archivos-detalle-requerimiento').modal({
             show: true,
             backdrop: 'static'
         });
 
-        document.querySelector('div[id="modal-adjuntar-archivos-requerimiento"] div[class="modal-footer"] label[id="id_requerimiento"]').textContent =id_requerimiento;
-        document.querySelector('div[id="modal-adjuntar-archivos-requerimiento"] div[class="modal-footer"] label[id="id_detalle_requerimiento"]').textContent =id_detalle_requerimiento;
+        document.querySelector('div[id="modal-adjuntar-archivos-detalle-requerimiento"] div[class="modal-footer"] label[id="id_requerimiento"]').textContent =id_requerimiento;
+        document.querySelector('div[id="modal-adjuntar-archivos-detalle-requerimiento"] div[class="modal-footer"] label[id="id_detalle_requerimiento"]').textContent =id_detalle_requerimiento;
         get_data_archivos_adjuntos(id_detalle_requerimiento);
 
     }
@@ -2431,7 +2431,7 @@ function get_data_archivos_adjuntos(index){
                 for (x=0; x<response.length; x++){
                     id_detalle_requerimiento= response[x].id_detalle_requerimiento;
                         adjuntos.push({ 
-                            'id_archivo':response[x].id_archivo,
+                            'id_adjunto':response[x].id_adjunto,
                             'id_detalle_requerimiento':response[x].id_detalle_requerimiento,
                             'archivo':response[x].archivo,
                             'fecha_registro':response[x].fecha_registro,
@@ -2471,7 +2471,7 @@ function llenar_tabla_archivos_adjuntos(adjuntos){
         var row = table.insertRow(a+1);
         var tdIdArchivo =  row.insertCell(0);
             tdIdArchivo.setAttribute('class','hidden');
-            tdIdArchivo.innerHTML = adjuntos[a].id_archivo?adjuntos[a].id_archivo:'0';
+            tdIdArchivo.innerHTML = adjuntos[a].id_adjunto?adjuntos[a].id_adjunto:'0';
         var tdIdDetalleReq =  row.insertCell(1);
             tdIdDetalleReq.setAttribute('class','hidden');
             tdIdDetalleReq.innerHTML = adjuntos[a].id_detalle_requerimiento?adjuntos[a].id_detalle_requerimiento:'0';
@@ -2490,7 +2490,7 @@ function llenar_tabla_archivos_adjuntos(adjuntos){
         '<button'+
         '    class="btn btn-danger btn-sm "'+
         '    name="btnEliminarArchivoAdjunto"'+
-        '    onclick="eliminarArchivoAdjunto('+a+','+adjuntos[a].id_archivo+','+adjuntos[a].id_detalle_requerimiento+')"'+
+        '    onclick="eliminarArchivoAdjunto('+a+','+adjuntos[a].id_adjunto+','+adjuntos[a].id_detalle_requerimiento+')"'+
         '    title="Eliminar Archivo"'+
         '>'+
         '    <i class="fas fa-trash"></i>'+
@@ -2537,8 +2537,8 @@ function agregarAdjunto(event){ //agregando nuevo archivo adjunto
 
 
             let archivo ={
-                id_archivo: 0,
-                id_detalle_requerimiento: document.querySelector('div[id="modal-adjuntar-archivos-requerimiento"] div[class="modal-footer"] label[id="id_detalle_requerimiento"]').textContent,
+                id_adjunto: 0,
+                id_detalle_requerimiento: document.querySelector('div[id="modal-adjuntar-archivos-detalle-requerimiento"] div[class="modal-footer"] label[id="id_detalle_requerimiento"]').textContent,
                 archivo:file.name,
                 fecha_registro: new Date().toJSON().slice(0, 10),
                 estado: 1
@@ -2563,12 +2563,12 @@ function imprimir_tabla_adjuntos(){
     for(var a=0;a < adjuntos.length;a++){
         var row = table.insertRow(-1);
 
-        if(adjuntos[a].id_archivo ==0){
+        if(adjuntos[a].id_adjunto ==0){
             indicadorTd="green"; // si es nuevo
         }
         var tdIdArchivo =  row.insertCell(0);
         tdIdArchivo.setAttribute('class','hidden');
-        tdIdArchivo.innerHTML = adjuntos[a].id_archivo?adjuntos[a].id_archivo:'0';
+        tdIdArchivo.innerHTML = adjuntos[a].id_adjunto?adjuntos[a].id_adjunto:'0';
         var tdIdDetalleReq =  row.insertCell(1);
         tdIdDetalleReq.setAttribute('class','hidden');
         tdIdDetalleReq.innerHTML = 0;
@@ -2590,7 +2590,7 @@ function imprimir_tabla_adjuntos(){
         '<button'+
         '    class="btn btn-danger btn-sm "'+
         '    name="btnEliminarArchivoAdjunto"'+
-        '    onclick="eliminarArchivoAdjunto('+a+','+adjuntos[a].id_archivo+')"'+
+        '    onclick="eliminarArchivoAdjunto('+a+','+adjuntos[a].id_adjunto+')"'+
         '    title="Eliminar Archivo"'+
         '>'+
         '    <i class="fas fa-trash"></i>'+
@@ -2602,7 +2602,7 @@ function imprimir_tabla_adjuntos(){
 function guardarAdjuntos(){
     
     // console.log(obs);
-    let id_req = document.querySelector('div[id="modal-adjuntar-archivos-requerimiento"] div[class="modal-footer"] label[id="id_requerimiento"]').textContent;
+    let id_req = document.querySelector('div[id="modal-adjuntar-archivos-detalle-requerimiento"] div[class="modal-footer"] label[id="id_requerimiento"]').textContent;
     if(id_req < 0){
         alert("error 790: GuardarAdjunto");
     }
@@ -2611,7 +2611,7 @@ function guardarAdjuntos(){
     // console.log(only_adjuntos);
     let id_detalle_requerimiento = adjuntos[0].id_detalle_requerimiento;
 
-    const onlyNewAdjuntos = adjuntos.filter(id => id.id_archivo == 0); // solo enviar los registros nuevos
+    const onlyNewAdjuntos = adjuntos.filter(id => id.id_adjunto == 0); // solo enviar los registros nuevos
 
         var myformData = new FormData();        
         // myformData.append('archivo_adjunto', JSON.stringify(adjuntos));
@@ -2643,7 +2643,7 @@ function guardarAdjuntos(){
                     if (ask == true){
                         return false;
                     }else{
-                        $('#modal-adjuntar-archivos-requerimiento').modal('hide');
+                        $('#modal-adjuntar-archivos-detalle-requerimiento').modal('hide');
                     }
                 }
             }
@@ -2655,16 +2655,16 @@ function guardarAdjuntos(){
 }
 
 
-function eliminarArchivoAdjunto(indice,id_archivo,id_detalle_requerimiento){
+function eliminarArchivoAdjunto(indice,id_adjunto,id_detalle_requerimiento){
 
     document.getElementById('nombre_archivo_coti_editar').value='';
 
-    if(id_archivo >0){
+    if(id_adjunto >0){
         var ask = confirm('¿Desea eliminar este archivo ?');
         if (ask == true){
             $.ajax({
                 type: 'PUT',
-                url: '/logistica/eliminar-archivo-adjunto/'+id_archivo,
+                url: '/logistica/eliminar-archivo-adjunto/'+id_adjunto,
                 dataType: 'JSON',
                 success: function(response){
                     if(response.status == 'ok'){

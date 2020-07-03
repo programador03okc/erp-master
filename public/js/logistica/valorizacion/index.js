@@ -672,7 +672,7 @@ function get_data_archivos_adjuntos(id){
                 for (x=0; x<response.length; x++){
                     id_detalle_requerimiento= response[x].id_detalle_requerimiento;
                         adjuntos.push({ 
-                            'id_archivo':response[x].id_archivo,
+                            'id_adjunto':response[x].id_adjunto,
                             'id_valorizacion_cotizacion':response[x].id_valorizacion_cotizacion,
                             'id_detalle_requerimiento':response[x].id_detalle_requerimiento,
                             'archivo':response[x].archivo,
@@ -709,7 +709,7 @@ function llenar_tabla_archivos_adjuntos(adjuntos){
         var row = table.insertRow(a+1);
         var tdIdArchivo =  row.insertCell(0);
             tdIdArchivo.setAttribute('class','hidden');
-            tdIdArchivo.innerHTML = adjuntos[a].id_archivo?adjuntos[a].id_archivo:'0';
+            tdIdArchivo.innerHTML = adjuntos[a].id_adjunto?adjuntos[a].id_adjunto:'0';
         var tdIdDetalleReq =  row.insertCell(1);
             tdIdDetalleReq.setAttribute('class','hidden');
             tdIdDetalleReq.innerHTML = adjuntos[a].id_detalle_requerimiento?adjuntos[a].id_detalle_requerimiento:'0';
@@ -747,7 +747,7 @@ function get_data_archivos_adjuntos_proveedor(id){
                 for (x=0; x<response.length; x++){
                     id_detalle_requerimiento= response[x].id_detalle_requerimiento;
                         adjuntos_proveedor.push({ 
-                            'id_archivo':response[x].id_archivo,
+                            'id_adjunto':response[x].id_adjunto,
                             'id_valorizacion_cotizacion':response[x].id_valorizacion_cotizacion,
                             'id_detalle_requerimiento':response[x].id_detalle_requerimiento,
                             'archivo':response[x].archivo,
@@ -781,7 +781,7 @@ function guardarAdjuntosProveedor(){
     // console.log(only_adjuntos_proveedor);
     let id_valorizacion_cotizacion = adjuntos_proveedor[0].id_valorizacion_cotizacion;
     let id_detalle_requerimiento = adjuntos_proveedor[0].id_detalle_requerimiento;
-    const onlyNewAdjuntos = adjuntos_proveedor.filter(id => id.id_archivo == 0); // solo enviar los registros nuevos
+    const onlyNewAdjuntos = adjuntos_proveedor.filter(id => id.id_adjunto == 0); // solo enviar los registros nuevos
     var myformData = new FormData();        
     // myformData.append('archivo_adjunto', JSON.stringify(adjuntos_proveedor));
     for(let i=0;i<only_adjuntos_proveedor.length;i++){

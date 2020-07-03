@@ -93,7 +93,7 @@
 </div>
 
 <!-- 1re include para evitar error al cargar modal -->
-@include('logistica.requerimientos.modal_adjuntar_archivos_requerimiento') 
+@include('logistica.requerimientos.modal_adjuntar_archivos_detalle_requerimiento.blade') 
 <!--  includes -->
 @include('logistica.requerimientos.aprobacion.modal_obs')
 @include('logistica.requerimientos.aprobacion.modal_aprobacion')

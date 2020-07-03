@@ -523,6 +523,7 @@ class LogisticaController extends Controller
                 DB::raw("(ubi_dis.descripcion) || ' ' || (ubi_prov.descripcion) || ' ' || (ubi_dpto.descripcion)  AS name_ubigeo"),
                 'alm_req.direccion_entrega',
                 'alm_req.id_almacen',
+                'alm_req.monto',
                 DB::raw("(CASE WHEN alm_req.estado = 1 THEN 'Habilitado' ELSE 'Deshabilitado' END) AS estado_desc")
             )
             ->where([
@@ -588,7 +589,8 @@ class LogisticaController extends Controller
                     'id_ubigeo_entrega' => $data->id_ubigeo_entrega,
                     'name_ubigeo' => $data->name_ubigeo,
                     'direccion_entrega' => $data->direccion_entrega,
-                    'id_almacen' => $data->id_almacen
+                    'id_almacen' => $data->id_almacen,
+                    'monto' => $data->monto
                     
                 ];
             };
@@ -608,7 +610,7 @@ class LogisticaController extends Controller
                 // ->leftJoin('almacen.alm_tp_prod', 'alm_tp_prod.id_tipo_producto', '=', 'alm_cat_prod.id_tipo_producto')
                 ->leftJoin('logistica.equipo', 'alm_item.id_equipo', '=', 'equipo.id_equipo')
 
-                ->leftJoin('almacen.alm_req_archivos', 'alm_req_archivos.id_detalle_requerimiento', '=', 'alm_det_req.id_detalle_requerimiento')
+                ->leftJoin('almacen.alm_det_req_adjuntos', 'alm_det_req_adjuntos.id_detalle_requerimiento', '=', 'alm_det_req.id_detalle_requerimiento')
 
                 ->leftJoin('finanzas.presup_par', 'presup_par.id_partida', '=', 'alm_det_req.partida')
                 ->leftJoin('finanzas.presup_pardet', 'presup_pardet.id_pardet', '=', 'presup_par.id_pardet')
@@ -666,11 +668,11 @@ class LogisticaController extends Controller
                     'alm_item.id_equipo',
                     'equipo.descripcion as equipo_descripcion',
 
-                    'alm_req_archivos.id_archivo AS archivo_id_archivo',
-                    'alm_req_archivos.archivo AS archivo_archivo',
-                    'alm_req_archivos.estado AS archivo_estado',
-                    'alm_req_archivos.fecha_registro AS archivo_fecha_registro',
-                    'alm_req_archivos.id_detalle_requerimiento AS archivo_id_detalle_requerimiento'
+                    'alm_det_req_adjuntos.id_adjunto AS adjunto_id_adjunto',
+                    'alm_det_req_adjuntos.archivo AS adjunto_archivo',
+                    'alm_det_req_adjuntos.estado AS adjunto_estado',
+                    'alm_det_req_adjuntos.fecha_registro AS adjunto_fecha_registro',
+                    'alm_det_req_adjuntos.id_detalle_requerimiento AS adjunto_id_detalle_requerimiento'
                 )
                 ->where([
                     ['alm_det_req.id_requerimiento', '=', $requerimiento[0]['id_requerimiento']]
@@ -685,11 +687,11 @@ class LogisticaController extends Controller
                 foreach ($alm_det_req as $data) {
                     $detalle_requerimiento_adjunto[] = [
                         'id_detalle_requerimiento' => $data->id_detalle_requerimiento,
-                        'archivo_id_archivo' => $data->archivo_id_archivo,
-                        'archivo_archivo' => $data->archivo_archivo,
-                        'archivo_id_detalle_requerimiento' => $data->archivo_id_detalle_requerimiento,
-                        'archivo_fecha_registro' => $data->archivo_fecha_registro,
-                        'archivo_estado' => $data->archivo_estado
+                        'id_adjunto' => $data->adjunto_id_adjunto,
+                        'archivo' => $data->adjunto_archivo,
+                        'id_detalle_requerimiento' => $data->adjunto_id_detalle_requerimiento,
+                        'fecha_registro' => $data->adjunto_fecha_registro,
+                        'estado' => $data->adjunto_estado
                     ];
                 }
             } else {
@@ -717,7 +719,7 @@ class LogisticaController extends Controller
                             'fecha_registro'            => $data->fecha_registro_alm_det_req,
                             'obs'                       => $data->obs,
                             'estado'                    => $data->estado,
-
+                            'adjunto'                   => [],
                             'codigo_item'                => $data->codigo_item,
                             'id_tipo_item'                => $data->id_tipo_item,
 
@@ -758,8 +760,8 @@ class LogisticaController extends Controller
                 for ($j = 0; $j < sizeof($detalle_requerimiento); $j++) {
                     for ($i = 0; $i < sizeof($detalle_requerimiento_adjunto); $i++) {
                         if ($detalle_requerimiento[$j]['id_detalle_requerimiento'] === $detalle_requerimiento_adjunto[$i]['id_detalle_requerimiento']) {
-                            if ($detalle_requerimiento_adjunto[$i]['archivo_estado'] === NUll) {
-                                $detalle_requerimiento_adjunto[$i]['archivo_estado'] = 0;
+                            if ($detalle_requerimiento_adjunto[$i]['estado'] === NUll) {
+                                $detalle_requerimiento_adjunto[$i]['estado'] = 0;
                             }
                             $detalle_requerimiento[$j]['adjunto'][] = $detalle_requerimiento_adjunto[$i];
                         }
@@ -1122,18 +1124,18 @@ class LogisticaController extends Controller
             $det_req_list[] = $data->id_detalle_requerimiento;
         }
 
-        $archivos = DB::table('almacen.alm_req_archivos')
+        $archivos = DB::table('almacen.alm_det_req_adjuntos')
             ->select(
-                'alm_req_archivos.id_archivo',
-                'alm_req_archivos.id_detalle_requerimiento',
-                'alm_req_archivos.id_valorizacion_cotizacion',
-                'alm_req_archivos.archivo',
-                'alm_req_archivos.estado',
-                'alm_req_archivos.fecha_registro',
-                DB::raw("(CASE WHEN almacen.alm_req_archivos.estado = 1 THEN 'Habilitado' ELSE 'Deshabilitado' END) AS estado_desc")
+                'alm_det_req_adjuntos.id_adjunto',
+                'alm_det_req_adjuntos.id_detalle_requerimiento',
+                'alm_det_req_adjuntos.id_valorizacion_cotizacion',
+                'alm_det_req_adjuntos.archivo',
+                'alm_det_req_adjuntos.estado',
+                'alm_det_req_adjuntos.fecha_registro',
+                DB::raw("(CASE WHEN almacen.alm_det_req_adjuntos.estado = 1 THEN 'Habilitado' ELSE 'Deshabilitado' END) AS estado_desc")
             )
-            ->whereIn('alm_req_archivos.id_detalle_requerimiento', $det_req_list)
-            ->orderBy('alm_req_archivos.id_archivo', 'asc')
+            ->whereIn('alm_det_req_adjuntos.id_detalle_requerimiento', $det_req_list)
+            ->orderBy('alm_det_req_adjuntos.id_adjunto', 'asc')
             ->get();
 
         return response()->json($archivos);
@@ -1142,24 +1144,24 @@ class LogisticaController extends Controller
     public function mostrar_archivos_adjuntos($id_detalle_requerimiento)
     {
 
-        $data = DB::table('almacen.alm_req_archivos')
+        $data = DB::table('almacen.alm_det_req_adjuntos')
             ->select(
-                'alm_req_archivos.id_archivo',
-                'alm_req_archivos.id_detalle_requerimiento',
-                'alm_req_archivos.id_valorizacion_cotizacion',
-                'alm_req_archivos.archivo',
-                'alm_req_archivos.estado',
-                'alm_req_archivos.fecha_registro',
+                'alm_det_req_adjuntos.id_adjunto',
+                'alm_det_req_adjuntos.id_detalle_requerimiento',
+                'alm_det_req_adjuntos.id_valorizacion_cotizacion',
+                'alm_det_req_adjuntos.archivo',
+                'alm_det_req_adjuntos.estado',
+                'alm_det_req_adjuntos.fecha_registro',
                 'alm_det_req.obs',
-                DB::raw("(CASE WHEN almacen.alm_req_archivos.estado = 1 THEN 'Habilitado' ELSE 'Deshabilitado' END) AS estado_desc")
+                DB::raw("(CASE WHEN almacen.alm_det_req_adjuntos.estado = 1 THEN 'Habilitado' ELSE 'Deshabilitado' END) AS estado_desc")
             )
-            ->leftJoin('almacen.alm_det_req', 'alm_det_req.id_detalle_requerimiento', '=', 'alm_req_archivos.id_detalle_requerimiento')
+            ->leftJoin('almacen.alm_det_req', 'alm_det_req.id_detalle_requerimiento', '=', 'alm_det_req_adjuntos.id_detalle_requerimiento')
 
             ->where([
-                ['alm_req_archivos.id_detalle_requerimiento','=', $id_detalle_requerimiento],
-                ['alm_req_archivos.estado','=', 1]
+                ['alm_det_req_adjuntos.id_detalle_requerimiento','=', $id_detalle_requerimiento],
+                ['alm_det_req_adjuntos.estado','=', 1]
                     ])
-            ->orderBy('alm_req_archivos.id_archivo', 'asc')
+            ->orderBy('alm_det_req_adjuntos.id_adjunto', 'asc')
             ->get();
 
         return response()->json($data);
@@ -1167,21 +1169,73 @@ class LogisticaController extends Controller
     public function mostrar_archivos_adjuntos_proveedor($id)
     {
 
-        $data = DB::table('almacen.alm_req_archivos')
+        $data = DB::table('almacen.alm_det_req_adjuntos')
             ->select(
-                'alm_req_archivos.id_archivo',
-                'alm_req_archivos.id_detalle_requerimiento',
-                'alm_req_archivos.id_valorizacion_cotizacion',
-                'alm_req_archivos.archivo',
-                'alm_req_archivos.estado',
-                'alm_req_archivos.fecha_registro',
-                DB::raw("(CASE WHEN almacen.alm_req_archivos.estado = 1 THEN 'Habilitado' ELSE 'Deshabilitado' END) AS estado_desc")
+                'alm_det_req_adjuntos.id_adjunto',
+                'alm_det_req_adjuntos.id_detalle_requerimiento',
+                'alm_det_req_adjuntos.id_valorizacion_cotizacion',
+                'alm_det_req_adjuntos.archivo',
+                'alm_det_req_adjuntos.estado',
+                'alm_det_req_adjuntos.fecha_registro',
+                DB::raw("(CASE WHEN almacen.alm_det_req_adjuntos.estado = 1 THEN 'Habilitado' ELSE 'Deshabilitado' END) AS estado_desc")
             )
-            ->where('alm_req_archivos.id_valorizacion_cotizacion', $id)
-            ->orderBy('alm_req_archivos.id_archivo', 'asc')
+            ->where('alm_det_req_adjuntos.id_valorizacion_cotizacion', $id)
+            ->orderBy('alm_det_req_adjuntos.id_adjunto', 'asc')
             ->get();
 
         return response()->json($data);
+    }
+
+    public function mostrar_archivos_adjuntos_requerimiento($id)
+    {
+        $data = DB::table('almacen.alm_req_adjuntos')
+            ->select(
+                'alm_req_adjuntos.id_adjunto',
+                'alm_req_adjuntos.id_requerimiento',
+                'alm_req_adjuntos.archivo',
+                'alm_req_adjuntos.estado',
+                'alm_req_adjuntos.fecha_registro',
+                DB::raw("(CASE WHEN almacen.alm_req_adjuntos.estado = 1 THEN 'Habilitado' ELSE 'Deshabilitado' END) AS estado_desc")
+            )
+            ->where([
+                ['alm_req_adjuntos.id_requerimiento', $id],
+                ['alm_req_adjuntos.estado', 1]
+                ])
+            ->orderBy('alm_req_adjuntos.id_adjunto', 'asc')
+            ->get();
+
+        return response()->json(['data'=>$data]);
+    }
+
+    public function eliminar_archivo_adjunto_requerimiento($id_adjunto){
+
+        $estado_anulado = $this->get_estado_doc('Anulado');
+
+        $sql= DB::table('almacen.alm_req_adjuntos')
+        ->select('alm_req_adjuntos.*')
+        ->where('id_adjunto', $id_adjunto)
+        ->get();
+        
+        $id_requerimiento = $sql->first()->id_requerimiento;
+
+        $update = DB::table('almacen.alm_req_adjuntos')->where('id_adjunto', $id_adjunto)
+        ->update([
+            'estado'          => $estado_anulado
+        ]);
+
+        if($update){
+            $rpta ='ok';
+            // Storage::disk('archivos')->put("logistica/detalle_requerimiento/" . $name_file, \File::get($file));
+
+        }else{
+            $rpta='no_actualiza';
+        }
+
+        $output=['status'=>$rpta,'id_requerimiento'=>$id_requerimiento];
+
+
+    return response()->json($output);
+        
     }
 
 
@@ -1198,7 +1252,7 @@ class LogisticaController extends Controller
                 $name_file = "COT" . time() . $file->getClientOriginalName();
                 if ($request->id_valorizacion_cotizacion > 0 || $request->id_valorizacion_cotizacion !== NULL) {
 
-                    $alm_req_archivos = DB::table('almacen.alm_req_archivos')->insertGetId(
+                    $alm_det_req_adjuntos = DB::table('almacen.alm_det_req_adjuntos')->insertGetId(
                         [
                             // 'id_detalle_requerimiento'  => $request->id_detalle_requerimiento,
                             'id_valorizacion_cotizacion'  => $request->id_valorizacion_cotizacion,
@@ -1206,7 +1260,7 @@ class LogisticaController extends Controller
                             'estado'                    => 1,
                             'fecha_registro'            => date('Y-m-d H:i:s')
                         ],
-                        'id_archivo'
+                        'id_adjunto'
                     );
                     Storage::disk('archivos')->put("logistica/cotizacion/" . $name_file, \File::get($file));
                 }
@@ -1214,21 +1268,21 @@ class LogisticaController extends Controller
                 $name_file = null;
             }
         }
-        return response()->json($alm_req_archivos);
+        return response()->json($alm_det_req_adjuntos);
     }
 
-    public function eliminar_archivo_adjunto($id_archivo){
+    public function eliminar_archivo_adjunto_detalle_requerimiento($id_adjunto){
 
         $estado_anulado = $this->get_estado_doc('Anulado');
 
-        $sql= DB::table('almacen.alm_req_archivos')
-        ->select('alm_req_archivos.*')
-        ->where('id_archivo', $id_archivo)
+        $sql= DB::table('almacen.alm_det_req_adjuntos')
+        ->select('alm_det_req_adjuntos.*')
+        ->where('id_adjunto', $id_adjunto)
         ->get();
         
         $id_det_req = $sql->first()->id_detalle_requerimiento;
 
-        $update = DB::table('almacen.alm_req_archivos')->where('id_archivo', $id_archivo)
+        $update = DB::table('almacen.alm_det_req_adjuntos')->where('id_adjunto', $id_adjunto)
         ->update([
             'estado'          => $estado_anulado
         ]);
@@ -1253,28 +1307,62 @@ class LogisticaController extends Controller
 
         $data = DB::table('logistica.log_cotizacion')
             ->select(
-                'alm_req_archivos.id_archivo',
+                'alm_det_req_adjuntos.id_adjunto',
                 'valoriza_coti_detalle.id_detalle_requerimiento',
-                'alm_req_archivos.archivo',
-                'alm_req_archivos.fecha_registro',
-                'alm_req_archivos.estado'
+                'alm_det_req_adjuntos.archivo',
+                'alm_det_req_adjuntos.fecha_registro',
+                'alm_det_req_adjuntos.estado'
             )
             ->leftJoin('logistica.log_valorizacion_cotizacion', 'log_valorizacion_cotizacion.id_cotizacion', '=', 'log_cotizacion.id_cotizacion')
             ->leftJoin('logistica.valoriza_coti_detalle', 'valoriza_coti_detalle.id_valorizacion_cotizacion', '=', 'log_valorizacion_cotizacion.id_valorizacion_cotizacion')
-            ->join('almacen.alm_req_archivos', 'alm_req_archivos.id_detalle_requerimiento', '=', 'valoriza_coti_detalle.id_detalle_requerimiento')
+            ->join('almacen.alm_det_req_adjuntos', 'alm_det_req_adjuntos.id_detalle_requerimiento', '=', 'valoriza_coti_detalle.id_detalle_requerimiento')
             ->where([
                 ['log_cotizacion.id_cotizacion', '=', $id_cotizacion],
                 ['log_cotizacion.estado', '=', 1],
                 ['log_valorizacion_cotizacion.estado', '!=', 7]
-                // ['alm_req_archivos.estado','=', 1]
+                // ['alm_det_req_adjuntos.estado','=', 1]
             ])
-            ->orderBy('alm_req_archivos.id_archivo', 'asc')
+            ->orderBy('alm_det_req_adjuntos.id_adjunto', 'asc')
             ->get();
 
 
         return response()->json($data);
     }
-    public function guardar_archivos_adjuntos(Request $request)
+
+    public function guardar_archivos_adjuntos_requerimiento(Request $request)
+    {
+        $archivo_adjunto_length = count($request->only_adjuntos);
+        $detalle_adjunto = json_decode($request->detalle_adjuntos, true);
+        $detalle_adjuntos_length = count($detalle_adjunto);
+        $name_file = '';
+        // if (is_array($adjuntos)) {}
+        foreach ($request->only_adjuntos as $clave => $valor) {
+            $file = $request->file('only_adjuntos')[$clave];
+
+            if (isset($file)) {
+                $name_file = "R" . time() . $file->getClientOriginalName();
+                if ($request->id_requerimiento > 0 || $request->id_requerimiento !== NULL) {
+
+                    $alm_req_adjuntos = DB::table('almacen.alm_req_adjuntos')->insertGetId(
+                        [
+                            'id_requerimiento'          => $request->id_requerimiento,
+                            'archivo'                   => $name_file,
+                            'estado'                    => 1,
+                            'fecha_registro'            => date('Y-m-d H:i:s')
+                        ],
+                        'id_adjunto'
+                    );
+                    Storage::disk('archivos')->put("logistica/requerimiento/" . $name_file, \File::get($file));
+                }
+            } else {
+                $name_file = null;
+            }
+        }
+
+        return response()->json($alm_req_adjuntos);
+    }
+
+    public function guardar_archivos_adjuntos_detalle_requerimiento(Request $request)
     {
         $archivo_adjunto_length = count($request->only_adjuntos);
         $detalle_adjunto = json_decode($request->detalle_adjuntos, true);
@@ -1288,14 +1376,14 @@ class LogisticaController extends Controller
                 $name_file = "DR" . time() . $file->getClientOriginalName();
                 if ($request->id_detalle_requerimiento > 0 || $request->id_detalle_requerimiento !== NULL) {
 
-                    $alm_req_archivos = DB::table('almacen.alm_req_archivos')->insertGetId(
+                    $alm_det_req_adjuntos = DB::table('almacen.alm_det_req_adjuntos')->insertGetId(
                         [
                             'id_detalle_requerimiento'  => $request->id_detalle_requerimiento,
                             'archivo'                   => $name_file,
                             'estado'                    => 1,
                             'fecha_registro'            => date('Y-m-d H:i:s')
                         ],
-                        'id_archivo'
+                        'id_adjunto'
                     );
                     Storage::disk('archivos')->put("logistica/detalle_requerimiento/" . $name_file, \File::get($file));
                 }
@@ -1306,7 +1394,7 @@ class LogisticaController extends Controller
         //     for ($i=0; $i< $detalle_adjuntos_length; $i++){
         //         if($detalle_adjunto[$i]['id_archivo'] === 0 || $detalle_adjunto[$i]['id_archivo'] === null){
 
-        //             $alm_req_archivos = DB::table('almacen.alm_req_archivos')->insertGetId(
+        //             $alm_det_req_adjuntos = DB::table('almacen.alm_det_req_adjuntos')->insertGetId(
         //                 [        
         //                     'id_detalle_requerimiento'  => $detalle_adjunto[$i]['id_detalle_requerimiento'],
         //                     'archivo'                   => $detalle_adjunto[$i]['archivo'],
@@ -1317,12 +1405,12 @@ class LogisticaController extends Controller
         //             );
         //         }
         // }
-        // if ($alm_req_archivos > 0){
-        //     $value = $alm_req_archivos;
+        // if ($alm_det_req_adjuntos > 0){
+        //     $value = $alm_det_req_adjuntos;
         // }else{
         //     $value = 0;
         // }
-        return response()->json($alm_req_archivos);
+        return response()->json($alm_det_req_adjuntos);
     }
     public function telefonos_cliente($id_persona=null,$id_cliente=null){
         $data=[];
@@ -1451,7 +1539,8 @@ class LogisticaController extends Controller
                 'telefono'              => isset($request->requerimiento['telefono'])?$request->requerimiento['telefono']:null,
                 'id_ubigeo_entrega'     => isset($request->requerimiento['ubigeo'])?$request->requerimiento['ubigeo']:null,
                 'id_almacen'            => isset($request->requerimiento['id_almacen'])?$request->requerimiento['id_almacen']:null,
-                'confirmacion_pago'     => false
+                'confirmacion_pago'     => false,
+                'monto'                 => isset($request->requerimiento['monto'])?$request->requerimiento['monto']:null
             ],
             'id_requerimiento'
         );
@@ -1644,6 +1733,7 @@ class LogisticaController extends Controller
         $direccion_entrega = isset($request->requerimiento['direccion_entrega'])?$request->requerimiento['direccion_entrega']:null;
         $ubigeo = isset($request->requerimiento['ubigeo'])?$request->requerimiento['ubigeo']:null;
         $id_almacen = isset($request->requerimiento['id_almacen'])?$request->requerimiento['id_almacen']:null;
+        $monto = isset($request->requerimiento['monto'])?$request->requerimiento['monto']:null;
         $moneda = $request->requerimiento['id_moneda'];
         $id_area = $request->requerimiento['id_area'];
         $id_op_com = $request->requerimiento['id_op_com'];
@@ -1672,7 +1762,8 @@ class LogisticaController extends Controller
                     'id_area'               => is_numeric($id_area) == 1 ? $id_area : null,
                     'id_op_com'             => is_numeric($id_op_com) == 1 ? $id_op_com : null,
                     'id_prioridad'          => is_numeric($id_priori) == 1 ? $id_priori : null,
-                    'codigo_occ'            => $codigo_occ
+                    'codigo_occ'            => $codigo_occ,
+                    'monto'                 => $monto
                 ]);
             $count_detalle = count($request->detalle);
             if ($count_detalle > 0) {
@@ -6634,21 +6725,21 @@ class LogisticaController extends Controller
         // return $idDetReqList;
 
     
-        $alm_req_archivos = DB::table('almacen.alm_req_archivos')
+        $alm_det_req_adjuntos = DB::table('almacen.alm_det_req_adjuntos')
         ->select(
-            'alm_req_archivos.*'
+            'alm_det_req_adjuntos.*'
         )
-        ->whereIn('alm_req_archivos.id_detalle_requerimiento',$idDetReqList)
+        ->whereIn('alm_det_req_adjuntos.id_detalle_requerimiento',$idDetReqList)
         ->where(
             [
-                ['alm_req_archivos.estado', '>', 0]
+                ['alm_det_req_adjuntos.estado', '>', 0]
             ]
         )
         ->get();
 
 
         foreach($items as $keyItem => $item){
-            foreach($alm_req_archivos as $keyReArch => $reqArch){
+            foreach($alm_det_req_adjuntos as $keyReArch => $reqArch){
                 if($item['id_detalle_requerimiento'] == $reqArch->id_detalle_requerimiento){
                     $items[$keyItem]['adjuntos'][]=$reqArch;
                 }
@@ -7660,7 +7751,7 @@ class LogisticaController extends Controller
                 ->leftJoin('almacen.alm_det_req', 'alm_prod.id_producto', '=', 'alm_det_req.id_producto')
                 ->leftJoin('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'alm_det_req.id_requerimiento')
                 ->leftJoin('almacen.alm_und_medida as und_medida_det_req', 'alm_det_req.id_unidad_medida', '=', 'und_medida_det_req.id_unidad_medida')
-                ->leftJoin('almacen.alm_req_archivos', 'alm_req_archivos.id_detalle_requerimiento', '=', 'alm_det_req.id_detalle_requerimiento')
+                ->leftJoin('almacen.alm_det_req_adjuntos', 'alm_det_req_adjuntos.id_detalle_requerimiento', '=', 'alm_det_req.id_detalle_requerimiento')
 
                 ->select(
                     'alm_det_req.id_detalle_requerimiento',
@@ -7689,11 +7780,11 @@ class LogisticaController extends Controller
                     'alm_prod.codigo AS alm_prod_codigo',
                     'alm_prod.descripcion AS alm_prod_descripcion',
 
-                    'alm_req_archivos.id_archivo AS archivo_id_archivo',
-                    'alm_req_archivos.archivo AS archivo_archivo',
-                    'alm_req_archivos.estado AS archivo_estado',
-                    'alm_req_archivos.fecha_registro AS archivo_fecha_registro',
-                    'alm_req_archivos.id_detalle_requerimiento AS archivo_id_detalle_requerimiento'
+                    'alm_det_req_adjuntos.id_archivo AS adjunto_id_adjunto',
+                    'alm_det_req_adjuntos.archivo AS adjunto_archivo',
+                    'alm_det_req_adjuntos.estado AS adjunto_estado',
+                    'alm_det_req_adjuntos.fecha_registro AS adjunto_fecha_registro',
+                    'alm_det_req_adjuntos.id_detalle_requerimiento AS adjunto_id_detalle_requerimiento'
                 )
                 ->where([
                     ['alm_det_req.id_requerimiento', '=', $requerimiento[0]['id_requerimiento']]
@@ -7708,11 +7799,11 @@ class LogisticaController extends Controller
                 foreach ($alm_det_req as $data) {
                     $detalle_requerimiento_adjunto[] = [
                         'id_detalle_requerimiento' => $data->id_detalle_requerimiento,
-                        'archivo_id_archivo' => $data->archivo_id_archivo,
-                        'archivo_archivo' => $data->archivo_archivo,
-                        'archivo_id_detalle_requerimiento' => $data->archivo_id_detalle_requerimiento,
-                        'archivo_fecha_registro' => $data->archivo_fecha_registro,
-                        'archivo_estado' => $data->archivo_estado
+                        'id_adjunto' => $data->adjunto_id_adjunto,
+                        'archivo' => $data->adjunto_archivo,
+                        'id_detalle_requerimiento' => $data->adjunto_id_detalle_requerimiento,
+                        'fecha_registro' => $data->adjunto_fecha_registro,
+                        'estado' => $data->adjunto_estado
                     ];
                 }
             } else {
