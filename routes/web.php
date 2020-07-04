@@ -769,6 +769,14 @@ Route::group(['middleware' => ['auth']], function () {
 
 			});
 
+			Route::group(['as' => 'trazabilidad-requerimientos.', 'prefix' => 'trazabilidad-requerimientos'], function(){
+
+				Route::get('index', 'DistribucionController@view_trazabilidad_requerimientos')->name('index');
+				Route::post('listarRequerimientosTrazabilidad', 'DistribucionController@listarRequerimientosTrazabilidad');
+				Route::get('verTrazabilidadRequerimiento/{id}', 'DistribucionController@verTrazabilidadRequerimiento');
+				
+			});
+
 		});
 
 		Route::group(['as' => 'movimientos.', 'prefix' => 'movimientos'], function(){

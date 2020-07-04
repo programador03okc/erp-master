@@ -38,7 +38,7 @@
         </a>
         <ul class="treeview-menu">
             <li><a href="{{route('almacen.distribucion.despachos.index')}}"> Gestión de Despachos </a></li>
-            <!-- <li><a href="grupoDespachos"> Despachos </a></li> -->
+            <li><a href="{{route('almacen.distribucion.trazabilidad-requerimientos.index')}}"> Trazabilidad </a></li>
             <!-- <li><a href="#"> Despachos Pendientes </a></li> -->
         </ul>
     </li>

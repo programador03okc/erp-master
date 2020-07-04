@@ -31,18 +31,16 @@ $(function(){
 });
 
 function listarTransferenciasPendientes(){
-    var alm_origen = $('[name=id_almacen_ori]').val();
-    // var alm_destino = $('[name=id_almacen_des]').val();
-    console.log('ori'+alm_origen);
+    var alm_destino = $('[name=id_almacen_destino]').val();
     
-    if (alm_origen !== '' && alm_origen !== ''){
+    if (alm_destino !== '' && alm_destino !== ''){
         var vardataTables = funcDatatables();
         $('#listaTransferenciasPendientes').DataTable({
             'destroy':true,
             'dom': vardataTables[1],
             'buttons': vardataTables[2],
             'language' : vardataTables[0],
-            'ajax' : 'listar_transferencias_pendientes/'+alm_origen,
+            'ajax' : 'listar_transferencias_pendientes/'+alm_destino,
             // 'ajax': {
             //     url:'listar_transferencias_pendientes/'+alm_origen+'/'+alm_destino,
             //     dataSrc:''
@@ -143,17 +141,17 @@ $('#listaTransferenciasPendientes tbody').on("click","button.salida", function()
 
 
 function listarTransferenciasRecibidas(){
-    var origen = $('[name=id_almacen_ori_recibida]').val();
-    console.log('ori'+origen);
+    var destino = $('[name=id_almacen_dest_recibida]').val();
+    console.log('ori'+destino);
     
-    if (origen !== '' && origen !== ''){
+    if (destino !== '' && destino !== ''){
         var vardataTables = funcDatatables();
         $('#listaTransferenciasRecibidas').DataTable({
             'destroy':true,
             'dom': vardataTables[1],
             'buttons': vardataTables[2],
             'language' : vardataTables[0],
-            'ajax' : 'listar_transferencias_recibidas/'+origen,
+            'ajax' : 'listar_transferencias_recibidas/'+destino,
             // 'ajax': {
             //     url:'listar_transferencias_pendientes/'+alm_origen+'/'+alm_destino,
             //     dataSrc:''

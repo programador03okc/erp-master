@@ -320,12 +320,28 @@ function listarGruposDespachados(){
                     'data-placement="bottom" data-id="'+row['id_od_grupo_detalle']+'" data-od="'+row['id_od']+'" data-idreq="'+row['id_requerimiento']+'" title="Confirmar Entrega" >'+
                     '<i class="fas fa-check"></i></button>'+
                     '<button type="button" class="no_conforme btn btn-danger boton" data-toggle="tooltip" '+
-                    'data-placement="bottom" data-id="'+row['id_od_grupo_detalle']+'" data-od="'+row['id_od']+'" data-cod-od="'+row['codigo_od']+'" data-concepto="'+row['concepto']+'" title="No Entregado" >'+
+                    'data-placement="bottom" data-id="'+row['id_od_grupo_detalle']+'" data-od="'+row['id_od']+'" data-idreq="'+row['id_requerimiento']+'" data-cod-od="'+row['codigo_od']+'" data-concepto="'+row['concepto']+'" title="No Entregado" >'+
                     '<i class="fas fa-ban"></i></button>') : ''));
                 }
             },
         ],
-        'columnDefs': [{ 'aTargets': [0], 'sClass': 'invisible'}],
+        'columnDefs': [{ 
+            'aTargets': [0], 
+            // 'searchable': true,
+            'sClass': 'invisible'
+        }],
+        // initComplete: function () {
+        //     // Apply the search
+        //     this.api().columns().every( function () {
+        //         var that = this;
+ 
+        //         $( 'input', this.footer() ).on( 'keyup change clear', function () {
+        //             if ( that.search() !== this.value ) {
+        //                 that.search( this.value ).draw();
+        //             }
+        //         });
+        //     });
+        // }
     });
 }
 
@@ -354,6 +370,7 @@ $('#gruposDespachados tbody').on("click","button.conforme", function(){
 $('#gruposDespachados tbody').on("click","button.no_conforme", function(){
     var id_od_grupo_detalle = $(this).data('id');
     var id_od = $(this).data('od');
+    var id_req = $(this).data('idreq');
     var cod_od = $(this).data('codOd');
     var concepto = $(this).data('concepto');
 
@@ -363,6 +380,7 @@ $('#gruposDespachados tbody').on("click","button.no_conforme", function(){
 
     $('[name=obs_id_od_grupo_detalle]').val(id_od_grupo_detalle);
     $('[name=obs_id_od]').val(id_od);
+    $('[name=obs_id_requerimiento]').val(id_req);
     $("#codigo_odg").text(cod_od +' - '+concepto+' - '+"No Entregado");
     $("#btnDespachoObs").removeAttr("disabled");
 });
@@ -390,10 +408,12 @@ function despacho_no_conforme(){
     var idg = $('[name=obs_id_od_grupo_detalle]').val();
     var ido = $('[name=obs_id_od]').val();
     var obs = $('[name=obs_confirmacion]').val();
+    var idr = $('[name=obs_id_requerimiento]').val();
     $('#btnDespachoObs').attr('disabled','true');
 
     var data = 'id_od_grupo_detalle='+idg+
                '&id_od='+ido+
+               '&id_requerimiento='+idr+
                '&obs_confirmacion='+obs;
     $.ajax({
         type: 'POST',

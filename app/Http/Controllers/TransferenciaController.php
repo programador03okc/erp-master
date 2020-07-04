@@ -26,7 +26,7 @@ class TransferenciaController extends Controller
         return view('almacen/transferencias/listar_transferencias', compact('clasificaciones','almacenes','usuarios','motivos_anu'));
     }
 
-    public function listar_transferencias_pendientes($ori){
+    public function listar_transferencias_pendientes($destino){
         $data = DB::table('almacen.trans')
         ->select('trans.*','guia_ven.fecha_emision as fecha_guia',
         DB::raw("(guia_ven.serie) || ' ' || (guia_ven.numero) as guia_ven"),
@@ -58,14 +58,14 @@ class TransferenciaController extends Controller
         ->leftJoin('configuracion.sis_usua as usu_destino','usu_destino.id_usuario','=','trans.responsable_destino')
         ->join('configuracion.sis_usua as usu_registro','usu_registro.id_usuario','=','trans.registrado_por')
         ->join('administracion.adm_estado_doc','adm_estado_doc.id_estado_doc','=','trans.estado')
-        ->where([['trans.id_almacen_origen','=',$ori],
+        ->where([['trans.id_almacen_destino','=',$destino],
                  ['trans.estado','=',1]])
         ->get();
         $output['data'] = $data;
         return response()->json($output);
     }
     
-    public function listar_transferencias_recibidas($ori){
+    public function listar_transferencias_recibidas($destino){
         $data = DB::table('almacen.trans')
         ->select('trans.*','guia_ven.fecha_emision as fecha_guia',
         DB::raw("(guia_ven.serie) || ' ' || (guia_ven.numero) as guia_ven"),
@@ -99,7 +99,7 @@ class TransferenciaController extends Controller
         ->leftJoin('configuracion.sis_usua as usu_destino','usu_destino.id_usuario','=','trans.responsable_destino')
         ->join('configuracion.sis_usua as usu_registro','usu_registro.id_usuario','=','trans.registrado_por')
         ->join('administracion.adm_estado_doc','adm_estado_doc.id_estado_doc','=','trans.estado')
-        ->where([['trans.id_almacen_origen','=',$ori],['trans.estado','=',14]])
+        ->where([['trans.id_almacen_destino','=',$destino],['trans.estado','=',14]])
         ->get();
         $output['data'] = $data;
         return response()->json($output);
@@ -270,6 +270,15 @@ class TransferenciaController extends Controller
                         DB::table('almacen.alm_det_req')
                         ->where('id_requerimiento',$ing->id_requerimiento)
                         ->update(['estado'=>17]);//Enviado
+                        $id_usuario = Auth::user()->id_usuario;
+                        //Agrega accion en requerimiento
+                        DB::table('almacen.alm_req_obs')
+                        ->insert([  'id_requerimiento'=>$ing->id_requerimiento,
+                                    'accion'=>'INGRESO ANULADO',
+                                    'descripcion'=>'Ingreso por Transferencia Anulado. Requerimiento regresa a Enviado.',
+                                    'id_usuario'=>$id_usuario,
+                                    'fecha_registro'=>date('Y-m-d H:i:s')
+                            ]);
                     }
                 } else {
                     $msj = 'Ya se generó una Orden de Despacho.';
@@ -624,7 +633,9 @@ class TransferenciaController extends Controller
                     ]);
 
             if ($guia_ven->id_requerimiento !== null) {
+                $accion = '';
                 if ($guia_ven->id_tipo_requerimiento == 1){
+                    $accion = 'Reservado';
                     DB::table('almacen.alm_req')
                     ->where('id_requerimiento',$guia_ven->id_requerimiento)
                     ->update(['estado'=>19]);//Reservdo
@@ -635,6 +646,7 @@ class TransferenciaController extends Controller
                               'id_almacen_reserva'=>$request->id_almacen_destino]);//Reservado
                 } 
                 else if ($guia_ven->id_tipo_requerimiento == 3){
+                    $accion = 'Procesado';
                     DB::table('almacen.alm_req')
                     ->where('id_requerimiento',$guia_ven->id_requerimiento)
                     ->update(['estado'=>9]);//Procesado
@@ -644,6 +656,14 @@ class TransferenciaController extends Controller
                     ->update(['estado'=>9,
                               'id_almacen_reserva'=>null]);//Procesado
                 }
+                //Agrega accion en requerimiento
+                DB::table('almacen.alm_req_obs')
+                ->insert([  'id_requerimiento'=>$guia_ven->id_requerimiento,
+                            'accion'=>'INGRESO POR TRANSFERENCIA',
+                            'descripcion'=>'Ingresó al Almacén por Transferencia con Guía '.$guia_ven->serie.'-'.$guia_ven->numero.' y fue '.$accion,
+                            'id_usuario'=>$usuario->id_usuario,
+                            'fecha_registro'=>$fecha
+                    ]);
             }
             DB::commit();
             return response()->json($id_ingreso);
