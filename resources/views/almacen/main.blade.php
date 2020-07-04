@@ -4,7 +4,7 @@
     Dashboard Almacén
 @endsection
 @section('content')
-<section class="content">
+<!-- <section class="content"> -->
 
     <div class="row">
         <div class="col-md-3">
@@ -90,7 +90,7 @@
             </div>
         </div>
     </div>
-</section>
+<!-- </section> -->
 @include('almacen.verRequerimientoEstado')
 @endsection
 @section('scripts')

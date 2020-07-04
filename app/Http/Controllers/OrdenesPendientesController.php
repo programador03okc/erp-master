@@ -308,16 +308,24 @@ class OrdenesPendientesController extends Controller
 
                         if (($oc->id_tipo_requerimiento == 1 && ($oc->id_cliente !== null || $oc->id_persona !== null)) ||
                             ($oc->id_tipo_requerimiento == 3 && ($oc->id_sede !== $oc->sede_almacen))){
-    
+                                
                             DB::table('almacen.alm_req')
                             ->where('id_requerimiento',$oc->id_requerimiento)
                             ->update(['estado'=>19]);//Reservado
-    
+                                
                             DB::table('almacen.alm_det_req')
                             ->where('id_requerimiento',$oc->id_requerimiento)
                             ->update(['estado'=>19,
                                       'id_almacen_reserva'=>$request->id_almacen]);//Reservado
                         }
+                        
+                        DB::table('almacen.alm_req_obs')
+                        ->insert(['id_requerimiento'=>$oc->id_requerimiento,
+                            'accion'=>'INGRESADO',
+                            'descripcion'=>'Ingresado a Almacén con Guía '.$request->serie.'-'.$request->numero,
+                            'id_usuario'=>$id_usuario,
+                            'fecha_registro'=>$fecha_registro
+                            ]);
                     }
                 }
             }    
@@ -486,6 +494,14 @@ class OrdenesPendientesController extends Controller
             DB::table('almacen.alm_det_req')
                 ->where('id_requerimiento',$request->id_requerimiento)
                 ->update(['estado'=>17]);//enviado
+            //Agrega accion en requerimiento
+            DB::table('almacen.alm_req_obs')
+            ->insert(['id_requerimiento'=>$request->id_requerimiento,
+                'accion'=>'SALIDA POR TRANSFERENCIA',
+                'descripcion'=>'Salió del Almacén por Transferencia con Guía '.$request->trans_serie.'-'.$request->trans_numero,
+                'id_usuario'=>$usuario,
+                'fecha_registro'=>$fecha_registro
+                ]);
 
             DB::commit();
             return response()->json($id_salida);
@@ -572,6 +588,14 @@ class OrdenesPendientesController extends Controller
                             DB::table('almacen.alm_det_req')
                             ->where('id_requerimiento',$req->id_requerimiento)
                             ->update(['estado'=>5]);//Atendido
+                            //Agrega accion en requerimiento
+                            DB::table('almacen.alm_req_obs')
+                            ->insert([  'id_requerimiento'=>$ing->id_requerimiento,
+                                        'accion'=>'INGRESO ANULADO',
+                                        'descripcion'=>'Ingreso por Compra Anulado. Requerimiento regresa a Atendido.',
+                                        'id_usuario'=>$id_usuario,
+                                        'fecha_registro'=>date('Y-m-d H:i:s')
+                                ]);
                         }
                     } else {
                         $msj = 'El ingreso ya fue procesado con una Orden de Despacho o una Transferencia';

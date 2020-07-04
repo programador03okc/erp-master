@@ -11,6 +11,7 @@
                 <div class="modal-body">
                     <input type="text" class="oculto" name="obs_id_od_grupo_detalle">
                     <input type="text" class="oculto" name="obs_id_od">
+                    <input type="text" class="oculto" name="obs_id_requerimiento">
                     <div class="row">
                         <div class="col-md-12">
                             <h5>Observaciones</h5>

@@ -1086,7 +1086,8 @@ span.select2-selection{
 #ordenesEntregadas_filter,
 #requerimientosPendientes_filter,
 #ordenesDespacho_filter,
-#gruposDespachados_filter{
+#gruposDespachados_filter,
+#listaRequerimientosTrazabilidad_filter{
     margin: 0;
 }
 #listaPendientes_filter label input[type="search"],
@@ -1117,7 +1118,8 @@ span.select2-selection{
 #ordenesEntregadas_filter label input[type="search"],
 #requerimientosPendientes_filter label input[type="search"],
 #ordenesDespacho_filter label input[type="search"],
-#gruposDespachados_filter label input[type="search"]{
+#gruposDespachados_filter label input[type="search"],
+#listaRequerimientosTrazabilidad_filter label input[type="search"]{
     width: 95%;
 }
 .subtitulo_blue{
