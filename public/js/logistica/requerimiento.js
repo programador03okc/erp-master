@@ -321,7 +321,7 @@ function listarRequerimiento(viewAnulados) {
     
     let url=rutaListaRequerimientoModal+'/'+viewAnulados;
     // if(viewAnulados == true){
-        console.log(url);
+        // console.log(url);
     //     url='/logistica/requerimientos_sin_estado';
     // }
     var vardataTables = funcDatatables();
@@ -345,7 +345,10 @@ function listarRequerimiento(viewAnulados) {
             {'data': 'fecha_requerimiento'},
             {'data': 'estado_doc'}
         ],
-        'columnDefs': [{ 'aTargets': [0], 'sClass': 'invisible'}]
+        'columnDefs': [{ 'aTargets': [0], 'sClass': 'invisible'}],
+        'order': [
+            [5, 'desc']
+        ]
 
 
     });
@@ -400,8 +403,16 @@ $(function(){
         }
     });
 });
+
+function inicializarSelect(){
+    listar_almacenes();
+    listar_sedes();
+
+}
+
 function selectRequerimiento(){
     // console.log("selectRequerimiento");
+    inicializarSelect();
     var id = $('#id_requerimiento').text();
     var page = $('.page-main').attr('type');
     var form = $('.page-main form[type=register]').attr('id');
@@ -473,6 +484,7 @@ function mostrar_requerimiento(IdorCode){
                 $('[name=cliente_ruc]').val(response['requerimiento'][0].cliente_ruc);
                 $('[name=cliente_razon_social]').val(response['requerimiento'][0].cliente_razon_social);
                 $('[name=direccion_entrega]').val(response['requerimiento'][0].direccion_entrega);
+                $('[name=telefono_cliente]').val(response['requerimiento'][0].telefono);
                 $('[name=ubigeo]').val(response['requerimiento'][0].id_ubigeo_entrega);
                 $('[name=name_ubigeo]').val(response['requerimiento'][0].name_ubigeo);
                 $('[name=id_almacen]').val(response['requerimiento'][0].id_almacen);
@@ -740,8 +752,8 @@ function calcMontoLimiteDePartida(){
     if( ListOfPartidaSelected.filter(function(partida){ return partida.id_partida === idPartidaSelected }).length  == 0){
         ListOfPartidaSelected.push(partidaSelected);
     }
-    console.log('itemSelected');
-    console.log(itemSelected);
+    // console.log('itemSelected');
+    // console.log(itemSelected);
     ListOfItems.push(itemSelected);
     
     // console.log('ListOfItems');
@@ -1549,7 +1561,7 @@ function catalogoItemsModal(){
 function listar_almacenes(){
     $.ajax({
         type: 'GET',
-        url: '/listar_almacenes',
+        url: 'listar_almacenes',
         dataType: 'JSON',
         success: function(response){
             // console.log(response.data);
@@ -1562,6 +1574,29 @@ function listar_almacenes(){
                 }
             }
             $('[name=id_almacen]').html('<option value="0" disabled selected>Elija una opción</option>'+option);
+        }
+    }).fail( function( jqXHR, textStatus, errorThrown ){
+        console.log(jqXHR);
+        console.log(textStatus);
+        console.log(errorThrown);
+    });
+}
+function listar_sedes(){
+    $.ajax({
+        type: 'GET',
+        url: 'mostrar-sede',
+        dataType: 'JSON',
+        success: function(response){
+            // console.log(response);
+            var option = '';
+            for (var i=0; i<response.length; i++){
+                if (response.length == 1){
+                    option+='<option data-id-empresa="'+response[i].id_empresa+'" value="'+response[i].id_sede+'" selected>'+response[i].codigo+' - '+response[i].descripcion+'</option>';
+                } else {
+                    option+='<option data-id-empresa="'+response[i].id_empresa+'" value="'+response[i].id_sede+'">'+response[i].codigo+' - '+response[i].descripcion+'</option>';
+                }
+            }
+            $('[name=sede]').html('<option value="0" disabled selected>Elija una opción</option>'+option);
         }
     }).fail( function( jqXHR, textStatus, errorThrown ){
         console.log(jqXHR);
@@ -1850,6 +1885,15 @@ function save_requerimiento(action){
         data.requerimiento.id_estado_doc =1  // estado elaborado 
         data.requerimiento.estado = 1  // estado 
         
+        if(document.querySelector("select[name='tipo_requerimiento']").value == 3){ // Compra Stock Almacen
+        let almacen_id_sede =document.querySelector("select[name='id_almacen']").options[document.querySelector("select[name='id_almacen']").selectedIndex].dataset.idSede;
+        let almacen_id_empresa =document.querySelector("select[name='id_almacen']").options[document.querySelector("select[name='id_almacen']").selectedIndex].dataset.idEmpresa;
+            // update id_sede, id_empresa
+        data.requerimiento.id_empresa =almacen_id_empresa;
+        data.requerimiento.id_sede = almacen_id_sede;
+        
+    
+        }
         // console.log(data);
         
         baseUrl = rutaGuardarRequerimiento;
@@ -2189,6 +2233,7 @@ function changeMonedaSelect(e){
 }
 
 function changeOptTipoReqSelect(e){
+    
     if(e.target.value == 2){ //venta directa
         document.querySelector("div[id='input-group-almacen'] h5").textContent = 'Almacén';
 
@@ -2417,7 +2462,7 @@ function cargar_almacenes(sede){
             url: 'cargar_almacenes/'+sede,
             dataType: 'JSON',
             success: function(response){
-                console.log(response);
+                // console.log(response);
                 var option = '';
                 for (var i=0; i<response.length; i++){
                     if (response.length == 1){

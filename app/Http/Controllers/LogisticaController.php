@@ -522,6 +522,7 @@ class LogisticaController extends Controller
                 'alm_req.id_ubigeo_entrega',
                 DB::raw("(ubi_dis.descripcion) || ' ' || (ubi_prov.descripcion) || ' ' || (ubi_dpto.descripcion)  AS name_ubigeo"),
                 'alm_req.direccion_entrega',
+                'alm_req.telefono',
                 'alm_req.id_almacen',
                 'alm_req.monto',
                 DB::raw("(CASE WHEN alm_req.estado = 1 THEN 'Habilitado' ELSE 'Deshabilitado' END) AS estado_desc")
@@ -589,6 +590,7 @@ class LogisticaController extends Controller
                     'id_ubigeo_entrega' => $data->id_ubigeo_entrega,
                     'name_ubigeo' => $data->name_ubigeo,
                     'direccion_entrega' => $data->direccion_entrega,
+                    'telefono' => $data->telefono,
                     'id_almacen' => $data->id_almacen,
                     'monto' => $data->monto
                     
@@ -1531,6 +1533,7 @@ class LogisticaController extends Controller
                 'estado'                => ($request->requerimiento['tipo_requerimiento'] ==2?19:1),
                 'id_estado_doc'         => $request->requerimiento['id_estado_doc'],
                 'codigo_occ'            => isset($request->requerimiento['codigo_occ'])?$request->requerimiento['codigo_occ']:null,
+                'id_empresa'            => isset($request->requerimiento['id_empresa'])?$request->requerimiento['id_empresa']:null,
                 'id_sede'               => isset($request->requerimiento['id_sede'])?$request->requerimiento['id_sede']:null,
                 'tipo_cliente'          => isset($request->requerimiento['tipo_cliente'])?$request->requerimiento['tipo_cliente']:null,
                 'id_cliente'            => isset($request->requerimiento['id_cliente'])?$request->requerimiento['id_cliente']:null,
@@ -8071,6 +8074,15 @@ class LogisticaController extends Controller
                 DB::table('almacen.alm_det_req')
                 ->where('id_requerimiento',$request->id_requerimiento)
                 ->update(['estado'=>5]);
+
+            //Agrega accion en requerimiento
+            DB::table('almacen.alm_req_obs')
+            ->insert([  'id_requerimiento'=>$request->id_requerimiento,
+                        'accion'=>'ATENDIDO',
+                        'descripcion'=>'Se generó Orden de Compra '.$codigo,
+                        'id_usuario'=>$id_usuario,
+                        'fecha_registro'=>date('Y-m-d H:i:s')
+            ]);
 
             DB::commit();
             return response()->json($id_orden);

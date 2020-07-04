@@ -10,17 +10,17 @@
                     <div class="col-md-12">
                         <div class="input-group-okc">
                             <input type="file" name="nombre_archivo" class="custom-file-input" onchange="agregarAdjuntoRequerimiento(event); return false;" />
-                            <div class="input-group-append">
-                                <button
-                                    type="button"
-                                    class="btn btn-info"
-                                    onClick="guardarAdjuntosRequerimiento();"
-                                    ><i class="fas fa-file-upload"></i> Subir Archivo
-                                </button>
-                            </div>
                         </div>
                     </div>
                 </div>
+            </div>
+            <div class="modal-footer">
+                <button
+                    type="button"
+                    class="btn btn-info"
+                    onClick="guardarAdjuntosRequerimiento();"
+                    ><i class="fas fa-file-upload"></i> Subir Archivo
+                </button>
             </div>
         </div>
     </div>
