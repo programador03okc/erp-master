@@ -318,38 +318,65 @@ function modalRequerimiento(){
 }
 
 function listarRequerimiento(viewAnulados) {
+    
     let url=rutaListaRequerimientoModal+'/'+viewAnulados;
     // if(viewAnulados == true){
+        console.log(url);
     //     url='/logistica/requerimientos_sin_estado';
     // }
-
     var vardataTables = funcDatatables();
     $('#listaRequerimiento').dataTable({
-        'dom': vardataTables[1],
-        'buttons': vardataTables[2],
-        'language' : vardataTables[0],
-        'processing': true,
-        "scrollX": true,
-        "bDestroy": true,
-        'ajax': url,
-        'columns': [
+        bDestroy: true,
+        order: [[1, 'desc']],
+        info:     true,
+        iDisplayLength:10,
+        paging:   true,
+        searching: false,
+        language: vardataTables[0],
+        processing: true,
+        bDestroy: true,
+        ajax:url,
+        columns: [
             {'data': 'id_requerimiento'},
             {'data': 'codigo'},
             {'data': 'tipo_req_desc'},
             {'data': 'alm_req_concepto'},
-            {'data': 'adm_grupo_descripcion'},
-            {'data': 'area_desc'},
             {'data': 'usuario'},
-            {'data': 'rrhh_rol_concepto'},
             {'data': 'fecha_requerimiento'},
             {'data': 'estado_doc'}
         ],
-        'columnDefs': [{ 'aTargets': [0], 'sClass': 'invisible'}],
-        'order': [
-            [8, 'desc']
-        ]
+        'columnDefs': [{ 'aTargets': [0], 'sClass': 'invisible'}]
+
+
     });
+
+    // var vardataTables = funcDatatables();
+    // $('#listaRequerimiento').dataTable({
+    //     'language' : vardataTables[0],
+    //     'processing': true,
+    //     "scrollX": true,
+    //     "info":     false,
+    //     "iDisplayLength":10,
+    //     "paging":   true,
+    //     "searching": true,
+    //     "bDestroy": true,
+    //     'ajax': url,
+    //     'columns': [
+    //         {'data': 'id_requerimiento'},
+    //         {'data': 'codigo'},
+    //         {'data': 'tipo_req_desc'},
+    //         {'data': 'alm_req_concepto'},
+    //         {'data': 'usuario'},
+    //         {'data': 'fecha_requerimiento'},
+    //         {'data': 'estado_doc'}
+    //     ],
+    //     'columnDefs': [{ 'aTargets': [0], 'sClass': 'invisible'}],
+    //     'order': [
+    //         [5, 'desc']
+    //     ]
+    // });
 }
+
 $(function(){
     /* Seleccionar valor del DataTable */
     $('#listaRequerimiento tbody').on('click', 'tr', function(){
@@ -449,6 +476,7 @@ function mostrar_requerimiento(IdorCode){
                 $('[name=ubigeo]').val(response['requerimiento'][0].id_ubigeo_entrega);
                 $('[name=name_ubigeo]').val(response['requerimiento'][0].name_ubigeo);
                 $('[name=id_almacen]').val(response['requerimiento'][0].id_almacen);
+                $('[name=monto]').val(response['requerimiento'][0].monto);
                 
 
                 $('#estado_doc').text(response['requerimiento'][0].estado_doc);
@@ -492,10 +520,10 @@ function mostrar_requerimiento(IdorCode){
                         'estado':detalle_requerimiento[x].estado
                     };
                         for(j=0; j<detalle_requerimiento[x].adjunto.length; j++){
-                        adjunto.push({ 'archivo_id_archivo':detalle_requerimiento[x].adjunto[j].archivo_id_archivo,
-                            'archivo_archivo':detalle_requerimiento[x].adjunto[j].archivo_archivo,
-                            'archivo_estado':detalle_requerimiento[x].adjunto[j].archivo_estado,
-                            'archivo_id_detalle_requerimiento':detalle_requerimiento[x].adjunto[j].id_detalle_requerimiento
+                        adjunto.push({ 'id_adjunto':detalle_requerimiento[x].adjunto[j].id_adjunto,
+                            'archivo':detalle_requerimiento[x].adjunto[j].archivo,
+                            'estado':detalle_requerimiento[x].adjunto[j].estado,
+                            'id_detalle_requerimiento':detalle_requerimiento[x].adjunto[j].id_detalle_requerimiento
                             });
                         }
                         items['adjunto']=adjunto;
@@ -505,6 +533,7 @@ function mostrar_requerimiento(IdorCode){
                     // console.log(data_item);
                     
                     llenar_tabla_detalle_requerimiento(data_item);
+                    llenarTablaAdjuntosRequerimiento(response['requerimiento'][0].id_requerimiento);
                     
                     // desbloquear el imprimir requerimiento
                     var btnImprimirRequerimientoPdf = document.getElementsByName("btn-imprimir-requerimento-pdf");
@@ -526,7 +555,7 @@ function mostrar_requerimiento(IdorCode){
                     }
 
                 let obsReq = document.getElementById('observaciones_requerimiento');
-                obsReq.innerHTML = '<div class="col-sm-12"><legend><h2>OBSERVACIONES POR RESOLVER:</h2></legend></div></br>'+htmlObservacionReq;
+                obsReq.innerHTML = '</br>'+htmlObservacionReq;
 
             }else{
                 alert("no se puedo obtener el requerimiento para mostrar");
@@ -900,6 +929,7 @@ function get_data_requerimiento(){
     almacen_id_sede =document.querySelector("select[name='id_almacen']").options[document.querySelector("select[name='id_almacen']").selectedIndex].dataset.idSede;
     almacen_id_empresa =document.querySelector("select[name='id_almacen']").options[document.querySelector("select[name='id_almacen']").selectedIndex].dataset.idEmpresa;
     observacion = document.querySelector("form[id='form-requerimiento'] textarea[name='observacion']").value;
+    monto = document.querySelector("form[id='form-requerimiento'] input[name='monto']").value;
 
     requerimiento = {
         id_requerimiento,
@@ -927,7 +957,8 @@ function get_data_requerimiento(){
         id_almacen,
         almacen_id_sede,
         almacen_id_empresa,
-        observacion
+        observacion,
+        monto
         
     };
 return requerimiento;
@@ -1204,7 +1235,7 @@ function archivosAdjuntosModal(event,index){
             // console.log(data_item[index]);
         if(data_item[index].id_detalle_requerimiento >0){ // es un requerimiento traido de la base de datos\
 
-            $('#modal-adjuntar-archivos-requerimiento').modal({
+            $('#modal-adjuntar-archivos-detalle-requerimiento').modal({
                 show: true,
                 backdrop: 'static'
             });
@@ -1234,7 +1265,7 @@ function get_data_archivos_adjuntos(index){
                 for (x=0; x<response.length; x++){
                     id_detalle_requerimiento= response[x].id_detalle_requerimiento;
                         adjuntos.push({ 
-                            'id_archivo':response[x].id_archivo,
+                            'id_adjunto':response[x].id_adjunto,
                             'id_detalle_requerimiento':response[x].id_detalle_requerimiento,
                             'archivo':response[x].archivo,
                             'fecha_registro':response[x].fecha_registro,
@@ -1271,7 +1302,7 @@ function llenar_tabla_archivos_adjuntos(adjuntos){
         var row = table.insertRow(a+1);
         var tdIdArchivo =  row.insertCell(0);
             tdIdArchivo.setAttribute('class','hidden');
-            tdIdArchivo.innerHTML = adjuntos[a].id_archivo?adjuntos[a].id_archivo:'0';
+            tdIdArchivo.innerHTML = adjuntos[a].id_adjunto?adjuntos[a].id_adjunto:'0';
         var tdIdDetalleReq =  row.insertCell(1);
             tdIdDetalleReq.setAttribute('class','hidden');
             tdIdDetalleReq.innerHTML = adjuntos[a].id_detalle_requerimiento?adjuntos[a].id_detalle_requerimiento:'0';
@@ -1290,7 +1321,7 @@ function llenar_tabla_archivos_adjuntos(adjuntos){
         '<button'+
         '    class="btn btn-danger btn-sm "'+
         '    name="btnEliminarArchivoAdjunto"'+
-        '    onclick="eliminarArchivoAdjunto('+a+','+adjuntos[a].id_archivo+')"'+
+        '    onclick="eliminarArchivoAdjunto('+a+','+adjuntos[a].id_adjunto+')"'+
         '    title="Eliminar Archivo"'+
         '>'+
         '    <i class="fas fa-trash"></i>'+
@@ -1301,16 +1332,15 @@ function llenar_tabla_archivos_adjuntos(adjuntos){
     return null;
 }
 
-function eliminarArchivoAdjunto(indice,id_archivo){
+function eliminarArchivoAdjunto(indice,id_adjunto){
 
-    document.getElementById('nombre_archivo').value='';
-
-    if(id_archivo >0){
+    // document.querySelector("div[id='modal-adjuntar-archivos-detalle-requerimiento'] input[name='nombre_archivo']").value;
+    if(id_adjunto >0){
         var ask = confirm('¿Desea eliminar este archivo ?');
         if (ask == true){
             $.ajax({
                 type: 'PUT',
-                url: '/logistica/eliminar-archivo-adjunto/'+id_archivo,
+                url: 'eliminar-archivo-adjunto-detaller-requerimiento/'+id_adjunto,
                 dataType: 'JSON',
                 success: function(response){
                     if(response.status == 'ok'){
@@ -1341,7 +1371,7 @@ function eliminarArchivoAdjunto(indice,id_archivo){
 let only_adjuntos=[];
 function agregarAdjunto(event){ //agregando nuevo archivo adjunto
    
-    //  console.log(event.target.value);
+     console.log(event.target.value);
      let fileList = event.target.files;
      let file = fileList[0];
 
@@ -1374,7 +1404,7 @@ function agregarAdjunto(event){ //agregando nuevo archivo adjunto
 
 
             let archivo ={
-                id_archivo: 0,
+                id_adjunto: 0,
                 id_detalle_requerimiento: id_detalle_requerimiento,
                 archivo:file.name,
                 fecha_registro: new Date().toJSON().slice(0, 10),
@@ -1384,9 +1414,9 @@ function agregarAdjunto(event){ //agregando nuevo archivo adjunto
             let only_file = event.target.files[0]
             adjuntos.push(archivo);
             only_adjuntos.push(only_file);
-            // console.log("agregar adjunto");
-            // console.log(adjuntos);
-            // console.log(only_adjuntos);
+            console.log("agregar adjunto");
+            console.log(adjuntos);
+            console.log(only_adjuntos);
             imprimir_tabla_adjuntos();
             
     }
@@ -1399,12 +1429,12 @@ function imprimir_tabla_adjuntos(){
     for(var a=0;a < adjuntos.length;a++){
         var row = table.insertRow(-1);
 
-        if(adjuntos[a].id_archivo ==0){
+        if(adjuntos[a].id_adjunto ==0){
             indicadorTd="green"; // si es nuevo
         }
         var tdIdArchivo =  row.insertCell(0);
         tdIdArchivo.setAttribute('class','hidden');
-        tdIdArchivo.innerHTML = adjuntos[a].id_archivo?adjuntos[a].id_archivo:'0';
+        tdIdArchivo.innerHTML = adjuntos[a].id_adjunto?adjuntos[a].id_adjunto:'0';
         var tdIdDetalleReq =  row.insertCell(1);
         tdIdDetalleReq.setAttribute('class','hidden');
         tdIdDetalleReq.innerHTML = 0;
@@ -1426,7 +1456,7 @@ function imprimir_tabla_adjuntos(){
         '<button'+
         '    class="btn btn-danger btn-sm "'+
         '    name="btnEliminarArchivoAdjunto"'+
-        '    onclick="eliminarArchivoAdjunto('+a+','+adjuntos[a].id_archivo+')"'+
+        '    onclick="eliminarArchivoAdjunto('+a+','+adjuntos[a].id_adjunto+')"'+
         '    title="Eliminar Archivo"'+
         '>'+
         '    <i class="fas fa-trash"></i>'+
@@ -1447,7 +1477,7 @@ function guardarAdjuntos(){
     // console.log(only_adjuntos);
     let id_detalle_requerimiento = adjuntos[0].id_detalle_requerimiento;
 
-    const onlyNewAdjuntos = adjuntos.filter(id => id.id_archivo == 0); // solo enviar los registros nuevos
+    const onlyNewAdjuntos = adjuntos.filter(id => id.id_adjunto == 0); // solo enviar los registros nuevos
 
         var myformData = new FormData();        
         // myformData.append('archivo_adjunto', JSON.stringify(adjuntos));
@@ -1459,7 +1489,7 @@ function guardarAdjuntos(){
         myformData.append('detalle_adjuntos', JSON.stringify(onlyNewAdjuntos));
         myformData.append('id_detalle_requerimiento', id_detalle_requerimiento);
     
-        baseUrl = '/logistica/guardar-archivos-adjuntos';
+        baseUrl = 'guardar-archivos-adjuntos-detalle-requerimiento';
         $.ajax({
             type: 'POST',
             processData: false,
@@ -1479,7 +1509,7 @@ function guardarAdjuntos(){
                     if (ask == true){
                         return false;
                     }else{
-                        $('#modal-adjuntar-archivos-requerimiento').modal('hide');
+                        $('#modal-adjuntar-archivos-detalle-requerimiento').modal('hide');
                     }
                 }
             }
@@ -1896,6 +1926,8 @@ function editRequerimiento(){
     disabledControl(btnAdjuntarArchivos,false);
     var btnEliminarItem = document.getElementsByName("btnEliminarItem");
         disabledControl(btnEliminarItem,false);
+    var btnEliminarAdjuntoRequerimiento = document.getElementsByName("btnEliminarAdjuntoRequerimiento");
+        disabledControl(btnEliminarAdjuntoRequerimiento,false);
     return null;
 }
 
@@ -2144,10 +2176,21 @@ function cargarArchivo(){
 }
 
 
+function changeMonedaSelect(e){
+    if( e.target.value == 1){
+        document.querySelector("div[id='montoMoneda']").textContent='S/.';
+
+    }else if( e.target.value ==2){
+        document.querySelector("div[id='montoMoneda']").textContent='$';
+    }else{
+        document.querySelector("div[id='montoMoneda']").textContent='';
+    }
+
+}
+
 function changeOptTipoReqSelect(e){
     if(e.target.value == 2){ //venta directa
         document.querySelector("div[id='input-group-almacen'] h5").textContent = 'Almacén';
-        document.querySelector("div[id='input-group-fecha']").setAttribute('class','col-md-3');
 
         document.querySelector("form[id='form-requerimiento'] input[name='nombre_area']").value='';
         document.querySelector("form[id='form-requerimiento'] input[name='id_area']").value='';
@@ -2165,14 +2208,15 @@ function changeOptTipoReqSelect(e){
             'input-group-empresa',
             'input-group-tipo-cliente',
             'input-group-cliente',
-            'input-group-direccion-entrega'
+            'input-group-direccion-entrega',
+            'input-group-monto'
+
         ]);
 
         listar_almacenes();
 
     }else if(e.target.value == 3){
         document.querySelector("div[id='input-group-almacen'] h5").textContent = 'Almacén que solicita';
-        document.querySelector("div[id='input-group-fecha']").setAttribute('class','col-md-3');
 
         document.querySelector("form[id='form-requerimiento'] input[name='nombre_area']").value='';
         document.querySelector("form[id='form-requerimiento'] input[name='id_area']").value='';
@@ -2189,7 +2233,8 @@ function changeOptTipoReqSelect(e){
             'input-group-direccion-entrega',
             'input-group-ubigeo-entrega',
             'input-group-proyecto',
-            'input-group-comercial'
+            'input-group-comercial',
+            'input-group-monto'
         ]);
         hiddeElement('mostrar','form-requerimiento',[
             'input-group-almacen'
@@ -2225,7 +2270,9 @@ function changeOptTipoReqSelect(e){
             'input-group-telefono-cliente',
             'input-group-cliente',
             'input-group-direccion-entrega',
-            'input-group-ubigeo-entrega'
+            'input-group-ubigeo-entrega',
+            'input-group-monto'
+
         ]);
 
     }

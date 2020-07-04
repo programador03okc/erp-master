@@ -34,20 +34,20 @@ class SistemaController extends Controller
     }
     
     public function mostrar_archivos_adjuntos(Request $request, $id_detalle_requerimiento){
-        $data = DB::table('almacen.alm_req_archivos')
+        $data = DB::table('almacen.alm_det_req_adjuntos')
         ->select(  
-            'alm_req_archivos.id_archivo AS archivo_id_archivo',
-            'alm_req_archivos.id_detalle_requerimiento AS archivo_id_detalle_requerimiento',
-            'alm_req_archivos.archivo AS archivo_archivo',
-            'alm_req_archivos.estado AS archivo_estado',
-            'alm_req_archivos.fecha_registro AS archivo_fecha_registro'
-            // DB::raw("(CASE WHEN alm_req_archivos.estado = 1 THEN 'Habilitado' ELSE 'Deshabilitado' END) AS estado_desc")
+            'alm_det_req_adjuntos.id_adjunto',
+            'alm_det_req_adjuntos.id_detalle_requerimiento',
+            'alm_det_req_adjuntos.archivo',
+            'alm_det_req_adjuntos.estado',
+            'alm_det_req_adjuntos.fecha_registro'
+            // DB::raw("(CASE WHEN alm_det_req_adjuntos.estado = 1 THEN 'Habilitado' ELSE 'Deshabilitado' END) AS estado_desc")
             )
         ->where([
-            ['alm_req_archivos.id_detalle_requerimiento', '=', $request->id_detalle_requerimiento],
-            ['alm_req_archivos.estado', '=', 1]
+            ['alm_det_req_adjuntos.id_detalle_requerimiento', '=', $request->id_detalle_requerimiento],
+            ['alm_det_req_adjuntos.estado', '=', 1]
         ])
-        ->orderBy('alm_req_archivos.id_archivo', 'asc')
+        ->orderBy('alm_det_req_adjuntos.id_adjunto', 'asc')
         ->get();
         return response()->json($data);
     }
@@ -64,7 +64,7 @@ class SistemaController extends Controller
                 if(isset($file)){
                     $name_file = $abreviatura.time().$file->getClientOriginalName();
                     if($request->id_detalle_requerimiento >0 || $request->id_detalle_requerimiento !== NULL){
-                        $alm_det_req = DB::table('almacen.alm_req_archivos')->insertGetId(
+                        $alm_det_req = DB::table('almacen.alm_det_req_adjuntos')->insertGetId(
                                 
                             [
                                 'id_detalle_requerimiento'      => $request->id_detalle_requerimiento, 
@@ -72,7 +72,7 @@ class SistemaController extends Controller
                                 'archivo'               => $name_file,
                                 'estado'                => 1
                             ],
-                            'id_archivo'
+                            'id_adjunto'
                         );
                             // Storage::disk('archivos')->put('tdr/'.$name_file, \File::get($file));
                             Storage::disk('archivos')->put("logistica/".$nombre_carpeta_destino.$name_file, \File::get($file));
@@ -95,7 +95,7 @@ class SistemaController extends Controller
 
     public function actualizar_status_file(Request $request){
             if($request[0] >0){
-            $data = DB::table('almacen.alm_req_archivos')->where('id_archivo', $request[0])
+            $data = DB::table('almacen.alm_det_req_adjuntos')->where('id_adjunto', $request[0])
             ->update([
                 'estado'                    => 0,
                 'fecha_registro'            => date('Y-m-d H:i:s')

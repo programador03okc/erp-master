@@ -1135,6 +1135,12 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::get('listar_ubigeos', 'AlmacenController@listar_ubigeos');
 					Route::get('listar_personas', 'RecursosHumanosController@mostrar_persona_table');
 					Route::get('cargar_almacenes/{id_sede}', 'LogisticaController@cargar_almacenes');
+					Route::post('guardar-archivos-adjuntos-detalle-requerimiento', 'LogisticaController@guardar_archivos_adjuntos_detalle_requerimiento');
+					Route::put('eliminar-archivo-adjunto-detalle-requerimiento/{id_archivo}', 'LogisticaController@eliminar_archivo_adjunto_detalle_requerimiento');
+					Route::post('guardar-archivos-adjuntos-requerimiento', 'LogisticaController@guardar_archivos_adjuntos_requerimiento');
+					Route::put('eliminar-archivo-adjunto-requerimiento/{id_archivo}', 'LogisticaController@eliminar_archivo_adjunto_requerimiento');
+					Route::get('mostrar-archivos-adjuntos-requerimiento/{id_requerimiento?}', 'LogisticaController@mostrar_archivos_adjuntos_requerimiento');
+				
 
 				});
 				Route::group(['as' => 'gestionar.', 'prefix' => 'gestionar'], function(){
@@ -1992,8 +1998,6 @@ Route::get('decode5t/{id}', 'EquipoController@decode5t');
 	Route::get('logistica/mostrar_items', 'LogisticaController@mostrar_items');
 	Route::get('logistica/mostrar_item/{id_item}', 'LogisticaController@mostrar_item');
 	Route::get('logistica/get_requerimiento/{id}/{doc}', 'LogisticaController@get_requerimiento');
-	Route::post('logistica/guardar-archivos-adjuntos', 'LogisticaController@guardar_archivos_adjuntos');
-	Route::put('logistica/eliminar-archivo-adjunto/{id_archivo}', 'LogisticaController@eliminar_archivo_adjunto');
 	Route::get('/mostrar_nombre_grupo/{id}', 'EquipoController@mostrar_nombre_grupo');
 
 	Route::get('logistica/get_historial_aprobacion/{id_req}', 'LogisticaController@get_historial_aprobacion');

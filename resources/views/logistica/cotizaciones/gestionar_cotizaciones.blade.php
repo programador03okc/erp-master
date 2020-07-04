@@ -298,7 +298,7 @@
 @include('logistica.cotizaciones.modal_duplicar_cotizacion')
 @include('logistica.cotizaciones.modal_ver_cotizacion')
 @include('logistica.cotizaciones.modal_editar_cotizacion')
-@include('logistica.requerimientos.modal_adjuntar_archivos_requerimiento')
+@include('logistica.requerimientos.modal_adjuntar_archivos_detalle_requerimiento')
 @include('logistica.cotizaciones.modal_envio_cotizacion')
 @include('logistica.cotizaciones.modal_adjuntos_cotizacion')
 @include('logistica.cotizaciones.cotizacionModal')

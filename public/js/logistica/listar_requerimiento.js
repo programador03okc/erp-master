@@ -361,7 +361,7 @@ function imprimirReq(id){
 }
 
 function verArchivosAdjuntosRequerimiento(id){
-    $('#modal-adjuntar-archivos-requerimiento').modal({
+    $('#modal-adjuntar-archivos-detalle-requerimiento').modal({
         show: true,
         backdrop: 'static'
     });
@@ -379,7 +379,7 @@ function verArchivosAdjuntosRequerimiento(id){
             if(response.length >0){
                 for (x=0; x<response.length; x++){
                     adjuntos_requerimiento.push({ 
-                            'id_archivo':response[x].id_archivo,
+                            'id_adjunto':response[x].id_adjunto,
                             'id_detalle_requerimiento':response[x].id_detalle_requerimiento,
                             'archivo':response[x].archivo,
                             'fecha_registro':response[x].fecha_registro,
@@ -414,7 +414,7 @@ function verArchivosAdjuntosRequerimiento(id){
             var row = table.insertRow(a+1);
             var tdIdArchivo =  row.insertCell(0);
                 tdIdArchivo.setAttribute('class','hidden');
-                tdIdArchivo.innerHTML = adjuntos[a].id_archivo?adjuntos[a].id_archivo:'0';
+                tdIdArchivo.innerHTML = adjuntos[a].id_adjunto?adjuntos[a].id_adjunto:'0';
             var tdIdDetalleReq =  row.insertCell(1);
                 tdIdDetalleReq.setAttribute('class','hidden');
                 tdIdDetalleReq.innerHTML = adjuntos[a].id_detalle_requerimiento?adjuntos[a].id_detalle_requerimiento:'0';
