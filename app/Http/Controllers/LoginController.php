@@ -33,7 +33,7 @@ class LoginController extends Controller{
     }
 
     function select_modules(){
-        $sql = DB::table('configuracion.sis_modulo')->where('id_padre', '=', 0)->orderBy('descripcion', 'ASC')->get();
+        $sql = DB::table('configuracion.sis_modulo')->where([['id_padre', '=', 0],['estado','!=',7]])->orderBy('descripcion', 'ASC')->get();
         $html = '';
 
         foreach ($sql as $row){

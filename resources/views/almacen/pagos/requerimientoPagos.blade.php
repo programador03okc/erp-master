@@ -66,7 +66,7 @@ Confirmación de Pagos
                                         <th>Estado</th>
                                         <th>Confirmación</th>
                                         <th>Observación</th>
-                                        <th width="70px">Acción</th>
+                                        <th width="150px">Acción</th>
                                     </tr>
                                 </thead>
                                 <tbody></tbody>
@@ -80,6 +80,7 @@ Confirmación de Pagos
 </div>
 @include('almacen.distribucion.requerimientoDetalle')
 @include('almacen.distribucion.requerimientoObs')
+@include('almacen.distribucion.verRequerimientoAdjuntos')
 @endsection
 
 @section('scripts')

@@ -5,6 +5,7 @@
 .env
 public/js/app.js
 public/css/app.css
+/public/files/*
 /public/files/*.doc
 /public/files/*.docx
 /public/files/*.xls
