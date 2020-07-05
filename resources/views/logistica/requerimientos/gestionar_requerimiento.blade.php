@@ -323,7 +323,7 @@
                     </thead>
                     <tbody>
                         <tr id="default_tr">
-                            <td colspan="4"> No hay datos registrados</td>
+                            <td colspan="5"> No hay datos registrados</td>
                         </tr>
                     </tbody>
                 </table>

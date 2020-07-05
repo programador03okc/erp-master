@@ -166,7 +166,7 @@ $("#form-orden-requerimiento").on("submit", function(e){
 });
 
 function guardar_orden_requerimiento(data){
-    console.log(data);
+    // console.log(data);
     $.ajax({
         type: 'POST',
         url: rutaGuardarOrdenPorRequerimiento,
