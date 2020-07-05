@@ -62,21 +62,39 @@ function listarRequerimientosPendientes(){
         'columnDefs': [
             {'aTargets': [0], 'sClass': 'invisible'},
             {'render': function (data, type, row){
-                return '<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" '+
+                const tieneAccion = '{{Auth::user()->tieneAccion(78)}}';
+                if (tieneAccion == '1') {
+                    return '<button type="button" class="adjunto btn btn-warning boton" data-toggle="tooltip" '+
+                    'data-placement="bottom" data-id="'+row['id_requerimiento']+'" title="Ver Adjuntos" >'+
+                    '<i class="fas fa-file-download"></i></button>'+
+                    '<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" '+
+                        'data-placement="bottom" title="Ver Detalle" >'+
+                        '<i class="fas fa-list-ul"></i></button>'+
+                    '<button type="button" class="conforme btn btn-success boton" data-toggle="tooltip" '+
+                        'data-placement="bottom" data-id="'+row['id_requerimiento']+'" data-cod="'+row['codigo']+'" data-concepto="'+row['concepto']+'" title="Confirmar Entrega" >'+
+                        '<i class="fas fa-check"></i></button>'+
+                    '<button type="button" class="no_conforme btn btn-danger boton" data-toggle="tooltip" '+
+                        'data-placement="bottom" data-id="'+row['id_requerimiento']+'" data-cod="'+row['codigo']+'" data-concepto="'+row['concepto']+'" title="Confirmar Entrega" >'+
+                        '<i class="fas fa-ban"></i></button>'
+                } else {
+                    return '<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" '+
                     'data-placement="bottom" title="Ver Detalle" >'+
-                    '<i class="fas fa-list-ul"></i></button>'+
-                '<button type="button" class="conforme btn btn-success boton" data-toggle="tooltip" '+
-                    'data-placement="bottom" data-id="'+row['id_requerimiento']+'" data-cod="'+row['codigo']+'" data-concepto="'+row['concepto']+'" title="Confirmar Entrega" >'+
-                    '<i class="fas fa-check"></i></button>'+
-                '<button type="button" class="no_conforme btn btn-danger boton" data-toggle="tooltip" '+
-                    'data-placement="bottom" data-id="'+row['id_requerimiento']+'" data-cod="'+row['codigo']+'" data-concepto="'+row['concepto']+'" title="Confirmar Entrega" >'+
-                    '<i class="fas fa-ban"></i></button>'
+                    '<i class="fas fa-list-ul"></i></button>'
+                }
                 }, targets: 9
             }
         ],
     });
    
 }
+
+$('#requerimientosPendientes tbody').on("click","button.adjunto", function(){
+    var id_requerimiento = $(this).data('id');
+    $('#modal-requerimientoAdjuntos').modal({
+        show: true
+    });
+    verRequerimientoAdjuntos(id_requerimiento);
+});
 
 $('#requerimientosPendientes tbody').on("click","button.detalle", function(){
     var data = $('#requerimientosPendientes').DataTable().row($(this).parents("tr")).data();
@@ -123,6 +141,23 @@ $("#form-requerimiento_obs").on("submit", function(e){
     console.log(data);
     confirmacion_pago(data);
 });
+
+function verRequerimientoAdjuntos(id_requerimiento){
+    $.ajax({
+        type: 'GET',
+        url: 'verRequerimientoAdjuntos/'+id_requerimiento,
+        dataType: 'JSON',
+        success: function(response){
+            console.log(response);
+            $('#listaAdjuntosRequerimiento tbody').html(response);
+        }
+    }).fail( function( jqXHR, textStatus, errorThrown ){
+        console.log(jqXHR);
+        console.log(textStatus);
+        console.log(errorThrown);
+    });
+
+}
 
 function confirmacion_pago(data){
     var origen = $('[name=boton_origen]').val();

@@ -85,8 +85,10 @@ Gestión de Despachos
                                 </thead>
                                 <tbody></tbody>
                             </table>
+                            @if(Auth::user()->tieneAccion(80))
                             <button type="button" class="btn btn-success" data-toggle="tooltip" data-placement="bottom" 
                             title="Crear Despacho" onClick="crear_grupo_orden_despacho();">Generar Despacho</button>
+                            @endif
                         </div>
                     </div>
                 </form>

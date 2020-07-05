@@ -1277,4 +1277,25 @@ class DistribucionController extends Controller
         return response()->json($data);
     }
 
+    public function verRequerimientoAdjuntos($id_requerimiento){
+        $data = DB::table('almacen.alm_req_adjuntos')
+        ->where('alm_req_adjuntos.id_requerimiento',$id_requerimiento)
+        ->orderBy('fecha_registro','desc')
+        ->get();
+        $i = 1;
+        $html = '';
+        foreach($data as $d){
+            $ruta = '/logistica/requerimiento/'.$d->archivo;
+            $file = asset('files').$ruta;
+            $html .= '  
+                <tr id="seg-'.$d->id_adjunto.'">
+                    <td>'.$i.'</td>
+                    <td><a href="'.$file.'" target="_blank">'.$d->archivo.'</a></td>
+                    <td>'.$d->fecha_registro.'</td>
+                </tr>';
+            $i++;
+        }
+        return json_encode($html);
+    }
+
 }

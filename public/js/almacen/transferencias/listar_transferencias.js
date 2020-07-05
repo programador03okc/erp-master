@@ -106,12 +106,17 @@ function listarTransferenciasPendientes(){
                 },
                 {'render':
                     function (data, type, row){
-                        return ('<button type="button" class="atender btn btn-success boton" data-toggle="tooltip" '+
-                        'data-placement="bottom" title="Atender" >'+
-                        '<i class="fas fa-share"></i></button>'+
-                    '<button type="button" class="salida btn btn-primary boton" data-toggle="tooltip" '+
-                        'data-placement="bottom" data-id-salida="'+row['id_salida']+'" title="Ver Salida" >'+
-                        '<i class="fas fa-file-alt"></i></button>');
+                        const tieneAccion = '{{Auth::user()->tieneAccion(91)}}';
+                        if (tieneAccion == '1') {
+                            return ('<button type="button" class="atender btn btn-success boton" data-toggle="tooltip" '+
+                            'data-placement="bottom" title="Atender" >'+
+                            '<i class="fas fa-share"></i></button>'+
+                        '<button type="button" class="salida btn btn-primary boton" data-toggle="tooltip" '+
+                            'data-placement="bottom" data-id-salida="'+row['id_salida']+'" title="Ver Salida" >'+
+                            '<i class="fas fa-file-alt"></i></button>');
+                        } else {
+                            return ''
+                        }
                     }
                 }
             ],
@@ -215,15 +220,22 @@ function listarTransferenciasRecibidas(){
                 },
                 {'render':
                     function (data, type, row){
-                        return ('<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" '+
-                        'data-placement="bottom" title="Ver Detalle" >'+
-                        '<i class="fas fa-list-ul"></i></button>'+
-                    '<button type="button" class="ingreso btn btn-warning boton" data-toggle="tooltip" '+
-                        'data-placement="bottom" data-id-ingreso="'+row['id_ingreso']+'" title="Ver Ingreso" >'+
-                        '<i class="fas fa-file-alt"></i></button>'+
-                    '<button type="button" class="anular btn btn-danger boton" data-toggle="tooltip" '+
-                        'data-placement="bottom" data-id="'+row['id_transferencia']+'" data-guia="'+row['id_guia_com']+'" data-ing="'+row['id_ingreso']+'" title="Anular" >'+
-                        '<i class="fas fa-trash"></i></button>');
+                        const tieneAccion = '{{Auth::user()->tieneAccion(91)}}';
+                        if (tieneAccion == '1') {
+                            return ('<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" '+
+                                'data-placement="bottom" title="Ver Detalle" >'+
+                                '<i class="fas fa-list-ul"></i></button>'+
+                            '<button type="button" class="ingreso btn btn-warning boton" data-toggle="tooltip" '+
+                                'data-placement="bottom" data-id-ingreso="'+row['id_ingreso']+'" title="Ver Ingreso" >'+
+                                '<i class="fas fa-file-alt"></i></button>'+
+                            '<button type="button" class="anular btn btn-danger boton" data-toggle="tooltip" '+
+                                'data-placement="bottom" data-id="'+row['id_transferencia']+'" data-guia="'+row['id_guia_com']+'" data-ing="'+row['id_ingreso']+'" title="Anular" >'+
+                                '<i class="fas fa-trash"></i></button>');
+                        } else {
+                            return '<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" '+
+                            'data-placement="bottom" title="Ver Detalle" >'+
+                            '<i class="fas fa-list-ul"></i></button>'
+                        }
                     }
                 }
             ],

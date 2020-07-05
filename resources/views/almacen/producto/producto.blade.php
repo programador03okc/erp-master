@@ -1,9 +1,15 @@
 @extends('layout.main')
 @include('layout.menu_almacen')
 
-@section('option')
-    @include('layout.option')
-@endsection
+@if(Auth::user()->tieneAccion(69))
+    @section('option')
+        @include('layout.option')
+    @endsection
+@elseif(Auth::user()->tieneAccion(70))
+    @section('option')
+        @include('layout.option_historial')
+    @endsection
+@endif
 
 @section('cabecera')
     Producto
