@@ -1143,6 +1143,7 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::get('listar_almacenes', 'AlmacenController@mostrar_almacenes');
 					Route::get('mostrar-sede', 'ConfiguracionController@mostrarSede');
 					Route::get('verTrazabilidadRequerimiento/{id}', 'DistribucionController@verTrazabilidadRequerimiento');
+					Route::get('getCodigoRequerimiento/{id}', 'LogisticaController@getCodigoRequerimiento');
 
 
 				

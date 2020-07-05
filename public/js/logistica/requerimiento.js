@@ -536,7 +536,8 @@ function mostrar_requerimiento(IdorCode){
                         adjunto.push({ 'id_adjunto':detalle_requerimiento[x].adjunto[j].id_adjunto,
                             'archivo':detalle_requerimiento[x].adjunto[j].archivo,
                             'estado':detalle_requerimiento[x].adjunto[j].estado,
-                            'id_detalle_requerimiento':detalle_requerimiento[x].adjunto[j].id_detalle_requerimiento
+                            'id_detalle_requerimiento':detalle_requerimiento[x].adjunto[j].id_detalle_requerimiento,
+                            'id_requerimiento':response['requerimiento'][0].id_requerimiento
                             });
                         }
                         items['adjunto']=adjunto;
@@ -1383,8 +1384,9 @@ function eliminarArchivoAdjunto(indice,id_adjunto){
 
 let only_adjuntos=[];
 function agregarAdjunto(event){ //agregando nuevo archivo adjunto
-   
-     console.log(event.target.value);
+    let id_req = document.querySelector("form[id='form-requerimiento'] input[name='id_requerimiento']").value;
+
+    //  console.log(event.target.value);
      let fileList = event.target.files;
      let file = fileList[0];
 
@@ -1418,6 +1420,7 @@ function agregarAdjunto(event){ //agregando nuevo archivo adjunto
 
             let archivo ={
                 id_adjunto: 0,
+                id_requerimiento: id_req,
                 id_detalle_requerimiento: id_detalle_requerimiento,
                 archivo:file.name,
                 fecha_registro: new Date().toJSON().slice(0, 10),
@@ -1427,9 +1430,9 @@ function agregarAdjunto(event){ //agregando nuevo archivo adjunto
             let only_file = event.target.files[0]
             adjuntos.push(archivo);
             only_adjuntos.push(only_file);
-            console.log("agregar adjunto");
-            console.log(adjuntos);
-            console.log(only_adjuntos);
+            // console.log("agregar adjunto");
+            // console.log(adjuntos);
+            // console.log(only_adjuntos);
             imprimir_tabla_adjuntos();
             
     }
@@ -1488,6 +1491,7 @@ function guardarAdjuntos(){
     
     // console.log(adjuntos);
     // console.log(only_adjuntos);
+    let id_requerimiento = id_req;
     let id_detalle_requerimiento = adjuntos[0].id_detalle_requerimiento;
 
     const onlyNewAdjuntos = adjuntos.filter(id => id.id_adjunto == 0); // solo enviar los registros nuevos
@@ -1500,6 +1504,7 @@ function guardarAdjuntos(){
         }
         
         myformData.append('detalle_adjuntos', JSON.stringify(onlyNewAdjuntos));
+        myformData.append('id_requerimiento', id_requerimiento);
         myformData.append('id_detalle_requerimiento', id_detalle_requerimiento);
     
         baseUrl = 'guardar-archivos-adjuntos-detalle-requerimiento';

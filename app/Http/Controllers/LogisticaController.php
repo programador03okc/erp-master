@@ -1330,9 +1330,31 @@ class LogisticaController extends Controller
 
         return response()->json($data);
     }
+    public function getCodigoRequerimiento($id){
+        $codigo=0;
+        $alm_req = DB::table('almacen.alm_req')
+            ->select('alm_req.codigo')
+            ->where('alm_req.id_requerimiento', $id)
+            ->get();
+            if($alm_req){
+                $codigo = $alm_req->first()->codigo;
+            }
+            return $codigo;
+    }
+    public function getNextvalAdjuntosRequerimiento(){
+        $next=0;
+        $result = DB::select( DB::raw("SELECT nextval('almacen.alm_req_adjuntos_id_adjunto_seq')"));
+        if($result){
+            $next= $result[0]->nextval;
+        }
+            return $next;
+    }
 
     public function guardar_archivos_adjuntos_requerimiento(Request $request)
     {
+        $codigo_requerimiento = $this->getCodigoRequerimiento($request->id_requerimiento);
+        $nextValId = $this->getNextvalAdjuntosRequerimiento();
+
         $archivo_adjunto_length = count($request->only_adjuntos);
         $detalle_adjunto = json_decode($request->detalle_adjuntos, true);
         $detalle_adjuntos_length = count($detalle_adjunto);
@@ -1342,7 +1364,8 @@ class LogisticaController extends Controller
             $file = $request->file('only_adjuntos')[$clave];
 
             if (isset($file)) {
-                $name_file = "R" . time() . $file->getClientOriginalName();
+                // $name_file = "R" . time() . $file->getClientOriginalName();
+                $name_file = $codigo_requerimiento.$nextValId;
                 if ($request->id_requerimiento > 0 || $request->id_requerimiento !== NULL) {
 
                     $alm_req_adjuntos = DB::table('almacen.alm_req_adjuntos')->insertGetId(
@@ -1363,9 +1386,20 @@ class LogisticaController extends Controller
 
         return response()->json($alm_req_adjuntos);
     }
+    public function getNextvalAdjuntosDetalleRequerimiento(){
+        $next=0;
+        $result = DB::select( DB::raw("SELECT nextval('almacen.alm_det_req_adjuntos_id_adjunto_seq')"));
+        if($result){
+            $next= $result[0]->nextval;
+        }
+            return $next;
+    }
 
     public function guardar_archivos_adjuntos_detalle_requerimiento(Request $request)
     {
+        $codigo_requerimiento = $this->getCodigoRequerimiento($request->id_requerimiento);
+        $nextValId = $this->getNextvalAdjuntosDetalleRequerimiento();
+
         $archivo_adjunto_length = count($request->only_adjuntos);
         $detalle_adjunto = json_decode($request->detalle_adjuntos, true);
         $detalle_adjuntos_length = count($detalle_adjunto);
@@ -1375,7 +1409,8 @@ class LogisticaController extends Controller
             $file = $request->file('only_adjuntos')[$clave];
 
             if (isset($file)) {
-                $name_file = "DR" . time() . $file->getClientOriginalName();
+                // $name_file = "DR" . time() . $file->getClientOriginalName();
+                $name_file = $codigo_requerimiento.$nextValId;
                 if ($request->id_detalle_requerimiento > 0 || $request->id_detalle_requerimiento !== NULL) {
 
                     $alm_det_req_adjuntos = DB::table('almacen.alm_det_req_adjuntos')->insertGetId(
