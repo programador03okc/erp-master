@@ -1,8 +1,5 @@
 @extends('layout.main')
 @include('layout.menu_almacen')
-@section('option')
-    @include('layout.option')
-@endsection
 
 @section('cabecera')
     Catálogo de Productos

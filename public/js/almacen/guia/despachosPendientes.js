@@ -72,13 +72,20 @@ function listarDespachosPendientes(){
         'columnDefs': [
             {'aTargets': [0], 'sClass': 'invisible'},
             {'render': function (data, type, row){
-                return '<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" '+
-                'data-placement="bottom" title="Ver Detalle" >'+
-                '<i class="fas fa-list-ul"></i></button>'+
-                (row['estado'] == 1 ? 
-                ('<button type="button" class="guia btn btn-warning boton" data-toggle="tooltip" '+
-                    'data-placement="bottom" title="Generar Guía" >'+
-                    '<i class="fas fa-sign-in-alt"></i></button>') : '');
+                const tieneAccion = '{{Auth::user()->tieneAccion(85)}}';
+                if (tieneAccion == '1') {
+                    return '<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" '+
+                    'data-placement="bottom" title="Ver Detalle" >'+
+                    '<i class="fas fa-list-ul"></i></button>'+
+                    (row['estado'] == 1 ? 
+                    ('<button type="button" class="guia btn btn-warning boton" data-toggle="tooltip" '+
+                        'data-placement="bottom" title="Generar Guía" >'+
+                        '<i class="fas fa-sign-in-alt"></i></button>') : '');
+                } else {
+                    return '<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" '+
+                    'data-placement="bottom" title="Ver Detalle" >'+
+                    '<i class="fas fa-list-ul"></i></button>'
+                }
                 }, targets: 12
             }
         ],
@@ -135,12 +142,19 @@ function listarDespachosEntregados(){
         'columnDefs': [
             {'aTargets': [0], 'sClass': 'invisible'},
             {'render': function (data, type, row){
-                return '<button type="button" class="salida btn btn-warning boton" data-toggle="tooltip" '+
-                    'data-placement="bottom" title="Ver Salida" data-id="'+row['id_mov_alm']+'">'+
-                    '<i class="fas fa-file-alt"></i></button>'+
-                    '<button type="button" class="anular btn btn-danger boton" data-toggle="tooltip" '+
-                    'data-placement="bottom" title="Anular Salida" data-id="'+row['id_mov_alm']+'" data-guia="'+row['id_guia_ven']+'" data-od="'+row['id_od']+'">'+
-                    '<i class="fas fa-trash"></i></button>';
+                const tieneAccion = '{{Auth::user()->tieneAccion(85)}}';
+                    if (tieneAccion == '1') {
+                        return '<button type="button" class="salida btn btn-warning boton" data-toggle="tooltip" '+
+                            'data-placement="bottom" title="Ver Salida" data-id="'+row['id_mov_alm']+'">'+
+                            '<i class="fas fa-file-alt"></i></button>'+
+                            '<button type="button" class="anular btn btn-danger boton" data-toggle="tooltip" '+
+                            'data-placement="bottom" title="Anular Salida" data-id="'+row['id_mov_alm']+'" data-guia="'+row['id_guia_ven']+'" data-od="'+row['id_od']+'">'+
+                            '<i class="fas fa-trash"></i></button>';
+                    } else {
+                        return '<button type="button" class="salida btn btn-warning boton" data-toggle="tooltip" '+
+                            'data-placement="bottom" title="Ver Salida" data-id="'+row['id_mov_alm']+'">'+
+                            '<i class="fas fa-file-alt"></i></button>'
+                    }
                 }, targets: 9
                 // '<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" '+
                 //     'data-placement="bottom" title="Ver Detalle" data-id="'+row.id_mov_alm+'">'+

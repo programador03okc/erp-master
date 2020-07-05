@@ -51,6 +51,23 @@ class Usuario extends Authenticatable
         return Acceso::join('configuracion.sis_rol','sis_acceso.id_rol','=','sis_rol.id_rol')
             ->join('configuracion.sis_accion_rol','sis_accion_rol.id_rol','=','sis_rol.id_rol')
             ->where('id_usuario',$this->id_usuario)->where('id_accion',$id)->first()!=null;
+	}
+	
+	public function tieneAplicacion($id)
+    {
+        return Acceso::join('configuracion.sis_rol','sis_acceso.id_rol','=','sis_rol.id_rol')
+            ->join('configuracion.sis_accion_rol','sis_accion_rol.id_rol','=','sis_rol.id_rol')
+            ->join('configuracion.sis_accion','sis_accion.id_accion','=','sis_accion_rol.id_accion')
+            ->where('id_usuario',$this->id_usuario)->where('sis_accion.id_aplicacion',$id)->first()!=null;
+	}
+	
+	public function tieneSubModulo($id)
+    {
+        return Acceso::join('configuracion.sis_rol','sis_acceso.id_rol','=','sis_rol.id_rol')
+            ->join('configuracion.sis_accion_rol','sis_accion_rol.id_rol','=','sis_rol.id_rol')
+            ->join('configuracion.sis_accion','sis_accion.id_accion','=','sis_accion_rol.id_accion')
+            ->join('configuracion.sis_aplicacion','sis_aplicacion.id_aplicacion','=','sis_accion.id_aplicacion')
+            ->where('id_usuario',$this->id_usuario)->where('sis_aplicacion.id_sub_modulo',$id)->first()!=null;
     }
 
 

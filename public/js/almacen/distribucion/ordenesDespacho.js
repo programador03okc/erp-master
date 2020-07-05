@@ -87,24 +87,31 @@ function listarRequerimientosPendientes(){
         'columnDefs': [
             {'aTargets': [0], 'sClass': 'invisible'},
             {'render': function (data, type, row){
-                return '<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" '+
-                'data-placement="bottom" title="Ver Detalle" >'+
-                '<i class="fas fa-list-ul"></i></button>'+
-                ((row['estado'] == 19 && row['id_tipo_requerimiento'] == 2 && row['id_od'] == null) ? 
-                    '<button type="button" class="anular btn btn-danger boton" data-toggle="tooltip" '+
-                    'data-placement="bottom" data-id="'+row['id_requerimiento']+'" data-cod="'+row['codigo']+'" title="Anular Requerimiento" >'+
-                    '<i class="fas fa-trash"></i></button>' : '')+
-                (
-                    ((row['estado'] == 19 && row['id_tipo_requerimiento'] == 1 && row['sede_requerimiento'] == row['sede_orden'] && row['id_od'] == null) ||
-                     (row['estado'] == 19 && row['id_tipo_requerimiento'] == 1 && row['sede_requerimiento'] !== row['sede_orden'] && row['id_transferencia'] !== null && row['id_od'] == null) || //compra con transferencia
-                     (row['estado'] == 19 && row['id_tipo_requerimiento'] == 2 && row['confirmacion_pago'] == true && row['id_od'] == null)) ? //venta directa
-                    ('<button type="button" class="despacho btn btn-success boton" data-toggle="tooltip" '+
-                    'data-placement="bottom" title="Generar Orden de Despacho" >'+
-                    '<i class="fas fa-sign-in-alt"></i></button>') : 
-                    ( row['id_od'] !== null && row['estado_od'] == 1) ?
-                    '<button type="button" class="anular_od btn btn-danger boton" data-toggle="tooltip" '+
-                    'data-placement="bottom" data-id="'+row['id_od']+'" data-cod="'+row['codigo_od']+'" title="Anular Orden Despacho" >'+
-                    '<i class="fas fa-trash"></i></button>' : '' )
+                const tieneAccion = '{{Auth::user()->tieneAccion(80)}}';
+                if (tieneAccion == '1') {
+                    return '<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" '+
+                    'data-placement="bottom" title="Ver Detalle" >'+
+                    '<i class="fas fa-list-ul"></i></button>'+
+                    ((row['estado'] == 19 && row['id_tipo_requerimiento'] == 2 && row['id_od'] == null) ? 
+                        '<button type="button" class="anular btn btn-danger boton" data-toggle="tooltip" '+
+                        'data-placement="bottom" data-id="'+row['id_requerimiento']+'" data-cod="'+row['codigo']+'" title="Anular Requerimiento" >'+
+                        '<i class="fas fa-trash"></i></button>' : '')+
+                    (
+                        ((row['estado'] == 19 && row['id_tipo_requerimiento'] == 1 && row['sede_requerimiento'] == row['sede_orden'] && row['id_od'] == null) ||
+                        (row['estado'] == 19 && row['id_tipo_requerimiento'] == 1 && row['sede_requerimiento'] !== row['sede_orden'] && row['id_transferencia'] !== null && row['id_od'] == null) || //compra con transferencia
+                        (row['estado'] == 19 && row['id_tipo_requerimiento'] == 2 && row['confirmacion_pago'] == true && row['id_od'] == null)) ? //venta directa
+                        ('<button type="button" class="despacho btn btn-success boton" data-toggle="tooltip" '+
+                        'data-placement="bottom" title="Generar Orden de Despacho" >'+
+                        '<i class="fas fa-sign-in-alt"></i></button>') : 
+                        ( row['id_od'] !== null && row['estado_od'] == 1) ?
+                        '<button type="button" class="anular_od btn btn-danger boton" data-toggle="tooltip" '+
+                        'data-placement="bottom" data-id="'+row['id_od']+'" data-cod="'+row['codigo_od']+'" title="Anular Orden Despacho" >'+
+                        '<i class="fas fa-trash"></i></button>' : '' )
+                } else {
+                    return '<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" '+
+                    'data-placement="bottom" title="Ver Detalle" >'+
+                    '<i class="fas fa-list-ul"></i></button>'
+                }
                 }, targets: 14
             }
         ],
@@ -309,19 +316,29 @@ function listarGruposDespachados(){
             },
             {'render': 
                 function (data, type, row){
-                    return ('<button type="button" class="god_detalle btn btn-primary boton" data-toggle="tooltip" '+
-                    'data-placement="bottom" title="Ver Detalle" >'+
-                    '<i class="fas fa-list-ul"></i></button>'+
-                    '<button type="button" class="imprimir btn btn-info boton" data-toggle="tooltip" '+
-                    'data-placement="bottom" data-id-grupo="'+row['id_od_grupo']+'" title="Ver Despacho" >'+
-                    '<i class="fas fa-file-alt"></i></button>'+
-                    ((row['confirmacion'] == false && row['estado_od'] == 20)? 
-                    ('<button type="button" class="conforme btn btn-success boton" data-toggle="tooltip" '+
-                    'data-placement="bottom" data-id="'+row['id_od_grupo_detalle']+'" data-od="'+row['id_od']+'" data-idreq="'+row['id_requerimiento']+'" title="Confirmar Entrega" >'+
-                    '<i class="fas fa-check"></i></button>'+
-                    '<button type="button" class="no_conforme btn btn-danger boton" data-toggle="tooltip" '+
-                    'data-placement="bottom" data-id="'+row['id_od_grupo_detalle']+'" data-od="'+row['id_od']+'" data-idreq="'+row['id_requerimiento']+'" data-cod-od="'+row['codigo_od']+'" data-concepto="'+row['concepto']+'" title="No Entregado" >'+
-                    '<i class="fas fa-ban"></i></button>') : ''));
+                    const tieneAccion = '{{Auth::user()->tieneAccion(80)}}';
+                    if (tieneAccion == '1') {
+                        return ('<button type="button" class="god_detalle btn btn-primary boton" data-toggle="tooltip" '+
+                        'data-placement="bottom" title="Ver Detalle" >'+
+                        '<i class="fas fa-list-ul"></i></button>'+
+                        '<button type="button" class="imprimir btn btn-info boton" data-toggle="tooltip" '+
+                        'data-placement="bottom" data-id-grupo="'+row['id_od_grupo']+'" title="Ver Despacho" >'+
+                        '<i class="fas fa-file-alt"></i></button>'+
+                        ((row['confirmacion'] == false && row['estado_od'] == 20)? 
+                        ('<button type="button" class="conforme btn btn-success boton" data-toggle="tooltip" '+
+                        'data-placement="bottom" data-id="'+row['id_od_grupo_detalle']+'" data-od="'+row['id_od']+'" data-idreq="'+row['id_requerimiento']+'" title="Confirmar Entrega" >'+
+                        '<i class="fas fa-check"></i></button>'+
+                        '<button type="button" class="no_conforme btn btn-danger boton" data-toggle="tooltip" '+
+                        'data-placement="bottom" data-id="'+row['id_od_grupo_detalle']+'" data-od="'+row['id_od']+'" data-idreq="'+row['id_requerimiento']+'" data-cod-od="'+row['codigo_od']+'" data-concepto="'+row['concepto']+'" title="No Entregado" >'+
+                        '<i class="fas fa-ban"></i></button>') : ''));
+                    } else {
+                        return '<button type="button" class="god_detalle btn btn-primary boton" data-toggle="tooltip" '+
+                        'data-placement="bottom" title="Ver Detalle" >'+
+                        '<i class="fas fa-list-ul"></i></button>'+
+                        '<button type="button" class="imprimir btn btn-info boton" data-toggle="tooltip" '+
+                        'data-placement="bottom" data-id-grupo="'+row['id_od_grupo']+'" title="Ver Despacho" >'+
+                        '<i class="fas fa-file-alt"></i></button>'
+                    }
                 }
             },
         ],

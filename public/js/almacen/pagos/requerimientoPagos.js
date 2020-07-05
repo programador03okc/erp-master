@@ -62,18 +62,25 @@ function listarRequerimientosPendientes(){
         'columnDefs': [
             {'aTargets': [0], 'sClass': 'invisible'},
             {'render': function (data, type, row){
-                return '<button type="button" class="adjunto btn btn-warning boton" data-toggle="tooltip" '+
-                'data-placement="bottom" data-id="'+row['id_requerimiento']+'" title="Ver Adjuntos" >'+
-                '<i class="fas fa-file-download"></i></button>'+
-                '<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" '+
+                const tieneAccion = '{{Auth::user()->tieneAccion(78)}}';
+                if (tieneAccion == '1') {
+                    return '<button type="button" class="adjunto btn btn-warning boton" data-toggle="tooltip" '+
+                    'data-placement="bottom" data-id="'+row['id_requerimiento']+'" title="Ver Adjuntos" >'+
+                    '<i class="fas fa-file-download"></i></button>'+
+                    '<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" '+
+                        'data-placement="bottom" title="Ver Detalle" >'+
+                        '<i class="fas fa-list-ul"></i></button>'+
+                    '<button type="button" class="conforme btn btn-success boton" data-toggle="tooltip" '+
+                        'data-placement="bottom" data-id="'+row['id_requerimiento']+'" data-cod="'+row['codigo']+'" data-concepto="'+row['concepto']+'" title="Confirmar Entrega" >'+
+                        '<i class="fas fa-check"></i></button>'+
+                    '<button type="button" class="no_conforme btn btn-danger boton" data-toggle="tooltip" '+
+                        'data-placement="bottom" data-id="'+row['id_requerimiento']+'" data-cod="'+row['codigo']+'" data-concepto="'+row['concepto']+'" title="Confirmar Entrega" >'+
+                        '<i class="fas fa-ban"></i></button>'
+                } else {
+                    return '<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" '+
                     'data-placement="bottom" title="Ver Detalle" >'+
-                    '<i class="fas fa-list-ul"></i></button>'+
-                '<button type="button" class="conforme btn btn-success boton" data-toggle="tooltip" '+
-                    'data-placement="bottom" data-id="'+row['id_requerimiento']+'" data-cod="'+row['codigo']+'" data-concepto="'+row['concepto']+'" title="Confirmar Entrega" >'+
-                    '<i class="fas fa-check"></i></button>'+
-                '<button type="button" class="no_conforme btn btn-danger boton" data-toggle="tooltip" '+
-                    'data-placement="bottom" data-id="'+row['id_requerimiento']+'" data-cod="'+row['codigo']+'" data-concepto="'+row['concepto']+'" title="Confirmar Entrega" >'+
-                    '<i class="fas fa-ban"></i></button>'
+                    '<i class="fas fa-list-ul"></i></button>'
+                }
                 }, targets: 9
             }
         ],
