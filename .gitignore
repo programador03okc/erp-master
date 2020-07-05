@@ -3,8 +3,9 @@
 /storage
 /node_modules
 .env
-public/js/app.js
-public/css/app.css
+/public/files/*
+/public/js/app.js
+/public/css/app.css
 /public/files/*.doc
 /public/files/*.docx
 /public/files/*.xls

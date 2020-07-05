@@ -380,7 +380,7 @@ class LogisticaController extends Controller
             $hasWhere = ['alm_req.estado','>',0];
         }
         if($option == 'ONLY_ACTIVOS'  ){
-            $hasWhere = ['alm_req.estado', '=', 1];
+            $hasWhere = ['alm_req.estado', '!=', 7];
 
         }
 
@@ -7783,7 +7783,7 @@ class LogisticaController extends Controller
                     'alm_prod.codigo AS alm_prod_codigo',
                     'alm_prod.descripcion AS alm_prod_descripcion',
 
-                    'alm_det_req_adjuntos.id_archivo AS adjunto_id_adjunto',
+                    'alm_det_req_adjuntos.id_adjunto AS adjunto_id_adjunto',
                     'alm_det_req_adjuntos.archivo AS adjunto_archivo',
                     'alm_det_req_adjuntos.estado AS adjunto_estado',
                     'alm_det_req_adjuntos.fecha_registro AS adjunto_fecha_registro',
@@ -8080,7 +8080,7 @@ class LogisticaController extends Controller
             ->insert([  'id_requerimiento'=>$request->id_requerimiento,
                         'accion'=>'ATENDIDO',
                         'descripcion'=>'Se generó Orden de Compra '.$codigo,
-                        'id_usuario'=>$id_usuario,
+                        'id_usuario'=>$usuario,
                         'fecha_registro'=>date('Y-m-d H:i:s')
             ]);
 
