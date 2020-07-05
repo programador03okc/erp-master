@@ -329,9 +329,7 @@
     $(document).ready(function(){
         seleccionarMenu(window.location);
         inicializar(
-            "{{route('logistica.gestion-logistica.cotizacion.gestionar.select-sede-by-empresa')}}",
-            "{{route('logistica.gestion-logistica.cotizacion.gestionar.telefonos-cliente')}}",
-            "{{route('logistica.gestion-logistica.cotizacion.gestionar.direcciones-cliente')}}"
+            "{{route('logistica.gestion-logistica.cotizacion.gestionar.select-sede-by-empresa')}}"
             );
     });
     </script>
