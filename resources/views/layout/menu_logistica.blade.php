@@ -145,46 +145,76 @@
         </div>
         <div class="box-body" style="display: none;">
             <ul class="sidebar-menu">
+            @if(Auth::user()->tieneSubModulo(45))
                 <li class="treeview">
                     <a href="#">
                         <i class="fas fa-id-card-alt"></i> <span>Solicitudes / Asignaciones</span> <i class="fa fa-angle-left pull-right"></i>
                     </a>
                     <ul class="treeview-menu">
+                        @if(Auth::user()->tieneAplicacion(121))
                         <li><a href="/equi_sol"> Solicitud de Movilidad y Equipo </a></li>
+                        @endif
+                        @if(Auth::user()->tieneAplicacion(122))
                         <li><a href="/aprob_sol"> Listado de Solicitudes </a></li>
+                        @endif
+                        @if(Auth::user()->tieneAplicacion(123))
                         <li><a href="/control"> Registro de Bitácora </a></li>
+                        @endif
                     </ul>
                 </li>
+                @endif
+                @if(Auth::user()->tieneSubModulo(46))
                     <li class="treeview">
                         <a href="#">
                             <i class="fas fa-book"></i> <span>Catálogos</span> <i class="fa fa-angle-left pull-right"></i>
                         </a>
                         <ul class="treeview-menu">
+                            @if(Auth::user()->tieneAplicacion(124))
                             <li><a href="/equi_tipo"> Tipo de Equipos </a></li>
+                            @endif
+                            @if(Auth::user()->tieneAplicacion(125))
                             <li><a href="/equi_cat"> Categoria de Equipos </a></li>
+                            @endif
+                            @if(Auth::user()->tieneAplicacion(126))
                             <li><a href="/equi_catalogo"> Catálogo de Equipos </a></li>
+                            @endif
                             {{-- <li><a href="tp_combustible"> Tipo de Combustible </a></li> --}}
                         </ul>
                     </li>
+                    @endif
+                    @if(Auth::user()->tieneSubModulo(47))
                     <li class="treeview">
                         <a href="#">
                             <i class="fas fa-wrench"></i> <span>Mantenimientos</span> <i class="fa fa-angle-left pull-right"></i>
                         </a>
                         <ul class="treeview-menu">
+                            @if(Auth::user()->tieneAplicacion(127))
                             <li><a href="/mtto"> Mantenimiento de Equipo </a></li>
+                            @endif
+                            @if(Auth::user()->tieneAplicacion(128))
                             <li><a href="/mtto_realizados"> Mantenimientos Realizados </a></li>
+                            @endif
                         </ul>
                     </li>
+                    @endif
+                    @if(Auth::user()->tieneSubModulo(26))
                     <li class="treeview">
                         <a href="#">
                             <i class="fas fa-chart-bar"></i> <span>Reportes</span> <i class="fa fa-angle-left pull-right"></i>
                         </a>
                         <ul class="treeview-menu">
+                            @if(Auth::user()->tieneAplicacion(129))
                             <li><a href="/sol_todas"> Listado Solicitudes </a></li>
+                            @endif
+                            @if(Auth::user()->tieneAplicacion(130))
                             <li><a href="/docs"> Documentos del Equipo </a></li>
+                            @endif
+                            @if(Auth::user()->tieneAplicacion(131))
                             <li><a href="/mtto_pendientes"> Programación de Mttos </a></li>
+                            @endif
                         </ul>
                     </li>
+                    @endif
             </ul>
         </div><!-- /.box-body -->
     </div>
