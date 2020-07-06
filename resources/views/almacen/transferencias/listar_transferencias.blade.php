@@ -158,6 +158,7 @@ Gestión de Transferencias
     <script>
     $(document).ready(function(){
         seleccionarMenu(window.location);
+        iniciar('{{Auth::user()->tieneAccion(91)}}');
     });
     </script>
 @endsection

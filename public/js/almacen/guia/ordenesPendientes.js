@@ -1,6 +1,6 @@
-$(function(){
+function iniciar(permiso){
     $("#tab-ordenes section:first form").attr('form', 'formulario');
-    listarOrdenesPendientes();
+    listarOrdenesPendientes(permiso);
 
     $('ul.nav-tabs li a').click(function(){
         $('ul.nav-tabs li').removeClass('active');
@@ -18,17 +18,17 @@ $(function(){
 
         clearDataTable();
         if (activeForm == "form-pendientes"){
-            listarOrdenesPendientes();
+            listarOrdenesPendientes(permiso);
         } 
         else if (activeForm == "form-ingresadas"){
-            listarOrdenesEntregadas();
+            listarOrdenesEntregadas(permiso);
         }
         $(activeTab).attr('hidden', false);//inicio botones (estados)
     });
     vista_extendida();
-});
+}
 
-function listarOrdenesPendientes(){
+function listarOrdenesPendientes(permiso){
     var vardataTables = funcDatatables();
     $('#ordenesPendientes').DataTable({
         'dom': vardataTables[1],
@@ -57,8 +57,7 @@ function listarOrdenesPendientes(){
         'columnDefs': [
             {'aTargets': [0], 'sClass': 'invisible'},
             {'render': function (data, type, row){
-                const tieneAccion = '{{Auth::user()->tieneAccion(83)}}';
-                if (tieneAccion == '1') {
+                if (permiso == '1') {
                     return '<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" '+
                         'data-placement="bottom" title="Ver Detalle" >'+
                         '<i class="fas fa-list-ul"></i></button>'+
@@ -88,7 +87,7 @@ $('#ordenesPendientes tbody').on("click","button.guia", function(){
     open_guia_create(data);
 });
 
-function listarOrdenesEntregadas(){
+function listarOrdenesEntregadas(permiso){
     var vardataTables = funcDatatables();
     $('#ordenesEntregadas').DataTable({
         'dom': vardataTables[1],
@@ -125,8 +124,7 @@ function listarOrdenesEntregadas(){
         'columnDefs': [
             {'aTargets': [0], 'sClass': 'invisible'},
             {'render': function (data, type, row){
-                const tieneAccion = '{{Auth::user()->tieneAccion(83)}}';
-                if (tieneAccion == '1') {
+                if (permiso == '1') {
                     return '<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" '+
                         'data-placement="bottom" title="Ver Detalle" data-id="'+row['id_orden_compra']+'">'+
                         '<i class="fas fa-list-ul"></i></button>'+
