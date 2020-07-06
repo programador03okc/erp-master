@@ -1,24 +1,24 @@
 var mySession =[];
 
 $(function(){
-    $.ajax({
-        type: 'GET',
-        url: '/verSession',
-        // data: data,
-        success: function(response){
-            // console.log(response.trabajador.roles); 
-            let roles = response.trabajador.roles;
-            let idRolConceptoListSession= [];
-            roles.forEach(element => {
-                idRolConceptoListSession.push(element.id_rol_concepto);
-            });
+    // $.ajax({
+    //     type: 'GET',
+    //     url: 'verSession',
+    //     // data: data,
+    //     success: function(response){
+    //         // console.log(response.trabajador.roles); 
+    //         let roles = response.trabajador.roles;
+    //         let idRolConceptoListSession= [];
+    //         roles.forEach(element => {
+    //             idRolConceptoListSession.push(element.id_rol_concepto);
+    //         });
             
-            mySession={
-                'roles':idRolConceptoListSession
-            };
+    //         mySession={
+    //             'roles':idRolConceptoListSession
+    //         };
             
-        }
-    });
+    //     }
+    // });
 
     // $('[name=id_almacen]').val(1).trigger('change.select2');
     listarOrdenes();
@@ -41,7 +41,7 @@ function listarOrdenes(){
         'dom': vardataTables[1],
         'buttons': vardataTables[2],
         'language' : vardataTables[0],
-        'ajax': '/logistica/listar_todas_ordenes',
+        'ajax': 'listar_todas_ordenes',
         "dataSrc":'',
         'scrollX': true,
         'columnDefs': [{ className: "text-right", 'aTargets': [0], 'sClass': 'invisible'}],
@@ -50,9 +50,9 @@ function listarOrdenes(){
             var response = settings.json;
             // console.log(response);
             
-            // if(response == undefined || response.data.length ==0){
-                    // alert("No hay Ordenes registradas");
-            // }
+            if(response == undefined || response.data.length ==0){
+                    alert("No hay ordenes registradas para mostrar");
+            }
         },
     });
 
@@ -79,7 +79,7 @@ function tracking_orden(tbody, tabla){
 function imprimir_orden(tbody,tabla){
     $(tbody).on("click","button.imprimir_orden", function(){
         if (this.dataset.idOrdenCompra > 0){
-            window.open('/generar_orden_pdf/'+this.dataset.idOrdenCompra);
+            window.open('generar_orden_pdf/'+this.dataset.idOrdenCompra);
         }
 
     });
@@ -178,7 +178,7 @@ function open_tracking_orden(id_orden){
 }
 
 function get_data_orden_tracking(id_orden){
-    baseUrl = '/logistica/explorar-orden/'+id_orden;
+    baseUrl = 'explorar-orden/'+id_orden;
     $.ajax({
         type: 'GET',
         url: baseUrl,
@@ -384,7 +384,7 @@ function guardar_aprobación(){
         $.ajax({
             type: 'PUT',
             // headers: {'X-CSRF-TOKEN': token},
-            url: '/logistica/guardar_aprobacion_orden',
+            url: 'guardar_aprobacion_orden',
             data: payload,
             // cache: false,
             // contentType: false,

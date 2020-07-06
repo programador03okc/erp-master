@@ -1206,10 +1206,21 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::post('guardar', 'LogisticaController@guardar_orden_por_requerimiento')->name('guardar');
 					Route::put('revertir/{id_orden?}/{id_requerimiento?}', 'LogisticaController@revertir_orden_requerimiento')->name('revertir');
 					Route::get('mostrar_proveedores', 'LogisticaController@mostrar_proveedores');
-
-				
-					});
 				});
+				Route::group(['as' => 'lista-ordenes.', 'prefix' => 'por-requerimiento'], function(){
+					Route::get('vista_listar_ordenes', 'LogisticaController@view_listar_ordenes')->name('index');
+					Route::get('listar_todas_ordenes', 'LogisticaController@listar_todas_ordenes');
+					Route::get('generar_orden_pdf/{id}', 'LogisticaController@generar_orden_pdf'); // PDF
+					Route::get('verSession', 'LogisticaController@verSession'); 
+					Route::get('explorar-orden/{id_orden}', 'LogisticaController@explorar_orden'); 
+					Route::put('guardar_aprobacion_orden/', 'LogisticaController@guardar_aprobacion_orden'); 
+					Route::post('guardar_pago_orden', 'LogisticaController@guardar_pago_orden');
+					Route::get('eliminar_pago/{id_pago}', 'LogisticaController@eliminar_pago'); 
+	
+					});
+			});
+
+
 
 
 		});
@@ -2056,7 +2067,6 @@ Route::get('decode5t/{id}', 'EquipoController@decode5t');
 	Route::get('get_flujo_aprobacion/{req}/{doc}', 'LogisticaController@get_flujo_aprobacion');
 	Route::post('logistica/guardar_sustento', 'LogisticaController@guardar_sustento');
 	// Route::post('logistica/aceptar_sustento', 'LogisticaController@aceptar_sustento'); 
-	// Route::get('verSession', 'LogisticaController@verSession'); 
 	// Route::get('verUsuario', 'EquipoController@verUsuario'); 
 	
 	Route::get('logistica/get_cuadro_costos_comercial', 'LogisticaController@get_cuadro_costos_comercial');
@@ -2142,19 +2152,12 @@ Route::get('decode5t/{id}', 'EquipoController@decode5t');
 	Route::post('guardar_cuenta_banco', 'LogisticaController@guardar_cuenta_banco');
 	Route::get('mostrar_impuesto/{id}/{fecha}', 'ProyectosController@mostrar_impuesto');
 	Route::get('imprimir_orden_pdf/{id}', 'LogisticaController@imprimir_orden_pdf'); // PDF
-	Route::get('generar_orden_pdf/{id}', 'LogisticaController@generar_orden_pdf'); // PDF
 	Route::put('actualizar_item_sin_codigo/{id_orden}/{id_valorizacion}', 'LogisticaController@actualizar_item_sin_codigo');
 	Route::get('data_buenas_pro', 'LogisticaController@data_buenas_pro');
-	Route::get('vista_listar_ordenes', 'LogisticaController@view_listar_ordenes');
-	Route::get('/logistica/listar_todas_ordenes', 'LogisticaController@listar_todas_ordenes');
-	Route::post('guardar_pago_orden', 'LogisticaController@guardar_pago_orden');
 	Route::put('logistica/cuadro_comparativo/eliminar_buena_pro/{id_valorizacion}', 'LogisticaController@eliminar_buena_pro');
-	Route::put('logistica/guardar_aprobacion_orden/', 'LogisticaController@guardar_aprobacion_orden'); 
-	Route::get('eliminar_pago/{id_pago}', 'LogisticaController@eliminar_pago'); 
 	Route::get('get_data_req_by_id_orden/{id_orden}', 'LogisticaController@get_data_req_by_id_orden'); 
 	Route::get('getReqOperacionFlujoAprob/{id}/{tipo_id}', 'LogisticaController@getReqOperacionFlujoAprob'); 
 	Route::get('get_current_user/', 'LogisticaController@get_current_user'); 
-	Route::get('/logistica/explorar-orden/{id_orden}', 'LogisticaController@explorar_orden'); 
 
 
 	/** logistica - Comprobante de Compra */

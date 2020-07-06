@@ -19,15 +19,30 @@ function inicializar(
     rutaGuardarOrdenPorRequerimiento = _rutaGuardarOrdenPorRequerimiento;
     rutaRevertirOrdenPorRequerimiento = _rutaRevertirOrdenPorRequerimiento;
 
-    listar_requerimientos_pendientes();
-    listar_requerimientos_atendidos();
+}
 
+function iniciar(permiso){
+    listar_requerimientos_pendientes(permiso);
+
+    $('ul.nav-tabs li a').click(function(){
+
+        var activeTab = $(this).attr('href');
+        var activeForm = "form-"+activeTab.substring(1);
+
+        if (activeForm == "form-requerimientosAtendidos"){
+            listar_requerimientos_atendidos(permiso);
+        } 
+        else if (activeForm == "form-requerimientosPendientes"){
+            listar_requerimientos_pendientes(permiso);
+        }
+
+    });
 }
 
 var detalleRequerimientoSelected = [];
 
 
-function listar_requerimientos_pendientes(){
+function listar_requerimientos_pendientes(permiso){
     var vardataTables = funcDatatables();
     $('#listaRequerimientosPendientes').dataTable({
         'dom': vardataTables[1],
@@ -43,14 +58,16 @@ function listar_requerimientos_pendientes(){
             {'data': 'codigo_sede_empresa'},
             {'data': 'fecha_requerimiento'},
             { render: function (data, type, row) {                
-                    let btn =
-                    '<div class="btn-group btn-group-sm" role="group">'+
-                        '<button type="button" class="btn btn-primary btn-sm" name="btnOpenModalOrdenRequerimiento" title="Generar Orden" data-id-requerimiento="'+row.id_requerimiento+'"  onclick="openModalOrdenRequerimiento(this);">'+
-                            '<i class="far fa-file-alt"></i>'+
-                        '</button>'+
+                if(permiso == '1') {
+                    return ('<div class="btn-group btn-group-sm" role="group">'+
+                    '<button type="button" class="btn btn-primary btn-sm" name="btnOpenModalOrdenRequerimiento" title="Generar Orden" data-id-requerimiento="'+row.id_requerimiento+'"  onclick="openModalOrdenRequerimiento(this);">'+
+                        '<i class="far fa-file-alt"></i>'+
+                    '</button>'+
 
-                    '</div>';
-                    return (btn);
+                '</div>');
+                    }else{
+                        return ''
+                    }
                 },
             }
         ],
@@ -58,7 +75,7 @@ function listar_requerimientos_pendientes(){
     });
 }
 
-function listar_requerimientos_atendidos(){
+function listar_requerimientos_atendidos(permiso){
     var vardataTables = funcDatatables();
     $('#listaRequerimientosAtendidos').dataTable({
         'dom': vardataTables[1],
@@ -76,15 +93,16 @@ function listar_requerimientos_atendidos(){
             {'data': 'codigo_sede_empresa'},
             {'data': 'fecha_orden'},
             { render: function (data, type, row) {               
-                    let btn =
-                    '<div class="btn-group btn-group-sm" role="group">'+
-                        '<button type="button" class="btn btn-danger btn-sm" name="btnEliminarAtencionOrdenRequerimiento" title="Revertir Atención" data-id-requerimiento="'+row.id_requerimiento+'"  data-codigo-requerimiento="'+row.codigo+'" data-id-orden-compra="'+row.id_orden_compra+'" onclick="eliminarAtencionOrdenRequerimiento(this);">'+
+                if (permiso == '1') {
+                    return ('<div class="btn-group btn-group-sm" role="group">'+
+                            '<button type="button" class="btn btn-danger btn-sm" name="btnEliminarAtencionOrdenRequerimiento" title="Revertir Atención" data-id-requerimiento="'+row.id_requerimiento+'"  data-codigo-requerimiento="'+row.codigo+'" data-id-orden-compra="'+row.id_orden_compra+'" onclick="eliminarAtencionOrdenRequerimiento(this);">'+
                             '<i class="fas fa-backspace"></i>'+
-                        '</button>'+
-
-                    '</div>';
-                    return (btn);
-                },
+                            '</button>'+
+                            '</div>');
+                }else {
+                    return '';
+                }   
+            }
             }
         ],
         'columnDefs': [{ 'aTargets': [0], 'sClass': 'invisible'}],
