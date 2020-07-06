@@ -50,7 +50,7 @@ class Usuario extends Authenticatable
     {
         return Acceso::join('configuracion.sis_rol','sis_acceso.id_rol','=','sis_rol.id_rol')
             ->join('configuracion.sis_accion_rol','sis_accion_rol.id_rol','=','sis_rol.id_rol')
-            ->where('id_usuario',$this->id_usuario)->where('id_accion',$id)->first()!=null;
+            ->where('id_usuario',$this->id_usuario)->where('sis_accion_rol.id_accion',$id)->first()!=null;
 	}
 	
 	public function tieneAplicacion($id)

@@ -114,6 +114,7 @@ Pendientes de Ingreso
     <script>
     $(document).ready(function(){
         seleccionarMenu(window.location);
+        iniciar('{{Auth::user()->tieneAccion(83)}}');
     });
     </script>
 @endsection

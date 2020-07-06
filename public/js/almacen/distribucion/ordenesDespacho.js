@@ -1,8 +1,8 @@
 let od_seleccionadas = [];
 
-$(function(){
+function iniciar(permiso){
     $("#tab-reqPendientes section:first form").attr('form', 'formulario');
-    listarRequerimientosPendientes();
+    listarRequerimientosPendientes(permiso);
 
     $('ul.nav-tabs li a').click(function(){
         $('ul.nav-tabs li').removeClass('active');
@@ -20,20 +20,21 @@ $(function(){
 
         clearDataTable();
         if (activeForm == "form-pendientes"){
-            listarRequerimientosPendientes();
+            $('#requerimientosPendientes').DataTable().ajax.reload();
+            // listarRequerimientosPendientes();
         } 
         else if (activeForm == "form-despachos"){
             listarOrdenesPendientes();
         }
         else if (activeForm == "form-despachados"){
-            listarGruposDespachados();
+            listarGruposDespachados(permiso);
         }
         $(activeTab).attr('hidden', false);//inicio botones (estados)
     });
     vista_extendida();
-});
+}
 
-function listarRequerimientosPendientes(){
+function listarRequerimientosPendientes(permiso){
     var vardataTables = funcDatatables();
     $('#requerimientosPendientes').DataTable({
         'dom': vardataTables[1],
@@ -87,8 +88,7 @@ function listarRequerimientosPendientes(){
         'columnDefs': [
             {'aTargets': [0], 'sClass': 'invisible'},
             {'render': function (data, type, row){
-                const tieneAccion = '{{Auth::user()->tieneAccion(80)}}';
-                if (tieneAccion == '1') {
+                if (permiso == '1') {
                     return '<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" '+
                     'data-placement="bottom" title="Ver Detalle" >'+
                     '<i class="fas fa-list-ul"></i></button>'+
@@ -267,7 +267,7 @@ function listarOrdenesPendientes(){
     });
 }
 
-function listarGruposDespachados(){
+function listarGruposDespachados(permiso){
     var vardataTables = funcDatatables();
     $('#gruposDespachados').DataTable({
         'dom': vardataTables[1],
@@ -316,8 +316,7 @@ function listarGruposDespachados(){
             },
             {'render': 
                 function (data, type, row){
-                    const tieneAccion = '{{Auth::user()->tieneAccion(80)}}';
-                    if (tieneAccion == '1') {
+                    if (permiso == '1') {
                         return ('<button type="button" class="god_detalle btn btn-primary boton" data-toggle="tooltip" '+
                         'data-placement="bottom" title="Ver Detalle" >'+
                         '<i class="fas fa-list-ul"></i></button>'+

@@ -1,6 +1,6 @@
-$(function(){
+function iniciar(permiso){
     $("#tab-ordenes section:first form").attr('form', 'formulario');
-    listarDespachosPendientes();
+    listarDespachosPendientes(permiso);
 
     $('ul.nav-tabs li a').click(function(){
         $('ul.nav-tabs li').removeClass('active');
@@ -18,17 +18,17 @@ $(function(){
 
         clearDataTable();
         if (activeForm == "form-pendientes"){
-            listarDespachosPendientes();
+            listarDespachosPendientes(permiso);
         } 
         else if (activeForm == "form-salidas"){
-            listarDespachosEntregados();
+            listarDespachosEntregados(permiso);
         }
         $(activeTab).attr('hidden', false);//inicio botones (estados)
     });
     vista_extendida();
-});
+}
 
-function listarDespachosPendientes(){
+function listarDespachosPendientes(permiso){
     var vardataTables = funcDatatables();
     $('#despachosPendientes').DataTable({
         'dom': vardataTables[1],
@@ -72,8 +72,7 @@ function listarDespachosPendientes(){
         'columnDefs': [
             {'aTargets': [0], 'sClass': 'invisible'},
             {'render': function (data, type, row){
-                const tieneAccion = '{{Auth::user()->tieneAccion(85)}}';
-                if (tieneAccion == '1') {
+                if (permiso == '1') {
                     return '<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" '+
                     'data-placement="bottom" title="Ver Detalle" >'+
                     '<i class="fas fa-list-ul"></i></button>'+
@@ -105,7 +104,7 @@ $('#despachosPendientes tbody').on("click","button.guia", function(){
     open_guia_create(data);
 });
 
-function listarDespachosEntregados(){
+function listarDespachosEntregados(permiso){
     var vardataTables = funcDatatables();
     $('#despachosEntregados').DataTable({
         'dom': vardataTables[1],
@@ -142,8 +141,7 @@ function listarDespachosEntregados(){
         'columnDefs': [
             {'aTargets': [0], 'sClass': 'invisible'},
             {'render': function (data, type, row){
-                const tieneAccion = '{{Auth::user()->tieneAccion(85)}}';
-                    if (tieneAccion == '1') {
+                    if (permiso == '1') {
                         return '<button type="button" class="salida btn btn-warning boton" data-toggle="tooltip" '+
                             'data-placement="bottom" title="Ver Salida" data-id="'+row['id_mov_alm']+'">'+
                             '<i class="fas fa-file-alt"></i></button>'+
