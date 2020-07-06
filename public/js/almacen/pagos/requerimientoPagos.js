@@ -1,6 +1,8 @@
-$(function(){
+function iniciar(permisoConfirmarDenegarPago) {
+
     $("#tab-reqPendientes section:first form").attr('form', 'formulario');
-    listarRequerimientosPendientes();
+    //Se llama al iniciar
+    listarRequerimientosPendientes(permisoConfirmarDenegarPago);
 
     $('ul.nav-tabs li a').click(function(){
         $('ul.nav-tabs li').removeClass('active');
@@ -18,7 +20,14 @@ $(function(){
 
         clearDataTable();
         if (activeForm == "form-pendientes"){
-            listarRequerimientosPendientes();
+            //Si ya se llamo al iniciar, no deberia verificarse si cumple algun requisito porque ya se llamo
+            //Si quieres que se actualice la data, ya vimos que la funcion es ... $('#tabla').DataTable().ajax.reload();
+            //Lo que hace esa funcion es volver a solicitar data del servidor, no hace falta volver a iniciar toda la estructura
+            //del datatable, no hace falta volver a llamar esa funcion
+            //parece que te confunde aun la forma de trabajar, los conceptos, necesitas un cursito rapido
+
+            //listarRequerimientosPendientes(permisoConfirmarDenegarPago);
+            $('#requerimientosPendientes').DataTable().ajax.reload();
         } 
         else if (activeForm == "form-confirmados"){
             listarRequerimientosConfirmados();
@@ -26,9 +35,9 @@ $(function(){
         $(activeTab).attr('hidden', false);//inicio botones (estados)
     });
     vista_extendida();
-});
+}
 
-function listarRequerimientosPendientes(){
+function listarRequerimientosPendientes(permisoConfirmarDenegarPago){
     var vardataTables = funcDatatables();
     $('#requerimientosPendientes').DataTable({
         'dom': vardataTables[1],
@@ -62,11 +71,16 @@ function listarRequerimientosPendientes(){
         'columnDefs': [
             {'aTargets': [0], 'sClass': 'invisible'},
             {'render': function (data, type, row){
-                const tieneAccion = '{{Auth::user()->tieneAccion(78)}}';
-                if (tieneAccion == '1') {
+                const accion = permisoConfirmarDenegarPago;
+                console.log(accion == '1');
+                if (accion != '1') {
+                    return '<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" '+
+                    'data-placement="bottom" title="Ver Detalle" >'+
+                    '<i class="fas fa-list-ul"></i></button>'
+                } else {
                     return '<button type="button" class="adjunto btn btn-warning boton" data-toggle="tooltip" '+
-                    'data-placement="bottom" data-id="'+row['id_requerimiento']+'" title="Ver Adjuntos" >'+
-                    '<i class="fas fa-file-download"></i></button>'+
+                        'data-placement="bottom" data-id="'+row['id_requerimiento']+'" title="Ver Adjuntos" >'+
+                        '<i class="fas fa-file-download"></i></button>'+
                     '<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" '+
                         'data-placement="bottom" title="Ver Detalle" >'+
                         '<i class="fas fa-list-ul"></i></button>'+
@@ -76,10 +90,6 @@ function listarRequerimientosPendientes(){
                     '<button type="button" class="no_conforme btn btn-danger boton" data-toggle="tooltip" '+
                         'data-placement="bottom" data-id="'+row['id_requerimiento']+'" data-cod="'+row['codigo']+'" data-concepto="'+row['concepto']+'" title="Confirmar Entrega" >'+
                         '<i class="fas fa-ban"></i></button>'
-                } else {
-                    return '<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" '+
-                    'data-placement="bottom" title="Ver Detalle" >'+
-                    '<i class="fas fa-list-ul"></i></button>'
                 }
                 }, targets: 9
             }

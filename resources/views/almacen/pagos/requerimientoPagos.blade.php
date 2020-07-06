@@ -99,6 +99,7 @@ Confirmación de Pagos
     <script>
     $(document).ready(function(){
         seleccionarMenu(window.location);
+        iniciar('{{Auth::user()->tieneAccion(78)}}');
     });
     </script>
 @endsection
