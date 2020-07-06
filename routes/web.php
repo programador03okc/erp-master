@@ -1165,6 +1165,34 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::group(['as' => 'gestionar.', 'prefix' => 'gestionar'], function(){
 					Route::get('index', 'LogisticaController@view_gestionar_cotizaciones')->name('index');
 					Route::get('select-sede-by-empresa/{id?}', 'LogisticaController@select_sede_by_empresa')->name('select-sede-by-empresa');
+					Route::get('listaCotizacionesPorGrupo/{id_cotizacion}', 'LogisticaController@listaCotizacionesPorGrupo');
+					Route::get('requerimientos_entrante_a_cotizacion_v2/{id_empresa}/{id_sede}', 'LogisticaController@requerimientos_entrante_a_cotizacion_v2');
+					Route::get('detalle_requerimiento', 'LogisticaController@detalle_requerimiento');
+					Route::post('guardar_cotizacion/{id_gru}', 'LogisticaController@guardar_cotizacion');
+					Route::post('agregar-item-cotizacion/{id_cotizacion}', 'LogisticaController@agregar_item_a_cotizacion');
+					Route::post('eliminar-item-cotizacion/{id_cotizacion}', 'LogisticaController@eliminar_item_a_cotizacion');
+					Route::put('actulizar-empresa-cotizacion', 'LogisticaController@actualizar_empresa_cotizacion');
+					Route::put('actulizar-proveedor-cotizacion', 'LogisticaController@actualizar_proveedor_cotizacion');
+					Route::put('actulizar-contacto-cotizacion', 'LogisticaController@actualizar_contacto_cotizacion');
+					Route::get('mostrar_email_proveedor/{id}', 'LogisticaController@mostrar_email_proveedor');
+					// Route::post('update_cotizacion', 'LogisticaController@update_cotizacion');
+					// Route::post('duplicate_cotizacion', 'LogisticaController@duplicate_cotizacion');
+					Route::post('guardar_contacto', 'LogisticaController@guardar_contacto');
+					Route::get('descargar_solicitud_cotizacion_excel/{id}', 'LogisticaController@descargar_solicitud_cotizacion_excel');
+					Route::get('anular_cotizacion/{id}', 'LogisticaController@anular_cotizacion');
+					Route::get('saldo_por_producto/{id}', 'AlmacenController@saldo_por_producto');
+					Route::post('enviar_correo', 'CorreoController@enviar');
+					Route::get('estado_archivos_adjuntos_cotizacion/{id_cotizacion}', 'CorreoController@getAttachFileStatus');
+					Route::post('guardar-archivos-adjuntos-cotizacion', 'CorreoController@guardar_archivos_adjuntos_cotizacion');
+					Route::get('mostrar_grupo_cotizacion/{id}', 'LogisticaController@mostrar_grupo_cotizacion');
+					Route::get('mostrar_cotizacion/{id}', 'LogisticaController@mostrar_cotizacion');
+					Route::get('get_cotizacion/{id}', 'LogisticaController@get_cotizacion');
+					Route::get('logistica/mostrar-archivos-adjuntos/{id_detalle_requerimiento}', 'LogisticaController@mostrar_archivos_adjuntos');
+					Route::post('guardar-archivos-adjuntos-detalle-requerimiento', 'LogisticaController@guardar_archivos_adjuntos_detalle_requerimiento');
+					Route::put('eliminar-archivo-adjunto-detalle-requerimiento/{id_archivo}', 'LogisticaController@eliminar_archivo_adjunto_detalle_requerimiento');
+					Route::put('descargar_olicitud_cotizacion_excel/{id_cotizacion}', 'LogisticaController@descargar_olicitud_cotizacion_excel');
+					Route::get('archivos_adjuntos_cotizacion/{id_cotizacion}', 'LogisticaController@mostrar_archivos_adjuntos_cotizacion');
+
 
 					});
 				});
@@ -2008,7 +2036,6 @@ Route::get('decode5t/{id}', 'EquipoController@decode5t');
 	Route::get('/mostrar_nombre_grupo/{id}', 'EquipoController@mostrar_nombre_grupo');
 
 	Route::get('logistica/get_historial_aprobacion/{id_req}', 'LogisticaController@get_historial_aprobacion');
-	Route::get('logistica/mostrar-archivos-adjuntos/{id_detalle_requerimiento}', 'LogisticaController@mostrar_archivos_adjuntos');
 	Route::get('logistica/mostrar-adjuntos/{id_requerimiento}', 'LogisticaController@mostrar_adjuntos');
 	Route::get('logistica/imprimir-requerimiento-pdf/{id}/{codigo}', 'LogisticaController@generar_requerimiento_pdf');
 	Route::get('logistica/requerimiento/lista', 'LogisticaController@view_lista_requerimientos');
@@ -2039,23 +2066,14 @@ Route::get('decode5t/{id}', 'EquipoController@decode5t');
  	Route::get('get_estado_doc/{nombreEstadoDoc}', 'LogisticaController@get_estado_doc');
 	Route::get('logistica/mostrar-archivos-adjuntos-proveedor/{id}', 'LogisticaController@mostrar_archivos_adjuntos_proveedor');
 	Route::post('logistica/guardar-archivos-adjuntos-proveedor', 'LogisticaController@guardar_archivos_adjuntos_proveedor');
-	Route::get('archivos_adjuntos_cotizacion/{id_cotizacion}', 'LogisticaController@mostrar_archivos_adjuntos_cotizacion');
-	Route::get('gestionar_cotizaciones', 'LogisticaController@view_gestionar_cotizaciones');
-	Route::get('listaCotizacionesPorGrupo/{id_cotizacion}', 'LogisticaController@listaCotizacionesPorGrupo');
-	Route::get('requerimientos_entrante_a_cotizacion', 'LogisticaController@requerimientos_entrante_a_cotizacion');
-	Route::get('requerimientos_entrante_a_cotizacion_v2/{id_empresa}/{id_sede}', 'LogisticaController@requerimientos_entrante_a_cotizacion_v2');
-	Route::get('detalle_requerimiento', 'LogisticaController@detalle_requerimiento');
-	Route::post('guardar_cotizacion/{id_gru}', 'LogisticaController@guardar_cotizacion');
-	Route::post('agregar-item-cotizacion/{id_cotizacion}', 'LogisticaController@agregar_item_a_cotizacion');
-	Route::post('eliminar-item-cotizacion/{id_cotizacion}', 'LogisticaController@eliminar_item_a_cotizacion');
-	Route::put('actulizar-empresa-cotizacion', 'LogisticaController@actualizar_empresa_cotizacion');
-	Route::put('actulizar-proveedor-cotizacion', 'LogisticaController@actualizar_proveedor_cotizacion');
-	Route::put('actulizar-contacto-cotizacion', 'LogisticaController@actualizar_contacto_cotizacion');
+
+	// Route::get('gestionar_cotizaciones', 'LogisticaController@view_gestionar_cotizaciones');
+	// Route::get('requerimientos_entrante_a_cotizacion', 'LogisticaController@requerimientos_entrante_a_cotizacion');
+	
 
 	// Route::get('cotizaciones_por_grupo/{id}', 'LogisticaController@cotizaciones_por_grupo');
 	// Route::get('items_cotizaciones_por_grupo/{id}', 'LogisticaController@items_cotizaciones_por_grupo');
 	// Route::get('get_items_cotizaciones_por_grupo/{id}', 'LogisticaController@get_items_cotizaciones_por_grupo');
-	Route::get('mostrar_grupo_cotizacion/{id}', 'LogisticaController@mostrar_grupo_cotizacion');
 	Route::get('mostrar_proveedores', 'LogisticaController@mostrar_proveedores');
 	Route::post('guardar_proveedor', 'LogisticaController@guardar_proveedor');
 	Route::post('registrar_proveedor', 'LogisticaController@registrar_proveedor');
@@ -2078,23 +2096,12 @@ Route::get('decode5t/{id}', 'EquipoController@decode5t');
 	Route::get('mostrar_proveedor/{id_proveedor}', 'LogisticaController@mostrar_proveedor');
 
 
-	Route::get('mostrar_email_proveedor/{id}', 'LogisticaController@mostrar_email_proveedor');
-	Route::post('update_cotizacion', 'LogisticaController@update_cotizacion');
-	Route::post('duplicate_cotizacion', 'LogisticaController@duplicate_cotizacion');
-	Route::get('mostrar_cotizacion/{id}', 'LogisticaController@mostrar_cotizacion');
-	Route::post('guardar_contacto', 'LogisticaController@guardar_contacto');
-	Route::get('descargar_solicitud_cotizacion_excel/{id}', 'LogisticaController@descargar_solicitud_cotizacion_excel');
-	Route::get('get_cotizacion/{id}', 'LogisticaController@get_cotizacion');
-	Route::get('anular_cotizacion/{id}', 'LogisticaController@anular_cotizacion');
-	Route::get('saldo_por_producto/{id}', 'AlmacenController@saldo_por_producto');
 
-	Route::get('form_enviar_correo', 'CorreoController@crear');
-	Route::post('enviar_correo', 'CorreoController@enviar');
-	Route::post('cargar_archivo_correo', 'CorreoController@store');
+
+	// Route::get('form_enviar_correo', 'CorreoController@crear');
+	// Route::post('cargar_archivo_correo', 'CorreoController@store');
 	// Route::get('generar_cotizacion_excel/{id_cotizacion}', 'CorreoController@generarCotizacionInServer');
-	Route::get('estado_archivos_adjuntos_cotizacion/{id_cotizacion}', 'CorreoController@getAttachFileStatus');
 	// Route::get('descartar_archivo_adjunto/{id}/{tipo_doc}', 'CorreoController@discardFileInServer');
-	Route::post('logistica/guardar-archivos-adjuntos-cotizacion', 'CorreoController@guardar_archivos_adjuntos_cotizacion');
 
 
 
