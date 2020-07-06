@@ -545,7 +545,7 @@ function openModalEnviarCoti(e) {
     if (id_cotizacion_creada > 0) {
         $.ajax({
             type: 'GET',
-            url: '/listaCotizacionesPorGrupo/' + id_cotizacion_creada,
+            url: 'listaCotizacionesPorGrupo/' + id_cotizacion_creada,
             dataType: 'JSON',
             success: function (response) {
                 // console.log(response);
@@ -662,7 +662,7 @@ function mostrar_detalle_requerimiento(listCheckReq, tableName) {
     limpiarTabla(tableName);
     $.ajax({
         type: 'GET',
-        url: '/detalle_requerimiento',
+        url: 'detalle_requerimiento',
         dataType: 'JSON',
         data: data,
 
@@ -923,7 +923,7 @@ function GuardarCotizacion() {
     if (listCheckReqDet.length > 0) {
         $.ajax({
             type: 'POST',
-            url: '/guardar_cotizacion/' + id_grupo_cotizacion,
+            url: 'guardar_cotizacion/' + id_grupo_cotizacion,
             dataType: 'JSON',
             data: items,
             success: function (response) {
@@ -993,7 +993,7 @@ function GuardarCotizacion() {
 function mostrar_grupo_cotizacion(id_grupo) {
     $.ajax({
         type: 'GET',
-        url: '/mostrar_grupo_cotizacion/' + id_grupo,
+        url: 'mostrar_grupo_cotizacion/' + id_grupo,
         dataType: 'JSON',
         success: function (response) {
             $('[name=id_grupo_cotizacion]').val(response.id_grupo_cotizacion)
@@ -1013,7 +1013,7 @@ function mostrar_cotizacion(id_cotizacion, modal) {
     // console.log('id_cotizacion'+id_cotizacion);
     $.ajax({
         type: 'GET',
-        url: '/mostrar_cotizacion/' + id_cotizacion,
+        url: 'mostrar_cotizacion/' + id_cotizacion,
         dataType: 'JSON',
         success: function (response) {
             // console.log(response);
@@ -1062,7 +1062,7 @@ function mostrar_cotizacion(id_cotizacion, modal) {
 function change_proveedor(id_prov) {
     $.ajax({
         type: 'GET',
-        url: '/mostrar_email_proveedor/' + id_prov,
+        url: 'mostrar_email_proveedor/' + id_prov,
         dataType: 'JSON',
         success: function (response) {
             //  console.log(response);
@@ -1177,7 +1177,7 @@ function downloadSolicitudCotizacion(id_cotizacion) {
 
         $.ajax({
             type: 'GET',
-            url: '/descargar_olicitud_cotizacion_excel/'+id_cotizacion,
+            url: 'descargar_olicitud_cotizacion_excel/'+id_cotizacion,
             dataType: 'JSON',
             success: function(response){
                 data = response;
@@ -1216,7 +1216,7 @@ function listar_archivos_adjuntos_cotizacion(id_cotizacion) {
 
     $.ajax({
         type: 'GET',
-        url: '/archivos_adjuntos_cotizacion/' + id_cotizacion,
+        url: 'archivos_adjuntos_cotizacion/' + id_cotizacion,
         dataType: 'JSON',
         success: function (response) {
             // console.log(response);
@@ -1296,7 +1296,7 @@ function anular_cotizacion(id_cotizacion) {
     if (rspta) {
         $.ajax({
             type: 'GET',
-            url: '/anular_cotizacion/' + id_cotizacion,
+            url: 'anular_cotizacion/' + id_cotizacion,
             dataType: 'JSON',
             success: function (response) {
                 // console.log(response);
@@ -1357,7 +1357,7 @@ function onChangeEmpresaModalEditarCotizacion(){
     let payload = {'id_empresa': id_empresa, 'id_cotizacion':id_cotizacion};
     $.ajax({
         type: 'PUT',
-        url: '/actulizar-empresa-cotizacion',
+        url: 'actulizar-empresa-cotizacion',
         dataType: 'JSON',
         data: {data:payload},
         success: function(response){
@@ -1389,7 +1389,7 @@ function onChangeContactoModalEditarCotizacion(){
         let payload = {'id_contacto': id_contacto, 'id_cotizacion':id_cotizacion,'email_contacto':email_contacto};
         $.ajax({
         type: 'PUT',
-        url: '/actulizar-contacto-cotizacion',
+        url: 'actulizar-contacto-cotizacion',
         dataType: 'JSON',
         data: {data:payload},
         success: function(response){
@@ -1433,7 +1433,7 @@ function listar_saldos_productos(id_producto) {
         language: vardataTables[0],
         destroy: true,
         ajax: {
-            url: '/saldo_por_producto/' + id_producto,
+            url: 'saldo_por_producto/' + id_producto,
             dataSrc: '',
         },
         columns: [
@@ -1522,7 +1522,7 @@ function listar_requerimientos(id_empresa = null,id_sede = null,loadTo=null) {
         bDestroy: true,
         order: [[8, 'desc']],
         language: vardataTables[0],
-        ajax: '/requerimientos_entrante_a_cotizacion_v2/' + id_empresa+'/'+id_sede,
+        ajax: 'requerimientos_entrante_a_cotizacion_v2/' + id_empresa+'/'+id_sede,
         columns: [
             { data: 'id_requerimiento' },
             {
@@ -1663,7 +1663,7 @@ function lista_cotizaciones() {
         buttons: vardataTables[2],
         language: vardataTables[0],
         destroy: true,
-        ajax: '/listaCotizacionesPorGrupo/null',
+        ajax: 'listaCotizacionesPorGrupo/null',
         columns: [
             { data: 'id_grupo_cotizacion' },
             { data: 'id_cotizacion' },
@@ -1787,7 +1787,7 @@ function modalDuplicarSolicitudCotizacion(id_cotizacion){
 
     $.ajax({
         type: 'GET',
-        url: '/mostrar_cotizacion/' + id_cotizacion,
+        url: 'mostrar_cotizacion/' + id_cotizacion,
         dataType: 'JSON',
         success: function (response) {
             document.querySelector('form[id="form-duplicar-cotizacion"] select[name="id_empresa"]').value = response['cotizacion'].id_empresa;
@@ -1829,7 +1829,7 @@ function duplicarCotizacion(){
             if (id_contacto !== null) {
                 $.ajax({
                     type: 'POST',
-                    url: '/duplicate_cotizacion',
+                    url: 'duplicate_cotizacion',
                     data: data,
                     dataType: 'JSON',
                     success: function (response) {
@@ -1861,7 +1861,7 @@ function duplicarCotizacion(){
 function getItemsRequerimientoModalVerCoti(id_cotizacion){
     $.ajax({
         type: 'GET',
-        url: '/get_cotizacion/' + id_cotizacion,
+        url: 'get_cotizacion/' + id_cotizacion,
         dataType: 'JSON',
         success: function (response) {
             llenarTablaItemsModalVerCoti(response[0].items);
@@ -1875,7 +1875,7 @@ function getItemsRequerimientoModalVerCoti(id_cotizacion){
 function getItemsRequerimientoModalEditarCoti(id_cotizacion){
     $.ajax({
         type: 'GET',
-        url: '/get_cotizacion/' + id_cotizacion,
+        url: 'get_cotizacion/' + id_cotizacion,
         dataType: 'JSON',
         success: function (response) {
             llenarTablaItemsModalEditarCoti(response[0].items);
@@ -1996,7 +1996,7 @@ function fill_form_envio_cotizacion(data) {
 function getAttachFileStatus(id_cotizacion){
     $.ajax({
         type: 'GET',
-        url: '/estado_archivos_adjuntos_cotizacion/' + id_cotizacion,
+        url: 'estado_archivos_adjuntos_cotizacion/' + id_cotizacion,
         dataType: 'JSON',
         success: function (response) {
             if (response.status <= 0) {
@@ -2021,7 +2021,7 @@ function getAttachFileStatusNewCotiza(id_cotizacion) {
     textAdjuntos=[];
     $.ajax({
         type: 'GET',
-        url: '/estado_archivos_adjuntos_cotizacion/' + id_cotizacion,
+        url: 'estado_archivos_adjuntos_cotizacion/' + id_cotizacion,
         dataType: 'JSON',
         success: function (response) {
             if (response.status <= 0) {
@@ -2063,7 +2063,7 @@ function getAttachFileStatusModalVerCoti(id_cotizacion){
 
     $.ajax({
         type: 'GET',
-        url: '/estado_archivos_adjuntos_cotizacion/' + id_cotizacion,
+        url: 'estado_archivos_adjuntos_cotizacion/' + id_cotizacion,
         dataType: 'JSON',
         success: function (response) {
             if (response.status <= 0) {
@@ -2095,7 +2095,7 @@ function getAttachFileStatusModalEditarCoti(id_cotizacion){
 
     $.ajax({
         type: 'GET',
-        url: '/estado_archivos_adjuntos_cotizacion/' + id_cotizacion,
+        url: 'estado_archivos_adjuntos_cotizacion/' + id_cotizacion,
         dataType: 'JSON',
         success: function (response) {
             if (response.status <= 0) {
@@ -2320,7 +2320,7 @@ function guardarAdjuntoCoti() {
 
     myformData.append('info_adjuntos', JSON.stringify(onlyNewAdjuntos));
 
-    baseUrl = '/logistica/guardar-archivos-adjuntos-cotizacion';
+    baseUrl = 'guardar-archivos-adjuntos-cotizacion';
     // console.log(...myformData)
 
     $.ajax({
@@ -2419,7 +2419,7 @@ function agregarAdjuntosItemReq(id_requerimiento,id_detalle_requerimiento){
 function get_data_archivos_adjuntos(index){
     adjuntos=[];
     limpiarTabla('listaArchivos');
-    baseUrl = '/logistica/mostrar-archivos-adjuntos/'+index;
+    baseUrl = 'logistica/mostrar-archivos-adjuntos/'+index;
     $.ajax({
         type: 'GET',
         url: baseUrl,
@@ -2623,7 +2623,7 @@ function guardarAdjuntos(){
         myformData.append('detalle_adjuntos', JSON.stringify(onlyNewAdjuntos));
         myformData.append('id_detalle_requerimiento', id_detalle_requerimiento);
     
-        baseUrl = '/logistica/guardar-archivos-adjuntos';
+        baseUrl = 'logistica/guardar-archivos-adjuntos-detalle-requerimiento';
         $.ajax({
             type: 'POST',
             processData: false,
@@ -2664,7 +2664,7 @@ function eliminarArchivoAdjunto(indice,id_adjunto,id_detalle_requerimiento){
         if (ask == true){
             $.ajax({
                 type: 'PUT',
-                url: '/logistica/eliminar-archivo-adjunto/'+id_adjunto,
+                url: 'eliminar-archivo-adjunto-detalle-requerimiento/'+id_adjunto,
                 dataType: 'JSON',
                 success: function(response){
                     if(response.status == 'ok'){
@@ -2760,7 +2760,7 @@ function addAllItemReqToCoti(e){
         if (ask == true){
             $.ajax({
                 type: 'POST',
-                url: '/agregar-item-cotizacion/'+id_cotizacion,
+                url: 'agregar-item-cotizacion/'+id_cotizacion,
                 dataType: 'JSON',
                 data: {data:listCheckReqDet},
                 success: function(response){
@@ -2808,7 +2808,7 @@ function eliminarItemDeCotizacion(){
             if (rspta) {
                 $.ajax({
                     type: 'POST',
-                    url: '/eliminar-item-cotizacion/' + id_cotizacion,
+                    url: 'eliminar-item-cotizacion/' + id_cotizacion,
                     dataType: 'JSON',
                     data:payload,
                     success: function (response) {
