@@ -106,7 +106,6 @@ function listarTransferenciasPendientes(permiso){
                 },
                 {'render':
                     function (data, type, row){
-                        // const tieneAccion = '{{Auth::user()->tieneAccion(91)}}';
                         if (permiso == '1') {
                             return ('<button type="button" class="atender btn btn-success boton" data-toggle="tooltip" '+
                             'data-placement="bottom" title="Atender" >'+
