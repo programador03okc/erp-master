@@ -8,10 +8,17 @@
     Lista de Ordenes
 @endsection
 
+@section('breadcrumb')
+<ol class="breadcrumb">
+    <li><a href="{{route('logistica.index')}}"><i class="fas fa-tachometer-alt"></i> Logística</a></li>
+    <li>Ordenes</li>
+    <li class="active">@yield('cabecera')</li>
+</ol>
+@endsection
+
 @section('content')
 <div class="page-main" type="listar_ordenes">
     <legend class="mylegend">
-        <h2>Listado de Ordenes</h2>
     </legend>
     <div class="row">
         <div class="col-md-12">

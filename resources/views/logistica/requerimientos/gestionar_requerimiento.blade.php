@@ -1,8 +1,15 @@
 @extends('layout.main')
 @include('layout.menu_logistica')
+
+@if(Auth::user()->tieneAccion(102))
 @section('option')
     @include('layout.option')
 @endsection
+@elseif(Auth::user()->tieneAccion(103))
+@section('option')
+        @include('layout.option_historial')
+    @endsection
+@endif
 
 @section('cabecera')
     Nuevo Requerimiento

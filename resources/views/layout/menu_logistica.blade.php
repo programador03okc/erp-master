@@ -56,7 +56,7 @@
                         <li><a href="{{route('logistica.gestion-logistica.orden.por-requerimiento.index')}}">Orden por Requerimiento</a></li>
                         @endif
                         @if(Auth::user()->tieneAplicacion(109))
-                        <li><a href="/vista_listar_ordenes"> Listado de Ordenes </a></li>
+                        <li><a href="{{route('logistica.gestion-logistica.orden.lista-ordenes.index')}}"> Listado de Ordenes </a></li>
                         @endif
                     </ul>
                 </li>

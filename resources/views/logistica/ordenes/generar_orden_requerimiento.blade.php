@@ -7,6 +7,14 @@
     Generar Orden por Requerimiento
 @endsection
 
+@section('breadcrumb')
+<ol class="breadcrumb">
+    <li><a href="{{route('logistica.index')}}"><i class="fas fa-tachometer-alt"></i> Logística</a></li>
+    <li>Ordenes</li>
+    <li class="active">@yield('cabecera')</li>
+</ol>
+@endsection
+
 @section('content')
 <div class="page-main" type="orden-requerimiento">
         <div class="row">
@@ -22,28 +30,30 @@
                         <div role="tabpanel" class="tab-pane active" id="requerimientosPendientes">
                                 <div class="panel panel-default">
                                     <div class="panel-body">
-                                        <table class="mytable table table-condensed table-bordered table-okc-view" 
-                                        id="listaRequerimientosPendientes">
-                                            <thead>
-                                                <tr>
-                                                <th hidden></th>
-                                                <th width="50">Código</th>
-                                                <th width="250">Concepto</th>
-                                                <th width="100">Sede</th>
-                                                <th width="50">Fecha Registro</th>
-                                                <th width="50">ACCIONES</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody></tbody>
-                                        </table>
+                                        <form id="form-requerimientosPendientes" type="register">
+                                            <table class="mytable table table-condensed table-bordered table-okc-view" 
+                                            id="listaRequerimientosPendientes">
+                                                <thead>
+                                                    <tr>
+                                                    <th hidden></th>
+                                                    <th width="50">Código</th>
+                                                    <th width="250">Concepto</th>
+                                                    <th width="100">Sede</th>
+                                                    <th width="50">Fecha Registro</th>
+                                                    <th width="50">ACCIONES</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody></tbody>
+                                            </table>
+                                        </form>
                                     </div>
                                 </div>
                         </div>
                         <div role="tabpanel" class="tab-pane" id="requerimientosAtendidos">
                             <div class="panel panel-default">
                                 <div class="panel-body">
-                                <table class="mytable table table-condensed table-bordered table-okc-view" 
-                                        id="listaRequerimientosAtendidos">
+                                    <form id="form-requerimientosAtendidos" type="register">
+                                        <table class="mytable table table-condensed table-bordered table-okc-view" id="listaRequerimientosAtendidos">
                                             <thead>
                                                 <tr>
                                                 <th hidden></th>
@@ -58,6 +68,7 @@
                                             </thead>
                                             <tbody></tbody>
                                         </table>
+                                    </form>
                                 </div>
                             </div>
                         </div>
@@ -97,6 +108,7 @@
             "{{route('logistica.gestion-logistica.orden.por-requerimiento.guardar')}}",
             "{{route('logistica.gestion-logistica.orden.por-requerimiento.revertir')}}"
             );
+            iniciar('{{Auth::user()->tieneAccion(114)}}');
     });
     </script>
 @endsection
