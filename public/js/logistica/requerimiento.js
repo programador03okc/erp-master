@@ -2414,6 +2414,8 @@ function getDataSelectSede(id_empresa = null){
             url: rutaSedeByEmpresa+'/' + id_empresa,
             dataType: 'JSON',
             success: function(response){
+                console.log(response);
+                
                 llenarSelectSede(response);
                 llenarUbigeo();
             }

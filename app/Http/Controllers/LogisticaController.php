@@ -129,8 +129,9 @@ class LogisticaController extends Controller
     function sedesAcceso($id_empresa){
         $id_usuario = Auth::user()->id_usuario;
         $sedes = DB::table('configuracion.sis_usua_sede')
-		->select('sis_sede.*')
-		->join('administracion.sis_sede','sis_sede.id_sede','=','sis_usua_sede.id_sede')
+		->select('sis_sede.*','ubi_dis.descripcion as ubigeo_descripcion')
+        ->join('administracion.sis_sede','sis_sede.id_sede','=','sis_usua_sede.id_sede')
+        ->leftJoin('configuracion.ubi_dis','ubi_dis.id_dis','=','sis_sede.id_ubigeo')
         ->where([['sis_usua_sede.id_usuario','=',$id_usuario],
                  ['sis_sede.id_empresa','=',$id_empresa]])
 		->get();
