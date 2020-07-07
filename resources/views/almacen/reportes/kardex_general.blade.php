@@ -51,7 +51,7 @@ Kardex General
                         <th>Op</th>
                         <th>Movimiento</th>
                         <th>Guía Remisión</th>
-                        <th>Documento</th>
+                        <th>Transferencia</th>
                         <th>Orden Compra</th>
                         <th>Requerimiento</th>
                     </tr>

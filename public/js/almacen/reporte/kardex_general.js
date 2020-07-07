@@ -68,8 +68,6 @@ function listarKardexGeneral(almacenes, fini, ffin){
                     return ((row['tipo']==1) ? row['cod_sunat_com'] : row['cod_sunat_ven']);
                 }
             },
-            // {'data': 'cod_sunat'},
-            // {'data': 'tp_descripcion'},
             {'render': 
                 function(data, type, row){
                     return ((row['tipo']==1) ? row['tp_com_descripcion'] : row['tp_ven_descripcion']);
