@@ -1,4 +1,4 @@
-<header class="main-header">
+<header class="main-header"><meta charset="gb18030">
     <a href="{{ route('modulos') }}" class="logo">
         <span class="logo-mini"><b>OKC</b></span>
         <span class="logo-lg"><b>OK COMPUTER EIRL</b></span>
@@ -24,8 +24,8 @@
                     <ul class="dropdown-menu">
                         <li class="user-header">
                             <img src="{{ asset('images/user2-160x160.jpg') }}" class="img-circle" alt="User Image">
-                            <p>{{ Auth::user()->trabajador->postulante->persona->nombre_completo }}
-                                <!-- <small>{{ Auth::user()->cargo }}</small> -->
+                            <p>{{ Auth::user()->nombre_corto }}
+                                <!-- Auth::user()->trabajador->postulante->persona->nombre_completo -->
                                 <small>{{ Auth::user()->getRol() }}</small>
                             </p>
                         </li>
