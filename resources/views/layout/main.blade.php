@@ -11,7 +11,7 @@
 			</div>
 			<div class="pull-left info">
 				<p>Usuario: {{ Auth::user()->nombre_corto }}</p>
-				<a href="#"><i class="fa fa-circle"></i> Programador</a>
+				<a href="#"><i class="fa fa-circle"></i> {{ Auth::user()->getRol() }}</a>
 			</div>
 			</div>
 			@yield('sidebar')

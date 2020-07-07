@@ -78,6 +78,20 @@ class Usuario extends Authenticatable
 		->where('sis_usua_sede.id_usuario',$this->id_usuario)
 		->get();
         return $sedes;
+	}
+
+	public function getRol()
+    {
+		$roles = DB::table('configuracion.sis_acceso')
+		->select('sis_rol.*')
+		->join('configuracion.sis_rol','sis_rol.id_rol','=','sis_acceso.id_rol')
+		->where('sis_acceso.id_usuario',$this->id_usuario)
+		->get();
+		$texto = '';
+		foreach ($roles as $s) {
+			$texto.=$s->descripcion.'  ';
+		}
+		return $texto;
     }
 
 

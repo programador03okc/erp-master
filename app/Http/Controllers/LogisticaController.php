@@ -126,6 +126,16 @@ class LogisticaController extends Controller
         return view('logistica/ordenes/listar_ordenes');
     }
 
+    function sedesAcceso($id_empresa){
+        $id_usuario = Auth::user()->id_usuario;
+        $sedes = DB::table('configuracion.sis_usua_sede')
+		->select('sis_sede.*')
+		->join('administracion.sis_sede','sis_sede.id_sede','=','sis_usua_sede.id_sede')
+        ->where([['sis_usua_sede.id_usuario','=',$id_usuario],
+                 ['sis_sede.id_empresa','=',$id_empresa]])
+		->get();
+        return $sedes;
+    }
     function listar_proveedores(){
         $output['data']=[];
         $prov = DB::table('contabilidad.adm_contri')

@@ -25,7 +25,8 @@
                         <li class="user-header">
                             <img src="{{ asset('images/user2-160x160.jpg') }}" class="img-circle" alt="User Image">
                             <p>{{ Auth::user()->trabajador->postulante->persona->nombre_completo }}
-                                <small>{{ Auth::user()->cargo }}</small>
+                                <!-- <small>{{ Auth::user()->cargo }}</small> -->
+                                <small>{{ Auth::user()->getRol() }}</small>
                             </p>
                         </li>
                         <li class="user-footer">
