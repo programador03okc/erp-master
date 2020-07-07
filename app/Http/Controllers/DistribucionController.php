@@ -124,7 +124,7 @@ class DistribucionController extends Controller
             'ubi_dis.descripcion as ubigeo_descripcion',
             'rrhh_perso.nro_documento as dni_persona','alm_almacen.descripcion as almacen_descripcion',
             'alm_almacen.id_sede as sede_almacen',
-            'alm_tp_req.descripcion as tipo_req',
+            'alm_tp_req.descripcion as tipo_req','sis_moneda.simbolo',
             DB::raw("(rrhh_perso.nombres) || ' ' || (rrhh_perso.apellido_paterno) || ' ' || (rrhh_perso.apellido_materno) AS nombre_persona"),
             'adm_contri.nro_documento as cliente_ruc','adm_contri.razon_social as cliente_razon_social')
             ->join('almacen.alm_tp_req','alm_tp_req.id_tipo_requerimiento','=','alm_req.id_tipo_requerimiento')
@@ -136,6 +136,7 @@ class DistribucionController extends Controller
             ->leftJoin('rrhh.rrhh_perso','rrhh_perso.id_persona','=','alm_req.id_persona')
             ->leftJoin('comercial.com_cliente','com_cliente.id_cliente','=','alm_req.id_cliente')
             ->leftJoin('contabilidad.adm_contri','adm_contri.id_contribuyente','=','com_cliente.id_contribuyente')
+            ->leftJoin('configuracion.sis_moneda','sis_moneda.id_moneda','=','alm_req.id_moneda')
             ->where([['alm_req.estado','=',1],['alm_req.confirmacion_pago','=',false]])
             ->orWhere([['alm_req.estado','=',19],['alm_req.id_tipo_requerimiento','=',2],['alm_req.confirmacion_pago','=',false]]);//muestra todos los reservados
             // ->get();

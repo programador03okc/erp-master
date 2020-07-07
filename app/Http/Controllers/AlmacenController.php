@@ -570,9 +570,10 @@ class AlmacenController extends Controller
     }
     public function cargar_almacenes($id_sede){
         $data = DB::table('almacen.alm_almacen')
-        ->select('alm_almacen.*', 'sis_sede.id_empresa', 'sis_sede.descripcion as sede_descripcion',
-        'alm_tp_almacen.descripcion as tp_almacen')
+        ->select('alm_almacen.*','sis_sede.descripcion as sede_descripcion',
+        'adm_empresa.id_empresa','alm_tp_almacen.descripcion as tp_almacen')
             ->leftjoin('administracion.sis_sede','sis_sede.id_sede','=','alm_almacen.id_sede')
+            ->leftjoin('administracion.adm_empresa','adm_empresa.id_empresa','=','sis_sede.id_empresa')
             ->join('almacen.alm_tp_almacen','alm_tp_almacen.id_tipo_almacen','=','alm_almacen.id_tipo_almacen')
             ->where([['alm_almacen.estado', '=', 1],
                      ['alm_almacen.id_sede','=',$id_sede]])
