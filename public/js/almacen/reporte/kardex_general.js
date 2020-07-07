@@ -30,11 +30,16 @@ function listarKardexGeneral(almacenes, fini, ffin){
         },
         'columns': [
             {'data': 'id_mov_alm_det'},
-            // {'data': 'prod_codigo'},
             {'data': 'prod_codigo'},
             {'data': 'prod_descripcion'},
             {'data': 'fecha_emision'},
-            {'data': 'posicion'},
+            {'render': 
+                function(data, type, row){
+                    return ((row['posicion']!==null) ? row['posicion'] : row['almacen_descripcion']);
+                    // return row['almacen_descripcion'];
+                }
+            },
+            // {'data': 'posicion'},
             {'data': 'abreviatura'},
             {'render': 
                 function(data, type, row){
@@ -84,10 +89,12 @@ function listarKardexGeneral(almacenes, fini, ffin){
                 function(data, type, row){
                     if (row['cod_transformacion'] !== null)
                         return row['cod_transformacion'];
-                    else if (row['id_doc_com'] !== null)
-                        return row['doc_com'];
-                    else if(row['id_doc_ven'] !== null)
-                        return row['doc_ven'];
+                    else if (row['cod_transferencia'] !== null)
+                        return row['cod_transferencia'];
+                    // else if (row['id_doc_com'] !== null)
+                    //     return row['doc_com'];
+                    // else if(row['id_doc_ven'] !== null)
+                    //     return row['doc_ven'];
                     else
                         return '';
                 }
