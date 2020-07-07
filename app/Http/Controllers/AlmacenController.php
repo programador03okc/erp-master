@@ -570,9 +570,10 @@ class AlmacenController extends Controller
     }
     public function cargar_almacenes($id_sede){
         $data = DB::table('almacen.alm_almacen')
-        ->select('alm_almacen.*', 'sis_sede.id_empresa', 'sis_sede.descripcion as sede_descripcion',
-        'alm_tp_almacen.descripcion as tp_almacen')
+        ->select('alm_almacen.*','sis_sede.descripcion as sede_descripcion',
+        'adm_empresa.id_empresa','alm_tp_almacen.descripcion as tp_almacen')
             ->leftjoin('administracion.sis_sede','sis_sede.id_sede','=','alm_almacen.id_sede')
+            ->leftjoin('administracion.adm_empresa','adm_empresa.id_empresa','=','sis_sede.id_empresa')
             ->join('almacen.alm_tp_almacen','alm_tp_almacen.id_tipo_almacen','=','alm_almacen.id_tipo_almacen')
             ->where([['alm_almacen.estado', '=', 1],
                      ['alm_almacen.id_sede','=',$id_sede]])
@@ -4420,10 +4421,11 @@ class AlmacenController extends Controller
             'tp_ope_ven.cod_sunat as cod_sunat_ven','tp_ope_ven.descripcion as tp_ven_descripcion',
             DB::raw("(tp_guia_com.abreviatura) || '-' || (guia_com.serie) || '-' || (guia_com.numero) as guia_com"),
             DB::raw("(tp_guia_ven.abreviatura) || '-' || (guia_ven.serie) || '-' || (guia_ven.numero) as guia_ven"),
-            DB::raw("(tp_doc_com.abreviatura) || '-' || (doc_com.serie) || '-' || (doc_com.numero) as doc_com"),
-            DB::raw("(tp_doc_ven.abreviatura) || '-' || (doc_ven.serie) || '-' || (doc_ven.numero) as doc_ven"),
-            'guia_com.id_guia','guia_ven.id_guia_ven',
-            'doc_com.id_doc_com','doc_ven.id_doc_ven','transformacion.codigo as cod_transformacion')
+            // DB::raw("(tp_doc_com.abreviatura) || '-' || (doc_com.serie) || '-' || (doc_com.numero) as doc_com"),
+            // DB::raw("(tp_doc_ven.abreviatura) || '-' || (doc_ven.serie) || '-' || (doc_ven.numero) as doc_ven"),
+            'guia_com.id_guia','guia_ven.id_guia_ven','alm_almacen.descripcion as almacen_descripcion',
+            // 'doc_com.id_doc_com','doc_ven.id_doc_ven',
+            'transformacion.codigo as cod_transformacion','trans.codigo as cod_transferencia')
             ->join('almacen.mov_alm','mov_alm.id_mov_alm','=','mov_alm_det.id_mov_alm')
             ->leftjoin('almacen.transformacion','transformacion.id_transformacion','=','mov_alm.id_transformacion')
             // ->join('almacen.tp_mov','tp_mov.id_tp_mov','=','mov_alm.id_tp_mov')
@@ -4433,17 +4435,19 @@ class AlmacenController extends Controller
             ->leftjoin('almacen.guia_com','guia_com.id_guia','=','mov_alm.id_guia_com')
             ->leftjoin('almacen.tp_doc_almacen as tp_guia_com','tp_guia_com.id_tp_doc_almacen','=','guia_com.id_tp_doc_almacen')
             ->leftjoin('almacen.tp_ope as tp_ope_com','tp_ope_com.id_operacion','=','mov_alm.id_operacion')
-            ->leftjoin('almacen.doc_com','doc_com.id_doc_com','=','mov_alm.id_doc_com')
-            ->leftjoin('contabilidad.cont_tp_doc as tp_doc_com','tp_doc_com.id_tp_doc','=','doc_com.id_tp_doc')
+            // ->leftjoin('almacen.doc_com','doc_com.id_doc_com','=','mov_alm.id_doc_com')
+            // ->leftjoin('contabilidad.cont_tp_doc as tp_doc_com','tp_doc_com.id_tp_doc','=','doc_com.id_tp_doc')
             ->leftjoin('almacen.guia_ven','guia_ven.id_guia_ven','=','mov_alm.id_guia_ven')
             ->leftjoin('almacen.tp_doc_almacen as tp_guia_ven','tp_guia_ven.id_tp_doc_almacen','=','guia_ven.id_tp_doc_almacen')
             ->leftjoin('almacen.tp_ope as tp_ope_ven','tp_ope_ven.id_operacion','=','mov_alm.id_operacion')
-            ->leftjoin('almacen.doc_ven','doc_ven.id_doc_ven','=','mov_alm.id_doc_ven')
-            ->leftjoin('contabilidad.cont_tp_doc as tp_doc_ven','tp_doc_ven.id_tp_doc','=','doc_ven.id_tp_doc')
+            // ->leftjoin('almacen.doc_ven','doc_ven.id_doc_ven','=','mov_alm.id_doc_ven')
+            // ->leftjoin('contabilidad.cont_tp_doc as tp_doc_ven','tp_doc_ven.id_tp_doc','=','doc_ven.id_tp_doc')
             // ->leftjoin('almacen.alm_req','alm_req.id_requerimiento','=','mov_alm.id_req')
+            ->leftjoin('almacen.trans','trans.id_transferencia','=','mov_alm.id_transferencia')
+            ->leftjoin('almacen.alm_almacen','alm_almacen.id_almacen','=','mov_alm.id_almacen')
             ->where([['mov_alm.fecha_emision','>=',$finicio],
-                    ['mov_alm.fecha_emision','<=',$ffin],
-                    ['mov_alm_det.estado','=',1]])
+                     ['mov_alm.fecha_emision','<=',$ffin],
+                     ['mov_alm_det.estado','=',1]])
             ->whereIn('mov_alm.id_almacen',$alm_array)
             ->orderBy('alm_prod.codigo','asc')
             ->orderBy('mov_alm.fecha_emision','asc')
@@ -4496,6 +4500,7 @@ class AlmacenController extends Controller
                 "prod_descripcion"=>$d->prod_descripcion,
                 "fecha_emision"=>$d->fecha_emision,
                 "posicion"=>$d->posicion,
+                "almacen_descripcion"=>$d->almacen_descripcion,
                 "abreviatura"=>$d->abreviatura,
                 "tipo"=>$d->id_tp_mov,
                 "cantidad"=>$d->cantidad,
@@ -4508,15 +4513,14 @@ class AlmacenController extends Controller
                 "tp_ven_descripcion"=>$d->tp_ven_descripcion,
                 "id_guia_com"=>$d->id_guia,
                 "id_guia_ven"=>$d->id_guia_ven,
-                "id_doc_com"=>$d->id_doc_com,
-                "id_doc_ven"=>$d->id_doc_ven,
-                "doc_com"=>$d->doc_com,
-                "doc_ven"=>$d->doc_ven,
+                // "id_doc_com"=>$d->id_doc_com,
+                // "id_doc_ven"=>$d->id_doc_ven,
+                // "doc_com"=>$d->doc_com,
+                // "doc_ven"=>$d->doc_ven,
                 "guia_com"=>$d->guia_com,
                 "guia_ven"=>$d->guia_ven,
-                "doc_com"=>$d->doc_com,
-                "doc_ven"=>$d->doc_ven,
                 "cod_transformacion"=>$d->cod_transformacion,
+                "cod_transferencia"=>$d->cod_transferencia,
                 "orden"=>$orden,
                 "req"=>$req,
             ];

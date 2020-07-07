@@ -20,8 +20,8 @@ function iniciar(permiso){
 
         clearDataTable();
         if (activeForm == "form-pendientes"){
-            $('#requerimientosPendientes').DataTable().ajax.reload();
-            // listarRequerimientosPendientes();
+            // $('#requerimientosPendientes').DataTable().ajax.reload();
+            listarRequerimientosPendientes(permiso);
         } 
         else if (activeForm == "form-despachos"){
             listarOrdenesPendientes();

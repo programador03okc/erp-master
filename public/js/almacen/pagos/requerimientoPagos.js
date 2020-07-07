@@ -25,9 +25,8 @@ function iniciar(permisoConfirmarDenegarPago) {
             //Lo que hace esa funcion es volver a solicitar data del servidor, no hace falta volver a iniciar toda la estructura
             //del datatable, no hace falta volver a llamar esa funcion
             //parece que te confunde aun la forma de trabajar, los conceptos, necesitas un cursito rapido
-
-            //listarRequerimientosPendientes(permisoConfirmarDenegarPago);
-            $('#requerimientosPendientes').DataTable().ajax.reload();
+            listarRequerimientosPendientes(permisoConfirmarDenegarPago);
+            // $('#requerimientosPendientes').DataTable().ajax.reload();
         } 
         else if (activeForm == "form-confirmados"){
             listarRequerimientosConfirmados();
@@ -62,7 +61,10 @@ function listarRequerimientosPendientes(permisoConfirmarDenegarPago){
             {'data': 'direccion_entrega'},
             // {'data': 'grupo', 'name': 'adm_grupo.descripcion'},
             {'data': 'responsable', 'name': 'sis_usua.nombre_corto'},
-            // {'data': 'estado_doc', 'name': 'adm_estado_doc.estado_doc'},
+            {'render': function (data, type, row){
+                return row['simbolo']+' '+row['monto'];
+                }
+            },
             {'render': function (data, type, row){
                 return '<span class="label label-'+row['bootstrap_color']+'">'+row['estado_doc']+'</span>'
                 }
@@ -91,7 +93,7 @@ function listarRequerimientosPendientes(permisoConfirmarDenegarPago){
                         'data-placement="bottom" data-id="'+row['id_requerimiento']+'" data-cod="'+row['codigo']+'" data-concepto="'+row['concepto']+'" title="Confirmar Entrega" >'+
                         '<i class="fas fa-ban"></i></button>'
                 }
-                }, targets: 9
+                }, targets: 10
             }
         ],
     });

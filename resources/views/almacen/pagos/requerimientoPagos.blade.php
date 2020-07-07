@@ -37,6 +37,7 @@ Confirmación de Pagos
                                         <th>Ubigeo Entrega</th>
                                         <th>Dirección Entrega</th>
                                         <th>Responsable</th>
+                                        <th>Monto</th>
                                         <th>Estado</th>
                                         <th width="90px">Acción</th>
                                     </tr>

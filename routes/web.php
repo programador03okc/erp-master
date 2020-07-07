@@ -1135,7 +1135,7 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::get('direcciones-cliente/{id_persona?}/{id_cliente?}', 'LogisticaController@direcciones_cliente')->name('direcciones-cliente');
 					Route::get('listar_ubigeos', 'AlmacenController@listar_ubigeos');
 					Route::get('listar_personas', 'RecursosHumanosController@mostrar_persona_table');
-					Route::get('cargar_almacenes/{id_sede}', 'LogisticaController@cargar_almacenes');
+					Route::get('cargar_almacenes/{id_sede}', 'AlmacenController@cargar_almacenes');
 					Route::post('guardar-archivos-adjuntos-detalle-requerimiento', 'LogisticaController@guardar_archivos_adjuntos_detalle_requerimiento');
 					Route::put('eliminar-archivo-adjunto-detalle-requerimiento/{id_archivo}', 'LogisticaController@eliminar_archivo_adjunto_detalle_requerimiento');
 					Route::post('guardar-archivos-adjuntos-requerimiento', 'LogisticaController@guardar_archivos_adjuntos_requerimiento');
@@ -2098,7 +2098,7 @@ Route::get('decode5t/{id}', 'EquipoController@decode5t');
 	Route::post('registrar_adjunto_proveedor', 'LogisticaController@registrar_adjunto_proveedor');
 	// Route::post('registrar_only_archivo', 'LogisticaController@registrar_only_archivo');
 	Route::put('update_adjunto_proveedor', 'LogisticaController@update_adjunto_proveedor');
-	Route::get('logistica/cargar_almacenes/{id_sede}', 'LogisticaController@cargar_almacenes');
+	// Route::get('logistica/cargar_almacenes/{id_sede}', 'LogisticaController@cargar_almacenes');
 
 	 // logistica proveedores
 	Route::get('gestionar_proveedores', 'LogisticaController@view_lista_proveedores');

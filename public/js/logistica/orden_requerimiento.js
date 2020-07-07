@@ -21,8 +21,8 @@ function inicializar(
 
 }
 
-function iniciar(permiso){
-    listar_requerimientos_pendientes(permiso);
+function tieneAccion(permisoCrearOrdenPorRequerimiento, permisoRevertirOrden){
+    listar_requerimientos_pendientes(permisoCrearOrdenPorRequerimiento);
 
     $('ul.nav-tabs li a').click(function(){
 
@@ -30,10 +30,10 @@ function iniciar(permiso){
         var activeForm = "form-"+activeTab.substring(1);
 
         if (activeForm == "form-requerimientosAtendidos"){
-            listar_requerimientos_atendidos(permiso);
+            listar_requerimientos_atendidos(permisoRevertirOrden);
         } 
         else if (activeForm == "form-requerimientosPendientes"){
-            listar_requerimientos_pendientes(permiso);
+            listar_requerimientos_pendientes(permisoCrearOrdenPorRequerimiento);
         }
 
     });
@@ -42,9 +42,9 @@ function iniciar(permiso){
 var detalleRequerimientoSelected = [];
 
 
-function listar_requerimientos_pendientes(permiso){
+function listar_requerimientos_pendientes(permisoCrearOrdenPorRequerimiento){
     var vardataTables = funcDatatables();
-    $('#listaRequerimientosPendientes').dataTable({
+    $('#listaRequerimientosPendientes').DataTable({
         'dom': vardataTables[1],
         'buttons': vardataTables[2],
         'language' : vardataTables[0],
@@ -58,7 +58,7 @@ function listar_requerimientos_pendientes(permiso){
             {'data': 'codigo_sede_empresa'},
             {'data': 'fecha_requerimiento'},
             { render: function (data, type, row) {                
-                if(permiso == '1') {
+                if(permisoCrearOrdenPorRequerimiento == '1') {
                     return ('<div class="btn-group btn-group-sm" role="group">'+
                     '<button type="button" class="btn btn-primary btn-sm" name="btnOpenModalOrdenRequerimiento" title="Generar Orden" data-id-requerimiento="'+row.id_requerimiento+'"  onclick="openModalOrdenRequerimiento(this);">'+
                         '<i class="far fa-file-alt"></i>'+
@@ -75,9 +75,9 @@ function listar_requerimientos_pendientes(permiso){
     });
 }
 
-function listar_requerimientos_atendidos(permiso){
+function listar_requerimientos_atendidos(permisoRevertirOrden){
     var vardataTables = funcDatatables();
-    $('#listaRequerimientosAtendidos').dataTable({
+    $('#listaRequerimientosAtendidos').DataTable({
         'dom': vardataTables[1],
         'buttons': vardataTables[2],
         'language' : vardataTables[0],
@@ -93,7 +93,7 @@ function listar_requerimientos_atendidos(permiso){
             {'data': 'codigo_sede_empresa'},
             {'data': 'fecha_orden'},
             { render: function (data, type, row) {               
-                if (permiso == '1') {
+                if (permisoRevertirOrden == '1') {
                     return ('<div class="btn-group btn-group-sm" role="group">'+
                             '<button type="button" class="btn btn-danger btn-sm" name="btnEliminarAtencionOrdenRequerimiento" title="Revertir Atención" data-id-requerimiento="'+row.id_requerimiento+'"  data-codigo-requerimiento="'+row.codigo+'" data-id-orden-compra="'+row.id_orden_compra+'" onclick="eliminarAtencionOrdenRequerimiento(this);">'+
                             '<i class="fas fa-backspace"></i>'+
@@ -109,9 +109,9 @@ function listar_requerimientos_atendidos(permiso){
     });
 }
 
-function updateTableRequerimientoAtendidos(){    
-    $('#listaRequerimientosAtendidos').DataTable().ajax.reload();
-}
+// function updateTableRequerimientoAtendidos(){    
+//     // $('#listaRequerimientosAtendidos').DataTable().ajax.reload();
+// }
 
 function eliminarAtencionOrdenRequerimiento(obj){
     let codigo_requerimiento = obj.dataset.codigoRequerimiento;

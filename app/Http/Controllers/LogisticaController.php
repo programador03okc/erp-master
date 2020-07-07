@@ -1548,6 +1548,10 @@ class LogisticaController extends Controller
             }
         }
 
+        if($request->detalle == '' || $request->detalle == null || count($request->detalle)==0){
+            return 0;
+        }else{
+
         //----------------------------------------------------------------------------
         $id_requerimiento = DB::table('almacen.alm_req')->insertGetId(
             [
@@ -1555,10 +1559,10 @@ class LogisticaController extends Controller
                 'id_tipo_requerimiento' => $request->requerimiento['tipo_requerimiento'],
                 'id_usuario'            => Auth::user()->id_usuario,
                 'id_rol'                => isset($request->requerimiento['id_rol'])?$request->requerimiento['id_rol']:null,
-                'fecha_requerimiento'   => $request->requerimiento['fecha_requerimiento'],
+                'fecha_requerimiento'   => isset($request->requerimiento['fecha_requerimiento'])?$request->requerimiento['fecha_requerimiento']:null,
                 'id_periodo'            => $request->requerimiento['id_periodo'],
-                'concepto'              => $request->requerimiento['concepto'],
-                'id_moneda'             => $request->requerimiento['id_moneda'],
+                'concepto'              => isset($request->requerimiento['concepto'])?strtoupper($request->requerimiento['concepto']):null,
+                'id_moneda'             => isset($request->requerimiento['id_moneda'])?$request->requerimiento['id_moneda']:null,
                 'observacion'           => isset($request->requerimiento['observacion'])?$request->requerimiento['observacion']:null,
                 'id_grupo'              => isset($request->requerimiento['id_grupo'])?$request->requerimiento['id_grupo']:null,
                 'id_area'               => isset($request->requerimiento['id_area'])?$request->requerimiento['id_area']:null,
@@ -1625,8 +1629,9 @@ class LogisticaController extends Controller
             'id_doc_aprob'
         );
 
-
         return response()->json($id_requerimiento);
+        }
+
     }
 
     public function  actualizar_telefono_cliente($tipo_cliente,$id_persona,$id_cliente,$telefono){
@@ -7632,7 +7637,10 @@ class LogisticaController extends Controller
             ->where([['alm_req.estado', '=', 5],['log_ord_compra.estado', '!=', 7],['alm_req.id_tipo_requerimiento','=',1],['alm_req.confirmacion_pago','=',true]])
             ->orderBy('alm_req.id_requerimiento', 'desc')
             ->get();
-        return response()->json(["data" => $alm_req]);
+
+            $output['data']=$alm_req;
+
+        return response()->json($output);
 
  
     }
