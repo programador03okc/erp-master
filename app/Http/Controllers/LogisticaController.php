@@ -8057,8 +8057,10 @@ class LogisticaController extends Controller
                 $status=200;
             }
         }
+        $output=['status'=>$status];
+
         DB::commit();
-        return response()->json(['status'=>$status]);
+        return response()->json($output);
 
         } catch (\PDOException $e) {
             DB::rollBack();

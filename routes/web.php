@@ -1148,6 +1148,7 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::get('verTrazabilidadRequerimiento/{id}', 'DistribucionController@verTrazabilidadRequerimiento');
 					Route::get('getCodigoRequerimiento/{id}', 'LogisticaController@getCodigoRequerimiento');
 					Route::get('mostrar-archivos-adjuntos/{id_detalle_requerimiento}', 'LogisticaController@mostrar_archivos_adjuntos');
+					Route::post('save_cliente', 'LogisticaController@save_cliente');
 
 
 				
@@ -2035,7 +2036,6 @@ Route::get('select_programaciones/{id}', 'EquipoController@select_programaciones
 Route::get('decode5t/{id}', 'EquipoController@decode5t');
 	/* Logistica */
 
-	Route::post('save_cliente', 'LogisticaController@save_cliente');
 
 	Route::get('get_id_operacion/{id1}/{id2}/{id23}', 'LogisticaController@get_id_operacion');
 	Route::get('session-rol-aprob', 'LogisticaController@userSession');
