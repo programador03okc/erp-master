@@ -51,7 +51,7 @@
             </div>
             <div class="modal-footer">
                 <label id="mid_det" style="display: none;"></label>
-                <button id="nombre_boton" class="btn btn-sm btn-success" onClick="recibir();"></button>
+                <button id="submit_transferencia" class="btn btn-sm btn-success" onClick="recibir();"></button>
             </div>
         </div>
     </div>

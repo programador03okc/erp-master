@@ -69,7 +69,7 @@ Gestión de Transferencias
                                         <th>Almacén Destino</th>
                                         <th>Responsable Origen</th>
                                         <th>Responsable Destino</th>
-                                        <th>Registrado por</th>
+                                        <!-- <th>Registrado por</th> -->
                                         <th>Estado</th>
                                         <th>OC</th>
                                         <th>Req.</th>
@@ -118,7 +118,7 @@ Gestión de Transferencias
                                         <th>Almacén Destino</th>
                                         <th>Responsable Origen</th>
                                         <th>Responsable Destino</th>
-                                        <th>Registrado por</th>
+                                        <!-- <th>Registrado por</th> -->
                                         <th>Estado</th>
                                         <th>OC</th>
                                         <th>Req.</th>

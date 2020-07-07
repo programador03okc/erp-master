@@ -216,7 +216,7 @@ function guardar_orden_requerimiento(data){
                     alert('Orden de registrada con éxito');
                     $('#modal-orden-requerimiento').modal('hide');
                     $('#listaRequerimientosPendientes').DataTable().ajax.reload();
-                    $('#listaRequerimientosAtendidos').DataTable().ajax.reload();
+                    // $('#listaRequerimientosAtendidos').DataTable().ajax.reload();
                 }
             }
         }).fail( function( jqXHR, textStatus, errorThrown ){

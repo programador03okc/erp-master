@@ -34,7 +34,7 @@ function cargar_almacenes(sede, campo){
                         option+='<option value="'+response[i].id_almacen+'">'+response[i].codigo+' - '+response[i].descripcion+'</option>';
                     }
                 }
-                $('[name='+campo+']').html('<option value="0" disabled selected>Elija una opción</option>'+option);
+                $('[name='+campo+']').html(option);
             }
         }).fail( function( jqXHR, textStatus, errorThrown ){
             console.log(jqXHR);
