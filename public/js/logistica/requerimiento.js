@@ -1886,7 +1886,7 @@ function validaRequerimiento(){
         if (data_item.length <= 0){
             msj+='\n Es necesario que agregue mínimo un Ítem';
         }
-        if (concepto.length > 0){
+        if (concepto.length <= 0){
             msj+='\n Es necesario que ingrese un Concepto';
         }
         if (empresa == ''){
@@ -1911,13 +1911,13 @@ function validaRequerimiento(){
             msj+='\n Es necesario que seleccione una Dirección';
         }
     }else if(tipo_requerimiento == 3){ // compra stock almacen
-        if (concepto.length > 0 || concepto == ''){
+        if (concepto.length <= 0 || concepto == ''){
             msj+='\n Es necesario que ingrese un Concepto';
         }
         if (data_item.length <= 0){
             msj+='\n Es necesario que agregue mínimo un Ítem';
         }
-        if (concepto.length > 0){
+        if (concepto.length <= 0){
             msj+='\n Es necesario que ingrese un Concepto';
         }
         if (id_almacen == '0' || id_almacen == null){

@@ -20,10 +20,21 @@ class TransferenciaController extends Controller
     }
     function view_listar_transferencias(){
         $clasificaciones = AlmacenController::mostrar_guia_clas_cbo();
-        $almacenes = AlmacenController::mostrar_almacenes_cbo();
+        // $almacenes = AlmacenController::mostrar_almacenes_cbo();
+        $almacenes = $this->listarAlmacenesAcceso();
         $usuarios = AlmacenController::select_usuarios();
         $motivos_anu = AlmacenController::select_motivo_anu();
         return view('almacen/transferencias/listar_transferencias', compact('clasificaciones','almacenes','usuarios','motivos_anu'));
+    }
+
+    public function listarAlmacenesAcceso(){
+        $id_usuario = Auth::user()->id_usuario;
+        $data = DB::table('configuracion.sis_usua_sede')
+        ->select('alm_almacen.*')
+        ->join('almacen.alm_almacen','alm_almacen.id_sede','=','sis_usua_sede.id_sede')
+        ->where('sis_usua_sede.id_usuario',$id_usuario)
+        ->get();
+        return $data;
     }
 
     public function listar_transferencias_pendientes($destino){

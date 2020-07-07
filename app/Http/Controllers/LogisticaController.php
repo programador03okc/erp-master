@@ -102,7 +102,8 @@ class LogisticaController extends Controller
         // $tp_moneda = $this->select_moneda();
         $tp_documento = $this->select_documento();
         $sis_identidad = $this->select_sis_identidad();
-        $sedes = $this->select_sedes();
+        // $sedes = $this->select_sedes();
+        $sedes = Auth::user()->sedesAcceso();
 
         return view('logistica/ordenes/generar_orden_requerimiento', compact('sedes','sis_identidad','tp_documento'));
     }
