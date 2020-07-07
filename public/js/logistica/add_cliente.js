@@ -16,11 +16,16 @@ function agregar_cliente(){
         habilitarInputPersonaJuridica();
     }
 
-    // $('[name=id_proveedor]').val('');
-    // $('[name=nro_documento]').val('');
+    $('[name=id_proveedor]').val('');
+    $('[name=nro_documento]').val('');
     // $('[name=id_doc_identidad]').val('');
-    // $('[name=direccion_fiscal]').val('');
-    // $('[name=razon_social]').val('');
+    $('[name=direccion_fiscal]').val('');
+    $('[name=razon_social]').val('');
+    $('[name=nombre]').val('');
+    $('[name=apellido_paterno]').val('');
+    $('[name=apellido_materno]').val('');
+    $('[name=telefono]').val('');
+    $('[name=direccion]').val('');
 }
 
 function handleChangeTipoCliente(e){

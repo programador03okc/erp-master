@@ -7905,8 +7905,8 @@ class LogisticaController extends Controller
                 for ($j = 0; $j < sizeof($detalle_requerimiento); $j++) {
                     for ($i = 0; $i < sizeof($detalle_requerimiento_adjunto); $i++) {
                         if ($detalle_requerimiento[$j]['id_detalle_requerimiento'] === $detalle_requerimiento_adjunto[$i]['id_detalle_requerimiento']) {
-                            if ($detalle_requerimiento_adjunto[$i]['archivo_estado'] === NUll) {
-                                $detalle_requerimiento_adjunto[$i]['archivo_estado'] = 0;
+                            if ($detalle_requerimiento_adjunto[$i]['estado'] === NUll) {
+                                $detalle_requerimiento_adjunto[$i]['estado'] = 0;
                             }
                             $detalle_requerimiento[$j]['adjunto'][] = $detalle_requerimiento_adjunto[$i];
                         }

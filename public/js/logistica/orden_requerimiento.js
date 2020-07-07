@@ -144,6 +144,9 @@ function eliminarAtencionOrdenRequerimiento(obj){
     }
     
 }
+// function listar_sede_usuario(){
+
+// }
 
 function openModalOrdenRequerimiento(obj){
     // console.log(obj.dataset.idRequerimiento);   
@@ -153,6 +156,7 @@ function openModalOrdenRequerimiento(obj){
         backdrop: 'static'
     });
     obtenerRequerimiento(obj.dataset.idRequerimiento);
+    // listar_sede_usuario();
 }
 
 function obtenerRequerimiento(id){
@@ -183,28 +187,44 @@ $("#form-orden-requerimiento").on("submit", function(e){
     guardar_orden_requerimiento(payload);
 });
 
+function validaOrdenRequerimiento(){
+    var codigo_orden = $('[name=codigo_orden]').val();
+    var id_proveedor = $('[name=id_proveedor]').val();
+    var msj = '';
+    if (codigo_orden == ''){
+        msj+='\n Es necesario que ingrese un código de orden Softlink';
+    }
+    if (id_proveedor == ''){
+        msj+='\n Es necesario que seleccione un Proveedor';
+    }
+}
+
 function guardar_orden_requerimiento(data){
     // console.log(data);
-    $.ajax({
-        type: 'POST',
-        url: rutaGuardarOrdenPorRequerimiento,
-        data: data,
-        dataType: 'JSON',
-        success: function(response){
-            console.log(response);
-            if (response > 0){
-                alert('Orden de registrada con éxito');
-                $('#modal-orden-requerimiento').modal('hide');
-                $('#listaRequerimientosPendientes').DataTable().ajax.reload();
-                $('#listaRequerimientosAtendidos').DataTable().ajax.reload();
+    var msj = validaOrdenRequerimiento();
+    if (msj.length > 0){
+        alert(msj);
+    } else{
+        $.ajax({
+            type: 'POST',
+            url: rutaGuardarOrdenPorRequerimiento,
+            data: data,
+            dataType: 'JSON',
+            success: function(response){
+                console.log(response);
+                if (response > 0){
+                    alert('Orden de registrada con éxito');
+                    $('#modal-orden-requerimiento').modal('hide');
+                    $('#listaRequerimientosPendientes').DataTable().ajax.reload();
+                    $('#listaRequerimientosAtendidos').DataTable().ajax.reload();
+                }
             }
-        }
-    }).fail( function( jqXHR, textStatus, errorThrown ){
-        console.log(jqXHR);
-        console.log(textStatus);
-        console.log(errorThrown);
-    });
-    
+        }).fail( function( jqXHR, textStatus, errorThrown ){
+            console.log(jqXHR);
+            console.log(textStatus);
+            console.log(errorThrown);
+        });
+    }
 }
 
 function listar_detalle_orden_requerimiento(data){
