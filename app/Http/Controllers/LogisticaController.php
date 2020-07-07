@@ -1711,7 +1711,7 @@ class LogisticaController extends Controller
             }
 
         }else if($tipo_cliente == 2){ // persona juridica
-            $req_dir_pers = DB::table('comercial.com_cliente')
+            $req_dir_cli = DB::table('comercial.com_cliente')
             ->select(
                 'adm_contri.id_contribuyente',
                 'adm_contri.direccion_fiscal'

@@ -144,9 +144,7 @@ function eliminarAtencionOrdenRequerimiento(obj){
     }
     
 }
-// function listar_sede_usuario(){
 
-// }
 
 function openModalOrdenRequerimiento(obj){
     // console.log(obj.dataset.idRequerimiento);   
@@ -156,7 +154,6 @@ function openModalOrdenRequerimiento(obj){
         backdrop: 'static'
     });
     obtenerRequerimiento(obj.dataset.idRequerimiento);
-    // listar_sede_usuario();
 }
 
 function obtenerRequerimiento(id){
@@ -170,7 +167,7 @@ function obtenerRequerimiento(id){
             console.log(response); 
             document.querySelector("div[id='modal-orden-requerimiento'] span[id='codigo_requeriento_seleccionado']").textContent= ' - Requerimiento: '+ response.requerimiento.codigo;
             document.querySelector("div[id='modal-orden-requerimiento'] input[name='id_requerimiento']").value= response.requerimiento.id_requerimiento;
-            document.querySelector("div[id='modal-orden-requerimiento'] select[name='sede']").value= response.requerimiento.id_sede;
+            // document.querySelector("div[id='modal-orden-requerimiento'] select[name='sede']").value= response.requerimiento.id_sede;
         }
     }).fail( function( jqXHR, textStatus, errorThrown ){
         console.log(jqXHR);
@@ -197,10 +194,10 @@ function validaOrdenRequerimiento(){
     if (id_proveedor == ''){
         msj+='\n Es necesario que seleccione un Proveedor';
     }
+    return  msj;
 }
 
 function guardar_orden_requerimiento(data){
-    // console.log(data);
     var msj = validaOrdenRequerimiento();
     if (msj.length > 0){
         alert(msj);
