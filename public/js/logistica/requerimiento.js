@@ -1869,6 +1869,66 @@ function selectPartida(id_partida){
 //         console.log(errorThrown);
 //     });
 // }
+function validaRequerimiento(){
+    var tipo_requerimiento = $('[name=tipo_requerimiento]').val();
+    var concepto = $('[name=concepto]').val();
+    var empresa = $('[name=empresa]').val();
+    var sede = $('[name=sede]').val();
+    var id_persona = $('[name=id_persona]').val();
+    var id_cliente = $('[name=id_cliente]').val();
+    var ubigeo = $('[name=name_ubigeo]').val();
+    var id_almacen = $('[name=id_almacen]').val();
+    var telefono_cliente = $('[name=telefono_cliente]').val();
+    var direccion_entrega = $('[name=direccion_entrega]').val();
+
+    var msj = '';
+    if(tipo_requerimiento == 1 || tipo_requerimiento == 2){ //compra || venta directa
+        if (data_item.length <= 0){
+            msj+='\n Es necesario que agregue mínimo un Ítem';
+        }
+        if (concepto.length > 0){
+            msj+='\n Es necesario que ingrese un Concepto';
+        }
+        if (empresa == ''){
+            msj+='\n Es necesario que seleccione una Empresa';
+        }
+        if (sede == ''){
+            msj+='\n Es necesario que seleccione una Sede';
+        }
+        if (id_persona == '' && id_cliente == '' ){
+            msj+='\n Es necesario que seleccione un Cliente';
+        }
+        if (ubigeo == ''){
+            msj+='\n Es necesario que seleccione un Ubigeo';
+        }
+        if (id_almacen == '0' || id_almacen == null){
+            msj+='\n Es necesario que seleccione un Almacén';
+        }
+        if (telefono_cliente == ''){
+            msj+='\n Es necesario que seleccione un Teléfono';
+        }
+        if (direccion_entrega == ''){
+            msj+='\n Es necesario que seleccione una Dirección';
+        }
+    }else if(tipo_requerimiento == 3){ // compra stock almacen
+        if (concepto.length > 0 || concepto == ''){
+            msj+='\n Es necesario que ingrese un Concepto';
+        }
+        if (data_item.length <= 0){
+            msj+='\n Es necesario que agregue mínimo un Ítem';
+        }
+        if (concepto.length > 0){
+            msj+='\n Es necesario que ingrese un Concepto';
+        }
+        if (id_almacen == '0' || id_almacen == null){
+            msj+='\n Es necesario que seleccione un Almacén';
+        }
+    }
+
+
+    return msj;
+
+}
 
 function save_requerimiento(action){
     let actual_id_usuario = userSession.id_usuario;
@@ -1882,48 +1942,58 @@ function save_requerimiento(action){
     // requerimiento.id_rol = actual_id_rol; // update -> id rol actual
     // requerimiento.id_grupo = actual_id_grupo; // update -> id area actual
     let data = {requerimiento,detalle:detalle_requerimiento};
-    // console.log(data);
-    
+    console.log(data);
+
     
     if (action == 'register'){
-        // funcion guardar nuevo
 
-        data.requerimiento.id_estado_doc =1  // estado elaborado 
-        data.requerimiento.estado = 1  // estado 
+        var msj = validaRequerimiento();
         
-        if(document.querySelector("select[name='tipo_requerimiento']").value == 3){ // Compra Stock Almacen
-        let almacen_id_sede =document.querySelector("select[name='id_almacen']").options[document.querySelector("select[name='id_almacen']").selectedIndex].dataset.idSede;
-        let almacen_id_empresa =document.querySelector("select[name='id_almacen']").options[document.querySelector("select[name='id_almacen']").selectedIndex].dataset.idEmpresa;
-            // update id_sede, id_empresa
-        data.requerimiento.id_empresa =almacen_id_empresa;
-        data.requerimiento.id_sede = almacen_id_sede;
+        if (msj.length > 0){
+            alert(msj);
+        } else{
+                        // funcion guardar nuevo
+
+            data.requerimiento.id_estado_doc =1  // estado elaborado 
+            data.requerimiento.estado = 1  // estado 
+            
+            if(document.querySelector("select[name='tipo_requerimiento']").value == 3){ // Compra Stock Almacen
+            let almacen_id_sede =document.querySelector("select[name='id_almacen']").options[document.querySelector("select[name='id_almacen']").selectedIndex].dataset.idSede;
+            let almacen_id_empresa =document.querySelector("select[name='id_almacen']").options[document.querySelector("select[name='id_almacen']").selectedIndex].dataset.idEmpresa;
+                // update id_sede, id_empresa
+            data.requerimiento.id_empresa =almacen_id_empresa;
+            data.requerimiento.id_sede = almacen_id_sede;
+            
         
-    
-        }
-        // console.log(data);
-        
-        baseUrl = rutaGuardarRequerimiento;
-        $.ajax({
-            type: 'POST',
-            url: baseUrl,
-            data: data,
-            dataType: 'JSON',
-            success: function(response){
-                // console.log(response);
-                if (response > 0){
-                    let lastIdRequerimiento =  response;
-                    mostrar_requerimiento(lastIdRequerimiento);
-                    changeStateButton('guardar');
-                    $('#form-requerimiento').attr('type', 'register');
-                    changeStateInput('form-requerimiento', true);
-                    alert("Requerimiento Guardado");
-                }
             }
-        }).fail( function(jqXHR, textStatus, errorThrown){
-            console.log(jqXHR);
-            console.log(textStatus);
-            console.log(errorThrown);
-        });  
+            // console.log(data);
+            
+            baseUrl = rutaGuardarRequerimiento;
+            $.ajax({
+                type: 'POST',
+                url: baseUrl,
+                data: data,
+                dataType: 'JSON',
+                success: function(response){
+                    console.log(response);
+                    if (response > 0){
+                        let lastIdRequerimiento =  response;
+                        mostrar_requerimiento(lastIdRequerimiento);
+                        changeStateButton('guardar');
+                        $('#form-requerimiento').attr('type', 'register');
+                        changeStateInput('form-requerimiento', true);
+                        alert("Requerimiento Guardado");
+                    }else{
+                        alert('Hubo un problema al intentar guardar el requerimiento');
+                    }
+                }
+            }).fail( function(jqXHR, textStatus, errorThrown){
+                console.log(jqXHR);
+                console.log(textStatus);
+                console.log(errorThrown);
+            });  
+        }
+
         
     }else if(action == 'edition'){
         // funcion editar
