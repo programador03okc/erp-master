@@ -1134,7 +1134,8 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::get('telefonos-cliente/{id_persona?}/{id_cliente?}', 'LogisticaController@telefonos_cliente')->name('telefonos-cliente');
 					Route::get('direcciones-cliente/{id_persona?}/{id_cliente?}', 'LogisticaController@direcciones_cliente')->name('direcciones-cliente');
 					Route::get('listar_ubigeos', 'AlmacenController@listar_ubigeos');
-					Route::get('listar_personas', 'RecursosHumanosController@mostrar_persona_table');
+					Route::get('listar_personas', 'RecursosHumanosController@mostrar_persona_table')->name('listar_personas');
+					Route::get('mostrar_clientes', 'AlmacenController@mostrar_clientes')->name('mostrar_clientes');;
 					Route::get('cargar_almacenes/{id_sede}', 'AlmacenController@cargar_almacenes');
 					Route::post('guardar-archivos-adjuntos-detalle-requerimiento', 'LogisticaController@guardar_archivos_adjuntos_detalle_requerimiento');
 					Route::put('eliminar-archivo-adjunto-detalle-requerimiento/{id_archivo}', 'LogisticaController@eliminar_archivo_adjunto_detalle_requerimiento');
@@ -1145,6 +1146,7 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::get('mostrar-sede', 'ConfiguracionController@mostrarSede');
 					Route::get('verTrazabilidadRequerimiento/{id}', 'DistribucionController@verTrazabilidadRequerimiento');
 					Route::get('getCodigoRequerimiento/{id}', 'LogisticaController@getCodigoRequerimiento');
+					Route::get('mostrar-archivos-adjuntos/{id_detalle_requerimiento}', 'LogisticaController@mostrar_archivos_adjuntos');
 
 
 				
@@ -1187,7 +1189,7 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::get('mostrar_grupo_cotizacion/{id}', 'LogisticaController@mostrar_grupo_cotizacion');
 					Route::get('mostrar_cotizacion/{id}', 'LogisticaController@mostrar_cotizacion');
 					Route::get('get_cotizacion/{id}', 'LogisticaController@get_cotizacion');
-					Route::get('logistica/mostrar-archivos-adjuntos/{id_detalle_requerimiento}', 'LogisticaController@mostrar_archivos_adjuntos');
+					Route::get('mostrar-archivos-adjuntos/{id_detalle_requerimiento}', 'LogisticaController@mostrar_archivos_adjuntos');
 					Route::post('guardar-archivos-adjuntos-detalle-requerimiento', 'LogisticaController@guardar_archivos_adjuntos_detalle_requerimiento');
 					Route::put('eliminar-archivo-adjunto-detalle-requerimiento/{id_archivo}', 'LogisticaController@eliminar_archivo_adjunto_detalle_requerimiento');
 					Route::put('descargar_olicitud_cotizacion_excel/{id_cotizacion}', 'LogisticaController@descargar_olicitud_cotizacion_excel');

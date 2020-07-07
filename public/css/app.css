@@ -1633,6 +1633,10 @@ form .select2-container .select2-selection--single {
   position: relative;
 }
 
+.sidebar-collapse .box-header .box-title {
+  display: none;
+}
+
 .nested_task .gantt_add,
 .gantt_grid_scale .gantt_grid_head_add {
   display: none !important;

@@ -397,7 +397,9 @@
             "{{route('logistica.gestion-logistica.requerimiento.elaboracion.actualizar')}}",
             "{{route('logistica.gestion-logistica.requerimiento.elaboracion.anular')}}",
             "{{route('logistica.gestion-logistica.requerimiento.elaboracion.select-sede-by-empresa')}}",
-            "{{route('logistica.gestion-logistica.requerimiento.elaboracion.copiar-requerimiento')}}"
+            "{{route('logistica.gestion-logistica.requerimiento.elaboracion.copiar-requerimiento')}}",
+            "{{route('logistica.gestion-logistica.requerimiento.elaboracion.telefonos-cliente')}}",
+            "{{route('logistica.gestion-logistica.requerimiento.elaboracion.direcciones-cliente')}}"
             );
     });
     </script>

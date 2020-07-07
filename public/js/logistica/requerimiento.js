@@ -1240,6 +1240,7 @@ function fill_input_detalle_requerimiento(item){
 function archivosAdjuntosModal(event,index){
     event.preventDefault();
 
+console.log(data_item);
 
     if(data_item.length >0){
         id_detalle_requerimiento = data_item[index].id_detalle_requerimiento;
@@ -1268,7 +1269,7 @@ function archivosAdjuntosModal(event,index){
 function get_data_archivos_adjuntos(index){
     adjuntos=[];
     limpiarTabla('listaArchivos');
-    baseUrl = '/logistica/mostrar-archivos-adjuntos/'+index;
+    baseUrl = 'mostrar-archivos-adjuntos/'+index;
     $.ajax({
         type: 'GET',
         url: baseUrl,
@@ -1354,7 +1355,7 @@ function eliminarArchivoAdjunto(indice,id_adjunto){
         if (ask == true){
             $.ajax({
                 type: 'PUT',
-                url: 'eliminar-archivo-adjunto-detaller-requerimiento/'+id_adjunto,
+                url: 'eliminar-archivo-adjunto-detalle-requerimiento/'+id_adjunto,
                 dataType: 'JSON',
                 success: function(response){
                     if(response.status == 'ok'){
@@ -1942,7 +1943,7 @@ function save_requerimiento(action){
     // requerimiento.id_rol = actual_id_rol; // update -> id rol actual
     // requerimiento.id_grupo = actual_id_grupo; // update -> id area actual
     let data = {requerimiento,detalle:detalle_requerimiento};
-    console.log(data);
+    // console.log(data);
 
     
     if (action == 'register'){
