@@ -70,7 +70,7 @@ function listarTransferenciasPendientes(permiso){
                 {'data': 'alm_destino_descripcion'},
                 {'data': 'nombre_origen'},
                 {'data': 'nombre_destino'},
-                {'data': 'nombre_registro'},
+                // {'data': 'nombre_registro'},
                 // {'data': 'estado_doc'},
                 {'render':
                     function (data, type, row){
@@ -184,7 +184,7 @@ function listarTransferenciasRecibidas(permiso){
                 {'data': 'alm_destino_descripcion'},
                 {'data': 'nombre_origen'},
                 {'data': 'nombre_destino'},
-                {'data': 'nombre_registro'},
+                // {'data': 'nombre_registro'},
                 {'render':
                     function (data, type, row){
                         return ('<span class="label label-'+row['bootstrap_color']+'">'+row['estado_doc']+'</span>');

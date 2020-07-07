@@ -28,10 +28,9 @@
                         <div class="col-md-6">
                             <h5>Almacén</h5>
                             <select class="form-control js-example-basic-single" name="id_almacen" required>
-                                <option value="0">Elija una opción</option>
-                                @foreach ($almacenes as $alm)
+                                <!-- @foreach ($almacenes as $alm)
                                     <option value="{{$alm->id_almacen}}">{{$alm->codigo}} - {{$alm->descripcion}}</option>
-                                @endforeach
+                                @endforeach -->
                             </select>
                         </div>
                         <div class="col-md-6">

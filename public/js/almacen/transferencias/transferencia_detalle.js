@@ -12,10 +12,12 @@ function open_transferencia_detalle(data){
         $('[name=almacen_destino]').val(data.alm_destino_descripcion);
         $('[name=responsable_destino]').val(data.responsable_destino);
         $('[name=estado]').val(data.estado);
+        $("#submit_transferencia").removeAttr("disabled");
+
         if (data.estado == 14 || data.estado == 7){
-            $('#nombre_boton').text('Cerrar');
+            $('#submit_transferencia').text('Cerrar');
         } else {
-            $('#nombre_boton').text('Recibir');
+            $('#submit_transferencia').text('Recibir');
         }
         listarItems(data.id_transferencia);
     }
@@ -89,6 +91,7 @@ function recibir(){
                     // '&ubicaciones='+ubicaciones+
                     // '&observacion='+observacion;
             console.log(data);
+            $("#submit_transferencia").attr('disabled','true');
             $.ajax({
                 type: 'POST',
                 url: 'guardar_ingreso_transferencia',
