@@ -1,18 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Sistema ERP</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-    <link rel="icon" type="image/ico" href="{{ asset('images/icono.ico')}}" />
+@extends('layout.base')
 
-    <link rel="stylesheet" href="{{ asset('template/bootstrap/css/bootstrap.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('template/fontawesome/css/all.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('template/adminlte/css/adminlte.min.css') }}">
+@section('cabecera')
+Iniciar sesión
+@endsection
 
-    <link rel="stylesheet" href="{{ asset('css/app.css')}}">
-</head>
-<body>
+@section('body')
     <div class="hold-transition login-page">
         <div class="login-box">
             <div class="login-header">
@@ -37,7 +29,7 @@
             <div class="login-box-body">
                 <div class="login-name"><h3>SISTEMA ERP</h3></div>
                 <div class="login-img">
-                    <img src="{{ asset('images/logo_okc.png') }}">
+                    <img class="img-responsive" src="{{ asset('images/logo_okc.png') }}">
                 </div>
                 <form id="formLogin" action="{{ route('login') }}">
                 @csrf
@@ -65,53 +57,8 @@
 
         </div>
     </div>
-    <script src="{{ asset('template/plugins/jQuery/jquery.min.js') }}"></script>
-    <script src="{{ asset('template/bootstrap/js/bootstrap.min.js') }}"></script>
-    <script src="{{ asset('template/adminlte/js/adminlte.min.js') }}"></script>
-    <script src="{{ asset('template/plugins/iCheck/icheck.min.js') }}"></script>
-    <script src="{{ asset('template/plugins/sweetalert/sweetalert2@8.js') }}"></script>
-    <script src="{{ asset('js/app.js')}}"></script>
+@endsection
 
-    <script src="{{ asset('js/publico/notas_lanzamiento.js')}}"></script>
-    <script>
-      $(document).ready(function(){
-        get_notas_lanzamiento("{{route('mostrar-version-actual')}}");
-      });
-        /*function cargarRol(value){
-            baseUrl = 'cargar_usuarios/'+value;
-            var opt ='';
-            $.ajax({
-                type: 'GET',
-                // headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-                url: baseUrl,
-                dataType: 'JSON',
-                success: function(response){
-                    $('[name=role]').val(response.rol);
-                }
-            }).fail( function(jqXHR, textStatus, errorThrown){
-                console.log(jqXHR);
-                console.log(textStatus);
-                console.log(errorThrown);
-            });
-        }*/
-    </script>
-
-
-<!-- Modal -->
-<div class="modal fade bs-example-modal-lg" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-  <div class="modal-dialog modal-lg" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h3 class="modal-title" id="myModalLabel">Notas de Lanzamiento <small>{{$lastVersion}}</small></h3>
-      </div>
-      <div class="modal-body">
-        <div name="text_nota_lanzamiento"></div>
-      </div>
-    </div>
-  </div>
-</div>
-
-
-</body>
-</html>
+@section('scripts')
+<script src="{{ asset('js/app.js')}}"></script>
+@endsection

@@ -1503,6 +1503,10 @@ form .select2-container .select2-selection--single{
 .sidebar-collapse .box-header > .box-tools{
     position: relative;
 }
+.sidebar-collapse .box-header .box-title{
+    display: none;
+}
+
 // .box .box-header > .box-tools{
 //     position: relative;
 // }
