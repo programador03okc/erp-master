@@ -4871,7 +4871,7 @@ class LogisticaController extends Controller
         return json_encode($payload);
     }
 
-    public function guardar_proveedor(Request $request, $option){
+    public function guardar_proveedor(Request $request){
         $fecha = date('Y-m-d H:i:s');
         $output=[];
         $id_contribuyente = DB::table('contabilidad.adm_contri')->insertGetId(
@@ -4901,7 +4901,7 @@ class LogisticaController extends Controller
         $html = '';
 
         foreach($data as $d){
-            $output[] = ['id_proveedor'=>$id_proveedor, 'nro_documento'=>$nro_documento, 'razon_social'=>$razon_social];
+            $output[] = ['id_proveedor'=>$id_proveedor, 'nro_documento'=>$request->nro_documento, 'razon_social'=>$request->razon_social];
         }
         return json_encode($output);
     }
