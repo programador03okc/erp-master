@@ -243,6 +243,17 @@ class ConfiguracionController extends Controller{
             ->orderBy('descripcion', 'asc')->get();
         return $data;
     }
+    public function select_sede_usuario(){
+
+        $data = DB::table('configuracion.sis_usua_sede')
+        ->select('sis_usua_sede.*')
+        ->where([
+            ['estado', '=', 1], 
+            ['id_usuario', '=', Auth::user()->id_usuario]
+            ])
+            ->orderBy('id_usua_sede', 'asc')->get();
+        return $data;
+    }
     public function select_area($grupo){
         $data = DB::table('administracion.adm_area')->select('id_area', 'descripcion')->where([['estado', '=', 1], ['id_grupo', '=', $grupo]])
             ->orderBy('descripcion', 'asc')->get();
