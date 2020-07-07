@@ -54,7 +54,11 @@
   background-color: rgba(0, 0, 0, 0.1);
 }*/
 .skin-okc .main-header li.user-header {
-  background-color: #dd4b39;
+  background-color: #e5e5e5;
+}
+
+.navbar-nav>.user-menu>.dropdown-menu>li.user-header>p{
+  color: #070707;
 }
 .skin-okc .content-header {
   background: transparent;

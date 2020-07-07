@@ -42,9 +42,9 @@ function llenarTablaAdjuntosRequerimiento(id_req){
                     '    <i class="fas fa-file-download"></i>'+
                     '</a>'+
                     '<button'+
-                    '    class="btn btn-danger btn-sm disabled"'+
+                    '    class="btn btn-danger btn-sm "'+
                     '    name="btnEliminarAdjuntoRequerimiento"'+
-                    '    onclick="eliminarArchivoAdjuntoRequerimiento('+meta.row+','+row.id_adjunto+')"'+
+                    '    onclick="eliminarArchivoAdjuntoRequerimiento(event,'+meta.row+','+row.id_adjunto+')"'+
                     '    title="Eliminar Archivo"'+
                     '>'+
                     '    <i class="fas fa-trash"></i>'+
@@ -191,7 +191,8 @@ function guardarAdjuntosRequerimiento(){
         });  
 }
 
-function eliminarArchivoAdjuntoRequerimiento(indice,id_adjunto){
+function eliminarArchivoAdjuntoRequerimiento(event,indice,id_adjunto){
+    event.preventDefault();
 
     if(id_adjunto >0){
         var ask = confirm('¿Desea eliminar este archivo ?');
