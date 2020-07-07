@@ -7,6 +7,14 @@
     Generar Orden por Requerimiento
 @endsection
 
+@section('breadcrumb')
+<ol class="breadcrumb">
+    <li><a href="{{route('logistica.index')}}"><i class="fas fa-tachometer-alt"></i> Logística</a></li>
+    <li>Ordenes</li>
+    <li class="active">@yield('cabecera')</li>
+</ol>
+@endsection
+
 @section('content')
 <div class="page-main" type="orden-requerimiento">
         <div class="row">
@@ -15,35 +23,37 @@
                     <!-- Nav tabs -->
                     <ul class="nav nav-tabs" role="tablist">
                         <li role="presentation" class="active"><a href="#requerimientosPendientes" aria-controls="requerimientosPendientes" role="tab" data-toggle="tab">Requerimientos Pendientes</a></li>
-                        <li role="presentation" class=""><a href="#requerimientosAtendidos" onClick="vista_extendida(); updateTableRequerimientoAtendidos();" aria-controls="requerimientosAtendidos" role="tab" data-toggle="tab">Requerimientos Atentidos</a></li>
+                        <li role="presentation" class=""><a href="#requerimientosAtendidos" onClick="vista_extendida();" aria-controls="requerimientosAtendidos" role="tab" data-toggle="tab">Requerimientos Atentidos</a></li>
                     </ul>
                     <!-- Tab panes -->
                     <div class="tab-content">
                         <div role="tabpanel" class="tab-pane active" id="requerimientosPendientes">
                                 <div class="panel panel-default">
                                     <div class="panel-body">
-                                        <table class="mytable table table-condensed table-bordered table-okc-view" 
-                                        id="listaRequerimientosPendientes">
-                                            <thead>
-                                                <tr>
-                                                <th hidden></th>
-                                                <th width="50">Código</th>
-                                                <th width="250">Concepto</th>
-                                                <th width="100">Sede</th>
-                                                <th width="50">Fecha Registro</th>
-                                                <th width="50">ACCIONES</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody></tbody>
-                                        </table>
+                                        <form id="form-requerimientosPendientes" type="register">
+                                            <table class="mytable table table-condensed table-bordered table-okc-view" 
+                                            id="listaRequerimientosPendientes">
+                                                <thead>
+                                                    <tr>
+                                                    <th hidden></th>
+                                                    <th width="50">Código</th>
+                                                    <th width="250">Concepto</th>
+                                                    <th width="100">Sede</th>
+                                                    <th width="50">Fecha Registro</th>
+                                                    <th width="50">ACCIONES</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody></tbody>
+                                            </table>
+                                        </form>
                                     </div>
                                 </div>
                         </div>
                         <div role="tabpanel" class="tab-pane" id="requerimientosAtendidos">
                             <div class="panel panel-default">
                                 <div class="panel-body">
-                                <table class="mytable table table-condensed table-bordered table-okc-view" 
-                                        id="listaRequerimientosAtendidos">
+                                    <form id="form-requerimientosAtendidos" type="register">
+                                        <table class="mytable table table-condensed table-bordered table-okc-view" id="listaRequerimientosAtendidos">
                                             <thead>
                                                 <tr>
                                                 <th hidden></th>
@@ -58,6 +68,7 @@
                                             </thead>
                                             <tbody></tbody>
                                         </table>
+                                    </form>
                                 </div>
                             </div>
                         </div>
@@ -97,6 +108,7 @@
             "{{route('logistica.gestion-logistica.orden.por-requerimiento.guardar')}}",
             "{{route('logistica.gestion-logistica.orden.por-requerimiento.revertir')}}"
             );
+            tieneAccion('{{Auth::user()->tieneAccion(114)}}','{{Auth::user()->tieneAccion(115)}}');
     });
     </script>
 @endsection

@@ -8,10 +8,16 @@
     Lista Requerimientos
 @endsection
 
+@section('breadcrumb')
+<ol class="breadcrumb">
+    <li><a href="{{route('logistica.index')}}"><i class="fas fa-tachometer-alt"></i> Logística</a></li>
+    <li>Requerimientos</li>
+    <li class="active">@yield('cabecera')</li>
+</ol>
+@endsection
+
 @section('content')
 <div class="page-main" type="lista_requerimiento">
-    <legend><h2>Lista de Requerimientos</h2></legend>
-
     <div class="row">
         <div class="col-md-4">
             <h5>Empresa</h5>
