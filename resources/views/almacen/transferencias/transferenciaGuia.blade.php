@@ -61,7 +61,7 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-6">
+                        <!-- <div class="col-md-6">
                             <h5>Responsable Origen:</h5>
                             <select class="form-control" name="responsable_origen" >
                                 <option value="0">Elija una opción</option>
@@ -69,7 +69,7 @@
                                     <option value="{{$usu->id_usuario}}">{{$usu->nombre_corto}}</option>
                                 @endforeach
                             </select>
-                        </div>
+                        </div> -->
                         <div class="col-md-6">
                             <h5>Responsable Destino:</h5>
                             <!-- js-example-basic-single -->

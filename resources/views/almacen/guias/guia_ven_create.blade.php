@@ -45,15 +45,14 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-6">
+                        <!-- <div class="col-md-6">
                             <h5>Responsable</h5>
                             <select class="form-control" name="responsable" required >
-                                <!-- <option value="0">Elija una opción</option> -->
                                 @foreach ($usuarios as $usu)
                                     <option value="{{$usu->id_usuario}}">{{$usu->nombre_corto}}</option>
                                 @endforeach
                             </select>
-                        </div>
+                        </div> -->
                         <div class="col-md-6">
                             <h5>Almacén</h5>
                             <input type="text" class="oculto " name="id_almacen" required >

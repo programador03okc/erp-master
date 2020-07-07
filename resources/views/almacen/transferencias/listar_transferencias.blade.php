@@ -29,11 +29,11 @@ Gestión de Transferencias
                 <form id="form-pendientes" type="register">
                     <div class="row">
                         <div class="col-md-4">
-                            <h5>Almacén Origen</h5>
+                            <h5>Almacén Destino</h5>
                             <select class="form-control" name="id_almacen_destino">
                                 <option value="0">Elija una opción</option>
                                 @foreach ($almacenes as $alm)
-                                    <option value="{{$alm->id_almacen}}">{{$alm->descripcion}}</option>
+                                    <option value="{{$alm->id_almacen}}" selected>{{$alm->descripcion}}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -91,7 +91,7 @@ Gestión de Transferencias
                             <select class="form-control" name="id_almacen_dest_recibida">
                                 <option value="0">Elija una opción</option>
                                 @foreach ($almacenes as $alm)
-                                    <option value="{{$alm->id_almacen}}">{{$alm->descripcion}}</option>
+                                    <option value="{{$alm->id_almacen}}" selected>{{$alm->descripcion}}</option>
                                 @endforeach
                             </select>
                         </div>

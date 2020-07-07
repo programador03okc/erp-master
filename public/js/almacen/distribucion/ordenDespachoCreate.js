@@ -185,7 +185,7 @@ function guardar_orden_despacho(){
         success: function(response){
             console.log(response);
             if (response > 0){
-                alert('La Orden de Despacho se generó correctamente.'+response);
+                alert('La Orden de Despacho se generó correctamente.');
                 $('#modal-orden_despacho_create').modal('hide');
                 $('#requerimientosPendientes').DataTable().ajax.reload();
             }

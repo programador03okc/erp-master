@@ -79,7 +79,7 @@ function guardar_grupo_despacho(){
         success: function(response){
             console.log(response);
             if (response > 0){
-                alert('El Despacho se generó correctamente.'+response);
+                alert('El Despacho se generó correctamente.');
                 $('#modal-grupo_despacho_create').modal('hide');
                 var id = encode5t(response);
                 window.open('imprimir_despacho/'+id);
