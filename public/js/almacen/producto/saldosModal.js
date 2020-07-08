@@ -34,7 +34,7 @@ function listarSaldos(id_almacen){
         'buttons': vardataTables[2],
         'language' : vardataTables[0],
         'bDestroy': true,
-        'ajax': '/listar_saldos/'+id_almacen,
+        'ajax': 'listar_saldos/'+id_almacen,
         'columns': [
             {'data': 'id_producto'},
             {'data': 'codigo'},

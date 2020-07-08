@@ -1105,7 +1105,6 @@ function detalleRequerimientoModal(event,index){
     if (tipo == 2){        
         var sede = $('[name=sede]').val();
         var almacen = $('select[name=id_almacen]').val();
-        console.log(almacen);
         
         if (sede !== null && sede !== '' &&  sede !== undefined ){
             if (almacen !== null && almacen !== '' && almacen !== undefined ){
@@ -1115,7 +1114,7 @@ function detalleRequerimientoModal(event,index){
                 });
                 $('[name=id_almacen]').show();
     
-                cargar_almacenes(sede);
+                // cargar_almacenes(sede);
                 document.querySelector("div[id='modal-detalle-requerimiento'] input[name='fecha_entrega_item']").value='';
                 document.querySelector("div[id='modal-detalle-requerimiento'] input[name='lugar_entrega_item']").value='';
                 document.querySelector("div[id='modal-detalle-requerimiento'] input[name='des_partida']").value='';
@@ -1561,6 +1560,8 @@ function catalogoItemsModal(){
     }
     else if(tipo == 2){
         var almacen = $('[name=id_almacen]').val();
+        console.log(almacen);
+        
         saldosModal(almacen);
     }
 }
@@ -2413,9 +2414,7 @@ function getDataSelectSede(id_empresa = null){
             headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
             url: rutaSedeByEmpresa+'/' + id_empresa,
             dataType: 'JSON',
-            success: function(response){
-                console.log(response);
-                
+            success: function(response){                
                 llenarSelectSede(response);
                 llenarUbigeo();
             }

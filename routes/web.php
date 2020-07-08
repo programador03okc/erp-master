@@ -1149,6 +1149,7 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::get('getCodigoRequerimiento/{id}', 'LogisticaController@getCodigoRequerimiento');
 					Route::get('mostrar-archivos-adjuntos/{id_detalle_requerimiento}', 'LogisticaController@mostrar_archivos_adjuntos');
 					Route::post('save_cliente', 'LogisticaController@save_cliente');
+					Route::get('listar_saldos/{id}', 'AlmacenController@listar_saldos');
 
 
 				
