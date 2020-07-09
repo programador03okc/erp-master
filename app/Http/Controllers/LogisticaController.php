@@ -12978,16 +12978,35 @@ class LogisticaController extends Controller
 
     function view_main_logistica()
     {
-        $cantidad_requerimientos_generados = $this->cantidad_requerimientos_generados();
-        $cantidad_requerimientos_aprobados = $this->cantidad_requerimientos_aprobados();
-        $cantidad_requerimientos_observados = $this->cantidad_requerimientos_observados();
-        $cantidad_requerimientos_anulados = $this->cantidad_requerimientos_anulados();
+        $cantidades = AlmacenController::cantidades_main();
+        $cantidad_requerimientos_elaborados = $cantidades['requerimientos'];
+        $cantidad_ordenes_pendientes = $cantidades['orden'];
+        $cantidad_despachos_pendientes = $cantidades['despachos'];
+        $cantidad_ingresos_pendientes = $cantidades['ingresos'];
+        $cantidad_salidas_pendientes = $cantidades['salidas'];
+        $cantidad_transferencias_pendientes = $cantidades['transferencias'];
+        $cantidad_pagos_pendientes = $cantidades['pagos'];
+
         return view('logistica/main', compact(
-            'cantidad_requerimientos_generados',
-            'cantidad_requerimientos_aprobados',
-            'cantidad_requerimientos_observados',
-            'cantidad_requerimientos_anulados'
+            'cantidad_requerimientos_elaborados',
+            'cantidad_ordenes_pendientes',
+            'cantidad_despachos_pendientes',
+            'cantidad_ingresos_pendientes',
+            'cantidad_salidas_pendientes',
+            'cantidad_transferencias_pendientes',
+            'cantidad_pagos_pendientes'
             ));
+
+        // $cantidad_requerimientos_generados = $this->cantidad_requerimientos_generados();
+        // $cantidad_requerimientos_aprobados = $this->cantidad_requerimientos_aprobados();
+        // $cantidad_requerimientos_observados = $this->cantidad_requerimientos_observados();
+        // $cantidad_requerimientos_anulados = $this->cantidad_requerimientos_anulados();
+        // return view('logistica/main', compact(
+        //     'cantidad_requerimientos_generados',
+        //     'cantidad_requerimientos_aprobados',
+        //     'cantidad_requerimientos_observados',
+        //     'cantidad_requerimientos_anulados'
+        //     ));
     }
 
     public function cantidad_requerimientos_generados(){
