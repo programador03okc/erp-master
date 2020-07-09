@@ -31,6 +31,7 @@ function listarKardexGeneral(almacenes, fini, ffin){
         'columns': [
             {'data': 'id_mov_alm_det'},
             {'data': 'prod_codigo'},
+            {'data': 'prod_part_number'},
             {'data': 'prod_descripcion'},
             {'data': 'fecha_emision'},
             {'render': 

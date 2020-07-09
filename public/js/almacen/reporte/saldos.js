@@ -42,7 +42,7 @@ function listarSaldos(url){
             {'data': 'id_prod_ubi'},
             {'data': 'codigo'},
             {'data': 'codigo_anexo'},
-            {'data': 'cod_antiguo'},
+            {'data': 'part_number'},
             {'data': 'descripcion'},
             {'data': 'abreviatura'},
             {'data': 'stock', 'class': 'right'},

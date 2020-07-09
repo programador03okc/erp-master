@@ -104,9 +104,12 @@ function listarRequerimientosPendientes(permiso){
                         'data-placement="bottom" title="Generar Orden de Despacho" >'+
                         '<i class="fas fa-sign-in-alt"></i></button>') : 
                         ( row['id_od'] !== null && row['estado_od'] == 1) ?
-                        '<button type="button" class="anular_od btn btn-danger boton" data-toggle="tooltip" '+
-                        'data-placement="bottom" data-id="'+row['id_od']+'" data-cod="'+row['codigo_od']+'" title="Anular Orden Despacho" >'+
-                        '<i class="fas fa-trash"></i></button>' : '' )
+                        `<button type="button" class="adjuntar btn btn-warning boton" data-toggle="tooltip" 
+                        data-placement="bottom" data-id="${row['id_od']}" data-cod="${row['codigo_od']}" title="Agregar Adjuntos" >
+                        <i class="fas fa-paperclip"></i></button>
+                        <button type="button" class="anular_od btn btn-danger boton" data-toggle="tooltip" 
+                        data-placement="bottom" data-id="${row['id_od']}" data-cod="${row['codigo_od']}" title="Anular Orden Despacho" >
+                        <i class="fas fa-trash"></i></button>` : '' )
                 } else {
                     return '<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" '+
                     'data-placement="bottom" title="Ver Detalle" >'+
@@ -124,6 +127,97 @@ $('#requerimientosPendientes tbody').on("click","button.detalle", function(){
     console.log(data.id_requerimiento);
     open_detalle_requerimiento(data);
 });
+
+$('#requerimientosPendientes tbody').on("click","button.adjuntar", function(){
+    var id = $(this).data('id');
+    var cod = $(this).data('cod');
+    $('#modal-despachoAdjuntos').modal({
+        show: true
+    });
+    listarAdjuntos(id);
+    $('[name=id_od]').val(id);
+    $('[name=codigo_od]').val(cod);
+});
+
+function listarAdjuntos(id){
+    $.ajax({
+        type: 'GET',
+        url: 'listarAdjuntosOrdenDespacho/'+id,
+        dataType: 'JSON',
+        success: function(response){
+            $('#listaAdjuntos tbody').html(response);
+        }
+    }).fail( function( jqXHR, textStatus, errorThrown ){
+        console.log(jqXHR);
+        console.log(textStatus);
+        console.log(errorThrown);
+    });
+}
+
+$("#form-od_adjunto").on("submit", function(e){
+    e.preventDefault();
+    var nro = $('#listaAdjuntos tbody tr').length;
+    $('[name=numero]').val(nro+1);
+    guardar_od_adjunto();
+});
+
+function guardar_od_adjunto(){
+    var formData = new FormData($('#form-od_adjunto')[0]);
+    var id = $('[name=id_od]').val();
+    var adjunto = $('[name=archivo_adjunto]').val();
+    var nro = $('[name=numero]').val();
+    console.log(nro);
+    if (adjunto !== '' && adjunto !== null){
+        $.ajax({
+            type: 'POST',
+            // headers: {'X-CSRF-TOKEN': token},
+            url: 'guardar_od_adjunto',
+            data: formData,
+            cache: false,
+            contentType: false,
+            processData: false,
+            dataType: 'JSON',
+            success: function(response){
+                console.log(response);
+                if (response > 0){
+                    alert('Adjunto registrado con éxito');
+                    listarAdjuntos(id);
+                }
+            }
+        }).fail( function( jqXHR, textStatus, errorThrown ){
+            console.log(jqXHR);
+            console.log(textStatus);
+            console.log(errorThrown);
+        });
+    } else {
+        alert('Debe seleccionar un archivo!');
+    }
+}
+
+function anular_adjunto(id_od_adjunto){
+    if (id_od_adjunto !== ''){
+        var rspta = confirm("¿Está seguro que desea anular el adjunto?")
+        if (rspta){
+            var id = $('[name=id_od]').val();
+            $.ajax({
+                type: 'GET',
+                url: 'anular_od_adjunto/'+id_od_adjunto,
+                dataType: 'JSON',
+                success: function(response){
+                    console.log(response);
+                    if (response > 0){
+                        alert('Adjunto anulado con éxito');
+                        listarAdjuntos(id);
+                    }
+                }
+            }).fail( function( jqXHR, textStatus, errorThrown ){
+                console.log(jqXHR);
+                console.log(textStatus);
+                console.log(errorThrown);
+            });        
+        }
+    }
+}
 
 $('#requerimientosPendientes tbody').on("click","button.anular", function(){
     var id = $(this).data('id');

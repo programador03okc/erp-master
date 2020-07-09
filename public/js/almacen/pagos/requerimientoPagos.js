@@ -1,15 +1,143 @@
+class RequerimientoPago
+{
+    constructor(permisoConfirmarDenegarPago)
+    {
+        this.permisoConfirmarDenegarPago=permisoConfirmarDenegarPago;
+        this.listarRequerimientosPendientes();
+        this.listarRequerimientosConfirmados();
+    }
+
+    listarRequerimientosPendientes() {
+        const permisoConfirmarDenegarPago=this.permisoConfirmarDenegarPago;
+        var vardataTables = funcDatatables();
+        $('#requerimientosPendientes').DataTable({
+            'dom': vardataTables[1],
+            'buttons': vardataTables[2],
+            'language' : vardataTables[0],
+            'destroy' : true,
+            'serverSide' : true,
+            'ajax': {
+                url: 'listarRequerimientosPendientesPagos',
+                type: 'POST'
+            },
+            'columns': [
+                {'data': 'id_requerimiento'},
+                {'data': 'tipo_req'},
+                {'data': 'codigo'},
+                {'data': 'concepto'},
+                {'data': 'fecha_requerimiento'},
+                {'render': function (data, type, row){
+                    return (row['ubigeo_descripcion'] !== null ? row['ubigeo_descripcion'] : '');
+                    }
+                },
+                {'data': 'direccion_entrega'},
+                // {'data': 'grupo', 'name': 'adm_grupo.descripcion'},
+                {'data': 'responsable', 'name': 'sis_usua.nombre_corto'},
+                {'render': function (data, type, row){
+                    return row['simbolo']+' '+row['monto'];
+                    }
+                },
+                {'render': function (data, type, row){
+                    return '<span class="label label-'+row['bootstrap_color']+'">'+row['estado_doc']+'</span>'
+                    }
+                }
+            ],
+            'columnDefs': [
+                {'aTargets': [0], 'sClass': 'invisible'},
+                {'render': function (data, type, row){
+                    //const accion = permisoConfirmarDenegarPago;
+                    //console.log(permisoConfirmarDenegarPago == '1');
+                    if (permisoConfirmarDenegarPago != '1') {
+                        return `<button style="padding-left:2px;" type="button" class="detalle btn btn-primary boton" data-toggle="tooltip"
+                        data-placement="bottom" title="Ver Detalle">
+                        <i class="fas fa-list-ul"></i></button>`;
+                    } else {
+                        return `
+                        <div>
+                        <button type="button" style="padding-left:8px;padding-right:7px;" class="adjunto btn btn-warning boton" data-toggle="tooltip" 
+                            data-placement="bottom" data-id="${row['id_requerimiento']}" title="Ver Adjuntos" >
+                            <i class="fas fa-file-download"></i></button>
+                        <button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" 
+                            data-placement="bottom" title="Ver Detalle" >
+                            <i class="fas fa-list-ul"></i></button>
+                            </div>
+                            <div>
+                        <button type="button" class="conforme btn btn-success boton" data-toggle="tooltip" 
+                            data-placement="bottom" data-id="${row['id_requerimiento']}" data-cod="${row['codigo']}" data-concepto="${row['concepto']}" title="Confirmar Entrega" >
+                            <i class="fas fa-check"></i></button>
+                        <button type="button" class="no_conforme btn btn-danger boton" data-toggle="tooltip" 
+                            data-placement="bottom" data-id="${row['id_requerimiento']}" data-cod="${row['codigo']}" data-concepto="${row['concepto']}" title="Confirmar Entrega" >
+                            <i class="fas fa-ban"></i></button>
+                            </div>
+                            `;
+                    }
+                    }, targets: 10
+                }
+            ],
+        });
+    }
+
+    listarRequerimientosConfirmados(){
+        var vardataTables = funcDatatables();
+        $('#requerimientosConfirmados').DataTable({
+            'dom': vardataTables[1],
+            'buttons': vardataTables[2],
+            'language' : vardataTables[0],
+            'destroy' : true,
+            'serverSide' : true,
+            'ajax': {
+                url: 'listarRequerimientosConfirmadosPagos',
+                type: 'POST'
+            },
+            'columns': [
+                {'data': 'id_requerimiento'},
+                {'data': 'tipo_req'},
+                {'data': 'codigo'},
+                {'data': 'concepto'},
+                {'data': 'fecha_requerimiento'},
+                {'render': function (data, type, row){
+                    return (row['ubigeo_descripcion'] !== null ? row['ubigeo_descripcion'] : '');
+                    }
+                },
+                {'data': 'direccion_entrega'},
+                // {'data': 'grupo', 'name': 'adm_grupo.descripcion'},
+                {'data': 'responsable', 'name': 'sis_usua.nombre_corto'},
+                // {'data': 'estado_doc', 'name': 'adm_estado_doc.estado_doc'},
+                {'render': function (data, type, row){
+                    return '<span class="label label-'+row['bootstrap_color']+'">'+row['estado_doc']+'</span>'
+                    }
+                },
+                {'render': function (data, type, row){
+                    return (row['confirmacion_pago'] ? 'PAGO CONFIRMADO' : 'PAGO NO CONFIRMADO');
+                    }
+                },
+                {'data': 'obs_confirmacion'}
+            ],
+            'columnDefs': [
+                {'aTargets': [0], 'sClass': 'invisible'},
+                {'render': function (data, type, row){
+                    return (row['estado'] !== 7 ? ('<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" '+
+                        'data-placement="bottom" title="Ver Detalle" >'+
+                        '<i class="fas fa-list-ul"></i></button>') : '')
+                    }, targets: 11
+                }
+            ],
+        });
+    }
+}
+
 function iniciar(permisoConfirmarDenegarPago) {
 
-    $("#tab-reqPendientes section:first form").attr('form', 'formulario');
+    //$("#tab-reqPendientes section:first form").attr('form', 'formulario');
     //Se llama al iniciar
     listarRequerimientosPendientes(permisoConfirmarDenegarPago);
 
     $('ul.nav-tabs li a').click(function(){
-        $('ul.nav-tabs li').removeClass('active');
+        /*$('ul.nav-tabs li').removeClass('active');
         $(this).parent().addClass('active');
         $('.content-tabs section').attr('hidden', true);
         $('.content-tabs section form').removeAttr('type');
-        $('.content-tabs section form').removeAttr('form');
+        $('.content-tabs section form').removeAttr('form');*/
 
         var activeTab = $(this).attr('type');
         var activeForm = "form-"+activeTab.substring(1);
@@ -36,69 +164,7 @@ function iniciar(permisoConfirmarDenegarPago) {
     vista_extendida();
 }
 
-function listarRequerimientosPendientes(permisoConfirmarDenegarPago){
-    var vardataTables = funcDatatables();
-    $('#requerimientosPendientes').DataTable({
-        'dom': vardataTables[1],
-        'buttons': vardataTables[2],
-        'language' : vardataTables[0],
-        'destroy' : true,
-        'serverSide' : true,
-        'ajax': {
-            url: 'listarRequerimientosPendientesPagos',
-            type: 'POST'
-        },
-        'columns': [
-            {'data': 'id_requerimiento'},
-            {'data': 'tipo_req'},
-            {'data': 'codigo'},
-            {'data': 'concepto'},
-            {'data': 'fecha_requerimiento'},
-            {'render': function (data, type, row){
-                return (row['ubigeo_descripcion'] !== null ? row['ubigeo_descripcion'] : '');
-                }
-            },
-            {'data': 'direccion_entrega'},
-            // {'data': 'grupo', 'name': 'adm_grupo.descripcion'},
-            {'data': 'responsable', 'name': 'sis_usua.nombre_corto'},
-            {'render': function (data, type, row){
-                return row['simbolo']+' '+row['monto'];
-                }
-            },
-            {'render': function (data, type, row){
-                return '<span class="label label-'+row['bootstrap_color']+'">'+row['estado_doc']+'</span>'
-                }
-            }
-        ],
-        'columnDefs': [
-            {'aTargets': [0], 'sClass': 'invisible'},
-            {'render': function (data, type, row){
-                const accion = permisoConfirmarDenegarPago;
-                console.log(accion == '1');
-                if (accion != '1') {
-                    return '<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" '+
-                    'data-placement="bottom" title="Ver Detalle" >'+
-                    '<i class="fas fa-list-ul"></i></button>'
-                } else {
-                    return '<button type="button" class="adjunto btn btn-warning boton" data-toggle="tooltip" '+
-                        'data-placement="bottom" data-id="'+row['id_requerimiento']+'" title="Ver Adjuntos" >'+
-                        '<i class="fas fa-file-download"></i></button>'+
-                    '<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" '+
-                        'data-placement="bottom" title="Ver Detalle" >'+
-                        '<i class="fas fa-list-ul"></i></button>'+
-                    '<button type="button" class="conforme btn btn-success boton" data-toggle="tooltip" '+
-                        'data-placement="bottom" data-id="'+row['id_requerimiento']+'" data-cod="'+row['codigo']+'" data-concepto="'+row['concepto']+'" title="Confirmar Entrega" >'+
-                        '<i class="fas fa-check"></i></button>'+
-                    '<button type="button" class="no_conforme btn btn-danger boton" data-toggle="tooltip" '+
-                        'data-placement="bottom" data-id="'+row['id_requerimiento']+'" data-cod="'+row['codigo']+'" data-concepto="'+row['concepto']+'" title="Confirmar Entrega" >'+
-                        '<i class="fas fa-ban"></i></button>'
-                }
-                }, targets: 10
-            }
-        ],
-    });
-   
-}
+
 
 $('#requerimientosPendientes tbody').on("click","button.adjunto", function(){
     var id_requerimiento = $(this).data('id');
@@ -190,54 +256,6 @@ function confirmacion_pago(data){
         console.log(jqXHR);
         console.log(textStatus);
         console.log(errorThrown);
-    });
-}
-
-function listarRequerimientosConfirmados(){
-    var vardataTables = funcDatatables();
-    $('#requerimientosConfirmados').DataTable({
-        'dom': vardataTables[1],
-        'buttons': vardataTables[2],
-        'language' : vardataTables[0],
-        'destroy' : true,
-        'serverSide' : true,
-        'ajax': {
-            url: 'listarRequerimientosConfirmadosPagos',
-            type: 'POST'
-        },
-        'columns': [
-            {'data': 'id_requerimiento'},
-            {'data': 'tipo_req'},
-            {'data': 'codigo'},
-            {'data': 'concepto'},
-            {'data': 'fecha_requerimiento'},
-            {'render': function (data, type, row){
-                return (row['ubigeo_descripcion'] !== null ? row['ubigeo_descripcion'] : '');
-                }
-            },
-            {'data': 'direccion_entrega'},
-            // {'data': 'grupo', 'name': 'adm_grupo.descripcion'},
-            {'data': 'responsable', 'name': 'sis_usua.nombre_corto'},
-            // {'data': 'estado_doc', 'name': 'adm_estado_doc.estado_doc'},
-            {'render': function (data, type, row){
-                return '<span class="label label-'+row['bootstrap_color']+'">'+row['estado_doc']+'</span>'
-                }
-            },
-            {'render': function (data, type, row){
-                return (row['confirmacion_pago'] ? 'PAGO CONFIRMADO' : 'PAGO NO CONFIRMADO');
-                }
-            },
-            {'data': 'obs_confirmacion'}
-        ],
-        'columnDefs': [
-            {'aTargets': [0], 'sClass': 'invisible'},
-            {'render': function (data, type, row){
-                return (row['estado'] !== 7 ? ('<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" '+
-                    'data-placement="bottom" title="Ver Detalle" >'+
-                    '<i class="fas fa-list-ul"></i></button>') : '')
-                }, targets: 11
-            }
-        ],
     });
 }
    

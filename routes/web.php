@@ -767,7 +767,10 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::post('despacho_conforme', 'DistribucionController@despacho_conforme');
 				Route::post('despacho_no_conforme', 'DistribucionController@despacho_no_conforme');
 				Route::get('imprimir_despacho/{id}', 'DistribucionController@imprimir_despacho');
-
+				Route::get('listarAdjuntosOrdenDespacho/{id}', 'DistribucionController@listarAdjuntosOrdenDespacho');
+				Route::post('guardar_od_adjunto', 'DistribucionController@guardar_od_adjunto');
+				Route::get('anular_od_adjunto/{id}', 'DistribucionController@anular_od_adjunto');
+				
 			});
 
 			Route::group(['as' => 'trazabilidad-requerimientos.', 'prefix' => 'trazabilidad-requerimientos'], function(){

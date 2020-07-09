@@ -56,7 +56,7 @@ Saldos Actuales
                         <th hidden></th>
                         <th>Código</th>
                         <th>Cód.Anexo</th>
-                        <th>Cód.Antiguo</th>
+                        <th>Part Number</th>
                         <th>Descripción</th>
                         <th>Und</th>
                         <th>Stock</th>

@@ -1244,7 +1244,7 @@ class AlmacenController extends Controller
                 [
                     'codigo' => $codigo,
                     'codigo_anexo' => $request->codigo_anexo,
-                    'codigo_proveedor' => $request->codigo_proveedor,
+                    'part_number' => $request->part_number,
                     'id_clasif' => $request->id_clasif,
                     'id_subcategoria' => $request->id_subcategoria,
                     'descripcion' => $des,
@@ -1288,7 +1288,7 @@ class AlmacenController extends Controller
                 ->update([
                     // 'codigo' => $request->codigo,
                     'codigo_anexo' => $request->codigo_anexo,
-                    'codigo_proveedor' => $request->codigo_proveedor,
+                    'part_number' => $request->part_number,
                     'id_subcategoria' => $request->id_subcategoria,
                     'id_categoria' => $request->id_categoria,
                     'id_clasif' => $request->id_clasif,
@@ -4415,7 +4415,7 @@ class AlmacenController extends Controller
         
         $data = DB::table('almacen.mov_alm_det')
             ->select('mov_alm_det.*','mov_alm.fecha_emision','mov_alm.id_tp_mov',
-            'alm_prod.descripcion as prod_descripcion','alm_prod.codigo as prod_codigo',
+            'alm_prod.descripcion as prod_descripcion','alm_prod.codigo as prod_codigo','alm_prod.part_number as prod_part_number',
             'alm_prod.codigo_anexo','alm_und_medida.abreviatura','alm_ubi_posicion.codigo as posicion',
             'tp_ope_com.cod_sunat as cod_sunat_com','tp_ope_com.descripcion as tp_com_descripcion',
             'tp_ope_ven.cod_sunat as cod_sunat_ven','tp_ope_ven.descripcion as tp_ven_descripcion',
@@ -4497,6 +4497,7 @@ class AlmacenController extends Controller
             $nuevo = [
                 "id_mov_alm_det"=>$d->id_mov_alm_det,
                 "prod_codigo"=>$d->prod_codigo,
+                "prod_part_number"=>$d->prod_part_number,
                 "prod_descripcion"=>$d->prod_descripcion,
                 "fecha_emision"=>$d->fecha_emision,
                 "posicion"=>$d->posicion,
@@ -4532,7 +4533,8 @@ class AlmacenController extends Controller
     {
         $data = DB::table('almacen.alm_prod_ubi')
             ->select('alm_prod_ubi.*','alm_prod.codigo','alm_prod.descripcion','alm_ubi_posicion.codigo as cod_posicion',
-            'alm_und_medida.abreviatura','alm_prod.codigo_anexo','sis_moneda.simbolo','alm_cat_prod.descripcion as des_categoria',
+            'alm_und_medida.abreviatura','alm_prod.codigo_anexo','alm_prod.part_number','sis_moneda.simbolo',
+            'alm_cat_prod.descripcion as des_categoria',
             'alm_subcat.descripcion as des_subcategoria','alm_clasif.descripcion as des_clasificacion',
             'alm_prod_antiguo.cod_antiguo','alm_prod.id_moneda','alm_prod.id_unidad_medida',
             DB::raw("(SELECT SUM(alm_det_req.cantidad) FROM almacen.alm_det_req 
@@ -4585,6 +4587,7 @@ class AlmacenController extends Controller
                 'id_almacen'=> $d->id_almacen,
                 'codigo'=> $d->codigo,
                 'codigo_anexo'=> $d->codigo_anexo,
+                'part_number'=> $d->part_number,
                 'cod_antiguo'=> $d->cod_antiguo,
                 'descripcion'=> $d->descripcion,
                 'abreviatura'=> $d->abreviatura,
@@ -4613,7 +4616,8 @@ class AlmacenController extends Controller
     {
         $data = DB::table('almacen.alm_prod_ubi')
             ->select('alm_prod_ubi.*','alm_prod.codigo','alm_prod.descripcion','alm_ubi_posicion.codigo as cod_posicion',
-            'alm_und_medida.abreviatura','alm_prod.codigo_anexo','sis_moneda.simbolo','alm_cat_prod.descripcion as des_categoria',
+            'alm_und_medida.abreviatura','alm_prod.codigo_anexo','alm_prod.part_number','sis_moneda.simbolo',
+            'alm_cat_prod.descripcion as des_categoria',
             'alm_subcat.descripcion as des_subcategoria','alm_clasif.descripcion as des_clasificacion',
             'alm_prod_antiguo.cod_antiguo','alm_prod.id_moneda','alm_prod.id_unidad_medida',
             DB::raw("(SELECT SUM(alm_det_req.cantidad) FROM almacen.alm_det_req 
@@ -4666,6 +4670,7 @@ class AlmacenController extends Controller
                 'id_almacen'=> $d->id_almacen,
                 'codigo'=> $d->codigo,
                 'codigo_anexo'=> $d->codigo_anexo,
+                'part_number'=> $d->part_number,
                 'cod_antiguo'=> $d->cod_antiguo,
                 'descripcion'=> $d->descripcion,
                 'abreviatura'=> $d->abreviatura,

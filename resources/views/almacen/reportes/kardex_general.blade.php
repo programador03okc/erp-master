@@ -38,6 +38,7 @@ Kardex General
                     <tr>
                         <th hidden></th>
                         <th>Código</th>
+                        <th>Part Number</th>
                         <th>Descripción</th>
                         <th>Fecha</th>
                         <th>Ubicación</th>

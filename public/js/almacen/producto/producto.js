@@ -75,7 +75,7 @@ function mostrar_producto(id){
             $('[name=id_producto]').val(response['producto'][0].id_producto);
             $('#codigo').text(response['producto'][0].codigo);
             $('[name=codigo_anexo]').val(response['producto'][0].codigo_anexo);
-            $('[name=codigo_proveedor]').val(response['producto'][0].codigo_proveedor);
+            $('[name=part_number]').val(response['producto'][0].part_number);
             $('[name=descripcion]').val(response['producto'][0].descripcion);
             $('[name=id_unidad_medida]').val(response['producto'][0].id_unidad_medida);
             $('[name=id_subcategoria]').val(response['producto'][0].id_subcategoria).trigger('change.select2');

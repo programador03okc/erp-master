@@ -1281,7 +1281,7 @@ class DistribucionController extends Controller
 
     public function verRequerimientoAdjuntos($id_requerimiento){
         $data = DB::table('almacen.alm_req_adjuntos')
-        ->where('alm_req_adjuntos.id_requerimiento',$id_requerimiento)
+        ->where([['alm_req_adjuntos.id_requerimiento','=',$id_requerimiento],['estado','=',1]])
         ->orderBy('fecha_registro','desc')
         ->get();
         $i = 1;
@@ -1300,4 +1300,75 @@ class DistribucionController extends Controller
         return json_encode($html);
     }
 
+    public function listarAdjuntosOrdenDespacho($id_od){
+        $data = DB::table('almacen.orden_despacho_adjunto')
+        ->where([['orden_despacho_adjunto.id_od','=',$id_od],['estado','!=',7]])
+        ->get();
+        $i = 1;
+        $html = '';
+        foreach($data as $d){
+            $ruta = '/almacen/orden_despacho/'.$d->archivo_adjunto;
+            $file = asset('files').$ruta;
+            $html .= '  
+                <tr id="'.$d->id_od_adjunto.'">
+                    <td>'.$i.'</td>
+                    <td><a href="'.$file.'" target="_blank">'.$d->archivo_adjunto.'</a></td>
+                    <td><i class="fas fa-trash icon-tabla red boton" data-toggle="tooltip" data-placement="bottom" 
+                    title="Anular Adjunto" onClick="anular_adjunto('.$d->id_od_adjunto.');"></i></td>
+                </tr>';
+            $i++;
+        }
+        return json_encode($html);
+    }
+
+    public function guardar_od_adjunto(Request $request){
+        $file = $request->file('archivo_adjunto');
+        $id = 0;
+        if (isset($file)){
+            //obtenemos el nombre del archivo
+            $extension = pathinfo($file->getClientOriginalName(), PATHINFO_EXTENSION);
+            $nombre = $request->codigo_od.'.'.$request->numero.'.'.$extension;
+            //indicamos que queremos guardar un nuevo archivo en el disco local
+            \File::delete(public_path('almacen/orden_despacho/'.$nombre));
+            \Storage::disk('archivos')->put('almacen/orden_despacho/'.$nombre,\File::get($file));
+            
+            $id = DB::table('almacen.orden_despacho_adjunto')->insertGetId(
+                [
+                    'id_od' => $request->id_od,
+                    'archivo_adjunto' => $nombre,
+                    'fecha_registro' => date('Y-m-d H:i:s')
+                ],
+                    'id_od_adjunto'
+                );
+        }
+        return response()->json($id);
+    }
+
+    public function anular_od_adjunto($id_od_adjunto){
+        try {
+            DB::beginTransaction();
+
+            $update = 0;
+            $adjunto = DB::table('almacen.orden_despacho_adjunto')
+            ->where('id_od_adjunto',$id_od_adjunto)
+            ->first();
+
+            $file_path = public_path()."\\files\almacen\orden_despacho\\".$adjunto->archivo_adjunto;
+
+            if (file_exists($file_path)){
+                File::delete($file_path);
+
+                $update = DB::table('almacen.orden_despacho_adjunto')
+                ->where('id_od_adjunto',$id_od_adjunto)
+                ->update(['estado'=>7]);
+            }
+            
+            DB::commit();
+            return response()->json($update);
+            
+        } catch (\PDOException $e) {
+    
+            DB::rollBack();
+        }
+    }
 }
