@@ -133,6 +133,7 @@ Gestión de Despachos
 @include('almacen.distribucion.grupoDespachoDetalle')
 @include('almacen.distribucion.ordenDespachoObs')
 @include('almacen.distribucion.requerimientoObs')
+@include('almacen.distribucion.ordenDespachoAdjuntos')
 @include('logistica.cotizaciones.clienteModal')
 @include('logistica.cotizaciones.proveedorModal')
 @include('logistica.cotizaciones.add_proveedor')

@@ -41,7 +41,6 @@
             <li class="active"><a type="#general">Datos Generales</a></li>
             <li class=""><a type="#ubicacion">Ubicaciones</a></li>
             <li class=""><a type="#serie">Control de Series</a></li>
-            {{-- <li class=""><a type="#merma">Merma y Desmedro</a></li> --}}
         </ul>
         <div class="content-tabs">
             <section id="general" hidden>
@@ -154,8 +153,8 @@
                                     <input type="text" class="form-control activation" name="codigo_anexo" disabled="true">
                                 </div>              
                                 <div class="col-md-4">
-                                    <h5>Código Proveedor</h5>
-                                    <input type="text" class="form-control activation" name="codigo_proveedor" disabled="true">
+                                    <h5>Part Number</h5>
+                                    <input type="text" class="form-control activation" name="part_number" disabled="true">
                                 </div>
                                 <div class="col-sm-4">
                                     <h5>Moneda</h5>
