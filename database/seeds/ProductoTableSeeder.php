@@ -37,6 +37,12 @@ class ProductoTableSeeder extends Seeder
 
             DB::table('almacen.alm_prod')->where('id_producto',$id)
             ->update(['codigo'=>$nextId]);
+
+            DB::table('almacen.alm_item')->insert([   
+                    'id_producto' => $id,
+                    'codigo' => $nextId,
+                    'fecha_registro' => date('Y-m-d H:i:s')
+                ]);
         }
     }
 
