@@ -89,7 +89,11 @@ class Usuario extends Authenticatable
 		->get();
 		$texto = '';
 		foreach ($roles as $s) {
-			$texto.=$s->descripcion.'  ';
+			if ($texto == ''){
+				$texto.=$s->descripcion;
+			} else {
+				$texto.=', '.$s->descripcion;
+			}
 		}
 		return $texto;
     }

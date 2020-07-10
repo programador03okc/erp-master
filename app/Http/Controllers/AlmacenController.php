@@ -24,7 +24,8 @@ class AlmacenController extends Controller
     }
     function view_main_almacen()
     {
-        $cantidades = $this->cantidades_main();
+        $cantidades = AlmacenController::cantidades_main();
+        $cantidad_ordenes_pendientes = $cantidades['orden'];
         $cantidad_despachos_pendientes = $cantidades['despachos'];
         $cantidad_ingresos_pendientes = $cantidades['ingresos'];
         $cantidad_salidas_pendientes = $cantidades['salidas'];
@@ -32,6 +33,7 @@ class AlmacenController extends Controller
         $cantidad_pagos_pendientes = $cantidades['pagos'];
 
         return view('almacen/main', compact(
+            'cantidad_ordenes_pendientes',
             'cantidad_despachos_pendientes',
             'cantidad_ingresos_pendientes',
             'cantidad_salidas_pendientes',
@@ -39,7 +41,7 @@ class AlmacenController extends Controller
             'cantidad_pagos_pendientes'
             ));
     }
-    public function cantidades_main(){
+    public static function cantidades_main(){
         $reservados = DB::table('almacen.alm_req')
         ->select('alm_req.estado','alm_req.id_tipo_requerimiento','alm_req.confirmacion_pago',
                 'alm_almacen.id_sede as sede_requerimiento','log_ord_compra.id_sede as sede_orden',
@@ -78,6 +80,14 @@ class AlmacenController extends Controller
                     $despachos++;
             }
         }
+        
+        $req = DB::table('almacen.alm_req')
+        ->where([['estado','=',1],['confirmacion_pago','=',false]])
+        ->count();
+
+        $orden = DB::table('almacen.alm_req')
+        ->where([['estado','=',1],['confirmacion_pago','=',true]])
+        ->count();
 
         $ingresos = DB::table('almacen.alm_req')
         ->where([['estado','=',5]])
@@ -96,7 +106,7 @@ class AlmacenController extends Controller
         ->orWhere([['id_tipo_requerimiento','=',2],['estado','=',19],['confirmacion_pago','=',false]])
         ->count();
 
-        return (['despachos'=>$despachos,'ingresos'=>$ingresos, 'salidas'=>$salidas, 
+        return (['requerimientos'=>$req,'orden'=>$orden,'despachos'=>$despachos,'ingresos'=>$ingresos, 'salidas'=>$salidas, 
         'transferencias'=>$transferencias, 'pagos'=>$pagos]);
     }
 
