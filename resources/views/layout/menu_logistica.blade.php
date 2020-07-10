@@ -1,6 +1,6 @@
 @section('sidebar')
 <ul class="sidebar-menu" data-widget="tree">
-    <li><a href="{{route('logistica.index')}}"><i class="fas fa-tachometer-alt"></i> <span>Dashboard</span></a></li>
+    <li><a href="{{route('logistica.index')}}"><i class="fas fa-tachometer-alt"></i> <span>Logística y Almacenes</span></a></li>
     @if(Auth::user()->tieneSubModuloPadre(48))
     <li class=" treeview ">
         <a href="#">
