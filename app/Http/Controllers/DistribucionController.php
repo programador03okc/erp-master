@@ -1336,6 +1336,7 @@ class DistribucionController extends Controller
                 [
                     'id_od' => $request->id_od,
                     'archivo_adjunto' => $nombre,
+                    'estado' => 1,
                     'fecha_registro' => date('Y-m-d H:i:s')
                 ],
                     'id_od_adjunto'

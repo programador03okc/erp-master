@@ -11,12 +11,11 @@ $(function(){
         var idCo = $(this)[0].childNodes[1].innerHTML;
         var ruc = $(this)[0].childNodes[2].innerHTML;
         var des = $(this)[0].childNodes[3].innerHTML;
-        $('.modal-footer #razon_social').text('');
 
         $('.modal-footer #id_proveedor').text(idTr);
         $('.modal-footer #id_contribuyente').text(idCo);
         $('.modal-footer #ruc').text(ruc);
-        $('.modal-footer #razon_social').text(des);
+        $('.modal-footer #select_razon_social').text(des);
     });
 });
 
@@ -33,7 +32,7 @@ function listar_proveedores(){
             {'data': 'id_contribuyente'},
             {'data': 'nro_documento'},
             {'data': 'razon_social'},
-            {'data': 'telefono'}
+            // {'data': 'telefono'}
         ],
         'columnDefs': [{ 'aTargets': [0,1], 'sClass': 'invisible'}],
     });
@@ -50,7 +49,7 @@ function proveedorModal(){
 function selectProveedor(){
     var myId = $('.modal-footer #id_proveedor').text();
     var idCo = $('.modal-footer #id_contribuyente').text();
-    var des = $('.modal-footer #razon_social').text();
+    var des = $('.modal-footer #select_razon_social').text();
     var ruc = $('.modal-footer #ruc').text();
     var page = $('.page-main').attr('type');
     // console.log('page: '+page);
@@ -90,7 +89,7 @@ function selectProveedor(){
     }
     else if (page == "requerimientosPendientes"){
         $('[name=gd_id_proveedor]').val(myId);
-        $('[name=gd_razon_social]').val(des);            
+        $('[name=gd_razon_social]').val(des);        
     }
     else {
         $('[name=id_proveedor]').val(myId);

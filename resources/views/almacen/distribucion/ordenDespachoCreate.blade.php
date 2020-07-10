@@ -14,7 +14,7 @@
                         <div class="col-md-4">
                             <h5>Tipo Cliente</h5>
                             <div class="input-group-okc">
-                                    <select name="tipo_cliente" name="tipo_cliente" onChange="changeTipoCliente(event);"
+                                <select name="tipo_cliente" name="tipo_cliente" onChange="changeTipoCliente(event);"
                                     class="form-control activation" style="width:100px" required>
                                     <!-- <option value="0">Elija una opción</option> -->
                                     <option value="1" default>Persona Natural</option>

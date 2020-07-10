@@ -886,7 +886,8 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::get('listarAdjuntosOrdenDespacho/{id}', 'DistribucionController@listarAdjuntosOrdenDespacho');
 					Route::post('guardar_od_adjunto', 'DistribucionController@guardar_od_adjunto');
 					Route::get('anular_od_adjunto/{id}', 'DistribucionController@anular_od_adjunto');
-					
+					Route::post('guardar_proveedor', 'LogisticaController@guardar_proveedor');
+
 				});
 	
 				Route::group(['as' => 'trazabilidad-requerimientos.', 'prefix' => 'trazabilidad-requerimientos'], function(){

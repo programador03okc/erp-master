@@ -4877,38 +4877,56 @@ class LogisticaController extends Controller
     }
 
     public function guardar_proveedor(Request $request){
-        $fecha = date('Y-m-d H:i:s');
-        $output=[];
-        $id_contribuyente = DB::table('contabilidad.adm_contri')->insertGetId(
-            [
-                'id_tipo_contribuyente'=>$request->id_tipo_contribuyente, 
-                'id_doc_identidad'=>$request->id_doc_identidad, 
-                'nro_documento'=>$request->nro_documento, 
-                'razon_social'=>$request->razon_social, 
-                'estado'=>1,
-                'fecha_registro'=>$fecha
-            ],
-                'id_contribuyente'
-            );
-        $id_proveedor = DB::table('logistica.log_prove')->insertGetId(
-            [
-                'id_contribuyente'=>$id_contribuyente,
-                'codigo'=>'000',
-                'estado'=>1,
-                'fecha_registro'=>$fecha
-            ],
-                'id_proveedor'
-            );
-        $data = DB::table('logistica.log_prove')
-            ->select('log_prove.id_proveedor','adm_contri.nro_documento','adm_contri.razon_social')
-            ->join('contabilidad.adm_contri','adm_contri.id_contribuyente','=','log_prove.id_contribuyente')
-            ->where([['adm_contri.estado','=',1],['log_prove.estado','=',1]])->get();
-        $html = '';
+        try {
+            DB::beginTransaction();
 
-        foreach($data as $d){
-            $output[] = ['id_proveedor'=>$id_proveedor, 'nro_documento'=>$request->nro_documento, 'razon_social'=>$request->razon_social];
+            $fecha = date('Y-m-d H:i:s');
+
+            $exist = DB::table('contabilidad.adm_contri')
+            ->where([['nro_documento','=',$request->nro_documento],['estado','!=',7]])
+            ->first();
+
+            $id_proveedor = 0;
+
+            if ($exist == null){
+                $id_contribuyente = DB::table('contabilidad.adm_contri')->insertGetId(
+                    [
+                        'id_tipo_contribuyente'=>$request->id_tipo_contribuyente, 
+                        'id_doc_identidad'=>$request->id_doc_identidad, 
+                        'nro_documento'=>$request->nro_documento, 
+                        'razon_social'=>strtoupper($request->razon_social), 
+                        'estado'=>1,
+                        'fecha_registro'=>$fecha
+                    ],
+                        'id_contribuyente'
+                    );
+                $id_proveedor = DB::table('logistica.log_prove')->insertGetId(
+                    [
+                        'id_contribuyente'=>$id_contribuyente,
+                        // 'codigo'=>'000',
+                        'estado'=>1,
+                        'fecha_registro'=>$fecha
+                    ],
+                        'id_proveedor'
+                    );
+            }
+            
+            DB::commit();
+            return response()->json(['id_proveedor'=>$id_proveedor,'razon_social'=>strtoupper($request->razon_social)]);
+            
+        } catch (\PDOException $e) {
+            DB::rollBack();
         }
-        return json_encode($output);
+        // $data = DB::table('logistica.log_prove')
+        //     ->select('log_prove.id_proveedor','adm_contri.nro_documento','adm_contri.razon_social')
+        //     ->join('contabilidad.adm_contri','adm_contri.id_contribuyente','=','log_prove.id_contribuyente')
+        //     ->where([['adm_contri.estado','=',1],['log_prove.estado','=',1]])->get();
+        // $html = '';
+
+        // foreach($data as $d){
+        //     $output[] = ['id_proveedor'=>$id_proveedor, 'nro_documento'=>$request->nro_documento, 'razon_social'=>$request->razon_social];
+        // }
+        // return json_encode($output);
     }
     public function registrar_proveedor(Request $request)
     {
