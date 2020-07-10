@@ -77,7 +77,7 @@ function adjuntoRequerimientoModal(event){
             // get_data_archivos_adjuntos(data_item[index].id_detalle_requerimiento);
             
         }else{ //no existe id_detalle_requerimiento => es un nuevo requerimiento
-            alert("es nuevo requerimiento.... debe guardar el requerimiento primero");
+            alert("Primero debe guardar el requerimiento");
         }
 }
 

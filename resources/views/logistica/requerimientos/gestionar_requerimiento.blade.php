@@ -304,8 +304,8 @@
                             <th>#</th>
                             <th>ARCHIVO</th>
                             <th width="120">
-                                <center><button class="btn btn-xs btn-success activation" onClick="adjuntoRequerimientoModal(event);" id="btnAgregarAdjuntoReq"
-                                    data-toggle="tooltip" data-placement="bottom"  title="Agregar Adjunto" disabled><i class="fas fa-plus"></i>
+                                <center><button class="btn btn-xs btn-success" onClick="adjuntoRequerimientoModal(event);" id="btnAgregarAdjuntoReq"
+                                    data-toggle="tooltip" data-placement="bottom"  title="Agregar Adjunto"><i class="fas fa-plus"></i>
                                 </button></center>
                             </th>
                         </tr>

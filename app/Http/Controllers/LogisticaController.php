@@ -736,6 +736,7 @@ class LogisticaController extends Controller
                             'estado'                    => $data->estado,
                             'adjunto'                   => [],
                             'codigo_item'                => $data->codigo_item,
+                            'part_number'                => $data->part_number,
                             'id_tipo_item'                => $data->id_tipo_item,
 
                             'id_servicio'               => $data->id_servicio,
