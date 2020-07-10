@@ -14,6 +14,7 @@
                             <th></th>
                             <th></th>
                             <th>CODIGO</th>
+                            <th>PART NUMBER</th>
                             <th>DESCRIPCION</th>
                             <th width="120">UNIDAD</th>
                         </tr>
@@ -24,6 +25,7 @@
             <div class="modal-footer">
                 <label style="display: none;" id="id_item"></label>
                 <label style="display: none;" id="codigo"></label>
+                <label style="display: none;" id="part_number"></label>
                 <label style="display: none;" id="descripcion"></label>
                 <label style="display: none;" id="id_producto"></label>
                 <label style="display: none;" id="id_servicio"></label>

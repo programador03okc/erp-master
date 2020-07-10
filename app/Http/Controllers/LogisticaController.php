@@ -656,6 +656,7 @@ class LogisticaController extends Controller
                     'alm_item.codigo AS codigo_item',
                     'alm_item.fecha_registro AS alm_item_fecha_registro',
                     'alm_prod.codigo AS alm_prod_codigo',
+                    'alm_prod.part_number',
                     'alm_prod.descripcion AS alm_prod_descripcion',
 
                     // 'alm_prod.id_unidad_medida AS prod_id_unidad_medida',
@@ -743,6 +744,7 @@ class LogisticaController extends Controller
                             'log_tp_servi_descripcion'   => $data->log_tp_servi_descripcion,
 
                             'id_producto'               => $data->id_producto,
+                            'codigo_producto'            => $data->alm_prod_codigo,
                             'codigo_producto'            => $data->alm_prod_codigo,
                             // 'descripcion'               => $requerimiento[0]["id_tipo_requerimiento"] ==1?$data->alm_prod_descripcion:($requerimiento[0]["id_tipo_requerimiento"] ==2?$data->log_servi_descripcion:''),
                             'descripcion'               => $data->id_tipo_item == 1 ? $data->alm_prod_descripcion : ($data->id_tipo_item == 2 ? $data->log_servi_descripcion : ($data->id_tipo_item == 3 ? $data->equipo_descripcion : $data->descripcion_adicional)),
@@ -2080,6 +2082,7 @@ class LogisticaController extends Controller
                             ELSE 'nulo' END) AS unidad_medida_descripcion
                             "),
 
+                'alm_prod.part_number',
                 'alm_prod.id_unidad_medida',
                 'alm_prod_ubi.stock'
             )
@@ -2117,6 +2120,7 @@ class LogisticaController extends Controller
                 WHEN alm_item.id_servicio isNUll AND alm_item.id_producto isNull THEN equipo.descripcion 
                 ELSE 'nulo' END) AS descripcion
                 "),
+                'alm_prod.part_number',
                 'alm_prod.id_unidad_medida',
                 'alm_und_medida.descripcion AS unidad_medida_descripcion',
                 'alm_prod_ubi.stock'
@@ -7894,7 +7898,7 @@ class LogisticaController extends Controller
                             'codigo_item'                => $data->codigo_item,
                             'id_tipo_item'                => $data->id_tipo_item,
                             'id_producto'               => $data->id_producto,
-                            'codigo_producto'            => $data->alm_prod_codigo,
+                            'part_number'               => $data->part_number,
                             'descripcion'               => $data->descripcion_adicional,
                             'subtotal'               =>  $subtotal,
                         ];

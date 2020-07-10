@@ -518,6 +518,7 @@ function mostrar_requerimiento(IdorCode){
                         'id_equipo':detalle_requerimiento[x].id_equipo,
                         'id_requerimiento':response['requerimiento'][0].id_requerimiento,
                         'id_detalle_requerimiento':detalle_requerimiento[x].id_detalle_requerimiento,
+                        'part_number':detalle_requerimiento[x].part_number,
                         'cod_item':detalle_requerimiento[x].codigo_item,
                         'des_item':detalle_requerimiento[x].descripcion?detalle_requerimiento[x].descripcion:detalle_requerimiento[x].descripcion_adicional, 
                         'id_unidad_medida':detalle_requerimiento[x].id_unidad_medida,
@@ -655,6 +656,7 @@ function modal_area(){
 function limpiarFormularioDetalleRequerimiento(){
     $('[name=estado]').val('');
     $('[name=id_item]').val('');
+    $('[name=part_number]').val('');
     $('[name=id_producto]').val('');
     $('[name=id_servicio]').val('');
     $('[name=id_equipo]').val('');
@@ -704,7 +706,7 @@ function agregarItem(){
     //     /////////////////////////////////////////
         let tam_data_item = data_item.length;
         data_item.push(item);
-        console.log(data_item);
+        // console.log(data_item);
         
         let update_tam_data_item= data_item.length;
         if(update_tam_data_item > tam_data_item  ){
@@ -775,14 +777,14 @@ function calcMontoLimiteDePartida(){
             return prev;
         }, new Map());
 
-        console.log([...counts]);
+        // console.log([...counts]);
 
         partidaList = ListOfItems.reduce((prev, curr) => {
             prev.set(curr.id_partida, curr.codigo_partida );
             return prev;
         }, new Map());
 
-        console.log([...partidaList]);
+        // console.log([...partidaList]);
 
 
 
@@ -803,7 +805,7 @@ function calcMontoLimiteDePartida(){
                 });
         });
 
-        console.log(reducedObjArr);
+        // console.log(reducedObjArr);
 
         reducedObjArr.map((item)=>{
             if(item.id_partida == [...partidaList][0][0] ){
@@ -890,14 +892,15 @@ function llenar_tabla_detalle_requerimiento(data_item){
             }
             row.insertCell(0).innerHTML = data_item[a].id_item?data_item[a].id_item:'0';
             row.insertCell(1).innerHTML = data_item[a].cod_item?data_item[a].cod_item:'0';
-            row.insertCell(2).innerHTML = data_item[a].des_item?data_item[a].des_item:'-';
-            row.insertCell(3).innerHTML = descripcion_unidad;
-            row.insertCell(4).innerHTML = data_item[a].cantidad?data_item[a].cantidad:'0';
-            row.insertCell(5).innerHTML = data_item[a].precio_referencial?data_item[a].precio_referencial:'0';
-            row.insertCell(6).innerHTML = data_item[a].fecha_entrega?data_item[a].fecha_entrega:null;
-            row.insertCell(7).innerHTML = data_item[a].lugar_entrega?data_item[a].lugar_entrega:'-';
+            row.insertCell(2).innerHTML = data_item[a].part_number?data_item[a].part_number:'-';
+            row.insertCell(3).innerHTML = data_item[a].des_item?data_item[a].des_item:'-';
+            row.insertCell(4).innerHTML = descripcion_unidad;
+            row.insertCell(5).innerHTML = data_item[a].cantidad?data_item[a].cantidad:'0';
+            row.insertCell(6).innerHTML = data_item[a].precio_referencial?data_item[a].precio_referencial:'0';
+            row.insertCell(7).innerHTML = data_item[a].fecha_entrega?data_item[a].fecha_entrega:null;
+            row.insertCell(8).innerHTML = data_item[a].lugar_entrega?data_item[a].lugar_entrega:'-';
 
-            var tdBtnAction = row.insertCell(8);
+            var tdBtnAction = row.insertCell(9);
             // tdBtnAction.className = classHiden;
             tdBtnAction.setAttribute('width',widthGroupBtnAction);
             tdBtnAction.innerHTML = '<div class="btn-group btn-group-sm" role="group" aria-label="Second group">'+
@@ -988,6 +991,7 @@ function get_data_detalle_requerimiento(){
     var id_equipo = $('[name=id_equipo]').val();
     var id_detalle_requerimiento = $('[name=id_detalle_requerimiento]').val();
     var cod_item = $('[name=codigo_item]').val();
+    var part_number = $('[name=part_number]').val();
     var des_item = $('[name=descripcion_item]').val();
     // var id_unidad_medida = $('[name=unidad_medida_item]').val() !=="" ?$('[name=unidad_medida_item]').val():0;
     var id_unidad_medida = $('[name=unidad_medida_item]').val();
@@ -1016,6 +1020,7 @@ function get_data_detalle_requerimiento(){
         'id_equipo':parseInt(id_equipo),
         'id_detalle_requerimiento':parseInt(id_detalle_requerimiento),
         'cod_item':cod_item,
+        'part_number':part_number,
         'des_item':des_item,
         'id_unidad_medida':parseInt(id_unidad_medida),
         'unidad':und_text,
@@ -1239,7 +1244,7 @@ function fill_input_detalle_requerimiento(item){
 function archivosAdjuntosModal(event,index){
     event.preventDefault();
 
-console.log(data_item);
+// console.log(data_item);
 
     if(data_item.length >0){
         id_detalle_requerimiento = data_item[index].id_detalle_requerimiento;
@@ -1560,7 +1565,7 @@ function catalogoItemsModal(){
     }
     else if(tipo == 2){
         var almacen = $('[name=id_almacen]').val();
-        console.log(almacen);
+        // console.log(almacen);
         
         saldosModal(almacen);
     }
@@ -1627,9 +1632,11 @@ $(function(){
         var idServ = $(this)[0].children[2].innerHTML;
         var idEqui = $(this)[0].children[3].innerHTML;
         var codigo = $(this)[0].children[4].innerHTML;
-        var descri = $(this)[0].children[5].innerHTML;
+        var partNum = $(this)[0].children[5].innerHTML;
+        var descri = $(this)[0].children[6].innerHTML;
         $('.modal-footer #id_item').text(idItem);
         $('.modal-footer #codigo').text(codigo);
+        $('.modal-footer #part_number').text(partNum);
         $('.modal-footer #descripcion').text(descri);
         $('.modal-footer #id_producto').text(idProd);
         $('.modal-footer #id_servicio').text(idServ);
@@ -1655,6 +1662,7 @@ function listarItems() {
             {'data': 'id_servicio'},
             {'data': 'id_equipo'},
             {'data': 'codigo'},
+            {'data': 'part_number'},
             {'data': 'descripcion'},
             {'data': 'unidad_medida_descripcion'}
         ],
@@ -1693,6 +1701,7 @@ function controlUnidadMedida(){
 
 function selectItem(){
     var id_item = $('.modal-footer #id_item').text();
+    var part_number = $('.modal-footer #part_number').text();
     var id_producto = $('.modal-footer #id_producto').text();
     var id_servicio = $('.modal-footer #id_servicio').text();
     var id_equipo = $('.modal-footer #id_equipo').text();
@@ -1729,12 +1738,13 @@ function mostrar_item(id){
         url: baseUrl,
         dataType: 'JSON',
         success: function(response){
-            // console.log(response);
+            console.log(response);
             let btnVerUltimasCompras = document.getElementsByName('btnVerUltimasCompras')[0];
             btnVerUltimasCompras.removeAttribute('disabled');
             btnVerUltimasCompras.setAttribute('class','btn btn-sm btn-default');
 
             $('[name=id_item]').val(response[0].id_item);
+            $('[name=part_number]').val(response[0].part_number);
             $('[name=id_producto]').val(response[0].id_producto);
             $('[name=id_servicio]').val(response[0].id_servicio);
             $('[name=id_equipo]').val(response[0].id_equipo);
