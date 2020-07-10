@@ -36,7 +36,7 @@ function guardar_proveedor(){
     } else {
         $("#submitProveedor").attr('disabled','true');
         var formData = new FormData($('#form-proveedor')[0]);
-        console.log(formData);
+        // console.log(formData);
         $.ajax({
             type: 'POST',
             headers: {'X-CSRF-TOKEN': token},
@@ -47,7 +47,7 @@ function guardar_proveedor(){
             processData: false,
             dataType: 'JSON',
             success: function(response){
-                console.log(response);
+                // console.log(response);
                 
                 if (response['id_proveedor'] > 0){
                     alert('Proveedor registrado con éxito');
@@ -58,6 +58,10 @@ function guardar_proveedor(){
                     if (page == "requerimientosPendientes"){
                         $('[name=gd_id_proveedor]').val(response['id_proveedor']);
                         $('[name=gd_razon_social]').val(response['razon_social']);
+                    }
+                    if( page == "orden-requerimiento"){
+                        $('[name=id_proveedor]').val(response['id_proveedor']);
+                        $('[name=razon_social]').val(response['razon_social']);
                     }
                 } else {
                     alert('Ya se encuentra registrado un Proveedor con dicho Nro de Documento!');

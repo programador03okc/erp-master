@@ -164,7 +164,7 @@ function obtenerRequerimiento(id){
         success: function(response){
             detalleRequerimientoSelected=response.det_req;
             listar_detalle_orden_requerimiento(response.det_req);
-            console.log(response); 
+            // console.log(response); 
             document.querySelector("div[id='modal-orden-requerimiento'] span[id='codigo_requeriento_seleccionado']").textContent= ' - Requerimiento: '+ response.requerimiento.codigo;
             document.querySelector("div[id='modal-orden-requerimiento'] input[name='id_requerimiento']").value= response.requerimiento.id_requerimiento;
             // document.querySelector("div[id='modal-orden-requerimiento'] select[name='sede']").value= response.requerimiento.id_sede;

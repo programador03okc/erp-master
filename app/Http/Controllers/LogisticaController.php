@@ -1379,7 +1379,7 @@ class LogisticaController extends Controller
 
             if (isset($file)) {
                 // $name_file = "R" . time() . $file->getClientOriginalName();
-                $name_file = $codigo_requerimiento.$nextValId;
+                $name_file = $codigo_requerimiento.'-'.$nextValId;
                 if ($request->id_requerimiento > 0 || $request->id_requerimiento !== NULL) {
 
                     $alm_req_adjuntos = DB::table('almacen.alm_req_adjuntos')->insertGetId(
@@ -1424,7 +1424,7 @@ class LogisticaController extends Controller
 
             if (isset($file)) {
                 // $name_file = "DR" . time() . $file->getClientOriginalName();
-                $name_file = $codigo_requerimiento.$nextValId;
+                $name_file = $codigo_requerimiento.'-'.$nextValId;
                 if ($request->id_detalle_requerimiento > 0 || $request->id_detalle_requerimiento !== NULL) {
 
                     $alm_det_req_adjuntos = DB::table('almacen.alm_det_req_adjuntos')->insertGetId(
@@ -2084,18 +2084,11 @@ class LogisticaController extends Controller
 
                 'alm_prod.part_number',
                 'alm_prod.id_unidad_medida',
-                'alm_prod_ubi.stock'
             )
             ->leftJoin('almacen.alm_prod', 'alm_prod.id_producto', '=', 'alm_item.id_producto')
-            ->leftJoin('almacen.alm_prod_ubi', 'alm_prod_ubi.id_producto', '=', 'alm_prod.id_producto')
             ->leftJoin('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'alm_prod.id_unidad_medida')
             ->leftJoin('logistica.log_servi', 'log_servi.id_servicio', '=', 'alm_item.id_servicio')
             ->leftJoin('logistica.equipo', 'equipo.id_equipo', '=', 'alm_item.id_equipo')
-            // ->where([
-            // ['alm_prod_ubi.stock', '>', 0],
-            // ['alm_prod_ubi.estado', '=', 1]
-            // ])
-            // ->limit(500)
             ->get();
         return response()->json(["data" => $data]);
     }
