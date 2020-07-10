@@ -98,35 +98,6 @@
                 <canvas id="chartRequerimientos" width="600" height="300"></canvas>
             </div>
         </div>
-        <div class="row">
-            <div class="col-md-4" style="display:flex;">
-                
-                <!-- <div class="info-box bg-green">
-                    <span class="info-box-icon"><i class="fas fa-cubes"></i></span>
-
-                    <div class="info-box-content">
-                        <span class="info-box-text">Saldos Actuales</span>
-                        <span class="info-box-number">92,050</span>
-
-                        <div class="progress">
-                            <div class="progress-bar" style="width: 20%"></div>
-                        </div>
-                        <span class="progress-description">
-                            20% Increase in 30 Days
-                        </span>
-                    </div>
-                </div> -->
-                <!-- <div class="info-box">
-                    <a href="{{route('logistica.almacen.reportes.saldos.index')}}" class="small-box-footer">
-                        <span class="info-box-icon bg-green"><i class="fas fa-cubes"></i></span>
-                    </a>
-                    <div class="info-box-content">
-                        <span class="info-box-text">Saldos Actuales </span>
-                        <span class="info-box-number">760</span>
-                    </div>
-                </div> -->
-            </div>
-        </div>
     </div>
     <div class="col-md-3">
         <div class="row">
