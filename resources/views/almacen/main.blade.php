@@ -1,5 +1,5 @@
 @extends('layout.main')
-@include('layout.menu_almacen')
+@include('layout.menu_logistica')
 @section('cabecera')
     Dashboard Almacén
 @endsection
