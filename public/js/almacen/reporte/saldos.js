@@ -43,6 +43,8 @@ function listarSaldos(url){
             {'data': 'codigo'},
             {'data': 'codigo_anexo'},
             {'data': 'part_number'},
+            {'data': 'des_categoria'},
+            {'data': 'des_subcategoria'},
             {'data': 'descripcion'},
             {'data': 'abreviatura'},
             {'data': 'stock', 'class': 'right'},
@@ -68,8 +70,6 @@ function listarSaldos(url){
             //     }
             // },
             {'data': 'des_clasificacion'},
-            {'data': 'des_categoria'},
-            {'data': 'des_subcategoria'},
         ],
         'columnDefs': [{ 'aTargets': [0], 'sClass': 'invisible'}],
         "order": [[4, "asc"]]

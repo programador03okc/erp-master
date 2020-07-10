@@ -57,6 +57,8 @@ Saldos Actuales
                         <th>Código</th>
                         <th>Cód.Anexo</th>
                         <th>Part Number</th>
+                        <th>Categoría</th>
+                        <th>SubCategoría</th>
                         <th>Descripción</th>
                         <th>Und</th>
                         <th>Stock</th>
@@ -68,8 +70,6 @@ Saldos Actuales
                         <th>Costo Promedio</th>
                         <th>Ubicación</th>
                         <th>Clasificación</th>
-                        <th>Categoría</th>
-                        <th>SubCategoría</th>
                     </tr>
                 </thead>
                 <tbody></tbody>
