@@ -18,7 +18,7 @@
                         <p style="font-size:15px;display:flex;width:20px;">Despachos Pendientes</p>
                     </div>
                     @if(Auth::user()->tieneAplicacion(80))
-                    <a href="{{route('almacen.distribucion.despachos.index')}}" class="small-box-footer">Ir <i class="fa fa-arrow-circle-right"></i></a>
+                    <a href="{{route('logistica.almacen.distribucion.despachos.index')}}" class="small-box-footer">Ir <i class="fa fa-arrow-circle-right"></i></a>
                     @else
                     <a href="#" class="small-box-footer">Ir <i class="fa fa-arrow-circle-right"></i></a>
                     @endif
@@ -34,7 +34,7 @@
                         <p style="font-size:15px;display:flex;width:20px;">Ingresos Pendientes</p>
                     </div>
                     @if(Auth::user()->tieneAplicacion(82))
-                    <a href="{{route('almacen.movimientos.pendientes-ingreso.index')}}" class="small-box-footer">Ir <i class="fa fa-arrow-circle-right"></i></a>
+                    <a href="{{route('logistica.almacen.movimientos.pendientes-ingreso.index')}}" class="small-box-footer">Ir <i class="fa fa-arrow-circle-right"></i></a>
                     @else
                     <a href="#" class="small-box-footer">Ir <i class="fa fa-arrow-circle-right"></i></a>
                     @endif
@@ -51,7 +51,7 @@
                         <p style="font-size:15px;display:flex;width:20px;">Salidas Pendientes</p>
                     </div>
                     @if(Auth::user()->tieneAplicacion(83))
-                    <a href="{{route('almacen.movimientos.pendientes-salida.index')}}" class="small-box-footer">Ir <i class="fa fa-arrow-circle-right"></i></a>
+                    <a href="{{route('logistica.almacen.movimientos.pendientes-salida.index')}}" class="small-box-footer">Ir <i class="fa fa-arrow-circle-right"></i></a>
                     @else
                     <a href="#" class="small-box-footer">Ir <i class="fa fa-arrow-circle-right"></i></a>
                     @endif
@@ -68,7 +68,7 @@
                     <p style="font-size:15px;display:flex;width:20px;">Transferencias Pendientes</p>
                 </div>
                 @if(Auth::user()->tieneAplicacion(86))
-                <a href="{{route('almacen.transferencias.gestion-transferencias.index')}}" class="small-box-footer">Ir <i class="fa fa-arrow-circle-right"></i></a>
+                <a href="{{route('logistica.almacen.transferencias.gestion-transferencias.index')}}" class="small-box-footer">Ir <i class="fa fa-arrow-circle-right"></i></a>
                 @else
                 <a href="#" class="small-box-footer">Ir <i class="fa fa-arrow-circle-right"></i></a>
                 @endif
@@ -102,7 +102,7 @@
                         <p style="font-size:15px;display:flex;width:20px;">Confirmaciones de Pago</p>
                     </div>
                     @if(Auth::user()->tieneAplicacion(79))
-                    <a href="{{route('almacen.pagos.confirmacion-pagos.index')}}" class="small-box-footer">Ir <i class="fa fa-arrow-circle-right"></i></a>
+                    <a href="{{route('logistica.almacen.pagos.confirmacion-pagos.index')}}" class="small-box-footer">Ir <i class="fa fa-arrow-circle-right"></i></a>
                     @else
                     <a href="#" class="small-box-footer">Ir <i class="fa fa-arrow-circle-right"></i></a>
                     @endif
