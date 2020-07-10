@@ -73,7 +73,7 @@ function botones(tbody, tabla){
     $(tbody).on("click","button.ver", function(){
         var data = tabla.row($(this).parents("tr")).data();
         var id = encode5t(data.id_mov_alm);
-        window.open('imprimir_guia_salida/'+id);
+        window.open('imprimir_salida/'+id);
     });
 }
 /**Filtros Modal */

@@ -33,6 +33,7 @@ function listarSaldos(url){
         'buttons': vardataTables[2],
         'language' : vardataTables[0],
         'destroy':true,
+        "scrollX": true,
         'ajax': url,
         // 'ajax': {
         //     url:'listar_saldos/'+almacen,

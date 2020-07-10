@@ -1133,15 +1133,17 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::get('index', 'AlmacenController@view_busqueda_ingresos')->name('index');
 					Route::get('listar_busqueda_ingresos/{alm}/{tp}/{des}/{doc}/{fini}/{ffin}', 'AlmacenController@listar_busqueda_ingresos');
 					Route::get('select_almacenes_empresa/{id}', 'AlmacenController@select_almacenes_empresa');
+					Route::get('imprimir_ingreso/{id}', 'AlmacenController@imprimir_ingreso');
 					Route::get('imprimir_guia_ingreso/{id}', 'AlmacenController@imprimir_guia_ingreso');
 					
 				});
-	
+				
 				Route::group(['as' => 'detalle-salidas.', 'prefix' => 'detalle-salidas'], function(){
-	
+					
 					Route::get('index', 'AlmacenController@view_busqueda_salidas')->name('index');
 					Route::get('listar_busqueda_salidas/{alm}/{tp}/{des}/{doc}/{fini}/{ffin}', 'AlmacenController@listar_busqueda_salidas');
 					Route::get('select_almacenes_empresa/{id}', 'AlmacenController@select_almacenes_empresa');
+					Route::get('imprimir_salida/{id}', 'AlmacenController@imprimir_salida');
 					
 				});
 	
