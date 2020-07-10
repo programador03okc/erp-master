@@ -120,13 +120,16 @@ function listar_detalle_ingreso(id_requerimiento){
                 html+='<tr id="'+element.id_mov_alm_det+'">'+
                 '<td><input type="checkbox" onChange="changeCheckIngresa(this,'+element.id_mov_alm_det+');"/></td>'+
                 '<td>'+(element.codigo_producto !== null ? element.codigo_producto : '')+'</td>'+
+                '<td>'+(element.part_number !== null ? element.part_number : '')+'</td>'+
+                '<td>'+(element.categoria !== null ? element.categoria : '')+'</td>'+
+                '<td>'+(element.subcategoria !== null ? element.subcategoria : '')+'</td>'+
                 '<td>'+(element.producto_descripcion !== null ? element.producto_descripcion : '')+'</td>'+
                 '<td>'+element.cantidad+'</td>'+
                 '<td>'+(element.unidad_producto !== null ? element.unidad_producto : '')+'</td>'+
                 // '<td>'+(element.almacen_descripcion !== null ? element.almacen_descripcion : '')+'</td>'+
                 // '<td>'+(element.codigo_posicion !== null ? element.codigo_posicion : '')+'</td>'+
                 // '<td>'+(element.lugar_entrega !== null ? element.lugar_entrega : element.lugar_despacho_orden)+'</td>'+
-                '<td><span class="label label-'+element.bootstrap_color+'">'+element.estado_doc+'</span></td>'+
+                // '<td><span class="label label-'+element.bootstrap_color+'">'+element.estado_doc+'</span></td>'+
                 // '<td>'+(element.id_almacen !== null ? 
                 //     '<button type="button" class="btn btn-info" data-toggle="tooltip" data-placement="bottom" title="Ver Transferencia" onClick="#"><i class="fas fa-file-alt"></i></button>' : '')+
                 // '</td>'+

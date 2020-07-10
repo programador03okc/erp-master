@@ -1,9 +1,15 @@
-function iniciar(permiso){
+let valor_permiso = null;
+let usuario_session = null;
+
+function iniciar(permiso, usuario){
     // clearDataTable();
     $("#tab-transferencias section:first form").attr('form', 'formulario');
     $('[name=id_almacen_ori]').val(1);
-    listarTransferenciasPendientes(permiso);
+    valor_permiso = permiso;
+    usuario_session = usuario;
 
+    listarTransferenciasPendientes();
+    console.log(permiso);
     $('ul.nav-tabs li a').click(function(){
         $('ul.nav-tabs li').removeClass('active');
         $(this).parent().addClass('active');
@@ -18,29 +24,29 @@ function iniciar(permiso){
         $("#"+activeForm).attr('form', 'formulario');
         changeStateInput(activeForm, true);
 
-        clearDataTable();
+        // clearDataTable();
         if (activeForm == "form-pendientes"){
-            listarTransferenciasPendientes(permiso);
+            listarTransferenciasPendientes();
         } 
         else if (activeForm == "form-recibidas"){
-            listarTransferenciasRecibidas(permiso);
+            listarTransferenciasRecibidas();
         }
         $(activeTab).attr('hidden', false);//inicio botones (estados)
     });
     vista_extendida();
 }
 
-function listarTransferenciasPendientes(permiso){
+function listarTransferenciasPendientes(){
     var alm_destino = $('[name=id_almacen_destino]').val();
     
     if (alm_destino !== '' && alm_destino !== ''){
         var vardataTables = funcDatatables();
         $('#listaTransferenciasPendientes').DataTable({
-            'destroy':true,
             'dom': vardataTables[1],
             'buttons': vardataTables[2],
             'language' : vardataTables[0],
             "scrollX": true,
+            'bDestroy':true,
             'ajax' : 'listar_transferencias_pendientes/'+alm_destino,
             // 'ajax': {
             //     url:'listar_transferencias_pendientes/'+alm_origen+'/'+alm_destino,
@@ -107,7 +113,7 @@ function listarTransferenciasPendientes(permiso){
                 },
                 {'render':
                     function (data, type, row){
-                        if (permiso == '1') {
+                        if (valor_permiso == '1') {
                             return ('<button type="button" class="atender btn btn-success boton" data-toggle="tooltip" '+
                             'data-placement="bottom" title="Atender" >'+
                             '<i class="fas fa-share"></i></button>'+
@@ -145,17 +151,18 @@ $('#listaTransferenciasPendientes tbody').on("click","button.salida", function()
 });
 
 
-function listarTransferenciasRecibidas(permiso){
+function listarTransferenciasRecibidas(){
     var destino = $('[name=id_almacen_dest_recibida]').val();
     console.log('ori'+destino);
     
     if (destino !== '' && destino !== ''){
         var vardataTables = funcDatatables();
         $('#listaTransferenciasRecibidas').DataTable({
-            'destroy':true,
             'dom': vardataTables[1],
             'buttons': vardataTables[2],
             'language' : vardataTables[0],
+            "scrollX": true,
+            'bDestroy':true,
             'ajax' : 'listar_transferencias_recibidas/'+destino,
             // 'ajax': {
             //     url:'listar_transferencias_pendientes/'+alm_origen+'/'+alm_destino,
@@ -220,8 +227,7 @@ function listarTransferenciasRecibidas(permiso){
                 },
                 {'render':
                     function (data, type, row){
-                        // const tieneAccion = '{{Auth::user()->tieneAccion(91)}}';
-                        if (permiso == '1') {
+                        if (valor_permiso == '1') {
                             return ('<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" '+
                                 'data-placement="bottom" title="Ver Detalle" >'+
                                 '<i class="fas fa-list-ul"></i></button>'+

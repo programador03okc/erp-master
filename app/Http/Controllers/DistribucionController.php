@@ -202,15 +202,18 @@ class DistribucionController extends Controller
 
     public function verDetalleIngreso($id_requerimiento){
         $data = DB::table('almacen.mov_alm_det')
-        ->select('mov_alm_det.*','alm_prod.codigo as codigo_producto',
+        ->select('mov_alm_det.*','alm_prod.codigo as codigo_producto','alm_prod.part_number',
+        'alm_cat_prod.descripcion as categoria','alm_subcat.descripcion as subcategoria',
         'alm_prod.descripcion as producto_descripcion','alm_und_medida.abreviatura as unidad_producto')
         ->join('almacen.alm_prod','alm_prod.id_producto','=','mov_alm_det.id_producto')
-        ->leftjoin('almacen.alm_und_medida','alm_und_medida.id_unidad_medida','=','alm_prod.id_unidad_medida')
+        ->join('almacen.alm_cat_prod','alm_cat_prod.id_categoria','=','alm_prod.id_categoria')
+        ->join('almacen.alm_subcat','alm_subcat.id_subcategoria','=','alm_prod.id_subcategoria')
+        ->join('almacen.alm_und_medida','alm_und_medida.id_unidad_medida','=','alm_prod.id_unidad_medida')
         ->join('almacen.mov_alm','mov_alm.id_mov_alm','=','mov_alm_det.id_mov_alm')
         ->join('almacen.guia_com','guia_com.id_guia','=','mov_alm.id_guia_com')
         ->join('logistica.log_ord_compra','log_ord_compra.id_orden_compra','=','guia_com.id_oc')
         ->join('almacen.alm_req','alm_req.id_requerimiento','=','log_ord_compra.id_requerimiento')
-        ->where([['log_ord_compra.id_requerimiento','=',$id_requerimiento]])
+        ->where([['log_ord_compra.id_requerimiento','=',$id_requerimiento],['mov_alm_det.estado','!=',7]])
         ->get();
         return response()->json($data);
     }
@@ -811,7 +814,10 @@ class DistribucionController extends Controller
         ->leftjoin('rrhh.rrhh_perso','rrhh_perso.id_persona','=','orden_despacho.id_persona')
         ->leftjoin('configuracion.ubi_dis','ubi_dis.id_dis','=','orden_despacho.ubigeo_destino')
         ->leftjoin('almacen.alm_almacen','alm_almacen.id_almacen','=','orden_despacho.id_almacen')
-        ->leftjoin('almacen.guia_ven','guia_ven.id_od','=','orden_despacho.id_od')
+        ->leftJoin('almacen.guia_ven', function($join)
+                         {   $join->on('guia_ven.id_od', '=', 'orden_despacho.id_od');
+                             $join->where('guia_ven.estado','!=', 7);
+                         })
         ->leftjoin('almacen.alm_req','alm_req.id_requerimiento','=','orden_despacho.id_requerimiento')
         ->where([['orden_despacho_grupo_det.id_od_grupo','=',$id],['orden_despacho_grupo_det.estado','!=',7]])
         ->get();

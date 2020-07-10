@@ -10,7 +10,7 @@ function open_transferencia_detalle(data){
         $('[name=guia_ingreso_compra]').val(data.guia_ingreso_compra);
         $('[name=id_almacen_destino]').val(data.id_almacen_destino);
         $('[name=almacen_destino]').val(data.alm_destino_descripcion);
-        $('[name=responsable_destino]').val(data.responsable_destino);
+        $('[name=responsable_destino]').val(usuario_session);
         $('[name=estado]').val(data.estado);
         $("#submit_transferencia").removeAttr("disabled");
 

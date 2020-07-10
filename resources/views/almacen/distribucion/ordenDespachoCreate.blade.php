@@ -116,12 +116,15 @@
                                         <tr>
                                             <th>#</th>
                                             <th>Código</th>
+                                            <th>PartNumber</th>
+                                            <th>Categoría</th>
+                                            <th>SubCategoría</th>
                                             <th>Descripción</th>
                                             <th>Cantidad</th>
                                             <th>Unid</th>
                                             <!-- <th>Almacén</th> -->
                                             <!-- <th>Lugar de Entrega</th> -->
-                                            <th>Estado</th>
+                                            <!-- <th>Estado</th> -->
                                             <!-- <th>Acción</th> -->
                                             <!-- <th>Total</th> -->
                                         </tr>

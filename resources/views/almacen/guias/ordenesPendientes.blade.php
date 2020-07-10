@@ -37,6 +37,7 @@ Pendientes de Ingreso
                                         <th>Cod.Orden</th>
                                         <th>R.U.C.</th>
                                         <th>Razon Social</th>
+                                        <th>SoftLink</th>
                                         <th>Fecha Emisión</th>
                                         <th>Req.</th>
                                         <th>Concepto</th>
@@ -68,6 +69,7 @@ Pendientes de Ingreso
                                         <th>Sede Orden</th>
                                         <th>R.U.C.</th>
                                         <th>Razon Social</th>
+                                        <th>SoftLink</th>
                                         <th>Req.</th>
                                         <th>Sede Req.</th>
                                         <th>Concepto</th>
