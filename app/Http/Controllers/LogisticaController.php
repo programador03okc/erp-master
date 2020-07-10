@@ -7840,6 +7840,7 @@ class LogisticaController extends Controller
                     'alm_item.codigo AS codigo_item',
                     'alm_item.fecha_registro AS alm_item_fecha_registro',
                     'alm_prod.codigo AS alm_prod_codigo',
+                    'alm_prod.part_number',
                     'alm_prod.descripcion AS alm_prod_descripcion',
 
                     'alm_det_req_adjuntos.id_adjunto AS adjunto_id_adjunto',

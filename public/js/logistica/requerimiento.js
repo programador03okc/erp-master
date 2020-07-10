@@ -673,8 +673,27 @@ function limpiarFormularioDetalleRequerimiento(){
     $('[name=cod_partida]').val('');
     $('[name=des_partida]').val('');
 }
+function validaModalDetalle(){
+    var unidad_medida_item = $('[name=unidad_medida_item]').val();
+    var cantidad_item = $('[name=cantidad_item]').val();
+    var msj = '';
+
+    if (cantidad_item == ''){
+        msj+='\n Es necesario una Cantidad';
+    }
+    if (unidad_medida_item == ''){
+        msj+='\n Es necesario que seleccione una Unidad de Medida';
+    }
+    return msj;
+}
 
 function agregarItem(){
+
+    var msj = validaModalDetalle();
+    if (msj.length > 0){
+        alert(msj);
+    } else{
+
     var table = document.getElementById("ListaDetalleRequerimiento");
     var len = table.querySelectorAll('tr').length;
     for (var i=0; i < len; i++){
@@ -730,6 +749,7 @@ function agregarItem(){
 
     let btnVerUltimasCompras = document.getElementsByName('btnVerUltimasCompras')[0];
     btnVerUltimasCompras.setAttribute('disabled',true);
+    }
  }
 
 function statusBtnOpenProyectoModal(value){
@@ -1700,33 +1720,33 @@ function controlUnidadMedida(){
 }
 
 function selectItem(){
-    var id_item = $('.modal-footer #id_item').text();
-    var part_number = $('.modal-footer #part_number').text();
-    var id_producto = $('.modal-footer #id_producto').text();
-    var id_servicio = $('.modal-footer #id_servicio').text();
-    var id_equipo = $('.modal-footer #id_equipo').text();
-    var page = $('.page-main').attr('type');
-    var form = $('.page-main form[type=register]').attr('id');
-    mostrar_item(id_item);
-    var selectUnidadMedida = document.getElementsByName("unidad_medida_item");    
-    // console.log(id_item);
-    // console.log(id_producto);
-    // console.log(id_servicio);
-    // console.log(id_equipo);
-    if(id_producto > 0){
-        disabledControl(selectUnidadMedida,false);
-        document.getElementsByName("id_tipo_item")[0].value = 1;
-    }
-    if(id_servicio > 0){
-        disabledControl(selectUnidadMedida,true);
-        document.getElementsByName("id_tipo_item")[0].value = 2;
 
-    }
-    if(id_equipo > 0){
-        disabledControl(selectUnidadMedida,true);
-        document.getElementsByName("id_tipo_item")[0].value = 3;
-    }
-    $('#modal-catalogo-items').modal('hide');
+        var id_item = $('.modal-footer #id_item').text();
+        var id_producto = $('.modal-footer #id_producto').text();
+        var id_servicio = $('.modal-footer #id_servicio').text();
+        var id_equipo = $('.modal-footer #id_equipo').text();
+        var page = $('.page-main').attr('type');
+        var form = $('.page-main form[type=register]').attr('id');
+        mostrar_item(id_item);
+        var selectUnidadMedida = document.getElementsByName("unidad_medida_item");    
+        // console.log(id_item);
+        // console.log(id_producto);
+        // console.log(id_servicio);
+        // console.log(id_equipo);
+        if(id_producto > 0){
+            disabledControl(selectUnidadMedida,false);
+            document.getElementsByName("id_tipo_item")[0].value = 1;
+        }
+        if(id_servicio > 0){
+            disabledControl(selectUnidadMedida,true);
+            document.getElementsByName("id_tipo_item")[0].value = 2;
+    
+        }
+        if(id_equipo > 0){
+            disabledControl(selectUnidadMedida,true);
+            document.getElementsByName("id_tipo_item")[0].value = 3;
+        }
+        $('#modal-catalogo-items').modal('hide');
 }
 
 
