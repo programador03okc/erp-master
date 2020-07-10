@@ -32,6 +32,8 @@ function listarKardexGeneral(almacenes, fini, ffin){
             {'data': 'id_mov_alm_det'},
             {'data': 'prod_codigo'},
             {'data': 'prod_part_number'},
+            {'data': 'categoria'},
+            {'data': 'subcategoria'},
             {'data': 'prod_descripcion'},
             {'data': 'fecha_emision'},
             {'render': 
@@ -44,7 +46,7 @@ function listarKardexGeneral(almacenes, fini, ffin){
             {'data': 'abreviatura'},
             {'render': 
                 function(data, type, row){
-                    return ((row['tipo']==1) ? row['cantidad'] : '0');
+                    return ((row['tipo']==1 || row['tipo']==0) ? row['cantidad'] : '0');
                 }
             },
             {'render': 
@@ -55,7 +57,7 @@ function listarKardexGeneral(almacenes, fini, ffin){
             {'data': 'saldo'},
             {'render': 
                 function(data, type, row){
-                    return ((row['tipo']==1) ? row['valorizacion'] : '0');
+                    return ((row['tipo']==1 || row['tipo']==0) ? row['valorizacion'] : '0');
                 }
             },
             {'render': 
@@ -64,6 +66,7 @@ function listarKardexGeneral(almacenes, fini, ffin){
                 }
             },
             {'data': 'saldo_valor'},
+            {'data': 'codigo'},
             {'render': 
                 function(data, type, row){
                     return ((row['tipo']==1) ? row['cod_sunat_com'] : row['cod_sunat_ven']);

@@ -68,7 +68,7 @@ Saldos Actuales
                         <th>Soles</th>
                         <th>Dolar</th>
                         <th>Costo Promedio</th>
-                        <th>Ubicación</th>
+                        <th>Almacén</th>
                         <th>Clasificación</th>
                     </tr>
                 </thead>
