@@ -70,6 +70,16 @@ class Usuario extends Authenticatable
             ->where('id_usuario',$this->id_usuario)->where('sis_aplicacion.id_sub_modulo',$id)->first()!=null;
 	}
 	
+	public function tieneSubModuloPadre($id)
+    {
+        return Acceso::join('configuracion.sis_rol','sis_acceso.id_rol','=','sis_rol.id_rol')
+            ->join('configuracion.sis_accion_rol','sis_accion_rol.id_rol','=','sis_rol.id_rol')
+            ->join('configuracion.sis_accion','sis_accion.id_accion','=','sis_accion_rol.id_accion')
+            ->join('configuracion.sis_aplicacion','sis_aplicacion.id_aplicacion','=','sis_accion.id_aplicacion')
+            ->join('configuracion.sis_modulo','sis_modulo.id_modulo','=','sis_aplicacion.id_sub_modulo')
+            ->where('id_usuario',$this->id_usuario)->where('sis_modulo.id_padre',$id)->first()!=null;
+	}
+	
 	public function sedesAcceso()
     {
 		$sedes = DB::table('configuracion.sis_usua_sede')
