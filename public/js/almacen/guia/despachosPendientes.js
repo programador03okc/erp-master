@@ -36,6 +36,7 @@ function listarDespachosPendientes(permiso){
         'language' : vardataTables[0],
         'destroy' : true,
         'serverSide' : true,
+        "scrollX": true,
         'ajax': {
             url: 'listarOrdenesDespachoPendientes',
             type: 'POST'
@@ -112,6 +113,7 @@ function listarDespachosEntregados(permiso){
         'language' : vardataTables[0],
         'destroy' : true,
         'serverSide' : true,
+        "scrollX": true,
         'ajax': {
             url: 'listarSalidasDespacho',
             type: 'POST'

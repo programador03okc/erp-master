@@ -40,6 +40,7 @@ function listarTransferenciasPendientes(permiso){
             'dom': vardataTables[1],
             'buttons': vardataTables[2],
             'language' : vardataTables[0],
+            "scrollX": true,
             'ajax' : 'listar_transferencias_pendientes/'+alm_destino,
             // 'ajax': {
             //     url:'listar_transferencias_pendientes/'+alm_origen+'/'+alm_destino,

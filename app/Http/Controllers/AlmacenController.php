@@ -2679,8 +2679,8 @@ class AlmacenController extends Controller
     public function get_ingreso($id){
         $ingreso = DB::table('almacen.mov_alm')
             ->select('mov_alm.*','alm_almacen.descripcion as des_almacen',
-            DB::raw("(tp_doc_almacen.abreviatura) || ' ' || (guia_com.serie) || ' ' || (guia_com.numero) as guia"),
-            DB::raw("(cont_tp_doc.abreviatura) || ' ' || (doc_com.serie) || ' ' || (doc_com.numero) as doc"),
+            DB::raw("(tp_doc_almacen.abreviatura) || '-' || (guia_com.serie) || '-' || (guia_com.numero) as guia"),
+            DB::raw("(cont_tp_doc.abreviatura) || '-' || (doc_com.serie) || '-' || (doc_com.numero) as doc"),
             'doc_com.fecha_emision as doc_fecha_emision','tp_doc_almacen.descripcion as tp_doc_descripcion',
             'guia_com.fecha_emision as fecha_guia','sis_usua.usuario as nom_usuario',
             'adm_contri.razon_social','adm_contri.direccion_fiscal','adm_contri.nro_documento','tp_ope.cod_sunat',
@@ -2808,28 +2808,28 @@ class AlmacenController extends Controller
                     <tr>
                         <td class="subtitle">Ingreso N°</td>
                         <td width=10px>:</td>
-                        <td class="verticalTop">'.$ingreso->codigo.'</td>
+                        <td width=250px>'.$ingreso->codigo.'</td>
                         <td>Fecha Ingreso</td>
                         <td width=10px>:</td>
                         <td>'.$ingreso->fecha_emision.'</td>
                     </tr>
                 ';
-                if ($ingreso->guia !== '--'){
+                if ($ingreso->guia !== null){
                     $html.='
                     <tr>
                         <td class="subtitle">Guía N°</td>
                         <td width=10px>:</td>
-                        <td class="verticalTop">'.$ingreso->guia.'</td>
+                        <td>'.$ingreso->guia.'</td>
                         <td>Fecha Guía</td>
                         <td width=10px>:</td>
                         <td>'.$ingreso->fecha_guia.'</td>
                     </tr>';
                 }
-                if ($ingreso->doc !== '--'){
+                if ($ingreso->doc !== null){
                     $html.='<tr>
                         <td width=110px>Documento</td>
                         <td width=10px>:</td>
-                        <td width=300px>'.$ingreso->doc.'</td>
+                        <td>'.$ingreso->doc.'</td>
                         <td width=120px>Fecha Documento</td>
                         <td width=10px>:</td>
                         <td>'.$ingreso->doc_fecha_emision.'</td>
@@ -4120,7 +4120,7 @@ class AlmacenController extends Controller
             'trans.codigo as cod_trans',
             'alm_destino.descripcion as des_alm_destino','trans.fecha_transferencia',
             DB::raw("(cont_tp_doc.abreviatura) || '-' || (doc_ven.serie) || '-' || (doc_ven.numero) as doc"),
-            DB::raw("(rrhh_perso.nombres,' ',rrhh_perso.apellido_paterno,' ',rrhh_perso.apellido_materno) as persona"),
+            DB::raw("(rrhh_perso.nombres) || ' ' || (rrhh_perso.apellido_paterno) || ' ' || (rrhh_perso.apellido_materno) as persona"),
             'transformacion.codigo as cod_transformacion',//'transformacion.serie','transformacion.numero',
             'transformacion.fecha_transformacion','guia_ven.fecha_emision as fecha_guia',
             'adm_contri.nro_documento as ruc_empresa','adm_contri.razon_social as empresa_razon_social')
@@ -4221,7 +4221,7 @@ class AlmacenController extends Controller
                         <td width=10px>:</td>
                         <td>'.$salida->fecha_emision.'</td>
                     </tr>';
-                if ($salida->guia !== '--'){
+                if ($salida->guia !== null){
                     $html.='
                     <tr>
                         <td>Guía de Venta</td>
@@ -4245,7 +4245,7 @@ class AlmacenController extends Controller
                     </tr>
                     ';
                 }
-                if (isset($salida->doc) && $salida->doc !== '--'){
+                if ($salida->doc !== null){
                     $html.='
                     <tr>
                         <td>Documento de Venta</td>

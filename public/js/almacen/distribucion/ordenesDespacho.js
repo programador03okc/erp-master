@@ -42,6 +42,7 @@ function listarRequerimientosPendientes(permiso){
         'language' : vardataTables[0],
         'destroy' : true,
         'serverSide' : true,
+        "scrollX": true,
         'ajax': {
             url: 'listarRequerimientosPendientes',
             type: 'POST'
@@ -267,6 +268,7 @@ function listarOrdenesPendientes(){
         'language' : vardataTables[0],
         'destroy' : true,
         'serverSide' : true,
+        "scrollX": true,
         'ajax': {
             url: 'listarOrdenesDespacho',
             type: 'POST'
@@ -369,6 +371,7 @@ function listarGruposDespachados(permiso){
         'language' : vardataTables[0],
         'destroy' : true,
         'serverSide' : true,
+        "scrollX": true,
         'ajax': {
             url: 'listarGruposDespachados',
             type: 'POST'
