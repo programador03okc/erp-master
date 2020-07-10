@@ -1,5 +1,5 @@
 @extends('layout.main')
-@include('layout.menu_almacen')
+@include('layout.menu_logistica')
 
 @section('cabecera')
     Catálogo de Productos
@@ -46,4 +46,9 @@
     <script src="{{ asset('datatables/JSZip/jszip.min.js') }}"></script>
 
     <script src="{{ asset('js/almacen/producto/prod_catalogo.js')}}"></script>
+    <script>
+    $(document).ready(function(){
+        seleccionarMenu(window.location);
+    });
+    </script>
 @endsection

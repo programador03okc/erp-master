@@ -10,15 +10,17 @@ $(function(){
         }
         var myId = $(this)[0].firstChild.innerHTML;
         var codi = $(this)[0].childNodes[1].innerHTML;
-        var desc = $(this)[0].childNodes[2].innerHTML;
-        var stoc = $(this)[0].childNodes[3].innerHTML;
-        var rese = $(this)[0].childNodes[4].innerHTML;
-        var unid = $(this)[0].childNodes[5].innerHTML;
+        var partnum = $(this)[0].childNodes[2].innerHTML;
+        var desc = $(this)[0].childNodes[3].innerHTML;
+        var stoc = $(this)[0].childNodes[4].innerHTML;
+        var rese = $(this)[0].childNodes[5].innerHTML;
+        var unid = $(this)[0].childNodes[6].innerHTML;
 
         var cant = parseFloat(stoc) - parseFloat(rese);
 
         $('#saldo_id_producto').text(myId);
         $('#saldo_codigo_item').text(codi);
+        $('#part_number').text(partnum);
         $('#saldo_descripcion_item').text(desc);
         $('#saldo_cantidad_item').text(cant);
         $('#saldo_unidad_medida_item').text(unid);
@@ -38,6 +40,7 @@ function listarSaldos(id_almacen){
         'columns': [
             {'data': 'id_producto'},
             {'data': 'codigo'},
+            {'data': 'part_number'},
             {'data': 'descripcion'},
             {'data': 'stock'},
             {'render':
@@ -62,7 +65,7 @@ function listarSaldos(id_almacen){
             // },
             {'data': 'id_unidad_medida'}
         ],
-        'columnDefs': [{ 'aTargets': [0,5], 'sClass': 'invisible'}],
+        'columnDefs': [{ 'aTargets': [0,6], 'sClass': 'invisible'}],
     });
 }
 
@@ -89,12 +92,14 @@ function saldosModal(id_almacen){
 function selectValue(){
     var id = $('#saldo_id_producto').text();
     var co = $('#saldo_codigo_item').text();
+    var pn = $('#part_number').text();
     var de = $('#saldo_descripcion_item').text();
     var ca = $('#saldo_cantidad_item').text();
     var un = $('#saldo_unidad_medida_item').text();
 
     $('[name=id_producto]').val(id);
     $('[name=codigo_item]').val(co);
+    $('[name=part_number]').val(pn);
     $('[name=descripcion_item]').val(de);
     $('[name=cantidad_item]').val(ca);
     $('[name=unidad_medida_item]').val(un);

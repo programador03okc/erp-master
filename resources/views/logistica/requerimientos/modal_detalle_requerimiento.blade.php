@@ -19,7 +19,8 @@
                                     <input hidden="true" type="text" name="id_equipo">
                                     <input hidden="true" type="text" name="id_tipo_item">
                                     <input hidden="true" type="text" name="id_detalle_requerimiento">
-                                    <input type="text" name="codigo_item" class="form-control group-elemento input-sm" style="width:200px;text-align:center;" readonly="">
+                                    <input type="text" name="codigo_item" class="form-control group-elemento input-sm" style="width:150px;text-align:center;" readonly="">
+                                    <input type="text" name="part_number" class="form-control group-elemento input-sm" style="width:150px;text-align:center;" readonly="">
                                     <div class="input-group-okc">
                                     <input type="text" class="form-control  input-sm" name="descripcion_item" placeholder="" aria-describedby="basic-addon4" 
                                         onkeydown="handleKeyDown(event);" 

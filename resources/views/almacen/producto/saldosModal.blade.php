@@ -12,6 +12,7 @@
                         <tr>
                             <th hidden>Id</th>
                             <th>Código</th>
+                            <th>Part Number</th>
                             <th>Descripción</th>
                             <th>Stock</th>
                             <th>Reserva</th>
@@ -25,6 +26,7 @@
             <div class="modal-footer">
                 <label id="saldo_id_producto" style="display: none;"></label>
                 <label id="saldo_codigo_item" style="display: none;"></label>
+                <label id="part_number" style="display: none;"></label>
                 <label id="saldo_descripcion_item" style="display: none;"></label>
                 <label id="saldo_cantidad_item" style="display: none;"></label>
                 <label id="saldo_unidad_medida_item" style="display: none;"></label>

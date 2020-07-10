@@ -1,5 +1,5 @@
 @include('layout.head')
-@include('layout.menu_almacen')
+@include('layout.menu_logistica')
 @include('layout.body')
 <div class="page-main" type="doc_venta">
     <legend class="mylegend">

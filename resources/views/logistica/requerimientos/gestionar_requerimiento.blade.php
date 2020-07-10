@@ -269,6 +269,7 @@
                         <tr>
                             <th class="invisible">#</th>
                             <th>CODIGO</th>
+                            <th>PART NUMBER</th>
                             <th>DESCRIPCION</th>
                             <th width="60">UNIDAD</th>
                             <th width="70">CANTIDAD</th>

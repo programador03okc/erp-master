@@ -1,5 +1,5 @@
 @extends('layout.main')
-@include('layout.menu_almacen')
+@include('layout.menu_logistica')
 
 @section('cabecera')
 Detalle de Ingresos
@@ -11,7 +11,7 @@ Detalle de Ingresos
 
 @section('breadcrumb')
 <ol class="breadcrumb">
-  <li><a href="{{route('almacen.index')}}"><i class="fas fa-tachometer-alt"></i> Almacén</a></li>
+  <li><a href="{{route('logistica.index')}}"><i class="fas fa-tachometer-alt"></i> Almacén</a></li>
   <li>Reportes</li>
   <li class="active">@yield('cabecera')</li>
 </ol>

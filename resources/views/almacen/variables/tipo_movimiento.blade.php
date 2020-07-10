@@ -1,5 +1,5 @@
 @extends('layout.main')
-@include('layout.menu_almacen')
+@include('layout.menu_logistica')
 
 @section('option')
     @include('layout.option')
@@ -15,7 +15,7 @@ Documentos de Prorrateo
 
 @section('breadcrumb')
 <ol class="breadcrumb">
-  <li><a href="{{route('almacen.index')}}"><i class="fas fa-tachometer-alt"></i> Almacén</a></li>
+  <li><a href="{{route('logistica.index')}}"><i class="fas fa-tachometer-alt"></i> Almacén</a></li>
   <li>Variables</li>
   <li class="active">@yield('cabecera')</li>
 </ol>
