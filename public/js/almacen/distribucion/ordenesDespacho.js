@@ -18,10 +18,10 @@ function iniciar(permiso){
         $("#"+activeForm).attr('form', 'formulario');
         changeStateInput(activeForm, true);
 
-        clearDataTable();
+        // clearDataTable();
         if (activeForm == "form-pendientes"){
-            // $('#requerimientosPendientes').DataTable().ajax.reload();
             listarRequerimientosPendientes(permiso);
+            // $('#requerimientosPendientes').DataTable().ajax.reload();
         } 
         else if (activeForm == "form-despachos"){
             listarOrdenesPendientes();
@@ -40,9 +40,9 @@ function listarRequerimientosPendientes(permiso){
         'dom': vardataTables[1],
         'buttons': vardataTables[2],
         'language' : vardataTables[0],
-        'destroy' : true,
+        'bDestroy' : true,
         'serverSide' : true,
-        "scrollX": true,
+        // "scrollX": true,
         'ajax': {
             url: 'listarRequerimientosPendientes',
             type: 'POST'
@@ -266,9 +266,9 @@ function listarOrdenesPendientes(){
         'dom': vardataTables[1],
         'buttons': vardataTables[2],
         'language' : vardataTables[0],
-        'destroy' : true,
+        'bDestroy' : true,
         'serverSide' : true,
-        "scrollX": true,
+        // "scrollX": true,
         'ajax': {
             url: 'listarOrdenesDespacho',
             type: 'POST'
@@ -369,7 +369,7 @@ function listarGruposDespachados(permiso){
         'dom': vardataTables[1],
         'buttons': vardataTables[2],
         'language' : vardataTables[0],
-        'destroy' : true,
+        'bDestroy' : true,
         'serverSide' : true,
         "scrollX": true,
         'ajax': {
@@ -555,7 +555,7 @@ function open_grupo_detalle(data){
     $('#detalleGrupoDespacho tbody').html('');
     $.ajax({
         type: 'GET',
-        url: '/verDetalleGrupoDespacho/'+data.id_od_grupo,
+        url: 'verDetalleGrupoDespacho/'+data.id_od_grupo,
         dataType: 'JSON',
         success: function(response){
             console.log(response);

@@ -16,7 +16,7 @@ function iniciar(permiso){
         $("#"+activeForm).attr('form', 'formulario');
         changeStateInput(activeForm, true);
 
-        clearDataTable();
+        // clearDataTable();
         if (activeForm == "form-pendientes"){
             listarDespachosPendientes(permiso);
         } 

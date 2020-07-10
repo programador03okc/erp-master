@@ -913,7 +913,8 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::post('guardar_guia_transferencia', 'OrdenesPendientesController@guardar_guia_transferencia');
 					Route::post('anular_ingreso', 'OrdenesPendientesController@anular_ingreso');
 					Route::get('cargar_almacenes/{id}', 'AlmacenController@cargar_almacenes');
-	
+					Route::get('imprimir_ingreso/{id}', 'AlmacenController@imprimir_ingreso');
+
 				});
 	
 				Route::group(['as' => 'pendientes-salida.', 'prefix' => 'pendientes-salida'], function(){
@@ -923,6 +924,8 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::post('guardar_guia_despacho', 'DistribucionController@guardar_guia_despacho');
 					Route::post('listarSalidasDespacho', 'DistribucionController@listarSalidasDespacho');
 					Route::post('anular_salida', 'DistribucionController@anular_salida');
+					Route::get('verDetalleDespacho/{id}', 'DistribucionController@verDetalleDespacho');
+					Route::get('imprimir_salida/{id}', 'AlmacenController@imprimir_salida');
 	
 				});
 	

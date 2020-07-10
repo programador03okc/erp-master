@@ -22,6 +22,9 @@ function listar_detalle_requerimiento(id_requerimiento, idTabla){
                 html+='<tr id="'+element.id_detalle_requerimiento+'">'+
                 '<td>'+(idTabla == 'detalleRequerimiento' ? i : '<input type="checkbox" onChange="changeCheckIngresa(this,'+element.id_detalle_requerimiento+');"/>')+'</td>'+
                 '<td>'+(element.producto_codigo !== null ? element.producto_codigo : '')+'</td>'+
+                '<td>'+(element.part_number !== null ? element.part_number : '')+'</td>'+
+                '<td>'+(element.categoria !== null ? element.categoria : '')+'</td>'+
+                '<td>'+(element.subcategoria !== null ? element.subcategoria : '')+'</td>'+
                 '<td>'+(element.producto_descripcion !== null ? element.producto_descripcion : element.descripcion_adicional)+'</td>'+
                 '<td>'+element.cantidad+'</td>'+
                 '<td>'+(element.abreviatura !== null ? element.abreviatura : '')+'</td>'+

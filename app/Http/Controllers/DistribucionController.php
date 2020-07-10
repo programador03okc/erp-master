@@ -186,8 +186,11 @@ class DistribucionController extends Controller
             ->select('alm_det_req.*','alm_almacen.descripcion as almacen_descripcion',
                     'adm_estado_doc.estado_doc','adm_estado_doc.bootstrap_color',
                     'alm_prod.descripcion as producto_descripcion','alm_prod.codigo as producto_codigo',
-                    'alm_und_medida.abreviatura')
+                    'alm_und_medida.abreviatura','alm_cat_prod.descripcion as categoria',
+                    'alm_subcat.descripcion as subcategoria','alm_prod.part_number')
             ->leftJoin('almacen.alm_prod', 'alm_prod.id_producto', '=', 'alm_det_req.id_producto')
+            ->leftJoin('almacen.alm_cat_prod', 'alm_cat_prod.id_categoria', '=', 'alm_prod.id_categoria')
+            ->leftJoin('almacen.alm_subcat', 'alm_subcat.id_subcategoria', '=', 'alm_prod.id_subcategoria')
             // ->leftJoin('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'alm_prod.id_unidad_medida')
             ->leftJoin('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'alm_det_req.id_unidad_medida')
             ->leftJoin('almacen.alm_almacen', 'alm_almacen.id_almacen', '=', 'alm_det_req.id_almacen')
@@ -362,8 +365,11 @@ class DistribucionController extends Controller
     public function verDetalleDespacho($id_od){
         $data = DB::table('almacen.orden_despacho_det')
         ->select('orden_despacho_det.*','alm_prod.codigo','alm_prod.descripcion',
-        'alm_ubi_posicion.codigo as posicion','alm_und_medida.abreviatura')
+        'alm_ubi_posicion.codigo as posicion','alm_und_medida.abreviatura','alm_prod.part_number',
+        'alm_cat_prod.descripcion as categoria','alm_subcat.descripcion as subcategoria')
         ->leftJoin('almacen.alm_prod','alm_prod.id_producto','=','orden_despacho_det.id_producto')
+        ->leftJoin('almacen.alm_cat_prod','alm_cat_prod.id_categoria','=','alm_prod.id_categoria')
+        ->leftJoin('almacen.alm_subcat','alm_subcat.id_subcategoria','=','alm_prod.id_subcategoria')
         ->leftJoin('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'alm_prod.id_unidad_medida')
         ->leftJoin('almacen.alm_ubi_posicion','alm_ubi_posicion.id_posicion','=','orden_despacho_det.id_posicion')
         ->where([['orden_despacho_det.id_od','=',$id_od],['orden_despacho_det.estado','!=',7]])
@@ -1021,22 +1027,24 @@ class DistribucionController extends Controller
                       'estado'=>7,
                       'obs_confirmacion'=>$request->obs_motivo]);
 
-            $data = DB::table('almacen.alm_det_req')
+            DB::table('almacen.alm_det_req')
             ->where('id_requerimiento',$request->obs_id_requerimiento)
             ->update(['estado'=>7]);
 
             $id_usuario = Auth::user()->id_usuario;
             
-            DB::table('almacen.alm_req_obs')
-            ->insert(['id_requerimiento'=>$request->obs_id_requerimiento,
+            $id = DB::table('almacen.alm_req_obs')
+            ->insertGetId(['id_requerimiento'=>$request->obs_id_requerimiento,
                       'accion'=>'PAGO NO CONFIRMADO',
                       'descripcion'=>$request->obs_motivo,
                       'id_usuario'=>$id_usuario,
                       'fecha_registro'=>date('Y-m-d H:i:s')
-                      ]);
+                    ],
+                      'id_observacion'
+                );
       
             DB::commit();
-            return response()->json($data);
+            return response()->json($id);
             
         } catch (\PDOException $e) {
             DB::rollBack();
@@ -1274,7 +1282,7 @@ class DistribucionController extends Controller
         ->select('alm_req_obs.*','sis_usua.nombre_corto')
         ->join('configuracion.sis_usua','sis_usua.id_usuario','=','alm_req_obs.id_usuario')
         ->where('alm_req_obs.id_requerimiento',$id_requerimiento)
-        ->orderBy('fecha_registro','desc')
+        ->orderBy('fecha_registro','asc')
         ->get();
         return response()->json($data);
     }

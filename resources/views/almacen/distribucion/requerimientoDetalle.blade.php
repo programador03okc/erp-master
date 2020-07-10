@@ -19,6 +19,9 @@
                                         <tr>
                                             <th>#</th>
                                             <th>Código</th>
+                                            <th>PartNumber</th>
+                                            <th>Categoría</th>
+                                            <th>SubCategoría</th>
                                             <th width="40%">Descripción</th>
                                             <th>Cantidad</th>
                                             <th>Unid</th>
