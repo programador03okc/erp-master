@@ -54,7 +54,7 @@
                         <div class="col-md-1">
                             <div class="form-group">
                                 <h5>Cantidad</h5>
-                                <input type="text" class="form-control input-sm activation" name="cantidad_item" step="any">
+                                <input type="number" min="1" class="form-control input-sm activation" name="cantidad_item" step="1">
                             </div>
                         </div>
                         <div class="col-md-2">
