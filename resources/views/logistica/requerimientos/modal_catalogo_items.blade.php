@@ -17,6 +17,8 @@
                             <th>PART NUMBER</th>
                             <th>DESCRIPCION</th>
                             <th width="120">UNIDAD</th>
+                            <th>CATEGORÍA</th>
+                            <th>SUBCATEGORÍA</th>
                         </tr>
                     </thead>
                     <tbody></tbody>

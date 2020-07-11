@@ -14,6 +14,8 @@
                             <th>Código</th>
                             <th>Part Number</th>
                             <th>Descripción</th>
+                            <th>Categoría</th>
+                            <th>SubCategoría</th>
                             <th>Stock</th>
                             <th>Reserva</th>
                             <!-- <th>Detalle</th> -->
@@ -28,6 +30,8 @@
                 <label id="saldo_codigo_item" style="display: none;"></label>
                 <label id="part_number" style="display: none;"></label>
                 <label id="saldo_descripcion_item" style="display: none;"></label>
+                <label id="categoria" style="display: none;"></label>
+                <label id="subcategoria" style="display: none;"></label>
                 <label id="saldo_cantidad_item" style="display: none;"></label>
                 <label id="saldo_unidad_medida_item" style="display: none;"></label>
                 <button class="btn btn-sm btn-success" onClick="selectValue();">Aceptar</button>

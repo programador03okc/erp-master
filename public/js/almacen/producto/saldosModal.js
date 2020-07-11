@@ -12,9 +12,11 @@ $(function(){
         var codi = $(this)[0].childNodes[1].innerHTML;
         var partnum = $(this)[0].childNodes[2].innerHTML;
         var desc = $(this)[0].childNodes[3].innerHTML;
-        var stoc = $(this)[0].childNodes[4].innerHTML;
-        var rese = $(this)[0].childNodes[5].innerHTML;
-        var unid = $(this)[0].childNodes[6].innerHTML;
+        var cat = $(this)[0].childNodes[4].innerHTML;
+        var subcat = $(this)[0].childNodes[5].innerHTML;
+        var stoc = $(this)[0].childNodes[6].innerHTML;
+        var rese = $(this)[0].childNodes[7].innerHTML;
+        var unid = $(this)[0].childNodes[8].innerHTML;
 
         var cant = parseFloat(stoc) - parseFloat(rese);
 
@@ -22,6 +24,8 @@ $(function(){
         $('#saldo_codigo_item').text(codi);
         $('#part_number').text(partnum);
         $('#saldo_descripcion_item').text(desc);
+        $('#categoria').text(cat);
+        $('#subcategoria').text(subcat);
         $('#saldo_cantidad_item').text(cant);
         $('#saldo_unidad_medida_item').text(unid);
 
@@ -42,6 +46,8 @@ function listarSaldos(id_almacen){
             {'data': 'codigo'},
             {'data': 'part_number'},
             {'data': 'descripcion'},
+            {'data': 'des_categoria'},
+            {'data': 'des_subcategoria'},
             {'data': 'stock'},
             {'render':
                 function (data, type, row){
@@ -65,7 +71,7 @@ function listarSaldos(id_almacen){
             // },
             {'data': 'id_unidad_medida'}
         ],
-        'columnDefs': [{ 'aTargets': [0,6], 'sClass': 'invisible'}],
+        'columnDefs': [{ 'aTargets': [0,8], 'sClass': 'invisible'}],
     });
 }
 
@@ -94,6 +100,8 @@ function selectValue(){
     var co = $('#saldo_codigo_item').text();
     var pn = $('#part_number').text();
     var de = $('#saldo_descripcion_item').text();
+    var cat = $('#categoria').text();
+    var subcat = $('#subcategoria').text();
     var ca = $('#saldo_cantidad_item').text();
     var un = $('#saldo_unidad_medida_item').text();
 
@@ -101,6 +109,8 @@ function selectValue(){
     $('[name=codigo_item]').val(co);
     $('[name=part_number]').val(pn);
     $('[name=descripcion_item]').val(de);
+    $('[name=categoria]').val(cat);
+    $('[name=subcategoria]').val(subcat);
     $('[name=cantidad_item]').val(ca);
     $('[name=unidad_medida_item]').val(un);
 
