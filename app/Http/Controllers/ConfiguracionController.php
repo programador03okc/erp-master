@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Auth;
 use DateTime;
 ini_set('max_execution_time', 3600);
 date_default_timezone_set('America/Lima');
@@ -330,13 +331,12 @@ class ConfiguracionController extends Controller{
     function cambiar_clave(Request $request){
         $p1 = $this->encode5t(addslashes($request->pass_old));
         $p2 = $this->encode5t(addslashes($request->pass_new));
-        $user = Session()->get('usuario');
+        $user = Auth::user()->id_usuario;
         
-        $sql = DB::table('configuracion.sis_usua')->where([['clave', '=', $p1], ['usuario', '=', $user]])->get();
+        $sql = DB::table('configuracion.sis_usua')->where([['clave', '=', $p1], ['id_usuario', '=', $user], ['estado', '=', 1]])->first();
         
-        if ($sql->count() > 0) {
-            $id_usu = $sql->first()->id_usuario;
-            $data = DB::table('configuracion.sis_usua')->where('id_usuario', $id_usu)->update(['clave'  => $p2]);
+        if ($sql !== null) {
+            $data = DB::table('configuracion.sis_usua')->where('id_usuario', $sql->id_usuario)->update(['clave'  => $p2]);
             $rpta = $data;
         }else{
             $rpta = 0;

@@ -748,7 +748,8 @@ function execSetting(){
         var repass = $('[name=pass_renew]').val();
         if(pass == repass){
             var data = $('#formSettingsPassword').serialize();
-            var baseUrl = 'update_password';
+            var baseUrl = '/update_password';
+            console.log(data);
             $.ajax({
                 type: 'POST',
                 headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
@@ -756,6 +757,7 @@ function execSetting(){
                 data: data,
                 dataType: 'JSON',
                 success: function(response){
+                    console.log(response);
                     $('.loading').remove();
                     if(response > 0){
                         alert('Contraseña correctamente actualizada.');
