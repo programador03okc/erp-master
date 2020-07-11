@@ -1,4 +1,4 @@
-$(function(){
+$(document).ready(function(){
     listar_acus();
 });
 function listar_acus(){
@@ -7,7 +7,7 @@ function listar_acus(){
         'dom': vardataTables[1],
         'buttons': vardataTables[2],
         'language' : vardataTables[0],
-        'destroy': true,
+        'bDestroy': true,
         'retrieve': true,
         'ajax': 'listar_acus',
         'columns': [

@@ -78,8 +78,8 @@ Análisis de Costos Unitarios
 <script>
     $(document).ready(function(){
         seleccionarMenu(window.location);
-        inicializar("{{route('proyectos.variables-entorno.sistemas-contrato.listar')}}","{{route('proyectos.variables-entorno.sistemas-contrato.mostrar')}}","{{route('proyectos.variables-entorno.sistemas-contrato.guardar')}}");
-        listar();
+        // inicializar("{{route('proyectos.variables-entorno.sistemas-contrato.listar')}}","{{route('proyectos.variables-entorno.sistemas-contrato.mostrar')}}","{{route('proyectos.variables-entorno.sistemas-contrato.guardar')}}");
+        // listar();
 
         // const tieneNuevo='{{Auth::user()->tieneAccion(10)}}';
         // if (tieneNuevo!='1')

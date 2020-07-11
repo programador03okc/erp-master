@@ -60,7 +60,7 @@ function listarOpcion(ruta){
         'dom': vardataTables[1],
         'buttons': vardataTables[2],
         'language' : vardataTables[0],
-        'ajax': '/'+ruta,
+        'ajax': ruta,
         'bDestroy': true,
         'retrieve': true,
         'columns': [
