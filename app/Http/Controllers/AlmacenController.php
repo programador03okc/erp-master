@@ -4424,8 +4424,9 @@ class AlmacenController extends Controller
         $alm_array = explode(',',$almacenes);
         
         $data = DB::table('almacen.mov_alm_det')
-            ->select('mov_alm_det.*','mov_alm.fecha_emision','mov_alm.id_tp_mov',
+            ->select('mov_alm_det.*','mov_alm.fecha_emision','mov_alm.id_tp_mov','mov_alm.codigo',
             'alm_prod.descripcion as prod_descripcion','alm_prod.codigo as prod_codigo','alm_prod.part_number as prod_part_number',
+            'alm_cat_prod.descripcion as categoria','alm_subcat.descripcion as subcategoria',
             'alm_prod.codigo_anexo','alm_und_medida.abreviatura','alm_ubi_posicion.codigo as posicion',
             'tp_ope_com.cod_sunat as cod_sunat_com','tp_ope_com.descripcion as tp_com_descripcion',
             'tp_ope_ven.cod_sunat as cod_sunat_ven','tp_ope_ven.descripcion as tp_ven_descripcion',
@@ -4440,6 +4441,8 @@ class AlmacenController extends Controller
             ->leftjoin('almacen.transformacion','transformacion.id_transformacion','=','mov_alm.id_transformacion')
             // ->join('almacen.tp_mov','tp_mov.id_tp_mov','=','mov_alm.id_tp_mov')
             ->join('almacen.alm_prod','alm_prod.id_producto','=','mov_alm_det.id_producto')
+            ->join('almacen.alm_cat_prod','alm_cat_prod.id_categoria','=','alm_prod.id_categoria')
+            ->join('almacen.alm_subcat','alm_subcat.id_subcategoria','=','alm_prod.id_subcategoria')
             ->join('almacen.alm_und_medida','alm_und_medida.id_unidad_medida','=','alm_prod.id_unidad_medida')
             ->leftjoin('almacen.alm_ubi_posicion','alm_ubi_posicion.id_posicion','=','mov_alm_det.id_posicion')
             ->leftjoin('almacen.guia_com','guia_com.id_guia','=','mov_alm.id_guia_com')
@@ -4506,6 +4509,9 @@ class AlmacenController extends Controller
 
             $nuevo = [
                 "id_mov_alm_det"=>$d->id_mov_alm_det,
+                "codigo"=>$d->codigo,
+                "categoria"=>$d->categoria,
+                "subcategoria"=>$d->subcategoria,
                 "prod_codigo"=>$d->prod_codigo,
                 "prod_part_number"=>$d->prod_part_number,
                 "prod_descripcion"=>$d->prod_descripcion,

@@ -39,9 +39,11 @@ Kardex General
                         <th hidden></th>
                         <th>Código</th>
                         <th>Part Number</th>
+                        <th>Categoría</th>
+                        <th>SubCategoría</th>
                         <th>Descripción</th>
                         <th>Fecha</th>
-                        <th>Ubicación</th>
+                        <th>Almacén</th>
                         <th>Und</th>
                         <th>Ing.</th>
                         <th>Sal.</th>
@@ -49,12 +51,13 @@ Kardex General
                         <th>Ing.</th>
                         <th>Sal.</th>
                         <th>Valoriz.</th>
+                        <th>Cod.Mov.</th>
                         <th>Op</th>
                         <th>Movimiento</th>
-                        <th>Guía Remisión</th>
-                        <th>Transferencia</th>
-                        <th>Orden Compra</th>
-                        <th>Requerimiento</th>
+                        <th>Guía </th>
+                        <th>Transf.</th>
+                        <th>O.C.</th>
+                        <th>Req.</th>
                     </tr>
                 </thead>
                 <tbody></tbody>

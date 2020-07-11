@@ -154,11 +154,10 @@ Gestión de Transferencias
 
     <script src="{{ asset('js/almacen/transferencias/listar_transferencias.js')}}"></script>
     <script src="{{ asset('js/almacen/transferencias/transferencia_detalle.js')}}"></script>
-    <script src="{{ asset('js/almacen/guia/guia_venta.js')}}"></script>
     <script>
     $(document).ready(function(){
         seleccionarMenu(window.location);
-        iniciar('{{Auth::user()->tieneAccion(91)}}');
+        iniciar('{{Auth::user()->tieneAccion(91)}}','{{Auth::user()->id_usuario}}');
     });
     </script>
 @endsection

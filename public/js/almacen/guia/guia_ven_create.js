@@ -15,8 +15,8 @@ function open_guia_create(data){
     $('#serie').text('');
     $('#numero').text('');
     // cargar_almacenes(data.id_sede, 'id_almacen');
-    var tp_doc_almacen = 2;//guia venta
-    next_serie_numero(data.id_sede,tp_doc_almacen);
+    // var tp_doc_almacen = 2;//guia venta
+    // next_serie_numero(data.id_sede,tp_doc_almacen);
 }
 
 function next_serie_numero(id_sede,id_tp_doc){

@@ -118,11 +118,14 @@ class TransferenciaController extends Controller
 
     public function listar_transferencia_detalle($id_transferencia){
         $detalle = DB::table('almacen.guia_ven_det')
-        ->select('guia_ven_det.*','alm_prod.codigo','alm_prod.descripcion','alm_und_medida.abreviatura')
+        ->select('guia_ven_det.*','alm_prod.codigo','alm_prod.descripcion','alm_und_medida.abreviatura',
+        'alm_prod.part_number','alm_cat_prod.descripcion as categoria','alm_subcat.descripcion as subcategoria')
         ->join('almacen.guia_ven','guia_ven.id_guia_ven','=','guia_ven_det.id_guia_ven')
         ->join('almacen.trans','trans.id_guia_ven','=','guia_ven.id_guia_ven')
         ->join('almacen.alm_prod','alm_prod.id_producto','=','guia_ven_det.id_producto')
         ->join('almacen.alm_und_medida','alm_und_medida.id_unidad_medida','=','alm_prod.id_unidad_medida')
+        ->join('almacen.alm_cat_prod','alm_cat_prod.id_categoria','=','alm_prod.id_categoria')
+        ->join('almacen.alm_subcat','alm_subcat.id_subcategoria','=','alm_prod.id_subcategoria')
         ->where([['trans.id_transferencia','=',$id_transferencia],
                 ['guia_ven_det.estado','!=',7]])
         ->get();
@@ -180,6 +183,9 @@ class TransferenciaController extends Controller
                 <tr id="'.$d->id_guia_ven_det.'">
                     <td><input type="checkbox" checked change="onCheck('.$d->id_guia_ven_det.');"/></td>
                     <td>'.$d->codigo.'</td>
+                    <td>'.$d->part_number.'</td>
+                    <td>'.$d->categoria.'</td>
+                    <td>'.$d->subcategoria.'</td>
                     <td>'.$d->descripcion.'</td>
                     <td>'.$d->cantidad.'</td>
                     <td><input type="number" class="input-data right" style="width:80px;" name="cantidad_recibida" value="'.$nueva_cant.'" max="'.$nueva_cant.'"/></td>
@@ -413,6 +419,9 @@ class TransferenciaController extends Controller
 
             $usuario = Auth::user();
             $fecha = date('Y-m-d H:i:s');
+
+            DB::table('almacen.trans')->where('id_transferencia',$request->id_transferencia)
+            ->update(['responsable_destino'=>$request->responsable_destino]);
 
             $guia_ven = DB::table('almacen.guia_ven')
             ->select('guia_ven.*','adm_empresa.id_contribuyente as empresa_contribuyente',

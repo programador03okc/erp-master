@@ -1026,11 +1026,11 @@ Route::group(['middleware' => ['auth']], function () {
 					// Route::get('proveedor/{id}', 'AlmacenController@proveedor');
 	
 				});
-	
+				
 			});
-	
+			
 			Route::group(['as' => 'transferencias.', 'prefix' => 'transferencias'], function(){
-	
+				
 				Route::group(['as' => 'gestion-transferencias.', 'prefix' => 'gestion-transferencias'], function(){
 					//Transferencias
 					Route::get('index', 'TransferenciaController@view_listar_transferencias')->name('index');
@@ -1042,6 +1042,7 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::get('ingreso_transferencia/{id}', 'TransferenciaController@ingreso_transferencia');
 					Route::get('transferencia_nextId/{id}', 'TransferenciaController@transferencia_nextId');
 					Route::post('anular_transferencia_salida', 'TransferenciaController@anular_transferencia_salida');
+					Route::get('imprimir_ingreso/{id}', 'AlmacenController@imprimir_ingreso');
 					
 				});
 	

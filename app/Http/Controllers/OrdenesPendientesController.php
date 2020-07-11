@@ -30,7 +30,7 @@ class OrdenesPendientesController extends Controller
 
     public function listarOrdenesPendientes(){
         $data = DB::table('logistica.log_ord_compra')
-            ->select('log_ord_compra.*','log_ord_compra.codigo as codigo_orden',
+            ->select('log_ord_compra.*','log_ord_compra.codigo as codigo_orden','log_ord_compra.codigo_softlink',
             'adm_estado_doc.estado_doc','adm_estado_doc.bootstrap_color','adm_contri.razon_social',
             'adm_contri.nro_documento','sis_usua.nombre_corto',
             // 'sis_moneda.simbolo',
@@ -53,6 +53,7 @@ class OrdenesPendientesController extends Controller
     public function listarOrdenesEntregadas(){
         $data = DB::table('almacen.mov_alm')
             ->select('mov_alm.*','log_ord_compra.id_orden_compra','log_ord_compra.codigo as codigo_orden',
+            'log_ord_compra.codigo_softlink',
             'adm_contri.nro_documento','adm_contri.razon_social','log_ord_compra.fecha as fecha_orden',
             'alm_req.codigo as codigo_requerimiento','alm_req.concepto','log_ord_compra.id_sede as sede_orden',
             'sis_usua.nombre_corto','sede_oc.descripcion as sede_orden_descripcion',
@@ -97,6 +98,8 @@ class OrdenesPendientesController extends Controller
         $detalle = DB::table('logistica.log_det_ord_compra')
             ->select(
                 'log_det_ord_compra.*','alm_item.id_producto','alm_prod.codigo',
+                'alm_prod.part_number','alm_cat_prod.descripcion as categoria',
+                'alm_subcat.descripcion as subcategoria',
                 'alm_prod.descripcion','alm_und_medida.abreviatura'
                 // 'log_valorizacion_cotizacion.cantidad_cotizada',
                 // 'log_valorizacion_cotizacion.precio_cotizado',
@@ -114,6 +117,8 @@ class OrdenesPendientesController extends Controller
             // ->join('almacen.alm_det_req', 'alm_det_req.id_detalle_requerimiento', '=', 'valoriza_coti_detalle.id_detalle_requerimiento')
             ->leftjoin('almacen.alm_item', 'alm_item.id_item', '=', 'log_det_ord_compra.id_item')
             ->leftjoin('almacen.alm_prod', 'alm_prod.id_producto', '=', 'alm_item.id_producto')
+            ->leftjoin('almacen.alm_cat_prod', 'alm_cat_prod.id_categoria', '=', 'alm_prod.id_categoria')
+            ->leftjoin('almacen.alm_subcat', 'alm_subcat.id_subcategoria', '=', 'alm_prod.id_subcategoria')
             ->leftjoin('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'log_det_ord_compra.id_unidad_medida')
             // ->leftjoin('logistica.log_servi', 'log_servi.id_servicio', '=', 'alm_item.id_servicio')
             // ->leftjoin('logistica.equipo', 'equipo.id_equipo', '=', 'alm_item.id_equipo')
@@ -592,7 +597,7 @@ class OrdenesPendientesController extends Controller
                             ->update(['estado'=>5]);//Atendido
                             //Agrega accion en requerimiento
                             DB::table('almacen.alm_req_obs')
-                            ->insert([  'id_requerimiento'=>$ing->id_requerimiento,
+                            ->insert([  'id_requerimiento'=>$req->id_requerimiento,
                                         'accion'=>'INGRESO ANULADO',
                                         'descripcion'=>'Ingreso por Compra Anulado. Requerimiento regresa a Atendido.',
                                         'id_usuario'=>$id_usuario,

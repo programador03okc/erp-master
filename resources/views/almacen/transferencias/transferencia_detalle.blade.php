@@ -37,13 +37,15 @@
                         <tr>
                             <td width="3%">Nro</td>
                             <td width="10%">Código</td>
+                            <td>PartNumber</td>
+                            <td>Categoría</td>
+                            <td>SubCategoría</td>
                             <td>Descripción</td>
-                            {{-- <td width="15%">Posición</td> --}}
                             <td class="right">Cant.Enviada</td>
                             <td>Cant.Recibida</td>
                             <td>Und</td>
                             <td width="10%">Ubicación</td>
-                            <td width="30%">Observación</td>
+                            <td width="10%">Observación</td>
                         </tr>
                     </thead>
                     <tbody></tbody>

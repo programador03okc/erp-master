@@ -16,7 +16,7 @@ function iniciar(permiso){
         $("#"+activeForm).attr('form', 'formulario');
         changeStateInput(activeForm, true);
 
-        clearDataTable();
+        // clearDataTable();
         if (activeForm == "form-pendientes"){
             listarOrdenesPendientes(permiso);
         } 
@@ -34,7 +34,7 @@ function listarOrdenesPendientes(permiso){
         'dom': vardataTables[1],
         'buttons': vardataTables[2],
         'language' : vardataTables[0],
-        'destroy' : true,
+        'bDestroy' : true,
         'serverSide' : true,
         "scrollX": true,
         'ajax': {
@@ -46,6 +46,7 @@ function listarOrdenesPendientes(permiso){
             {'data': 'codigo'},
             {'data': 'nro_documento', 'name': 'adm_contri.nro_documento'},
             {'data': 'razon_social', 'name': 'adm_contri.razon_social'},
+            {'data': 'codigo_softlink', 'name': 'log_ord_compra.codigo_softlink'},
             {'data': 'fecha'},
             {'data': 'codigo_requerimiento', 'name': 'alm_req.codigo'},
             {'data': 'concepto', 'name': 'alm_req.concepto'},
@@ -70,7 +71,7 @@ function listarOrdenesPendientes(permiso){
                         'data-placement="bottom" title="Ver Detalle" >'+
                         '<i class="fas fa-list-ul"></i></button>'
                 }
-                }, targets: 8
+                }, targets: 9
             }
         ],
     });
@@ -94,7 +95,7 @@ function listarOrdenesEntregadas(permiso){
         'dom': vardataTables[1],
         'buttons': vardataTables[2],
         'language' : vardataTables[0],
-        'destroy' : true,
+        'bDestroy' : true,
         'serverSide' : true,
         "scrollX": true,
         'ajax': {
@@ -107,7 +108,7 @@ function listarOrdenesEntregadas(permiso){
             {'data': 'sede_orden_descripcion', 'name': 'sede_oc.descripcion'},
             {'data': 'nro_documento', 'name': 'adm_contri.nro_documento'},
             {'data': 'razon_social', 'name': 'adm_contri.razon_social'},
-            // {'data': 'simbolo'},
+            {'data': 'codigo_softlink', 'name': 'log_ord_compra.codigo_softlink'},
             // {'data': 'monto_subtotal', 'class': 'right'},
             // {'data': 'monto_igv', 'class': 'right'},
             // {'data': 'monto_total', 'class': 'right'},
@@ -157,7 +158,7 @@ function listarOrdenesEntregadas(permiso){
                             'data-placement="bottom" title="Ver Ingreso" data-id="'+row['id_mov_alm']+'">'+
                             '<i class="fas fa-file-alt"></i></button>'
                     }
-                }, targets: 13
+                }, targets: 14
             }    
         ],
     });
@@ -310,7 +311,7 @@ function listar_detalle_orden(id_orden){
     console.log('id_orden',id_orden);
     $.ajax({
         type: 'GET',
-        url: '/detalleOrden/'+id_orden,
+        url: 'detalleOrden/'+id_orden,
         dataType: 'JSON',
         success: function(response){
             console.log(response);
@@ -326,8 +327,11 @@ function listar_detalle_orden(id_orden){
                 html+='<tr id="'+element.id_detalle_orden+'">'+
                 '<td>'+i+'</td>'+
                 '<td>'+element.codigo+'</td>'+
+                '<td>'+element.part_number+'</td>'+
+                '<td>'+element.categoria+'</td>'+
+                '<td>'+element.subcategoria+'</td>'+
                 '<td>'+element.descripcion+'</td>'+
-                '<td>'+element.cantidad_cotizada+'</td>'+
+                '<td>'+element.cantidad+'</td>'+
                 '<td>'+element.abreviatura+'</td>'+
                 // '<td>'+element.precio_cotizado+'</td>'+
                 // '<td class="right">'+formatNumber.decimal(sub_total,'',-2)+'</td>'+
