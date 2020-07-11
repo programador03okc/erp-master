@@ -393,6 +393,8 @@
     <script>
     $(document).ready(function(){
         seleccionarMenu(window.location);
+        const grupo='{{Auth::user()->getGrupo()->descripcion}}';
+        alert(grupo);
         inicializar(
             "{{route('logistica.gestion-logistica.requerimiento.elaboracion.lista-modal')}}",
             "{{route('logistica.gestion-logistica.requerimiento.elaboracion.mostrar-requerimiento')}}",

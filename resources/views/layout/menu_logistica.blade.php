@@ -1,32 +1,33 @@
 @section('sidebar')
 <ul class="sidebar-menu" data-widget="tree">
     <li><a href="{{route('logistica.index')}}"><i class="fas fa-tachometer-alt"></i> <span>Logística y Almacenes</span></a></li>
-    @if(Auth::user()->tieneSubModuloPadre(48))
+    @if(Auth::user()->tieneSubModulo(23))
     <li class=" treeview ">
         <a href="#">
-            <i class="fas fa-truck-loading"></i> <span>Logística</span>
+            <i class="fas fa-file-prescription"></i> <span>Requerimientos</span>
             <span class="pull-right-container">
                 <i class="fa fa-angle-left pull-right"></i>
             </span>
         </a>
         <ul class="treeview-menu">
-            @if(Auth::user()->tieneSubModulo(23))
-            <li class="treeview" style="height: auto;">
-                <a href="#"><i class="fas fa-file-prescription"></i> Requerimientos
-                    <span class="pull-right-container">
-                    <i class="fa fa-angle-left pull-right"></i>
-                    </span>
-                </a>
-                <ul class="treeview-menu">
-                @if(Auth::user()->tieneAplicacion(102))
-                    <li><a href="{{route('logistica.gestion-logistica.requerimiento.elaboracion.index')}}"><i class="far fa-circle fa-xs"></i> Elaborar</a></li>
-                @endif
-                @if(Auth::user()->tieneAplicacion(103))
-                    <li><a href="{{route('logistica.gestion-logistica.requerimiento.gestionar.index')}}"><i class="far fa-circle fa-xs"></i> Listado</a></li>
-                @endif
-                </ul>
-            </li>
-            @endif
+        @if(Auth::user()->tieneAplicacion(102))
+            <li><a href="{{route('logistica.gestion-logistica.requerimiento.elaboracion.index')}}"><i class="far fa-circle fa-xs"></i> Elaborar</a></li>
+        @endif
+        @if(Auth::user()->tieneAplicacion(103))
+            <li><a href="{{route('logistica.gestion-logistica.requerimiento.gestionar.index')}}"><i class="far fa-circle fa-xs"></i> Listado</a></li>
+        @endif
+        </ul>
+    </li>
+    @endif
+    @if(Auth::user()->tieneSubModuloPadre(48))
+    <li class=" treeview ">
+        <a href="#">
+            <i class="fas fa-truck-loading"></i> <span>Compras</span>
+            <span class="pull-right-container">
+                <i class="fa fa-angle-left pull-right"></i>
+            </span>
+        </a>
+        <ul class="treeview-menu">
             @if(Auth::user()->tieneSubModulo(24))
             <li class="treeview" >
                 <a href="#"><i class="fas fa-file-invoice-dollar"></i> Cotizaciones
