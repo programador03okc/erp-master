@@ -274,6 +274,8 @@
                             <th width="60">UNIDAD</th>
                             <th width="70">CANTIDAD</th>
                             <th width="70">PRECIO REF.</th>
+                            <th width="70">CATEGORÍA</th>
+                            <th width="70">SUBCATEGORÍA</th>
                             <th width="100">FECHA ENTREGA</th>
                             <th width="100">LUGAR ENTREGA</th>
                             <th width="120">
@@ -286,7 +288,7 @@
                     <tbody id="body_detalle_requerimiento">
                         <tr id="default_tr">
                             <td></td>
-                            <td colspan="7"> No hay datos registrados</td>
+                            <td colspan="11"> No hay datos registrados</td>
                         </tr>
                     </tbody>
                 </table>

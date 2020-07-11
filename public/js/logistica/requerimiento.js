@@ -917,10 +917,12 @@ function llenar_tabla_detalle_requerimiento(data_item){
             row.insertCell(4).innerHTML = descripcion_unidad;
             row.insertCell(5).innerHTML = data_item[a].cantidad?data_item[a].cantidad:'0';
             row.insertCell(6).innerHTML = data_item[a].precio_referencial?data_item[a].precio_referencial:'0';
-            row.insertCell(7).innerHTML = data_item[a].fecha_entrega?data_item[a].fecha_entrega:null;
-            row.insertCell(8).innerHTML = data_item[a].lugar_entrega?data_item[a].lugar_entrega:'-';
+            row.insertCell(7).innerHTML = data_item[a].categoria?data_item[a].categoria:'-';
+            row.insertCell(8).innerHTML = data_item[a].subcategoria?data_item[a].subcategoria:'-';
+            row.insertCell(9).innerHTML = data_item[a].fecha_entrega?data_item[a].fecha_entrega:null;
+            row.insertCell(10).innerHTML = data_item[a].lugar_entrega?data_item[a].lugar_entrega:'-';
 
-            var tdBtnAction = row.insertCell(9);
+            var tdBtnAction = row.insertCell(11);
             // tdBtnAction.className = classHiden;
             tdBtnAction.setAttribute('width',widthGroupBtnAction);
             tdBtnAction.innerHTML = '<div class="btn-group btn-group-sm" role="group" aria-label="Second group">'+
@@ -1020,6 +1022,8 @@ function get_data_detalle_requerimiento(){
     var und_text = $('[name=unidad_medida_item]').find('option:selected').text();
     var cantidad = $('[name=cantidad_item]').val();
     var precio_referencial = $('[name=precio_ref_item]').val();
+    var categoria = $('[name=categoria]').val();
+    var subcategoria = $('[name=subcategoria]').val();
     var fecha_entrega = $('[name=fecha_entrega_item]').val();
     var lugar_entrega = $('[name=lugar_entrega_item]').val();
     var id_partida = $('[name=id_partida]').val();
@@ -1046,6 +1050,8 @@ function get_data_detalle_requerimiento(){
         'unidad':und_text,
         'cantidad':parseFloat(cantidad),
         'precio_referencial':parseFloat(precio_referencial),
+        'categoria':categoria,
+        'subcategoria':subcategoria,
         'fecha_entrega':fecha_entrega,
         'lugar_entrega':lugar_entrega,
         'id_partida':parseInt(id_partida),
@@ -1684,7 +1690,9 @@ function listarItems() {
             {'data': 'codigo'},
             {'data': 'part_number'},
             {'data': 'descripcion'},
-            {'data': 'unidad_medida_descripcion'}
+            {'data': 'unidad_medida_descripcion'},
+            {'data': 'categoria'},
+            {'data': 'subcategoria'}
         ],
         'columnDefs': [
             { 'aTargets': [0], 'sClass': 'invisible'},
@@ -1771,6 +1779,8 @@ function mostrar_item(id){
             $('[name=codigo_item]').val(response[0].codigo);
             $('[name=descripcion_item]').val(response[0].descripcion);
             $('[name=unidad_medida_item]').val(response[0].id_unidad_medida);
+            $('[name=categoria]').val(response[0].categoria);
+            $('[name=subcategoria]').val(response[0].subcategoria);
 
         }
     }).fail( function( jqXHR, textStatus, errorThrown ){
