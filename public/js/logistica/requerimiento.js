@@ -27,6 +27,18 @@ function inicializar( _rutaLista,
     rutaCopiarRequerimiento = _rutaCopiarRequerimiento;
     rutaTelefonosCliente = _rutaTelefonosCliente;
     rutaDireccionesCliente = _rutaDireccionesCliente;
+
+
+}
+
+function controlInput(id,descripcion){
+    if(descripcion == 'Proyectos'){
+       hiddeElement('mostrar','form-requerimiento',[
+        'input-group-proyecto'
+        ]);
+        document.querySelector("form[id='form-requerimiento'] input[name='id_grupo']").value= id;
+
+    }
 }
 
 let data = [];
@@ -47,7 +59,6 @@ var UsoDePartida =[];
 var userSession =[];
 
 let tpOptCom  ={};
-
 $(function(){
     $.ajax({
         type: 'GET',
@@ -954,7 +965,7 @@ function get_data_requerimiento(){
     nombre_area = document.querySelector("form[id='form-requerimiento'] input[name='nombre_area']").value;
     id_moneda = document.querySelector("form[id='form-requerimiento'] select[name='moneda']").value;
     id_periodo = document.querySelector("form[id='form-requerimiento'] select[name='periodo']").value;
-    id_op_com = document.querySelector("form[id='form-requerimiento'] input[name='id_op_com']").value;
+    id_proyecto = document.querySelector("form[id='form-requerimiento'] input[name='id_proyecto']").value;
     id_rol = document.querySelector("form[id='form-requerimiento'] select[name='rol_usuario']").value;
     codigo_occ = document.querySelector("form[id='form-requerimiento'] input[name='codigo_occ']").value;
     id_sede = document.querySelector("form[id='form-requerimiento'] select[name='sede']").value;
@@ -1793,29 +1804,33 @@ function mostrar_item(id){
 
 // modal partidas
 function partidasModal(){  
-    var grupo = $('[name=id_grupo]').val();
-    // console.log(grupo);
+    var id_grupo = $('[name=id_grupo]').val();
+    var id_proyecto = $('[name=id_proyecto]').val();
     
-    if (grupo !== ''){
-        $('#modal-partidas').modal({
-            show: true,
-            backdrop: 'static'
-        });
-        listarPartidas(grupo);
-    } else {
-        alert('Es necesario que seleccione un Área!');
+    if (id_grupo !== ''){
+        if (id_proyecto != ''){
+            $('#modal-partidas').modal({
+                show: true,
+                backdrop: 'static'
+            });
+            listarPartidas(id_grupo,id_proyecto);
+        } else {
+            alert('hubo un problema, asegurese de seleccionar un proyecto antes de continuar.');
+        }
+    }else{
+        alert("Ocurrio un problema, no se puedo seleccionar el grupo al que pertence el usuario.");
     }
+    
 }
-function listarPartidas(id_grupo){
-    let id_op_com= document.getElementsByName('id_op_com')[0].value;
-    // console.log(id_op_com);
+function listarPartidas(id_grupo,id_proyecto){
     
-    if(id_op_com == 0 || id_op_com == '' || id_op_com == null){
-        id_op_com = null;
+    if(id_proyecto == 0 || id_proyecto == '' || id_proyecto == null){
+        id_proyecto = null;
     }
+    console.log('listar_partidas/'+id_grupo+'/'+id_proyecto);
     $.ajax({
         type: 'GET',
-        url: '/listar_partidas/'+id_grupo+'/'+id_op_com,
+        url: 'listar_partidas/'+id_grupo+'/'+id_proyecto,
         dataType: 'JSON',
         success: function(response){
             // console.log(response);
@@ -2359,7 +2374,6 @@ function changeOptTipoReqSelect(e){
         document.querySelector("form[id='form-requerimiento'] input[name='id_area']").value='';
         document.querySelector("form[id='form-requerimiento'] select[name='rol_usuario']").value='';
         hiddeElement('ocultar','form-requerimiento',[
-            'input-group-area',
             'input-group-rol-usuario',
             'input-group-proyecto',
             'input-group-comercial'
@@ -2387,7 +2401,6 @@ function changeOptTipoReqSelect(e){
         hiddeElement('ocultar','form-requerimiento',[
             'input-group-moneda',
             'input-group-empresa',
-            'input-group-area',
             'input-group-rol-usuario',
             'input-group-sede',
             'input-group-tipo-cliente',
@@ -2424,7 +2437,6 @@ function changeOptTipoReqSelect(e){
         ]);
         hiddeElement('mostrar','form-requerimiento',[
             'input-group-almacen',
-            'input-group-area',
             'input-group-rol-usuario',
             'input-group-moneda',
             'input-group-empresa',
@@ -2454,9 +2466,15 @@ function getDataSelectSede(id_empresa = null){
             headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
             url: rutaSedeByEmpresa+'/' + id_empresa,
             dataType: 'JSON',
-            success: function(response){                
-                llenarSelectSede(response);
-                llenarUbigeo();
+            success: function(response){ 
+                console.log(response);  
+                if(response.length ==0){
+                    console.error("usuario no registrado en 'configuracion'.'sis_usua_sede' o el estado del registro es diferente de 1");
+                    alert('No se pudo acceder al listado de Sedes, el usuario debe pertenecer a una Sede y la sede esta habilitada');
+                }else{
+                    llenarSelectSede(response);
+                    llenarUbigeo();
+                }
             }
         });
     }

@@ -2284,17 +2284,15 @@ class EquipoController extends Controller
         return $array;
     }
 
-    public function listar_partidas($id_grupo,$id_op_com=null){
-
-        $grupo = $this->mostrar_nombre_grupo($id_grupo);
+    public function listar_partidas($id_grupo,$id_proyecto=null){
         
-        if($grupo['descripcion'] == 'PROYECTOS' || $grupo['descripcion']== 'Proyectos'){ 
+        if($id_proyecto != null || $id_proyecto != ''){ 
             
             $presup = DB::table('proyectos.proy_presup')
             ->select('presup.*')
             ->leftJoin('finanzas.presup', 'presup.id_presup', '=', 'proy_presup.id_presup')
             ->where([
-                    ['proy_presup.id_op_com','=',$id_op_com],
+                    ['proy_presup.id_proyecto','=',$id_proyecto],
                     ['proy_presup.estado','=',8],
                     ['tp_presup','=',4]
 

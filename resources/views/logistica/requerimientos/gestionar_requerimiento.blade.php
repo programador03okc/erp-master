@@ -184,23 +184,11 @@
                     </button>
                 </div>
             </div>
-            <div class="col-md-2" id="input-group-area" hidden>
-                <h5>Area</h5>
-                <input type="hidden" class="form-control" name="id_grupo">
-                <input type="hidden" class="form-control" name="id_area">
-                <div class="input-group-okc">
-                    <input type="text" class="form-control" name="nombre_area" disabled="true">
-                    <div class="input-group-append">
-                        <button type="button" class="input-group-text" onclick="modal_area();">
-                            <i class="fa fa-search"></i>
-                        </button>
-                    </div>
-                </div>
-            </div>
             <div class="col-md-6" id="input-group-proyecto" hidden>
                 <h5>Proyecto</h5>
                 <div style="display:flex;">
-                    <input hidden="true" type="text" name="id_op_com" class="activation">
+                    <input type="hidden" class="form-control" name="id_grupo">
+                    <input type="hidden" type="text" name="id_proyecto" class="activation">
                     <input type="text" name="codigo_opcion" class="form-control group-elemento" style="width:130px; text-align:center;" readonly>
                     <div class="input-group-okc">
                         <input type="text" class="form-control" name="nombre_opcion" placeholder="" aria-describedby="basic-addon4" disabled="true">
@@ -390,11 +378,14 @@
     <script src="{{ asset('js/logistica/add_cliente.js')}}"></script>
     <script src="{{ asset('js/almacen/producto/saldosModal.js')}}"></script>
     <script src="{{ asset('js/publico/consulta_sunat.js')}}"></script>
+    <script src="{{ asset('template/plugins/moment.min.js') }}"></script>
+
     <script>
     $(document).ready(function(){
         seleccionarMenu(window.location);
-        const grupo='{{Auth::user()->getGrupo()->descripcion}}';
-        alert(grupo);
+        var descripcion_grupo='{{Auth::user()->getGrupo()->descripcion}}';
+        var id_grupo='{{Auth::user()->getGrupo()->id_grupo}}';
+        controlInput(id_grupo,descripcion_grupo);
         inicializar(
             "{{route('logistica.gestion-logistica.requerimiento.elaboracion.lista-modal')}}",
             "{{route('logistica.gestion-logistica.requerimiento.elaboracion.mostrar-requerimiento')}}",

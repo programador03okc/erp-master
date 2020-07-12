@@ -133,6 +133,8 @@ class LogisticaController extends Controller
         ->join('administracion.sis_sede','sis_sede.id_sede','=','sis_usua_sede.id_sede')
         ->leftJoin('configuracion.ubi_dis','ubi_dis.id_dis','=','sis_sede.id_ubigeo')
         ->where([['sis_usua_sede.id_usuario','=',$id_usuario],
+                ['sis_usua_sede.estado','=', 1],
+                ['sis_sede.estado','=', 1],
                  ['sis_sede.id_empresa','=',$id_empresa]])
 		->get();
         return $sedes;
@@ -2085,12 +2087,8 @@ class LogisticaController extends Controller
 
                 'alm_prod.part_number',
                 'alm_prod.id_unidad_medida',
-                'alm_cat_prod.descripcion as categoria',
-                'alm_subcat.descripcion as subcategoria'
             )
             ->leftJoin('almacen.alm_prod', 'alm_prod.id_producto', '=', 'alm_item.id_producto')
-            ->join('almacen.alm_cat_prod', 'alm_cat_prod.id_categoria', '=', 'alm_prod.id_categoria')
-            ->join('almacen.alm_subcat','alm_subcat.id_subcategoria','=','alm_prod.id_subcategoria')
             ->leftJoin('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'alm_prod.id_unidad_medida')
             ->leftJoin('logistica.log_servi', 'log_servi.id_servicio', '=', 'alm_item.id_servicio')
             ->leftJoin('logistica.equipo', 'equipo.id_equipo', '=', 'alm_item.id_equipo')
@@ -2102,8 +2100,6 @@ class LogisticaController extends Controller
     {
         $data = DB::table('almacen.alm_item')
             ->leftJoin('almacen.alm_prod', 'alm_item.id_producto', '=', 'alm_prod.id_producto')
-            ->join('almacen.alm_cat_prod', 'alm_cat_prod.id_categoria', '=', 'alm_prod.id_categoria')
-            ->join('almacen.alm_subcat','alm_subcat.id_subcategoria','=','alm_prod.id_subcategoria')
             ->leftJoin('logistica.log_servi', 'log_servi.id_servicio', '=', 'alm_item.id_servicio')
             ->leftJoin('logistica.equipo', 'equipo.id_equipo', '=', 'alm_item.id_equipo')
             ->leftJoin('almacen.alm_prod_ubi', 'alm_prod_ubi.id_producto', '=', 'alm_prod.id_producto')
@@ -2123,10 +2119,7 @@ class LogisticaController extends Controller
                 'alm_prod.part_number',
                 'alm_prod.id_unidad_medida',
                 'alm_und_medida.descripcion AS unidad_medida_descripcion',
-                'alm_prod_ubi.stock',
-                'alm_cat_prod.descripcion as categoria',
-                'alm_subcat.descripcion as subcategoria'
-
+                'alm_prod_ubi.stock'
             )
             ->where([
                 ['alm_item.id_item', '=', $id_item]

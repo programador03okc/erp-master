@@ -621,6 +621,8 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::get('mostrar-archivos-adjuntos/{id_detalle_requerimiento}', 'LogisticaController@mostrar_archivos_adjuntos');
 					Route::post('save_cliente', 'LogisticaController@save_cliente');
 					Route::get('listar_saldos/{id}', 'AlmacenController@listar_saldos');
+					Route::get('listar_opciones', 'ProyectosController@listar_opciones');
+					Route::get('listar_partidas/{id_grupo}/{id_op_com}', 'EquipoController@listar_partidas');
 
 
 				
@@ -2001,7 +2003,6 @@ Route::post('update_mtto_detalle', 'EquipoController@update_mtto_detalle');
 Route::get('anular_mtto_detalle/{id}', 'EquipoController@anular_mtto_detalle');
 Route::get('listar_mtto_detalle/{id}', 'EquipoController@listar_mtto_detalle');
 Route::get('mostrar_mtto_detalle/{id}', 'EquipoController@mostrar_mtto_detalle');
-Route::get('listar_partidas/{id_grupo}/{id_op_com}', 'EquipoController@listar_partidas');
 Route::get('tp_combustible', 'EquipoController@view_tp_combustible');
 Route::get('listar_tp_combustibles', 'EquipoController@mostrar_tp_combustibles');
 Route::get('mostrar_tp_combustible/{id}', 'EquipoController@mostrar_tp_combustible');

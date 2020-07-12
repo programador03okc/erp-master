@@ -8,7 +8,7 @@ $(function(){
         let formName = document.getElementsByClassName('page-main')[0].getAttribute('type');
 
         if (formName =='requerimiento'){
-            $('[name=id_op_com]').val(id);
+            $('[name=id_proyecto]').val(id);
             $('[name=codigo_opcion]').val(cod);
             $('[name=nombre_opcion]').val(des);
             $('#modal-opcion').modal('hide');
@@ -60,7 +60,7 @@ function listarOpcion(ruta){
         'dom': vardataTables[1],
         'buttons': vardataTables[2],
         'language' : vardataTables[0],
-        'ajax': '/'+ruta,
+        'ajax': ruta,
         'bDestroy': true,
         'retrieve': true,
         'columns': [
