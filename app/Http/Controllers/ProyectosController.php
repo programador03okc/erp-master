@@ -1127,105 +1127,52 @@ class ProyectosController extends Controller
     }
     public function guardar_acu(Request $request)
     {
-        $id_usuario = Auth::user()->id_usuario;
-        $id_cu_partida = 0;
-        $partida = null;
+        try{
+            DB::beginTransaction();
 
-        $id_cu_partida = DB::table('proyectos.proy_cu_partida')->insertGetId(
-        [
-            'id_cu' => $request->id_cu,
-            // 'codigo' => $codigo,
-            // 'descripcion' => strtoupper($request->descripcion),
-            // 'id_categoria' => $request->id_categoria,
-            // 'observacion' => $request->observacion,
-            'unid_medida' => $request->unid_medida,
-            'total' => $request->total_acu,
-            'rendimiento' => $request->rendimiento,
-            'estado' => 1,
-            'fecha_registro' => date('Y-m-d H:i:s'),
-            'usuario_registro' => $id_usuario,
-        ],
-            'id_cu_partida'
-        );
-
-        $ids = explode(',',$request->id_det);
-        $ins = explode(',',$request->id_insumo);
-        // $pre = explode(',',$request->id_precio);
-        $can = explode(',',$request->cantidad);
-        $cua = explode(',',$request->cuadrilla);
-        $uni = explode(',',$request->unitario);
-        $tot = explode(',',$request->total);
-        $count = count($ins);
-
-        for ($i=0; $i<$count; $i++){
-            $id_det     = $ids[$i];
-            $id_ins     = $ins[$i];
-            // $id_precio  = $pre[$i];
-            $cant       = $can[$i];
-            $cuad       = $cua[$i];
-            $precio_u   = $uni[$i];
-            $precio_t   = $tot[$i];
-            // $id_insumo  = substr($id_ins, 1, strlen($id_ins));
-
-            DB::table('proyectos.proy_cu_detalle')->insert(
-                [
-                    'id_cu_partida' => $id_cu_partida,
-                    'id_insumo' => $id_ins,
-                    // 'id_precio' => $id_precio,
-                    'cantidad' => $cant,
-                    'cuadrilla' => $cuad,
-                    'precio_unit' => $precio_u,
-                    'precio_total' => $precio_t,
-                    'fecha_registro' => date('Y-m-d H:i:s'),
-                    'estado' => 1
-                ]
-            );
-        }
-        $partida = DB::table('proyectos.proy_cu_partida')
-        ->select('proy_cu_partida.*','proy_cu.codigo','proy_cu.descripcion','alm_und_medida.abreviatura')
-        ->join('proyectos.proy_cu','proy_cu.id_cu','=','proy_cu_partida.id_cu')
-        ->join('almacen.alm_und_medida','alm_und_medida.id_unidad_medida','=','proy_cu_partida.unid_medida')
-        ->where('id_cu_partida',$id_cu_partida)->first();
-        
-        return response()->json(['id_cu_partida'=>$id_cu_partida,'partida'=>$partida]);
-    }
-
-    //update_acu
-    public function update_acu(Request $request)
-    {
-        $update = DB::table('proyectos.proy_cu_partida')->where('id_cu_partida', $request->id_cu_partida)
-            ->update([
+            $id_usuario = Auth::user()->id_usuario;
+            $id_cu_partida = 0;
+            $partida = null;
+    
+            $id_cu_partida = DB::table('proyectos.proy_cu_partida')->insertGetId(
+            [
+                'id_cu' => $request->id_cu,
+                // 'codigo' => $codigo,
                 // 'descripcion' => strtoupper($request->descripcion),
                 // 'id_categoria' => $request->id_categoria,
-                'id_cu' => $request->id_cu,
+                // 'observacion' => $request->observacion,
                 'unid_medida' => $request->unid_medida,
                 'total' => $request->total_acu,
                 'rendimiento' => $request->rendimiento,
-            ]);
-
-        $ids = explode(',',$request->id_det);
-        $ins = explode(',',$request->id_insumo);
-        // $pre = explode(',',$request->id_precio);
-        $can = explode(',',$request->cantidad);
-        $cua = explode(',',$request->cuadrilla);
-        $uni = explode(',',$request->unitario);
-        $tot = explode(',',$request->total);
-
-        $count = count($ids);
-
-        for ($i=0; $i<$count; $i++){
-            $id_det     = $ids[$i];
-            $id_ins     = $ins[$i];
-            // $id_precio  = $pre[$i];
-            $cant       = $can[$i];
-            $cuad       = $cua[$i];
-            $precio_u   = $uni[$i];
-            $precio_t   = $tot[$i];
-
-            if ($id_det == '0'){
-                $update = DB::table('proyectos.proy_cu_detalle')->insert(
+                'estado' => 1,
+                'fecha_registro' => date('Y-m-d H:i:s'),
+                'usuario_registro' => $id_usuario,
+            ],
+                'id_cu_partida'
+            );
+    
+            $ids = explode(',',$request->id_det);
+            $ins = explode(',',$request->id_insumo);
+            // $pre = explode(',',$request->id_precio);
+            $can = explode(',',$request->cantidad);
+            $cua = explode(',',$request->cuadrilla);
+            $uni = explode(',',$request->unitario);
+            $tot = explode(',',$request->total);
+            $count = count($ins);
+    
+            for ($i=0; $i<$count; $i++){
+                $id_det     = $ids[$i];
+                $id_ins     = $ins[$i];
+                // $id_precio  = $pre[$i];
+                $cant       = $can[$i];
+                $cuad       = $cua[$i];
+                $precio_u   = $uni[$i];
+                $precio_t   = $tot[$i];
+                // $id_insumo  = substr($id_ins, 1, strlen($id_ins));
+    
+                DB::table('proyectos.proy_cu_detalle')->insert(
                     [
-                        'id_cu_partida' => $request->id_cu_partida,
+                        'id_cu_partida' => $id_cu_partida,
                         'id_insumo' => $id_ins,
                         // 'id_precio' => $id_precio,
                         'cantidad' => $cant,
@@ -1237,32 +1184,102 @@ class ProyectosController extends Controller
                     ]
                 );
             }
-            else {
-                $update = DB::table('proyectos.proy_cu_detalle')
-                ->where('id_cu_detalle',$id_det)
+            $partida = DB::table('proyectos.proy_cu_partida')
+            ->select('proy_cu_partida.*','proy_cu.codigo','proy_cu.descripcion','alm_und_medida.abreviatura')
+            ->join('proyectos.proy_cu','proy_cu.id_cu','=','proy_cu_partida.id_cu')
+            ->join('almacen.alm_und_medida','alm_und_medida.id_unidad_medida','=','proy_cu_partida.unid_medida')
+            ->where('id_cu_partida',$id_cu_partida)->first();
+
+            DB::commit();
+            return response()->json(['id_cu_partida'=>$id_cu_partida,'partida'=>$partida]);
+
+        } catch (\PDOException $e) {
+            DB::rollBack();
+        }
+        
+    }
+
+    //update_acu
+    public function update_acu(Request $request)
+    {
+        try{
+            DB::beginTransaction();
+
+            $update = DB::table('proyectos.proy_cu_partida')->where('id_cu_partida', $request->id_cu_partida)
                 ->update([
-                        // 'id_precio' => $id_precio,
-                        'cantidad' => $cant,
-                        'cuadrilla' => $cuad,
-                        'precio_unit' => $precio_u,
-                        'precio_total' => $precio_t
-                    ]
-                );
+                    // 'descripcion' => strtoupper($request->descripcion),
+                    // 'id_categoria' => $request->id_categoria,
+                    'id_cu' => $request->id_cu,
+                    'unid_medida' => $request->unid_medida,
+                    'total' => $request->total_acu,
+                    'rendimiento' => $request->rendimiento,
+                ]);
+    
+            $ids = explode(',',$request->id_det);
+            $ins = explode(',',$request->id_insumo);
+            // $pre = explode(',',$request->id_precio);
+            $can = explode(',',$request->cantidad);
+            $cua = explode(',',$request->cuadrilla);
+            $uni = explode(',',$request->unitario);
+            $tot = explode(',',$request->total);
+    
+            $count = count($ids);
+    
+            for ($i=0; $i<$count; $i++){
+                $id_det     = $ids[$i];
+                $id_ins     = $ins[$i];
+                // $id_precio  = $pre[$i];
+                $cant       = $can[$i];
+                $cuad       = $cua[$i];
+                $precio_u   = $uni[$i];
+                $precio_t   = $tot[$i];
+    
+                if ($id_det == '0'){
+                    $update = DB::table('proyectos.proy_cu_detalle')->insert(
+                        [
+                            'id_cu_partida' => $request->id_cu_partida,
+                            'id_insumo' => $id_ins,
+                            // 'id_precio' => $id_precio,
+                            'cantidad' => $cant,
+                            'cuadrilla' => $cuad,
+                            'precio_unit' => $precio_u,
+                            'precio_total' => $precio_t,
+                            'fecha_registro' => date('Y-m-d H:i:s'),
+                            'estado' => 1
+                        ]
+                    );
+                }
+                else {
+                    $update = DB::table('proyectos.proy_cu_detalle')
+                    ->where('id_cu_detalle',$id_det)
+                    ->update([
+                            // 'id_precio' => $id_precio,
+                            'cantidad' => $cant,
+                            'cuadrilla' => $cuad,
+                            'precio_unit' => $precio_u,
+                            'precio_total' => $precio_t
+                        ]
+                    );
+                }
             }
-        }
-        $elim = explode(',',$request->det_eliminados);
-        $count1 = count($elim);
-
-        if (!empty($request->det_eliminados)){
-
-            for ($i=0; $i<$count1; $i++){
-                $id_eli = $elim[$i];
-                $update = DB::table('proyectos.proy_cu_detalle')
-                ->where('id_cu_detalle',$id_eli)
-                ->update([ 'estado' => 7 ]);
+            $elim = explode(',',$request->det_eliminados);
+            $count1 = count($elim);
+    
+            if (!empty($request->det_eliminados)){
+    
+                for ($i=0; $i<$count1; $i++){
+                    $id_eli = $elim[$i];
+                    $update = DB::table('proyectos.proy_cu_detalle')
+                    ->where('id_cu_detalle',$id_eli)
+                    ->update([ 'estado' => 7 ]);
+                }
             }
+            DB::commit();
+            return response()->json(['id_cu_partida'=>$update]);
+            
+        } catch (\PDOException $e) {
+            DB::rollBack();
         }
-        return response()->json(['id_cu_partida'=>$update]);
     }
 
     public function anular_acu($id){
