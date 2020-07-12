@@ -141,7 +141,8 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::post('guardar_insumo', 'ProyectosController@guardar_insumo');
 				Route::post('actualizar_insumo', 'ProyectosController@update_insumo');
 				Route::get('anular_insumo/{id}', 'ProyectosController@anular_insumo');
-				
+				Route::get('listar_insumo_precios/{id}', 'ProyectosController@listar_insumo_precios');
+
 			});
 
 			Route::group(['as' => 'nombres-cu.', 'prefix' => 'nombres-cu'], function(){
@@ -173,6 +174,9 @@ Route::group(['middleware' => ['auth']], function () {
 
 				Route::post('guardar_cu', 'ProyectosController@guardar_cu');
 				Route::post('update_cu', 'ProyectosController@update_cu');
+				Route::get('listar_cus', 'ProyectosController@listar_cus');
+				Route::get('listar_insumos', 'ProyectosController@listar_insumos');
+				Route::get('mostrar_presupuestos_acu/{id}', 'ProyectosController@mostrar_presupuestos_acu');
 
 			});
 
