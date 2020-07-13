@@ -192,7 +192,8 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::post('actualizar_opcion', 'ProyectosController@update_opcion');
 				Route::get('anular_opcion/{id}', 'ProyectosController@anular_opcion');
 				Route::post('guardar_cliente', 'ProyectosController@guardar_cliente');				
-				
+				Route::get('mostrar_clientes', 'AlmacenController@mostrar_clientes');
+
 			});
 
 			Route::group(['as' => 'presupuestos-internos.', 'prefix' => 'presupuestos-internos'], function(){
@@ -1170,6 +1171,7 @@ Route::group(['middleware' => ['auth']], function () {
 	
 					Route::get('index', 'AlmacenController@view_kardex_detallado')->name('index');
 					Route::get('kardex_producto/{id}/{alm}/{fini}/{ffin}', 'AlmacenController@kardex_producto');
+					Route::get('listar_kardex_producto/{id}/{alm}/{fini}/{ffin}', 'AlmacenController@kardex_producto');
 					Route::get('kardex_detallado/{id}/{alm}/{fini}/{ffin}', 'AlmacenController@download_kardex_producto');
 					Route::get('select_almacenes_empresa/{id}', 'AlmacenController@select_almacenes_empresa');
 					Route::get('datos_producto/{id}', 'AlmacenController@datos_producto');
