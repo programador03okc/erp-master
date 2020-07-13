@@ -22,11 +22,11 @@ Kardex General
     <div class="row" style="padding-left:0px;padding-right:0px;">
         <div class="col-md-12">
             <button type="submit" class="btn btn-success" data-toggle="tooltip" 
-                    data-placement="bottom" title="Descargar Kardex Sunat" 
-                    onClick="downloadKardexSunat();">Kardex Sunat</button>
-                <button type="button" class="btn btn-primary" data-toggle="tooltip" 
-                    data-placement="bottom" title="Ingrese los filtros" 
-                    onClick="open_filtros();">Filtros</button>
+                data-placement="bottom" title="Descargar Kardex Sunat" 
+                onClick="downloadKardexSunat();">Kardex Sunat</button>
+            <button type="button" class="btn btn-primary" data-toggle="tooltip" 
+                data-placement="bottom" title="Ingrese los filtros" 
+                onClick="open_filtros();">Filtros</button>
         </div>
     </div>
     <div class="row">

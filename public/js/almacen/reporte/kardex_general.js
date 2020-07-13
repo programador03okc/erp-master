@@ -23,7 +23,7 @@ function listarKardexGeneral(almacenes, fini, ffin){
         'dom': vardataTables[1],
         'buttons': vardataTables[2],
         'language' : vardataTables[0],
-        "scrollX": true,
+        // "scrollX": true,
         'ajax': {
             url:'kardex_general/'+almacenes+'/'+fini+'/'+ffin,
             dataSrc:''
@@ -57,15 +57,20 @@ function listarKardexGeneral(almacenes, fini, ffin){
             {'data': 'saldo'},
             {'render': 
                 function(data, type, row){
-                    return ((row['tipo']==1 || row['tipo']==0) ? row['valorizacion'] : '0');
+                    return ((row['tipo']==1 || row['tipo']==0) ? formatNumber.decimal(row['valorizacion'],'',-2) : '0');
                 }
             },
             {'render': 
                 function(data, type, row){
-                    return ((row['tipo']==2) ? row['valorizacion'] : '0');
+                    return ((row['tipo']==2) ? formatNumber.decimal(row['valorizacion'],'',-2) : '0');
                 }
             },
-            {'data': 'saldo_valor'},
+            {'render': 
+                function(data, type, row){
+                    return (formatNumber.decimal(row['saldo_valor'],'',-2));
+                }
+            },
+            // {'data': 'saldo_valor'},
             {'data': 'codigo'},
             {'render': 
                 function(data, type, row){

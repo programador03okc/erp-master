@@ -5946,24 +5946,26 @@ class AlmacenController extends Controller
             'guia_ven.serie as guia_ven_serie','guia_ven.numero as guia_ven_numero',
             'tp_doc_ven.cod_sunat as cod_sunat_ven','doc_ven.serie as doc_ven_serie','doc_ven.numero as doc_ven_numero',
             'doc_ven.fecha_emision as doc_ven_fecha','tp_op_com.cod_sunat as op_sunat_ing',
-            'tp_op_ven.cod_sunat as op_sunat_sal','doc_com_sunat.cod_doc_sunat as doc_sunat_com',
-            'doc_ven_sunat.cod_doc_sunat as doc_sunat_ven')
+            'tp_op_ven.cod_sunat as op_sunat_sal','tp_cod_sunat_com.cod_sunat as doc_sunat_com',
+            'tp_cod_sunat_ven.cod_sunat as doc_sunat_ven')
             ->join('almacen.mov_alm','mov_alm.id_mov_alm','=','mov_alm_det.id_mov_alm')
             ->join('almacen.alm_prod','alm_prod.id_producto','=','mov_alm_det.id_producto')
             ->join('almacen.alm_und_medida','alm_und_medida.id_unidad_medida','=','alm_prod.id_unidad_medida')
+            ->leftJoin('almacen.alm_ubi_posicion','alm_ubi_posicion.id_posicion','=','mov_alm_det.id_posicion')
             // ->join('almacen.tp_mov','tp_mov.id_tp_mov','=','mov_alm.id_tp_mov')
-            ->leftjoin('almacen.alm_ubi_posicion','alm_ubi_posicion.id_posicion','=','mov_alm_det.id_posicion')
-            ->leftjoin('almacen.guia_com','guia_com.id_guia','=','mov_alm.id_guia_com')
-            ->leftjoin('almacen.tp_doc_almacen as doc_com_sunat','doc_com_sunat.id_tp_doc_almacen','=','guia_com.id_tp_doc_almacen')
-            ->leftjoin('almacen.tp_ope as tp_op_com','tp_op_com.id_operacion','=','guia_com.id_operacion')
-            ->leftjoin('almacen.doc_com','doc_com.id_doc_com','=','mov_alm.id_doc_com')
-            ->leftjoin('contabilidad.cont_tp_doc as tp_doc_com','tp_doc_com.id_tp_doc','=','doc_com.id_tp_doc')
-            ->leftjoin('almacen.guia_ven','guia_ven.id_guia_ven','=','mov_alm.id_guia_ven')
-            ->leftjoin('almacen.tp_doc_almacen as doc_ven_sunat','doc_ven_sunat.id_tp_doc_almacen','=','guia_ven.id_tp_doc_almacen')
-            ->leftjoin('almacen.tp_ope as tp_op_ven','tp_op_ven.id_operacion','=','guia_ven.id_operacion')
-            ->leftjoin('almacen.doc_ven','doc_ven.id_doc_ven','=','mov_alm.id_doc_ven')
-            ->leftjoin('contabilidad.cont_tp_doc as tp_doc_ven','tp_doc_ven.id_tp_doc','=','doc_ven.id_tp_doc')
-            ->leftjoin('almacen.alm_req','alm_req.id_requerimiento','=','mov_alm.id_req')
+            ->leftJoin('almacen.guia_com','guia_com.id_guia','=','mov_alm.id_guia_com')
+            ->leftJoin('almacen.tp_doc_almacen as doc_com_sunat','doc_com_sunat.id_tp_doc','=','guia_com.id_tp_doc_almacen')
+            ->leftJoin('contabilidad.cont_tp_doc as tp_cod_sunat_com','tp_cod_sunat_com.id_tp_doc','=','doc_com_sunat.id_tp_doc')
+            ->leftJoin('almacen.tp_ope as tp_op_com','tp_op_com.id_operacion','=','guia_com.id_operacion')
+            ->leftJoin('almacen.doc_com','doc_com.id_doc_com','=','mov_alm.id_doc_com')
+            ->leftJoin('contabilidad.cont_tp_doc as tp_doc_com','tp_doc_com.id_tp_doc','=','doc_com.id_tp_doc')
+            ->leftJoin('almacen.guia_ven','guia_ven.id_guia_ven','=','mov_alm.id_guia_ven')
+            ->leftJoin('almacen.tp_doc_almacen as doc_ven_sunat','doc_ven_sunat.id_tp_doc','=','guia_ven.id_tp_doc_almacen')
+            ->leftJoin('contabilidad.cont_tp_doc as tp_cod_sunat_ven','tp_cod_sunat_ven.id_tp_doc','=','doc_ven_sunat.id_tp_doc')
+            ->leftJoin('almacen.tp_ope as tp_op_ven','tp_op_ven.id_operacion','=','guia_ven.id_operacion')
+            ->leftJoin('almacen.doc_ven','doc_ven.id_doc_ven','=','mov_alm.id_doc_ven')
+            ->leftJoin('contabilidad.cont_tp_doc as tp_doc_ven','tp_doc_ven.id_tp_doc','=','doc_ven.id_tp_doc')
+            // ->leftjoin('almacen.alm_req','alm_req.id_requerimiento','=','mov_alm.id_req')
             ->where([['mov_alm.id_almacen','=',$id_almacen],
                     ['mov_alm_det.id_producto','=',$id_producto],
                     ['mov_alm.fecha_emision','>=',$finicio],
@@ -6099,10 +6101,10 @@ class AlmacenController extends Controller
                         'alm_prod.descripcion as prod_descripcion','alm_und_medida.abreviatura')
                         ->join('almacen.alm_prod','alm_prod.id_producto','=','alm_prod_ubi.id_producto')
                         ->join('almacen.alm_und_medida','alm_und_medida.id_unidad_medida','=','alm_prod.id_unidad_medida')
-                        ->join('almacen.alm_ubi_posicion','alm_ubi_posicion.id_posicion','=','alm_prod_ubi.id_posicion')
-                        ->join('almacen.alm_ubi_nivel','alm_ubi_nivel.id_nivel','=','alm_ubi_posicion.id_nivel')
-                        ->join('almacen.alm_ubi_estante','alm_ubi_estante.id_estante','=','alm_ubi_nivel.id_estante')
-                        ->join('almacen.alm_almacen','alm_almacen.id_almacen','=','alm_ubi_estante.id_almacen')
+                        ->leftJoin('almacen.alm_ubi_posicion','alm_ubi_posicion.id_posicion','=','alm_prod_ubi.id_posicion')
+                        // ->join('almacen.alm_ubi_nivel','alm_ubi_nivel.id_nivel','=','alm_ubi_posicion.id_nivel')
+                        // ->join('almacen.alm_ubi_estante','alm_ubi_estante.id_estante','=','alm_ubi_nivel.id_estante')
+                        ->join('almacen.alm_almacen','alm_almacen.id_almacen','=','alm_prod_ubi.id_almacen')
                         ->where([['alm_prod_ubi.estado','=',1],
                                 ['alm_almacen.id_almacen','=',$id_almacen]])
                         ->get();
@@ -6186,15 +6188,15 @@ class AlmacenController extends Controller
                                             <td>'.$det->guia_com_serie.'</td>
                                             <td>'.$det->guia_com_numero.'</td>
                                             <td>'.$det->op_sunat_ing.'</td>
-                                            <td class="right" style="mso-number-format:"0.00";">'.number_format($det->cantidad,2).'</td>
-                                            <td class="right" style="mso-number-format:"0.00";">'.number_format($unitario,3).'</td>
-                                            <td class="right" style="mso-number-format:"0.00";">'.number_format($det->valorizacion,3).'</td>
+                                            <td class="right" style="mso-number-format:"0.00";">'.number_format($det->cantidad,2,".",",").'</td>
+                                            <td class="right" style="mso-number-format:"0.00";">'.number_format($unitario,3,".",",").'</td>
+                                            <td class="right" style="mso-number-format:"0.00";">'.number_format($det->valorizacion,3,".",",").'</td>
                                             <td class="right">0</td>
                                             <td class="right">0</td>
                                             <td class="right">0</td>
-                                            <td class="right" style="mso-number-format:"0.00";">'.number_format($saldo,2).'</td>
-                                            <td class="right" style="mso-number-format:"0.00";">'.number_format($saldo_unitario,3).'</td>
-                                            <td class="right" style="mso-number-format:"0.00";">'.number_format($saldo_valor,3).'</td>
+                                            <td class="right" style="mso-number-format:"0.00";">'.number_format($saldo,2,".",",").'</td>
+                                            <td class="right" style="mso-number-format:"0.00";">'.number_format($saldo_unitario,3,".",",").'</td>
+                                            <td class="right" style="mso-number-format:"0.00";">'.number_format($saldo_valor,3,".",",").'</td>
                                         </tr>';
                                     }
                                     else if ($det->tipo == 2){
@@ -6222,9 +6224,9 @@ class AlmacenController extends Controller
                                             <td class="right" style="mso-number-format:"0.00";">'.floatval($det->cantidad).'</td>
                                             <td class="right" style="mso-number-format:"0.00";">'.(floatval($det->valorizacion) / floatval($det->cantidad)).'</td>
                                             <td class="right" style="mso-number-format:"0.00";">'.$det->valorizacion.'</td>
-                                            <td class="right" style="mso-number-format:"0.00";">'.number_format($saldo,2).'</td>
-                                            <td class="right" style="mso-number-format:"0.00";">'.number_format($saldo_unitario,3).'</td>
-                                            <td class="right" style="mso-number-format:"0.00";">'.number_format($saldo_valor,3).'</td>
+                                            <td class="right" style="mso-number-format:"0.00";">'.number_format($saldo,2,".",",").'</td>
+                                            <td class="right" style="mso-number-format:"0.00";">'.number_format($saldo_unitario,3,".",",").'</td>
+                                            <td class="right" style="mso-number-format:"0.00";">'.number_format($saldo_valor,3,".",",").'</td>
                                         </tr>';
                                     }
                                     // $codigo = $det->prod_codigo;
@@ -6385,9 +6387,9 @@ class AlmacenController extends Controller
             'tp_ope_ven.descripcion as des_ope_ven','adm_contri.razon_social')
             ->join('almacen.mov_alm','mov_alm.id_mov_alm','=','mov_alm_det.id_mov_alm')
             ->leftjoin('almacen.alm_ubi_posicion','alm_ubi_posicion.id_posicion','=','mov_alm_det.id_posicion')
-            ->leftjoin('almacen.alm_ubi_nivel','alm_ubi_nivel.id_nivel','=','alm_ubi_posicion.id_nivel')
-            ->leftjoin('almacen.alm_ubi_estante','alm_ubi_estante.id_estante','=','alm_ubi_nivel.id_estante')
-            ->leftjoin('almacen.alm_almacen','alm_almacen.id_almacen','=','alm_ubi_estante.id_almacen')
+            // ->leftjoin('almacen.alm_ubi_nivel','alm_ubi_nivel.id_nivel','=','alm_ubi_posicion.id_nivel')
+            // ->leftjoin('almacen.alm_ubi_estante','alm_ubi_estante.id_estante','=','alm_ubi_nivel.id_estante')
+            ->leftjoin('almacen.alm_almacen','alm_almacen.id_almacen','=','mov_alm.id_almacen')
             ->leftjoin('almacen.guia_com_det','guia_com_det.id_guia_com_det','=','mov_alm_det.id_guia_com_det')
             ->leftjoin('almacen.guia_com','guia_com.id_guia','=','guia_com_det.id_guia_com')
             ->leftjoin('logistica.log_prove','log_prove.id_proveedor','=','guia_com.id_proveedor')
@@ -6408,7 +6410,7 @@ class AlmacenController extends Controller
             ->orderBy('mov_alm.fecha_emision','asc')
             ->orderBy('mov_alm.id_tp_mov','asc')
             ->get();
-
+        
         if (isset($data)){
             $saldo = 0;
             $saldo_valor = 0;
@@ -6434,15 +6436,15 @@ class AlmacenController extends Controller
                     $html.='
                     <tr id="'.$d->id_mov_alm_det.'">
                         <td>'.$d->fecha_emision.'</td>
-                        <td>'.($d->guia_com == '--' ? $d->codigo : $d->guia_com).'</td>
+                        <td>'.($d->guia_com == null ? $d->codigo : $d->guia_com).'</td>
                         <td></td>
                         <td>'.($d->razon_social !== null ? $d->razon_social : '').'</td>
                         <td class="right" style="background:#ffffb0;">'.$d->cantidad.'</td>
                         <td class="right" style="background:#ffffb0;">0</td>
                         <td class="right" style="background:#ffffb0;">'.$saldo.'</td>
-                        <td class="right" style="background:#d8fcfc;">'.$d->valorizacion.'</td>
+                        <td class="right" style="background:#d8fcfc;">'.number_format($d->valorizacion,2,".",",").'</td>
                         <td class="right" style="background:#d8fcfc;">0</td>
-                        <td class="right" style="background:#d8fcfc;">'.$saldo_valor.'</td>
+                        <td class="right" style="background:#d8fcfc;">'.number_format($saldo_valor,2,".",",").'</td>
                         <td>'.$d->cod_posicion.'</td>
                         <td>'.($d->cod_sunat_ope_com !== null ? $d->cod_sunat_ope_com : '').'</td>
                         <td>'.$d->des_ope_com.'</td>
@@ -6459,8 +6461,8 @@ class AlmacenController extends Controller
                         <td class="right" style="background:#ffffb0;">'.$d->cantidad.'</td>
                         <td class="right" style="background:#ffffb0;">'.$saldo.'</td>
                         <td class="right" style="background:#d8fcfc;">0</td>
-                        <td class="right" style="background:#d8fcfc;">'.$d->valorizacion.'</td>
-                        <td class="right" style="background:#d8fcfc;">'.$saldo_valor.'</td>
+                        <td class="right" style="background:#d8fcfc;">'.number_format($d->valorizacion,2,".",",").'</td>
+                        <td class="right" style="background:#d8fcfc;">'.number_format($saldo_valor,2,".",",").'</td>
                         <td>'.$d->cod_posicion.'</td>
                         <td>'.$d->cod_sunat_ope_ven.'</td>
                         <td>'.$d->des_ope_ven.'</td>
@@ -6469,7 +6471,7 @@ class AlmacenController extends Controller
             }
             // $html.='</tbody></table>';
         }
-        return ['html'=>$html,'suma_ing_cant'=>$suma_ing_cant,'suma_sal_cant'=>$suma_sal_cant,'suma_ing_val'=>$suma_ing_val,'suma_sal_val'=>$suma_sal_val];
+        return ['html'=>$html,'suma_ing_cant'=>$suma_ing_cant,'suma_sal_cant'=>$suma_sal_cant,'suma_ing_val'=>number_format($suma_ing_val,2,".",","),'suma_sal_val'=>number_format($suma_sal_val,2,".",",")];
     }
     public function kardex_producto($id_producto,$almacen,$finicio,$ffin){
         $html = $this->listar_kardex_producto($id_producto,$almacen,$finicio,$ffin);

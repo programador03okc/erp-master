@@ -8,7 +8,7 @@
             </div>
             <div class="modal-body">
                 {{-- <input type="hidden" name="_token" value="{{csrf_token()}}" id="token"> --}}
-                <input class="oculto" name="id_cu_partida">
+                <input class="oculto" name="id_cu_partida_cd">
                 <div class="row">
                     <div class="col-md-7">
                         <h5>Seleccione una Descripción de A.C.U.</h5>

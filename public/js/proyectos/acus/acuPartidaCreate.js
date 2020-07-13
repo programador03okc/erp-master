@@ -3,38 +3,26 @@ let anulados = [];
 let jornal = 8; //revisar que sea un dato ingresable
 let id_partida_temporal = null;
 
-function open_acu_partida_create(data){
+function open_acu_partida_create(){
     $('#modal-acu_partida_create').modal({
         show: true
     });
     insumos = [];
     id_partida_temporal = null;
     console.log(data);
-    if (data !== undefined){
-        $('[name=id_cu_partida]').val(data.id_cu_partida);
-        $('[name=id_cu]').val(data.id_cu);
-        $('[name=cod_acu]').val(data.codigo);
-        $('[name=des_acu]').val(data.descripcion);
-        $('[name=rendimiento]').val(data.rendimiento);
-        $('[name=unid_medida_cu]').val(data.unid_medida);
-        $('[name=id_categoria]').val(data.id_categoria);
-        $('[name=total_acu]').val(formatDecimalDigitos(data.total,4));
-        $('[name=observacion]').val(data.observacion);
-        unid_abrev();
-        listar_acu_detalle(data.id_cu_partida);
-    } else {
-        $('[name=id_cu_partida]').val('');
-        $('[name=id_cu]').val('');
-        $('[name=cod_acu]').val('');
-        $('[name=des_acu]').val('');
-        $('[name=rendimiento]').val('');
-        $('[name=unid_medida_cu]').val('');
-        $('[name=id_categoria]').val('');
-        $('[name=total_acu]').val('');
-        $('[name=observacion]').val('');
-        limpiar_nuevo_cu();
-        $('#AcuInsumos tbody').html('');
-    }
+    
+    $('[name=id_cu_partida_cd]').val('');
+    $('[name=id_cu]').val('');
+    $('[name=cod_acu]').val('');
+    $('[name=des_acu]').val('');
+    $('[name=rendimiento]').val('');
+    $('[name=unid_medida_cu]').val('');
+    $('[name=id_categoria]').val('');
+    $('[name=total_acu]').val('');
+    $('[name=observacion]').val('');
+    limpiar_nuevo_cu();
+    $('#AcuInsumos tbody').html('');
+    
 }
 
 function listar_acu_detalle(id){
@@ -73,7 +61,7 @@ function listar_acu_detalle(id){
 }
 
 function guardar_acu(){
-    var id = $('[name=id_cu_partida]').val();
+    var id = $('[name=id_cu_partida_cd]').val();
     var cu = $('[name=id_cu]').val();
     var ren = $('[name=rendimiento]').val();
     var und = $('[name=unid_medida_cu]').val();
@@ -84,7 +72,6 @@ function guardar_acu(){
     var cuadrilla = [];
     var cantidad = [];
     var unitario = [];
-    // var id_precio = [];
     var total = [];
     
     insumos.forEach(element => {
@@ -93,7 +80,6 @@ function guardar_acu(){
         cuadrilla.push((element.cuadrilla !== '' ? element.cuadrilla : 0));
         cantidad.push(element.cantidad);
         unitario.push(element.unitario);
-        // id_precio.push(element.id_precio);
         total.push(element.total);
     });
     
@@ -102,13 +88,13 @@ function guardar_acu(){
             '&rendimiento='+ren+
             '&unid_medida='+und+
             '&total_acu='+tot+
-            '&id_det='+id_det+
-            '&id_insumo='+id_insumo+
-            // '&id_precio='+id_precio+
-            '&cuadrilla='+cuadrilla+
-            '&cantidad='+cantidad+
-            '&unitario='+unitario+
-            '&total='+total+
+            '&insumos='+JSON.stringify(insumos)+
+            // '&id_det='+id_det+
+            // '&id_insumo='+id_insumo+
+            // '&cuadrilla='+cuadrilla+
+            // '&cantidad='+cantidad+
+            // '&unitario='+unitario+
+            // '&total='+total+
             '&det_eliminados='+anulados;
 
     console.log(datax);
@@ -118,6 +104,7 @@ function guardar_acu(){
     } else {
         baseUrl = 'guardar_acu';
     }
+    console.log(baseUrl);
     var msj = verificaAcu();
     if (msj.length > 0){
         alert(msj);
@@ -130,11 +117,14 @@ function guardar_acu(){
             dataType: 'JSON',
             success: function(response){
                 console.log(response);
+
                 if (response['id_cu_partida'] > 0){
                     alert('Costo Unitario registrado con éxito');
                     let formName = document.getElementsByClassName('page-main')[0].getAttribute('type');    
+                    
                     if (formName =='presint' || formName =='preseje'){
                         console.log('id_partida_temporal: '+id_partida_temporal);
+                        
                         if (id_partida_temporal !== null){
                             editar_partida_cd(id_partida_temporal);
                             $("#par-"+id_partida_temporal+" td").find("input[name=importe_unitario]").val(tot);

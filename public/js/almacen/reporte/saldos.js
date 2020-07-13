@@ -33,12 +33,12 @@ function listarSaldos(url){
         'buttons': vardataTables[2],
         'language' : vardataTables[0],
         'destroy':true,
-        "scrollX": true,
         'ajax': url,
         // 'ajax': {
-        //     url:'listar_saldos/'+almacen,
-        //     dataSrc:''
-        // },
+            //     url:'listar_saldos/'+almacen,
+            //     dataSrc:''
+            // },
+        // "scrollX": true,
         'columns': [
             {'data': 'id_prod_ubi'},
             {'data': 'codigo'},
