@@ -2614,7 +2614,256 @@ class LogisticaController extends Controller
         $array = array('id'=>$id_area_rol, 'msg'=>$msg);
         return $array;
     }
+    public function listar_requerimientos_elaborados($id_empresa,$id_sede,$id_grupo){
+
+        $estado_anulado= $this->get_estado_doc('Anulado');
+        $hasWhere=[
+            ['alm_req.estado', '!=', $estado_anulado],
+            ['adm_grupo.estado', '=', 1],
+            ['sis_sede.estado', '=', 1]
+        ];
+
+        if($id_empresa >0){
+            $hasWhere[]=['sis_sede.id_empresa', '=', $id_empresa];
+        }
+        if($id_sede >0){
+            $hasWhere[]=['sis_sede.id_sede', '=', $id_sede];
+        }
+        if($id_grupo >0){
+            $hasWhere[]=['adm_grupo.id_grupo', '=', $id_grupo];
+        }
+
+        $req     = array();
+        $det_req = array();
+
+        $sql_req = DB::table('almacen.alm_req')
+        ->leftJoin('administracion.adm_documentos_aprob', 'alm_req.id_requerimiento', '=', 'adm_documentos_aprob.id_doc')
+        ->leftJoin('administracion.adm_estado_doc', 'alm_req.id_estado_doc', '=', 'adm_estado_doc.id_estado_doc')
+        ->leftJoin('almacen.alm_tp_req', 'alm_req.id_tipo_requerimiento', '=', 'alm_tp_req.id_tipo_requerimiento')
+        ->leftJoin('administracion.adm_prioridad', 'alm_req.id_prioridad', '=', 'adm_prioridad.id_prioridad')
+        ->leftJoin('administracion.adm_grupo', 'alm_req.id_grupo', '=', 'adm_grupo.id_grupo')
+        ->leftJoin('administracion.sis_sede', 'sis_sede.id_sede', '=', 'adm_grupo.id_sede')
+        ->leftJoin('administracion.adm_area', 'alm_req.id_area', '=', 'adm_area.id_area')
+        ->leftJoin('proyectos.proy_op_com', 'proy_op_com.id_op_com', '=', 'alm_req.id_op_com')
+        ->leftJoin('configuracion.sis_moneda', 'alm_req.id_moneda', '=', 'sis_moneda.id_moneda')
+        ->leftJoin('administracion.adm_periodo', 'adm_periodo.id_periodo', '=', 'alm_req.id_periodo')
+        ->leftJoin('administracion.adm_empresa', 'alm_req.id_empresa', '=', 'adm_empresa.id_empresa')
+        ->leftJoin('contabilidad.adm_contri', 'adm_empresa.id_contribuyente', '=', 'adm_contri.id_contribuyente')
+        ->leftJoin('contabilidad.sis_identi', 'sis_identi.id_doc_identidad', '=', 'adm_contri.id_doc_identidad')
+        ->leftJoin('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'alm_req.id_usuario')
+        ->leftJoin('rrhh.rrhh_trab as trab', 'trab.id_trabajador', '=', 'sis_usua.id_trabajador')
+        ->leftJoin('rrhh.rrhh_postu as post', 'post.id_postulante', '=', 'trab.id_postulante')
+        ->leftJoin('rrhh.rrhh_perso as pers', 'pers.id_persona', '=', 'post.id_persona')
+
+        ->select(
+            'alm_req.id_requerimiento',
+            'adm_documentos_aprob.id_doc_aprob',
+            'alm_req.codigo',
+            'alm_req.id_tipo_requerimiento',
+            'alm_req.id_usuario',
+            'alm_req.id_rol',
+            'alm_req.fecha_requerimiento',
+            'alm_req.id_periodo',
+            'adm_periodo.descripcion as descripcion_periodo',
+            'alm_req.concepto',
+            'alm_req.id_grupo',
+            'alm_req.id_empresa',
+            'adm_contri.razon_social',
+            'adm_contri.nro_documento',
+            'adm_contri.id_doc_identidad',
+            'sis_identi.descripcion as tipo_documento_identidad',
+            'alm_req.id_op_com',
+            'proy_op_com.codigo as codigo_op_com',
+            'proy_op_com.descripcion as descripcion_op_com',
+            'alm_req.concepto AS alm_req_concepto',
+            'alm_req.estado',
+            'alm_req.fecha_registro',
+            'alm_req.id_area',
+            'alm_req.archivo_adjunto',
+            'alm_req.id_prioridad',
+            'alm_req.id_estado_doc',
+            'alm_req.id_presupuesto',
+            'alm_req.objetivo',
+            'alm_req.tipo_occ',
+            'alm_req.id_occ',
+            'alm_req.id_moneda',
+            'alm_req.desembolso',
+            'adm_estado_doc.estado_doc',
+            'alm_tp_req.descripcion AS tipo_requerimiento',
+            'adm_prioridad.descripcion AS priori',
+            'adm_grupo.descripcion AS grupo',
+            'adm_area.descripcion AS area',
+            'sis_moneda.simbolo AS simbolo_moneda',
+            DB::raw("(pers.nombres) || ' ' || (pers.apellido_paterno) || ' ' || (pers.apellido_materno) as nombre_usuario")
+
+        )
+        ->where($hasWhere)
+        ->orderBy('alm_req.id_requerimiento', 'DESC')
+        ->get();
+
+        $simbolo_moneda='';
+        foreach($sql_req as $data){
+            $req[]=[
+                'id_requerimiento' => $data->id_requerimiento,
+                'id_doc_aprob' => $data->id_doc_aprob,
+                'codigo' => $data->codigo,
+                'id_tipo_requerimiento' => $data->id_tipo_requerimiento,
+                'id_usuario' => $data->id_usuario,
+                'id_rol' => $data->id_rol,
+                'fecha_requerimiento' => $data->fecha_requerimiento,
+                'id_periodo' => $data->id_periodo,
+                'descripcion_periodo' => $data->descripcion_periodo,
+                'concepto' => $data->concepto,
+                'id_empresa' => $data->id_empresa,
+                'razon_social' => $data->razon_social,
+                'nro_documento' => $data->nro_documento,
+                'tipo_documento_identidad' => $data->tipo_documento_identidad,
+                'id_grupo' => $data->id_grupo,
+                'id_op_com' => $data->id_op_com,
+                'codigo_op_com' => $data->codigo_op_com,
+                'descripcion_op_com' => $data->descripcion_op_com,
+                'estado' => $data->estado,
+                'fecha_registro' => $data->fecha_registro,
+                'id_area' => $data->id_area,
+                'archivo_adjunto' => $data->archivo_adjunto,
+                'id_prioridad' => $data->id_prioridad,
+                'id_estado_doc' => $data->id_estado_doc,
+                'id_presupuesto' => $data->id_presupuesto,
+                'objetivo' => $data->objetivo,
+                'tipo_occ' => $data->tipo_occ,
+                'id_occ' => $data->id_occ,
+                'id_moneda' => $data->id_moneda,
+                'simbolo_moneda' => $data->simbolo_moneda,
+                'desembolso' => $data->desembolso,
+                'estado_doc' => $data->estado_doc,
+                'tipo_requerimiento' => $data->tipo_requerimiento,
+                'priori' => $data->priori,
+                'grupo' => $data->grupo,
+                'area' => $data->area,
+                'usuario' => $data->nombre_usuario,
+
+                
+            ];
+
+            $simbolo_moneda = $data->simbolo_moneda;
+
+        }
+
+        $size_req= count($req);
+
+        $sql_det_req = DB::table('almacen.alm_det_req')
+        ->select(
+            'alm_det_req.id_detalle_requerimiento',
+            'alm_det_req.id_requerimiento',
+            'alm_det_req.id_item',
+            'alm_det_req.precio_referencial',
+            'alm_det_req.cantidad',
+            'alm_det_req.fecha_entrega',
+            'alm_det_req.descripcion_adicional',
+            'alm_det_req.obs',
+            'alm_det_req.partida',
+            'alm_det_req.unidad_medida',
+            'alm_det_req.estado',
+            'alm_det_req.fecha_registro',
+            'alm_det_req.lugar_entrega',
+            'alm_det_req.id_unidad_medida',
+            'alm_det_req.id_tipo_item'
+        )
+        ->where('alm_det_req.estado', '!=', $estado_anulado)
+        ->orderBy('alm_det_req.id_requerimiento', 'DESC')
+        ->get();
+
+
+        $aux_sum=0; // aux monto referencual head req
+
+        if(isset($sql_det_req) && sizeof($sql_det_req) > 0){
+            foreach($sql_det_req as $data){
+                
+                $det_req[]=[
+                    'id_detalle_requerimiento'=> $data->id_detalle_requerimiento,
+                    'id_requerimiento'=> $data->id_requerimiento,
+                    'id_item'=> $data->id_item,
+                    'precio_referencial'=> $data->precio_referencial,
+                    'cantidad'=> $data->cantidad,
+                    'fecha_entrega'=> $data->fecha_entrega,
+                    'descripcion_adicional'=> $data->descripcion_adicional,
+                    'obs'=> $data->obs,
+                    'partida'=> $data->partida,
+                    'unidad_medida'=> $data->unidad_medida,
+                    'estado'=> $data->estado,
+                    'fecha_registro'=> $data->fecha_registro,
+                    'lugar_entrega'=> $data->lugar_entrega,
+                    'id_unidad_medida'=> $data->id_unidad_medida,
+                    'id_tipo_item'=> $data->id_tipo_item
+                ];
+
+                $total = intval($data->cantidad) * floatval($data->precio_referencial);
+                $aux_sum = $aux_sum + floatval($total);
+            }
     
+            $size_det_req= count($det_req);
+            
+            for($i = 0; $i < $size_req; $i++ ){
+                for($j = 0; $j < $size_det_req; $j++ ){
+                    $req[$i]['detalle'] = [];
+    
+                }
+            }
+    
+            for($i = 0; $i < $size_req; $i++ ){
+                for($j = 0; $j < $size_det_req; $j++ ){
+                    if($det_req[$j]['id_requerimiento'] == $req[$i]['id_requerimiento']){
+                        $req[$i]['detalle'][] = $det_req[$j];
+                    }
+                }
+            }
+        }else{ // si no existe datos en detalle_requerimiento
+            for($i = 0; $i < $size_req; $i++ ){
+                $req[$i]['detalle'] = [];
+            }
+        }
+
+        $req[0]['monto_total_referencial']= $simbolo_moneda.(number_format($aux_sum,2,'.', ''));
+
+
+        // $output[] = [
+        //     'flag'=> $flag, 
+        //     'codigo'=> $codigo, 
+        //     'concepto'=> $concepto,
+        //     'monto_total_referencial'=> $monto_total_referencial,
+        //     'fec_rq'=> $fec_rq, 
+        //     'desc_periodo'=> $desc_periodo, 
+        //     'tp_req'=> $tp_req,
+        //     'empresa'=> $empresa, 
+        //     'gral'=> $gral, 
+        //     'usuario'=> $usuario, 
+        //     'status'=> $status.'<center>'.$indicadorCotizacion.$indicadorOrden.'</center>', 
+        //     'action'=> $action
+        // ];
+        
+    
+        // return response()->json($output);
+        return datatables($req)->toJson();
+
+        // return DataTables::of($output)
+        // ->addColumn('flag',function($output){
+        //         $flag = $output['flag'];
+        //         return $flag;
+        // })
+        // ->addColumn('status',function($output){
+        //         $status = $output['status'];
+        //         return $status;
+        // })
+        // ->addColumn('action',function($output){
+        //         $action = $output['action'];
+        //         return $action;
+        // })
+        // ->rawColumns(['flag','status','action'])
+        // ->make(true);
+
+        // return response()->json($req);
+    }
+
     public function listar_requerimiento_v2($id_empresa,$id_sede,$id_grupo){
 
         $userRoles=$this->userSession()['roles'];
@@ -2675,8 +2924,7 @@ class LogisticaController extends Controller
                 $flag = '<center> <i class="fas fa-thermometer-full red"  data-toggle="tooltip" data-placement="right" title="Crítico"  ></i></center>';
             }
 
-            $usuario = Usuario::find($id_usu)->trabajador->postulante->persona->nombre_completo;
-            $empresa = Grupo::find($id_grp)->sede->empresa->contribuyente->razon_social;
+             $empresa = Grupo::find($id_grp)->sede->empresa->contribuyente->razon_social;
             // $id_cnc_rol = $this->consult_id_rol_aprob($userRolList);
 
 

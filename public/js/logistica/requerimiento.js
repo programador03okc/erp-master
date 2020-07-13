@@ -32,12 +32,11 @@ function inicializar( _rutaLista,
 }
 
 function controlInput(id,descripcion){
+    document.querySelector("form[id='form-requerimiento'] input[name='id_grupo']").value = id;
     if(descripcion == 'Proyectos'){
        hiddeElement('mostrar','form-requerimiento',[
         'input-group-proyecto'
         ]);
-        document.querySelector("form[id='form-requerimiento'] input[name='id_grupo']").value= id;
-
     }
 }
 
@@ -477,12 +476,12 @@ function mostrar_requerimiento(IdorCode){
                 $('[name=prioridad]').val(response['requerimiento'][0].id_prioridad);
                 $('[name=empresa]').val(response['requerimiento'][0].id_empresa);
                 $('[name=sede]').val(response['requerimiento'][0].id_sede);
-                $('[name=id_area]').val(response['requerimiento'][0].id_area);
+                // $('[name=id_area]').val(response['requerimiento'][0].id_area);
                 $('[name=id_grupo]').val(response['requerimiento'][0].id_grupo);
-                $('[name=nombre_area]').val(response['requerimiento'][0].area_descripcion);
+                // $('[name=nombre_area]').val(response['requerimiento'][0].area_descripcion);
                 $('[name=moneda]').val(response['requerimiento'][0].id_moneda);
                 $('[name=periodo]').val(response['requerimiento'][0].id_periodo);
-                 $('[name=id_op_com]').val(response['requerimiento'][0].id_op_com);
+                 $('[name=id_proyecto]').val(response['requerimiento'][0].id_proyecto);
                 $('[name=codigo_opcion]').val(response['requerimiento'][0].codigo_op_com);
                 $('[name=nombre_opcion]').val(response['requerimiento'][0].descripcion_op_com);
                 $('[name=observacion]').val(response['requerimiento'][0].observacion);
@@ -961,8 +960,8 @@ function get_data_requerimiento(){
     id_empresa = document.querySelector("form[id='form-requerimiento'] select[name='empresa']").value;
     id_sede = document.querySelector("form[id='form-requerimiento'] select[name='sede']").value;
     id_grupo = document.querySelector("form[id='form-requerimiento'] input[name='id_grupo']").value;
-    id_area = document.querySelector("form[id='form-requerimiento'] input[name='id_area']").value;
-    nombre_area = document.querySelector("form[id='form-requerimiento'] input[name='nombre_area']").value;
+    // id_area = document.querySelector("form[id='form-requerimiento'] input[name='id_area']").value;
+    // nombre_area = document.querySelector("form[id='form-requerimiento'] input[name='nombre_area']").value;
     id_moneda = document.querySelector("form[id='form-requerimiento'] select[name='moneda']").value;
     id_periodo = document.querySelector("form[id='form-requerimiento'] select[name='periodo']").value;
     id_proyecto = document.querySelector("form[id='form-requerimiento'] input[name='id_proyecto']").value;
@@ -991,11 +990,11 @@ function get_data_requerimiento(){
         id_empresa,
         id_sede,
         id_grupo,
-        id_area,
-        nombre_area,
+        // id_area,
+        // nombre_area,
         id_moneda,
         id_periodo,
-        id_op_com,
+        id_proyecto,
         id_rol,
         codigo_occ,
         tipo_cliente,
@@ -2180,8 +2179,8 @@ function pasteDataOfModalToForm(){
     let periodo = document.getElementById('textPeriodo').value;
     let empresa = document.getElementById('textEmpresa').value;
     let grupo = document.getElementById('textGrupo').value;
-    let area = document.getElementById('textArea').value;
-    let nombre_area = document.getElementById('textNombreArea').value;
+    // let area = document.getElementById('textArea').value;
+    // let nombre_area = document.getElementById('textNombreArea').value;
     let rol = document.getElementById('textRolUsuario').value;
 // console.log(rol);
 
@@ -2214,14 +2213,14 @@ function pasteDataOfModalToForm(){
         mcd_grupo.forEach(function(item) {
             item.value=grupo;
 });
-    let mcd_area = document.querySelectorAll('input[name="id_area"]');
-        mcd_area.forEach(function(item) {
-            item.value=area;
-});
-    let mcd_nombre_area = document.querySelectorAll('input[name="nombre_area"]');
-        mcd_nombre_area.forEach(function(item) {
-            item.value=nombre_area;
-});
+//     let mcd_area = document.querySelectorAll('input[name="id_area"]');
+//         mcd_area.forEach(function(item) {
+//             item.value=area;
+// });
+//     let mcd_nombre_area = document.querySelectorAll('input[name="nombre_area"]');
+//         mcd_nombre_area.forEach(function(item) {
+//             item.value=nombre_area;
+// });
     let mcd_rol_usuario = document.querySelectorAll('select[name="rol_usuario"]');
         mcd_rol_usuario.forEach(function(item) {
             item.value=rol;
@@ -2370,8 +2369,8 @@ function changeOptTipoReqSelect(e){
     if(e.target.value == 2){ //venta directa
         document.querySelector("div[id='input-group-almacen'] h5").textContent = 'Almacén';
 
-        document.querySelector("form[id='form-requerimiento'] input[name='nombre_area']").value='';
-        document.querySelector("form[id='form-requerimiento'] input[name='id_area']").value='';
+        // document.querySelector("form[id='form-requerimiento'] input[name='nombre_area']").value='';
+        // document.querySelector("form[id='form-requerimiento'] input[name='id_area']").value='';
         document.querySelector("form[id='form-requerimiento'] select[name='rol_usuario']").value='';
         hiddeElement('ocultar','form-requerimiento',[
             'input-group-rol-usuario',
@@ -2395,8 +2394,8 @@ function changeOptTipoReqSelect(e){
     }else if(e.target.value == 3){
         document.querySelector("div[id='input-group-almacen'] h5").textContent = 'Almacén que solicita';
 
-        document.querySelector("form[id='form-requerimiento'] input[name='nombre_area']").value='';
-        document.querySelector("form[id='form-requerimiento'] input[name='id_area']").value='';
+        // document.querySelector("form[id='form-requerimiento'] input[name='nombre_area']").value='';
+        // document.querySelector("form[id='form-requerimiento'] input[name='id_area']").value='';
         document.querySelector("form[id='form-requerimiento'] select[name='rol_usuario']").value='';
         hiddeElement('ocultar','form-requerimiento',[
             'input-group-moneda',

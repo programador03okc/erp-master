@@ -1,4 +1,4 @@
-var rutaLista,
+var rutaListaElaborados,
 rutaGetIdEmpresa,
 rutaSedeByEmpresa,
 rutaGrupoBySede,
@@ -6,7 +6,7 @@ rutaVerFlujos,
 rutaExplorarRequerimiento;
 
 function inicializar(
-    _rutaLista,
+    _rutaListaElaborados,
     _rutaGetIdEmpresa,
     _rutaSedeByEmpresa,
     _rutaGrupoBySede,
@@ -14,7 +14,7 @@ function inicializar(
     _rutaExplorarRequerimiento
     ) {
     
-    rutaLista = _rutaLista;
+    rutaListaElaborados = _rutaListaElaborados;
     rutaGetIdEmpresa = _rutaGetIdEmpresa;
     rutaSedeByEmpresa = _rutaSedeByEmpresa;
     rutaGrupoBySede = _rutaGrupoBySede;
@@ -163,68 +163,60 @@ function listarTablaReq(id_empresa =null,id_sede =null, id_grupo=null){
     // console.log(id_grupo);
     
     // var vardataTables = funcDatatables();
-    $('#ListaReq').dataTable({
-        processing: true,
-        serverSide: true,
-        bDestroy: true,
+    $('#ListaReq').DataTable({
+        'processing': true,
+        'serverSide': true,
+        'bDestroy': true,
+        // bInfo:     false,
+        'paging':   true,
+        'searching': true,
+        'bLengthChange': false,
 
-        ajax: {
+        'iDisplayLength':50,
+        'ajax': {
             // url:'/logistica/requerimiento/lista/'+id_empresa+'/'+id_sede+'/'+id_grupo,
-            url:rutaLista+'/'+id_empresa+'/'+id_sede+'/'+id_grupo,
+            url:rutaListaElaborados+'/'+id_empresa+'/'+id_sede+'/'+id_grupo,
             type:'GET',
             data: {_token: "{{csrf_token()}}"}
         },
-        columns:[
-
-            {
-                data:'flag',
-                name:'flag'
-            },
-            {
-                data:'codigo',
-                name:'codigo'
-            },
-            {
-                data:'concepto',
-                name:'concepto'
-            },
-            {
-                data:'monto_total_referencial',
-                name:'monto_total_referencial'
-            },
-            {
-                data:'fec_rq',
-                name:'fec_rq'
-            },
-            {
-                data:'desc_periodo',
-                name:'desc_periodo'
-            },
-            {
-                data:'tp_req',
-                name:'tp_req'
-            },
-            {
-                data:'empresa',
-                name:'empresa'
-            },
-            {
-                data:'gral',
-                name:'gral'
-            },
-            {
-                data:'usuario',
-                name:'usuario'
-            },
-            {
-                data:'status',
-                name:'status'
-            },
-            {
-                data:'action',
-                name:'action'
+        'columns':[
+            {'render': function (data, type, row){
+                if(row['priori']=='Normal'){
+                    return '<center> <i class="fas fa-thermometer-empty green"  data-toggle="tooltip" data-placement="right" title="Normal" ></i></center>';
+                }else if(row['priori'] == 'Media'){
+                    return '<center> <i class="fas fa-thermometer-half orange"  data-toggle="tooltip" data-placement="right" title="Alta"  ></i></center>';
+                }else if(row['Alta']){
+                    return '<center> <i class="fas fa-thermometer-full red"  data-toggle="tooltip" data-placement="right" title="Crítico"  ></i></center>';
+                }else{
+                    return '';
+                } 
             }
-        ]
+            },
+            {'data':'codigo', 'name':'codigo'},
+            {'data':'concepto', 'name':'concepto'},
+            {'data':'monto_total_referencial', 'name':'monto_total_referencial'},
+            {'data':'fecha_requerimiento', 'name':'fecha_requerimiento'},
+            {'data':'descripcion_periodo', 'name':'descripcion_periodo'},
+            {'data':'tipo_requerimiento', 'name':'tipo_requerimiento'},
+            {'render': function (data, type, row){
+                    return row['razon_social']+ ' '+row['tipo_documento_identidad']+': '+row['nro_documento'];
+            }
+            },            
+            {'render': function (data, type, row){
+                return row['descripcion_op_com']?row['descripcion_op_com']:row['area']; 
+            }
+            },            
+            {'data':'usuario', 'name':'usuario'},
+            {'data':'estado_doc', 'name':'estado_doc'},
+            {'render': function (data, type, row){
+                let containerOpenBrackets='<center><div class="btn-group" role="group" style="margin-bottom: 5px;">';
+                let containerCloseBrackets='</div></center>';
+                // let btnEditar='<button type="button" class="btn btn-sm btn-log bg-primary" title="Ver o editar" onClick="editarListaReq(' +row['id_requerimiento']+ ');"><i class="fas fa-edit fa-xs"></i></button>';
+                let btnDetalleRapido='<button type="button" class="btn btn-sm btn-log bg-maroon" title="Ver detalle rápido" onClick="viewFlujo(' +row['id_requerimiento']+ ', ' +row['id_doc_aprob']+ ');"><i class="fas fa-eye fa-xs"></i></button>';
+                let btnTracking='<button type="button" class="btn btn-sm btn-log bg-primary" title="Explorar Requerimiento" onClick="tracking_requerimiento(' +row['id_requerimiento']+ ');"><i class="fas fa-globe fa-xs"></i></button>';
+                return containerOpenBrackets+btnDetalleRapido+btnTracking+containerCloseBrackets;
+                }
+            },        ]
     });
     // $('#ListaReq').dataTable({
     //     'dom': 'frtip',

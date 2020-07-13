@@ -18,59 +18,94 @@
 
 @section('content')
 <div class="page-main" type="lista_requerimiento">
-    <div class="row">
-        <div class="col-md-4">
-            <h5>Empresa</h5>
-            <div style="display:flex;">
-            <select class="form-control" id="id_empresa_select" onChange="handleChangeFilterEmpresaListReqByEmpresa(event);">
-                    <option value="0" disabled>Elija una opción</option>
-                    @foreach ($empresas as $emp)
-                        <option value="{{$emp->id_empresa}}" data-url-logo="{{$emp->logo_empresa}}">{{$emp->razon_social}}</option>
-                    @endforeach
-                </select>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <h5>Sede</h5>
-            <div style="display:flex;">
-            <select class="form-control" id="id_sede_select" onChange="handleChangeFilterSedeListReqByEmpresa(event);" disabled>
-                    <option value="0" >Todas</option>
-                </select>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <h5>Grupo</h5>
-            <div style="display:flex;">
-            <select class="form-control" id="id_grupo_select" onChange="handleChangeFilterGrupoListReqByEmpresa(event);" disabled>
-                    <option value="0" >Todas</option>
-                </select>
-            </div>
-        </div>
-    </div>
+<div class="row">
+            <div class="col-md-12">
+                <div>
+                    <!-- Nav tabs -->
+                    <ul class="nav nav-tabs" role="tablist">
+                        <li role="presentation" class="active"><a href="#requerimientosElaborados" aria-controls="requerimientosElaborados" role="tab" data-toggle="tab">Requerimientos Elaborados</a></li>
+                        <li role="presentation" class=""><a href="#requerimientosPendientesAprobacion" onClick="vista_extendida();" aria-controls="requerimientosPendientesAprobacion" role="tab" data-toggle="tab">Requerimientos Pendientes</a></li>
+                    </ul>
+                    <!-- Tab panes -->
+                    <div class="tab-content">
+                        <div role="tabpanel" class="tab-pane active" id="requerimientosElaborados">
+                                <div class="panel panel-default">
+                                    <div class="panel-body">
+                                        <form id="form-requerimientosElaborados" type="register">
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <h5>Empresa</h5>
+                                                <div style="display:flex;">
+                                                <select class="form-control" id="id_empresa_select" onChange="handleChangeFilterEmpresaListReqByEmpresa(event);">
+                                                        <option value="0" disabled>Elija una opción</option>
+                                                        @foreach ($empresas as $emp)
+                                                            <option value="{{$emp->id_empresa}}" data-url-logo="{{$emp->logo_empresa}}">{{$emp->razon_social}}</option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <h5>Sede</h5>
+                                                <div style="display:flex;">
+                                                <select class="form-control" id="id_sede_select" onChange="handleChangeFilterSedeListReqByEmpresa(event);" disabled>
+                                                        <option value="0" >Todas</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <h5>Grupo</h5>
+                                                <div style="display:flex;">
+                                                <select class="form-control" id="id_grupo_select" onChange="handleChangeFilterGrupoListReqByEmpresa(event);" disabled>
+                                                        <option value="0" >Todas</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
 
-    <div class="row">
-        <div class="col-sm-12">
-            <!-- <caption>Requerimientos: Registrados | Aprobados</caption> -->
-            <table class="mytable table table-hover table-condensed table-bordered table-okc-view" id="ListaReq" width="100%">
-                <thead>
-                    <tr>
-                        <th width="10"></th>
-                        <th>CODIGO</th>
-                        <th width="250">CONCEPTO</th>
-                        <th>TOTAL</th>
-                        <th>FECHA</th>
-                        <th>PERIODO</th>
-                        <th>TIPO</th>
-                        <th width="120">EMPRESA</th>
-                        <th>AREA / PROYECTO</th>
-                        <th>CREADO POR</th>
-                        <th width="70">ESTADO</th>
-                        <th width="90">ACCIÓN</th>
-                    </tr>
-                </thead>
-            </table>
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <!-- <caption>Requerimientos: Registrados | Aprobados</caption> -->
+                                                <table class="mytable table table-hover table-condensed table-bordered table-okc-view" id="ListaReq" width="100%">
+                                                    <thead>
+                                                        <tr>
+                                                            <th width="10"></th>
+                                                            <th>CODIGO</th>
+                                                            <th width="250">CONCEPTO</th>
+                                                            <th>TOTAL</th>
+                                                            <th>FECHA</th>
+                                                            <th>PERIODO</th>
+                                                            <th>TIPO</th>
+                                                            <th width="120">EMPRESA</th>
+                                                            <th>AREA / PROYECTO</th>
+                                                            <th>CREADO POR</th>
+                                                            <th width="70">ESTADO</th>
+                                                            <th width="90">ACCIÓN</th>
+                                                        </tr>
+                                                    </thead>
+                                                </table>
+                                            </div>
+                                        </div>
+                                        </form>
+                                    </div>
+                                </div>
+                        </div>
+                        <div role="tabpanel" class="tab-pane" id="requerimientosPendientesAprobacion">
+                            <div class="panel panel-default">
+                                <div class="panel-body">
+                                    <form id="form-requerimientosPendientesAprobacion" type="register">
+
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-    </div>
+
+
+
+
 </div>
 
 <!-- modal -->
@@ -125,12 +160,12 @@
     $(document).ready(function(){
         seleccionarMenu(window.location);
         inicializar(
-            "{{route('logistica.gestion-logistica.requerimiento.gestionar.listar')}}",
-            "{{route('logistica.gestion-logistica.requerimiento.gestionar.empresa')}}",
-            "{{route('logistica.gestion-logistica.requerimiento.gestionar.select-sede-by-empresa')}}",
-            "{{route('logistica.gestion-logistica.requerimiento.gestionar.select-grupo-by-sede')}}",
-            "{{route('logistica.gestion-logistica.requerimiento.gestionar.ver-flujos')}}",
-            "{{route('logistica.gestion-logistica.requerimiento.gestionar.explorar-requerimiento')}}"
+            "{{route('logistica.gestion-logistica.requerimiento.listado.elaborados')}}",
+            "{{route('logistica.gestion-logistica.requerimiento.listado.empresa')}}",
+            "{{route('logistica.gestion-logistica.requerimiento.listado.select-sede-by-empresa')}}",
+            "{{route('logistica.gestion-logistica.requerimiento.listado.select-grupo-by-sede')}}",
+            "{{route('logistica.gestion-logistica.requerimiento.listado.ver-flujos')}}",
+            "{{route('logistica.gestion-logistica.requerimiento.listado.explorar-requerimiento')}}"
             );
      });
     </script>
