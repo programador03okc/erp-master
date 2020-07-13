@@ -297,6 +297,7 @@ function edit_acu(id_cu_partida, id_partida){
                         // $('[name=id_categoria]').val(response['acu'][0].id_categoria);
                         // $('[name=observacion]').val(response['acu'][0].observacion);
                         unid_abrev();
+                        limpiar_nuevo_cu();
                         insumos = [];
                         id_partida_temporal = id_partida;
                         listar_acu_detalle(response['acu'][0].id_cu_partida);
@@ -322,7 +323,7 @@ function acuParticaCreateModal(){
     else {
         var id = $('[name=id_presupuesto]').val();
         if (id !== '' && id !== null){
-            open_acu_partida_create(undefined);
+            open_acu_partida_create();
         } else {
             alert('Debe seleccionar un Presupuesto');
         }

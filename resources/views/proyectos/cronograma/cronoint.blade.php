@@ -49,10 +49,10 @@ Cronograma Interno
                                         </select>
                                     </div>
                                     <div class="col-md-1"></div>
-                                    <div class="col-md-2">
+                                    <div class="col-md-1">
                                         <label id="codigo"></label>
                                     </div>
-                                    <div class="col-md-2">
+                                    <div class="col-md-6">
                                         <label id="descripcion"></label>
                                     </div>
                                 </div>

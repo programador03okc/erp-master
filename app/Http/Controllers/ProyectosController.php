@@ -1151,39 +1151,39 @@ class ProyectosController extends Controller
                 'id_cu_partida'
             );
     
-            $ids = explode(',',$request->id_det);
-            $ins = explode(',',$request->id_insumo);
-            // $pre = explode(',',$request->id_precio);
-            $can = explode(',',$request->cantidad);
-            $cua = explode(',',$request->cuadrilla);
-            $uni = explode(',',$request->unitario);
-            $tot = explode(',',$request->total);
-            $count = count($ins);
-    
-            for ($i=0; $i<$count; $i++){
-                $id_det     = $ids[$i];
-                $id_ins     = $ins[$i];
-                // $id_precio  = $pre[$i];
-                $cant       = $can[$i];
-                $cuad       = $cua[$i];
-                $precio_u   = $uni[$i];
-                $precio_t   = $tot[$i];
-                // $id_insumo  = substr($id_ins, 1, strlen($id_ins));
-    
+            $insumos = json_decode($request->insumos);
+
+            foreach ($insumos as $ins) {
                 DB::table('proyectos.proy_cu_detalle')->insert(
                     [
                         'id_cu_partida' => $id_cu_partida,
-                        'id_insumo' => $id_ins,
+                        'id_insumo' => $ins->id_insumo,
                         // 'id_precio' => $id_precio,
-                        'cantidad' => $cant,
-                        'cuadrilla' => $cuad,
-                        'precio_unit' => $precio_u,
-                        'precio_total' => $precio_t,
+                        'cantidad' => $ins->cantidad,
+                        'cuadrilla' => $ins->cuadrilla,
+                        'precio_unit' => $ins->unitario,
+                        'precio_total' => $ins->total,
                         'fecha_registro' => date('Y-m-d H:i:s'),
                         'estado' => 1
                     ]
                 );
             }
+            // $ids = explode(',',$request->id_det);
+            // $ins = explode(',',$request->id_insumo);
+            // $can = explode(',',$request->cantidad);
+            // $cua = explode(',',$request->cuadrilla);
+            // $uni = explode(',',$request->unitario);
+            // $tot = explode(',',$request->total);
+            // $count = count($ins);
+    
+            // for ($i=0; $i<$count; $i++){
+            //     $id_det     = $ids[$i];
+            //     $id_ins     = $ins[$i];
+            //     $cant       = $can[$i];
+            //     $cuad       = $cua[$i];
+            //     $precio_u   = $uni[$i];
+            //     $precio_t   = $tot[$i];
+            // }
             $partida = DB::table('proyectos.proy_cu_partida')
             ->select('proy_cu_partida.*','proy_cu.codigo','proy_cu.descripcion','alm_und_medida.abreviatura')
             ->join('proyectos.proy_cu','proy_cu.id_cu','=','proy_cu_partida.id_cu')
@@ -1205,7 +1205,7 @@ class ProyectosController extends Controller
         try{
             DB::beginTransaction();
 
-            $update = DB::table('proyectos.proy_cu_partida')->where('id_cu_partida', $request->id_cu_partida)
+            DB::table('proyectos.proy_cu_partida')->where('id_cu_partida', $request->id_cu_partida)
                 ->update([
                     // 'descripcion' => strtoupper($request->descripcion),
                     // 'id_categoria' => $request->id_categoria,
@@ -1215,35 +1215,18 @@ class ProyectosController extends Controller
                     'rendimiento' => $request->rendimiento,
                 ]);
     
-            $ids = explode(',',$request->id_det);
-            $ins = explode(',',$request->id_insumo);
-            // $pre = explode(',',$request->id_precio);
-            $can = explode(',',$request->cantidad);
-            $cua = explode(',',$request->cuadrilla);
-            $uni = explode(',',$request->unitario);
-            $tot = explode(',',$request->total);
-    
-            $count = count($ids);
-    
-            for ($i=0; $i<$count; $i++){
-                $id_det     = $ids[$i];
-                $id_ins     = $ins[$i];
-                // $id_precio  = $pre[$i];
-                $cant       = $can[$i];
-                $cuad       = $cua[$i];
-                $precio_u   = $uni[$i];
-                $precio_t   = $tot[$i];
-    
-                if ($id_det == '0'){
+            $insumos = json_decode($request->insumos);
+
+            foreach ($insumos as $ins) {
+                if ($ins->id_cu_detalle == '0'){
                     $update = DB::table('proyectos.proy_cu_detalle')->insert(
                         [
                             'id_cu_partida' => $request->id_cu_partida,
-                            'id_insumo' => $id_ins,
-                            // 'id_precio' => $id_precio,
-                            'cantidad' => $cant,
-                            'cuadrilla' => $cuad,
-                            'precio_unit' => $precio_u,
-                            'precio_total' => $precio_t,
+                            'id_insumo' => $ins->id_insumo,
+                            'cantidad' => $ins->cantidad,
+                            'cuadrilla' => $ins->cuadrilla,
+                            'precio_unit' => $ins->unitario,
+                            'precio_total' => $ins->total,
                             'fecha_registro' => date('Y-m-d H:i:s'),
                             'estado' => 1
                         ]
@@ -1251,13 +1234,12 @@ class ProyectosController extends Controller
                 }
                 else {
                     $update = DB::table('proyectos.proy_cu_detalle')
-                    ->where('id_cu_detalle',$id_det)
+                    ->where('id_cu_detalle',$ins->id_cu_detalle)
                     ->update([
-                            // 'id_precio' => $id_precio,
-                            'cantidad' => $cant,
-                            'cuadrilla' => $cuad,
-                            'precio_unit' => $precio_u,
-                            'precio_total' => $precio_t
+                            'cantidad' => $ins->cantidad,
+                            'cuadrilla' => $ins->cuadrilla,
+                            'precio_unit' => $ins->unitario,
+                            'precio_total' => $ins->total,
                         ]
                     );
                 }
@@ -1274,8 +1256,15 @@ class ProyectosController extends Controller
                     ->update([ 'estado' => 7 ]);
                 }
             }
+
+            $partida = DB::table('proyectos.proy_cu_partida')
+            ->select('proy_cu_partida.*','proy_cu.codigo','proy_cu.descripcion','alm_und_medida.abreviatura')
+            ->join('proyectos.proy_cu','proy_cu.id_cu','=','proy_cu_partida.id_cu')
+            ->join('almacen.alm_und_medida','alm_und_medida.id_unidad_medida','=','proy_cu_partida.unid_medida')
+            ->where('id_cu_partida',$request->id_cu_partida)->first();
+
             DB::commit();
-            return response()->json(['id_cu_partida'=>$update]);
+            return response()->json(['id_cu_partida'=>$request->id_cu_partida,'partida'=>$partida]);
             
         } catch (\PDOException $e) {
             DB::rollBack();
