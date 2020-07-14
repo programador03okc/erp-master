@@ -28,16 +28,20 @@ function inicializar( _rutaLista,
     rutaTelefonosCliente = _rutaTelefonosCliente;
     rutaDireccionesCliente = _rutaDireccionesCliente;
 
+    listar_almacenes();
 
 }
 
 function controlInput(id,descripcion){
     document.querySelector("form[id='form-requerimiento'] input[name='id_grupo']").value = id;
+    document.querySelector("form[id='form-requerimiento'] input[name='descripcion_grupo']").value = descripcion;
+    console.log(descripcion);
     if(descripcion == 'Proyectos'){
        hiddeElement('mostrar','form-requerimiento',[
         'input-group-proyecto'
         ]);
     }
+
 }
 
 let data = [];
@@ -1122,8 +1126,8 @@ function eliminarItemDetalleRequerimiento(event,index){
 // modal detalle 
 var indice='';
 function detalleRequerimientoModal(event,index){
-    // console.log(data_item);
 
+    
     $('#form-detalle-requerimiento')[0].reset();
     event.preventDefault();
     var btnAceptarCambio = document.getElementsByName("btn-aceptar-cambio");
@@ -1197,6 +1201,26 @@ function detalleRequerimientoModal(event,index){
         document.querySelector("div[id='modal-detalle-requerimiento'] div[id='input-group-partida']").setAttribute('hidden',true);
     }
     actualizarMontoLimiteDePartida();
+
+    controlInputModalDetalleRequerimiento();
+}
+
+function controlInputModalDetalleRequerimiento(){
+    let descripcion_grupo = document.querySelector("form[id='form-requerimiento'] input[name='descripcion_grupo']").value;
+    console.log(descripcion_grupo);
+
+    if(descripcion_grupo == 'Comercial'){
+        console.log('ocl');
+    hiddeElement('ocultar','form-detalle-requerimiento',[
+        'input-group-lugar_entrega',
+        'input-group-partida'
+        ]);
+    }else{
+        hiddeElement('mostrar','form-detalle-requerimiento',[
+            'input-group-lugar_entrega',
+            'input-group-partida'
+            ]);
+    }
 }
 
 function actualizarMontoLimiteDePartida(id_item,option){
@@ -1685,6 +1709,8 @@ function listarItems() {
     $('#listaItems').dataTable({
         // 'dom': vardataTables[1],
         // 'buttons': vardataTables[2],
+        "dom": '<"toolbar">frtip',
+
         'scrollY':        '50vh',
         'scrollCollapse': true,
         'language' : vardataTables[0],
@@ -1714,11 +1740,20 @@ function listarItems() {
             [2, 'asc']
         ]
     });
+    $("div.toolbar").html('<button class="btn btn-sm btn-primary" onclick="crearProducto();">Crear Producto</button>');
 
-    let tablelistaitem = document.getElementById('listaItems_wrapper');
-    tablelistaitem.childNodes[0].childNodes[0].hidden = true;
+  
 
 }
+
+function crearProducto(){
+// Abrir nuevo tab
+let url ="/logistica/almacen/catalogos/productos/index";
+var win = window.open(url, '_blank');
+// Cambiar el foco al nuevo tab (punto opcional)
+win.focus();
+}
+
 function controlUnidadMedida(){
     var id_tipo_item = document.getElementsByName("id_tipo_item")[0].value;    
     var id_servicio = document.getElementsByName("id_servicio")[0].value;    
@@ -2487,7 +2522,7 @@ function llenarUbigeo(){
     document.querySelector("input[name='name_ubigeo']").value=name_ubigeo;
     
     var sede = $('[name=sede]').val();
-    cargar_almacenes(sede);
+    // cargar_almacenes(sede);
 }
 
 function llenarSelectSede(array){
@@ -2587,7 +2622,7 @@ function changeOptUbigeo(e){
 
     document.querySelector("input[name='ubigeo']").value=ubigeo;
     document.querySelector("input[name='name_ubigeo']").value=name_ubigeo;
-    cargar_almacenes(sede);
+    // cargar_almacenes(sede);
 }
 
 function cargar_almacenes(sede){

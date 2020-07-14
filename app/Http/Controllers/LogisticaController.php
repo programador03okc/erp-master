@@ -2797,8 +2797,10 @@ class LogisticaController extends Controller
                     'id_tipo_item'=> $data->id_tipo_item
                 ];
 
-                $total = intval($data->cantidad) * floatval($data->precio_referencial);
-                $aux_sum = $aux_sum + floatval($total);
+                // $total = intval($data->cantidad) * floatval($data->precio_referencial);
+                // $aux_sum = $aux_sum + floatval($total);
+                // $req[0]['monto_total_referencial']= $simbolo_moneda.(number_format($aux_sum,2,'.', ''));
+
             }
     
             $size_det_req= count($det_req);
@@ -2823,45 +2825,8 @@ class LogisticaController extends Controller
             }
         }
 
-        $req[0]['monto_total_referencial']= $simbolo_moneda.(number_format($aux_sum,2,'.', ''));
-
-
-        // $output[] = [
-        //     'flag'=> $flag, 
-        //     'codigo'=> $codigo, 
-        //     'concepto'=> $concepto,
-        //     'monto_total_referencial'=> $monto_total_referencial,
-        //     'fec_rq'=> $fec_rq, 
-        //     'desc_periodo'=> $desc_periodo, 
-        //     'tp_req'=> $tp_req,
-        //     'empresa'=> $empresa, 
-        //     'gral'=> $gral, 
-        //     'usuario'=> $usuario, 
-        //     'status'=> $status.'<center>'.$indicadorCotizacion.$indicadorOrden.'</center>', 
-        //     'action'=> $action
-        // ];
-        
-    
-        // return response()->json($output);
         return datatables($req)->toJson();
 
-        // return DataTables::of($output)
-        // ->addColumn('flag',function($output){
-        //         $flag = $output['flag'];
-        //         return $flag;
-        // })
-        // ->addColumn('status',function($output){
-        //         $status = $output['status'];
-        //         return $status;
-        // })
-        // ->addColumn('action',function($output){
-        //         $action = $output['action'];
-        //         return $action;
-        // })
-        // ->rawColumns(['flag','status','action'])
-        // ->make(true);
-
-        // return response()->json($req);
     }
 
     public function listar_requerimiento_v2($id_empresa,$id_sede,$id_grupo){

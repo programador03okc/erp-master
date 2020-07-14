@@ -71,12 +71,10 @@
                                                             <th width="10"></th>
                                                             <th>CODIGO</th>
                                                             <th width="250">CONCEPTO</th>
-                                                            <th>TOTAL</th>
                                                             <th>FECHA</th>
-                                                            <th>PERIODO</th>
                                                             <th>TIPO</th>
                                                             <th width="120">EMPRESA</th>
-                                                            <th>AREA / PROYECTO</th>
+                                                            <th>GRUPO / PROYECTO</th>
                                                             <th>CREADO POR</th>
                                                             <th width="70">ESTADO</th>
                                                             <th width="90">ACCIÓN</th>

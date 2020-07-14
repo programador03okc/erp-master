@@ -194,16 +194,14 @@ function listarTablaReq(id_empresa =null,id_sede =null, id_grupo=null){
             },
             {'data':'codigo', 'name':'codigo'},
             {'data':'concepto', 'name':'concepto'},
-            {'data':'monto_total_referencial', 'name':'monto_total_referencial'},
             {'data':'fecha_requerimiento', 'name':'fecha_requerimiento'},
-            {'data':'descripcion_periodo', 'name':'descripcion_periodo'},
             {'data':'tipo_requerimiento', 'name':'tipo_requerimiento'},
             {'render': function (data, type, row){
                     return row['razon_social']+ ' '+row['tipo_documento_identidad']+': '+row['nro_documento'];
             }
             },            
             {'render': function (data, type, row){
-                return row['descripcion_op_com']?row['descripcion_op_com']:row['area']; 
+                return row['descripcion_op_com']?row['descripcion_op_com']:row['grupo']; 
             }
             },            
             {'data':'usuario', 'name':'usuario'},
