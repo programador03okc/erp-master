@@ -1246,7 +1246,7 @@ class AlmacenController extends Controller
         $des = strtoupper($request->descripcion);
 
         $count = DB::table('almacen.alm_prod')
-        ->where([['descripcion','=',$des],['estado','=',1]])
+        ->where([['descripcion','=',$des],['part_number','=',$request->part_number],['estado','=',1]])
         ->count();
 
         if ($count == 0){
@@ -1278,7 +1278,7 @@ class AlmacenController extends Controller
                     'fecha_registro' => $fecha
                 ],  'id_item');
         } else {
-            $msj = 'No es posible guardar. Ya existe un producto con dicha descripción.';
+            $msj = 'No es posible guardar. Ya existe un producto con dicha descripción y/o Part Number.';
         }
         return response()->json(['msj'=>$msj,'id_producto'=>$id_producto]);
     }
@@ -1289,7 +1289,7 @@ class AlmacenController extends Controller
         $des = strtoupper($request->descripcion);
 
         $count = DB::table('almacen.alm_prod')
-        ->where([['descripcion','=',$des],['estado','=',1]])
+        ->where([['descripcion','=',$des],['part_number','=',$request->part_number],['estado','=',1]])
         ->count();
 
         if ($count <= 1){
@@ -1312,7 +1312,7 @@ class AlmacenController extends Controller
                     'notas' => $request->notas,
                 ]);
         } else {
-            $msj = 'No es posible actualizar. Ya existe un producto con la misma descripción.';
+            $msj = 'No es posible actualizar. Ya existe un producto con la misma descripción y/o Part Number.';
         }
         return response()->json(['msj'=>$msj,'id_producto'=>$request->id_producto]);
     }
