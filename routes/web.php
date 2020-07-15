@@ -894,6 +894,8 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::post('guardar_od_adjunto', 'DistribucionController@guardar_od_adjunto');
 					Route::get('anular_od_adjunto/{id}', 'DistribucionController@anular_od_adjunto');
 					Route::post('guardar_proveedor', 'LogisticaController@guardar_proveedor');
+					Route::get('mostrar_clientes', 'AlmacenController@mostrar_clientes');
+					Route::get('listar_personas', 'RecursosHumanosController@mostrar_persona_table');
 
 				});
 	

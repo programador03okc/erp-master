@@ -24,7 +24,7 @@
                         </div>
                         <div class="col-md-2">
                             <h5>Teléfono</h5>
-                            <input type="text" class="form-control" name="telefono">
+                            <input type="number" class="form-control" name="telefono">
                         </div>
                         <div class="col-md-6">
                             <h5>Almacén</h5>
@@ -35,16 +35,6 @@
                     <div class="row">
                         <div class="col-md-6">
                             <h5>Cliente</h5>
-                            <!-- <div style="display:flex;">
-                                <input class="oculto" name="id_cliente"/>
-                                <input class="oculto" name="id_contrib"/>
-                                <input type="text" class="form-control" name="cliente_razon_social" placeholder="Seleccione un cliente..." 
-                                    aria-describedby="basic-addon1" disabled>
-                                <button type="button" class="input-group-text btn-primary" id="basic-addon1" onClick="clienteModal();">
-                                    <i class="fa fa-search"></i>
-                                </button>
-                            </div> -->
-                            <!-- class="input-group-okc"  -->
                             <div style="display:flex;"> 
                                 <input type="text" class="oculto" name="id_cliente" >
                                 <input type="text" class="oculto" name="tipo_cliente" >
@@ -55,11 +45,9 @@
                                 <input type="text" class="form-control" name="dni_persona" style="width: 130px;">
                                 <input type="text" class="form-control" name="nombre_persona" >
 
-                                <!-- <div class="input-group-append">         -->
-                                    <button type="button" title="Seleccionar Cliente" name="btnCliente" 
-                                    onClick="openCliente();"
-                                    class="input-group-text btn-primary" ><i class="fas fa-user-tie"></i></button>
-                                <!-- </div> -->
+                                <button type="button" title="Seleccionar Cliente" name="btnCliente" 
+                                onClick="openCliente();" class="input-group-text btn-primary" >
+                                <i class="fas fa-user-tie"></i></button>
                             </div>
                         </div>
                         <div class="col-md-3">
@@ -95,7 +83,30 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-12">
+                        <div class="col-md-6">
+                            <h5>Correo Cliente</h5>
+                            <input type="text" class="form-control" name="correo_cliente">
+                        </div>
+                        <div class="col-md-6">
+                            <h5>Elija el documento que desea emitir:</h5>
+                            <div class="form-group">
+                                <div class="radio">
+                                    <label>
+                                    <input type="radio" name="optionsRadios" id="boleta" value="boleta" checked="">
+                                    Boleta
+                                    </label>
+                                </div>
+                                <div class="radio">
+                                    <label>
+                                    <input type="radio" name="optionsRadios" id="factura" value="factura">
+                                    Factura
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
                             <h5></h5>
                             <input class="oculto" name="aplica_cambios_valor"/>
                             <input type="checkbox" name="aplica_cambios" style="margin-right: 10px; margin-left: 7px;"/> Aplica Cambios
@@ -146,7 +157,8 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-sm btn-success" id="submit_orden_despacho" onClick="guardar_orden_despacho();" >Guardar</button>
+                    <button class="btn btn-sm btn-success" id="submit_orden_despacho" onClick="guardar_orden_despacho();" >Guardar y Enviar <i class="fas fa-paper-plane"></i> </button>
+                    <!-- &nbsp;<img width="10px" src="{{ asset('images/loading.gif')}}" class="loading invisible"><img> -->
                     <!-- <input type="submit" id="submit_orden_despacho" class="btn btn-success" value="Guardar"/> -->
                 </div>
             </form>

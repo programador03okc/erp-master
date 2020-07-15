@@ -243,6 +243,7 @@ class DistribucionController extends Controller
                     'registrado_por'=>$usuario,
                     'tipo_entrega'=>$request->tipo_entrega,
                     'fecha_registro'=>date('Y-m-d H:i:s'),
+                    'documento'=>$request->documento,
                     'estado'=>1,
                     'tipo_cliente'=>$request->tipo_cliente
                 ],
@@ -305,20 +306,87 @@ class DistribucionController extends Controller
                 $data = json_decode($request->detalle_requerimiento);
                 
                 foreach ($data as $d) {
+                    $descripcion = ($d->producto_descripcion !== null ? $d->producto_descripcion : $d->descripcion_adicional);
                     DB::table('almacen.orden_despacho_det')
                     ->insert([
                         'id_od'=>$id_od,
                         'id_producto'=>$d->id_producto,
                         // 'id_posicion'=>($d->id_posicion),
                         'cantidad'=>$d->cantidad,
-                        'descripcion_producto'=>($d->producto_descripcion !== null ? $d->producto_descripcion : $d->descripcion_adicional),
+                        'descripcion_producto'=>$descripcion,
                         'estado'=>1,
                         'fecha_registro'=>date('Y-m-d H:i:s')
                     ]);
                 }
             }
+
+            $msj = '';
+
+            $empresa = DB::table('administracion.sis_sede')
+            ->select('adm_empresa.id_empresa','adm_contri.razon_social')
+            ->join('administracion.adm_empresa','adm_empresa.id_empresa','=','sis_sede.id_empresa')
+            ->join('contabilidad.adm_contri','adm_contri.id_contribuyente','=','adm_empresa.id_contribuyente')
+            ->where('id_sede',$request->id_sede)->first();
+
+        // if ($empresa !== null){
+            $req = DB::table('almacen.alm_req')
+            ->where('id_requerimiento',$request->id_requerimiento)
+            ->first();
+
+            $items = DB::table('almacen.alm_det_req')
+            ->select('alm_det_req.cantidad','alm_det_req.precio_referencial',
+            DB::raw("(item_cat.descripcion) || ' ' || (item_subcat.descripcion) || ' ' || (item.descripcion) AS item_descripcion"),
+            DB::raw("(prod_cat.descripcion) || ' ' || (prod_subcat.descripcion) || ' ' || (prod.descripcion) AS prod_descripcion"),
+            'item_unidad.abreviatura as item_unid','prod_unidad.abreviatura as prod_unid',
+            'item.part_number as item_part_number','prod.part_number as prod_part_number',
+            'sis_moneda.simbolo')
+            ->join('almacen.alm_req','alm_req.id_requerimiento','=','alm_det_req.id_requerimiento')
+            ->leftJoin('configuracion.sis_moneda','sis_moneda.id_moneda','=','alm_req.id_moneda')
+            ->leftJoin('almacen.alm_item','alm_item.id_item','=','alm_det_req.id_item')
+            ->leftJoin('almacen.alm_prod as item','item.id_producto','=','alm_item.id_producto')
+            ->leftJoin('almacen.alm_und_medida as item_unidad','item_unidad.id_unidad_medida','=','item.id_unidad_medida')
+            ->leftJoin('almacen.alm_cat_prod as item_cat','item_cat.id_categoria','=','item.id_categoria')
+            ->leftJoin('almacen.alm_subcat as item_subcat','item_subcat.id_subcategoria','=','item.id_subcategoria')
+
+            ->leftJoin('almacen.alm_prod as prod','prod.id_producto','=','alm_det_req.id_producto')
+            ->leftJoin('almacen.alm_und_medida as prod_unidad','prod_unidad.id_unidad_medida','=','prod.id_unidad_medida')
+            ->leftJoin('almacen.alm_cat_prod as prod_cat','prod_cat.id_categoria','=','prod.id_categoria')
+            ->leftJoin('almacen.alm_subcat as prod_subcat','prod_subcat.id_subcategoria','=','prod.id_subcategoria')
+            
+            ->where([['alm_det_req.id_requerimiento','=',$request->id_requerimiento],['alm_det_req.estado','!=',7]])
+            ->get();
+
+            $text = '';
+            $i = 1;
+            foreach ($items as $item) {
+                $text .= $i.'.- '.($item->item_part_number !== null ? $item->item_part_number : $item->prod_part_number).
+                ' '.($item->item_descripcion !== null ? $item->item_descripcion : $item->prod_descripcion).
+                '   Cantidad: '.$item->cantidad.' '.($item->item_unid !== null ? $item->item_unid : $item->prod_unid).
+                '   Precio: '.$item->simbolo.' '.$item->precio_referencial;
+            }
+
+            $asunto = 'Generar '.$request->documento.' para el '.$req->codigo.' '.$req->concepto;
+            $contenido = '
+    Favor de generar '.$request->documento.' para el '.$req->codigo.' '.$req->concepto.' 
+    Empresa: '.$empresa->razon_social.'
+                    
+    Datos del Cliente:
+    - '.($request->documento == 'boleta' ? 'DNI: '.$request->dni_persona : 'RUC: '.$request->ruc).'
+    - '.($request->documento == 'boleta' ? 'Nombres y Apellidos: '.$request->nombre_persona : 'Razon Social: '.$request->razon_social).'
+    - Dirección: '.$request->direccion_destino.'
+    - Fecha Despacho: '.$request->fecha_despacho.'
+
+    Descripcion de Items:
+    '.$text.'
+    
+    Saludos,
+    Módulo de Logística y Almacenes
+    ';
+            $destinatario = 'distribucion@okcomputer.com.pe';
+            $msj = CorreoController::enviar_correo($empresa->id_empresa, $destinatario, $asunto, $contenido);
+
             DB::commit();
-            return response()->json($id_od);
+            return response()->json($msj);
             
         } catch (\PDOException $e) {
             DB::rollBack();
@@ -1210,16 +1278,18 @@ class DistribucionController extends Controller
             ->first();
             $id_usuario = Auth::user()->id_usuario;
             //Agrega accion en requerimiento
-            DB::table('almacen.alm_req_obs')
-            ->insert([  'id_requerimiento'=>$od->id_requerimiento,
+            $obs = DB::table('almacen.alm_req_obs')
+            ->insertGetId([  'id_requerimiento'=>$od->id_requerimiento,
                         'accion'=>'O.D. ANULADA',
                         'descripcion'=>'Orden de Despacho Anulado',
                         'id_usuario'=>$id_usuario,
                         'fecha_registro'=>date('Y-m-d H:i:s')
-                ]);
+                ],
+                    'id_observacion'
+                );
 
             DB::commit();
-            return response()->json($update);
+            return response()->json($obs);
             
         } catch (\PDOException $e) {
     

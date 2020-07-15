@@ -299,11 +299,16 @@ function listarOrdenesPendientes(){
                     return ('<span class="label label-'+row['bootstrap_color']+'">'+row['estado_doc']+'</span>');
                 }
             },
-            {'defaultContent': 
-            '<button type="button" class="od_detalle btn btn-primary boton" data-toggle="tooltip" '+
-            'data-placement="bottom" title="Ver Detalle" >'+
-            '<i class="fas fa-list-ul"></i></button>'}
-            // {'data': 'id_sede'}
+            {'render': 
+                function (data, type, row){
+                    return `<button type="button" class="od_detalle btn btn-primary boton" data-toggle="tooltip" 
+                                data-placement="bottom" title="Ver Detalle" >
+                                <i class="fas fa-list-ul"></i></button>
+                            <button type="button" class="adjuntar btn btn-warning boton" data-toggle="tooltip" 
+                                data-placement="bottom" data-id="${row['id_od']}" data-cod="${row['codigo']}" title="Agregar Adjuntos" >
+                                <i class="fas fa-paperclip"></i></button>`;
+                }
+            }
         ],
         'drawCallback': function(){
             $('#ordenesDespacho tbody tr td input[type="checkbox"]').iCheck({
@@ -338,6 +343,16 @@ function listarOrdenesPendientes(){
         var data = $('#ordenesDespacho').DataTable().row($(this).parents("tr")).data();
         console.log('data.id_od'+data.id_od);
         open_detalle_despacho(data);
+    });
+    $('#ordenesDespacho tbody').on("click","button.adjuntar", function(){
+        var id = $(this).data('id');
+        var cod = $(this).data('cod');
+        $('#modal-despachoAdjuntos').modal({
+            show: true
+        });
+        listarAdjuntos(id);
+        $('[name=id_od]').val(id);
+        $('[name=codigo_od]').val(cod);
     });
     // Handle iCheck change event for checkboxes in table body
     $($('#ordenesDespacho').DataTable().table().container()).on('ifChanged', '.dt-checkboxes', function(event){
@@ -417,6 +432,9 @@ function listarGruposDespachados(permiso){
                         return ('<button type="button" class="god_detalle btn btn-primary boton" data-toggle="tooltip" '+
                         'data-placement="bottom" title="Ver Detalle" >'+
                         '<i class="fas fa-list-ul"></i></button>'+
+                        `<button type="button" class="adjuntar btn btn-warning boton" data-toggle="tooltip" 
+                            data-placement="bottom" data-id="${row['id_od']}" data-cod="${row['codigo_od']}" title="Agregar Adjuntos" >
+                            <i class="fas fa-paperclip"></i></button>`+
                         '<button type="button" class="imprimir btn btn-info boton" data-toggle="tooltip" '+
                         'data-placement="bottom" data-id-grupo="'+row['id_od_grupo']+'" title="Ver Despacho" >'+
                         '<i class="fas fa-file-alt"></i></button>'+
@@ -431,6 +449,9 @@ function listarGruposDespachados(permiso){
                         return '<button type="button" class="god_detalle btn btn-primary boton" data-toggle="tooltip" '+
                         'data-placement="bottom" title="Ver Detalle" >'+
                         '<i class="fas fa-list-ul"></i></button>'+
+                        `<button type="button" class="adjuntar btn btn-warning boton" data-toggle="tooltip" 
+                            data-placement="bottom" data-id="${row['id_od']}" data-cod="${row['codigo_od']}" title="Agregar Adjuntos" >
+                            <i class="fas fa-paperclip"></i></button>`+
                         '<button type="button" class="imprimir btn btn-info boton" data-toggle="tooltip" '+
                         'data-placement="bottom" data-id-grupo="'+row['id_od_grupo']+'" title="Ver Despacho" >'+
                         '<i class="fas fa-file-alt"></i></button>'
@@ -462,6 +483,17 @@ $('#gruposDespachados tbody').on("click","button.god_detalle", function(){
     var data = $('#gruposDespachados').DataTable().row($(this).parents("tr")).data();
     console.log('data.id_od'+data.id_od_grupo);
     open_grupo_detalle(data);
+});
+
+$('#gruposDespachados tbody').on("click","button.adjuntar", function(){
+    var id = $(this).data('id');
+    var cod = $(this).data('cod');
+    $('#modal-despachoAdjuntos').modal({
+        show: true
+    });
+    listarAdjuntos(id);
+    $('[name=id_od]').val(id);
+    $('[name=codigo_od]').val(cod);
 });
 
 $('#gruposDespachados tbody').on("click","button.imprimir", function(){

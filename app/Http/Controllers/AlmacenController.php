@@ -768,22 +768,13 @@ class AlmacenController extends Controller
     {
         $data = DB::table('comercial.com_cliente')
         ->select('com_cliente.id_cliente','com_cliente.id_contribuyente',
-            'adm_contri.nro_documento','adm_contri.razon_social', 'adm_contri.telefono', 'adm_contri.direccion_fiscal')
+            'adm_contri.nro_documento','adm_contri.razon_social', 'adm_contri.telefono', 'adm_contri.direccion_fiscal','adm_contri.email')
         ->join('contabilidad.adm_contri','adm_contri.id_contribuyente','=','com_cliente.id_contribuyente')
         ->where([['com_cliente.estado', '=', 1]])
             ->orderBy('adm_contri.nro_documento')
             ->get();
         $output['data'] = $data;
         return $output;
-        // $data = DB::table('comercial.com_cliente')
-        //     ->select('com_cliente.id_cliente','com_cliente.id_contribuyente',
-        //         'adm_contri.nro_documento','adm_contri.razon_social')
-        //     ->join('contabilidad.adm_contri','adm_contri.id_contribuyente','=','com_cliente.id_contribuyente')
-        //     ->where([['com_cliente.estado', '=', 1]])
-        //         ->orderBy('adm_contri.nro_documento')
-        //         ->get();
-        // $output['data'] = $data;
-        // return $output;
     }
     public function mostrar_clientes_empresa()
     {
@@ -1245,9 +1236,16 @@ class AlmacenController extends Controller
         $msj = '';
         $des = strtoupper($request->descripcion);
 
-        $count = DB::table('almacen.alm_prod')
-        ->where([['descripcion','=',$des],['part_number','=',$request->part_number],['estado','=',1]])
-        ->count();
+        if ($request->part_number !== null && $request->part_number !== ''){
+            $count = DB::table('almacen.alm_prod')
+            ->where([['part_number','=',$request->part_number],['estado','=',1]])
+            ->count();
+        } 
+        else if ($des !== null && $des !== ''){
+            $count = DB::table('almacen.alm_prod')
+            ->where([['descripcion','=',$des],['estado','=',1]])
+            ->count();
+        }
 
         if ($count == 0){
             $id_producto = DB::table('almacen.alm_prod')->insertGetId(

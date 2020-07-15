@@ -68,14 +68,14 @@
                                                     </label>
                                                 </div> Control de Series
                                             </div>
-                                            <div class="form-group">
+                                            <!-- <div class="form-group">
                                                 <h5></h5>
                                                 <div class="icheckbox_flat-blue">
                                                     <label style="display:flex;">
                                                         <input type="checkbox" class="flat-red" name="afecto_igv" value="0">
                                                     </label>
                                                 </div> Afecto a I.G.V. (Gravado)
-                                            </div>
+                                            </div> -->
                                         </div>
                                     </div>
                                     <div class="row">
@@ -210,7 +210,7 @@
                                     </fieldset>
                                 </div>
                                 <div class="col-md-7">
-                                    <h5>Descripción</h5>
+                                    <h5>Notas</h5>
                                     <textarea name="notas" class="form-control activation" rows="8" cols="30"></textarea>
                                 </div>
                             </div>

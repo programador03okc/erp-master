@@ -77,7 +77,11 @@ function openCliente(){
 }
 
 function changeTipoCliente(e){
-    if (e.target.value == 1){
+    limpiarCampos(e.target.value);
+}
+
+function limpiarCampos(tipo){
+    if (tipo == 1){
         $('[name=id_cliente]').val('');
         $('[name=cliente_ruc]').val('');
         $('[name=cliente_razon_social]').val('');
@@ -90,7 +94,7 @@ function changeTipoCliente(e){
         $('[name=dni_persona]').show();
         $('[name=nombre_persona]').show();
     }
-    else if (e.target.value == 2){
+    else if (tipo == 2){
         $('[name=id_cliente]').val('');
         $('[name=cliente_ruc]').val('');
         $('[name=cliente_razon_social]').val('');
@@ -148,8 +152,8 @@ function listar_detalle_ingreso(id_requerimiento){
 function guardar_orden_despacho(){
     var sede = $('[name=id_sede]').val();
     var req = $('[name=id_requerimiento]').val();
-    var clie = $('[name=id_cliente]').val();
     var alm = $('[name=id_almacen]').val();
+    var clie = $('[name=id_cliente]').val();
     var perso = $('[name=id_persona]').val();
     var ubig = $('[name=ubigeo]').val();
     var dir = $('[name=direccion_destino]').val();
@@ -161,6 +165,14 @@ function guardar_orden_despacho(){
     var telf = $('[name=telefono]').val();
     var sale = $('[name=sale]').val();
 
+    var mail = $('[name=correo_cliente]').val();
+    var dni = $('[name=dni_persona]').val();
+    var name = $('[name=nombre_persona]').val();
+    var ruc = $('[name=cliente_ruc]').val();
+    var raz = $('[name=cliente_razon_social]').val();
+
+    var doc = $('input[name=optionsRadios]:checked').val();
+
     var data =  'id_sede='+sede+
                 '&id_requerimiento='+req+
                 '&id_cliente='+clie+
@@ -170,34 +182,47 @@ function guardar_orden_despacho(){
                 '&direccion_destino='+dir+
                 '&fecha_despacho='+fdes+
                 '&fecha_entrega='+fent+
+                '&documento='+doc+
                 '&aplica_cambios_valor='+camb+
                 '&tipo_entrega='+tipo+
                 '&tipo_cliente='+tpcli+
                 '&telefono='+telf+
                 '&sale='+sale+
+                '&correo_cliente='+mail+
+                '&dni_persona='+dni+
+                '&nombre_persona='+name+
+                '&ruc='+ruc+
+                '&razon_social='+raz+
                 '&detalle_ingresa='+JSON.stringify(detalle_ingresa)+
                 '&detalle_requerimiento='+JSON.stringify(detalle_requerimiento);
 
-    $("#submit_orden_despacho").attr('disabled','true');
     console.log(data);
-    $.ajax({
-        type: 'POST',
-        url: 'guardar_orden_despacho',
-        data: data,
-        dataType: 'JSON',
-        success: function(response){
-            console.log(response);
-            if (response > 0){
-                alert('La Orden de Despacho se generó correctamente.');
-                $('#modal-orden_despacho_create').modal('hide');
-                $('#requerimientosPendientes').DataTable().ajax.reload();
+    var msj = validaOrdenDespacho();
+
+    if (msj.length > 0){
+        alert(msj);
+    } 
+    else {
+        $("#submit_orden_despacho").attr('disabled','true');
+        $.ajax({
+            type: 'POST',
+            url: 'guardar_orden_despacho',
+            data: data,
+            dataType: 'JSON',
+            success: function(response){
+                console.log(response);
+                // if (response.lenght > 0){
+                    alert(response);
+                    $('#modal-orden_despacho_create').modal('hide');
+                    $('#requerimientosPendientes').DataTable().ajax.reload();
+                // }
             }
-        }
-    }).fail( function( jqXHR, textStatus, errorThrown ){
-        console.log(jqXHR);
-        console.log(textStatus);
-        console.log(errorThrown);
-    });
+        }).fail( function( jqXHR, textStatus, errorThrown ){
+            console.log(jqXHR);
+            console.log(textStatus);
+            console.log(errorThrown);
+        });
+    }
 }
 
 $("[name=aplica_cambios]").on( 'change', function() {
@@ -219,6 +244,19 @@ $("[name=aplica_cambios]").on( 'change', function() {
         $("#detalleRequerimientoOD tbody tr").each(function(){
             $(this).find("td input[type=checkbox]").prop('checked', false);
         });
+    }
+});
+
+$("[name=optionsRadios]").on( 'change', function() {
+    if( $(this).is(':checked') ) {
+        var tipo = null;
+        if ($(this).val() == 'factura'){
+            tipo = 2;
+        } else {
+            tipo = 1;
+        }
+        $('[name=tipo_cliente]').val(tipo);
+        limpiarCampos(tipo);
     }
 });
 
@@ -248,4 +286,38 @@ function changeCheckIngresa(checkbox, id_mov_alm_det){
         detalle_ingresa.splice(index,1);
     }
     console.log(detalle_ingresa);
+}
+
+function validaOrdenDespacho(){
+    var tpcli = $('[name=tipo_cliente]').val();
+    var clie = $('[name=id_cliente]').val();
+    var perso = $('[name=id_persona]').val();
+    var ubig = $('[name=ubigeo]').val();
+    var dir = $('[name=direccion_destino]').val();
+    var telf = $('[name=telefono]').val();
+    var mail = $('[name=correo_cliente]').val();
+    var msj = '';
+
+    if (tpcli == 1){
+        if (perso == ''){
+            msj+='\n Es necesario que ingrese los datos del Cliente';
+        }
+    } else if (tpcli == 2){
+        if (clie == ''){
+            msj+='\n Es necesario que ingrese los datos del Cliente';
+        }
+    }
+    if (ubig == ''){
+        msj+='\n Es necesario que ingrese un Ubigeo Destino';
+    }
+    if (dir == ''){
+        msj+='\n Es necesario que ingrese una Dirección Destino';
+    }
+    if (telf == ''){
+        msj+='\n Es necesario que ingrese un Teléfono';
+    }
+    if (mail == ''){
+        msj+='\n Es necesario que ingrese un Email';
+    }
+    return msj;
 }

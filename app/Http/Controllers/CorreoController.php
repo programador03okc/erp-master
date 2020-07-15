@@ -203,7 +203,7 @@ class CorreoController extends Controller
         return ['id_empresa'=>$id_empresa,'status'=>$status];
     }
 
-    public function get_smtp_authentication($id_empresa){
+    public static function get_smtp_authentication($id_empresa){
         $smtp_server='';
         $port='';
         $emial='';
@@ -242,6 +242,63 @@ class CorreoController extends Controller
         ];
     }
 
+    public static function enviar_correo($id_empresa, $destinatario, $asunto, $contenido){
+        $attachments=[];
+        $cantidadAdjuntos=0;
+        $smpt_setting=[];
+        // $id_cotizacion = $request->input("id_cotizacion");
+        // $remitente = $request->input("remitente");
+        // $destinatario = $request->input("destinatario");
+        // $asunto = $request->input("asunto");
+        // $contenido = $request->input("contenido_mail");
+        // $adjunto_server = json_decode($request->adjunto_server);
+        // $empresa =$this->get_empresa($id_cotizacion);
+
+        // if ($empresa['status'] == 'success'){
+        $smpt_setting = CorreoController::get_smtp_authentication($id_empresa);
+        // }
+
+        if ($smpt_setting['status'] =='success'){
+            $smtpAddress = $smpt_setting['smtp_server'];
+            $port = $smpt_setting['port'];
+            $encryption = $smpt_setting['encryption'];
+            $yourEmail = $smpt_setting['email'];
+            $yourPassword = $smpt_setting['password'];
+        } else { 
+            return 'Error, no existe configuración de correo para la empresa seleccionada';
+        }
+		
+        Swift_Preferences::getInstance()->setCacheType('null');
+
+        $transport = (new \Swift_SmtpTransport($smtpAddress, $port, $encryption))
+                ->setUsername($yourEmail)
+                ->setPassword($yourPassword);
+        $mailer = new Swift_Mailer($transport);
+
+        // Create a message
+        $message = (new \Swift_Message($asunto))
+        ->setFrom([$yourEmail])
+        ->setTo([$destinatario])
+        ->setBody($contenido)
+        // ->attach($attachment)
+        ;
+        
+        foreach ($attachments as $attachment) {
+            $message->attach(\Swift_Attachment::fromPath($attachment));
+        }
+
+        if ($mailer->send($message)){
+            // $estado_enviado =(new LogisticaController)->get_estado_doc('Enviado');
+            // $update = DB::table('logistica.log_cotizacion')->where('id_cotizacion', $id_cotizacion)
+            // ->update([
+            //     'estado_envio'          => $estado_enviado
+            // ]);
+                
+            return "Mensaje Enviado.";
+        }
+        return "Algo salió mal :(";
+    }
+
     public function enviar(Request $request)
     {
 		$attachments=[];
@@ -259,7 +316,7 @@ class CorreoController extends Controller
 
         $empresa =$this->get_empresa($id_cotizacion);
         if($empresa['status'] == 'success'){
-           $smpt_setting = $this->get_smtp_authentication($empresa['id_empresa']);
+           $smpt_setting = CorreoController::get_smtp_authentication($empresa['id_empresa']);
            
         }
 

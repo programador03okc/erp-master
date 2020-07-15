@@ -30,7 +30,7 @@
                             </p>
                         </li>
                         <li class="user-footer">
-                            <div class="pull-left"><a href="javascript: void(0)" onclick="changePassword();" class="btn btn-default btn-flat">Perfil</a></div>
+                            <div class="pull-left"><a href="javascript: void(0)" onclick="changePassword();" class="btn btn-default btn-flat">Cambiar Contraseña</a></div>
                             <div class="pull-right">
                                 <form id="logout-form" action="{{ route('logout') }}" method="POST">
                                     @csrf
