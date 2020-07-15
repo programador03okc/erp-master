@@ -14,7 +14,7 @@
             <li><a href="{{route('logistica.gestion-logistica.requerimiento.elaboracion.index')}}"><i class="far fa-circle fa-xs"></i> Elaborar</a></li>
         @endif
         @if(Auth::user()->tieneAplicacion(103))
-            <li><a href="{{route('logistica.gestion-logistica.requerimiento.gestionar.index')}}"><i class="far fa-circle fa-xs"></i> Listado</a></li>
+            <li><a href="{{route('logistica.gestion-logistica.requerimiento.listado.index')}}"><i class="far fa-circle fa-xs"></i> Listado</a></li>
         @endif
         </ul>
     </li>

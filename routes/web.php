@@ -633,7 +633,7 @@ Route::group(['middleware' => ['auth']], function () {
 				
 
 				});
-				Route::group(['as' => 'gestionar.', 'prefix' => 'gestionar'], function(){
+				Route::group(['as' => 'listado.', 'prefix' => 'listado'], function(){
 					Route::get('index', 'LogisticaController@view_lista_requerimientos')->name('index');
 					Route::get('listar/{empresa?}/{sede?}/{grupo?}', 'LogisticaController@listar_requerimiento_v2')->name('listar');
 					Route::get('empresa', 'LogisticaController@getIdEmpresa')->name('empresa');
@@ -641,6 +641,7 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::get('select-grupo-by-sede/{id?}', 'LogisticaController@select_grupo_by_sede')->name('select-grupo-by-sede');
 					Route::get('ver-flujos/{req?}/{doc?}', 'LogisticaController@flujo_aprobacion')->name('ver-flujos');
 					Route::get('explorar-requerimiento/{id_requerimiento?}', 'LogisticaController@explorar_requerimiento')->name('explorar-requerimiento');
+					Route::get('elaborados/{empresa?}/{sede?}/{grupo?}', 'LogisticaController@listar_requerimientos_elaborados')->name('elaborados');
 				});
 			});
 			

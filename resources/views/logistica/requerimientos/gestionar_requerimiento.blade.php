@@ -187,6 +187,7 @@
             <div class="col-md-6" id="input-group-proyecto" hidden>
                 <h5>Proyecto</h5>
                 <div style="display:flex;">
+                    <input type="hidden" class="form-control" name="descripcion_grupo">
                     <input type="hidden" class="form-control" name="id_grupo">
                     <input type="hidden" type="text" name="id_proyecto" class="activation">
                     <input type="text" name="codigo_opcion" class="form-control group-elemento" style="width:130px; text-align:center;" readonly>
