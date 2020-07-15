@@ -45,7 +45,7 @@ function isNumberKey(evt){
 function controlInput(id,descripcion){
     document.querySelector("form[id='form-requerimiento'] input[name='id_grupo']").value = id;
     document.querySelector("form[id='form-requerimiento'] input[name='descripcion_grupo']").value = descripcion;
-    console.log(descripcion);
+    // console.log(descripcion);
     if(descripcion == 'Proyectos'){
        hiddeElement('mostrar','form-requerimiento',[
         'input-group-proyecto'
@@ -319,6 +319,7 @@ function handleKeyDown(event){
 function handleKeyPress(event){    
     $('[name=id_item]').val(0);
     $('[name=codigo_item]').val('SIN CODIGO');
+    $('[name=part_number]').val('');
     $('[name=id_producto]').val(0);
     $('[name=id_servicio]').val(0);
     $('[name=id_equipo]').val(0);
@@ -327,6 +328,7 @@ function handleKeyPress(event){
 function handlePaste(event){    
     $('[name=id_item]').val(0);
     $('[name=codigo_item]').val('SIN CODIGO');
+    $('[name=part_number]').val('');
     $('[name=id_producto]').val(0);
     $('[name=id_servicio]').val(0);
     $('[name=id_equipo]').val(0);
@@ -1220,10 +1222,9 @@ function detalleRequerimientoModal(event,index){
 
 function controlInputModalDetalleRequerimiento(){
     let descripcion_grupo = document.querySelector("form[id='form-requerimiento'] input[name='descripcion_grupo']").value;
-    console.log(descripcion_grupo);
+    // console.log(descripcion_grupo);
 
     if(descripcion_grupo == 'Comercial'){
-        console.log('ocl');
     hiddeElement('ocultar','form-detalle-requerimiento',[
         'input-group-lugar_entrega',
         'input-group-partida'
@@ -1301,6 +1302,7 @@ function fill_input_detalle_requerimiento(item){
     $('[name=id_equipo]').val(item.id_equipo);
     $('[name=id_detalle_requerimiento]').val(item.id_detalle_requerimiento);
     $('[name=codigo_item]').val(item.cod_item);
+    $('[name=part_number]').val(item.part_number);
     $('[name=descripcion_item]').val(item.des_item);
     $('[name=unidad_medida_item]').val(item.id_unidad_medida);
     $('[name=cantidad_item]').val(item.cantidad);
@@ -1824,7 +1826,7 @@ function mostrar_item(id){
         url: baseUrl,
         dataType: 'JSON',
         success: function(response){
-            console.log(response);
+            // console.log(response);
             let btnVerUltimasCompras = document.getElementsByName('btnVerUltimasCompras')[0];
             btnVerUltimasCompras.removeAttribute('disabled');
             btnVerUltimasCompras.setAttribute('class','btn btn-sm btn-default');
@@ -2523,7 +2525,7 @@ function getDataSelectSede(id_empresa = null){
             url: rutaSedeByEmpresa+'/' + id_empresa,
             dataType: 'JSON',
             success: function(response){ 
-                console.log(response);  
+                // console.log(response);  
                 if(response.length ==0){
                     console.error("usuario no registrado en 'configuracion'.'sis_usua_sede' o el estado del registro es diferente de 1");
                     alert('No se pudo acceder al listado de Sedes, el usuario debe pertenecer a una Sede y la sede esta habilitada');
