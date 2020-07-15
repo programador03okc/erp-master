@@ -610,6 +610,7 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::post('copiar-requerimiento/{id?}', 'LogisticaController@copiar_requerimiento')->name('copiar-requerimiento');
 					Route::get('telefonos-cliente/{id_persona?}/{id_cliente?}', 'LogisticaController@telefonos_cliente')->name('telefonos-cliente');
 					Route::get('direcciones-cliente/{id_persona?}/{id_cliente?}', 'LogisticaController@direcciones_cliente')->name('direcciones-cliente');
+					Route::get('emails-cliente/{id_persona?}/{id_cliente?}', 'LogisticaController@emails_cliente')->name('emails-cliente');
 					Route::get('listar_ubigeos', 'AlmacenController@listar_ubigeos');
 					Route::get('listar_personas', 'RecursosHumanosController@mostrar_persona_table')->name('listar_personas');
 					Route::get('mostrar_clientes', 'AlmacenController@mostrar_clientes')->name('mostrar_clientes');;

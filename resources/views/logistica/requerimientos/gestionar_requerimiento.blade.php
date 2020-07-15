@@ -169,8 +169,17 @@
             <div class="col-md-2" id="input-group-telefono-cliente" >
                 <h5>Teléfono Cliente</h5>
                 <div style="display:flex;">
-                    <input type="text" class="form-control activation" name="telefono_cliente"  disabled>
+                    <input type="text" class="form-control activation" name="telefono_cliente" onkeypress="return isNumberKey(event)"  disabled>
                         <button type="button" class="btn-primary" title="Buscar Teléfonos" name="btnSearchPhone"  onClick="telefonosClienteModal();">
+                            <i class="fas fa-address-book"></i>
+                        </button>
+                </div>
+            </div>
+            <div class="col-md-2" id="input-group-email-cliente" >
+                <h5>Correo Cliente</h5>
+                <div style="display:flex;">
+                    <input type="email" class="form-control activation" name="email_cliente"  disabled>
+                        <button type="button" class="btn-primary" title="Buscar Teléfonos" name="btnSearchPhone"  onClick="emailClienteModal();">
                             <i class="fas fa-address-book"></i>
                         </button>
                 </div>
@@ -340,6 +349,7 @@
 
 </div>
 @include('logistica.requerimientos.modal_direcciones_cliente')
+@include('logistica.requerimientos.modal_email_cliente')
 @include('logistica.requerimientos.modal_telefonos_cliente')
 @include('logistica.requerimientos.modal_cuadro_costos_comercial')
 @include('logistica.requerimientos.modal_copiar_documento')
@@ -396,7 +406,8 @@
             "{{route('logistica.gestion-logistica.requerimiento.elaboracion.select-sede-by-empresa')}}",
             "{{route('logistica.gestion-logistica.requerimiento.elaboracion.copiar-requerimiento')}}",
             "{{route('logistica.gestion-logistica.requerimiento.elaboracion.telefonos-cliente')}}",
-            "{{route('logistica.gestion-logistica.requerimiento.elaboracion.direcciones-cliente')}}"
+            "{{route('logistica.gestion-logistica.requerimiento.elaboracion.direcciones-cliente')}}",
+            "{{route('logistica.gestion-logistica.requerimiento.elaboracion.emails-cliente')}}"
             );
     });
     </script>

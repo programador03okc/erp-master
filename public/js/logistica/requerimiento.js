@@ -6,7 +6,8 @@ rutaAnularRequerimiento,
 rutaSedeByEmpresa,
 rutaCopiarRequerimiento,
 rutaTelefonosCliente,
-rutaDireccionesCliente;
+rutaDireccionesCliente,
+rutaEmailCliente;
 
 function inicializar( _rutaLista,
     _rutaMostrarRequerimiento,
@@ -16,7 +17,8 @@ function inicializar( _rutaLista,
     _rutaSedeByEmpresa,
     _rutaCopiarRequerimiento,
     _rutaTelefonosCliente,
-    _rutaDireccionesCliente
+    _rutaDireccionesCliente,
+    _rutaEmailCliente
     ) {
     rutaListaRequerimientoModal = _rutaLista;
     rutaMostrarRequerimiento = _rutaMostrarRequerimiento;
@@ -27,9 +29,17 @@ function inicializar( _rutaLista,
     rutaCopiarRequerimiento = _rutaCopiarRequerimiento;
     rutaTelefonosCliente = _rutaTelefonosCliente;
     rutaDireccionesCliente = _rutaDireccionesCliente;
+    rutaEmailCliente = _rutaEmailCliente;
 
     listar_almacenes();
 
+}
+
+function isNumberKey(evt){
+    var charCode = (evt.which) ? evt.which : event.keyCode
+    if (charCode > 31 && (charCode < 48 || charCode > 57))
+        return false;
+    return true;
 }
 
 function controlInput(id,descripcion){
@@ -500,6 +510,7 @@ function mostrar_requerimiento(IdorCode){
                 $('[name=cliente_razon_social]').val(response['requerimiento'][0].cliente_razon_social);
                 $('[name=direccion_entrega]').val(response['requerimiento'][0].direccion_entrega);
                 $('[name=telefono_cliente]').val(response['requerimiento'][0].telefono);
+                $('[name=email_cliente]').val(response['requerimiento'][0].email);
                 $('[name=ubigeo]').val(response['requerimiento'][0].id_ubigeo_entrega);
                 $('[name=name_ubigeo]').val(response['requerimiento'][0].name_ubigeo);
                 $('[name=id_almacen]').val(response['requerimiento'][0].id_almacen);
@@ -977,6 +988,7 @@ function get_data_requerimiento(){
     id_persona = document.querySelector("form[id='form-requerimiento'] input[name='id_persona']").value;
     direccion_entrega = document.querySelector("form[id='form-requerimiento'] input[name='direccion_entrega']").value;
     telefono = document.querySelector("form[id='form-requerimiento'] input[name='telefono_cliente']").value;
+    email = document.querySelector("form[id='form-requerimiento'] input[name='email_cliente']").value;
     ubigeo = document.querySelector("form[id='form-requerimiento'] input[name='ubigeo']").value;
     id_almacen = document.querySelector("form[id='form-requerimiento'] select[name='id_almacen']").value;
     almacen_id_sede =document.querySelector("select[name='id_almacen']").options[document.querySelector("select[name='id_almacen']").selectedIndex].dataset.idSede;
@@ -1006,6 +1018,7 @@ function get_data_requerimiento(){
         id_persona,
         direccion_entrega,
         telefono,
+        email,
         ubigeo,
         id_almacen,
         almacen_id_sede,
@@ -1971,6 +1984,7 @@ function validaRequerimiento(){
     var id_almacen = $('[name=id_almacen]').val();
     var telefono_cliente = $('[name=telefono_cliente]').val();
     var direccion_entrega = $('[name=direccion_entrega]').val();
+    var email_cliente = $('[name=email_cliente]').val();
 
     var msj = '';
     if(tipo_requerimiento == 1 || tipo_requerimiento == 2){ //compra || venta directa
@@ -1997,6 +2011,9 @@ function validaRequerimiento(){
         }
         if (telefono_cliente == ''){
             msj+='\n Es necesario que seleccione un Teléfono';
+        }
+        if (email_cliente == ''){
+            msj+='\n Es necesario que ingrese un Email';
         }
         if (direccion_entrega == ''){
             msj+='\n Es necesario que seleccione una Dirección';
@@ -2416,6 +2433,7 @@ function changeOptTipoReqSelect(e){
             'input-group-sede',
             'input-group-tipo-cliente',
             'input-group-telefono-cliente',
+            'input-group-email-cliente',
             'input-group-empresa',
             'input-group-tipo-cliente',
             'input-group-cliente',
@@ -2439,6 +2457,7 @@ function changeOptTipoReqSelect(e){
             'input-group-sede',
             'input-group-tipo-cliente',
             'input-group-telefono-cliente',
+            'input-group-email-cliente',
             'input-group-cliente',
             'input-group-direccion-entrega',
             'input-group-ubigeo-entrega',
@@ -2462,6 +2481,8 @@ function changeOptTipoReqSelect(e){
         document.querySelector("form[id='form-requerimiento'] input[name='dni_persona']").value='';
         document.querySelector("form[id='form-requerimiento'] input[name='nombre_persona']").value='';
         document.querySelector("form[id='form-requerimiento'] input[name='direccion_entrega']").value='';
+        document.querySelector("form[id='form-requerimiento'] input[name='telefono_cliente']").value='';
+        document.querySelector("form[id='form-requerimiento'] input[name='email_cliente']").value='';
         document.querySelector("form[id='form-requerimiento'] input[name='ubigeo']").value='';
         document.querySelector("form[id='form-requerimiento'] input[name='name_ubigeo']").value='';
 
@@ -2477,6 +2498,7 @@ function changeOptTipoReqSelect(e){
             'input-group-sede',
             'input-group-tipo-cliente',
             'input-group-telefono-cliente',
+            'input-group-email-cliente',
             'input-group-cliente',
             'input-group-direccion-entrega',
             'input-group-ubigeo-entrega',
@@ -2581,6 +2603,9 @@ function changeTipoCliente(e){
     if (e.target.value == 1){
         $('[name=id_cliente]').val('');
         $('[name=cliente_ruc]').val('');
+        $('[name=telefono_cliente]').val('');
+        $('[name=email_cliente]').val('');
+        $('[name=direccion_entrega]').val('');
         $('[name=cliente_razon_social]').val('');
         $('[name=cliente_ruc]').hide();
         $('[name=cliente_razon_social]').hide();
@@ -2594,6 +2619,9 @@ function changeTipoCliente(e){
     else if (e.target.value == 2){
         $('[name=id_cliente]').val('');
         $('[name=cliente_ruc]').val('');
+        $('[name=telefono_cliente]').val('');
+        $('[name=email_cliente]').val('');
+        $('[name=direccion_entrega]').val('');
         $('[name=cliente_razon_social]').val('');
         $('[name=cliente_ruc]').show();
         $('[name=cliente_razon_social]').show();
@@ -2667,6 +2695,20 @@ function telefonosClienteModal(){
     }
 
 }
+function emailClienteModal(){
+    let id_cliente = document.querySelector("form[id='form-requerimiento'] input[name='id_cliente']").value?parseInt(document.querySelector("form[id='form-requerimiento'] input[name='id_cliente']").value):0;
+    let id_persona = document.querySelector("form[id='form-requerimiento'] input[name='id_persona']").value?parseInt(document.querySelector("form[id='form-requerimiento'] input[name='id_persona']").value):0;
+    
+    if(id_cliente>0){
+        openModalEmailCliente();
+        llenarListaEmailCliente(null,id_cliente);
+    }
+    if(id_persona>0){
+        openModalEmailCliente();
+        llenarListaEmailCliente(id_persona,null);
+    }
+
+}
 
 function direccionesClienteModal(){
     let id_cliente = document.querySelector("form[id='form-requerimiento'] input[name='id_cliente']").value?parseInt(document.querySelector("form[id='form-requerimiento'] input[name='id_cliente']").value):0;
@@ -2685,6 +2727,11 @@ function direccionesClienteModal(){
 
 function openModalTelefonosCliente(){
     $('#modal-telefonos-cliente').modal({
+        show: true
+    });
+}
+function openModalEmailCliente(){
+    $('#modal-email-cliente').modal({
         show: true
     });
 }
@@ -2707,7 +2754,18 @@ $(function(){
         $('[name=telefono_cliente]').val(tel);    
         $('#modal-telefonos-cliente').modal('hide');
     });
-
+    $('#listaEmailCliente tbody').on('click', 'tr', function(){
+        // console.log($(this));
+        if ($(this).hasClass('eventClick')){
+            $(this).removeClass('eventClick');
+        } else {
+            $('#listaPersonas').dataTable().$('tr.eventClick').removeClass('eventClick');
+            $(this).addClass('eventClick');
+        }
+        var email = $(this)[0].firstChild.innerHTML;
+        $('[name=email_cliente]').val(email);    
+        $('#modal-Email-cliente').modal('hide');
+    });
     $('#listaDireccionesCliente tbody').on('click', 'tr', function(){
         // console.log($(this));
         if ($(this).hasClass('eventClick')){
@@ -2721,6 +2779,32 @@ $(function(){
         $('#modal-direcciones-cliente').modal('hide');
     });
 });
+function llenarListaEmailCliente(id_persona=null,id_cliente=null){
+
+    var vardataTables = funcDatatables();
+    $('#listaEmailCliente').dataTable({
+        bDestroy: true,
+        info:     false,
+        iDisplayLength:2,
+        paging:   true,
+        searching: true,
+        language: vardataTables[0],
+        processing: true,
+        ajax: rutaEmailCliente+'/'+id_persona+'/'+id_cliente,
+        columns: [
+            {'render':
+                function (data, type, row, meta){
+                    return row.email;
+                }
+            }
+        ],
+    })
+
+    let tablelistaitem = document.getElementById(
+        'listaEmailCliente_wrapper'
+    )
+    tablelistaitem.childNodes[0].childNodes[0].hidden = true
+}
 
 function llenarListaTelefonoCliente(id_persona=null,id_cliente=null){
 

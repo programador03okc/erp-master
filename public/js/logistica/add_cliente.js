@@ -26,6 +26,7 @@ function agregar_cliente(){
     $('[name=apellido_materno]').val('');
     $('[name=telefono]').val('');
     $('[name=direccion]').val('');
+    $('[name=email]').val('');
 }
 
 function handleChangeTipoCliente(e){
@@ -65,6 +66,7 @@ function get_data_form_agregar_cliente(){
     let razon_social = document.querySelector("form[id='form-agregar-cliente'] input[name='razon_social']").value;
     let telefono = document.querySelector("form[id='form-agregar-cliente'] input[name='telefono']").value;
     let direccion = document.querySelector("form[id='form-agregar-cliente'] input[name='direccion']").value;
+    let email = document.querySelector("form[id='form-agregar-cliente'] input[name='email']").value;
 
     let  data={
         'tipo_cliente' : tipo_cliente?tipo_cliente:null,
@@ -75,7 +77,8 @@ function get_data_form_agregar_cliente(){
         'apellido_materno' : apellido_materno?apellido_materno:null,
         'razon_social' : razon_social?razon_social:null,
         'telefono' : telefono?telefono:null,
-        'direccion' : direccion?direccion:null
+        'direccion' : direccion?direccion:null,
+        'email' : email?email:null
     };
 
     return data;
@@ -93,13 +96,25 @@ function guardar_cliente(){
             // console.log(response);
             if(response.status == 200){
                 alert('Cliente registrado con éxito');
-                var ask = confirm('¿Desea continuar agregando más clientes ?');
-                if (ask == true){
-                    return false;
-                }else{
-                    $('#modal-add-cliente').modal('hide');
-                    
+                if(response.data.tipo_cliente == 1){
+                    document.querySelector("form[id='form-requerimiento'] input[name='id_persona']").value = response.data.id;
+                    document.querySelector("form[id='form-requerimiento'] input[name='dni_persona']").value = response.data.nro_documento;
+                    document.querySelector("form[id='form-requerimiento'] input[name='nombre_persona']").value = response.data.nombre_completo;
+                    document.querySelector("form[id='form-requerimiento'] input[name='direccion_entrega']").value =response.data.direccion;
+                    document.querySelector("form[id='form-requerimiento'] input[name='telefono_cliente']").value =response.data.telefono;
+                    document.querySelector("form[id='form-requerimiento'] input[name='email_cliente']").value = response.data.email;
                 }
+                if(response.data.tipo_cliente ==2){
+                    document.querySelector("form[id='form-requerimiento'] input[name='id_cliente']").value = response.data.id;
+                    document.querySelector("form[id='form-requerimiento'] input[name='cliente_ruc']").value = response.data.nro_documento;
+                    document.querySelector("form[id='form-requerimiento'] input[name='cliente_razon_social']").value = response.data.razon_social;
+                    document.querySelector("form[id='form-requerimiento'] input[name='direccion_entrega']").value =response.data.direccion;
+                    document.querySelector("form[id='form-requerimiento'] input[name='telefono_cliente']").value =response.data.telefono;
+                    document.querySelector("form[id='form-requerimiento'] input[name='email_cliente']").value = response.data.email;
+                }
+                $('#modal-add-cliente').modal('hide');
+            
+
             }
         }
     }).fail( function( jqXHR, textStatus, errorThrown ){
@@ -120,6 +135,7 @@ function limpiarFormAgregarCliente(){
     document.querySelector("form[id='form-agregar-cliente'] input[name='razon_social']").value= '';
     document.querySelector("form[id='form-agregar-cliente'] input[name='telefono']").value= '';
     document.querySelector("form[id='form-agregar-cliente'] input[name='direccion']").value= '';
+    document.querySelector("form[id='form-agregar-cliente'] input[name='email']").value= '';
 }
 
 function evaluarDocumentoSeleccionado(event){

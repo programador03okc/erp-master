@@ -537,6 +537,7 @@ class LogisticaController extends Controller
                 DB::raw("(ubi_dis.descripcion) || ' ' || (ubi_prov.descripcion) || ' ' || (ubi_dpto.descripcion)  AS name_ubigeo"),
                 'alm_req.direccion_entrega',
                 'alm_req.telefono',
+                'alm_req.email',
                 'alm_req.id_almacen',
                 'alm_req.monto',
                 DB::raw("(CASE WHEN alm_req.estado = 1 THEN 'Habilitado' ELSE 'Deshabilitado' END) AS estado_desc")
@@ -605,6 +606,7 @@ class LogisticaController extends Controller
                     'name_ubigeo' => $data->name_ubigeo,
                     'direccion_entrega' => $data->direccion_entrega,
                     'telefono' => $data->telefono,
+                    'email' => $data->email,
                     'id_almacen' => $data->id_almacen,
                     'monto' => $data->monto
                     
@@ -1510,6 +1512,28 @@ class LogisticaController extends Controller
         return response()->json($data);
     }
 
+    public function emails_cliente($id_persona=null,$id_cliente=null){
+        $data=[];
+        if($id_persona > 0){
+            $whereSelected = ['alm_req.id_persona','=',$id_persona];
+        }
+        if($id_cliente > 0){
+            $whereSelected = ['alm_req.id_cliente','=',$id_cliente];
+
+        }
+        $tel_req = DB::table('almacen.alm_req')
+        ->select(
+            'alm_req.email'
+        )
+        ->where([$whereSelected])
+        ->whereNotNull('alm_req.email')
+        ->distinct()
+        ->get();
+
+        $data['data']=$tel_req;
+        return response()->json($data);
+    }
+
     public function guardar_requerimiento(Request $request)
     {
         if($request->requerimiento['tipo_requerimiento'] == 2){
@@ -1596,6 +1620,7 @@ class LogisticaController extends Controller
                 'id_persona'            => isset($request->requerimiento['id_persona'])?$request->requerimiento['id_persona']:null,
                 'direccion_entrega'     => isset($request->requerimiento['direccion_entrega'])?$request->requerimiento['direccion_entrega']:null,
                 'telefono'              => isset($request->requerimiento['telefono'])?$request->requerimiento['telefono']:null,
+                'email'                 => isset($request->requerimiento['email'])?$request->requerimiento['email']:null,
                 'id_ubigeo_entrega'     => isset($request->requerimiento['ubigeo'])?$request->requerimiento['ubigeo']:null,
                 'id_almacen'            => isset($request->requerimiento['id_almacen'])?$request->requerimiento['id_almacen']:null,
                 'confirmacion_pago'     => false,
@@ -1605,9 +1630,10 @@ class LogisticaController extends Controller
         );
 
         // guardar telefono cliente 
-        if($request->requerimiento['telefono'] != null || $request->requerimiento['telefono'] != ''){
+        if($request->requerimiento['telefono'] != null || $request->requerimiento['telefono'] != '' || $request->requerimiento['email'] != ''){
             $this->actualizar_telefono_cliente($request->requerimiento['tipo_cliente'],$request->requerimiento['id_persona'],$request->requerimiento['id_cliente'],$request->requerimiento['telefono']);
             $this->actualizar_direccion_cliente($request->requerimiento['tipo_cliente'],$request->requerimiento['id_persona'],$request->requerimiento['id_cliente'],$request->requerimiento['direccion_entrega']);
+            $this->actualizar_email_cliente($request->requerimiento['tipo_cliente'],$request->requerimiento['id_persona'],$request->requerimiento['id_cliente'],$request->requerimiento['email']);
         }
 
         $detalle_reqArray = $request->detalle;
@@ -1739,7 +1765,51 @@ class LogisticaController extends Controller
         }
 
     }
-    
+
+    public function actualizar_email_cliente($tipo_cliente,$id_persona,$id_cliente,$email){
+        if($tipo_cliente ==1){ // persona natural
+            $req_email_pers = DB::table('rrhh.rrhh_perso')
+            ->select(
+                'rrhh_perso.email' 
+            )
+            ->where('rrhh_perso.id_persona',$id_persona)
+            ->get();
+
+            if($req_email_pers->count() > 0){
+                if(trim($req_email_pers->first()->email) !== trim($email)){
+                    // actualizar telefono
+                    $update_dir_persona = DB::table('rrhh.rrhh_perso')
+                    ->where('id_persona', $id_persona)
+                    ->update([               
+                        'email' => trim($email)
+                    ]);
+                    
+                }
+            }
+
+        }else if($tipo_cliente == 2){ // persona juridica
+            $req_email_cli = DB::table('comercial.com_cliente')
+            ->select(
+                'adm_contri.id_contribuyente',
+                'adm_contri.email'
+            )
+            ->join('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'com_cliente.id_contribuyente')
+            ->where('com_cliente.id_cliente',$id_cliente)
+            ->get();
+            
+            if($req_email_cli->count() > 0){
+                if(trim($req_email_cli->first()->email) !== trim($email)){
+                    // actualizar telefono
+                    $update_dir_persona = DB::table('contabilidad.adm_contri')
+                    ->where('id_contribuyente', $req_email_cli->first()->id_contribuyente)
+                    ->update([               
+                        'email' => trim($email)
+                    ]);
+                }
+            }
+        }
+
+    }
 
     public function anular_requerimiento($id){
         $status=0;
@@ -8247,6 +8317,7 @@ class LogisticaController extends Controller
             DB::beginTransaction();
 
         $status=0;
+        $data =[];
         $tipo_cliente = $request->tipo_cliente;
         if($tipo_cliente == 1){ #persona natural
 
@@ -8261,6 +8332,7 @@ class LogisticaController extends Controller
                     'estado' => 1,
                     'telefono' => $request->telefono?$request->telefono:null,
                     'direccion' => $request->direccion?$request->direccion:null,
+                    'email' => $request->email?$request->email:null,
                     'fecha_registro' => date('Y-m-d H:i:s')
  
                 ],
@@ -8268,6 +8340,15 @@ class LogisticaController extends Controller
             );
             if($id_persona>0){
                 $status=200;
+                $data=[ 
+                    'tipo_cliente'=> $tipo_cliente,
+                    'id'=> $id_persona,
+                    'nro_documento'=> $request->nro_documento,
+                    'nombre_completo'=> ($request->nombre.' '.$request->apellido_paterno.' '.$request->apellido_materno), 
+                    'telefono'=>$request->telefono,
+                    'direccion'=>$request->direccion,
+                    'email'=>$request->email
+                ];
             }
 
         }else if($tipo_cliente == 2){ #persona juridica
@@ -8280,6 +8361,7 @@ class LogisticaController extends Controller
                     'estado' => 1,
                     'telefono' => $request->telefono?$request->telefono:null,
                     'direccion_fiscal' => $request->direccion?$request->direccion:null,
+                    'email' => $request->email?$request->email:null,
                     'fecha_registro' => date('Y-m-d H:i:s')
  
                 ],
@@ -8287,6 +8369,15 @@ class LogisticaController extends Controller
             );
             if($id_contribuyente>0){
                 $status=200;
+                $data=[ 
+                    'tipo_cliente'=> $tipo_cliente,
+                    'id'=> $id_contribuyente,
+                    'nro_documento'=> $request->nro_documento,
+                    'razon_social'=> $request->razon_social, 
+                    'telefono'=>$request->telefono,
+                    'direccion'=>$request->direccion,
+                    'email'=>$request->email
+                ];
             }
             $id_cliente = DB::table('comercial.com_cliente')
             ->insertGetId(
@@ -8301,7 +8392,7 @@ class LogisticaController extends Controller
                 $status=200;
             }
         }
-        $output=['status'=>$status];
+        $output=['status'=>$status,'data'=>$data];
 
         DB::commit();
         return response()->json($output);
