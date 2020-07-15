@@ -13,12 +13,14 @@ $(function(){
         var name = $(this)[0].childNodes[2].innerHTML;
         var tel = $(this)[0].childNodes[3].innerHTML;
         var dir = $(this)[0].childNodes[4].innerHTML;
+        var email = $(this)[0].childNodes[5].innerHTML;
 
         $('[name=id_persona]').val(myId);    
         $('[name=dni_persona]').val(dni);    
         $('[name=nombre_persona]').val(name);    
         $('[name=telefono_cliente]').val(tel);    
         $('[name=direccion_entrega]').val(dir);    
+        $('[name=email_cliente]').val(email);    
         $('#modal-personaModal').modal('hide');
     });
 });
@@ -49,6 +51,7 @@ function listarPersonas() {
         },
         {'data': 'telefono','defaultContent': ''},
         {'data': 'direccion','defaultContent': ''},
+        {'data': 'email','defaultContent': ''}
         ],
         'columnDefs': [{ 'aTargets': [0], 'sClass': 'invisible'}],
         'order': [

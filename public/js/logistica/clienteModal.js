@@ -13,12 +13,14 @@ $(function(){
         var des = $(this)[0].childNodes[3].innerHTML;
         var tel = $(this)[0].childNodes[4].innerHTML;
         var dir = $(this)[0].childNodes[5].innerHTML;
+        var email = $(this)[0].childNodes[6].innerHTML;
         $('[name=id_cliente]').val(myId);
         $('[name=id_contrib]').val(idCo);
         $('[name=cliente_ruc]').val(ruc);
         $('[name=cliente_razon_social]').val(des);
         $('[name=telefono_cliente]').val(tel);
         $('[name=direccion_entrega]').val(dir);
+        $('[name=email_cliente]').val(email);
         
         $('#modal-clientes').modal('hide');
     //     $('.modal-footer #id_cliente').text(idTr);
@@ -41,7 +43,8 @@ function listar_clientes(){
             {'data': 'nro_documento'},
             {'data': 'razon_social'},
             {'data': 'telefono'},
-            {'data': 'direccion_fiscal'}
+            {'data': 'direccion_fiscal'},
+            {'data': 'email'}
         ],
         'columnDefs': [{ 'aTargets': [0,1], 'sClass': 'invisible'}],
     });

@@ -63,7 +63,11 @@
                                     <h5>Telefono</h5>
                                     <input type="text" name="telefono" class="form-control" required/>
                                 </div>
-                                <div class="col-md-8">
+                                <div class="col-md-4">
+                                    <h5>Email</h5>
+                                    <input type="text" name="email" class="form-control" required/>
+                                </div>
+                                <div class="col-md-4">
                                     <h5>Dirección</h5>
                                     <input type="text" name="direccion" class="form-control" required/>
                                 </div>
