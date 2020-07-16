@@ -106,11 +106,15 @@ function listarRequerimientosPendientes(permiso){
                         '<i class="fas fa-sign-in-alt"></i></button>') : 
                         ( row['id_od'] !== null && row['estado_od'] == 1) ?
                         `<button type="button" class="adjuntar btn btn-warning boton" data-toggle="tooltip" 
-                        data-placement="bottom" data-id="${row['id_od']}" data-cod="${row['codigo_od']}" title="Agregar Adjuntos" >
-                        <i class="fas fa-paperclip"></i></button>
+                            data-placement="bottom" data-id="${row['id_od']}" data-cod="${row['codigo_od']}" title="Agregar Adjuntos" >
+                            <i class="fas fa-paperclip"></i></button>
                         <button type="button" class="anular_od btn btn-danger boton" data-toggle="tooltip" 
-                        data-placement="bottom" data-id="${row['id_od']}" data-cod="${row['codigo_od']}" title="Anular Orden Despacho" >
-                        <i class="fas fa-trash"></i></button>` : '' )
+                            data-placement="bottom" data-id="${row['id_od']}" data-cod="${row['codigo_od']}" title="Anular Orden Despacho" >
+                            <i class="fas fa-trash"></i></button>` : '' )+
+                        (row['estado'] == 9 ? 
+                        `<button type="button" class="adjuntar btn btn-warning boton" data-toggle="tooltip" 
+                            data-placement="bottom" data-id="${row['id_od']}" data-cod="${row['codigo_od']}" title="Agregar Adjuntos" >
+                            <i class="fas fa-paperclip"></i></button>` : '')
                 } else {
                     return '<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" '+
                     'data-placement="bottom" title="Ver Detalle" >'+
@@ -140,6 +144,35 @@ $('#requerimientosPendientes tbody').on("click","button.adjuntar", function(){
     $('[name=codigo_od]').val(cod);
 });
 
+$('#requerimientosPendientes tbody').on("click","button.anular", function(){
+    var id = $(this).data('id');
+    var cod = $(this).data('cod');
+    var origen = 'despacho';
+    openRequerimientoObs(id, cod, origen);
+});
+
+$('#requerimientosPendientes tbody').on("click","button.despacho", function(){
+    var data = $('#requerimientosPendientes').DataTable().row($(this).parents("tr")).data();
+    console.log(data);
+    open_despacho_create(data);
+});
+
+$('#requerimientosPendientes tbody').on("click","button.anular_od", function(){
+    var id = $(this).data('id');
+    var cod = $(this).data('cod');
+    var msj = confirm('¿Está seguro que desea anular la '+cod+' ?');
+    if (msj){
+        anularOrdenDespacho(id);
+    }
+});
+
+$("#form-od_adjunto").on("submit", function(e){
+    e.preventDefault();
+    var nro = $('#listaAdjuntos tbody tr').length;
+    $('[name=numero]').val(nro+1);
+    guardar_od_adjunto();
+});
+
 function listarAdjuntos(id){
     $.ajax({
         type: 'GET',
@@ -154,13 +187,6 @@ function listarAdjuntos(id){
         console.log(errorThrown);
     });
 }
-
-$("#form-od_adjunto").on("submit", function(e){
-    e.preventDefault();
-    var nro = $('#listaAdjuntos tbody tr').length;
-    $('[name=numero]').val(nro+1);
-    guardar_od_adjunto();
-});
 
 function guardar_od_adjunto(){
     var formData = new FormData($('#form-od_adjunto')[0]);
@@ -219,28 +245,6 @@ function anular_adjunto(id_od_adjunto){
         }
     }
 }
-
-$('#requerimientosPendientes tbody').on("click","button.anular", function(){
-    var id = $(this).data('id');
-    var cod = $(this).data('cod');
-    var origen = 'despacho';
-    openRequerimientoObs(id, cod, origen);
-});
-
-$('#requerimientosPendientes tbody').on("click","button.despacho", function(){
-    var data = $('#requerimientosPendientes').DataTable().row($(this).parents("tr")).data();
-    console.log(data);
-    open_despacho_create(data);
-});
-
-$('#requerimientosPendientes tbody').on("click","button.anular_od", function(){
-    var id = $(this).data('id');
-    var cod = $(this).data('cod');
-    var msj = confirm('¿Está seguro que desea anular la '+cod+' ?');
-    if (msj){
-        anularOrdenDespacho(id);
-    }
-});
 
 function anularOrdenDespacho(id){
     $.ajax({
@@ -386,7 +390,7 @@ function listarGruposDespachados(permiso){
         'language' : vardataTables[0],
         'bDestroy' : true,
         'serverSide' : true,
-        "scrollX": true,
+        // "scrollX": true,
         'ajax': {
             url: 'listarGruposDespachados',
             type: 'POST'
@@ -464,18 +468,6 @@ function listarGruposDespachados(permiso){
             // 'searchable': true,
             'sClass': 'invisible'
         }],
-        // initComplete: function () {
-        //     // Apply the search
-        //     this.api().columns().every( function () {
-        //         var that = this;
- 
-        //         $( 'input', this.footer() ).on( 'keyup change clear', function () {
-        //             if ( that.search() !== this.value ) {
-        //                 that.search( this.value ).draw();
-        //             }
-        //         });
-        //     });
-        // }
     });
 }
 

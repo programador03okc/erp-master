@@ -4,7 +4,8 @@ let usuario_session = null;
 function iniciar(permiso, usuario){
     // clearDataTable();
     $("#tab-transferencias section:first form").attr('form', 'formulario');
-    $('[name=id_almacen_ori]').val(1);
+    // $('[name=id_almacen_origen]').val(1);
+    // $('[name=id_almacen_destino]').val(1);
     valor_permiso = permiso;
     usuario_session = usuario;
 
@@ -28,6 +29,9 @@ function iniciar(permiso, usuario){
         if (activeForm == "form-pendientes"){
             listarTransferenciasPendientes();
         } 
+        else if (activeForm == "form-porEnviar"){
+            listarTransferenciasPorEnviar();
+        }
         else if (activeForm == "form-recibidas"){
             listarTransferenciasRecibidas();
         }
@@ -45,7 +49,7 @@ function listarTransferenciasPendientes(){
             'dom': vardataTables[1],
             'buttons': vardataTables[2],
             'language' : vardataTables[0],
-            "scrollX": true,
+            // "scrollX": true,
             'bDestroy':true,
             'ajax' : 'listar_transferencias_pendientes/'+alm_destino,
             // 'ajax': {
@@ -66,11 +70,11 @@ function listarTransferenciasPendientes(){
                         return ('<label class="lbl-codigo" title="Abrir Guía" onClick="abrir_guia_venta('+row['id_guia_ven']+')">'+row['guia_ven']+'</label>');
                     }
                 },
-                {'render':
-                    function (data, type, row){
-                        return ('<label class="lbl-codigo" title="Abrir Guía" onClick="abrir_guia_compra('+row['id_guia_com']+')">'+row['guia_com']+'</label>');
-                    }
-                },
+                // {'render':
+                //     function (data, type, row){
+                //         return ('<label class="lbl-codigo" title="Abrir Guía" onClick="abrir_guia_compra('+row['id_guia_com']+')">'+row['guia_com']+'</label>');
+                //     }
+                // },
                 // {'data': 'guia'},
                 // {'data': 'fecha_guia'},
                 {'data': 'alm_origen_descripcion'},
@@ -150,6 +154,57 @@ $('#listaTransferenciasPendientes tbody').on("click","button.salida", function()
     }
 });
 
+function listarTransferenciasPorEnviar(){
+    var alm_origen = $('[name=id_almacen_origen]').val();
+    var vardataTables = funcDatatables();
+    $('#listaTransferenciasPorEnviar').DataTable({
+        'dom': vardataTables[1],
+        'buttons': vardataTables[2],
+        'language' : vardataTables[0],
+        'bDestroy' : true,
+        'serverSide' : true,
+        // "scrollX": true,
+        'ajax': {
+            url: 'listarTransferenciasPorEnviar/'+alm_origen,
+            type: 'POST'
+        },
+        'columns': [
+            {'data': 'id_transferencia'},
+            {'data': 'codigo'},
+            {'data': 'fecha_registro'},
+            {'data': 'alm_origen_descripcion', 'name': 'alm_almacen.descripcion'},
+            {'data': 'cod_req', 'name': 'alm_req.codigo'},
+            {'data': 'concepto', 'name': 'alm_req.concepto'},
+            {'data': 'sede_descripcion', 'name': 'sis_sede.descripcion'},
+            {'data': 'nombre_corto', 'name': 'sis_usua.nombre_corto'}
+        ],
+        'columnDefs': [
+            {'aTargets': [0], 'sClass': 'invisible'},
+            {'render': function (data, type, row){
+                    if (valor_permiso == '1') {
+                        return `<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" 
+                            data-placement="bottom" title="Ver Detalle" > 
+                            <i class="fas fa-list-ul"></i></button>`+
+                        `<button type="button" class="guia btn btn-success boton" data-toggle="tooltip" 
+                            data-placement="bottom" data-id="${row['id_transferencia']}" data-cod="${row['id_requerimiento']}" title="Generar Guía" >
+                            <i class="fas fa-sign-in-alt"></i></button>`
+                    } else {
+                        return `<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" 
+                        data-placement="bottom" title="Ver Detalle" >
+                        <i class="fas fa-list-ul"></i></button>`
+                    }
+                }, targets: 8
+            }
+        ],
+    });
+}
+   
+$('#listaTransferenciasPorEnviar tbody').on("click","button.guia", function(){
+    var data = $('#listaTransferenciasPorEnviar').DataTable().row($(this).parents("tr")).data();
+    console.log('data'+data);
+    // var data = $(this).data('id');
+    openGenerarGuia(data);
+});
 
 function listarTransferenciasRecibidas(){
     var destino = $('[name=id_almacen_dest_recibida]').val();
@@ -161,7 +216,7 @@ function listarTransferenciasRecibidas(){
             'dom': vardataTables[1],
             'buttons': vardataTables[2],
             'language' : vardataTables[0],
-            "scrollX": true,
+            // "scrollX": true,
             'bDestroy':true,
             'ajax' : 'listar_transferencias_recibidas/'+destino,
             // 'ajax': {
@@ -211,7 +266,11 @@ function listarTransferenciasRecibidas(){
                     function (data, type, row){
                         if (row['codigo_req'] !== null){
                             return (row['codigo_req']);
-                        } else {
+                        }
+                        else if (row['codigo_req_directo'] !== null){
+                            return (row['codigo_req_directo']);
+                        } 
+                        else {
                             return '';
                         }
                     }
@@ -220,7 +279,11 @@ function listarTransferenciasRecibidas(){
                     function (data, type, row){
                         if (row['concepto_req'] !== null){
                             return (row['concepto_req']);
-                        } else {
+                        } 
+                        else if (row['concepto_req_directo'] !== null){
+                            return (row['concepto_req_directo']);
+                        } 
+                        else {
                             return '';
                         }
                     }

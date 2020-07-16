@@ -90,7 +90,8 @@ class TransferenciaController extends Controller
         'guia_ven.id_guia_com as guia_ingreso_compra','ingreso.id_mov_alm as id_ingreso',
         'salida.id_mov_alm as id_salida',
         'log_ord_compra.codigo as codigo_orden','alm_req.codigo as codigo_req',
-        'alm_req.concepto as concepto_req')
+        'alm_req.concepto as concepto_req','req_directo.codigo as codigo_req_directo',
+        'req_directo.concepto as concepto_req_directo')
         ->leftJoin('almacen.mov_alm as ingreso','ingreso.id_guia_com','=','trans.id_guia_com')
         ->leftJoin('almacen.mov_alm as salida','salida.id_guia_ven','=','trans.id_guia_ven')
         ->leftJoin('almacen.guia_ven','guia_ven.id_guia_ven','=','trans.id_guia_ven')
@@ -102,6 +103,10 @@ class TransferenciaController extends Controller
         ->leftJoin('almacen.alm_req', function($join)
         {   $join->on('alm_req.id_requerimiento', '=', 'log_ord_compra.id_requerimiento');
             $join->where('alm_req.estado','!=', 7);
+        })
+        ->leftJoin('almacen.alm_req as req_directo', function($join)
+        {   $join->on('req_directo.id_requerimiento', '=', 'trans.id_requerimiento');
+            $join->where('req_directo.estado','!=', 7);
         })
         ->leftJoin('almacen.guia_com','guia_com.id_guia','=','trans.id_guia_com')
         ->join('almacen.alm_almacen as alm_origen','alm_origen.id_almacen','=','trans.id_almacen_origen')
@@ -694,6 +699,245 @@ class TransferenciaController extends Controller
             // return response()->json($e);
         }
         
+    }
+
+    public function listarTransferenciasPorEnviar($alm_origen){
+        $lista = DB::table('almacen.trans')
+        ->select('trans.*','alm_req.codigo as cod_req','alm_req.concepto','sede_solicita.id_sede','sede_solicita.descripcion as sede_descripcion',
+        'alm_almacen.descripcion as alm_origen_descripcion','sis_usua.nombre_corto','sede_almacen.id_sede as id_sede_almacen',
+        'sede_almacen.descripcion as sede_almacen_descripcion')
+        ->join('almacen.alm_req','alm_req.id_requerimiento','=','trans.id_requerimiento')
+        ->join('administracion.sis_sede as sede_solicita','sede_solicita.id_sede','=','alm_req.id_sede')
+        ->join('almacen.alm_almacen','alm_almacen.id_almacen','=','trans.id_almacen_origen')
+        ->join('administracion.sis_sede as sede_almacen','sede_almacen.id_sede','=','alm_almacen.id_sede')
+        ->join('configuracion.sis_usua','sis_usua.id_usuario','=','alm_req.id_usuario')
+        ->where([['trans.id_almacen_origen','=',$alm_origen],['trans.id_guia_ven','=',null],['trans.estado','!=',7]]);
+        return datatables($lista)->toJson();
+    }
+
+    public function update_guia_transferencia(Request $request){
+
+        try {
+            DB::beginTransaction();
+            // database queries here
+            $id_tp_doc_almacen = 2;//guia venta
+            $id_operacion = 11;//salida por transferencia
+            $fecha_registro = date('Y-m-d H:i:s');
+            $fecha = date('Y-m-d');
+            $usuario = Auth::user()->id_usuario;
+
+            $id_guia = DB::table('almacen.guia_ven')->insertGetId(
+                [
+                    'id_tp_doc_almacen' => $id_tp_doc_almacen,
+                    'serie' => $request->trans_serie,
+                    'numero' => $request->trans_numero,
+                    'fecha_emision' => $request->fecha_emision,
+                    'fecha_almacen' => $request->fecha_almacen,
+                    'id_almacen' => $request->id_almacen_origen,
+                    'usuario' => $usuario,
+                    'estado' => 1,
+                    'fecha_registro' => $fecha_registro,
+                    'id_sede' => $request->id_sede,
+                    'fecha_traslado' => $fecha,
+                    'id_operacion' => $id_operacion,
+                    // 'id_guia_com' => ($request->id_guia_com !== '' ? $request->id_guia_com : null),
+                    'registrado_por' => $usuario,
+                ],
+                'id_guia_ven'
+            );
+            //cambia estado serie-numero
+            if ($request->id_serie_numero !== null && $request->id_serie_numero !== ''){
+                DB::table('almacen.serie_numero')
+                ->where('id_serie_numero',$request->id_serie_numero)
+                ->update(['estado' => 8]);//emitido -> 8
+            }
+
+            $codigo_trans = TransferenciaController::transferencia_nextId($request->id_almacen_origen);
+            //actualizo la transferencia
+            DB::table('almacen.trans')->where('id_transferencia',$request->id_transferencia)
+            ->update([
+                'id_almacen_destino' => $request->id_almacen_destino,
+                'id_guia_ven' => $id_guia,
+                'responsable_origen' => $usuario,
+                'responsable_destino' => $request->responsable_destino_trans,
+                'fecha_transferencia' => $fecha
+            ]);
+            //Genero la salida
+            $codigo = AlmacenController::nextMovimiento(2,//salida
+            $request->fecha_almacen,
+            $request->id_almacen_origen);
+
+            $id_salida = DB::table('almacen.mov_alm')->insertGetId(
+                [
+                    'id_almacen' => $request->id_almacen_origen,
+                    'id_tp_mov' => 2,//Salidas
+                    'codigo' => $codigo,
+                    'fecha_emision' => $request->fecha_almacen,
+                    'id_guia_ven' => $id_guia,
+                    'id_transferencia' => $request->id_transferencia,
+                    'id_operacion' => $id_operacion,
+                    'revisado' => 0,
+                    'usuario' => $usuario,
+                    'estado' => 1,
+                    'fecha_registro' => $fecha_registro,
+                ],
+                    'id_mov_alm'
+                );
+
+            $detalle = DB::table('almacen.trans_detalle')
+            ->select('trans_detalle.*','alm_prod.id_unidad_medida')
+            ->join('almacen.alm_prod','alm_prod.id_producto','=','trans_detalle.id_producto')
+            ->where([['trans_detalle.id_transferencia',$request->id_transferencia],['trans_detalle.estado','!=',7]])
+            ->get();
+
+            foreach($detalle as $det){
+                $id_guia_ven_det = DB::table('almacen.guia_ven_det')->insertGetId(
+                    [
+                        'id_guia_ven' => $id_guia,
+                        'id_producto' => $det->id_producto,
+                        'cantidad' => $det->cantidad,
+                        'id_unid_med' => $det->id_unidad_medida,
+                        // 'id_ing_det' => $det->id_mov_alm_det,
+                        'estado' => 1,
+                        'fecha_registro' => $fecha_registro,
+                    ],
+                        'id_guia_ven_det'
+                    );
+
+                //Guardo los items de la salida
+                $id_det = DB::table('almacen.mov_alm_det')->insertGetId(
+                    [
+                        'id_mov_alm' => $id_salida,
+                        'id_producto' => $det->id_producto,
+                        // 'id_posicion' => $det->id_posicion,
+                        'cantidad' => $det->cantidad,
+                        'valorizacion' => 0,
+                        'usuario' => $usuario,
+                        'id_guia_ven_det' => $id_guia_ven_det,
+                        'estado' => 1,
+                        'fecha_registro' => $fecha_registro,
+                    ],
+                        'id_mov_alm_det'
+                    );
+                //Actualizo los saldos del producto
+                //Obtengo el registro de saldos
+                $ubi = DB::table('almacen.alm_prod_ubi')
+                ->where([['id_producto','=',$det->id_producto],
+                        ['id_almacen','=',$request->id_almacen_origen]])
+                ->first();
+                //Traer stockActual
+                $saldo = AlmacenController::saldo_actual_almacen($det->id_producto, $request->id_almacen_origen);
+                $valor = AlmacenController::valorizacion_almacen($det->id_producto, $request->id_almacen_origen);
+                $cprom = ($saldo > 0 ? $valor/$saldo : 0);
+                //guardo saldos actualizados
+                if ($ubi !== null){//si no existe -> creo la ubicacion
+                    DB::table('almacen.alm_prod_ubi')
+                    ->where('id_prod_ubi',$ubi->id_prod_ubi)
+                    ->update([  'stock' => $saldo,
+                                'valorizacion' => $valor,
+                                'costo_promedio' => $cprom
+                        ]);
+                } else {
+                    DB::table('almacen.alm_prod_ubi')->insert([
+                        'id_producto' => $det->id_producto,
+                        'id_almacen' => $request->id_almacen_origen,
+                        'stock' => $saldo,
+                        'valorizacion' => $valor,
+                        'costo_promedio' => $cprom,
+                        'estado' => 1,
+                        'fecha_registro' => $fecha_registro
+                        ]);
+                }
+            }
+
+            //actualiza estado requerimiento: enviado
+            DB::table('almacen.alm_req')
+                ->where('id_requerimiento',$request->id_requerimiento)
+                ->update(['estado'=>17]);//enviado
+            //actualiza estado requerimiento_detalle: enviado
+            DB::table('almacen.alm_det_req')
+                ->where('id_requerimiento',$request->id_requerimiento)
+                ->update(['estado'=>17]);//enviado
+            //Agrega accion en requerimiento
+            DB::table('almacen.alm_req_obs')
+            ->insert(['id_requerimiento'=>$request->id_requerimiento,
+                'accion'=>'SALIDA POR TRANSFERENCIA',
+                'descripcion'=>'Salió del Almacén por Transferencia con Guía '.$request->trans_serie.'-'.$request->trans_numero,
+                'id_usuario'=>$usuario,
+                'fecha_registro'=>$fecha_registro
+                ]);
+
+            DB::commit();
+            return response()->json($id_salida);
+            
+        } catch (\PDOException $e) {
+            // Woopsy
+            DB::rollBack();
+            // return response()->json($e);
+        }
+    }
+
+    public static function generarTransferenciaRequerimiento(Request $request){
+        $sede = $request->id_sede;
+
+        if ($request->id_tipo_requerimiento == 2 || $request->id_tipo_requerimiento == 3){
+            $array_items = [];
+            $array_almacen = [];
+
+            foreach ($request->detalle_items as $det) {
+                $almacen = DB::table('almacen.alm_almacen')
+                ->select('sis_sede.id_sede')
+                ->join('administracion.sis_sede','sis_sede.id_sede','=','alm_almacen.id_sede')
+                ->where('id_almacen',$det->id_almacen_reserva)
+                ->first();
+                
+                if ($almacen !== null && $sede !== $almacen->id_sede){
+                    array_push($array_items, $det);
+
+                    if (!in_array($det->almacen_reserva, $array_almacen)){
+                        array_push($array_almacen, $det->almacen_reserva);
+                    }
+                }
+            }
+
+            foreach ($array_almacen as $alm){
+                
+                $fecha = date('Y-m-d H:i:s');
+                $codigo = TransferenciaController::transferencia_nextId($alm);
+                $id_usuario = Auth::user()->id_usuario;
+                $guardar = false;
+
+                $id_trans = DB::table('almacen.trans')->insertGetId(
+                    [
+                        'id_almacen_origen' => $alm,
+                        'id_almacen_destino' => $request->id_almacen_destino,
+                        'codigo' => $codigo,
+                        'id_requerimiento' => $request->id_requerimiento,
+                        'id_guia_ven' => null,
+                        'responsable_origen' => null,
+                        'responsable_destino' => null,
+                        'fecha_transferencia' => date('Y-m-d'),
+                        'registrado_por' => $id_usuario,
+                        'estado' => 1,
+                        'fecha_registro' => $fecha
+                    ],
+                        'id_transferencia'
+                    );
+                
+                foreach ($array_items as $item) {
+                    if ($item->id_almacen_reserva == $alm){
+                        DB::table('almacen.trans_detalle')->insert(
+                        [
+                            'id_transferencia' => $id_trans,
+                            'id_producto' => $item->id_producto,
+                            'cantidad' => $item->cantidad,
+                            'estado' => 1,
+                            'fecha_registro' => $fecha
+                        ]);
+                    }
+                }
+            }
+        }
     }
 
     public static function transferencia_nextId($id_alm_origen){

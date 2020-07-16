@@ -65,6 +65,7 @@ function guardar_proveedor(){
                     }
                 } else {
                     alert('Ya se encuentra registrado un Proveedor con dicho Nro de Documento!');
+                    $("#submitProveedor").removeAttr("disabled");
                 }
                 // var html = '<option value="0" disabled>Elija una opción</option>'+response;
                 // $('[name=id_proveedor]').html(html);

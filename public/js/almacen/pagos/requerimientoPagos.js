@@ -66,7 +66,7 @@ class RequerimientoPago
                             data-placement="bottom" data-id="${row['id_requerimiento']}" data-cod="${row['codigo']}" data-concepto="${row['concepto']}" title="Confirmar Entrega" >
                             <i class="fas fa-check"></i></button>
                         <button type="button" class="no_conforme btn btn-danger boton" data-toggle="tooltip" 
-                            data-placement="bottom" data-id="${row['id_requerimiento']}" data-cod="${row['codigo']}" data-concepto="${row['concepto']}" title="Confirmar Entrega" >
+                            data-placement="bottom" data-id="${row['id_requerimiento']}" data-cod="${row['codigo']}" data-concepto="${row['concepto']}" title="Descartar Requerimiento" >
                             <i class="fas fa-ban"></i></button>
                             </div>
                             `;

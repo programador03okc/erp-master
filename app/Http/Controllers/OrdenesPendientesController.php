@@ -393,7 +393,7 @@ class OrdenesPendientesController extends Controller
                 'id_guia_ven' => $id_guia,
                 // 'responsable_origen' => $request->responsable_origen,
                 'responsable_origen' => $usuario,
-                'responsable_destino' => $request->responsable_destino,
+                'responsable_destino' => $request->responsable_destino_trans,
                 'fecha_transferencia' => $fecha,
                 'registrado_por' => $usuario,
                 'estado' => 1,

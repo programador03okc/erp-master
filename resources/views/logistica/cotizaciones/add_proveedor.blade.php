@@ -56,7 +56,7 @@
                             <div class="row">
                                 <div class="col-md-12">
                                     <h5>Dirección Fiscal</h5>
-                                    <input type="text" name="direccion_fiscal" class="form-control"/>
+                                    <input type="text" name="direccion_fiscal" class="form-control" required/>
                                 </div>
                             </div>
                             

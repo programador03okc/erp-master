@@ -36,7 +36,7 @@ function listarOrdenesPendientes(permiso){
         'language' : vardataTables[0],
         'bDestroy' : true,
         'serverSide' : true,
-        "scrollX": true,
+        // "scrollX": true,
         'ajax': {
             url: 'listarOrdenesPendientes',
             type: 'POST'
@@ -97,7 +97,7 @@ function listarOrdenesEntregadas(permiso){
         'language' : vardataTables[0],
         'bDestroy' : true,
         'serverSide' : true,
-        "scrollX": true,
+        // "scrollX": true,
         'ajax': {
             url: 'listarOrdenesEntregadas',
             type: 'POST'

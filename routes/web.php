@@ -1049,12 +1049,15 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::get('listar_transferencias_recibidas/{ori}', 'TransferenciaController@listar_transferencias_recibidas');
 					Route::get('listar_transferencia_detalle/{id}', 'TransferenciaController@listar_transferencia_detalle');
 					Route::post('guardar_ingreso_transferencia', 'TransferenciaController@guardar_ingreso_transferencia');
+					Route::post('update_guia_transferencia', 'TransferenciaController@update_guia_transferencia');
 					Route::post('anular_transferencia_ingreso', 'TransferenciaController@anular_transferencia_ingreso');
 					Route::get('ingreso_transferencia/{id}', 'TransferenciaController@ingreso_transferencia');
 					Route::get('transferencia_nextId/{id}', 'TransferenciaController@transferencia_nextId');
 					Route::post('anular_transferencia_salida', 'TransferenciaController@anular_transferencia_salida');
 					Route::get('imprimir_ingreso/{id}', 'AlmacenController@imprimir_ingreso');
-					
+					Route::post('listarTransferenciasPorEnviar/{id}', 'TransferenciaController@listarTransferenciasPorEnviar');
+					Route::get('cargar_almacenes/{id}', 'AlmacenController@cargar_almacenes');
+
 				});
 	
 			});
