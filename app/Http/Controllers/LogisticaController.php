@@ -8322,86 +8322,96 @@ class LogisticaController extends Controller
         try {
             DB::beginTransaction();
 
-        $status=0;
-        $data =[];
-        $tipo_cliente = $request->tipo_cliente;
-        if($tipo_cliente == 1){ #persona natural
+            $status=0;
+            $data =[];
+            $tipo_cliente = $request->tipo_cliente;
 
-            $id_persona = DB::table('rrhh.rrhh_perso')
-            ->insertGetId(
-                [
-                    'id_documento_identidad' => $request->tipo_documento?$request->tipo_documento:null,
-                    'nro_documento' => $request->nro_documento?$request->nro_documento:null,
-                    'nombres' => $request->nombre?$request->nombre:null,
-                    'apellido_paterno' => $request->apellido_paterno?$request->apellido_paterno:null,
-                    'apellido_materno' => $request->apellido_materno?$request->apellido_materno:null,
-                    'estado' => 1,
-                    'telefono' => $request->telefono?$request->telefono:null,
-                    'direccion' => $request->direccion?$request->direccion:null,
-                    'email' => $request->email?$request->email:null,
-                    'fecha_registro' => date('Y-m-d H:i:s')
- 
-                ],
-                'id_persona'
-            );
-            if($id_persona>0){
-                $status=200;
-                $data=[ 
-                    'tipo_cliente'=> $tipo_cliente,
-                    'id'=> $id_persona,
-                    'nro_documento'=> $request->nro_documento,
-                    'nombre_completo'=> ($request->nombre.' '.$request->apellido_paterno.' '.$request->apellido_materno), 
-                    'telefono'=>$request->telefono,
-                    'direccion'=>$request->direccion,
-                    'email'=>$request->email
-                ];
-            }
+            if ($tipo_cliente == 1){ #persona natural
+                $exist = DB::table('rrhh.rrhh_perso')
+                ->where([['nro_documento','=',$request->nro_documento],['estado','=',1]])
+                ->first();
 
-        }else if($tipo_cliente == 2){ #persona juridica
-            $id_contribuyente = DB::table('contabilidad.adm_contri')
-            ->insertGetId(
-                [
-                    'id_doc_identidad' => $request->tipo_documento?$request->tipo_documento:null,
-                    'nro_documento' => $request->nro_documento?$request->nro_documento:null,
-                    'razon_social' => $request->razon_social?$request->razon_social:null,
-                    'estado' => 1,
-                    'telefono' => $request->telefono?$request->telefono:null,
-                    'direccion_fiscal' => $request->direccion?$request->direccion:null,
-                    'email' => $request->email?$request->email:null,
-                    'fecha_registro' => date('Y-m-d H:i:s')
- 
-                ],
-                'id_contribuyente'
-            );
-            if($id_contribuyente>0){
-                $status=200;
-                $data=[ 
-                    'tipo_cliente'=> $tipo_cliente,
-                    'id'=> $id_contribuyente,
-                    'nro_documento'=> $request->nro_documento,
-                    'razon_social'=> $request->razon_social, 
-                    'telefono'=>$request->telefono,
-                    'direccion'=>$request->direccion,
-                    'email'=>$request->email
-                ];
+                if ($exist == null){
+                    $id_persona = DB::table('rrhh.rrhh_perso')
+                    ->insertGetId([
+                            'id_documento_identidad' => $request->tipo_documento,
+                            'nro_documento' => $request->nro_documento,
+                            'nombres' => $request->nombre,
+                            'apellido_paterno' => $request->apellido_paterno,
+                            'apellido_materno' => $request->apellido_materno,
+                            'telefono' => $request->telefono,
+                            'direccion' => $request->direccion,
+                            'email' => $request->email,
+                            'estado' => 1,
+                            'fecha_registro' => date('Y-m-d H:i:s')
+                        ],
+                        'id_persona'
+                    );
+                    if($id_persona>0){
+                        $status=200;
+                        $data=[ 
+                            'tipo_cliente'=> $tipo_cliente,
+                            'id'=> $id_persona,
+                            'nro_documento'=> $request->nro_documento,
+                            'nombre_completo'=> ($request->nombre.' '.$request->apellido_paterno.' '.$request->apellido_materno), 
+                            'telefono'=>$request->telefono,
+                            'direccion'=>$request->direccion,
+                            'email'=>$request->email
+                        ];
+                    }
+                }
             }
-            $id_cliente = DB::table('comercial.com_cliente')
-            ->insertGetId(
-                [
-                    'id_contribuyente' => $id_contribuyente,
-                    'estado' => 1,
-                    'fecha_registro' => date('Y-m-d H:i:s')
-                ],
-                'id_cliente'
-            );
-            if($id_cliente>0){
-                $status=200;
-            }
-        }
-        $output=['status'=>$status,'data'=>$data];
+            else if ($tipo_cliente == 2){ #persona juridica
+                $exist = DB::table('contabilidad.adm_contri')
+                ->where([['nro_documento','=',$request->nro_documento],['estado','=',1]])
+                ->first();
 
-        DB::commit();
-        return response()->json($output);
+                if ($exist == null){
+                    $id_contribuyente = DB::table('contabilidad.adm_contri')
+                    ->insertGetId(
+                        [
+                            'id_doc_identidad' => $request->tipo_documento,
+                            'nro_documento' => $request->nro_documento,
+                            'razon_social' => $request->razon_social,
+                            'telefono' => $request->telefono,
+                            'direccion_fiscal' => $request->direccion,
+                            'email' => $request->email,
+                            'estado' => 1,
+                            'fecha_registro' => date('Y-m-d H:i:s')
+        
+                        ],
+                        'id_contribuyente'
+                    );
+                    if($id_contribuyente>0){
+                        $status=200;
+                        $data=[ 
+                            'tipo_cliente'=> $tipo_cliente,
+                            'id'=> $id_contribuyente,
+                            'nro_documento'=> $request->nro_documento,
+                            'razon_social'=> $request->razon_social, 
+                            'telefono'=>$request->telefono,
+                            'direccion'=>$request->direccion,
+                            'email'=>$request->email
+                        ];
+                    }
+                    $id_cliente = DB::table('comercial.com_cliente')
+                    ->insertGetId(
+                        [
+                            'id_contribuyente' => $id_contribuyente,
+                            'estado' => 1,
+                            'fecha_registro' => date('Y-m-d H:i:s')
+                        ],
+                        'id_cliente'
+                    );
+                    if($id_cliente>0){
+                        $status=200;
+                    }
+                }
+            }
+            $output=['status'=>$status,'data'=>$data];
+
+            DB::commit();
+            return response()->json($output);
 
         } catch (\PDOException $e) {
             DB::rollBack();

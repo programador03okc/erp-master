@@ -85,44 +85,49 @@ function get_data_form_agregar_cliente(){
 }
 
 function guardar_cliente(){
-    let payload = get_data_form_agregar_cliente();
-    // console.log(payload);
-    $.ajax({
-        type: 'POST',
-        url: 'save_cliente',
-        data: payload,
-        dataType: 'JSON',
-        success: function(response){
-            // console.log(response);
-            if(response.status == 200){
-                alert('Cliente registrado con éxito');
-                if(response.data.tipo_cliente == 1){
-                    document.querySelector("form[id='form-requerimiento'] input[name='id_persona']").value = response.data.id;
-                    document.querySelector("form[id='form-requerimiento'] input[name='dni_persona']").value = response.data.nro_documento;
-                    document.querySelector("form[id='form-requerimiento'] input[name='nombre_persona']").value = response.data.nombre_completo;
-                    document.querySelector("form[id='form-requerimiento'] input[name='direccion_entrega']").value =response.data.direccion;
-                    document.querySelector("form[id='form-requerimiento'] input[name='telefono_cliente']").value =response.data.telefono;
-                    document.querySelector("form[id='form-requerimiento'] input[name='email_cliente']").value = response.data.email;
+    var msj = validaCampos();
+    if (msj.length > 0){
+        alert(msj);
+    } else {
+        let payload = get_data_form_agregar_cliente();
+        $.ajax({
+            type: 'POST',
+            url: 'save_cliente',
+            data: payload,
+            dataType: 'JSON',
+            success: function(response){
+                console.log(response);
+                if(response.status == 200){
+                    alert('Cliente registrado con éxito');
+                    if(response.data.tipo_cliente == 1){
+                        document.querySelector("form[id='form-requerimiento'] input[name='id_persona']").value = response.data.id;
+                        document.querySelector("form[id='form-requerimiento'] input[name='dni_persona']").value = response.data.nro_documento;
+                        document.querySelector("form[id='form-requerimiento'] input[name='nombre_persona']").value = response.data.nombre_completo;
+                        document.querySelector("form[id='form-requerimiento'] input[name='direccion_entrega']").value =response.data.direccion;
+                        document.querySelector("form[id='form-requerimiento'] input[name='telefono_cliente']").value =response.data.telefono;
+                        document.querySelector("form[id='form-requerimiento'] input[name='email_cliente']").value = response.data.email;
+                    }
+                    if(response.data.tipo_cliente ==2){
+                        document.querySelector("form[id='form-requerimiento'] input[name='id_cliente']").value = response.data.id;
+                        document.querySelector("form[id='form-requerimiento'] input[name='cliente_ruc']").value = response.data.nro_documento;
+                        document.querySelector("form[id='form-requerimiento'] input[name='cliente_razon_social']").value = response.data.razon_social;
+                        document.querySelector("form[id='form-requerimiento'] input[name='direccion_entrega']").value =response.data.direccion;
+                        document.querySelector("form[id='form-requerimiento'] input[name='telefono_cliente']").value =response.data.telefono;
+                        document.querySelector("form[id='form-requerimiento'] input[name='email_cliente']").value = response.data.email;
+                    }
+                    $('#modal-add-cliente').modal('hide');
+                } 
+                else if(response.status == 0){
+                    alert('El Nro de documento del cliente ya existe!');
                 }
-                if(response.data.tipo_cliente ==2){
-                    document.querySelector("form[id='form-requerimiento'] input[name='id_cliente']").value = response.data.id;
-                    document.querySelector("form[id='form-requerimiento'] input[name='cliente_ruc']").value = response.data.nro_documento;
-                    document.querySelector("form[id='form-requerimiento'] input[name='cliente_razon_social']").value = response.data.razon_social;
-                    document.querySelector("form[id='form-requerimiento'] input[name='direccion_entrega']").value =response.data.direccion;
-                    document.querySelector("form[id='form-requerimiento'] input[name='telefono_cliente']").value =response.data.telefono;
-                    document.querySelector("form[id='form-requerimiento'] input[name='email_cliente']").value = response.data.email;
-                }
-                $('#modal-add-cliente').modal('hide');
-            
-
             }
-        }
-    }).fail( function( jqXHR, textStatus, errorThrown ){
-        alert('fail, Error al guardar');
-        console.log(jqXHR);
-        console.log(textStatus);
-        console.log(errorThrown);
-    });    
+        }).fail( function( jqXHR, textStatus, errorThrown ){
+            alert('fail, Error al guardar');
+            console.log(jqXHR);
+            console.log(textStatus);
+            console.log(errorThrown);
+        });
+    }
 }
 
 function limpiarFormAgregarCliente(){
@@ -145,4 +150,31 @@ function evaluarDocumentoSeleccionado(event){
     }else{
         $('#btnConsultaSunat').removeClass('disabled');
     }
+}
+
+function validaCampos(){
+    var tipo = $('[name=tipo_cliente]').val();
+    var name = $('[name=nombre]').val();
+    var ap_p = $('[name=apellido_paterno]').val();
+    var ap_m = $('[name=apellido_materno]').val();
+    var razo = $('[name=razon_social]').val();
+    var text = '';
+
+    if (tipo == '1'){
+        if (name == '' || name == null){
+            text += 'Es necesario que ingrese un Nombre\n';
+        }
+        if (ap_p == '' || ap_p == null){
+            text += 'Es necesario que ingrese un Apellido Paterno\n';
+        }
+        if (ap_m == '' || ap_m == null){
+            text += 'Es necesario que ingrese un Apellido Materno\n';
+        }
+    } 
+    else if (tipo == '2') {
+        if (razo == '' || razo == null){
+            text += 'Es necesario que ingrese una Razon Social';
+        }
+    }
+    return text;
 }
