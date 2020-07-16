@@ -22,7 +22,7 @@ use App\Models\Logistica\Empresa;
 use App\Models\Tesoreria\Usuario;
 use App\Models\Tesoreria\Grupo;
 use DataTables;
-// use Debugbar;
+use Debugbar;
 
 date_default_timezone_set('America/Lima');
 
@@ -733,7 +733,7 @@ class LogisticaController extends Controller
                             'id_detalle_requerimiento'  => $data->id_detalle_requerimiento,
                             'id_requerimiento'          => $data->id_requerimiento,
                             'codigo_requerimiento'      => $data->codigo_requerimiento,
-                            'id_item'                   => $data->id_item,
+                            'id_item'                   => $data->id_item_alm_det_req,
                             'cantidad'                  => $data->cantidad,
                             'id_unidad_medida'             => $data->id_unidad_medida,
                             'unidad_medida'             => $data->unidad_medida,
@@ -1661,7 +1661,8 @@ class LogisticaController extends Controller
                             'id_unidad_medida'      => is_numeric($detalle_reqArray[$i]['id_unidad_medida']) == 1 ? $detalle_reqArray[$i]['id_unidad_medida'] : null,
                             'id_tipo_item'          => is_numeric($detalle_reqArray[$i]['id_tipo_item']) == 1 ? $detalle_reqArray[$i]['id_tipo_item']:null,
                             'fecha_registro'        => date('Y-m-d H:i:s'),
-                            'estado'                => ($request->requerimiento['tipo_requerimiento'] ==2?19:1)
+                            'estado'                => ($request->requerimiento['tipo_requerimiento'] ==2?19:1),
+                            'id_almacen_reserva'     => is_numeric($detalle_reqArray[$i]['id_almacen_reserva']) == 1 ? $detalle_reqArray[$i]['id_almacen_reserva']:null
                         ],
                         'id_detalle_requerimiento'
                     );
@@ -1677,10 +1678,79 @@ class LogisticaController extends Controller
             ],
             'id_doc_aprob'
         );
-
+        $this->generarTransferenciaRequerimiento($request);
         return response()->json($id_requerimiento);
         }
 
+    }
+
+    public static function generarTransferenciaRequerimiento($request){
+        $sede = $request->requerimiento['id_sede'];
+
+        if ($request->requerimiento['tipo_requerimiento'] == 2 || $request->requerimiento['tipo_requerimiento'] == 3){
+            $array_items = [];
+            $array_almacen = [];
+            foreach ($request->detalle as $det) {
+                Debugbar::info($det);
+
+                $almacen = DB::table('almacen.alm_almacen')
+                ->select('sis_sede.id_sede')
+                ->join('administracion.sis_sede','sis_sede.id_sede','=','alm_almacen.id_sede')
+                ->where('id_almacen',$det['id_almacen_reserva'])
+                ->first();
+            
+                if ($almacen !== null && $sede !== $almacen->id_sede){
+                    array_push($array_items, $det);
+
+                    if (!in_array($det['id_almacen_reserva'], $array_almacen)){
+                        array_push($array_almacen, $det['id_almacen_reserva']);
+                    }
+                }
+            }
+
+            $almacen_destino = DB::table('almacen.alm_almacen')
+            ->select('alm_almacen.id_almacen')
+            ->where('id_sede',$request->requerimiento['id_sede'])
+            ->first();
+
+            foreach ($array_almacen as $alm){
+                
+                $fecha = date('Y-m-d H:i:s');
+                $codigo = TransferenciaController::transferencia_nextId($alm);
+                $id_usuario = Auth::user()->id_usuario;
+                $guardar = false;
+
+                $id_trans = DB::table('almacen.trans')->insertGetId(
+                    [
+                        'id_almacen_origen' => $alm,
+                        'id_almacen_destino' => $almacen_destino->id_almacen,
+                        'codigo' => $codigo,
+                        'id_requerimiento' => $request->requerimiento['id_requerimiento'],
+                        'id_guia_ven' => null,
+                        'responsable_origen' => null,
+                        'responsable_destino' => null,
+                        'fecha_transferencia' => date('Y-m-d'),
+                        'registrado_por' => $id_usuario,
+                        'estado' => 1,
+                        'fecha_registro' => $fecha
+                    ],
+                        'id_transferencia'
+                    );
+                
+                foreach ($array_items as $item) {
+                    if ($item['id_almacen_reserva'] == $alm){
+                        DB::table('almacen.trans_detalle')->insert(
+                        [
+                            'id_transferencia' => $id_trans,
+                            'id_producto' => $item['id_producto'],
+                            'cantidad' => $item['cantidad'],
+                            'estado' => 1,
+                            'fecha_registro' => $fecha
+                        ]);
+                    }
+                }
+            }
+        }
     }
 
     public function  actualizar_telefono_cliente($tipo_cliente,$id_persona,$id_cliente,$telefono){
