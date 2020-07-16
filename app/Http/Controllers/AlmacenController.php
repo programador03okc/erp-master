@@ -4546,7 +4546,7 @@ class AlmacenController extends Controller
     public function listar_saldos($almacen)
     {
         $data = DB::table('almacen.alm_prod_ubi')
-            ->select('alm_prod_ubi.*','alm_prod.codigo','alm_prod.descripcion','alm_ubi_posicion.codigo as cod_posicion',
+            ->select('alm_item.id_item','alm_prod_ubi.*','alm_prod.codigo','alm_prod.descripcion','alm_ubi_posicion.codigo as cod_posicion',
             'alm_und_medida.abreviatura','alm_prod.codigo_anexo','alm_prod.part_number','sis_moneda.simbolo',
             'alm_cat_prod.descripcion as des_categoria',
             'alm_subcat.descripcion as des_subcategoria','alm_clasif.descripcion as des_clasificacion',
@@ -4562,6 +4562,7 @@ class AlmacenController extends Controller
             // ->join('almacen.alm_ubi_estante','alm_ubi_estante.id_estante','=','alm_ubi_nivel.id_estante')
             ->join('almacen.alm_almacen','alm_almacen.id_almacen','=','alm_prod_ubi.id_almacen')
             ->join('almacen.alm_prod','alm_prod.id_producto','=','alm_prod_ubi.id_producto')
+            ->join('almacen.alm_item','alm_item.id_producto','=','alm_prod.id_producto')
             ->join('almacen.alm_und_medida','alm_und_medida.id_unidad_medida','=','alm_prod.id_unidad_medida')
             ->leftjoin('configuracion.sis_moneda','sis_moneda.id_moneda','=','alm_prod.id_moneda')
             ->leftjoin('almacen.alm_clasif','alm_clasif.id_clasificacion','=','alm_prod.id_clasif')
@@ -4597,6 +4598,7 @@ class AlmacenController extends Controller
             }
             $nuevo = [
                 'id_prod_ubi'=> $d->id_prod_ubi,
+                'id_item'=> $d->id_item,
                 'id_producto'=> $d->id_producto,
                 'id_almacen'=> $d->id_almacen,
                 'codigo'=> $d->codigo,

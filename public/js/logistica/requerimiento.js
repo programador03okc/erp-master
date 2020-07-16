@@ -1086,7 +1086,8 @@ function get_data_detalle_requerimiento(){
         'id_partida':parseInt(id_partida),
         'cod_partida':cod_partida,
         'des_partida':des_partida,
-        'estado':parseInt(estado)
+        'estado':parseInt(estado),
+        'id_almacen_reserva':1
         };
         return item;
 }
@@ -1789,10 +1790,10 @@ function controlUnidadMedida(){
 
 function selectItem(){
 
-        var id_item = $('.modal-footer #id_item').text();
-        var id_producto = $('.modal-footer #id_producto').text();
-        var id_servicio = $('.modal-footer #id_servicio').text();
-        var id_equipo = $('.modal-footer #id_equipo').text();
+        var id_item = $('#modal-catalogo-items .modal-footer #id_item').text();
+        var id_producto = $('#modal-catalogo-items .modal-footer #id_producto').text();
+        var id_servicio = $('#modal-catalogo-items .modal-footer #id_servicio').text();
+        var id_equipo = $('#modal-catalogo-items .modal-footer #id_equipo').text();
         var page = $('.page-main').attr('type');
         var form = $('.page-main form[type=register]').attr('id');
         mostrar_item(id_item);

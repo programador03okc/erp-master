@@ -17,6 +17,7 @@ $(function(){
         var stoc = $(this)[0].childNodes[6].innerHTML;
         var rese = $(this)[0].childNodes[7].innerHTML;
         var unid = $(this)[0].childNodes[8].innerHTML;
+        var idItem = $(this)[0].childNodes[9].innerHTML;
 
         var cant = parseFloat(stoc) - parseFloat(rese);
 
@@ -28,6 +29,7 @@ $(function(){
         $('#subcategoria').text(subcat);
         $('#saldo_cantidad_item').text(cant);
         $('#saldo_unidad_medida_item').text(unid);
+        $('#id_item').text(idItem);
 
     });
 
@@ -69,9 +71,10 @@ function listarSaldos(id_almacen){
             //         }
             //     }
             // },
-            {'data': 'id_unidad_medida'}
+            {'data': 'id_unidad_medida'},
+            {'data': 'id_item'}
         ],
-        'columnDefs': [{ 'aTargets': [0,8], 'sClass': 'invisible'}],
+        'columnDefs': [{ 'aTargets': [0,8,9], 'sClass': 'invisible'}],
     });
 }
 
@@ -104,6 +107,7 @@ function selectValue(){
     var subcat = $('#subcategoria').text();
     var ca = $('#saldo_cantidad_item').text();
     var un = $('#saldo_unidad_medida_item').text();
+    var idItem = $('#id_item').text();
 
     $('[name=id_producto]').val(id);
     $('[name=codigo_item]').val(co);
@@ -113,6 +117,7 @@ function selectValue(){
     $('[name=subcategoria]').val(subcat);
     $('[name=cantidad_item]').val(ca);
     $('[name=unidad_medida_item]').val(un);
+    $('[name=id_item]').val(idItem);
 
     $('#modal-saldos').modal('hide');
     // var myId = $('.modal-footer label').text();

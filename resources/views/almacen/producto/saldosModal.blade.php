@@ -20,12 +20,14 @@
                             <th>Reserva</th>
                             <!-- <th>Detalle</th> -->
                             <th hidden>unid.medida</th>
+                            <th hidden>id_item</th>
                         </tr>
                     </thead>
                     <tbody></tbody>
                 </table>
             </div>
             <div class="modal-footer">
+                <label id="id_item" style="display: none;"></label>
                 <label id="saldo_id_producto" style="display: none;"></label>
                 <label id="saldo_codigo_item" style="display: none;"></label>
                 <label id="part_number" style="display: none;"></label>
