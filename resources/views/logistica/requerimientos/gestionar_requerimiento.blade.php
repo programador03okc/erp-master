@@ -127,7 +127,7 @@
                     <button type="button" title="Seleccionar Ubigeo" class="btn-primary" onClick="ubigeoModal();" ><i class="far fa-compass"></i></button>
                 </div>
             </div>
-            <div class="col-md-4" id="input-group-almacen">
+            <div class="col-md-4" id="input-group-almacen" hidden>
                 <h5>Almacén que solicita</h5>
                 <select class="form-control activation " name="id_almacen">
                     <option value="0">Elija una opción</option>

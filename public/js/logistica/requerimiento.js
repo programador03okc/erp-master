@@ -1058,6 +1058,7 @@ function get_data_detalle_requerimiento(){
     var id_partida = $('[name=id_partida]').val();
     var cod_partida = $('[name=cod_partida]').val();
     var des_partida = $('[name=des_partida]').val();
+    var id_almacen_reserva = $('[name=id_almacen_reserva]').val();
     if($('[name=estado]').val() === ""){
         var estado = 1;
     }else{
@@ -1087,7 +1088,7 @@ function get_data_detalle_requerimiento(){
         'cod_partida':cod_partida,
         'des_partida':des_partida,
         'estado':parseInt(estado),
-        'id_almacen_reserva':1
+        'id_almacen_reserva':parseInt(id_almacen_reserva)
         };
         return item;
 }
@@ -1165,15 +1166,15 @@ function detalleRequerimientoModal(event,index){
     
     if (tipo == 2){        
         var sede = $('[name=sede]').val();
-        var almacen = $('select[name=id_almacen]').val();
+        // var almacen = $('select[name=id_almacen]').val();
         
         if (sede !== null && sede !== '' &&  sede !== undefined ){
-            if (almacen !== null && almacen !== '' && almacen !== undefined ){
+            // if (almacen !== null && almacen !== '' && almacen !== undefined ){
                 $('#modal-detalle-requerimiento').modal({
                     show: true,
                     backdrop: 'static'
                 });
-                $('[name=id_almacen]').show();
+                // $('[name=id_almacen]').show();
     
                 // cargar_almacenes(sede);
                 document.querySelector("div[id='modal-detalle-requerimiento'] input[name='fecha_entrega_item']").value='';
@@ -1184,9 +1185,9 @@ function detalleRequerimientoModal(event,index){
                 document.querySelector("div[id='modal-detalle-requerimiento'] div[id='input-group-lugar_entrega']").setAttribute('hidden',true);
                 document.querySelector("div[id='modal-detalle-requerimiento'] div[id='input-group-partida']").setAttribute('hidden',true);
     
-            }else{
-                alert('Debe seleccionar un almacen.');
-            }
+            // }else{
+            //     alert('Debe seleccionar un almacen.');
+            // }
         } else {
             alert('Debe seleccionar una sede.');
         }
@@ -1984,7 +1985,7 @@ function validaRequerimiento(){
     var id_persona = $('[name=id_persona]').val();
     var id_cliente = $('[name=id_cliente]').val();
     var ubigeo = $('[name=name_ubigeo]').val();
-    var id_almacen = $('[name=id_almacen]').val();
+    // var id_almacen = $('[name=id_almacen]').val();
     var telefono_cliente = $('[name=telefono_cliente]').val();
     var direccion_entrega = $('[name=direccion_entrega]').val();
     var email_cliente = $('[name=email_cliente]').val();
@@ -2009,9 +2010,9 @@ function validaRequerimiento(){
         if (ubigeo == ''){
             msj+='\n Es necesario que seleccione un Ubigeo';
         }
-        if (id_almacen == '0' || id_almacen == null){
-            msj+='\n Es necesario que seleccione un Almacén';
-        }
+        // if (id_almacen == '0' || id_almacen == null){
+        //     msj+='\n Es necesario que seleccione un Almacén';
+        // }
         if (telefono_cliente == ''){
             msj+='\n Es necesario que seleccione un Teléfono';
         }
@@ -2031,9 +2032,9 @@ function validaRequerimiento(){
         if (concepto.length <= 0){
             msj+='\n Es necesario que ingrese un Concepto';
         }
-        if (id_almacen == '0' || id_almacen == null){
-            msj+='\n Es necesario que seleccione un Almacén';
-        }
+        // if (id_almacen == '0' || id_almacen == null){
+        //     msj+='\n Es necesario que seleccione un Almacén';
+        // }
     }
 
 
@@ -2466,10 +2467,12 @@ function changeOptTipoReqSelect(e){
             'input-group-ubigeo-entrega',
             'input-group-proyecto',
             'input-group-comercial',
-            'input-group-monto'
+            'input-group-monto',
+            'input-group-almacen'
+
         ]);
         hiddeElement('mostrar','form-requerimiento',[
-            'input-group-almacen'
+            // 'input-group-almacen'
         ]);
 
         listar_almacenes();
@@ -2491,10 +2494,10 @@ function changeOptTipoReqSelect(e){
 
         hiddeElement('ocultar','form-requerimiento',[
             'input-group-proyecto',
-            'input-group-comercial'
+            'input-group-comercial',
+            'input-group-almacen'
         ]);
         hiddeElement('mostrar','form-requerimiento',[
-            'input-group-almacen',
             'input-group-rol-usuario',
             'input-group-moneda',
             'input-group-empresa',

@@ -10,17 +10,22 @@
                 id="listaSaldos">
                     <thead>
                         <tr>
-                            <th hidden>Id</th>
-                            <th>Código</th>
-                            <th>Part Number</th>
-                            <th>Descripción</th>
-                            <th>Categoría</th>
-                            <th>SubCategoría</th>
-                            <th>Stock</th>
-                            <th>Reserva</th>
-                            <!-- <th>Detalle</th> -->
-                            <th hidden>unid.medida</th>
-                            <th hidden>id_item</th>
+                            <th rowspan="2"  hidden>Id</th>
+                            <th rowspan="2" >Código</th>
+                            <th rowspan="2" >Part Number</th>
+                            <th rowspan="2" >Descripción</th>
+                            <th rowspan="2" >Categoría</th>
+                            <th rowspan="2" >SubCategoría</th>
+                            <th colspan="2">Almacén Central OKC - Ilo</th>
+                            <th colspan="2">Almacén Central OKC - Lima</th>
+                            <th rowspan="2" >unid.medida</th>
+                            <th rowspan="2" >id_item</th>
+                        </tr>
+                        <tr>
+                            <td>Stock</td>
+                            <td>Reserva</td>
+                            <td>Stock</td>
+                            <td>Reserva</td>
                         </tr>
                     </thead>
                     <tbody></tbody>
@@ -36,7 +41,7 @@
                 <label id="subcategoria" style="display: none;"></label>
                 <label id="saldo_cantidad_item" style="display: none;"></label>
                 <label id="saldo_unidad_medida_item" style="display: none;"></label>
-                <button class="btn btn-sm btn-success" onClick="selectValue();">Aceptar</button>
+                <!-- <button class="btn btn-sm btn-success" onClick="selectValue();">Aceptar</button> -->
             </div>
         </div>
     </div>

@@ -629,6 +629,7 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::get('listar_saldos/{id}', 'AlmacenController@listar_saldos');
 					Route::get('listar_opciones', 'ProyectosController@listar_opciones');
 					Route::get('listar_partidas/{id_grupo}/{id_op_com}', 'EquipoController@listar_partidas');
+					Route::get('listar-saldos-por-almacen', 'AlmacenController@listar_saldos_por_almacen');
 
 
 				
