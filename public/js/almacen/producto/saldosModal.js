@@ -54,7 +54,7 @@ function listarSaldos(id_almacen){
                 function (data, type, row){
                     if(row['stock_almacenes'][0]['id_almacen'] == 1){
                         if(row['stock_almacenes'][0]['stock'] >0){
-                            return ('<button class="btn btn-sm btn-info" onClick="selectValue(this,'+row['stock_almacenes'][0]['id_almacen']+');">'+row['stock_almacenes'][0]['stock']+'</button>')
+                            return ('<button class="btn btn-sm btn-info" onClick="selectValue(this,'+row['stock_almacenes'][0]['id_almacen']+',\''+row['stock_almacenes'][0]['almacen_descripcion']+'\');">'+row['stock_almacenes'][0]['stock']+'</button>')
                         }else{
                             return row['stock_almacenes'][0]['stock'];
                         }
@@ -76,7 +76,7 @@ function listarSaldos(id_almacen){
                 function (data, type, row){
                     if(row['stock_almacenes'][1]['id_almacen'] == 2){
                         if(row['stock_almacenes'][1]['stock'] >0){
-                            return ('<button class="btn btn-sm btn-info" onClick="selectValue(this,'+row['stock_almacenes'][1]['id_almacen']+');">'+row['stock_almacenes'][1]['stock']+'</button>')
+                            return ('<button class="btn btn-sm btn-info" onClick="selectValue(this,'+row['stock_almacenes'][1]['id_almacen']+',\''+row['stock_almacenes'][1]['almacen_descripcion']+'\');">'+row['stock_almacenes'][1]['stock']+'</button>')
 
                         }else{
                                 return row['stock_almacenes'][0]['stock'];
@@ -122,7 +122,7 @@ function saldosModal(id_almacen){
     listarSaldos(id_almacen);
 }
 
-function selectValue(element,id_almacen){
+function selectValue(element,id_almacen,almacen_descripcion){
     var id = element.parentElement.parentElement.childNodes[0].innerText;
     var co = element.parentElement.parentElement.childNodes[1].innerText;
     var pn = element.parentElement.parentElement.childNodes[2].innerText;
@@ -133,6 +133,7 @@ function selectValue(element,id_almacen){
     var un = element.parentElement.parentElement.childNodes[10].innerText;
     var idItem = element.parentElement.parentElement.childNodes[11].innerText;
     var idAlmacenReserva = id_almacen;
+    var descripcionAlmacenReserva = almacen_descripcion;
 
     $('[name=id_producto]').val(id);
     $('[name=codigo_item]').val(co);
@@ -144,6 +145,7 @@ function selectValue(element,id_almacen){
     $('[name=unidad_medida_item]').val(un);
     $('[name=id_item]').val(idItem);
     $('[name=id_almacen_reserva]').val(idAlmacenReserva);
+    $('[name=almacen_descripcion]').val(descripcionAlmacenReserva);
 
     $('#modal-saldos').modal('hide');
     // var myId = $('.modal-footer label').text();

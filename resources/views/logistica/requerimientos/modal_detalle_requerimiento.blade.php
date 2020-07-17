@@ -22,6 +22,7 @@
                                     <input hidden="true" type="text" name="categoria">
                                     <input hidden="true" type="text" name="subcategoria">
                                     <input hidden="true" type="text" name="id_almacen_reserva">
+                                    <input hidden="true" type="text" name="almacen_descripcion">
                                     <input type="text" name="codigo_item" class="form-control group-elemento input-sm" style="width:150px;text-align:center;" readonly="">
                                     <input type="text" name="part_number" class="form-control group-elemento input-sm" style="width:150px;text-align:center;" readonly="">
                                     <div class="input-group-okc">
