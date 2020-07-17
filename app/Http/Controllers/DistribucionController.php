@@ -389,7 +389,7 @@ class DistribucionController extends Controller
     Saludos,
     Módulo de Logística y Almacenes
     ';
-            $destinatario = 'programador01@okcomputer.com.pe';
+            $destinatario = 'distribucion@okcomputer.com.pe';
             $msj = CorreoController::enviar_correo($empresa->id_empresa, $destinatario, $asunto, $contenido);
 
             DB::commit();
