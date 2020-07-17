@@ -100,7 +100,8 @@ function listarRequerimientosPendientes(permiso){
                     (
                         ((row['estado'] == 19 && row['id_tipo_requerimiento'] == 1 && row['sede_requerimiento'] == row['sede_orden'] && row['id_od'] == null) ||
                         (row['estado'] == 19 && row['id_tipo_requerimiento'] == 1 && row['sede_requerimiento'] !== row['sede_orden'] && row['id_transferencia'] !== null && row['id_od'] == null) || //compra con transferencia
-                        (row['estado'] == 19 && row['id_tipo_requerimiento'] == 2 && row['confirmacion_pago'] == true && row['id_od'] == null)) ? //venta directa
+                        (row['estado'] == 19 && row['id_tipo_requerimiento'] == 2 && row['confirmacion_pago'] == true && row['id_od'] == null && row['id_transferencia_directo'] == null) ||
+                        (row['estado'] == 19 && row['id_tipo_requerimiento'] == 2 && row['confirmacion_pago'] == true && row['id_od'] == null && row['id_transferencia_directo'] !== null && row['trans_estado_directo'] == 14)) ? //venta directa
                         ('<button type="button" class="despacho btn btn-success boton" data-toggle="tooltip" '+
                         'data-placement="bottom" title="Generar Orden de Despacho" >'+
                         '<i class="fas fa-sign-in-alt"></i></button>') : 

@@ -29,7 +29,7 @@
                         <div class="col-md-6">
                             <h5>Almacén</h5>
                             <input type="text" class="oculto" name="id_almacen" >
-                            <input type="text" class="form-control" name="almacen_descripcion">                            
+                            <input type="text" class="form-control" name="almacen_descripcion" readOnly>                            
                         </div>
                     </div>
                     <div class="row">

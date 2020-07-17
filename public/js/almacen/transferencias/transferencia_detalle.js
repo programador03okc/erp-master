@@ -7,6 +7,7 @@ function open_transferencia_detalle(data){
         $('#guia').text(data.guia_ven);
         $('[name=id_transferencia]').val(data.id_transferencia);
         $('[name=id_guia_ven]').val(data.id_guia_ven);
+        $('[name=id_requerimiento]').val((data.id_requerimiento_directo !== null) ? data.id_requerimiento_directo : '');
         $('[name=guia_ingreso_compra]').val(data.guia_ingreso_compra);
         $('[name=id_almacen_destino]').val(data.id_almacen_destino);
         $('[name=almacen_destino]').val(data.alm_destino_descripcion);
@@ -49,6 +50,7 @@ function recibir(){
     if (estado !== '14' && estado !== '7'){
         var id_transferencia = $('[name=id_transferencia]').val();
         var id_guia_ven = $('[name=id_guia_ven]').val();
+        var id_req = $('[name=id_requerimiento]').val();
         var fecha_almacen = $('[name=fecha_almacen]').val();
         var id_almacen_destino = $('[name=id_almacen_destino]').val();
         var responsable_destino = $('[name=responsable_destino]').val();
@@ -81,6 +83,7 @@ function recibir(){
         // if (!falta_ubi){
             var data = 'id_transferencia='+id_transferencia+
                     '&id_guia_ven='+id_guia_ven+
+                    '&id_requerimiento='+id_req+
                     '&fecha_almacen='+fecha_almacen+
                     '&responsable_destino='+responsable_destino+
                     '&id_almacen_destino='+id_almacen_destino+

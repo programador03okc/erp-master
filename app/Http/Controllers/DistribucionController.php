@@ -49,7 +49,9 @@ class DistribucionController extends Controller
             'alm_almacen.id_sede as sede_requerimiento','log_ord_compra.id_sede as sede_orden',
             'sis_sede.descripcion as sede_descripcion_orden',
             'orden_despacho.id_od','orden_despacho.codigo as codigo_od','orden_despacho.estado as estado_od',
-            'alm_tp_req.descripcion as tipo_req',
+            'alm_tp_req.descripcion as tipo_req','trans_directo.id_transferencia as id_transferencia_directo',
+            'trans_directo.estado as trans_estado_directo','almacen_destino.descripcion as almacen_descripcion_directo',
+            'trans_directo.id_almacen_destino as id_almacen_directo',
             DB::raw("(rrhh_perso.nombres) || ' ' || (rrhh_perso.apellido_paterno) || ' ' || (rrhh_perso.apellido_materno) AS nombre_persona"),
             'adm_contri.nro_documento as cliente_ruc','adm_contri.razon_social as cliente_razon_social')
             ->join('almacen.alm_tp_req','alm_tp_req.id_tipo_requerimiento','=','alm_req.id_tipo_requerimiento')
@@ -86,6 +88,11 @@ class DistribucionController extends Controller
                          {   $join->on('orden_despacho.id_requerimiento', '=', 'alm_req.id_requerimiento');
                              $join->where('orden_despacho.estado','!=', 7);
                          })
+            ->leftJoin('almacen.trans as trans_directo', function($join)
+                         {   $join->on('trans_directo.id_requerimiento', '=', 'alm_req.id_requerimiento');
+                             $join->where('trans_directo.estado','!=', 7);
+                         })
+            ->leftJoin('almacen.alm_almacen as almacen_destino','almacen_destino.id_almacen','=','trans_directo.id_almacen_destino')
             // ->leftJoin('almacen.orden_despacho','orden_despacho.id_requerimiento','=','alm_req.id_requerimiento')
             ->where([['alm_req.estado','!=',1], ['alm_req.estado','!=',7], ['alm_req.estado','!=',20], 
             ['alm_req.estado','!=',21]])//muestra todos los reservados
@@ -382,7 +389,7 @@ class DistribucionController extends Controller
     Saludos,
     Módulo de Logística y Almacenes
     ';
-            $destinatario = 'distribucion@okcomputer.com.pe';
+            $destinatario = 'programador01@okcomputer.com.pe';
             $msj = CorreoController::enviar_correo($empresa->id_empresa, $destinatario, $asunto, $contenido);
 
             DB::commit();

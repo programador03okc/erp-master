@@ -15,9 +15,9 @@ function open_despacho_create(data){
     $('[name=ubigeo]').val(data.id_ubigeo_entrega);
     $('[name=name_ubigeo]').val(data.ubigeo_descripcion);
     $('[name=tipo_cliente]').val(data.tipo_cliente);
-    $('[name=id_almacen]').val(data.id_almacen);
-    $('[name=almacen_descripcion]').val(data.almacen_descripcion);
-    $('[name=id_sede]').val(data.sede_requerimiento);
+    $('[name=id_almacen]').val((data.id_almacen !== null && data.id_almacen !== 0) ? data.id_almacen : data.id_almacen_directo);
+    $('[name=almacen_descripcion]').val(data.almacen_descripcion !== null ? data.almacen_descripcion : data.almacen_descripcion_directo);
+    $('[name=id_sede]').val(data.sede_requerimiento !== null ? data.sede_requerimiento : data.id_sede);
     $('[name=telefono]').val(data.telefono);
     $('[name=correo_cliente]').val(data.email);
 

@@ -101,7 +101,11 @@ function listarTransferenciasPendientes(){
                     function (data, type, row){
                         if (row['codigo_req'] !== null){
                             return (row['codigo_req']);
-                        } else {
+                        } 
+                        else if (row['codigo_req_directo'] !== null){
+                            return (row['codigo_req_directo']);
+                        }
+                        else {
                             return '';
                         }
                     }
@@ -110,7 +114,11 @@ function listarTransferenciasPendientes(){
                     function (data, type, row){
                         if (row['concepto_req'] !== null){
                             return (row['concepto_req']);
-                        } else {
+                        }
+                        else if (row['concepto_req_directo'] !== null){
+                            return (row['concepto_req_directo']);
+                        } 
+                        else {
                             return '';
                         }
                     }
@@ -182,16 +190,13 @@ function listarTransferenciasPorEnviar(){
             {'aTargets': [0], 'sClass': 'invisible'},
             {'render': function (data, type, row){
                     if (valor_permiso == '1') {
-                        return `<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" 
-                            data-placement="bottom" title="Ver Detalle" > 
-                            <i class="fas fa-list-ul"></i></button>`+
-                        `<button type="button" class="guia btn btn-success boton" data-toggle="tooltip" 
+                        return `<button type="button" class="guia btn btn-success boton" data-toggle="tooltip" 
                             data-placement="bottom" data-id="${row['id_transferencia']}" data-cod="${row['id_requerimiento']}" title="Generar Guía" >
                             <i class="fas fa-sign-in-alt"></i></button>`
-                    } else {
-                        return `<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" 
-                        data-placement="bottom" title="Ver Detalle" >
-                        <i class="fas fa-list-ul"></i></button>`
+                    // } else {
+                    //     return `<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" 
+                    //     data-placement="bottom" title="Ver Detalle" >
+                    //     <i class="fas fa-list-ul"></i></button>`
                     }
                 }, targets: 8
             }
@@ -205,6 +210,14 @@ $('#listaTransferenciasPorEnviar tbody').on("click","button.guia", function(){
     // var data = $(this).data('id');
     openGenerarGuia(data);
 });
+
+// $('#listaTransferenciasPorEnviar tbody').on("click","button.detalle", function(){
+//     var data = $('#listaTransferenciasPorEnviar').DataTable().row($(this).parents("tr")).data();
+//     console.log(data);
+//     if (data !== undefined){
+//         open_transferencia_detalle(data);
+//     }
+// });
 
 function listarTransferenciasRecibidas(){
     var destino = $('[name=id_almacen_dest_recibida]').val();

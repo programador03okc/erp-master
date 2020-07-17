@@ -8,6 +8,7 @@
             <div class="modal-body">
                 <input type="text" class="oculto" name="id_transferencia" >
                 <input type="text" class="oculto" name="id_guia_ven" >
+                <input type="text" class="oculto" name="id_requerimiento" >
                 <input type="text" class="oculto" name="estado" >
                 <input type="text" class="oculto" name="guia_ingreso_compra" >
                 <div class="row">
