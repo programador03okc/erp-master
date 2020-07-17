@@ -1542,6 +1542,11 @@ class LogisticaController extends Controller
 
     public function guardar_requerimiento(Request $request)
     {
+
+    try {
+        DB::beginTransaction();
+
+        $id_requerimiento=0;
         if($request->requerimiento['tipo_requerimiento'] == 2){
             $mes = date('m', strtotime("now"));
             $yy = date('y', strtotime("now"));
@@ -1678,10 +1683,25 @@ class LogisticaController extends Controller
             ],
             'id_doc_aprob'
         );
-        $this->generarTransferenciaRequerimiento($request);
-        return response()->json($id_requerimiento);
-        }
 
+        // trazabilidad requerimiento elaboraod
+        DB::table('almacen.alm_req_obs')
+        ->insert([  'id_requerimiento'=>$id_requerimiento,
+                    'accion'=>'ELABORADO',
+                    'descripcion'=>'Requerimiento elaborado.',
+                    'id_usuario'=>Auth::user()->id_usuario,
+                    'fecha_registro'=>date('Y-m-d H:i:s')
+        ]);
+
+        $this->generarTransferenciaRequerimiento($request);
+        
+        }
+        DB::commit();
+        return response()->json($id_requerimiento);
+
+        } catch (\PDOException $e) {
+            DB::rollBack();
+        }
     }
 
     public static function generarTransferenciaRequerimiento($request){
