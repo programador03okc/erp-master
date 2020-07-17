@@ -644,11 +644,20 @@ class DistribucionController extends Controller
             //Agrega accion en requerimiento
             DB::table('almacen.alm_req_obs')
             ->insert([  'id_requerimiento'=>$request->id_requerimiento,
-                        'accion'=>'ENTREGADO',
-                        'descripcion'=>'Requerimiento Entregado',
+                        'accion'=>'NO ENTREGADO',
+                        'descripcion'=>'Requerimiento No Entregado. '.$request->obs_confirmacion,
                         'id_usuario'=>$id_usuario,
                         'fecha_registro'=>date('Y-m-d H:i:s')
                 ]);
+            
+            DB::table('almacen.alm_req')
+            ->where('id_requerimiento',$request->id_requerimiento)
+            ->update(['estado'=>9]);
+
+            DB::table('almacen.alm_det_req')
+            ->where('id_requerimiento',$request->id_requerimiento)
+            ->update(['estado'=>9]);
+
             DB::commit();
             return response()->json($data);
             
