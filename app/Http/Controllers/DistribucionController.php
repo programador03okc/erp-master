@@ -362,7 +362,7 @@ class DistribucionController extends Controller
                 $text .= $i.'.- '.($item->item_part_number !== null ? $item->item_part_number : $item->prod_part_number).
                 ' '.($item->item_descripcion !== null ? $item->item_descripcion : $item->prod_descripcion).
                 '   Cantidad: '.$item->cantidad.' '.($item->item_unid !== null ? $item->item_unid : $item->prod_unid).
-                '   Precio: '.$item->simbolo.' '.$item->precio_referencial;
+                '   Precio: '.($item->precio_referencial !== null ? ($item->simbolo.' '.$item->precio_referencial) : 0);
             }
 
             $asunto = 'Generar '.$request->documento.' para el '.$req->codigo.' '.$req->concepto;
