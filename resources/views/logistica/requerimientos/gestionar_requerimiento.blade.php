@@ -268,14 +268,15 @@
                             <th class="invisible">#</th>
                             <th>CODIGO</th>
                             <th>PART NUMBER</th>
+                            <th width="70">CATEGORÍA</th>
+                            <th width="70">SUBCATEGORÍA</th>
                             <th>DESCRIPCION</th>
                             <th width="60">UNIDAD</th>
                             <th width="70">CANTIDAD</th>
                             <th width="70">PRECIO REF.</th>
-                            <th width="70">CATEGORÍA</th>
-                            <th width="70">SUBCATEGORÍA</th>
                             <th width="100">FECHA ENTREGA</th>
                             <th width="100">LUGAR ENTREGA</th>
+                            <th width="100">ALMACEN RESERVA</th>
                             <th width="120">
                                 <center><button class="btn btn-xs btn-success activation" onClick="detalleRequerimientoModal(event);" id="btn-add"
                                     data-toggle="tooltip" data-placement="bottom"  title="Agregar Detalle" disabled><i class="fas fa-plus"></i>

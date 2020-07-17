@@ -605,6 +605,10 @@ function mostrar_requerimiento(IdorCode){
                         'id_detalle_requerimiento':detalle_requerimiento[x].id_detalle_requerimiento,
                         'part_number':detalle_requerimiento[x].part_number,
                         'cod_item':detalle_requerimiento[x].codigo_item,
+                        'categoria':detalle_requerimiento[x].categoria,
+                        'subcategoria':detalle_requerimiento[x].subcategoria,
+                        'id_almacen_reserva':detalle_requerimiento[x].id_almacen_reserva,
+                        'almacen_descripcion':detalle_requerimiento[x].almacen_reserva,
                         'des_item':detalle_requerimiento[x].descripcion?detalle_requerimiento[x].descripcion:detalle_requerimiento[x].descripcion_adicional, 
                         'id_unidad_medida':detalle_requerimiento[x].id_unidad_medida,
                         'unidad':detalle_requerimiento[x].unidad_medida,
@@ -947,7 +951,7 @@ function calcMontoLimiteDePartida(){
 }
 
 function llenar_tabla_detalle_requerimiento(data_item){
-    // console.log(data_item);
+    console.log(data_item);
     
     limpiarTabla('ListaDetalleRequerimiento');
     // limpiando
@@ -998,16 +1002,18 @@ function llenar_tabla_detalle_requerimiento(data_item){
             row.insertCell(0).innerHTML = data_item[a].id_item?data_item[a].id_item:'0';
             row.insertCell(1).innerHTML = data_item[a].cod_item?data_item[a].cod_item:'0';
             row.insertCell(2).innerHTML = data_item[a].part_number?data_item[a].part_number:'-';
-            row.insertCell(3).innerHTML = data_item[a].des_item?data_item[a].des_item:'-';
-            row.insertCell(4).innerHTML = descripcion_unidad;
-            row.insertCell(5).innerHTML = data_item[a].cantidad?data_item[a].cantidad:'0';
-            row.insertCell(6).innerHTML = data_item[a].precio_referencial?data_item[a].precio_referencial:'0';
-            row.insertCell(7).innerHTML = data_item[a].categoria?data_item[a].categoria:'-';
-            row.insertCell(8).innerHTML = data_item[a].subcategoria?data_item[a].subcategoria:'-';
+            row.insertCell(3).innerHTML = data_item[a].categoria?data_item[a].categoria:'-';
+            row.insertCell(4).innerHTML = data_item[a].subcategoria?data_item[a].subcategoria:'-';
+            row.insertCell(5).innerHTML = data_item[a].des_item?data_item[a].des_item:'-';
+            row.insertCell(6).innerHTML = descripcion_unidad;
+            row.insertCell(7).innerHTML = data_item[a].cantidad?data_item[a].cantidad:'0';
+            row.insertCell(8).innerHTML = data_item[a].precio_referencial?data_item[a].precio_referencial:'0';
+
             row.insertCell(9).innerHTML = data_item[a].fecha_entrega?data_item[a].fecha_entrega:null;
             row.insertCell(10).innerHTML = data_item[a].lugar_entrega?data_item[a].lugar_entrega:'-';
+            row.insertCell(11).innerHTML = data_item[a].almacen_descripcion?data_item[a].almacen_descripcion:'-';
 
-            var tdBtnAction = row.insertCell(11);
+            var tdBtnAction = row.insertCell(12);
             // tdBtnAction.className = classHiden;
             tdBtnAction.setAttribute('width',widthGroupBtnAction);
             tdBtnAction.innerHTML = '<div class="btn-group btn-group-sm" role="group" aria-label="Second group">'+
@@ -1117,6 +1123,7 @@ function get_data_detalle_requerimiento(){
     var cod_partida = $('[name=cod_partida]').val();
     var des_partida = $('[name=des_partida]').val();
     var id_almacen_reserva = $('[name=id_almacen_reserva]').val();
+    var almacen_descripcion = $('[name=almacen_descripcion]').val();
     if($('[name=estado]').val() === ""){
         var estado = 1;
     }else{
@@ -1146,7 +1153,8 @@ function get_data_detalle_requerimiento(){
         'cod_partida':cod_partida,
         'des_partida':des_partida,
         'estado':parseInt(estado),
-        'id_almacen_reserva':parseInt(id_almacen_reserva)
+        'id_almacen_reserva':parseInt(id_almacen_reserva),
+        'almacen_descripcion':almacen_descripcion
         };
         return item;
 }

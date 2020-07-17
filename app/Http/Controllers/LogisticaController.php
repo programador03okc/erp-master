@@ -625,7 +625,10 @@ class LogisticaController extends Controller
                 ->leftJoin('almacen.alm_prod', 'alm_item.id_producto', '=', 'alm_prod.id_producto')
                 ->leftJoin('logistica.log_servi', 'alm_item.id_servicio', '=', 'log_servi.id_servicio')
                 ->leftJoin('logistica.log_tp_servi', 'log_tp_servi.id_tipo_servicio', '=', 'log_servi.id_tipo_servicio')
-
+                ->join('almacen.alm_cat_prod', 'alm_cat_prod.id_categoria', '=', 'alm_prod.id_categoria')
+                ->join('almacen.alm_subcat','alm_subcat.id_subcategoria','=','alm_prod.id_subcategoria')
+                ->leftJoin('almacen.alm_almacen', 'alm_det_req.id_almacen_reserva', '=', 'alm_almacen.id_almacen')
+    
                 ->leftJoin('almacen.alm_und_medida', 'alm_det_req.id_unidad_medida', '=', 'alm_und_medida.id_unidad_medida')
                 ->leftJoin('almacen.alm_und_medida as und_medida_det_req', 'alm_det_req.id_unidad_medida', '=', 'und_medida_det_req.id_unidad_medida')
                 // ->leftJoin('almacen.alm_clasif', 'alm_clasif.id_clasificacion', '=', 'alm_prod.id_clasif')
@@ -663,6 +666,10 @@ class LogisticaController extends Controller
                     
                     'alm_item.id_item',
                     'alm_det_req.id_producto',
+                    'alm_cat_prod.descripcion as categoria',
+                    'alm_subcat.descripcion as subcategoria',
+                    'alm_det_req.id_almacen_reserva',
+                    'alm_almacen.descripcion as almacen_reserva',
                     'alm_item.codigo AS codigo_item',
                     'alm_item.fecha_registro AS alm_item_fecha_registro',
                     'alm_prod.codigo AS alm_prod_codigo',
@@ -734,6 +741,10 @@ class LogisticaController extends Controller
                             'id_requerimiento'          => $data->id_requerimiento,
                             'codigo_requerimiento'      => $data->codigo_requerimiento,
                             'id_item'                   => $data->id_item_alm_det_req,
+                            'categoria'                 => $data->categoria,
+                            'subcategoria'              => $data->subcategoria,
+                            'id_almacen_reserva'        => $data->id_almacen_reserva,
+                            'almacen_reserva'        => $data->almacen_reserva,
                             'cantidad'                  => $data->cantidad,
                             'id_unidad_medida'             => $data->id_unidad_medida,
                             'unidad_medida'             => $data->unidad_medida,
@@ -1559,27 +1570,27 @@ class LogisticaController extends Controller
             $correlativo = $this->leftZero(4, ($num + 1));
             $codigo = "{$documento}-V-{$yy}-{$correlativo}";
         }else{
-            if(isset($request->requerimiento['id_grupo'])){
-                $sql_grupo = DB::table('administracion.adm_grupo')
-                ->select('adm_grupo.id_grupo','adm_grupo.descripcion')
-                ->where('adm_grupo.id_grupo', $request->requerimiento['id_grupo'])
-                ->get();
+            // if(isset($request->requerimiento['id_grupo'])){
+            //     $sql_grupo = DB::table('administracion.adm_grupo')
+            //     ->select('adm_grupo.id_grupo','adm_grupo.descripcion')
+            //     ->where('adm_grupo.id_grupo', $request->requerimiento['id_grupo'])
+            //     ->get();
         
-                $id_grupo = $sql_grupo->first()->id_grupo;
-                $descripcion_grupo = $sql_grupo->first()->descripcion;  
-            //---------------------GENERANDO CODIGO REQUERIMIENTO--------------------------
-                $mes = date('m', strtotime("now"));
-                $yy = date('y', strtotime("now"));
-                $yyyy = date('Y', strtotime("now"));
-                $documento = 'RQ';
-                $grupo = $descripcion_grupo[0];
-                $num = DB::table('almacen.alm_req')
-                ->whereYear('fecha_registro', '=', $yyyy)
-                ->where('id_grupo', '=', $id_grupo)
-                ->count();
-                $correlativo = $this->leftZero(4, ($num + 1));
-                $codigo = "{$documento}-{$grupo}-{$yy}-{$correlativo}";
-            }else{
+            //     $id_grupo = $sql_grupo->first()->id_grupo;
+            //     $descripcion_grupo = $sql_grupo->first()->descripcion;  
+            // //---------------------GENERANDO CODIGO REQUERIMIENTO--------------------------
+            //     $mes = date('m', strtotime("now"));
+            //     $yy = date('y', strtotime("now"));
+            //     $yyyy = date('Y', strtotime("now"));
+            //     $documento = 'RQ';
+            //     $grupo = $descripcion_grupo[0];
+            //     $num = DB::table('almacen.alm_req')
+            //     ->whereYear('fecha_registro', '=', $yyyy)
+            //     ->where('id_grupo', '=', $id_grupo)
+            //     ->count();
+            //     $correlativo = $this->leftZero(4, ($num + 1));
+            //     $codigo = "{$documento}-{$grupo}-{$yy}-{$correlativo}";
+            // }else{
                 $mes = date('m', strtotime("now"));
                 $yy = date('y', strtotime("now"));
                 $yyyy = date('Y', strtotime("now"));
@@ -1597,7 +1608,7 @@ class LogisticaController extends Controller
                 }
                 $codigo = "{$documento}-{$tp}-{$yy}-{$correlativo}";
                 
-            }
+            // }
         }
 
         if($request->detalle == '' || $request->detalle == null || count($request->detalle)==0){
@@ -1693,7 +1704,7 @@ class LogisticaController extends Controller
                     'fecha_registro'=>date('Y-m-d H:i:s')
         ]);
 
-        $this->generarTransferenciaRequerimiento($request);
+        $this->generarTransferenciaRequerimiento($request, $id_requerimiento);
         
         }
         DB::commit();
@@ -1704,7 +1715,7 @@ class LogisticaController extends Controller
         }
     }
 
-    public static function generarTransferenciaRequerimiento($request){
+    public function generarTransferenciaRequerimiento($request, $id_requerimiento){
         $sede = $request->requerimiento['id_sede'];
 
         if ($request->requerimiento['tipo_requerimiento'] == 2){
@@ -1745,7 +1756,7 @@ class LogisticaController extends Controller
                         'id_almacen_origen' => $alm,
                         'id_almacen_destino' => $almacen_destino->id_almacen,
                         'codigo' => $codigo,
-                        'id_requerimiento' => $request->requerimiento['id_requerimiento'],
+                        'id_requerimiento' =>  $id_requerimiento,
                         'id_guia_ven' => null,
                         'responsable_origen' => null,
                         'responsable_destino' => null,
