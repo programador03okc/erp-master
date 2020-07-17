@@ -989,7 +989,7 @@ function llenar_tabla_detalle_requerimiento(data_item){
     }
 
     for(var a=0;a < data_item.length;a++){
-        if(data_item[a].estado >0){
+        if(data_item[a].estado !=7){
             
             var row = table.insertRow(-1);
             let descripcion_unidad = '';
@@ -1188,13 +1188,13 @@ function eliminarItemDetalleRequerimiento(event,index){
         let item = data_item[index]; 
         // console.log(data_item[index].id_item);
         actualizarMontoLimiteDePartida(data_item[index].id_item,'ELIMINAR');
-        item.estado=0;
+        item.estado=7;
         // console.log(data_item.length);
         
         let tamDataItem = data_item.length;
         let numEstadoCero =0;
         data_item.forEach(element => {
-            if(element.estado == 0){
+            if(element.estado == 7){
                 numEstadoCero++;
             }
         });

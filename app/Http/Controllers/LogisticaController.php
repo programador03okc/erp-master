@@ -550,7 +550,7 @@ class LogisticaController extends Controller
             )
             ->where([
                 $theWhere
-                // ,['alm_req.estado', '=', 1]
+                ,['alm_req.estado', '!=', 7]
             ])
             ->orderBy('alm_req.id_requerimiento', 'asc')
             ->get();
@@ -708,7 +708,7 @@ class LogisticaController extends Controller
                 )
                 ->where([
                     ['alm_det_req.id_requerimiento', '=', $requerimiento[0]['id_requerimiento']]
-                    // ,['alm_det_req.estado', '=', 1]
+                    ,['alm_det_req.estado', '!=', 7]
                 ])
                 ->orderBy('alm_item.id_item', 'asc')
                 ->get();
@@ -1554,8 +1554,8 @@ class LogisticaController extends Controller
     public function guardar_requerimiento(Request $request)
     {
 
-    try {
-        DB::beginTransaction();
+    // try {
+    //     DB::beginTransaction();
 
         $id_requerimiento=0;
         if($request->requerimiento['tipo_requerimiento'] == 2){
@@ -1707,12 +1707,12 @@ class LogisticaController extends Controller
         $this->generarTransferenciaRequerimiento($request, $id_requerimiento);
         
         }
-        DB::commit();
+        // DB::commit();
         return response()->json($id_requerimiento);
 
-        } catch (\PDOException $e) {
-            DB::rollBack();
-        }
+        // } catch (\PDOException $e) {
+        //     DB::rollBack();
+        // }
     }
 
     public function generarTransferenciaRequerimiento($request, $id_requerimiento){
@@ -1722,19 +1722,19 @@ class LogisticaController extends Controller
             $array_items = [];
             $array_almacen = [];
             foreach ($request->detalle as $det) {
-                Debugbar::info($det);
-
-                $almacen = DB::table('almacen.alm_almacen')
-                ->select('sis_sede.id_sede')
-                ->join('administracion.sis_sede','sis_sede.id_sede','=','alm_almacen.id_sede')
-                ->where('id_almacen',$det['id_almacen_reserva'])
-                ->first();
-            
-                if ($almacen !== null && $sede !== $almacen->id_sede){
-                    array_push($array_items, $det);
-
-                    if (!in_array($det['id_almacen_reserva'], $array_almacen)){
-                        array_push($array_almacen, $det['id_almacen_reserva']);
+                if($det['estado'] !=7){
+                    $almacen = DB::table('almacen.alm_almacen')
+                    ->select('sis_sede.id_sede')
+                    ->join('administracion.sis_sede','sis_sede.id_sede','=','alm_almacen.id_sede')
+                    ->where('id_almacen',$det['id_almacen_reserva'])
+                    ->first();
+                    
+                    if ($almacen !== null && $sede !== $almacen->id_sede){
+                        array_push($array_items, $det);
+    
+                        if (!in_array($det['id_almacen_reserva'], $array_almacen)){
+                            array_push($array_almacen, $det['id_almacen_reserva']);
+                        }
                     }
                 }
             }
@@ -1972,10 +1972,10 @@ class LogisticaController extends Controller
         $id_almacen = isset($request->requerimiento['id_almacen'])?$request->requerimiento['id_almacen']:null;
         $monto = isset($request->requerimiento['monto'])?$request->requerimiento['monto']:null;
         $moneda = $request->requerimiento['id_moneda'];
-        $id_area = $request->requerimiento['id_area'];
-        $id_op_com = $request->requerimiento['id_op_com'];
+        $id_area = isset($request->requerimiento['id_area'])?$request->requerimiento['id_area']:null;
+        $id_op_com = isset($request->requerimiento['id_op_com'])?$request->requerimiento['id_op_com']:null;
         $id_priori = $request->requerimiento['id_prioridad'];
-        $codigo_occ = $request->requerimiento['codigo_occ'];
+        $codigo_occ = isset($request->requerimiento['id_op_com'])?$request->requerimiento['id_op_com']:null;
 
         if ($id != NULL) {
             $data_requerimiento = DB::table('almacen.alm_req')->where('id_requerimiento', $id)
@@ -2006,17 +2006,19 @@ class LogisticaController extends Controller
             if ($count_detalle > 0) {
                 for ($i = 0; $i < $count_detalle; $i++) {
                     $id_det_req = $request->detalle[$i]['id_detalle_requerimiento'];
-                    $id_item = $request->detalle[$i]['id_item'];
-                    $id_producto = $request->detalle[$i]['id_producto'];
-                    $precio_ref = $request->detalle[$i]['precio_referencial'];
-                    $cantidad = $request->detalle[$i]['cantidad'];
-                    $fecha_entrega = $request->detalle[$i]['fecha_entrega'];
-                    $lugar_entrega = $request->detalle[$i]['lugar_entrega'];
-                    $des_item = $request->detalle[$i]['des_item'];
-                    $id_parti = $request->detalle[$i]['id_partida'];
-                    $id_unit = $request->detalle[$i]['id_unidad_medida'];
-                    $id_tipo_item = $request->detalle[$i]['id_tipo_item'];
-                    $estado = $request->detalle[$i]['estado'];
+                    $id_item = isset($request->detalle[$i]['id_item'])?$request->detalle[$i]['id_item']:null;
+                    $id_producto = isset($request->detalle[$i]['id_producto'])?$request->detalle[$i]['id_producto']:null;
+                    $precio_ref = isset($request->detalle[$i]['precio_referencial'])?$request->detalle[$i]['precio_referencial']:null;
+                    $cantidad = isset($request->detalle[$i]['cantidad'])?$request->detalle[$i]['cantidad']:null;
+                    $fecha_entrega = isset($request->detalle[$i]['fecha_entrega'])?$request->detalle[$i]['fecha_entrega']:null;
+                    $lugar_entrega = isset($request->detalle[$i]['lugar_entrega'])?$request->detalle[$i]['lugar_entrega']:null;
+                    $des_item = isset($request->detalle[$i]['des_item'])?$request->detalle[$i]['des_item']:null;
+                    $id_parti = isset($request->detalle[$i]['id_partida'])?$request->detalle[$i]['id_partida']:null;
+                    $id_unit = isset($request->detalle[$i]['id_unidad_medida'])?$request->detalle[$i]['id_unidad_medida']:null;
+                    $id_tipo_item = isset($request->detalle[$i]['id_tipo_item'])?$request->detalle[$i]['id_tipo_item']:null;
+                    $estado = isset($request->detalle[$i]['estado'])?$request->detalle[$i]['estado']:1;
+                    $id_almacen_reserva = is_numeric($request->detalle[$i]['id_almacen_reserva']) == 1 ? $request->detalle[$i]['id_almacen_reserva']:null;
+
 
                     if ($id_det_req > 0) {
                         $data_detalle = DB::table('almacen.alm_det_req')
@@ -2033,34 +2035,76 @@ class LogisticaController extends Controller
                                 'partida'               => is_numeric($id_parti) == 1 ? $id_parti : null,
                                 'id_unidad_medida'      => is_numeric($id_unit) == 1 ? $id_unit : null,
                                 'id_tipo_item'          => is_numeric($id_tipo_item) == 1 ? $id_tipo_item : null,
+                                'id_almacen_reserva'    => $id_almacen_reserva,
                                 'estado'                => $estado
                             ]);
                     } else {
                         $data_detalle = DB::table('almacen.alm_det_req')->insertGetId(
                             [
                                 'id_requerimiento'      => $id,
-                                'id_item'               => $id_item,
+                                'id_item'               => is_numeric($id_item) == 1 ? $id_item : null,
+                                'id_producto'           => is_numeric($id_producto) == 1 ? $id_producto : null,
                                 'precio_referencial'    => $precio_ref,
                                 'cantidad'              => $cantidad,
                                 'fecha_entrega'         => $fecha_entrega,
                                 'lugar_entrega'         => $lugar_entrega,
                                 'descripcion_adicional' => $des_item,
-                                'partida'               => $id_parti,
-                                'id_unidad_medida'      => $id_unit,
-                                'id_tipo_item'          => $id_tipo_item,
+                                'partida'               => is_numeric($id_parti) == 1 ? $id_parti : null,
+                                'id_unidad_medida'      => is_numeric($id_unit) == 1 ? $id_unit : null,
+                                'id_tipo_item'          => is_numeric($id_tipo_item) == 1 ? $id_tipo_item : null,
                                 'estado'                => $estado,
                                 'fecha_registro'        => date('Y-m-d H:i:s'),
+                                'id_almacen_reserva'    => $id_almacen_reserva,
                                 'estado'                => 1
                             ],
                             'id_detalle_requerimiento'
                         );
                     }
                 }
+                $this->anularTrasfarencia($id);
+                $this->generarTransferenciaRequerimiento($request, $id);
+
+
                 return response()->json($data_detalle);
             }
             return response()->json($data_requerimiento);
         } else {
             return response(0);
+        }
+    }
+
+    public function anularTrasfarencia($id){
+        try {
+            DB::beginTransaction();
+    
+        $estado_anulado = $this->get_estado_doc('Anulado');
+        $status =0;
+
+        $idTrans=DB::table('almacen.trans')
+        ->select('trans.*')
+        ->where('id_requerimiento',$id)
+        ->get()->first()->id_transferencia;
+        
+        // anular tras
+        $trans = DB::table('almacen.trans')
+        ->where('id_requerimiento', $id)
+        ->update([
+            'estado' => $estado_anulado
+        ]);
+        // anulas trans_detalle
+        $trans_detalle = DB::table('almacen.trans_detalle')
+        ->where('id_transferencia', $idTrans)
+        ->update([
+            'estado' => $estado_anulado
+        ]);
+        if($trans > 0 &&  $trans_detalle > 0){
+            $status= 200;
+        }
+        DB::commit();
+        return $status;
+
+        } catch (\PDOException $e) {
+            DB::rollBack();
         }
     }
 
