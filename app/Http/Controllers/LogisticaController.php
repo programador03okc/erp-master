@@ -1554,8 +1554,8 @@ class LogisticaController extends Controller
     public function guardar_requerimiento(Request $request)
     {
 
-    // try {
-    //     DB::beginTransaction();
+    try {
+        DB::beginTransaction();
 
         $id_requerimiento=0;
         if($request->requerimiento['tipo_requerimiento'] == 2){
@@ -1707,12 +1707,12 @@ class LogisticaController extends Controller
         $this->generarTransferenciaRequerimiento($request, $id_requerimiento);
         
         }
-        // DB::commit();
+        DB::commit();
         return response()->json($id_requerimiento);
 
-        // } catch (\PDOException $e) {
-        //     DB::rollBack();
-        // }
+        } catch (\PDOException $e) {
+            DB::rollBack();
+        }
     }
 
     public function generarTransferenciaRequerimiento($request, $id_requerimiento){
