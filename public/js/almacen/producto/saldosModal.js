@@ -129,9 +129,9 @@ function selectValue(element,id_almacen){
     var de = element.parentElement.parentElement.childNodes[3].innerText;
     var cat = element.parentElement.parentElement.childNodes[4].innerText;
     var subcat = element.parentElement.parentElement.childNodes[5].innerText;
-    var ca = element.parentElement.parentElement.childNodes[6].innerText;
-    var un = element.parentElement.parentElement.childNodes[7].innerText;
-    var idItem = element.parentElement.parentElement.childNodes[8].innerText;
+    var ca = element.innerText;
+    var un = element.parentElement.parentElement.childNodes[10].innerText;
+    var idItem = element.parentElement.parentElement.childNodes[11].innerText;
     var idAlmacenReserva = id_almacen;
 
     $('[name=id_producto]').val(id);
