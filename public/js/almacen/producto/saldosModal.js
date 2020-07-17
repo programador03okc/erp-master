@@ -123,7 +123,6 @@ function saldosModal(id_almacen){
 }
 
 function selectValue(element,id_almacen){
-    console.log(element.parentElement.parentElement.childNodes[1].innerText)
     var id = element.parentElement.parentElement.childNodes[0].innerText;
     var co = element.parentElement.parentElement.childNodes[1].innerText;
     var pn = element.parentElement.parentElement.childNodes[2].innerText;

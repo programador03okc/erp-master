@@ -1687,7 +1687,7 @@ class LogisticaController extends Controller
     public static function generarTransferenciaRequerimiento($request){
         $sede = $request->requerimiento['id_sede'];
 
-        if ($request->requerimiento['tipo_requerimiento'] == 2 || $request->requerimiento['tipo_requerimiento'] == 3){
+        if ($request->requerimiento['tipo_requerimiento'] == 2){
             $array_items = [];
             $array_almacen = [];
             foreach ($request->detalle as $det) {

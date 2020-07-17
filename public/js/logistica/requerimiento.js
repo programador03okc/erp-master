@@ -480,7 +480,65 @@ function mostrar_requerimiento(IdorCode){
             data = response;
             // console.log(response);
             if(response['requerimiento'] !== undefined){
-                
+                if(response['requerimiento'][0].id_tipo_requerimiento == 1){
+                    hiddeElement('ocultar','form-requerimiento',[
+                        'input-group-proyecto',
+                        'input-group-comercial',
+                        'input-group-almacen'
+                    ]);
+                    hiddeElement('mostrar','form-requerimiento',[
+                        'input-group-rol-usuario',
+                        'input-group-moneda',
+                        'input-group-empresa',
+                        'input-group-sede',
+                        'input-group-tipo-cliente',
+                        'input-group-telefono-cliente',
+                        'input-group-email-cliente',
+                        'input-group-cliente',
+                        'input-group-direccion-entrega',
+                        'input-group-ubigeo-entrega',
+                        'input-group-monto'
+            
+                    ]);
+                }else if(response['requerimiento'][0].id_tipo_requerimiento ==2){
+                    hiddeElement('ocultar','form-requerimiento',[
+                        'input-group-rol-usuario',
+                        'input-group-proyecto',
+                        'input-group-comercial'
+                    ]);
+                    hiddeElement('mostrar','form-requerimiento',[
+                        'input-group-sede',
+                        'input-group-tipo-cliente',
+                        'input-group-telefono-cliente',
+                        'input-group-email-cliente',
+                        'input-group-empresa',
+                        'input-group-tipo-cliente',
+                        'input-group-cliente',
+                        'input-group-direccion-entrega',
+                        'input-group-monto'
+            
+                    ]);
+                }else if(response['requerimiento'][0].id_tipo_requerimiento ==3){
+                    hiddeElement('ocultar','form-requerimiento',[
+                        'input-group-moneda',
+                        'input-group-empresa',
+                        'input-group-rol-usuario',
+                        'input-group-sede',
+                        'input-group-tipo-cliente',
+                        'input-group-telefono-cliente',
+                        'input-group-email-cliente',
+                        'input-group-cliente',
+                        'input-group-direccion-entrega',
+                        'input-group-ubigeo-entrega',
+                        'input-group-proyecto',
+                        'input-group-comercial',
+                        'input-group-monto'
+                    ]);
+                    hiddeElement('mostrar','form-requerimiento',[
+                        'input-group-almacen'
+                    ]);
+                }
+
                 $('[name=id_usuario_req]').val(response['requerimiento'][0].id_usuario);
                 $('[name=rol_usuario]').val(response['requerimiento'][0].id_rol);
                 $('[name=id_estado_doc]').val(response['requerimiento'][0].id_estado_doc);
@@ -1795,8 +1853,8 @@ function selectItem(){
         var id_producto = $('#modal-catalogo-items .modal-footer #id_producto').text();
         var id_servicio = $('#modal-catalogo-items .modal-footer #id_servicio').text();
         var id_equipo = $('#modal-catalogo-items .modal-footer #id_equipo').text();
-        var page = $('.page-main').attr('type');
-        var form = $('.page-main form[type=register]').attr('id');
+        // var page = $('.page-main').attr('type');
+        // var form = $('.page-main form[type=register]').attr('id');
         mostrar_item(id_item);
         var selectUnidadMedida = document.getElementsByName("unidad_medida_item");    
         // console.log(id_item);
@@ -1827,7 +1885,12 @@ function mostrar_item(id){
         type: 'GET',
         url: baseUrl,
         dataType: 'JSON',
+        beforeSend: function() {
+                document.querySelector("div[id='modal-detalle-requerimiento'] button[name='btn-agregar-item']").setAttribute('disabled', true);
+        },
         success: function(response){
+            document.querySelector("div[id='modal-detalle-requerimiento'] button[name='btn-agregar-item']").removeAttribute('disabled');
+
             // console.log(response);
             let btnVerUltimasCompras = document.getElementsByName('btnVerUltimasCompras')[0];
             btnVerUltimasCompras.removeAttribute('disabled');
@@ -2467,12 +2530,10 @@ function changeOptTipoReqSelect(e){
             'input-group-ubigeo-entrega',
             'input-group-proyecto',
             'input-group-comercial',
-            'input-group-monto',
-            'input-group-almacen'
-
+            'input-group-monto'
         ]);
         hiddeElement('mostrar','form-requerimiento',[
-            // 'input-group-almacen'
+            'input-group-almacen'
         ]);
 
         listar_almacenes();
