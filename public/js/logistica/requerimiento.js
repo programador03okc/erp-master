@@ -357,7 +357,7 @@ function listarRequerimiento(viewAnulados) {
         info:     true,
         iDisplayLength:10,
         paging:   true,
-        searching: false,
+        searching: true,
         language: vardataTables[0],
         processing: true,
         bDestroy: true,
@@ -379,6 +379,10 @@ function listarRequerimiento(viewAnulados) {
 
     });
 
+    let tablelistareq = document.getElementById(
+        'listaRequerimiento_wrapper'
+    )
+    tablelistareq.childNodes[0].childNodes[0].hidden = true
     // var vardataTables = funcDatatables();
     // $('#listaRequerimiento').dataTable({
     //     'language' : vardataTables[0],
@@ -2502,7 +2506,8 @@ function changeOptTipoReqSelect(e){
         hiddeElement('ocultar','form-requerimiento',[
             'input-group-rol-usuario',
             'input-group-proyecto',
-            'input-group-comercial'
+            'input-group-comercial',
+            'input-group-almacen'
         ]);
         hiddeElement('mostrar','form-requerimiento',[
             'input-group-sede',
