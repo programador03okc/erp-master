@@ -46,7 +46,7 @@ class DistribucionController extends Controller
             'log_ord_compra.codigo as codigo_orden','guia_com.serie','guia_com.numero',
             'trans.id_transferencia','trans.codigo as codigo_transferencia','ubi_dis.descripcion as ubigeo_descripcion',
             'rrhh_perso.nro_documento as dni_persona','alm_almacen.descripcion as almacen_descripcion',
-            'alm_almacen.id_sede as sede_requerimiento','log_ord_compra.id_sede as sede_orden',
+            'alm_req.id_sede as sede_requerimiento','log_ord_compra.id_sede as sede_orden',
             'sis_sede.descripcion as sede_descripcion_orden',
             'orden_despacho.id_od','orden_despacho.codigo as codigo_od','orden_despacho.estado as estado_od',
             'alm_tp_req.descripcion as tipo_req','trans_directo.id_transferencia as id_transferencia_directo',
@@ -79,7 +79,7 @@ class DistribucionController extends Controller
                              $join->where('trans.estado','!=', 7);
                          })
             // ->leftJoin('almacen.trans','trans.id_guia_ven','=','guia_ven.id_guia_ven')
-            ->leftJoin('almacen.alm_almacen','alm_almacen.id_almacen','=','alm_req.id_almacen')
+            ->leftJoin('almacen.alm_almacen','alm_almacen.id_almacen','=','guia_com.id_almacen')
             ->leftJoin('configuracion.ubi_dis','ubi_dis.id_dis','=','alm_req.id_ubigeo_entrega')
             ->leftJoin('rrhh.rrhh_perso','rrhh_perso.id_persona','=','alm_req.id_persona')
             ->leftJoin('comercial.com_cliente','com_cliente.id_cliente','=','alm_req.id_cliente')

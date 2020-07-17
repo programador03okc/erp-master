@@ -130,7 +130,7 @@ function listarRequerimientosPendientes(permiso){
 
 $('#requerimientosPendientes tbody').on("click","button.detalle", function(){
     var data = $('#requerimientosPendientes').DataTable().row($(this).parents("tr")).data();
-    console.log(data.id_requerimiento);
+    console.log(data);
     open_detalle_requerimiento(data);
 });
 
