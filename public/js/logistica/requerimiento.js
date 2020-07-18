@@ -955,38 +955,15 @@ function calcMontoLimiteDePartida(){
 }
 
 function llenar_tabla_detalle_requerimiento(data_item){
-    console.log(data_item);
-    
+
     limpiarTabla('ListaDetalleRequerimiento');
-    // limpiando
     htmls ='<tr></tr>';
     $('#ListaDetalleRequerimiento tbody').html(htmls);
-    // mejorarndo recorrer data_item para llenar tabla detalle requerimiento...
-    var table = document.getElementById("ListaDetalleRequerimiento");
-    // console.log("data ",data_item);
-    // console.log("length ",data_item.length);
+    var table = document.getElementById("ListaDetalleRequerimiento"); 
     
     let widthGroupBtnAction='auto';
-    let classHiden='';
-    let classDisabled='disabled';
-    let classBtnAdjuntos ='';
-    var id_estado_doc = document.getElementsByName('id_estado_doc')[0].value;
-    var id_usuario_session = document.getElementsByName('id_usuario_session')[0].value;
-    var id_usuario_req = document.getElementsByName('id_usuario_req')[0].value;
+
     
-    if((id_estado_doc == 3 || id_estado_doc == 1 ) && id_usuario_session==id_usuario_req ){
-        classHiden='';
-    }else{
-        classHiden='hidden';
-        document.getElementById('btnEditar').setAttribute("disabled","true");
-        document.getElementById('btnAnular').setAttribute("disabled","true");
-    }
-    if(id_estado_doc.length <=0 || id_usuario_req.length <=0 ){
-        classHiden='';
-        classDisabled='';
-
-
-    }
 
     for(var a=0;a < data_item.length;a++){
         if(data_item[a].estado !=7){
@@ -1019,11 +996,17 @@ function llenar_tabla_detalle_requerimiento(data_item){
 
             var tdBtnAction = row.insertCell(12);
             // tdBtnAction.className = classHiden;
+            var hasAttrDisabled ='';
+                if(document.querySelector("button[id='btnEditar']").hasAttribute('disabled')== false){
+                    hasAttrDisabled ='disabled';
+                }else{
+                    hasAttrDisabled = '';
+                }
             tdBtnAction.setAttribute('width',widthGroupBtnAction);
             tdBtnAction.innerHTML = '<div class="btn-group btn-group-sm" role="group" aria-label="Second group">'+
-            '<button class="btn btn-secondary btn-sm '+classHiden+' '+classDisabled+'"  name="btnEditarItem" data-toggle="tooltip" title="Editar" onClick="detalleRequerimientoModal(event, '+a+');" ><i class="fas fa-edit"></i></button>'+
-            '<button class="btn btn-danger btn-sm '+classHiden+' '+classDisabled+'"   name="btnEliminarItem" data-toggle="tooltip" title="Eliminar" onclick="eliminarItemDetalleRequerimiento(event, '+a+');" ><i class="fas fa-trash-alt"></i></button>'+
-            '<button class="btn btn-primary btn-sm '+ classBtnAdjuntos+'" name="btnAdjuntarArchivos" data-toggle="tooltip" title="Adjuntos" onClick="archivosAdjuntosModal(event, '+a+');"><i class="fas fa-paperclip"></i></button>'+
+            '<button class="btn btn-secondary btn-sm"  name="btnEditarItem" data-toggle="tooltip" title="Editar" onClick="detalleRequerimientoModal(event, '+a+');" '+hasAttrDisabled+'><i class="fas fa-edit"></i></button>'+
+            '<button class="btn btn-danger btn-sm"   name="btnEliminarItem" data-toggle="tooltip" title="Eliminar" onclick="eliminarItemDetalleRequerimiento(event, '+a+');" '+hasAttrDisabled+' ><i class="fas fa-trash-alt"></i></button>'+
+            '<button class="btn btn-primary btn-sm" name="btnAdjuntarArchivos" data-toggle="tooltip" title="Adjuntos" onClick="archivosAdjuntosModal(event, '+a+');" '+hasAttrDisabled+'><i class="fas fa-paperclip"></i></button>'+
             '</div>';
 
         }
