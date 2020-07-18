@@ -1764,6 +1764,10 @@ $(function(){
         var codigo = $(this)[0].children[4].innerHTML;
         var partNum = $(this)[0].children[5].innerHTML;
         var descri = $(this)[0].children[6].innerHTML;
+        var unidad = $(this)[0].children[7].innerHTML;
+        var categoria = $(this)[0].children[8].innerHTML;
+        var subcategoria = $(this)[0].children[9].innerHTML;
+        var id_unidad = $(this)[0].children[10].innerHTML;
         $('.modal-footer #id_item').text(idItem);
         $('.modal-footer #codigo').text(codigo);
         $('.modal-footer #part_number').text(partNum);
@@ -1771,6 +1775,10 @@ $(function(){
         $('.modal-footer #id_producto').text(idProd);
         $('.modal-footer #id_servicio').text(idServ);
         $('.modal-footer #id_equipo').text(idEqui);
+        $('.modal-footer #unidad_medida').text(unidad);
+        $('.modal-footer #id_unidad_medida').text(id_unidad);
+        $('.modal-footer #categoria').text(categoria);
+        $('.modal-footer #subcategoria').text(subcategoria);
     });
 });
 
@@ -1798,13 +1806,15 @@ function listarItems() {
             {'data': 'descripcion'},
             {'data': 'unidad_medida_descripcion'},
             {'data': 'categoria'},
-            {'data': 'subcategoria'}
+            {'data': 'subcategoria'},
+            {'data': 'id_unidad_medida'}
         ],
         'columnDefs': [
             { 'aTargets': [0], 'sClass': 'invisible'},
             { 'aTargets': [1], 'sClass': 'invisible'},
             { 'aTargets': [2], 'sClass': 'invisible'},
-            { 'aTargets': [3], 'sClass': 'invisible'}
+            { 'aTargets': [3], 'sClass': 'invisible'},
+            { 'aTargets': [10], 'sClass': 'invisible'}
                     ],
         'order': [
             [2, 'asc']
@@ -1848,14 +1858,26 @@ function selectItem(){
         var id_producto = $('#modal-catalogo-items .modal-footer #id_producto').text();
         var id_servicio = $('#modal-catalogo-items .modal-footer #id_servicio').text();
         var id_equipo = $('#modal-catalogo-items .modal-footer #id_equipo').text();
-        // var page = $('.page-main').attr('type');
-        // var form = $('.page-main form[type=register]').attr('id');
-        mostrar_item(id_item);
+
+        $('[name=id_item]').val(document.querySelector("div[id='modal-catalogo-items'] div[class='modal-footer'] label[id='id_item']").textContent);
+        $('[name=part_number]').val(document.querySelector("div[id='modal-catalogo-items'] div[class='modal-footer'] label[id='part_number']").textContent);
+        $('[name=id_producto]').val(document.querySelector("div[id='modal-catalogo-items'] div[class='modal-footer'] label[id='id_producto']").textContent);
+        $('[name=id_servicio]').val(document.querySelector("div[id='modal-catalogo-items'] div[class='modal-footer'] label[id='id_servicio']").textContent);
+        $('[name=id_equipo]').val(document.querySelector("div[id='modal-catalogo-items'] div[class='modal-footer'] label[id='id_equipo']").textContent);
+        $('[name=codigo_item]').val(document.querySelector("div[id='modal-catalogo-items'] div[class='modal-footer'] label[id='codigo']").textContent);
+        $('[name=descripcion_item]').val(document.querySelector("div[id='modal-catalogo-items'] div[class='modal-footer'] label[id='descripcion']").textContent);
+        $('[name=unidad_medida_item]').val(document.querySelector("div[id='modal-catalogo-items'] div[class='modal-footer'] label[id='id_unidad_medida']").textContent);
+        $('[name=categoria]').val(document.querySelector("div[id='modal-catalogo-items'] div[class='modal-footer'] label[id='categoria']").textContent);
+        $('[name=subcategoria]').val(document.querySelector("div[id='modal-catalogo-items'] div[class='modal-footer'] label[id='subcategoria']").textContent);
+        $('[name=cantidad_item]').val(1);
+        
+        let btnVerUltimasCompras = document.getElementsByName('btnVerUltimasCompras')[0];
+        btnVerUltimasCompras.removeAttribute('disabled');
+        btnVerUltimasCompras.setAttribute('class','btn btn-sm btn-default');
+
+
         var selectUnidadMedida = document.getElementsByName("unidad_medida_item");    
-        // console.log(id_item);
-        // console.log(id_producto);
-        // console.log(id_servicio);
-        // console.log(id_equipo);
+
         if(id_producto > 0){
             disabledControl(selectUnidadMedida,false);
             document.getElementsByName("id_tipo_item")[0].value = 1;
@@ -1870,44 +1892,6 @@ function selectItem(){
             document.getElementsByName("id_tipo_item")[0].value = 3;
         }
         $('#modal-catalogo-items').modal('hide');
-}
-
-
-function mostrar_item(id){
-    $(":file").filestyle('disabled', false);
-    baseUrl = '/logistica/mostrar_item/'+id;
-    $.ajax({
-        type: 'GET',
-        url: baseUrl,
-        dataType: 'JSON',
-        beforeSend: function() {
-                document.querySelector("div[id='modal-detalle-requerimiento'] button[name='btn-agregar-item']").setAttribute('disabled', true);
-        },
-        success: function(response){
-            document.querySelector("div[id='modal-detalle-requerimiento'] button[name='btn-agregar-item']").removeAttribute('disabled');
-
-            // console.log(response);
-            let btnVerUltimasCompras = document.getElementsByName('btnVerUltimasCompras')[0];
-            btnVerUltimasCompras.removeAttribute('disabled');
-            btnVerUltimasCompras.setAttribute('class','btn btn-sm btn-default');
-
-            $('[name=id_item]').val(response[0].id_item);
-            $('[name=part_number]').val(response[0].part_number);
-            $('[name=id_producto]').val(response[0].id_producto);
-            $('[name=id_servicio]').val(response[0].id_servicio);
-            $('[name=id_equipo]').val(response[0].id_equipo);
-            $('[name=codigo_item]').val(response[0].codigo);
-            $('[name=descripcion_item]').val(response[0].descripcion);
-            $('[name=unidad_medida_item]').val(response[0].id_unidad_medida);
-            $('[name=categoria]').val(response[0].categoria);
-            $('[name=subcategoria]').val(response[0].subcategoria);
-
-        }
-    }).fail( function( jqXHR, textStatus, errorThrown ){
-        console.log(jqXHR);
-        console.log(textStatus);
-        console.log(errorThrown);
-    });
 }
 
 

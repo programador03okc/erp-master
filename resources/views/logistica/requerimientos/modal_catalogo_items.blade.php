@@ -19,19 +19,24 @@
                             <th width="120">UNIDAD</th>
                             <th>CATEGORÍA</th>
                             <th>SUBCATEGORÍA</th>
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody></tbody>
                 </table>
             </div>
             <div class="modal-footer">
-                <label style="display: none;" id="id_item"></label>
+                <label style="display: none;" id="id_item"></label> 
                 <label style="display: none;" id="codigo"></label>
                 <label style="display: none;" id="part_number"></label>
                 <label style="display: none;" id="descripcion"></label>
                 <label style="display: none;" id="id_producto"></label>
                 <label style="display: none;" id="id_servicio"></label>
                 <label style="display: none;" id="id_equipo"></label>
+                <label style="display: none;" id="id_unidad_medida"></label>
+                <label style="display: none;" id="unidad_medida"></label>
+                <label style="display: none;" id="categoria"></label>
+                <label style="display: none;" id="subcategoria"></label>
                 <button class="btn btn-sm btn-success" onClick="selectItem();">Aceptar</button>
             </div>
         </div>
