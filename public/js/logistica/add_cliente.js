@@ -9,7 +9,8 @@ function agregar_cliente(){
     $('#modal-add-cliente').modal({
         show: true
     });
-    let tipo_cliente = document.querySelector("form[id='form-requerimiento'] select[name='tipo_cliente']").value;
+    // let tipo_cliente = document.querySelector("form[id='form-requerimiento'] select[name='tipo_cliente']").value;
+    let tipo_cliente = $('[name=tipo_cliente]').val();
     if(tipo_cliente == 1){
         habilitarInputPersonaNatural();
     }else if(tipo_cliente ==2){
@@ -99,21 +100,42 @@ function guardar_cliente(){
                 console.log(response);
                 if(response.status == 200){
                     alert('Cliente registrado con éxito');
-                    if(response.data.tipo_cliente == 1){
-                        document.querySelector("form[id='form-requerimiento'] input[name='id_persona']").value = response.data.id;
-                        document.querySelector("form[id='form-requerimiento'] input[name='dni_persona']").value = response.data.nro_documento;
-                        document.querySelector("form[id='form-requerimiento'] input[name='nombre_persona']").value = response.data.nombre_completo;
-                        document.querySelector("form[id='form-requerimiento'] input[name='direccion_entrega']").value =response.data.direccion;
-                        document.querySelector("form[id='form-requerimiento'] input[name='telefono_cliente']").value =response.data.telefono;
-                        document.querySelector("form[id='form-requerimiento'] input[name='email_cliente']").value = response.data.email;
-                    }
-                    if(response.data.tipo_cliente ==2){
-                        document.querySelector("form[id='form-requerimiento'] input[name='id_cliente']").value = response.data.id;
-                        document.querySelector("form[id='form-requerimiento'] input[name='cliente_ruc']").value = response.data.nro_documento;
-                        document.querySelector("form[id='form-requerimiento'] input[name='cliente_razon_social']").value = response.data.razon_social;
-                        document.querySelector("form[id='form-requerimiento'] input[name='direccion_entrega']").value =response.data.direccion;
-                        document.querySelector("form[id='form-requerimiento'] input[name='telefono_cliente']").value =response.data.telefono;
-                        document.querySelector("form[id='form-requerimiento'] input[name='email_cliente']").value = response.data.email;
+                    let page = document.getElementsByClassName('page-main')[0].getAttribute('type');
+
+                    if (page=='requerimiento'){
+                        if(response.data.tipo_cliente == 1){
+                            document.querySelector("form[id='form-requerimiento'] input[name='id_persona']").value = response.data.id;
+                            document.querySelector("form[id='form-requerimiento'] input[name='dni_persona']").value = response.data.nro_documento;
+                            document.querySelector("form[id='form-requerimiento'] input[name='nombre_persona']").value = response.data.nombre_completo;
+                            document.querySelector("form[id='form-requerimiento'] input[name='direccion_entrega']").value =response.data.direccion;
+                            document.querySelector("form[id='form-requerimiento'] input[name='telefono_cliente']").value =response.data.telefono;
+                            document.querySelector("form[id='form-requerimiento'] input[name='email_cliente']").value = response.data.email;
+                        }
+                        else if(response.data.tipo_cliente ==2){
+                            document.querySelector("form[id='form-requerimiento'] input[name='id_cliente']").value = response.data.id;
+                            document.querySelector("form[id='form-requerimiento'] input[name='cliente_ruc']").value = response.data.nro_documento;
+                            document.querySelector("form[id='form-requerimiento'] input[name='cliente_razon_social']").value = response.data.razon_social;
+                            document.querySelector("form[id='form-requerimiento'] input[name='direccion_entrega']").value =response.data.direccion;
+                            document.querySelector("form[id='form-requerimiento'] input[name='telefono_cliente']").value =response.data.telefono;
+                            document.querySelector("form[id='form-requerimiento'] input[name='email_cliente']").value = response.data.email;
+                        }
+                    } else if (page=='requerimientosPendientes'){
+                        if(response.data.tipo_cliente == 1){
+                            $('[name=id_persona]').val(response.data.id);
+                            $('[name=dni_persona]').val(response.data.nro_documento);
+                            $('[name=nombre_persona]').val(response.data.nombre_completo);
+                            $('[name=direccion_destino]').val(response.data.direccion);
+                            $('[name=telefono_cliente]').val(response.data.telefono);
+                            $('[name=correo_cliente]').val(response.data.email);
+                        }
+                        else if(response.data.tipo_cliente == 2){
+                            $('[name=id_cliente]').val(response.data.id);
+                            $('[name=cliente_ruc]').val(response.data.nro_documento);
+                            $('[name=cliente_razon_social]').val(response.data.razon_social);
+                            $('[name=direccion_destino]').val(response.data.direccion);
+                            $('[name=telefono_cliente]').val(response.data.telefono);
+                            $('[name=correo_cliente]').val(response.data.email);
+                        }
                     }
                     $('#modal-add-cliente').modal('hide');
                 } 

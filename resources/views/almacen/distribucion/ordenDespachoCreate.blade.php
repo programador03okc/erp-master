@@ -24,7 +24,7 @@
                         </div>
                         <div class="col-md-2">
                             <h5>Teléfono</h5>
-                            <input type="number" class="form-control" name="telefono">
+                            <input type="number" class="form-control" name="telefono_cliente">
                         </div>
                         <div class="col-md-6">
                             <h5>Almacén</h5>
@@ -38,16 +38,20 @@
                             <div style="display:flex;"> 
                                 <input type="text" class="oculto" name="id_cliente" >
                                 <input type="text" class="oculto" name="tipo_cliente" >
-                                <input type="text" class="form-control" name="cliente_ruc" style="display: none; width: 130px;">
-                                <input type="text" class="form-control" name="cliente_razon_social" style="display: none;">
+                                <input type="text" class="form-control" name="cliente_ruc" style="display: none; width: 130px;" readOnly>
+                                <input type="text" class="form-control" name="cliente_razon_social" style="display: none;" readOnly>
 
                                 <input type="text" class="oculto" name="id_persona" >
-                                <input type="text" class="form-control" name="dni_persona" style="width: 130px;">
-                                <input type="text" class="form-control" name="nombre_persona" >
+                                <input type="text" class="form-control" name="dni_persona" style="width: 130px;" readOnly>
+                                <input type="text" class="form-control" name="nombre_persona" readOnly>
 
                                 <button type="button" title="Seleccionar Cliente" name="btnCliente" 
                                 onClick="openCliente();" class="input-group-text btn-primary" >
                                 <i class="fas fa-user-tie"></i></button>
+
+                                <button type="button" class="btn-success" title="Agregar Cliente" name="btnAddCliente" 
+                                onClick="agregar_cliente();">
+                                <i class="fas fa-plus"></i></button>
                             </div>
                         </div>
                         <div class="col-md-3">
@@ -68,7 +72,7 @@
                             <h5>Ubigeo Destino</h5>
                             <div style="display:flex;">
                                 <input class="oculto" name="ubigeo"/>
-                                <input type="text" class="form-control" name="name_ubigeo">
+                                <input type="text" class="form-control" name="name_ubigeo" readOnly>
                                 <button type="button" class="input-group-text btn-primary" id="basic-addon1" onClick="ubigeoModal();">
                                     <i class="fa fa-search"></i>
                                 </button>

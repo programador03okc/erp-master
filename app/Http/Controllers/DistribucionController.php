@@ -44,7 +44,8 @@ class DistribucionController extends Controller
             ->select('alm_req.*','sis_usua.nombre_corto as responsable','adm_grupo.descripcion as grupo',
             'adm_estado_doc.estado_doc','adm_estado_doc.bootstrap_color',
             'log_ord_compra.codigo as codigo_orden','guia_com.serie','guia_com.numero',
-            'trans.id_transferencia','trans.codigo as codigo_transferencia','ubi_dis.descripcion as ubigeo_descripcion',
+            'trans.id_transferencia','trans.codigo as codigo_transferencia',
+            DB::raw("(ubi_dis.descripcion) || ' - ' || (ubi_prov.descripcion) || ' - ' || (ubi_dpto.descripcion) AS ubigeo_descripcion"),
             'rrhh_perso.nro_documento as dni_persona','alm_almacen.descripcion as almacen_descripcion',
             'alm_req.id_sede as sede_requerimiento','log_ord_compra.id_sede as sede_orden',
             'sis_sede.descripcion as sede_descripcion_orden',
@@ -83,8 +84,10 @@ class DistribucionController extends Controller
                          {   $join->on('trans.id_guia_ven', '=', 'guia_ven.id_guia_ven');
                              $join->where('trans.estado','!=', 7);
                          })
-            ->leftJoin('almacen.alm_almacen','alm_almacen.id_almacen','=','guia_com.id_almacen')
+            ->leftJoin('almacen.alm_almacen','alm_almacen.id_almacen','=','alm_req.id_almacen')
             ->leftJoin('configuracion.ubi_dis','ubi_dis.id_dis','=','alm_req.id_ubigeo_entrega')
+            ->leftJoin('configuracion.ubi_prov','ubi_prov.id_prov','=','ubi_dis.id_prov')
+            ->leftJoin('configuracion.ubi_dpto','ubi_dpto.id_dpto','=','ubi_prov.id_dpto')
             ->leftJoin('rrhh.rrhh_perso','rrhh_perso.id_persona','=','alm_req.id_persona')
             ->leftJoin('comercial.com_cliente','com_cliente.id_cliente','=','alm_req.id_cliente')
             ->leftJoin('contabilidad.adm_contri','adm_contri.id_contribuyente','=','com_cliente.id_contribuyente')
@@ -372,7 +375,9 @@ class DistribucionController extends Controller
                 $text .= $i.'.- '.($item->item_part_number !== null ? $item->item_part_number : $item->prod_part_number).
                 ' '.($item->item_descripcion !== null ? $item->item_descripcion : $item->prod_descripcion).
                 '   Cantidad: '.$item->cantidad.' '.($item->item_unid !== null ? $item->item_unid : $item->prod_unid).
-                '   Precio: '.($item->precio_referencial !== null ? ($item->simbolo.' '.$item->precio_referencial) : 0);
+                '   Precio: '.($item->precio_referencial !== null ? ($item->simbolo.' '.$item->precio_referencial) : 0).'
+                ';
+                $i++;
             }
 
             $asunto = 'Generar '.$request->documento.' para el '.$req->codigo.' '.$req->concepto;
@@ -387,12 +392,12 @@ class DistribucionController extends Controller
     - Fecha Despacho: '.$request->fecha_despacho.'
 
     Descripcion de Items:
-    '.$text.'
+                '.$text.'
     
     Saludos,
     Módulo de Logística y Almacenes
     ';
-            $destinatario = 'distribucion@okcomputer.com.pe';
+            $destinatario = 'programador01@okcomputer.com.pe';
             $msj = CorreoController::enviar_correo($empresa->id_empresa, $destinatario, $asunto, $contenido);
 
             DB::commit();

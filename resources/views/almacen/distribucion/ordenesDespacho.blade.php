@@ -137,6 +137,7 @@ Gestión de Despachos
 @include('almacen.distribucion.ordenDespachoAdjuntos')
 @include('logistica.cotizaciones.clienteModal')
 @include('logistica.cotizaciones.proveedorModal')
+@include('logistica.cotizaciones.add_cliente')
 @include('logistica.cotizaciones.add_proveedor')
 @include('publico.personaModal')
 @include('publico.ubigeoModal')
@@ -165,6 +166,8 @@ Gestión de Despachos
     <script src="{{ asset('js/logistica/clienteModal.js')}}"></script>
     <script src="{{ asset('js/logistica/proveedorModal.js')}}"></script>
     <script src="{{ asset('js/logistica/add_proveedor.js')}}"></script>
+    <script src="{{ asset('js/logistica/add_cliente.js')}}"></script>
+    <script src="{{ asset('js/publico/hiddenElement.js')}}"></script>
     <script src="{{ asset('js/publico/ubigeoModal.js')}}"></script>
     <script src="{{ asset('js/publico/personaModal.js')}}"></script>
     <script>

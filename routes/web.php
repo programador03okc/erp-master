@@ -900,6 +900,8 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::get('mostrar_clientes', 'AlmacenController@mostrar_clientes');
 					Route::get('listar_personas', 'RecursosHumanosController@mostrar_persona_table');
 					Route::get('listarDetalleTransferencias/{id}', 'TransferenciaController@listarDetalleTransferencias');
+					Route::get('listar_ubigeos', 'AlmacenController@listar_ubigeos');
+					Route::post('save_cliente', 'LogisticaController@save_cliente');
 
 				});
 	
