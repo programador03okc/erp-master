@@ -78,7 +78,10 @@ function listarRequerimientosPendientes(permiso){
                 }
             },
             {'render': function (data, type, row){
-                return (row['codigo_transferencia'] !== null ? row['codigo_transferencia'] : '')
+                return (row['codigo_transferencia'] !== null ? row['codigo_transferencia'] : (row['count_transferencia'] > 0 ? 
+                '<button type="button" class="detalle_trans btn btn-success boton" data-toggle="tooltip" '+
+                    'data-placement="bottom" title="Ver Detalle de Transferencias" data-id="'+row['id_requerimiento']+'">'+
+                    '<i class="fas fa-exchange-alt"></i></button>' : ''))
                 }
             },
             {'render': function (data, type, row){
@@ -93,15 +96,15 @@ function listarRequerimientosPendientes(permiso){
                     return '<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" '+
                     'data-placement="bottom" title="Ver Detalle" >'+
                     '<i class="fas fa-list-ul"></i></button>'+
-                    ((row['estado'] == 19 && row['id_tipo_requerimiento'] == 2 && row['id_od'] == null) ? 
+                    ((row['estado'] == 19 && row['id_tipo_requerimiento'] == 2 && row['id_od'] == null && row['confirmacion_pago'] == false) ? 
                         '<button type="button" class="anular btn btn-danger boton" data-toggle="tooltip" '+
                         'data-placement="bottom" data-id="'+row['id_requerimiento']+'" data-cod="'+row['codigo']+'" title="Anular Requerimiento" >'+
                         '<i class="fas fa-trash"></i></button>' : '')+
                     (
-                        ((row['estado'] == 19 && row['id_tipo_requerimiento'] == 1 && row['sede_requerimiento'] == row['sede_orden'] && row['id_od'] == null) ||
+                        ((row['estado'] == 19 && row['id_tipo_requerimiento'] == 1 && row['sede_requerimiento'] == row['sede_orden'] && row['id_od'] == null) || //compra 
                         (row['estado'] == 19 && row['id_tipo_requerimiento'] == 1 && row['sede_requerimiento'] !== row['sede_orden'] && row['id_transferencia'] !== null && row['id_od'] == null) || //compra con transferencia
-                        (row['estado'] == 19 && row['id_tipo_requerimiento'] == 2 && row['confirmacion_pago'] == true && row['id_od'] == null && row['id_transferencia_directo'] == null) ||
-                        (row['estado'] == 19 && row['id_tipo_requerimiento'] == 2 && row['confirmacion_pago'] == true && row['id_od'] == null && row['id_transferencia_directo'] !== null && row['trans_estado_directo'] == 14)) ? //venta directa
+                        (row['estado'] == 19 && row['id_tipo_requerimiento'] == 2 && row['confirmacion_pago'] == true && row['id_od'] == null && row['count_transferencia'] == 0) || //venta directa
+                        (row['estado'] == 19 && row['id_tipo_requerimiento'] == 2 && row['confirmacion_pago'] == true && row['id_od'] == null && row['count_transferencia'] > 0 && row['count_transferencia'] == row['count_transferencia_recibida'])) ? //venta directa con transferencia
                         ('<button type="button" class="despacho btn btn-success boton" data-toggle="tooltip" '+
                         'data-placement="bottom" title="Generar Orden de Despacho" >'+
                         '<i class="fas fa-sign-in-alt"></i></button>') : 
@@ -132,6 +135,11 @@ $('#requerimientosPendientes tbody').on("click","button.detalle", function(){
     var data = $('#requerimientosPendientes').DataTable().row($(this).parents("tr")).data();
     console.log(data);
     open_detalle_requerimiento(data);
+});
+
+$('#requerimientosPendientes tbody').on("click","button.detalle_trans", function(){
+    var id = $(this).data('id');
+    open_detalle_transferencia(id);
 });
 
 $('#requerimientosPendientes tbody').on("click","button.adjuntar", function(){
@@ -257,6 +265,24 @@ function anularOrdenDespacho(id){
             if (response > 0){
                 $('#requerimientosPendientes').DataTable().ajax.reload();
             }
+        }
+    }).fail( function( jqXHR, textStatus, errorThrown ){
+        console.log(jqXHR);
+        console.log(textStatus);
+        console.log(errorThrown);
+    });
+}
+
+function open_detalle_transferencia(id){
+    $('#modal-detalleTransferencia').modal({
+        show: true
+    });
+    $.ajax({
+        type: 'GET',
+        url: 'listarDetalleTransferencias/'+id,
+        dataType: 'JSON',
+        success: function(response){
+            $('#detalleTransferencias tbody').html(response);
         }
     }).fail( function( jqXHR, textStatus, errorThrown ){
         console.log(jqXHR);

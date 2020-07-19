@@ -396,7 +396,7 @@ class OrdenesPendientesController extends Controller
                 'responsable_destino' => $request->responsable_destino_trans,
                 'fecha_transferencia' => $fecha,
                 'registrado_por' => $usuario,
-                'estado' => 1,
+                'estado' => 17,//enviado
                 'fecha_registro' => $fecha_registro,
             ],
                 'id_transferencia'
@@ -496,7 +496,8 @@ class OrdenesPendientesController extends Controller
             //actualiza estado requerimiento: enviado
             DB::table('almacen.alm_req')
                 ->where('id_requerimiento',$request->id_requerimiento)
-                ->update(['estado'=>17]);//enviado
+                ->update(['estado'=>17,
+                          'id_almacen'=>$request->id_almacen_destino]);//enviado
             //actualiza estado requerimiento_detalle: enviado
             DB::table('almacen.alm_det_req')
                 ->where('id_requerimiento',$request->id_requerimiento)

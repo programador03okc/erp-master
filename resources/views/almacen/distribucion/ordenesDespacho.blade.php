@@ -127,6 +127,7 @@ Gestión de Despachos
     </div>
 </div>
 @include('almacen.distribucion.requerimientoDetalle')
+@include('almacen.distribucion.transferenciasDetalle')
 @include('almacen.distribucion.ordenDespachoCreate')
 @include('almacen.distribucion.grupoDespachoCreate')
 @include('almacen.distribucion.despachoDetalle')
