@@ -9,7 +9,7 @@ function iniciar(permiso, usuario){
     valor_permiso = permiso;
     usuario_session = usuario;
 
-    listarTransferenciasPendientes();
+    listarTransferenciasPorEnviar();
     console.log(permiso);
     $('ul.nav-tabs li a').click(function(){
         $('ul.nav-tabs li').removeClass('active');
@@ -67,7 +67,11 @@ function listarTransferenciasPendientes(){
                 {'data': 'codigo'},
                 {'render':
                     function (data, type, row){
-                        return ('<label class="lbl-codigo" title="Abrir Guía" onClick="abrir_guia_venta('+row['id_guia_ven']+')">'+row['guia_ven']+'</label>');
+                        if (row['id_guia_ven'] !== null){
+                            return ('<label class="lbl-codigo" title="Abrir Guía" onClick="abrir_guia_venta('+row['id_guia_ven']+')">'+row['guia_ven']+'</label>');
+                        } else {
+                            return '';
+                        }
                     }
                 },
                 // {'render':
@@ -126,12 +130,12 @@ function listarTransferenciasPendientes(){
                 {'render':
                     function (data, type, row){
                         if (valor_permiso == '1') {
-                            return ('<button type="button" class="atender btn btn-success boton" data-toggle="tooltip" '+
-                            'data-placement="bottom" title="Atender" >'+
+                            return (row['id_guia_ven'] !== null ? ('<button type="button" class="atender btn btn-success boton" data-toggle="tooltip" '+
+                            'data-placement="bottom" title="Recibir" >'+
                             '<i class="fas fa-share"></i></button>'+
-                        '<button type="button" class="salida btn btn-primary boton" data-toggle="tooltip" '+
+                            '<button type="button" class="salida btn btn-primary boton" data-toggle="tooltip" '+
                             'data-placement="bottom" data-id-salida="'+row['id_salida']+'" title="Ver Salida" >'+
-                            '<i class="fas fa-file-alt"></i></button>');
+                            '<i class="fas fa-file-alt"></i></button>') : '');
                         } else {
                             return ''
                         }
@@ -180,7 +184,8 @@ function listarTransferenciasPorEnviar(){
             {'data': 'id_transferencia'},
             {'data': 'codigo'},
             {'data': 'fecha_registro'},
-            {'data': 'alm_origen_descripcion', 'name': 'alm_almacen.descripcion'},
+            {'data': 'alm_origen_descripcion', 'name': 'origen.descripcion'},
+            {'data': 'alm_destino_descripcion', 'name': 'destino.descripcion'},
             {'data': 'cod_req', 'name': 'alm_req.codigo'},
             {'data': 'concepto', 'name': 'alm_req.concepto'},
             {'data': 'sede_descripcion', 'name': 'sis_sede.descripcion'},
@@ -198,7 +203,7 @@ function listarTransferenciasPorEnviar(){
                     //     data-placement="bottom" title="Ver Detalle" >
                     //     <i class="fas fa-list-ul"></i></button>`
                     }
-                }, targets: 8
+                }, targets: 9
             }
         ],
     });
@@ -397,13 +402,21 @@ function anular_transferencia(data){
 }
 
 function abrir_guia_venta(id_guia_venta){
-    console.log('abrir_guia_venta()');
+    // Abrir nuevo tab
     localStorage.setItem("id_guia_ven",id_guia_venta);
-    location.assign("guia_venta");
+    let url ="/logistica/almacen/movimientos/guias-venta/index";
+    var win = window.open(url, '_blank');
+    // Cambiar el foco al nuevo tab (punto opcional)
+    win.focus();
+    // location.assign("/logistica/almacen/movimientos/guias-venta/index");
 }
 
 function abrir_guia_compra(id_guia_compra){
-    console.log('abrir_guia_compra()');
+    // Abrir nuevo tab
     localStorage.setItem("id_guia_com",id_guia_compra);
-    location.assign("guia_compra");
+    let url ="/logistica/almacen/movimientos/guias-compra/index";
+    var win = window.open(url, '_blank');
+    // Cambiar el foco al nuevo tab (punto opcional)
+    win.focus();
+    // location.assign("guia_compra");
 }

@@ -78,7 +78,10 @@ function listarRequerimientosPendientes(permiso){
                 }
             },
             {'render': function (data, type, row){
-                return (row['codigo_transferencia'] !== null ? row['codigo_transferencia'] : '')
+                return (row['codigo_transferencia'] !== null ? row['codigo_transferencia'] : (row['count_transferencia'] > 0 ? 
+                '<button type="button" class="detalle_trans btn btn-success boton" data-toggle="tooltip" '+
+                    'data-placement="bottom" title="Ver Detalle de Transferencias" data-id="'+row['id_requerimiento']+'">'+
+                    '<i class="fas fa-exchange-alt"></i></button>' : ''))
                 }
             },
             {'render': function (data, type, row){
@@ -93,15 +96,15 @@ function listarRequerimientosPendientes(permiso){
                     return '<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" '+
                     'data-placement="bottom" title="Ver Detalle" >'+
                     '<i class="fas fa-list-ul"></i></button>'+
-                    ((row['estado'] == 19 && row['id_tipo_requerimiento'] == 2 && row['id_od'] == null) ? 
+                    ((row['estado'] == 19 && row['id_tipo_requerimiento'] == 2 && row['id_od'] == null && row['confirmacion_pago'] == false) ? 
                         '<button type="button" class="anular btn btn-danger boton" data-toggle="tooltip" '+
                         'data-placement="bottom" data-id="'+row['id_requerimiento']+'" data-cod="'+row['codigo']+'" title="Anular Requerimiento" >'+
                         '<i class="fas fa-trash"></i></button>' : '')+
                     (
-                        ((row['estado'] == 19 && row['id_tipo_requerimiento'] == 1 && row['sede_requerimiento'] == row['sede_orden'] && row['id_od'] == null) ||
+                        ((row['estado'] == 19 && row['id_tipo_requerimiento'] == 1 && row['sede_requerimiento'] == row['sede_orden'] && row['id_od'] == null) || //compra 
                         (row['estado'] == 19 && row['id_tipo_requerimiento'] == 1 && row['sede_requerimiento'] !== row['sede_orden'] && row['id_transferencia'] !== null && row['id_od'] == null) || //compra con transferencia
-                        (row['estado'] == 19 && row['id_tipo_requerimiento'] == 2 && row['confirmacion_pago'] == true && row['id_od'] == null && row['id_transferencia_directo'] == null) ||
-                        (row['estado'] == 19 && row['id_tipo_requerimiento'] == 2 && row['confirmacion_pago'] == true && row['id_od'] == null && row['id_transferencia_directo'] !== null && row['trans_estado_directo'] == 14)) ? //venta directa
+                        (row['estado'] == 19 && row['id_tipo_requerimiento'] == 2 && row['confirmacion_pago'] == true && row['id_od'] == null && row['count_transferencia'] == 0) || //venta directa
+                        (row['estado'] == 19 && row['id_tipo_requerimiento'] == 2 && row['confirmacion_pago'] == true && row['id_od'] == null && row['count_transferencia'] > 0 && row['count_transferencia'] == row['count_transferencia_recibida'])) ? //venta directa con transferencia
                         ('<button type="button" class="despacho btn btn-success boton" data-toggle="tooltip" '+
                         'data-placement="bottom" title="Generar Orden de Despacho" >'+
                         '<i class="fas fa-sign-in-alt"></i></button>') : 
@@ -132,6 +135,11 @@ $('#requerimientosPendientes tbody').on("click","button.detalle", function(){
     var data = $('#requerimientosPendientes').DataTable().row($(this).parents("tr")).data();
     console.log(data);
     open_detalle_requerimiento(data);
+});
+
+$('#requerimientosPendientes tbody').on("click","button.detalle_trans", function(){
+    var id = $(this).data('id');
+    open_detalle_transferencia(id);
 });
 
 $('#requerimientosPendientes tbody').on("click","button.adjuntar", function(){
@@ -257,6 +265,24 @@ function anularOrdenDespacho(id){
             if (response > 0){
                 $('#requerimientosPendientes').DataTable().ajax.reload();
             }
+        }
+    }).fail( function( jqXHR, textStatus, errorThrown ){
+        console.log(jqXHR);
+        console.log(textStatus);
+        console.log(errorThrown);
+    });
+}
+
+function open_detalle_transferencia(id){
+    $('#modal-detalleTransferencia').modal({
+        show: true
+    });
+    $.ajax({
+        type: 'GET',
+        url: 'listarDetalleTransferencias/'+id,
+        dataType: 'JSON',
+        success: function(response){
+            $('#detalleTransferencias tbody').html(response);
         }
     }).fail( function( jqXHR, textStatus, errorThrown ){
         console.log(jqXHR);
@@ -445,10 +471,10 @@ function listarGruposDespachados(permiso){
                         '<i class="fas fa-file-alt"></i></button>'+
                         ((row['confirmacion'] == false && row['estado_od'] == 20)? 
                         ('<button type="button" class="conforme btn btn-success boton" data-toggle="tooltip" '+
-                        'data-placement="bottom" data-id="'+row['id_od_grupo_detalle']+'" data-od="'+row['id_od']+'" data-idreq="'+row['id_requerimiento']+'" title="Confirmar Entrega" >'+
+                        'data-placement="bottom" data-id="'+row['id_od_grupo_detalle']+'" data-od="'+row['id_od']+'" data-idreq="'+row['id_requerimiento']+'" data-cod-req="'+row['codigo_req']+'" data-concepto="'+row['concepto']+'" title="Confirmar Entrega" >'+
                         '<i class="fas fa-check"></i></button>'+
                         '<button type="button" class="no_conforme btn btn-danger boton" data-toggle="tooltip" '+
-                        'data-placement="bottom" data-id="'+row['id_od_grupo_detalle']+'" data-od="'+row['id_od']+'" data-idreq="'+row['id_requerimiento']+'" data-cod-od="'+row['codigo_od']+'" data-concepto="'+row['concepto']+'" title="No Entregado" >'+
+                        'data-placement="bottom" data-id="'+row['id_od_grupo_detalle']+'" data-od="'+row['id_od']+'" data-idreq="'+row['id_requerimiento']+'" data-cod-req="'+row['codigo_req']+'" data-concepto="'+row['concepto']+'" title="No Entregado" >'+
                         '<i class="fas fa-ban"></i></button>') : ''));
                     } else {
                         return '<button type="button" class="god_detalle btn btn-primary boton" data-toggle="tooltip" '+
@@ -499,17 +525,23 @@ $('#gruposDespachados tbody').on("click","button.conforme", function(){
     var id_od_grupo_detalle = $(this).data('id');
     var id_od = $(this).data('od');
     var id_req = $(this).data('idreq');
-    var data = 'id_od_grupo_detalle='+id_od_grupo_detalle+
-               '&id_od='+id_od+
-               '&id_requerimiento='+id_req;
-    despacho_conforme(data);
+    var cod_req = $(this).data('codReq');
+    var concepto = $(this).data('concepto');
+
+    var rspta = confirm('¿Está seguro que desea dar Conformidad de Entrega al '+cod_req+' '+concepto+'?');
+    if (rspta){
+        var data = 'id_od_grupo_detalle='+id_od_grupo_detalle+
+                   '&id_od='+id_od+
+                   '&id_requerimiento='+id_req;
+        despacho_conforme(data);
+    }
 });
 
 $('#gruposDespachados tbody').on("click","button.no_conforme", function(){
     var id_od_grupo_detalle = $(this).data('id');
     var id_od = $(this).data('od');
     var id_req = $(this).data('idreq');
-    var cod_od = $(this).data('codOd');
+    var cod_req = $(this).data('codReq');
     var concepto = $(this).data('concepto');
 
     $('#modal-despacho_obs').modal({
@@ -519,7 +551,7 @@ $('#gruposDespachados tbody').on("click","button.no_conforme", function(){
     $('[name=obs_id_od_grupo_detalle]').val(id_od_grupo_detalle);
     $('[name=obs_id_od]').val(id_od);
     $('[name=obs_id_requerimiento]').val(id_req);
-    $("#codigo_odg").text(cod_od +' - '+concepto+' - '+"No Entregado");
+    $("#codigo_odg").text(cod_req +' - '+concepto+' - '+"No Entregado");
     $("#btnDespachoObs").removeAttr("disabled");
 });
 

@@ -49,7 +49,7 @@
                         </div>
                         <div class="col-md-6">
                             <h5>Almacén Destino</h5>
-                            <select class="form-control" name="id_almacen_destino">
+                            <select class="form-control js-example-basic-single " name="id_almacen_destino">
                                 <option value="0">Elija una opción</option>
                                 @foreach ($almacenes as $alm)
                                     <option value="{{$alm->id_almacen}}">{{$alm->descripcion}}</option>
@@ -70,7 +70,7 @@
                         <div class="col-md-6">
                             <h5>Responsable Destino:</h5>
                             <!-- js-example-basic-single -->
-                            <select class="form-control" name="responsable_destino_trans">
+                            <select class="form-control js-example-basic-single " name="responsable_destino_trans">
                                 <option value="0">Elija una opción</option>
                                 @foreach ($usuarios as $usu)
                                     <option value="{{$usu->id_usuario}}">{{$usu->nombre_corto}}</option>
