@@ -1553,6 +1553,15 @@ class LogisticaController extends Controller
 
     public function guardar_requerimiento(Request $request)
     {
+        // tipo requerimiento:
+            // 1 compra
+                // tipo_cliente
+                    // 1 pers.natural
+                    // 2 pers.juridica
+                    // 3 uso almacen
+                    // 4 uso administración
+            // 2 venta directa
+            // 3 pedido almacén
 
     try {
         DB::beginTransaction();
@@ -1570,27 +1579,7 @@ class LogisticaController extends Controller
             $correlativo = $this->leftZero(4, ($num + 1));
             $codigo = "{$documento}-V-{$yy}-{$correlativo}";
         }else{
-            // if(isset($request->requerimiento['id_grupo'])){
-            //     $sql_grupo = DB::table('administracion.adm_grupo')
-            //     ->select('adm_grupo.id_grupo','adm_grupo.descripcion')
-            //     ->where('adm_grupo.id_grupo', $request->requerimiento['id_grupo'])
-            //     ->get();
-        
-            //     $id_grupo = $sql_grupo->first()->id_grupo;
-            //     $descripcion_grupo = $sql_grupo->first()->descripcion;  
-            // //---------------------GENERANDO CODIGO REQUERIMIENTO--------------------------
-            //     $mes = date('m', strtotime("now"));
-            //     $yy = date('y', strtotime("now"));
-            //     $yyyy = date('Y', strtotime("now"));
-            //     $documento = 'RQ';
-            //     $grupo = $descripcion_grupo[0];
-            //     $num = DB::table('almacen.alm_req')
-            //     ->whereYear('fecha_registro', '=', $yyyy)
-            //     ->where('id_grupo', '=', $id_grupo)
-            //     ->count();
-            //     $correlativo = $this->leftZero(4, ($num + 1));
-            //     $codigo = "{$documento}-{$grupo}-{$yy}-{$correlativo}";
-            // }else{
+       
                 $mes = date('m', strtotime("now"));
                 $yy = date('y', strtotime("now"));
                 $yyyy = date('Y', strtotime("now"));
@@ -1602,13 +1591,16 @@ class LogisticaController extends Controller
                 $correlativo = $this->leftZero(4, ($num + 1));
                 $tp = '';
                 if ($request->requerimiento['tipo_requerimiento'] == 1){
-                    $tp = 'C';
+                    if ($request->requerimiento['tipo_cliente'] == 3){
+                        $tp = 'S';
+                    }else{
+                        $tp = 'C';
+                    }
                 } else if ($request->requerimiento['tipo_requerimiento'] == 3){
-                    $tp = 'S';
+                    $tp = 'PA';
                 }
                 $codigo = "{$documento}-{$tp}-{$yy}-{$correlativo}";
                 
-            // }
         }
 
         if($request->detalle == '' || $request->detalle == null || count($request->detalle)==0){
@@ -1729,7 +1721,8 @@ class LogisticaController extends Controller
                     ->where('id_almacen',$det['id_almacen_reserva'])
                     ->first();
                     
-                    if ($almacen !== null && $sede !== $almacen->id_sede){
+                    if ($almacen != null && $sede != $almacen->id_sede){
+
                         array_push($array_items, $det);
     
                         if (!in_array($det['id_almacen_reserva'], $array_almacen)){

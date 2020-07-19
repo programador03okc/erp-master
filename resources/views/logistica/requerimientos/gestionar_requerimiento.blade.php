@@ -127,22 +127,23 @@
                     <button type="button" title="Seleccionar Ubigeo" class="btn-primary" onClick="ubigeoModal();" ><i class="far fa-compass"></i></button>
                 </div>
             </div>
-            <div class="col-md-4" id="input-group-almacen" hidden>
-                <h5>Almacén que solicita</h5>
-                <select class="form-control activation " name="id_almacen">
-                    <option value="0">Elija una opción</option>
-                </select>
-            </div>
             <div class="col-md-2 form-inline" id="input-group-tipo-cliente" >
                 <h5>Tipo Cliente</h5>
                 <div class="input-group-okc">
                         <select name="tipo_cliente" onChange="changeTipoCliente(event);"
                         class="form-control activation" style="width:100px" required>
                         <!-- <option value="0">Elija una opción</option> -->
-                        <option value="1" default>Persona Natural</option>
+                        <!-- <option value="1" default>Persona Natural</option>
                         <option value="2">Persona Juridica</option>
+                        <option value="3">Uso Almacén</option> -->
                     </select>
                 </div>
+            </div>
+            <div class="col-md-4" id="input-group-almacen" hidden>
+                <h5>Almacén que solicita</h5>
+                <select class="form-control activation " name="id_almacen">
+                    <option value="0">Elija una opción</option>
+                </select>
             </div>
             <div class="col-md-4 form-inline" id="input-group-cliente" >
                 <h5>Cliente</h5>
