@@ -23,9 +23,11 @@ Trazabilidad de Requerimientos
                     <tr>
                         <th hidden></th>
                         <th>Tipo</th>
-                        <th>Codigo</th>
                         <th>Sede Req.</th>
+                        <th>Codigo</th>
                         <th>Concepto</th>
+                        <th>Tipo Cliente</th>
+                        <th>Cliente</th>
                         <th>Fecha Req.</th>
                         <th>Ubigeo Entrega</th>
                         <th>Dirección Entrega</th>
@@ -36,7 +38,7 @@ Trazabilidad de Requerimientos
                         <th>Guía Compra</th>
                         <th>Transf.</th>
                         <th>O.Despacho</th>
-                        <th width="50px">Ver</th>
+                        <th width="70px">Ver</th>
                     </tr>
                 </thead>
                 <tbody></tbody>
@@ -45,6 +47,7 @@ Trazabilidad de Requerimientos
     </div>
 </div>
 @include('almacen.distribucion.verTrazabilidadRequerimiento')
+@include('almacen.distribucion.requerimientoDetalle')
 @endsection
 
 @section('scripts')
@@ -59,6 +62,7 @@ Trazabilidad de Requerimientos
     <script src="{{ asset('datatables/JSZip/jszip.min.js') }}"></script>
     
     <script src="{{ asset('js/almacen/distribucion/trazabilidadRequerimientos.js')}}"></script>
+    <script src="{{ asset('js/almacen/distribucion/requerimientoDetalle.js')}}"></script>
 
     <script>
     $(document).ready(function(){

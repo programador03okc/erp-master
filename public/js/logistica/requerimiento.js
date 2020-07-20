@@ -33,10 +33,18 @@ function inicializar( _rutaLista,
 
     listar_almacenes();
 
-            let selectTipoRequerimiento = document.querySelector("form[id='form-requerimiento'] select[name='tipo_requerimiento']").value;
-            console.log(selectTipoRequerimiento);
-            createOptionTipoCliente(selectTipoRequerimiento);
+    let selectTipoRequerimiento = document.querySelector("form[id='form-requerimiento'] select[name='tipo_requerimiento']").value;
+    console.log(selectTipoRequerimiento);
+    createOptionTipoCliente(selectTipoRequerimiento);
 
+    var id_requerimiento = localStorage.getItem("id_requerimiento");
+
+    if (id_requerimiento !== null){
+        mostrar_requerimiento(id_requerimiento);
+        verTrazabilidadRequerimiento(id_requerimiento);
+        localStorage.removeItem("id_requerimiento");
+        changeStateButton('historial');
+    }
 }
 
 function isNumberKey(evt){

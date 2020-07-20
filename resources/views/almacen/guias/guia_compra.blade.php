@@ -226,8 +226,8 @@ Guía de Compra - Ingreso
                     <div class="row">
                         <div class="col-md-12">
                             <fieldset class="group-importes"><legend><h6>Documento(s) de Sustento</h6></legend>
-                                <table id="oc" class="table-group">
-                                    <thead>
+                                <table id="oc" class="mytable table table-striped table-condensed table-bordered ">
+                                    <thead style="color:white;">
                                         <tr>
                                             <th width="13%">Código</th>
                                             <th width="10%">Fecha Emisión</th>
@@ -248,8 +248,8 @@ Guía de Compra - Ingreso
                     <div class="row">
                         <div class="col-md-12">
                             <fieldset class="group-importes"><legend><h6>Items de la Guía de Compra</h6></legend>
-                                <table class="table-group" width="100%" id="listaDetalle">
-                                    <thead>
+                                <table class="mytable table table-striped table-condensed table-bordered" width="100%" id="listaDetalle">
+                                    <thead style="color:white;">
                                         <tr>
                                             <th width='8%'>OC Nro.</th>
                                             <th width='8%'>Guia Ven.</th>

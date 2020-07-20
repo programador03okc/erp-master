@@ -246,10 +246,10 @@
                 </a>
                 <ul class="treeview-menu">
                 @if(Auth::user()->tieneAplicacion(82))
-                <li><a href="{{route('logistica.almacen.movimientos.pendientes-ingreso.index')}}"><i class="far fa-circle fa-xs"></i> Pendientes de Ingreso </a></li>
+                <li><a href="{{route('logistica.almacen.movimientos.pendientes-ingreso.index')}}"><i class="far fa-circle fa-xs"></i> Ingresos Pendientes </a></li>
                 @endif
                 @if(Auth::user()->tieneAplicacion(83))
-                <li><a href="{{route('logistica.almacen.movimientos.pendientes-salida.index')}}"><i class="far fa-circle fa-xs"></i> Pendientes de Salida </a></li>
+                <li><a href="{{route('logistica.almacen.movimientos.pendientes-salida.index')}}"><i class="far fa-circle fa-xs"></i> Salidas Pendientes </a></li>
                 @endif
                 @if(Auth::user()->tieneAplicacion(84))
                 <li><a href="{{route('logistica.almacen.movimientos.guias-compra.index')}}"><i class="far fa-circle fa-xs"></i> Compras - Ingresos </a></li>

@@ -263,7 +263,7 @@ Guía de Venta - Salida
                             <fieldset class="group-importes"><legend><h6>Items de la Guía de Venta</h6></legend>
                                 <table class="table-group" width="100%"
                                     id="listaDetalle">
-                                    <thead>
+                                    <thead style="color:white;">
                                         <tr>
                                             <th width='10%'>Doc Nro.</th>
                                             <th width='10%'>Código</th>

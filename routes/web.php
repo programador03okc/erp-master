@@ -910,7 +910,8 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::get('index', 'DistribucionController@view_trazabilidad_requerimientos')->name('index');
 					Route::post('listarRequerimientosTrazabilidad', 'DistribucionController@listarRequerimientosTrazabilidad');
 					Route::get('verTrazabilidadRequerimiento/{id}', 'DistribucionController@verTrazabilidadRequerimiento');
-					
+					Route::get('verDetalleRequerimiento/{id}', 'DistribucionController@verDetalleRequerimiento');
+
 				});
 	
 			});

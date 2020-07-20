@@ -17,9 +17,39 @@ function listarTrazabilidadRequerimientos(){
         'columns': [
             {'data': 'id_requerimiento'},
             {'data': 'tipo_req', 'name': 'alm_tp_req.descripcion'},
-            {'data': 'codigo'},
             {'data': 'sede_descripcion_req', 'name': 'sede_req.descripcion'},
+            // {'data': 'codigo'},
+            {'render': function (data, type, row){
+                return (row['codigo'] !== null ? 
+                        ('<label class="lbl-codigo" title="Abrir Requerimiento" onClick="abrir_requerimiento('+row['id_requerimiento']+')">'+row['codigo']+'</label>')
+                        : '');
+                }
+            },
             {'data': 'concepto'},
+            {'render': function (data, type, row){
+                var tipo = '';
+                switch (row['tipo_cliente']){
+                    case 1 : tipo ='Persona Natural'; break;
+                    case 2 : tipo ='Persona Jurídica'; break;
+                    case 3 : tipo ='Uso Almacén'; break;
+                    case 4 : tipo ='Uso Administrativo'; break;
+                    default: break; 
+                }
+                return (tipo);
+                }
+            },
+            {'render': function (data, type, row){
+                var cliente = '';
+                switch (row['tipo_cliente']){
+                    case 1 : cliente = (row['nombre_persona'] !== null ? row['nombre_persona'] : ''); break;
+                    case 2 : cliente = (row['cliente_razon_social'] !== null ? row['cliente_razon_social'] : ''); break;
+                    case 3 : cliente = (row['almacen_descripcion'] !== null ? row['almacen_descripcion'] : ''); break;
+                    case 4 : cliente = 'Uso Administrativo'; break;
+                    default: break; 
+                }
+                return (cliente);
+                }
+            },
             {'data': 'fecha_requerimiento'},
             {'render': function (data, type, row){
                 return (row['ubigeo_descripcion'] !== null ? row['ubigeo_descripcion'] : '');
@@ -59,8 +89,11 @@ function listarTrazabilidadRequerimientos(){
             {'render': function (data, type, row){
                 return '<button type="button" class="ver btn btn-info boton" data-toggle="tooltip" data-placement="bottom" '+
                 'data-id="'+row['id_requerimiento']+'" title="Ver Trazabilidad" >'+
-                '<i class="fas fa-search"></i></button>'
-                }, targets: 15
+                '<i class="fas fa-search"></i></button>'+
+                '<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" '+
+                    'data-placement="bottom" title="Ver Detalle" >'+
+                    '<i class="fas fa-list-ul"></i></button>'
+                }, targets: 17
             }
         ],
     });
@@ -73,6 +106,12 @@ $('#listaRequerimientosTrazabilidad tbody').on("click","button.ver", function(){
         show: true
     });
     verTrazabilidadRequerimiento(id);
+});
+
+$('#listaRequerimientosTrazabilidad tbody').on("click","button.detalle", function(){
+    var data = $('#listaRequerimientosTrazabilidad').DataTable().row($(this).parents("tr")).data();
+    console.log(data);
+    open_detalle_requerimiento(data);
 });
 
 function verTrazabilidadRequerimiento(id_requerimiento){
@@ -102,4 +141,13 @@ function verTrazabilidadRequerimiento(id_requerimiento){
         console.log(errorThrown);
     });
 
+}
+
+function abrir_requerimiento(id_requerimiento){
+    // Abrir nuevo tab
+    localStorage.setItem("id_requerimiento",id_requerimiento);
+    let url ="/logistica/gestion-logistica/requerimiento/elaboracion/index";
+    var win = window.open(url, '_blank');
+    // Cambiar el foco al nuevo tab (punto opcional)
+    win.focus();
 }

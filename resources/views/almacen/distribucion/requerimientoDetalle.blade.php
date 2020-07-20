@@ -25,7 +25,7 @@
                                             <th width="40%">Descripción</th>
                                             <th>Cantidad</th>
                                             <th>Unid</th>
-                                            <!-- <th>Almacén</th> -->
+                                            <th>Almacén Reserva</th>
                                             <!-- <th>Lugar de Entrega</th> -->
                                             <th>Estado</th>
                                             <!-- <th>Acción</th> -->
