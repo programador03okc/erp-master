@@ -34,9 +34,16 @@ function inicializar( _rutaLista,
     listar_almacenes();
 
             let selectTipoRequerimiento = document.querySelector("form[id='form-requerimiento'] select[name='tipo_requerimiento']").value;
-            console.log(selectTipoRequerimiento);
             createOptionTipoCliente(selectTipoRequerimiento);
+            
+            var id_requerimiento = localStorage.getItem("id_requerimiento");
 
+            if (id_requerimiento !== null){
+                mostrar_requerimiento(id_requerimiento);
+                verTrazabilidadRequerimiento(id_requerimiento);
+                localStorage.removeItem("id_requerimiento");
+                changeStateButton('historial');
+            }
 }
 
 function isNumberKey(evt){
@@ -281,8 +288,13 @@ function selectCodigoCC(){
 function nuevo_req(){
     data_item=[];
     data=[];
+    adjuntos=[];
+    adjuntosRequerimiento=[];
+    onlyAdjuntosRequerimiento=[];
     $('#form-requerimiento')[0].reset();
-    $('#body_detalle_requerimiento').html('<tr id="default_tr"><td></td><td colspan="7"> No hay datos registrados</td></tr>');
+    $('#body_detalle_requerimiento').html('<tr id="default_tr"><td></td><td colspan="12"> No hay datos registrados</td></tr>');
+    $('#body_adjuntos_requerimiento').html('<tr id="default_tr"><td></td><td colspan="3"> No hay datos registrados</td></tr>');
+    $('#body_lista_trazabilidad_requerimiento').html('<tr id="default_tr"><td></td><td colspan="5"> No hay datos registrados</td></tr>');
     $('#estado_doc').text('');
     $('[name=id_usuario_req]').val('');
     $('[name=id_estado_doc]').val('');
@@ -370,14 +382,31 @@ function listarRequerimiento(viewAnulados) {
             {'data': 'id_requerimiento'},
             {'data': 'codigo'},
             {'data': 'tipo_req_desc'},
+            {'data': 'tipo_cliente_desc'},
             {'data': 'alm_req_concepto'},
+            {'render':
+                function (data, type, row, meta){
+                    let cliente = '';
+                    if(row.id_cliente != null){
+                        cliente = row.cliente_razon_social;
+                    } else 
+                    if(row.id_persona != null){
+                        cliente = row.nombre_persona;
+                    }else 
+                    if(row.id_almacen != null){
+                        cliente = row.almacen_solicitante;
+                    } 
+                    
+                    return cliente;
+                }
+            },
             {'data': 'usuario'},
             {'data': 'fecha_requerimiento'},
             {'data': 'estado_doc'}
         ],
         'columnDefs': [{ 'aTargets': [0], 'sClass': 'invisible'}],
         'order': [
-            [5, 'desc']
+            [6, 'desc']
         ]
 
 
@@ -728,8 +757,8 @@ function validaModalDetalle(){
     var unidad_medida_item = document.querySelector("div[id='modal-detalle-requerimiento'] select[name='unidad_medida_item']").value;
     var cantidad_item = document.querySelector("div[id='modal-detalle-requerimiento'] input[name='cantidad_item']").value;
     var msj = '';
-    console.log(unidad_medida_item);
-    console.log(cantidad_item);
+    // console.log(unidad_medida_item);
+    // console.log(cantidad_item);
     if (cantidad_item == ''){
         msj+='\n Es necesario una Cantidad';
     }
@@ -1644,18 +1673,23 @@ function limpiarTabla(idElement){
 
 // modal catalogo items
 function catalogoItemsModal(){   
-    var tipo = $('[name=tipo_requerimiento]').val();
-    if (tipo == 1 || tipo ==3){
+    var tipo_requerimiento = $('[name=tipo_requerimiento]').val();
+    var tipo_cliente = $('[name=tipo_cliente]').val();
+    if (tipo_requerimiento == 1 ){
         $('#modal-catalogo-items').modal({
             show: true,
             backdrop: 'static'
         });
         listarItems();
     }
-    else if(tipo == 2){
+    else if(tipo_requerimiento == 2){
         var almacen = $('[name=id_almacen]').val();
         // console.log(almacen);
         
+        saldosModal(almacen);
+    }
+    else if(tipo_requerimiento ==3 && tipo_cliente == 3){
+        var almacen = $('[name=id_almacen]').val();        
         saldosModal(almacen);
     }
 }
@@ -2035,9 +2069,9 @@ function validaRequerimiento(){
         if (concepto.length <= 0){
             msj+='\n Es necesario que ingrese un Concepto';
         }
-        // if (id_almacen == '0' || id_almacen == null){
-        //     msj+='\n Es necesario que seleccione un Almacén';
-        // }
+        if (id_almacen == '0' || id_almacen == null){
+            msj+='\n Es necesario que seleccione un Almacén';
+        }
     }
 
 
@@ -2090,7 +2124,7 @@ function save_requerimiento(action){
                 data: data,
                 dataType: 'JSON',
                 success: function(response){
-                    console.log(response);
+                    // console.log(response);
                     if (response > 0){
                         let lastIdRequerimiento =  response;
                         mostrar_requerimiento(lastIdRequerimiento);
@@ -2122,6 +2156,7 @@ function save_requerimiento(action){
                 // console.log(response);
                 if (response > 0){
                     alert("Requerimiento Actualizado");
+                    changeStateButton('guardar');
                 }
             }
         }).fail( function(jqXHR, textStatus, errorThrown){
@@ -2431,12 +2466,13 @@ function limpiarSelectTipoCliente(){
 }
 
 function createOptionTipoCliente(tipoRequerimiento){  
+    let selectTipoCliente = document.querySelector("form[id='form-requerimiento'] select[name='tipo_cliente']");
+    let array = [];
     switch (tipoRequerimiento) {
     case 'COMPRA':
     case '1':
         limpiarSelectTipoCliente();
-        let selectTipoCliente = document.querySelector("form[id='form-requerimiento'] select[name='tipo_cliente']");
-        let array =[
+        array =[
             {descripcion:'Persona Natural', valor: 1},
             {descripcion:'Persona Juridica', valor: 2},
             {descripcion:'Uso Almacen', valor: 3},
@@ -2449,6 +2485,34 @@ function createOptionTipoCliente(tipoRequerimiento){
             selectTipoCliente.add(option);
         });
         break;
+        case 'VENTA':
+        case '2':
+            limpiarSelectTipoCliente();
+            array =[
+                {descripcion:'Persona Natural', valor: 1},
+                {descripcion:'Persona Juridica', valor: 2}
+            ]
+            array.forEach(element => {
+                let option = document.createElement("option");
+                option.text = element.descripcion;
+                option.value = element.valor;
+                selectTipoCliente.add(option);
+            });
+            break;
+        case 'USO_ALMACEN':
+        case '3':
+            limpiarSelectTipoCliente();
+            array =[
+                {descripcion:'Uso Almacen', valor: 3},
+                {descripcion:'Uso Administración', valor: 4}
+            ]
+            array.forEach(element => {
+                let option = document.createElement("option");
+                option.text = element.descripcion;
+                option.value = element.valor;
+                selectTipoCliente.add(option);
+            });
+            break;
     
         default:
 
@@ -2464,9 +2528,11 @@ function changeOptTipoReqSelect(e){
         limpiarFormRequerimiento();
         document.querySelector("div[id='input-group-almacen'] h5").textContent = 'Almacén que solicita';
     }else if(e.target.value == 2){ //venta directa
+        createOptionTipoCliente('VENTA');
         stateFormRequerimiento(3)
         listar_almacenes();
     }else if(e.target.value == 3){
+        createOptionTipoCliente('USO_ALMACEN');
         stateFormRequerimiento(2);
     }
 }
@@ -2485,7 +2551,7 @@ function getDataSelectSede(id_empresa = null){
             url: rutaSedeByEmpresa+'/' + id_empresa,
             dataType: 'JSON',
             success: function(response){ 
-                console.log(response);  
+                // console.log(response);  
                 if(response.length ==0){
                     console.error("usuario no registrado en 'configuracion'.'sis_usua_sede' o el estado del registro es diferente de 1");
                     alert('No se pudo acceder al listado de Sedes, el usuario debe pertenecer a una Sede y la sede esta habilitada');
