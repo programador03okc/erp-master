@@ -58,8 +58,9 @@ class OrdenesPendientesController extends Controller
             'alm_req.codigo as codigo_requerimiento','alm_req.concepto','log_ord_compra.id_sede as sede_orden',
             'sis_usua.nombre_corto','sede_oc.descripcion as sede_orden_descripcion',
             // 'sis_moneda.simbolo','log_ord_compra.monto_subtotal','log_ord_compra.monto_igv','log_ord_compra.monto_total',
-            'alm_almacen.id_sede as sede_almacen','sede_req.descripcion as sede_requerimiento_descripcion',
-            'alm_req.id_sede as sede_requerimiento','guia_com.serie','guia_com.numero',
+            // 'alm_almacen.id_sede as sede_almacen',
+            'sede_req.descripcion as sede_requerimiento_descripcion',
+            'sede_req.id_sede as sede_requerimiento','guia_com.serie','guia_com.numero',
             'alm_req.id_requerimiento','alm_req.estado as estado_requerimiento',
             'alm_req.id_tipo_requerimiento','alm_req.id_almacen as almacen_requerimiento',
             'trans.id_transferencia','guia_ven_trans.id_guia_ven as id_guia_ven_trans',
@@ -72,7 +73,7 @@ class OrdenesPendientesController extends Controller
             ->join('contabilidad.adm_contri','adm_contri.id_contribuyente','=','log_prove.id_contribuyente')
             ->leftjoin('almacen.alm_req','alm_req.id_requerimiento','=','log_ord_compra.id_requerimiento')
             ->leftjoin('administracion.sis_sede as sede_req','sede_req.id_sede','=','alm_req.id_sede')
-            ->leftjoin('almacen.alm_almacen','alm_almacen.id_almacen','=','alm_req.id_almacen')
+            // ->leftjoin('almacen.alm_almacen','alm_almacen.id_almacen','=','alm_req.id_almacen')
             // ->leftjoin('almacen.guia_ven','guia_ven.id_guia_com','=','mov_alm.id_guia_com')
             ->leftJoin('almacen.guia_ven as guia_ven_trans', function($join)
                          {   $join->on('guia_ven_trans.id_guia_com', '=', 'mov_alm.id_guia_com');
@@ -303,7 +304,7 @@ class OrdenesPendientesController extends Controller
                     //actualiza estado requerimiento reservado
                     $oc = DB::table('logistica.log_ord_compra')
                     ->select('log_ord_compra.*','alm_req.id_cliente','alm_req.id_persona','alm_req.id_tipo_requerimiento',
-                    'alm_req.id_sede as sede_requerimiento')
+                    'alm_req.tipo_cliente','alm_req.id_sede as sede_requerimiento')
                     ->join('almacen.alm_req','alm_req.id_requerimiento','=','log_ord_compra.id_requerimiento')
                     // ->leftjoin('almacen.alm_almacen','alm_almacen.id_almacen','=','alm_req.id_almacen')
                     ->where('log_ord_compra.id_orden_compra',$request->id_orden_compra)

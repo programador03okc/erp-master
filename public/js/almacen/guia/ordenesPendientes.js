@@ -143,7 +143,7 @@ function listarOrdenesEntregadas(permiso){
                         '<i class="fas fa-trash"></i></button>' : '')+
                         (
                         ((row['id_tipo_requerimiento'] == 1 && (row['sede_orden'] !== row['sede_requerimiento'] && row['codigo_trans'] == null)) ||
-                         (row['id_tipo_requerimiento'] == 3 && (row['sede_orden'] !== row['sede_almacen'] && row['codigo_trans'] == null))) ? 
+                         (row['id_tipo_requerimiento'] == 3 && (row['sede_orden'] !== row['sede_requerimiento'] && row['codigo_trans'] == null))) ? 
                             ('<button type="button" class="transferencia btn btn-success boton" data-toggle="tooltip" '+
                             'data-placement="bottom" title="Generar Transferencia" >'+
                             '<i class="fas fa-exchange-alt"></i></button>') : 
@@ -167,7 +167,7 @@ function listarOrdenesEntregadas(permiso){
 
 $('#ordenesEntregadas tbody').on("click","button.detalle", function(){
     var data = $('#ordenesEntregadas').DataTable().row($(this).parents("tr")).data();
-    console.log('data.id_orden_compra'+data.id_orden_compra);
+    console.log(data);
     open_detalle(data);
 });
 
