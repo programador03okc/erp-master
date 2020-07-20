@@ -414,6 +414,11 @@ class LogisticaController extends Controller
             ->leftJoin('administracion.adm_area', 'alm_req.id_area', '=', 'adm_area.id_area')
             ->leftJoin('proyectos.proy_op_com', 'proy_op_com.id_op_com', '=', 'alm_req.id_op_com')
             ->leftJoin('administracion.adm_grupo', 'adm_grupo.id_grupo', '=', 'alm_req.id_grupo')
+            ->leftJoin('rrhh.rrhh_perso as perso_natural', 'alm_req.id_persona', '=', 'perso_natural.id_persona')
+            ->leftJoin('comercial.com_cliente', 'alm_req.id_cliente', '=', 'com_cliente.id_cliente')
+            ->leftJoin('contabilidad.adm_contri as contri_cliente', 'com_cliente.id_contribuyente', '=', 'contri_cliente.id_contribuyente')
+            ->leftJoin('almacen.alm_almacen', 'alm_req.id_almacen', '=', 'alm_almacen.id_almacen')
+
             // ->leftJoin('logistica.log_detalle_grupo_cotizacion', 'log_detalle_grupo_cotizacion.id_requerimiento', '=', 'alm_req.id_requerimiento')
             // ->leftJoin('logistica.log_ord_compra', 'log_ord_compra.id_grupo_cotizacion', '=', 'log_detalle_grupo_cotizacion.id_grupo_cotizacion')
             // ->leftJoin('almacen.guia_com_oc', 'guia_com_oc.id_oc', '=', 'log_ord_compra.id_orden_compra')
@@ -424,6 +429,8 @@ class LogisticaController extends Controller
                 'alm_req.fecha_requerimiento',
                 'alm_req.id_tipo_requerimiento',
                 'alm_tp_req.descripcion AS tipo_req_desc',
+                'alm_req.tipo_cliente',
+                DB::raw("(CASE WHEN alm_req.tipo_cliente = 1 THEN 'Persona Natural'  WHEN alm_req.tipo_cliente = 2 THEN 'Persona Juridica' WHEN alm_req.tipo_cliente = 3 THEN 'Uso Almacen' WHEN alm_req.tipo_cliente = 4 THEN 'Uso Administración' ELSE '' END) AS tipo_cliente_desc"),
                 'sis_usua.usuario',
                 'rrhh_rol.id_area',
                 'adm_area.descripcion AS area_desc',
@@ -438,6 +445,14 @@ class LogisticaController extends Controller
                 'alm_req.concepto AS alm_req_concepto',
                 // 'log_detalle_grupo_cotizacion.id_detalle_grupo_cotizacion',
                 'alm_req.id_prioridad',
+                'alm_req.id_cliente',
+                'contri_cliente.nro_documento as cliente_ruc',
+                'contri_cliente.razon_social as cliente_razon_social',
+                'alm_req.id_persona',
+                DB::raw("(perso_natural.nombres) || ' ' || (perso_natural.apellido_paterno) || ' ' || (perso_natural.apellido_materno)  AS nombre_persona"),
+
+                'alm_req.id_almacen',
+                'alm_almacen.descripcion as almacen_solicitante',
                 'alm_req.fecha_registro',
                 'alm_req.estado',
                 'adm_estado_doc.estado_doc',
@@ -1692,7 +1707,10 @@ class LogisticaController extends Controller
                     'fecha_registro'=>date('Y-m-d H:i:s')
         ]);
 
-        $this->generarTransferenciaRequerimiento($request, $id_requerimiento);
+        if($request->requerimiento['tipo_requerimiento'] == 2){ //venta diracta
+            $this->generarTransferenciaRequerimiento($request, $id_requerimiento);
+        }
+
         
         }
         DB::commit();
@@ -1704,7 +1722,7 @@ class LogisticaController extends Controller
     }
 
     public function generarTransferenciaRequerimiento($request, $id_requerimiento){
-        $sede = $request->requerimiento['id_sede'];
+        $sede = isset($request->requerimiento['id_sede'])?$request->requerimiento['id_sede']:null;
 
         if ($request->requerimiento['tipo_requerimiento'] == 2){
             $array_items = [];

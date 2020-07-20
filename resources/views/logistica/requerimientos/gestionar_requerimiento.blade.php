@@ -311,7 +311,7 @@
                             </th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="body_adjuntos_requerimiento">
                         <tr id="default_tr">
                             <td colspan="4"> No hay datos registrados</td>
                         </tr>
@@ -330,7 +330,7 @@
                             <th>FECHA</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="body_lista_trazabilidad_requerimiento">
                         <tr id="default_tr">
                             <td colspan="5"> No hay datos registrados</td>
                         </tr>

@@ -17,8 +17,10 @@
                         <tr>
                             <th hidden>Id</th>
                             <th>Código</th>
-                            <th>Tipo</th>
+                            <th>Tipo Requerimiento</th>
+                            <th>Tipo Cliente</th>
                             <th>Concepto</th>
+                            <th>Cliente</th>
                             <th>Usuario</th>
                             <th>Fecha Req.</th>
                             <th>Estado</th>
