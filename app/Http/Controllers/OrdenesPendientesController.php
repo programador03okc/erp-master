@@ -303,17 +303,19 @@ class OrdenesPendientesController extends Controller
                     //actualiza estado requerimiento reservado
                     $oc = DB::table('logistica.log_ord_compra')
                     ->select('log_ord_compra.*','alm_req.id_cliente','alm_req.id_persona','alm_req.id_tipo_requerimiento',
-                    'alm_almacen.id_sede as sede_almacen')
+                    'alm_req.id_sede as sede_requerimiento')
                     ->join('almacen.alm_req','alm_req.id_requerimiento','=','log_ord_compra.id_requerimiento')
-                    ->leftjoin('almacen.alm_almacen','alm_almacen.id_almacen','=','alm_req.id_almacen')
+                    // ->leftjoin('almacen.alm_almacen','alm_almacen.id_almacen','=','alm_req.id_almacen')
                     ->where('log_ord_compra.id_orden_compra',$request->id_orden_compra)
                     ->first();
                     //si existe un requerimiento por venta directa actualiza el estado
                     if ($oc !== null && $oc->id_requerimiento !== null){
-
-                        if (($oc->id_tipo_requerimiento == 1 && ($oc->id_cliente !== null || $oc->id_persona !== null)) ||
-                            ($oc->id_tipo_requerimiento == 3 && ($oc->id_sede !== $oc->sede_almacen))){
-                                
+                        // ($oc->id_tipo_requerimiento == 1 && ($oc->id_cliente !== null || $oc->id_persona !== null)) ||
+                        // ($oc->id_tipo_requerimiento == 3 && ($oc->id_sede !== $oc->sede_requerimiento))
+                        $estado = '';
+                        if (($oc->tipo_cliente == 1 || $oc->tipo_cliente == 2 || $oc->tipo_cliente == 4) ||
+                            ($oc->tipo_cliente == 3 && ($oc->id_sede !== $oc->sede_requerimiento))){
+                            $estado = 'Reservado';
                             DB::table('almacen.alm_req')
                             ->where('id_requerimiento',$oc->id_requerimiento)
                             ->update(['estado'=>19]);//Reservado
@@ -323,11 +325,22 @@ class OrdenesPendientesController extends Controller
                             ->update(['estado'=>19,
                                       'id_almacen_reserva'=>$request->id_almacen]);//Reservado
                         }
+                        else {
+                            $estado = 'Procesado';
+                            DB::table('almacen.alm_req')
+                            ->where('id_requerimiento',$oc->id_requerimiento)
+                            ->update(['estado'=>9]);//Procesado
+                                
+                            DB::table('almacen.alm_det_req')
+                            ->where('id_requerimiento',$oc->id_requerimiento)
+                            ->update(['estado'=>9,
+                                      'id_almacen_reserva'=>null]);//Procesado
+                        }
                         
                         DB::table('almacen.alm_req_obs')
                         ->insert(['id_requerimiento'=>$oc->id_requerimiento,
                             'accion'=>'INGRESADO',
-                            'descripcion'=>'Ingresado a Almacén con Guía '.$request->serie.'-'.$request->numero,
+                            'descripcion'=>'Ingresado a Almacén con Guía '.$request->serie.'-'.$request->numero.'. Pasa a estado: '.$estado,
                             'id_usuario'=>$id_usuario,
                             'fecha_registro'=>$fecha_registro
                             ]);
