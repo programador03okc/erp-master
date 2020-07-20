@@ -30,7 +30,7 @@
                                         onkeydown="handleKeyDown(event);" 
                                         onKeyPress="handleKeyPress(event);"
                                         onpaste="handlePaste(event);"
-                                        >
+                                        readOnly>
                                     <div class="input-group-append">
                                         <button type="button" class="input-group-text" id="basic-addon9" onClick="catalogoItemsModal();">
                                             <i class="fa fa-search"></i>
@@ -55,7 +55,7 @@
                                 </select>                        
                             </div>
                         </div>
-                        <div class="col-md-1">
+                        <div class="col-md-2">
                             <div class="form-group">
                                 <h5>Cantidad</h5>
                                 <input type="number" min="1" class="form-control input-sm activation" name="cantidad_item" step="1">
