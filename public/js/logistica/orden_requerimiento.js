@@ -228,7 +228,7 @@ function listar_detalle_orden_requerimiento(data){
     var vardataTables = funcDatatables();
     $('#listaDetalleOrden').dataTable({
         bDestroy: true,
-        order: [[1, 'desc']],
+        order: [[0, 'asc']],
         info:     true,
         iDisplayLength:2,
         paging:   true,

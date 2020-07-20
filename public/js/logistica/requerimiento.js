@@ -488,63 +488,17 @@ function mostrar_requerimiento(IdorCode){
             data = response;
             // console.log(response);
             if(response['requerimiento'] !== undefined){
-                if(response['requerimiento'][0].id_tipo_requerimiento == 1){
-                    hiddeElement('ocultar','form-requerimiento',[
-                        'input-group-proyecto',
-                        'input-group-comercial',
-                        'input-group-almacen'
-                    ]);
-                    hiddeElement('mostrar','form-requerimiento',[
-                        'input-group-rol-usuario',
-                        'input-group-moneda',
-                        'input-group-empresa',
-                        'input-group-sede',
-                        'input-group-tipo-cliente',
-                        'input-group-telefono-cliente',
-                        'input-group-email-cliente',
-                        'input-group-cliente',
-                        'input-group-direccion-entrega',
-                        'input-group-ubigeo-entrega',
-                        'input-group-monto'
-            
-                    ]);
-                }else if(response['requerimiento'][0].id_tipo_requerimiento ==2){
-                    hiddeElement('ocultar','form-requerimiento',[
-                        'input-group-rol-usuario',
-                        'input-group-proyecto',
-                        'input-group-comercial'
-                    ]);
-                    hiddeElement('mostrar','form-requerimiento',[
-                        'input-group-sede',
-                        'input-group-tipo-cliente',
-                        'input-group-telefono-cliente',
-                        'input-group-email-cliente',
-                        'input-group-empresa',
-                        'input-group-tipo-cliente',
-                        'input-group-cliente',
-                        'input-group-direccion-entrega',
-                        'input-group-monto'
-            
-                    ]);
-                }else if(response['requerimiento'][0].id_tipo_requerimiento ==3){
-                    hiddeElement('ocultar','form-requerimiento',[
-                        'input-group-moneda',
-                        'input-group-empresa',
-                        'input-group-rol-usuario',
-                        'input-group-sede',
-                        'input-group-tipo-cliente',
-                        'input-group-telefono-cliente',
-                        'input-group-email-cliente',
-                        'input-group-cliente',
-                        'input-group-direccion-entrega',
-                        'input-group-ubigeo-entrega',
-                        'input-group-proyecto',
-                        'input-group-comercial',
-                        'input-group-monto'
-                    ]);
-                    hiddeElement('mostrar','form-requerimiento',[
-                        'input-group-almacen'
-                    ]);
+                if(response['requerimiento'][0].id_tipo_requerimiento == 1){ // compra
+                    if(response['requerimiento'][0].tipo_cliente == 1 || response['requerimiento'][0].tipo_cliente == 2){ //persona natural o persona juridica
+                        stateFormRequerimiento(1);
+                    }
+                    if(response['requerimiento'][0].tipo_cliente == 3  ){ // uso almacen
+                        stateFormRequerimiento(2);
+                    }
+                }else if(response['requerimiento'][0].id_tipo_requerimiento ==2){ //venta directa
+                    stateFormRequerimiento(3);
+                }else if(response['requerimiento'][0].id_tipo_requerimiento ==3){ // pedido almacén
+                    stateFormRequerimiento(2);
                 }
 
                 $('[name=id_usuario_req]').val(response['requerimiento'][0].id_usuario);
@@ -1136,7 +1090,7 @@ function get_data_detalle_requerimiento(){
         'id_unidad_medida':parseInt(id_unidad_medida),
         'unidad':und_text,
         'cantidad':parseFloat(cantidad),
-        'precio_referencial':parseFloat(precio_referencial),
+        'precio_referencial':parseFloat(precio_referencial)?parseFloat(precio_referencial):null,
         'categoria':categoria,
         'subcategoria':subcategoria,
         'fecha_entrega':fecha_entrega,
@@ -2118,9 +2072,9 @@ function save_requerimiento(action){
             data.requerimiento.id_estado_doc =1  // estado elaborado 
             data.requerimiento.estado = 1  // estado 
             
-            if(document.querySelector("select[name='tipo_requerimiento']").value == 3){ // Compra Stock Almacen
-            let almacen_id_sede =document.querySelector("select[name='id_almacen']").options[document.querySelector("select[name='id_almacen']").selectedIndex].dataset.idSede;
-            let almacen_id_empresa =document.querySelector("select[name='id_almacen']").options[document.querySelector("select[name='id_almacen']").selectedIndex].dataset.idEmpresa;
+            if(document.querySelector("form[id='form-requerimiento'] select[name='tipo_requerimiento']").value == 1 && document.querySelector("form[id='form-requerimiento'] select[name='tipo_cliente']").value == 3){ // Compra y Uso Almacen
+            let almacen_id_sede =document.querySelector("form[id='form-requerimiento'] select[name='id_almacen']").options[document.querySelector("select[name='id_almacen']").selectedIndex].dataset.idSede;
+            let almacen_id_empresa =document.querySelector("form[id='form-requerimiento'] select[name='id_almacen']").options[document.querySelector("select[name='id_almacen']").selectedIndex].dataset.idEmpresa;
                 // update id_sede, id_empresa
             data.requerimiento.id_empresa =almacen_id_empresa;
             data.requerimiento.id_sede = almacen_id_sede;

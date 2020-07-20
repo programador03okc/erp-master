@@ -1591,11 +1591,7 @@ class LogisticaController extends Controller
                 $correlativo = $this->leftZero(4, ($num + 1));
                 $tp = '';
                 if ($request->requerimiento['tipo_requerimiento'] == 1){
-                    if ($request->requerimiento['tipo_cliente'] == 3){
-                        $tp = 'S';
-                    }else{
-                        $tp = 'C';
-                    }
+                $tp = 'C';
                 } else if ($request->requerimiento['tipo_requerimiento'] == 3){
                     $tp = 'PA';
                 }
@@ -2054,8 +2050,11 @@ class LogisticaController extends Controller
                         );
                     }
                 }
-                $this->anularTrasfarencia($id);
-                $this->generarTransferenciaRequerimiento($request, $id);
+
+                if($tipo_requerimiento == 2){ // venta directa
+                    $this->anularTrasfarencia($id);
+                    $this->generarTransferenciaRequerimiento($request, $id);
+                }
 
 
                 return response()->json($data_detalle);
