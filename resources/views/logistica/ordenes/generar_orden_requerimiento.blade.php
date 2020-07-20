@@ -22,8 +22,8 @@
                 <div>
                     <!-- Nav tabs -->
                     <ul class="nav nav-tabs" role="tablist">
-                        <li role="presentation" class="active"><a href="#requerimientosPendientes" aria-controls="requerimientosPendientes" role="tab" data-toggle="tab">Requerimientos Pendientes</a></li>
-                        <li role="presentation" class=""><a href="#requerimientosAtendidos" onClick="vista_extendida();" aria-controls="requerimientosAtendidos" role="tab" data-toggle="tab">Requerimientos Atentidos</a></li>
+                        <li role="presentation" class="active"><a href="#requerimientosPendientes" aria-controls="requerimientosPendientes" role="tab" data-toggle="tab">Compras Pendientes</a></li>
+                        <li role="presentation" class=""><a href="#requerimientosAtendidos" onClick="vista_extendida();" aria-controls="requerimientosAtendidos" role="tab" data-toggle="tab">Compras Atentidas</a></li>
                     </ul>
                     <!-- Tab panes -->
                     <div class="tab-content">

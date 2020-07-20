@@ -1707,7 +1707,7 @@ class LogisticaController extends Controller
                     'fecha_registro'=>date('Y-m-d H:i:s')
         ]);
 
-        if($request->requerimiento['tipo_requerimiento'] == 2){ //venta diracta
+        if($request->requerimiento['tipo_requerimiento'] == 2 || $request->requerimiento['tipo_requerimiento'] == 3){ //venta diracta o pedido almacen
             $this->generarTransferenciaRequerimiento($request, $id_requerimiento);
         }
 
@@ -1724,7 +1724,7 @@ class LogisticaController extends Controller
     public function generarTransferenciaRequerimiento($request, $id_requerimiento){
         $sede = isset($request->requerimiento['id_sede'])?$request->requerimiento['id_sede']:null;
 
-        if ($request->requerimiento['tipo_requerimiento'] == 2){
+        if ($request->requerimiento['tipo_requerimiento'] == 2 || $request->requerimiento['tipo_requerimiento'] == 3){ //venta diracta o pedido almacen
             $array_items = [];
             $array_almacen = [];
             foreach ($request->detalle as $det) {
@@ -8111,6 +8111,7 @@ class LogisticaController extends Controller
 
             )
             ->where([['alm_req.estado', '=', 5],['log_ord_compra.estado', '!=', 7],['alm_req.id_tipo_requerimiento','=',1],['alm_req.confirmacion_pago','=',true]])
+            ->orWhere([['alm_req.estado', '=', 5],['alm_req.id_tipo_requerimiento','=',1],['alm_req.tipo_cliente','=',3]])
             ->orderBy('alm_req.id_requerimiento', 'desc')
             ->get();
 
