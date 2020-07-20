@@ -126,27 +126,28 @@ function listarOrdenesEntregadas(permiso){
         ],
         'columnDefs': [
             {'aTargets': [0], 'sClass': 'invisible'},
-            {'render': function (data, type, row){
-                if (permiso == '1') {
-                    return '<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" '+
-                        'data-placement="bottom" title="Ver Detalle" data-id="'+row['id_orden_compra']+'">'+
-                        '<i class="fas fa-list-ul"></i></button>'+
-                    '<button type="button" class="ingreso btn btn-warning boton" data-toggle="tooltip" '+
-                        'data-placement="bottom" title="Ver Ingreso" data-id="'+row['id_mov_alm']+'">'+
-                        '<i class="fas fa-file-alt"></i></button>'+
-                    // '<button type="button" class="ver_guias btn btn-warning boton" data-toggle="tooltip" '+
-                    //     'data-placement="bottom" title="Ver Guías" data-id="'+row.id_orden_compra+'">'+
-                    //     '<i class="fas fa-file-alt"></i></button>'+
+            {'render': 
+                function (data, type, row){
+                    if (permiso == '1') {
+                        return '<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" '+
+                            'data-placement="bottom" title="Ver Detalle" data-id="'+row['id_orden_compra']+'">'+
+                            '<i class="fas fa-list-ul"></i></button>'+
+                        '<button type="button" class="ingreso btn btn-warning boton" data-toggle="tooltip" '+
+                            'data-placement="bottom" title="Ver Ingreso" data-id="'+row['id_mov_alm']+'">'+
+                            '<i class="fas fa-file-alt"></i></button>'+
+                        // '<button type="button" class="ver_guias btn btn-warning boton" data-toggle="tooltip" '+
+                        //     'data-placement="bottom" title="Ver Guías" data-id="'+row.id_orden_compra+'">'+
+                        //     '<i class="fas fa-file-alt"></i></button>'+
                         (row['codigo_trans'] == null ? '<button type="button" class="anular btn btn-danger boton" data-toggle="tooltip" '+
                         'data-placement="bottom" title="Anular Ingreso" data-id="'+row['id_mov_alm']+'" data-guia="'+row['id_guia_com']+'" data-oc="'+row['id_orden_compra']+'">'+
                         '<i class="fas fa-trash"></i></button>' : '')+
                         (
                         ((row['id_tipo_requerimiento'] == 1 && (row['sede_orden'] !== row['sede_requerimiento'] && row['codigo_trans'] == null)) ||
-                        (row['id_tipo_requerimiento'] == 3 && (row['sede_orden'] !== row['sede_almacen'] && row['codigo_trans'] == null))) ? 
+                         (row['id_tipo_requerimiento'] == 3 && (row['sede_orden'] !== row['sede_almacen'] && row['codigo_trans'] == null))) ? 
                             ('<button type="button" class="transferencia btn btn-success boton" data-toggle="tooltip" '+
                             'data-placement="bottom" title="Generar Transferencia" >'+
                             '<i class="fas fa-exchange-alt"></i></button>') : 
-                            ((row['codigo_trans'] !== null && row['estado_trans'] == 1) ?
+                            ((row['codigo_trans'] !== null && row['estado_trans'] == 17) ?
                             '<button type="button" class="anular_sal btn btn-danger boton" data-toggle="tooltip" '+
                             'data-placement="bottom" title="Anular Salida" data-id="'+row['id_salida_trans']+'" data-guia="'+row['id_guia_ven_trans']+'" data-trans="'+row['id_transferencia']+'">'+
                             '<i class="fas fa-trash"></i></button>' : ''));

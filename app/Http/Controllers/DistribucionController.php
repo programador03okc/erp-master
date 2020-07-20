@@ -150,7 +150,7 @@ class DistribucionController extends Controller
             ->leftJoin('comercial.com_cliente','com_cliente.id_cliente','=','alm_req.id_cliente')
             ->leftJoin('contabilidad.adm_contri','adm_contri.id_contribuyente','=','com_cliente.id_contribuyente')
             ->leftJoin('configuracion.sis_moneda','sis_moneda.id_moneda','=','alm_req.id_moneda')
-            ->where([['alm_req.estado','=',1],['alm_req.confirmacion_pago','=',false]])
+            ->where([['alm_req.estado','=',1],['alm_req.confirmacion_pago','=',false],['alm_req.tipo_cliente','!=',3],['alm_req.tipo_cliente','!=',4]])
             ->orWhere([['alm_req.estado','=',19],['alm_req.id_tipo_requerimiento','=',2],['alm_req.confirmacion_pago','=',false]]);//muestra todos los reservados
             // ->get();
         return datatables($data)->toJson();

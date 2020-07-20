@@ -435,7 +435,7 @@ class TransferenciaController extends Controller
             ->select('guia_ven.*','adm_empresa.id_contribuyente as empresa_contribuyente',
             'log_prove.id_proveedor as empresa_proveedor','com_cliente.id_contribuyente as cliente_contribuyente',
             'prove_cliente.id_proveedor as cliente_proveedor','log_ord_compra.id_requerimiento',
-            'alm_req.id_tipo_requerimiento')
+            'alm_req.id_tipo_requerimiento','alm_req.tipo_cliente')
             ->join('administracion.sis_sede','sis_sede.id_sede','=','guia_ven.id_sede')
             ->join('administracion.adm_empresa','adm_empresa.id_empresa','=','sis_sede.id_empresa')
             ->leftJoin('logistica.log_prove','log_prove.id_contribuyente','=','adm_empresa.id_contribuyente')
@@ -662,7 +662,9 @@ class TransferenciaController extends Controller
 
             if ($guia_ven->id_requerimiento !== null) {
                 $accion = '';
-                if ($guia_ven->id_tipo_requerimiento == 1){
+                if (($guia_ven->id_tipo_requerimiento == 1 && $guia_ven->tipo_cliente !== 3) ||
+                    ($guia_ven->id_tipo_requerimiento == 2) ||
+                    ($guia_ven->id_tipo_requerimiento == 3 && $guia_ven->tipo_cliente == 4)){
                     $accion = 'Reservado';
                     DB::table('almacen.alm_req')
                     ->where('id_requerimiento',$guia_ven->id_requerimiento)
@@ -673,7 +675,7 @@ class TransferenciaController extends Controller
                     ->update(['estado'=>19,
                               'id_almacen_reserva'=>$request->id_almacen_destino]);//Reservado
                 } 
-                else if ($guia_ven->id_tipo_requerimiento == 3){
+                else {
                     $accion = 'Procesado';
                     DB::table('almacen.alm_req')
                     ->where('id_requerimiento',$guia_ven->id_requerimiento)
