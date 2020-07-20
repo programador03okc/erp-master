@@ -771,10 +771,11 @@ function limpiarFormularioDetalleRequerimiento(){
     $('[name=des_partida]').val('');
 }
 function validaModalDetalle(){
-    var unidad_medida_item = $('[name=unidad_medida_item]').val();
-    var cantidad_item = $('[name=cantidad_item]').val();
+    var unidad_medida_item = document.querySelector("div[id='modal-detalle-requerimiento'] select[name='unidad_medida_item']").value;
+    var cantidad_item = document.querySelector("div[id='modal-detalle-requerimiento'] input[name='cantidad_item']").value;
     var msj = '';
-
+    console.log(unidad_medida_item);
+    console.log(cantidad_item);
     if (cantidad_item == ''){
         msj+='\n Es necesario una Cantidad';
     }
@@ -2025,6 +2026,7 @@ function selectPartida(id_partida){
 // }
 function validaRequerimiento(){
     var tipo_requerimiento = $('[name=tipo_requerimiento]').val();
+    var tipo_cliente = $('[name=tipo_cliente]').val();
     var concepto = $('[name=concepto]').val();
     var empresa = $('[name=empresa]').val();
     var sede = $('[name=sede]').val();
@@ -2037,7 +2039,8 @@ function validaRequerimiento(){
     var email_cliente = $('[name=email_cliente]').val();
 
     var msj = '';
-    if(tipo_requerimiento == 1 || tipo_requerimiento == 2){ //compra || venta directa
+    if((tipo_requerimiento == 1 || tipo_requerimiento == 2) && (tipo_cliente == 1 || tipo_cliente ==2)){ //compra || venta directa - pers.natural o pers.juridica
+
         if (data_item.length <= 0){
             msj+='\n Es necesario que agregue mínimo un Ítem';
         }
@@ -2068,7 +2071,7 @@ function validaRequerimiento(){
         if (direccion_entrega == ''){
             msj+='\n Es necesario que seleccione una Dirección';
         }
-    }else if(tipo_requerimiento == 3){ // compra stock almacen
+    }else if((tipo_requerimiento == 1) && (tipo_cliente == 3)){  // compra - uso almacen 
         if (concepto.length <= 0 || concepto == ''){
             msj+='\n Es necesario que ingrese un Concepto';
         }
@@ -2528,18 +2531,32 @@ function getDataSelectSede(id_empresa = null){
             url: rutaSedeByEmpresa+'/' + id_empresa,
             dataType: 'JSON',
             success: function(response){ 
-                // console.log(response);  
+                console.log(response);  
                 if(response.length ==0){
                     console.error("usuario no registrado en 'configuracion'.'sis_usua_sede' o el estado del registro es diferente de 1");
                     alert('No se pudo acceder al listado de Sedes, el usuario debe pertenecer a una Sede y la sede esta habilitada');
                 }else{
                     llenarSelectSede(response);
+                    seleccionarAmacen(response)
                     llenarUbigeo();
                 }
             }
         });
     }
     return false;
+}
+
+function seleccionarAmacen(data){
+    let firstSede = data[0].id_sede;
+    let selectAlmacen = document.querySelector("div[id='input-group-almacen'] select[name='id_almacen']");
+    if(selectAlmacen.options.length>0){
+        var i, L = selectAlmacen.options.length - 1;
+        for(i = L; i >= 0; i--) {
+            if(selectAlmacen.options[i].dataset.idSede == firstSede){
+                selectAlmacen.options[i].setAttribute('selected',true);
+            }
+        }
+    }
 }
 
 function llenarUbigeo(){
@@ -2690,8 +2707,18 @@ function changeTipoCliente(e){
     if (e.target.value == 1){ // persona natural
         limpiarFormRequerimiento()
         stateFormRequerimiento(1);
+        document.querySelector("form[id='form-requerimiento'] input[name='cliente_ruc']").style.display ='none';
+        document.querySelector("form[id='form-requerimiento'] input[name='cliente_razon_social']").style.display = 'none';
+        document.querySelector("form[id='form-requerimiento'] input[name='nombre_persona']").style.display ='block';
+        document.querySelector("form[id='form-requerimiento'] input[name='dni_persona']").style.display ='block';
+
     }
     else if (e.target.value == 2){ // persona juridica
+
+        document.querySelector("form[id='form-requerimiento'] input[name='cliente_ruc']").style.display ='block';
+        document.querySelector("form[id='form-requerimiento'] input[name='cliente_razon_social']").style.display ='block';
+        document.querySelector("form[id='form-requerimiento'] input[name='nombre_persona']").style.display ='none';
+        document.querySelector("form[id='form-requerimiento'] input[name='dni_persona']").style.display ='none';
         limpiarFormRequerimiento()
         stateFormRequerimiento(1);
 
@@ -2720,8 +2747,8 @@ function limpiarFormRequerimiento(){
     document.querySelector("form[id='form-requerimiento'] input[name='direccion_entrega']").value='';
 
 
-    document.querySelector("form[id='form-requerimiento'] select[name='id_almacen']").value='';
-    document.querySelector("form[id='form-requerimiento'] input[name='ubigeo']").value='';
+    // document.querySelector("form[id='form-requerimiento'] select[name='id_almacen']").value='';
+    // document.querySelector("form[id='form-requerimiento'] input[name='ubigeo']").value='';
     // document.querySelector("form[id='form-requerimiento'] select[name='sede']").value='';
     // document.querySelector("form[id='form-requerimiento'] select[name='tipo_cliente']").value = '';      
     // document.querySelector("form[id='form-requerimiento'] input[name='name_ubigeo']").value='';

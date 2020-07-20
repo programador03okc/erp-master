@@ -5133,7 +5133,6 @@ class LogisticaController extends Controller
                         'unidad_medida_item' =>$item->unidad_medida_item?$item->unidad_medida_item:'',
                         'cantidad' =>$d->cantidad,
                         'precio_referencial' =>$d->precio_referencial,
-                        'stock_comprometido' =>$d->stock_comprometido,
                         'descripcion_almacen' =>$d->descripcion_almacen,
                         'almacen'=> $almacenes
                     ];
@@ -5155,7 +5154,6 @@ class LogisticaController extends Controller
                     'unidad_medida_item' =>'',
                     'cantidad' =>$d->cantidad,
                     'precio_referencial' =>$d->precio_referencial,
-                    'stock_comprometido' =>$d->stock_comprometido,
                     'descripcion_almacen' =>$d->descripcion_almacen,
                     'almacen'=> []
                 ];
@@ -5820,8 +5818,6 @@ class LogisticaController extends Controller
                 'lugar_entrega'=> $detalle->lugar_entrega,
                 'id_unidad_medida'=> $detalle->id_unidad_medida, 
                 'id_tipo_item'=> $detalle->id_tipo_item,
-                'stock_comprometido'=> $detalle->stock_comprometido,
-                'id_almacen'=> $detalle->id_almacen,
                 'merge'=>[]
             ];
             // if($detalle->id_item !=null){
@@ -6060,8 +6056,6 @@ class LogisticaController extends Controller
                     'lugar_entrega'=> $detalle->lugar_entrega,
                     'id_unidad_medida'=> $detalle->id_unidad_medida, 
                     'id_tipo_item'=> $detalle->id_tipo_item,
-                    'stock_comprometido'=> $detalle->stock_comprometido,
-                    'id_almacen'=> $detalle->id_almacen,
                     'merge'=>[]
                 ];
      
@@ -6506,78 +6500,78 @@ class LogisticaController extends Controller
     //     return json_encode($html);
     // }
 
-    public function actualizar_stock_comprometido(Request $request){
-        $result=[];
-        $status_stock ='';
-        $status_alm ='';
-        $statusOption =['success','fail'];
+    // public function actualizar_stock_comprometido(Request $request){
+    //     $result=[];
+    //     $status_stock ='';
+    //     $status_alm ='';
+    //     $statusOption =['success','fail'];
 
-        foreach($request->comprometer_stock as $item){
-            $alm_det_req = DB::table('almacen.alm_det_req')
-            ->where('id_detalle_requerimiento', $item['id_detalle_requerimiento'])
-            ->update([
-                'stock_comprometido' => $item['stock_comprometido']
-            ]);
-        }
-        if($alm_det_req != null){
-            // array_push($message,'DETALLE_REQUERIMIENTO_ACTUALIZADO');
-            $status_stock=$statusOption[0];
+    //     foreach($request->comprometer_stock as $item){
+    //         $alm_det_req = DB::table('almacen.alm_det_req')
+    //         ->where('id_detalle_requerimiento', $item['id_detalle_requerimiento'])
+    //         ->update([
+    //             'stock_comprometido' => $item['stock_comprometido']
+    //         ]);
+    //     }
+    //     if($alm_det_req != null){
+    //         // array_push($message,'DETALLE_REQUERIMIENTO_ACTUALIZADO');
+    //         $status_stock=$statusOption[0];
 
-            foreach($request->comprometer_stock as $item){
-                $alm_req = DB::table('almacen.alm_req')
-                ->where('id_requerimiento', $item['id_requerimiento'])
-                ->update([
-                    'stock_comprometido' => 1
-                ]);
-            }
-            if($alm_req != null){
-                // array_push($message,'REQUERIMIENTO_ACTUALIZADO');
-                $status_stock=$statusOption[0];
+    //         foreach($request->comprometer_stock as $item){
+    //             $alm_req = DB::table('almacen.alm_req')
+    //             ->where('id_requerimiento', $item['id_requerimiento'])
+    //             ->update([
+    //                 'stock_comprometido' => 1
+    //             ]);
+    //         }
+    //         if($alm_req != null){
+    //             // array_push($message,'REQUERIMIENTO_ACTUALIZADO');
+    //             $status_stock=$statusOption[0];
 
-            }else{
-                // array_push($message,'REQUERIMIENTO_NO_ACTUALIZADO');
-                $status_stock=$statusOption[1];
-
-
-            }
-
-        }else{
-            // array_push($message,'DETALLE_REQUERIMIENTO_NO_ACTUALIZADO');
-            $status_stock=$statusOption[1];
+    //         }else{
+    //             // array_push($message,'REQUERIMIENTO_NO_ACTUALIZADO');
+    //             $status_stock=$statusOption[1];
 
 
-        }
+    //         }
+
+    //     }else{
+    //         // array_push($message,'DETALLE_REQUERIMIENTO_NO_ACTUALIZADO');
+    //         $status_stock=$statusOption[1];
+
+
+    //     }
 
          
 
-        // 
-        foreach($request->almacen as $item){
-            $det_req = DB::table('almacen.alm_det_req')
-            ->where('id_detalle_requerimiento', $item['id_detalle_requerimiento'])
-            ->update([
-                'id_almacen' => $item['id_almacen']
-            ]);
-        }
-        if($det_req != null){
-            // array_push($message,'DETALLE_REQUERIMIENTO_ACTUALIZADO');
-            $status_alm=$statusOption[0];
+    //     // 
+    //     foreach($request->almacen as $item){
+    //         $det_req = DB::table('almacen.alm_det_req')
+    //         ->where('id_detalle_requerimiento', $item['id_detalle_requerimiento'])
+    //         ->update([
+    //             'id_almacen' => $item['id_almacen']
+    //         ]);
+    //     }
+    //     if($det_req != null){
+    //         // array_push($message,'DETALLE_REQUERIMIENTO_ACTUALIZADO');
+    //         $status_alm=$statusOption[0];
 
 
-        }else{
-            // array_push($message,'DETALLE_REQUERIMIENTO_NO_ACTUALIZADO');
-            $status_alm=$statusOption[1];
+    //     }else{
+    //         // array_push($message,'DETALLE_REQUERIMIENTO_NO_ACTUALIZADO');
+    //         $status_alm=$statusOption[1];
 
 
-        }
+    //     }
 
-        $result = ['status_stock'=>$status_stock,'status_almacen'=>$status_alm];
-
-
+    //     $result = ['status_stock'=>$status_stock,'status_almacen'=>$status_alm];
 
 
 
-    return response()->json($result);
-     }
+
+
+    // return response()->json($result);
+    //  }
 
     public function mostrar_grupo_cotizacion($id_grupo)
     {
@@ -7175,8 +7169,7 @@ class LogisticaController extends Controller
                 'alm_det_req.obs',
                 'alm_det_req.partida',
                 'alm_det_req.unidad_medida',
-                'alm_det_req.fecha_registro',
-                'alm_det_req.stock_comprometido'
+                'alm_det_req.fecha_registro'
             )
             ->leftJoin('logistica.valoriza_coti_detalle', 'valoriza_coti_detalle.id_valorizacion_cotizacion', '=', 'log_valorizacion_cotizacion.id_valorizacion_cotizacion')
             ->leftJoin('almacen.alm_det_req', 'alm_det_req.id_detalle_requerimiento', '=', 'valoriza_coti_detalle.id_detalle_requerimiento')
@@ -7216,7 +7209,6 @@ class LogisticaController extends Controller
                     'precio_referencial'=>$data->precio_referencial,
                     'fecha_entrega'=>$data->fecha_entrega,
                     'lugar_entrega'=>$data->lugar_entrega,
-                    'stock_comprometido' => $data->stock_comprometido?$data->stock_comprometido:0,
                     'id_unidad_medida' => $data->id_unidad_medida,
                     'unidad_medida_descripcion' => $data->unidad_medida_descripcion,
                     'fecha_registro' => $data->fecha_registro,
@@ -7227,7 +7219,7 @@ class LogisticaController extends Controller
                 foreach($items as $clave => $valor){
                     if($valor['id_item'] == $data->id_item){
                         $items[$clave]['cantidad'] += $data->cantidad;
-                        $items[$clave]['stock_comprometido'] += $data->stock_comprometido;
+                        // $items[$clave]['stock_comprometido'] += $data->stock_comprometido;
                     }
                 }
             }
@@ -7475,7 +7467,6 @@ class LogisticaController extends Controller
                         $reqReadyForCotList[$i]["id_estado_doc"]= $req[$j]->id_estado_doc; 
                         $reqReadyForCotList[$i]["id_moneda"]= $req[$j]->id_moneda; 
                         $reqReadyForCotList[$i]["obs_log"]= $req[$j]->obs_log; 
-                        $reqReadyForCotList[$i]["stock_comprometido"]= $req[$j]->stock_comprometido; 
                         $reqReadyForCotList[$i]["des_area"]= $req[$j]->des_area;
                         $reqReadyForCotList[$i]["estado_doc"]= $req[$j]->estado_doc;
                     }
@@ -7570,7 +7561,6 @@ class LogisticaController extends Controller
                     'id_estado_doc'=>$data->id_estado_doc,
                     'id_moneda'=>$data->id_moneda,
                     'obs_log'=>$data->obs_log,
-                    'stock_comprometido'=>$data->stock_comprometido,
                     'des_area'=>$data->des_area,
                     'estado_doc'=>$data->estado_doc,
                     'has_cotizacion'=>in_array($data->id_requerimiento, $idReqInValCotiListUniq)?true:false,
@@ -8048,6 +8038,7 @@ class LogisticaController extends Controller
 
             )
             ->where([['alm_req.estado', '=', 1],['alm_req.id_tipo_requerimiento','=',1],['alm_req.confirmacion_pago','=',true]])
+            ->orWhere([['alm_req.estado', '=', 1],['alm_req.id_tipo_requerimiento','=',1],['alm_req.tipo_cliente','=',3]])
             ->orderBy('alm_req.id_requerimiento', 'desc')
             ->get();
         return response()->json(["data" => $alm_req]);
