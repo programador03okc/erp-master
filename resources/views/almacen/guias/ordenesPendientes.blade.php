@@ -21,7 +21,7 @@ Pendientes de Ingreso
 <div class="page-main" type="ordenesPendientes">
     <div class="col-md-12" id="tab-ordenes"  style="padding-left:0px;padding-right:0px;">
         <ul class="nav nav-tabs" id="myTab">
-            <li class="active"><a type="#pendientes">Ordenes Pendientes</a></li>
+            <li class="active"><a type="#pendientes">Ordenes Pendientes de Llegada</a></li>
             <li class=""><a type="#ingresadas">Ordenes Ingresadas Almacén</a></li>
         </ul>
         <div class="content-tabs">
