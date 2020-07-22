@@ -35,12 +35,12 @@ Pendientes de Ingreso
                                     <tr>
                                         <th hidden></th>
                                         <th>Cod.Orden</th>
-                                        <th>R.U.C.</th>
-                                        <th>Razon Social</th>
-                                        <th>SoftLink</th>
+                                        <!-- <th>R.U.C.</th> -->
+                                        <th>Proveedor</th>
                                         <th>Fecha Emisión</th>
                                         <th>Req.</th>
                                         <th>Concepto</th>
+                                        <th>Fecha Entrega</th>
                                         <th>Responsable</th>
                                         <!-- <th>Mnd</th>
                                         <th>SubTotal</th>
