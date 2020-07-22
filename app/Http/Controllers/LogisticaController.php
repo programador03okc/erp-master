@@ -407,7 +407,7 @@ class LogisticaController extends Controller
         $alm_req = DB::table('almacen.alm_req')
             ->join('almacen.alm_tp_req', 'alm_req.id_tipo_requerimiento', '=', 'alm_tp_req.id_tipo_requerimiento')
             ->leftJoin('configuracion.sis_usua', 'alm_req.id_usuario', '=', 'sis_usua.id_usuario')
-            ->leftJoin('administracion.adm_estado_doc', 'alm_req.id_estado_doc', '=', 'adm_estado_doc.id_estado_doc')
+            ->leftJoin('administracion.adm_estado_doc', 'alm_req.estado', '=', 'adm_estado_doc.id_estado_doc')
             ->leftJoin('rrhh.rrhh_trab', 'sis_usua.id_trabajador', '=', 'rrhh_trab.id_trabajador')
             ->leftJoin('rrhh.rrhh_rol', 'alm_req.id_rol', '=', 'rrhh_rol.id_rol')
             ->leftJoin('rrhh.rrhh_rol_concepto', 'rrhh_rol_concepto.id_rol_concepto', '=', 'rrhh_rol.id_rol_concepto')
@@ -493,7 +493,7 @@ class LogisticaController extends Controller
             ->leftJoin('administracion.sis_sede', 'sis_sede.id_sede', '=', 'alm_req.id_sede')
             ->leftJoin('administracion.adm_empresa', 'adm_empresa.id_empresa', '=', 'sis_sede.id_empresa')
             ->leftJoin('contabilidad.adm_contri as contrib', 'adm_empresa.id_contribuyente', '=', 'contrib.id_contribuyente')
-            ->leftJoin('administracion.adm_estado_doc', 'alm_req.id_estado_doc', '=', 'adm_estado_doc.id_estado_doc')
+            ->leftJoin('administracion.adm_estado_doc', 'alm_req.estado', '=', 'adm_estado_doc.id_estado_doc')
             
             ->leftJoin('configuracion.sis_usua', 'alm_req.id_usuario', '=', 'sis_usua.id_usuario')
             ->leftJoin('rrhh.rrhh_trab', 'sis_usua.id_trabajador', '=', 'rrhh_trab.id_trabajador')
@@ -2469,7 +2469,7 @@ class LogisticaController extends Controller
         $det_req = array();
 
         $sql_req = DB::table('almacen.alm_req')
-        ->leftJoin('administracion.adm_estado_doc', 'alm_req.id_estado_doc', '=', 'adm_estado_doc.id_estado_doc')
+        ->leftJoin('administracion.adm_estado_doc', 'alm_req.estado', '=', 'adm_estado_doc.id_estado_doc')
         ->leftJoin('almacen.alm_tp_req', 'alm_req.id_tipo_requerimiento', '=', 'alm_tp_req.id_tipo_requerimiento')
         ->leftJoin('administracion.adm_prioridad', 'alm_req.id_prioridad', '=', 'adm_prioridad.id_prioridad')
         ->leftJoin('administracion.adm_grupo', 'alm_req.id_grupo', '=', 'adm_grupo.id_grupo')
@@ -2890,7 +2890,7 @@ class LogisticaController extends Controller
 
         $sql_req = DB::table('almacen.alm_req')
         ->leftJoin('administracion.adm_documentos_aprob', 'alm_req.id_requerimiento', '=', 'adm_documentos_aprob.id_doc')
-        ->leftJoin('administracion.adm_estado_doc', 'alm_req.id_estado_doc', '=', 'adm_estado_doc.id_estado_doc')
+        ->leftJoin('administracion.adm_estado_doc', 'alm_req.estado', '=', 'adm_estado_doc.id_estado_doc')
         ->leftJoin('almacen.alm_tp_req', 'alm_req.id_tipo_requerimiento', '=', 'alm_tp_req.id_tipo_requerimiento')
         ->leftJoin('administracion.adm_prioridad', 'alm_req.id_prioridad', '=', 'adm_prioridad.id_prioridad')
         ->leftJoin('administracion.adm_grupo', 'alm_req.id_grupo', '=', 'adm_grupo.id_grupo')
@@ -3543,7 +3543,7 @@ class LogisticaController extends Controller
     {
         $sql = DB::table('almacen.alm_req')
             ->leftJoin('administracion.adm_periodo', 'adm_periodo.id_periodo', '=', 'alm_req.id_periodo')
-            ->leftJoin('administracion.adm_estado_doc', 'alm_req.id_estado_doc', '=', 'adm_estado_doc.id_estado_doc')
+            ->leftJoin('administracion.adm_estado_doc', 'alm_req.estado', '=', 'adm_estado_doc.id_estado_doc')
             ->leftJoin('almacen.alm_tp_req', 'alm_req.id_tipo_requerimiento', '=', 'alm_tp_req.id_tipo_requerimiento')
             ->leftJoin('administracion.adm_prioridad', 'alm_req.id_prioridad', '=', 'adm_prioridad.id_prioridad')
             ->leftJoin('administracion.adm_grupo', 'alm_req.id_grupo', '=', 'adm_grupo.id_grupo')
@@ -7480,7 +7480,7 @@ class LogisticaController extends Controller
             $req = DB::table('almacen.alm_req')   
             ->select('alm_req.*', 'adm_area.descripcion as des_area', 'adm_estado_doc.estado_doc')
             ->leftJoin('administracion.adm_area', 'alm_req.id_area', '=', 'adm_area.id_area')
-            ->leftJoin('administracion.adm_estado_doc', 'alm_req.id_estado_doc', '=', 'adm_estado_doc.id_estado_doc')
+            ->leftJoin('administracion.adm_estado_doc', 'alm_req.estado', '=', 'adm_estado_doc.id_estado_doc')
             ->whereIn('alm_req.id_requerimiento',$IdReqList)
             ->orderBy('alm_req.fecha_registro', 'desc')
             ->get();
@@ -7571,7 +7571,7 @@ class LogisticaController extends Controller
             $req = DB::table('almacen.alm_req')   
             ->select('alm_req.*', 'adm_area.descripcion as des_area', 'adm_estado_doc.estado_doc')
             ->leftJoin('administracion.adm_area', 'alm_req.id_area', '=', 'adm_area.id_area')
-            ->leftJoin('administracion.adm_estado_doc', 'alm_req.id_estado_doc', '=', 'adm_estado_doc.id_estado_doc')
+            ->leftJoin('administracion.adm_estado_doc', 'alm_req.estado', '=', 'adm_estado_doc.id_estado_doc')
             ->whereNotIn(
                 'alm_req.id_estado_doc',$estado_excluidos
                 )
@@ -8028,7 +8028,7 @@ class LogisticaController extends Controller
         $alm_req = DB::table('almacen.alm_req')
             ->join('almacen.alm_tp_req', 'alm_req.id_tipo_requerimiento', '=', 'alm_tp_req.id_tipo_requerimiento')
             ->leftJoin('configuracion.sis_usua', 'alm_req.id_usuario', '=', 'sis_usua.id_usuario')
-            ->leftJoin('administracion.adm_estado_doc', 'alm_req.id_estado_doc', '=', 'adm_estado_doc.id_estado_doc')
+            ->leftJoin('administracion.adm_estado_doc', 'alm_req.estado', '=', 'adm_estado_doc.id_estado_doc')
             ->leftJoin('rrhh.rrhh_trab', 'sis_usua.id_trabajador', '=', 'rrhh_trab.id_trabajador')
             ->leftJoin('rrhh.rrhh_rol', 'alm_req.id_rol', '=', 'rrhh_rol.id_rol')
             ->leftJoin('rrhh.rrhh_rol_concepto', 'rrhh_rol_concepto.id_rol_concepto', '=', 'rrhh_rol.id_rol_concepto')
@@ -8087,7 +8087,7 @@ class LogisticaController extends Controller
         $alm_req = DB::table('almacen.alm_req')
             ->join('almacen.alm_tp_req', 'alm_req.id_tipo_requerimiento', '=', 'alm_tp_req.id_tipo_requerimiento')
             ->leftJoin('configuracion.sis_usua', 'alm_req.id_usuario', '=', 'sis_usua.id_usuario')
-            ->leftJoin('administracion.adm_estado_doc', 'alm_req.id_estado_doc', '=', 'adm_estado_doc.id_estado_doc')
+            ->leftJoin('administracion.adm_estado_doc', 'alm_req.estado', '=', 'adm_estado_doc.id_estado_doc')
             ->leftJoin('rrhh.rrhh_trab', 'sis_usua.id_trabajador', '=', 'rrhh_trab.id_trabajador')
             ->leftJoin('rrhh.rrhh_rol', 'alm_req.id_rol', '=', 'rrhh_rol.id_rol')
             ->leftJoin('rrhh.rrhh_rol_concepto', 'rrhh_rol_concepto.id_rol_concepto', '=', 'rrhh_rol.id_rol_concepto')
@@ -8153,7 +8153,7 @@ class LogisticaController extends Controller
             ->leftJoin('administracion.sis_sede', 'sis_sede.id_sede', '=', 'alm_req.id_sede')
             ->leftJoin('administracion.adm_empresa', 'adm_empresa.id_empresa', '=', 'sis_sede.id_empresa')
             ->leftJoin('contabilidad.adm_contri as contrib', 'adm_empresa.id_contribuyente', '=', 'contrib.id_contribuyente')
-            ->leftJoin('administracion.adm_estado_doc', 'alm_req.id_estado_doc', '=', 'adm_estado_doc.id_estado_doc')
+            ->leftJoin('administracion.adm_estado_doc', 'alm_req.estado', '=', 'adm_estado_doc.id_estado_doc')
             
             ->leftJoin('configuracion.sis_usua', 'alm_req.id_usuario', '=', 'sis_usua.id_usuario')
             ->leftJoin('rrhh.rrhh_trab', 'sis_usua.id_trabajador', '=', 'rrhh_trab.id_trabajador')
@@ -12450,7 +12450,7 @@ class LogisticaController extends Controller
         ->leftJoin('administracion.adm_area', 'alm_req.id_area', '=', 'adm_area.id_area')
         ->leftJoin('proyectos.proy_op_com', 'proy_op_com.id_op_com', '=', 'alm_req.id_op_com')
         ->leftJoin('administracion.adm_grupo', 'adm_grupo.id_grupo', '=', 'alm_req.id_grupo')
-        ->leftJoin('administracion.adm_estado_doc', 'adm_estado_doc.id_estado_doc', '=', 'alm_req.id_estado_doc')
+        ->leftJoin('administracion.adm_estado_doc', 'adm_estado_doc.id_estado_doc', '=', 'alm_req.estado')
 
         // ->leftJoin('logistica.log_detalle_grupo_cotizacion', 'log_detalle_grupo_cotizacion.id_requerimiento', '=', 'alm_req.id_requerimiento')
         // ->leftJoin('logistica.log_ord_compra', 'log_ord_compra.id_grupo_cotizacion', '=', 'log_detalle_grupo_cotizacion.id_grupo_cotizacion')
