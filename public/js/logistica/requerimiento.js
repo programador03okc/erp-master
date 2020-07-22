@@ -1690,17 +1690,11 @@ function catalogoItemsModal(){
         
         saldosModal(almacen);
     }
-    else if(tipo_requerimiento ==3 && tipo_cliente == 3){ // pedido almacen & uso almacén
+    else if(tipo_requerimiento ==3 ){ // pedido almacen
         var almacen = $('[name=id_almacen]').val();        
         saldosModal(almacen);
     }
-    else if(tipo_requerimiento ==3 && tipo_cliente == 4){ // pedido almacen & uso administración
-        $('#modal-catalogo-items').modal({
-            show: true,
-            backdrop: 'true'
-        });
-        listarItems();
-    }
+
 }
 
 function listar_almacenes(){
@@ -1765,10 +1759,10 @@ $(function(){
         var idEqui = $(this)[0].children[3].innerHTML;
         var codigo = $(this)[0].children[4].innerHTML;
         var partNum = $(this)[0].children[5].innerHTML;
-        var descri = $(this)[0].children[6].innerHTML;
-        var unidad = $(this)[0].children[7].innerHTML;
-        var categoria = $(this)[0].children[8].innerHTML;
-        var subcategoria = $(this)[0].children[9].innerHTML;
+        var categoria = $(this)[0].children[6].innerHTML;
+        var subcategoria = $(this)[0].children[7].innerHTML;
+        var descri = $(this)[0].children[8].innerHTML;
+        var unidad = $(this)[0].children[9].innerHTML;
         var id_unidad = $(this)[0].children[10].innerHTML;
         $('.modal-footer #id_item').text(idItem);
         $('.modal-footer #codigo').text(codigo);
@@ -1805,10 +1799,10 @@ function listarItems() {
             {'data': 'id_equipo'},
             {'data': 'codigo'},
             {'data': 'part_number'},
-            {'data': 'descripcion'},
-            {'data': 'unidad_medida_descripcion'},
             {'data': 'categoria'},
             {'data': 'subcategoria'},
+            {'data': 'descripcion'},
+            {'data': 'unidad_medida_descripcion'},
             {'data': 'id_unidad_medida'}
         ],
         'columnDefs': [

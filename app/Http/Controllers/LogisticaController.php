@@ -1963,7 +1963,7 @@ class LogisticaController extends Controller
                         'estado' => $estado_anulado
                     ]);
                     $statusAnularRequerimiento=200;
-                    if($id_tipo_requerimiento == 2 ||( $id_tipo_requerimiento ==3 && $id_tipo_cliente == 3)){
+                    if($id_tipo_requerimiento == 2 ||( $id_tipo_requerimiento ==3)){
                         $statusAnularTrasferencia = $this->anularTrasfarencia($id);
                     }
 
