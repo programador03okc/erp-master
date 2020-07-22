@@ -454,6 +454,8 @@ class LogisticaController extends Controller
                 'alm_req.id_almacen',
                 'alm_almacen.descripcion as almacen_solicitante',
                 'alm_req.fecha_registro',
+                'alm_req.monto',
+                'alm_req.fecha_entrega',
                 'alm_req.estado',
                 'adm_estado_doc.estado_doc',
                 'adm_estado_doc.bootstrap_color',
@@ -561,6 +563,7 @@ class LogisticaController extends Controller
                 'alm_req.email',
                 'alm_req.id_almacen',
                 'alm_req.monto',
+                'alm_req.fecha_entrega',
                 DB::raw("(CASE WHEN alm_req.estado = 1 THEN 'Habilitado' ELSE 'Deshabilitado' END) AS estado_desc")
             )
             ->where([
@@ -629,7 +632,8 @@ class LogisticaController extends Controller
                     'telefono' => $data->telefono,
                     'email' => $data->email,
                     'id_almacen' => $data->id_almacen,
-                    'monto' => $data->monto
+                    'monto' => $data->monto,
+                    'fecha_entrega' => $data->fecha_entrega
                     
                 ];
             };
@@ -1926,35 +1930,52 @@ class LogisticaController extends Controller
     }
 
     public function anular_requerimiento($id){
-        $status=0;
+        $statusAnularRequerimiento=0;
+        $statusAnularTrasferencia=0;
         if($id > 0){
             $userId = Auth::user()->id_usuario;
-            $id_usuario_req= DB::table('almacen.alm_req')
+            $req= DB::table('almacen.alm_req')
             ->select(
                 'alm_req.id_usuario'
             )
             ->where([
-                ['alm_req.id_requerimiento', '=', $id],
-                ['alm_req.estado', '=', 1]
+                ['alm_req.id_requerimiento', '=', $id]
             ])
-            ->first()->id_usuario;        
-
-            if($id_usuario_req == $userId){
-                $requerimiento = DB::table('almacen.alm_req')->where('id_requerimiento', $id)
-                ->update([               
-                    'estado' => 7
-                ]);
-                $detalle_re = DB::table('almacen.alm_det_req')
-                ->where('id_requerimiento', '=', $id)
-                ->update([
-                    'estado' => 7
-                ]);
-                $status=1;
-            }else{
-                $status= 2;
+            ->get();   
+            
+            if(count($req)>0){
+                $id_usuario_req = $req->first()->id_usuario; 
+                $id_tipo_requerimiento = $req->first()->id_tipo_requerimiento; 
+                $tipo_cliente = $req->first()->tipo_cliente; 
             }
 
-           $output=['status'=>$status,'id_usuario_req'=>$id_usuario_req, 'id_usuario_auth'=>$userId];
+            if(isset($id_usuario_req)){
+                $estado_anulado = $this->get_estado_doc('Anulado');
+                
+                if($id_usuario_req == $userId){
+                    $requerimiento = DB::table('almacen.alm_req')->where('id_requerimiento', $id)
+                    ->update([               
+                        'estado' => $estado_anulado
+                    ]);
+                    $detalle_re = DB::table('almacen.alm_det_req')
+                    ->where('id_requerimiento', '=', $id)
+                    ->update([
+                        'estado' => $estado_anulado
+                    ]);
+                    $statusAnularRequerimiento=200;
+                    if($id_tipo_requerimiento == 2 ||( $id_tipo_requerimiento ==3 && $id_tipo_cliente == 3)){
+                        $statusAnularTrasferencia = $this->anularTrasfarencia($id);
+                    }
+
+                }else{
+                    $statusAnularRequerimiento= 401;
+                }
+            }else{
+                $statusAnularRequerimiento = 400;
+            }
+   
+
+           $output=['status_requerimiento'=>$statusAnularRequerimiento,'status_transferencia'=>$statusAnularTrasferencia,'id_usuario_req'=>$id_usuario_req, 'id_usuario_auth'=>$userId];
         }
         return response()->json($output);
 

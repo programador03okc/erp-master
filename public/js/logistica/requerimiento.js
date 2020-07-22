@@ -184,7 +184,7 @@ function mostrar_cuadro_costos_modal(){
         case '2': // cuadro de costos
             $('#modal-cuadro_costos_comercial').modal({
                 show: true,
-                backdrop: 'static'
+                backdrop: 'true'
             });
 
             get_cuadro_costos_comercial();
@@ -354,7 +354,7 @@ function handlePaste(event){
 function modalRequerimiento(){
     $('#modal-requerimiento').modal({
         show: true,
-        backdrop: 'static'
+        backdrop: 'true'
     });
     listarRequerimiento('ONLY_ACTIVOS');
 }
@@ -566,6 +566,7 @@ function mostrar_requerimiento(IdorCode){
                 $('[name=name_ubigeo]').val(response['requerimiento'][0].name_ubigeo);
                 $('[name=id_almacen]').val(response['requerimiento'][0].id_almacen);
                 $('[name=monto]').val(response['requerimiento'][0].monto);
+                $('[name=fecha_entrega]').val(response['requerimiento'][0].fecha_entrega);
                 
 
                 $('#estado_doc').text(response['requerimiento'][0].estado_doc);
@@ -699,7 +700,7 @@ function modal_area(){
 
         $('#modal-empresa-area').modal({
             show: true,
-            backdrop: 'static'
+            backdrop: 'true'
         });
         cargarEstOrg(id_emp);
     }else{
@@ -1036,6 +1037,7 @@ function get_data_requerimiento(){
     almacen_id_empresa =document.querySelector("select[name='id_almacen']").options[document.querySelector("select[name='id_almacen']").selectedIndex].dataset.idEmpresa;
     observacion = document.querySelector("form[id='form-requerimiento'] textarea[name='observacion']").value;
     monto = document.querySelector("form[id='form-requerimiento'] input[name='monto']").value;
+    fecha_entrega = document.querySelector("form[id='form-requerimiento'] input[name='fecha_entrega']").value;
 
     requerimiento = {
         id_requerimiento,
@@ -1065,7 +1067,8 @@ function get_data_requerimiento(){
         almacen_id_sede,
         almacen_id_empresa,
         observacion,
-        monto
+        monto,
+        fecha_entrega
         
     };
 return requerimiento;
@@ -1142,6 +1145,7 @@ function aceptarCambiosItem(){ // del modal-detalle-requerimiento
         update_data_item(indice, item);
         $('#modal-detalle-requerimiento').modal('hide');
 
+
     }else{
         alert("El indice no es numérico");
     }
@@ -1185,7 +1189,6 @@ function eliminarItemDetalleRequerimiento(event,index){
 var indice='';
 function detalleRequerimientoModal(event,index){
 
-    
     $('#form-detalle-requerimiento')[0].reset();
     event.preventDefault();
     var btnAceptarCambio = document.getElementsByName("btn-aceptar-cambio");
@@ -1204,7 +1207,6 @@ function detalleRequerimientoModal(event,index){
         disabledControl(btnAceptarCambio,true);
     }
     var tipo = $('[name=tipo_requerimiento]').val();
-    
     if (tipo == 2){        
         // var sede = $('[name=sede]').val();
         // var almacen = $('select[name=id_almacen]').val();
@@ -1213,7 +1215,7 @@ function detalleRequerimientoModal(event,index){
             // if (almacen !== null && almacen !== '' && almacen !== undefined ){
                 $('#modal-detalle-requerimiento').modal({
                     show: true,
-                    backdrop: 'static'
+                    backdrop: 'true'
                 });
                 // $('[name=id_almacen]').show();
     
@@ -1236,7 +1238,7 @@ function detalleRequerimientoModal(event,index){
     else if (tipo == 1){
         $('#modal-detalle-requerimiento').modal({
             show: true,
-            backdrop: 'static'
+            backdrop: 'true'
         });
         document.querySelector("div[id='modal-detalle-requerimiento'] input[name='fecha_entrega_item']").value='';
         document.querySelector("div[id='modal-detalle-requerimiento'] input[name='lugar_entrega_item']").value='';
@@ -1248,7 +1250,7 @@ function detalleRequerimientoModal(event,index){
     }else if(tipo ==3){
         $('#modal-detalle-requerimiento').modal({
             show: true,
-            backdrop: 'static'
+            backdrop: 'true'
         });
         document.querySelector("div[id='modal-detalle-requerimiento'] input[name='fecha_entrega_item']").value='';
         document.querySelector("div[id='modal-detalle-requerimiento'] input[name='lugar_entrega_item']").value='';
@@ -1374,7 +1376,7 @@ function archivosAdjuntosModal(event,index){
 
             $('#modal-adjuntar-archivos-detalle-requerimiento').modal({
                 show: true,
-                backdrop: 'static'
+                backdrop: 'true'
             });
             get_data_archivos_adjuntos(data_item[index].id_detalle_requerimiento);
             
@@ -1678,7 +1680,7 @@ function catalogoItemsModal(){
     if (tipo_requerimiento == 1 ){
         $('#modal-catalogo-items').modal({
             show: true,
-            backdrop: 'static'
+            backdrop: 'true'
         });
         listarItems();
     }
@@ -1688,9 +1690,16 @@ function catalogoItemsModal(){
         
         saldosModal(almacen);
     }
-    else if(tipo_requerimiento ==3 && tipo_cliente == 3){
+    else if(tipo_requerimiento ==3 && tipo_cliente == 3){ // pedido almacen & uso almacén
         var almacen = $('[name=id_almacen]').val();        
         saldosModal(almacen);
+    }
+    else if(tipo_requerimiento ==3 && tipo_cliente == 4){ // pedido almacen & uso administración
+        $('#modal-catalogo-items').modal({
+            show: true,
+            backdrop: 'true'
+        });
+        listarItems();
     }
 }
 
@@ -1897,7 +1906,7 @@ function partidasModal(){
         if (id_proyecto != ''){
             $('#modal-partidas').modal({
                 show: true,
-                backdrop: 'static'
+                backdrop: 'true'
             });
             listarPartidas(id_grupo,id_proyecto);
         } else {
@@ -2171,7 +2180,7 @@ function openSustento(id_obs ,id_req){
     $('[name=motivo_sustento]').val('');
     $('[name=id_requerimiento_sustento]').val(id_req);
     $('[name=id_observacion_sustento]').val(id_obs);
-    $('#modal-sustento').modal({show: true, backdrop: 'static'});
+    $('#modal-sustento').modal({show: true, backdrop: 'true'});
 }
 
 function editRequerimiento(){
@@ -2225,10 +2234,12 @@ function anular_requerimiento(id_req){
             dataType: 'JSON',
             success: function(response){
                 // console.log(response);
-                if(response.status ==1){
-                    alert("Requerimiento Anulado.");
+                if(response.status_requerimiento ==200 && response.status_transferencia ==200){
+                    alert("Requerimiento Anulado y se revertió la transferencia.");
                     nuevo_req();
-                }else if(response.status ==2){
+                }else if(response.status_requerimiento ==200 && response.status_transferencia ==400){
+                    alert("Requerimiento Anulado.");
+                }else if(response.status_requerimiento ==401){
                     alert("No se puede Anular, Unicamente el usuario que creo el requerimiento puede anular.");
                 }else{
                     alert("No se pudo Anular el Requerimiento.");
@@ -2255,7 +2266,7 @@ function copiarDocumento(){
         if(id >0 ){
             $('#modal-copiar-documento').modal({
                 show: true,
-                backdrop: 'static'
+                backdrop: 'true'
             });
         }else{
             alert("No se seleccionó un requerimiento del historial");
@@ -2374,7 +2385,7 @@ function verUltimasCompras(event){
     if(id_item != null && id_item.length > 0){
     $('#modal-ultimas_compras').modal({
         show: true,
-        backdrop: 'static'
+        backdrop: 'true'
     });
  
         listarUltimasCompras(id_item,0);

@@ -251,6 +251,12 @@
                     <input type="text" class="form-control activation" name="monto">
                 </div>
             </div>
+            <div class="col-md-2" id="input-group-fecha_entrega">
+                <div class="form-group">
+                    <h5>Fecha Entrega</h5>
+                    <input type="date" class="form-control input-sm activation" name="fecha_entrega" step="any" min={{ date('Y-m-d H:i:s') }} value={{ date('Y-m-d H:i:s') }}>
+                </div>
+            </div>
             <div class="col-md-3" id="input-group-observacion" hidden>
                 <h5>Observación:</h5>
                 <textarea class="form-control activation" name="observacion" cols="50" rows="10" style="height:60px;" disabled></textarea>
