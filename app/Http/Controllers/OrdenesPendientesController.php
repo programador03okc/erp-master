@@ -32,7 +32,7 @@ class OrdenesPendientesController extends Controller
         $data = DB::table('logistica.log_ord_compra')
             ->select('log_ord_compra.*','log_ord_compra.codigo as codigo_orden','log_ord_compra.codigo_softlink',
             'adm_estado_doc.estado_doc','adm_estado_doc.bootstrap_color','adm_contri.razon_social',
-            'adm_contri.nro_documento','sis_usua.nombre_corto',
+            'sis_usua.nombre_corto','alm_req.fecha_entrega',
             // 'sis_moneda.simbolo',
             'alm_req.codigo as codigo_requerimiento','alm_req.concepto')
             // ->join('administracion.adm_tp_docum','adm_tp_docum.id_tp_documento','=','log_ord_compra.id_tp_documento')
