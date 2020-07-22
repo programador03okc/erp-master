@@ -1803,7 +1803,12 @@ function listarItems() {
             {'data': 'subcategoria'},
             {'data': 'descripcion'},
             {'data': 'unidad_medida_descripcion'},
-            {'data': 'id_unidad_medida'}
+            {'data': 'id_unidad_medida'},
+            {'render':
+                function (data, type, row){
+                    return ('<button class="btn btn-sm btn-info" onClick="verSaldoProducto('+row.id_producto+ ');">Stock</button>');
+                }
+            }
         ],
         'columnDefs': [
             { 'aTargets': [0], 'sClass': 'invisible'},
@@ -1820,6 +1825,68 @@ function listarItems() {
 
   
 
+}
+
+function verSaldoProducto(id_producto){
+    $('#modal-saldos').modal({
+        show: true
+    });
+    listarSaldosProducto(id_producto);
+
+}
+
+function listarSaldosProducto(id_producto){
+    var vardataTables = funcDatatables();
+    $('#listaSaldos').DataTable({
+        'dom': vardataTables[1],
+        'buttons': vardataTables[2],
+        'language' : vardataTables[0],
+        'bDestroy': true,
+        'ajax': 'listar-saldos-por-almacen/'+id_producto,
+        'columns': [
+            {'data': 'id_producto'},
+            {'data': 'codigo'},
+            {'data': 'part_number'},
+            {'data': 'descripcion'},
+            {'data': 'des_categoria'},
+            {'data': 'des_subcategoria'},
+            {'render':
+                function (data, type, row){
+                    if(row['stock_almacenes'][0]['id_almacen'] == 1){
+                            return row['stock_almacenes'][0]['stock'];
+                    }
+                }
+            },
+            {'render':
+                function (data, type, row){
+                    if(row['stock_almacenes'][0]['id_almacen'] == 1){
+                        return row['stock_almacenes'][0]['cantidad_reserva'];
+                    }else{
+                        return '-';
+                    }
+                }
+            },
+            {'render':
+                function (data, type, row){
+                    if(row['stock_almacenes'][1]['id_almacen'] == 2){
+                            return row['stock_almacenes'][1]['stock']
+                    }
+                }
+            },
+            {'render':
+                function (data, type, row){
+                    if(row['stock_almacenes'][1]['id_almacen'] == 2){
+                        return (row['stock_almacenes'][1]['cantidad_reserva']);
+                    }else{
+                        return '-';
+                    }
+                }
+            },
+            {'data': 'id_unidad_medida'},
+            {'data': 'id_item'}
+        ],
+        'columnDefs': [{ 'aTargets': [0,10,11], 'sClass': 'invisible'}],
+    });
 }
 
 function crearProducto(){

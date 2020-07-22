@@ -19,7 +19,8 @@
                             <th>SUBCATEGORÍA</th>
                             <th>DESCRIPCION</th>
                             <th width="120">UNIDAD</th>
-                            <th></th>
+                            <th>id_unidad_medida</th>
+                            <th>Acción</th>
                         </tr>
                     </thead>
                     <tbody></tbody>

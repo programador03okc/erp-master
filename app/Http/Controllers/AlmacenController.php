@@ -4793,6 +4793,93 @@ class AlmacenController extends Controller
         return response()->json($output);
     }
 
+    public function listar_saldos_por_almacen_producto($id_producto)
+    {
+        $data = DB::table('almacen.alm_prod')
+            ->select(
+                'alm_item.id_item',
+                'alm_prod.id_producto',
+                'alm_prod.codigo',
+                'alm_prod.descripcion',
+                'alm_und_medida.abreviatura',
+                'alm_prod.codigo_anexo',
+                'alm_prod.part_number',
+                'alm_cat_prod.descripcion as des_categoria',
+                'alm_subcat.descripcion as des_subcategoria',
+                'alm_clasif.descripcion as des_clasificacion',
+                'alm_prod.id_unidad_medida'
+            )
+            ->join('almacen.alm_item','alm_item.id_producto','=','alm_prod.id_producto')
+            ->join('almacen.alm_und_medida','alm_und_medida.id_unidad_medida','=','alm_prod.id_unidad_medida')
+            ->join('almacen.alm_clasif','alm_clasif.id_clasificacion','=','alm_prod.id_clasif')
+            ->join('almacen.alm_subcat','alm_subcat.id_subcategoria','=','alm_prod.id_subcategoria')
+            ->join('almacen.alm_cat_prod','alm_cat_prod.id_categoria','=','alm_prod.id_categoria')
+            ->where([
+                ['alm_prod.estado','=',1],
+                ['alm_prod.id_producto','=',$id_producto]
+            ])
+            ->distinct()->get();
+        
+        $nueva_data = [];
+        $fecha = date('Y-m-d');
+        $almacenes = DB::table('almacen.alm_almacen')->where('estado',1)->get();
+
+        foreach($data as $d){
+            $stock_almacenes = [];
+
+            foreach ($almacenes as $alm) {
+                $stock = DB::table('almacen.alm_prod_ubi')
+                ->select('alm_prod_ubi.id_prod_ubi','alm_prod_ubi.stock','alm_prod_ubi.costo_promedio',
+                DB::raw("(SELECT SUM(alm_det_req.cantidad) FROM almacen.alm_det_req 
+                        WHERE alm_det_req.estado=19 
+                        AND alm_det_req.id_producto=alm_prod_ubi.id_producto 
+                        AND alm_det_req.id_almacen_reserva=alm_prod_ubi.id_almacen) as cantidad_reserva"))
+                ->where([['alm_prod_ubi.id_producto','=',$d->id_producto],
+                         ['alm_prod_ubi.id_almacen','=',$alm->id_almacen]])
+                         ->first();
+
+                if ($stock !== null){
+                    $nuevo = [
+                        'id_prod_ubi'=> $stock->id_prod_ubi,
+                        'id_almacen'=> $alm->id_almacen,
+                        'almacen_descripcion'=> $alm->descripcion,
+                        'stock'=> $stock->stock,
+                        'costo_promedio'=> $stock->costo_promedio,
+                        'cantidad_reserva'=> ($stock->cantidad_reserva !== null ? $stock->cantidad_reserva : 0)
+                    ];
+                    array_push($stock_almacenes, $nuevo);
+                } else {
+                    $nuevo = [
+                        'id_prod_ubi'=> 0,
+                        'id_almacen'=> $alm->id_almacen,
+                        'almacen_descripcion'=> $alm->descripcion,
+                        'stock'=> 0,
+                        'costo_promedio'=> 0,
+                        'cantidad_reserva'=> 0
+                    ];
+                    array_push($stock_almacenes, $nuevo);
+                }
+            }
+            $nuevo = [
+                'id_producto'=> $d->id_producto,
+                'id_item'=> $d->id_item,
+                'codigo'=> $d->codigo,
+                'codigo_anexo'=> $d->codigo_anexo,
+                'part_number'=> $d->part_number,
+                'descripcion'=> $d->descripcion,
+                'abreviatura'=> $d->abreviatura,
+                'id_unidad_medida'=> $d->id_unidad_medida,
+                'des_clasificacion'=> $d->des_clasificacion,
+                'des_categoria'=> $d->des_categoria,
+                'des_subcategoria'=> $d->des_subcategoria,
+                'stock_almacenes'=> $stock_almacenes
+            ];
+            array_push($nueva_data,$nuevo);
+        }
+        $output['data'] = $nueva_data;
+        return response()->json($output);
+    }
+
     public function saldo_actual($id_producto, $id_posicion){
         $ing = DB::table('almacen.mov_alm_det')
             ->select(DB::raw("SUM(mov_alm_det.cantidad) as ingresos"))
