@@ -19,7 +19,8 @@
                                     <tr style="background-color: lightblue;">
                                         <th>Código</th>
                                         <th>Concepto</th>
-                                        <!-- <th>Cantidad</th> -->
+                                        <th>Almacén</th>
+                                        <th>Cantidad</th>
                                         <th>RegistradoPor</th>
                                     </tr>
                                 </thead>

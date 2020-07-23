@@ -184,9 +184,11 @@ class DistribucionController extends Controller
 
     public function verRequerimientosReservados($id,$almacen){
         $detalles = DB::table('almacen.alm_det_req')
-            ->select('alm_det_req.*','alm_req.codigo','alm_req.concepto','sis_usua.nombre_corto')
+            ->select('alm_det_req.*','alm_req.codigo','alm_req.concepto','sis_usua.nombre_corto',
+            'alm_almacen.descripcion as almacen_descripcion')
             ->join('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'alm_det_req.id_requerimiento')
             ->join('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'alm_req.id_usuario')
+            ->join('almacen.alm_almacen', 'alm_almacen.id_almacen', '=', 'alm_det_req.id_almacen_reserva')
             ->where([['alm_det_req.id_producto','=',$id],
                      ['alm_det_req.id_almacen_reserva','=',$almacen],
                      ['alm_det_req.estado','=',19]])

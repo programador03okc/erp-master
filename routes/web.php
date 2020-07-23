@@ -1122,7 +1122,8 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::get('listar_saldos_todo', 'AlmacenController@listar_saldos_todo');
 					Route::get('verRequerimientosReservados/{id}/{alm}', 'DistribucionController@verRequerimientosReservados');
 					Route::get('tipo_cambio_compra/{fecha}', 'AlmacenController@tipo_cambio_compra');
-	
+					Route::get('listar-saldos-por-almacen', 'AlmacenController@listar_saldos_por_almacen');
+
 				});
 	
 				Route::group(['as' => 'lista-ingresos.', 'prefix' => 'lista-ingresos'], function(){

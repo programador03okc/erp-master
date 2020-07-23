@@ -19,11 +19,7 @@ Saldos Actuales
 
 @section('content')
 <div class="page-main" type="saldos">
-    <div class="row">
-        <!-- <div class="col-md-3">
-            <h5>Saldo al:</h5>
-            <input type="date" class="form-control" name="fecha">
-        </div> -->
+    <!-- <div class="row">
         <div class="col-md-6">
             <h5>Almacén</h5>
             <div style="display:flex;">
@@ -46,13 +42,32 @@ Saldos Actuales
         <div class="col-md-12">
             <input type="checkbox" name="todos_almacenes" style="margin-right: 10px; margin-left: 7px;"/> Todos los almacenes
         </div>
-    </div>
+    </div> -->
     <div class="row">
         <div class="col-md-12">
             <table class="mytable table table-condensed table-bordered table-okc-view" 
                 id="listaSaldos">
                 <thead>
                     <tr>
+                        <th rowspan="2"  hidden>Id</th>
+                        <th rowspan="2" >Código</th>
+                        <th rowspan="2" >Part Number</th>
+                        <th rowspan="2" >Descripción</th>
+                        <th rowspan="2" >Categoría</th>
+                        <th rowspan="2" >SubCategoría</th>
+                        <th colspan="2">Almacén Central OKC - Ilo</th>
+                        <th colspan="2">Almacén Central OKC - Lima</th>
+                        <th rowspan="2" >unid.medida</th>
+                        <th rowspan="2" >id_item</th>
+                    </tr>
+                    <tr>
+                        <td>Stock</td>
+                        <td>Reserva</td>
+                        <td>Stock</td>
+                        <td>Reserva</td>
+                    </tr>
+
+                    <!-- <tr>
                         <th hidden></th>
                         <th>Código</th>
                         <th>Cód.Anexo</th>
@@ -70,14 +85,14 @@ Saldos Actuales
                         <th>Costo Promedio</th>
                         <th>Almacén</th>
                         <th>Clasificación</th>
-                    </tr>
+                    </tr> -->
                 </thead>
                 <tbody></tbody>
             </table>
         </div>
     </div>
 </div>
-@include('almacen.verRequerimientoEstado')
+@include('almacen.reportes.verRequerimientoReservas')
 @endsection
 
 @section('scripts')
