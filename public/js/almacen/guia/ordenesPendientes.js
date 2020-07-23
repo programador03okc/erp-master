@@ -46,7 +46,7 @@ function listarOrdenesPendientes(permiso){
             {'data': 'codigo'},
             // {'data': 'nro_documento', 'name': 'adm_contri.nro_documento'},
             {'data': 'razon_social', 'name': 'adm_contri.razon_social'},
-            {'data': 'codigo_softlink', 'name': 'log_ord_compra.codigo_softlink'},
+            // {'data': 'codigo_softlink', 'name': 'log_ord_compra.codigo_softlink'},
             {'data': 'fecha'},
             {'data': 'codigo_requerimiento', 'name': 'alm_req.codigo'},
             {'data': 'concepto', 'name': 'alm_req.concepto'},
@@ -72,7 +72,7 @@ function listarOrdenesPendientes(permiso){
                         'data-placement="bottom" title="Ver Detalle" >'+
                         '<i class="fas fa-list-ul"></i></button>'
                 }
-                }, targets: 9
+                }, targets: 8
             }
         ],
     });
