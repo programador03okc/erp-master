@@ -9,7 +9,7 @@
                 <table class="mytable table table-condensed table-bordered table-okc-view" 
                 id="listaSaldos">
                     <thead>
-                        <tr>
+                        <!-- <tr>
                             <th rowspan="2"  hidden>Id</th>
                             <th rowspan="2" >Código</th>
                             <th rowspan="2" >Part Number</th>
@@ -26,7 +26,7 @@
                             <td>Reserva</td>
                             <td>Stock</td>
                             <td>Reserva</td>
-                        </tr>
+                        </tr> -->
                     </thead>
                     <tbody></tbody>
                 </table>
