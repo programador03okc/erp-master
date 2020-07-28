@@ -2325,7 +2325,7 @@ Route::get('decode5t/{id}', 'EquipoController@decode5t');
 	Route::post('editar_area', 'AdministracionController@actualizar_area');
 	Route::get('anular_area/{id}', 'AdministracionController@anular_area');
 
-	Route::post('notification', 'SocketController@notification');
-	Route::get('notificaciones_sin_leer', 'SocketController@notificaciones_sin_leer');
+	// Route::post('notification', 'SocketController@notification');
+	// Route::get('notificaciones_sin_leer', 'SocketController@notificaciones_sin_leer');
 
 });
