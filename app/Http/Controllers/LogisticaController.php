@@ -8789,6 +8789,7 @@ function get_id_usuario_usuario_por_rol($descripcion_rol, $id_sede, $id_empresa)
                 ->insert([
                     'id_orden_compra'=>$id_orden,
                     'id_item'=> ($d->id_item ? $d->id_item : null),
+                    'id_detalle_requerimiento'=> ($d->id_detalle_requerimiento ? $d->id_detalle_requerimiento : null),
                     'cantidad'=> $d->cantidad,
                     'id_unidad_medida'=> $d->id_unidad_medida,
                     'precio'=> $d->precio_referencial,
