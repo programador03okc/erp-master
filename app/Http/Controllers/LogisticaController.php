@@ -1715,6 +1715,10 @@ class LogisticaController extends Controller
             $this->generarTransferenciaRequerimiento($request, $id_requerimiento);
         }
 
+        if($request->requerimiento['tipo_requerimiento'] == 1){ //compra
+            $this->componer_email_requerimiento($id_requerimiento, 'NUEVO', $request->requerimiento['tipo_requerimiento']);
+            $this->crear_notificacion_nuevo_requerimiento($id_requerimiento);
+        }
         
         }
         DB::commit();
@@ -1722,6 +1726,42 @@ class LogisticaController extends Controller
 
         } catch (\PDOException $e) {
             DB::rollBack();
+        }
+    }
+
+    public function crear_notificacion_nuevo_requerimiento($id_requerimiento){
+        if($id_requerimiento > 0){
+            $req = DB::table('almacen.alm_req')
+            ->select('alm_req.*')
+            ->where([
+                ['alm_req.id_requerimiento', '=', $id_requerimiento]
+            ])
+            ->get();
+    
+            $id_usuario_list=[];
+            if ($req->count() > 0) {
+                $codigo = $req->first()->codigo;
+                $id_empresa = $req->first()->id_empresa;
+                $id_sede = $req->first()->id_sede;
+
+                $id_usuario_list= $this->get_id_usuario_usuario_por_rol('Logístico Compras', $id_sede, $id_empresa);
+
+                if(count($id_usuario_list) > 0){
+                    foreach ($id_usuario_list as $id) {
+                        DB::table('administracion.notificaciones')->insertGetId(
+                            [
+                                'id_usuario' => $id,
+                                'mensaje' => 'Se creo un requerimiento de compra: '.$codigo,
+                                'url' => null,
+                                'fecha' =>  date('Y-m-d H:i:s'),
+                                'leido' => false
+                            ],
+                                'id'
+                            );
+                    }
+                }
+            }
+    
         }
     }
 
@@ -4487,58 +4527,174 @@ class LogisticaController extends Controller
         return response()->json($ouput);
     }
 
-    function componer_email_notificacion($id_doc_aprob,$motivo,$id_usu){
-        $documentos = DB::table('administracion.adm_documentos_aprob')
-            ->select('adm_documentos_aprob.*')
-            ->where([
-                ['adm_documentos_aprob.id_doc_aprob', '=', $id_doc_aprob]
-            ])
-            ->get();
 
-            $id_doc=0;
+    function componer_email_requerimiento($id,$opcion,$tipo){
+ 
+
             $id_tp_documento=0;
             $id_usuario_propietario=0;
             $payload=[];
             $estado_envio=[];
+ 
+            if($opcion == 'NUEVO'){
+                if($tipo == 1){ //compra
+					$req = DB::table('almacen.alm_req')
+					->select('alm_req.*')
+					->where([
+						['alm_req.id_requerimiento', '=', $id]
+					])
+					->get();
+	
+					if ($req->count() > 0) {
+						$codigo = $req->first()->codigo;
+						$id_usuario_propietario = $req->first()->id_usuario;
+						$id_empresa = $req->first()->id_empresa;
+						$id_sede = $req->first()->id_sede;
+	
+						$email_destinatario= $this->get_email_usuario_por_rol('Logístico Compras', $id_sede, $id_empresa);
+						$payload=[
+							'email_destinatario'=>$email_destinatario,
+							'titulo'=>'Nuevo Requerimiento de Compra:  '.$codigo,
+							'mensaje'=>'Se Creo un nuevo requerimiento de compra: '.$codigo
+						];
+                        if(count($email_destinatario)>0){
+                            $estado_envio =(new CorreoController)->enviar_correo_a_usuario($payload);
+                        }
 
-            if ($documentos->count() > 0) {
-                $id_doc = $documentos->first()->id_doc;
-                $id_tp_documento = $documentos->first()->id_tp_documento;
-            }
-
-            if($id_tp_documento == 1){
-                $req = DB::table('almacen.alm_req')
-                ->select('alm_req.*')
-                ->where([
-                    ['alm_req.id_requerimiento', '=', $id_doc]
-                ])
-                ->get();
-
-                if ($req->count() > 0) {
-                    $codigo = $req->first()->codigo;
-                    $id_usuario_propietario = $req->first()->id_usuario;
-
-                    $data_propietario= $this->get_data_usuario($id_usuario_propietario);
-                    $data_observador= $this->get_data_usuario($id_usu);
-                    $payload=[
-                        'id_usuario_propietario'=>$id_usuario_propietario,
-                        'email_propietario'=>$data_propietario['email'],
-                        'nombre_completo_usuario_observado'=>$data_observador['nombre_completo'],
-                        'id_usuario_observador'=>$id_usu,
-                        'motivo'=>$motivo,
-                        'codigo_documento'=>$codigo
-                    ];
-
-                    $estado_envio =(new CorreoController)->enviar_correo_a_usuario($payload);
-
+	
+					}
                 }
 
 
             }
+            if($opcion == 'OBSERVAR'){
+                
+            }
+ 
             
 
         return $estado_envio;
-    }
+	}
+	
+	function get_email_usuario_por_rol($descripcion_rol, $id_sede, $id_empresa){
+		$id_rol = DB::table('configuracion.sis_rol')
+        ->select('sis_rol.id_rol')
+        ->where([
+            ['sis_rol.descripcion', 'like', '%'.$descripcion_rol.'%']
+        ])
+		->get()->first()->id_rol;
+        // return $id_rol;
+        
+		$usuarios = DB::table('configuracion.sis_acceso')
+        ->select('sis_acceso.id_usuario','sis_sede.id_empresa','adm_empresa.codigo as empresa','sis_usua_sede.id_sede','sis_sede.descripcion as sede','rrhh_perso.id_persona','sis_usua.id_trabajador','rrhh_perso.email')
+        ->leftJoin('configuracion.sis_usua_sede', 'sis_usua_sede.id_usuario', '=', 'sis_acceso.id_usuario')
+        ->leftJoin('administracion.sis_sede', 'sis_sede.id_sede', '=', 'sis_usua_sede.id_sede')
+        ->leftJoin('administracion.adm_empresa', 'adm_empresa.id_empresa', '=', 'sis_sede.id_empresa')
+        ->leftJoin('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'sis_acceso.id_usuario')
+        ->leftJoin('rrhh.rrhh_trab', 'rrhh_trab.id_trabajador', '=', 'sis_usua.id_trabajador')
+        ->leftJoin('rrhh.rrhh_postu', 'rrhh_postu.id_postulante', '=', 'rrhh_trab.id_postulante')
+        ->leftJoin('rrhh.rrhh_perso', 'rrhh_perso.id_persona', '=', 'rrhh_postu.id_persona')
+ 
+        ->where([
+            ['sis_acceso.id_rol', '=', $id_rol]
+        ])
+        ->get();
+        
+        $usuario =[];
+            foreach ($usuarios as $key => $value) {
+                if($value->id_sede == $id_sede && $value->id_empresa == $id_empresa){
+                    if($value->email != null || $value->email!=''){
+                        $usuario[]= $value->email;
+                    }
+                }
+            }
+		return $usuario;
+}
+
+function get_id_usuario_usuario_por_rol($descripcion_rol, $id_sede, $id_empresa){
+    $id_rol = DB::table('configuracion.sis_rol')
+    ->select('sis_rol.id_rol')
+    ->where([
+        ['sis_rol.descripcion', 'like', '%'.$descripcion_rol.'%']
+    ])
+    ->get()->first()->id_rol;
+    
+    $usuarios = DB::table('configuracion.sis_acceso')
+    ->select('sis_acceso.id_usuario','sis_sede.id_empresa','adm_empresa.codigo as empresa','sis_usua_sede.id_sede','sis_sede.descripcion as sede')
+    ->leftJoin('configuracion.sis_usua_sede', 'sis_usua_sede.id_usuario', '=', 'sis_acceso.id_usuario')
+    ->leftJoin('administracion.sis_sede', 'sis_sede.id_sede', '=', 'sis_usua_sede.id_sede')
+    ->leftJoin('administracion.adm_empresa', 'adm_empresa.id_empresa', '=', 'sis_sede.id_empresa')
+ 
+
+    ->where([
+        ['sis_acceso.id_rol', '=', $id_rol]
+    ])
+    ->get();
+    
+    $idUsuarioList =[];
+        foreach ($usuarios as $key => $value) {
+            if($value->id_sede == $id_sede && $value->id_empresa == $id_empresa){
+                if($value->id_usuario != null || $value->id_usuario!=''){
+                    $idUsuarioList[]= $value->id_usuario;
+                }
+            }
+        }
+    return $idUsuarioList;
+}
+
+    // function componer_email_notificacion($id_doc_aprob,$motivo,$id_usu){
+    //     $documentos = DB::table('administracion.adm_documentos_aprob')
+    //         ->select('adm_documentos_aprob.*')
+    //         ->where([
+    //             ['adm_documentos_aprob.id_doc_aprob', '=', $id_doc_aprob]
+    //         ])
+    //         ->get();
+
+    //         $id_doc=0;
+    //         $id_tp_documento=0;
+    //         $id_usuario_propietario=0;
+    //         $payload=[];
+    //         $estado_envio=[];
+
+    //         if ($documentos->count() > 0) {
+    //             $id_doc = $documentos->first()->id_doc;
+    //             $id_tp_documento = $documentos->first()->id_tp_documento;
+    //         }
+
+    //         if($id_tp_documento == 1){
+    //             $req = DB::table('almacen.alm_req')
+    //             ->select('alm_req.*')
+    //             ->where([
+    //                 ['alm_req.id_requerimiento', '=', $id_doc]
+    //             ])
+    //             ->get();
+
+    //             if ($req->count() > 0) {
+    //                 $codigo = $req->first()->codigo;
+    //                 $id_usuario_propietario = $req->first()->id_usuario;
+
+    //                 $data_propietario= $this->get_data_usuario($id_usuario_propietario);
+    //                 $data_observador= $this->get_data_usuario($id_usu);
+    //                 $payload=[
+    //                     'id_usuario_propietario'=>$id_usuario_propietario,
+    //                     'email_propietario'=>$data_propietario['email'],
+    //                     'nombre_completo_usuario_observado'=>$data_observador['nombre_completo'],
+    //                     'id_usuario_observador'=>$id_usu,
+    //                     'mensaje'=>$motivo."Observado por: ".$data_observador['nombre_completo'],
+    //                     // 'codigo_documento'=>$codigo,
+    //                     'titulo'=>'El requerimiento '.$codigo.' fue observado',
+    //                 ];
+
+    //                 $estado_envio =(new CorreoController)->enviar_correo_a_usuario($payload);
+
+    //             }
+
+
+    //         }
+            
+
+    //     return $estado_envio;
+    // }
 
     function get_data_usuario($id_usurio){
         $email='';

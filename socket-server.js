@@ -41,6 +41,17 @@ app.post("/notification", function(req, res) {
     res.send();
 });
 
+app.post("/notificaciones_sin_leer", function(req, res) {
+    var params = req.body;
+    var clients = io.sockets.clients().sockets;
+
+    for (const key in clients) {
+        if (key != params.id) clients[key].emit("notificaciones_sin_leer", params);
+    }
+
+    res.send();
+});
+
 // Recebe conexão dos usuários no servidor
 io.on("connection", function(client) {
     // Adicionado clientes

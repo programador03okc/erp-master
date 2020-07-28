@@ -16,5 +16,11 @@ Módulos
             </section>
         </div>
     </div>
-    
+    <script>
+		document.addEventListener('DOMContentLoaded', function(){ 
+            console.log('call');
+			get_notificaciones_sin_leer_interval();
+		}, false);
+
+		</script>
 @endsection

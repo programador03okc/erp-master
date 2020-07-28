@@ -55,12 +55,17 @@ var getSaldosPorAlmacen = function() {
 
 function listarSaldos(){
     getSaldosPorAlmacen().then(function(data) {
+        var table = document.getElementById("listaSaldos").tHead;
+        table.parentNode.removeChild(table);
+        document.getElementById("listaSaldos").createTHead();
         buildTableListaSaldos(data);
     });
 }
 
 function buildTableListaSaldos(obj){
     var table = document.getElementById("listaSaldos").tHead;
+ 
+    
     var row = table.insertRow(0);
     row.insertCell(0).outerHTML  = '<th rowspan="2" hidden >Id</th>';
     row.insertCell(1).outerHTML  = '<th rowspan="2">Código</th>';

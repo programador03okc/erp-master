@@ -32,5 +32,10 @@
 		</section>
 		</div>
 		</div>
+		<script>
+			document.addEventListener('DOMContentLoaded', function(){ 
+				get_notificaciones_sin_leer_interval();
+			}, false);
+		</script>
 	@endsection
 	

@@ -88,8 +88,13 @@
 	<script src="{{ asset('template/plugins/sweetalert/sweetalert2@8.js') }}"></script>
 	<script src="{{ asset('template/plugins/bootstrap_filestyle/bootstrap-filestyle.min.js') }}"></script>
 	<script src="{{ asset('template/plugins/pace/pace.js') }}"></script>
+	<script src="{{asset('js/socket.io.js')}}"></script>
+	<script src="{{asset('js/publico/notificaciones_sin_leer.js')}}"></script>
+	<!-- <script src="{{asset('js/notificaciones_navegador_socket.js')}}"></script> -->
+	<!-- <script src="{{asset('js/notificaciones_sin_leer_socket.js')}}"></script> -->
+
 	<script>
-		function seleccionarMenu(url)
+ 		function seleccionarMenu(url)
 		{
             $('ul.sidebar-menu a').filter(function () {
                 return this.href == url;
@@ -114,6 +119,7 @@
             }).parents('div.box.active').find("button.btn.btn-box-tool i").attr("class","fa fa-minus");		
 		}
 	</script>
+
 	@yield('scripts')
 	</body>
 </html>

@@ -1823,16 +1823,75 @@ function listarItems() {
     });
     $("div.toolbar").html('<button class="btn btn-sm btn-primary" onclick="crearProducto();">Crear Producto</button>');
 
-  
+}
 
+var getSaldosPorAlmacen = function() {
+    return new Promise(function(resolve, reject) {
+        $.ajax({
+            type: 'GET',
+            url: 'listar-saldos-por-almacen',
+            datatype: "JSON",
+            data: data,
+            success: function(response){
+                resolve(response)  
+            },
+            error: function(err) {
+                reject(err) // Reject the promise and go to catch()
+                }
+        });
+    
+    });
 }
 
 function verSaldoProducto(id_producto){
     $('#modal-saldos').modal({
         show: true
     });
-    listarSaldosProducto(id_producto);
+    // listarSaldosProducto(id_producto);
 
+    getSaldosPorAlmacen().then(function(data) {
+        var table = document.getElementById("listaSaldos").tHead;
+        table.parentNode.removeChild(table);
+        document.getElementById("listaSaldos").createTHead();
+        buildTableListaSaldosProducto(data,id_producto);
+    });
+
+}
+
+function buildTableListaSaldosProducto(obj,id_producto){
+    var table = document.getElementById("listaSaldos").tHead;
+    var row = table.insertRow(0);
+    row.insertCell(0).outerHTML  = '<th rowspan="2" hidden >Id</th>';
+    row.insertCell(1).outerHTML  = '<th rowspan="2">Código</th>';
+    row.insertCell(2).outerHTML  = '<th rowspan="2">Part Number</th>';
+    row.insertCell(3).outerHTML  = '<th rowspan="2">Descripción</th>';
+    row.insertCell(4).outerHTML  = '<th rowspan="2">Categoría</th>';
+    row.insertCell(5).outerHTML  = '<th rowspan="2">SubCategoría</th>';
+    let startTd =6;
+    let firstElement = obj.data[0].stock_almacenes;
+    
+    for (let i = 0; i < firstElement.length; i++) {
+        const almacen = firstElement[i].almacen_descripcion;
+        row.insertCell(startTd).outerHTML  = '<th colspan="2">'+almacen+'</th>';
+        startTd++;
+    }
+    row.insertCell(startTd).outerHTML  = '<th rowspan="2">Unid.medida</th>';
+    row.insertCell(startTd+1).outerHTML  = '<th rowspan="2">id_item</th>';
+    var row2 = table.insertRow(1);
+
+    let cantidadAlmacenes = firstElement.length;
+    let detallePorAlmacen = cantidadAlmacenes*2;
+    for (let i = 0; i < detallePorAlmacen ; i++) {
+        if(i%2 == 0 ){ //par
+            row2.insertCell(i).outerHTML  = '<th>Stock</th>';
+        }else{ //impar
+            row2.insertCell(i).outerHTML  = '<th>Reserva</th>';
+        }
+    }
+
+
+    // fillDataListaSaldos(obj);
+    listarSaldosProducto(id_producto);
 }
 
 function listarSaldosProducto(id_producto){
@@ -2202,6 +2261,8 @@ function save_requerimiento(action){
                         $('#form-requerimiento').attr('type', 'register');
                         changeStateInput('form-requerimiento', true);
                         alert("Requerimiento Guardado");
+                        get_notificaciones_sin_leer_interval(); 
+                        // showNotificacionUsuario(100); // notificaciones de navegador beta
                     }else{
                         alert('Hubo un problema al intentar guardar el requerimiento');
                     }
