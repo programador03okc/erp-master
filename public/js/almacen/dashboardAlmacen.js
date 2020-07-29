@@ -27,13 +27,13 @@ function mostrar_tabla(){
         url: 'getEstadosRequerimientos',
         dataType: 'JSON',
         success: function(response){
-            console.log(response);
+            // console.log(response);
             var html = '';
-            console.log(orden);
+            // console.log(orden);
             var i = 1;
             for (let index = 0; index < orden.length; index++) {
                 const nro = orden[index];
-                console.log('nro:'+nro);
+                // console.log('nro:'+nro);
                 var estado = response.find(element => element.estado == nro);
                 // response.forEach(function (element) {
                 if (estado !== undefined){

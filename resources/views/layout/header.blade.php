@@ -41,6 +41,16 @@
                         </li>
                     </ul>
                 </li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        <i class="fas fa-bell"></i>
+                         <span class="badge badge-light" id="cantidad_notificaciones"></span>
+                    </a>
+                    <ul class="dropdown-menu" id="lista_notificaciones">
+                        <li role="separator" class="divider"></li>
+                        <li class="text-center"><a href="{{route('administracion.notificaciones')}}"><p>Ver Notificaciones <i class="fas fa-arrow-right"></i></p></a></li>
+                    </ul>
+                </li>
             </ul>
         </div>
     </nav>

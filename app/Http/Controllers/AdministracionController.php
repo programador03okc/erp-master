@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 
+use Illuminate\Support\Facades\Auth;
 
 use App\Models\administracion\empresa;
 use App\Models\administracion\area;
@@ -15,6 +16,13 @@ date_default_timezone_set('America/Lima');
  
 
 class AdministracionController extends Controller{
+
+    function view_main_administracion(){
+        return view('administracion/main');
+    }
+    function view_notificaciones(){
+        return view('administracion/notificaciones');
+    }
 
     function view_empresa(){
         $pais = $this->select_pais();
@@ -497,7 +505,75 @@ class AdministracionController extends Controller{
         return response()->json($data);
     }
 
+    public function listar_notificaciones_no_leidas(){
+        $id_usuario = Auth::user()->id_usuario;
 
+        $notificaciones = DB::table('administracion.notificaciones')
+        ->select(
+            'notificaciones.*'
+            )
+
+        ->where([
+            ['notificaciones.id_usuario','=',$id_usuario],
+            ['notificaciones.leido','=',false]
+        ])
+        ->get();
+        $output['data'] = $notificaciones;
+
+        return response()->json($output);
+    }
+    public function listar_notificaciones_leidas(){
+        $id_usuario = Auth::user()->id_usuario;
+
+        $notificaciones = DB::table('administracion.notificaciones')
+        ->select(
+            'notificaciones.*'
+            )
+
+        ->where([
+            ['notificaciones.id_usuario','=',$id_usuario],
+            ['notificaciones.leido','=',true]
+        ])
+        ->get();
+        $output['data'] = $notificaciones;
+
+        return response()->json($output);
+    }
+
+    public function marcar_notificacion_leida($id){
+        $status = 0;
+
+        $notificacion = DB::table('administracion.notificaciones')->where('id', $id)
+        ->update([
+            'leido'            => true
+
+        ]);
+
+        if($notificacion){
+            $status=200;
+        }else{
+            $status=400;
+        }
+        return response()->json(['status'=>$status]);
+    }
+
+    public function marcar_notificacion_no_leida($id){
+        $status = 0;
+
+        $notificacion = DB::table('administracion.notificaciones')->where('id', $id)
+        ->update([
+            'leido'            => false
+        ]);
+
+        if($notificacion){
+            $status=200;
+        }else{
+            $status=400;
+        }
+        return response()->json(['status'=>$status]);
+    }
+
+    
 
     ////////////// FIN EDGAR
     /////////////////////////////////////////////////////////////////////////////
