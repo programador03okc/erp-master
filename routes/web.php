@@ -931,6 +931,8 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::post('anular_ingreso', 'OrdenesPendientesController@anular_ingreso');
 					Route::get('cargar_almacenes/{id}', 'AlmacenController@cargar_almacenes');
 					Route::get('imprimir_ingreso/{id}', 'AlmacenController@imprimir_ingreso');
+					Route::post('detalleOrdenesSeleccionadas', 'OrdenesPendientesController@detalleOrdenesSeleccionadas');
+					Route::get('detalleMovimiento/{id}', 'OrdenesPendientesController@detalleMovimiento');
 
 				});
 	
@@ -1063,7 +1065,8 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::get('imprimir_ingreso/{id}', 'AlmacenController@imprimir_ingreso');
 					Route::post('listarTransferenciasPorEnviar/{id}', 'TransferenciaController@listarTransferenciasPorEnviar');
 					Route::get('cargar_almacenes/{id}', 'AlmacenController@cargar_almacenes');
-
+					Route::get('listarDetalleTransferencia/{id}', 'TransferenciaController@listarDetalleTransferencia');
+					
 				});
 	
 			});

@@ -1,6 +1,6 @@
 <div class="modal fade" tabindex="-1" role="dialog" id="modal-transferenciaGuia">
-    <div class="modal-dialog">
-        <div class="modal-content" style="width:600px;">
+    <div class="modal-dialog" style="width:900px;">
+        <div class="modal-content">
             <form id="form-transferenciaGuia">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="close"><span aria-hidden="true">&times;</span></button>
@@ -14,7 +14,7 @@
                     <input type="text" class="oculto" name="id_requerimiento">
                     <input type="text" class="oculto" name="id_transferencia">
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <h5>Serie-Número</h5>
                             <input type="text" class="oculto" name="id_serie_numero">
                             <div class="input-group">
@@ -26,19 +26,27 @@
                                     <!-- onBlur="ceros_numero('numero');"> -->
                             </div>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <h5>Fecha de Emisión</h5>
                             <input type="date" class="form-control activation" name="fecha_emision" value="<?=date('Y-m-d');?>" >
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <h5>Fecha Almacén</h5>
                             <input type="date" class="form-control" name="fecha_almacen" value="<?=date('Y-m-d');?>">
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-4">
+                            <h5>Responsable Destino:</h5>
+                            <!-- js-example-basic-single -->
+                            <select class="form-control js-example-basic-single " name="responsable_destino_trans">
+                                <option value="0">Elija una opción</option>
+                                @foreach ($usuarios as $usu)
+                                    <option value="{{$usu->id_usuario}}">{{$usu->nombre_corto}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-4">
                             <h5>Almacén Origen</h5>
                             <select class="form-control" name="id_almacen_origen" readOnly>
                                 <option value="0">Elija una opción</option>
@@ -47,7 +55,7 @@
                                 @endforeach
                             </select>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <h5>Almacén Destino</h5>
                             <select class="form-control js-example-basic-single " name="id_almacen_destino">
                                 <option value="0">Elija una opción</option>
@@ -58,24 +66,23 @@
                         </div>
                     </div>
                     <div class="row">
-                        <!-- <div class="col-md-6">
-                            <h5>Responsable Origen:</h5>
-                            <select class="form-control" name="responsable_origen" >
-                                <option value="0">Elija una opción</option>
-                                @foreach ($usuarios as $usu)
-                                    <option value="{{$usu->id_usuario}}">{{$usu->nombre_corto}}</option>
-                                @endforeach
-                            </select>
-                        </div> -->
-                        <div class="col-md-6">
-                            <h5>Responsable Destino:</h5>
-                            <!-- js-example-basic-single -->
-                            <select class="form-control js-example-basic-single " name="responsable_destino_trans">
-                                <option value="0">Elija una opción</option>
-                                @foreach ($usuarios as $usu)
-                                    <option value="{{$usu->id_usuario}}">{{$usu->nombre_corto}}</option>
-                                @endforeach
-                            </select>
+                        <div class="col-md-12">
+                            <table class="mytable table table-condensed table-bordered table-okc-view" width="100%" 
+                                id="detalleTransferencia"  style="margin-top:10px;">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Código</th>
+                                        <th>PartNumber</th>
+                                        <th>Categoría</th>
+                                        <th>SubCategoría</th>
+                                        <th>Descripción</th>
+                                        <th>Cantidad</th>
+                                        <th>Unid</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
                         </div>
                     </div>
                 </div>

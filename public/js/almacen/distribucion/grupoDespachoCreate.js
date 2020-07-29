@@ -10,10 +10,9 @@ function crear_grupo_orden_despacho() {
     od_seleccionadas.forEach(element => {
         if (sede == null){
             sede = element.id_sede;
-        } else {
-            if (element.id_sede !== sede){
-                diferentes++;
-            }
+        } 
+        else if (element.id_sede !== sede){
+            diferentes++;
         }
         html+='<tr id="'+element.id_od+'">'+
         '<td>'+i+'</td>'+

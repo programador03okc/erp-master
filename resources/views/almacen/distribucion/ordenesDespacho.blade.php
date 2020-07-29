@@ -38,6 +38,7 @@ Gestión de Despachos
                                     <tr>
                                         <th hidden></th>
                                         <th>Tipo</th>
+                                        <th>Sede Req.</th>
                                         <th>Codigo</th>
                                         <th>Concepto</th>
                                         <th>Fecha Req.</th>

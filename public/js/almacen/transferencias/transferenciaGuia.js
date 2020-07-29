@@ -42,6 +42,7 @@ function openGenerarGuia(data){
     if (data.id_almacen_destino !== null){
         $('[name=id_almacen_destino]').val(data.id_almacen_destino);
     }
+    listarDetalleTransferencia(data.id_transferencia);
     // var tp_doc_almacen = 2;//guia venta
     // next_serie_numero(data.sede_orden,tp_doc_almacen);
 }
@@ -63,6 +64,39 @@ function cargar_almacenes(sede, campo){
                     }
                 }
                 $('[name='+campo+']').html(option);
+            }
+        }).fail( function( jqXHR, textStatus, errorThrown ){
+            console.log(jqXHR);
+            console.log(textStatus);
+            console.log(errorThrown);
+        });
+    }
+}
+
+function listarDetalleTransferencia(id_transferencia){
+    if (id_transferencia !== ''){
+        $.ajax({
+            type: 'GET',
+            url: 'listarDetalleTransferencia/'+id_transferencia,
+            dataType: 'JSON',
+            success: function(response){
+                console.log(response);
+                var html='';
+                var i = 1;
+                response.forEach(element => {
+                    html+=`<tr>
+                    <td>${i}</td>
+                    <td>${element.codigo}</td>
+                    <td>${element.part_number}</td>
+                    <td>${element.categoria}</td>
+                    <td>${element.subcategoria}</td>
+                    <td>${element.descripcion}</td>
+                    <td>${element.cantidad}</td>
+                    <td>${element.abreviatura}</td>
+                    </tr>`;
+                    i++;
+                });
+                $('#detalleTransferencia tbody').html(html);
             }
         }).fail( function( jqXHR, textStatus, errorThrown ){
             console.log(jqXHR);
