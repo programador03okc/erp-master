@@ -1,5 +1,5 @@
 @extends('layout.main')
-@include('layout.menu_admin')
+@include('layout.menu_logistica')
 @section('option')
 @endsection
 
@@ -9,7 +9,7 @@
 
 @section('breadcrumb')
 <ol class="breadcrumb">
-    <li><a href="{{route('administracion.index')}}"><i class="fas fa-tachometer-alt"></i> Administración</a></li>
+    <li><a href="{{route('administracion.index')}}"><i class="fas fa-tachometer-alt"></i> Logistica</a></li>
     <li class="active">@yield('cabecera')</li>
 </ol>
 @endsection

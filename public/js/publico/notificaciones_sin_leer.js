@@ -9,7 +9,7 @@ function get_notificaciones_sin_leer(){
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         },
-        url: '/admin/listar-notificaciones-no-leidas',
+        url: '/logistica/notificaciones/no-leidas',
         type: "GET",
         success: function(response) {
             // console.log(response);

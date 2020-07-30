@@ -7,7 +7,7 @@
                 <i class="fas fa-tachometer-alt"></i> <span>Administrativos</span> <i class="fa fa-angle-left pull-right"></i>
             </a>
             <ul class="treeview-menu">
-                <li><a href="{{route('administracion.notificaciones')}}"> Notificaciones </a></li>
+                <!-- <li><a href="{{route('administracion.notificaciones.index')}}"> Notificaciones </a></li> -->
                 <li><a href="empresas"> Empresas</a></li>
                 <li><a href="sedes"> Sedes </a></li>
                 <li><a href="grupos"> Grupos</a></li>
