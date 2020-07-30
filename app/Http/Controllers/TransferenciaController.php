@@ -744,6 +744,39 @@ class TransferenciaController extends Controller
         return datatables($lista)->toJson();
     }
 
+    public function listarDetalleTransferencia($id_trans){
+        $detalle = DB::table('almacen.trans_detalle')
+        ->select('trans_detalle.*','alm_prod.codigo','alm_prod.descripcion',
+        'alm_cat_prod.descripcion as categoria','alm_subcat.descripcion as subcategoria',
+        'alm_prod.part_number','alm_und_medida.abreviatura')
+        ->join('almacen.alm_prod','alm_prod.id_producto','=','trans_detalle.id_producto')
+        ->join('almacen.alm_und_medida','alm_und_medida.id_unidad_medida','=','alm_prod.id_unidad_medida')
+        ->join('almacen.alm_cat_prod','alm_cat_prod.id_categoria','=','alm_prod.id_categoria')
+        ->join('almacen.alm_subcat','alm_subcat.id_subcategoria','=','alm_prod.id_subcategoria')
+        // ->join('almacen.alm_clasif','alm_clasif.id_clasificacion','=','alm_prod.id_clasif')
+        ->where([['trans_detalle.id_transferencia','=',$id_trans],
+                 ['trans_detalle.estado','!=',7]])
+        ->get();
+        return response()->json($detalle);
+    }
+    // public function listarRequerimientosPorEnviar($alm_origen){
+    //     $lista = DB::table('almacen.alm_det_req')
+    //     ->select('trans.*','alm_req.codigo as cod_req','alm_req.concepto','sede_solicita.id_sede','sede_solicita.descripcion as sede_descripcion',
+    //     'origen.descripcion as alm_origen_descripcion','sis_usua.nombre_corto','sede_almacen.id_sede as id_sede_almacen',
+    //     'sede_almacen.descripcion as sede_almacen_descripcion','destino.descripcion as alm_destino_descripcion')
+    //     // ->join('almacen.alm_req','alm_req.id_requerimiento','=','trans.id_requerimiento')
+    //     ->join('administracion.sis_sede as sede_solicita','sede_solicita.id_sede','=','alm_req.id_sede')
+    //     ->join('almacen.alm_almacen as origen','origen.id_almacen','=','trans.id_almacen_origen')
+    //     ->join('administracion.sis_sede as sede_almacen','sede_almacen.id_sede','=','origen.id_sede')
+    //     ->join('almacen.alm_almacen as destino','destino.id_almacen','=','trans.id_almacen_destino') 
+    //     ->join('configuracion.sis_usua','sis_usua.id_usuario','=','alm_req.id_usuario')
+    //     ->where([['trans.id_almacen_origen','=',$alm_origen],
+    //              ['trans.id_guia_ven','=',null],
+    //              ['alm_req.confirmacion_pago','=',true],
+    //              ['trans.estado','!=',7]]);
+    //     return datatables($lista)->toJson();
+    // }
+
     public function update_guia_transferencia(Request $request){
 
         try {

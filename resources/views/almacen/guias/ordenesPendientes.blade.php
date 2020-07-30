@@ -6,7 +6,9 @@ Pendientes de Ingreso
 @endsection
 
 @section('estilos')
+<link rel="stylesheet" href="{{ asset('template/plugins/iCheck/all.css') }}">
 <link rel="stylesheet" href="{{ asset('template/plugins/select2/select2.css') }}">
+<link rel="stylesheet" href="{{ asset('template/plugins/jquery-datatables-checkboxes/css/dataTables.checkboxes.css') }}">
 @endsection
 
 @section('breadcrumb')
@@ -34,6 +36,7 @@ Pendientes de Ingreso
                                 <thead>
                                     <tr>
                                         <th hidden></th>
+                                        <th></th>
                                         <th>Cod.Orden</th>
                                         <!-- <th>R.U.C.</th> -->
                                         <th>Proveedor</th>
@@ -52,6 +55,10 @@ Pendientes de Ingreso
                                 <tbody></tbody>
                                 <tfoot></tfoot>
                             </table>
+                            @if(Auth::user()->tieneAccion(83))
+                            <button type="button" class="btn btn-success" data-toggle="tooltip" data-placement="bottom" 
+                            title="Crear Guía / Ingreso" onClick="open_guia_create();">Generar Guía</button>
+                            @endif
                         </div>
                     </div>
                 </form>
@@ -65,19 +72,20 @@ Pendientes de Ingreso
                                 <thead>
                                     <tr>
                                         <th hidden></th>
-                                        <th>Cod.Orden</th>
-                                        <th>Sede Orden</th>
+                                        <!-- <th>Cod.Orden</th> -->
+                                        <th>Sede Guía</th>
                                         <th>R.U.C.</th>
                                         <th>Razon Social</th>
-                                        <th>SoftLink</th>
-                                        <th>Req.</th>
-                                        <th>Sede Req.</th>
-                                        <th>Concepto</th>
+                                        <!-- <th>SoftLink</th> -->
+                                        <!-- <th>Req.</th> -->
+                                        <!-- <th>Sede Req.</th> -->
+                                        <!-- <th>Concepto</th> -->
                                         <th>Guía Compra</th>
                                         <th>Ingreso</th>
+                                        <th>Almacén</th>
                                         <th>Fecha Ingreso</th>
                                         <th>Responsable</th>
-                                        <th>Trans.</th>
+                                        <!-- <th>Trans.</th> -->
                                         <th width="100px"></th>
                                     </tr>
                                 </thead>
@@ -92,6 +100,7 @@ Pendientes de Ingreso
     </div>
 </div>
 @include('almacen.guias.ordenDetalle')
+@include('almacen.guias.movimientoDetalle')
 @include('almacen.guias.ordenesGuias')
 @include('almacen.guias.guia_com_create')
 @include('almacen.guias.guia_com_obs')
@@ -109,7 +118,9 @@ Pendientes de Ingreso
     <script src="{{ asset('datatables/pdfmake/pdfmake.min.js') }}"></script>
     <script src="{{ asset('datatables/pdfmake/vfs_fonts.js') }}"></script>
     <script src="{{ asset('datatables/JSZip/jszip.min.js') }}"></script>
+    <script src="{{ asset('template/plugins/iCheck/icheck.min.js') }}"></script>
     <script src="{{ asset('template/plugins/select2/select2.min.js') }}"></script>
+    <script src="{{ asset('template/plugins/jquery-datatables-checkboxes/js/dataTables.checkboxes.min.js') }}"></script>
 
     <script src="{{ asset('js/almacen/guia/ordenesPendientes.js')}}"></script>
     <script src="{{ asset('js/almacen/transferencias/transferenciaGuia.js')}}"></script>
