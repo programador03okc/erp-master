@@ -708,6 +708,7 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::put('revertir/{id_orden?}/{id_requerimiento?}', 'LogisticaController@revertir_orden_requerimiento')->name('revertir');
 					Route::get('mostrar_proveedores', 'LogisticaController@mostrar_proveedores');
 					Route::post('guardar_proveedor', 'LogisticaController@guardar_proveedor');
+					Route::get	('detalle-orden-atendido/{id_orden?}', 'LogisticaController@detalle_orden_atendido');
 
 				});
 				Route::group(['as' => 'lista-ordenes.', 'prefix' => 'por-requerimiento'], function(){
