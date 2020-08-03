@@ -1664,7 +1664,7 @@ class LogisticaController extends Controller
             $this->actualizar_direccion_cliente($request->requerimiento['tipo_cliente'],$request->requerimiento['id_persona'],$request->requerimiento['id_cliente'],$request->requerimiento['direccion_entrega']);
             $this->actualizar_email_cliente($request->requerimiento['tipo_cliente'],$request->requerimiento['id_persona'],$request->requerimiento['id_cliente'],$request->requerimiento['email']);
         }
-
+        $detalle_req=[];
         $detalle_reqArray = $request->detalle;
         $count_detalle_req = count($detalle_reqArray);
         if ($count_detalle_req > 0) {
@@ -1689,6 +1689,15 @@ class LogisticaController extends Controller
                         ],
                         'id_detalle_requerimiento'
                     );
+
+                    $detalle_req[]=[
+                        'id_detalle_requerimiento'=> $alm_det_req,
+                        'id_producto'=> is_numeric($detalle_reqArray[$i]['id_producto']) == 1 && $detalle_reqArray[$i]['id_producto']>0 ? $detalle_reqArray[$i]['id_producto']:null,
+                        'id_item' => is_numeric($detalle_reqArray[$i]['id_item']) == 1 && $detalle_reqArray[$i]['id_item']>0 ? $detalle_reqArray[$i]['id_item']:null,
+                        'cantidad' => $detalle_reqArray[$i]['cantidad']?$detalle_reqArray[$i]['cantidad']:null,
+                        'id_almacen_reserva'=> is_numeric($detalle_reqArray[$i]['id_almacen_reserva']) == 1 ? $detalle_reqArray[$i]['id_almacen_reserva']:null,
+                        'estado' => ($request->requerimiento['tipo_requerimiento'] ==2?19:1)
+                    ];
             }
         }
 
@@ -1712,7 +1721,7 @@ class LogisticaController extends Controller
         ]);
 
         if($request->requerimiento['tipo_requerimiento'] == 2 || $request->requerimiento['tipo_requerimiento'] == 3){ //venta diracta o pedido almacen
-            $this->generarTransferenciaRequerimiento($request, $id_requerimiento);
+            $this->generarTransferenciaRequerimiento($id_requerimiento, $request->requerimiento['tipo_requerimiento'], $request->requerimiento['id_sede'], $detalle_req);
         }
 
         if($request->requerimiento['tipo_requerimiento'] == 1){ //compra
@@ -1765,13 +1774,14 @@ class LogisticaController extends Controller
         }
     }
 
-    public function generarTransferenciaRequerimiento($request, $id_requerimiento){
-        $sede = isset($request->requerimiento['id_sede'])?$request->requerimiento['id_sede']:null;
+    public function generarTransferenciaRequerimiento($id_requerimiento, $tipo_requerimiento, $id_sede, $detalle_req ){
 
-        if ($request->requerimiento['tipo_requerimiento'] == 2 || $request->requerimiento['tipo_requerimiento'] == 3){ //venta diracta o pedido almacen
+        $sede = $id_sede?$id_sede:null;
+
+        if ($tipo_requerimiento == 2 || $tipo_requerimiento == 3){ //venta diracta o pedido almacen
             $array_items = [];
             $array_almacen = [];
-            foreach ($request->detalle as $det) {
+            foreach ($detalle_req as $det) {
                 if($det['estado'] !=7){
                     $almacen = DB::table('almacen.alm_almacen')
                     ->select('sis_sede.id_sede')
@@ -1792,7 +1802,7 @@ class LogisticaController extends Controller
 
             $almacen_destino = DB::table('almacen.alm_almacen')
             ->select('alm_almacen.id_almacen')
-            ->where('id_sede',$request->requerimiento['id_sede'])
+            ->where('id_sede',$sede)
             ->first();
 
             foreach ($array_almacen as $alm){
@@ -1818,7 +1828,7 @@ class LogisticaController extends Controller
                     ],
                         'id_transferencia'
                     );
-                
+
                 foreach ($array_items as $item) {
                     if ($item['id_almacen_reserva'] == $alm){
                         DB::table('almacen.trans_detalle')->insert(
@@ -1827,7 +1837,8 @@ class LogisticaController extends Controller
                             'id_producto' => $item['id_producto'],
                             'cantidad' => $item['cantidad'],
                             'estado' => 1,
-                            'fecha_registro' => $fecha
+                            'fecha_registro' => $fecha,
+                            'id_requerimiento_detalle' => $item['id_detalle_requerimiento']
                         ]);
                     }
                 }
@@ -2021,7 +2032,7 @@ class LogisticaController extends Controller
 
     }
 
-    public function actualizar_requerimiento(Request $request, $id)
+    public function actualizar_requerimiento(Request $request, $id_requerimiento)
     {
         $codigo = $request->requerimiento['codigo'];
         $tipo_requerimiento = $request->requerimiento['tipo_requerimiento'];
@@ -2045,8 +2056,8 @@ class LogisticaController extends Controller
         $id_priori = $request->requerimiento['id_prioridad'];
         $codigo_occ = isset($request->requerimiento['id_op_com'])?$request->requerimiento['id_op_com']:null;
 
-        if ($id != NULL) {
-            $data_requerimiento = DB::table('almacen.alm_req')->where('id_requerimiento', $id)
+        if ($id_requerimiento != NULL) {
+            $data_requerimiento = DB::table('almacen.alm_req')->where('id_requerimiento', $id_requerimiento)
                 ->update([
                     'codigo'                => $codigo,
                     'id_tipo_requerimiento' => $tipo_requerimiento,
@@ -2070,6 +2081,8 @@ class LogisticaController extends Controller
                     'codigo_occ'            => $codigo_occ,
                     'monto'                 => $monto
                 ]);
+
+            $detalle_req=[];
             $count_detalle = count($request->detalle);
             if ($count_detalle > 0) {
                 for ($i = 0; $i < $count_detalle; $i++) {
@@ -2092,7 +2105,7 @@ class LogisticaController extends Controller
                         $data_detalle = DB::table('almacen.alm_det_req')
                             ->where('id_detalle_requerimiento', '=', $id_det_req)
                             ->update([
-                                'id_requerimiento'      => $id,
+                                'id_requerimiento'      => $id_requerimiento,
                                 'id_item'               => is_numeric($id_item) == 1 ? $id_item : null,
                                 'id_producto'           => is_numeric($id_producto) == 1 ? $id_producto : null,
                                 'precio_referencial'    => $precio_ref,
@@ -2109,7 +2122,7 @@ class LogisticaController extends Controller
                     } else {
                         $data_detalle = DB::table('almacen.alm_det_req')->insertGetId(
                             [
-                                'id_requerimiento'      => $id,
+                                'id_requerimiento'      => $id_requerimiento,
                                 'id_item'               => is_numeric($id_item) == 1 ? $id_item : null,
                                 'id_producto'           => is_numeric($id_producto) == 1 ? $id_producto : null,
                                 'precio_referencial'    => $precio_ref,
@@ -2127,12 +2140,21 @@ class LogisticaController extends Controller
                             ],
                             'id_detalle_requerimiento'
                         );
+
+                        $detalle_req[]=[
+                            'id_detalle_requerimiento'=> $data_detalle,
+                            'id_producto'=> is_numeric($id_producto) == 1 ? $id_producto : null,
+                            'id_item' => is_numeric($id_item) == 1 ? $id_item : null,
+                            'cantidad' => $cantidad,
+                            'id_almacen_reserva'=> $id_almacen_reserva,
+                            'estado' => 1
+                        ];
                     }
                 }
 
                 if($tipo_requerimiento == 2){ // venta directa
-                    $this->anularTrasfarencia($id);
-                    $this->generarTransferenciaRequerimiento($request, $id);
+                    $this->anularTrasfarencia($id_requerimiento);
+                    $this->generarTransferenciaRequerimiento($id_requerimiento, $tipo_requerimiento, $id_sede, $detalle_req);
                 }
 
 

@@ -2253,7 +2253,7 @@ function save_requerimiento(action){
                 data: data,
                 dataType: 'JSON',
                 success: function(response){
-                    // console.log(response);
+                    console.log(response);
                     if (response > 0){
                         let lastIdRequerimiento =  response;
                         mostrar_requerimiento(lastIdRequerimiento);
