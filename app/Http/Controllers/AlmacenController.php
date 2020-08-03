@@ -7340,7 +7340,7 @@ class AlmacenController extends Controller
             $suma_total += floatval($det->cantidad * $det->unitario);
         }
 
-        $valor = $total_comp / ($suma_total !== 0 ? $suma_total : 1);
+        $valor = $total_comp / ($suma_total > 0 ? $suma_total : 1);
 
         foreach($data as $det){
             $id_guia_det = $det->id_guia_com_det;
