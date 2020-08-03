@@ -338,10 +338,10 @@ function listarTransferenciasRecibidas(){
                 {'render':
                     function (data, type, row){
                         if (row['codigo_req'] !== null){
-                            return (row['codigo_req']);
+                            return ('<label class="lbl-codigo" title="Abrir Guía" onClick="abrir_requerimiento('+row['id_requerimiento']+')">'+row['codigo_req']+'</label>');
                         }
                         else if (row['codigo_req_directo'] !== null){
-                            return (row['codigo_req_directo']);
+                            return ('<label class="lbl-codigo" title="Abrir Guía" onClick="abrir_requerimiento('+row['id_requerimiento']+')">'+row['codigo_req_directo']+'</label>');
                         } 
                         else {
                             return '';
@@ -463,7 +463,6 @@ function abrir_guia_venta(id_guia_venta){
     var win = window.open(url, '_blank');
     // Cambiar el foco al nuevo tab (punto opcional)
     win.focus();
-    // location.assign("/logistica/almacen/movimientos/guias-venta/index");
 }
 
 function abrir_guia_compra(id_guia_compra){
@@ -473,5 +472,13 @@ function abrir_guia_compra(id_guia_compra){
     var win = window.open(url, '_blank');
     // Cambiar el foco al nuevo tab (punto opcional)
     win.focus();
-    // location.assign("guia_compra");
+}
+
+function abrir_requerimiento(id_requerimiento){
+    // Abrir nuevo tab
+    localStorage.setItem("id_requerimiento",id_requerimiento);
+    let url ="/logistica/gestion-logistica/requerimiento/elaboracion/index";
+    var win = window.open(url, '_blank');
+    // Cambiar el foco al nuevo tab (punto opcional)
+    win.focus();
 }
