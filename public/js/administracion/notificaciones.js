@@ -10,7 +10,7 @@ function listaNotificacionesNoLeidas(){
         'buttons': vardataTables[2],
         'language' : vardataTables[0],
         'bDestroy': true,
-        'ajax': 'listar-notificaciones-no-leidas',
+        'ajax': 'no-leidas',
         'columns': [
             {'render':
                 function (data, type, row,meta){
@@ -41,7 +41,7 @@ function listaNotificacionesLeidas(){
         'buttons': vardataTables[2],
         'language' : vardataTables[0],
         'bDestroy': true,
-        'ajax': 'listar-notificaciones-leidas',
+        'ajax': 'leidas',
         'columns': [
             {'render':
                 function (data, type, row,meta){
@@ -69,7 +69,7 @@ function marcarLeido(id){
     if(id > 0){
         $.ajax({
             type: 'PUT',
-            url: 'marcar-notificacion-leida/'+id,
+            url: 'marcar-leida/'+id,
             dataType: 'JSON',
             success: function(response){
                 // console.log(response);
@@ -94,7 +94,7 @@ function marcarNoLeido(id){
     if(id > 0){
         $.ajax({
             type: 'PUT',
-            url: 'marcar-notificacion-no-leida/'+id,
+            url: 'marcar-no-leida/'+id,
             dataType: 'JSON',
             success: function(response){
                 // console.log(response);

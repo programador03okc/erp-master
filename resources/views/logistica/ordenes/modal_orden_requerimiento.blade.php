@@ -63,6 +63,7 @@
                                 id="listaDetalleOrden" width="100%">
                                 <thead>
                                     <tr>
+                                        <th width="20"></th>
                                         <th width="20">#</th>
                                         <th width="80">COD. ITEM</th>
                                         <th width="200">PRODUCTO</th>

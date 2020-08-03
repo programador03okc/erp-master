@@ -48,7 +48,7 @@
                     </a>
                     <ul class="dropdown-menu" id="lista_notificaciones">
                         <li role="separator" class="divider"></li>
-                        <li class="text-center"><a href="{{route('administracion.notificaciones')}}"><p>Ver Notificaciones <i class="fas fa-arrow-right"></i></p></a></li>
+                        <li class="text-center"><a href="{{route('administracion.notificaciones.index')}}"><p>Ver Notificaciones <i class="fas fa-arrow-right"></i></p></a></li>
                     </ul>
                 </li>
             </ul>

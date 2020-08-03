@@ -77,6 +77,7 @@
             </div>
         </div>
  </div>
+@include('logistica.ordenes.modal_detalle_orden_atendido')
 @include('logistica.ordenes.modal_orden_requerimiento')
 @include('logistica.cotizaciones.proveedorModal')
 @include('logistica.cotizaciones.add_proveedor')

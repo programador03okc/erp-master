@@ -95,6 +95,9 @@ function listar_requerimientos_atendidos(permisoRevertirOrden){
             { render: function (data, type, row) {               
                 if (permisoRevertirOrden == '1') {
                     return ('<div class="btn-group btn-group-sm" role="group">'+
+                            '<button type="button" class="btn btn-info btn-sm" name="btnVerDetalleOrdenAtendido" title="Ver Ítems" data-id-requerimiento="'+row.id_requerimiento+'"  data-codigo-requerimiento="'+row.codigo+'" data-id-orden-compra="'+row.id_orden_compra+'" onclick="verDetalleOrdenAtendido(this);">'+
+                            '<i class="fas fa-eye"></i>'+
+                            '</button>'+
                             '<button type="button" class="btn btn-danger btn-sm" name="btnEliminarAtencionOrdenRequerimiento" title="Revertir Atención" data-id-requerimiento="'+row.id_requerimiento+'"  data-codigo-requerimiento="'+row.codigo+'" data-id-orden-compra="'+row.id_orden_compra+'" onclick="eliminarAtencionOrdenRequerimiento(this);">'+
                             '<i class="fas fa-backspace"></i>'+
                             '</button>'+
@@ -112,6 +115,62 @@ function listar_requerimientos_atendidos(permisoRevertirOrden){
 // function updateTableRequerimientoAtendidos(){    
 //     // $('#listaRequerimientosAtendidos').DataTable().ajax.reload();
 // }
+
+function verDetalleOrdenAtendido(obj){
+    // let id_requerimiento = obj.dataset.idRequerimiento;
+    let id_orden = obj.dataset.idOrdenCompra;
+    // console.log(id_orden);
+
+    $('#modal-detalle-orden-atendido').modal({
+        show: true,
+        backdrop: 'true'
+    });
+
+    listar_detalle_orden_atendido(id_orden)
+}
+
+
+function listar_detalle_orden_atendido(id_orden){
+    var vardataTables = funcDatatables();
+    $('#listaDetalleOrdenAtendido').dataTable({
+        bDestroy: true,
+        order: [[0, 'asc']],
+        info:     true,
+        iDisplayLength:2,
+        paging:   true,
+        searching: false,
+        language: vardataTables[0],
+        processing: true,
+        bDestroy: true,
+        ajax: 'detalle-orden-atendido/'+id_orden,
+        columns: [
+            {'render':
+                function (data, type, row, meta){
+                    return meta.row +1;
+                }
+            },
+ 
+            { data: 'codigo_item' },
+            { data: 'part_number' },
+            { data: 'categoria' },
+            { data: 'subcategoria' },
+            { data: 'descripcion' },
+            { data: 'unidad_medida' },
+            { data: 'cantidad' },
+            { data: 'precio_referencial' },
+            { data: 'fecha_entrega' },
+            { data: 'lugar_entrega' },
+            { data: 'almacen_reserva' }
+        ],
+
+    })
+
+    let tablelistaitem = document.getElementById('listaDetalleOrden_wrapper');
+    tablelistaitem.childNodes[0].childNodes[0].hidden = true;
+
+
+}
+
 
 function eliminarAtencionOrdenRequerimiento(obj){
     let codigo_requerimiento = obj.dataset.codigoRequerimiento;
@@ -153,7 +212,18 @@ function openModalOrdenRequerimiento(obj){
         show: true,
         backdrop: 'static'
     });
+
+    cleanFormModalOrdenRequerimiento();
     obtenerRequerimiento(obj.dataset.idRequerimiento);
+}
+
+function cleanFormModalOrdenRequerimiento(){
+    document.querySelector("form[id='form-orden-requerimiento'] input[name='codigo_orden']").value = '';
+    document.querySelector("form[id='form-orden-requerimiento'] input[name='razon_social']").value = '';
+    document.querySelector("form[id='form-orden-requerimiento'] input[name='id_proveedor']").value = '';
+    document.querySelector("form[id='form-orden-requerimiento'] input[name='id_contrib']").value = '';
+    $('#listaDetalleOrden').DataTable().clear();
+
 }
 
 function obtenerRequerimiento(id){
@@ -164,7 +234,7 @@ function obtenerRequerimiento(id){
         success: function(response){
             detalleRequerimientoSelected=response.det_req;
             listar_detalle_orden_requerimiento(response.det_req);
-            // console.log(response); 
+            console.log(response.det_req); 
             document.querySelector("div[id='modal-orden-requerimiento'] span[id='codigo_requeriento_seleccionado']").textContent= ' - Requerimiento: '+ response.requerimiento.codigo;
             document.querySelector("div[id='modal-orden-requerimiento'] input[name='id_requerimiento']").value= response.requerimiento.id_requerimiento;
             // document.querySelector("div[id='modal-orden-requerimiento'] select[name='sede']").value= response.requerimiento.id_sede;
@@ -176,13 +246,50 @@ function obtenerRequerimiento(id){
     });
 }
 
+function agregarItemsWithChecked(){
+    var itemsChecked =[]; 
+    let tableListaDetalleOrden = document.getElementById('listaDetalleOrden');
+    let tableChildren = tableListaDetalleOrden.children[1].children;
+    let sizeTableChildren = tableChildren.length;
+    for(i=0;i<sizeTableChildren;i++){
+        if(tableChildren[i].cells.length >0){
+            if(tableChildren[i].cells[0].children[0].checked == true){
+                itemsChecked.push( {
+                'id_detalle_requerimiento':tableChildren[i].cells[0].children[0].dataset.idDetalleRequerimiento
+            });
+            }
+        };
+    }
+
+    return itemsChecked;
+}
 
 $("#form-orden-requerimiento").on("submit", function(e){
     e.preventDefault();
     var data = $(this).serialize();
-    var payload = data+'&detalle_requerimiento='+JSON.stringify(detalleRequerimientoSelected);
+    var detalle_requerimiento = [];
+    let itemsChecked=[];
+    itemsChecked = agregarItemsWithChecked();
+    // console.log(itemsChecked);
+    if(itemsChecked.length > 0){
+        detalleRequerimientoSelected.forEach(elementDetReq => {
+            itemsChecked.forEach(elementChecked => {
+                if(elementDetReq.id_detalle_requerimiento == elementChecked.id_detalle_requerimiento){
+                    detalle_requerimiento.push(elementDetReq);
+                }
+            })
+        });
+    }else{
+        detalle_requerimiento= detalleRequerimientoSelected;
+    }
+    // console.log(detalle_requerimiento);
+    var payload = data+'&detalle_requerimiento='+JSON.stringify(detalle_requerimiento);
+    // console.log(payload);
+    // console.log(detalleRequerimientoSelected);
     guardar_orden_requerimiento(payload);
+
 });
+
 
 function validaOrdenRequerimiento(){
     var codigo_orden = $('[name=codigo_orden]').val();
@@ -238,6 +345,11 @@ function listar_detalle_orden_requerimiento(data){
         bDestroy: true,
         data:data,
         columns: [
+            {'render':
+                function (data, type, row, meta){
+                    return '<input type="checkbox" checked data-id-detalle-requerimiento="' + row.id_detalle_requerimiento + '"  />';
+                }
+            },
             {'render':
                 function (data, type, row, meta){
                     return meta.row +1;

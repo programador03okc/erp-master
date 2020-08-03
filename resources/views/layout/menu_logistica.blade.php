@@ -443,5 +443,20 @@
         </ul>
     </li>
     @endif
+    @if(Auth::user()->tieneSubModuloPadre(5))
+    <li class="treeview">
+        <a href="#">
+            <i class="fas fa-inbox"></i> <span>Notificaciones</span>
+            <span class="pull-right-container">
+                <i class="fa fa-angle-left pull-right"></i>
+            </span>
+        </a>
+        <ul class="treeview-menu">
+            @if(Auth::user()->tieneSubModulo(6))
+            <li><a href="{{route('logistica.notificaciones.index')}}"><i class="far fa-circle fa-xs"></i> Bandeja Entrada </a></li>
+            @endif
+        </ul>
+    </li>
+    @endif
 </ul>
 @endsection
