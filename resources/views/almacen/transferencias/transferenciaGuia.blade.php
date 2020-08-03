@@ -72,6 +72,7 @@
                                 <thead>
                                     <tr>
                                         <th>#</th>
+                                        <th>Transferencia</th>
                                         <th>Código</th>
                                         <th>PartNumber</th>
                                         <th>Categoría</th>
@@ -79,6 +80,7 @@
                                         <th>Descripción</th>
                                         <th>Cantidad</th>
                                         <th>Unid</th>
+                                        <th>Estado</th>
                                     </tr>
                                 </thead>
                                 <tbody></tbody>

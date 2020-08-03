@@ -32,19 +32,80 @@ function openGenerarGuia(data){
     $('[name=trans_serie]').val('');
     $('[name=trans_numero]').val('');
     $('[name=id_guia_com]').val('');
-    $('[name=id_sede]').val(data.id_sede_almacen);
+    $('[name=id_sede]').val(data.id_sede_origen);
     $('[name=id_mov_alm]').val('');
     $('[name=id_requerimiento]').val(data.id_requerimiento);
     $('[name=id_transferencia]').val(data.id_transferencia);
     $("#submit_transferencia").removeAttr("disabled");
     
-    cargar_almacenes(data.id_sede, 'id_almacen_destino');
+    cargar_almacenes(data.id_sede_destino, 'id_almacen_destino');
     if (data.id_almacen_destino !== null){
         $('[name=id_almacen_destino]').val(data.id_almacen_destino);
     }
     listarDetalleTransferencia(data.id_transferencia);
+    id_trans_seleccionadas.push(data.id_transferencia);
     // var tp_doc_almacen = 2;//guia venta
     // next_serie_numero(data.sede_orden,tp_doc_almacen);
+}
+
+let id_trans_seleccionadas = [];
+
+function open_guia_transferencia_create(){
+    var alm_origen = null;
+    var alm_destino = null;
+    var sede_origen = null;
+    var sede_destino = null;
+    var dif_ori = 0;
+    var dif_des = 0;
+    id_trans_seleccionadas = [];
+    origen = 'transferencia_por_requerimiento';
+
+    trans_seleccionadas.forEach(element => {
+        id_trans_seleccionadas.push(element.id_transferencia);
+
+        if (alm_origen == null){
+            alm_origen = element.id_almacen_origen;
+            sede_origen = element.id_sede_origen;
+        } 
+        else if (element.id_almacen_origen !== alm_origen){
+            dif_ori++;
+        }
+        if (alm_destino == null){
+            alm_destino = element.id_almacen_destino;
+            sede_destino = element.id_sede_destino;
+        } 
+        else if (element.id_almacen_destino !== alm_destino){
+            dif_des++;
+        }
+    });
+
+    var text = '';
+    if (dif_ori > 0) text+='Debe seleccionar transferencias del mismo Almacén Origen\n';
+    if (dif_des > 0) text+='Debe seleccionar transferencias del mismo Almacén Destino';
+
+    if ((dif_des + dif_ori) > 0){
+        alert(text);
+    } else {
+        $('#modal-transferenciaGuia').modal({
+            show: true
+        });
+        $('[name=id_almacen_origen]').val(alm_origen);
+        $('[name=trans_serie]').val('');
+        $('[name=trans_numero]').val('');
+        $('[name=id_guia_com]').val('');
+        $('[name=id_sede]').val(sede_origen);
+        $('[name=id_mov_alm]').val('');
+        // $('[name=id_requerimiento]').val(data.id_requerimiento);
+        // $('[name=id_transferencia]').val(data.id_transferencia);
+        $("#submit_transferencia").removeAttr("disabled");
+        
+        cargar_almacenes(sede_destino, 'id_almacen_destino');
+        if (alm_destino !== null){
+            $('[name=id_almacen_destino]').val(alm_destino);
+        }
+        var data = 'trans_seleccionadas='+JSON.stringify(id_trans_seleccionadas);
+        listarDetalleTransferenciaSeleccionadas(data);
+    }
 }
 
 function cargar_almacenes(sede, campo){
@@ -86,6 +147,7 @@ function listarDetalleTransferencia(id_transferencia){
                 response.forEach(element => {
                     html+=`<tr>
                     <td>${i}</td>
+                    <td>${element.codigo_trans}</td>
                     <td>${element.codigo}</td>
                     <td>${element.part_number}</td>
                     <td>${element.categoria}</td>
@@ -93,6 +155,7 @@ function listarDetalleTransferencia(id_transferencia){
                     <td>${element.descripcion}</td>
                     <td>${element.cantidad}</td>
                     <td>${element.abreviatura}</td>
+                    <td>${element.estado_doc}</td>
                     </tr>`;
                     i++;
                 });
@@ -104,6 +167,22 @@ function listarDetalleTransferencia(id_transferencia){
             console.log(errorThrown);
         });
     }
+}
+
+function listarDetalleTransferenciaSeleccionadas(data){
+    $.ajax({
+        type: 'POST',
+        url: 'listarDetalleTransferenciasSeleccionadas',
+        data: data,
+        dataType: 'JSON',
+        success: function(response){
+            $('#detalleTransferencia tbody').html(response);
+        }
+    }).fail( function( jqXHR, textStatus, errorThrown ){
+        console.log(jqXHR);
+        console.log(textStatus);
+        console.log(errorThrown);
+    });
 }
 
 function next_serie_numero(id_sede,id_tp_doc){
@@ -142,6 +221,7 @@ $("#form-transferenciaGuia").on("submit", function(e){
         guardar_transferencia(data);
     } 
     else if (origen == 'transferencia_por_requerimiento'){
+        data+='&trans_seleccionadas='+JSON.stringify(id_trans_seleccionadas);
         update_transferencia(data);
     }
 });

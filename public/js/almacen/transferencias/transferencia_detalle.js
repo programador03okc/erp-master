@@ -3,12 +3,12 @@ function open_transferencia_detalle(data){
         $('#modal-transferencia_detalle').modal({
             show: true
         });
-        $('#cod_trans').text(data.codigo);
+        // $('#cod_trans').text(data.codigo);
         $('#guia').text(data.guia_ven);
-        $('[name=id_transferencia]').val(data.id_transferencia);
+        // $('[name=id_transferencia]').val(data.id_transferencia);
         $('[name=id_guia_ven]').val(data.id_guia_ven);
-        $('[name=id_requerimiento]').val((data.id_requerimiento_directo !== null) ? data.id_requerimiento_directo : '');
-        $('[name=guia_ingreso_compra]').val(data.guia_ingreso_compra);
+        // $('[name=id_requerimiento]').val((data.id_requerimiento_directo !== null) ? data.id_requerimiento_directo : '');
+        // $('[name=guia_ingreso_compra]').val(data.guia_ingreso_compra);
         $('[name=id_almacen_destino]').val(data.id_almacen_destino);
         $('[name=almacen_destino]').val(data.alm_destino_descripcion);
         $('[name=responsable_destino]').val(usuario_session);
@@ -20,8 +20,27 @@ function open_transferencia_detalle(data){
         } else {
             $('#submit_transferencia').text('Recibir');
         }
-        listarItems(data.id_transferencia);
+        listar_guia_transferencia_detalle(data.id_guia_ven);
     }
+}
+
+function listar_guia_transferencia_detalle(id_guia_ven){
+    console.log(id_guia_ven);
+    $('#listaTransferenciaDetalle tbody').html('');
+    $.ajax({
+        type: 'GET',
+        // headers: {'X-CSRF-TOKEN': token},
+        url: 'listar_guia_transferencia_detalle/'+id_guia_ven,
+        dataType: 'JSON',
+        success: function(response){
+            // console.log(response);
+            $('#listaTransferenciaDetalle tbody').html(response);
+        }
+    }).fail( function( jqXHR, textStatus, errorThrown ){
+        console.log(jqXHR);
+        console.log(textStatus);
+        console.log(errorThrown);
+    });
 }
 
 function listarItems(id_transferencia){
@@ -68,7 +87,7 @@ function recibir(){
                 id_guia_ven_det: $(this).parent().parent()[0].id,
                 cantidad_recibida: $(this).closest('td').siblings().find("input[name=cantidad_recibida]").val(),
                 observacion: $(this).closest('td').siblings().find("input[name=observacion]").val(),
-                ubicacion: $(this).closest('td').siblings().find("select[name=id_posicion]").val()
+                // ubicacion: $(this).closest('td').siblings().find("select[name=id_posicion]").val()
             }
             detalle.push(nuevo);
             // var cant = $(this).closest('tr').find('td:eq(3)').text();

@@ -6,7 +6,9 @@ Gestión de Transferencias
 @endsection
 
 @section('estilos')
+<link rel="stylesheet" href="{{ asset('template/plugins/iCheck/all.css') }}">
 <link rel="stylesheet" href="{{ asset('template/plugins/select2/select2.css') }}">
+<link rel="stylesheet" href="{{ asset('template/plugins/jquery-datatables-checkboxes/css/dataTables.checkboxes.css') }}">
 @endsection
 
 @section('breadcrumb')
@@ -52,6 +54,7 @@ Gestión de Transferencias
                                 <thead>
                                     <tr>
                                         <th hidden></th>
+                                        <th></th>
                                         <th>Código</th>
                                         <th>Fecha Registro</th>
                                         <th>Almacén Origen</th>
@@ -65,6 +68,10 @@ Gestión de Transferencias
                                 </thead>
                                 <tbody></tbody>
                             </table>
+                            @if(Auth::user()->tieneAccion(91))
+                            <button type="button" class="btn btn-success" data-toggle="tooltip" data-placement="bottom" 
+                            title="Crear Guía / Salida" onClick="open_guia_transferencia_create();">Generar Guía</button>
+                            @endif
                         </div>
                     </div>
                 </form>
@@ -95,8 +102,8 @@ Gestión de Transferencias
                                 <thead>
                                     <tr>
                                         <th hidden></th>
-                                        <th>Fecha Trans.</th>
-                                        <th>Nro.Trans.</th>
+                                        <th>Fecha Guía</th>
+                                        <!-- <th>Nro.Trans.</th> -->
                                         <th>Guía Venta</th>
                                         <!-- <th>Guía Compra</th> -->
                                         <!-- <th>Fecha de Guía</th> -->
@@ -106,9 +113,9 @@ Gestión de Transferencias
                                         <th>Responsable Destino</th>
                                         <!-- <th>Registrado por</th> -->
                                         <th>Estado</th>
-                                        <th>OC</th>
+                                        <!-- <th>OC</th>
                                         <th>Req.</th>
-                                        <th>Concepto</th>
+                                        <th>Concepto</th> -->
                                         <th width="10%">Acción</th>
                                     </tr>
                                 </thead>
@@ -186,7 +193,9 @@ Gestión de Transferencias
     <script src="{{ asset('datatables/pdfmake/vfs_fonts.js') }}"></script>
     <script src="{{ asset('datatables/JSZip/jszip.min.js') }}"></script>
     <script src="{{ asset('template/plugins/moment.min.js') }}"></script>
+    <script src="{{ asset('template/plugins/iCheck/icheck.min.js') }}"></script>
     <script src="{{ asset('template/plugins/select2/select2.min.js') }}"></script>
+    <script src="{{ asset('template/plugins/jquery-datatables-checkboxes/js/dataTables.checkboxes.min.js') }}"></script>
 
     <script src="{{ asset('js/almacen/transferencias/listar_transferencias.js')}}"></script>
     <script src="{{ asset('js/almacen/transferencias/transferencia_detalle.js')}}"></script>
