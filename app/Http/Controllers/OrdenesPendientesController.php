@@ -32,7 +32,7 @@ class OrdenesPendientesController extends Controller
         $data = DB::table('logistica.log_ord_compra')
             ->select('log_ord_compra.*','log_ord_compra.codigo as codigo_orden','log_ord_compra.codigo_softlink',
             'adm_estado_doc.estado_doc','adm_estado_doc.bootstrap_color','adm_contri.razon_social',
-            'sis_usua.nombre_corto','alm_req.fecha_entrega',
+            'sis_usua.nombre_corto','alm_req.fecha_entrega','sis_sede.descripcion as sede_descripcion',
             // 'sis_moneda.simbolo',
             'alm_req.codigo as codigo_requerimiento','alm_req.concepto')
             // ->join('administracion.adm_tp_docum','adm_tp_docum.id_tp_documento','=','log_ord_compra.id_tp_documento')
@@ -42,6 +42,7 @@ class OrdenesPendientesController extends Controller
             ->join('configuracion.sis_usua','sis_usua.id_usuario','=','log_ord_compra.id_usuario')
             // ->join('configuracion.sis_moneda','sis_moneda.id_moneda','=','log_ord_compra.id_moneda')
             ->leftjoin('almacen.alm_req','alm_req.id_requerimiento','=','log_ord_compra.id_requerimiento')
+            ->join('administracion.sis_sede','sis_sede.id_sede','=','log_ord_compra.id_sede')
             ->where([['log_ord_compra.estado','!=',7],
                     ['log_ord_compra.en_almacen','=',false],
                     ['log_ord_compra.id_tp_documento','=',2]])//Orden de Compra
@@ -141,11 +142,6 @@ class OrdenesPendientesController extends Controller
 
     public function detalleOrdenesSeleccionadas(Request $request){
         $ordenes = json_decode($request->oc_seleccionadas);
-        // $ocs = [];
-        // foreach($ordenes as $oc){
-        //     array_push($ocs, $oc->id_orden_compra);
-        // }
-
         $detalle = DB::table('logistica.log_det_ord_compra')
             ->select(
                 'log_det_ord_compra.*','alm_item.id_producto','alm_prod.codigo',
@@ -154,7 +150,8 @@ class OrdenesPendientesController extends Controller
                 'alm_prod.descripcion','alm_und_medida.abreviatura',
                 'log_ord_compra.codigo as codigo_oc',
                 DB::raw('(SELECT SUM(guia_com_det.cantidad) FROM almacen.guia_com_det
-                          WHERE guia_com_det.id_oc_det = log_det_ord_compra.id_detalle_orden) 
+                          WHERE guia_com_det.id_oc_det = log_det_ord_compra.id_detalle_orden 
+                            AND guia_com_det.estado != 7) 
                           AS suma_cantidad_guias')
             )
             ->join('logistica.log_ord_compra', 'log_ord_compra.id_orden_compra', '=', 'log_det_ord_compra.id_orden_compra')
@@ -488,6 +485,7 @@ class OrdenesPendientesController extends Controller
                                             [
                                                 'id_transferencia' => $id_trans,
                                                 'id_producto' => $det->id_producto,
+                                                'id_requerimiento_detalle' => $det->id_detalle_requerimiento,
                                                 'cantidad' => $cantidad,
                                                 'estado' => 1,
                                                 'fecha_registro' => $fecha

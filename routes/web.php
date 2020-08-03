@@ -1079,6 +1079,8 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::post('listarTransferenciasPorEnviar/{id}', 'TransferenciaController@listarTransferenciasPorEnviar');
 					Route::get('cargar_almacenes/{id}', 'AlmacenController@cargar_almacenes');
 					Route::get('listarDetalleTransferencia/{id}', 'TransferenciaController@listarDetalleTransferencia');
+					Route::post('listarDetalleTransferenciasSeleccionadas', 'TransferenciaController@listarDetalleTransferenciasSeleccionadas');
+					Route::get('listar_guia_transferencia_detalle/{id}', 'TransferenciaController@listar_guia_transferencia_detalle');
 					
 				});
 	

@@ -2,7 +2,7 @@ let oc_seleccionadas = [];
 
 function iniciar(permiso){
     $("#tab-ordenes section:first form").attr('form', 'formulario');
-    listarOrdenesPendientes();
+    listarOrdenesPendientes(permiso);
     oc_seleccionadas = [];
 
     $('ul.nav-tabs li a').click(function(){
@@ -21,7 +21,7 @@ function iniciar(permiso){
 
         // clearDataTable();
         if (activeForm == "form-pendientes"){
-            listarOrdenesPendientes();
+            listarOrdenesPendientes(permiso);
         } 
         else if (activeForm == "form-ingresadas"){
             listarOrdenesEntregadas(permiso);
@@ -31,7 +31,7 @@ function iniciar(permiso){
     vista_extendida();
 }
 
-function listarOrdenesPendientes(){
+function listarOrdenesPendientes(permiso){
     var vardataTables = funcDatatables();
     $('#ordenesPendientes').DataTable({
         'dom': vardataTables[1],
@@ -47,7 +47,7 @@ function listarOrdenesPendientes(){
         'columns': [
             {'data': 'id_orden_compra'},
             {'data': 'codigo'},
-            // {'data': 'nro_documento', 'name': 'adm_contri.nro_documento'},
+            {'data': 'sede_descripcion', 'name': 'sis_sede.descripcion'},
             {'data': 'razon_social', 'name': 'adm_contri.razon_social'},
             // {'data': 'codigo_softlink', 'name': 'log_ord_compra.codigo_softlink'},
             {'data': 'fecha'},
@@ -57,18 +57,18 @@ function listarOrdenesPendientes(){
             {'data': 'nombre_corto', 'name': 'sis_usua.nombre_corto'},
             {'render': 
                 function (data, type, row){
-                    // if (permiso == '1') {
-                    //     return '<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" '+
-                    //         'data-placement="bottom" title="Ver Detalle" >'+
-                    //         '<i class="fas fa-list-ul"></i></button>'+
-                    //     '<button type="button" class="guia btn btn-info boton" data-toggle="tooltip" '+
-                    //         'data-placement="bottom" title="Generar Guía" >'+
-                    //         '<i class="fas fa-sign-in-alt"></i></button>';
-                    // } else {
+                    if (permiso == '1') {
+                        return '<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" '+
+                            'data-placement="bottom" title="Ver Detalle" >'+
+                            '<i class="fas fa-list-ul"></i></button>'+
+                        '<button type="button" class="guia btn btn-info boton" data-toggle="tooltip" '+
+                            'data-placement="bottom" title="Generar Guía" >'+
+                            '<i class="fas fa-sign-in-alt"></i></button>';
+                    } else {
                         return '<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" '+
                             'data-placement="bottom" title="Ver Detalle" >'+
                             '<i class="fas fa-list-ul"></i></button>';
-                    // }
+                    }
                 }
             }
         ],
@@ -131,11 +131,136 @@ $('#ordenesPendientes tbody').on("click","button.detalle", function(){
     // var data = $(this).data('id');
     open_detalle(data);
 });
-// $('#ordenesPendientes tbody').on("click","button.guia", function(){
-//     var data = $('#ordenesPendientes').DataTable().row($(this).parents("tr")).data();
-//     console.log('data.id_orden_compra'+data.id_orden_compra);
-//     open_guia_create(data);
-// });
+
+$('#ordenesPendientes tbody').on("click","button.guia", function(){
+    var data = $('#ordenesPendientes').DataTable().row($(this).parents("tr")).data();
+    console.log('data.id_orden_compra'+data.id_orden_compra);
+    open_guia_create(data);
+});
+
+function open_guia_create(data){
+    $('#modal-guia_create').modal({
+        show: true
+    });
+    $("#submit_guia").removeAttr("disabled");
+    $('[name=id_operacion]').val(2).trigger('change.select2');
+    $('[name=id_guia_clas]').val(1);
+    $('[name=id_proveedor]').val(data.id_proveedor);
+    $('[name=id_sede]').val(data.id_sede);
+    $('[name=id_orden_compra]').val(data.id_orden_compra);
+    $('#serie').text('');
+    $('#numero').text('');
+    cargar_almacenes(data.id_sede, 'id_almacen');
+    var data = 'oc_seleccionadas='+JSON.stringify([data.id_orden_compra]);
+    listar_detalle_ordenes_seleccionadas(data);
+}
+
+function open_guia_create_seleccionadas(){
+    var id_prov = null;
+    var sede = null;
+    var dif_prov = 0;
+    var dif_sede = 0;
+    var id_oc_seleccionadas = [];
+
+    oc_seleccionadas.forEach(element => {
+        id_oc_seleccionadas.push(element.id_orden_compra);
+
+        if (id_prov == null){
+            id_prov = element.id_proveedor;
+        } 
+        else if (element.id_proveedor !== id_prov){
+            dif_prov++;
+        }
+        if (sede == null){
+            sede = element.id_sede;
+        } 
+        else if (element.id_sede !== sede){
+            dif_sede++;
+        }
+    });
+
+    var text = '';
+    if (dif_prov > 0) text+='Debe seleccionar OCs del mismo proveedor\n';
+    if (dif_sede > 0) text+='Debe seleccionar OCs de la misma sede';
+
+    if ((dif_sede + dif_prov) > 0){
+        alert(text);
+    } else {
+        $('#modal-guia_create').modal({
+            show: true
+        });
+        $("#submit_guia").removeAttr("disabled");
+        $('[name=id_operacion]').val(2).trigger('change.select2');
+        $('[name=id_guia_clas]').val(1);
+        $('[name=id_proveedor]').val(id_prov);
+        $('[name=id_sede]').val(sede);
+        // $('[name=id_orden_compra]').val(data.id_orden_compra);
+        $('#serie').text('');
+        $('#numero').text('');
+        cargar_almacenes(sede, 'id_almacen');
+        var data = 'oc_seleccionadas='+JSON.stringify(id_oc_seleccionadas);
+        listar_detalle_ordenes_seleccionadas(data);
+    }
+}
+
+function listar_detalle_ordenes_seleccionadas(data){
+    console.log(oc_seleccionadas);
+    console.log(data);
+    $.ajax({
+        type: 'POST',
+        url: 'detalleOrdenesSeleccionadas',
+        data: data,
+        dataType: 'JSON',
+        success: function(response){
+            $('#detalleOrdenSeleccionadas tbody').html(response);
+        }
+    }).fail( function( jqXHR, textStatus, errorThrown ){
+        console.log(jqXHR);
+        console.log(textStatus);
+        console.log(errorThrown);
+    });
+}
+
+$("#form-guia_create").on("submit", function(e){
+    console.log('submit');
+    e.preventDefault();
+    var data = $(this).serialize();
+    var detalle = [];
+    
+    $("#detalleOrdenSeleccionadas input[type=checkbox]:checked").each(function(){
+        detalle.push({ 
+            'id_detalle_orden'  : $(this).val(),
+            'cantidad'          : $(this).parent().parent().find('td input[id=cantidad]').val()
+        });
+    });
+    data+='&detalle='+JSON.stringify(detalle);
+    console.log(data);
+    guardar_guia_create(data);
+});
+
+function guardar_guia_create(data){
+    $("#submit_guia").attr('disabled','true');
+    $.ajax({
+        type: 'POST',
+        url: 'guardar_guia_com_oc',
+        data: data,
+        dataType: 'JSON',
+        success: function(id_ingreso){
+            console.log(id_ingreso);
+            if (id_ingreso > 0){
+                alert('Ingreso Almacén generado con éxito');
+                $('#modal-guia_create').modal('hide');
+                $('#ordenesPendientes').DataTable().ajax.reload();
+                // var id = encode5t(id_ingreso);
+                // window.open('imprimir_ingreso/'+id);
+            }
+        }
+    }).fail( function( jqXHR, textStatus, errorThrown ){
+        console.log(jqXHR);
+        console.log(textStatus);
+        console.log(errorThrown);
+    });
+}
 
 function listarOrdenesEntregadas(permiso){
     var vardataTables = funcDatatables();
@@ -316,73 +441,6 @@ function open_detalle_movimiento(id, codigo){
     $('#cabecera').text(codigo);
     listar_detalle_movimiento(id);
 }
-
-function open_guia_create(){
-    var id_prov = null;
-    var sede = null;
-    var dif_prov = 0;
-    var dif_sede = 0;
-    var id_oc_seleccionadas = [];
-
-    oc_seleccionadas.forEach(element => {
-        id_oc_seleccionadas.push(element.id_orden_compra);
-
-        if (id_prov == null){
-            id_prov = element.id_proveedor;
-        } 
-        else if (element.id_proveedor !== id_prov){
-            dif_prov++;
-        }
-        if (sede == null){
-            sede = element.id_sede;
-        } 
-        else if (element.id_sede !== sede){
-            dif_sede++;
-        }
-    });
-
-    var text = '';
-    if (dif_prov > 0) text+='Debe seleccionar OCs del mismo proveedor\n';
-    if (dif_sede > 0) text+='Debe seleccionar OCs de la misma sede';
-
-    if ((dif_sede + dif_prov) > 0){
-        alert(text);
-    } else {
-        $('#modal-guia_create').modal({
-            show: true
-        });
-        $("#submit_guia").removeAttr("disabled");
-        $('[name=id_operacion]').val(2).trigger('change.select2');
-        $('[name=id_guia_clas]').val(1);
-        $('[name=id_proveedor]').val(id_prov);
-        $('[name=id_sede]').val(sede);
-        // $('[name=id_orden_compra]').val(data.id_orden_compra);
-        $('#serie').text('');
-        $('#numero').text('');
-        cargar_almacenes(sede, 'id_almacen');
-        var data = 'oc_seleccionadas='+JSON.stringify(id_oc_seleccionadas);
-        listar_detalle_ordenes_seleccionadas(data);
-    }
-}
-
-function listar_detalle_ordenes_seleccionadas(data){
-    console.log(oc_seleccionadas);
-    console.log(data);
-    $.ajax({
-        type: 'POST',
-        url: 'detalleOrdenesSeleccionadas',
-        data: data,
-        dataType: 'JSON',
-        success: function(response){
-            $('#detalleOrdenSeleccionadas tbody').html(response);
-        }
-    }).fail( function( jqXHR, textStatus, errorThrown ){
-        console.log(jqXHR);
-        console.log(textStatus);
-        console.log(errorThrown);
-    });
-}
-
 // function cargar_almacenes(sede){
 //     if (sede !== ''){
 //         $.ajax({
@@ -492,7 +550,7 @@ function listar_detalle_movimiento(id_mov_alm){
 function listar_guias_orden(id_orden){
     $.ajax({
         type: 'GET',
-        url: '/verGuiasOrden/'+id_orden,
+        url: 'verGuiasOrden/'+id_orden,
         dataType: 'JSON',
         success: function(response){
             console.log(response);
@@ -524,47 +582,6 @@ function abrir_guia_compra(id_guia_compra){
     console.log('abrir_guia_compra()');
     localStorage.setItem("id_guia_com",id_guia_compra);
     location.assign("guia_compra");
-}
-
-$("#form-guia_create").on("submit", function(e){
-    console.log('submit');
-    e.preventDefault();
-    var data = $(this).serialize();
-    var detalle = [];
-    
-    $("#detalleOrdenSeleccionadas input[type=checkbox]:checked").each(function(){
-        detalle.push({ 
-            'id_detalle_orden'  : $(this).val(),
-            'cantidad'          : $(this).parent().parent().find('td input[id=cantidad]').val()
-        });
-    });
-    data+='&detalle='+JSON.stringify(detalle),
-    console.log(data);
-    guardar_guia_create(data);
-});
-
-function guardar_guia_create(data){
-    $("#submit_guia").attr('disabled','true');
-    $.ajax({
-        type: 'POST',
-        url: 'guardar_guia_com_oc',
-        data: data,
-        dataType: 'JSON',
-        success: function(id_ingreso){
-            console.log(id_ingreso);
-            if (id_ingreso > 0){
-                alert('Ingreso Almacén generado con éxito');
-                $('#modal-guia_create').modal('hide');
-                $('#ordenesPendientes').DataTable().ajax.reload();
-                // var id = encode5t(id_ingreso);
-                // window.open('imprimir_ingreso/'+id);
-            }
-        }
-    }).fail( function( jqXHR, textStatus, errorThrown ){
-        console.log(jqXHR);
-        console.log(textStatus);
-        console.log(errorThrown);
-    });
 }
 
 function ceros_numero(numero){

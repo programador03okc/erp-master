@@ -1,5 +1,6 @@
 let valor_permiso = null;
 let usuario_session = null;
+let trans_seleccionadas = [];
 
 function iniciar(permiso, usuario){
     // clearDataTable();
@@ -40,6 +41,100 @@ function iniciar(permiso, usuario){
     vista_extendida();
 }
 
+function listarTransferenciasPorEnviar(){
+    var alm_origen = $('[name=id_almacen_origen]').val();
+    var vardataTables = funcDatatables();
+    $('#listaTransferenciasPorEnviar').DataTable({
+        'dom': vardataTables[1],
+        'buttons': vardataTables[2],
+        'language' : vardataTables[0],
+        'bDestroy' : true,
+        'serverSide' : true,
+        // "scrollX": true,
+        'ajax': {
+            url: 'listarTransferenciasPorEnviar/'+alm_origen,
+            type: 'POST'
+        },
+        'columns': [
+            {'data': 'id_transferencia'},
+            {'data': 'codigo'},
+            {'data': 'fecha_registro'},
+            {'data': 'alm_origen_descripcion', 'name': 'origen.descripcion'},
+            {'data': 'alm_destino_descripcion', 'name': 'destino.descripcion'},
+            {'data': 'cod_req', 'name': 'alm_req.codigo'},
+            {'data': 'concepto', 'name': 'alm_req.concepto'},
+            {'data': 'sede_descripcion', 'name': 'sis_sede.descripcion'},
+            {'data': 'nombre_corto', 'name': 'sis_usua.nombre_corto'},
+            {'render': function (data, type, row){
+                if (valor_permiso == '1') {
+                    return `<button type="button" class="guia btn btn-success boton" data-toggle="tooltip" 
+                        data-placement="bottom" data-id="${row['id_transferencia']}" data-cod="${row['id_requerimiento']}" title="Generar Guía" >
+                        <i class="fas fa-sign-in-alt"></i></button>`
+                    }
+                }
+            }
+        ],
+        'drawCallback': function(){
+            $('#listaTransferenciasPorEnviar tbody tr td input[type="checkbox"]').iCheck({
+               checkboxClass: 'icheckbox_flat-blue'
+            });
+         },
+        'columnDefs': [
+            {
+                // 'aTargets': [0], 
+                // 'sClass': 'invisible'
+                'targets': 0,
+                'searchable': false,
+                'orderable': false,
+                'className': 'dt-body-center',
+                // 'checkboxes': {
+                //     'selectRow': true
+                //  }
+                'checkboxes': {
+                    'selectRow': true,
+                    'selectCallback': function(nodes, selected){
+                        $('input[type="checkbox"]', nodes).iCheck('update');
+                    },
+                    'selectAllCallback': function(nodes, selected, indeterminate){
+                        $('input[type="checkbox"]', nodes).iCheck('update');
+                    }
+                }
+            }
+        ],
+        'select': 'multi',
+        'order': [[1, 'asc']]
+    });
+    
+    $($('#listaTransferenciasPorEnviar').DataTable().table().container()).on('ifChanged', '.dt-checkboxes', function(event){
+        var cell = $('#listaTransferenciasPorEnviar').DataTable().cell($(this).closest('td'));
+        cell.checkboxes.select(this.checked);
+    
+        var data = $('#listaTransferenciasPorEnviar').DataTable().row($(this).parents("tr")).data();
+        console.log(this.checked);
+    
+        if (data !== null && data !== undefined){
+            if (this.checked){
+                trans_seleccionadas.push(data);
+            }
+            else {
+                var index = trans_seleccionadas.findIndex(function(item, i){
+                    return item.id_transferencia == data.id_transferencia;
+                });
+                if (index !== null){
+                    trans_seleccionadas.splice(index,1);
+                }
+            }
+        }
+    });
+}
+   
+$('#listaTransferenciasPorEnviar tbody').on("click","button.guia", function(){
+    var data = $('#listaTransferenciasPorEnviar').DataTable().row($(this).parents("tr")).data();
+    console.log('data'+data);
+    // var data = $(this).data('id');
+    openGenerarGuia(data);
+});
+
 function listarTransferenciasPendientes(){
     var alm_destino = $('[name=id_almacen_destino]').val();
     
@@ -57,14 +152,18 @@ function listarTransferenciasPendientes(){
             //     dataSrc:''
             // },
             'columns': [
-                {'data': 'id_transferencia'},
+                {'data': 'id_guia_ven'},
                 // {'data': 'codigo_transferencia'},
                 {'render':
                     function (data, type, row){
-                        return (formatDate(row['fecha_transferencia']));
+                        if (row['id_guia_ven'] !== null){
+                            return (formatDate(row['fecha_guia']));
+                        } else {
+                            return '';
+                        }
                     }
                 },
-                {'data': 'codigo'},
+                // {'data': 'codigo'},
                 {'render':
                     function (data, type, row){
                         if (row['id_guia_ven'] !== null){
@@ -92,41 +191,41 @@ function listarTransferenciasPendientes(){
                         return ('<span class="label label-'+row['bootstrap_color']+'">'+row['estado_doc']+'</span>');
                     }
                 },
-                {'render':
-                    function (data, type, row){
-                        if (row['codigo_orden'] !== null){
-                            return (row['codigo_orden']);
-                        } else {
-                            return '';
-                        }
-                    }
-                },
-                {'render':
-                    function (data, type, row){
-                        if (row['codigo_req'] !== null){
-                            return (row['codigo_req']);
-                        } 
-                        else if (row['codigo_req_directo'] !== null){
-                            return (row['codigo_req_directo']);
-                        }
-                        else {
-                            return '';
-                        }
-                    }
-                },
-                {'render':
-                    function (data, type, row){
-                        if (row['concepto_req'] !== null){
-                            return (row['concepto_req']);
-                        }
-                        else if (row['concepto_req_directo'] !== null){
-                            return (row['concepto_req_directo']);
-                        } 
-                        else {
-                            return '';
-                        }
-                    }
-                },
+                // {'render':
+                //     function (data, type, row){
+                //         if (row['codigo_orden'] !== null){
+                //             return (row['codigo_orden']);
+                //         } else {
+                //             return '';
+                //         }
+                //     }
+                // },
+                // {'render':
+                //     function (data, type, row){
+                //         if (row['codigo_req'] !== null){
+                //             return (row['codigo_req']);
+                //         } 
+                //         else if (row['codigo_req_directo'] !== null){
+                //             return (row['codigo_req_directo']);
+                //         }
+                //         else {
+                //             return '';
+                //         }
+                //     }
+                // },
+                // {'render':
+                //     function (data, type, row){
+                //         if (row['concepto_req'] !== null){
+                //             return (row['concepto_req']);
+                //         }
+                //         else if (row['concepto_req_directo'] !== null){
+                //             return (row['concepto_req_directo']);
+                //         } 
+                //         else {
+                //             return '';
+                //         }
+                //     }
+                // },
                 {'render':
                     function (data, type, row){
                         if (valor_permiso == '1') {
@@ -142,8 +241,14 @@ function listarTransferenciasPendientes(){
                     }
                 }
             ],
-            'columnDefs': [{ 'aTargets': [0], 'sClass': 'invisible'}],
+            'columnDefs': [
+                { 
+                    'aTargets': [0], 
+                    'sClass': 'invisible'
+                }
+            ],
         });
+    
     }
     // atender("#listaTransferenciasPendientes tbody", $('#listaTransferenciasPendientes').DataTable());
     // verSalida("#listaTransferenciasPendientes tbody", $('#listaTransferenciasPendientes').DataTable());
@@ -164,56 +269,6 @@ $('#listaTransferenciasPendientes tbody').on("click","button.salida", function()
         var id = encode5t(idSalida);
         window.open('imprimir_salida/'+id);
     }
-});
-
-function listarTransferenciasPorEnviar(){
-    var alm_origen = $('[name=id_almacen_origen]').val();
-    var vardataTables = funcDatatables();
-    $('#listaTransferenciasPorEnviar').DataTable({
-        'dom': vardataTables[1],
-        'buttons': vardataTables[2],
-        'language' : vardataTables[0],
-        'bDestroy' : true,
-        'serverSide' : true,
-        // "scrollX": true,
-        'ajax': {
-            url: 'listarTransferenciasPorEnviar/'+alm_origen,
-            type: 'POST'
-        },
-        'columns': [
-            {'data': 'id_transferencia'},
-            {'data': 'codigo'},
-            {'data': 'fecha_registro'},
-            {'data': 'alm_origen_descripcion', 'name': 'origen.descripcion'},
-            {'data': 'alm_destino_descripcion', 'name': 'destino.descripcion'},
-            {'data': 'cod_req', 'name': 'alm_req.codigo'},
-            {'data': 'concepto', 'name': 'alm_req.concepto'},
-            {'data': 'sede_descripcion', 'name': 'sis_sede.descripcion'},
-            {'data': 'nombre_corto', 'name': 'sis_usua.nombre_corto'}
-        ],
-        'columnDefs': [
-            {'aTargets': [0], 'sClass': 'invisible'},
-            {'render': function (data, type, row){
-                    if (valor_permiso == '1') {
-                        return `<button type="button" class="guia btn btn-success boton" data-toggle="tooltip" 
-                            data-placement="bottom" data-id="${row['id_transferencia']}" data-cod="${row['id_requerimiento']}" title="Generar Guía" >
-                            <i class="fas fa-sign-in-alt"></i></button>`
-                    // } else {
-                    //     return `<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" 
-                    //     data-placement="bottom" title="Ver Detalle" >
-                    //     <i class="fas fa-list-ul"></i></button>`
-                    }
-                }, targets: 9
-            }
-        ],
-    });
-}
-   
-$('#listaTransferenciasPorEnviar tbody').on("click","button.guia", function(){
-    var data = $('#listaTransferenciasPorEnviar').DataTable().row($(this).parents("tr")).data();
-    console.log('data'+data);
-    // var data = $(this).data('id');
-    openGenerarGuia(data);
 });
 
 // $('#listaTransferenciasPorEnviar tbody').on("click","button.detalle", function(){
