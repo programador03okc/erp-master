@@ -17,6 +17,9 @@ function get_notificaciones_sin_leer(){
             if(cantidad_notificaciones >0){
                 document.querySelector("span[id='cantidad_notificaciones']").textContent = cantidad_notificaciones;
                 var ul = document.getElementById("lista_notificaciones");
+                while(ul.firstChild) {
+                    ul.removeChild(ul.firstChild);
+                }
                 response.data.forEach(function(item) {
                     var li = document.createElement("li");
                     var a = document.createElement("a");
