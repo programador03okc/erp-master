@@ -4145,24 +4145,24 @@ class AlmacenController extends Controller
         $detalle = DB::table('almacen.mov_alm_det')
             ->select('mov_alm_det.*','alm_prod.codigo','alm_prod.descripcion',
             'alm_ubi_posicion.codigo as cod_posicion','alm_und_medida.abreviatura',
-            'alm_prod.series','alm_req.id_requerimiento','alm_req.codigo as cod_req')
+            'alm_prod.series','trans.codigo as cod_trans')
             ->join('almacen.alm_prod','alm_prod.id_producto','=','mov_alm_det.id_producto')
             ->join('almacen.alm_und_medida','alm_und_medida.id_unidad_medida','=','alm_prod.id_unidad_medida')
             ->leftjoin('almacen.alm_ubi_posicion','alm_ubi_posicion.id_posicion','=','mov_alm_det.id_posicion')
             ->leftjoin('almacen.guia_ven_det','guia_ven_det.id_guia_ven_det','=','mov_alm_det.id_guia_ven_det')
-            ->leftjoin('almacen.alm_det_req','alm_det_req.id_detalle_requerimiento','=','guia_ven_det.id_req_det')
-            ->leftjoin('almacen.alm_req','alm_req.id_requerimiento','=','alm_det_req.id_requerimiento')
+            ->leftjoin('almacen.trans_detalle','trans_detalle.id_trans_detalle','=','guia_ven_det.id_trans_det')
+            ->leftjoin('almacen.trans','trans.id_transferencia','=','trans_detalle.id_transferencia')
             ->where([['mov_alm_det.id_mov_alm','=',$id],['mov_alm_det.estado','=',1]])
             ->get();
 
-        $req = [];
-        foreach($detalle as $d){
-            if ($d->cod_req !== null){
-                if (in_array($d->cod_req, $req) == false){
-                    array_push($req, $d->cod_req);
-                }
-            }
-        }
+        // $req = [];
+        // foreach($detalle as $d){
+        //     if ($d->cod_req !== null){
+        //         if (in_array($d->cod_req, $req) == false){
+        //             array_push($req, $d->cod_req);
+        //         }
+        //     }
+        // }
         $fecha_actual = date('Y-m-d');
         $hora_actual = date('H:i:s');
 
@@ -4255,23 +4255,23 @@ class AlmacenController extends Controller
                     </tr>
                     ';
                 }
-                if ($req !== []){
-                    $cods_req = '';
-                    for ($i=0; $i<count($req); $i++){
-                        if ($cods_req == ''){
-                            $cods_req.= $req[$i];
-                        } else {
-                            $cods_req.= $req[$i].', ';
-                        }
-                    }
-                    $html.='
-                    <tr>
-                        <td>Requerimiento</td>
-                        <td>:</td>
-                        <td colSpan="4">'.$cods_req.'</td>
-                    </tr>
-                    ';
-                }
+                // if ($req !== []){
+                //     $cods_req = '';
+                //     for ($i=0; $i<count($req); $i++){
+                //         if ($cods_req == ''){
+                //             $cods_req.= $req[$i];
+                //         } else {
+                //             $cods_req.= $req[$i].', ';
+                //         }
+                //     }
+                //     $html.='
+                //     <tr>
+                //         <td>Requerimiento</td>
+                //         <td>:</td>
+                //         <td colSpan="4">'.$cods_req.'</td>
+                //     </tr>
+                //     ';
+                // }
                 if (isset($salida->cod_trans)){
                     $html.='
                     <tr>

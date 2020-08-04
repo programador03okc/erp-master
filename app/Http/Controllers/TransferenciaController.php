@@ -274,7 +274,8 @@ class TransferenciaController extends Controller
         ->join('almacen.alm_cat_prod','alm_cat_prod.id_categoria','=','alm_prod.id_categoria')
         ->join('almacen.alm_subcat','alm_subcat.id_subcategoria','=','alm_prod.id_subcategoria')
         // ->join('almacen.guia_ven','guia_ven.id_guia_ven','=','guia_ven_det.id_guia_ven')
-        ->join('almacen.trans','trans.id_guia_ven','=','guia_ven_det.id_guia_ven')
+        ->join('almacen.trans_detalle','trans_detalle.id_trans_detalle','=','guia_ven_det.id_trans_det')
+        ->join('almacen.trans','trans.id_transferencia','=','trans_detalle.id_transferencia')
         ->where([['guia_ven_det.id_guia_ven','=',$id_guia_ven],
                  ['guia_ven_det.estado','!=',7]])
         ->get();
