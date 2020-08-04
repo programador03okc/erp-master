@@ -315,7 +315,7 @@ function guardar_orden_requerimiento(data){
             data: data,
             dataType: 'JSON',
             success: function(response){
-                console.log(response);
+                // console.log(response);
                 if (response > 0){
                     alert('Orden de registrada con éxito');
                     $('#modal-orden-requerimiento').modal('hide');

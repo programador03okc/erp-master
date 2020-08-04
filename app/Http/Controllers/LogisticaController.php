@@ -8204,48 +8204,6 @@ function get_id_usuario_usuario_por_rol($descripcion_rol, $id_sede, $id_empresa)
 
     public function listar_requerimientos_pendientes(){
 
-
-
-        $alm_req_item_atentidos = DB::table('almacen.alm_req')
-        ->select(
-            'alm_req.id_requerimiento',
-            'alm_req.codigo',
-            'alm_req.concepto',
-            'alm_req.fecha_requerimiento',
-            'alm_req.id_tipo_requerimiento'
-            )
-            ->where([['alm_req.estado', '=', 5],['alm_req.id_tipo_requerimiento','=',1],['alm_req.confirmacion_pago','=',true]])
-            ->orWhere([['alm_req.estado', '=', 5],['alm_req.id_tipo_requerimiento','=',1],['alm_req.tipo_cliente','=',3]])
-            ->orderBy('alm_req.id_requerimiento', 'desc')
-            ->get();
-
-        $id_re_atentidos_list = [];
-        foreach($alm_req_item_atentidos as $element){
-            $id_re_atentidos_list[]= $element->id_requerimiento;
-        }
-
-        if(count($id_re_atentidos_list) > 0){
-            $det_alm_req_item_pendientes = DB::table('almacen.alm_det_req')
-            ->select(
-                'alm_det_req.id_detalle_requerimiento',
-                'alm_det_req.id_requerimiento'
-                )
-                ->where([['alm_det_req.estado', '=', 1]])
-                ->whereIn('alm_det_req.id_requerimiento', $id_re_atentidos_list)
-                ->get();
-        }
-
-        $id_req_pendientes=[];
-
-        foreach($det_alm_req_item_pendientes as $element){
-            $id_req_pendientes[] = $element->id_requerimiento; 
-        }
-
-        $id_req_pendientes_list_unique= array_unique($id_req_pendientes);
-
-
-        // return response()->json(["data" => $result]);
-
         $alm_req = DB::table('almacen.alm_req')
         ->join('almacen.alm_tp_req', 'alm_req.id_tipo_requerimiento', '=', 'alm_tp_req.id_tipo_requerimiento')
         ->leftJoin('configuracion.sis_usua', 'alm_req.id_usuario', '=', 'sis_usua.id_usuario')
@@ -8298,7 +8256,7 @@ function get_id_usuario_usuario_por_rol($descripcion_rol, $id_sede, $id_empresa)
         )
         ->where([['alm_req.estado', '=', 1],['alm_req.id_tipo_requerimiento','=',1],['alm_req.confirmacion_pago','=',true],])
         ->orWhere([['alm_req.estado', '=', 1],['alm_req.id_tipo_requerimiento','=',1],['alm_req.tipo_cliente','=',3]])
-        ->orWhereIn('alm_req.id_requerimiento', $id_req_pendientes_list_unique)
+        // ->orWhereIn('alm_req.id_requerimiento', $id_req_pendientes_list_unique)
         ->orderBy('alm_req.id_requerimiento', 'desc')
         ->get();
 
@@ -8979,15 +8937,40 @@ function get_id_usuario_usuario_por_rol($descripcion_rol, $id_sede, $id_empresa)
                 ]);
             }
 
-                DB::table('almacen.alm_req')
-                ->where('id_requerimiento',$request->id_requerimiento)
-                ->update(['estado'=>5]);
+
         
                 foreach ($dataDetalle as $d) {
                         DB::table('almacen.alm_det_req')
                         ->where('id_detalle_requerimiento',$d->id_detalle_requerimiento)
                         ->update(['estado'=>5]);
                 } 
+
+            $alm_det_req = DB::table('almacen.alm_det_req')
+            ->select(
+                'alm_det_req.*'
+            )
+            ->where([
+                ['alm_det_req.id_requerimiento', '=', $request->id_requerimiento],
+                ['alm_det_req.estado', '!=', 7]
+                ])
+            ->get();
+
+            $cantidad_det_req=0;
+            if($alm_det_req){
+                $cantidad_det_req = $alm_det_req->count();
+            }
+
+            $cantidad_detalle_item_proce = count($dataDetalle);
+            // Debugbar::info($cantidad_det_req);
+            // Debugbar::info($cantidad_detalle_item_proce);
+
+            if($cantidad_det_req == $cantidad_detalle_item_proce){
+                DB::table('almacen.alm_req')
+                ->where('id_requerimiento',$request->id_requerimiento)
+                ->update(['estado'=>5]);
+            }
+
+
             //Agrega accion en requerimiento
             DB::table('almacen.alm_req_obs')
             ->insert([  'id_requerimiento'=>$request->id_requerimiento,
