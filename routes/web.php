@@ -1426,6 +1426,7 @@ Route::group(['middleware' => ['auth']], function () {
 	});
 
 
+Route::get('soft_tipos_cambio', 'AlmacenController@soft_tipos_cambio');
 /* Configuración */
 Route::post('update_password', 'ConfiguracionController@cambiar_clave');
 Route::get('modulo', 'ConfiguracionController@view_modulos');

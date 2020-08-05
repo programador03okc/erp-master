@@ -8655,6 +8655,18 @@ class AlmacenController extends Controller
         return response()->json(['size'=>$size,'output'=>$output]);
     }
 
+    public function soft_tipos_cambio(){
+        DB::connection('soft')->table('tcambio')
+        ->insert([
+            'dfecha' => '2020-08-03',
+            'cambio' => '3.237',
+            'cambio2' => '3.237',
+            'cambio3' => '3.237'
+        ]);
+        $data = DB::connection('soft')->table('tcambio')
+        ->get();
+        return $data;
+    }
     public function migrar_docs_compra(){
         
         $data = DB::table('almacen.doc_com')

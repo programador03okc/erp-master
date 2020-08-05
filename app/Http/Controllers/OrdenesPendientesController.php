@@ -76,24 +76,24 @@ class OrdenesPendientesController extends Controller
             // ->join('logistica.log_ord_compra','log_ord_compra.id_orden_compra','=','guia_com.id_oc')
             ->join('almacen.alm_almacen','alm_almacen.id_almacen','=','guia_com.id_almacen')
             ->join('administracion.sis_sede as sede_guia','sede_guia.id_sede','=','alm_almacen.id_sede')
-            ->join('logistica.log_prove','log_prove.id_proveedor','=','guia_com.id_proveedor')
-            ->join('contabilidad.adm_contri','adm_contri.id_contribuyente','=','log_prove.id_contribuyente')
+            ->leftJoin('logistica.log_prove','log_prove.id_proveedor','=','guia_com.id_proveedor')
+            ->leftJoin('contabilidad.adm_contri','adm_contri.id_contribuyente','=','log_prove.id_contribuyente')
             // ->leftjoin('almacen.alm_req','alm_req.id_requerimiento','=','log_ord_compra.id_requerimiento')
             // ->leftjoin('administracion.sis_sede as sede_req','sede_req.id_sede','=','alm_req.id_sede')
             // ->leftjoin('almacen.alm_almacen','alm_almacen.id_almacen','=','alm_req.id_almacen')
             // ->leftjoin('almacen.guia_ven','guia_ven.id_guia_com','=','mov_alm.id_guia_com')
-            ->leftJoin('almacen.guia_ven as guia_ven_trans', function($join)
-                         {   $join->on('guia_ven_trans.id_guia_com', '=', 'mov_alm.id_guia_com');
-                             $join->where('guia_ven_trans.estado','!=', 7);
-                         })
-            ->leftJoin('almacen.mov_alm as salida_trans', function($join)
-                         {   $join->on('salida_trans.id_guia_ven', '=', 'guia_ven_trans.id_guia_ven');
-                             $join->where('salida_trans.estado','!=', 7);
-                         })
-            ->leftJoin('almacen.trans', function($join)
-                         {   $join->on('trans.id_guia_ven', '=', 'guia_ven_trans.id_guia_ven');
-                             $join->where('trans.estado','!=', 7);
-                         })
+            // ->leftJoin('almacen.guia_ven as guia_ven_trans', function($join)
+            //              {   $join->on('guia_ven_trans.id_guia_com', '=', 'mov_alm.id_guia_com');
+            //                  $join->where('guia_ven_trans.estado','!=', 7);
+            //              })
+            // ->leftJoin('almacen.mov_alm as salida_trans', function($join)
+            //              {   $join->on('salida_trans.id_guia_ven', '=', 'guia_ven_trans.id_guia_ven');
+            //                  $join->where('salida_trans.estado','!=', 7);
+            //              })
+            // ->leftJoin('almacen.trans', function($join)
+            //              {   $join->on('trans.id_guia_ven', '=', 'guia_ven_trans.id_guia_ven');
+            //                  $join->where('trans.estado','!=', 7);
+            //              })
             // ->join('configuracion.sis_moneda','sis_moneda.id_moneda','=','log_ord_compra.id_moneda')
             ->join('configuracion.sis_usua','sis_usua.id_usuario','=','mov_alm.usuario')
             // ->leftJoin('almacen.guia_ven','guia_ven.id_guia_com','=','mov_alm.id_guia_com')

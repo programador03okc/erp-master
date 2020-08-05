@@ -90,7 +90,20 @@ return [
             'prefix' => '',
             'prefix_indexes' => true,
         ],
-
+        
+        'soft'  => [
+            'driver'     => 'mysql',
+            'host'       => env('SOFT_HOST', '127.0.0.1'),
+            // 'host'       => env('SOFT_HOST', '192.168.11.3'),
+            'port'       => env('SOFT_PORT', '3306'),
+            'database'   => env('SOFT_DATABASE', 'forge'),
+            'username'   => env('SOFT_USERNAME', 'forge'),
+            'password'   => env('SOFT_PASSWORD', ''),
+            'charset'    => 'utf8',
+            'collation'  => 'utf8_unicode_ci',
+            'prefix'     => '',
+            'strict'     => false,
+        ],
     ],
 
     /*
