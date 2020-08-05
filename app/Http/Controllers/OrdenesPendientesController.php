@@ -45,8 +45,8 @@ class OrdenesPendientesController extends Controller
             ->join('administracion.sis_sede','sis_sede.id_sede','=','log_ord_compra.id_sede')
             ->where([['log_ord_compra.estado','!=',7],
                     ['log_ord_compra.en_almacen','=',false],
-                    ['log_ord_compra.id_tp_documento','=',2]])//Orden de Compra
-            ->get();
+                    ['log_ord_compra.id_tp_documento','=',2]]);//Orden de Compra
+            // ->get();
         return datatables($data)->toJson();
         // return response()->json($data);
     }
@@ -76,7 +76,7 @@ class OrdenesPendientesController extends Controller
             // ->join('logistica.log_ord_compra','log_ord_compra.id_orden_compra','=','guia_com.id_oc')
             ->join('almacen.alm_almacen','alm_almacen.id_almacen','=','guia_com.id_almacen')
             ->join('administracion.sis_sede as sede_guia','sede_guia.id_sede','=','alm_almacen.id_sede')
-            ->leftJoin('logistica.log_prove','log_prove.id_proveedor','=','guia_com.id_proveedor')
+            ->join('logistica.log_prove','log_prove.id_proveedor','=','guia_com.id_proveedor')
             ->leftJoin('contabilidad.adm_contri','adm_contri.id_contribuyente','=','log_prove.id_contribuyente')
             // ->leftjoin('almacen.alm_req','alm_req.id_requerimiento','=','log_ord_compra.id_requerimiento')
             // ->leftjoin('administracion.sis_sede as sede_req','sede_req.id_sede','=','alm_req.id_sede')
@@ -98,9 +98,10 @@ class OrdenesPendientesController extends Controller
             ->join('configuracion.sis_usua','sis_usua.id_usuario','=','mov_alm.usuario')
             // ->leftJoin('almacen.guia_ven','guia_ven.id_guia_com','=','mov_alm.id_guia_com')
             ->where([['mov_alm.estado','!=',7],['mov_alm.id_tp_mov','=',1]])
-            ->orderBy('mov_alm.fecha_emision','desc')
-            ->get();
+            ->orderBy('mov_alm.fecha_emision','desc');
+            // ->get();
         return datatables($data)->toJson();
+        // return response()->json($data);
     }
 
     public function detalleOrden($id_orden){

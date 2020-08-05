@@ -270,21 +270,15 @@ function listarOrdenesEntregadas(permiso){
         'language' : vardataTables[0],
         'bDestroy' : true,
         'serverSide' : true,
-        // "scrollX": true,
         'ajax': {
             url: 'listarOrdenesEntregadas',
             type: 'POST'
         },
         'columns': [
             {'data': 'id_mov_alm'},
-            // {'data': 'codigo_orden', 'name': 'log_ord_compra.codigo'},
             {'data': 'sede_guia_descripcion', 'name': 'sede_guia.descripcion'},
             {'data': 'nro_documento', 'name': 'adm_contri.nro_documento'},
             {'data': 'razon_social', 'name': 'adm_contri.razon_social'},
-            // {'data': 'codigo_softlink', 'name': 'log_ord_compra.codigo_softlink'},
-            // {'data': 'codigo_requerimiento', 'name': 'alm_req.codigo'},
-            // {'data': 'sede_requerimiento_descripcion', 'name': 'sede_req.descripcion'},
-            // {'data': 'concepto', 'name': 'alm_req.concepto'},
             {'render': function (data, type, row){
                     return row['serie']+'-'+row['numero'];
                 }
@@ -292,10 +286,9 @@ function listarOrdenesEntregadas(permiso){
             {'data': 'codigo'},
             {'data': 'almacen_descripcion', 'name': 'alm_almacen.descripcion'},
             {'data': 'fecha_emision'},
-            {'data': 'nombre_corto', 'name': 'sis_usua.nombre_corto'},
-            // {'data': 'codigo_trans', 'name': 'trans.codigo'},
+            {'data': 'nombre_corto', 'name': 'sis_usua.nombre_corto'}
         ],
-        "order": [[ 3, "desc" ]],
+        "order": [[ 0, "desc" ]],
         'columnDefs': [
             {'aTargets': [0], 'sClass': 'invisible'},
             {'render': 
