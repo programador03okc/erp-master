@@ -1144,6 +1144,7 @@ span.select2-selection {
 #listaOpcionesTodo tbody td:nth-last-child(11),
 #listaOpcionesTodo tbody td:nth-last-child(12),
 #listaDocsProrrateo tbody td:nth-last-child(12),
+#listaPromocion tbody td:nth-last-child(5),
 #listaSaldos tbody td:nth-last-child(9) {
   background: #d8fcfc;
 }
@@ -1154,6 +1155,7 @@ span.select2-selection {
 #listaAcu_filter,
 #listaProyecto_filter,
 #listaProducto_filter,
+#listaPromocion_filter,
 #listaProductoCatalogo_filter,
 #kardexGeneral_filter,
 #listaEquiCatalogo_filter,
@@ -1194,6 +1196,7 @@ span.select2-selection {
 #listaAcu_filter label input[type=search],
 #listaProyecto_filter label input[type=search],
 #kardexGeneral_filter label input[type=search],
+#listaPromocion_filter label input[type=search],
 #listaProductoCatalogo_filter label input[type=search],
 #listaEquiCatalogo_filter label input[type=search],
 #listaMttoPendientes_filter label input[type=search],

@@ -292,7 +292,7 @@ function listar_promociones(id_producto){
         'buttons': [
             {
                 text: "Agregar Producto Promocionado",
-                className: 'btn btn-warning',
+                className: 'btn btn-success',
                 action: function(){
                     accion_origen = 'crear_promocion';
                     productoModal();
@@ -306,6 +306,7 @@ function listar_promociones(id_producto){
             {'data': 'id_promocion'},
             {'data': 'descripcion_producto'},
             {'data': 'descripcion_producto_promocion'},
+            {'data': 'fecha_registro'},
             {'render':
                 function (data, type, row){
                     return ((row['estado'] == 1) ? 'Activo' : 'Inactivo');
@@ -317,11 +318,36 @@ function listar_promociones(id_producto){
             {'aTargets': [0], 'sClass': 'invisible'},
             {'render': function (data, type, row){
                     return '<button type="button" class="anular btn btn-danger boton" data-toggle="tooltip" '+
-                    'data-placement="bottom" title="Dar de Baja" >'+
-                    '<i class="fas fa-ban"></i></button>';
-                }, targets: 5
+                    'data-placement="bottom" title="Dar de Baja" data-id="'+row['id_promocion']+'">'+
+                    '<i class="fas fa-trash"></i></button>';
+                }, targets: 6
             }
-        ],
+        ]
+    });
+}
+
+$('#listaPromocion tbody').on("click","button.anular", function(){
+    var id = $(this).data('id');
+    anular_promocion(id);
+});
+
+function anular_promocion(id_promocion){
+    $.ajax({
+        type: 'GET',
+        url: 'anular_promocion/'+id_promocion,
+        dataType: 'JSON',
+        success: function(response){
+            console.log(response);
+            if (response > 0){
+                alert('Promoción anulada con éxito!');
+                var id = $('[name=id_producto]').val();
+                listar_promociones(id);
+            }
+        }
+    }).fail( function( jqXHR, textStatus, errorThrown ){
+        console.log(jqXHR);
+        console.log(textStatus);
+        console.log(errorThrown);
     });
 }
 

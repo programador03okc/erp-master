@@ -1121,6 +1121,7 @@ class AlmacenController extends Controller
         $output['data'] = $prod;
         return response()->json($output);
     }
+
     public function mostrar_prods_almacen($id_almacen){
         $prod = DB::table('almacen.alm_prod_ubi')
             ->select('alm_prod_ubi.*','alm_prod.codigo','alm_prod.descripcion',
@@ -1140,6 +1141,7 @@ class AlmacenController extends Controller
         $output['data'] = $prod;
         return response()->json($output);
     }
+
     public function mostrar_productos(){
         $data = DB::table('almacen.alm_prod')
             ->select('alm_prod.id_producto','alm_prod.codigo','alm_prod.descripcion',
@@ -1356,6 +1358,14 @@ class AlmacenController extends Controller
         );
         return response()->json($id);
     }
+
+    public function anular_promocion($id){
+        $update = DB::table('almacen.alm_prod_prom')
+        ->where('id_promocion',$id)
+        ->update(['estado'=>7]);
+        return response()->json($update);
+    }
+    
     //Tipo de Servicio
     public function mostrar_tp_servicios(){
         $data = DB::table('logistica.log_tp_servi')

@@ -230,6 +230,7 @@
                                         <td hidden></td>
                                         <td>Producto</td>
                                         <td>Producto Promocionado</td>
+                                        <td>Fecha Registro</td>
                                         <td>Estado</td>
                                         <td>Usuario Registro</td>
                                         <td>Acción</td>
