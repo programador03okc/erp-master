@@ -918,6 +918,8 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::get('listarDetalleTransferencias/{id}', 'TransferenciaController@listarDetalleTransferencias');
 					Route::get('listar_ubigeos', 'AlmacenController@listar_ubigeos');
 					Route::post('save_cliente', 'LogisticaController@save_cliente');
+					Route::post('listarRequerimientosElaborados', 'DistribucionController@listarRequerimientosElaborados');
+					Route::post('listarRequerimientosConfirmados', 'DistribucionController@listarRequerimientosConfirmados');
 
 				});
 	

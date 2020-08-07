@@ -148,6 +148,37 @@
         </ul>
     </li>
     @endif
+    @if(Auth::user()->tieneSubModulo(19))
+    <li class="treeview">
+        <a href="#"><i class="fas fa-hand-holding-usd"></i> <span>Pagos</span>
+            <span class="pull-right-container">
+            <i class="fa fa-angle-left pull-right"></i>
+            </span>
+        </a>
+        <ul class="treeview-menu">
+            @if(Auth::user()->tieneAplicacion(79))
+            <li><a href="{{route('logistica.almacen.pagos.confirmacion-pagos.index')}}"><i class="far fa-circle fa-xs"></i> Confirmación de Pagos </a></li>
+            @endif
+        </ul>
+    </li>
+    @endif
+    @if(Auth::user()->tieneSubModulo(20))
+    <li class="treeview">
+        <a href="#"><i class="fas fa-truck"></i> <span>Distribución</span>
+            <span class="pull-right-container">
+            <i class="fa fa-angle-left pull-right"></i>
+            </span>
+        </a>
+        <ul class="treeview-menu">
+        @if(Auth::user()->tieneAplicacion(80))
+        <li><a href="{{route('logistica.almacen.distribucion.despachos.index')}}"><i class="far fa-circle fa-xs"></i> Gestión de Despachos </a></li>
+        @endif
+        @if(Auth::user()->tieneAplicacion(81))
+        <li><a href="{{route('logistica.almacen.distribucion.trazabilidad-requerimientos.index')}}"><i class="far fa-circle fa-xs"></i> Trazabilidad </a></li>
+        @endif
+        </ul>
+    </li>
+    @endif
     @if(Auth::user()->tieneSubModuloPadre(5))
     <li class=" treeview ">
         <a href="#">
@@ -206,7 +237,7 @@
                 </ul>
             </li>
             @endif
-            @if(Auth::user()->tieneSubModulo(19))
+            <!-- @if(Auth::user()->tieneSubModulo(19))
             <li class="treeview">
                 <a href="#"><i class="fas fa-hand-holding-usd"></i> Pagos
                     <span class="pull-right-container">
@@ -219,8 +250,8 @@
                     @endif
                 </ul>
             </li>
-            @endif
-            @if(Auth::user()->tieneSubModulo(20))
+            @endif -->
+            <!-- @if(Auth::user()->tieneSubModulo(20))
             <li class="treeview">
                 <a href="#"><i class="fas fa-truck"></i> Distribución
                     <span class="pull-right-container">
@@ -236,7 +267,7 @@
                 @endif
                 </ul>
             </li>
-            @endif
+            @endif -->
             @if(Auth::user()->tieneSubModulo(21))
             <li class="treeview">
                 <a href="#"><i class="fab fa-medium-m"></i> Movimientos
@@ -445,8 +476,7 @@
     @endif
     @if(Auth::user()->tieneSubModuloPadre(5))
     <li class="treeview">
-        <a href="#">
-            <i class="fas fa-inbox"></i> <span>Notificaciones</span>
+        <a href="#"><i class="fas fa-inbox"></i> <span>Notificaciones</span>
             <span class="pull-right-container">
                 <i class="fa fa-angle-left pull-right"></i>
             </span>

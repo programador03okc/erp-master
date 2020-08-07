@@ -1,5 +1,6 @@
 let detalle_requerimiento = [];
 let detalle_ingresa = [];
+let tab_origen = null;
 
 function open_despacho_create(data){
     $('#modal-orden_despacho_create').modal({
@@ -17,7 +18,7 @@ function open_despacho_create(data){
     $('[name=tipo_cliente]').val(data.tipo_cliente);
     $('[name=id_almacen]').val((data.id_almacen !== null && data.id_almacen !== 0) ? data.id_almacen : '');
     $('[name=almacen_descripcion]').val(data.almacen_descripcion !== null ? data.almacen_descripcion : '');
-    $('[name=id_sede]').val(data.sede_requerimiento !== null ? data.sede_requerimiento : data.id_sede);
+    $('[name=id_sede]').val(data.sede_requerimiento !== null ? data.sede_requerimiento : '');
     $('[name=telefono_cliente]').val(data.telefono);
     $('[name=correo_cliente]').val(data.email);
 
@@ -220,11 +221,15 @@ function guardar_orden_despacho(){
             dataType: 'JSON',
             success: function(response){
                 console.log(response);
-                // if (response.lenght > 0){
-                    alert(response);
-                    $('#modal-orden_despacho_create').modal('hide');
+                alert(response);
+                $('#modal-orden_despacho_create').modal('hide');
+                
+                if (tab_origen == 'confirmados'){
+                    $('#requerimientosConfirmados').DataTable().ajax.reload();
+                } 
+                else if (tab_origen == 'enProceso'){
                     $('#requerimientosPendientes').DataTable().ajax.reload();
-                // }
+                }
             }
         }).fail( function( jqXHR, textStatus, errorThrown ){
             console.log(jqXHR);
