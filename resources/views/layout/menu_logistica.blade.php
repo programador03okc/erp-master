@@ -150,7 +150,7 @@
     @endif
     @if(Auth::user()->tieneSubModulo(19))
     <li class="treeview">
-        <a href="#"><i class="fas fa-hand-holding-usd"></i> <span>Pagos</span>
+        <a href="#"><i class="fas fa-hand-holding-usd"></i> <span> Pagos</span>
             <span class="pull-right-container">
             <i class="fa fa-angle-left pull-right"></i>
             </span>
@@ -164,7 +164,7 @@
     @endif
     @if(Auth::user()->tieneSubModulo(20))
     <li class="treeview">
-        <a href="#"><i class="fas fa-truck"></i> <span>Distribución</span>
+        <a href="#"><i class="fas fa-truck"></i> <span> Distribución</span>
             <span class="pull-right-container">
             <i class="fa fa-angle-left pull-right"></i>
             </span>
@@ -182,7 +182,7 @@
     @if(Auth::user()->tieneSubModuloPadre(5))
     <li class=" treeview ">
         <a href="#">
-            <i class="fas fa-truck"></i> <span>Almacén</span>
+            <i class="fas fa-warehouse"></i> <span> Almacén</span>
             <span class="pull-right-container">
                 <i class="fa fa-angle-left pull-right"></i>
             </span>
