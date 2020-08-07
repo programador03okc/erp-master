@@ -1806,7 +1806,12 @@ function listarItems() {
             {'data': 'id_unidad_medida'},
             {'render':
                 function (data, type, row){
-                    return ('<button class="btn btn-sm btn-info" onClick="verSaldoProducto('+row.id_producto+ ');">Stock</button>');
+                    if(row.id_unidad_medida == 1){
+                        return ('<button class="btn btn-sm btn-info" onClick="verSaldoProducto('+row.id_producto+ ');">Stock</button>');
+                    }else{ 
+                        return '';
+                    }
+
                 }
             }
         ],

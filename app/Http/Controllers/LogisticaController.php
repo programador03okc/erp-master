@@ -568,7 +568,6 @@ class LogisticaController extends Controller
             )
             ->where([
                 $theWhere
-                ,['alm_req.estado', '!=', 7]
             ])
             ->orderBy('alm_req.id_requerimiento', 'asc')
             ->get();
@@ -727,7 +726,6 @@ class LogisticaController extends Controller
                 )
                 ->where([
                     ['alm_det_req.id_requerimiento', '=', $requerimiento[0]['id_requerimiento']]
-                    ,['alm_det_req.estado', '!=', 7]
                 ])
                 ->orderBy('alm_item.id_item', 'asc')
                 ->get();
@@ -1988,7 +1986,7 @@ class LogisticaController extends Controller
             $userId = Auth::user()->id_usuario;
             $req= DB::table('almacen.alm_req')
             ->select(
-                'alm_req.id_usuario'
+                'alm_req.*'
             )
             ->where([
                 ['alm_req.id_requerimiento', '=', $id]
@@ -2014,6 +2012,16 @@ class LogisticaController extends Controller
                     ->update([
                         'estado' => $estado_anulado
                     ]);
+
+                    // trazabilidad requerimiento
+                    DB::table('almacen.alm_req_obs')
+                    ->insert([  'id_requerimiento'=>$id,
+                                'accion'=>'ANULADO',
+                                'descripcion'=>'Requerimiento anulado.',
+                                'id_usuario'=>Auth::user()->id_usuario,
+                                'fecha_registro'=>date('Y-m-d H:i:s')
+                    ]);
+
                     $statusAnularRequerimiento=200;
                     if($id_tipo_requerimiento == 2 ||( $id_tipo_requerimiento ==3)){
                         $statusAnularTrasferencia = $this->anularTrasfarencia($id);
@@ -2410,8 +2418,8 @@ class LogisticaController extends Controller
             ->leftJoin('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'alm_prod.id_unidad_medida')
             ->leftJoin('logistica.log_servi', 'log_servi.id_servicio', '=', 'alm_item.id_servicio')
             ->leftJoin('logistica.equipo', 'equipo.id_equipo', '=', 'alm_item.id_equipo')
-            ->join('almacen.alm_cat_prod', 'alm_cat_prod.id_categoria', '=', 'alm_prod.id_categoria')
-            ->join('almacen.alm_subcat','alm_subcat.id_subcategoria','=','alm_prod.id_subcategoria')
+            ->leftJoin('almacen.alm_cat_prod', 'alm_cat_prod.id_categoria', '=', 'alm_prod.id_categoria')
+            ->leftJoin('almacen.alm_subcat','alm_subcat.id_subcategoria','=','alm_prod.id_subcategoria')
 
             ->get();
         return response()->json(["data" => $data]);
