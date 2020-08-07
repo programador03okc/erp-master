@@ -2,7 +2,7 @@
 @include('layout.menu_logistica')
 
 @section('cabecera')
-Gestión de Despachos
+Panel de Control de Despachos
 @endsection
 
 @section('estilos')
