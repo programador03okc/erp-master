@@ -17,7 +17,7 @@
 
 @section('breadcrumb')
 <ol class="breadcrumb">
-    <li><a href="{{route('logistica.index')}}"><i class="fas fa-tachometer-alt"></i> Logística</a></li>
+    <li><a href="{{route('logistica.index')}}"><i class="fas fa-tachometer-alt"></i> Logística y Almacenes</a></li>
     <li>Requerimientos</li>
     <li class="active">@yield('cabecera')</li>
 </ol>
@@ -257,9 +257,9 @@
                     <input type="date" class="form-control input-sm activation" name="fecha_entrega" step="any" min={{ date('Y-m-d H:i:s') }} value={{ date('Y-m-d H:i:s') }}>
                 </div>
             </div>
-            <div class="col-md-3" id="input-group-observacion" hidden>
+            <div class="col-md-12" id="input-group-observacion">
                 <h5>Observación:</h5>
-                <textarea class="form-control activation" name="observacion" cols="50" rows="10" style="height:60px;" disabled></textarea>
+                <textarea class="form-control activation" name="observacion" cols="100" rows="100" style="height:50px;" disabled></textarea>
             </div>
         </div>
     </fieldset>
