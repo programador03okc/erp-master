@@ -2,7 +2,7 @@ let od_seleccionadas = [];
 
 function iniciar(permiso){
     $("#tab-reqPendientes section:first form").attr('form', 'formulario');
-    listarRequerimientosPendientes(permiso);
+    listarRequerimientosElaborados();
 
     $('ul.nav-tabs li a').click(function(){
         $('ul.nav-tabs li').removeClass('active');
@@ -23,6 +23,12 @@ function iniciar(permiso){
             listarRequerimientosPendientes(permiso);
             // $('#requerimientosPendientes').DataTable().ajax.reload();
         } 
+        else if (activeForm == "form-elaborados"){
+            listarRequerimientosElaborados();
+        }
+        else if (activeForm == "form-confirmados"){
+            listarRequerimientosConfirmados();
+        }
         else if (activeForm == "form-despachos"){
             listarOrdenesPendientes();
         }
@@ -33,6 +39,118 @@ function iniciar(permiso){
     });
     vista_extendida();
 }
+
+function listarRequerimientosElaborados(){
+    var vardataTables = funcDatatables();
+    $('#requerimientosElaborados').DataTable({
+        'dom': vardataTables[1],
+        'buttons': vardataTables[2],
+        'language' : vardataTables[0],
+        'bDestroy' : true,
+        'serverSide' : true,
+        // "scrollX": true,
+        'ajax': {
+            url: 'listarRequerimientosElaborados',
+            type: 'POST'
+        },
+        'columns': [
+            {'data': 'id_requerimiento'},
+            {'data': 'tipo_req'},
+            {'data': 'sede_descripcion_req', 'name': 'sede_req.descripcion'},
+            {'data': 'codigo'},
+            {'data': 'concepto'},
+            {'data': 'fecha_requerimiento'},
+            {'render': function (data, type, row){
+                return (row['ubigeo_descripcion'] !== null ? row['ubigeo_descripcion'] : '');
+                }
+            },
+            {'data': 'direccion_entrega'},
+            // {'data': 'grupo', 'name': 'adm_grupo.descripcion'},
+            {'data': 'responsable', 'name': 'sis_usua.nombre_corto'},
+            // {'data': 'estado_doc', 'name': 'adm_estado_doc.estado_doc'},
+            {'render': function (data, type, row){
+                return '<span class="label label-'+row['bootstrap_color']+'">'+row['estado_doc']+'</span>'
+                }
+            }
+        ],
+        'columnDefs': [
+            {'aTargets': [0], 'sClass': 'invisible'},
+            {'render': function (data, type, row){
+                    return '<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" '+
+                    'data-placement="bottom" title="Ver Detalle" >'+
+                    '<i class="fas fa-list-ul"></i></button>';
+                }, targets: 10
+            }
+        ],
+    });
+   
+}
+$('#requerimientosElaborados tbody').on("click","button.detalle", function(){
+    var data = $('#requerimientosElaborados').DataTable().row($(this).parents("tr")).data();
+    console.log(data);
+    open_detalle_requerimiento(data);
+});
+
+function listarRequerimientosConfirmados(){
+    var vardataTables = funcDatatables();
+    $('#requerimientosConfirmados').DataTable({
+        'dom': vardataTables[1],
+        'buttons': vardataTables[2],
+        'language' : vardataTables[0],
+        'bDestroy' : true,
+        'serverSide' : true,
+        // "scrollX": true,
+        'ajax': {
+            url: 'listarRequerimientosConfirmados',
+            type: 'POST'
+        },
+        'columns': [
+            {'data': 'id_requerimiento'},
+            {'data': 'tipo_req'},
+            {'data': 'sede_descripcion_req', 'name': 'sede_req.descripcion'},
+            {'data': 'codigo'},
+            {'data': 'concepto'},
+            {'data': 'fecha_requerimiento'},
+            {'render': function (data, type, row){
+                return (row['ubigeo_descripcion'] !== null ? row['ubigeo_descripcion'] : '');
+                }
+            },
+            {'data': 'direccion_entrega'},
+            // {'data': 'grupo', 'name': 'adm_grupo.descripcion'},
+            {'data': 'responsable', 'name': 'sis_usua.nombre_corto'},
+            // {'data': 'estado_doc', 'name': 'adm_estado_doc.estado_doc'},
+            {'render': function (data, type, row){
+                return '<span class="label label-'+row['bootstrap_color']+'">'+row['estado_doc']+'</span>'
+                }
+            }
+        ],
+        'columnDefs': [
+            {'aTargets': [0], 'sClass': 'invisible'},
+            {'render': function (data, type, row){
+                    return ((row['estado'] == 19 && row['confirmacion_pago'] == true) ? 
+                    (`<button type="button" class="despacho btn btn-success boton" data-toggle="tooltip" 
+                        data-placement="bottom" title="Generar Orden de Despacho" >
+                        <i class="fas fa-sign-in-alt"></i></button>`) : '')+
+                    (`<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" 
+                        data-placement="bottom" title="Ver Detalle" >
+                        <i class="fas fa-list-ul"></i></button>`);
+                }, targets: 10
+            }
+        ],
+    });
+}
+$('#requerimientosConfirmados tbody').on("click","button.detalle", function(){
+    var data = $('#requerimientosConfirmados').DataTable().row($(this).parents("tr")).data();
+    console.log(data);
+    open_detalle_requerimiento(data);
+});
+
+$('#requerimientosConfirmados tbody').on("click","button.despacho", function(){
+    var data = $('#requerimientosConfirmados').DataTable().row($(this).parents("tr")).data();
+    console.log(data);
+    tab_origen = 'confirmados';
+    open_despacho_create(data);
+});
 
 function listarRequerimientosPendientes(permiso){
     var vardataTables = funcDatatables();
@@ -107,9 +225,9 @@ function listarRequerimientosPendientes(permiso){
                         // (row['estado'] == 19 && row['id_tipo_requerimiento'] == 1 && row['sede_requerimiento'] !== row['sede_orden'] && row['id_transferencia'] !== null && row['id_od'] == null) || //compra con transferencia
                         (row['estado'] == 19 && row['confirmacion_pago'] == true && row['id_od'] == null && row['count_transferencia'] == 0) || //venta directa
                         (row['estado'] == 19 && row['confirmacion_pago'] == true && row['id_od'] == null && row['count_transferencia'] > 0 && row['count_transferencia'] == row['count_transferencia_recibida'])) ? //venta directa con transferencia
-                        ('<button type="button" class="despacho btn btn-success boton" data-toggle="tooltip" '+
-                        'data-placement="bottom" title="Generar Orden de Despacho" >'+
-                        '<i class="fas fa-sign-in-alt"></i></button>') : 
+                            ('<button type="button" class="despacho btn btn-success boton" data-toggle="tooltip" '+
+                            'data-placement="bottom" title="Generar Orden de Despacho" >'+
+                            '<i class="fas fa-sign-in-alt"></i></button>') : 
                         ( row['id_od'] !== null && row['estado_od'] == 1) ?
                         `<button type="button" class="adjuntar btn btn-warning boton" data-toggle="tooltip" 
                             data-placement="bottom" data-id="${row['id_od']}" data-cod="${row['codigo_od']}" title="Agregar Adjuntos" >
@@ -165,6 +283,7 @@ $('#requerimientosPendientes tbody').on("click","button.anular", function(){
 $('#requerimientosPendientes tbody').on("click","button.despacho", function(){
     var data = $('#requerimientosPendientes').DataTable().row($(this).parents("tr")).data();
     console.log(data);
+    tab_origen = 'enProceso';
     open_despacho_create(data);
 });
 

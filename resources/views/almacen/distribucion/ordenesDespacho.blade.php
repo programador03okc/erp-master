@@ -2,7 +2,7 @@
 @include('layout.menu_logistica')
 
 @section('cabecera')
-Gestión de Despachos
+Panel de Control de Despachos
 @endsection
 
 @section('estilos')
@@ -23,12 +23,68 @@ Gestión de Despachos
 <div class="page-main" type="requerimientosPendientes">
     <div class="col-md-12" id="tab-reqPendientes" style="padding-left:0px;padding-right:0px;">
         <ul class="nav nav-tabs" id="myTab">
-            <li class="active"><a type="#pendientes">Requerimientos Pendientes</a></li>
-            <li class=""><a type="#despachos">Despachos Pendientes</a></li>
-            <li class=""><a type="#despachados">Despachos Realizados</a></li>
+            <li class="active"><a type="#elaborados">Requerimientos Pendientes</a></li>
+            <li class=""><a type="#confirmados">Requerimientos Confirmados</a></li>
+            <li class=""><a type="#pendientes">Requerimientos En Proceso</a></li>
+            <li class=""><a type="#despachos">Requerimientos Por Despachar</a></li>
+            <li class=""><a type="#despachados">Requerimientos Despachados</a></li>
         </ul>
         <div class="content-tabs">
-            <section id="pendientes" >
+            <section id="elaborados" >
+                <form id="form-elaborados" type="register">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <table class="mytable table table-condensed table-bordered table-okc-view" 
+                                id="requerimientosElaborados">
+                                <thead>
+                                    <tr>
+                                        <th hidden></th>
+                                        <th>Tipo</th>
+                                        <th>Sede Req.</th>
+                                        <th>Codigo</th>
+                                        <th>Concepto</th>
+                                        <th>Fecha Req.</th>
+                                        <th>Ubigeo Entrega</th>
+                                        <th>Dirección Entrega</th>
+                                        <th>Responsable</th>
+                                        <th>Estado</th>
+                                        <th width="90px">Acción</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </form>
+            </section>
+            <section id="confirmados" hidden>
+                <form id="form-confirmados" type="register">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <table class="mytable table table-condensed table-bordered table-okc-view" 
+                                id="requerimientosConfirmados">
+                                <thead>
+                                    <tr>
+                                        <th hidden></th>
+                                        <th>Tipo</th>
+                                        <th>Sede Req.</th>
+                                        <th>Codigo</th>
+                                        <th>Concepto</th>
+                                        <th>Fecha Req.</th>
+                                        <th>Ubigeo Entrega</th>
+                                        <th>Dirección Entrega</th>
+                                        <th>Responsable</th>
+                                        <th>Estado</th>
+                                        <th width="90px">Acción</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </form>
+            </section>
+            <section id="pendientes" hidden>
                 <form id="form-pendientes" type="register">
                     <div class="row">
                         <div class="col-md-12">
