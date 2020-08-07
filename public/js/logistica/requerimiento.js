@@ -356,6 +356,7 @@ function modalRequerimiento(){
         show: true,
         backdrop: 'true'
     });
+    document.querySelector("div[id='modal-requerimiento'] input[id='checkViewTodos']").checked = false; //default false
     listarRequerimiento('ONLY_ACTIVOS');
 }
 
