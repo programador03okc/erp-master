@@ -1115,7 +1115,7 @@ class AlmacenController extends Controller
     public function mostrar_prods(){
         $prod = DB::table('almacen.alm_prod')
             ->select('alm_prod.id_producto', 'alm_prod.codigo', 'alm_prod.descripcion',
-            'alm_prod.codigo_anexo','alm_prod.id_unidad_medida','alm_prod_antiguo.cod_antiguo')
+            'alm_prod.part_number','alm_prod.id_unidad_medida','alm_prod_antiguo.cod_antiguo')
             ->leftjoin('almacen.alm_prod_antiguo','alm_prod_antiguo.id_producto','=','alm_prod.id_producto')
             ->get();
         $output['data'] = $prod;
@@ -1124,7 +1124,7 @@ class AlmacenController extends Controller
     public function mostrar_prods_almacen($id_almacen){
         $prod = DB::table('almacen.alm_prod_ubi')
             ->select('alm_prod_ubi.*','alm_prod.codigo','alm_prod.descripcion',
-            'alm_prod.codigo_anexo','alm_prod.id_unidad_medida',
+            'alm_prod.part_number','alm_prod.id_unidad_medida',
             'alm_prod_antiguo.cod_antiguo','alm_prod_ubi.stock',
             'alm_ubi_posicion.codigo as cod_posicion')
             ->join('almacen.alm_prod','alm_prod.id_producto','=','alm_prod_ubi.id_producto')
@@ -1322,7 +1322,40 @@ class AlmacenController extends Controller
         return response()->json($data);
     }
 
+    public function listar_promociones($id_producto){
+        $data = DB::table('almacen.alm_prod_prom')
+            ->select('alm_prod_prom.*','sis_usua.nombre_corto',
+            DB::raw("(cat_prod.descripcion) || ' ' || (subcat_prod.descripcion) || ' ' || (prod.descripcion) AS descripcion_producto"),
+            DB::raw("(cat_prod_prom.descripcion) || ' ' || (subcat_prod_prom.descripcion) || ' ' || (prod_prom.descripcion) AS descripcion_producto_promocion"))
+            ->join('almacen.alm_prod as prod','prod.id_producto','=','alm_prod_prom.id_producto')
+            ->join('almacen.alm_cat_prod as cat_prod','cat_prod.id_categoria','=','prod.id_categoria')
+            ->join('almacen.alm_subcat as subcat_prod','subcat_prod.id_subcategoria','=','prod.id_subcategoria')
+            ->join('almacen.alm_prod as prod_prom','prod_prom.id_producto','=','alm_prod_prom.id_producto_promocion')
+            ->join('almacen.alm_cat_prod as cat_prod_prom','cat_prod_prom.id_categoria','=','prod_prom.id_categoria')
+            ->join('almacen.alm_subcat as subcat_prod_prom','subcat_prod_prom.id_subcategoria','=','prod_prom.id_subcategoria')
+            ->join('configuracion.sis_usua','sis_usua.id_usuario','=','alm_prod_prom.usuario_registro')
+            ->where([['alm_prod_prom.id_producto','=',$id_producto],
+                     ['alm_prod_prom.estado','!=',7]])
+            ->get();
+            $output['data'] = $data;
+        return response()->json($output);
+    }
 
+    public function crear_promocion(Request $request){
+        $id_usuario = Auth::user()->id_usuario;
+        $id = DB::table('almacen.alm_prod_prom')
+        ->insertGetId(
+            [
+                'id_producto' => $request->id_producto,
+                'id_producto_promocion' => $request->id_producto_promocion,
+                'estado' => 1,
+                'fecha_registro' => date('Y-m-d H:i:s'),
+                'usuario_registro' => $id_usuario,
+            ],  
+                'id_promocion'
+        );
+        return response()->json($id);
+    }
     //Tipo de Servicio
     public function mostrar_tp_servicios(){
         $data = DB::table('logistica.log_tp_servi')

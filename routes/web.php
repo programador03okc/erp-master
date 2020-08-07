@@ -794,6 +794,9 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::get('anular_producto/{id}', 'AlmacenController@anular_producto');
 					Route::post('guardar_imagen', 'AlmacenController@guardar_imagen');
 					
+					Route::get('listar_promociones/{id}', 'AlmacenController@listar_promociones');
+					Route::post('crear_promocion', 'AlmacenController@crear_promocion');
+					
 					Route::get('listar_ubicaciones_producto/{id}', 'AlmacenController@mostrar_ubicaciones_producto');
 					Route::get('mostrar_ubicacion/{id}', 'AlmacenController@mostrar_ubicacion');
 					Route::post('guardar_ubicacion', 'AlmacenController@guardar_ubicacion');

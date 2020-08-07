@@ -39,13 +39,14 @@
     <div class="col-md-12" id="tab-producto">
         <ul class="nav nav-tabs" id="myTab">
             <li class="active"><a type="#general">Datos Generales</a></li>
+            <li class=""><a type="#promocion">Promociones</a></li>
             <li class=""><a type="#ubicacion">Ubicaciones</a></li>
             <li class=""><a type="#serie">Control de Series</a></li>
         </ul>
         <div class="content-tabs">
             <section id="general" hidden>
                 <form id="form-general" type="register">  <!--form="formulario"-->
-                <input type="hidden" name="id_producto">
+                <input type="text" class="oculto" name="id_producto">
                     <div class="row">
                         <div class="col-md-3">
                             <div class="row">
@@ -117,7 +118,7 @@
                                         @endforeach
                                     </select>
                                 </div>
-                                {{-- <div class="col-md-4">
+                                <!-- {{-- <div class="col-md-4">
                                     <h5>Subcategoría</h5>
                                     <div class="input-group-okc">
                                         <input type="hidden" name="id_subcategoria" >
@@ -130,7 +131,7 @@
                                             </button>
                                         </div>
                                     </div>
-                                </div> --}}
+                                </div> --}} -->
                                 <div class="col-md-4">
                                     <h5>Clasificación</h5>
                                     <select class="form-control activation js-example-basic-single" name="id_clasif" disabled="true">
@@ -218,38 +219,32 @@
                     </div>
                 </form>
             </section>
+            <section id="promocion" hidden>
+                <form id="form-promocion" type="register">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <table class="mytable table table-condensed table-bordered table-okc-view" width="100%"
+                                id="listaPromocion">
+                                <thead>
+                                    <tr>
+                                        <td hidden></td>
+                                        <td>Producto</td>
+                                        <td>Producto Promocionado</td>
+                                        <td>Estado</td>
+                                        <td>Usuario Registro</td>
+                                        <td>Acción</td>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </form>
+            </section>
             <section id="ubicacion" hidden>
                 <form id="form-ubicacion" type="register">
                     <input type="hidden" name="id_producto">
                     <div class="row">
-                        <!-- <div class="col-md-4">
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <h5>Almacén</h5>
-                                    <input type="hidden" name="id_prod_ubi" primary="ids"/>
-                                    <input type="text" class="form-control" name="alm_descripcion" disabled="true"/>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <h5>Posición</h5>
-                                    <select class="form-control activation js-example-basic-single" 
-                                    name="id_posicion" disabled="true" onChange="posicion();">
-                                        <option value="0">Elija una opción</option>
-                                        @foreach ($posiciones as $pos)
-                                            <option value="{{$pos->id_posicion}}">{{$pos->codigo}}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                                <div class="col-md-6">
-                                    <h5>Stock</h5>
-                                    <div class="input-group">
-                                        <input type="number" class="form-control activation" name="stock" disabled="true"/>
-                                        <span class="input-group-addon" name="abreviatura"></span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div> -->
                         <div class="col-md-12">
                             <table class="mytable table table-condensed table-bordered table-okc-view" width="100%"
                                 id="listaUbicacion">
@@ -292,33 +287,6 @@
                     </div>
                 </form>
             </section>
-            {{-- <section id="merma" hidden>
-                <form id="form-merma" type="register">
-                <input type="hidden" name="id_producto">
-                    <div class="row">
-                        <div class="col-sm-4">
-                            <div class="form-group">
-                                <h5></h5>
-                                <div class="icheckbox_flat-green">
-                                    <label style="display:flex;">
-                                        <input type="checkbox" class="flat-red" name="desmedro" value="0">
-                                    </label>
-                                </div> Desmedro
-                            </div>
-                        </div>
-                        <div class="col-sm-4">
-                            <div class="form-group">
-                                <h5></h5>
-                                <div class="icheckbox_flat-green">
-                                    <label style="display:flex;">
-                                        <input type="checkbox" class="flat-red" name="merma" value="0">
-                                    </label>
-                                </div> Merma
-                            </div>
-                        </div>
-                    </div>
-                </form>
-            </section> --}}
         </div>
     </div>
 </div>
