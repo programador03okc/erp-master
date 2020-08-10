@@ -925,7 +925,8 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::post('save_cliente', 'LogisticaController@save_cliente');
 					Route::post('listarRequerimientosElaborados', 'DistribucionController@listarRequerimientosElaborados');
 					Route::post('listarRequerimientosConfirmados', 'DistribucionController@listarRequerimientosConfirmados');
-
+					Route::get('actualizaCantidadDespachosTabs', 'DistribucionController@actualizaCantidadDespachosTabs');
+					
 				});
 	
 				Route::group(['as' => 'trazabilidad-requerimientos.', 'prefix' => 'trazabilidad-requerimientos'], function(){
