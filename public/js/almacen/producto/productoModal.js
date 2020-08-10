@@ -1,3 +1,5 @@
+let accion_origen = null;
+
 $(function(){
     /* Seleccionar valor del DataTable */
     $('#listaProducto tbody').on('click', 'tr', function(){
@@ -73,7 +75,7 @@ function listarProductos(){
         '<th>Código</th>'+
         '<th>Código Antiguo</th>'+
         '<th>Descripción</th>'+
-        '<th>Código Anexo</th>'+
+        '<th>Part Number</th>'+
         '<th hidden>unid</th>'+
     '</tr>';
     $('#listaProducto thead').html(html);
@@ -84,13 +86,14 @@ function listarProductos(){
         'buttons': vardataTables[2],
         'language' : vardataTables[0],
         // 'processing': true,
+        'bDestroy' : true,
         'ajax': 'mostrar_prods',
         'columns': [
             {'data': 'id_producto'},
             {'data': 'codigo'},
             {'data': 'cod_antiguo'},
             {'data': 'descripcion'},
-            {'data': 'codigo_anexo'},
+            {'data': 'part_number'},
             {'data': 'id_unidad_medida'},
         ],
         'columnDefs': [{ 'aTargets': [0,5], 'sClass': 'invisible'}],
@@ -102,7 +105,7 @@ function listarProductosAlmacen(id_almacen){
         '<th>Código</th>'+
         '<th>Código Antiguo</th>'+
         '<th>Descripción</th>'+
-        '<th>Código Anexo</th>'+
+        '<th>Part Number</th>'+
         '<th hidden>unid</th>'+
         '<th>Posición</th>'+
         '<th>Stock Actual</th>'+
@@ -116,12 +119,13 @@ function listarProductosAlmacen(id_almacen){
         'buttons': vardataTables[2],
         'language' : vardataTables[0],
         'ajax': 'mostrar_prods_almacen/'+id_almacen,
+        'bDestroy' : true,
         'columns': [
             {'data': 'id_producto'},
             {'data': 'codigo'},
             {'data': 'cod_antiguo'},
             {'data': 'descripcion'},
-            {'data': 'codigo_anexo'},
+            {'data': 'part_number'},
             {'data': 'id_unidad_medida'},
             {'data': 'cod_posicion'},
             {'data': 'stock'},
@@ -149,6 +153,15 @@ function selectProducto(){
             clearForm(form);
             mostrar_producto(myId);
             changeStateButton('historial');
+        } 
+        else if (form == "form-promocion"){
+            // clearDataTable();
+            if (accion_origen == 'crear_promocion'){
+                crear_promocion(myId);
+            } else {
+                listar_promociones(myId);
+                $('[name=id_producto]').val(myId);
+            }
         } 
         else if (form == "form-ubicacion"){
             // clearDataTable();

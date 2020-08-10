@@ -28,6 +28,11 @@ $(function(){
             $('[name=id_producto]').val(id);
             $('[name=abreviatura]').text(abr);
         }
+        else if (activeForm == "form-promocion" && id !== ""){
+            clearDataTable();
+            listar_promociones(id);
+            $('[name=id_producto]').val(id);
+        }
         else if (activeForm == "form-serie" && id !== ""){
             clearDataTable();
             listar_series(id);
@@ -122,37 +127,42 @@ function mostrar_producto(id){
 
 function save_producto(data, action){
     console.log(data);
-    if (action == 'register'){
-        baseUrl = 'guardar_producto';
-    } else if (action == 'edition'){
-        baseUrl = 'actualizar_producto';
-    }
-    $.ajax({
-        type: 'POST',
-        headers: {'X-CSRF-TOKEN': token},
-        url: baseUrl,
-        data: data,
-        dataType: 'JSON',
-        success: function(response){
-            console.log(response);
-            console.log('id_producto:'+response['id_producto']);
-            if (response['msj'].length > 0){
-                alert(response['msj']);
-            } else {
-                alert('Producto registrado con exito');
-                changeStateButton('guardar');
-                $('#form-general').attr('type', 'register');
-                changeStateInput('form-general', true);
-                
-                console.log('id_producto:'+response['id_producto']);
-                mostrar_producto(response['id_producto']);
-            }
+    var msj = validaProducto();
+    if (msj.length > 0){
+        alert(msj);
+    } else {
+        if (action == 'register'){
+            baseUrl = 'guardar_producto';
+        } else if (action == 'edition'){
+            baseUrl = 'actualizar_producto';
         }
-    }).fail( function( jqXHR, textStatus, errorThrown ){
-        console.log(jqXHR);
-        console.log(textStatus);
-        console.log(errorThrown);
-    });
+        $.ajax({
+            type: 'POST',
+            headers: {'X-CSRF-TOKEN': token},
+            url: baseUrl,
+            data: data,
+            dataType: 'JSON',
+            success: function(response){
+                console.log(response);
+                console.log('id_producto:'+response['id_producto']);
+                if (response['msj'].length > 0){
+                    alert(response['msj']);
+                } else {
+                    alert('Producto registrado con exito');
+                    changeStateButton('guardar');
+                    $('#form-general').attr('type', 'register');
+                    changeStateInput('form-general', true);
+                    
+                    console.log('id_producto:'+response['id_producto']);
+                    mostrar_producto(response['id_producto']);
+                }
+            }
+        }).fail( function( jqXHR, textStatus, errorThrown ){
+            console.log(jqXHR);
+            console.log(textStatus);
+            console.log(errorThrown);
+        });
+    }
 }
 
 function anular_producto(ids){
@@ -241,4 +251,126 @@ function unid_abrev($id_name){
     } else {
         $('[name=abr_'+$id_name+']').text("");
     }
+}
+
+function validaProducto(){
+    var id_categoria = $('[name=id_categoria]').val();
+    var id_subcategoria = $('[name=id_subcategoria]').val();
+    var id_clasif = $('[name=id_clasif]').val();
+    var descripcion = $('[name=descripcion]').val();
+    var part_number = $('[name=part_number]').val();
+    // var id_moneda = $('[name=id_moneda]').val();
+    var id_unidad_medida = $('[name=id_unidad_medida]').val();
+    var msj = '';
+
+    if (id_categoria == '0'){
+        msj+='\n Es necesario que elija una Categoría';
+    }
+    if (id_subcategoria == '0'){
+        msj+='\n Es necesario que elija una SubCategoría';
+    }
+    if (id_clasif == '0'){
+        msj+='\n Es necesario que alija una Clasificación';
+    }
+    if (descripcion == ''){
+        msj+='\n Es necesario que ingrese una Descripción';
+    }
+    if (part_number == ''){
+        msj+='\n Es necesario que ingrese una Part Number';
+    }
+    if (id_unidad_medida == '0'){
+        msj+='\n Es necesario que seleccione una Unidad de Medida';
+    }
+    return msj;
+}
+
+function listar_promociones(id_producto){
+    var vardataTables = funcDatatables();
+    $('#listaPromocion').dataTable({
+        'dom': vardataTables[1],
+        // 'buttons': vardataTables[2],
+        'buttons': [
+            {
+                text: "Agregar Producto Promocionado",
+                className: 'btn btn-success',
+                action: function(){
+                    accion_origen = 'crear_promocion';
+                    productoModal();
+                }
+            }
+        ],
+        'language' : vardataTables[0],
+        'bDestroy' : true,
+        'ajax': 'listar_promociones/'+id_producto,
+        'columns': [
+            {'data': 'id_promocion'},
+            {'data': 'descripcion_producto'},
+            {'data': 'descripcion_producto_promocion'},
+            {'data': 'fecha_registro'},
+            {'render':
+                function (data, type, row){
+                    return ((row['estado'] == 1) ? 'Activo' : 'Inactivo');
+                }
+            },
+            {'data': 'nombre_corto'}
+        ],
+        'columnDefs': [
+            {'aTargets': [0], 'sClass': 'invisible'},
+            {'render': function (data, type, row){
+                    return '<button type="button" class="anular btn btn-danger boton" data-toggle="tooltip" '+
+                    'data-placement="bottom" title="Dar de Baja" data-id="'+row['id_promocion']+'">'+
+                    '<i class="fas fa-trash"></i></button>';
+                }, targets: 6
+            }
+        ]
+    });
+}
+
+$('#listaPromocion tbody').on("click","button.anular", function(){
+    var id = $(this).data('id');
+    anular_promocion(id);
+});
+
+function anular_promocion(id_promocion){
+    $.ajax({
+        type: 'GET',
+        url: 'anular_promocion/'+id_promocion,
+        dataType: 'JSON',
+        success: function(response){
+            console.log(response);
+            if (response > 0){
+                alert('Promoción anulada con éxito!');
+                var id = $('[name=id_producto]').val();
+                listar_promociones(id);
+            }
+        }
+    }).fail( function( jqXHR, textStatus, errorThrown ){
+        console.log(jqXHR);
+        console.log(textStatus);
+        console.log(errorThrown);
+    });
+}
+
+function crear_promocion(id_seleccionado){
+    var id = $('[name=id_producto]').val();
+    var data = 'id_producto='+id+
+               '&id_producto_promocion='+id_seleccionado;
+    $.ajax({
+        type: 'POST',
+        url: 'crear_promocion',
+        data: data,
+        dataType: 'JSON',
+        success: function(response){
+            console.log(response);
+            if (response > 0){
+                alert('Promoción registrada con éxito!');
+                // $('#listaPromocion').DataTable().ajax.reload();
+                listar_promociones(id);
+            }
+        }
+    }).fail( function( jqXHR, textStatus, errorThrown ){
+        console.log(jqXHR);
+        console.log(textStatus);
+        console.log(errorThrown);
+    });
 }
