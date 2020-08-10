@@ -124,6 +124,15 @@
                     <button class="btn btn-sm btn-success" name="btn-aceptar-cambio" onClick="aceptarCambiosItem();">Aceptar</button>
                 </div>
             </div>
+            <div class="row" id="promocion_activa" hidden>
+                <div class="col-md-6 text-left">
+                <div class="alert alert-info alert-dismissible fade in" role="alert"> 
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true" onClick="quitarPromocionAvtiva();">×</span></button> 
+                    <i class="fas fa-gift"></i> <strong>promoción:</strong>
+                    <ul id="productos_con_promocion">
+                    </ul>
+                </div>
+            </div>
             </div>
         </div>
     </div>
@@ -132,3 +141,5 @@
 @include('logistica.cotizaciones.modal_ultimas_compras')
 @include('logistica.requerimientos.modal_catalogo_items')
 @include('logistica.requerimientos.modal_partidas')
+@include('almacen.producto.saldosModal')
+

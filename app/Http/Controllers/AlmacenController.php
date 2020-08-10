@@ -4711,12 +4711,25 @@ class AlmacenController extends Controller
     
     public function listar_saldos_por_almacen()
     {
-        $data = DB::table('almacen.alm_prod')
+        $data = DB::table('almacen.alm_item')
             ->select(
                 'alm_item.id_item',
+                'alm_item.id_servicio',
                 'alm_prod.id_producto',
-                'alm_prod.codigo',
-                'alm_prod.descripcion',
+                'alm_prod.estado as estado_producto',
+                'log_servi.estado as estado_servicio',
+                // 'alm_prod.codigo',
+                DB::raw("(CASE 
+                WHEN alm_item.id_servicio isNUll THEN alm_prod.codigo 
+                WHEN alm_item.id_producto isNUll THEN log_servi.codigo 
+                ELSE 'nulo' END) AS codigo
+                "),
+                // 'alm_prod.descripcion',
+                DB::raw("(CASE 
+                WHEN alm_item.id_servicio isNUll THEN alm_prod.descripcion 
+                WHEN alm_item.id_producto isNUll THEN log_servi.descripcion 
+                ELSE 'nulo' END) AS descripcion
+                "),
                 'alm_und_medida.abreviatura',
                 'alm_prod.codigo_anexo',
                 'alm_prod.part_number',
@@ -4725,12 +4738,14 @@ class AlmacenController extends Controller
                 'alm_clasif.descripcion as des_clasificacion',
                 'alm_prod.id_unidad_medida'
             )
-            ->join('almacen.alm_item','alm_item.id_producto','=','alm_prod.id_producto')
-            ->join('almacen.alm_und_medida','alm_und_medida.id_unidad_medida','=','alm_prod.id_unidad_medida')
-            ->join('almacen.alm_clasif','alm_clasif.id_clasificacion','=','alm_prod.id_clasif')
-            ->join('almacen.alm_subcat','alm_subcat.id_subcategoria','=','alm_prod.id_subcategoria')
-            ->join('almacen.alm_cat_prod','alm_cat_prod.id_categoria','=','alm_prod.id_categoria')
-            ->where([['alm_prod.estado','=',1]])
+            ->leftJoin('almacen.alm_prod','alm_prod.id_producto','=','alm_item.id_producto')
+            ->leftJoin('logistica.log_servi', 'log_servi.id_servicio', '=', 'alm_item.id_servicio')
+            ->leftJoin('almacen.alm_und_medida','alm_und_medida.id_unidad_medida','=','alm_prod.id_unidad_medida')
+            ->leftJoin('almacen.alm_clasif','alm_clasif.id_clasificacion','=','alm_prod.id_clasif')
+            ->leftJoin('almacen.alm_subcat','alm_subcat.id_subcategoria','=','alm_prod.id_subcategoria')
+            ->leftJoin('almacen.alm_cat_prod','alm_cat_prod.id_categoria','=','alm_prod.id_categoria')
+            ->where([['alm_prod.estado','=',1],['log_servi.estado','=',null]])
+            ->orWhere([['alm_prod.estado','=',null],['log_servi.estado','=',1]])
             ->distinct()->get();
         
         $nueva_data = [];
@@ -4775,6 +4790,9 @@ class AlmacenController extends Controller
             }
             $nuevo = [
                 'id_producto'=> $d->id_producto,
+                'id_servicio'=> $d->id_servicio,
+                'estado_producto'=> $d->estado_producto,
+                'estado_servicio'=> $d->estado_servicio,
                 'id_item'=> $d->id_item,
                 'codigo'=> $d->codigo,
                 'codigo_anexo'=> $d->codigo_anexo,

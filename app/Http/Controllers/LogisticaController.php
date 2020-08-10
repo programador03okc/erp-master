@@ -643,8 +643,8 @@ class LogisticaController extends Controller
                 ->leftJoin('almacen.alm_prod', 'alm_item.id_producto', '=', 'alm_prod.id_producto')
                 ->leftJoin('logistica.log_servi', 'alm_item.id_servicio', '=', 'log_servi.id_servicio')
                 ->leftJoin('logistica.log_tp_servi', 'log_tp_servi.id_tipo_servicio', '=', 'log_servi.id_tipo_servicio')
-                ->join('almacen.alm_cat_prod', 'alm_cat_prod.id_categoria', '=', 'alm_prod.id_categoria')
-                ->join('almacen.alm_subcat','alm_subcat.id_subcategoria','=','alm_prod.id_subcategoria')
+                ->leftJoin('almacen.alm_cat_prod', 'alm_cat_prod.id_categoria', '=', 'alm_prod.id_categoria')
+                ->leftJoin('almacen.alm_subcat','alm_subcat.id_subcategoria','=','alm_prod.id_subcategoria')
                 ->leftJoin('almacen.alm_almacen', 'alm_det_req.id_almacen_reserva', '=', 'alm_almacen.id_almacen')
     
                 ->leftJoin('almacen.alm_und_medida', 'alm_det_req.id_unidad_medida', '=', 'alm_und_medida.id_unidad_medida')
@@ -17449,5 +17449,42 @@ public function get_cuadro_costos_comercial(){
     ->get();
     return $data;
 }
+
+public function obtener_promociones($id_producto,$id_almacen){
+    $alm_prod_prom = DB::table('almacen.alm_prod_prom')
+    ->select(
+        'alm_prod_prom.*',
+        'alm_prod.codigo',
+        'alm_prod.codigo_anexo',
+        'alm_prod.part_number',
+        'alm_cat_prod.descripcion as categoria',
+        'alm_subcat.descripcion as subcategoria',
+        'alm_prod.descripcion',
+        'alm_prod.id_unidad_medida',
+        'alm_und_medida.descripcion as unidad_medida',
+         'alm_prod_ubi.id_prod_ubi','alm_prod_ubi.stock','alm_prod_ubi.costo_promedio', 'alm_prod_ubi.id_almacen', 'alm_almacen.descripcion as descripcion_almacen',
+            DB::raw("(SELECT SUM(alm_det_req.cantidad) FROM almacen.alm_det_req 
+            WHERE alm_det_req.estado=19 
+            AND alm_det_req.id_producto=alm_prod_ubi.id_producto 
+            AND alm_det_req.id_almacen_reserva=alm_prod_ubi.id_almacen) as cantidad_reserva")
+    )
+    ->leftJoin('almacen.alm_prod', 'alm_prod.id_producto', '=', 'alm_prod_prom.id_producto')
+    ->leftJoin('almacen.alm_cat_prod', 'alm_cat_prod.id_categoria', '=', 'alm_prod.id_categoria')
+    ->leftJoin('almacen.alm_subcat','alm_subcat.id_subcategoria','=','alm_prod.id_subcategoria')
+    ->leftJoin('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'alm_prod.id_unidad_medida')
+    ->leftJoin('almacen.alm_prod_ubi', 'alm_prod_ubi.id_producto', '=', 'alm_prod_prom.id_producto')
+    ->leftJoin('almacen.alm_almacen', 'alm_almacen.id_almacen', '=', 'alm_prod_ubi.id_almacen')
+
+    ->where([    
+    ['alm_prod_prom.id_producto_promocion','=',$id_producto],
+    ['alm_prod_ubi.id_almacen','=',$id_almacen]
+    ])
+    ->orderBy('alm_prod_prom.id_promocion', 'asc')
+    ->get();
+
+    $output=['data'=>$alm_prod_prom];
+    return response()->json($output);
+}
+
 
 }

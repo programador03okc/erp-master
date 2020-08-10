@@ -355,6 +355,7 @@
     </form>
 
 </div>
+
 @include('logistica.requerimientos.modal_direcciones_cliente')
 @include('logistica.requerimientos.modal_email_cliente')
 @include('logistica.requerimientos.modal_telefonos_cliente')
@@ -371,8 +372,9 @@
 @include('logistica.cotizaciones.add_cliente')
 @include('publico.personaModal')
 @include('publico.ubigeoModal')
-@include('almacen.producto.saldosModal')
 @include('almacen.verRequerimientoEstado')
+@include('logistica.requerimientos.modal_promocion_item')
+
 @endsection
 
 @section('scripts')

@@ -81,6 +81,7 @@ var codigoPartidaSelected='';
 var itemSelected ={};
 var UsoDePartida =[];
 var userSession =[];
+var objPromociones =[];
 
 let tpOptCom  ={};
 $(function(){
@@ -761,11 +762,13 @@ function validaModalDetalle(){
     var msj = '';
     // console.log(unidad_medida_item);
     // console.log(cantidad_item);
-    if (cantidad_item == ''){
-        msj+='\n Es necesario una Cantidad';
+    if(document.querySelector("div[id='modal-detalle-requerimiento'] input[name='id_producto']").value > 0 ){
+        if (unidad_medida_item == ''){
+            msj+='\n Es necesario que seleccione una Unidad de Medida';
+        }
     }
-    if (unidad_medida_item == ''){
-        msj+='\n Es necesario que seleccione una Unidad de Medida';
+    if (cantidad_item == ''){
+        msj+='\n Es necesario una Cantidad';    
     }
     return msj;
 }
@@ -1190,6 +1193,7 @@ function eliminarItemDetalleRequerimiento(event,index){
 var indice='';
 function detalleRequerimientoModal(event,index){
 
+
     $('#form-detalle-requerimiento')[0].reset();
     event.preventDefault();
     var btnAceptarCambio = document.getElementsByName("btn-aceptar-cambio");
@@ -1219,7 +1223,8 @@ function detalleRequerimientoModal(event,index){
                     backdrop: 'true'
                 });
                 // $('[name=id_almacen]').show();
-    
+                document.querySelector("div[id='modal-detalle-requerimiento'] div[id='promocion_activa']").setAttribute('hidden',true);
+
                 // cargar_almacenes(sede);
                 document.querySelector("div[id='modal-detalle-requerimiento'] input[name='fecha_entrega_item']").value='';
                 document.querySelector("div[id='modal-detalle-requerimiento'] input[name='lugar_entrega_item']").value='';
@@ -1824,7 +1829,7 @@ function listarItems() {
             { 'aTargets': [10], 'sClass': 'invisible'}
                     ],
         'order': [
-            [2, 'asc']
+            [8, 'asc']
         ]
     });
     $("div.toolbar").html('<button class="btn btn-sm btn-primary" onclick="crearProducto();">Crear Producto</button>');
@@ -1851,7 +1856,8 @@ var getSaldosPorAlmacen = function() {
 
 function verSaldoProducto(id_producto){
     $('#modal-saldos').modal({
-        show: true
+        show: true,
+        backdrop: 'true'
     });
     // listarSaldosProducto(id_producto);
 
@@ -1903,9 +1909,13 @@ function buildTableListaSaldosProducto(obj,id_producto){
 function listarSaldosProducto(id_producto){
     var vardataTables = funcDatatables();
     $('#listaSaldos').DataTable({
-        'dom': vardataTables[1],
-        'buttons': vardataTables[2],
+        // 'dom': vardataTables[1],
+        // 'buttons': vardataTables[2],
         'language' : vardataTables[0],
+        'processing': true,
+        'info':     false,
+        'searching': false,
+        'paging':   false,
         'bDestroy': true,
         'ajax': 'listar-saldos-por-almacen/'+id_producto,
         'columns': [
@@ -1986,6 +1996,8 @@ function selectItem(){
         var id_producto = $('#modal-catalogo-items .modal-footer #id_producto').text();
         var id_servicio = $('#modal-catalogo-items .modal-footer #id_servicio').text();
         var id_equipo = $('#modal-catalogo-items .modal-footer #id_equipo').text();
+        var descripcion_producto = document.querySelector("div[id='modal-catalogo-items'] div[class='modal-footer'] label[id='descripcion']").textContent;
+        var id_almacen = document.querySelector("form[id='form-requerimiento'] select[name='id_almacen']").value;
 
         $('[name=id_item]').val(document.querySelector("div[id='modal-catalogo-items'] div[class='modal-footer'] label[id='id_item']").textContent);
         $('[name=part_number]').val(document.querySelector("div[id='modal-catalogo-items'] div[class='modal-footer'] label[id='part_number']").textContent);
@@ -1993,7 +2005,7 @@ function selectItem(){
         $('[name=id_servicio]').val(document.querySelector("div[id='modal-catalogo-items'] div[class='modal-footer'] label[id='id_servicio']").textContent);
         $('[name=id_equipo]').val(document.querySelector("div[id='modal-catalogo-items'] div[class='modal-footer'] label[id='id_equipo']").textContent);
         $('[name=codigo_item]').val(document.querySelector("div[id='modal-catalogo-items'] div[class='modal-footer'] label[id='codigo']").textContent);
-        $('[name=descripcion_item]').val(document.querySelector("div[id='modal-catalogo-items'] div[class='modal-footer'] label[id='descripcion']").textContent);
+        $('[name=descripcion_item]').val(descripcion_producto);
         $('[name=unidad_medida_item]').val(document.querySelector("div[id='modal-catalogo-items'] div[class='modal-footer'] label[id='id_unidad_medida']").textContent);
         $('[name=categoria]').val(document.querySelector("div[id='modal-catalogo-items'] div[class='modal-footer'] label[id='categoria']").textContent);
         $('[name=subcategoria]').val(document.querySelector("div[id='modal-catalogo-items'] div[class='modal-footer'] label[id='subcategoria']").textContent);
@@ -2019,9 +2031,96 @@ function selectItem(){
             disabledControl(selectUnidadMedida,true);
             document.getElementsByName("id_tipo_item")[0].value = 3;
         }
+
+
+        obtenerPromociones(id_producto,id_almacen,descripcion_producto);
+
         $('#modal-catalogo-items').modal('hide');
 }
 
+function obtenerPromociones(id_producto,id_almacen,descripcion_producto){
+    if(id_almacen > 0){
+        $.ajax({
+            type: 'GET',
+            url: 'obtener-promociones/'+id_producto+'/'+id_almacen,
+            dataType: 'JSON',
+            success: function(response){
+                // console.log(response);
+                objPromociones = response.data;
+                if(response.data.length >0 ){
+                    $('#modal-promocion-item').modal({
+                        show: true,
+                        backdrop: 'true'
+                    });
+                document.querySelector("div[id='modal-promocion-item'] strong[id='producto_descripcion']").innerText=descripcion_producto;
+                
+                var ul = document.querySelector("div[id='modal-promocion-item'] ul[id='productos_con_promocion']");
+                while(ul.firstChild) {
+                    ul.removeChild(ul.firstChild);
+                }
+
+                response.data.forEach(element => {
+                    var node = document.createElement("LI");
+                    var textnode = document.createTextNode(element.descripcion);
+                    node.appendChild(textnode);
+                    ul.appendChild(node);
+                });
+                }
+            }
+        }).fail( function( jqXHR, textStatus, errorThrown ){
+            console.log(jqXHR);
+            console.log(textStatus);
+            console.log(errorThrown);
+        });
+    }
+}
+
+
+function omitirPromocion(){
+    $('#modal-promocion-item').modal('hide');
+}
+
+function agregarPromociones(){
+    var ul = document.querySelector("div[id='modal-detalle-requerimiento'] ul[id='productos_con_promocion']");
+    while(ul.firstChild) {
+        ul.removeChild(ul.firstChild);
+    }
+
+    objPromociones.forEach(element => {
+
+        data_item.push({
+            'id_promocion':element.id_promocion,
+            'id_producto':element.id_producto,
+            'id_producto_promocion':element.id_producto_promocion,
+            'cod_item':element.codigo,
+            'codigo_anexo':element.codigo_anexo,
+            'part_number':element.part_number,
+            'categoria':element.categoria,
+            'subcategoria':element.subcategoria,
+            'des_item':element.descripcion,
+            'id_unidad_medida':element.id_unidad_medida,
+            'unidad':element.unidad_medida,
+            'cantidad':1
+        });
+
+        
+        var node = document.createElement("LI");
+        var textnode = document.createTextNode(element.descripcion);
+        node.appendChild(textnode);
+        ul.appendChild(node);
+    });
+
+    document.querySelector("div[id='modal-detalle-requerimiento'] div[id='promocion_activa']").removeAttribute('hidden');
+    // console.log(data_item);
+    
+    $('#modal-promocion-item').modal('hide');
+
+}
+
+function quitarPromocionAvtiva(){
+    data_item=[];
+    // console.log(data_item);
+}
 
 // modal partidas
 function partidasModal(){  
