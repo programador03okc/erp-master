@@ -42,47 +42,38 @@ class AlmacenController extends Controller
             ));
     }
     public static function cantidades_main(){
-        $reservados = DB::table('almacen.alm_req')
+        $requerimientos = DB::table('almacen.alm_req')
         ->select('alm_req.estado','alm_req.id_tipo_requerimiento','alm_req.confirmacion_pago',
-                'alm_almacen.id_sede as sede_requerimiento','log_ord_compra.id_sede as sede_orden',
-                'trans.id_transferencia','orden_despacho.id_od')
-        ->leftJoin('logistica.log_ord_compra', function($join)
-                {   $join->on('log_ord_compra.id_requerimiento', '=', 'alm_req.id_requerimiento');
-                    $join->where('log_ord_compra.estado','!=', 7);
-                })
-        ->leftJoin('almacen.guia_com', function($join)
-                {   $join->on('guia_com.id_oc', '=', 'log_ord_compra.id_orden_compra');
-                    $join->where('guia_com.estado','!=', 7);
-                })
-        ->leftJoin('almacen.guia_ven', function($join)
-                {   $join->on('guia_ven.id_guia_com', '=', 'guia_com.id_guia');
-                    $join->where('guia_ven.estado','!=', 7);
-                })
-        ->leftJoin('almacen.trans', function($join)
-                {   $join->on('trans.id_guia_ven', '=', 'guia_ven.id_guia_ven');
-                    $join->where('trans.estado','!=', 7);
-                })
+                 'orden_despacho.id_od',
+                 DB::raw("(SELECT COUNT(*) FROM almacen.trans where
+                        trans.id_requerimiento = alm_req.id_requerimiento
+                        and trans.estado != 7) AS count_transferencia"),
+                 DB::raw("(SELECT COUNT(*) FROM almacen.trans where
+                            trans.id_requerimiento = alm_req.id_requerimiento
+                            and trans.estado = 14) AS count_transferencia_recibida"))
         ->leftJoin('almacen.orden_despacho', function($join)
                 {   $join->on('orden_despacho.id_requerimiento', '=', 'alm_req.id_requerimiento');
                     $join->where('orden_despacho.estado','!=', 7);
                 })
-        ->leftJoin('almacen.alm_almacen','alm_almacen.id_almacen','=','alm_req.id_almacen')
-        ->where('alm_req.estado',19)
-        ->orWhere('alm_req.estado',9)
-        ->get();
+        ->where('alm_req.estado',9)
+        ->orWhere('alm_req.estado',20)
+        ->orWhere([['alm_req.id_tipo_requerimiento','=',1], ['alm_req.estado','=',19], ['orden_despacho.id_od','=',null]])
+        ->orWhere([['alm_req.id_tipo_requerimiento','!=',1], ['alm_req.estado','=',19], ['alm_req.confirmacion_pago','=',true], 
+                   ['orden_despacho.id_od','=',null]])
+            ->get();
 
         $despachos = 0;
-        foreach($reservados as $req){
-            if (($req->estado == 19 && $req->id_tipo_requerimiento == 1 && $req->sede_requerimiento == $req->sede_orden && $req->id_od == null) ||
-                ($req->estado == 19 && $req->id_tipo_requerimiento == 1 && $req->sede_requerimiento !== $req->sede_orden && $req->id_transferencia !== null && $req->id_od == null) || 
-                ($req->estado == 19 && $req->id_tipo_requerimiento == 2 && $req->confirmacion_pago == true && $req->id_od == null) ||
-                ($req->estado == 9)){
-                    $despachos++;
+        foreach ($requerimientos as $req) {
+            if ($req->estado == 19 && $req->id_tipo_requerimiento == 1 && $req->count_transferencia == $req->count_transferencia_recibida){
+                $despachos++;
+            } else {
+                $despachos++;
             }
         }
         
         $req = DB::table('almacen.alm_req')
-        ->where([['estado','=',1],['confirmacion_pago','=',false]])
+        ->where([['alm_req.estado','=',1], ['alm_req.confirmacion_pago','=',false]])//muestra todos los reservados
+        ->orWhere([['alm_req.id_tipo_requerimiento','!=',1], ['alm_req.estado','=',19], ['alm_req.confirmacion_pago','=',false]])
         ->count();
 
         $orden = DB::table('almacen.alm_req')
@@ -99,11 +90,12 @@ class AlmacenController extends Controller
 
         $transferencias = DB::table('almacen.trans')
         ->where('estado',1)
+        ->orWhere('estado',17)
         ->count();
 
         $pagos = DB::table('almacen.alm_req')
         ->where([['id_tipo_requerimiento','=',1],['estado','=',1],['confirmacion_pago','=',false]])
-        ->orWhere([['id_tipo_requerimiento','=',2],['estado','=',19],['confirmacion_pago','=',false]])
+        ->orWhere([['id_tipo_requerimiento','!=',1],['estado','=',19],['confirmacion_pago','=',false]])
         ->count();
 
         return (['requerimientos'=>$req,'orden'=>$orden,'despachos'=>$despachos,'ingresos'=>$ingresos, 'salidas'=>$salidas, 
