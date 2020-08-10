@@ -107,6 +107,7 @@ function fillDataListaSaldos(obj){
         'buttons': vardataTables[2],
         'language' : vardataTables[0],
         'bDestroy': true,
+        'processing': true,
         'data': obj.data,
         'columns': [
             {'data': 'id_producto'},
@@ -190,7 +191,11 @@ function fillDataListaSaldos(obj){
 
 function saldosModal(id_almacen){
     $('#modal-saldos').modal({
-        show: true
+        show: true,
+        backdrop: 'true',
+        keyboard: true
+
+
     });
     listarSaldos(id_almacen);
 }

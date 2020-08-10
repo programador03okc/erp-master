@@ -2,7 +2,7 @@
     <div class="modal-dialog" style="width: 800px;">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="close"><span aria-hidden="true">&times;</span></button>
+                <button type="button" class="close"  data-dismiss="modal-saldos" onClick="$('#modal-saldos').modal('hide');" ><span aria-hidden="true">&times;</span></button>
                 <h3 class="modal-title">Lista de Saldos de Almacén</h3>
             </div>
             <div class="modal-body">

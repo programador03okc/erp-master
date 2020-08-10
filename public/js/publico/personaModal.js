@@ -28,7 +28,7 @@ $(function(){
 function modalPersona(){
     $('#modal-personaModal').modal({
         show: true,
-        backdrop: 'static'
+        backdrop: 'true'
     });
     listarPersonas();
 }

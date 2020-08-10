@@ -373,6 +373,7 @@
 @include('logistica.requerimientos.aprobacion.modal_sustento')
 @include('almacen.verRequerimientoEstado')
 @include('logistica.requerimientos.modal_promocion_item')
+@include('almacen.producto.saldosModal')
 
 @endsection
 

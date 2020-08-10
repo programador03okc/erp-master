@@ -1686,7 +1686,9 @@ function catalogoItemsModal(){
     if (tipo_requerimiento == 1 ){
         $('#modal-catalogo-items').modal({
             show: true,
-            backdrop: 'true'
+            backdrop: 'true',
+            keyboard: true
+
         });
         listarItems();
     }
@@ -1789,7 +1791,7 @@ function listarItems() {
     $('#listaItems').dataTable({
         // 'dom': vardataTables[1],
         // 'buttons': vardataTables[2],
-        "dom": '<"toolbar">frtip',
+        // "dom": '<"toolbar">frtip',
 
         'scrollY':        '50vh',
         'scrollCollapse': true,
@@ -1857,7 +1859,8 @@ var getSaldosPorAlmacen = function() {
 function verSaldoProducto(id_producto){
     $('#modal-saldos').modal({
         show: true,
-        backdrop: 'true'
+        backdrop: 'true',
+        keyboard: false
     });
     // listarSaldosProducto(id_producto);
 
