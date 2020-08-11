@@ -3,6 +3,8 @@ let od_seleccionadas = [];
 function iniciar(permiso){
     $("#tab-reqPendientes section:first form").attr('form', 'formulario');
     listarRequerimientosElaborados();
+    actualizaCantidadDespachosTabs();
+    intervalFunction();
 
     $('ul.nav-tabs li a').click(function(){
         $('ul.nav-tabs li').removeClass('active');
@@ -38,6 +40,31 @@ function iniciar(permiso){
         $(activeTab).attr('hidden', false);//inicio botones (estados)
     });
     vista_extendida();
+}
+
+function intervalFunction() {
+    setInterval(actualizaCantidadDespachosTabs, 10000);
+}
+
+function actualizaCantidadDespachosTabs(){
+    $.ajax({
+        type: 'GET',
+        url: 'actualizaCantidadDespachosTabs',
+        dataType: 'JSON',
+        success: function(response){
+            console.log(response);
+            $('#selaborados').text(response['count_pendientes'] > 0 ? response['count_pendientes'] : '');
+            $('#sconfirmados').text(response['count_confirmados'] > 0 ? response['count_confirmados'] : '');
+            $('#spendientes').text(response['count_en_proceso'] > 0 ? response['count_en_proceso'] : '');
+            $('#sdespachos').text(response['count_por_despachar'] > 0 ? response['count_por_despachar'] : '');
+            $('#sdespachados').text(response['count_despachados'] > 0 ? response['count_despachados'] : '');
+        }
+    }).fail( function( jqXHR, textStatus, errorThrown ){
+        console.log(jqXHR);
+        console.log(textStatus);
+        console.log(errorThrown);
+    });
+    // setInterval(actualizaCantidadDespachosTabs, 10000);
 }
 
 function listarRequerimientosElaborados(){

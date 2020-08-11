@@ -39,6 +39,50 @@ class DistribucionController extends Controller
         return view('almacen/distribucion/trazabilidadRequerimientos');
     }
 
+    public function actualizaCantidadDespachosTabs(){
+        $count_pendientes = DB::table('almacen.alm_req')
+            ->where([['alm_req.estado','=',1], ['alm_req.confirmacion_pago','=',false]])//muestra todos los reservados
+            ->orWhere([['alm_req.id_tipo_requerimiento','!=',1], ['alm_req.estado','=',19], ['alm_req.confirmacion_pago','=',false]])
+                ->count();
+
+        $count_confirmados = DB::table('almacen.alm_req')
+            ->leftJoin('almacen.orden_despacho', function($join){   
+                        $join->on('orden_despacho.id_requerimiento', '=', 'alm_req.id_requerimiento');
+                        $join->where('orden_despacho.estado','!=', 7);
+                    })
+            ->where([['alm_req.estado','=',1], ['alm_req.confirmacion_pago','=',true]])
+            ->orWhere([['alm_req.estado','=',5]])
+            ->orWhere([['alm_req.id_tipo_requerimiento','!=',1], ['alm_req.estado','=',19], 
+                    ['alm_req.confirmacion_pago','=',true], ['orden_despacho.id_od','=',null]])
+                ->count();
+        
+        $count_en_proceso = DB::table('almacen.alm_req')
+            ->leftJoin('almacen.orden_despacho', function($join){   
+                $join->on('orden_despacho.id_requerimiento', '=', 'alm_req.id_requerimiento');
+                $join->where('orden_despacho.estado','!=', 7);
+            })
+            ->where('alm_req.estado',17)
+            ->orWhere([['alm_req.id_tipo_requerimiento','=',1], ['alm_req.estado','=',19], ['alm_req.confirmacion_pago','=',true]])
+            ->orWhere([['alm_req.id_tipo_requerimiento','!=',1], ['alm_req.estado','=',19], ['orden_despacho.id_od','!=',null]])
+                ->count();
+
+        $count_por_despachar = DB::table('almacen.orden_despacho')
+            ->where('orden_despacho.estado',9)
+            ->count();
+
+        $count_despachados = DB::table('almacen.orden_despacho_grupo_det')
+        ->join('almacen.orden_despacho','orden_despacho.id_od','=','orden_despacho_grupo_det.id_od')
+        ->join('almacen.alm_req','alm_req.id_requerimiento','=','orden_despacho.id_requerimiento')
+        ->join('administracion.adm_estado_doc','adm_estado_doc.id_estado_doc','=','alm_req.estado')
+        ->where([['orden_despacho_grupo_det.estado','!=',7],['alm_req.estado','=',20]])//Despachado
+        ->count();
+        
+        return response()->json(['count_pendientes'=>$count_pendientes,
+                                 'count_confirmados'=>$count_confirmados,
+                                 'count_en_proceso'=>$count_en_proceso,
+                                 'count_por_despachar'=>$count_por_despachar,
+                                 'count_despachados'=>$count_despachados]);
+    }
     public function listarRequerimientosElaborados(){
         $data = DB::table('almacen.alm_req')
             ->select('alm_req.*','sis_usua.nombre_corto as responsable',
@@ -178,6 +222,91 @@ class DistribucionController extends Controller
         return datatables($data)->toJson();
         // return response()->json($data);
     }
+
+    public function listarOrdenesDespacho(Request $request){
+        $data = DB::table('almacen.orden_despacho')
+        ->select('orden_despacho.*','adm_contri.nro_documento','adm_contri.razon_social',
+        'alm_req.codigo as codigo_req','alm_req.concepto','ubi_dis.descripcion as ubigeo_descripcion',
+        'sis_usua.nombre_corto','adm_estado_doc.estado_doc','adm_estado_doc.bootstrap_color',
+        DB::raw("(rrhh_perso.nombres) || ' ' || (rrhh_perso.apellido_paterno) || ' ' || (rrhh_perso.apellido_materno) AS nombre_persona"),
+        'alm_almacen.descripcion as almacen_descripcion','rrhh_perso.telefono')
+        ->leftjoin('comercial.com_cliente','com_cliente.id_cliente','=','orden_despacho.id_cliente')
+        ->leftjoin('contabilidad.adm_contri','adm_contri.id_contribuyente','=','com_cliente.id_contribuyente')
+        ->leftjoin('rrhh.rrhh_perso','rrhh_perso.id_persona','=','orden_despacho.id_persona')
+        ->leftjoin('almacen.alm_almacen','alm_almacen.id_almacen','=','orden_despacho.id_almacen')
+        ->join('almacen.alm_req','alm_req.id_requerimiento','=','orden_despacho.id_requerimiento')
+        ->join('administracion.adm_estado_doc','adm_estado_doc.id_estado_doc','=','alm_req.estado')
+        ->join('configuracion.ubi_dis','ubi_dis.id_dis','=','orden_despacho.ubigeo_destino')
+        ->join('configuracion.sis_usua','sis_usua.id_usuario','=','orden_despacho.registrado_por')
+        ->where('orden_despacho.estado',9);
+        // ->get();
+        return datatables($data)->toJson();
+    }
+
+    public function listarGruposDespachados(Request $request){
+        $data = DB::table('almacen.orden_despacho_grupo_det')
+        ->select('orden_despacho_grupo_det.*','orden_despacho_grupo.fecha_despacho','orden_despacho.codigo as codigo_od',
+        'orden_despacho_grupo.observaciones','orden_despacho.direccion_destino','sis_usua.nombre_corto as trabajador_despacho',
+        'adm_contri.razon_social as proveedor_despacho','cliente.razon_social as cliente_razon_social',
+        DB::raw("(rrhh_perso.nombres) || ' ' || (rrhh_perso.apellido_paterno) || ' ' || (rrhh_perso.apellido_materno) AS cliente_persona"),
+        'alm_req.codigo as codigo_req','alm_req.concepto','alm_req.id_requerimiento',
+        'ubi_dis.descripcion as ubigeo_descripcion',
+        'adm_estado_doc.estado_doc','adm_estado_doc.bootstrap_color','alm_almacen.descripcion as almacen_descripcion',
+        'orden_despacho_grupo.codigo as codigo_odg','orden_despacho.estado as estado_od')
+        ->join('almacen.orden_despacho_grupo','orden_despacho_grupo.id_od_grupo','=','orden_despacho_grupo_det.id_od_grupo')
+        ->leftjoin('configuracion.sis_usua','sis_usua.id_usuario','=','orden_despacho_grupo.responsable')
+        ->leftjoin('logistica.log_prove','log_prove.id_proveedor','=','orden_despacho_grupo.id_proveedor')
+        ->leftjoin('contabilidad.adm_contri','adm_contri.id_contribuyente','=','log_prove.id_contribuyente')
+        // ->join('administracion.adm_estado_doc','adm_estado_doc.id_estado_doc','=','orden_despacho_grupo.estado')
+        ->join('almacen.orden_despacho','orden_despacho.id_od','=','orden_despacho_grupo_det.id_od')
+        ->leftjoin('comercial.com_cliente','com_cliente.id_cliente','=','orden_despacho.id_cliente')
+        ->leftjoin('contabilidad.adm_contri as cliente','cliente.id_contribuyente','=','com_cliente.id_contribuyente')
+        ->leftjoin('rrhh.rrhh_perso','rrhh_perso.id_persona','=','orden_despacho.id_persona')
+        ->leftjoin('almacen.alm_almacen','alm_almacen.id_almacen','=','orden_despacho.id_almacen')
+        ->join('almacen.alm_req','alm_req.id_requerimiento','=','orden_despacho.id_requerimiento')
+        ->join('administracion.adm_estado_doc','adm_estado_doc.id_estado_doc','=','alm_req.estado')
+        ->join('configuracion.ubi_dis','ubi_dis.id_dis','=','orden_despacho.ubigeo_destino')
+        ->where([['orden_despacho_grupo_det.estado','!=',7]]);
+        //->get();
+        return datatables($data)->toJson();
+    }
+
+    public function verDetalleGrupoDespacho($id_od_grupo){
+        $data = DB::table('almacen.orden_despacho_grupo_det')
+        ->select('orden_despacho_grupo_det.*','orden_despacho.codigo','orden_despacho.direccion_destino',
+        'orden_despacho.fecha_despacho','orden_despacho.fecha_entrega','adm_contri.nro_documento',
+        'adm_contri.razon_social','alm_req.codigo as codigo_req','alm_req.concepto',
+        'ubi_dis.descripcion as ubigeo_descripcion','sis_usua.nombre_corto','adm_estado_doc.estado_doc',
+        DB::raw("(rrhh_perso.nombres) || ' ' || (rrhh_perso.apellido_paterno) || ' ' || (rrhh_perso.apellido_materno) AS nombre_persona"),
+        'adm_estado_doc.bootstrap_color')
+        ->join('almacen.orden_despacho','orden_despacho.id_od','=','orden_despacho_grupo_det.id_od')
+        ->leftjoin('comercial.com_cliente','com_cliente.id_cliente','=','orden_despacho.id_cliente')
+        ->leftjoin('contabilidad.adm_contri','adm_contri.id_contribuyente','=','com_cliente.id_contribuyente')
+        ->leftjoin('rrhh.rrhh_perso','rrhh_perso.id_persona','=','orden_despacho.id_persona')
+        ->join('almacen.alm_req','alm_req.id_requerimiento','=','orden_despacho.id_requerimiento')
+        ->join('configuracion.ubi_dis','ubi_dis.id_dis','=','orden_despacho.ubigeo_destino')
+        ->join('configuracion.sis_usua','sis_usua.id_usuario','=','orden_despacho.registrado_por')
+        ->join('administracion.adm_estado_doc','adm_estado_doc.id_estado_doc','=','orden_despacho.estado')
+        ->where([['orden_despacho_grupo_det.id_od_grupo','=',$id_od_grupo],['orden_despacho_grupo_det.estado','!=',7]])
+        ->get();
+        return response()->json($data);
+    }
+
+    public function verDetalleDespacho($id_od){
+        $data = DB::table('almacen.orden_despacho_det')
+        ->select('orden_despacho_det.*','alm_prod.codigo','alm_prod.descripcion',
+        'alm_ubi_posicion.codigo as posicion','alm_und_medida.abreviatura','alm_prod.part_number',
+        'alm_cat_prod.descripcion as categoria','alm_subcat.descripcion as subcategoria')
+        ->leftJoin('almacen.alm_prod','alm_prod.id_producto','=','orden_despacho_det.id_producto')
+        ->leftJoin('almacen.alm_cat_prod','alm_cat_prod.id_categoria','=','alm_prod.id_categoria')
+        ->leftJoin('almacen.alm_subcat','alm_subcat.id_subcategoria','=','alm_prod.id_subcategoria')
+        ->leftJoin('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'alm_prod.id_unidad_medida')
+        ->leftJoin('almacen.alm_ubi_posicion','alm_ubi_posicion.id_posicion','=','orden_despacho_det.id_posicion')
+        ->where([['orden_despacho_det.id_od','=',$id_od],['orden_despacho_det.estado','!=',7]])
+        ->get();
+        return response()->json($data);
+    }
+
 
     public function getEstadosRequerimientos(){
         $data = DB::table('almacen.alm_req')
@@ -501,41 +630,6 @@ class DistribucionController extends Controller
         return datatables($data)->toJson();
     }
 
-    public function listarOrdenesDespacho(Request $request){
-        $data = DB::table('almacen.orden_despacho')
-        ->select('orden_despacho.*','adm_contri.nro_documento','adm_contri.razon_social',
-        'alm_req.codigo as codigo_req','alm_req.concepto','ubi_dis.descripcion as ubigeo_descripcion',
-        'sis_usua.nombre_corto','adm_estado_doc.estado_doc','adm_estado_doc.bootstrap_color',
-        DB::raw("(rrhh_perso.nombres) || ' ' || (rrhh_perso.apellido_paterno) || ' ' || (rrhh_perso.apellido_materno) AS nombre_persona"),
-        'alm_almacen.descripcion as almacen_descripcion','rrhh_perso.telefono')
-        ->leftjoin('comercial.com_cliente','com_cliente.id_cliente','=','orden_despacho.id_cliente')
-        ->leftjoin('contabilidad.adm_contri','adm_contri.id_contribuyente','=','com_cliente.id_contribuyente')
-        ->leftjoin('rrhh.rrhh_perso','rrhh_perso.id_persona','=','orden_despacho.id_persona')
-        ->leftjoin('almacen.alm_almacen','alm_almacen.id_almacen','=','orden_despacho.id_almacen')
-        ->join('almacen.alm_req','alm_req.id_requerimiento','=','orden_despacho.id_requerimiento')
-        ->join('administracion.adm_estado_doc','adm_estado_doc.id_estado_doc','=','alm_req.estado')
-        ->join('configuracion.ubi_dis','ubi_dis.id_dis','=','orden_despacho.ubigeo_destino')
-        ->join('configuracion.sis_usua','sis_usua.id_usuario','=','orden_despacho.registrado_por')
-        ->where('orden_despacho.estado',9);
-        // ->get();
-        return datatables($data)->toJson();
-    }
-
-    public function verDetalleDespacho($id_od){
-        $data = DB::table('almacen.orden_despacho_det')
-        ->select('orden_despacho_det.*','alm_prod.codigo','alm_prod.descripcion',
-        'alm_ubi_posicion.codigo as posicion','alm_und_medida.abreviatura','alm_prod.part_number',
-        'alm_cat_prod.descripcion as categoria','alm_subcat.descripcion as subcategoria')
-        ->leftJoin('almacen.alm_prod','alm_prod.id_producto','=','orden_despacho_det.id_producto')
-        ->leftJoin('almacen.alm_cat_prod','alm_cat_prod.id_categoria','=','alm_prod.id_categoria')
-        ->leftJoin('almacen.alm_subcat','alm_subcat.id_subcategoria','=','alm_prod.id_subcategoria')
-        ->leftJoin('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'alm_prod.id_unidad_medida')
-        ->leftJoin('almacen.alm_ubi_posicion','alm_ubi_posicion.id_posicion','=','orden_despacho_det.id_posicion')
-        ->where([['orden_despacho_det.id_od','=',$id_od],['orden_despacho_det.estado','!=',7]])
-        ->get();
-        return response()->json($data);
-    }
-
     public function guardar_grupo_despacho(Request $request){
 
         try {
@@ -603,55 +697,6 @@ class DistribucionController extends Controller
         } catch (\PDOException $e) {
             DB::rollBack();
         }
-    }
-
-    public function listarGruposDespachados(Request $request){
-        $data = DB::table('almacen.orden_despacho_grupo_det')
-        ->select('orden_despacho_grupo_det.*','orden_despacho_grupo.fecha_despacho','orden_despacho.codigo as codigo_od',
-        'orden_despacho_grupo.observaciones','orden_despacho.direccion_destino','sis_usua.nombre_corto as trabajador_despacho',
-        'adm_contri.razon_social as proveedor_despacho','cliente.razon_social as cliente_razon_social',
-        DB::raw("(rrhh_perso.nombres) || ' ' || (rrhh_perso.apellido_paterno) || ' ' || (rrhh_perso.apellido_materno) AS cliente_persona"),
-        'alm_req.codigo as codigo_req','alm_req.concepto','alm_req.id_requerimiento',
-        'ubi_dis.descripcion as ubigeo_descripcion',
-        'adm_estado_doc.estado_doc','adm_estado_doc.bootstrap_color','alm_almacen.descripcion as almacen_descripcion',
-        'orden_despacho_grupo.codigo as codigo_odg','orden_despacho.estado as estado_od')
-        ->join('almacen.orden_despacho_grupo','orden_despacho_grupo.id_od_grupo','=','orden_despacho_grupo_det.id_od_grupo')
-        ->leftjoin('configuracion.sis_usua','sis_usua.id_usuario','=','orden_despacho_grupo.responsable')
-        ->leftjoin('logistica.log_prove','log_prove.id_proveedor','=','orden_despacho_grupo.id_proveedor')
-        ->leftjoin('contabilidad.adm_contri','adm_contri.id_contribuyente','=','log_prove.id_contribuyente')
-        // ->join('administracion.adm_estado_doc','adm_estado_doc.id_estado_doc','=','orden_despacho_grupo.estado')
-        ->join('almacen.orden_despacho','orden_despacho.id_od','=','orden_despacho_grupo_det.id_od')
-        ->leftjoin('comercial.com_cliente','com_cliente.id_cliente','=','orden_despacho.id_cliente')
-        ->leftjoin('contabilidad.adm_contri as cliente','cliente.id_contribuyente','=','com_cliente.id_contribuyente')
-        ->leftjoin('rrhh.rrhh_perso','rrhh_perso.id_persona','=','orden_despacho.id_persona')
-        ->leftjoin('almacen.alm_almacen','alm_almacen.id_almacen','=','orden_despacho.id_almacen')
-        ->join('almacen.alm_req','alm_req.id_requerimiento','=','orden_despacho.id_requerimiento')
-        ->join('administracion.adm_estado_doc','adm_estado_doc.id_estado_doc','=','alm_req.estado')
-        ->join('configuracion.ubi_dis','ubi_dis.id_dis','=','orden_despacho.ubigeo_destino')
-        ->where([['orden_despacho_grupo_det.estado','!=',7]]);
-        //->get();
-        return datatables($data)->toJson();
-    }
-
-    public function verDetalleGrupoDespacho($id_od_grupo){
-        $data = DB::table('almacen.orden_despacho_grupo_det')
-        ->select('orden_despacho_grupo_det.*','orden_despacho.codigo','orden_despacho.direccion_destino',
-        'orden_despacho.fecha_despacho','orden_despacho.fecha_entrega','adm_contri.nro_documento',
-        'adm_contri.razon_social','alm_req.codigo as codigo_req','alm_req.concepto',
-        'ubi_dis.descripcion as ubigeo_descripcion','sis_usua.nombre_corto','adm_estado_doc.estado_doc',
-        DB::raw("(rrhh_perso.nombres) || ' ' || (rrhh_perso.apellido_paterno) || ' ' || (rrhh_perso.apellido_materno) AS nombre_persona"),
-        'adm_estado_doc.bootstrap_color')
-        ->join('almacen.orden_despacho','orden_despacho.id_od','=','orden_despacho_grupo_det.id_od')
-        ->leftjoin('comercial.com_cliente','com_cliente.id_cliente','=','orden_despacho.id_cliente')
-        ->leftjoin('contabilidad.adm_contri','adm_contri.id_contribuyente','=','com_cliente.id_contribuyente')
-        ->leftjoin('rrhh.rrhh_perso','rrhh_perso.id_persona','=','orden_despacho.id_persona')
-        ->join('almacen.alm_req','alm_req.id_requerimiento','=','orden_despacho.id_requerimiento')
-        ->join('configuracion.ubi_dis','ubi_dis.id_dis','=','orden_despacho.ubigeo_destino')
-        ->join('configuracion.sis_usua','sis_usua.id_usuario','=','orden_despacho.registrado_por')
-        ->join('administracion.adm_estado_doc','adm_estado_doc.id_estado_doc','=','orden_despacho.estado')
-        ->where([['orden_despacho_grupo_det.id_od_grupo','=',$id_od_grupo],['orden_despacho_grupo_det.estado','!=',7]])
-        ->get();
-        return response()->json($data);
     }
 
     public function despacho_conforme(Request $request){
