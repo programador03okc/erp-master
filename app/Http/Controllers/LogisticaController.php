@@ -17468,15 +17468,15 @@ public function obtener_promociones($id_producto,$id_almacen){
             AND alm_det_req.id_producto=alm_prod_ubi.id_producto 
             AND alm_det_req.id_almacen_reserva=alm_prod_ubi.id_almacen) as cantidad_reserva")
     )
-    ->leftJoin('almacen.alm_prod', 'alm_prod.id_producto', '=', 'alm_prod_prom.id_producto')
+    ->leftJoin('almacen.alm_prod', 'alm_prod.id_producto', '=', 'alm_prod_prom.id_producto_promocion')
     ->leftJoin('almacen.alm_cat_prod', 'alm_cat_prod.id_categoria', '=', 'alm_prod.id_categoria')
     ->leftJoin('almacen.alm_subcat','alm_subcat.id_subcategoria','=','alm_prod.id_subcategoria')
     ->leftJoin('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'alm_prod.id_unidad_medida')
-    ->leftJoin('almacen.alm_prod_ubi', 'alm_prod_ubi.id_producto', '=', 'alm_prod_prom.id_producto')
+    ->leftJoin('almacen.alm_prod_ubi', 'alm_prod_ubi.id_producto', '=', 'alm_prod_prom.id_producto_promocion')
     ->leftJoin('almacen.alm_almacen', 'alm_almacen.id_almacen', '=', 'alm_prod_ubi.id_almacen')
 
     ->where([    
-    ['alm_prod_prom.id_producto_promocion','=',$id_producto],
+    ['alm_prod_prom.id_producto','=',$id_producto],
     ['alm_prod_ubi.id_almacen','=',$id_almacen]
     ])
     ->orderBy('alm_prod_prom.id_promocion', 'asc')

@@ -836,6 +836,8 @@ function agregarItem(){
     let btnVerUltimasCompras = document.getElementsByName('btnVerUltimasCompras')[0];
     btnVerUltimasCompras.setAttribute('disabled',true);
     }
+    $('#modal-detalle-requerimiento').modal('hide');
+
  }
 
 function statusBtnOpenProyectoModal(value){
@@ -2063,10 +2065,20 @@ function obtenerPromociones(id_producto,id_almacen,descripcion_producto){
                 }
 
                 response.data.forEach(element => {
-                    var node = document.createElement("LI");
-                    var textnode = document.createTextNode(element.descripcion);
-                    node.appendChild(textnode);
-                    ul.appendChild(node);
+                    if(element.stock > 0){
+                        var node = document.createElement("LI");
+                        node.setAttribute('class','text-success');
+                        var textnode = document.createTextNode(element.descripcion+' (Saldo disponible: '+element.stock+' Und.)');
+                        node.appendChild(textnode);
+                        ul.appendChild(node);
+                    }else{
+                        var node = document.createElement("LI");
+                        node.setAttribute('class','text-danger');
+                        var textnode = document.createTextNode(element.descripcion+' (No hay saldo en almacén)');
+                        node.appendChild(textnode);
+                        ul.appendChild(node);
+                    }
+
                 });
                 }
             }
@@ -2088,29 +2100,45 @@ function agregarPromociones(){
     while(ul.firstChild) {
         ul.removeChild(ul.firstChild);
     }
-
+    
     objPromociones.forEach(element => {
 
-        data_item.push({
-            'id_promocion':element.id_promocion,
-            'id_producto':element.id_producto,
-            'id_producto_promocion':element.id_producto_promocion,
-            'cod_item':element.codigo,
-            'codigo_anexo':element.codigo_anexo,
-            'part_number':element.part_number,
-            'categoria':element.categoria,
-            'subcategoria':element.subcategoria,
-            'des_item':element.descripcion,
-            'id_unidad_medida':element.id_unidad_medida,
-            'unidad':element.unidad_medida,
-            'cantidad':1
-        });
+        if(element.stock >0){
+            data_item.push({
+                'id_promocion':element.id_promocion,
+                'id_producto':element.id_producto,
+                'id_producto_promocion':element.id_producto_promocion,
+                'cod_item':element.codigo,
+                'codigo_anexo':element.codigo_anexo,
+                'part_number':element.part_number,
+                'categoria':element.categoria,
+                'subcategoria':element.subcategoria,
+                'des_item':element.descripcion,
+                'stock':element.stock,
+                'id_unidad_medida':element.id_unidad_medida,
+                'unidad':element.unidad_medida,
+                'id_item':null,
+                'id_tipo_item':null,
+                'precio_referencial':null,
+                'fecha_entrega':null,
+                'id_partida':null,
+                'cantidad':1,
+                'id_almacen_reserva':null
+    
+            });
+        }
+
 
         
-        var node = document.createElement("LI");
-        var textnode = document.createTextNode(element.descripcion);
-        node.appendChild(textnode);
-        ul.appendChild(node);
+
+
+        if(element.stock > 0){
+            var node = document.createElement("LI");
+            var textnode = document.createTextNode(element.descripcion);
+            node.appendChild(textnode);
+            ul.appendChild(node);
+        }
+
     });
 
     document.querySelector("div[id='modal-detalle-requerimiento'] div[id='promocion_activa']").removeAttribute('hidden');
