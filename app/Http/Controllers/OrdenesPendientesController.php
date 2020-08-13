@@ -147,7 +147,7 @@ class OrdenesPendientesController extends Controller
             ->select(
                 'log_det_ord_compra.*','alm_item.id_producto','alm_prod.codigo',
                 'alm_prod.part_number','alm_cat_prod.descripcion as categoria',
-                'alm_subcat.descripcion as subcategoria',
+                'alm_subcat.descripcion as subcategoria','alm_prod.series',
                 'alm_prod.descripcion','alm_und_medida.abreviatura',
                 'log_ord_compra.codigo as codigo_oc',
                 DB::raw('(SELECT SUM(guia_com_det.cantidad) FROM almacen.guia_com_det
@@ -164,11 +164,17 @@ class OrdenesPendientesController extends Controller
             ->whereIn('log_det_ord_compra.id_orden_compra',$ordenes)
             ->where('log_det_ord_compra.estado',1)
             ->get();
+        
         $html = '';
         $i = 1;
+        $ids_detalle = [];
+
         foreach ($detalle as $det) {
+            
+            array_push($ids_detalle, ['id_oc_det'=>$det->id_detalle_orden,'series'=>[]]);
             $cantidad = ($det->cantidad - $det->suma_cantidad_guias);
-            $html.='<tr>
+
+            $html.='<tr id="'.$det->id_detalle_orden.'">
                 <td><input type="checkbox" value="'.$det->id_detalle_orden.'" checked/></td>
                 <td>'.$det->codigo_oc.'</td>
                 <td>'.$det->codigo.'</td>
@@ -178,10 +184,15 @@ class OrdenesPendientesController extends Controller
                 <td>'.$det->descripcion.'</td>
                 <td><input type="number" id="cantidad" value="'.$cantidad.'" min="1" max="'.$cantidad.'" style="width:80px;"/></td>
                 <td>'.$det->abreviatura.'</td>
+                <td><input type="text" class="oculto" id="series" value="'.$det->series.'" data-partnumber="'.$det->part_number.'"/>';
+                if ($det->series == true) {
+                    $html.='<i class="fas fa-bars icon-tabla boton" data-toggle="tooltip" data-placement="bottom" title="Agregar Series" onClick="agrega_series('.$det->id_detalle_orden.');"></i>';
+                }
+                $html.='</td>
             </tr>';
             $i++;
         }
-        return json_encode($html);
+        return json_encode(['html'=>$html, 'ids_detalle'=>$ids_detalle]);
     }
 
     public function detalleMovimiento($id_mov_alm){
@@ -293,35 +304,23 @@ class OrdenesPendientesController extends Controller
                     
                     $detalle = DB::table('logistica.log_det_ord_compra')
                     ->select('log_det_ord_compra.*','alm_item.id_producto')
-                    // 'log_valorizacion_cotizacion.precio_cotizado',
-                    // 'log_valorizacion_cotizacion.id_unidad_medida','log_valorizacion_cotizacion.precio_sin_igv',
-                    // 'log_valorizacion_cotizacion.cantidad_cotizada',
-                    // 'log_valorizacion_cotizacion.monto_descuento'
-                    // ->leftjoin('logistica.log_valorizacion_cotizacion','log_valorizacion_cotizacion.id_valorizacion_cotizacion','=','log_det_ord_compra.id_valorizacion_cotizacion')
                     ->leftjoin('almacen.alm_item','alm_item.id_item','=','log_det_ord_compra.id_item')
                     ->whereIn('id_detalle_orden',$ids_ocd)
-                    // ->where([['log_det_ord_compra.estado','!=',7],
-                    //          ['log_det_ord_compra.id_orden_compra','=',$request->id_orden_compra]])
                     ->get();
                     
                     $cantidad = 0;
                     $padres_oc = [];
 
                     foreach ($detalle as $det) {
-                        // $posicion = DB::table('almacen.alm_prod_ubi')
-                        // ->select('alm_ubi_posicion.id_posicion','alm_ubi_posicion.codigo')
-                        // ->join('almacen.alm_ubi_posicion','alm_ubi_posicion.id_posicion','=','alm_prod_ubi.id_posicion')
-                        // ->where([['alm_prod_ubi.id_producto','=',$det->id_producto],
-                        //          ['alm_prod_ubi.id_almacen','=',$request->id_almacen],
-                        //          ['alm_prod_ubi.estado','=',1]])
-                        // ->orderBy('id_prod_ubi','desc')
-                        // ->first();
+
                         if (!in_array($det->id_orden_compra, $padres_oc)){
                             array_push($padres_oc, $det->id_orden_compra);
                         }
+                        $series = [];
                         foreach($detalle_oc as $d){
                             if ($det->id_detalle_orden == $d->id_detalle_orden){
                                 $cantidad = $d->cantidad;
+                                $series = $d->series;
                                 break;
                             }
                         }
@@ -345,6 +344,19 @@ class OrdenesPendientesController extends Controller
                             ],
                                 'id_guia_com_det'
                             );
+                        //agrega series
+                        foreach ($series as $serie) {
+                            DB::table('almacen.alm_prod_serie')->insert(
+                                [
+                                    'id_prod' => $det->id_producto,
+                                    'id_almacen' => $request->id_almacen,
+                                    'serie' => $serie,
+                                    'estado' => 1,
+                                    'fecha_registro' => $fecha_registro,
+                                    'id_guia_det' => $id_guia_com_det
+                                ]
+                            );
+                        }
                         //Guardo los items del ingreso
                         $id_det = DB::table('almacen.mov_alm_det')->insertGetId(
                             [
@@ -403,6 +415,13 @@ class OrdenesPendientesController extends Controller
                             ->update(['estado' => 6]);//En Almacen
                         }
                     }
+                    //vuelve a jalar para traer los ids guia_det
+                    $nuevo_detalle = DB::table('logistica.log_det_ord_compra')
+                    ->select('log_det_ord_compra.*','alm_item.id_producto','guia_com_det.id_guia_com_det')
+                    ->leftjoin('almacen.alm_item','alm_item.id_item','=','log_det_ord_compra.id_item')
+                    ->leftjoin('almacen.guia_com_det','guia_com_det.id_oc_det','=','log_det_ord_compra.id_detalle_orden')
+                    ->whereIn('id_detalle_orden',$ids_ocd)
+                    ->get();
                     //actualiza estado oc padre
                     foreach ($padres_oc as $padre){
                         $count_alm = DB::table('logistica.log_det_ord_compra')
@@ -446,8 +465,9 @@ class OrdenesPendientesController extends Controller
                                 ->where('id_requerimiento',$oc->id_requerimiento)
                                 ->update(['estado'=>19,
                                             'id_almacen_reserva'=>$request->id_almacen]);//Reservado
-
-                                if ($oc->sede_requerimiento !== $request->id_sede){//sede orden y almacen
+                                //sede orden y almacen requerimiento son diferentes
+                                if ($oc->sede_requerimiento !== $request->id_sede){
+                                    
                                     $fecha = date('Y-m-d H:i:s');
                                     $codigo_tra = TransferenciaController::transferencia_nextId($request->id_almacen);
                                     $guardar = false;
@@ -471,9 +491,10 @@ class OrdenesPendientesController extends Controller
                                             'id_transferencia'
                                         );
 
-                                    foreach ($detalle as $det) {
+                                    foreach ($nuevo_detalle as $det) {
 
                                         if ($det->id_orden_compra == $padre){
+                                            $cantidad = null;
                                             
                                             foreach($detalle_oc as $d){
                                                 if ($det->id_detalle_orden == $d->id_detalle_orden){
@@ -487,6 +508,7 @@ class OrdenesPendientesController extends Controller
                                                 'id_transferencia' => $id_trans,
                                                 'id_producto' => $det->id_producto,
                                                 'id_requerimiento_detalle' => $det->id_detalle_requerimiento,
+                                                'id_guia_com_det' => $det->id_guia_com_det,
                                                 'cantidad' => $cantidad,
                                                 'estado' => 1,
                                                 'fecha_registro' => $fecha
@@ -716,103 +738,111 @@ class OrdenesPendientesController extends Controller
             $msj = '';
 
             $ing = DB::table('almacen.mov_alm')
+            ->select('mov_alm.*','guia_com.serie','guia_com.numero')
+            ->join('almacen.guia_com','guia_com.id_guia','=','mov_alm.id_guia_com')
             ->where('id_mov_alm', $request->id_mov_alm)
             ->first();
             //si el ingreso no esta revisado
             if ($ing->revisado == 0){
-                //si existe una orden
-                if ($request->id_oc !== null) {
-                    //Verifica si ya tiene transferencia u orden de despacho
-                    $req = DB::table('logistica.log_ord_compra')
-                    ->select('alm_req.id_requerimiento','trans.id_transferencia','orden_despacho.id_od')
-                    ->join('almacen.alm_req','alm_req.id_requerimiento','=','log_ord_compra.id_requerimiento')
-                    ->join('almacen.guia_com','guia_com.id_oc','=','log_ord_compra.id_orden_compra')
-                    ->leftJoin('almacen.guia_ven', function($join)
-                    {   $join->on('guia_ven.id_guia_com', '=', 'guia_com.id_guia');
-                        $join->where('guia_ven.estado','!=', 7);
-                    })
-                    ->leftJoin('almacen.trans', function($join)
-                    {   $join->on('trans.id_guia_ven', '=', 'guia_ven.id_guia_ven');
-                        $join->where('trans.estado','!=', 7);
-                    })
-                    ->leftJoin('almacen.orden_despacho', function($join)
-                    {   $join->on('orden_despacho.id_requerimiento', '=', 'alm_req.id_requerimiento');
-                        $join->where('orden_despacho.estado','!=', 7);
-                    })
-                    ->where('id_orden_compra',$request->id_oc)
-                    ->first();
+                //Verifica si ya tiene transferencia u orden de despacho
+                $detalle = DB::table('almacen.mov_alm_det')
+                ->select('log_det_ord_compra.id_detalle_orden','log_det_ord_compra.id_orden_compra',
+                         'alm_det_req.id_detalle_requerimiento','alm_det_req.id_requerimiento',
+                         'trans_detalle.id_trans_detalle','trans.id_transferencia',
+                         'trans.estado as estado_trans','orden_despacho.id_od')
+                ->join('almacen.guia_com_det','guia_com_det.id_guia_com_det','=','mov_alm_det.id_guia_com_det')
+                ->join('logistica.log_det_ord_compra','log_det_ord_compra.id_detalle_orden','=','guia_com_det.id_oc_det')
+                ->join('almacen.alm_det_req','alm_det_req.id_detalle_requerimiento','=','log_det_ord_compra.id_detalle_requerimiento')
+                // ->join('almacen.alm_req','alm_req.id_requerimiento','=','alm_det_req.id_requerimiento')
+                ->leftjoin('almacen.orden_despacho','orden_despacho.id_requerimiento','=','alm_det_req.id_requerimiento')
+                ->leftjoin('almacen.trans_detalle','trans_detalle.id_guia_com_det','=','mov_alm_det.id_guia_com_det')
+                ->leftjoin('almacen.trans','trans.id_transferencia','=','trans_detalle.id_transferencia')
+                ->where([['mov_alm_det.id_mov_alm','=',$request->id_mov_alm],['mov_alm_det.estado','!=',7]])
+                ->get();
 
-                    if ($req !== null && $req->id_requerimiento !== null && $req->id_transferencia == null && $req->id_od == null){
-                        //Anula ingreso
-                        $update = DB::table('almacen.mov_alm')
-                        ->where('id_mov_alm', $request->id_mov_alm)
-                        ->update([ 'estado' => 7 ]);
-                        //Anula el detalle
-                        $update = DB::table('almacen.mov_alm_det')
-                        ->where('id_mov_alm', $request->id_mov_alm)
-                        ->update([ 'estado' => 7 ]);
-                        //Agrega motivo anulacion a la guia
-                        DB::table('almacen.guia_com_obs')->insert(
-                        [
-                            'id_guia_com'=>$request->id_guia_com,
-                            'observacion'=>$request->observacion,
-                            'registrado_por'=>$id_usuario,
-                            'id_motivo_anu'=>$request->id_motivo_obs,
-                            'fecha_registro'=>date('Y-m-d H:i:s')
-                        ]);
-                        //Anula la Guia
-                        $update = DB::table('almacen.guia_com')
-                        ->where('id_guia', $request->id_guia_com)
-                        ->update([ 'estado' => 7 ]);
-                        //Anula la Guia Detalle
-                        $update = DB::table('almacen.guia_com_det')
-                        ->where('id_guia_com', $request->id_guia_com)
-                        ->update([ 'estado' => 7 ]);
+                $validado = true;
+                foreach ($detalle as $det) {
+                    if (($det->id_trans_detalle !== null && $det->estado_trans == 17) || $det->id_od !== null){
+                        $validado = false;
+                    }
+                }
+
+                if ($validado){
+                    //Anula ingreso
+                    $update = DB::table('almacen.mov_alm')
+                    ->where('id_mov_alm', $request->id_mov_alm)
+                    ->update([ 'estado' => 7 ]);
+                    //Anula el detalle
+                    $update = DB::table('almacen.mov_alm_det')
+                    ->where('id_mov_alm', $request->id_mov_alm)
+                    ->update([ 'estado' => 7 ]);
+                    //Agrega motivo anulacion a la guia
+                    DB::table('almacen.guia_com_obs')->insert(
+                    [
+                        'id_guia_com'=>$request->id_guia_com,
+                        'observacion'=>$request->observacion,
+                        'registrado_por'=>$id_usuario,
+                        'id_motivo_anu'=>$request->id_motivo_obs,
+                        'fecha_registro'=>date('Y-m-d H:i:s')
+                    ]);
+                    //Anula la Guia
+                    $update = DB::table('almacen.guia_com')
+                    ->where('id_guia', $request->id_guia_com)
+                    ->update([ 'estado' => 7 ]);
+                    //Anula la Guia Detalle
+                    $update = DB::table('almacen.guia_com_det')
+                    ->where('id_guia_com', $request->id_guia_com)
+                    ->update([ 'estado' => 7 ]);
+                    
+                    $requerimientos = [];
+
+                    foreach ($detalle as $det) {
+                        //Quita estado de la orden
+                        DB::table('logistica.log_det_ord_compra')
+                        ->where('id_detalle_orden',$det->id_detalle_orden)
+                        ->update(['estado' => 1]);
                         //Quita estado de la orden
                         DB::table('logistica.log_ord_compra')
-                        ->where('id_orden_compra',$request->id_oc)
+                        ->where('id_orden_compra',$det->id_orden_compra)
                         ->update(['en_almacen' => false]);
-    
-                        if ($req->id_requerimiento !== null){
+
+                        DB::table('almacen.alm_det_req')
+                        ->where('id_detalle_requerimiento',$det->id_detalle_requerimiento)
+                        ->update(['estado' => 5]);//Atendido
+                        
+                        if (!in_array($det->id_requerimiento, $requerimientos)){
+                            //agrega id_requerimiento
+                            array_push($requerimientos, $det->id_requerimiento);
                             //Requerimiento regresa a atendido
                             DB::table('almacen.alm_req')
-                            ->where('id_requerimiento',$req->id_requerimiento)
-                            ->update(['estado'=>5]);//Atendido
-    
-                            DB::table('almacen.alm_det_req')
-                            ->where('id_requerimiento',$req->id_requerimiento)
-                            ->update(['estado'=>5]);//Atendido
-                            //Agrega accion en requerimiento
-                            DB::table('almacen.alm_req_obs')
-                            ->insert([  'id_requerimiento'=>$req->id_requerimiento,
-                                        'accion'=>'INGRESO ANULADO',
-                                        'descripcion'=>'Ingreso por Compra Anulado. Requerimiento regresa a Atendido.',
-                                        'id_usuario'=>$id_usuario,
-                                        'fecha_registro'=>date('Y-m-d H:i:s')
-                                ]);
+                            ->where('id_requerimiento',$det->id_requerimiento)
+                            ->update(['estado' => 5]);//Atendido
                         }
-                    } else {
-                        $msj = 'El ingreso ya fue procesado con una Orden de Despacho o una Transferencia';
+                        //Anula transferencia
+                        if ($det->id_trans_detalle !== null){
+                            
+                            DB::table('almacen.trans_detalle')
+                            ->where('id_trans_detalle',$det->id_trans_detalle)
+                            ->update(['estado' => 7]);//Anulado
+
+                            DB::table('almacen.trans')
+                            ->where('id_transferencia',$det->id_transferencia)
+                            ->update(['estado' => 7]);//Anulado
+                        }
                     }
-                // } else {
-                //     $ordenes = DB::table('almacen.guia_com_oc')
-                //     ->where('id_guia_com', $request->id_guia_com)
-                //     ->get();
-                    
-                //     if ($ordenes !== null && isset($ordenes)){
-                //         //Anula la Orden
-                //         DB::table('almacen.guia_com_oc')
-                //         ->where('id_guia_com', $request->id_guia_com)
-                //         ->update([ 'estado' => 7 ]);
-                        
-                //         foreach($ordenes as $oc){
-                //             DB::table('logistica.log_ord_compra')
-                //             ->where('id_orden_compra',$oc->id_oc)
-                //             ->update(['en_almacen' => false]);
-                //         }
-                //     } 
+
+                    foreach ($requerimientos as $id_requerimiento) {
+                        //Agrega accion en requerimiento
+                        DB::table('almacen.alm_req_obs')
+                        ->insert([  'id_requerimiento'=>$id_requerimiento,
+                                    'accion'=>'INGRESO ANULADO',
+                                    'descripcion'=>'Ingreso por Compra con Guía '.$ing->serie.'-'.$ing->numero.' e '.$ing->codigo.' fue Anulado. Requerimiento regresa a Atendido.',
+                                    'id_usuario'=>$id_usuario,
+                                    'fecha_registro'=>date('Y-m-d H:i:s')
+                            ]);                        
+                    }
                 } else {
-                    $msj = 'No existe una orden enlazada';
+                    $msj = 'El ingreso ya fue procesado con una Orden de Despacho o una Transferencia';
                 }
             } else {
                 $msj = 'El ingreso ya fue revisado por el Jefe de Almacén';

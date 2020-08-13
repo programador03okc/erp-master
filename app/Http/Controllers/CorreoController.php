@@ -246,17 +246,7 @@ class CorreoController extends Controller
         $attachments=[];
         $cantidadAdjuntos=0;
         $smpt_setting=[];
-        // $id_cotizacion = $request->input("id_cotizacion");
-        // $remitente = $request->input("remitente");
-        // $destinatario = $request->input("destinatario");
-        // $asunto = $request->input("asunto");
-        // $contenido = $request->input("contenido_mail");
-        // $adjunto_server = json_decode($request->adjunto_server);
-        // $empresa =$this->get_empresa($id_cotizacion);
-
-        // if ($empresa['status'] == 'success'){
         $smpt_setting = CorreoController::get_smtp_authentication($id_empresa);
-        // }
 
         if ($smpt_setting['status'] =='success'){
             $smtpAddress = $smpt_setting['smtp_server'];
@@ -288,12 +278,6 @@ class CorreoController extends Controller
         }
 
         if ($mailer->send($message)){
-            // $estado_enviado =(new LogisticaController)->get_estado_doc('Enviado');
-            // $update = DB::table('logistica.log_cotizacion')->where('id_cotizacion', $id_cotizacion)
-            // ->update([
-            //     'estado_envio'          => $estado_enviado
-            // ]);
-                
             return "Mensaje Enviado.";
         }
         return "Algo salió mal :(";

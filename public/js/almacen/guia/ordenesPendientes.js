@@ -1,4 +1,5 @@
 let oc_seleccionadas = [];
+let oc_det_seleccionadas = [];
 
 function iniciar(permiso){
     $("#tab-ordenes section:first form").attr('form', 'formulario');
@@ -206,13 +207,15 @@ function open_guia_create_seleccionadas(){
 function listar_detalle_ordenes_seleccionadas(data){
     console.log(oc_seleccionadas);
     console.log(data);
+    oc_det_seleccionadas = [];
     $.ajax({
         type: 'POST',
         url: 'detalleOrdenesSeleccionadas',
         data: data,
         dataType: 'JSON',
         success: function(response){
-            $('#detalleOrdenSeleccionadas tbody').html(response);
+            $('#detalleOrdenSeleccionadas tbody').html(response['html']);
+            oc_det_seleccionadas = response['ids_detalle'];
         }
     }).fail( function( jqXHR, textStatus, errorThrown ){
         console.log(jqXHR);
@@ -226,16 +229,33 @@ $("#form-guia_create").on("submit", function(e){
     e.preventDefault();
     var data = $(this).serialize();
     var detalle = [];
+    var validaCampos = '';
     
     $("#detalleOrdenSeleccionadas input[type=checkbox]:checked").each(function(){
+        var id_oc_det = $(this).val();
+        var json = oc_det_seleccionadas.find(element => element.id_oc_det == id_oc_det);
+        var series = (json !== null ? json.series : []);
+        var requiereSeries = $(this).parent().parent().find('td input[id=series]').val();
+        var part_number = $(this).parent().parent().find('td input[id=series]').data('partnumber');
+        
+        if (requiereSeries == '1' && series.length == 0){
+            validaCampos += 'El producto con Part Number '+part_number+' requiere que ingrese Series.\n'; 
+        }
+
         detalle.push({ 
-            'id_detalle_orden'  : $(this).val(),
-            'cantidad'          : $(this).parent().parent().find('td input[id=cantidad]').val()
+            'id_detalle_orden'  : id_oc_det,
+            'cantidad'          : $(this).parent().parent().find('td input[id=cantidad]').val(),
+            'series'            : series
         });
     });
-    data+='&detalle='+JSON.stringify(detalle);
-    console.log(data);
-    guardar_guia_create(data);
+
+    if (validaCampos.length > 0){
+        alert(validaCampos);
+    } else {
+        data+='&detalle='+JSON.stringify(detalle);
+        console.log(data);
+        guardar_guia_create(data);
+    }
 });
 
 function guardar_guia_create(data){

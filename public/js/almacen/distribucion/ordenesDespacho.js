@@ -98,6 +98,10 @@ function listarRequerimientosElaborados(){
             {'render': function (data, type, row){
                 return '<span class="label label-'+row['bootstrap_color']+'">'+row['estado_doc']+'</span>'
                 }
+            },
+            {'render': function (data, type, row){
+                    return 'Pendiente de aprobar por <strong>Finanzas</strong>';
+                }
             }
         ],
         'columnDefs': [
@@ -106,7 +110,7 @@ function listarRequerimientosElaborados(){
                     return '<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" '+
                     'data-placement="bottom" title="Ver Detalle" >'+
                     '<i class="fas fa-list-ul"></i></button>';
-                }, targets: 10
+                }, targets: 11
             }
         ],
     });

@@ -159,60 +159,81 @@ function listar_detalle_ingreso(id_requerimiento){
     });
 }
 
-function guardar_orden_despacho(){
-    var sede = $('[name=id_sede]').val();
-    var req = $('[name=id_requerimiento]').val();
-    var alm = $('[name=id_almacen]').val();
-    var clie = $('[name=id_cliente]').val();
-    var perso = $('[name=id_persona]').val();
-    var ubig = $('[name=ubigeo]').val();
-    var dir = $('[name=direccion_destino]').val();
-    var fdes = $('[name=fecha_despacho]').val();
-    var fent = $('[name=fecha_entrega]').val();
-    var camb = $('[name=aplica_cambios_valor]').val();
-    var tipo = $('[name=tipo_entrega]').val();
-    var tpcli = $('[name=tipo_cliente]').val();
-    var telf = $('[name=telefono_cliente]').val();
-    var sale = $('[name=sale]').val();
-
-    var mail = $('[name=correo_cliente]').val();
-    var dni = $('[name=dni_persona]').val();
-    var name = $('[name=nombre_persona]').val();
-    var ruc = $('[name=cliente_ruc]').val();
-    var raz = $('[name=cliente_razon_social]').val();
-
-    var doc = $('input[name=optionsRadios]:checked').val();
-
-    var data =  'id_sede='+sede+
-                '&id_requerimiento='+req+
-                '&id_cliente='+clie+
-                '&id_persona='+perso+
-                '&id_almacen='+alm+
-                '&ubigeo='+ubig+
-                '&direccion_destino='+dir+
-                '&fecha_despacho='+fdes+
-                '&fecha_entrega='+fent+
-                '&documento='+doc+
-                '&aplica_cambios_valor='+camb+
-                '&tipo_entrega='+tipo+
-                '&tipo_cliente='+tpcli+
-                '&telefono='+telf+
-                '&sale='+sale+
-                '&correo_cliente='+mail+
-                '&dni_persona='+dni+
-                '&nombre_persona='+name+
-                '&ruc='+ruc+
-                '&razon_social='+raz+
-                '&detalle_ingresa='+JSON.stringify(detalle_ingresa)+
-                '&detalle_requerimiento='+JSON.stringify(detalle_requerimiento);
-
-    console.log(data);
+$("#form-orden_despacho").on("submit", function(e){
+    console.log('submit');
+    e.preventDefault();
     var msj = validaOrdenDespacho();
 
     if (msj.length > 0){
         alert(msj);
     } 
     else {
+        var serial = $(this).serialize();
+        var doc = $('input[name=optionsRadios]:checked').val();
+        var data = serial+'&documento='+doc+
+                          '&detalle_ingresa='+JSON.stringify(detalle_ingresa)+
+                          '&detalle_requerimiento='+JSON.stringify(detalle_requerimiento);
+        console.log(data);
+        guardar_orden_despacho(data);
+    }
+});
+
+function guardar_orden_despacho(data){
+    // var sede = $('[name=id_sede]').val();
+    // var req = $('[name=id_requerimiento]').val();
+    // var alm = $('[name=id_almacen]').val();
+    // var clie = $('[name=id_cliente]').val();
+    // var perso = $('[name=id_persona]').val();
+    // var ubig = $('[name=ubigeo]').val();
+    // var dir = $('[name=direccion_destino]').val();
+    // var fdes = $('[name=fecha_despacho]').val();
+    // var hdes = $('[name=hora_despacho]').val();
+    // var fent = $('[name=fecha_entrega]').val();
+    // var camb = $('[name=aplica_cambios_valor]').val();
+    // var tipo = $('[name=tipo_entrega]').val();
+    // var tpcli = $('[name=tipo_cliente]').val();
+    // var telf = $('[name=telefono_cliente]').val();
+    // var sale = $('[name=sale]').val();
+
+    // var mail = $('[name=correo_cliente]').val();
+    // var dni = $('[name=dni_persona]').val();
+    // var name = $('[name=nombre_persona]').val();
+    // var ruc = $('[name=cliente_ruc]').val();
+    // var raz = $('[name=cliente_razon_social]').val();
+
+    // var doc = $('input[name=optionsRadios]:checked').val();
+
+    // var data =  'id_sede='+sede+
+    //             '&id_requerimiento='+req+
+    //             '&id_cliente='+clie+
+    //             '&id_persona='+perso+
+    //             '&id_almacen='+alm+
+    //             '&ubigeo='+ubig+
+    //             '&direccion_destino='+dir+
+    //             '&fecha_despacho='+fdes+
+    //             '&hora_despacho='+hdes+
+    //             '&fecha_entrega='+fent+
+    //             '&documento='+doc+
+    //             '&aplica_cambios_valor='+camb+
+    //             '&tipo_entrega='+tipo+
+    //             '&tipo_cliente='+tpcli+
+    //             '&telefono='+telf+***
+    //             '&sale='+sale+
+    //             '&correo_cliente='+mail+
+    //             '&dni_persona='+dni+
+    //             '&nombre_persona='+name+
+    //             '&ruc='+ruc+***
+    //             '&razon_social='+raz+***
+    //             '&detalle_ingresa='+JSON.stringify(detalle_ingresa)+
+    //             '&detalle_requerimiento='+JSON.stringify(detalle_requerimiento);
+
+    console.log(data);
+    // var msj = validaOrdenDespacho();
+
+    // if (msj.length > 0){
+    //     alert(msj);
+    // } 
+    // else {
         $("#submit_orden_despacho").attr('disabled','true');
         $.ajax({
             type: 'POST',
@@ -236,7 +257,7 @@ function guardar_orden_despacho(){
             console.log(textStatus);
             console.log(errorThrown);
         });
-    }
+    // }
 }
 
 $("[name=aplica_cambios]").on( 'change', function() {
@@ -310,6 +331,7 @@ function validaOrdenDespacho(){
     var dir = $('[name=direccion_destino]').val();
     var telf = $('[name=telefono_cliente]').val();
     var mail = $('[name=correo_cliente]').val();
+    var hora = $('[name=hora_despacho]').val();
     var msj = '';
 
     if (tpcli == 1){
@@ -332,6 +354,9 @@ function validaOrdenDespacho(){
     }
     if (mail == ''){
         msj+='\n Es necesario que ingrese un Email';
+    }
+    if (hora == ''){
+        msj+='\n Es necesario que ingrese una Hora';
     }
     return msj;
 }

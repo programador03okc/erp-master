@@ -448,11 +448,12 @@ class DistribucionController extends Controller
                     'id_cliente'=>$request->id_cliente,
                     'id_persona'=>$request->id_persona,
                     'id_almacen'=>$request->id_almacen,
-                    'telefono'=>$request->telefono,
+                    'telefono'=>$request->telefono_cliente,
                     'codigo'=>$codigo,
                     'ubigeo_destino'=>$request->ubigeo,
                     'direccion_destino'=>$request->direccion_destino,
                     'fecha_despacho'=>$request->fecha_despacho,
+                    'hora_despacho'=>$request->hora_despacho,
                     'fecha_entrega'=>$request->fecha_entrega,
                     'aplica_cambios'=>($request->aplica_cambios_valor == 'si' ? true : false),
                     'registrado_por'=>$usuario,
@@ -535,8 +536,6 @@ class DistribucionController extends Controller
                 }
             }
 
-            $msj = '';
-
             $empresa = DB::table('administracion.sis_sede')
             ->select('adm_empresa.id_empresa','adm_contri.razon_social')
             ->join('administracion.adm_empresa','adm_empresa.id_empresa','=','sis_sede.id_empresa')
@@ -582,16 +581,18 @@ class DistribucionController extends Controller
                 $i++;
             }
 
-            $asunto = 'Generar '.$request->documento.' para el '.$req->codigo.' '.$req->concepto;
-            $contenido = '
-    Favor de generar '.$request->documento.' para el '.$req->codigo.' '.$req->concepto.' 
+            $asunto_facturacion = 'Generar '.$request->documento.' para el '.$req->codigo.' '.$req->concepto;
+            $asunto_almacen = 'Generar Guía de Venta para el '.$req->codigo.' '.$req->concepto;
+
+            $contenido = ' para el '.$req->codigo.' '.$req->concepto.' 
     Empresa: '.$empresa->razon_social.'
-                    
+            
     Datos del Cliente:
-    - '.($request->documento == 'boleta' ? 'DNI: '.$request->dni_persona : 'RUC: '.$request->ruc).'
-    - '.($request->documento == 'boleta' ? 'Nombres y Apellidos: '.$request->nombre_persona : 'Razon Social: '.$request->razon_social).'
+    - '.($request->documento == 'boleta' ? 'DNI: '.$request->dni_persona : 'RUC: '.$request->cliente_ruc).'
+    - '.($request->documento == 'boleta' ? 'Nombres y Apellidos: '.$request->nombre_persona : 'Razon Social: '.$request->cliente_razon_social).'
     - Dirección: '.$request->direccion_destino.'
     - Fecha Despacho: '.$request->fecha_despacho.'
+    - Hora Despacho: '.$request->hora_despacho.'
 
     Descripcion de Items:
                 '.$text.'
@@ -599,8 +600,34 @@ class DistribucionController extends Controller
     Saludos,
     Módulo de Logística y Almacenes
     ';
-            $destinatario = 'programador01@okcomputer.com.pe';
-            $msj = CorreoController::enviar_correo($empresa->id_empresa, $destinatario, $asunto, $contenido);
+        
+            $contenido_facturacion = '
+    Favor de generar '.$request->documento.$contenido;
+
+            $contenido_almacen = '
+    Favor de generar Guía de Venta'.$contenido;
+
+            $destinatario_facturacion = 'programador01@okcomputer.com.pe';
+            $destinatario_almacen = 'programador01@okcomputer.com.pe';
+            $msj = '';
+
+            $rspta_facturacion = CorreoController::enviar_correo( $empresa->id_empresa, $destinatario_facturacion, 
+                                                                  $asunto_facturacion, $contenido_facturacion);
+            $rspta_almacen = CorreoController::enviar_correo( $empresa->id_empresa, $destinatario_almacen, 
+                                                              $asunto_almacen, $contenido_almacen);
+
+            if ($rspta_facturacion !== 'Mensaje Enviado.'){
+                $msj = 'No se pudo enviar el mensaje a '.$destinatario_facturacion;
+            } else {
+                $msj = 'Mensaje enviado correctamente a '.$destinatario_facturacion;
+            }
+            if ($rspta_almacen !== 'Mensaje Enviado.'){
+                $msj .= '
+No se pudo enviar el mensaje a '.$destinatario_almacen;
+            } else {
+                $msj .= '
+Mensaje enviado correctamente a '.$destinatario_almacen;
+            }
 
             DB::commit();
             return response()->json($msj);

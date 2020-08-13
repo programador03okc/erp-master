@@ -7,14 +7,13 @@
                     <h3 class="modal-title">Generar Orden de Despacho</h3>
                 </div>
                 <div class="modal-body">
-                    <input type="text" class="oculto" name="id_orden_despacho">
                     <input type="text" class="oculto" name="id_requerimiento">
                     <input type="text" class="oculto" name="id_sede"/>
                     <div class="row">
                         <div class="col-md-4">
                             <h5>Tipo Cliente</h5>
                             <div class="input-group-okc">
-                                <select name="tipo_cliente" name="tipo_cliente" onChange="changeTipoCliente(event);"
+                                <select name="tipo_cliente" onChange="changeTipoCliente(event);"
                                     class="form-control activation" style="width:100px" required>
                                     <!-- <option value="0">Elija una opción</option> -->
                                     <option value="1" default>Persona Natural</option>
@@ -37,7 +36,6 @@
                             <h5>Cliente</h5>
                             <div style="display:flex;"> 
                                 <input type="text" class="oculto" name="id_cliente" >
-                                <input type="text" class="oculto" name="tipo_cliente" >
                                 <input type="text" class="form-control" name="cliente_ruc" style="display: none; width: 130px;" readOnly>
                                 <input type="text" class="form-control" name="cliente_razon_social" style="display: none;" readOnly>
 
@@ -59,8 +57,8 @@
                             <input type="date" class="form-control" name="fecha_despacho" value="<?=date('Y-m-d');?>">
                         </div>
                         <div class="col-md-3">
-                            <h5>Última Fecha de Entrega</h5>
-                            <input type="date" class="form-control" name="fecha_entrega" value="<?=date('Y-m-d');?>">
+                            <h5>Hora de Despacho</h5>
+                            <input type="time" class="form-control" name="hora_despacho">
                         </div>
                     </div>
                     <div class="row">
@@ -79,11 +77,8 @@
                             </div>
                         </div>
                         <div class="col-md-3">
-                            <h5>Tipo de Entrega</h5>
-                            <select class="form-control" name="tipo_entrega">
-                                <option value="MISMA CIUDAD">MISMA CIUDAD</option>
-                                <option value="OTRAS CIUDADES">OTRAS CIUDADES</option>
-                            </select>
+                            <h5>Última Fecha de Entrega</h5>
+                            <input type="date" class="form-control" name="fecha_entrega" value="<?=date('Y-m-d');?>">
                         </div>
                     </div>
                     <div class="row">
@@ -91,7 +86,14 @@
                             <h5>Correo Cliente</h5>
                             <input type="text" class="form-control" name="correo_cliente">
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-3">
+                            <h5>Tipo de Entrega</h5>
+                            <select class="form-control" name="tipo_entrega">
+                                <option value="MISMA CIUDAD">MISMA CIUDAD</option>
+                                <option value="OTRAS CIUDADES">OTRAS CIUDADES</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
                             <h5>Elija el documento que desea emitir:</h5>
                             <div class="form-group">
                                 <div class="radio">
@@ -161,9 +163,9 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-sm btn-success" id="submit_orden_despacho" onClick="guardar_orden_despacho();" >Guardar y Enviar <i class="fas fa-paper-plane"></i> </button>
+                    <!-- <button class="btn btn-sm btn-success" id="submit_orden_despacho" onClick="guardar_orden_despacho();" >Guardar y Enviar <i class="fas fa-paper-plane"></i> </button> -->
                     <!-- &nbsp;<img width="10px" src="{{ asset('images/loading.gif')}}" class="loading invisible"><img> -->
-                    <!-- <input type="submit" id="submit_orden_despacho" class="btn btn-success" value="Guardar"/> -->
+                    <input type="submit" id="submit_orden_despacho" class="btn btn-success" value="Guardar y Enviar"/>
                 </div>
             </form>
         </div>
