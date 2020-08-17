@@ -2158,7 +2158,7 @@ class AlmacenController extends Controller
         $id_unidad_medida = DB::table('almacen.alm_und_medida')->insertGetId(
             [
                 'descripcion' => $request->descripcion,
-                'abreviatura' => $request->abreviatura,
+                'abreviatura' => strtoupper($request->abreviatura),
                 'estado' => 1,
                 // 'fecha_registro' => $fecha,
             ],
@@ -8698,28 +8698,6 @@ class AlmacenController extends Controller
         return response()->json($output);
     }
 
-    public function listar_kardex(){
-        $data = DB::connection('soft')->table('movimien')
-        ->where([['fec_docu','>=','2018-01-01'],
-                 ['cod_docu','=','FA']])
-        ->get();
-        $output['data'] = $data;
-        $size = $data->count();
-        return response()->json(['size'=>$size,'output'=>$output]);
-    }
-
-    public function soft_tipos_cambio(){
-        DB::connection('soft')->table('tcambio')
-        ->insert([
-            'dfecha' => '2020-08-03',
-            'cambio' => '3.237',
-            'cambio2' => '3.237',
-            'cambio3' => '3.237'
-        ]);
-        $data = DB::connection('soft')->table('tcambio')
-        ->get();
-        return $data;
-    }
     public function migrar_docs_compra(){
         
         $data = DB::table('almacen.doc_com')
