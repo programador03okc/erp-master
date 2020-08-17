@@ -647,8 +647,7 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::get('listar-saldos-por-almacen/{id_producto}', 'AlmacenController@listar_saldos_por_almacen_producto');
 					Route::get('obtener-promociones/{id_producto}/{id_almacen}', 'LogisticaController@obtener_promociones');
 
-
-				
+					Route::post('migrar_venta_directa', 'MigrateSoftLinkController@migrar_venta_directa');
 
 				});
 				Route::group(['as' => 'listado.', 'prefix' => 'listado'], function(){
@@ -727,8 +726,8 @@ Route::group(['middleware' => ['auth']], function () {
 
 		});
 
-		Route::get('getEstadosRequerimientos', 'DistribucionController@getEstadosRequerimientos');
-		Route::get('listarEstadosRequerimientos/{id}', 'DistribucionController@listarEstadosRequerimientos');
+		Route::get('getEstadosRequerimientos/{filtro}', 'DistribucionController@getEstadosRequerimientos');
+		Route::get('listarEstadosRequerimientos/{id}/{filtro}', 'DistribucionController@listarEstadosRequerimientos');
 		
 		Route::group(['as' => 'almacen.', 'prefix' => 'almacen'], function(){
 	
@@ -1308,6 +1307,8 @@ Route::group(['middleware' => ['auth']], function () {
 	});
 
 
+	Route::get('migrar_venta_directa/{id}', 'MigrateSoftLinkController@migrar_venta_directa');
+	Route::get('prueba', 'MigrateSoftLinkController@prueba');
 	Route::get('anular_presup', 'ProyectosController@anular_presup');
 
 

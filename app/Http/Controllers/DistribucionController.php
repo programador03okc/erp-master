@@ -308,25 +308,82 @@ class DistribucionController extends Controller
     }
 
 
-    public function getEstadosRequerimientos(){
-        $data = DB::table('almacen.alm_req')
-        ->select('alm_req.estado','adm_estado_doc.estado_doc','adm_estado_doc.bootstrap_color',
-            DB::raw('count(alm_req.id_requerimiento) as cantidad'))
-        ->join('administracion.adm_estado_doc','adm_estado_doc.id_estado_doc','=','alm_req.estado')
-        ->groupBy('alm_req.estado','adm_estado_doc.estado_doc','adm_estado_doc.bootstrap_color')
-            ->where([['alm_req.estado','!=',7]])
-            ->orderBy('alm_req.estado','desc')
-            ->get();
+    public function getEstadosRequerimientos($filtro){
+        $hoy = date('Y-m-d');
+
+        if ($filtro == '1'){
+            $data = DB::table('almacen.alm_req')
+            ->select('alm_req.estado','adm_estado_doc.estado_doc','adm_estado_doc.bootstrap_color',
+                DB::raw('count(alm_req.id_requerimiento) as cantidad'))
+            ->join('administracion.adm_estado_doc','adm_estado_doc.id_estado_doc','=','alm_req.estado')
+            ->groupBy('alm_req.estado','adm_estado_doc.estado_doc','adm_estado_doc.bootstrap_color')
+                ->where([['alm_req.estado','!=',7],['fecha_requerimiento','=',$hoy]])
+                ->orderBy('alm_req.estado','desc')
+                ->get();
+        } 
+        else if ($filtro == '2'){
+
+            $data = DB::table('almacen.alm_req')
+            ->select('alm_req.estado','adm_estado_doc.estado_doc','adm_estado_doc.bootstrap_color',
+                DB::raw('count(alm_req.id_requerimiento) as cantidad'))
+            ->join('administracion.adm_estado_doc','adm_estado_doc.id_estado_doc','=','alm_req.estado')
+            ->groupBy('alm_req.estado','adm_estado_doc.estado_doc','adm_estado_doc.bootstrap_color')
+                ->where([['alm_req.estado','!=',7]])
+                ->whereBetween('fecha_requerimiento', [
+                    Carbon::now()->startOfWeek(),
+                    Carbon::now()->endOfWeek(),
+                ])
+                ->orderBy('alm_req.estado','desc')
+                ->get();
+        } 
+        else if ($filtro == '3'){
+            $mes = date('m', strtotime($hoy));
+
+            $data = DB::table('almacen.alm_req')
+            ->select('alm_req.estado','adm_estado_doc.estado_doc','adm_estado_doc.bootstrap_color',
+                DB::raw('count(alm_req.id_requerimiento) as cantidad'))
+            ->join('administracion.adm_estado_doc','adm_estado_doc.id_estado_doc','=','alm_req.estado')
+            ->groupBy('alm_req.estado','adm_estado_doc.estado_doc','adm_estado_doc.bootstrap_color')
+                ->where([['alm_req.estado','!=',7]])
+                ->whereMonth('fecha_requerimiento', '=', $mes)
+                ->orderBy('alm_req.estado','desc')
+                ->get();
+        }
+        
         return response()->json($data);
     }
 
-    public function listarEstadosRequerimientos($estado){
-        $data = DB::table('almacen.alm_req')
-        ->select('alm_req.id_requerimiento','alm_req.codigo','alm_req.concepto','sis_usua.nombre_corto')
-            // ->join('almacen.alm_tp_req','alm_tp_req.id_tipo_requerimiento','=','alm_req.id_tipo_requerimiento')
-            ->join('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'alm_req.id_usuario')
-            ->where([['alm_req.estado','=',$estado]])
-            ->get();
+    public function listarEstadosRequerimientos($estado, $filtro){
+        $hoy = date('Y-m-d');
+
+        if ($filtro == '1'){
+            $data = DB::table('almacen.alm_req')
+            ->select('alm_req.id_requerimiento','alm_req.codigo','alm_req.concepto','sis_usua.nombre_corto')
+                ->join('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'alm_req.id_usuario')
+                ->where([['alm_req.estado','=',$estado],['fecha_requerimiento','=',$hoy]])
+                ->get();
+        } 
+        else if ($filtro == '2'){
+            $data = DB::table('almacen.alm_req')
+            ->select('alm_req.id_requerimiento','alm_req.codigo','alm_req.concepto','sis_usua.nombre_corto')
+                ->join('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'alm_req.id_usuario')
+                ->where([['alm_req.estado','=',$estado]])
+                ->whereBetween('fecha_requerimiento', [
+                    Carbon::now()->startOfWeek(),
+                    Carbon::now()->endOfWeek(),
+                ])
+                ->get();
+        } 
+        else if ($filtro == '3'){
+            $mes = date('m', strtotime($hoy));
+            
+            $data = DB::table('almacen.alm_req')
+            ->select('alm_req.id_requerimiento','alm_req.codigo','alm_req.concepto','sis_usua.nombre_corto')
+                ->join('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'alm_req.id_usuario')
+                ->where([['alm_req.estado','=',$estado]])
+                ->whereMonth('fecha_requerimiento', '=', $mes)
+                ->get();
+        }
         return response()->json($data);
     }
 

@@ -85,6 +85,16 @@
     <div class="col-md-9">
         <div class="row">
             <div class="col-md-4">
+                <div style="display:flex;">
+                    <p>Seleccione el Filtro: </p>
+                    <select name="filtro" onChange="mostrar_tabla();"
+                        class="form-control" style="width:200px" required>
+                        <!-- <option value="0">Elija una opción</option> -->
+                        <option value="1" >Hoy</option>
+                        <option value="2" >Semana</option>
+                        <option value="3" selected>Mes</option>
+                    </select>
+                </div>
                 <div class="panel panel-default">
                     <div class="panel-heading">Requerimientos por Estado</div>
                     <!-- <div class="panel-body">
