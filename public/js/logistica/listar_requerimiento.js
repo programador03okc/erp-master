@@ -5,7 +5,7 @@ rutaGrupoBySede,
 rutaVerFlujos,
 rutaExplorarRequerimiento;
 
-function inicializar(
+function inicializarRutasListado(
     _rutaListaElaborados,
     _rutaGetIdEmpresa,
     _rutaSedeByEmpresa,

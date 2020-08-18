@@ -426,6 +426,7 @@ class LogisticaController extends Controller
                 'alm_req.id_requerimiento',
                 'alm_req.codigo',
                 'alm_req.concepto',
+                'alm_req.occ_softlink',
                 'alm_req.fecha_requerimiento',
                 'alm_req.id_tipo_requerimiento',
                 'alm_tp_req.descripcion AS tipo_req_desc',
@@ -539,12 +540,9 @@ class LogisticaController extends Controller
                 'rrhh_rol_concepto.descripcion AS rrhh_rol_concepto',
                 'alm_req.id_area',
                 'adm_area.descripcion AS area_descripcion',
-                'alm_req.id_op_com',
                 'proy_op_com.codigo as codigo_op_com',
                 'proy_op_com.descripcion as descripcion_op_com',
                 'alm_req.id_presupuesto',
-                'alm_req.objetivo',
-                'alm_req.id_occ',
                 'alm_req.archivo_adjunto',
                 'alm_req.fecha_registro',
                 'alm_req.estado',
@@ -585,14 +583,12 @@ class LogisticaController extends Controller
                     'id_requerimiento' => $data->id_requerimiento,
                     'codigo' => $data->codigo,
                     'concepto' => $data->concepto,
-                    // 'objetivo' => $data->objetivo, deprecated ( eliminar campo)
                     'id_moneda' => $data->id_moneda,
                     'id_periodo' => $data->id_periodo,
                     'id_estado_doc' => $data->id_estado_doc,
                     'estado_doc' => $data->estado_doc,
                     'bootstrap_color' => $data->bootstrap_color,
                     'id_prioridad' => $data->id_prioridad,
-                    'id_occ' => $data->id_occ,
                     'id_empresa' => $data->id_empresa,
                     'id_grupo' => $data->id_grupo,
                     'id_sede' => $data->id_sede,
@@ -610,7 +606,6 @@ class LogisticaController extends Controller
                     'id_area' => $data->id_area,
                     'area_descripcion' => $data->area_descripcion,
                     'archivo_adjunto' => $data->archivo_adjunto,
-                    'id_op_com' => $data->id_op_com,
                     'codigo_op_com' => $data->codigo_op_com,
                     'descripcion_op_com' => $data->descripcion_op_com,
                     'id_presupuesto' => $data->id_presupuesto,
@@ -1639,7 +1634,6 @@ class LogisticaController extends Controller
                 'fecha_registro'        => date('Y-m-d H:i:s'),
                 'estado'                => ($request->requerimiento['tipo_requerimiento'] ==2?19:1),
                 'id_estado_doc'         => $request->requerimiento['id_estado_doc'],
-                'codigo_occ'            => isset($request->requerimiento['codigo_occ'])?$request->requerimiento['codigo_occ']:null,
                 'id_empresa'            => isset($request->requerimiento['id_empresa'])?$request->requerimiento['id_empresa']:null,
                 'id_sede'               => isset($request->requerimiento['id_sede'])?$request->requerimiento['id_sede']:null,
                 'tipo_cliente'          => isset($request->requerimiento['tipo_cliente'])?$request->requerimiento['tipo_cliente']:null,
@@ -2559,7 +2553,6 @@ class LogisticaController extends Controller
             'adm_periodo.descripcion as descripcion_periodo',
             'alm_req.concepto',
             'alm_req.id_grupo',
-            'alm_req.id_op_com',
             'proy_op_com.codigo as codigo_op_com',
             'proy_op_com.descripcion as descripcion_op_com',
             'alm_req.concepto AS alm_req_concepto',
@@ -2570,11 +2563,8 @@ class LogisticaController extends Controller
             'alm_req.id_prioridad',
             'alm_req.id_estado_doc',
             'alm_req.id_presupuesto',
-            'alm_req.objetivo',
-            'alm_req.tipo_occ',
-            'alm_req.id_occ',
             'alm_req.id_moneda',
-            'alm_req.desembolso',
+            'alm_req.id_op_com',
             'adm_estado_doc.estado_doc',
             'alm_tp_req.descripcion AS tipo_requerimiento',
             'adm_prioridad.descripcion AS priori',
@@ -2610,12 +2600,8 @@ class LogisticaController extends Controller
                 'id_prioridad' => $data->id_prioridad,
                 'id_estado_doc' => $data->id_estado_doc,
                 'id_presupuesto' => $data->id_presupuesto,
-                'objetivo' => $data->objetivo,
-                'tipo_occ' => $data->tipo_occ,
-                'id_occ' => $data->id_occ,
                 'id_moneda' => $data->id_moneda,
                 'simbolo_moneda' => $data->simbolo_moneda,
-                'desembolso' => $data->desembolso,
                 'estado_doc' => $data->estado_doc,
                 'tipo_requerimiento' => $data->tipo_requerimiento,
                 'priori' => $data->priori,
@@ -2990,12 +2976,12 @@ class LogisticaController extends Controller
             'adm_periodo.descripcion as descripcion_periodo',
             'alm_req.concepto',
             'alm_req.id_grupo',
+            'alm_req.id_op_com',
             'alm_req.id_empresa',
             'adm_contri.razon_social',
             'adm_contri.nro_documento',
             'adm_contri.id_doc_identidad',
             'sis_identi.descripcion as tipo_documento_identidad',
-            'alm_req.id_op_com',
             'proy_op_com.codigo as codigo_op_com',
             'proy_op_com.descripcion as descripcion_op_com',
             'alm_req.concepto AS alm_req_concepto',
@@ -3006,11 +2992,7 @@ class LogisticaController extends Controller
             'alm_req.id_prioridad',
             'alm_req.id_estado_doc',
             'alm_req.id_presupuesto',
-            'alm_req.objetivo',
-            'alm_req.tipo_occ',
-            'alm_req.id_occ',
             'alm_req.id_moneda',
-            'alm_req.desembolso',
             'adm_estado_doc.estado_doc',
             'alm_tp_req.descripcion AS tipo_requerimiento',
             'adm_prioridad.descripcion AS priori',
@@ -3052,12 +3034,8 @@ class LogisticaController extends Controller
                 'id_prioridad' => $data->id_prioridad,
                 'id_estado_doc' => $data->id_estado_doc,
                 'id_presupuesto' => $data->id_presupuesto,
-                'objetivo' => $data->objetivo,
-                'tipo_occ' => $data->tipo_occ,
-                'id_occ' => $data->id_occ,
                 'id_moneda' => $data->id_moneda,
                 'simbolo_moneda' => $data->simbolo_moneda,
-                'desembolso' => $data->desembolso,
                 'estado_doc' => $data->estado_doc,
                 'tipo_requerimiento' => $data->tipo_requerimiento,
                 'priori' => $data->priori,
@@ -5961,6 +5939,29 @@ function get_id_usuario_usuario_por_rol($descripcion_rol, $id_sede, $id_empresa)
         return $codigoGrupo;
     }
 
+    public function get_tipo_cliente($nombreTipoCliente){
+        $tipo_requerimiento =  DB::table('almacen.tipo_cliente')
+        ->where('descripcion', $nombreTipoCliente)
+        ->get();
+        if($tipo_requerimiento->count()>0){
+            $id_tipo_cliente=  $tipo_requerimiento->first()->id_tipo_cliente;
+        }else{
+            $id_tipo_cliente =0;
+        }
+        return $id_tipo_cliente;
+    }
+    public function get_tipo_requerimiento($nombreTipoRequerimiento){
+        $tipo_requerimiento =  DB::table('almacen.alm_tp_req')
+        ->where('descripcion', $nombreTipoRequerimiento)
+        ->get();
+        if($tipo_requerimiento->count()>0){
+            $id_tipo_requerimiento=  $tipo_requerimiento->first()->id_tipo_requerimiento;
+        }else{
+            $id_tipo_requerimiento =0;
+        }
+        return $id_tipo_requerimiento;
+    }
+
     public function get_estado_doc($nombreEstadoDoc){
         $estado_doc =  DB::table('administracion.adm_estado_doc')
         ->where('estado_doc', $nombreEstadoDoc)
@@ -8501,12 +8502,9 @@ function get_id_usuario_usuario_por_rol($descripcion_rol, $id_sede, $id_empresa)
                 'rrhh_rol_concepto.descripcion AS rrhh_rol_concepto',
                 'alm_req.id_area',
                 'adm_area.descripcion AS area_descripcion',
-                'alm_req.id_op_com',
                 'proy_op_com.codigo as codigo_op_com',
                 'proy_op_com.descripcion as descripcion_op_com',
                 'alm_req.id_presupuesto',
-                'alm_req.objetivo',
-                'alm_req.id_occ',
                 'alm_req.archivo_adjunto',
                 'alm_req.fecha_registro',
                 'alm_req.estado',
@@ -8544,14 +8542,12 @@ function get_id_usuario_usuario_por_rol($descripcion_rol, $id_sede, $id_empresa)
                     'id_requerimiento' => $data->id_requerimiento,
                     'codigo' => $data->codigo,
                     'concepto' => $data->concepto,
-                    // 'objetivo' => $data->objetivo, deprecated ( eliminar campo)
                     'id_moneda' => $data->id_moneda,
                     'id_periodo' => $data->id_periodo,
                     'id_estado_doc' => $data->id_estado_doc,
                     'estado_doc' => $data->estado_doc,
                     'bootstrap_color' => $data->bootstrap_color,
                     'id_prioridad' => $data->id_prioridad,
-                    'id_occ' => $data->id_occ,
                     'id_empresa' => $data->id_empresa,
                     'id_grupo' => $data->id_grupo,
                     'id_sede' => $data->id_sede,
@@ -8569,8 +8565,6 @@ function get_id_usuario_usuario_por_rol($descripcion_rol, $id_sede, $id_empresa)
                     'id_area' => $data->id_area,
                     'area_descripcion' => $data->area_descripcion,
                     'archivo_adjunto' => $data->archivo_adjunto,
-                    'id_op_com' => $data->id_op_com,
-                    'codigo_op_com' => $data->codigo_op_com,
                     'descripcion_op_com' => $data->descripcion_op_com,
                     'id_presupuesto' => $data->id_presupuesto,
                     'observacion' => $data->observacion,
@@ -10395,7 +10389,7 @@ function get_id_usuario_usuario_por_rol($descripcion_rol, $id_sede, $id_empresa)
 
     public function userSession()
     {
-        $id_rol = Auth::user()->login_rol;
+        $id_rol = Auth::user()->rol;
         $id_usuario = Auth::user()->id_usuario;
         $id_trabajador = Auth::user()->id_trabajador;
         $usuario = Auth::user()->usuario;
@@ -10414,25 +10408,21 @@ function get_id_usuario_usuario_por_rol($descripcion_rol, $id_sede, $id_empresa)
             'roles'=>[]
         ];
 
-        $rolConceptoUser = DB::table('administracion.rol_aprobacion')
+        $rolConceptoUser = DB::table('configuracion.sis_acceso')
         ->select(
-            'rol_aprobacion.id_rol_aprobacion',
-            'rol_aprobacion.id_area',
-            'adm_area.descripcion as nombre_area',
-            'rol_aprobacion.id_rol_concepto',
-            'rrhh_rol_concepto.descripcion as rol_concepto',
-            'rol_aprobacion.estado'
+            'sis_rol.id_rol',
+            'sis_rol.id_grupo',
+            'sis_rol.descripcion as rol_concepto',
+            'sis_rol.estado'
         )
-        ->leftJoin('rrhh.rrhh_rol_concepto', 'rrhh_rol_concepto.id_rol_concepto', '=', 'rol_aprobacion.id_rol_concepto')
-        ->leftJoin('administracion.adm_area', 'adm_area.id_area', '=', 'rol_aprobacion.id_area')
+        ->leftJoin('configuracion.sis_rol', 'sis_rol.id_rol', '=', 'sis_acceso.id_rol')
         // ->where(function($q) use ($dateNow) {
         //     $q->where('rol_aprobacion.fecha_fin','>', $dateNow)
         //     ->orWhere('rol_aprobacion.fecha_fin', null);
         // })
         ->where([
-            ['rol_aprobacion.id_trabajador', '=', $dataSession['id_trabajador']]
+            ['sis_acceso.id_usuario', '=', $id_usuario]
             ])
-        ->whereNotIn( 'rol_aprobacion.estado', [2,7])
         ->get();
 
         $dataSession['roles']=$rolConceptoUser;

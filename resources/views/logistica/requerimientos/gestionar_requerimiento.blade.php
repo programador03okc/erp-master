@@ -36,7 +36,17 @@
         <input type="hidden" name="id_estado_doc">
         <input type="hidden" name="id_requerimiento" primary="ids">
         <input type="hidden" name="cantidad_aprobaciones">        
+
         <div class="row">
+                <div class="col-md-12">
+                    <div class="input-group pull-right">
+                        <button type="button" name="btn-imprimir-requerimento-pdf" class="btn btn-info btn-sm" onclick="ImprimirRequerimientoPdf()" disabled><i class="fas fa-print"></i></button>
+                        &nbsp;
+                        <button type="button" name="btn-migrar-requerimiento" class="btn btn-success btn-sm" 
+                            data-toggle="tooltip" data-placement="bottom" title="Migrar Requerimiento a Softlink"
+                            onclick="migrarRequerimiento()" disabled><i class="fas fa-paper-plane"></i></button>
+                    </div>
+                </div>
                 <div class="col-md-2">
                         <h5 >Tipo de Requerimiento:</h5> 
                         <select class="form-control input-sm activation" name="tipo_requerimiento" onChange="changeOptTipoReqSelect(event);">
@@ -77,17 +87,13 @@
                         <div class="input-group-okc">
                             <select class="form-control input-sm activation" name="rol_usuario">
                             @foreach ($roles as $rol)
-                                <option value="{{$rol->id_rol_aprobacion}}">{{$rol->rol_concepto.' - '.$rol->nombre_area}}</option>
+                                <option value="{{$rol->id_rol}}">{{$rol->rol_concepto}}</option>
                             @endforeach
                             </select>
                         </div>
                     </div>
-                    <div class="col-md-1">
+                    <div class="col-md-2">
                         <h5>Estado:</h5> <h2><span class="label" id="estado_doc">&nbsp;</span></h2>
-                    </div>
-                    <div class="col-md-1">
-                            <h5>&nbsp;</h5>
-                            <button type="button" name="btn-imprimir-requerimento-pdf" class="btn btn-info btn-sm" onclick="ImprimirRequerimientoPdf()" disabled><i class="fas fa-print"></i></button>
                     </div>
                     
         </div>

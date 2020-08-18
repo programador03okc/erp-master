@@ -637,6 +637,15 @@ function mostrar_requerimiento(IdorCode){
                     var btnImprimirRequerimientoPdf = document.getElementsByName("btn-imprimir-requerimento-pdf");
                     disabledControl(btnImprimirRequerimientoPdf,false);
                     
+
+                    var btnMigrarRequerimiento = document.getElementsByName("btn-migrar-requerimiento");
+                    
+                    if (response['requerimiento'][0].occ_softlink == '' ||
+                        response['requerimiento'][0].occ_softlink == null){
+                        disabledControl(btnMigrarRequerimiento,false);
+                    } else {
+                        disabledControl(btnMigrarRequerimiento,true);
+                    }
                 // get observaciones  
                 let htmlObservacionReq = '';
                     // console.log(response.observacion_requerimiento);
@@ -658,6 +667,26 @@ function mostrar_requerimiento(IdorCode){
             }else{
                 alert("no se puedo obtener el requerimiento para mostrar");
             }
+        }
+    }).fail( function( jqXHR, textStatus, errorThrown ){
+        console.log(jqXHR);
+        console.log(textStatus);
+        console.log(errorThrown);
+    });
+}
+
+function migrarRequerimiento(){
+    var id = $('[name=id_requerimiento]').val();
+    var data = 'id_requerimiento='+id;
+    console.log('id_requerimiento: '+id);
+    $.ajax({
+        type: 'POST',
+        url: 'migrar_venta_directa',
+        data: data,
+        dataType: 'JSON',
+        success: function(response){
+            console.log(response);
+            alert(response);
         }
     }).fail( function( jqXHR, textStatus, errorThrown ){
         console.log(jqXHR);
@@ -2345,6 +2374,8 @@ function validaRequerimiento(){
 }
 
 function save_requerimiento(action){
+    changeStateButton('guardar');
+
     let actual_id_usuario = userSession.id_usuario;
     let requerimiento = get_data_requerimiento();
     // console.log(requerimiento);
@@ -2356,7 +2387,7 @@ function save_requerimiento(action){
     // requerimiento.id_rol = actual_id_rol; // update -> id rol actual
     // requerimiento.id_grupo = actual_id_grupo; // update -> id area actual
     let data = {requerimiento,detalle:detalle_requerimiento};
-    // console.log(data);
+    console.log(data);
 
     
     if (action == 'register'){
@@ -2391,9 +2422,9 @@ function save_requerimiento(action){
                 success: function(response){
                     console.log(response);
                     if (response > 0){
+                        changeStateButton('guardar');
                         let lastIdRequerimiento =  response;
                         mostrar_requerimiento(lastIdRequerimiento);
-                        changeStateButton('guardar');
                         $('#form-requerimiento').attr('type', 'register');
                         changeStateInput('form-requerimiento', true);
                         alert("Requerimiento Guardado");
@@ -2401,6 +2432,7 @@ function save_requerimiento(action){
                         // showNotificacionUsuario(100); // notificaciones de navegador beta
                     }else{
                         alert('Hubo un problema al intentar guardar el requerimiento');
+ 
                     }
                 }
             }).fail( function(jqXHR, textStatus, errorThrown){

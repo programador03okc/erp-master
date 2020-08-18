@@ -646,8 +646,7 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::get('listar-saldos-por-almacen', 'AlmacenController@listar_saldos_por_almacen');
 					Route::get('listar-saldos-por-almacen/{id_producto}', 'AlmacenController@listar_saldos_por_almacen_producto');
 					Route::get('obtener-promociones/{id_producto}/{id_almacen}', 'LogisticaController@obtener_promociones');
-
-
+					Route::post('migrar_venta_directa', 'MigrateSoftLinkController@migrar_venta_directa');
 				
 
 				});
@@ -660,6 +659,9 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::get('ver-flujos/{req?}/{doc?}', 'LogisticaController@flujo_aprobacion')->name('ver-flujos');
 					Route::get('explorar-requerimiento/{id_requerimiento?}', 'LogisticaController@explorar_requerimiento')->name('explorar-requerimiento');
 					Route::get('elaborados/{empresa?}/{sede?}/{grupo?}', 'LogisticaController@listar_requerimientos_elaborados')->name('elaborados');
+
+					Route::get('pendiente-aprobacion', 'RequerimientoController@requerimientos_pendientes_aprobacion')->name('pendientes-aprobacion');
+
 				});
 			});
 			

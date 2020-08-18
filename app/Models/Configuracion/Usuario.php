@@ -116,7 +116,25 @@ class Usuario extends Authenticatable
 			->select('sis_grupo.*')->first();
 		return $grupo;
 	}
+	public function getAllGrupo()
+	{
+		$grupo = Acceso::join('configuracion.sis_rol','sis_acceso.id_rol','=','sis_rol.id_rol')
+            ->leftJoin('configuracion.sis_grupo','sis_grupo.id_grupo','=','sis_rol.id_grupo')
+			->where('id_usuario',$this->id_usuario)
+			->select('sis_grupo.*')
+			->distinct('id_grupo')->get();
+		return $grupo;
+	}
 
+	public function getAllRol()
+	{
+		$roles = DB::table('configuracion.sis_acceso')
+		->select('sis_acceso.*','sis_rol.descripcion')
+		->join('configuracion.sis_rol','sis_rol.id_rol','=','sis_acceso.id_rol')
+		->where('sis_acceso.id_usuario',$this->id_usuario)
+		->get();
+		return $roles;
+	}
 
 
 

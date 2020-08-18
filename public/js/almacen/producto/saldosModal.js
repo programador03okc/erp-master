@@ -214,6 +214,11 @@ function selectValue(element,id_almacen,almacen_descripcion){
     var descripcionAlmacenReserva = almacen_descripcion;
     var idser = element.parentElement.parentElement.childNodes[12].innerText;
 
+    if(id >0){
+        $('[name=id_tipo_item]').val(1);
+    }else if(idser > 0){
+        $('[name=id_tipo_item]').val(2);
+    }
     $('[name=id_producto]').val(id);
     $('[name=id_servicio]').val(idser);
     $('[name=codigo_item]').val(co);
