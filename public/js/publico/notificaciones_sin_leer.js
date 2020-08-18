@@ -1,7 +1,7 @@
 
 function get_notificaciones_sin_leer_interval(){
     get_notificaciones_sin_leer();
-    setInterval(get_notificaciones_sin_leer, 30000); // cada 3 minutos
+    setInterval(get_notificaciones_sin_leer, ( 60 * 3 * 1000)); // cada 3 minutos aprox
 
 }
 function get_notificaciones_sin_leer(){
