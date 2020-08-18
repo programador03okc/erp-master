@@ -21,7 +21,7 @@ function inicializarRutasListado(
     rutaVerFlujos = _rutaVerFlujos;
     rutaExplorarRequerimiento = _rutaExplorarRequerimiento;
     
-    defaultValueSelectEmpresa('OK COMPUTER');
+    listar_requerimientos_elaborados('OK COMPUTER');
 
 }
 
@@ -52,7 +52,7 @@ $(function(){
 
 });
 
-function defaultValueSelectEmpresa(name){    
+function listar_requerimientos_elaborados(name){  
     let data={nombre:name};
     $.ajax({
         type: 'GET',
