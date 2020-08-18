@@ -22,9 +22,12 @@ let backgroundColor = [ //Color del segmento
 let orden = [1,5,19,17,9,20,21];
 
 function mostrar_tabla(){
+    var filtro = $('[name=filtro]').val();
+    dataLabel = [];
+    dataCantidades = [];
     $.ajax({
         type: 'GET',
-        url: 'getEstadosRequerimientos',
+        url: 'getEstadosRequerimientos/'+filtro,
         dataType: 'JSON',
         success: function(response){
             // console.log(response);
@@ -75,9 +78,10 @@ $('#listaEstadosRequerimientos tbody').on("click","button.ver", function(){
 });
 
 function listarRequerimientosEstado(estado){
+    var filtro = $('[name=filtro]').val();
     $.ajax({
         type: 'GET',
-        url: 'listarEstadosRequerimientos/'+estado,
+        url: 'listarEstadosRequerimientos/'+estado+'/'+filtro,
         dataType: 'JSON',
         success: function(response){
             console.log(response);
