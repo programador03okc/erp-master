@@ -1,9 +1,3 @@
-// import { normalize } from "path";
-// $(function(){
-//     console.log('function');
-//     $('[name=serie_prod]').focus();
-//     $('[name=serie_prod]').attr('autofocus','true');
-// });
 
 function agrega_series(id_guia_det, descripcion){
     var canti = $("#reg-"+id_guia_det+" td").find("input[name=cantidad]").val();

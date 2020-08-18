@@ -106,6 +106,8 @@ Pendientes de Ingreso
 @include('almacen.guias.guia_com_obs')
 @include('almacen.transferencias.transferenciaGuia')
 @include('almacen.guias.guia_ven_obs')
+@include('almacen.guias.guia_com_series')
+
 @endsection
 
 @section('scripts')
@@ -121,9 +123,11 @@ Pendientes de Ingreso
     <script src="{{ asset('template/plugins/iCheck/icheck.min.js') }}"></script>
     <script src="{{ asset('template/plugins/select2/select2.min.js') }}"></script>
     <script src="{{ asset('template/plugins/jquery-datatables-checkboxes/js/dataTables.checkboxes.min.js') }}"></script>
-
+    <script src="{{ asset('template/plugins/js-xlsx/xlsx.full.min.js') }}"></script>
+    
     <script src="{{ asset('js/almacen/guia/ordenesPendientes.js')}}"></script>
     <script src="{{ asset('js/almacen/transferencias/transferenciaGuia.js')}}"></script>
+    <script src="{{ asset('js/almacen/guia/guia_com_det_series.js')}}"></script>
     <script>
     $(document).ready(function(){
         seleccionarMenu(window.location);

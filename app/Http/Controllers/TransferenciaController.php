@@ -806,23 +806,6 @@ class TransferenciaController extends Controller
         ->get();
         return response()->json($detalle);
     }
-    // public function listarRequerimientosPorEnviar($alm_origen){
-    //     $lista = DB::table('almacen.alm_det_req')
-    //     ->select('trans.*','alm_req.codigo as cod_req','alm_req.concepto','sede_solicita.id_sede','sede_solicita.descripcion as sede_descripcion',
-    //     'origen.descripcion as alm_origen_descripcion','sis_usua.nombre_corto','sede_almacen.id_sede as id_sede_almacen',
-    //     'sede_almacen.descripcion as sede_almacen_descripcion','destino.descripcion as alm_destino_descripcion')
-    //     // ->join('almacen.alm_req','alm_req.id_requerimiento','=','trans.id_requerimiento')
-    //     ->join('administracion.sis_sede as sede_solicita','sede_solicita.id_sede','=','alm_req.id_sede')
-    //     ->join('almacen.alm_almacen as origen','origen.id_almacen','=','trans.id_almacen_origen')
-    //     ->join('administracion.sis_sede as sede_almacen','sede_almacen.id_sede','=','origen.id_sede')
-    //     ->join('almacen.alm_almacen as destino','destino.id_almacen','=','trans.id_almacen_destino') 
-    //     ->join('configuracion.sis_usua','sis_usua.id_usuario','=','alm_req.id_usuario')
-    //     ->where([['trans.id_almacen_origen','=',$alm_origen],
-    //              ['trans.id_guia_ven','=',null],
-    //              ['alm_req.confirmacion_pago','=',true],
-    //              ['trans.estado','!=',7]]);
-    //     return datatables($lista)->toJson();
-    // }
 
     public function update_guia_transferencia(Request $request){
 
@@ -876,6 +859,9 @@ class TransferenciaController extends Controller
                         'estado' => 17,
                         'fecha_transferencia' => $fecha
                     ]);
+                    DB::table('almacen.trans_detalle')
+                    ->where('id_transferencia',$trans)
+                    ->update(['estado' => 17]);
                 }
             } else {
                 DB::table('almacen.trans')->where('id_transferencia',$request->id_transferencia)
@@ -887,6 +873,9 @@ class TransferenciaController extends Controller
                     'estado' => 17,
                     'fecha_transferencia' => $fecha
                 ]);
+                DB::table('almacen.trans_detalle')
+                ->where('id_transferencia',$request->id_transferencia)
+                ->update(['estado' => 17]);
             }
             //Genero la salida
             $codigo = AlmacenController::nextMovimiento(2,//salida

@@ -98,6 +98,10 @@ function listarRequerimientosElaborados(){
             {'render': function (data, type, row){
                 return '<span class="label label-'+row['bootstrap_color']+'">'+row['estado_doc']+'</span>'
                 }
+            },
+            {'render': function (data, type, row){
+                    return 'Pendiente de aprobar por <strong>Finanzas</strong>';
+                }
             }
         ],
         'columnDefs': [
@@ -106,7 +110,7 @@ function listarRequerimientosElaborados(){
                     return '<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" '+
                     'data-placement="bottom" title="Ver Detalle" >'+
                     '<i class="fas fa-list-ul"></i></button>';
-                }, targets: 10
+                }, targets: 11
             }
         ],
     });
@@ -149,6 +153,22 @@ function listarRequerimientosConfirmados(){
             {'render': function (data, type, row){
                 return '<span class="label label-'+row['bootstrap_color']+'">'+row['estado_doc']+'</span>'
                 }
+            },
+            {'render': function (data, type, row){
+                    console.log(row['confirmacion_pago']);
+                    if (row['estado'] == 1 && row['confirmacion_pago'] == true){
+                        return 'Pendiente de que <strong>Compras</strong> genere la OC';
+                    } 
+                    else if (row['estado'] == 5){
+                        return 'Pendiente de que <strong>Almacén</strong> genere el Ingreso';
+                    } 
+                    else if (row['id_tipo_requerimiento'] !== 1 && row['estado'] == 19 && row['id_od'] == null){
+                        return 'Pendiente de que <strong>Distribución</strong> genere la OD';
+                    }
+                    else {
+                        return '';
+                    }
+                }
             }
         ],
         'columnDefs': [
@@ -161,7 +181,7 @@ function listarRequerimientosConfirmados(){
                     (`<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" 
                         data-placement="bottom" title="Ver Detalle" >
                         <i class="fas fa-list-ul"></i></button>`);
-                }, targets: 10
+                }, targets: 11
             }
         ],
     });
@@ -220,10 +240,6 @@ function listarRequerimientosPendientes(permiso){
                 }
             },            
             {'render': function (data, type, row){
-                return (row['serie'] !== null ? row['serie']+'-'+row['numero'] : '')
-                }
-            },
-            {'render': function (data, type, row){
                 return (row['codigo_transferencia'] !== null ? row['codigo_transferencia'] : (row['count_transferencia'] > 0 ? 
                 '<button type="button" class="detalle_trans btn btn-success boton" data-toggle="tooltip" '+
                     'data-placement="bottom" title="Ver Detalle de Transferencias" data-id="'+row['id_requerimiento']+'">'+
@@ -232,6 +248,23 @@ function listarRequerimientosPendientes(permiso){
             },
             {'render': function (data, type, row){
                 return (row['codigo_od'] !== null ? row['codigo_od'] : '')
+                }
+            },
+            {'render': function (data, type, row){
+                    if (row['estado'] == 17){
+                        return 'Pendiente de que <strong>Almacén</strong> recepcione la Transferencia';
+                    } 
+                    else if (row['estado'] == 19 && row['count_transferencia'] > 0 && 
+                             row['count_transferencia'] !== row['count_transferencia_recibida']){
+                        return 'Pendiente de que <strong>Almacén</strong> envíe la Transferencia';
+                    }
+                    else if (row['estado'] == 19 && row['id_od'] == null && 
+                             row['count_transferencia'] == row['count_transferencia_recibida']){
+                        return 'Pendiente de que <strong>Distribución</strong> genere la OD';
+                    }
+                    else if (row['estado'] == 19 && row['id_od'] !== null){
+                        return 'Pendiente de que <strong>Almacén</strong> genere la Salida';
+                    }
                 }
             }
         ],
@@ -480,6 +513,11 @@ function listarOrdenesPendientes(){
             },
             {'render': 
                 function (data, type, row){
+                    return 'Pendiente de que <strong>Distribución</strong> genere el Despacho';
+                }
+            },
+            {'render': 
+                function (data, type, row){
                     return `<button type="button" class="od_detalle btn btn-primary boton" data-toggle="tooltip" 
                                 data-placement="bottom" title="Ver Detalle" >
                                 <i class="fas fa-list-ul"></i></button>
@@ -603,6 +641,15 @@ function listarGruposDespachados(permiso){
             {'render': 
                 function (data, type, row){
                     return ('<span class="label label-'+row['bootstrap_color']+'">'+row['estado_doc']+'</span>');
+                }
+            },
+            {'render': 
+                function (data, type, row){
+                    if (row['estado_od'] == 20){
+                        return 'Pendiente de que <strong>Distribución</strong> confirme la Entrega';
+                    } else {
+                        return '';
+                    }
                 }
             },
             {'render': 

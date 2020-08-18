@@ -46,8 +46,9 @@ Panel de Control de Despachos
                                         <th>Fecha Req.</th>
                                         <th>Ubigeo Entrega</th>
                                         <th>Dirección Entrega</th>
-                                        <th>Responsable</th>
+                                        <th>Generado por</th>
                                         <th>Estado</th>
+                                        <th>Motivo</th>
                                         <th width="90px">Acción</th>
                                     </tr>
                                 </thead>
@@ -73,8 +74,9 @@ Panel de Control de Despachos
                                         <th>Fecha Req.</th>
                                         <th>Ubigeo Entrega</th>
                                         <th>Dirección Entrega</th>
-                                        <th>Responsable</th>
+                                        <th>Generado por</th>
                                         <th>Estado</th>
+                                        <th>Motivo</th>
                                         <th width="90px">Acción</th>
                                     </tr>
                                 </thead>
@@ -100,13 +102,13 @@ Panel de Control de Despachos
                                         <th>Fecha Req.</th>
                                         <th>Ubigeo Entrega</th>
                                         <th>Dirección Entrega</th>
-                                        <th>Responsable</th>
+                                        <th>Generado por</th>
                                         <th>Estado</th>
                                         <th>OC</th>
                                         <th>Sede OC</th>
-                                        <th>Guía Compra</th>
                                         <th>Transf.</th>
                                         <th>O.Despacho</th>
+                                        <th>Motivo</th>
                                         <th width="90px">Acción</th>
                                     </tr>
                                 </thead>
@@ -135,8 +137,9 @@ Panel de Control de Despachos
                                         <th>Dirección Destino</th>
                                         <th>Fecha Despacho</th>
                                         <th>Fecha Entrega</th>
-                                        <th>Registrado por</th>
+                                        <th>Generado por</th>
                                         <th>Estado</th>
+                                        <th>Motivo</th>
                                         <th width="70px">Acción</th>
                                     </tr>
                                 </thead>
@@ -171,6 +174,7 @@ Panel de Control de Despachos
                                         <th>Despachador</th>
                                         <th>Confirmación</th>
                                         <th>Estado</th>
+                                        <th>Motivo</th>
                                         <th width="100px">Acción</th>
                                     </tr>
                                 </thead>
