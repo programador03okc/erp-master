@@ -23,8 +23,8 @@
                 <div>
                     <!-- Nav tabs -->
                     <ul class="nav nav-tabs" role="tablist">
-                        <li role="presentation" class="active"><a href="#requerimientosElaborados" aria-controls="requerimientosElaborados" role="tab" data-toggle="tab">Requerimientos Elaborados</a></li>
-                        <li role="presentation" class=""><a href="#requerimientosPendientesAprobacion" onClick="vista_extendida();" aria-controls="requerimientosPendientesAprobacion" role="tab" data-toggle="tab">Requerimientos Pendientes de Aprobación</a></li>
+                        <li role="presentation" class="active"><a href="#requerimientosElaborados" onClick="listar_requerimientos_elaborados('OK COMPUTER');" aria-controls="requerimientosElaborados" role="tab" data-toggle="tab">Requerimientos Elaborados</a></li>
+                        <li role="presentation" class=""><a href="#requerimientosPendientesAprobacion" onClick="vista_extendida(); listar_requerimientos_pendientes_aprobar();" aria-controls="requerimientosPendientesAprobacion" role="tab" data-toggle="tab">Requerimientos Pendientes de Aprobación</a></li>
                     </ul>
                     <!-- Tab panes -->
                     <div class="tab-content">
@@ -70,14 +70,14 @@
                                                             <tr>
                                                                 <th width="10"></th>
                                                                 <th>CODIGO</th>
-                                                                <th width="250">CONCEPTO</th>
+                                                                <th width="150">CONCEPTO</th>
                                                                 <th>FECHA</th>
                                                                 <th>TIPO</th>
                                                                 <th width="120">EMPRESA</th>
                                                                 <th>GRUPO / PROYECTO</th>
                                                                 <th>CREADO POR</th>
                                                                 <th width="70">ESTADO</th>
-                                                                <th width="90">ACCIÓN</th>
+                                                                <th width="120">ACCIÓN</th>
                                                             </tr>
                                                         </thead>
                                                     </table>
@@ -97,15 +97,17 @@
                                                     <thead>
                                                         <tr>
                                                             <th width="10"></th>
+                                                            <th></th>
                                                             <th>CODIGO</th>
-                                                            <th width="250">CONCEPTO</th>
+                                                            <th width="150">CONCEPTO</th>
                                                             <th>FECHA</th>
-                                                            <th>TIPO</th>
+                                                            <th>TIPO REQ.</th>
+                                                            <th>TIPO CLIENTE</th>
                                                             <th width="120">EMPRESA</th>
                                                             <th>GRUPO / PROYECTO</th>
                                                             <th>CREADO POR</th>
                                                             <th width="70">ESTADO</th>
-                                                            <th width="90">ACCIÓN</th>
+                                                            <th width="120">ACCIÓN</th>
                                                         </tr>
                                                     </thead>
                                                 </table>
