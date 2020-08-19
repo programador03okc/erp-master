@@ -357,12 +357,7 @@
         </div>
     </div>
     </fieldset>  
-    <br>
-    <fieldset class="group-table"> 
-        <h5><strong>Observaciones por resolver:</strong></h5>
-        <div class="row" id="observaciones_requerimiento"></div> 
-        <div class="row" id="observaciones_item_requerimiento"></div> 
-    </fieldset>
+    <div class="row" id="observaciones_requerimiento"></div> 
         
     </form>
 
