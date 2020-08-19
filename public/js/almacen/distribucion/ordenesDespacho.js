@@ -43,13 +43,14 @@ function iniciar(permiso){
 }
 
 function intervalFunction() {
-    setInterval(actualizaCantidadDespachosTabs, 10000);
+    setInterval(actualizaCantidadDespachosTabs, 60000);
 }
 
 function actualizaCantidadDespachosTabs(){
     $.ajax({
         type: 'GET',
         url: 'actualizaCantidadDespachosTabs',
+        global: false,
         dataType: 'JSON',
         success: function(response){
             console.log(response);
@@ -64,7 +65,6 @@ function actualizaCantidadDespachosTabs(){
         console.log(textStatus);
         console.log(errorThrown);
     });
-    // setInterval(actualizaCantidadDespachosTabs, 10000);
 }
 
 function listarRequerimientosElaborados(){
