@@ -8,13 +8,14 @@ function consultaSunat(){
 		$('#panel_consulta_sunat').removeClass('invisible');
 		$.ajax({
 		type:'POST',
+		dataType: 'JSON',
 		url:url,
 		data:'ruc='+ruc,
-		success: function(datos_dni){
-			console.log(datos_dni);		
+		success: function(response){
+			console.log(response);		
 			$('.loading').addClass('invisible');
 			$('.sunat-ico').removeClass('invisible');
-			var datos = eval(datos_dni);
+			var datos = eval(response);
 				var nada ='nada';
 				if(datos[0]==nada){
 					alert('DNI o RUC no válido o no registrado');
@@ -88,10 +89,14 @@ function consultaSunat(){
 							}
 						}
 					});
-					console.log('id_tipo:'+id_tipo);
+					// console.log('id_tipo:'+id_tipo);
 					$('[name=id_tipo_contribuyente]').val(id_tipo);
 				}		
 			}
+		}).fail( function( jqXHR, textStatus, errorThrown ){
+			console.log(jqXHR);
+			console.log(textStatus);
+			console.log(errorThrown);
 		});
 	} else {
 		alert('Es necesario que ingrese un numero de RUC!');

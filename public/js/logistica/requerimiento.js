@@ -666,7 +666,7 @@ function mostrar_requerimiento(IdorCode){
                     }
 
                 let obsReq = document.getElementById('observaciones_requerimiento');
-                obsReq.innerHTML = '</br>'+htmlObservacionReq;
+                obsReq.innerHTML = '<fieldset class="group-table"> <h5><strong>Observaciones por resolver:</strong></h5></br>'+htmlObservacionReq+'</fieldset>';
 
             }else{
                 alert("no se puedo obtener el requerimiento para mostrar");
@@ -1266,7 +1266,7 @@ function detalleRequerimientoModal(event,index){
                 document.querySelector("div[id='modal-detalle-requerimiento'] input[name='lugar_entrega_item']").value='';
                 document.querySelector("div[id='modal-detalle-requerimiento'] input[name='des_partida']").value='';
                 document.querySelector("div[id='modal-detalle-requerimiento'] input[name='id_partida']").value='';
-                document.querySelector("div[id='modal-detalle-requerimiento'] div[id='input-group-fecha_entrega']").setAttribute('hidden',true);
+                // document.querySelector("div[id='modal-detalle-requerimiento'] div[id='input-group-fecha_entrega']").setAttribute('hidden',true);
                 // document.querySelector("div[id='modal-detalle-requerimiento'] div[id='input-group-lugar_entrega']").setAttribute('hidden',true);
                 // document.querySelector("div[id='modal-detalle-requerimiento'] div[id='input-group-partida']").setAttribute('hidden',true);
     
@@ -1286,7 +1286,7 @@ function detalleRequerimientoModal(event,index){
         document.querySelector("div[id='modal-detalle-requerimiento'] input[name='lugar_entrega_item']").value='';
         document.querySelector("div[id='modal-detalle-requerimiento'] input[name='des_partida']").value='';
         document.querySelector("div[id='modal-detalle-requerimiento'] input[name='id_partida']").value='';
-        document.querySelector("div[id='modal-detalle-requerimiento'] div[id='input-group-fecha_entrega']").removeAttribute('hidden');
+        // document.querySelector("div[id='modal-detalle-requerimiento'] div[id='input-group-fecha_entrega']").removeAttribute('hidden');
         // document.querySelector("div[id='modal-detalle-requerimiento'] div[id='input-group-lugar_entrega']").removeAttribute('hidden');
         // document.querySelector("div[id='modal-detalle-requerimiento'] div[id='input-group-partida']").removeAttribute('hidden');
     }else if(tipo ==3){
@@ -1298,7 +1298,7 @@ function detalleRequerimientoModal(event,index){
         document.querySelector("div[id='modal-detalle-requerimiento'] input[name='lugar_entrega_item']").value='';
         document.querySelector("div[id='modal-detalle-requerimiento'] input[name='des_partida']").value='';
         document.querySelector("div[id='modal-detalle-requerimiento'] input[name='id_partida']").value='';
-        document.querySelector("div[id='modal-detalle-requerimiento'] div[id='input-group-fecha_entrega']").setAttribute('hidden',true);
+        // document.querySelector("div[id='modal-detalle-requerimiento'] div[id='input-group-fecha_entrega']").setAttribute('hidden',true);
         // document.querySelector("div[id='modal-detalle-requerimiento'] div[id='input-group-lugar_entrega']").setAttribute('hidden',true);
         // document.querySelector("div[id='modal-detalle-requerimiento'] div[id='input-group-partida']").setAttribute('hidden',true);
     }
@@ -1314,9 +1314,10 @@ function controlInputModalDetalleRequerimiento(){
     // console.log(descripcion_grupo);
 
     if(tipo_requerimiento == 1 && tipo_cliente == 4 ){
-        hiddeElement('mostrar','form-detalle-requerimiento',[
-            'input-group-lugar_entrega'
-            ]);
+        // hiddeElement('mostrar','form-detalle-requerimiento',[
+        //     'input-group-lugar_entrega',
+        //     'input-group-fecha_entrega'
+        //     ]);
 
             if(descripcion_grupo == 'Proyectos'){
                 hiddeElement('mostrar','form-detalle-requerimiento',[
@@ -1326,6 +1327,7 @@ function controlInputModalDetalleRequerimiento(){
     }else{
         hiddeElement('ocultar','form-detalle-requerimiento',[
             'input-group-lugar_entrega',
+            'input-group-fecha_entrega',
             'input-group-partida'
             ]);
     }
@@ -1877,7 +1879,10 @@ function listarItems() {
             [8, 'asc']
         ]
     });
-    $("div.toolbar").html('<button class="btn btn-sm btn-primary" onclick="crearProducto();">Crear Producto</button>');
+    let tablelistaitem = document.getElementById(
+        'listaItems_wrapper'
+    )
+    tablelistaitem.childNodes[0].childNodes[0].hidden = true;
 
 }
 
@@ -2437,6 +2442,8 @@ function save_requerimiento(action){
                         changeStateButton('guardar');
                         let lastIdRequerimiento =  response;
                         mostrar_requerimiento(lastIdRequerimiento);
+                        verTrazabilidadRequerimiento(lastIdRequerimiento);
+
                         $('#form-requerimiento').attr('type', 'register');
                         changeStateInput('form-requerimiento', true);
                         alert("Requerimiento Guardado");
@@ -3335,7 +3342,7 @@ function dibujarTablatrazabilidadRequerimiento(data){
         bDestroy: true,
         info:     false,
         iDisplayLength:10,
-        paging:   true,
+        paging:   false,
         searching: false,
         language: vardataTables[0],
         processing: true,
