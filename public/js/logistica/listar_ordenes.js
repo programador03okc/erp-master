@@ -45,15 +45,15 @@ function listarOrdenes(){
         "dataSrc":'',
         'scrollX': true,
         'columnDefs': [{ className: "text-right", 'aTargets': [0], 'sClass': 'invisible'}],
-        "drawCallback": function (settings) { 
+        // "drawCallback": function (settings) { 
             // Here the response
-            var response = settings.json;
+            // var response = settings.json;
             // console.log(response);
             
-            if(response == undefined || response.data.length ==0){
-                    alert("No hay ordenes registradas para mostrar");
-            }
-        },
+            // if(response == undefined || response.data.length ==0){
+            //         // alert("No hay ordenes registradas para mostrar");
+            // }
+        // },
     });
 
     // ver("#listaOrdenes tbody", tabla);

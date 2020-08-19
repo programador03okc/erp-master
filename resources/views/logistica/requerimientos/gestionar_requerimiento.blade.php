@@ -307,6 +307,12 @@
         </div>
     </fieldset>
     <br>
+    <div class="row">
+        <div class="col-md-12 text-right">
+            <button type="submit" class="btn-okc" id="btnGuardar"><i class="fas fa-save fa-lg"></i> Guardar</button>
+        </div>
+    </div>
+    <br>
     <fieldset class="group-table"> 
     <div class="row">
         <div class="col-md-4">

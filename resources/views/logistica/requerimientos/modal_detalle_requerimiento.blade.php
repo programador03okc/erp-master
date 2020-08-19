@@ -2,7 +2,7 @@
     <div class="modal-dialog" style="width: 70%;">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal-detalle-requerimiento" aria-label="close"><span aria-hidden="true">&times;</span></button>
+                <button type="button" class="close" data-dismiss="modal-detalle-requerimiento" onClick="$('#modal-detalle-requerimiento').modal('hide');"><span aria-hidden="true">&times;</span></button>
                 <h3 class="modal-title">Detalle Requerimiento</h3>
             </div>
             <div class="modal-body">
@@ -84,7 +84,7 @@
                                 <input type="date" class="form-control input-sm activation" name="fecha_entrega_item" step="any" min={{ date('Y-m-d H:i:s') }} value={{ date('Y-m-d H:i:s') }}>
                             </div>
                         </div>
-                        <div class="col-md-3" id="input-group-lugar_entrega">
+                        <div class="col-md-3" id="input-group-lugar_entrega" hidden>
                             <div class="form-group">
                                 <h5>Lugar de Entrega</h5>
                                 <input type="text" class="form-control input-sm activation" name="lugar_entrega_item" step="any">
@@ -92,7 +92,7 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-12" id="input-group-partida">
+                        <div class="col-md-12" id="input-group-partida" hidden>
                             <div class="form-group"> 
                                 <h5>Partida</h5>
                                 <div style="display:flex;">
