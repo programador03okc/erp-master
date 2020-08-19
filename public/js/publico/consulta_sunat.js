@@ -7,7 +7,7 @@ function consultaSunat(){
 		$('.sunat-ico').addClass('invisible');
 		$('#panel_consulta_sunat').removeClass('invisible');
 		$.ajax({
-		type:'POST',
+		type:'GET',
 		dataType: 'JSON',
 		url:url,
 		data:'ruc='+ruc,
