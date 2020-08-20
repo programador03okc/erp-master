@@ -125,6 +125,27 @@ function mostrar_producto(id){
     });
 }
 
+$("[name=id_categoria]").change( function() {
+    var id = $('[name=id_producto]').val();
+    if (id == ''){
+        var sel = $(this).find('option:selected').text();
+        console.log(sel);
+        $('[name=descripcion]').val(sel);
+    }
+    console.log($(this).val());
+});
+
+$("[name=id_subcategoria]").change( function() {
+    var id = $('[name=id_producto]').val();
+    if (id == ''){
+        var sel = $(this).find('option:selected').text();
+        console.log(sel);
+        var des = $('[name=descripcion]').val();
+        $('[name=descripcion]').val(des+' '+sel+' ');
+    }
+    console.log($(this).val());
+});
+
 function save_producto(data, action){
     console.log(data);
     var msj = validaProducto();
