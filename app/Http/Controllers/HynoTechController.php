@@ -91,44 +91,54 @@ class HynoTechController extends Controller {
 	public function consulta_sunat(Request $request){
 		// $ruc = $_POST['ruc'];
 		$ruc = $request->ruc;
-		// $postdata = http_build_query(
+ 
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+		curl_setopt($ch,CURLOPT_URL,"https://api.sunat.cloud/ruc/".$ruc);
+		curl_setopt($ch,CURLOPT_RETURNTRANSFER,1);
+		curl_setopt($ch, CURLOPT_USERAGENT, "Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US) AppleWebKit/525.13 (KHTML, like Gecko) Chrome/0.A.B.C Safari/525.13");
+		$data = json_decode(curl_exec($ch));
+		curl_close($ch);
+
+		if(isset($data)){
+			$output= ['data'=>$data];
+
+		}else{
+			$output =['data'=>[]];
+		}
+		return response()->json($output);
+
+		// $opts = array('http' =>
 		// 	array(
-		// 		'ruc' => $ruc
-		// 	)
+		// 		'method'  => 'GET',
+		// 		'header'  => 'User-Agent:Mozilla/5.0 (Windows NT 6.2) AppleWebKit/537.1 (KHTML, like Gecko) Chrome/21.0.1180.75 Safari/537.1\r\n'
+		// )
 		// );
-		
-		$opts = array('http' =>
-			array(
-				'method'  => 'GET',
-				'header'  => 'Content-Type: application/x-www-form-urlencoded'
-				// 'content' => $postdata
-			)
-		);
-        $context  = stream_context_create($opts);
+        // $context  = stream_context_create($opts);
 
-        $data = @file_get_contents('https://api.sunat.cloud/ruc/'.$ruc,FALSE, $context);
-        $info = json_decode($data, true);
+        // $data = @file_get_contents('https://api.sunat.cloud/ruc/'.$ruc,FALSE, $context);
+        // $info = json_decode($data, true);
         
-        if($data==='[]' || $info['fecha_inscripcion']==='--'){
-            $datos = array(0 => 'nada');
-            // echo json_encode($datos);
-            return response()->json($datos);
+        // if($data==='[]' || $info['fecha_inscripcion']==='--'){
+        //     $datos = array(0 => 'nada');
+        //     // echo json_encode($datos);
+        //     return response()->json($datos);
 
-        }else{
+        // }else{
 		
-        $datos = array(
-            0 => $info['ruc'], 
-            1 => $info['razon_social'],
-            2 => date("d/m/Y", strtotime($info['fecha_actividad'])),
-            3 => $info['contribuyente_condicion'],
-            4 => $info['contribuyente_tipo'],
-            5 => $info['contribuyente_estado'],
-            6 => date("d/m/Y", strtotime($info['fecha_inscripcion'])),
-            7 => $info['domicilio_fiscal'],
-            8 => date("d/m/Y", strtotime($info['emision_electronica']))
-        );
-            return response()->json($datos);
+        // $datos = array(
+        //     0 => $info['ruc'], 
+        //     1 => $info['razon_social'],
+        //     2 => date("d/m/Y", strtotime($info['fecha_actividad'])),
+        //     3 => $info['contribuyente_condicion'],
+        //     4 => $info['contribuyente_tipo'],
+        //     5 => $info['contribuyente_estado'],
+        //     6 => date("d/m/Y", strtotime($info['fecha_inscripcion'])),
+        //     7 => $info['domicilio_fiscal'],
+        //     8 => date("d/m/Y", strtotime($info['emision_electronica']))
+        // );
+        //     return response()->json($datos);
 
-        }
+        // }
      }
 }

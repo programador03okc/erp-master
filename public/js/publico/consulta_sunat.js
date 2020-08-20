@@ -15,34 +15,36 @@ function consultaSunat(){
 			console.log(response);		
 			$('.loading').addClass('invisible');
 			$('.sunat-ico').removeClass('invisible');
-			var datos = eval(response);
-				var nada ='nada';
-				if(datos[0]==nada){
+			var data = response.data;
+			// 	var nada ='nada';
+				if(data.length ==0){
 					alert('DNI o RUC no válido o no registrado');
 				}else{
-					if(datos[5] =='Activo' || datos[5] == 'ACTIVO'){
+					if(data.contribuyente_estado == 'ACTIVO'){
 						$('[name=estado]').addClass('label-success');
 					}else{
 						$('[name=estado]').addClass('label-warning');
 					}
-					if(datos[3] =='Habido' || datos[3] == 'HABIDO'){
+					if(data.contribuyente_estado == 'HABIDO'){
 						$('[name=condicion]').addClass('label-success');
 					}else{
 						$('[name=condicion]').addClass('label-warning');
 					}
-					$('[name=numero_ruc]').text(datos[0]);
-					$('[name=razon_social]').text(datos[1]);
-					$('[name=fecha_actividad]').text(datos[2]);
-					$('[name=condicion]').text(datos[3]);
-					$('[name=tipo]').text(datos[4]);
-					$('[name=estado]').text(datos[5]);
-					$('[name=fecha_inscripcion]').text(datos[6]);
-					$('[name=domicilio]').text(datos[7]);
-					$('[name=emision]').text(datos[8]);
+					$('[name=numero_ruc]').text(data.ruc);
+					$('[name=razon_social]').text(data.razon_social);
+					$('[name=fecha_actividad]').text(data.fecha_actividad);
+					$('[name=condicion]').text(data.contribuyente_condicion);
+					$('[name=tipo]').text(data.contribuyente_tipo);
+					$('[name=estado]').text(data.contribuyente_estado);
+					$('[name=fecha_inscripcion]').text(data.fecha_inscripcion);
+					$('[name=domicilio]').text(data.domicilio_fiscal);
+					$('[name=direccion]').val(data.domicilio_fiscal);
+
+					$('[name=emision]').text(data.sistema_emision);
 					
-					$('[name=razon_social]').val(datos[1]);
-					// $('[name=estado_ruc]').val(datos[5]);
-					switch (datos[5]) { //ESTADO RUC
+					$('[name=razon_social]').val(data.razon_social);
+					$('[name=estado_ruc]').val(data.contribuyente_estado);
+					switch (data.contribuyente_estado) { //ESTADO RUC
 						case 'ACTIVO':
 							$('[name=estado_ruc]').val(1);
 							break;
@@ -64,8 +66,8 @@ function consultaSunat(){
 						default:
 							break;
 					}
-					// $('[name=condicion_ruc]').val(datos[3]);
-					switch (datos[3]) { //CONDICION RU
+
+					switch (data.contribuyente_condicion) { //CONDICION RU
 						case 'HABIDO':
 							$('[name=condicion_ruc]').val(1);
 							break;
@@ -78,19 +80,18 @@ function consultaSunat(){
 						default:
 							break;
 					}
-					$('[name=direccion_fiscal]').val(datos[7]);
 					
-					var tipo = datos[4];
-					var id_tipo = 0;
-					$("[name=id_tipo_contribuyente] option").each(function(){
-						if ($(this).val() != "" ){
-							if ($(this).text() == tipo){
-								id_tipo = $(this).val();
-							}
-						}
-					});
-					// console.log('id_tipo:'+id_tipo);
-					$('[name=id_tipo_contribuyente]').val(id_tipo);
+			// 		var tipo = datos[4];
+			// 		var id_tipo = 0;
+			// 		$("[name=id_tipo_contribuyente] option").each(function(){
+			// 			if ($(this).val() != "" ){
+			// 				if ($(this).text() == tipo){
+			// 					id_tipo = $(this).val();
+			// 				}
+			// 			}
+			// 		});
+			// 		// console.log('id_tipo:'+id_tipo);
+			// 		$('[name=id_tipo_contribuyente]').val(id_tipo);
 				}		
 			}
 		}).fail( function( jqXHR, textStatus, errorThrown ){
