@@ -14,26 +14,16 @@ $(function(){
         var tel = $(this)[0].childNodes[4].innerHTML;
         var dir = $(this)[0].childNodes[5].innerHTML;
         var email = $(this)[0].childNodes[6].innerHTML;
-        document.querySelector("form[id='form-requerimiento'] input[name='id_cliente']").value = myId;
-        // document.querySelector("form[id='form-requerimiento'] input[name='id_contrib']").value = idCo;
-        document.querySelector("form[id='form-requerimiento'] input[name='cliente_ruc']").value = ruc;
-        document.querySelector("form[id='form-requerimiento'] input[name='cliente_razon_social']").value = des;
-        document.querySelector("form[id='form-requerimiento'] input[name='telefono_cliente']").value = tel;
-        document.querySelector("form[id='form-requerimiento'] input[name='direccion_entrega']").value = dir;
-        document.querySelector("form[id='form-requerimiento'] input[name='email_cliente']").value = email;
 
-        // $('[name=id_cliente]').val(myId);
-        // $('[name=id_contrib]').val(idCo);
-        // $('[name=cliente_ruc]').val(ruc);
-        // $('[name=cliente_razon_social]').val(des);
-        // $('[name=telefono_cliente]').val(tel);
-        // $('[name=direccion_entrega]').val(dir);
-        // $('[name=email_cliente]').val(email);
+        $('[name=id_cliente]').val(myId);
+        $('[name=id_contrib]').val(idCo);
+        $('[name=cliente_ruc]').val(ruc);
+        $('[name=cliente_razon_social]').val(des);
+        $('[name=telefono_cliente]').val(tel);
+        $('[name=direccion_entrega]').val(dir);
+        $('[name=email_cliente]').val(email);
         
         $('#modal-clientes').modal('hide');
-    //     $('.modal-footer #id_cliente').text(idTr);
-    //     $('.modal-footer #id_contribuyente').text(idCo);
-    //     $('.modal-footer #razon_social').text(des);
     });
 });
 

@@ -98,13 +98,13 @@
                             <div class="form-group">
                                 <div class="radio">
                                     <label>
-                                    <input type="radio" name="optionsRadios" id="boleta" value="boleta" checked="">
+                                    <input type="radio" name="optionsRadios" id="Boleta" value="Boleta" checked="">
                                     Boleta
                                     </label>
                                 </div>
                                 <div class="radio">
                                     <label>
-                                    <input type="radio" name="optionsRadios" id="factura" value="factura">
+                                    <input type="radio" name="optionsRadios" id="Factura" value="Factura">
                                     Factura
                                     </label>
                                 </div>

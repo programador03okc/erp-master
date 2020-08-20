@@ -503,12 +503,13 @@ class DistribucionController extends Controller
                     'id_sede'=>$request->id_sede,
                     'id_requerimiento'=>$request->id_requerimiento,
                     'id_cliente'=>$request->id_cliente,
-                    'id_persona'=>$request->id_persona,
+                    'id_persona'=>($request->id_persona > 0 ? $request->id_persona : null),
                     'id_almacen'=>$request->id_almacen,
                     'telefono'=>$request->telefono_cliente,
                     'codigo'=>$codigo,
                     'ubigeo_destino'=>$request->ubigeo,
                     'direccion_destino'=>$request->direccion_destino,
+                    'correo_cliente'=>$request->correo_cliente,
                     'fecha_despacho'=>$request->fecha_despacho,
                     'hora_despacho'=>$request->hora_despacho,
                     'fecha_entrega'=>$request->fecha_entrega,
@@ -645,8 +646,8 @@ class DistribucionController extends Controller
     Empresa: '.$empresa->razon_social.'
             
     Datos del Cliente:
-    - '.($request->documento == 'boleta' ? 'DNI: '.$request->dni_persona : 'RUC: '.$request->cliente_ruc).'
-    - '.($request->documento == 'boleta' ? 'Nombres y Apellidos: '.$request->nombre_persona : 'Razon Social: '.$request->cliente_razon_social).'
+    - '.($request->documento == 'Boleta' ? 'DNI: '.$request->dni_persona : 'RUC: '.$request->cliente_ruc).'
+    - '.($request->documento == 'Boleta' ? 'Nombres y Apellidos: '.$request->nombre_persona : 'Razon Social: '.$request->cliente_razon_social).'
     - Dirección: '.$request->direccion_destino.'
     - Fecha Despacho: '.$request->fecha_despacho.'
     - Hora Despacho: '.$request->hora_despacho.'
@@ -727,8 +728,8 @@ Mensaje enviado correctamente a '.$destinatario_almacen;
                 'codigo'=>$codigo,
                 'id_sede'=>$request->id_sede,
                 'fecha_despacho'=>$request->fecha_despacho,
-                'responsable'=>$request->responsable,
-                'mov_propia'=>($request->mov_propia_valor == 'si' ? true : false),
+                'responsable'=>($request->responsable > 0 ? $request->responsable : null),
+                'mov_entrega'=>$request->mov_entrega,
                 'id_proveedor'=>$request->id_proveedor,
                 'observaciones'=>$request->observaciones,
                 'registrado_por'=>$id_usuario,
@@ -1162,7 +1163,7 @@ Mensaje enviado correctamente a '.$destinatario_almacen;
                     </tr>
                 </table>
                 <h3 style="margin:0px;"><center>DESPACHO</center></h3>
-                <h5><center>'.($despacho_grupo->trabajador_despacho !== null ? $despacho_grupo->trabajador_despacho : $despacho_grupo->proveedor_despacho).'</center></h5>
+                <h5><center>'.($despacho_grupo->trabajador_despacho !== null ? $despacho_grupo->trabajador_despacho : ($despacho_grupo->proveedor_despacho !== null ? $despacho_grupo->proveedor_despacho : $despacho_grupo->mov_entrega)).'</center></h5>
                 <p>'.strtoupper($despacho_grupo->observaciones).'</p>
                 ';
 

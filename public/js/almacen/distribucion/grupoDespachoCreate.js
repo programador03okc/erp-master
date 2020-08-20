@@ -35,20 +35,36 @@ function crear_grupo_orden_despacho() {
         $('[name=id_sede_grupo]').val(sede);
         $('#detalleODs tbody').html(html);
         $("#btnGrupoDespacho").removeAttr("disabled");
-        $("#trabajador").hide();
+        $("#proveedor").hide();
+        $("#trabajador").show();
         console.log(od_seleccionadas);
     }
 }
 
-$("[name=mov_propia]").on( 'change', function() {
-    if( $(this).is(':checked') ) {
+// $("[name=mov_propia]").on( 'change', function() {
+//     if( $(this).is(':checked') ) {
+//         $("#proveedor").hide();
+//         $("#trabajador").show();
+//         $("[name=mov_propia_valor]").val('no');
+//     } else {
+//         $("#proveedor").show();
+//         $("#trabajador").hide();
+//         $("[name=mov_propia_valor]").val('si');
+//     }
+// });
+$("[name=mov_entrega]").change( function(e) {
+    console.log($(this).val());
+    if( $(this).val() == 'Movilidad Propia' ) {
         $("#proveedor").hide();
         $("#trabajador").show();
-        $("[name=mov_propia_valor]").val('no');
-    } else {
+    } 
+    else if( $(this).val() == 'Movilidad de Tercero' ) {
         $("#proveedor").show();
         $("#trabajador").hide();
-        $("[name=mov_propia_valor]").val('si');
+    }
+    else {
+        $("#proveedor").hide();
+        $("#trabajador").hide();
     }
 });
 
@@ -56,14 +72,14 @@ function guardar_grupo_despacho(){
     var resp = $('[name=responsable_grupo]').val();
     var fdes = $('[name=fecha_despacho_grupo]').val();
     var sede = $('[name=id_sede_grupo]').val();
-    var movp = $('[name=mov_propia_valor]').val();
+    var move = $('[name=mov_entrega]').val();
     var prov = $('[name=gd_id_proveedor]').val();
     var obs = $('[name=observaciones]').val();
 
     var data =  'responsable='+resp+
                 '&fecha_despacho='+fdes+
                 '&id_sede='+sede+
-                '&mov_propia_valor='+movp+
+                '&mov_entrega='+move+
                 '&id_proveedor='+prov+
                 '&observaciones='+obs+
                 '&ordenes_despacho='+JSON.stringify(od_seleccionadas);

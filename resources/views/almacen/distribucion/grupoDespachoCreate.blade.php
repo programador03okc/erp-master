@@ -9,16 +9,26 @@
                 <div class="modal-body">
                     <input type="text" class="oculto" name="id_od_grupo">
                     <input type="text" class="oculto" name="id_sede_grupo">
-                    <div class="row">
+                    <!-- <div class="row">
                         <div class="col-md-3">
-                            <input class="oculto" name="mov_propia_valor"/>
                             <input type="checkbox" name="mov_propia" style="margin-right: 10px; margin-left: 7px;"/> Movilidad Propia
                         </div>
-                    </div>
+                    </div> -->
                     <div class="row">
-                        <div class="col-md-3">
+                        <div class="col-md-2">
                             <h5>Fecha de Despacho</h5>
                             <input type="date" class="form-control activation" name="fecha_despacho_grupo" value="<?=date('Y-m-d');?>">
+                        </div>
+                        <div class="col-md-2">
+                            <h5>Tipo de Entrega</h5>
+                            <div class="input-group-okc">
+                                <select name="mov_entrega" class="form-control activation" 
+                                    style="width:100px" required>
+                                    <option value="Movilidad Propia" default>Movilidad Propia</option>
+                                    <option value="Movilidad de Tercero">Movilidad de Tercero</option>
+                                    <option value="Cliente Recoge en Oficina">Cliente Recoge en Oficina</option>
+                                </select>
+                            </div>
                         </div>
                         <div class="col-md-6" id="proveedor">
                             <h5>Proveedor</h5>
@@ -46,12 +56,12 @@
                     <div class="row">
                         <div class="col-md-12">
                             <h5>Observaciones</h5>
-                            <textarea name="observaciones" id="observaciones" cols="150" rows="3"></textarea>
+                            <textarea name="observaciones" id="observaciones" cols="160" rows="3"></textarea>
                         </div>
                     </div>
                 </div>
                 <div>
-                    <div class="modal-header" style="display:flex;">
+                    <div class="modal-header" style="display:flex;padding-top: 0px;padding-bottom: 0px;">
                         <h4 class="modal-title"> Ordenes de Despacho: </h4>
                     </div>
                     <div class="modal-body">

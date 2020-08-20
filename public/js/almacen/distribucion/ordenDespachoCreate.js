@@ -24,10 +24,10 @@ function open_despacho_create(data){
 
     // $('#'+data.documento+'').prop('checked', true);
     if (data.tipo_cliente == 1){
-        $('#boleta').prop('checked', true);
+        $('#Boleta').prop('checked', true);
     } 
     else if (data.tipo_cliente == 2){
-        $('#factura').prop('checked', true);
+        $('#Factura').prop('checked', true);
     }
 
     if (data.id_persona !== null){
@@ -285,7 +285,7 @@ $("[name=aplica_cambios]").on( 'change', function() {
 $("[name=optionsRadios]").on( 'change', function() {
     if( $(this).is(':checked') ) {
         var tipo = null;
-        if ($(this).val() == 'factura'){
+        if ($(this).val() == 'Factura'){
             tipo = 2;
         } else {
             tipo = 1;
