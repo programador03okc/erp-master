@@ -43,24 +43,24 @@ function listar_guia_transferencia_detalle(id_guia_ven){
     });
 }
 
-function listarItems(id_transferencia){
-    console.log(id_transferencia);
-    $('#listaTransferenciaDetalle tbody').html('');
-    $.ajax({
-        type: 'GET',
-        // headers: {'X-CSRF-TOKEN': token},
-        url: 'listar_transferencia_detalle/'+id_transferencia,
-        dataType: 'JSON',
-        success: function(response){
-            console.log(response);
-            $('#listaTransferenciaDetalle tbody').html(response);
-        }
-    }).fail( function( jqXHR, textStatus, errorThrown ){
-        console.log(jqXHR);
-        console.log(textStatus);
-        console.log(errorThrown);
-    });
-}
+// function listarItems(id_transferencia){
+//     console.log(id_transferencia);
+//     $('#listaTransferenciaDetalle tbody').html('');
+//     $.ajax({
+//         type: 'GET',
+//         // headers: {'X-CSRF-TOKEN': token},
+//         url: 'listar_transferencia_detalle/'+id_transferencia,
+//         dataType: 'JSON',
+//         success: function(response){
+//             console.log(response);
+//             $('#listaTransferenciaDetalle tbody').html(response);
+//         }
+//     }).fail( function( jqXHR, textStatus, errorThrown ){
+//         console.log(jqXHR);
+//         console.log(textStatus);
+//         console.log(errorThrown);
+//     });
+// }
 
 function recibir(){
     var estado = $('[name=estado]').val();

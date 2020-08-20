@@ -1088,6 +1088,7 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::get('transferencia_nextId/{id}', 'TransferenciaController@transferencia_nextId');
 					Route::post('anular_transferencia_salida', 'TransferenciaController@anular_transferencia_salida');
 					Route::get('imprimir_ingreso/{id}', 'AlmacenController@imprimir_ingreso');
+					Route::get('imprimir_salida/{id}', 'AlmacenController@imprimir_salida');
 					Route::post('listarTransferenciasPorEnviar/{id}', 'TransferenciaController@listarTransferenciasPorEnviar');
 					Route::get('cargar_almacenes/{id}', 'AlmacenController@cargar_almacenes');
 					Route::get('listarDetalleTransferencia/{id}', 'TransferenciaController@listarDetalleTransferencia');

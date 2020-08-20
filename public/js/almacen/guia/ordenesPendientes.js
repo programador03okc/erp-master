@@ -244,7 +244,7 @@ $("#form-guia_create").on("submit", function(e){
 
         detalle.push({ 
             'id_detalle_orden'  : id_oc_det,
-            'cantidad'          : $(this).parent().parent().find('td input[id=cantidad]').val(),
+            'cantidad'          : $(this).parent().parent().find('td input[id='+id_oc_det+'cantidad]').val(),
             'series'            : series
         });
     });
@@ -380,13 +380,6 @@ $('#ordenesEntregadas tbody').on("click","button.anular", function(){
     $('[name=observacion]').val('');
 
     $("#submitGuiaObs").removeAttr("disabled");
-});
-
-$('#ordenesEntregadas tbody').on("click","button.transferencia", function(){
-    var data = $('#ordenesEntregadas').DataTable().row($(this).parents("tr")).data();
-    console.log('data.id_orden_compra'+data.id_orden_compra);
-    // var data = $(this).data('id');
-    openTransferenciaGuia(data);
 });
 
 $('#ordenesEntregadas tbody').on("click","button.anular_sal", function(){

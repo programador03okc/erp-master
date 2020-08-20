@@ -1,5 +1,5 @@
 <div class="modal fade" tabindex="-1" role="dialog" id="modal-transferenciaGuia">
-    <div class="modal-dialog" style="width:900px;">
+    <div class="modal-dialog" style="width:1100px;">
         <div class="modal-content">
             <form id="form-transferenciaGuia">
                 <div class="modal-header">
@@ -72,7 +72,9 @@
                                 <thead>
                                     <tr>
                                         <th>#</th>
-                                        <th>Transferencia</th>
+                                        <th>Transfe.</th>
+                                        <th>Requerimiento</th>
+                                        <th>Concepto</th>
                                         <th>Código</th>
                                         <th>PartNumber</th>
                                         <th>Categoría</th>
