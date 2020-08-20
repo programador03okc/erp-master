@@ -6,6 +6,11 @@
                 <h3 class="modal-title">Lista de items</h3>
             </div>
             <div class="modal-body">
+            <div class="row">
+                <div class="col-md-12">
+                <button class="btn btn-sm btn-primary" onclick="crearProducto();">Crear Producto</button>
+                </div>
+            </div>
                 <table class="mytable table table-striped table-condensed table-bordered" id="listaItems">
                     <thead>
                         <tr>

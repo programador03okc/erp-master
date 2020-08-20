@@ -13,7 +13,7 @@ function llenarTablaAdjuntosRequerimiento(id_req){
         bDestroy: true,
         info:     false,
         iDisplayLength:10,
-        paging:   true,
+        paging:   false,
         searching: false,
         language: vardataTables[0],
         processing: true,

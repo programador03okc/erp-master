@@ -89,9 +89,24 @@ class HynoTechController extends Controller {
 	}
 
 	public function consulta_sunat(Request $request){
-        // $ruc = $_POST['ruc'];
-        $ruc = $request->ruc;
-        $data = file_get_contents("https://api.sunat.cloud/ruc/".$ruc);
+		// $ruc = $_POST['ruc'];
+		$ruc = $request->ruc;
+		// $postdata = http_build_query(
+		// 	array(
+		// 		'ruc' => $ruc
+		// 	)
+		// );
+		
+		$opts = array('http' =>
+			array(
+				'method'  => 'GET',
+				'header'  => 'Content-Type: application/x-www-form-urlencoded'
+				// 'content' => $postdata
+			)
+		);
+        $context  = stream_context_create($opts);
+
+        $data = @file_get_contents('https://api.sunat.cloud/ruc/'.$ruc,FALSE, $context);
         $info = json_decode($data, true);
         
         if($data==='[]' || $info['fecha_inscripcion']==='--'){

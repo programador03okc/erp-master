@@ -2309,7 +2309,7 @@ Route::get('decode5t/{id}', 'EquipoController@decode5t');
 
 
 	// APIs de Terceros
-	Route::post('consulta_sunat', 'HynoTechController@consulta_sunat');
+	Route::get('consulta_sunat/{nro_documento?}', 'HynoTechController@consulta_sunat');
 
 	// Route::get('hasObsDetReq/{id_req}', 'LogisticaController@hasObsDetReq');
 	// // Route::get('get_header_observacion/{id_req}', 'LogisticaController@get_header_observacion');

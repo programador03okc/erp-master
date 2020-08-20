@@ -307,6 +307,12 @@
         </div>
     </fieldset>
     <br>
+    <div class="row">
+        <div class="col-md-12 text-right">
+            <button type="submit" class="btn-okc" id="btnGuardar"><i class="fas fa-save fa-lg"></i> Guardar</button>
+        </div>
+    </div>
+    <br>
     <fieldset class="group-table"> 
     <div class="row">
         <div class="col-md-4">
@@ -351,12 +357,7 @@
         </div>
     </div>
     </fieldset>  
-    <br>
-    <fieldset class="group-table"> 
-        <h5><strong>Observaciones por resolver:</strong></h5>
-        <div class="row" id="observaciones_requerimiento"></div> 
-        <div class="row" id="observaciones_item_requerimiento"></div> 
-    </fieldset>
+    <div class="row" id="observaciones_requerimiento"></div> 
         
     </form>
 

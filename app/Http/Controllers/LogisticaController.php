@@ -13392,16 +13392,18 @@ function get_id_usuario_usuario_por_rol($descripcion_rol, $id_sede, $id_empresa)
     }
 
     public function listar_todas_ordenes(){
-        $userSession=$this->userSession()['roles'];
-        $userSessionRolConceptoList=[];
-        $userSessionRolAreaList=[];
-        foreach($userSession as $us){
+        // $userSession=$this->userSession()['roles'];
+        $allRol = Auth::user()->getAllRol();
 
-            $userSessionRolConceptoList[]=$us->id_rol_concepto; //id_rol_concepto actuales
-            $userSessionRolAreaList[]=$us->id_area; //id area de usuario actual
+        $userSessionRolConceptoList=[];
+        // $userSessionRolAreaList=[];
+        foreach($allRol as $rol){
+
+            $userSessionRolConceptoList[]=$rol->id_rol; //id_rol_concepto actuales
+            // $userSessionRolAreaList[]=$us->id_area; //id area de usuario actual
         }
         // $userSessionRolConceptoList=array_unique($userSessionRolConceptoList);
-        $userSessionRolAreaList=array_unique($userSessionRolAreaList);
+        // $userSessionRolAreaList=array_unique($userSessionRolAreaList);
         
         
         // $rolConceptoHabilitado[] = $this->get_id_rol_concepto('ASISTENTE ADMINISTRATIVO');
@@ -13409,7 +13411,7 @@ function get_id_usuario_usuario_por_rol($descripcion_rol, $id_sede, $id_empresa)
         // $rolConceptoHabilitado[] = $this->get_id_rol_concepto('ASISTENTE CONTABLE');
 
         
-        $usuarioPuedeRegistraPago = false;
+        $usuarioPuedeRegistraPago = true;
         // $countRG=0;
         // foreach($userSessionRolConceptoList as $idSessionRolConcept){
         //     if(array_search($idSessionRolConcept,$rolConceptoHabilitado)){ //si id_rol_cocepto de la session esta en los roles permitidos (asistente administrativo, jefe de fianznas tesoreria)
@@ -13420,12 +13422,12 @@ function get_id_usuario_usuario_por_rol($descripcion_rol, $id_sede, $id_empresa)
         //     $usuarioPuedeRegistraPago = true; // esta habilidado para registrar pago
         // }
 
-        $AreaHabilitada = $this->get_area('CONTABILIDAD');
-        if(in_array($AreaHabilitada,$userSessionRolAreaList)){
-            $usuarioPuedeRegistraPago= true;
-        }else{
-            $usuarioPuedeRegistraPago= false;
-        }
+        // $AreaHabilitada = $this->get_area('CONTABILIDAD');
+        // if(in_array($AreaHabilitada,$userSessionRolAreaList)){
+        //     $usuarioPuedeRegistraPago= true;
+        // }else{
+        //     $usuarioPuedeRegistraPago= false;
+        // }
 
         $id_tipo_doc_oc = $this->get_id_tipo_documento('Orden de Compra');
         $id_tipo_doc_os= $this->get_id_tipo_documento('Orden de Servicio');
@@ -13437,7 +13439,7 @@ function get_id_usuario_usuario_por_rol($descripcion_rol, $id_sede, $id_empresa)
         
   
         
-        $output=[];
+        $data=[];
        
 
         $grupoReq=[];
@@ -13653,7 +13655,7 @@ function get_id_usuario_usuario_por_rol($descripcion_rol, $id_sede, $id_empresa)
                                     $infoIncluded='<center><label class="label label-warning" title="info" style="cursor:pointer;" onClick="viewGroupInfo(event)" data-group-info="'.$groupIncludeJson.'" >i</label></center>';
                                 // 
 
-                                $output['data'][] = array(
+                                $data[] = array(
                                     $id_orden_compra, 
                                     date_format($date,'Y-m-d'), 
                                     '<label class="lbl-codigo" title="Abrir Orden" onClick="abrir_orden('.$id_orden_compra.')">'.$codigo.'</label>',
@@ -13680,7 +13682,7 @@ function get_id_usuario_usuario_por_rol($descripcion_rol, $id_sede, $id_empresa)
                         } // end recorrrer cada id_grupo
                     }
                 }
-                // return $output;
+                $output = ['data'=>$data];
                 return response()->json($output);
     }
 
