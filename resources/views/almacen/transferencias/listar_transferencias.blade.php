@@ -33,7 +33,7 @@ Gestión de Transferencias
                     <div class="row">
                         <div class="col-md-4">
                             <h5>Almacén Origen</h5>
-                            <select class="form-control" name="id_almacen_origen">
+                            <select class="form-control" name="id_almacen_origen" onChange="listarTransferenciasPorEnviar();">
                                 <option value="0">Elija una opción</option>
                                 @foreach ($almacenes as $alm)
                                     <option value="{{$alm->id_almacen}}" selected>{{$alm->descripcion}}</option>
@@ -81,7 +81,7 @@ Gestión de Transferencias
                     <div class="row">
                         <div class="col-md-4">
                             <h5>Almacén Destino</h5>
-                            <select class="form-control" name="id_almacen_destino">
+                            <select class="form-control" name="id_almacen_destino" onChange="listarTransferenciasPendientes();">
                                 <option value="0">Elija una opción</option>
                                 @foreach ($almacenes as $alm)
                                     <option value="{{$alm->id_almacen}}" selected>{{$alm->descripcion}}</option>
@@ -130,7 +130,7 @@ Gestión de Transferencias
                     <div class="row">
                         <div class="col-md-4">
                             <h5>Almacén Destino</h5>
-                            <select class="form-control" name="id_almacen_dest_recibida">
+                            <select class="form-control" name="id_almacen_dest_recibida" onChange="listarTransferenciasRecibidas();">
                                 <option value="0">Elija una opción</option>
                                 @foreach ($almacenes as $alm)
                                     <option value="{{$alm->id_almacen}}" selected>{{$alm->descripcion}}</option>
@@ -155,14 +155,11 @@ Gestión de Transferencias
                                         <th>Nro.Trans.</th>
                                         <th>Guía Venta</th>
                                         <th>Guía Compra</th>
-                                        <!-- <th>Fecha de Guía</th> -->
                                         <th>Almacén Origen</th>
                                         <th>Almacén Destino</th>
                                         <th>Responsable Origen</th>
                                         <th>Responsable Destino</th>
-                                        <!-- <th>Registrado por</th> -->
                                         <th>Estado</th>
-                                        <th>OC</th>
                                         <th>Req.</th>
                                         <th>Concepto</th>
                                         <th width="7%">Acción</th>
@@ -177,9 +174,11 @@ Gestión de Transferencias
         </div>
     </div>
 </div>
-@include('almacen.transferencias.transferencia_detalle')
+@include('almacen.transferencias.transferenciaRecibir')
+@include('almacen.transferencias.transferenciaEnviar')
+@include('almacen.transferencias.transferenciaDetalle')
 @include('almacen.guias.guia_com_obs')
-@include('almacen.transferencias.transferenciaGuia')
+@include('almacen.guias.guia_ven_obs')
 @endsection
 
 @section('scripts')
@@ -198,8 +197,8 @@ Gestión de Transferencias
     <script src="{{ asset('template/plugins/jquery-datatables-checkboxes/js/dataTables.checkboxes.min.js') }}"></script>
 
     <script src="{{ asset('js/almacen/transferencias/listar_transferencias.js')}}"></script>
-    <script src="{{ asset('js/almacen/transferencias/transferencia_detalle.js')}}"></script>
-    <script src="{{ asset('js/almacen/transferencias/transferenciaGuia.js')}}"></script>
+    <script src="{{ asset('js/almacen/transferencias/transferenciaRecibir.js')}}"></script>
+    <script src="{{ asset('js/almacen/transferencias/transferenciaEnviar.js')}}"></script>
     <script>
     $(document).ready(function(){
         seleccionarMenu(window.location);

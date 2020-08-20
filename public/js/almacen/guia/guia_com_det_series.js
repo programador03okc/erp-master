@@ -16,7 +16,8 @@ function agrega_series(id_oc_det){
     }
 
     // listarSeries(id_guia_det);
-    cant_items = $("#"+id_oc_det+" td").find("input[id=cantidad]").val();
+    // cant_items = $("#"+id_oc_det+" td").find("input[id=cantidad]").val();
+    cant_items = $("#"+id_oc_det+"cantidad").val();
 
     $('[name=id_oc_det]').val(id_oc_det);
     // $('#descripcion').text(descripcion);

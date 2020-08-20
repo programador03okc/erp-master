@@ -290,14 +290,14 @@ function listarRequerimientosPendientes(permiso){
                             '<i class="fas fa-sign-in-alt"></i></button>') : 
                         ( row['id_od'] !== null && row['estado_od'] == 1) ?
                         `<button type="button" class="adjuntar btn btn-warning boton" data-toggle="tooltip" 
-                            data-placement="bottom" data-id="${row['id_od']}" data-cod="${row['codigo_od']}" title="Agregar Adjuntos" >
+                            data-placement="bottom" data-id="${row['id_od']}" data-cod="${row['codigo_od']}" title="Adjuntar Boleta/Factura" >
                             <i class="fas fa-paperclip"></i></button>
                         <button type="button" class="anular_od btn btn-danger boton" data-toggle="tooltip" 
                             data-placement="bottom" data-id="${row['id_od']}" data-cod="${row['codigo_od']}" title="Anular Orden Despacho" >
                             <i class="fas fa-trash"></i></button>` : '' )+
                         (row['estado'] == 9 ? 
                         `<button type="button" class="adjuntar btn btn-warning boton" data-toggle="tooltip" 
-                            data-placement="bottom" data-id="${row['id_od']}" data-cod="${row['codigo_od']}" title="Agregar Adjuntos" >
+                            data-placement="bottom" data-id="${row['id_od']}" data-cod="${row['codigo_od']}" title="Adjuntar Boleta/Factura" >
                             <i class="fas fa-paperclip"></i></button>` : '')
                 } else {
                     return '<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" '+
@@ -522,7 +522,7 @@ function listarOrdenesPendientes(){
                                 data-placement="bottom" title="Ver Detalle" >
                                 <i class="fas fa-list-ul"></i></button>
                             <button type="button" class="adjuntar btn btn-warning boton" data-toggle="tooltip" 
-                                data-placement="bottom" data-id="${row['id_od']}" data-cod="${row['codigo']}" title="Agregar Adjuntos" >
+                                data-placement="bottom" data-id="${row['id_od']}" data-cod="${row['codigo']}" title="Adjuntar Boleta/Factura" >
                                 <i class="fas fa-paperclip"></i></button>`;
                 }
             }
@@ -659,7 +659,7 @@ function listarGruposDespachados(permiso){
                         'data-placement="bottom" title="Ver Detalle" >'+
                         '<i class="fas fa-list-ul"></i></button>'+
                         `<button type="button" class="adjuntar btn btn-warning boton" data-toggle="tooltip" 
-                            data-placement="bottom" data-id="${row['id_od']}" data-cod="${row['codigo_od']}" title="Agregar Adjuntos" >
+                            data-placement="bottom" data-id="${row['id_od']}" data-cod="${row['codigo_od']}" title="Adjuntar Boleta/Factura" >
                             <i class="fas fa-paperclip"></i></button>`+
                         '<button type="button" class="imprimir btn btn-info boton" data-toggle="tooltip" '+
                         'data-placement="bottom" data-id-grupo="'+row['id_od_grupo']+'" title="Ver Despacho" >'+
@@ -676,7 +676,7 @@ function listarGruposDespachados(permiso){
                         'data-placement="bottom" title="Ver Detalle" >'+
                         '<i class="fas fa-list-ul"></i></button>'+
                         `<button type="button" class="adjuntar btn btn-warning boton" data-toggle="tooltip" 
-                            data-placement="bottom" data-id="${row['id_od']}" data-cod="${row['codigo_od']}" title="Agregar Adjuntos" >
+                            data-placement="bottom" data-id="${row['id_od']}" data-cod="${row['codigo_od']}" title="Adjuntar Boleta/Factura" >
                             <i class="fas fa-paperclip"></i></button>`+
                         '<button type="button" class="imprimir btn btn-info boton" data-toggle="tooltip" '+
                         'data-placement="bottom" data-id-grupo="'+row['id_od_grupo']+'" title="Ver Despacho" >'+

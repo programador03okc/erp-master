@@ -147,10 +147,6 @@ function listarTransferenciasPendientes(){
             // "scrollX": true,
             'bDestroy':true,
             'ajax' : 'listar_transferencias_pendientes/'+alm_destino,
-            // 'ajax': {
-            //     url:'listar_transferencias_pendientes/'+alm_origen+'/'+alm_destino,
-            //     dataSrc:''
-            // },
             'columns': [
                 {'data': 'id_guia_ven'},
                 // {'data': 'codigo_transferencia'},
@@ -163,7 +159,6 @@ function listarTransferenciasPendientes(){
                         }
                     }
                 },
-                // {'data': 'codigo'},
                 {'render':
                     function (data, type, row){
                         if (row['id_guia_ven'] !== null){
@@ -173,68 +168,28 @@ function listarTransferenciasPendientes(){
                         }
                     }
                 },
-                // {'render':
-                //     function (data, type, row){
-                //         return ('<label class="lbl-codigo" title="Abrir Guía" onClick="abrir_guia_compra('+row['id_guia_com']+')">'+row['guia_com']+'</label>');
-                //     }
-                // },
-                // {'data': 'guia'},
-                // {'data': 'fecha_guia'},
                 {'data': 'alm_origen_descripcion'},
                 {'data': 'alm_destino_descripcion'},
                 {'data': 'nombre_origen'},
                 {'data': 'nombre_destino'},
-                // {'data': 'nombre_registro'},
-                // {'data': 'estado_doc'},
                 {'render':
                     function (data, type, row){
                         return ('<span class="label label-'+row['bootstrap_color']+'">'+row['estado_doc']+'</span>');
                     }
                 },
-                // {'render':
-                //     function (data, type, row){
-                //         if (row['codigo_orden'] !== null){
-                //             return (row['codigo_orden']);
-                //         } else {
-                //             return '';
-                //         }
-                //     }
-                // },
-                // {'render':
-                //     function (data, type, row){
-                //         if (row['codigo_req'] !== null){
-                //             return (row['codigo_req']);
-                //         } 
-                //         else if (row['codigo_req_directo'] !== null){
-                //             return (row['codigo_req_directo']);
-                //         }
-                //         else {
-                //             return '';
-                //         }
-                //     }
-                // },
-                // {'render':
-                //     function (data, type, row){
-                //         if (row['concepto_req'] !== null){
-                //             return (row['concepto_req']);
-                //         }
-                //         else if (row['concepto_req_directo'] !== null){
-                //             return (row['concepto_req_directo']);
-                //         } 
-                //         else {
-                //             return '';
-                //         }
-                //     }
-                // },
                 {'render':
                     function (data, type, row){
                         if (valor_permiso == '1') {
-                            return (row['id_guia_ven'] !== null ? ('<button type="button" class="atender btn btn-success boton" data-toggle="tooltip" '+
-                            'data-placement="bottom" title="Recibir" >'+
-                            '<i class="fas fa-share"></i></button>'+
-                            '<button type="button" class="salida btn btn-primary boton" data-toggle="tooltip" '+
-                            'data-placement="bottom" data-id-salida="'+row['id_salida']+'" title="Ver Salida" >'+
-                            '<i class="fas fa-file-alt"></i></button>') : '');
+                            return (row['id_guia_ven'] !== null ? 
+                            (`<button type="button" class="atender btn btn-success boton" data-toggle="tooltip" 
+                            data-placement="bottom" title="Recibir" >
+                            <i class="fas fa-share"></i></button>
+                            <button type="button" class="salida btn btn-primary boton" data-toggle="tooltip" 
+                            data-placement="bottom" data-id-salida="${row['id_salida']}" title="Imprimir Salida" >
+                            <i class="fas fa-file-alt"></i></button>
+                            <button type="button" class="anularSalida btn btn-danger boton" data-toggle="tooltip" 
+                            data-placement="bottom" data-id="${row['id_guia_ven']}" data-id-salida="${row['id_salida']}" title="Anular Salida" >
+                            <i class="fas fa-trash"></i></button>`) : '');
                         } else {
                             return ''
                         }
@@ -265,19 +220,65 @@ $('#listaTransferenciasPendientes tbody').on("click","button.atender", function(
 
 $('#listaTransferenciasPendientes tbody').on("click","button.salida", function(){
     var idSalida = $(this).data('idSalida');
+    console.log(idSalida);
     if (idSalida !== ''){
         var id = encode5t(idSalida);
         window.open('imprimir_salida/'+id);
     }
 });
 
-// $('#listaTransferenciasPorEnviar tbody').on("click","button.detalle", function(){
-//     var data = $('#listaTransferenciasPorEnviar').DataTable().row($(this).parents("tr")).data();
-//     console.log(data);
-//     if (data !== undefined){
-//         open_transferencia_detalle(data);
-//     }
-// });
+$('#listaTransferenciasPendientes tbody').on("click","button.anularSalida", function(){
+    var idSalida = $(this).data('idSalida');
+    var idGuia = $(this).data('id');
+    console.log(idSalida);
+    if (idSalida !== ''){
+        var c = confirm('¿Está seguro que desea anular la salida por transferencia?');
+        if (c){
+            $('#modal-guia_ven_obs').modal({
+                show: true
+            });
+
+            $('[name=id_salida]').val(idSalida);
+            // $('[name=id_transferencia]').val('');
+            $('[name=id_guia_ven]').val(idGuia);
+            $('[name=observacion_guia_ven]').val('');
+
+            $("#submitGuiaVenObs").removeAttr("disabled");
+        }
+    }
+});
+
+$("#form-guia_ven_obs").on("submit", function(e){
+    console.log('submit');
+    e.preventDefault();
+    var data = $(this).serialize();
+    console.log(data);
+    anular_transferencia_salida(data);
+});
+
+function anular_transferencia_salida(data){
+    $("#submitGuiaVenObs").attr('disabled','true');
+    $.ajax({
+        type: 'POST',
+        url: 'anular_transferencia_salida',
+        data: data,
+        dataType: 'JSON',
+        success: function(response){
+            if (response.length > 0){
+                alert(response);
+                $('#modal-guia_ven_obs').modal('hide');
+            } else {
+                alert('Salida por Transferencia anulada con éxito');
+                $('#modal-guia_ven_obs').modal('hide');
+                listarTransferenciasPendientes();
+            }
+        }
+    }).fail( function( jqXHR, textStatus, errorThrown ){
+        console.log(jqXHR);
+        console.log(textStatus);
+        console.log(errorThrown);
+    });
+}
 
 function listarTransferenciasRecibidas(){
     var destino = $('[name=id_almacen_dest_recibida]').val();
@@ -326,15 +327,15 @@ function listarTransferenciasRecibidas(){
                         return ('<span class="label label-'+row['bootstrap_color']+'">'+row['estado_doc']+'</span>');
                     }
                 },
-                {'render':
-                    function (data, type, row){
-                        if (row['codigo_orden'] !== null){
-                            return (row['codigo_orden']);
-                        } else {
-                            return '';
-                        }
-                    }
-                },
+                // {'render':
+                //     function (data, type, row){
+                //         if (row['codigo_orden'] !== null){
+                //             return (row['codigo_orden']);
+                //         } else {
+                //             return '';
+                //         }
+                //     }
+                // },
                 {'render':
                     function (data, type, row){
                         if (row['codigo_req'] !== null){
@@ -364,24 +365,29 @@ function listarTransferenciasRecibidas(){
                 {'render':
                     function (data, type, row){
                         if (valor_permiso == '1') {
-                            return ('<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" '+
-                                'data-placement="bottom" title="Ver Detalle" >'+
-                                '<i class="fas fa-list-ul"></i></button>'+
-                            '<button type="button" class="ingreso btn btn-warning boton" data-toggle="tooltip" '+
-                                'data-placement="bottom" data-id-ingreso="'+row['id_ingreso']+'" title="Ver Ingreso" >'+
-                                '<i class="fas fa-file-alt"></i></button>'+
-                            '<button type="button" class="anular btn btn-danger boton" data-toggle="tooltip" '+
-                                'data-placement="bottom" data-id="'+row['id_transferencia']+'" data-guia="'+row['id_guia_com']+'" data-ing="'+row['id_ingreso']+'" title="Anular" >'+
-                                '<i class="fas fa-trash"></i></button>');
+                            return (`<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" 
+                                data-placement="bottom" title="Ver Detalle" data-id="${row['id_transferencia']}" 
+                                data-cod="${row['codigo']}" data-guia="${row['guia_com']}" 
+                                data-origen="${row['alm_origen_descripcion']}" data-destino="${row['alm_destino_descripcion']}">
+                                <i class="fas fa-list-ul"></i></button>
+                            <button type="button" class="ingreso btn btn-warning boton" data-toggle="tooltip" 
+                                data-placement="bottom" data-id-ingreso="${row['id_ingreso']}" title="Ver Ingreso" >
+                                <i class="fas fa-file-alt"></i></button>
+                            <button type="button" class="anular btn btn-danger boton" data-toggle="tooltip" 
+                                data-placement="bottom" data-id="${row['id_transferencia']}" data-guia="${row['id_guia_com']}" data-ing="${row['id_ingreso']}" title="Anular" >
+                                <i class="fas fa-trash"></i></button>`);
                         } else {
-                            return '<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" '+
-                            'data-placement="bottom" title="Ver Detalle" >'+
-                            '<i class="fas fa-list-ul"></i></button>'
+                            return `<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" 
+                            data-placement="bottom" title="Ver Detalle" data-id="${row['id_transferencia']}" 
+                            data-cod="${row['codigo']}" data-guia="${row['guia_com']}" 
+                            data-origen="${row['alm_origen_descripcion']}" data-destino="${row['alm_destino_descripcion']}">
+                            <i class="fas fa-list-ul"></i></button>`
                         }
                     }
                 }
             ],
             'columnDefs': [{ 'aTargets': [0], 'sClass': 'invisible'}],
+            'order': [[1, 'desc']]
         });
     }
 }
@@ -395,12 +401,57 @@ $('#listaTransferenciasRecibidas tbody').on("click","button.ingreso", function()
 });
 
 $('#listaTransferenciasRecibidas tbody').on("click","button.detalle", function(){
-    var data = $('#listaTransferenciasRecibidas').DataTable().row($(this).parents("tr")).data();
-    console.log(data);
-    if (data !== undefined){
-        open_transferencia_detalle(data);
+    var id_transferencia = $(this).data('id');
+    var codigo = $(this).data('cod');
+    var guia = $(this).data('guia');
+    var origen = $(this).data('origen');
+    var destino = $(this).data('destino');
+
+    if (id_transferencia !== ''){
+        $('#modal-transferenciaDetalle').modal({
+            show: true
+        });
+        console.log(codigo);
+        $('#codigo_transferencia').text(codigo);
+        $('#nro_guia').text(guia);
+        $('[name=det_almacen_origen]').val(origen);
+        $('[name=det_almacen_destino]').val(destino);
+        detalle_transferencia(id_transferencia);
     }
 });
+
+function detalle_transferencia(id_transferencia){
+    $.ajax({
+        type: 'GET',
+        url: 'listar_transferencia_detalle/'+id_transferencia,
+        dataType: 'JSON',
+        success: function(response){
+            console.log(response);
+            var html='';
+            var i = 1;
+            response.forEach(element => {
+                html+=`<tr>
+                <td>${i}</td>
+                <td>${element.codigo}</td>
+                <td style="background-color: LightCyan;">${element.part_number}</td>
+                <td style="background-color: LightCyan;">${element.categoria}</td>
+                <td style="background-color: LightCyan;">${element.subcategoria}</td>
+                <td style="background-color: LightCyan;">${element.descripcion}</td>
+                <td style="background-color: MistyRose;">${element.cantidad}</td>
+                <td>${element.abreviatura}</td>
+                <td style="background-color: NavajoWhite;">${element.serie !== null ? element.serie+'-'+element.numero : ''}</td>
+                <td><span class="label label-${element.bootstrap_color}">${element.estado_doc}</span></td>
+                </tr>`;
+                i++;
+            });
+            $('#listaTransferenciaDetalle tbody').html(html);
+        }
+    }).fail( function( jqXHR, textStatus, errorThrown ){
+        console.log(jqXHR);
+        console.log(textStatus);
+        console.log(errorThrown);
+    });
+}
 
 $('#listaTransferenciasRecibidas tbody').on("click","button.anular", function(){
     var id_transferencia = $(this).data('id');
@@ -429,10 +480,10 @@ $("#form-obs").on("submit", function(e){
     e.preventDefault();
     var data = $(this).serialize();
     console.log(data);
-    anular_transferencia(data);
+    anular_transferencia_ingreso(data);
 });
 
-function anular_transferencia(data){
+function anular_transferencia_ingreso(data){
     $("#submitGuiaObs").attr('disabled','true');
     $.ajax({
         type: 'POST',

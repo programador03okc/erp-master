@@ -182,7 +182,7 @@ class OrdenesPendientesController extends Controller
                 <td>'.$det->categoria.'</td>
                 <td>'.$det->subcategoria.'</td>
                 <td>'.$det->descripcion.'</td>
-                <td><input type="number" id="cantidad" value="'.$cantidad.'" min="1" max="'.$cantidad.'" style="width:80px;"/></td>
+                <td><input type="number" id="'.$det->id_detalle_orden.'cantidad" value="'.$cantidad.'" min="1" max="'.$cantidad.'" style="width:80px;"/></td>
                 <td>'.$det->abreviatura.'</td>
                 <td><input type="text" class="oculto" id="series" value="'.$det->series.'" data-partnumber="'.$det->part_number.'"/>';
                 if ($det->series == true) {
@@ -419,7 +419,11 @@ class OrdenesPendientesController extends Controller
                     $nuevo_detalle = DB::table('logistica.log_det_ord_compra')
                     ->select('log_det_ord_compra.*','alm_item.id_producto','guia_com_det.id_guia_com_det')
                     ->leftjoin('almacen.alm_item','alm_item.id_item','=','log_det_ord_compra.id_item')
-                    ->leftjoin('almacen.guia_com_det','guia_com_det.id_oc_det','=','log_det_ord_compra.id_detalle_orden')
+                    // ->leftjoin('almacen.guia_com_det','guia_com_det.id_oc_det','=','log_det_ord_compra.id_detalle_orden')
+                    ->leftJoin('almacen.guia_com_det', function($join)
+                         {   $join->on('guia_com_det.id_oc_det', '=', 'log_det_ord_compra.id_detalle_orden');
+                             $join->where('guia_com_det.estado','!=', 7);
+                         })
                     ->whereIn('id_detalle_orden',$ids_ocd)
                     ->get();
                     //actualiza estado oc padre
@@ -464,7 +468,7 @@ class OrdenesPendientesController extends Controller
                                 DB::table('almacen.alm_det_req')
                                 ->where('id_requerimiento',$oc->id_requerimiento)
                                 ->update(['estado'=>19,
-                                            'id_almacen_reserva'=>$request->id_almacen]);//Reservado
+                                          'id_almacen_reserva'=>$request->id_almacen]);//Reservado
                                 //sede orden y almacen requerimiento son diferentes
                                 if ($oc->sede_requerimiento !== $request->id_sede){
                                     
@@ -526,8 +530,7 @@ class OrdenesPendientesController extends Controller
                                     
                                 DB::table('almacen.alm_det_req')
                                 ->where('id_requerimiento',$oc->id_requerimiento)
-                                ->update(['estado'=>9,
-                                            'id_almacen_reserva'=>null]);//Procesado
+                                ->update(['estado'=>9]);//Procesado
                             }
                             
                             DB::table('almacen.alm_req_obs')

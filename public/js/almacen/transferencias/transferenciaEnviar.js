@@ -147,14 +147,16 @@ function listarDetalleTransferencia(id_transferencia){
                 response.forEach(element => {
                     html+=`<tr>
                     <td>${i}</td>
-                    <td>${element.codigo_trans}</td>
+                    <td style="background-color: LightCyan;">${element.codigo_trans}</td>
+                    <td style="background-color: LightCyan;">${element.codigo_req}</td>
+                    <td style="background-color: LightCyan;">${element.concepto}</td>
                     <td>${element.codigo}</td>
-                    <td>${element.part_number}</td>
+                    <td style="background-color: MistyRose;">${element.part_number}</td>
                     <td>${element.categoria}</td>
                     <td>${element.subcategoria}</td>
-                    <td>${element.descripcion}</td>
-                    <td>${element.cantidad}</td>
-                    <td>${element.abreviatura}</td>
+                    <td style="background-color: MistyRose;">${element.descripcion}</td>
+                    <td style="background-color: MistyRose;">${element.cantidad}</td>
+                    <td style="background-color: MistyRose;">${element.abreviatura}</td>
                     <td>${element.estado_doc}</td>
                     </tr>`;
                     i++;
