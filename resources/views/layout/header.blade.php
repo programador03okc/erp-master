@@ -1,7 +1,7 @@
 <header class="main-header"><meta charset="gb18030">
     <a href="{{ route('modulos') }}" class="logo">
         <span class="logo-mini"><b>OKC</b></span>
-        <span class="logo-lg"><b>OK COMPUTER EIRL</b></span>
+        <span class="logo-lg"><b>OK COMPUTER E.I.R.L.</b></span>
     </a>
 
     <nav class="navbar navbar-static-top">
@@ -26,7 +26,7 @@
                             <img src="{{ asset('images/user2-160x160.jpg') }}" class="img-circle" alt="User Image">
                             <p>{{ Auth::user()->nombre_corto }}
                                 <!-- Auth::user()->trabajador->postulante->persona->nombre_completo -->
-                                <small>{{ Auth::user()->getRol() }}</small>
+                                <small>{{ Auth::user()->getRolesText() }}</small>
                             </p>
                         </li>
                         <li class="user-footer">

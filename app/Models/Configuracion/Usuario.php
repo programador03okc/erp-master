@@ -90,7 +90,7 @@ class Usuario extends Authenticatable
         return $sedes;
 	}
 
-	public function getRol()
+	public function getRolesText()
     {
 		$roles = DB::table('configuracion.sis_acceso')
 		->select('sis_rol.*')
