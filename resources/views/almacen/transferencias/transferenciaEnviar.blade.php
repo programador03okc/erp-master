@@ -83,6 +83,7 @@
                                         <th>Cantidad</th>
                                         <th>Unid</th>
                                         <th>Estado</th>
+                                        <th></th>
                                     </tr>
                                 </thead>
                                 <tbody></tbody>

@@ -384,6 +384,17 @@ class TransferenciaController extends Controller
                     ->where('id_guia_ven', $request->id_guia_ven)
                     ->update([ 'estado' => 7 ]);
 
+                    $detalle = DB::table('almacen.guia_ven_det')
+                    ->select('guia_ven_det.id_guia_ven_det')
+                    ->where('id_guia_ven', $request->id_guia_ven)
+                    ->get();
+
+                    foreach ($detalle as $det) {
+                        DB::table('almacen.alm_prod_serie')
+                        ->where('id_guia_ven_det','=',$det->id_guia_ven_det)
+                        ->update(['id_guia_ven_det' => null]);
+                    }
+
                     foreach ($transferencias as $tra) {
                         //Transferencia cambia estado elaborado
                         DB::table('almacen.trans')
@@ -437,6 +448,14 @@ class TransferenciaController extends Controller
         return response()->json($data);
     }
 
+    public function pruebat(){
+        $data = DB::table('almacen.alm_prod_serie')
+                    ->select('alm_prod_serie.serie')
+                    ->leftJoin('almacen.trans_detalle', 'trans_detalle.id_guia_com_det', '=', 'alm_prod_serie.id_guia_det')
+                    ->where([['trans_detalle.id_trans_detalle','=',37]])
+                    ->get();
+        return $data->count();
+    }
     public function guardar_ingreso_transferencia(Request $request){ 
 
         try {
@@ -574,6 +593,27 @@ class TransferenciaController extends Controller
                     ],
                         'id_guia_com_det'
                     );
+                    
+                    $series = DB::table('almacen.alm_prod_serie')
+                    ->select('alm_prod_serie.serie')
+                    ->leftJoin('almacen.trans_detalle', 'trans_detalle.id_guia_com_det', '=', 'alm_prod_serie.id_guia_det')
+                    ->where([['trans_detalle.id_trans_detalle','=',$det->id_trans_det]])
+                    ->get();
+
+                    if ($series->count() > 0){
+                        foreach ($series as $s) {
+                            //Inserta serie
+                            DB::table('almacen.guia_com_det')->insert([
+                                'id_prod' => $det->id_producto,
+                                'serie' => $s->serie,
+                                'estado' => 1,
+                                'fecha_registro' => date('Y-m-d H:i:s'),
+                                'id_guia_det' => $id_guia_com_det,
+                                'id_almacen' => $request->id_almacen_destino
+                            ]);
+                        }
+                    }
+
                     if ($d->observacion !== '' && $d->observacion !== null){
                         DB::table('almacen.guia_com_det_obs')->insertGetId([
                             'id_guia_com_det' => $id_guia_com_det,
@@ -725,7 +765,7 @@ class TransferenciaController extends Controller
 
     public function listarDetalleTransferencia($id_trans){
         $detalle = DB::table('almacen.trans_detalle')
-        ->select('trans_detalle.*','alm_prod.codigo','alm_prod.descripcion',
+        ->select('trans_detalle.*','alm_prod.codigo','alm_prod.descripcion','alm_prod.series',
         'alm_cat_prod.descripcion as categoria','alm_subcat.descripcion as subcategoria',
         'alm_prod.part_number','alm_und_medida.abreviatura','trans.codigo as codigo_trans',
         'adm_estado_doc.estado_doc','alm_req.codigo as codigo_req','alm_req.concepto')
@@ -867,7 +907,11 @@ class TransferenciaController extends Controller
                     ],
                         'id_guia_ven_det'
                     );
-
+                //Guardo relacion guia_ven_det en las series
+                DB::table('almacen.alm_prod_serie')
+                ->where([['id_guia_det','=',$det->id_guia_com_det],
+                         ['id_prod','=',$det->id_producto],['estado','!=',7]])
+                ->update(['id_guia_ven_det'=>$id_guia_ven_det]);
                 //Guardo los items de la salida
                 $id_det = DB::table('almacen.mov_alm_det')->insertGetId(
                     [
@@ -1055,9 +1099,9 @@ class TransferenciaController extends Controller
         'adm_estado_doc.estado_doc','alm_req.codigo as codigo_req','alm_req.concepto',
         // 'guia_com.serie as serie_com','guia_com.numero as numero_com',
         // 'guia_ven.serie as serie_ven','guia_ven.numero as numero_ven',
-        'alm_prod.codigo','alm_prod.part_number','alm_cat_prod.descripcion as categoria',
-        'alm_subcat.descripcion as subcategoria','alm_prod.descripcion','alm_und_medida.abreviatura',
-        'trans.codigo as codigo_trans')
+        'alm_prod.codigo','alm_prod.part_number','alm_prod.series',
+        'alm_cat_prod.descripcion as categoria','alm_subcat.descripcion as subcategoria',
+        'alm_prod.descripcion','alm_und_medida.abreviatura','trans.codigo as codigo_trans')
         ->join('almacen.trans','trans.id_transferencia','=','trans_detalle.id_transferencia')
         // ->join('almacen.alm_almacen as origen','origen.id_almacen','=','trans.id_almacen_origen')
         // ->join('almacen.alm_almacen as destino','destino.id_almacen','=','trans.id_almacen_destino')
@@ -1088,10 +1132,28 @@ class TransferenciaController extends Controller
                 <td style="background-color: MistyRose;">'.$t->cantidad.'</td>
                 <td style="background-color: MistyRose;">'.$t->abreviatura.'</td>
                 <td>'.$t->estado_doc.'</td>
+                <td>';
+                if ($t->series == true) {
+                    $html.='<i class="fas fa-bars icon-tabla boton" data-toggle="tooltip" data-placement="bottom" 
+                    title="Ver Series" onClick="listarSeries('.$t->id_guia_com_det.');"></i>';
+                }
+                $html.='</td>
             <tr/>';
             $i++;
         }
         return json_encode($html);
+    }
+
+    public function listarSeries($id_guia_com_det){
+        $series = DB::table('almacen.alm_prod_serie')
+        ->select('alm_prod_serie.*',
+        DB::raw("(guia_com.serie) || '-' || (guia_com.numero) AS guia_com"))
+        ->join('almacen.guia_com_det','guia_com_det.id_guia_com_det','=','alm_prod_serie.id_guia_det')
+        ->join('almacen.guia_com','guia_com.id_guia','=','guia_com_det.id_guia_com')
+        ->where([['alm_prod_serie.id_guia_det','=',$id_guia_com_det],
+                 ['alm_prod_serie.estado','!=',7]])
+        ->get();
+        return response()->json($series);
     }
 
     public static function transferencia_nextId($id_alm_origen){

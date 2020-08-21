@@ -1094,6 +1094,7 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::get('listarDetalleTransferencia/{id}', 'TransferenciaController@listarDetalleTransferencia');
 					Route::post('listarDetalleTransferenciasSeleccionadas', 'TransferenciaController@listarDetalleTransferenciasSeleccionadas');
 					Route::get('listar_guia_transferencia_detalle/{id}', 'TransferenciaController@listar_guia_transferencia_detalle');
+					Route::get('listarSeries/{id}', 'TransferenciaController@listarSeries');
 					
 				});
 	
@@ -1440,6 +1441,7 @@ Route::group(['middleware' => ['auth']], function () {
 
 
 Route::get('soft_tipos_cambio', 'AlmacenController@soft_tipos_cambio');
+Route::get('pruebat', 'TransferenciaController@pruebat');
 /* Configuración */
 Route::post('update_password', 'ConfiguracionController@cambiar_clave');
 Route::get('modulo', 'ConfiguracionController@view_modulos');

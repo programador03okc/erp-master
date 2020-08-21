@@ -140,6 +140,7 @@ $('#ordenesPendientes tbody').on("click","button.guia", function(){
 });
 
 function open_guia_create(data){
+    console.log(data);
     $('#modal-guia_create').modal({
         show: true
     });
@@ -447,33 +448,33 @@ function open_detalle_movimiento(id, codigo){
     $('#cabecera').text(codigo);
     listar_detalle_movimiento(id);
 }
-// function cargar_almacenes(sede){
-//     if (sede !== ''){
-//         $.ajax({
-//             type: 'GET',
-//             url: 'cargar_almacenes/'+sede,
-//             dataType: 'JSON',
-//             success: function(response){
-//                 console.log(response);
-//                 var option = '';
-//                 for (var i=0; i<response.length; i++){
-//                     if (response.length == 1){
-//                         option+='<option data-id-sede="'+response[i].id_sede+'" data-id-empresa="'+response[i].id_empresa+'" value="'+response[i].id_almacen+'" selected>'+response[i].codigo+' - '+response[i].descripcion+'</option>';
+function cargar_almacenes(sede){
+    if (sede !== ''){
+        $.ajax({
+            type: 'GET',
+            url: 'cargar_almacenes/'+sede,
+            dataType: 'JSON',
+            success: function(response){
+                console.log(response);
+                var option = '';
+                for (var i=0; i<response.length; i++){
+                    if (response.length == 1){
+                        option+='<option data-id-sede="'+response[i].id_sede+'" data-id-empresa="'+response[i].id_empresa+'" value="'+response[i].id_almacen+'" selected>'+response[i].codigo+' - '+response[i].descripcion+'</option>';
 
-//                     } else {
-//                         option+='<option data-id-sede="'+response[i].id_sede+'" data-id-empresa="'+response[i].id_empresa+'" value="'+response[i].id_almacen+'">'+response[i].codigo+' - '+response[i].descripcion+'</option>';
+                    } else {
+                        option+='<option data-id-sede="'+response[i].id_sede+'" data-id-empresa="'+response[i].id_empresa+'" value="'+response[i].id_almacen+'">'+response[i].codigo+' - '+response[i].descripcion+'</option>';
 
-//                     }
-//                 }
-//                 $('[name=id_almacen]').html(option);
-//             }
-//         }).fail( function( jqXHR, textStatus, errorThrown ){
-//             console.log(jqXHR);
-//             console.log(textStatus);
-//             console.log(errorThrown);
-//         });
-//     }
-// }
+                    }
+                }
+                $('[name=id_almacen]').html(option);
+            }
+        }).fail( function( jqXHR, textStatus, errorThrown ){
+            console.log(jqXHR);
+            console.log(textStatus);
+            console.log(errorThrown);
+        });
+    }
+}
 
 function open_guias(data){
     $('#modal-guias').modal({

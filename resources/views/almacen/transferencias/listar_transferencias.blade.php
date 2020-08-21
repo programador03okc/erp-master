@@ -177,6 +177,7 @@ Gestión de Transferencias
 @include('almacen.transferencias.transferenciaRecibir')
 @include('almacen.transferencias.transferenciaEnviar')
 @include('almacen.transferencias.transferenciaDetalle')
+@include('almacen.transferencias.ver_series')
 @include('almacen.guias.guia_com_obs')
 @include('almacen.guias.guia_ven_obs')
 @endsection

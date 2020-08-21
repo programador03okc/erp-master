@@ -749,7 +749,8 @@ class OrdenesPendientesController extends Controller
             if ($ing->revisado == 0){
                 //Verifica si ya tiene transferencia u orden de despacho
                 $detalle = DB::table('almacen.mov_alm_det')
-                ->select('log_det_ord_compra.id_detalle_orden','log_det_ord_compra.id_orden_compra',
+                ->select('mov_alm_det.id_guia_com_det','mov_alm_det.id_producto',
+                         'log_det_ord_compra.id_detalle_orden','log_det_ord_compra.id_orden_compra',
                          'alm_det_req.id_detalle_requerimiento','alm_det_req.id_requerimiento',
                          'trans_detalle.id_trans_detalle','trans.id_transferencia',
                          'trans.estado as estado_trans','orden_despacho.id_od')
@@ -800,6 +801,11 @@ class OrdenesPendientesController extends Controller
                     $requerimientos = [];
 
                     foreach ($detalle as $det) {
+                        //Anula las series relacionadas
+                        DB::table('almacen.alm_prod_serie')
+                        ->where([['id_guia_det','=',$det->id_guia_com_det],
+                                 ['id_prod','=',$det->id_producto]])
+                        ->update(['estado' => 7]);
                         //Quita estado de la orden
                         DB::table('logistica.log_det_ord_compra')
                         ->where('id_detalle_orden',$det->id_detalle_orden)

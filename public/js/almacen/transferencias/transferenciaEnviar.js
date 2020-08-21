@@ -1,27 +1,27 @@
 let origen = null;
 
-function openTransferenciaGuia(data){
-    origen = 'transferencia_por_orden';
-    $('#modal-transferenciaGuia').modal({
-        show: true
-    });
+// function openTransferenciaGuia(data){
+//     origen = 'transferencia_por_orden';
+//     $('#modal-transferenciaGuia').modal({
+//         show: true
+//     });
     
-    $('[name=id_almacen_origen]').val(data.id_almacen);
-    $('[name=trans_serie]').val('');
-    $('[name=trans_numero]').val('');
-    $('[name=id_guia_com]').val(data.id_guia_com);
-    $('[name=id_sede]').val(data.sede_orden);
-    $('[name=id_mov_alm]').val(data.id_mov_alm);
-    $('[name=id_requerimiento]').val(data.id_requerimiento);
-    $("#submit_transferencia").removeAttr("disabled");
-    if (data.almacen_requerimiento !== null){
-        $('[name=id_almacen_destino]').val(data.almacen_requerimiento);
-    } else {
-        cargar_almacenes(data.sede_requerimiento, 'id_almacen_destino');
-    }
-    // var tp_doc_almacen = 2;//guia venta
-    // next_serie_numero(data.sede_orden,tp_doc_almacen);
-}
+//     $('[name=id_almacen_origen]').val(data.id_almacen);
+//     $('[name=trans_serie]').val('');
+//     $('[name=trans_numero]').val('');
+//     $('[name=id_guia_com]').val(data.id_guia_com);
+//     $('[name=id_sede]').val(data.sede_orden);
+//     $('[name=id_mov_alm]').val(data.id_mov_alm);
+//     $('[name=id_requerimiento]').val(data.id_requerimiento);
+//     $("#submit_transferencia").removeAttr("disabled");
+//     if (data.almacen_requerimiento !== null){
+//         $('[name=id_almacen_destino]').val(data.almacen_requerimiento);
+//     } else {
+//         cargar_almacenes(data.sede_requerimiento, 'id_almacen_destino');
+//     }
+//     // var tp_doc_almacen = 2;//guia venta
+//     // next_serie_numero(data.sede_orden,tp_doc_almacen);
+// }
 
 function openGenerarGuia(data){
     origen = 'transferencia_por_requerimiento';
@@ -158,7 +158,10 @@ function listarDetalleTransferencia(id_transferencia){
                     <td style="background-color: MistyRose;">${element.cantidad}</td>
                     <td style="background-color: MistyRose;">${element.abreviatura}</td>
                     <td>${element.estado_doc}</td>
+                    <td>${(element.series ? `<i class="fas fa-bars icon-tabla boton" data-toggle="tooltip" data-placement="bottom" 
+                        title="Ver Series" onClick="listarSeries(${element.id_guia_com_det});"></i>` : '')}</td>
                     </tr>`;
+                    // onClick="agrega_series('.$det->id_detalle_orden.');"
                     i++;
                 });
                 $('#detalleTransferencia tbody').html(html);
@@ -179,6 +182,37 @@ function listarDetalleTransferenciaSeleccionadas(data){
         dataType: 'JSON',
         success: function(response){
             $('#detalleTransferencia tbody').html(response);
+        }
+    }).fail( function( jqXHR, textStatus, errorThrown ){
+        console.log(jqXHR);
+        console.log(textStatus);
+        console.log(errorThrown);
+    });
+}
+
+function listarSeries(id_guia_com_det){
+    $('#modal-ver_series').modal({
+        show: true
+    });
+    $.ajax({
+        type: 'GET',
+        url: 'listarSeries/'+id_guia_com_det,
+        dataType: 'JSON',
+        success: function(response){
+            console.log(response);
+            var tr = '';
+            var i = 1;
+            response.forEach(element => {
+                tr+=`<tr id="${element.id_prod_serie}">
+                        <td class="numero">${i}</td>
+                        <td class="serie">${element.serie}</td>
+                        <td>${element.guia_com}</td>
+                        </tr>`;
+                    });
+                    // <td><i class="btn btn-danger fas fa-trash fa-lg" ></i>
+            // onClick="eliminar_serie('+"'"+response[i].id_prod_serie+"'"+');"
+            $('#listaSeries tbody').html(tr);
+            $('[name=serie_prod]').focus();
         }
     }).fail( function( jqXHR, textStatus, errorThrown ){
         console.log(jqXHR);
