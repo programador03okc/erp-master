@@ -2042,7 +2042,7 @@ function controlUnidadMedida(){
 }
 
 function selectItem(){
-
+        detalleRequerimientoModal(event);
         var id_item = $('#modal-catalogo-items .modal-footer #id_item').text();
         var id_producto = $('#modal-catalogo-items .modal-footer #id_producto').text();
         var id_servicio = $('#modal-catalogo-items .modal-footer #id_servicio').text();
@@ -2546,10 +2546,10 @@ function anular_requerimiento(id_req){
                 if(response.status_requerimiento ==200 && response.status_transferencia ==200){
                     alert("Requerimiento Anulado y se revertió la transferencia.");
                     nuevo_req();
-                }else if(response.status_requerimiento ==200 && response.status_transferencia ==400){
+                }else if((response.status_requerimiento ==200 && response.status_transferencia == 0) || (response.status_requerimiento ==200 && response.status_transferencia == 400)){
                     alert("Requerimiento Anulado.");
-                }else if(response.status_requerimiento ==401){
-                    alert("No se puede Anular, Unicamente el usuario que creo el requerimiento puede anular.");
+                }else if(response.status_requerimiento ==400){
+                    alert("Hubo un problema, No se puede Anular el Requerimiento");
                 }else{
                     alert("No se pudo Anular el Requerimiento.");
                 }
