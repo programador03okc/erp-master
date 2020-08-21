@@ -145,7 +145,7 @@
                             <div class="row" style="margin-bottom: 0;">
                                 <div class="col-md-12">
                                     <h5>Descripción</h5>
-                                    <input type="text" class="form-control activation" name="descripcion" disabled="true">
+                                    <input type="text" class="form-control activation" name="descripcion" onkeyup="mayus(this);" disabled="true">
                                 </div>
                             </div>
                             <div class="row" style="margin-bottom: 0;">

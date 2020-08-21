@@ -140,11 +140,14 @@ $("[name=id_subcategoria]").change( function() {
     if (id == ''){
         var sel = $(this).find('option:selected').text();
         console.log(sel);
-        var des = $('[name=descripcion]').val();
-        $('[name=descripcion]').val(des+' '+sel+' ');
+        var cat = $('select[name=id_categoria] option:selected').text();
+        $('[name=descripcion]').val(cat+' '+sel+' ');
     }
-    console.log($(this).val());
 });
+
+function mayus(e) {
+    e.value = e.value.toUpperCase();
+}
 
 function save_producto(data, action){
     console.log(data);
