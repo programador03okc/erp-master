@@ -290,7 +290,7 @@
                             <th width="100">LUGAR ENTREGA</th>
                             <th width="100">ALMACEN RESERVA</th>
                             <th width="120">
-                                <center><button class="btn btn-xs btn-success activation" onClick="detalleRequerimientoModal(event);" id="btn-add"
+                                <center><button type="button" class="btn btn-xs btn-success activation" onClick="catalogoItemsModal();" id="btn-add"
                                     data-toggle="tooltip" data-placement="bottom"  title="Agregar Detalle" disabled><i class="fas fa-plus"></i>
                                 </button></center>
                             </th>
@@ -374,13 +374,15 @@
 @include('logistica.requerimientos.modal_adjuntar_archivos_requerimiento')
 @include('logistica.requerimientos.modal_adjuntar_archivos_detalle_requerimiento')
 @include('logistica.requerimientos.modal_historial_requerimiento')
+@include('logistica.requerimientos.modal_catalogo_items')
+@include('almacen.producto.saldosModal')
+@include('logistica.requerimientos.modal_partidas')
 @include('logistica.requerimientos.modal_detalle_requerimiento')
 @include('logistica.requerimientos.modal_empresa_area')
 @include('proyectos.opcion.opcionModal')
 @include('logistica.requerimientos.aprobacion.modal_sustento')
 @include('almacen.verRequerimientoEstado')
 @include('logistica.requerimientos.modal_promocion_item')
-@include('almacen.producto.saldosModal')
 
 @endsection
 

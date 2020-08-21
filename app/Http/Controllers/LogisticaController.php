@@ -1976,8 +1976,18 @@ class LogisticaController extends Controller
     public function anular_requerimiento($id){
         $statusAnularRequerimiento=0;
         $statusAnularTrasferencia=0;
+        $hasPermission= false;
+
         if($id > 0){
             $userId = Auth::user()->id_usuario;
+            $allRol = Auth::user()->getAllRol();
+
+            foreach($allRol as $rol){
+                if($rol->descripcion  == 'Coordinador'){
+                    $hasPermission= true;
+                }
+            }
+
             $req= DB::table('almacen.alm_req')
             ->select(
                 'alm_req.*'
@@ -1992,42 +2002,43 @@ class LogisticaController extends Controller
                 $id_tipo_requerimiento = $req->first()->id_tipo_requerimiento; 
                 $tipo_cliente = $req->first()->tipo_cliente; 
             }
-
+            $estado_anulado = $this->get_estado_doc('Anulado');
+            
             if(isset($id_usuario_req)){
-                $estado_anulado = $this->get_estado_doc('Anulado');
                 
                 if($id_usuario_req == $userId){
-                    $requerimiento = DB::table('almacen.alm_req')->where('id_requerimiento', $id)
-                    ->update([               
-                        'estado' => $estado_anulado
-                    ]);
-                    $detalle_re = DB::table('almacen.alm_det_req')
-                    ->where('id_requerimiento', '=', $id)
-                    ->update([
-                        'estado' => $estado_anulado
-                    ]);
-
-                    // trazabilidad requerimiento
-                    DB::table('almacen.alm_req_obs')
-                    ->insert([  'id_requerimiento'=>$id,
-                                'accion'=>'ANULADO',
-                                'descripcion'=>'Requerimiento anulado.',
-                                'id_usuario'=>Auth::user()->id_usuario,
-                                'fecha_registro'=>date('Y-m-d H:i:s')
-                    ]);
-
-                    $statusAnularRequerimiento=200;
-                    if($id_tipo_requerimiento == 2 ||( $id_tipo_requerimiento ==3)){
-                        $statusAnularTrasferencia = $this->anularTrasfarencia($id);
-                    }
-
-                }else{
-                    $statusAnularRequerimiento= 401;
+                    $hasPermission =true;
                 }
-            }else{
-                $statusAnularRequerimiento = 400;
             }
-   
+
+            if($hasPermission == true){
+                $requerimiento = DB::table('almacen.alm_req')->where('id_requerimiento', $id)
+                ->update([               
+                    'estado' => $estado_anulado
+                ]);
+                $detalle_re = DB::table('almacen.alm_det_req')
+                ->where('id_requerimiento', '=', $id)
+                ->update([
+                    'estado' => $estado_anulado
+                ]);
+
+                // trazabilidad requerimiento
+                DB::table('almacen.alm_req_obs')
+                ->insert([  'id_requerimiento'=>$id,
+                            'accion'=>'ANULADO',
+                            'descripcion'=>'Requerimiento anulado.',
+                            'id_usuario'=>Auth::user()->id_usuario,
+                            'fecha_registro'=>date('Y-m-d H:i:s')
+                ]);
+
+                $statusAnularRequerimiento=200;
+                if($id_tipo_requerimiento == 2 ||( $id_tipo_requerimiento ==3)){
+                    $statusAnularTrasferencia = $this->anularTrasfarencia($id);
+                }
+
+            }else{
+                $statusAnularRequerimiento=400;
+            }
 
            $output=['status_requerimiento'=>$statusAnularRequerimiento,'status_transferencia'=>$statusAnularTrasferencia,'id_usuario_req'=>$id_usuario_req, 'id_usuario_auth'=>$userId];
         }
@@ -2179,23 +2190,34 @@ class LogisticaController extends Controller
         $idTrans=DB::table('almacen.trans')
         ->select('trans.*')
         ->where('id_requerimiento',$id)
-        ->get()->first()->id_transferencia;
+        ->get();
         
-        // anular tras
-        $trans = DB::table('almacen.trans')
-        ->where('id_requerimiento', $id)
-        ->update([
-            'estado' => $estado_anulado
-        ]);
-        // anulas trans_detalle
-        $trans_detalle = DB::table('almacen.trans_detalle')
-        ->where('id_transferencia', $idTrans)
-        ->update([
-            'estado' => $estado_anulado
-        ]);
-        if($trans > 0 &&  $trans_detalle > 0){
-            $status= 200;
+        if(count($idTrans) > 0){
+            $id_transferencia= $idTrans->first()->id_transferencia;
+            // anular tras
+            $trans = DB::table('almacen.trans')
+            ->where('id_requerimiento', $id)
+            ->update([
+                'estado' => $estado_anulado
+            ]);
+
+            // anulas trans_detalle
+            $trans_detalle = DB::table('almacen.trans_detalle')
+            ->where('id_transferencia', $id_transferencia)
+            ->update([
+                'estado' => $estado_anulado
+            ]);
+
+            if($trans > 0 &&  $trans_detalle > 0){
+                $status= 200;
+            }
+        }else{
+            $status= 400;
+
         }
+
+
+ 
         DB::commit();
         return $status;
 

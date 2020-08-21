@@ -139,6 +139,5 @@
 </div>
 
 @include('logistica.cotizaciones.modal_ultimas_compras')
-@include('logistica.requerimientos.modal_catalogo_items')
-@include('logistica.requerimientos.modal_partidas')
+
 
