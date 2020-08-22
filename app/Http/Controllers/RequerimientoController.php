@@ -25,7 +25,55 @@ date_default_timezone_set('America/Lima');
 class RequerimientoController extends Controller
 {
 
+    public function leftZero($lenght, $number)
+    {
+        $nLen = strlen($number);
+        $zeros = '';
+        for ($i = 0; $i < ($lenght - $nLen); $i++) {
+            $zeros = $zeros . '0';
+        }
+        return $zeros . $number;
+    }
     
+    public function nextCodigoRequerimiento($tipo_requerimiento){
+        $yy = date('y', strtotime("now"));
+        $yyyy = date('Y', strtotime("now"));
+        $documento = 'RQ';
+
+        $num = DB::table('almacen.alm_req')
+        ->where('id_tipo_requerimiento',$tipo_requerimiento)
+        ->whereYear('fecha_registro', '=', $yyyy)
+        ->count();
+
+        $identificador='';
+
+        switch ($tipo_requerimiento) {
+            case 1:
+                # code...
+                $identificador= 'C';
+            break;
+            case 2:
+                # code...
+                $identificador= 'V';
+            break;
+            case 3:
+                # code...
+                $identificador= 'PA';
+            break;
+            
+            default:
+                $identificador= '';
+                # code...
+                break;
+        }
+
+        $correlativo = $this->leftZero(4, ($num + 1));
+        $codigo = "{$documento}-{$identificador}-{$yy}-{$correlativo}";
+
+        $output = ['data'=>$codigo];
+        return $output;
+
+    }
     
     public function requerimientos_pendientes_aprobacion(){
         // $id_usuario = Auth::user()->id_usuario;

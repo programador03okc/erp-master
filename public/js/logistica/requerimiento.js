@@ -7,7 +7,8 @@ rutaSedeByEmpresa,
 rutaCopiarRequerimiento,
 rutaTelefonosCliente,
 rutaDireccionesCliente,
-rutaEmailCliente;
+rutaEmailCliente,
+rutaNextCodigoRequerimiento;
 
 function inicializar( _rutaLista,
     _rutaMostrarRequerimiento,
@@ -18,7 +19,8 @@ function inicializar( _rutaLista,
     _rutaCopiarRequerimiento,
     _rutaTelefonosCliente,
     _rutaDireccionesCliente,
-    _rutaEmailCliente
+    _rutaEmailCliente,
+    _rutaNextCodigoRequerimiento
     ) {
     rutaListaRequerimientoModal = _rutaLista;
     rutaMostrarRequerimiento = _rutaMostrarRequerimiento;
@@ -30,12 +32,15 @@ function inicializar( _rutaLista,
     rutaTelefonosCliente = _rutaTelefonosCliente;
     rutaDireccionesCliente = _rutaDireccionesCliente;
     rutaEmailCliente = _rutaEmailCliente;
+    rutaNextCodigoRequerimiento = _rutaNextCodigoRequerimiento;
 
     listar_almacenes();
 
             let selectTipoRequerimiento = document.querySelector("form[id='form-requerimiento'] select[name='tipo_requerimiento']").value;
             createOptionTipoCliente(selectTipoRequerimiento);
             
+            getNexCodigoRequerimiento(selectTipoRequerimiento);
+
             var id_requerimiento = localStorage.getItem("id_requerimiento");
 
             if (id_requerimiento !== null){
@@ -44,6 +49,7 @@ function inicializar( _rutaLista,
                 localStorage.removeItem("id_requerimiento");
                 changeStateButton('historial');
             }
+
 }
 
 function isNumberKey(evt){
@@ -2841,6 +2847,18 @@ function createOptionTipoCliente(tipoRequerimiento){
     return false;
 }
 
+function getNexCodigoRequerimiento(tipo_requerimiento){
+    $.ajax({
+        type: 'GET',
+        headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+        url: rutaNextCodigoRequerimiento+'/' + tipo_requerimiento,
+        dataType: 'JSON',
+        success: function(response){ 
+            document.querySelector("form[id='form-requerimiento'] input[name='codigo']").value = response.data;
+        }
+    });
+}
+
 function changeOptTipoReqSelect(e){
     if(e.target.value == 1){
         createOptionTipoCliente('COMPRA');
@@ -2855,6 +2873,7 @@ function changeOptTipoReqSelect(e){
         createOptionTipoCliente('USO_ALMACEN');
         stateFormRequerimiento(2);
     }
+    getNexCodigoRequerimiento(e.target.value);
 }
 
 function changeOptEmpresaSelect(e){

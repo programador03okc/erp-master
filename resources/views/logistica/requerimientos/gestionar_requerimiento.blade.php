@@ -56,7 +56,7 @@
                         </select>
                     </div>
                     <div class="col-md-2">
-                        <h5>Buscar Requerimiento</h5>
+                        <h5>Código de Requerimiento</h5>
                         <div style="display:flex;">
                             <input type="text" class="form-control" name="codigo" placeholder="Código">
                             <!-- <div class="input-group-append"> -->
@@ -425,7 +425,8 @@
             "{{route('logistica.gestion-logistica.requerimiento.elaboracion.copiar-requerimiento')}}",
             "{{route('logistica.gestion-logistica.requerimiento.elaboracion.telefonos-cliente')}}",
             "{{route('logistica.gestion-logistica.requerimiento.elaboracion.direcciones-cliente')}}",
-            "{{route('logistica.gestion-logistica.requerimiento.elaboracion.emails-cliente')}}"
+            "{{route('logistica.gestion-logistica.requerimiento.elaboracion.emails-cliente')}}",
+            "{{route('logistica.gestion-logistica.requerimiento.elaboracion.siguiente-codigo-requerimiento')}}"
             );
     });
     </script>
