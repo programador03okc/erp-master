@@ -30,14 +30,14 @@
                                 </div>
                             </div>
                         </div> -->
-                        <table class="mytable table table-striped table-condensed table-bordered" 
+                        <table class="mytable table table-striped table-condensed table-bordered table-okc-view" 
                             id="listaSeries">
                             <thead>
                                 <tr>
                                     <!-- <td hidden></td> -->
                                     <td width="5%">#</td>
                                     <td width="60%">Serie</td>
-                                    <td>Doc.Ingreso</td>
+                                    <td>Guía Remisión</td>
                                     <!-- <td>Anular</td> -->
                                 </tr>
                             </thead>

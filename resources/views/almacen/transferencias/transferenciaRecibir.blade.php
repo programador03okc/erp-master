@@ -33,21 +33,22 @@
                 </div>
                 <br/>
                 <table class="mytable table table-striped table-condensed table-bordered table-okc-view" 
-                id="listaTransferenciaDetalle">
+                    id="listaTransferenciaDetalleRecibir">
                     <thead>
                         <tr>
-                            <td width="3%">Nro</td>
+                            <td width="3%"></td>
                             <td width="6%">Código Trans.</td>
+                            <td width="6%">Código Req.</td>
+                            <td width="6%">Concepto</td>
                             <td width="10%">Código</td>
                             <td>PartNumber</td>
                             <td>Categoría</td>
                             <td>SubCategoría</td>
                             <td>Descripción</td>
-                            <td>Cant.Enviada</td>
                             <td>Cant.Recibida</td>
                             <td>Und</td>
-                            <!-- <td width="10%">Ubicación</td> -->
                             <td width="10%">Observación</td>
+                            <td></td>
                         </tr>
                     </thead>
                     <tbody></tbody>

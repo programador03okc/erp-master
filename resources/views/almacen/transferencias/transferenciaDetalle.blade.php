@@ -31,6 +31,7 @@
                             <td>Und</td>
                             <td>Guía Compra</td>
                             <td>Estado</td>
+                            <td></td>
                         </tr>
                     </thead>
                     <tbody></tbody>
