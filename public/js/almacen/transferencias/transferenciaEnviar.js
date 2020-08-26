@@ -142,29 +142,7 @@ function listarDetalleTransferencia(id_transferencia){
             dataType: 'JSON',
             success: function(response){
                 console.log(response);
-                var html='';
-                var i = 1;
-                response.forEach(element => {
-                    html+=`<tr>
-                    <td>${i}</td>
-                    <td style="background-color: LightCyan;">${element.codigo_trans}</td>
-                    <td style="background-color: LightCyan;">${element.codigo_req}</td>
-                    <td style="background-color: LightCyan;">${element.concepto}</td>
-                    <td>${element.codigo}</td>
-                    <td style="background-color: MistyRose;">${element.part_number}</td>
-                    <td>${element.categoria}</td>
-                    <td>${element.subcategoria}</td>
-                    <td style="background-color: MistyRose;">${element.descripcion}</td>
-                    <td style="background-color: MistyRose;">${element.cantidad}</td>
-                    <td style="background-color: MistyRose;">${element.abreviatura}</td>
-                    <td>${element.estado_doc}</td>
-                    <td>${(element.series ? `<i class="fas fa-bars icon-tabla boton" data-toggle="tooltip" data-placement="bottom" 
-                        title="Ver Series" onClick="listarSeries(${element.id_guia_com_det});"></i>` : '')}</td>
-                    </tr>`;
-                    // onClick="agrega_series('.$det->id_detalle_orden.');"
-                    i++;
-                });
-                $('#detalleTransferencia tbody').html(html);
+                mostrarDetalleTransferencia(response);
             }
         }).fail( function( jqXHR, textStatus, errorThrown ){
             console.log(jqXHR);
@@ -181,13 +159,39 @@ function listarDetalleTransferenciaSeleccionadas(data){
         data: data,
         dataType: 'JSON',
         success: function(response){
-            $('#detalleTransferencia tbody').html(response);
+            mostrarDetalleTransferencia(response);
         }
     }).fail( function( jqXHR, textStatus, errorThrown ){
         console.log(jqXHR);
         console.log(textStatus);
         console.log(errorThrown);
     });
+}
+
+function mostrarDetalleTransferencia(listaDetalle){
+    var html='';
+    var i = 1;
+    listaDetalle.forEach(element => {
+        html+=`<tr>
+        <td>${i}</td>
+        <td style="background-color: LightCyan;">${element.codigo_trans}</td>
+        <td style="background-color: LightCyan;">${element.codigo_req}</td>
+        <td style="background-color: LightCyan;">${element.concepto}</td>
+        <td>${element.codigo}</td>
+        <td style="background-color: MistyRose;">${element.part_number}</td>
+        <td>${element.categoria}</td>
+        <td>${element.subcategoria}</td>
+        <td style="background-color: MistyRose;">${element.descripcion}</td>
+        <td style="background-color: MistyRose;">${element.cantidad}</td>
+        <td style="background-color: MistyRose;">${element.abreviatura}</td>
+        <td>${element.estado_doc}</td>
+        <td>${(element.series ? `<i class="fas fa-bars icon-tabla boton" data-toggle="tooltip" data-placement="bottom" 
+            title="Ver Series" onClick="listarSeries(${element.id_guia_com_det});"></i>` : '')}</td>
+        </tr>`;
+        // onClick="agrega_series('.$det->id_detalle_orden.');"
+        i++;
+    });
+    $('#detalleTransferencia tbody').html(html);
 }
 
 function listarSeries(id_guia_com_det){
