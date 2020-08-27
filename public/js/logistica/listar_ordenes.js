@@ -42,8 +42,30 @@ function listarOrdenes(){
         'buttons': vardataTables[2],
         'language' : vardataTables[0],
         'ajax': 'listar_todas_ordenes',
-        "dataSrc":'',
-        'scrollX': true,
+        // "dataSrc":'',
+        'scrollX': false,
+        'columns': [
+            {'data': 'id_orden_compra'},
+            {'data': 'fecha'},
+            {'data': 'codigo'},
+            {'data': 'nro_documento'},
+            {'data': 'razon_social'},
+            {'data': 'moneda_simbolo'},
+            {'data': 'monto_subtotal'},
+            {'data': 'monto_igv'},
+            {'data': 'monto_total'},
+            {'data': 'condicion'},
+            {'data': 'plazo_entrega'},
+            {'data': 'nro_cuenta_prin'},
+            {'data': 'nro_cuenta_alter'},
+            {'data': 'nro_cuenta_detra'},
+            {'data': 'codigo_cuadro_comparativo'},
+            {'data': 'estado'},
+            {'data': 'detalle_pago'},
+            {'data': 'archivo_adjunto'},
+            {'data': 'botones_accion'}
+            
+        ],
         'columnDefs': [{ className: "text-right", 'aTargets': [0], 'sClass': 'invisible'}],
         // "drawCallback": function (settings) { 
             // Here the response
@@ -60,7 +82,7 @@ function listarOrdenes(){
     aprobar_orden("#listaOrdenes tbody", tabla);
     pagar("#listaOrdenes tbody", tabla);
     eliminar("#listaOrdenes tbody", tabla);
-    imprimir_orden("#listaOrdenes tbody", tabla);
+    // imprimir_orden("#listaOrdenes tbody", tabla);
     tracking_orden("#listaOrdenes tbody", tabla);
     vista_extendida();
 }
@@ -76,15 +98,23 @@ function tracking_orden(tbody, tabla){
 
 }
 
-function imprimir_orden(tbody,tabla){
-    $(tbody).on("click","button.imprimir_orden", function(){
-        if (this.dataset.idOrdenCompra > 0){
-            window.open('generar_orden_pdf/'+this.dataset.idOrdenCompra);
-        }
-
-    });
-
+function imprimir_orden(event){
+    console.log();
+    let id_orden = event.currentTarget.dataset.idOrdenCompra;
+    
+    if (id_orden > 0){
+    window.open('generar_orden_pdf/'+id_orden);
+    }
 }
+// function imprimir_orden(tbody,tabla){
+//     $(tbody).on("click","button.imprimir_orden", function(){
+//         if (this.dataset.idOrdenCompra > 0){
+//             window.open('generar_orden_pdf/'+this.dataset.idOrdenCompra);
+//         }
+
+//     });
+
+// }
 
 function aprobar_orden(tbody, tabla){
     $(tbody).on("click","button.aprobar_orden", function(){
@@ -124,9 +154,10 @@ function eliminar(tbody, tabla){
     });
 }
 function abrir_orden(id_orden_compra){
-    // console.log(id_orden_compra);
-    localStorage.setItem("idOrden",id_orden_compra);
-    location.assign("../../generar_orden");
+    console.log(id_orden_compra);
+    console.log('abrir orden');
+    // localStorage.setItem("idOrden",id_orden_compra);
+    // location.assign("../../generar_orden");
 }
 function abrir_cuadro(id_grupo_cotizacion){
     localStorage.setItem("idGrupo",id_grupo_cotizacion);
