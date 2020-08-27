@@ -647,6 +647,7 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::get('listar-saldos-por-almacen/{id_producto}', 'AlmacenController@listar_saldos_por_almacen_producto');
 					Route::get('obtener-promociones/{id_producto}/{id_almacen}', 'LogisticaController@obtener_promociones');
 					Route::post('migrar_venta_directa', 'MigrateSoftLinkController@migrar_venta_directa');
+					Route::get('siguiente-codigo-requerimiento/{id_tipo_requerimiento?}', 'RequerimientoController@nextCodigoRequerimiento')->name('siguiente-codigo-requerimiento');
 				
 
 				});
@@ -715,9 +716,9 @@ Route::group(['middleware' => ['auth']], function () {
 
 				});
 				Route::group(['as' => 'lista-ordenes.', 'prefix' => 'por-requerimiento'], function(){
-					Route::get('vista_listar_ordenes', 'LogisticaController@view_listar_ordenes')->name('index');
-					Route::get('listar_todas_ordenes', 'LogisticaController@listar_todas_ordenes');
-					Route::get('generar_orden_pdf/{id}', 'LogisticaController@generar_orden_pdf'); // PDF
+					Route::get('vista_listar_ordenes', 'OrdenController@view_listar_ordenes')->name('index');
+					Route::get('listar_todas_ordenes', 'OrdenController@listar_todas_ordenes');
+					Route::get('generar_orden_pdf/{id}', 'OrdenController@generar_orden_pdf'); // PDF
 					Route::get('verSession', 'LogisticaController@verSession'); 
 					Route::get('explorar-orden/{id_orden}', 'LogisticaController@explorar_orden'); 
 					Route::put('guardar_aprobacion_orden/', 'LogisticaController@guardar_aprobacion_orden'); 

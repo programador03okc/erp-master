@@ -56,9 +56,9 @@
                         </select>
                     </div>
                     <div class="col-md-2">
-                        <h5>Buscar Requerimiento</h5>
+                        <h5>Código</h5>
                         <div style="display:flex;">
-                            <input type="text" class="form-control" name="codigo" placeholder="Código">
+                            <input type="text" class="form-control" name="codigo" placeholder="">
                             <!-- <div class="input-group-append"> -->
                                 <button type="button" class="btn-warning" id="basic-addon1" onClick="get_requerimiento_por_codigo();">
                                     <i class="fa fa-search"></i>
@@ -425,7 +425,8 @@
             "{{route('logistica.gestion-logistica.requerimiento.elaboracion.copiar-requerimiento')}}",
             "{{route('logistica.gestion-logistica.requerimiento.elaboracion.telefonos-cliente')}}",
             "{{route('logistica.gestion-logistica.requerimiento.elaboracion.direcciones-cliente')}}",
-            "{{route('logistica.gestion-logistica.requerimiento.elaboracion.emails-cliente')}}"
+            "{{route('logistica.gestion-logistica.requerimiento.elaboracion.emails-cliente')}}",
+            "{{route('logistica.gestion-logistica.requerimiento.elaboracion.siguiente-codigo-requerimiento')}}"
             );
     });
     </script>
