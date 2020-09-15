@@ -377,12 +377,12 @@
 @include('logistica.requerimientos.modal_catalogo_items')
 @include('almacen.producto.saldosModal')
 @include('logistica.requerimientos.modal_partidas')
-@include('logistica.requerimientos.modal_detalle_requerimiento')
 @include('logistica.requerimientos.modal_empresa_area')
 @include('proyectos.opcion.opcionModal')
 @include('logistica.requerimientos.aprobacion.modal_sustento')
 @include('almacen.verRequerimientoEstado')
 @include('logistica.requerimientos.modal_promocion_item')
+@include('logistica.requerimientos.modal_detalle_requerimiento')
 
 @endsection
 
