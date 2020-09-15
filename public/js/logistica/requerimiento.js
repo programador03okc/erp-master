@@ -1232,14 +1232,16 @@ function eliminarItemDetalleRequerimiento(event,index){
 }
 // modal detalle 
 var indice='';
-function detalleRequerimientoModal(event,index){
+function detalleRequerimientoModal(event=null,index=null){
 
 
     $('#form-detalle-requerimiento')[0].reset();
-    event.preventDefault();
+    if(event){
+        event.preventDefault();
+    }
     var btnAceptarCambio = document.getElementsByName("btn-aceptar-cambio");
     var btnAgregarCambio = document.getElementsByName("btn-agregar-item");
-    if(index  !== undefined){ // editando item
+    if(index  != undefined){ // editando item
         let item = data_item[index]; 
  
       

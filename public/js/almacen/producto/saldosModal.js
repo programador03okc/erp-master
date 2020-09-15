@@ -203,7 +203,7 @@ function saldosModal(id_almacen){
 function selectValue(element,id_almacen,almacen_descripcion){
 
     if(document.querySelector("form[id='form-requerimiento']") != null) {
-         detalleRequerimientoModal(event);
+        detalleRequerimientoModal(null,null);
     }
 
 
