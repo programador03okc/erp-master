@@ -470,7 +470,7 @@ class OrdenesPendientesController extends Controller
                                 ->update(['estado'=>19,
                                           'id_almacen_reserva'=>$request->id_almacen]);//Reservado
                                 //sede orden y almacen requerimiento son diferentes
-                                if ($oc->sede_requerimiento !== $request->id_sede){
+                                if ($oc->id_sede !== $oc->sede_requerimiento){
                                     
                                     $fecha = date('Y-m-d H:i:s');
                                     $codigo_tra = TransferenciaController::transferencia_nextId($request->id_almacen);
