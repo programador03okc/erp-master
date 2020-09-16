@@ -104,7 +104,7 @@ function save_transformacion(data, action){
 function ceros_numero(numero){
     if (numero == 'numero'){
         var num = $('[name=numero]').val();
-        $('[name=numero]').val(leftZero(6,num));
+        $('[name=numero]').val(leftZero(7,num));
     }
 }
 function calcula_totales(){

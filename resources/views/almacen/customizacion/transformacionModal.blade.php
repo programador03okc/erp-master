@@ -14,7 +14,7 @@
                             <th>Código</th>
                             <th>Serie-Número</th>
                             <th>Fecha Transformacion</th>
-                            <th>Empresa</th>
+                            <!-- <th>Empresa</th> -->
                             <th>Almacén</th>
                         </tr>
                     </thead>

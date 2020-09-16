@@ -1142,7 +1142,9 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::get('anular_indirecto/{id}', 'AlmacenController@anular_indirecto');
 					Route::get('anular_sobrante/{id}', 'AlmacenController@anular_sobrante');
 					Route::get('anular_transformado/{id}', 'AlmacenController@anular_transformado');
-					
+					Route::get('listar_servicio', 'AlmacenController@mostrar_servicios');
+					Route::get('mostrar_prods', 'AlmacenController@mostrar_prods');
+
 				});
 	
 			});

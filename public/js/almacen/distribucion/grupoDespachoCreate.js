@@ -99,6 +99,7 @@ function guardar_grupo_despacho(){
                 var id = encode5t(response);
                 window.open('imprimir_despacho/'+id);
                 $('#ordenesDespacho').DataTable().ajax.reload();
+                actualizaCantidadDespachosTabs();
             }
         }
     }).fail( function( jqXHR, textStatus, errorThrown ){

@@ -23,10 +23,15 @@ function listarTransformaciones(){
                     return (formatDate(row['fecha_transformacion']));
                 }
             },
-            {'data': 'codigo'},
+            // {'data': 'codigo'},
             {'render':
                 function (data, type, row){
-                    return ('<label class="lbl-codigo" title="Abrir Transformación" onClick="abrir_transformacion('+row['id_transformacion']+')">'+row['serie']+'-'+row['numero']+'</label>');
+                    return ('<label class="lbl-codigo" title="Abrir Transformación" onClick="abrir_transformacion('+row['id_transformacion']+')">'+row['codigo']+'</label>');
+                }
+            },
+            {'render':
+                function (data, type, row){
+                    return ((row['serie'] !== undefined ? row['serie'] : '')+'-'+(row['numero'] !== undefined ? row['numero'] : ''));
                 }
             },
             {'data': 'razon_social'},
@@ -54,7 +59,6 @@ function listarTransformaciones(){
     ver("#listaTransformaciones tbody", tabla);
     atender("#listaTransformaciones tbody", tabla);
     anular("#listaTransformaciones tbody", tabla);
-    vista_extendida();
 }
 function ver(tbody, tabla){
     console.log("ver");
@@ -106,9 +110,5 @@ function anular(tbody, tabla){
 function abrir_transformacion(id_transformacion){
     console.log('abrir_transformacion()');
     localStorage.setItem("id_transformacion",id_transformacion);
-    location.assign("transformacion");
-}
-function vista_extendida(){
-    let body=document.getElementsByTagName('body')[0];
-    body.classList.add("sidebar-collapse"); 
+    location.assign("/logistica/almacen/customizacion/hoja-transformacion/index");
 }

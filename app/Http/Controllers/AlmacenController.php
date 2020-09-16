@@ -7844,17 +7844,19 @@ class AlmacenController extends Controller
         ->where('id_guia_com',$id_guia_com)->get();
         return response()->json($data);
     }
-    // public function listar_transformaciones(){
-    //     $data = DB::table('almacen.transformacion')
-    //     ->select('transformacion.*','adm_contri.razon_social','alm_almacen.descripcion')
-    //     ->join('administracion.adm_empresa','adm_empresa.id_empresa','=','transformacion.id_empresa')
-    //     ->join('contabilidad.adm_contri','adm_contri.id_contribuyente','=','adm_empresa.id_contribuyente')
-    //     ->join('almacen.alm_almacen','alm_almacen.id_almacen','=','transformacion.id_almacen')
-    //     ->where([['transformacion.estado','!=',7]])
-    //     ->get();
-    //     $output['data'] = $data;
-    //     return response()->json($output);
-    // }
+
+    public function listar_transformaciones(){
+        $data = DB::table('almacen.transformacion')
+        ->select('transformacion.*','alm_almacen.descripcion')
+        // ->join('administracion.adm_empresa','adm_empresa.id_empresa','=','transformacion.id_empresa')
+        // ->join('contabilidad.adm_contri','adm_contri.id_contribuyente','=','adm_empresa.id_contribuyente')
+        ->join('almacen.alm_almacen','alm_almacen.id_almacen','=','transformacion.id_almacen')
+        ->where([['transformacion.estado','!=',7]])
+        ->get();
+        $output['data'] = $data;
+        return response()->json($output);
+    }
+
     public function mostrar_transformacion($id_transformacion){
         $data = DB::table('almacen.transformacion')
         ->select('transformacion.*','adm_estado_doc.estado_doc','sis_usua.nombre_corto')
@@ -8432,7 +8434,7 @@ class AlmacenController extends Controller
         ->join('administracion.sis_sede','sis_sede.id_sede','=','alm_almacen.id_sede')
         ->join('administracion.adm_empresa','adm_empresa.id_empresa','=','sis_sede.id_empresa')
         ->join('contabilidad.adm_contri','adm_contri.id_contribuyente','=','adm_empresa.id_contribuyente')
-        ->join('configuracion.sis_usua as respon','respon.id_usuario','=','transformacion.responsable')
+        ->leftjoin('configuracion.sis_usua as respon','respon.id_usuario','=','transformacion.responsable')
         ->join('configuracion.sis_usua as regist','regist.id_usuario','=','transformacion.registrado_por')
         ->join('administracion.adm_estado_doc','adm_estado_doc.id_estado_doc','=','transformacion.estado')
         ->where([['transformacion.id_almacen','=',$id_almacen]])

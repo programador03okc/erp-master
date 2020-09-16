@@ -27,27 +27,14 @@ Hoja de Transformación
     <!-- <div class="row"> -->
     <form id="form-transformacion" type="register"  form="formulario">
         <div class="thumbnail" style="padding-left: 10px;padding-right: 10px;">
-            <div class="row"  style="padding-left: 10px;padding-right: 10px;padding-top: 10px;">
-                <div class="col-md-2">
-                    <label id="codigo_transformacion"></label>
-                </div>
-                <div class="col-md-10" style="text-align:right;">
-                    <button type="submit" class="btn btn-success" onClick="procesar_transformacion();">
-                        Procesar Transformación </button>
-                    <button type="button" class="btn btn-warning" data-toggle="tooltip" 
-                        data-placement="bottom" title="Ver Salida de Almacén" 
-                        onClick="abrir_salida();"><i class="fas fa-file-alt"></i></button>
-                    <button type="button" class="btn btn-info" data-toggle="tooltip" 
-                        data-placement="bottom" title="Ver Ingreso a Almacén" 
-                        onClick="abrir_ingreso();"><i class="fas fa-file-alt"></i></button>
-                </div>
-            </div>
-            <div class="row"  style="padding-left: 10px;padding-right: 10px;">
-                <div class="col-md-7">
+            
+            <div class="row"  style="padding-left: 10px;padding-right: 10px;margin-bottom: 0px;">
+                <div class="col-md-10">
                     <input type="hidden" name="_token" value="{{csrf_token()}}" id="token">
                     <input type="hidden" name="id_transformacion" primary="ids">
+                    <input type="text" name="cod_estado" hidden/>
                     <div class="row">
-                        <div class="col-md-6">
+                        <!-- <div class="col-md-3">
                             <h5>Empresa</h5>
                             <select class="form-control activation js-example-basic-single" name="id_empresa" disabled="true">
                                 <option value="0">Elija una opción</option>
@@ -55,8 +42,17 @@ Hoja de Transformación
                                     <option value="{{$emp->id_empresa}}">{{$emp->razon_social}}</option>
                                 @endforeach
                             </select>
+                        </div> -->
+                        <div class="col-md-4">
+                            <h5>Almacén</h5>
+                            <select class="form-control activation js-example-basic-single" name="id_almacen" disabled="true">
+                                <option value="0">Elija una opción</option>
+                                @foreach ($almacenes as $alm)
+                                    <option value="{{$alm->id_almacen}}">{{$alm->descripcion}}</option>
+                                @endforeach
+                            </select>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <h5>Serie-Número</h5>
                             <div class="input-group">
                                 <input type="text" class="form-control activation" name="serie" 
@@ -66,18 +62,7 @@ Hoja de Transformación
                                     placeholder="000000" onBlur="ceros_numero('numero');">
                             </div>
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <h5>Almacén</h5>
-                            <select class="form-control activation js-example-basic-single" name="id_almacen" disabled="true">
-                                <option value="0">Elija una opción</option>
-                                @foreach ($almacenes as $alm)
-                                    <option value="{{$alm->id_almacen}}">{{$alm->descripcion}}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <h5>Responsable</h5>
                             <select class="form-control activation js-example-basic-single" 
                                 name="responsable" disabled="true">
@@ -88,13 +73,7 @@ Hoja de Transformación
                             </select>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <h5>Fecha de Transformación</h5>
-                            <input type="date" class="form-control activation" name="fecha_transformacion" value="<?=date('Y-m-d');?>" >
-                        </div>
-                    </div>
-                    <div class="row">
+                    <!-- <div class="row">
                         <div class="col-md-5">
                             <h5 id="fecha_registro">Fecha Registro: <label></label></h5>
                         </div>
@@ -102,56 +81,24 @@ Hoja de Transformación
                             <h5 id="registrado_por">Registrado por: <label></label></h5>
                         </div>
                         <div class="col-md-3">
-                            <input type="text" name="cod_estado" hidden/>
+                            
                             <h5 id="estado">Estado: <label></label></h5>
                         </div>
-                    </div>
+                    </div> -->
                 </div>
-                <div class="col-md-5">
-                    <table class="tabla-totales mytable table table-condensed table-bordered table-okc-view" width="100%">
-                        <thead>
-                            <tr>
-                                <th colSpan="3" style="text-align:center;">Resumen Contable</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td width="50%">Total Materias Primas</td>
-                                <td width="20%"></td>
-                                <td><input type="number" class="importe" name="total_materias" disabled="true" value="0"/></td>
-                            </tr>
-                            <tr>
-                                <td>Total Servicios Directos</td>
-                                <td></td>
-                                <td><input type="number" class="importe" name="total_directos" disabled="true" value="0"/></td>
-                            </tr>
-                            <tr>
-                                <td><strong>Costo Primo</strong></td>
-                                <td></td>
-                                <td><input type="number" class="importe" name="costo_primo" disabled="true" value="0"/></td>
-                            </tr>
-                            <tr>
-                                <td>Total Costos Indirectos</td>
-                                <td></td>
-                                <td><input type="number" class="importe" name="total_indirectos" disabled="true" value="0"/></td>
-                            </tr>
-                            <tr>
-                                <td>Total Sobrantes</td>
-                                <td></td>
-                                <td><input type="number" class="importe" name="total_sobrantes" disabled="true" value="0"/></td>
-                            </tr>
-                            <tr>
-                                <td><strong>Costo de Transformación</strong></td>
-                                <td></td>
-                                <td><input type="number" class="importe" name="costo_transformacion" disabled="true" value="0"/></td>
-                            </tr>
-                            {{-- <tr>
-                                <td>Costo por unidad</td>
-                                <td></td>
-                                <td><input type="number" class="importe" name="costo_unitario" disabled="true" value="0"/></td>
-                            </tr> --}}
-                        </tbody>
-                    </table>
+                <div class="col-md-2">
+                    <div class="row"  style="padding-left: 10px;padding-right: 0px;padding-top: 15px;">
+                        <div class="col-md-10" style="text-align:right;">
+                            <button type="submit" class="btn btn-success btn-sm" onClick="procesar_transformacion();" data-toggle="tooltip" data-placement="bottom" title="Procesar Transformación">
+                            <i class="fas fa-step-forward"></i> </button>
+                            <button type="button" class="btn btn-warning btn-sm" data-toggle="tooltip" 
+                                data-placement="bottom" title="Ver Salida de Almacén" 
+                                onClick="abrir_salida();"><i class="fas fa-file-alt"></i></button>
+                            <button type="button" class="btn btn-info btn-sm" data-toggle="tooltip" 
+                                data-placement="bottom" title="Ver Ingreso a Almacén" 
+                                onClick="abrir_ingreso();"><i class="fas fa-file-alt"></i></button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -168,7 +115,7 @@ Hoja de Transformación
             </div>
             <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
             <div class="panel-body">
-                <table id="listaMateriasPrimas" class="mytable table table-condensed table-bordered table-okc-view">
+                <table id="listaMateriasPrimas" class="mytable table table-condensed table-bordered table-okc-view" style="margin-bottom: 0px;">
                     <thead>
                         <tr>
                             <th width='5%'>Nro</th>
@@ -197,6 +144,51 @@ Hoja de Transformación
             </div>
             </div>
         </div>
+        <div class="row">
+            <div class="col-md-8"></div>
+            <div class="col-md-4">
+                <table class="table table-condensed " width="100%">
+                    <tbody>
+                        <tr>
+                            <td width="50%" style="text-align: right;">Total Materias Primas</td>
+                            <td width="10%"></td>
+                            <td><label name="total_materias">0.00</label></td>
+                            
+                        </tr>
+                        <tr>
+                            <td style="text-align: right;">Total Servicios Directos</td>
+                            <td width="10%"></td>
+                            <td><label name="total_directos">0.00</label></td>
+                            
+                        </tr>
+                        <tr>
+                            <td style="text-align: right;"><strong>Costo Primo</strong></td>
+                            <td width="10%"></td>
+                            <td><label name="costo_primo">0.00</label></td>
+                            
+                        </tr>
+                        <tr>
+                            <td style="text-align: right;">Total Costos Indirectos</td>
+                            <td width="10%"></td>
+                            <td><label name="total_indirectos">0.00</label></td>
+                            
+                        </tr>
+                        <tr>
+                            <td style="text-align: right;">Total Sobrantes</td>
+                            <td width="10%"></td>
+                            <td><label name="total_sobrantes">0.00</label></td>
+                            
+                        </tr>
+                        <tr>
+                            <td style="text-align: right;"><strong>Costo de Transformación</strong></td>
+                            <td width="10%"></td>
+                            <td><label name="costo_transformacion">0.00</label></td>
+                            
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
         <div class="panel panel-default">
             <div class="panel-heading" role="tab" id="headingTwo">
             <h4 class="panel-title">
@@ -207,7 +199,7 @@ Hoja de Transformación
             </div>
             <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
             <div class="panel-body">
-                <table id="listaServiciosDirectos" class="mytable table table-condensed table-bordered table-okc-view" width="100%">
+                <table id="listaServiciosDirectos" class="mytable table table-condensed table-bordered table-okc-view" width="100%" style="margin-bottom: 0px;">
                     <thead>
                         <tr>
                             <th width='5%'>Nro</th>
@@ -245,7 +237,7 @@ Hoja de Transformación
             </div>
             <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
             <div class="panel-body">
-                <table id="listaCostosIndirectos" class="mytable table table-condensed table-bordered table-okc-view" width="100%">
+                <table id="listaCostosIndirectos" class="mytable table table-condensed table-bordered table-okc-view" width="100%" style="margin-bottom: 0px;">
                     <thead>
                         <tr>
                             <th width='5%'>Nro</th>
@@ -284,7 +276,7 @@ Hoja de Transformación
             </div>
             <div id="collapseFour" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
             <div class="panel-body">
-                <table id="listaSobrantes" class="mytable table table-condensed table-bordered table-okc-view" width="100%">
+                <table id="listaSobrantes" class="mytable table table-condensed table-bordered table-okc-view" width="100%" style="margin-bottom: 0px;">
                     <thead>
                         <tr>
                             <th width='5%'>Nro</th>
@@ -323,7 +315,7 @@ Hoja de Transformación
             </div>
             <div id="collapseFive" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
             <div class="panel-body">
-                <table id="listaProductoTransformado" class="mytable table table-condensed table-bordered table-okc-view" width="100%">
+                <table id="listaProductoTransformado" class="mytable table table-condensed table-bordered table-okc-view" width="100%" style="margin-bottom: 0px;">
                     <thead>
                         <tr>
                             <th width='5%'>Nro</th>

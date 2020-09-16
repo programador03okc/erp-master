@@ -25,7 +25,7 @@ function listarTransformaciones(){
             {'data': 'codigo'},
             {'render':
                 function (data, type, row){
-                    return (row['serie']+'-'+row['numero']);
+                    return ((row['serie'] !== undefined ? row['serie'] : '')+'-'+(row['numero'] !== undefined ? row['numero'] : ''));
                 }
             },
             {'render':
@@ -33,7 +33,7 @@ function listarTransformaciones(){
                     return (formatDate(row['fecha_transformacion']));
                 }
             },
-            {'data': 'razon_social'},
+            // {'data': 'razon_social'},
             {'data': 'descripcion'},
         ],
         'columnDefs': [{ 'aTargets': [0], 'sClass': 'invisible'}],

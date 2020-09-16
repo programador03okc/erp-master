@@ -47,7 +47,7 @@ class RequerimientoPago
                 {'render': function (data, type, row){
                     //const accion = permisoConfirmarDenegarPago;
                     //console.log(permisoConfirmarDenegarPago == '1');
-                    if (permisoConfirmarDenegarPago != '1') {
+                    if (permisoConfirmarDenegarPago !== '1') {
                         return `<button style="padding-left:2px;" type="button" class="detalle btn btn-primary boton" data-toggle="tooltip"
                         data-placement="bottom" title="Ver Detalle">
                         <i class="fas fa-list-ul"></i></button>`;

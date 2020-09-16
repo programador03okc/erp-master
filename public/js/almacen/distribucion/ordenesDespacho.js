@@ -445,6 +445,7 @@ function anularOrdenDespacho(id){
             console.log(response);
             if (response > 0){
                 $('#requerimientosPendientes').DataTable().ajax.reload();
+                actualizaCantidadDespachosTabs();
             }
         }
     }).fail( function( jqXHR, textStatus, errorThrown ){
@@ -760,6 +761,7 @@ function despacho_conforme(data){
             console.log(response);
             if (response > 0){
                 $('#gruposDespachados').DataTable().ajax.reload();
+                actualizaCantidadDespachosTabs();
             }
         }
     }).fail( function( jqXHR, textStatus, errorThrown ){
@@ -790,6 +792,7 @@ function despacho_no_conforme(){
             if (response > 0){
                 $('#modal-despacho_obs').modal('hide');
                 $('#gruposDespachados').DataTable().ajax.reload();
+                actualizaCantidadDespachosTabs();
             }
         }
     }).fail( function( jqXHR, textStatus, errorThrown ){

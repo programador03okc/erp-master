@@ -1186,7 +1186,8 @@ span.select2-selection {
 #ordenesDespacho_filter,
 #gruposDespachados_filter,
 #listaRequerimientosTrazabilidad_filter,
-#listaCu_filter {
+#listaCu_filter,
+#listaTransformaciones_filter {
   margin: 0;
 }
 
@@ -1224,7 +1225,8 @@ span.select2-selection {
 #ordenesDespacho_filter label input[type=search],
 #gruposDespachados_filter label input[type=search],
 #listaRequerimientosTrazabilidad_filter label input[type=search],
-#listaCu_filter label input[type=search] {
+#listaCu_filter label input[type=search],
+#listaTransformaciones_filter label input[type=search] {
   width: 95%;
 }
 

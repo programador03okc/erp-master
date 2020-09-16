@@ -251,6 +251,7 @@ function guardar_orden_despacho(data){
                 else if (tab_origen == 'enProceso'){
                     $('#requerimientosPendientes').DataTable().ajax.reload();
                 }
+                actualizaCantidadDespachosTabs();
             }
         }).fail( function( jqXHR, textStatus, errorThrown ){
             console.log(jqXHR);
