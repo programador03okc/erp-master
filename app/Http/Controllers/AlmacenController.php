@@ -2872,7 +2872,7 @@ class AlmacenController extends Controller
                     $html.='<tr>
                         <td width=110px>Transformación</td>
                         <td width=10px>:</td>
-                        <td width=300px>'.$ingreso->cod_transformacion.' ('.$ingreso->serie.'-'.$ingreso->numero.')</td>
+                        <td width=300px>'.$ingreso->cod_transformacion.'</td>
                         <td width=150px>Fecha Transformación</td>
                         <td width=10px>:</td>
                         <td>'.$ingreso->fecha_transformacion.'</td>
@@ -4271,7 +4271,7 @@ class AlmacenController extends Controller
                     <tr>
                         <td>Transformación</td>
                         <td>:</td>
-                        <td width=250px>'.$salida->cod_transformacion.' ('.$salida->serie.'-'.$salida->numero.')</td>
+                        <td width=250px>'.$salida->cod_transformacion.'</td>
                         <td width=150px>Fecha Transformación</td>
                         <td width=10px>:</td>
                         <td>'.$salida->fecha_transformacion.'</td>
@@ -8266,108 +8266,118 @@ class AlmacenController extends Controller
     }
 
     public function procesar_transformacion($id_transformacion){
-        $id_usuario = Auth::user()->id_usuario;
-        $fecha = date('Y-m-d H:i:s');
-        
-        $tra = DB::table('almacen.transformacion')
-        ->where('id_transformacion',$id_transformacion)
-        ->first();
-        
-        $salida = DB::table('almacen.transfor_materia')
-        ->where([['id_transformacion','=',$id_transformacion],['estado','!=',7]])
-        ->get();
+        try {
+            DB::beginTransaction();
 
-        $id_salida = 0;
-        if (count($salida) > 0){
-            $codigo_sal = AlmacenController::nextMovimiento(2,$tra->fecha_transformacion,$tra->id_almacen);
-            //guardar salida de almacén
-            $id_salida = DB::table('almacen.mov_alm')->insertGetId(
-                [
-                    'id_almacen' => $tra->id_almacen,
-                    'id_tp_mov' => 2,//Salidas
-                    'codigo' => $codigo_sal,
-                    'fecha_emision' => $tra->fecha_transformacion,
-                    'id_transformacion' => $id_transformacion,
-                    'id_operacion' => 27,//Salida por servicio de producción
-                    'revisado' => 0,
-                    'usuario' => $id_usuario,
-                    'estado' => 1,
-                    'fecha_registro' => $fecha,
-                ],
-                    'id_mov_alm'
-                );
-            //guardar detalle de salida de almacén
-            foreach($salida as $sal){
-                DB::table('almacen.mov_alm_det')->insertGetId(
+            $id_usuario = Auth::user()->id_usuario;
+            $fecha = date('Y-m-d H:i:s');
+            
+            $tra = DB::table('almacen.transformacion')
+            ->where('id_transformacion',$id_transformacion)
+            ->first();
+            
+            $salida = DB::table('almacen.transfor_materia')
+            ->where([['id_transformacion','=',$id_transformacion],['estado','!=',7]])
+            ->get();
+
+            $id_salida = 0;
+            if (count($salida) > 0){
+                $codigo_sal = AlmacenController::nextMovimiento(2,$tra->fecha_transformacion,$tra->id_almacen);
+                //guardar salida de almacén
+                $id_salida = DB::table('almacen.mov_alm')->insertGetId(
                     [
-                        'id_mov_alm' => $id_salida,
-                        'id_producto' => $sal->id_producto,
-                        // 'id_posicion' => $sal->id_posicion,
-                        'cantidad' => $sal->cantidad,
-                        'valorizacion' => $sal->valor_total,
+                        'id_almacen' => $tra->id_almacen,
+                        'id_tp_mov' => 2,//Salidas
+                        'codigo' => $codigo_sal,
+                        'fecha_emision' => $tra->fecha_transformacion,
+                        'id_transformacion' => $id_transformacion,
+                        'id_operacion' => 27,//Salida por servicio de producción
+                        'revisado' => 0,
                         'usuario' => $id_usuario,
                         'estado' => 1,
                         'fecha_registro' => $fecha,
                     ],
-                        'id_mov_alm_det'
+                        'id_mov_alm'
                     );
+                //guardar detalle de salida de almacén
+                foreach($salida as $sal){
+                    DB::table('almacen.mov_alm_det')->insertGetId(
+                        [
+                            'id_mov_alm' => $id_salida,
+                            'id_producto' => $sal->id_producto,
+                            // 'id_posicion' => $sal->id_posicion,
+                            'cantidad' => $sal->cantidad,
+                            'valorizacion' => ($sal->valor_total !== null ? $sal->valor_total : 0),
+                            'usuario' => $id_usuario,
+                            'estado' => 1,
+                            'fecha_registro' => $fecha,
+                        ],
+                            'id_mov_alm_det'
+                        );
+                }
             }
-        }
 
-        $sob = DB::table('almacen.transfor_sobrante')
-        ->select('transfor_sobrante.id_producto','transfor_sobrante.cantidad',
-        'transfor_sobrante.valor_unitario','transfor_sobrante.valor_total')
-        ->where([['id_transformacion','=',$id_transformacion],['estado','!=',7]]);
-        
-        $ingreso = DB::table('almacen.transfor_transformado')
-        ->select('transfor_transformado.id_producto','transfor_transformado.cantidad',
-        'transfor_transformado.valor_unitario','transfor_transformado.valor_total')
-        ->where([['id_transformacion','=',$id_transformacion],['estado','!=',7]])
-        ->unionAll($sob)
-        ->get()
-        ->toArray();
+            $sob = DB::table('almacen.transfor_sobrante')
+            ->select('transfor_sobrante.id_producto','transfor_sobrante.cantidad',
+            'transfor_sobrante.valor_unitario','transfor_sobrante.valor_total')
+            ->where([['id_transformacion','=',$id_transformacion],['estado','!=',7]]);
+            
+            $ingreso = DB::table('almacen.transfor_transformado')
+            ->select('transfor_transformado.id_producto','transfor_transformado.cantidad',
+            'transfor_transformado.valor_unitario','transfor_transformado.valor_total')
+            ->where([['id_transformacion','=',$id_transformacion],['estado','!=',7]])
+            ->unionAll($sob)
+            ->get()
+            ->toArray();
 
-        $id_ingreso = 0;
-        if (count($ingreso) > 0){
-            $codigo_ing = AlmacenController::nextMovimiento(1,$tra->fecha_transformacion,$tra->id_almacen);
+            $id_ingreso = 0;
+            if (count($ingreso) > 0){
+                $codigo_ing = AlmacenController::nextMovimiento(1,$tra->fecha_transformacion,$tra->id_almacen);
 
-            $id_ingreso = DB::table('almacen.mov_alm')->insertGetId(
-                [
-                    'id_almacen' => $tra->id_almacen,
-                    'id_tp_mov' => 1,//Ingresos
-                    'codigo' => $codigo_ing,
-                    'fecha_emision' => $tra->fecha_transformacion,
-                    'id_transformacion' => $id_transformacion,
-                    'id_operacion' => 26,//Entrada por servicio de producción
-                    'revisado' => 0,
-                    'usuario' => $id_usuario,
-                    'estado' => 1,
-                    'fecha_registro' => $fecha,
-                ],
-                    'id_mov_alm'
-                );
-
-            foreach($ingreso as $ing){
-                DB::table('almacen.mov_alm_det')->insertGetId(
+                $id_ingreso = DB::table('almacen.mov_alm')->insertGetId(
                     [
-                        'id_mov_alm' => $id_ingreso,
-                        'id_producto' => $ing->id_producto,
-                        // 'id_posicion' => $ing->id_posicion,
-                        'cantidad' => $ing->cantidad,
-                        'valorizacion' => $ing->valor_total,
+                        'id_almacen' => $tra->id_almacen,
+                        'id_tp_mov' => 1,//Ingresos
+                        'codigo' => $codigo_ing,
+                        'fecha_emision' => $tra->fecha_transformacion,
+                        'id_transformacion' => $id_transformacion,
+                        'id_operacion' => 26,//Entrada por servicio de producción
+                        'revisado' => 0,
                         'usuario' => $id_usuario,
                         'estado' => 1,
                         'fecha_registro' => $fecha,
                     ],
-                        'id_mov_alm_det'
+                        'id_mov_alm'
                     );
-            }
-        }
-        DB::table('almacen.transformacion')
-        ->where('id_transformacion',$id_transformacion)
-        ->update(['estado' => 9]);//Procesado
 
-        return response()->json(['id_salida'=>$id_salida,'id_ingreso'=>$id_ingreso]);
+                foreach($ingreso as $ing){
+                    DB::table('almacen.mov_alm_det')->insertGetId(
+                        [
+                            'id_mov_alm' => $id_ingreso,
+                            'id_producto' => $ing->id_producto,
+                            // 'id_posicion' => $ing->id_posicion,
+                            'cantidad' => $ing->cantidad,
+                            'valorizacion' => ($ing->valor_total !== null ? $ing->valor_total : 0),
+                            'usuario' => $id_usuario,
+                            'estado' => 1,
+                            'fecha_registro' => $fecha,
+                        ],
+                            'id_mov_alm_det'
+                        );
+                }
+            }
+            DB::table('almacen.transformacion')
+            ->where('id_transformacion',$id_transformacion)
+            ->update(['estado' => 9]);//Procesado
+
+            return response()->json(['id_salida'=>$id_salida,'id_ingreso'=>$id_ingreso]);
+
+            DB::commit();
+            return response()->json($msj);
+            
+        } catch (\PDOException $e) {
+            DB::rollBack();
+        }
     }
     public function anular_transformacion($id_transformacion){
         $rspta = '';

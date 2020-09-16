@@ -48,7 +48,8 @@ function mostrar_transformacion(id){
             $('[name=total_sobrantes]').val(response[0].total_sobrantes);
             $('[name=costo_transformacion]').val(response[0].costo_transformacion);
             $('[name=cod_estado]').val(response[0].estado);
-            $('#codigo_transformacion').text(response[0].codigo);
+            $('[name=observacion]').val(response[0].observacion);
+            $('[name=codigo]').val(response[0].codigo);
             $('#fecha_registro label').text('');
             $('#fecha_registro label').text(formatDateHour(response[0].fecha_registro));
             $('#estado label').text('');

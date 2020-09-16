@@ -34,16 +34,11 @@ Hoja de Transformación
                     <input type="hidden" name="id_transformacion" primary="ids">
                     <input type="text" name="cod_estado" hidden/>
                     <div class="row">
-                        <!-- <div class="col-md-3">
-                            <h5>Empresa</h5>
-                            <select class="form-control activation js-example-basic-single" name="id_empresa" disabled="true">
-                                <option value="0">Elija una opción</option>
-                                @foreach ($empresas as $emp)
-                                    <option value="{{$emp->id_empresa}}">{{$emp->razon_social}}</option>
-                                @endforeach
-                            </select>
-                        </div> -->
-                        <div class="col-md-4">
+                        <div class="col-md-3">
+                            <h5>Código</h5>
+                            <input type="text" name="codigo" class="form-control" readOnly/>
+                        </div>
+                        <div class="col-md-3">
                             <h5>Almacén</h5>
                             <select class="form-control activation js-example-basic-single" name="id_almacen" disabled="true">
                                 <option value="0">Elija una opción</option>
@@ -52,7 +47,11 @@ Hoja de Transformación
                                 @endforeach
                             </select>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-3">
+                            <h5>Fecha Transformación</h5>
+                            <input type="date" class="form-control activation" name="fecha_transformacion"/>
+                        </div>
+                        <!-- <div class="col-md-3">
                             <h5>Serie-Número</h5>
                             <div class="input-group">
                                 <input type="text" class="form-control activation" name="serie" 
@@ -61,8 +60,8 @@ Hoja de Transformación
                                 <input type="text" class="form-control activation" name="numero"
                                     placeholder="000000" onBlur="ceros_numero('numero');">
                             </div>
-                        </div>
-                        <div class="col-md-4">
+                        </div> -->
+                        <div class="col-md-3">
                             <h5>Responsable</h5>
                             <select class="form-control activation js-example-basic-single" 
                                 name="responsable" disabled="true">
@@ -71,6 +70,12 @@ Hoja de Transformación
                                     <option value="{{$usu->id_usuario}}">{{$usu->nombre_corto}}</option>
                                 @endforeach
                             </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <!-- <h5>Observación</h5> -->
+                            <textarea name="observacion" id="observacion" cols="150" rows="3"></textarea>
                         </div>
                     </div>
                     <!-- <div class="row">
@@ -93,10 +98,10 @@ Hoja de Transformación
                             <i class="fas fa-step-forward"></i> </button>
                             <button type="button" class="btn btn-warning btn-sm" data-toggle="tooltip" 
                                 data-placement="bottom" title="Ver Salida de Almacén" 
-                                onClick="abrir_salida();"><i class="fas fa-file-alt"></i></button>
+                                onClick="abrir_salida();">S</button>
                             <button type="button" class="btn btn-info btn-sm" data-toggle="tooltip" 
                                 data-placement="bottom" title="Ver Ingreso a Almacén" 
-                                onClick="abrir_ingreso();"><i class="fas fa-file-alt"></i></button>
+                                onClick="abrir_ingreso();">I</button>
                         </div>
                     </div>
                 </div>

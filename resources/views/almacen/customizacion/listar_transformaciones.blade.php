@@ -41,7 +41,7 @@ Gestión de Customizaciones
                         <th hidden></th>
                         <th>Fecha Trans.</th>
                         <th>Código</th>
-                        <th>Serie-Número</th>
+                        <!-- <th>Serie-Número</th> -->
                         <th>Empresa</th>
                         <th>Almacén</th>
                         <th>Responsable</th>

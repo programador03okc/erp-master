@@ -29,11 +29,11 @@ function listarTransformaciones(){
                     return ('<label class="lbl-codigo" title="Abrir Transformación" onClick="abrir_transformacion('+row['id_transformacion']+')">'+row['codigo']+'</label>');
                 }
             },
-            {'render':
-                function (data, type, row){
-                    return ((row['serie'] !== undefined ? row['serie'] : '')+'-'+(row['numero'] !== undefined ? row['numero'] : ''));
-                }
-            },
+            // {'render':
+            //     function (data, type, row){
+            //         return ((row['serie'] !== undefined ? row['serie'] : '')+'-'+(row['numero'] !== undefined ? row['numero'] : ''));
+            //     }
+            // },
             {'data': 'razon_social'},
             {'data': 'descripcion'},
             {'data': 'nombre_responsable'},
