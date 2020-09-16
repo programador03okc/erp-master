@@ -665,8 +665,8 @@ class DistribucionController extends Controller
             $contenido_almacen = '
     Favor de generar Guía de Venta'.$contenido;
 
-            $destinatario_facturacion = 'programador01@okcomputer.com.pe';
-            $destinatario_almacen = 'programador01@okcomputer.com.pe';
+            $destinatario_facturacion = 'agerencia@okcomputer.com.pe';
+            $destinatario_almacen = 'almacen.ilo@okcomputer.com.pe';
             $msj = '';
 
             $rspta_facturacion = CorreoController::enviar_correo( $empresa->id_empresa, $destinatario_facturacion, 
