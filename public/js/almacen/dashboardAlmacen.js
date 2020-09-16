@@ -90,6 +90,7 @@ function listarRequerimientosEstado(estado){
             response.forEach(element => {
                 html+='<tr id="'+element.id_requerimiento+'">'+
                 '<td>'+element.codigo+'</td>'+
+                '<td>'+element.fecha_requerimiento+'</td>'+
                 '<td>'+element.concepto+'</td>'+
                 '<td>'+element.nombre_corto+'</td>'+
                 '</tr>';

@@ -18,8 +18,8 @@
                                 <thead>
                                     <tr style="background-color: lightblue;">
                                         <th>Código</th>
+                                        <th>Fecha Req.</th>
                                         <th>Concepto</th>
-                                        <!-- <th>Cantidad</th> -->
                                         <th>RegistradoPor</th>
                                     </tr>
                                 </thead>

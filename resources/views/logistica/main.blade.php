@@ -93,6 +93,7 @@
                         <option value="1" >Hoy</option>
                         <option value="2" >Semana</option>
                         <option value="3" selected>Mes</option>
+                        <option value="4" >Año</option>
                     </select>
                 </div>
                 <div class="panel panel-default">

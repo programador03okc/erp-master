@@ -349,6 +349,19 @@ class DistribucionController extends Controller
                 ->orderBy('alm_req.estado','desc')
                 ->get();
         }
+        else if ($filtro == '4'){
+            $anio = date('Y', strtotime($hoy));
+
+            $data = DB::table('almacen.alm_req')
+            ->select('alm_req.estado','adm_estado_doc.estado_doc','adm_estado_doc.bootstrap_color',
+                DB::raw('count(alm_req.id_requerimiento) as cantidad'))
+            ->join('administracion.adm_estado_doc','adm_estado_doc.id_estado_doc','=','alm_req.estado')
+            ->groupBy('alm_req.estado','adm_estado_doc.estado_doc','adm_estado_doc.bootstrap_color')
+                ->where([['alm_req.estado','!=',7]])
+                ->whereYear('fecha_requerimiento', '=', $anio)
+                ->orderBy('alm_req.estado','desc')
+                ->get();
+        }
         
         return response()->json($data);
     }
@@ -358,14 +371,16 @@ class DistribucionController extends Controller
 
         if ($filtro == '1'){
             $data = DB::table('almacen.alm_req')
-            ->select('alm_req.id_requerimiento','alm_req.codigo','alm_req.concepto','sis_usua.nombre_corto')
+            ->select('alm_req.id_requerimiento','alm_req.codigo','alm_req.concepto','sis_usua.nombre_corto',
+            'alm_req.fecha_requerimiento')
                 ->join('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'alm_req.id_usuario')
                 ->where([['alm_req.estado','=',$estado],['fecha_requerimiento','=',$hoy]])
                 ->get();
         } 
         else if ($filtro == '2'){
             $data = DB::table('almacen.alm_req')
-            ->select('alm_req.id_requerimiento','alm_req.codigo','alm_req.concepto','sis_usua.nombre_corto')
+            ->select('alm_req.id_requerimiento','alm_req.codigo','alm_req.concepto','sis_usua.nombre_corto',
+            'alm_req.fecha_requerimiento')
                 ->join('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'alm_req.id_usuario')
                 ->where([['alm_req.estado','=',$estado]])
                 ->whereBetween('fecha_requerimiento', [
@@ -378,10 +393,22 @@ class DistribucionController extends Controller
             $mes = date('m', strtotime($hoy));
             
             $data = DB::table('almacen.alm_req')
-            ->select('alm_req.id_requerimiento','alm_req.codigo','alm_req.concepto','sis_usua.nombre_corto')
+            ->select('alm_req.id_requerimiento','alm_req.codigo','alm_req.concepto','sis_usua.nombre_corto',
+            'alm_req.fecha_requerimiento')
                 ->join('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'alm_req.id_usuario')
                 ->where([['alm_req.estado','=',$estado]])
                 ->whereMonth('fecha_requerimiento', '=', $mes)
+                ->get();
+        }
+        else if ($filtro == '4'){
+            $anio = date('Y', strtotime($hoy));
+            
+            $data = DB::table('almacen.alm_req')
+            ->select('alm_req.id_requerimiento','alm_req.codigo','alm_req.concepto','sis_usua.nombre_corto',
+            'alm_req.fecha_requerimiento')
+                ->join('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'alm_req.id_usuario')
+                ->where([['alm_req.estado','=',$estado]])
+                ->whereYear('fecha_requerimiento', '=', $anio)
                 ->get();
         }
         return response()->json($data);
