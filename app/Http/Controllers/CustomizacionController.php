@@ -202,8 +202,8 @@ class CustomizacionController extends Controller
     }
     public function listar_directos($id_transformacion){
         $data = DB::table('almacen.transfor_directo')
-        ->select('transfor_directo.*','log_servi.codigo','log_servi.descripcion')
-        ->leftjoin('logistica.log_servi','log_servi.id_servicio','=','transfor_directo.id_servicio')
+        ->select('transfor_directo.*')
+        // ->leftjoin('logistica.log_servi','log_servi.id_servicio','=','transfor_directo.id_servicio')
         // ->join('almacen.alm_und_medida','alm_und_medida.id_unidad_medida','=','alm_prod.id_unidad_medida')
         ->where([['transfor_directo.id_transformacion','=',$id_transformacion],
                  ['transfor_directo.estado','=',1]])
@@ -215,10 +215,7 @@ class CustomizacionController extends Controller
             $html.='
             <tr id="dir-'.$d->id_directo.'">
                 <td>'.$i.'</td>
-                <td>'.($d->codigo!==null ? $d->codigo : $d->part_number_cc).'</td>
-                <td>'.($d->descripcion!==null ? $d->descripcion : $d->descripcion_cc).'</td>
-                <td><input type="number" class="input-data right" name="dir_cantidad" value="'.$d->cantidad.'" onChange="calcula_directo('.$d->id_directo.');" disabled="true"/></td>
-                <td><input type="number" class="input-data right" name="dir_valor_unitario" value="'.$d->valor_unitario.'" onChange="calcula_directo('.$d->id_directo.');" disabled="true"/></td>
+                <td>'.$d->descripcion.'</td>
                 <td><input type="number" class="input-data right" name="dir_valor_total" value="'.round($d->valor_total,2,PHP_ROUND_HALF_UP).'" onChange="calcula_directo('.$d->id_directo.');" disabled="true"/></td>
                 <td style="display:flex;">
                     <i class="fas fa-pen-square icon-tabla blue visible boton" data-toggle="tooltip" data-placement="bottom" title="Editar Item" onClick="editar_directo('.$d->id_directo.');"></i>
@@ -334,10 +331,10 @@ class CustomizacionController extends Controller
     }
     public function listar_sobrantes($id_transformacion){
         $data = DB::table('almacen.transfor_sobrante')
-        ->select('transfor_sobrante.*','alm_prod.codigo','alm_prod.descripcion',
+        ->select('transfor_sobrante.*','alm_prod.codigo',
         'alm_und_medida.abreviatura','alm_prod.series')
-        ->join('almacen.alm_prod','alm_prod.id_producto','=','transfor_sobrante.id_producto')
-        ->join('almacen.alm_und_medida','alm_und_medida.id_unidad_medida','=','alm_prod.id_unidad_medida')
+        ->leftjoin('almacen.alm_prod','alm_prod.id_producto','=','transfor_sobrante.id_producto')
+        ->leftjoin('almacen.alm_und_medida','alm_und_medida.id_unidad_medida','=','alm_prod.id_unidad_medida')
         ->where([['transfor_sobrante.id_transformacion','=',$id_transformacion],
                  ['transfor_sobrante.estado','=',1]])
         ->get();
@@ -348,10 +345,11 @@ class CustomizacionController extends Controller
             $html.='
             <tr id="sob-'.$d->id_sobrante.'">
                 <td>'.$i.'</td>
-                <td>'.$d->codigo.'</td>
+                <td>'.($d->codigo!==null ? $d->codigo : '').'</td>
+                <td>'.$d->part_number.'</td>
                 <td>'.$d->descripcion.'</td>
                 <td><input type="number" class="input-data right" name="sob_cantidad" value="'.$d->cantidad.'" onChange="calcula_sobrante('.$d->id_sobrante.');" disabled="true"/></td>
-                <td>'.$d->abreviatura.'</td>
+                <td>'.($d->abreviatura!==null ? $d->abreviatura : '').'</td>
                 <td><input type="number" class="input-data right" name="sob_valor_unitario" value="'.$d->valor_unitario.'" onChange="calcula_sobrante('.$d->id_sobrante.');" disabled="true"/></td>
                 <td><input type="number" class="input-data right" name="sob_valor_total" value="'.round($d->valor_total,2,PHP_ROUND_HALF_UP).'" onChange="calcula_sobrante('.$d->id_sobrante.');" disabled="true"/></td>
                 <td style="display:flex;">
@@ -736,7 +734,7 @@ class CustomizacionController extends Controller
                     'id_transformacion' => $id_transformacion,
                     // 'id_servicio' => $request->id_servicio,
                     // 'part_number_cc' => $ser->part_no,
-                    'descripcion_cc' => $ser->descripcion,
+                    'descripcion' => $ser->descripcion,
                     // 'cantidad' => $ser->cantidad,
                     // 'valor_unitario' => $ser->precio,
                     'valor_total' => round($ser->total,6,PHP_ROUND_HALF_UP),
@@ -757,7 +755,9 @@ class CustomizacionController extends Controller
                 DB::table('almacen.transfor_sobrante')->insert(
                     [
                         'id_transformacion' => $id_transformacion,
-                        'id_producto' => $sob->id_producto,
+                        // 'id_producto' => $sob->id_producto,
+                        'part_number' => $sob->part_number,
+                        'descripcion' => $sob->descripcion,
                         'cantidad' => $sob->cantidad,
                         'valor_unitario' => $sob->unitario,
                         'valor_total' => round(($sob->unitario * $sob->cantidad),6,PHP_ROUND_HALF_UP),
@@ -768,7 +768,7 @@ class CustomizacionController extends Controller
 
             $transformados = json_decode($request->lista_transformados);
             foreach($transformados as $tra){
-                DB::table('almacen.transfor_sobrante')->insert(
+                DB::table('almacen.transfor_transformado')->insert(
                     [
                         'id_transformacion' => $id_transformacion,
                         'id_producto' => $tra->id_producto,

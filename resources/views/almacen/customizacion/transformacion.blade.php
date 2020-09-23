@@ -209,12 +209,12 @@ Hoja de Transformación
                     <thead>
                         <tr>
                             <th width='5%'>Nro</th>
-                            <th width='10%'>Código</th>
-                            <th width='40%'>Descripción</th>
-                            <th width='10%'>Cant.</th>
-                            <th>Unit.</th>
-                            <th>Total</th>
-                            <th width='5%'>
+                            <!-- <th width='10%'>Código</th> -->
+                            <th>Descripción</th>
+                            <!-- <th width='10%'>Cant.</th>
+                            <th>Unit.</th> -->
+                            <th width='15%'>Total</th>
+                            <th width='8%'>
                                 <i class="fas fa-plus-square icon-tabla green boton" 
                                     data-toggle="tooltip" data-placement="bottom" 
                                     title="Agregar Servicio" onClick="servicioModal();"></i>
@@ -224,7 +224,7 @@ Hoja de Transformación
                     <tbody></tbody>
                     <tfoot>
                         <tr>
-                            <td colSpan="5"></td>
+                            <td colSpan="2"></td>
                             <td><input type="number" class="input-data right" name="total_directos" disabled="true"/></td>
                             <td></td>
                         </tr>
@@ -287,6 +287,7 @@ Hoja de Transformación
                         <tr>
                             <th width='5%'>Nro</th>
                             <th width='10%'>Código</th>
+                            <th width='10%'>PartNumber</th>
                             <th width='40%'>Descripción</th>
                             <th width='10%'>Cant.</th>
                             <th>Unid.</th>
@@ -304,7 +305,7 @@ Hoja de Transformación
                         <tr>
                             <td colSpan="6"></td>
                             <td><input type="number" class="input-data right" name="total_sobrantes" disabled="true"/></td>
-                            <td></td>
+                            <td colSpan="2"></td>
                         </tr>
                     </tfoot>
                 </table>
@@ -343,7 +344,7 @@ Hoja de Transformación
                         <tr>
                             <td colSpan="6"></td>
                             <td><input type="number" class="input-data right" name="total_transformado" disabled="true"/></td>
-                            <td></td>
+                            <td colSpan="2"></td>
                         </tr>
                     </tfoot>
                 </table>

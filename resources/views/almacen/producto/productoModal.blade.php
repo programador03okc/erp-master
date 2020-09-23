@@ -26,6 +26,7 @@
             <div class="modal-footer">
                 <label id="id_producto" style="display: none;"></label>
                 <label id="codigo" style="display: none;"></label>
+                <label id="partnumber" style="display: none;"></label>
                 <label id="descripcion" style="display: none;"></label>
                 <label id="unid_med" style="display: none;"></label>
                 <label id="posicion" style="display: none;"></label>

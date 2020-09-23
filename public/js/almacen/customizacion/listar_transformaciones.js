@@ -125,7 +125,7 @@ function generar(tbody, tabla){
         $('#modal-transformacion_create').modal({
             show: true
         });
-        
+        $('#submit_transformacion').removeAttr('disabled');
         lista_materias = [];
         lista_servicios = [];
         lista_sobrantes = [];
