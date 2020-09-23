@@ -35,6 +35,7 @@ function mostrar_transformacion(id){
         success: function(response){
             console.log(response[0]);
             $('[name=id_transformacion]').val(response[0].id_transformacion);
+            $('[name=codigo_oportunidad]').val(response[0].codigo_oportunidad);
             $('[name=id_empresa]').val(response[0].id_empresa).trigger('change.select2');
             $('[name=serie]').val(response[0].serie);
             $('[name=numero]').val(response[0].numero);

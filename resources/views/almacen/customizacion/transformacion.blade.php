@@ -34,7 +34,7 @@ Hoja de Transformación
                     <input type="hidden" name="id_transformacion" primary="ids">
                     <input type="text" name="cod_estado" hidden/>
                     <div class="row">
-                        <div class="col-md-3">
+                        <div class="col-md-2">
                             <h5>Código</h5>
                             <input type="text" name="codigo" class="form-control" readOnly/>
                         </div>
@@ -47,7 +47,7 @@ Hoja de Transformación
                                 @endforeach
                             </select>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-2">
                             <h5>Fecha Transformación</h5>
                             <input type="date" class="form-control activation" name="fecha_transformacion"/>
                         </div>
@@ -70,6 +70,10 @@ Hoja de Transformación
                                     <option value="{{$usu->id_usuario}}">{{$usu->nombre_corto}}</option>
                                 @endforeach
                             </select>
+                        </div>
+                        <div class="col-md-2">
+                            <h5>Cod. Cuadro Costos</h5>
+                            <input type="text" name="codigo_oportunidad" class="form-control" readOnly/>
                         </div>
                     </div>
                     <div class="row">
@@ -124,8 +128,9 @@ Hoja de Transformación
                 <table id="listaMateriasPrimas" class="mytable table table-condensed table-bordered table-okc-view" style="margin-bottom: 0px;">
                     <thead>
                         <tr>
-                            <th width='5%'>Nro</th>
-                            <th width='10%'>Código</th>
+                            <th>Nro</th>
+                            <th>Código</th>
+                            <th>PartNumber</th>
                             <th width='40%'>Descripción</th>
                             <th width='10%'>Cant.</th>
                             <th>Unid.</th>
@@ -141,7 +146,7 @@ Hoja de Transformación
                     <tbody></tbody>
                     <tfoot>
                         <tr>
-                            <td colSpan="6"></td>
+                            <td colSpan="7"></td>
                             <td><input type="number" class="input-data right" name="total_materias" disabled="true"/></td>
                             <td></td>
                         </tr>

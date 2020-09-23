@@ -30,7 +30,10 @@ class CustomizacionController extends Controller
 
     public function mostrar_transformacion($id_transformacion){
         $data = DB::table('almacen.transformacion')
-        ->select('transformacion.*','adm_estado_doc.estado_doc','sis_usua.nombre_corto')
+        ->select('transformacion.*','oportunidades.codigo_oportunidad',
+        'adm_estado_doc.estado_doc','sis_usua.nombre_corto')
+        ->leftjoin('mgcp_cuadro_costos.cc','cc.id','=','transformacion.id_cc')
+        ->leftjoin('mgcp_oportunidades.oportunidades','oportunidades.id','=','cc.id_oportunidad')
         ->join('administracion.adm_estado_doc','adm_estado_doc.id_estado_doc','=','transformacion.estado')
         ->join('configuracion.sis_usua','sis_usua.id_usuario','=','transformacion.registrado_por')
         ->where('id_transformacion',$id_transformacion)
@@ -148,7 +151,8 @@ class CustomizacionController extends Controller
             $html.='
             <tr id="mat-'.$d->id_materia.'">
                 <td>'.$i.'</td>
-                <td>'.($d->codigo!==null ? $d->codigo : $d->part_number_cc).'</td>
+                <td>'.($d->codigo!==null ? $d->codigo : '').'</td>
+                <td>'.($d->part_number_cc!==null ? $d->part_number_cc : '').'</td>
                 <td>'.($d->descripcion!==null ? $d->descripcion : $d->descripcion_cc).'</td>
                 <td><input type="number" class="input-data right" name="mat_cantidad" value="'.$d->cantidad.'" onChange="calcula_materia('.$d->id_materia.');" disabled="true"/></td>
                 <td>'.($d->abreviatura!==null ? $d->abreviatura : '').'</td>
