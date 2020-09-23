@@ -75,7 +75,8 @@ Hoja de Transformación
                     <div class="row">
                         <div class="col-md-12">
                             <!-- <h5>Observación</h5> -->
-                            <textarea name="observacion" id="observacion" cols="150" rows="3"></textarea>
+                            <textarea name="observacion" id="observacion" class="activation" 
+                                cols="170" rows="3"></textarea>
                         </div>
                     </div>
                     <!-- <div class="row">

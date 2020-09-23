@@ -23,11 +23,7 @@ function listarTransformaciones(){
         'columns': [
             {'data': 'id_transformacion'},
             {'data': 'codigo'},
-            {'render':
-                function (data, type, row){
-                    return ((row['serie'] !== undefined ? row['serie'] : '')+'-'+(row['numero'] !== undefined ? row['numero'] : ''));
-                }
-            },
+            {'data': 'observacion'},
             {'render':
                 function (data, type, row){
                     return (formatDate(row['fecha_transformacion']));

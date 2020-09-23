@@ -52,6 +52,13 @@ function servicioModal(){
             alert('La transformación ya fue procesada y/o anulada');
         }
     }
+    else if (page == 'transformaciones'){
+        $('#modal-servicio').modal({
+            show: true
+        });
+        clearDataTable();
+        listarServicios();
+    }
 }
 function selectServicio(){
     var myId = $('.modal-footer #id_servicio').text();

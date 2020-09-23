@@ -1187,6 +1187,8 @@ span.select2-selection {
 #gruposDespachados_filter,
 #listaRequerimientosTrazabilidad_filter,
 #listaCu_filter,
+#listaCuadrosCostos_filter,
+#listaTransformacionesMadres_filter,
 #listaTransformaciones_filter {
   margin: 0;
 }
@@ -1226,6 +1228,8 @@ span.select2-selection {
 #gruposDespachados_filter label input[type=search],
 #listaRequerimientosTrazabilidad_filter label input[type=search],
 #listaCu_filter label input[type=search],
+#listaCuadrosCostos_filter label input[type=search],
+#listaTransformacionesMadres_filter label input[type=search],
 #listaTransformaciones_filter label input[type=search] {
   width: 95%;
 }

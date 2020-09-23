@@ -19,7 +19,7 @@ function listarAlmacenes(){
         'dom': vardataTables[1],
         'buttons': vardataTables[2],
         'language' : vardataTables[0],
-        'bDestroy': true,
+        'destroy': true,
         'ajax': 'listar_almacenes',
         'columns': [
             {'data': 'id_almacen'},
@@ -54,6 +54,10 @@ function selectAlmacen(){
     if (page == "ubicacion"){
         console.log(myId);
         listar_estantes(myId);
+    }
+    else if (page == "transformaciones"){
+        id_almacen = myId;
+        generarTransformacion();
     }
     
     $('#modal-Almacen').modal('hide');

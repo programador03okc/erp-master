@@ -70,11 +70,7 @@ function listarTrazabilidadRequerimientos(){
             {'render': function (data, type, row){
                 return (row['sede_descripcion_orden'] !== null ? row['sede_descripcion_orden'] : '')
                 }
-            },            
-            {'render': function (data, type, row){
-                return (row['serie'] !== null ? row['serie']+'-'+row['numero'] : '')
-                }
-            },
+            }, 
             {'render': function (data, type, row){
                 return (row['codigo_transferencia'] !== null ? row['codigo_transferencia'] : '')
                 }
@@ -82,7 +78,9 @@ function listarTrazabilidadRequerimientos(){
             {'render': function (data, type, row){
                 return (row['codigo_od'] !== null ? row['codigo_od'] : '')
                 }
-            }
+            },
+            {'data': 'guias_adicionales'},
+            {'data': 'importe_total'}
         ],
         'columnDefs': [
             {'aTargets': [0], 'sClass': 'invisible'},
@@ -90,10 +88,17 @@ function listarTrazabilidadRequerimientos(){
                 return '<button type="button" class="ver btn btn-info boton" data-toggle="tooltip" data-placement="bottom" '+
                 'data-id="'+row['id_requerimiento']+'" title="Ver Trazabilidad" >'+
                 '<i class="fas fa-search"></i></button>'+
-                '<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" '+
+                '<button type="button" class="detalle btn btn-primary boton " data-toggle="tooltip" '+
                     'data-placement="bottom" title="Ver Detalle" >'+
-                    '<i class="fas fa-list-ul"></i></button>'
-                }, targets: 17
+                    '<i class="fas fa-list-ul"></i></button>'+
+                (row['id_od'] !== null ? 
+                `<button type="button" class="adjuntar btn btn-warning boton" data-toggle="tooltip" 
+                        data-placement="bottom" data-id="${row['id_od']}" data-cod="${row['codigo_od']}" title="Adjuntar Boleta/Factura" >
+                        <i class="fas fa-paperclip"></i></button>`: '')+
+                (row['id_od_grupo'] !== null ? `<button type="button" class="imprimir btn btn-success boton" data-toggle="tooltip" 
+                    data-placement="bottom" data-id-grupo="${row['id_od_grupo']}" title="Ver Despacho" >
+                    <i class="fas fa-file-alt"></i></button>` : '')
+                }, targets: 18
             }
         ],
     });
@@ -112,6 +117,24 @@ $('#listaRequerimientosTrazabilidad tbody').on("click","button.detalle", functio
     var data = $('#listaRequerimientosTrazabilidad').DataTable().row($(this).parents("tr")).data();
     console.log(data);
     open_detalle_requerimiento(data);
+});
+
+$('#listaRequerimientosTrazabilidad tbody').on("click","button.adjuntar", function(){
+    var id = $(this).data('id');
+    var cod = $(this).data('cod');
+    $('#modal-despachoAdjuntos').modal({
+        show: true
+    });
+    listarAdjuntos(id);
+    $('[name=id_od]').val(id);
+    $('[name=codigo_od]').val(cod);
+});
+
+$('#listaRequerimientosTrazabilidad tbody').on("click","button.imprimir", function(){
+    var id_od_grupo = $(this).data('idGrupo');
+    var id = encode5t(id_od_grupo);
+    console.log(id_od_grupo);
+    window.open('imprimir_despacho/'+id);
 });
 
 function verTrazabilidadRequerimiento(id_requerimiento){

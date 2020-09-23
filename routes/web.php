@@ -938,6 +938,10 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::post('listarRequerimientosTrazabilidad', 'DistribucionController@listarRequerimientosTrazabilidad');
 					Route::get('verTrazabilidadRequerimiento/{id}', 'DistribucionController@verTrazabilidadRequerimiento');
 					Route::get('verDetalleRequerimiento/{id}', 'DistribucionController@verDetalleRequerimiento');
+					Route::get('imprimir_despacho/{id}', 'DistribucionController@imprimir_despacho');
+					Route::get('listarAdjuntosOrdenDespacho/{id}', 'DistribucionController@listarAdjuntosOrdenDespacho');
+					Route::post('guardar_od_adjunto', 'DistribucionController@guardar_od_adjunto');
+					Route::get('anular_od_adjunto/{id}', 'DistribucionController@anular_od_adjunto');
 
 				});
 	
@@ -1107,41 +1111,47 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::group(['as' => 'gestion-customizaciones.', 'prefix' => 'gestion-customizaciones'], function(){
 					//Transformaciones
 					Route::get('index', 'AlmacenController@view_listar_transformaciones')->name('index');
-					Route::get('listar_todas_transformaciones/{id}', 'AlmacenController@listar_todas_transformaciones');
-					
+					Route::get('listar_todas_transformaciones', 'CustomizacionController@listar_todas_transformaciones');
+					Route::post('listarCuadrosCostos', 'CustomizacionController@listarCuadrosCostos');
+					Route::post('generarTransformacion', 'CustomizacionController@generarTransformacion');
+					Route::get('listar_almacenes', 'AlmacenController@mostrar_almacenes');
+					Route::get('obtenerCuadro/{id}/{tipo}', 'CustomizacionController@obtenerCuadro');
+					Route::get('listar_servicio', 'AlmacenController@mostrar_servicios');
+					Route::get('mostrar_prods', 'AlmacenController@mostrar_prods');
+
 				});
 	
 				Route::group(['as' => 'hoja-transformacion.', 'prefix' => 'hoja-transformacion'], function(){
 					//Transformaciones
 					Route::get('index', 'AlmacenController@view_transformacion')->name('index');
-					Route::post('guardar_transformacion', 'AlmacenController@guardar_transformacion');
-					Route::post('update_transformacion', 'AlmacenController@update_transformacion');
-					Route::get('listar_transformaciones', 'AlmacenController@listar_transformaciones');
-					Route::get('mostrar_transformacion/{id}', 'AlmacenController@mostrar_transformacion');
-					Route::get('anular_transformacion/{id}', 'AlmacenController@anular_transformacion');
-					Route::get('listar_materias/{id}', 'AlmacenController@listar_materias');
-					Route::get('listar_directos/{id}', 'AlmacenController@listar_directos');
-					Route::get('listar_indirectos/{id}', 'AlmacenController@listar_indirectos');
-					Route::get('listar_sobrantes/{id}', 'AlmacenController@listar_sobrantes');
-					Route::get('listar_transformados/{id}', 'AlmacenController@listar_transformados');
-					Route::get('procesar_transformacion/{id}', 'AlmacenController@procesar_transformacion');
-					Route::post('guardar_materia', 'AlmacenController@guardar_materia');
-					Route::post('guardar_directo', 'AlmacenController@guardar_directo');
-					Route::post('guardar_indirecto', 'AlmacenController@guardar_indirecto');
-					Route::post('guardar_sobrante', 'AlmacenController@guardar_sobrante');
-					Route::post('guardar_transformado', 'AlmacenController@guardar_transformado');
-					Route::post('update_materia', 'AlmacenController@update_materia');
-					Route::post('update_directo', 'AlmacenController@update_directo');
-					Route::post('update_indirecto', 'AlmacenController@update_indirecto');
-					Route::post('update_sobrante', 'AlmacenController@update_sobrante');
-					Route::post('update_transformado', 'AlmacenController@update_transformado');
-					Route::get('id_ingreso_transformacion/{id}', 'AlmacenController@id_ingreso_transformacion');
-					Route::get('id_salida_transformacion/{id}', 'AlmacenController@id_salida_transformacion');
-					Route::get('anular_materia/{id}', 'AlmacenController@anular_materia');
-					Route::get('anular_directo/{id}', 'AlmacenController@anular_directo');
-					Route::get('anular_indirecto/{id}', 'AlmacenController@anular_indirecto');
-					Route::get('anular_sobrante/{id}', 'AlmacenController@anular_sobrante');
-					Route::get('anular_transformado/{id}', 'AlmacenController@anular_transformado');
+					Route::post('guardar_transformacion', 'CustomizacionController@guardar_transformacion');
+					Route::post('update_transformacion', 'CustomizacionController@update_transformacion');
+					Route::get('listar_transformaciones', 'CustomizacionController@listar_transformaciones');
+					Route::get('mostrar_transformacion/{id}', 'CustomizacionController@mostrar_transformacion');
+					Route::get('anular_transformacion/{id}', 'CustomizacionController@anular_transformacion');
+					Route::get('listar_materias/{id}', 'CustomizacionController@listar_materias');
+					Route::get('listar_directos/{id}', 'CustomizacionController@listar_directos');
+					Route::get('listar_indirectos/{id}', 'CustomizacionController@listar_indirectos');
+					Route::get('listar_sobrantes/{id}', 'CustomizacionController@listar_sobrantes');
+					Route::get('listar_transformados/{id}', 'CustomizacionController@listar_transformados');
+					Route::get('procesar_transformacion/{id}', 'CustomizacionController@procesar_transformacion');
+					Route::post('guardar_materia', 'CustomizacionController@guardar_materia');
+					Route::post('guardar_directo', 'CustomizacionController@guardar_directo');
+					Route::post('guardar_indirecto', 'CustomizacionController@guardar_indirecto');
+					Route::post('guardar_sobrante', 'CustomizacionController@guardar_sobrante');
+					Route::post('guardar_transformado', 'CustomizacionController@guardar_transformado');
+					Route::post('update_materia', 'CustomizacionController@update_materia');
+					Route::post('update_directo', 'CustomizacionController@update_directo');
+					Route::post('update_indirecto', 'CustomizacionController@update_indirecto');
+					Route::post('update_sobrante', 'CustomizacionController@update_sobrante');
+					Route::post('update_transformado', 'CustomizacionController@update_transformado');
+					Route::get('id_ingreso_transformacion/{id}', 'CustomizacionController@id_ingreso_transformacion');
+					Route::get('id_salida_transformacion/{id}', 'CustomizacionController@id_salida_transformacion');
+					Route::get('anular_materia/{id}', 'CustomizacionController@anular_materia');
+					Route::get('anular_directo/{id}', 'CustomizacionController@anular_directo');
+					Route::get('anular_indirecto/{id}', 'CustomizacionController@anular_indirecto');
+					Route::get('anular_sobrante/{id}', 'CustomizacionController@anular_sobrante');
+					Route::get('anular_transformado/{id}', 'CustomizacionController@anular_transformado');
 					Route::get('listar_servicio', 'AlmacenController@mostrar_servicios');
 					Route::get('mostrar_prods', 'AlmacenController@mostrar_prods');
 					Route::get('imprimir_ingreso/{id}', 'AlmacenController@imprimir_ingreso');
@@ -1447,7 +1457,7 @@ Route::group(['middleware' => ['auth']], function () {
 
 
 Route::get('soft_tipos_cambio', 'AlmacenController@soft_tipos_cambio');
-Route::get('pruebat', 'TransferenciaController@pruebat');
+Route::get('transformacion_nextId/{fec}/{id}', 'CustomizacionController@transformacion_nextId');
 /* Configuración */
 Route::post('update_password', 'ConfiguracionController@cambiar_clave');
 Route::get('modulo', 'ConfiguracionController@view_modulos');

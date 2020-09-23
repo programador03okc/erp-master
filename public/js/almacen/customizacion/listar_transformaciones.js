@@ -1,65 +1,267 @@
-$(function(){
-    // clearDataTable();
-    $('[name=id_almacen]').val(1).trigger('change.select2');
-    listarTransformaciones();
-});
-function listarTransformaciones(){
-    var almacen = $('[name=id_almacen]').val();
-    var vardataTables = funcDatatables();
-    var tabla = $('#listaTransformaciones').DataTable({
-        'destroy':true,
-        'dom': vardataTables[1],
-        'buttons': vardataTables[2],
-        'language' : vardataTables[0],
-        'ajax' : 'listar_todas_transformaciones/'+almacen,
-        // 'ajax': {
-        //     url:'listar_transferencias_pendientes/'+alm_origen+'/'+alm_destino,
-        //     dataSrc:''
-        // },
-        'columns': [
-            {'data': 'id_transformacion'},
-            {'render':
-                function (data, type, row){
-                    return (formatDate(row['fecha_transformacion']));
-                }
+class GestionCustomizacion
+{
+    constructor(permiso)
+    {
+        this.permiso = permiso;
+        this.listarCuadrosCostos();
+        //this.listarTransformaciones();
+    }
+
+    listarCuadrosCostos() {
+        const permiso = this.permiso;
+        var vardataTables = funcDatatables();
+        var tabla = $('#listaCuadrosCostos').DataTable({
+            'dom': vardataTables[1],
+            'buttons': vardataTables[2],
+            'language' : vardataTables[0],
+            'destroy' : true,
+            'serverSide' : true,
+            'ajax': {
+                url: 'listarCuadrosCostos',
+                type: 'POST'
             },
-            // {'data': 'codigo'},
-            {'render':
-                function (data, type, row){
-                    return ('<label class="lbl-codigo" title="Abrir Transformación" onClick="abrir_transformacion('+row['id_transformacion']+')">'+row['codigo']+'</label>');
+            'columns': [
+                {'data': 'id'},
+                {'data': 'codigo_oportunidad', 'name': 'oportunidades.codigo_oportunidad'},
+                {'data': 'oportunidad', 'name': 'oportunidades.oportunidad'},
+                {'data': 'entidad', 'name': 'entidades.entidad'},
+                {'data': 'estado', 'name': 'estados_aprobacion.estado'},
+                {'data': 'prioridad'},
+                {'data': 'fecha_entrega'},
+                {'render': function (data, type, row){
+                        return row['tipo_cuadro'] == 1 ? 'Acuerdo Marco' : 'Venta Directa';
+                    }
+                },
+                {'data': 'name', 'name': 'users.name'}
+            ],
+            'columnDefs': [
+                {'aTargets': [0], 'sClass': 'invisible'},
+                {'render': function (data, type, row){
+                    // console.log(permiso == '1');
+                        // if (permiso !== '1') {
+                            return `<button type="button" class="generar_transformacion btn btn-success btn-sm " data-toggle="tooltip"
+                            data-placement="bottom" data-id="${row['id']}" data-tipo="${row['tipo_cuadro']}" data-oportunidad="${row['oportunidad']}" 
+                            title="Generar Hoja de Transformación"><i class="fas fa-angle-double-right"></i></button>`;
+                        // }
+                    }, targets: 9
                 }
-            },
-            // {'render':
-            //     function (data, type, row){
-            //         return ((row['serie'] !== undefined ? row['serie'] : '')+'-'+(row['numero'] !== undefined ? row['numero'] : ''));
-            //     }
+            ],
+        });
+        generar("#listaCuadrosCostos tbody", tabla);
+    }
+
+    listarTransformaciones(){
+        var vardataTables = funcDatatables();
+        var tabla = $('#listaTransformacionesMadres').DataTable({
+            'dom': vardataTables[1],
+            'buttons': vardataTables[2],
+            'language' : vardataTables[0],
+            'destroy':true,
+            'ajax' : 'listar_todas_transformaciones',
+            // 'ajax': {
+            //     url:'listar_transferencias_pendientes/'+alm_origen+'/'+alm_destino,
+            //     dataSrc:''
             // },
-            {'data': 'razon_social'},
-            {'data': 'descripcion'},
-            {'data': 'nombre_responsable'},
-            {'data': 'nombre_registrado'},
-            {'render':
-                function (data, type, row){
-                    return ('<span class="label label-'+row['bootstrap_color']+'">'+row['estado_doc']+'</span>');
-                }
-            },
-            {'defaultContent': 
-                '<button type="button" class="ver btn btn-primary boton" data-toggle="tooltip" '+
-                    'data-placement="bottom" title="Ver Ingreso" >'+
-                    '<i class="fas fa-search-plus"></i></button>'+
-                '<button type="button" class="atender btn btn-success boton" data-toggle="tooltip" '+
-                    'data-placement="bottom" title="Atender" >'+
-                    '<i class="fas fa-share"></i></button>'+
-                '<button type="button" class="anular btn btn-danger boton" data-toggle="tooltip" '+
-                    'data-placement="bottom" title="Anular" >'+
-                    '<i class="fas fa-trash"></i></button>'},
-        ],
-        'columnDefs': [{ 'aTargets': [0], 'sClass': 'invisible'}],
-    });
-    ver("#listaTransformaciones tbody", tabla);
-    atender("#listaTransformaciones tbody", tabla);
-    anular("#listaTransformaciones tbody", tabla);
+            'columns': [
+                {'data': 'id_transformacion'},
+                {'render':
+                    function (data, type, row){
+                        return (formatDate(row['fecha_transformacion']));
+                    }
+                },
+                {'render':
+                    function (data, type, row){
+                        return ('<label class="lbl-codigo" title="Abrir Transformación" onClick="abrir_transformacion('+row['id_transformacion']+')">'+row['codigo']+'</label>');
+                    }
+                },
+                {'data': 'razon_social'},
+                {'data': 'descripcion'},
+                {'data': 'nombre_responsable'},
+                {'data': 'nombre_registrado'},
+                {'render':
+                    function (data, type, row){
+                        return ('<span class="label label-'+row['bootstrap_color']+'">'+row['estado_doc']+'</span>');
+                    }
+                },
+                {'defaultContent': 
+                    '<button type="button" class="ver btn btn-primary boton" data-toggle="tooltip" '+
+                        'data-placement="bottom" title="Ver Ingreso" >'+
+                        '<i class="fas fa-search-plus"></i></button>'+
+                    '<button type="button" class="atender btn btn-success boton" data-toggle="tooltip" '+
+                        'data-placement="bottom" title="Atender" >'+
+                        '<i class="fas fa-share"></i></button>'+
+                    '<button type="button" class="anular btn btn-danger boton" data-toggle="tooltip" '+
+                        'data-placement="bottom" title="Anular" >'+
+                        '<i class="fas fa-trash"></i></button>'},
+            ],
+            'columnDefs': [{ 'aTargets': [0], 'sClass': 'invisible'}],
+        });
+        // ver("#listaTransformacionesMadres tbody", tabla);
+        // atender("#listaTransformacionesMadres tbody", tabla);
+        // anular("#listaTransformacionesMadres tbody", tabla);
+    }
 }
+
+
+let id_cc = null;
+let tipo = null;
+let id_almacen = null;
+let oportunidad = null;
+
+let lista_materias = [];
+let lista_servicios = [];
+let lista_sobrantes = [];
+let lista_transformados = [];
+
+function generar(tbody, tabla){
+    console.log("ver");
+    $(tbody).on("click","button.generar_transformacion", function(){
+        id_cc = $(this).data('id');
+        tipo = $(this).data('tipo');
+        oportunidad = $(this).data('oportunidad');
+        $('[name=id_cc]').val(id_cc);
+        $('[name=tipo]').val(tipo);
+        $('[name=oportunidad]').val(oportunidad);
+        $('#modal-transformacion_create').modal({
+            show: true
+        });
+        
+        lista_materias = [];
+        lista_servicios = [];
+        lista_sobrantes = [];
+        lista_transformados = [];
+        obtenerCuadro(id_cc,tipo);
+    });
+}
+
+function obtenerCuadro(id_cc,tipo){
+    $.ajax({
+        type: 'GET',
+        url: 'obtenerCuadro/'+id_cc+'/'+tipo,
+        dataType: 'JSON',
+        success: function(response){
+            console.log(response);
+            response['materias_primas'].forEach(
+                function(element) {
+                    var materia = {
+                        'part_no': element.part_no,
+                        'descripcion': element.descripcion,
+                        'cantidad': element.cantidad,
+                        'unitario': element.precio,
+                        'total': (element.cantidad * element.precio)
+                    };
+                    lista_materias.push(materia);
+                }
+            );
+            response['servicios'].forEach(
+                function(element) {
+                    if (element.part_no !== null && element.part_no !== 'NULL'){
+                        var gasto = {
+                            'descripcion': element.descripcion,
+                            'total': element.costo
+                        };
+                        lista_servicios.push(gasto);
+                    } else {
+                        var servicio = {
+                            'part_no': element.part_no,
+                            'descripcion': element.descripcion,
+                            'cantidad': element.cantidad,
+                            'unitario': element.precio,
+                            'total': (element.cantidad * element.precio)
+                        };
+                        lista_materias.push(servicio);
+                    }
+                }
+            );
+            response['gastos'].forEach(
+                function(element) {
+                    var gasto = {
+                        'descripcion': element.descripcion,
+                        'total': element.costo
+                    };
+                    lista_servicios.push(gasto);
+                }
+            );
+            mostrarCuadros();
+        }
+    }).fail( function( jqXHR, textStatus, errorThrown ){
+        console.log(jqXHR);
+        console.log(textStatus);
+        console.log(errorThrown);
+    });
+}
+function mostrarCuadros(){
+    var html_materia = '';
+    lista_materias.forEach(function(element) {
+        html_materia += `<tr>
+            <td>${element.part_no}</td>
+            <td>${element.descripcion}</td>
+            <td>${element.cantidad}</td>
+            <td>${element.unitario}</td>
+            <td>${element.total}</td>
+            </tr>`;
+        });
+    $('#listaMateriasPrimas tbody').html(html_materia);
+
+    var html_servicio = '';
+    lista_servicios.forEach(function(element) {
+        html_servicio += `<tr>
+            <td>${element.part_no}</td>
+            <td>${element.descripcion}</td>
+            <td>${element.cantidad}</td>
+            <td>${element.unitario}</td>
+            <td>${element.total}</td>
+        </tr>`;
+    });
+    $('#listaServiciosDirectos tbody').html(html_servicio);
+
+}
+
+$("#form-transformacion_create").on("submit", function(e){
+    e.preventDefault();
+    var alm = $('[name=id_almacen]').val();
+
+    if (alm !== '0'){
+        var serial = $(this).serialize();
+        var data = serial+'&lista_materias='+JSON.stringify(lista_materias)+
+        '&lista_servicios='+JSON.stringify(lista_servicios)+
+        '&lista_sobrantes='+JSON.stringify(lista_sobrantes)+
+        '&lista_transformados='+JSON.stringify(lista_transformados);
+
+        $('#submit_transformacion').attr('disabled','true');
+        generarTransformacion(data);
+        $('#modal-transformacion_create').modal('hide');
+    } else {
+        alert('Es necesario que seleccione un almacén!');
+    }
+});
+
+function generarTransformacion(data){
+    // var data =  'id_cc='+id_cc+
+    //             '&tipo='+tipo+
+    //             '&oportunidad='+oportunidad+
+    //             '&id_almacen='+id_almacen+
+    //             '&lista_materias='+JSON.stringify(lista_materias)+
+    //             '&lista_servicios='+JSON.stringify(lista_servicios)+
+    //             '&lista_sobrantes='+JSON.stringify(lista_sobrantes)+
+    //             '&lista_transformados='+JSON.stringify(lista_transformados);
+    console.log(data);
+    $.ajax({
+        type: 'POST',
+        url: 'generarTransformacion',
+        data: data,
+        dataType: 'JSON',
+        success: function(response){
+            console.log(response);
+            alert(response);
+        }
+    }).fail( function( jqXHR, textStatus, errorThrown ){
+        console.log(jqXHR);
+        console.log(textStatus);
+        console.log(errorThrown);
+    });
+}
+
 function ver(tbody, tabla){
     console.log("ver");
     $(tbody).on("click","button.ver", function(){

@@ -356,86 +356,6 @@ $('#requerimientosPendientes tbody').on("click","button.anular_od", function(){
     }
 });
 
-$("#form-od_adjunto").on("submit", function(e){
-    e.preventDefault();
-    var nro = $('#listaAdjuntos tbody tr').length;
-    $('[name=numero]').val(nro+1);
-    guardar_od_adjunto();
-});
-
-function listarAdjuntos(id){
-    $.ajax({
-        type: 'GET',
-        url: 'listarAdjuntosOrdenDespacho/'+id,
-        dataType: 'JSON',
-        success: function(response){
-            $('#listaAdjuntos tbody').html(response);
-        }
-    }).fail( function( jqXHR, textStatus, errorThrown ){
-        console.log(jqXHR);
-        console.log(textStatus);
-        console.log(errorThrown);
-    });
-}
-
-function guardar_od_adjunto(){
-    var formData = new FormData($('#form-od_adjunto')[0]);
-    var id = $('[name=id_od]').val();
-    var adjunto = $('[name=archivo_adjunto]').val();
-    var nro = $('[name=numero]').val();
-    console.log(nro);
-    if (adjunto !== '' && adjunto !== null){
-        $.ajax({
-            type: 'POST',
-            // headers: {'X-CSRF-TOKEN': token},
-            url: 'guardar_od_adjunto',
-            data: formData,
-            cache: false,
-            contentType: false,
-            processData: false,
-            dataType: 'JSON',
-            success: function(response){
-                console.log(response);
-                if (response > 0){
-                    alert('Adjunto registrado con éxito');
-                    listarAdjuntos(id);
-                }
-            }
-        }).fail( function( jqXHR, textStatus, errorThrown ){
-            console.log(jqXHR);
-            console.log(textStatus);
-            console.log(errorThrown);
-        });
-    } else {
-        alert('Debe seleccionar un archivo!');
-    }
-}
-
-function anular_adjunto(id_od_adjunto){
-    if (id_od_adjunto !== ''){
-        var rspta = confirm("¿Está seguro que desea anular el adjunto?")
-        if (rspta){
-            var id = $('[name=id_od]').val();
-            $.ajax({
-                type: 'GET',
-                url: 'anular_od_adjunto/'+id_od_adjunto,
-                dataType: 'JSON',
-                success: function(response){
-                    console.log(response);
-                    if (response > 0){
-                        alert('Adjunto anulado con éxito');
-                        listarAdjuntos(id);
-                    }
-                }
-            }).fail( function( jqXHR, textStatus, errorThrown ){
-                console.log(jqXHR);
-                console.log(textStatus);
-                console.log(errorThrown);
-            });        
-        }
-    }
-}
-
 function anularOrdenDespacho(id){
     $.ajax({
         type: 'GET',
@@ -637,8 +557,8 @@ function listarGruposDespachados(permiso){
                     }
                 }
             },
-            // {'data': 'observaciones'},
-            {'data': 'obs_confirmacion'},
+            {'data': 'mov_entrega', 'name': 'orden_despacho_grupo.mov_entrega'},
+            // {'data': 'obs_confirmacion'},
             {'render': 
                 function (data, type, row){
                     return ('<span class="label label-'+row['bootstrap_color']+'">'+row['estado_doc']+'</span>');
@@ -667,7 +587,7 @@ function listarGruposDespachados(permiso){
                         '<i class="fas fa-file-alt"></i></button>'+
                         ((row['confirmacion'] == false && row['estado_od'] == 20)? 
                         ('<button type="button" class="conforme btn btn-success boton" data-toggle="tooltip" '+
-                        'data-placement="bottom" data-id="'+row['id_od_grupo_detalle']+'" data-od="'+row['id_od']+'" data-idreq="'+row['id_requerimiento']+'" data-cod-req="'+row['codigo_req']+'" data-concepto="'+row['concepto']+'" title="Confirmar Entrega" >'+
+                        'data-placement="bottom" data-id="'+row['id_od_grupo_detalle']+'" data-od="'+row['id_od']+'" data-idreq="'+row['id_requerimiento']+'" data-cod-req="'+row['codigo_req']+'" data-concepto="'+row['concepto']+'" data-mov="'+row['mov_entrega']+'" title="Confirmar Entrega" >'+
                         '<i class="fas fa-check"></i></button>'+
                         '<button type="button" class="no_conforme btn btn-danger boton" data-toggle="tooltip" '+
                         'data-placement="bottom" data-id="'+row['id_od_grupo_detalle']+'" data-od="'+row['id_od']+'" data-idreq="'+row['id_requerimiento']+'" data-cod-req="'+row['codigo_req']+'" data-concepto="'+row['concepto']+'" title="No Entregado" >'+
@@ -723,14 +643,37 @@ $('#gruposDespachados tbody').on("click","button.conforme", function(){
     var id_req = $(this).data('idreq');
     var cod_req = $(this).data('codReq');
     var concepto = $(this).data('concepto');
+    var mov = $(this).data('mov');
 
-    var rspta = confirm('¿Está seguro que desea dar Conformidad de Entrega al '+cod_req+' '+concepto+'?');
-    if (rspta){
-        var data = 'id_od_grupo_detalle='+id_od_grupo_detalle+
-                   '&id_od='+id_od+
-                   '&id_requerimiento='+id_req;
-        despacho_conforme(data);
+    if (mov !== 'Cliente Recoge en Oficina'){
+        $('#modal-orden_despacho_confirmacion').modal({
+            show: true
+        });
+        $('[name=id_od]').val(id_od);
+        $('[name=con_id_requerimiento]').val(id_req);
+        $('[name=id_od_grupo_detalle]').val(id_od_grupo_detalle);
+        $('#submit_od_confirmacion').removeAttr("disabled");
     }
+    else {
+        var rspta = confirm('¿Está seguro que desea dar Conformidad de Entrega al '+cod_req+' '+concepto+'?');
+        if (rspta){
+            var data = 'id_od_grupo_detalle='+id_od_grupo_detalle+
+                       '&id_od='+id_od+
+                       '&id_requerimiento='+id_req+
+                       '&guias_adicionales='+
+                       '&importe_total=';
+            despacho_conforme(data);
+        }
+    }
+});
+
+$("#form-orden_despacho_confirmacion").on("submit", function(e){
+    e.preventDefault();
+    var data = $(this).serialize();
+    console.log(data);
+    $('#submit_od_confirmacion').attr('disabled','true');
+    despacho_conforme(data);
+    $('#modal-orden_despacho_confirmacion').modal('hide');
 });
 
 $('#gruposDespachados tbody').on("click","button.no_conforme", function(){

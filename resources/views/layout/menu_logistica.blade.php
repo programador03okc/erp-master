@@ -305,23 +305,6 @@
                 </ul>
             </li>
             @endif
-            @if(Auth::user()->tieneSubModulo(41))
-            <li class="treeview">
-                <a href="#"><i class="fas fa-code-branch"></i> Customización
-                    <span class="pull-right-container">
-                    <i class="fa fa-angle-left pull-right"></i>
-                    </span>
-                </a>
-                <ul class="treeview-menu">
-                @if(Auth::user()->tieneAplicacion(87))
-                <li><a href="{{route('logistica.almacen.customizacion.gestion-customizaciones.index')}}"><i class="far fa-circle fa-xs"></i> Gestión de Customizaciones </a></li>
-                @endif
-                @if(Auth::user()->tieneAplicacion(88))
-                <li><a href="{{route('logistica.almacen.customizacion.hoja-transformacion.index')}}"><i class="far fa-circle fa-xs"></i> Hoja de Transformación </a></li>
-                @endif
-                </ul>
-            </li>
-            @endif
             @if(Auth::user()->tieneSubModulo(42))
             <li class="treeview">
                 <a href="#"><i class="fas fa-chart-bar"></i> Reportes
@@ -383,6 +366,23 @@
                 </ul>
             </li>
             @endif
+        </ul>
+    </li>
+    @endif
+    @if(Auth::user()->tieneSubModulo(41))
+    <li class="treeview">
+        <a href="#"><i class="fas fa-code-branch"></i> Customización
+            <span class="pull-right-container">
+            <i class="fa fa-angle-left pull-right"></i>
+            </span>
+        </a>
+        <ul class="treeview-menu">
+        @if(Auth::user()->tieneAplicacion(87))
+        <li><a href="{{route('logistica.almacen.customizacion.gestion-customizaciones.index')}}"><i class="far fa-circle fa-xs"></i> Gestión de Customizaciones </a></li>
+        @endif
+        @if(Auth::user()->tieneAplicacion(88))
+        <li><a href="{{route('logistica.almacen.customizacion.hoja-transformacion.index')}}"><i class="far fa-circle fa-xs"></i> Hoja de Transformación </a></li>
+        @endif
         </ul>
     </li>
     @endif

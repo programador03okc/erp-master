@@ -2,7 +2,7 @@ function iniciar(permiso){
     $("#tab-ordenes section:first form").attr('form', 'formulario');
     listarDespachosPendientes(permiso);
 
-    $('ul.nav-tabs li a').click(function(){
+    $('ul.nav-tabs li a').on('click',function(){
         $('ul.nav-tabs li').removeClass('active');
         $(this).parent().addClass('active');
         $('.content-tabs section').attr('hidden', true);

@@ -172,7 +172,8 @@ Panel de Control de Despachos
                                         <th>Dirección</th>
                                         <th>Fecha Despacho</th>
                                         <th>Despachador</th>
-                                        <th>Confirmación</th>
+                                        <th>Tipo Entrega</th>
+                                        <!-- <th>Confirmación</th> -->
                                         <th>Estado</th>
                                         <th>Motivo</th>
                                         <th width="100px">Acción</th>
@@ -193,6 +194,7 @@ Panel de Control de Despachos
 @include('almacen.distribucion.grupoDespachoCreate')
 @include('almacen.distribucion.despachoDetalle')
 @include('almacen.distribucion.grupoDespachoDetalle')
+@include('almacen.distribucion.ordenDespachoConfirmacion')
 @include('almacen.distribucion.ordenDespachoObs')
 @include('almacen.distribucion.requerimientoObs')
 @include('almacen.distribucion.ordenDespachoAdjuntos')
@@ -221,6 +223,7 @@ Panel de Control de Despachos
     <script src="{{ asset('js/almacen/distribucion/ordenesDespacho.js')}}"></script>
     <script src="{{ asset('js/almacen/distribucion/ordenDespachoCreate.js')}}"></script>
     <script src="{{ asset('js/almacen/distribucion/grupoDespachoCreate.js')}}"></script>
+    <script src="{{ asset('js/almacen/distribucion/ordenDespachoAdjuntos.js')}}"></script>
     <script src="{{ asset('js/almacen/distribucion/despachoDetalle.js')}}"></script>
     <script src="{{ asset('js/almacen/distribucion/requerimientoDetalle.js')}}"></script>
     <script src="{{ asset('js/almacen/distribucion/requerimientoObs.js')}}"></script>

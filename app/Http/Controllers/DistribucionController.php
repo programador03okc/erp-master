@@ -250,7 +250,7 @@ class DistribucionController extends Controller
         'adm_contri.razon_social as proveedor_despacho','cliente.razon_social as cliente_razon_social',
         DB::raw("(rrhh_perso.nombres) || ' ' || (rrhh_perso.apellido_paterno) || ' ' || (rrhh_perso.apellido_materno) AS cliente_persona"),
         'alm_req.codigo as codigo_req','alm_req.concepto','alm_req.id_requerimiento',
-        'ubi_dis.descripcion as ubigeo_descripcion',
+        'ubi_dis.descripcion as ubigeo_descripcion','orden_despacho_grupo.mov_entrega',
         'adm_estado_doc.estado_doc','adm_estado_doc.bootstrap_color','alm_almacen.descripcion as almacen_descripcion',
         'orden_despacho_grupo.codigo as codigo_odg','orden_despacho.estado as estado_od')
         ->join('almacen.orden_despacho_grupo','orden_despacho_grupo.id_od_grupo','=','orden_despacho_grupo_det.id_od_grupo')
@@ -266,7 +266,7 @@ class DistribucionController extends Controller
         ->join('almacen.alm_req','alm_req.id_requerimiento','=','orden_despacho.id_requerimiento')
         ->join('administracion.adm_estado_doc','adm_estado_doc.id_estado_doc','=','alm_req.estado')
         ->join('configuracion.ubi_dis','ubi_dis.id_dis','=','orden_despacho.ubigeo_destino')
-        ->where([['orden_despacho_grupo_det.estado','!=',7]]);
+        ->where([['orden_despacho_grupo_det.estado','!=',7],['orden_despacho.estado','=',20]]);
         //->get();
         return datatables($data)->toJson();
     }
@@ -692,8 +692,8 @@ class DistribucionController extends Controller
             $contenido_almacen = '
     Favor de generar Guía de Venta'.$contenido;
 
-            $destinatario_facturacion = 'agerencia@okcomputer.com.pe';
-            $destinatario_almacen = 'almacen.ilo@okcomputer.com.pe';
+            $destinatario_facturacion = 'programador01@okcomputer.com.pe';
+            $destinatario_almacen = 'asistente.almacenilo@okcomputer.com.pe';
             $msj = '';
 
             $rspta_facturacion = CorreoController::enviar_correo( $empresa->id_empresa, $destinatario_facturacion, 
@@ -815,14 +815,28 @@ Mensaje enviado correctamente a '.$destinatario_almacen;
         try {
             DB::beginTransaction();
 
+            $requerimiento = null;
+
+            if ($request->guias_adicionales !== null){
+                DB::table('almacen.orden_despacho')
+                ->where('id_od',$request->id_od)
+                ->update([
+                    'estado'=>21, 
+                    'guias_adicionales'=>$request->guias_adicionales,
+                    'importe_total'=>$request->importe_total
+                    ]);
+                $requerimiento = $request->con_id_requerimiento;
+            } else {
+                DB::table('almacen.orden_despacho')
+                ->where('id_od',$request->id_od)
+                ->update(['estado'=>21]);
+                $requerimiento = $request->id_requerimiento;
+            }
+
             $data = DB::table('almacen.orden_despacho_grupo_det')
             ->where('id_od_grupo_detalle',$request->id_od_grupo_detalle)
             ->update(['confirmacion'=>true,
                     'obs_confirmacion'=>'Entregado Conforme']);
-
-            DB::table('almacen.orden_despacho')
-            ->where('id_od',$request->id_od)
-            ->update(['estado'=>21]);
 
             $id_usuario = Auth::user()->id_usuario;
 
@@ -835,17 +849,17 @@ Mensaje enviado correctamente a '.$destinatario_almacen;
                     'fecha_registro'=>date('Y-m-d H:i:s')
                     ]);
             
-            if ($request->id_requerimiento !== null){
+            if ($requerimiento !== null){
                 DB::table('almacen.alm_req')
-                ->where('id_requerimiento',$request->id_requerimiento)
+                ->where('id_requerimiento',$requerimiento)
                 ->update(['estado'=>21]);
 
                 DB::table('almacen.alm_det_req')
-                ->where('id_requerimiento',$request->id_requerimiento)
+                ->where('id_requerimiento',$requerimiento)
                 ->update(['estado'=>21]);
                 //Agrega accion en requerimiento
                 DB::table('almacen.alm_req_obs')
-                ->insert([  'id_requerimiento'=>$request->id_requerimiento,
+                ->insert([  'id_requerimiento'=>$requerimiento,
                             'accion'=>'ENTREGADO',
                             'descripcion'=>'Requerimiento Entregado',
                             'id_usuario'=>$id_usuario,
@@ -1561,7 +1575,8 @@ Mensaje enviado correctamente a '.$destinatario_almacen;
             'alm_almacen.id_sede as sede_requerimiento','log_ord_compra.id_sede as sede_orden',
             'sis_sede.descripcion as sede_descripcion_orden','sede_req.descripcion as sede_descripcion_req',
             'orden_despacho.id_od','orden_despacho.codigo as codigo_od','orden_despacho.estado as estado_od',
-            'alm_tp_req.descripcion as tipo_req',
+            'orden_despacho.guias_adicionales','orden_despacho.importe_total',
+            'alm_tp_req.descripcion as tipo_req','orden_despacho_grupo.id_od_grupo',
             DB::raw("(rrhh_perso.nombres) || ' ' || (rrhh_perso.apellido_paterno) || ' ' || (rrhh_perso.apellido_materno) AS nombre_persona"),
             'adm_contri.nro_documento as cliente_ruc','adm_contri.razon_social as cliente_razon_social')
             ->join('almacen.alm_tp_req','alm_tp_req.id_tipo_requerimiento','=','alm_req.id_tipo_requerimiento')
@@ -1599,7 +1614,8 @@ Mensaje enviado correctamente a '.$destinatario_almacen;
                          {   $join->on('orden_despacho.id_requerimiento', '=', 'alm_req.id_requerimiento');
                              $join->where('orden_despacho.estado','!=', 7);
                          })
-            // ->leftJoin('almacen.orden_despacho','orden_despacho.id_requerimiento','=','alm_req.id_requerimiento')
+            ->leftJoin('almacen.orden_despacho_grupo_det','orden_despacho_grupo_det.id_od','=','orden_despacho.id_od')
+            ->leftJoin('almacen.orden_despacho_grupo','orden_despacho_grupo.id_od_grupo','=','orden_despacho_grupo_det.id_od_grupo')
             ->where([['alm_req.estado','!=',7]])
             ->orderBy('alm_req.fecha_requerimiento','desc');
             // ->get();
