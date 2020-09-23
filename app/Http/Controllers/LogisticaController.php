@@ -4568,7 +4568,7 @@ class LogisticaController extends Controller
             $estado_envio=[];
  
             if($opcion == 'NUEVO'){
-                if($tipo == 1){ //compra
+                if($tipo == 1 || $tipo == 2){ //compra o venta
 					$req = DB::table('almacen.alm_req')
 					->select('alm_req.*')
 					->where([
@@ -4583,6 +4583,8 @@ class LogisticaController extends Controller
 						$id_sede = $req->first()->id_sede;
 	
 						$email_destinatario= $this->get_email_usuario_por_rol('Logístico Compras', $id_sede, $id_empresa);
+						// $email_destinatario[]= $this->get_email_usuario_por_rol('Coordinador', $id_sede, $id_empresa);
+						$email_destinatario[]= 'distribucion@okcomputer.com.pe'; 
 						$payload=[
 							'email_destinatario'=>$email_destinatario,
 							'titulo'=>'Nuevo Requerimiento de Compra:  '.$codigo,
