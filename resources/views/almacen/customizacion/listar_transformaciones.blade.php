@@ -22,8 +22,8 @@ Gestión de Customizaciones
 
                 <ul class="nav nav-tabs" id="myTab">
                     <li class="active"><a data-toggle="tab" href="#cc">Cuadros de Costos</a></li>
-                    <li class=""><a data-toggle="tab" href="#htm">Hojas de Transformación Madres</a></li>
-                    <li class=""><a data-toggle="tab" href="#hth">Hojas de Transformación Hijas</a></li>
+                    <li class=""><a data-toggle="tab" href="#htm">Hojas de Transformación</a></li>
+                    <!-- <li class=""><a data-toggle="tab" href="#hth">Hojas de Transformación Hijas</a></li> -->
                 </ul>
 
                 <div class="tab-content">
@@ -67,10 +67,11 @@ Gestión de Customizaciones
                                                 <th hidden></th>
                                                 <th>Fecha Trans.</th>
                                                 <th>Código</th>
+                                                <th>Oportunidad</th>
                                                 <th>Empresa</th>
                                                 <th>Almacén</th>
                                                 <th>Responsable</th>
-                                                <th>Registrado por</th>
+                                                <!-- <th>Registrado por</th> -->
                                                 <th>Estado</th>
                                                 <th width="10%">Acción</th>
                                             </tr>
@@ -81,33 +82,7 @@ Gestión de Customizaciones
                             </div>
                         </form>
                     </div>
-                    <div id="hth" class="tab-pane fade">
-                        <br>
-                        <form id="form-hth" type="register">
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <table class="mytable table table-condensed table-bordered table-okc-view" 
-                                        id="listaTransformacionesHijas">
-                                        <thead>
-                                            <tr>
-                                                <th hidden></th>
-                                                <th>Fecha Trans.</th>
-                                                <th>Código</th>
-                                                <!-- <th>Serie-Número</th> -->
-                                                <th>Empresa</th>
-                                                <th>Almacén</th>
-                                                <th>Responsable</th>
-                                                <th>Registrado por</th>
-                                                <th>Estado</th>
-                                                <th width="10%">Acción</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody style="font-size: 11px;"></tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
+                    
                 </div>
             </div>
         </div>

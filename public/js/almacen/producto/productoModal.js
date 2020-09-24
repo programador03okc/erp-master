@@ -14,17 +14,19 @@ $(function(){
         var part = $(this)[0].childNodes[2].innerHTML;
         var desc = $(this)[0].childNodes[3].innerHTML;
         var unid = $(this)[0].childNodes[4].innerHTML;
+        var abre = $(this)[0].childNodes[5].innerHTML;
 
         $('#modal-producto .modal-footer #id_producto').text(idTr);
         $('#modal-producto .modal-footer #codigo').text(code);
         $('#modal-producto .modal-footer #partnumber').text(part);
         $('#modal-producto .modal-footer #descripcion').text(desc);
         $('#modal-producto .modal-footer #unid_med').text(unid);
+        $('#modal-producto .modal-footer #abreviatura').text(abre);
 
         var page = $('.page-main').attr('type');
 
         if (page == 'guia_venta'){
-            var posicion = $(this)[0].childNodes[7].innerHTML;
+            var posicion = $(this)[0].childNodes[8].innerHTML;
             $('#modal-producto .modal-footer #posicion').text(posicion);
         }
     });
@@ -79,6 +81,7 @@ function listarProductos(){
         // '<th>Código Antiguo</th>'+
         '<th>Descripción</th>'+
         '<th hidden>unid</th>'+
+        '<th hidden>abrev</th>'+
     '</tr>';
     $('#listaProducto thead').html(html);
 
@@ -97,8 +100,9 @@ function listarProductos(){
             {'data': 'part_number'},
             {'data': 'descripcion'},
             {'data': 'id_unidad_medida'},
+            {'data': 'abreviatura'},
         ],
-        'columnDefs': [{ 'aTargets': [0,4], 'sClass': 'invisible'}],
+        'columnDefs': [{ 'aTargets': [0,4,5], 'sClass': 'invisible'}],
     });
 }
 function listarProductosAlmacen(id_almacen){
@@ -109,6 +113,7 @@ function listarProductosAlmacen(id_almacen){
         '<th>Part Number</th>'+
         '<th>Descripción</th>'+
         '<th hidden>unid</th>'+
+        '<th hidden>abreviatura</th>'+
         '<th>Posición</th>'+
         '<th>Stock Actual</th>'+
         '<th hidden>posicion</th>'+
@@ -129,11 +134,12 @@ function listarProductosAlmacen(id_almacen){
             {'data': 'part_number'},
             {'data': 'descripcion'},
             {'data': 'id_unidad_medida'},
+            {'data': 'abreviatura'},
             {'data': 'cod_posicion'},
             {'data': 'stock'},
             {'data': 'id_posicion'},
         ],
-        'columnDefs': [{ 'aTargets': [0,4,7], 'sClass': 'invisible'}],
+        'columnDefs': [{ 'aTargets': [0,4,7,5], 'sClass': 'invisible'}],
     });
 }
 function selectProducto(){
@@ -142,6 +148,7 @@ function selectProducto(){
     var part = $('#modal-producto .modal-footer #partnumber').text();
     var desc = $('#modal-producto .modal-footer #descripcion').text();
     var unid = $('#modal-producto .modal-footer #unid_med').text();
+    var abre = $('#modal-producto .modal-footer #abreviatura').text();
     var posi = $('#modal-producto .modal-footer #posicion').text();
 
     var page = $('.page-main').attr('type');
@@ -193,26 +200,28 @@ function selectProducto(){
         $('[name=descripcion]').val(code+' - '+desc);
         datos_producto(myId);
     }
-    else if (page == "transformacion"){
-        var acordion = $('#accordion .in')[0].id;
-        console.log($('#accordion .in')[0].id);
-        if (acordion == "collapseOne"){//materias primas
-            guardar_materia(myId);
-        }
-        else if (acordion == "collapseFour"){//sobrantes
-            guardar_sobrante(myId);
-        }
-        else if (acordion == "collapseFive"){//productos transformados
-            guardar_transformado(myId);
-        }
-    }
-    else if (page == "transformaciones"){
+    // else if (page == "transformacion"){
+    //     var acordion = $('#accordion .in')[0].id;
+    //     console.log($('#accordion .in')[0].id);
+    //     if (acordion == "collapseOne"){//materias primas
+    //         guardar_materia(myId);
+    //     }
+    //     else if (acordion == "collapseFour"){//sobrantes
+    //         guardar_sobrante(myId);
+    //     }
+    //     else if (acordion == "collapseFive"){//productos transformados
+    //         guardar_transformado(myId);
+    //     }
+    // }
+    else if (page == "transformaciones" ||
+        page == "transformacion"){
         console.log(desc);
         var sel = {
             'id_producto': myId,
             'part_number': part,
+            'codigo': code,
             'descripcion': desc,
-            'unid_med': unid
+            'unid_med': abre
         }
         agregar_producto(sel);
     }

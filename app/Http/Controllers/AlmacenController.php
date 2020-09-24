@@ -1107,7 +1107,9 @@ class AlmacenController extends Controller
     public function mostrar_prods(){
         $prod = DB::table('almacen.alm_prod')
             ->select('alm_prod.id_producto', 'alm_prod.codigo', 'alm_prod.descripcion',
-            'alm_prod.part_number','alm_prod.id_unidad_medida','alm_prod_antiguo.cod_antiguo')
+            'alm_prod.part_number','alm_prod.id_unidad_medida','alm_prod_antiguo.cod_antiguo',
+            'alm_und_medida.abreviatura')
+            ->leftjoin('almacen.alm_und_medida','alm_und_medida.id_unidad_medida','=','alm_prod.id_unidad_medida')
             ->leftjoin('almacen.alm_prod_antiguo','alm_prod_antiguo.id_producto','=','alm_prod.id_producto')
             ->get();
         $output['data'] = $prod;

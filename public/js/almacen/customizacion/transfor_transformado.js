@@ -1,10 +1,82 @@
-function guardar_transformado(id){
-    var id_trans = $('[name=id_transformacion]').val();
-    var data =  'id_producto='+id+
-            '&id_transformacion='+id_trans+
-            '&cantidad=1'+
-            '&valor_unitario=1'+
-            '&valor_total=1';
+let sel_producto = null;
+//Transformados
+function agregar_producto(sel){
+    sel_producto = sel;
+    var cant = $("#listaProductoTransformado tbody tr").length;
+    var index = 0;
+    if (cant > 0){
+        index = $("#listaProductoTransformado tbody tr:last-child")[0].id;
+    }
+    console.log(sel);
+    var row = `<tr>
+        <td>${sel.codigo}</td>
+        <td>${sel.part_number}</td>
+        <td>${sel.descripcion}</td>
+        <td><input type="number" class="form-control calcula" name="cantidad" id="cantidad"></td>
+        <td>${sel.unid_med}</td>
+        <td><input type="number" class="form-control calcula" name="unitario" id="unitario"></td>
+        <td><input type="number" class="form-control" name="total" readOnly id="total"></td>
+        <td>
+        <i class="fas fa-check icon-tabla blue boton add" 
+            data-toggle="tooltip" data-placement="bottom" title="Agregar" ></i>
+        <i class="fas fa-trash icon-tabla red boton delete" 
+            data-toggle="tooltip" data-placement="bottom" title="Eliminar" ></i>
+        </td>
+    </tr>`;
+    $("#listaProductoTransformado").append(row);
+}
+// Calcula total
+$('#listaProductoTransformado tbody').on("change", ".calcula", function(){
+    var cantidad = $(this).parents("tr").find('input[name=cantidad]').val();
+    var unitario = $(this).parents("tr").find('input[name=unitario]').val();
+    console.log('cantidad'+cantidad+' unitario'+unitario);
+    if (cantidad !== '' && unitario !== ''){
+        $(this).parents("tr").find('input[name=total]').val(parseFloat(cantidad) * parseFloat(unitario));
+    } else {
+        $(this).parents("tr").find('input[name=total]').val(0);
+    }
+});
+// Add row on add button click
+$('#listaProductoTransformado tbody').on("click", ".add", function(){
+    var empty = false;
+    var input = $(this).parents("tr").find('input');
+    input.each(function(){
+        if(!$(this).val()){
+            $(this).addClass("error");
+            empty = true;
+        } else{
+            $(this).removeClass("error");
+        }
+    });
+    $(this).parents("tr").find(".error").first().focus();
+    if(!empty){
+        var cantidad = 0;
+        var unitario = 0;
+
+        input.each(function(){
+            if ($(this)[0].name == 'cantidad'){
+                cantidad = parseFloat($(this).val());
+            }
+            else if ($(this)[0].name == 'unitario'){
+                unitario = parseFloat($(this).val());
+            }
+            $(this).parent("td").html($(this).val());
+        });
+        $(this).addClass("hidden");
+
+        var id_trans = $('[name=id_transformacion]').val();
+        var data = 'id_producto='+sel_producto.id_producto+
+                '&id_transformacion='+id_trans+
+                '&part_number='+sel_producto.part_number+
+                '&descripcion='+sel_producto.descripcion+
+                '&cantidad='+cantidad+
+                '&valor_unitario='+unitario+
+                '&valor_total='+(cantidad * unitario);
+        guardar_transformado(data);
+    }		
+});
+
+function guardar_transformado(data){
     console.log(data);
     $.ajax({
         type: 'POST',
@@ -15,6 +87,7 @@ function guardar_transformado(id){
             console.log(response);
             if (response > 0){
                 alert('Item guardado con éxito');
+                var id_trans = $('[name=id_transformacion]').val();
                 listar_transformados(id_trans);
             }
         }
@@ -24,6 +97,7 @@ function guardar_transformado(id){
         console.log(errorThrown);
     });
 }
+
 function listar_transformados(id_transformacion){
     $('#listaProductoTransformado tbody').html('');
     $.ajax({
@@ -31,8 +105,24 @@ function listar_transformados(id_transformacion){
         url: 'listar_transformados/'+id_transformacion,
         dataType: 'JSON',
         success: function(response){
-            $('#listaProductoTransformado tbody').html(response);
-            total_transformado();
+            var html = '';
+            response.forEach(element => {
+                html += `<tr id="${element.id_transformado}">
+                    <td>${element.codigo}</td>
+                    <td>${element.part_number}</td>
+                    <td>${element.descripcion}</td>
+                    <td>${element.cantidad}</td>
+                    <td>${element.abreviatura}</td>
+                    <td>${element.valor_unitario}</td>
+                    <td>${element.valor_total}</td>
+                    <td style="padding:0px;">
+                        <i class="fas fa-trash icon-tabla red boton delete" 
+                        data-toggle="tooltip" data-placement="bottom" title="Eliminar" ></i>
+                    </td>
+                </tr>`;
+            });
+            $('#listaProductoTransformado tbody').html(html);
+            // total_transformado();
         }
     }).fail( function( jqXHR, textStatus, errorThrown ){
         console.log(jqXHR);
@@ -82,26 +172,33 @@ function update_transformado(id_transformado){
         console.log(errorThrown);
     });
 }
-function anular_transformado(id){
+// Delete row on delete button click
+$('#listaProductoTransformado tbody').on("click", ".delete", function(){
     var anula = confirm("¿Esta seguro que desea anular éste item?");
+    
     if (anula){
-        $.ajax({
-            type: 'GET',
-            url: 'anular_transformado/'+id,
-            dataType: 'JSON',
-            success: function(response){
-                console.log(response);
-                if (response > 0){
-                    alert('Item anulado con éxito');
-                    $("#tra-"+id).remove();
-                }
-            }
-        }).fail( function( jqXHR, textStatus, errorThrown ){
-            console.log(jqXHR);
-            console.log(textStatus);
-            console.log(errorThrown);
-        });
+        var idx = $(this).parents("tr")[0].id;
+        $(this).parents("tr").remove();
+        console.log(idx);
+        anular_transformado(idx);
     }
+});
+function anular_transformado(id){
+    $.ajax({
+        type: 'GET',
+        url: 'anular_transformado/'+id,
+        dataType: 'JSON',
+        success: function(response){
+            console.log(response);
+            if (response > 0){
+                alert('Item anulado con éxito');
+            }
+        }
+    }).fail( function( jqXHR, textStatus, errorThrown ){
+        console.log(jqXHR);
+        console.log(textStatus);
+        console.log(errorThrown);
+    });
 }
 function calcula_transformado(id_transformado){
     var cant = $('#tra-'+id_transformado+' input[name=tra_cantidad]').val();

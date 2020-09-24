@@ -113,8 +113,181 @@ Hoja de Transformación
             </div>
         </div>
     </form>
-    <!-- </div> -->
-    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-info">
+                <div class="panel-heading">Materias Primas</div>
+                <table id="listaMateriasPrimas" class="table">
+                    <thead>
+                        <tr>
+                            <th>Código</th>
+                            <th>Part Number</th>
+                            <th>Descripción</th>
+                            <th>Cant.</th>
+                            <th>Unid.</th>
+                            <th>Unit.</th>
+                            <th>Total</th>
+                            <th></th>
+                            <!-- <th>
+                                <i class="fas fa-plus-square icon-tabla green boton" 
+                                    data-toggle="tooltip" data-placement="bottom" 
+                                    title="Agregar Producto" onClick="productoModal();"></i>
+                            </th> -->
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-8"></div>
+        <div class="col-md-4">
+            <table class="table table-condensed " width="100%">
+                <tbody>
+                    <tr>
+                        <td width="50%" style="text-align: right;">Total Materias Primas</td>
+                        <td width="10%"></td>
+                        <td><label name="total_materias">0.00</label></td>
+                        
+                    </tr>
+                    <tr>
+                        <td style="text-align: right;">Total Servicios Directos</td>
+                        <td width="10%"></td>
+                        <td><label name="total_directos">0.00</label></td>
+                        
+                    </tr>
+                    <tr>
+                        <td style="text-align: right;"><strong>Costo Primo</strong></td>
+                        <td width="10%"></td>
+                        <td><label name="costo_primo">0.00</label></td>
+                        
+                    </tr>
+                    <tr>
+                        <td style="text-align: right;">Total Costos Indirectos</td>
+                        <td width="10%"></td>
+                        <td><label name="total_indirectos">0.00</label></td>
+                        
+                    </tr>
+                    <tr>
+                        <td style="text-align: right;">Total Sobrantes</td>
+                        <td width="10%"></td>
+                        <td><label name="total_sobrantes">0.00</label></td>
+                        
+                    </tr>
+                    <tr>
+                        <td style="text-align: right;"><strong>Costo de Transformación</strong></td>
+                        <td width="10%"></td>
+                        <td><label name="costo_transformacion">0.00</label></td>
+                        
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+
+            <div class="panel panel-default">
+                <div class="panel-heading">Servicios Directos</div>
+                <table id="listaServiciosDirectos" class="table">
+                    <thead>
+                        <tr>
+                            <!-- <th width='10%'>Part Number</th> -->
+                            <th>Descripción</th>
+                            <!-- <th width='10%'>Cant.</th>
+                            <th>Unit.</th> -->
+                            <th width='15%'>Total</th>
+                            <th style="padding:0px;">
+                                <i class="fas fa-plus-square icon-tabla green boton add-new-servicio" 
+                                    data-toggle="tooltip" data-placement="bottom" 
+                                    title="Agregar Servicio" ></i>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-warning">
+                <div class="panel-heading">Costos Indirectos</div>
+                <table id="listaCostosIndirectos" class="table">
+                    <thead>
+                        <tr>
+                            <!-- <th width='5%'>Nro</th> -->
+                            <th width='10%'>Código Item</th>
+                            <th>Tasa(%)</th>
+                            <th>Parámetro</th>
+                            <th>Unit.</th>
+                            <th>Total</th>
+                            <th width='5%'>
+                                <i class="fas fa-plus-square icon-tabla green boton add-new-indirecto" 
+                                    data-toggle="tooltip" data-placement="bottom" 
+                                    title="Agregar Indirecto"></i>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-danger">
+                <div class="panel-heading">Sobrantes</div>
+                <table id="listaSobrantes" class="table">
+                    <thead>
+                        <tr>
+                            <th>Código</th>
+                            <th>Part Number</th>
+                            <th width='40%'>Descripción</th>
+                            <th>Cant.</th>
+                            <th>Unid.</th>
+                            <th>Unit.</th>
+                            <th>Total</th>
+                            <th width='8%'>
+                                <i class="fas fa-plus-square icon-tabla green boton add-new-sobrante" 
+                                    data-toggle="tooltip" data-placement="bottom" 
+                                    title="Agregar Producto" ></i>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-success">
+                <div class="panel-heading">Productos Transformados</div>
+                <table id="listaProductoTransformado" class="table">
+                    <thead>
+                        <tr>
+                            <th>Código</th>
+                            <th>Part Number</th>
+                            <th width='40%'>Descripción</th>
+                            <th>Cant.</th>
+                            <th>Unid.</th>
+                            <th>Unit.</th>
+                            <th>Total</th>
+                            <th width='8%'>
+                                <i class="fas fa-plus-square icon-tabla green boton add-new-transformado" 
+                                    data-toggle="tooltip" data-placement="bottom" 
+                                    title="Agregar Producto" onClick="productoModal();"></i>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <!-- <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
         <div class="panel panel-default">
             <div class="panel-heading" role="tab" id="headingOne">
             <h4 class="panel-title">
@@ -214,10 +387,7 @@ Hoja de Transformación
                     <thead>
                         <tr>
                             <th width='5%'>Nro</th>
-                            <!-- <th width='10%'>Código</th> -->
                             <th>Descripción</th>
-                            <!-- <th width='10%'>Cant.</th>
-                            <th>Unit.</th> -->
                             <th width='15%'>Total</th>
                             <th width='8%'>
                                 <i class="fas fa-plus-square icon-tabla green boton" 
@@ -356,7 +526,7 @@ Hoja de Transformación
             </div>
             </div>
         </div>
-    </div>
+    </div> -->
 </div>
 @include('almacen.customizacion.transformacionModal')
 @include('almacen.producto.productoModal')

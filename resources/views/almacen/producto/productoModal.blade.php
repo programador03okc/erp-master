@@ -29,6 +29,7 @@
                 <label id="partnumber" style="display: none;"></label>
                 <label id="descripcion" style="display: none;"></label>
                 <label id="unid_med" style="display: none;"></label>
+                <label id="abreviatura" style="display: none;"></label>
                 <label id="posicion" style="display: none;"></label>
                 <button class="btn btn-sm btn-success" onClick="selectProducto();">Aceptar</button>
             </div>

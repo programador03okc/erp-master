@@ -74,10 +74,11 @@ class GestionCustomizacion
                         return ('<label class="lbl-codigo" title="Abrir Transformación" onClick="abrir_transformacion('+row['id_transformacion']+')">'+row['codigo']+'</label>');
                     }
                 },
+                {'data': 'observacion'},
                 {'data': 'razon_social'},
                 {'data': 'descripcion'},
                 {'data': 'nombre_responsable'},
-                {'data': 'nombre_registrado'},
+                // {'data': 'nombre_registrado'},
                 {'render':
                     function (data, type, row){
                         return ('<span class="label label-'+row['bootstrap_color']+'">'+row['estado_doc']+'</span>');
@@ -192,26 +193,31 @@ function obtenerCuadro(id_cc,tipo){
 }
 function mostrarCuadros(){
     var html_materia = '';
+    var i = 1;
     lista_materias.forEach(function(element) {
-        html_materia += `<tr>
+        html_materia += `<tr id="${i}">
             <td>${element.part_no}</td>
             <td>${element.descripcion}</td>
             <td>${element.cantidad}</td>
             <td>${element.unitario}</td>
             <td>${element.total}</td>
             </tr>`;
+            i++;
         });
     $('#listaMateriasPrimas tbody').html(html_materia);
 
     var html_servicio = '';
+    i = 1;
     lista_servicios.forEach(function(element) {
-        html_servicio += `<tr>
-            <td>${element.part_no}</td>
+        html_servicio += `<tr id="${i}">
             <td>${element.descripcion}</td>
-            <td>${element.cantidad}</td>
-            <td>${element.unitario}</td>
             <td>${element.total}</td>
+            <td>
+                <i class="fas fa-trash icon-tabla red boton delete" 
+                data-toggle="tooltip" data-placement="bottom" title="Eliminar" ></i>
+            </td>
         </tr>`;
+        i++;
     });
     $('#listaServiciosDirectos tbody').html(html_servicio);
 
@@ -223,7 +229,8 @@ $("#form-transformacion_create").on("submit", function(e){
 
     if (alm !== '0'){
         var serial = $(this).serialize();
-        var data = serial+'&lista_materias='+JSON.stringify(lista_materias)+
+        var data = serial+
+        '&lista_materias='+JSON.stringify(lista_materias)+
         '&lista_servicios='+JSON.stringify(lista_servicios)+
         '&lista_sobrantes='+JSON.stringify(lista_sobrantes)+
         '&lista_transformados='+JSON.stringify(lista_transformados);

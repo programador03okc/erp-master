@@ -149,8 +149,7 @@ class CustomizacionController extends Controller
         $i = 1;
         foreach ($data as $d){
             $html.='
-            <tr id="mat-'.$d->id_materia.'">
-                <td>'.$i.'</td>
+            <tr id="'.$i.'">
                 <td>'.($d->codigo!==null ? $d->codigo : '').'</td>
                 <td>'.($d->part_number_cc!==null ? $d->part_number_cc : '').'</td>
                 <td>'.($d->descripcion!==null ? $d->descripcion : $d->descripcion_cc).'</td>
@@ -183,10 +182,11 @@ class CustomizacionController extends Controller
         $id_directo = DB::table('almacen.transfor_directo')->insertGetId(
             [
                 'id_transformacion' => $request->id_transformacion,
-                'id_servicio' => $request->id_servicio,
-                'cantidad' => $request->cantidad,
-                'valor_unitario' => $request->valor_unitario,
-                'valor_total' => round($request->valor_total,2,PHP_ROUND_HALF_UP),
+                'descripcion' => $request->descripcion,
+                // 'id_servicio' => $request->id_servicio,
+                // 'cantidad' => $request->cantidad,
+                // 'valor_unitario' => $request->valor_unitario,
+                'valor_total' => round($request->valor_total,4,PHP_ROUND_HALF_UP),
                 'estado' => 1,
                 'fecha_registro' => $fecha,
             ],
@@ -212,25 +212,24 @@ class CustomizacionController extends Controller
         ->where([['transfor_directo.id_transformacion','=',$id_transformacion],
                  ['transfor_directo.estado','=',1]])
         ->get();
-
-        $html = '';
-        $i = 1;
-        foreach ($data as $d){
-            $html.='
-            <tr id="dir-'.$d->id_directo.'">
-                <td>'.$i.'</td>
-                <td>'.$d->descripcion.'</td>
-                <td><input type="number" class="input-data right" name="dir_valor_total" value="'.round($d->valor_total,2,PHP_ROUND_HALF_UP).'" onChange="calcula_directo('.$d->id_directo.');" disabled="true"/></td>
-                <td style="display:flex;">
-                    <i class="fas fa-pen-square icon-tabla blue visible boton" data-toggle="tooltip" data-placement="bottom" title="Editar Item" onClick="editar_directo('.$d->id_directo.');"></i>
-                    <i class="fas fa-save icon-tabla green oculto boton" data-toggle="tooltip" data-placement="bottom" title="Guardar Item" onClick="update_directo('.$d->id_directo.');"></i>
-                    <i class="fas fa-trash icon-tabla red boton" data-toggle="tooltip" data-placement="bottom" title="Anular Item" onClick="anular_directo('.$d->id_directo.');"></i>
-                </td>
-            </tr>
-            ';
-            $i++;
-        }
-        return json_encode($html);
+        // $html = '';
+        // $i = 1;
+        // foreach ($data as $d){
+        //     $html.='
+        //     <tr id="dir-'.$d->id_directo.'">
+        //         <td>'.$d->descripcion.'</td>
+        //         <td><input type="number" class="input-data right" name="dir_valor_total" value="'.round($d->valor_total,2,PHP_ROUND_HALF_UP).'" onChange="calcula_directo('.$d->id_directo.');" disabled="true"/></td>
+        //         <td style="display:flex;">
+        //             <i class="fas fa-pen-square icon-tabla blue visible boton" data-toggle="tooltip" data-placement="bottom" title="Editar Item" onClick="editar_directo('.$d->id_directo.');"></i>
+        //             <i class="fas fa-save icon-tabla green oculto boton" data-toggle="tooltip" data-placement="bottom" title="Guardar Item" onClick="update_directo('.$d->id_directo.');"></i>
+        //             <i class="fas fa-trash icon-tabla red boton" data-toggle="tooltip" data-placement="bottom" title="Anular Item" onClick="anular_directo('.$d->id_directo.');"></i>
+        //         </td>
+        //     </tr>
+        //     ';
+        //     $i++;
+        // }
+        // return json_encode($html);
+        return response()->json($data);
     }
     public function anular_directo(Request $request, $id)
     {
@@ -271,33 +270,33 @@ class CustomizacionController extends Controller
     public function listar_indirectos($id_transformacion){
         $data = DB::table('almacen.transfor_indirecto')
         ->select('transfor_indirecto.*','log_servi.codigo','log_servi.descripcion')
-        ->join('logistica.log_servi','log_servi.id_servicio','=','transfor_indirecto.cod_item')
+        ->leftjoin('logistica.log_servi','log_servi.id_servicio','=','transfor_indirecto.cod_item')
         ->where([['transfor_indirecto.id_transformacion','=',$id_transformacion],
                  ['transfor_indirecto.estado','=',1]])
         ->get();
-
-        $html = '';
-        $i = 1;
-        foreach ($data as $d){
-            $html.='
-            <tr id="ind-'.$d->id_indirecto.'">
-                <td>'.$i.'</td>
-                <td>'.$d->codigo.'</td>
-                <td>'.$d->descripcion.'</td>
-                <td><input type="number" class="input-data right" name="ind_tasa" value="'.$d->tasa.'" onChange="calcula_total('.$d->id_indirecto.');" disabled="true"/></td>
-                <td><input type="number" class="input-data right" name="ind_parametro" value="'.$d->parametro.'" onChange="calcula_total('.$d->id_indirecto.');" disabled="true"/></td>
-                <td><input type="number" class="input-data right" name="ind_valor_unitario" value="'.$d->valor_unitario.'" onChange="calcula_total('.$d->id_indirecto.');" disabled="true"/></td>
-                <td><input type="number" class="input-data right" name="ind_valor_total" value="'.round($d->valor_total,2,PHP_ROUND_HALF_UP).'" onChange="calcula_total('.$d->id_indirecto.');" disabled="true"/></td>
-                <td style="display:flex;">
-                    <i class="fas fa-pen-square icon-tabla blue visible boton" data-toggle="tooltip" data-placement="bottom" title="Editar Item" onClick="editar_indirecto('.$d->id_indirecto.');"></i>
-                    <i class="fas fa-save icon-tabla green oculto boton" data-toggle="tooltip" data-placement="bottom" title="Guardar Item" onClick="update_indirecto('.$d->id_indirecto.');"></i>
-                    <i class="fas fa-trash icon-tabla red boton" data-toggle="tooltip" data-placement="bottom" title="Anular Item" onClick="anular_indirecto('.$d->id_indirecto.');"></i>
-                </td>
-            </tr>
-            ';
-            $i++;
-        }
-        return json_encode($html);
+        return response()->json($data);
+        // $html = '';
+        // $i = 1;
+        // foreach ($data as $d){
+        //     $html.='
+        //     <tr id="ind-'.$d->id_indirecto.'">
+        //         <td>'.$i.'</td>
+        //         <td>'.$d->codigo.'</td>
+        //         <td>'.$d->descripcion.'</td>
+        //         <td><input type="number" class="input-data right" name="ind_tasa" value="'.$d->tasa.'" onChange="calcula_total('.$d->id_indirecto.');" disabled="true"/></td>
+        //         <td><input type="number" class="input-data right" name="ind_parametro" value="'.$d->parametro.'" onChange="calcula_total('.$d->id_indirecto.');" disabled="true"/></td>
+        //         <td><input type="number" class="input-data right" name="ind_valor_unitario" value="'.$d->valor_unitario.'" onChange="calcula_total('.$d->id_indirecto.');" disabled="true"/></td>
+        //         <td><input type="number" class="input-data right" name="ind_valor_total" value="'.round($d->valor_total,2,PHP_ROUND_HALF_UP).'" onChange="calcula_total('.$d->id_indirecto.');" disabled="true"/></td>
+        //         <td style="display:flex;">
+        //             <i class="fas fa-pen-square icon-tabla blue visible boton" data-toggle="tooltip" data-placement="bottom" title="Editar Item" onClick="editar_indirecto('.$d->id_indirecto.');"></i>
+        //             <i class="fas fa-save icon-tabla green oculto boton" data-toggle="tooltip" data-placement="bottom" title="Guardar Item" onClick="update_indirecto('.$d->id_indirecto.');"></i>
+        //             <i class="fas fa-trash icon-tabla red boton" data-toggle="tooltip" data-placement="bottom" title="Anular Item" onClick="anular_indirecto('.$d->id_indirecto.');"></i>
+        //         </td>
+        //     </tr>
+        //     ';
+        //     $i++;
+        // }
+        // return json_encode($html);
     }
     public function anular_indirecto(Request $request, $id)
     {
@@ -348,10 +347,9 @@ class CustomizacionController extends Controller
         foreach ($data as $d){
             $html.='
             <tr id="sob-'.$d->id_sobrante.'">
-                <td>'.$i.'</td>
                 <td>'.($d->codigo!==null ? $d->codigo : '').'</td>
-                <td>'.$d->part_number.'</td>
-                <td>'.$d->descripcion.'</td>
+                <td>'.($d->part_number!==null ? $d->part_number : '').'</td>
+                <td>'.($d->descripcion!== null ? $d->descripcion : '').'</td>
                 <td><input type="number" class="input-data right" name="sob_cantidad" value="'.$d->cantidad.'" onChange="calcula_sobrante('.$d->id_sobrante.');" disabled="true"/></td>
                 <td>'.($d->abreviatura!==null ? $d->abreviatura : '').'</td>
                 <td><input type="number" class="input-data right" name="sob_valor_unitario" value="'.$d->valor_unitario.'" onChange="calcula_sobrante('.$d->id_sobrante.');" disabled="true"/></td>
@@ -404,35 +402,35 @@ class CustomizacionController extends Controller
     public function listar_transformados($id_transformacion){
         $data = DB::table('almacen.transfor_transformado')
         ->select('transfor_transformado.*','alm_prod.codigo','alm_prod.descripcion',
-        'alm_und_medida.abreviatura','alm_prod.series')
+        'alm_prod.part_number','alm_und_medida.abreviatura','alm_prod.series')
         ->join('almacen.alm_prod','alm_prod.id_producto','=','transfor_transformado.id_producto')
         ->join('almacen.alm_und_medida','alm_und_medida.id_unidad_medida','=','alm_prod.id_unidad_medida')
         ->where([['transfor_transformado.id_transformacion','=',$id_transformacion],
                  ['transfor_transformado.estado','=',1]])
         ->get();
-
-        $html = '';
-        $i = 1;
-        foreach ($data as $d){
-            $html.='
-            <tr id="tra-'.$d->id_transformado.'">
-                <td>'.$i.'</td>
-                <td>'.$d->codigo.'</td>
-                <td>'.$d->descripcion.'</td>
-                <td><input type="number" class="input-data right" name="tra_cantidad" value="'.$d->cantidad.'" onChange="calcula_transformado('.$d->id_transformado.');" disabled="true"/></td>
-                <td>'.$d->abreviatura.'</td>
-                <td><input type="number" class="input-data right" name="tra_valor_unitario" value="'.$d->valor_unitario.'" onChange="calcula_transformado('.$d->id_transformado.');" disabled="true"/></td>
-                <td><input type="number" class="input-data right" name="tra_valor_total" value="'.round($d->valor_total,2,PHP_ROUND_HALF_UP).'" onChange="calcula_transformado('.$d->id_transformado.');" disabled="true"/></td>
-                <td style="display:flex;">
-                    <i class="fas fa-pen-square icon-tabla blue visible boton" data-toggle="tooltip" data-placement="bottom" title="Editar Item" onClick="editar_transformado('.$d->id_transformado.');"></i>
-                    <i class="fas fa-save icon-tabla green oculto boton" data-toggle="tooltip" data-placement="bottom" title="Guardar Item" onClick="update_transformado('.$d->id_transformado.');"></i>
-                    <i class="fas fa-trash icon-tabla red boton" data-toggle="tooltip" data-placement="bottom" title="Anular Item" onClick="anular_transformado('.$d->id_transformado.');"></i>
-                </td>
-            </tr>
-            ';
-            $i++;
-        }
-        return json_encode($html);
+        return response()->json($data);
+        // $html = '';
+        // $i = 1;
+        // foreach ($data as $d){
+        //     $html.='
+        //     <tr id="tra-'.$d->id_transformado.'">
+        //         <td>'.$d->codigo.'</td>
+        //         <td>'.$d->part_number.'</td>
+        //         <td>'.$d->descripcion.'</td>
+        //         <td><input type="number" class="input-data right" name="tra_cantidad" value="'.$d->cantidad.'" onChange="calcula_transformado('.$d->id_transformado.');" disabled="true"/></td>
+        //         <td>'.$d->abreviatura.'</td>
+        //         <td><input type="number" class="input-data right" name="tra_valor_unitario" value="'.$d->valor_unitario.'" onChange="calcula_transformado('.$d->id_transformado.');" disabled="true"/></td>
+        //         <td><input type="number" class="input-data right" name="tra_valor_total" value="'.round($d->valor_total,2,PHP_ROUND_HALF_UP).'" onChange="calcula_transformado('.$d->id_transformado.');" disabled="true"/></td>
+        //         <td style="display:flex;">
+        //             <i class="fas fa-pen-square icon-tabla blue visible boton" data-toggle="tooltip" data-placement="bottom" title="Editar Item" onClick="editar_transformado('.$d->id_transformado.');"></i>
+        //             <i class="fas fa-save icon-tabla green oculto boton" data-toggle="tooltip" data-placement="bottom" title="Guardar Item" onClick="update_transformado('.$d->id_transformado.');"></i>
+        //             <i class="fas fa-trash icon-tabla red boton" data-toggle="tooltip" data-placement="bottom" title="Anular Item" onClick="anular_transformado('.$d->id_transformado.');"></i>
+        //         </td>
+        //     </tr>
+        //     ';
+        //     $i++;
+        // }
+        // return json_encode($html);
     }
     public function anular_transformado(Request $request, $id)
     {
