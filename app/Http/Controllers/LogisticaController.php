@@ -8982,16 +8982,22 @@ function get_id_usuario_usuario_por_rol($descripcion_rol, $id_sede, $id_empresa)
                 ])
             ->get();
 
+            $cantidad_det_req_con_orden = DB::table('almacen.alm_det_req')
+            ->where([
+                ['alm_det_req.id_requerimiento', '=', $request->id_requerimiento],
+                ['alm_det_req.estado', '=', 5]
+                ])
+            ->count();
+
             $cantidad_det_req=0;
             if($alm_det_req){
                 $cantidad_det_req = $alm_det_req->count();
             }
 
-            $cantidad_detalle_item_proce = count($dataDetalle);
             // Debugbar::info($cantidad_det_req);
-            // Debugbar::info($cantidad_detalle_item_proce);
+            // Debugbar::info($cantidad_det_req_con_orden);
 
-            if($cantidad_det_req == $cantidad_detalle_item_proce){
+            if($cantidad_det_req == $cantidad_det_req_con_orden){
                 DB::table('almacen.alm_req')
                 ->where('id_requerimiento',$request->id_requerimiento)
                 ->update(['estado'=>5]);
