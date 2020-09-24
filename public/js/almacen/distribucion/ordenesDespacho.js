@@ -29,7 +29,7 @@ function iniciar(permiso){
             listarRequerimientosElaborados();
         }
         else if (activeForm == "form-confirmados"){
-            listarRequerimientosConfirmados();
+            listarRequerimientosConfirmados(permiso);
         }
         else if (activeForm == "form-despachos"){
             listarOrdenesPendientes();
@@ -122,7 +122,7 @@ $('#requerimientosElaborados tbody').on("click","button.detalle", function(){
     open_detalle_requerimiento(data);
 });
 
-function listarRequerimientosConfirmados(){
+function listarRequerimientosConfirmados(permiso){
     var vardataTables = funcDatatables();
     $('#requerimientosConfirmados').DataTable({
         'dom': vardataTables[1],
@@ -155,7 +155,6 @@ function listarRequerimientosConfirmados(){
                 }
             },
             {'render': function (data, type, row){
-                    console.log(row['confirmacion_pago']);
                     if (row['estado'] == 1 && row['confirmacion_pago'] == true){
                         return 'Pendiente de que <strong>Compras</strong> genere la OC';
                     } 
@@ -174,10 +173,11 @@ function listarRequerimientosConfirmados(){
         'columnDefs': [
             {'aTargets': [0], 'sClass': 'invisible'},
             {'render': function (data, type, row){
-                    return ((row['estado'] == 19 && row['confirmacion_pago'] == true) ? 
+                console.log(permiso);
+                    return (permiso == '1' ? ((row['estado'] == 19 && row['confirmacion_pago'] == true) ? 
                     (`<button type="button" class="despacho btn btn-success boton" data-toggle="tooltip" 
                         data-placement="bottom" title="Generar Orden de Despacho" >
-                        <i class="fas fa-sign-in-alt"></i></button>`) : '')+
+                        <i class="fas fa-sign-in-alt"></i></button>`) : '') : '')+
                     (`<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" 
                         data-placement="bottom" title="Ver Detalle" >
                         <i class="fas fa-list-ul"></i></button>`);

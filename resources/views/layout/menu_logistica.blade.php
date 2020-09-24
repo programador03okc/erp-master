@@ -371,7 +371,7 @@
     @endif
     @if(Auth::user()->tieneSubModulo(41))
     <li class="treeview">
-        <a href="#"><i class="fas fa-code-branch"></i> Customización
+        <a href="#"><i class="fas fa-code-branch"></i> <span>Customización</span>
             <span class="pull-right-container">
             <i class="fa fa-angle-left pull-right"></i>
             </span>
