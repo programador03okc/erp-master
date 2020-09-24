@@ -173,7 +173,6 @@ function listarRequerimientosConfirmados(permiso){
         'columnDefs': [
             {'aTargets': [0], 'sClass': 'invisible'},
             {'render': function (data, type, row){
-                console.log(permiso);
                     return (permiso == '1' ? ((row['estado'] == 19 && row['confirmacion_pago'] == true) ? 
                     (`<button type="button" class="despacho btn btn-success boton" data-toggle="tooltip" 
                         data-placement="bottom" title="Generar Orden de Despacho" >
@@ -250,6 +249,8 @@ function listarRequerimientosPendientes(permiso){
                 return (row['codigo_od'] !== null ? row['codigo_od'] : '')
                 }
             },
+            {'data': 'fecha_despacho', 'name': 'orden_despacho.fecha_despacho'},
+            {'data': 'hora_despacho', 'name': 'orden_despacho.hora_despacho'},
             {'render': function (data, type, row){
                     if (row['estado'] == 17){
                         return 'Pendiente de que <strong>Almacén</strong> recepcione la Transferencia';
@@ -268,6 +269,7 @@ function listarRequerimientosPendientes(permiso){
                 }
             }
         ],
+        'order': [[ 14, "asc" ],[ 15, "asc" ]],
         'columnDefs': [
             {'aTargets': [0], 'sClass': 'invisible'},
             {'render': function (data, type, row){
@@ -304,7 +306,7 @@ function listarRequerimientosPendientes(permiso){
                     'data-placement="bottom" title="Ver Detalle" >'+
                     '<i class="fas fa-list-ul"></i></button>'
                 }
-                }, targets: 15
+                }, targets: 17
             }
         ],
     });

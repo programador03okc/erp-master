@@ -108,6 +108,8 @@ Panel de Control de Despachos
                                         <th>Sede OC</th>
                                         <th>Transf.</th>
                                         <th>O.Despacho</th>
+                                        <th>Fecha Despacho</th>
+                                        <th>Hora Despacho</th>
                                         <th>Motivo</th>
                                         <th width="90px">Acción</th>
                                     </tr>

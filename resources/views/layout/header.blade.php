@@ -16,6 +16,16 @@
                 <li><a href="/config">Configuración</a></li>
                 <li class="info-docs"><a href="#" data-toggle="modal" data-target="#modal-sobre-erp">Sobre el ERP</a></li>
                 <!-- <li><span onclick="modalSobreERP();" style="cursor:pointer;"></span></li> -->
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        <i class="fas fa-bell"></i>
+                         <span class="badge badge-light" id="cantidad_notificaciones"></span>
+                    </a>
+                    <ul class="dropdown-menu" id="lista_notificaciones">
+                        <li role="separator" class="divider"></li>
+                        <li class="text-center"><a href="{{route('administracion.notificaciones.index')}}"><p>Ver Notificaciones <i class="fas fa-arrow-right"></i></p></a></li>
+                    </ul>
+                </li>
                 <li class="dropdown user user-menu">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                         <img src="{{ asset('images/user2-160x160.jpg') }}" class="user-image" alt="User Image">
@@ -39,16 +49,6 @@
 
                             </div>
                         </li>
-                    </ul>
-                </li>
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                        <i class="fas fa-bell"></i>
-                         <span class="badge badge-light" id="cantidad_notificaciones"></span>
-                    </a>
-                    <ul class="dropdown-menu" id="lista_notificaciones">
-                        <li role="separator" class="divider"></li>
-                        <li class="text-center"><a href="{{route('administracion.notificaciones.index')}}"><p>Ver Notificaciones <i class="fas fa-arrow-right"></i></p></a></li>
                     </ul>
                 </li>
             </ul>

@@ -32,7 +32,7 @@
                     <div class="row">
                         <div class="col-md-6">
                             <h5>Tipo de Operación</h5>
-                            <select class="form-control js-example-basic-single" name="id_operacion" required >
+                            <select class="form-control js-example-basic-single" name="id_operacion" required readOnly>
                                 <option value="0">Elija una opción</option>
                                 @foreach ($tp_operacion as $tp)
                                     <option value="{{$tp->id_operacion}}">{{$tp->cod_sunat}} - {{$tp->descripcion}}</option>
@@ -40,25 +40,21 @@
                             </select>
                         </div>
                         <div class="col-md-6">
-                            <h5>Fecha de Almacén</h5>
-                            <input type="date" class="form-control " name="fecha_almacen" value="<?=date('Y-m-d');?>" required >
+                            <h5>Almacén</h5>
+                            <input type="text" class="oculto " name="id_almacen" required >
+                            <input type="text" class="form-control " name="almacen_descripcion" readOnly>
                         </div>
                     </div>
-                    <div class="row">
-                        <!-- <div class="col-md-6">
+                    <!-- <div class="row">
+                        <div class="col-md-6">
                             <h5>Responsable</h5>
                             <select class="form-control" name="responsable" required >
                                 @foreach ($usuarios as $usu)
                                     <option value="{{$usu->id_usuario}}">{{$usu->nombre_corto}}</option>
                                 @endforeach
                             </select>
-                        </div> -->
-                        <div class="col-md-6">
-                            <h5>Almacén</h5>
-                            <input type="text" class="oculto " name="id_almacen" required >
-                            <input type="text" class="form-control " name="almacen_descripcion" readOnly>
                         </div>
-                    </div>
+                    </div> -->
                     <div class="row">
                         <div class="col-md-12">
                             <h5>Clasif. de los Bienes y Servicios</h5>

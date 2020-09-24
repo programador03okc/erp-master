@@ -34,6 +34,8 @@ Pendientes de Salida
                                 <thead>
                                     <tr>
                                         <th hidden></th>
+                                        <th>Fecha Despacho</th>
+                                        <th>Hora Despacho</th>
                                         <th>Codigo</th>
                                         <th>Cliente</th>
                                         <th>Requerimiento</th>
@@ -41,7 +43,6 @@ Pendientes de Salida
                                         <th>Almacén</th>
                                         <th>Ubigeo</th>
                                         <th>Dirección Destino</th>
-                                        <th>Fecha Despacho</th>
                                         <th>Fecha Entrega</th>
                                         <th>Registrado por</th>
                                         <th>Estado</th>
@@ -64,15 +65,15 @@ Pendientes de Salida
                                 <thead>
                                     <tr>
                                         <th hidden></th>
+                                        <th>Fecha Salida</th>
                                         <th>Cod.Orden</th>
                                         <th>Cliente</th>
                                         <th>Req.</th>
                                         <th>Concepto</th>
                                         <th>Almacén</th>
                                         <th>Guia</th>
-                                        <th>Fecha Salida</th>
                                         <th>Responsable</th>
-                                        <th width="50px"></th>
+                                        <th width="80px"></th>
                                     </tr>
                                 </thead>
                                 <tbody></tbody>

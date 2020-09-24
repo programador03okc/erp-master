@@ -43,6 +43,8 @@ function listarDespachosPendientes(permiso){
         },
         'columns': [
             {'data': 'id_od'},
+            {'data': 'fecha_despacho'},
+            {'data': 'hora_despacho'},
             {'data': 'codigo'},
             {'render': 
                 function (data, type, row){
@@ -59,7 +61,6 @@ function listarDespachosPendientes(permiso){
             {'data': 'almacen_descripcion', 'name': 'alm_almacen.descripcion'},
             {'data': 'ubigeo_descripcion', 'name': 'ubi_dis.descripcion'},
             {'data': 'direccion_destino'},
-            {'data': 'fecha_despacho'},
             {'data': 'fecha_entrega'},
             {'data': 'nombre_corto', 'name': 'sis_usua.nombre_corto'},
             {'render': 
@@ -70,6 +71,7 @@ function listarDespachosPendientes(permiso){
             // {'defaultContent': 
             // }
         ],
+        'order': [[ 1, "asc" ],[ 2, "asc" ]],
         'columnDefs': [
             {'aTargets': [0], 'sClass': 'invisible'},
             {'render': function (data, type, row){
@@ -86,7 +88,7 @@ function listarDespachosPendientes(permiso){
                     'data-placement="bottom" title="Ver Detalle" >'+
                     '<i class="fas fa-list-ul"></i></button>'
                 }
-                }, targets: 12
+                }, targets: 13
             }
         ],
     });
@@ -120,6 +122,7 @@ function listarDespachosEntregados(permiso){
         },
         'columns': [
             {'data': 'id_mov_alm'},
+            {'data': 'fecha_emision'},
             {'data': 'codigo_od', 'name': 'orden_despacho.codigo'},
             {'render': 
                 function (data, type, row){
@@ -137,9 +140,9 @@ function listarDespachosEntregados(permiso){
                     return row['serie']+'-'+row['numero'];
                 }
             },
-            {'data': 'fecha_emision'},
             {'data': 'nombre_corto', 'name': 'sis_usua.nombre_corto'}
         ],
+        'order': [[ 1, "desc" ]],
         'columnDefs': [
             {'aTargets': [0], 'sClass': 'invisible'},
             {'render': function (data, type, row){

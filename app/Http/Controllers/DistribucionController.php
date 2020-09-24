@@ -163,7 +163,7 @@ class DistribucionController extends Controller
             'alm_req.id_sede as sede_requerimiento','log_ord_compra.id_sede as sede_orden',
             'sis_sede.descripcion as sede_descripcion_orden','sede_req.descripcion as sede_descripcion_req',
             'orden_despacho.id_od','orden_despacho.codigo as codigo_od','orden_despacho.estado as estado_od',
-            'alm_tp_req.descripcion as tipo_req',
+            'orden_despacho.fecha_despacho','orden_despacho.hora_despacho','alm_tp_req.descripcion as tipo_req',
             DB::raw("(rrhh_perso.nombres) || ' ' || (rrhh_perso.apellido_paterno) || ' ' || (rrhh_perso.apellido_materno) AS nombre_persona"),
                     'adm_contri.nro_documento as cliente_ruc','adm_contri.razon_social as cliente_razon_social',
             DB::raw("(SELECT COUNT(*) FROM almacen.trans where
@@ -951,7 +951,7 @@ Mensaje enviado correctamente a '.$destinatario_almacen;
                             'id_cliente' => $request->id_cliente,
                             'id_persona' => $request->id_persona,
                             'fecha_emision' => $request->fecha_emision,
-                            'fecha_almacen' => $request->fecha_almacen,
+                            'fecha_almacen' => $request->fecha_emision,
                             'id_almacen' => $request->id_almacen,
                             'id_operacion' => $request->id_operacion,
                             // 'transportista' => $request->transportista,
@@ -972,7 +972,7 @@ Mensaje enviado correctamente a '.$destinatario_almacen;
 
                     //Genero la salida
                     $codigo = AlmacenController::nextMovimiento(2,//salida
-                    $request->fecha_almacen,
+                    $request->fecha_emision,
                     $request->id_almacen);
     
                     $id_salida = DB::table('almacen.mov_alm')->insertGetId(
@@ -980,7 +980,7 @@ Mensaje enviado correctamente a '.$destinatario_almacen;
                             'id_almacen' => $request->id_almacen,
                             'id_tp_mov' => 2,//Salidas
                             'codigo' => $codigo,
-                            'fecha_emision' => $request->fecha_almacen,
+                            'fecha_emision' => $request->fecha_emision,
                             'id_guia_ven' => $id_guia_ven,
                             'id_operacion' => $request->id_operacion,
                             'revisado' => 0,
