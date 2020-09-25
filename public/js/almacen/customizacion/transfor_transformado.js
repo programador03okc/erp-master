@@ -1,12 +1,8 @@
-let sel_producto = null;
+let sel_producto_transformado = null;
 //Transformados
-function agregar_producto(sel){
-    sel_producto = sel;
-    var cant = $("#listaProductoTransformado tbody tr").length;
-    var index = 0;
-    if (cant > 0){
-        index = $("#listaProductoTransformado tbody tr:last-child")[0].id;
-    }
+function agregar_producto_transformado(sel){
+    sel_producto_transformado = sel;
+
     console.log(sel);
     var row = `<tr>
         <td>${sel.codigo}</td>
@@ -65,10 +61,10 @@ $('#listaProductoTransformado tbody').on("click", ".add", function(){
         $(this).addClass("hidden");
 
         var id_trans = $('[name=id_transformacion]').val();
-        var data = 'id_producto='+sel_producto.id_producto+
+        var data = 'id_producto='+sel_producto_transformado.id_producto+
                 '&id_transformacion='+id_trans+
-                '&part_number='+sel_producto.part_number+
-                '&descripcion='+sel_producto.descripcion+
+                '&part_number='+sel_producto_transformado.part_number+
+                '&descripcion='+sel_producto_transformado.descripcion+
                 '&cantidad='+cantidad+
                 '&valor_unitario='+unitario+
                 '&valor_total='+(cantidad * unitario);
@@ -130,48 +126,48 @@ function listar_transformados(id_transformacion){
         console.log(errorThrown);
     });
 }
-function editar_transformado(id_transformado){
-    $("#tra-"+id_transformado+" td").find("input[name=tra_cantidad]").removeAttr('disabled');
-    $("#tra-"+id_transformado+" td").find("input[name=tra_valor_unitario]").removeAttr('disabled');
+// function editar_transformado(id_transformado){
+//     $("#tra-"+id_transformado+" td").find("input[name=tra_cantidad]").removeAttr('disabled');
+//     $("#tra-"+id_transformado+" td").find("input[name=tra_valor_unitario]").removeAttr('disabled');
 
-    $("#tra-"+id_transformado+" td").find("i.blue").removeClass('visible');
-    $("#tra-"+id_transformado+" td").find("i.blue").addClass('oculto');
-    $("#tra-"+id_transformado+" td").find("i.green").removeClass('oculto');
-    $("#tra-"+id_transformado+" td").find("i.green").addClass('visible');
-}
-function update_transformado(id_transformado){
-    var cant = $("#tra-"+id_transformado+" td").find("input[name=tra_cantidad]").val();
-    var unit = $("#tra-"+id_transformado+" td").find("input[name=tra_valor_unitario]").val();
-    var tota = $("#tra-"+id_transformado+" td").find("input[name=tra_valor_total]").val();
+//     $("#tra-"+id_transformado+" td").find("i.blue").removeClass('visible');
+//     $("#tra-"+id_transformado+" td").find("i.blue").addClass('oculto');
+//     $("#tra-"+id_transformado+" td").find("i.green").removeClass('oculto');
+//     $("#tra-"+id_transformado+" td").find("i.green").addClass('visible');
+// }
+// function update_transformado(id_transformado){
+//     var cant = $("#tra-"+id_transformado+" td").find("input[name=tra_cantidad]").val();
+//     var unit = $("#tra-"+id_transformado+" td").find("input[name=tra_valor_unitario]").val();
+//     var tota = $("#tra-"+id_transformado+" td").find("input[name=tra_valor_total]").val();
 
-    var data = 'id_transformado='+id_transformado+
-            '&cantidad='+cant+
-            '&valor_unitario='+unit+
-            '&valor_total='+tota;
-    console.log(data);
+//     var data = 'id_transformado='+id_transformado+
+//             '&cantidad='+cant+
+//             '&valor_unitario='+unit+
+//             '&valor_total='+tota;
+//     console.log(data);
 
-    $.ajax({
-        type: 'POST',
-        url: 'update_transformado',
-        data: data,
-        dataType: 'JSON',
-        success: function(response){
-            console.log(response);
-            if (response > 0){
-                // alert('Item actualizado con éxito');
-                $("#tra-"+id_transformado+" td").find("input").attr('disabled',true);
-                $("#tra-"+id_transformado+" td").find("i.blue").removeClass('oculto');
-                $("#tra-"+id_transformado+" td").find("i.blue").addClass('visible');
-                $("#tra-"+id_transformado+" td").find("i.green").removeClass('visible');
-                $("#tra-"+id_transformado+" td").find("i.green").addClass('oculto');
-            }
-        }
-    }).fail( function( jqXHR, textStatus, errorThrown ){
-        console.log(jqXHR);
-        console.log(textStatus);
-        console.log(errorThrown);
-    });
-}
+//     $.ajax({
+//         type: 'POST',
+//         url: 'update_transformado',
+//         data: data,
+//         dataType: 'JSON',
+//         success: function(response){
+//             console.log(response);
+//             if (response > 0){
+//                 // alert('Item actualizado con éxito');
+//                 $("#tra-"+id_transformado+" td").find("input").attr('disabled',true);
+//                 $("#tra-"+id_transformado+" td").find("i.blue").removeClass('oculto');
+//                 $("#tra-"+id_transformado+" td").find("i.blue").addClass('visible');
+//                 $("#tra-"+id_transformado+" td").find("i.green").removeClass('visible');
+//                 $("#tra-"+id_transformado+" td").find("i.green").addClass('oculto');
+//             }
+//         }
+//     }).fail( function( jqXHR, textStatus, errorThrown ){
+//         console.log(jqXHR);
+//         console.log(textStatus);
+//         console.log(errorThrown);
+//     });
+// }
 // Delete row on delete button click
 $('#listaProductoTransformado tbody').on("click", ".delete", function(){
     var anula = confirm("¿Esta seguro que desea anular éste item?");
@@ -190,9 +186,11 @@ function anular_transformado(id){
         dataType: 'JSON',
         success: function(response){
             console.log(response);
-            if (response > 0){
-                alert('Item anulado con éxito');
-            }
+            var id_trans = $('[name=id_transformacion]').val();
+            listar_transformados(id_trans);
+            // if (response > 0){
+            //     alert('Item anulado con éxito');
+            // }
         }
     }).fail( function( jqXHR, textStatus, errorThrown ){
         console.log(jqXHR);
@@ -200,23 +198,23 @@ function anular_transformado(id){
         console.log(errorThrown);
     });
 }
-function calcula_transformado(id_transformado){
-    var cant = $('#tra-'+id_transformado+' input[name=tra_cantidad]').val();
-    var unit = $('#tra-'+id_transformado+' input[name=tra_valor_unitario]').val();
-    console.log('cant'+cant+' unit'+unit);
-    if (cant !== '' && unit !== '') {
-        $('#tra-'+id_transformado+' input[name=tra_valor_total]').val(cant * unit);
-    } else {
-        $('#tra-'+id_transformado+' input[name=tra_valor_total]').val(0);
-    }
-    total_transformado();
-}
-function total_transformado(){
-    var total = 0;
-    $("input[name=tra_valor_total]").each(function(){
-        console.log($(this).val());
-        total += parseFloat($(this).val());
-    });
-    console.log('total='+total);
-    $('[name=total_transformado]').val(total);
-}
+// function calcula_transformado(id_transformado){
+//     var cant = $('#tra-'+id_transformado+' input[name=tra_cantidad]').val();
+//     var unit = $('#tra-'+id_transformado+' input[name=tra_valor_unitario]').val();
+//     console.log('cant'+cant+' unit'+unit);
+//     if (cant !== '' && unit !== '') {
+//         $('#tra-'+id_transformado+' input[name=tra_valor_total]').val(cant * unit);
+//     } else {
+//         $('#tra-'+id_transformado+' input[name=tra_valor_total]').val(0);
+//     }
+//     total_transformado();
+// }
+// function total_transformado(){
+//     var total = 0;
+//     $("input[name=tra_valor_total]").each(function(){
+//         console.log($(this).val());
+//         total += parseFloat($(this).val());
+//     });
+//     console.log('total='+total);
+//     $('[name=total_transformado]').val(total);
+// }

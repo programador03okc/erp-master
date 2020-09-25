@@ -138,36 +138,36 @@ class CustomizacionController extends Controller
     public function listar_materias($id_transformacion){
         $data = DB::table('almacen.transfor_materia')
         ->select('transfor_materia.*','alm_prod.codigo','alm_prod.descripcion',
-        'alm_und_medida.abreviatura','alm_prod.series')
+        'alm_prod.part_number','alm_und_medida.abreviatura','alm_prod.series')
         ->leftjoin('almacen.alm_prod','alm_prod.id_producto','=','transfor_materia.id_producto')
         ->leftjoin('almacen.alm_und_medida','alm_und_medida.id_unidad_medida','=','alm_prod.id_unidad_medida')
         ->where([['transfor_materia.id_transformacion','=',$id_transformacion],
                  ['transfor_materia.estado','=',1]])
         ->get();
-
-        $html = '';
-        $i = 1;
-        foreach ($data as $d){
-            $html.='
-            <tr id="'.$i.'">
-                <td>'.($d->codigo!==null ? $d->codigo : '').'</td>
-                <td>'.($d->part_number_cc!==null ? $d->part_number_cc : '').'</td>
-                <td>'.($d->descripcion!==null ? $d->descripcion : $d->descripcion_cc).'</td>
-                <td><input type="number" class="input-data right" name="mat_cantidad" value="'.$d->cantidad.'" onChange="calcula_materia('.$d->id_materia.');" disabled="true"/></td>
-                <td>'.($d->abreviatura!==null ? $d->abreviatura : '').'</td>
-                <td><input type="number" class="input-data right" name="mat_valor_unitario" value="'.$d->valor_unitario.'" onChange="calcula_materia('.$d->id_materia.');" disabled="true"/></td>
-                <td><input type="number" class="input-data right" name="mat_valor_total" value="'.round($d->valor_total,2,PHP_ROUND_HALF_UP).'" onChange="calcula_materia('.$d->id_materia.');" disabled="true"/></td>
-                <td style="display:flex;">
-                    <i class="fas fa-edit icon-tabla green visible boton" data-toggle="tooltip" data-placement="bottom" title="Seleccionar Producto" onClick="productoModal();"></i>
-                    <i class="fas fa-pen-square icon-tabla blue visible boton" data-toggle="tooltip" data-placement="bottom" title="Editar Item" onClick="editar_materia('.$d->id_materia.');"></i>
-                    <i class="fas fa-save icon-tabla green oculto boton" data-toggle="tooltip" data-placement="bottom" title="Guardar Item" onClick="update_materia('.$d->id_materia.');"></i>
-                    <i class="fas fa-trash icon-tabla red boton" data-toggle="tooltip" data-placement="bottom" title="Anular Item" onClick="anular_materia('.$d->id_materia.');"></i>
-                </td>
-            </tr>
-            ';
-            $i++;
-        }
-        return json_encode($html);
+        return response()->json($data);
+        // $html = '';
+        // $i = 1;
+        // foreach ($data as $d){
+        //     $html.='
+        //     <tr id="'.$i.'">
+        //         <td>'.($d->codigo!==null ? $d->codigo : '').'</td>
+        //         <td>'.($d->part_number_cc!==null ? $d->part_number_cc : '').'</td>
+        //         <td>'.($d->descripcion!==null ? $d->descripcion : $d->descripcion_cc).'</td>
+        //         <td><input type="number" class="input-data right" name="mat_cantidad" value="'.$d->cantidad.'" onChange="calcula_materia('.$d->id_materia.');" disabled="true"/></td>
+        //         <td>'.($d->abreviatura!==null ? $d->abreviatura : '').'</td>
+        //         <td><input type="number" class="input-data right" name="mat_valor_unitario" value="'.$d->valor_unitario.'" onChange="calcula_materia('.$d->id_materia.');" disabled="true"/></td>
+        //         <td><input type="number" class="input-data right" name="mat_valor_total" value="'.round($d->valor_total,2,PHP_ROUND_HALF_UP).'" onChange="calcula_materia('.$d->id_materia.');" disabled="true"/></td>
+        //         <td style="display:flex;">
+        //             <i class="fas fa-edit icon-tabla green visible boton" data-toggle="tooltip" data-placement="bottom" title="Seleccionar Producto" onClick="productoModal();"></i>
+        //             <i class="fas fa-pen-square icon-tabla blue visible boton" data-toggle="tooltip" data-placement="bottom" title="Editar Item" onClick="editar_materia('.$d->id_materia.');"></i>
+        //             <i class="fas fa-save icon-tabla green oculto boton" data-toggle="tooltip" data-placement="bottom" title="Guardar Item" onClick="update_materia('.$d->id_materia.');"></i>
+        //             <i class="fas fa-trash icon-tabla red boton" data-toggle="tooltip" data-placement="bottom" title="Anular Item" onClick="anular_materia('.$d->id_materia.');"></i>
+        //         </td>
+        //     </tr>
+        //     ';
+        //     $i++;
+        // }
+        // return json_encode($html);
     }
     public function anular_materia(Request $request, $id)
     {
@@ -334,36 +334,36 @@ class CustomizacionController extends Controller
     }
     public function listar_sobrantes($id_transformacion){
         $data = DB::table('almacen.transfor_sobrante')
-        ->select('transfor_sobrante.*','alm_prod.codigo',
-        'alm_und_medida.abreviatura','alm_prod.series')
+        ->select('transfor_sobrante.*','alm_prod.codigo','alm_prod.part_number as part_number_prod',
+        'alm_prod.descripcion as descripcion_prod','alm_und_medida.abreviatura','alm_prod.series')
         ->leftjoin('almacen.alm_prod','alm_prod.id_producto','=','transfor_sobrante.id_producto')
         ->leftjoin('almacen.alm_und_medida','alm_und_medida.id_unidad_medida','=','alm_prod.id_unidad_medida')
         ->where([['transfor_sobrante.id_transformacion','=',$id_transformacion],
                  ['transfor_sobrante.estado','=',1]])
         ->get();
-
-        $html = '';
-        $i = 1;
-        foreach ($data as $d){
-            $html.='
-            <tr id="sob-'.$d->id_sobrante.'">
-                <td>'.($d->codigo!==null ? $d->codigo : '').'</td>
-                <td>'.($d->part_number!==null ? $d->part_number : '').'</td>
-                <td>'.($d->descripcion!== null ? $d->descripcion : '').'</td>
-                <td><input type="number" class="input-data right" name="sob_cantidad" value="'.$d->cantidad.'" onChange="calcula_sobrante('.$d->id_sobrante.');" disabled="true"/></td>
-                <td>'.($d->abreviatura!==null ? $d->abreviatura : '').'</td>
-                <td><input type="number" class="input-data right" name="sob_valor_unitario" value="'.$d->valor_unitario.'" onChange="calcula_sobrante('.$d->id_sobrante.');" disabled="true"/></td>
-                <td><input type="number" class="input-data right" name="sob_valor_total" value="'.round($d->valor_total,2,PHP_ROUND_HALF_UP).'" onChange="calcula_sobrante('.$d->id_sobrante.');" disabled="true"/></td>
-                <td style="display:flex;">
-                    <i class="fas fa-pen-square icon-tabla blue visible boton" data-toggle="tooltip" data-placement="bottom" title="Editar Item" onClick="editar_sobrante('.$d->id_sobrante.');"></i>
-                    <i class="fas fa-save icon-tabla green oculto boton" data-toggle="tooltip" data-placement="bottom" title="Guardar Item" onClick="update_sobrante('.$d->id_sobrante.');"></i>
-                    <i class="fas fa-trash icon-tabla red boton" data-toggle="tooltip" data-placement="bottom" title="Anular Item" onClick="anular_sobrante('.$d->id_sobrante.');"></i>
-                </td>
-            </tr>
-            ';
-            $i++;
-        }
-        return json_encode($html);
+        return response()->json($data);
+        // $html = '';
+        // $i = 1;
+        // foreach ($data as $d){
+        //     $html.='
+        //     <tr id="sob-'.$d->id_sobrante.'">
+        //         <td>'.($d->codigo!==null ? $d->codigo : '').'</td>
+        //         <td>'.($d->part_number!==null ? $d->part_number : '').'</td>
+        //         <td>'.($d->descripcion!== null ? $d->descripcion : '').'</td>
+        //         <td><input type="number" class="input-data right" name="sob_cantidad" value="'.$d->cantidad.'" onChange="calcula_sobrante('.$d->id_sobrante.');" disabled="true"/></td>
+        //         <td>'.($d->abreviatura!==null ? $d->abreviatura : '').'</td>
+        //         <td><input type="number" class="input-data right" name="sob_valor_unitario" value="'.$d->valor_unitario.'" onChange="calcula_sobrante('.$d->id_sobrante.');" disabled="true"/></td>
+        //         <td><input type="number" class="input-data right" name="sob_valor_total" value="'.round($d->valor_total,2,PHP_ROUND_HALF_UP).'" onChange="calcula_sobrante('.$d->id_sobrante.');" disabled="true"/></td>
+        //         <td style="display:flex;">
+        //             <i class="fas fa-pen-square icon-tabla blue visible boton" data-toggle="tooltip" data-placement="bottom" title="Editar Item" onClick="editar_sobrante('.$d->id_sobrante.');"></i>
+        //             <i class="fas fa-save icon-tabla green oculto boton" data-toggle="tooltip" data-placement="bottom" title="Guardar Item" onClick="update_sobrante('.$d->id_sobrante.');"></i>
+        //             <i class="fas fa-trash icon-tabla red boton" data-toggle="tooltip" data-placement="bottom" title="Anular Item" onClick="anular_sobrante('.$d->id_sobrante.');"></i>
+        //         </td>
+        //     </tr>
+        //     ';
+        //     $i++;
+        // }
+        // return json_encode($html);
     }
     public function anular_sobrante(Request $request, $id)
     {

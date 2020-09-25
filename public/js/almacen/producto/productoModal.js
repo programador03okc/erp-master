@@ -213,8 +213,7 @@ function selectProducto(){
     //         guardar_transformado(myId);
     //     }
     // }
-    else if (page == "transformaciones" ||
-        page == "transformacion"){
+    else if (page == "transformaciones"){
         console.log(desc);
         var sel = {
             'id_producto': myId,
@@ -224,6 +223,25 @@ function selectProducto(){
             'unid_med': abre
         }
         agregar_producto(sel);
+    }
+    else if (page == "transformacion"){
+        console.log(desc);
+        var sel = {
+            'id_producto': myId,
+            'part_number': part,
+            'codigo': code,
+            'descripcion': desc,
+            'unid_med': abre
+        }
+        if (origen == 'transformado'){
+            agregar_producto_transformado(sel);
+        } 
+        else if (origen == 'sobrante'){
+            agregar_producto_sobrante(sel);
+        }
+        else if (origen == 'materia'){
+            agregar_producto_materia(sel);
+        }
     }
     $('#modal-producto').modal('hide');
 }

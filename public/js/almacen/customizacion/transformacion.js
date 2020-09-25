@@ -109,26 +109,26 @@ function ceros_numero(numero){
         $('[name=numero]').val(leftZero(7,num));
     }
 }
-function calcula_totales(){
-    var tot_materias = $('[name=total_materias]').val();
-    var tot_directos = $('[name=total_directos]').val();
-    var tot_indirectos = $('[name=total_indirectos]').val();
-    var tot_sobrantes = $('[name=total_sobrantes]').val();
-    var tot_transformados = $('[name=total_transformados]').val();
-    var costo_primo = 0;
+// function calcula_totales(){
+//     var tot_materias = $('[name=total_materias]').val();
+//     var tot_directos = $('[name=total_directos]').val();
+//     var tot_indirectos = $('[name=total_indirectos]').val();
+//     var tot_sobrantes = $('[name=total_sobrantes]').val();
+//     var tot_transformados = $('[name=total_transformados]').val();
+//     var costo_primo = 0;
 
-    if (tot_materias !== '' && tot_directos !== ''){
-        costo_primo = parseFloat(tot_materias) + parseFloat(tot_directos);
-        console.log('costo_primo:'+costo_primo);
-        $('[name=costo_primo]').val(costo_primo);
-    }
-    if (tot_indirectos !== '' && 
-        tot_sobrantes !== '' && 
-        tot_transformados !== ''){
+//     if (tot_materias !== '' && tot_directos !== ''){
+//         costo_primo = parseFloat(tot_materias) + parseFloat(tot_directos);
+//         console.log('costo_primo:'+costo_primo);
+//         $('[name=costo_primo]').val(costo_primo);
+//     }
+//     if (tot_indirectos !== '' && 
+//         tot_sobrantes !== '' && 
+//         tot_transformados !== ''){
 
-    }
-    console.log('total_materias: '+tot_materias+' - total_directos: '+tot_directos);
-}
+//     }
+//     console.log('total_materias: '+tot_materias+' - total_directos: '+tot_directos);
+// }
 function procesar_transformacion(){
     var id_trans = $('[name=id_transformacion]').val();
 
@@ -235,4 +235,29 @@ function anular_transformacion(ids){
         console.log(textStatus);
         console.log(errorThrown);
     });
+}
+
+let origen = null;
+function openProductoMateriaModal(){
+    origen = 'materia';
+    productoModal();
+}
+function openProductoTransformadoModal(){
+    origen = 'transformado';
+    productoModal();
+}
+function openProductoSobranteModal(){
+    origen = 'sobrante';
+    productoModal();
+}
+// Calcula total
+function actualizaTotales(){
+    var total_materias = parseFloat($('[name=total_materias]').text());
+    var total_directos = parseFloat($('[name=total_directos]').text());
+    var total_indirectos = parseFloat($('[name=total_indirectos]').text());
+    var total_sobrantes = parseFloat($('[name=total_sobrantes]').text());
+    console.log('actualiza');
+    $('[name=costo_primo]').text(formatDecimalDigitos((total_materias + total_directos),2));
+    $('[name=costo_transformacion]').text(formatDecimalDigitos((total_materias + total_directos + total_indirectos - total_sobrantes),2));
+
 }

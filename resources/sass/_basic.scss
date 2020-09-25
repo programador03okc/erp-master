@@ -1546,6 +1546,11 @@ form .select2-container .select2-selection--single{
 //     color: #fff !important;
 // }
 
+.table-small tbody tr th,
+.table-small tbody tr td{
+    padding: 0px;
+    border-top: 0px solid #ddd;
+}
 //Proyectos - Gantt
 
 .nested_task .gantt_add,

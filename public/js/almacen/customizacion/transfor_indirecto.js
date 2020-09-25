@@ -6,21 +6,24 @@ function listar_indirectos(id_transformacion){
         dataType: 'JSON',
         success: function(response){
             var html = ''; 
+            var suma_indirectos = 0;
             response.forEach(element => {
+                suma_indirectos += parseFloat(element.valor_total);
                 html += `<tr id="${element.id_indirecto}">
                     <td>${element.cod_item}</td>
                     <td>${element.tasa}</td>
                     <td>${element.parametro}</td>
                     <td>${element.valor_unitario}</td>
                     <td>${element.valor_total}</td>
-                    <td>
+                    <td style="padding:0px;">
                         <i class="fas fa-trash icon-tabla red boton delete" 
                         data-toggle="tooltip" data-placement="bottom" title="Eliminar" ></i>
                     </td>
                 </tr>`;
             });
             $('#listaCostosIndirectos tbody').html(html);
-            // total_indirecto();
+            $('[name=total_indirectos]').text(formatDecimalDigitos(suma_indirectos,2));
+            actualizaTotales();
         }
     }).fail( function( jqXHR, textStatus, errorThrown ){
         console.log(jqXHR);
@@ -92,7 +95,9 @@ function anular_indirecto(id){
         success: function(response){
             console.log(response);
             if (response > 0){
-                alert('Item anulado con éxito');
+                // alert('Item anulado con éxito');
+                var id_trans = $('[name=id_transformacion]').val();
+                listar_indirectos(id_trans);
             }
         }
     }).fail( function( jqXHR, textStatus, errorThrown ){
@@ -101,26 +106,26 @@ function anular_indirecto(id){
         console.log(errorThrown);
     });
 }
-function calcula_total(id_indirecto){
-    var cant = $('#ind-'+id_indirecto+' input[name=ind_tasa]').val();
-    var unit = $('#ind-'+id_indirecto+' input[name=ind_valor_unitario]').val();
-    console.log('cant'+cant+' unit'+unit);
-    if (cant !== '' && unit !== '') {
-        $('#ind-'+id_indirecto+' input[name=ind_valor_total]').val(cant * unit);
-    } else {
-        $('#ind-'+id_indirecto+' input[name=ind_valor_total]').val(0);
-    }
-    total_indirecto();
-}
-function total_indirecto(){
-    var total = 0;
-    $("input[name=ind_valor_total]").each(function(){
-        console.log($(this).val());
-        total += parseFloat($(this).val());
-    });
-    console.log('total='+total);
-    $('[name=total_indirectos]').val(total);
-}
+// function calcula_total(id_indirecto){
+//     var cant = $('#ind-'+id_indirecto+' input[name=ind_tasa]').val();
+//     var unit = $('#ind-'+id_indirecto+' input[name=ind_valor_unitario]').val();
+//     console.log('cant'+cant+' unit'+unit);
+//     if (cant !== '' && unit !== '') {
+//         $('#ind-'+id_indirecto+' input[name=ind_valor_total]').val(cant * unit);
+//     } else {
+//         $('#ind-'+id_indirecto+' input[name=ind_valor_total]').val(0);
+//     }
+//     total_indirecto();
+// }
+// function total_indirecto(){
+//     var total = 0;
+//     $("input[name=ind_valor_total]").each(function(){
+//         console.log($(this).val());
+//         total += parseFloat($(this).val());
+//     });
+//     console.log('total='+total);
+//     $('[name=total_indirectos]').val(total);
+// }
 
 $(".add-new-indirecto").on('click',function(){
     $(this).attr("disabled", "disabled");

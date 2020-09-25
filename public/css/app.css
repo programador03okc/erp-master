@@ -1635,6 +1635,12 @@ form .select2-container .select2-selection--single {
   display: none;
 }
 
+.table-small tbody tr th,
+.table-small tbody tr td {
+  padding: 0px;
+  border-top: 0px solid #ddd;
+}
+
 .nested_task .gantt_add,
 .gantt_grid_scale .gantt_grid_head_add {
   display: none !important;

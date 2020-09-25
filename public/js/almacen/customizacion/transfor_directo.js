@@ -6,8 +6,10 @@ function listar_directos(id_transformacion){
         dataType: 'JSON',
         success: function(response){
             var html = ''; 
-            var i = 1;
+            var suma_servicios = 0;
+
             response.forEach(element => {
+                suma_servicios += parseFloat(element.valor_total);
                 html += `<tr id="${element.id_directo}">
                     <td>${element.descripcion}</td>
                     <td>${element.valor_total}</td>
@@ -16,10 +18,12 @@ function listar_directos(id_transformacion){
                         data-toggle="tooltip" data-placement="bottom" title="Eliminar" ></i>
                     </td>
                 </tr>`;
-                i++;
             });
             $('#listaServiciosDirectos tbody').html(html);
-            // total_directo();
+            $('[name=total_directos]').text(formatDecimalDigitos(suma_servicios,2));
+            // var materias = parseFloat($('[name=total_materias]').text());
+            // $('[name=costo_primo]').text(formatDecimalDigitos((suma_servicios + materias),2));
+            actualizaTotales();
         }
     }).fail( function( jqXHR, textStatus, errorThrown ){
         console.log(jqXHR);
@@ -97,7 +101,9 @@ function anular_directo(id){
         success: function(response){
             console.log(response);
             if (response > 0){
-                alert('Item anulado con éxito');
+                // alert('Item anulado con éxito');
+                var id_trans = $('[name=id_transformacion]').val();
+                listar_directos(id_trans)
             }
         }
     }).fail( function( jqXHR, textStatus, errorThrown ){
@@ -106,32 +112,32 @@ function anular_directo(id){
         console.log(errorThrown);
     });
 }
-function calcula_directo(id_directo){
-    var cant = $('#dir-'+id_directo+' input[name=dir_cantidad]').val();
-    var unit = $('#dir-'+id_directo+' input[name=dir_valor_unitario]').val();
-    console.log('cant'+cant+' unit'+unit);
-    if (cant !== '' && unit !== '') {
-        $('#dir-'+id_directo+' input[name=dir_valor_total]').val(cant * unit);
-    } else {
-        $('#dir-'+id_directo+' input[name=dir_valor_total]').val(0);
-    }
-    total_directo();
-}
-function total_directo(){
-    var total = 0;
-    $("input[name=dir_valor_total]").each(function(){
-        console.log($(this).val());
-        total += parseFloat($(this).val());
-    });
-    console.log('total='+total);
-    $('[name=total_directos]').val(total);
+// function calcula_directo(id_directo){
+//     var cant = $('#dir-'+id_directo+' input[name=dir_cantidad]').val();
+//     var unit = $('#dir-'+id_directo+' input[name=dir_valor_unitario]').val();
+//     console.log('cant'+cant+' unit'+unit);
+//     if (cant !== '' && unit !== '') {
+//         $('#dir-'+id_directo+' input[name=dir_valor_total]').val(cant * unit);
+//     } else {
+//         $('#dir-'+id_directo+' input[name=dir_valor_total]').val(0);
+//     }
+//     total_directo();
+// }
+// function total_directo(){
+//     var total = 0;
+//     $("input[name=dir_valor_total]").each(function(){
+//         console.log($(this).val());
+//         total += parseFloat($(this).val());
+//     });
+//     console.log('total='+total);
+//     $('[name=total_directos]').val(total);
 
-    var tot_materias = $('[name=total_materias]').val();
-    var costo_primo = parseFloat(tot_materias) + total;
-    console.log('costo_primo:'+costo_primo);
-    $('[name=costo_primo]').val(costo_primo);
+//     var tot_materias = $('[name=total_materias]').val();
+//     var costo_primo = parseFloat(tot_materias) + total;
+//     console.log('costo_primo:'+costo_primo);
+//     $('[name=costo_primo]').val(costo_primo);
 
-}
+// }
 
 $(".add-new-servicio").on('click',function(){
     $(this).attr("disabled", "disabled");
