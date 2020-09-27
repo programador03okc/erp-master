@@ -644,7 +644,7 @@ class CustomizacionController extends Controller
         $data = DB::table('mgcp_cuadro_costos.cc')
         ->select('cc.id','cc.prioridad','cc.fecha_entrega','cc.tipo_cuadro',
         'oportunidades.codigo_oportunidad','oportunidades.oportunidad',
-        'entidades.entidad','estados_aprobacion.estado','users.name')
+        'entidades.nombre','estados_aprobacion.estado','users.name')
         ->join('mgcp_oportunidades.oportunidades','oportunidades.id','=','cc.id_oportunidad')
         ->join('mgcp_acuerdo_marco.entidades','entidades.id','=','oportunidades.id_entidad')
         ->join('mgcp_cuadro_costos.estados_aprobacion','estados_aprobacion.id','=','cc.estado_aprobacion')

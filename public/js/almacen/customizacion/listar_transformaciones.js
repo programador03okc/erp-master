@@ -24,7 +24,7 @@ class GestionCustomizacion
                 {'data': 'id'},
                 {'data': 'codigo_oportunidad', 'name': 'oportunidades.codigo_oportunidad'},
                 {'data': 'oportunidad', 'name': 'oportunidades.oportunidad'},
-                {'data': 'entidad', 'name': 'entidades.entidad'},
+                {'data': 'nombre', 'name': 'entidades.nombre'},
                 {'data': 'estado', 'name': 'estados_aprobacion.estado'},
                 {'data': 'prioridad'},
                 {'data': 'fecha_entrega'},
