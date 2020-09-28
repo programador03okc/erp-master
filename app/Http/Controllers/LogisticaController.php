@@ -909,7 +909,7 @@ class LogisticaController extends Controller
         $mes = date('m', strtotime("now"));
         $yy = date('y', strtotime("now"));
         $yyyy = date('Y', strtotime("now"));
-        $documento = 'RQ';
+        $documento = 'R';
         $grupo = $descripcion_grupo[0];
         $num = DB::table('almacen.alm_req')
             // ->whereMonth('fecha_registro', '=', $mes)
@@ -917,7 +917,7 @@ class LogisticaController extends Controller
             ->where('id_grupo', '=', $id_grupo)
             ->count();
         $correlativo = $this->leftZero(4, ($num + 1));
-        $codigo = "{$documento}{$grupo}-{$yy}{$correlativo}";
+        $codigo = "{$documento}{$grupo}{$yy}{$correlativo}";
         //----------------------------------------------------------------------------
         $data_req = DB::table('almacen.alm_req')->insertGetId(
             [
@@ -1583,19 +1583,19 @@ class LogisticaController extends Controller
             $mes = date('m', strtotime("now"));
             $yy = date('y', strtotime("now"));
             $yyyy = date('Y', strtotime("now"));
-            $documento = 'RQ';
+            $documento = 'R';
             $num = DB::table('almacen.alm_req')
             ->where('id_tipo_requerimiento',2)
             ->whereYear('fecha_registro', '=', $yyyy)
             ->count();
             $correlativo = $this->leftZero(4, ($num + 1));
-            $codigo = "{$documento}-V-{$yy}-{$correlativo}";
+            $codigo = "{$documento}V{$yy}{$correlativo}";
         }else{
        
                 $mes = date('m', strtotime("now"));
                 $yy = date('y', strtotime("now"));
                 $yyyy = date('Y', strtotime("now"));
-                $documento = 'RQ';
+                $documento = 'R';
                 $num = DB::table('almacen.alm_req')
                 ->where('id_tipo_requerimiento',$request->requerimiento['tipo_requerimiento'])
                 ->whereYear('fecha_registro', '=', $yyyy)
@@ -1607,7 +1607,7 @@ class LogisticaController extends Controller
                 } else if ($request->requerimiento['tipo_requerimiento'] == 3){
                     $tp = 'PA';
                 }
-                $codigo = "{$documento}-{$tp}-{$yy}-{$correlativo}";
+                $codigo = "{$documento}{$tp}{$yy}{$correlativo}";
                 
         }
 
@@ -5949,7 +5949,7 @@ function get_id_usuario_usuario_por_rol($descripcion_rol, $id_sede, $id_empresa)
         $anio = date('y', strtotime("now"));
         $num = DB::table('logistica.log_cotizacion')->count();
         $correlativo = $this->leftZero(4, ($num + 1));
-        $codigo = "CO-{$anio}{$mes}-{$correlativo}";
+        $codigo = "CO-{$anio}{$mes}{$correlativo}";
         return $codigo;
     }
 
@@ -5959,7 +5959,7 @@ function get_id_usuario_usuario_por_rol($descripcion_rol, $id_sede, $id_empresa)
         $anio = date('y', strtotime("now"));
         $num = DB::table('logistica.log_grupo_cotizacion')->count();
         $correlativo = $this->leftZero(4, ($num + 1));
-        $codigoGrupo = "CC-{$anio}{$mes}-{$correlativo}";
+        $codigoGrupo = "CC-{$anio}{$mes}{$correlativo}";
         return $codigoGrupo;
     }
 
@@ -8011,11 +8011,11 @@ function get_id_usuario_usuario_por_rol($descripcion_rol, $id_sede, $id_empresa)
         $correlativo = $this->leftZero(4, ($num + 1));
 
         if ($id_tp_docum == 2) {
-            $codigoOrden = "OC-{$anio}{$mes}-{$correlativo}";
+            $codigoOrden = "OC-{$anio}{$mes}{$correlativo}";
         } else if ($id_tp_docum == 3) {
-            $codigoOrden = "OS-{$anio}{$mes}-{$correlativo}";
+            $codigoOrden = "OS-{$anio}{$mes}{$correlativo}";
         } else {
-            $codigoOrden = "-{$anio}{$mes}-{$correlativo}";
+            $codigoOrden = "-{$anio}{$mes}{$correlativo}";
         }
         return $codigoOrden;
     }
