@@ -10,7 +10,7 @@
 				<img src="{{asset('images/user2-160x160.jpg')}}" class="img-circle" alt="User Image">
 			</div>
 			<div class="pull-left info">
-				<p>Usuario: {{ Auth::user()->nombre_corto }}</p>
+				<p>{{ Auth::user()->nombre_corto }}</p>
 				<a href="#"><i class="fa fa-circle"></i> {{ Auth::user()->getRolesText() }}</a>
 			</div>
 			</div>
