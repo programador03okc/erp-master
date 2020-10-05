@@ -38,7 +38,7 @@ class RequerimientoController extends Controller
     public function nextCodigoRequerimiento($tipo_requerimiento){
         $yy = date('y', strtotime("now"));
         $yyyy = date('Y', strtotime("now"));
-        $documento = 'RQ';
+        $documento = 'R';
 
         $num = DB::table('almacen.alm_req')
         ->where('id_tipo_requerimiento',$tipo_requerimiento)
@@ -68,7 +68,7 @@ class RequerimientoController extends Controller
         }
 
         $correlativo = $this->leftZero(4, ($num + 1));
-        $codigo = "{$documento}-{$identificador}-{$yy}-{$correlativo}";
+        $codigo = "{$documento}{$identificador}{$yy}{$correlativo}";
 
         $output = ['data'=>$codigo];
         return $output;
