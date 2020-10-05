@@ -800,8 +800,8 @@ class ProyectosController extends Controller
             ->select('proy_cu.*','proy_cu_cat.descripcion as cat_descripcion',
             'adm_estado_doc.estado_doc','adm_estado_doc.bootstrap_color','sis_usua.nombre_corto')
             ->leftjoin('proyectos.proy_cu_cat','proy_cu_cat.id_categoria','=','proy_cu.id_categoria')
-            ->leftjoin('administracion.adm_estado_doc','adm_estado_doc.id_estado_doc','=','proy_cu.estado')
-            ->leftjoin('configuracion.sis_usua','sis_usua.id_usuario','=','proy_cu.usuario_registro')
+            ->join('administracion.adm_estado_doc','adm_estado_doc.id_estado_doc','=','proy_cu.estado')
+            ->join('configuracion.sis_usua','sis_usua.id_usuario','=','proy_cu.usuario_registro')
             ->where([['proy_cu.estado', '!=', 7]])
             ->get();
         $output['data'] = $data;

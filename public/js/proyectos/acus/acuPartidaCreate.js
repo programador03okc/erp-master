@@ -9,7 +9,6 @@ function open_acu_partida_create(){
     });
     insumos = [];
     id_partida_temporal = null;
-    console.log(data);
     
     $('[name=id_cu_partida_cd]').val('');
     $('[name=id_cu]').val('');
@@ -23,6 +22,25 @@ function open_acu_partida_create(){
     limpiar_nuevo_cu();
     $('#AcuInsumos tbody').html('');
     
+}
+
+function editar_acu_partida(data){
+    $('#modal-acu_partida_create').modal({
+        show: true
+    });
+    console.log(data);
+    insumos = [];
+    id_partida_temporal = null;
+    $('[name=id_cu_partida_cd]').val(data.id_cu_partida);
+    $('[name=id_cu]').val(data.id_cu);
+    $('[name=cod_acu]').val(data.codigo);
+    $('[name=des_acu]').val(data.descripcion);
+    $('[name=rendimiento]').val(data.rendimiento);
+    $('[name=unid_medida_cu]').val(data.unid_medida);
+    $('[name=id_categoria]').val(data.id_categoria);
+    $('[name=total_acu]').val(formatDecimalDigitos(data.total,4));
+    $('[name=observacion]').val(data.observacion);
+    listar_acu_detalle(data.id_cu_partida);
 }
 
 function listar_acu_detalle(id){

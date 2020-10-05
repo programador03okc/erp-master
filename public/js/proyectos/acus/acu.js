@@ -66,7 +66,7 @@ function botones(tbody, tabla){
             if (data.nro_pres > 0){
                 alert('No puede editar éste A.C.U porque ya esta relacionado con un Presupuesto Emitido!');
             } else {
-                open_acu_partida_create(data);
+                editar_acu_partida(data);
             }
         }
     });
