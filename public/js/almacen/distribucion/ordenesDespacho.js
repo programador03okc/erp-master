@@ -22,20 +22,25 @@ function iniciar(permiso){
 
         // clearDataTable();
         if (activeForm == "form-pendientes"){
+            od_seleccionadas = [];
             listarRequerimientosPendientes(permiso);
             // $('#requerimientosPendientes').DataTable().ajax.reload();
         } 
         else if (activeForm == "form-elaborados"){
             listarRequerimientosElaborados();
+            od_seleccionadas = [];
         }
         else if (activeForm == "form-confirmados"){
             listarRequerimientosConfirmados(permiso);
+            od_seleccionadas = [];
         }
         else if (activeForm == "form-despachos"){
             listarOrdenesPendientes();
+            od_seleccionadas = [];
         }
         else if (activeForm == "form-despachados"){
             listarGruposDespachados(permiso);
+            od_seleccionadas = [];
         }
         $(activeTab).attr('hidden', false);//inicio botones (estados)
     });
