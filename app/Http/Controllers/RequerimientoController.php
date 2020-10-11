@@ -85,7 +85,6 @@ class RequerimientoController extends Controller
         // $estado_elaborado =(new LogisticaController)->get_estado_doc('Elaborado');
         $uso_administracion =(new LogisticaController)->get_tipo_cliente('Uso Administración');
         $compra =(new LogisticaController)->get_tipo_requerimiento('Compra');
-        $operaciones =(new AprobacionController)->get_operacion('Requerimiento');
         $tipo_documento = 1; // Requerimientos
 
         $requerimientos = DB::table('almacen.alm_req')
@@ -172,13 +171,16 @@ class RequerimientoController extends Controller
             ->orderBy('alm_req.id_requerimiento', 'asc')
         ->get();
 
+        
+        $payload=[];
+        $operacion_selected=0;
+        $flujo_list_selected=[];
+        $aprobaciones=[];
+        $pendiente_aprobacion=[];
+        
+        
         foreach($requerimientos as $element){
-            $payload=[];
-            $operacion_selected=0;
-            $flujo_list_selected=[];
-            $aprobaciones=[];
-            $pendiente_aprobacion=[];
-
+            
             $id_doc_aprobacion_req = $element->id_doc_aprob;
             $id_grupo_req = $element->id_grupo;
             $id_tipo_requerimiento_req = $element->id_tipo_requerimiento;
@@ -186,6 +188,7 @@ class RequerimientoController extends Controller
             $estado_req = $element->estado;
 
             $voboList =(new AprobacionController)->getVoBo($id_doc_aprobacion_req); // todas las vobo
+
             if($voboList['status']== 200){
                 foreach($voboList['data'] as $vobo){ 
                     $aprobaciones[]= $vobo; //lista de aprobaciones
@@ -199,13 +202,17 @@ class RequerimientoController extends Controller
                 $id_flujo_array[]= $aprobacion->id_flujo;
             }
             // #####
+            // return $aprobaciones;
 
-            $prioridadList=['data'=>[],'status'=>400];
+            // ### seleccionar la operacion que corrresponde el req segun grupo, tipo documento , prioridad
+            // $prioridadList=['data'=>[],'status'=>400];
+            $operaciones =(new AprobacionController)->get_operacion('Requerimiento',$id_grupo_req,$id_prioridad_req);
+
             foreach($operaciones['data'] as $operacion){
-                if($operacion->id_grupo == $id_grupo_req && $operacion->id_tp_documento == $tipo_documento){ 
+                if($operacion->id_grupo == $id_grupo_req && $operacion->id_tp_documento == $tipo_documento && $operacion->id_prioridad == $id_prioridad_req){ 
                     $operacion_selected = $operacion->id_operacion;
-
-                    if($operacion->id_grupo_criterios !=null){
+                    // ### si tiene agun criterio 
+                    if($operacion->id_grupo_criterios !=null){ // accion si existe algun criterio
                         // $prioridadArrayList =(new AprobacionController)->getCriterioPrioridad($operacion->id_grupo_criterios);
                         // if($prioridadList['status']==200){
                                 // if(count($prioridadList['data'] > 0)){
@@ -216,77 +223,86 @@ class RequerimientoController extends Controller
                         // }
                         // $rangoMonto = $this->getCriterioMonto(); // only declared
                     }
+                    // ##### seleccion de flujos    
                     $flujo_list =(new AprobacionController)->getIdFlujo($operacion_selected);
+                    // return $id_flujo_array;
 
-                    $pendiente_aprobacion= $flujo_list['data'];
+                    $pendiente_aprobacion= [];
+                    // return $pendiente_aprobacion;
                     //eliminando flujo ya aprobados
-                    foreach ($pendiente_aprobacion as $key => $object) {
+                    foreach ($flujo_list['data'] as $key => $object) {
                         // if ($object->id_flujo == 3) {
-                        if (in_array($object->id_flujo,$id_flujo_array)) {
-                            array_splice($pendiente_aprobacion, $key, 1);
-
+                            if (!in_array($object->id_flujo,$id_flujo_array)) {
+                                // array_splice($pendiente_aprobacion, $key, 1);
+                                $pendiente_aprobacion[]=$object;
+                                
                         }
                     }
+                // return $pendiente_aprobacion;
+
                     
                 }
             }
 
             // filtar requerimientos para usuario en sesion 
             $allRol = Auth::user()->getAllRol();
-           
+        //    return  $allRol;
             $id_rol_list=[];
             foreach($allRol as $rol){
                 $id_rol_list[]= $rol->id_rol; // lista de id_rol del usuario en sesion
             }
-
-            if(in_array($pendiente_aprobacion[0]->id_rol, $id_rol_list) == true){
-                $payload[]=[
-                    'id_requerimiento'=>$element->id_requerimiento,
-                    'id_doc_aprob'=> $id_doc_aprobacion_req,
-                    'id_tipo_requerimiento'=>$element->id_tipo_requerimiento,
-                    'tipo_requerimiento'=>$element->tipo_requerimiento,
-                    'id_tipo_cliente'=>$element->id_tipo_cliente,
-                    'descripcion_tipo_cliente'=>$element->descripcion_tipo_cliente,
-                    'id_prioridad'=>$element->id_prioridad,
-                    'descripcion_prioridad'=>$element->descripcion_prioridad,
-                    'id_periodo'=>$element->id_periodo,
-                    'descripcion_periodo'=>$element->descripcion_periodo,
-                    'codigo'=>$element->codigo,
-                    'concepto'=>$element->concepto,
-                    'id_empresa'=>$element->id_empresa,
-                    'razon_social_empresa'=>$element->razon_social_empresa,
-                    'codigo_sede_empresa'=>$element->codigo_sede_empresa,
-                    'logo_empresa'=>$element->logo_empresa,
-                    'id_grupo'=>$element->id_grupo,
-                    'descripcion_grupo'=>$element->descripcion_grupo,
-                    'descripcion_op_com'=>$element->descripcion_op_com,
-                    'fecha_requerimiento'=>$element->fecha_requerimiento,
-                    'observacion'=>$element->observacion,
-                    'name_ubigeo'=>$element->name_ubigeo,
-                    'id_moneda'=>$element->id_moneda,
-                    'desrcipcion_moneda'=>$element->desrcipcion_moneda,
-                    'monto'=>$element->monto,
-                    'fecha_entrega'=>$element->fecha_entrega,
-                    'id_usuario'=>$element->id_usuario,
-                    'id_rol'=>$element->id_rol,
-                    'descripcion_rol'=>$element->descripcion_rol,
-                    'usuario'=>$element->usuario,
-                    'persona'=>$element->persona,
-                    'id_almacen'=>$element->id_almacen,
-                    'descripcion_almacen'=>$element->descripcion_almacen,
-                    'aprobaciones'=>$aprobaciones,
-                    'pendiente_aprobacion'=>$pendiente_aprobacion,
-                    'estado'=>$element->estado,
-                    'estado_doc'=>$element->estado_doc
-                ];
+            if(count($pendiente_aprobacion)>0){
+                if(in_array($pendiente_aprobacion[0]->id_rol, $id_rol_list) == true){
+                
+                    $payload[]=[
+                        'id_requerimiento'=>$element->id_requerimiento,
+                        'id_doc_aprob'=> $id_doc_aprobacion_req,
+                        'id_tipo_requerimiento'=>$element->id_tipo_requerimiento,
+                        'tipo_requerimiento'=>$element->tipo_requerimiento,
+                        'id_tipo_cliente'=>$element->id_tipo_cliente,
+                        'descripcion_tipo_cliente'=>$element->descripcion_tipo_cliente,
+                        'id_prioridad'=>$element->id_prioridad,
+                        'descripcion_prioridad'=>$element->descripcion_prioridad,
+                        'id_periodo'=>$element->id_periodo,
+                        'descripcion_periodo'=>$element->descripcion_periodo,
+                        'codigo'=>$element->codigo,
+                        'concepto'=>$element->concepto,
+                        'id_empresa'=>$element->id_empresa,
+                        'razon_social_empresa'=>$element->razon_social_empresa,
+                        'codigo_sede_empresa'=>$element->codigo_sede_empresa,
+                        'logo_empresa'=>$element->logo_empresa,
+                        'id_grupo'=>$element->id_grupo,
+                        'descripcion_grupo'=>$element->descripcion_grupo,
+                        'descripcion_op_com'=>$element->descripcion_op_com,
+                        'fecha_requerimiento'=>$element->fecha_requerimiento,
+                        'observacion'=>$element->observacion,
+                        'name_ubigeo'=>$element->name_ubigeo,
+                        'id_moneda'=>$element->id_moneda,
+                        'desrcipcion_moneda'=>$element->desrcipcion_moneda,
+                        'monto'=>$element->monto,
+                        'fecha_entrega'=>$element->fecha_entrega,
+                        'id_usuario'=>$element->id_usuario,
+                        'id_rol'=>$element->id_rol,
+                        'descripcion_rol'=>$element->descripcion_rol,
+                        'usuario'=>$element->usuario,
+                        'persona'=>$element->persona,
+                        'id_almacen'=>$element->id_almacen,
+                        'descripcion_almacen'=>$element->descripcion_almacen,
+                        'cantidad_aprobados_total_flujo'=> count($aprobaciones).'/'.count($flujo_list['data']),
+                        'aprobaciones'=>$aprobaciones,
+                        'pendiente_aprobacion'=>$pendiente_aprobacion,
+                        'estado'=>$element->estado,
+                        'estado_doc'=>$element->estado_doc
+                    ];
+                }
             }
+
 
             
         }
         $output = ['data'=>$payload];
         return $output;
 
- 
         //  return DataTables::of($output)
         // ->addColumn('flag',function($output){
         //         $flag = $output['flag'];
@@ -302,6 +318,279 @@ class RequerimientoController extends Controller
         // })
         // ->rawColumns(['flag','status','action'])
         // ->make(true);
+    }
+    public function cargar_almacenes($id_sede){
+        $data = DB::table('almacen.alm_almacen')
+        ->select('alm_almacen.id_almacen','alm_almacen.id_sede','alm_almacen.codigo','alm_almacen.descripcion',
+        'sis_sede.descripcion as sede_descripcion','alm_tp_almacen.descripcion as tp_almacen')
+        ->leftjoin('administracion.sis_sede','sis_sede.id_sede','=','alm_almacen.id_sede')
+        ->join('almacen.alm_tp_almacen','alm_tp_almacen.id_tipo_almacen','=','alm_almacen.id_tipo_almacen')
+        ->where([['alm_almacen.estado', '=', 1],
+        ['alm_almacen.id_sede','=',$id_sede]])
+        ->orderBy('codigo')
+        ->get();
+        return $data;
+    }
+    
+    public function is_true($val, $return_null=false){
+        $boolval = ( is_string($val) ? filter_var($val, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) : (bool) $val );
+        return ( $boolval===null && !$return_null ? false : $boolval );
+    }
+
+    public function detalle_requerimiento( Request $request )
+    {
+        
+        $checkList= $request->data;
+        $idReqList=[];
+
+        foreach($checkList as $data){
+            if($this->is_true($data['stateCheck']) == true){
+                $idReqList[]= $data['id_req'];
+            }
+        }
+
+
+
+        // return $idReqList;
+            $det = DB::table('almacen.alm_det_req')
+            ->select(
+                'alm_det_req.*', 
+                'alm_req.codigo as cod_req',
+                'alm_und_medida.abreviatura as unidad_medida_detalle_req',
+                'alm_almacen.descripcion as descripcion_almacen'
+                
+                )
+            ->join('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'alm_det_req.id_requerimiento')
+            ->leftJoin('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'alm_det_req.id_unidad_medida')
+            ->leftjoin('almacen.alm_almacen', 'alm_almacen.id_almacen', '=', 'alm_det_req.id_almacen_reserva')
+
+            ->whereIn('alm_det_req.id_requerimiento', $idReqList)
+            ->get();
+        
+ 
+      
+
+        $html = '';
+        $i = 1;
+        $payload=[];
+        foreach ($det as $clave => $d) {
+            $item = DB::table('almacen.alm_item')
+                ->select(
+                    'alm_item.*',
+                    'alm_prod.id_producto',
+                    'alm_prod.codigo as cod_producto',
+                    'alm_prod.descripcion as des_producto',
+                    'log_servi.codigo as cod_servicio',
+                    'log_servi.descripcion as des_servicio',
+                    'alm_und_medida.abreviatura as unidad_medida_item'
+                )
+                ->leftjoin('almacen.alm_prod', 'alm_prod.id_producto', '=', 'alm_item.id_producto')
+                ->leftjoin('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'alm_prod.id_unidad_medida')
+                ->leftjoin('logistica.log_servi', 'log_servi.id_servicio', '=', 'alm_item.id_servicio')
+                ->where('id_item', $d->id_item)
+                ->first();
+
+            if (isset($item)) { // si existe variable
+                
+                if ($item->id_producto !== null || is_numeric($item->id_producto) == 1) {
+                    $sedeReq = DB::table('almacen.alm_req')
+                    ->select(
+                        'adm_grupo.id_sede'
+                    )
+                    ->leftjoin('administracion.adm_grupo', 'adm_grupo.id_grupo', '=', 'alm_req.id_grupo')
+                    ->where('alm_req.id_requerimiento', $d->id_requerimiento)
+                    ->first();
+                    $almacenes  = $this->cargar_almacenes($sedeReq->id_sede);
+
+                    $payload[]=[
+                        'id_requerimiento'=>$d->id_requerimiento,
+                        'id_detalle_requerimiento'=>$d->id_detalle_requerimiento,
+                        'id_item'=>$d->id_item,
+                        'id_tipo_item'=>$d->id_tipo_item,
+                        'cod_req' =>$d->cod_req,
+                        'descripcion_adicional'=>$d->descripcion_adicional,
+                        'lugar_entrega'=>$d->lugar_entrega,
+                        'fecha_entrega'=>$d->fecha_entrega,
+                        'id_producto'=>$item->id_producto,
+                        'cod_producto' =>$item->cod_producto?$item->cod_producto:$item->cod_servicio,
+                        'des_producto' =>$item->des_producto?$item->des_producto:$item->des_servicio,
+                        'unidad_medida_detalle_req' =>$d->unidad_medida_detalle_req?$d->unidad_medida_detalle_req:'',
+                        'unidad_medida_item' =>$item->unidad_medida_item?$item->unidad_medida_item:'',
+                        'cantidad' =>$d->cantidad,
+                        'precio_referencial' =>$d->precio_referencial,
+                        'descripcion_almacen' =>$d->descripcion_almacen,
+                        'almacen'=> $almacenes
+                    ];
+                }
+            }else{
+                $payload[]=[
+                    'id_requerimiento'=>$d->id_requerimiento,
+                    'id_detalle_requerimiento'=>$d->id_detalle_requerimiento,
+                    'id_item'=>0,
+                    'id_tipo_item'=>0,
+                    'cod_req' =>$d->cod_req,
+                    'descripcion_adicional'=>$d->descripcion_adicional,
+                    'lugar_entrega'=>$d->lugar_entrega,
+                    'fecha_entrega'=>$d->fecha_entrega,
+                    'id_producto'=>0,
+                    'cod_producto' =>0,
+                    'des_producto' =>'',
+                    'unidad_medida_detalle_req' =>$d->unidad_medida_detalle_req?$d->unidad_medida_detalle_req:'',
+                    'unidad_medida_item' =>'',
+                    'cantidad' =>$d->cantidad,
+                    'precio_referencial' =>$d->precio_referencial,
+                    'descripcion_almacen' =>$d->descripcion_almacen,
+                    'almacen'=> []
+                ];
+            }
+
+
+                //     if($type_view =='VIEW_CHECKBOX'){
+                //     $html .= '
+                //         <tr>
+                //             <td>
+                //                 <input class="oculto" value="' . $d->id_requerimiento . '" name="id_requerimiento"/>
+                //                 <input class="oculto" value="' . $d->id_detalle_requerimiento . '" name="id_detalle"/>
+                //                 <input type="checkbox"/>
+                //             </td>
+                //             <td>' . $d->cod_req . '</td>
+                //             <td>-</td>
+                //             <td>' . $item->cod_producto . '</td>
+                //             <td>' . $item->des_producto . '</td>
+                //             <td>' . $item->abreviatura . '</td>
+                //             <td>' . $d->cantidad . '</td>
+                //             <td>' . $d->precio_referencial . '</td>
+                //             <td> <input type="number" min="0" max="'.$d->cantidad.'" value="'.$d->stock_comprometido .'" class="form-control activation stock_comprometido" data-id-det-req="'.$d->id_detalle_requerimiento.'"  data-id-req="'.$d->id_requerimiento.'"name="stock_comprometido[]" disabled></td>
+                //             <td>
+                //                 <select class="form-control almacen_selected" name="" data-id-det-req="'.$d->id_detalle_requerimiento.'">';
+                //                 foreach($almacenes as $al){
+                //                     $html.='<option value="'.$al->id_almacen.'">'.$al->descripcion.'</option>';
+                //                 }
+                //         $html.='</select>
+                //             </td>
+
+                //         </tr>
+                //     ';
+                //     }else{
+                //         $html .= '
+                //         <tr>
+                //             <td>
+                //                 <input class="oculto" value="' . $d->id_requerimiento . '" name="id_requerimiento"/>
+                //                 <input class="oculto" value="' . $d->id_detalle_requerimiento . '" name="id_detalle"/>';
+                //         $html.= $clave;
+                //         $html.='
+                //             </td>
+                //             <td>' . $d->cod_req . '</td>
+                //             <td>' . $item->cod_producto . '</td>
+                //             <td>' . $item->des_producto . '</td>
+                //             <td>' . $item->abreviatura . '</td>
+                //             <td>' . $d->cantidad . '</td>
+                //             <td>' . $d->precio_referencial . '</td>
+                //             <td>' . $d->stock_comprometido . '</td>
+                //         </tr>
+                //         ';
+                //     }
+                // } else if ($item->id_servicio !== null || is_numeric($item->id_servicio) == 1) {
+                //     if($type_view =='VIEW_CHECKBOX'){
+                //     $html .= '
+                //         <tr>
+                //             <td>
+                //                 <input class="oculto" value="' . $d->id_requerimiento . '" name="id_requerimiento"/>
+                //                 <input class="oculto" value="' . $d->id_detalle_requerimiento . '" name="id_detalle"/>';
+                //                 '<input type="checkbox"/>
+                //             </td>
+                //             <td>' . $d->cod_req . '</td>
+                //             <td>'.$item->codigo.'</td>
+                //             <td>' . $item->cod_servicio . '</td>
+                //             <td>' . $item->des_servicio . '</td>
+                //             <td>serv</td>
+                //             <td>' . $d->cantidad . '</td>
+                //             <td>' . $d->precio_referencial . '</td>
+                //             <td> <input type="number" min="0" max="'.$d->cantidad.'" value="'.$d->stock_comprometido .'" class="form-control activation stock_comprometido" data-id-det-req="'.$d->id_detalle_requerimiento.'"  data-id-req="'.$d->id_requerimiento.'"name="stock_comprometido[]" disabled></td>
+
+                //         </tr>
+                //         ';
+                //     }else{
+                //         $html .= '
+                //         <tr>
+                //             <td>
+                //                 <input class="oculto" value="' . $d->id_requerimiento . '" name="id_requerimiento"/>
+                //                 <input class="oculto" value="' . $d->id_detalle_requerimiento . '" name="id_detalle"/>';
+                //         $html.= $clave;
+                //         $html.= '
+                //             </td>
+                //             <td>' . $d->cod_req . '</td>
+                //             <td>' . $item->cod_servicio . '</td>
+                //             <td>' . $item->des_servicio . '</td>
+                //             <td>serv</td>
+                //             <td>' . $d->cantidad . '</td>
+                //             <td>' . $d->precio_referencial . '</td>
+                //             <td>' . $d->stock_comprometido . '</td>
+
+                //         </tr>
+                //         ';                        
+                // ';
+                //         ';                        
+                //     }
+                // }
+            // } else { // si no existe | no existe id_item
+            //     if($type_view =='VIEW_CHECKBOX'){
+            //         $sedeReq = DB::table('almacen.alm_req')
+            //         ->select(
+            //             'adm_grupo.id_sede'
+            //         )
+            //         ->leftjoin('administracion.adm_grupo', 'adm_grupo.id_grupo', '=', 'alm_req.id_grupo')
+            //         ->where('alm_req.id_requerimiento', $d->id_requerimiento)
+            //         ->first();
+            //         $almacenes  = $this->cargar_almacenes($sedeReq->id_sede);
+            //     $html .= '
+            //         <tr>
+            //             <td>
+            //                 <input class="oculto" value="' . $d->id_requerimiento . '" name="id_requerimiento"/>
+            //                 <input class="oculto" value="' . $d->id_detalle_requerimiento . '" name="id_detalle"/>
+            //                 <input type="checkbox"/>
+            //             </td>
+            //             <td>' . $d->cod_req . '</td>
+            //             <td>-</td>
+            //             <td>-</td>
+            //             <td>' . $d->descripcion_adicional . '</td>
+            //             <td>' . $d->abreviatura . '</td>
+            //             <td>' . $d->cantidad . '</td>
+            //             <td>' . $d->precio_referencial . '</td>
+            //             <td> <input type="number" min="0" max="'.$d->cantidad.'" value="'.$d->stock_comprometido .'" class="form-control activation stock_comprometido" data-id-det-req="'.$d->id_detalle_requerimiento.'"  data-id-req="'.$d->id_requerimiento.'"name="stock_comprometido[]" disabled></td>
+            //             <td>
+            //                 <select class="form-control almacen_selected" name="" data-id-det-req="'.$d->id_detalle_requerimiento.'">';
+            //                 foreach($almacenes as $al){
+            //                     $html.='<option value="'.$al->id_almacen.'">'.$al->descripcion.'</option>';
+            //                 }
+            //         $html.='</select>
+            //             </td>
+
+            //         </tr>
+            //     ';
+            //     }else{
+            //         $html .= '
+            //         <tr>
+            //             <td>
+            //                 <input class="oculto" value="' . $d->id_requerimiento . '" name="id_requerimiento"/>
+            //                 <input class="oculto" value="' . $d->id_detalle_requerimiento . '" name="id_detalle"/>';
+            //         $html.= $clave;
+            //         $html.='</td>
+            //             <td>' . $d->cod_req . '</td>
+            //             <td>0</td>
+            //             <td>' . $d->descripcion_adicional . '</td>
+            //             <td>' . $d->abreviatura . '</td>
+            //             <td>' . $d->cantidad . '</td>
+            //             <td>' . $d->precio_referencial . '</td>
+            //             <td>' . $d->stock_comprometido . '</td>
+
+            //         </tr>
+            //     '; 
+            //     }
+
+
+        }
+        return json_encode($payload);
     }
 
     

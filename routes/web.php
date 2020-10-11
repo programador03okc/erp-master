@@ -662,6 +662,7 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::get('elaborados/{empresa?}/{sede?}/{grupo?}', 'LogisticaController@listar_requerimientos_elaborados')->name('elaborados');
 
 					Route::get('pendiente-aprobacion', 'RequerimientoController@requerimientos_pendientes_aprobacion')->name('pendientes-aprobacion');
+					Route::post('aprobar-documento', 'AprobacionController@aprobar_documento')->name('aprobar-documento');
 
 				});
 			});
@@ -671,8 +672,10 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::get('index', 'LogisticaController@view_gestionar_cotizaciones')->name('index');
 					Route::get('select-sede-by-empresa/{id?}', 'LogisticaController@select_sede_by_empresa')->name('select-sede-by-empresa');
 					Route::get('listaCotizacionesPorGrupo/{id_cotizacion}', 'LogisticaController@listaCotizacionesPorGrupo');
-					Route::get('requerimientos_entrante_a_cotizacion_v2/{id_empresa}/{id_sede}', 'LogisticaController@requerimientos_entrante_a_cotizacion_v2');
-					Route::get('detalle_requerimiento', 'LogisticaController@detalle_requerimiento');
+					Route::get('requerimientos_entrante_a_cotizacion/{id_empresa}/{id_sede}', 'CotizacionController@requerimientos_entrante_a_cotizacion');
+					Route::get('detalle_requerimiento', 'RequerimientoController@detalle_requerimiento');
+					Route::get('mostrar_proveedores', 'LogisticaController@mostrar_proveedores');
+
 					Route::post('guardar_cotizacion/{id_gru}', 'LogisticaController@guardar_cotizacion');
 					Route::post('agregar-item-cotizacion/{id_cotizacion}', 'LogisticaController@agregar_item_a_cotizacion');
 					Route::post('eliminar-item-cotizacion/{id_cotizacion}', 'LogisticaController@eliminar_item_a_cotizacion');

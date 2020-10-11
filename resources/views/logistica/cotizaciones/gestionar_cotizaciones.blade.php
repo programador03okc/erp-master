@@ -144,79 +144,61 @@
                                                     <div class="panel panel-default">
                                                         <div class="panel-body">
                                                             <h5>Crear Cotización</h5>
-                                                        
+ 
+                                                            <input class="oculto" name="id_cotizacion"/>
+                                                            <input type="hidden" name="id_grupo_cotizacion" value="0" primary="ids">
                                                             <div class="row">
                                                                 <div class="col-md-12">
-                                                                    <form id="cotizacion_proveedor" method="post">
-                                                                        <div class="row">
-                                                                            <input class="oculto" name="id_cotizacion"/>
-                                                                            <input type="hidden" name="id_grupo_cotizacion" value="0" primary="ids">
-
-                                                                            <div class="col-md-5">
-                                                                                <div class="row">
-                                                                                    <div class="col-md-8">
-                                                                                        <h5>Empresa</h5>
-                                                                                        <div style="display:flex;">
-                                                                                            <select class="form-control" name="id_empresa" onChange="cargar_imagen(); handleChangeFilterCrearCotiByEmpresa(event);">
-                                                                                                <option value="0" disabled>Elija una opción</option>
-                                                                                                @foreach ($empresas as $emp)
-                                                                                                    <option value="{{$emp->id_empresa}}" data-url-logo="{{$emp->logo_empresa}}">{{$emp->razon_social}}</option>
-                                                                                                @endforeach
-                                                                                            </select>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                    <div class="col-md-4">
-                                                                                        <h5>Sede</h5>
-                                                                                        <div style="display:flex;">
-                                                                                            <select class="form-control" id="id_sede_crear_coti" >
-                                                                                                <option value="0" disabled>Elija una opción</option>
-                                                                                            </select>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </div>
-                                                                                <div class="row">
-                                                                                    <div class="col-md-12">
-                                                                                        <img id="img" class="imagen">
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="col-md-7">
-                                                                                <div class="row">
-                                                                                    <div class="col-md-12">
-                                                                                        <h5>Proveedor</h5>
-                                                                                        <div style="display:flex;">
-                                                                                            <input class="oculto" name="id_proveedor"/>
-                                                                                            <input class="oculto" name="id_contrib"/>
-                                                                                            <input type="text" class="form-control" name="razon_social" placeholder="Seleccione un proveedor..." 
-                                                                                                onChange="change_proveedor();" aria-describedby="basic-addon1" >
-                                                                                            <button type="button" class="input-group-text" id="basic-addon11" onClick="proveedorModal();">
-                                                                                                <i class="fa fa-search"></i>
-                                                                                            </button>
-                                                                                            <button type="button" class="btn-primary" title="Agregar Proveedor" onClick="agregar_proveedor();">
-                                                                                                <i class="fas fa-plus"></i></button>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </div>
-                                                                                <div class="row">
-                                                                                    <div class="col-md-12">
-                                                                                        <h5>Contacto</h5>
-                                                                                        <div style="display:flex;">
-                                                                                            <select class="form-control" name="id_contacto" ></select>
-                                                                                            <button type="button" class="btn-primary" title="Agregar Contacto" onClick="agregar_contacto();">
-                                                                                                <i class="fas fa-plus"></i></button>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </div>
+                                                                        <div class="col-md-3">
+                                                                            <h5>Código Cuadro Comparativo</h5>
+                                                                            <div style="display:flex;">
+                                                                                <input type="text" class="form-control" name="codigo_cuadro_comparativo" placeholder="CC-#####" readOnly>
                                                                             </div>
                                                                         </div>
-                                                                        <div class="row">
-                                                                            <div class="col-md-12 right">
-                                                                                <button class="btn btn-success" role="button"   onClick="generar_cotizacion(event);">
-                                                                                        Crear Solicitud de Cotización <i class="fas fa-save"></i>
-                                                                                </button>
-                                                                            </div>                    
-                                                                        </div>                    
-                                                                    </form>
+                                                                        <div class="col-md-9 text-right">
+                                                                            <h5>&nbsp;</h5>
+                                                                            <button class="btn btn-success" id="exampleInputName3" type="button" onClick="nuevaSolicitudCotizacion();">
+                                                                                <i class="fas fa-plus"></i> Crear Solicitud de Cotización 
+                                                                            </button>
+                                                                        </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col-md-12">
+                                                                    <table class="mytable table table-striped table-condensed table-bordered table-sm" id="">
+                                                                        <thead>
+                                                                            <tr>
+                                                                                <th width='30px'>#</th>
+                                                                                <th>Cotización</th>
+                                                                                <th>Proveedor</th>                                                                        
+                                                                                <th>Req. Vinculados</th>
+                                                                                <th>Estado</th>
+                                                                                <th width='150px'>Acción</th>                                                                        
+                                                                            </tr>    
+                                                                        </thead>
+                                                                        <tbody>
+                                                                            <tr>
+                                                                                <td colspan="6" class="text-center">No existe cotizaciones ingresadas</td>
+                                                                            </tr>
+                                                                            <!-- <tr>
+                                                                                <td>1</td>
+                                                                                <td>C0001</td>
+                                                                                <td>Holitas</td>
+                                                                                <td>RE011</td>
+                                                                                <td>Enviado?</td>
+                                                                                <td>
+                                                                                <center>
+                                                                                <div class="btn-group" role="group" style="margin-bottom: 5px;">
+                                                                                    <button type="button" class="btn btn-sm btn-log btn-primary" title="Ver detalle" onclick="viewFlujo(3, 21);"><i class="fas fa-eye fa-xs"></i></button>
+                                                                                    <button type="button" class="btn btn-sm btn-log btn-warning" title="Editar cotización" onclick="tracking_requerimiento(3);"><i class="fas fa-edit fa-xs"></i></button>
+                                                                                    <button type="button" class="btn btn-sm btn-log btn-info" title="Enviar cotización" onclick="tracking_requerimiento(3);"><i class="far fa-paper-plane"></i></button>
+                                                                                    <button type="button" class="btn btn-sm btn-log btn-danger" title="Eliminar cotización" onclick="viewFlujo(3, 21);"><i class="fas fa-trash fa-xs"></i></button>
+                                                                                </div>
+                                                                                </center>
+                                                                                </td>
+                                                                            </tr> -->
+                                                                        </tbody>
+                                                                    </table>
                                                                 </div>   
                                                             </div>   
                                                             
@@ -258,7 +240,7 @@
                                     </div>
                                 </div>
                         </div>
-                        <div role="tabpanel" class="tab-pane" id="cotiListByGroup">
+                        <!-- <div role="tabpanel" class="tab-pane" id="cotiListByGroup">
                             <div class="panel panel-default">
                                 <div class="panel-body">
                                     <table class="mytable table table-condensed table-bordered table-okc-view" 
@@ -286,7 +268,7 @@
                                     </table>
                                 </div>
                             </div>
-                        </div>
+                        </div> -->
  
                     </div>
                 </div>
@@ -295,6 +277,7 @@
         </div>
     </form>
 </div>
+@include('logistica.cotizaciones.modal_nueva_solicitud_cotizacion')
 @include('logistica.cotizaciones.modal_duplicar_cotizacion')
 @include('logistica.cotizaciones.modal_ver_cotizacion')
 @include('logistica.cotizaciones.modal_editar_cotizacion')

@@ -107,6 +107,7 @@
                                                             <th>GRUPO / PROYECTO</th>
                                                             <th>CREADO POR</th>
                                                             <th width="70">ESTADO</th>
+                                                            <th width="50">Aprob/Total</th>
                                                             <th width="120">ACCIÓN</th>
                                                         </tr>
                                                     </thead>
@@ -175,7 +176,7 @@
 
     <script src="{{asset('js/logistica/listar_requerimiento.js')}}"></script>
     <script src="{{asset('js/logistica/listar_requerimiento_pendientes_aprobacion.js')}}"></script>
-    <script src="{{asset('js/logistica/aprobacion/aprobacion.js')}}"></script>
+    <!-- <script src="{{asset('js/logistica/aprobacion/aprobacion.js')}}"></script> -->
 
     <script>
     $(document).ready(function(){
@@ -191,6 +192,7 @@
         
         inicializarRutasPendienteAprobacion(
             "{{route('logistica.gestion-logistica.requerimiento.listado.pendientes-aprobacion')}}",
+            "{{route('logistica.gestion-logistica.requerimiento.listado.aprobar-documento')}}"
             // "{{route('logistica.gestion-logistica.requerimiento.listado.empresa')}}",
             // "{{route('logistica.gestion-logistica.requerimiento.listado.select-sede-by-empresa')}}",
             // "{{route('logistica.gestion-logistica.requerimiento.listado.select-grupo-by-sede')}}",

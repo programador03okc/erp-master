@@ -3012,7 +3012,6 @@ class LogisticaController extends Controller
             'alm_req.id_area',
             'alm_req.archivo_adjunto',
             'alm_req.id_prioridad',
-            'alm_req.id_estado_doc',
             'alm_req.id_presupuesto',
             'alm_req.id_moneda',
             'adm_estado_doc.estado_doc',
@@ -3054,7 +3053,6 @@ class LogisticaController extends Controller
                 'id_area' => $data->id_area,
                 'archivo_adjunto' => $data->archivo_adjunto,
                 'id_prioridad' => $data->id_prioridad,
-                'id_estado_doc' => $data->id_estado_doc,
                 'id_presupuesto' => $data->id_presupuesto,
                 'id_moneda' => $data->id_moneda,
                 'simbolo_moneda' => $data->simbolo_moneda,
@@ -5261,279 +5259,13 @@ function get_id_usuario_usuario_por_rol($descripcion_rol, $id_sede, $id_empresa)
         return $cotizacionList;
     }
 
-    public function cargar_almacenes($id_sede){
-        $data = DB::table('almacen.alm_almacen')
-        ->select('alm_almacen.id_almacen','alm_almacen.id_sede','alm_almacen.codigo','alm_almacen.descripcion',
-        'sis_sede.descripcion as sede_descripcion','alm_tp_almacen.descripcion as tp_almacen')
-        ->leftjoin('administracion.sis_sede','sis_sede.id_sede','=','alm_almacen.id_sede')
-        ->join('almacen.alm_tp_almacen','alm_tp_almacen.id_tipo_almacen','=','alm_almacen.id_tipo_almacen')
-        ->where([['alm_almacen.estado', '=', 1],
-        ['alm_almacen.id_sede','=',$id_sede]])
-        ->orderBy('codigo')
-        ->get();
-        return $data;
-    }
+
 
     public function is_true($val, $return_null=false){
         $boolval = ( is_string($val) ? filter_var($val, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) : (bool) $val );
         return ( $boolval===null && !$return_null ? false : $boolval );
     }
 
-    public function detalle_requerimiento( Request $request )
-    {
-        
-        $checkList= $request->data;
-        $idReqList=[];
-
-        foreach($checkList as $data){
-            if($this->is_true($data['stateCheck']) == true){
-                $idReqList[]= $data['id_req'];
-            }
-        }
-
-
-
-        // return $idReqList;
-            $det = DB::table('almacen.alm_det_req')
-            ->select(
-                'alm_det_req.*', 
-                'alm_req.codigo as cod_req',
-                'alm_und_medida.abreviatura as unidad_medida_detalle_req',
-                'alm_almacen.descripcion as descripcion_almacen'
-                
-                )
-            ->join('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'alm_det_req.id_requerimiento')
-            ->leftJoin('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'alm_det_req.id_unidad_medida')
-            ->leftjoin('almacen.alm_almacen', 'alm_almacen.id_almacen', '=', 'alm_det_req.id_almacen')
-
-            ->whereIn('alm_det_req.id_requerimiento', $idReqList)
-            ->get();
-        
- 
-      
-
-        $html = '';
-        $i = 1;
-        $payload=[];
-        foreach ($det as $clave => $d) {
-            $item = DB::table('almacen.alm_item')
-                ->select(
-                    'alm_item.*',
-                    'alm_prod.id_producto',
-                    'alm_prod.codigo as cod_producto',
-                    'alm_prod.descripcion as des_producto',
-                    'log_servi.codigo as cod_servicio',
-                    'log_servi.descripcion as des_servicio',
-                    'alm_und_medida.abreviatura as unidad_medida_item'
-                )
-                ->leftjoin('almacen.alm_prod', 'alm_prod.id_producto', '=', 'alm_item.id_producto')
-                ->leftjoin('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'alm_prod.id_unidad_medida')
-                ->leftjoin('logistica.log_servi', 'log_servi.id_servicio', '=', 'alm_item.id_servicio')
-                ->where('id_item', $d->id_item)
-                ->first();
-
-            if (isset($item)) { // si existe variable
-                
-                if ($item->id_producto !== null || is_numeric($item->id_producto) == 1) {
-                    $sedeReq = DB::table('almacen.alm_req')
-                    ->select(
-                        'adm_grupo.id_sede'
-                    )
-                    ->leftjoin('administracion.adm_grupo', 'adm_grupo.id_grupo', '=', 'alm_req.id_grupo')
-                    ->where('alm_req.id_requerimiento', $d->id_requerimiento)
-                    ->first();
-                    $almacenes  = $this->cargar_almacenes($sedeReq->id_sede);
-
-                    $payload[]=[
-                        'id_requerimiento'=>$d->id_requerimiento,
-                        'id_detalle_requerimiento'=>$d->id_detalle_requerimiento,
-                        'id_item'=>$d->id_item,
-                        'id_tipo_item'=>$d->id_tipo_item,
-                        'cod_req' =>$d->cod_req,
-                        'descripcion_adicional'=>$d->descripcion_adicional,
-                        'lugar_entrega'=>$d->lugar_entrega,
-                        'fecha_entrega'=>$d->fecha_entrega,
-                        'id_producto'=>$item->id_producto,
-                        'cod_producto' =>$item->cod_producto?$item->cod_producto:$item->cod_servicio,
-                        'des_producto' =>$item->des_producto?$item->des_producto:$item->des_servicio,
-                        'unidad_medida_detalle_req' =>$d->unidad_medida_detalle_req?$d->unidad_medida_detalle_req:'',
-                        'unidad_medida_item' =>$item->unidad_medida_item?$item->unidad_medida_item:'',
-                        'cantidad' =>$d->cantidad,
-                        'precio_referencial' =>$d->precio_referencial,
-                        'descripcion_almacen' =>$d->descripcion_almacen,
-                        'almacen'=> $almacenes
-                    ];
-                }
-            }else{
-                $payload[]=[
-                    'id_requerimiento'=>$d->id_requerimiento,
-                    'id_detalle_requerimiento'=>$d->id_detalle_requerimiento,
-                    'id_item'=>0,
-                    'id_tipo_item'=>0,
-                    'cod_req' =>$d->cod_req,
-                    'descripcion_adicional'=>$d->descripcion_adicional,
-                    'lugar_entrega'=>$d->lugar_entrega,
-                    'fecha_entrega'=>$d->fecha_entrega,
-                    'id_producto'=>0,
-                    'cod_producto' =>0,
-                    'des_producto' =>'',
-                    'unidad_medida_detalle_req' =>$d->unidad_medida_detalle_req?$d->unidad_medida_detalle_req:'',
-                    'unidad_medida_item' =>'',
-                    'cantidad' =>$d->cantidad,
-                    'precio_referencial' =>$d->precio_referencial,
-                    'descripcion_almacen' =>$d->descripcion_almacen,
-                    'almacen'=> []
-                ];
-            }
-
-
-                //     if($type_view =='VIEW_CHECKBOX'){
-                //     $html .= '
-                //         <tr>
-                //             <td>
-                //                 <input class="oculto" value="' . $d->id_requerimiento . '" name="id_requerimiento"/>
-                //                 <input class="oculto" value="' . $d->id_detalle_requerimiento . '" name="id_detalle"/>
-                //                 <input type="checkbox"/>
-                //             </td>
-                //             <td>' . $d->cod_req . '</td>
-                //             <td>-</td>
-                //             <td>' . $item->cod_producto . '</td>
-                //             <td>' . $item->des_producto . '</td>
-                //             <td>' . $item->abreviatura . '</td>
-                //             <td>' . $d->cantidad . '</td>
-                //             <td>' . $d->precio_referencial . '</td>
-                //             <td> <input type="number" min="0" max="'.$d->cantidad.'" value="'.$d->stock_comprometido .'" class="form-control activation stock_comprometido" data-id-det-req="'.$d->id_detalle_requerimiento.'"  data-id-req="'.$d->id_requerimiento.'"name="stock_comprometido[]" disabled></td>
-                //             <td>
-                //                 <select class="form-control almacen_selected" name="" data-id-det-req="'.$d->id_detalle_requerimiento.'">';
-                //                 foreach($almacenes as $al){
-                //                     $html.='<option value="'.$al->id_almacen.'">'.$al->descripcion.'</option>';
-                //                 }
-                //         $html.='</select>
-                //             </td>
-
-                //         </tr>
-                //     ';
-                //     }else{
-                //         $html .= '
-                //         <tr>
-                //             <td>
-                //                 <input class="oculto" value="' . $d->id_requerimiento . '" name="id_requerimiento"/>
-                //                 <input class="oculto" value="' . $d->id_detalle_requerimiento . '" name="id_detalle"/>';
-                //         $html.= $clave;
-                //         $html.='
-                //             </td>
-                //             <td>' . $d->cod_req . '</td>
-                //             <td>' . $item->cod_producto . '</td>
-                //             <td>' . $item->des_producto . '</td>
-                //             <td>' . $item->abreviatura . '</td>
-                //             <td>' . $d->cantidad . '</td>
-                //             <td>' . $d->precio_referencial . '</td>
-                //             <td>' . $d->stock_comprometido . '</td>
-                //         </tr>
-                //         ';
-                //     }
-                // } else if ($item->id_servicio !== null || is_numeric($item->id_servicio) == 1) {
-                //     if($type_view =='VIEW_CHECKBOX'){
-                //     $html .= '
-                //         <tr>
-                //             <td>
-                //                 <input class="oculto" value="' . $d->id_requerimiento . '" name="id_requerimiento"/>
-                //                 <input class="oculto" value="' . $d->id_detalle_requerimiento . '" name="id_detalle"/>';
-                //                 '<input type="checkbox"/>
-                //             </td>
-                //             <td>' . $d->cod_req . '</td>
-                //             <td>'.$item->codigo.'</td>
-                //             <td>' . $item->cod_servicio . '</td>
-                //             <td>' . $item->des_servicio . '</td>
-                //             <td>serv</td>
-                //             <td>' . $d->cantidad . '</td>
-                //             <td>' . $d->precio_referencial . '</td>
-                //             <td> <input type="number" min="0" max="'.$d->cantidad.'" value="'.$d->stock_comprometido .'" class="form-control activation stock_comprometido" data-id-det-req="'.$d->id_detalle_requerimiento.'"  data-id-req="'.$d->id_requerimiento.'"name="stock_comprometido[]" disabled></td>
-
-                //         </tr>
-                //         ';
-                //     }else{
-                //         $html .= '
-                //         <tr>
-                //             <td>
-                //                 <input class="oculto" value="' . $d->id_requerimiento . '" name="id_requerimiento"/>
-                //                 <input class="oculto" value="' . $d->id_detalle_requerimiento . '" name="id_detalle"/>';
-                //         $html.= $clave;
-                //         $html.= '
-                //             </td>
-                //             <td>' . $d->cod_req . '</td>
-                //             <td>' . $item->cod_servicio . '</td>
-                //             <td>' . $item->des_servicio . '</td>
-                //             <td>serv</td>
-                //             <td>' . $d->cantidad . '</td>
-                //             <td>' . $d->precio_referencial . '</td>
-                //             <td>' . $d->stock_comprometido . '</td>
-
-                //         </tr>
-                //         ';                        
-                // ';
-                //         ';                        
-                //     }
-                // }
-            // } else { // si no existe | no existe id_item
-            //     if($type_view =='VIEW_CHECKBOX'){
-            //         $sedeReq = DB::table('almacen.alm_req')
-            //         ->select(
-            //             'adm_grupo.id_sede'
-            //         )
-            //         ->leftjoin('administracion.adm_grupo', 'adm_grupo.id_grupo', '=', 'alm_req.id_grupo')
-            //         ->where('alm_req.id_requerimiento', $d->id_requerimiento)
-            //         ->first();
-            //         $almacenes  = $this->cargar_almacenes($sedeReq->id_sede);
-            //     $html .= '
-            //         <tr>
-            //             <td>
-            //                 <input class="oculto" value="' . $d->id_requerimiento . '" name="id_requerimiento"/>
-            //                 <input class="oculto" value="' . $d->id_detalle_requerimiento . '" name="id_detalle"/>
-            //                 <input type="checkbox"/>
-            //             </td>
-            //             <td>' . $d->cod_req . '</td>
-            //             <td>-</td>
-            //             <td>-</td>
-            //             <td>' . $d->descripcion_adicional . '</td>
-            //             <td>' . $d->abreviatura . '</td>
-            //             <td>' . $d->cantidad . '</td>
-            //             <td>' . $d->precio_referencial . '</td>
-            //             <td> <input type="number" min="0" max="'.$d->cantidad.'" value="'.$d->stock_comprometido .'" class="form-control activation stock_comprometido" data-id-det-req="'.$d->id_detalle_requerimiento.'"  data-id-req="'.$d->id_requerimiento.'"name="stock_comprometido[]" disabled></td>
-            //             <td>
-            //                 <select class="form-control almacen_selected" name="" data-id-det-req="'.$d->id_detalle_requerimiento.'">';
-            //                 foreach($almacenes as $al){
-            //                     $html.='<option value="'.$al->id_almacen.'">'.$al->descripcion.'</option>';
-            //                 }
-            //         $html.='</select>
-            //             </td>
-
-            //         </tr>
-            //     ';
-            //     }else{
-            //         $html .= '
-            //         <tr>
-            //             <td>
-            //                 <input class="oculto" value="' . $d->id_requerimiento . '" name="id_requerimiento"/>
-            //                 <input class="oculto" value="' . $d->id_detalle_requerimiento . '" name="id_detalle"/>';
-            //         $html.= $clave;
-            //         $html.='</td>
-            //             <td>' . $d->cod_req . '</td>
-            //             <td>0</td>
-            //             <td>' . $d->descripcion_adicional . '</td>
-            //             <td>' . $d->abreviatura . '</td>
-            //             <td>' . $d->cantidad . '</td>
-            //             <td>' . $d->precio_referencial . '</td>
-            //             <td>' . $d->stock_comprometido . '</td>
-
-            //         </tr>
-            //     '; 
-            //     }
-
-
-        }
-        return json_encode($payload);
-    }
 
     public function guardar_proveedor(Request $request){
         try {
@@ -6183,7 +5915,7 @@ function get_id_usuario_usuario_por_rol($descripcion_rol, $id_sede, $id_empresa)
 
 
 
-            
+            $codigo_grupo='';
             //agrega grupo_cotizacion
             if ($id_grupo != '0') {
                 $detalle_grupo_cotizacion = DB::table('logistica.log_detalle_grupo_cotizacion')->insert(
@@ -6248,7 +5980,7 @@ function get_id_usuario_usuario_por_rol($descripcion_rol, $id_sede, $id_empresa)
 
                 }
             }
-        return response()->json(['id_cotizacion' => $id_cotizacion, 'id_grupo' => $id_grupo, 'message'=>$rsta, 'status'=>$status]);
+        return response()->json(['id_cotizacion' => $id_cotizacion, 'codigo_grupo'=>$codigo_grupo, 'id_grupo' => $id_grupo, 'message'=>$rsta, 'status'=>$status]);
     }
 
     function agregar_item_a_cotizacion(Request $request,$id_cotizacion){
@@ -7731,103 +7463,6 @@ function get_id_usuario_usuario_por_rol($descripcion_rol, $id_sede, $id_empresa)
         return response()->json($output);
     }
 
-    public function requerimientos_entrante_a_cotizacion_v2($id_empresa = null,$id_sede=null)
-    {
-        $estado_aprobado = $this->get_estado_doc('Aprobado');
-        $estado_anulado = $this->get_estado_doc('Anulado');
-        $estado_observado = $this->get_estado_doc('Observado');
-        $estado_denegado = $this->get_estado_doc('Denegado');
-        $estado_elaborado = $this->get_estado_doc('Elaborado');
-        $estado_excluidos=[$estado_elaborado,$estado_anulado, $estado_observado,$estado_denegado];
-
-            $id_detalle_req_list_in_coti = DB::table('logistica.log_valorizacion_cotizacion')
-            ->select('valoriza_coti_detalle.id_requerimiento')
-            ->leftJoin('logistica.valoriza_coti_detalle', 'valoriza_coti_detalle.id_valorizacion_cotizacion', '=', 'log_valorizacion_cotizacion.id_valorizacion_cotizacion')
-            ->where([['log_valorizacion_cotizacion.estado', '!=',$estado_anulado ],
-            ['valoriza_coti_detalle.estado', '!=',$estado_anulado ]]) 
-            ->groupBy('valoriza_coti_detalle.id_requerimiento')
-            ->orderBy('valoriza_coti_detalle.id_requerimiento', 'desc')
-            ->get();
-
-              $reqList=[];
-            foreach($id_detalle_req_list_in_coti as $data){
-                 array_push($reqList, $data->id_requerimiento);
-            }
-
-            $idReqInValCotiListUniq=array_unique($reqList);
-
-  
-            // $id_empresa = 2; //enviar como parametro el id_empresa
-            $whereIdEmpresa=[];
-            if($id_empresa != null && $id_empresa >0){
-                $whereIdEmpresa[] =['sis_sede.id_empresa','=',$id_empresa];
-            }
-            if($id_sede != null && $id_sede >0){
-                $whereIdEmpresa[] =['sis_sede.id_sede','=',$id_sede];
-            }
-            $gruposByEmpresa=[];
-
-            $SQLgrupoByEmpresa = DB::table('administracion.adm_grupo')   
-            ->select('adm_grupo.id_grupo')
-            ->leftJoin('administracion.sis_sede', 'sis_sede.id_sede', '=', 'adm_grupo.id_sede')
-            ->where($whereIdEmpresa)
-            ->orderBy('adm_grupo.id_grupo', 'desc')
-            ->get();
-            if($SQLgrupoByEmpresa){
-                foreach($SQLgrupoByEmpresa as $data){
-                    $gruposByEmpresa[]=$data->id_grupo;
-                }
-            }
-            // return $gruposByEmpresa;
- 
-            $req = DB::table('almacen.alm_req')   
-            ->select('alm_req.*', 'adm_area.descripcion as des_area', 'adm_estado_doc.estado_doc')
-            ->leftJoin('administracion.adm_area', 'alm_req.id_area', '=', 'adm_area.id_area')
-            ->leftJoin('administracion.adm_estado_doc', 'alm_req.estado', '=', 'adm_estado_doc.id_estado_doc')
-            ->whereNotIn(
-                'alm_req.id_estado_doc',$estado_excluidos
-                )
-            ->whereIn(
-                'alm_req.id_grupo',$gruposByEmpresa
-
-            )
-            ->orderBy('alm_req.fecha_registro', 'desc')
-            ->get();
-            $requerimientos=[];
-            foreach($req as $data){
-                $requerimientos[]=[
-                    'id_requerimiento'=>$data->id_requerimiento,
-                    'codigo'=>$data->codigo,
-                    'id_tipo_requerimiento'=>$data->id_tipo_requerimiento,
-                    'id_usuario'=>$data->id_usuario,
-                    'id_rol'=>$data->id_rol,
-                    'fecha_requerimiento'=>$data->fecha_requerimiento,
-                    'concepto'=>$data->concepto,
-                    'id_grupo'=>$data->id_grupo,
-                    'id_op_com'=>$data->id_op_com,
-                    'fecha_registro'=>$data->fecha_registro,
-                    'id_area'=>$data->id_area,
-                    'id_prioridad'=>$data->id_prioridad,
-                    'id_estado_doc'=>$data->id_estado_doc,
-                    'id_moneda'=>$data->id_moneda,
-                    'obs_log'=>$data->obs_log,
-                    'des_area'=>$data->des_area,
-                    'estado_doc'=>$data->estado_doc,
-                    'has_cotizacion'=>in_array($data->id_requerimiento, $idReqInValCotiListUniq)?true:false,
-                ];
-                
-
-            }
-          
- 
- 
-
-        $output['data'] = $requerimientos;
-        // return response()->json($output);
-
-        // return response()->json($output);
-        return response()->json($output);
-    }
 
 
 
@@ -9080,7 +8715,7 @@ function get_id_usuario_usuario_por_rol($descripcion_rol, $id_sede, $id_empresa)
         if(isset($id_req) && $id_req > 0){
             DB::table('almacen.alm_req') //requerimiento cambia su estado
                 ->where('id_requerimiento', $id_req)
-                ->update(['id_estado_doc' => 5]); // estado Atendido ( con orden)            
+                ->update(['estado' => 5]); // estado Atendido ( con orden)            
         }
 
         $data_doc_aprob = DB::table('administracion.adm_documentos_aprob')->insertGetId(
@@ -10114,8 +9749,7 @@ function get_id_usuario_usuario_por_rol($descripcion_rol, $id_sede, $id_empresa)
 
             ->where($hasWhere)
             ->get();
-
-
+        
         if (sizeof($log_cotizacion) > 0) {
             foreach ($log_cotizacion as $data) {
                 $id_cotizaciones[] = $data->id_cotizacion;

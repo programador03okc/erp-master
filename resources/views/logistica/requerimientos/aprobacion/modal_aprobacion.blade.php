@@ -22,18 +22,14 @@
                     </div>
                     <div class="row">
                         <div class="col-md-12">
-                            <input type="hidden" name="id_documento">
-                            <input type="hidden" name="codigo">
-                            <input type="hidden" name="doc_aprobacion">
-                            <input type="hidden" name="id_area">
-                            <input type="hidden" name="flujo">
+                            <input type="hidden" name="id_doc_aprob">
                             <h5>Motivo/Justificación</h5>
-                            <textarea class="form-control input-sm" name="motivo" id="motivo" rows="5"></textarea>
+                            <textarea class="form-control input-sm" name="detalle_observacion" id="detalle_observacion" rows="5"></textarea>
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-sm btn-success">Grabar</button>
+                    <button type="button" class="btn btn-sm btn-success" onClick="GrabarAprobacion();">Grabar</button>
                 </div>
             </form>
         </div>
