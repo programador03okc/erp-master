@@ -187,56 +187,6 @@ Hoja de Transformación
     </div>
     <div class="row">
         <div class="col-md-12">
-
-            <div class="panel panel-default" style="margin-bottom: 0px;" >
-                <div class="panel-heading"><strong>Servicios Directos</strong></div>
-                <table id="listaServiciosDirectos" class="table">
-                    <thead>
-                        <tr style="background: lightgray;">
-                            <!-- <th width='10%'>Part Number</th> -->
-                            <th>Descripción</th>
-                            <!-- <th width='10%'>Cant.</th>
-                            <th>Unit.</th> -->
-                            <th width='15%'>Total</th>
-                            <th style="padding:0px;">
-                                <i class="fas fa-plus-square icon-tabla green boton add-new-servicio" 
-                                    data-toggle="tooltip" data-placement="bottom" 
-                                    title="Agregar Servicio" ></i>
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-12">
-            <div class="panel panel-warning" style="margin-bottom: 0px;" >
-                <div class="panel-heading"><strong>Costos Indirectos</strong></div>
-                <table id="listaCostosIndirectos" class="table">
-                    <thead>
-                        <tr style="background: navajowhite;">
-                            <!-- <th width='5%'>Nro</th> -->
-                            <th>Código Item</th>
-                            <th>Tasa(%)</th>
-                            <th>Parámetro</th>
-                            <th>Unit.</th>
-                            <th>Total</th>
-                            <th style="padding:0px;">
-                                <i class="fas fa-plus-square icon-tabla green boton add-new-indirecto" 
-                                    data-toggle="tooltip" data-placement="bottom" 
-                                    title="Agregar Indirecto"></i>
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-12">
             <div class="panel panel-danger" style="margin-bottom: 0px;" >
                 <div class="panel-heading"><strong>Sobrantes</strong></div>
                 <table id="listaSobrantes" class="table">
@@ -287,246 +237,55 @@ Hoja de Transformación
             </div>
         </div>
     </div>
-    <!-- <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-        <div class="panel panel-default">
-            <div class="panel-heading" role="tab" id="headingOne">
-            <h4 class="panel-title">
-                <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                Materias Primas
-                </a>
-            </h4>
-            </div>
-            <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
-            <div class="panel-body">
-                <table id="listaMateriasPrimas" class="mytable table table-condensed table-bordered table-okc-view" style="margin-bottom: 0px;">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default" style="margin-bottom: 0px;" >
+                <div class="panel-heading"><strong>Servicios Directos</strong></div>
+                <table id="listaServiciosDirectos" class="table">
                     <thead>
-                        <tr>
-                            <th>Nro</th>
-                            <th>Código</th>
-                            <th>PartNumber</th>
-                            <th width='40%'>Descripción</th>
-                            <th width='10%'>Cant.</th>
-                            <th>Unid.</th>
-                            <th>Unit.</th>
-                            <th>Total</th>
-                            <th width='5%'>
-                                <i class="fas fa-plus-square icon-tabla green boton" 
-                                    data-toggle="tooltip" data-placement="bottom" 
-                                    title="Agregar Producto" onClick="productoModal();"></i>
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                    <tfoot>
-                        <tr>
-                            <td colSpan="7"></td>
-                            <td><input type="number" class="input-data right" name="total_materias" disabled="true"/></td>
-                            <td></td>
-                        </tr>
-                    </tfoot>
-                </table>
-            </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-8"></div>
-            <div class="col-md-4">
-                <table class="table table-condensed " width="100%">
-                    <tbody>
-                        <tr>
-                            <td width="50%" style="text-align: right;">Total Materias Primas</td>
-                            <td width="10%"></td>
-                            <td><label name="total_materias">0.00</label></td>
-                            
-                        </tr>
-                        <tr>
-                            <td style="text-align: right;">Total Servicios Directos</td>
-                            <td width="10%"></td>
-                            <td><label name="total_directos">0.00</label></td>
-                            
-                        </tr>
-                        <tr>
-                            <td style="text-align: right;"><strong>Costo Primo</strong></td>
-                            <td width="10%"></td>
-                            <td><label name="costo_primo">0.00</label></td>
-                            
-                        </tr>
-                        <tr>
-                            <td style="text-align: right;">Total Costos Indirectos</td>
-                            <td width="10%"></td>
-                            <td><label name="total_indirectos">0.00</label></td>
-                            
-                        </tr>
-                        <tr>
-                            <td style="text-align: right;">Total Sobrantes</td>
-                            <td width="10%"></td>
-                            <td><label name="total_sobrantes">0.00</label></td>
-                            
-                        </tr>
-                        <tr>
-                            <td style="text-align: right;"><strong>Costo de Transformación</strong></td>
-                            <td width="10%"></td>
-                            <td><label name="costo_transformacion">0.00</label></td>
-                            
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        <div class="panel panel-default">
-            <div class="panel-heading" role="tab" id="headingTwo">
-            <h4 class="panel-title">
-                <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                Servicios Directos
-                </a>
-            </h4>
-            </div>
-            <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
-            <div class="panel-body">
-                <table id="listaServiciosDirectos" class="mytable table table-condensed table-bordered table-okc-view" width="100%" style="margin-bottom: 0px;">
-                    <thead>
-                        <tr>
-                            <th width='5%'>Nro</th>
+                        <tr style="background: lightgray;">
+                            <!-- <th width='10%'>Part Number</th> -->
                             <th>Descripción</th>
+                            <!-- <th width='10%'>Cant.</th>
+                            <th>Unit.</th> -->
                             <th width='15%'>Total</th>
-                            <th width='8%'>
-                                <i class="fas fa-plus-square icon-tabla green boton" 
+                            <th style="padding:0px;">
+                                <i class="fas fa-plus-square icon-tabla green boton add-new-servicio" 
                                     data-toggle="tooltip" data-placement="bottom" 
-                                    title="Agregar Servicio" onClick="servicioModal();"></i>
+                                    title="Agregar Servicio" ></i>
                             </th>
                         </tr>
                     </thead>
                     <tbody></tbody>
-                    <tfoot>
-                        <tr>
-                            <td colSpan="2"></td>
-                            <td><input type="number" class="input-data right" name="total_directos" disabled="true"/></td>
-                            <td></td>
-                        </tr>
-                    </tfoot>
                 </table>
             </div>
-            </div>
         </div>
-        <div class="panel panel-default">
-            <div class="panel-heading" role="tab" id="headingThree">
-            <h4 class="panel-title">
-                <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-                Costos Indirectos
-                </a>
-            </h4>
-            </div>
-            <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
-            <div class="panel-body">
-                <table id="listaCostosIndirectos" class="mytable table table-condensed table-bordered table-okc-view" width="100%" style="margin-bottom: 0px;">
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-warning" style="margin-bottom: 0px;" >
+                <div class="panel-heading"><strong>Costos Indirectos</strong></div>
+                <table id="listaCostosIndirectos" class="table">
                     <thead>
-                        <tr>
-                            <th width='5%'>Nro</th>
-                            <th width='10%'>Código</th>
-                            <th width='40%'>Descripción</th>
+                        <tr style="background: navajowhite;">
+                            <!-- <th width='5%'>Nro</th> -->
+                            <th>Código Item</th>
                             <th>Tasa(%)</th>
                             <th>Parámetro</th>
                             <th>Unit.</th>
                             <th>Total</th>
-                            <th width='5%'>
-                                <i class="fas fa-plus-square icon-tabla green boton" 
+                            <th style="padding:0px;">
+                                <i class="fas fa-plus-square icon-tabla green boton add-new-indirecto" 
                                     data-toggle="tooltip" data-placement="bottom" 
-                                    title="Agregar Servicio" onClick="servicioModal();"></i>
+                                    title="Agregar Indirecto"></i>
                             </th>
                         </tr>
                     </thead>
                     <tbody></tbody>
-                    <tfoot>
-                        <tr>
-                            <td colSpan="6"></td>
-                            <td><input type="number" class="input-data right" name="total_indirectos" disabled="true"/></td>
-                            <td></td>
-                        </tr>
-                    </tfoot>
                 </table>
             </div>
-            </div>
         </div>
-        <div class="panel panel-default">
-            <div class="panel-heading" role="tab" id="headingFour">
-            <h4 class="panel-title">
-                <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
-                Sobrantes
-                </a>
-            </h4>
-            </div>
-            <div id="collapseFour" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
-            <div class="panel-body">
-                <table id="listaSobrantes" class="mytable table table-condensed table-bordered table-okc-view" width="100%" style="margin-bottom: 0px;">
-                    <thead>
-                        <tr>
-                            <th width='5%'>Nro</th>
-                            <th width='10%'>Código</th>
-                            <th width='10%'>PartNumber</th>
-                            <th width='40%'>Descripción</th>
-                            <th width='10%'>Cant.</th>
-                            <th>Unid.</th>
-                            <th>Unit.</th>
-                            <th>Total</th>
-                            <th width='5%'>
-                                <i class="fas fa-plus-square icon-tabla green boton" 
-                                    data-toggle="tooltip" data-placement="bottom" 
-                                    title="Agregar Producto" onClick="productoModal();"></i>
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                    <tfoot>
-                        <tr>
-                            <td colSpan="6"></td>
-                            <td><input type="number" class="input-data right" name="total_sobrantes" disabled="true"/></td>
-                            <td colSpan="2"></td>
-                        </tr>
-                    </tfoot>
-                </table>
-            </div>
-            </div>
-        </div>
-        <div class="panel panel-default">
-            <div class="panel-heading" role="tab" id="headingFive">
-            <h4 class="panel-title">
-                <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
-                Productos Transformados
-                </a>
-            </h4>
-            </div>
-            <div id="collapseFive" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
-            <div class="panel-body">
-                <table id="listaProductoTransformado" class="mytable table table-condensed table-bordered table-okc-view" width="100%" style="margin-bottom: 0px;">
-                    <thead>
-                        <tr>
-                            <th width='5%'>Nro</th>
-                            <th width='10%'>Código</th>
-                            <th width='40%'>Descripción</th>
-                            <th width='10%'>Cant.</th>
-                            <th>Unid.</th>
-                            <th>Unit.</th>
-                            <th>Total</th>
-                            <th width='5%'>
-                                <i class="fas fa-plus-square icon-tabla green boton" 
-                                    data-toggle="tooltip" data-placement="bottom" 
-                                    title="Agregar Producto" onClick="productoModal();"></i>
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                    <tfoot>
-                        <tr>
-                            <td colSpan="6"></td>
-                            <td><input type="number" class="input-data right" name="total_transformado" disabled="true"/></td>
-                            <td colSpan="2"></td>
-                        </tr>
-                    </tfoot>
-                </table>
-            </div>
-            </div>
-        </div>
-    </div> -->
+    </div>
 </div>
 @include('almacen.customizacion.transformacionModal')
 @include('almacen.producto.productoModal')

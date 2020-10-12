@@ -58,6 +58,7 @@ function open_despacho_create(data){
         $('[name=nombre_persona]').hide();
     }
     $("#detalleItemsReq").hide();
+    $("#despachoExterno").show();
 
     // if (data.id_tipo_requerimiento == 2){
         // var idTabla = 'detalleRequerimientoOD';
@@ -248,6 +249,7 @@ $("[name=aplica_cambios]").on( 'change', function() {
         $('#name_title').text('Despacho Interno');
         $('#name_title').removeClass();
         $('#name_title').addClass('red');
+        $("#despachoExterno").hide();
 
         $("[name=seleccionar_todos]").prop('checked', true);
         detalle_ingresa = detalle_requerimiento;
@@ -260,6 +262,7 @@ $("[name=aplica_cambios]").on( 'change', function() {
         $('#name_title').text('Despacho Externo');
         $('#name_title').removeClass();
         $('#name_title').addClass('blue');
+        $("#despachoExterno").show();
 
         $("[name=seleccionar_todos]").prop('checked', false);
         detalle_ingresa = [];
