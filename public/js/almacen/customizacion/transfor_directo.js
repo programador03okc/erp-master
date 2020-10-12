@@ -82,7 +82,9 @@ $('#listaServiciosDirectos tbody').on("click", ".delete", function(){
         var idx = $(this).parents("tr")[0].id;
         $(this).parents("tr").remove();
         console.log(idx);
-        anular_directo(idx);
+        if (idx !== ''){
+            anular_directo(idx);
+        }
     }
     // var index = lista_servicios.findIndex(function(item, i){
     //     console.log('idx'+idx+' index'+item.index);

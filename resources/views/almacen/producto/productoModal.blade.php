@@ -8,18 +8,7 @@
             </div>
             <div class="modal-body">
                 <table class="mytable table table-condensed table-bordered table-okc-view" id="listaProducto">
-                    <thead>
-                        {{-- <tr>
-                            <th></th>
-                            <th>Código</th>
-                            <th>Código Antiguo</th>
-                            <th>Descripción</th>
-                            <th>Código Anexo</th>
-                            <th>Posición</th>
-                            <th>Stock Actual</th>
-                            <th hidden>unid</th>
-                        </tr> --}}
-                    </thead>
+                    <thead></thead>
                     <tbody></tbody>
                 </table>
             </div>

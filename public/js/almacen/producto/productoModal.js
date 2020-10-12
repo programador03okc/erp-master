@@ -88,7 +88,15 @@ function listarProductos(){
     var vardataTables = funcDatatables();
     $('#listaProducto').dataTable({
         'dom': vardataTables[1],
-        'buttons': vardataTables[2],
+        'buttons': [
+            {
+                text: "Crear Producto",
+                className: 'btn btn-primary',
+                action: function(){
+                    openProductoCreate();
+                }
+            }
+        ],
         'language' : vardataTables[0],
         // 'processing': true,
         'bDestroy' : true,
@@ -200,19 +208,6 @@ function selectProducto(){
         $('[name=descripcion]').val(code+' - '+desc);
         datos_producto(myId);
     }
-    // else if (page == "transformacion"){
-    //     var acordion = $('#accordion .in')[0].id;
-    //     console.log($('#accordion .in')[0].id);
-    //     if (acordion == "collapseOne"){//materias primas
-    //         guardar_materia(myId);
-    //     }
-    //     else if (acordion == "collapseFour"){//sobrantes
-    //         guardar_sobrante(myId);
-    //     }
-    //     else if (acordion == "collapseFive"){//productos transformados
-    //         guardar_transformado(myId);
-    //     }
-    // }
     else if (page == "transformaciones"){
         console.log(desc);
         var sel = {
@@ -242,6 +237,18 @@ function selectProducto(){
         else if (origen == 'materia'){
             agregar_producto_materia(sel);
         }
+    }
+    else if (page == "requerimientosPendientes"){
+        var producto = {
+            'id_producto': myId,
+            'part_number': part,
+            'codigo': code,
+            'descripcion': desc,
+            'abreviatura': abre,
+            'id_unidad_medida': unid
+        }
+        detalle_sale.push(producto);
+        mostrarSale();
     }
     $('#modal-producto').modal('hide');
 }

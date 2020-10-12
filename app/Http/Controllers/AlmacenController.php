@@ -119,10 +119,10 @@ class AlmacenController extends Controller
         return view('almacen/producto/prod_catalogo');
     }
     function view_producto(){
-        $clasificaciones = $this->mostrar_clasificaciones_cbo();
-        $subcategorias = $this->mostrar_subcategorias_cbo();
-        $categorias = $this->mostrar_categorias_cbo();
-        $unidades = $this->mostrar_unidades_cbo();
+        $clasificaciones = AlmacenController::mostrar_clasificaciones_cbo();
+        $subcategorias = AlmacenController::mostrar_subcategorias_cbo();
+        $categorias = AlmacenController::mostrar_categorias_cbo();
+        $unidades = AlmacenController::mostrar_unidades_cbo();
         $posiciones = $this->mostrar_posiciones_cbo();
         $ubicaciones = $this->mostrar_ubicaciones_cbo();
         $monedas = $this->mostrar_moneda_cbo();
@@ -495,7 +495,7 @@ class AlmacenController extends Controller
                 ->orderBy('alm_tp_prod.id_tipo_producto','asc')->get();
         return $data;
     }
-    public function mostrar_clasificaciones_cbo(){
+    public static function mostrar_clasificaciones_cbo(){
         $data = DB::table('almacen.alm_clasif')
             ->select('alm_clasif.id_clasificacion','alm_clasif.descripcion')
             ->where([['alm_clasif.estado', '=', 1]])
@@ -503,7 +503,7 @@ class AlmacenController extends Controller
                 ->get();
         return $data;
     }
-    public function mostrar_subcategorias_cbo(){
+    public static function mostrar_subcategorias_cbo(){
         $data = DB::table('almacen.alm_subcat')
             ->select('alm_subcat.id_subcategoria','alm_subcat.descripcion')
             ->where([['alm_subcat.estado', '=', 1]])
@@ -511,7 +511,7 @@ class AlmacenController extends Controller
                 ->get();
         return $data;
     }
-    public function mostrar_categorias_cbo(){
+    public static function mostrar_categorias_cbo(){
         $data = DB::table('almacen.alm_cat_prod')
             ->select('alm_cat_prod.id_categoria','alm_cat_prod.descripcion')
             ->where([['alm_cat_prod.estado', '=', 1]])
@@ -519,7 +519,7 @@ class AlmacenController extends Controller
                 ->get();
         return $data;
     }
-    public function mostrar_unidades_cbo(){
+    public static function mostrar_unidades_cbo(){
         $data = DB::table('almacen.alm_und_medida')
             ->select('alm_und_medida.id_unidad_medida','alm_und_medida.descripcion',
                 'alm_und_medida.abreviatura')
@@ -1247,19 +1247,19 @@ class AlmacenController extends Controller
             $id_producto = DB::table('almacen.alm_prod')->insertGetId(
                 [
                     'codigo' => $codigo,
-                    'codigo_anexo' => $request->codigo_anexo,
+                    'codigo_anexo' => ($request->codigo_anexo!==null ? $request->codigo_anexo : null),
                     'part_number' => $request->part_number,
                     'id_clasif' => $request->id_clasif,
                     'id_subcategoria' => $request->id_subcategoria,
+                    'id_categoria' => $request->id_categoria,
                     'descripcion' => $des,
                     'id_unidad_medida' => ($request->id_unidad_medida !== 0 ? $request->id_unidad_medida : null),
-                    'id_unid_equi' => ($request->id_unid_equi !== 0 ? $request->id_unid_equi : null),
-                    'cant_pres' => $request->cant_pres,
-                    'series' => ($request->series == '1')?true:false,
-                    'afecto_igv' => ($request->afecto_igv == '1')?true:false,
-                    'id_moneda' => $request->id_moneda,
-                    'notas' => $request->notas,
-                    'id_categoria' => $request->id_categoria,
+                    'id_unid_equi' => (($request->id_unid_equi !== 0 && $request->id_unid_equi !== null) ? $request->id_unid_equi : null),
+                    'cant_pres' => ($request->cant_pres !== null ? $request->cant_pres : null),
+                    'series' => ($request->series == null || $request->series !== '1') ? false : true,
+                    'afecto_igv' => ($request->afecto_igv == null || $request->afecto_igv !== '1') ? false : true,
+                    'id_moneda' => ($request->id_moneda !== null ? $request->id_moneda : null),
+                    'notas' => ($request->notas !== null ? $request->notas : ''),
                     'estado' => 1,
                     'fecha_registro' => $fecha
                 ],
@@ -1271,10 +1271,19 @@ class AlmacenController extends Controller
                     'codigo' => $codigo,
                     'fecha_registro' => $fecha
                 ],  'id_item');
-        } else {
+
+            $producto = DB::table('almacen.alm_prod')
+                    ->select('alm_prod.*','alm_und_medida.abreviatura')
+                    ->join('almacen.alm_und_medida','alm_und_medida.id_unidad_medida','=','alm_prod.id_unidad_medida')
+                    ->where('id_producto',$id_producto)->first();
+            
+            return response()->json(['msj'=>$msj,'id_producto'=>$id_producto,'producto'=>$producto]);
+        } 
+        else {
             $msj = 'No es posible guardar. Ya existe un producto con dicha descripción y/o Part Number.';
+
+            return response()->json(['msj'=>$msj]);
         }
-        return response()->json(['msj'=>$msj,'id_producto'=>$id_producto]);
     }
 
     public function update_producto(Request $request)

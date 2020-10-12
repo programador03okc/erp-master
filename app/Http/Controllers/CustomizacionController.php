@@ -365,7 +365,7 @@ class CustomizacionController extends Controller
         // }
         // return json_encode($html);
     }
-    public function anular_sobrante(Request $request, $id)
+    public function anular_sobrante($id)
     {
         $data = DB::table('almacen.transfor_sobrante')->where('id_sobrante', $id)
             ->update([ 'estado' => 7 ]);

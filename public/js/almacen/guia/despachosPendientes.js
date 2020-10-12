@@ -43,6 +43,15 @@ function listarDespachosPendientes(permiso){
         },
         'columns': [
             {'data': 'id_od'},
+            {'render': 
+                function (data, type, row){
+                    if (row['aplica_cambios']){
+                        return '<span class="label label-danger">Despacho Interno</span>';
+                    } else {
+                        return '<span class="label label-primary">Despacho Externo</span>';
+                    }
+                }
+            },
             {'data': 'fecha_despacho'},
             {'data': 'hora_despacho'},
             {'data': 'codigo'},
@@ -59,17 +68,10 @@ function listarDespachosPendientes(permiso){
             {'data': 'codigo_req', 'name': 'alm_req.codigo'},
             {'data': 'concepto', 'name': 'alm_req.concepto'},
             {'data': 'almacen_descripcion', 'name': 'alm_almacen.descripcion'},
-            {'data': 'ubigeo_descripcion', 'name': 'ubi_dis.descripcion'},
-            {'data': 'direccion_destino'},
+            // {'data': 'ubigeo_descripcion', 'name': 'ubi_dis.descripcion'},
+            // {'data': 'direccion_destino'},
             {'data': 'fecha_entrega'},
-            {'data': 'nombre_corto', 'name': 'sis_usua.nombre_corto'},
-            {'render': 
-                function (data, type, row){
-                    return ('<span class="label label-'+row['bootstrap_color']+'">'+row['estado_doc']+'</span>');
-                }
-            }
-            // {'defaultContent': 
-            // }
+            {'data': 'nombre_corto', 'name': 'sis_usua.nombre_corto'}
         ],
         'order': [[ 1, "asc" ],[ 2, "asc" ]],
         'columnDefs': [
@@ -88,7 +90,7 @@ function listarDespachosPendientes(permiso){
                     'data-placement="bottom" title="Ver Detalle" >'+
                     '<i class="fas fa-list-ul"></i></button>'
                 }
-                }, targets: 13
+                }, targets: 11
             }
         ],
     });

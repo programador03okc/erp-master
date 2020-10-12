@@ -4,7 +4,7 @@
             <form id="form-orden_despacho">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="close"><span aria-hidden="true">&times;</span></button>
-                    <h3 class="modal-title">Generar Orden de Despacho</h3>
+                    <h3 class="modal-title">Generar Orden de Despacho - <span id="name_title"></span></h3>
                 </div>
                 <div class="modal-body">
                     <input type="text" class="oculto" name="id_requerimiento">
@@ -120,10 +120,10 @@
                     </div>
                 </div>
                 <div id="detalleItemsReq">
-                    <div class="modal-header" style="display:flex;">
+                    <div class="modal-header" style="display:flex;padding-top: 0px;">
                         <h4 class="modal-title green"><i class="fas fa-arrow-circle-right green"></i> Ingresa: </h4>
                     </div>
-                    <div class="modal-body">
+                    <div class="modal-body" style="padding-bottom:0px;">
                         <div class="row">
                             <div class="col-md-12">
                                 <input type="checkbox" name="seleccionar_todos" style="margin-right: 10px; margin-left: 7px;"/> Seleccione todos los items
@@ -134,16 +134,14 @@
                                             <th>#</th>
                                             <th>Código</th>
                                             <th>PartNumber</th>
-                                            <th>Categoría</th>
-                                            <th>SubCategoría</th>
+                                            <!-- <th>Categoría</th>
+                                            <th>SubCategoría</th> -->
                                             <th>Descripción</th>
-                                            <th>Cantidad</th>
-                                            <th>Unid</th>
                                             <th>Almacén Reserva</th>
-                                            <!-- <th>Lugar de Entrega</th> -->
+                                            <th>Cant.</th>
+                                            <th>Unid</th>
+                                            <th>Cant.Desp.</th>
                                             <th>Estado</th>
-                                            <!-- <th>Acción</th> -->
-                                            <!-- <th>Total</th> -->
                                         </tr>
                                     </thead>
                                     <tbody></tbody>
@@ -151,13 +149,32 @@
                             </div>
                         </div>
                     </div>
-                    <div class="modal-header" style="display:flex;">
+                    <div class="modal-header" style="display:flex;padding-top: 0px;">
                         <h4 class="modal-title red"><i class="fas fa-arrow-circle-left red"></i> Sale: </h4>
                     </div>
-                    <div class="modal-body">
+                    <div class="modal-body" style="padding-top:0px;padding-bottom:0px;">
                         <div class="row">
                             <div class="col-md-12">
-                                <textarea name="sale" id="sale" cols="137" rows="5"></textarea>
+                                <table class="mytable table table-condensed table-bordered table-okc-view" width="100%" 
+                                    id="detalleSale"  style="margin-top:10px;">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Código</th>
+                                            <th>PartNumber</th>
+                                            <th>Descripción</th>
+                                            <th>Cant.</th>
+                                            <th>Unid</th>
+                                            <th style="background: white;width: 40px;">
+                                                <i class="fas fa-plus icon-tabla green boton" 
+                                                    data-toggle="tooltip" data-placement="bottom" 
+                                                    title="Agregar Producto" onClick="productoModal();"></i>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                                <!-- <textarea name="sale" id="sale" cols="137" rows="5"></textarea> -->
                             </div>
                         </div>
                     </div>

@@ -22,7 +22,11 @@ class DistribucionController extends Controller
     function view_ordenesDespacho(){
         $usuarios = AlmacenController::select_usuarios();
         $sis_identidad = AlmacenController::sis_identidad_cbo();
-        return view('almacen/distribucion/ordenesDespacho', compact('usuarios','sis_identidad'));
+        $clasificaciones = AlmacenController::mostrar_clasificaciones_cbo();
+        $subcategorias = AlmacenController::mostrar_subcategorias_cbo();
+        $categorias = AlmacenController::mostrar_categorias_cbo();
+        $unidades = AlmacenController::mostrar_unidades_cbo();
+        return view('almacen/distribucion/ordenesDespacho', compact('usuarios','sis_identidad','clasificaciones','subcategorias','categorias','unidades'));
     }
     function view_despachosPendientes(){
         $tp_operacion = AlmacenController::tp_operacion_cbo_sal();
@@ -217,6 +221,7 @@ class DistribucionController extends Controller
             ->where('alm_req.estado',17)
             ->orWhere([['alm_req.id_tipo_requerimiento','=',1], ['alm_req.estado','=',19], ['alm_req.confirmacion_pago','=',true]])
             ->orWhere([['alm_req.id_tipo_requerimiento','!=',1], ['alm_req.estado','=',19], ['orden_despacho.id_od','!=',null]])
+            ->orWhere([['alm_req.estado','=',22]])
             ->orderBy('alm_req.fecha_requerimiento','desc');
             // ->get();
         return datatables($data)->toJson();
@@ -238,7 +243,7 @@ class DistribucionController extends Controller
         ->join('administracion.adm_estado_doc','adm_estado_doc.id_estado_doc','=','alm_req.estado')
         ->join('configuracion.ubi_dis','ubi_dis.id_dis','=','orden_despacho.ubigeo_destino')
         ->join('configuracion.sis_usua','sis_usua.id_usuario','=','orden_despacho.registrado_por')
-        ->where('orden_despacho.estado',9);
+        ->where('orden_despacho.estado',23);
         // ->get();
         return datatables($data)->toJson();
     }
@@ -581,27 +586,52 @@ class DistribucionController extends Controller
                         'tipo_cambio'=>1,
                         'fecha_registro'=>date('Y-m-d H:i:s'),
                         'estado'=>1,
-                        'observacion'=>'SALE: '.$request->sale
+                        // 'observacion'=>'SALE: '.$request->sale
                     ],
                         'id_transformacion'
                 );
-
                 
-                $data = json_decode($request->detalle_ingresa);
+                $ingresa = json_decode($request->detalle_ingresa);
                 
-                foreach ($data as $d) {
+                foreach ($ingresa as $i) {
                     DB::table('almacen.transfor_materia')
                     ->insert([
                         'id_transformacion'=>$id_transformacion,
-                        'id_producto'=>$d->id_producto,
-                        // 'id_posicion'=>$d->id_posicion,
-                        'cantidad'=>$d->cantidad,
+                        'id_producto'=>$i->id_producto,
+                        'cantidad'=>$i->cantidad,
+                        'valor_unitario'=>0,
+                        'valor_total'=>0,
+                        'estado'=>1,
+                        'fecha_registro'=>date('Y-m-d H:i:s')
+                    ]);
+
+                    DB::table('almacen.orden_despacho_det')
+                    ->insert([
+                        'id_od'=>$id_od,
+                        'id_producto'=>$i->id_producto,
+                        'id_detalle_requerimiento'=>$i->id_detalle_requerimiento,
+                        'cantidad'=>$i->cantidad,
+                        'descripcion_producto'=>$i->descripcion,
+                        'estado'=>1,
+                        'fecha_registro'=>date('Y-m-d H:i:s')
+                    ]);
+                }
+
+                $sale = json_decode($request->detalle_sale);
+                
+                foreach ($sale as $s) {
+                    DB::table('almacen.transfor_transformado')
+                    ->insert([
+                        'id_transformacion'=>$id_transformacion,
+                        'id_producto'=>$s->id_producto,
+                        'cantidad'=>$s->cantidad,
                         'valor_unitario'=>0,
                         'valor_total'=>0,
                         'estado'=>1,
                         'fecha_registro'=>date('Y-m-d H:i:s')
                     ]);
                 }
+
             }
             else {
                 $data = json_decode($request->detalle_requerimiento);
@@ -612,7 +642,7 @@ class DistribucionController extends Controller
                     ->insert([
                         'id_od'=>$id_od,
                         'id_producto'=>$d->id_producto,
-                        // 'id_posicion'=>($d->id_posicion),
+                        'id_detalle_requerimiento'=>$d->id_detalle_requerimiento,
                         'cantidad'=>$d->cantidad,
                         'descripcion_producto'=>$descripcion,
                         'estado'=>1,
@@ -1063,21 +1093,22 @@ Mensaje enviado correctamente a '.$destinatario_almacen;
                         }
                     }
                     //orden de despacho estado   procesado
+                    $est = ($request->id_operacion == 27 ? 22 : 23);
                     DB::table('almacen.orden_despacho')
                     ->where('id_od',$request->id_od)
-                    ->update(['estado'=>9]);
+                    ->update(['estado'=>$est]);
                     //orden de despacho detalle estado   procesado
                     DB::table('almacen.orden_despacho_det')
                     ->where('id_od',$request->id_od)
-                    ->update(['estado'=>9]);
+                    ->update(['estado'=>$est]);
                     //requerimiento despachado
                     DB::table('almacen.alm_req')
                     ->where('id_requerimiento',$request->id_requerimiento)
-                    ->update(['estado'=>9]);
+                    ->update(['estado'=>$est]);
                     //orden de despacho detalle estado   procesado
                     DB::table('almacen.alm_det_req')
                     ->where('id_requerimiento',$request->id_requerimiento)
-                    ->update(['estado'=>9]);
+                    ->update(['estado'=>$est]);
                     //Agrega accion en requerimiento
                     DB::table('almacen.alm_req_obs')
                     ->insert([  'id_requerimiento'=>$request->id_requerimiento,

@@ -3,7 +3,11 @@ function open_guia_create(data){
         show: true
     });
     $("#submit_guia").removeAttr("disabled");
-    $('[name=id_operacion]').val(1).trigger('change.select2');
+    if (data.aplica_cambios){
+        $('[name=id_operacion]').val(27).trigger('change.select2');
+    } else {
+        $('[name=id_operacion]').val(1).trigger('change.select2');
+    }
     $('[name=id_guia_clas]').val(1);
     $('[name=id_od]').val(data.id_od);
     $('[name=id_almacen]').val(data.id_almacen);

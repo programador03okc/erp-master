@@ -181,8 +181,10 @@ $('#listaSobrantes tbody').on("click", ".delete", function(){
     if (anula){
         var idx = $(this).parents("tr")[0].id;
         $(this).parents("tr").remove();
-        console.log(idx);
-        anular_sobrante(idx);
+        console.log('idx'+idx);
+        if (idx !== ''){
+            anular_sobrante(idx);
+        }
     }
 });
 function anular_sobrante(id){

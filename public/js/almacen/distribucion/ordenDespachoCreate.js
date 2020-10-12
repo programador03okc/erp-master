@@ -1,5 +1,6 @@
 let detalle_requerimiento = [];
 let detalle_ingresa = [];
+let detalle_sale = [];
 let tab_origen = null;
 
 function open_despacho_create(data){
@@ -58,11 +59,10 @@ function open_despacho_create(data){
     }
     $("#detalleItemsReq").hide();
 
-    console.log(data.id_tipo_requerimiento);
     // if (data.id_tipo_requerimiento == 2){
-        var idTabla = 'detalleRequerimientoOD';
-        console.log(idTabla);
-        listar_detalle_requerimiento(data.id_requerimiento, idTabla);
+        // var idTabla = 'detalleRequerimientoOD';
+        // console.log(idTabla);
+        detalleRequerimiento(data.id_requerimiento);
     // } 
     // else if (data.id_tipo_requerimiento == 1){
     //     listar_detalle_ingreso(data.id_requerimiento);
@@ -72,9 +72,45 @@ function open_despacho_create(data){
     $('[name=fecha_entrega]').val(fecha_actual());
     $('[name=aplica_cambios]').prop('checked', false);
     $('[name=aplica_cambios_valor]').val('no');
+    $('#name_title').text('Despacho Externo');
+    $('#name_title').removeClass();
+    $('#name_title').addClass('blue');
 
     detalle_requerimiento = [];
     detalle_ingresa = [];
+    detalle_sale = [];
+}
+
+function detalleRequerimiento(id_requerimiento){
+    $.ajax({
+        type: 'GET',
+        url: 'verDetalleRequerimiento/'+id_requerimiento,
+        dataType: 'JSON',
+        success: function(response){
+            console.log(response);
+            var html = '';
+            detalle_requerimiento = response;
+
+            response.forEach(element => {
+                html+='<tr id="'+element.id_detalle_requerimiento+'">'+
+                '<td><input type="checkbox" value="'+element.id_detalle_requerimiento+'" onChange="changeCheckIngresa(this,'+element.id_detalle_requerimiento+');"/></td>'+
+                '<td>'+(element.producto_codigo !== null ? element.producto_codigo : '')+'</td>'+
+                '<td>'+(element.part_number !== null ? element.part_number : '')+'</td>'+
+                '<td>'+(element.producto_descripcion !== null ? element.producto_descripcion : element.descripcion_adicional)+'</td>'+
+                '<td>'+(element.almacen_descripcion !== null ? element.almacen_descripcion : '')+'</td>'+
+                '<td>'+element.cantidad+'</td>'+
+                '<td>'+(element.abreviatura !== null ? element.abreviatura : '')+'</td>'+
+                '<td><input type="number" id="'+element.id_detalle_requerimiento+'cantidad" value="'+element.cantidad+'" max="'+element.cantidad+'" style="width: 80px;"/></td>'+
+                '<td><span class="label label-'+element.bootstrap_color+'">'+element.estado_doc+'</span></td>'+
+                '</tr>';
+            });
+            $('#detalleRequerimientoOD tbody').html(html);
+        }
+    }).fail( function( jqXHR, textStatus, errorThrown ){
+        console.log(jqXHR);
+        console.log(textStatus);
+        console.log(errorThrown);
+    });
 }
 
 function openCliente(){
@@ -119,38 +155,84 @@ function limpiarCampos(tipo){
     }
 }
 
-function listar_detalle_ingreso(id_requerimiento){
+$("#form-orden_despacho").on("submit", function(e){
+    console.log('submit');
+    e.preventDefault();
+    var msj = validaOrdenDespacho();
+    var json_detalle_ingresa = [];
+    var json_detalle_sale = [];
+    var validaCampos = '';
+
+    if (msj.length > 0){
+        alert(msj);
+    } 
+    else {
+        var serial = $(this).serialize();
+        var doc = $('input[name=optionsRadios]:checked').val();
+
+        $("#detalleRequerimientoOD input[type=checkbox]:checked").each(function(){
+            var id_detalle_requerimiento = $(this).val();
+            var json = detalle_ingresa.find(element => element.id_detalle_requerimiento == id_detalle_requerimiento);
+            
+            json_detalle_ingresa.push({
+                'cantidad'      : $(this).parent().parent().find('td input[id='+id_detalle_requerimiento+'cantidad]').val(),
+                'id_detalle_requerimiento' : json.id_detalle_requerimiento,
+                'id_producto'   : json.id_producto,
+                'descripcion'   : json.descripcion_adicional,
+            });
+        });
+
+        $("#detalleSale tbody tr").each(function(){
+            var id_producto = $(this)[0].id;
+            var json = detalle_sale.find(element => element.id_producto == id_producto);
+            var cant = $(this).parent().parent().find('td input[type=number]').val();
+
+            if (cant == '' || cant == null){
+                validaCampos += 'El producto '+json.descripcion+' requiere que cantidad.\n'; 
+            }
+            json_detalle_sale.push({
+                'cantidad' : cant,
+                'id_producto' : json.id_producto
+            });
+        });
+
+        console.log(json_detalle_ingresa);
+        console.log(json_detalle_sale);
+
+        if (validaCampos.length > 0){
+            alert(validaCampos);
+        } else {
+            var data = serial+'&documento='+doc+
+                            '&detalle_ingresa='+JSON.stringify(json_detalle_ingresa)+
+                            '&detalle_requerimiento='+JSON.stringify(detalle_requerimiento)+
+                            '&detalle_sale='+JSON.stringify(json_detalle_sale);
+            console.log(data);
+            guardar_orden_despacho(data);
+        }
+    }
+});
+
+function guardar_orden_despacho(data){
+    console.log(data);
+    $("#submit_orden_despacho").attr('disabled','true');
+
     $.ajax({
-        type: 'GET',
-        url: 'verDetalleIngreso/'+id_requerimiento,
+        type: 'POST',
+        url: 'guardar_orden_despacho',
+        data: data,
         dataType: 'JSON',
         success: function(response){
             console.log(response);
-            var html = '';
-            var i = 1;
-            detalle_requerimiento = response;
-            console.log(detalle_requerimiento);
-            response.forEach(element => {
-                html+='<tr id="'+element.id_mov_alm_det+'">'+
-                '<td><input type="checkbox" onChange="changeCheckIngresa(this,'+element.id_mov_alm_det+');"/></td>'+
-                '<td>'+(element.codigo_producto !== null ? element.codigo_producto : '')+'</td>'+
-                '<td>'+(element.part_number !== null ? element.part_number : '')+'</td>'+
-                '<td>'+(element.categoria !== null ? element.categoria : '')+'</td>'+
-                '<td>'+(element.subcategoria !== null ? element.subcategoria : '')+'</td>'+
-                '<td>'+(element.producto_descripcion !== null ? element.producto_descripcion : '')+'</td>'+
-                '<td>'+element.cantidad+'</td>'+
-                '<td>'+(element.unidad_producto !== null ? element.unidad_producto : '')+'</td>'+
-                // '<td>'+(element.almacen_descripcion !== null ? element.almacen_descripcion : '')+'</td>'+
-                // '<td>'+(element.codigo_posicion !== null ? element.codigo_posicion : '')+'</td>'+
-                // '<td>'+(element.lugar_entrega !== null ? element.lugar_entrega : element.lugar_despacho_orden)+'</td>'+
-                // '<td><span class="label label-'+element.bootstrap_color+'">'+element.estado_doc+'</span></td>'+
-                // '<td>'+(element.id_almacen !== null ? 
-                //     '<button type="button" class="btn btn-info" data-toggle="tooltip" data-placement="bottom" title="Ver Transferencia" onClick="#"><i class="fas fa-file-alt"></i></button>' : '')+
-                // '</td>'+
-                '</tr>';
-                i++;
-            });
-            $('#detalleRequerimientoOD tbody').html(html);
+            alert(response);
+            $('#modal-orden_despacho_create').modal('hide');
+            
+            if (tab_origen == 'confirmados'){
+                $('#requerimientosConfirmados').DataTable().ajax.reload();
+            } 
+            else if (tab_origen == 'enProceso'){
+                $('#requerimientosPendientes').DataTable().ajax.reload();
+            }
+            actualizaCantidadDespachosTabs();
         }
     }).fail( function( jqXHR, textStatus, errorThrown ){
         console.log(jqXHR);
@@ -159,112 +241,13 @@ function listar_detalle_ingreso(id_requerimiento){
     });
 }
 
-$("#form-orden_despacho").on("submit", function(e){
-    console.log('submit');
-    e.preventDefault();
-    var msj = validaOrdenDespacho();
-
-    if (msj.length > 0){
-        alert(msj);
-    } 
-    else {
-        var serial = $(this).serialize();
-        var doc = $('input[name=optionsRadios]:checked').val();
-        var data = serial+'&documento='+doc+
-                          '&detalle_ingresa='+JSON.stringify(detalle_ingresa)+
-                          '&detalle_requerimiento='+JSON.stringify(detalle_requerimiento);
-        console.log(data);
-        guardar_orden_despacho(data);
-    }
-});
-
-function guardar_orden_despacho(data){
-    // var sede = $('[name=id_sede]').val();
-    // var req = $('[name=id_requerimiento]').val();
-    // var alm = $('[name=id_almacen]').val();
-    // var clie = $('[name=id_cliente]').val();
-    // var perso = $('[name=id_persona]').val();
-    // var ubig = $('[name=ubigeo]').val();
-    // var dir = $('[name=direccion_destino]').val();
-    // var fdes = $('[name=fecha_despacho]').val();
-    // var hdes = $('[name=hora_despacho]').val();
-    // var fent = $('[name=fecha_entrega]').val();
-    // var camb = $('[name=aplica_cambios_valor]').val();
-    // var tipo = $('[name=tipo_entrega]').val();
-    // var tpcli = $('[name=tipo_cliente]').val();
-    // var telf = $('[name=telefono_cliente]').val();
-    // var sale = $('[name=sale]').val();
-
-    // var mail = $('[name=correo_cliente]').val();
-    // var dni = $('[name=dni_persona]').val();
-    // var name = $('[name=nombre_persona]').val();
-    // var ruc = $('[name=cliente_ruc]').val();
-    // var raz = $('[name=cliente_razon_social]').val();
-
-    // var doc = $('input[name=optionsRadios]:checked').val();
-
-    // var data =  'id_sede='+sede+
-    //             '&id_requerimiento='+req+
-    //             '&id_cliente='+clie+
-    //             '&id_persona='+perso+
-    //             '&id_almacen='+alm+
-    //             '&ubigeo='+ubig+
-    //             '&direccion_destino='+dir+
-    //             '&fecha_despacho='+fdes+
-    //             '&hora_despacho='+hdes+
-    //             '&fecha_entrega='+fent+
-    //             '&documento='+doc+
-    //             '&aplica_cambios_valor='+camb+
-    //             '&tipo_entrega='+tipo+
-    //             '&tipo_cliente='+tpcli+
-    //             '&telefono='+telf+***
-    //             '&sale='+sale+
-    //             '&correo_cliente='+mail+
-    //             '&dni_persona='+dni+
-    //             '&nombre_persona='+name+
-    //             '&ruc='+ruc+***
-    //             '&razon_social='+raz+***
-    //             '&detalle_ingresa='+JSON.stringify(detalle_ingresa)+
-    //             '&detalle_requerimiento='+JSON.stringify(detalle_requerimiento);
-
-    console.log(data);
-    // var msj = validaOrdenDespacho();
-
-    // if (msj.length > 0){
-    //     alert(msj);
-    // } 
-    // else {
-        $("#submit_orden_despacho").attr('disabled','true');
-        $.ajax({
-            type: 'POST',
-            url: 'guardar_orden_despacho',
-            data: data,
-            dataType: 'JSON',
-            success: function(response){
-                console.log(response);
-                alert(response);
-                $('#modal-orden_despacho_create').modal('hide');
-                
-                if (tab_origen == 'confirmados'){
-                    $('#requerimientosConfirmados').DataTable().ajax.reload();
-                } 
-                else if (tab_origen == 'enProceso'){
-                    $('#requerimientosPendientes').DataTable().ajax.reload();
-                }
-                actualizaCantidadDespachosTabs();
-            }
-        }).fail( function( jqXHR, textStatus, errorThrown ){
-            console.log(jqXHR);
-            console.log(textStatus);
-            console.log(errorThrown);
-        });
-    // }
-}
-
 $("[name=aplica_cambios]").on( 'change', function() {
     if( $(this).is(':checked') ) {
         $("#detalleItemsReq").show();
         $("[name=aplica_cambios_valor]").val('si');
+        $('#name_title').text('Despacho Interno');
+        $('#name_title').removeClass();
+        $('#name_title').addClass('red');
 
         $("[name=seleccionar_todos]").prop('checked', true);
         detalle_ingresa = detalle_requerimiento;
@@ -274,6 +257,9 @@ $("[name=aplica_cambios]").on( 'change', function() {
     } else {
         $("#detalleItemsReq").hide();
         $("[name=aplica_cambios_valor]").val('no');
+        $('#name_title').text('Despacho Externo');
+        $('#name_title').removeClass();
+        $('#name_title').addClass('blue');
 
         $("[name=seleccionar_todos]").prop('checked', false);
         detalle_ingresa = [];
@@ -310,14 +296,14 @@ $("[name=seleccionar_todos]").on( 'change', function() {
     }
 });
 
-function changeCheckIngresa(checkbox, id_mov_alm_det){
-    console.log(checkbox.checked+' id_mov_alm_det'+id_mov_alm_det);
+function changeCheckIngresa(checkbox, id_detalle_requerimiento){
+    console.log(checkbox.checked+' id_detalle_requerimiento'+id_detalle_requerimiento);
     if (checkbox.checked) {
-        var nuevo = detalle_requerimiento.find(element => element.id_mov_alm_det == id_mov_alm_det);
+        var nuevo = detalle_requerimiento.find(element => element.id_detalle_requerimiento == id_detalle_requerimiento);
         detalle_ingresa.push(nuevo);
     } else {
         var index = detalle_ingresa.findIndex(function(item, i){
-            return item.id_mov_alm_det == id_mov_alm_det;
+            return item.id_detalle_requerimiento == id_detalle_requerimiento;
         });
         detalle_ingresa.splice(index,1);
     }
@@ -360,4 +346,23 @@ function validaOrdenDespacho(){
         msj+='\n Es necesario que ingrese una Hora';
     }
     return msj;
+}
+
+function mostrarSale(){
+    var html = '';
+    var i = 1;
+    detalle_sale.forEach(element => {
+        html+=`<tr id="${element.id_producto}">
+        <td>${i}</td>
+        <td>${(element.codigo !== null ? element.codigo : '')}</td>
+        <td>${(element.part_number !== null ? element.part_number : '')}</td>
+        <td>${element.descripcion}</td>
+        <td><input type="number" id="" value="" style="width: 80px;"/></td>
+        <td>${(element.abreviatura !== null ? element.abreviatura : '')}</td>
+        <td><i class="fas fa-times icon-tabla red boton" data-toggle="tooltip" data-placement="bottom" 
+        title="Eliminar" onClick="eliminarProductoSale();"></i></td>
+        </tr>`;
+        i++;
+    });
+    $('#detalleSale tbody').html(html);
 }

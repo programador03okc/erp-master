@@ -360,7 +360,10 @@
 .numero {
     text-align: right;
 }
-
+.td-blue{
+    color: #000;
+    background: rgb(202, 248, 252);
+}
 /* Menu de acciones*/
 .option-function{
     width: 100%;
@@ -1019,6 +1022,8 @@ span.select2-selection{
 #listaOpcionesTodo tbody td:nth-last-child(7),
 #listaOpcionesTodo tbody td:nth-last-child(8),
 #listaOpcionesTodo tbody td:nth-last-child(9),
+#despachosPendientes tbody td:nth-last-child(10),
+#despachosPendientes tbody td:nth-last-child(9),
 #listaDocsProrrateo tbody td:nth-last-child(10),
 #listaDocsProrrateo tbody td:nth-last-child(11)
 {
@@ -1059,6 +1064,8 @@ span.select2-selection{
 #listaOpcionesTodo tbody td:nth-last-child(12),
 #listaDocsProrrateo tbody td:nth-last-child(12),
 #listaPromocion tbody td:nth-last-child(5),
+#despachosPendientes tbody td:nth-last-child(6),
+#despachosPendientes tbody td:nth-last-child(5),
 #listaSaldos tbody td:nth-last-child(9)
 {
     background: #d8fcfc;

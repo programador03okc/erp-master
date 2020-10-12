@@ -6,7 +6,7 @@ function iniciar(permiso){
     actualizaCantidadDespachosTabs();
     intervalFunction();
 
-    $('ul.nav-tabs li a').click(function(){
+    $('ul.nav-tabs li a').on('click',function(){
         $('ul.nav-tabs li').removeClass('active');
         $(this).parent().addClass('active');
         $('.content-tabs section').attr('hidden', true);
@@ -21,12 +21,7 @@ function iniciar(permiso){
         changeStateInput(activeForm, true);
 
         // clearDataTable();
-        if (activeForm == "form-pendientes"){
-            od_seleccionadas = [];
-            listarRequerimientosPendientes(permiso);
-            // $('#requerimientosPendientes').DataTable().ajax.reload();
-        } 
-        else if (activeForm == "form-elaborados"){
+        if (activeForm == "form-elaborados"){
             listarRequerimientosElaborados();
             od_seleccionadas = [];
         }
@@ -34,6 +29,11 @@ function iniciar(permiso){
             listarRequerimientosConfirmados(permiso);
             od_seleccionadas = [];
         }
+        else if (activeForm == "form-pendientes"){
+            od_seleccionadas = [];
+            listarRequerimientosPendientes(permiso);
+            // $('#requerimientosPendientes').DataTable().ajax.reload();
+        } 
         else if (activeForm == "form-despachos"){
             listarOrdenesPendientes();
             od_seleccionadas = [];
@@ -119,8 +119,8 @@ function listarRequerimientosElaborados(){
             }
         ],
     });
-   
 }
+
 $('#requerimientosElaborados tbody').on("click","button.detalle", function(){
     var data = $('#requerimientosElaborados').DataTable().row($(this).parents("tr")).data();
     console.log(data);
@@ -270,6 +270,9 @@ function listarRequerimientosPendientes(permiso){
                     }
                     else if (row['estado'] == 19 && row['id_od'] !== null){
                         return 'Pendiente de que <strong>Almacén</strong> genere la Salida';
+                    }
+                    else if (row['estado'] == 22){
+                        return 'Pendiente de que <strong>Customización</strong> realice la transformación';
                     }
                 }
             }

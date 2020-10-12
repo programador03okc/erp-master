@@ -84,7 +84,9 @@ $('#listaCostosIndirectos tbody').on("click", ".delete", function(){
         var idx = $(this).parents("tr")[0].id;
         $(this).parents("tr").remove();
         console.log(idx);
-        anular_indirecto(idx);
+        if (idx !== ''){
+            anular_indirecto(idx);
+        }
     }
 });
 function anular_indirecto(id){

@@ -200,6 +200,8 @@ Panel de Control de Despachos
 @include('almacen.distribucion.ordenDespachoObs')
 @include('almacen.distribucion.requerimientoObs')
 @include('almacen.distribucion.ordenDespachoAdjuntos')
+@include('almacen.producto.productoModal')
+@include('almacen.producto.productoCreate')
 @include('logistica.cotizaciones.clienteModal')
 @include('logistica.cotizaciones.proveedorModal')
 @include('logistica.cotizaciones.add_cliente')
@@ -229,6 +231,8 @@ Panel de Control de Despachos
     <script src="{{ asset('js/almacen/distribucion/despachoDetalle.js')}}"></script>
     <script src="{{ asset('js/almacen/distribucion/requerimientoDetalle.js')}}"></script>
     <script src="{{ asset('js/almacen/distribucion/requerimientoObs.js')}}"></script>
+    <script src="{{ asset('js/almacen/producto/productoModal.js')}}"></script>
+    <script src="{{ asset('js/almacen/producto/productoCreate.js')}}"></script>
     <script src="{{ asset('js/logistica/clienteModal.js')}}"></script>
     <script src="{{ asset('js/logistica/proveedorModal.js')}}"></script>
     <script src="{{ asset('js/logistica/add_proveedor.js')}}"></script>
