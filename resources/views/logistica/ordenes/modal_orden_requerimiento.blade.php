@@ -1,5 +1,5 @@
 <div class="modal fade" tabindex="-1" role="dialog" id="modal-orden-requerimiento">
-    <div class="modal-dialog" style="width: 50%;">
+    <div class="modal-dialog" style="width: 70%;">
         <div class="modal-content">
             <form id="form-orden-requerimiento" type="register" form="formulario">
 
@@ -10,8 +10,8 @@
                 <div class="modal-body">
                     <input class="oculto" name="id_requerimiento"/>
                     <div class="row">
-                        <div class="col-md-4"  id="group-tipo_orden">
-                            <h5>Tipo</h5>
+                        <div class="col-md-3"  id="group-tipo_orden">
+                            <h5>Tipo de Orden</h5>
                             <select class="form-control" 
                                 name="id_tipo_doc" disabled>
                                 <option value="0">Elija una opción</option>
@@ -24,12 +24,48 @@
                                 @endforeach
                             </select>
                         </div>
-                        <div class="col-md-3" id="group-fecha_orden">
+                        <div class="col-md-2" id="group-codigo">
+                            <h5>Código Orden</h5>
+                            <input class="form-control" id="codigo_orden" type="text" placeholder="OC#####" value="" readOnly>
+                        </div>
+                        <div class="col-md-2" id="group-fecha_orden">
                             <h5>Fecha</h5>
                             <input class="form-control" id="fecha" type="date" placeholder="DD/MM/AA" value={{ date('Y-m-d H:i:s') }} readOnly>
                         </div>
+                        <div class="col-md-3" id="group-fecha_orden">
+                            <h5>Condición</h5>
+                            <div style="display:flex;">
+                                <select class="form-control group-elemento activation" name="id_condicion" onchange="handlechangeCondicion(event);"
+                                    style="width:120px;text-align:center;" disabled="true">
+                
+                                </select>
+                                <input type="number" name="plazo_dias"  class="form-control activation group-elemento" style="text-align:right; width:50px; " />
+                                <input type="text" value="días" class="form-control group-elemento" style="width:60px;text-align:center;" />
+                            </div>
+                        </div>
+                        <div class="col-md-2" id="group-fecha_orden">
+                            <h5>Plazo Entrega</h5>
+                            <div style="display:flex;">
+                                <input type="number" name="plazo_entrega" class="form-control activation group-elemento" style="text-align:right;" />
+                                <input type="text" value="días" class="form-control group-elemento" style="width:60px;text-align:center;" />
+                            </div>
+                        </div>
                     </div>
+
                     <div class="row">
+                        <div class="col-md-3" id="group-fecha_orden">
+                            <h5>Moneda</h5>
+                            <select class="form-control activation" name="id_moneda" >
+                                <option value="0">Elija una opción</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3" id="group-fecha_orden">
+                            <h5>Tipo de Documento</h5>
+                            <select class="form-control activation" 
+                                name="id_tp_documento" disabled="true">
+                                <option value="0">Elija una opción</option>
+                            </select>
+                        </div>
                         <div class="col-md-3" id="group-codigo_orden" >
                             <h5>Código Orden Softlink</h5>
                             <input class="form-control" name="codigo_orden" type="text" placeholder="">
@@ -42,6 +78,9 @@
                                     @endforeach                    
                                 </select>
                         </div>
+                    </div>
+
+                    <div class="row">
                         <div class="col-md-6" id="group-proveedor">
                             <h5>Proveedor</h5>
                             <div style="display:flex;">
@@ -54,6 +93,12 @@
                                 </button> 
                                 <button type="button" class="btn-primary activation" title="Agregar Proveedor" onClick="agregar_proveedor();"><i class="fas fa-plus"></i></button>
                             </div>
+                        </div>
+                        <div class="col-md-6 right">
+                            <h5>&nbsp;</h5>
+                            <button class="btn btn-primary" type="button" id="btnCrearOrdenCompra" onClick="openModalCrearOrdenCompra();">
+                                <i class="fas fa-plus"></i> Agregar Nuevo Item
+                            </button>
                         </div>
                     </div>
                     <br>

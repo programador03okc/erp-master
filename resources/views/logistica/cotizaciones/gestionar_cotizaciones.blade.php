@@ -37,7 +37,6 @@
                                                 <li role="presentation" class="active"><a href="#requerimiento" aria-controls="requerimiento" role="tab" data-toggle="tab">1. Selección de Requerimientos</a></li>
                                                 <li role="presentation" class="disabled"><a href="#detalle_requerimiento" aria-controls="detalle_requerimiento" role="tab" data-toggle="tab">2. Selección de Items</a></li>
                                                 <li role="presentation" class="disabled"><a href="#crear_coti" aria-controls="crear_coti" role="tab" data-toggle="tab">3. Generar Cotización</a></li>
-                                                <!-- <li role="presentation" class="disabled"><a href="#settings" aria-controls="settings" role="tab" data-toggle="tab">4. Envio</a></li> -->
                                             </ul>
 
                                             <!-- Tab panes -->
@@ -219,22 +218,6 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <!-- <div role="tabpanel" class="tab-pane" id="settings">
-                                                    <div class="panel panel-default">
-                                                        <div class="panel-body">
-                                                            <h5>Envio</h5>
-                                                            <div class="row">
-                                                                <div class="col-md-12">
-                                                                </div>
-                                                                <div class="col-md-12 right">
-                                                                <button class="btn btn-default" role="button"   onClick="gotToFourthToThirdTab();">
-                                                                        Atras <i class="fas fa-arrow-circle-left"></i>
-                                                                </button>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div> -->
                                             </div>
                                         </div>
                                     </div>

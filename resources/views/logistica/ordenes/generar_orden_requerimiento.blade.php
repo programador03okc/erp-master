@@ -31,20 +31,58 @@
                                 <div class="panel panel-default">
                                     <div class="panel-body">
                                         <form id="form-requerimientosPendientes" type="register">
+                                            <div class="row">
+                                                <div class="col-md-4">
+                                                    <h5>Empresa</h5>
+                                                    <div style="display:flex;">
+                                                    <select class="form-control" id="id_empresa_select_req" onChange="handleChangeFilterReqByEmpresa(event);">
+                                                            <option value="0" disabled>Elija una opción</option>
+                                                            @foreach ($empresas as $emp)
+                                                                <option value="{{$emp->id_empresa}}" data-url-logo="{{$emp->logo_empresa}}">{{$emp->razon_social}}</option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <h5>Sede</h5>
+                                                    <div style="display:flex;">
+                                                    <select class="form-control" id="id_sede_select_req" onChange="handleChangeFilterReqBySede(event);" disabled>
+                                                            <option value="0">Elija una opción</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <h5>&nbsp;</h5>
+                                                        <input type="checkbox" id="incluir_sede" onchange="handleChangeIncluirSede(event)" /> Inlcuir Sede
+                                                </div>
+                                            </div>
                                             <table class="mytable table table-condensed table-bordered table-okc-view" 
                                             id="listaRequerimientosPendientes">
                                                 <thead>
                                                     <tr>
-                                                    <th hidden></th>
-                                                    <th width="50">Código</th>
-                                                    <th width="250">Concepto</th>
-                                                    <th width="100">Sede</th>
-                                                    <th width="50">Fecha Registro</th>
-                                                    <th width="50">ACCIONES</th>
+                                                    <th hidden>Id</th>
+                                                    <th>Check</th>
+                                                    <th>Código</th>
+                                                    <th>Concepto</th>
+                                                    <th>Tipo Req.</th>
+                                                    <th>Tipo Cliente</th>
+                                                    <th>Proveedor/Entidad</th>
+                                                    <th>Empresa - Sede</th>
+                                                    <th>Autor</th>
+                                                    <th>Estado</th>
+                                                    <th>Fecha</th>
+                                                    <th>Acción</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody></tbody>
                                             </table>
+                                            <div class="row">
+                                                <div class="col-md-12 right">
+                                                    <button class="btn btn-warning" type="button" id="btnCrearOrdenCompra" onClick="openModalCrearOrdenCompra();" disabled>
+                                                        Crear Orden <i class="fas fa-file-invoice"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
                                         </form>
                                     </div>
                                 </div>

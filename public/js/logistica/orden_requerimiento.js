@@ -1,9 +1,12 @@
+
 var rutaRequerimientosPendientes, 
 rutaRequerimientosAtendidos,
 rutaRequerimientoOrden,
 rutaGuardarOrdenPorRequerimiento,
 rutaRevertirOrdenPorRequerimiento
 ;
+
+var listCheckReq=[];
 
 function inicializar(
     _rutaRequerimientosPendientes,
@@ -19,6 +22,113 @@ function inicializar(
     rutaGuardarOrdenPorRequerimiento = _rutaGuardarOrdenPorRequerimiento;
     rutaRevertirOrdenPorRequerimiento = _rutaRevertirOrdenPorRequerimiento;
 
+    let defaultIdEmpresa = 1
+    document.getElementById('id_empresa_select_req').value = defaultIdEmpresa // default select filter 1 = okc
+}
+
+function statusBtnGenerarOrden(){
+    let countStateCheckTrue=0;
+
+    listCheckReq.map(value => {
+        if (value.stateCheck == true) {
+            countStateCheckTrue += 1;
+        }
+    })
+
+    
+    if (countStateCheckTrue > 0) {
+        document
+            .getElementById('btnCrearOrdenCompra')
+            .removeAttribute('disabled')
+    } else {
+        document
+            .getElementById('btnCrearOrdenCompra')
+            .setAttribute('disabled', true)
+    }
+}
+
+function agregarListCheckReq(id,stateCheck){
+    let newCheckReq = {
+        id_req: id,
+        stateCheck: stateCheck,
+    };
+    listCheckReq.push(newCheckReq);
+    statusBtnGenerarOrden();
+}
+
+function evalSelectedCheckReq(id,stateCheck){
+    let arrIdReq=[];
+    let newCheckReq = {
+        id_req: id,
+        stateCheck: stateCheck,
+    };
+
+    listCheckReq.map(value => {
+            arrIdReq.push(value.id_req);
+    });
+
+    if (arrIdReq.includes(newCheckReq.id_req) == true) {
+        // actualiza
+        listCheckReq.map(value => {
+            if (value.id_req == newCheckReq.id_req) {
+                value.stateCheck = newCheckReq.stateCheck
+                // console.log(newCheckReq.stateCheck);
+            }
+        });
+    } else {
+        listCheckReq.push(newCheckReq)
+    }
+
+    statusBtnGenerarOrden();
+
+}
+
+$('#listaRequerimientosPendientes tbody').on('click', 'tr', function () {
+    if ($(this).hasClass('eventClick')) {
+        $(this).removeClass('eventClick')
+    } else {
+        $('#listaRequerimientosPendientes')
+            .dataTable()
+            .$('tr.eventClick')
+            .removeClass('eventClick')
+        $(this).addClass('eventClick')
+    }
+    let id = $(this)[0].childNodes[1].childNodes[0].dataset.idRequerimiento
+    let stateCheck = $(this)[0].childNodes[1].childNodes[0].checked
+
+
+
+    if (listCheckReq.length == 0) {
+        agregarListCheckReq(id,stateCheck);
+    }else{
+        evalSelectedCheckReq(id,stateCheck);
+    }
+    // console.log(listCheckReq);
+
+})
+
+function openModalCrearOrdenCompra(){
+
+
+let reqTrueList=[];
+if(listCheckReq.length >0){
+    listCheckReq.forEach(element => {
+        if(element.stateCheck == true){
+            reqTrueList.push(element.id_req)
+        }
+        
+    });
+    
+    $('#modal-orden-requerimiento').modal({
+        show: true,
+        backdrop: 'static'
+    });
+    obtenerRequerimiento(reqTrueList);
+    cleanFormModalOrdenRequerimiento();
+    // console.log(reqTrueList);
+}else{
+    alert("No existe Requerimiento seleccionado");
+}
 }
 
 function tieneAccion(permisoCrearOrdenPorRequerimiento, permisoRevertirOrden){
@@ -43,6 +153,7 @@ var detalleRequerimientoSelected = [];
 
 
 function listar_requerimientos_pendientes(permisoCrearOrdenPorRequerimiento){
+
     var vardataTables = funcDatatables();
     $('#listaRequerimientosPendientes').DataTable({
         'dom': vardataTables[1],
@@ -53,11 +164,20 @@ function listar_requerimientos_pendientes(permisoCrearOrdenPorRequerimiento){
         'ajax': rutaRequerimientosPendientes,
         'columns': [
             {'data': 'id_requerimiento'},
+            { render: function (data, type, row) { 
+                return `<input type="checkbox" data-id-requerimiento="${row.id_requerimiento}" />`;
+                }
+            },
             {'data': 'codigo'},
             {'data': 'concepto'},
-            {'data': 'codigo_sede_empresa'},
+            {'data': 'tipo_req_desc'},
+            {'data': 'tipo_cliente_desc'},
+            {'data': 'id_cliente'},
+            {'data': 'empresa_sede'},
+            {'data': 'usuario'},
+            {'data': 'estado_doc'},
             {'data': 'fecha_requerimiento'},
-            { render: function (data, type, row) {                
+            { render: function (data, type, row) { 
                 if(permisoCrearOrdenPorRequerimiento == '1') {
                     return ('<div class="btn-group btn-group-sm" role="group">'+
                     '<button type="button" class="btn btn-primary btn-sm" name="btnOpenModalOrdenRequerimiento" title="Generar Orden" data-id-requerimiento="'+row.id_requerimiento+'"  onclick="openModalOrdenRequerimiento(this);">'+
@@ -205,17 +325,17 @@ function eliminarAtencionOrdenRequerimiento(obj){
 }
 
 
-function openModalOrdenRequerimiento(obj){
-    // console.log(obj.dataset.idRequerimiento);   
+// function openModalOrdenRequerimiento(obj){
+//     // console.log(obj.dataset.idRequerimiento);   
  
-    $('#modal-orden-requerimiento').modal({
-        show: true,
-        backdrop: 'static'
-    });
+//     $('#modal-orden-requerimiento').modal({
+//         show: true,
+//         backdrop: 'static'
+//     });
 
-    cleanFormModalOrdenRequerimiento();
-    obtenerRequerimiento(obj.dataset.idRequerimiento);
-}
+//     cleanFormModalOrdenRequerimiento();
+//     obtenerRequerimiento(obj.dataset.idRequerimiento);
+// }
 
 function cleanFormModalOrdenRequerimiento(){
     document.querySelector("form[id='form-orden-requerimiento'] input[name='codigo_orden']").value = '';
@@ -226,17 +346,21 @@ function cleanFormModalOrdenRequerimiento(){
 
 }
 
-function obtenerRequerimiento(id){
+function obtenerRequerimiento(reqTrueList){
+// console.log(reqTrueList);
+
     $.ajax({
-        type: 'GET',
-        url: rutaRequerimientoOrden+'/'+id,
+        type: 'POST',
+        url: rutaRequerimientoOrden,
+        data:{'requerimientoList':reqTrueList},
         dataType: 'JSON',
         success: function(response){
+            // console.log(response);
             detalleRequerimientoSelected=response.det_req;
             listar_detalle_orden_requerimiento(response.det_req);
-            console.log(response.det_req); 
-            document.querySelector("div[id='modal-orden-requerimiento'] span[id='codigo_requeriento_seleccionado']").textContent= ' - Requerimiento: '+ response.requerimiento.codigo;
-            document.querySelector("div[id='modal-orden-requerimiento'] input[name='id_requerimiento']").value= response.requerimiento.id_requerimiento;
+            // console.log(response.det_req); 
+            // document.querySelector("div[id='modal-orden-requerimiento'] span[id='codigo_requeriento_seleccionado']").textContent= ' - Requerimiento: '+ response.requerimiento.codigo;
+            // document.querySelector("div[id='modal-orden-requerimiento'] input[name='id_requerimiento']").value= response.requerimiento.id_requerimiento;
             // document.querySelector("div[id='modal-orden-requerimiento'] select[name='sede']").value= response.requerimiento.id_sede;
         }
     }).fail( function( jqXHR, textStatus, errorThrown ){

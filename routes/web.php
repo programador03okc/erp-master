@@ -706,11 +706,11 @@ Route::group(['middleware' => ['auth']], function () {
 				});
 			Route::group(['as' => 'orden.', 'prefix' => 'orden'], function(){
 				Route::group(['as' => 'por-requerimiento.', 'prefix' => 'por-requerimiento'], function(){
-					Route::get('index', 'LogisticaController@view_generar_orden_requerimiento')->name('index');
+					Route::get('index', 'OrdenController@view_generar_orden_requerimiento')->name('index');
 					// generar oreden por requerimiento
-					Route::get('requerimientos-pendientes', 'LogisticaController@listar_requerimientos_pendientes')->name('requerimientos-pendientes'); 
+					Route::get('requerimientos-pendientes', 'OrdenController@listar_requerimientos_pendientes')->name('requerimientos-pendientes'); 
 					Route::get('requerimientos-atendidos', 'LogisticaController@listar_requerimientos_atendidos')->name('requerimientos-atendidos'); 
-					Route::get('requerimiento-orden/{id?}', 'LogisticaController@get_requerimiento_orden')->name('requerimiento-orden'); 
+					Route::post('requerimiento-orden', 'OrdenController@get_requerimiento_orden')->name('requerimiento-orden'); 
 					Route::post('guardar', 'LogisticaController@guardar_orden_por_requerimiento')->name('guardar');
 					Route::put('revertir/{id_orden?}/{id_requerimiento?}', 'LogisticaController@revertir_orden_requerimiento')->name('revertir');
 					Route::get('mostrar_proveedores', 'LogisticaController@mostrar_proveedores');
