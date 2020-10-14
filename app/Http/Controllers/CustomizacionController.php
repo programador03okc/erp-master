@@ -31,13 +31,23 @@ class CustomizacionController extends Controller
     public function mostrar_transformacion($id_transformacion){
         $data = DB::table('almacen.transformacion')
         ->select('transformacion.*','oportunidades.codigo_oportunidad',
-        'adm_estado_doc.estado_doc','sis_usua.nombre_corto')
+                 'adm_estado_doc.estado_doc','adm_estado_doc.bootstrap_color','sis_usua.nombre_corto',
+                 'orden_despacho.codigo as cod_od','alm_almacen.descripcion as almacen_descripcion',
+                 'alm_req.codigo as cod_req','guia_ven.serie','guia_ven.numero')
+        ->join('almacen.orden_despacho','orden_despacho.id_od','=','transformacion.id_od')
+        ->join('almacen.alm_almacen','alm_almacen.id_almacen','=','transformacion.id_almacen')
+        ->join('almacen.alm_req','alm_req.id_requerimiento','=','orden_despacho.id_requerimiento')
+        ->join('almacen.guia_ven', function($join)
+                {   $join->on('guia_ven.id_od', '=', 'transformacion.id_od');
+                    $join->where('guia_ven.estado','!=', 7);
+                })
         ->leftjoin('mgcp_cuadro_costos.cc','cc.id','=','transformacion.id_cc')
         ->leftjoin('mgcp_oportunidades.oportunidades','oportunidades.id','=','cc.id_oportunidad')
         ->join('administracion.adm_estado_doc','adm_estado_doc.id_estado_doc','=','transformacion.estado')
-        ->join('configuracion.sis_usua','sis_usua.id_usuario','=','transformacion.registrado_por')
+        ->join('configuracion.sis_usua','sis_usua.id_usuario','=','transformacion.responsable')
         ->where('id_transformacion',$id_transformacion)
-        ->get();
+        ->first();
+
         return response()->json($data);
     }
 
@@ -145,30 +155,8 @@ class CustomizacionController extends Controller
                  ['transfor_materia.estado','=',1]])
         ->get();
         return response()->json($data);
-        // $html = '';
-        // $i = 1;
-        // foreach ($data as $d){
-        //     $html.='
-        //     <tr id="'.$i.'">
-        //         <td>'.($d->codigo!==null ? $d->codigo : '').'</td>
-        //         <td>'.($d->part_number_cc!==null ? $d->part_number_cc : '').'</td>
-        //         <td>'.($d->descripcion!==null ? $d->descripcion : $d->descripcion_cc).'</td>
-        //         <td><input type="number" class="input-data right" name="mat_cantidad" value="'.$d->cantidad.'" onChange="calcula_materia('.$d->id_materia.');" disabled="true"/></td>
-        //         <td>'.($d->abreviatura!==null ? $d->abreviatura : '').'</td>
-        //         <td><input type="number" class="input-data right" name="mat_valor_unitario" value="'.$d->valor_unitario.'" onChange="calcula_materia('.$d->id_materia.');" disabled="true"/></td>
-        //         <td><input type="number" class="input-data right" name="mat_valor_total" value="'.round($d->valor_total,2,PHP_ROUND_HALF_UP).'" onChange="calcula_materia('.$d->id_materia.');" disabled="true"/></td>
-        //         <td style="display:flex;">
-        //             <i class="fas fa-edit icon-tabla green visible boton" data-toggle="tooltip" data-placement="bottom" title="Seleccionar Producto" onClick="productoModal();"></i>
-        //             <i class="fas fa-pen-square icon-tabla blue visible boton" data-toggle="tooltip" data-placement="bottom" title="Editar Item" onClick="editar_materia('.$d->id_materia.');"></i>
-        //             <i class="fas fa-save icon-tabla green oculto boton" data-toggle="tooltip" data-placement="bottom" title="Guardar Item" onClick="update_materia('.$d->id_materia.');"></i>
-        //             <i class="fas fa-trash icon-tabla red boton" data-toggle="tooltip" data-placement="bottom" title="Anular Item" onClick="anular_materia('.$d->id_materia.');"></i>
-        //         </td>
-        //     </tr>
-        //     ';
-        //     $i++;
-        // }
-        // return json_encode($html);
     }
+
     public function anular_materia(Request $request, $id)
     {
         $data = DB::table('almacen.transfor_materia')->where('id_materia', $id)
@@ -212,23 +200,6 @@ class CustomizacionController extends Controller
         ->where([['transfor_directo.id_transformacion','=',$id_transformacion],
                  ['transfor_directo.estado','=',1]])
         ->get();
-        // $html = '';
-        // $i = 1;
-        // foreach ($data as $d){
-        //     $html.='
-        //     <tr id="dir-'.$d->id_directo.'">
-        //         <td>'.$d->descripcion.'</td>
-        //         <td><input type="number" class="input-data right" name="dir_valor_total" value="'.round($d->valor_total,2,PHP_ROUND_HALF_UP).'" onChange="calcula_directo('.$d->id_directo.');" disabled="true"/></td>
-        //         <td style="display:flex;">
-        //             <i class="fas fa-pen-square icon-tabla blue visible boton" data-toggle="tooltip" data-placement="bottom" title="Editar Item" onClick="editar_directo('.$d->id_directo.');"></i>
-        //             <i class="fas fa-save icon-tabla green oculto boton" data-toggle="tooltip" data-placement="bottom" title="Guardar Item" onClick="update_directo('.$d->id_directo.');"></i>
-        //             <i class="fas fa-trash icon-tabla red boton" data-toggle="tooltip" data-placement="bottom" title="Anular Item" onClick="anular_directo('.$d->id_directo.');"></i>
-        //         </td>
-        //     </tr>
-        //     ';
-        //     $i++;
-        // }
-        // return json_encode($html);
         return response()->json($data);
     }
     public function anular_directo(Request $request, $id)
@@ -275,29 +246,8 @@ class CustomizacionController extends Controller
                  ['transfor_indirecto.estado','=',1]])
         ->get();
         return response()->json($data);
-        // $html = '';
-        // $i = 1;
-        // foreach ($data as $d){
-        //     $html.='
-        //     <tr id="ind-'.$d->id_indirecto.'">
-        //         <td>'.$i.'</td>
-        //         <td>'.$d->codigo.'</td>
-        //         <td>'.$d->descripcion.'</td>
-        //         <td><input type="number" class="input-data right" name="ind_tasa" value="'.$d->tasa.'" onChange="calcula_total('.$d->id_indirecto.');" disabled="true"/></td>
-        //         <td><input type="number" class="input-data right" name="ind_parametro" value="'.$d->parametro.'" onChange="calcula_total('.$d->id_indirecto.');" disabled="true"/></td>
-        //         <td><input type="number" class="input-data right" name="ind_valor_unitario" value="'.$d->valor_unitario.'" onChange="calcula_total('.$d->id_indirecto.');" disabled="true"/></td>
-        //         <td><input type="number" class="input-data right" name="ind_valor_total" value="'.round($d->valor_total,2,PHP_ROUND_HALF_UP).'" onChange="calcula_total('.$d->id_indirecto.');" disabled="true"/></td>
-        //         <td style="display:flex;">
-        //             <i class="fas fa-pen-square icon-tabla blue visible boton" data-toggle="tooltip" data-placement="bottom" title="Editar Item" onClick="editar_indirecto('.$d->id_indirecto.');"></i>
-        //             <i class="fas fa-save icon-tabla green oculto boton" data-toggle="tooltip" data-placement="bottom" title="Guardar Item" onClick="update_indirecto('.$d->id_indirecto.');"></i>
-        //             <i class="fas fa-trash icon-tabla red boton" data-toggle="tooltip" data-placement="bottom" title="Anular Item" onClick="anular_indirecto('.$d->id_indirecto.');"></i>
-        //         </td>
-        //     </tr>
-        //     ';
-        //     $i++;
-        // }
-        // return json_encode($html);
     }
+
     public function anular_indirecto(Request $request, $id)
     {
         $data = DB::table('almacen.transfor_indirecto')->where('id_indirecto', $id)
@@ -399,6 +349,7 @@ class CustomizacionController extends Controller
                 ]);
         return response()->json($data);
     }
+
     public function listar_transformados($id_transformacion){
         $data = DB::table('almacen.transfor_transformado')
         ->select('transfor_transformado.*','alm_prod.codigo','alm_prod.descripcion',
@@ -409,29 +360,8 @@ class CustomizacionController extends Controller
                  ['transfor_transformado.estado','=',1]])
         ->get();
         return response()->json($data);
-        // $html = '';
-        // $i = 1;
-        // foreach ($data as $d){
-        //     $html.='
-        //     <tr id="tra-'.$d->id_transformado.'">
-        //         <td>'.$d->codigo.'</td>
-        //         <td>'.$d->part_number.'</td>
-        //         <td>'.$d->descripcion.'</td>
-        //         <td><input type="number" class="input-data right" name="tra_cantidad" value="'.$d->cantidad.'" onChange="calcula_transformado('.$d->id_transformado.');" disabled="true"/></td>
-        //         <td>'.$d->abreviatura.'</td>
-        //         <td><input type="number" class="input-data right" name="tra_valor_unitario" value="'.$d->valor_unitario.'" onChange="calcula_transformado('.$d->id_transformado.');" disabled="true"/></td>
-        //         <td><input type="number" class="input-data right" name="tra_valor_total" value="'.round($d->valor_total,2,PHP_ROUND_HALF_UP).'" onChange="calcula_transformado('.$d->id_transformado.');" disabled="true"/></td>
-        //         <td style="display:flex;">
-        //             <i class="fas fa-pen-square icon-tabla blue visible boton" data-toggle="tooltip" data-placement="bottom" title="Editar Item" onClick="editar_transformado('.$d->id_transformado.');"></i>
-        //             <i class="fas fa-save icon-tabla green oculto boton" data-toggle="tooltip" data-placement="bottom" title="Guardar Item" onClick="update_transformado('.$d->id_transformado.');"></i>
-        //             <i class="fas fa-trash icon-tabla red boton" data-toggle="tooltip" data-placement="bottom" title="Anular Item" onClick="anular_transformado('.$d->id_transformado.');"></i>
-        //         </td>
-        //     </tr>
-        //     ';
-        //     $i++;
-        // }
-        // return json_encode($html);
     }
+    
     public function anular_transformado(Request $request, $id)
     {
         $data = DB::table('almacen.transfor_transformado')->where('id_transformado', $id)
@@ -439,120 +369,120 @@ class CustomizacionController extends Controller
         return response()->json($data);
     }
 
-    public function procesar_transformacion($id_transformacion){
-        try {
-            DB::beginTransaction();
+    // public function procesar_transformacion($id_transformacion){
+    //     try {
+    //         DB::beginTransaction();
 
-            $id_usuario = Auth::user()->id_usuario;
-            $fecha = date('Y-m-d H:i:s');
+    //         $id_usuario = Auth::user()->id_usuario;
+    //         $fecha = date('Y-m-d H:i:s');
             
-            $tra = DB::table('almacen.transformacion')
-            ->where('id_transformacion',$id_transformacion)
-            ->first();
+    //         $tra = DB::table('almacen.transformacion')
+    //         ->where('id_transformacion',$id_transformacion)
+    //         ->first();
             
-            $salida = DB::table('almacen.transfor_materia')
-            ->where([['id_transformacion','=',$id_transformacion],['estado','!=',7]])
-            ->get();
+    //         $salida = DB::table('almacen.transfor_materia')
+    //         ->where([['id_transformacion','=',$id_transformacion],['estado','!=',7]])
+    //         ->get();
 
-            $id_salida = 0;
-            if (count($salida) > 0){
-                $codigo_sal = AlmacenController::nextMovimiento(2,$tra->fecha_transformacion,$tra->id_almacen);
-                //guardar salida de almacén
-                $id_salida = DB::table('almacen.mov_alm')->insertGetId(
-                    [
-                        'id_almacen' => $tra->id_almacen,
-                        'id_tp_mov' => 2,//Salidas
-                        'codigo' => $codigo_sal,
-                        'fecha_emision' => $tra->fecha_transformacion,
-                        'id_transformacion' => $id_transformacion,
-                        'id_operacion' => 27,//Salida por servicio de producción
-                        'revisado' => 0,
-                        'usuario' => $id_usuario,
-                        'estado' => 1,
-                        'fecha_registro' => $fecha,
-                    ],
-                        'id_mov_alm'
-                    );
-                //guardar detalle de salida de almacén
-                foreach($salida as $sal){
-                    DB::table('almacen.mov_alm_det')->insertGetId(
-                        [
-                            'id_mov_alm' => $id_salida,
-                            'id_producto' => $sal->id_producto,
-                            // 'id_posicion' => $sal->id_posicion,
-                            'cantidad' => $sal->cantidad,
-                            'valorizacion' => ($sal->valor_total !== null ? $sal->valor_total : 0),
-                            'usuario' => $id_usuario,
-                            'estado' => 1,
-                            'fecha_registro' => $fecha,
-                        ],
-                            'id_mov_alm_det'
-                        );
-                }
-            }
+    //         $id_salida = 0;
+    //         if (count($salida) > 0){
+    //             $codigo_sal = AlmacenController::nextMovimiento(2,$tra->fecha_transformacion,$tra->id_almacen);
+    //             //guardar salida de almacén
+    //             $id_salida = DB::table('almacen.mov_alm')->insertGetId(
+    //                 [
+    //                     'id_almacen' => $tra->id_almacen,
+    //                     'id_tp_mov' => 2,//Salidas
+    //                     'codigo' => $codigo_sal,
+    //                     'fecha_emision' => $tra->fecha_transformacion,
+    //                     'id_transformacion' => $id_transformacion,
+    //                     'id_operacion' => 27,//Salida por servicio de producción
+    //                     'revisado' => 0,
+    //                     'usuario' => $id_usuario,
+    //                     'estado' => 1,
+    //                     'fecha_registro' => $fecha,
+    //                 ],
+    //                     'id_mov_alm'
+    //                 );
+    //             //guardar detalle de salida de almacén
+    //             foreach($salida as $sal){
+    //                 DB::table('almacen.mov_alm_det')->insertGetId(
+    //                     [
+    //                         'id_mov_alm' => $id_salida,
+    //                         'id_producto' => $sal->id_producto,
+    //                         // 'id_posicion' => $sal->id_posicion,
+    //                         'cantidad' => $sal->cantidad,
+    //                         'valorizacion' => ($sal->valor_total !== null ? $sal->valor_total : 0),
+    //                         'usuario' => $id_usuario,
+    //                         'estado' => 1,
+    //                         'fecha_registro' => $fecha,
+    //                     ],
+    //                         'id_mov_alm_det'
+    //                     );
+    //             }
+    //         }
 
-            $sob = DB::table('almacen.transfor_sobrante')
-            ->select('transfor_sobrante.id_producto','transfor_sobrante.cantidad',
-            'transfor_sobrante.valor_unitario','transfor_sobrante.valor_total')
-            ->where([['id_transformacion','=',$id_transformacion],['estado','!=',7]]);
+    //         $sob = DB::table('almacen.transfor_sobrante')
+    //         ->select('transfor_sobrante.id_producto','transfor_sobrante.cantidad',
+    //         'transfor_sobrante.valor_unitario','transfor_sobrante.valor_total')
+    //         ->where([['id_transformacion','=',$id_transformacion],['estado','!=',7]]);
             
-            $ingreso = DB::table('almacen.transfor_transformado')
-            ->select('transfor_transformado.id_producto','transfor_transformado.cantidad',
-            'transfor_transformado.valor_unitario','transfor_transformado.valor_total')
-            ->where([['id_transformacion','=',$id_transformacion],['estado','!=',7]])
-            ->unionAll($sob)
-            ->get()
-            ->toArray();
+    //         $ingreso = DB::table('almacen.transfor_transformado')
+    //         ->select('transfor_transformado.id_producto','transfor_transformado.cantidad',
+    //         'transfor_transformado.valor_unitario','transfor_transformado.valor_total')
+    //         ->where([['id_transformacion','=',$id_transformacion],['estado','!=',7]])
+    //         ->unionAll($sob)
+    //         ->get()
+    //         ->toArray();
 
-            $id_ingreso = 0;
-            if (count($ingreso) > 0){
-                $codigo_ing = AlmacenController::nextMovimiento(1,$tra->fecha_transformacion,$tra->id_almacen);
+    //         $id_ingreso = 0;
+    //         if (count($ingreso) > 0){
+    //             $codigo_ing = AlmacenController::nextMovimiento(1,$tra->fecha_transformacion,$tra->id_almacen);
 
-                $id_ingreso = DB::table('almacen.mov_alm')->insertGetId(
-                    [
-                        'id_almacen' => $tra->id_almacen,
-                        'id_tp_mov' => 1,//Ingresos
-                        'codigo' => $codigo_ing,
-                        'fecha_emision' => $tra->fecha_transformacion,
-                        'id_transformacion' => $id_transformacion,
-                        'id_operacion' => 26,//Entrada por servicio de producción
-                        'revisado' => 0,
-                        'usuario' => $id_usuario,
-                        'estado' => 1,
-                        'fecha_registro' => $fecha,
-                    ],
-                        'id_mov_alm'
-                    );
+    //             $id_ingreso = DB::table('almacen.mov_alm')->insertGetId(
+    //                 [
+    //                     'id_almacen' => $tra->id_almacen,
+    //                     'id_tp_mov' => 1,//Ingresos
+    //                     'codigo' => $codigo_ing,
+    //                     'fecha_emision' => $tra->fecha_transformacion,
+    //                     'id_transformacion' => $id_transformacion,
+    //                     'id_operacion' => 26,//Entrada por servicio de producción
+    //                     'revisado' => 0,
+    //                     'usuario' => $id_usuario,
+    //                     'estado' => 1,
+    //                     'fecha_registro' => $fecha,
+    //                 ],
+    //                     'id_mov_alm'
+    //                 );
 
-                foreach($ingreso as $ing){
-                    DB::table('almacen.mov_alm_det')->insertGetId(
-                        [
-                            'id_mov_alm' => $id_ingreso,
-                            'id_producto' => $ing->id_producto,
-                            // 'id_posicion' => $ing->id_posicion,
-                            'cantidad' => $ing->cantidad,
-                            'valorizacion' => ($ing->valor_total !== null ? $ing->valor_total : 0),
-                            'usuario' => $id_usuario,
-                            'estado' => 1,
-                            'fecha_registro' => $fecha,
-                        ],
-                            'id_mov_alm_det'
-                        );
-                }
-            }
-            DB::table('almacen.transformacion')
-            ->where('id_transformacion',$id_transformacion)
-            ->update(['estado' => 9]);//Procesado
+    //             foreach($ingreso as $ing){
+    //                 DB::table('almacen.mov_alm_det')->insertGetId(
+    //                     [
+    //                         'id_mov_alm' => $id_ingreso,
+    //                         'id_producto' => $ing->id_producto,
+    //                         // 'id_posicion' => $ing->id_posicion,
+    //                         'cantidad' => $ing->cantidad,
+    //                         'valorizacion' => ($ing->valor_total !== null ? $ing->valor_total : 0),
+    //                         'usuario' => $id_usuario,
+    //                         'estado' => 1,
+    //                         'fecha_registro' => $fecha,
+    //                     ],
+    //                         'id_mov_alm_det'
+    //                     );
+    //             }
+    //         }
+    //         DB::table('almacen.transformacion')
+    //         ->where('id_transformacion',$id_transformacion)
+    //         ->update(['estado' => 9]);//Procesado
 
-            return response()->json(['id_salida'=>$id_salida,'id_ingreso'=>$id_ingreso]);
+    //         return response()->json(['id_salida'=>$id_salida,'id_ingreso'=>$id_ingreso]);
 
-            DB::commit();
-            return response()->json($msj);
+    //         DB::commit();
+    //         return response()->json($msj);
             
-        } catch (\PDOException $e) {
-            DB::rollBack();
-        }
-    }
+    //     } catch (\PDOException $e) {
+    //         DB::rollBack();
+    //     }
+    // }
     public function anular_transformacion($id_transformacion){
         $rspta = '';
         $ing = DB::table('almacen.mov_alm')
@@ -628,8 +558,9 @@ class CustomizacionController extends Controller
                 ['id_tp_mov','=',1],//ingreso
                 ['estado','=',1]])
         ->first();
-        return response()->json($ing->id_mov_alm);
+        return response()->json($ing!==null ? $ing->id_mov_alm : null);
     }
+    
     public function id_salida_transformacion($id_transformacion){
         $ing = DB::table('almacen.mov_alm')
         ->where([['mov_alm.id_transformacion','=',$id_transformacion],
@@ -639,6 +570,16 @@ class CustomizacionController extends Controller
         return response()->json($ing->id_mov_alm);
     }
 
+    public function procesar_transformacion(Request $request){
+        $data = DB::table('almacen.transformacion')
+        ->where('id_transformacion',$request->id_transformacion)
+        ->update([  'estado'=>9,//procesado
+                    'responsable'=>$request->responsable,
+                    'observacion'=>$request->observacion,
+                    'fecha_transformacion'=>date('Y-m-d H:i:s')
+                    ]);
+        return response()->json($data);
+    }
 
     public function listarCuadrosCostos(){
         $data = DB::table('mgcp_cuadro_costos.cc')

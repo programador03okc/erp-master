@@ -102,6 +102,8 @@ function listar_transformados(id_transformacion){
         dataType: 'JSON',
         success: function(response){
             var html = '';
+            var est = $('[name=id_estado]').val();
+
             response.forEach(element => {
                 html += `<tr id="${element.id_transformado}">
                     <td>${element.codigo}</td>
@@ -112,8 +114,8 @@ function listar_transformados(id_transformacion){
                     <td>${element.valor_unitario}</td>
                     <td>${element.valor_total}</td>
                     <td style="padding:0px;">
-                        <i class="fas fa-trash icon-tabla red boton delete" 
-                        data-toggle="tooltip" data-placement="bottom" title="Eliminar" ></i>
+                        ${est == 1 ? `<i class="fas fa-trash icon-tabla red boton delete" 
+                        data-toggle="tooltip" data-placement="bottom" title="Eliminar" ></i>` : ''}
                     </td>
                 </tr>`;
             });
@@ -176,7 +178,9 @@ $('#listaProductoTransformado tbody').on("click", ".delete", function(){
         var idx = $(this).parents("tr")[0].id;
         $(this).parents("tr").remove();
         console.log(idx);
-        anular_transformado(idx);
+        if (idx !== ''){
+            anular_transformado(idx);
+        }
     }
 });
 function anular_transformado(id){

@@ -29,10 +29,10 @@ Hoja de Transformación
         <div class="thumbnail" style="padding-left: 10px;padding-right: 10px;">
             
             <div class="row"  style="padding-left: 10px;padding-right: 10px;margin-bottom: 0px;">
-                <div class="col-md-10">
+                <div class="col-md-12">
                     <input type="hidden" name="_token" value="{{csrf_token()}}" id="token">
                     <input type="hidden" name="id_transformacion" primary="ids">
-                    <input type="text" name="cod_estado" hidden/>
+                    
                     <div class="row">
                         <div class="col-md-2">
                             <h5>Código</h5>
@@ -40,75 +40,57 @@ Hoja de Transformación
                         </div>
                         <div class="col-md-3">
                             <h5>Almacén</h5>
-                            <select class="form-control activation js-example-basic-single" name="id_almacen" disabled="true">
-                                <option value="0">Elija una opción</option>
-                                @foreach ($almacenes as $alm)
-                                    <option value="{{$alm->id_almacen}}">{{$alm->descripcion}}</option>
-                                @endforeach
-                            </select>
+                            <input type="text" name="almacen_descripcion" class="form-control" readOnly/>
                         </div>
                         <div class="col-md-2">
-                            <h5>Fecha Transformación</h5>
-                            <input type="date" class="form-control activation" name="fecha_transformacion"/>
-                        </div>
-                        <!-- <div class="col-md-3">
-                            <h5>Serie-Número</h5>
-                            <div class="input-group">
-                                <input type="text" class="form-control activation" name="serie" 
-                                    placeholder="000" >
-                                <span class="input-group-addon">-</span>
-                                <input type="text" class="form-control activation" name="numero"
-                                    placeholder="000000" onBlur="ceros_numero('numero');">
-                            </div>
-                        </div> -->
-                        <div class="col-md-3">
-                            <h5>Responsable</h5>
-                            <select class="form-control activation js-example-basic-single" 
-                                name="responsable" disabled="true">
-                                <option value="0">Elija una opción</option>
-                                @foreach ($usuarios as $usu)
-                                    <option value="{{$usu->id_usuario}}">{{$usu->nombre_corto}}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="col-md-2">
-                            <h5>Cod. Cuadro Costos</h5>
+                            <h5>Cuadro Costos</h5>
                             <input type="text" name="codigo_oportunidad" class="form-control" readOnly/>
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12">
-                            <!-- <h5>Observación</h5> -->
-                            <textarea name="observacion" id="observacion" class="activation" 
-                                cols="170" rows="3"></textarea>
+                        <div class="col-md-2">
+                            <h5>Orden Despacho</h5>
+                            <input type="text" name="codigo_od" class="form-control" readOnly/>
+                        </div>
+                        <div class="col-md-2">
+                            <h5>Guía Remisión</h5>
+                            <input type="text" name="serie-numero" class="form-control" readOnly/>
                         </div>
                     </div>
-                    <!-- <div class="row">
-                        <div class="col-md-5">
-                            <h5 id="fecha_registro">Fecha Registro: <label></label></h5>
-                        </div>
-                        <div class="col-md-4">
-                            <h5 id="registrado_por">Registrado por: <label></label></h5>
-                        </div>
-                        <div class="col-md-3">
-                            
-                            <h5 id="estado">Estado: <label></label></h5>
-                        </div>
-                    </div> -->
+                </div>
+            </div>
+            <div class="row" style="padding-left: 10px;padding-right: 10px;margin-top: 0px;">
+                <div class="col-md-1">
+                    <h5>Estado</h5>
+                    <input name="id_estado" style="display:none"/>
+                    <span id="estado_doc"></span>
                 </div>
                 <div class="col-md-2">
-                    <div class="row"  style="padding-left: 10px;padding-right: 0px;padding-top: 15px;">
-                        <div class="col-md-10" style="text-align:right;">
-                            <button type="submit" class="btn btn-success btn-sm" onClick="procesar_transformacion();" data-toggle="tooltip" data-placement="bottom" title="Procesar Transformación">
-                            <i class="fas fa-step-forward"></i> </button>
-                            <button type="button" class="btn btn-warning btn-sm" data-toggle="tooltip" 
-                                data-placement="bottom" title="Ver Salida de Almacén" 
-                                onClick="abrir_salida();">S</button>
-                            <button type="button" class="btn btn-info btn-sm" data-toggle="tooltip" 
-                                data-placement="bottom" title="Ver Ingreso a Almacén" 
-                                onClick="abrir_ingreso();">I</button>
-                        </div>
-                    </div>
+                    <h5>Fecha Registro</h5>
+                    <span id="fecha_registro"></span>
+                </div>
+                <div class="col-md-2">
+                    <h5>Fecha Transformación</h5>
+                    <span id="fecha_transformacion"></span>
+                </div>
+                <div class="col-md-2">
+                    <h5>Responsable</h5>
+                    <span id="nombre_responsable"></span>
+                </div>
+                <div class="col-md-3">
+                    <h5>Observación</h5>
+                    <span id="observacion"></span>
+                </div>
+                <div class="col-md-2" style="padding-left: 10px;padding-right: 0px;padding-top: 15px;">
+                    <!-- <div class="col-md-10" style="text-align:right;"> -->
+                        <button type="button" class="btn btn-success btn-sm" onClick="openProcesar();" 
+                            data-toggle="tooltip" data-placement="bottom" title="Procesar Transformación">
+                            Procesar <i class="fas fa-step-forward"></i> </button>
+                        <button type="button" class="btn btn-warning btn-sm" data-toggle="tooltip" 
+                            data-placement="bottom" title="Ver Salida de Almacén" 
+                            onClick="abrir_salida();">S</button>
+                        <button type="button" class="btn btn-info btn-sm" data-toggle="tooltip" 
+                            data-placement="bottom" title="Ver Ingreso a Almacén" 
+                            onClick="abrir_ingreso();">I</button>
+                    <!-- </div> -->
                 </div>
             </div>
         </div>
@@ -129,7 +111,7 @@ Hoja de Transformación
                             <th>Total</th>
                             <th>
                                 <i class="fas fa-plus-square icon-tabla green boton" 
-                                    data-toggle="tooltip" data-placement="bottom" 
+                                    id="addMateriaPrima" data-toggle="tooltip" data-placement="bottom" 
                                     title="Agregar Producto" onClick="openProductoMateriaModal();"></i>
                             </th>
                         </tr>
@@ -201,7 +183,7 @@ Hoja de Transformación
                             <th>Total</th>
                             <th width='8%' style="padding:0px;">
                                 <i class="fas fa-plus-square icon-tabla green boton add-new-sobrante" 
-                                    data-toggle="tooltip" data-placement="bottom" 
+                                    id="addSobrante" data-toggle="tooltip" data-placement="bottom" 
                                     title="Agregar Producto" onClick="openProductoSobranteModal();"></i>
                             </th>
                         </tr>
@@ -227,7 +209,7 @@ Hoja de Transformación
                             <th>Total</th>
                             <th width='8%' style="padding:0px;">
                                 <i class="fas fa-plus-square icon-tabla green boton add-new-transformado" 
-                                    data-toggle="tooltip" data-placement="bottom" 
+                                    id="addTransformado" data-toggle="tooltip" data-placement="bottom" 
                                     title="Agregar Producto" onClick="openProductoTransformadoModal();"></i>
                             </th>
                         </tr>
@@ -251,7 +233,7 @@ Hoja de Transformación
                             <th width='15%'>Total</th>
                             <th style="padding:0px;">
                                 <i class="fas fa-plus-square icon-tabla green boton add-new-servicio" 
-                                    data-toggle="tooltip" data-placement="bottom" 
+                                    id="addServicio" data-toggle="tooltip" data-placement="bottom" 
                                     title="Agregar Servicio" ></i>
                             </th>
                         </tr>
@@ -276,7 +258,7 @@ Hoja de Transformación
                             <th>Total</th>
                             <th style="padding:0px;">
                                 <i class="fas fa-plus-square icon-tabla green boton add-new-indirecto" 
-                                    data-toggle="tooltip" data-placement="bottom" 
+                                    id="addCostoIndirecto" data-toggle="tooltip" data-placement="bottom" 
                                     title="Agregar Indirecto"></i>
                             </th>
                         </tr>
@@ -288,6 +270,7 @@ Hoja de Transformación
     </div>
 </div>
 @include('almacen.customizacion.transformacionModal')
+@include('almacen.customizacion.transformacionProcesar')
 @include('almacen.producto.productoModal')
 @include('logistica.servicioModal')
 @endsection

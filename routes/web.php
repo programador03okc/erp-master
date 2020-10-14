@@ -1136,7 +1136,7 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::get('listar_indirectos/{id}', 'CustomizacionController@listar_indirectos');
 					Route::get('listar_sobrantes/{id}', 'CustomizacionController@listar_sobrantes');
 					Route::get('listar_transformados/{id}', 'CustomizacionController@listar_transformados');
-					Route::get('procesar_transformacion/{id}', 'CustomizacionController@procesar_transformacion');
+					Route::post('procesar_transformacion', 'CustomizacionController@procesar_transformacion');
 					Route::post('guardar_materia', 'CustomizacionController@guardar_materia');
 					Route::post('guardar_directo', 'CustomizacionController@guardar_directo');
 					Route::post('guardar_indirecto', 'CustomizacionController@guardar_indirecto');

@@ -7,6 +7,7 @@ function listar_directos(id_transformacion){
         success: function(response){
             var html = ''; 
             var suma_servicios = 0;
+            var est = $('[name=id_estado]').val();
 
             response.forEach(element => {
                 suma_servicios += parseFloat(element.valor_total);
@@ -14,8 +15,8 @@ function listar_directos(id_transformacion){
                     <td>${element.descripcion}</td>
                     <td>${element.valor_total}</td>
                     <td style="padding:0px;">
-                        <i class="fas fa-trash icon-tabla red boton delete" 
-                        data-toggle="tooltip" data-placement="bottom" title="Eliminar" ></i>
+                        ${est == 1 ? `<i class="fas fa-trash icon-tabla red boton delete" 
+                        data-toggle="tooltip" data-placement="bottom" title="Eliminar" ></i>` : ''}
                     </td>
                 </tr>`;
             });

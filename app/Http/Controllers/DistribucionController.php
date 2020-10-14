@@ -599,6 +599,7 @@ class DistribucionController extends Controller
                         'id_transformacion'=>$id_transformacion,
                         'id_producto'=>$i->id_producto,
                         'cantidad'=>$i->cantidad,
+                        'id_od'=>$id_od,
                         'valor_unitario'=>0,
                         'valor_total'=>0,
                         'estado'=>1,
@@ -625,6 +626,7 @@ class DistribucionController extends Controller
                         'id_transformacion'=>$id_transformacion,
                         'id_producto'=>$s->id_producto,
                         'cantidad'=>$s->cantidad,
+                        'id_od'=>$id_od,
                         'valor_unitario'=>0,
                         'valor_total'=>0,
                         'estado'=>1,
@@ -1004,7 +1006,12 @@ Mensaje enviado correctamente a '.$destinatario_almacen;
                     $codigo = AlmacenController::nextMovimiento(2,//salida
                     $request->fecha_emision,
                     $request->id_almacen);
-    
+                    
+                    $transformacion = DB::table('almacen.transformacion')
+                    ->select('id_transformacion')
+                    ->where('id_od',$request->id_od)
+                    ->first();
+
                     $id_salida = DB::table('almacen.mov_alm')->insertGetId(
                         [
                             'id_almacen' => $request->id_almacen,
@@ -1013,6 +1020,7 @@ Mensaje enviado correctamente a '.$destinatario_almacen;
                             'fecha_emision' => $request->fecha_emision,
                             'id_guia_ven' => $id_guia_ven,
                             'id_operacion' => $request->id_operacion,
+                            'id_transformacion' => ($transformacion!==null ? $transformacion->id_transformacion : null),
                             'revisado' => 0,
                             'usuario' => $id_usuario,
                             'estado' => 1,
