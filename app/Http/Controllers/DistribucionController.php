@@ -574,6 +574,7 @@ class DistribucionController extends Controller
                         'fecha_transformacion'=>$fecha_actual,
                         'codigo'=>$codTrans,
                         // 'responsable'=>$usuario,
+                        'id_od'=>$id_od,
                         'id_moneda'=>1,
                         'id_almacen'=>$request->id_almacen,
                         'total_materias'=>0,
@@ -599,7 +600,6 @@ class DistribucionController extends Controller
                         'id_transformacion'=>$id_transformacion,
                         'id_producto'=>$i->id_producto,
                         'cantidad'=>$i->cantidad,
-                        'id_od'=>$id_od,
                         'valor_unitario'=>0,
                         'valor_total'=>0,
                         'estado'=>1,
@@ -626,7 +626,6 @@ class DistribucionController extends Controller
                         'id_transformacion'=>$id_transformacion,
                         'id_producto'=>$s->id_producto,
                         'cantidad'=>$s->cantidad,
-                        'id_od'=>$id_od,
                         'valor_unitario'=>0,
                         'valor_total'=>0,
                         'estado'=>1,
@@ -653,97 +652,102 @@ class DistribucionController extends Controller
                 }
             }
 
-            $empresa = DB::table('administracion.sis_sede')
-            ->select('adm_empresa.id_empresa','adm_contri.razon_social')
-            ->join('administracion.adm_empresa','adm_empresa.id_empresa','=','sis_sede.id_empresa')
-            ->join('contabilidad.adm_contri','adm_contri.id_contribuyente','=','adm_empresa.id_contribuyente')
-            ->where('id_sede',$request->id_sede)->first();
+            if ($request->aplica_cambios_valor !== 'si'){
 
-        // if ($empresa !== null){
-            $req = DB::table('almacen.alm_req')
-            ->where('id_requerimiento',$request->id_requerimiento)
-            ->first();
-
-            $items = DB::table('almacen.alm_det_req')
-            ->select('alm_det_req.cantidad','alm_det_req.precio_referencial',
-            DB::raw("(item_cat.descripcion) || ' ' || (item_subcat.descripcion) || ' ' || (item.descripcion) AS item_descripcion"),
-            DB::raw("(prod_cat.descripcion) || ' ' || (prod_subcat.descripcion) || ' ' || (prod.descripcion) AS prod_descripcion"),
-            'item_unidad.abreviatura as item_unid','prod_unidad.abreviatura as prod_unid',
-            'item.part_number as item_part_number','prod.part_number as prod_part_number',
-            'sis_moneda.simbolo')
-            ->join('almacen.alm_req','alm_req.id_requerimiento','=','alm_det_req.id_requerimiento')
-            ->leftJoin('configuracion.sis_moneda','sis_moneda.id_moneda','=','alm_req.id_moneda')
-            ->leftJoin('almacen.alm_item','alm_item.id_item','=','alm_det_req.id_item')
-            ->leftJoin('almacen.alm_prod as item','item.id_producto','=','alm_item.id_producto')
-            ->leftJoin('almacen.alm_und_medida as item_unidad','item_unidad.id_unidad_medida','=','item.id_unidad_medida')
-            ->leftJoin('almacen.alm_cat_prod as item_cat','item_cat.id_categoria','=','item.id_categoria')
-            ->leftJoin('almacen.alm_subcat as item_subcat','item_subcat.id_subcategoria','=','item.id_subcategoria')
-
-            ->leftJoin('almacen.alm_prod as prod','prod.id_producto','=','alm_det_req.id_producto')
-            ->leftJoin('almacen.alm_und_medida as prod_unidad','prod_unidad.id_unidad_medida','=','prod.id_unidad_medida')
-            ->leftJoin('almacen.alm_cat_prod as prod_cat','prod_cat.id_categoria','=','prod.id_categoria')
-            ->leftJoin('almacen.alm_subcat as prod_subcat','prod_subcat.id_subcategoria','=','prod.id_subcategoria')
-            
-            ->where([['alm_det_req.id_requerimiento','=',$request->id_requerimiento],['alm_det_req.estado','!=',7]])
-            ->get();
-
-            $text = '';
-            $i = 1;
-            foreach ($items as $item) {
-                $text .= $i.'.- '.($item->item_part_number !== null ? $item->item_part_number : $item->prod_part_number).
-                ' '.($item->item_descripcion !== null ? $item->item_descripcion : $item->prod_descripcion).
-                '   Cantidad: '.$item->cantidad.' '.($item->item_unid !== null ? $item->item_unid : $item->prod_unid).
-                '   Precio: '.($item->precio_referencial !== null ? ($item->simbolo.' '.$item->precio_referencial) : 0).'
-                ';
-                $i++;
-            }
-
-            $asunto_facturacion = 'Generar '.$request->documento.' para el '.$req->codigo.' '.$req->concepto;
-            $asunto_almacen = 'Generar Guía de Venta para el '.$req->codigo.' '.$req->concepto;
-
-            $contenido = ' para el '.$req->codigo.' '.$req->concepto.' 
-    Empresa: '.$empresa->razon_social.'
-            
-    Datos del Cliente:
-    - '.($request->documento == 'Boleta' ? 'DNI: '.$request->dni_persona : 'RUC: '.$request->cliente_ruc).'
-    - '.($request->documento == 'Boleta' ? 'Nombres y Apellidos: '.$request->nombre_persona : 'Razon Social: '.$request->cliente_razon_social).'
-    - Dirección: '.$request->direccion_destino.'
-    - Fecha Despacho: '.$request->fecha_despacho.'
-    - Hora Despacho: '.$request->hora_despacho.'
-
-    Descripcion de Items:
-                '.$text.'
+                $empresa = DB::table('administracion.sis_sede')
+                ->select('adm_empresa.id_empresa','adm_contri.razon_social')
+                ->join('administracion.adm_empresa','adm_empresa.id_empresa','=','sis_sede.id_empresa')
+                ->join('contabilidad.adm_contri','adm_contri.id_contribuyente','=','adm_empresa.id_contribuyente')
+                ->where('id_sede',$request->id_sede)->first();
     
-    Saludos,
-    Módulo de Logística y Almacenes
-    ';
+            // if ($empresa !== null){
+                $req = DB::table('almacen.alm_req')
+                ->where('id_requerimiento',$request->id_requerimiento)
+                ->first();
+    
+                $items = DB::table('almacen.alm_det_req')
+                ->select('alm_det_req.cantidad','alm_det_req.precio_referencial',
+                DB::raw("(item_cat.descripcion) || ' ' || (item_subcat.descripcion) || ' ' || (item.descripcion) AS item_descripcion"),
+                DB::raw("(prod_cat.descripcion) || ' ' || (prod_subcat.descripcion) || ' ' || (prod.descripcion) AS prod_descripcion"),
+                'item_unidad.abreviatura as item_unid','prod_unidad.abreviatura as prod_unid',
+                'item.part_number as item_part_number','prod.part_number as prod_part_number',
+                'sis_moneda.simbolo')
+                ->join('almacen.alm_req','alm_req.id_requerimiento','=','alm_det_req.id_requerimiento')
+                ->leftJoin('configuracion.sis_moneda','sis_moneda.id_moneda','=','alm_req.id_moneda')
+                ->leftJoin('almacen.alm_item','alm_item.id_item','=','alm_det_req.id_item')
+                ->leftJoin('almacen.alm_prod as item','item.id_producto','=','alm_item.id_producto')
+                ->leftJoin('almacen.alm_und_medida as item_unidad','item_unidad.id_unidad_medida','=','item.id_unidad_medida')
+                ->leftJoin('almacen.alm_cat_prod as item_cat','item_cat.id_categoria','=','item.id_categoria')
+                ->leftJoin('almacen.alm_subcat as item_subcat','item_subcat.id_subcategoria','=','item.id_subcategoria')
+    
+                ->leftJoin('almacen.alm_prod as prod','prod.id_producto','=','alm_det_req.id_producto')
+                ->leftJoin('almacen.alm_und_medida as prod_unidad','prod_unidad.id_unidad_medida','=','prod.id_unidad_medida')
+                ->leftJoin('almacen.alm_cat_prod as prod_cat','prod_cat.id_categoria','=','prod.id_categoria')
+                ->leftJoin('almacen.alm_subcat as prod_subcat','prod_subcat.id_subcategoria','=','prod.id_subcategoria')
+                
+                ->where([['alm_det_req.id_requerimiento','=',$request->id_requerimiento],['alm_det_req.estado','!=',7]])
+                ->get();
+    
+                $text = '';
+                $i = 1;
+                foreach ($items as $item) {
+                    $text .= $i.'.- '.($item->item_part_number !== null ? $item->item_part_number : $item->prod_part_number).
+                    ' '.($item->item_descripcion !== null ? $item->item_descripcion : $item->prod_descripcion).
+                    '   Cantidad: '.$item->cantidad.' '.($item->item_unid !== null ? $item->item_unid : $item->prod_unid).
+                    '   Precio: '.($item->precio_referencial !== null ? ($item->simbolo.' '.$item->precio_referencial) : 0).'
+                    ';
+                    $i++;
+                }
+    
+                $asunto_facturacion = 'Generar '.$request->documento.' para el '.$req->codigo.' '.$req->concepto;
+                $asunto_almacen = 'Generar Guía de Venta para el '.$req->codigo.' '.$req->concepto;
+    
+                $contenido = ' para el '.$req->codigo.' '.$req->concepto.' 
+        Empresa: '.$empresa->razon_social.'
+                
+        Datos del Cliente:
+        - '.($request->documento == 'Boleta' ? 'DNI: '.$request->dni_persona : 'RUC: '.$request->cliente_ruc).'
+        - '.($request->documento == 'Boleta' ? 'Nombres y Apellidos: '.$request->nombre_persona : 'Razon Social: '.$request->cliente_razon_social).'
+        - Dirección: '.$request->direccion_destino.'
+        - Fecha Despacho: '.$request->fecha_despacho.'
+        - Hora Despacho: '.$request->hora_despacho.'
+    
+        Descripcion de Items:
+                    '.$text.'
         
-            $contenido_facturacion = '
-    Favor de generar '.$request->documento.$contenido;
-
-            $contenido_almacen = '
-    Favor de generar Guía de Venta'.$contenido;
-
-            $destinatario_facturacion = 'programador01@okcomputer.com.pe';
-            $destinatario_almacen = 'asistente.almacenilo@okcomputer.com.pe';
-            $msj = '';
-
-            $rspta_facturacion = CorreoController::enviar_correo( $empresa->id_empresa, $destinatario_facturacion, 
-                                                                  $asunto_facturacion, $contenido_facturacion);
-            $rspta_almacen = CorreoController::enviar_correo( $empresa->id_empresa, $destinatario_almacen, 
-                                                              $asunto_almacen, $contenido_almacen);
-
-            if ($rspta_facturacion !== 'Mensaje Enviado.'){
-                $msj = 'No se pudo enviar el mensaje a '.$destinatario_facturacion;
+        Saludos,
+        Módulo de Logística y Almacenes
+        ';
+            
+                $contenido_facturacion = '
+        Favor de generar '.$request->documento.$contenido;
+    
+                $contenido_almacen = '
+        Favor de generar Guía de Venta'.$contenido;
+    
+                $destinatario_facturacion = 'programador01@okcomputer.com.pe';
+                $destinatario_almacen = 'asistente.almacenilo@okcomputer.com.pe';
+                $msj = '';
+    
+                $rspta_facturacion = CorreoController::enviar_correo( $empresa->id_empresa, $destinatario_facturacion, 
+                                                                      $asunto_facturacion, $contenido_facturacion);
+                $rspta_almacen = CorreoController::enviar_correo( $empresa->id_empresa, $destinatario_almacen, 
+                                                                  $asunto_almacen, $contenido_almacen);
+    
+                if ($rspta_facturacion !== 'Mensaje Enviado.'){
+                    $msj = 'No se pudo enviar el mensaje a '.$destinatario_facturacion;
+                } else {
+                    $msj = 'Mensaje enviado correctamente a '.$destinatario_facturacion;
+                }
+                if ($rspta_almacen !== 'Mensaje Enviado.'){
+                    $msj .= '
+    No se pudo enviar el mensaje a '.$destinatario_almacen;
+                } else {
+                    $msj .= '
+    Mensaje enviado correctamente a '.$destinatario_almacen;
+                }
             } else {
-                $msj = 'Mensaje enviado correctamente a '.$destinatario_facturacion;
-            }
-            if ($rspta_almacen !== 'Mensaje Enviado.'){
-                $msj .= '
-No se pudo enviar el mensaje a '.$destinatario_almacen;
-            } else {
-                $msj .= '
-Mensaje enviado correctamente a '.$destinatario_almacen;
+                $msj = 'Se guardó existosamente la Orden de Despacho y Hoja de Transformación';
             }
 
             DB::commit();

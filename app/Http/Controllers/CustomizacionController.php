@@ -28,14 +28,19 @@ class CustomizacionController extends Controller
         return response()->json($output);
     }
 
-    public function mostrar_transformacion($id_transformacion){
+    public function listarTransformacionesProcesadas(){
         $data = DB::table('almacen.transformacion')
-        ->select('transformacion.*','oportunidades.codigo_oportunidad',
-                 'adm_estado_doc.estado_doc','adm_estado_doc.bootstrap_color','sis_usua.nombre_corto',
-                 'orden_despacho.codigo as cod_od','alm_almacen.descripcion as almacen_descripcion',
-                 'alm_req.codigo as cod_req','guia_ven.serie','guia_ven.numero')
+        ->select('transformacion.*','alm_almacen.descripcion as almacen_descripcion',
+                 'sis_usua.nombre_corto as nombre_responsable','orden_despacho.codigo as cod_od',
+                 'alm_req.codigo as cod_req','guia_ven.serie','guia_ven.numero',
+                 'oportunidades.codigo_oportunidad','adm_estado_doc.estado_doc','alm_almacen.id_sede',
+                 'adm_estado_doc.bootstrap_color','log_prove.id_proveedor','adm_contri.razon_social')
         ->join('almacen.orden_despacho','orden_despacho.id_od','=','transformacion.id_od')
         ->join('almacen.alm_almacen','alm_almacen.id_almacen','=','transformacion.id_almacen')
+        ->join('administracion.sis_sede','sis_sede.id_sede','=','alm_almacen.id_sede')
+        ->join('administracion.adm_empresa','adm_empresa.id_empresa','=','sis_sede.id_empresa')
+        ->join('contabilidad.adm_contri','adm_contri.id_contribuyente','=','adm_empresa.id_contribuyente')
+        ->join('logistica.log_prove','log_prove.id_contribuyente','=','adm_contri.id_contribuyente')
         ->join('almacen.alm_req','alm_req.id_requerimiento','=','orden_despacho.id_requerimiento')
         ->join('almacen.guia_ven', function($join)
                 {   $join->on('guia_ven.id_od', '=', 'transformacion.id_od');
@@ -45,7 +50,50 @@ class CustomizacionController extends Controller
         ->leftjoin('mgcp_oportunidades.oportunidades','oportunidades.id','=','cc.id_oportunidad')
         ->join('administracion.adm_estado_doc','adm_estado_doc.id_estado_doc','=','transformacion.estado')
         ->join('configuracion.sis_usua','sis_usua.id_usuario','=','transformacion.responsable')
+        ->where([['transformacion.estado','=',9]]);
+        return datatables($data)->toJson();
+    }
+
+    public function listarDetalleTransformacion($id_transformacion){
+        $materias = DB::table('almacen.transfor_materia')
+        ->select('transfor_materia.id_producto','transfor_materia.cantidad','transfor_materia.valor_unitario',
+        'transfor_materia.valor_total','alm_prod.descripcion','alm_prod.id_unidad_medida','alm_prod.part_number',
+        'alm_prod.codigo as cod_prod','alm_und_medida.abreviatura')
+        ->join('almacen.alm_prod','alm_prod.id_producto','=','transfor_materia.id_producto')
+        ->join('almacen.alm_und_medida','alm_und_medida.id_unidad_medida','=','alm_prod.id_unidad_medida')
+        ->where('id_transformacion',$id_transformacion);
+
+        $transformados = DB::table('almacen.transfor_transformado')
+        ->select('transfor_transformado.id_producto','transfor_transformado.cantidad','transfor_transformado.valor_unitario',
+        'transfor_transformado.valor_total','alm_prod.descripcion','alm_prod.id_unidad_medida','alm_prod.part_number',
+        'alm_prod.codigo as cod_prod','alm_und_medida.abreviatura')
+        ->join('almacen.alm_prod','alm_prod.id_producto','=','transfor_transformado.id_producto')
+        ->join('almacen.alm_und_medida','alm_und_medida.id_unidad_medida','=','alm_prod.id_unidad_medida')
         ->where('id_transformacion',$id_transformacion)
+        ->unionAll($materias)
+        ->get();
+
+        return response()->json($transformados);
+    }
+
+    public function mostrar_transformacion($id_transformacion){
+        $data = DB::table('almacen.transformacion')
+        ->select('transformacion.*','oportunidades.codigo_oportunidad',
+                 'adm_estado_doc.estado_doc','adm_estado_doc.bootstrap_color','sis_usua.nombre_corto',
+                 'orden_despacho.codigo as cod_od','alm_almacen.descripcion as almacen_descripcion',
+                 'alm_req.codigo as cod_req','guia_ven.serie','guia_ven.numero')
+        ->leftjoin('almacen.orden_despacho','orden_despacho.id_od','=','transformacion.id_od')
+        ->leftjoin('almacen.alm_almacen','alm_almacen.id_almacen','=','transformacion.id_almacen')
+        ->leftjoin('almacen.alm_req','alm_req.id_requerimiento','=','orden_despacho.id_requerimiento')
+        ->leftjoin('almacen.guia_ven', function($join)
+                {   $join->on('guia_ven.id_od', '=', 'transformacion.id_od');
+                    $join->where('guia_ven.estado','!=', 7);
+                })
+        ->leftjoin('mgcp_cuadro_costos.cc','cc.id','=','transformacion.id_cc')
+        ->leftjoin('mgcp_oportunidades.oportunidades','oportunidades.id','=','cc.id_oportunidad')
+        ->leftjoin('administracion.adm_estado_doc','adm_estado_doc.id_estado_doc','=','transformacion.estado')
+        ->leftjoin('configuracion.sis_usua','sis_usua.id_usuario','=','transformacion.responsable')
+        ->where('transformacion.id_transformacion',$id_transformacion)
         ->first();
 
         return response()->json($data);

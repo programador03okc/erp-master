@@ -38,7 +38,7 @@ function productoModal(){
     var abrir = false;
 
     if (page == 'transformacion'){
-        var est = $('[name=cod_estado]').val();
+        var est = $('[name=id_estado]').val();
         console.log('estado: '+est);
         if (est == '1'){
             abrir = true;

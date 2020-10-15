@@ -24,6 +24,7 @@ Pendientes de Ingreso
     <div class="col-md-12" id="tab-ordenes"  style="padding-left:0px;padding-right:0px;">
         <ul class="nav nav-tabs" id="myTab">
             <li class="active"><a type="#pendientes">Ordenes Pendientes de Llegada</a></li>
+            <li class=""><a type="#transformaciones">Transformaciones Pendientes de Ingreso</a></li>
             <li class=""><a type="#ingresadas">Ordenes Ingresadas Almacén</a></li>
         </ul>
         <div class="content-tabs">
@@ -56,9 +57,37 @@ Pendientes de Ingreso
                                 <tfoot></tfoot>
                             </table>
                             @if(Auth::user()->tieneAccion(83))
-                            <button type="button" class="btn btn-success" data-toggle="tooltip" data-placement="bottom" 
-                            title="Crear Guía / Ingreso" onClick="open_guia_create_seleccionadas();">Generar Guía</button>
+                                <button type="button" class="btn btn-success" data-toggle="tooltip" data-placement="bottom" 
+                                title="Crear Guía / Ingreso" onClick="open_guia_create_seleccionadas();">Generar Guía</button>
                             @endif
+                        </div>
+                    </div>
+                </form>
+            </section>
+            <section id="transformaciones" hidden>
+                <form id="form-transformaciones" type="register">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <table class="mytable table table-condensed table-bordered table-okc-view" 
+                                id="listaTransformaciones" style="width:100px;">
+                                <thead>
+                                    <tr>
+                                        <th hidden></th>
+                                        <th>Código</th>
+                                        <th>Fecha Transf</th>
+                                        <th>Almacén</th>
+                                        <th>Responsable</th>
+                                        <th>Cuadro Costo</th>
+                                        <th>Orden Despacho</th>
+                                        <th>Requerimiento</th>
+                                        <th>Guía</th>
+                                        <th>Observación</th>
+                                        <th width="80px"></th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                                <tfoot></tfoot>
+                            </table>
                         </div>
                     </div>
                 </form>
@@ -125,6 +154,7 @@ Pendientes de Ingreso
     <script src="{{ asset('template/plugins/js-xlsx/xlsx.full.min.js') }}"></script>
     
     <script src="{{ asset('js/almacen/guia/ordenesPendientes.js')}}"></script>
+    <script src="{{ asset('js/almacen/guia/guia_com_create.js')}}"></script>
     <script src="{{ asset('js/almacen/guia/guia_com_det_series.js')}}"></script>
     <script>
     $(document).ready(function(){

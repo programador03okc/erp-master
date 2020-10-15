@@ -270,9 +270,13 @@ class AlmacenController extends Controller
     function view_transformacion(){
         $almacenes = $this->mostrar_almacenes_cbo();
         $empresas = $this->select_empresa();
-        // $usuarios = $this->select_usuarios_almacen();
+        $clasificaciones = AlmacenController::mostrar_clasificaciones_cbo();
+        $subcategorias = AlmacenController::mostrar_subcategorias_cbo();
+        $categorias = AlmacenController::mostrar_categorias_cbo();
+        $unidades = AlmacenController::mostrar_unidades_cbo();
         $usuarios = $this->select_usuarios();
-        return view('almacen/customizacion/transformacion', compact('almacenes','empresas','usuarios'));
+        return view('almacen/customizacion/transformacion', 
+        compact('almacenes','empresas','usuarios','categorias','subcategorias','unidades','clasificaciones'));
     }
     function view_listar_transformaciones(){
         $almacenes = $this->mostrar_almacenes_cbo();

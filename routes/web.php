@@ -965,6 +965,8 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::get('imprimir_ingreso/{id}', 'AlmacenController@imprimir_ingreso');
 					Route::post('detalleOrdenesSeleccionadas', 'OrdenesPendientesController@detalleOrdenesSeleccionadas');
 					Route::get('detalleMovimiento/{id}', 'OrdenesPendientesController@detalleMovimiento');
+					Route::post('listarTransformacionesProcesadas', 'CustomizacionController@listarTransformacionesProcesadas');
+					Route::get('listarDetalleTransformacion/{id}', 'CustomizacionController@listarDetalleTransformacion');
 
 				});
 	

@@ -5,12 +5,18 @@ function nuevo_transformacion(){
 }
 function limpiarCampos(){
     $('[name=id_transformacion]').val('');
-    $('[name=id_empresa]').val(0).trigger('change.select2');
-    $('[name=serie]').val('');
-    $('[name=numero]').val('');
-    $('[name=id_almacen]').val(0).trigger('change.select2');
-    $('[name=responsable]').val(auth_user.id_usuario).trigger('change.select2');
-    $('[name=fecha_transformacion]').val(fecha_actual());
+    $('[name=codigo]').val('');
+    $('[name=almacen_descripcion]').val('');
+    $('[name=codigo_oportunidad]').val('');
+    $('[name=codigo_od]').val('');
+    $('[name=serie-numero]').val('');
+    $('[name=id_estado]').val(1);
+
+    $('#estado_doc').text('');
+    $('#fecha_registro').text('');
+    $('#fecha_transformacion').text('');
+    $('#nombre_responsable').text('');
+    $('#observacion').text('');
 
     $('#listaMateriasPrimas tbody').html('');
     $('#listaServiciosDirectos tbody').html('');
@@ -20,10 +26,11 @@ function limpiarCampos(){
 
 }
 $(function(){
-    var id_transformacion = localStorage.getItem("id_transformacion");
-    if (id_transformacion !== null){
+    var id_transformacion = localStorage.getItem("id_transfor");
+    console.log('id_transfor'+id_transformacion);
+    if (id_transformacion !== null && id_transformacion !== undefined){
         mostrar_transformacion(id_transformacion);
-        localStorage.removeItem("id_transformacion");
+        localStorage.removeItem("id_transfor");
         changeStateButton('historial');
     }
 });
@@ -133,18 +140,18 @@ function openProcesar(){
     var id_trans = $('[name=id_transformacion]').val();
 
     if (id_trans !== ''){
-        // var est = $('[name=id_estado]').val();
-        // if (est == '9'){
-        //     alert('La transformación ya fue procesada.');
-        // } 
-        // else if (est == '7'){
-        //     alert('La transformación esta Anulada.');
-        // } 
-        // else {
+        var est = $('[name=id_estado]').val();
+        if (est == '9'){
+            alert('La transformación ya fue procesada.');
+        } 
+        else if (est == '7'){
+            alert('La transformación esta Anulada.');
+        } 
+        else {
             $('#modal-procesarTransformacion').modal({
                 show: true
             });
-        // }
+        }
     } else {
         alert('No ha seleccionado una Hoja de Transformación');
     }
@@ -166,8 +173,8 @@ function procesar_transformacion(data){
         dataType: 'JSON',
         success: function(response){
             console.log(response);
+            $('#modal-procesarTransformacion').modal('hide');
             alert('Transformación procesada con éxito');
-            $('#modal-procesarTransformacion').hide();
             var id_trans = $('[name=id_transformacion]').val();
             mostrar_transformacion(id_trans);
         }

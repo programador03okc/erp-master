@@ -3,8 +3,8 @@ class GestionCustomizacion
     constructor(permiso)
     {
         this.permiso = permiso;
-        this.listarCuadrosCostos();
-        //this.listarTransformaciones();
+        // this.listarCuadrosCostos();
+        this.listarTransformaciones();
     }
 
     listarCuadrosCostos() {
@@ -317,7 +317,7 @@ function anular(tbody, tabla){
     });
 }
 function abrir_transformacion(id_transformacion){
-    console.log('abrir_transformacion()');
-    localStorage.setItem("id_transformacion",id_transformacion);
+    console.log('abrir_transformacio'+id_transformacion);
+    localStorage.setItem("id_transfor",id_transformacion);
     location.assign("/logistica/almacen/customizacion/hoja-transformacion/index");
 }

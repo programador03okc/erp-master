@@ -272,6 +272,7 @@ Hoja de Transformación
 @include('almacen.customizacion.transformacionModal')
 @include('almacen.customizacion.transformacionProcesar')
 @include('almacen.producto.productoModal')
+@include('almacen.producto.productoCreate')
 @include('logistica.servicioModal')
 @endsection
 
@@ -291,6 +292,7 @@ Hoja de Transformación
     <script src="{{('/js/almacen/customizacion/transformacion.js')}}"></script>
     <script src="{{('/js/almacen/customizacion/transformacionModal.js')}}"></script>
     <script src="{{('/js/almacen/producto/productoModal.js')}}"></script>
+    <script src="{{('/js/almacen/producto/productoCreate.js')}}"></script>
     <script src="{{('/js/almacen/customizacion/transfor_materia.js')}}"></script>
     <script src="{{('/js/almacen/customizacion/transfor_directo.js')}}"></script>
     <script src="{{('/js/almacen/customizacion/transfor_indirecto.js')}}"></script>
