@@ -590,9 +590,18 @@ class CustomizacionController extends Controller
     
     public function listar_transformaciones(){
         $data = DB::table('almacen.transformacion')
-        ->select('transformacion.*','alm_almacen.descripcion')
-        // ->join('administracion.adm_empresa','adm_empresa.id_empresa','=','transformacion.id_empresa')
-        // ->join('contabilidad.adm_contri','adm_contri.id_contribuyente','=','adm_empresa.id_contribuyente')
+        ->select('transformacion.*','alm_almacen.descripcion','guia_ven.serie','guia_ven.numero',
+                 'alm_req.codigo as cod_req','oportunidades.codigo_oportunidad','adm_estado_doc.estado_doc',
+                 'adm_estado_doc.bootstrap_color')
+        ->leftjoin('almacen.orden_despacho','orden_despacho.id_od','=','transformacion.id_od')
+        ->leftjoin('almacen.alm_req','alm_req.id_requerimiento','=','orden_despacho.id_requerimiento')
+        ->leftjoin('almacen.guia_ven', function($join)
+                {   $join->on('guia_ven.id_od', '=', 'transformacion.id_od');
+                    $join->where('guia_ven.estado','!=', 7);
+                })
+        ->leftjoin('mgcp_cuadro_costos.cc','cc.id','=','transformacion.id_cc')
+        ->leftjoin('mgcp_oportunidades.oportunidades','oportunidades.id','=','cc.id_oportunidad')
+        ->join('administracion.adm_estado_doc','adm_estado_doc.id_estado_doc','=','transformacion.estado')
         ->join('almacen.alm_almacen','alm_almacen.id_almacen','=','transformacion.id_almacen')
         ->where([['transformacion.estado','!=',7]])
         ->get();

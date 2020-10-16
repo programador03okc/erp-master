@@ -13,8 +13,8 @@
                             <th hidden>Id</th>
                             <th>Código</th>
                             <th>Oportunidad</th>
-                            <th>Fecha Transformacion</th>
-                            <!-- <th>Empresa</th> -->
+                            <th>Requerimiento</th>
+                            <th>Guía Remisión</th>
                             <th>Almacén</th>
                         </tr>
                     </thead>

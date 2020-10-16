@@ -1016,6 +1016,12 @@ class DistribucionController extends Controller
                     ->where('id_od',$request->id_od)
                     ->first();
 
+                    if ($transformacion !== null){
+                        DB::table('almacen.transformacion')
+                        ->where('id_transformacion',$transformacion->id_transformacion)
+                        ->update(['estado'=>14]);//Recibido
+                    }
+
                     $id_salida = DB::table('almacen.mov_alm')->insertGetId(
                         [
                             'id_almacen' => $request->id_almacen,

@@ -10,6 +10,7 @@
                     <input type="text" class="oculto" name="id_orden_compra">
                     <input type="text" class="oculto" name="id_proveedor">
                     <input type="text" class="oculto" name="id_sede">
+                    <input type="text" class="oculto" name="id_transformacion">
                     <div class="row">
                         <div class="col-md-4">
                             <h5>Serie-Número</h5>
@@ -73,6 +74,8 @@
                                         <th>Descripción</th>
                                         <th>Cantidad</th>
                                         <th>Unid</th>
+                                        <th>Unitario</th>
+                                        <th>Total</th>
                                         <th></th>
                                     </tr>
                                 </thead>

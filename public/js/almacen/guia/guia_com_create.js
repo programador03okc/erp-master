@@ -9,6 +9,7 @@ function open_guia_create(data){
     $('[name=id_proveedor]').val(data.id_proveedor);
     $('[name=id_sede]').val(data.id_sede);
     $('[name=id_orden_compra]').val(data.id_orden_compra);
+    $('[name=id_transformacion]').val('');
     $('#serie').text('');
     $('#numero').text('');
     cargar_almacenes(data.id_sede, 'id_almacen');
@@ -55,7 +56,7 @@ function open_guia_create_seleccionadas(){
         $('[name=id_guia_clas]').val(1);
         $('[name=id_proveedor]').val(id_prov);
         $('[name=id_sede]').val(sede);
-        // $('[name=id_orden_compra]').val(data.id_orden_compra);
+        $('[name=id_transformacion]').val('');
         $('#serie').text('');
         $('#numero').text('');
         cargar_almacenes(sede, 'id_almacen');
@@ -94,7 +95,7 @@ function listar_detalle_transformacion(id){
             var html = '';
             var i=1;
             response.forEach(function(element){
-                html+=`<tr>
+                html+=`<tr id="${element.id_producto}">
                 <td>${i}</td>
                 <td></td>
                 <td>${element.cod_prod}</td>
@@ -104,6 +105,9 @@ function listar_detalle_transformacion(id){
                 <td>${element.descripcion}</td>
                 <td>${element.cantidad}</td>
                 <td>${element.abreviatura}</td>
+                <td>${element.valor_unitario}</td>
+                <td>${element.valor_total}</td>
+                <td></td>
                 </tr>`;
                 i++;
             });
@@ -146,12 +150,15 @@ $("#form-guia_create").on("submit", function(e){
 
     if (ope == 26){
         $("#detalleOrdenSeleccionadas tbody tr").each(function(){
-            
-            // detalle.push({ 
-            //     'id_detalle_orden'  : id_oc_det,
-            //     'cantidad'          : $(this).parent().parent().find('td input[id='+id_oc_det+'cantidad]').val(),
-            //     'series'            : series
-            // });
+            var id_producto = $(this)[0].id;
+            var cant = $(this)[0].childNodes[15].innerHTML;
+            var unit = $(this)[0].childNodes[19].innerHTML;
+            console.log(cant);
+            detalle.push({ 
+                'id_producto'  : id_producto,
+                'cantidad'     : cant,
+                'unitario'     : unit
+            });
         });
     } else {
         $("#detalleOrdenSeleccionadas input[type=checkbox]:checked").each(function(){
@@ -178,7 +185,7 @@ $("#form-guia_create").on("submit", function(e){
     } else {
         data+='&detalle='+JSON.stringify(detalle);
         console.log(data);
-        // guardar_guia_create(data);
+        guardar_guia_create(data);
     }
 });
 

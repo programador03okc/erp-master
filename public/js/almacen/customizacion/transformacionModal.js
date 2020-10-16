@@ -23,10 +23,16 @@ function listarTransformaciones(){
         'columns': [
             {'data': 'id_transformacion'},
             {'data': 'codigo'},
-            {'data': 'observacion'},
+            {'data': 'codigo_oportunidad'},
+            // {'render':
+            //     function (data, type, row){
+            //         return (row['codigo_oportunidad']!== null ? row['codigo_oportunidad'] : '');
+            //     }
+            // },
+            {'data': 'cod_req'},
             {'render':
                 function (data, type, row){
-                    return (formatDate(row['fecha_transformacion']));
+                    return (row['serie'] !== null ? (row['serie']+'-'+row['numero']) : '');
                 }
             },
             // {'data': 'razon_social'},
