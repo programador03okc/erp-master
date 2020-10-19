@@ -65,13 +65,13 @@ Gestión de Customizaciones
                                         <thead>
                                             <tr>
                                                 <th hidden></th>
-                                                <th>Fecha Trans.</th>
+                                                <th>Fecha Registro</th>
+                                                <th>Fecha Transf.</th>
                                                 <th>Código</th>
-                                                <th>Oportunidad</th>
-                                                <th>Empresa</th>
+                                                <th>Cuadro Costos</th>
                                                 <th>Almacén</th>
                                                 <th>Responsable</th>
-                                                <!-- <th>Registrado por</th> -->
+                                                <th>Observación</th>
                                                 <th>Estado</th>
                                                 <th width="10%">Acción</th>
                                             </tr>

@@ -66,6 +66,11 @@ class GestionCustomizacion
                 {'data': 'id_transformacion'},
                 {'render':
                     function (data, type, row){
+                        return (formatDate(row['fecha_registro']));
+                    }
+                },
+                {'render':
+                    function (data, type, row){
                         return (formatDate(row['fecha_transformacion']));
                     }
                 },
@@ -74,35 +79,96 @@ class GestionCustomizacion
                         return ('<label class="lbl-codigo" title="Abrir Transformación" onClick="abrir_transformacion('+row['id_transformacion']+')">'+row['codigo']+'</label>');
                     }
                 },
-                {'data': 'observacion'},
-                {'data': 'razon_social'},
+                {'data': 'codigo_oportunidad'},
                 {'data': 'descripcion'},
                 {'data': 'nombre_responsable'},
+                {'data': 'observacion'},
                 // {'data': 'nombre_registrado'},
                 {'render':
                     function (data, type, row){
                         return ('<span class="label label-'+row['bootstrap_color']+'">'+row['estado_doc']+'</span>');
                     }
                 },
-                {'defaultContent': 
-                    '<button type="button" class="ver btn btn-primary boton" data-toggle="tooltip" '+
-                        'data-placement="bottom" title="Ver Ingreso" >'+
-                        '<i class="fas fa-search-plus"></i></button>'+
-                    '<button type="button" class="atender btn btn-success boton" data-toggle="tooltip" '+
-                        'data-placement="bottom" title="Atender" >'+
-                        '<i class="fas fa-share"></i></button>'+
-                    '<button type="button" class="anular btn btn-danger boton" data-toggle="tooltip" '+
-                        'data-placement="bottom" title="Anular" >'+
-                        '<i class="fas fa-trash"></i></button>'},
+                {'render':
+                    function (data, type, row){
+                        return ('<button type="button" class="salida btn btn-success boton" data-toggle="tooltip" '+
+                                    'data-placement="bottom" title="Ver Salida" data-id="'+row['id_transformacion']+'">'+
+                                    '<i class="fas fa-search"></i></button>'+
+                                    
+                                '<button type="button" class="ingreso btn btn-primary boton" data-toggle="tooltip" '+
+                                    'data-placement="bottom" title="Ver Ingreso" data-id="'+row['id_transformacion']+'">'+
+                                    '<i class="fas fa-search"></i></button>'+
+                                
+                                '<button type="button" class="anular btn btn-danger boton" data-toggle="tooltip" '+
+                                    'data-placement="bottom" title="Anular" >'+
+                                    '<i class="fas fa-trash"></i></button>');
+                    }
+                },
             ],
             'columnDefs': [{ 'aTargets': [0], 'sClass': 'invisible'}],
         });
-        // ver("#listaTransformacionesMadres tbody", tabla);
-        // atender("#listaTransformacionesMadres tbody", tabla);
-        // anular("#listaTransformacionesMadres tbody", tabla);
     }
 }
 
+$('#listaTransformacionesMadres tbody').on("click","button.ingreso", function(){
+    var id = $(this).data('id');
+    abrir_ingreso(id);
+});
+
+$('#listaTransformacionesMadres tbody').on("click","button.salida", function(){
+    var id = $(this).data('id');
+    abrir_salida(id);
+});
+
+function abrir_salida(id_transformacion){
+    if (id_transformacion != ''){
+        $.ajax({
+            type: 'GET',
+            url: 'id_salida_transformacion/'+id_transformacion,
+            dataType: 'JSON',
+            success: function(id_salida){
+                if (id_salida > 0){
+                    console.log(id_salida);
+                    var id = encode5t(id_salida);
+                    window.open('imprimir_salida/'+id);
+                } else {
+                    alert('Esta Transformación no tiene Salida');
+                }
+            }
+        }).fail( function( jqXHR, textStatus, errorThrown ){
+            console.log(jqXHR);
+            console.log(textStatus);
+            console.log(errorThrown);
+        });
+    } else {
+        alert('Debe seleccionar una Transformación!');
+    }
+}
+
+function abrir_ingreso(id_transformacion){
+    if (id_transformacion != ''){
+        $.ajax({
+            type: 'GET',
+            url: 'id_ingreso_transformacion/'+id_transformacion,
+            dataType: 'JSON',
+            success: function(id_ingreso){
+                if (id_ingreso > 0){
+                    console.log(id_ingreso);
+                    var id = encode5t(id_ingreso);
+                    window.open('imprimir_ingreso/'+id);
+                } else {
+                    alert('Esta Transformación no tiene Ingreso');
+                }
+            }
+        }).fail( function( jqXHR, textStatus, errorThrown ){
+            console.log(jqXHR);
+            console.log(textStatus);
+            console.log(errorThrown);
+        });
+    } else {
+        alert('Debe seleccionar una Transformación!');
+    }
+}
 
 let id_cc = null;
 let tipo = null;

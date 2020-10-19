@@ -14,7 +14,7 @@ class CustomizacionController extends Controller
         $data = DB::table('almacen.transformacion')
         ->select('transformacion.*','adm_contri.razon_social','alm_almacen.descripcion',
         'respon.nombre_corto as nombre_responsable','regist.nombre_corto as nombre_registrado',
-        'adm_estado_doc.estado_doc','adm_estado_doc.bootstrap_color')
+        'adm_estado_doc.estado_doc','adm_estado_doc.bootstrap_color','oportunidades.codigo_oportunidad')
         ->join('almacen.alm_almacen','alm_almacen.id_almacen','=','transformacion.id_almacen')
         ->join('administracion.sis_sede','sis_sede.id_sede','=','alm_almacen.id_sede')
         ->join('administracion.adm_empresa','adm_empresa.id_empresa','=','sis_sede.id_empresa')
@@ -22,6 +22,8 @@ class CustomizacionController extends Controller
         ->leftjoin('configuracion.sis_usua as respon','respon.id_usuario','=','transformacion.responsable')
         ->join('configuracion.sis_usua as regist','regist.id_usuario','=','transformacion.registrado_por')
         ->join('administracion.adm_estado_doc','adm_estado_doc.id_estado_doc','=','transformacion.estado')
+        ->leftjoin('mgcp_cuadro_costos.cc','cc.id','=','transformacion.id_cc')
+        ->leftjoin('mgcp_oportunidades.oportunidades','oportunidades.id','=','cc.id_oportunidad')
         // ->where([['transformacion.id_almacen','=',$id_almacen]])
         ->get();
         $output['data'] = $data;
