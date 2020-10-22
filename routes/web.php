@@ -709,13 +709,16 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::get('index', 'OrdenController@view_generar_orden_requerimiento')->name('index');
 					// generar oreden por requerimiento
 					Route::get('requerimientos-pendientes', 'OrdenController@listar_requerimientos_pendientes')->name('requerimientos-pendientes'); 
-					Route::get('requerimientos-atendidos', 'LogisticaController@listar_requerimientos_atendidos')->name('requerimientos-atendidos'); 
-					Route::post('requerimiento-orden', 'OrdenController@get_requerimiento_orden')->name('requerimiento-orden'); 
-					Route::post('guardar', 'LogisticaController@guardar_orden_por_requerimiento')->name('guardar');
+					Route::get('ordenes-en-proceso', 'OrdenController@lista_ordenes_en_proceso')->name('ordenes-en-proceso'); 
+					Route::post('detalle-requerimiento-orden', 'OrdenController@get_detalle_requerimiento_orden')->name('detalle-requerimiento-orden'); 
+					Route::post('guardar', 'OrdenController@guardar_orden_por_requerimiento')->name('guardar');
 					Route::put('revertir/{id_orden?}/{id_requerimiento?}', 'LogisticaController@revertir_orden_requerimiento')->name('revertir');
 					Route::get('mostrar_proveedores', 'LogisticaController@mostrar_proveedores');
 					Route::post('guardar_proveedor', 'LogisticaController@guardar_proveedor');
-					Route::get	('detalle-orden-atendido/{id_orden?}', 'LogisticaController@detalle_orden_atendido');
+					Route::get	('ver-orden/{id_orden?}', 'OrdenController@ver_orden');
+					Route::post('actualizar-estado', 'OrdenController@update_estado_orden')->name('actualizar-estado-orden'); 
+					Route::put('actualizar-estado-detalle-requerimieto/{id_detalle_req?}/{estado?}', 'OrdenController@update_estado_detalle_requerimiento')->name('actualizar-estado-detalle-requerimiento'); 
+
 
 				});
 				Route::group(['as' => 'lista-ordenes.', 'prefix' => 'por-requerimiento'], function(){

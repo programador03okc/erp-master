@@ -17,21 +17,64 @@ class OrdenController extends Controller
 
     function view_generar_orden_requerimiento()
     {
-        // $condiciones = $this->select_condiciones();
+        $condiciones = $this->select_condiciones();
         // $tp_doc = $this->select_tp_doc();
         // $bancos = $this->select_bancos();
         // $cuentas = $this->select_tipos_cuenta();
         // $responsables = $this->select_responsables();
         // $contactos = $this->select_contacto();
-        // $tp_moneda = $this->select_moneda();
+        $tp_moneda = $this->select_moneda();
         $tp_documento = $this->select_documento();
         $sis_identidad = $this->select_sis_identidad();
-        // $sedes = $this->select_sedes();
+        $sedes = $this->select_sedes();
         $empresas = $this->select_mostrar_empresas();
+        $tp_doc = $this->select_tp_doc();
 
-        $sedes = Auth::user()->sedesAcceso();
+        // $sedes = Auth::user()->sedesAcceso();
 
-        return view('logistica/ordenes/generar_orden_requerimiento', compact('sedes','empresas','sis_identidad','tp_documento'));
+        return view('logistica/ordenes/generar_orden_requerimiento', compact('sedes','empresas','sis_identidad','tp_documento', 'tp_moneda','tp_doc','condiciones'));
+    }
+
+    public function select_moneda(){
+        $data = DB::table('configuracion.sis_moneda')
+            ->select('sis_moneda.id_moneda','sis_moneda.descripcion','sis_moneda.simbolo')
+            ->where([
+                ['sis_moneda.estado', '=', 1]
+            ])
+            ->orderBy('sis_moneda.id_moneda', 'asc')
+            ->get();
+        return $data;
+    }
+    
+    public function select_sedes()
+    {
+        $data = DB::table('administracion.sis_sede')
+            ->select(
+                'sis_sede.*'
+            )
+            ->orderBy('sis_sede.id_empresa', 'asc')
+            ->get();
+        return $data;
+    }
+
+    public function select_tp_doc()
+    {
+        $data = DB::table('contabilidad.cont_tp_doc')
+            ->select('cont_tp_doc.id_tp_doc', 'cont_tp_doc.cod_sunat', 'cont_tp_doc.descripcion')
+            ->where([['cont_tp_doc.estado', '=', 1]])
+            ->orderBy('cont_tp_doc.id_tp_doc')
+            ->get();
+        return $data;
+    }
+
+    public function select_condiciones()
+    {
+        $data = DB::table('logistica.log_cdn_pago')
+            ->select('log_cdn_pago.id_condicion_pago', 'log_cdn_pago.descripcion')
+            ->where('log_cdn_pago.estado', 1)
+            ->orderBy('log_cdn_pago.descripcion')
+            ->get();
+        return $data;
     }
 
     public function select_mostrar_empresas()
@@ -143,9 +186,9 @@ class OrdenController extends Controller
     // guia_com_oc.id_oc = log_ord_compra.id_orden_compra)::integer as cantidad_entrada_almacen")
 
         )
-        ->where([['alm_req.estado', '=', 1],['alm_req.id_tipo_requerimiento','=',1],['alm_req.confirmacion_pago','=',true],])
-        ->orWhere([['alm_req.estado', '=', 1],['alm_req.id_tipo_requerimiento','=',1],['alm_req.tipo_cliente','=',3]])
-        // ->orWhereIn('alm_req.id_requerimiento', $id_req_pendientes_list_unique)
+        ->where([['alm_req.estado', '=', 1],['alm_req.confirmacion_pago','=',true],['alm_req.id_tipo_requerimiento', '=', 1]])
+        ->orWhere([['alm_req.estado', '=', 1],['alm_req.id_tipo_requerimiento', '=', 1]])
+        ->orWhere([['alm_req.estado', '=', 23],['alm_req.id_tipo_requerimiento', '=', 1]])
         ->orderBy('alm_req.id_requerimiento', 'desc')
         ->get();
 
@@ -154,7 +197,143 @@ class OrdenController extends Controller
     return response()->json(["data" => $alm_req]);
  
     }
-    public function get_requerimiento_orden(Request $request )
+
+    public function lista_ordenes_en_proceso(){
+        $orden_list=[];
+        $detalle_orden_list=[];
+
+        $orden_obj = DB::table('logistica.log_ord_compra')
+        ->select(
+            'log_ord_compra.*',
+            'adm_contri.id_contribuyente',
+            'adm_contri.razon_social',
+            'adm_contri.nro_documento',
+            'sis_sede.descripcion as empresa_sede',
+            'adm_estado_doc.estado_doc',
+            'adm_estado_doc.bootstrap_color',
+        )
+        ->leftJoin('logistica.log_prove', 'log_prove.id_proveedor', '=', 'log_ord_compra.id_proveedor')
+        ->leftJoin('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'log_prove.id_contribuyente')
+        ->leftJoin('administracion.sis_sede', 'sis_sede.id_sede', '=', 'log_ord_compra.id_sede')
+        ->leftJoin('administracion.adm_estado_doc', 'log_ord_compra.estado', '=', 'adm_estado_doc.id_estado_doc')
+
+        ->where([['log_ord_compra.estado', '!=', 7]])
+        ->orderBy('log_ord_compra.fecha','desc')
+        ->get();
+
+        $orden_list = collect($orden_obj)->map(function($x){ return (array) $x; })->toArray(); 
+
+
+        $detalle_orden_obj = DB::table('logistica.log_det_ord_compra')
+        ->select(
+            'log_det_ord_compra.*',
+            'alm_det_req.observacion',
+            'alm_req.codigo',
+            'alm_prod.codigo AS alm_prod_codigo',
+            'alm_prod.part_number',
+            'alm_cat_prod.descripcion as categoria',
+            'alm_subcat.descripcion as subcategoria',
+            'alm_prod.descripcion AS alm_prod_descripcion'
+        )
+        ->leftJoin('almacen.alm_item', 'log_det_ord_compra.id_item', '=', 'alm_item.id_item')
+        ->leftJoin('almacen.alm_prod', 'alm_prod.id_producto', '=', 'alm_item.id_producto')
+        ->leftJoin('almacen.alm_cat_prod', 'alm_cat_prod.id_categoria', '=', 'alm_prod.id_categoria')
+        ->leftJoin('almacen.alm_subcat','alm_subcat.id_subcategoria','=','alm_prod.id_subcategoria')
+    
+        ->leftJoin('almacen.alm_det_req', 'alm_det_req.id_detalle_requerimiento', '=', 'log_det_ord_compra.id_detalle_requerimiento')
+        ->leftJoin('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'alm_det_req.id_requerimiento')
+
+        ->where([['log_det_ord_compra.estado', '!=', 7]])
+        ->get();
+
+        $detalle_orden_list = collect($detalle_orden_obj)->map(function($x){ return (array) $x; })->toArray(); 
+        foreach ($orden_list as $keyOrd => $valueOrd) {
+            $orden_list[$keyOrd]['detalle']=[];
+        }
+
+        foreach ($orden_list as $keyOrd => $valueOrd) {
+            foreach ($detalle_orden_list as $keyDetOrd => $valueDetOrd) {
+                if($valueOrd['id_orden_compra'] == $valueDetOrd['id_orden_compra']){
+                    $orden_list[$keyOrd]['detalle'][]= $valueDetOrd;
+                }
+            }
+        }
+
+
+        // $alm_req = DB::table('almacen.alm_req')
+        //     ->join('almacen.alm_tp_req', 'alm_req.id_tipo_requerimiento', '=', 'alm_tp_req.id_tipo_requerimiento')
+        //     ->leftJoin('configuracion.sis_usua', 'alm_req.id_usuario', '=', 'sis_usua.id_usuario')
+        //     ->leftJoin('administracion.adm_estado_doc', 'alm_req.estado', '=', 'adm_estado_doc.id_estado_doc')
+        //     ->leftJoin('rrhh.rrhh_trab', 'sis_usua.id_trabajador', '=', 'rrhh_trab.id_trabajador')
+        //     ->leftJoin('rrhh.rrhh_rol', 'alm_req.id_rol', '=', 'rrhh_rol.id_rol')
+        //     ->leftJoin('rrhh.rrhh_rol_concepto', 'rrhh_rol_concepto.id_rol_concepto', '=', 'rrhh_rol.id_rol_concepto')
+        //     ->leftJoin('administracion.adm_area', 'alm_req.id_area', '=', 'adm_area.id_area')
+        //     ->leftJoin('proyectos.proy_op_com', 'proy_op_com.id_op_com', '=', 'alm_req.id_op_com')
+        //     ->leftJoin('administracion.adm_grupo', 'adm_grupo.id_grupo', '=', 'alm_req.id_grupo')
+        //     ->leftJoin('logistica.log_ord_compra', 'alm_req.id_requerimiento', '=', 'log_ord_compra.id_requerimiento')
+        //     ->leftJoin('administracion.adm_estado_doc as estado', 'log_ord_compra.estado', '=', 'estado.id_estado_doc')
+
+        //     ->leftJoin('administracion.sis_sede', 'sis_sede.id_sede', '=', 'log_ord_compra.id_sede')
+
+        //     ->select(
+        //         'alm_req.id_requerimiento',
+        //         'log_ord_compra.id_orden_compra',
+        //         'log_ord_compra.codigo_softlink',
+        //         'log_ord_compra.fecha as fecha_orden',
+        //         'alm_req.codigo',
+        //         'alm_req.concepto',
+        //         'alm_req.fecha_requerimiento',
+        //         'alm_req.id_tipo_requerimiento',
+        //         'alm_tp_req.descripcion AS tipo_req_desc',
+        //         'sis_usua.usuario',
+        //         'rrhh_rol.id_area',
+        //         'adm_area.descripcion AS area_desc',
+        //         'rrhh_rol.id_rol',
+        //         'rrhh_rol.id_rol_concepto',
+        //         'rrhh_rol_concepto.descripcion AS rrhh_rol_concepto',
+        //         'alm_req.id_grupo',
+        //         'adm_grupo.descripcion AS adm_grupo_descripcion',
+        //         'alm_req.id_op_com',
+        //         'proy_op_com.codigo as codigo_op_com',
+        //         'proy_op_com.descripcion as descripcion_op_com',
+        //         'alm_req.concepto AS alm_req_concepto',
+        //         // 'log_detalle_grupo_cotizacion.id_detalle_grupo_cotizacion',
+        //         'alm_req.id_prioridad',
+        //         'alm_req.fecha_registro',
+        //         'alm_req.estado as estado_requerimiento',
+        //         'log_ord_compra.estado as id_estado_orden',
+        //         'estado.estado_doc as estado_orden',
+        //         'log_ord_compra.id_sede',
+        //         'sis_sede.codigo as codigo_sede_empresa',
+        //         'adm_estado_doc.estado_doc',
+        //         'adm_estado_doc.bootstrap_color',
+        //         // DB::raw("(CASE WHEN alm_req.estado = 1 THEN 'Habilitado' ELSE 'Deshabilitado' END) AS estado_desc")
+
+        //     )
+        //     ->where([['alm_req.estado', '=', 5],['log_ord_compra.estado', '!=', 7],['alm_req.id_tipo_requerimiento','=',1],['alm_req.confirmacion_pago','=',true]])
+        //     // ->orWhere([['alm_req.estado', '=', 5],['log_ord_compra.estado', '!=', 7],['alm_req.id_tipo_requerimiento','=',1],['alm_req.tipo_cliente','=',3]])
+        //     ->orderBy('alm_req.id_requerimiento', 'desc')
+        //     ->get();
+
+            $output['data']=$orden_list;
+
+        return response()->json($output);
+    }
+
+    public function cantidadCompradaDetalleOrden($id_detalle_requerimiento ){
+        $cantiadComprada= 0;
+        $det_ord_compra = DB::table('logistica.log_det_ord_compra')
+        ->select('log_det_ord_compra.*')
+        ->where('log_det_ord_compra.id_detalle_requerimiento', $id_detalle_requerimiento)
+        ->get();
+
+        if(isset($det_ord_compra) && sizeof($det_ord_compra)> 0){
+            $cantiadComprada = $det_ord_compra->first()->cantidad;
+        }
+        return $cantiadComprada;
+
+    }
+    public function get_detalle_requerimiento_orden(Request $request )
     {
 
         $requerimientoList = $request->requerimientoList;
@@ -317,6 +496,8 @@ class OrdenController extends Controller
                     'alm_det_req.descripcion_adicional',
                     'alm_det_req.id_tipo_item',
                     'alm_det_req.estado',
+                    'alm_det_req.stock_comprometido',
+                    'alm_det_req.observacion',
                     
                     
                     
@@ -335,9 +516,7 @@ class OrdenController extends Controller
                     'alm_det_req_adjuntos.id_detalle_requerimiento AS adjunto_id_detalle_requerimiento'
                 )
                 ->whereIn('alm_req.id_requerimiento', $requerimientoList)
-                ->where([
-                    ['alm_det_req.estado','=', 1]
-                ])
+                ->whereIn('alm_det_req.estado', [1,23,7])
 
                 ->orderBy('alm_item.id_item', 'asc')
                 ->get();
@@ -372,8 +551,8 @@ class OrdenController extends Controller
                             'id_requerimiento'          => $data->id_requerimiento,
                             'codigo_requerimiento'      => $data->codigo_requerimiento,
                             'id_item'                   => $data->id_item,
-                            'cantidad'                  => $data->cantidad,
-                            'id_unidad_medida'             => $data->id_unidad_medida,
+                            'cantidad'                  => $data->cantidad - ($data->stock_comprometido?$data->stock_comprometido:0) - ($this->cantidadCompradaDetalleOrden($data->id_detalle_requerimiento)),
+                            'id_unidad_medida'          => $data->id_unidad_medida,
                             'unidad_medida'             => $data->unidad_medida,
                             'precio_referencial'        => $data->precio_referencial,
                             'descripcion_adicional'     => $data->descripcion_adicional,
@@ -386,6 +565,9 @@ class OrdenController extends Controller
                             'id_tipo_item'                => $data->id_tipo_item,
                             'id_producto'               => $data->id_producto,
                             'part_number'               => $data->part_number,
+                            'stock_comprometido'        => $data->stock_comprometido,
+                            'observacion'               => $data->observacion,
+                            'cantidad_a_comprar'        => 0,
                             'descripcion'               => $data->descripcion_adicional,
                             'subtotal'               =>  $subtotal,
                         ];
@@ -423,6 +605,42 @@ class OrdenController extends Controller
         return $data;
     }
     
+    function update_estado_orden(Request $request ){
+        $id_orden_compra = $request->id_orden_compra;
+        $id_estado_orden_selected = $request->id_estado_orden_selected;
+        
+       $update_log_ord_compra = DB::table('logistica.log_ord_compra')
+        ->where([
+                ['id_orden_compra',$id_orden_compra]])
+        ->update(
+            [
+                'estado' => $id_estado_orden_selected
+            ]);
+
+        return $update_log_ord_compra;
+
+    }
+    function update_estado_detalle_requerimiento($id_detalle_requerimiento,$estado ){
+        
+        $status=500;
+        $alm_det_req = DB::table('almacen.alm_det_req')
+        ->where([
+                ['id_detalle_requerimiento',$id_detalle_requerimiento]])
+        ->update(
+            [
+                'estado' => $estado
+            ]);
+        if(isset($alm_det_req) && $alm_det_req>0){
+            $status= 200;
+        }else{
+            $status= 204;
+
+        }
+        $output = [ 'status'=>$status];
+
+        return $output;
+
+    }
 
     function view_listar_ordenes()
     {
@@ -1163,6 +1381,442 @@ class OrdenController extends Controller
         // </table>
         return $html;
     }
+    public function leftZero($lenght, $number)
+    {
+        $nLen = strlen($number);
+        $zeros = '';
+        for ($i = 0; $i < ($lenght - $nLen); $i++) {
+            $zeros = $zeros . '0';
+        }
+        return $zeros . $number;
+    }
+
+    public function nextCodigoOrden($id_tp_docum)
+    {
+        $mes = date('m', strtotime("now"));
+        $anio = date('y', strtotime("now"));
+
+        $num = DB::table('logistica.log_ord_compra')
+            ->where('id_tp_documento', $id_tp_docum)->count();
+
+        $correlativo = $this->leftZero(4, ($num + 1));
+
+        if ($id_tp_docum == 2) {
+            $codigoOrden = "OC-{$anio}{$mes}{$correlativo}";
+        } else if ($id_tp_docum == 3) {
+            $codigoOrden = "OS-{$anio}{$mes}{$correlativo}";
+        } else {
+            $codigoOrden = "-{$anio}{$mes}{$correlativo}";
+        }
+        return $codigoOrden;
+    }
+
+    public function guardar_orden_por_requerimiento(Request $request){
+        try {
+            DB::beginTransaction();
+
+            $usuario = Auth::user()->id_usuario;
+            $tp_doc = ($request->id_tipo_doc !== null ? $request->id_tipo_doc : 2);
+            $codigo = $this->nextCodigoOrden($tp_doc);
+            $guardarEnRequerimiento = $request->guardarEnRequerimiento;
+
+            $id_orden = DB::table('logistica.log_ord_compra')
+            ->insertGetId(
+                [
+                    'id_grupo_cotizacion' => $request->id_grupo_cotizacion?$request->id_grupo_cotizacion:null,
+                    'id_tp_documento' =>  $tp_doc,
+                    'fecha' => date('Y-m-d H:i:s'),
+                    'id_usuario' => $usuario,
+                    'id_moneda' => ($request->id_moneda?$request->id_moneda:null),
+                    'id_proveedor' => $request->id_proveedor,
+                    'codigo' => $codigo,
+                    'monto_subtotal' => $request->monto_subtotal?$request->monto_subtotal:null,
+                    'igv_porcentaje' => $request->igv_porcentaje?$request->igv_porcentaje:null,
+                    'monto_igv' => $request->monto_igv?$request->monto_igv:null,
+                    'monto_total' => $request->monto_total?$request->monto_total:null,
+                    'plazo_entrega' => $request->plazo_entrega?$request->plazo_entrega:null,
+                    'id_condicion' => $request->id_condicion?$request->id_condicion:null,
+                    'plazo_dias' => $request->plazo_dias?$request->plazo_dias:null,
+                    'id_cotizacion' => $request->id_cotizacion?$request->id_cotizacion:null,
+                    'id_cta_principal' => $request->id_cta_principal?$request->id_cta_principal:null,
+                    'id_cta_alternativa' => $request->id_cta_alternativa?$request->id_cta_alternativa:null,
+                    'id_cta_detraccion' => $request->id_cta_detraccion?$request->id_cta_detraccion:null,
+                    'personal_responsable' => $request->contacto_responsable?$request->contacto_responsable:null,
+                    'id_sede' => $request->sede?$request->sede:null,
+                    'id_requerimiento' => $request->id_requerimiento,
+                    'en_almacen' => false,
+                    'estado' => 17,
+                    'codigo_softlink' => ($request->codigo_orden!==null ? $request->codigo_orden : ''),
+                ],
+                'id_orden_compra'
+            );
+
+            $dataDetalle = json_decode($request->detalle_requerimiento);
+
+            $allidReqList=[];
+            foreach ($dataDetalle as $d) {
+                
+                $allidReqList[]= $d->id_requerimiento;
+
+                if($d->cantidad_a_comprar > 0){
+                    if($guardarEnRequerimiento == false){
+                        DB::table('logistica.log_det_ord_compra')
+                        ->insert([
+                            'id_orden_compra'=>$id_orden,
+                            'id_item'=> ($d->id_item ? $d->id_item : null),
+                            'id_detalle_requerimiento'=> ($d->id_detalle_requerimiento ? $d->id_detalle_requerimiento : null),
+                            'cantidad'=> $d->cantidad_a_comprar,
+                            'id_unidad_medida'=> $d->id_unidad_medida,
+                            'precio'=> $d->precio_referencial,
+                            // 'subtotal'=> ($d->precio_referencial * $d->cantidad),
+                            'subtotal'=> $d->subtotal?$d->subtotal:0,
+                            'estado'=> 17
+                            // 'fecha_registro'=> date('Y-m-d H:i:s')
+                        ]);
+                    }elseif($guardarEnRequerimiento == true){
+                        if(isset($d->id ) == true){
+                            $id_new_det_req = DB::table('almacen.alm_det_req')->insertGetId(
+                                [
+                                    'id_requerimiento'      => ($d->id_requerimiento ? $d->id_requerimiento : null),
+                                    'id_item'               => ($d->id_item ? $d->id_item : null),
+                                    'id_producto'           => ($d->id_producto ? $d->id_producto : null),
+                                    'precio_referencial'    => ($d->precio_referencial ? $d->precio_referencial : null),
+                                    'cantidad'              => ($d->cantidad_a_comprar ? $d->cantidad_a_comprar : null),
+                                    'fecha_entrega'         => null,
+                                    'lugar_entrega'         => null,
+                                    'descripcion_adicional' => ($d->descripcion_adicional ? $d->descripcion_adicional : null),
+                                    'partida'               => null,
+                                    'id_unidad_medida'      => ($d->cantidad_a_comprar ? $d->cantidad_a_comprar : null),
+                                    'id_tipo_item'          => ($d->id_tipo_item ? $d->id_tipo_item : null),
+                                    'fecha_registro'        => date('Y-m-d H:i:s'),
+                                    'estado'                => ($d->estado ? $d->estado : null),
+                                    'id_almacen_reserva'     => null
+                                ],
+                                'id_detalle_requerimiento'
+                            );
+
+                            DB::table('logistica.log_det_ord_compra')
+                            ->insert([
+                                'id_orden_compra'=>$id_orden,
+                                'id_item'=> $d->id_item ? $d->id_item : null,
+                                'id_detalle_requerimiento'=> $id_new_det_req,
+                                'cantidad'=> $d->cantidad_a_comprar?$d->cantidad_a_comprar:null,
+                                'id_unidad_medida'=> $d->id_unidad_medida?$d->id_unidad_medida:null,
+                                'precio'=> $d->precio_referencial?$d->precio_referencial:null,
+                                'subtotal'=> $d->subtotal?$d->subtotal:null,
+                                'estado'=> 17
+                            ]);
+                        }
+                    }
+
+                }
+            }
+
+            $uniqueIdReqList = array_unique($allidReqList);
+
+            $idRequerimientoAtentidosTotalList=[];
+            $idRequerimientoAtentidosParcialList=[];
+
+            $sizeDataDetalle = count($dataDetalle);
+            $countAtendido=0;
+            
+                foreach ($dataDetalle as $d) {
+                    if(($d->cantidad_a_comprar + $d->stock_comprometido ) == $d->cantidad ){
+                        $countAtendido+=1;
+                        $idRequerimientoAtentidosTotalList[]=$d->id_requerimiento;
+                        DB::table('almacen.alm_det_req')
+                        ->where('id_detalle_requerimiento',$d->id_detalle_requerimiento)
+                        ->update(
+                            [
+                                'estado'=>5, //atendido total
+                                'stock_comprometido'=> $d->stock_comprometido
+                            ] 
+                                ); 
+                    }
+                    if((($d->cantidad_a_comprar + $d->stock_comprometido )>0) && (($d->cantidad_a_comprar + $d->stock_comprometido ) < $d->cantidad)){
+                        $idRequerimientoAtentidosParcialList[]=$d->id_requerimiento;
+                        DB::table('almacen.alm_det_req')
+                        ->where('id_detalle_requerimiento',$d->id_detalle_requerimiento)
+                        ->update(
+                            [
+                                'estado'=>23, // atendido parcial
+                                'stock_comprometido'=> $d->stock_comprometido
+                            ]
+                            
+                        ); 
+                    }
+                } 
+                if(count($idRequerimientoAtentidosTotalList)>0){
+                    foreach ($idRequerimientoAtentidosTotalList as $key => $id_req) {
+
+                        if($countAtendido ==$sizeDataDetalle){
+                            DB::table('almacen.alm_req')
+                            ->where('id_requerimiento',$id_req)
+                            ->update(['estado'=>5]); // atendido total
+    
+                            DB::table('almacen.alm_req_obs')
+                            ->insert([  'id_requerimiento'=>$id_req,
+                                        'accion'=>'ATENDIDO TOTAL',
+                                        'descripcion'=>'Se generó Orden de Compra '.$codigo,
+                                        'id_usuario'=>$usuario,
+                                        'fecha_registro'=>date('Y-m-d H:i:s')
+                            ]);
+                        }else{
+                            DB::table('almacen.alm_req')
+                            ->where('id_requerimiento',$id_req)
+                            ->update(['estado'=>23]); // atendido parcial
+    
+                            DB::table('almacen.alm_req_obs')
+                            ->insert([  'id_requerimiento'=>$id_req,
+                                        'accion'=>'ATENDIDO PARCIAL',
+                                        'descripcion'=>'Se generó Orden de Compra '.$codigo,
+                                        'id_usuario'=>$usuario,
+                                        'fecha_registro'=>date('Y-m-d H:i:s')
+                            ]);
+                        }
+
+                    }
+
+                }
+                if(count($idRequerimientoAtentidosParcialList)>0){
+                    foreach ($idRequerimientoAtentidosParcialList as $key => $id_req) {
+                        DB::table('almacen.alm_req')
+                        ->where('id_requerimiento',$id_req)
+                        ->update(['estado'=>23]); // atendido parcial
+
+                        DB::table('almacen.alm_req_obs')
+                        ->insert([  'id_requerimiento'=>$id_req,
+                                    'accion'=>'ATENDIDO PARCIAL',
+                                    'descripcion'=>'Se generó Orden de Compra '.$codigo,
+                                    'id_usuario'=>$usuario,
+                                    'fecha_registro'=>date('Y-m-d H:i:s')
+                        ]);
+                    }
+                }
+
+            // $alm_det_req = DB::table('almacen.alm_det_req')
+            // ->select(
+            //     'alm_det_req.*'
+            // )
+            // ->whereIn('alm_det_req.id_requerimiento',$uniqueIdReqList)
+            // ->where([
+            //     ['alm_det_req.estado', '!=', 7]
+            //     ])
+            // ->get();
+
+            // $cantidad_det_req_con_orden = DB::table('almacen.alm_det_req')
+            // ->whereIn('alm_det_req.id_requerimiento',$uniqueIdReqList)
+            // ->where([
+            //     ['alm_det_req.estado', '=', 5]
+            //     ])
+            // ->count();
+
+            // $cantidad_det_req=0;
+            // if($alm_det_req){
+            //     $cantidad_det_req = $alm_det_req->count();
+            // }
+
+            // Debugbar::info($cantidad_det_req);
+            // Debugbar::info($cantidad_det_req_con_orden);
+
+            // if($cantidad_det_req == $cantidad_det_req_con_orden){
+            //     DB::table('almacen.alm_req')
+            //     ->whereIn('alm_req.id_requerimiento',$uniqueIdReqList)
+            //     ->update(['estado'=>5]);
+            // }
+
+
+            //Agrega accion en requerimiento
+            // foreach ($uniqueIdReqList as $key => $id_requerimiento) {
+            //     DB::table('almacen.alm_req_obs')
+            //     ->insert([  'id_requerimiento'=>$id_requerimiento,
+            //                 'accion'=>'ATENDIDO',
+            //                 'descripcion'=>'Se generó Orden de Compra '.$codigo,
+            //                 'id_usuario'=>$usuario,
+            //                 'fecha_registro'=>date('Y-m-d H:i:s')
+            //     ]);
+            // }
+  
+
+        DB::commit();
+            return response()->json($id_orden);
+
+        } catch (\PDOException $e) {
+            DB::rollBack();
+        }
+
+    }
+
+    public function ver_orden($id_orden)
+    {
+
+        $log_ord_compra = DB::table('logistica.log_ord_compra')
+        ->select(
+            'log_ord_compra.*',
+            'adm_contri.id_contribuyente',
+            'adm_contri.razon_social',
+            'adm_contri.nro_documento',
+            'log_cdn_pago.descripcion as condicion',
+            'sis_moneda.simbolo',
+            'cta_prin.nro_cuenta as nro_cuenta_prin',
+            'cta_alter.nro_cuenta as nro_cuenta_alter',
+            'cta_detra.nro_cuenta as nro_cuenta_detra',
+            'adm_estado_doc.estado_doc',
+            'adm_estado_doc.bootstrap_color',
+            'log_ord_compra_pago.id_pago',
+            'log_ord_compra_pago.detalle_pago',
+            'log_ord_compra_pago.archivo_adjunto'
+            )
+        ->leftjoin('logistica.log_prove', 'log_prove.id_proveedor', '=', 'log_ord_compra.id_proveedor')
+        ->leftjoin('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'log_prove.id_contribuyente')
+        ->leftjoin('logistica.log_cdn_pago','log_cdn_pago.id_condicion_pago','=','log_ord_compra.id_condicion')
+        ->leftjoin('configuracion.sis_moneda','sis_moneda.id_moneda','=','log_ord_compra.id_moneda')
+        ->leftjoin('contabilidad.adm_cta_contri as cta_prin','cta_prin.id_cuenta_contribuyente','=','log_ord_compra.id_cta_principal')
+        ->leftjoin('contabilidad.adm_cta_contri as cta_alter','cta_alter.id_cuenta_contribuyente','=','log_ord_compra.id_cta_alternativa')
+        ->leftjoin('contabilidad.adm_cta_contri as cta_detra','cta_detra.id_cuenta_contribuyente','=','log_ord_compra.id_cta_detraccion')
+        ->join('administracion.adm_estado_doc','adm_estado_doc.id_estado_doc','=','log_ord_compra.estado')
+        ->leftjoin('logistica.log_ord_compra_pago','log_ord_compra_pago.id_orden_compra','=','log_ord_compra.id_orden_compra')
+        ->where('log_ord_compra.id_orden_compra','=',$id_orden)
+        ->get();
+
+        if (isset($log_ord_compra)) {
+            $orden = [];
+            foreach ($log_ord_compra as $data) {
+                    $orden = [
+                        'codigo'         => $data->codigo,
+                        'fecha'          => $data->fecha,
+                        'codigo_softlink'=> $data->codigo_softlink,
+                        'razon_social'   => $data->razon_social,
+                        'nro_documento'  => $data->nro_documento,
+                        'condicion'      => $data->condicion,
+                        'simbolo'        => $data->simbolo,
+                        'estado_doc'     => $data->estado_doc,
+                        'id_condicion'   => $data->id_condicion,
+                        'plazo_dias'     => $data->plazo_dias,
+                        'plazo_entrega'  => $data->plazo_entrega,
+                        'igv_porcentaje' => $data->igv_porcentaje,
+                        'monto_subtotal' => $data->monto_subtotal,
+                        'monto_igv'      => $data->monto_igv,
+                        'monto_total'    => $data->monto_total
+                    ];
+                }
+
+        } else {
+
+            $orden = [];
+        }
+
+
+        $log_det_ord_compra = DB::table('logistica.log_det_ord_compra')
+        ->leftJoin('almacen.alm_item', 'log_det_ord_compra.id_item', '=', 'alm_item.id_item')
+        ->leftJoin('almacen.alm_prod', 'alm_prod.id_producto', '=', 'alm_item.id_producto')
+        ->leftJoin('almacen.alm_cat_prod', 'alm_cat_prod.id_categoria', '=', 'alm_prod.id_categoria')
+        ->leftJoin('almacen.alm_subcat','alm_subcat.id_subcategoria','=','alm_prod.id_subcategoria')
+        ->leftJoin('almacen.alm_det_req', 'log_det_ord_compra.id_detalle_requerimiento', '=', 'alm_det_req.id_detalle_requerimiento')
+        ->leftJoin('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'alm_det_req.id_requerimiento')
+        ->leftJoin('almacen.alm_und_medida as und_medida_det_req', 'alm_det_req.id_unidad_medida', '=', 'und_medida_det_req.id_unidad_medida')
+        // ->leftJoin('almacen.alm_det_req_adjuntos', 'alm_det_req_adjuntos.id_detalle_requerimiento', '=', 'alm_det_req.id_detalle_requerimiento')
+        ->leftJoin('almacen.alm_almacen', 'alm_det_req.id_almacen_reserva', '=', 'alm_almacen.id_almacen')
+
+        ->select(
+            'log_det_ord_compra.id_detalle_orden',
+            'log_det_ord_compra.garantia',
+            'log_det_ord_compra.estado',
+            'log_det_ord_compra.personal_autorizado',
+            'log_det_ord_compra.lugar_despacho',
+            'log_det_ord_compra.descripcion_adicional',
+            'log_det_ord_compra.id_unidad_medida',
+            'log_det_ord_compra.precio',
+            'log_det_ord_compra.cantidad',
+            'alm_det_req.id_detalle_requerimiento',
+            'alm_req.id_requerimiento',
+            'alm_req.codigo AS codigo_requerimiento',
+            'alm_det_req.id_requerimiento',
+            'alm_det_req.id_item AS id_item_alm_det_req',
+            'alm_det_req.precio_referencial',
+            // 'alm_det_req.cantidad',
+            // 'alm_det_req.id_unidad_medida',
+            'und_medida_det_req.descripcion AS unidad_medida',
+            'alm_det_req.obs',
+            'alm_det_req.fecha_registro AS fecha_registro_alm_det_req',
+            'alm_det_req.fecha_entrega',
+            'alm_det_req.lugar_entrega',
+            'alm_det_req.descripcion_adicional',
+            'alm_det_req.id_tipo_item',
+            'alm_item.id_item',
+            'alm_det_req.id_producto',
+            'alm_cat_prod.descripcion as categoria',
+            'alm_subcat.descripcion as subcategoria',
+            'alm_item.codigo AS codigo_item',
+            'alm_item.fecha_registro AS alm_item_fecha_registro',
+            'alm_prod.codigo AS alm_prod_codigo',
+            'alm_prod.part_number',
+            'alm_prod.descripcion AS alm_prod_descripcion',
+
+            'alm_det_req.id_almacen_reserva',
+            'alm_almacen.descripcion as almacen_reserva',
+         )
+        ->where([
+            ['log_det_ord_compra.id_orden_compra', '=', $id_orden],
+        ])
+
+        ->orderBy('log_det_ord_compra.id_detalle_orden', 'desc')
+        ->get();
+
+        // return $log_det_ord_compra;
+        $total = 0;
+        if (isset($log_det_ord_compra)) {
+            $lastId = "";
+            $detalle_orden = [];
+            foreach ($log_det_ord_compra as $data) {
+                if ($data->id_detalle_requerimiento !== $lastId) {
+                    $subtotal =+ $data->cantidad *  $data->precio_referencial;
+                    $total = $subtotal;
+                    $detalle_orden[] = [
+                        'id_detalle_orden'          => $data->id_detalle_orden,
+                        'id_detalle_requerimiento'  => $data->id_detalle_requerimiento,
+                        'id_requerimiento'          => $data->id_requerimiento,
+                        'codigo_requerimiento'      => $data->codigo_requerimiento,
+                        'id_item'                   => $data->id_item,
+                        'cantidad'                  => $data->cantidad,
+                        'id_unidad_medida'             => $data->id_unidad_medida,
+                        'unidad_medida'             => $data->unidad_medida,
+                        'precio_referencial'        => $data->precio_referencial,
+                        'descripcion_adicional'     => $data->descripcion_adicional,
+                        'fecha_entrega'             => $data->fecha_entrega,
+                        'lugar_entrega'             => $data->lugar_entrega,
+                        'fecha_registro'            => $data->fecha_registro_alm_det_req,
+                        'obs'                       => $data->obs,
+                        'estado'                    => $data->estado,
+                        'codigo_item'                => $data->codigo_item,
+                        'id_tipo_item'                => $data->id_tipo_item,
+                        'id_producto'               => $data->id_producto,
+                        'categoria'               => $data->categoria,
+                        'subcategoria'               => $data->subcategoria,
+                        'part_number'               => $data->part_number,
+                        'descripcion'               => $data->descripcion_adicional,
+                        'id_almacen'                => $data->id_almacen_reserva,
+                        'almacen_reserva'               => $data->almacen_reserva,
+                        'subtotal'               =>  $subtotal,
+                    ];
+                    $lastId = $data->id_detalle_requerimiento;
+                }
+            }
+
+ 
+
+        } else {
+
+            $detalle_orden = [];
+        }
+
+ 
+        $output=['status'=>200, 'data'=>['orden'=>$orden,'detalle_orden'=>$detalle_orden]];
+
+
+        return response()->json($output);
+    }
+
 
     public function generar_orden_pdf($id_orden_compra)
     {

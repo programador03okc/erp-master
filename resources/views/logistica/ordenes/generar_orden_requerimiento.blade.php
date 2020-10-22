@@ -23,7 +23,7 @@
                     <!-- Nav tabs -->
                     <ul class="nav nav-tabs" role="tablist">
                         <li role="presentation" class="active"><a href="#requerimientosPendientes" aria-controls="requerimientosPendientes" role="tab" data-toggle="tab">Compras Pendientes</a></li>
-                        <li role="presentation" class=""><a href="#requerimientosAtendidos" onClick="vista_extendida();" aria-controls="requerimientosAtendidos" role="tab" data-toggle="tab">Compras Atentidas</a></li>
+                        <li role="presentation" class=""><a href="#comprasEnProceso" onClick="vista_extendida();" aria-controls="comprasEnProceso" role="tab" data-toggle="tab">En Proceso</a></li>
                     </ul>
                     <!-- Tab panes -->
                     <div class="tab-content">
@@ -87,21 +87,27 @@
                                     </div>
                                 </div>
                         </div>
-                        <div role="tabpanel" class="tab-pane" id="requerimientosAtendidos">
+                        <div role="tabpanel" class="tab-pane" id="comprasEnProceso">
                             <div class="panel panel-default">
                                 <div class="panel-body">
-                                    <form id="form-requerimientosAtendidos" type="register">
-                                        <table class="mytable table table-condensed table-bordered table-okc-view" id="listaRequerimientosAtendidos">
+                                    <form id="form-comprasEnProceso" type="register">
+                                        <table class="mytable table table-condensed table-bordered table-okc-view" id="listaComprasEnProceso">
                                             <thead>
                                                 <tr>
-                                                <th hidden></th>
-                                                <th width="50">Código Requerimiento</th>
-                                                <th width="250">Concepto</th>
-                                                <th width="50">Fecha Requerimiento</th>
-                                                <th width="50">Código Orden Softlink</th>
-                                                <th width="100">Sede</th>
-                                                <th width="50">Fecha Orden</th>
-                                                <th width="20">ACCIONES</th>
+                                                <th width="10">#</th>
+                                                <th width="20">Código Orden</th>
+                                                <th width="30">Mayorista</th>
+                                                <th width="20">Subcategoría</th>
+                                                <th width="20">Categoría</th>
+                                                <th width="20">Part Number</th>
+                                                <th width="50">Descripción</th>
+                                                <th width="20">Fecha</th>
+                                                <th width="20">Transito</th>
+                                                <th width="20">ETA</th>
+                                                <th width="30">Sede - Empresa</th>
+                                                <th width="20">Estado</th>
+                                                <th width="30">Observación</th>
+                                                <th width="40">ACCIONES</th>
                                                 </tr>
                                             </thead>
                                             <tbody></tbody>
@@ -115,11 +121,15 @@
             </div>
         </div>
  </div>
-@include('logistica.ordenes.modal_detalle_orden_atendido')
+@include('logistica.ordenes.modal_lista_items_requerimiento')
+@include('logistica.ordenes.modal_editar_estado_orden')
+@include('logistica.ordenes.modal_ver_orden')
 @include('logistica.ordenes.modal_orden_requerimiento')
 @include('logistica.cotizaciones.proveedorModal')
 @include('logistica.cotizaciones.add_proveedor')
 @include('logistica.ordenes.ordenesModal')
+@include('logistica.requerimientos.modal_catalogo_items')
+@include('logistica.requerimientos.modal_vincular_item_requerimiento')
 @endsection
 
 @section('scripts')
@@ -137,15 +147,19 @@
     <script src="{{('/js/logistica/proveedorModal.js')}}"></script>
     <script src="{{('/js/logistica/add_proveedor.js')}}"></script>
     <script src="{{('/js/logistica/orden_requerimiento.js')}}"></script>
+    <script src="{{ asset('template/plugins/moment.min.js') }}"></script>
+
     <script>
     $(document).ready(function(){
         seleccionarMenu(window.location);
         inicializar(
             "{{route('logistica.gestion-logistica.orden.por-requerimiento.requerimientos-pendientes')}}",
-            "{{route('logistica.gestion-logistica.orden.por-requerimiento.requerimientos-atendidos')}}",
-            "{{route('logistica.gestion-logistica.orden.por-requerimiento.requerimiento-orden')}}",
+            "{{route('logistica.gestion-logistica.orden.por-requerimiento.ordenes-en-proceso')}}",
+            "{{route('logistica.gestion-logistica.orden.por-requerimiento.detalle-requerimiento-orden')}}",
             "{{route('logistica.gestion-logistica.orden.por-requerimiento.guardar')}}",
-            "{{route('logistica.gestion-logistica.orden.por-requerimiento.revertir')}}"
+            "{{route('logistica.gestion-logistica.orden.por-requerimiento.revertir')}}",
+            "{{route('logistica.gestion-logistica.orden.por-requerimiento.actualizar-estado-orden')}}",
+            "{{route('logistica.gestion-logistica.orden.por-requerimiento.actualizar-estado-detalle-requerimiento')}}"
             );
             tieneAccion('{{Auth::user()->tieneAccion(114)}}','{{Auth::user()->tieneAccion(115)}}');
     });

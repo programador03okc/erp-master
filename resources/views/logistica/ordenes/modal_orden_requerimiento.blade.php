@@ -1,5 +1,5 @@
 <div class="modal fade" tabindex="-1" role="dialog" id="modal-orden-requerimiento">
-    <div class="modal-dialog" style="width: 70%;">
+    <div class="modal-dialog" style="width: 80%;">
         <div class="modal-content">
             <form id="form-orden-requerimiento" type="register" form="formulario">
 
@@ -24,46 +24,50 @@
                                 @endforeach
                             </select>
                         </div>
-                        <div class="col-md-2" id="group-codigo">
-                            <h5>Código Orden</h5>
-                            <input class="form-control" id="codigo_orden" type="text" placeholder="OC#####" value="" readOnly>
-                        </div>
-                        <div class="col-md-2" id="group-fecha_orden">
-                            <h5>Fecha</h5>
-                            <input class="form-control" id="fecha" type="date" placeholder="DD/MM/AA" value={{ date('Y-m-d H:i:s') }} readOnly>
-                        </div>
                         <div class="col-md-3" id="group-fecha_orden">
                             <h5>Condición</h5>
                             <div style="display:flex;">
                                 <select class="form-control group-elemento activation" name="id_condicion" onchange="handlechangeCondicion(event);"
-                                    style="width:120px;text-align:center;" disabled="true">
-                
+                                    style="width:120px;text-align:center;" >
+                                    @foreach ($condiciones as $cond)
+                                        <option value="{{$cond->id_condicion_pago}}">{{$cond->descripcion}}</option>
+                                    @endforeach
                                 </select>
                                 <input type="number" name="plazo_dias"  class="form-control activation group-elemento" style="text-align:right; width:50px; " />
-                                <input type="text" value="días" class="form-control group-elemento" style="width:60px;text-align:center;" />
+                                <input type="text" value="días" class="form-control group-elemento" style="width:40px;text-align:center;" />
                             </div>
                         </div>
-                        <div class="col-md-2" id="group-fecha_orden">
+                        <div class="col-md-3" id="group-fecha_orden">
                             <h5>Plazo Entrega</h5>
                             <div style="display:flex;">
                                 <input type="number" name="plazo_entrega" class="form-control activation group-elemento" style="text-align:right;" />
                                 <input type="text" value="días" class="form-control group-elemento" style="width:60px;text-align:center;" />
                             </div>
                         </div>
-                    </div>
-
-                    <div class="row">
                         <div class="col-md-3" id="group-fecha_orden">
                             <h5>Moneda</h5>
                             <select class="form-control activation" name="id_moneda" >
-                                <option value="0">Elija una opción</option>
+                                @foreach ($tp_moneda as $tpm)
+                                    <option value="{{$tpm->id_moneda}}" data-simbolo-moneda="{{$tpm->simbolo}}" >{{$tpm->descripcion}} ( {{$tpm->simbolo}} )</option>
+                                @endforeach
                             </select>
                         </div>
+                    </div>
+
+                    <div class="row">
+
                         <div class="col-md-3" id="group-fecha_orden">
                             <h5>Tipo de Documento</h5>
                             <select class="form-control activation" 
-                                name="id_tp_documento" disabled="true">
+                                name="id_tp_documento">
                                 <option value="0">Elija una opción</option>
+                                @foreach ($tp_doc as $tp)
+                                    @if($tp->descripcion == 'Factura')
+                                        <option value="{{$tp->id_tp_doc}}" selected>{{$tp->cod_sunat}} - {{$tp->descripcion}}</option>
+                                    @else
+                                        <option value="{{$tp->id_tp_doc}}">{{$tp->cod_sunat}} - {{$tp->descripcion}}</option>
+                                    @endif
+                                @endforeach
                             </select>
                         </div>
                         <div class="col-md-3" id="group-codigo_orden" >
@@ -94,37 +98,63 @@
                                 <button type="button" class="btn-primary activation" title="Agregar Proveedor" onClick="agregar_proveedor();"><i class="fas fa-plus"></i></button>
                             </div>
                         </div>
-                        <div class="col-md-6 right">
+                        <div class="col-md-6 left">
                             <h5>&nbsp;</h5>
-                            <button class="btn btn-primary" type="button" id="btnCrearOrdenCompra" onClick="openModalCrearOrdenCompra();">
+                            <button class="btn btn-primary" type="button" id="btnAgregarNuevoItem" onClick="agregarNuevoItem();">
                                 <i class="fas fa-plus"></i> Agregar Nuevo Item
                             </button>
                         </div>
                     </div>
                     <br>
                     <div class="row">
-                        <div class="col-sm-12">
+                        <div class="col-md-12">
                             <table class="mytable table table-condensed table-bordered table-okc-view" 
-                                id="listaDetalleOrden" width="100%">
+                                id="listaDetalleOrden" style="margin-bottom: 0px;">
                                 <thead>
                                     <tr>
-                                        <th width="20"></th>
-                                        <th width="20">#</th>
-                                        <th width="80">COD. ITEM</th>
-                                        <th width="200">PRODUCTO</th>
-                                        <th width="30">UNIDAD</th>
-                                        <th width="50">CANTIDAD</th>
+                                        <th></th>
+                                        <th>REQ.</th>
+                                        <th>COD. ITEM</th>
+                                        <th>PRODUCTO</th>
+                                        <th>UNIDAD</th>
+                                        <th>CANTIDAD</th>
+                                        <th>PRECIO</th>
+                                        <th>STOCK COMPROMETIDO</th>
+                                        <th>CANTIDAD A COMPRAR</th>
+                                        <th>TOTAL</th>
+                                        <th>ACCIÓN</th>
                                     </tr>
                                 </thead>
                                 <tbody></tbody>
                             </table>
                         </div>
+                        <div class="col-md-12">
+                            <div class="row">
+                                <div class="col-md-8"></div>
+                                <div class="col-md-4">
+                                <dl class="dl-horizontal">
+                                        <dt>Total:</dt>
+                                        <dd class="text-center"><var name=total></var></dd>
+                                    </dl>
+                                </div>
+                            </div>
+                            <!-- <p class="c"><strong>Total: </strong> <var name="total"></var></p> -->
+                        </div>
                     </div>
-                </div>
                 <div class="modal-footer">
+                    <div class="form-inline">
+                    <div class="checkbox" id="check-guarda_en_requerimiento" style="display:none">
+                        <label>
+                            <input type="checkbox" name="guardarEnRequerimiento"> Guardar nuevos items en requerimiento?
+                        </label>
+                    </div> 
+
                     <input type="submit" id="submit_orden_requerimiento" class="btn btn-success" value="Guardar"/>
+ 
+                    </div>
                 </div>
             </form>
         </div>
     </div>
 </div>
+@include('logistica.ordenes.modal_confirmar_eliminar_item')

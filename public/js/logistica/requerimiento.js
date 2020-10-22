@@ -1255,7 +1255,7 @@ function detalleRequerimientoModal(event=null,index=null){
         disabledControl(btnAceptarCambio,true);
     }
     var tipo = $('[name=tipo_requerimiento]').val();
-    console.log(tipo);
+    // console.log(tipo);
     if (tipo == 2){        
         // var sede = $('[name=sede]').val();
         // var almacen = $('select[name=id_almacen]').val();
@@ -1840,6 +1840,7 @@ $(function(){
 });
 
 function listarItems() {
+    // console.log('listaItems');
     var vardataTables = funcDatatables();
     $('#listaItems').dataTable({
         // 'dom': vardataTables[1],
@@ -2870,7 +2871,7 @@ function changeOptTipoReqSelect(e){
     }else if(e.target.value == 2){ //venta directa
         createOptionTipoCliente('VENTA');
         stateFormRequerimiento(3)
-        listar_almacenes();
+        // listar_almacenes();
     }else if(e.target.value == 3){
         createOptionTipoCliente('USO_ALMACEN');
         stateFormRequerimiento(2);
@@ -3132,7 +3133,7 @@ function changeOptUbigeo(e){
 
     document.querySelector("input[name='ubigeo']").value=ubigeo;
     document.querySelector("input[name='name_ubigeo']").value=name_ubigeo;
-    // cargar_almacenes(sede);
+    cargar_almacenes(sede);
 }
 
 function cargar_almacenes(sede){
