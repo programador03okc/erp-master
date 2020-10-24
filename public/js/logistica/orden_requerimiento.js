@@ -5,6 +5,7 @@ rutaDetalleRequerimientoOrden,
 rutaGuardarOrdenPorRequerimiento,
 rutaRevertirOrdenPorRequerimiento,
 rutaActualizarEstadoOrdenPorRequerimiento,
+rutaActualizarEstadoDetalleOrdenPorRequerimiento,
 rutaActualizarEstadoDetalleRequerimiento
 ;
 
@@ -21,6 +22,7 @@ function inicializar(
     _rutaGuardarOrdenPorRequerimiento,
     _rutaRevertirOrdenPorRequerimiento,
     _rutaActualizarEstadoOrdenPorRequerimiento,
+    _rutaActualizarEstadoDetalleOrdenPorRequerimiento,
     _rutaActualizarEstadoDetalleRequerimiento
     ) {
     
@@ -30,6 +32,7 @@ function inicializar(
     rutaGuardarOrdenPorRequerimiento = _rutaGuardarOrdenPorRequerimiento;
     rutaRevertirOrdenPorRequerimiento = _rutaRevertirOrdenPorRequerimiento;
     rutaActualizarEstadoOrdenPorRequerimiento = _rutaActualizarEstadoOrdenPorRequerimiento;
+    rutaActualizarEstadoDetalleOrdenPorRequerimiento = _rutaActualizarEstadoDetalleOrdenPorRequerimiento;
     rutaActualizarEstadoDetalleRequerimiento = _rutaActualizarEstadoDetalleRequerimiento;
 
     let defaultIdEmpresa = 1
@@ -199,6 +202,7 @@ function tieneAccion(permisoCrearOrdenPorRequerimiento, permisoRevertirOrden){
 }
 
 function llenarTablaListaItemsRequerimiento(data){
+    console.log(data);
     var vardataTables = funcDatatables();
     $('#listaItemsRequerimiento').dataTable({
         'scrollY':        '50vh',
@@ -225,7 +229,21 @@ function llenarTablaListaItemsRequerimiento(data){
             {'data': 'unidad_medida'},
             {'data': 'cantidad'},
             {'data': 'precio_referencial'},
-            {'data': 'observacion'}
+            {'data': 'estado_doc'},
+            {'data': 'observacion'},
+            {'render':
+            function (data, type, row, meta){
+                let action ='';
+                    action = `
+                    <div class="btn-group btn-group-sm" role="group">
+                        <button type="button" class="btn btn-warning btn-sm" title="Atendido por Almacén" name="btnAtendidoPorAlmacen" data-id_requerimiento="${(row.id_requerimiento?row.id_requerimiento:0)}" data-id_detalle_requerimiento="${(row.id_detalle_requerimiento?row.id_detalle_requerimiento:0)}"  onclick="AtendidoPorAlmacen(this);">
+                        <i class="fas fa-pallet"></i>
+                        </button>
+                    </div>
+                    `;
+                return action;
+            }
+        }
         ],
         'order': [
             [0, 'asc']
@@ -237,6 +255,34 @@ function llenarTablaListaItemsRequerimiento(data){
     tablelistaitem.childNodes[0].childNodes[0].hidden = true;
 }
 
+function AtendidoPorAlmacen(obj){
+    let id_requerimiento = obj.dataset.id_requerimiento;
+    let id_detalle_requerimiento = obj.dataset.id_detalle_requerimiento;
+    console.log(id_requerimiento);
+    console.log(id_detalle_requerimiento);
+
+    $.ajax({
+        type: 'PUT',
+        url: rutaActualizarEstadoDetalleRequerimiento+'/'+id_detalle_requerimiento+'/'+5,
+        dataType: 'JSON',
+        success: function(response){
+            // console.log(response);
+            if(response.status == 200){
+                alert('El estado del item fue actualizado');
+                fillTablaListaItemsRequerimiento(id_requerimiento);
+            }else{
+                alert('Hubo un problema al intentar Actualizado');
+                
+            }
+
+        }
+    }).fail( function( jqXHR, textStatus, errorThrown ){
+        console.log(jqXHR);
+        console.log(textStatus);
+        console.log(errorThrown);
+    });
+}
+
 function openModalVerDetalleRequerimiento(obj){
     let id_requerimiento = obj.dataset.idRequerimiento;
     // console.log(id_requerimiento);
@@ -245,7 +291,10 @@ function openModalVerDetalleRequerimiento(obj){
         show: true,
         backdrop: 'true'
     });
+    fillTablaListaItemsRequerimiento(id_requerimiento)
+}
 
+function fillTablaListaItemsRequerimiento(id_requerimiento){
     $.ajax({
         type: 'GET',
         url:  `/logistica/gestion-logistica/requerimiento/elaboracion/mostrar-requerimiento/${id_requerimiento}/0`,
@@ -259,9 +308,6 @@ function openModalVerDetalleRequerimiento(obj){
         console.log(textStatus);
         console.log(errorThrown);
     });
-
-   
-
 }
 
 function listar_requerimientos_pendientes(permisoCrearOrdenPorRequerimiento){
@@ -312,7 +358,7 @@ function listar_ordenes_en_proceso(permisoRevertirOrden){
         'dom': vardataTables[1],
         'buttons': vardataTables[2],
         'language' : vardataTables[0],
-        'order': [[6, 'desc']],
+        'order': [[7, 'desc']],
         'destroy' : true,
         'ajax': rutaOrdenesEnProceso,
         'columns': [
@@ -320,63 +366,62 @@ function listar_ordenes_en_proceso(permisoRevertirOrden){
                 return meta.row +1;
             }
             },
-            {'data': 'codigo_softlink'},
+            { render: function (data, type, row) {     
+                return `<span class="label label-default" onClick="verOrdenModal(this);" data-id-estado-detalle-orden-compra="${row.id_detalle_orden_estado}" data-id-orden-compra="${row.detalle_orden_id_orden_compra}" data-id-detalle-orden-compra="${row.detalle_orden_id_detalle_orden}"  data-codigo-requerimiento="${row.codigo_requerimiento}" data-id-requerimiento="${row.orden_id_requerimiento}" data-codigo-item="${row.alm_prod_codigo}" style="cursor: pointer;" title="Ver Orden">${row.orden_codigo_softlink}</span>`;
+
+            }
+            },
             { render: function (data, type, row) {     
                 return `${row.nro_documento} - ${row.razon_social}`;
                 }
             },
             { render: function (data, type, row) {     
-                return `${row.detalle[0]['subcategoria']}`;
+                return `${row.subcategoria}`;
                 }
             },
             { render: function (data, type, row) {     
-                return `${row.detalle[0]['categoria']}`;
+                return `${row.categoria}`;
                 }
             },
             { render: function (data, type, row) {     
-                return `${row.detalle[0]['part_number']}`;
+                return `${row.part_number}`;
                 }
             },
             { render: function (data, type, row) {     
-                return `${row.detalle[0]['alm_prod_descripcion']}`;
+                return `${row.alm_prod_descripcion}`;
                 }
             },
             { render: function (data, type, row) {     
-                return `${row.fecha}`;
+                return `${row.orden_fecha}`;
                 }
             },
             { render: function (data, type, row) {     
-                return `${row.plazo_entrega}`;
+                return `${row.orden_plazo_entrega}`;
                 }
             },
             { render: function (data, type, row) {     
-               var estimatedTimeOfArrive= moment(row.fecha).add(row.plazo_entrega, 'days').format('YYYY-MM-DD hh:mm:ss');
+               var estimatedTimeOfArrive= moment(row.orden_fecha).add(row.orden_plazo_entrega, 'days').format('YYYY-MM-DD hh:mm:ss');
                 return `${estimatedTimeOfArrive}`;
                 }
             },
             {'data': 'empresa_sede'},
             { render: function (data, type, row) {     
-                return `<span class="label label-${row.bootstrap_color}">${row.estado_doc}</span>`;
+                return `<span class="label label-${row.detalle_orden_estado_bootstrap_color}" onClick="editarEstadoItemOrden(this);" data-id-estado-detalle-orden-compra="${row.id_detalle_orden_estado}" data-id-orden-compra="${row.detalle_orden_id_orden_compra}" data-id-detalle-orden-compra="${row.detalle_orden_id_detalle_orden}" data-codigo-item="${row.alm_prod_codigo}" style="cursor: pointer;" title="Cambiar Estado de Item">${row.detalle_orden_estado}</span>`;
+
                 }
             },
             { render: function (data, type, row) {     
-                return row.detalle[0].observacion?row.detalle[0].observacion:"Ninguna";
+                return row.observacion?row.observacion:"Ninguna";
                 }
             },
             { render: function (data, type, row) {               
                 if (permisoRevertirOrden == '1') {
                     return ('<div class="btn-group btn-group-sm" role="group">'+
-                            '<button type="button" class="btn btn-info btn-sm" name="btnVerOrdenModal" title="Ver Ítems" data-id-requerimiento="'+row.id_requerimiento+'"  data-codigo-requerimiento="'+row.codigo+'" data-id-orden-compra="'+row.id_orden_compra+'" onclick="verOrdenModal(this);">'+
-                            '<i class="fas fa-eye"></i>'+
+                            '<button type="button" class="btn btn-danger btn-xs" name="btnEliminarAtencionOrdenRequerimiento" title="Revertir Atención" data-id-requerimiento="'+row.orden_id_requerimiento+'"  data-codigo-requerimiento="'+row.codigo_requerimiento+'" data-id-orden-compra="'+row.orden_id_orden_compra+'" onclick="eliminarAtencionOrdenRequerimiento(this);">'+
+                            '<i class="fas fa-backspace fa-xs"></i>'+
                             '</button>'+
-                            '<button type="button" class="btn btn-danger btn-sm" name="btnEliminarAtencionOrdenRequerimiento" title="Revertir Atención" data-id-requerimiento="'+row.id_requerimiento+'"  data-codigo-requerimiento="'+row.codigo+'" data-id-orden-compra="'+row.id_orden_compra+'" onclick="eliminarAtencionOrdenRequerimiento(this);">'+
-                            '<i class="fas fa-backspace"></i>'+
-                            '</button>'+
-                            '<button type="button" class="btn btn-primary btn-sm" name="btnDocumentosVinculados" title="Ver Documento Vinculados" data-id-requerimiento="'+row.id_requerimiento+'"  data-codigo-requerimiento="'+row.codigo+'" data-id-orden-compra="'+row.id_orden_compra+'" onclick="documentosVinculados(this);">'+
-                            '<i class="fas fa-folder"></i>'+
-                            '</button>'+
-                            '<button type="button" class="btn btn-warning btn-sm" name="btnEditarEstadoOrden" title="Editar Estado" data-id-requerimiento="'+row.id_requerimiento+'"  data-codigo-orden-compra="'+row.codigo+'" data-id-orden-compra="'+row.id_orden_compra+'"  data-id-estado-orden-compra="'+row.estado+'" onclick="editarEstadoOrden(this);">'+
-                            '<i class="fas fa-edit"></i>'+
+                            '<button type="button" class="btn btn-primary btn-xs" name="btnDocumentosVinculados" title="Ver Documento Vinculados" data-id-requerimiento="'+row.orden_id_requerimiento+'"  data-codigo-requerimiento="'+row.codigo_requerimiento+'" data-id-orden-compra="'+row.orden_id_orden_compra+'" onclick="documentosVinculados(this);">'+
+                            '<i class="fas fa-folder fa-xs"></i>'+
                             '</button>'+
                             '</div>');
                 }else {
@@ -394,9 +439,9 @@ function listar_ordenes_en_proceso(permisoRevertirOrden){
 //     // $('#listaComprasEnProceso').DataTable().ajax.reload();
 // }
 function fillEstados(id_estado_actual){
+    // console.log(id_estado_actual);
     let html ='';
     let estados = [
-            {'1':'ELABORADA'},
             {'17':'ENVIADA'},
             {'14':'RECEPCIONADA'},
             {'26':'POR DESPACHAR'},
@@ -418,12 +463,14 @@ function fillEstados(id_estado_actual){
             
         });
         document.querySelector("select[name='estado_orden']").innerHTML = html;
+        document.querySelector("select[name='estado_detalle_orden']").innerHTML = html;
     }else{
         estados.forEach(element => {
             html+=`<option value="${Object.keys(element)[0]}">${Object.values(element)[0]}</option>`;
             
         });
         document.querySelector("select[name='estado_orden']").innerHTML = html;
+        document.querySelector("select[name='estado_detalle_orden']").innerHTML = html;
     }
 
 
@@ -446,9 +493,29 @@ function editarEstadoOrden(obj){
 
 }
 
+function editarEstadoItemOrden(obj){
+    let id_orden_compra = obj.dataset.idOrdenCompra;
+    let id_detalle_orden = obj.dataset.idDetalleOrdenCompra;
+    let id_estado_actual = obj.dataset.idEstadoDetalleOrdenCompra;
+    let codigo_item = obj.dataset.codigoItem;
+
+    $('#modal-editar-estado-detalle-orden').modal({
+        show: true,
+        backdrop: 'true'
+    });
+
+    document.querySelector("div[id='modal-editar-estado-detalle-orden'] input[name='id_orden_compra'").value = id_orden_compra;
+    document.querySelector("div[id='modal-editar-estado-detalle-orden'] input[name='id_detalle_orden_compra'").value = id_detalle_orden;
+    document.querySelector("div[id='modal-editar-estado-detalle-orden'] span[name='codigo_item_orden_compra'").textContent = codigo_item;
+
+    fillEstados(id_estado_actual);
+
+}
+
 function updateEstadoOrdenCompra(){
     let id_orden_compra = document.querySelector("div[id='modal-editar-estado-orden'] input[name='id_orden_compra'").value;
     let id_estado_orden_selected = document.querySelector("div[id='modal-editar-estado-orden'] select[name='estado_orden'").value;
+    let estado_orden_selected = document.querySelector("div[id='modal-editar-estado-orden'] select[name='estado_orden'")[document.querySelector("div[id='modal-editar-estado-orden'] select[name='estado_orden'").selectedIndex].textContent;
     
     $.ajax({
         type: 'POST',
@@ -460,7 +527,41 @@ function updateEstadoOrdenCompra(){
             listar_ordenes_en_proceso(1);
             if(response ==1){
                 alert('El estado fue Actualizado');
+                document.querySelector("span[id='estado_orden']").textContent = estado_orden_selected;
                 $('#modal-editar-estado-orden').modal('hide');
+            }else{
+                alert('Hubo un problema al intentar Actualizado');
+                
+            }
+
+        }
+    }).fail( function( jqXHR, textStatus, errorThrown ){
+        console.log(jqXHR);
+        console.log(textStatus);
+        console.log(errorThrown);
+    });
+}
+
+function updateEstadoDetalleOrdenCompra(){
+    let id_orden_compra = document.querySelector("div[id='modal-editar-estado-detalle-orden'] input[name='id_orden_compra'").value;
+    let id_detalle_orden_compra = document.querySelector("div[id='modal-editar-estado-detalle-orden'] input[name='id_detalle_orden_compra'").value;
+    let id_estado_detalle_orden_selected = document.querySelector("div[id='modal-editar-estado-detalle-orden'] select[name='estado_detalle_orden'").value;
+    let estado_detalle_orden_selected = document.querySelector("div[id='modal-editar-estado-detalle-orden'] select[name='estado_detalle_orden'")[document.querySelector("div[id='modal-editar-estado-detalle-orden'] select[name='estado_detalle_orden'").selectedIndex].textContent;
+    
+    console.log(id_detalle_orden_compra);
+    console.log(id_estado_detalle_orden_selected);
+    $.ajax({
+        type: 'POST',
+        url: rutaActualizarEstadoDetalleOrdenPorRequerimiento,
+        data:{'id_detalle_orden_compra':id_detalle_orden_compra, 'id_estado_detalle_orden_selected':id_estado_detalle_orden_selected},
+        dataType: 'JSON',
+        success: function(response){
+            console.log(response);
+            listar_ordenes_en_proceso(1);
+            if(response ==1){
+                alert('El estado del item fue actualizado');
+                ver_orden(id_orden_compra);
+                $('#modal-editar-estado-detalle-orden').modal('hide');
             }else{
                 alert('Hubo un problema al intentar Actualizado');
                 
@@ -490,13 +591,14 @@ function verOrdenModal(obj){
 }
 
 function llenarCabeceraOrde(data){
+    // console.log(data);
     document.querySelector("span[id='inputCodigo']").textContent = data.codigo_softlink;
     document.querySelector("p[id='inputProveedor']").textContent = data.razon_social+' RUC: '+data.nro_documento;
     document.querySelector("p[id='inputFecha']").textContent = data.fecha;
     document.querySelector("p[id='inputMoneda']").textContent = data.simbolo;
     document.querySelector("p[id='inputCondicion']").textContent = data.condicion+' '+data.plazo_dias+' días';
     document.querySelector("p[id='inputPlazoEntrega']").textContent = data.plazo_entrega;
-    document.querySelector("p[id='inputEstado']").textContent = data.estado_doc;
+    document.querySelector("p[id='inputEstado']").innerHTML = `<span class="label label-${data.bootstrap_color}" id="estado_orden" onClick="editarEstadoOrden(this);" data-id-estado-orden-compra="${data.id_estado}" data-id-orden-compra="${data.id_orden_compra}" data-codigo-orden-compra="${data.codigo_softlink}" style="cursor: pointer;" title="Cambiar Estado de Orden">${data.estado_doc}</span>`
 }
 
 function ver_orden(id_orden){
@@ -506,7 +608,7 @@ function ver_orden(id_orden){
         url: 'ver-orden/'+id_orden,
         dataType: 'JSON',
         success: function(response){
-            console.log(response);
+            // console.log(response);
             if (response.status ==200){
                 llenarCabeceraOrde(response.data.orden);
                 llenarTablaItemsOrden(response.data.detalle_orden);
@@ -550,7 +652,14 @@ function llenarTablaItemsOrden(data){
             { data: 'descripcion' },
             { data: 'unidad_medida' },
             { data: 'cantidad' },
-            { data: 'precio_referencial' }
+            { data: 'precio_referencial' },
+            { data: 'subtotal' },
+            {'render':
+                function (data, type, row, meta){
+                    return `<span class="label label-${row.bootstrap_color_estado_detalle_orden}" onClick="editarEstadoItemOrden(this);" data-id-estado-detalle-orden-compra="${row.id_estado_detalle_orden}" data-id-orden-compra="${row.id_orden_compra}" data-id-detalle-orden-compra="${row.id_detalle_orden}" data-codigo-item="${row.codigo_item}" style="cursor: pointer;" title="Cambiar Estado de Item">${row.estado_detalle_orden}</span>`;
+
+                }
+            }
         ],
 
     })

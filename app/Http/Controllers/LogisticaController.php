@@ -619,6 +619,7 @@ class LogisticaController extends Controller
 
                 ->leftJoin('finanzas.presup_par', 'presup_par.id_partida', '=', 'alm_det_req.partida')
                 ->leftJoin('finanzas.presup_pardet', 'presup_pardet.id_pardet', '=', 'presup_par.id_pardet')
+                ->leftJoin('administracion.adm_estado_doc', 'alm_det_req.estado', '=', 'adm_estado_doc.id_estado_doc')
 
                 ->select(
                     'alm_det_req.id_detalle_requerimiento',
@@ -638,7 +639,8 @@ class LogisticaController extends Controller
                     'alm_det_req.descripcion_adicional',
                     'alm_det_req.id_tipo_item',
                     'alm_det_req.estado',
-                    
+                    'adm_estado_doc.estado_doc',
+                    'adm_estado_doc.bootstrap_color',
                     'alm_det_req.partida',
                     'presup_par.codigo AS codigo_partida',
                     'presup_pardet.descripcion AS descripcion_partida',
@@ -734,6 +736,8 @@ class LogisticaController extends Controller
                             'obs'                       => $data->obs,
                             'observacion'               => $data->observacion,
                             'estado'                    => $data->estado,
+                            'estado_doc'                => $data->estado_doc,
+                            'bootstrap_color'           => $data->bootstrap_color,
                             'adjunto'                   => [],
                             'codigo_item'                => $data->codigo_item,
                             'part_number'                => $data->part_number,

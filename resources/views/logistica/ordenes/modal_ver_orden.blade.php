@@ -48,15 +48,16 @@
                             <thead>
                                 <tr>
                                     <th width="20">#</th>
-                                    <th width="120">CODIGO.</th>
-                                    <th width="120">PART NUMBER</th>
-                                    <th width="400">CATEGORÍA</th>
-                                    <th width="400">SUBCATEGORÍA</th>
-                                    <th width="400">DESCRIPCIÓN</th>
-                                    <th width="100">UNIDAD</th>
-                                    <th width="100">CANTIDAD</th>
-                                    <th width="100">PRECIO</th>
-                                    <th width="100">SUBTOTAL</th>
+                                    <th width="20">CODIGO.</th>
+                                    <th width="30">PART NUMBER</th>
+                                    <th width="40">CATEGORÍA</th>
+                                    <th width="40">SUBCATEGORÍA</th>
+                                    <th width="40">DESCRIPCIÓN</th>
+                                    <th width="30">UNIDAD</th>
+                                    <th width="30">CANTIDAD</th>
+                                    <th width="30">PRECIO</th>
+                                    <th width="30">SUBTOTAL</th>
+                                    <th width="30">ESTADO</th>
         
                                 </tr>
                             </thead>
