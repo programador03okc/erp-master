@@ -57,25 +57,26 @@ class CustomizacionController extends Controller
     }
 
     public function listarDetalleTransformacion($id_transformacion){
-        $materias = DB::table('almacen.transfor_materia')
-        ->select('transfor_materia.id_producto','transfor_materia.cantidad','transfor_materia.valor_unitario',
-        'transfor_materia.valor_total','alm_prod.descripcion','alm_prod.id_unidad_medida','alm_prod.part_number',
+        $sobrantes = DB::table('almacen.transfor_sobrante')
+        ->select('transfor_sobrante.id_sobrante','transfor_sobrante.id_producto','transfor_sobrante.cantidad','transfor_sobrante.valor_unitario',
+        'transfor_sobrante.valor_total','alm_prod.descripcion','alm_prod.id_unidad_medida','alm_prod.part_number',
         'alm_prod.codigo as cod_prod','alm_und_medida.abreviatura')
-        ->join('almacen.alm_prod','alm_prod.id_producto','=','transfor_materia.id_producto')
+        ->join('almacen.alm_prod','alm_prod.id_producto','=','transfor_sobrante.id_producto')
         ->join('almacen.alm_und_medida','alm_und_medida.id_unidad_medida','=','alm_prod.id_unidad_medida')
-        ->where('id_transformacion',$id_transformacion);
+        ->where('id_transformacion',$id_transformacion)
+        ->get();
 
         $transformados = DB::table('almacen.transfor_transformado')
-        ->select('transfor_transformado.id_producto','transfor_transformado.cantidad','transfor_transformado.valor_unitario',
+        ->select('transfor_transformado.id_transformado','transfor_transformado.id_producto','transfor_transformado.cantidad','transfor_transformado.valor_unitario',
         'transfor_transformado.valor_total','alm_prod.descripcion','alm_prod.id_unidad_medida','alm_prod.part_number',
         'alm_prod.codigo as cod_prod','alm_und_medida.abreviatura')
         ->join('almacen.alm_prod','alm_prod.id_producto','=','transfor_transformado.id_producto')
         ->join('almacen.alm_und_medida','alm_und_medida.id_unidad_medida','=','alm_prod.id_unidad_medida')
         ->where('id_transformacion',$id_transformacion)
-        ->unionAll($materias)
+        // ->unionAll($materias)
         ->get();
 
-        return response()->json($transformados);
+        return response()->json(['sobrantes'=>$sobrantes,'transformados'=>$transformados]);
     }
 
     public function mostrar_transformacion($id_transformacion){
@@ -627,6 +628,15 @@ class CustomizacionController extends Controller
                 ['estado','=',1]])
         ->first();
         return response()->json($ing->id_mov_alm);
+    }
+
+    public function iniciar_transformacion($id){
+        $data = DB::table('almacen.transformacion')
+        ->where('id_transformacion',$id)
+        ->update([  'estado'=>24,//iniciado
+                    'fecha_inicio'=>date('Y-m-d H:i:s')
+                    ]);
+        return response()->json($data);
     }
 
     public function procesar_transformacion(Request $request){

@@ -18,7 +18,7 @@ function listar_indirectos(id_transformacion){
                     <td>${element.valor_unitario}</td>
                     <td>${element.valor_total}</td>
                     <td style="padding:0px;">
-                        ${est == 1 ? `<i class="fas fa-trash icon-tabla red boton delete" 
+                        ${(est !== 9 && est !== 7) ? `<i class="fas fa-trash icon-tabla red boton delete" 
                         data-toggle="tooltip" data-placement="bottom" title="Eliminar" ></i>` : ''}
                     </td>
                 </tr>`;

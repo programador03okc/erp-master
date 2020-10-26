@@ -913,6 +913,7 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::get('anular_orden_despacho/{id}', 'DistribucionController@anular_orden_despacho');
 					Route::get('mostrar_proveedores', 'LogisticaController@mostrar_proveedores');
 					Route::post('listarGruposDespachados', 'DistribucionController@listarGruposDespachados');
+					Route::post('listarGruposDespachadosPendientesCargo', 'DistribucionController@listarGruposDespachadosPendientesCargo');
 					Route::get('verDetalleGrupoDespacho/{id}', 'DistribucionController@verDetalleGrupoDespacho');
 					Route::post('despacho_conforme', 'DistribucionController@despacho_conforme');
 					Route::post('despacho_no_conforme', 'DistribucionController@despacho_no_conforme');
@@ -1142,6 +1143,7 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::get('listar_indirectos/{id}', 'CustomizacionController@listar_indirectos');
 					Route::get('listar_sobrantes/{id}', 'CustomizacionController@listar_sobrantes');
 					Route::get('listar_transformados/{id}', 'CustomizacionController@listar_transformados');
+					Route::get('iniciar_transformacion/{id}', 'CustomizacionController@iniciar_transformacion');
 					Route::post('procesar_transformacion', 'CustomizacionController@procesar_transformacion');
 					Route::post('guardar_materia', 'CustomizacionController@guardar_materia');
 					Route::post('guardar_directo', 'CustomizacionController@guardar_directo');

@@ -75,12 +75,15 @@ Hoja de Transformación
                     <h5>Responsable</h5>
                     <span id="nombre_responsable"></span>
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-2">
                     <h5>Observación</h5>
                     <span id="observacion"></span>
                 </div>
-                <div class="col-md-2" style="padding-left: 10px;padding-right: 0px;padding-top: 15px;">
+                <div class="col-md-3" style="padding-left: 10px;padding-right: 0px;padding-top: 15px;">
                     <!-- <div class="col-md-10" style="text-align:right;"> -->
+                        <button type="button" class="btn btn-primary btn-sm" onClick="openIniciar();" 
+                            data-toggle="tooltip" data-placement="bottom" title="Iniciar Transformación">
+                            Iniciar <i class="fas fa-step-forward"></i> </button>
                         <button type="button" class="btn btn-success btn-sm" onClick="openProcesar();" 
                             data-toggle="tooltip" data-placement="bottom" title="Procesar Transformación">
                             Procesar <i class="fas fa-step-forward"></i> </button>

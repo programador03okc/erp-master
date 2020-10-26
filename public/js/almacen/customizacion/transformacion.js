@@ -64,7 +64,7 @@ function mostrar_transformacion(id){
             $('#nombre_responsable').text(response.nombre_corto);
             $('#observacion').text(response.observacion);
             
-            if (response.estado == 1){
+            if (response.estado !== 9 && response.estado !== 7){
                 $('#addCostoIndirecto').show();
                 $('#addServicio').show();
                 $('#addTransformado').show();
@@ -80,6 +80,7 @@ function mostrar_transformacion(id){
             
             $('[name=id_estado]').val(response.estado);
             $('#estado_doc').text(response.estado_doc);
+            $('#estado_doc').removeClass();
             $('#estado_doc').addClass("label label-"+response.bootstrap_color);
             
             listar_materias(response.id_transformacion);
@@ -183,6 +184,23 @@ function procesar_transformacion(data){
         console.log(textStatus);
         console.log(errorThrown);
     });
+}
+
+function openIniciar(){
+    var id_transformacion = $('[name=id_transformacion]').val();
+    $.ajax({
+        type: 'GET',
+        url: 'iniciar_transformacion/'+id_transformacion,
+        dataType: 'JSON',
+        success: function(response){
+            console.log(response);
+            mostrar_transformacion(id_transformacion);
+        }
+    }).fail( function( jqXHR, textStatus, errorThrown ){
+        console.log(jqXHR);
+        console.log(textStatus);
+        console.log(errorThrown);
+    });    
 }
 
 function abrir_salida(){

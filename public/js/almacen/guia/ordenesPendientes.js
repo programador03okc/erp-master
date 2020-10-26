@@ -1,12 +1,14 @@
 let oc_seleccionadas = [];
 let oc_det_seleccionadas = [];
+let acceso = null;
 
 function iniciar(permiso){
     $("#tab-ordenes section:first form").attr('form', 'formulario');
-    listarOrdenesPendientes(permiso);
+    acceso = permiso;
+    listarOrdenesPendientes();
     oc_seleccionadas = [];
 
-    $('ul.nav-tabs li a').click(function(){
+    $('ul.nav-tabs li a').on('click',function(){
         $('ul.nav-tabs li').removeClass('active');
         $(this).parent().addClass('active');
         $('.content-tabs section').attr('hidden', true);
@@ -22,20 +24,20 @@ function iniciar(permiso){
 
         // clearDataTable();
         if (activeForm == "form-pendientes"){
-            listarOrdenesPendientes(permiso);
+            listarOrdenesPendientes();
         } 
         else if (activeForm == "form-transformaciones"){
-            listarTransformaciones(permiso);
+            listarTransformaciones();
         }
         else if (activeForm == "form-ingresadas"){
-            listarOrdenesEntregadas(permiso);
+            listarOrdenesEntregadas();
         }
         $(activeTab).attr('hidden', false);//inicio botones (estados)
     });
     vista_extendida();
 }
 
-function listarOrdenesPendientes(permiso){
+function listarOrdenesPendientes(){
     var vardataTables = funcDatatables();
     $('#ordenesPendientes').DataTable({
         'dom': vardataTables[1],
@@ -61,7 +63,7 @@ function listarOrdenesPendientes(permiso){
             {'data': 'nombre_corto', 'name': 'sis_usua.nombre_corto'},
             {'render': 
                 function (data, type, row){
-                    if (permiso == '1') {
+                    if (acceso == '1') {
                         return '<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" '+
                             'data-placement="bottom" title="Ver Detalle" >'+
                             '<i class="fas fa-list-ul"></i></button>'+
@@ -142,7 +144,7 @@ $('#ordenesPendientes tbody').on("click","button.guia", function(){
     open_guia_create(data);
 });
 
-function listarTransformaciones(permiso){
+function listarTransformaciones(){
     var vardataTables = funcDatatables();
     $('#listaTransformaciones').DataTable({
         'dom': vardataTables[1],
@@ -174,10 +176,13 @@ function listarTransformaciones(permiso){
             {'data': 'observacion', 'name': 'transformacion.observacion'},
             {'render': 
                 function (data, type, row){
-                    if (permiso == '1') {
+                    if (acceso == '1') {
                         return '<button type="button" class="guia btn btn-info boton" data-toggle="tooltip" '+
                             'data-placement="bottom" title="Generar Guía" >'+
-                            '<i class="fas fa-sign-in-alt"></i></button>';
+                            '<i class="fas fa-sign-in-alt"></i></button>'+
+                            '<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" '+
+                            'data-placement="bottom" title="Ver Detalle" >'+
+                            '<i class="fas fa-list-ul"></i></button>';
                     } else {
                         return '<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" '+
                             'data-placement="bottom" title="Ver Detalle" >'+
@@ -198,7 +203,7 @@ $('#listaTransformaciones tbody').on("click","button.guia", function(){
     open_transformacion_guia_create(data);
 });
 
-function listarOrdenesEntregadas(permiso){
+function listarOrdenesEntregadas(){
     var vardataTables = funcDatatables();
     $('#ordenesEntregadas').DataTable({
         'dom': vardataTables[1],
@@ -229,7 +234,7 @@ function listarOrdenesEntregadas(permiso){
             {'aTargets': [0], 'sClass': 'invisible'},
             {'render': 
                 function (data, type, row){
-                    if (permiso == '1') {
+                    if (acceso == '1') {
                         return '<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" '+
                             'data-placement="bottom" title="Ver Detalle" data-id="'+row['id_mov_alm']+'" data-cod="'+row['codigo']+'">'+
                             '<i class="fas fa-list-ul"></i></button>'+

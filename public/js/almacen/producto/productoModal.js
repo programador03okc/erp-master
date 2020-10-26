@@ -38,13 +38,7 @@ function productoModal(){
     var abrir = false;
 
     if (page == 'transformacion'){
-        var est = $('[name=id_estado]').val();
-        console.log('estado: '+est);
-        if (est == '1'){
-            abrir = true;
-        } else {
-            alert('La transformación ya fue procesada y/o anulada');
-        }
+        abrir = true;
     }
     else if (page == 'guia_venta'){
         var estado = $('[name=cod_estado]').val();

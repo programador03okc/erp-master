@@ -94,11 +94,28 @@ function listar_detalle_transformacion(id){
             console.log(response);
             var html = '';
             var i=1;
-            response.forEach(function(element){
-                html+=`<tr id="${element.id_producto}">
+            response['sobrantes'].forEach(function(element){
+                html+=`<tr id="${element.id_sobrante}" >
                 <td>${i}</td>
                 <td></td>
-                <td>${element.cod_prod}</td>
+                <td><input style="display:none" id="producto" data-tipo="sobrante" value="${element.id_producto}"/>${element.cod_prod}</td>
+                <td>${element.part_number}</td>
+                <td></td>
+                <td></td>
+                <td>${element.descripcion}</td>
+                <td>${element.cantidad}</td>
+                <td>${element.abreviatura}</td>
+                <td>${element.valor_unitario}</td>
+                <td>${element.valor_total}</td>
+                <td></td>
+                </tr>`;
+                i++;
+            });
+            response['transformados'].forEach(function(element){
+                html+=`<tr id="${element.id_transformado}" >
+                <td>${i}</td>
+                <td></td>
+                <td><input style="display:none" id="producto" data-tipo="transformado" value="${element.id_producto}"/>${element.cod_prod}</td>
                 <td>${element.part_number}</td>
                 <td></td>
                 <td></td>
@@ -150,11 +167,17 @@ $("#form-guia_create").on("submit", function(e){
 
     if (ope == 26){
         $("#detalleOrdenSeleccionadas tbody tr").each(function(){
-            var id_producto = $(this)[0].id;
+            var id = $(this)[0].id;
+            var id_producto = $(this).find('td input[id=producto]').val();
+            console.log(id_producto);
+            var tipo = $(this).find('td input[id=producto]').data('tipo');
+            console.log(tipo);
+            
             var cant = $(this)[0].childNodes[15].innerHTML;
             var unit = $(this)[0].childNodes[19].innerHTML;
-            console.log(cant);
             detalle.push({ 
+                'id'  : id,
+                'tipo'  : tipo,
                 'id_producto'  : id_producto,
                 'cantidad'     : cant,
                 'unitario'     : unit
@@ -201,7 +224,13 @@ function guardar_guia_create(data){
             if (id_ingreso > 0){
                 alert('Ingreso Almacén generado con éxito');
                 $('#modal-guia_create').modal('hide');
-                $('#ordenesPendientes').DataTable().ajax.reload();
+                
+                var tra = $('[name=id_transformacion]').val();
+                if (tra!==''){
+                    listarOrdenesEntregadas();
+                } else {
+                    listarOrdenesPendientes();
+                }
                 // var id = encode5t(id_ingreso);
                 // window.open('imprimir_ingreso/'+id);
             }

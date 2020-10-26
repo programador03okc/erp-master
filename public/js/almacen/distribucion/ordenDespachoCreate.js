@@ -93,17 +93,21 @@ function detalleRequerimiento(id_requerimiento){
             detalle_requerimiento = response;
 
             response.forEach(element => {
-                html+='<tr id="'+element.id_detalle_requerimiento+'">'+
-                '<td><input type="checkbox" value="'+element.id_detalle_requerimiento+'" onChange="changeCheckIngresa(this,'+element.id_detalle_requerimiento+');"/></td>'+
-                '<td>'+(element.producto_codigo !== null ? element.producto_codigo : '')+'</td>'+
-                '<td>'+(element.part_number !== null ? element.part_number : '')+'</td>'+
-                '<td>'+(element.producto_descripcion !== null ? element.producto_descripcion : element.descripcion_adicional)+'</td>'+
-                '<td>'+(element.almacen_descripcion !== null ? element.almacen_descripcion : '')+'</td>'+
-                '<td>'+element.cantidad+'</td>'+
-                '<td>'+(element.abreviatura !== null ? element.abreviatura : '')+'</td>'+
-                '<td><input type="number" id="'+element.id_detalle_requerimiento+'cantidad" value="'+element.cantidad+'" max="'+element.cantidad+'" style="width: 80px;"/></td>'+
-                '<td><span class="label label-'+element.bootstrap_color+'">'+element.estado_doc+'</span></td>'+
-                '</tr>';
+                var cant = parseFloat(element.cantidad) - (element.suma_despachos !== null ? element.suma_despachos : 0);
+
+                if (cant > 0){
+                    html+='<tr id="'+element.id_detalle_requerimiento+'">'+
+                    '<td><input type="checkbox" value="'+element.id_detalle_requerimiento+'" onChange="changeCheckIngresa(this,'+element.id_detalle_requerimiento+');"/></td>'+
+                    '<td>'+(element.producto_codigo !== null ? element.producto_codigo : '')+'</td>'+
+                    '<td>'+(element.part_number !== null ? element.part_number : '')+'</td>'+
+                    '<td>'+(element.producto_descripcion !== null ? element.producto_descripcion : element.descripcion_adicional)+'</td>'+
+                    '<td>'+(element.almacen_descripcion !== null ? element.almacen_descripcion : '')+'</td>'+
+                    '<td>'+element.cantidad+'</td>'+
+                    '<td>'+(element.abreviatura !== null ? element.abreviatura : '')+'</td>'+
+                    '<td><input type="number" id="'+element.id_detalle_requerimiento+'cantidad" value="'+cant+'" max="'+cant+'" min="0" style="width: 80px;"/></td>'+
+                    '<td><span class="label label-'+element.bootstrap_color+'">'+element.estado_doc+'</span></td>'+
+                    '</tr>';
+                }
             });
             $('#detalleRequerimientoOD tbody').html(html);
         }

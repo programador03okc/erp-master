@@ -15,7 +15,7 @@
                             <th>Oportunidad</th>
                             <th>Requerimiento</th>
                             <th>Guía Remisión</th>
-                            <th>Almacén</th>
+                            <th>Estado</th>
                         </tr>
                     </thead>
                     <tbody style="font-size: 11px;"></tbody>

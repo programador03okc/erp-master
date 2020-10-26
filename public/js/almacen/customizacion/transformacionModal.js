@@ -35,8 +35,11 @@ function listarTransformaciones(){
                     return (row['serie'] !== null ? (row['serie']+'-'+row['numero']) : '');
                 }
             },
-            // {'data': 'razon_social'},
-            {'data': 'descripcion'},
+            {'render':
+                function (data, type, row){
+                    return ('<span class="label label-'+row['bootstrap_color']+'">'+row['estado_doc']+'</span>');
+                }
+            }
         ],
         'columnDefs': [{ 'aTargets': [0], 'sClass': 'invisible'}],
     });
