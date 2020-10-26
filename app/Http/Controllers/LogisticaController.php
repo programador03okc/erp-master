@@ -462,6 +462,8 @@ class LogisticaController extends Controller
             ->leftJoin('administracion.adm_empresa', 'adm_empresa.id_empresa', '=', 'sis_sede.id_empresa')
             ->leftJoin('contabilidad.adm_contri as contrib', 'adm_empresa.id_contribuyente', '=', 'contrib.id_contribuyente')
             ->leftJoin('administracion.adm_estado_doc', 'alm_req.estado', '=', 'adm_estado_doc.id_estado_doc')
+            ->leftJoin('contabilidad.adm_cta_contri', 'adm_cta_contri.id_cuenta_contribuyente', '=', 'alm_req.id_cuenta')
+            ->leftJoin('contabilidad.cont_banco', 'cont_banco.id_banco', '=', 'adm_cta_contri.id_banco')
             
             ->leftJoin('configuracion.sis_usua', 'alm_req.id_usuario', '=', 'sis_usua.id_usuario')
             ->leftJoin('rrhh.rrhh_trab', 'sis_usua.id_trabajador', '=', 'rrhh_trab.id_trabajador')
@@ -527,6 +529,8 @@ class LogisticaController extends Controller
                 'alm_req.monto',
                 'alm_req.fecha_entrega',
                 'alm_req.id_cuenta',
+                'adm_cta_contri.id_tipo_cuenta',
+                'cont_banco.id_banco',
                 'alm_req.nro_cuenta',
                 'alm_req.nro_cuenta_interbancaria',
                 DB::raw("(CASE WHEN alm_req.estado = 1 THEN 'Habilitado' ELSE 'Deshabilitado' END) AS estado_desc")
@@ -587,6 +591,8 @@ class LogisticaController extends Controller
                     'name_ubigeo' => $data->name_ubigeo,
                     'direccion_entrega' => $data->direccion_entrega,
                     'id_cuenta' => $data->id_cuenta,
+                    'id_tipo_cuenta' => $data->id_tipo_cuenta,
+                    'id_banco' => $data->id_banco,
                     'nro_cuenta' => $data->nro_cuenta,
                     'nro_cuenta_interbancaria' => $data->nro_cuenta_interbancaria,
                     'telefono' => $data->telefono,
