@@ -21,13 +21,13 @@ Gestión de Customizaciones
             <div class="col-md-12" id="tab-transformaciones" style="padding-left:0px;padding-right:0px;">
 
                 <ul class="nav nav-tabs" id="myTab">
-                    <li class="active"><a data-toggle="tab" href="#cc">Cuadros de Costos</a></li>
-                    <li class=""><a data-toggle="tab" href="#htm">Hojas de Transformación</a></li>
+                    <!-- <li class="active"><a data-toggle="tab" href="#cc">Cuadros de Costos</a></li> -->
+                    <li class="active"><a data-toggle="tab" href="#htm">Hojas de Transformación</a></li>
                     <!-- <li class=""><a data-toggle="tab" href="#hth">Hojas de Transformación Hijas</a></li> -->
                 </ul>
 
                 <div class="tab-content">
-                    <div id="cc" class="tab-pane fade in active">
+                    <!-- <div id="cc" class="tab-pane fade in active">
                         <br>
                         <form id="form-cc" type="register">
                             <div class="row">
@@ -54,8 +54,8 @@ Gestión de Customizaciones
                                 </div>
                             </div>
                         </form>
-                    </div>
-                    <div id="htm" class="tab-pane fade">
+                    </div> -->
+                    <div id="htm" class="tab-pane fade in active">
                         <br>
                         <form id="form-htm" type="register">
                             <div class="row">
@@ -65,13 +65,13 @@ Gestión de Customizaciones
                                         <thead>
                                             <tr>
                                                 <th hidden></th>
-                                                <th>Fecha Trans.</th>
+                                                <th>Fecha Registro</th>
+                                                <th>Fecha Transf.</th>
                                                 <th>Código</th>
-                                                <th>Oportunidad</th>
-                                                <th>Empresa</th>
+                                                <th>Cuadro Costos</th>
                                                 <th>Almacén</th>
                                                 <th>Responsable</th>
-                                                <!-- <th>Registrado por</th> -->
+                                                <th>Observación</th>
                                                 <th>Estado</th>
                                                 <th width="10%">Acción</th>
                                             </tr>
@@ -121,11 +121,12 @@ Gestión de Customizaciones
         })
         $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
             let tab = $(e.target).attr("href") // activated tab
-            if (tab=='#cc')
-            {
-                $('#listaCuadrosCostos').DataTable().ajax.reload();
-            }
-            else if (tab=='#htm')
+            // if (tab=='#cc')
+            // {
+            //     $('#listaCuadrosCostos').DataTable().ajax.reload();
+            // }
+            // else 
+            if (tab=='#htm')
             {
                 if ($('#listaTransformacionesMadres tbody tr').length > 0){
                     $('#listaTransformacionesMadres').DataTable().ajax.reload();

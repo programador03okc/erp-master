@@ -1,12 +1,14 @@
 let oc_seleccionadas = [];
 let oc_det_seleccionadas = [];
+let acceso = null;
 
 function iniciar(permiso){
     $("#tab-ordenes section:first form").attr('form', 'formulario');
-    listarOrdenesPendientes(permiso);
+    acceso = permiso;
+    listarOrdenesPendientes();
     oc_seleccionadas = [];
 
-    $('ul.nav-tabs li a').click(function(){
+    $('ul.nav-tabs li a').on('click',function(){
         $('ul.nav-tabs li').removeClass('active');
         $(this).parent().addClass('active');
         $('.content-tabs section').attr('hidden', true);
@@ -22,17 +24,20 @@ function iniciar(permiso){
 
         // clearDataTable();
         if (activeForm == "form-pendientes"){
-            listarOrdenesPendientes(permiso);
+            listarOrdenesPendientes();
         } 
+        else if (activeForm == "form-transformaciones"){
+            listarTransformaciones();
+        }
         else if (activeForm == "form-ingresadas"){
-            listarOrdenesEntregadas(permiso);
+            listarOrdenesEntregadas();
         }
         $(activeTab).attr('hidden', false);//inicio botones (estados)
     });
     vista_extendida();
 }
 
-function listarOrdenesPendientes(permiso){
+function listarOrdenesPendientes(){
     var vardataTables = funcDatatables();
     $('#ordenesPendientes').DataTable({
         'dom': vardataTables[1],
@@ -58,7 +63,7 @@ function listarOrdenesPendientes(permiso){
             {'data': 'nombre_corto', 'name': 'sis_usua.nombre_corto'},
             {'render': 
                 function (data, type, row){
-                    if (permiso == '1') {
+                    if (acceso == '1') {
                         return '<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" '+
                             'data-placement="bottom" title="Ver Detalle" >'+
                             '<i class="fas fa-list-ul"></i></button>'+
@@ -139,151 +144,66 @@ $('#ordenesPendientes tbody').on("click","button.guia", function(){
     open_guia_create(data);
 });
 
-function open_guia_create(data){
-    console.log(data);
-    $('#modal-guia_create').modal({
-        show: true
-    });
-    $("#submit_guia").removeAttr("disabled");
-    $('[name=id_operacion]').val(2).trigger('change.select2');
-    $('[name=id_guia_clas]').val(1);
-    $('[name=id_proveedor]').val(data.id_proveedor);
-    $('[name=id_sede]').val(data.id_sede);
-    $('[name=id_orden_compra]').val(data.id_orden_compra);
-    $('#serie').text('');
-    $('#numero').text('');
-    cargar_almacenes(data.id_sede, 'id_almacen');
-    var data = 'oc_seleccionadas='+JSON.stringify([data.id_orden_compra]);
-    listar_detalle_ordenes_seleccionadas(data);
-}
-
-function open_guia_create_seleccionadas(){
-    var id_prov = null;
-    var sede = null;
-    var dif_prov = 0;
-    var dif_sede = 0;
-    var id_oc_seleccionadas = [];
-
-    oc_seleccionadas.forEach(element => {
-        id_oc_seleccionadas.push(element.id_orden_compra);
-
-        if (id_prov == null){
-            id_prov = element.id_proveedor;
-        } 
-        else if (element.id_proveedor !== id_prov){
-            dif_prov++;
-        }
-        if (sede == null){
-            sede = element.id_sede;
-        } 
-        else if (element.id_sede !== sede){
-            dif_sede++;
-        }
-    });
-
-    var text = '';
-    if (dif_prov > 0) text+='Debe seleccionar OCs del mismo proveedor\n';
-    if (dif_sede > 0) text+='Debe seleccionar OCs de la misma sede';
-
-    if ((dif_sede + dif_prov) > 0){
-        alert(text);
-    } else {
-        $('#modal-guia_create').modal({
-            show: true
-        });
-        $("#submit_guia").removeAttr("disabled");
-        $('[name=id_operacion]').val(2).trigger('change.select2');
-        $('[name=id_guia_clas]').val(1);
-        $('[name=id_proveedor]').val(id_prov);
-        $('[name=id_sede]').val(sede);
-        // $('[name=id_orden_compra]').val(data.id_orden_compra);
-        $('#serie').text('');
-        $('#numero').text('');
-        cargar_almacenes(sede, 'id_almacen');
-        var data = 'oc_seleccionadas='+JSON.stringify(id_oc_seleccionadas);
-        listar_detalle_ordenes_seleccionadas(data);
-    }
-}
-
-function listar_detalle_ordenes_seleccionadas(data){
-    console.log(oc_seleccionadas);
-    console.log(data);
-    oc_det_seleccionadas = [];
-    $.ajax({
-        type: 'POST',
-        url: 'detalleOrdenesSeleccionadas',
-        data: data,
-        dataType: 'JSON',
-        success: function(response){
-            $('#detalleOrdenSeleccionadas tbody').html(response['html']);
-            oc_det_seleccionadas = response['ids_detalle'];
-        }
-    }).fail( function( jqXHR, textStatus, errorThrown ){
-        console.log(jqXHR);
-        console.log(textStatus);
-        console.log(errorThrown);
+function listarTransformaciones(){
+    var vardataTables = funcDatatables();
+    $('#listaTransformaciones').DataTable({
+        'dom': vardataTables[1],
+        'buttons': vardataTables[2],
+        'language' : vardataTables[0],
+        'bDestroy' : true,
+        'serverSide' : true,
+        // "scrollX": true,
+        'ajax': {
+            url: 'listarTransformacionesProcesadas',
+            type: 'POST'
+        },
+        'columns': [
+            {'data': 'id_transformacion'},
+            {'data': 'codigo'},
+            {'data': 'fecha_transformacion', 'name': 'transformacion.fecha_transformacion'},
+            {'data': 'almacen_descripcion', 'name': 'alm_almacen.descripcion'},
+            {'data': 'nombre_responsable', 'name': 'sis_usua.nombre_corto'},
+            {'render': function(data, type, row){
+                    return (row['codigo_oportunidad'] !== null ? row['codigo_oportunidad'] : '');
+                }
+            },
+            {'data': 'cod_od', 'name': 'orden_despacho.codigo'},
+            {'data': 'cod_req', 'name': 'alm_req.codigo'},
+            {'render': function(data, type, row){
+                    return (row['serie'] !== null ? (row['serie']+'-'+row['numero']) : '');
+                }
+            },
+            {'data': 'observacion', 'name': 'transformacion.observacion'},
+            {'render': 
+                function (data, type, row){
+                    if (acceso == '1') {
+                        return '<button type="button" class="guia btn btn-info boton" data-toggle="tooltip" '+
+                            'data-placement="bottom" title="Generar Guía" >'+
+                            '<i class="fas fa-sign-in-alt"></i></button>'+
+                            '<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" '+
+                            'data-placement="bottom" title="Ver Detalle" >'+
+                            '<i class="fas fa-list-ul"></i></button>';
+                    } else {
+                        return '<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" '+
+                            'data-placement="bottom" title="Ver Detalle" >'+
+                            '<i class="fas fa-list-ul"></i></button>';
+                    }
+                }
+            }
+        ],
+        'columnDefs': [
+            {'aTargets': [0], 'sClass': 'invisible'}
+         ],
+        'order': [[1, 'asc']]
     });
 }
 
-$("#form-guia_create").on("submit", function(e){
-    console.log('submit');
-    e.preventDefault();
-    var data = $(this).serialize();
-    var detalle = [];
-    var validaCampos = '';
-    
-    $("#detalleOrdenSeleccionadas input[type=checkbox]:checked").each(function(){
-        var id_oc_det = $(this).val();
-        var json = oc_det_seleccionadas.find(element => element.id_oc_det == id_oc_det);
-        var series = (json !== null ? json.series : []);
-        var requiereSeries = $(this).parent().parent().find('td input[id=series]').val();
-        var part_number = $(this).parent().parent().find('td input[id=series]').data('partnumber');
-        
-        if (requiereSeries == '1' && series.length == 0){
-            validaCampos += 'El producto con Part Number '+part_number+' requiere que ingrese Series.\n'; 
-        }
-
-        detalle.push({ 
-            'id_detalle_orden'  : id_oc_det,
-            'cantidad'          : $(this).parent().parent().find('td input[id='+id_oc_det+'cantidad]').val(),
-            'series'            : series
-        });
-    });
-
-    if (validaCampos.length > 0){
-        alert(validaCampos);
-    } else {
-        data+='&detalle='+JSON.stringify(detalle);
-        console.log(data);
-        guardar_guia_create(data);
-    }
+$('#listaTransformaciones tbody').on("click","button.guia", function(){
+    var data = $('#listaTransformaciones').DataTable().row($(this).parents("tr")).data();
+    open_transformacion_guia_create(data);
 });
 
-function guardar_guia_create(data){
-    $("#submit_guia").attr('disabled','true');
-    $.ajax({
-        type: 'POST',
-        url: 'guardar_guia_com_oc',
-        data: data,
-        dataType: 'JSON',
-        success: function(id_ingreso){
-            console.log(id_ingreso);
-            if (id_ingreso > 0){
-                alert('Ingreso Almacén generado con éxito');
-                $('#modal-guia_create').modal('hide');
-                $('#ordenesPendientes').DataTable().ajax.reload();
-                // var id = encode5t(id_ingreso);
-                // window.open('imprimir_ingreso/'+id);
-            }
-        }
-    }).fail( function( jqXHR, textStatus, errorThrown ){
-        console.log(jqXHR);
-        console.log(textStatus);
-        console.log(errorThrown);
-    });
-}
-
-function listarOrdenesEntregadas(permiso){
+function listarOrdenesEntregadas(){
     var vardataTables = funcDatatables();
     $('#ordenesEntregadas').DataTable({
         'dom': vardataTables[1],
@@ -314,7 +234,7 @@ function listarOrdenesEntregadas(permiso){
             {'aTargets': [0], 'sClass': 'invisible'},
             {'render': 
                 function (data, type, row){
-                    if (permiso == '1') {
+                    if (acceso == '1') {
                         return '<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" '+
                             'data-placement="bottom" title="Ver Detalle" data-id="'+row['id_mov_alm']+'" data-cod="'+row['codigo']+'">'+
                             '<i class="fas fa-list-ul"></i></button>'+

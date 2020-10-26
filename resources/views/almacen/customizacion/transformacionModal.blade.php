@@ -13,9 +13,9 @@
                             <th hidden>Id</th>
                             <th>Código</th>
                             <th>Oportunidad</th>
-                            <th>Fecha Transformacion</th>
-                            <!-- <th>Empresa</th> -->
-                            <th>Almacén</th>
+                            <th>Requerimiento</th>
+                            <th>Guía Remisión</th>
+                            <th>Estado</th>
                         </tr>
                     </thead>
                     <tbody style="font-size: 11px;"></tbody>

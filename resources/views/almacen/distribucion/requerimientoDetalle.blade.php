@@ -24,6 +24,7 @@
                                             <th>SubCategoría</th>
                                             <th width="40%">Descripción</th>
                                             <th>Cantidad</th>
+                                            <th>Cant.Despachada</th>
                                             <th>Unid</th>
                                             <th>Almacén Reserva</th>
                                             <!-- <th>Lugar de Entrega</th> -->

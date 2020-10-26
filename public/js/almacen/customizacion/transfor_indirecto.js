@@ -7,6 +7,8 @@ function listar_indirectos(id_transformacion){
         success: function(response){
             var html = ''; 
             var suma_indirectos = 0;
+            var est = $('[name=id_estado]').val();
+
             response.forEach(element => {
                 suma_indirectos += parseFloat(element.valor_total);
                 html += `<tr id="${element.id_indirecto}">
@@ -16,8 +18,8 @@ function listar_indirectos(id_transformacion){
                     <td>${element.valor_unitario}</td>
                     <td>${element.valor_total}</td>
                     <td style="padding:0px;">
-                        <i class="fas fa-trash icon-tabla red boton delete" 
-                        data-toggle="tooltip" data-placement="bottom" title="Eliminar" ></i>
+                        ${(est !== 9 && est !== 7) ? `<i class="fas fa-trash icon-tabla red boton delete" 
+                        data-toggle="tooltip" data-placement="bottom" title="Eliminar" ></i>` : ''}
                     </td>
                 </tr>`;
             });
@@ -84,7 +86,9 @@ $('#listaCostosIndirectos tbody').on("click", ".delete", function(){
         var idx = $(this).parents("tr")[0].id;
         $(this).parents("tr").remove();
         console.log(idx);
-        anular_indirecto(idx);
+        if (idx !== ''){
+            anular_indirecto(idx);
+        }
     }
 });
 function anular_indirecto(id){

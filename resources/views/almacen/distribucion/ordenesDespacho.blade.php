@@ -26,8 +26,9 @@ Panel de Control de Despachos
             <li class="active"><a type="#elaborados">Requerimientos Pendientes <span id="selaborados" class="badge badge-info"></span></a></li>
             <li class=""><a type="#confirmados">Requerimientos Confirmados <span id="sconfirmados" class="badge badge-info"></span></a></li>
             <li class=""><a type="#pendientes">Requerimientos En Proceso <span id="spendientes" class="badge badge-info"></span></a></li>
-            <li class=""><a type="#despachos">Requerimientos Por Despachar <span id="sdespachos" class="badge badge-info"></span></a></li>
-            <li class=""><a type="#despachados">Requerimientos Despachados <span id="sdespachados" class="badge badge-info"></span></a></li>
+            <li class=""><a type="#despachos">Por Despachar <span id="sdespachos" class="badge badge-info"></span></a></li>
+            <li class=""><a type="#sinTransporte">Pendientes de Transporte <span id="ssinTransporte" class="badge badge-info"></span></a></li>
+            <li class=""><a type="#retornoCargo">Pendientes de Retorno de Cargo <span id="sretornoCargo" class="badge badge-info"></span></a></li>
         </ul>
         <div class="content-tabs">
             <section id="elaborados" >
@@ -39,13 +40,14 @@ Panel de Control de Despachos
                                 <thead>
                                     <tr>
                                         <th hidden></th>
-                                        <th>Tipo</th>
+                                        <th>Orden Elec.</th>
+                                        <th>Entidad</th>
                                         <th>Sede Req.</th>
                                         <th>Codigo</th>
                                         <th>Concepto</th>
                                         <th>Fecha Req.</th>
-                                        <th>Ubigeo Entrega</th>
-                                        <th>Dirección Entrega</th>
+                                        <!-- <th>Ubigeo Entrega</th>
+                                        <th>Dirección Entrega</th> -->
                                         <th>Generado por</th>
                                         <th>Estado</th>
                                         <th>Motivo</th>
@@ -100,12 +102,8 @@ Panel de Control de Despachos
                                         <th>Codigo</th>
                                         <th>Concepto</th>
                                         <th>Fecha Req.</th>
-                                        <th>Ubigeo Entrega</th>
-                                        <th>Dirección Entrega</th>
                                         <th>Generado por</th>
                                         <th>Estado</th>
-                                        <th>OC</th>
-                                        <th>Sede OC</th>
                                         <th>Transf.</th>
                                         <th>O.Despacho</th>
                                         <th>Fecha Despacho</th>
@@ -155,12 +153,44 @@ Panel de Control de Despachos
                     </div>
                 </form>
             </section>
-            <section id="despachados" hidden>
-                <form id="form-despachados" type="register">
+            <section id="sinTransporte" hidden>
+                <form id="form-sinTransporte" type="register">
                     <div class="row">
                         <div class="col-md-12">
                             <table class="mytable table table-condensed table-bordered table-okc-view" 
                                 id="gruposDespachados">
+                                <thead>
+                                    <tr>
+                                        <th hidden></th>
+                                        <th>Despacho</th>
+                                        <th>Orden Despacho</th>
+                                        <th>Requerimiento</th>
+                                        <th>Cliente</th>
+                                        <th>Concepto</th>
+                                        <th>Almacén</th>
+                                        <th>Ubigeo</th>
+                                        <th>Dirección</th>
+                                        <th>Fecha Despacho</th>
+                                        <th>Despachador</th>
+                                        <th>Tipo Entrega</th>
+                                        <!-- <th>Confirmación</th> -->
+                                        <th>Estado</th>
+                                        <th>Motivo</th>
+                                        <th width="100px">Acción</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </form>
+            </section>
+            <section id="retornoCargo" hidden>
+                <form id="form-retornoCargo" type="register">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <table class="mytable table table-condensed table-bordered table-okc-view" 
+                                id="pendientesRetornoCargo">
                                 <thead>
                                     <tr>
                                         <th hidden></th>
@@ -200,6 +230,8 @@ Panel de Control de Despachos
 @include('almacen.distribucion.ordenDespachoObs')
 @include('almacen.distribucion.requerimientoObs')
 @include('almacen.distribucion.ordenDespachoAdjuntos')
+@include('almacen.producto.productoModal')
+@include('almacen.producto.productoCreate')
 @include('logistica.cotizaciones.clienteModal')
 @include('logistica.cotizaciones.proveedorModal')
 @include('logistica.cotizaciones.add_cliente')
@@ -229,6 +261,8 @@ Panel de Control de Despachos
     <script src="{{ asset('js/almacen/distribucion/despachoDetalle.js')}}"></script>
     <script src="{{ asset('js/almacen/distribucion/requerimientoDetalle.js')}}"></script>
     <script src="{{ asset('js/almacen/distribucion/requerimientoObs.js')}}"></script>
+    <script src="{{ asset('js/almacen/producto/productoModal.js')}}"></script>
+    <script src="{{ asset('js/almacen/producto/productoCreate.js')}}"></script>
     <script src="{{ asset('js/logistica/clienteModal.js')}}"></script>
     <script src="{{ asset('js/logistica/proveedorModal.js')}}"></script>
     <script src="{{ asset('js/logistica/add_proveedor.js')}}"></script>

@@ -23,14 +23,23 @@ function listarTransformaciones(){
         'columns': [
             {'data': 'id_transformacion'},
             {'data': 'codigo'},
-            {'data': 'observacion'},
+            {'data': 'codigo_oportunidad'},
+            // {'render':
+            //     function (data, type, row){
+            //         return (row['codigo_oportunidad']!== null ? row['codigo_oportunidad'] : '');
+            //     }
+            // },
+            {'data': 'cod_req'},
             {'render':
                 function (data, type, row){
-                    return (formatDate(row['fecha_transformacion']));
+                    return (row['serie'] !== null ? (row['serie']+'-'+row['numero']) : '');
                 }
             },
-            // {'data': 'razon_social'},
-            {'data': 'descripcion'},
+            {'render':
+                function (data, type, row){
+                    return ('<span class="label label-'+row['bootstrap_color']+'">'+row['estado_doc']+'</span>');
+                }
+            }
         ],
         'columnDefs': [{ 'aTargets': [0], 'sClass': 'invisible'}],
     });

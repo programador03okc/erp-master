@@ -7,6 +7,7 @@ function listar_directos(id_transformacion){
         success: function(response){
             var html = ''; 
             var suma_servicios = 0;
+            var est = $('[name=id_estado]').val();
 
             response.forEach(element => {
                 suma_servicios += parseFloat(element.valor_total);
@@ -14,8 +15,8 @@ function listar_directos(id_transformacion){
                     <td>${element.descripcion}</td>
                     <td>${element.valor_total}</td>
                     <td style="padding:0px;">
-                        <i class="fas fa-trash icon-tabla red boton delete" 
-                        data-toggle="tooltip" data-placement="bottom" title="Eliminar" ></i>
+                        ${(est !== 9 && est !== 7) ? `<i class="fas fa-trash icon-tabla red boton delete" 
+                        data-toggle="tooltip" data-placement="bottom" title="Eliminar" ></i>` : ''}
                     </td>
                 </tr>`;
             });
@@ -82,7 +83,9 @@ $('#listaServiciosDirectos tbody').on("click", ".delete", function(){
         var idx = $(this).parents("tr")[0].id;
         $(this).parents("tr").remove();
         console.log(idx);
-        anular_directo(idx);
+        if (idx !== ''){
+            anular_directo(idx);
+        }
     }
     // var index = lista_servicios.findIndex(function(item, i){
     //     console.log('idx'+idx+' index'+item.index);

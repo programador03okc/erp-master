@@ -27,6 +27,7 @@ function listar_detalle_requerimiento(id_requerimiento, idTabla){
                 '<td>'+(element.subcategoria !== null ? element.subcategoria : '')+'</td>'+
                 '<td>'+(element.producto_descripcion !== null ? element.producto_descripcion : element.descripcion_adicional)+'</td>'+
                 '<td>'+element.cantidad+'</td>'+
+                '<td>'+element.suma_despachos+'</td>'+
                 '<td>'+(element.abreviatura !== null ? element.abreviatura : '')+'</td>'+
                 '<td>'+(element.almacen_descripcion !== null ? element.almacen_descripcion : '')+'</td>'+
                 // '<td>'+(element.codigo_posicion !== null ? element.codigo_posicion : '')+'</td>'+

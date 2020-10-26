@@ -4,7 +4,7 @@
             <form id="form-orden_despacho_confirmacion">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="close"><span aria-hidden="true">&times;</span></button>
-                    <h3 class="modal-title">Confirmación de Entrega del Despacho</h3>
+                    <h3 class="modal-title">Datos del Transportista</h3>
                 </div>
                 <div class="modal-body">
                     <input type="text" class="oculto" name="id_od"/>
@@ -24,7 +24,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <input type="submit" id="submit_od_confirmacion" class="btn btn-success" value="Confirmar"/>
+                    <input type="submit" id="submit_od_confirmacion" class="btn btn-success" value="Guardar"/>
                 </div>
             </form>
         </div>
