@@ -40,13 +40,14 @@ Panel de Control de Despachos
                                 <thead>
                                     <tr>
                                         <th hidden></th>
-                                        <th>Tipo</th>
+                                        <th>Orden Elec.</th>
+                                        <th>Entidad</th>
                                         <th>Sede Req.</th>
                                         <th>Codigo</th>
                                         <th>Concepto</th>
                                         <th>Fecha Req.</th>
-                                        <th>Ubigeo Entrega</th>
-                                        <th>Dirección Entrega</th>
+                                        <!-- <th>Ubigeo Entrega</th>
+                                        <th>Dirección Entrega</th> -->
                                         <th>Generado por</th>
                                         <th>Estado</th>
                                         <th>Motivo</th>

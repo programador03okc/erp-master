@@ -93,15 +93,16 @@ function listarRequerimientosElaborados(){
         'columns': [
             {'data': 'id_requerimiento'},
             {'data': 'tipo_req'},
+            {'data': 'tipo_req'},
             {'data': 'sede_descripcion_req', 'name': 'sede_req.descripcion'},
             {'data': 'codigo'},
             {'data': 'concepto'},
             {'data': 'fecha_requerimiento'},
-            {'render': function (data, type, row){
-                return (row['ubigeo_descripcion'] !== null ? row['ubigeo_descripcion'] : '');
-                }
-            },
-            {'data': 'direccion_entrega'},
+            // {'render': function (data, type, row){
+            //     return (row['ubigeo_descripcion'] !== null ? row['ubigeo_descripcion'] : '');
+            //     }
+            // },
+            // {'data': 'direccion_entrega'},
             // {'data': 'grupo', 'name': 'adm_grupo.descripcion'},
             {'data': 'responsable', 'name': 'sis_usua.nombre_corto'},
             // {'data': 'estado_doc', 'name': 'adm_estado_doc.estado_doc'},
@@ -120,7 +121,7 @@ function listarRequerimientosElaborados(){
                     return '<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" '+
                     'data-placement="bottom" title="Ver Detalle" >'+
                     '<i class="fas fa-list-ul"></i></button>';
-                }, targets: 11
+                }, targets: 10
             }
         ],
     });
