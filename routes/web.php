@@ -662,6 +662,7 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::get('elaborados/{empresa?}/{sede?}/{grupo?}', 'LogisticaController@listar_requerimientos_elaborados')->name('elaborados');
 
 					Route::get('pendiente-aprobacion', 'RequerimientoController@requerimientos_pendientes_aprobacion')->name('pendientes-aprobacion');
+					Route::post('aprobar-documento', 'AprobacionController@aprobar_documento')->name('aprobar-documento');
 
 				});
 			});
@@ -671,8 +672,10 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::get('index', 'LogisticaController@view_gestionar_cotizaciones')->name('index');
 					Route::get('select-sede-by-empresa/{id?}', 'LogisticaController@select_sede_by_empresa')->name('select-sede-by-empresa');
 					Route::get('listaCotizacionesPorGrupo/{id_cotizacion}', 'LogisticaController@listaCotizacionesPorGrupo');
-					Route::get('requerimientos_entrante_a_cotizacion_v2/{id_empresa}/{id_sede}', 'LogisticaController@requerimientos_entrante_a_cotizacion_v2');
-					Route::get('detalle_requerimiento', 'LogisticaController@detalle_requerimiento');
+					Route::get('requerimientos_entrante_a_cotizacion/{id_empresa}/{id_sede}', 'CotizacionController@requerimientos_entrante_a_cotizacion');
+					Route::get('detalle_requerimiento', 'RequerimientoController@detalle_requerimiento');
+					Route::get('mostrar_proveedores', 'LogisticaController@mostrar_proveedores');
+
 					Route::post('guardar_cotizacion/{id_gru}', 'LogisticaController@guardar_cotizacion');
 					Route::post('agregar-item-cotizacion/{id_cotizacion}', 'LogisticaController@agregar_item_a_cotizacion');
 					Route::post('eliminar-item-cotizacion/{id_cotizacion}', 'LogisticaController@eliminar_item_a_cotizacion');
@@ -703,16 +706,19 @@ Route::group(['middleware' => ['auth']], function () {
 				});
 			Route::group(['as' => 'orden.', 'prefix' => 'orden'], function(){
 				Route::group(['as' => 'por-requerimiento.', 'prefix' => 'por-requerimiento'], function(){
-					Route::get('index', 'LogisticaController@view_generar_orden_requerimiento')->name('index');
+					Route::get('index', 'OrdenController@view_generar_orden_requerimiento')->name('index');
 					// generar oreden por requerimiento
-					Route::get('requerimientos-pendientes', 'LogisticaController@listar_requerimientos_pendientes')->name('requerimientos-pendientes'); 
-					Route::get('requerimientos-atendidos', 'LogisticaController@listar_requerimientos_atendidos')->name('requerimientos-atendidos'); 
-					Route::get('requerimiento-orden/{id?}', 'LogisticaController@get_requerimiento_orden')->name('requerimiento-orden'); 
-					Route::post('guardar', 'LogisticaController@guardar_orden_por_requerimiento')->name('guardar');
+					Route::get('requerimientos-pendientes', 'OrdenController@listar_requerimientos_pendientes')->name('requerimientos-pendientes'); 
+					Route::get('ordenes-en-proceso', 'OrdenController@lista_ordenes_en_proceso')->name('ordenes-en-proceso'); 
+					Route::post('detalle-requerimiento-orden', 'OrdenController@get_detalle_requerimiento_orden')->name('detalle-requerimiento-orden'); 
+					Route::post('guardar', 'OrdenController@guardar_orden_por_requerimiento')->name('guardar');
 					Route::put('revertir/{id_orden?}/{id_requerimiento?}', 'LogisticaController@revertir_orden_requerimiento')->name('revertir');
 					Route::get('mostrar_proveedores', 'LogisticaController@mostrar_proveedores');
 					Route::post('guardar_proveedor', 'LogisticaController@guardar_proveedor');
-					Route::get	('detalle-orden-atendido/{id_orden?}', 'LogisticaController@detalle_orden_atendido');
+					Route::get	('ver-orden/{id_orden?}', 'OrdenController@ver_orden');
+					Route::post('actualizar-estado', 'OrdenController@update_estado_orden')->name('actualizar-estado-orden'); 
+					Route::put('actualizar-estado-detalle-requerimieto/{id_detalle_req?}/{estado?}', 'OrdenController@update_estado_detalle_requerimiento')->name('actualizar-estado-detalle-requerimiento'); 
+
 
 				});
 				Route::group(['as' => 'lista-ordenes.', 'prefix' => 'por-requerimiento'], function(){

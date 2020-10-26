@@ -167,9 +167,11 @@ $(function () {
         let idReq = $(this)[0].childNodes[1].childNodes[0].dataset.idRequerimiento;
         let idDetReq = $(this)[0].childNodes[1].childNodes[0].dataset.idDetalleRequerimiento;
         let stateCheck = $(this)[0].childNodes[1].childNodes[0].checked;
-
+        let codigo = $(this)[0].childNodes[3].childNodes[0].textContent;
+        // console.log(codigo);
         checkDetReq = {
             id_req: idReq,
+            codigo: codigo,
             id_det_req: idDetReq,
             stateCheck: stateCheck,
             newCantidad:0
@@ -345,7 +347,7 @@ function handleChangeIncluirSede(event){
 
     if(event.target.checked == true){
         document.querySelector("div[id='requerimiento'] select[id='id_sede_select_req']").removeAttribute('disabled');
-        getDataSelectSede(id_empresa,"requerimiento","id_sede_select_req");
+        getDataSelectSede(id_empresa,'div',"requerimiento","id_sede_select_req");
 
     }else{
         document.querySelector("div[id='requerimiento'] select[id='id_sede_select_req']").setAttribute('disabled',true);
@@ -359,7 +361,7 @@ function handleChangeIncluirSede(event){
     }
 
 }
-function getDataSelectSede(id_empresa = null, tabId ,selector){
+function getDataSelectSede(id_empresa = null, element , idElement ,selector){
     if(id_empresa >0){
         $.ajax({
             type: 'GET',
@@ -367,16 +369,16 @@ function getDataSelectSede(id_empresa = null, tabId ,selector){
             url: rutaSedeByEmpresa+ '/' + id_empresa,
             dataType: 'JSON',
             success: function(response){
-                llenarSelectSede(response,tabId,selector);
+                llenarSelectSede(response,element,idElement,selector);
             }
         });
     }
     return false;
 }
 
-function llenarSelectSede(array, tabId,selector){
+function llenarSelectSede(array,element, idElement,selector){
 
-    let selectElement = document.querySelector("div[id='"+tabId+"'] select[id='"+selector+"']");
+    let selectElement = document.querySelector(element+"[id='"+idElement+"'] select[id='"+selector+"']");
     // console.log(tabId);
     // console.log(selector);
     // console.log(selectElement);
@@ -404,7 +406,7 @@ function llenarSelectSede(array, tabId,selector){
 
 function handleChangeFilterCrearCotiByEmpresa(e){
     let id_empresa =e.target.value;
-    getDataSelectSede(id_empresa, "crear_coti","id_sede_crear_coti");
+    getDataSelectSede(id_empresa,"div", "crear_coti","id_sede_crear_coti");
 
 }
 
@@ -417,7 +419,7 @@ function handleChangeFilterReqBySede(e){
 }
 
 function handleChangeFilterReqByEmpresa(e) {
-    getDataSelectSede(e.target.value,"requerimiento", "id_sede_select_req");
+    getDataSelectSede(e.target.value,'div',"requerimiento", "id_sede_select_req");
     listar_requerimientos(e.target.value,null,null);
 }
 
@@ -512,15 +514,7 @@ function gotToThirdTab(e) {
     // console.log('gotToThirdTab');
     // console.log(listCheckReqDet);
 
-    let id_empresa =document.getElementById('id_empresa_select_req').value;
-    document.querySelector("div[id='crear_coti'] select[name='id_empresa']").value = id_empresa;
 
-    getDataSelectSede(id_empresa, "crear_coti","id_sede_crear_coti");
-
-    let id_sede =document.getElementById('id_sede_select_req').value;
-    if(id_sede > 0){
-        document.querySelector("div[id='crear_coti'] select[id='id_sede_crear_coti']").value = id_sede;
-    }
 
     // document.getElementsByName('id_sede')[0].value = document.getElementById(
     //     'id_sede_select_req'
@@ -862,8 +856,8 @@ function hasAllInputFill() {
         return false;
     }
 }
-function generar_cotizacion(e) {
-	e.preventDefault();
+function generar_cotizacion() {
+	// e.preventDefault();
     if (hasAllInputFill() == false) {
         alert('para seguir Debe completar todo los campos');
     } else {
@@ -879,7 +873,7 @@ function generar_cotizacion(e) {
         })
 
         if (countExceed == 0) {
-            GuardarCotizacion()
+            GuardarCotizacion();
         } else {
             alert('Stock Comprometido es mayor a la cantidad solicitada')
         }
@@ -907,18 +901,21 @@ function get_data_form_generar_cotizacion() {
 
 function GuardarCotizacion() {
     // console.log(listCheckReqDet);
-    let formCotizacionProvEmpresa = get_data_form_generar_cotizacion()
-    var items = {}
-    var data = {}
+    let formCotizacionProvEmpresa = get_data_form_generar_cotizacion();
+    // console.log(get_data_form_generar_cotizacion);
+    var items = {};
+    var data = {};
 
     // listCheckReqDet.cotizacion =formCotizacionProvEmpresa;
 
-    data.req = listCheckReqDet
-    data.formdata = formCotizacionProvEmpresa
-    items = { data: data }
-    var id_grupo_cotizacion = $('[name=id_grupo_cotizacion]').val()
+    data.req = listCheckReqDet;
+    data.formdata = formCotizacionProvEmpresa;
+        console.log(data);
+
+    items = { data: data };
+    var id_grupo_cotizacion = $('[name=id_grupo_cotizacion]').val();
     // console.log('items enviados=>');
-    // console.log(items);
+    console.log('id_grupo_cotizacion',id_grupo_cotizacion);
 
     if (listCheckReqDet.length > 0) {
         $.ajax({
@@ -927,14 +924,16 @@ function GuardarCotizacion() {
             dataType: 'JSON',
             data: items,
             success: function (response) {
-                // console.log(response);
+                console.log(response);
 
                 if (response.status == 'success') {
                     if (response['id_cotizacion'] > 0) {
                         id_cotizacion_creada = response['id_cotizacion'];
                         alert('Cotización registrada con éxito')
-                        var id_grupo = response['id_grupo']
+                        var id_grupo = response['id_grupo'];
+                        var codigo_cuadro_comparativo = response['codigo_grupo'];
                         $('[name=id_grupo_cotizacion]').val(id_grupo)
+                        $('[name=codigo_cuadro_comparativo]').val(codigo_cuadro_comparativo)
                         lista_cotizaciones()
                         // listarRequerimiento(1)
                         document.getElementById('btnOpenModalEnviarCoti').removeAttribute('disabled');
@@ -1522,7 +1521,7 @@ function listar_requerimientos(id_empresa = null,id_sede = null,loadTo=null) {
         bDestroy: true,
         order: [[8, 'desc']],
         language: vardataTables[0],
-        ajax: 'requerimientos_entrante_a_cotizacion_v2/' + id_empresa+'/'+id_sede,
+        ajax: 'requerimientos_entrante_a_cotizacion/' + id_empresa+'/'+id_sede,
         columns: [
             { data: 'id_requerimiento' },
             {
@@ -2829,6 +2828,26 @@ function eliminarItemDeCotizacion(){
                 })
             }
         }
+    }
+
+}
+
+
+function nuevaSolicitudCotizacion(){
+    $('#modal-nueva-solicitud-cotizacion').modal({
+        show: true,
+        backdrop: 'static',
+        keyboard: false
+    });
+
+    let id_empresa =document.getElementById('id_empresa_select_req').value;
+    document.querySelector("form[id='form-nueva-solicitud-cotizacion'] select[name='id_empresa']").value = id_empresa;
+
+    getDataSelectSede(id_empresa,"form", "form-nueva-solicitud-cotizacion","id_sede_crear_coti");
+
+    let id_sede =document.getElementById('id_sede_select_req').value;
+    if(id_sede > 0){
+        document.querySelector("form[id='form-nueva-solicitud-cotizacion'] select[id='id_sede_crear_coti']").value = id_sede;
     }
 
 }

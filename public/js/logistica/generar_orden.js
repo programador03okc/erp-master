@@ -366,12 +366,12 @@ function ingresarCodigoCatalogoItems(){
         show: true,
         backdrop: 'static'
     });
-    listarItems();
+    listarItemsConStock();
     
 }
 
 
-function listarItems() {
+function listarItemsConStock() {
     var vardataTables = funcDatatables();
     $('#listaItems').dataTable({
         'dom': vardataTables[1],
