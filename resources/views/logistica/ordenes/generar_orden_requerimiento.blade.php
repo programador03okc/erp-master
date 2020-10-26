@@ -122,8 +122,9 @@
         </div>
  </div>
 @include('logistica.ordenes.modal_lista_items_requerimiento')
-@include('logistica.ordenes.modal_editar_estado_orden')
 @include('logistica.ordenes.modal_ver_orden')
+@include('logistica.ordenes.modal_editar_estado_orden')
+@include('logistica.ordenes.modal_editar_estado_detalle_orden')
 @include('logistica.ordenes.modal_orden_requerimiento')
 @include('logistica.cotizaciones.proveedorModal')
 @include('logistica.cotizaciones.add_proveedor')
@@ -159,6 +160,7 @@
             "{{route('logistica.gestion-logistica.orden.por-requerimiento.guardar')}}",
             "{{route('logistica.gestion-logistica.orden.por-requerimiento.revertir')}}",
             "{{route('logistica.gestion-logistica.orden.por-requerimiento.actualizar-estado-orden')}}",
+            "{{route('logistica.gestion-logistica.orden.por-requerimiento.actualizar-estado-detalle-orden')}}",
             "{{route('logistica.gestion-logistica.orden.por-requerimiento.actualizar-estado-detalle-requerimiento')}}"
             );
             tieneAccion('{{Auth::user()->tieneAccion(114)}}','{{Auth::user()->tieneAccion(115)}}');

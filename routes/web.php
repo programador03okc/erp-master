@@ -710,6 +710,7 @@ Route::group(['middleware' => ['auth']], function () {
 					// generar oreden por requerimiento
 					Route::get('requerimientos-pendientes', 'OrdenController@listar_requerimientos_pendientes')->name('requerimientos-pendientes'); 
 					Route::get('ordenes-en-proceso', 'OrdenController@lista_ordenes_en_proceso')->name('ordenes-en-proceso'); 
+					Route::get('items-ordenes-en-proceso', 'OrdenController@lista_items_ordenes_en_proceso')->name('ordenes-en-proceso'); 
 					Route::post('detalle-requerimiento-orden', 'OrdenController@get_detalle_requerimiento_orden')->name('detalle-requerimiento-orden'); 
 					Route::post('guardar', 'OrdenController@guardar_orden_por_requerimiento')->name('guardar');
 					Route::put('revertir/{id_orden?}/{id_requerimiento?}', 'LogisticaController@revertir_orden_requerimiento')->name('revertir');
@@ -717,8 +718,9 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::post('guardar_proveedor', 'LogisticaController@guardar_proveedor');
 					Route::get	('ver-orden/{id_orden?}', 'OrdenController@ver_orden');
 					Route::post('actualizar-estado', 'OrdenController@update_estado_orden')->name('actualizar-estado-orden'); 
-					Route::put('actualizar-estado-detalle-requerimieto/{id_detalle_req?}/{estado?}', 'OrdenController@update_estado_detalle_requerimiento')->name('actualizar-estado-detalle-requerimiento'); 
-
+					Route::post('actualizar-estado-detalle', 'OrdenController@update_estado_item_orden')->name('actualizar-estado-detalle-orden'); 
+					Route::put('actualizar-estado-detalle-requerimiento/{id_detalle_req?}/{estado?}', 'OrdenController@update_estado_detalle_requerimiento')->name('actualizar-estado-detalle-requerimiento'); 
+					
 
 				});
 				Route::group(['as' => 'lista-ordenes.', 'prefix' => 'por-requerimiento'], function(){

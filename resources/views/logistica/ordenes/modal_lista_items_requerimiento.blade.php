@@ -20,7 +20,9 @@
                                     <th>UNIDAD</th>
                                     <th>CANTIDAD</th>
                                     <th>PRECIO</th>
+                                    <th>ESTADO ACTUAL</th>
                                     <th>OBSERVACION</th>
+                                    <th>ACCIÓN</th>
                                 </tr>
                             </thead>
                             <tbody></tbody>
