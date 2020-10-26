@@ -6,7 +6,8 @@ rutaGuardarOrdenPorRequerimiento,
 rutaRevertirOrdenPorRequerimiento,
 rutaActualizarEstadoOrdenPorRequerimiento,
 rutaActualizarEstadoDetalleOrdenPorRequerimiento,
-rutaActualizarEstadoDetalleRequerimiento
+rutaActualizarEstadoDetalleRequerimiento,
+rutaSedeByEmpresa
 ;
 
 var listCheckReq=[];
@@ -23,7 +24,8 @@ function inicializar(
     _rutaRevertirOrdenPorRequerimiento,
     _rutaActualizarEstadoOrdenPorRequerimiento,
     _rutaActualizarEstadoDetalleOrdenPorRequerimiento,
-    _rutaActualizarEstadoDetalleRequerimiento
+    _rutaActualizarEstadoDetalleRequerimiento,
+    _rutaSedeByEmpresa
     ) {
     
     rutaRequerimientosPendientes = _rutaRequerimientosPendientes;
@@ -34,6 +36,7 @@ function inicializar(
     rutaActualizarEstadoOrdenPorRequerimiento = _rutaActualizarEstadoOrdenPorRequerimiento;
     rutaActualizarEstadoDetalleOrdenPorRequerimiento = _rutaActualizarEstadoDetalleOrdenPorRequerimiento;
     rutaActualizarEstadoDetalleRequerimiento = _rutaActualizarEstadoDetalleRequerimiento;
+    rutaSedeByEmpresa = _rutaSedeByEmpresa;
 
     let defaultIdEmpresa = 1
     document.getElementById('id_empresa_select_req').value = defaultIdEmpresa // default select filter 1 = okc
@@ -184,7 +187,8 @@ if(listCheckReq.length >0){
 }
 
 function tieneAccion(permisoCrearOrdenPorRequerimiento, permisoRevertirOrden){
-    listar_requerimientos_pendientes(permisoCrearOrdenPorRequerimiento);
+   let id_empresa= document.querySelector("select[id='id_empresa_select_req']").value;
+    listar_requerimientos_pendientes(permisoCrearOrdenPorRequerimiento,id_empresa,null);
 
     $('ul.nav-tabs li a').click(function(){
 
@@ -195,7 +199,7 @@ function tieneAccion(permisoCrearOrdenPorRequerimiento, permisoRevertirOrden){
             listar_ordenes_en_proceso(permisoRevertirOrden);
         } 
         else if (activeForm == "form-requerimientosPendientes"){
-            listar_requerimientos_pendientes(permisoCrearOrdenPorRequerimiento);
+            listar_requerimientos_pendientes(permisoCrearOrdenPorRequerimiento,id_empresa,null);
         }
 
     });
@@ -310,7 +314,7 @@ function fillTablaListaItemsRequerimiento(id_requerimiento){
     });
 }
 
-function listar_requerimientos_pendientes(permisoCrearOrdenPorRequerimiento){
+function listar_requerimientos_pendientes(permisoCrearOrdenPorRequerimiento,id_empresa= null,id_sede =null){
     var vardataTables = funcDatatables();
     $('#listaRequerimientosPendientes').DataTable({
         'dom': vardataTables[1],
@@ -318,7 +322,7 @@ function listar_requerimientos_pendientes(permisoCrearOrdenPorRequerimiento){
         'language' : vardataTables[0],
         'order': [[0, 'desc']],
         'destroy' : true,
-        'ajax': rutaRequerimientosPendientes,
+        'ajax': rutaRequerimientosPendientes+'/'+id_empresa+'/'+id_sede,
         'columns': [
             {'data': 'id_requerimiento'},
             { render: function (data, type, row) { 
@@ -1849,4 +1853,84 @@ function agregarItemATablaListaDetalleOrden(newItem){
     console.log(detalleRequerimientoSelected);
     // table.rows(i).nodes()[0].childNodes[5].children[0].dataset.id_requerimiento=0;
     // table.rows(i).nodes()[0].childNodes[5].children[0].dataset.id_detalle_requerimiento=0;
+}
+
+function handleChangeFilterReqByEmpresa(e) {
+    let id_empresa =e.target.value;
+    getDataSelectSede(id_empresa);
+    listar_requerimientos_pendientes(null,id_empresa,null);
+}
+
+function getDataSelectSede(id_empresa = null){
+    if(id_empresa >0){
+        $.ajax({
+            type: 'GET',
+            headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+            url: rutaSedeByEmpresa+ '/' + id_empresa,
+            dataType: 'JSON',
+            success: function(response){
+                llenarSelectSede(response);
+            }
+        });
+    }
+    return false;
+}
+
+function llenarSelectSede(array){
+
+    let selectElement = document.querySelector("select[id='id_sede_select_req']");
+    // console.log(tabId);
+    // console.log(selector);
+    // console.log(selectElement);
+    
+    if(selectElement.options.length>0){
+        var i, L = selectElement.options.length - 1;
+        for(i = L; i >= 0; i--) {
+            selectElement.remove(i);
+        }
+    }
+
+    array.forEach(element => {
+        let option = document.createElement("option");
+        option.text = element.descripcion;
+        option.value = element.id_sede;
+        selectElement.add(option);
+    });
+
+    // console.log(selectElement.value);
+    let id_empresa = document.querySelector("select[id='id_empresa_select_req']").value;
+    let id_sede= selectElement.value;
+     listar_requerimientos_pendientes(null,id_empresa,id_sede);
+
+
+}
+
+function handleChangeIncluirSede(event){
+    
+    let selectEmpresa = document.querySelector("select[id='id_empresa_select_req']");
+    let id_empresa = selectEmpresa.value;
+
+    if(event.target.checked == true){
+        document.querySelector("select[id='id_sede_select_req']").removeAttribute('disabled');
+        getDataSelectSede(id_empresa);
+
+    }else{
+        document.querySelector("select[id='id_sede_select_req']").setAttribute('disabled',true);
+        let selectElement = document.querySelector("select[id='id_sede_select_req']");
+        var i, L = selectElement.options.length - 1;
+        for(i = L; i >= 0; i--) {
+            selectElement.remove(i);
+        }
+        listar_requerimientos_pendientes(null,id_empresa,null);
+
+    }
+
+}
+
+function handleChangeFilterReqBySede(e){
+    let id_sede =e.target.value;
+    let id_empresa = document.querySelector("select[id='id_empresa_select_req']");
+    listar_requerimientos_pendientes(null,id_empresa,id_sede);
+
+    
 }
