@@ -71,7 +71,7 @@ class DistribucionController extends Controller
                 ->count();
 
         $count_por_despachar = DB::table('almacen.orden_despacho')
-            ->where('orden_despacho.estado',9)
+            ->where('orden_despacho.estado',23)
             ->count();
 
         $count_despachados = DB::table('almacen.orden_despacho_grupo_det')
@@ -80,12 +80,20 @@ class DistribucionController extends Controller
         ->join('administracion.adm_estado_doc','adm_estado_doc.id_estado_doc','=','alm_req.estado')
         ->where([['orden_despacho_grupo_det.estado','!=',7],['alm_req.estado','=',20]])//Despachado
         ->count();
+
+        $count_cargo = DB::table('almacen.orden_despacho_grupo_det')
+        ->join('almacen.orden_despacho','orden_despacho.id_od','=','orden_despacho_grupo_det.id_od')
+        ->join('almacen.alm_req','alm_req.id_requerimiento','=','orden_despacho.id_requerimiento')
+        ->join('administracion.adm_estado_doc','adm_estado_doc.id_estado_doc','=','alm_req.estado')
+        ->where([['orden_despacho_grupo_det.estado','!=',7],['alm_req.estado','=',25]])//Pendiente de cargo
+        ->count();
         
         return response()->json(['count_pendientes'=>$count_pendientes,
                                  'count_confirmados'=>$count_confirmados,
                                  'count_en_proceso'=>$count_en_proceso,
                                  'count_por_despachar'=>$count_por_despachar,
-                                 'count_despachados'=>$count_despachados]);
+                                 'count_despachados'=>$count_despachados,
+                                 'count_cargo'=>$count_cargo]);
     }
     public function listarRequerimientosElaborados(){
         $data = DB::table('almacen.alm_req')

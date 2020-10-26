@@ -67,7 +67,8 @@ function actualizaCantidadDespachosTabs(){
             $('#sconfirmados').text(response['count_confirmados'] > 0 ? response['count_confirmados'] : '');
             $('#spendientes').text(response['count_en_proceso'] > 0 ? response['count_en_proceso'] : '');
             $('#sdespachos').text(response['count_por_despachar'] > 0 ? response['count_por_despachar'] : '');
-            $('#sdespachados').text(response['count_despachados'] > 0 ? response['count_despachados'] : '');
+            $('#ssinTransporte').text(response['count_despachados'] > 0 ? response['count_despachados'] : '');
+            $('#sretornoCargo').text(response['count_cargo'] > 0 ? response['count_cargo'] : '');
         }
     }).fail( function( jqXHR, textStatus, errorThrown ){
         console.log(jqXHR);
