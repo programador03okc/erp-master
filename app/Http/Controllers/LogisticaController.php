@@ -48,8 +48,10 @@ class LogisticaController extends Controller
         $periodos = $this->mostrar_periodos();
         $roles = $this->userSession()['roles'];
         $sis_identidad = $this->select_sis_identidad();
+        $bancos = $this->select_bancos();
+        $tipos_cuenta = $this->select_tipos_cuenta();
 
-        return view('logistica/requerimientos/gestionar_requerimiento', compact('sis_identidad','tipo_requerimiento','monedas', 'prioridades', 'empresas', 'unidades_medida','roles','periodos'));
+        return view('logistica/requerimientos/gestionar_requerimiento', compact('sis_identidad','tipo_requerimiento','monedas', 'prioridades', 'empresas', 'unidades_medida','roles','periodos','bancos','tipos_cuenta'));
     }
 
     function view_gestionar_cotizaciones()
@@ -1510,6 +1512,121 @@ class LogisticaController extends Controller
         $data['data']=$tel_req;
         return response()->json($data);
     }
+     function cuentas_cliente($id_persona=null,$id_cliente=null){
+        $data=[];
+        $status=0;
+        $com_cliente = DB::table('comercial.com_cliente')
+ 
+        ->where('com_cliente.id_cliente','=',$id_cliente)
+        ->get();
+        if(count($com_cliente)>0){
+            $id_contribuyente= $com_cliente->first()->id_contribuyente;
+            $status=200;
+
+            if($id_contribuyente >0){
+                $adm_cta_contri = DB::table('contabilidad.adm_cta_contri')
+                ->select(
+                    'adm_cta_contri.id_cuenta_contribuyente',
+                    'adm_cta_contri.id_banco',
+                    'adm_contri.razon_social as banco',
+                    'adm_tp_cta.descripcion as tipo_cuenta',
+                    'adm_cta_contri.nro_cuenta',
+                    'adm_cta_contri.nro_cuenta_interbancaria',
+                    'adm_cta_contri.id_moneda',
+                    'sis_moneda.descripcion as moneda'
+                )
+                ->leftJoin('contabilidad.adm_tp_cta','adm_tp_cta.id_tipo_cuenta','=','adm_cta_contri.id_tipo_cuenta')
+                ->leftJoin('contabilidad.cont_banco','cont_banco.id_banco','=','adm_cta_contri.id_banco')
+                ->leftJoin('contabilidad.adm_contri','adm_contri.id_contribuyente','=','cont_banco.id_contribuyente')
+                ->leftJoin('configuracion.sis_moneda','sis_moneda.id_moneda','=','adm_cta_contri.id_moneda')
+                ->where('adm_cta_contri.id_contribuyente',$id_contribuyente)
+                ->get();
+                $status = 200;
+                $output=['data'=>$adm_cta_contri,'mensaje'=>'Ok', 'status'=>$status];
+                return $output;
+            }else{
+                $status = 400;
+                $output=['data'=>'','mensaje'=>'no existe contribuyente', 'status'=>$status];
+                return $output;
+
+            }
+            $output=['data'=>$adm_cta_contri,'mensaje'=>'OK', 'status'=>$status];
+            return $output;
+        }else{
+            $status=400;
+            $output=['data'=>'','mensaje'=>'no existe cliente', 'status'=>$status];
+            return $output;
+
+        }
+      
+        // $com_cliente = DB::table('comercial.com_cliente')
+        // ->select(
+        //     'adm_cta_contri.id_cuenta_contribuyente',
+        //     'adm_cta_contri.id_banco',
+        //     // 'adm_contri.razon_social as banco',
+        //     'adm_cta_contri.nro_cuenta',
+        //     'adm_cta_contri.nro_cuenta_interbancaria',
+        //     'adm_cta_contri.id_moneda'
+        //     // 'sis_moneda.descripcion as moneda'
+        // )
+        // ->leftJoin('contabilidad.adm_cta_contri','adm_cta_contri.id_contribuyente','=','com_cliente.id_contribuyente')
+        // // ->leftJoin('contabilidad.cont_banco','cont_banco.id_banco','=','adm_cta_contri.id_banco')
+        // // ->leftJoin('contabilidad.adm_contri','adm_contri.id_contribuyente','=','cont_banco.id_contribuyente')
+        // // ->leftJoin('configuracion.sis_moneda','sis_moneda.id_moneda','=','adm_cta_contri.id_moneda')
+        // ->where(['com_cliente.id_cliente','=',$id_cliente])
+        // ->get();
+
+        $data['data']=$com_cliente;
+        return response()->json($data);
+    }
+
+    public function guardar_cuentas_cliente(Request $request){
+        $id_cliente = $request->id_cliente;
+        $banco = $request->banco;
+        $tipo_cuenta = $request->tipo_cuenta;
+        $moneda = $request->moneda;
+        $nro_cuenta = $request->nro_cuenta;
+        $cci = $request->cci;
+
+        $status=0;
+        $com_cliente = DB::table('comercial.com_cliente')
+            ->select(
+                'adm_contri.id_contribuyente',
+                'adm_contri.telefono'
+            )
+            ->join('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'com_cliente.id_contribuyente')
+            ->where('com_cliente.id_cliente',$id_cliente)
+            ->get();
+
+        $id_contribuyente=0;
+        if($com_cliente->count() > 0){
+            $id_contribuyente = $com_cliente->first()->id_contribuyente;
+        }
+
+        if($id_contribuyente >0){
+            $id_cta_contri = DB::table('contabilidad.adm_cta_contri')->insertGetId(
+                [
+                    'id_contribuyente'         => $id_contribuyente,
+                    'id_banco'                 => $banco,
+                    'id_tipo_cuenta'           => $tipo_cuenta,
+                    'nro_cuenta'               => $nro_cuenta,
+                    'nro_cuenta_interbancaria' => $cci,
+                    'id_moneda'                => $moneda,
+                    'fecha_registro'           => date('Y-m-d H:i:s'),
+                    'estado'                   => 1
+    
+                ],
+                'id_cuenta_contribuyente'
+            );
+            if($id_cta_contri > 0){
+                $status=200;
+            }
+        }
+
+        $output=['status'=>$status, 'id_cuenta_contribuyente'=>$id_cta_contri];
+        return response()->json($output);
+
+    }
 
     public function emails_cliente($id_persona=null,$id_cliente=null){
         $data=[];
@@ -1619,7 +1736,6 @@ class LogisticaController extends Controller
                 'observacion'           => isset($request->requerimiento['observacion'])?$request->requerimiento['observacion']:null,
                 'id_grupo'              => isset($request->requerimiento['id_grupo'])?$request->requerimiento['id_grupo']:null,
                 'id_area'               => isset($request->requerimiento['id_area'])?$request->requerimiento['id_area']:null,
-                'id_op_com'             => isset($request->requerimiento['id_op_com'])?$request->requerimiento['id_op_com']:null,
                 'id_prioridad'          => isset($request->requerimiento['id_prioridad'])?$request->requerimiento['id_prioridad']:null,
                 'fecha_registro'        => date('Y-m-d H:i:s'),
                 'estado'                => ($request->requerimiento['tipo_requerimiento'] ==2?19:1),
@@ -1629,6 +1745,9 @@ class LogisticaController extends Controller
                 'id_cliente'            => isset($request->requerimiento['id_cliente'])?$request->requerimiento['id_cliente']:null,
                 'id_persona'            => isset($request->requerimiento['id_persona'])?$request->requerimiento['id_persona']:null,
                 'direccion_entrega'     => isset($request->requerimiento['direccion_entrega'])?$request->requerimiento['direccion_entrega']:null,
+                'id_cuenta'             => isset($request->requerimiento['id_cuenta'])?$request->requerimiento['id_cuenta']:null,
+                'nro_cuenta'            => isset($request->requerimiento['nro_cuenta'])?$request->requerimiento['nro_cuenta']:null,
+                'nro_cuenta_interbancaria'     => isset($request->requerimiento['cci'])?$request->requerimiento['cci']:null,
                 'telefono'              => isset($request->requerimiento['telefono'])?$request->requerimiento['telefono']:null,
                 'email'                 => isset($request->requerimiento['email'])?$request->requerimiento['email']:null,
                 'id_ubigeo_entrega'     => isset($request->requerimiento['ubigeo'])?$request->requerimiento['ubigeo']:null,
@@ -1659,7 +1778,6 @@ class LogisticaController extends Controller
                             'id_producto'           => is_numeric($detalle_reqArray[$i]['id_producto']) == 1 && $detalle_reqArray[$i]['id_producto']>0 ? $detalle_reqArray[$i]['id_producto']:null,
                             'precio_referencial'    => is_numeric($detalle_reqArray[$i]['precio_referencial']) == 1 ?$detalle_reqArray[$i]['precio_referencial']:null,
                             'cantidad'              => $detalle_reqArray[$i]['cantidad']?$detalle_reqArray[$i]['cantidad']:null,
-                            'fecha_entrega'         => isset($detalle_reqArray[$i]['fecha_entrega'])?$detalle_reqArray[$i]['fecha_entrega']:null,
                             'lugar_entrega'         => isset($detalle_reqArray[$i]['lugar_entrega'])?$detalle_reqArray[$i]['lugar_entrega']:null,
                             'descripcion_adicional' => isset($detalle_reqArray[$i]['des_item'])?$detalle_reqArray[$i]['des_item']:null,
                             'partida'               => is_numeric($detalle_reqArray[$i]['id_partida']) == 1 && $detalle_reqArray[$i]['id_partida']>0 ?$detalle_reqArray[$i]['id_partida']:null,

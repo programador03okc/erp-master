@@ -133,71 +133,32 @@
                     <button type="button" title="Seleccionar Ubigeo" class="btn-primary" onClick="ubigeoModal();" ><i class="far fa-compass"></i></button>
                 </div>
             </div>
-            <div class="col-md-2 form-inline" id="input-group-tipo-cliente" >
-                <h5>Tipo Cliente</h5>
+            <div class="col-md-2" id="input-group-moneda">
+                <h5>Moneda</h5>
+                <select class="form-control activation" name="moneda" onChange="changeMonedaSelect(event)" disabled="true">
+                @foreach ($monedas as $moneda)
+                    <option value="{{$moneda->id_moneda}}">{{$moneda->descripcion}}</option>
+                @endforeach
+                </select>
+            </div>
+            <div class="col-md-2" id="input-group-monto" >
+                <h5>Monto</h5>
                 <div class="input-group-okc">
-                        <select name="tipo_cliente" onChange="changeTipoCliente(event);"
-                        class="form-control activation" style="width:100px" required>
-                        <!-- <option value="0">Elija una opción</option> -->
-                        <!-- <option value="1" default>Persona Natural</option>
-                        <option value="2">Persona Juridica</option>
-                        <option value="3">Uso Almacén</option> -->
-                    </select>
+                    <div class="input-group-addon" id="montoMoneda" style="width: auto;">S/.</div>
+                    <input type="text" class="form-control activation" name="monto">
                 </div>
             </div>
+            <div class="col-md-2" id="input-group-fecha_entrega">
+                <div class="form-group">
+                    <h5>Fecha Entrega</h5>
+                    <input type="date" class="form-control input-sm activation" name="fecha_entrega" step="any" min={{ date('Y-m-d H:i:s') }} value={{ date('Y-m-d H:i:s') }}>
+                </div>
+            </div>
+
             <div class="col-md-4" id="input-group-almacen" hidden>
                 <h5>Almacén que solicita</h5>
                 <select class="form-control activation " name="id_almacen">
                 </select>
-            </div>
-            <div class="col-md-4 form-inline" id="input-group-cliente" >
-                <h5>Cliente</h5>
-                <div style="display:flex;">
-                    <input type="text" class="oculto" name="id_cliente" >
-                    <input type="text" class="form-control" name="cliente_ruc"  style="width: 100px; display: none;">
-                    <input type="text" class="form-control" name="cliente_razon_social" style="display: none;">
-
-                    <input type="text" class="oculto" name="id_persona" >
-                    <input type="text" class="form-control activation" name="dni_persona" style="width: 100px;">
-                    <input type="text" class="form-control activation" name="nombre_persona" >
-
-                    <!-- <div class="input-group-append">         -->
-                        <button type="button" class="btn-primary" title="Seleccionar Cliente" name="btnCliente" 
-                        onClick="openCliente();"  ><i class="fas fa-user-tie"></i></button>
-                    <!-- </div> 
-                    <div class="input-group-append"> class="input-group-text         -->
-                        <button type="button" class="btn-success" title="Agregar Cliente" name="btnAddCliente" 
-                        onClick="agregar_cliente();"
-                         ><i class="fas fa-plus"></i></button>
-                    <!-- </div> -->
-                </div>
-            </div>
-            <div class="col-md-2" id="input-group-telefono-cliente" >
-                <h5>Teléfono Cliente</h5>
-                <div style="display:flex;">
-                    <input type="text" class="form-control activation" name="telefono_cliente" onkeypress="return isNumberKey(event)"  disabled>
-                        <button type="button" class="btn-primary" title="Buscar Teléfonos" name="btnSearchPhone"  onClick="telefonosClienteModal();">
-                            <i class="fas fa-address-book"></i>
-                        </button>
-                </div>
-            </div>
-            <div class="col-md-2" id="input-group-email-cliente" >
-                <h5>Correo Cliente</h5>
-                <div style="display:flex;">
-                    <input type="email" class="form-control activation" name="email_cliente"  disabled>
-                        <button type="button" class="btn-primary" title="Buscar Teléfonos" name="btnSearchPhone"  onClick="emailClienteModal();">
-                            <i class="fas fa-address-book"></i>
-                        </button>
-                </div>
-            </div>
-            <div class="col-md-4" id="input-group-direccion-entrega" >
-                <h5>Dirección Entrega</h5>
-                <div style="display:flex;">
-                    <input type="text" class="form-control activation" name="direccion_entrega"  disabled>
-                    <button type="button" class="btn-primary" title="Buscar Dirección" name="btnSearchAddress" onClick="direccionesClienteModal();">
-                        <i class="fas fa-location-arrow"></i>
-                    </button>
-                </div>
             </div>
             <div class="col-md-6" id="input-group-proyecto" hidden>
                 <h5>Proyecto</h5>
@@ -242,27 +203,96 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-2" id="input-group-moneda">
-                <h5>Moneda</h5>
-                <select class="form-control activation" name="moneda" onChange="changeMonedaSelect(event)" disabled="true">
-                @foreach ($monedas as $moneda)
-                    <option value="{{$moneda->id_moneda}}">{{$moneda->descripcion}}</option>
-                @endforeach
-                </select>
-            </div>
-            <div class="col-md-2" id="input-group-monto" >
-                <h5>Monto</h5>
+        </div>
+
+        <div class="row">
+            <div class="col-md-2 form-inline" id="input-group-tipo-cliente" >
+                <h5>Tipo Cliente</h5>
                 <div class="input-group-okc">
-                    <div class="input-group-addon" id="montoMoneda" style="width: auto;">S/.</div>
-                    <input type="text" class="form-control activation" name="monto">
+                        <select name="tipo_cliente" onChange="changeTipoCliente(event);"
+                        class="form-control activation" style="width:100px" required>
+                        <!-- <option value="0">Elija una opción</option> -->
+                        <!-- <option value="1" default>Persona Natural</option>
+                        <option value="2">Persona Juridica</option>
+                        <option value="3">Uso Almacén</option> -->
+                    </select>
                 </div>
             </div>
-            <div class="col-md-2" id="input-group-fecha_entrega">
-                <div class="form-group">
-                    <h5>Fecha Entrega</h5>
-                    <input type="date" class="form-control input-sm activation" name="fecha_entrega" step="any" min={{ date('Y-m-d H:i:s') }} value={{ date('Y-m-d H:i:s') }}>
+            <div class="col-md-4 form-inline" id="input-group-cliente" >
+                <h5>Cliente</h5>
+                <div style="display:flex;">
+                    <input type="text" class="oculto" name="id_cliente" >
+                    <input type="text" class="form-control" name="cliente_ruc"  style="width: 120px; display: none;">
+                    <input type="text" class="form-control" name="cliente_razon_social" style="display: none;">
+
+                    <input type="text" class="oculto" name="id_persona" >
+                    <input type="text" class="form-control activation" name="dni_persona" style="width: 120px;">
+                    <input type="text" class="form-control activation" name="nombre_persona" >
+
+                    <!-- <div class="input-group-append">         -->
+                        <button type="button" class="btn-primary" title="Seleccionar Cliente" name="btnCliente" 
+                        onClick="openCliente();"  ><i class="fas fa-user-tie"></i></button>
+                    <!-- </div> 
+                    <div class="input-group-append"> class="input-group-text         -->
+                        <button type="button" class="btn-success" title="Agregar Cliente" name="btnAddCliente" 
+                        onClick="agregar_cliente();"
+                         ><i class="fas fa-plus"></i></button>
+                    <!-- </div> -->
                 </div>
             </div>
+            <div class="col-md-2" id="input-group-telefono-cliente" >
+                <h5>Teléfono Cliente</h5>
+                <div style="display:flex;">
+                    <input type="text" class="form-control activation" name="telefono_cliente" onkeypress="return isNumberKey(event)"  disabled>
+                        <button type="button" class="btn-primary" title="Buscar Teléfonos" name="btnSearchPhone"  onClick="telefonosClienteModal();">
+                            <i class="fas fa-address-book"></i>
+                        </button>
+                </div>
+            </div>
+            <div class="col-md-2" id="input-group-email-cliente" >
+                <h5>Correo Cliente</h5>
+                <div style="display:flex;">
+                    <input type="email" class="form-control activation" name="email_cliente"  disabled>
+                        <button type="button" class="btn-primary" title="Buscar Teléfonos" name="btnSearchPhone"  onClick="emailClienteModal();">
+                            <i class="fas fa-address-book"></i>
+                        </button>
+                </div>
+            </div>
+            <div class="col-md-2" id="input-group-direccion-entrega" >
+                <h5>Dirección Entrega</h5>
+                <div style="display:flex;">
+                    <input type="text" class="form-control activation" name="direccion_entrega"  disabled>
+                    <button type="button" class="btn-primary" title="Buscar Dirección" name="btnSearchAddress" onClick="direccionesClienteModal();">
+                        <i class="fas fa-location-arrow"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="col-md-6" id="input-group-cuenta" >
+                <h5>Cuenta</h5>
+                <div style="display:flex;">
+                    <input type="text" class="oculto" name="id_cuenta" >
+                    <select class="form-control activation" name="banco" readOnly>
+                        @foreach ($bancos as $banco)
+                            <option value="{{$banco->id_banco}}">{{$banco->razon_social}}</option>
+                        @endforeach
+                    </select>
+                    <select class="form-control activation" name="tipo_cuenta" readOnly>
+                        @foreach ($tipos_cuenta as $tipo)
+                            <option value="{{$tipo->id_tipo_cuenta}}">{{$tipo->descripcion}}</option>
+                        @endforeach
+                    </select>
+                    <input type="text" class="form-control activation" name="nro_cuenta" placeholder="Nro Cuenta" readOnly>
+                    <input type="text" class="form-control activation" name="cci" placeholder="CCI" readOnly>
+                    <button type="button" class="btn-primary" title="Buscar Cuenta" name="btnSearchAccount" onClick="cuentaClienteModal();">
+                        <i class="fas fa-piggy-bank"></i>
+                    </button>
+                    <button type="button" class="btn-success" title="Agregar Cuenta" name="btnAddAccount" onClick="agregarCuentaClienteModal();">
+                        <i class="fas fa-plus"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="row">
             <div class="col-md-12" id="input-group-observacion">
                 <h5>Observación:</h5>
                 <textarea class="form-control activation" name="observacion" cols="100" rows="100" style="height:50px;" disabled></textarea>
@@ -366,6 +396,8 @@
 @include('logistica.cotizaciones.clienteModal')
 @include('logistica.cotizaciones.add_cliente')
 @include('publico.ubigeoModal')
+@include('logistica.requerimientos.modal_agregar_cuenta_cliente')
+@include('logistica.requerimientos.modal_cuentas_cliente')
 @include('logistica.requerimientos.modal_direcciones_cliente')
 @include('logistica.requerimientos.modal_email_cliente')
 @include('logistica.requerimientos.modal_telefonos_cliente')
@@ -426,7 +458,9 @@
             "{{route('logistica.gestion-logistica.requerimiento.elaboracion.telefonos-cliente')}}",
             "{{route('logistica.gestion-logistica.requerimiento.elaboracion.direcciones-cliente')}}",
             "{{route('logistica.gestion-logistica.requerimiento.elaboracion.emails-cliente')}}",
-            "{{route('logistica.gestion-logistica.requerimiento.elaboracion.siguiente-codigo-requerimiento')}}"
+            "{{route('logistica.gestion-logistica.requerimiento.elaboracion.siguiente-codigo-requerimiento')}}",
+            "{{route('logistica.gestion-logistica.requerimiento.elaboracion.cuentas-cliente')}}",
+            "{{route('logistica.gestion-logistica.requerimiento.elaboracion.guardar-cuentas-cliente')}}"
             );
     });
     </script>

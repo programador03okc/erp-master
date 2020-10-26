@@ -8,7 +8,9 @@ rutaCopiarRequerimiento,
 rutaTelefonosCliente,
 rutaDireccionesCliente,
 rutaEmailCliente,
-rutaNextCodigoRequerimiento;
+rutaNextCodigoRequerimiento,
+rutaCuentasCliente,
+rutaGuardarCuentacliente;
 
 function inicializar( _rutaLista,
     _rutaMostrarRequerimiento,
@@ -20,7 +22,9 @@ function inicializar( _rutaLista,
     _rutaTelefonosCliente,
     _rutaDireccionesCliente,
     _rutaEmailCliente,
-    _rutaNextCodigoRequerimiento
+    _rutaNextCodigoRequerimiento,
+    _rutaCuentasCliente,
+    _rutaGuardarCuentacliente
     ) {
     rutaListaRequerimientoModal = _rutaLista;
     rutaMostrarRequerimiento = _rutaMostrarRequerimiento;
@@ -33,6 +37,8 @@ function inicializar( _rutaLista,
     rutaDireccionesCliente = _rutaDireccionesCliente;
     rutaEmailCliente = _rutaEmailCliente;
     rutaNextCodigoRequerimiento = _rutaNextCodigoRequerimiento;
+    rutaCuentasCliente = _rutaCuentasCliente;
+    rutaGuardarCuentacliente = _rutaGuardarCuentacliente;
 
     listar_almacenes();
 
@@ -1074,6 +1080,9 @@ function get_data_requerimiento(){
     id_cliente = document.querySelector("form[id='form-requerimiento'] input[name='id_cliente']").value;
     id_persona = document.querySelector("form[id='form-requerimiento'] input[name='id_persona']").value;
     direccion_entrega = document.querySelector("form[id='form-requerimiento'] input[name='direccion_entrega']").value;
+    id_cuenta = document.querySelector("form[id='form-requerimiento'] input[name='id_cuenta']").value;
+    nro_cuenta = document.querySelector("form[id='form-requerimiento'] input[name='nro_cuenta']").value;
+    cci = document.querySelector("form[id='form-requerimiento'] input[name='cci']").value;
     telefono = document.querySelector("form[id='form-requerimiento'] input[name='telefono_cliente']").value;
     email = document.querySelector("form[id='form-requerimiento'] input[name='email_cliente']").value;
     ubigeo = document.querySelector("form[id='form-requerimiento'] input[name='ubigeo']").value;
@@ -1105,6 +1114,9 @@ function get_data_requerimiento(){
         id_cliente,
         id_persona,
         direccion_entrega,
+        id_cuenta,
+        nro_cuenta,
+        cci,
         telefono,
         email,
         ubigeo,
@@ -3002,6 +3014,7 @@ function stateFormRequerimiento(estilo){
                 'input-group-email-cliente',
                 'input-group-cliente',
                 'input-group-direccion-entrega',
+                'input-group-cuenta',
                 'input-group-ubigeo-entrega',
                 'input-group-monto'
     
@@ -3018,6 +3031,7 @@ function stateFormRequerimiento(estilo){
                 'input-group-email-cliente',
                 'input-group-cliente',
                 'input-group-direccion-entrega',
+                'input-group-cuenta',
                 'input-group-ubigeo-entrega',
                 'input-group-proyecto',
                 'input-group-comercial',
@@ -3107,6 +3121,9 @@ function limpiarFormRequerimiento(){
     document.querySelector("form[id='form-requerimiento'] input[name='telefono_cliente']").value='';
     document.querySelector("form[id='form-requerimiento'] input[name='email_cliente']").value='';
     document.querySelector("form[id='form-requerimiento'] input[name='direccion_entrega']").value='';
+    document.querySelector("form[id='form-requerimiento'] input[name='id_cuenta']").value='';
+    document.querySelector("form[id='form-requerimiento'] input[name='nro_cuenta']").value='';
+    document.querySelector("form[id='form-requerimiento'] input[name='cci']").value='';
 
 
     // document.querySelector("form[id='form-requerimiento'] select[name='id_almacen']").value='';
@@ -3207,6 +3224,98 @@ function direccionesClienteModal(){
     }
 
 }
+function cuentaClienteModal(){
+    let id_cliente = document.querySelector("form[id='form-requerimiento'] input[name='id_cliente']").value?parseInt(document.querySelector("form[id='form-requerimiento'] input[name='id_cliente']").value):0;
+    // let id_persona = document.querySelector("form[id='form-requerimiento'] input[name='id_persona']").value?parseInt(document.querySelector("form[id='form-requerimiento'] input[name='id_persona']").value):0;
+
+    if(id_cliente>0){
+        openModalCuentasCliente();
+        llenarListaCuentasCliente(null,id_cliente);
+    }
+    // if(id_persona>0){
+    //     openModalCuentasCliente();
+    //     llenarListaCuentasCliente(id_persona,null);
+    // }
+
+}
+
+function agregarCuentaClienteModal(){
+    let id_cliente = document.querySelector("form[id='form-requerimiento'] input[name='id_cliente']").value?parseInt(document.querySelector("form[id='form-requerimiento'] input[name='id_cliente']").value):0;
+    let razon_social = document.querySelector("form[id='form-requerimiento'] input[name='cliente_razon_social']").value?(document.querySelector("form[id='form-requerimiento'] input[name='cliente_razon_social']").value):"-";
+    document.querySelector("div[id='modal-agregar-cuenta-cliente'] input[name='id_cliente']").value = id_cliente;
+    document.querySelector("span[id='razon_social']").textContent = razon_social;
+     // let id_persona = document.querySelector("form[id='form-requerimiento'] input[name='id_persona']").value?parseInt(document.querySelector("form[id='form-requerimiento'] input[name='id_persona']").value):0;
+
+    if(id_cliente>0){
+        openModalAgregarCuentasCliente();
+    }
+ 
+
+}
+
+function openModalAgregarCuentasCliente(){
+    $('#modal-agregar-cuenta-cliente').modal({
+        show: true
+    });
+}
+
+function guardarCuentaCliente(){
+    let id_cliente = document.querySelector("div[id='modal-agregar-cuenta-cliente'] input[name='id_cliente']").value;
+    let banco = document.querySelector("div[id='modal-agregar-cuenta-cliente'] select[name='banco']").value;
+    let tipo_cuenta = document.querySelector("div[id='modal-agregar-cuenta-cliente'] select[name='tipo_cuenta']").value;
+    let moneda = document.querySelector("div[id='modal-agregar-cuenta-cliente'] select[name='moneda']").value;
+    let nro_cuenta = document.querySelector("div[id='modal-agregar-cuenta-cliente'] input[name='nro_cuenta']").value;
+    let cci = document.querySelector("div[id='modal-agregar-cuenta-cliente'] input[name='cci']").value;
+    let payload={};
+
+    if(id_cliente > 0){
+        if(nro_cuenta.length >0 || cci.length >0){
+            payload = {
+                'id_cliente': id_cliente,
+                'banco': banco,
+                'tipo_cuenta': tipo_cuenta,
+                'moneda': moneda,
+                'nro_cuenta': nro_cuenta,
+                'cci': cci
+            };
+
+            $.ajax({
+                type: 'POST',
+                url: rutaGuardarCuentacliente,
+                data: payload,
+                beforeSend: function(){
+                },
+                success: function(response){
+                    console.log(response);
+                    if (response.status == '200') {
+                        alert('Se agregó la cuenta');
+                        $('#modal-agregar-cuenta-cliente').modal('hide');
+                        let new_id_cuenta= response.id_cuenta_contribuyente;
+                        payload.id_cuenta=new_id_cuenta;
+                        fillInputCuentaCliente(payload);
+
+                    }else {
+                        alert('hubo un error, No se puedo guardar');
+                    }
+                }
+            });
+
+        }else{
+            alert("debe ingresar un número de cuenta");
+        }
+    }else{
+        alert("hubo un error en obtener el ID cliente");
+    }
+}
+
+function fillInputCuentaCliente(data){
+    document.querySelector("form[id='form-requerimiento'] input[name='id_cuenta']").value = data.id_cuenta?data.id_cuenta:0;
+    document.querySelector("form[id='form-requerimiento'] select[name='banco']").value = data.banco?data.banco:0;
+    document.querySelector("form[id='form-requerimiento'] select[name='tipo_cuenta']").value = data.tipo_cuenta?data.tipo_cuenta:0;
+    document.querySelector("form[id='form-requerimiento'] select[name='moneda']").value = data.moneda?data.moneda:0;
+    document.querySelector("form[id='form-requerimiento'] input[name='nro_cuenta']").value = data.nro_cuenta?data.nro_cuenta:'';
+    document.querySelector("form[id='form-requerimiento'] input[name='cci']").value = data.cci?data.cci:'';
+}
 
 function openModalTelefonosCliente(){
     $('#modal-telefonos-cliente').modal({
@@ -3220,6 +3329,11 @@ function openModalEmailCliente(){
 }
 function openModalDireccionesCliente(){
     $('#modal-direcciones-cliente').modal({
+        show: true
+    });
+}
+function openModalCuentasCliente(){
+    $('#modal-cuentas-cliente').modal({
         show: true
     });
 }
@@ -3260,6 +3374,28 @@ $(function(){
         var dir = $(this)[0].firstChild.innerHTML;
         $('[name=direccion_entrega]').val(dir);    
         $('#modal-direcciones-cliente').modal('hide');
+    });
+    $('#listaCuentasCliente tbody').on('click', 'tr', function(){
+        // console.log($(this));
+        if ($(this).hasClass('eventClick')){
+            $(this).removeClass('eventClick');
+        } else {
+            $('#listaPersonas').dataTable().$('tr.eventClick').removeClass('eventClick');
+            $(this).addClass('eventClick');
+        }
+        var id_cuenta = $(this)[0].firstChild.innerHTML;
+        var banco = $(this)[0].childNodes[1].innerHTML;
+        var tipo_cuenta = $(this)[0].childNodes[2].innerHTML;
+        var nro_cuenta = $(this)[0].childNodes[3].innerHTML;
+        var nro_cuenta_interbancaria = $(this)[0].childNodes[4].innerHTML;
+        // var moneda = $(this)[0].childNodes[5].innerHTML;
+
+        $('[name=id_cuenta]').val(id_cuenta);    
+        $('[name=banco]').val(banco);    
+        $('[name=tipo_cuenta]').val(tipo_cuenta);    
+        $('[name=nro_cuenta]').val(nro_cuenta);    
+        $('[name=cci]').val(nro_cuenta_interbancaria);    
+        $('#modal-cuentas-cliente').modal('hide');
     });
 });
 function llenarListaEmailCliente(id_persona=null,id_cliente=null){
@@ -3339,6 +3475,60 @@ function llenarListaDireccionesCliente(id_persona=null,id_cliente=null){
 
     let tablelistaitem = document.getElementById(
         'listaDireccionesCliente_wrapper'
+    )
+    tablelistaitem.childNodes[0].childNodes[0].hidden = true
+}
+
+function llenarListaCuentasCliente(id_persona=null,id_cliente=null){
+    console.log(id_persona,id_cliente);
+    var vardataTables = funcDatatables();
+    $('#listaCuentasCliente').DataTable({
+        bDestroy: true,
+        info:     false,
+        iDisplayLength:2,
+        paging:   true,
+        searching: true,
+        language: vardataTables[0],
+        processing: true,
+        ajax: rutaCuentasCliente+'/'+id_persona+'/'+id_cliente,
+        columns: [
+            {'render':
+                function (data, type, row, meta){
+                    return row.id_cuenta_contribuyente;
+                }
+            },
+            {'render':
+                function (data, type, row, meta){
+                    return row.banco;
+                }
+            },
+            {'render':
+                function (data, type, row, meta){
+                    return row.tipo_cuenta;
+                }
+            },
+            {'render':
+                function (data, type, row, meta){
+                    return row.nro_cuenta;
+                }
+            },
+            {'render':
+                function (data, type, row, meta){
+                    return row.nro_cuenta_interbancaria;
+                }
+            },
+            {'render':
+                function (data, type, row, meta){
+                    return row.moneda;
+                }
+            }
+        ],
+        'columnDefs': [{ 'aTargets': [0], 'sClass': 'invisible'}],
+
+    })
+
+    let tablelistaitem = document.getElementById(
+        'listaCuentasCliente_wrapper'
     )
     tablelistaitem.childNodes[0].childNodes[0].hidden = true
 }

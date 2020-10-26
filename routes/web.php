@@ -624,6 +624,8 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::post('copiar-requerimiento/{id?}', 'LogisticaController@copiar_requerimiento')->name('copiar-requerimiento');
 					Route::get('telefonos-cliente/{id_persona?}/{id_cliente?}', 'LogisticaController@telefonos_cliente')->name('telefonos-cliente');
 					Route::get('direcciones-cliente/{id_persona?}/{id_cliente?}', 'LogisticaController@direcciones_cliente')->name('direcciones-cliente');
+					Route::get('cuentas-cliente/{id_persona?}/{id_cliente?}', 'LogisticaController@cuentas_cliente')->name('cuentas-cliente');
+					Route::post('guardar-cuentas-cliente', 'LogisticaController@guardar_cuentas_cliente')->name('guardar-cuentas-cliente');
 					Route::get('emails-cliente/{id_persona?}/{id_cliente?}', 'LogisticaController@emails_cliente')->name('emails-cliente');
 					Route::get('listar_ubigeos', 'AlmacenController@listar_ubigeos');
 					Route::get('listar_personas', 'RecursosHumanosController@mostrar_persona_table')->name('listar_personas');
