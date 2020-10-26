@@ -140,7 +140,7 @@ class OrdenController extends Controller
         ->leftJoin('rrhh.rrhh_rol', 'alm_req.id_rol', '=', 'rrhh_rol.id_rol')
         ->leftJoin('rrhh.rrhh_rol_concepto', 'rrhh_rol_concepto.id_rol_concepto', '=', 'rrhh_rol.id_rol_concepto')
         ->leftJoin('administracion.adm_area', 'alm_req.id_area', '=', 'adm_area.id_area')
-        ->leftJoin('proyectos.proy_op_com', 'proy_op_com.id_op_com', '=', 'alm_req.id_op_com')
+        // ->leftJoin('proyectos.proy_op_com', 'proy_op_com.id_op_com', '=', 'alm_req.id_op_com')
         ->leftJoin('administracion.adm_grupo', 'adm_grupo.id_grupo', '=', 'alm_req.id_grupo')
         ->leftJoin('administracion.sis_sede', 'sis_sede.id_sede', '=', 'alm_req.id_sede')
 
@@ -164,9 +164,9 @@ class OrdenController extends Controller
             'rrhh_rol_concepto.descripcion AS rrhh_rol_concepto',
             'alm_req.id_grupo',
             'adm_grupo.descripcion AS adm_grupo_descripcion',
-            'alm_req.id_op_com',
-            'proy_op_com.codigo as codigo_op_com',
-            'proy_op_com.descripcion as descripcion_op_com',
+            // 'alm_req.id_op_com',
+            // 'proy_op_com.codigo as codigo_op_com',
+            // 'proy_op_com.descripcion as descripcion_op_com',
             'alm_req.concepto AS alm_req_concepto',
             // 'log_detalle_grupo_cotizacion.id_detalle_grupo_cotizacion',
             'alm_req.id_cliente',
@@ -384,7 +384,7 @@ class OrdenController extends Controller
             ->leftJoin('rrhh.rrhh_rol', 'alm_req.id_rol', '=', 'rrhh_rol.id_rol')
             ->leftJoin('rrhh.rrhh_rol_concepto', 'rrhh_rol_concepto.id_rol_concepto', '=', 'rrhh_rol.id_rol_concepto')
             ->leftJoin('administracion.adm_area', 'rrhh_rol.id_area', '=', 'adm_area.id_area')
-            ->leftJoin('proyectos.proy_op_com', 'proy_op_com.id_op_com', '=', 'alm_req.id_op_com')
+            // ->leftJoin('proyectos.proy_op_com', 'proy_op_com.id_op_com', '=', 'alm_req.id_op_com')
             ->leftJoin('proyectos.proy_presup', 'alm_req.id_presupuesto', '=', 'proy_presup.id_presupuesto')
             ->leftJoin('rrhh.rrhh_perso as perso_natural', 'alm_req.id_persona', '=', 'perso_natural.id_persona')
             ->leftJoin('comercial.com_cliente', 'alm_req.id_cliente', '=', 'com_cliente.id_cliente')
@@ -420,8 +420,8 @@ class OrdenController extends Controller
                 'rrhh_rol_concepto.descripcion AS rrhh_rol_concepto',
                 'alm_req.id_area',
                 'adm_area.descripcion AS area_descripcion',
-                'proy_op_com.codigo as codigo_op_com',
-                'proy_op_com.descripcion as descripcion_op_com',
+                // 'proy_op_com.codigo as codigo_op_com',
+                // 'proy_op_com.descripcion as descripcion_op_com',
                 'alm_req.id_presupuesto',
                 'alm_req.archivo_adjunto',
                 'alm_req.fecha_registro',
