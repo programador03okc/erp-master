@@ -381,7 +381,6 @@ class LogisticaController extends Controller
             ->leftJoin('rrhh.rrhh_rol', 'alm_req.id_rol', '=', 'rrhh_rol.id_rol')
             ->leftJoin('rrhh.rrhh_rol_concepto', 'rrhh_rol_concepto.id_rol_concepto', '=', 'rrhh_rol.id_rol_concepto')
             ->leftJoin('administracion.adm_area', 'alm_req.id_area', '=', 'adm_area.id_area')
-            ->leftJoin('proyectos.proy_op_com', 'proy_op_com.id_op_com', '=', 'alm_req.id_op_com')
             ->leftJoin('administracion.adm_grupo', 'adm_grupo.id_grupo', '=', 'alm_req.id_grupo')
             ->leftJoin('rrhh.rrhh_perso as perso_natural', 'alm_req.id_persona', '=', 'perso_natural.id_persona')
             ->leftJoin('comercial.com_cliente', 'alm_req.id_cliente', '=', 'com_cliente.id_cliente')
@@ -409,9 +408,8 @@ class LogisticaController extends Controller
                 'rrhh_rol_concepto.descripcion AS rrhh_rol_concepto',
                 'alm_req.id_grupo',
                 'adm_grupo.descripcion AS adm_grupo_descripcion',
-                'alm_req.id_op_com',
-                'proy_op_com.codigo as codigo_op_com',
-                'proy_op_com.descripcion as descripcion_op_com',
+                // 'proy_op_com.codigo as codigo_op_com',
+                // 'proy_op_com.descripcion as descripcion_op_com',
                 'alm_req.concepto AS alm_req_concepto',
                 // 'log_detalle_grupo_cotizacion.id_detalle_grupo_cotizacion',
                 'alm_req.id_prioridad',
@@ -472,7 +470,6 @@ class LogisticaController extends Controller
             ->leftJoin('rrhh.rrhh_rol', 'alm_req.id_rol', '=', 'rrhh_rol.id_rol')
             ->leftJoin('rrhh.rrhh_rol_concepto', 'rrhh_rol_concepto.id_rol_concepto', '=', 'rrhh_rol.id_rol_concepto')
             ->leftJoin('administracion.adm_area', 'rrhh_rol.id_area', '=', 'adm_area.id_area')
-            ->leftJoin('proyectos.proy_op_com', 'proy_op_com.id_op_com', '=', 'alm_req.id_op_com')
             ->leftJoin('proyectos.proy_presup', 'alm_req.id_presupuesto', '=', 'proy_presup.id_presupuesto')
             ->leftJoin('rrhh.rrhh_perso as perso_natural', 'alm_req.id_persona', '=', 'perso_natural.id_persona')
             ->leftJoin('comercial.com_cliente', 'alm_req.id_cliente', '=', 'com_cliente.id_cliente')
@@ -508,10 +505,9 @@ class LogisticaController extends Controller
                 'rrhh_rol_concepto.descripcion AS rrhh_rol_concepto',
                 'alm_req.id_area',
                 'adm_area.descripcion AS area_descripcion',
-                'proy_op_com.codigo as codigo_op_com',
-                'proy_op_com.descripcion as descripcion_op_com',
+                // 'proy_op_com.codigo as codigo_op_com',
+                // 'proy_op_com.descripcion as descripcion_op_com',
                 'alm_req.id_presupuesto',
-                'alm_req.archivo_adjunto',
                 'alm_req.fecha_registro',
                 'alm_req.estado',
                 'alm_req.id_sede',
@@ -530,6 +526,9 @@ class LogisticaController extends Controller
                 'alm_req.id_almacen',
                 'alm_req.monto',
                 'alm_req.fecha_entrega',
+                'alm_req.id_cuenta',
+                'alm_req.nro_cuenta',
+                'alm_req.nro_cuenta_interbancaria',
                 DB::raw("(CASE WHEN alm_req.estado = 1 THEN 'Habilitado' ELSE 'Deshabilitado' END) AS estado_desc")
             )
             ->where([
@@ -572,9 +571,6 @@ class LogisticaController extends Controller
                     'id_rol' => $data->id_rol,
                     'id_area' => $data->id_area,
                     'area_descripcion' => $data->area_descripcion,
-                    'archivo_adjunto' => $data->archivo_adjunto,
-                    'codigo_op_com' => $data->codigo_op_com,
-                    'descripcion_op_com' => $data->descripcion_op_com,
                     'id_presupuesto' => $data->id_presupuesto,
                     'observacion' => $data->observacion,
                     'fecha_registro' => $data->fecha_registro,
@@ -590,11 +586,13 @@ class LogisticaController extends Controller
                     'id_ubigeo_entrega' => $data->id_ubigeo_entrega,
                     'name_ubigeo' => $data->name_ubigeo,
                     'direccion_entrega' => $data->direccion_entrega,
+                    'id_cuenta' => $data->id_cuenta,
+                    'nro_cuenta' => $data->nro_cuenta,
+                    'nro_cuenta_interbancaria' => $data->nro_cuenta_interbancaria,
                     'telefono' => $data->telefono,
                     'email' => $data->email,
                     'id_almacen' => $data->id_almacen,
-                    'monto' => $data->monto,
-                    'fecha_entrega' => $data->fecha_entrega
+                    'monto' => $data->monto
                     
                 ];
             };
@@ -633,10 +631,8 @@ class LogisticaController extends Controller
                     'alm_det_req.cantidad',
                     'alm_det_req.id_unidad_medida',
                     'und_medida_det_req.descripcion AS unidad_medida',
-                    'alm_det_req.obs',
                     'alm_det_req.observacion',
                     'alm_det_req.fecha_registro AS fecha_registro_alm_det_req',
-                    'alm_det_req.fecha_entrega',
                     'alm_det_req.lugar_entrega',
                     'alm_det_req.descripcion_adicional',
                     'alm_det_req.id_tipo_item',
@@ -732,10 +728,8 @@ class LogisticaController extends Controller
                             'unidad_medida'             => $data->unidad_medida,
                             'precio_referencial'        => $data->precio_referencial,
                             'descripcion_adicional'     => $data->descripcion_adicional,
-                            'fecha_entrega'             => $data->fecha_entrega,
                             'lugar_entrega'             => $data->lugar_entrega,
                             'fecha_registro'            => $data->fecha_registro_alm_det_req,
-                            'obs'                       => $data->obs,
                             'observacion'               => $data->observacion,
                             'estado'                    => $data->estado,
                             'estado_doc'                => $data->estado_doc,
@@ -904,7 +898,6 @@ class LogisticaController extends Controller
                 'id_moneda'             => $request->requerimiento['id_moneda'],
                 'id_grupo'              => $request->requerimiento['id_grupo'],
                 'id_area'               => $request->requerimiento['id_area'],
-                'id_op_com'             => $request->requerimiento['id_op_com'],
                 'id_prioridad'          => $request->requerimiento['id_prioridad'],
                 'fecha_registro'        => date('Y-m-d H:i:s'),
                 'estado'                => $request->requerimiento['estado']
@@ -1065,7 +1058,7 @@ class LogisticaController extends Controller
                 <tr>
                     <td class="subtitle top">Proyecto</td>
                     <td class="subtitle verticalTop">:</td>
-                    <td class="verticalTop justify" colspan="4" >' . $requerimiento['requerimiento'][0]['descripcion_op_com'] . '</td>
+                    <td class="verticalTop justify" colspan="4" ></td>
                 </tr>    
                 <tr>
                     <td class="subtitle">Presupuesto</td>
@@ -1174,7 +1167,6 @@ class LogisticaController extends Controller
                 'alm_det_req_adjuntos.archivo',
                 'alm_det_req_adjuntos.estado',
                 'alm_det_req_adjuntos.fecha_registro',
-                'alm_det_req.obs',
                 DB::raw("(CASE WHEN almacen.alm_det_req_adjuntos.estado = 1 THEN 'Habilitado' ELSE 'Deshabilitado' END) AS estado_desc")
             )
             ->leftJoin('almacen.alm_det_req', 'alm_det_req.id_detalle_requerimiento', '=', 'alm_det_req_adjuntos.id_detalle_requerimiento')
@@ -2173,9 +2165,7 @@ class LogisticaController extends Controller
         $monto = isset($request->requerimiento['monto'])?$request->requerimiento['monto']:null;
         $moneda = $request->requerimiento['id_moneda'];
         $id_area = isset($request->requerimiento['id_area'])?$request->requerimiento['id_area']:null;
-        $id_op_com = isset($request->requerimiento['id_op_com'])?$request->requerimiento['id_op_com']:null;
         $id_priori = $request->requerimiento['id_prioridad'];
-        $codigo_occ = isset($request->requerimiento['id_op_com'])?$request->requerimiento['id_op_com']:null;
 
         if ($id_requerimiento != NULL) {
             $data_requerimiento = DB::table('almacen.alm_req')->where('id_requerimiento', $id_requerimiento)
@@ -2197,9 +2187,7 @@ class LogisticaController extends Controller
                     'id_moneda'             => is_numeric($moneda) == 1 ? $moneda : null,
                     'id_grupo'               => is_numeric($id_grupo) == 1 ? $id_grupo : null,
                     'id_area'               => is_numeric($id_area) == 1 ? $id_area : null,
-                    'id_op_com'             => is_numeric($id_op_com) == 1 ? $id_op_com : null,
                     'id_prioridad'          => is_numeric($id_priori) == 1 ? $id_priori : null,
-                    'codigo_occ'            => $codigo_occ,
                     'monto'                 => $monto
                 ]);
 
@@ -2212,7 +2200,6 @@ class LogisticaController extends Controller
                     $id_producto = isset($request->detalle[$i]['id_producto'])?$request->detalle[$i]['id_producto']:null;
                     $precio_ref = isset($request->detalle[$i]['precio_referencial'])?$request->detalle[$i]['precio_referencial']:null;
                     $cantidad = isset($request->detalle[$i]['cantidad'])?$request->detalle[$i]['cantidad']:null;
-                    $fecha_entrega = isset($request->detalle[$i]['fecha_entrega'])?$request->detalle[$i]['fecha_entrega']:null;
                     $lugar_entrega = isset($request->detalle[$i]['lugar_entrega'])?$request->detalle[$i]['lugar_entrega']:null;
                     $des_item = isset($request->detalle[$i]['des_item'])?$request->detalle[$i]['des_item']:null;
                     $id_parti = isset($request->detalle[$i]['id_partida'])?$request->detalle[$i]['id_partida']:null;
@@ -2231,7 +2218,6 @@ class LogisticaController extends Controller
                                 'id_producto'           => is_numeric($id_producto) == 1 ? $id_producto : null,
                                 'precio_referencial'    => $precio_ref,
                                 'cantidad'              => $cantidad,
-                                'fecha_entrega'         => $fecha_entrega,
                                 'lugar_entrega'         => $lugar_entrega,
                                 'descripcion_adicional' => $des_item,
                                 'partida'               => is_numeric($id_parti) == 1 ? $id_parti : null,
@@ -2248,7 +2234,6 @@ class LogisticaController extends Controller
                                 'id_producto'           => is_numeric($id_producto) == 1 ? $id_producto : null,
                                 'precio_referencial'    => $precio_ref,
                                 'cantidad'              => $cantidad,
-                                'fecha_entrega'         => $fecha_entrega,
                                 'lugar_entrega'         => $lugar_entrega,
                                 'descripcion_adicional' => $des_item,
                                 'partida'               => is_numeric($id_parti) == 1 ? $id_parti : null,
@@ -2668,7 +2653,6 @@ class LogisticaController extends Controller
         ->leftJoin('administracion.adm_prioridad', 'alm_req.id_prioridad', '=', 'adm_prioridad.id_prioridad')
         ->leftJoin('administracion.adm_grupo', 'alm_req.id_grupo', '=', 'adm_grupo.id_grupo')
         ->leftJoin('administracion.adm_area', 'alm_req.id_area', '=', 'adm_area.id_area')
-        ->leftJoin('proyectos.proy_op_com', 'proy_op_com.id_op_com', '=', 'alm_req.id_op_com')
         ->leftJoin('configuracion.sis_moneda', 'alm_req.id_moneda', '=', 'sis_moneda.id_moneda')
         ->leftJoin('administracion.adm_periodo', 'adm_periodo.id_periodo', '=', 'alm_req.id_periodo')
         ->select(
@@ -2682,17 +2666,15 @@ class LogisticaController extends Controller
             'adm_periodo.descripcion as descripcion_periodo',
             'alm_req.concepto',
             'alm_req.id_grupo',
-            'proy_op_com.codigo as codigo_op_com',
-            'proy_op_com.descripcion as descripcion_op_com',
+            // 'proy_op_com.codigo as codigo_op_com',
+            // 'proy_op_com.descripcion as descripcion_op_com',
             'alm_req.concepto AS alm_req_concepto',
             'alm_req.estado',
             'alm_req.fecha_registro',
             'alm_req.id_area',
-            'alm_req.archivo_adjunto',
             'alm_req.id_prioridad',
             'alm_req.id_presupuesto',
             'alm_req.id_moneda',
-            'alm_req.id_op_com',
             'adm_estado_doc.estado_doc',
             'alm_tp_req.descripcion AS tipo_requerimiento',
             'adm_prioridad.descripcion AS priori',
@@ -2718,9 +2700,6 @@ class LogisticaController extends Controller
                 'descripcion_periodo' => $data->descripcion_periodo,
                 'concepto' => $data->concepto,
                 'id_grupo' => $data->id_grupo,
-                'id_op_com' => $data->id_op_com,
-                'codigo_op_com' => $data->codigo_op_com,
-                'descripcion_op_com' => $data->descripcion_op_com,
                 'estado' => $data->estado,
                 'fecha_registro' => $data->fecha_registro,
                 'id_area' => $data->id_area,
@@ -2747,9 +2726,7 @@ class LogisticaController extends Controller
             'alm_det_req.id_item',
             'alm_det_req.precio_referencial',
             'alm_det_req.cantidad',
-            'alm_det_req.fecha_entrega',
             'alm_det_req.descripcion_adicional',
-            'alm_det_req.obs',
             'alm_det_req.partida',
             'alm_det_req.unidad_medida',
             'alm_det_req.estado',
@@ -2769,9 +2746,7 @@ class LogisticaController extends Controller
                     'id_item'=> $data->id_item,
                     'precio_referencial'=> $data->precio_referencial,
                     'cantidad'=> $data->cantidad,
-                    'fecha_entrega'=> $data->fecha_entrega,
                     'descripcion_adicional'=> $data->descripcion_adicional,
-                    'obs'=> $data->obs,
                     'partida'=> $data->partida,
                     'unidad_medida'=> $data->unidad_medida,
                     'estado'=> $data->estado,
@@ -3080,7 +3055,6 @@ class LogisticaController extends Controller
         ->leftJoin('administracion.adm_grupo', 'alm_req.id_grupo', '=', 'adm_grupo.id_grupo')
         ->leftJoin('administracion.sis_sede', 'sis_sede.id_sede', '=', 'adm_grupo.id_sede')
         ->leftJoin('administracion.adm_area', 'alm_req.id_area', '=', 'adm_area.id_area')
-        ->leftJoin('proyectos.proy_op_com', 'proy_op_com.id_op_com', '=', 'alm_req.id_op_com')
         ->leftJoin('configuracion.sis_moneda', 'alm_req.id_moneda', '=', 'sis_moneda.id_moneda')
         ->leftJoin('administracion.adm_periodo', 'adm_periodo.id_periodo', '=', 'alm_req.id_periodo')
         ->leftJoin('administracion.adm_empresa', 'alm_req.id_empresa', '=', 'adm_empresa.id_empresa')
@@ -3103,19 +3077,17 @@ class LogisticaController extends Controller
             'adm_periodo.descripcion as descripcion_periodo',
             'alm_req.concepto',
             'alm_req.id_grupo',
-            'alm_req.id_op_com',
             'alm_req.id_empresa',
             'adm_contri.razon_social',
             'adm_contri.nro_documento',
             'adm_contri.id_doc_identidad',
             'sis_identi.descripcion as tipo_documento_identidad',
-            'proy_op_com.codigo as codigo_op_com',
-            'proy_op_com.descripcion as descripcion_op_com',
+            // 'proy_op_com.codigo as codigo_op_com',
+            // 'proy_op_com.descripcion as descripcion_op_com',
             'alm_req.concepto AS alm_req_concepto',
             'alm_req.estado',
             'alm_req.fecha_registro',
             'alm_req.id_area',
-            'alm_req.archivo_adjunto',
             'alm_req.id_prioridad',
             'alm_req.id_presupuesto',
             'alm_req.id_moneda',
@@ -3150,13 +3122,9 @@ class LogisticaController extends Controller
                 'nro_documento' => $data->nro_documento,
                 'tipo_documento_identidad' => $data->tipo_documento_identidad,
                 'id_grupo' => $data->id_grupo,
-                'id_op_com' => $data->id_op_com,
-                'codigo_op_com' => $data->codigo_op_com,
-                'descripcion_op_com' => $data->descripcion_op_com,
                 'estado' => $data->estado,
                 'fecha_registro' => $data->fecha_registro,
                 'id_area' => $data->id_area,
-                'archivo_adjunto' => $data->archivo_adjunto,
                 'id_prioridad' => $data->id_prioridad,
                 'id_presupuesto' => $data->id_presupuesto,
                 'id_moneda' => $data->id_moneda,
@@ -3184,9 +3152,7 @@ class LogisticaController extends Controller
             'alm_det_req.id_item',
             'alm_det_req.precio_referencial',
             'alm_det_req.cantidad',
-            'alm_det_req.fecha_entrega',
             'alm_det_req.descripcion_adicional',
-            'alm_det_req.obs',
             'alm_det_req.partida',
             'alm_det_req.unidad_medida',
             'alm_det_req.estado',
@@ -3211,9 +3177,7 @@ class LogisticaController extends Controller
                     'id_item'=> $data->id_item,
                     'precio_referencial'=> $data->precio_referencial,
                     'cantidad'=> $data->cantidad,
-                    'fecha_entrega'=> $data->fecha_entrega,
                     'descripcion_adicional'=> $data->descripcion_adicional,
-                    'obs'=> $data->obs,
                     'partida'=> $data->partida,
                     'unidad_medida'=> $data->unidad_medida,
                     'estado'=> $data->estado,
@@ -3287,7 +3251,7 @@ class LogisticaController extends Controller
             $area = $row['area'];
             $id_grp = $row['id_grupo'];
             $grupo = $row['grupo'];
-            $proyec = $row['descripcion_op_com'];
+            // $proyec = $row['descripcion_op_com'];
             $method = '';
         
             $detalle = $row['detalle'];
@@ -3725,7 +3689,6 @@ class LogisticaController extends Controller
             ->leftJoin('administracion.adm_empresa', 'sis_sede.id_empresa', '=', 'adm_empresa.id_empresa')
             ->leftJoin('contabilidad.adm_contri', 'adm_empresa.id_contribuyente', '=', 'adm_contri.id_contribuyente')
             ->leftJoin('administracion.adm_area', 'alm_req.id_area', '=', 'adm_area.id_area')
-            ->leftJoin('proyectos.proy_op_com', 'proy_op_com.id_op_com', '=', 'alm_req.id_op_com')
             ->select(
                 'alm_req.*',
                 'adm_periodo.descripcion as descripcion_periodo',
@@ -3734,8 +3697,8 @@ class LogisticaController extends Controller
                 'adm_prioridad.descripcion AS priori',
                 'adm_grupo.descripcion AS grupo',
                 'adm_area.descripcion AS area',
-                'proy_op_com.codigo as codigo_op_com',
-                'proy_op_com.descripcion as descripcion_op_com',
+                // 'proy_op_com.codigo as codigo_op_com',
+                // 'proy_op_com.descripcion as descripcion_op_com',
                 'alm_req.concepto AS alm_req_concepto',            
                 'alm_req.estado',
                 'adm_contri.razon_social',
@@ -3751,18 +3714,17 @@ class LogisticaController extends Controller
             $id_usu = $row->id_usuario;
             $grupo = $row->id_grupo;
             $area_id = $row->id_area;
-            $id_op_com = $row->id_op_com;
+            $id_op_com = null;
             $date = date('d/m/Y', strtotime($row->fecha_requerimiento));
             $id_periodo = $row->id_periodo;
             $descripcion_periodo = $row->descripcion_periodo;
             $moneda = $row->id_moneda;
-            $codigo_occ = $row->codigo_occ;
 
             $infoGrupo = $this->mostrar_nombre_grupo($grupo);
 
             if ($infoGrupo['descripcion'] == 'Proyectos') {
                 if ($id_op_com != null) {
-                    $destino = $row->descripcion_op_com;
+                    $destino = null;
                 } else {
                     $destino = $row->area . ' - GASTOS ADMINISTRATIVOS';
                 }
@@ -3804,7 +3766,7 @@ class LogisticaController extends Controller
                 if($destino == 'COMERCIAL'){
                     $html.='<tr>
                                 <th>OCC:</th>
-                                <td>' . $codigo_occ . '</td>
+                                <td></td>
                             </tr>';
                 }
 
@@ -3877,9 +3839,7 @@ class LogisticaController extends Controller
             $id_item = $det->id_item;
             $precio = $det->precio_referencial;
             $cant = $det->cantidad;
-            $obs = $det->obs;
             $id_part = $det->partida;
-            $fecha_entrega = $det->fecha_entrega;
             $unit = $det->unidad_medida_descripcion;
             $active = '';
 
@@ -3916,7 +3876,7 @@ class LogisticaController extends Controller
                     <td> ' . ($clave+1) . '</td>
                     <td>' . $name . '</td>
                     <td>' . $partida . '</td>
-                    <td>' . $fecha_entrega . '</td>
+                    <td></td>
                     <td>' . $unit . '</td>
                     <td class="text-right">' . number_format($cant, 3) . '</td>
                     <td class="text-right">' . number_format($precio, 2) . '</td>
@@ -3928,7 +3888,7 @@ class LogisticaController extends Controller
                     <td>' . $cont . '</td>
                     <td>' . $name . '</td>
                     <td>' . $partida . '</td>
-                    <td>' . $fecha_entrega . '</td>
+                    <td></td>
                     <td>' . ($unit ? $unit : $unidad) . '</td>
                     <td class="text-right">' . number_format($cant, 3) . '</td>
                     <td class="text-right">' . number_format($precio, 2) . '</td>
@@ -4689,6 +4649,7 @@ class LogisticaController extends Controller
 						// $email_destinatario[]= $this->get_email_usuario_por_rol('Coordinador', $id_sede, $id_empresa);
 						$email_destinatario[]= 'distribucion@okcomputer.com.pe'; 
 						$payload=[
+							'id_empresa'=>$id_empresa,
 							'email_destinatario'=>$email_destinatario,
 							'titulo'=>'Nuevo Requerimiento de Compra:  '.$codigo,
 							'mensaje'=>'Se Creo un nuevo requerimiento de compra: '.$codigo
@@ -7250,10 +7211,8 @@ function get_id_usuario_usuario_por_rol($descripcion_rol, $id_sede, $id_empresa)
                 'alm_det_req.id_item',
                 'alm_det_req.precio_referencial',
                 'alm_det_req.cantidad',
-                'alm_det_req.fecha_entrega',
                 'alm_det_req.lugar_entrega',
                 'alm_det_req.descripcion_adicional',
-                'alm_det_req.obs',
                 'alm_det_req.partida',
                 'alm_det_req.unidad_medida',
                 'alm_det_req.fecha_registro'
@@ -7294,7 +7253,6 @@ function get_id_usuario_usuario_por_rol($descripcion_rol, $id_sede, $id_empresa)
                     'cantidad' => intval($data->cantidad),
                     'cantidad_cotizada' => intval($data->cantidad_cotizada),
                     'precio_referencial'=>$data->precio_referencial,
-                    'fecha_entrega'=>$data->fecha_entrega,
                     'lugar_entrega'=>$data->lugar_entrega,
                     'id_unidad_medida' => $data->id_unidad_medida,
                     'unidad_medida_descripcion' => $data->unidad_medida_descripcion,
@@ -7546,7 +7504,6 @@ function get_id_usuario_usuario_por_rol($descripcion_rol, $id_sede, $id_empresa)
                         $reqReadyForCotList[$i]["fecha_requerimiento"]= $req[$j]->fecha_requerimiento;
                         $reqReadyForCotList[$i]["concepto"]= $req[$j]->concepto;
                         $reqReadyForCotList[$i]["id_grupo"]= $req[$j]->id_grupo; 
-                        $reqReadyForCotList[$i]["id_op_com"]= $req[$j]->id_op_com; 
                         $reqReadyForCotList[$i]["estado"]= $req[$j]->estado; 
                         $reqReadyForCotList[$i]["fecha_registro"]= $req[$j]->fecha_registro;
                         $reqReadyForCotList[$i]["id_area"]= $req[$j]->id_area; 
@@ -10380,7 +10337,6 @@ function get_id_usuario_usuario_por_rol($descripcion_rol, $id_sede, $id_empresa)
                 ELSE 'nulo' END) AS descripcion
                 "),
                 'alm_det_req.cantidad',
-                'alm_det_req.fecha_entrega',
                 DB::raw("(CASE 
                 WHEN alm_item.id_item isNUll THEN alm_und_medida.descripcion 
                 WHEN alm_item.id_servicio isNUll AND alm_item.id_equipo isNull THEN alm_und_medida.descripcion
@@ -10507,8 +10463,7 @@ function get_id_usuario_usuario_por_rol($descripcion_rol, $id_sede, $id_empresa)
                 'descripcion' => $data->descripcion,
                 'cantidad' => $data->cantidad,
                 'unidad_medida' => $data->unidad_medida,
-                'precio_referencial' => $data->precio_referencial,
-                'fecha_entrega' => $data->fecha_entrega
+                'precio_referencial' => $data->precio_referencial
             ];
         }
         // merge item with same quantity
@@ -11366,7 +11321,6 @@ function get_id_usuario_usuario_por_rol($descripcion_rol, $id_sede, $id_empresa)
         ->leftJoin('administracion.rol_aprobacion', 'alm_req.id_rol', '=', 'rol_aprobacion.id_rol_aprobacion')
         ->leftJoin('rrhh.rrhh_rol_concepto', 'rrhh_rol_concepto.id_rol_concepto', '=', 'rol_aprobacion.id_rol_concepto')
         ->leftJoin('administracion.adm_area', 'alm_req.id_area', '=', 'adm_area.id_area')
-        ->leftJoin('proyectos.proy_op_com', 'proy_op_com.id_op_com', '=', 'alm_req.id_op_com')
         ->leftJoin('administracion.adm_grupo', 'adm_grupo.id_grupo', '=', 'alm_req.id_grupo')
         ->leftJoin('administracion.adm_estado_doc', 'adm_estado_doc.id_estado_doc', '=', 'alm_req.estado')
 
@@ -11389,9 +11343,8 @@ function get_id_usuario_usuario_por_rol($descripcion_rol, $id_sede, $id_empresa)
             'rrhh_rol_concepto.descripcion AS rrhh_rol_concepto',
             'alm_req.id_grupo',
             'adm_grupo.descripcion AS adm_grupo_descripcion',
-            'alm_req.id_op_com',
-            'proy_op_com.codigo as codigo_op_com',
-            'proy_op_com.descripcion as descripcion_op_com',
+            // 'proy_op_com.codigo as codigo_op_com',
+            // 'proy_op_com.descripcion as descripcion_op_com',
             'alm_req.concepto AS alm_req_concepto',
             'alm_req.fecha_registro',
             'alm_req.id_prioridad',

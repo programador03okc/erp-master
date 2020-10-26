@@ -444,7 +444,7 @@ class CorreoController extends Controller
         $msg='';
         $ouput=[];
 
-        $smpt_setting = $this->get_smtp_authentication(1);
+        $smpt_setting = $this->get_smtp_authentication($payload['id_empresa']);
         if($smpt_setting['status'] =='success'){
             $smtpAddress = $smpt_setting['smtp_server'];
             $port = $smpt_setting['port'];
