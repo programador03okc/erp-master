@@ -280,6 +280,12 @@ function listarRequerimientosPendientes(permiso){
                     else if (row['estado'] == 10){
                         return 'Pendiente de que <strong>Distribución</strong> realice el Despacho Externo';
                     }
+                    else if (row['estado'] == 28){
+                        return 'Pendiente de que <strong>Distribución</strong> genere la Orden de Despacho';
+                    }
+                    else if (row['estado'] == 29){
+                        return 'Pendiente de que <strong>Almacén</strong> genere la Salida';
+                    }
                 }
             }
         ],
@@ -301,6 +307,7 @@ function listarRequerimientosPendientes(permiso){
                         // (row['estado'] == 19 && row['id_tipo_requerimiento'] == 1 && row['sede_requerimiento'] !== row['sede_orden'] && row['id_transferencia'] !== null && row['id_od'] == null) || //compra con transferencia
                         (row['estado'] == 19 && row['confirmacion_pago'] == true && /*row['id_od'] == null &&*/ row['count_transferencia'] == 0) || //venta directa
                         (row['estado'] == 10 && (row['codigo_od'] !== null && row['aplica_cambios'] == true)) ||
+                        (row['estado'] == 28) ||
                         (row['estado'] == 19 && row['confirmacion_pago'] == true && /*row['id_od'] == null &&*/ row['count_transferencia'] > 0 && row['count_transferencia'] == row['count_transferencia_recibida'])) ? //venta directa con transferencia
                             ('<button type="button" class="despacho btn btn-success boton" data-toggle="tooltip" '+
                             'data-placement="bottom" title="Generar Orden de Despacho" >'+

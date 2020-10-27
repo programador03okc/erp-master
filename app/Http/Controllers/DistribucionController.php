@@ -66,6 +66,11 @@ class DistribucionController extends Controller
                 $join->where('orden_despacho.estado','!=', 7);
             })
             ->where('alm_req.estado',17)
+            ->orWhere('alm_req.estado',10)
+            ->orWhere('alm_req.estado',29)
+            ->orWhere('alm_req.estado',27)
+            ->orWhere('alm_req.estado',28)
+            ->orWhere('alm_req.estado',22)
             ->orWhere([['alm_req.id_tipo_requerimiento','=',1], ['alm_req.estado','=',19], ['alm_req.confirmacion_pago','=',true]])
             ->orWhere([['alm_req.id_tipo_requerimiento','!=',1], ['alm_req.estado','=',19], ['orden_despacho.id_od','!=',null]])
                 ->count();
@@ -230,6 +235,8 @@ class DistribucionController extends Controller
             ->where('alm_req.estado',17)
             ->orWhere('alm_req.estado',10)
             ->orWhere('alm_req.estado',29)
+            ->orWhere('alm_req.estado',27)
+            ->orWhere('alm_req.estado',28)
             ->orWhere([['alm_req.id_tipo_requerimiento','=',1], ['alm_req.estado','=',19], ['alm_req.confirmacion_pago','=',true]])
             ->orWhere([['alm_req.id_tipo_requerimiento','!=',1], ['alm_req.estado','=',19], ['orden_despacho.id_od','!=',null]])
             ->orWhere([['alm_req.estado','=',22]])

@@ -27,7 +27,7 @@
                             <input type="date" class="form-control" name="fecha_emision" value="<?=date('Y-m-d');?>" required>
                         </div>
                         <div class="col-md-4">
-                            <h5>Fecha de Almacén</h5>
+                            <h5>Fecha de Ingreso</h5>
                             <input type="date" class="form-control" name="fecha_almacen" value="<?=date('Y-m-d');?>" required>
                         </div>
                     </div>

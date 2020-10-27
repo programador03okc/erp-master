@@ -162,7 +162,8 @@ class OrdenesPendientesController extends Controller
             ->leftjoin('almacen.alm_subcat', 'alm_subcat.id_subcategoria', '=', 'alm_prod.id_subcategoria')
             ->leftjoin('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'log_det_ord_compra.id_unidad_medida')
             ->whereIn('log_det_ord_compra.id_orden_compra',$ordenes)
-            ->where('log_det_ord_compra.estado',1)
+            ->where([['log_det_ord_compra.estado','!=',7],
+                    ['log_det_ord_compra.estado','!=',28]])
             ->get();
         
         $html = '';
@@ -184,6 +185,8 @@ class OrdenesPendientesController extends Controller
                 <td>'.$det->descripcion.'</td>
                 <td><input type="number" id="'.$det->id_detalle_orden.'cantidad" value="'.$cantidad.'" min="1" max="'.$cantidad.'" style="width:80px;"/></td>
                 <td>'.$det->abreviatura.'</td>
+                <td>'.$det->precio.'</td>
+                <td>'.$det->subtotal.'</td>
                 <td><input type="text" class="oculto" id="series" value="'.$det->series.'" data-partnumber="'.$det->part_number.'"/>';
                 if ($det->series == true) {
                     $html.='<i class="fas fa-bars icon-tabla boton" data-toggle="tooltip" data-placement="bottom" title="Agregar Series" onClick="agrega_series('.$det->id_detalle_orden.');"></i>';
@@ -433,9 +436,10 @@ class OrdenesPendientesController extends Controller
                         
                         $cantidad = 0;
                         $padres_oc = [];
+                        $padres_req = [];
     
                         foreach ($detalle as $det) {
-    
+
                             if (!in_array($det->id_orden_compra, $padres_oc)){
                                 array_push($padres_oc, $det->id_orden_compra);
                             }
@@ -505,11 +509,45 @@ class OrdenesPendientesController extends Controller
     
                             $suma = ($ant !== null ? $ant->suma_cantidad : 0);
     
+                            $dreq = DB::table('almacen.alm_det_req')
+                            ->where('id_detalle_requerimiento',$det->id_detalle_requerimiento)
+                            ->first();
+
+                            if (!in_array($dreq->id_requerimiento, $padres_req)){
+                                array_push($padres_req, $dreq->id_requerimiento);
+                            }
+
                             if ($det->cantidad == $suma){
                                 DB::table('logistica.log_det_ord_compra')
                                 ->where('id_detalle_orden',$det->id_detalle_orden)
-                                ->update(['estado' => 6]);//En Almacen
+                                ->update(['estado' => 28]);//Almacen Total
+                                
+                                $ant = DB::table('logistica.log_det_ord_compra')
+                                ->select(DB::raw('SUM(cantidad) AS suma_cantidad'))
+                                ->where([['id_detalle_requerimiento','=',$det->id_detalle_requerimiento],
+                                        ['estado','=',28]])
+                                ->first();
+
+                                if ($dreq->cantidad == $ant->suma_cantidad){
+                                    DB::table('almacen.alm_det_req')
+                                    ->where('id_detalle_requerimiento',$det->id_detalle_requerimiento)
+                                    ->update(['estado'=>28]);
+                                } else {
+                                    DB::table('almacen.alm_det_req')
+                                    ->where('id_detalle_requerimiento',$det->id_detalle_requerimiento)
+                                    ->update(['estado'=>27]);
+                                }
+
+                            } else {
+                                DB::table('logistica.log_det_ord_compra')
+                                    ->where('id_detalle_orden',$det->id_detalle_orden)
+                                    ->update(['estado' => 27]);//Almacen parcial
+
+                                DB::table('almacen.alm_det_req')
+                                    ->where('id_detalle_requerimiento',$det->id_detalle_requerimiento)
+                                    ->update(['estado' => 27]);
                             }
+
                         }
                         //vuelve a jalar para traer los ids guia_det
                         $nuevo_detalle = DB::table('logistica.log_det_ord_compra')
@@ -526,7 +564,7 @@ class OrdenesPendientesController extends Controller
                         foreach ($padres_oc as $padre){
                             $count_alm = DB::table('logistica.log_det_ord_compra')
                             ->where([['id_orden_compra','=',$padre],
-                                     ['estado','=',6]])
+                                     ['estado','=',28]])
                             ->count();
     
                             $count_todo = DB::table('logistica.log_det_ord_compra')
@@ -538,7 +576,13 @@ class OrdenesPendientesController extends Controller
                                 //cambiar orden En Almacen
                                 DB::table('logistica.log_ord_compra')
                                 ->where('id_orden_compra',$padre)
-                                ->update(['en_almacen'=>true]);
+                                ->update([  'en_almacen'=>true,
+                                            'estado'=>28,
+                                        ]);
+                            } else {
+                                DB::table('logistica.log_ord_compra')
+                                ->where('id_orden_compra',$padre)
+                                ->update([  'estado'=>27  ]);
                             }
                             //actualiza estado requerimiento reservado
                             $oc = DB::table('logistica.log_ord_compra')
@@ -635,6 +679,29 @@ class OrdenesPendientesController extends Controller
                                     'id_usuario'=>$id_usuario,
                                     'fecha_registro'=>$fecha_registro
                                     ]);
+                            }
+
+                            foreach ($padres_req as $padre){
+                                $count_alm = DB::table('almacen.alm_det_req')
+                                ->where([['id_requerimiento','=',$padre],
+                                         ['estado','=',28]])
+                                ->count();
+        
+                                $count_todo = DB::table('almacen.alm_det_req')
+                                ->where([['id_requerimiento','=',$padre],
+                                         ['estado','!=',7]])
+                                ->count();
+        
+                                if ($count_todo == $count_alm){
+                                    //cambiar orden En Almacen
+                                    DB::table('almacen.alm_req')
+                                    ->where('id_requerimiento',$padre)
+                                    ->update([  'estado'=>28  ]);
+                                } else {
+                                    DB::table('almacen.alm_req')
+                                    ->where('id_requerimiento',$padre)
+                                    ->update([  'estado'=>27  ]);
+                                }
                             }
                         }
                     }
@@ -936,11 +1003,12 @@ class OrdenesPendientesController extends Controller
                         //Quita estado de la orden
                         DB::table('logistica.log_det_ord_compra')
                         ->where('id_detalle_orden',$det->id_detalle_orden)
-                        ->update(['estado' => 1]);
+                        ->update(['estado' => 26]);
                         //Quita estado de la orden
                         DB::table('logistica.log_ord_compra')
                         ->where('id_orden_compra',$det->id_orden_compra)
-                        ->update(['en_almacen' => false]);
+                        ->update([  'en_almacen' => false,
+                                    'estado'=>26]);
 
                         DB::table('almacen.alm_det_req')
                         ->where('id_detalle_requerimiento',$det->id_detalle_requerimiento)
