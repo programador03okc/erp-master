@@ -33,7 +33,7 @@
                                         <option value="{{$cond->id_condicion_pago}}">{{$cond->descripcion}}</option>
                                     @endforeach
                                 </select>
-                                <input type="number" name="plazo_dias"  class="form-control activation group-elemento" style="text-align:right; width:50px; " />
+                                <input type="number" name="plazo_dias"  class="form-control activation group-elemento" style="text-align:right; width:50px; " disabled />
                                 <input type="text" value="días" class="form-control group-elemento" style="width:40px;text-align:center;" />
                             </div>
                         </div>

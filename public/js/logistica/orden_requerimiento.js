@@ -1934,3 +1934,16 @@ function handleChangeFilterReqBySede(e){
 
     
 }
+
+function handlechangeCondicion(event){
+    let condicion= document.querySelector("select[name='id_condicion']")
+    let text_condicion = condicion.options[condicion.selectedIndex].text;
+    if(text_condicion == 'Contado cash'){
+        document.getElementsByName('plazo_dias')[0].value = null;
+        document.getElementsByName('plazo_dias')[0].setAttribute('disabled','true');
+    }else if(text_condicion =='Crédito'){
+        document.getElementsByName('plazo_dias')[0].removeAttribute('disabled');
+
+    }
+
+}
