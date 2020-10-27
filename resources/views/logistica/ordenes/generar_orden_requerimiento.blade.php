@@ -161,7 +161,9 @@
             "{{route('logistica.gestion-logistica.orden.por-requerimiento.revertir')}}",
             "{{route('logistica.gestion-logistica.orden.por-requerimiento.actualizar-estado-orden')}}",
             "{{route('logistica.gestion-logistica.orden.por-requerimiento.actualizar-estado-detalle-orden')}}",
-            "{{route('logistica.gestion-logistica.orden.por-requerimiento.actualizar-estado-detalle-requerimiento')}}"
+            "{{route('logistica.gestion-logistica.orden.por-requerimiento.actualizar-estado-detalle-requerimiento')}}",
+            "{{route('logistica.gestion-logistica.cotizacion.gestionar.select-sede-by-empresa')}}"
+
             );
             tieneAccion('{{Auth::user()->tieneAccion(114)}}','{{Auth::user()->tieneAccion(115)}}');
     });

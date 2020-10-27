@@ -129,8 +129,21 @@ class OrdenController extends Controller
         return $sedes;
     }
 
-    public function listar_requerimientos_pendientes(){
-
+    public function listar_requerimientos_pendientes($id_empresa= null, $id_sede=null){
+        $firstCondition[]=[['alm_req.estado', '=', 1],['alm_req.confirmacion_pago','=',true],['alm_req.id_tipo_requerimiento', '=', 1]];
+        $secondCondition[]=[['alm_req.estado', '=', 1],['alm_req.id_tipo_requerimiento', '=', 1]];
+        $thirdCondition[]=[['alm_req.estado', '=', 23],['alm_req.id_tipo_requerimiento', '=', 1]];
+        if($id_empresa >0){
+            $firstCondition[0]=['alm_req.id_empresa','=',$id_empresa];
+            $secondCondition[0]=['alm_req.id_empresa','=',$id_empresa];
+            $thirdCondition[0]=['alm_req.id_empresa','=',$id_empresa];
+        }
+        if($id_sede >0){
+            $firstCondition[0]=['alm_req.id_sede','=',$id_sede];
+            $secondCondition[0]=['alm_req.id_sede','=',$id_sede];
+            $thirdCondition[0]=['alm_req.id_sede','=',$id_sede];
+        }
+ 
         $alm_req = DB::table('almacen.alm_req')
         ->join('almacen.alm_tp_req', 'alm_req.id_tipo_requerimiento', '=', 'alm_tp_req.id_tipo_requerimiento')
         ->join('almacen.tipo_cliente', 'tipo_cliente.id_tipo_cliente', '=', 'alm_req.tipo_cliente')
@@ -174,6 +187,7 @@ class OrdenController extends Controller
             'alm_req.id_prioridad',
             'alm_req.fecha_registro',
             'alm_req.estado',
+            'alm_req.id_empresa',
             'alm_req.id_sede',
             'sis_sede.descripcion as empresa_sede',
             'adm_estado_doc.estado_doc',
@@ -186,9 +200,9 @@ class OrdenController extends Controller
     // guia_com_oc.id_oc = log_ord_compra.id_orden_compra)::integer as cantidad_entrada_almacen")
 
         )
-        ->where([['alm_req.estado', '=', 1],['alm_req.confirmacion_pago','=',true],['alm_req.id_tipo_requerimiento', '=', 1]])
-        ->orWhere([['alm_req.estado', '=', 1],['alm_req.id_tipo_requerimiento', '=', 1]])
-        ->orWhere([['alm_req.estado', '=', 23],['alm_req.id_tipo_requerimiento', '=', 1]])
+        ->where($firstCondition)
+        ->orWhere($secondCondition)
+        ->orWhere($thirdCondition)
         ->orderBy('alm_req.id_requerimiento', 'desc')
         ->get();
 

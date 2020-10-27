@@ -710,7 +710,7 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::group(['as' => 'por-requerimiento.', 'prefix' => 'por-requerimiento'], function(){
 					Route::get('index', 'OrdenController@view_generar_orden_requerimiento')->name('index');
 					// generar oreden por requerimiento
-					Route::get('requerimientos-pendientes', 'OrdenController@listar_requerimientos_pendientes')->name('requerimientos-pendientes'); 
+					Route::get('requerimientos-pendientes/{id_empresa?}/{id_sede?}', 'OrdenController@listar_requerimientos_pendientes')->name('requerimientos-pendientes'); 
 					Route::get('ordenes-en-proceso', 'OrdenController@lista_ordenes_en_proceso')->name('ordenes-en-proceso'); 
 					Route::get('items-ordenes-en-proceso', 'OrdenController@lista_items_ordenes_en_proceso')->name('ordenes-en-proceso'); 
 					Route::post('detalle-requerimiento-orden', 'OrdenController@get_detalle_requerimiento_orden')->name('detalle-requerimiento-orden'); 

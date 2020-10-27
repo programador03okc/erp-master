@@ -571,15 +571,8 @@ function mostrar_requerimiento(IdorCode){
                 
                 $('[name=sede]').val(response['requerimiento'][0].id_sede);
                 $('[name=tipo_cliente]').val(response['requerimiento'][0].tipo_cliente);
-                $('[name=id_persona]').val(response['requerimiento'][0].id_persona);
-                $('[name=dni_persona]').val(response['requerimiento'][0].dni_persona);
-                $('[name=nombre_persona]').val(response['requerimiento'][0].nombre_persona);
-                $('[name=id_cliente]').val(response['requerimiento'][0].id_cliente);
-                $('[name=cliente_ruc]').val(response['requerimiento'][0].cliente_ruc);
-                $('[name=cliente_razon_social]').val(response['requerimiento'][0].cliente_razon_social);
-                $('[name=direccion_entrega]').val(response['requerimiento'][0].direccion_entrega);
-                $('[name=telefono_cliente]').val(response['requerimiento'][0].telefono);
-                $('[name=email_cliente]').val(response['requerimiento'][0].email);
+
+
                 $('[name=ubigeo]').val(response['requerimiento'][0].id_ubigeo_entrega);
                 $('[name=name_ubigeo]').val(response['requerimiento'][0].name_ubigeo);
                 $('[name=id_almacen]').val(response['requerimiento'][0].id_almacen);
@@ -597,6 +590,22 @@ function mostrar_requerimiento(IdorCode){
 
                 }
                 $('[name=cantidad_aprobaciones]').val(response['aprobaciones']);
+
+                changeTipoCliente(event,response['requerimiento'][0].tipo_cliente); //cambiar input para tipo cliente
+                $('[name=id_persona]').val(response['requerimiento'][0].id_persona);
+                $('[name=dni_persona]').val(response['requerimiento'][0].dni_persona);
+                $('[name=nombre_persona]').val(response['requerimiento'][0].nombre_persona);
+                $('[name=id_cliente]').val(response['requerimiento'][0].id_cliente);
+                $('[name=cliente_ruc]').val(response['requerimiento'][0].cliente_ruc);
+                $('[name=cliente_razon_social]').val(response['requerimiento'][0].cliente_razon_social);
+                $('[name=direccion_entrega]').val(response['requerimiento'][0].direccion_entrega);
+                $('[name=telefono_cliente]').val(response['requerimiento'][0].telefono);
+                $('[name=email_cliente]').val(response['requerimiento'][0].email);
+                $('[name=id_cuenta]').val(response['requerimiento'][0].id_cuenta);
+                $('[name=tipo_cuenta]').val(response['requerimiento'][0].id_tipo_cuenta);
+                $('[name=banco]').val(response['requerimiento'][0].id_banco);
+                $('[name=nro_cuenta]').val(response['requerimiento'][0].nro_cuenta);
+                $('[name=cci]').val(response['requerimiento'][0].nro_cuenta_interbancaria);
                 /* detalle */
                 var detalle_requerimiento = response['det_req'];
                 if(detalle_requerimiento.length === 0){
@@ -3079,8 +3088,13 @@ function stateFormRequerimiento(estilo){
 
 }
 
-function changeTipoCliente(e){
-    if (e.target.value == 1){ // persona natural
+function changeTipoCliente(e,id =null){
+    let option = e.target.value;
+    if(id >0){
+        option = id;
+    }
+
+    if (option == 1){ // persona natural
         limpiarFormRequerimiento()
         stateFormRequerimiento(1);
         document.querySelector("form[id='form-requerimiento'] input[name='cliente_ruc']").style.display ='none';
@@ -3089,7 +3103,7 @@ function changeTipoCliente(e){
         document.querySelector("form[id='form-requerimiento'] input[name='dni_persona']").style.display ='block';
 
     }
-    else if (e.target.value == 2){ // persona juridica
+    else if (option == 2){ // persona juridica
 
         document.querySelector("form[id='form-requerimiento'] input[name='cliente_ruc']").style.display ='block';
         document.querySelector("form[id='form-requerimiento'] input[name='cliente_razon_social']").style.display ='block';
@@ -3098,12 +3112,12 @@ function changeTipoCliente(e){
         limpiarFormRequerimiento()
         stateFormRequerimiento(1);
 
-    }else if(e.target.value == 3 ){ // uso almacen
+    }else if(option == 3 ){ // uso almacen
         limpiarFormRequerimiento()
         stateFormRequerimiento(2);
         listar_almacenes();
     
-    }else if(e.target.value == 4 ){ // uso administracinón
+    }else if(option == 4 ){ // uso administracinón
         limpiarFormRequerimiento()
         stateFormRequerimiento(1);
         
