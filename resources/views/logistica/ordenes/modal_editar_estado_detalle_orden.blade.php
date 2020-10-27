@@ -2,7 +2,7 @@
 <div class="modal fade" tabindex="-1" role="dialog" id="modal-editar-estado-detalle-orden">
     <div class="modal-dialog" style="width: 40%;">
         <div class="modal-content">
-            <form id="form-aprobacion_orden">
+            <form id="form-editar_estado_item_orden">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="close"><span aria-hidden="true">&times;</span></button>
                     <h3 class="modal-title">Editar Estado de Item <span name="codigo_item_orden_compra"></span></h3>

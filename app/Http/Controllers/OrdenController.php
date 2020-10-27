@@ -29,10 +29,14 @@ class OrdenController extends Controller
         $sedes = $this->select_sedes();
         $empresas = $this->select_mostrar_empresas();
         $tp_doc = $this->select_tp_doc();
-
+        $clasificaciones = (new AlmacenController)->mostrar_clasificaciones_cbo();
+        $subcategorias = (new AlmacenController)->mostrar_subcategorias_cbo();
+        $categorias = (new AlmacenController)->mostrar_categorias_cbo();
+        $unidades = (new AlmacenController)->mostrar_unidades_cbo();
+        
         // $sedes = Auth::user()->sedesAcceso();
 
-        return view('logistica/ordenes/generar_orden_requerimiento', compact('sedes','empresas','sis_identidad','tp_documento', 'tp_moneda','tp_doc','condiciones'));
+        return view('logistica/ordenes/generar_orden_requerimiento', compact('sedes','empresas','sis_identidad','tp_documento', 'tp_moneda','tp_doc','condiciones','clasificaciones','subcategorias','categorias','unidades'));
     }
 
     public function select_moneda(){

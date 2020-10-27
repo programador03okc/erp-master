@@ -4,7 +4,7 @@
             <form id="form-orden-requerimiento" type="register" form="formulario">
 
                 <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="close"><span aria-hidden="true">&times;</span></button>
+                <button type="button" class="close" data-dismiss="modal-orden-requerimiento" onClick="$('#modal-orden-requerimiento').modal('hide');"><span aria-hidden="true">&times;</span></button>
                     <h3 class="modal-title">Generar Orden <span id="codigo_requeriento_seleccionado"></span></h3>
                 </div>
                 <div class="modal-body">
