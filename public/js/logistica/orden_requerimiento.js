@@ -333,7 +333,16 @@ function listar_requerimientos_pendientes(permisoCrearOrdenPorRequerimiento,id_e
             {'data': 'concepto'},
             {'data': 'tipo_req_desc'},
             {'data': 'tipo_cliente_desc'},
-            {'data': 'id_cliente'},
+            { render: function (data, type, row) { 
+                let entidad = '';
+                if(row.id_cliente > 0){
+                    entidad = `${row.cliente_razon_social} RUC: ${row.cliente_ruc}`;
+                }else if(row.id_persona >0){
+                    entidad = `${row.nombre_persona}`;
+                }   
+                return entidad;
+                }
+            },
             {'data': 'empresa_sede'},
             {'data': 'usuario'},
             {'data': 'estado_doc'},

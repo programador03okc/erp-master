@@ -160,6 +160,9 @@ class OrdenController extends Controller
         // ->leftJoin('proyectos.proy_op_com', 'proy_op_com.id_op_com', '=', 'alm_req.id_op_com')
         ->leftJoin('administracion.adm_grupo', 'adm_grupo.id_grupo', '=', 'alm_req.id_grupo')
         ->leftJoin('administracion.sis_sede', 'sis_sede.id_sede', '=', 'alm_req.id_sede')
+        ->leftJoin('comercial.com_cliente', 'alm_req.id_cliente', '=', 'com_cliente.id_cliente')
+        ->leftJoin('contabilidad.adm_contri as contri_cliente', 'com_cliente.id_contribuyente', '=', 'contri_cliente.id_contribuyente')
+        ->leftJoin('rrhh.rrhh_perso as perso_natural', 'alm_req.id_persona', '=', 'perso_natural.id_persona')
 
         // ->leftJoin('logistica.log_detalle_grupo_cotizacion', 'log_detalle_grupo_cotizacion.id_requerimiento', '=', 'alm_req.id_requerimiento')
         // ->leftJoin('logistica.log_ord_compra', 'log_ord_compra.id_grupo_cotizacion', '=', 'log_detalle_grupo_cotizacion.id_grupo_cotizacion')
@@ -187,7 +190,11 @@ class OrdenController extends Controller
             'alm_req.concepto AS alm_req_concepto',
             // 'log_detalle_grupo_cotizacion.id_detalle_grupo_cotizacion',
             'alm_req.id_cliente',
+            'contri_cliente.nro_documento as cliente_ruc',
+            'contri_cliente.razon_social as cliente_razon_social',
             'alm_req.id_persona',
+            'perso_natural.nro_documento as dni_persona',
+            DB::raw("(perso_natural.nombres) || ' ' || (perso_natural.apellido_paterno) || ' ' || (perso_natural.apellido_materno)  AS nombre_persona"),
             'alm_req.id_prioridad',
             'alm_req.fecha_registro',
             'alm_req.estado',
