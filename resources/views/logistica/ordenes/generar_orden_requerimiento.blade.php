@@ -117,6 +117,14 @@
                                             <tbody></tbody>
                                         </table>
                                     </form>
+                                    <h6>Leyenda: Estados de Orden:</h6>
+                                    <span class="label label-info">Enviado</span>
+                                    <span class="label label-primary">Confirmada</span>
+                                    <span class="label label-danger">Facturada</span>
+                                    <span class="label label-primary">Despachado</span>
+                                    <span class="label label-warning">En Transito</span>
+                                    <span class="label label-danger">En Almacen Parcial</span>
+                                    <span class="label label-primary">En Almacen Total</span>
                                 </div>
                             </div>
                         </div>
