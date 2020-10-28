@@ -2824,9 +2824,9 @@ function createOptionTipoCliente(tipoRequerimiento){
         limpiarSelectTipoCliente();
         array =[
             {descripcion:'Persona Natural', valor: 1},
-            {descripcion:'Persona Juridica', valor: 2},
-            {descripcion:'Uso Almacen', valor: 3},
-            {descripcion:'Uso Administración', valor: 4}
+            {descripcion:'Persona Juridica', valor: 2}
+            // {descripcion:'Uso Almacen', valor: 3},
+            // {descripcion:'Uso Administración', valor: 4}
         ]
         array.forEach(element => {
             let option = document.createElement("option");

@@ -797,40 +797,40 @@ class LogisticaController extends Controller
                 $detalle_requerimiento = [];
             }
 
-            //get cotizaciones que tenga el requerimiento
-            $log_valorizacion_cotizacion = DB::table('logistica.log_valorizacion_cotizacion')
-                ->select(
-                    'log_valorizacion_cotizacion.id_cotizacion'
-                )
-                ->where(
-                    [
-                        ['log_valorizacion_cotizacion.id_requerimiento', '=', $id_requerimiento]
-                    ]
-                )
-                ->get();
+            // get cotizaciones que tenga el requerimiento
+            // $log_valorizacion_cotizacion = DB::table('logistica.log_valorizacion_cotizacion')
+            //     ->select(
+            //         'log_valorizacion_cotizacion.id_cotizacion'
+            //     )
+            //     ->where(
+            //         [
+            //             ['log_valorizacion_cotizacion.id_requerimiento', '=', $id_requerimiento]
+            //         ]
+            //     )
+            //     ->get();
 
             $cotizaciones = [];
-            foreach ($log_valorizacion_cotizacion as $data) {
-                if (in_array($data->id_cotizacion, $cotizaciones) === false) {
-                    array_push($cotizaciones, $data->id_cotizacion);
-                }
-            }
+            // foreach ($log_valorizacion_cotizacion as $data) {
+            //     if (in_array($data->id_cotizacion, $cotizaciones) === false) {
+            //         array_push($cotizaciones, $data->id_cotizacion);
+            //     }
+            // }
             ////////////////////////////////////////////
 
             // get detalle grupo cot.
-            $log_detalle_grupo_cotizacion = DB::table('logistica.log_detalle_grupo_cotizacion')
-                ->select(
-                    'log_detalle_grupo_cotizacion.id_grupo_cotizacion'
-                )
-                ->whereIn('log_detalle_grupo_cotizacion.id_cotizacion', $cotizaciones)
-                ->get();
-        }
+        //     $log_detalle_grupo_cotizacion = DB::table('logistica.log_detalle_grupo_cotizacion')
+        //         ->select(
+        //             'log_detalle_grupo_cotizacion.id_grupo_cotizacion'
+        //         )
+        //         ->whereIn('log_detalle_grupo_cotizacion.id_cotizacion', $cotizaciones)
+        //         ->get();
+        // }
         $grupo_cotizacion = [];
-        foreach ($log_detalle_grupo_cotizacion as $data) {
-            if (in_array($data->id_grupo_cotizacion, $grupo_cotizacion) === false) {
-                array_push($grupo_cotizacion, $data->id_grupo_cotizacion);
-            }
-        }
+        // foreach ($log_detalle_grupo_cotizacion as $data) {
+        //     if (in_array($data->id_grupo_cotizacion, $grupo_cotizacion) === false) {
+        //         array_push($grupo_cotizacion, $data->id_grupo_cotizacion);
+        //     }
+        // }
 
         $estado_req = $this->consult_estado($id_requerimiento);
         $req_observacion = [];
@@ -4694,9 +4694,9 @@ class LogisticaController extends Controller
         ->leftJoin('administracion.sis_sede', 'sis_sede.id_sede', '=', 'sis_usua_sede.id_sede')
         ->leftJoin('administracion.adm_empresa', 'adm_empresa.id_empresa', '=', 'sis_sede.id_empresa')
         ->leftJoin('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'sis_acceso.id_usuario')
-        ->leftJoin('rrhh.rrhh_trab', 'rrhh_trab.id_trabajador', '=', 'sis_usua.id_trabajador')
-        ->leftJoin('rrhh.rrhh_postu', 'rrhh_postu.id_postulante', '=', 'rrhh_trab.id_postulante')
-        ->leftJoin('rrhh.rrhh_perso', 'rrhh_perso.id_persona', '=', 'rrhh_postu.id_persona')
+        // ->leftJoin('rrhh.rrhh_trab', 'rrhh_trab.id_trabajador', '=', 'sis_usua.id_trabajador')
+        // ->leftJoin('rrhh.rrhh_postu', 'rrhh_postu.id_postulante', '=', 'rrhh_trab.id_postulante')
+        // ->leftJoin('rrhh.rrhh_perso', 'rrhh_perso.id_persona', '=', 'rrhh_postu.id_persona')
  
         ->where([
             ['sis_acceso.id_rol', '=', $id_rol]
