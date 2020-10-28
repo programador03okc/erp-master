@@ -214,7 +214,7 @@ $('#requerimientosConfirmados tbody').on("click","button.despacho", function(){
 
 function listarRequerimientosPendientes(permiso){
     var vardataTables = funcDatatables();
-    $('#requerimientosPendientes').DataTable({
+    $('#requerimientosEnProceso').DataTable({
         'dom': vardataTables[1],
         'buttons': vardataTables[2],
         'language' : vardataTables[0],
@@ -252,9 +252,8 @@ function listarRequerimientosPendientes(permiso){
                 }
             },
             {'render': function (data, type, row){
-                return (row['codigo_od'] !== null ? (row['aplica_cambios'] ? 
-                    '<span class="label label-danger">'+row['codigo_od']+'</span>' : 
-                    '<span class="label label-primary">'+row['codigo_od']+'</span>') : '')
+                return  (row['count_despachos_internos'] > 0 ? ('<span class="label label-danger">'+row['count_despachos_internos']+' </span>') : '')+
+                        (row['codigo_od'] !== null ? ('<span class="label label-primary">'+row['codigo_od']+'</span>') : '');
                 }
             },
             {'data': 'fecha_despacho', 'name': 'orden_despacho.fecha_despacho'},
@@ -306,7 +305,7 @@ function listarRequerimientosPendientes(permiso){
                         //     (row['estado'] == 19 && row['id_tipo_requerimiento'] == 1 && row['sede_requerimiento'] == row['sede_orden'] && row['id_od'] == null) || //compra 
                         // (row['estado'] == 19 && row['id_tipo_requerimiento'] == 1 && row['sede_requerimiento'] !== row['sede_orden'] && row['id_transferencia'] !== null && row['id_od'] == null) || //compra con transferencia
                         (row['estado'] == 19 && row['confirmacion_pago'] == true && /*row['id_od'] == null &&*/ row['count_transferencia'] == 0) || //venta directa
-                        (row['estado'] == 10 && (row['codigo_od'] !== null && row['aplica_cambios'] == true)) ||
+                        (row['estado'] == 10) ||
                         (row['estado'] == 28) ||
                         (row['estado'] == 19 && row['confirmacion_pago'] == true && /*row['id_od'] == null &&*/ row['count_transferencia'] > 0 && row['count_transferencia'] == row['count_transferencia_recibida'])) ? //venta directa con transferencia
                             ('<button type="button" class="despacho btn btn-success boton" data-toggle="tooltip" '+
@@ -335,18 +334,18 @@ function listarRequerimientosPendientes(permiso){
    
 }
 
-$('#requerimientosPendientes tbody').on("click","button.detalle", function(){
-    var data = $('#requerimientosPendientes').DataTable().row($(this).parents("tr")).data();
+$('#requerimientosEnProceso tbody').on("click","button.detalle", function(){
+    var data = $('#requerimientosEnProceso').DataTable().row($(this).parents("tr")).data();
     console.log(data);
     open_detalle_requerimiento(data);
 });
 
-$('#requerimientosPendientes tbody').on("click","button.detalle_trans", function(){
+$('#requerimientosEnProceso tbody').on("click","button.detalle_trans", function(){
     var id = $(this).data('id');
     open_detalle_transferencia(id);
 });
 
-$('#requerimientosPendientes tbody').on("click","button.adjuntar", function(){
+$('#requerimientosEnProceso tbody').on("click","button.adjuntar", function(){
     var id = $(this).data('id');
     var cod = $(this).data('cod');
     $('#modal-despachoAdjuntos').modal({
@@ -357,21 +356,21 @@ $('#requerimientosPendientes tbody').on("click","button.adjuntar", function(){
     $('[name=codigo_od]').val(cod);
 });
 
-$('#requerimientosPendientes tbody').on("click","button.anular", function(){
+$('#requerimientosEnProceso tbody').on("click","button.anular", function(){
     var id = $(this).data('id');
     var cod = $(this).data('cod');
     var origen = 'despacho';
     openRequerimientoObs(id, cod, origen);
 });
 
-$('#requerimientosPendientes tbody').on("click","button.despacho", function(){
-    var data = $('#requerimientosPendientes').DataTable().row($(this).parents("tr")).data();
+$('#requerimientosEnProceso tbody').on("click","button.despacho", function(){
+    var data = $('#requerimientosEnProceso').DataTable().row($(this).parents("tr")).data();
     console.log(data);
     tab_origen = 'enProceso';
     open_despacho_create(data);
 });
 
-$('#requerimientosPendientes tbody').on("click","button.anular_od", function(){
+$('#requerimientosEnProceso tbody').on("click","button.anular_od", function(){
     var id = $(this).data('id');
     var cod = $(this).data('cod');
     var msj = confirm('¿Está seguro que desea anular la '+cod+' ?');
@@ -388,7 +387,7 @@ function anularOrdenDespacho(id){
         success: function(response){
             console.log(response);
             if (response > 0){
-                $('#requerimientosPendientes').DataTable().ajax.reload();
+                $('#requerimientosEnProceso').DataTable().ajax.reload();
                 actualizaCantidadDespachosTabs();
             }
         }

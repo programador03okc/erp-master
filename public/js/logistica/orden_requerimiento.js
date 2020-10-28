@@ -38,7 +38,7 @@ function inicializar(
     rutaActualizarEstadoDetalleRequerimiento = _rutaActualizarEstadoDetalleRequerimiento;
     rutaSedeByEmpresa = _rutaSedeByEmpresa;
 
-    let defaultIdEmpresa = 1
+    let defaultIdEmpresa = 4
     document.getElementById('id_empresa_select_req').value = defaultIdEmpresa // default select filter 1 = okc
 }
 

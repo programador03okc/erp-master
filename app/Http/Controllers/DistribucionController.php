@@ -63,6 +63,7 @@ class DistribucionController extends Controller
         $count_en_proceso = DB::table('almacen.alm_req')
             ->leftJoin('almacen.orden_despacho', function($join){   
                 $join->on('orden_despacho.id_requerimiento', '=', 'alm_req.id_requerimiento');
+                $join->where('orden_despacho.aplica_cambios', '=', false);
                 $join->where('orden_despacho.estado','!=', 7);
             })
             ->where('alm_req.estado',17)
@@ -181,6 +182,10 @@ class DistribucionController extends Controller
             'sis_sede.descripcion as sede_descripcion_orden','sede_req.descripcion as sede_descripcion_req',
             'orden_despacho.id_od','orden_despacho.codigo as codigo_od','orden_despacho.estado as estado_od',
             'orden_despacho.aplica_cambios',
+            DB::raw("(SELECT COUNT(*) FROM almacen.orden_despacho where
+                    orden_despacho.id_requerimiento = alm_req.id_requerimiento
+                    and orden_despacho.aplica_cambios = true
+                    and orden_despacho.estado != 7) AS count_despachos_internos"),
             'orden_despacho.fecha_despacho','orden_despacho.hora_despacho','alm_tp_req.descripcion as tipo_req',
             DB::raw("(rrhh_perso.nombres) || ' ' || (rrhh_perso.apellido_paterno) || ' ' || (rrhh_perso.apellido_materno) AS nombre_persona"),
                     'adm_contri.nro_documento as cliente_ruc','adm_contri.razon_social as cliente_razon_social',
@@ -223,6 +228,7 @@ class DistribucionController extends Controller
             ->leftJoin('contabilidad.adm_contri','adm_contri.id_contribuyente','=','com_cliente.id_contribuyente')
             ->leftJoin('almacen.orden_despacho', function($join)
                          {  $join->on('orden_despacho.id_requerimiento', '=', 'alm_req.id_requerimiento');
+                            $join->where('orden_despacho.aplica_cambios', '=', false);
                             $join->where('orden_despacho.estado','!=', 7);
                          })
             // ->leftJoin('almacen.trans as trans_directo', function($join)
@@ -816,6 +822,7 @@ class DistribucionController extends Controller
         
         Saludos,
         Módulo de Logística y Almacenes
+        Sistema ERP
         ';
             
                 $contenido_facturacion = '

@@ -93,7 +93,7 @@ Panel de Control de Despachos
                     <div class="row">
                         <div class="col-md-12">
                             <table class="mytable table table-condensed table-bordered table-okc-view" 
-                                id="requerimientosPendientes">
+                                id="requerimientosEnProceso">
                                 <thead>
                                     <tr>
                                         <th hidden></th>
