@@ -38,7 +38,7 @@ function inicializar(
     rutaActualizarEstadoDetalleRequerimiento = _rutaActualizarEstadoDetalleRequerimiento;
     rutaSedeByEmpresa = _rutaSedeByEmpresa;
 
-    let defaultIdEmpresa = 4
+    let defaultIdEmpresa = 1
     document.getElementById('id_empresa_select_req').value = defaultIdEmpresa // default select filter 1 = okc
 }
 
@@ -455,14 +455,11 @@ function fillEstados(id_estado_actual){
     // console.log(id_estado_actual);
     let html ='';
     let estados = [
-            {'17':'ENVIADA'},
-            {'14':'RECEPCIONADA'},
-            {'26':'POR DESPACHAR'},
-            {'22':'EN TRANSITO'},
-            {'23':'OC ATENDIDA PARCIAL'},
-            {'5':'OC ATENDIDA TOTAL'},
-            {'24':'CONFIRMADA ALMACEN PARCIAL'},
-            {'25':'CONFIRMADA ALMACEN TOTAL'}
+            {'17':'ENVIADO'},
+            {'30':'CONFIRMADA'},
+            {'31':'FACTURADA'},
+            {'20':'DESPACHADO'},
+            {'22':'EN TRANSITO'}
     ];
 
 

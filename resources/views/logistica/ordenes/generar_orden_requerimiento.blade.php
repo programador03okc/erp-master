@@ -38,7 +38,11 @@
                                                     <select class="form-control" id="id_empresa_select_req" onChange="handleChangeFilterReqByEmpresa(event);">
                                                             <option value="0" disabled>Elija una opción</option>
                                                             @foreach ($empresas as $emp)
+                                                                @if($emp->razon_social == 'OK COMPUTER')
+                                                                <option value="{{$emp->id_empresa}}" data-url-logo="{{$emp->logo_empresa}}" selected>{{$emp->razon_social}}</option>
+                                                                @else
                                                                 <option value="{{$emp->id_empresa}}" data-url-logo="{{$emp->logo_empresa}}">{{$emp->razon_social}}</option>
+                                                                @endif
                                                             @endforeach
                                                         </select>
                                                     </div>
@@ -113,6 +117,14 @@
                                             <tbody></tbody>
                                         </table>
                                     </form>
+                                    <h6>Leyenda: Estados de Orden:</h6>
+                                    <span class="label label-info">Enviado</span>
+                                    <span class="label label-primary">Confirmada</span>
+                                    <span class="label label-danger">Facturada</span>
+                                    <span class="label label-primary">Despachado</span>
+                                    <span class="label label-warning">En Transito</span>
+                                    <span class="label label-danger">En Almacen Parcial</span>
+                                    <span class="label label-primary">En Almacen Total</span>
                                 </div>
                             </div>
                         </div>
