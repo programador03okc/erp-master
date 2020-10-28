@@ -38,7 +38,11 @@
                                                     <select class="form-control" id="id_empresa_select_req" onChange="handleChangeFilterReqByEmpresa(event);">
                                                             <option value="0" disabled>Elija una opción</option>
                                                             @foreach ($empresas as $emp)
+                                                                @if($emp->razon_social == 'OK COMPUTER')
+                                                                <option value="{{$emp->id_empresa}}" data-url-logo="{{$emp->logo_empresa}}" selected>{{$emp->razon_social}}</option>
+                                                                @else
                                                                 <option value="{{$emp->id_empresa}}" data-url-logo="{{$emp->logo_empresa}}">{{$emp->razon_social}}</option>
+                                                                @endif
                                                             @endforeach
                                                         </select>
                                                     </div>
