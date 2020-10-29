@@ -95,7 +95,7 @@ function listar_ordenes_propias(){
                 let containerCloseBrackets='</div></center>';
                 // let btnEditar='<button type="button" class="btn btn-sm btn-log bg-primary" title="Ver o editar" onClick="editarListaReq(' +row['id_requerimiento']+ ');"><i class="fas fa-edit fa-xs"></i></button>';
                 // let btnDetalleRapido='<button type="button" class="btn btn-default" title="Ver OC Fisica" onclick="location.href='+row['url_oc_fisica']+';"><i class="fas fa-eye fa-xs"></i></button>';
-                let btnVerOrdenElectronica='<a class="btn btn-info btn-sm" title="O/C electrónica" href="'+row['url_oc_fisica']+'" target="_blank"><i class="far fa-file-pdf"></i></a>';
+                let btnVerOrdenElectronica='<a class="btn btn-info btn-sm" title="O/C electrónica" href="https://apps1.perucompras.gob.pe//OrdenCompra/obtenerPdfOrdenPublico?ID_OrdenCompra='+row['id']+'&ImprimirCompleto=1" target="_blank"><i class="far fa-file-pdf"></i></a>';
                 let btnVerOrdenFisica='<a class="btn btn-default btn-sm" title="O/C escaneada" href="'+row['url_oc_fisica']+'" target="_blank"><i class="far fa-file-alt"></i></a>';
                 let btnGenerarRequerimiento='<button type="button" class="btn btn-sm btn-log bg-maroon" title="Generar Requerimiento" onClick=""><i class="fas fa-registered"></i></button>';
                 return containerOpenBrackets+btnVerOrdenElectronica+btnVerOrdenFisica+btnGenerarRequerimiento+containerCloseBrackets;
