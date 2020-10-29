@@ -3,6 +3,7 @@ rutaGetIdEmpresa,
 rutaSedeByEmpresa,
 rutaGrupoBySede,
 rutaVerFlujos,
+rutaListaOrdenesPropias,
 rutaExplorarRequerimiento;
 
 function inicializarRutasListado(
@@ -11,7 +12,8 @@ function inicializarRutasListado(
     _rutaSedeByEmpresa,
     _rutaGrupoBySede,
     _rutaVerFlujos,
-    _rutaExplorarRequerimiento
+    _rutaExplorarRequerimiento,
+    _rutaListaOrdenesPropias
     ) {
     
     rutaListaElaborados = _rutaListaElaborados;
@@ -20,7 +22,9 @@ function inicializarRutasListado(
     rutaGrupoBySede = _rutaGrupoBySede;
     rutaVerFlujos = _rutaVerFlujos;
     rutaExplorarRequerimiento = _rutaExplorarRequerimiento;
-    
+    rutaListaOrdenesPropias = _rutaListaOrdenesPropias;
+
+    listar_ordenes_propias();
     listar_requerimientos_elaborados('OK COMPUTER');
 
 }
@@ -51,6 +55,73 @@ $(function(){
 
 
 });
+
+ 
+
+function listar_ordenes_propias(){
+    let id_empresa = document.querySelector("form[id='form-ordenesPropias'] select[id='id_empresa_select']").value;
+    $('#ListaOrdenesPropias').DataTable({
+        'processing': true,
+        'serverSide': true,
+        'bDestroy': true,
+        // bInfo:     false,
+        'paging':   true,
+        'searching': true,
+        'bLengthChange': false,
+
+        'iDisplayLength':50,
+        'ajax': {
+            // url:'/logistica/requerimiento/lista/'+id_empresa+'/'+id_sede+'/'+id_grupo,
+            url:rutaListaOrdenesPropias+'/'+id_empresa,
+            type:'GET',
+            data: {_token: "{{csrf_token()}}"}
+        },
+        'columns':[
+            {'render': function (data, type, row){
+                return `${row['orden_am']}`;
+                }
+            },
+            {'data':'empresa', 'name':'empresa'},
+            {'data':'am', 'name':'am'},
+            {'data':'entidad', 'name':'entidad'},
+            {'data':'fecha_publicacion', 'name':'fecha_publicacion'},
+            {'data':'estado_oc', 'name':'estado_oc'},
+            {'data':'fecha_estado', 'name':'fecha_estado'},
+            {'data':'estado_entrega', 'name':'estado_entrega'},
+            {'data':'fecha_entrega', 'name':'fecha_entrega'},
+            {'data':'monto_total', 'name':'monto_total'},
+            {'render': function (data, type, row){
+                let containerOpenBrackets='<center><div class="btn-group" role="group" style="margin-bottom: 5px;">';
+                let containerCloseBrackets='</div></center>';
+                // let btnEditar='<button type="button" class="btn btn-sm btn-log bg-primary" title="Ver o editar" onClick="editarListaReq(' +row['id_requerimiento']+ ');"><i class="fas fa-edit fa-xs"></i></button>';
+                // let btnDetalleRapido='<button type="button" class="btn btn-default" title="Ver OC Fisica" onclick="location.href='+row['url_oc_fisica']+';"><i class="fas fa-eye fa-xs"></i></button>';
+                let btnVerOrdenElectronica='<a class="btn btn-info btn-sm" title="O/C electrónica" href="'+row['url_oc_fisica']+'" target="_blank"><i class="far fa-file-pdf"></i></a>';
+                let btnVerOrdenFisica='<a class="btn btn-default btn-sm" title="O/C escaneada" href="'+row['url_oc_fisica']+'" target="_blank"><i class="far fa-file-alt"></i></a>';
+                let btnGenerarRequerimiento='<button type="button" class="btn btn-sm btn-log bg-maroon" title="Generar Requerimiento" onClick=""><i class="fas fa-registered"></i></button>';
+                return containerOpenBrackets+btnVerOrdenElectronica+btnVerOrdenFisica+btnGenerarRequerimiento+containerCloseBrackets;
+                }
+            },
+        ],
+        'order': [
+            [4, 'desc']
+        ]
+    });
+
+    $('#ListaOrdenesPropias').DataTable().on("draw", function(){
+        resizeSide();
+    });
+
+    let ListaOrdenesPropias_wrapper = document.getElementById(
+        'ListaOrdenesPropias_wrapper'
+    )
+    ListaOrdenesPropias_wrapper.childNodes[0].childNodes[0].hidden = true;
+
+    let ListaOrdenesPropias_filter = document.getElementById(
+        'ListaOrdenesPropias_filter'
+    )
+    ListaOrdenesPropias_filter.children[0].children[0].style.width = '95%'; 
+
+}
 
 function listar_requerimientos_elaborados(name){  
     let data={nombre:name};

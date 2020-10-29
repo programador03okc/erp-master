@@ -662,10 +662,11 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::get('ver-flujos/{req?}/{doc?}', 'LogisticaController@flujo_aprobacion')->name('ver-flujos');
 					Route::get('explorar-requerimiento/{id_requerimiento?}', 'LogisticaController@explorar_requerimiento')->name('explorar-requerimiento');
 					Route::get('elaborados/{empresa?}/{sede?}/{grupo?}', 'LogisticaController@listar_requerimientos_elaborados')->name('elaborados');
-
+					
 					Route::get('pendiente-aprobacion', 'RequerimientoController@requerimientos_pendientes_aprobacion')->name('pendientes-aprobacion');
 					Route::post('aprobar-documento', 'AprobacionController@aprobar_documento')->name('aprobar-documento');
-
+					
+					Route::get('lista-ordenes-propias/{empresa?}', 'RequerimientoController@lista_ordenes_propias')->name('lista-ordenes-propias');
 				});
 			});
 			

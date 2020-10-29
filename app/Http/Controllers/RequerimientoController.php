@@ -593,5 +593,24 @@ class RequerimientoController extends Controller
         return json_encode($payload);
     }
 
+
+    function lista_ordenes_propias($id_empresa){
+        $oc_propias = DB::table('mgcp_acuerdo_marco.oc_propias')
+        ->select(
+            'oc_propias.*',
+            'empresas.empresa',
+            'acuerdo_marco.descripcion_corta as am',
+            'entidades.nombre as entidad'
+            )
+        ->leftJoin('mgcp_acuerdo_marco.empresas', 'empresas.id', '=', 'oc_propias.id_empresa')
+        ->leftJoin('mgcp_acuerdo_marco.entidades', 'entidades.id', '=', 'oc_propias.id_entidad')
+        ->leftJoin('mgcp_acuerdo_marco.catalogos', 'catalogos.id', '=', 'oc_propias.id_catalogo')
+        ->leftJoin('mgcp_acuerdo_marco.acuerdo_marco', 'acuerdo_marco.id', '=', 'catalogos.id_acuerdo_marco')
+        ->orderBy('oc_propias.fecha_publicacion', 'desc')
+        ->get();
+
+        return datatables($oc_propias)->toJson();
+
+    }
     
 }
