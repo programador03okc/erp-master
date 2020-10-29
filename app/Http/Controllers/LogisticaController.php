@@ -33,8 +33,8 @@ class LogisticaController extends Controller
     {
         $roles = $this->userSession()['roles'];
         $empresas = $this->select_mostrar_empresas();
-
-        return view('logistica/requerimientos/lista_requerimientos', compact('roles','empresas'));
+        $empresas_am =  $this->select_mostrar_empresas_am();
+        return view('logistica/requerimientos/lista_requerimientos', compact('roles','empresas','empresas_am'));
     }
 
     function view_gestionar_requerimiento()
@@ -294,6 +294,16 @@ class LogisticaController extends Controller
             ->get();
         return $data;
     }
+
+    public function select_mostrar_empresas_am()
+    {
+        $empresas = DB::table('mgcp_acuerdo_marco.empresas')
+            ->select('empresas.*')
+            ->orderBy('empresas.id', 'asc')
+            ->get();
+        return $empresas;
+    }
+
     public function select_bancos()
     {
         $data = DB::table('contabilidad.cont_banco')
