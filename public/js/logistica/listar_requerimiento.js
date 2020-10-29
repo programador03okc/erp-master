@@ -121,6 +121,9 @@ function listar_ordenes_propias(){
     )
     ListaOrdenesPropias_filter.children[0].children[0].style.width = '95%'; 
 
+    document.querySelector("table[id='ListaOrdenesPropias']").tHead.style.fontSize = '11px',
+    document.querySelector("table[id='ListaOrdenesPropias']").tBodies[0].style.fontSize = '11px';
+
 }
 
 function listar_requerimientos_elaborados(name){  
