@@ -959,13 +959,17 @@ class DistribucionController extends Controller
 
             $requerimiento = null;
 
-            if ($request->guias_adicionales !== null){
+            if ($request->agencia !== null){
                 DB::table('almacen.orden_despacho')
                 ->where('id_od',$request->id_od)
                 ->update([
                     'estado'=>25, 
-                    'guias_adicionales'=>$request->guias_adicionales,
-                    'importe_total'=>$request->importe_total
+                    'agencia'=>$request->agencia,
+                    'serie'=>$request->serie,
+                    'numero'=>$request->numero,
+                    'fecha_transportista'=>$request->fecha_transportista,
+                    'codigo_envio'=>$request->codigo_envio,
+                    'importe_flete'=>$request->importe_flete
                     ]);
                 $requerimiento = $request->con_id_requerimiento;
             } else {

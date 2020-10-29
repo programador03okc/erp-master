@@ -226,7 +226,7 @@ Panel de Control de Despachos
 @include('almacen.distribucion.grupoDespachoCreate')
 @include('almacen.distribucion.despachoDetalle')
 @include('almacen.distribucion.grupoDespachoDetalle')
-@include('almacen.distribucion.ordenDespachoConfirmacion')
+@include('almacen.distribucion.ordenDespachoTransportista')
 @include('almacen.distribucion.ordenDespachoObs')
 @include('almacen.distribucion.requerimientoObs')
 @include('almacen.distribucion.ordenDespachoAdjuntos')
