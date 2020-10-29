@@ -5,12 +5,18 @@
                 <button type="button" class="close" data-dismiss="modal" 
                 aria-label="close"><span aria-hidden="true">&times;</span></button>
                 <div style="display:flex;">
-                    <h3 class="modal-title">Archivos Adjuntos</h3>
+                    <h3 class="modal-title">Adjuntos en la Orden Despacho</h3>
                 </div>
             </div>
             <div class="modal-body">
-                <div class="row">
-                    <form id="form-od_adjunto"  enctype="multipart/form-data" method="post">
+                <form id="form-od_adjunto"  enctype="multipart/form-data" method="post">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <label>Observación:</label>
+                            <input type="text" name="observacion" class="form-control"/>
+                        </div>
+                    </div>
+                    <div class="row">
                         <input type="text" class="oculto" name="id_od_adjunto"/>
                         <input type="text" class="oculto" name="id_od"/>
                         <input type="text" class="oculto" name="codigo_od"/>
@@ -24,8 +30,8 @@
                         <div class="col-md-2">
                             <input type="submit" style="height:32px; margin-top:23px;" class="btn btn-success boton" value="Agregar"/>
                         </div>
-                    </form>
-                </div>
+                    </div>
+                </form>
                 <div class="row">
                     <div class="col-md-12">
                         <table class="mytable table table-condensed table-bordered table-okc-view" width="100%" 

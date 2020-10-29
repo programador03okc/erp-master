@@ -671,13 +671,19 @@ $('#gruposDespachados tbody').on("click","button.conforme", function(){
     var mov = $(this).data('mov');
 
     if (mov !== 'Cliente Recoge en Oficina'){
-        $('#modal-orden_despacho_confirmacion').modal({
+        $('#modal-orden_despacho_transportista').modal({
             show: true
         });
         $('[name=id_od]').val(id_od);
         $('[name=con_id_requerimiento]').val(id_req);
         $('[name=id_od_grupo_detalle]').val(id_od_grupo_detalle);
-        $('#submit_od_confirmacion').removeAttr("disabled");
+        $('[name=agencia]').val('');
+        $('[name=serie]').val('');
+        $('[name=numero]').val('');
+        $('[name=fecha_transportista]').val('');
+        $('[name=codigo_envio]').val('');
+        $('[name=importe_flete]').val('');
+        $('#submit_od_transportista').removeAttr("disabled");
     }
     else {
         var rspta = confirm('¿Está seguro que desea dar Conformidad de Entrega al '+cod_req+' '+concepto+'?');
@@ -692,13 +698,13 @@ $('#gruposDespachados tbody').on("click","button.conforme", function(){
     }
 });
 
-$("#form-orden_despacho_confirmacion").on("submit", function(e){
+$("#form-orden_despacho_transportista").on("submit", function(e){
     e.preventDefault();
     var data = $(this).serialize();
     console.log(data);
-    $('#submit_od_confirmacion').attr('disabled','true');
+    $('#submit_od_transportista').attr('disabled','true');
     despacho_conforme(data);
-    $('#modal-orden_despacho_confirmacion').modal('hide');
+    $('#modal-orden_despacho_transportista').modal('hide');
 });
 
 $('#gruposDespachados tbody').on("click","button.no_conforme", function(){
