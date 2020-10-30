@@ -612,10 +612,10 @@ function listarGruposDespachados(permiso){
                             data-placement="bottom" data-id="${row['id_od']}" data-cod="${row['codigo_od']}" title="Adjuntar Boleta/Factura" >
                             <i class="fas fa-paperclip"></i></button>`+
                         ((row['confirmacion'] == false && row['estado_od'] == 20)? 
-                        ('<button type="button" class="conforme btn btn-success boton" data-toggle="tooltip" '+
+                        ('<button type="button" class="transportista btn btn-success boton" data-toggle="tooltip" '+
                         'data-placement="bottom" data-id="'+row['id_od_grupo_detalle']+'" data-od="'+row['id_od']+'" data-idreq="'+row['id_requerimiento']+'" data-cod-req="'+row['codigo_req']+'" data-concepto="'+row['concepto']+'" data-mov="'+row['mov_entrega']+'" title="Agregar Datos del Transportista" >'+
                         '<i class="fas fa-shuttle-van"></i></button>'+
-                        '<button type="button" class="no_conforme btn btn-danger boton" data-toggle="tooltip" '+
+                        '<button type="button" class="revertir btn btn-danger boton" data-toggle="tooltip" '+
                         'data-placement="bottom" data-id="'+row['id_od_grupo_detalle']+'" data-od="'+row['id_od']+'" data-idreq="'+row['id_requerimiento']+'" data-cod-req="'+row['codigo_req']+'" data-concepto="'+row['concepto']+'" title="Revertir" >'+
                         '<i class="fas fa-backspace"></i></button>') : ''));
                     } else {
@@ -662,7 +662,7 @@ function openDespacho(id_od_grupo){
     window.open('imprimir_despacho/'+id);
 }
 
-$('#gruposDespachados tbody').on("click","button.conforme", function(){
+$('#gruposDespachados tbody').on("click","button.transportista", function(){
     var id_od_grupo_detalle = $(this).data('id');
     var id_od = $(this).data('od');
     var id_req = $(this).data('idreq');
@@ -690,9 +690,7 @@ $('#gruposDespachados tbody').on("click","button.conforme", function(){
         if (rspta){
             var data = 'id_od_grupo_detalle='+id_od_grupo_detalle+
                        '&id_od='+id_od+
-                       '&id_requerimiento='+id_req+
-                       '&guias_adicionales='+
-                       '&importe_total=';
+                       '&id_requerimiento='+id_req;
             despacho_conforme(data);
         }
     }
@@ -703,32 +701,40 @@ $("#form-orden_despacho_transportista").on("submit", function(e){
     var data = $(this).serialize();
     console.log(data);
     $('#submit_od_transportista').attr('disabled','true');
-    despacho_conforme(data);
+    despacho_transportista(data);
     $('#modal-orden_despacho_transportista').modal('hide');
 });
 
-$('#gruposDespachados tbody').on("click","button.no_conforme", function(){
+$('#gruposDespachados tbody').on("click","button.revertir", function(){
     var id_od_grupo_detalle = $(this).data('id');
     var id_od = $(this).data('od');
     var id_req = $(this).data('idreq');
     var cod_req = $(this).data('codReq');
     var concepto = $(this).data('concepto');
 
-    $('#modal-despacho_obs').modal({
-        show: true
-    });
+    var data = 'id_od_grupo_detalle='+id_od_grupo_detalle+
+                '&id_od='+id_od+
+                '&id_requerimiento='+id_req;
 
-    $('[name=obs_id_od_grupo_detalle]').val(id_od_grupo_detalle);
-    $('[name=obs_id_od]').val(id_od);
-    $('[name=obs_id_requerimiento]').val(id_req);
-    $("#codigo_odg").text(cod_req +' - '+concepto+' - '+"No Entregado");
-    $("#btnDespachoObs").removeAttr("disabled");
+    var rspta = confirm('¿Está seguro que desea revertir el '+cod_req+' '+concepto+'?');
+    if (rspta){
+        despacho_revertir_despacho(data);
+    }
+    // $('#modal-despacho_obs').modal({
+    //     show: true
+    // });
+
+    // $('[name=obs_id_od_grupo_detalle]').val(id_od_grupo_detalle);
+    // $('[name=obs_id_od]').val(id_od);
+    // $('[name=obs_id_requerimiento]').val(id_req);
+    // $("#codigo_odg").text(cod_req +' - '+concepto+' - '+"No Entregado");
+    // $("#btnDespachoObs").removeAttr("disabled");
 });
 
-function despacho_conforme(data){
+function despacho_transportista(data){
     $.ajax({
         type: 'POST',
-        url: 'despacho_conforme',
+        url: 'despacho_transportista',
         data: data,
         dataType: 'JSON',
         success: function(response){
@@ -745,26 +751,16 @@ function despacho_conforme(data){
     });
 }
 
-function despacho_no_conforme(){
-    var idg = $('[name=obs_id_od_grupo_detalle]').val();
-    var ido = $('[name=obs_id_od]').val();
-    var obs = $('[name=obs_confirmacion]').val();
-    var idr = $('[name=obs_id_requerimiento]').val();
-    $('#btnDespachoObs').attr('disabled','true');
-
-    var data = 'id_od_grupo_detalle='+idg+
-               '&id_od='+ido+
-               '&id_requerimiento='+idr+
-               '&obs_confirmacion='+obs;
+function despacho_revertir_despacho(data){
     $.ajax({
         type: 'POST',
-        url: 'despacho_no_conforme',
+        url: 'despacho_revertir_despacho',
         data: data,
         dataType: 'JSON',
         success: function(response){
             console.log(response);
             if (response > 0){
-                $('#modal-despacho_obs').modal('hide');
+                // $('#modal-despacho_obs').modal('hide');
                 $('#gruposDespachados').DataTable().ajax.reload();
                 actualizaCantidadDespachosTabs();
             }
@@ -883,8 +879,14 @@ function listarGruposDespachadosPendientesCargo(permiso){
                         // 'data-placement="bottom" title="Ver Detalle" >'+
                         // '<i class="fas fa-list-ul"></i></button>'+
                         return `<button type="button" class="adjuntar btn btn-warning boton" data-toggle="tooltip" 
-                            data-placement="bottom" data-id="${row['id_od']}" data-cod="${row['codigo_od']}" title="Adjuntar Boleta/Factura" >
-                            <i class="fas fa-paperclip"></i></button>`;
+                            data-placement="bottom" data-id="${row['id_od']}" data-cod="${row['codigo_od']}" title="Agregar Comentarios" >
+                            <i class="fas fa-comment-dots"></i></button>
+                            <button type="button" class="conforme btn btn-success boton" data-toggle="tooltip" 
+                            data-placement="bottom" data-id="${row['id_od_grupo_detalle']}" data-od="${row['id_od']}" data-idreq="${row['id_requerimiento']}" data-cod-req="${row['codigo_req']}" data-concepto="${row['concepto']}" title="Confirmar Entrega" >
+                            <i class="fas fa-check"></i></button>
+                            <button type="button" class="no_conforme btn btn-danger boton" data-toggle="tooltip" 
+                            data-placement="bottom" data-id="${row['id_od_grupo_detalle']}" data-od="${row['id_od']}" data-idreq="${row['id_requerimiento']}" data-cod-req="${row['codigo_req']}" data-concepto="${row['concepto']}" title="Revertir" >
+                            <i class="fas fa-backspace"></i></button>`;
                     }
                 }
             },
@@ -907,3 +909,77 @@ $('#pendientesRetornoCargo tbody').on("click","button.adjuntar", function(){
     $('[name=id_od]').val(id);
     $('[name=codigo_od]').val(cod);
 });
+
+$('#pendientesRetornoCargo tbody').on("click","button.conforme", function(){
+    var id_od_grupo_detalle = $(this).data('id');
+    var id_od = $(this).data('od');
+    var id_req = $(this).data('idreq');
+    var cod_req = $(this).data('codReq');
+    var concepto = $(this).data('concepto');
+    
+    var rspta = confirm('¿Está seguro de confirmar la Entrega del '+cod_req+' '+concepto);
+
+    if (rspta){
+        var data =  'id_od_grupo_detalle='+id_od_grupo_detalle+
+                    '&id_od='+id_od+
+                    '&id_requerimiento='+id_req;
+        despacho_conforme(data);
+    }
+});
+
+$('#pendientesRetornoCargo tbody').on("click","button.no_conforme", function(){
+    var id_od_grupo_detalle = $(this).data('id');
+    var id_od = $(this).data('od');
+    var id_req = $(this).data('idreq');
+    var cod_req = $(this).data('codReq');
+    var concepto = $(this).data('concepto');
+
+    var rspta = confirm('¿Está seguro que desea revertir el '+cod_req+' '+concepto);
+
+    if (rspta){
+        var data =  'id_od_grupo_detalle='+id_od_grupo_detalle+
+                    '&id_od='+id_od+
+                    '&id_requerimiento='+id_req;
+        despacho_no_conforme(data);
+    }
+});
+
+function despacho_conforme(data){
+    $.ajax({
+        type: 'POST',
+        url: 'despacho_conforme',
+        data: data,
+        dataType: 'JSON',
+        success: function(response){
+            console.log(response);
+            if (response > 0){
+                $('#pendientesRetornoCargo').DataTable().ajax.reload();
+                actualizaCantidadDespachosTabs();
+            }
+        }
+    }).fail( function( jqXHR, textStatus, errorThrown ){
+        console.log(jqXHR);
+        console.log(textStatus);
+        console.log(errorThrown);
+    });
+}
+
+function despacho_no_conforme(data){
+    $.ajax({
+        type: 'POST',
+        url: 'despacho_no_conforme',
+        data: data,
+        dataType: 'JSON',
+        success: function(response){
+            console.log(response);
+            if (response > 0){
+                $('#pendientesRetornoCargo').DataTable().ajax.reload();
+                actualizaCantidadDespachosTabs();
+            }
+        }
+    }).fail( function( jqXHR, textStatus, errorThrown ){
+        console.log(jqXHR);
+        console.log(textStatus);
+        console.log(errorThrown);
+    });
+}

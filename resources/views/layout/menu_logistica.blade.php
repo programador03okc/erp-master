@@ -148,7 +148,7 @@
         </ul>
     </li>
     @endif
-    @if(Auth::user()->tieneSubModulo(19))
+    <!-- @if(Auth::user()->tieneSubModulo(19))
     <li class="treeview">
         <a href="#"><i class="fas fa-hand-holding-usd"></i> <span> Pagos</span>
             <span class="pull-right-container">
@@ -161,7 +161,7 @@
             @endif
         </ul>
     </li>
-    @endif
+    @endif -->
     @if(Auth::user()->tieneSubModulo(20))
     <li class="treeview">
         <a href="#"><i class="fas fa-truck"></i> <span> Distribución</span>

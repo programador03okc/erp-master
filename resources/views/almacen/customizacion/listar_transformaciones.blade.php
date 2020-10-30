@@ -66,8 +66,10 @@ Gestión de Customizaciones
                                             <tr>
                                                 <th hidden></th>
                                                 <th>Fecha Registro</th>
-                                                <th>Fecha Transf.</th>
                                                 <th>Código</th>
+                                                <th>Fecha Entrega</th>
+                                                <th>Fecha Inicio</th>
+                                                <th>Fecha Proceso</th>
                                                 <th>Cuadro Costos</th>
                                                 <th>Almacén</th>
                                                 <th>Responsable</th>
