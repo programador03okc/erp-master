@@ -50,8 +50,12 @@ class LogisticaController extends Controller
         $sis_identidad = $this->select_sis_identidad();
         $bancos = $this->select_bancos();
         $tipos_cuenta = $this->select_tipos_cuenta();
+        $clasificaciones = (new AlmacenController)->mostrar_clasificaciones_cbo();
+        $subcategorias = (new AlmacenController)->mostrar_subcategorias_cbo();
+        $categorias = (new AlmacenController)->mostrar_categorias_cbo();
+        $unidades = (new AlmacenController)->mostrar_unidades_cbo();
 
-        return view('logistica/requerimientos/gestionar_requerimiento', compact('sis_identidad','tipo_requerimiento','monedas', 'prioridades', 'empresas', 'unidades_medida','roles','periodos','bancos','tipos_cuenta'));
+        return view('logistica/requerimientos/gestionar_requerimiento', compact('sis_identidad','tipo_requerimiento','monedas', 'prioridades', 'empresas', 'unidades_medida','roles','periodos','bancos','tipos_cuenta','clasificaciones','subcategorias','categorias','unidades'));
     }
 
     function view_gestionar_cotizaciones()

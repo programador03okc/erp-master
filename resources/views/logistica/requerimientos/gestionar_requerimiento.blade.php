@@ -407,6 +407,7 @@
 @include('logistica.requerimientos.modal_adjuntar_archivos_detalle_requerimiento')
 @include('logistica.requerimientos.modal_historial_requerimiento')
 @include('logistica.requerimientos.modal_catalogo_items')
+@include('logistica.requerimientos.modal_crear_nuevo_producto')
 @include('almacen.producto.saldosModal')
 @include('logistica.requerimientos.modal_detalle_requerimiento')
 @include('logistica.requerimientos.modal_partidas')
@@ -437,6 +438,7 @@
     <script src="{{ asset('js/publico/hiddenElement.js')}}"></script>
     <script src="{{ asset('js/logistica/clienteModal.js')}}"></script>
     <script src="{{ asset('js/logistica/add_cliente.js')}}"></script>
+    <script src="{{ asset('js/logistica/crear_nuevo_producto.js')}}"></script>
     <script src="{{ asset('js/almacen/producto/saldosModal.js')}}"></script>
     <script src="{{ asset('js/publico/consulta_sunat.js')}}"></script>
     <script src="{{ asset('template/plugins/moment.min.js') }}"></script>

@@ -1868,7 +1868,7 @@ function listarItems() {
         // 'buttons': vardataTables[2],
         // "dom": '<"toolbar">frtip',
 
-        'scrollY':        '50vh',
+        'scrollY': '30vh',
         'scrollCollapse': true,
         'language' : vardataTables[0],
         'processing': true,
@@ -2045,13 +2045,13 @@ function listarSaldosProducto(id_producto){
     });
 }
 
-function crearProducto(){
-// Abrir nuevo tab
-let url ="/logistica/almacen/catalogos/productos/index";
-var win = window.open(url, '_blank');
-// Cambiar el foco al nuevo tab (punto opcional)
-win.focus();
-}
+// function crearProducto(){
+// // Abrir nuevo tab
+// let url ="/logistica/almacen/catalogos/productos/index";
+// var win = window.open(url, '_blank');
+// // Cambiar el foco al nuevo tab (punto opcional)
+// win.focus();
+// }
 
 function controlUnidadMedida(){
     var id_tipo_item = document.getElementsByName("id_tipo_item")[0].value;    

@@ -143,7 +143,7 @@
 @include('logistica.ordenes.ordenesModal')
 @include('logistica.requerimientos.modal_catalogo_items')
 @include('logistica.requerimientos.modal_vincular_item_requerimiento')
-@include('logistica.ordenes.modal_crear_nuevo_producto')
+@include('logistica.requerimientos.modal_crear_nuevo_producto')
 @endsection
 
 @section('scripts')
