@@ -601,6 +601,7 @@ class RequerimientoController extends Controller
             'empresas.empresa',
             'acuerdo_marco.descripcion_corta as am',
             'entidades.nombre as entidad',
+            'cc.id as id_cc',
             'cc.estado_aprobacion as id_estado_aprobacion_cc',
             'estados_aprobacion.estado as estado_aprobacion_cc'
             )

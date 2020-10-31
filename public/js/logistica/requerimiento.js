@@ -56,6 +56,318 @@ function inicializar( _rutaLista,
                 changeStateButton('historial');
             }
 
+            var ordenP_Cuadroc = JSON.parse(sessionStorage.getItem('ordenP_Cuadroc'));
+            if(ordenP_Cuadroc !== null && ordenP_Cuadroc.hasOwnProperty('id_orden_propia') && ordenP_Cuadroc.hasOwnProperty('id_cc')){
+                controlBtnVerDetalleCC('mostrar');
+                console.log(ordenP_Cuadroc);
+                let payload= getDataCuadroCostos();
+                fillDataCuadroCostosInReq(payload);
+            }else{
+                console.log('ordenP_Cuadroc vacio');
+            }
+
+}
+function controlBtnVerDetalleCC(estado){
+    let inputs =document.querySelectorAll("button[name='btnVerDetalleCuadroCostos']");
+    let size = inputs.length;
+    if(estado =='mostrar'){
+        for (let index = 0; index < size; index++) {
+            console.log(inputs[index]);
+            inputs[index].style.display='inline-block';
+        }
+    }
+    if(estado =='ocultar'){
+        for (let index = 0; index < size; index++) {
+            inputs[index].style.display='none';
+        }
+    }
+
+}
+function getDataCuadroCostos(){
+    let payload ={
+        'orden_compra':{
+            'nro_oc':'OCAM-2020-853-38-0',
+            'empresa':'Smart Value',
+            'id_empresa':'3',
+            'entidad':'GOBIERNO REGIONAL DE LA LIBERTAD-SALUD UTES OTUZCO',
+            'fecha_publicacion':'2020-10-28', //28-10-2020
+            'fecha_entrega':'2020-11-09', //09-11-2020
+            'lugar_entraga':'CALLE PROGRESO N° 385 - OTUZCO',
+        },
+        'cuadro_costos':{
+            'id_cc':'2180',
+            'nro_cc':'OKC2010193',
+            'estado':'Aprobado - etapa de compras',
+            'entidad':{
+                'detalle':{
+                    'dni_ruc':'20354537096',
+                    'entidad':'GOBIERNO REGIONAL DE LA LIBERTAD-SALUD UTES OTUZCO',
+                    'direccion':'CALLE PROGRESO Nº 385',
+                    'ubigeo':'OTUZCO / OTUZCO / LA LIBERTAD',
+                    'semaforo':'color rojo',
+                },
+                'responsable':{
+                    'nombre':'JOSE ANTONIO DE LA CRUZ AVALOS',
+                    'cargo':'JEFE DE ALMACEN',
+                    'telefono':'942037246',
+                    'correo':'josefino1974@hotmail.com'
+                },
+                'contacto':{
+                    'nombre':'',
+                    'cargo':'',
+                    'correo':'',
+                    'comentario':'',
+                    'telefono':''
+                }, 
+                
+            },
+            'bienes_para_servicio':'-S/0.00', 
+            'gastos_generales':'-S/0.00', 
+            'ganancia_real':'S/645.61', 
+            'margen_ganancia':'21.39%', 
+            'monto_adjudicado_inc_IGV':'S/3,561.50',
+            'detalle':[
+                {
+                    'id':1,
+                    'part_number':'ONPGG',
+                    'descripcion':'LAPTOP DEL LATITUDE 3410, CORE i5, 8GB, 1TB - ETIQUETAR CON P/N:&nbsp;0PTL341-31612SS3-H',
+                    'pvu_oc_sin_igv':'3,018.22',
+                    'flete_oc_sin_igv':'0.00',
+                    'cantidad':'1',
+                    'garantia_meses':'36',
+                    'origen_costo':'Mayoris. exclus.',
+                    'proveedor_seleccionado':'OK COMPUTER',
+                    'costos_unitario_sin_igv':'$442.00',
+                    'plazo_entrega_proveedor':'1',
+                    'flete_sin_igv':'S/80.00',
+                    'fondo_proveedor':'S/00.00',
+                    'costo_compra_dolares':'$442.00',
+                    'costo_compra_soles':'S/1,594.29',
+                    'total_flete_proveedor':'S/80.00',
+                    'costo_compra_mas_flete':'S/1,674.29',
+                    'monto_adjudicado':'S/3,018.22',
+                    'garantia':'S/1,343.93'
+                },
+                {
+                    'id':2,
+                    'part_number':'',
+                    'descripcion':'GYGABYTE 512GB M.2 NVME PCIE GEN 3.0 X4 - PARA CAMBIAR CON EL DE 1TB Y PASAR SU INFO',
+                    'pvu_oc_sin_igv':'0.00',
+                    'flete_oc_sin_igv':'1',
+                    'cantidad':'0',
+                    'garantia_meses':'0',
+                    'origen_costo':'Mayoris. exclus.',
+                    'proveedor_seleccionado':'OK COMPUTER',
+                    'costos_unitario_sin_igv':'$57.29',
+                    'plazo_entrega_proveedor':'1',
+                    'flete_sin_igv':'S/0.00',
+                    'fondo_proveedor':'S/0.00',
+                    'costo_compra_dolares':'$57.29',
+                    'costo_compra_soles':'S/206.65',
+                    'total_flete_proveedor':'S/0.00',
+                    'costo_compra_mas_flete':'S/206.65',
+                    'monto_adjudicado':'S/0.00',
+                    'garantia':'S/-206.65'
+                },
+                {
+                    'id':3,
+                    'part_number':'CT8G4SFRA266',
+                    'descripcion':'Crucial 8GB DDR4 2666 MHZ SODIMM- PARA AUMENTAR A 16GB',
+                    'pvu_oc_sin_igv':'0.00',
+                    'flete_oc_sin_igv':'0.00',
+                    'cantidad':'1',
+                    'garantia_meses':'0',
+                    'origen_costo':'Mayoris. exclus.',
+                    'proveedor_seleccionado':'OK COMPUTER',
+                    'costos_unitario_sin_igv':'$26.70',
+                    'plazo_entrega_proveedor':'1',
+                    'flete_sin_igv':'0.00',
+                    'fondo_proveedor':'0.00',
+                    'costo_compra_dolares':'$26.70',
+                    'costo_compra_soles':'S/96.31',
+                    'total_flete_proveedor':'S/0.00',
+                    'costo_compra_mas_flete':'S/96.31',
+                    'monto_adjudicado':'S/0.00',
+                    'garantia':'S/-96.31'
+                },
+                {
+                    'id':4,
+                    'part_number':'KW9-00142',
+                    'descripcion':'Sistema Operativo Microsoft Windows Home 10, 64 bits, español, 1pk, DSP OEI DVD - PARA INSTALAR EN LA LAPTOP',
+                    'pvu_oc_sin_igv':'0.00',
+                    'flete_oc_sin_igv':'0.00',
+                    'cantidad':'1',
+                    'garantia_meses':'0',
+                    'origen_costo':'Mayoris. exclus.',
+                    'proveedor_seleccionado':'GRUPO DELTRON S.A.',
+                    'costos_unitario_sin_igv':'$109.61',
+                    'plazo_entrega_proveedor':'1',
+                    'flete_sin_igv':'S/0.00',
+                    'fondo_proveedor':'S/0.00',
+                    'costo_compra_dolares':'$109.61',
+                    'costo_compra_soles':'S/395.36',
+                    'total_flete_proveedor':'S/0.00',
+                    'costo_compra_mas_flete':'S/395.36',
+                    'monto_adjudicado':'S/0.00',
+                    'garantia':'S/-395.36'
+                }
+            ]
+        }
+    };
+    return payload;
+}
+
+function fillDataCuadroCostosInReq(payload){
+    // changeStateButton('nuevo');
+    changeStateInput('form-requerimiento', false);
+    changeStateButton('nuevo');
+    nuevo_req();
+    document.querySelector("select[name='tipo_requerimiento']").value =1;
+    document.querySelector("input[name='concepto']").value =payload.cuadro_costos.nro_cc;
+    document.querySelector("select[name='periodo']").value =1;
+    document.querySelector("select[name='prioridad']").value =1;
+    document.querySelector("select[id='empresa']").value =payload.orden_compra.id_empresa;
+    document.querySelector("select[name='sede']").value ='';
+    document.querySelector("select[name='moneda']").value =1;
+    document.querySelector("textarea[name='observacion']").value ='Lugar de Entrega: '+payload.orden_compra.lugar_entraga;
+    document.querySelector("input[name='name_ubigeo']").value ='';
+    document.querySelector("input[name='monto']").value =payload.cuadro_costos.monto_adjudicado_inc_IGV;
+    document.querySelector("input[name='fecha_entrega']").value =payload.orden_compra.fecha_entrega;
+    document.querySelector("select[name='tipo_cliente']").value =2;
+    changeTipoCliente(event,2); //cambiar input para tipo cliente
+    document.querySelector("input[name='cliente_ruc']").value =payload.cuadro_costos.entidad.detalle.dni_ruc;
+    document.querySelector("input[name='cliente_razon_social']").value =payload.cuadro_costos.entidad.detalle.entidad;
+    document.querySelector("input[name='direccion_entrega']").value =payload.cuadro_costos.entidad.detalle.direccion;
+    document.querySelector("input[name='telefono_cliente']").value =payload.cuadro_costos.entidad.responsable.telefono;
+    document.querySelector("input[name='email_cliente']").value =payload.cuadro_costos.entidad.responsable.correo;
+
+    mostrarDetalleCuadroCostos(payload);
+
+
+}
+
+function mostrarDetalleCuadroCostos(payload){
+
+
+    var dataTableListaDetalleCuadroCostos =  $('#ListaDetalleCuadroCostos').DataTable({
+        'processing': false,
+        'serverSide': false,
+        'bDestroy': true,
+        'bInfo':     false,
+        'dom': 'Bfrtip',
+        'paging':   false,
+        'searching': false,
+        'data':payload.cuadro_costos.detalle,
+        'columns':[
+            {'data':'part_number'},
+            {'render': function (data, type, row){
+                return `${row['descripcion']}`;
+                }
+            },
+            {'data':'pvu_oc_sin_igv'},
+            {'data':'flete_oc_sin_igv'},
+            {'data':'cantidad'},
+            {'data':'garantia_meses'},
+            {'data':'origen_costo'},
+            {'data':'proveedor_seleccionado'},
+            {'data':'costos_unitario_sin_igv'},
+            {'data':'plazo_entrega_proveedor'},
+            {'data':'flete_sin_igv'},
+            {'data':'fondo_proveedor'},
+            {'data':'costo_compra_dolares'},
+            {'data':'costo_compra_soles'},
+            {'data':'total_flete_proveedor'},
+            {'data':'costo_compra_mas_flete'},
+            {'data':'monto_adjudicado'},
+            {'data':'garantia'}
+        ]
+    });
+
+    document.querySelector("table[id='ListaDetalleCuadroCostos']").tHead.style.fontSize = '11px',
+    document.querySelector("table[id='ListaDetalleCuadroCostos']").tBodies[0].style.fontSize = '11px';
+    dataTableListaDetalleCuadroCostos.buttons().destroy();
+    document.querySelector("table[id='ListaDetalleCuadroCostos'] thead").style.backgroundColor ="#5d4d6d";
+    $('#ListaDetalleCuadroCostos tr').css('cursor','default');
+
+
+}
+
+function verDetalleCuadroCostos(){
+    $('#modal-detalle_cuadro_costos').modal({
+        show: true,
+        backdrop: 'true'
+    });
+
+    listarDetalleCuadroCostosConAccion();
+}
+
+function listarDetalleCuadroCostosConAccion(){
+    
+    let payload = getDataCuadroCostos();
+
+
+    var dataTableListaDetalleCuadroCostosConAccion =  $('#listaDetalleCuadroCostosConAccion').DataTable({
+        'processing': true,
+        "paging":         false,
+        'serverSide': false,
+        'bDestroy': true,
+        'bInfo':     false,
+        'dom': 'Bfrtip',
+        'searching': false,
+        'responsive': true,
+
+        'data':payload.cuadro_costos.detalle,
+        'columns':[
+            {'data':'part_number'},
+            {'render': function (data, type, row){
+                return `${row['descripcion']}`;
+                }
+            },
+            {'data':'pvu_oc_sin_igv'},
+            {'data':'flete_oc_sin_igv'},
+            {'data':'cantidad'},
+            {'data':'garantia_meses'},
+            {'data':'origen_costo'},
+            {'data':'proveedor_seleccionado'},
+            {'data':'costos_unitario_sin_igv'},
+            {'data':'plazo_entrega_proveedor'},
+            {'data':'flete_sin_igv'},
+            {'data':'fondo_proveedor'},
+            {'data':'costo_compra_dolares'},
+            {'data':'costo_compra_soles'},
+            {'data':'total_flete_proveedor'},
+            {'data':'costo_compra_mas_flete'},
+            {'data':'monto_adjudicado'},
+            {'data':'garantia'},
+            {'render': function (data, type, row){
+                return `<button class="btn btn-sm btn-info" onclick="copiarPegarItemDetalleCuadroCostos(${row['id']});" title="Copiar y Pegar"><i class="fas fa-paste"></i></button>`;
+                }
+            }
+        ]
+    });
+
+    document.querySelector("table[id='listaDetalleCuadroCostosConAccion']").tHead.style.fontSize = '11px',
+    document.querySelector("table[id='listaDetalleCuadroCostosConAccion']").tBodies[0].style.fontSize = '11px';
+    document.querySelector("table[id='listaDetalleCuadroCostosConAccion'] thead").style.backgroundColor ="#5d4d6d";
+
+    dataTableListaDetalleCuadroCostosConAccion.buttons().destroy();
+    $('#listaDetalleCuadroCostosConAccion tr').css('cursor','default');
+}
+
+function copiarPegarItemDetalleCuadroCostos(id_detalle_cc){
+    $('#modal-detalle_cuadro_costos').modal('hide');
+    console.log(id_detalle_cc);
+    let detalle_cc= getDataCuadroCostos().cuadro_costos.detalle;
+    let detalle_cc_selected='';
+    detalle_cc.forEach(element => {
+        if(element.id == id_detalle_cc){
+            detalle_cc_selected= element;
+        }
+    });
+    document.querySelector("div[id='modal-catalogo-items'] input[type='search']").value= detalle_cc_selected.descripcion;
+    document.querySelector("div[id='modal-crear-nuevo-producto'] input[name='part_number']").value= detalle_cc_selected.part_number;
+    document.querySelector("div[id='modal-crear-nuevo-producto'] input[name='descripcion']").value= detalle_cc_selected.descripcion;
+
 }
 
 function isNumberKey(evt){
@@ -1754,7 +2066,9 @@ function limpiarTabla(idElement){
 }
 
 // modal catalogo items
-function catalogoItemsModal(){   
+function catalogoItemsModal(){  
+    $('#modal-detalle-requerimiento').modal('hide');
+ 
     var tipo_requerimiento = $('[name=tipo_requerimiento]').val();
     var tipo_cliente = $('[name=tipo_cliente]').val();
     if (tipo_requerimiento == 1 ){
@@ -1913,7 +2227,11 @@ function listarItems() {
         'listaItems_wrapper'
     )
     tablelistaitem.childNodes[0].childNodes[0].hidden = true;
-
+    
+    let listaItems_filter = document.getElementById(
+        'listaItems_filter'
+    )
+    listaItems_filter.querySelector("input[type='search']").style.width='100%';
 }
 
 var getSaldosPorAlmacen = function() {
@@ -3089,7 +3407,7 @@ function stateFormRequerimiento(estilo){
 }
 
 function changeTipoCliente(e,id =null){
-    let option = e.target.value;
+    let option = e?e.target.value:null;
     if(id >0){
         option = id;
     }

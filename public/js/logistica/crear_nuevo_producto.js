@@ -11,6 +11,12 @@ function crearProducto(){
 
     fixCloseModalKeyEscapeDetect();
 
+
+    // var ordenP_Cuadroc = JSON.parse(sessionStorage.getItem('ordenP_Cuadroc'));
+    //     if(ordenP_Cuadroc !== null && ordenP_Cuadroc.hasOwnProperty('id_orden_propia') && ordenP_Cuadroc.hasOwnProperty('id_cc')){
+    //         document.querySelector("button[name='btnVerDetalleCuadroCostos']").style.display='inline-block';
+    //     }
+
 }
 
 function fixCloseModalKeyEscapeDetect(){

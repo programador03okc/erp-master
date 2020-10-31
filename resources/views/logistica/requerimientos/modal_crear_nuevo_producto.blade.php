@@ -5,6 +5,8 @@
                 <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal-crear-nuevo-producto" onClick="$('#modal-crear-nuevo-producto').modal('hide');"><span aria-hidden="true">&times;</span></button>
                     <h3 class="modal-title">Crear Producto</h3>
+                    <button class="btn btn-sm btn-purple" name="btnVerDetalleCuadroCostos" onclick="verDetalleCuadroCostos();" style="background:mediumpurple; color:white; display:none">Ver Items de Cuadro de Costos</button>
+
                 </div>
                 <div class="modal-body">
                     <div class="row">

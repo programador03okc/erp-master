@@ -9,6 +9,7 @@
             <div class="row">
                 <div class="col-md-12">
                 <button class="btn btn-sm btn-primary" onclick="crearProducto();">Crear Producto</button>
+                <button class="btn btn-sm btn-purple" name="btnVerDetalleCuadroCostos" onclick="verDetalleCuadroCostos();" style="background:mediumpurple; color:white; display:none">Ver Items de Cuadro de Costos</button>
                 </div>
             </div>
                 <table class="mytable table table-striped table-condensed table-bordered" id="listaItems">

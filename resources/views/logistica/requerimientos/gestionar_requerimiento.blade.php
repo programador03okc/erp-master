@@ -321,11 +321,11 @@
                             <th width="100">ALMACEN RESERVA</th>
                             <th width="120">
                                 <center><button type="button" class="btn btn-xs btn-success activation" onClick="catalogoItemsModal();" id="btn-add"
-                                    data-toggle="tooltip" data-placement="bottom"  title="Agregar Detalle" disabled><i class="fas fa-plus"></i>
-                                </button></center>
-                            </th>
-                        </tr>
-                    </thead>
+                                data-toggle="tooltip" data-placement="bottom"  title="Agregar Detalle" disabled><i class="fas fa-plus"></i>
+                            </button></center>
+                        </th>
+                    </tr>
+                </thead>
                     <tbody id="body_detalle_requerimiento">
                         <tr id="default_tr">
                             <td></td>
@@ -336,6 +336,40 @@
             </div>
         </div>
     </fieldset>
+    <br>
+    <fieldset class="group-table">
+        <div class="row">
+            <div class="col-sm-12">
+                <fieldset class="group-importes" ><legend style="background: #5d4d6d;"><h6>Detalles de cuadro de Costos OKC2010193 (Aprobado - etapa de compras)</h6></legend>
+                <table class="mytable table table-striped table-condensed table-bordered dataTable no-footer" id="ListaDetalleCuadroCostos" width="100%" style="width: 100%;background: #f8f3f9;">
+                    <thead>
+                        <tr>
+                            <th>Part No.</th>
+                            <th>Descripción</th>
+                            <th>P.V.U. O/C (sinIGV) S/</th>
+                            <th>Flete O/C (sinIGV) S/</th>
+                            <th>Cant.</th>
+                            <th>Garant. meses</th>
+                            <th>Origen costo</th>
+                            <th>Proveedor seleccionado</th>
+                            <th>Costo unit. sel.(sinIGV)</th>
+                            <th>Plazo ent. proveedor</th>
+                            <th>Flete S/ (sinIGV)</th>
+                            <th>Fondo proveedor</th>
+                            <th>Costo de compra</th>
+                            <th>Costo de compra en soles</th>
+                            <th>Total flete proveedor</th>
+                            <th>Costo compra + flete</th>
+                            <th>Monto adjudic.</th>
+                            <th>Ganancia</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </fieldset>   
     <br>
     <div class="row">
         <div class="col-md-12 text-right">
@@ -408,10 +442,11 @@
 @include('logistica.requerimientos.modal_historial_requerimiento')
 @include('logistica.requerimientos.modal_catalogo_items')
 @include('logistica.requerimientos.modal_crear_nuevo_producto')
+@include('logistica.requerimientos.modal_detalle_cuadro_costos')
 @include('almacen.producto.saldosModal')
-@include('logistica.requerimientos.modal_detalle_requerimiento')
 @include('logistica.requerimientos.modal_partidas')
 @include('logistica.requerimientos.modal_empresa_area')
+@include('logistica.requerimientos.modal_detalle_requerimiento')
 @include('proyectos.opcion.opcionModal')
 @include('logistica.requerimientos.aprobacion.modal_sustento')
 @include('almacen.verRequerimientoEstado')

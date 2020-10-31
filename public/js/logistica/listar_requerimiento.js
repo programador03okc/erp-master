@@ -116,7 +116,7 @@ function listar_ordenes_propias(){
                 btnVerOrdenElectronica='<a class="btn btn-info btn-sm" title="O/C electrónica" href="https://apps1.perucompras.gob.pe//OrdenCompra/obtenerPdfOrdenPublico?ID_OrdenCompra='+row['id']+'&ImprimirCompleto=1" target="_blank"><i class="far fa-file-pdf"></i></a>';
                 btnVerOrdenFisica='<a class="btn btn-default btn-sm" title="O/C escaneada" href="'+row['url_oc_fisica']+'" target="_blank"><i class="far fa-file-alt"></i></a>';
                 if(row['id_estado_aprobacion_cc'] ==3){
-                    btnGenerarRequerimiento='<button type="button" class="btn btn-sm btn-log bg-maroon" title="Generar Requerimiento" onClick=""><i class="fas fa-registered"></i></button>';
+                    btnGenerarRequerimiento='<button type="button" class="btn btn-sm btn-log bg-maroon" title="Generar Requerimiento" onClick="generarRequerimientoByOrdenCompraPropia('+row['id']+','+row['id_cc']+')"><i class="fas fa-registered"></i></button>';
                 }else{
                     btnGenerarRequerimiento='';
                 }
@@ -145,6 +145,14 @@ function listar_ordenes_propias(){
 
     document.querySelector("table[id='ListaOrdenesPropias']").tHead.style.fontSize = '11px',
     document.querySelector("table[id='ListaOrdenesPropias']").tBodies[0].style.fontSize = '11px';
+
+}
+
+function generarRequerimientoByOrdenCompraPropia(id_orden_propia,id_cc){
+    let data = {'id_orden_propia':id_orden_propia,'id_cc':id_cc };
+    // console.log(data);
+    sessionStorage.setItem('ordenP_Cuadroc', JSON.stringify(data));
+    window.location.href = '/logistica/gestion-logistica/requerimiento/elaboracion/index'; //using a named route
 
 }
 
