@@ -91,13 +91,35 @@ function listar_ordenes_propias(){
             {'data':'fecha_entrega', 'name':'fecha_entrega'},
             {'data':'monto_total', 'name':'monto_total'},
             {'render': function (data, type, row){
+                let estado_cc ='';
+                if(row['id_estado_aprobacion_cc']==1){
+                    estado_cc = '<p class="text-muted">'+row['estado_aprobacion_cc']+'</p>';
+                }else if(row['id_estado_aprobacion_cc']==2){
+                    estado_cc = '<p class="text-primary">'+row['estado_aprobacion_cc']+'</p>';
+                }else if(row['id_estado_aprobacion_cc']==3){
+                    estado_cc = '<p class="text-success">'+row['estado_aprobacion_cc']+'</p>';
+                }else if(row['id_estado_aprobacion_cc']==4){
+                    estado_cc = '<p class="text-danger">'+row['estado_aprobacion_cc']+'</p>';
+                }
+                return estado_cc;
+
+            }
+            },
+            {'render': function (data, type, row){
                 let containerOpenBrackets='<center><div class="btn-group" role="group" style="margin-bottom: 5px;">';
                 let containerCloseBrackets='</div></center>';
+                let btnVerOrdenFisica='';
+                let btnVerOrdenElectronica='';
+                let btnGenerarRequerimiento='';
                 // let btnEditar='<button type="button" class="btn btn-sm btn-log bg-primary" title="Ver o editar" onClick="editarListaReq(' +row['id_requerimiento']+ ');"><i class="fas fa-edit fa-xs"></i></button>';
                 // let btnDetalleRapido='<button type="button" class="btn btn-default" title="Ver OC Fisica" onclick="location.href='+row['url_oc_fisica']+';"><i class="fas fa-eye fa-xs"></i></button>';
-                let btnVerOrdenElectronica='<a class="btn btn-info btn-sm" title="O/C electrónica" href="https://apps1.perucompras.gob.pe//OrdenCompra/obtenerPdfOrdenPublico?ID_OrdenCompra='+row['id']+'&ImprimirCompleto=1" target="_blank"><i class="far fa-file-pdf"></i></a>';
-                let btnVerOrdenFisica='<a class="btn btn-default btn-sm" title="O/C escaneada" href="'+row['url_oc_fisica']+'" target="_blank"><i class="far fa-file-alt"></i></a>';
-                let btnGenerarRequerimiento='<button type="button" class="btn btn-sm btn-log bg-maroon" title="Generar Requerimiento" onClick=""><i class="fas fa-registered"></i></button>';
+                btnVerOrdenElectronica='<a class="btn btn-info btn-sm" title="O/C electrónica" href="https://apps1.perucompras.gob.pe//OrdenCompra/obtenerPdfOrdenPublico?ID_OrdenCompra='+row['id']+'&ImprimirCompleto=1" target="_blank"><i class="far fa-file-pdf"></i></a>';
+                btnVerOrdenFisica='<a class="btn btn-default btn-sm" title="O/C escaneada" href="'+row['url_oc_fisica']+'" target="_blank"><i class="far fa-file-alt"></i></a>';
+                if(row['id_estado_aprobacion_cc'] ==3){
+                    btnGenerarRequerimiento='<button type="button" class="btn btn-sm btn-log bg-maroon" title="Generar Requerimiento" onClick=""><i class="fas fa-registered"></i></button>';
+                }else{
+                    btnGenerarRequerimiento='';
+                }
                 return containerOpenBrackets+btnVerOrdenElectronica+btnVerOrdenFisica+btnGenerarRequerimiento+containerCloseBrackets;
                 }
             },

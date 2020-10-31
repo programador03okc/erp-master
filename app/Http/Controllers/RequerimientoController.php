@@ -600,12 +600,16 @@ class RequerimientoController extends Controller
             'oc_propias.*',
             'empresas.empresa',
             'acuerdo_marco.descripcion_corta as am',
-            'entidades.nombre as entidad'
+            'entidades.nombre as entidad',
+            'cc.estado_aprobacion as id_estado_aprobacion_cc',
+            'estados_aprobacion.estado as estado_aprobacion_cc'
             )
         ->leftJoin('mgcp_acuerdo_marco.empresas', 'empresas.id', '=', 'oc_propias.id_empresa')
         ->leftJoin('mgcp_acuerdo_marco.entidades', 'entidades.id', '=', 'oc_propias.id_entidad')
         ->leftJoin('mgcp_acuerdo_marco.catalogos', 'catalogos.id', '=', 'oc_propias.id_catalogo')
         ->leftJoin('mgcp_acuerdo_marco.acuerdo_marco', 'acuerdo_marco.id', '=', 'catalogos.id_acuerdo_marco')
+        ->leftJoin('mgcp_cuadro_costos.cc', 'cc.id_oportunidad', '=', 'oc_propias.id_oportunidad')
+        ->leftJoin('mgcp_cuadro_costos.estados_aprobacion', 'estados_aprobacion.id', '=', 'cc.estado_aprobacion')
         ->orderBy('oc_propias.fecha_publicacion', 'desc')
         ->get();
 
