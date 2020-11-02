@@ -945,6 +945,7 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::post('listarRequerimientosConfirmados', 'DistribucionController@listarRequerimientosConfirmados');
 					Route::get('actualizaCantidadDespachosTabs', 'DistribucionController@actualizaCantidadDespachosTabs');
 					Route::get('mostrar_prods', 'AlmacenController@mostrar_prods');
+					Route::get('verSeries/{id}', 'DistribucionController@verSeries');
 					Route::post('guardar_producto', 'AlmacenController@guardar_producto');
 
 				});

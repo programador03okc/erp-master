@@ -20,10 +20,33 @@ function agrega_series(id_oc_det){
     cant_items = $("#"+id_oc_det+"cantidad").val();
 
     $('[name=id_oc_det]').val(id_oc_det);
+    $('[name=id_detalle_transformacion]').val('');
     // $('#descripcion').text(descripcion);
     $('[name=serie_prod]').val('');
     $('#listaBarras tbody').val('');
     
+}
+
+function agrega_series_transformacion(id){
+    console.log('agrega_series_transformacion');
+    $('#modal-guia_com_barras').modal({
+        show: true
+    });
+    var json = series_transformacion.find(element => element.id == id);
+    console.log(json);
+    
+    if (json !== null){
+        if (json.series.length > 0){
+            json_series = json.series;
+            cargar_series();
+        }
+    }
+    cant_items = (json !== null ? json.cantidad : 0);
+
+    $('[name=id_oc_det]').val('');
+    $('[name=id_detalle_transformacion]').val(id);
+    $('[name=serie_prod]').val('');
+    $('#listaBarras tbody').val('');
 }
 
 function cargar_series(){
@@ -96,13 +119,26 @@ function eliminar_serie(serie){
 
 function guardar_series(){
     var id_oc_det = $('[name=id_oc_det]').val();
-    var json = oc_det_seleccionadas.find(element => element.id_oc_det == id_oc_det);
+    var id_detalle_transformacion = $('[name=id_detalle_transformacion]').val();
     
-    if (json !== null){
-        json.series = json_series;
+    if (id_oc_det !== ''){
+        var json = oc_det_seleccionadas.find(element => element.id_oc_det == id_oc_det);
+        
+        if (json !== null){
+            json.series = json_series;
+        }
+        console.log(json);
+        console.log(oc_det_seleccionadas);
     }
-    console.log(json);
-    console.log(oc_det_seleccionadas);
+    else if (id_detalle_transformacion !== ''){
+        var json = series_transformacion.find(element => element.id == id_detalle_transformacion);
+        
+        if (json !== null){
+            json.series = json_series;
+        }
+        console.log(json);
+        console.log(series_transformacion);
+    }
     $('#modal-guia_com_barras').modal('hide');
 }
 

@@ -180,8 +180,6 @@ class OrdenesPendientesController extends Controller
                 <td>'.$det->codigo_oc.'</td>
                 <td>'.$det->codigo.'</td>
                 <td>'.$det->part_number.'</td>
-                <td>'.$det->categoria.'</td>
-                <td>'.$det->subcategoria.'</td>
                 <td>'.$det->descripcion.'</td>
                 <td><input type="number" id="'.$det->id_detalle_orden.'cantidad" value="'.$cantidad.'" min="1" max="'.$cantidad.'" style="width:80px;"/></td>
                 <td>'.$det->abreviatura.'</td>
@@ -330,6 +328,21 @@ class OrdenesPendientesController extends Controller
                                     'id_guia_com_det'
                                 );
 
+                            if ($det->series !== null){
+                                //agrega series
+                                foreach ($det->series as $serie) {
+                                    DB::table('almacen.alm_prod_serie')->insert(
+                                        [
+                                            'id_prod' => $det->id_producto,
+                                            'id_almacen' => $request->id_almacen,
+                                            'serie' => $serie,
+                                            'estado' => 1,
+                                            'fecha_registro' => $fecha_registro,
+                                            'id_guia_det' => $id_guia_com_det
+                                        ]
+                                    );
+                                }
+                            }
                             //Guardo los items del ingreso
                             $id_det = DB::table('almacen.mov_alm_det')->insertGetId(
                                 [

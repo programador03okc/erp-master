@@ -92,8 +92,10 @@ function listarRequerimientosElaborados(){
         },
         'columns': [
             {'data': 'id_requerimiento'},
-            {'data': 'tipo_req'},
-            {'data': 'tipo_req'},
+            {'data': 'orden_am', 'name': 'oc_propias.orden_am'},
+            {'data': 'codigo_oportunidad', 'name': 'oportunidades.codigo_oportunidad'},
+            {'data': 'oportunidad', 'name': 'oportunidades.oportunidad'},
+            {'data': 'entidad', 'name': 'entidades.entidad'},
             {'data': 'sede_descripcion_req', 'name': 'sede_req.descripcion'},
             {'data': 'codigo'},
             {'data': 'concepto'},
@@ -111,7 +113,7 @@ function listarRequerimientosElaborados(){
                 }
             },
             {'render': function (data, type, row){
-                    return 'Pendiente de aprobar por <strong>Finanzas</strong>';
+                    return 'Pendiente de que <strong>Compras</strong> genere la OC';
                 }
             }
         ],
@@ -121,7 +123,7 @@ function listarRequerimientosElaborados(){
                     return '<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" '+
                     'data-placement="bottom" title="Ver Detalle" >'+
                     '<i class="fas fa-list-ul"></i></button>';
-                }, targets: 10
+                }, targets: 12
             }
         ],
     });
@@ -148,7 +150,10 @@ function listarRequerimientosConfirmados(permiso){
         },
         'columns': [
             {'data': 'id_requerimiento'},
-            {'data': 'tipo_req'},
+            {'data': 'orden_am', 'name': 'oc_propias.orden_am'},
+            {'data': 'codigo_oportunidad', 'name': 'oportunidades.codigo_oportunidad'},
+            {'data': 'oportunidad', 'name': 'oportunidades.oportunidad'},
+            {'data': 'entidad', 'name': 'entidades.entidad'},
             {'data': 'sede_descripcion_req', 'name': 'sede_req.descripcion'},
             {'data': 'codigo'},
             {'data': 'concepto'},
@@ -172,12 +177,15 @@ function listarRequerimientosConfirmados(permiso){
                     else if (row['estado'] == 5){
                         return 'Pendiente de que <strong>Almacén</strong> genere el Ingreso';
                     } 
-                    else if (row['id_tipo_requerimiento'] !== 1 && row['estado'] == 19 && row['id_od'] == null){
-                        return 'Pendiente de que <strong>Distribución</strong> genere la OD';
-                    }
-                    else if (row['estado'] == 29){
-                        return 'Pendiente de que <strong>Almacén</strong> realice la salida';
-                    }
+                    else if (row['estado'] == 15){
+                        return 'Pendiente de que <strong>Compras</strong> complete la OC';
+                    } 
+                    // else if (row['id_tipo_requerimiento'] !== 1 && row['estado'] == 19 && row['id_od'] == null){
+                    //     return 'Pendiente de que <strong>Distribución</strong> genere la OD';
+                    // }
+                    // else if (row['estado'] == 29){
+                    //     return 'Pendiente de que <strong>Almacén</strong> realice la salida';
+                    // }
                     else {
                         return '';
                     }
@@ -194,7 +202,7 @@ function listarRequerimientosConfirmados(permiso){
                     (`<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" 
                         data-placement="bottom" title="Ver Detalle" >
                         <i class="fas fa-list-ul"></i></button>`);
-                }, targets: 11
+                }, targets: 14
             }
         ],
     });
@@ -227,7 +235,10 @@ function listarRequerimientosPendientes(permiso){
         },
         'columns': [
             {'data': 'id_requerimiento'},
-            {'data': 'tipo_req'},
+            {'data': 'orden_am', 'name': 'oc_propias.orden_am'},
+            {'data': 'codigo_oportunidad', 'name': 'oportunidades.codigo_oportunidad'},
+            {'data': 'oportunidad', 'name': 'oportunidades.oportunidad'},
+            {'data': 'entidad', 'name': 'entidades.entidad'},
             {'data': 'sede_descripcion_req', 'name': 'sede_req.descripcion'},
             {'data': 'codigo'},
             {'data': 'concepto'},
@@ -245,7 +256,7 @@ function listarRequerimientosPendientes(permiso){
                 }
             },
             {'render': function (data, type, row){
-                return (row['codigo_transferencia'] !== null ? row['codigo_transferencia'] : (row['count_transferencia'] > 0 ? 
+                return ((row['count_transferencia'] > 0 ? 
                 '<button type="button" class="detalle_trans btn btn-success boton" data-toggle="tooltip" '+
                     'data-placement="bottom" title="Ver Detalle de Transferencias" data-id="'+row['id_requerimiento']+'">'+
                     '<i class="fas fa-exchange-alt"></i></button>' : ''))
@@ -272,6 +283,9 @@ function listarRequerimientosPendientes(permiso){
                     }
                     else if (row['estado'] == 19 && row['id_od'] !== null){
                         return 'Pendiente de que <strong>Almacén</strong> genere la Salida';
+                    }
+                    else if (row['id_tipo_requerimiento'] !== 1 && row['estado'] == 19 && row['id_od'] == null){
+                        return 'Pendiente de que <strong>Distribución</strong> genere la OD';
                     }
                     else if (row['estado'] == 22){
                         return 'Pendiente de que <strong>Customización</strong> realice la transformación';
@@ -307,6 +321,7 @@ function listarRequerimientosPendientes(permiso){
                         (row['estado'] == 19 && row['confirmacion_pago'] == true && /*row['id_od'] == null &&*/ row['count_transferencia'] == 0) || //venta directa
                         (row['estado'] == 10) ||
                         (row['estado'] == 28) ||
+                        (row['estado'] == 19 && row['id_tipo_requerimiento'] !== 1) ||
                         (row['estado'] == 19 && row['confirmacion_pago'] == true && /*row['id_od'] == null &&*/ row['count_transferencia'] > 0 && row['count_transferencia'] == row['count_transferencia_recibida'])) ? //venta directa con transferencia
                             ('<button type="button" class="despacho btn btn-success boton" data-toggle="tooltip" '+
                             'data-placement="bottom" title="Generar Orden de Despacho" >'+
@@ -327,7 +342,7 @@ function listarRequerimientosPendientes(permiso){
                     'data-placement="bottom" title="Ver Detalle" >'+
                     '<i class="fas fa-list-ul"></i></button>'
                 }
-                }, targets: 13
+                }, targets: 16
             }
         ],
     });
@@ -431,6 +446,10 @@ function listarOrdenesPendientes(){
         },
         'columns': [
             {'data': 'id_od'},
+            {'data': 'orden_am', 'name': 'oc_propias.orden_am'},
+            {'data': 'codigo_oportunidad', 'name': 'oportunidades.codigo_oportunidad'},
+            {'data': 'oportunidad', 'name': 'oportunidades.oportunidad'},
+            {'data': 'entidad', 'name': 'entidades.entidad'},
             {'data': 'codigo'},
             {'render': 
                 function (data, type, row){
@@ -554,6 +573,10 @@ function listarGruposDespachados(permiso){
         },
         'columns': [
             {'data': 'id_od_grupo_detalle'},
+            {'data': 'orden_am', 'name': 'oc_propias.orden_am'},
+            {'data': 'codigo_oportunidad', 'name': 'oportunidades.codigo_oportunidad'},
+            {'data': 'oportunidad', 'name': 'oportunidades.oportunidad'},
+            {'data': 'entidad', 'name': 'entidades.entidad'},
             {'data': 'codigo_odg', 'name': 'orden_despacho_grupo.codigo'},
             // {'data': 'codigo_od', 'name': 'orden_despacho.codigo'},
             {'render': 
@@ -825,6 +848,10 @@ function listarGruposDespachadosPendientesCargo(permiso){
         },
         'columns': [
             {'data': 'id_od_grupo_detalle'},
+            {'data': 'orden_am', 'name': 'oc_propias.orden_am'},
+            {'data': 'codigo_oportunidad', 'name': 'oportunidades.codigo_oportunidad'},
+            {'data': 'oportunidad', 'name': 'oportunidades.oportunidad'},
+            {'data': 'entidad', 'name': 'entidades.entidad'},
             {'data': 'codigo_odg', 'name': 'orden_despacho_grupo.codigo'},
             // {'data': 'codigo_od', 'name': 'orden_despacho.codigo'},
             {'render': 

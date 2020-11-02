@@ -38,14 +38,16 @@ Pendientes de Ingreso
                                     <tr>
                                         <th hidden></th>
                                         <th></th>
+                                        <th>Orden SoftLink</th>
                                         <th>Cod.Orden</th>
                                         <th>Sede Orden</th>
                                         <th>Proveedor</th>
                                         <th>Fecha Emisión</th>
-                                        <th>Req.</th>
+                                        <!-- <th>Req.</th>
                                         <th>Concepto</th>
-                                        <th>Fecha Entrega</th>
+                                        <th>Fecha Entrega</th> -->
                                         <th>Responsable</th>
+                                        <th>Estado</th>
                                         <!-- <th>Mnd</th>
                                         <th>SubTotal</th>
                                         <th>IGV</th>
@@ -73,11 +75,14 @@ Pendientes de Ingreso
                                 <thead>
                                     <tr>
                                         <th hidden></th>
+                                        <th>Orden Elec.</th>
+                                        <th>Cuadro Costo</th>
+                                        <th>Oportunidad</th>
+                                        <th>Entidad</th>
                                         <th>Código</th>
                                         <th>Fecha Transf</th>
                                         <th>Almacén</th>
                                         <th>Responsable</th>
-                                        <th>Cuadro Costo</th>
                                         <th>Orden Despacho</th>
                                         <th>Requerimiento</th>
                                         <th>Guía</th>

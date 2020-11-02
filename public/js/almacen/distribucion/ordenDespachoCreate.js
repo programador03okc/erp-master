@@ -22,6 +22,7 @@ function open_despacho_create(data){
     $('[name=id_sede]').val(data.sede_requerimiento !== null ? data.sede_requerimiento : '');
     $('[name=telefono_cliente]').val(data.telefono);
     $('[name=correo_cliente]').val(data.email);
+    $('[name=id_cc]').val(data.id_cc);
 
     // $('#'+data.documento+'').prop('checked', true);
     if (data.tipo_cliente == 1){
@@ -101,11 +102,13 @@ function detalleRequerimiento(id_requerimiento){
                     '<td>'+(element.producto_codigo !== null ? element.producto_codigo : '')+'</td>'+
                     '<td>'+(element.part_number !== null ? element.part_number : '')+'</td>'+
                     '<td>'+(element.producto_descripcion !== null ? element.producto_descripcion : element.descripcion_adicional)+'</td>'+
-                    '<td>'+(element.almacen_descripcion !== null ? element.almacen_descripcion : '')+'</td>'+
+                    // '<td>'+(element.almacen_descripcion !== null ? element.almacen_descripcion : '')+'</td>'+
                     '<td>'+element.cantidad+'</td>'+
                     '<td>'+(element.abreviatura !== null ? element.abreviatura : '')+'</td>'+
+                    '<td>'+(element.suma_despachos !== null ? element.suma_despachos : '0')+'</td>'+
                     '<td><input type="number" id="'+element.id_detalle_requerimiento+'cantidad" value="'+cant+'" max="'+cant+'" min="0" style="width: 80px;"/></td>'+
                     '<td><span class="label label-'+element.bootstrap_color+'">'+element.estado_doc+'</span></td>'+
+                    (element.series ? '<td><i class="fas fa-bars icon-tabla boton" data-toggle="tooltip" data-placement="bottom" title="Ver Series" onClick="verSeries('+element.id_detalle_requerimiento+');"></i></td>' : '<td></td>')+
                     '</tr>';
                 }
             });
@@ -116,6 +119,39 @@ function detalleRequerimiento(id_requerimiento){
         console.log(textStatus);
         console.log(errorThrown);
     });
+}
+
+function verSeries(id_detalle_requerimiento){
+    if (id_detalle_requerimiento !== null){
+        $.ajax({
+            type: 'GET',
+            url: 'verSeries/'+id_detalle_requerimiento,
+            dataType: 'JSON',
+            success: function(response){
+                console.log(response);
+                // json_series = response;
+                $('#modal-ver_series').modal({
+                    show: true
+                });
+                var tr = '';
+                var i = 1;
+                response.forEach(element => {
+                    tr+=`<tr id="reg-${element.serie}">
+                            <td class="numero">${i}</td>
+                            <td><input type="text" class="oculto" name="series" value="${element.serie}"/>${element.serie}</td>
+                            <td>${element.serie_guia_com}-${element.numero_guia_com}</td>
+                            <td>${element.serie_guia_ven !== null ? (element.serie_guia_ven+'-'+element.numero_guia_ven) : ''}</td>
+                        </tr>`;
+                    i++;
+                });
+                $('#listaSeries tbody').html(tr);
+            }
+        }).fail( function( jqXHR, textStatus, errorThrown ){
+            console.log(jqXHR);
+            console.log(textStatus);
+            console.log(errorThrown);
+        });
+    }
 }
 
 function openCliente(){

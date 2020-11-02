@@ -10,6 +10,7 @@
             <input type="text" class="oculto" name="id_guia_det"/>
             <input type="text" class="oculto" name="anulados"/>
             <input type="text" class="oculto" name="id_oc_det"/>
+            <input type="text" class="oculto" name="id_detalle_transformacion"/>
                 <div class="row">
                     <div class="col-md-12">
                         <label>Ingrese una serie:</label>

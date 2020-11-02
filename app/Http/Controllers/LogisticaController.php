@@ -12098,7 +12098,8 @@ function get_id_usuario_usuario_por_rol($descripcion_rol, $id_sede, $id_empresa)
         $cantidad_ingresos_pendientes = $cantidades['ingresos'];
         $cantidad_salidas_pendientes = $cantidades['salidas'];
         $cantidad_transferencias_pendientes = $cantidades['transferencias'];
-        $cantidad_pagos_pendientes = $cantidades['pagos'];
+        // $cantidad_pagos_pendientes = $cantidades['pagos'];
+        $cantidad_transformaciones_pendientes = $cantidades['transformaciones_pend'];
 
         return view('logistica/main', compact(
             'cantidad_requerimientos_elaborados',
@@ -12107,7 +12108,8 @@ function get_id_usuario_usuario_por_rol($descripcion_rol, $id_sede, $id_empresa)
             'cantidad_ingresos_pendientes',
             'cantidad_salidas_pendientes',
             'cantidad_transferencias_pendientes',
-            'cantidad_pagos_pendientes'
+            // 'cantidad_pagos_pendientes',
+            'cantidad_transformaciones_pendientes'
             ));
 
         // $cantidad_requerimientos_generados = $this->cantidad_requerimientos_generados();

@@ -9,6 +9,7 @@
                 <div class="modal-body">
                     <input type="text" class="oculto" name="id_requerimiento">
                     <input type="text" class="oculto" name="id_sede"/>
+                    <input type="text" class="oculto" name="id_cc"/>
                     <div class="row">
                         <div class="col-md-6">
                             <h5>Almacén</h5>
@@ -138,11 +139,13 @@
                                             <!-- <th>Categoría</th>
                                             <th>SubCategoría</th> -->
                                             <th>Descripción</th>
-                                            <th>Almacén Reserva</th>
+                                            <!-- <th>Almacén Reserva</th> -->
                                             <th>Cant.</th>
                                             <th>Unid</th>
-                                            <th>Cant.Desp.</th>
+                                            <th>Despachado</th>
+                                            <th>Cant.Despacho</th>
                                             <th>Estado</th>
+                                            <th></th>
                                         </tr>
                                     </thead>
                                     <tbody></tbody>
