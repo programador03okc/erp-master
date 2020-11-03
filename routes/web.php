@@ -993,6 +993,7 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::post('guardar_guia_despacho', 'DistribucionController@guardar_guia_despacho');
 					Route::post('listarSalidasDespacho', 'DistribucionController@listarSalidasDespacho');
 					Route::post('anular_salida', 'DistribucionController@anular_salida');
+					Route::post('cambio_serie_numero', 'DistribucionController@cambio_serie_numero');
 					Route::get('verDetalleDespacho/{id}', 'DistribucionController@verDetalleDespacho');
 					Route::get('imprimir_salida/{id}', 'AlmacenController@imprimir_salida');
 	

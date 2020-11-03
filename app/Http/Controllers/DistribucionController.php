@@ -1836,6 +1836,72 @@ class DistribucionController extends Controller
         return $str;
     }
     
+    public function cambio_serie_numero(Request $request){
+    
+        try {
+            DB::beginTransaction();
+    
+            $id_usuario = Auth::user()->id_usuario;
+            $msj = '';
+    
+            $sal = DB::table('almacen.mov_alm')
+            ->where('id_mov_alm', $request->id_salida)
+            ->first();
+            //si la salida no esta revisada
+            if ($sal->revisado == 0){
+                //si existe una orden
+                if ($request->id_od !== null) {
+                    //Verifica si ya fue despachado
+                    $od = DB::table('almacen.orden_despacho')
+                    ->select('orden_despacho.*','adm_estado_doc.estado_doc')
+                    ->join('administracion.adm_estado_doc','adm_estado_doc.id_estado_doc','=','orden_despacho.estado')
+                    ->where('id_od',$request->id_od)
+                    ->first();
+                    //si la orden de despacho es despacho externo
+                    if ($od->estado == 23){
+                        //Anula la Guia
+                        $update = DB::table('almacen.guia_ven')
+                        ->where('id_guia_ven', $request->id_guia_ven)
+                        ->update([  'serie' => $request->serie_nuevo,
+                                    'numero'=> $request->numero_nuevo ]);
+                        //Agrega motivo anulacion a la guia
+                        DB::table('almacen.guia_ven_obs')->insert(
+                            [
+                                'id_guia_ven'=>$request->id_guia_ven,
+                                'observacion'=>'Se cambió la serie-número de la Guía Venta a '.$request->serie_nuevo.'-'.$request->numero_nuevo,
+                                'registrado_por'=>$id_usuario,
+                                'id_motivo_anu'=>$request->id_motivo_obs_cambio,
+                                'fecha_registro'=>date('Y-m-d H:i:s')
+                            ]);
+
+                        if ($od->id_requerimiento !== null){
+                            //Agrega accion en requerimiento
+                            DB::table('almacen.alm_req_obs')
+                            ->insert([  'id_requerimiento'=>$od->id_requerimiento,
+                                        'accion'=>'CAMBIO DE SERIE-NUMERO',
+                                        'descripcion'=>'Se cambió la serie-número de la Guía Venta a '.$request->serie_nuevo.'-'.$request->numero_nuevo,
+                                        'id_usuario'=>$id_usuario,
+                                        'fecha_registro'=>date('Y-m-d H:i:s')
+                                ]);
+                        }
+                    } else {
+                        $msj = 'La Orden de Despacho ya está con '.$od->estado_doc;
+                    }
+                } else {
+                    $msj = 'No existe una orden de despacho enlazada';
+                }
+            } else {
+                $msj = 'La salida ya fue revisada por el Jefe de Almacén';
+            }
+            DB::commit();
+            return response()->json($msj);
+            
+        } catch (\PDOException $e) {
+    
+            DB::rollBack();
+        }
+    }
+
     public function anular_salida(Request $request){
     
         try {
@@ -1858,7 +1924,7 @@ class DistribucionController extends Controller
                     ->where('id_od',$request->id_od)
                     ->first();
                     //si la orden de despacho es Procesado
-                    if ($od->estado == 9){
+                    if ($od->estado == 9 || $od->estado == 23){
                         //Anula salida
                         $update = DB::table('almacen.mov_alm')
                         ->where('id_mov_alm', $request->id_salida)
@@ -1890,14 +1956,14 @@ class DistribucionController extends Controller
                         ->update(['estado' => 1]);
 
                         if ($od->id_requerimiento !== null){
-                            //Requerimiento regresa a Reservado
+                            //Requerimiento regresa a por despachar
                             DB::table('almacen.alm_req')
                             ->where('id_requerimiento',$od->id_requerimiento)
-                            ->update(['estado'=>19]);//Reservado
+                            ->update(['estado'=>29]);//por despachar
     
                             DB::table('almacen.alm_det_req')
                             ->where('id_requerimiento',$od->id_requerimiento)
-                            ->update(['estado'=>19]);//Reservado
+                            ->update(['estado'=>29]);//por despachar
                             //Agrega accion en requerimiento
                             DB::table('almacen.alm_req_obs')
                             ->insert([  'id_requerimiento'=>$od->id_requerimiento,
@@ -1908,7 +1974,7 @@ class DistribucionController extends Controller
                                 ]);
                         }
                     } else {
-                        $msj = 'La Orden de Despacho ya fue '.$od->estado_doc;
+                        $msj = 'La Orden de Despacho ya está con '.$od->estado_doc;
                     }
                 } else {
                     $msj = 'No existe una orden de despacho enlazada';

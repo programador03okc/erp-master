@@ -46,7 +46,7 @@ Pendientes de Salida
                                         <th>Dirección Destino</th> -->
                                         <th>Fecha Entrega</th>
                                         <th>Registrado por</th>
-                                        <th width="70px">Acción</th>
+                                        <th width="90px">Acción</th>
                                     </tr>
                                 </thead>
                                 <tbody></tbody>
@@ -73,7 +73,7 @@ Pendientes de Salida
                                         <th>Almacén</th>
                                         <th>Guia</th>
                                         <th>Responsable</th>
-                                        <th width="80px"></th>
+                                        <th width="120px"></th>
                                     </tr>
                                 </thead>
                                 <tbody></tbody>
@@ -89,6 +89,7 @@ Pendientes de Salida
 @include('almacen.guias.guia_ven_create')
 @include('almacen.distribucion.despachoDetalle')
 @include('almacen.guias.guia_ven_obs')
+@include('almacen.guias.guia_ven_cambio')
 @include('almacen.guias.guia_com_series')
 @endsection
 
@@ -108,6 +109,7 @@ Pendientes de Salida
     <script src="{{ asset('js/almacen/guia/guia_ven_create.js')}}"></script>
     <script src="{{ asset('js/almacen/distribucion/despachoDetalle.js')}}"></script>
     <script src="{{ asset('js/almacen/guia/guia_com_det_series.js')}}"></script>
+    <script src="{{ asset('js/almacen/guia/guia_ven_cambio.js')}}"></script>
     <script>
     $(document).ready(function(){
         seleccionarMenu(window.location);
