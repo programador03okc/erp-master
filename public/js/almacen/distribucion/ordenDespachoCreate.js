@@ -154,12 +154,29 @@ function verSeries(id_detalle_requerimiento){
     }
 }
 
-function verInstrucciones(){
+function verInstrucciones(id_detalle_requerimiento){
     $('#modal-od_transformacion').modal({
         show: true
     });
+    $('[name=id_detalle_requerimiento]').val(id_detalle_requerimiento);
     $("#submit_od_transformacion").removeAttr("disabled");
 }
+
+$("#form-od_transformacion").on("submit", function(e){
+    e.preventDefault();
+    var id_detalle_requerimiento = $('[name=id_detalle_requerimiento]').val();
+    var ing = detalle_ingresa.find(element => element.id_detalle_requerimiento == id_detalle_requerimiento);
+    var data = $(this).serializeArray();
+    console.log(data);
+    // var indexed_array = {};
+    $.map(data, function(n, i){
+        ing[n['name']] = n['value'];
+        // indexed_array[n['name']] = n['value'];
+    });
+    // ing.transformacion = indexed_array;
+    console.log(detalle_ingresa);
+    $('#modal-od_transformacion').modal('hide');
+});
 
 function openCliente(){
     var tipoCliente = $('[name=tipo_cliente]').val();
@@ -227,6 +244,10 @@ $("#form-orden_despacho").on("submit", function(e){
                 'id_detalle_requerimiento' : json.id_detalle_requerimiento,
                 'id_producto'   : json.id_producto,
                 'descripcion'   : json.descripcion_adicional,
+                'part_number_transformado'   : json.part_number_transformado,
+                'descripcion_transformado'   : json.descripcion_transformado,
+                'comentario_transformado'   : json.comentario_transformado,
+                'cantidad_transformado'   : json.cantidad_transformado,
             });
         });
 
@@ -278,7 +299,7 @@ function guardar_orden_despacho(data){
                 $('#requerimientosConfirmados').DataTable().ajax.reload();
             } 
             else if (tab_origen == 'enProceso'){
-                $('#requerimientosPendientes').DataTable().ajax.reload();
+                $('#requerimientosEnProceso').DataTable().ajax.reload();
             }
             actualizaCantidadDespachosTabs();
         }

@@ -741,6 +741,10 @@ class DistribucionController extends Controller
                         'id_detalle_requerimiento'=>$i->id_detalle_requerimiento,
                         'cantidad'=>$i->cantidad,
                         'descripcion_producto'=>$i->descripcion,
+                        'part_number_transformado'=>$i->part_number_transformado,
+                        'descripcion_transformado'=>$i->descripcion_transformado,
+                        'comentario_transformado'=>$i->comentario_transformado,
+                        'cantidad_transformado'=>$i->cantidad_transformado,
                         'estado'=>1,
                         'fecha_registro'=>date('Y-m-d H:i:s')
                         ],
