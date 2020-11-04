@@ -250,6 +250,7 @@ Panel de Control de Despachos
 @include('almacen.distribucion.ordenDespachoObs')
 @include('almacen.distribucion.requerimientoObs')
 @include('almacen.distribucion.ordenDespachoAdjuntos')
+@include('almacen.distribucion.ordenDespachoTransformacion')
 @include('almacen.producto.productoModal')
 @include('almacen.producto.productoCreate')
 @include('almacen.transferencias.ver_series')

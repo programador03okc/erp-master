@@ -733,20 +733,9 @@ class DistribucionController extends Controller
                 $ingresa = json_decode($request->detalle_ingresa);
                 
                 foreach ($ingresa as $i) {
-                    DB::table('almacen.transfor_materia')
-                    ->insert([
-                        'id_transformacion'=>$id_transformacion,
-                        'id_producto'=>$i->id_producto,
-                        'cantidad'=>$i->cantidad,
-                        'id_detalle_requerimiento'=>$i->id_detalle_requerimiento,
-                        'valor_unitario'=>0,
-                        'valor_total'=>0,
-                        'estado'=>1,
-                        'fecha_registro'=>date('Y-m-d H:i:s')
-                    ]);
 
-                    DB::table('almacen.orden_despacho_det')
-                    ->insert([
+                    $id_od_detalle = DB::table('almacen.orden_despacho_det')
+                    ->insertGetId([
                         'id_od'=>$id_od,
                         'id_producto'=>$i->id_producto,
                         'id_detalle_requerimiento'=>$i->id_detalle_requerimiento,
@@ -754,8 +743,22 @@ class DistribucionController extends Controller
                         'descripcion_producto'=>$i->descripcion,
                         'estado'=>1,
                         'fecha_registro'=>date('Y-m-d H:i:s')
-                    ]);
+                        ],
+                        'id_od_detalle'
+                    );
                     
+                    DB::table('almacen.transfor_materia')
+                    ->insert([
+                        'id_transformacion'=>$id_transformacion,
+                        'id_producto'=>$i->id_producto,
+                        'cantidad'=>$i->cantidad,
+                        'id_od_detalle'=>$id_od_detalle,
+                        'valor_unitario'=>0,
+                        'valor_total'=>0,
+                        'estado'=>1,
+                        'fecha_registro'=>date('Y-m-d H:i:s')
+                    ]);
+
                     $detreq = DB::table('almacen.alm_det_req')
                         ->where('id_detalle_requerimiento',$i->id_detalle_requerimiento)
                         ->first();
@@ -772,7 +775,7 @@ class DistribucionController extends Controller
                     if ($detdes->suma_cantidad >= $detreq->cantidad){
                         DB::table('almacen.alm_det_req')
                         ->where('id_detalle_requerimiento',$i->id_detalle_requerimiento)
-                        ->update(['estado'=>22]);
+                        ->update(['estado'=>22]);//despacho interno
                     }
                 }
 
@@ -783,13 +786,13 @@ class DistribucionController extends Controller
 
                 $desp = DB::table('almacen.alm_det_req')
                     ->where([['id_requerimiento','=',$request->id_requerimiento],
-                            ['estado','=',22]])
+                            ['estado','=',22]])//despacho interno
                     ->count();
                     
                 if ($desp == $todo){
                     DB::table('almacen.alm_req')
                     ->where('id_requerimiento',$request->id_requerimiento)
-                    ->update(['estado'=>22]);
+                    ->update(['estado'=>22]);//despacho interno
                 }
 
                 $sale = json_decode($request->detalle_sale);
@@ -826,12 +829,12 @@ class DistribucionController extends Controller
 
                     DB::table('almacen.alm_det_req')
                     ->where('id_detalle_requerimiento',$d->id_detalle_requerimiento)
-                    ->update(['estado'=>29]);
+                    ->update(['estado'=>29]);//por despachar
                 }
 
                 DB::table('almacen.alm_req')
                 ->where('id_requerimiento',$request->id_requerimiento)
-                ->update(['estado'=>29]);
+                ->update(['estado'=>29]);//por despachar
             }
 
             if ($request->aplica_cambios_valor !== 'si'){
@@ -844,6 +847,11 @@ class DistribucionController extends Controller
     
             // if ($empresa !== null){
                 $req = DB::table('almacen.alm_req')
+                ->select('alm_req.*','oc_propias.id as id_oc_propia','oc_propias.url_oc_fisica')
+                ->leftjoin('mgcp_cuadro_costos.cc','cc.id','=','alm_req.id_cc')
+                ->leftjoin('mgcp_oportunidades.oportunidades','oportunidades.id','=','cc.id_oportunidad')
+                ->leftjoin('mgcp_acuerdo_marco.oc_propias','oc_propias.id_oportunidad','=','oportunidades.id')
+                // ->leftjoin('mgcp_acuerdo_marco.entidades','entidades.id','=','oportunidades.id_entidad')
                 ->where('id_requerimiento',$request->id_requerimiento)
                 ->first();
     
@@ -896,7 +904,10 @@ class DistribucionController extends Controller
     
         Descripcion de Items:
                     '.$text.'
-        
+        '.($req->id_oc_propia !== null 
+        ? ('Ver Orden Física: '.$req->url_oc_fisica.' 
+        Ver Orden Electrónica: https://apps1.perucompras.gob.pe//OrdenCompra/obtenerPdfOrdenPublico?ID_OrdenCompra='.$req->id_oc_propia.'&ImprimirCompleto=1') : '').'
+
         *Este correo es generado de manera automatica, por favor no responder.
         
         Saludos,
@@ -2014,12 +2025,45 @@ class DistribucionController extends Controller
             }
 
             $od = DB::table('almacen.orden_despacho')
+                ->select('orden_despacho.*','alm_req.id_tipo_requerimiento')
+                ->join('almacen.alm_req','alm_req.id_requerimiento','=','orden_despacho.id_requerimiento')
                 ->where('id_od',$id_od)
                 ->first();
 
-            DB::table('almacen.alm_req')
-                ->where('id_requerimiento',$od->id_requerimiento)
-                ->update(['estado'=>19]);
+            $count_ods = DB::table('almacen.orden_despacho')
+            ->where([['id_requerimiento','=',$od->id_requerimiento],
+                        ['aplica_cambios','=',true],
+                        ['estado','!=',7]])
+            ->count();
+
+            if ($od->aplica_cambios){
+                if ($count_ods > 0){
+                    DB::table('almacen.alm_req')
+                        ->where('id_requerimiento',$od->id_requerimiento)
+                        ->update(['estado'=>22]);//despacho interno
+                } else {
+                    DB::table('almacen.alm_req')
+                        ->where('id_requerimiento',$od->id_requerimiento)
+                        ->update(['estado'=>28]);//en almacen total
+                }
+            } else {
+                if ($count_ods > 0){
+                    DB::table('almacen.alm_req')
+                        ->where('id_requerimiento',$od->id_requerimiento)
+                        ->update(['estado'=>10]);//transformado
+                } else {
+                    if ($od->id_tipo_requerimiento !== 1){
+                        DB::table('almacen.alm_req')
+                            ->where('id_requerimiento',$od->id_requerimiento)
+                            ->update(['estado'=>19]);//en almacen total
+                    } else {
+                        DB::table('almacen.alm_req')
+                            ->where('id_requerimiento',$od->id_requerimiento)
+                            ->update(['estado'=>28]);//en almacen total
+                    }
+                }
+            }
+
 
             $id_usuario = Auth::user()->id_usuario;
             //Agrega accion en requerimiento

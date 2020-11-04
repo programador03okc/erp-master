@@ -108,8 +108,9 @@ function detalleRequerimiento(id_requerimiento){
                     '<td>'+(element.suma_despachos !== null ? element.suma_despachos : '0')+'</td>'+
                     '<td><input type="number" id="'+element.id_detalle_requerimiento+'cantidad" value="'+cant+'" max="'+cant+'" min="0" style="width: 80px;"/></td>'+
                     '<td><span class="label label-'+element.bootstrap_color+'">'+element.estado_doc+'</span></td>'+
-                    (element.series ? '<td><i class="fas fa-bars icon-tabla boton" data-toggle="tooltip" data-placement="bottom" title="Ver Series" onClick="verSeries('+element.id_detalle_requerimiento+');"></i></td>' : '<td></td>')+
-                    '</tr>';
+                    '<td><i class="fas fa-code-branch boton btn btn-warning" data-toggle="tooltip" data-placement="bottom" title="Ver Instrucciones" onClick="verInstrucciones('+element.id_detalle_requerimiento+');"></i>'+
+                    (element.series ? '<i class="fas fa-bars icon-tabla boton" data-toggle="tooltip" data-placement="bottom" title="Ver Series" onClick="verSeries('+element.id_detalle_requerimiento+');"></i>' : '')+
+                    '</td></tr>';
                 }
             });
             $('#detalleRequerimientoOD tbody').html(html);
@@ -129,7 +130,6 @@ function verSeries(id_detalle_requerimiento){
             dataType: 'JSON',
             success: function(response){
                 console.log(response);
-                // json_series = response;
                 $('#modal-ver_series').modal({
                     show: true
                 });
@@ -152,6 +152,13 @@ function verSeries(id_detalle_requerimiento){
             console.log(errorThrown);
         });
     }
+}
+
+function verInstrucciones(){
+    $('#modal-od_transformacion').modal({
+        show: true
+    });
+    $("#submit_od_transformacion").removeAttr("disabled");
 }
 
 function openCliente(){
