@@ -112,7 +112,7 @@ class DistribucionController extends Controller
             // 'rrhh_perso.nro_documento as dni_persona','alm_almacen.descripcion as almacen_descripcion',
             'alm_req.id_sede as sede_requerimiento','sede_req.descripcion as sede_descripcion_req',
             'oc_propias.orden_am','oportunidades.oportunidad','oportunidades.codigo_oportunidad',
-            'entidades.entidad'
+            'entidades.entidad','oc_propias.id as id_oc_propia','oc_propias.url_oc_fisica'
             // 'alm_tp_req.descripcion as tipo_req',
             // DB::raw("(rrhh_perso.nombres) || ' ' || (rrhh_perso.apellido_paterno) || ' ' || (rrhh_perso.apellido_materno) AS nombre_persona"),
                     // 'adm_contri.nro_documento as cliente_ruc','adm_contri.razon_social as cliente_razon_social',
@@ -152,7 +152,8 @@ class DistribucionController extends Controller
             // DB::raw("(rrhh_perso.nombres) || ' ' || (rrhh_perso.apellido_paterno) || ' ' || (rrhh_perso.apellido_materno) AS nombre_persona"),
             // 'adm_contri.nro_documento as cliente_ruc','adm_contri.razon_social as cliente_razon_social',
             'oc_propias.orden_am','oportunidades.oportunidad','oportunidades.codigo_oportunidad',
-            'entidades.entidad','orden_despacho.id_od'//,'orden_despacho.codigo as codigo_od','orden_despacho.estado as estado_od'
+            'entidades.entidad','orden_despacho.id_od','oc_propias.id as id_oc_propia','oc_propias.url_oc_fisica'
+            //,'orden_despacho.codigo as codigo_od','orden_despacho.estado as estado_od'
             )
             // ->join('almacen.alm_tp_req','alm_tp_req.id_tipo_requerimiento','=','alm_req.id_tipo_requerimiento')
             ->leftjoin('mgcp_cuadro_costos.cc','cc.id','=','alm_req.id_cc')
@@ -219,7 +220,8 @@ class DistribucionController extends Controller
                         trans.id_requerimiento = alm_req.id_requerimiento
                         and trans.estado = 14) AS count_transferencia_recibida"),
             'oc_propias.orden_am','oportunidades.oportunidad','oportunidades.codigo_oportunidad',
-            'entidades.entidad','orden_despacho.id_od'//,'orden_despacho.codigo as codigo_od','orden_despacho.estado as estado_od'
+            'entidades.entidad','orden_despacho.id_od','oc_propias.id as id_oc_propia','oc_propias.url_oc_fisica'
+            //,'orden_despacho.codigo as codigo_od','orden_despacho.estado as estado_od'
             )
             ->leftjoin('mgcp_cuadro_costos.cc','cc.id','=','alm_req.id_cc')
             ->leftjoin('mgcp_oportunidades.oportunidades','oportunidades.id','=','cc.id_oportunidad')
@@ -294,7 +296,7 @@ class DistribucionController extends Controller
         'alm_almacen.descripcion as almacen_descripcion',
         'rrhh_perso.telefono',
         'oc_propias.orden_am','oportunidades.oportunidad','oportunidades.codigo_oportunidad',
-        'entidades.entidad','orden_despacho.id_od')
+        'entidades.entidad','orden_despacho.id_od','oc_propias.id as id_oc_propia','oc_propias.url_oc_fisica')
         ->leftjoin('comercial.com_cliente','com_cliente.id_cliente','=','orden_despacho.id_cliente')
         ->leftjoin('contabilidad.adm_contri','adm_contri.id_contribuyente','=','com_cliente.id_contribuyente')
         ->leftjoin('rrhh.rrhh_perso','rrhh_perso.id_persona','=','orden_despacho.id_persona')
@@ -323,7 +325,7 @@ class DistribucionController extends Controller
         'adm_estado_doc.estado_doc','adm_estado_doc.bootstrap_color','alm_almacen.descripcion as almacen_descripcion',
         'orden_despacho_grupo.codigo as codigo_odg','orden_despacho.estado as estado_od',
         'oc_propias.orden_am','oportunidades.oportunidad','oportunidades.codigo_oportunidad',
-        'entidades.entidad','orden_despacho.id_od')
+        'entidades.entidad','orden_despacho.id_od','oc_propias.id as id_oc_propia','oc_propias.url_oc_fisica')
         ->join('almacen.orden_despacho_grupo','orden_despacho_grupo.id_od_grupo','=','orden_despacho_grupo_det.id_od_grupo')
         ->leftjoin('configuracion.sis_usua','sis_usua.id_usuario','=','orden_despacho_grupo.responsable')
         ->leftjoin('logistica.log_prove','log_prove.id_proveedor','=','orden_despacho_grupo.id_proveedor')
@@ -357,7 +359,7 @@ class DistribucionController extends Controller
         'adm_estado_doc.estado_doc','adm_estado_doc.bootstrap_color','alm_almacen.descripcion as almacen_descripcion',
         'orden_despacho_grupo.codigo as codigo_odg','orden_despacho.estado as estado_od',
         'oc_propias.orden_am','oportunidades.oportunidad','oportunidades.codigo_oportunidad',
-        'entidades.entidad','orden_despacho.id_od')
+        'entidades.entidad','orden_despacho.id_od','oc_propias.id as id_oc_propia','oc_propias.url_oc_fisica')
         ->join('almacen.orden_despacho_grupo','orden_despacho_grupo.id_od_grupo','=','orden_despacho_grupo_det.id_od_grupo')
         ->leftjoin('configuracion.sis_usua','sis_usua.id_usuario','=','orden_despacho_grupo.responsable')
         ->leftjoin('logistica.log_prove','log_prove.id_proveedor','=','orden_despacho_grupo.id_proveedor')

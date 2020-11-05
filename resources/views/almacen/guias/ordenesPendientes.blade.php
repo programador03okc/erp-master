@@ -159,6 +159,7 @@ Pendientes de Ingreso
     <script src="{{ asset('template/plugins/js-xlsx/xlsx.full.min.js') }}"></script>
     
     <script src="{{ asset('js/almacen/guia/ordenesPendientes.js')}}"></script>
+    <script src="{{ asset('js/almacen/guia/ordenes_ver_detalle.js')}}"></script>
     <script src="{{ asset('js/almacen/guia/guia_com_create.js')}}"></script>
     <script src="{{ asset('js/almacen/guia/guia_com_det_series.js')}}"></script>
     <script>

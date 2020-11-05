@@ -37,9 +37,11 @@ function iniciar(permiso){
     vista_extendida();
 }
 
+var table;
+
 function listarOrdenesPendientes(){
     var vardataTables = funcDatatables();
-    $('#ordenesPendientes').DataTable({
+    table = $('#ordenesPendientes').DataTable({
         'dom': vardataTables[1],
         'buttons': vardataTables[2],
         'language' : vardataTables[0],
@@ -66,22 +68,25 @@ function listarOrdenesPendientes(){
                 return '<span class="label label-'+row['bootstrap_color']+'">'+row['estado_doc']+'</span>'
                 }
             },
-            {'render': 
-                function (data, type, row){
-                    if (acceso == '1') {
-                        return '<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" '+
-                            'data-placement="bottom" title="Ver Detalle" >'+
-                            '<i class="fas fa-list-ul"></i></button>'+
-                        '<button type="button" class="guia btn btn-info boton" data-toggle="tooltip" '+
-                            'data-placement="bottom" title="Generar Guía" >'+
-                            '<i class="fas fa-sign-in-alt"></i></button>';
-                    } else {
-                        return '<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" '+
-                            'data-placement="bottom" title="Ver Detalle" >'+
-                            '<i class="fas fa-list-ul"></i></button>';
-                    }
-                }
-            }
+            // {'render': 
+            //     function (data, type, row){
+            //         if (acceso == '1') {
+            //             return '<button type="button" class="ver-detalle btn btn-primary boton" data-toggle="tooltip" '+
+            //             'data-placement="bottom" title="Ver Detalle" data-id="'+row['id_orden_compra']+'">'+
+            //             '<i class="fas fa-chevron-down"></i></button>'+
+            //             // '<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" '+
+            //             //     'data-placement="bottom" title="Ver Detalle" >'+
+            //             //     '<i class="fas fa-list-ul"></i></button>'+
+            //             '<button type="button" class="guia btn btn-info boton" data-toggle="tooltip" '+
+            //                 'data-placement="bottom" title="Generar Guía" >'+
+            //                 '<i class="fas fa-sign-in-alt"></i></button>';
+            //         } else {
+            //             return '<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" '+
+            //                 'data-placement="bottom" title="Ver Detalle" >'+
+            //                 '<i class="fas fa-list-ul"></i></button>';
+            //         }
+            //     }
+            // }
         ],
         'drawCallback': function(){
             $('#ordenesPendientes tbody tr td input[type="checkbox"]').iCheck({
@@ -106,6 +111,25 @@ function listarOrdenesPendientes(){
                         $('input[type="checkbox"]', nodes).iCheck('update');
                     }
                 }
+            },
+            {'render': 
+                function (data, type, row){
+                    if (acceso == '1') {
+                        return '<button type="button" class="ver-detalle btn btn-primary boton" data-toggle="tooltip" '+
+                        'data-placement="bottom" title="Ver Detalle" data-id="'+row['id_orden_compra']+'">'+
+                        '<i class="fas fa-chevron-down"></i></button>'+
+                        // '<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" '+
+                        //     'data-placement="bottom" title="Ver Detalle" >'+
+                        //     '<i class="fas fa-list-ul"></i></button>'+
+                        '<button type="button" class="guia btn btn-info boton" data-toggle="tooltip" '+
+                            'data-placement="bottom" title="Generar Guía" >'+
+                            '<i class="fas fa-sign-in-alt"></i></button>';
+                    } else {
+                        return '<button type="button" class="ver-detalle btn btn-primary boton" data-toggle="tooltip" '+
+                        'data-placement="bottom" title="Ver Detalle" data-id="'+row['id_orden_compra']+'">'+
+                        '<i class="fas fa-chevron-down"></i></button>';
+                    }
+                }, targets: 8
             }
          ],
         'select': 'multi',

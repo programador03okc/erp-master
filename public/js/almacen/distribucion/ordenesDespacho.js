@@ -92,7 +92,13 @@ function listarRequerimientosElaborados(){
         },
         'columns': [
             {'data': 'id_requerimiento'},
-            {'data': 'orden_am', 'name': 'oc_propias.orden_am'},
+            {'render': function (data, type, row){
+                return (row['orden_am'] !== null ? row['orden_am']+`<a href="https://apps1.perucompras.gob.pe//OrdenCompra/obtenerPdfOrdenPublico?ID_OrdenCompra=${row['id_oc_propia']}&ImprimirCompleto=1">
+                <span class="label label-success">Ver O.E.</span></a>
+            <a href="${row['url_oc_fisica']}">
+                <span class="label label-warning">Ver O.F.</span></a>` : '');
+                }
+            },
             {'data': 'codigo_oportunidad', 'name': 'oportunidades.codigo_oportunidad'},
             {'data': 'oportunidad', 'name': 'oportunidades.oportunidad'},
             {'data': 'entidad', 'name': 'entidades.entidad'},
@@ -100,10 +106,6 @@ function listarRequerimientosElaborados(){
             {'data': 'codigo'},
             {'data': 'concepto'},
             {'data': 'fecha_requerimiento'},
-            // {'render': function (data, type, row){
-            //     return (row['ubigeo_descripcion'] !== null ? row['ubigeo_descripcion'] : '');
-            //     }
-            // },
             // {'data': 'direccion_entrega'},
             // {'data': 'grupo', 'name': 'adm_grupo.descripcion'},
             {'data': 'responsable', 'name': 'sis_usua.nombre_corto'},
@@ -150,7 +152,13 @@ function listarRequerimientosConfirmados(permiso){
         },
         'columns': [
             {'data': 'id_requerimiento'},
-            {'data': 'orden_am', 'name': 'oc_propias.orden_am'},
+            {'render': function (data, type, row){
+                return (row['orden_am'] !== null ? row['orden_am']+`<a href="https://apps1.perucompras.gob.pe//OrdenCompra/obtenerPdfOrdenPublico?ID_OrdenCompra=${row['id_oc_propia']}&ImprimirCompleto=1">
+                <span class="label label-success">Ver O.E.</span></a>
+            <a href="${row['url_oc_fisica']}">
+                <span class="label label-warning">Ver O.F.</span></a>` : '');
+                }
+            },
             {'data': 'codigo_oportunidad', 'name': 'oportunidades.codigo_oportunidad'},
             {'data': 'oportunidad', 'name': 'oportunidades.oportunidad'},
             {'data': 'entidad', 'name': 'entidades.entidad'},
@@ -235,7 +243,13 @@ function listarRequerimientosPendientes(permiso){
         },
         'columns': [
             {'data': 'id_requerimiento'},
-            {'data': 'orden_am', 'name': 'oc_propias.orden_am'},
+            {'render': function (data, type, row){
+                return (row['orden_am'] !== null ? row['orden_am']+`<a href="https://apps1.perucompras.gob.pe//OrdenCompra/obtenerPdfOrdenPublico?ID_OrdenCompra=${row['id_oc_propia']}&ImprimirCompleto=1">
+                <span class="label label-success">Ver O.E.</span></a>
+            <a href="${row['url_oc_fisica']}">
+                <span class="label label-warning">Ver O.F.</span></a>` : '');
+                }
+            },
             {'data': 'codigo_oportunidad', 'name': 'oportunidades.codigo_oportunidad'},
             {'data': 'oportunidad', 'name': 'oportunidades.oportunidad'},
             {'data': 'entidad', 'name': 'entidades.entidad'},
@@ -446,7 +460,13 @@ function listarOrdenesPendientes(){
         },
         'columns': [
             {'data': 'id_od'},
-            {'data': 'orden_am', 'name': 'oc_propias.orden_am'},
+            {'render': function (data, type, row){
+                return (row['orden_am'] !== null ? row['orden_am']+`<a href="https://apps1.perucompras.gob.pe//OrdenCompra/obtenerPdfOrdenPublico?ID_OrdenCompra=${row['id_oc_propia']}&ImprimirCompleto=1">
+                <span class="label label-success">Ver O.E.</span></a>
+            <a href="${row['url_oc_fisica']}">
+                <span class="label label-warning">Ver O.F.</span></a>` : '');
+                }
+            },
             {'data': 'codigo_oportunidad', 'name': 'oportunidades.codigo_oportunidad'},
             {'data': 'oportunidad', 'name': 'oportunidades.oportunidad'},
             {'data': 'entidad', 'name': 'entidades.entidad'},
@@ -573,7 +593,13 @@ function listarGruposDespachados(permiso){
         },
         'columns': [
             {'data': 'id_od_grupo_detalle'},
-            {'data': 'orden_am', 'name': 'oc_propias.orden_am'},
+            {'render': function (data, type, row){
+                return (row['orden_am'] !== null ? row['orden_am']+`<a href="https://apps1.perucompras.gob.pe//OrdenCompra/obtenerPdfOrdenPublico?ID_OrdenCompra=${row['id_oc_propia']}&ImprimirCompleto=1">
+                <span class="label label-success">Ver O.E.</span></a>
+            <a href="${row['url_oc_fisica']}">
+                <span class="label label-warning">Ver O.F.</span></a>` : '');
+                }
+            },
             {'data': 'codigo_oportunidad', 'name': 'oportunidades.codigo_oportunidad'},
             {'data': 'oportunidad', 'name': 'oportunidades.oportunidad'},
             {'data': 'entidad', 'name': 'entidades.entidad'},
@@ -848,7 +874,13 @@ function listarGruposDespachadosPendientesCargo(permiso){
         },
         'columns': [
             {'data': 'id_od_grupo_detalle'},
-            {'data': 'orden_am', 'name': 'oc_propias.orden_am'},
+            {'render': function (data, type, row){
+                return (row['orden_am'] !== null ? row['orden_am']+`<a href="https://apps1.perucompras.gob.pe//OrdenCompra/obtenerPdfOrdenPublico?ID_OrdenCompra=${row['id_oc_propia']}&ImprimirCompleto=1">
+                <span class="label label-success">Ver O.E.</span></a>
+            <a href="${row['url_oc_fisica']}">
+                <span class="label label-warning">Ver O.F.</span></a>` : '');
+                }
+            },
             {'data': 'codigo_oportunidad', 'name': 'oportunidades.codigo_oportunidad'},
             {'data': 'oportunidad', 'name': 'oportunidades.oportunidad'},
             {'data': 'entidad', 'name': 'entidades.entidad'},
