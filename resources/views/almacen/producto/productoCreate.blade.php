@@ -50,6 +50,16 @@
                                 @endforeach
                             </select>
                         </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <h5></h5>
+                                <div class="icheckbox_flat-blue">
+                                    <label style="display:flex;">
+                                        <input type="checkbox" class="flat-red" name="series" value="0">
+                                    </label>
+                                </div> Control de Series
+                            </div>
+                        </div>
                     </div>
                     <div class="row">
                         <div class="col-md-12">

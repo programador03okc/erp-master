@@ -24,7 +24,7 @@ Panel de Control de Despachos
     <div class="col-md-12" id="tab-reqPendientes" style="padding-left:0px;padding-right:0px;">
         <ul class="nav nav-tabs" id="myTab">
             <li class="active"><a type="#elaborados">Requerimientos Pendientes <span id="selaborados" class="badge badge-info"></span></a></li>
-            <li class=""><a type="#confirmados">Requerimientos Confirmados <span id="sconfirmados" class="badge badge-info"></span></a></li>
+            <li class=""><a type="#confirmados">Requerimientos en Compras <span id="sconfirmados" class="badge badge-info"></span></a></li>
             <li class=""><a type="#pendientes">Requerimientos En Proceso <span id="spendientes" class="badge badge-info"></span></a></li>
             <li class=""><a type="#despachos">Por Despachar <span id="sdespachos" class="badge badge-info"></span></a></li>
             <li class=""><a type="#sinTransporte">Pendientes de Transporte <span id="ssinTransporte" class="badge badge-info"></span></a></li>
@@ -41,6 +41,8 @@ Panel de Control de Despachos
                                     <tr>
                                         <th hidden></th>
                                         <th>Orden Elec.</th>
+                                        <th>Cod.CC</th>
+                                        <th>Oportunidad</th>
                                         <th>Entidad</th>
                                         <th>Sede Req.</th>
                                         <th>Codigo</th>
@@ -69,7 +71,10 @@ Panel de Control de Despachos
                                 <thead>
                                     <tr>
                                         <th hidden></th>
-                                        <th>Tipo</th>
+                                        <th>Orden Elec.</th>
+                                        <th>Cod.CC</th>
+                                        <th>Oportunidad</th>
+                                        <th>Entidad</th>
                                         <th>Sede Req.</th>
                                         <th>Codigo</th>
                                         <th>Concepto</th>
@@ -97,7 +102,10 @@ Panel de Control de Despachos
                                 <thead>
                                     <tr>
                                         <th hidden></th>
-                                        <th>Tipo</th>
+                                        <th>Orden Elec.</th>
+                                        <th>Cod.CC</th>
+                                        <th>Oportunidad</th>
+                                        <th>Entidad</th>
                                         <th>Sede Req.</th>
                                         <th>Codigo</th>
                                         <th>Concepto</th>
@@ -128,6 +136,10 @@ Panel de Control de Despachos
                                     <tr>
                                         <th hidden></th>
                                         <th></th>
+                                        <th>Orden Elec.</th>
+                                        <th>Cod.CC</th>
+                                        <th>Oportunidad</th>
+                                        <th>Entidad</th>
                                         <th>Codigo</th>
                                         <th>Cliente</th>
                                         <th>Requerimiento</th>
@@ -162,6 +174,10 @@ Panel de Control de Despachos
                                 <thead>
                                     <tr>
                                         <th hidden></th>
+                                        <th>Orden Elec.</th>
+                                        <th>Cod.CC</th>
+                                        <th>Oportunidad</th>
+                                        <th>Entidad</th>
                                         <th>Despacho</th>
                                         <th>Orden Despacho</th>
                                         <th>Requerimiento</th>
@@ -194,6 +210,10 @@ Panel de Control de Despachos
                                 <thead>
                                     <tr>
                                         <th hidden></th>
+                                        <th>Orden Elec.</th>
+                                        <th>Cod.CC</th>
+                                        <th>Oportunidad</th>
+                                        <th>Entidad</th>
                                         <th>Despacho</th>
                                         <th>Orden Despacho</th>
                                         <th>Requerimiento</th>
@@ -230,8 +250,11 @@ Panel de Control de Despachos
 @include('almacen.distribucion.ordenDespachoObs')
 @include('almacen.distribucion.requerimientoObs')
 @include('almacen.distribucion.ordenDespachoAdjuntos')
+@include('almacen.distribucion.ordenDespachoTransformacion')
 @include('almacen.producto.productoModal')
 @include('almacen.producto.productoCreate')
+@include('almacen.transferencias.ver_series')
+
 @include('logistica.cotizaciones.clienteModal')
 @include('logistica.cotizaciones.proveedorModal')
 @include('logistica.cotizaciones.add_cliente')
@@ -270,6 +293,7 @@ Panel de Control de Despachos
     <script src="{{ asset('js/publico/hiddenElement.js')}}"></script>
     <script src="{{ asset('js/publico/ubigeoModal.js')}}"></script>
     <script src="{{ asset('js/publico/personaModal.js')}}"></script>
+
     <script>
     $(document).ready(function(){
         seleccionarMenu(window.location);

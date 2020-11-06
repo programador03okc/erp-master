@@ -84,8 +84,11 @@ function open_transformacion_guia_create(data){
     listar_detalle_transformacion(data.id_transformacion);
 }
 
+let series_transformacion = [];
+
 function listar_detalle_transformacion(id){
     oc_det_seleccionadas = [];
+    series_transformacion = [];
     $.ajax({
         type: 'GET',
         url: 'listarDetalleTransformacion/'+id,
@@ -93,23 +96,28 @@ function listar_detalle_transformacion(id){
         success: function(response){
             console.log(response);
             var html = '';
-            var i=1;
+            var i = 1;
             response['sobrantes'].forEach(function(element){
                 html+=`<tr id="${element.id_sobrante}" >
                 <td>${i}</td>
                 <td></td>
                 <td><input style="display:none" id="producto" data-tipo="sobrante" value="${element.id_producto}"/>${element.cod_prod}</td>
                 <td>${element.part_number}</td>
-                <td></td>
-                <td></td>
                 <td>${element.descripcion}</td>
                 <td>${element.cantidad}</td>
                 <td>${element.abreviatura}</td>
                 <td>${element.valor_unitario}</td>
                 <td>${element.valor_total}</td>
-                <td></td>
+                ${( element.series
+                    ? '<td><input type="text" class="oculto" id="series" value="'+element.series+'" data-partnumber="'+element.part_number+'"/><i class="fas fa-bars icon-tabla boton" data-toggle="tooltip" data-placement="bottom" title="Agregar Series" onClick="agrega_series_transformacion('+"'s"+element.id_sobrante+"'"+');"></i></td>' 
+                    : '<td></td>')}
                 </tr>`;
                 i++;
+                series_transformacion.push({
+                    'id'        : 's'+element.id_sobrante,
+                    'series'    : [],
+                    'cantidad'  : element.cantidad
+                });
             });
             response['transformados'].forEach(function(element){
                 html+=`<tr id="${element.id_transformado}" >
@@ -117,16 +125,21 @@ function listar_detalle_transformacion(id){
                 <td></td>
                 <td><input style="display:none" id="producto" data-tipo="transformado" value="${element.id_producto}"/>${element.cod_prod}</td>
                 <td>${element.part_number}</td>
-                <td></td>
-                <td></td>
                 <td>${element.descripcion}</td>
                 <td>${element.cantidad}</td>
                 <td>${element.abreviatura}</td>
                 <td>${element.valor_unitario}</td>
                 <td>${element.valor_total}</td>
-                <td></td>
+                ${( element.series
+                    ? '<td><input type="text" class="oculto" id="series" value="'+element.series+'" data-partnumber="'+element.part_number+'"/><i class="fas fa-bars icon-tabla boton" data-toggle="tooltip" data-placement="bottom" title="Agregar Series" onClick="agrega_series_transformacion('+"'t"+element.id_transformado+"'"+');"></i></td>' 
+                    : '<td></td>')}
                 </tr>`;
                 i++;
+                series_transformacion.push({
+                    'id'        : 't'+element.id_transformado,
+                    'series'    : [],
+                    'cantidad'  : element.cantidad
+                });
             });
             $('#detalleOrdenSeleccionadas tbody').html(html);
         }
@@ -169,18 +182,28 @@ $("#form-guia_create").on("submit", function(e){
         $("#detalleOrdenSeleccionadas tbody tr").each(function(){
             var id = $(this)[0].id;
             var id_producto = $(this).find('td input[id=producto]').val();
-            console.log(id_producto);
             var tipo = $(this).find('td input[id=producto]').data('tipo');
-            console.log(tipo);
+            var abr = (tipo == 'sobrante' ? 's' : 't');
+
+            var json = series_transformacion.find(element => element.id == abr+id);
+            console.log(json.series);
+            var series = (json !== null ? json.series : []);
+            var requiereSeries = $(this).find('td input[id=series]').val();
+            var part_number = $(this).find('td input[id=series]').data('partnumber');
             
-            var cant = $(this)[0].childNodes[15].innerHTML;
-            var unit = $(this)[0].childNodes[19].innerHTML;
+            if (requiereSeries == 'true' && series.length == 0){
+                validaCampos += 'El producto con Part Number '+part_number+' requiere que ingrese Series.\n'; 
+            }
+            
+            var cant = $(this)[0].childNodes[11].innerHTML;
+            var unit = $(this)[0].childNodes[15].innerHTML;
             detalle.push({ 
                 'id'  : id,
                 'tipo'  : tipo,
                 'id_producto'  : id_producto,
                 'cantidad'     : cant,
-                'unitario'     : unit
+                'unitario'     : unit,
+                'series'       : series
             });
         });
     } else {

@@ -65,10 +65,15 @@ Gestión de Customizaciones
                                         <thead>
                                             <tr>
                                                 <th hidden></th>
+                                                <th>Orden Elec.</th>
+                                                <th>Cuadro Costo</th>
+                                                <th>Oportunidad</th>
+                                                <th>Entidad</th>
                                                 <th>Fecha Registro</th>
-                                                <th>Fecha Transf.</th>
                                                 <th>Código</th>
-                                                <th>Cuadro Costos</th>
+                                                <th>Fecha Entrega</th>
+                                                <th>Fecha Inicio</th>
+                                                <th>Fecha Proceso</th>
                                                 <th>Almacén</th>
                                                 <th>Responsable</th>
                                                 <th>Observación</th>

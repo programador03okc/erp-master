@@ -64,6 +64,10 @@ class GestionCustomizacion
             // },
             'columns': [
                 {'data': 'id_transformacion'},
+                {'data': 'orden_am', 'name': 'oc_propias.orden_am'},
+                {'data': 'codigo_oportunidad', 'name': 'oportunidades.codigo_oportunidad'},
+                {'data': 'oportunidad', 'name': 'oportunidades.oportunidad'},
+                {'data': 'entidad', 'name': 'entidades.entidad'},
                 {'render':
                     function (data, type, row){
                         return (formatDate(row['fecha_registro']));
@@ -71,15 +75,18 @@ class GestionCustomizacion
                 },
                 {'render':
                     function (data, type, row){
-                        return (formatDate(row['fecha_transformacion']));
-                    }
-                },
-                {'render':
-                    function (data, type, row){
                         return ('<label class="lbl-codigo" title="Abrir Transformación" onClick="abrir_transformacion('+row['id_transformacion']+')">'+row['codigo']+'</label>');
                     }
                 },
-                {'data': 'codigo_oportunidad'},
+                {'data': 'fecha_entrega'},
+                {'data': 'fecha_inicio'},
+                {'data': 'fecha_transformacion'},
+                // {'render':
+                //     function (data, type, row){
+                //         return (formatDate(row['fecha_transformacion']));
+                //     }
+                // },
+                // {'data': 'codigo_oportunidad'},
                 {'data': 'descripcion'},
                 {'data': 'nombre_responsable'},
                 {'data': 'observacion'},

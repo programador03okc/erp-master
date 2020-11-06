@@ -25,9 +25,13 @@ function guardar_od_adjunto(){
     var formData = new FormData($('#form-od_adjunto')[0]);
     var id = $('[name=id_od]').val();
     var adjunto = $('[name=archivo_adjunto]').val();
+    var desc = $('[name=descripcion]').val();
     var nro = $('[name=numero]').val();
-    console.log(nro);
-    if (adjunto !== '' && adjunto !== null){
+    console.log(adjunto);
+    console.log(desc);
+    if (desc == '' && adjunto == null){
+        alert('Debe seleccionar un archivo o ingresar una descripción!');
+    } else {
         $.ajax({
             type: 'POST',
             // headers: {'X-CSRF-TOKEN': token},
@@ -40,7 +44,7 @@ function guardar_od_adjunto(){
             success: function(response){
                 console.log(response);
                 if (response > 0){
-                    alert('Adjunto registrado con éxito');
+                    // alert('Adjunto registrado con éxito');
                     listarAdjuntos(id);
                 }
             }
@@ -49,8 +53,6 @@ function guardar_od_adjunto(){
             console.log(textStatus);
             console.log(errorThrown);
         });
-    } else {
-        alert('Debe seleccionar un archivo!');
     }
 }
 

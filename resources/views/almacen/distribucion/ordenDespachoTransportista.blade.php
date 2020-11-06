@@ -29,7 +29,7 @@
                         </div>
                         <div class="col-md-6">
                             <h5>Fecha de Guía</h5>
-                            <input type="date" name="fecha_transportista" class="form-control" required/>
+                            <input type="date" name="fecha_transportista" class="form-control" value="<?=date('Y-m-d');?>" required/>
                         </div>
                     </div>
                     <!-- <div class="row">

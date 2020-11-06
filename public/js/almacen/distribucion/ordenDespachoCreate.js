@@ -22,6 +22,7 @@ function open_despacho_create(data){
     $('[name=id_sede]').val(data.sede_requerimiento !== null ? data.sede_requerimiento : '');
     $('[name=telefono_cliente]').val(data.telefono);
     $('[name=correo_cliente]').val(data.email);
+    $('[name=id_cc]').val(data.id_cc);
 
     // $('#'+data.documento+'').prop('checked', true);
     if (data.tipo_cliente == 1){
@@ -101,12 +102,15 @@ function detalleRequerimiento(id_requerimiento){
                     '<td>'+(element.producto_codigo !== null ? element.producto_codigo : '')+'</td>'+
                     '<td>'+(element.part_number !== null ? element.part_number : '')+'</td>'+
                     '<td>'+(element.producto_descripcion !== null ? element.producto_descripcion : element.descripcion_adicional)+'</td>'+
-                    '<td>'+(element.almacen_descripcion !== null ? element.almacen_descripcion : '')+'</td>'+
+                    // '<td>'+(element.almacen_descripcion !== null ? element.almacen_descripcion : '')+'</td>'+
                     '<td>'+element.cantidad+'</td>'+
                     '<td>'+(element.abreviatura !== null ? element.abreviatura : '')+'</td>'+
+                    '<td>'+(element.suma_despachos !== null ? element.suma_despachos : '0')+'</td>'+
                     '<td><input type="number" id="'+element.id_detalle_requerimiento+'cantidad" value="'+cant+'" max="'+cant+'" min="0" style="width: 80px;"/></td>'+
                     '<td><span class="label label-'+element.bootstrap_color+'">'+element.estado_doc+'</span></td>'+
-                    '</tr>';
+                    '<td><i class="fas fa-code-branch boton btn btn-warning" data-toggle="tooltip" data-placement="bottom" title="Ver Instrucciones" onClick="verInstrucciones('+element.id_detalle_requerimiento+');"></i>'+
+                    (element.series ? '<i class="fas fa-bars icon-tabla boton" data-toggle="tooltip" data-placement="bottom" title="Ver Series" onClick="verSeries('+element.id_detalle_requerimiento+');"></i>' : '')+
+                    '</td></tr>';
                 }
             });
             $('#detalleRequerimientoOD tbody').html(html);
@@ -117,6 +121,62 @@ function detalleRequerimiento(id_requerimiento){
         console.log(errorThrown);
     });
 }
+
+function verSeries(id_detalle_requerimiento){
+    if (id_detalle_requerimiento !== null){
+        $.ajax({
+            type: 'GET',
+            url: 'verSeries/'+id_detalle_requerimiento,
+            dataType: 'JSON',
+            success: function(response){
+                console.log(response);
+                $('#modal-ver_series').modal({
+                    show: true
+                });
+                var tr = '';
+                var i = 1;
+                response.forEach(element => {
+                    tr+=`<tr id="reg-${element.serie}">
+                            <td class="numero">${i}</td>
+                            <td><input type="text" class="oculto" name="series" value="${element.serie}"/>${element.serie}</td>
+                            <td>${element.serie_guia_com}-${element.numero_guia_com}</td>
+                            <td>${element.serie_guia_ven !== null ? (element.serie_guia_ven+'-'+element.numero_guia_ven) : ''}</td>
+                        </tr>`;
+                    i++;
+                });
+                $('#listaSeries tbody').html(tr);
+            }
+        }).fail( function( jqXHR, textStatus, errorThrown ){
+            console.log(jqXHR);
+            console.log(textStatus);
+            console.log(errorThrown);
+        });
+    }
+}
+
+function verInstrucciones(id_detalle_requerimiento){
+    $('#modal-od_transformacion').modal({
+        show: true
+    });
+    $('[name=id_detalle_requerimiento]').val(id_detalle_requerimiento);
+    $("#submit_od_transformacion").removeAttr("disabled");
+}
+
+$("#form-od_transformacion").on("submit", function(e){
+    e.preventDefault();
+    var id_detalle_requerimiento = $('[name=id_detalle_requerimiento]').val();
+    var ing = detalle_ingresa.find(element => element.id_detalle_requerimiento == id_detalle_requerimiento);
+    var data = $(this).serializeArray();
+    console.log(data);
+    // var indexed_array = {};
+    $.map(data, function(n, i){
+        ing[n['name']] = n['value'];
+        // indexed_array[n['name']] = n['value'];
+    });
+    // ing.transformacion = indexed_array;
+    console.log(detalle_ingresa);
+    $('#modal-od_transformacion').modal('hide');
+});
 
 function openCliente(){
     var tipoCliente = $('[name=tipo_cliente]').val();
@@ -184,6 +244,10 @@ $("#form-orden_despacho").on("submit", function(e){
                 'id_detalle_requerimiento' : json.id_detalle_requerimiento,
                 'id_producto'   : json.id_producto,
                 'descripcion'   : json.descripcion_adicional,
+                'part_number_transformado'   : json.part_number_transformado,
+                'descripcion_transformado'   : json.descripcion_transformado,
+                'comentario_transformado'   : json.comentario_transformado,
+                'cantidad_transformado'   : json.cantidad_transformado,
             });
         });
 
@@ -235,7 +299,7 @@ function guardar_orden_despacho(data){
                 $('#requerimientosConfirmados').DataTable().ajax.reload();
             } 
             else if (tab_origen == 'enProceso'){
-                $('#requerimientosPendientes').DataTable().ajax.reload();
+                $('#requerimientosEnProceso').DataTable().ajax.reload();
             }
             actualizaCantidadDespachosTabs();
         }
