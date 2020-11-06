@@ -50,14 +50,14 @@ function format ( table_id, id, row ) {
             if (response.length > 0){
                 response.forEach(function(element){
                     html+=`<tr>
-                    <td style="border: none;">${element.orden_am} <a href="https://apps1.perucompras.gob.pe//OrdenCompra/obtenerPdfOrdenPublico?ID_OrdenCompra=${element.id_oc_propia}&ImprimirCompleto=1">
-                            <span class="label label-success">Ver O.E.</span></a>
-                        <a href="${element.url_oc_fisica}">
-                            <span class="label label-warning">Ver O.F.</span></a>
+                    <td style="border: none;">${(element.orden_am!==null ? `<a href="https://apps1.perucompras.gob.pe//OrdenCompra/obtenerPdfOrdenPublico?ID_OrdenCompra=${element.id_oc_propia}&ImprimirCompleto=1">
+                    <span class="label label-success">Ver O.E.</span></a>
+                <a href="${element.url_oc_fisica}">
+                    <span class="label label-warning">Ver O.F.</span></a>`:'')} 
                     </td>
-                    <td style="border: none;">${element.codigo_oportunidad}</td>
-                    <td style="border: none;">${element.oportunidad}</td>
-                    <td style="border: none;">${element.nombre}</td>
+                    <td style="border: none;">${element.codigo_oportunidad!==null ? element.codigo_oportunidad : ''}</td>
+                    <td style="border: none;">${element.oportunidad!==null ? element.oportunidad : ''}</td>
+                    <td style="border: none;">${element.nombre!==null ? element.nombre : ''}</td>
                     <td style="border: none;">${element.codigo_req}</td>
                     <td style="border: none;">${element.codigo}</td>
                     <td style="border: none;">${element.part_number}</td>
