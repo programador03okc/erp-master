@@ -101,7 +101,7 @@ function listarRequerimientosElaborados(){
             },
             {'data': 'codigo_oportunidad', 'name': 'oportunidades.codigo_oportunidad'},
             {'data': 'oportunidad', 'name': 'oportunidades.oportunidad'},
-            {'data': 'entidad', 'name': 'entidades.entidad'},
+            {'data': 'nombre', 'name': 'entidades.nombre'},
             {'data': 'sede_descripcion_req', 'name': 'sede_req.descripcion'},
             {'data': 'codigo'},
             {'data': 'concepto'},
@@ -161,7 +161,7 @@ function listarRequerimientosConfirmados(permiso){
             },
             {'data': 'codigo_oportunidad', 'name': 'oportunidades.codigo_oportunidad'},
             {'data': 'oportunidad', 'name': 'oportunidades.oportunidad'},
-            {'data': 'entidad', 'name': 'entidades.entidad'},
+            {'data': 'nombre', 'name': 'entidades.nombre'},
             {'data': 'sede_descripcion_req', 'name': 'sede_req.descripcion'},
             {'data': 'codigo'},
             {'data': 'concepto'},
@@ -252,7 +252,7 @@ function listarRequerimientosPendientes(permiso){
             },
             {'data': 'codigo_oportunidad', 'name': 'oportunidades.codigo_oportunidad'},
             {'data': 'oportunidad', 'name': 'oportunidades.oportunidad'},
-            {'data': 'entidad', 'name': 'entidades.entidad'},
+            {'data': 'nombre', 'name': 'entidades.nombre'},
             {'data': 'sede_descripcion_req', 'name': 'sede_req.descripcion'},
             {'data': 'codigo'},
             {'data': 'concepto'},
@@ -469,7 +469,7 @@ function listarOrdenesPendientes(){
             },
             {'data': 'codigo_oportunidad', 'name': 'oportunidades.codigo_oportunidad'},
             {'data': 'oportunidad', 'name': 'oportunidades.oportunidad'},
-            {'data': 'entidad', 'name': 'entidades.entidad'},
+            {'data': 'nombre', 'name': 'entidades.nombre'},
             {'data': 'codigo'},
             {'render': 
                 function (data, type, row){
@@ -602,7 +602,7 @@ function listarGruposDespachados(permiso){
             },
             {'data': 'codigo_oportunidad', 'name': 'oportunidades.codigo_oportunidad'},
             {'data': 'oportunidad', 'name': 'oportunidades.oportunidad'},
-            {'data': 'entidad', 'name': 'entidades.entidad'},
+            {'data': 'nombre', 'name': 'entidades.nombre'},
             {'data': 'codigo_odg', 'name': 'orden_despacho_grupo.codigo'},
             // {'data': 'codigo_od', 'name': 'orden_despacho.codigo'},
             {'render': 
@@ -883,7 +883,7 @@ function listarGruposDespachadosPendientesCargo(permiso){
             },
             {'data': 'codigo_oportunidad', 'name': 'oportunidades.codigo_oportunidad'},
             {'data': 'oportunidad', 'name': 'oportunidades.oportunidad'},
-            {'data': 'entidad', 'name': 'entidades.entidad'},
+            {'data': 'nombre', 'name': 'entidades.nombre'},
             {'data': 'codigo_odg', 'name': 'orden_despacho_grupo.codigo'},
             // {'data': 'codigo_od', 'name': 'orden_despacho.codigo'},
             {'render': 

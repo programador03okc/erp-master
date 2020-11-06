@@ -57,7 +57,7 @@ function format ( table_id, id, row ) {
                     </td>
                     <td style="border: none;">${element.codigo_oportunidad}</td>
                     <td style="border: none;">${element.oportunidad}</td>
-                    <td style="border: none;">${element.entidad}</td>
+                    <td style="border: none;">${element.nombre}</td>
                     <td style="border: none;">${element.codigo_req}</td>
                     <td style="border: none;">${element.codigo}</td>
                     <td style="border: none;">${element.part_number}</td>
