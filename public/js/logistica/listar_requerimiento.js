@@ -106,6 +106,18 @@ function listar_ordenes_propias(){
             }
             },
             {'render': function (data, type, row){
+                if(row['tipo_cuadro'] == 0){
+                    return 'Venta';
+
+                }else if(row['tipo_cuadro'] ==1){
+                    return 'Acuerdo Marco';
+
+                }else{
+                    return '';
+                }
+                }
+            },
+            {'render': function (data, type, row){
                 let containerOpenBrackets='<center><div class="btn-group" role="group" style="margin-bottom: 5px;">';
                 let containerCloseBrackets='</div></center>';
                 let btnVerOrdenFisica='';
@@ -116,7 +128,7 @@ function listar_ordenes_propias(){
                 btnVerOrdenElectronica='<a class="btn btn-info btn-sm" title="O/C electrónica" href="https://apps1.perucompras.gob.pe//OrdenCompra/obtenerPdfOrdenPublico?ID_OrdenCompra='+row['id']+'&ImprimirCompleto=1" target="_blank"><i class="far fa-file-pdf"></i></a>';
                 btnVerOrdenFisica='<a class="btn btn-default btn-sm" title="O/C escaneada" href="'+row['url_oc_fisica']+'" target="_blank"><i class="far fa-file-alt"></i></a>';
                 if(row['id_estado_aprobacion_cc'] ==3){
-                    btnGenerarRequerimiento='<button type="button" class="btn btn-sm btn-log bg-maroon" title="Generar Requerimiento" onClick="generarRequerimientoByOrdenCompraPropia('+row['id']+','+row['id_cc']+')"><i class="fas fa-registered"></i></button>';
+                    btnGenerarRequerimiento='<button type="button" class="btn btn-sm btn-log bg-maroon" title="Generar Requerimiento" onClick="generarRequerimientoByOrdenCompraPropia('+row['tipo_cuadro']+','+row['id_cc']+')"><i class="fas fa-registered"></i></button>';
                 }else{
                     btnGenerarRequerimiento='';
                 }
@@ -148,9 +160,15 @@ function listar_ordenes_propias(){
 
 }
 
-function generarRequerimientoByOrdenCompraPropia(id_orden_propia,id_cc){
-    let data = {'id_orden_propia':id_orden_propia,'id_cc':id_cc };
-    // console.log(data);
+function generarRequerimientoByOrdenCompraPropia(tipo_cuadro,id_cc){
+
+    sessionStorage.removeItem('ordenP_Cuadroc')
+
+    let data = {
+        'tipo_cuadro':tipo_cuadro,
+        'id_cc':id_cc
+    };
+    console.log(data);
     sessionStorage.setItem('ordenP_Cuadroc', JSON.stringify(data));
     window.location.href = '/logistica/gestion-logistica/requerimiento/elaboracion/index'; //using a named route
 

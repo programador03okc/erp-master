@@ -10,7 +10,13 @@ rutaDireccionesCliente,
 rutaEmailCliente,
 rutaNextCodigoRequerimiento,
 rutaCuentasCliente,
-rutaGuardarCuentacliente;
+rutaGuardarCuentacliente,
+rutaCuadroCostos,
+rutaDetalleCuadroCostos,
+rutaObtenerCostruirCliente;
+
+var tempDetalleItemsCC=[];
+var tempDetalleItemCCSelect={};
 
 function inicializar( _rutaLista,
     _rutaMostrarRequerimiento,
@@ -24,7 +30,10 @@ function inicializar( _rutaLista,
     _rutaEmailCliente,
     _rutaNextCodigoRequerimiento,
     _rutaCuentasCliente,
-    _rutaGuardarCuentacliente
+    _rutaGuardarCuentacliente,
+    _rutaCuadroCostos,
+    _rutaDetalleCuadroCostos,
+    _rutaObtenerCostruirCliente
     ) {
     rutaListaRequerimientoModal = _rutaLista;
     rutaMostrarRequerimiento = _rutaMostrarRequerimiento;
@@ -39,6 +48,9 @@ function inicializar( _rutaLista,
     rutaNextCodigoRequerimiento = _rutaNextCodigoRequerimiento;
     rutaCuentasCliente = _rutaCuentasCliente;
     rutaGuardarCuentacliente = _rutaGuardarCuentacliente;
+    rutaCuadroCostos = _rutaCuadroCostos;
+    rutaDetalleCuadroCostos = _rutaDetalleCuadroCostos;
+    rutaObtenerCostruirCliente = _rutaObtenerCostruirCliente;
 
     listar_almacenes();
 
@@ -55,198 +67,149 @@ function inicializar( _rutaLista,
                 localStorage.removeItem("id_requerimiento");
                 changeStateButton('historial');
             }
-
             var ordenP_Cuadroc = JSON.parse(sessionStorage.getItem('ordenP_Cuadroc'));
-            if(ordenP_Cuadroc !== null && ordenP_Cuadroc.hasOwnProperty('id_orden_propia') && ordenP_Cuadroc.hasOwnProperty('id_cc')){
-                controlBtnVerDetalleCC('mostrar');
-                console.log(ordenP_Cuadroc);
-                let payload= getDataCuadroCostos();
-                fillDataCuadroCostosInReq(payload);
+            if(ordenP_Cuadroc !== null && ordenP_Cuadroc.hasOwnProperty('tipo_cuadro') && ordenP_Cuadroc.hasOwnProperty('id_cc')){
+                vista_extendida();
+                document.querySelector("fieldset[id='group-detalle-cuadro-costos']").removeAttribute('hidden');
+                // console.log(ordenP_Cuadroc);
+                let btnVinculoAcrivoCC= `<span class="text-info" id="text-info-cc-vinculado" > (vinculado a un CC) <span class="badge label-danger" onClick="eliminarVinculoCC();" style="position: absolute;margin-top: -5px;margin-left: 5px; cursor:pointer" title="Eliminar vínculo">×</span></span>`;
+                document.querySelector("section[class='content-header']").children[0].innerHTML+=btnVinculoAcrivoCC;
+                getDataCuadroCostos(ordenP_Cuadroc);
             }else{
-                console.log('ordenP_Cuadroc vacio');
+                console.log('no se encontro cuadro de costos, variable de sesión ordenP_Cuadroc vacia');
+                document.querySelector("fieldset[id='group-detalle-cuadro-costos']").setAttribute('hidden',true);
+
             }
 
 }
-function controlBtnVerDetalleCC(estado){
-    let inputs =document.querySelectorAll("button[name='btnVerDetalleCuadroCostos']");
-    let size = inputs.length;
-    if(estado =='mostrar'){
-        for (let index = 0; index < size; index++) {
-            console.log(inputs[index]);
-            inputs[index].style.display='inline-block';
-        }
-    }
-    if(estado =='ocultar'){
-        for (let index = 0; index < size; index++) {
-            inputs[index].style.display='none';
-        }
-    }
-
+ 
+function vista_extendida(){
+    let body=document.getElementsByTagName('body')[0];
+    body.classList.add("sidebar-collapse"); 
 }
-function getDataCuadroCostos(){
-    let payload ={
-        'orden_compra':{
-            'nro_oc':'OCAM-2020-853-38-0',
-            'empresa':'Smart Value',
-            'id_empresa':'3',
-            'entidad':'GOBIERNO REGIONAL DE LA LIBERTAD-SALUD UTES OTUZCO',
-            'fecha_publicacion':'2020-10-28', //28-10-2020
-            'fecha_entrega':'2020-11-09', //09-11-2020
-            'lugar_entraga':'CALLE PROGRESO N° 385 - OTUZCO',
+
+
+function getCabeceraCuadroCostos(id){
+    return new Promise(function(resolve, reject) {
+    $.ajax({
+        type: 'GET',
+        url:rutaCuadroCostos +'/'+id,
+        dataType: 'JSON',
+        success(response) {
+            resolve(response) // Resolve promise and go to then() 
         },
-        'cuadro_costos':{
-            'id_cc':'2180',
-            'nro_cc':'OKC2010193',
-            'estado':'Aprobado - etapa de compras',
-            'entidad':{
-                'detalle':{
-                    'dni_ruc':'20354537096',
-                    'entidad':'GOBIERNO REGIONAL DE LA LIBERTAD-SALUD UTES OTUZCO',
-                    'direccion':'CALLE PROGRESO Nº 385',
-                    'ubigeo':'OTUZCO / OTUZCO / LA LIBERTAD',
-                    'semaforo':'color rojo',
-                },
-                'responsable':{
-                    'nombre':'JOSE ANTONIO DE LA CRUZ AVALOS',
-                    'cargo':'JEFE DE ALMACEN',
-                    'telefono':'942037246',
-                    'correo':'josefino1974@hotmail.com'
-                },
-                'contacto':{
-                    'nombre':'',
-                    'cargo':'',
-                    'correo':'',
-                    'comentario':'',
-                    'telefono':''
-                }, 
-                
-            },
-            'bienes_para_servicio':'-S/0.00', 
-            'gastos_generales':'-S/0.00', 
-            'ganancia_real':'S/645.61', 
-            'margen_ganancia':'21.39%', 
-            'monto_adjudicado_inc_IGV':'S/3,561.50',
-            'detalle':[
-                {
-                    'id':1,
-                    'part_number':'ONPGG',
-                    'descripcion':'LAPTOP DEL LATITUDE 3410, CORE i5, 8GB, 1TB - ETIQUETAR CON P/N:&nbsp;0PTL341-31612SS3-H',
-                    'pvu_oc_sin_igv':'3,018.22',
-                    'flete_oc_sin_igv':'0.00',
-                    'cantidad':'1',
-                    'garantia_meses':'36',
-                    'origen_costo':'Mayoris. exclus.',
-                    'proveedor_seleccionado':'OK COMPUTER',
-                    'costos_unitario_sin_igv':'$442.00',
-                    'plazo_entrega_proveedor':'1',
-                    'flete_sin_igv':'S/80.00',
-                    'fondo_proveedor':'S/00.00',
-                    'costo_compra_dolares':'$442.00',
-                    'costo_compra_soles':'S/1,594.29',
-                    'total_flete_proveedor':'S/80.00',
-                    'costo_compra_mas_flete':'S/1,674.29',
-                    'monto_adjudicado':'S/3,018.22',
-                    'garantia':'S/1,343.93'
-                },
-                {
-                    'id':2,
-                    'part_number':'',
-                    'descripcion':'GYGABYTE 512GB M.2 NVME PCIE GEN 3.0 X4 - PARA CAMBIAR CON EL DE 1TB Y PASAR SU INFO',
-                    'pvu_oc_sin_igv':'0.00',
-                    'flete_oc_sin_igv':'1',
-                    'cantidad':'0',
-                    'garantia_meses':'0',
-                    'origen_costo':'Mayoris. exclus.',
-                    'proveedor_seleccionado':'OK COMPUTER',
-                    'costos_unitario_sin_igv':'$57.29',
-                    'plazo_entrega_proveedor':'1',
-                    'flete_sin_igv':'S/0.00',
-                    'fondo_proveedor':'S/0.00',
-                    'costo_compra_dolares':'$57.29',
-                    'costo_compra_soles':'S/206.65',
-                    'total_flete_proveedor':'S/0.00',
-                    'costo_compra_mas_flete':'S/206.65',
-                    'monto_adjudicado':'S/0.00',
-                    'garantia':'S/-206.65'
-                },
-                {
-                    'id':3,
-                    'part_number':'CT8G4SFRA266',
-                    'descripcion':'Crucial 8GB DDR4 2666 MHZ SODIMM- PARA AUMENTAR A 16GB',
-                    'pvu_oc_sin_igv':'0.00',
-                    'flete_oc_sin_igv':'0.00',
-                    'cantidad':'1',
-                    'garantia_meses':'0',
-                    'origen_costo':'Mayoris. exclus.',
-                    'proveedor_seleccionado':'OK COMPUTER',
-                    'costos_unitario_sin_igv':'$26.70',
-                    'plazo_entrega_proveedor':'1',
-                    'flete_sin_igv':'0.00',
-                    'fondo_proveedor':'0.00',
-                    'costo_compra_dolares':'$26.70',
-                    'costo_compra_soles':'S/96.31',
-                    'total_flete_proveedor':'S/0.00',
-                    'costo_compra_mas_flete':'S/96.31',
-                    'monto_adjudicado':'S/0.00',
-                    'garantia':'S/-96.31'
-                },
-                {
-                    'id':4,
-                    'part_number':'KW9-00142',
-                    'descripcion':'Sistema Operativo Microsoft Windows Home 10, 64 bits, español, 1pk, DSP OEI DVD - PARA INSTALAR EN LA LAPTOP',
-                    'pvu_oc_sin_igv':'0.00',
-                    'flete_oc_sin_igv':'0.00',
-                    'cantidad':'1',
-                    'garantia_meses':'0',
-                    'origen_costo':'Mayoris. exclus.',
-                    'proveedor_seleccionado':'GRUPO DELTRON S.A.',
-                    'costos_unitario_sin_igv':'$109.61',
-                    'plazo_entrega_proveedor':'1',
-                    'flete_sin_igv':'S/0.00',
-                    'fondo_proveedor':'S/0.00',
-                    'costo_compra_dolares':'$109.61',
-                    'costo_compra_soles':'S/395.36',
-                    'total_flete_proveedor':'S/0.00',
-                    'costo_compra_mas_flete':'S/395.36',
-                    'monto_adjudicado':'S/0.00',
-                    'garantia':'S/-395.36'
-                }
-            ]
+        error: function(err) {
+        reject(err) // Reject the promise and go to catch()
         }
-    };
-    return payload;
+        });
+    });
+}
+function geDetalleCuadroCostos(id){
+    return new Promise(function(resolve, reject) {
+    $.ajax({
+        type: 'GET',
+        url:rutaDetalleCuadroCostos +'/'+id,
+        dataType: 'JSON',
+        success(response) {
+            resolve(response) // Resolve promise and go to then() 
+        },
+        error: function(err) {
+        reject(err) // Reject the promise and go to catch()
+        }
+        });
+    });
 }
 
-function fillDataCuadroCostosInReq(payload){
-    // changeStateButton('nuevo');
+function getDataCuadroCostos(cc){
+    getCabeceraCuadroCostos(cc.id_cc).then(function(res) {
+        // Run this when your request was successful
+        // console.log(res)
+        if(res.status ==200){
+            llenarCabeceraCuadroCostos(res.data);
+        }
+    }).catch(function(err) {
+        // Run this when promise was rejected via reject()
+        console.log(err)
+    })
+    geDetalleCuadroCostos(cc.id_cc).then(function(res) {
+        // Run this when your request was successful
+        // console.log(res)
+        if(res.status ==200){
+            tempDetalleItemsCC= res.data;
+            llenarDetalleCuadroCostos(res.data);
+        }
+    }).catch(function(err) {
+        // Run this when promise was rejected via reject()
+        console.log(err)
+    })
+}
+
+function getOrBuildCustomer(razon_social,ruc,telefono,direccion,correo){
+    return new Promise(function(resolve, reject) {
+        $.ajax({
+            type: 'POST',
+            url:rutaObtenerCostruirCliente,
+            data:{'razon_social':razon_social ,'ruc':ruc,'telefono':telefono,'direccion':direccion,'correo':correo},
+            dataType: 'JSON',
+            success(response) {
+                resolve(response); // Resolve promise and go to then() 
+            },
+            error: function(err) {
+            reject(err); // Reject the promise and go to catch()
+            }
+            });
+        });
+}
+
+function llenarCabeceraCuadroCostos(data){
+// console.log(data);
     changeStateInput('form-requerimiento', false);
     changeStateButton('nuevo');
     nuevo_req();
+    document.querySelector("input[name='id_cc']").value =data.id_cc;
+    document.querySelector("input[name='tipo_cuadro']").value =data.tipo_cuadro;
     document.querySelector("select[name='tipo_requerimiento']").value =1;
-    document.querySelector("input[name='concepto']").value =payload.cuadro_costos.nro_cc;
-    document.querySelector("select[name='periodo']").value =1;
+    document.querySelector("input[name='confirmacion_pago']").value =true;
+    document.querySelector("input[name='concepto']").value =data.orden_am;
+    document.querySelector("select[name='periodo']").value =2;
     document.querySelector("select[name='prioridad']").value =1;
-    document.querySelector("select[id='empresa']").value =payload.orden_compra.id_empresa;
-    document.querySelector("select[name='sede']").value ='';
+    document.querySelector("select[id='empresa']").value =data.id_empresa;
+    getDataSelectSede(data.id_empresa);
+    // document.querySelector("select[name='sede']").value ='';
     document.querySelector("select[name='moneda']").value =1;
-    document.querySelector("textarea[name='observacion']").value ='Lugar de Entrega: '+payload.orden_compra.lugar_entraga;
-    document.querySelector("input[name='name_ubigeo']").value ='';
-    document.querySelector("input[name='monto']").value =payload.cuadro_costos.monto_adjudicado_inc_IGV;
-    document.querySelector("input[name='fecha_entrega']").value =payload.orden_compra.fecha_entrega;
+    document.querySelector("textarea[name='observacion']").value ='Lugar de Entrega: '+data.lugar_entraga + ', Ubigeo: '+data.ubigeo_entidad;
+    // document.querySelector("input[name='name_ubigeo']").value ='';
+    document.querySelector("input[name='monto']").value =data.monto_total;
+    document.querySelector("input[name='fecha_entrega']").value =data.fecha_entrega;
     document.querySelector("select[name='tipo_cliente']").value =2;
     changeTipoCliente(event,2); //cambiar input para tipo cliente
-    document.querySelector("input[name='cliente_ruc']").value =payload.cuadro_costos.entidad.detalle.dni_ruc;
-    document.querySelector("input[name='cliente_razon_social']").value =payload.cuadro_costos.entidad.detalle.entidad;
-    document.querySelector("input[name='direccion_entrega']").value =payload.cuadro_costos.entidad.detalle.direccion;
-    document.querySelector("input[name='telefono_cliente']").value =payload.cuadro_costos.entidad.responsable.telefono;
-    document.querySelector("input[name='email_cliente']").value =payload.cuadro_costos.entidad.responsable.correo;
 
-    mostrarDetalleCuadroCostos(payload);
+    
+    document.querySelector("h6[name='titulo_tabla_detalle_cc']").textContent = `Detalle de Cuadro de Costos ${data.codigo_oportunidad} ( ${data.estado_aprobacion_cc} )`;
 
+    getOrBuildCustomer(data.nombre_entidad,data.ruc_entidad,data.telefono,data.direccion_entidad,data.correo).then(function(res) {
+        // Run this when your request was successful
+        console.log(res);
+        if(res.status ==200){
+            document.querySelector("input[name='id_cliente']").value =res.data.id_cliente;
+            document.querySelector("input[name='cliente_ruc']").value =res.data.ruc;
+            document.querySelector("input[name='cliente_razon_social']").value =res.data.razon_social;
+            document.querySelector("input[name='direccion_entrega']").value =res.data.direccion;
+            document.querySelector("input[name='telefono_cliente']").value =res.data.telefono;
+            document.querySelector("input[name='email_cliente']").value =res.data.correo;
+            // console.log(res.mensaje);
+        }else{
+            console.log(res.status);
+            console.log(res.mensaje);
+        }
+    }).catch(function(err) {
+        // Run this when promise was rejected via reject()
+        console.log(err);
+    })
 
 }
 
-function mostrarDetalleCuadroCostos(payload){
+function llenarDetalleCuadroCostos(data){
 
 
     var dataTableListaDetalleCuadroCostos =  $('#ListaDetalleCuadroCostos').DataTable({
@@ -257,29 +220,24 @@ function mostrarDetalleCuadroCostos(payload){
         'dom': 'Bfrtip',
         'paging':   false,
         'searching': false,
-        'data':payload.cuadro_costos.detalle,
+        'data':data,
         'columns':[
-            {'data':'part_number'},
+            {'data':'part_no'},
             {'render': function (data, type, row){
                 return `${row['descripcion']}`;
                 }
             },
-            {'data':'pvu_oc_sin_igv'},
-            {'data':'flete_oc_sin_igv'},
+            {'data':'pvu_oc'},
+            {'data':'flete_oc'},
             {'data':'cantidad'},
-            {'data':'garantia_meses'},
-            {'data':'origen_costo'},
-            {'data':'proveedor_seleccionado'},
-            {'data':'costos_unitario_sin_igv'},
-            {'data':'plazo_entrega_proveedor'},
-            {'data':'flete_sin_igv'},
-            {'data':'fondo_proveedor'},
-            {'data':'costo_compra_dolares'},
-            {'data':'costo_compra_soles'},
-            {'data':'total_flete_proveedor'},
-            {'data':'costo_compra_mas_flete'},
-            {'data':'monto_adjudicado'},
-            {'data':'garantia'}
+            {'data':'garantia'},
+            {'data':'razon_social_proveedor'},
+            {'data':'nombre_autor'},
+            {'data':'fecha_creacion'}, 
+            {'render': function (data, type, row){
+                return `<button class="btn btn-xs btn-default" onclick="procesarItemDetalleCuadroCostos(${row['id']});" title="Agregar Item" style="background-color:#714fa7; color:white;"><i class="fas fa-plus"></i></button>`;
+                }
+            }
         ]
     });
 
@@ -291,82 +249,52 @@ function mostrarDetalleCuadroCostos(payload){
 
 
 }
+ 
+function eliminarVinculoCC(){
+    tempDetalleItemCCSelect={};
+    tempDetalleItemsCC=[];
+    sessionStorage.removeItem('ordenP_Cuadroc')
+    $('#text-info-cc-vinculado').attr('hidden',true);
+    $('#text-info-item-vinculado').attr('hidden',true);
+    document.querySelector("fieldset[id='group-detalle-cuadro-costos']").setAttribute('hidden',true);
+    alert("Se elimino el vinculo al Cuadro de Costos");
 
-function verDetalleCuadroCostos(){
-    $('#modal-detalle_cuadro_costos').modal({
-        show: true,
-        backdrop: 'true'
-    });
+}
+function eliminarVinculoItemCC(){
+    tempDetalleItemCCSelect={};
+    $('#text-info-item-vinculado').attr('hidden',true);
+    alert("Se elimino el vinculo del item seleccionado del Cuadro de Costos");
 
-    listarDetalleCuadroCostosConAccion();
 }
 
-function listarDetalleCuadroCostosConAccion(){
-    
-    let payload = getDataCuadroCostos();
-
-
-    var dataTableListaDetalleCuadroCostosConAccion =  $('#listaDetalleCuadroCostosConAccion').DataTable({
-        'processing': true,
-        "paging":         false,
-        'serverSide': false,
-        'bDestroy': true,
-        'bInfo':     false,
-        'dom': 'Bfrtip',
-        'searching': false,
-        'responsive': true,
-
-        'data':payload.cuadro_costos.detalle,
-        'columns':[
-            {'data':'part_number'},
-            {'render': function (data, type, row){
-                return `${row['descripcion']}`;
-                }
-            },
-            {'data':'pvu_oc_sin_igv'},
-            {'data':'flete_oc_sin_igv'},
-            {'data':'cantidad'},
-            {'data':'garantia_meses'},
-            {'data':'origen_costo'},
-            {'data':'proveedor_seleccionado'},
-            {'data':'costos_unitario_sin_igv'},
-            {'data':'plazo_entrega_proveedor'},
-            {'data':'flete_sin_igv'},
-            {'data':'fondo_proveedor'},
-            {'data':'costo_compra_dolares'},
-            {'data':'costo_compra_soles'},
-            {'data':'total_flete_proveedor'},
-            {'data':'costo_compra_mas_flete'},
-            {'data':'monto_adjudicado'},
-            {'data':'garantia'},
-            {'render': function (data, type, row){
-                return `<button class="btn btn-sm btn-info" onclick="copiarPegarItemDetalleCuadroCostos(${row['id']});" title="Copiar y Pegar"><i class="fas fa-paste"></i></button>`;
-                }
-            }
-        ]
-    });
-
-    document.querySelector("table[id='listaDetalleCuadroCostosConAccion']").tHead.style.fontSize = '11px',
-    document.querySelector("table[id='listaDetalleCuadroCostosConAccion']").tBodies[0].style.fontSize = '11px';
-    document.querySelector("table[id='listaDetalleCuadroCostosConAccion'] thead").style.backgroundColor ="#5d4d6d";
-
-    dataTableListaDetalleCuadroCostosConAccion.buttons().destroy();
-    $('#listaDetalleCuadroCostosConAccion tr').css('cursor','default');
-}
-
-function copiarPegarItemDetalleCuadroCostos(id_detalle_cc){
-    $('#modal-detalle_cuadro_costos').modal('hide');
+function procesarItemDetalleCuadroCostos(id_detalle_cc){
     console.log(id_detalle_cc);
-    let detalle_cc= getDataCuadroCostos().cuadro_costos.detalle;
-    let detalle_cc_selected='';
-    detalle_cc.forEach(element => {
+    
+    let detalle_cc_selected=null;
+    let id_cc_am_filas=null;
+    let id_cc_venta_filas=null;
+    tempDetalleItemsCC.forEach(element => {
         if(element.id == id_detalle_cc){
             detalle_cc_selected= element;
         }
     });
-    document.querySelector("div[id='modal-catalogo-items'] input[type='search']").value= detalle_cc_selected.descripcion;
-    document.querySelector("div[id='modal-crear-nuevo-producto'] input[name='part_number']").value= detalle_cc_selected.part_number;
-    document.querySelector("div[id='modal-crear-nuevo-producto'] input[name='descripcion']").value= detalle_cc_selected.descripcion;
+
+    if( detalle_cc_selected.hasOwnProperty('id_cc_am')){
+        id_cc_am_filas = detalle_cc_selected.id;
+        id_cc_venta_filas = null;
+    }else if(detalle_cc_selected.hasOwnProperty('id_cc_venta')){
+        id_cc_am_filas = null;
+        id_cc_venta_filas = detalle_cc_selected.id;
+    }
+    let descripcionParseText = ((detalle_cc_selected.descripcion).replace("&lt;","<")).trim();
+    let partNumberParseText = detalle_cc_selected.part_no;
+    tempDetalleItemCCSelect={
+        'part_number':document.querySelector("div[id='modal-crear-nuevo-producto'] input[name='part_number']").value= partNumberParseText?partNumberParseText:'',
+        'descripcion':document.querySelector("div[id='modal-crear-nuevo-producto'] input[name='descripcion']").value= descripcionParseText?descripcionParseText:'sin descripcion',
+        'id_cc_am_filas':id_cc_am_filas,
+        'id_cc_venta_filas':id_cc_venta_filas
+        }
+        catalogoItemsModal();
 
 }
 
@@ -1381,6 +1309,10 @@ function get_data_requerimiento(){
     let requerimiento = {};
     // console.log(tipo_req);
     tipo_requerimiento = tipo_req;
+    id_cc = document.querySelector("form[id='form-requerimiento'] input[name='id_cc']").value;
+    tipo_cuadro = document.querySelector("form[id='form-requerimiento'] input[name='tipo_cuadro']").value;
+    confirmacion_pago = document.querySelector("form[id='form-requerimiento'] input[name='confirmacion_pago']").value;
+
     id_requerimiento = document.querySelector("form[id='form-requerimiento'] input[name='id_requerimiento']").value;
     codigo = document.querySelector("form[id='form-requerimiento'] input[name='codigo']").value;
     concepto = document.querySelector("form[id='form-requerimiento'] input[name='concepto']").value;
@@ -1416,7 +1348,10 @@ function get_data_requerimiento(){
 
     requerimiento = {
         id_requerimiento,
+        id_cc,
+        tipo_cuadro,
         tipo_requerimiento,
+        confirmacion_pago,
         codigo,
         concepto,
         fecha_requerimiento,
@@ -1454,6 +1389,13 @@ return requerimiento;
 
 function get_data_detalle_requerimiento(){
 
+    let id_cc_am_filas = null;
+    let id_cc_venta_filas=null;
+    if( tempDetalleItemCCSelect.hasOwnProperty('id_cc_am_filas')){
+        id_cc_am_filas = tempDetalleItemCCSelect.id_cc_am_filas;
+    }else if(tempDetalleItemCCSelect.hasOwnProperty('id_cc_venta_filas')){
+        id_cc_venta_filas = tempDetalleItemCCSelect.id_cc_venta_filas;
+    }
  
     var id_item = $('[name=id_item]').val();
     var id_tipo_item = $('[name=id_tipo_item]').val();
@@ -1510,7 +1452,9 @@ function get_data_detalle_requerimiento(){
         'des_partida':des_partida,
         'estado':parseInt(estado),
         'id_almacen_reserva':parseInt(id_almacen_reserva),
-        'almacen_descripcion':almacen_descripcion
+        'almacen_descripcion':almacen_descripcion,
+        'id_cc_am_filas':id_cc_am_filas,
+        'id_cc_venta_filas': id_cc_venta_filas
         };
         return item;
 }
@@ -2079,6 +2023,8 @@ function catalogoItemsModal(){
 
         });
         listarItems();
+
+
     }
     else if(tipo_requerimiento == 2){
         var almacen = $('[name=id_almacen]').val();
@@ -2221,8 +2167,21 @@ function listarItems() {
                     ],
         'order': [
             [8, 'asc']
-        ]
+        ],
+        "initComplete": function(settings, json) {
+            if(tempDetalleItemCCSelect.hasOwnProperty('descripcion')){
+                if(tempDetalleItemCCSelect.descripcion.length >0){
+                    $('#text-info-item-vinculado').attr('title',tempDetalleItemCCSelect.descripcion);
+                    $('#text-info-item-vinculado').removeAttr('hidden');
+                    $('#example_filter input').val(tempDetalleItemCCSelect.descripcion);
+                    this.api().search(tempDetalleItemCCSelect.descripcion).draw();
+                }
+            }
+          } 
     });
+
+ 
+
     let tablelistaitem = document.getElementById(
         'listaItems_wrapper'
     )
@@ -2752,7 +2711,7 @@ function save_requerimiento(action){
     // requerimiento.id_rol = actual_id_rol; // update -> id rol actual
     // requerimiento.id_grupo = actual_id_grupo; // update -> id area actual
     let data = {requerimiento,detalle:detalle_requerimiento};
-    // console.log(data);
+    console.log(data);
 
     
     if (action == 'register'){
@@ -2795,6 +2754,7 @@ function save_requerimiento(action){
                         $('#form-requerimiento').attr('type', 'register');
                         changeStateInput('form-requerimiento', true);
                         alert("Requerimiento Guardado");
+                        sessionStorage.removeItem('ordenP_Cuadroc')
                         get_notificaciones_sin_leer_interval(); 
                         // showNotificacionUsuario(100); // notificaciones de navegador beta
                     }else{
@@ -3235,7 +3195,7 @@ function getDataSelectSede(id_empresa = null){
                 // console.log(response);  
                 if(response.length ==0){
                     console.error("usuario no registrado en 'configuracion'.'sis_usua_sede' o el estado del registro es diferente de 1");
-                    alert('No se pudo acceder al listado de Sedes, el usuario debe pertenecer a una Sede y la sede esta habilitada');
+                    alert('No se pudo acceder al listado de Sedes, el usuario debe pertenecer a una Sede y la sede debe estar habilitada');
                 }else{
                     llenarSelectSede(response);
                     seleccionarAmacen(response)
@@ -3329,7 +3289,8 @@ function stateFormRequerimiento(estilo){
             hiddeElement('ocultar','form-requerimiento',[
                 'input-group-proyecto',
                 'input-group-comercial',
-                'input-group-almacen'
+                'input-group-almacen',
+                'input-group-cuenta'
             ]);
             hiddeElement('mostrar','form-requerimiento',[
                 'input-group-rol-usuario',
@@ -3341,7 +3302,6 @@ function stateFormRequerimiento(estilo){
                 'input-group-email-cliente',
                 'input-group-cliente',
                 'input-group-direccion-entrega',
-                'input-group-cuenta',
                 'input-group-ubigeo-entrega',
                 'input-group-monto'
     

@@ -10,6 +10,7 @@ use PDF;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 date_default_timezone_set('America/Lima');
+use Debugbar;
 
 
 class OrdenController extends Controller
@@ -134,18 +135,18 @@ class OrdenController extends Controller
     }
 
     public function listar_requerimientos_pendientes($id_empresa= null, $id_sede=null){
-        $firstCondition[]=[['alm_req.estado', '=', 1],['alm_req.confirmacion_pago','=',true],['alm_req.id_tipo_requerimiento', '=', 1]];
-        $secondCondition[]=[['alm_req.estado', '=', 1],['alm_req.id_tipo_requerimiento', '=', 1]];
-        $thirdCondition[]=[['alm_req.estado', '=', 23],['alm_req.id_tipo_requerimiento', '=', 1]];
+        $firstCondition=[['alm_req.estado', '=', 1],['alm_req.confirmacion_pago','=',true],['alm_req.id_tipo_requerimiento', '=', 1]];
+        // $secondCondition[]=[['alm_req.estado', '=', 1],['alm_req.confirmacion_pago','=',true],['alm_req.id_tipo_requerimiento', '=', 1]];
+        $thirdCondition=[['alm_req.estado', '=', 23],['alm_req.confirmacion_pago','=',true],['alm_req.id_tipo_requerimiento', '=', 1]];
         if($id_empresa >0){
-            $firstCondition[0]=['alm_req.id_empresa','=',$id_empresa];
-            $secondCondition[0]=['alm_req.id_empresa','=',$id_empresa];
-            $thirdCondition[0]=['alm_req.id_empresa','=',$id_empresa];
+            $firstCondition[]=['alm_req.id_empresa','=',$id_empresa];
+            // $secondCondition[0]=['alm_req.id_empresa','=',$id_empresa];
+            $thirdCondition[]=['alm_req.id_empresa','=',$id_empresa];
         }
         if($id_sede >0){
-            $firstCondition[0]=['alm_req.id_sede','=',$id_sede];
-            $secondCondition[0]=['alm_req.id_sede','=',$id_sede];
-            $thirdCondition[0]=['alm_req.id_sede','=',$id_sede];
+            $firstCondition[]=['alm_req.id_sede','=',$id_sede];
+            // $secondCondition[0]=['alm_req.id_sede','=',$id_sede];
+            $thirdCondition[]=['alm_req.id_sede','=',$id_sede];
         }
  
         $alm_req = DB::table('almacen.alm_req')
@@ -212,7 +213,7 @@ class OrdenController extends Controller
 
         )
         ->where($firstCondition)
-        ->orWhere($secondCondition)
+        // ->orWhere($secondCondition)
         ->orWhere($thirdCondition)
         ->orderBy('alm_req.id_requerimiento', 'desc')
         ->get();
@@ -1475,8 +1476,8 @@ class OrdenController extends Controller
     }
 
     public function guardar_orden_por_requerimiento(Request $request){
-        try {
-            DB::beginTransaction();
+        // try {
+        //     DB::beginTransaction();
 
             $usuario = Auth::user()->id_usuario;
             $tp_doc = ($request->id_tipo_doc !== null ? $request->id_tipo_doc : 2);
@@ -1514,25 +1515,45 @@ class OrdenController extends Controller
                 'id_orden_compra'
             );
 
-            $dataDetalle = json_decode($request->detalle_requerimiento);
+            $dataDetalle = $request->detalle;
+            Debugbar::info($request->plazo_dias);
+            Debugbar::info($request->detalle);
+            Debugbar::info($request['detalle']);
+            Debugbar::info(json_encode($request));
+            Debugbar::info(json_encode($request->detalle));
+            Debugbar::info($dataDetalle);
+
+
+            // if(is_array($dataDetalle)){
+            //     foreach($dataDetalle as $d){
+            //         //Do something.
+            //         $done='oki';
+            //     }
+            // }else{
+            //     $done='nop';
+
+            // }
+            // return ($done);
+            // return ($request->detalle_requerimiento);
+            // return response()->json($request->detalle_requerimiento);
+
 
             $allidReqList=[];
-            foreach ($dataDetalle as $d) {
-                
-                $allidReqList[]= $d->id_requerimiento;
+            foreach($dataDetalle as $d) {
+                $allidReqList[]= $d['id_requerimiento'];
 
-                if($d->cantidad_a_comprar > 0){
+                if($d['cantidad_a_comprar'] > 0){
                     if($guardarEnRequerimiento == false){
                         DB::table('logistica.log_det_ord_compra')
                         ->insert([
                             'id_orden_compra'=>$id_orden,
-                            'id_item'=> ($d->id_item ? $d->id_item : null),
-                            'id_detalle_requerimiento'=> ($d->id_detalle_requerimiento ? $d->id_detalle_requerimiento : null),
-                            'cantidad'=> $d->cantidad_a_comprar,
-                            'id_unidad_medida'=> $d->id_unidad_medida,
-                            'precio'=> $d->precio_referencial,
+                            'id_item'=> ($d['id_item'] ? $d['id_item'] : null),
+                            'id_detalle_requerimiento'=> ($d['id_detalle_requerimiento'] ? $d['id_detalle_requerimiento'] : null),
+                            'cantidad'=> $d['cantidad_a_comprar'],
+                            'id_unidad_medida'=> $d['id_unidad_medida'],
+                            'precio'=> $d['precio_referencial'],
                             // 'subtotal'=> ($d->precio_referencial * $d->cantidad),
-                            'subtotal'=> $d->subtotal?$d->subtotal:0,
+                            'subtotal'=> $d['subtotal']?$d['subtotal']:0,
                             'estado'=> 17
                             // 'fecha_registro'=> date('Y-m-d H:i:s')
                         ]);
@@ -1540,18 +1561,18 @@ class OrdenController extends Controller
                         if(isset($d->id ) == true){
                             $id_new_det_req = DB::table('almacen.alm_det_req')->insertGetId(
                                 [
-                                    'id_requerimiento'      => ($d->id_requerimiento ? $d->id_requerimiento : null),
-                                    'id_item'               => ($d->id_item ? $d->id_item : null),
-                                    'id_producto'           => ($d->id_producto ? $d->id_producto : null),
-                                    'precio_referencial'    => ($d->precio_referencial ? $d->precio_referencial : null),
-                                    'cantidad'              => ($d->cantidad_a_comprar ? $d->cantidad_a_comprar : null),
+                                    'id_requerimiento'      => ($d['id_requerimiento'] ? $d['id_requerimiento'] : null),
+                                    'id_item'               => ($d['id_item'] ? $d['id_item'] : null),
+                                    'id_producto'           => ($d['id_producto'] ? $d['id_producto'] : null),
+                                    'precio_referencial'    => ($d['precio_referencial'] ? $d['precio_referencial'] : null),
+                                    'cantidad'              => ($d['cantidad_a_comprar'] ? $d['cantidad_a_comprar'] : null),
                                     'lugar_entrega'         => null,
-                                    'descripcion_adicional' => ($d->descripcion_adicional ? $d->descripcion_adicional : null),
+                                    'descripcion_adicional' => ($d['descripcion_adicional'] ? $d['descripcion_adicional'] : null),
                                     'partida'               => null,
-                                    'id_unidad_medida'      => ($d->cantidad_a_comprar ? $d->cantidad_a_comprar : null),
-                                    'id_tipo_item'          => ($d->id_tipo_item ? $d->id_tipo_item : null),
+                                    'id_unidad_medida'      => ($d['cantidad_a_comprar'] ? $d['cantidad_a_comprar'] : null),
+                                    'id_tipo_item'          => ($d['id_tipo_item'] ? $d['id_tipo_item'] : null),
                                     'fecha_registro'        => date('Y-m-d H:i:s'),
-                                    'estado'                => ($d->estado ? $d->estado : null),
+                                    'estado'                => ($d['estado'] ? $d['estado'] : null),
                                     'id_almacen_reserva'     => null
                                 ],
                                 'id_detalle_requerimiento'
@@ -1560,11 +1581,11 @@ class OrdenController extends Controller
                             DB::table('logistica.log_det_ord_compra')
                             ->insert([
                                 'id_orden_compra'=>$id_orden,
-                                'id_item'=> $d->id_item ? $d->id_item : null,
+                                'id_item'=> $d['id_item'] ? $d['id_item'] : null,
                                 'id_detalle_requerimiento'=> $id_new_det_req,
-                                'cantidad'=> $d->cantidad_a_comprar?$d->cantidad_a_comprar:null,
-                                'id_unidad_medida'=> $d->id_unidad_medida?$d->id_unidad_medida:null,
-                                'precio'=> $d->precio_referencial?$d->precio_referencial:null,
+                                'cantidad'=> $d['cantidad_a_comprar']?$d['cantidad_a_comprar']:null,
+                                'id_unidad_medida'=> $d['id_unidad_medida']?$d['id_unidad_medida']:null,
+                                'precio'=> $d['precio_referencial']?$d['precio_referencial']:null,
                                 'subtotal'=> $d->subtotal?$d->subtotal:null,
                                 'estado'=> 17
                             ]);
@@ -1583,26 +1604,26 @@ class OrdenController extends Controller
             $countAtendido=0;
             
                 foreach ($dataDetalle as $d) {
-                    if(($d->cantidad_a_comprar + $d->stock_comprometido ) == $d->cantidad ){
+                    if(($d['cantidad_a_comprar'] + $d['stock_comprometido'] ) == $d['cantidad'] ){
                         $countAtendido+=1;
-                        $idRequerimientoAtentidosTotalList[]=$d->id_requerimiento;
+                        $idRequerimientoAtentidosTotalList[]=$d['id_requerimiento'];
                         DB::table('almacen.alm_det_req')
-                        ->where('id_detalle_requerimiento',$d->id_detalle_requerimiento)
+                        ->where('id_detalle_requerimiento',$d['id_detalle_requerimiento'])
                         ->update(
                             [
                                 'estado'=>5, //atendido total
-                                'stock_comprometido'=> $d->stock_comprometido
+                                'stock_comprometido'=> $d['stock_comprometido']?$d['stock_comprometido']:0
                             ] 
                                 ); 
                     }
-                    if((($d->cantidad_a_comprar + $d->stock_comprometido )>0) && (($d->cantidad_a_comprar + $d->stock_comprometido ) < $d->cantidad)){
-                        $idRequerimientoAtentidosParcialList[]=$d->id_requerimiento;
+                    if((($d['cantidad_a_comprar'] + $d['stock_comprometido'] )>0) && (($d['cantidad_a_comprar'] + $d['stock_comprometido'] ) < $d['cantidad'])){
+                        $idRequerimientoAtentidosParcialList[]=$d['id_requerimiento'];
                         DB::table('almacen.alm_det_req')
-                        ->where('id_detalle_requerimiento',$d->id_detalle_requerimiento)
+                        ->where('id_detalle_requerimiento',$d['id_detalle_requerimiento'])
                         ->update(
                             [
                                 'estado'=>23, // atendido parcial
-                                'stock_comprometido'=> $d->stock_comprometido
+                                'stock_comprometido'=> $d['stock_comprometido']?$d['stock_comprometido']:0
                             ]
                             
                         ); 
@@ -1700,12 +1721,12 @@ class OrdenController extends Controller
             // }
   
 
-        DB::commit();
+        // DB::commit();
             return response()->json($id_orden);
 
-        } catch (\PDOException $e) {
-            DB::rollBack();
-        }
+        // } catch (\PDOException $e) {
+        //     DB::rollBack();
+        // }
 
     }
 

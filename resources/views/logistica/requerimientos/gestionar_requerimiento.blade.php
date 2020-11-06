@@ -36,6 +36,9 @@
         <input type="hidden" name="id_estado_doc">
         <input type="hidden" name="id_requerimiento" primary="ids">
         <input type="hidden" name="cantidad_aprobaciones">        
+        <input type="hidden" name="confirmacion_pago">
+        <input type="hidden" name="id_cc">
+        <input type="hidden" name="tipo_cuadro">
 
         <div class="row">
                 <div class="col-md-12">
@@ -82,7 +85,7 @@
                                 @endforeach
                             </select>
                     </div>
-                    <div class="col-md-2" id="input-group-rol-usuario">
+                    <div class="col-md-2" id="input-group-rol-usuario" >
                         <h5>Roles del Usuario</h5>
                         <div class="input-group-okc">
                             <select class="form-control input-sm activation" name="rol_usuario">
@@ -267,7 +270,7 @@
                     </button>
                 </div>
             </div>
-            <div class="col-md-6" id="input-group-cuenta" >
+            <div class="col-md-6" id="input-group-cuenta" hidden >
                 <h5>Cuenta</h5>
                 <div style="display:flex;">
                     <input type="text" class="oculto" name="id_cuenta" >
@@ -337,10 +340,10 @@
         </div>
     </fieldset>
     <br>
-    <fieldset class="group-table">
+    <fieldset class="group-table" id="group-detalle-cuadro-costos" hidden>
         <div class="row">
             <div class="col-sm-12">
-                <fieldset class="group-importes" ><legend style="background: #5d4d6d;"><h6>Detalles de cuadro de Costos OKC2010193 (Aprobado - etapa de compras)</h6></legend>
+                <fieldset class="group-importes" ><legend style="background: #5d4d6d;"><h6 name='titulo_tabla_detalle_cc'>Detalles de cuadro de Costos</h6></legend>
                 <table class="mytable table table-striped table-condensed table-bordered dataTable no-footer" id="ListaDetalleCuadroCostos" width="100%" style="width: 100%;background: #f8f3f9;">
                     <thead>
                         <tr>
@@ -350,18 +353,10 @@
                             <th>Flete O/C (sinIGV) S/</th>
                             <th>Cant.</th>
                             <th>Garant. meses</th>
-                            <th>Origen costo</th>
                             <th>Proveedor seleccionado</th>
-                            <th>Costo unit. sel.(sinIGV)</th>
-                            <th>Plazo ent. proveedor</th>
-                            <th>Flete S/ (sinIGV)</th>
-                            <th>Fondo proveedor</th>
-                            <th>Costo de compra</th>
-                            <th>Costo de compra en soles</th>
-                            <th>Total flete proveedor</th>
-                            <th>Costo compra + flete</th>
-                            <th>Monto adjudic.</th>
-                            <th>Ganancia</th>
+                            <th>Creado Por</th>
+                            <th>Fecha Creación</th>
+                            <th>Acción</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -442,7 +437,6 @@
 @include('logistica.requerimientos.modal_historial_requerimiento')
 @include('logistica.requerimientos.modal_catalogo_items')
 @include('logistica.requerimientos.modal_crear_nuevo_producto')
-@include('logistica.requerimientos.modal_detalle_cuadro_costos')
 @include('almacen.producto.saldosModal')
 @include('logistica.requerimientos.modal_partidas')
 @include('logistica.requerimientos.modal_empresa_area')
@@ -497,7 +491,10 @@
             "{{route('logistica.gestion-logistica.requerimiento.elaboracion.emails-cliente')}}",
             "{{route('logistica.gestion-logistica.requerimiento.elaboracion.siguiente-codigo-requerimiento')}}",
             "{{route('logistica.gestion-logistica.requerimiento.elaboracion.cuentas-cliente')}}",
-            "{{route('logistica.gestion-logistica.requerimiento.elaboracion.guardar-cuentas-cliente')}}"
+            "{{route('logistica.gestion-logistica.requerimiento.elaboracion.guardar-cuentas-cliente')}}",
+            "{{route('logistica.gestion-logistica.requerimiento.elaboracion.cuadro-costos')}}",
+            "{{route('logistica.gestion-logistica.requerimiento.elaboracion.detalle-cuadro-costos')}}",
+            "{{route('logistica.gestion-logistica.requerimiento.elaboracion.obtener-construir-cliente')}}"
             );
     });
     </script>

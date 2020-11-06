@@ -740,12 +740,12 @@ function obtenerRequerimiento(reqTrueList){
         data:{'requerimientoList':reqTrueList},
         dataType: 'JSON',
         success: function(response){
-            // console.log(response);
+            console.log(response);
             detalleRequerimientoSelected=response.det_req;
             listar_detalle_orden_requerimiento(response.det_req);
             // console.log(response.det_req); 
             // document.querySelector("div[id='modal-orden-requerimiento'] span[id='codigo_requeriento_seleccionado']").textContent= ' - Requerimiento: '+ response.requerimiento.codigo;
-            // document.querySelector("div[id='modal-orden-requerimiento'] input[name='id_requerimiento']").value= response.requerimiento.id_requerimiento;
+            // document.querySelector("div[id='modal-orden-requerimiento'] input[name='id_requerimiento']").value= response.requerimiento[0].id_requerimiento;
             // document.querySelector("div[id='modal-orden-requerimiento'] select[name='sede']").value= response.requerimiento.id_sede;
         }
     }).fail( function( jqXHR, textStatus, errorThrown ){
@@ -919,8 +919,9 @@ function margeObjArrayToDetalleReqSelected(){
         alert(`se vinculo con exito ${countChanges} item(s)`);
         $('#modal-vincular-item-requerimiento').modal('hide');
         linksToReqObjArray=[];
-        payload_orden = '&detalle_requerimiento='+JSON.stringify(detalleRequerimientoSelected);
-        sendDataToSaveOrden(payload_orden);
+        payload_orden =get_header_orden_requerimiento();
+        payload_orden.detalle= detalleRequerimientoSelected;
+    sendDataToSaveOrden(payload_orden);
 
     }else{
         alert('hubo un error al intentar vincular el item con el requerimiento');
@@ -1051,6 +1052,34 @@ function llenarTablaListaRequerimientosVinculados(data){
     let tablelistaitem = document.getElementById('listaRequerimientosVinculados_wrapper');
     tablelistaitem.childNodes[0].childNodes[0].hidden = true;
 }
+function get_header_orden_requerimiento(){
+    let id_tipo_doc = document.querySelector("div[id='modal-orden-requerimiento'] select[name='id_tipo_doc']").value;
+    let id_condicion = document.querySelector("div[id='modal-orden-requerimiento'] select[name='id_condicion']").value;
+    let plazo_dias = document.querySelector("div[id='modal-orden-requerimiento'] input[name='plazo_dias']").value;
+    let plazo_entrega = document.querySelector("div[id='modal-orden-requerimiento'] input[name='plazo_entrega']").value;
+    let id_moneda = document.querySelector("div[id='modal-orden-requerimiento'] select[name='id_moneda']").value;
+    let id_tp_documento = document.querySelector("div[id='modal-orden-requerimiento'] select[name='id_tp_documento']").value;
+    let codigo_orden = document.querySelector("div[id='modal-orden-requerimiento'] input[name='codigo_orden']").value;
+    let sede = document.querySelector("div[id='modal-orden-requerimiento'] select[name='sede']").value;
+    let id_proveedor = document.querySelector("div[id='modal-orden-requerimiento'] input[name='id_proveedor']").value;
+    let id_contrib = document.querySelector("div[id='modal-orden-requerimiento'] input[name='id_contrib']").value;
+
+    let data = {
+        'id_tipo_doc':id_tipo_doc, 
+        'id_condicion':id_condicion, 
+        'plazo_dias':plazo_dias, 
+        'plazo_entrega':plazo_entrega, 
+        'id_moneda':id_moneda, 
+        'id_tp_documento':id_tp_documento, 
+        'codigo_orden':codigo_orden, 
+        'sede':sede, 
+        'id_proveedor':id_proveedor, 
+        'id_contrib':id_contrib,
+        'detalle':[]
+    }
+    
+    return data;
+}
 
 $("#form-orden-requerimiento").on("submit", function(e){
     e.preventDefault();
@@ -1072,7 +1101,9 @@ $("#form-orden-requerimiento").on("submit", function(e){
                 }
             });
 
-            payload_orden += '&detalle_requerimiento='+JSON.stringify(detalleRequerimientoSelected);
+            payload_orden =get_header_orden_requerimiento();
+            payload_orden.detalle= detalleRequerimientoSelected;
+            // payload_orden += '&detalle_requerimiento='+JSON.stringify(detalleRequerimientoSelected);
             sendDataToSaveOrden(payload_orden);
 
         }else if(coutReqInObj >1){
@@ -1085,13 +1116,15 @@ $("#form-orden-requerimiento").on("submit", function(e){
 
             
         }else{ //no existen nuevos item argregados, guardar nromal (no habra que guardar en req)
-            payload_orden += '&detalle_requerimiento='+JSON.stringify(detalleRequerimientoSelected);
+            payload_orden =get_header_orden_requerimiento();
+            payload_orden.detalle= detalleRequerimientoSelected;
             sendDataToSaveOrden(payload_orden);
     
         }
     }else{ // sin guardar en req
-        payload_orden += '&detalle_requerimiento='+JSON.stringify(detalleRequerimientoSelected);
-        sendDataToSaveOrden(payload_orden);
+        payload_orden =get_header_orden_requerimiento();
+        payload_orden.detalle= detalleRequerimientoSelected;
+    sendDataToSaveOrden(payload_orden);
     }
 
     // let itemsChecked=[];
@@ -1122,7 +1155,7 @@ $("#form-orden-requerimiento").on("submit", function(e){
 });
 
 function sendDataToSaveOrden(payload){
-    console.log(payload);
+    // console.log(payload);
     let hasNull = hasNullCantidadAComprar();
 
     if(hasNull ==true){
@@ -1154,6 +1187,8 @@ function validaOrdenRequerimiento(){
 }
 
 function guardar_orden_requerimiento(data){
+    console.log(data);
+    
     var msj = validaOrdenRequerimiento();
     if (msj.length > 0){
         alert(msj);
@@ -1164,7 +1199,7 @@ function guardar_orden_requerimiento(data){
             data: data,
             dataType: 'JSON',
             success: function(response){
-                // console.log(response);
+                console.log(response);
                 if (response > 0){
                     alert('Orden de registrada con éxito');
                     $('#modal-orden-requerimiento').modal('hide');
@@ -1489,7 +1524,7 @@ function updateInputCantidadAComprar(event){
                 updateInObjCantidadAComprar(rowNumberSelected,idRequerimientoSelected,idDetalleRequerimientoSelected,nuevoValor);
                 calcTotalDetalleRequerimiento(idDetalleRequerimientoSelected,rowNumberSelected);
 
-                console.log(detalleRequerimientoSelected);
+                // console.log(detalleRequerimientoSelected);
                 // 
             }
             
@@ -1653,7 +1688,7 @@ function updateInObjCantidadAComprar(rowNumber, idReq,idDetReq,valor){
             }
         });
     }
-    console.log(detalleRequerimientoSelected);
+    // console.log(detalleRequerimientoSelected);
 }
 
 function updateInObjStockComprometido(rowNumber,idReq,idDetReq,valor){
