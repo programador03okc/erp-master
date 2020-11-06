@@ -651,6 +651,9 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::post('migrar_venta_directa', 'MigrateSoftLinkController@migrar_venta_directa');
 					Route::get('siguiente-codigo-requerimiento/{id_tipo_requerimiento?}', 'RequerimientoController@nextCodigoRequerimiento')->name('siguiente-codigo-requerimiento');
 					Route::post('guardar-producto', 'AlmacenController@guardar_producto')->name('guardar-producto');;
+					Route::get('cuadro-costos/{id_cc?}', 'RequerimientoController@cuadro_costos')->name('cuadro-costos');
+					Route::get('detalle-cuadro-costos/{id_cc?}', 'RequerimientoController@detalle_cuadro_costos')->name('detalle-cuadro-costos');
+					Route::post('obtener-construir-cliente', 'RequerimientoController@obtenerConstruirCliente')->name('obtener-construir-cliente');
 
 				
 

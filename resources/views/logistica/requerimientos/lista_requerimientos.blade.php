@@ -63,6 +63,8 @@
                                                                 <th>Estado Entrega</th>
                                                                 <th>Fecha Entrega</th>
                                                                 <th>Total</th>
+                                                                <th>Estado Aprob. CC</th>
+                                                                <th>Tipo Cuadro</th>
                                                                 <th width="120">ACCIÓN</th>
                                                             </tr>
                                                         </thead>
