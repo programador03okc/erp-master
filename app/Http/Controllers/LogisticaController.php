@@ -1694,8 +1694,8 @@ class LogisticaController extends Controller
             // 2 venta directa
             // 3 pedido almacén
 
-    // try {
-    //     DB::beginTransaction();
+    try {
+        DB::beginTransaction();
 
         $id_requerimiento=0;
         if($request->requerimiento['tipo_requerimiento'] == 2){
@@ -1859,12 +1859,12 @@ class LogisticaController extends Controller
         }
         
         }
-            // DB::commit();
+            DB::commit();
         return response()->json($id_requerimiento);
 
-        // } catch (\PDOException $e) {
-        //     DB::rollBack();
-        // }
+        } catch (\PDOException $e) {
+            DB::rollBack();
+        }
     }
 
     public function crear_notificacion_nuevo_requerimiento($id_requerimiento){
