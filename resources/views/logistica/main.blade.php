@@ -32,22 +32,6 @@
     <div class="col-md-3">
         <div class="small-box bg-orange">
             <div class="icon">
-                <i class="fas fa-hand-holding-usd"></i>
-                </div>
-                <div class="inner">
-                    <h3>{{$cantidad_pagos_pendientes}}</h3>
-                    <p style="font-size:15px;display:flex;width:20px;">Confirmaciones de Pago</p>
-                </div>
-                @if(Auth::user()->tieneAplicacion(79))
-                <a href="{{route('logistica.almacen.pagos.confirmacion-pagos.index')}}" class="small-box-footer">Ir <i class="fa fa-arrow-circle-right"></i></a>
-                @else
-                <a href="#" class="small-box-footer">Ir <i class="fa fa-arrow-circle-right"></i></a>
-                @endif
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="small-box bg-teal">
-            <div class="icon">
                 <i class="fas fa-file-invoice"></i>
                 </div>
                 <div class="inner">
@@ -64,7 +48,7 @@
         
     </div>
     <div class="col-md-3">
-        <div class="small-box bg-green">
+        <div class="small-box bg-teal">
             <div class="icon">
                 <i class="fas fa-truck"></i>
                 </div>
@@ -80,6 +64,23 @@
         </div>
         
     </div>
+    <div class="col-md-3">
+        <div class="small-box bg-green">
+            <div class="icon">
+                <i class="fas fa-code-branch"></i>
+                </div>
+                <div class="inner">
+                    <h3>{{$cantidad_transformaciones_pendientes}}</h3>
+                    <p style="font-size:15px;display:flex;width:20px;">Transformaciones Pendientes</p>
+                </div>
+                @if(Auth::user()->tieneAplicacion(79))
+                <a href="{{route('logistica.almacen.customizacion.gestion-customizaciones.index')}}" class="small-box-footer">Ir <i class="fa fa-arrow-circle-right"></i></a>
+                @else
+                <a href="#" class="small-box-footer">Ir <i class="fa fa-arrow-circle-right"></i></a>
+                @endif
+        </div>
+    </div>
+
 </div>
 <div class="row">
     <div class="col-md-9">

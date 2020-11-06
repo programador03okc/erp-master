@@ -1,5 +1,5 @@
 <div class="modal fade" tabindex="-1" role="dialog" id="modal-ver_series">
-    <div class="modal-dialog" style="width:30%;">
+    <div class="modal-dialog" style="width:40%;">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="close"><span aria-hidden="true">&times;</span></button>
@@ -37,7 +37,8 @@
                                     <!-- <td hidden></td> -->
                                     <td width="5%">#</td>
                                     <td width="60%">Serie</td>
-                                    <td>Guía Remisión</td>
+                                    <td>Guía Compra</td>
+                                    <td>Guía Venta</td>
                                     <!-- <td>Anular</td> -->
                                 </tr>
                             </thead>

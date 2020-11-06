@@ -110,30 +110,23 @@ class OrdenesPendientesController extends Controller
                 'log_det_ord_compra.*','alm_item.id_producto','alm_prod.codigo',
                 'alm_prod.part_number','alm_cat_prod.descripcion as categoria',
                 'alm_subcat.descripcion as subcategoria',
-                'alm_prod.descripcion','alm_und_medida.abreviatura',
-                'adm_estado_doc.estado_doc','adm_estado_doc.bootstrap_color'
-                // 'log_valorizacion_cotizacion.cantidad_cotizada',
-                // 'log_valorizacion_cotizacion.precio_cotizado',
-                // 'log_valorizacion_cotizacion.monto_descuento',
-                // 'log_valorizacion_cotizacion.subtotal'
-                // 'alm_det_req.id_item'
+                'alm_prod.descripcion','alm_und_medida.abreviatura','alm_req.codigo as codigo_req',
+                'adm_estado_doc.estado_doc','adm_estado_doc.bootstrap_color',
+                'oc_propias.orden_am','oportunidades.oportunidad','oportunidades.codigo_oportunidad',
+                'entidades.entidad','oc_propias.id as id_oc_propia','oc_propias.url_oc_fisica'
             )
-            // ->leftJoin('configuracion.sis_usua as sis_usua_aut', 'sis_usua_aut.id_usuario', '=', 'log_det_ord_compra.personal_autorizado')
-            // ->leftJoin('rrhh.rrhh_trab as trab_aut', 'trab_aut.id_trabajador', '=', 'sis_usua_aut.id_trabajador')
-            // ->leftJoin('rrhh.rrhh_postu as post_aut', 'post_aut.id_postulante', '=', 'trab_aut.id_postulante')
-            // ->leftJoin('rrhh.rrhh_perso as pers_aut', 'pers_aut.id_persona', '=', 'post_aut.id_persona')
-
-            // ->join('logistica.log_valorizacion_cotizacion', 'log_valorizacion_cotizacion.id_valorizacion_cotizacion', '=', 'log_det_ord_compra.id_valorizacion_cotizacion')
-            // ->join('logistica.valoriza_coti_detalle', 'valoriza_coti_detalle.id_valorizacion_cotizacion', '=', 'log_valorizacion_cotizacion.id_valorizacion_cotizacion')
-            // ->join('almacen.alm_det_req', 'alm_det_req.id_detalle_requerimiento', '=', 'valoriza_coti_detalle.id_detalle_requerimiento')
             ->leftjoin('almacen.alm_item', 'alm_item.id_item', '=', 'log_det_ord_compra.id_item')
             ->leftjoin('almacen.alm_prod', 'alm_prod.id_producto', '=', 'alm_item.id_producto')
             ->leftjoin('almacen.alm_cat_prod', 'alm_cat_prod.id_categoria', '=', 'alm_prod.id_categoria')
             ->leftjoin('almacen.alm_subcat', 'alm_subcat.id_subcategoria', '=', 'alm_prod.id_subcategoria')
             ->leftjoin('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'log_det_ord_compra.id_unidad_medida')
+            ->leftjoin('almacen.alm_det_req', 'alm_det_req.id_detalle_requerimiento', '=', 'log_det_ord_compra.id_detalle_requerimiento')
+            ->leftjoin('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'alm_det_req.id_requerimiento')
+            ->leftjoin('mgcp_cuadro_costos.cc','cc.id','=','alm_req.id_cc')
+            ->leftjoin('mgcp_oportunidades.oportunidades','oportunidades.id','=','cc.id_oportunidad')
+            ->leftjoin('mgcp_acuerdo_marco.oc_propias','oc_propias.id_oportunidad','=','oportunidades.id')
+            ->leftjoin('mgcp_acuerdo_marco.entidades','entidades.id','=','oportunidades.id_entidad')
             ->join('administracion.adm_estado_doc', 'adm_estado_doc.id_estado_doc', '=', 'log_det_ord_compra.estado')
-            // ->leftjoin('logistica.log_servi', 'log_servi.id_servicio', '=', 'alm_item.id_servicio')
-            // ->leftjoin('logistica.equipo', 'equipo.id_equipo', '=', 'alm_item.id_equipo')
             ->where([
                 ['log_det_ord_compra.id_orden_compra', '=', $id_orden]
             ])
@@ -180,8 +173,6 @@ class OrdenesPendientesController extends Controller
                 <td>'.$det->codigo_oc.'</td>
                 <td>'.$det->codigo.'</td>
                 <td>'.$det->part_number.'</td>
-                <td>'.$det->categoria.'</td>
-                <td>'.$det->subcategoria.'</td>
                 <td>'.$det->descripcion.'</td>
                 <td><input type="number" id="'.$det->id_detalle_orden.'cantidad" value="'.$cantidad.'" min="1" max="'.$cantidad.'" style="width:80px;"/></td>
                 <td>'.$det->abreviatura.'</td>
@@ -330,6 +321,21 @@ class OrdenesPendientesController extends Controller
                                     'id_guia_com_det'
                                 );
 
+                            if ($det->series !== null){
+                                //agrega series
+                                foreach ($det->series as $serie) {
+                                    DB::table('almacen.alm_prod_serie')->insert(
+                                        [
+                                            'id_prod' => $det->id_producto,
+                                            'id_almacen' => $request->id_almacen,
+                                            'serie' => $serie,
+                                            'estado' => 1,
+                                            'fecha_registro' => $fecha_registro,
+                                            'id_guia_det' => $id_guia_com_det
+                                        ]
+                                    );
+                                }
+                            }
                             //Guardo los items del ingreso
                             $id_det = DB::table('almacen.mov_alm_det')->insertGetId(
                                 [

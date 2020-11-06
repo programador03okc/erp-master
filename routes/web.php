@@ -932,6 +932,8 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::post('listarGruposDespachados', 'DistribucionController@listarGruposDespachados');
 					Route::post('listarGruposDespachadosPendientesCargo', 'DistribucionController@listarGruposDespachadosPendientesCargo');
 					Route::get('verDetalleGrupoDespacho/{id}', 'DistribucionController@verDetalleGrupoDespacho');
+					Route::post('despacho_transportista', 'DistribucionController@despacho_transportista');
+					Route::post('despacho_revertir_despacho', 'DistribucionController@despacho_revertir_despacho');
 					Route::post('despacho_conforme', 'DistribucionController@despacho_conforme');
 					Route::post('despacho_no_conforme', 'DistribucionController@despacho_no_conforme');
 					Route::get('imprimir_despacho/{id}', 'DistribucionController@imprimir_despacho');
@@ -948,6 +950,7 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::post('listarRequerimientosConfirmados', 'DistribucionController@listarRequerimientosConfirmados');
 					Route::get('actualizaCantidadDespachosTabs', 'DistribucionController@actualizaCantidadDespachosTabs');
 					Route::get('mostrar_prods', 'AlmacenController@mostrar_prods');
+					Route::get('verSeries/{id}', 'DistribucionController@verSeries');
 					Route::post('guardar_producto', 'AlmacenController@guardar_producto');
 
 				});
@@ -995,9 +998,11 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::post('guardar_guia_despacho', 'DistribucionController@guardar_guia_despacho');
 					Route::post('listarSalidasDespacho', 'DistribucionController@listarSalidasDespacho');
 					Route::post('anular_salida', 'DistribucionController@anular_salida');
+					Route::post('cambio_serie_numero', 'DistribucionController@cambio_serie_numero');
 					Route::get('verDetalleDespacho/{id}', 'DistribucionController@verDetalleDespacho');
 					Route::get('imprimir_salida/{id}', 'AlmacenController@imprimir_salida');
-	
+					Route::get('anular_orden_despacho/{id}', 'DistribucionController@anular_orden_despacho');
+
 				});
 	
 				Route::group(['as' => 'guias-compra.', 'prefix' => 'guias-compra'], function(){

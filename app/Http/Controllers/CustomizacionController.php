@@ -14,7 +14,9 @@ class CustomizacionController extends Controller
         $data = DB::table('almacen.transformacion')
         ->select('transformacion.*','adm_contri.razon_social','alm_almacen.descripcion',
         'respon.nombre_corto as nombre_responsable','regist.nombre_corto as nombre_registrado',
-        'adm_estado_doc.estado_doc','adm_estado_doc.bootstrap_color','oportunidades.codigo_oportunidad')
+        'adm_estado_doc.estado_doc','adm_estado_doc.bootstrap_color',
+        'oc_propias.orden_am','oportunidades.oportunidad','oportunidades.codigo_oportunidad',
+        'entidades.entidad')
         ->join('almacen.alm_almacen','alm_almacen.id_almacen','=','transformacion.id_almacen')
         ->join('administracion.sis_sede','sis_sede.id_sede','=','alm_almacen.id_sede')
         ->join('administracion.adm_empresa','adm_empresa.id_empresa','=','sis_sede.id_empresa')
@@ -24,6 +26,8 @@ class CustomizacionController extends Controller
         ->join('administracion.adm_estado_doc','adm_estado_doc.id_estado_doc','=','transformacion.estado')
         ->leftjoin('mgcp_cuadro_costos.cc','cc.id','=','transformacion.id_cc')
         ->leftjoin('mgcp_oportunidades.oportunidades','oportunidades.id','=','cc.id_oportunidad')
+        ->leftjoin('mgcp_acuerdo_marco.oc_propias','oc_propias.id_oportunidad','=','oportunidades.id')
+        ->leftjoin('mgcp_acuerdo_marco.entidades','entidades.id','=','oportunidades.id_entidad')
         // ->where([['transformacion.id_almacen','=',$id_almacen]])
         ->get();
         $output['data'] = $data;
@@ -35,8 +39,10 @@ class CustomizacionController extends Controller
         ->select('transformacion.*','alm_almacen.descripcion as almacen_descripcion',
                  'sis_usua.nombre_corto as nombre_responsable','orden_despacho.codigo as cod_od',
                  'alm_req.codigo as cod_req','guia_ven.serie','guia_ven.numero',
-                 'oportunidades.codigo_oportunidad','adm_estado_doc.estado_doc','alm_almacen.id_sede',
-                 'adm_estado_doc.bootstrap_color','log_prove.id_proveedor','adm_contri.razon_social')
+                 'adm_estado_doc.estado_doc','alm_almacen.id_sede','orden_despacho.id_od',
+                 'adm_estado_doc.bootstrap_color','log_prove.id_proveedor','adm_contri.razon_social',
+                 'oc_propias.orden_am','oportunidades.oportunidad','oportunidades.codigo_oportunidad',
+                 'entidades.entidad')
         ->join('almacen.orden_despacho','orden_despacho.id_od','=','transformacion.id_od')
         ->join('almacen.alm_almacen','alm_almacen.id_almacen','=','transformacion.id_almacen')
         ->join('administracion.sis_sede','sis_sede.id_sede','=','alm_almacen.id_sede')
@@ -50,6 +56,8 @@ class CustomizacionController extends Controller
                 })
         ->leftjoin('mgcp_cuadro_costos.cc','cc.id','=','transformacion.id_cc')
         ->leftjoin('mgcp_oportunidades.oportunidades','oportunidades.id','=','cc.id_oportunidad')
+        ->leftjoin('mgcp_acuerdo_marco.oc_propias','oc_propias.id_oportunidad','=','oportunidades.id')
+        ->leftjoin('mgcp_acuerdo_marco.entidades','entidades.id','=','oportunidades.id_entidad')
         ->join('administracion.adm_estado_doc','adm_estado_doc.id_estado_doc','=','transformacion.estado')
         ->join('configuracion.sis_usua','sis_usua.id_usuario','=','transformacion.responsable')
         ->where([['transformacion.estado','=',9]]);
@@ -58,8 +66,9 @@ class CustomizacionController extends Controller
 
     public function listarDetalleTransformacion($id_transformacion){
         $sobrantes = DB::table('almacen.transfor_sobrante')
-        ->select('transfor_sobrante.id_sobrante','transfor_sobrante.id_producto','transfor_sobrante.cantidad','transfor_sobrante.valor_unitario',
-        'transfor_sobrante.valor_total','alm_prod.descripcion','alm_prod.id_unidad_medida','alm_prod.part_number',
+        ->select('transfor_sobrante.id_sobrante','transfor_sobrante.id_producto','transfor_sobrante.cantidad',
+        'transfor_sobrante.valor_unitario','transfor_sobrante.valor_total','alm_prod.descripcion',
+        'alm_prod.id_unidad_medida','alm_prod.part_number','alm_prod.series',
         'alm_prod.codigo as cod_prod','alm_und_medida.abreviatura')
         ->join('almacen.alm_prod','alm_prod.id_producto','=','transfor_sobrante.id_producto')
         ->join('almacen.alm_und_medida','alm_und_medida.id_unidad_medida','=','alm_prod.id_unidad_medida')
@@ -67,8 +76,9 @@ class CustomizacionController extends Controller
         ->get();
 
         $transformados = DB::table('almacen.transfor_transformado')
-        ->select('transfor_transformado.id_transformado','transfor_transformado.id_producto','transfor_transformado.cantidad','transfor_transformado.valor_unitario',
-        'transfor_transformado.valor_total','alm_prod.descripcion','alm_prod.id_unidad_medida','alm_prod.part_number',
+        ->select('transfor_transformado.id_transformado','transfor_transformado.id_producto','transfor_transformado.cantidad',
+        'transfor_transformado.valor_unitario','transfor_transformado.valor_total','alm_prod.descripcion',
+        'alm_prod.id_unidad_medida','alm_prod.part_number','alm_prod.series',
         'alm_prod.codigo as cod_prod','alm_und_medida.abreviatura')
         ->join('almacen.alm_prod','alm_prod.id_producto','=','transfor_transformado.id_producto')
         ->join('almacen.alm_und_medida','alm_und_medida.id_unidad_medida','=','alm_prod.id_unidad_medida')

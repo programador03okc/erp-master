@@ -37,9 +37,11 @@ function iniciar(permiso){
     vista_extendida();
 }
 
+var table;
+
 function listarOrdenesPendientes(){
     var vardataTables = funcDatatables();
-    $('#ordenesPendientes').DataTable({
+    table = $('#ordenesPendientes').DataTable({
         'dom': vardataTables[1],
         'buttons': vardataTables[2],
         'language' : vardataTables[0],
@@ -52,31 +54,39 @@ function listarOrdenesPendientes(){
         },
         'columns': [
             {'data': 'id_orden_compra'},
+            {'data': 'codigo_softlink'},
             {'data': 'codigo'},
             {'data': 'sede_descripcion', 'name': 'sis_sede.descripcion'},
             {'data': 'razon_social', 'name': 'adm_contri.razon_social'},
             // {'data': 'codigo_softlink', 'name': 'log_ord_compra.codigo_softlink'},
             {'data': 'fecha'},
-            {'data': 'codigo_requerimiento', 'name': 'alm_req.codigo'},
-            {'data': 'concepto', 'name': 'alm_req.concepto'},
-            {'data': 'fecha_entrega', 'name': 'alm_req.fecha_entrega'},
+            // {'data': 'codigo_requerimiento', 'name': 'alm_req.codigo'},
+            // {'data': 'concepto', 'name': 'alm_req.concepto'},
+            // {'data': 'fecha_entrega', 'name': 'alm_req.fecha_entrega'},
             {'data': 'nombre_corto', 'name': 'sis_usua.nombre_corto'},
-            {'render': 
-                function (data, type, row){
-                    if (acceso == '1') {
-                        return '<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" '+
-                            'data-placement="bottom" title="Ver Detalle" >'+
-                            '<i class="fas fa-list-ul"></i></button>'+
-                        '<button type="button" class="guia btn btn-info boton" data-toggle="tooltip" '+
-                            'data-placement="bottom" title="Generar Guía" >'+
-                            '<i class="fas fa-sign-in-alt"></i></button>';
-                    } else {
-                        return '<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" '+
-                            'data-placement="bottom" title="Ver Detalle" >'+
-                            '<i class="fas fa-list-ul"></i></button>';
-                    }
+            {'render': function (data, type, row){
+                return '<span class="label label-'+row['bootstrap_color']+'">'+row['estado_doc']+'</span>'
                 }
-            }
+            },
+            // {'render': 
+            //     function (data, type, row){
+            //         if (acceso == '1') {
+            //             return '<button type="button" class="ver-detalle btn btn-primary boton" data-toggle="tooltip" '+
+            //             'data-placement="bottom" title="Ver Detalle" data-id="'+row['id_orden_compra']+'">'+
+            //             '<i class="fas fa-chevron-down"></i></button>'+
+            //             // '<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" '+
+            //             //     'data-placement="bottom" title="Ver Detalle" >'+
+            //             //     '<i class="fas fa-list-ul"></i></button>'+
+            //             '<button type="button" class="guia btn btn-info boton" data-toggle="tooltip" '+
+            //                 'data-placement="bottom" title="Generar Guía" >'+
+            //                 '<i class="fas fa-sign-in-alt"></i></button>';
+            //         } else {
+            //             return '<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" '+
+            //                 'data-placement="bottom" title="Ver Detalle" >'+
+            //                 '<i class="fas fa-list-ul"></i></button>';
+            //         }
+            //     }
+            // }
         ],
         'drawCallback': function(){
             $('#ordenesPendientes tbody tr td input[type="checkbox"]').iCheck({
@@ -101,6 +111,25 @@ function listarOrdenesPendientes(){
                         $('input[type="checkbox"]', nodes).iCheck('update');
                     }
                 }
+            },
+            {'render': 
+                function (data, type, row){
+                    if (acceso == '1') {
+                        return '<button type="button" class="ver-detalle btn btn-primary boton" data-toggle="tooltip" '+
+                        'data-placement="bottom" title="Ver Detalle" data-id="'+row['id_orden_compra']+'">'+
+                        '<i class="fas fa-chevron-down"></i></button>'+
+                        // '<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" '+
+                        //     'data-placement="bottom" title="Ver Detalle" >'+
+                        //     '<i class="fas fa-list-ul"></i></button>'+
+                        '<button type="button" class="guia btn btn-info boton" data-toggle="tooltip" '+
+                            'data-placement="bottom" title="Generar Guía" >'+
+                            '<i class="fas fa-sign-in-alt"></i></button>';
+                    } else {
+                        return '<button type="button" class="ver-detalle btn btn-primary boton" data-toggle="tooltip" '+
+                        'data-placement="bottom" title="Ver Detalle" data-id="'+row['id_orden_compra']+'">'+
+                        '<i class="fas fa-chevron-down"></i></button>';
+                    }
+                }, targets: 8
             }
          ],
         'select': 'multi',
@@ -159,14 +188,14 @@ function listarTransformaciones(){
         },
         'columns': [
             {'data': 'id_transformacion'},
+            {'data': 'orden_am', 'name': 'oc_propias.orden_am'},
+            {'data': 'codigo_oportunidad', 'name': 'oportunidades.codigo_oportunidad'},
+            {'data': 'oportunidad', 'name': 'oportunidades.oportunidad'},
+            {'data': 'entidad', 'name': 'entidades.entidad'},
             {'data': 'codigo'},
             {'data': 'fecha_transformacion', 'name': 'transformacion.fecha_transformacion'},
             {'data': 'almacen_descripcion', 'name': 'alm_almacen.descripcion'},
             {'data': 'nombre_responsable', 'name': 'sis_usua.nombre_corto'},
-            {'render': function(data, type, row){
-                    return (row['codigo_oportunidad'] !== null ? row['codigo_oportunidad'] : '');
-                }
-            },
             {'data': 'cod_od', 'name': 'orden_despacho.codigo'},
             {'data': 'cod_req', 'name': 'alm_req.codigo'},
             {'render': function(data, type, row){

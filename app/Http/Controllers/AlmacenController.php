@@ -25,20 +25,24 @@ class AlmacenController extends Controller
     function view_main_almacen()
     {
         $cantidades = AlmacenController::cantidades_main();
+        $cantidad_requerimientos = $cantidades['requerimientos'];
         $cantidad_ordenes_pendientes = $cantidades['orden'];
         $cantidad_despachos_pendientes = $cantidades['despachos'];
         $cantidad_ingresos_pendientes = $cantidades['ingresos'];
         $cantidad_salidas_pendientes = $cantidades['salidas'];
         $cantidad_transferencias_pendientes = $cantidades['transferencias'];
-        $cantidad_pagos_pendientes = $cantidades['pagos'];
+        // $cantidad_pagos_pendientes = $cantidades['pagos'];
+        $cantidad_transformaciones_pendientes = $cantidades['transformaciones_pend'];
 
         return view('almacen/main', compact(
+            'cantidad_requerimientos',
             'cantidad_ordenes_pendientes',
             'cantidad_despachos_pendientes',
             'cantidad_ingresos_pendientes',
             'cantidad_salidas_pendientes',
             'cantidad_transferencias_pendientes',
-            'cantidad_pagos_pendientes'
+            // 'cantidad_pagos_pendientes',
+            'cantidad_transformaciones_pendientes'
             ));
     }
     public static function cantidades_main(){
@@ -72,17 +76,25 @@ class AlmacenController extends Controller
         }
         
         $req = DB::table('almacen.alm_req')
-        ->where([['alm_req.estado','=',1], ['alm_req.confirmacion_pago','=',false]])//muestra todos los reservados
-        ->orWhere([['alm_req.id_tipo_requerimiento','!=',1], ['alm_req.estado','=',19], ['alm_req.confirmacion_pago','=',false]])
+        ->where([['alm_req.estado','=',1]])
         ->count();
 
         $orden = DB::table('almacen.alm_req')
-        ->where([['estado','=',1],['confirmacion_pago','=',true]])
+        ->orWhere([['alm_req.estado','=',5]])
+        ->orWhere([['alm_req.estado','=',15]])
         ->count();
 
-        $ingresos = DB::table('almacen.alm_req')
-        ->where([['estado','=',5]])
+        $ordenes = DB::table('logistica.log_ord_compra')
+        ->where([['log_ord_compra.estado','!=',7],
+                    ['log_ord_compra.en_almacen','=',false],
+                    ['log_ord_compra.id_tp_documento','=',2]])
         ->count();
+
+        $transformaciones = DB::table('almacen.transformacion')
+        ->where([['transformacion.estado','=',9]])
+        ->count();
+
+        $ingresos = $ordenes + $transformaciones;
 
         $salidas = DB::table('almacen.orden_despacho')
         ->where('estado',1)
@@ -93,13 +105,19 @@ class AlmacenController extends Controller
         ->orWhere('estado',17)
         ->count();
 
-        $pagos = DB::table('almacen.alm_req')
-        ->where([['id_tipo_requerimiento','=',1],['estado','=',1],['confirmacion_pago','=',false]])
-        ->orWhere([['id_tipo_requerimiento','!=',1],['estado','=',19],['confirmacion_pago','=',false]])
+        // $pagos = DB::table('almacen.alm_req')
+        // ->where([['id_tipo_requerimiento','=',1],['estado','=',1],['confirmacion_pago','=',false]])
+        // ->orWhere([['id_tipo_requerimiento','!=',1],['estado','=',19],['confirmacion_pago','=',false]])
+        // ->count();
+
+        $transformaciones_pend = DB::table('almacen.transformacion')
+        ->where('estado',1)
+        ->orWhere('estado',21)
+        ->orWhere('estado',24)
         ->count();
 
         return (['requerimientos'=>$req,'orden'=>$orden,'despachos'=>$despachos,'ingresos'=>$ingresos, 'salidas'=>$salidas, 
-        'transferencias'=>$transferencias, 'pagos'=>$pagos]);
+        'transferencias'=>$transferencias, 'transformaciones_pend'=>$transformaciones_pend]);
     }
 
     function view_tipo(){

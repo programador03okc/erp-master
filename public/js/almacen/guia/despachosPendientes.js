@@ -78,13 +78,16 @@ function listarDespachosPendientes(permiso){
             {'aTargets': [0], 'sClass': 'invisible'},
             {'render': function (data, type, row){
                 if (permiso == '1') {
-                    return '<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" '+
-                    'data-placement="bottom" title="Ver Detalle" >'+
-                    '<i class="fas fa-list-ul"></i></button>'+
+                    return `<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" 
+                        data-placement="bottom" title="Ver Detalle" >
+                        <i class="fas fa-list-ul"></i></button>`+
                     (row['estado'] == 1 ? 
-                    ('<button type="button" class="guia btn btn-warning boton" data-toggle="tooltip" '+
-                        'data-placement="bottom" title="Generar Guía" >'+
-                        '<i class="fas fa-sign-in-alt"></i></button>') : '');
+                    (`<button type="button" class="guia btn btn-warning boton" data-toggle="tooltip" 
+                        data-placement="bottom" title="Generar Guía" >
+                        <i class="fas fa-sign-in-alt"></i></button>
+                    <button type="button" class="anular btn btn-danger boton" data-toggle="tooltip" 
+                        data-placement="bottom" title="Anular Orden de Despacho" data-id="${row['id_od']}">
+                        <i class="fas fa-trash"></i></button>`) : '');
                 } else {
                     return '<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" '+
                     'data-placement="bottom" title="Ver Detalle" >'+
@@ -108,6 +111,32 @@ $('#despachosPendientes tbody').on("click","button.guia", function(){
     console.log('data.id_od'+data.id_od);
     open_guia_create(data);
 });
+
+$('#despachosPendientes tbody').on("click","button.anular", function(){
+    var id = $(this).data('id');
+    var msj = confirm('¿Está seguro que desea anular la Orden de Despacho ?');
+    if (msj){
+        anularOrdenDespacho(id);
+    }
+});
+
+function anularOrdenDespacho(id){
+    $.ajax({
+        type: 'GET',
+        url: 'anular_orden_despacho/'+id,
+        dataType: 'JSON',
+        success: function(response){
+            console.log(response);
+            if (response > 0){
+                $('#despachosPendientes').DataTable().ajax.reload();
+            }
+        }
+    }).fail( function( jqXHR, textStatus, errorThrown ){
+        console.log(jqXHR);
+        console.log(textStatus);
+        console.log(errorThrown);
+    });
+}
 
 function listarDespachosEntregados(permiso){
     var vardataTables = funcDatatables();
@@ -149,12 +178,15 @@ function listarDespachosEntregados(permiso){
             {'aTargets': [0], 'sClass': 'invisible'},
             {'render': function (data, type, row){
                     if (permiso == '1') {
-                        return '<button type="button" class="salida btn btn-warning boton" data-toggle="tooltip" '+
-                            'data-placement="bottom" title="Ver Salida" data-id="'+row['id_mov_alm']+'">'+
-                            '<i class="fas fa-file-alt"></i></button>'+
-                            '<button type="button" class="anular btn btn-danger boton" data-toggle="tooltip" '+
-                            'data-placement="bottom" title="Anular Salida" data-id="'+row['id_mov_alm']+'" data-guia="'+row['id_guia_ven']+'" data-od="'+row['id_od']+'">'+
-                            '<i class="fas fa-trash"></i></button>';
+                        return `<button type="button" class="salida btn btn-warning boton" data-toggle="tooltip" 
+                            data-placement="bottom" title="Ver Salida" data-id="${row['id_mov_alm']}">
+                            <i class="fas fa-file-alt"></i></button>
+                            <button type="button" class="anular btn btn-danger boton" data-toggle="tooltip" 
+                                data-placement="bottom" title="Anular Salida" data-id="${row['id_mov_alm']}" data-guia="${row['id_guia_ven']}"
+                                data-od="${row['id_od']}"><i class="fas fa-trash"></i></button>
+                            <button type="button" class="cambio btn btn-success boton" data-toggle="tooltip" 
+                                data-placement="bottom" title="Cambiar Serie-Número" data-id="${row['id_mov_alm']}" data-guia="${row['id_guia_ven']}"
+                                data-od="${row['id_od']}"><i class="fas fa-sync-alt"></i></button>`;
                     } else {
                         return '<button type="button" class="salida btn btn-warning boton" data-toggle="tooltip" '+
                             'data-placement="bottom" title="Ver Salida" data-id="'+row['id_mov_alm']+'">'+
@@ -224,3 +256,19 @@ function anular_salida(data){
         console.log(errorThrown);
     });
 }
+
+$('#despachosEntregados tbody').on("click","button.cambio", function(){
+    var id_mov_alm = $(this).data('id');
+    var id_guia = $(this).data('guia');
+    var id_od = $(this).data('od');
+
+    $('#modal-guia_ven_cambio').modal({
+        show: true
+    });
+
+    $('[name=id_salida]').val(id_mov_alm);
+    $('[name=id_guia_ven]').val(id_guia);
+    $('[name=id_od]').val(id_od);
+
+    $("#submit_guia_ven_cambio").removeAttr("disabled");
+});
