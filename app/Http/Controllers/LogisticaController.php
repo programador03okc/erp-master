@@ -50,8 +50,12 @@ class LogisticaController extends Controller
         $sis_identidad = $this->select_sis_identidad();
         $bancos = $this->select_bancos();
         $tipos_cuenta = $this->select_tipos_cuenta();
+        $clasificaciones = (new AlmacenController)->mostrar_clasificaciones_cbo();
+        $subcategorias = (new AlmacenController)->mostrar_subcategorias_cbo();
+        $categorias = (new AlmacenController)->mostrar_categorias_cbo();
+        $unidades = (new AlmacenController)->mostrar_unidades_cbo();
 
-        return view('logistica/requerimientos/gestionar_requerimiento', compact('sis_identidad','tipo_requerimiento','monedas', 'prioridades', 'empresas', 'unidades_medida','roles','periodos','bancos','tipos_cuenta'));
+        return view('logistica/requerimientos/gestionar_requerimiento', compact('sis_identidad','tipo_requerimiento','monedas', 'prioridades', 'empresas', 'unidades_medida','roles','periodos','bancos','tipos_cuenta','clasificaciones','subcategorias','categorias','unidades'));
     }
 
     function view_gestionar_cotizaciones()
@@ -1690,8 +1694,8 @@ class LogisticaController extends Controller
             // 2 venta directa
             // 3 pedido almacén
 
-    // try {
-    //     DB::beginTransaction();
+    try {
+        DB::beginTransaction();
 
         $id_requerimiento=0;
         if($request->requerimiento['tipo_requerimiento'] == 2){
@@ -1730,6 +1734,19 @@ class LogisticaController extends Controller
             return 0;
         }else{
 
+        if($request->requerimiento['tipo_requerimiento'] ==1){
+            $estado = 1;
+            if($request->requerimiento['id_cc'] != null || $request->requerimiento['id_cc'] != ''){
+                $estado = 2;
+            }
+        }
+        elseif($request->requerimiento['tipo_requerimiento'] ==2){
+            $estado = 19;
+        }
+        else{
+            $estado = 1;
+            
+        }
         //----------------------------------------------------------------------------
         $id_requerimiento = DB::table('almacen.alm_req')->insertGetId(
             [
@@ -1746,7 +1763,7 @@ class LogisticaController extends Controller
                 'id_area'               => isset($request->requerimiento['id_area'])?$request->requerimiento['id_area']:null,
                 'id_prioridad'          => isset($request->requerimiento['id_prioridad'])?$request->requerimiento['id_prioridad']:null,
                 'fecha_registro'        => date('Y-m-d H:i:s'),
-                'estado'                => ($request->requerimiento['tipo_requerimiento'] ==2?19:1),
+                'estado'                => $estado,
                 'id_empresa'            => isset($request->requerimiento['id_empresa'])?$request->requerimiento['id_empresa']:null,
                 'id_sede'               => isset($request->requerimiento['id_sede'])?$request->requerimiento['id_sede']:null,
                 'tipo_cliente'          => isset($request->requerimiento['tipo_cliente'])?$request->requerimiento['tipo_cliente']:null,
@@ -1760,9 +1777,11 @@ class LogisticaController extends Controller
                 'email'                 => isset($request->requerimiento['email'])?$request->requerimiento['email']:null,
                 'id_ubigeo_entrega'     => isset($request->requerimiento['ubigeo'])?$request->requerimiento['ubigeo']:null,
                 'id_almacen'            => isset($request->requerimiento['id_almacen'])?$request->requerimiento['id_almacen']:null,
-                'confirmacion_pago'     => false,
+                'confirmacion_pago'     => isset($request->requerimiento['confirmacion_pago'])?$request->requerimiento['confirmacion_pago']:false,
                 'monto'                 => isset($request->requerimiento['monto'])?$request->requerimiento['monto']:null,
-                'fecha_entrega'         => isset($request->requerimiento['fecha_entrega'])?$request->requerimiento['fecha_entrega']:null
+                'fecha_entrega'         => isset($request->requerimiento['fecha_entrega'])?$request->requerimiento['fecha_entrega']:null,
+                'id_cc'                 => isset($request->requerimiento['id_cc'])?$request->requerimiento['id_cc']:null,
+                'tipo_cuadro'           => isset($request->requerimiento['tipo_cuadro'])?$request->requerimiento['tipo_cuadro']:null
             ],
             'id_requerimiento'
         );
@@ -1793,7 +1812,9 @@ class LogisticaController extends Controller
                             'id_tipo_item'          => is_numeric($detalle_reqArray[$i]['id_tipo_item']) == 1 ? $detalle_reqArray[$i]['id_tipo_item']:null,
                             'fecha_registro'        => date('Y-m-d H:i:s'),
                             'estado'                => ($request->requerimiento['tipo_requerimiento'] ==2?19:1),
-                            'id_almacen_reserva'     => is_numeric($detalle_reqArray[$i]['id_almacen_reserva']) == 1 ? $detalle_reqArray[$i]['id_almacen_reserva']:null
+                            'id_almacen_reserva'    => is_numeric($detalle_reqArray[$i]['id_almacen_reserva']) == 1 ? $detalle_reqArray[$i]['id_almacen_reserva']:null,
+                            'id_cc_am_filas'           => is_numeric($detalle_reqArray[$i]['id_cc_am_filas']) == 1 ? $detalle_reqArray[$i]['id_cc_am_filas']:null,
+                            'id_cc_venta_filas'       => is_numeric($detalle_reqArray[$i]['id_cc_venta_filas']) == 1 ? $detalle_reqArray[$i]['id_cc_venta_filas']:null
                         ],
                         'id_detalle_requerimiento'
                     );
@@ -1838,12 +1859,12 @@ class LogisticaController extends Controller
         }
         
         }
-        // DB::commit();
+            DB::commit();
         return response()->json($id_requerimiento);
 
-        // } catch (\PDOException $e) {
-        //     DB::rollBack();
-        // }
+        } catch (\PDOException $e) {
+            DB::rollBack();
+        }
     }
 
     public function crear_notificacion_nuevo_requerimiento($id_requerimiento){

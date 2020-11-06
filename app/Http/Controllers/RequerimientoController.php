@@ -600,17 +600,320 @@ class RequerimientoController extends Controller
             'oc_propias.*',
             'empresas.empresa',
             'acuerdo_marco.descripcion_corta as am',
-            'entidades.nombre as entidad'
+            'entidades.nombre as entidad',
+            'cc.estado_aprobacion as id_estado_aprobacion_cc',
+            'estados_aprobacion.estado as estado_aprobacion_cc',
+            'oportunidades.id_tipo_negocio',
+            'tipos_negocio.tipo as tipo_negocio',
+            'cc.id as id_cc',
+            'cc.tipo_cuadro',
+            'cc_am_filas.id as id_am_filas',
+            'cc_venta_filas.id as id_venta_filas',
+            'oportunidades.id_tipo_negocio',
+            'tipos_negocio.tipo as tipo_negocio'
             )
         ->leftJoin('mgcp_acuerdo_marco.empresas', 'empresas.id', '=', 'oc_propias.id_empresa')
         ->leftJoin('mgcp_acuerdo_marco.entidades', 'entidades.id', '=', 'oc_propias.id_entidad')
         ->leftJoin('mgcp_acuerdo_marco.catalogos', 'catalogos.id', '=', 'oc_propias.id_catalogo')
         ->leftJoin('mgcp_acuerdo_marco.acuerdo_marco', 'acuerdo_marco.id', '=', 'catalogos.id_acuerdo_marco')
+        ->leftJoin('mgcp_cuadro_costos.cc', 'cc.id_oportunidad', '=', 'oc_propias.id_oportunidad')
+        ->leftJoin('mgcp_cuadro_costos.estados_aprobacion', 'estados_aprobacion.id', '=', 'cc.estado_aprobacion')
+        ->leftJoin('mgcp_oportunidades.oportunidades', 'oportunidades.id', '=', 'cc.id_oportunidad')
+        ->leftJoin('mgcp_oportunidades.tipos_negocio', 'tipos_negocio.id', '=', 'oportunidades.id_tipo_negocio')
+        ->leftJoin('mgcp_cuadro_costos.cc_venta_filas', 'cc_venta_filas.id', '=', 'cc.id')
+        ->leftJoin('mgcp_cuadro_costos.cc_am_filas', 'cc_am_filas.id', '=', 'cc.id')
         ->orderBy('oc_propias.fecha_publicacion', 'desc')
         ->get();
 
         return datatables($oc_propias)->toJson();
+    }
+    function cuadro_costos($id_cc){
+        $cc = DB::table('mgcp_acuerdo_marco.oc_propias')
+        ->select(
+            'cc.id as id_cc',
+            'cc.tipo_cuadro',
+            'oc_propias.id as id_orden_propia',
+            'oc_propias.orden_am',
+            'oc_propias.id_empresa',
+            'empresas.empresa',
+            'oc_propias.fecha_estado',
+            'oc_propias.lugar_entrega',
+            'oc_propias.id_entidad',
+            'entidades.nombre as nombre_entidad',
+            'entidades.ruc as ruc_entidad',
+            'entidades.direccion as direccion_entidad',
+            'entidades.ubigeo as ubigeo_entidad',
+            'entidades.responsable',
+            'entidades.telefono',
+            'entidades.cargo',
+            'entidades.correo',
+            'oc_propias.monto_total',
+            'oc_propias.url_oc_fisica',
+            DB::raw("('https://apps1.perucompras.gob.pe//OrdenCompra/obtenerPdfOrdenPublico?ID_OrdenCompra='|| (oc_propias.id) ||'&ImprimirCompleto=1') AS url_oc_electronica"),
+            'oc_propias.url_oc_fisica',
+            'oc_propias.fecha_entrega',
+            'oc_propias.id_oportunidad',
+            'oportunidades.codigo_oportunidad',
+            'oc_propias.estado_entrega',
+            'oc_propias.fecha_publicacion',
+            // 'oc_propias.occ',
+            // 'oc_propias.despachada',
+            'acuerdo_marco.descripcion_corta as am',
+            'cc.estado_aprobacion as id_estado_aprobacion_cc',
+            'estados_aprobacion.estado as estado_aprobacion_cc'
+
+            )
+        ->leftJoin('mgcp_acuerdo_marco.empresas', 'empresas.id', '=', 'oc_propias.id_empresa')
+        ->leftJoin('mgcp_acuerdo_marco.entidades', 'entidades.id', '=', 'oc_propias.id_entidad')
+        ->leftJoin('mgcp_acuerdo_marco.catalogos', 'catalogos.id', '=', 'oc_propias.id_catalogo')
+        ->leftJoin('mgcp_acuerdo_marco.acuerdo_marco', 'acuerdo_marco.id', '=', 'catalogos.id_acuerdo_marco')
+        ->leftJoin('mgcp_cuadro_costos.cc', 'cc.id_oportunidad', '=', 'oc_propias.id_oportunidad')
+        ->leftJoin('mgcp_cuadro_costos.estados_aprobacion', 'estados_aprobacion.id', '=', 'cc.estado_aprobacion')
+        ->leftJoin('mgcp_oportunidades.oportunidades', 'oportunidades.id', '=', 'cc.id_oportunidad')
+        ->where('cc.id','=',$id_cc)  
+        ->get();
+        if(count($cc)>0){
+            $status=200;
+            $msj='Ok';
+            $output=['status'=>$status, 'mensaje'=>$msj,'data'=>$cc->first()];
+        }else{
+            $status=204;
+            $msj='no se encontro data';
+            $output=['status'=>$status, 'mensaje'=>$msj,'data'=>[]];
+        }
+        return response()->json($output);
 
     }
-    
+    function detalle_cuadro_costos($id_cc){
+
+        $status =0;
+        $msj='';
+
+        $cc = DB::table('mgcp_cuadro_costos.cc')
+        ->select(
+            'cc.id as id_cc',
+            'cc.tipo_cuadro',
+            'cc.id_oportunidad',
+            'oportunidades.id_tipo_negocio',
+            'cc.estado_aprobacion as id_estado_aprobacion_cc',
+            'estados_aprobacion.estado as estado_aprobacion_cc'
+            )
+
+        ->leftJoin('mgcp_cuadro_costos.estados_aprobacion', 'estados_aprobacion.id', '=', 'cc.estado_aprobacion')
+        ->leftJoin('mgcp_oportunidades.oportunidades', 'oportunidades.id', '=', 'cc.id_oportunidad')
+        ->where('cc.id','=',$id_cc)  
+        ->get();
+        
+        $tipo_cuadro=0;
+        if(count($cc)>0){
+            $tipo_cuadro = $cc->first()->tipo_cuadro;
+        }
+
+        if($tipo_cuadro>0){
+            if($tipo_cuadro == 1){ // acuerdo marco
+
+                $det_cc = DB::table('mgcp_cuadro_costos.cc_am_filas')
+                ->select(
+                    'cc_am_filas.id',
+                    'cc_am_filas.id_cc_am',
+                    'cc_am_filas.part_no',
+                    'cc_am_filas.descripcion',
+                    'cc_am_filas.cantidad',
+                    'cc_am_filas.pvu_oc',
+                    'cc_am_filas.flete_oc',
+                    'cc_am_filas.proveedor_seleccionado',
+                    'proveedores.razon_social as razon_social_proveedor',
+                    'proveedores.ruc as ruc_proveedor',
+                    'cc_am_filas.garantia',
+                    'cc_am_filas.creado_por as id_autor',
+                    'users.name as nombre_autor',
+                    'cc_am_filas.fecha_creacion'
+                    )
+                ->leftJoin('mgcp_cuadro_costos.cc', 'cc.id', '=', 'cc_am_filas.id_cc_am')
+                ->leftJoin('mgcp_cuadro_costos.estados_aprobacion', 'estados_aprobacion.id', '=', 'cc.estado_aprobacion')
+                ->leftJoin('mgcp_oportunidades.oportunidades', 'oportunidades.id', '=', 'cc.id_oportunidad')
+                ->leftJoin('mgcp_oportunidades.tipos_negocio', 'tipos_negocio.id', '=', 'oportunidades.id_tipo_negocio')
+                ->leftJoin('mgcp_cuadro_costos.cc_am_proveedores', 'cc_am_proveedores.id', '=', 'cc_am_filas.proveedor_seleccionado')
+                ->leftJoin('mgcp_cuadro_costos.proveedores', 'proveedores.id', '=', 'cc_am_proveedores.id_proveedor')
+                ->leftJoin('mgcp_usuarios.users', 'users.id', '=', 'cc_am_filas.creado_por')
+ 
+                ->where('cc_am_filas.id_cc_am','=',$id_cc)  
+                ->get();
+                $status =200;
+                $msj='Ok';
+            }elseif($tipo_cuadro ==0){ // venta
+                $det_cc = DB::table('mgcp_cuadro_costos.cc_venta_filas')
+                ->select(
+                    'cc_venta_filas.id',
+                    'cc_venta_filas.id_cc_venta',
+                    'cc_venta_filas.part_no',
+                    'cc_venta_filas.descripcion',
+                    'cc_venta_filas.cantidad',
+                    'cc_venta_filas.pvu_oc',
+                    'cc_venta_filas.flete_oc',
+                    'cc_venta_filas.proveedor_seleccionado',
+                    'proveedores.razon_social as razon_social_proveedor',
+                    'proveedores.ruc as ruc_proveedor',
+                    'cc_venta_filas.garantia',
+                    'cc_venta_filas.creado_por as id_autor',
+                    'users.name as nombre_autor',
+                    'cc_venta_filas.fecha_creacion'
+                    )
+                ->leftJoin('mgcp_cuadro_costos.cc', 'cc.id', '=', 'cc_venta_filas.id_cc_venta')
+                ->leftJoin('mgcp_cuadro_costos.estados_aprobacion', 'estados_aprobacion.id', '=', 'cc.estado_aprobacion')
+                ->leftJoin('mgcp_oportunidades.oportunidades', 'oportunidades.id', '=', 'cc.id_oportunidad')
+                ->leftJoin('mgcp_oportunidades.tipos_negocio', 'tipos_negocio.id', '=', 'oportunidades.id_tipo_negocio')
+                ->leftJoin('mgcp_cuadro_costos.cc_venta_proveedor', 'cc_venta_proveedor.id', '=', 'cc_venta_filas.proveedor_seleccionado')
+                ->leftJoin('mgcp_cuadro_costos.proveedores', 'proveedores.id', '=', 'cc_venta_filas.proveedor_seleccionado')
+                ->leftJoin('mgcp_usuarios.users', 'users.id', '=', 'cc_venta_filas.creado_por')
+                ->where('cc_venta_filas.id_cc_venta','=',$id_cc)  
+                ->get();
+                $status =200;
+                $msj='Ok';
+            }else{
+                $status =204;
+                $msj='el tipo de negocio no esta comprendido en la consulta.';
+            }
+        }
+        $output=['status'=>$status, 'mensaje'=>$msj, 'data'=>$det_cc];
+        return response()->json($output);
+
+    }
+
+
+    function obtenerConstruirCliente(Request $request){
+        $status=0;
+        $msj=[];
+
+        $razon_social=$request->razon_social;
+        $ruc=$request->ruc;
+        $telefono=$request->telefono;
+        $direccion=$request->direccion;
+        $correo=$request->correo;
+        $cliente=[];
+        $fechaHoy = date('Y-m-d H:i:s');
+
+        $adm_contri = DB::table('contabilidad.adm_contri')
+        ->select(
+            'adm_contri.*',
+            )
+        ->where([
+            ['adm_contri.nro_documento','=',$ruc]
+            ])
+        ->orWhere([
+            ['adm_contri.razon_social','=',$razon_social]
+            ])
+        ->get();
+        
+
+        $id_contribuyente=null;
+        if(count($adm_contri)>0){
+            $id_contribuyente= $adm_contri->first()->id_contribuyente;
+
+            $com_cliente = DB::table('comercial.com_cliente')
+            ->select(
+                'com_cliente.*'
+                )
+            ->where([
+                ['com_cliente.id_contribuyente','=',$id_contribuyente]
+                ])
+            ->orderBy('com_cliente.fecha_registro')
+            ->get();
+            $msj[]='Contribuyente encontrado';
+
+            if(count($com_cliente)>0){
+
+                $cliente =[
+                    'id_cliente'=>$com_cliente->first()->id_cliente,
+                    'razon_social'=>$adm_contri->first()->razon_social,
+                    'ruc'=>$adm_contri->first()->nro_documento,
+                    'telefono'=>$adm_contri->first()->telefono,
+                    'direccion'=>$adm_contri->first()->direccion_fiscal,
+                    'correo'=>$adm_contri->first()->email
+                ];
+
+                $msj[]=' Cliente encontrado';
+                $status=200;
+
+            }else{ // se encontro contribuyente pero no registrado como cliente => crear cliente
+                
+                $id_cliente = DB::table('comercial.com_cliente')->insertGetId(
+                    [
+                        'id_contribuyente' => $id_contribuyente,
+                        'codigo' => null,
+                        'estado' =>1,
+                        'fecha_registro' => $fechaHoy
+                    ],
+                        'id_cliente'
+                    );
+
+                    if($id_cliente>0){
+                        $msj[]=' Cliente creado';
+                        $cliente =[
+                            'id_cliente'=>$id_cliente,
+                            'razon_social'=>$adm_contri->first()->razon_social,
+                            'ruc'=>$adm_contri->first()->nro_documento,
+                            'telefono'=>$adm_contri->first()->telefono,
+                            'direccion'=>$adm_contri->first()->direccion_fiscal,
+                            'correo'=>$adm_contri->first()->email
+                        ];
+                        $status=200;
+                    }else{
+                        $msj[]=' hubo un problema al crear el cliente en base a un contribuyente';
+                        $status=204;
+                    }
+            }
+
+        }else{ // no se encontro el contribuyente, se debe crear contribuyente y cliente
+            
+
+            $id_contribuyente = DB::table('contabilidad.adm_contri')->insertGetId(
+                [
+                    'razon_social' => $razon_social?$razon_social:null,
+                    'nro_documento' => $ruc?$ruc:null,
+                    'telefono' => $telefono?$telefono:null,
+                    'direccion_fiscal' => $direccion?$direccion:null,
+                    'email' => $correo?$correo:null,
+                    'estado' => 1,
+                    'fecha_registro' => $fechaHoy
+                ],
+                    'id_contribuyente'
+                );
+
+            $id_cliente = DB::table('comercial.com_cliente')->insertGetId(
+                [
+                    'id_contribuyente' => $id_contribuyente,
+                    'codigo' => null,
+                    'estado' =>1,
+                    'fecha_registro' => $fechaHoy
+                ],
+                    'id_cliente'
+                );
+
+                $cliente =[
+                    'id_cliente'=>$id_cliente,
+                    'razon_social'=>$razon_social,
+                    'ruc'=>$ruc,
+                    'telefono'=>$telefono,
+                    'direccion'=>$direccion,
+                    'correo'=>$correo
+                ];
+
+                if($id_contribuyente >0 && $id_cliente >0){
+                    $status=200;
+                    $msj[]='Se creo un nuevo cliente';
+                }else{
+                    $status=204;
+                    $msj[]='hubo un problema al crear un nuevo cliente';
+                }
+        }
+
+        
+
+        
+
+        $output=['status'=>$status, 'mensaje'=>$msj, 'data'=>$cliente];
+        return response()->json($output);
+    }
+
 }

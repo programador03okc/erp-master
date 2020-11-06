@@ -11,6 +11,15 @@ function crearProducto(){
 
     fixCloseModalKeyEscapeDetect();
 
+
+    var ordenP_Cuadroc = JSON.parse(sessionStorage.getItem('ordenP_Cuadroc'));
+    if(ordenP_Cuadroc !== null && ordenP_Cuadroc.hasOwnProperty('tipo_cuadro') && ordenP_Cuadroc.hasOwnProperty('id_cc')){
+        console.log(tempDetalleItemCCSelect);
+            document.querySelector("div[id='modal-crear-nuevo-producto'] input[name='part_number']").value = tempDetalleItemCCSelect.part_number?tempDetalleItemCCSelect.part_number:null;
+            document.querySelector("div[id='modal-crear-nuevo-producto'] input[name='descripcion']").value= tempDetalleItemCCSelect.descripcion?tempDetalleItemCCSelect.descripcion:null;
+
+        }
+
 }
 
 function fixCloseModalKeyEscapeDetect(){
@@ -35,8 +44,8 @@ $("[name=id_categoria]").on('change', function() {
     var id = $('[name=id_producto]').val();
     if (id == ''){
         var sel = $(this).find('option:selected').text();
-        console.log(sel);
-        $('[name=descripcion]').val(sel);
+        // console.log(sel);
+        // $('[name=descripcion]').val(sel);
     }
     console.log($(this).val());
 });
@@ -45,9 +54,9 @@ $("[name=id_subcategoria]").on('change', function() {
     var id = $('[name=id_producto]').val();
     if (id == ''){
         var sel = $(this).find('option:selected').text();
-        console.log(sel);
-        var cat = $('select[name=id_categoria] option:selected').text();
-        $('[name=descripcion]').val(cat+' '+sel+' ');
+        // console.log(sel);
+        // var cat = $('select[name=id_categoria] option:selected').text();
+        // $('[name=descripcion]').val(cat+' '+sel+' ');
     }
 });
 
