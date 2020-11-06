@@ -113,7 +113,7 @@ class OrdenesPendientesController extends Controller
                 'alm_prod.descripcion','alm_und_medida.abreviatura','alm_req.codigo as codigo_req',
                 'adm_estado_doc.estado_doc','adm_estado_doc.bootstrap_color',
                 'oc_propias.orden_am','oportunidades.oportunidad','oportunidades.codigo_oportunidad',
-                'entidades.entidad','oc_propias.id as id_oc_propia','oc_propias.url_oc_fisica'
+                'entidades.nombre','oc_propias.id as id_oc_propia','oc_propias.url_oc_fisica'
             )
             ->leftjoin('almacen.alm_item', 'alm_item.id_item', '=', 'log_det_ord_compra.id_item')
             ->leftjoin('almacen.alm_prod', 'alm_prod.id_producto', '=', 'alm_item.id_producto')
