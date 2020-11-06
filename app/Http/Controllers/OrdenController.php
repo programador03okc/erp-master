@@ -136,16 +136,16 @@ class OrdenController extends Controller
 
     public function listar_requerimientos_pendientes($id_empresa= null, $id_sede=null){
         $firstCondition=[['alm_req.estado', '=', 1],['alm_req.confirmacion_pago','=',true],['alm_req.id_tipo_requerimiento', '=', 1]];
-        // $secondCondition[]=[['alm_req.estado', '=', 1],['alm_req.confirmacion_pago','=',true],['alm_req.id_tipo_requerimiento', '=', 1]];
+        $secondCondition=[['alm_req.estado', '=', 2],['alm_req.confirmacion_pago','=',true],['alm_req.id_tipo_requerimiento', '=', 1]];
         $thirdCondition=[['alm_req.estado', '=', 23],['alm_req.confirmacion_pago','=',true],['alm_req.id_tipo_requerimiento', '=', 1]];
         if($id_empresa >0){
             $firstCondition[]=['alm_req.id_empresa','=',$id_empresa];
-            // $secondCondition[0]=['alm_req.id_empresa','=',$id_empresa];
+            $secondCondition[]=['alm_req.id_empresa','=',$id_empresa];
             $thirdCondition[]=['alm_req.id_empresa','=',$id_empresa];
         }
         if($id_sede >0){
             $firstCondition[]=['alm_req.id_sede','=',$id_sede];
-            // $secondCondition[0]=['alm_req.id_sede','=',$id_sede];
+            $secondCondition[]=['alm_req.id_sede','=',$id_sede];
             $thirdCondition[]=['alm_req.id_sede','=',$id_sede];
         }
  
@@ -213,7 +213,7 @@ class OrdenController extends Controller
 
         )
         ->where($firstCondition)
-        // ->orWhere($secondCondition)
+        ->orWhere($secondCondition)
         ->orWhere($thirdCondition)
         ->orderBy('alm_req.id_requerimiento', 'desc')
         ->get();
@@ -372,6 +372,83 @@ class OrdenController extends Controller
 
         $output['data']=$orden_list;
         return $output;
+    }
+
+    function documentosVinculadosOrden($id_orden){
+        $status=0;
+        $id_cc='';
+        $tipo_cuadro='';
+        $id_oportunidad='';
+        $documentos=[];
+
+        $log_ord_compra = DB::table('logistica.log_ord_compra')
+        ->select(
+            'log_ord_compra.id_orden_compra',
+            'log_ord_compra.codigo_softlink',
+            'alm_req.id_cc',
+            'alm_req.tipo_cuadro',
+            'log_ord_compra.estado as estado_orden',
+            'alm_req.codigo as codigo_requerimiento',
+            'log_ord_compra.codigo as codigo_orden',
+            'alm_det_req.id_requerimiento'
+        )
+        ->leftJoin('logistica.log_det_ord_compra', 'log_det_ord_compra.id_orden_compra', '=', 'log_ord_compra.id_orden_compra')
+        ->leftJoin('almacen.alm_det_req', 'alm_det_req.id_detalle_requerimiento', '=', 'log_det_ord_compra.id_detalle_requerimiento')
+        ->leftJoin('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'alm_det_req.id_requerimiento')
+        ->where([
+            ['log_ord_compra.id_orden_compra', '=', $id_orden]
+        ])
+        ->get();
+        
+        if(count($log_ord_compra)>0){
+            foreach($log_ord_compra as $data){
+                $id_cc=$data->id_cc;
+                $tipo_cuadro=$data->tipo_cuadro;
+            }
+
+            $cc = DB::table('mgcp_cuadro_costos.cc')
+            ->select('cc.id_oportunidad')
+            ->where([
+                ['cc.id', '=', $id_cc]
+            ])
+            ->get();
+
+            if(count($cc)>0){
+
+                $id_oportunidad = $cc->first()->id_oportunidad;
+                $oc_propias = DB::table('mgcp_acuerdo_marco.oc_propias')
+                ->select('oc_propias.id','oc_propias.url_oc_fisica')
+                ->where([
+                    ['oc_propias.id_oportunidad', '=', $id_oportunidad]
+                ])
+                ->get();
+                
+                if(count($oc_propias)>0){
+                    $orden_electronica= "https://apps1.perucompras.gob.pe//OrdenCompra/obtenerPdfOrdenPublico?ID_OrdenCompra=".($oc_propias->first()->id)."&ImprimirCompleto=1";
+                    $orden_fisica= $oc_propias->first()->url_oc_fisica;
+                    $documentos[]=[
+                        'orden_fisica'=>$orden_fisica,
+                        'orden_electronica'=>$orden_electronica,
+                    ];
+                    $status=200;
+
+                }else{
+                    $status=204;
+                }
+
+
+            }else{
+                $status=204;
+            }
+
+
+        }else{
+            $status=204;
+        }
+
+        $output=['status'=>$status, 'data'=>$documentos];
+
+        return response()->json($output);
     }
 
     public function cantidadCompradaDetalleOrden($id_detalle_requerimiento ){

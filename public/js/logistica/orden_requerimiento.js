@@ -7,7 +7,8 @@ rutaRevertirOrdenPorRequerimiento,
 rutaActualizarEstadoOrdenPorRequerimiento,
 rutaActualizarEstadoDetalleOrdenPorRequerimiento,
 rutaActualizarEstadoDetalleRequerimiento,
-rutaSedeByEmpresa
+rutaSedeByEmpresa,
+rutaDocumentosVinculadosOrden
 ;
 
 var listCheckReq=[];
@@ -25,7 +26,8 @@ function inicializar(
     _rutaActualizarEstadoOrdenPorRequerimiento,
     _rutaActualizarEstadoDetalleOrdenPorRequerimiento,
     _rutaActualizarEstadoDetalleRequerimiento,
-    _rutaSedeByEmpresa
+    _rutaSedeByEmpresa,
+    _rutaDocumentosVinculadosOrden
     ) {
     
     rutaRequerimientosPendientes = _rutaRequerimientosPendientes;
@@ -37,6 +39,7 @@ function inicializar(
     rutaActualizarEstadoDetalleOrdenPorRequerimiento = _rutaActualizarEstadoDetalleOrdenPorRequerimiento;
     rutaActualizarEstadoDetalleRequerimiento = _rutaActualizarEstadoDetalleRequerimiento;
     rutaSedeByEmpresa = _rutaSedeByEmpresa;
+    rutaDocumentosVinculadosOrden = _rutaDocumentosVinculadosOrden;
 
 }
 
@@ -204,7 +207,7 @@ function tieneAccion(permisoCrearOrdenPorRequerimiento, permisoRevertirOrden){
 }
 
 function llenarTablaListaItemsRequerimiento(data){
-    console.log(data);
+    // console.log(data);
     var vardataTables = funcDatatables();
     $('#listaItemsRequerimiento').dataTable({
         'scrollY':        '50vh',
@@ -457,7 +460,7 @@ function fillEstados(id_estado_actual){
             {'30':'CONFIRMADA'},
             {'31':'FACTURADA'},
             {'20':'DESPACHADO'},
-            {'22':'EN TRANSITO'}
+            {'26':'EN TRANSITO'}
     ];
 
 
@@ -1985,4 +1988,57 @@ function handlechangeCondicion(event){
 
     }
 
+}
+
+function llenarTablaDocumentosVinculados(data){
+    var vardataTables = funcDatatables();
+    $('#tablaDocumentosVinculados').dataTable({
+        'info':     false,
+        'searching': false,
+        'paging':   false,
+        'language' : vardataTables[0],
+        'processing': true,
+        "bDestroy": true,
+        'data':data,
+        'columns': [
+            {'render':
+                function (data, type, row){
+                    return `<a href="${row.orden_fisica}" target="_blank"><span class="label label-warning">Orden Física</span></a> 
+                    <a href="${row.orden_electronica}" target="_blank"><span class="label label-info">Orden Electrónica</span></a>`;
+                }
+            }
+        ]
+    });
+    let tableDocumentosVinculados = document.getElementById(
+        'tablaDocumentosVinculados_wrapper'
+    )
+    tableDocumentosVinculados.childNodes[0].childNodes[0].hidden = true;
+}
+
+function listarDocumentosVinculados(id){
+    $.ajax({
+        type: 'GET',
+        url: rutaDocumentosVinculadosOrden+'/'+id,
+        dataType: 'JSON',
+        success: function(response){
+            // console.log(response);
+            if(response.status==200){
+                llenarTablaDocumentosVinculados(response.data);
+            }
+        }
+    }).fail( function( jqXHR, textStatus, errorThrown ){
+        console.log(jqXHR);
+        console.log(textStatus);
+        console.log(errorThrown);
+    });
+}
+
+function documentosVinculados(obj){
+    $('#modal-documentos-vinculados').modal({
+        show: true,
+        backdrop: 'static'
+    });
+
+    let id_orden_compra = obj.dataset.idOrdenCompra;
+    listarDocumentosVinculados(id_orden_compra);
 }

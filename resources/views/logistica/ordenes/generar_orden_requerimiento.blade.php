@@ -129,6 +129,7 @@
             </div>
         </div>
  </div>
+@include('logistica.ordenes.modal_documentos_vinculados')
 @include('logistica.ordenes.modal_lista_items_requerimiento')
 @include('logistica.ordenes.modal_ver_orden')
 @include('logistica.ordenes.modal_editar_estado_orden')
@@ -172,7 +173,8 @@
             "{{route('logistica.gestion-logistica.orden.por-requerimiento.actualizar-estado-orden')}}",
             "{{route('logistica.gestion-logistica.orden.por-requerimiento.actualizar-estado-detalle-orden')}}",
             "{{route('logistica.gestion-logistica.orden.por-requerimiento.actualizar-estado-detalle-requerimiento')}}",
-            "{{route('logistica.gestion-logistica.cotizacion.gestionar.select-sede-by-empresa')}}"
+            "{{route('logistica.gestion-logistica.cotizacion.gestionar.select-sede-by-empresa')}}",
+            "{{route('logistica.gestion-logistica.orden.por-requerimiento.documentos-vinculados')}}"
 
             );
             tieneAccion('{{Auth::user()->tieneAccion(114)}}','{{Auth::user()->tieneAccion(115)}}');

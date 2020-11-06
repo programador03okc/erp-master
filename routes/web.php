@@ -728,7 +728,8 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::post('actualizar-estado', 'OrdenController@update_estado_orden')->name('actualizar-estado-orden'); 
 					Route::post('actualizar-estado-detalle', 'OrdenController@update_estado_item_orden')->name('actualizar-estado-detalle-orden'); 
 					Route::put('actualizar-estado-detalle-requerimiento/{id_detalle_req?}/{estado?}', 'OrdenController@update_estado_detalle_requerimiento')->name('actualizar-estado-detalle-requerimiento'); 
-					Route::post('guardar-producto', 'AlmacenController@guardar_producto')->name('guardar-producto');;
+					Route::post('guardar-producto', 'AlmacenController@guardar_producto')->name('guardar-producto');
+					Route::get('documentos-vinculados/{id_orden?}', 'OrdenController@documentosVinculadosOrden')->name('documentos-vinculados');
 
 
 				});

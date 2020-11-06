@@ -251,6 +251,7 @@ function llenarDetalleCuadroCostos(data){
 }
  
 function eliminarVinculoCC(){
+    document.querySelector("form[id='form-requerimiento'] input[name='id_cc']").value='';
     tempDetalleItemCCSelect={};
     tempDetalleItemsCC=[];
     sessionStorage.removeItem('ordenP_Cuadroc')

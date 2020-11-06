@@ -1734,6 +1734,19 @@ class LogisticaController extends Controller
             return 0;
         }else{
 
+        if($request->requerimiento['tipo_requerimiento'] ==1){
+            $estado = 1;
+            if($request->requerimiento['id_cc'] != null || $request->requerimiento['id_cc'] != ''){
+                $estado = 2;
+            }
+        }
+        elseif($request->requerimiento['tipo_requerimiento'] ==2){
+            $estado = 19;
+        }
+        else{
+            $estado = 1;
+            
+        }
         //----------------------------------------------------------------------------
         $id_requerimiento = DB::table('almacen.alm_req')->insertGetId(
             [
@@ -1750,7 +1763,7 @@ class LogisticaController extends Controller
                 'id_area'               => isset($request->requerimiento['id_area'])?$request->requerimiento['id_area']:null,
                 'id_prioridad'          => isset($request->requerimiento['id_prioridad'])?$request->requerimiento['id_prioridad']:null,
                 'fecha_registro'        => date('Y-m-d H:i:s'),
-                'estado'                => ($request->requerimiento['tipo_requerimiento'] ==2?19:1),
+                'estado'                => $estado,
                 'id_empresa'            => isset($request->requerimiento['id_empresa'])?$request->requerimiento['id_empresa']:null,
                 'id_sede'               => isset($request->requerimiento['id_sede'])?$request->requerimiento['id_sede']:null,
                 'tipo_cliente'          => isset($request->requerimiento['tipo_cliente'])?$request->requerimiento['tipo_cliente']:null,
