@@ -142,6 +142,7 @@
                                             <!-- <th>Almacén Reserva</th> -->
                                             <th>Cant.</th>
                                             <th>Unid</th>
+                                            <th>En Almacén</th>
                                             <th>Despachado</th>
                                             <th>Cant.Despacho</th>
                                             <th>Estado</th>

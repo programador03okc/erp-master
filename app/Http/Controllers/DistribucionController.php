@@ -606,7 +606,17 @@ class DistribucionController extends Controller
                     WHERE
                         odd.id_detalle_requerimiento = alm_det_req.id_detalle_requerimiento
                         and odd.estado != 7
-                        and od.aplica_cambios = true) AS suma_despachos"))
+                        and od.aplica_cambios = true) AS suma_despachos"),
+                    DB::raw("(SELECT SUM(guia.cantidad) 
+                    FROM almacen.guia_com_det AS guia
+                    INNER JOIN logistica.log_det_ord_compra AS oc
+                        on(guia.id_oc_det = oc.id_detalle_orden)
+                    INNER JOIN almacen.alm_det_req AS req
+                        on(oc.id_detalle_requerimiento = req.id_detalle_requerimiento)
+                    WHERE
+                        req.id_detalle_requerimiento = alm_det_req.id_detalle_requerimiento
+                        and guia.estado != 7
+                        and oc.estado != 7) AS suma_ingresos"))
             ->leftJoin('almacen.alm_prod', 'alm_prod.id_producto', '=', 'alm_det_req.id_producto')
             ->leftJoin('almacen.alm_cat_prod', 'alm_cat_prod.id_categoria', '=', 'alm_prod.id_categoria')
             ->leftJoin('almacen.alm_subcat', 'alm_subcat.id_subcategoria', '=', 'alm_prod.id_subcategoria')

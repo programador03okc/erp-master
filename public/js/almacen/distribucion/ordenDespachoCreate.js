@@ -94,7 +94,8 @@ function detalleRequerimiento(id_requerimiento){
             detalle_requerimiento = response;
 
             response.forEach(element => {
-                var cant = parseFloat(element.cantidad) - (element.suma_despachos !== null ? element.suma_despachos : 0);
+                var ing = (element.suma_ingresos !== null ? parseFloat(element.suma_ingresos) : 0);
+                var cant = ing - (element.suma_despachos !== null ? parseFloat(element.suma_despachos) : 0);
 
                 if (cant > 0){
                     html+='<tr id="'+element.id_detalle_requerimiento+'">'+
@@ -105,6 +106,7 @@ function detalleRequerimiento(id_requerimiento){
                     // '<td>'+(element.almacen_descripcion !== null ? element.almacen_descripcion : '')+'</td>'+
                     '<td>'+element.cantidad+'</td>'+
                     '<td>'+(element.abreviatura !== null ? element.abreviatura : '')+'</td>'+
+                    '<td>'+(element.suma_ingresos !== null ? element.suma_ingresos : '0')+'</td>'+
                     '<td>'+(element.suma_despachos !== null ? element.suma_despachos : '0')+'</td>'+
                     '<td><input type="number" id="'+element.id_detalle_requerimiento+'cantidad" value="'+cant+'" max="'+cant+'" min="0" style="width: 80px;"/></td>'+
                     '<td><span class="label label-'+element.bootstrap_color+'">'+element.estado_doc+'</span></td>'+
