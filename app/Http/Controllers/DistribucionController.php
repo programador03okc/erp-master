@@ -831,14 +831,14 @@ class DistribucionController extends Controller
                 $data = json_decode($request->detalle_requerimiento);
                 
                 foreach ($data as $d) {
-                    $descripcion = ($d->producto_descripcion !== null ? $d->producto_descripcion : $d->descripcion_adicional);
+                    // $descripcion = ($d->producto_descripcion !== null ? $d->producto_descripcion : $d->descripcion_adicional);
                     DB::table('almacen.orden_despacho_det')
                     ->insert([
                         'id_od'=>$id_od,
                         'id_producto'=>$d->id_producto,
                         'id_detalle_requerimiento'=>$d->id_detalle_requerimiento,
                         'cantidad'=>$d->cantidad,
-                        'descripcion_producto'=>$descripcion,
+                        // 'descripcion_producto'=>$descripcion,
                         'estado'=>1,
                         'fecha_registro'=>date('Y-m-d H:i:s')
                     ]);
