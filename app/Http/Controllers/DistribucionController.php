@@ -752,7 +752,7 @@ class DistribucionController extends Controller
                         'id_producto'=>$i->id_producto,
                         'id_detalle_requerimiento'=>$i->id_detalle_requerimiento,
                         'cantidad'=>$i->cantidad,
-                        'descripcion_producto'=>$i->descripcion,
+                        // 'descripcion_producto'=>$i->descripcion,
                         'part_number_transformado'=>($i->part_number_transformado!==null ? $i->part_number_transformado : null),
                         'descripcion_transformado'=>($i->descripcion_transformado!==null ? $i->descripcion_transformado : null),
                         'comentario_transformado'=>($i->comentario_transformado!==null ? $i->comentario_transformado : null),

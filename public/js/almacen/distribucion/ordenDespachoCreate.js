@@ -245,7 +245,7 @@ $("#form-orden_despacho").on("submit", function(e){
                 'cantidad'      : $(this).parent().parent().find('td input[id='+id_detalle_requerimiento+'cantidad]').val(),
                 'id_detalle_requerimiento' : json.id_detalle_requerimiento,
                 'id_producto'   : json.id_producto,
-                'descripcion'   : json.descripcion_adicional,
+                // 'descripcion'   : json.descripcion_adicional,
                 'part_number_transformado'   : json.part_number_transformado,
                 'descripcion_transformado'   : json.descripcion_transformado,
                 'comentario_transformado'   : json.comentario_transformado,
