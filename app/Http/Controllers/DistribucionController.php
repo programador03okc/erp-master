@@ -2053,6 +2053,10 @@ class DistribucionController extends Controller
             ->count();
 
             if ($od->aplica_cambios){
+                DB::table('almacen.transformacion')
+                ->where('id_od',$id_od)
+                ->update(['estado'=>7]);
+                
                 if ($count_ods > 0){
                     DB::table('almacen.alm_req')
                         ->where('id_requerimiento',$od->id_requerimiento)

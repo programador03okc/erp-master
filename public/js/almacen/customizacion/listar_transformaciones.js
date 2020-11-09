@@ -67,7 +67,7 @@ class GestionCustomizacion
                 {'data': 'orden_am', 'name': 'oc_propias.orden_am'},
                 {'data': 'codigo_oportunidad', 'name': 'oportunidades.codigo_oportunidad'},
                 {'data': 'oportunidad', 'name': 'oportunidades.oportunidad'},
-                {'data': 'entidad', 'name': 'entidades.entidad'},
+                {'data': 'nombre', 'name': 'entidades.nombre'},
                 {'render':
                     function (data, type, row){
                         return (formatDate(row['fecha_registro']));

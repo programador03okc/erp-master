@@ -16,7 +16,7 @@ class CustomizacionController extends Controller
         'respon.nombre_corto as nombre_responsable','regist.nombre_corto as nombre_registrado',
         'adm_estado_doc.estado_doc','adm_estado_doc.bootstrap_color',
         'oc_propias.orden_am','oportunidades.oportunidad','oportunidades.codigo_oportunidad',
-        'entidades.entidad')
+        'entidades.nombre')
         ->join('almacen.alm_almacen','alm_almacen.id_almacen','=','transformacion.id_almacen')
         ->join('administracion.sis_sede','sis_sede.id_sede','=','alm_almacen.id_sede')
         ->join('administracion.adm_empresa','adm_empresa.id_empresa','=','sis_sede.id_empresa')
