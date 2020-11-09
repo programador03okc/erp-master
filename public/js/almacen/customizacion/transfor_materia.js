@@ -12,6 +12,10 @@ function agregar_producto_materia(sel){
         <td>${sel.unid_med}</td>
         <td><input type="number" class="form-control calcula" name="unitario" id="unitario"></td>
         <td><input type="number" class="form-control" name="total" readOnly id="total"></td>
+        <td style="background:Thistle;"></td>
+        <td style="background:Thistle;"></td>
+        <td style="background:Thistle;"></td>
+        <td style="background:Thistle;"></td>
         <td>
         <i class="fas fa-check icon-tabla blue boton add" 
             data-toggle="tooltip" data-placement="bottom" title="Agregar" ></i>
@@ -114,8 +118,12 @@ function listar_materias(id_transformacion){
                     <td>${element.abreviatura !== null ? element.abreviatura : ''}</td>
                     <td>${element.valor_unitario}</td>
                     <td>${element.valor_total}</td>
+                    <td style="background:Thistle;">${element.part_number_transformado}</td>
+                    <td style="background:Thistle;">${element.descripcion_transformado}</td>
+                    <td style="background:Thistle;">${element.cantidad_transformado}</td>
+                    <td style="background:Thistle;">${element.comentario_transformado}</td>
                     <td style="padding:0px;">
-                        ${(est !== 9 && est !== 7) ? `<i class="fas fa-trash icon-tabla red boton delete" 
+                        ${(est == 24) ? `<i class="fas fa-trash icon-tabla red boton delete" 
                         data-toggle="tooltip" data-placement="bottom" title="Eliminar" ></i>` : ''}
                     </td>
                 </tr>`;

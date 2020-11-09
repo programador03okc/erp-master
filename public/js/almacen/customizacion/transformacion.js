@@ -64,7 +64,7 @@ function mostrar_transformacion(id){
             $('#nombre_responsable').text(response.nombre_corto);
             $('#observacion').text(response.observacion);
             
-            if (response.estado !== 9 && response.estado !== 7){
+            if (response.estado == 24){
                 $('#addCostoIndirecto').show();
                 $('#addServicio').show();
                 $('#addTransformado').show();

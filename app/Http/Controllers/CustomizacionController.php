@@ -209,9 +209,11 @@ class CustomizacionController extends Controller
     public function listar_materias($id_transformacion){
         $data = DB::table('almacen.transfor_materia')
         ->select('transfor_materia.*','alm_prod.codigo','alm_prod.descripcion',
-        'alm_prod.part_number','alm_und_medida.abreviatura','alm_prod.series')
+        'alm_prod.part_number','alm_und_medida.abreviatura','alm_prod.series','orden_despacho_det.part_number_transformado',
+        'orden_despacho_det.descripcion_transformado','orden_despacho_det.comentario_transformado','orden_despacho_det.cantidad_transformado')
         ->leftjoin('almacen.alm_prod','alm_prod.id_producto','=','transfor_materia.id_producto')
         ->leftjoin('almacen.alm_und_medida','alm_und_medida.id_unidad_medida','=','alm_prod.id_unidad_medida')
+        ->leftjoin('almacen.orden_despacho_det','orden_despacho_det.id_od_detalle','=','transfor_materia.id_od_detalle')
         ->where([['transfor_materia.id_transformacion','=',$id_transformacion],
                  ['transfor_materia.estado','=',1]])
         ->get();
