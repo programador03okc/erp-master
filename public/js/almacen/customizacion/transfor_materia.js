@@ -118,10 +118,10 @@ function listar_materias(id_transformacion){
                     <td>${element.abreviatura !== null ? element.abreviatura : ''}</td>
                     <td>${element.valor_unitario}</td>
                     <td>${element.valor_total}</td>
-                    <td style="background:Thistle;">${element.part_number_transformado}</td>
-                    <td style="background:Thistle;">${element.descripcion_transformado}</td>
-                    <td style="background:Thistle;">${element.cantidad_transformado}</td>
-                    <td style="background:Thistle;">${element.comentario_transformado}</td>
+                    <td style="background:Thistle;">${element.part_number_transformado!==null?element.part_number_transformado:''}</td>
+                    <td style="background:Thistle;">${element.descripcion_transformado!==null?element.descripcion_transformado:''}</td>
+                    <td style="background:Thistle;">${element.cantidad_transformado!==null?element.cantidad_transformado:''}</td>
+                    <td style="background:Thistle;">${element.comentario_transformado!==null?element.comentario_transformado:''}</td>
                     <td style="padding:0px;">
                         ${(est == 24) ? `<i class="fas fa-trash icon-tabla red boton delete" 
                         data-toggle="tooltip" data-placement="bottom" title="Eliminar" ></i>` : ''}
