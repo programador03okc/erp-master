@@ -721,7 +721,7 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::get('items-ordenes-en-proceso', 'OrdenController@lista_items_ordenes_en_proceso')->name('ordenes-en-proceso'); 
 					Route::post('detalle-requerimiento-orden', 'OrdenController@get_detalle_requerimiento_orden')->name('detalle-requerimiento-orden'); 
 					Route::post('guardar', 'OrdenController@guardar_orden_por_requerimiento')->name('guardar');
-					Route::put('revertir/{id_orden?}/{id_requerimiento?}', 'LogisticaController@revertir_orden_requerimiento')->name('revertir');
+					Route::put('revertir/{id_orden?}', 'LogisticaController@revertir_orden_requerimiento')->name('revertir');
 					Route::get('mostrar_proveedores', 'LogisticaController@mostrar_proveedores');
 					Route::post('guardar_proveedor', 'LogisticaController@guardar_proveedor');
 					Route::get	('ver-orden/{id_orden?}', 'OrdenController@ver_orden');
