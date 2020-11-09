@@ -682,25 +682,25 @@ function llenarTablaItemsOrden(data){
 
 function eliminarAtencionOrdenRequerimiento(obj){
     let codigo_requerimiento = obj.dataset.codigoRequerimiento;
-    let id_requerimiento = obj.dataset.idRequerimiento;
+    // let id_requerimiento = obj.dataset.idRequerimiento;
     let id_orden = obj.dataset.idOrdenCompra;
     // console.log(id_requerimiento,id_orden);
     var ask = confirm('¿Desea revertir el requerimiento '+codigo_requerimiento+'?');
     if (ask == true){
         $.ajax({
             type: 'PUT',
-            url: rutaRevertirOrdenPorRequerimiento+'/'+id_orden+'/'+id_requerimiento,
+            url: rutaRevertirOrdenPorRequerimiento+'/'+id_orden,
             beforeSend: function(){
             },
             success: function(response){
                 // console.log(response);                
                 if (response.status == 200) {
-                    alert('Se revertió la orden y restablecio el estado del requerimiento');
+                    alert(response.mensaje);
                     $('#listaComprasEnProceso').DataTable().ajax.reload();
                     $('#listaRequerimientosPendientes').DataTable().ajax.reload();
                 }else {
-                    alert('hubo un problema, No se puedo revertir el restablecio el estado del requerimiento y anular la orden');
                     console.log(response);
+                    alert(response.mensaje);
                     
                 }
             }
