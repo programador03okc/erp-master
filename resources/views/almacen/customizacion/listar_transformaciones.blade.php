@@ -7,7 +7,7 @@ Gestión de Customizaciones
 
 @section('breadcrumb')
 <ol class="breadcrumb">
-  <li><a href="{{route('logistica.index')}}"><i class="fas fa-tachometer-alt"></i> Almacén</a></li>
+  <li><a href="{{route('logistica.index')}}"><i class="fas fa-tachometer-alt"></i> Logistica y Almacenes</a></li>
   <li>Customización</li>
   <li class="active">@yield('cabecera')</li>
 </ol>

@@ -91,7 +91,6 @@ function detalleRequerimiento(id_requerimiento){
         success: function(response){
             console.log(response);
             var html = '';
-            detalle_requerimiento = response;
 
             response.forEach(element => {
                 var ing = (element.suma_ingresos !== null ? parseFloat(element.suma_ingresos) : 0);
@@ -114,7 +113,13 @@ function detalleRequerimiento(id_requerimiento){
                     (element.series ? '<i class="fas fa-bars icon-tabla boton" data-toggle="tooltip" data-placement="bottom" title="Ver Series" onClick="verSeries('+element.id_detalle_requerimiento+');"></i>' : '')+
                     '</td></tr>';
                 }
+                element['part_number_transformado'] = '';
+                element['cantidad_transformado'] = '';
+                element['descripcion_transformado'] = '';
+                element['comentario_transformado'] = '';
             });
+            detalle_requerimiento = response;
+
             $('#detalleRequerimientoOD tbody').html(html);
         }
     }).fail( function( jqXHR, textStatus, errorThrown ){
