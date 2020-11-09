@@ -28,7 +28,7 @@ class CustomizacionController extends Controller
         ->leftjoin('mgcp_oportunidades.oportunidades','oportunidades.id','=','cc.id_oportunidad')
         ->leftjoin('mgcp_acuerdo_marco.oc_propias','oc_propias.id_oportunidad','=','oportunidades.id')
         ->leftjoin('mgcp_acuerdo_marco.entidades','entidades.id','=','oportunidades.id_entidad')
-        // ->where([['transformacion.id_almacen','=',$id_almacen]])
+        ->where([['transformacion.estado','!=',7]])
         ->get();
         $output['data'] = $data;
         return response()->json($output);
