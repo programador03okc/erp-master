@@ -101,7 +101,7 @@ function detalleRequerimiento(id_requerimiento){
             response.forEach(element => {
                 var ing = (element.suma_ingresos !== null ? parseFloat(element.suma_ingresos) : 0);
                 var cant = ing - (element.suma_despachos !== null ? parseFloat(element.suma_despachos) : 0);
-
+                
                 if (cant > 0){
                     html+='<tr id="'+element.id_detalle_requerimiento+'">'+
                     '<td><input type="checkbox" value="'+element.id_detalle_requerimiento+'" onChange="changeCheckIngresa(this,'+element.id_detalle_requerimiento+');"/></td>'+
@@ -333,7 +333,15 @@ $("[name=aplica_cambios]").on( 'change', function() {
         $("#despachoExterno").hide();
 
         $("[name=seleccionar_todos]").prop('checked', true);
-        detalle_ingresa = detalle_requerimiento;
+        
+        detalle_requerimiento.forEach(function(element){
+            var ing = (element.suma_ingresos !== null ? parseFloat(element.suma_ingresos) : 0);
+            var cant = ing - (element.suma_despachos !== null ? parseFloat(element.suma_despachos) : 0);
+            if (cant > 0){
+                detalle_ingresa.push(element);
+            }
+        });
+        // detalle_ingresa = detalle_requerimiento;
         $("#detalleRequerimientoOD tbody tr").each(function(){
             $(this).find("td input[type=checkbox]").prop('checked', true);
         });
