@@ -119,10 +119,10 @@ function detalleRequerimiento(id_requerimiento){
                     (element.series ? '<i class="fas fa-bars icon-tabla boton" data-toggle="tooltip" data-placement="bottom" title="Ver Series" onClick="verSeries('+element.id_detalle_requerimiento+');"></i>' : '')+
                     '</td></tr>';
                 }
-                element['part_number_transformado'] = '';
-                element['cantidad_transformado'] = '';
-                element['descripcion_transformado'] = '';
-                element['comentario_transformado'] = '';
+                element['part_number_transformado'] = null;
+                element['cantidad_transformado'] = null;
+                element['descripcion_transformado'] = null;
+                element['comentario_transformado'] = null;
             });
             detalle_requerimiento = response;
 
@@ -295,7 +295,6 @@ $("#form-orden_despacho").on("submit", function(e){
 });
 
 function guardar_orden_despacho(data){
-    console.log(data);
     $("#submit_orden_despacho").attr('disabled','true');
 
     $.ajax({
@@ -309,10 +308,13 @@ function guardar_orden_despacho(data){
             $('#modal-orden_despacho_create').modal('hide');
             
             if (tab_origen == 'confirmados'){
-                $('#requerimientosConfirmados').DataTable().ajax.reload();
+                // $('#requerimientosConfirmados').DataTable().ajax.reload();
+                listarRequerimientosConfirmados(permiso_temp);
+                od_seleccionadas = [];
             } 
             else if (tab_origen == 'enProceso'){
-                $('#requerimientosEnProceso').DataTable().ajax.reload();
+                listarRequerimientosPendientes(permiso_temp);
+                od_seleccionadas = [];
             }
             actualizaCantidadDespachosTabs();
         }
@@ -451,8 +453,8 @@ function mostrarSale(){
         <td>${element.descripcion}</td>
         <td><input type="number" id="" value="" style="width: 80px;"/></td>
         <td>${(element.abreviatura !== null ? element.abreviatura : '')}</td>
-        <td><i class="fas fa-times icon-tabla red boton" data-toggle="tooltip" data-placement="bottom" 
-        title="Eliminar" onClick="eliminarProductoSale();"></i></td>
+        <td><i class="fas fa-times icon-tabla red boton delete" data-toggle="tooltip" data-placement="bottom" 
+        title="Eliminar"></i></td>
         </tr>`;
         i++;
     });
@@ -469,3 +471,24 @@ function ceros_numero(numero){
         $('[name=serie]').val(leftZero(4,num));
     }
 }
+
+$('#detalleSale tbody').on("click", ".delete", function(){
+    var anula = confirm("¿Esta seguro que desea anular éste item?");
+    
+    if (anula){
+        var idx = $(this).parents("tr")[0].id;
+        var index = detalle_sale.findIndex(function(item, i){
+            return parseInt(item.id_producto) == parseInt(idx);
+        });
+        console.log(index);
+        if (index !== -1){
+            detalle_sale.splice(index,1);
+        }
+        $(this).parents("tr").remove();
+        console.log('idx'+idx);
+    }
+});
+// function eliminarProductoSale(){
+//     var idx = $(this).parents("tr")[0].id;
+//     $(this).parents("tr").remove();
+// }
