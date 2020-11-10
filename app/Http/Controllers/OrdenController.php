@@ -137,7 +137,7 @@ class OrdenController extends Controller
     public function listar_requerimientos_pendientes($id_empresa= null, $id_sede=null){
         $firstCondition=[['alm_req.estado', '=', 1],['alm_req.confirmacion_pago','=',true],['alm_req.id_tipo_requerimiento', '=', 1]];
         $secondCondition=[['alm_req.estado', '=', 2],['alm_req.confirmacion_pago','=',true],['alm_req.id_tipo_requerimiento', '=', 1]];
-        $thirdCondition=[['alm_req.estado', '=', 23],['alm_req.confirmacion_pago','=',true],['alm_req.id_tipo_requerimiento', '=', 1]];
+        $thirdCondition=[['alm_req.estado', '=', 15],['alm_req.confirmacion_pago','=',true],['alm_req.id_tipo_requerimiento', '=', 1]];
         $fourthCondition=[['alm_req.estado', '=', 27],['alm_req.confirmacion_pago','=',true],['alm_req.id_tipo_requerimiento', '=', 1]];
         if($id_empresa >0){
             $firstCondition[]=['alm_req.id_empresa','=',$id_empresa];
