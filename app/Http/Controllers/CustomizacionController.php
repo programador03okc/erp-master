@@ -42,7 +42,7 @@ class CustomizacionController extends Controller
                  'adm_estado_doc.estado_doc','alm_almacen.id_sede','orden_despacho.id_od',
                  'adm_estado_doc.bootstrap_color','log_prove.id_proveedor','adm_contri.razon_social',
                  'oc_propias.orden_am','oportunidades.oportunidad','oportunidades.codigo_oportunidad',
-                 'entidades.entidad')
+                 'entidades.nombre')
         ->join('almacen.orden_despacho','orden_despacho.id_od','=','transformacion.id_od')
         ->join('almacen.alm_almacen','alm_almacen.id_almacen','=','transformacion.id_almacen')
         ->join('administracion.sis_sede','sis_sede.id_sede','=','alm_almacen.id_sede')

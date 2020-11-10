@@ -23,6 +23,10 @@ function open_despacho_create(data){
     $('[name=telefono_cliente]').val(data.telefono);
     $('[name=correo_cliente]').val(data.email);
     $('[name=id_cc]').val(data.id_cc);
+    $('[name=part_number_transformado]').val('');
+    $('[name=cantidad_transformado]').val('');
+    $('[name=descripcion_transformado]').val('');
+    $('[name=comentario_transformado]').val('');
 
     // $('#'+data.documento+'').prop('checked', true);
     if (data.tipo_cliente == 1){
@@ -77,6 +81,8 @@ function open_despacho_create(data){
     $('#name_title').text('Despacho Externo');
     $('#name_title').removeClass();
     $('#name_title').addClass('blue');
+
+    $('#detalleSale tbody').html('');
 
     detalle_requerimiento = [];
     detalle_ingresa = [];
