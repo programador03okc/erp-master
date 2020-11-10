@@ -119,12 +119,22 @@ function detalleRequerimiento(id_requerimiento){
                     (element.series ? '<i class="fas fa-bars icon-tabla boton" data-toggle="tooltip" data-placement="bottom" title="Ver Series" onClick="verSeries('+element.id_detalle_requerimiento+');"></i>' : '')+
                     '</td></tr>';
                 }
-                element['part_number_transformado'] = null;
-                element['cantidad_transformado'] = null;
-                element['descripcion_transformado'] = null;
-                element['comentario_transformado'] = null;
+                // element['part_number_transformado'] = null;
+                // element['cantidad_transformado'] = null;
+                // element['descripcion_transformado'] = null;
+                // element['comentario_transformado'] = null;
+
+                detalle_requerimiento.push({
+                    'id_detalle_requerimiento'  : element.id_detalle_requerimiento,
+                    'id_producto'               : element.id_producto,
+                    'cantidad'                  : element.cantidad,
+                    'part_number_transformado'  : null,
+                    'descripcion_transformado'  : null,
+                    'comentario_transformado'   : null,
+                    'cantidad_transformado'     : null,
+                });
             });
-            detalle_requerimiento = response;
+            // detalle_requerimiento = response;
 
             $('#detalleRequerimientoOD tbody').html(html);
         }
