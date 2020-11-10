@@ -1703,7 +1703,7 @@ class OrdenController extends Controller
                         ->where('id_detalle_requerimiento',$d['id_detalle_requerimiento'])
                         ->update(
                             [
-                                'estado'=>23, // atendido parcial
+                                'estado'=>15, // atendido parcial
                                 'stock_comprometido'=> $d['stock_comprometido']?$d['stock_comprometido']:0
                             ]
                             
@@ -1728,7 +1728,7 @@ class OrdenController extends Controller
                         }else{
                             DB::table('almacen.alm_req')
                             ->where('id_requerimiento',$id_req)
-                            ->update(['estado'=>23]); // atendido parcial
+                            ->update(['estado'=>15]); // atendido parcial
     
                             DB::table('almacen.alm_req_obs')
                             ->insert([  'id_requerimiento'=>$id_req,
@@ -1746,7 +1746,7 @@ class OrdenController extends Controller
                     foreach ($idRequerimientoAtentidosParcialList as $key => $id_req) {
                         DB::table('almacen.alm_req')
                         ->where('id_requerimiento',$id_req)
-                        ->update(['estado'=>23]); // atendido parcial
+                        ->update(['estado'=>15]); // atendido parcial
 
                         DB::table('almacen.alm_req_obs')
                         ->insert([  'id_requerimiento'=>$id_req,
