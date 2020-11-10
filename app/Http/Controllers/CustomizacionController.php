@@ -52,7 +52,7 @@ class CustomizacionController extends Controller
         ->join('almacen.alm_req','alm_req.id_requerimiento','=','orden_despacho.id_requerimiento')
         ->join('almacen.guia_ven', function($join)
                 {   $join->on('guia_ven.id_od', '=', 'transformacion.id_od');
-                    $join->where('guia_ven.estado','!=', 7);
+                    $join->where('guia_ven.estado','<>', 7);
                 })
         ->leftjoin('mgcp_cuadro_costos.cc','cc.id','=','transformacion.id_cc')
         ->leftjoin('mgcp_oportunidades.oportunidades','oportunidades.id','=','cc.id_oportunidad')
