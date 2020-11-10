@@ -138,15 +138,18 @@ class OrdenController extends Controller
         $firstCondition=[['alm_req.estado', '=', 1],['alm_req.confirmacion_pago','=',true],['alm_req.id_tipo_requerimiento', '=', 1]];
         $secondCondition=[['alm_req.estado', '=', 2],['alm_req.confirmacion_pago','=',true],['alm_req.id_tipo_requerimiento', '=', 1]];
         $thirdCondition=[['alm_req.estado', '=', 23],['alm_req.confirmacion_pago','=',true],['alm_req.id_tipo_requerimiento', '=', 1]];
+        $fourthCondition=[['alm_req.estado', '=', 27],['alm_req.confirmacion_pago','=',true],['alm_req.id_tipo_requerimiento', '=', 1]];
         if($id_empresa >0){
             $firstCondition[]=['alm_req.id_empresa','=',$id_empresa];
             $secondCondition[]=['alm_req.id_empresa','=',$id_empresa];
             $thirdCondition[]=['alm_req.id_empresa','=',$id_empresa];
+            $fourthCondition[]=['alm_req.id_empresa','=',$id_empresa];
         }
         if($id_sede >0){
             $firstCondition[]=['alm_req.id_sede','=',$id_sede];
             $secondCondition[]=['alm_req.id_sede','=',$id_sede];
             $thirdCondition[]=['alm_req.id_sede','=',$id_sede];
+            $fourthCondition[]=['alm_req.id_sede','=',$id_sede];
         }
  
         $alm_req = DB::table('almacen.alm_req')
@@ -215,6 +218,7 @@ class OrdenController extends Controller
         ->where($firstCondition)
         ->orWhere($secondCondition)
         ->orWhere($thirdCondition)
+        ->orWhere($fourthCondition)
         ->orderBy('alm_req.id_requerimiento', 'desc')
         ->get();
 
