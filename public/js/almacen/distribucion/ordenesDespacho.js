@@ -486,9 +486,9 @@ function listarOrdenesPendientes(){
             // {'data': 'razon_social', 'name': 'adm_contri.razon_social'},
             {'data': 'codigo_req', 'name': 'alm_req.codigo'},
             {'data': 'concepto', 'name': 'alm_req.concepto'},
-            {'data': 'almacen_descripcion', 'name': 'alm_almacen.descripcion'},
-            {'data': 'ubigeo_descripcion', 'name': 'ubi_dis.descripcion'},
-            {'data': 'direccion_destino'},
+            // {'data': 'almacen_descripcion', 'name': 'alm_almacen.descripcion'},
+            // {'data': 'ubigeo_descripcion', 'name': 'ubi_dis.descripcion'},
+            // {'data': 'direccion_destino'},
             {'data': 'fecha_despacho'},
             {'data': 'fecha_entrega'},
             {'data': 'nombre_corto', 'name': 'sis_usua.nombre_corto'},
@@ -505,7 +505,8 @@ function listarOrdenesPendientes(){
             {'render': 
                 function (data, type, row){
                     return `<button type="button" class="od_detalle btn btn-primary boton" data-toggle="tooltip" 
-                                data-placement="bottom" title="Ver Detalle" >
+                                data-placement="bottom" title="Ver Detalle" data-id="${row['id_requerimiento']}" 
+                                data-codigo="${row['codigo_req']}" data-concepto="${row['concepto']}">
                                 <i class="fas fa-list-ul"></i></button>
                             <button type="button" class="adjuntar btn btn-warning boton" data-toggle="tooltip" 
                                 data-placement="bottom" data-id="${row['id_od']}" data-cod="${row['codigo']}" title="Adjuntar Boleta/Factura" >
@@ -543,10 +544,21 @@ function listarOrdenesPendientes(){
     });
     
     $('#ordenesDespacho tbody').on("click","button.od_detalle", function(){
-        var data = $('#ordenesDespacho').DataTable().row($(this).parents("tr")).data();
-        console.log('data.id_od'+data.id_od);
-        open_detalle_despacho(data);
+        // var data = $('#ordenesDespacho').DataTable().row($(this).parents("tr")).data();
+        // console.log('data.id_od'+data.id_od);
+        // open_detalle_despacho(data);
+        var id = $(this).data('id');
+        var cod = $(this).data('codigo');
+        var con = $(this).data('concepto');
+        var data = {
+            'id_requerimiento': id,
+            'codigo': cod,
+            'concepto': con,
+        };
+        console.log(data);
+        open_detalle_requerimiento(data);
     });
+
     $('#ordenesDespacho tbody').on("click","button.adjuntar", function(){
         var id = $(this).data('id');
         var cod = $(this).data('cod');
@@ -614,19 +626,19 @@ function listarGruposDespachados(permiso){
                 }
             },
             {'data': 'codigo_req', 'name': 'alm_req.codigo'},
-            {'render': 
-                function (data, type, row){
-                    if (row['cliente_razon_social'] !== null){
-                        return row['cliente_razon_social'];
-                    } else if (row['cliente_persona'] !== null){
-                        return row['cliente_persona'];
-                    }
-                }
-            },
+            // {'render': 
+            //     function (data, type, row){
+            //         if (row['cliente_razon_social'] !== null){
+            //             return row['cliente_razon_social'];
+            //         } else if (row['cliente_persona'] !== null){
+            //             return row['cliente_persona'];
+            //         }
+            //     }
+            // },
             {'data': 'concepto', 'name': 'alm_req.concepto'},
-            {'data': 'almacen_descripcion', 'name': 'alm_almacen.descripcion'},
-            {'data': 'ubigeo_descripcion', 'name': 'ubi_dis.descripcion'},
-            {'data': 'direccion_destino', 'name': 'orden_despacho.direccion_destino'},
+            // {'data': 'almacen_descripcion', 'name': 'alm_almacen.descripcion'},
+            // {'data': 'ubigeo_descripcion', 'name': 'ubi_dis.descripcion'},
+            // {'data': 'direccion_destino', 'name': 'orden_despacho.direccion_destino'},
             {'data': 'fecha_despacho', 'name': 'orden_despacho_grupo.fecha_despacho'},
             {'render': 
                 function (data, type, row){

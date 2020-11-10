@@ -144,9 +144,9 @@ Panel de Control de Despachos
                                         <th>Cliente</th>
                                         <th>Requerimiento</th>
                                         <th>Concepto</th>
-                                        <th>Almacén</th>
+                                        <!-- <th>Almacén</th>
                                         <th>Ubigeo</th>
-                                        <th>Dirección Destino</th>
+                                        <th>Dirección Destino</th> -->
                                         <th>Fecha Despacho</th>
                                         <th>Fecha Entrega</th>
                                         <th>Generado por</th>
@@ -181,11 +181,11 @@ Panel de Control de Despachos
                                         <th>Despacho</th>
                                         <th>Orden Despacho</th>
                                         <th>Requerimiento</th>
-                                        <th>Cliente</th>
+                                        <!-- <th>Cliente</th> -->
                                         <th>Concepto</th>
-                                        <th>Almacén</th>
-                                        <th>Ubigeo</th>
-                                        <th>Dirección</th>
+                                        <!-- <th>Almacén</th> -->
+                                        <!-- <th>Ubigeo</th> -->
+                                        <!-- <th>Dirección</th> -->
                                         <th>Fecha Despacho</th>
                                         <th>Despachador</th>
                                         <th>Tipo Entrega</th>
