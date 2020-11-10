@@ -646,7 +646,7 @@ class OrdenController extends Controller
                     'alm_det_req_adjuntos.id_detalle_requerimiento AS adjunto_id_detalle_requerimiento'
                 )
                 ->whereIn('alm_req.id_requerimiento', $requerimientoList)
-                ->whereIn('alm_det_req.estado', [1,23,7])
+                ->whereIn('alm_det_req.estado', [1,2,15,27,7])
 
                 ->orderBy('alm_item.id_item', 'asc')
                 ->get();
