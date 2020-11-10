@@ -191,7 +191,7 @@ function listarTransformaciones(){
             {'data': 'orden_am', 'name': 'oc_propias.orden_am'},
             {'data': 'codigo_oportunidad', 'name': 'oportunidades.codigo_oportunidad'},
             {'data': 'oportunidad', 'name': 'oportunidades.oportunidad'},
-            {'data': 'entidad', 'name': 'entidades.entidad'},
+            {'data': 'nombre', 'name': 'entidades.nombre'},
             {'data': 'codigo'},
             {'data': 'fecha_transformacion', 'name': 'transformacion.fecha_transformacion'},
             {'data': 'almacen_descripcion', 'name': 'alm_almacen.descripcion'},
