@@ -27,7 +27,7 @@
                                             <th>Cant.Ingresada</th>
                                             <th>Cant.Despachada</th>
                                             <th>Unid</th>
-                                            <th>Almacén Reserva</th>
+                                            <!-- <th>Almacén Reserva</th> -->
                                             <!-- <th>Lugar de Entrega</th> -->
                                             <th>Estado</th>
                                             <!-- <th>Acción</th> -->
