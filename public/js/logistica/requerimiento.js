@@ -66,6 +66,8 @@ function inicializar( _rutaLista,
                 verTrazabilidadRequerimiento(id_requerimiento);
                 localStorage.removeItem("id_requerimiento");
                 changeStateButton('historial');
+                vista_extendida();
+
             }
             var ordenP_Cuadroc = JSON.parse(sessionStorage.getItem('ordenP_Cuadroc'));
             if(ordenP_Cuadroc !== null && ordenP_Cuadroc.hasOwnProperty('tipo_cuadro') && ordenP_Cuadroc.hasOwnProperty('id_cc')){

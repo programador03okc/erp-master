@@ -595,6 +595,7 @@ class RequerimientoController extends Controller
 
 
     function lista_ordenes_propias($id_empresa){
+
         $oc_propias = DB::table('mgcp_acuerdo_marco.oc_propias')
         ->select(
             'oc_propias.*',
@@ -606,6 +607,8 @@ class RequerimientoController extends Controller
             'oportunidades.id_tipo_negocio',
             'tipos_negocio.tipo as tipo_negocio',
             'cc.id as id_cc',
+            'alm_req.id_requerimiento',
+            'alm_req.codigo as codigo_requerimiento',
             'cc.tipo_cuadro',
             'cc_am_filas.id as id_am_filas',
             'cc_venta_filas.id as id_venta_filas',
@@ -622,6 +625,7 @@ class RequerimientoController extends Controller
         ->leftJoin('mgcp_oportunidades.tipos_negocio', 'tipos_negocio.id', '=', 'oportunidades.id_tipo_negocio')
         ->leftJoin('mgcp_cuadro_costos.cc_venta_filas', 'cc_venta_filas.id', '=', 'cc.id')
         ->leftJoin('mgcp_cuadro_costos.cc_am_filas', 'cc_am_filas.id', '=', 'cc.id')
+        ->leftJoin('almacen.alm_req', 'alm_req.id_cc', '=', 'cc.id')
         ->orderBy('oc_propias.fecha_publicacion', 'desc')
         ->get();
 

@@ -65,7 +65,7 @@
                                                                 <th>Total</th>
                                                                 <th>Estado Aprob. CC</th>
                                                                 <th>Tipo Cuadro</th>
-                                                                <th width="120">ACCIÓN</th>
+                                                                <th width="150">ACCIÓN</th>
                                                             </tr>
                                                         </thead>
                                                     </table>
