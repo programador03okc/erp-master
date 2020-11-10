@@ -459,11 +459,18 @@ class OrdenController extends Controller
         $cantiadComprada= 0;
         $det_ord_compra = DB::table('logistica.log_det_ord_compra')
         ->select('log_det_ord_compra.*')
-        ->where('log_det_ord_compra.id_detalle_requerimiento', $id_detalle_requerimiento)
+        ->where([
+            ['log_det_ord_compra.id_detalle_requerimiento', '=',$id_detalle_requerimiento],
+            ['log_det_ord_compra.estado','!=',7]
+            ]
+        )
         ->get();
 
         if(isset($det_ord_compra) && sizeof($det_ord_compra)> 0){
-            $cantiadComprada = $det_ord_compra->first()->cantidad;
+            foreach($det_ord_compra as $data){
+                $cantiadComprada += $data->cantidad;
+
+            }
         }
         return $cantiadComprada;
 
