@@ -422,7 +422,7 @@ class OrdenesPendientesController extends Controller
                         DB::table('almacen.alm_req_obs')
                         ->insert(['id_requerimiento'=>$id_requerimiento,
                             'accion'=>'INGRESADO',
-                            'descripcion'=>'Ingresado a Almacén con Guía '.$request->serie.'-'.$request->numero.'. Pasa a estado: Finalizado',
+                            'descripcion'=>'Ingresado a Almacén con Guía '.$request->serie.'-'.$request->numero.'.',
                             'id_usuario'=>$id_usuario,
                             'fecha_registro'=>$fecha_registro
                             ]);
@@ -528,20 +528,26 @@ class OrdenesPendientesController extends Controller
                                 ->where('id_detalle_orden',$det->id_detalle_orden)
                                 ->update(['estado' => 28]);//Almacen Total
                                 
-                                $ant = DB::table('logistica.log_det_ord_compra')
+                                $ant_oc = DB::table('logistica.log_det_ord_compra')
                                 ->select(DB::raw('SUM(cantidad) AS suma_cantidad'))
                                 ->where([['id_detalle_requerimiento','=',$det->id_detalle_requerimiento],
                                         ['estado','=',28]])
                                 ->first();
 
-                                if ($dreq->cantidad == $ant->suma_cantidad){
-                                    DB::table('almacen.alm_det_req')
-                                    ->where('id_detalle_requerimiento',$det->id_detalle_requerimiento)
-                                    ->update(['estado'=>28]);
-                                } else {
-                                    DB::table('almacen.alm_det_req')
-                                    ->where('id_detalle_requerimiento',$det->id_detalle_requerimiento)
-                                    ->update(['estado'=>27]);
+                                $detalle_req = DB::table('almacen.alm_det_req')
+                                ->where('id_detalle_requerimiento',$det->id_detalle_requerimiento)->first();
+
+                                if ($detalle_req->estado !== 22){
+                                    
+                                    if ($dreq->cantidad == $ant_oc->suma_cantidad){
+                                        DB::table('almacen.alm_det_req')
+                                        ->where('id_detalle_requerimiento',$det->id_detalle_requerimiento)
+                                        ->update(['estado'=>28]);
+                                    } else {
+                                        DB::table('almacen.alm_det_req')
+                                        ->where('id_detalle_requerimiento',$det->id_detalle_requerimiento)
+                                        ->update(['estado'=>27]);
+                                    }
                                 }
 
                             } else {

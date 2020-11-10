@@ -246,7 +246,7 @@ function listarRequerimientosPendientes(permiso){
             {'render': function (data, type, row){
                 return (row['orden_am'] !== null ? row['orden_am']+`<a href="https://apps1.perucompras.gob.pe//OrdenCompra/obtenerPdfOrdenPublico?ID_OrdenCompra=${row['id_oc_propia']}&ImprimirCompleto=1">
                 <span class="label label-success">Ver O.E.</span></a>
-            <a href="${row['url_oc_fisica']}">
+                <a href="${row['url_oc_fisica']}">
                 <span class="label label-warning">Ver O.F.</span></a>` : '');
                 }
             },
@@ -336,7 +336,7 @@ function listarRequerimientosPendientes(permiso){
                         //     (row['estado'] == 19 && row['id_tipo_requerimiento'] == 1 && row['sede_requerimiento'] == row['sede_orden'] && row['id_od'] == null) || //compra 
                         // (row['estado'] == 19 && row['id_tipo_requerimiento'] == 1 && row['sede_requerimiento'] !== row['sede_orden'] && row['id_transferencia'] !== null && row['id_od'] == null) || //compra con transferencia
                         (row['estado'] == 19 && row['confirmacion_pago'] == true && /*row['id_od'] == null &&*/ row['count_transferencia'] == 0) || //venta directa
-                        (row['estado'] == 10) ||
+                        (row['estado'] == 10) || (row['estado'] == 22) ||
                         (row['estado'] == 28) || (row['estado'] == 27) ||
                         (row['estado'] == 19 && row['id_tipo_requerimiento'] !== 1) ||
                         (row['estado'] == 19 && row['confirmacion_pago'] == true && /*row['id_od'] == null &&*/ row['count_transferencia'] > 0 && row['count_transferencia'] == row['count_transferencia_recibida'])) ? //venta directa con transferencia
