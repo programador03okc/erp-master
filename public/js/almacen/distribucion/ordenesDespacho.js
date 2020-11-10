@@ -1,10 +1,12 @@
 let od_seleccionadas = [];
+let permiso_temp = null;
 
 function iniciar(permiso){
     $("#tab-reqPendientes section:first form").attr('form', 'formulario');
     listarRequerimientosElaborados();
     actualizaCantidadDespachosTabs();
     intervalFunction();
+    permiso_temp = permiso;
 
     $('ul.nav-tabs li a').on('click',function(){
         $('ul.nav-tabs li').removeClass('active');
