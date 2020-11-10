@@ -25,7 +25,7 @@
                                             <th width="40%">Descripción</th>
                                             <th>Cantidad</th>
                                             <th>Cant.Ingresada</th>
-                                            <th>Cant.Despachada</th>
+                                            <th>Cant.Transf.</th>
                                             <th>Unid</th>
                                             <!-- <th>Almacén Reserva</th> -->
                                             <!-- <th>Lugar de Entrega</th> -->

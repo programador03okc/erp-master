@@ -530,8 +530,9 @@ class OrdenesPendientesController extends Controller
                                 
                                 $ant_oc = DB::table('logistica.log_det_ord_compra')
                                 ->select(DB::raw('SUM(cantidad) AS suma_cantidad'))
-                                ->where([['id_detalle_requerimiento','=',$det->id_detalle_requerimiento],
-                                        ['estado','=',28]])
+                                ->where('id_detalle_requerimiento',$det->id_detalle_requerimiento)
+                                ->where('estado',28)
+                                ->orWhere('estado',10)
                                 ->first();
 
                                 $detalle_req = DB::table('almacen.alm_det_req')
