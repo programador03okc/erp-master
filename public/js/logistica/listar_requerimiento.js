@@ -26,6 +26,7 @@ function inicializarRutasListado(
 
     listar_ordenes_propias();
     listar_requerimientos_elaborados('OK COMPUTER');
+    vista_extendida();
 
 }
 
@@ -123,16 +124,22 @@ function listar_ordenes_propias(){
                 let btnVerOrdenFisica='';
                 let btnVerOrdenElectronica='';
                 let btnGenerarRequerimiento='';
+                let btnIrRequerimiento='';
                 // let btnEditar='<button type="button" class="btn btn-sm btn-log bg-primary" title="Ver o editar" onClick="editarListaReq(' +row['id_requerimiento']+ ');"><i class="fas fa-edit fa-xs"></i></button>';
                 // let btnDetalleRapido='<button type="button" class="btn btn-default" title="Ver OC Fisica" onclick="location.href='+row['url_oc_fisica']+';"><i class="fas fa-eye fa-xs"></i></button>';
-                btnVerOrdenElectronica='<a class="btn btn-info btn-sm" title="O/C electrónica" href="https://apps1.perucompras.gob.pe//OrdenCompra/obtenerPdfOrdenPublico?ID_OrdenCompra='+row['id']+'&ImprimirCompleto=1" target="_blank"><i class="far fa-file-pdf"></i></a>';
-                btnVerOrdenFisica='<a class="btn btn-default btn-sm" title="O/C escaneada" href="'+row['url_oc_fisica']+'" target="_blank"><i class="far fa-file-alt"></i></a>';
+                btnVerOrdenElectronica='<a class="btn btn-sm btn-info" title="O/C electrónica" href="https://apps1.perucompras.gob.pe//OrdenCompra/obtenerPdfOrdenPublico?ID_OrdenCompra='+row['id']+'&ImprimirCompleto=1" target="_blank"><i class="far fa-file-pdf"></i></a>';
+                btnVerOrdenFisica='<a class="btn btn-sm btn-default" title="O/C escaneada" href="'+row['url_oc_fisica']+'" target="_blank"><i class="far fa-file-alt"></i></a>';
                 if(row['id_estado_aprobacion_cc'] ==3){
-                    btnGenerarRequerimiento='<button type="button" class="btn btn-sm btn-log bg-maroon" title="Generar Requerimiento" onClick="generarRequerimientoByOrdenCompraPropia('+row['tipo_cuadro']+','+row['id_cc']+')"><i class="fas fa-registered"></i></button>';
+                    btnGenerarRequerimiento='<button type="button" class="btn btn-sm bg-maroon" title="Generar Requerimiento" onClick="generarRequerimientoByOrdenCompraPropia('+row['tipo_cuadro']+','+row['id_cc']+')"><i class="fas fa-registered"></i></button>';
                 }else{
                     btnGenerarRequerimiento='';
                 }
-                return containerOpenBrackets+btnVerOrdenElectronica+btnVerOrdenFisica+btnGenerarRequerimiento+containerCloseBrackets;
+                if(row['id_requerimiento'] >0){
+                    btnIrRequerimiento='<a type="button" class="btn btn-sm bg-primary" title="Ir Requerimiento '+row['codigo_requerimiento']+'" onClick="irRequerimientoByOrdenCompraPropia('+row['id_requerimiento'] +')"><i class="fas fa-file-prescription"></i></a>';
+                }else{
+                    btnIrRequerimiento='';
+                }
+                return containerOpenBrackets+btnVerOrdenElectronica+btnVerOrdenFisica+btnGenerarRequerimiento+btnIrRequerimiento+containerCloseBrackets;
                 }
             },
         ],
@@ -157,6 +164,12 @@ function listar_ordenes_propias(){
 
     document.querySelector("table[id='ListaOrdenesPropias']").tHead.style.fontSize = '11px',
     document.querySelector("table[id='ListaOrdenesPropias']").tBodies[0].style.fontSize = '11px';
+
+}
+
+function irRequerimientoByOrdenCompraPropia(id_requerimiento){
+    localStorage.setItem('id_requerimiento', id_requerimiento);
+    window.location.href='/logistica/gestion-logistica/requerimiento/elaboracion/index';
 
 }
 
