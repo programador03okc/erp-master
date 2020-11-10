@@ -618,7 +618,7 @@ function listarGruposDespachados(permiso){
             {'data': 'codigo_oportunidad', 'name': 'oportunidades.codigo_oportunidad'},
             {'data': 'oportunidad', 'name': 'oportunidades.oportunidad'},
             {'data': 'nombre', 'name': 'entidades.nombre'},
-            {'data': 'codigo_odg', 'name': 'orden_despacho_grupo.codigo'},
+            // {'data': 'codigo_odg', 'name': 'orden_despacho_grupo.codigo'},
             // {'data': 'codigo_od', 'name': 'orden_despacho.codigo'},
             {'render': 
                 function (data, type, row){
@@ -899,7 +899,7 @@ function listarGruposDespachadosPendientesCargo(permiso){
             {'data': 'codigo_oportunidad', 'name': 'oportunidades.codigo_oportunidad'},
             {'data': 'oportunidad', 'name': 'oportunidades.oportunidad'},
             {'data': 'nombre', 'name': 'entidades.nombre'},
-            {'data': 'codigo_odg', 'name': 'orden_despacho_grupo.codigo'},
+            // {'data': 'codigo_odg', 'name': 'orden_despacho_grupo.codigo'},
             // {'data': 'codigo_od', 'name': 'orden_despacho.codigo'},
             {'render': 
                 function (data, type, row){
@@ -907,19 +907,19 @@ function listarGruposDespachadosPendientesCargo(permiso){
                 }
             },
             {'data': 'codigo_req', 'name': 'alm_req.codigo'},
-            {'render': 
-                function (data, type, row){
-                    if (row['cliente_razon_social'] !== null){
-                        return row['cliente_razon_social'];
-                    } else if (row['cliente_persona'] !== null){
-                        return row['cliente_persona'];
-                    }
-                }
-            },
+            // {'render': 
+            //     function (data, type, row){
+            //         if (row['cliente_razon_social'] !== null){
+            //             return row['cliente_razon_social'];
+            //         } else if (row['cliente_persona'] !== null){
+            //             return row['cliente_persona'];
+            //         }
+            //     }
+            // },
             {'data': 'concepto', 'name': 'alm_req.concepto'},
-            {'data': 'almacen_descripcion', 'name': 'alm_almacen.descripcion'},
-            {'data': 'ubigeo_descripcion', 'name': 'ubi_dis.descripcion'},
-            {'data': 'direccion_destino', 'name': 'orden_despacho.direccion_destino'},
+            // {'data': 'almacen_descripcion', 'name': 'alm_almacen.descripcion'},
+            // {'data': 'ubigeo_descripcion', 'name': 'ubi_dis.descripcion'},
+            // {'data': 'direccion_destino', 'name': 'orden_despacho.direccion_destino'},
             {'data': 'fecha_despacho', 'name': 'orden_despacho_grupo.fecha_despacho'},
             {'render': 
                 function (data, type, row){

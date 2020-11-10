@@ -178,7 +178,7 @@ Panel de Control de Despachos
                                         <th>Cod.CC</th>
                                         <th>Oportunidad</th>
                                         <th>Entidad</th>
-                                        <th>Despacho</th>
+                                        <!-- <th>Despacho</th> -->
                                         <th>Orden Despacho</th>
                                         <th>Requerimiento</th>
                                         <!-- <th>Cliente</th> -->
@@ -214,18 +214,17 @@ Panel de Control de Despachos
                                         <th>Cod.CC</th>
                                         <th>Oportunidad</th>
                                         <th>Entidad</th>
-                                        <th>Despacho</th>
+                                        <!-- <th>Despacho</th> -->
                                         <th>Orden Despacho</th>
                                         <th>Requerimiento</th>
-                                        <th>Cliente</th>
+                                        <!-- <th>Cliente</th> -->
                                         <th>Concepto</th>
-                                        <th>Almacén</th>
-                                        <th>Ubigeo</th>
-                                        <th>Dirección</th>
+                                        <!-- <th>Almacén</th> -->
+                                        <!-- <th>Ubigeo</th> -->
+                                        <!-- <th>Dirección</th> -->
                                         <th>Fecha Despacho</th>
                                         <th>Despachador</th>
                                         <th>Tipo Entrega</th>
-                                        <!-- <th>Confirmación</th> -->
                                         <th>Estado</th>
                                         <th>Motivo</th>
                                         <th width="100px">Acción</th>
