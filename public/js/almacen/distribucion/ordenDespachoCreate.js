@@ -128,6 +128,8 @@ function detalleRequerimiento(id_requerimiento){
                     'id_detalle_requerimiento'  : element.id_detalle_requerimiento,
                     'id_producto'               : element.id_producto,
                     'cantidad'                  : element.cantidad,
+                    'suma_ingresos'             : element.suma_ingresos,
+                    'suma_despachos'            : element.suma_despachos,
                     'part_number_transformado'  : null,
                     'descripcion_transformado'  : null,
                     'comentario_transformado'   : null,
