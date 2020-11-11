@@ -1,4 +1,4 @@
-let detalle_requerimiento = [];
+﻿let detalle_requerimiento = [];
 let detalle_ingresa = [];
 let detalle_sale = [];
 let tab_origen = null;
