@@ -383,10 +383,18 @@ function listar_ordenes_en_proceso(permisoRevertirOrden){
             { render: function (data, type, row) {     
                 return `<span class="label label-default" onClick="verOrdenModal(this);" data-id-estado-detalle-orden-compra="${row.id_detalle_orden_estado}" data-id-orden-compra="${row.detalle_orden_id_orden_compra}" data-id-detalle-orden-compra="${row.detalle_orden_id_detalle_orden}"  data-codigo-requerimiento="${row.codigo_requerimiento}" data-id-requerimiento="${row.orden_id_requerimiento}" data-codigo-item="${row.alm_prod_codigo}" style="cursor: pointer;" title="Ver Orden">${row.orden_codigo_softlink}</span>`;
 
-            }
+                }
             },
             { render: function (data, type, row) {     
-                return `${row.nro_documento} - ${row.razon_social}`;
+                return `${row.concepto}`;
+                }
+            },
+            { render: function (data, type, row) {     
+                return `${row.razon_social_cliente}`;
+                }
+            },
+            { render: function (data, type, row) {     
+                return `${row.razon_social}`;
                 }
             },
             { render: function (data, type, row) {     

@@ -348,6 +348,9 @@ class OrdenController extends Controller
             'log_det_ord_compra.subtotal as detalle_orden_subtotal',
             'log_det_ord_compra.id_detalle_requerimiento as detalle_orden_id_detalle_requerimiento',
             'alm_det_req.observacion',
+            'alm_req.concepto',
+            'alm_req.id_cliente',
+            'contri_cli.razon_social as razon_social_cliente',
             'alm_req.codigo as codigo_requerimiento',
             'alm_prod.codigo AS alm_prod_codigo',
             'alm_prod.part_number',
@@ -364,10 +367,12 @@ class OrdenController extends Controller
         ->leftJoin('almacen.alm_item', 'log_det_ord_compra.id_item', '=', 'alm_item.id_item')
         ->leftJoin('almacen.alm_prod', 'alm_prod.id_producto', '=', 'alm_item.id_producto')
         ->leftJoin('almacen.alm_cat_prod', 'alm_cat_prod.id_categoria', '=', 'alm_prod.id_categoria')
-        ->leftJoin('almacen.alm_subcat','alm_subcat.id_subcategoria','=','alm_prod.id_subcategoria')
-    
+        ->leftJoin('almacen.alm_subcat','alm_subcat.id_subcategoria','=','alm_prod.id_subcategoria')    
         ->leftJoin('almacen.alm_det_req', 'alm_det_req.id_detalle_requerimiento', '=', 'log_det_ord_compra.id_detalle_requerimiento')
         ->leftJoin('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'alm_det_req.id_requerimiento')
+        ->leftJoin('comercial.com_cliente','com_cliente.id_cliente','=','alm_req.id_cliente')
+        ->leftJoin('contabilidad.adm_contri as contri_cli','contri_cli.id_contribuyente','=','com_cliente.id_contribuyente')
+
         ->where([['log_ord_compra.estado', '!=', 7]])
         ->orderBy('log_ord_compra.fecha','desc')
         ->get();

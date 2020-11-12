@@ -77,6 +77,8 @@ function inicializar( _rutaLista,
                 let btnVinculoAcrivoCC= `<span class="text-info" id="text-info-cc-vinculado" > (vinculado a un CC) <span class="badge label-danger" onClick="eliminarVinculoCC();" style="position: absolute;margin-top: -5px;margin-left: 5px; cursor:pointer" title="Eliminar vínculo">×</span></span>`;
                 document.querySelector("section[class='content-header']").children[0].innerHTML+=btnVinculoAcrivoCC;
                 getDataCuadroCostos(ordenP_Cuadroc);
+                document.querySelector("input[name='fecha_entrega']").setAttribute('disabled',true);
+                document.querySelector("div[id='input-group-monto'] h5").textContent ='Monto OC';
             }else{
                 console.log('no se encontro cuadro de costos, variable de sesión ordenP_Cuadroc vacia');
                 document.querySelector("fieldset[id='group-detalle-cuadro-costos']").setAttribute('hidden',true);
@@ -776,7 +778,7 @@ function mostrar_requerimiento(IdorCode){
         dataType: 'JSON',
         success: function(response){
             data = response;
-            // console.log(response);
+            console.log(response);
             if(response['requerimiento'] !== undefined){
                 if(response['requerimiento'][0].id_tipo_requerimiento == 1){ // compra
                     if(response['requerimiento'][0].tipo_cliente == 1 || response['requerimiento'][0].tipo_cliente == 2){ //persona natural o persona juridica
@@ -876,6 +878,8 @@ function mostrar_requerimiento(IdorCode){
                         'unidad':detalle_requerimiento[x].unidad_medida,
                         'cantidad':detalle_requerimiento[x].cantidad,
                         'precio_referencial':detalle_requerimiento[x].precio_referencial,
+                        'id_tipo_moneda':detalle_requerimiento[x].id_tipo_moneda,
+                        'tipo_moneda':detalle_requerimiento[x].tipo_moneda,
                         'fecha_entrega':detalle_requerimiento[x].fecha_entrega,
                         'lugar_entrega':detalle_requerimiento[x].lugar_entrega?detalle_requerimiento[x].lugar_entrega:"",
                         'id_partida':detalle_requerimiento[x].id_partida,
@@ -1281,12 +1285,13 @@ function llenar_tabla_detalle_requerimiento(data_item){
             row.insertCell(6).innerHTML = descripcion_unidad;
             row.insertCell(7).innerHTML = data_item[a].cantidad?data_item[a].cantidad:'0';
             row.insertCell(8).innerHTML = data_item[a].precio_referencial?data_item[a].precio_referencial:'0';
+            row.insertCell(9).innerHTML = data_item[a].tipo_moneda?data_item[a].tipo_moneda:'';
 
-            row.insertCell(9).innerHTML = data_item[a].fecha_entrega?data_item[a].fecha_entrega:null;
-            row.insertCell(10).innerHTML = data_item[a].lugar_entrega?data_item[a].lugar_entrega:'-';
-            row.insertCell(11).innerHTML = data_item[a].almacen_descripcion?data_item[a].almacen_descripcion:'-';
+            // row.insertCell(9).innerHTML = data_item[a].fecha_entrega?data_item[a].fecha_entrega:null;
+            // row.insertCell(10).innerHTML = data_item[a].lugar_entrega?data_item[a].lugar_entrega:'-';
+            // row.insertCell(11).innerHTML = data_item[a].almacen_descripcion?data_item[a].almacen_descripcion:'-';
 
-            var tdBtnAction = row.insertCell(12);
+            var tdBtnAction = row.insertCell(10);
             // tdBtnAction.className = classHiden;
             var hasAttrDisabled ='';
                 if(document.querySelector("button[id='btnEditar']").hasAttribute('disabled')== false){
@@ -1416,6 +1421,8 @@ function get_data_detalle_requerimiento(){
     var und_text = $('[name=unidad_medida_item]').find('option:selected').text();
     var cantidad = $('[name=cantidad_item]').val();
     var precio_referencial = $('[name=precio_ref_item]').val();
+    var id_tipo_moneda = $('[name=tipo_moneda]').val();
+    var tipo_moneda = $('[name=tipo_moneda] option:selected').text()
     var categoria = $('[name=categoria]').val();
     var subcategoria = $('[name=subcategoria]').val();
     var fecha_entrega = $('[name=fecha_entrega_item]').val();
@@ -1446,6 +1453,8 @@ function get_data_detalle_requerimiento(){
         'unidad':und_text,
         'cantidad':parseFloat(cantidad),
         'precio_referencial':parseFloat(precio_referencial)?parseFloat(precio_referencial):null,
+        'id_tipo_moneda':id_tipo_moneda,
+        'tipo_moneda':tipo_moneda,
         'categoria':categoria,
         'subcategoria':subcategoria,
         'fecha_entrega':fecha_entrega,

@@ -107,8 +107,8 @@
                 <input type="text" class="form-control activation" name="concepto">
             </div>
             <div class="col-md-2"  id="input-group-fecha">
-                <h5>Fecha</h5>
-                <input type="date" class="form-control activation" name="fecha_requerimiento" disabled="true" min={{ date('Y-m-d H:i:s') }} value={{ date('Y-m-d H:i:s') }}>
+                <h5>Fecha Creación</h5>
+                <input type="date" class="form-control" name="fecha_requerimiento" disabled="true" min={{ date('Y-m-d H:i:s') }} value={{ date('Y-m-d H:i:s') }}>
             </div>
             <!-- <div class="form-group row"> -->
             <div class="col-md-2" id="input-group-empresa">
@@ -144,8 +144,8 @@
                 @endforeach
                 </select>
             </div>
-            <div class="col-md-2" id="input-group-monto" >
-                <h5>Monto</h5>
+            <div class="col-md-2" id="input-group-monto">
+                <h5>Monto Total</h5>
                 <div class="input-group-okc">
                     <div class="input-group-addon" id="montoMoneda" style="width: auto;">S/.</div>
                     <input type="text" class="form-control activation" name="monto">
@@ -153,8 +153,8 @@
             </div>
             <div class="col-md-2" id="input-group-fecha_entrega">
                 <div class="form-group">
-                    <h5>Fecha Entrega</h5>
-                    <input type="date" class="form-control input-sm activation" name="fecha_entrega" step="any" min={{ date('Y-m-d H:i:s') }} value={{ date('Y-m-d H:i:s') }}>
+                    <h5>Fecha Limite Entrega</h5>
+                    <input type="date" class="form-control input-sm activation" name="fecha_entrega">
                 </div>
             </div>
 
@@ -311,17 +311,15 @@
                     <thead>
                         <tr>
                             <th class="invisible">#</th>
-                            <th>CODIGO</th>
-                            <th>PART NUMBER</th>
+                            <th width="70">CODIGO</th>
+                            <th width="70">PART NUMBER</th>
                             <th width="70">CATEGORÍA</th>
                             <th width="70">SUBCATEGORÍA</th>
-                            <th>DESCRIPCION</th>
+                            <th width="200">DESCRIPCION</th>
                             <th width="60">UNIDAD</th>
                             <th width="70">CANTIDAD</th>
                             <th width="70">PRECIO REF.</th>
-                            <th width="100">FECHA ENTREGA</th>
-                            <th width="100">LUGAR ENTREGA</th>
-                            <th width="100">ALMACEN RESERVA</th>
+                            <th width="70">MONEDA</th>
                             <th width="120">
                                 <center><button type="button" class="btn btn-xs btn-success activation" onClick="catalogoItemsModal();" id="btn-add"
                                 data-toggle="tooltip" data-placement="bottom"  title="Agregar Detalle" disabled><i class="fas fa-plus"></i>
