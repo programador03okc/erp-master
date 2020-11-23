@@ -72,7 +72,6 @@ function inicializar( _rutaLista,
             var ordenP_Cuadroc = JSON.parse(sessionStorage.getItem('ordenP_Cuadroc'));
             if(ordenP_Cuadroc !== null && ordenP_Cuadroc.hasOwnProperty('tipo_cuadro') && ordenP_Cuadroc.hasOwnProperty('id_cc')){
                 vista_extendida();
-                document.querySelector("fieldset[id='group-detalle-cuadro-costos']").removeAttribute('hidden');
                 // console.log(ordenP_Cuadroc);
                 let btnVinculoAcrivoCC= `<span class="text-info" id="text-info-cc-vinculado" > (vinculado a un CC) <span class="badge label-danger" onClick="eliminarVinculoCC();" style="position: absolute;margin-top: -5px;margin-left: 5px; cursor:pointer" title="Eliminar vínculo">×</span></span>`;
                 document.querySelector("section[class='content-header']").children[0].innerHTML+=btnVinculoAcrivoCC;
@@ -138,9 +137,34 @@ function getDataCuadroCostos(cc){
     geDetalleCuadroCostos(cc.id_cc).then(function(res) {
         // Run this when your request was successful
         // console.log(res)
+        let cantidadTransformaciones=0;
+        let itemsConTransformacionList=[];
         if(res.status ==200){
             tempDetalleItemsCC= res.data;
-            llenarDetalleCuadroCostos(res.data);
+            tempDetalleItemsCC.forEach(element => {
+                if(element['descripcion_producto_transformado'] != null  || element['descripcion_producto_transformado' != '']){
+                    cantidadTransformaciones+=1;
+                    itemsConTransformacionList.push({
+                        'id':element.id,
+                        'part_no_producto_transformado':element.part_no_producto_transformado,
+                        'descripcion_producto_transformado':element.descripcion_producto_transformado,
+                        'comentario_producto_transformado':element.comentario_producto_transformado,
+                        'cantidad':element.cantidad
+
+                    });
+                }
+            });
+
+            if(cantidadTransformaciones >0){
+                document.querySelector("form[id='form-requerimiento'] input[name='tiene_transformacion']").value= true;
+                document.querySelector("fieldset[id='group-detalle-items-transformados']").removeAttribute('hidden');
+                llenarItemsTransformados(itemsConTransformacionList)
+            }else{
+                document.querySelector("form[id='form-requerimiento'] input[name='tiene_transformacion']").value= false;
+                document.querySelector("fieldset[id='group-detalle-cuadro-costos']").removeAttribute('hidden');
+                llenarDetalleCuadroCostos(res.data);
+            }
+
         }
     }).catch(function(err) {
         // Run this when promise was rejected via reject()
@@ -213,6 +237,36 @@ function llenarCabeceraCuadroCostos(data){
 
 }
 
+function llenarItemsTransformados(data){
+
+    var dataTableListaDetalleItemstransformado =  $('#ListaDetalleItemstransformado').DataTable({
+        'processing': false,
+        'serverSide': false,
+        'bDestroy': true,
+        'bInfo':     false,
+        'dom': 'Bfrtip',
+        'paging':   false,
+        'searching': false,
+        'data':data,
+        'columns':[
+            {'data':'part_no_producto_transformado'},
+            {'data':'descripcion_producto_transformado'},
+            {'data':'cantidad'},
+            {'data':'comentario_producto_transformado'},
+            {'render': function (data, type, row){
+                return `<button class="btn btn-xs btn-default" onclick="procesarItemDetalleCuadroCostos(${row['id']},'ITEM_CON_TRANSFORMACION');" title="Agregar Item" style="background-color:#a7904f; color:white;"><i class="fas fa-plus"></i></button>`;
+                }
+            }
+        ]
+    });
+
+    document.querySelector("table[id='ListaDetalleItemstransformado']").tHead.style.fontSize = '11px',
+    document.querySelector("table[id='ListaDetalleItemstransformado']").tBodies[0].style.fontSize = '11px';
+    dataTableListaDetalleItemstransformado.buttons().destroy();
+    document.querySelector("table[id='ListaDetalleItemstransformado'] thead").style.backgroundColor ="#968a30";
+    $('#ListaDetalleItemstransformado tr').css('cursor','default');
+}
+
 function llenarDetalleCuadroCostos(data){
 
 
@@ -239,7 +293,7 @@ function llenarDetalleCuadroCostos(data){
             {'data':'nombre_autor'},
             {'data':'fecha_creacion'}, 
             {'render': function (data, type, row){
-                return `<button class="btn btn-xs btn-default" onclick="procesarItemDetalleCuadroCostos(${row['id']});" title="Agregar Item" style="background-color:#714fa7; color:white;"><i class="fas fa-plus"></i></button>`;
+                return `<button class="btn btn-xs btn-default" onclick="procesarItemDetalleCuadroCostos(${row['id']},'ITEM_SIN_TRANSFORMACION');" title="Agregar Item" style="background-color:#714fa7; color:white;"><i class="fas fa-plus"></i></button>`;
                 }
             }
         ]
@@ -272,7 +326,7 @@ function eliminarVinculoItemCC(){
 
 }
 
-function procesarItemDetalleCuadroCostos(id_detalle_cc){
+function procesarItemDetalleCuadroCostos(id_detalle_cc,tipo_item){
     console.log(id_detalle_cc);
     
     let detalle_cc_selected=null;
@@ -291,14 +345,26 @@ function procesarItemDetalleCuadroCostos(id_detalle_cc){
         id_cc_am_filas = null;
         id_cc_venta_filas = detalle_cc_selected.id;
     }
-    let descripcionParseText = ((detalle_cc_selected.descripcion).replace("&lt;","<")).trim();
-    let partNumberParseText = detalle_cc_selected.part_no;
-    tempDetalleItemCCSelect={
-        'part_number':document.querySelector("div[id='modal-crear-nuevo-producto'] input[name='part_number']").value= partNumberParseText?partNumberParseText:'',
-        'descripcion':document.querySelector("div[id='modal-crear-nuevo-producto'] input[name='descripcion']").value= descripcionParseText?descripcionParseText:'sin descripcion',
-        'id_cc_am_filas':id_cc_am_filas,
-        'id_cc_venta_filas':id_cc_venta_filas
+    if(tipo_item =='ITEM_SIN_TRANSFORMACION'){
+        let descripcionParseText = ((detalle_cc_selected.descripcion).replace("&lt;","<")).trim();
+        let partNumberParseText = detalle_cc_selected.part_no;
+        tempDetalleItemCCSelect={
+            'part_number':document.querySelector("div[id='modal-crear-nuevo-producto'] input[name='part_number']").value= partNumberParseText?partNumberParseText:'',
+            'descripcion':document.querySelector("div[id='modal-crear-nuevo-producto'] input[name='descripcion']").value= descripcionParseText?descripcionParseText:'sin descripcion',
+            'id_cc_am_filas':id_cc_am_filas,
+            'id_cc_venta_filas':id_cc_venta_filas
+            }
+    }else if(tipo_item =='ITEM_CON_TRANSFORMACION'){
+        let descripcionParseText = ((detalle_cc_selected.descripcion_producto_transformado).replace("&lt;","<")).trim();
+        let partNumberParseText = detalle_cc_selected.part_no_producto_transformado;
+        tempDetalleItemCCSelect={
+            'part_number':document.querySelector("div[id='modal-crear-nuevo-producto'] input[name='part_number']").value= partNumberParseText?partNumberParseText:'',
+            'descripcion':document.querySelector("div[id='modal-crear-nuevo-producto'] input[name='descripcion']").value= descripcionParseText?descripcionParseText:'sin descripcion',
+            'id_cc_am_filas':id_cc_am_filas,
+            'id_cc_venta_filas':id_cc_venta_filas
         }
+    }
+
         catalogoItemsModal();
 
 }
@@ -1353,6 +1419,7 @@ function get_data_requerimiento(){
     observacion = document.querySelector("form[id='form-requerimiento'] textarea[name='observacion']").value;
     monto = document.querySelector("form[id='form-requerimiento'] input[name='monto']").value;
     fecha_entrega = document.querySelector("form[id='form-requerimiento'] input[name='fecha_entrega']").value;
+    tiene_transformacion = document.querySelector("form[id='form-requerimiento'] input[name='tiene_transformacion']").value;
 
     requerimiento = {
         id_requerimiento,
@@ -1389,7 +1456,8 @@ function get_data_requerimiento(){
         almacen_id_empresa,
         observacion,
         monto,
-        fecha_entrega
+        fecha_entrega,
+        tiene_transformacion
         
     };
 return requerimiento;
@@ -1438,6 +1506,9 @@ function get_data_detalle_requerimiento(){
         var estado = $('[name=estado]').val();
         
     }
+    
+    let tiene_transformacion = document.querySelector("form[id='form-requerimiento'] input[name='tiene_transformacion']").value;
+
 
     let item = {
         'id_item':parseInt(id_item),
@@ -1466,7 +1537,8 @@ function get_data_detalle_requerimiento(){
         'id_almacen_reserva':parseInt(id_almacen_reserva),
         'almacen_descripcion':almacen_descripcion,
         'id_cc_am_filas':id_cc_am_filas,
-        'id_cc_venta_filas': id_cc_venta_filas
+        'id_cc_venta_filas': id_cc_venta_filas,
+        'tiene_transformacion':tiene_transformacion
         };
         return item;
 }

@@ -1787,7 +1787,8 @@ class LogisticaController extends Controller
                 'monto'                 => isset($request->requerimiento['monto'])?$request->requerimiento['monto']:null,
                 'fecha_entrega'         => isset($request->requerimiento['fecha_entrega'])?$request->requerimiento['fecha_entrega']:null,
                 'id_cc'                 => isset($request->requerimiento['id_cc'])?$request->requerimiento['id_cc']:null,
-                'tipo_cuadro'           => isset($request->requerimiento['tipo_cuadro'])?$request->requerimiento['tipo_cuadro']:null
+                'tipo_cuadro'           => isset($request->requerimiento['tipo_cuadro'])?$request->requerimiento['tipo_cuadro']:null,
+                'tiene_transformacion'   => isset($request->requerimiento['tiene_transformacion'])?$request->requerimiento['tiene_transformacion']:null
             ],
             'id_requerimiento'
         );
@@ -1820,8 +1821,10 @@ class LogisticaController extends Controller
                             'fecha_registro'        => date('Y-m-d H:i:s'),
                             'estado'                => ($request->requerimiento['tipo_requerimiento'] ==2?19:1),
                             'id_almacen_reserva'    => is_numeric($detalle_reqArray[$i]['id_almacen_reserva']) == 1 ? $detalle_reqArray[$i]['id_almacen_reserva']:null,
-                            'id_cc_am_filas'           => is_numeric($detalle_reqArray[$i]['id_cc_am_filas']) == 1 ? $detalle_reqArray[$i]['id_cc_am_filas']:null,
-                            'id_cc_venta_filas'       => is_numeric($detalle_reqArray[$i]['id_cc_venta_filas']) == 1 ? $detalle_reqArray[$i]['id_cc_venta_filas']:null
+                            'id_cc_am_filas'        => is_numeric($detalle_reqArray[$i]['id_cc_am_filas']) == 1 ? $detalle_reqArray[$i]['id_cc_am_filas']:null,
+                            'id_cc_venta_filas'     => is_numeric($detalle_reqArray[$i]['id_cc_venta_filas']) == 1 ? $detalle_reqArray[$i]['id_cc_venta_filas']:null,
+                            'tiene_transformacion'  => $detalle_reqArray[$i]['tiene_transformacion']?$detalle_reqArray[$i]['tiene_transformacion']:null
+
                         ],
                         'id_detalle_requerimiento'
                     );

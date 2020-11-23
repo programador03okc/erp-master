@@ -1,13 +1,13 @@
 <div class="modal fade" tabindex="-1" role="dialog" id="modal-orden-requerimiento">
-    <div class="modal-dialog" style="width: 80%;">
+    <div class="modal-dialog" style="width: 95%;">
         <div class="modal-content">
-            <form id="form-orden-requerimiento" type="register" form="formulario">
-
-                <div class="modal-header">
+            <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal-orden-requerimiento" onClick="$('#modal-orden-requerimiento').modal('hide');"><span aria-hidden="true">&times;</span></button>
-                    <h3 class="modal-title">Generar Orden <span id="codigo_requeriento_seleccionado"></span></h3>
-                </div>
-                <div class="modal-body">
+                <h3 class="modal-title">Generar Orden<span></span></h3>
+            </div>
+            <div class="modal-body">
+ 
+                <form id="form-modal-orden-requerimiento" type="register" form="formulario">
                     <input class="oculto" name="id_requerimiento"/>
                     <div class="row">
                         <div class="col-md-3"  id="group-tipo_orden">
@@ -141,20 +141,21 @@
                             <!-- <p class="c"><strong>Total: </strong> <var name="total"></var></p> -->
                         </div>
                     </div>
-                <div class="modal-footer">
+                    <div class="modal-footer">
                     <div class="form-inline">
-                    <div class="checkbox" id="check-guarda_en_requerimiento" style="display:none">
-                        <label>
-                            <input type="checkbox" name="guardarEnRequerimiento"> Guardar nuevos items en requerimiento?
-                        </label>
-                    </div> 
+                        <div class="checkbox" id="check-guarda_en_requerimiento" style="display:none">
+                            <label>
+                                <input type="checkbox" name="guardarEnRequerimiento"> Guardar nuevos items en requerimiento?
+                            </label>
+                        </div> 
 
-                    <input type="submit" id="submit_orden_requerimiento" class="btn btn-success" value="Guardar"/>
- 
+                        <input type="submit" id="submit_orden_requerimiento" class="btn btn-success" value="Guardar"/>
                     </div>
-                </div>
-            </form>
+                </form>
+
+            </div>
         </div>
     </div>
 </div>
-@include('logistica.ordenes.modal_confirmar_eliminar_item')
+
+ 

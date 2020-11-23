@@ -24,6 +24,7 @@ class OrdenController extends Controller
         // $cuentas = $this->select_tipos_cuenta();
         // $responsables = $this->select_responsables();
         // $contactos = $this->select_contacto();
+
         $tp_moneda = $this->select_moneda();
         $tp_documento = $this->select_documento();
         $sis_identidad = $this->select_sis_identidad();
@@ -34,10 +35,12 @@ class OrdenController extends Controller
         $subcategorias = (new AlmacenController)->mostrar_subcategorias_cbo();
         $categorias = (new AlmacenController)->mostrar_categorias_cbo();
         $unidades = (new AlmacenController)->mostrar_unidades_cbo();
-        
+
+        $unidades_medida = (new LogisticaController)->mostrar_unidad_medida();
+        $monedas = (new LogisticaController)->mostrar_moneda();
         // $sedes = Auth::user()->sedesAcceso();
 
-        return view('logistica/ordenes/generar_orden_requerimiento', compact('sedes','empresas','sis_identidad','tp_documento', 'tp_moneda','tp_doc','condiciones','clasificaciones','subcategorias','categorias','unidades'));
+        return view('logistica/ordenes/generar_orden_requerimiento', compact('sedes','empresas','sis_identidad','tp_documento', 'tp_moneda','tp_doc','condiciones','clasificaciones','subcategorias','categorias','unidades','unidades_medida','monedas'));
     }
 
     public function select_moneda(){
@@ -480,6 +483,60 @@ class OrdenController extends Controller
         return $cantiadComprada;
 
     }
+
+    public function get_lista_items_cuadro_costos_por_id_requerimiento(Request $request)
+    {
+        $requerimientoList = $request->requerimientoList;
+        $temp_data=[];
+        $data=[];
+
+        if(count($requerimientoList)>0){
+
+            $alm_req = DB::table('almacen.alm_req')
+            ->select('alm_req.id_cc')
+            ->whereIn('alm_req.id_requerimiento', $requerimientoList)
+            ->orderBy('alm_req.id_requerimiento', 'desc')
+            ->get();
+
+
+            foreach($alm_req as $element){
+                $temp_data[]=((new RequerimientoController)->get_detalle_cuadro_costos($element->id_cc)['data']);
+            }
+            
+            if(count($temp_data)>0){
+                foreach($temp_data as $arr){
+                    foreach($arr as $value){
+                        $data[]=$value;
+                    }
+                }
+                $status = 200;
+
+            }else{
+                $status = 204;
+            }
+        }
+
+        $output=['status'=>$status, 'data'=>$data];
+
+        return response()->json($output);
+
+    }
+
+    public function tieneItemsParaCompra(Request $request ){
+        $requerimientoList = $request->requerimientoList;
+        $tieneItems=false;
+        $alm_det_req = DB::table('almacen.alm_det_req')
+        ->select('alm_det_req.*')
+        ->whereNull('alm_det_req.tiene_transformacion')
+        ->whereIn('alm_det_req.id_requerimiento',$requerimientoList)
+        ->get();
+
+        if(count($alm_det_req)>0){
+            $tieneItems=true;
+        }
+        return response()->json($tieneItems);
+    }
+
     public function get_detalle_requerimiento_orden(Request $request )
     {
 
@@ -559,6 +616,7 @@ class OrdenController extends Controller
                 DB::raw("(CASE WHEN alm_req.estado = 1 THEN 'Habilitado' ELSE 'Deshabilitado' END) AS estado_desc")
             )
             ->whereIn('alm_req.id_requerimiento', $requerimientoList)
+            ->WhereIn('alm_req.tiene_transformacion',[true,1])
             ->orderBy('alm_req.id_requerimiento', 'desc')
             ->get();
 
@@ -658,8 +716,8 @@ class OrdenController extends Controller
                     'alm_det_req_adjuntos.id_detalle_requerimiento AS adjunto_id_detalle_requerimiento'
                 )
                 ->whereIn('alm_req.id_requerimiento', $requerimientoList)
+                ->whereNull('alm_det_req.tiene_transformacion')
                 ->whereNotIn('alm_det_req.estado', [7])
-
                 ->orderBy('alm_item.id_item', 'asc')
                 ->get();
 
@@ -2061,4 +2119,110 @@ class OrdenController extends Controller
         return $pdf->download('orden.pdf');
     }
 
+
+    function buscarItemCatalogo(Request $request){
+        $part_number = $request->part_number;
+        $descripcion = $request->descripcion;
+
+        $alm_prod = DB::table('almacen.alm_prod')
+        ->select(
+            'alm_item.id_item',
+            'alm_item.codigo AS codigo_item',
+            'alm_prod.id_producto',
+            'alm_prod.codigo AS alm_prod_codigo',
+            'alm_prod.part_number',
+            'alm_prod.descripcion',
+            'alm_prod.id_unidad_medida',
+            'alm_prod.id_moneda',
+            'sis_moneda.descripcion as moneda',
+            'alm_prod.id_categoria',
+            'alm_prod.id_subcategoria',
+            'alm_prod.id_clasif',
+            'alm_und_medida.descripcion as unidad_medida',
+            'alm_cat_prod.descripcion as categoria',
+            'alm_subcat.descripcion as subcategoria',
+            'alm_clasif.descripcion as clasificacion'
+            )
+        ->leftJoin('configuracion.sis_moneda', 'sis_moneda.id_moneda', '=', 'alm_prod.id_moneda')
+        ->leftJoin('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'alm_prod.id_unidad_medida')
+        ->leftJoin('almacen.alm_item', 'alm_item.id_producto', '=', 'alm_prod.id_producto')
+        ->leftJoin('almacen.alm_cat_prod', 'alm_cat_prod.id_categoria', '=', 'alm_prod.id_categoria')
+        ->leftJoin('almacen.alm_subcat','alm_subcat.id_subcategoria','=','alm_prod.id_subcategoria')
+        ->leftJoin('almacen.alm_clasif','alm_clasif.id_clasificacion','=','alm_prod.id_clasif')
+        ->where('alm_prod.part_number','=',$part_number)
+        ->whereNotNull('alm_prod.part_number')
+        ->orWhere('alm_prod.descripcion','like','%'.$descripcion.'%')
+        ->get();
+
+        return response()->json($alm_prod);
+
+    }
+
+    function getGrupoSelectItemParaCompra(){
+
+        $output=[];
+        $clasificaciones = (new AlmacenController)->mostrar_clasificaciones_cbo();
+        $subcategorias = (new AlmacenController)->mostrar_subcategorias_cbo();
+        $categorias = (new AlmacenController)->mostrar_categorias_cbo();
+        $monedas = (new LogisticaController)->mostrar_moneda();
+        $unidades_medida = (new AlmacenController)->mostrar_unidades_cbo();
+        $output[]= [
+            'categoria'=>$categorias,
+            'subcategoria'=>$subcategorias,
+            'clasificacion'=>$clasificaciones,
+            'moneda'=>$monedas,
+            'unidad_medida'=>$unidades_medida
+        ];
+        return response()->json($output);
+
+    }
+
+    function guardarItemsEnDetalleRequerimiento(Request $request){
+        $id_requerimiento_list = $request->id_requerimiento_list;
+        $id_requerimiento= $id_requerimiento_list[0]; // solo toma el primero id_requerimieno
+        $items = $request->items;
+        $status='';
+        $newIdDetalleRequerimientoList=[];
+
+        $count_items = count($items);
+        if ($count_items > 0) {
+            for ($i = 0; $i < $count_items; $i++) {
+                    $alm_det_req = DB::table('almacen.alm_det_req')->insertGetId(
+
+                        [
+                            'id_requerimiento'      => $id_requerimiento,
+                            'id_item'               => is_numeric($items[$i]['id_item']) == 1 && $items[$i]['id_item']>0 ? $items[$i]['id_item']:null,
+                            'id_producto'           => is_numeric($items[$i]['id_producto']) == 1 && $items[$i]['id_producto']>0 ? $items[$i]['id_producto']:null,
+                            'precio_referencial'    => is_numeric($items[$i]['precio']) == 1 ?$items[$i]['precio']:null,
+                            'cantidad'              => $items[$i]['cantidad']?$items[$i]['cantidad']:null,
+                            'id_moneda'             => $items[$i]['id_moneda']?$items[$i]['id_moneda']:null,
+                            'descripcion_adicional' => isset($items[$i]['descripcion'])?$items[$i]['descripcion']:null,
+                            'id_unidad_medida'      => is_numeric($items[$i]['id_unidad_medida']) == 1 ? $items[$i]['id_unidad_medida'] : null,
+                            'id_tipo_item'          => 1,
+                            'fecha_registro'        => date('Y-m-d H:i:s'),
+                            'estado'                => 1
+
+                        ],
+                        'id_detalle_requerimiento'
+                    );
+
+                    $newIdDetalleRequerimientoList[]=$alm_det_req;
+
+            }
+        }
+
+        if($count_items == count($newIdDetalleRequerimientoList)){
+            $status =200;
+        }else{
+            $status =204;
+        }
+
+        $output= [
+            'id_detalle_requerimiento_list'=>$newIdDetalleRequerimientoList,
+            'status'=>$status
+        ];
+
+        return response()->json($output);
+
+    }
 }

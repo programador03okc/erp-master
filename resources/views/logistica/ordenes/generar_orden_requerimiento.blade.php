@@ -136,13 +136,15 @@
 @include('logistica.ordenes.modal_ver_orden')
 @include('logistica.ordenes.modal_editar_estado_orden')
 @include('logistica.ordenes.modal_editar_estado_detalle_orden')
+@include('logistica.ordenes.modal_agregar_items_para_compra')
 @include('logistica.ordenes.modal_orden_requerimiento')
 @include('logistica.cotizaciones.proveedorModal')
 @include('logistica.cotizaciones.add_proveedor')
 @include('logistica.ordenes.ordenesModal')
-@include('logistica.requerimientos.modal_catalogo_items')
 @include('logistica.requerimientos.modal_vincular_item_requerimiento')
+@include('logistica.requerimientos.modal_catalogo_items')
 @include('logistica.requerimientos.modal_crear_nuevo_producto')
+@include('logistica.ordenes.modal_confirmar_eliminar_item')
 @endsection
 
 @section('scripts')
@@ -156,10 +158,12 @@
     <script src="{{ asset('datatables/pdfmake/vfs_fonts.js') }}"></script>
     <script src="{{ asset('datatables/JSZip/jszip.min.js') }}"></script>
     <script src="{{ asset('template/plugins/select2/select2.min.js') }}"></script>
-    <script src="{{('/js/logistica/generar_orden.js')}}"></script>
+    <!-- <script src="{{('/js/logistica/generar_orden.js')}}"></script> -->
     <script src="{{('/js/logistica/proveedorModal.js')}}"></script>
     <script src="{{('/js/logistica/add_proveedor.js')}}"></script>
-    <script src="{{('/js/logistica/orden_requerimiento.js')}}"></script>
+    <script src="{{('/js/logistica/orden/orden_requerimiento.js')}}"></script>
+    <script src="{{('/js/logistica/orden/modal_items_para_compra.js')}}"></script>
+    <script src="{{('/js/logistica/orden/modal_orden_requerimiento.js')}}"></script>
     <script src="{{('/js/logistica/crear_nuevo_producto.js')}}"></script>
     <script src="{{ asset('template/plugins/moment.min.js') }}"></script>
 
@@ -169,16 +173,25 @@
         inicializar(
             "{{route('logistica.gestion-logistica.orden.por-requerimiento.requerimientos-pendientes')}}",
             "{{route('logistica.gestion-logistica.orden.por-requerimiento.ordenes-en-proceso')}}",
-            "{{route('logistica.gestion-logistica.orden.por-requerimiento.detalle-requerimiento-orden')}}",
-            "{{route('logistica.gestion-logistica.orden.por-requerimiento.guardar')}}",
             "{{route('logistica.gestion-logistica.orden.por-requerimiento.revertir')}}",
             "{{route('logistica.gestion-logistica.orden.por-requerimiento.actualizar-estado-orden')}}",
             "{{route('logistica.gestion-logistica.orden.por-requerimiento.actualizar-estado-detalle-orden')}}",
             "{{route('logistica.gestion-logistica.orden.por-requerimiento.actualizar-estado-detalle-requerimiento')}}",
             "{{route('logistica.gestion-logistica.cotizacion.gestionar.select-sede-by-empresa')}}",
-            "{{route('logistica.gestion-logistica.orden.por-requerimiento.documentos-vinculados')}}"
-
+            "{{route('logistica.gestion-logistica.orden.por-requerimiento.documentos-vinculados')}}",
+            "{{route('logistica.gestion-logistica.orden.por-requerimiento.tiene-items-para-compra')}}"
             );
+        inicializarModalItemsParaCompra(
+            "{{route('logistica.gestion-logistica.orden.por-requerimiento.lista_items-cuadro-costos-por-requerimiento')}}",
+            "{{route('logistica.gestion-logistica.orden.por-requerimiento.buscar-item-catalogo')}}",
+            "{{route('logistica.gestion-logistica.orden.por-requerimiento.grupo-select-item-para-compra')}}",
+            "{{route('logistica.gestion-logistica.orden.por-requerimiento.guardar-items-detalle-requerimiento')}}"
+        );
+        inicializarModalOrdenRequerimiento(
+            "{{route('logistica.gestion-logistica.orden.por-requerimiento.detalle-requerimiento-orden')}}",
+            "{{route('logistica.gestion-logistica.orden.por-requerimiento.guardar')}}"
+
+        );
             tieneAccion('{{Auth::user()->tieneAccion(114)}}','{{Auth::user()->tieneAccion(115)}}');
     });
     </script>
