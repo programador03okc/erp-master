@@ -3,7 +3,7 @@
 	<head>
 		<meta charset="UTF-8">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
-		<title>@yield('cabecera') - Sistema ERP</title>
+		<title>@yield('cabecera') - System Agile</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 		<meta name="csrf-token" content="{{csrf_token()}}">
 		<link rel="icon" type="image/ico" href="{{ asset('images/icono.ico')}}" />
@@ -27,7 +27,7 @@
 		<div class="modal-content">
 			<div class="modal-header">
 			<button type="button" class="close" data-dismiss="modal" aria-label="close"><span aria-hidden="true">&times;</span></button>
-			<h3 class="modal-title"><strong>Sobre el ERP</strong></h3>
+			<h3 class="modal-title"><strong>Sobre Agile</strong></h3>
 			</div>
 			<div class="modal-body">
 			<p>Manuales:</p>
