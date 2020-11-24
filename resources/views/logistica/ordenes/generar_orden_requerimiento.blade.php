@@ -95,9 +95,11 @@
                                             <thead>
                                                 <tr>
                                                 <th width="10">#</th>
-                                                <th width="20">Código Orden</th>
+                                                <th width="20">OC</th>
+                                                <th width="20">OCAM</th>
+                                                <th width="20">Cliente</th>
                                                 <th width="30">Mayorista</th>
-                                                <th width="20">Subcategoría</th>
+                                                <th width="20">Marca</th>
                                                 <th width="20">Categoría</th>
                                                 <th width="20">Part Number</th>
                                                 <th width="50">Descripción</th>

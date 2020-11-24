@@ -77,6 +77,16 @@
       
                             </div>
                         </div>
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <h5>Moneda</h5>
+                                <select class="form-control input-sm activation" name="tipo_moneda">
+                                @foreach ($monedas as $moneda)
+                                    <option value="{{$moneda->id_moneda}}">{{$moneda->descripcion}}</option>
+                                @endforeach
+                                </select>
+                            </div>
+                        </div>
         
                         <div class="col-md-3" id="input-group-fecha_entrega">
                             <div class="form-group">

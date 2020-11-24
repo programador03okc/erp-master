@@ -383,10 +383,18 @@ function listar_ordenes_en_proceso(permisoRevertirOrden){
             { render: function (data, type, row) {     
                 return `<span class="label label-default" onClick="verOrdenModal(this);" data-id-estado-detalle-orden-compra="${row.id_detalle_orden_estado}" data-id-orden-compra="${row.detalle_orden_id_orden_compra}" data-id-detalle-orden-compra="${row.detalle_orden_id_detalle_orden}"  data-codigo-requerimiento="${row.codigo_requerimiento}" data-id-requerimiento="${row.orden_id_requerimiento}" data-codigo-item="${row.alm_prod_codigo}" style="cursor: pointer;" title="Ver Orden">${row.orden_codigo_softlink}</span>`;
 
-            }
+                }
             },
             { render: function (data, type, row) {     
-                return `${row.nro_documento} - ${row.razon_social}`;
+                return `${row.concepto}`;
+                }
+            },
+            { render: function (data, type, row) {     
+                return `${row.razon_social_cliente}`;
+                }
+            },
+            { render: function (data, type, row) {     
+                return `${row.razon_social}`;
                 }
             },
             { render: function (data, type, row) {     
@@ -419,8 +427,13 @@ function listar_ordenes_en_proceso(permisoRevertirOrden){
                 }
             },
             {'data': 'empresa_sede'},
-            { render: function (data, type, row) {     
-                return `<span class="label label-${row.detalle_orden_estado_bootstrap_color}" onClick="editarEstadoItemOrden(this);" data-id-estado-detalle-orden-compra="${row.id_detalle_orden_estado}" data-id-orden-compra="${row.detalle_orden_id_orden_compra}" data-id-detalle-orden-compra="${row.detalle_orden_id_detalle_orden}" data-codigo-item="${row.alm_prod_codigo}" style="cursor: pointer;" title="Cambiar Estado de Item">${row.detalle_orden_estado}</span>`;
+            { render: function (data, type, row) {    
+                let estadoDetalleOrdenHabilitadasActualizar=[17,20,26,30,31];
+                if(estadoDetalleOrdenHabilitadasActualizar.includes(row.id_detalle_orden_estado) ==true){
+                    return `<span class="label label-${row.detalle_orden_estado_bootstrap_color}" onClick="editarEstadoItemOrden(this);" data-id-estado-detalle-orden-compra="${row.id_detalle_orden_estado}" data-id-orden-compra="${row.detalle_orden_id_orden_compra}" data-id-detalle-orden-compra="${row.detalle_orden_id_detalle_orden}" data-codigo-item="${row.alm_prod_codigo}" style="cursor: pointer;" title="Cambiar Estado de Item">${row.detalle_orden_estado}</span>`;
+                }else{
+                    return `<span class="label label-${row.detalle_orden_estado_bootstrap_color}" data-id-estado-detalle-orden-compra="${row.id_detalle_orden_estado}" data-id-orden-compra="${row.detalle_orden_id_orden_compra}" data-id-detalle-orden-compra="${row.detalle_orden_id_detalle_orden}" data-codigo-item="${row.alm_prod_codigo}" style="cursor: default;">${row.detalle_orden_estado}</span>`;
+                }
 
                 }
             },
@@ -609,7 +622,13 @@ function llenarCabeceraOrde(data){
     document.querySelector("p[id='inputMoneda']").textContent = data.simbolo;
     document.querySelector("p[id='inputCondicion']").textContent = data.condicion+' '+data.plazo_dias+' días';
     document.querySelector("p[id='inputPlazoEntrega']").textContent = data.plazo_entrega;
-    document.querySelector("p[id='inputEstado']").innerHTML = `<span class="label label-${data.bootstrap_color}" id="estado_orden" onClick="editarEstadoOrden(this);" data-id-estado-orden-compra="${data.id_estado}" data-id-orden-compra="${data.id_orden_compra}" data-codigo-orden-compra="${data.codigo_softlink}" style="cursor: pointer;" title="Cambiar Estado de Orden">${data.estado_doc}</span>`
+    let estadoOrdenHabilitadasActualizar=[17,20,26,30,31];
+
+    if(estadoOrdenHabilitadasActualizar.includes(data.id_estado)==true){
+        document.querySelector("p[id='inputEstado']").innerHTML = `<span class="label label-${data.bootstrap_color}" id="estado_orden" onClick="editarEstadoOrden(this);" data-id-estado-orden-compra="${data.id_estado}" data-id-orden-compra="${data.id_orden_compra}" data-codigo-orden-compra="${data.codigo_softlink}" style="cursor: pointer;" title="Cambiar Estado de Orden">${data.estado_doc}</span>`
+    }else{
+        document.querySelector("p[id='inputEstado']").innerHTML = `<span class="label label-${data.bootstrap_color}" id="estado_orden" data-id-estado-orden-compra="${data.id_estado}" data-id-orden-compra="${data.id_orden_compra}" data-codigo-orden-compra="${data.codigo_softlink}" style="cursor: default;">${data.estado_doc}</span>`
+    }
 }
 
 function ver_orden(id_orden){
@@ -667,8 +686,13 @@ function llenarTablaItemsOrden(data){
             { data: 'subtotal' },
             {'render':
                 function (data, type, row, meta){
-                    return `<span class="label label-${row.bootstrap_color_estado_detalle_orden}" onClick="editarEstadoItemOrden(this);" data-id-estado-detalle-orden-compra="${row.id_estado_detalle_orden}" data-id-orden-compra="${row.id_orden_compra}" data-id-detalle-orden-compra="${row.id_detalle_orden}" data-codigo-item="${row.codigo_item}" style="cursor: pointer;" title="Cambiar Estado de Item">${row.estado_detalle_orden}</span>`;
+                    let estadoDetalleOrdenHabilitadasActualizar=[17,20,26,30,31];
 
+                    if(estadoDetalleOrdenHabilitadasActualizar.includes(row.id_estado_detalle_orden)==true){
+                        return `<span class="label label-${row.bootstrap_color_estado_detalle_orden}" onClick="editarEstadoItemOrden(this);" data-id-estado-detalle-orden-compra="${row.id_estado_detalle_orden}" data-id-orden-compra="${row.id_orden_compra}" data-id-detalle-orden-compra="${row.id_detalle_orden}" data-codigo-item="${row.codigo_item}" style="cursor: pointer;" title="Cambiar Estado de Item">${row.estado_detalle_orden}</span>`;
+                    }else{
+                        return `<span class="label label-${row.bootstrap_color_estado_detalle_orden}" data-id-estado-detalle-orden-compra="${row.id_estado_detalle_orden}" data-id-orden-compra="${row.id_orden_compra}" data-id-detalle-orden-compra="${row.id_detalle_orden}" data-codigo-item="${row.codigo_item}" style="cursor: default;" >${row.estado_detalle_orden}</span>`;
+                    }
                 }
             }
         ],

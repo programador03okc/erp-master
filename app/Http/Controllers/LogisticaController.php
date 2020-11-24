@@ -580,6 +580,7 @@ class LogisticaController extends Controller
                     'codigo_sede_empresa' => $data->codigo_sede_empresa,
                     'logo_empresa' => $data->logo_empresa,
                     'fecha_requerimiento' => $data->fecha_requerimiento,
+                    'fecha_entrega' => $data->fecha_entrega,
                     'id_periodo' => $data->id_periodo,
                     'id_tipo_requerimiento' => $data->id_tipo_requerimiento,
                     'tipo_requerimiento' => $data->tp_req_descripcion,
@@ -640,6 +641,7 @@ class LogisticaController extends Controller
                 ->leftJoin('finanzas.presup_par', 'presup_par.id_partida', '=', 'alm_det_req.partida')
                 ->leftJoin('finanzas.presup_pardet', 'presup_pardet.id_pardet', '=', 'presup_par.id_pardet')
                 ->leftJoin('administracion.adm_estado_doc', 'alm_det_req.estado', '=', 'adm_estado_doc.id_estado_doc')
+                ->leftJoin('configuracion.sis_moneda', 'alm_det_req.id_moneda', '=', 'sis_moneda.id_moneda')
 
                 ->select(
                     'alm_det_req.id_detalle_requerimiento',
@@ -656,6 +658,8 @@ class LogisticaController extends Controller
                     'alm_det_req.lugar_entrega',
                     'alm_det_req.descripcion_adicional',
                     'alm_det_req.id_tipo_item',
+                    'alm_det_req.id_moneda as id_tipo_moneda',
+                    'sis_moneda.descripcion as tipo_moneda',
                     'alm_det_req.estado',
                     'adm_estado_doc.estado_doc',
                     'adm_estado_doc.bootstrap_color',
@@ -750,6 +754,8 @@ class LogisticaController extends Controller
                             'descripcion_adicional'     => $data->descripcion_adicional,
                             'lugar_entrega'             => $data->lugar_entrega,
                             'fecha_registro'            => $data->fecha_registro_alm_det_req,
+                            'id_tipo_moneda'            => $data->id_tipo_moneda,
+                            'tipo_moneda'               => $data->tipo_moneda,
                             'observacion'               => $data->observacion,
                             'estado'                    => $data->estado,
                             'estado_doc'                => $data->estado_doc,
@@ -1805,6 +1811,7 @@ class LogisticaController extends Controller
                             'id_producto'           => is_numeric($detalle_reqArray[$i]['id_producto']) == 1 && $detalle_reqArray[$i]['id_producto']>0 ? $detalle_reqArray[$i]['id_producto']:null,
                             'precio_referencial'    => is_numeric($detalle_reqArray[$i]['precio_referencial']) == 1 ?$detalle_reqArray[$i]['precio_referencial']:null,
                             'cantidad'              => $detalle_reqArray[$i]['cantidad']?$detalle_reqArray[$i]['cantidad']:null,
+                            'id_moneda'             => $detalle_reqArray[$i]['id_tipo_moneda']?$detalle_reqArray[$i]['id_tipo_moneda']:null,
                             'lugar_entrega'         => isset($detalle_reqArray[$i]['lugar_entrega'])?$detalle_reqArray[$i]['lugar_entrega']:null,
                             'descripcion_adicional' => isset($detalle_reqArray[$i]['des_item'])?$detalle_reqArray[$i]['des_item']:null,
                             'partida'               => is_numeric($detalle_reqArray[$i]['id_partida']) == 1 && $detalle_reqArray[$i]['id_partida']>0 ?$detalle_reqArray[$i]['id_partida']:null,

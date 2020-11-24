@@ -31,7 +31,11 @@
                             <select class="form-control activation js-example-basic-single" name="id_clasif" required>
                                 <!-- <option value="0">Elija una opción</option> -->
                                 @foreach ($clasificaciones as $clasif)
-                                    <option value="{{$clasif->id_clasificacion}}">{{$clasif->descripcion}}</option>
+                                    @if($clasif->descripcion == "NUEVO" || $clasif->id_clasificacion == 5)
+                                        <option value="{{$clasif->id_clasificacion}}" selected="selected">{{$clasif->descripcion}}</option>
+                                    @else
+                                        <option value="{{$clasif->id_clasificacion}}">{{$clasif->descripcion}}</option>
+                                    @endif
                                 @endforeach
                             </select>
                         </div>
@@ -46,7 +50,12 @@
                             <select class="form-control activation " name="id_unidad_medida" required>
                                 <!-- <option value="0">Elija una opción</option> -->
                                 @foreach ($unidades as $unid)
-                                    <option value="{{$unid->id_unidad_medida}}">{{$unid->descripcion}}</option>
+                                    @if($unid->descripcion == "Caja" || $unid->id_unidad_medida ==30 )
+                                        <option value="{{$unid->id_unidad_medida}}" selected>{{$unid->descripcion}}</option>
+                                    @else
+                                        <option value="{{$unid->id_unidad_medida}}">{{$unid->descripcion}}</option>
+                                    @endif
+
                                 @endforeach
                             </select>
                         </div>

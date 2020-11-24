@@ -4,10 +4,10 @@ function crearProducto(){
     });
     $('[name=id_categoria]').val('');
     $('[name=id_subcategoria]').val('');
-    $('[name=id_clasif]').val('');
+    // $('[name=id_clasif]').val('');
     $('[name=descripcion]').val('');
     $('[name=part_number]').val('');
-    $('[name=id_unidad_medida]').val('');
+    // $('[name=id_unidad_medida]').val('');
 
     fixCloseModalKeyEscapeDetect();
 

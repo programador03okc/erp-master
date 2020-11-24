@@ -130,7 +130,11 @@ function listar_ordenes_propias(){
                 btnVerOrdenElectronica='<a class="btn btn-sm btn-info" title="O/C electrónica" href="https://apps1.perucompras.gob.pe//OrdenCompra/obtenerPdfOrdenPublico?ID_OrdenCompra='+row['id']+'&ImprimirCompleto=1" target="_blank"><i class="far fa-file-pdf"></i></a>';
                 btnVerOrdenFisica='<a class="btn btn-sm btn-default" title="O/C escaneada" href="'+row['url_oc_fisica']+'" target="_blank"><i class="far fa-file-alt"></i></a>';
                 if(row['id_estado_aprobacion_cc'] ==3){
-                    btnGenerarRequerimiento='<button type="button" class="btn btn-sm bg-maroon" title="Generar Requerimiento" onClick="generarRequerimientoByOrdenCompraPropia('+row['tipo_cuadro']+','+row['id_cc']+')"><i class="fas fa-registered"></i></button>';
+                    if(row['id_requerimiento'] >0){
+                        btnGenerarRequerimiento='<button type="button" class="btn btn-sm bg-maroon" title="Generar Requerimiento" disabled><i class="fas fa-registered"></i></button>';
+                    }else{
+                        btnGenerarRequerimiento='<button type="button" class="btn btn-sm bg-maroon" title="Generar Requerimiento" onClick="generarRequerimientoByOrdenCompraPropia('+row['tipo_cuadro']+','+row['id_cc']+')"><i class="fas fa-registered"></i></button>';
+                    }
                 }else{
                     btnGenerarRequerimiento='';
                 }
