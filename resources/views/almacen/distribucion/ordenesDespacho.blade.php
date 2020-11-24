@@ -45,7 +45,7 @@ Panel de Control de Despachos
                                         <th>Oportunidad</th>
                                         <th>Entidad</th>
                                         <th>Sede Req.</th>
-                                        <th>Codigo</th>
+                                        <th>Cod.Req.</th>
                                         <th>Concepto</th>
                                         <th>Fecha Req.</th>
                                         <!-- <th>Ubigeo Entrega</th>
@@ -76,7 +76,7 @@ Panel de Control de Despachos
                                         <th>Oportunidad</th>
                                         <th>Entidad</th>
                                         <th>Sede Req.</th>
-                                        <th>Codigo</th>
+                                        <th>Cod.Req.</th>
                                         <th>Concepto</th>
                                         <th>Fecha Req.</th>
                                         <th>Ubigeo Entrega</th>
@@ -107,7 +107,7 @@ Panel de Control de Despachos
                                         <th>Oportunidad</th>
                                         <th>Entidad</th>
                                         <th>Sede Req.</th>
-                                        <th>Codigo</th>
+                                        <th>Cod.Req.</th>
                                         <th>Concepto</th>
                                         <th>Fecha Req.</th>
                                         <th>Generado por</th>
@@ -140,7 +140,7 @@ Panel de Control de Despachos
                                         <th>Cod.CC</th>
                                         <th>Oportunidad</th>
                                         <th>Entidad</th>
-                                        <th>Codigo</th>
+                                        <th>Cod.Req.</th>
                                         <th>Cliente</th>
                                         <th>Requerimiento</th>
                                         <th>Concepto</th>
@@ -180,7 +180,7 @@ Panel de Control de Despachos
                                         <th>Entidad</th>
                                         <!-- <th>Despacho</th> -->
                                         <th>Orden Despacho</th>
-                                        <th>Requerimiento</th>
+                                        <th>Cod.Req.</th>
                                         <!-- <th>Cliente</th> -->
                                         <th>Concepto</th>
                                         <!-- <th>Almacén</th> -->
@@ -216,7 +216,7 @@ Panel de Control de Despachos
                                         <th>Entidad</th>
                                         <!-- <th>Despacho</th> -->
                                         <th>Orden Despacho</th>
-                                        <th>Requerimiento</th>
+                                        <th>Cod.Req.</th>
                                         <!-- <th>Cliente</th> -->
                                         <th>Concepto</th>
                                         <!-- <th>Almacén</th> -->
