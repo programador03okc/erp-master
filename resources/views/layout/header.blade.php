@@ -14,7 +14,7 @@
                 <!-- <li class="okc-li-mod"><a href="#" class="btn" id="like" data-name="Espejito espejito...quien es el más bonito">Test Socket</a></li> -->
                 <li><a href="/modulos">Módulos</a></li>
                 <li><a href="/config">Configuración</a></li>
-                <li class="info-docs"><a href="#" data-toggle="modal" data-target="#modal-sobre-erp">Sobre el ERP</a></li>
+                <li class="info-docs"><a href="#" data-toggle="modal" data-target="#modal-sobre-erp">Sobre Agile</a></li>
                 <!-- <li><span onclick="modalSobreERP();" style="cursor:pointer;"></span></li> -->
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">

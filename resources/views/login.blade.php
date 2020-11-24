@@ -27,7 +27,7 @@ Iniciar sesión
             </div>
             <br>
             <div class="login-box-body">
-                <div class="login-name"><h3>SISTEMA ERP</h3></div>
+                <div class="login-name"><h3>SYSTEM AGILE</h3></div>
                 <div class="login-img">
                     <img class="img-responsive" src="{{ asset('images/logo_okc.png') }}">
                 </div>
