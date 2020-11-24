@@ -39,6 +39,7 @@
         <input type="hidden" name="confirmacion_pago">
         <input type="hidden" name="id_cc">
         <input type="hidden" name="tipo_cuadro">
+        <input type="hidden" name="tiene_transformacion">
 
         <div class="row">
                 <div class="col-md-12">
@@ -337,6 +338,28 @@
             </div>
         </div>
     </fieldset>
+    <br>
+    <fieldset class="group-table" id="group-detalle-items-transformados" hidden>
+        <div class="row">
+            <div class="col-sm-12">
+                <fieldset class="group-importes" ><legend style="background: #968a30;"><h6 name='titulo_tabla_detalle_items_transfomados'>Detalles Items Transformados</h6></legend>
+                <table class="mytable table table-striped table-condensed table-bordered dataTable no-footer" id="ListaDetalleItemstransformado" width="100%" style="width: 100%;background: #968a30;">
+                    <thead>
+                        <tr>
+                            <th>Part No.</th>
+                            <th>Descripción</th>
+                            <th>Cant.</th>
+                            <th>Comentario</th>
+                            <th>Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </fieldset>   
+    <br>
     <br>
     <fieldset class="group-table" id="group-detalle-cuadro-costos" hidden>
         <div class="row">

@@ -688,7 +688,8 @@ class RequerimientoController extends Controller
         return response()->json($output);
 
     }
-    function detalle_cuadro_costos($id_cc){
+
+    function get_detalle_cuadro_costos($id_cc){
 
         $status =0;
         $msj='';
@@ -731,7 +732,10 @@ class RequerimientoController extends Controller
                     'cc_am_filas.garantia',
                     'cc_am_filas.creado_por as id_autor',
                     'users.name as nombre_autor',
-                    'cc_am_filas.fecha_creacion'
+                    'cc_am_filas.fecha_creacion',
+                    'cc_am_filas.part_no_producto_transformado',
+                    'cc_am_filas.descripcion_producto_transformado',
+                    'cc_am_filas.comentario_producto_transformado'
                     )
                 ->leftJoin('mgcp_cuadro_costos.cc', 'cc.id', '=', 'cc_am_filas.id_cc_am')
                 ->leftJoin('mgcp_cuadro_costos.estados_aprobacion', 'estados_aprobacion.id', '=', 'cc.estado_aprobacion')
@@ -780,6 +784,13 @@ class RequerimientoController extends Controller
             }
         }
         $output=['status'=>$status, 'mensaje'=>$msj, 'data'=>$det_cc];
+        return $output;
+        
+
+    }
+
+    function detalle_cuadro_costos($id_cc){
+        $output= $this->get_detalle_cuadro_costos($id_cc);
         return response()->json($output);
 
     }

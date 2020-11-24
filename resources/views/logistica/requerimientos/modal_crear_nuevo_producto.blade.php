@@ -68,7 +68,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <input type="submit" id="submit_productoCreate" class="btn btn-success" value="Guardar"/>
+                    <input type="submit" id="submit_newProductoCreate" class="btn btn-success" value="Guardar"/>
                 </div>
             </form>
         </div>
