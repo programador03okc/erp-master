@@ -1367,6 +1367,7 @@ Route::group(['middleware' => ['auth']], function () {
 
 
 	Route::get('migrar_venta_directa/{id}', 'MigrateSoftLinkController@migrar_venta_directa');
+	Route::get('prue/{id}', 'OrdenesPendientesController@prue');
 	Route::get('prueba', 'MigrateSoftLinkController@prueba');
 	Route::get('anular_presup', 'ProyectosController@anular_presup');
 

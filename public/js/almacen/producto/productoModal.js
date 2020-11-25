@@ -234,12 +234,13 @@ function selectProducto(){
     }
     else if (page == "requerimientosPendientes"){
         var producto = {
-            'id_producto': myId,
+            'id_producto': parseInt(myId),
             'part_number': part,
             'codigo': code,
             'descripcion': desc,
             'abreviatura': abre,
-            'id_unidad_medida': unid
+            'id_unidad_medida': unid,
+            'cantidad': 1
         }
         detalle_sale.push(producto);
         mostrarSale();

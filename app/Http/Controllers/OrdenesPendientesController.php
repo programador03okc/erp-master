@@ -702,7 +702,9 @@ class OrdenesPendientesController extends Controller
         
                                 $count_todo = DB::table('almacen.alm_det_req')
                                 ->where([['id_requerimiento','=',$padre],
-                                         ['estado','!=',7]])
+                                        ['estado','!=',7]])
+                                ->where('tiene_transformacion',null)
+                                ->orWhere('tiene_transformacion',false)
                                 ->count();
         
                                 if ($count_todo == $count_alm){
@@ -730,6 +732,15 @@ class OrdenesPendientesController extends Controller
 
     }
 
+    public function prue($padre){
+        $count_todo = DB::table('almacen.alm_det_req')
+                    ->where([['id_requerimiento','=',$padre],
+                            ['estado','!=',7]])
+                    ->where('tiene_transformacion',null)
+                    ->orWhere('tiene_transformacion',false)
+                    ->count();
+        return $count_todo;
+    }
     public function actualiza_prod_ubi($id_producto, $id_almacen){
         //Actualizo los saldos del producto
         //Obtengo el registro de saldos

@@ -117,7 +117,7 @@
                         <div class="col-md-6">
                             <h5></h5>
                             <input class="oculto" name="aplica_cambios_valor"/>
-                            <input type="checkbox" name="aplica_cambios" style="margin-right: 10px; margin-left: 7px;"/> Aplica Cambios
+                            <input type="checkbox" name="aplica_cambios" id="aplica_cambios" style="margin-right: 10px; margin-left: 7px;"/> Aplica Cambios
                         </div>
                     </div>
                 </div>
