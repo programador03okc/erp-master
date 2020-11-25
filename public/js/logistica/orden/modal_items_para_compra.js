@@ -69,7 +69,7 @@ function llenarTablaDetalleCuadroCostos(data) {
         'columns': [
             {
                 'render': function (data, type, row) {
-                    return row['part_no'] ? row['part_no'] : '';
+                    return `${row['part_no']?row['part_no']:''}`;
                 }
             },
             {
@@ -94,7 +94,7 @@ function llenarTablaDetalleCuadroCostos(data) {
             },
             {
                 'render': function (data, type, row) {
-                    return `${row['garantia']}`;
+                    return `${row['garantia']?row['garantia']:''}`;
                 }
             },
             {
@@ -176,7 +176,8 @@ function procesarItemParaCompraDetalleCuadroCostos(id) {
         'subcategoria': "",
         'id_moneda': 1,
         'cantidad': "",
-        'precio': ""
+        'precio': "",
+        'tiene_transformacion': false
 
     };
     buscarItemEnCatalogo(data_item_CC_selected).then(function (data) {
@@ -186,6 +187,7 @@ function procesarItemParaCompraDetalleCuadroCostos(id) {
             // console.log(data[0]);
             data[0].cantidad = 1;
             data[0].precio = '';
+            data[0].tiene_transformacion = false;
 
             if (data[0].id_moneda == null) {
                 data[0].id_moneda = 1;
@@ -385,7 +387,7 @@ function componerTdItemsParaCompra(data, selectCategoria, selectSubCategoria, se
 
             if (data[a].codigo_item == '') {
                 row.insertCell(0).innerHTML = data[a].codigo_item ? data[a].codigo_item : '';
-                row.insertCell(1).innerHTML = `<input type="text" class="form-control" name="part_number" value="${data[a].part_number ? data[a].part_number : '-'}" data-indice="${a}" onkeyUp="updateInputPartNumber(event);">`;
+                row.insertCell(1).innerHTML = `<input type="text" class="form-control" name="part_number" value="${data[a].part_number ? data[a].part_number : ''}" data-indice="${a}" onkeyUp="updateInputPartNumber(event);">`;
                 row.insertCell(2).innerHTML = makeSelectedToSelect(a, 'categoria', selectCategoria, data[a].id_categoria, '');
                 row.insertCell(3).innerHTML = makeSelectedToSelect(a, 'subcategoria', selectSubCategoria, data[a].id_subcategoria, '');
                 row.insertCell(4).innerHTML = makeSelectedToSelect(a, 'clasificacion', selectClasCategoria, data[a].id_clasif, '');
@@ -396,7 +398,7 @@ function componerTdItemsParaCompra(data, selectCategoria, selectSubCategoria, se
                 row.insertCell(9).innerHTML = `<input type="text" class="form-control" name="precio" data-indice="${a}" onkeyUp="updateInputPrecio(event);" value="${data[a].precio}">`;
             } else {
                 row.insertCell(0).innerHTML = data[a].codigo_item ? data[a].codigo_item : '';
-                row.insertCell(1).innerHTML = `<input type="text" class="form-control" name="part_number" value="${data[a].part_number ? data[a].part_number : '-'}" data-indice="${a}" onkeyUp="updateInputPartNumber(event);" disabled>`;
+                row.insertCell(1).innerHTML = `<input type="text" class="form-control" name="part_number" value="${data[a].part_number ? data[a].part_number : ''}" data-indice="${a}" onkeyUp="updateInputPartNumber(event);" disabled>`;
                 row.insertCell(2).innerHTML = makeSelectedToSelect(a, 'categoria', selectCategoria, data[a].id_categoria, 'disabled');
                 row.insertCell(3).innerHTML = makeSelectedToSelect(a, 'subcategoria', selectSubCategoria, data[a].id_subcategoria, 'disabled');
                 row.insertCell(4).innerHTML = makeSelectedToSelect(a, 'clasificacion', selectClasCategoria, data[a].id_clasif, 'disabled');
@@ -573,7 +575,7 @@ function guardarItemParaCompraEnCatalogo(obj, index) {
 
     if (inputPartNumber, inputCategoria, inputSubCategoria, inputClasificacion, inputUnidadMedida, inputMoneda != '') {
         let data = {
-            'part_number': inputPartNumber,
+            'part_number': (inputPartNumber.length>0)?inputPartNumber:null,
             'descripcion': inputDescripcion,
             'id_categoria': inputCategoria,
             'id_subcategoria': inputSubCategoria,
