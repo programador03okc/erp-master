@@ -259,7 +259,7 @@ function makeSelectedToSelect(indice, type, data, id, hasDisabled) {
     let html = '';
     switch (type) {
         case 'categoria':
-            html = `<select class="form-control" name="categoria" ${hasDisabled} data-indice="${indice}" onChange="updateInputCategoria(event);">`;
+            html = `<select class="form-control" name="categoria" ${hasDisabled} data-indice="${indice}" onChange="updateInputCategoriaModalItemsParaCompra(event);">`;
             data.forEach(item => {
                 if (item.id_categoria == id) {
                     html += `<option value="${item.id_categoria}" selected>${item.descripcion}</option>`;
@@ -270,7 +270,7 @@ function makeSelectedToSelect(indice, type, data, id, hasDisabled) {
             html += '</select>';
             break;
         case 'subcategoria':
-            html = `<select class="form-control" name="subcategoria" ${hasDisabled} data-indice="${indice}" onChange="updateInputSubcategoria(event);">`;
+            html = `<select class="form-control" name="subcategoria" ${hasDisabled} data-indice="${indice}" onChange="updateInputSubcategoriaModalItemsParaCompra(event);">`;
             data.forEach(item => {
                 if (item.id_subcategoria == id) {
                     html += `<option value="${item.id_subcategoria}" selected>${item.descripcion}</option>`;
@@ -281,7 +281,7 @@ function makeSelectedToSelect(indice, type, data, id, hasDisabled) {
             html += '</select>';
             break;
         case 'clasificacion':
-            html = `<select class="form-control" name="clasificacion" ${hasDisabled} data-indice="${indice}" onChange="updateInputClasificacion(event);">`;
+            html = `<select class="form-control" name="clasificacion" ${hasDisabled} data-indice="${indice}" onChange="updateInputClasificacionModalItemsParaCompra(event);">`;
             data.forEach(item => {
                 if (item.id_clasificacion == id) {
                     html += `<option value="${item.id_clasificacion}" selected>${item.descripcion}</option>`;
@@ -293,7 +293,7 @@ function makeSelectedToSelect(indice, type, data, id, hasDisabled) {
             html += '</select>';
             break;
         case 'moneda':
-            html = `<select class="form-control" name="moneda" ${hasDisabled} data-indice="${indice}" onChange="updateInputMoneda(event);">`;
+            html = `<select class="form-control" name="moneda" ${hasDisabled} data-indice="${indice}" onChange="updateInputMonedaModalItemsParaCompra(event);">`;
             data.forEach(item => {
                 if (item.id_moneda == id) {
                     html += `<option value="${item.id_moneda}" selected>${item.descripcion}</option>`;
@@ -305,7 +305,7 @@ function makeSelectedToSelect(indice, type, data, id, hasDisabled) {
             html += '</select>';
             break;
         case 'unidad_medida':
-            html = `<select class="form-control" name="unidad_medida" ${hasDisabled} data-indice="${indice}" onChange="updateInputUnidadMedida(event);">`;
+            html = `<select class="form-control" name="unidad_medida" ${hasDisabled} data-indice="${indice}" onChange="updateInputUnidadMedidaModalItemsParaCompra(event);">`;
             data.forEach(item => {
                 if (item.id_unidad_medida == id) {
                     html += `<option value="${item.id_unidad_medida}" selected>${item.descripcion}</option>`;
@@ -329,8 +329,8 @@ function validarObjItemsParaCompra() {
     if (itemsParaCompraList.length > 0) {
         // console.log(itemsParaCompraList);
         itemsParaCompraList.forEach(element => {
-            if (element.part_number == '' || element.part_number == null) {
-                infoStateInput.push('Completar Part Number');
+            if (element.id_producto == '' || element.id_producto == null) {
+                infoStateInput.push('Guardar item');
             }
             if (element.id_categoria == '' || element.id_categoria == null) {
                 infoStateInput.push('Completar Categoría');
@@ -356,11 +356,6 @@ function validarObjItemsParaCompra() {
 
         });
 
-        if (document.querySelectorAll("button[name='btnGuardarItem']").length > 0) {
-            infoStateInput.push('Guardar item en Catálogo');
-
-        }
-
         if (infoStateInput.length > 0) {
 
             document.querySelector("div[id='modal-agregar-items-para-compra'] button[id='btnIrACrearOrden']").setAttribute('title', 'Falta: ' + infoStateInput.join());
@@ -385,28 +380,28 @@ function componerTdItemsParaCompra(data, selectCategoria, selectSubCategoria, se
 
             var row = table.insertRow(-1);
 
-            if (data[a].codigo_item == '') {
+            if (data[a].id_producto == '') {
                 row.insertCell(0).innerHTML = data[a].codigo_item ? data[a].codigo_item : '';
-                row.insertCell(1).innerHTML = `<input type="text" class="form-control" name="part_number" value="${data[a].part_number ? data[a].part_number : ''}" data-indice="${a}" onkeyUp="updateInputPartNumber(event);">`;
+                row.insertCell(1).innerHTML = `<input type="text" class="form-control" name="part_number" value="${data[a].part_number ? data[a].part_number : ''}" data-indice="${a}" onkeyup="updateInputPartNumberModalItemsParaCompra(event);">`;
                 row.insertCell(2).innerHTML = makeSelectedToSelect(a, 'categoria', selectCategoria, data[a].id_categoria, '');
                 row.insertCell(3).innerHTML = makeSelectedToSelect(a, 'subcategoria', selectSubCategoria, data[a].id_subcategoria, '');
                 row.insertCell(4).innerHTML = makeSelectedToSelect(a, 'clasificacion', selectClasCategoria, data[a].id_clasif, '');
                 row.insertCell(5).innerHTML = `<span name="descripcion">${data[a].descripcion ? data[a].descripcion : '-'}</span> `;
                 row.insertCell(6).innerHTML = makeSelectedToSelect(a, 'unidad_medida', selectUnidadMedida, data[a].id_unidad_medida, '');
-                row.insertCell(7).innerHTML = `<input type="text" class="form-control" name="cantidad" data-indice="${a}" onkeyUp ="updateInputCantidad(event);" value="${data[a].cantidad}">`;
+                row.insertCell(7).innerHTML = `<input type="text" class="form-control" name="cantidad" data-indice="${a}" onkeyup ="updateInputCantidadModalItemsParaCompra(event);" value="${data[a].cantidad}">`;
                 row.insertCell(8).innerHTML = makeSelectedToSelect(a, 'moneda', selectMoneda, data[a].id_moneda, '');
-                row.insertCell(9).innerHTML = `<input type="text" class="form-control" name="precio" data-indice="${a}" onkeyUp="updateInputPrecio(event);" value="${data[a].precio}">`;
+                row.insertCell(9).innerHTML = `<input type="text" class="form-control" name="precio" data-indice="${a}" onkeyup="updateInputPrecioModalItemsParaCompra(event);" value="${data[a].precio}">`;
             } else {
                 row.insertCell(0).innerHTML = data[a].codigo_item ? data[a].codigo_item : '';
-                row.insertCell(1).innerHTML = `<input type="text" class="form-control" name="part_number" value="${data[a].part_number ? data[a].part_number : ''}" data-indice="${a}" onkeyUp="updateInputPartNumber(event);" disabled>`;
+                row.insertCell(1).innerHTML = `<input type="text" class="form-control" name="part_number" value="${data[a].part_number ? data[a].part_number : ''}" data-indice="${a}" onkeyup="updateInputPartNumberModalItemsParaCompra(event);" disabled>`;
                 row.insertCell(2).innerHTML = makeSelectedToSelect(a, 'categoria', selectCategoria, data[a].id_categoria, 'disabled');
                 row.insertCell(3).innerHTML = makeSelectedToSelect(a, 'subcategoria', selectSubCategoria, data[a].id_subcategoria, 'disabled');
                 row.insertCell(4).innerHTML = makeSelectedToSelect(a, 'clasificacion', selectClasCategoria, data[a].id_clasif, 'disabled');
                 row.insertCell(5).innerHTML = `<span name="descripcion">${data[a].descripcion ? data[a].descripcion : '-'}</span> `;
                 row.insertCell(6).innerHTML = makeSelectedToSelect(a, 'unidad_medida', selectUnidadMedida, data[a].id_unidad_medida, '');
-                row.insertCell(7).innerHTML = `<input type="text" class="form-control" name="cantidad" data-indice="${a}" onkeyUp="updateInputCantidad(event);" value="${data[a].cantidad}">`;
+                row.insertCell(7).innerHTML = `<input type="text" class="form-control" name="cantidad" data-indice="${a}" onkeyup="updateInputCantidadModalItemsParaCompra(event);" value="${data[a].cantidad}">`;
                 row.insertCell(8).innerHTML = makeSelectedToSelect(a, 'moneda', selectMoneda, data[a].id_moneda, '');
-                row.insertCell(9).innerHTML = `<input type="text" class="form-control" name="precio" data-indice="${a}" onkeyUp="updateInputPrecio(event);"  value="${data[a].precio}">`;
+                row.insertCell(9).innerHTML = `<input type="text" class="form-control" name="precio" data-indice="${a}" onkeyup="updateInputPrecioModalItemsParaCompra(event);" value="${data[a].precio}" >`;
             }
 
             var tdBtnAction = row.insertCell(10);
@@ -416,7 +411,7 @@ function componerTdItemsParaCompra(data, selectCategoria, selectSubCategoria, se
             tdBtnAction.setAttribute('width', 'auto');
 
             btnAction = `<div class="btn-group btn-group-sm" role="group" aria-label="Second group">`;
-            if (data[a].codigo_item == '') {
+            if (data[a].id_producto == '') {
                 btnAction += `<button class="btn btn-success btn-sm"  name="btnGuardarItem" data-toggle="tooltip" title="Guardar en Catálogo" onClick="guardarItemParaCompraEnCatalogo(this, ${a});" ${hasAttrDisabled}><i class="fas fa-save"></i></button>`;
 
             }
@@ -434,7 +429,17 @@ function componerTdItemsParaCompra(data, selectCategoria, selectSubCategoria, se
 
 
 
-function updateInputCategoria(event) {
+function updateIdItemParaCompraList(id_item,id_producto,indiceSelected) {
+    itemsParaCompraList.forEach((element, index) => {
+        if (index == indiceSelected) {
+            itemsParaCompraList[index].id_producto = parseInt(id_producto);
+            itemsParaCompraList[index].id_item = parseInt(id_item);
+        }
+    });
+    validarObjItemsParaCompra();
+}
+
+function updateInputCategoriaModalItemsParaCompra(event) {
     let idValor = event.target.value;
     let textValor = event.target.options[event.target.selectedIndex].textContent;
     let indiceSelected = event.target.dataset.indice;
@@ -450,7 +455,7 @@ function updateInputCategoria(event) {
 
     // console.log(itemsParaCompraList);
 }
-function updateInputSubcategoria(event) {
+function updateInputSubcategoriaModalItemsParaCompra(event) {
     let idValor = event.target.value;
     let textValor = event.target.options[event.target.selectedIndex].textContent;
     let indiceSelected = event.target.dataset.indice;
@@ -467,7 +472,7 @@ function updateInputSubcategoria(event) {
     // console.log(itemsParaCompraList);
 }
 
-function updateInputClasificacion(event) {
+function updateInputClasificacionModalItemsParaCompra(event) {
     let idValor = event.target.value;
     let textValor = event.target.options[event.target.selectedIndex].textContent;
     let indiceSelected = event.target.dataset.indice;
@@ -483,7 +488,7 @@ function updateInputClasificacion(event) {
 
     // console.log(itemsParaCompraList);
 }
-function updateInputMoneda(event) {
+function updateInputMonedaModalItemsParaCompra(event) {
     let idValor = event.target.value;
     let textValor = event.target.options[event.target.selectedIndex].textContent;
     let indiceSelected = event.target.dataset.indice;
@@ -500,7 +505,7 @@ function updateInputMoneda(event) {
     // console.log(itemsParaCompraList);
 }
 
-function updateInputUnidadMedida(event) {
+function updateInputUnidadMedidaModalItemsParaCompra(event) {
     let idValor = event.target.value;
     let textValor = event.target.options[event.target.selectedIndex].textContent;
     let indiceSelected = event.target.dataset.indice;
@@ -517,10 +522,9 @@ function updateInputUnidadMedida(event) {
     // console.log(itemsParaCompraList);
 }
 
-function updateInputCantidad(event) {
+function updateInputCantidadModalItemsParaCompra(event) {
     let nuevoValor = event.target.value;
     let indiceSelected = event.target.dataset.indice;
-
     itemsParaCompraList.forEach((element, index) => {
         if (index == indiceSelected) {
             itemsParaCompraList[index].cantidad = nuevoValor;
@@ -531,10 +535,9 @@ function updateInputCantidad(event) {
 
     // console.log(itemsParaCompraList);
 }
-function updateInputPrecio(event) {
+function updateInputPrecioModalItemsParaCompra(event) {
     let nuevoValor = event.target.value;
     let indiceSelected = event.target.dataset.indice;
-
     itemsParaCompraList.forEach((element, index) => {
         if (index == indiceSelected) {
             itemsParaCompraList[index].precio = nuevoValor;
@@ -543,9 +546,8 @@ function updateInputPrecio(event) {
     });
     validarObjItemsParaCompra();
 
-    // console.log(itemsParaCompraList);
 }
-function updateInputPartNumber(event) {
+function updateInputPartNumberModalItemsParaCompra(event) {
     let nuevoValor = event.target.value;
     let indiceSelected = event.target.dataset.indice;
 
@@ -586,14 +588,14 @@ function guardarItemParaCompraEnCatalogo(obj, index) {
             'precio': inputPrecio
         }
         // console.log(data);
-        crearNuevoProductoEnCatalogo(data, tr);
+        crearNuevoProductoEnCatalogo(data, tr, index);
 
     } else {
         alert('Complete todo los campos antes de hacer clic en guardar ');
     }
 }
 
-function crearNuevoProductoEnCatalogo(data, tr) {
+function crearNuevoProductoEnCatalogo(data, tr, index) {
     $.ajax({
         type: 'POST',
         url: 'guardar-producto',
@@ -604,6 +606,7 @@ function crearNuevoProductoEnCatalogo(data, tr) {
                 alert(response['msj']);
             } else {
                 if (response.id_producto > 0) {
+                    updateIdItemParaCompraList(response.id_item,response.id_producto,index)
                     alert('Se Guardó con éxito el producto en el Catálogo');
                     tr.querySelector("button[name='btnGuardarItem']").remove();
                 } else {

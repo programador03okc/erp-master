@@ -1317,9 +1317,12 @@ class AlmacenController extends Controller
         ->where([['descripcion','=',$des],['part_number','=',$request->part_number],['estado','=',1]])
         ->count();
 
+        $id_item=0;
+        $id_producto = $request->id_producto;
+
         if ($count <= 1){
             $data = DB::table('almacen.alm_prod')
-                ->where('id_producto', $request->id_producto)
+                ->where('id_producto',$id_producto )
                 ->update([
                     // 'codigo' => $request->codigo,
                     'codigo_anexo' => $request->codigo_anexo,
@@ -1336,10 +1339,16 @@ class AlmacenController extends Controller
                     'id_moneda' => $request->id_moneda,
                     'notas' => $request->notas,
                 ]);
+
+                $id_item = DB::table('almacen.alm_prod')
+                ->select('alm_prod.id_item')
+                ->where('id_producto', $id_producto)
+                ->first();
+
         } else {
             $msj = 'No es posible actualizar. Ya existe un producto con la misma descripción y/o Part Number.';
         }
-        return response()->json(['msj'=>$msj,'id_producto'=>$request->id_producto]);
+        return response()->json(['msj'=>$msj,'id_item'=>$id_item, 'id_producto'=>$id_producto]);
     }
 
     public function anular_producto(Request $request,$id){
