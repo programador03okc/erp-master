@@ -1299,7 +1299,7 @@ class AlmacenController extends Controller
                     ->join('almacen.alm_und_medida','alm_und_medida.id_unidad_medida','=','alm_prod.id_unidad_medida')
                     ->where('id_producto',$id_producto)->first();
             
-            return response()->json(['msj'=>$msj,'id_producto'=>$id_producto,'producto'=>$producto]);
+            return response()->json(['msj'=>$msj,'id_item'=>$id_item, 'id_producto'=>$id_producto,'producto'=>$producto]);
         } 
         else {
             $msj = 'No es posible guardar. Ya existe un producto con dicha descripción y/o Part Number.';
@@ -1343,7 +1343,7 @@ class AlmacenController extends Controller
                 $id_item = DB::table('almacen.alm_prod')
                 ->select('alm_prod.id_item')
                 ->where('id_producto', $id_producto)
-                ->first();
+                ->get()->first();
 
         } else {
             $msj = 'No es posible actualizar. Ya existe un producto con la misma descripción y/o Part Number.';
