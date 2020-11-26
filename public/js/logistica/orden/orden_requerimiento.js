@@ -82,14 +82,15 @@ function openModalItemsParaCompra(){
 }
 
 function openModalCrearOrdenCompra() {
-
+    reqTrueList=[];
+    itemsParaCompraList=[];
+    limpiarTabla('ListaItemsParaComprar');
     if (listCheckReq.length > 0) {
         listCheckReq.forEach(element => {
             if (element.stateCheck == true) {
                 reqTrueList.push(element.id_req)
             }
         });
-
 
     tieneItemsParaCompra(reqTrueList).then(function (tieneItems) {
         // console.log(tieneItems);
