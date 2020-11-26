@@ -217,7 +217,7 @@ function llenarCabeceraCuadroCostos(data){
 
     getOrBuildCustomer(data.nombre_entidad,data.ruc_entidad,data.telefono,data.direccion_entidad,data.correo).then(function(res) {
         // Run this when your request was successful
-        console.log(res);
+        // console.log(res);
         if(res.status ==200){
             document.querySelector("input[name='id_cliente']").value =res.data.id_cliente;
             document.querySelector("input[name='cliente_ruc']").value =res.data.ruc;
@@ -327,7 +327,7 @@ function eliminarVinculoItemCC(){
 }
 
 function procesarItemDetalleCuadroCostos(id_detalle_cc,tipo_item){
-    console.log(id_detalle_cc);
+    // console.log(id_detalle_cc);
     
     let detalle_cc_selected=null;
     let id_cc_am_filas=null;

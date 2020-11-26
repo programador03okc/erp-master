@@ -39,7 +39,7 @@
         <input type="hidden" name="confirmacion_pago">
         <input type="hidden" name="id_cc">
         <input type="hidden" name="tipo_cuadro">
-        <input type="hidden" name="tiene_transformacion">
+        <input type="hidden" name="tiene_transformacion" value=false>
 
         <div class="row">
                 <div class="col-md-12">

@@ -415,7 +415,7 @@ function componerTdItemsParaCompra(data, selectCategoria, selectSubCategoria, se
                 btnAction += `<button class="btn btn-success btn-sm"  name="btnGuardarItem" data-toggle="tooltip" title="Guardar en Catálogo" onClick="guardarItemParaCompraEnCatalogo(this, ${a});" ${hasAttrDisabled}><i class="fas fa-save"></i></button>`;
 
             }
-            btnAction += `<button class="btn btn-primary btn-sm" name="btnRemplazarItem" data-toggle="tooltip" title="Remplazar" onClick="buscarRemplazarItemParaCompra(this, ${a});" ${hasAttrDisabled}><i class="fas fa-search"></i></button>`;
+            // btnAction += `<button class="btn btn-primary btn-sm" name="btnRemplazarItem" data-toggle="tooltip" title="Remplazar" onClick="buscarRemplazarItemParaCompra(this, ${a});" ${hasAttrDisabled}><i class="fas fa-search"></i></button>`;
             btnAction += `<button class="btn btn-danger btn-sm"   name="btnEliminarItem" data-toggle="tooltip" title="Eliminar" onclick="eliminarItemDeListadoParaCompra(this, ${a});" ${hasAttrDisabled} ><i class="fas fa-trash-alt"></i></button>`;
             btnAction += `</div>`;
             tdBtnAction.innerHTML = btnAction;
@@ -625,6 +625,24 @@ function buscarRemplazarItemParaCompra(obj, index) {
     console.log(obj, index);
 
 }
+
+function actualizarIndicesDeTabla(){
+    let trs= document.querySelector("table[id='ListaItemsParaComprar'] tbody").children;
+    let i=0;
+    for (let index = 1; index < trs.length; index++) {
+            trs[index].querySelector("input[name='part_number']").dataset.indice = i;
+            trs[index].querySelector("select[name='categoria']").dataset.indice = i;
+            trs[index].querySelector("select[name='subcategoria']").dataset.indice = i;
+            trs[index].querySelector("select[name='clasificacion']").dataset.indice = i;
+            trs[index].querySelector("select[name='unidad_medida']").dataset.indice = i;
+            trs[index].querySelector("input[name='cantidad']").dataset.indice = i;
+            trs[index].querySelector("select[name='moneda']").dataset.indice = i;
+            trs[index].querySelector("input[name='precio']").dataset.indice = i;
+            i++;
+    }
+
+}
+
 function eliminarItemDeListadoParaCompra(obj, index) {
     // console.log(obj,index);
 
@@ -632,6 +650,8 @@ function eliminarItemDeListadoParaCompra(obj, index) {
     row.remove(row);
 
     itemsParaCompraList = itemsParaCompraList.filter((item, i) => i !== index);
+
+    actualizarIndicesDeTabla();
     // console.log(itemsParaCompraList);
 }
 

@@ -451,7 +451,10 @@ function listar_requerimientos_pendientes(permisoCrearOrdenPorRequerimiento,id_e
         'destroy' : true,
         'ajax': rutaRequerimientosPendientes+'/'+id_empresa+'/'+id_sede,
         'columns': [
-            {'data': 'id_requerimiento'},
+            { render: function (data, type, row) { 
+                return `${row.id_requerimiento}">`;
+                }
+            },
             { render: function (data, type, row) { 
                 return `<input type="checkbox" data-id-requerimiento="${row.id_requerimiento}" />`;
                 }
@@ -480,8 +483,8 @@ function listar_requerimientos_pendientes(permisoCrearOrdenPorRequerimiento,id_e
                     '<button type="button" class="btn btn-primary btn-xs" name="btnOpenModalVerDetalleRequeriento" title="Ver Detalle Requerimiento" data-id-requerimiento="'+row.id_requerimiento+'"  onclick="openModalVerDetalleRequerimiento(this);">'+
                         '<i class="far fa-eye fa-sm"></i>'+
                     '</button>'+
-                    '<button type="button" class="btn btn-warning btn-xs" name="btnOpenModalDesbloquarRequeriento" title="Desbloquear Requerimiento" data-id-requerimiento="'+row.id_requerimiento+'"  onclick="openModalDesbloquearRequerimiento(this);">'+
-                        '<i class="fas fa-unlock-alt fa-sm"></i>'+
+                    '<button type="button" class="btn btn-danger btn-xs" name="btnAgregarItemARequeriento" title="Agregar Item a Requerimiento" data-id-requerimiento="'+row.id_requerimiento+'"  onclick="openModalAgregarItemARequerimiento(this);">'+
+                        '<i class="fas fa-plus-square fa-sm"></i>'+
                     '</button>'+
 
                 '</div>');
@@ -492,6 +495,15 @@ function listar_requerimientos_pendientes(permisoCrearOrdenPorRequerimiento,id_e
             }
         ],
         'columnDefs': [{ 'aTargets': [0], 'sClass': 'invisible'}],
+        "createdRow": function( row, data, dataIndex){
+            if( data.tiene_transformacion == true  ){
+                $(row).css('background-color', '#d8c74ab8');
+            }
+            else if( data.tiene_transformacion == false  ){
+                $(row).css('background-color', '#b498d0');
+            }
+
+        }
     });
 }
 

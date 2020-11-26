@@ -207,6 +207,7 @@ class OrdenController extends Controller
             'alm_req.estado',
             'alm_req.id_empresa',
             'alm_req.id_sede',
+            'alm_req.tiene_transformacion',
             'sis_sede.descripcion as empresa_sede',
             'adm_estado_doc.estado_doc',
             'adm_estado_doc.bootstrap_color',
