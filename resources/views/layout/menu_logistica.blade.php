@@ -171,7 +171,7 @@
         </a>
         <ul class="treeview-menu">
         @if(Auth::user()->tieneAplicacion(80))
-        <li><a href="{{route('logistica.almacen.distribucion.despachos.index')}}"><i class="far fa-circle fa-xs"></i> Gestión de Despachos </a></li>
+        <li><a href="{{route('logistica.almacen.distribucion.despachos.index')}}"><i class="far fa-circle fa-xs"></i> Panel de Control </a></li>
         @endif
         @if(Auth::user()->tieneAplicacion(81))
         <li><a href="{{route('logistica.almacen.distribucion.trazabilidad-requerimientos.index')}}"><i class="far fa-circle fa-xs"></i> Trazabilidad </a></li>

@@ -12,7 +12,7 @@ function open_despacho_create(data){
     $("#submit_orden_despacho").removeAttr("disabled");
     $('[name=tipo_entrega]').val('MISMA CIUDAD').trigger('change.select2');
     $('[name=id_requerimiento]').val(data.id_requerimiento);
-    // $('[name=id_sede]').val(data.id_sede);
+    $('[name=tiene_transformacion]').val(data.tiene_transformacion ? 'si' : 'no');
     $('[name=direccion_destino]').val(data.direccion_entrega);
     $('[name=ubigeo]').val(data.id_ubigeo_entrega);
     $('[name=name_ubigeo]').val(data.ubigeo_descripcion);
@@ -65,85 +65,105 @@ function open_despacho_create(data){
     $("#detalleItemsReq").hide();
     $("#despachoExterno").show();
 
-    // if (data.id_tipo_requerimiento == 2){
-        // var idTabla = 'detalleRequerimientoOD';
-        // console.log(idTabla);
-        detalleRequerimiento(data.id_requerimiento);
-    // } 
-    // else if (data.id_tipo_requerimiento == 1){
-    //     listar_detalle_ingreso(data.id_requerimiento);
-    // }
-
+    $('#detalleSale tbody').html('');
+            
     $('[name=fecha_despacho]').val(fecha_actual());
     $('[name=fecha_entrega]').val(fecha_actual());
-    $('[name=aplica_cambios]').prop('checked', false);
-    $('[name=aplica_cambios_valor]').val('no');
-    $('#name_title').text('Despacho Externo');
-    $('#name_title').removeClass();
-    $('#name_title').addClass('blue');
-
-    $('#detalleSale tbody').html('');
-
+    
     detalle_requerimiento = [];
     detalle_ingresa = [];
     detalle_sale = [];
+
+    detalleRequerimiento(data.id_requerimiento).then(function (response) {
+
+        var html = '';
+        console.log('det');
+        response.forEach(element => {
+            var ing = (element.suma_ingresos !== null ? parseFloat(element.suma_ingresos) : 0);
+            var cant = ing - (element.suma_despachos !== null ? parseFloat(element.suma_despachos) : 0);
+            
+            if (cant > 0){
+                html+='<tr id="'+element.id_detalle_requerimiento+'">'+
+                '<td><input type="checkbox" id="detalle" value="'+element.id_detalle_requerimiento+'" onChange="changeCheckIngresa(this,'+element.id_detalle_requerimiento+');"/></td>'+
+                '<td>'+(element.producto_codigo !== null ? element.producto_codigo : '')+'</td>'+
+                '<td>'+(element.part_number !== null ? element.part_number : '')+'</td>'+
+                '<td>'+(element.producto_descripcion !== null ? element.producto_descripcion : element.descripcion_adicional)+'</td>'+
+                // '<td>'+(element.almacen_descripcion !== null ? element.almacen_descripcion : '')+'</td>'+
+                '<td>'+element.cantidad+'</td>'+
+                '<td>'+(element.abreviatura !== null ? element.abreviatura : '')+'</td>'+
+                '<td>'+(element.suma_ingresos !== null ? element.suma_ingresos : '0')+'</td>'+
+                '<td>'+(element.suma_despachos !== null ? element.suma_despachos : '0')+'</td>'+
+                '<td><input type="number" id="'+element.id_detalle_requerimiento+'cantidad" value="'+cant+'" max="'+cant+'" min="0" style="width: 80px;"/></td>'+
+                '<td><span class="label label-'+element.bootstrap_color+'">'+element.estado_doc+'</span></td>'+
+                '<td><i class="fas fa-code-branch boton btn btn-warning" data-toggle="tooltip" data-placement="bottom" title="Agregar Instrucciones" onClick="verInstrucciones('+element.id_detalle_requerimiento+');"></i>'+
+                (element.series ? '<i class="fas fa-bars icon-tabla boton" data-toggle="tooltip" data-placement="bottom" title="Ver Series" onClick="verSeries('+element.id_detalle_requerimiento+');"></i>' : '')+
+                '</td></tr>';
+            }
+            
+            detalle_requerimiento.push({
+                'id_detalle_requerimiento'  : element.id_detalle_requerimiento,
+                'id_producto'               : element.id_producto,
+                'cantidad'                  : element.cantidad,
+                'suma_ingresos'             : element.suma_ingresos,
+                'suma_despachos'            : element.suma_despachos,
+                'part_number_transformado'  : null,
+                'descripcion_transformado'  : null,
+                'comentario_transformado'   : null,
+                'cantidad_transformado'     : null,
+            });
+
+            if (element.tiene_transformacion){
+                detalle_sale.push({
+                    'id_detalle_requerimiento'  : element.id_detalle_requerimiento,
+                    'id_producto'               : element.id_producto,
+                    'part_number'               : element.part_number,
+                    'codigo'                    : element.producto_codigo,
+                    'descripcion'               : element.producto_descripcion,
+                    'id_unidad_medida'          : element.id_unidad_medida,
+                    'abreviatura'               : element.abreviatura,
+                    'cantidad'                  : element.cantidad,
+                });
+            }
+        });
+
+        $('#detalleRequerimientoOD tbody').html(html);
+        mostrarSale();
+
+        if (data.tiene_transformacion && 
+            data.count_despachos_internos == 0){
+            $('[name=aplica_cambios]').prop('checked', true);
+            on();
+        } else {
+            $('[name=aplica_cambios]').prop('checked', false);
+            off();
+        }
+
+    }).catch(function (err) {
+        console.log(err)
+    });
+
 }
 
 function detalleRequerimiento(id_requerimiento){
-    $.ajax({
-        type: 'GET',
-        url: 'verDetalleRequerimiento/'+id_requerimiento,
-        dataType: 'JSON',
-        success: function(response){
-            console.log(response);
-            var html = '';
 
-            response.forEach(element => {
-                var ing = (element.suma_ingresos !== null ? parseFloat(element.suma_ingresos) : 0);
-                var cant = ing - (element.suma_despachos !== null ? parseFloat(element.suma_despachos) : 0);
-                
-                if (cant > 0){
-                    html+='<tr id="'+element.id_detalle_requerimiento+'">'+
-                    '<td><input type="checkbox" value="'+element.id_detalle_requerimiento+'" onChange="changeCheckIngresa(this,'+element.id_detalle_requerimiento+');"/></td>'+
-                    '<td>'+(element.producto_codigo !== null ? element.producto_codigo : '')+'</td>'+
-                    '<td>'+(element.part_number !== null ? element.part_number : '')+'</td>'+
-                    '<td>'+(element.producto_descripcion !== null ? element.producto_descripcion : element.descripcion_adicional)+'</td>'+
-                    // '<td>'+(element.almacen_descripcion !== null ? element.almacen_descripcion : '')+'</td>'+
-                    '<td>'+element.cantidad+'</td>'+
-                    '<td>'+(element.abreviatura !== null ? element.abreviatura : '')+'</td>'+
-                    '<td>'+(element.suma_ingresos !== null ? element.suma_ingresos : '0')+'</td>'+
-                    '<td>'+(element.suma_despachos !== null ? element.suma_despachos : '0')+'</td>'+
-                    '<td><input type="number" id="'+element.id_detalle_requerimiento+'cantidad" value="'+cant+'" max="'+cant+'" min="0" style="width: 80px;"/></td>'+
-                    '<td><span class="label label-'+element.bootstrap_color+'">'+element.estado_doc+'</span></td>'+
-                    '<td><i class="fas fa-code-branch boton btn btn-warning" data-toggle="tooltip" data-placement="bottom" title="Agregar Instrucciones" onClick="verInstrucciones('+element.id_detalle_requerimiento+');"></i>'+
-                    (element.series ? '<i class="fas fa-bars icon-tabla boton" data-toggle="tooltip" data-placement="bottom" title="Ver Series" onClick="verSeries('+element.id_detalle_requerimiento+');"></i>' : '')+
-                    '</td></tr>';
-                }
-                // element['part_number_transformado'] = null;
-                // element['cantidad_transformado'] = null;
-                // element['descripcion_transformado'] = null;
-                // element['comentario_transformado'] = null;
+    return new Promise(function (resolve, reject) {
 
-                detalle_requerimiento.push({
-                    'id_detalle_requerimiento'  : element.id_detalle_requerimiento,
-                    'id_producto'               : element.id_producto,
-                    'cantidad'                  : element.cantidad,
-                    'suma_ingresos'             : element.suma_ingresos,
-                    'suma_despachos'            : element.suma_despachos,
-                    'part_number_transformado'  : null,
-                    'descripcion_transformado'  : null,
-                    'comentario_transformado'   : null,
-                    'cantidad_transformado'     : null,
-                });
-            });
-            // detalle_requerimiento = response;
-
-            $('#detalleRequerimientoOD tbody').html(html);
-        }
-    }).fail( function( jqXHR, textStatus, errorThrown ){
-        console.log(jqXHR);
-        console.log(textStatus);
-        console.log(errorThrown);
+        $.ajax({
+            type: 'GET',
+            url: 'verDetalleRequerimiento/'+id_requerimiento,
+            dataType: 'JSON',
+            success(response){
+                console.log('promesa');
+                resolve(response); // Resolve promise and go to then()
+            },
+            error: function (err) {
+                reject(err) // Reject the promise and go to catch()
+            }
+        }).fail( function( jqXHR, textStatus, errorThrown ){
+            console.log(jqXHR);
+            console.log(textStatus);
+            console.log(errorThrown);
+        });
     });
 }
 
@@ -285,6 +305,7 @@ $("#form-orden_despacho").on("submit", function(e){
                 validaCampos += 'El producto '+json.descripcion+' requiere que cantidad.\n'; 
             }
             json_detalle_sale.push({
+                'id_detalle_requerimiento' : json.id_detalle_requerimiento,
                 'cantidad' : cant,
                 'id_producto' : json.id_producto
             });
@@ -339,41 +360,51 @@ function guardar_orden_despacho(data){
 
 $("[name=aplica_cambios]").on( 'change', function() {
     if( $(this).is(':checked') ) {
-        $("#detalleItemsReq").show();
-        $("[name=aplica_cambios_valor]").val('si');
-        $('#name_title').text('Despacho Interno');
-        $('#name_title').removeClass();
-        $('#name_title').addClass('red');
-        $("#despachoExterno").hide();
-
-        $("[name=seleccionar_todos]").prop('checked', true);
-        
-        detalle_requerimiento.forEach(function(element){
-            var ing = (element.suma_ingresos !== null ? parseFloat(element.suma_ingresos) : 0);
-            var cant = ing - (element.suma_despachos !== null ? parseFloat(element.suma_despachos) : 0);
-            if (cant > 0){
-                detalle_ingresa.push(element);
-            }
-        });
-        // detalle_ingresa = detalle_requerimiento;
-        $("#detalleRequerimientoOD tbody tr").each(function(){
-            $(this).find("td input[type=checkbox]").prop('checked', true);
-        });
+        on();
     } else {
-        $("#detalleItemsReq").hide();
-        $("[name=aplica_cambios_valor]").val('no');
-        $('#name_title').text('Despacho Externo');
-        $('#name_title').removeClass();
-        $('#name_title').addClass('blue');
-        $("#despachoExterno").show();
-
-        $("[name=seleccionar_todos]").prop('checked', false);
-        detalle_ingresa = [];
-        $("#detalleRequerimientoOD tbody tr").each(function(){
-            $(this).find("td input[type=checkbox]").prop('checked', false);
-        });
+        off();
     }
 });
+
+function on(){
+    $("#detalleItemsReq").show();
+    $("[name=aplica_cambios_valor]").val('si');
+    $('#name_title').text('Despacho Interno');
+    $('#name_title').removeClass();
+    $('#name_title').addClass('red');
+    $("#despachoExterno").hide();
+
+    $("[name=seleccionar_todos]").prop('checked', true);
+    on_todos();
+    // $("#detalleRequerimientoOD tbody tr").each(function(){
+    //     // $(this).find("td input[id=detalle]").prop('checked', true);
+    //     $(this).find("td input[type=checkbox]").prop('checked', true);
+    // });
+    
+    // detalle_requerimiento.forEach(function(element){
+    //     var ing = (element.suma_ingresos !== null ? parseFloat(element.suma_ingresos) : 0);
+    //     var cant = ing - (element.suma_despachos !== null ? parseFloat(element.suma_despachos) : 0);
+    //     if (cant > 0){
+    //         detalle_ingresa.push(element);
+    //     }
+    // });
+}
+
+function off(){
+    $("#detalleItemsReq").hide();
+    $("[name=aplica_cambios_valor]").val('no');
+    $('#name_title').text('Despacho Externo');
+    $('#name_title').removeClass();
+    $('#name_title').addClass('blue');
+    $("#despachoExterno").show();
+
+    $("[name=seleccionar_todos]").prop('checked', false);
+    // detalle_ingresa = [];
+    // $("#detalleRequerimientoOD tbody tr").each(function(){
+    //     $(this).find("td input[type=checkbox]").prop('checked', false);
+    // });
+    off_todos();
+}
 
 $("[name=optionsRadios]").on( 'change', function() {
     if( $(this).is(':checked') ) {
@@ -390,17 +421,34 @@ $("[name=optionsRadios]").on( 'change', function() {
 
 $("[name=seleccionar_todos]").on( 'change', function() {
     if( $(this).is(':checked') ) {
-        detalle_ingresa = detalle_requerimiento;
-        $("#detalleRequerimientoOD tbody tr").each(function(){
-            $(this).find("td input[type=checkbox]").prop('checked', true);
-        });
+        on_todos();
     } else {
-        detalle_ingresa = [];
-        $("#detalleRequerimientoOD tbody tr").each(function(){
-            $(this).find("td input[type=checkbox]").prop('checked', false);
-        });
+        off_todos();
     }
 });
+
+function on_todos(){
+    console.log('on_todos');
+    // detalle_ingresa = detalle_requerimiento;
+    detalle_requerimiento.forEach(function(element){
+        var ing = (element.suma_ingresos !== null ? parseFloat(element.suma_ingresos) : 0);
+        var cant = ing - (element.suma_despachos !== null ? parseFloat(element.suma_despachos) : 0);
+        if (cant > 0){
+            detalle_ingresa.push(element);
+        }
+    });
+    $("#detalleRequerimientoOD tbody tr").each(function(){
+        $(this).find("td input[type=checkbox]").prop('checked', true);
+    });
+}
+
+function off_todos(){
+    console.log('off_todos');
+    detalle_ingresa = [];
+    $("#detalleRequerimientoOD tbody tr").each(function(){
+        $(this).find("td input[type=checkbox]").prop('checked', false);
+    });
+}
 
 function changeCheckIngresa(checkbox, id_detalle_requerimiento){
     console.log(checkbox.checked+' id_detalle_requerimiento'+id_detalle_requerimiento);
@@ -463,7 +511,7 @@ function mostrarSale(){
         <td>${(element.codigo !== null ? element.codigo : '')}</td>
         <td>${(element.part_number !== null ? element.part_number : '')}</td>
         <td>${element.descripcion}</td>
-        <td><input type="number" id="" value="" style="width: 80px;"/></td>
+        <td><input type="number" id="" value="${element.cantidad ? element.cantidad : '1'}" style="width: 80px;"/></td>
         <td>${(element.abreviatura !== null ? element.abreviatura : '')}</td>
         <td><i class="fas fa-times icon-tabla red boton delete" data-toggle="tooltip" data-placement="bottom" 
         title="Eliminar"></i></td>

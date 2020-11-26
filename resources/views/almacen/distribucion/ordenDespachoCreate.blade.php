@@ -10,6 +10,7 @@
                     <input type="text" class="oculto" name="id_requerimiento">
                     <input type="text" class="oculto" name="id_sede"/>
                     <input type="text" class="oculto" name="id_cc"/>
+                    <input type="text" class="oculto" name="tiene_transformacion"/>
                     <div class="row">
                         <div class="col-md-6">
                             <h5>Almacén</h5>
@@ -117,7 +118,7 @@
                         <div class="col-md-6">
                             <h5></h5>
                             <input class="oculto" name="aplica_cambios_valor"/>
-                            <input type="checkbox" name="aplica_cambios" style="margin-right: 10px; margin-left: 7px;"/> Aplica Cambios
+                            <input type="checkbox" name="aplica_cambios" id="aplica_cambios" style="margin-right: 10px; margin-left: 7px;"/> Aplica Cambios
                         </div>
                     </div>
                 </div>
