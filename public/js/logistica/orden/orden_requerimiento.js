@@ -447,7 +447,7 @@ function listar_requerimientos_pendientes(permisoCrearOrdenPorRequerimiento,id_e
         'dom': vardataTables[1],
         'buttons': vardataTables[2],
         'language' : vardataTables[0],
-        'order': [[0, 'desc']],
+        'order': [[10, 'desc']],
         'destroy' : true,
         'ajax': rutaRequerimientosPendientes+'/'+id_empresa+'/'+id_sede,
         'columns': [
