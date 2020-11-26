@@ -151,6 +151,7 @@ function buscarItemEnCatalogo(data) {
 
 function procesarItemParaCompraDetalleCuadroCostos(id) {
     let detalleItemsParaCompraCCSelected = '';
+    // console.log(tempDetalleItemsParaCompraCC);
     tempDetalleItemsParaCompraCC.forEach(element => {
         if (element.id == id) {
             detalleItemsParaCompraCCSelected = element;
@@ -175,7 +176,7 @@ function procesarItemParaCompraDetalleCuadroCostos(id) {
         'unidad_medida': "Caja",
         'subcategoria': "",
         'id_moneda': 1,
-        'cantidad': "",
+        'cantidad': detalleItemsParaCompraCCSelected.cantidad,
         'precio': "",
         'tiene_transformacion': false
 
@@ -185,7 +186,7 @@ function procesarItemParaCompraDetalleCuadroCostos(id) {
         if (data.length > 0) {
             // console.log(data)
             // console.log(data[0]);
-            data[0].cantidad = 1;
+            data[0].cantidad = data_item_CC_selected.cantidad;
             data[0].precio = '';
             data[0].tiene_transformacion = false;
 
@@ -292,18 +293,6 @@ function makeSelectedToSelect(indice, type, data, id, hasDisabled) {
             });
             html += '</select>';
             break;
-        case 'moneda':
-            html = `<select class="form-control" name="moneda" ${hasDisabled} data-indice="${indice}" onChange="updateInputMonedaModalItemsParaCompra(event);">`;
-            data.forEach(item => {
-                if (item.id_moneda == id) {
-                    html += `<option value="${item.id_moneda}" selected>${item.descripcion}</option>`;
-                } else {
-                    html += `<option value="${item.id_moneda}">${item.descripcion}</option>`;
-
-                }
-            });
-            html += '</select>';
-            break;
         case 'unidad_medida':
             html = `<select class="form-control" name="unidad_medida" ${hasDisabled} data-indice="${indice}" onChange="updateInputUnidadMedidaModalItemsParaCompra(event);">`;
             data.forEach(item => {
@@ -347,12 +336,6 @@ function validarObjItemsParaCompra() {
             if (element.cantidad == '' || element.cantidad == null) {
                 infoStateInput.push('Completar Cantidad');
             }
-            if (element.precio == '' || element.precio == null) {
-                infoStateInput.push('Completar Precio');
-            }
-            if (element.id_moneda == '' || element.id_moneda == null) {
-                infoStateInput.push('Completar Moneda');
-            }
 
         });
 
@@ -389,8 +372,6 @@ function componerTdItemsParaCompra(data, selectCategoria, selectSubCategoria, se
                 row.insertCell(5).innerHTML = `<span name="descripcion">${data[a].descripcion ? data[a].descripcion : '-'}</span> `;
                 row.insertCell(6).innerHTML = makeSelectedToSelect(a, 'unidad_medida', selectUnidadMedida, data[a].id_unidad_medida, '');
                 row.insertCell(7).innerHTML = `<input type="text" class="form-control" name="cantidad" data-indice="${a}" onkeyup ="updateInputCantidadModalItemsParaCompra(event);" value="${data[a].cantidad}">`;
-                row.insertCell(8).innerHTML = makeSelectedToSelect(a, 'moneda', selectMoneda, data[a].id_moneda, '');
-                row.insertCell(9).innerHTML = `<input type="text" class="form-control" name="precio" data-indice="${a}" onkeyup="updateInputPrecioModalItemsParaCompra(event);" value="${data[a].precio}">`;
             } else {
                 row.insertCell(0).innerHTML = data[a].codigo_item ? data[a].codigo_item : '';
                 row.insertCell(1).innerHTML = `<input type="text" class="form-control" name="part_number" value="${data[a].part_number ? data[a].part_number : ''}" data-indice="${a}" onkeyup="updateInputPartNumberModalItemsParaCompra(event);" disabled>`;
@@ -400,11 +381,9 @@ function componerTdItemsParaCompra(data, selectCategoria, selectSubCategoria, se
                 row.insertCell(5).innerHTML = `<span name="descripcion">${data[a].descripcion ? data[a].descripcion : '-'}</span> `;
                 row.insertCell(6).innerHTML = makeSelectedToSelect(a, 'unidad_medida', selectUnidadMedida, data[a].id_unidad_medida, '');
                 row.insertCell(7).innerHTML = `<input type="text" class="form-control" name="cantidad" data-indice="${a}" onkeyup="updateInputCantidadModalItemsParaCompra(event);" value="${data[a].cantidad}">`;
-                row.insertCell(8).innerHTML = makeSelectedToSelect(a, 'moneda', selectMoneda, data[a].id_moneda, '');
-                row.insertCell(9).innerHTML = `<input type="text" class="form-control" name="precio" data-indice="${a}" onkeyup="updateInputPrecioModalItemsParaCompra(event);" value="${data[a].precio}" >`;
             }
 
-            var tdBtnAction = row.insertCell(10);
+            var tdBtnAction = row.insertCell(8);
             var btnAction = '';
             // tdBtnAction.className = classHiden;
             var hasAttrDisabled = '';
@@ -535,18 +514,7 @@ function updateInputCantidadModalItemsParaCompra(event) {
 
     // console.log(itemsParaCompraList);
 }
-function updateInputPrecioModalItemsParaCompra(event) {
-    let nuevoValor = event.target.value;
-    let indiceSelected = event.target.dataset.indice;
-    itemsParaCompraList.forEach((element, index) => {
-        if (index == indiceSelected) {
-            itemsParaCompraList[index].precio = nuevoValor;
 
-        }
-    });
-    validarObjItemsParaCompra();
-
-}
 function updateInputPartNumberModalItemsParaCompra(event) {
     let nuevoValor = event.target.value;
     let indiceSelected = event.target.dataset.indice;
@@ -572,10 +540,9 @@ function guardarItemParaCompraEnCatalogo(obj, index) {
     let inputClasificacion = tr.querySelector("select[name='clasificacion']").value;
     let inputUnidadMedida = tr.querySelector("select[name='unidad_medida']").value;
     let inputCantidad = tr.querySelector("input[name='cantidad']").value;
-    let inputMoneda = tr.querySelector("select[name='moneda']").value;
-    let inputPrecio = tr.querySelector("input[name='precio']").value;
 
-    if (inputPartNumber, inputCategoria, inputSubCategoria, inputClasificacion, inputUnidadMedida, inputMoneda != '') {
+
+    if (inputPartNumber, inputCategoria, inputSubCategoria, inputClasificacion, inputUnidadMedida != '') {
         let data = {
             'part_number': (inputPartNumber.length>0)?inputPartNumber:null,
             'descripcion': inputDescripcion,
@@ -583,9 +550,7 @@ function guardarItemParaCompraEnCatalogo(obj, index) {
             'id_subcategoria': inputSubCategoria,
             'id_clasif': inputClasificacion,
             'id_unidad_medida': inputUnidadMedida,
-            'cantidad': inputCantidad,
-            'id_moneda': inputMoneda,
-            'precio': inputPrecio
+            'cantidad': inputCantidad
         }
         // console.log(data);
         crearNuevoProductoEnCatalogo(data, tr, index);
@@ -609,6 +574,10 @@ function crearNuevoProductoEnCatalogo(data, tr, index) {
                     updateIdItemParaCompraList(response.id_item,response.id_producto,index)
                     alert('Se Guardó con éxito el producto en el Catálogo');
                     tr.querySelector("button[name='btnGuardarItem']").remove();
+                    tr.querySelector("input[name='part_number']").setAttribute('disabled',true);
+                    tr.querySelector("select[name='categoria']").setAttribute('disabled',true);
+                    tr.querySelector("select[name='subcategoria']").setAttribute('disabled',true);
+                    tr.querySelector("select[name='clasificacion']").setAttribute('disabled',true);
                 } else {
                     alert('ocurrio un problema al generar el codigo del producto');
                 }

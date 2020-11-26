@@ -147,14 +147,14 @@ function getDataCuadroCostos(cc){
                     itemsConTransformacionList.push({
                         'id':element.id,
                         'part_no_producto_transformado':element.part_no_producto_transformado,
-                        'descripcion_producto_transformado':element.descripcion_producto_transformado,
+                        'descripcion_producto_transformado':(element.descripcion_producto_transformado.replace("nbsp;","").replace("&nbsp;","").replace("&amp;","")).trim(),
                         'comentario_producto_transformado':element.comentario_producto_transformado,
                         'cantidad':element.cantidad
 
                     });
                 }
             });
-
+            // console.log(itemsConTransformacionList);
             if(cantidadTransformaciones >0){
                 document.querySelector("form[id='form-requerimiento'] input[name='tiene_transformacion']").value= true;
                 document.querySelector("fieldset[id='group-detalle-items-transformados']").removeAttribute('hidden');
@@ -346,20 +346,26 @@ function procesarItemDetalleCuadroCostos(id_detalle_cc,tipo_item){
         id_cc_venta_filas = detalle_cc_selected.id;
     }
     if(tipo_item =='ITEM_SIN_TRANSFORMACION'){
-        let descripcionParseText = ((detalle_cc_selected.descripcion).replace("&lt;","<")).trim();
-        let partNumberParseText = detalle_cc_selected.part_no;
+        let descripcionParseText = ((detalle_cc_selected.descripcion).replace("&lt;","<").replace("nbsp;","").replace("&nbsp;","").replace("&amp;","")).trim();
+        let partNumberParseText = detalle_cc_selected.part_no? detalle_cc_selected.part_no:'';
+        let cantidadParseText = detalle_cc_selected.cantidad;
         tempDetalleItemCCSelect={
-            'part_number':document.querySelector("div[id='modal-crear-nuevo-producto'] input[name='part_number']").value= partNumberParseText?partNumberParseText:'',
-            'descripcion':document.querySelector("div[id='modal-crear-nuevo-producto'] input[name='descripcion']").value= descripcionParseText?descripcionParseText:'sin descripcion',
+            'part_number':document.querySelector("div[id='modal-crear-nuevo-producto'] input[name='part_number']").value= partNumberParseText,
+            'descripcion':document.querySelector("div[id='modal-crear-nuevo-producto'] input[name='descripcion']").value= descripcionParseText,
+            'cantidad':cantidadParseText,
             'id_cc_am_filas':id_cc_am_filas,
             'id_cc_venta_filas':id_cc_venta_filas
             }
     }else if(tipo_item =='ITEM_CON_TRANSFORMACION'){
-        let descripcionParseText = ((detalle_cc_selected.descripcion_producto_transformado).replace("&lt;","<")).trim();
-        let partNumberParseText = detalle_cc_selected.part_no_producto_transformado;
+        let descripcionParseText = ((detalle_cc_selected.descripcion_producto_transformado).replace("&lt;","<").replace("nbsp;","").replace("&nbsp;","").replace("&amp;","")).trim();
+        let partNumberParseText = detalle_cc_selected.part_no_producto_transformado? detalle_cc_selected.part_no_producto_transformado:'';
+        let cantidadParseText = detalle_cc_selected.cantidad;
+        // console.log(cantidadParseText);
+
         tempDetalleItemCCSelect={
-            'part_number':document.querySelector("div[id='modal-crear-nuevo-producto'] input[name='part_number']").value= partNumberParseText?partNumberParseText:'',
-            'descripcion':document.querySelector("div[id='modal-crear-nuevo-producto'] input[name='descripcion']").value= descripcionParseText?descripcionParseText:'sin descripcion',
+            'part_number':document.querySelector("div[id='modal-crear-nuevo-producto'] input[name='part_number']").value= partNumberParseText,
+            'descripcion':document.querySelector("div[id='modal-crear-nuevo-producto'] input[name='descripcion']").value= descripcionParseText,
+            'cantidad':cantidadParseText,
             'id_cc_am_filas':id_cc_am_filas,
             'id_cc_venta_filas':id_cc_venta_filas
         }
@@ -844,7 +850,7 @@ function mostrar_requerimiento(IdorCode){
         dataType: 'JSON',
         success: function(response){
             data = response;
-            console.log(response);
+            // console.log(response);
             if(response['requerimiento'] !== undefined){
                 if(response['requerimiento'][0].id_tipo_requerimiento == 1){ // compra
                     if(response['requerimiento'][0].tipo_cliente == 1 || response['requerimiento'][0].tipo_cliente == 2){ //persona natural o persona juridica
@@ -1604,8 +1610,7 @@ function detalleRequerimientoModal(event=null,index=null){
     var btnAgregarCambio = document.getElementsByName("btn-agregar-item");
     if(index  != undefined){ // editando item
         let item = data_item[index]; 
- 
-      
+    
         indice = index;       
         fill_input_detalle_requerimiento(item);
         controlUnidadMedida();
@@ -2207,7 +2212,7 @@ $(function(){
 function listarItems() {
     // console.log('listaItems');
     var vardataTables = funcDatatables();
-    $('#listaItems').dataTable({
+   var tablaListaItems =  $('#listaItems').dataTable({
         // 'dom': vardataTables[1],
         // 'buttons': vardataTables[2],
         // "dom": '<"toolbar">frtip',
@@ -2253,12 +2258,16 @@ function listarItems() {
             [8, 'asc']
         ],
         "initComplete": function(settings, json) {
+            // console.log(tempDetalleItemCCSelect);
             if(tempDetalleItemCCSelect.hasOwnProperty('descripcion')){
                 if(tempDetalleItemCCSelect.descripcion.length >0){
                     $('#text-info-item-vinculado').attr('title',tempDetalleItemCCSelect.descripcion);
                     $('#text-info-item-vinculado').removeAttr('hidden');
                     $('#example_filter input').val(tempDetalleItemCCSelect.descripcion);
                     this.api().search(tempDetalleItemCCSelect.descripcion).draw();
+                    document.querySelector("input[type='search']").focus();
+                    document.querySelector("input[type='search']").setSelectionRange(tempDetalleItemCCSelect.descripcion.length,tempDetalleItemCCSelect.descripcion.length );
+
                 }
             }
           } 
@@ -2451,7 +2460,7 @@ function selectItem(){
         $('[name=unidad_medida_item]').val(document.querySelector("div[id='modal-catalogo-items'] div[class='modal-footer'] label[id='id_unidad_medida']").textContent);
         $('[name=categoria]').val(document.querySelector("div[id='modal-catalogo-items'] div[class='modal-footer'] label[id='categoria']").textContent);
         $('[name=subcategoria]').val(document.querySelector("div[id='modal-catalogo-items'] div[class='modal-footer'] label[id='subcategoria']").textContent);
-        $('[name=cantidad_item]').val(1);
+        $('[name=cantidad_item]').val(tempDetalleItemCCSelect.cantidad?tempDetalleItemCCSelect.cantidad:1);
         
         let btnVerUltimasCompras = document.getElementsByName('btnVerUltimasCompras')[0];
         btnVerUltimasCompras.removeAttribute('disabled');
@@ -2795,7 +2804,7 @@ function save_requerimiento(action){
     // requerimiento.id_rol = actual_id_rol; // update -> id rol actual
     // requerimiento.id_grupo = actual_id_grupo; // update -> id area actual
     let data = {requerimiento,detalle:detalle_requerimiento};
-    console.log(data);
+    // console.log(data);
 
     
     if (action == 'register'){
@@ -2828,7 +2837,7 @@ function save_requerimiento(action){
                 data: data,
                 dataType: 'JSON',
                 success: function(response){
-                    console.log(response);
+                    // console.log(response);
                     if (response > 0){
                         changeStateButton('guardar');
                         let lastIdRequerimiento =  response;

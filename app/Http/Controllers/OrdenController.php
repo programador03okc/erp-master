@@ -528,7 +528,7 @@ class OrdenController extends Controller
         $tieneItems=false;
         $alm_det_req = DB::table('almacen.alm_det_req')
         ->select('alm_det_req.*')
-        ->whereNull('alm_det_req.tiene_transformacion')
+        ->where('alm_det_req.tiene_transformacion',false)
         ->whereIn('alm_det_req.id_requerimiento',$requerimientoList)
         ->get();
 
@@ -617,7 +617,7 @@ class OrdenController extends Controller
                 DB::raw("(CASE WHEN alm_req.estado = 1 THEN 'Habilitado' ELSE 'Deshabilitado' END) AS estado_desc")
             )
             ->whereIn('alm_req.id_requerimiento', $requerimientoList)
-            ->WhereIn('alm_req.tiene_transformacion',[true,1])
+            // ->WhereIn('alm_req.tiene_transformacion',[true,1])
             ->orderBy('alm_req.id_requerimiento', 'desc')
             ->get();
 
@@ -717,7 +717,7 @@ class OrdenController extends Controller
                     'alm_det_req_adjuntos.id_detalle_requerimiento AS adjunto_id_detalle_requerimiento'
                 )
                 ->whereIn('alm_req.id_requerimiento', $requerimientoList)
-                ->whereNull('alm_det_req.tiene_transformacion')
+                ->whereIn('alm_det_req.tiene_transformacion',[false])
                 ->whereNotIn('alm_det_req.estado', [7])
                 ->orderBy('alm_item.id_item', 'asc')
                 ->get();
@@ -2201,7 +2201,9 @@ class OrdenController extends Controller
                             'id_unidad_medida'      => is_numeric($items[$i]['id_unidad_medida']) == 1 ? $items[$i]['id_unidad_medida'] : null,
                             'id_tipo_item'          => 1,
                             'fecha_registro'        => date('Y-m-d H:i:s'),
-                            'estado'                => 1
+                            'estado'                => 1,
+                            'tiene_transformacion'  => isset($items[$i]['tiene_transformacion'])?$items[$i]['tiene_transformacion']:false
+
 
                         ],
                         'id_detalle_requerimiento'
