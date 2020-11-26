@@ -12,7 +12,7 @@ function open_despacho_create(data){
     $("#submit_orden_despacho").removeAttr("disabled");
     $('[name=tipo_entrega]').val('MISMA CIUDAD').trigger('change.select2');
     $('[name=id_requerimiento]').val(data.id_requerimiento);
-    // $('[name=id_sede]').val(data.id_sede);
+    $('[name=tiene_transformacion]').val(data.tiene_transformacion ? 'si' : 'no');
     $('[name=direccion_destino]').val(data.direccion_entrega);
     $('[name=ubigeo]').val(data.id_ubigeo_entrega);
     $('[name=name_ubigeo]').val(data.ubigeo_descripcion);
@@ -114,13 +114,14 @@ function open_despacho_create(data){
 
             if (element.tiene_transformacion){
                 detalle_sale.push({
-                    'id_producto'       : element.id_producto,
-                    'part_number'       : element.part_number,
-                    'codigo'            : element.producto_codigo,
-                    'descripcion'       : element.producto_descripcion,
-                    'id_unidad_medida'  : element.id_unidad_medida,
-                    'abreviatura'       : element.abreviatura,
-                    'cantidad'          : element.cantidad,
+                    'id_detalle_requerimiento'  : element.id_detalle_requerimiento,
+                    'id_producto'               : element.id_producto,
+                    'part_number'               : element.part_number,
+                    'codigo'                    : element.producto_codigo,
+                    'descripcion'               : element.producto_descripcion,
+                    'id_unidad_medida'          : element.id_unidad_medida,
+                    'abreviatura'               : element.abreviatura,
+                    'cantidad'                  : element.cantidad,
                 });
             }
         });
@@ -304,6 +305,7 @@ $("#form-orden_despacho").on("submit", function(e){
                 validaCampos += 'El producto '+json.descripcion+' requiere que cantidad.\n'; 
             }
             json_detalle_sale.push({
+                'id_detalle_requerimiento' : json.id_detalle_requerimiento,
                 'cantidad' : cant,
                 'id_producto' : json.id_producto
             });

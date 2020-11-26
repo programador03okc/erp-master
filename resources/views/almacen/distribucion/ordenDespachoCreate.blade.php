@@ -10,6 +10,7 @@
                     <input type="text" class="oculto" name="id_requerimiento">
                     <input type="text" class="oculto" name="id_sede"/>
                     <input type="text" class="oculto" name="id_cc"/>
+                    <input type="text" class="oculto" name="tiene_transformacion"/>
                     <div class="row">
                         <div class="col-md-6">
                             <h5>Almacén</h5>

@@ -18,9 +18,39 @@ function open_guia_create(data){
     $('[name=almacen_descripcion]').val(data.almacen_descripcion);
     $('#serie').text('');
     $('#numero').text('');
+
+    listarDetalleOrdenDespacho(data.id_od);
     // cargar_almacenes(data.id_sede, 'id_almacen');
     // var tp_doc_almacen = 2;//guia venta
     // next_serie_numero(data.id_sede,tp_doc_almacen);
+}
+
+function listarDetalleOrdenDespacho(id_od){
+    $.ajax({
+        type: 'GET',
+        url: 'verDetalleDespacho/'+id_od,
+        dataType: 'JSON',
+        success: function(response){
+            console.log(response);
+            var html = '';
+            var i = 1;
+            response.forEach(element => {
+                html += `<tr>
+                <td>${i}</td>
+                <td>${element.codigo}</td>
+                <td>${element.part_number}</td>
+                <td>${element.descripcion}</td>
+                <td>${element.cantidad}</td>
+                <td>${element.abreviatura}</td>
+                </tr>`;
+            });
+            $('#detalleGuiaVenta tbody').html(html);
+        }
+    }).fail( function( jqXHR, textStatus, errorThrown ){
+        console.log(jqXHR);
+        console.log(textStatus);
+        console.log(errorThrown);
+    });
 }
 
 function next_serie_numero(id_sede,id_tp_doc){

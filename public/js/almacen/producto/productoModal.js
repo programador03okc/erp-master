@@ -240,7 +240,8 @@ function selectProducto(){
             'descripcion': desc,
             'abreviatura': abre,
             'id_unidad_medida': unid,
-            'cantidad': 1
+            'cantidad': 1,
+            'id_detalle_requerimiento': null,
         }
         detalle_sale.push(producto);
         mostrarSale();

@@ -410,6 +410,7 @@ class OrdenesPendientesController extends Controller
 
                         $todos = DB::table('almacen.alm_det_req')
                         ->where([['id_requerimiento','=',$id_requerimiento],
+                                ['tiene_transformacion','=',false],
                                 ['estado','!=',7]])
                         ->count();
 
@@ -1015,6 +1016,12 @@ class OrdenesPendientesController extends Controller
                     $update = DB::table('almacen.guia_com_det')
                     ->where('id_guia_com', $request->id_guia_com)
                     ->update([ 'estado' => 7 ]);
+
+                    if ($ing->id_transformacion !== null){
+                        DB::table('almacen.transformacion')
+                        ->where('id_transformacion',$ing->id_transformacion)
+                        ->update(['estado' => 9]);
+                    }
                     
                     $requerimientos = [];
 

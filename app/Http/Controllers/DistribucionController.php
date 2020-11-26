@@ -828,26 +828,50 @@ class DistribucionController extends Controller
 
             }
             else {
-                $data = json_decode($request->detalle_requerimiento);
-                
-                foreach ($data as $d) {
-                    // $descripcion = ($d->producto_descripcion !== null ? $d->producto_descripcion : $d->descripcion_adicional);
-                    DB::table('almacen.orden_despacho_det')
-                    ->insert([
-                        'id_od'=>$id_od,
-                        'id_producto'=>$d->id_producto,
-                        'id_detalle_requerimiento'=>$d->id_detalle_requerimiento,
-                        'cantidad'=>$d->cantidad,
-                        // 'descripcion_producto'=>$descripcion,
-                        'estado'=>1,
-                        'fecha_registro'=>date('Y-m-d H:i:s')
-                    ]);
+                if ($request->tiene_transformacion == 'si'){
+                    $data = json_decode($request->detalle_sale);
+                    
+                    foreach ($data as $d) {
+                        // $descripcion = ($d->producto_descripcion !== null ? $d->producto_descripcion : $d->descripcion_adicional);
+                        DB::table('almacen.orden_despacho_det')
+                        ->insert([
+                            'id_od'=>$id_od,
+                            'id_producto'=>$d->id_producto,
+                            'id_detalle_requerimiento'=>$d->id_detalle_requerimiento,
+                            'cantidad'=>$d->cantidad,
+                            'estado'=>1,
+                            'fecha_registro'=>date('Y-m-d H:i:s')
+                        ]);
+    
+                        if ($d->id_detalle_requerimiento !== null){
 
-                    DB::table('almacen.alm_det_req')
-                    ->where('id_detalle_requerimiento',$d->id_detalle_requerimiento)
-                    ->update(['estado'=>29]);//por despachar
+                            DB::table('almacen.alm_det_req')
+                            ->where('id_detalle_requerimiento',$d->id_detalle_requerimiento)
+                            ->update(['estado'=>29]);//por despachar
+                        }
+                    }
+                } else {
+
+                    $data = json_decode($request->detalle_requerimiento);
+                    
+                    foreach ($data as $d) {
+                        // $descripcion = ($d->producto_descripcion !== null ? $d->producto_descripcion : $d->descripcion_adicional);
+                        DB::table('almacen.orden_despacho_det')
+                        ->insert([
+                            'id_od'=>$id_od,
+                            'id_producto'=>$d->id_producto,
+                            'id_detalle_requerimiento'=>$d->id_detalle_requerimiento,
+                            'cantidad'=>$d->cantidad,
+                            // 'descripcion_producto'=>$descripcion,
+                            'estado'=>1,
+                            'fecha_registro'=>date('Y-m-d H:i:s')
+                        ]);
+    
+                        DB::table('almacen.alm_det_req')
+                        ->where('id_detalle_requerimiento',$d->id_detalle_requerimiento)
+                        ->update(['estado'=>29]);//por despachar
+                    }
                 }
-
                 DB::table('almacen.alm_req')
                 ->where('id_requerimiento',$request->id_requerimiento)
                 ->update(['estado'=>29]);//por despachar
@@ -1331,14 +1355,6 @@ class DistribucionController extends Controller
                             'fecha_almacen' => $request->fecha_emision,
                             'id_almacen' => $request->id_almacen,
                             'id_operacion' => $request->id_operacion,
-                            // 'transportista' => $request->transportista,
-                            // 'tra_serie' => $request->tra_serie,
-                            // 'tra_numero' => $request->tra_numero,
-                            // 'punto_partida' => $request->punto_partida,
-                            // 'punto_llegada' => $request->punto_llegada,
-                            // 'fecha_traslado' => $request->fecha_traslado,
-                            // 'placa' => $request->placa,
-                            // 'usuario' => $request->responsable,
                             'usuario' => $id_usuario,
                             'registrado_por' => $id_usuario,
                             'estado' => 1,
@@ -1484,12 +1500,36 @@ class DistribucionController extends Controller
                     DB::table('almacen.orden_despacho_det')
                     ->where('id_od',$request->id_od)
                     ->update(['estado'=>$est]);
-                    //requerimiento despachado
-                    $todo = DB::table('almacen.alm_det_req')
-                    ->where([['id_requerimiento','=',$request->id_requerimiento],
-                            ['estado','!=',7]])
-                    ->count();
 
+                    $requerimiento = DB::table('almacen.alm_req')
+                        ->where('id_requerimiento',$request->id_requerimiento)
+                        ->first();
+                    //requerimiento despachado
+                    if ($requerimiento->tiene_transformacion){
+
+                        if ($aplica_cambios){
+
+                            $todo = DB::table('almacen.alm_det_req')
+                            ->where([['id_requerimiento','=',$request->id_requerimiento],
+                                    ['tiene_transformacion','=',false],
+                                    ['estado','!=',7]])
+                            ->count();       
+                        } 
+                        else {
+                            $todo = DB::table('almacen.alm_det_req')
+                            ->where([['id_requerimiento','=',$request->id_requerimiento],
+                                    ['tiene_transformacion','=',true],
+                                    ['estado','!=',7]])
+                            ->count();
+                        }
+                    }
+                    else {
+                        $todo = DB::table('almacen.alm_det_req')
+                        ->where([['id_requerimiento','=',$request->id_requerimiento],
+                                ['tiene_transformacion','=',false],
+                                ['estado','!=',7]])
+                        ->count(); 
+                    }
                     $desp = DB::table('almacen.alm_det_req')
                     ->where([['id_requerimiento','=',$request->id_requerimiento],
                             ['estado','=',$est]])
