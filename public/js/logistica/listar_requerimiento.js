@@ -79,7 +79,6 @@ function listar_ordenes_propias(){
         },
         'columns':[
             {'render': function (data, type, row){
-                console.log(row.descripcion_producto_transformado);
                 return `${row['orden_am']}`;
                 }
             },
@@ -149,13 +148,15 @@ function listar_ordenes_propias(){
             },
         ],
         "createdRow": function( row, data, dataIndex){
-            console.log(data.cantidad_producto_con_transformacion);
+            console.log(row.childNodes[0]);
             if(data.cantidad_producto_con_transformacion != null){
                 if( data.cantidad_producto_con_transformacion >0  ){
-                    $(row).css('background-color', '#d8c74ab8');
+                    $(row.childNodes[0]).css('background-color', '#d8c74ab8');
+                    $(row.childNodes[0]).css('font-weight', 'bold');
                 }
                 else if( data.cantidad_producto_con_transformacion == 0  ){
-                    $(row).css('background-color', '#b498d0');
+                    $(row.childNodes[0]).css('background-color', '#b498d0');
+                    $(row.childNodes[0]).css('font-weight', 'bold');
                 }
             }else{
                 $(row).css('background-color', '#b498d0');

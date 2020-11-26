@@ -497,10 +497,12 @@ function listar_requerimientos_pendientes(permisoCrearOrdenPorRequerimiento,id_e
         'columnDefs': [{ 'aTargets': [0], 'sClass': 'invisible'}],
         "createdRow": function( row, data, dataIndex){
             if( data.tiene_transformacion == true  ){
-                $(row).css('background-color', '#d8c74ab8');
+                $(row.childNodes[2]).css('background-color', '#d8c74ab8');
+                $(row.childNodes[2]).css('font-weight', 'bold');
             }
             else if( data.tiene_transformacion == false  ){
-                $(row).css('background-color', '#b498d0');
+                $(row.childNodes[2]).css('background-color', '#b498d0');
+                $(row.childNodes[2]).css('font-weight', 'bold');
             }
 
         }
