@@ -410,6 +410,7 @@ class OrdenesPendientesController extends Controller
 
                         $todos = DB::table('almacen.alm_det_req')
                         ->where([['id_requerimiento','=',$id_requerimiento],
+                                ['tiene_transformacion','=',false],
                                 ['estado','!=',7]])
                         ->count();
 
@@ -702,7 +703,9 @@ class OrdenesPendientesController extends Controller
         
                                 $count_todo = DB::table('almacen.alm_det_req')
                                 ->where([['id_requerimiento','=',$padre],
-                                         ['estado','!=',7]])
+                                        ['estado','!=',7]])
+                                ->where('tiene_transformacion',null)
+                                ->orWhere('tiene_transformacion',false)
                                 ->count();
         
                                 if ($count_todo == $count_alm){
@@ -730,6 +733,15 @@ class OrdenesPendientesController extends Controller
 
     }
 
+    public function prue($padre){
+        $count_todo = DB::table('almacen.alm_det_req')
+                    ->where([['id_requerimiento','=',$padre],
+                            ['estado','!=',7]])
+                    ->where('tiene_transformacion',null)
+                    ->orWhere('tiene_transformacion',false)
+                    ->count();
+        return $count_todo;
+    }
     public function actualiza_prod_ubi($id_producto, $id_almacen){
         //Actualizo los saldos del producto
         //Obtengo el registro de saldos
@@ -1004,6 +1016,12 @@ class OrdenesPendientesController extends Controller
                     $update = DB::table('almacen.guia_com_det')
                     ->where('id_guia_com', $request->id_guia_com)
                     ->update([ 'estado' => 7 ]);
+
+                    if ($ing->id_transformacion !== null){
+                        DB::table('almacen.transformacion')
+                        ->where('id_transformacion',$ing->id_transformacion)
+                        ->update(['estado' => 9]);
+                    }
                     
                     $requerimientos = [];
 

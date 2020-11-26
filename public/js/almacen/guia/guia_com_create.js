@@ -250,7 +250,7 @@ function guardar_guia_create(data){
                 
                 var tra = $('[name=id_transformacion]').val();
                 if (tra!==''){
-                    listarOrdenesEntregadas();
+                    listarTransformaciones();
                 } else {
                     listarOrdenesPendientes();
                 }
