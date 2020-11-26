@@ -611,6 +611,9 @@ class RequerimientoController extends Controller
             'alm_req.codigo as codigo_requerimiento',
             'cc.tipo_cuadro',
             'cc_am_filas.id as id_am_filas',
+            DB::raw("(SELECT COUNT(*) FROM mgcp_cuadro_costos.cc_am_filas 
+            WHERE cc_am_filas.descripcion_producto_transformado NOTNULL 
+            AND cc_am_filas.id_cc_am=cc.id ) as cantidad_producto_con_transformacion"),
             'cc_venta_filas.id as id_venta_filas',
             'oportunidades.id_tipo_negocio',
             'tipos_negocio.tipo as tipo_negocio'

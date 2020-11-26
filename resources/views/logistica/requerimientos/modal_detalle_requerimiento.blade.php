@@ -61,7 +61,7 @@
                                 <input type="number" min="1" class="form-control input-sm activation" name="cantidad_item" step="1">
                             </div>
                         </div>
-                        <div class="col-md-2">
+                        <div class="col-md-2" hidden>
                             <div class="input-group-okc">
                                 <div class="form-group">
                                     <h5>Precio Ref. <i class="fas fa-question-circle" data-toggle="tooltip" data-placement="top" title="Precio Unitario Incluye IGV"></i></h5>
@@ -77,7 +77,7 @@
       
                             </div>
                         </div>
-                        <div class="col-md-2">
+                        <div class="col-md-2" hidden>
                             <div class="form-group">
                                 <h5>Moneda</h5>
                                 <select class="form-control input-sm activation" name="tipo_moneda">

@@ -21,13 +21,15 @@ function crearProducto(){
         }
 
         // console.log(detalleItemsParaCompraCCSelected);
-        if(detalleItemsParaCompraCCSelected.hasOwnProperty('descripcion')){
-            if(detalleItemsParaCompraCCSelected.descripcion.length >0){
-                document.querySelector("div[id='modal-crear-nuevo-producto'] input[name='part_number']").value = detalleItemsParaCompraCCSelected.part_no?detalleItemsParaCompraCCSelected.part_no:null;
-                document.querySelector("div[id='modal-crear-nuevo-producto'] input[name='descripcion']").value= detalleItemsParaCompraCCSelected.descripcion?detalleItemsParaCompraCCSelected.descripcion:null;
-    
+        if(detalleItemsParaCompraCCSelected != undefined){
+            if(detalleItemsParaCompraCCSelected.hasOwnProperty('descripcion')){
+                if(detalleItemsParaCompraCCSelected.descripcion.length >0){
+                    document.querySelector("div[id='modal-crear-nuevo-producto'] input[name='part_number']").value = detalleItemsParaCompraCCSelected.part_no?detalleItemsParaCompraCCSelected.part_no:null;
+                    document.querySelector("div[id='modal-crear-nuevo-producto'] input[name='descripcion']").value= detalleItemsParaCompraCCSelected.descripcion?detalleItemsParaCompraCCSelected.descripcion:null;
+                }
             }
         }
+
 
 }
 
