@@ -112,7 +112,7 @@ class GestionCustomizacion
                     }
                 },
             ],
-            'order': [[ 1, "desc" ]],
+            'order': [[ 0, "desc" ]],
             'columnDefs': [{ 'aTargets': [0], 'sClass': 'invisible'}],
         });
     }
