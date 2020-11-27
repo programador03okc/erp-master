@@ -2212,8 +2212,14 @@ class DistribucionController extends Controller
                          {   $join->on('orden_despacho.id_requerimiento', '=', 'alm_req.id_requerimiento');
                              $join->where('orden_despacho.estado','!=', 7);
                          })
-            ->leftJoin('almacen.orden_despacho_grupo_det','orden_despacho_grupo_det.id_od','=','orden_despacho.id_od')
-            ->leftJoin('almacen.orden_despacho_grupo','orden_despacho_grupo.id_od_grupo','=','orden_despacho_grupo_det.id_od_grupo')
+            ->leftJoin('almacen.orden_despacho_grupo_det', function($join)
+                        {   $join->on('orden_despacho_grupo_det.id_od', '=', 'orden_despacho.id_od');
+                            $join->where('orden_despacho_grupo_det.estado','!=', 7);
+                        })
+            ->leftJoin('almacen.orden_despacho_grupo', function($join)
+                        {   $join->on('orden_despacho_grupo.id_od_grupo', '=', 'orden_despacho_grupo_det.id_od_grupo');
+                            $join->where('orden_despacho_grupo.estado','!=', 7);
+                        })
             ->where([['alm_req.estado','!=',7]])
             ->orderBy('alm_req.fecha_requerimiento','desc');
             // ->get();
