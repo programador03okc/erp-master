@@ -1296,7 +1296,7 @@ class DistribucionController extends Controller
             }
   */          
             DB::commit();
-            return response()->json($data);
+            return response()->json(1);
             
         } catch (\PDOException $e) {
             DB::rollBack();
