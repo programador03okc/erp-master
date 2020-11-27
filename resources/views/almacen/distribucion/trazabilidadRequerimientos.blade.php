@@ -33,9 +33,9 @@ Trazabilidad de Requerimientos
                         <th>Dirección Entrega</th>
                         <th>Generado por</th>
                         <th>Estado</th>
-                        <th>OC</th>
-                        <th>Sede OC</th>
-                        <th>Transf.</th>
+                        <!-- <th>OC</th>
+                        <th>Sede OC</th> -->
+                        <!-- <th>Transf.</th> -->
                         <th>O.D.</th>
                         <th>Guías Adic.</th>
                         <th>Importe</th>

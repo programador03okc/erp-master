@@ -63,18 +63,18 @@ function listarTrazabilidadRequerimientos(){
                 return '<span class="label label-'+row['bootstrap_color']+'">'+row['estado_doc']+'</span>'
                 }
             },
-            {'render': function (data, type, row){
-                return (row['codigo_orden'] !== null ? row['codigo_orden'] : '')
-                }
-            },
-            {'render': function (data, type, row){
-                return (row['sede_descripcion_orden'] !== null ? row['sede_descripcion_orden'] : '')
-                }
-            }, 
-            {'render': function (data, type, row){
-                return (row['codigo_transferencia'] !== null ? row['codigo_transferencia'] : '')
-                }
-            },
+            // {'render': function (data, type, row){
+            //     return (row['codigo_orden'] !== null ? row['codigo_orden'] : '')
+            //     }
+            // },
+            // {'render': function (data, type, row){
+            //     return (row['sede_descripcion_orden'] !== null ? row['sede_descripcion_orden'] : '')
+            //     }
+            // }, 
+            // {'render': function (data, type, row){
+            //     return (row['codigo_transferencia'] !== null ? row['codigo_transferencia'] : '')
+            //     }
+            // },
             {'render': function (data, type, row){
                 return (row['codigo_od'] !== null ? row['codigo_od'] : '')
                 }
@@ -98,7 +98,7 @@ function listarTrazabilidadRequerimientos(){
                 (row['id_od_grupo'] !== null ? `<button type="button" class="imprimir btn btn-success boton" data-toggle="tooltip" 
                     data-placement="bottom" data-id-grupo="${row['id_od_grupo']}" title="Ver Despacho" >
                     <i class="fas fa-file-alt"></i></button>` : '')
-                }, targets: 18
+                }, targets: 15
             }
         ],
     });

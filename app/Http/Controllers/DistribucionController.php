@@ -2161,11 +2161,15 @@ class DistribucionController extends Controller
         $data = DB::table('almacen.alm_req')
             ->select('alm_req.*','sis_usua.nombre_corto as responsable','adm_grupo.descripcion as grupo',
             'adm_estado_doc.estado_doc','adm_estado_doc.bootstrap_color',
-            'log_ord_compra.codigo as codigo_orden','guia_com.serie','guia_com.numero',
-            'trans.id_transferencia','trans.codigo as codigo_transferencia','ubi_dis.descripcion as ubigeo_descripcion',
+            // 'log_ord_compra.codigo as codigo_orden',
+            // 'guia_com.serie','guia_com.numero',
+            // 'trans.id_transferencia','trans.codigo as codigo_transferencia',
+            'ubi_dis.descripcion as ubigeo_descripcion',
             'rrhh_perso.nro_documento as dni_persona','alm_almacen.descripcion as almacen_descripcion',
-            'alm_almacen.id_sede as sede_requerimiento','log_ord_compra.id_sede as sede_orden',
-            'sis_sede.descripcion as sede_descripcion_orden','sede_req.descripcion as sede_descripcion_req',
+            // 'alm_almacen.id_sede as sede_requerimiento',
+            // 'log_ord_compra.id_sede as sede_orden',
+            // 'sis_sede.descripcion as sede_descripcion_orden',
+            'sede_req.descripcion as sede_descripcion_req',
             'orden_despacho.id_od','orden_despacho.codigo as codigo_od','orden_despacho.estado as estado_od',
             // 'orden_despacho.guias_adicionales',
             DB::raw("(orden_despacho.agencia) || ' ' || (orden_despacho.serie) || '-' || (orden_despacho.numero) || ' ' || (orden_despacho.codigo_envio) AS guias_adicionales"),
@@ -2177,26 +2181,26 @@ class DistribucionController extends Controller
             ->join('configuracion.sis_usua','sis_usua.id_usuario','=','alm_req.id_usuario')
             ->leftjoin('administracion.adm_grupo','adm_grupo.id_grupo','=','alm_req.id_grupo')
             ->join('administracion.adm_estado_doc','adm_estado_doc.id_estado_doc','=','alm_req.estado')
-            ->leftJoin('logistica.log_ord_compra', function($join)
-                         {   $join->on('log_ord_compra.id_requerimiento', '=', 'alm_req.id_requerimiento');
-                             $join->where('log_ord_compra.estado','!=', 7);
-                         })
-            ->leftJoin('administracion.sis_sede','sis_sede.id_sede','=','log_ord_compra.id_sede')
-            // ->leftJoin('almacen.guia_com','guia_com.id_oc','=','log_ord_compra.id_orden_compra')
-            // ->leftJoin('almacen.mov_alm','mov_alm.id_guia_com','=','guia_com.id_guia')
-            ->leftJoin('almacen.guia_com', function($join)
-                         {   $join->on('guia_com.id_oc', '=', 'log_ord_compra.id_orden_compra');
-                             $join->where('guia_com.estado','!=', 7);
-                         })
-            ->leftJoin('almacen.guia_ven', function($join)
-                         {   $join->on('guia_ven.id_guia_com', '=', 'guia_com.id_guia');
-                             $join->where('guia_ven.estado','!=', 7);
-                         })
+            // ->leftJoin('logistica.log_ord_compra', function($join)
+            //              {   $join->on('log_ord_compra.id_requerimiento', '=', 'alm_req.id_requerimiento');
+            //                  $join->where('log_ord_compra.estado','!=', 7);
+            //              })
+            // ->leftJoin('administracion.sis_sede','sis_sede.id_sede','=','log_ord_compra.id_sede')
+            // // ->leftJoin('almacen.guia_com','guia_com.id_oc','=','log_ord_compra.id_orden_compra')
+            // // ->leftJoin('almacen.mov_alm','mov_alm.id_guia_com','=','guia_com.id_guia')
+            // ->leftJoin('almacen.guia_com', function($join)
+            //              {   $join->on('guia_com.id_oc', '=', 'log_ord_compra.id_orden_compra');
+            //                  $join->where('guia_com.estado','!=', 7);
+            //              })
+            // ->leftJoin('almacen.guia_ven', function($join)
+            //              {   $join->on('guia_ven.id_guia_com', '=', 'guia_com.id_guia');
+            //                  $join->where('guia_ven.estado','!=', 7);
+            //              })
             // ->leftJoin('almacen.guia_ven','guia_ven.id_guia_com','=','guia_com.id_guia')
-            ->leftJoin('almacen.trans', function($join)
-                         {   $join->on('trans.id_guia_ven', '=', 'guia_ven.id_guia_ven');
-                             $join->where('trans.estado','!=', 7);
-                         })
+            // ->leftJoin('almacen.trans', function($join)
+            //              {   $join->on('trans.id_guia_ven', '=', 'guia_ven.id_guia_ven');
+            //                  $join->where('trans.estado','!=', 7);
+            //              })
             // ->leftJoin('almacen.trans','trans.id_guia_ven','=','guia_ven.id_guia_ven')
             ->leftJoin('almacen.alm_almacen','alm_almacen.id_almacen','=','alm_req.id_almacen')
             ->leftJoin('administracion.sis_sede as sede_req','sede_req.id_sede','=','alm_almacen.id_sede')
