@@ -703,9 +703,8 @@ class OrdenesPendientesController extends Controller
         
                                 $count_todo = DB::table('almacen.alm_det_req')
                                 ->where([['id_requerimiento','=',$padre],
+                                        ['tiene_transformacion','=',false],
                                         ['estado','!=',7]])
-                                ->where('tiene_transformacion',null)
-                                ->orWhere('tiene_transformacion',false)
                                 ->count();
         
                                 if ($count_todo == $count_alm){
