@@ -52,7 +52,7 @@ function crear_grupo_orden_despacho() {
 //         $("[name=mov_propia_valor]").val('si');
 //     }
 // });
-$("[name=mov_entrega]").change( function(e) {
+$("[name=mov_entrega]").on( 'change', function(e) {
     console.log($(this).val());
     if( $(this).val() == 'Movilidad Propia' ) {
         $("#proveedor").hide();
@@ -66,6 +66,9 @@ $("[name=mov_entrega]").change( function(e) {
         $("#proveedor").hide();
         $("#trabajador").hide();
     }
+    $('[name=responsable_grupo]').val('');
+    $('[name=gd_id_proveedor]').val('');
+    $('[name=gd_razon_social]').val('');
 });
 
 function guardar_grupo_despacho(){
