@@ -11,7 +11,7 @@
                     <div class="row">
                         <div class="col-md-12">
                             <h5>Responsable</h5>
-                            <select name="responsable" class="form-control js-example-basic-single">
+                            <select name="responsable" class="form-control js-example-basic-single" required>
                                 <option value="0">Elija una opción</option>
                                 @foreach ($usuarios as $usu)
                                     <option value="{{$usu->id_usuario}}">{{$usu->nombre_corto}}</option>

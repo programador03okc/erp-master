@@ -163,7 +163,14 @@ $("#form-procesarTransformacion").on("submit", function(e){
     e.preventDefault();
     var data = $(this).serialize();
     console.log(data);
-    procesar_transformacion(data);
+    var res = $('[name=responsable]').val();
+    
+    if (res !== null && res !== '0'){
+        procesar_transformacion(data);
+    }
+    else {
+        alert('Es necesario que seleccione un Responsable');
+    }
 });
 
 function procesar_transformacion(data){
