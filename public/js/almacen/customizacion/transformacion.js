@@ -152,6 +152,8 @@ function openProcesar(){
             $('#modal-procesarTransformacion').modal({
                 show: true
             });
+            $('[name=responsable]').val('');
+            $('[name=observacion]').val('');
         }
     } else {
         alert('No ha seleccionado una Hoja de Transformación');
