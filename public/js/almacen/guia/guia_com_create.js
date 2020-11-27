@@ -106,8 +106,8 @@ function listar_detalle_transformacion(id){
                 <td>${element.descripcion}</td>
                 <td>${element.cantidad}</td>
                 <td>${element.abreviatura}</td>
-                <td>${element.valor_unitario}</td>
-                <td>${element.valor_total}</td>
+                <td>${formatNumber.decimal(element.valor_unitario,'',2)}</td>
+                <td>${formatNumber.decimal(element.valor_total,'',2)}</td>
                 ${( element.series
                     ? '<td><input type="text" class="oculto" id="series" value="'+element.series+'" data-partnumber="'+element.part_number+'"/><i class="fas fa-bars icon-tabla boton" data-toggle="tooltip" data-placement="bottom" title="Agregar Series" onClick="agrega_series_transformacion('+"'s"+element.id_sobrante+"'"+');"></i></td>' 
                     : '<td></td>')}
@@ -128,8 +128,8 @@ function listar_detalle_transformacion(id){
                 <td>${element.descripcion}</td>
                 <td>${element.cantidad}</td>
                 <td>${element.abreviatura}</td>
-                <td>${element.valor_unitario}</td>
-                <td>${element.valor_total}</td>
+                <td>${formatNumber.decimal(element.valor_unitario,'',2)}</td>
+                <td>${formatNumber.decimal(element.valor_total,'',2)}</td>
                 ${( element.series
                     ? '<td><input type="text" class="oculto" id="series" value="'+element.series+'" data-partnumber="'+element.part_number+'"/><i class="fas fa-bars icon-tabla boton" data-toggle="tooltip" data-placement="bottom" title="Agregar Series" onClick="agrega_series_transformacion('+"'t"+element.id_transformado+"'"+');"></i></td>' 
                     : '<td></td>')}

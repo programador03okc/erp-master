@@ -46,6 +46,19 @@ function guardar_od_adjunto(){
                 if (response > 0){
                     // alert('Adjunto registrado con éxito');
                     listarAdjuntos(id);
+                    // var pro = $('[name=proviene_de]').val();
+                    // if (pro == 'enProceso'){
+                    //     listarRequerimientosPendientes();
+                    // }
+                    // else if (pro == 'ordenesDespacho'){
+                    //     listarOrdenesPendientes();
+                    // }
+                    // else if (pro == 'gruposDespachados'){
+                    //     listarGruposDespachados();
+                    // }
+                    // else if (pro == 'retornoCargo'){
+                    //     listarGruposDespachadosPendientesCargo();
+                    // }
                 }
             }
         }).fail( function( jqXHR, textStatus, errorThrown ){
@@ -70,6 +83,19 @@ function anular_adjunto(id_od_adjunto){
                     if (response > 0){
                         alert('Adjunto anulado con éxito');
                         listarAdjuntos(id);
+                        // var pro = $('[name=proviene_de]').val();
+                        // if (pro == 'enProceso'){
+                        //     listarRequerimientosPendientes();
+                        // }
+                        // else if (pro == 'ordenesDespacho'){
+                        //     listarOrdenesPendientes();
+                        // }
+                        // else if (pro == 'gruposDespachados'){
+                        //     listarGruposDespachados();
+                        // }
+                        // else if (pro == 'retornoCargo'){
+                        //     listarGruposDespachadosPendientesCargo();
+                        // }
                     }
                 }
             }).fail( function( jqXHR, textStatus, errorThrown ){

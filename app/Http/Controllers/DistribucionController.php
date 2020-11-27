@@ -209,6 +209,9 @@ class DistribucionController extends Controller
                     orden_despacho.id_requerimiento = alm_req.id_requerimiento
                     and orden_despacho.aplica_cambios = true
                     and orden_despacho.estado != 7) AS count_despachos_internos"),
+            DB::raw("(SELECT COUNT(*) FROM almacen.orden_despacho_adjunto where
+                    orden_despacho_adjunto.id_od = orden_despacho.id_od
+                    and orden_despacho_adjunto.estado != 7) AS count_despacho_adjuntos"),
             'orden_despacho.fecha_despacho','orden_despacho.hora_despacho',
             // 'alm_tp_req.descripcion as tipo_req',
             DB::raw("(rrhh_perso.nombres) || ' ' || (rrhh_perso.apellido_paterno) || ' ' || (rrhh_perso.apellido_materno) AS nombre_persona"),
@@ -293,8 +296,10 @@ class DistribucionController extends Controller
         'alm_req.codigo as codigo_req','alm_req.concepto','ubi_dis.descripcion as ubigeo_descripcion',
         'sis_usua.nombre_corto','adm_estado_doc.estado_doc','adm_estado_doc.bootstrap_color',
         DB::raw("(rrhh_perso.nombres) || ' ' || (rrhh_perso.apellido_paterno) || ' ' || (rrhh_perso.apellido_materno) AS nombre_persona"),
-        'alm_almacen.descripcion as almacen_descripcion',
-        'rrhh_perso.telefono',
+        'alm_almacen.descripcion as almacen_descripcion','rrhh_perso.telefono',
+        DB::raw("(SELECT COUNT(*) FROM almacen.orden_despacho_adjunto where
+                    orden_despacho_adjunto.id_od = orden_despacho.id_od
+                    and orden_despacho_adjunto.estado != 7) AS count_despacho_adjuntos"),
         'oc_propias.orden_am','oportunidades.oportunidad','oportunidades.codigo_oportunidad',
         'entidades.nombre','orden_despacho.id_od','oc_propias.id as id_oc_propia','oc_propias.url_oc_fisica')
         ->leftjoin('comercial.com_cliente','com_cliente.id_cliente','=','orden_despacho.id_cliente')
@@ -325,7 +330,10 @@ class DistribucionController extends Controller
         'adm_estado_doc.estado_doc','adm_estado_doc.bootstrap_color','alm_almacen.descripcion as almacen_descripcion',
         'orden_despacho_grupo.codigo as codigo_odg','orden_despacho.estado as estado_od',
         'oc_propias.orden_am','oportunidades.oportunidad','oportunidades.codigo_oportunidad',
-        'entidades.nombre','orden_despacho.id_od','oc_propias.id as id_oc_propia','oc_propias.url_oc_fisica')
+        'entidades.nombre','orden_despacho.id_od','oc_propias.id as id_oc_propia','oc_propias.url_oc_fisica',
+        DB::raw("(SELECT COUNT(*) FROM almacen.orden_despacho_adjunto where
+                    orden_despacho_adjunto.id_od = orden_despacho.id_od
+                    and orden_despacho_adjunto.estado != 7) AS count_despacho_adjuntos"))
         ->join('almacen.orden_despacho_grupo','orden_despacho_grupo.id_od_grupo','=','orden_despacho_grupo_det.id_od_grupo')
         ->leftjoin('configuracion.sis_usua','sis_usua.id_usuario','=','orden_despacho_grupo.responsable')
         ->leftjoin('logistica.log_prove','log_prove.id_proveedor','=','orden_despacho_grupo.id_proveedor')
@@ -359,7 +367,10 @@ class DistribucionController extends Controller
         'adm_estado_doc.estado_doc','adm_estado_doc.bootstrap_color','alm_almacen.descripcion as almacen_descripcion',
         'orden_despacho_grupo.codigo as codigo_odg','orden_despacho.estado as estado_od',
         'oc_propias.orden_am','oportunidades.oportunidad','oportunidades.codigo_oportunidad',
-        'entidades.nombre','orden_despacho.id_od','oc_propias.id as id_oc_propia','oc_propias.url_oc_fisica')
+        'entidades.nombre','orden_despacho.id_od','oc_propias.id as id_oc_propia','oc_propias.url_oc_fisica',
+        DB::raw("(SELECT COUNT(*) FROM almacen.orden_despacho_adjunto where
+                    orden_despacho_adjunto.id_od = orden_despacho.id_od
+                    and orden_despacho_adjunto.estado != 7) AS count_despacho_adjuntos"))
         ->join('almacen.orden_despacho_grupo','orden_despacho_grupo.id_od_grupo','=','orden_despacho_grupo_det.id_od_grupo')
         ->leftjoin('configuracion.sis_usua','sis_usua.id_usuario','=','orden_despacho_grupo.responsable')
         ->leftjoin('logistica.log_prove','log_prove.id_proveedor','=','orden_despacho_grupo.id_proveedor')

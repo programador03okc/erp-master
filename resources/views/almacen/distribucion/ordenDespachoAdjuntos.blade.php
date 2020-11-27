@@ -15,6 +15,7 @@
                         <input type="text" class="oculto" name="id_od"/>
                         <input type="text" class="oculto" name="codigo_od"/>
                         <input type="text" class="oculto" name="numero"/>
+                        <input type="text" class="oculto" name="proviene_de"/>
                         <div class="col-md-6">
                             <label>Descripción:</label>
                             <input type="text" name="descripcion" class="form-control"/>

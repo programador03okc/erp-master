@@ -346,14 +346,14 @@ function listarRequerimientosPendientes(permiso){
                             'data-placement="bottom" title="Generar Orden de Despacho" >'+
                             '<i class="fas fa-sign-in-alt"></i></button>') : 
                         ( row['id_od'] !== null && row['estado_od'] == 1) ?
-                        `<button type="button" class="adjuntar btn btn-warning boton" data-toggle="tooltip" 
+                        `<button type="button" class="adjuntar btn btn-${row['count_despacho_adjuntos']>0 ? 'warning' : 'default' } boton" data-toggle="tooltip" 
                             data-placement="bottom" data-id="${row['id_od']}" data-cod="${row['codigo_od']}" title="Adjuntar Boleta/Factura" >
                             <i class="fas fa-paperclip"></i></button>
                         <button type="button" class="anular_od btn btn-danger boton" data-toggle="tooltip" 
                             data-placement="bottom" data-id="${row['id_od']}" data-cod="${row['codigo_od']}" title="Anular Orden Despacho" >
                             <i class="fas fa-trash"></i></button>` : '' )+
                         (row['estado'] == 9 ? 
-                        `<button type="button" class="adjuntar btn btn-warning boton" data-toggle="tooltip" 
+                        `<button type="button" class="adjuntar btn btn-${row['count_despacho_adjuntos']>0 ? 'warning' : 'default' } boton" data-toggle="tooltip" 
                             data-placement="bottom" data-id="${row['id_od']}" data-cod="${row['codigo_od']}" title="Adjuntar Boleta/Factura" >
                             <i class="fas fa-paperclip"></i></button>` : '')
                 } else {
@@ -390,6 +390,7 @@ $('#requerimientosEnProceso tbody').on("click","button.adjuntar", function(){
     $('[name=codigo_od]').val(cod);
     $('[name=descripcion]').val('');
     $('[name=archivo_adjunto]').val('');
+    $('[name=proviene_de]').val('enProceso');
 });
 
 $('#requerimientosEnProceso tbody').on("click","button.anular", function(){
@@ -512,7 +513,7 @@ function listarOrdenesPendientes(){
                                 data-placement="bottom" title="Ver Detalle" data-id="${row['id_requerimiento']}" 
                                 data-codigo="${row['codigo_req']}" data-concepto="${row['concepto']}">
                                 <i class="fas fa-list-ul"></i></button>
-                            <button type="button" class="adjuntar btn btn-warning boton" data-toggle="tooltip" 
+                            <button type="button" class="adjuntar btn btn-${row['count_despacho_adjuntos']>0 ? "warning" : "default" } boton" data-toggle="tooltip" 
                                 data-placement="bottom" data-id="${row['id_od']}" data-cod="${row['codigo']}" title="Adjuntar Boleta/Factura" >
                                 <i class="fas fa-paperclip"></i></button>`;
                 }
@@ -574,6 +575,7 @@ function listarOrdenesPendientes(){
         $('[name=codigo_od]').val(cod);
         $('[name=descripcion]').val('');
         $('[name=archivo_adjunto]').val('');
+        $('[name=proviene_de]').val('ordenesDespacho');
         
     });
     // Handle iCheck change event for checkboxes in table body
@@ -679,7 +681,7 @@ function listarGruposDespachados(permiso){
                         // 'data-placement="bottom" title="Ver Detalle" >'+
                         // '<i class="fas fa-list-ul"></i></button>'+
                         return (
-                        `<button type="button" class="adjuntar btn btn-warning boton" data-toggle="tooltip" 
+                        `<button type="button" class="adjuntar btn btn-${row['count_despacho_adjuntos']>0 ? "warning" : "default"} boton" data-toggle="tooltip" 
                             data-placement="bottom" data-id="${row['id_od']}" data-cod="${row['codigo_od']}" title="Adjuntar Boleta/Factura" >
                             <i class="fas fa-paperclip"></i></button>`+
                         ((row['confirmacion'] == false && row['estado_od'] == 20)? 
@@ -690,7 +692,7 @@ function listarGruposDespachados(permiso){
                         'data-placement="bottom" data-id="'+row['id_od_grupo_detalle']+'" data-od="'+row['id_od']+'" data-idreq="'+row['id_requerimiento']+'" data-cod-req="'+row['codigo_req']+'" data-concepto="'+row['concepto']+'" title="Revertir" >'+
                         '<i class="fas fa-backspace"></i></button>') : ''));
                     } else {
-                        return `<button type="button" class="adjuntar btn btn-warning boton" data-toggle="tooltip" 
+                        return `<button type="button" class="adjuntar btn btn-${row['count_despacho_adjuntos']>0 ? "warning" : "default"} boton" data-toggle="tooltip" 
                             data-placement="bottom" data-id="${row['id_od']}" data-cod="${row['codigo_od']}" title="Adjuntar Boleta/Factura" >
                             <i class="fas fa-paperclip"></i></button>`;
                     }
@@ -722,6 +724,7 @@ $('#gruposDespachados tbody').on("click","button.adjuntar", function(){
     $('[name=codigo_od]').val(cod);
     $('[name=descripcion]').val('');
     $('[name=archivo_adjunto]').val('');
+    $('[name=proviene_de]').val('gruposDespachados');
 });
 
 // $('#gruposDespachados tbody').on("click","button.imprimir", function(){
@@ -961,7 +964,7 @@ function listarGruposDespachadosPendientesCargo(permiso){
                         // '<button type="button" class="god_detalle btn btn-primary boton" data-toggle="tooltip" '+
                         // 'data-placement="bottom" title="Ver Detalle" >'+
                         // '<i class="fas fa-list-ul"></i></button>'+
-                        return `<button type="button" class="adjuntar btn btn-warning boton" data-toggle="tooltip" 
+                        return `<button type="button" class="adjuntar btn btn-${row['count_despacho_adjuntos']>0 ? "warning" : "default"} boton" data-toggle="tooltip" 
                             data-placement="bottom" data-id="${row['id_od']}" data-cod="${row['codigo_od']}" title="Agregar Comentarios" >
                             <i class="fas fa-comment-dots"></i></button>
                             <button type="button" class="conforme btn btn-success boton" data-toggle="tooltip" 
@@ -993,6 +996,7 @@ $('#pendientesRetornoCargo tbody').on("click","button.adjuntar", function(){
     $('[name=codigo_od]').val(cod);
     $('[name=descripcion]').val('');
     $('[name=archivo_adjunto]').val('');
+    $('[name=proviene_de]').val('retornoCargo');
 });
 
 $('#pendientesRetornoCargo tbody').on("click","button.conforme", function(){
