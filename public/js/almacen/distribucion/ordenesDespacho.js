@@ -388,6 +388,8 @@ $('#requerimientosEnProceso tbody').on("click","button.adjuntar", function(){
     listarAdjuntos(id);
     $('[name=id_od]').val(id);
     $('[name=codigo_od]').val(cod);
+    $('[name=descripcion]').val('');
+    $('[name=archivo_adjunto]').val('');
 });
 
 $('#requerimientosEnProceso tbody').on("click","button.anular", function(){
