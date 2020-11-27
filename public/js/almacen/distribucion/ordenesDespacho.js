@@ -572,6 +572,9 @@ function listarOrdenesPendientes(){
         listarAdjuntos(id);
         $('[name=id_od]').val(id);
         $('[name=codigo_od]').val(cod);
+        $('[name=descripcion]').val('');
+        $('[name=archivo_adjunto]').val('');
+        
     });
     // Handle iCheck change event for checkboxes in table body
     $($('#ordenesDespacho').DataTable().table().container()).on('ifChanged', '.dt-checkboxes', function(event){
@@ -717,6 +720,8 @@ $('#gruposDespachados tbody').on("click","button.adjuntar", function(){
     listarAdjuntos(id);
     $('[name=id_od]').val(id);
     $('[name=codigo_od]').val(cod);
+    $('[name=descripcion]').val('');
+    $('[name=archivo_adjunto]').val('');
 });
 
 // $('#gruposDespachados tbody').on("click","button.imprimir", function(){
@@ -986,6 +991,8 @@ $('#pendientesRetornoCargo tbody').on("click","button.adjuntar", function(){
     listarAdjuntos(id);
     $('[name=id_od]').val(id);
     $('[name=codigo_od]').val(cod);
+    $('[name=descripcion]').val('');
+    $('[name=archivo_adjunto]').val('');
 });
 
 $('#pendientesRetornoCargo tbody').on("click","button.conforme", function(){
