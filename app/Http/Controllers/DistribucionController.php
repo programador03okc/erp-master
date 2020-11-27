@@ -2156,7 +2156,9 @@ class DistribucionController extends Controller
             'alm_almacen.id_sede as sede_requerimiento','log_ord_compra.id_sede as sede_orden',
             'sis_sede.descripcion as sede_descripcion_orden','sede_req.descripcion as sede_descripcion_req',
             'orden_despacho.id_od','orden_despacho.codigo as codigo_od','orden_despacho.estado as estado_od',
-            'orden_despacho.guias_adicionales','orden_despacho.importe_total',
+            // 'orden_despacho.guias_adicionales',
+            DB::raw("(orden_despacho.agencia) || ' ' || (orden_despacho.serie) || '-' || (orden_despacho.numero) || ' ' || (orden_despacho.codigo_envio) AS guias_adicionales"),
+            'orden_despacho.importe_flete',
             'alm_tp_req.descripcion as tipo_req','orden_despacho_grupo.id_od_grupo',
             DB::raw("(rrhh_perso.nombres) || ' ' || (rrhh_perso.apellido_paterno) || ' ' || (rrhh_perso.apellido_materno) AS nombre_persona"),
             'adm_contri.nro_documento as cliente_ruc','adm_contri.razon_social as cliente_razon_social')

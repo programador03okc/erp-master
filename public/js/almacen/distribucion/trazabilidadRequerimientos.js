@@ -80,7 +80,7 @@ function listarTrazabilidadRequerimientos(){
                 }
             },
             {'data': 'guias_adicionales'},
-            {'data': 'importe_total'}
+            {'data': 'importe_flete'}
         ],
         'columnDefs': [
             {'aTargets': [0], 'sClass': 'invisible'},
