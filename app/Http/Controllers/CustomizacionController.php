@@ -29,6 +29,7 @@ class CustomizacionController extends Controller
         ->leftjoin('mgcp_acuerdo_marco.oc_propias','oc_propias.id_oportunidad','=','oportunidades.id')
         ->leftjoin('mgcp_acuerdo_marco.entidades','entidades.id','=','oportunidades.id_entidad')
         ->where([['transformacion.estado','!=',7]])
+        ->orderBy('fecha_registro','desc')
         ->get();
         $output['data'] = $data;
         return response()->json($output);
