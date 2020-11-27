@@ -165,7 +165,7 @@ $("#form-procesarTransformacion").on("submit", function(e){
     console.log(data);
     var res = $('[name=responsable]').val();
     
-    if (res !== null && res !== '0'){
+    if (res !== "0"){
         procesar_transformacion(data);
     }
     else {
