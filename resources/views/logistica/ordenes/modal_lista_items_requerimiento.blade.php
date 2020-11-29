@@ -1,5 +1,5 @@
 <div class="modal fade" tabindex="-1" role="dialog" id="modal-lista-items-requerimiento">
-    <div class="modal-dialog" style="width: 70%;">
+    <div class="modal-dialog" style="width: 90%;">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal-lista-items-requerimiento" onClick="$('#modal-lista-items-requerimiento').modal('hide');"><span aria-hidden="true">&times;</span></button>
@@ -7,6 +7,18 @@
             </div>
             <div class="modal-body">
                 <div class="row">
+                    <div class="col-md-12 btn-group right" role="group" style="margin-bottom: 5px;">
+                        <span id='group-inputGuardarNuevosItemsEnRequerimiento' hidden>
+                            <button class="btn btn-success" type="button" id="btnGuardarNuevoItemsEnRequerimiento" onClick="guardarNuevosItemsEnRequerimiento();">
+                                <i class="fas fa-save"></i> Guardar
+                            </button>
+                        </span>
+                        <span id='group-inputAgregarItem' hidden>
+                            <button class="btn btn-primary" type="button" id="btnAgregarNuevoItem" onClick="agregarNuevoItem();">
+                                <i class="fas fa-plus"></i> Agregar Nuevo Item
+                            </button>
+                        </span>
+                    </div>
                     <div class="col-md-12">
                         <table class="mytable table table-condensed table-bordered table-okc-view" id="listaItemsRequerimiento" style="margin-bottom: 0px; width:100%;">
                             <thead>
