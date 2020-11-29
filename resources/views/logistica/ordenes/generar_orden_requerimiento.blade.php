@@ -133,6 +133,8 @@
  </div>
 @include('logistica.ordenes.modal_documentos_vinculados')
 @include('logistica.ordenes.modal_lista_items_requerimiento')
+@include('logistica.requerimientos.modal_catalogo_items')
+@include('logistica.requerimientos.modal_crear_nuevo_producto')
 @include('logistica.ordenes.modal_ver_orden')
 @include('logistica.ordenes.modal_editar_estado_orden')
 @include('logistica.ordenes.modal_editar_estado_detalle_orden')
@@ -142,8 +144,6 @@
 @include('logistica.cotizaciones.add_proveedor')
 @include('logistica.ordenes.ordenesModal')
 @include('logistica.requerimientos.modal_vincular_item_requerimiento')
-@include('logistica.requerimientos.modal_catalogo_items')
-@include('logistica.requerimientos.modal_crear_nuevo_producto')
 @include('logistica.ordenes.modal_confirmar_eliminar_item')
 @endsection
 
@@ -179,7 +179,9 @@
             "{{route('logistica.gestion-logistica.orden.por-requerimiento.actualizar-estado-detalle-requerimiento')}}",
             "{{route('logistica.gestion-logistica.cotizacion.gestionar.select-sede-by-empresa')}}",
             "{{route('logistica.gestion-logistica.orden.por-requerimiento.documentos-vinculados')}}",
-            "{{route('logistica.gestion-logistica.orden.por-requerimiento.tiene-items-para-compra')}}"
+            "{{route('logistica.gestion-logistica.orden.por-requerimiento.tiene-items-para-compra')}}",
+            "{{route('logistica.gestion-logistica.orden.por-requerimiento.guardar-items-detalle-requerimiento')}}"
+
             );
         inicializarModalItemsParaCompra(
             "{{route('logistica.gestion-logistica.orden.por-requerimiento.lista_items-cuadro-costos-por-requerimiento')}}",

@@ -98,6 +98,9 @@ function guardarProducto(data){
                 $('#modal-crear-nuevo-producto').modal('hide');
                 listarItems();
                 console.log(response['producto']);
+
+                let tablaListaItems =  $('#listaItems').dataTable();
+                tablaListaItems .api().search(response['producto']['descripcion']).draw();
             }
         }
     }).fail( function( jqXHR, textStatus, errorThrown ){
