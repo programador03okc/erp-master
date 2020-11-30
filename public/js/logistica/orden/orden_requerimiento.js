@@ -8,7 +8,8 @@ rutaActualizarEstadoDetalleOrdenPorRequerimiento,
 rutaActualizarEstadoDetalleRequerimiento,
 rutaSedeByEmpresa,
 rutaDocumentosVinculadosOrden,
-rutaTieneItemsParaCompra
+rutaTieneItemsParaCompra,
+rutaGuardarItemsEnDetalleRequerimiento
 ;
 
 var listCheckReq=[];
@@ -19,6 +20,9 @@ var payload_orden=[];
 var tempDetalleItemsParaCompraCC=[];
 var detalleItemsParaCompraCCSelected ={};
 var data_item_para_compra =[];
+var id_requerimiento_seleccionado =0;
+var itemsParaAgregarARequerimientoList =[];
+var cantidadItemExistentesEnDetalleReq =0;
 
 function inicializar(
     _rutaRequerimientosPendientes,
@@ -30,7 +34,8 @@ function inicializar(
     _rutaActualizarEstadoDetalleRequerimiento,
     _rutaSedeByEmpresa,
     _rutaDocumentosVinculadosOrden,
-    _rutaTieneItemsParaCompra
+    _rutaTieneItemsParaCompra,
+    _rutaGuardarItemsEnDetalleRequerimiento
     ) {
     
     rutaRequerimientosPendientes = _rutaRequerimientosPendientes;
@@ -43,6 +48,7 @@ function inicializar(
     rutaSedeByEmpresa = _rutaSedeByEmpresa;
     rutaDocumentosVinculadosOrden = _rutaDocumentosVinculadosOrden;
     rutaTieneItemsParaCompra = _rutaTieneItemsParaCompra;
+    rutaGuardarItemsEnDetalleRequerimiento = _rutaGuardarItemsEnDetalleRequerimiento;
 
 }
 function tieneItemsParaCompra(requerimientoList) {
@@ -285,14 +291,14 @@ function listarItems() {
             [8, 'asc']
         ],
         "initComplete": function(settings, json) {
-            if(tempDetalleItemCCSelect.hasOwnProperty('descripcion')){
-                if(tempDetalleItemCCSelect.descripcion.length >0){
-                    $('#text-info-item-vinculado').attr('title',tempDetalleItemCCSelect.descripcion);
-                    $('#text-info-item-vinculado').removeAttr('hidden');
-                    $('#example_filter input').val(tempDetalleItemCCSelect.descripcion);
-                    this.api().search(tempDetalleItemCCSelect.descripcion).draw();
-                }
-            }
+            // if(tempDetalleItemCCSelect.hasOwnProperty('descripcion')){
+            //     if(tempDetalleItemCCSelect.descripcion.length >0){
+            //         $('#text-info-item-vinculado').attr('title',tempDetalleItemCCSelect.descripcion);
+            //         $('#text-info-item-vinculado').removeAttr('hidden');
+            //         $('#example_filter input').val(tempDetalleItemCCSelect.descripcion);
+            //         this.api().search(tempDetalleItemCCSelect.descripcion).draw();
+            //     }
+            // }
           } 
     });
 
@@ -310,8 +316,221 @@ function listarItems() {
 }
 
 
+$(function(){
+    /* Seleccionar valor del DataTable */
+    $('#listaItems tbody').on('click', 'tr', function(){
+        if ($(this).hasClass('eventClick')){
+            $(this).removeClass('eventClick');
+        } else {
+            $('#listaItems').dataTable().$('tr.eventClick').removeClass('eventClick');
+            $(this).addClass('eventClick');
+        }
+        var idItem = $(this)[0].children[0].innerHTML;
+        var idProd = $(this)[0].children[1].innerHTML;
+        var idServ = $(this)[0].children[2].innerHTML;
+        var idEqui = $(this)[0].children[3].innerHTML;
+        var codigo = $(this)[0].children[4].innerHTML;
+        var partNum = $(this)[0].children[5].innerHTML;
+        var categoria = $(this)[0].children[6].innerHTML;
+        var subcategoria = $(this)[0].children[7].innerHTML;
+        var descri = $(this)[0].children[8].innerHTML;
+        var unidad = $(this)[0].children[9].innerHTML;
+        var id_unidad = $(this)[0].children[10].innerHTML;
+        $('.modal-footer #id_item').text(idItem);
+        $('.modal-footer #codigo').text(codigo);
+        $('.modal-footer #part_number').text(partNum);
+        $('.modal-footer #descripcion').text(descri);
+        $('.modal-footer #id_producto').text(idProd);
+        $('.modal-footer #id_servicio').text(idServ);
+        $('.modal-footer #id_equipo').text(idEqui);
+        $('.modal-footer #unidad_medida').text(unidad);
+        $('.modal-footer #id_unidad_medida').text(id_unidad);
+        $('.modal-footer #categoria').text(categoria);
+        $('.modal-footer #subcategoria').text(subcategoria);
+
+        // console.log(idItem);
+    });
+});
+
+function selectItem(){
+
+    var id_item = document.querySelector("div[id='modal-catalogo-items'] div[class='modal-footer'] label[id='id_item']").textContent;
+    var codigo_item = document.querySelector("div[id='modal-catalogo-items'] div[class='modal-footer'] label[id='codigo']").textContent;
+    var part_number = document.querySelector("div[id='modal-catalogo-items'] div[class='modal-footer'] label[id='part_number']").textContent;
+    var id_producto = document.querySelector("div[id='modal-catalogo-items'] div[class='modal-footer'] label[id='id_producto']").textContent;
+    var id_servicio = document.querySelector("div[id='modal-catalogo-items'] div[class='modal-footer'] label[id='id_servicio']").textContent;
+    var id_equipo = document.querySelector("div[id='modal-catalogo-items'] div[class='modal-footer'] label[id='id_equipo']").textContent;
+    var descripcion_producto = document.querySelector("div[id='modal-catalogo-items'] div[class='modal-footer'] label[id='descripcion']").textContent;
+    var categoria = document.querySelector("div[id='modal-catalogo-items'] div[class='modal-footer'] label[id='categoria']").textContent;
+    var subcategoria = document.querySelector("div[id='modal-catalogo-items'] div[class='modal-footer'] label[id='subcategoria']").textContent;
+    var unidad_medida_item = document.querySelector("div[id='modal-catalogo-items'] div[class='modal-footer'] label[id='unidad_medida']").textContent;
+    var id_unidad_medida_item = document.querySelector("div[id='modal-catalogo-items'] div[class='modal-footer'] label[id='id_unidad_medida']").textContent;
+    var newItem={};
+
+    if(id_item.length >0){
+        // console.log(detalleRequerimientoSelected);
+
+        newItem= {
+            'id': 0,
+            'cantidad': 1,
+            'cantidad_a_comprar': 1,
+            'codigo_item': codigo_item,
+            'codigo_requerimiento': null,
+            'descripcion': descripcion_producto,
+            'descripcion_adicional': descripcion_producto,
+            'estado': 1,
+            'fecha_entrega': null,
+            'fecha_registro': new Date().toISOString().slice(0, 10),
+            'id_detalle_requerimiento': 0,
+            'id_item': id_item,
+            'id_producto': id_producto,
+            'id_requerimiento': 0,
+            'id_tipo_item': 1,
+            'id_unidad_medida': id_unidad_medida_item,
+            'lugar_entrega': null,
+            'obs': null,
+            'part_number': part_number,
+            'categoria': categoria,
+            'subcategoria': subcategoria,
+            'precio': null,
+            'id_moneda': 1,
+            'stock_comprometido': 0,
+            'subtotal': 0,
+            'unidad_medida': unidad_medida_item,
+            'tiene_transformacion': false
+        };
+
+        // console.log(newItem); 
+        itemsParaAgregarARequerimientoList.push(newItem);
+        controlShowInputGuardarNuevoItems();
+        $('#modal-catalogo-items').modal('hide');
+        agregarItemATablaListaItemsRequerimiento([newItem]);
+
+    }else{
+        alert('hubo un error, no existe un id_item');
+    }
+}
 
 
+// function limpiarTablaSoloUltimosAgregados(idElement){
+//     // console.log("limpiando tabla....");
+//     var table = document.getElementById(idElement);
+//     for(var i = table.rows.length - 1; i > 0; i--)
+//     {
+//         console.log(table.rows[i].cells[7]);
+//         // table.deleteRow(i);
+//     }
+//     return null;
+// }
+
+function controlShowInputGuardarNuevoItems(){
+    if(itemsParaAgregarARequerimientoList.length >0){
+        document.querySelector("div[id='modal-lista-items-requerimiento'] span[id='group-inputGuardarNuevosItemsEnRequerimiento']").removeAttribute('hidden');
+    }else{
+        document.querySelector("div[id='modal-lista-items-requerimiento'] span[id='group-inputGuardarNuevosItemsEnRequerimiento']").setAttribute('hidden',true);
+
+    }
+}
+
+function agregarItemATablaListaItemsRequerimiento(data){
+    // limpiarTablaSoloUltimosAgregados('listaItemsRequerimiento');
+
+    var table = document.getElementById("listaItemsRequerimiento");
+
+
+    for (var a = 0; a < data.length; a++) {
+        if (data[a].estado != 7) {
+
+            var row = table.insertRow(-1);
+
+            
+                row.insertCell(0).innerHTML = '';
+                row.insertCell(1).innerHTML = data[a].codigo_item;
+                row.insertCell(2).innerHTML = data[a].part_number;
+                row.insertCell(3).innerHTML = data[a].categoria;
+                row.insertCell(4).innerHTML = data[a].subcategoria;
+                row.insertCell(5).innerHTML = data[a].descripcion;
+                row.insertCell(6).innerHTML = data[a].unidad_medida;
+                row.insertCell(7).innerHTML = `<input type="text" min="1" class="form-control" name="cantidad" data-indice="${itemsParaAgregarARequerimientoList.length-1}" onkeyup ="updateInputCantidadModalItemsRequerimiento(event);" value="${data[a].cantidad}" style="
+                width: 60px;">`;
+                row.insertCell(8).innerHTML = '';
+                row.insertCell(9).innerHTML = '';
+                row.insertCell(10).innerHTML = '';
+
+            var tdBtnAction = row.insertCell(11);
+            var btnAction = '';
+            var hasAttrDisabled = '';
+            tdBtnAction.setAttribute('width', 'auto');
+
+            btnAction = `<div class="btn-group btn-group-sm" role="group" aria-label="Second group">`;
+            btnAction += `<button class="btn btn-danger btn-sm"   name="btnEliminarItemListadoItemsRequerimiento" data-toggle="tooltip" title="Eliminar" onclick="eliminarItemListadoItemsRequerimiento(this, ${itemsParaAgregarARequerimientoList.length-1});" ${hasAttrDisabled} ><i class="fas fa-trash-alt"></i></button>`;
+            btnAction += `</div>`;
+            tdBtnAction.innerHTML = btnAction;
+
+
+        }
+    }
+}
+
+function updateInputCantidadModalItemsRequerimiento(event){
+    let indiceSelected = event.target.dataset.indice;
+    let textValor = event.target.value;
+    if(textValor <=0){
+        alert("La cantidad No puede ser negativa o igual a Cero");
+        event.target.value =1;
+    }else{
+        itemsParaAgregarARequerimientoList.forEach((element, index) => {
+            if (index == indiceSelected) {
+                itemsParaAgregarARequerimientoList[index].cantidad = parseInt(textValor);
+    
+            }
+        });
+    }
+}
+function actualizarIndicesDeTablaDetalleReq(){
+    let trs= document.querySelector("table[id='listaItemsRequerimiento'] tbody").children;
+    let i=0;
+    for (let index = cantidadItemExistentesEnDetalleReq; index < trs.length; index++) {
+            trs[index].querySelector("input[name='cantidad']").dataset.indice = i;
+            // console.log(trs[index]);
+            i++;
+    }
+
+}
+
+function eliminarItemListadoItemsRequerimiento(obj,indice){
+    let row = obj.parentNode.parentNode.parentNode;
+    row.remove(row);
+    itemsParaAgregarARequerimientoList = itemsParaAgregarARequerimientoList.filter((item, i) => i !== indice);
+    controlShowInputGuardarNuevoItems();
+    actualizarIndicesDeTablaDetalleReq();
+}
+
+function guardarNuevosItemsEnRequerimiento(){
+    console.log(itemsParaAgregarARequerimientoList);
+    console.log(id_requerimiento_seleccionado);
+    $.ajax({
+        type: 'POST',
+        url: rutaGuardarItemsEnDetalleRequerimiento,
+        data: { 'id_requerimiento_list': [id_requerimiento_seleccionado], 'items':itemsParaAgregarARequerimientoList },
+        dataType: 'JSON',
+        success: function (response) {
+            console.log(response);
+            if (response.status == 200) {
+                alert('items guardados');
+                fillTablaListaItemsRequerimiento(id_requerimiento_seleccionado,'SIN_ACCION');
+                itemsParaAgregarARequerimientoList=[];
+                controlShowInputGuardarNuevoItems();
+            }else{
+                alert('Ocurrio un problema, no se pudo agregar los items al requerimiento');
+            }
+        }
+    }).fail(function (jqXHR, textStatus, errorThrown) {
+        console.log(jqXHR);
+        console.log(textStatus);
+        console.log(errorThrown);
+    });
+}
 
 function tieneAccion(permisoCrearOrdenPorRequerimiento, permisoRevertirOrden){
    let id_empresa= document.querySelector("select[id='id_empresa_select_req']").value;
@@ -332,7 +551,7 @@ function tieneAccion(permisoCrearOrdenPorRequerimiento, permisoRevertirOrden){
     });
 }
 
-function llenarTablaListaItemsRequerimiento(data){
+function llenarTablaListaItemsRequerimiento(data,TIPO){
     // console.log(data);
     var vardataTables = funcDatatables();
     $('#listaItemsRequerimiento').dataTable({
@@ -365,6 +584,7 @@ function llenarTablaListaItemsRequerimiento(data){
             {'render':
             function (data, type, row, meta){
                 let action ='';
+                if(TIPO =='CON_ACCION'){
                     action = `
                     <div class="btn-group btn-group-sm" role="group">
                         <button type="button" class="btn btn-warning btn-sm" title="Atendido por Almacén" name="btnAtendidoPorAlmacen" data-id_requerimiento="${(row.id_requerimiento?row.id_requerimiento:0)}" data-id_detalle_requerimiento="${(row.id_detalle_requerimiento?row.id_detalle_requerimiento:0)}"  onclick="AtendidoPorAlmacen(this);">
@@ -372,13 +592,17 @@ function llenarTablaListaItemsRequerimiento(data){
                         </button>
                     </div>
                     `;
+                }else if( TIPO=='SIN_ACCION'){
+                    action ='';
+                }
+
                 return action;
             }
         }
-        ],
-        'order': [
-            [0, 'asc']
         ]
+        // 'order': [
+        //     [0, 'asc']
+        // ]
     });
     let tablelistaitem = document.getElementById(
         'listaItemsRequerimiento_wrapper'
@@ -400,7 +624,7 @@ function AtendidoPorAlmacen(obj){
             // console.log(response);
             if(response.status == 200){
                 alert('El estado del item fue actualizado');
-                fillTablaListaItemsRequerimiento(id_requerimiento);
+                fillTablaListaItemsRequerimiento(id_requerimiento, 'CON_ACCION');
             }else{
                 alert('Hubo un problema al intentar Actualizado');
                 
@@ -414,7 +638,19 @@ function AtendidoPorAlmacen(obj){
     });
 }
 
-function openModalVerDetalleRequerimiento(obj){
+function openModalAgregarItemARequerimiento(obj){
+    id_requerimiento_seleccionado = obj.dataset.idRequerimiento;
+    // console.log(id_requerimiento);
+
+    $('#modal-lista-items-requerimiento').modal({
+        show: true,
+        backdrop: 'true'
+    });
+    document.querySelector("div[id='modal-lista-items-requerimiento'] span[id='group-inputAgregarItem']").removeAttribute('hidden');
+    fillTablaListaItemsRequerimiento(id_requerimiento_seleccionado,'SIN_ACCION')
+}
+
+function openModalAtenderConAlmacen(obj){
     let id_requerimiento = obj.dataset.idRequerimiento;
     // console.log(id_requerimiento);
 
@@ -422,17 +658,19 @@ function openModalVerDetalleRequerimiento(obj){
         show: true,
         backdrop: 'true'
     });
-    fillTablaListaItemsRequerimiento(id_requerimiento)
+    document.querySelector("div[id='modal-lista-items-requerimiento'] span[id='group-inputAgregarItem']").setAttribute('hidden',true);
+    fillTablaListaItemsRequerimiento(id_requerimiento,'CON_ACCION')
 }
 
-function fillTablaListaItemsRequerimiento(id_requerimiento){
+function fillTablaListaItemsRequerimiento(id_requerimiento,TIPO){
     $.ajax({
         type: 'GET',
         url:  `/logistica/gestion-logistica/requerimiento/elaboracion/mostrar-requerimiento/${id_requerimiento}/0`,
         dataType: 'JSON',
         success: function(response){
             // console.log(response);
-            llenarTablaListaItemsRequerimiento(response.det_req)
+            cantidadItemExistentesEnDetalleReq=response.det_req.length;
+            llenarTablaListaItemsRequerimiento(response.det_req,TIPO)
         }
     }).fail( function( jqXHR, textStatus, errorThrown ){
         console.log(jqXHR);
@@ -480,10 +718,10 @@ function listar_requerimientos_pendientes(permisoCrearOrdenPorRequerimiento,id_e
             { render: function (data, type, row) { 
                 // if(permisoCrearOrdenPorRequerimiento == '1') {
                     return ('<div class="btn-group btn-group-xs" role="group">'+
-                    '<button type="button" class="btn btn-primary btn-xs" name="btnOpenModalVerDetalleRequeriento" title="Ver Detalle Requerimiento" data-id-requerimiento="'+row.id_requerimiento+'"  onclick="openModalVerDetalleRequerimiento(this);">'+
+                    '<button type="button" class="btn btn-primary btn-xs" name="btnOpenModalAtenderConAlmacen" title="Atender con almacén" data-id-requerimiento="'+row.id_requerimiento+'"  onclick="openModalAtenderConAlmacen(this);">'+
                         '<i class="far fa-eye fa-sm"></i>'+
                     '</button>'+
-                    '<button type="button" class="btn btn-danger btn-xs" name="btnAgregarItemARequeriento" title="Agregar Item a Requerimiento" data-id-requerimiento="'+row.id_requerimiento+'"  onclick="openModalAgregarItemARequerimiento(this);">'+
+                    '<button type="button" class="btn btn-danger btn-xs" name="btnAgregarItemARequeriento" title="Agregar items para compra" data-id-requerimiento="'+row.id_requerimiento+'"  onclick="openModalAgregarItemARequerimiento(this);">'+
                         '<i class="fas fa-plus-square fa-sm"></i>'+
                     '</button>'+
 
@@ -549,7 +787,7 @@ function listar_ordenes_en_proceso(permisoRevertirOrden){
                 }
             },
             { render: function (data, type, row) {     
-                return `${row.part_number}`;
+                return `${row.part_number?row.part_number:''}`;
                 }
             },
             { render: function (data, type, row) {     
@@ -1059,7 +1297,6 @@ function agregarNuevoItem(){
 
     });
     listarItems();
-
 }
 
 
