@@ -738,6 +738,7 @@ class DistribucionController extends Controller
                         'id_cc'=>$request->id_cc,
                         'id_moneda'=>1,
                         'id_almacen'=>$request->id_almacen,
+                        'descripcion_sobrantes'=>$request->descripcion_sobrantes,
                         'total_materias'=>0,
                         'total_directos'=>0,
                         'costo_primo'=>0,

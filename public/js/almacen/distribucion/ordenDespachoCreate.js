@@ -95,7 +95,7 @@ function open_despacho_create(data){
                 '<td>'+(element.suma_despachos !== null ? element.suma_despachos : '0')+'</td>'+
                 '<td><input type="number" id="'+element.id_detalle_requerimiento+'cantidad" value="'+cant+'" max="'+cant+'" min="0" style="width: 80px;"/></td>'+
                 '<td><span class="label label-'+element.bootstrap_color+'">'+element.estado_doc+'</span></td>'+
-                '<td><i class="fas fa-code-branch boton btn btn-warning" data-toggle="tooltip" data-placement="bottom" title="Agregar Instrucciones" onClick="verInstrucciones('+element.id_detalle_requerimiento+');"></i>'+
+                '<td><i class="fas fa-code-branch boton btn btn-primary" data-toggle="tooltip" data-placement="bottom" title="Agregar Instrucciones" onClick="verInstrucciones('+element.id_detalle_requerimiento+');"></i>'+
                 (element.series ? '<i class="fas fa-bars icon-tabla boton" data-toggle="tooltip" data-placement="bottom" title="Ver Series" onClick="verSeries('+element.id_detalle_requerimiento+');"></i>' : '')+
                 '</td></tr>';
             }

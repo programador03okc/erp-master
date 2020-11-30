@@ -10,6 +10,11 @@ function open_guia_create(data){
     $('[name=id_sede]').val(data.id_sede);
     $('[name=id_orden_compra]').val(data.id_orden_compra);
     $('[name=id_transformacion]').val('');
+    $('[name=serie]').val('');
+    $('[name=numero]').val('');
+    $('[name=fecha_emision]').val(fecha_actual());
+    $('[name=fecha_almacen]').val(fecha_actual());
+
     $('#serie').text('');
     $('#numero').text('');
     cargar_almacenes(data.id_sede, 'id_almacen');
@@ -57,6 +62,10 @@ function open_guia_create_seleccionadas(){
         $('[name=id_proveedor]').val(id_prov);
         $('[name=id_sede]').val(sede);
         $('[name=id_transformacion]').val('');
+        $('[name=serie]').val('');
+        $('[name=numero]').val('');
+        $('[name=fecha_emision]').val(fecha_actual());
+        $('[name=fecha_almacen]').val(fecha_actual());
         $('#serie').text('');
         $('#numero').text('');
         cargar_almacenes(sede, 'id_almacen');
@@ -79,6 +88,8 @@ function open_transformacion_guia_create(data){
     $('[name=id_orden_compra]').val('');
     $('[name=serie]').val(data.serie);
     $('[name=numero]').val(data.numero);
+    $('[name=fecha_emision]').val(fecha_actual());
+    $('[name=fecha_almacen]').val(fecha_actual());
     cargar_almacenes(data.id_sede, 'id_almacen');
     // var data = 'oc_seleccionadas='+JSON.stringify([data.id_orden_compra]);
     listar_detalle_transformacion(data.id_transformacion);

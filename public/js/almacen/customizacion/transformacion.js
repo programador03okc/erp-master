@@ -63,6 +63,7 @@ function mostrar_transformacion(id){
             $('#fecha_registro').text(formatDateHour(response.fecha_registro));
             $('#nombre_responsable').text(response.nombre_corto);
             $('#observacion').text(response.observacion);
+            $('#descripcion_sobrantes').text(response.descripcion_sobrantes);
             
             if (response.estado == 24){
                 $('#addCostoIndirecto').show();

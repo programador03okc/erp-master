@@ -42,7 +42,7 @@
                         </div>
                         <div class="col-md-4">
                             <h5>Tipo de Operación</h5>
-                            <select class="form-control js-example-basic-single" name="id_operacion" required>
+                            <select class="form-control js-example-basic-single" name="id_operacion" readOnly required>
                                 <option value="0">Elija una opción</option>
                                 @foreach ($tp_operacion as $tp)
                                     <option value="{{$tp->id_operacion}}">{{$tp->cod_sunat}} - {{$tp->descripcion}}</option>
@@ -51,7 +51,7 @@
                         </div>
                         <div class="col-md-4">
                             <h5>Clasif. de los Bienes y Servicios</h5>
-                            <select class="form-control" name="id_guia_clas" required>
+                            <select class="form-control" name="id_guia_clas" readOnly required>
                                 <option value="0">Elija una opción</option>
                                 @foreach ($clasificaciones as $clas)
                                     <option value="{{$clas->id_clasificacion}}">{{$clas->descripcion}}</option>
