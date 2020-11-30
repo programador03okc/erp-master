@@ -2204,6 +2204,7 @@ class LogisticaController extends Controller
         $concepto = $request->requerimiento['concepto'];
         $observacion = isset($request->requerimiento['observacion'])?$request->requerimiento['observacion']:null;
         $id_sede =  isset($request->requerimiento['id_sede'])?$request->requerimiento['id_sede']:null;
+        $id_cliente = isset($request->requerimiento['id_cliente'])?$request->requerimiento['id_cliente']:null;
         $tipo_cliente = isset($request->requerimiento['tipo_cliente'])?$request->requerimiento['tipo_cliente']:null;
         $id_persona = isset($request->requerimiento['id_persona'])?$request->requerimiento['id_persona']:null;
         $direccion_entrega = isset($request->requerimiento['direccion_entrega'])?$request->requerimiento['direccion_entrega']:null;
@@ -2226,6 +2227,7 @@ class LogisticaController extends Controller
                     'concepto'              => $concepto,
                     'observacion'           => $observacion,
                     'tipo_cliente'          => $tipo_cliente,
+                    'id_cliente'            => $id_cliente,
                     'id_persona'            => $id_persona,
                     'direccion_entrega'     => $direccion_entrega,
                     'id_ubigeo_entrega'     => $ubigeo,
