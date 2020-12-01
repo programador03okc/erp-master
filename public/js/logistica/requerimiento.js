@@ -704,7 +704,7 @@ function listarRequerimiento(viewAnulados) {
     var vardataTables = funcDatatables();
     $('#listaRequerimiento').dataTable({
         bDestroy: true,
-        order: [[1, 'desc']],
+        order: [[7, 'desc']],
         info:     true,
         iDisplayLength:10,
         paging:   true,
@@ -739,12 +739,7 @@ function listarRequerimiento(viewAnulados) {
             {'data': 'fecha_requerimiento'},
             {'data': 'estado_doc'}
         ],
-        'columnDefs': [{ 'aTargets': [0], 'sClass': 'invisible'}],
-        'order': [
-            [6, 'desc']
-        ]
-
-
+        'columnDefs': [{ 'aTargets': [0], 'sClass': 'invisible'}]
     });
 
     let tablelistareq = document.getElementById(
@@ -3381,12 +3376,12 @@ function stateFormRequerimiento(estilo){
         case 1:
             hiddeElement('ocultar','form-requerimiento',[
                 'input-group-proyecto',
+                'input-group-rol-usuario',
                 'input-group-comercial',
                 'input-group-almacen',
                 'input-group-cuenta'
             ]);
             hiddeElement('mostrar','form-requerimiento',[
-                'input-group-rol-usuario',
                 'input-group-moneda',
                 'input-group-empresa',
                 'input-group-sede',

@@ -2202,8 +2202,12 @@ class LogisticaController extends Controller
         $fecha_req = $request->requerimiento['fecha_requerimiento'];
         $id_periodo = $request->requerimiento['id_periodo'];
         $concepto = $request->requerimiento['concepto'];
+        $telefono = isset($request->requerimiento['telefono'])?$request->requerimiento['telefono']:null;
+        $email = isset($request->requerimiento['email'])?$request->requerimiento['email']:null;
+        $nro_cuenta = isset($request->requerimiento['nro_cuenta'])?$request->requerimiento['nro_cuenta']:null;
         $observacion = isset($request->requerimiento['observacion'])?$request->requerimiento['observacion']:null;
         $id_sede =  isset($request->requerimiento['id_sede'])?$request->requerimiento['id_sede']:null;
+        $id_cliente = isset($request->requerimiento['id_cliente'])?$request->requerimiento['id_cliente']:null;
         $tipo_cliente = isset($request->requerimiento['tipo_cliente'])?$request->requerimiento['tipo_cliente']:null;
         $id_persona = isset($request->requerimiento['id_persona'])?$request->requerimiento['id_persona']:null;
         $direccion_entrega = isset($request->requerimiento['direccion_entrega'])?$request->requerimiento['direccion_entrega']:null;
@@ -2226,7 +2230,11 @@ class LogisticaController extends Controller
                     'concepto'              => $concepto,
                     'observacion'           => $observacion,
                     'tipo_cliente'          => $tipo_cliente,
+                    'id_cliente'            => $id_cliente,
                     'id_persona'            => $id_persona,
+                    'nro_cuenta'              => $nro_cuenta,
+                    'telefono'              => $telefono,
+                    'email'                 => $email,
                     'direccion_entrega'     => $direccion_entrega,
                     'id_ubigeo_entrega'     => $ubigeo,
                     'id_sede'               => $id_sede,
