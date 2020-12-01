@@ -86,7 +86,7 @@
                                 @endforeach
                             </select>
                     </div>
-                    <div class="col-md-2" id="input-group-rol-usuario" >
+                    <div class="col-md-2" id="input-group-rol-usuario" hidden>
                         <h5>Roles del Usuario</h5>
                         <div class="input-group-okc">
                             <select class="form-control input-sm activation" name="rol_usuario">
@@ -226,8 +226,8 @@
                 <h5>Cliente</h5>
                 <div style="display:flex;">
                     <input type="text" class="oculto" name="id_cliente" >
-                    <input type="text" class="form-control" name="cliente_ruc"  style="width: 120px; display: none;">
-                    <input type="text" class="form-control" name="cliente_razon_social" style="display: none;">
+                    <input type="text" class="form-control activation" name="cliente_ruc"  style="width: 120px; display: none;">
+                    <input type="text" class="form-control activation" name="cliente_razon_social" style="display: none;">
 
                     <input type="text" class="oculto" name="id_persona" >
                     <input type="text" class="form-control activation" name="dni_persona" style="width: 120px;">
