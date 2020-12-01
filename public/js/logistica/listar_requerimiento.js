@@ -155,13 +155,11 @@ function listar_ordenes_propias(){
             // console.log(row.childNodes[0]);
             if(data.cantidad_producto_con_transformacion != null){
                 if( data.cantidad_producto_con_transformacion >0  ){
-                    $(row.childNodes[0]).css('background-color', '#d8c74ab8');
                     $(row.childNodes[1]).css('background-color', '#d8c74ab8');
                     $(row.childNodes[1]).css('font-weight', 'bold');
                 }
                 else if( data.cantidad_producto_con_transformacion == 0  ){
-                    $(row.childNodes[0]).css('background-color', '#b498d0');
-                    $(row.childNodes[0]).css('font-weight', 'bold');
+        
                     $(row.childNodes[1]).css('background-color', '#b498d0');
                     $(row.childNodes[1]).css('font-weight', 'bold');
                 }
