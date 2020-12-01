@@ -53,8 +53,8 @@
                                                     <table class="mytable table table-hover table-condensed table-bordered table-okc-view" id="ListaOrdenesPropias" width="100%">
                                                         <thead>
                                                             <tr>
+                                                                <th></th>
                                                                 <th>#</th>
-                                                                <th>OCP</th>
                                                                 <th>Empresa</th>
                                                                 <th>AM</th>
                                                                 <th>Entidad</th>
