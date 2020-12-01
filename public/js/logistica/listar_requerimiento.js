@@ -78,6 +78,10 @@ function listar_ordenes_propias(){
             data: {_token: "{{csrf_token()}}"}
         },
         'columns':[
+            {'render': function (data, type, row,meta){
+                return meta.row +1;
+                }
+            },
             {'render': function (data, type, row){
                 return `${row['orden_am']}`;
                 }
@@ -163,6 +167,10 @@ function listar_ordenes_propias(){
 
             }
         },
+        initComplete: function () {
+
+        },
+
         'order': [
             [4, 'desc']
         ]

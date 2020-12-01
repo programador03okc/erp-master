@@ -38,7 +38,7 @@
                                                     <h5>Empresa</h5>
                                                     <div style="display:flex;">
                                                     <select class="form-control" id="id_empresa_select" onChange="handleChangeFilterEmpresaListReqByEmpresa(event);">
-                                                            <option value="0" disabled>Elija una opción</option>
+                                                            <option value="0">Todas las Empresas</option>
                                                             @foreach ($empresas_am as $emp)
                                                                 <option value="{{$emp->id}}">{{$emp->empresa}}</option>
                                                             @endforeach
@@ -54,6 +54,7 @@
                                                         <thead>
                                                             <tr>
                                                                 <th>#</th>
+                                                                <th>CO</th>
                                                                 <th>Empresa</th>
                                                                 <th>AM</th>
                                                                 <th>Entidad</th>
