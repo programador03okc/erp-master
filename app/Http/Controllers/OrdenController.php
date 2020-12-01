@@ -2124,7 +2124,15 @@ class OrdenController extends Controller
     function buscarItemCatalogo(Request $request){
         $part_number = $request->part_number;
         $descripcion = $request->descripcion;
-
+        $where=[];
+        if ($part_number !== null && $part_number !== ''){
+            $where=[['alm_prod.part_number','=',$part_number],['alm_prod.estado','=',1]];
+            
+        } 
+        else if ($descripcion !== null && $descripcion !== ''){
+            $where=[['alm_prod.descripcion','like','%'.$descripcion.'%'],['alm_prod.estado','=',1]];
+        }
+        
         $alm_prod = DB::table('almacen.alm_prod')
         ->select(
             'alm_item.id_item',
@@ -2150,9 +2158,7 @@ class OrdenController extends Controller
         ->leftJoin('almacen.alm_cat_prod', 'alm_cat_prod.id_categoria', '=', 'alm_prod.id_categoria')
         ->leftJoin('almacen.alm_subcat','alm_subcat.id_subcategoria','=','alm_prod.id_subcategoria')
         ->leftJoin('almacen.alm_clasif','alm_clasif.id_clasificacion','=','alm_prod.id_clasif')
-        ->where('alm_prod.part_number','=',$part_number)
-        ->whereNotNull('alm_prod.part_number')
-        ->orWhere('alm_prod.descripcion','like','%'.$descripcion.'%')
+        ->where($where)
         ->get();
 
         return response()->json($alm_prod);
