@@ -54,7 +54,7 @@
                                                         <thead>
                                                             <tr>
                                                                 <th>#</th>
-                                                                <th>CO</th>
+                                                                <th>OCP</th>
                                                                 <th>Empresa</th>
                                                                 <th>AM</th>
                                                                 <th>Entidad</th>
