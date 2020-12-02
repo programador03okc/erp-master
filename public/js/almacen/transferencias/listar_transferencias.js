@@ -68,8 +68,11 @@ function listarTransferenciasPorEnviar(){
             {'render': function (data, type, row){
                 if (valor_permiso == '1') {
                     return `<button type="button" class="guia btn btn-success boton" data-toggle="tooltip" 
-                        data-placement="bottom" data-id="${row['id_transferencia']}" data-cod="${row['id_requerimiento']}" title="Generar Guía" >
-                        <i class="fas fa-sign-in-alt"></i></button>`
+                            data-placement="bottom" data-id="${row['id_transferencia']}" data-cod="${row['id_requerimiento']}" title="Generar Guía" >
+                            <i class="fas fa-sign-in-alt"></i></button>
+                        <button type="button" class="anular btn btn-danger boton" data-toggle="tooltip" 
+                            data-placement="bottom" data-id="${row['id_transferencia']}" data-cod="${row['id_requerimiento']}" title="Anular Transferencia" >
+                            <i class="fas fa-trash"></i></button>`
                     }
                 }
             }
@@ -127,12 +130,32 @@ function listarTransferenciasPorEnviar(){
         }
     });
 }
-   
+
 $('#listaTransferenciasPorEnviar tbody').on("click","button.guia", function(){
     var data = $('#listaTransferenciasPorEnviar').DataTable().row($(this).parents("tr")).data();
     console.log('data'+data);
-    // var data = $(this).data('id');
     openGenerarGuia(data);
+});
+
+$('#listaTransferenciasPorEnviar tbody').on("click","button.anular", function(){
+    var id = $(this).data("id");
+    var rspta = confirm('¿Está seguro que desea anular ésta transferencia?');
+    
+    if (rspta){
+        $.ajax({
+            type: 'GET',
+            url: 'anular_transferencia/'+id,
+            dataType: 'JSON',
+            success: function(response){
+                alert('Transferencia anulada con éxito');
+                listarTransferenciasPorEnviar();
+            }
+        }).fail( function( jqXHR, textStatus, errorThrown ){
+            console.log(jqXHR);
+            console.log(textStatus);
+            console.log(errorThrown);
+        });
+    }
 });
 
 function listarTransferenciasPendientes(){
