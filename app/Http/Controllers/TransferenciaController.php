@@ -226,6 +226,19 @@ class TransferenciaController extends Controller
         return response()->json($detalle);
     }
 
+    public function anular_transferencia($id_transferencia){
+
+        $trans = DB::table('almacen.trans')
+        ->where('id_transferencia',$id_transferencia)
+        ->update(['estado'=>7]);
+
+        $trans = DB::table('almacen.trans_detalle')
+        ->where('id_transferencia',$id_transferencia)
+        ->update(['estado'=>7]);
+
+        return response()->json($trans);
+    }
+
     public function anular_transferencia_ingreso(Request $request){
         try {
             DB::beginTransaction();

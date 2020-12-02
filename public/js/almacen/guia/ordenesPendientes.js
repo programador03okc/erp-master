@@ -270,6 +270,9 @@ function listarOrdenesEntregadas(){
                         '<button type="button" class="ingreso btn btn-warning boton" data-toggle="tooltip" '+
                             'data-placement="bottom" title="Ver Ingreso" data-id="'+row['id_mov_alm']+'">'+
                             '<i class="fas fa-file-alt"></i></button>'+
+                        '<button type="button" class="transferencia btn btn-success boton" data-toggle="tooltip" '+
+                            'data-placement="bottom" title="Generar Transferencia" data-id="'+row['id_guia_com']+'">'+
+                            '<i class="fas fa-exchange-alt"></i></button>'+
                         // '<button type="button" class="ver_guias btn btn-warning boton" data-toggle="tooltip" '+
                         //     'data-placement="bottom" title="Ver Guías" data-id="'+row.id_orden_compra+'">'+
                         //     '<i class="fas fa-file-alt"></i></button>'+
@@ -330,6 +333,11 @@ $('#ordenesEntregadas tbody').on("click","button.anular", function(){
     $('[name=observacion]').val('');
 
     $("#submitGuiaObs").removeAttr("disabled");
+});
+
+$('#ordenesEntregadas tbody').on("click","button.transferencia", function(){
+    var id_guia = $(this).data('id');
+    generar_transferencia(id_guia);
 });
 
 $('#ordenesEntregadas tbody').on("click","button.anular_sal", function(){
@@ -577,6 +585,22 @@ function anular_ingreso(data){
                 $('#modal-guia_com_obs').modal('hide');
                 $('#ordenesEntregadas').DataTable().ajax.reload();
             }
+        }
+    }).fail( function( jqXHR, textStatus, errorThrown ){
+        console.log(jqXHR);
+        console.log(textStatus);
+        console.log(errorThrown);
+    });
+}
+
+function generar_transferencia(id_guia){
+    $.ajax({
+        type: 'GET',
+        url: 'transferencia/'+id_guia,
+        dataType: 'JSON',
+        success: function(response){
+            console.log(response);
+            alert(response);
         }
     }).fail( function( jqXHR, textStatus, errorThrown ){
         console.log(jqXHR);
