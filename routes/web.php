@@ -734,7 +734,9 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::post('buscar-item-catalogo', 'OrdenController@buscarItemCatalogo')->name('buscar-item-catalogo');
 					Route::get('grupo-select-item-para-compra', 'OrdenController@getGrupoSelectItemParaCompra')->name('grupo-select-item-para-compra');
 					Route::post('guardar-items-detalle-requerimiento', 'OrdenController@guardarItemsEnDetalleRequerimiento')->name('guardar-items-detalle-requerimiento'); 
+					Route::post('guardar-atencion-con-almacen', 'OrdenController@guardarAtencionConAlmacen')->name('guardar-atencion-con-almacen'); 
 					Route::post('tiene-items-para-compra', 'OrdenController@tieneItemsParaCompra')->name('tiene-items-para-compra'); 
+					Route::get('listar-almacenes', 'AlmacenController@mostrar_almacenes')->name('listar-almacenes');
 
 
 				});
