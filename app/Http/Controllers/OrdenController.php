@@ -528,7 +528,7 @@ class OrdenController extends Controller
         $tieneItems=false;
         $alm_det_req = DB::table('almacen.alm_det_req')
         ->select('alm_det_req.*')
-        ->where('alm_det_req.tiene_transformacion',false)
+        ->where([['alm_det_req.tiene_transformacion',false],['alm_det_req.estado',1]])
         ->whereIn('alm_det_req.id_requerimiento',$requerimientoList)
         ->get();
 

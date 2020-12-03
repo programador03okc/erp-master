@@ -158,7 +158,7 @@ function procesarItemParaCompraDetalleCuadroCostos(id) {
         }
     });
     // mostrarCatalogoItems();
-    // console.log(detalleItemsParaCompraCCSelected);
+    console.log(detalleItemsParaCompraCCSelected);
     let data_item_CC_selected = {
         'id_item': "",
         'id_producto': "",
