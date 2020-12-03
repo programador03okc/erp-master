@@ -58,7 +58,7 @@ function format ( table_id, id, row ) {
                     <td style="border: none;">${element.codigo_oportunidad!==null ? element.codigo_oportunidad : ''}</td>
                     <td style="border: none;">${element.oportunidad!==null ? element.oportunidad : ''}</td>
                     <td style="border: none;">${element.nombre!==null ? element.nombre : ''}</td>
-                    <td style="border: none;">${element.codigo_req}</td>
+                    <td style="border: none;"><label class="lbl-codigo" title="Abrir Requerimiento" onClick="abrir_requerimiento(${element.id_requerimiento})">${element.codigo_req}</label></td>
                     <td style="border: none;">${element.codigo}</td>
                     <td style="border: none;">${element.part_number}</td>
                     <td style="border: none;">${element.descripcion}</td>
@@ -105,4 +105,13 @@ function format ( table_id, id, row ) {
         console.log(textStatus);
         console.log(errorThrown);
     });
+}
+
+function abrir_requerimiento(id_requerimiento){
+    // Abrir nuevo tab
+    localStorage.setItem("id_requerimiento",id_requerimiento);
+    let url ="/logistica/gestion-logistica/requerimiento/elaboracion/index";
+    var win = window.open(url, '_blank');
+    // Cambiar el foco al nuevo tab (punto opcional)
+    win.focus();
 }

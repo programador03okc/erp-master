@@ -996,6 +996,7 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::get('detalleMovimiento/{id}', 'OrdenesPendientesController@detalleMovimiento');
 					Route::post('listarTransformacionesProcesadas', 'CustomizacionController@listarTransformacionesProcesadas');
 					Route::get('listarDetalleTransformacion/{id}', 'CustomizacionController@listarDetalleTransformacion');
+					Route::get('transferencia/{id}', 'OrdenesPendientesController@transferencia');
 
 				});
 	
@@ -1136,6 +1137,7 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::get('listar_guia_transferencia_detalle/{id}', 'TransferenciaController@listar_guia_transferencia_detalle');
 					Route::get('listarSeries/{id}', 'TransferenciaController@listarSeries');
 					Route::get('listarSeriesVen/{id}', 'TransferenciaController@listarSeriesVen');
+					Route::get('anular_transferencia/{id}', 'TransferenciaController@anular_transferencia');
 					
 				});
 	

@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\File;
 use Dompdf\Dompdf;
 use PDF;
+use Debugbar;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 date_default_timezone_set('America/Lima');
@@ -65,7 +66,7 @@ class OrdenesPendientesController extends Controller
             'alm_almacen.descripcion as almacen_descripcion',
             // 'sede_req.descripcion as sede_requerimiento_descripcion',
             // 'sede_req.id_sede as sede_requerimiento',
-            'guia_com.serie','guia_com.numero'
+            'guia_com.serie','guia_com.numero',
             // 'alm_req.id_requerimiento','alm_req.estado as estado_requerimiento',
             // 'alm_req.id_tipo_requerimiento','alm_req.id_almacen as almacen_requerimiento',
             // 'trans.id_transferencia','guia_ven_trans.id_guia_ven as id_guia_ven_trans',
@@ -109,7 +110,7 @@ class OrdenesPendientesController extends Controller
             ->select(
                 'log_det_ord_compra.*','alm_item.id_producto','alm_prod.codigo',
                 'alm_prod.part_number','alm_cat_prod.descripcion as categoria',
-                'alm_subcat.descripcion as subcategoria',
+                'alm_subcat.descripcion as subcategoria','alm_req.id_requerimiento',
                 'alm_prod.descripcion','alm_und_medida.abreviatura','alm_req.codigo as codigo_req',
                 'adm_estado_doc.estado_doc','adm_estado_doc.bootstrap_color',
                 'oc_propias.orden_am','oportunidades.oportunidad','oportunidades.codigo_oportunidad',
@@ -421,11 +422,11 @@ class OrdenesPendientesController extends Controller
                         }
 
                         DB::table('almacen.alm_req_obs')
-                        ->insert(['id_requerimiento'=>$id_requerimiento,
-                            'accion'=>'INGRESADO',
-                            'descripcion'=>'Ingresado a Almacén con Guía '.$request->serie.'-'.$request->numero.'.',
-                            'id_usuario'=>$id_usuario,
-                            'fecha_registro'=>$fecha_registro
+                        ->insert([  'id_requerimiento'=>$id_requerimiento,
+                                    'accion'=>'INGRESADO',
+                                    'descripcion'=>'Ingresado a Almacén con Guía '.$request->serie.'-'.$request->numero.'.',
+                                    'id_usuario'=>$id_usuario,
+                                    'fecha_registro'=>$fecha_registro
                             ]);
                     }
                     else {
@@ -436,8 +437,12 @@ class OrdenesPendientesController extends Controller
                         }
                         
                         $detalle = DB::table('logistica.log_det_ord_compra')
-                        ->select('log_det_ord_compra.*','alm_item.id_producto')
+                        ->select('log_det_ord_compra.*','alm_item.id_producto','alm_req.id_sede','alm_req.id_requerimiento',
+                                 'alm_req.id_almacen as id_almacen_destino')
                         ->leftjoin('almacen.alm_item','alm_item.id_item','=','log_det_ord_compra.id_item')
+                        ->leftjoin('logistica.log_ord_compra','log_ord_compra.id_orden_compra','=','log_det_ord_compra.id_orden_compra')
+                        ->leftjoin('almacen.alm_det_req','alm_det_req.id_detalle_requerimiento','=','log_det_ord_compra.id_detalle_requerimiento')
+                        ->leftjoin('almacen.alm_req','alm_req.id_requerimiento','=','alm_det_req.id_requerimiento')
                         ->whereIn('id_detalle_orden',$ids_ocd)
                         ->get();
                         
@@ -563,6 +568,9 @@ class OrdenesPendientesController extends Controller
                             }
 
                         }
+                        // return $detalle;
+                        $msj_trans = $this->generarTransferencias($request->id_almacen, $detalle);
+
                         //vuelve a jalar para traer los ids guia_det
                         $nuevo_detalle = DB::table('logistica.log_det_ord_compra')
                         ->select('log_det_ord_compra.*','alm_item.id_producto','guia_com_det.id_guia_com_det')
@@ -598,102 +606,6 @@ class OrdenesPendientesController extends Controller
                                 ->where('id_orden_compra',$padre)
                                 ->update([  'estado'=>27  ]);
                             }
-                            //actualiza estado requerimiento reservado
-                            $oc = DB::table('logistica.log_ord_compra')
-                            ->select('log_ord_compra.*','alm_req.id_cliente','alm_req.id_persona','alm_req.id_tipo_requerimiento',
-                            'alm_req.tipo_cliente','alm_req.id_sede as sede_requerimiento')
-                            ->join('almacen.alm_req','alm_req.id_requerimiento','=','log_ord_compra.id_requerimiento')
-                            // ->leftjoin('almacen.alm_almacen','alm_almacen.id_almacen','=','alm_req.id_almacen')
-                            ->where('log_ord_compra.id_orden_compra',$padre)
-                            ->first();
-                            //si existe un requerimiento 
-                            if ($oc !== null && $oc->id_requerimiento !== null){
-                                $estado = '';
-    
-                                if (($oc->tipo_cliente == 1 || $oc->tipo_cliente == 2 || $oc->tipo_cliente == 4) ||
-                                    ($oc->tipo_cliente == 3 && ($oc->id_sede !== $oc->sede_requerimiento))){
-    
-                                    $estado = 'Reservado';
-    
-                                    DB::table('almacen.alm_req')
-                                    ->where('id_requerimiento',$oc->id_requerimiento)
-                                    ->update(['estado'=>19]);//Reservado
-                                    
-                                    DB::table('almacen.alm_det_req')
-                                    ->where('id_requerimiento',$oc->id_requerimiento)
-                                    ->update(['estado'=>19,
-                                              'id_almacen_reserva'=>$request->id_almacen]);//Reservado
-                                    //sede orden y almacen requerimiento son diferentes
-                                    if ($oc->id_sede !== $oc->sede_requerimiento){
-                                        
-                                        $fecha = date('Y-m-d H:i:s');
-                                        $codigo_tra = TransferenciaController::transferencia_nextId($request->id_almacen);
-                                        $guardar = false;
-                                        $almacen_destino = DB::table('almacen.alm_almacen')
-                                            ->where([['id_sede','=',$oc->sede_requerimiento],['estado','!=',7]])->first();
-                                        
-                                        $id_trans = DB::table('almacen.trans')->insertGetId(
-                                            [
-                                                'id_almacen_origen' => $request->id_almacen,
-                                                'id_almacen_destino' => $almacen_destino->id_almacen,
-                                                'codigo' => $codigo_tra,
-                                                'id_requerimiento' =>  $oc->id_requerimiento,
-                                                'id_guia_ven' => null,
-                                                'responsable_origen' => null,
-                                                'responsable_destino' => null,
-                                                'fecha_transferencia' => date('Y-m-d'),
-                                                'registrado_por' => $id_usuario,
-                                                'estado' => 1,
-                                                'fecha_registro' => $fecha
-                                            ],
-                                                'id_transferencia'
-                                            );
-    
-                                        foreach ($nuevo_detalle as $det) {
-    
-                                            if ($det->id_orden_compra == $padre){
-                                                $cantidad = null;
-                                                
-                                                foreach($detalle_oc as $d){
-                                                    if ($det->id_detalle_orden == $d->id_detalle_orden){
-                                                        $cantidad = $d->cantidad;
-                                                        break;
-                                                    }
-                                                }
-    
-                                                DB::table('almacen.trans_detalle')->insert(
-                                                [
-                                                    'id_transferencia' => $id_trans,
-                                                    'id_producto' => $det->id_producto,
-                                                    'id_requerimiento_detalle' => $det->id_detalle_requerimiento,
-                                                    'id_guia_com_det' => $det->id_guia_com_det,
-                                                    'cantidad' => $cantidad,
-                                                    'estado' => 1,
-                                                    'fecha_registro' => $fecha
-                                                ]);
-                                            }
-                                        }
-                                    }
-                                }
-                                else {
-                                    $estado = 'Procesado';
-                                    DB::table('almacen.alm_req')
-                                    ->where('id_requerimiento',$oc->id_requerimiento)
-                                    ->update(['estado'=>9]);//Procesado
-                                        
-                                    DB::table('almacen.alm_det_req')
-                                    ->where('id_requerimiento',$oc->id_requerimiento)
-                                    ->update(['estado'=>9]);//Procesado
-                                }
-                                
-                                DB::table('almacen.alm_req_obs')
-                                ->insert(['id_requerimiento'=>$oc->id_requerimiento,
-                                    'accion'=>'INGRESADO',
-                                    'descripcion'=>'Ingresado a Almacén con Guía '.$request->serie.'-'.$request->numero.'. Pasa a estado: '.$estado,
-                                    'id_usuario'=>$id_usuario,
-                                    'fecha_registro'=>$fecha_registro
-                                    ]);
-                            }
 
                             foreach ($padres_req as $padre){
                                 $count_alm = DB::table('almacen.alm_det_req')
@@ -722,7 +634,7 @@ class OrdenesPendientesController extends Controller
                     }
             DB::commit();
             // return response()->json($detalle_oc);
-            return response()->json($id_ingreso);
+            return response()->json(['id_ingreso'=>$id_ingreso,'msj_trans'=>$msj_trans]);
             
         } catch (\PDOException $e) {
             // Woopsy
@@ -730,6 +642,129 @@ class OrdenesPendientesController extends Controller
             // return response()->json($e);
         }
 
+    }
+
+    public function transferencia($id_guia_com){
+
+        try {
+            DB::beginTransaction();
+
+            $guia = DB::table('almacen.guia_com')->where('id_guia',$id_guia_com)->first();
+            $guia_detalle = DB::table('almacen.guia_com_det')->where('id_guia_com',$id_guia_com)->get();
+
+            $ids_ocd = [];
+                        
+            foreach($guia_detalle as $d){
+                array_push($ids_ocd, $d->id_oc_det);
+            }
+
+            $detalle_oc = DB::table('logistica.log_det_ord_compra')
+                    ->select('log_det_ord_compra.*','alm_item.id_producto','alm_req.id_sede','alm_req.id_requerimiento',
+                                'alm_req.id_almacen as id_almacen_destino')
+                    ->leftjoin('almacen.alm_item','alm_item.id_item','=','log_det_ord_compra.id_item')
+                    ->leftjoin('logistica.log_ord_compra','log_ord_compra.id_orden_compra','=','log_det_ord_compra.id_orden_compra')
+                    ->leftjoin('almacen.alm_det_req','alm_det_req.id_detalle_requerimiento','=','log_det_ord_compra.id_detalle_requerimiento')
+                    ->leftjoin('almacen.alm_req','alm_req.id_requerimiento','=','alm_det_req.id_requerimiento')
+                    ->whereIn('log_det_ord_compra.id_detalle_orden',$ids_ocd)
+                    ->get();
+
+            $msj = null;
+            $msj = $this->generarTransferencias($guia->id_almacen, $detalle_oc);
+
+            DB::commit();
+            return response()->json($msj);
+            
+        } catch (\PDOException $e) {
+            // Woopsy
+            DB::rollBack();
+            // return response()->json($e);
+        }
+    }
+
+    public function generarTransferencias($id_almacen_origen, $detalle_oc){
+
+        $array_padres = [];
+        $array_items = [];
+
+        $sede = DB::table('almacen.alm_almacen')
+                    ->select('id_sede')
+                    ->where('id_almacen',$id_almacen_origen)->first();
+
+        foreach($detalle_oc as $det){
+
+            if ($det->id_sede !== $sede->id_sede){
+
+                $searchedValue = $det->id_requerimiento;
+                $existe = false;
+                
+                foreach($array_padres as $padre){
+                    if ($padre->id_requerimiento == $searchedValue){
+                        $existe = true;
+                        break;
+                    }
+                }
+                if ($existe == false){
+                    $nuevo = [
+                            'id_requerimiento' => $searchedValue,
+                            'id_almacen_destino' => $det->id_almacen_destino
+                    ];
+                    
+                    array_push($array_padres, $nuevo);
+                }
+                array_push($array_items, $det);
+            }
+        }
+        // return (['array_padres'=>$array_padres,'array_hijos'=>$array_items,
+        // 'detalle'=>$detalle_oc,'sede_guia'=>$sede->id_sede]);
+
+        $id_usuario = Auth::user()->id_usuario;
+        $fecha = date('Y-m-d H:i:s');
+        $msj = '';
+        
+        foreach ($array_padres as $padre){
+            
+            $codigo = TransferenciaController::transferencia_nextId($id_almacen_origen);
+            
+            if ($msj == ''){
+                $msj = 'Se generó transferencia. '.$codigo;
+            } else {
+                $msj .= ', '.$codigo;
+            }
+
+            $id_trans = DB::table('almacen.trans')->insertGetId(
+                [
+                    'id_almacen_origen' => $id_almacen_origen,
+                    'id_almacen_destino' => $padre['id_almacen_destino'],
+                    'codigo' => $codigo,
+                    'id_requerimiento' => $padre['id_requerimiento'],
+                    'id_guia_ven' => null,
+                    'responsable_origen' => null,
+                    'responsable_destino' => null,
+                    'fecha_transferencia' => date('Y-m-d'),
+                    'registrado_por' => $id_usuario,
+                    'estado' => 1,
+                    'fecha_registro' => $fecha
+                ],
+                    'id_transferencia'
+                );
+
+            foreach ($array_items as $item) {
+
+                if ($item->id_almacen_destino == $padre['id_almacen_destino']){
+
+                    DB::table('almacen.trans_detalle')->insert(
+                    [
+                        'id_transferencia' => $id_trans,
+                        'id_producto' => $item->id_producto,
+                        'cantidad' => $item->cantidad,
+                        'estado' => 1,
+                        'fecha_registro' => $fecha,
+                        'id_requerimiento_detalle' => $item->id_detalle_requerimiento
+                    ]);
+                }
+            }
+        }
+        return $msj;
     }
 
     public function prue($padre){
@@ -1076,7 +1111,7 @@ class OrdenesPendientesController extends Controller
                             ]);                        
                     }
                 } else {
-                    $msj = 'El ingreso ya fue procesado con una Orden de Despacho o una Transferencia';
+                    $msj = 'El ingreso ya fue procesado con una Orden de Despacho o una Transferencia.';
                 }
             } else {
                 $msj = 'El ingreso ya fue revisado por el Jefe de Almacén';

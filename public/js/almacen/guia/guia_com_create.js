@@ -253,10 +253,10 @@ function guardar_guia_create(data){
         url: 'guardar_guia_com_oc',
         data: data,
         dataType: 'JSON',
-        success: function(id_ingreso){
-            console.log(id_ingreso);
-            if (id_ingreso > 0){
-                alert('Ingreso Almacén generado con éxito');
+        success: function(response){
+            console.log(response);
+            if (response['id_ingreso'] > 0){
+                alert('Ingreso Almacén generado con éxito. '+response['msj_trans']);
                 $('#modal-guia_create').modal('hide');
                 
                 var tra = $('[name=id_transformacion]').val();
