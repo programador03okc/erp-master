@@ -9,7 +9,8 @@ rutaActualizarEstadoDetalleRequerimiento,
 rutaSedeByEmpresa,
 rutaDocumentosVinculadosOrden,
 rutaTieneItemsParaCompra,
-rutaGuardarItemsEnDetalleRequerimiento
+rutaGuardarItemsEnDetalleRequerimiento,
+rutaGuardarAtencionConAlmacen
 ;
 
 var listCheckReq=[];
@@ -23,6 +24,7 @@ var data_item_para_compra =[];
 var id_requerimiento_seleccionado =0;
 var itemsParaAgregarARequerimientoList =[];
 var cantidadItemExistentesEnDetalleReq =0;
+var itemsParaAtenderConAlmacenList =[];
 
 function inicializar(
     _rutaRequerimientosPendientes,
@@ -35,7 +37,8 @@ function inicializar(
     _rutaSedeByEmpresa,
     _rutaDocumentosVinculadosOrden,
     _rutaTieneItemsParaCompra,
-    _rutaGuardarItemsEnDetalleRequerimiento
+    _rutaGuardarItemsEnDetalleRequerimiento,
+    _rutaGuardarAtencionConAlmacen
     ) {
     
     rutaRequerimientosPendientes = _rutaRequerimientosPendientes;
@@ -49,6 +52,7 @@ function inicializar(
     rutaDocumentosVinculadosOrden = _rutaDocumentosVinculadosOrden;
     rutaTieneItemsParaCompra = _rutaTieneItemsParaCompra;
     rutaGuardarItemsEnDetalleRequerimiento = _rutaGuardarItemsEnDetalleRequerimiento;
+    rutaGuardarAtencionConAlmacen = _rutaGuardarAtencionConAlmacen;
 
 }
 function tieneItemsParaCompra(requerimientoList) {
@@ -425,17 +429,17 @@ function selectItem(){
 
 function controlShowInputGuardarNuevoItems(){
     if(itemsParaAgregarARequerimientoList.length >0){
-        document.querySelector("div[id='modal-lista-items-requerimiento'] span[id='group-inputGuardarNuevosItemsEnRequerimiento']").removeAttribute('hidden');
+        document.querySelector("div[id='modal-agregar-items-requerimiento'] span[id='group-inputGuardarNuevosItemsEnRequerimiento']").removeAttribute('hidden');
     }else{
-        document.querySelector("div[id='modal-lista-items-requerimiento'] span[id='group-inputGuardarNuevosItemsEnRequerimiento']").setAttribute('hidden',true);
+        document.querySelector("div[id='modal-agregar-items-requerimiento'] span[id='group-inputGuardarNuevosItemsEnRequerimiento']").setAttribute('hidden',true);
 
     }
 }
 
 function agregarItemATablaListaItemsRequerimiento(data){
-    // limpiarTablaSoloUltimosAgregados('listaItemsRequerimiento');
+    // limpiarTablaSoloUltimosAgregados('listaItemsRequerimientoParaAgregarItem');
 
-    var table = document.getElementById("listaItemsRequerimiento");
+    var table = document.getElementById("listaItemsRequerimientoParaAgregarItem");
 
 
     for (var a = 0; a < data.length; a++) {
@@ -488,7 +492,7 @@ function updateInputCantidadModalItemsRequerimiento(event){
     }
 }
 function actualizarIndicesDeTablaDetalleReq(){
-    let trs= document.querySelector("table[id='listaItemsRequerimiento'] tbody").children;
+    let trs= document.querySelector("table[id='listaItemsRequerimientoParaAgregarItem'] tbody").children;
     let i=0;
     for (let index = cantidadItemExistentesEnDetalleReq; index < trs.length; index++) {
             trs[index].querySelector("input[name='cantidad']").dataset.indice = i;
@@ -518,7 +522,7 @@ function guardarNuevosItemsEnRequerimiento(){
             console.log(response);
             if (response.status == 200) {
                 alert('items guardados');
-                fillTablaListaItemsRequerimiento(id_requerimiento_seleccionado,'SIN_ACCION');
+                getDataItemsRequerimientoParaAgregarItem(id_requerimiento_seleccionado);
                 itemsParaAgregarARequerimientoList=[];
                 controlShowInputGuardarNuevoItems();
             }else{
@@ -551,10 +555,10 @@ function tieneAccion(permisoCrearOrdenPorRequerimiento, permisoRevertirOrden){
     });
 }
 
-function llenarTablaListaItemsRequerimiento(data,TIPO){
+function llenarTablaListaItemsRequerimientoParaAgregarItem(data){
     // console.log(data);
     var vardataTables = funcDatatables();
-    $('#listaItemsRequerimiento').dataTable({
+    $('#listaItemsRequerimientoParaAgregarItem').dataTable({
         'scrollY':        '50vh',
         'info':     false,
         'searching': false,
@@ -578,23 +582,21 @@ function llenarTablaListaItemsRequerimiento(data,TIPO){
             {'data': 'descripcion'},
             {'data': 'unidad_medida'},
             {'data': 'cantidad'},
-            {'data': 'precio_referencial'},
             {'data': 'estado_doc'},
-            {'data': 'observacion'},
             {'render':
             function (data, type, row, meta){
                 let action ='';
-                if(TIPO =='CON_ACCION'){
-                    action = `
-                    <div class="btn-group btn-group-sm" role="group">
-                        <button type="button" class="btn btn-warning btn-sm" title="Atendido por Almacén" name="btnAtendidoPorAlmacen" data-id_requerimiento="${(row.id_requerimiento?row.id_requerimiento:0)}" data-id_detalle_requerimiento="${(row.id_detalle_requerimiento?row.id_detalle_requerimiento:0)}"  onclick="AtendidoPorAlmacen(this);">
-                        <i class="fas fa-pallet"></i>
-                        </button>
-                    </div>
-                    `;
-                }else if( TIPO=='SIN_ACCION'){
-                    action ='';
-                }
+                // if(TIPO =='CON_ACCION'){
+                //     action = `
+                //     <div class="btn-group btn-group-sm" role="group">
+                //         <button type="button" class="btn btn-warning btn-sm" title="Atendido por Almacén" name="btnAtendidoPorAlmacen" data-id_requerimiento="${(row.id_requerimiento?row.id_requerimiento:0)}" data-id_detalle_requerimiento="${(row.id_detalle_requerimiento?row.id_detalle_requerimiento:0)}"  onclick="AtendidoPorAlmacen(this);">
+                //         <i class="fas fa-pallet"></i>
+                //         </button>
+                //     </div>
+                //     `;
+                // }else if( TIPO=='SIN_ACCION'){
+                //     action ='';
+                // }
 
                 return action;
             }
@@ -610,7 +612,151 @@ function llenarTablaListaItemsRequerimiento(data,TIPO){
     tablelistaitem.childNodes[0].childNodes[0].hidden = true;
 }
 
-function AtendidoPorAlmacen(obj){
+function guardarAtendidoConAlmacen(){
+    // console.log(itemsParaAtenderConAlmacenList);
+    $.ajax({
+        type: 'POST',
+        url: rutaGuardarAtencionConAlmacen,
+        data: {'lista_items':itemsParaAtenderConAlmacenList},
+        dataType: 'JSON',
+        success: function (response) {
+            console.log(response);
+            // if (response['msj'].length > 0) {
+            //     alert(response['msj']);
+            // } else {
+            //     alert('ocurrio un problema, no se pudo guardar');
+            // }
+        }
+    }).fail(function (jqXHR, textStatus, errorThrown) {
+        console.log(jqXHR);
+        console.log(textStatus);
+        console.log(errorThrown);
+    });
+}
+
+function updateSelectAlmacenAAtender(obj,event){
+    let idValor = event.target.value;
+    // let textValor = event.target.options[event.target.selectedIndex].textContent;
+    let indiceSelected = event.target.dataset.indice;
+    itemsParaAtenderConAlmacenList.forEach((element, index) => {
+        if (index == indiceSelected) {
+            itemsParaAtenderConAlmacenList[index].id_almacen_reserva = parseInt(idValor);
+        }
+    });
+    // console.log(itemsParaAtenderConAlmacenList);
+}
+function updateObjCantidadAAtender(indice, valor){
+    itemsParaAtenderConAlmacenList.forEach((element, index) => {
+        if (index == indice) {
+            itemsParaAtenderConAlmacenList[index].cantidad_a_atender = valor;
+        }
+    });
+}
+function updateInputCantidadAAtender(obj,event){
+    let nuevoValor = event.target.value;
+    let indiceSelected = event.target.dataset.indice;
+    let cantidad = event.target.parentNode.parentNode.children[5].textContent;
+    if(parseInt(nuevoValor) > parseInt(cantidad) || parseInt(nuevoValor) <= 0 ){
+
+        obj.parentNode.parentNode.querySelector("input[name='cantidad_a_atender']").value= cantidad;
+        itemsParaAtenderConAlmacenList.forEach((element, index) => {
+            if (index == indiceSelected) {
+                itemsParaAtenderConAlmacenList[index].cantidad_a_atender = cantidad;
+            }
+        });
+    }else{
+        itemsParaAtenderConAlmacenList.forEach((element, index) => {
+            if (index == indiceSelected) {
+                itemsParaAtenderConAlmacenList[index].cantidad_a_atender = nuevoValor;
+            }
+        });
+    }
+
+    // console.log(itemsParaAtenderConAlmacenList);
+
+}
+
+function llenarTablaListaItemsRequerimientoParaAtenderConAlmacen(data_req,data_almacenes){
+    console.log(data_req);
+    var vardataTables = funcDatatables();
+    $('#listaItemsRequerimientoParaAtenderConAlmacen').dataTable({
+        'scrollY':        '50vh',
+        'info':     false,
+        'searching': false,
+        'paging':   false,
+        'scrollCollapse': true,
+        'language' : vardataTables[0],
+        'processing': true,
+        "bDestroy": true,
+        "scrollX": true,
+        'data':data_req,
+        'columns': [
+            {'render':
+                function (data, type, row,meta){
+                    return meta.row +1
+                }
+            },
+            {'data': 'codigo_item'},
+            {'data': 'part_number'},
+            {'data': 'descripcion'},
+            {'data': 'unidad_medida'},
+            {'data': 'cantidad'},
+            { render: function (data, type, row) { 
+                let estado ='';
+                if(row.suma_transferencias>0){
+                    estado = row.estado_doc + '<br><span class="label label-info">Con Transferencia</span>';
+                }else{
+                    estado= row.suma_transferencias;
+                }
+                return  estado ;
+                }
+            },
+            {'render':
+            function (data, type, row, meta){
+                let select =`<select class="form-control" data-indice="${meta.row}" onChange="updateSelectAlmacenAAtender(this,event)" style="background:lightsteelblue;">`;
+                    select +=`<option value ="0">Sin Selección</option>`;
+                data_almacenes.forEach(element => {
+                    if(row.id_almacen_reserva == element.id_almacen){
+                        select +=`<option value="${element.id_almacen}" data-id-empresa="${element.id_empresa}" selected>${element.descripcion}</option> `;
+
+                    }else{
+                        select +=`<option value="${element.id_almacen}" data-id-empresa="${element.id_empresa}">${element.descripcion}</option> `;
+                    }
+                });
+                select +=`</select>`;
+
+                return select;
+                }
+            },
+            {'render':
+            function (data, type, row, meta){
+                let action =`<input type="text" name="cantidad_a_atender" class="form-control" style="width: 70px; background:lightsteelblue;" data-indice="${meta.row}" onkeyup="updateInputCantidadAAtender(this,event);" value="${row.stock_comprometido?row.stock_comprometido:0}" />`;
+ 
+                updateObjCantidadAAtender(meta.row,row.stock_comprometido);
+                return action;
+                }
+            }
+        ],
+            "createdRow": function( row, data, dataIndex){
+
+                $(row.childNodes[7]).css('background-color', '#586c86');  
+                $(row.childNodes[7]).css('font-weight', 'bold');
+                $(row.childNodes[8]).css('background-color', '#586c86');  
+                $(row.childNodes[8]).css('font-weight', 'bold');
+
+        }
+        // 'order': [
+        //     [0, 'asc']
+        // ]
+    });
+    let tablelistaitem = document.getElementById(
+        'listaItemsRequerimientoParaAtenderConAlmacen_wrapper'
+    )
+    tablelistaitem.childNodes[0].childNodes[0].hidden = true;
+}
+
+
+function AtendidoPorAlmacen(obj){ // ya no se usa
     let id_requerimiento = obj.dataset.id_requerimiento;
     let id_detalle_requerimiento = obj.dataset.id_detalle_requerimiento;
     console.log(id_requerimiento);
@@ -624,7 +770,7 @@ function AtendidoPorAlmacen(obj){
             // console.log(response);
             if(response.status == 200){
                 alert('El estado del item fue actualizado');
-                fillTablaListaItemsRequerimiento(id_requerimiento, 'CON_ACCION');
+                getDataItemsRequerimientoParaAtenderConAlmacen(id_requerimiento);
             }else{
                 alert('Hubo un problema al intentar Actualizado');
                 
@@ -642,27 +788,26 @@ function openModalAgregarItemARequerimiento(obj){
     id_requerimiento_seleccionado = obj.dataset.idRequerimiento;
     // console.log(id_requerimiento);
 
-    $('#modal-lista-items-requerimiento').modal({
+    $('#modal-agregar-items-requerimiento').modal({
         show: true,
         backdrop: 'true'
     });
-    document.querySelector("div[id='modal-lista-items-requerimiento'] span[id='group-inputAgregarItem']").removeAttribute('hidden');
-    fillTablaListaItemsRequerimiento(id_requerimiento_seleccionado,'SIN_ACCION')
+    document.querySelector("div[id='modal-agregar-items-requerimiento'] span[id='group-inputAgregarItem']").removeAttribute('hidden');
+    getDataItemsRequerimientoParaAgregarItem(id_requerimiento_seleccionado)
 }
 
 function openModalAtenderConAlmacen(obj){
     let id_requerimiento = obj.dataset.idRequerimiento;
-    // console.log(id_requerimiento);
 
-    $('#modal-lista-items-requerimiento').modal({
+    $('#modal-atender-con-almacen').modal({
         show: true,
         backdrop: 'true'
     });
-    document.querySelector("div[id='modal-lista-items-requerimiento'] span[id='group-inputAgregarItem']").setAttribute('hidden',true);
-    fillTablaListaItemsRequerimiento(id_requerimiento,'CON_ACCION')
+
+    getDataItemsRequerimientoParaAtenderConAlmacen(id_requerimiento);
 }
 
-function fillTablaListaItemsRequerimiento(id_requerimiento,TIPO){
+function getDataItemsRequerimientoParaAgregarItem(id_requerimiento){
     $.ajax({
         type: 'GET',
         url:  `/logistica/gestion-logistica/requerimiento/elaboracion/mostrar-requerimiento/${id_requerimiento}/0`,
@@ -670,7 +815,61 @@ function fillTablaListaItemsRequerimiento(id_requerimiento,TIPO){
         success: function(response){
             // console.log(response);
             cantidadItemExistentesEnDetalleReq=response.det_req.length;
-            llenarTablaListaItemsRequerimiento(response.det_req,TIPO)
+            llenarTablaListaItemsRequerimientoParaAgregarItem(response.det_req);
+        }
+    }).fail( function( jqXHR, textStatus, errorThrown ){
+        console.log(jqXHR);
+        console.log(textStatus);
+        console.log(errorThrown);
+    });
+}
+
+function getAlmacenes() {
+
+    return new Promise(function (resolve, reject) {
+        $.ajax({
+            type: 'GET',
+            url:  `/logistica/gestion-logistica/orden/por-requerimiento/listar-almacenes`,
+            dataType: 'JSON',
+            success(response) {
+                resolve(response) // Resolve promise and go to then() 
+            },
+            error: function (err) {
+                reject(err) // Reject the promise and go to catch()
+            }
+        });
+    });
+}
+function customItemsParaAtenderConAlmacen(det_req){
+    itemsParaAtenderConAlmacenList= det_req;
+    itemsParaAtenderConAlmacenList.forEach((element,index) => {
+        itemsParaAtenderConAlmacenList[index].cantidad_a_atender =0;
+    });
+    // console.log(itemsParaAtenderConAlmacenList);
+}
+function getDataItemsRequerimientoParaAtenderConAlmacen(id_requerimiento){
+    $.ajax({
+        type: 'GET',
+        url:  `/logistica/gestion-logistica/requerimiento/elaboracion/mostrar-requerimiento/${id_requerimiento}/0`,
+        dataType: 'JSON',
+        success: function(response){
+            // console.log(response);
+            customItemsParaAtenderConAlmacen(response.det_req);
+            console.log(response.det_req);
+            cantidadItemExistentesEnDetalleReq=response.det_req.length;
+            getAlmacenes().then(function (res) {
+                // Run this when your request was successful
+                let data_almacenes= res.data;
+                if (data_almacenes.length > 0) {
+                    llenarTablaListaItemsRequerimientoParaAtenderConAlmacen(response.det_req,data_almacenes)
+                } else {
+                
+                }
+        
+            }).catch(function (err) {
+                // Run this when promise was rejected via reject()
+                console.log(err)
+            })
         }
     }).fail( function( jqXHR, textStatus, errorThrown ){
         console.log(jqXHR);
@@ -719,7 +918,7 @@ function listar_requerimientos_pendientes(permisoCrearOrdenPorRequerimiento,id_e
                 // if(permisoCrearOrdenPorRequerimiento == '1') {
                     return ('<div class="btn-group btn-group-xs" role="group">'+
                     '<button type="button" class="btn btn-primary btn-xs" name="btnOpenModalAtenderConAlmacen" title="Atender con almacén" data-id-requerimiento="'+row.id_requerimiento+'"  onclick="openModalAtenderConAlmacen(this);">'+
-                        '<i class="far fa-eye fa-sm"></i>'+
+                        '<i class="fas fa-dolly fa-sm"></i>'+
                     '</button>'+
                     '<button type="button" class="btn btn-danger btn-xs" name="btnAgregarItemARequeriento" title="Agregar items para compra" data-id-requerimiento="'+row.id_requerimiento+'"  onclick="openModalAgregarItemARequerimiento(this);">'+
                         '<i class="fas fa-plus-square fa-sm"></i>'+

@@ -132,7 +132,8 @@
         </div>
  </div>
 @include('logistica.ordenes.modal_documentos_vinculados')
-@include('logistica.ordenes.modal_lista_items_requerimiento')
+@include('logistica.ordenes.modal_agregar_items_requerimiento')
+@include('logistica.ordenes.modal_atender_con_almacen')
 @include('logistica.requerimientos.modal_catalogo_items')
 @include('logistica.requerimientos.modal_crear_nuevo_producto')
 @include('logistica.ordenes.modal_ver_orden')
@@ -180,7 +181,8 @@
             "{{route('logistica.gestion-logistica.cotizacion.gestionar.select-sede-by-empresa')}}",
             "{{route('logistica.gestion-logistica.orden.por-requerimiento.documentos-vinculados')}}",
             "{{route('logistica.gestion-logistica.orden.por-requerimiento.tiene-items-para-compra')}}",
-            "{{route('logistica.gestion-logistica.orden.por-requerimiento.guardar-items-detalle-requerimiento')}}"
+            "{{route('logistica.gestion-logistica.orden.por-requerimiento.guardar-items-detalle-requerimiento')}}",
+            "{{route('logistica.gestion-logistica.orden.por-requerimiento.guardar-atencion-con-almacen')}}"
 
             );
         inicializarModalItemsParaCompra(

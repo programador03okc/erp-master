@@ -2234,4 +2234,35 @@ class OrdenController extends Controller
         return response()->json($output);
 
     }
+
+    function guardarAtencionConAlmacen(Request $request){
+
+        try {
+            DB::beginTransaction();
+
+            $data = $request->lista_items;
+            $id_requerimiento = $data[0]['id_requerimiento'];
+            $id_sede = $data[0]['id_sede'];
+            $updateDetReq=0;
+            foreach ($data as $det) {
+                $updateDetReq += DB::table('almacen.alm_det_req')
+                    ->where('id_detalle_requerimiento',$det['id_detalle_requerimiento'])
+                    ->update(['stock_comprometido'=>$det['cantidad_a_atender'],'id_almacen_reserva'=>$det['id_almacen_reserva']>0?$det['id_almacen_reserva']:null]); 
+            }
+
+            $transferenciaRequerimiento = (new LogisticaController)->generarTransferenciaRequerimiento($id_requerimiento, $id_sede, $data);
+
+            $output=[
+                'id_requerimiento'=>$id_requerimiento,
+                'update_det_req'=> $updateDetReq,
+                'transferencia'=> $transferenciaRequerimiento
+            ];
+
+        DB::commit();
+
+            return response()->json($output);
+        } catch (\PDOException $e) {
+            DB::rollBack();
+        }
+    }
 }
