@@ -158,7 +158,10 @@ function procesarItemParaCompraDetalleCuadroCostos(id) {
         }
     });
     // mostrarCatalogoItems();
+    
     console.log(detalleItemsParaCompraCCSelected);
+    console.log(detalleItemsParaCompraCCSelected.descripcion);
+    
     let data_item_CC_selected = {
         'id_item': "",
         'id_producto': "",
@@ -181,6 +184,7 @@ function procesarItemParaCompraDetalleCuadroCostos(id) {
         'tiene_transformacion': false
 
     };
+
     buscarItemEnCatalogo(data_item_CC_selected).then(function (data) {
         // Run this when your request was successful
         if (data.length > 0) {
@@ -206,7 +210,7 @@ function procesarItemParaCompraDetalleCuadroCostos(id) {
 
             alert('No se encontró el producto seleccionado en el catalogo');
         }
-
+ 
     }).catch(function (err) {
         // Run this when promise was rejected via reject()
         console.log(err)
