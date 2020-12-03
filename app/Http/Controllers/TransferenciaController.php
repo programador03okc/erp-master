@@ -495,7 +495,7 @@ class TransferenciaController extends Controller
             'log_prove.id_proveedor as empresa_proveedor','com_cliente.id_contribuyente as cliente_contribuyente',
             'prove_cliente.id_proveedor as cliente_proveedor')
             // 'log_ord_compra.id_requerimiento',
-            // 'alm_req.id_tipo_requerimiento','alm_req.tipo_cliente')
+            // 'alm_req.id_tipo_requerimiento','alm_req.tipo_cliente'
             ->join('administracion.sis_sede','sis_sede.id_sede','=','guia_ven.id_sede')
             ->join('administracion.adm_empresa','adm_empresa.id_empresa','=','sis_sede.id_empresa')
             ->leftJoin('logistica.log_prove','log_prove.id_contribuyente','=','adm_empresa.id_contribuyente')
@@ -702,66 +702,99 @@ class TransferenciaController extends Controller
             foreach ($reqs as $r) {
                 DB::table('almacen.trans')
                 ->where('id_transferencia',$r->id_transferencia)
-                ->update(['estado' => 14,//Recibido
-                          'id_guia_com' => $id_guia_com]);
+                ->update([  'estado' => 14,//Recibido
+                            'id_guia_com' => $id_guia_com]);
 
-                if ($r->id_requerimiento !== null) {
-                    $accion = '';
+                $trans_det = DB::table('almacen.trans_detalle')
+                ->where('id_transferencia',$r->id_transferencia)
+                ->get();
 
-                    if (($r->id_tipo_requerimiento == 1 && $r->tipo_cliente !== 3) ||
-                        ($r->id_tipo_requerimiento == 2) ||
-                        ($r->id_tipo_requerimiento == 3 && $r->tipo_cliente == 4)){
-                            
-                        $accion = 'Reservado';
-                        DB::table('almacen.alm_req')
-                        ->where('id_requerimiento',$r->id_requerimiento)
-                        ->update(['estado'=>19]);//Reservdo
-        
-                        $trans_det = DB::table('almacen.trans_detalle')
-                        ->where('id_transferencia',$r->id_transferencia)
-                        ->get();
+                foreach ($trans_det as $det) {
 
-                        foreach ($trans_det as $det) {
-                            DB::table('almacen.alm_det_req')
-                            ->where('id_detalle_requerimiento',$det->id_requerimiento_detalle)
-                            ->update(['estado'=>19,
-                                      'id_almacen_reserva'=>$request->id_almacen_destino]);//Reservado
-                        }
-                    } 
-                    else {
-                        $accion = 'Procesado';
-                        DB::table('almacen.alm_req')
-                        ->where('id_requerimiento',$r->id_requerimiento)
-                        ->update(['estado'=>9]);//Procesado
-        
-                        $trans_det = DB::table('almacen.trans_detalle')
-                        ->where('id_transferencia',$r->id_transferencia)
-                        ->get();
+                    $det_req = DB::table('almacen.alm_det_req')
+                    ->where('id_detalle_requerimiento',$det->id_requerimiento_detalle)
+                    ->first();
 
-                        foreach ($trans_det as $det) {
-                            DB::table('almacen.alm_det_req')
-                            ->where('id_detalle_requerimiento',$det->id_requerimiento_detalle)
-                            ->update(['estado'=>9,
-                                      'id_almacen_reserva'=>null]);//Procesado
-                        }
+                    if ($det->cantidad >= $det_req->cantidad){
+                        DB::table('almacen.alm_det_req')
+                        ->where('id_detalle_requerimiento',$det->id_requerimiento_detalle)
+                        ->update([  'estado'=>14,//Recibido
+                                    'id_almacen_reserva'=>$request->id_almacen_destino]);
                     }
-                    //Agrega accion en requerimiento
-                    DB::table('almacen.alm_req_obs')
-                    ->insert([  'id_requerimiento'=>$r->id_requerimiento,
-                                'accion'=>'INGRESO POR TRANSFERENCIA',
-                                'descripcion'=>'Ingresó al Almacén por Transferencia con Guía '.$guia_ven->serie.'-'.$guia_ven->numero.' y fue '.$accion,
-                                'id_usuario'=>$usuario->id_usuario,
-                                'fecha_registro'=>$fecha
-                        ]);
-                } 
+                }
+
+                $count_recibido = DB::table('almacen.alm_det_req')
+                ->where([['id_requerimiento','=',$r->id_requerimiento],
+                        ['estado','=',14]])
+                ->count();
+
+                $count_todo = DB::table('almacen.alm_det_req')
+                ->where([['id_requerimiento','=',$r->id_requerimiento],
+                        ['estado','!=',7]])
+                ->count();
+
+                // if ($count_recibido >= $count_todo){
+                    DB::table('almacen.alm_req')
+                    ->where('id_requerimiento',$r->id_requerimiento)
+                    ->update(['estado'=>19]);//recibido
+                // }
+
+                //Agrega accion en requerimiento
+                DB::table('almacen.alm_req_obs')
+                ->insert([  'id_requerimiento'=>$r->id_requerimiento,
+                            'accion'=>'INGRESO POR TRANSFERENCIA',
+                            'descripcion'=>'Ingresó al Almacén por Transferencia con Guía '.$guia_ven->serie.'-'.$guia_ven->numero,
+                            'id_usuario'=>$usuario->id_usuario,
+                            'fecha_registro'=>$fecha
+                    ]);
             }
+                // if ($r->id_requerimiento !== null) {
+                //     $accion = '';
+
+                //     if (($r->id_tipo_requerimiento == 1 && $r->tipo_cliente !== 3) ||
+                //         ($r->id_tipo_requerimiento == 2) ||
+                //         ($r->id_tipo_requerimiento == 3 && $r->tipo_cliente == 4)){
+                            
+                //         $accion = 'Reservado';
+                //         DB::table('almacen.alm_req')
+                //         ->where('id_requerimiento',$r->id_requerimiento)
+                //         ->update(['estado'=>19]);//Reservdo
+        
+                //         $trans_det = DB::table('almacen.trans_detalle')
+                //         ->where('id_transferencia',$r->id_transferencia)
+                //         ->get();
+
+                //         foreach ($trans_det as $det) {
+                //             DB::table('almacen.alm_det_req')
+                //             ->where('id_detalle_requerimiento',$det->id_requerimiento_detalle)
+                //             ->update(['estado'=>19,
+                //                       'id_almacen_reserva'=>$request->id_almacen_destino]);//Reservado
+                //         }
+                //     } 
+                //     else {
+                //         $accion = 'Procesado';
+                //         DB::table('almacen.alm_req')
+                //         ->where('id_requerimiento',$r->id_requerimiento)
+                //         ->update(['estado'=>9]);//Procesado
+        
+                //         $trans_det = DB::table('almacen.trans_detalle')
+                //         ->where('id_transferencia',$r->id_transferencia)
+                //         ->get();
+
+                //         foreach ($trans_det as $det) {
+                //             DB::table('almacen.alm_det_req')
+                //             ->where('id_detalle_requerimiento',$det->id_requerimiento_detalle)
+                //             ->update(['estado'=>9,
+                //                       'id_almacen_reserva'=>null]);//Procesado
+                //         }
+                //     }
+                   
             DB::commit();
             return response()->json($id_ingreso);
             
         } catch (\PDOException $e) {
             // Woopsy
             DB::rollBack();
-            // return response()->json($e);
         }
         
     }

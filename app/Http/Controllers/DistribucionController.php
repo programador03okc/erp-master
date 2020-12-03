@@ -607,7 +607,7 @@ class DistribucionController extends Controller
             ->select('alm_det_req.*','alm_almacen.descripcion as almacen_descripcion',
                     'adm_estado_doc.estado_doc','adm_estado_doc.bootstrap_color',
                     'alm_prod.descripcion as producto_descripcion','alm_prod.codigo as producto_codigo',
-                    'alm_prod.series',
+                    'alm_prod.series','alm_req.id_almacen',
                     'alm_und_medida.abreviatura','alm_cat_prod.descripcion as categoria',
                     'alm_subcat.descripcion as subcategoria','alm_prod.part_number',
                     DB::raw("(SELECT SUM(cantidad) 
@@ -624,16 +624,24 @@ class DistribucionController extends Controller
                         on(guia.id_oc_det = oc.id_detalle_orden)
                     INNER JOIN almacen.alm_det_req AS req
                         on(oc.id_detalle_requerimiento = req.id_detalle_requerimiento)
+                    INNER JOIN almacen.guia_com AS g
+                        on(g.id_guia = guia.id_guia_com)
                     WHERE
                         req.id_detalle_requerimiento = alm_det_req.id_detalle_requerimiento
                         and guia.estado != 7
-                        and oc.estado != 7) AS suma_ingresos"))
+                        and g.id_almacen = alm_req.id_almacen
+                        and oc.estado != 7) AS suma_ingresos"),
+                    DB::raw("(SELECT SUM(trans_detalle.cantidad) 
+                    FROM almacen.trans_detalle 
+                    WHERE   trans_detalle.id_requerimiento_detalle = alm_det_req.id_detalle_requerimiento AND
+                            trans_detalle.estado != 7) AS suma_transferencias"))
             ->leftJoin('almacen.alm_prod', 'alm_prod.id_producto', '=', 'alm_det_req.id_producto')
             ->leftJoin('almacen.alm_cat_prod', 'alm_cat_prod.id_categoria', '=', 'alm_prod.id_categoria')
             ->leftJoin('almacen.alm_subcat', 'alm_subcat.id_subcategoria', '=', 'alm_prod.id_subcategoria')
             ->leftJoin('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'alm_det_req.id_unidad_medida')
             ->leftJoin('almacen.alm_almacen', 'alm_almacen.id_almacen', '=', 'alm_det_req.id_almacen_reserva')
             ->join('administracion.adm_estado_doc', 'adm_estado_doc.id_estado_doc', '=', 'alm_det_req.estado')
+            ->join('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'alm_det_req.id_requerimiento')
             ->where([['alm_det_req.id_requerimiento','=',$id_requerimiento],['alm_det_req.estado','!=',7]])
             ->get();
         return response()->json($detalles);
@@ -964,7 +972,7 @@ class DistribucionController extends Controller
         
         Saludos,
         Módulo de Logística y Almacenes
-        Sistema ERP
+        System AGILE
         ';
             
                 $contenido_facturacion = '

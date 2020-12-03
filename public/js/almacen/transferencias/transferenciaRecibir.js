@@ -162,7 +162,7 @@ function recibir(){
                     // var id = encode5t(response);
                     // window.open('imprimir_ingreso/'+id);
                     $('#modal-transferencia_detalle').modal('hide');
-                    listarTransferenciasPendientes();
+                    listarTransferenciasPorEnviar();
                 }
             }
         }).fail( function( jqXHR, textStatus, errorThrown ){

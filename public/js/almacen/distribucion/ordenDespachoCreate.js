@@ -98,8 +98,8 @@ function open_despacho_create(data){
                 '<td><i class="fas fa-code-branch boton btn btn-primary" data-toggle="tooltip" data-placement="bottom" title="Agregar Instrucciones" onClick="verInstrucciones('+element.id_detalle_requerimiento+');"></i>'+
                 (element.series ? '<i class="fas fa-bars icon-tabla boton" data-toggle="tooltip" data-placement="bottom" title="Ver Series" onClick="verSeries('+element.id_detalle_requerimiento+');"></i>' : '')+
                 '</td></tr>';
+                
             }
-            
             detalle_requerimiento.push({
                 'id_detalle_requerimiento'  : element.id_detalle_requerimiento,
                 'id_producto'               : element.id_producto,
@@ -111,7 +111,7 @@ function open_despacho_create(data){
                 'comentario_transformado'   : null,
                 'cantidad_transformado'     : null,
             });
-
+            
             if (element.tiene_transformacion){
                 detalle_sale.push({
                     'id_detalle_requerimiento'  : element.id_detalle_requerimiento,
@@ -317,12 +317,30 @@ $("#form-orden_despacho").on("submit", function(e){
         if (validaCampos.length > 0){
             alert(validaCampos);
         } else {
-            var data = serial+'&documento='+doc+
-                            '&detalle_ingresa='+JSON.stringify(json_detalle_ingresa)+
-                            '&detalle_requerimiento='+JSON.stringify(detalle_requerimiento)+
-                            '&detalle_sale='+JSON.stringify(json_detalle_sale);
-            console.log(data);
-            guardar_orden_despacho(data);
+            // var ac = $('[name=aplica_cambios_valor]').val();
+            // var m = '';
+            // if (ac == 'si'){
+            //     if (json_detalle_ingresa.length == 0){
+            //         m = 'No ha seleccionado items para despachar.';
+            //     }
+            //     if (json_detalle_sale.length == 0){
+            //         m += '\nNo ha ingresado items transformados.';
+            //     }
+            // } else {
+            //     if (detalle_requerimiento.length == 0){
+            //         m = 'No hay items para despachar.';
+            //     }
+            // }
+            // if (m == ''){
+                var data = serial+'&documento='+doc+
+                                '&detalle_ingresa='+JSON.stringify(json_detalle_ingresa)+
+                                '&detalle_requerimiento='+JSON.stringify(detalle_requerimiento)+
+                                '&detalle_sale='+JSON.stringify(json_detalle_sale);
+                console.log(data);
+                guardar_orden_despacho(data);
+            // } else {
+            //     alert(m);
+            // }
         }
     }
 });
