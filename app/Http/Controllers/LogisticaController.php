@@ -547,6 +547,7 @@ class LogisticaController extends Controller
                 'cont_banco.id_banco',
                 'alm_req.nro_cuenta',
                 'alm_req.nro_cuenta_interbancaria',
+                'alm_req.tiene_transformacion',
                 DB::raw("(CASE WHEN alm_req.estado = 1 THEN 'Habilitado' ELSE 'Deshabilitado' END) AS estado_desc")
             )
             ->where([
@@ -613,7 +614,8 @@ class LogisticaController extends Controller
                     'telefono' => $data->telefono,
                     'email' => $data->email,
                     'id_almacen' => $data->id_almacen,
-                    'monto' => $data->monto
+                    'monto' => $data->monto,
+                    'tiene_transformacion' => $data->tiene_transformacion
                     
                 ];
             };
@@ -679,7 +681,8 @@ class LogisticaController extends Controller
                     'alm_prod.codigo AS alm_prod_codigo',
                     'alm_prod.part_number',
                     'alm_prod.descripcion AS alm_prod_descripcion',
-
+                    
+                    'alm_det_req.tiene_transformacion',
                     // 'alm_prod.id_unidad_medida AS prod_id_unidad_medida',
                     // 'alm_und_medida.abreviatura AS prod_unidad_medida_abreviatura',
                     // 'alm_und_medida.descripcion AS prod_unidad_medida_descripcion',
@@ -746,6 +749,7 @@ class LogisticaController extends Controller
                         $detalle_requerimiento[] = [
                             'id_detalle_requerimiento'  => $data->id_detalle_requerimiento,
                             'id_requerimiento'          => $data->id_requerimiento,
+                            'tiene_transformacion'      => $data->tiene_transformacion,
                             'codigo_requerimiento'      => $data->codigo_requerimiento,
                             'id_sede'                   => $data->id_sede,
                             'id_item'                   => $data->id_item_alm_det_req,
@@ -1925,8 +1929,10 @@ class LogisticaController extends Controller
     public function generarTransferenciaRequerimiento($id_requerimiento, $id_sede, $detalle_req ){
 
         $sede = $id_sede?$id_sede:null;
+        $id_trans_detalle_list=[];
 
         $array_items = [];
+        $array_items_sin_transferencia = [];
         $array_almacen = [];
         foreach ($detalle_req as $det) {
             if($det['estado'] !=7){
@@ -1943,6 +1949,9 @@ class LogisticaController extends Controller
                     if (!in_array($det['id_almacen_reserva'], $array_almacen)){
                         array_push($array_almacen, $det['id_almacen_reserva']);
                     }
+                }elseif($almacen != null && $sede == $almacen->id_sede){
+                        array_push($array_items_sin_transferencia, $det);
+                        $this->actualizarEstadoDetalleRequerimientoSinTransferencia($array_items_sin_transferencia);
                 }
             }
         }
@@ -1978,7 +1987,7 @@ class LogisticaController extends Controller
 
             foreach ($array_items as $item) {
                 if ($item['id_almacen_reserva'] == $alm){
-                    DB::table('almacen.trans_detalle')->insert(
+                $id_trans_detalle_list[]= DB::table('almacen.trans_detalle')->insertGetId(
                     [
                         'id_transferencia' => $id_trans,
                         'id_producto' => $item['id_producto'],
@@ -1986,10 +1995,103 @@ class LogisticaController extends Controller
                         'estado' => 1,
                         'fecha_registro' => $fecha,
                         'id_requerimiento_detalle' => $item['id_detalle_requerimiento']
-                    ]);
+                    ],
+                    'id_trans_detalle'
+                    );
+
                 }
             }
         }
+   
+
+        if(count($id_trans_detalle_list) >0){
+            $this->actualizarEstadoDetalleRequerimientoPostTransferencia($id_trans_detalle_list);
+        }
+    }
+
+    public function actualizarEstadoDetalleRequerimientoSinTransferencia($item_list){
+        foreach($item_list as $item){
+            if($item['cantidad'] == $item['cantidad_a_atender'] ){
+                DB::table('almacen.alm_det_req')
+                ->where([
+                        ['id_detalle_requerimiento',$item['id_requerimiento_detalle']]])
+                ->update(
+                    [
+                        'estado' => 5
+                    ]);
+            }elseif($item['cantidad'] < $item['cantidad_a_atender']){
+                DB::table('almacen.alm_det_req')
+                ->where([
+                        ['id_detalle_requerimiento',$item['id_requerimiento_detalle']]])
+                ->update(
+                    [
+                        'estado' => 15
+                    ]);
+            }
+        }
+
+    }
+
+    public function actualizarEstadoDetalleRequerimientoPostTransferencia($id_trans_detalle_list){
+
+        $id_detalle_requerimiento_list=[];
+
+        $trans_detalle = DB::table('almacen.trans_detalle')
+        ->select(
+            'trans_detalle.id_trans_detalle',
+            'trans_detalle.id_transferencia',
+            'trans_detalle.cantidad',
+            'trans_detalle.id_requerimiento_detalle',
+            'trans_detalle.estado'
+            )
+        ->where('trans_detalle.estado','!=',7)
+        ->whereIn('trans_detalle.id_trans_detalle',$id_trans_detalle_list)
+        ->get();
+        // Debugbar::info($trans_detalle);
+
+        foreach($trans_detalle as $data){
+            $id_detalle_requerimiento_list[] = $data->id_requerimiento_detalle;
+        }
+        
+        $alm_det_req = DB::table('almacen.alm_det_req')
+        ->select(
+            'alm_det_req.id_detalle_requerimiento',
+            'alm_det_req.id_requerimiento',
+            'alm_det_req.cantidad',
+            'alm_det_req.estado'
+            )
+        ->where('alm_det_req.estado','!=',7)
+        ->whereIn('alm_det_req.id_detalle_requerimiento',$id_detalle_requerimiento_list)
+        ->get();
+
+        foreach($alm_det_req as $detreq){
+            foreach($trans_detalle as $dettras){
+                if($detreq->id_detalle_requerimiento == $dettras->id_requerimiento_detalle ){
+
+                    if(intval($detreq->cantidad) == intval($dettras->cantidad) ){
+                        DB::table('almacen.alm_det_req')
+                        ->where([
+                                ['id_detalle_requerimiento',$dettras->id_requerimiento_detalle]])
+                        ->update(
+                            [
+                                'estado' => 5
+                            ]);
+                    }
+                    if( intval($dettras->cantidad < intval($detreq->cantidad)) ){
+                        DB::table('almacen.alm_det_req')
+                        ->where([
+                                ['id_detalle_requerimiento',$dettras->id_requerimiento_detalle]])
+                        ->update(
+                            [
+                                'estado' => 15
+                            ]);
+                    }
+
+                }
+            }
+        }
+
+
     }
 
     public function  actualizar_telefono_cliente($tipo_cliente,$id_persona,$id_cliente,$telefono){

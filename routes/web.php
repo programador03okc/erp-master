@@ -142,6 +142,7 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::post('actualizar_insumo', 'ProyectosController@update_insumo');
 				Route::get('anular_insumo/{id}', 'ProyectosController@anular_insumo');
 				Route::get('listar_insumo_precios/{id}', 'ProyectosController@listar_insumo_precios');
+				Route::post('add_unid_med', 'AlmacenController@add_unid_med');
 
 			});
 

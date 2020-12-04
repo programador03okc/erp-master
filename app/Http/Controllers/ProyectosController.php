@@ -893,7 +893,7 @@ class ProyectosController extends Controller
             ->where([['proy_cu_partida.estado', '=', 1]])
             ->get();
         
-        $lista = [];
+        /*$lista = [];
         foreach($data as $d){
             // $nro_pres = $this->valida_acu_editar($d->id_cu_partida);
             $nro_pres = DB::table('proyectos.proy_cu_partida')
@@ -926,9 +926,9 @@ class ProyectosController extends Controller
                 ];
                 array_push($lista,$nuevo);
             }
-        }
+        }*/
 
-        $output['data'] = $lista;
+        $output['data'] = $data;
         return response()->json($output);
     }
     public function listar_acus()
@@ -4181,7 +4181,8 @@ class ProyectosController extends Controller
         ->join('proyectos.proy_insumo','proy_insumo.id_insumo','=','proy_cu_detalle.id_insumo')
         ->join('almacen.alm_und_medida','alm_und_medida.id_unidad_medida','=','proy_insumo.unid_medida')
         ->groupBy('proy_insumo.id_insumo','proy_insumo.tp_insumo','proy_insumo.codigo',
-            'proy_insumo.descripcion','alm_und_medida.abreviatura','proy_cu_detalle.precio_unit')
+            'proy_insumo.descripcion','alm_und_medida.abreviatura','proy_insumo.id_categoria',
+            'proy_cu_detalle.precio_unit')
             ->where([['proy_presup.id_presupuesto','=',$id],
                     ['proy_cd_partida.estado','=',1],
                     ['proy_cu_detalle.estado','=',1]])
@@ -4199,7 +4200,7 @@ class ProyectosController extends Controller
         ->join('proyectos.proy_insumo','proy_insumo.id_insumo','=','proy_cu_detalle.id_insumo')
         ->join('almacen.alm_und_medida','alm_und_medida.id_unidad_medida','=','proy_insumo.unid_medida')
         ->groupBy('proy_insumo.id_insumo','proy_insumo.tp_insumo','proy_insumo.codigo',
-            'proy_insumo.descripcion','alm_und_medida.abreviatura')
+            'proy_insumo.descripcion','alm_und_medida.abreviatura','proy_insumo.id_categoria')
             ->where([['proy_presup.id_presupuesto','=',$id],
                     ['proy_cd_partida.estado','=',1],
                     ['proy_cu_detalle.estado','=',1],
