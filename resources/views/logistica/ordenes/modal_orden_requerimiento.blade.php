@@ -78,7 +78,12 @@
                             <h5>Sede</h5>
                                 <select name="sede" class="form-control activation"  required>
                                     @foreach ($sedes as $sede)
+                                        @if($sede->id_sede == 4)
+                                        <option value="{{$sede->id_sede}}" selected>{{ $sede->descripcion}}</option>
+                                        @else
                                         <option value="{{$sede->id_sede}}">{{ $sede->descripcion}}</option>
+                                        @endif
+
                                     @endforeach                    
                                 </select>
                         </div>
