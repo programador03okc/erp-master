@@ -632,7 +632,7 @@ function guardarAtendidoConAlmacen(){
         success: function (response) {
             // console.log(response);
             if(response.update_det_req >0){
-                alert("Se realizo con éxito la reserva de "+response.update_det_req+" items");
+                alert("Se realizo con éxito la reserva");
                 getDataItemsRequerimientoParaAtenderConAlmacen(response.id_requerimiento);
             }else{
                 alert("Ocurrio un problema al intentar guardar la reserva");
@@ -727,26 +727,32 @@ function llenarTablaListaItemsRequerimientoParaAtenderConAlmacen(data_req,data_a
             },
             {'render':
             function (data, type, row, meta){
-                let select =`<select class="form-control" data-indice="${meta.row}" onChange="updateSelectAlmacenAAtender(this,event)" style="background:lightsteelblue;">`;
+                let select= '';
+                if(row.tiene_transformacion == false){
+                    select =`<select class="form-control" data-indice="${meta.row}" onChange="updateSelectAlmacenAAtender(this,event)" style="background:lightsteelblue;">`;
                     select +=`<option value ="0">Sin Selección</option>`;
-                data_almacenes.forEach(element => {
-                    if(row.id_almacen_reserva == element.id_almacen){
-                        select +=`<option value="${element.id_almacen}" data-id-empresa="${element.id_empresa}" selected>${element.descripcion}</option> `;
+                    data_almacenes.forEach(element => {
+                        if(row.id_almacen_reserva == element.id_almacen){
+                            select +=`<option value="${element.id_almacen}" data-id-empresa="${element.id_empresa}" selected>${element.descripcion}</option> `;
 
-                    }else{
-                        select +=`<option value="${element.id_almacen}" data-id-empresa="${element.id_empresa}">${element.descripcion}</option> `;
-                    }
-                });
-                select +=`</select>`;
+                        }else{
+                            select +=`<option value="${element.id_almacen}" data-id-empresa="${element.id_empresa}">${element.descripcion}</option> `;
+                        }
+                    });
+                    select +=`</select>`;
+                }
+
 
                 return select;
                 }
             },
             {'render':
             function (data, type, row, meta){
-                let action =`<input type="text" name="cantidad_a_atender" class="form-control" style="width: 70px; background:lightsteelblue;" data-indice="${meta.row}" onkeyup="updateInputCantidadAAtender(this,event);" value="0" />`;
- 
-                updateObjCantidadAAtender(meta.row,0);
+                let action='';
+                if(row.tiene_transformacion == false){
+                    action =`<input type="text" name="cantidad_a_atender" class="form-control" style="width: 70px; background:lightsteelblue;" data-indice="${meta.row}" onkeyup="updateInputCantidadAAtender(this,event);" value="0" />`;
+                    updateObjCantidadAAtender(meta.row,0);
+                } 
                 return action;
                 }
             }
