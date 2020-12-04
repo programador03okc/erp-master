@@ -98,9 +98,9 @@
                                 <button type="button" class="btn-primary activation" title="Agregar Proveedor" onClick="agregar_proveedor();"><i class="fas fa-plus"></i></button>
                             </div>
                         </div>
-                        <div class="col-md-6 left">
+                        <div class="col-md-6 left" hidden>
                             <h5>&nbsp;</h5>
-                            <button class="btn btn-primary" type="button" id="btnAgregarNuevoItem" onClick="agregarNuevoItem();">
+                            <button class="btn btn-primary" type="button" id="btnAgregarNuevoItem" onClick="agregarNuevoItem();" >
                                 <i class="fas fa-plus"></i> Agregar Nuevo Item
                             </button>
                         </div>
