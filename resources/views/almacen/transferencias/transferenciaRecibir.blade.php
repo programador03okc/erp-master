@@ -42,8 +42,6 @@
                             <td width="6%">Concepto</td>
                             <td width="10%">Código</td>
                             <td>PartNumber</td>
-                            <td>Categoría</td>
-                            <td>SubCategoría</td>
                             <td>Descripción</td>
                             <td>Cant.Recibida</td>
                             <td>Und</td>

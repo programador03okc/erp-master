@@ -33,19 +33,19 @@ Gestión de Transferencias
                     <div class="row">
                         <div class="col-md-4">
                             <h5>Almacén Origen</h5>
-                            <select class="form-control" name="id_almacen_origen" onChange="listarTransferenciasPorEnviar();">
-                                <option value="0">Elija una opción</option>
+                            <select class="form-control" name="id_almacen_origen_lista" onChange="listarTransferenciasPorEnviar();">
+                                <option value="0" selected>Elija una opción</option>
                                 @foreach ($almacenes as $alm)
-                                    <option value="{{$alm->id_almacen}}" selected>{{$alm->descripcion}}</option>
+                                    <option value="{{$alm->id_almacen}}">{{$alm->descripcion}}</option>
                                 @endforeach
                             </select>
                         </div>
-                        <div class="col-md-4">
+                        <!-- <div class="col-md-4">
                             <h5>Actualizar</h5>
                             <button type="button" class="btn btn-primary" data-toggle="tooltip" 
                                 data-placement="bottom" title="Actualizar" 
                                 onClick="listarTransferenciasPorEnviar();">Actualizar</button>
-                        </div>
+                        </div> -->
                     </div>
                     <div class="row">
                         <div class="col-md-12">
@@ -81,10 +81,10 @@ Gestión de Transferencias
                     <div class="row">
                         <div class="col-md-4">
                             <h5>Almacén Destino</h5>
-                            <select class="form-control" name="id_almacen_destino" onChange="listarTransferenciasPendientes();">
-                                <option value="0">Elija una opción</option>
+                            <select class="form-control" name="id_almacen_destino_lista" onChange="listarTransferenciasPendientes();">
+                                <option value="0" selected>Elija una opción</option>
                                 @foreach ($almacenes as $alm)
-                                    <option value="{{$alm->id_almacen}}" selected>{{$alm->descripcion}}</option>
+                                    <option value="{{$alm->id_almacen}}" >{{$alm->descripcion}}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -98,7 +98,7 @@ Gestión de Transferencias
                     <div class="row">
                         <div class="col-md-12">
                             <table class="mytable table table-condensed table-bordered table-okc-view" 
-                                id="listaTransferenciasPendientes">
+                                id="listaTransferenciasPorRecibir">
                                 <thead>
                                     <tr>
                                         <th hidden></th>
@@ -131,18 +131,18 @@ Gestión de Transferencias
                         <div class="col-md-4">
                             <h5>Almacén Destino</h5>
                             <select class="form-control" name="id_almacen_dest_recibida" onChange="listarTransferenciasRecibidas();">
-                                <option value="0">Elija una opción</option>
+                                <option value="0" selected>Elija una opción</option>
                                 @foreach ($almacenes as $alm)
-                                    <option value="{{$alm->id_almacen}}" selected>{{$alm->descripcion}}</option>
+                                    <option value="{{$alm->id_almacen}}" >{{$alm->descripcion}}</option>
                                 @endforeach
                             </select>
                         </div>
-                        <div class="col-md-4">
+                        <!-- <div class="col-md-4">
                             <h5>Actualizar</h5>
                             <button type="button" class="btn btn-primary" data-toggle="tooltip" 
                                 data-placement="bottom" title="Actualizar" 
                                 onClick="listarTransferenciasRecibidas();">Actualizar</button>
-                        </div>
+                        </div> -->
                     </div>
                     <div class="row">
                         <div class="col-md-12">

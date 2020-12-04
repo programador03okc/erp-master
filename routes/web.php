@@ -1119,7 +1119,7 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::group(['as' => 'gestion-transferencias.', 'prefix' => 'gestion-transferencias'], function(){
 					//Transferencias
 					Route::get('index', 'TransferenciaController@view_listar_transferencias')->name('index');
-					Route::get('listar_transferencias_pendientes/{ori}', 'TransferenciaController@listar_transferencias_pendientes');
+					// Route::get('listar_transferencias_pendientes/{ori}', 'TransferenciaController@listar_transferencias_pendientes');
 					Route::get('listar_transferencias_recibidas/{ori}', 'TransferenciaController@listar_transferencias_recibidas');
 					Route::get('listar_transferencia_detalle/{id}', 'TransferenciaController@listar_transferencia_detalle');
 					Route::post('guardar_ingreso_transferencia', 'TransferenciaController@guardar_ingreso_transferencia');
@@ -1131,6 +1131,7 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::get('imprimir_ingreso/{id}', 'AlmacenController@imprimir_ingreso');
 					Route::get('imprimir_salida/{id}', 'AlmacenController@imprimir_salida');
 					Route::post('listarTransferenciasPorEnviar/{id}', 'TransferenciaController@listarTransferenciasPorEnviar');
+					Route::get('listarTransferenciasPorRecibir/{id}', 'TransferenciaController@listarTransferenciasPorRecibir');
 					Route::get('cargar_almacenes/{id}', 'AlmacenController@cargar_almacenes');
 					Route::get('listarDetalleTransferencia/{id}', 'TransferenciaController@listarDetalleTransferencia');
 					Route::post('listarDetalleTransferenciasSeleccionadas', 'TransferenciaController@listarDetalleTransferenciasSeleccionadas');

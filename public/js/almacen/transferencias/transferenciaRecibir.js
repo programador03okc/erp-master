@@ -43,12 +43,10 @@ function listar_guia_transferencia_detalle(id_guia_ven){
                 <td style="background-color: LightCyan;">${element.codigo_req}</td>
                 <td style="background-color: LightCyan;">${element.concepto}</td>
                 <td>${element.codigo}</td>
-                <td style="background-color: MistyRose;">${element.part_number}</td>
-                <td>${element.categoria}</td>
-                <td>${element.subcategoria}</td>
-                <td style="background-color: MistyRose;">${element.descripcion}</td>
-                <td style="background-color: MistyRose;"><input type="number" class="input-data right" style="width:80px;" name="cantidad_recibida" value="${element.cantidad}" max="${element.cantidad}"/></td>
-                <td style="background-color: MistyRose;">${element.abreviatura}</td>
+                <td style="background-color: navajowhite;">${element.part_number}</td>
+                <td style="background-color: navajowhite;">${element.descripcion}</td>
+                <td><input type="number" class="input-data right" style="width:80px;" name="cantidad_recibida" value="${element.cantidad}" max="${element.cantidad}"/></td>
+                <td>${element.abreviatura}</td>
                 <td><input type="text" class="input-data" name="observacion"/></td>
                 <td>${(element.series ? `<i class="fas fa-bars icon-tabla boton" data-toggle="tooltip" data-placement="bottom" 
                     title="Ver Series" onClick="listarSeriesVen(${element.id_guia_ven_det});"></i>` : '')}</td>
@@ -162,7 +160,7 @@ function recibir(){
                     // var id = encode5t(response);
                     // window.open('imprimir_ingreso/'+id);
                     $('#modal-transferencia_detalle').modal('hide');
-                    listarTransferenciasPorEnviar();
+                    listarTransferenciasPendientes();
                 }
             }
         }).fail( function( jqXHR, textStatus, errorThrown ){

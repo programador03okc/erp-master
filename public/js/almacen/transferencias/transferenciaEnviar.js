@@ -178,12 +178,10 @@ function mostrarDetalleTransferencia(listaDetalle){
         <td style="background-color: LightCyan;">${element.codigo_req}</td>
         <td style="background-color: LightCyan;">${element.concepto}</td>
         <td>${element.codigo}</td>
-        <td style="background-color: MistyRose;">${element.part_number}</td>
-        <td>${element.categoria}</td>
-        <td>${element.subcategoria}</td>
-        <td style="background-color: MistyRose;">${element.descripcion}</td>
-        <td style="background-color: MistyRose;">${element.cantidad}</td>
-        <td style="background-color: MistyRose;">${element.abreviatura}</td>
+        <td style="background-color: navajowhite;">${element.part_number}</td>
+        <td style="background-color: navajowhite;">${element.descripcion}</td>
+        <td>${element.cantidad}</td>
+        <td>${element.abreviatura}</td>
         <td>${element.estado_doc}</td>
         <td>${(element.series ? `<i class="fas fa-bars icon-tabla boton" data-toggle="tooltip" data-placement="bottom" 
             title="Ver Series" onClick="listarSeries(${element.id_guia_com_det});"></i>` : '')}</td>

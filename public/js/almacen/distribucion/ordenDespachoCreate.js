@@ -79,8 +79,9 @@ function open_despacho_create(data){
         var html = '';
         console.log('det');
         response.forEach(element => {
-            var ing = (element.suma_ingresos !== null ? parseFloat(element.suma_ingresos) : 0);
-            var cant = ing - (element.suma_despachos !== null ? parseFloat(element.suma_despachos) : 0);
+            var ing = (element.suma_ingresos !== null ? parseFloat(element.suma_ingresos) : 0);//ingresos por compra
+            var tran = (element.suma_transferencias_recibidas !== null ? parseFloat(element.suma_transferencias_recibidas) : 0);//ingresos por transferencias recibidas
+            var cant = (ing + tran) - (element.suma_despachos !== null ? parseFloat(element.suma_despachos) : 0);
             
             if (cant > 0){
                 html+='<tr id="'+element.id_detalle_requerimiento+'">'+
@@ -91,7 +92,7 @@ function open_despacho_create(data){
                 // '<td>'+(element.almacen_descripcion !== null ? element.almacen_descripcion : '')+'</td>'+
                 '<td>'+element.cantidad+'</td>'+
                 '<td>'+(element.abreviatura !== null ? element.abreviatura : '')+'</td>'+
-                '<td>'+(element.suma_ingresos !== null ? element.suma_ingresos : '0')+'</td>'+
+                '<td>'+(ing + tran)+'</td>'+
                 '<td>'+(element.suma_despachos !== null ? element.suma_despachos : '0')+'</td>'+
                 '<td><input type="number" id="'+element.id_detalle_requerimiento+'cantidad" value="'+cant+'" max="'+cant+'" min="0" style="width: 80px;"/></td>'+
                 '<td><span class="label label-'+element.bootstrap_color+'">'+element.estado_doc+'</span></td>'+
@@ -106,6 +107,7 @@ function open_despacho_create(data){
                 'cantidad'                  : element.cantidad,
                 'suma_ingresos'             : element.suma_ingresos,
                 'suma_despachos'            : element.suma_despachos,
+                'suma_transferencias_recibidas' : element.suma_transferencias_recibidas,
                 'part_number_transformado'  : null,
                 'descripcion_transformado'  : null,
                 'comentario_transformado'   : null,
@@ -317,30 +319,30 @@ $("#form-orden_despacho").on("submit", function(e){
         if (validaCampos.length > 0){
             alert(validaCampos);
         } else {
-            // var ac = $('[name=aplica_cambios_valor]').val();
-            // var m = '';
-            // if (ac == 'si'){
-            //     if (json_detalle_ingresa.length == 0){
-            //         m = 'No ha seleccionado items para despachar.';
-            //     }
-            //     if (json_detalle_sale.length == 0){
-            //         m += '\nNo ha ingresado items transformados.';
-            //     }
-            // } else {
-            //     if (detalle_requerimiento.length == 0){
-            //         m = 'No hay items para despachar.';
-            //     }
-            // }
-            // if (m == ''){
+            var ac = $('[name=aplica_cambios_valor]').val();
+            var m = '';
+            if (ac == 'si'){
+                if (json_detalle_ingresa.length == 0){
+                    m = 'No ha seleccionado items para despachar.';
+                }
+                if (json_detalle_sale.length == 0){
+                    m += '\nNo ha ingresado items transformados.';
+                }
+            } else {
+                if (detalle_requerimiento.length == 0){
+                    m = 'No hay items para despachar.';
+                }
+            }
+            if (m == ''){
                 var data = serial+'&documento='+doc+
                                 '&detalle_ingresa='+JSON.stringify(json_detalle_ingresa)+
                                 '&detalle_requerimiento='+JSON.stringify(detalle_requerimiento)+
                                 '&detalle_sale='+JSON.stringify(json_detalle_sale);
                 console.log(data);
                 guardar_orden_despacho(data);
-            // } else {
-            //     alert(m);
-            // }
+            } else {
+                alert(m);
+            }
         }
     }
 });
@@ -449,8 +451,9 @@ function on_todos(){
     console.log('on_todos');
     // detalle_ingresa = detalle_requerimiento;
     detalle_requerimiento.forEach(function(element){
-        var ing = (element.suma_ingresos !== null ? parseFloat(element.suma_ingresos) : 0);
-        var cant = ing - (element.suma_despachos !== null ? parseFloat(element.suma_despachos) : 0);
+        var ing = (element.suma_ingresos !== null ? parseFloat(element.suma_ingresos) : 0);//ingresos por compra
+        var tran = (element.suma_transferencias_recibidas !== null ? parseFloat(element.suma_transferencias_recibidas) : 0);//ingresos por transferencias recibidas
+        var cant = (ing + tran) - (element.suma_despachos !== null ? parseFloat(element.suma_despachos) : 0);
         if (cant > 0){
             detalle_ingresa.push(element);
         }

@@ -58,7 +58,7 @@ function format ( table_id, id, row ) {
                     <td style="border: none;">${element.codigo_oportunidad!==null ? element.codigo_oportunidad : ''}</td>
                     <td style="border: none;">${element.oportunidad!==null ? element.oportunidad : ''}</td>
                     <td style="border: none;">${element.nombre!==null ? element.nombre : ''}</td>
-                    <td style="border: none;"><label class="lbl-codigo" title="Abrir Requerimiento" onClick="abrir_requerimiento(${element.id_requerimiento})">${element.codigo_req}</label></td>
+                    <td style="border: none;"><label class="lbl-codigo" title="Abrir Requerimiento" onClick="abrir_requerimiento(${element.id_requerimiento})">${element.codigo_req}</label> ${element.sede_req}</td>
                     <td style="border: none;">${element.codigo}</td>
                     <td style="border: none;">${element.part_number}</td>
                     <td style="border: none;">${element.descripcion}</td>
