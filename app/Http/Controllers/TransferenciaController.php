@@ -733,11 +733,15 @@ class TransferenciaController extends Controller
                         ['estado','!=',7]])
                 ->count();
 
-                // if ($count_recibido >= $count_todo){
+                if ($count_recibido >= $count_todo){
                     DB::table('almacen.alm_req')
                     ->where('id_requerimiento',$r->id_requerimiento)
-                    ->update(['estado'=>19]);//recibido
-                // }
+                    ->update(['estado'=>28]);//en atencion total
+                } else {
+                    DB::table('almacen.alm_req')
+                    ->where('id_requerimiento',$r->id_requerimiento)
+                    ->update(['estado'=>27]);//en atencion parcial
+                }
 
                 //Agrega accion en requerimiento
                 DB::table('almacen.alm_req_obs')
