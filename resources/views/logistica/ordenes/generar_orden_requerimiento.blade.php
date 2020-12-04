@@ -131,6 +131,7 @@
             </div>
         </div>
  </div>
+ @include('logistica.ordenes.modal_ver_cuadro_costos')
 @include('logistica.ordenes.modal_documentos_vinculados')
 @include('logistica.ordenes.modal_agregar_items_requerimiento')
 @include('logistica.ordenes.modal_atender_con_almacen')

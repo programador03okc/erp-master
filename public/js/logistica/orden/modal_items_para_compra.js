@@ -34,27 +34,27 @@ function inicializarModalItemsParaCompra(
 
 
 
-function obtenerListaItemsCuadroCostosPorIdRequerimiento(reqTrueList) {
-    $.ajax({
-        type: 'POST',
-        url: rutaListaItemsCuadroCostosPorRequerimiento,
-        data: { 'requerimientoList': reqTrueList },
-        dataType: 'JSON',
-        success: function (response) {
-            // console.log(response);
-            if (response.status == 200) {
-                tempDetalleItemsParaCompraCC = response.data;
-                llenarTablaDetalleCuadroCostos(response.data);
-            }
-            // listar_detalle_orden_requerimiento(response.det_req);
-            // console.log(response.det_req); 
-        }
-    }).fail(function (jqXHR, textStatus, errorThrown) {
-        console.log(jqXHR);
-        console.log(textStatus);
-        console.log(errorThrown);
-    });
-}
+// function obtenerListaItemsCuadroCostosPorIdRequerimiento(reqTrueList) {
+//     $.ajax({
+//         type: 'POST',
+//         url: rutaListaItemsCuadroCostosPorRequerimiento,
+//         data: { 'requerimientoList': reqTrueList },
+//         dataType: 'JSON',
+//         success: function (response) {
+//             // console.log(response);
+//             if (response.status == 200) {
+//                 tempDetalleItemsParaCompraCC = response.data;
+//                 llenarTablaDetalleCuadroCostos(response.data);
+//             }
+//             // listar_detalle_orden_requerimiento(response.det_req);
+//             // console.log(response.det_req); 
+//         }
+//     }).fail(function (jqXHR, textStatus, errorThrown) {
+//         console.log(jqXHR);
+//         console.log(textStatus);
+//         console.log(errorThrown);
+//     });
+// }
 
 function llenarTablaDetalleCuadroCostos(data) {
     var dataTableListaModalDetalleCuadroCostos = $('#ListaModalDetalleCuadroCostos').DataTable({
