@@ -65,7 +65,6 @@
                                                     <th>Código</th>
                                                     <th>Concepto</th>
                                                     <th>Tipo Req.</th>
-                                                    <th>Tipo Cliente</th>
                                                     <th>Proveedor/Entidad</th>
                                                     <th>Empresa - Sede</th>
                                                     <th>Autor</th>

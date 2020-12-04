@@ -1096,7 +1096,6 @@ function listar_requerimientos_pendientes(permisoCrearOrdenPorRequerimiento,id_e
             {'data': 'codigo'},
             {'data': 'concepto'},
             {'data': 'tipo_req_desc'},
-            {'data': 'tipo_cliente_desc'},
             { render: function (data, type, row) { 
                 let entidad = '';
                 if(row.id_cliente > 0){
