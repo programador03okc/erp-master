@@ -2250,12 +2250,11 @@ class OrdenController extends Controller
                     ->update(['stock_comprometido'=>$det['cantidad_a_atender'],'id_almacen_reserva'=>$det['id_almacen_reserva']>0?$det['id_almacen_reserva']:null]); 
             }
 
-            $transferenciaRequerimiento = (new LogisticaController)->generarTransferenciaRequerimiento($id_requerimiento, $id_sede, $data);
+             (new LogisticaController)->generarTransferenciaRequerimiento($id_requerimiento, $id_sede, $data);
 
             $output=[
                 'id_requerimiento'=>$id_requerimiento,
-                'update_det_req'=> $updateDetReq,
-                'transferencia'=> $transferenciaRequerimiento
+                'update_det_req'=> $updateDetReq
             ];
 
         DB::commit();
