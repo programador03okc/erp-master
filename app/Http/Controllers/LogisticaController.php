@@ -2011,6 +2011,9 @@ class LogisticaController extends Controller
 
     public function actualizarEstadoDetalleRequerimientoSinTransferencia($item_list){
         foreach($item_list as $item){
+        Debugbar::info($item['cantidad']);
+        Debugbar::info($item['cantidad_a_atender']);
+
             if($item['cantidad'] == $item['cantidad_a_atender'] ){
                 DB::table('almacen.alm_det_req')
                 ->where([
@@ -2019,7 +2022,7 @@ class LogisticaController extends Controller
                     [
                         'estado' => 5
                     ]);
-            }elseif($item['cantidad'] < $item['cantidad_a_atender']){
+            }elseif($item['cantidad'] >  $item['cantidad_a_atender']){
                 DB::table('almacen.alm_det_req')
                 ->where([
                         ['id_detalle_requerimiento',$item['id_requerimiento_detalle']]])
