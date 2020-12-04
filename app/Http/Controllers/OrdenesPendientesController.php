@@ -112,7 +112,7 @@ class OrdenesPendientesController extends Controller
                 'alm_prod.part_number','alm_cat_prod.descripcion as categoria',
                 'alm_subcat.descripcion as subcategoria','alm_req.id_requerimiento',
                 'alm_prod.descripcion','alm_und_medida.abreviatura','alm_req.codigo as codigo_req',
-                'adm_estado_doc.estado_doc','adm_estado_doc.bootstrap_color',
+                'adm_estado_doc.estado_doc','adm_estado_doc.bootstrap_color','sis_sede.descripcion as sede_req',
                 'oc_propias.orden_am','oportunidades.oportunidad','oportunidades.codigo_oportunidad',
                 'entidades.nombre','oc_propias.id as id_oc_propia','oc_propias.url_oc_fisica'
             )
@@ -123,6 +123,7 @@ class OrdenesPendientesController extends Controller
             ->leftjoin('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'log_det_ord_compra.id_unidad_medida')
             ->leftjoin('almacen.alm_det_req', 'alm_det_req.id_detalle_requerimiento', '=', 'log_det_ord_compra.id_detalle_requerimiento')
             ->leftjoin('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'alm_det_req.id_requerimiento')
+            ->leftjoin('administracion.sis_sede', 'sis_sede.id_sede', '=', 'alm_req.id_sede')
             ->leftjoin('mgcp_cuadro_costos.cc','cc.id','=','alm_req.id_cc')
             ->leftjoin('mgcp_oportunidades.oportunidades','oportunidades.id','=','cc.id_oportunidad')
             ->leftjoin('mgcp_acuerdo_marco.oc_propias','oc_propias.id_oportunidad','=','oportunidades.id')

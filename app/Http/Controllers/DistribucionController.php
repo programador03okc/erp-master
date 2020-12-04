@@ -631,10 +631,24 @@ class DistribucionController extends Controller
                         and guia.estado != 7
                         and g.id_almacen = alm_req.id_almacen
                         and oc.estado != 7) AS suma_ingresos"),
+                    DB::raw("(SELECT SUM(guia.cantidad) 
+                        FROM almacen.guia_com_det AS guia
+                        INNER JOIN logistica.log_det_ord_compra AS oc
+                            on(guia.id_oc_det = oc.id_detalle_orden)
+                        INNER JOIN almacen.alm_det_req AS req
+                            on(oc.id_detalle_requerimiento = req.id_detalle_requerimiento)
+                        WHERE
+                            req.id_detalle_requerimiento = alm_det_req.id_detalle_requerimiento
+                            and guia.estado != 7
+                            and oc.estado != 7) AS suma_todo_ingresos"),
                     DB::raw("(SELECT SUM(trans_detalle.cantidad) 
                     FROM almacen.trans_detalle 
                     WHERE   trans_detalle.id_requerimiento_detalle = alm_det_req.id_detalle_requerimiento AND
-                            trans_detalle.estado != 7) AS suma_transferencias"))
+                            trans_detalle.estado != 7) AS suma_transferencias"),
+                    DB::raw("(SELECT SUM(trans_detalle.cantidad) 
+                    FROM almacen.trans_detalle 
+                    WHERE   trans_detalle.id_requerimiento_detalle = alm_det_req.id_detalle_requerimiento AND
+                            trans_detalle.estado = 14) AS suma_transferencias_recibidas"))
             ->leftJoin('almacen.alm_prod', 'alm_prod.id_producto', '=', 'alm_det_req.id_producto')
             ->leftJoin('almacen.alm_cat_prod', 'alm_cat_prod.id_categoria', '=', 'alm_prod.id_categoria')
             ->leftJoin('almacen.alm_subcat', 'alm_subcat.id_subcategoria', '=', 'alm_prod.id_subcategoria')

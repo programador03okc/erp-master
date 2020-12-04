@@ -42,7 +42,7 @@ function iniciar(permiso, usuario){
 }
 
 function listarTransferenciasPorEnviar(){
-    var alm_origen = $('[name=id_almacen_origen]').val();
+    var alm_origen = $('[name=id_almacen_origen_lista]').val();
     var vardataTables = funcDatatables();
     $('#listaTransferenciasPorEnviar').DataTable({
         'dom': vardataTables[1],
@@ -159,17 +159,17 @@ $('#listaTransferenciasPorEnviar tbody').on("click","button.anular", function(){
 });
 
 function listarTransferenciasPendientes(){
-    var alm_destino = $('[name=id_almacen_destino]').val();
+    var alm_destino = $('[name=id_almacen_destino_lista]').val();
     
     if (alm_destino !== '' && alm_destino !== ''){
         var vardataTables = funcDatatables();
-        $('#listaTransferenciasPendientes').DataTable({
+        $('#listaTransferenciasPorRecibir').DataTable({
             'dom': vardataTables[1],
             'buttons': vardataTables[2],
             'language' : vardataTables[0],
             // "scrollX": true,
             'bDestroy':true,
-            'ajax' : 'listar_transferencias_pendientes/'+alm_destino,
+            'ajax' : 'listarTransferenciasPorRecibir/'+alm_destino,
             'columns': [
                 {'data': 'id_guia_ven'},
                 // {'data': 'codigo_transferencia'},
@@ -228,20 +228,20 @@ function listarTransferenciasPendientes(){
         });
     
     }
-    // atender("#listaTransferenciasPendientes tbody", $('#listaTransferenciasPendientes').DataTable());
-    // verSalida("#listaTransferenciasPendientes tbody", $('#listaTransferenciasPendientes').DataTable());
-    // anular("#listaTransferenciasPendientes tbody", $('#listaTransferenciasPendientes').DataTable());
+    // atender("#listaTransferenciasPorRecibir tbody", $('#listaTransferenciasPorRecibir').DataTable());
+    // verSalida("#listaTransferenciasPorRecibir tbody", $('#listaTransferenciasPorRecibir').DataTable());
+    // anular("#listaTransferenciasPorRecibir tbody", $('#listaTransferenciasPorRecibir').DataTable());
 }
 
-$('#listaTransferenciasPendientes tbody').on("click","button.atender", function(){
-    var data = $('#listaTransferenciasPendientes').DataTable().row($(this).parents("tr")).data();
+$('#listaTransferenciasPorRecibir tbody').on("click","button.atender", function(){
+    var data = $('#listaTransferenciasPorRecibir').DataTable().row($(this).parents("tr")).data();
     console.log(data);
     if (data !== undefined){
         open_transferencia_detalle(data);
     }
 });
 
-$('#listaTransferenciasPendientes tbody').on("click","button.salida", function(){
+$('#listaTransferenciasPorRecibir tbody').on("click","button.salida", function(){
     var idSalida = $(this).data('idSalida');
     console.log(idSalida);
     if (idSalida !== ''){
@@ -250,7 +250,7 @@ $('#listaTransferenciasPendientes tbody').on("click","button.salida", function()
     }
 });
 
-$('#listaTransferenciasPendientes tbody').on("click","button.anularSalida", function(){
+$('#listaTransferenciasPorRecibir tbody').on("click","button.anularSalida", function(){
     var idSalida = $(this).data('idSalida');
     var idGuia = $(this).data('id');
     console.log(idSalida);
