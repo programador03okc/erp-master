@@ -711,7 +711,10 @@ function llenarTablaListaItemsRequerimientoParaAtenderConAlmacen(data_req,data_a
             {'data': 'part_number'},
             {'data': 'descripcion'},
             {'data': 'unidad_medida'},
-            {'data': 'cantidad'},
+            { render: function (data, type, row) { 
+                return  parseInt(row.cantidad - row.suma_transferencias);
+                }
+            },
             { render: function (data, type, row) { 
                 let estado ='';
                 if(row.suma_transferencias>0){
@@ -741,9 +744,9 @@ function llenarTablaListaItemsRequerimientoParaAtenderConAlmacen(data_req,data_a
             },
             {'render':
             function (data, type, row, meta){
-                let action =`<input type="text" name="cantidad_a_atender" class="form-control" style="width: 70px; background:lightsteelblue;" data-indice="${meta.row}" onkeyup="updateInputCantidadAAtender(this,event);" value="${row.stock_comprometido?row.stock_comprometido:0}" />`;
+                let action =`<input type="text" name="cantidad_a_atender" class="form-control" style="width: 70px; background:lightsteelblue;" data-indice="${meta.row}" onkeyup="updateInputCantidadAAtender(this,event);" value="0" />`;
  
-                updateObjCantidadAAtender(meta.row,row.stock_comprometido);
+                updateObjCantidadAAtender(meta.row,0);
                 return action;
                 }
             }
