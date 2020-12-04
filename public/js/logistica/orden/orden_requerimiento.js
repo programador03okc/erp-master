@@ -621,11 +621,12 @@ function guardarAtendidoConAlmacen(){
         dataType: 'JSON',
         success: function (response) {
             console.log(response);
-            // if (response['msj'].length > 0) {
-            //     alert(response['msj']);
-            // } else {
-            //     alert('ocurrio un problema, no se pudo guardar');
-            // }
+            if(response.update_det_req >0){
+                alert("se realizo con éxito la reserva de "+response.update_det_req+" items");
+                getDataItemsRequerimientoParaAtenderConAlmacen(response.id_requerimiento);
+            }else{
+                alert("Ocurrio un problema al intentar guardar la reserva");
+            }
         }
     }).fail(function (jqXHR, textStatus, errorThrown) {
         console.log(jqXHR);
@@ -677,7 +678,7 @@ function updateInputCantidadAAtender(obj,event){
 }
 
 function llenarTablaListaItemsRequerimientoParaAtenderConAlmacen(data_req,data_almacenes){
-    console.log(data_req);
+    // console.log(data_req);
     var vardataTables = funcDatatables();
     $('#listaItemsRequerimientoParaAtenderConAlmacen').dataTable({
         'scrollY':        '50vh',
@@ -706,7 +707,7 @@ function llenarTablaListaItemsRequerimientoParaAtenderConAlmacen(data_req,data_a
                 if(row.suma_transferencias>0){
                     estado = row.estado_doc + '<br><span class="label label-info">Con Transferencia</span>';
                 }else{
-                    estado= row.suma_transferencias;
+                    estado= row.estado_doc;
                 }
                 return  estado ;
                 }
@@ -855,7 +856,7 @@ function getDataItemsRequerimientoParaAtenderConAlmacen(id_requerimiento){
         success: function(response){
             // console.log(response);
             customItemsParaAtenderConAlmacen(response.det_req);
-            console.log(response.det_req);
+            // console.log(response.det_req);
             cantidadItemExistentesEnDetalleReq=response.det_req.length;
             getAlmacenes().then(function (res) {
                 // Run this when your request was successful

@@ -149,6 +149,20 @@ function buscarItemEnCatalogo(data) {
     });
 }
 
+ 
+function cleanCharacterReference(text){
+    let str = text;
+    characterReferenceList=['&nbsp;','nbsp;','&amp;','amp;',"&lt;"];
+    characterReferenceList.forEach(element => {
+        while (str.search(element) > -1) {
+            str=  str.replace(element,"");
+
+        }
+    });
+        return str;
+
+}
+
 function procesarItemParaCompraDetalleCuadroCostos(id) {
     let detalleItemsParaCompraCCSelected = '';
     // console.log(tempDetalleItemsParaCompraCC);
@@ -159,15 +173,13 @@ function procesarItemParaCompraDetalleCuadroCostos(id) {
     });
     // mostrarCatalogoItems();
     
-    console.log(detalleItemsParaCompraCCSelected);
-    console.log(detalleItemsParaCompraCCSelected.descripcion);
-    
+
     let data_item_CC_selected = {
         'id_item': "",
         'id_producto': "",
         'id_tipo_item': "1",
         'part_number': detalleItemsParaCompraCCSelected.part_no,
-        'descripcion': detalleItemsParaCompraCCSelected.descripcion,
+        'descripcion': cleanCharacterReference(detalleItemsParaCompraCCSelected.descripcion),
         'alm_prod_codigo': "",
         'categoria': "",
         'clasificacion': "NUEVO",
@@ -184,6 +196,7 @@ function procesarItemParaCompraDetalleCuadroCostos(id) {
         'tiene_transformacion': false
 
     };
+    console.log(data_item_CC_selected);
 
     buscarItemEnCatalogo(data_item_CC_selected).then(function (data) {
         // Run this when your request was successful

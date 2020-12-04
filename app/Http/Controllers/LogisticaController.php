@@ -1843,6 +1843,7 @@ class LogisticaController extends Controller
                         'id_producto'=> is_numeric($detalle_reqArray[$i]['id_producto']) == 1 && $detalle_reqArray[$i]['id_producto']>0 ? $detalle_reqArray[$i]['id_producto']:null,
                         'id_item' => is_numeric($detalle_reqArray[$i]['id_item']) == 1 && $detalle_reqArray[$i]['id_item']>0 ? $detalle_reqArray[$i]['id_item']:null,
                         'cantidad' => $detalle_reqArray[$i]['cantidad']?$detalle_reqArray[$i]['cantidad']:null,
+                        'cantidad_a_atender' => $detalle_reqArray[$i]['cantidad']?$detalle_reqArray[$i]['cantidad']:null,
                         'id_almacen_reserva'=> is_numeric($detalle_reqArray[$i]['id_almacen_reserva']) == 1 ? $detalle_reqArray[$i]['id_almacen_reserva']:null,
                         'estado' => ($request->requerimiento['tipo_requerimiento'] ==2?19:1)
                     ];
@@ -1982,7 +1983,7 @@ class LogisticaController extends Controller
                     [
                         'id_transferencia' => $id_trans,
                         'id_producto' => $item['id_producto'],
-                        'cantidad' => $item['cantidad'],
+                        'cantidad' => $item['cantidad_a_atender'],
                         'estado' => 1,
                         'fecha_registro' => $fecha,
                         'id_requerimiento_detalle' => $item['id_detalle_requerimiento']
@@ -2314,6 +2315,7 @@ class LogisticaController extends Controller
                             'id_producto'=> is_numeric($id_producto) == 1 ? $id_producto : null,
                             'id_item' => is_numeric($id_item) == 1 ? $id_item : null,
                             'cantidad' => $cantidad,
+                            'cantidad_a_atender' => $cantidad,
                             'id_almacen_reserva'=> $id_almacen_reserva,
                             'estado' => 1
                         ];
