@@ -61,9 +61,10 @@ function format ( table_id, id, row ) {
                     '<td style="border: none;">'+(element.part_number !== null ? element.part_number : '')+'</td>'+
                     '<td style="border: none;">'+(element.producto_descripcion !== null ? element.producto_descripcion : element.descripcion_adicional)+'</td>'+
                     '<td style="border: none;">'+element.cantidad+'</td>'+
-                    '<td style="border: none;">'+(element.suma_transferencias!==null?element.suma_transferencias:'')+'</td>'+
-                    '<td style="border: none;">'+(element.suma_todo_ingresos!==null?element.suma_todo_ingresos:'')+'</td>'+
-                    '<td style="border: none;">'+(element.suma_despachos!==null?element.suma_despachos:'')+'</td>'+
+                    // '<td style="border: none;">'+(element.suma_transferencias!==null?element.suma_transferencias:'')+'</td>'+
+                    '<td style="border: none;">'+(element.suma_ingresos!==null?element.suma_ingresos:'0')+'</td>'+
+                    '<td style="border: none;">'+(element.suma_despachos_internos!==null?element.suma_despachos_internos:'0')+'</td>'+
+                    '<td style="border: none;">'+(element.suma_despachos_externos!==null?element.suma_despachos_externos:'0')+'</td>'+
                     '<td style="border: none;">'+(element.abreviatura !== null ? element.abreviatura : '')+'</td>'+
                     '<td style="border: none;"><span class="label label-'+element.bootstrap_color+'">'+element.estado_doc+'</span></td>'+
                     '</tr>';
@@ -78,8 +79,8 @@ function format ( table_id, id, row ) {
                         <th style="border: none;">PartNumber</th>
                         <th style="border: none;">Descripción</th>
                         <th style="border: none;">Cantidad</th>
-                        <th style="border: none;">Transferencia</th>
-                        <th style="border: none;">Comprado</th>
+                        <th style="border: none;">Ingresado</th>
+                        <th style="border: none;">Transformación</th>
                         <th style="border: none;">Despachado</th>
                         <th style="border: none;">Unid.</th>
                         <th style="border: none;">Estado</th>

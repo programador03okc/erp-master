@@ -22,8 +22,8 @@
                                             <th>PartNumber</th>
                                             <th>Descripción</th>
                                             <th>Cantidad</th>
-                                            <th>Transferencia</th>
-                                            <th>Comprado</th>
+                                            <!-- <th>Transferencia</th> -->
+                                            <th>Ingresado</th>
                                             <th>Despachado</th>
                                             <th>Unid</th>
                                             <th>Estado</th>

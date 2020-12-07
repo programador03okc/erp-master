@@ -80,8 +80,8 @@ function open_despacho_create(data){
         console.log('det');
         response.forEach(element => {
             var ing = (element.suma_ingresos !== null ? parseFloat(element.suma_ingresos) : 0);//ingresos por compra
-            var tran = (element.suma_transferencias_recibidas !== null ? parseFloat(element.suma_transferencias_recibidas) : 0);//ingresos por transferencias recibidas
-            var cant = (ing + tran) - (element.suma_despachos !== null ? parseFloat(element.suma_despachos) : 0);
+            // var tran = (element.suma_transferencias_recibidas !== null ? parseFloat(element.suma_transferencias_recibidas) : 0);//ingresos por transferencias recibidas
+            var cant = ing - (element.suma_despachos_internos !== null ? parseFloat(element.suma_despachos_internos) : 0);
             
             if (cant > 0){
                 html+='<tr id="'+element.id_detalle_requerimiento+'">'+
@@ -93,7 +93,7 @@ function open_despacho_create(data){
                 '<td>'+element.cantidad+'</td>'+
                 '<td>'+(element.abreviatura !== null ? element.abreviatura : '')+'</td>'+
                 '<td>'+(ing + tran)+'</td>'+
-                '<td>'+(element.suma_despachos !== null ? element.suma_despachos : '0')+'</td>'+
+                '<td>'+(element.suma_despachos_internos !== null ? element.suma_despachos_internos : '0')+'</td>'+
                 '<td><input type="number" id="'+element.id_detalle_requerimiento+'cantidad" value="'+cant+'" max="'+cant+'" min="0" style="width: 80px;"/></td>'+
                 '<td><span class="label label-'+element.bootstrap_color+'">'+element.estado_doc+'</span></td>'+
                 '<td><i class="fas fa-code-branch boton btn btn-primary" data-toggle="tooltip" data-placement="bottom" title="Agregar Instrucciones" onClick="verInstrucciones('+element.id_detalle_requerimiento+');"></i>'+
@@ -106,8 +106,8 @@ function open_despacho_create(data){
                 'id_producto'               : element.id_producto,
                 'cantidad'                  : element.cantidad,
                 'suma_ingresos'             : element.suma_ingresos,
-                'suma_despachos'            : element.suma_despachos,
-                'suma_transferencias_recibidas' : element.suma_transferencias_recibidas,
+                'suma_despachos'            : element.suma_despachos_internos,
+                // 'suma_transferencias_recibidas' : element.suma_transferencias_recibidas,
                 'part_number_transformado'  : null,
                 'descripcion_transformado'  : null,
                 'comentario_transformado'   : null,
@@ -452,8 +452,8 @@ function on_todos(){
     // detalle_ingresa = detalle_requerimiento;
     detalle_requerimiento.forEach(function(element){
         var ing = (element.suma_ingresos !== null ? parseFloat(element.suma_ingresos) : 0);//ingresos por compra
-        var tran = (element.suma_transferencias_recibidas !== null ? parseFloat(element.suma_transferencias_recibidas) : 0);//ingresos por transferencias recibidas
-        var cant = (ing + tran) - (element.suma_despachos !== null ? parseFloat(element.suma_despachos) : 0);
+        // var tran = (element.suma_transferencias_recibidas !== null ? parseFloat(element.suma_transferencias_recibidas) : 0);//ingresos por transferencias recibidas
+        var cant = ing - (element.suma_despachos_internos !== null ? parseFloat(element.suma_despachos_internos) : 0);
         if (cant > 0){
             detalle_ingresa.push(element);
         }

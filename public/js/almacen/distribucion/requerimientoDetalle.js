@@ -26,9 +26,9 @@ function listar_detalle_requerimiento(id_requerimiento, idTabla){
                 '<td>'+(element.part_number !== null ? element.part_number : '')+'</td>'+
                 '<td>'+(element.producto_descripcion !== null ? element.producto_descripcion : element.descripcion_adicional)+'</td>'+
                 '<td>'+element.cantidad+'</td>'+
-                '<td>'+(element.suma_transferencias!==null?element.suma_transferencias:'')+'</td>'+
-                '<td>'+(element.suma_todo_ingresos!==null?element.suma_todo_ingresos:'')+'</td>'+
-                '<td>'+(element.suma_despachos!==null?element.suma_despachos:'')+'</td>'+
+                // '<td>'+(element.suma_transferencias!==null?element.suma_transferencias:'')+'</td>'+
+                '<td>'+(element.suma_ingresos!==null?element.suma_ingresos:'')+'</td>'+
+                '<td>'+(element.suma_despachos_internos!==null?element.suma_despachos_internos:'')+'</td>'+
                 '<td>'+(element.abreviatura !== null ? element.abreviatura : '')+'</td>'+
                 '<td><span class="label label-'+element.bootstrap_color+'">'+element.estado_doc+'</span></td>'+
                 '</tr>';

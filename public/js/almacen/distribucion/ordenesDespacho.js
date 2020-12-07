@@ -266,10 +266,17 @@ function listarRequerimientosPendientes(permiso){
             }
         },
             {'data': 'nombre', 'name': 'entidades.nombre'},
-            {'data': 'sede_descripcion_req', 'name': 'sede_req.descripcion'},
+            // {'data': 'sede_descripcion_req', 'name': 'sede_req.descripcion'},
+            {'render': function (data, type, row){
+                return (row['fecha_entrega'] !== null ? formatDate(row['fecha_entrega']) : '');
+                }
+            },
             {'data': 'codigo'},
-            {'data': 'concepto'},
-            {'data': 'fecha_requerimiento'},
+            // {'data': 'concepto'},
+            {'render': function (data, type, row){
+                return (row['fecha_requerimiento'] !== null ? formatDate(row['fecha_requerimiento']) : '');
+                }
+            },
             // {'render': function (data, type, row){
             //     return (row['ubigeo_descripcion'] !== null ? row['ubigeo_descripcion'] : '');
             //     }
@@ -294,8 +301,8 @@ function listarRequerimientosPendientes(permiso){
                         (row['codigo_od'] !== null ? ('<span class="label label-primary">'+row['codigo_od']+'</span>') : '');
                 }
             },
-            {'data': 'fecha_despacho', 'name': 'orden_despacho.fecha_despacho'},
-            {'data': 'hora_despacho', 'name': 'orden_despacho.hora_despacho'},
+            // {'data': 'fecha_despacho', 'name': 'orden_despacho.fecha_despacho'},
+            // {'data': 'hora_despacho', 'name': 'orden_despacho.hora_despacho'},
             {'render': function (data, type, row){
                     if (row['estado'] == 17){
                         return 'Pendiente de que <strong>Almacén</strong> recepcione la Transferencia';
@@ -372,7 +379,7 @@ function listarRequerimientosPendientes(permiso){
                     'data-placement="bottom" title="Ver Detalle" data-id="'+row['id_requerimiento']+'">'+
                     '<i class="fas fa-chevron-down"></i></button>'
                 }
-                }, targets: 16
+                }, targets: 13
             }
         ],
     });
@@ -482,9 +489,9 @@ function listarOrdenesPendientes(){
             },
             {'data': 'codigo_oportunidad', 'name': 'oportunidades.codigo_oportunidad'},
             {'render': function (data, type, row){
-                return formatNumber.decimal(row['monto_total'],'S/',2);
-            }
-        },
+                    return formatNumber.decimal(row['monto_total'],'S/',2);
+                }
+            },
             {'data': 'nombre', 'name': 'entidades.nombre'},
             {'data': 'codigo'},
             {'render': 
