@@ -138,28 +138,6 @@ function ceros_numero(numero){
         $('[name=numero]').val(leftZero(7,num));
     }
 }
-function openProcesar(){
-    var id_trans = $('[name=id_transformacion]').val();
-
-    if (id_trans !== ''){
-        var est = $('[name=id_estado]').val();
-        if (est == '9'){
-            alert('La transformación ya fue procesada.');
-        } 
-        else if (est == '7'){
-            alert('La transformación esta Anulada.');
-        } 
-        else {
-            $('#modal-procesarTransformacion').modal({
-                show: true
-            });
-            $('[name=responsable]').val('');
-            $('[name=observacion]').val('');
-        }
-    } else {
-        alert('No ha seleccionado una Hoja de Transformación');
-    }
-}
 
 $("#form-procesarTransformacion").on("submit", function(e){
     console.log('submit');
@@ -196,21 +174,65 @@ function procesar_transformacion(data){
     });
 }
 
+function openProcesar(){
+    var id_trans = $('[name=id_transformacion]').val();
+
+    if (id_trans !== ''){
+        var est = $('[name=id_estado]').val();
+        if (est == '9'){
+            alert('La transformación ya fue procesada.');
+        } 
+        else if (est == '7'){
+            alert('No puede procesar. La transformación esta Anulada.');
+        } 
+        else if (est == '1'){
+            alert('A la espera de que Almacén genere la salida de los productos.');
+        } 
+        else if (est == '21'){
+            alert('Es necesario que inicie la transformación.');
+        } 
+        else if (est == '24'){
+            $('#modal-procesarTransformacion').modal({
+                show: true
+            });
+            $('[name=responsable]').val('');
+            $('[name=observacion]').val('');
+        }
+    } else {
+        alert('No ha seleccionado una Hoja de Transformación');
+    }
+}
+
 function openIniciar(){
     var id_transformacion = $('[name=id_transformacion]').val();
-    $.ajax({
-        type: 'GET',
-        url: 'iniciar_transformacion/'+id_transformacion,
-        dataType: 'JSON',
-        success: function(response){
-            console.log(response);
-            mostrar_transformacion(id_transformacion);
-        }
-    }).fail( function( jqXHR, textStatus, errorThrown ){
-        console.log(jqXHR);
-        console.log(textStatus);
-        console.log(errorThrown);
-    });    
+    var est = $('[name=id_estado]').val();
+    if (est == '1'){
+        alert('A la espera de que Almacén genere la salida de los productos.');
+    }
+    else if (est == '9'){
+        alert('La transformación ya fue procesada.');
+    } 
+    else if (est == '7'){
+        alert('No puede procesar. La transformación esta Anulada.');
+    }
+    else if (est == '24'){
+        alert('Ésta Transformación ya fue iniciada.');
+    } 
+    else if (est == '21'){
+        $.ajax({
+            type: 'GET',
+            url: 'iniciar_transformacion/'+id_transformacion,
+            dataType: 'JSON',
+            success: function(response){
+                console.log(response);
+                mostrar_transformacion(id_transformacion);
+            }
+        }).fail( function( jqXHR, textStatus, errorThrown ){
+            console.log(jqXHR);
+            console.log(textStatus);
+            console.log(errorThrown);
+        });
+    } 
 }
 
 function abrir_salida(){

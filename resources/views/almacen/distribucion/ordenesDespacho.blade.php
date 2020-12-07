@@ -42,7 +42,7 @@ Panel de Control de Despachos
                                         <th hidden></th>
                                         <th>Orden Elec.</th>
                                         <th>Cod.CC</th>
-                                        <th>Oportunidad</th>
+                                        <th>Monto </th>
                                         <th>Entidad</th>
                                         <th>Sede Req.</th>
                                         <th>Cod.Req.</th>
@@ -73,7 +73,7 @@ Panel de Control de Despachos
                                         <th hidden></th>
                                         <th>Orden Elec.</th>
                                         <th>Cod.CC</th>
-                                        <th>Oportunidad</th>
+                                        <th>Monto</th>
                                         <th>Entidad</th>
                                         <th>Sede Req.</th>
                                         <th>Cod.Req.</th>
@@ -104,18 +104,18 @@ Panel de Control de Despachos
                                         <th hidden></th>
                                         <th>Orden Elec.</th>
                                         <th>Cod.CC</th>
-                                        <th>Oportunidad</th>
+                                        <th>Monto</th>
                                         <th>Entidad</th>
-                                        <th>Sede Req.</th>
+                                        <th>Fecha Entrega</th>
                                         <th>Cod.Req.</th>
-                                        <th>Concepto</th>
+                                        <!-- <th>Concepto</th> -->
                                         <th>Fecha Req.</th>
                                         <th>Generado por</th>
                                         <th>Estado</th>
                                         <th>Transf.</th>
                                         <th>O.Despacho</th>
-                                        <th>Fecha Despacho</th>
-                                        <th>Hora Despacho</th>
+                                        <!-- <th>Fecha Despacho</th>
+                                        <th>Hora Despacho</th> -->
                                         <th>Motivo</th>
                                         <th width="90px">Acción</th>
                                     </tr>
@@ -138,7 +138,7 @@ Panel de Control de Despachos
                                         <th></th>
                                         <th>Orden Elec.</th>
                                         <th>Cod.CC</th>
-                                        <th>Oportunidad</th>
+                                        <th>Monto</th>
                                         <th>Entidad</th>
                                         <th>Cod.Req.</th>
                                         <th>Cliente</th>
@@ -176,7 +176,7 @@ Panel de Control de Despachos
                                         <th hidden></th>
                                         <th>Orden Elec.</th>
                                         <th>Cod.CC</th>
-                                        <th>Oportunidad</th>
+                                        <th>Monto</th>
                                         <th>Entidad</th>
                                         <!-- <th>Despacho</th> -->
                                         <th>Orden Despacho</th>
@@ -212,7 +212,7 @@ Panel de Control de Despachos
                                         <th hidden></th>
                                         <th>Orden Elec.</th>
                                         <th>Cod.CC</th>
-                                        <th>Oportunidad</th>
+                                        <th>Monto</th>
                                         <th>Entidad</th>
                                         <!-- <th>Despacho</th> -->
                                         <th>Orden Despacho</th>
@@ -275,13 +275,15 @@ Panel de Control de Despachos
     <script src="{{ asset('template/plugins/iCheck/icheck.min.js') }}"></script>
     <script src="{{ asset('template/plugins/select2/select2.min.js') }}"></script>
     <script src="{{ asset('template/plugins/jquery-datatables-checkboxes/js/dataTables.checkboxes.min.js') }}"></script>
-    
+    <script src="{{ asset('template/plugins/moment.min.js') }}"></script>
+
     <script src="{{ asset('js/almacen/distribucion/ordenesDespacho.js')}}"></script>
     <script src="{{ asset('js/almacen/distribucion/ordenDespachoCreate.js')}}"></script>
     <script src="{{ asset('js/almacen/distribucion/grupoDespachoCreate.js')}}"></script>
     <script src="{{ asset('js/almacen/distribucion/ordenDespachoAdjuntos.js')}}"></script>
     <script src="{{ asset('js/almacen/distribucion/despachoDetalle.js')}}"></script>
     <script src="{{ asset('js/almacen/distribucion/requerimientoDetalle.js')}}"></script>
+    <script src="{{ asset('js/almacen/distribucion/requerimientoVerDetalle.js')}}"></script>
     <script src="{{ asset('js/almacen/distribucion/requerimientoObs.js')}}"></script>
     <script src="{{ asset('js/almacen/producto/productoModal.js')}}"></script>
     <script src="{{ asset('js/almacen/producto/productoCreate.js')}}"></script>
