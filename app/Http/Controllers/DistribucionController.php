@@ -112,7 +112,7 @@ class DistribucionController extends Controller
             // 'rrhh_perso.nro_documento as dni_persona','alm_almacen.descripcion as almacen_descripcion',
             'alm_req.id_sede as sede_requerimiento','sede_req.descripcion as sede_descripcion_req',
             'oc_propias.orden_am','oportunidades.oportunidad','oportunidades.codigo_oportunidad',
-            'entidades.nombre','oc_propias.id as id_oc_propia','oc_propias.url_oc_fisica'
+            'entidades.nombre','oc_propias.id as id_oc_propia','oc_propias.url_oc_fisica','oc_propias.monto_total'
             // 'alm_tp_req.descripcion as tipo_req',
             // DB::raw("(rrhh_perso.nombres) || ' ' || (rrhh_perso.apellido_paterno) || ' ' || (rrhh_perso.apellido_materno) AS nombre_persona"),
                     // 'adm_contri.nro_documento as cliente_ruc','adm_contri.razon_social as cliente_razon_social',
@@ -152,7 +152,7 @@ class DistribucionController extends Controller
             // DB::raw("(rrhh_perso.nombres) || ' ' || (rrhh_perso.apellido_paterno) || ' ' || (rrhh_perso.apellido_materno) AS nombre_persona"),
             // 'adm_contri.nro_documento as cliente_ruc','adm_contri.razon_social as cliente_razon_social',
             'oc_propias.orden_am','oportunidades.oportunidad','oportunidades.codigo_oportunidad',
-            'entidades.nombre','orden_despacho.id_od','oc_propias.id as id_oc_propia','oc_propias.url_oc_fisica'
+            'entidades.nombre','orden_despacho.id_od','oc_propias.id as id_oc_propia','oc_propias.url_oc_fisica','oc_propias.monto_total'
             //,'orden_despacho.codigo as codigo_od','orden_despacho.estado as estado_od'
             )
             // ->join('almacen.alm_tp_req','alm_tp_req.id_tipo_requerimiento','=','alm_req.id_tipo_requerimiento')
@@ -223,7 +223,7 @@ class DistribucionController extends Controller
                         trans.id_requerimiento = alm_req.id_requerimiento
                         and trans.estado = 14) AS count_transferencia_recibida"),
             'oc_propias.orden_am','oportunidades.oportunidad','oportunidades.codigo_oportunidad',
-            'entidades.nombre','orden_despacho.id_od','oc_propias.id as id_oc_propia','oc_propias.url_oc_fisica'
+            'entidades.nombre','orden_despacho.id_od','oc_propias.id as id_oc_propia','oc_propias.url_oc_fisica','oc_propias.monto_total'
             //,'orden_despacho.codigo as codigo_od','orden_despacho.estado as estado_od'
             )
             ->leftjoin('mgcp_cuadro_costos.cc','cc.id','=','alm_req.id_cc')
@@ -300,7 +300,7 @@ class DistribucionController extends Controller
         DB::raw("(SELECT COUNT(*) FROM almacen.orden_despacho_adjunto where
                     orden_despacho_adjunto.id_od = orden_despacho.id_od
                     and orden_despacho_adjunto.estado != 7) AS count_despacho_adjuntos"),
-        'oc_propias.orden_am','oportunidades.oportunidad','oportunidades.codigo_oportunidad',
+        'oc_propias.orden_am','oportunidades.oportunidad','oportunidades.codigo_oportunidad','oc_propias.monto_total',
         'entidades.nombre','orden_despacho.id_od','oc_propias.id as id_oc_propia','oc_propias.url_oc_fisica')
         ->leftjoin('comercial.com_cliente','com_cliente.id_cliente','=','orden_despacho.id_cliente')
         ->leftjoin('contabilidad.adm_contri','adm_contri.id_contribuyente','=','com_cliente.id_contribuyente')
@@ -329,7 +329,7 @@ class DistribucionController extends Controller
         'ubi_dis.descripcion as ubigeo_descripcion','orden_despacho_grupo.mov_entrega',
         'adm_estado_doc.estado_doc','adm_estado_doc.bootstrap_color','alm_almacen.descripcion as almacen_descripcion',
         'orden_despacho_grupo.codigo as codigo_odg','orden_despacho.estado as estado_od',
-        'oc_propias.orden_am','oportunidades.oportunidad','oportunidades.codigo_oportunidad',
+        'oc_propias.orden_am','oportunidades.oportunidad','oportunidades.codigo_oportunidad','oc_propias.monto_total',
         'entidades.nombre','orden_despacho.id_od','oc_propias.id as id_oc_propia','oc_propias.url_oc_fisica',
         DB::raw("(SELECT COUNT(*) FROM almacen.orden_despacho_adjunto where
                     orden_despacho_adjunto.id_od = orden_despacho.id_od
@@ -366,7 +366,7 @@ class DistribucionController extends Controller
         'ubi_dis.descripcion as ubigeo_descripcion','orden_despacho_grupo.mov_entrega',
         'adm_estado_doc.estado_doc','adm_estado_doc.bootstrap_color','alm_almacen.descripcion as almacen_descripcion',
         'orden_despacho_grupo.codigo as codigo_odg','orden_despacho.estado as estado_od',
-        'oc_propias.orden_am','oportunidades.oportunidad','oportunidades.codigo_oportunidad',
+        'oc_propias.orden_am','oportunidades.oportunidad','oportunidades.codigo_oportunidad','oc_propias.monto_total',
         'entidades.nombre','orden_despacho.id_od','oc_propias.id as id_oc_propia','oc_propias.url_oc_fisica',
         DB::raw("(SELECT COUNT(*) FROM almacen.orden_despacho_adjunto where
                     orden_despacho_adjunto.id_od = orden_despacho.id_od

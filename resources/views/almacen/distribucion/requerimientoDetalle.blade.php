@@ -20,19 +20,13 @@
                                             <th>#</th>
                                             <th>Código</th>
                                             <th>PartNumber</th>
-                                            <!-- <th>Categoría</th>
-                                            <th>SubCategoría</th> -->
                                             <th>Descripción</th>
                                             <th>Cantidad</th>
                                             <th>Transferencia</th>
                                             <th>Comprado</th>
                                             <th>Despachado</th>
                                             <th>Unid</th>
-                                            <!-- <th>Almacén Reserva</th> -->
-                                            <!-- <th>Lugar de Entrega</th> -->
                                             <th>Estado</th>
-                                            <!-- <th>Acción</th> -->
-                                            <!-- <th>Total</th> -->
                                         </tr>
                                     </thead>
                                     <tbody></tbody>

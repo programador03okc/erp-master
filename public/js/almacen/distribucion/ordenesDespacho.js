@@ -102,7 +102,10 @@ function listarRequerimientosElaborados(){
                 }
             },
             {'data': 'codigo_oportunidad', 'name': 'oportunidades.codigo_oportunidad'},
-            {'data': 'oportunidad', 'name': 'oportunidades.oportunidad'},
+            {'render': function (data, type, row){
+                    return formatNumber.decimal(row['monto_total'],'S/',2);
+                }
+            },
             {'data': 'nombre', 'name': 'entidades.nombre'},
             {'data': 'sede_descripcion_req', 'name': 'sede_req.descripcion'},
             {'data': 'codigo'},
@@ -162,7 +165,10 @@ function listarRequerimientosConfirmados(permiso){
                 }
             },
             {'data': 'codigo_oportunidad', 'name': 'oportunidades.codigo_oportunidad'},
-            {'data': 'oportunidad', 'name': 'oportunidades.oportunidad'},
+            {'render': function (data, type, row){
+                return formatNumber.decimal(row['monto_total'],'S/',2);
+            }
+        },
             {'data': 'nombre', 'name': 'entidades.nombre'},
             {'data': 'sede_descripcion_req', 'name': 'sede_req.descripcion'},
             {'data': 'codigo'},
@@ -230,9 +236,11 @@ $('#requerimientosConfirmados tbody').on("click","button.despacho", function(){
     open_despacho_create(data);
 });
 
+var table;
+
 function listarRequerimientosPendientes(permiso){
     var vardataTables = funcDatatables();
-    $('#requerimientosEnProceso').DataTable({
+    table = $('#requerimientosEnProceso').DataTable({
         'dom': vardataTables[1],
         'buttons': vardataTables[2],
         'language' : vardataTables[0],
@@ -253,7 +261,10 @@ function listarRequerimientosPendientes(permiso){
                 }
             },
             {'data': 'codigo_oportunidad', 'name': 'oportunidades.codigo_oportunidad'},
-            {'data': 'oportunidad', 'name': 'oportunidades.oportunidad'},
+            {'render': function (data, type, row){
+                return formatNumber.decimal(row['monto_total'],'S/',2);
+            }
+        },
             {'data': 'nombre', 'name': 'entidades.nombre'},
             {'data': 'sede_descripcion_req', 'name': 'sede_req.descripcion'},
             {'data': 'codigo'},
@@ -327,8 +338,8 @@ function listarRequerimientosPendientes(permiso){
             {'render': function (data, type, row){
                 if (permiso == '1') {
                     return '<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" '+
-                    'data-placement="bottom" title="Ver Detalle" >'+
-                    '<i class="fas fa-list-ul"></i></button>'+
+                    'data-placement="bottom" title="Ver Detalle" data-id="'+row['id_requerimiento']+'">'+
+                    '<i class="fas fa-chevron-down"></i></button>'+
                     ((row['estado'] == 19 && row['id_tipo_requerimiento'] == 2 && row['id_od'] == null && row['confirmacion_pago'] == false) ? 
                         '<button type="button" class="anular btn btn-danger boton" data-toggle="tooltip" '+
                         'data-placement="bottom" data-id="'+row['id_requerimiento']+'" data-cod="'+row['codigo']+'" title="Anular Requerimiento" >'+
@@ -358,8 +369,8 @@ function listarRequerimientosPendientes(permiso){
                             <i class="fas fa-paperclip"></i></button>` : '')
                 } else {
                     return '<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" '+
-                    'data-placement="bottom" title="Ver Detalle" >'+
-                    '<i class="fas fa-list-ul"></i></button>'
+                    'data-placement="bottom" title="Ver Detalle" data-id="'+row['id_requerimiento']+'">'+
+                    '<i class="fas fa-chevron-down"></i></button>'
                 }
                 }, targets: 16
             }
@@ -367,12 +378,6 @@ function listarRequerimientosPendientes(permiso){
     });
    
 }
-
-$('#requerimientosEnProceso tbody').on("click","button.detalle", function(){
-    var data = $('#requerimientosEnProceso').DataTable().row($(this).parents("tr")).data();
-    console.log(data);
-    open_detalle_requerimiento(data);
-});
 
 $('#requerimientosEnProceso tbody').on("click","button.detalle_trans", function(){
     var id = $(this).data('id');
@@ -476,7 +481,10 @@ function listarOrdenesPendientes(){
                 }
             },
             {'data': 'codigo_oportunidad', 'name': 'oportunidades.codigo_oportunidad'},
-            {'data': 'oportunidad', 'name': 'oportunidades.oportunidad'},
+            {'render': function (data, type, row){
+                return formatNumber.decimal(row['monto_total'],'S/',2);
+            }
+        },
             {'data': 'nombre', 'name': 'entidades.nombre'},
             {'data': 'codigo'},
             {'render': 
@@ -625,7 +633,10 @@ function listarGruposDespachados(permiso){
                 }
             },
             {'data': 'codigo_oportunidad', 'name': 'oportunidades.codigo_oportunidad'},
-            {'data': 'oportunidad', 'name': 'oportunidades.oportunidad'},
+            {'render': function (data, type, row){
+                return formatNumber.decimal(row['monto_total'],'S/',2);
+            }
+        },
             {'data': 'nombre', 'name': 'entidades.nombre'},
             // {'data': 'codigo_odg', 'name': 'orden_despacho_grupo.codigo'},
             // {'data': 'codigo_od', 'name': 'orden_despacho.codigo'},
@@ -909,7 +920,10 @@ function listarGruposDespachadosPendientesCargo(permiso){
                 }
             },
             {'data': 'codigo_oportunidad', 'name': 'oportunidades.codigo_oportunidad'},
-            {'data': 'oportunidad', 'name': 'oportunidades.oportunidad'},
+            {'render': function (data, type, row){
+                return formatNumber.decimal(row['monto_total'],'S/',2);
+            }
+        },
             {'data': 'nombre', 'name': 'entidades.nombre'},
             // {'data': 'codigo_odg', 'name': 'orden_despacho_grupo.codigo'},
             // {'data': 'codigo_od', 'name': 'orden_despacho.codigo'},
