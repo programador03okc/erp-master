@@ -93,7 +93,7 @@ function open_despacho_create(data){
                 // '<td>'+(element.almacen_descripcion !== null ? element.almacen_descripcion : '')+'</td>'+
                 '<td>'+element.cantidad+'</td>'+
                 '<td>'+(element.abreviatura !== null ? element.abreviatura : '')+'</td>'+
-                '<td>'+(ing + tran)+'</td>'+
+                '<td>'+(ing + stock)+'</td>'+
                 '<td>'+(element.suma_despachos_internos !== null ? element.suma_despachos_internos : '0')+'</td>'+
                 '<td><input type="number" id="'+element.id_detalle_requerimiento+'cantidad" value="'+cant+'" max="'+cant+'" min="0" style="width: 80px;"/></td>'+
                 '<td><span class="label label-'+element.bootstrap_color+'">'+element.estado_doc+'</span></td>'+
