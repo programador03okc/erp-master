@@ -237,7 +237,7 @@ class OrdenesPendientesController extends Controller
             DB::beginTransaction();
             // database queries here
             $id_ingreso = null;
-            
+            $msj_trans = '';
             // if ($request->id_orden_compra !== null){
                 $id_tp_doc_almacen = 1;
                 $id_usuario = Auth::user()->id_usuario;
