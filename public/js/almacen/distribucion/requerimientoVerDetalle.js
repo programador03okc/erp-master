@@ -63,6 +63,7 @@ function format ( table_id, id, row ) {
                     '<td style="border: none;">'+element.cantidad+'</td>'+
                     // '<td style="border: none;">'+(element.suma_transferencias!==null?element.suma_transferencias:'')+'</td>'+
                     '<td style="border: none;">'+(element.suma_ingresos!==null?element.suma_ingresos:'0')+'</td>'+
+                    '<td style="border: none;">'+(element.stock_comprometido!==null?element.stock_comprometido:'0')+'</td>'+
                     '<td style="border: none;">'+(element.suma_despachos_internos!==null?element.suma_despachos_internos:'0')+'</td>'+
                     '<td style="border: none;">'+(element.suma_despachos_externos!==null?element.suma_despachos_externos:'0')+'</td>'+
                     '<td style="border: none;">'+(element.abreviatura !== null ? element.abreviatura : '')+'</td>'+
@@ -80,6 +81,7 @@ function format ( table_id, id, row ) {
                         <th style="border: none;">Descripción</th>
                         <th style="border: none;">Cantidad</th>
                         <th style="border: none;">Ingresado</th>
+                        <th style="border: none;">Stock Alm.</th>
                         <th style="border: none;">Transformación</th>
                         <th style="border: none;">Despachado</th>
                         <th style="border: none;">Unid.</th>
