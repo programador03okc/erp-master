@@ -6462,172 +6462,181 @@ class ProyectosController extends Controller
     }
 
     public function generar_estructura($id_presupuesto, $tipo){
-        $presup = DB::table('proyectos.proy_presup')
-        ->select('proy_presup.*','proy_op_com.descripcion',
-        'proy_op_com.cantidad','proy_op_com.unid_program')
-        ->join('proyectos.proy_op_com','proy_op_com.id_op_com','=','proy_presup.id_op_com')
-        ->where('id_presupuesto',$id_presupuesto)
-        ->first();
 
-        $id_grupo = 5;
-        $codigo = $this->nextCodigoPresupuesto($id_grupo, $presup->fecha_emision, $tipo);
+        try {
+            DB::beginTransaction();
 
-        //Inserta Nuevo Presupuesto
-        $id_presup = DB::table('finanzas.presup')
-        ->insertGetId([
-            'id_empresa' => $presup->id_empresa,
-            'id_grupo' => $id_grupo,//Grupo: Proyectos
-            'fecha_emision' => $presup->fecha_emision,
-            'codigo' => $codigo,
-            'descripcion' => $presup->descripcion,
-            'moneda' => $presup->moneda,
-            'responsable' => $presup->elaborado_por,
-            'estado' => 1,
-            'fecha_registro' => date('Y-m-d H:i:s'),
-            'tp_presup' => $tipo,
-        ],
-            'id_presup'
-        );
-    
-        $base = DB::table('finanzas.presup')
-        ->where([['tp_presup','=',1],['estado','=',1]])
-        ->orderBy('fecha_emision','desc')
-        ->first();
-    
-        $titulos = DB::table('finanzas.presup_titu')
-        ->where([['id_presup','=',$base->id_presup],['estado','=',1]])
-        ->get();
+            $presup = DB::table('proyectos.proy_presup')
+            ->select('proy_presup.*','proy_op_com.descripcion',
+            'proy_op_com.cantidad','proy_op_com.unid_program')
+            ->join('proyectos.proy_op_com','proy_op_com.id_op_com','=','proy_presup.id_op_com')
+            ->where('id_presupuesto',$id_presupuesto)
+            ->first();
 
-        //Inserta los titulos
-        foreach($titulos as $titu){
-            $data = DB::table('finanzas.presup_titu')
+            $id_grupo = 5;
+            $codigo = $this->nextCodigoPresupuesto($id_grupo, $presup->fecha_emision, $tipo);
+
+            //Inserta Nuevo Presupuesto
+            $id_presup = DB::table('finanzas.presup')
             ->insertGetId([
-                'id_presup' => $id_presup,
-                'codigo' => $titu->codigo,
-                'descripcion' => strtoupper($titu->descripcion),
-                'cod_padre' => $titu->cod_padre,
-                'total' => 0,
+                'id_empresa' => $presup->id_empresa,
+                'id_grupo' => $id_grupo,//Grupo: Proyectos
+                'fecha_emision' => $presup->fecha_emision,
+                'codigo' => $codigo,
+                'descripcion' => $presup->descripcion,
+                'moneda' => $presup->moneda,
+                'responsable' => $presup->elaborado_por,
+                'estado' => 1,
                 'fecha_registro' => date('Y-m-d H:i:s'),
-                'estado' => 1
+                'tp_presup' => $tipo,
             ],
-                'id_titulo'
+                'id_presup'
             );
-        }
-
-        $partidas = DB::table('finanzas.presup_par')
-        ->select('presup_par.*','presup_pardet.descripcion')
-        ->join('finanzas.presup_pardet','presup_pardet.id_pardet','=','presup_par.id_pardet')
-        ->where([['presup_par.id_presup','=',$base->id_presup],['presup_par.estado','=',1]])
-        ->get();
-
-        // $nuevas_partidas = [];
-        $cd = $this->solo_cd($id_presupuesto);
-        $ci = DB::table('proyectos.proy_ci_compo')
-            ->where([['id_ci', '=', $id_presupuesto],
-                    ['estado', '=', 1]])
-            ->orderBy('codigo')
-            ->get();
-        $gg = DB::table('proyectos.proy_gg_compo')
-            ->where([['id_gg', '=', $id_presupuesto],
-                    ['estado', '=', 1]])
-            ->orderBy('codigo')
+        
+            $base = DB::table('finanzas.presup')
+            ->where([['tp_presup','=',1],['estado','=',1]])
+            ->orderBy('fecha_emision','desc')
+            ->first();
+        
+            $titulos = DB::table('finanzas.presup_titu')
+            ->where([['id_presup','=',$base->id_presup],['estado','=',1]])
             ->get();
 
-        foreach($partidas as $par){
-            $rel_tipo = substr($par->relacionado, 0, 2);
-            $relacionado = substr($par->relacionado, 2, (strlen($par->relacionado)-2));
-            $agrega = false;
-
-            if ($rel_tipo == 'CD'){
-                foreach($cd as $c){
-                    if ($relacionado === $c["codigo"]){
-                        $agrega = true;
-                        DB::table('finanzas.presup_par')
-                        ->insertGetId([
-                            'id_presup' => $id_presup,
-                            'codigo' => $par->codigo,
-                            'id_pardet' => $par->id_pardet,
-                            'cod_padre' => $par->cod_padre,
-                            'relacionado' => '',
-                            'importe_base' => 0,
-                            'importe_total' => $c["suma"],
-                            'fecha_registro' => date('Y-m-d H:i:s'),
-                            'estado' => 1
-                        ],
-                            'id_partida'
-                        );
-                    }
-                }
-            }
-            else if ($rel_tipo == 'CI'){
-                foreach($ci as $i){
-                    if ($relacionado === $i->codigo){
-                        $agrega = true;
-                        DB::table('finanzas.presup_par')
-                        ->insertGetId([
-                            'id_presup' => $id_presup,
-                            'codigo' => $par->codigo,
-                            'id_pardet' => $par->id_pardet,
-                            'cod_padre' => $par->cod_padre,
-                            'relacionado' => '',
-                            'importe_base' => 0,
-                            'importe_total' => $i->total_comp,
-                            'fecha_registro' => date('Y-m-d H:i:s'),
-                            'estado' => 1
-                        ],
-                            'id_partida'
-                        );
-                    }
-                }
-            }
-            else if ($rel_tipo == 'GG'){
-                foreach($gg as $g){
-                    if ($relacionado === $g->codigo){
-                        $agrega = true;
-                        DB::table('finanzas.presup_par')
-                        ->insertGetId([
-                            'id_presup' => $id_presup,
-                            'codigo' => $par->codigo,
-                            'id_pardet' => $par->id_pardet,
-                            'cod_padre' => $par->cod_padre,
-                            'relacionado' => '',
-                            'importe_base' => 0,
-                            'importe_total' => $g->total_comp,
-                            'fecha_registro' => date('Y-m-d H:i:s'),
-                            'estado' => 1
-                        ],
-                            'id_partida'
-                        );
-                    }
-                }
+            //Inserta los titulos
+            foreach($titulos as $titu){
+                $data = DB::table('finanzas.presup_titu')
+                ->insertGetId([
+                    'id_presup' => $id_presup,
+                    'codigo' => $titu->codigo,
+                    'descripcion' => strtoupper($titu->descripcion),
+                    'cod_padre' => $titu->cod_padre,
+                    'total' => 0,
+                    'fecha_registro' => date('Y-m-d H:i:s'),
+                    'estado' => 1
+                ],
+                    'id_titulo'
+                );
             }
 
-            if ($agrega == false){
-                DB::table('finanzas.presup_par')
-                    ->insertGetId([
-                        'id_presup' => $id_presup,
-                        'codigo' => $par->codigo,
-                        'id_pardet' => $par->id_pardet,
-                        'cod_padre' => $par->cod_padre,
-                        'relacionado' => '',
-                        'importe_base' => 0,
-                        'importe_total' => 0,
-                        'fecha_registro' => date('Y-m-d H:i:s'),
-                        'estado' => 1
-                    ],
-                        'id_partida'
-                    );
+            $partidas = DB::table('finanzas.presup_par')
+            ->select('presup_par.*','presup_pardet.descripcion')
+            ->join('finanzas.presup_pardet','presup_pardet.id_pardet','=','presup_par.id_pardet')
+            ->where([['presup_par.id_presup','=',$base->id_presup],['presup_par.estado','=',1]])
+            ->get();
+
+            // $nuevas_partidas = [];
+            $cd = $this->solo_cd($id_presupuesto);
+            $ci = DB::table('proyectos.proy_ci_compo')
+                ->where([['id_ci', '=', $id_presupuesto],
+                        ['estado', '=', 1]])
+                ->orderBy('codigo')
+                ->get();
+            $gg = DB::table('proyectos.proy_gg_compo')
+                ->where([['id_gg', '=', $id_presupuesto],
+                        ['estado', '=', 1]])
+                ->orderBy('codigo')
+                ->get();
+
+            foreach($partidas as $par){
+                $rel_tipo = substr($par->relacionado, 0, 2);
+                $relacionado = substr($par->relacionado, 2, (strlen($par->relacionado)-2));
+                $agrega = false;
+
+                if ($rel_tipo == 'CD'){
+                    foreach($cd as $c){
+                        if ($relacionado === $c["codigo"]){
+                            $agrega = true;
+                            DB::table('finanzas.presup_par')
+                            ->insertGetId([
+                                'id_presup' => $id_presup,
+                                'codigo' => $par->codigo,
+                                'id_pardet' => $par->id_pardet,
+                                'cod_padre' => $par->cod_padre,
+                                'relacionado' => '',
+                                'importe_base' => 0,
+                                'importe_total' => $c["suma"],
+                                'fecha_registro' => date('Y-m-d H:i:s'),
+                                'estado' => 1
+                            ],
+                                'id_partida'
+                            );
+                        }
+                    }
+                }
+                else if ($rel_tipo == 'CI'){
+                    foreach($ci as $i){
+                        if ($relacionado === $i->codigo){
+                            $agrega = true;
+                            DB::table('finanzas.presup_par')
+                            ->insertGetId([
+                                'id_presup' => $id_presup,
+                                'codigo' => $par->codigo,
+                                'id_pardet' => $par->id_pardet,
+                                'cod_padre' => $par->cod_padre,
+                                'relacionado' => '',
+                                'importe_base' => 0,
+                                'importe_total' => $i->total_comp,
+                                'fecha_registro' => date('Y-m-d H:i:s'),
+                                'estado' => 1
+                            ],
+                                'id_partida'
+                            );
+                        }
+                    }
+                }
+                else if ($rel_tipo == 'GG'){
+                    foreach($gg as $g){
+                        if ($relacionado === $g->codigo){
+                            $agrega = true;
+                            DB::table('finanzas.presup_par')
+                            ->insertGetId([
+                                'id_presup' => $id_presup,
+                                'codigo' => $par->codigo,
+                                'id_pardet' => $par->id_pardet,
+                                'cod_padre' => $par->cod_padre,
+                                'relacionado' => '',
+                                'importe_base' => 0,
+                                'importe_total' => $g->total_comp,
+                                'fecha_registro' => date('Y-m-d H:i:s'),
+                                'estado' => 1
+                            ],
+                                'id_partida'
+                            );
+                        }
+                    }
+                }
+
+                if ($agrega == false){
+                    DB::table('finanzas.presup_par')
+                        ->insertGetId([
+                            'id_presup' => $id_presup,
+                            'codigo' => $par->codigo,
+                            'id_pardet' => $par->id_pardet,
+                            'cod_padre' => $par->cod_padre,
+                            'relacionado' => '',
+                            'importe_base' => 0,
+                            'importe_total' => 0,
+                            'fecha_registro' => date('Y-m-d H:i:s'),
+                            'estado' => 1
+                        ],
+                            'id_partida'
+                        );
+                }
             }
+            DB::table('proyectos.proy_presup')
+            ->where('id_presupuesto',$id_presupuesto)
+            ->update(['estado'=>8, 'id_presup'=>$id_presup]);//Emitido
+
+            $this->suma_titulos($id_presup);
+            // $html = $this->html_presupuesto_proyecto($id_presup,'imprimir_padres');
+
+            // return json_encode(['id_presup'=>$id_presup,'html'=>$html]);
+            DB::commit();
+            return json_encode($id_presup);
+            
+        } catch (\PDOException $e) {
+            DB::rollBack();
         }
-        DB::table('proyectos.proy_presup')
-        ->where('id_presupuesto',$id_presupuesto)
-        ->update(['estado'=>8, 'id_presup'=>$id_presup]);//Emitido
-
-        $this->suma_titulos($id_presup);
-        // $html = $this->html_presupuesto_proyecto($id_presup,'imprimir_padres');
-
-        return json_encode($id_presup);
-        // return json_encode(['id_presup'=>$id_presup,'html'=>$html]);
     }
 
     public function listar_presupuesto_proyecto($id)
