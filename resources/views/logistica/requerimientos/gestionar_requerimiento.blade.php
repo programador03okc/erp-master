@@ -40,6 +40,7 @@
         <input type="hidden" name="id_cc">
         <input type="hidden" name="tipo_cuadro">
         <input type="hidden" name="tiene_transformacion" value=false>
+        <input type="hidden" name="justificacion_generar_requerimiento">
 
         <div class="row">
                 <div class="col-md-12">

@@ -1804,6 +1804,8 @@ class LogisticaController extends Controller
             ],
             'id_requerimiento'
         );
+        
+  
 
         // guardar telefono cliente 
         if($request->requerimiento['telefono'] != null || $request->requerimiento['telefono'] != '' || $request->requerimiento['email'] != ''){
@@ -1863,11 +1865,16 @@ class LogisticaController extends Controller
             'id_doc_aprob'
         );
 
+
+        $texto_justificacion='';
+        if(isset($request->requerimiento['justificacion_generar_requerimiento'])?$request->requerimiento['justificacion_generar_requerimiento']:null){
+            $texto_justificacion= 'Con CC Pendiente Aprobación. '.$request->requerimiento['justificacion_generar_requerimiento'];
+        }
         // trazabilidad requerimiento elaboraod
         DB::table('almacen.alm_req_obs')
         ->insert([  'id_requerimiento'=>$id_requerimiento,
                     'accion'=>'ELABORADO',
-                    'descripcion'=>'Requerimiento elaborado.',
+                    'descripcion'=>'Requerimiento elaborado.'.$texto_justificacion,
                     'id_usuario'=>Auth::user()->id_usuario,
                     'fecha_registro'=>date('Y-m-d H:i:s')
         ]);
@@ -2011,8 +2018,8 @@ class LogisticaController extends Controller
 
     public function actualizarEstadoDetalleRequerimientoSinTransferencia($item_list){
         foreach($item_list as $item){
-        Debugbar::info($item['cantidad']);
-        Debugbar::info($item['cantidad_a_atender']);
+        // Debugbar::info($item['cantidad']);
+        // Debugbar::info($item['cantidad_a_atender']);
 
             if($item['cantidad'] == $item['cantidad_a_atender'] ){
                 DB::table('almacen.alm_det_req')
