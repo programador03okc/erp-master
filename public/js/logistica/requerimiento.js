@@ -73,9 +73,11 @@ function inicializar( _rutaLista,
             var justificacion_generar_requerimiento = JSON.parse(sessionStorage.getItem('justificacion_generar_requerimiento'));
             if(ordenP_Cuadroc !== null && ordenP_Cuadroc.hasOwnProperty('tipo_cuadro') && ordenP_Cuadroc.hasOwnProperty('id_cc')){
                 vista_extendida();
-                // console.log(ordenP_Cuadroc);
-                if(ordenP_Cuadroc.icc == justificacion_generar_requerimiento.icc){
-                    document.querySelector("input[name='justificacion_generar_requerimiento']").value=justificacion_generar_requerimiento.contenido;
+                console.log(ordenP_Cuadroc);
+                if(justificacion_generar_requerimiento != null){
+                    if(ordenP_Cuadroc.id_cc == justificacion_generar_requerimiento.id_cc){
+                        document.querySelector("input[name='justificacion_generar_requerimiento']").value=justificacion_generar_requerimiento.contenido;
+                    }
                 }
 
                 let btnVinculoAcrivoCC= `<span class="text-info" id="text-info-cc-vinculado" > (vinculado a un CC) <span class="badge label-danger" onClick="eliminarVinculoCC();" style="position: absolute;margin-top: -5px;margin-left: 5px; cursor:pointer" title="Eliminar vínculo">×</span></span>`;
