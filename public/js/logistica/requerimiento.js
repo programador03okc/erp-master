@@ -70,9 +70,16 @@ function inicializar( _rutaLista,
 
             }
             var ordenP_Cuadroc = JSON.parse(sessionStorage.getItem('ordenP_Cuadroc'));
+            var justificacion_generar_requerimiento = JSON.parse(sessionStorage.getItem('justificacion_generar_requerimiento'));
             if(ordenP_Cuadroc !== null && ordenP_Cuadroc.hasOwnProperty('tipo_cuadro') && ordenP_Cuadroc.hasOwnProperty('id_cc')){
                 vista_extendida();
-                // console.log(ordenP_Cuadroc);
+                console.log(ordenP_Cuadroc);
+                if(justificacion_generar_requerimiento != null){
+                    if(ordenP_Cuadroc.id_cc == justificacion_generar_requerimiento.id_cc){
+                        document.querySelector("input[name='justificacion_generar_requerimiento']").value=justificacion_generar_requerimiento.contenido;
+                    }
+                }
+
                 let btnVinculoAcrivoCC= `<span class="text-info" id="text-info-cc-vinculado" > (vinculado a un CC) <span class="badge label-danger" onClick="eliminarVinculoCC();" style="position: absolute;margin-top: -5px;margin-left: 5px; cursor:pointer" title="Eliminar vínculo">×</span></span>`;
                 document.querySelector("section[class='content-header']").children[0].innerHTML+=btnVinculoAcrivoCC;
                 getDataCuadroCostos(ordenP_Cuadroc);
@@ -1421,6 +1428,7 @@ function get_data_requerimiento(){
     monto = document.querySelector("form[id='form-requerimiento'] input[name='monto']").value;
     fecha_entrega = document.querySelector("form[id='form-requerimiento'] input[name='fecha_entrega']").value;
     tiene_transformacion = document.querySelector("form[id='form-requerimiento'] input[name='tiene_transformacion']").value;
+    justificacion_generar_requerimiento = document.querySelector("form[id='form-requerimiento'] input[name='justificacion_generar_requerimiento']").value;
 
     requerimiento = {
         id_requerimiento,
@@ -1458,7 +1466,8 @@ function get_data_requerimiento(){
         observacion,
         monto,
         fecha_entrega,
-        tiene_transformacion
+        tiene_transformacion,
+        justificacion_generar_requerimiento
         
     };
 return requerimiento;

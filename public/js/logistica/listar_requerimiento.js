@@ -131,19 +131,27 @@ function listar_ordenes_propias(){
                 let btnIrRequerimiento='';
                 // let btnEditar='<button type="button" class="btn btn-sm btn-log bg-primary" title="Ver o editar" onClick="editarListaReq(' +row['id_requerimiento']+ ');"><i class="fas fa-edit fa-xs"></i></button>';
                 // let btnDetalleRapido='<button type="button" class="btn btn-default" title="Ver OC Fisica" onclick="location.href='+row['url_oc_fisica']+';"><i class="fas fa-eye fa-xs"></i></button>';
-                btnVerOrdenElectronica='<a class="btn btn-sm btn-info" title="O/C electrónica" href="https://apps1.perucompras.gob.pe//OrdenCompra/obtenerPdfOrdenPublico?ID_OrdenCompra='+row['id']+'&ImprimirCompleto=1" target="_blank"><i class="far fa-file-pdf"></i></a>';
+                btnVerOrdenElectronica='<a class="btn btn-sm btn-default" title="O/C electrónica" href="https://apps1.perucompras.gob.pe//OrdenCompra/obtenerPdfOrdenPublico?ID_OrdenCompra='+row['id']+'&ImprimirCompleto=1" target="_blank"><i class="far fa-file-pdf"></i></a>';
                 btnVerOrdenFisica='<a class="btn btn-sm btn-default" title="O/C escaneada" href="'+row['url_oc_fisica']+'" target="_blank"><i class="far fa-file-alt"></i></a>';
                 if(row['id_estado_aprobacion_cc'] ==3){
                     if(row['id_requerimiento'] >0){
-                        btnGenerarRequerimiento='<button type="button" class="btn btn-sm bg-maroon" title="Generar Requerimiento" disabled><i class="fas fa-registered"></i></button>';
+                        btnGenerarRequerimiento='<button type="button" class="btn btn-sm bg-green" title="Generar Requerimiento" disabled><i class="fas fa-registered"></i></button>';
                     }else{
-                        btnGenerarRequerimiento='<button type="button" class="btn btn-sm bg-maroon" title="Generar Requerimiento" onClick="generarRequerimientoByOrdenCompraPropia('+row['tipo_cuadro']+','+row['id_cc']+')"><i class="fas fa-registered"></i></button>';
+                        btnGenerarRequerimiento='<button type="button" class="btn btn-sm bg-green" title="Generar Requerimiento" onClick="generarRequerimientoByOrdenCompraPropia('+row['tipo_cuadro']+','+row['id_cc']+','+row['id_estado_aprobacion_cc']+')"><i class="fas fa-registered"></i></button>';
                     }
-                }else{
+                }
+                else if(row['id_estado_aprobacion_cc'] ==2){
+                    if(row['id_requerimiento'] >0){
+                        btnGenerarRequerimiento='<button type="button" class="btn btn-sm bg-blue" title="Generar Requerimiento" disabled><i class="fas fa-registered"></i></button>';
+                    }else{
+                        btnGenerarRequerimiento='<button type="button" class="btn btn-sm bg-blue" title="Generar Requerimiento" onClick="generarRequerimientoByOrdenCompraPropia('+row['tipo_cuadro']+','+row['id_cc']+','+row['id_estado_aprobacion_cc']+')"><i class="fas fa-registered"></i></button>';
+                    }
+                }
+                else{
                     btnGenerarRequerimiento='';
                 }
                 if(row['id_requerimiento'] >0){
-                    btnIrRequerimiento='<a type="button" class="btn btn-sm bg-primary" title="Ir Requerimiento '+row['codigo_requerimiento']+'" onClick="irRequerimientoByOrdenCompraPropia('+row['id_requerimiento'] +')"><i class="fas fa-file-prescription"></i></a>';
+                    btnIrRequerimiento='<a type="button" class="btn btn-sm bg-info" title="Ir Requerimiento '+row['codigo_requerimiento']+'" onClick="irRequerimientoByOrdenCompraPropia('+row['id_requerimiento'] +')"><i class="fas fa-file-prescription"></i></a>';
                 }else{
                     btnIrRequerimiento='';
                 }
@@ -202,22 +210,51 @@ function listar_ordenes_propias(){
 }
 
 function irRequerimientoByOrdenCompraPropia(id_requerimiento){
+
     localStorage.setItem('id_requerimiento', id_requerimiento);
     window.location.href='/logistica/gestion-logistica/requerimiento/elaboracion/index';
 
 }
 
-function generarRequerimientoByOrdenCompraPropia(tipo_cuadro,id_cc){
-
-    sessionStorage.removeItem('ordenP_Cuadroc')
+function guardarJustificacionGenerarRequerimiento(){
+    sessionStorage.removeItem('justificacion_generar_requerimiento')
 
     let data = {
-        'tipo_cuadro':tipo_cuadro,
-        'id_cc':id_cc
-    };
-    console.log(data);
-    sessionStorage.setItem('ordenP_Cuadroc', JSON.stringify(data));
+        id_cc: document.querySelector("div[id='modal-justificar-generar-requerimiento'] label[name='id_cc']").textContent,
+        contenido:document.querySelector("div[id='modal-justificar-generar-requerimiento'] textarea[id='motivo_generar_requerimiento']").value
+    }
+    sessionStorage.setItem('justificacion_generar_requerimiento', JSON.stringify(data));
     window.location.href = '/logistica/gestion-logistica/requerimiento/elaboracion/index'; //using a named route
+}
+
+function generarRequerimientoByOrdenCompraPropia(tipo_cuadro,id_cc,id_estado_aprobacion_cc){
+    console.log(id_estado_aprobacion_cc);
+    sessionStorage.removeItem('ordenP_Cuadroc')
+
+    if(id_estado_aprobacion_cc == 2){
+        $('#modal-justificar-generar-requerimiento').modal({
+            show: true,
+            backdrop: 'static'
+        });
+        document.querySelector("div[id='modal-justificar-generar-requerimiento'] label[name='id_cc']").textContent = id_cc;
+        let data = {
+            'tipo_cuadro':tipo_cuadro,
+            'id_cc':id_cc,
+            'id_estado_aprobacion_cc':id_estado_aprobacion_cc
+        };
+        // console.log(data);
+        sessionStorage.setItem('ordenP_Cuadroc', JSON.stringify(data));
+        
+    }else{
+        let data = {
+            'tipo_cuadro':tipo_cuadro,
+            'id_cc':id_cc,
+            'id_estado_aprobacion_cc':id_estado_aprobacion_cc
+        };
+        // console.log(data);
+        sessionStorage.setItem('ordenP_Cuadroc', JSON.stringify(data));
+        window.location.href = '/logistica/gestion-logistica/requerimiento/elaboracion/index'; //using a named route
+    }
 
 }
 
