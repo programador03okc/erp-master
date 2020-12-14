@@ -172,6 +172,7 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('valida_acu_editar/{id}', 'ProyectosController@valida_acu_editar');
 				Route::get('insumos/{id}/{cu}', 'ProyectosController@insumos');
 				Route::get('partida_insumos_precio/{id}/{ins}', 'ProyectosController@partida_insumos_precio');
+				Route::post('guardar_insumo', 'ProyectosController@guardar_insumo');
 
 				Route::post('guardar_cu', 'ProyectosController@guardar_cu');
 				Route::post('update_cu', 'ProyectosController@update_cu');
