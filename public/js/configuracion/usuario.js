@@ -9,25 +9,35 @@ $(function(){
         'ajax': 'listar_usuarios',
         'columns': [
             {'data': 'id_usuario'},
-            {'data': 'nro_documento'},
             {'render':
-                function (data, type, row, meta){
-                    return (row['nombres'] + ' ' + row['apellido_paterno'] + ' ' + row['apellido_materno']);
-                }
+            function (data, type, row, meta){
+                return (row['nombre_completo_usuario']);
+            }
             },
             {'data': 'usuario'},
             {'render':
+            function (data, type, row, meta){
+                return row['clave']?'<p></span>   <i class="fas fa-eye-slash" onmousedown="showPasswordUser(this,'+row['id_usuario']+');"  onmouseup="hiddenPasswordUser(this); "style="cursor:pointer;"></i> <span name="password">**********</p>':'';
+            }
+            },
+            {'data': 'email'},
+            {'render':
+            function (data, type, row, meta){
+                return row['rol']?row['rol']:'';
+            }
+            },
+            {'data': 'fecha_registro'},
+            {'render':
                 function (data, type, row, meta){
-                    return ('<div class="flexAccion"><button type="button" class="btn bg-primary btn-flat botonList" data-toggle="tooltip" data-placement="bottom" title="Editar"><i class="fas fa-edit"></i></button>'+
-                    '<button type="button" class="btn bg-red btn-flat botonList" data-toggle="tooltip" data-placement="bottom" title="Anular" onclick="deleteUser('+row['id_usuario']+');"><i class="fas fa-trash"></i></button>'+
-                    '<button type="button" class="btn bg-olive btn-flat botonList" data-toggle="tooltip" data-placement="bottom" title="Accesos" onclick="AccesosUser('+row['id_usuario']+');"><i class="fas fa-unlock-alt"></i></button></div>'
+                    return ('<div class=""><button type="button" class="btn bg-primary btn-flat botonList" data-toggle="tooltip" data-placement="bottom" title="Editar" onclick="editarUsuario('+row['id_usuario']+');"><i class="fas fa-edit"></i></button>'+
+                    '<button type="button" class="btn bg-olive btn-flat botonList" data-toggle="tooltip" data-placement="bottom" title="Asignar Accesos" onclick="AccesoUsuario('+row['id_usuario']+');"><i class="fas fa-user-tag"></i></button></div>'
                     );
                 }
             }
         ],
         'columnDefs': [{ 'aTargets': [0], 'sClass': 'invisible'}],
         'order': [
-            [2, 'asc']
+            [6, 'desc']
         ]
     });
     resizeSide();
@@ -87,6 +97,55 @@ $(function(){
         }
     });
 });
+
+function editarUsuario(id){
+    $('#modal-editar-usuario').modal({
+        show: true,
+        backdrop: 'static'
+    });
+}
+function AccesoUsuario(id){
+    $('#modal-asignar-accesos').modal({
+        show: true,
+        backdrop: 'static'
+    });
+
+}
+function getPasswordUserDecode(id){
+    return new Promise(function(resolve, reject) {
+        $.ajax({
+            type: 'GET',
+            url: '/configuracion/usuario/password-user-decode/'+id,
+            dataType: 'JSON',
+            success(response) {
+                resolve(response) // Resolve promise and go to then() 
+            },
+            error: function(err) {
+            reject(err) // Reject the promise and go to catch()
+            }
+            });
+        });
+}
+
+function showPasswordUser(obj,id){
+    getPasswordUserDecode(id).then(function(res) {
+        // Run this when your request was successful
+        // console.log(res)
+        if(res.status ==200){
+            obj.className="fas fa-eye";
+            obj.parentNode.children[1].innerText=res.data;
+        }
+    }).catch(function(err) {
+        // Run this when promise was rejected via reject()
+        console.log(err)
+    })
+
+
+}
+function hiddenPasswordUser(obj){
+    obj.className="fas fa-eye-slash";
+    obj.parentNode.children[1].innerText="**********";
+}
 
 function crear_usuario(){
     $('.formularioUsu')[0].reset();

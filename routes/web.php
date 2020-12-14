@@ -1377,6 +1377,16 @@ Route::group(['middleware' => ['auth']], function () {
 	Route::get('prueba', 'MigrateSoftLinkController@prueba');
 	Route::get('anular_presup', 'ProyectosController@anular_presup');
 
+	Route::group(['as' => 'configuracion.', 'prefix' => 'configuracion'], function(){
+		Route::get('index', 'ConfiguracionController@view_main_configuracion')->name('index');
+		Route::get('usuarios', 'ConfiguracionController@view_usuario');
+		Route::get('listar_usuarios', 'ConfiguracionController@mostrar_usuarios');
+		Route::post('guardar_usuarios', 'ConfiguracionController@guardar_usuarios');
+		
+		Route::group(['as' => 'usuario.', 'prefix' => 'usuario'], function(){
+			Route::get('password-user-decode/{id?}', 'ConfiguracionController@getPasswordUserDecode')->name('password-user-decode');
+		});
+	});
 
 	Route::get('config', function () {
 		return view('configuracion/main');
@@ -1544,9 +1554,6 @@ Route::post('guardar_aplicaciones', 'ConfiguracionController@guardar_aplicacione
 Route::post('editar_aplicaciones', 'ConfiguracionController@actualizar_aplicaciones');
 Route::get('anular_aplicaciones/{id}', 'ConfiguracionController@anular_aplicaciones');
 
-Route::get('usuarios', 'ConfiguracionController@view_usuario');
-Route::get('listar_usuarios', 'ConfiguracionController@mostrar_usuarios_table');
-Route::post('guardar_usuarios', 'ConfiguracionController@guardar_usuarios');
 // Route::post('editar_usuarios', 'ConfiguracionController@actualizar_usuarios');
 Route::get('anular_usuarios/{id}', 'ConfiguracionController@anular_usuarios');
 Route::get('cargar_aplicaciones_mod/{id}/{user}', 'ConfiguracionController@mostrar_aplicaciones_modulo');

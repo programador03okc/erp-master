@@ -23,9 +23,12 @@
                     <thead>
                         <tr>
                             <th></th>
-                            <th width="12%">N° Dni</th>
-                            <th>Datos del Trabajador</th>
+                            <th width="12%">Nombre</th>
                             <th>Usuario</th>
+                            <th>Clave</th>
+                            <th>Email</th>
+                            <th>Rol</th>
+                            <th>Fecha Registro</th>
                             <th width="10%">Acción</th>
                         </tr>
                     </thead>
@@ -153,6 +156,9 @@
         </div>
     </div>
 </div>
+@include('configuracion.modal_editar_usuario')
+@include('configuracion.modal_asignar_accesos')
+
 @endsection
 @section('scripts')
     <script src="{{ asset('datatables/DataTables/js/jquery.dataTables.min.js') }}"></script>
