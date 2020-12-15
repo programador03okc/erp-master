@@ -909,3 +909,21 @@ function calculaRutaCritica(){
         gantt.parse(tasks);
     }
 }
+
+function actualizarPartidas(){
+    var id = $('[name=id_presupuesto]').val();
+    $.ajax({
+        type: 'GET',
+        url: 'actualizar_partidas_cronograma/'+id,
+        dataType: 'JSON',
+        success: function(response){
+            console.log(response);
+            alert('Partidas actualizadas con éxito');
+            listar_acus_cronograma(id);
+        }
+    }).fail( function( jqXHR, textStatus, errorThrown ){
+        console.log(jqXHR);
+        console.log(textStatus);
+        console.log(errorThrown);
+    });
+}

@@ -286,6 +286,7 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('anular_crono/{id}', 'ProyectosController@anular_crono');
 				Route::get('ver_gant/{id}', 'ProyectosController@ver_gant');
 				Route::get('listar_pres_crono/{tc}/{tp}', 'ProyectosController@listar_pres_crono');
+				Route::get('actualizar_partidas_cronograma/{id}', 'ProyectosController@actualizar_partidas_cronograma');
 				
 				Route::get('mostrar_acu/{id}', 'ProyectosController@mostrar_acu');
 				Route::get('listar_obs_cd/{id}', 'ProyectosController@listar_obs_cd');

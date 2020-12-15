@@ -3284,6 +3284,83 @@ class ProyectosController extends Controller
         return response()->json($id_crono);
     }
 
+    public function actualizar_partidas_cronograma($id_presupuesto)
+    {
+        try {
+            DB::beginTransaction();
+
+            $part_cd = DB::table('proyectos.proy_cd_partida')
+                ->select('proy_cd_partida.*','proy_presup.fecha_emision','proy_cu_partida.rendimiento')
+                ->join('proyectos.proy_presup','proy_presup.id_presupuesto','=','proy_cd_partida.id_cd')
+                // ->join('almacen.alm_und_medida','alm_und_medida.id_unidad_medida','=','proy_cd_partida.unid_medida')
+                ->join('proyectos.proy_cu_partida','proy_cu_partida.id_cu_partida','=','proy_cd_partida.id_cu_partida')
+                // ->join('proyectos.proy_cu','proy_cu.id_cu','=','proy_cu_partida.id_cu')
+                ->where([['proy_cd_partida.id_cd', '=', $id_presupuesto],
+                        ['proy_cd_partida.estado', '!=', 7]])
+                ->orderBy('proy_cd_partida.codigo')
+                ->get()
+                ->toArray();
+
+            $i = 1;
+
+            foreach($part_cd as $partida)
+            {
+                $par_crono = DB::table('proyectos.proy_cd_pcronog')
+                    ->select('proy_cd_pcronog.*','proy_cd_partida.cantidad','proy_cu_partida.rendimiento')
+                    ->join('proyectos.proy_cd_partida','proy_cd_partida.id_partida','=','proy_cd_pcronog.id_partida')
+                    ->join('proyectos.proy_cu_partida','proy_cu_partida.id_cu_partida','=','proy_cd_partida.id_cu_partida')
+                    ->where([['proy_cd_pcronog.id_partida','=',$partida->id_partida],['proy_cd_pcronog.tipo','=','cd']])
+                    ->first();
+
+                if ($par_crono !== null){
+                    
+                    $fecha_inicio = $par_crono->fecha_inicio;
+                    $duracion = round(($par_crono->cantidad / $par_crono->rendimiento),2,PHP_ROUND_HALF_UP);
+                    $fecha_fin = date("Y-m-d",strtotime($fecha_inicio."+ ".round($duracion,0,PHP_ROUND_HALF_UP)." days"));
+
+                    DB::table('proyectos.proy_cd_pcronog')
+                    ->where('id_pcronog',$par_crono->id_pcronog)
+                    ->update([
+                        'nro_orden'=>$i,
+                        'fecha_inicio'=>$fecha_inicio,
+                        'fecha_fin'=>$fecha_fin,
+                        'tp_predecesora'=>1,
+                        'dias_pos'=>0,
+                        'predecesora'=>"",
+                        'dias'=>$duracion
+                    ]);
+                }
+                else {
+                    $fecha_inicio = $partida->fecha_emision;
+                    $duracion = round(($partida->cantidad / $partida->rendimiento),2,PHP_ROUND_HALF_UP);
+                    $fecha_fin = date("Y-m-d",strtotime($fecha_inicio."+ ".round($duracion,0,PHP_ROUND_HALF_UP)." days"));
+
+                    DB::table('proyectos.proy_cd_pcronog')
+                    ->insert([
+                        'id_partida'=>$partida->id_partida,
+                        'id_presupuesto'=>$id_presupuesto,
+                        'tipo'=>'cd',
+                        'nro_orden'=>$i,
+                        'fecha_inicio'=>$fecha_inicio,
+                        'fecha_fin'=>$fecha_fin,
+                        'dias'=> $duracion,
+                        'tp_predecesora'=>1,
+                        'dias_pos'=>0,
+                        'predecesora'=>"",
+                        'fecha_registro'=>date('Y-m-d'),
+                        'estado'=>1
+                    ]);
+                }
+                $i++;
+            }
+            DB::commit();
+            return response()->json($id_presupuesto);
+            
+        } catch (\PDOException $e) {
+            DB::rollBack();
+        }
+    }
+
     public function anular_crono($id_presupuesto)
     {
         $presup = DB::table('proyectos.proy_presup')

@@ -48,12 +48,17 @@ Cronograma Interno
                                             @endforeach
                                         </select>
                                     </div>
-                                    <div class="col-md-1"></div>
                                     <div class="col-md-1">
                                         <label id="codigo"></label>
                                     </div>
                                     <div class="col-md-6">
                                         <label id="descripcion"></label>
+                                    </div>
+                                    <div class="col-md-1">
+                                        <button type="button" class="input-group-text btn btn-success" id="btnActualizarPartidas" data-toggle="tooltip" 
+                                            data-placement="bottom" title="Actualizar Partidas" onClick="actualizarPartidas();">
+                                            <i class="fas fa-sync-alt"></i>
+                                        </button>
                                     </div>
                                 </div>
                                 <table class="mytable table table-condensed table-bordered table-okc-view" width="100%" 
