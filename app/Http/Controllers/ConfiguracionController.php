@@ -29,7 +29,9 @@ class ConfiguracionController extends Controller{
     }
     function view_usuario(){
         $modulos = $this->select_modulos();
-        return view('configuracion/usuarios', compact('modulos'));
+        $roles=$this->lista_roles();
+
+        return view('configuracion/usuarios', compact('modulos','roles'));
     }
 
     function view_notas_lanzamiento(){
@@ -106,6 +108,15 @@ class ConfiguracionController extends Controller{
         ->orderBy('adm_operacion.id_operacion', 'asc')->get();
         return $data;
     }
+
+    function lista_roles(){
+		$roles = DB::table('configuracion.sis_rol')
+		->select('sis_rol.*')
+		->where('sis_rol.estado',1)
+		->get();
+		return $roles;
+    }
+
     public function mostrarTipoDocumento(){
         $data = DB::table('administracion.adm_tp_docum')
         ->select(
@@ -561,6 +572,123 @@ class ConfiguracionController extends Controller{
         return $output;
 
     }
+
+    public function savePerfil(Request $request){
+        try {
+            DB::beginTransaction();
+
+        $status=0;
+        $id_usuario = $request->id_usuario;
+        $nombres = $request->nombres;
+        $apellido_paterno = $request->apellido_paterno;
+        $apellido_materno = $request->apellido_materno;
+        $nombre_corto = $request->nombre_corto;
+        $usuario = $request->usuario;
+        $contraseña =  $this->encode5t($request->contraseña);
+        $email = $request->email;
+        $rol = $request->rol;
+
+        $sis_usua_update = DB::table('configuracion.sis_usua')
+        ->where('id_usuario', $id_usuario)
+        ->update([
+            'usuario' => $usuario,
+            'clave' => $contraseña,
+            'nombre_corto' => $nombre_corto
+        ]);
+
+
+        $sis_acceso_update = DB::table('configuracion.sis_acceso')
+        ->where('id_usuario', $id_usuario)
+        ->update([
+            'id_rol' => $rol
+        ]);
+
+        $rrhh_perso = DB::table('configuracion.sis_usua')
+        ->select(
+            'rrhh_perso.id_persona' 
+        )
+        ->join('rrhh.rrhh_trab', 'sis_usua.id_trabajador', '=', 'rrhh_trab.id_trabajador')
+        ->join('rrhh.rrhh_postu', 'rrhh_trab.id_postulante', '=', 'rrhh_postu.id_postulante')
+        ->join('rrhh.rrhh_perso', 'rrhh_postu.id_persona', '=', 'rrhh_perso.id_persona')
+
+        ->where('sis_usua.id_usuario', '=', $id_usuario)
+        ->get();
+
+        $id_persona=0;
+        if(count($rrhh_perso) > 0){
+            $id_persona=$rrhh_perso->first()->id_persona;
+
+            $rrhh_perso_update = DB::table('rrhh.rrhh_perso')
+            ->where('id_persona', $id_persona)
+            ->update([
+                'nombres' => $nombres,
+                'apellido_paterno' => $apellido_paterno,
+                'apellido_materno' => $apellido_materno,
+                'email' => $email,
+            ]);
+        }
+        if($sis_usua_update > 0  && $sis_acceso_update > 0  && $rrhh_perso_update > 0  ){
+            $status = 200;
+        }
+
+
+        $output= ['status'=>$status];
+        DB::commit();
+        return response()->json($output);
+        } catch (\PDOException $e) {
+            DB::rollBack();
+        }
+    }
+
+    public function getPerfil($id){
+        $usuario=[];
+        $status=0;
+        $sis_usua = DB::table('configuracion.sis_usua')
+            ->select(
+                'sis_usua.id_usuario',
+                'sis_usua.nombre_corto',
+                'sis_usua.usuario',
+                'sis_usua.clave',
+                'sis_usua.fecha_registro',
+                'sis_usua.estado',
+                'sis_acceso.id_acceso',
+                'sis_acceso.id_rol',
+                'sis_rol.descripcion as rol',
+                'rrhh_perso.nombres',
+                'rrhh_perso.apellido_paterno',
+                'rrhh_perso.apellido_materno',
+                DB::raw("CONCAT(rrhh_perso.nombres,' ',rrhh_perso.apellido_paterno,' ',rrhh_perso.apellido_materno) as nombre_completo_usuario"),
+                'rrhh_perso.email'
+                    )
+                    ->leftJoin('configuracion.sis_acceso', 'sis_acceso.id_usuario', '=', 'sis_usua.id_usuario')
+                    ->leftJoin('configuracion.sis_rol', 'sis_rol.id_rol', '=', 'sis_acceso.id_rol')
+            ->join('rrhh.rrhh_trab', 'sis_usua.id_trabajador', '=', 'rrhh_trab.id_trabajador')
+            ->join('rrhh.rrhh_postu', 'rrhh_trab.id_postulante', '=', 'rrhh_postu.id_postulante')
+            ->join('rrhh.rrhh_perso', 'rrhh_postu.id_persona', '=', 'rrhh_perso.id_persona')
+    
+            ->where('sis_usua.id_usuario', '=', $id)
+            ->orderBy('sis_usua.id_usuario', 'asc')
+            ->get();
+
+            if(count($sis_usua)>0){
+                $status=200;
+                $usuario=[
+                    'nombres'=>$sis_usua->first()->nombres,
+                    'apellido_paterno'=>$sis_usua->first()->apellido_paterno,
+                    'apellido_materno'=>$sis_usua->first()->apellido_materno,
+                    'nombre_corto'=>$sis_usua->first()->nombre_corto,
+                    'usuario'=>$sis_usua->first()->usuario,
+                    'contraseña_codificada'=>$sis_usua->first()->clave,
+                    'contraseña_decodificada'=> $this->decode5t(strval($sis_usua->first()->clave)),
+                    'email'=>$sis_usua->first()->email,
+                    'id_rol'=>$sis_usua->first()->id_rol
+                ];
+            }
+            $output=['status'=>$status,'data'=>$usuario];
+            return $output;
+    }
+
+
     public function mostrar_usuarios(){
         $data = DB::table('configuracion.sis_usua')
             ->select(

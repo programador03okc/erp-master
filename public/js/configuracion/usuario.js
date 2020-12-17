@@ -98,11 +98,90 @@ $(function(){
     });
 });
 
+function actualizarPerfilUsuario(){
+    let id_usuario = document.querySelector("div[id='modal-editar-usuario'] input[name='id_usuario']").value;
+    let nombres = document.querySelector("div[id='modal-editar-usuario'] input[name='nombres']").value;
+    let apellido_paterno = document.querySelector("div[id='modal-editar-usuario'] input[name='apellido_paterno']").value;
+    let apellido_materno = document.querySelector("div[id='modal-editar-usuario'] input[name='apellido_materno']").value;
+    let nombre_corto = document.querySelector("div[id='modal-editar-usuario'] input[name='nombre_corto']").value;
+    let usuario = document.querySelector("div[id='modal-editar-usuario'] input[name='usuario']").value;
+    let contraseña = document.querySelector("div[id='modal-editar-usuario'] input[name='contraseña']").value;
+    let email = document.querySelector("div[id='modal-editar-usuario'] input[name='email']").value;
+    let rol = document.querySelector("div[id='modal-editar-usuario'] select[name='rol']").value;
+
+    let  dataPerfil= {
+        id_usuario,
+        nombres,
+        apellido_paterno,
+        apellido_materno,
+        nombre_corto,
+        usuario,
+        contraseña,
+        email,
+        rol
+    };
+    // console.log(dataPerfil);
+    $.ajax({
+        type: 'POST',
+        url:'/configuracion/usuario/perfil',
+        data: dataPerfil,
+        beforeSend: function(){
+        },
+        success: function(response){
+            // console.log(response);
+            if (response.status == '200') {
+                $('#listaUsuarios').DataTable().ajax.reload();
+                alert('Se actualizó el perfil del usuario');
+            }else {
+                alert('hubo un error, No se puedo actualizar');
+            }
+        }
+    });
+}
+
+function getPerfilUsuario(id){
+    return new Promise(function(resolve, reject) {
+        $.ajax({
+            type: 'GET',
+            url:'/configuracion/usuario/perfil' +'/'+id,
+            dataType: 'JSON',
+            success(response) {
+                resolve(response) // Resolve promise and go to then() 
+            },
+            error: function(err) {
+            reject(err) // Reject the promise and go to catch()
+            }
+            });
+        });
+}
+function loadPerfilUsuario(id){
+    getPerfilUsuario(id).then(function(res) {
+        // Run this when your request was successful
+        // console.log(res)
+        if(res.status ==200){
+            document.querySelector("div[id='modal-editar-usuario'] input[name='id_usuario']").value= id;
+            document.querySelector("div[id='modal-editar-usuario'] input[name='nombres']").value= res.data.nombres;
+            document.querySelector("div[id='modal-editar-usuario'] input[name='apellido_paterno']").value= res.data.apellido_paterno;
+            document.querySelector("div[id='modal-editar-usuario'] input[name='apellido_materno']").value= res.data.apellido_materno;
+            document.querySelector("div[id='modal-editar-usuario'] input[name='nombre_corto']").value= res.data.nombre_corto;
+            document.querySelector("div[id='modal-editar-usuario'] input[name='usuario']").value= res.data.usuario;
+            // document.querySelector("div[id='modal-editar-usuario'] input[name='contraseña']").value= '*'.repeat((res.data.contraseña_decodificada).length);
+            document.querySelector("div[id='modal-editar-usuario'] input[name='contraseña']").value=  res.data.contraseña_decodificada;
+            document.querySelector("div[id='modal-editar-usuario'] input[name='email']").value= res.data.email;
+            document.querySelector("div[id='modal-editar-usuario'] select[name='rol']").value= res.data.id_rol;
+        }
+    }).catch(function(err) {
+        // Run this when promise was rejected via reject()
+        console.log(err)
+    })
+}
+
 function editarUsuario(id){
     $('#modal-editar-usuario').modal({
         show: true,
         backdrop: 'static'
     });
+    loadPerfilUsuario(id);
 }
 function AccesoUsuario(id){
     $('#modal-asignar-accesos').modal({

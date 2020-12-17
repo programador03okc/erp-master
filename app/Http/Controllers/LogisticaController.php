@@ -39,6 +39,7 @@ class LogisticaController extends Controller
 
     function view_gestionar_requerimiento()
     {
+        $grupos = Auth::user()->getAllGrupo();
         $monedas = $this->mostrar_moneda();
         $prioridades = $this->mostrar_prioridad();
         $tipo_requerimiento = $this->mostrar_tipo();
@@ -55,7 +56,7 @@ class LogisticaController extends Controller
         $categorias = (new AlmacenController)->mostrar_categorias_cbo();
         $unidades = (new AlmacenController)->mostrar_unidades_cbo();
 
-        return view('logistica/requerimientos/gestionar_requerimiento', compact('sis_identidad','tipo_requerimiento','monedas', 'prioridades', 'empresas', 'unidades_medida','roles','periodos','bancos','tipos_cuenta','clasificaciones','subcategorias','categorias','unidades'));
+        return view('logistica/requerimientos/gestionar_requerimiento', compact('grupos','sis_identidad','tipo_requerimiento','monedas', 'prioridades', 'empresas', 'unidades_medida','roles','periodos','bancos','tipos_cuenta','clasificaciones','subcategorias','categorias','unidades'));
     }
 
     function view_gestionar_cotizaciones()

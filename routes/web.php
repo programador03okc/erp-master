@@ -1386,6 +1386,9 @@ Route::group(['middleware' => ['auth']], function () {
 		
 		Route::group(['as' => 'usuario.', 'prefix' => 'usuario'], function(){
 			Route::get('password-user-decode/{id?}', 'ConfiguracionController@getPasswordUserDecode')->name('password-user-decode');
+			Route::get('perfil/{id}', 'ConfiguracionController@getPerfil')->name('get-perfil');
+			Route::post('perfil', 'ConfiguracionController@savePerfil')->name('save-perfil');
+
 		});
 	});
 
