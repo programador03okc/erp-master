@@ -165,23 +165,28 @@
                 <select class="form-control activation " name="id_almacen">
                 </select>
             </div>
-            <div class="col-md-6" id="input-group-proyecto" hidden>
-                <h5>Proyecto</h5>
-                <div style="display:flex;">
-                    <input type="hidden" class="form-control" name="descripcion_grupo">
-                    <input type="hidden" class="form-control" name="id_grupo">
-                    <input type="hidden" type="text" name="id_proyecto" class="activation">
-                    <input type="text" name="codigo_opcion" class="form-control group-elemento" style="width:130px; text-align:center;" readonly>
-                    <div class="input-group-okc">
-                        <input type="text" class="form-control" name="nombre_opcion" placeholder="" aria-describedby="basic-addon4" disabled="true">
-                        <div class="input-group-append">
-                            <button type="button" class="input-group-text" id="btnOpenModalProyecto" onClick="open_opcion_modal();">
-                                <i class="fa fa-search"></i>
-                            </button>
-                        </div>
-                    </div>                            
+            @foreach ($grupos as $grupo)
+            @if($grupo->id_grupo == 3)
+                <div class="col-md-6" id="input-group-proyecto">
+                    <h5>Proyecto</h5>
+                    <div style="display:flex;">
+                        <input type="hidden" class="form-control" name="descripcion_grupo">
+                        <input type="hidden" class="form-control" name="id_grupo">
+                        <input type="hidden" type="text" name="id_proyecto" class="activation">
+                        <input type="text" name="codigo_opcion" class="form-control group-elemento" style="width:130px; text-align:center;" readonly>
+                        <div class="input-group-okc">
+                            <input type="text" class="form-control" name="nombre_opcion" placeholder="" aria-describedby="basic-addon4" disabled="true">
+                            <div class="input-group-append">
+                                <button type="button" class="input-group-text" id="btnOpenModalProyecto" onClick="open_opcion_modal();">
+                                    <i class="fa fa-search"></i>
+                                </button>
+                            </div>
+                        </div>                            
+                    </div>
                 </div>
-            </div>
+            @endif
+            @endforeach
+
 
             <div id="input-group-comercial" hidden>
                 <div class="col-md-2" >
@@ -209,7 +214,8 @@
                 </div>
             </div>
         </div>
-
+        @foreach ($grupos as $grupo)
+        @if($grupo->id_grupo != 3)
         <div class="row">
             <div class="col-md-2 form-inline" id="input-group-tipo-cliente" >
                 <h5>Tipo Cliente</h5>
@@ -297,6 +303,8 @@
                 </div>
             </div>
         </div>
+        @endif
+        @endforeach
         <div class="row">
             <div class="col-md-12" id="input-group-observacion">
                 <h5>Observación:</h5>
@@ -495,11 +503,14 @@
     <script src="{{ asset('template/plugins/moment.min.js') }}"></script>
 
     <script>
+        var grupos = {!! json_encode($grupos) !!};
+        console.log(grupos);
+
     $(document).ready(function(){
         seleccionarMenu(window.location);
         var descripcion_grupo='{{Auth::user()->getGrupo()->descripcion}}';
         var id_grupo='{{Auth::user()->getGrupo()->id_grupo}}';
-        controlInput(id_grupo,descripcion_grupo);
+        // controlInput(id_grupo,descripcion_grupo);
         inicializar(
             "{{route('logistica.gestion-logistica.requerimiento.elaboracion.lista-modal')}}",
             "{{route('logistica.gestion-logistica.requerimiento.elaboracion.mostrar-requerimiento')}}",

@@ -389,17 +389,17 @@ function isNumberKey(evt){
     return true;
 }
 
-function controlInput(id,descripcion){
-    document.querySelector("form[id='form-requerimiento'] input[name='id_grupo']").value = id;
-    document.querySelector("form[id='form-requerimiento'] input[name='descripcion_grupo']").value = descripcion;
-    // console.log(descripcion);
-    if(descripcion == 'Proyectos'){
-       hiddeElement('mostrar','form-requerimiento',[
-        'input-group-proyecto'
-        ]);
-    }
+// function controlInput(id,descripcion){
+//     document.querySelector("form[id='form-requerimiento'] input[name='id_grupo']").value = id;
+//     document.querySelector("form[id='form-requerimiento'] input[name='descripcion_grupo']").value = descripcion;
+//     // console.log(descripcion);
+//     if(descripcion == 'Proyectos'){
+//        hiddeElement('mostrar','form-requerimiento',[
+//         'input-group-proyecto'
+//         ]);
+//     }
 
-}
+// }
 
 let data = [];
 let data_item=[];
@@ -483,32 +483,38 @@ $(function(){
 
 function changeOptComercialSelect(){
     let optCom =getActualOptComercial();
-    document.getElementById('title-option-comercial').textContent = 'Código '+optCom.texto;
-    switch (optCom.id) {
-        case '1':
-            document.getElementsByName('codigo_occ')[0].setAttribute('maxlength', '14');
-            document.getElementsByName('codigo_occ')[0].setAttribute('placeholder', 'OKC0000-0000000');
-            
-            break;
-            case '2':
-                document.getElementsByName('codigo_occ')[0].setAttribute('maxlength', '11');
-                document.getElementsByName('codigo_occ')[0].setAttribute('placeholder', 'OKC00-00000');
-
-            break;
-        default:
-            break;
+    if(document.getElementById('title-option-comercial') != null){
+        document.getElementById('title-option-comercial').textContent = 'Código '+optCom.texto;
+        switch (optCom.id) {
+            case '1':
+                document.getElementsByName('codigo_occ')[0].setAttribute('maxlength', '14');
+                document.getElementsByName('codigo_occ')[0].setAttribute('placeholder', 'OKC0000-0000000');
+                
+                break;
+                case '2':
+                    document.getElementsByName('codigo_occ')[0].setAttribute('maxlength', '11');
+                    document.getElementsByName('codigo_occ')[0].setAttribute('placeholder', 'OKC00-00000');
+    
+                break;
+            default:
+                break;
+        }
     }
+
 
 }
 
 function getActualOptComercial(){
-    let selection = document.getElementsByName('tpOptCom')[0].options.selectedIndex;
+    if(document.getElementsByName('tpOptCom')[0] != undefined){
+        let selection = document.getElementsByName('tpOptCom')[0].options.selectedIndex;
  
-    tpOptCom.texto = document.getElementsByName('tpOptCom')[0].options[selection].textContent;
-    tpOptCom.id  = document.getElementsByName('tpOptCom')[0].value;
-    // console.log(tpOptCom);
+        tpOptCom.texto = document.getElementsByName('tpOptCom')[0].options[selection].textContent;
+        tpOptCom.id  = document.getElementsByName('tpOptCom')[0].value;
+        // console.log(tpOptCom);
+    
+        return tpOptCom;
+    }
 
-    return tpOptCom;
 }
 
 function mostrar_cuadro_costos_modal(){
@@ -3185,37 +3191,26 @@ function changeMonedaSelect(e){
 
 function limpiarSelectTipoCliente(){
     let selectElement = document.querySelector("form[id='form-requerimiento'] select[name='tipo_cliente']");
-    while (selectElement.options.length > 0) {                
-        selectElement.remove(0);
-    }    
+    if(selectElement !=null){
+        while (selectElement.options.length > 0) {                
+            selectElement.remove(0);
+        }    
+    }
 }
 
 function createOptionTipoCliente(tipoRequerimiento){  
     let selectTipoCliente = document.querySelector("form[id='form-requerimiento'] select[name='tipo_cliente']");
-    let array = [];
-    switch (tipoRequerimiento) {
-    case 'COMPRA':
-    case '1':
-        limpiarSelectTipoCliente();
-        array =[
-            {descripcion:'Persona Natural', valor: 1},
-            {descripcion:'Persona Juridica', valor: 2}
-            // {descripcion:'Uso Almacen', valor: 3},
-            // {descripcion:'Uso Administración', valor: 4}
-        ]
-        array.forEach(element => {
-            let option = document.createElement("option");
-            option.text = element.descripcion;
-            option.value = element.valor;
-            selectTipoCliente.add(option);
-        });
-        break;
-        case 'VENTA':
-        case '2':
+    if(selectTipoCliente !=null){
+        let array = [];
+        switch (tipoRequerimiento) {
+        case 'COMPRA':
+        case '1':
             limpiarSelectTipoCliente();
             array =[
                 {descripcion:'Persona Natural', valor: 1},
                 {descripcion:'Persona Juridica', valor: 2}
+                // {descripcion:'Uso Almacen', valor: 3},
+                // {descripcion:'Uso Administración', valor: 4}
             ]
             array.forEach(element => {
                 let option = document.createElement("option");
@@ -3224,26 +3219,42 @@ function createOptionTipoCliente(tipoRequerimiento){
                 selectTipoCliente.add(option);
             });
             break;
-        case 'USO_ALMACEN':
-        case '3':
-            limpiarSelectTipoCliente();
-            array =[
-                {descripcion:'Uso Almacen', valor: 3},
-                {descripcion:'Uso Administración', valor: 4}
-            ]
-            array.forEach(element => {
-                let option = document.createElement("option");
-                option.text = element.descripcion;
-                option.value = element.valor;
-                selectTipoCliente.add(option);
-            });
-            break;
+            case 'VENTA':
+            case '2':
+                limpiarSelectTipoCliente();
+                array =[
+                    {descripcion:'Persona Natural', valor: 1},
+                    {descripcion:'Persona Juridica', valor: 2}
+                ]
+                array.forEach(element => {
+                    let option = document.createElement("option");
+                    option.text = element.descripcion;
+                    option.value = element.valor;
+                    selectTipoCliente.add(option);
+                });
+                break;
+            case 'USO_ALMACEN':
+            case '3':
+                limpiarSelectTipoCliente();
+                array =[
+                    {descripcion:'Uso Almacen', valor: 3},
+                    {descripcion:'Uso Administración', valor: 4}
+                ]
+                array.forEach(element => {
+                    let option = document.createElement("option");
+                    option.text = element.descripcion;
+                    option.value = element.valor;
+                    selectTipoCliente.add(option);
+                });
+                break;
+        
+            default:
     
-        default:
-
-            break;
+                break;
+        }
+        return false;
     }
-    return false;
+   
 }
 
 function getNexCodigoRequerimiento(tipo_requerimiento){

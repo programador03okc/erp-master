@@ -8,6 +8,7 @@ use Illuminate\Contracts\Session\Session;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class Usuario extends Authenticatable
 {
@@ -135,6 +136,8 @@ class Usuario extends Authenticatable
 		->get();
 		return $roles;
 	}
+
+
 
 
 
