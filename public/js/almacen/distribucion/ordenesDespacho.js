@@ -127,9 +127,9 @@ function listarRequerimientosElaborados(){
         'columnDefs': [
             {'aTargets': [0], 'sClass': 'invisible'},
             {'render': function (data, type, row){
-                    return '<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" '+
-                    'data-placement="bottom" title="Ver Detalle" >'+
-                    '<i class="fas fa-list-ul"></i></button>';
+                    return `<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" 
+                        data-placement="bottom" title="Ver Detalle" >
+                        <i class="fas fa-list-ul"></i></button>`;
                 }, targets: 12
             }
         ],

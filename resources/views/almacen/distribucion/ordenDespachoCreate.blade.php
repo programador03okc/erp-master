@@ -28,7 +28,7 @@
                     </div>
                     <div id="despachoExterno">
                         <div class="row">
-                            <div class="col-md-4">
+                            <div class="col-md-2">
                                 <h5>Tipo Cliente</h5>
                                 <div class="input-group-okc">
                                     <select name="tipo_cliente" onChange="changeTipoCliente(event);"
@@ -38,9 +38,9 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="col-md-2">
-                                <h5>Teléfono</h5>
-                                <input type="number" class="form-control" name="telefono_cliente">
+                            <div class="col-md-4">
+                                <h5>Persona Contacto</h5>
+                                <input type="text" class="form-control" name="contacto_cliente" readOnly>
                             </div>
                             <div class="col-md-6">
                                 <h5>Cliente</h5>
@@ -66,7 +66,7 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <h5>Dirección Destino</h5>
-                                <input type="text" class="form-control" name="direccion_destino">
+                                <input type="text" class="form-control" name="direccion_destino" readOnly>
                             </div>
                             <div class="col-md-3">
                                 <h5>Ubigeo Destino</h5>
@@ -84,9 +84,13 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <h5>Correo Cliente</h5>
-                                <input type="text" class="form-control" name="correo_cliente">
+                                <input type="text" class="form-control" name="correo_cliente" readOnly>
+                            </div>
+                            <div class="col-md-2">
+                                <h5>Teléfono</h5>
+                                <input type="text" class="form-control" name="telefono_cliente" readOnly>
                             </div>
                             <div class="col-md-3">
                                 <h5>Tipo de Entrega</h5>
