@@ -909,7 +909,7 @@ class DistribucionController extends Controller
                 ->update(['estado'=>29]);//por despachar
             }
 
-            if ($request->aplica_cambios_valor !== 'si'){
+            if ($request->aplica_cambios_valor == 'no'){
 
                 $empresa = DB::table('administracion.sis_sede')
                 ->select('adm_empresa.id_empresa','adm_contri.razon_social')
@@ -947,7 +947,9 @@ class DistribucionController extends Controller
                 ->leftJoin('almacen.alm_cat_prod as prod_cat','prod_cat.id_categoria','=','prod.id_categoria')
                 ->leftJoin('almacen.alm_subcat as prod_subcat','prod_subcat.id_subcategoria','=','prod.id_subcategoria')
                 
-                ->where([['alm_det_req.id_requerimiento','=',$request->id_requerimiento],['alm_det_req.estado','!=',7]])
+                ->where([['alm_det_req.id_requerimiento','=',$request->id_requerimiento],
+                        ['alm_det_req.estado','!=',7],
+                        ['alm_det_req.tiene_transformacion','=',($request->tiene_transformacion == 'si' ? true : false)]])
                 ->get();
     
                 $text = '';
