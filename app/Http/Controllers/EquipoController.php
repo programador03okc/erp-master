@@ -2310,34 +2310,9 @@ class EquipoController extends Controller
             ->get();
         }
 
-
         $html = '';
         $userSession=$this->userSession()['roles'];
         $isVisible ='';
-
-        // $idRolConceptoEnabledList=[
-        //     2, // GERENTE ADMINISTRATIVO
-        //     39, // GERENTE DE CONTROL INTERNO
-        //     3, // GERENTE COMERCIAL
-        //     15, // GERENTE PROYECTOS
-        //     44, // ing lamas
-        //     43 // ing cortez
-        // ];
-
-        // $hasRolEnabled=0;
-        // foreach($userSession as $us){
-
-        //     if(in_array($us->id_rol_concepto,$idRolConceptoEnabledList)){
-        //         $hasRolEnabled += 1;
-        //     }
-        // }
-
-        // if($hasRolEnabled == 0){
-        //     $isVisible ='invisible';
-        // }else{
-        //     $isVisible ='';
-        // }
-
 
         foreach($presup as $p){
             $titulos = DB::table('finanzas.presup_titu')

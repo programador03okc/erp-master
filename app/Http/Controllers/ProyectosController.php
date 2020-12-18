@@ -1562,6 +1562,7 @@ class ProyectosController extends Controller
         $output['data'] = $data;
         return response()->json($output);
     }
+
     public function mostrar_proyectos_pendientes($emp,$rol)
     {
         //Lista de flujos con el rol en sesion para proyecto
@@ -1848,12 +1849,104 @@ class ProyectosController extends Controller
         ]);
         return response()->json($data);
     }
+    
     public function anular_proyecto(Request $request,$id)
     {
         $data = DB::table('proyectos.proy_proyecto')->where('id_proyecto', $id)
         ->update([ 'estado' => 7 ]);
         return response()->json($data);
     }
+
+
+    
+    public function listar_proyectos_activos()
+    {
+        $data = DB::table('proyectos.proy_proyecto')
+                ->select('proy_proyecto.*')
+                ->where('proy_proyecto.estado', 1)
+                ->orderBy('id_proyecto')
+                ->get();
+        return response()->json($data);
+    }
+
+    public function listar_partidas($id_grupo,$id_proyecto=null){
+        
+        if($id_proyecto != null || $id_proyecto != ''){ 
+            
+            $presup = DB::table('proyectos.proy_presup')
+            ->select('presup.*')
+            ->leftJoin('finanzas.presup', 'presup.id_presup', '=', 'proy_presup.id_presup')
+            ->where([
+                    ['proy_presup.id_proyecto','=',$id_proyecto],
+                    ['proy_presup.estado','=',8],
+                    ['tp_presup','=',4]
+
+                    ])
+            ->get();
+
+        }else{
+
+            $presup = DB::table('finanzas.presup')
+            ->where([
+                    ['id_grupo','=',$id_grupo],
+                    ['estado','=',1],
+                    ['tp_presup','=',2]
+                    ])
+            ->get();
+        }
+
+        $html = '';
+        $userSession=$this->userSession()['roles'];
+        $isVisible ='';
+
+        foreach($presup as $p){
+            $titulos = DB::table('finanzas.presup_titu')
+                ->where([['id_presup','=',$p->id_presup],
+                        ['estado','=',1]])
+                ->orderBy('presup_titu.codigo')
+                ->get();
+            $partidas = DB::table('finanzas.presup_par')
+                ->select('presup_par.*','presup_pardet.descripcion as des_pardet')
+                ->join('finanzas.presup_pardet','presup_pardet.id_pardet','=','presup_par.id_pardet')
+                ->where([['presup_par.id_presup','=',$p->id_presup],
+                        ['presup_par.estado','=',1]])
+                ->orderBy('presup_par.codigo')
+                ->get();
+            $html .='
+            <div id='.$p->codigo.' class="panel panel-primary" style="width:100%;">
+                <h5 onclick="apertura('.$p->id_presup.');" class="panel-heading" style="cursor: pointer; margin: 0;">
+                '.$p->descripcion.' </h5>
+                <div id="pres-'.$p->id_presup.'" class="oculto" style="width:100%;">
+                    <table class="table table-bordered partidas" width="100%">
+                        <tbody> 
+                ';
+                foreach($titulos as $ti){
+                    $html .='
+                    <tr id="com-'.$ti->id_titulo.'">
+                        <td><strong>'.$ti->codigo.'</strong></td>
+                        <td><strong>'.$ti->descripcion.'</strong></td>
+                        <td class="right '.$isVisible.'"><strong>'.$ti->total.'</strong></td>
+                    </tr>';
+                    foreach($partidas as $par){
+                        if ($ti->codigo == $par->cod_padre){
+                            $html .='
+                            <tr id="par-'.$par->id_partida.'" onclick="selectPartida('.$par->id_partida.');" style="cursor: pointer; margin: 0;">
+                                <td name="codigo">'.$par->codigo.'</td>
+                                <td name="descripcion">'.$par->des_pardet.'</td>
+                                <td name="importe_total" class="right '.$isVisible.'">'.$par->importe_total.'</td>
+                            </tr>';
+                        }
+                    }
+                }
+            $html .='
+                    </tbody>
+                </table>
+            </div>
+        </div>';
+        }
+        return json_encode($html);
+    }
+
 
     //  PRESUPUESTO INTERNO
     public function mostrar_presupuestos_cabecera()
