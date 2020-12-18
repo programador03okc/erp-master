@@ -663,6 +663,15 @@ class RequerimientoController extends Controller
             'oportunidades.codigo_oportunidad',
             'oc_propias.estado_entrega',
             'oc_propias.fecha_publicacion',
+            'oc_propias.id_contacto',
+            'adm_ctb_contac.id_contribuyente as contact_id_contribuyente',
+            'entidades_contact.nombre as contact_nombre_entidad',
+            'adm_ctb_contac.nombre as contact_nombre',
+            'adm_ctb_contac.telefono as contact_telefono',
+            'adm_ctb_contac.email as contact_email',
+            'adm_ctb_contac.cargo as contact_cargo',
+            'adm_ctb_contac.direccion as contact_direccion',
+            'adm_ctb_contac.horario as contact_horario',
             // 'oc_propias.occ',
             // 'oc_propias.despachada',
             'acuerdo_marco.descripcion_corta as am',
@@ -677,6 +686,8 @@ class RequerimientoController extends Controller
         ->leftJoin('mgcp_cuadro_costos.cc', 'cc.id_oportunidad', '=', 'oc_propias.id_oportunidad')
         ->leftJoin('mgcp_cuadro_costos.estados_aprobacion', 'estados_aprobacion.id', '=', 'cc.estado_aprobacion')
         ->leftJoin('mgcp_oportunidades.oportunidades', 'oportunidades.id', '=', 'cc.id_oportunidad')
+        ->leftJoin('contabilidad.adm_ctb_contac', 'adm_ctb_contac.id_datos_contacto', '=', 'oc_propias.id_contacto')
+        ->leftJoin('mgcp_acuerdo_marco.entidades as entidades_contact', 'entidades_contact.id', '=', 'adm_ctb_contac.id_contribuyente')
         ->where('cc.id','=',$id_cc)  
         ->get();
         if(count($cc)>0){
