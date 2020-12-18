@@ -270,7 +270,7 @@
                 </div>
             </div>
             <div class="col-md-2" id="input-group-direccion-entrega" >
-                <h5>Dirección Entrega</h5>
+                <h5>Dirección Cliente</h5>
                 <div style="display:flex;">
                     <input type="text" class="form-control activation" name="direccion_entrega"  disabled>
                     <button type="button" class="btn-primary" title="Buscar Dirección" name="btnSearchAddress" onClick="direccionesClienteModal();">
@@ -300,6 +300,44 @@
                     <button type="button" class="btn-success" title="Agregar Cuenta" name="btnAddAccount" onClick="agregarCuentaClienteModal();">
                         <i class="fas fa-plus"></i>
                     </button>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4" id="input-group-nombre-contacto" >
+                <h5>Nombre Contacto</h5>
+                <div style="display:flex;">
+                    <input type="text" class="form-control" name="nombre_contacto"  disabled>
+                </div>
+            </div>
+            <div class="col-md-2" id="input-group-cargo-contacto" >
+                <h5>Cargo Contacto</h5>
+                <div style="display:flex;">
+                    <input type="text" class="form-control" name="cargo_contacto"  disabled>
+                </div>
+            </div>
+            <div class="col-md-4" id="input-group-email-contacto" >
+                <h5>Email Contacto</h5>
+                <div style="display:flex;">
+                    <input type="text" class="form-control" name="email_contacto"  disabled>
+                </div>
+            </div>
+            <div class="col-md-2" id="input-group-telefono-contacto" >
+                <h5>Teléfono Contacto</h5>
+                <div style="display:flex;">
+                    <input type="text" class="form-control" name="telefono_contacto"  disabled>
+                </div>
+            </div>
+            <div class="col-md-4" id="input-group-direccion-contacto" >
+                <h5>Dirección Entrega</h5>
+                <div style="display:flex;">
+                    <input type="text" class="form-control" name="direccion_contacto"  disabled>
+                </div>
+            </div>
+            <div class="col-md-2" id="input-group-horario-contacto" >
+                <h5>Horario Atención</h5>
+                <div style="display:flex;">
+                    <input type="text" class="form-control" name="horario_contacto"  disabled>
                 </div>
             </div>
         </div>

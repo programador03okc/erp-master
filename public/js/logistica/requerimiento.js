@@ -73,7 +73,7 @@ function inicializar( _rutaLista,
             var justificacion_generar_requerimiento = JSON.parse(sessionStorage.getItem('justificacion_generar_requerimiento'));
             if(ordenP_Cuadroc !== null && ordenP_Cuadroc.hasOwnProperty('tipo_cuadro') && ordenP_Cuadroc.hasOwnProperty('id_cc')){
                 vista_extendida();
-                console.log(ordenP_Cuadroc);
+                // console.log(ordenP_Cuadroc);
                 if(justificacion_generar_requerimiento != null){
                     if(ordenP_Cuadroc.id_cc == justificacion_generar_requerimiento.id_cc){
                         document.querySelector("input[name='justificacion_generar_requerimiento']").value=justificacion_generar_requerimiento.contenido;
@@ -197,7 +197,8 @@ function getOrBuildCustomer(razon_social,ruc,telefono,direccion,correo){
 }
 
 function llenarCabeceraCuadroCostos(data){
-// console.log(data);
+console.log( 'llenarCabeceraCuadroCostos');
+console.log(data);
     changeStateInput('form-requerimiento', false);
     changeStateButton('nuevo');
     nuevo_req();
@@ -212,11 +213,18 @@ function llenarCabeceraCuadroCostos(data){
     getDataSelectSede(data.id_empresa);
     // document.querySelector("select[name='sede']").value ='';
     document.querySelector("select[name='moneda']").value =1;
-    document.querySelector("textarea[name='observacion']").value ='Lugar de Entrega: '+data.lugar_entraga + ', Ubigeo: '+data.ubigeo_entidad;
     // document.querySelector("input[name='name_ubigeo']").value ='';
     document.querySelector("input[name='monto']").value =data.monto_total;
     document.querySelector("input[name='fecha_entrega']").value =data.fecha_entrega;
     document.querySelector("select[name='tipo_cliente']").value =2;
+    
+    // document.querySelector("input[name='id_cliente']").value =data.id_cliente?data.id_cliente:null;
+    document.querySelector("input[name='nombre_contacto']").value =data.contact_nombre?data.contact_nombre:'';
+    document.querySelector("input[name='cargo_contacto']").value =data.contact_cargo?data.contact_cargo:'';
+    document.querySelector("input[name='email_contacto']").value =data.contact_email?data.contact_email:'';
+    document.querySelector("input[name='telefono_contacto']").value =data.contact_telefono?data.contact_telefono:'';
+    document.querySelector("input[name='direccion_contacto']").value =data.contact_direccion?data.contact_direccion:'';
+    document.querySelector("input[name='horario_contacto']").value =data.contact_horario?data.contact_horario:'';
     changeTipoCliente(event,2); //cambiar input para tipo cliente
 
     
@@ -226,12 +234,14 @@ function llenarCabeceraCuadroCostos(data){
         // Run this when your request was successful
         // console.log(res);
         if(res.status ==200){
-            document.querySelector("input[name='id_cliente']").value =res.data.id_cliente;
-            document.querySelector("input[name='cliente_ruc']").value =res.data.ruc;
-            document.querySelector("input[name='cliente_razon_social']").value =res.data.razon_social;
-            document.querySelector("input[name='direccion_entrega']").value =res.data.direccion;
-            document.querySelector("input[name='telefono_cliente']").value =res.data.telefono;
-            document.querySelector("input[name='email_cliente']").value =res.data.correo;
+            document.querySelector("input[name='id_cliente']").value =res.data.id_cliente?res.data.id_cliente:'';
+            document.querySelector("input[name='cliente_ruc']").value =res.data.ruc?res.data.ruc:'';
+            document.querySelector("input[name='cliente_razon_social']").value =res.data.razon_social?res.data.razon_social:'';
+            document.querySelector("textarea[name='observacion']").value = 'Ubigeo Cliente: '+data.ubigeo_entidad?data.ubigeo_entidad:'';
+            // document.querySelector("input[name='responsable']").value =res.data.responsable;
+            document.querySelector("input[name='direccion_entrega']").value =res.data.direccion?res.data.direccion:'';
+            document.querySelector("input[name='telefono_cliente']").value =res.data.telefono?res.data.telefono:'';
+            document.querySelector("input[name='email_cliente']").value =res.data.correo?res.data.correo:'';
             // console.log(res.mensaje);
         }else{
             console.log(res.status);
@@ -3395,7 +3405,7 @@ function stateFormRequerimiento(estilo){
     switch (estilo) {
         case 1:
             hiddeElement('ocultar','form-requerimiento',[
-                'input-group-proyecto',
+                // 'input-group-proyecto',
                 'input-group-rol-usuario',
                 'input-group-comercial',
                 'input-group-almacen',
