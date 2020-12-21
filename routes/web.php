@@ -1369,10 +1369,50 @@ Route::group(['middleware' => ['auth']], function () {
 	
 		});
 		
-
+		
 	
 	});
 
+	Route::group(['as' => 'finanzas.', 'prefix' => 'finanzas'], function(){
+		// Finanzas
+		Route::get('index', function () {
+			return view('finanzas/main');
+		})->name('index');
+
+		Route::group(['as' => 'lista-presupuestos.', 'prefix' => 'lista-presupuestos'], function(){
+			// Lista de Presupuestos
+			Route::get('index', 'PresupuestoController@index')->name('index');
+	
+		});
+	
+		Route::group(['as' => 'presupuesto.', 'prefix' => 'presupuesto'], function(){
+			// Presupuesto
+			Route::get('create', 'PresupuestoController@create')->name('index');
+			Route::get('mostrarPartidas/{id}', 'PresupuestoController@mostrarPartidas')->name('mostrar-partidas');
+			Route::get('mostrarRequerimientosDetalle/{id}', 'PresupuestoController@mostrarRequerimientosDetalle')->name('mostrar-requerimientos-detalle');
+			Route::post('guardar-presupuesto', 'PresupuestoController@store')->name('guardar-presupuesto');
+			Route::post('actualizar-presupuesto', 'PresupuestoController@update')->name('actualizar-presupuesto');
+			
+			Route::post('guardar-titulo', 'TituloController@store')->name('guardar-titulo');
+			Route::post('actualizar-titulo', 'TituloController@update')->name('actualizar-titulo');
+			Route::get('anular-titulo/{id}','TituloController@destroy')->name('anular-titulo');
+	
+			Route::post('guardar-partida', 'PartidaController@store')->name('guardar-partida');
+			Route::post('actualizar-partida', 'PartidaController@update')->name('actualizar-partida');
+			Route::get('anular-partida/{id}','PartidaController@destroy')->name('anular-partida');
+	
+		});
+	
+		Route::group(['as' => 'centro-costos.', 'prefix' => 'centro-costos'], function(){
+			//Centro de Costos
+			Route::get('index', 'CentroCostoController@index')->name('index');
+			Route::get('mostrar-centro-costos', 'CentroCostoController@mostrarCentroCostos')->name('mostrar-centro-costos');
+			Route::post('guardar-centro-costo', 'CentroCostoController@store')->name('guardar-centro-costo');
+			Route::post('actualizar-centro-costo', 'CentroCostoController@update')->name('actualizar-centro-costo');
+			Route::get('anular-centro-costo/{id}','CentroCostoController@destroy')->name('anular-centro-costo');
+	
+		});
+	});
 
 	Route::get('migrar_venta_directa/{id}', 'MigrateSoftLinkController@migrar_venta_directa');
 	Route::get('prue/{id}', 'OrdenesPendientesController@prue');
