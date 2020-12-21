@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Models\Presupuestos\Partida;
 use App\Models\Presupuestos\Titulo;
 
+use Illuminate\Support\Facades\DB;
+
 class PartidaController extends Controller
 {
     public function __construct()
@@ -86,5 +88,22 @@ class PartidaController extends Controller
         $partida->update(['estado' => 7]);
 
         return response()->json($partida);
+    }
+
+    public function actualizarPartidas()
+    {
+        $partidas = Partida::all();
+        
+        foreach($partidas as $par){
+            
+            if ($par->id_pardet !== null){
+                $pardet = DB::table('finanzas.presup_pardet')->where('id_pardet',$par->id_pardet)->first();
+                
+                if ($pardet!==null){
+                    $par->update(['descripcion' => $pardet->descripcion]);
+                }
+            }
+        }
+        return response()->json('ok');
     }
 }

@@ -1382,6 +1382,7 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::group(['as' => 'lista-presupuestos.', 'prefix' => 'lista-presupuestos'], function(){
 			// Lista de Presupuestos
 			Route::get('index', 'PresupuestoController@index')->name('index');
+			Route::get('actualizarPartidas', 'PartidaController@actualizarPartidas')->name('actualizar-partidas');
 	
 		});
 	
