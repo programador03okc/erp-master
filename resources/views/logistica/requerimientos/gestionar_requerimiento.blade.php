@@ -541,8 +541,8 @@
     <script src="{{ asset('template/plugins/moment.min.js') }}"></script>
 
     <script>
-        var grupos = {!! json_encode($grupos) !!};
-        console.log(grupos);
+        // var grupos = {!! json_encode($grupos) !!};
+        // console.log(grupos);
 
     $(document).ready(function(){
         seleccionarMenu(window.location);

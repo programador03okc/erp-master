@@ -197,8 +197,8 @@ function getOrBuildCustomer(razon_social,ruc,telefono,direccion,correo){
 }
 
 function llenarCabeceraCuadroCostos(data){
-console.log( 'llenarCabeceraCuadroCostos');
-console.log(data);
+// console.log( 'llenarCabeceraCuadroCostos');
+// console.log(data);
     changeStateInput('form-requerimiento', false);
     changeStateButton('nuevo');
     nuevo_req();
@@ -1676,10 +1676,10 @@ function detalleRequerimientoModal(event=null,index=null){
             show: true,
             backdrop: 'true'
         });
-        document.querySelector("div[id='modal-detalle-requerimiento'] input[name='fecha_entrega_item']").value='';
-        document.querySelector("div[id='modal-detalle-requerimiento'] input[name='lugar_entrega_item']").value='';
-        document.querySelector("div[id='modal-detalle-requerimiento'] input[name='des_partida']").value='';
-        document.querySelector("div[id='modal-detalle-requerimiento'] input[name='id_partida']").value='';
+        // document.querySelector("div[id='modal-detalle-requerimiento'] input[name='fecha_entrega_item']").value='';
+        // document.querySelector("div[id='modal-detalle-requerimiento'] input[name='lugar_entrega_item']").value='';
+        // document.querySelector("div[id='modal-detalle-requerimiento'] input[name='des_partida']").value='';
+        // document.querySelector("div[id='modal-detalle-requerimiento'] input[name='id_partida']").value='';
         // document.querySelector("div[id='modal-detalle-requerimiento'] div[id='input-group-fecha_entrega']").removeAttribute('hidden');
         // document.querySelector("div[id='modal-detalle-requerimiento'] div[id='input-group-lugar_entrega']").removeAttribute('hidden');
         // document.querySelector("div[id='modal-detalle-requerimiento'] div[id='input-group-partida']").removeAttribute('hidden');
@@ -1715,7 +1715,6 @@ function controlInputModalDetalleRequerimiento(){
         //     ]);
 
             if(id_grupo == 3){ // proyectos
-                console.log('hiddeelement');
                 hiddeElement('mostrar','form-detalle-requerimiento',[
                     'input-group-partida'
                     ]);
@@ -1793,6 +1792,7 @@ switch (option) {
 }
 
 function fill_input_detalle_requerimiento(item){
+    console.log(item);
     $('[name=id_tipo_item]').val(item.id_tipo_item);
     $('[name=id_item]').val(item.id_item);
     $('[name=id_producto]').val(item.id_producto);
@@ -2659,7 +2659,7 @@ function listarPartidas(id_grupo,id_proyecto){
         url: 'listar_partidas/'+id_grupo+'/'+id_proyecto,
         dataType: 'JSON',
         success: function(response){
-            console.log(response);
+            // console.log(response);
             
             $('#listaPartidas').html(response);
         }
