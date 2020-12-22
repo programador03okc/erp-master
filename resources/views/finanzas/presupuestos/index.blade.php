@@ -24,6 +24,16 @@ Lista de Presupuestos
 
 @section('content')
     <div class="box box-solid">
+        <div class="box-header with-border">
+            <h3 class="box-title">Datos Generales</h3>
+            <div class="box-tools pull-right">
+                <button type="button" data-toggle="modal" data-target="actualizarPartidas" 
+                    title="Actualizar descripcion de partidas" class="btn btn-box-tool btn-sm btn-info"
+                    onClick="actualizarPartidas();">
+                    <i class="fas fa-sync-alt"></i>
+                </button>
+            </div>
+        </div>
         <div class="box-body">
             <div class="row">
                 <div class="col-md-12">
@@ -80,7 +90,7 @@ Lista de Presupuestos
         $(document).ready(function () {
 
             seleccionarMenu(window.location);
-            
+
             var vardataTables = funcDatatables();
 
             $('#listaPresupuestos').DataTable({
@@ -96,5 +106,23 @@ Lista de Presupuestos
             localStorage.setItem("id_presup",id);
             location.assign("/finanzas/presupuesto/create");
         }
+
+        function actualizarPartidas()
+        {
+            $.ajax({
+                type: 'GET',
+                url: 'actualizarPartidas',
+                dataType: 'JSON',
+                success: function(response){
+                    console.log(response);
+                    alert("Se actualizaron correctamente las descripciones");
+                }
+            }).fail( function( jqXHR, textStatus, errorThrown ){
+                console.log(jqXHR);
+                console.log(textStatus);
+                console.log(errorThrown);
+            });
+        }
+
     </script>
 @endsection
