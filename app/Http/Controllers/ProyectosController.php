@@ -1866,7 +1866,7 @@ class ProyectosController extends Controller
                 ->where('proy_proyecto.estado', 1)
                 ->orderBy('id_proyecto')
                 ->get();
-        return response()->json($data);
+        return $data;
     }
 
     public function listar_partidas($id_grupo,$id_proyecto=null){

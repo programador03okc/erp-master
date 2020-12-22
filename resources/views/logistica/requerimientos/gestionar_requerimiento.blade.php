@@ -41,6 +41,7 @@
         <input type="hidden" name="tipo_cuadro">
         <input type="hidden" name="tiene_transformacion" value=false>
         <input type="hidden" name="justificacion_generar_requerimiento">
+        <input type="hidden" name="id_grupo">
 
         <div class="row">
                 <div class="col-md-12">
@@ -165,22 +166,21 @@
                 <select class="form-control activation " name="id_almacen">
                 </select>
             </div>
+            
             @foreach ($grupos as $grupo)
             @if($grupo->id_grupo == 3)
-                <div class="col-md-6" id="input-group-proyecto">
+                <div class="col-md-12" id="input-group-proyecto">
                     <h5>Proyecto</h5>
                     <div style="display:flex;">
                         <input type="hidden" class="form-control" name="descripcion_grupo">
-                        <input type="hidden" class="form-control" name="id_grupo">
-                        <input type="hidden" type="text" name="id_proyecto" class="activation">
-                        <input type="text" name="codigo_opcion" class="form-control group-elemento" style="width:130px; text-align:center;" readonly>
+                        <input type="text" name="codigo_proyecto" class="form-control group-elemento" style="width:130px; text-align:center;" readonly>
                         <div class="input-group-okc">
-                            <input type="text" class="form-control" name="nombre_opcion" placeholder="" aria-describedby="basic-addon4" disabled="true">
-                            <div class="input-group-append">
-                                <button type="button" class="input-group-text" id="btnOpenModalProyecto" onClick="open_opcion_modal();">
-                                    <i class="fa fa-search"></i>
-                                </button>
-                            </div>
+                            <select class="form-control activation" name="id_proyecto" onChange="selectedProyecto(event);">
+                                <option value="0">Seleccione un Proyecto</option>
+                                @foreach ($proyectos_activos as $proyecto)
+                                    <option value="{{$proyecto->id_proyecto}}" data-codigo="{{$proyecto->codigo}}">{{$proyecto->descripcion}}</option>
+                                @endforeach
+                            </select>
                         </div>                            
                     </div>
                 </div>
@@ -506,10 +506,10 @@
 @include('logistica.requerimientos.modal_catalogo_items')
 @include('logistica.requerimientos.modal_crear_nuevo_producto')
 @include('almacen.producto.saldosModal')
-@include('logistica.requerimientos.modal_partidas')
+<!-- @include('proyectos.opcion.opcionModal') -->
 @include('logistica.requerimientos.modal_empresa_area')
 @include('logistica.requerimientos.modal_detalle_requerimiento')
-@include('proyectos.opcion.opcionModal')
+@include('logistica.requerimientos.modal_partidas')
 @include('logistica.requerimientos.aprobacion.modal_sustento')
 @include('almacen.verRequerimientoEstado')
 @include('logistica.requerimientos.modal_promocion_item')
@@ -529,7 +529,7 @@
     <script src="{{ asset('js/logistica/requerimiento.js') }}"></script>
     <script src="{{ asset('js/logistica/adjuntar_archivos_req.js') }}"></script>
     <script src="{{ asset('js/publico/modal_area.js')}}"></script>
-    <script src="{{ asset('js/proyectos/opcion/opcionModal.js')}}"></script>
+    <!-- <script src="{{ asset('js/proyectos/opcion/opcionModal.js')}}"></script> -->
     <script src="{{ asset('js/publico/ubigeoModal.js')}}"></script>
     <script src="{{ asset('js/publico/personaModal.js')}}"></script>
     <script src="{{ asset('js/publico/hiddenElement.js')}}"></script>
@@ -548,6 +548,8 @@
         seleccionarMenu(window.location);
         var descripcion_grupo='{{Auth::user()->getGrupo()->descripcion}}';
         var id_grupo='{{Auth::user()->getGrupo()->id_grupo}}';
+        document.querySelector("form[id='form-requerimiento'] input[name='id_grupo']").value = id_grupo;
+
         // controlInput(id_grupo,descripcion_grupo);
         inicializar(
             "{{route('logistica.gestion-logistica.requerimiento.elaboracion.lista-modal')}}",

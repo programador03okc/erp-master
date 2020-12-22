@@ -900,8 +900,8 @@ function mostrar_requerimiento(IdorCode){
                 $('[name=moneda]').val(response['requerimiento'][0].id_moneda);
                 $('[name=periodo]').val(response['requerimiento'][0].id_periodo);
                  $('[name=id_proyecto]').val(response['requerimiento'][0].id_proyecto);
-                $('[name=codigo_opcion]').val(response['requerimiento'][0].codigo_op_com);
-                $('[name=nombre_opcion]').val(response['requerimiento'][0].descripcion_op_com);
+                $('[name=codigo_proyecto]').val(response['requerimiento'][0].codigo_op_com);
+                // $('[name=nombre_proyecto]').val(response['requerimiento'][0].descripcion_op_com);
                 $('[name=observacion]').val(response['requerimiento'][0].observacion);
                 
                 $('[name=sede]').val(response['requerimiento'][0].id_sede);
@@ -1234,13 +1234,13 @@ function agregarItem(){
 function statusBtnOpenProyectoModal(value){
     switch (value) {
         case 'DESHABILITAR':
-            document.querySelector('form[id="form-requerimiento"] button[id="btnOpenModalProyecto"]').setAttribute('disabled', true);
-            document.querySelector('form[id="form-requerimiento"] button[id="btnOpenModalProyecto"]').setAttribute('title', 'No puede Cambiar de Proyecto, Existe uno o más items vinculados con el proyecto');
+            document.querySelector('form[id="form-requerimiento"] select[name="id_proyecto"]')?document.querySelector('form[id="form-requerimiento"] select[name="id_proyecto"]').setAttribute('disabled', true):null;
+            document.querySelector('form[id="form-requerimiento"] select[name="id_proyecto"]')?document.querySelector('form[id="form-requerimiento"] select[name="id_proyecto"]').setAttribute('title', 'No puede Cambiar de Proyecto, Existe uno o más items vinculados con el proyecto'):null;
             
             break;
             case 'HABILITAR':
-                document.querySelector('form[id="form-requerimiento"] button[id="btnOpenModalProyecto"]').removeAttribute('disabled');
-                document.querySelector('form[id="form-requerimiento"] button[id="btnOpenModalProyecto"]').setAttribute('title', 'Seleccionar Proyecto');
+                document.querySelector('form[id="form-requerimiento"] select[name="id_proyecto"]')?document.querySelector('form[id="form-requerimiento"] select[name="id_proyecto"]').removeAttribute('disabled'):null;
+                document.querySelector('form[id="form-requerimiento"] select[name="id_proyecto"]')?document.querySelector('form[id="form-requerimiento"] select[name="id_proyecto"]').setAttribute('title', 'Seleccionar Proyecto'):null;
             
             break;
     
@@ -1702,19 +1702,27 @@ function detalleRequerimientoModal(event=null,index=null){
 }
 
 function controlInputModalDetalleRequerimiento(){
-    let descripcion_grupo = document.querySelector("form[id='form-requerimiento'] input[name='descripcion_grupo']").value;
+    let id_grupo = document.querySelector("form[id='form-requerimiento'] input[name='id_grupo']").value;
     let tipo_requerimiento = document.querySelector("form[id='form-requerimiento'] select[name='tipo_requerimiento']").value;
-    let tipo_cliente = document.querySelector("form[id='form-requerimiento'] select[name='tipo_cliente']").value;
-    // console.log(descripcion_grupo);
+    let tipo_cliente = document.querySelector("form[id='form-requerimiento'] select[name='tipo_cliente']")?document.querySelector("form[id='form-requerimiento'] select[name='tipo_cliente']").value:null;
+    // console.log(id_grupo);
+    // console.log(tipo_requerimiento);
 
-    if(tipo_requerimiento == 1 && tipo_cliente == 4 ){
+    if(tipo_requerimiento == 1 ){
         // hiddeElement('mostrar','form-detalle-requerimiento',[
         //     'input-group-lugar_entrega',
         //     'input-group-fecha_entrega'
         //     ]);
 
-            if(descripcion_grupo == 'Proyectos'){
+            if(id_grupo == 3){ // proyectos
+                console.log('hiddeelement');
                 hiddeElement('mostrar','form-detalle-requerimiento',[
+                    'input-group-partida'
+                    ]);
+            }else{
+                hiddeElement('ocultar','form-detalle-requerimiento',[
+                    'input-group-lugar_entrega',
+                    'input-group-fecha_entrega',
                     'input-group-partida'
                     ]);
             }
@@ -2621,8 +2629,9 @@ function quitarPromocionAvtiva(){
 
 // modal partidas
 function partidasModal(){  
-    var id_grupo = $('[name=id_grupo]').val();
-    var id_proyecto = $('[name=id_proyecto]').val();
+    var id_grupo = document.querySelector("form[id='form-requerimiento'] input[name='id_grupo']").value;
+    var id_proyecto = document.querySelector("form[id='form-requerimiento'] select[name='id_proyecto']").value;
+
     
     if (id_grupo !== ''){
         if (id_proyecto != ''){
@@ -2644,13 +2653,13 @@ function listarPartidas(id_grupo,id_proyecto){
     if(id_proyecto == 0 || id_proyecto == '' || id_proyecto == null){
         id_proyecto = null;
     }
-    console.log('listar_partidas/'+id_grupo+'/'+id_proyecto);
+    // console.log('listar_partidas/'+id_grupo+'/'+id_proyecto);
     $.ajax({
         type: 'GET',
         url: 'listar_partidas/'+id_grupo+'/'+id_proyecto,
         dataType: 'JSON',
         success: function(response){
-            // console.log(response);
+            console.log(response);
             
             $('#listaPartidas').html(response);
         }
@@ -4003,4 +4012,11 @@ function dibujarTablatrazabilidadRequerimiento(data){
     )
     tablelistaitem.childNodes[0].childNodes[0].hidden = true;
 
+}
+
+function selectedProyecto(event){
+    let codigo = event.target.options[ event.target.selectedIndex].getAttribute('data-codigo');
+    // let id_proyecto = event.target.value;
+    document.querySelector("form[id='form-requerimiento'] input[name='codigo_proyecto']").value = codigo;
+  
 }

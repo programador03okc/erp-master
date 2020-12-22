@@ -55,8 +55,9 @@ class LogisticaController extends Controller
         $subcategorias = (new AlmacenController)->mostrar_subcategorias_cbo();
         $categorias = (new AlmacenController)->mostrar_categorias_cbo();
         $unidades = (new AlmacenController)->mostrar_unidades_cbo();
+        $proyectos_activos = (new ProyectosController)->listar_proyectos_activos();
 
-        return view('logistica/requerimientos/gestionar_requerimiento', compact('grupos','sis_identidad','tipo_requerimiento','monedas', 'prioridades', 'empresas', 'unidades_medida','roles','periodos','bancos','tipos_cuenta','clasificaciones','subcategorias','categorias','unidades'));
+        return view('logistica/requerimientos/gestionar_requerimiento', compact('grupos','sis_identidad','tipo_requerimiento','monedas', 'prioridades', 'empresas', 'unidades_medida','roles','periodos','bancos','tipos_cuenta','clasificaciones','subcategorias','categorias','unidades','proyectos_activos'));
     }
 
     function view_gestionar_cotizaciones()
