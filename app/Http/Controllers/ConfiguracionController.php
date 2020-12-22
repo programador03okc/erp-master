@@ -710,7 +710,7 @@ class ConfiguracionController extends Controller{
             ->join('rrhh.rrhh_postu', 'rrhh_trab.id_postulante', '=', 'rrhh_postu.id_postulante')
             ->join('rrhh.rrhh_perso', 'rrhh_postu.id_persona', '=', 'rrhh_perso.id_persona')
     
-            ->where('sis_usua.estado', '=', 1)
+            ->where([['sis_usua.estado', '!=', 7]])
             ->orderBy('sis_usua.id_usuario', 'asc')
             ->get();
             
@@ -719,18 +719,35 @@ class ConfiguracionController extends Controller{
     }
 
     public function guardar_usuarios(Request $request){
-        $data = DB::table('configuracion.sis_usua')->insertGetId(
-            [
-                'id_trabajador'     => $request->id_trabajador,
-                'usuario'           => $request->usuario,
-                'clave'             => $this->encode5t($request->clave),
-                'estado'            => $request->estado,
-                'fecha_registro'    => $request->fecha_registro
-                
-            ],
-            'id_usuario'
-        );
+        $usuario = DB::table('configuracion.sis_usua')
+            ->where('id_trabajador',$request->id_trabajador)
+            ->where([['estado','!=',7]])
+            ->count();
+
+        if ($usuario > 0){
+            $data = 'exist';
+        } else {
+            $data = DB::table('configuracion.sis_usua')->insertGetId(
+                [
+                    'id_trabajador'     => $request->id_trabajador,
+                    'usuario'           => $request->usuario,
+                    'clave'             => $this->encode5t($request->clave),
+                    'estado'            => 1,
+                    'fecha_registro'    => date('Y-m-d H:i:s')
+                    
+                ],
+                'id_usuario'
+            );
+        }
         return response()->json($data);
+    }
+
+    public function anular_usuario($id){
+        $usua = DB::table('configuracion.sis_usua')
+        ->where('id_usuario',$id)
+        ->update(['estado'=>7]);
+
+        return response()->json($usua);
     }
 /* NOTAS DE LANZAMIENTO */
 public function mostrar_notas_lanzamiento_select(){

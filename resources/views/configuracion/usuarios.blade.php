@@ -1,15 +1,13 @@
 @extends('layout.main')
 @include('layout.menu_config')
-@section('option')
-    @include('layout.option')
-@endsection
+
 @section('cabecera')
-    Lista de Usuarios
+    Gestión de Usuarios
 @endsection
 @section('content')
 <div class="page-main" type="usuarios">
     <legend class="mylegend">
-        <h2>Lista de Usuarios</h2>
+        <h2>Usuarios</h2>
         <ol class="breadcrumb">
             <li>
                 <button type="submit" class="btn btn-success" data-toggle="tooltip" data-placement="bottom" title="Nuevo Usuario" onClick="crear_usuario();">Nuevo Usuario</button>
@@ -29,7 +27,7 @@
                             <th>Email</th>
                             <th>Rol</th>
                             <th>Fecha Registro</th>
-                            <th width="10%">Acción</th>
+                            <th width="15%">Acción</th>
                         </tr>
                     </thead>
                     <tbody></tbody>
@@ -51,8 +49,8 @@
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-md-12">
-                            <h5>Buscar DNI</h5>
-                            <input type="hidden" class="form-control input-sm" name="id_trabajador">
+                            <h5>Trabajador</h5>
+                            <!-- <input type="hidden" class="form-control input-sm" name="id_trabajador">
                             <div class="input-group-okc">
                                 <input type="text" class="form-control input-sm" name="trab" id="trab" disabled>
                                 <div class="input-group-append">
@@ -60,6 +58,14 @@
                                         <i class="fa fa-search"></i>
                                     </button>
                                 </div>
+                            </div> -->
+                            <div style="display:flex;">
+                                <input class="oculto" name="id_trabajador"/>
+                                <input type="text" class="form-control activation" name="nombre_trabajador" placeholder="Seleccione un trabajador..." 
+                                    aria-describedby="basic-addon1" disabled>
+                                <button type="button" class="input-group-text activation btn-primary" id="basic-addon1" onClick="trabajadorModal();">
+                                    <i class="fa fa-search"></i>
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -82,7 +88,7 @@
     </div>
 </div>
 
-<div class="modal fade" tabindex="-1" role="dialog" id="modal-trabajador">
+<!-- <div class="modal fade" tabindex="-1" role="dialog" id="modal-trabajador">
     <div class="modal-dialog" style="width: 700px;">
         <div class="modal-content">
             <div class="modal-header">
@@ -109,7 +115,7 @@
             </div>
         </div>
     </div>
-</div>
+</div> -->
 <!-- Accesos -->
 <div class="modal fade" tabindex="-1" role="dialog" id="modal-accesos">
     <div class="modal-dialog" style="width: 80%;">
@@ -156,6 +162,7 @@
         </div>
     </div>
 </div>
+@include('proyectos.residentes.trabajadorModal')
 @include('configuracion.modal_editar_usuario')
 @include('configuracion.modal_asignar_accesos')
 
@@ -170,5 +177,8 @@
     <script src="{{ asset('datatables/pdfmake/pdfmake.min.js') }}"></script>
     <script src="{{ asset('datatables/pdfmake/vfs_fonts.js') }}"></script>
     <script src="{{ asset('datatables/JSZip/jszip.min.js') }}"></script>
+    
     <script src="{{('/js/configuracion/usuario.js')}}"></script>
+    <script src="{{ asset('js/proyectos/residentes/trabajadorModal.js')}}"></script>
+
 @endsection
