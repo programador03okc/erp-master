@@ -658,6 +658,8 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::get('cuadro-costos/{id_cc?}', 'RequerimientoController@cuadro_costos')->name('cuadro-costos');
 					Route::get('detalle-cuadro-costos/{id_cc?}', 'RequerimientoController@detalle_cuadro_costos')->name('detalle-cuadro-costos');
 					Route::post('obtener-construir-cliente', 'RequerimientoController@obtenerConstruirCliente')->name('obtener-construir-cliente');
+					Route::get('proyectos-activos', 'ProyectosController@listar_proyectos_activos')->name('proyectos-activos');
+					Route::get('listar-partidas/{id_grupo?}/{id_proyecto?}', 'ProyectosController@listar_partidas')->name('listar-partidas');
 
 				
 
