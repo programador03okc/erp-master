@@ -872,7 +872,15 @@ function mostrar_requerimiento(IdorCode){
             if(response['requerimiento'] !== undefined){
                 if(response['requerimiento'][0].id_tipo_requerimiento == 1){ // compra
                     if(response['requerimiento'][0].tipo_cliente == 1 || response['requerimiento'][0].tipo_cliente == 2){ //persona natural o persona juridica
-                        stateFormRequerimiento(1);
+                        // stateFormRequerimiento(1);
+                        grupos.forEach(element => {
+                            if(element.id_grupo ==3){ // proyectos
+                                stateFormRequerimiento(4)
+                             }else{
+                                stateFormRequerimiento(5) // otro
+                
+                            }
+                        });
                     }
                     if(response['requerimiento'][0].tipo_cliente == 3  ){ // uso almacen
                         stateFormRequerimiento(2);
@@ -900,7 +908,7 @@ function mostrar_requerimiento(IdorCode){
                 $('[name=moneda]').val(response['requerimiento'][0].id_moneda);
                 $('[name=periodo]').val(response['requerimiento'][0].id_periodo);
                  $('[name=id_proyecto]').val(response['requerimiento'][0].id_proyecto);
-                $('[name=codigo_proyecto]').val(response['requerimiento'][0].codigo_op_com);
+                $('[name=codigo_proyecto]').val(response['requerimiento'][0].codigo_proyecto);
                 // $('[name=nombre_proyecto]').val(response['requerimiento'][0].descripcion_op_com);
                 $('[name=observacion]').val(response['requerimiento'][0].observacion);
                 
@@ -1423,7 +1431,7 @@ function get_data_requerimiento(){
     // nombre_area = document.querySelector("form[id='form-requerimiento'] input[name='nombre_area']").value;
     id_moneda = document.querySelector("form[id='form-requerimiento'] select[name='moneda']").value;
     id_periodo = document.querySelector("form[id='form-requerimiento'] select[name='periodo']").value;
-    id_proyecto = document.querySelector("form[id='form-requerimiento'] input[name='id_proyecto']").value;
+    id_proyecto = document.querySelector("form[id='form-requerimiento'] select[name='id_proyecto']").value;
     id_rol = document.querySelector("form[id='form-requerimiento'] select[name='rol_usuario']").value;
     codigo_occ = document.querySelector("form[id='form-requerimiento'] input[name='codigo_occ']").value;
     id_sede = document.querySelector("form[id='form-requerimiento'] select[name='sede']").value;
@@ -1792,7 +1800,7 @@ switch (option) {
 }
 
 function fill_input_detalle_requerimiento(item){
-    console.log(item);
+    // console.log(item);
     $('[name=id_tipo_item]').val(item.id_tipo_item);
     $('[name=id_item]').val(item.id_item);
     $('[name=id_producto]').val(item.id_producto);
@@ -2765,6 +2773,7 @@ function validaRequerimiento(){
     var telefono_cliente = $('[name=telefono_cliente]').val();
     var direccion_entrega = $('[name=direccion_entrega]').val();
     var email_cliente = $('[name=email_cliente]').val();
+    var id_proyecto = $('[name=id_proyecto]').val();
 
     var msj = '';
     if((tipo_requerimiento == 1 || tipo_requerimiento == 2) && (tipo_cliente == 1 || tipo_cliente ==2)){ //compra || venta directa - pers.natural o pers.juridica
@@ -2781,24 +2790,36 @@ function validaRequerimiento(){
         if (sede == ''){
             msj+='\n Es necesario que seleccione una Sede';
         }
-        if (id_persona == '' && id_cliente == '' ){
-            msj+='\n Es necesario que seleccione un Cliente';
-        }
-        if (ubigeo == ''){
-            msj+='\n Es necesario que seleccione un Ubigeo';
-        }
-        // if (id_almacen == '0' || id_almacen == null){
-        //     msj+='\n Es necesario que seleccione un Almacén';
-        // }
-        if (telefono_cliente == ''){
-            msj+='\n Es necesario que seleccione un Teléfono';
-        }
-        if (email_cliente == ''){
-            msj+='\n Es necesario que ingrese un Email';
-        }
-        if (direccion_entrega == ''){
-            msj+='\n Es necesario que seleccione una Dirección';
-        }
+
+
+        grupos.forEach(element => {
+            if(element.id_grupo ==3){ // proyectos
+                if (id_proyecto == '' && id_proyecto == '' ){
+                    msj+='\n Es necesario que seleccione un Proyecto';
+                }
+            }else{
+                if (id_persona == '' && id_cliente == '' ){
+                    msj+='\n Es necesario que seleccione un Cliente';
+                }
+                if (ubigeo == ''){
+                    msj+='\n Es necesario que seleccione un Ubigeo';
+                }
+                // if (id_almacen == '0' || id_almacen == null){
+                //     msj+='\n Es necesario que seleccione un Almacén';
+                // }
+                if (telefono_cliente == ''){
+                    msj+='\n Es necesario que seleccione un Teléfono';
+                }
+                if (email_cliente == ''){
+                    msj+='\n Es necesario que ingrese un Email';
+                }
+                if (direccion_entrega == ''){
+                    msj+='\n Es necesario que seleccione una Dirección';
+                }
+
+            }
+        });
+
     }else if((tipo_requerimiento == 1) && (tipo_cliente == 3)){  // compra - uso almacen 
         if (concepto.length <= 0 || concepto == ''){
             msj+='\n Es necesario que ingrese un Concepto';
@@ -3411,6 +3432,7 @@ function llenarSelectSede(array){
 // }
 
 function stateFormRequerimiento(estilo){
+    // console.log(estilo);
     switch (estilo) {
         case 1:
             hiddeElement('ocultar','form-requerimiento',[
@@ -3460,7 +3482,7 @@ function stateFormRequerimiento(estilo){
             document.querySelector("div[id='input-group-almacen'] h5").textContent = 'Almacén que solicita';
             document.querySelector("form[id='form-requerimiento'] select[name='rol_usuario']").value='';
 
-            break;
+        break;
     
         case 3:
             document.querySelector("div[id='input-group-almacen'] h5").textContent = 'Almacén';
@@ -3485,7 +3507,69 @@ function stateFormRequerimiento(estilo){
     
             ]);
             break;
+            case 4: //compra - proyectos
+            hiddeElement('ocultar','form-requerimiento',[
+                'input-group-cliente',
+                'input-group-rol-usuario',
+                'input-group-comercial',
+                'input-group-almacen',
+                'input-group-cuenta',
+                'input-group-fecha_entrega',
+                'input-group-monto',
+                'input-group-cliente',
+                'input-group-tipo-cliente',
+                'input-group-telefono-cliente',
+                'input-group-email-cliente',
+                'input-group-direccion-entrega',
+                'input-group-cuenta',
+                'input-group-nombre-contacto',
+                'input-group-cargo-contacto',
+                'input-group-email-contacto',
+                'input-group-telefono-contacto',
+                'input-group-direccion-contacto',
+                'input-group-horario-contacto'
+            ]);
+            hiddeElement('mostrar','form-requerimiento',[
+                'input-group-moneda',
+                'input-group-empresa',
+                'input-group-sede',
+                'input-group-proyecto'    
+            ]); 
+            break;
+            case 5: //compra - comercial, otros
+            hiddeElement('ocultar','form-requerimiento',[
+                'input-group-cliente',
+                'input-group-rol-usuario',
+                'input-group-comercial',
+                'input-group-almacen',
+                'input-group-proyecto'
+            ]);
+            hiddeElement('mostrar','form-requerimiento',[
+                'input-group-moneda',
+                'input-group-empresa',
+                'input-group-sede',
+                'input-group-tipo-cliente',
+                'input-group-telefono-cliente',
+                'input-group-email-cliente',
+                'input-group-cliente',
+                'input-group-direccion-entrega',
+                'input-group-ubigeo-entrega',
+                'input-group-monto',
+                'input-group-cliente',
+                'input-group-tipo-cliente',
+                'input-group-telefono-cliente',
+                'input-group-email-cliente',
+                'input-group-direccion-entrega',
+                'input-group-cuenta',
+                'input-group-nombre-contacto',
+                'input-group-cargo-contacto',
+                'input-group-email-contacto',
+                'input-group-telefono-contacto',
+                'input-group-direccion-contacto',
+                'input-group-horario-contacto',
     
+            ]); 
+            break;
         default:
             break;
     }
@@ -3500,8 +3584,15 @@ function changeTipoCliente(e,id =null){
     }
 
     if (option == 1){ // persona natural
+ 
         limpiarFormRequerimiento()
-        stateFormRequerimiento(1);
+        grupos.forEach(element => {
+            if(element.id_grupo ==3){ // proyectos
+                stateFormRequerimiento(4)
+            }else{
+                stateFormRequerimiento(5)
+            }
+        });
         document.querySelector("form[id='form-requerimiento'] input[name='cliente_ruc']").style.display ='none';
         document.querySelector("form[id='form-requerimiento'] input[name='cliente_razon_social']").style.display = 'none';
         document.querySelector("form[id='form-requerimiento'] input[name='nombre_persona']").style.display ='block';

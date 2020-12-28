@@ -167,8 +167,6 @@
                 </select>
             </div>
             
-            @foreach ($grupos as $grupo)
-            @if($grupo->id_grupo == 3)
                 <div class="col-md-12" id="input-group-proyecto">
                     <h5>Proyecto</h5>
                     <div style="display:flex;">
@@ -184,8 +182,7 @@
                         </div>                            
                     </div>
                 </div>
-            @endif
-            @endforeach
+       
 
 
             <div id="input-group-comercial" hidden>
@@ -214,8 +211,7 @@
                 </div>
             </div>
         </div>
-        @foreach ($grupos as $grupo)
-        @if($grupo->id_grupo != 3)
+       
         <div class="row">
             <div class="col-md-2 form-inline" id="input-group-tipo-cliente" >
                 <h5>Tipo Cliente</h5>
@@ -341,8 +337,7 @@
                 </div>
             </div>
         </div>
-        @endif
-        @endforeach
+    
         <div class="row">
             <div class="col-md-12" id="input-group-observacion">
                 <h5>Observación:</h5>
@@ -541,9 +536,16 @@
     <script src="{{ asset('template/plugins/moment.min.js') }}"></script>
 
     <script>
-        // var grupos = {!! json_encode($grupos) !!};
+        var grupos = {!! json_encode($grupos) !!};
         // console.log(grupos);
+        grupos.forEach(element => {
+            if(element.id_grupo ==3){ // proyectos
+                stateFormRequerimiento(4)
+            }else{
+                stateFormRequerimiento(5)
 
+            }
+        });
     $(document).ready(function(){
         seleccionarMenu(window.location);
         var descripcion_grupo='{{Auth::user()->getGrupo()->descripcion}}';

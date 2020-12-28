@@ -488,6 +488,7 @@ class LogisticaController extends Controller
             ->leftJoin('rrhh.rrhh_rol', 'alm_req.id_rol', '=', 'rrhh_rol.id_rol')
             ->leftJoin('rrhh.rrhh_rol_concepto', 'rrhh_rol_concepto.id_rol_concepto', '=', 'rrhh_rol.id_rol_concepto')
             ->leftJoin('administracion.adm_area', 'rrhh_rol.id_area', '=', 'adm_area.id_area')
+            ->leftJoin('proyectos.proy_proyecto', 'alm_req.id_proyecto', '=', 'proy_proyecto.id_proyecto')
             ->leftJoin('proyectos.proy_presup', 'alm_req.id_presupuesto', '=', 'proy_presup.id_presupuesto')
             ->leftJoin('rrhh.rrhh_perso as perso_natural', 'alm_req.id_persona', '=', 'perso_natural.id_persona')
             ->leftJoin('comercial.com_cliente', 'alm_req.id_cliente', '=', 'com_cliente.id_cliente')
@@ -501,6 +502,8 @@ class LogisticaController extends Controller
                 'alm_req.codigo',
                 'alm_req.concepto',
                 'alm_req.id_moneda',
+                'alm_req.id_proyecto',
+                'proy_proyecto.codigo as codigo_proyecto',
                 'alm_req.id_periodo',
                 'alm_req.id_prioridad',
                 'adm_estado_doc.estado_doc',
@@ -572,6 +575,8 @@ class LogisticaController extends Controller
                     'codigo' => $data->codigo,
                     'concepto' => $data->concepto,
                     'id_moneda' => $data->id_moneda,
+                    'id_proyecto' => $data->id_proyecto,
+                    'codigo_proyecto' => $data->codigo_proyecto,
                     'id_periodo' => $data->id_periodo,
                     'estado_doc' => $data->estado_doc,
                     'bootstrap_color' => $data->bootstrap_color,
@@ -1778,6 +1783,7 @@ class LogisticaController extends Controller
                 'id_periodo'            => $request->requerimiento['id_periodo'],
                 'concepto'              => isset($request->requerimiento['concepto'])?strtoupper($request->requerimiento['concepto']):null,
                 'id_moneda'             => isset($request->requerimiento['id_moneda'])?$request->requerimiento['id_moneda']:null,
+                'id_proyecto'             => isset($request->requerimiento['id_proyecto'])?$request->requerimiento['id_proyecto']:null,
                 'observacion'           => isset($request->requerimiento['observacion'])?$request->requerimiento['observacion']:null,
                 'id_grupo'              => isset($request->requerimiento['id_grupo'])?$request->requerimiento['id_grupo']:null,
                 'id_area'               => isset($request->requerimiento['id_area'])?$request->requerimiento['id_area']:null,
