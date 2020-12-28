@@ -411,6 +411,7 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('anular_contrato/{id}', 'ProyectosController@anular_contrato');
 				Route::get('mostrar_presupuestos_acu/{id}', 'ProyectosController@mostrar_presupuestos_acu');
 				Route::get('html_presupuestos_acu/{id}', 'ProyectosController@html_presupuestos_acu');
+				Route::get('listar_opciones', 'ProyectosController@listar_opciones');
 
 			});
 			
@@ -1423,10 +1424,13 @@ Route::group(['middleware' => ['auth']], function () {
 	Route::get('anular_presup', 'ProyectosController@anular_presup');
 
 	Route::group(['as' => 'configuracion.', 'prefix' => 'configuracion'], function(){
+
 		Route::get('index', 'ConfiguracionController@view_main_configuracion')->name('index');
 		Route::get('usuarios', 'ConfiguracionController@view_usuario');
 		Route::get('listar_usuarios', 'ConfiguracionController@mostrar_usuarios');
 		Route::post('guardar_usuarios', 'ConfiguracionController@guardar_usuarios');
+		Route::get('listar_trabajadores', 'ProyectosController@listar_trabajadores');
+		Route::get('anular_usuario/{id}', 'ConfiguracionController@anular_usuario');
 		
 		Route::group(['as' => 'usuario.', 'prefix' => 'usuario'], function(){
 			Route::get('password-user-decode/{id?}', 'ConfiguracionController@getPasswordUserDecode')->name('password-user-decode');

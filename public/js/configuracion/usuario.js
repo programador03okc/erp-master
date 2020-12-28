@@ -29,8 +29,17 @@ $(function(){
             {'data': 'fecha_registro'},
             {'render':
                 function (data, type, row, meta){
-                    return ('<div class=""><button type="button" class="btn bg-primary btn-flat botonList" data-toggle="tooltip" data-placement="bottom" title="Editar" onclick="editarUsuario('+row['id_usuario']+');"><i class="fas fa-edit"></i></button>'+
-                    '<button type="button" class="btn bg-olive btn-flat botonList" data-toggle="tooltip" data-placement="bottom" title="Asignar Accesos" onclick="AccesoUsuario('+row['id_usuario']+');"><i class="fas fa-user-tag"></i></button></div>'
+                    return (`<div class="d-flex">
+                            <button type="button" class="btn bg-primary btn-flat botonList" data-toggle="tooltip" 
+                                data-placement="bottom" title="Editar" onclick="editarUsuario(${row['id_usuario']});">
+                                <i class="fas fa-edit"></i></button>
+                            <button type="button" class="btn bg-olive btn-flat botonList" data-toggle="tooltip" 
+                                data-placement="bottom" title="Asignar Accesos" onclick="accesoUsuario(${row['id_usuario']});">
+                                <i class="fas fa-user-tag"></i></button>
+                            <button type="button" class="btn bg-red btn-flat botonList" data-toggle="tooltip" 
+                                data-placement="bottom" title="Anular" onclick="anularUsuario(${row['id_usuario']});">
+                                <i class="fas fa-trash-alt"></i></button>
+                            </div>`
                     );
                 }
             }
@@ -72,6 +81,7 @@ $(function(){
                         alert('Se registro al usuario correctamente');
                         $('#formPage')[0].reset();
                         $('#listaUsuarios').DataTable().ajax.reload();
+                        $('#modal-agregarUsuario').modal('hide');
                     }else if (response == 'exist'){
                         alert('Ya existe usuario registrado para dicho trabajador');
                     }else{
@@ -183,12 +193,31 @@ function editarUsuario(id){
     });
     loadPerfilUsuario(id);
 }
-function AccesoUsuario(id){
+function accesoUsuario(id){
     $('#modal-asignar-accesos').modal({
         show: true,
         backdrop: 'static'
     });
-
+}
+function anularUsuario(id){
+    var rspta = confirm('¿Está seguro que desea anular éste usuario?');
+    
+    if (rspta){
+        $.ajax({
+            type: 'GET',
+            url: 'anular_usuario/'+id,
+            dataType: 'JSON',
+            success: function(response){
+                console.log(response);
+                alert('El usuario ha sido anulado');
+                $('#listaUsuarios').DataTable().ajax.reload();
+            }
+        }).fail( function( jqXHR, textStatus, errorThrown ){
+            console.log(jqXHR);
+            console.log(textStatus);
+            console.log(errorThrown);
+        });
+    }
 }
 function getPasswordUserDecode(id){
     return new Promise(function(resolve, reject) {
@@ -235,37 +264,37 @@ function crear_usuario(){
     });
 }
 
-function modalTrabajadores(){
-    $('#modal-trabajador').modal({
-        show: true,
-        backdrop: 'static'
-    });
-    listarTrabajador();
-}
+// function modalTrabajadores(){
+//     $('#modal-trabajador').modal({
+//         show: true,
+//         backdrop: 'static'
+//     });
+//     listarTrabajador();
+// }
 
-function selectValueTrab(){
-    var myId = $('.modal-footer #idTr').text();
-    var myName = $('.modal-footer #nameTr').text();
-    $('[name=id_trabajador]').val(myId);
-    $('[name=trab]').val(myName);
-    $('#modal-trabajador').modal('hide');
-}
+// function selectValueTrab(){
+//     var myId = $('.modal-footer #idTr').text();
+//     var myName = $('.modal-footer #nameTr').text();
+//     $('[name=id_trabajador]').val(myId);
+//     $('[name=trab]').val(myName);
+//     $('#modal-trabajador').modal('hide');
+// }
 
-function listarTrabajador(){
-    var vardataTables = funcDatatables();
-    $('#listaTrabajadorUser').dataTable({
-        'language' : vardataTables[0],
-        "processing": true,
-        "bDestroy": true,
-        'ajax': 'listar_trabajador',
-        'columns': [
-            {'data': 'id_trabajador'},
-            {'data': 'nro_documento'},
-            {'data': 'datos_trabajador'},
-            {'data': 'empresa'}
-        ]
-    });
-}
+// function listarTrabajador(){
+//     var vardataTables = funcDatatables();
+//     $('#listaTrabajadorUser').dataTable({
+//         'language' : vardataTables[0],
+//         "processing": true,
+//         "bDestroy": true,
+//         'ajax': 'listar_trabajador',
+//         'columns': [
+//             {'data': 'id_trabajador'},
+//             {'data': 'nro_documento'},
+//             {'data': 'datos_trabajador'},
+//             {'data': 'empresa'}
+//         ]
+//     });
+// }
 
 function deleteUser(id){
     var ask = confirm('¿Desea eliminar este registro');
