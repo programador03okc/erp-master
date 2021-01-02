@@ -12,6 +12,7 @@
             </div>
             <div class="modal-footer">
                 <label style="display: none;" id="id_partida"></label>
+                <label style="display: none;" id="id_item"></label>
                 <button class="btn btn-sm btn-success" onClick="selectPartida();">Aceptar</button>
             </div>
         </div>

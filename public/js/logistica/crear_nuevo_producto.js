@@ -58,7 +58,7 @@ $("[name=id_categoria]").on('change', function() {
         // console.log(sel);
         // $('[name=descripcion]').val(sel);
     }
-    console.log($(this).val());
+    // console.log($(this).val());
 });
 
 $("[name=id_subcategoria]").on('change', function() {
@@ -78,7 +78,7 @@ function mayus(e) {
 $("#form-crear-nuevo-producto").on("submit", function(e){
     e.preventDefault();
     var data = $(this).serialize();
-    console.log(data);
+    // console.log(data);
     guardarProducto(data);
 });
 
@@ -97,7 +97,7 @@ function guardarProducto(data){
                 alert('Producto registrado con éxito');
                 $('#modal-crear-nuevo-producto').modal('hide');
                 listarItems();
-                console.log(response['producto']);
+                // console.log(response['producto']);
 
                 let tablaListaItems =  $('#listaItems').dataTable();
                 tablaListaItems .api().search(response['producto']['descripcion']).draw();

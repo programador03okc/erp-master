@@ -13,10 +13,14 @@ rutaCuentasCliente,
 rutaGuardarCuentacliente,
 rutaCuadroCostos,
 rutaDetalleCuadroCostos,
-rutaObtenerCostruirCliente;
+rutaObtenerCostruirCliente,
+rutaObtenerGrupoSelectItemParaCpmpra
+;
 
 var tempDetalleItemsCC=[];
 var tempDetalleItemCCSelect={};
+var dataSelect = [];
+
 
 function inicializar( _rutaLista,
     _rutaMostrarRequerimiento,
@@ -33,7 +37,8 @@ function inicializar( _rutaLista,
     _rutaGuardarCuentacliente,
     _rutaCuadroCostos,
     _rutaDetalleCuadroCostos,
-    _rutaObtenerCostruirCliente
+    _rutaObtenerCostruirCliente,
+    _rutaObtenerGrupoSelectItemParaCpmpra
     ) {
     rutaListaRequerimientoModal = _rutaLista;
     rutaMostrarRequerimiento = _rutaMostrarRequerimiento;
@@ -51,6 +56,8 @@ function inicializar( _rutaLista,
     rutaCuadroCostos = _rutaCuadroCostos;
     rutaDetalleCuadroCostos = _rutaDetalleCuadroCostos;
     rutaObtenerCostruirCliente = _rutaObtenerCostruirCliente;
+    rutaObtenerGrupoSelectItemParaCpmpra = _rutaObtenerGrupoSelectItemParaCpmpra;
+
 
     listar_almacenes();
 
@@ -86,7 +93,7 @@ function inicializar( _rutaLista,
                 document.querySelector("input[name='fecha_entrega']").setAttribute('disabled',true);
                 document.querySelector("div[id='input-group-monto'] h5").textContent ='Monto OC';
             }else{
-                console.log('no se encontro cuadro de costos, variable de sesión ordenP_Cuadroc vacia');
+                // console.log('no se encontro cuadro de costos, variable de sesión ordenP_Cuadroc vacia');
                 document.querySelector("fieldset[id='group-detalle-cuadro-costos']").setAttribute('hidden',true);
 
             }
@@ -1388,9 +1395,23 @@ function llenar_tabla_detalle_requerimiento(data_item){
             // row.insertCell(9).innerHTML = data_item[a].fecha_entrega?data_item[a].fecha_entrega:null;
             // row.insertCell(10).innerHTML = data_item[a].lugar_entrega?data_item[a].lugar_entrega:'-';
             // row.insertCell(11).innerHTML = data_item[a].almacen_descripcion?data_item[a].almacen_descripcion:'-';
+            var id_grupo = document.querySelector("form[id='form-requerimiento'] input[name='id_grupo']").value;
+            var id_proyecto = document.querySelector("form[id='form-requerimiento'] select[name='id_proyecto']").value;
+            var tdBtnAction = '';
 
-            var tdBtnAction = row.insertCell(10);
+            if(id_grupo == 3){
+                document.querySelector("table[id='ListaDetalleRequerimiento']").tHead.children[0].cells[10].setAttribute('class','');                
+                row.insertCell(10).innerHTML =  data_item[a].cod_partida ? data_item[a].cod_partida : '';
+
+                tdBtnAction = row.insertCell(11);
+
+            }else{
+                tdBtnAction = row.insertCell(10);
+
+            }
+            
             // tdBtnAction.className = classHiden;
+            var btnAction = '';
             var hasAttrDisabled ='';
                 if(document.querySelector("button[id='btnEditar']").hasAttribute('disabled')== false){
                     hasAttrDisabled ='disabled';
@@ -1398,11 +1419,13 @@ function llenar_tabla_detalle_requerimiento(data_item){
                     hasAttrDisabled = '';
                 }
             tdBtnAction.setAttribute('width',widthGroupBtnAction);
-            tdBtnAction.innerHTML = '<div class="btn-group btn-group-sm" role="group" aria-label="Second group">'+
-            '<button class="btn btn-secondary btn-sm"  name="btnEditarItem" data-toggle="tooltip" title="Editar" onClick="detalleRequerimientoModal(event, '+a+');" '+hasAttrDisabled+'><i class="fas fa-edit"></i></button>'+
-            '<button class="btn btn-danger btn-sm"   name="btnEliminarItem" data-toggle="tooltip" title="Eliminar" onclick="eliminarItemDetalleRequerimiento(event, '+a+');" '+hasAttrDisabled+' ><i class="fas fa-trash-alt"></i></button>'+
-            '<button class="btn btn-primary btn-sm" name="btnAdjuntarArchivos" data-toggle="tooltip" title="Adjuntos" onClick="archivosAdjuntosModal(event, '+a+');" '+hasAttrDisabled+'><i class="fas fa-paperclip"></i></button>'+
-            '</div>';
+            btnAction = `<div class="btn-group btn-group-sm" role="group" aria-label="Second group"><center>`;
+            btnAction += `<button class="btn btn-secondary btn-sm"  name="btnEditarItem" data-toggle="tooltip" title="Editar" onClick="detalleRequerimientoModal(event, ${a});" '+hasAttrDisabled+'><i class="fas fa-edit"></i></button>`;
+            btnAction += `<button class="btn btn-primary btn-sm" name="btnAdjuntarArchivos" data-toggle="tooltip" title="Adjuntos" onClick="archivosAdjuntosModal(event, ${a});" '+hasAttrDisabled+'><i class="fas fa-paperclip"></i></button>`;
+            btnAction += `<button class="btn btn-danger btn-sm"   name="btnEliminarItem" data-toggle="tooltip" title="Eliminar" onclick="eliminarItemDetalleRequerimiento(event, ${a});" '+hasAttrDisabled+' ><i class="fas fa-trash-alt"></i></button>`;
+            btnAction += `</center></div>`;
+            tdBtnAction.innerHTML = btnAction;
+        
 
         }
     }
@@ -1638,7 +1661,6 @@ function detalleRequerimientoModal(event=null,index=null){
     var btnAgregarCambio = document.getElementsByName("btn-agregar-item");
     if(index  != undefined){ // editando item
         let item = data_item[index]; 
-    
         indice = index;       
         fill_input_detalle_requerimiento(item);
         controlUnidadMedida();
@@ -1818,6 +1840,8 @@ function fill_input_detalle_requerimiento(item){
     $('[name=id_partida]').val(item.id_partida);
     $('[name=cod_partida]').val(item.cod_partida);
     $('[name=des_partida]').val(item.des_partida);
+    $('[name=categoria]').val(item.categoria);
+    $('[name=subcategoria]').val(item.subcategoria);
     $('[name=estado]').val(item.estado);
 }
 
@@ -2478,51 +2502,313 @@ function controlUnidadMedida(){
 }
 
 function selectItem(){
-        detalleRequerimientoModal(event);
-        var id_item = $('#modal-catalogo-items .modal-footer #id_item').text();
-        var id_producto = $('#modal-catalogo-items .modal-footer #id_producto').text();
-        var id_servicio = $('#modal-catalogo-items .modal-footer #id_servicio').text();
-        var id_equipo = $('#modal-catalogo-items .modal-footer #id_equipo').text();
-        var descripcion_producto = document.querySelector("div[id='modal-catalogo-items'] div[class='modal-footer'] label[id='descripcion']").textContent;
-        var id_almacen = document.querySelector("form[id='form-requerimiento'] select[name='id_almacen']").value;
-
-        $('[name=id_item]').val(document.querySelector("div[id='modal-catalogo-items'] div[class='modal-footer'] label[id='id_item']").textContent);
-        $('[name=part_number]').val(document.querySelector("div[id='modal-catalogo-items'] div[class='modal-footer'] label[id='part_number']").textContent);
-        $('[name=id_producto]').val(document.querySelector("div[id='modal-catalogo-items'] div[class='modal-footer'] label[id='id_producto']").textContent);
-        $('[name=id_servicio]').val(document.querySelector("div[id='modal-catalogo-items'] div[class='modal-footer'] label[id='id_servicio']").textContent);
-        $('[name=id_equipo]').val(document.querySelector("div[id='modal-catalogo-items'] div[class='modal-footer'] label[id='id_equipo']").textContent);
-        $('[name=codigo_item]').val(document.querySelector("div[id='modal-catalogo-items'] div[class='modal-footer'] label[id='codigo']").textContent);
-        $('[name=descripcion_item]').val(descripcion_producto);
-        $('[name=unidad_medida_item]').val(document.querySelector("div[id='modal-catalogo-items'] div[class='modal-footer'] label[id='id_unidad_medida']").textContent);
-        $('[name=categoria]').val(document.querySelector("div[id='modal-catalogo-items'] div[class='modal-footer'] label[id='categoria']").textContent);
-        $('[name=subcategoria]').val(document.querySelector("div[id='modal-catalogo-items'] div[class='modal-footer'] label[id='subcategoria']").textContent);
-        $('[name=cantidad_item]').val(tempDetalleItemCCSelect.cantidad?tempDetalleItemCCSelect.cantidad:1);
-        
-        let btnVerUltimasCompras = document.getElementsByName('btnVerUltimasCompras')[0];
-        btnVerUltimasCompras.removeAttribute('disabled');
-        btnVerUltimasCompras.setAttribute('class','btn btn-sm btn-default');
-
-
-        var selectUnidadMedida = document.getElementsByName("unidad_medida_item");    
-
-        if(id_producto > 0){
-            disabledControl(selectUnidadMedida,false);
-            document.getElementsByName("id_tipo_item")[0].value = 1;
+        // detalleRequerimientoModal(event);
+        let id_producto = document.querySelector("div[id='modal-catalogo-items'] div[class='modal-footer'] label[id='id_producto']").textContent;
+        let id_servicio = document.querySelector("div[id='modal-catalogo-items'] div[class='modal-footer'] label[id='id_servicio']").textContent;
+        let id_equipo = document.querySelector("div[id='modal-catalogo-items'] div[class='modal-footer'] label[id='id_equipo']").textContent;
+        let id_tipo_item=null;
+        if(id_producto >0){
+            id_tipo_item = 1;
+        }else if(id_servicio >0){
+            id_tipo_item = 2;
+        }else if(id_equipo >0){
+            id_tipo_item = 3;
         }
-        if(id_servicio > 0){
-            disabledControl(selectUnidadMedida,true);
-            document.getElementsByName("id_tipo_item")[0].value = 2;
-    
+        let id_cc_am_filas = null;
+        let id_cc_venta_filas=null;
+        if( tempDetalleItemCCSelect.hasOwnProperty('id_cc_am_filas')){
+            id_cc_am_filas = tempDetalleItemCCSelect.id_cc_am_filas;
+        }else if(tempDetalleItemCCSelect.hasOwnProperty('id_cc_venta_filas')){
+            id_cc_venta_filas = tempDetalleItemCCSelect.id_cc_venta_filas;
         }
-        if(id_equipo > 0){
-            disabledControl(selectUnidadMedida,true);
-            document.getElementsByName("id_tipo_item")[0].value = 3;
-        }
+        let data_item_selected = {
+            'id_detalle_requerimiento': null,
+            'id_item': document.querySelector("div[id='modal-catalogo-items'] div[class='modal-footer'] label[id='id_item']").textContent,
+            'codigo': document.querySelector("div[id='modal-catalogo-items'] div[class='modal-footer'] label[id='codigo']").textContent,
+            'part_number': document.querySelector("div[id='modal-catalogo-items'] div[class='modal-footer'] label[id='part_number']").textContent,
+            'des_item': document.querySelector("div[id='modal-catalogo-items'] div[class='modal-footer'] label[id='descripcion']").textContent,
+            'cantidad': tempDetalleItemCCSelect.cantidad?tempDetalleItemCCSelect.cantidad:1,
+            'id_producto': parseInt(id_producto),
+            'id_servicio': parseInt(id_servicio),
+            'id_equipo': parseInt(id_equipo),
+            'id_tipo_item': parseInt(id_tipo_item),
+            'id_unidad_medida': document.querySelector("div[id='modal-catalogo-items'] div[class='modal-footer'] label[id='id_unidad_medida']").textContent,
+            'categoria': document.querySelector("div[id='modal-catalogo-items'] div[class='modal-footer'] label[id='categoria']").textContent,
+            'subcategoria': document.querySelector("div[id='modal-catalogo-items'] div[class='modal-footer'] label[id='subcategoria']").textContent,
+            'precio_referencial':null,
+            'id_tipo_moneda':1,
+            'lugar_entrega':null,
+            'id_partida':null,
+            'cod_partida':null,
+            'des_partida':null,
+            'id_almacen_reserva':null,
+            'almacen_descripcion':null,
+            'id_cc_am_filas':id_cc_am_filas,
+            'id_cc_venta_filas': id_cc_venta_filas,
+            'tiene_transformacion':document.querySelector("form[id='form-requerimiento'] input[name='tiene_transformacion']").value,
+            'estado':1
+        };
+        agregarItemATablaListaDetalleRequerimiento(data_item_selected);
 
+        // let btnVerUltimasCompras = document.getElementsByName('btnVerUltimasCompras')[0];
+        // btnVerUltimasCompras.removeAttribute('disabled');
+        // btnVerUltimasCompras.setAttribute('class','btn btn-sm btn-default');
 
-        obtenerPromociones(id_producto,id_almacen,descripcion_producto);
+        // obtenerPromociones(id_producto,id_almacen,descripcion_producto);
 
         $('#modal-catalogo-items').modal('hide');
+}
+
+function getDataAllSelect() {
+    return new Promise(function (resolve, reject) {
+        $.ajax({
+            type: 'GET',
+            url: rutaObtenerGrupoSelectItemParaCpmpra,
+            dataType: 'JSON',
+            success(response) {
+                resolve(response) // Resolve promise and go to then() 
+            },
+            error: function (err) {
+                reject(err) // Reject the promise and go to catch()
+            }
+        });
+    });
+}
+
+
+function agregarItemATablaListaDetalleRequerimiento(item){
+     
+    if(item.id_item > 0 && item.id_producto > 0){
+        data_item.push(item);
+        componerTdItemDetalleRequerimiento();
+    }else{
+        alert("lo siento, el item seleccionado no tiene un Id producto");
+    }
+}
+
+function makeSelectedToSelect(indice, type, data, id, hasDisabled) {
+    let html = '';
+    switch (type) {
+        // case 'categoria':
+        //     html = `<select class="form-control" name="categoria" ${hasDisabled} data-indice="${indice}">`;
+        //     data.forEach(item => {
+        //         if (item.id_categoria == id) {
+        //             html += `<option value="${item.id_categoria}" selected>${item.descripcion}</option>`;
+        //         } else {
+        //             html += `<option value="${item.id_categoria}">${item.descripcion}</option>`;
+        //         }
+        //     });
+        //     html += '</select>';
+        //     break;
+        // case 'subcategoria':
+        //     html = `<select class="form-control" name="subcategoria" ${hasDisabled} data-indice="${indice}" >`;
+        //     data.forEach(item => {
+        //         if (item.id_subcategoria == id) {
+        //             html += `<option value="${item.id_subcategoria}" selected>${item.descripcion}</option>`;
+        //         } else {
+        //             html += `<option value="${item.id_subcategoria}">${item.descripcion}</option>`;
+        //         }
+        //     });
+        //     html += '</select>';
+        //     break;
+        // case 'clasificacion':
+        //     html = `<select class="form-control" name="clasificacion" ${hasDisabled} data-indice="${indice}"  >`;
+        //     data.forEach(item => {
+        //         if (item.id_clasificacion == id) {
+        //             html += `<option value="${item.id_clasificacion}" selected>${item.descripcion}</option>`;
+        //         } else {
+        //             html += `<option value="${item.id_clasificacion}">${item.descripcion}</option>`;
+
+        //         }
+        //     });
+        //     html += '</select>';
+        //     break;
+        case 'unidad_medida':
+            html = `<select class="form-control" name="unidad_medida" ${hasDisabled} data-indice="${indice}" onChange="updateInputUnidadMedidaItem(event);">`;
+            data.forEach(item => {
+                if (item.id_unidad_medida == id) {
+                    html += `<option value="${item.id_unidad_medida}" selected>${item.descripcion}</option>`;
+                } else {
+                    html += `<option value="${item.id_unidad_medida}">${item.descripcion}</option>`;
+
+                }
+            });
+            html += '</select>';
+            break;
+        case 'moneda':
+            html = `<select class="form-control" name="moneda" ${hasDisabled} data-indice="${indice}" onChange="updateInputMonedaItem(event);">`;
+            data.forEach(item => {
+                if (item.id_moneda == id) {
+                    html += `<option value="${item.id_moneda}" selected>${item.descripcion}</option>`;
+                } else {
+                    html += `<option value="${item.id_moneda}">${item.descripcion}</option>`;
+
+                }
+            });
+            html += '</select>';
+            break;
+
+        default:
+            break;
+    }
+
+    return html;
+}
+
+function updateInputUnidadMedidaItem(event){
+    let idValor = event.target.value;
+    let textValor = event.target.options[event.target.selectedIndex].textContent;
+    let indiceSelected = event.target.dataset.indice;
+
+    data_item.forEach((element, index) => {
+        if (index == indiceSelected) {
+            data_item[index].id_unidad_medida = parseInt(idValor);
+            data_item[index].unidad_medida = textValor;
+
+        }
+    });
+}
+function updateInputMonedaItem(event){
+    let idValor = event.target.value;
+    let textValor = event.target.options[event.target.selectedIndex].textContent;
+    let indiceSelected = event.target.dataset.indice;
+
+    data_item.forEach((element, index) => {
+        if (index == indiceSelected) {
+            data_item[index].id_tipo_moneda = parseInt(idValor);
+            data_item[index].moneda = textValor;
+
+        }
+    });
+}
+
+function updateInputPrecioReferencialItem(event){
+    let nuevoValor = event.target.value;
+    let indiceSelected = event.target.dataset.indice;
+    data_item.forEach((element, index) => {
+        if (index == indiceSelected) {
+            data_item[index].precio_referencial = nuevoValor;
+
+        }
+    });
+}
+
+function updateInputCantidadItem(event){
+    let nuevoValor = event.target.value;
+    let indiceSelected = event.target.dataset.indice;
+    data_item.forEach((element, index) => {
+        if (index == indiceSelected) {
+            data_item[index].cantidad = nuevoValor;
+
+        }
+    });
+}
+
+function componerTdItemDetalleRequerimiento(){
+    var data = data_item;
+    // var selectCategoria=[];
+    // var selectSubCategoria=[];
+    // var selectClasCategoria=[];
+    var selectMoneda=[];
+    var selectUnidadMedida=[];
+    if (dataSelect.length > 0) {
+            // selectCategoria = dataSelect[0].categoria;
+            // selectSubCategoria = dataSelect[0].subcategoria; 
+            // selectClasCategoria = dataSelect[0].clasificacion; 
+            selectMoneda = dataSelect[0].moneda;
+            selectUnidadMedida = dataSelect[0].unidad_medida;
+
+            llenarTablaListaDetalleRequerimiento(data,selectMoneda,selectUnidadMedida);
+
+    } else {
+        getDataAllSelect().then(function (response) {
+            if (response.length > 0) {
+                console.log(response);
+                    dataSelect = response;
+                    // selectCategoria = response[0].categoria;
+                    // selectSubCategoria = response[0].subcategoria; 
+                    // selectClasCategoria = response[0].clasificacion; 
+                    selectMoneda = response[0].moneda;
+                    selectUnidadMedida = response[0].unidad_medida;
+                    llenarTablaListaDetalleRequerimiento(data,selectMoneda,selectUnidadMedida);
+
+            } else {
+                alert('No se pudo obtener data de select de item');
+            }
+
+        }).catch(function (err) {
+            // Run this when promise was rejected via reject()
+            console.log(err)
+        })
+    }
+    // validarObjItemsParaCompra();
+}
+
+function llenarTablaListaDetalleRequerimiento(data,selectMoneda,selectUnidadMedida){
+    htmls = '<tr></tr>';   
+    $('#ListaDetalleRequerimiento tbody').html(htmls);
+    var table = document.getElementById("ListaDetalleRequerimiento");
+
+    // console.log(data);
+
+    for (var a = 0; a < data.length; a++) {
+            var row = table.insertRow(-1);
+
+            if (data[a].id_producto == '') {
+                alert("lo siento, ocurrio un problema: El item seleccionado no tiene un Id producto");
+
+            } else {
+                var id_grupo = document.querySelector("form[id='form-requerimiento'] input[name='id_grupo']").value;
+
+                row.insertCell(0).innerHTML = data[a].id_item ? data[a].id_item : '';
+                row.insertCell(1).innerHTML = data[a].codigo ? data[a].codigo : '';
+                row.insertCell(2).innerHTML =  data[a].part_number ? data[a].part_number : '';
+                row.insertCell(3).innerHTML = data[a].categoria ? data[a].categoria : '';
+                row.insertCell(4).innerHTML = data[a].subcategoria ? data[a].subcategoria : '';
+                row.insertCell(5).innerHTML = `<span name="descripcion">${data[a].des_item ? data[a].des_item : ''}</span> `;
+                row.insertCell(6).innerHTML = makeSelectedToSelect(a, 'unidad_medida', selectUnidadMedida, data[a].id_unidad_medida, '');
+                row.insertCell(7).innerHTML = `<input type="text" class="form-control" name="cantidad" data-indice="${a}" onkeyup ="updateInputCantidadItem(event);" value="${data[a].cantidad}">`;
+                row.insertCell(8).innerHTML = `<input type="text" class="form-control" name="precio_referencial" data-indice="${a}" onkeyup ="updateInputPrecioReferencialItem(event);" value="${data[a].precio_referencial?data[a].precio_referencial:''}">`;
+                row.insertCell(9).innerHTML = makeSelectedToSelect(a, 'moneda', selectMoneda, data[a].id_unidad_medida, '');
+                
+                var tdBtnAction=null;
+                if(id_grupo == 3){
+                    document.querySelector("table[id='ListaDetalleRequerimiento']").tHead.children[0].cells[10].setAttribute('class','');                
+                    row.insertCell(10).innerHTML =  data[a].cod_partida ? data[a].cod_partida : '';
+
+                    tdBtnAction = row.insertCell(11);
+
+                }else{
+                    tdBtnAction = row.insertCell(10);
+
+                }
+
+                var btnAction = '';
+                // tdBtnAction.className = classHiden;
+                var hasAttrDisabled = '';
+                tdBtnAction.setAttribute('width', 'auto');
+                var id_proyecto = document.querySelector("form[id='form-requerimiento'] select[name='id_proyecto']").value;
+    
+                btnAction = `<div class="btn-group btn-group-sm" role="group" aria-label="Second group"><center>`;
+                if (id_proyecto > 0) {
+                    btnAction += `<button class="btn btn-warning btn-sm"  name="btnMostarPartidas" data-toggle="tooltip" title="Partida" onClick=" partidasModal(${data[a].id_item});" ${hasAttrDisabled}><i class="fas fa-money-check"></i></button>`;
+                }else{
+                    btnAction += `<button class="btn btn-warning btn-sm"  name="btnMostarPartidas" data-toggle="tooltip" title="Para mostrar partidas debe seleccionar un proyecto" onClick=" partidasModal(${data[a].id_item});" disabled><i class="fas fa-money-check"></i></button>`;
+                }
+                // btnAction += `<button class="btn btn-primary btn-sm" name="btnRemplazarItem" data-toggle="tooltip" title="Remplazar" onClick="buscarRemplazarItemParaCompra(this, ${a});" ${hasAttrDisabled}><i class="fas fa-search"></i></button>`;
+                btnAction += `<button class="btn btn-primary btn-sm" name="btnAdjuntarArchivos" data-toggle="tooltip" title="Adjuntos" onClick="archivosAdjuntosModal(event, ${a});" ${hasAttrDisabled}X><i class="fas fa-paperclip"></i></button>`;
+                btnAction += `<button class="btn btn-danger btn-sm"   name="btnEliminarItem" data-toggle="tooltip" title="Eliminar" onclick="eliminarItemDeListado(this,${data[a].id_item});" ${hasAttrDisabled} ><i class="fas fa-trash-alt"></i></button>`;
+                btnAction += `</center></div>`;
+                tdBtnAction.innerHTML = btnAction;
+            }
+    }
+}
+
+function eliminarItemDeListado(obj,id){
+    let row = obj.parentNode.parentNode.parentNode.parentNode;
+    row.remove(row);
+    data_item = data_item.filter((item, i) => item.id_item != id);
+    componerTdItemDetalleRequerimiento();
 }
 
 function obtenerPromociones(id_producto,id_almacen,descripcion_producto){
@@ -2636,10 +2922,10 @@ function quitarPromocionAvtiva(){
 }
 
 // modal partidas
-function partidasModal(){  
+function partidasModal(id_item){  
+    console.log(id_item);
     var id_grupo = document.querySelector("form[id='form-requerimiento'] input[name='id_grupo']").value;
     var id_proyecto = document.querySelector("form[id='form-requerimiento'] select[name='id_proyecto']").value;
-
     
     if (id_grupo !== ''){
         if (id_proyecto != ''){
@@ -2647,6 +2933,7 @@ function partidasModal(){
                 show: true,
                 backdrop: 'true'
             });
+            document.querySelector("div[id='modal-partidas'] label[id='id_item']").textContent =  id_item;
             listarPartidas(id_grupo,id_proyecto);
         } else {
             alert('hubo un problema, asegurese de seleccionar un proyecto antes de continuar.');
@@ -2707,18 +2994,39 @@ function selectPartida(id_partida){
         'importe_total': importe_total
     };
 
-    itemSelected = {
-        'id_item': document.getElementsByName('id_item')[0].value,
-        'codigo_item': document.getElementsByName('codigo_item')[0].value,
-        'descripcion':document.getElementsByName('descripcion_item')[0].value,
-        'unidad':document.getElementsByName('unidad_medida_item')[0].value,
-        'cantidad':document.getElementsByName('cantidad_item')[0].value,
-        'precio_referencial':document.getElementsByName('precio_ref_item')[0].value,
-        'id_partida':id_partida,
-        'codigo_partida':codigoPartidaSelected
+    let id_item_modal_partida = document.querySelector("div[id='modal-partidas'] label[id='id_item']").textContent;
+    if(id_item_modal_partida >0){
+        if(data_item.length >0){
+            data_item.forEach((element, index) => {
+                if (element.id_item == id_item_modal_partida) {
+                    data_item[index].id_partida = parseInt(id_partida);
+                    data_item[index].cod_partida = codigoPartidaSelected;
+                    data_item[index].des_partida = descripcion;
+        
+                }
+            });
+        }else{
+            alert("hubo un problema, no se puedo encontrar el listado de item para asignarle una partida");
+        }
+    }else{
+        alert("hubo un problema, no se pudo cargar el id_item para vincularlo a una partida");
+
     }
 
- 
+    componerTdItemDetalleRequerimiento();
+
+
+    // itemSelected = {
+    //     'id_item': document.getElementsByName('id_item')[0].value,
+    //     'codigo_item': document.getElementsByName('codigo_item')[0].value,
+    //     'descripcion':document.getElementsByName('descripcion_item')[0].value,
+    //     'unidad':document.getElementsByName('unidad_medida_item')[0].value,
+    //     'cantidad':document.getElementsByName('cantidad_item')[0].value,
+    //     'precio_referencial':document.getElementsByName('precio_ref_item')[0].value,
+    //     'id_partida':id_partida,
+    //     'codigo_partida':codigoPartidaSelected
+    // }
+
     document.querySelectorAll('[id^="pres"]')[0].setAttribute('class','oculto' );
 
 }
@@ -2848,7 +3156,6 @@ function save_requerimiento(action){
     // console.log(requerimiento);
     
     let detalle_requerimiento = data_item;
-
     requerimiento.id_usuario = actual_id_usuario; //update -> usuario actual
     // requerimiento.id_area = actual_id_area; // update -> id area actual
     // requerimiento.id_rol = actual_id_rol; // update -> id rol actual
@@ -4107,7 +4414,16 @@ function dibujarTablatrazabilidadRequerimiento(data){
 
 function selectedProyecto(event){
     let codigo = event.target.options[ event.target.selectedIndex].getAttribute('data-codigo');
-    // let id_proyecto = event.target.value;
+    let id_proyecto = event.target.value;
     document.querySelector("form[id='form-requerimiento'] input[name='codigo_proyecto']").value = codigo;
-  
+
+    if(id_proyecto >0){
+        let btnMostarPartidas = document.querySelectorAll("button[name='btnMostarPartidas']");
+        if(btnMostarPartidas.length >0){
+            btnMostarPartidas.forEach(element => {
+                element.removeAttribute('disabled');
+                element.setAttribute('title','Partidas');
+            });
+        }
+    }
 }

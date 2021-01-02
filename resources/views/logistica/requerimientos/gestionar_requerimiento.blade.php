@@ -363,6 +363,7 @@
                             <th width="70">CANTIDAD</th>
                             <th width="70">PRECIO REF.</th>
                             <th width="70">MONEDA</th>
+                            <th class="oculto" width="70">PARTIDA</th>
                             <th width="120">
                                 <center><button type="button" class="btn btn-xs btn-success activation" onClick="catalogoItemsModal();" id="btn-add"
                                 data-toggle="tooltip" data-placement="bottom"  title="Agregar Detalle" disabled><i class="fas fa-plus"></i>
@@ -501,10 +502,9 @@
 @include('logistica.requerimientos.modal_catalogo_items')
 @include('logistica.requerimientos.modal_crear_nuevo_producto')
 @include('almacen.producto.saldosModal')
-<!-- @include('proyectos.opcion.opcionModal') -->
 @include('logistica.requerimientos.modal_empresa_area')
-@include('logistica.requerimientos.modal_detalle_requerimiento')
 @include('logistica.requerimientos.modal_partidas')
+@include('logistica.requerimientos.modal_detalle_requerimiento')
 @include('logistica.requerimientos.aprobacion.modal_sustento')
 @include('almacen.verRequerimientoEstado')
 @include('logistica.requerimientos.modal_promocion_item')
@@ -569,7 +569,9 @@
             "{{route('logistica.gestion-logistica.requerimiento.elaboracion.guardar-cuentas-cliente')}}",
             "{{route('logistica.gestion-logistica.requerimiento.elaboracion.cuadro-costos')}}",
             "{{route('logistica.gestion-logistica.requerimiento.elaboracion.detalle-cuadro-costos')}}",
-            "{{route('logistica.gestion-logistica.requerimiento.elaboracion.obtener-construir-cliente')}}"
+            "{{route('logistica.gestion-logistica.requerimiento.elaboracion.obtener-construir-cliente')}}",
+            "{{route('logistica.gestion-logistica.requerimiento.elaboracion.grupo-select-item-para-compra')}}"
+
             );
     });
     </script>
