@@ -236,7 +236,7 @@ class RequerimientoController extends Controller
                                 
                         }
                     }
-                return $pendiente_aprobacion;
+                // return $pendiente_aprobacion;
 
                     
                 }
