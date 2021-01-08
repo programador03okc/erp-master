@@ -3,13 +3,13 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal-agregar-items-para-compra" onClick="$('#modal-agregar-items-para-compra').modal('hide');"><span aria-hidden="true">&times;</span></button>
-                <h3 class="modal-title">Items Para Compra<span id="codigo_requeriento_seleccionado"></span></h3>
+                <h3 class="modal-title">Agregar Item's Base<span id="codigo_requeriento_seleccionado"></span></h3>
             </div>
             <div class="modal-body">
                 <fieldset class="group-table">   
                     <div class="row">
                         <div class="col-sm-12">
-                            <fieldset class="group-importes"><legend style="background: #557092;"><h6>Item's para comprar</h6></legend>
+                            <fieldset class="group-importes"><legend style="background: #557092;"><h6>Item's Base</h6></legend>
                             <table class="mytable table table-striped table-condensed table-bordered dataTable no-footer" id="ListaItemsParaComprar" width="100%" style="width: 100%;background: #ecf1f3;">
                                 <thead>
                                     <tr>
