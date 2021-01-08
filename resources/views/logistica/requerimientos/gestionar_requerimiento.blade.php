@@ -521,7 +521,6 @@
     <script src="{{ asset('datatables/pdfmake/pdfmake.min.js') }}"></script>
     <script src="{{ asset('datatables/pdfmake/vfs_fonts.js') }}"></script>
     <script src="{{ asset('datatables/JSZip/jszip.min.js') }}"></script>
-    <script src="{{ asset('js/logistica/requerimiento.js') }}"></script>
     <script src="{{ asset('js/logistica/requerimiento/cuadro_costos.js') }}"></script>
     <script src="{{ asset('js/logistica/requerimiento/historial.js') }}"></script>
     <script src="{{ asset('js/logistica/requerimiento/trazabilidad.js') }}"></script>

@@ -83,7 +83,7 @@ class RequerimientoController extends Controller
         // $allGrupo = Auth::user()->getAllGrupo();
 
         // $estado_elaborado =(new LogisticaController)->get_estado_doc('Elaborado');
-        $uso_administracion =(new LogisticaController)->get_tipo_cliente('Uso Administración');
+        // $uso_administracion =(new LogisticaController)->get_tipo_cliente('Uso Administración');
         $compra =(new LogisticaController)->get_tipo_requerimiento('Compra');
         $tipo_documento = 1; // Requerimientos
 
@@ -103,8 +103,8 @@ class RequerimientoController extends Controller
             ->leftJoin('rrhh.rrhh_rol', 'alm_req.id_rol', '=', 'rrhh_rol.id_rol')
             ->leftJoin('rrhh.rrhh_rol_concepto', 'rrhh_rol_concepto.id_rol_concepto', '=', 'rrhh_rol.id_rol_concepto')
             ->leftJoin('administracion.adm_area', 'rrhh_rol.id_area', '=', 'adm_area.id_area')
-            ->leftJoin('proyectos.proy_op_com', 'proy_op_com.id_op_com', '=', 'alm_req.id_op_com')
-            ->leftJoin('proyectos.proy_presup', 'alm_req.id_presupuesto', '=', 'proy_presup.id_presupuesto')
+            // ->leftJoin('proyectos.proy_op_com', 'proy_op_com.id_op_com', '=', 'alm_req.id_op_com')
+            // ->leftJoin('proyectos.proy_presup', 'alm_req.id_presupuesto', '=', 'proy_presup.id_presupuesto')
             ->leftJoin('comercial.com_cliente', 'alm_req.id_cliente', '=', 'com_cliente.id_cliente')
             ->leftJoin('configuracion.ubi_dis', 'alm_req.id_ubigeo_entrega', '=', 'ubi_dis.id_dis')
             ->leftJoin('configuracion.ubi_prov', 'ubi_dis.id_prov', '=', 'ubi_prov.id_prov')
@@ -148,10 +148,8 @@ class RequerimientoController extends Controller
                 'rrhh_rol_concepto.descripcion AS rrhh_rol_concepto',
                 'alm_req.id_area',
                 'adm_area.descripcion AS area_descripcion',
-                'alm_req.id_op_com',
-                'proy_op_com.codigo as codigo_op_com',
-                'proy_op_com.descripcion as descripcion_op_com',
-                'alm_req.archivo_adjunto',
+                // 'proy_op_com.codigo as codigo_op_com',
+                // 'proy_op_com.descripcion as descripcion_op_com',
                 'alm_req.fecha_registro',
                 'alm_req.id_sede',
                 'alm_req.tipo_cliente as id_tipo_cliente',
@@ -164,8 +162,8 @@ class RequerimientoController extends Controller
                 'alm_req.fecha_entrega'
             )
             ->where([
-                ['alm_req.id_tipo_requerimiento','=',$compra], // compra
-                ['alm_req.tipo_cliente','=',$uso_administracion] // uso administracion
+                ['alm_req.id_tipo_requerimiento','=',$compra] // compra
+                // ['alm_req.tipo_cliente','=',$uso_administracion] // uso administracion
                 // ['alm_req.estado','=',$estado_elaborado] // elaborado
             ])
             ->orderBy('alm_req.id_requerimiento', 'asc')
@@ -238,7 +236,7 @@ class RequerimientoController extends Controller
                                 
                         }
                     }
-                // return $pendiente_aprobacion;
+                return $pendiente_aprobacion;
 
                     
                 }
@@ -273,7 +271,6 @@ class RequerimientoController extends Controller
                         'logo_empresa'=>$element->logo_empresa,
                         'id_grupo'=>$element->id_grupo,
                         'descripcion_grupo'=>$element->descripcion_grupo,
-                        'descripcion_op_com'=>$element->descripcion_op_com,
                         'fecha_requerimiento'=>$element->fecha_requerimiento,
                         'observacion'=>$element->observacion,
                         'name_ubigeo'=>$element->name_ubigeo,
@@ -356,6 +353,7 @@ class RequerimientoController extends Controller
             ->select(
                 'alm_det_req.*', 
                 'alm_req.codigo as cod_req',
+                'alm_req.fecha_entrega',
                 'alm_und_medida.abreviatura as unidad_medida_detalle_req',
                 'alm_almacen.descripcion as descripcion_almacen'
                 
@@ -410,7 +408,7 @@ class RequerimientoController extends Controller
                         'cod_req' =>$d->cod_req,
                         'descripcion_adicional'=>$d->descripcion_adicional,
                         'lugar_entrega'=>$d->lugar_entrega,
-                        'fecha_entrega'=>$d->fecha_entrega,
+                        'fecha_entrega'=>$d->fecha_entrega?$d->fecha_entrega:null,
                         'id_producto'=>$item->id_producto,
                         'cod_producto' =>$item->cod_producto?$item->cod_producto:$item->cod_servicio,
                         'des_producto' =>$item->des_producto?$item->des_producto:$item->des_servicio,
@@ -419,6 +417,7 @@ class RequerimientoController extends Controller
                         'cantidad' =>$d->cantidad,
                         'precio_referencial' =>$d->precio_referencial,
                         'descripcion_almacen' =>$d->descripcion_almacen,
+                        'stock_comprometido' =>$d->stock_comprometido,
                         'almacen'=> $almacenes
                     ];
                 }
@@ -440,6 +439,7 @@ class RequerimientoController extends Controller
                     'cantidad' =>$d->cantidad,
                     'precio_referencial' =>$d->precio_referencial,
                     'descripcion_almacen' =>$d->descripcion_almacen,
+                    'stock_comprometido' =>$d->stock_comprometido,
                     'almacen'=> []
                 ];
             }

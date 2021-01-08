@@ -268,7 +268,7 @@ function procesarItemDetalleCuadroCostos(id_detalle_cc,tipo_item){
         let cantidadParseText = detalle_cc_selected.cantidad;
         tempDetalleItemCCSelect={
             'part_number':document.querySelector("div[id='modal-crear-nuevo-producto'] input[name='part_number']").value= partNumberParseText,
-            'descripcion':document.querySelector("div[id='modal-crear-nuevo-producto'] input[name='descripcion']").value= descripcionParseText,
+            'descripcion':document.querySelector("div[id='modal-crear-nuevo-producto'] textarea[name='descripcion']").value= descripcionParseText,
             'cantidad':cantidadParseText,
             'id_cc_am_filas':id_cc_am_filas,
             'id_cc_venta_filas':id_cc_venta_filas
@@ -281,7 +281,7 @@ function procesarItemDetalleCuadroCostos(id_detalle_cc,tipo_item){
 
         tempDetalleItemCCSelect={
             'part_number':document.querySelector("div[id='modal-crear-nuevo-producto'] input[name='part_number']").value= partNumberParseText,
-            'descripcion':document.querySelector("div[id='modal-crear-nuevo-producto'] input[name='descripcion']").value= descripcionParseText,
+            'descripcion':document.querySelector("div[id='modal-crear-nuevo-producto'] textarea[name='descripcion']").value= descripcionParseText,
             'cantidad':cantidadParseText,
             'id_cc_am_filas':id_cc_am_filas,
             'id_cc_venta_filas':id_cc_venta_filas

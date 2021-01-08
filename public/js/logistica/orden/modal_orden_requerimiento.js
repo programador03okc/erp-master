@@ -39,10 +39,23 @@ function inicializarModalOrdenRequerimiento(
     // rutaListaItemsCuadroCostosPorRequerimiento = _rutaListaItemsCuadroCostosPorRequerimiento;
 
 }
+ 
+
+function limpiarTabla(idElement){
+    // console.log("limpiando tabla....");
+    var table = document.getElementById(idElement);
+    for(var i = table.rows.length - 1; i > 0; i--)
+    {
+        table.deleteRow(i);
+    }
+    return null;
+}
 
 function obtenerRequerimiento(reqTrueList){
+    limpiarTabla('listaDetalleOrden');
+
     // console.log(reqTrueList);
-    
+    detalleRequerimientoSelected=[];
         $.ajax({
             type: 'POST',
             url: rutaDetalleRequerimientoOrden,
@@ -50,8 +63,20 @@ function obtenerRequerimiento(reqTrueList){
             dataType: 'JSON',
             success: function(response){
                 // console.log(response);
-                detalleRequerimientoSelected=response.det_req;
-                listar_detalle_orden_requerimiento(response.det_req);
+                // detalleRequerimientoSelected=response.det_req;
+                response.det_req.forEach(element => {
+                    if(element.cantidad !=0){
+                        detalleRequerimientoSelected.push(element);
+                    }
+                });
+                // console.log(detalleRequerimientoSelected);
+                if(detalleRequerimientoSelected.length ==0){
+                    alert("No puede generar una orden sin antes agregar item(s) base");
+                    $('#modal-orden-requerimiento').modal('hide');
+
+                }else{
+                    listar_detalle_orden_requerimiento(detalleRequerimientoSelected);
+                }
                 // console.log(response.det_req); 
                 // document.querySelector("div[id='modal-orden-requerimiento'] span[id='codigo_requeriento_seleccionado']").textContent= ' - Requerimiento: '+ response.requerimiento.codigo;
                 // document.querySelector("div[id='modal-orden-requerimiento'] input[name='id_requerimiento']").value= response.requerimiento[0].id_requerimiento;
@@ -255,6 +280,7 @@ function updateInputCantidadAComprar(event){
 
 function listar_detalle_orden_requerimiento(data){
     // console.log(data);
+
     var vardataTables = funcDatatables();
     $('#listaDetalleOrden').DataTable({
         bDestroy: true,

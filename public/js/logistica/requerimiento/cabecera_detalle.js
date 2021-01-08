@@ -924,3 +924,225 @@ function isNumberKey(evt){
         return false;
     return true;
 }
+
+
+
+
+function llenarTablaListaDetalleRequerimiento(data,selectMoneda,selectUnidadMedida){
+    htmls = '<tr></tr>';   
+    $('#ListaDetalleRequerimiento tbody').html(htmls);
+    var table = document.getElementById("ListaDetalleRequerimiento");
+
+    // console.log(data);
+
+    for (var a = 0; a < data.length; a++) {
+            var row = table.insertRow(-1);
+
+            if (data[a].id_producto == '') {
+                alert("lo siento, ocurrio un problema: El item seleccionado no tiene un Id producto");
+
+            } else {
+                var id_grupo = document.querySelector("form[id='form-requerimiento'] input[name='id_grupo']").value;
+
+                row.insertCell(0).innerHTML = data[a].id_item ? data[a].id_item : '';
+                row.insertCell(1).innerHTML = data[a].codigo ? data[a].codigo : '';
+                row.insertCell(2).innerHTML =  data[a].part_number ? data[a].part_number : '';
+                row.insertCell(3).innerHTML = data[a].categoria ? data[a].categoria : '';
+                row.insertCell(4).innerHTML = data[a].subcategoria ? data[a].subcategoria : '';
+                row.insertCell(5).innerHTML = `<span name="descripcion">${data[a].des_item ? data[a].des_item : ''}</span> `;
+                row.insertCell(6).innerHTML = makeSelectedToSelect(a, 'unidad_medida', selectUnidadMedida, data[a].id_unidad_medida, '');
+                row.insertCell(7).innerHTML = `<input type="text" class="form-control" name="cantidad" data-indice="${a}" onkeyup ="updateInputCantidadItem(event);" value="${data[a].cantidad}">`;
+                row.insertCell(8).innerHTML = `<input type="text" class="form-control" name="precio_referencial" data-indice="${a}" onkeyup ="updateInputPrecioReferencialItem(event);" value="${data[a].precio_referencial?data[a].precio_referencial:''}">`;
+                row.insertCell(9).innerHTML = makeSelectedToSelect(a, 'moneda', selectMoneda, data[a].id_unidad_medida, '');
+                
+                var tdBtnAction=null;
+                if(id_grupo == 3){
+                    document.querySelector("table[id='ListaDetalleRequerimiento']").tHead.children[0].cells[10].setAttribute('class','');                
+                    row.insertCell(10).innerHTML =  data[a].cod_partida ? data[a].cod_partida : '';
+
+                    tdBtnAction = row.insertCell(11);
+
+                }else{
+                    tdBtnAction = row.insertCell(10);
+
+                }
+
+                var btnAction = '';
+                // tdBtnAction.className = classHiden;
+                var hasAttrDisabled = '';
+                tdBtnAction.setAttribute('width', 'auto');
+                var id_proyecto = document.querySelector("form[id='form-requerimiento'] select[name='id_proyecto']").value;
+    
+                btnAction = `<div class="btn-group btn-group-sm" role="group" aria-label="Second group"><center>`;
+                if (id_proyecto > 0) {
+                    btnAction += `<button class="btn btn-warning btn-sm"  name="btnMostarPartidas" data-toggle="tooltip" title="Partida" onClick=" partidasModal(${data[a].id_item});" ${hasAttrDisabled}><i class="fas fa-money-check"></i></button>`;
+                }else{
+                    btnAction += `<button class="btn btn-warning btn-sm"  name="btnMostarPartidas" data-toggle="tooltip" title="Para mostrar partidas debe seleccionar un proyecto" onClick=" partidasModal(${data[a].id_item});" disabled><i class="fas fa-money-check"></i></button>`;
+                }
+                // btnAction += `<button class="btn btn-primary btn-sm" name="btnRemplazarItem" data-toggle="tooltip" title="Remplazar" onClick="buscarRemplazarItemParaCompra(this, ${a});" ${hasAttrDisabled}><i class="fas fa-search"></i></button>`;
+                btnAction += `<button class="btn btn-primary btn-sm" name="btnAdjuntarArchivos" data-toggle="tooltip" title="Adjuntos" onClick="archivosAdjuntosModal(event, ${a});" ${hasAttrDisabled}X><i class="fas fa-paperclip"></i></button>`;
+                btnAction += `<button class="btn btn-danger btn-sm"   name="btnEliminarItem" data-toggle="tooltip" title="Eliminar" onclick="eliminarItemDeListado(this,${data[a].id_item});" ${hasAttrDisabled} ><i class="fas fa-trash-alt"></i></button>`;
+                btnAction += `</center></div>`;
+                tdBtnAction.innerHTML = btnAction;
+            }
+    }
+}
+
+// modal partidas
+function partidasModal(id_item){  
+    console.log(id_item);
+    var id_grupo = document.querySelector("form[id='form-requerimiento'] input[name='id_grupo']").value;
+    var id_proyecto = document.querySelector("form[id='form-requerimiento'] select[name='id_proyecto']").value;
+    
+    if (id_grupo !== ''){
+        if (id_proyecto != ''){
+            $('#modal-partidas').modal({
+                show: true,
+                backdrop: 'true'
+            });
+            document.querySelector("div[id='modal-partidas'] label[id='id_item']").textContent =  id_item;
+            listarPartidas(id_grupo,id_proyecto);
+        } else {
+            alert('hubo un problema, asegurese de seleccionar un proyecto antes de continuar.');
+        }
+    }else{
+        alert("Ocurrio un problema, no se puedo seleccionar el grupo al que pertence el usuario.");
+    }
+    
+}
+function listarPartidas(id_grupo,id_proyecto){
+    
+    if(id_proyecto == 0 || id_proyecto == '' || id_proyecto == null){
+        id_proyecto = null;
+    }
+    // console.log('listar_partidas/'+id_grupo+'/'+id_proyecto);
+    $.ajax({
+        type: 'GET',
+        url: 'listar_partidas/'+id_grupo+'/'+id_proyecto,
+        dataType: 'JSON',
+        success: function(response){
+            // console.log(response);
+            
+            $('#listaPartidas').html(response);
+        }
+    }).fail( function( jqXHR, textStatus, errorThrown ){
+        console.log(jqXHR);
+        console.log(textStatus);
+        console.log(errorThrown);
+    });
+}
+function apertura(id_presup){
+    if ($("#pres-"+id_presup+" ").attr('class') == 'oculto'){
+        $("#pres-"+id_presup+" ").removeClass('oculto');
+        $("#pres-"+id_presup+" ").addClass('visible');
+    } else {
+        $("#pres-"+id_presup+" ").removeClass('visible');
+        $("#pres-"+id_presup+" ").addClass('oculto');
+    }
+}
+
+
+
+function eliminarItemDeListado(obj,id){
+    let row = obj.parentNode.parentNode.parentNode.parentNode;
+    row.remove(row);
+    data_item = data_item.filter((item, i) => item.id_item != id);
+    componerTdItemDetalleRequerimiento();
+}
+
+function componerTdItemDetalleRequerimiento(){
+    var data = data_item;
+    // var selectCategoria=[];
+    // var selectSubCategoria=[];
+    // var selectClasCategoria=[];
+    var selectMoneda=[];
+    var selectUnidadMedida=[];
+    if (dataSelect.length > 0) {
+            // selectCategoria = dataSelect[0].categoria;
+            // selectSubCategoria = dataSelect[0].subcategoria; 
+            // selectClasCategoria = dataSelect[0].clasificacion; 
+            selectMoneda = dataSelect[0].moneda;
+            selectUnidadMedida = dataSelect[0].unidad_medida;
+
+            llenarTablaListaDetalleRequerimiento(data,selectMoneda,selectUnidadMedida);
+
+    } else {
+        getDataAllSelect().then(function (response) {
+            if (response.length > 0) {
+                console.log(response);
+                    dataSelect = response;
+                    // selectCategoria = response[0].categoria;
+                    // selectSubCategoria = response[0].subcategoria; 
+                    // selectClasCategoria = response[0].clasificacion; 
+                    selectMoneda = response[0].moneda;
+                    selectUnidadMedida = response[0].unidad_medida;
+                    llenarTablaListaDetalleRequerimiento(data,selectMoneda,selectUnidadMedida);
+
+            } else {
+                alert('No se pudo obtener data de select de item');
+            }
+
+        }).catch(function (err) {
+            // Run this when promise was rejected via reject()
+            console.log(err)
+        })
+    }
+    // validarObjItemsParaCompra();
+}
+
+function selectPartida(id_partida){
+    var codigo = $("#par-"+id_partida+" ").find("td[name=codigo]")[0].innerHTML;
+    var descripcion = $("#par-"+id_partida+" ").find("td[name=descripcion]")[0].innerHTML;
+    var importe_total = $("#par-"+id_partida+" ").find("td[name=importe_total]")[0].innerHTML;
+ 
+
+    $('#modal-partidas').modal('hide');
+    $('[name=id_partida]').val(id_partida);
+    $('[name=cod_partida]').val(codigo);
+    $('[name=des_partida]').val(descripcion);
+
+    idPartidaSelected = id_partida;
+    codigoPartidaSelected = codigo;
+    partidaSelected = {
+        'id_partida': id_partida,
+        'codigo': codigo,
+        'descripcion': descripcion,
+        'importe_total': importe_total
+    };
+
+    let id_item_modal_partida = document.querySelector("div[id='modal-partidas'] label[id='id_item']").textContent;
+    if(id_item_modal_partida >0){
+        if(data_item.length >0){
+            data_item.forEach((element, index) => {
+                if (element.id_item == id_item_modal_partida) {
+                    data_item[index].id_partida = parseInt(id_partida);
+                    data_item[index].cod_partida = codigoPartidaSelected;
+                    data_item[index].des_partida = descripcion;
+        
+                }
+            });
+        }else{
+            alert("hubo un problema, no se puedo encontrar el listado de item para asignarle una partida");
+        }
+    }else{
+        alert("hubo un problema, no se pudo cargar el id_item para vincularlo a una partida");
+
+    }
+
+    componerTdItemDetalleRequerimiento();
+
+
+    // itemSelected = {
+    //     'id_item': document.getElementsByName('id_item')[0].value,
+    //     'codigo_item': document.getElementsByName('codigo_item')[0].value,
+    //     'descripcion':document.getElementsByName('descripcion_item')[0].value,
+    //     'unidad':document.getElementsByName('unidad_medida_item')[0].value,
+    //     'cantidad':document.getElementsByName('cantidad_item')[0].value,
+    //     'precio_referencial':document.getElementsByName('precio_ref_item')[0].value,
+    //     'id_partida':id_partida,
+    //     'codigo_partida':codigoPartidaSelected
+    // }
+
+    document.querySelectorAll('[id^="pres"]')[0].setAttribute('class','oculto' );
+
+}

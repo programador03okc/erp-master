@@ -79,6 +79,7 @@ function openModalOrdenRequerimiento(){
         backdrop: 'true'
     });
 
+    // console.log(reqTrueList);
     obtenerRequerimiento(reqTrueList);
 }
 function openModalItemsParaCompra(){
@@ -101,6 +102,26 @@ function openModalItemsParaCompra(){
     })
 }
 
+function openModalAgregarItemBase(obj) {
+    let id_requerimiento = obj.dataset.idRequerimiento;
+    reqTrueList=[id_requerimiento];
+ 
+    limpiarTabla('ListaItemsParaComprar');
+ 
+
+    tieneItemsParaCompra(reqTrueList).then(function (tieneItems) {
+        // console.log(tieneItems);
+            openModalItemsParaCompra();
+
+    }).catch(function (err) {
+        // Run this when promise was rejected via reject()
+        console.log(err)
+    })
+        // obtenerRequerimiento(reqTrueList);
+        // cleanFormModalOrdenRequerimiento();
+        // console.log(reqTrueList);
+ 
+}
 function openModalCrearOrdenCompra() {
     reqTrueList=[];
     itemsParaCompraList=[];
@@ -114,11 +135,11 @@ function openModalCrearOrdenCompra() {
 
     tieneItemsParaCompra(reqTrueList).then(function (tieneItems) {
         // console.log(tieneItems);
-        if(tieneItems == true){
+        // if(tieneItems == true){
             openModalOrdenRequerimiento();
-        }else{
-            openModalItemsParaCompra();
-        }
+        // }else{
+        //     openModalItemsParaCompra();
+        // }
 
     }).catch(function (err) {
         // Run this when promise was rejected via reject()
@@ -622,27 +643,39 @@ function llenarTablaListaItemsRequerimientoParaAgregarItem(data){
     // tablelistaitem.childNodes[0].childNodes[0].hidden = true;
 }
 
+
 function guardarAtendidoConAlmacen(){
-    // console.log(itemsParaAtenderConAlmacenList);
-    $.ajax({
-        type: 'POST',
-        url: rutaGuardarAtencionConAlmacen,
-        data: {'lista_items':itemsParaAtenderConAlmacenList},
-        dataType: 'JSON',
-        success: function (response) {
-            // console.log(response);
-            if(response.update_det_req >0){
-                alert("Se realizo con éxito la reserva");
-                getDataItemsRequerimientoParaAtenderConAlmacen(response.id_requerimiento);
-            }else{
-                alert("Ocurrio un problema al intentar guardar la reserva");
-            }
-        }
-    }).fail(function (jqXHR, textStatus, errorThrown) {
-        console.log(jqXHR);
-        console.log(textStatus);
-        console.log(errorThrown);
+    var newItemsParaAtenderConAlmacenList = [];
+
+    newItemsParaAtenderConAlmacenList = itemsParaAtenderConAlmacenList.filter(function( obj ) {
+        return (obj.id_almacen_reserva >0) && (obj.cantidad_a_atender >0);
     });
+
+    console.log(newItemsParaAtenderConAlmacenList);
+    if(newItemsParaAtenderConAlmacenList.length >0){
+        $.ajax({
+                type: 'POST',
+                url: rutaGuardarAtencionConAlmacen,
+                data: {'lista_items':newItemsParaAtenderConAlmacenList},
+                dataType: 'JSON',
+                success: function (response) {
+                    // console.log(response);
+                    if(response.update_det_req >0){
+                        alert("Se realizo con éxito la reserva");
+                        getDataItemsRequerimientoParaAtenderConAlmacen(response.id_requerimiento);
+                    }else{
+                        alert("Ocurrio un problema al intentar guardar la reserva");
+                    }
+                }
+            }).fail(function (jqXHR, textStatus, errorThrown) {
+                console.log(jqXHR);
+                console.log(textStatus);
+                console.log(errorThrown);
+            });
+    }else{
+        alert("seleccione un almacén y especifique una cantidad a atender mayor a cero.");
+    }
+
 }
 
 function updateSelectAlmacenAAtender(obj,event){
@@ -722,6 +755,11 @@ function llenarTablaListaItemsRequerimientoParaAtenderConAlmacen(data_req,data_a
                 }else{
                     estado= row.estado_doc;
                 }
+  
+                if(row.tiene_transformacion == true){
+                    estado+='<br><span class="label label-default">Producto Transformado</span>';
+                }
+
                 return  estado ;
                 }
             },
@@ -825,6 +863,8 @@ function getDataListaItemsCuadroCostosPorIdRequerimiento(reqTrueList) {
 // function obtenerListaItemsCuadroCostosPorIdRequerimiento(reqTrueList)
 
 function llenarTablaDetalleCuadroCostos(data) {
+    // limpiarTabla('ListaModalDetalleCuadroCostos');
+
     var dataTableListaModalDetalleCuadroCostos = $('#ListaModalDetalleCuadroCostos').DataTable({
         'processing': false,
         'serverSide': false,
@@ -999,6 +1039,8 @@ function openModalAgregarItemARequerimiento(obj){
     getDataItemsRequerimientoParaAgregarItem(id_requerimiento_seleccionado)
 }
 
+
+
 function openModalAtenderConAlmacen(obj){
     let id_requerimiento = obj.dataset.idRequerimiento;
 
@@ -1116,20 +1158,25 @@ function listar_requerimientos_pendientes(permisoCrearOrdenPorRequerimiento,id_e
             {'data': 'usuario'},
             {'data': 'estado_doc'},
             {'data': 'fecha_requerimiento'},
-            { render: function (data, type, row) { 
+            { render: function (data, type, row) {
                 // if(permisoCrearOrdenPorRequerimiento == '1') {
-                    return ('<div class="btn-group btn-group-xs" role="group">'+
-                    '<button type="button" class="btn btn-primary btn-xs" name="btnOpenModalAtenderConAlmacen" title="Atender con almacén" data-id-requerimiento="'+row.id_requerimiento+'"  onclick="openModalAtenderConAlmacen(this);">'+
-                        '<i class="fas fa-dolly fa-sm"></i>'+
-                    '</button>'+
-                    '<button type="button" class="btn btn-danger btn-xs" name="btnAgregarItemARequeriento" title="Agregar items para compra" data-id-requerimiento="'+row.id_requerimiento+'"  onclick="openModalAgregarItemARequerimiento(this);">'+
-                        '<i class="fas fa-plus-square fa-sm"></i>'+
-                    '</button>'+
-                    '<button type="button" class="btn btn-primary btn-xs" name="btnVercuadroCostos" title="Ver Cuadro Costos" data-id-requerimiento="'+row.id_requerimiento+'"  onclick="openModalCuadroCostos(this);" style="background:#b498d0;">'+
-                        '<i class="fas fa-eye fa-sm"></i>'+
-                    '</button>'+
+                    return ('<div class="btn-group" role="group">'+
+                        '<button type="button" class="btn btn-primary btn-xs" name="btnOpenModalAtenderConAlmacen" title="Atender con almacén" data-id-requerimiento="'+row.id_requerimiento+'"  onclick="openModalAtenderConAlmacen(this);">'+
+                            '<i class="fas fa-dolly fa-sm"></i>'+
+                        '</button>'+
+                        '<button type="button" class="btn btn-primary btn-xs" name="btnAgregarItemBase" title="Agregar items del base" data-id-requerimiento="'+row.id_requerimiento+'"  onclick="openModalAgregarItemBase(this);"  style="background:#b498d0;">'+
+                            '<i class="fas fa-puzzle-piece fa-sm"></i>'+
+                        '</button>'+
+                    '</div>'+
+                    '<div class="btn-group" role="group">'+
+                        '<button type="button" class="btn btn-warning btn-xs" name="btnAgregarItemARequeriento" title="Agregar items para compra" data-id-requerimiento="'+row.id_requerimiento+'"  onclick="openModalAgregarItemARequerimiento(this);">'+
+                            '<i class="fas fa-plus-circle fa-sm"></i>'+
+                        '</button>'+
+                        '<button type="button" class="btn btn-info btn-xs" name="btnVercuadroCostos" title="Ver Cuadro Costos" data-id-requerimiento="'+row.id_requerimiento+'"  onclick="openModalCuadroCostos(this);">'+
+                            '<i class="fas fa-eye fa-sm"></i>'+
+                        '</button>'+
 
-                '</div>');
+                    '</div>');
                     // }else{
                     //     return ''
                     // }
@@ -1565,7 +1612,7 @@ function margeObjArrayToDetalleReqSelected(){
             }
         });
     });
-    console.log(detalleRequerimientoSelected);
+    // console.log(detalleRequerimientoSelected);
     if(countChanges>0){
         alert(`se vinculo con exito ${countChanges} item(s)`);
         $('#modal-vincular-item-requerimiento').modal('hide');
@@ -1895,7 +1942,7 @@ function agregarItemATablaListaDetalleOrden(newItem){
     table.rows(i).nodes()[0].setAttribute("style",'background:lightcyan')
     alert('Item '+newItem.codigo_item+' Agregado')
     
-    console.log(detalleRequerimientoSelected);
+    // console.log(detalleRequerimientoSelected);
     // table.rows(i).nodes()[0].childNodes[5].children[0].dataset.id_requerimiento=0;
     // table.rows(i).nodes()[0].childNodes[5].children[0].dataset.id_detalle_requerimiento=0;
 }
