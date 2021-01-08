@@ -63,7 +63,7 @@
                     <div class="row">
                         <div class="col-md-12">
                             <h5>Descripción</h5>
-                            <input type="text" class="form-control activation" name="descripcion" onkeyup="mayus(this);" required>
+                            <textarea name="descripcion"   class="form-control activation" id="" cols="30" rows="10" onkeyup="mayus(this);" required></textarea>
                         </div>
                     </div>
                 </div>

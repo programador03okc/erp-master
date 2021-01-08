@@ -66,7 +66,6 @@ class CotizacionController extends Controller
             }
 
             $idReqInValCotiListUniq=array_unique($reqList);
-
   
             // $id_empresa = 2; //enviar como parametro el id_empresa
             $whereIdEmpresa=[];
@@ -96,12 +95,14 @@ class CotizacionController extends Controller
             ->leftJoin('administracion.adm_area', 'alm_req.id_area', '=', 'adm_area.id_area')
             ->leftJoin('administracion.adm_estado_doc', 'alm_req.estado', '=', 'adm_estado_doc.id_estado_doc')
             ->where([
-                ['id_tipo_requerimiento',1],
-                ['tipo_cliente',4],
+                ['id_tipo_requerimiento',1]
             ])
-            ->whereNotIn(
-                'alm_req.estado',$estado_excluidos
+            ->where(
+                'alm_req.estado',$estado_aprobado
                 )
+            // ->whereNotIn(
+            //     'alm_req.estado',$estado_excluidos
+            //     )
             ->whereIn(
                 'alm_req.id_grupo',$gruposByEmpresa
 
@@ -119,7 +120,6 @@ class CotizacionController extends Controller
                     'fecha_requerimiento'=>$data->fecha_requerimiento,
                     'concepto'=>$data->concepto,
                     'id_grupo'=>$data->id_grupo,
-                    'id_op_com'=>$data->id_op_com,
                     'fecha_registro'=>$data->fecha_registro,
                     'id_area'=>$data->id_area,
                     'id_prioridad'=>$data->id_prioridad,

@@ -16,7 +16,7 @@ function crearProducto(){
     if(ordenP_Cuadroc !== null && ordenP_Cuadroc.hasOwnProperty('tipo_cuadro') && ordenP_Cuadroc.hasOwnProperty('id_cc')){
         // console.log(tempDetalleItemCCSelect);
             document.querySelector("div[id='modal-crear-nuevo-producto'] input[name='part_number']").value = tempDetalleItemCCSelect.part_number?tempDetalleItemCCSelect.part_number:null;
-            document.querySelector("div[id='modal-crear-nuevo-producto'] input[name='descripcion']").value= tempDetalleItemCCSelect.descripcion?tempDetalleItemCCSelect.descripcion:null;
+            document.querySelector("div[id='modal-crear-nuevo-producto'] textarea[name='descripcion']").value= tempDetalleItemCCSelect.descripcion?tempDetalleItemCCSelect.descripcion:null;
 
         }
 
@@ -25,7 +25,7 @@ function crearProducto(){
             if(detalleItemsParaCompraCCSelected.hasOwnProperty('descripcion')){
                 if(detalleItemsParaCompraCCSelected.descripcion.length >0){
                     document.querySelector("div[id='modal-crear-nuevo-producto'] input[name='part_number']").value = detalleItemsParaCompraCCSelected.part_no?detalleItemsParaCompraCCSelected.part_no:null;
-                    document.querySelector("div[id='modal-crear-nuevo-producto'] input[name='descripcion']").value= detalleItemsParaCompraCCSelected.descripcion?detalleItemsParaCompraCCSelected.descripcion:null;
+                    document.querySelector("div[id='modal-crear-nuevo-producto'] textarea[name='descripcion']").value= detalleItemsParaCompraCCSelected.descripcion?detalleItemsParaCompraCCSelected.descripcion:null;
                 }
             }
         }
