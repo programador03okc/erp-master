@@ -109,7 +109,7 @@ function open_despacho_create(data){
                 'cantidad'                  : element.cantidad,
                 'suma_ingresos'             : element.suma_ingresos,
                 'suma_despachos'            : element.suma_despachos_internos,
-                // 'suma_transferencias_recibidas' : element.suma_transferencias_recibidas,
+                'stock_comprometido'        : element.stock_comprometido,
                 'part_number_transformado'  : null,
                 'descripcion_transformado'  : null,
                 'comentario_transformado'   : null,
@@ -456,7 +456,11 @@ function on_todos(){
         var ing = (element.suma_ingresos !== null ? parseFloat(element.suma_ingresos) : 0);//ingresos por compra
         var stock = (element.stock_comprometido !== null ? element.stock_comprometido : 0);
         // var tran = (element.suma_transferencias_recibidas !== null ? parseFloat(element.suma_transferencias_recibidas) : 0);//ingresos por transferencias recibidas
-        var cant = ing + stock - (element.suma_despachos_internos !== null ? parseFloat(element.suma_despachos_internos) : 0);
+        var cant = ing + stock - (element.suma_despachos !== null ? parseFloat(element.suma_despachos) : 0);
+        console.log('ingresos '+ing);
+        console.log('stock '+stock);
+        console.log(element);
+        console.log('cantidad '+cant);
         if (cant > 0){
             detalle_ingresa.push(element);
         }
