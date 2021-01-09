@@ -414,6 +414,10 @@ function llenarSelectSede(array){
         let option = document.createElement("option");
         option.text = element.descripcion;
         option.value = element.id_sede;
+        if(element.codigo == 'LIMA' || element.codigo == 'Lima'){ // default sede lima
+            option.setAttribute('selected','selected');
+
+        }
         option.setAttribute('data-ubigeo',element.id_ubigeo);
         option.setAttribute('data-name-ubigeo',element.ubigeo_descripcion);
         selectElement.add(option);
@@ -449,13 +453,16 @@ function getDataSelectSede(id_empresa = null){
 }
 
 function seleccionarAmacen(data){
-    let firstSede = data[0].id_sede;
+    // let firstSede = data[0].id_sede;
+    let id_empresa_selected =  document.querySelector("select[id='empresa']").value;
     let selectAlmacen = document.querySelector("div[id='input-group-almacen'] select[name='id_almacen']");
     if(selectAlmacen.options.length>0){
         var i, L = selectAlmacen.options.length - 1;
-        for(i = L; i >= 0; i--) {
-            if(selectAlmacen.options[i].dataset.idSede == firstSede){
-                selectAlmacen.options[i].setAttribute('selected',true);
+        for(i = L; i > 0; i--) {
+            if(selectAlmacen.options[i].dataset.idEmpresa == id_empresa_selected){
+                 if( [4,10,11,12,13,14].includes(parseInt(selectAlmacen.options[i].dataset.idSede)) == true){ ///default almacen lima
+                    selectAlmacen.options[i].setAttribute('selected',true);
+                }
             }
         }
     }
