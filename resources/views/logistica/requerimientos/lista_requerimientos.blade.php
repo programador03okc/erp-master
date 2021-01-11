@@ -116,7 +116,7 @@
                                                     <table class="mytable table table-hover table-condensed table-bordered table-okc-view" id="ListaReq" width="100%">
                                                         <thead>
                                                             <tr>
-                                                                <th width="10"></th>
+                                                                <th></th>
                                                                 <th>CODIGO</th>
                                                                 <th width="150">CONCEPTO</th>
                                                                 <th>FECHA</th>
@@ -228,6 +228,25 @@
     <!-- <script src="{{asset('js/logistica/aprobacion/aprobacion.js')}}"></script> -->
 
     <script>
+
+        var roles = {!! json_encode($roles) !!};
+        var grupos = {!! json_encode($grupos) !!};
+        // console.log(roles);
+        grupos.forEach(element => {
+            if(element.id_grupo ==2){ // comercial
+                document.querySelector("div[type='lista_requerimiento'] ul").children[1].children[0].setAttribute("class",'hidden')
+                document.querySelector("div[type='lista_requerimiento'] ul").children[0].setAttribute("class",'active')
+                document.querySelector("div[type='lista_requerimiento'] div[class='tab-content']").children[1].setAttribute('class','tab-pane')
+                document.querySelector("div[type='lista_requerimiento'] div[class='tab-content']").children[0].setAttribute("class",'tab-pane active')
+
+            }else{
+                document.querySelector("div[type='lista_requerimiento'] ul").children[0].children[0].setAttribute("class",'hidden')
+                document.querySelector("div[type='lista_requerimiento'] ul").children[1].setAttribute("class",'active')
+                document.querySelector("div[type='lista_requerimiento'] div[class='tab-content']").children[0].setAttribute('class','tab-pane')
+                document.querySelector("div[type='lista_requerimiento'] div[class='tab-content']").children[1].setAttribute("class",'tab-pane active')
+            }
+        });
+
     $(document).ready(function(){
         seleccionarMenu(window.location);
         inicializarRutasListado(

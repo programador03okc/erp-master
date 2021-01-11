@@ -155,7 +155,8 @@ class AprobacionController extends Controller
             ->leftJoin('configuracion.sis_rol', 'adm_flujo.id_rol', '=', 'sis_rol.id_rol')
             ->leftJoin('administracion.adm_operacion', 'adm_flujo.id_operacion', '=', 'adm_operacion.id_operacion')
             ->where([
-                ['id_doc_aprob', '=', $id_doc_aprobacion]
+                ['id_doc_aprob', '=', $id_doc_aprobacion],
+                ['adm_flujo.estado', '=', 1]
                 ])
             ->orderBy('adm_flujo.orden', 'asc')
             ->get();

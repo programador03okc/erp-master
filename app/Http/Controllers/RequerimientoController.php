@@ -86,7 +86,7 @@ class RequerimientoController extends Controller
         // $uso_administracion =(new LogisticaController)->get_tipo_cliente('Uso Administración');
         $compra =(new LogisticaController)->get_tipo_requerimiento('Compra');
         $tipo_documento = 1; // Requerimientos
-
+        
         $requerimientos = DB::table('almacen.alm_req')
             ->join('almacen.alm_tp_req', 'alm_req.id_tipo_requerimiento', '=', 'alm_tp_req.id_tipo_requerimiento')
             ->leftJoin('almacen.tipo_cliente', 'alm_req.tipo_cliente', '=', 'tipo_cliente.id_tipo_cliente')
@@ -98,11 +98,11 @@ class RequerimientoController extends Controller
             ->leftJoin('administracion.adm_estado_doc', 'alm_req.estado', '=', 'adm_estado_doc.id_estado_doc')
             ->leftJoin('configuracion.sis_usua', 'alm_req.id_usuario', '=', 'sis_usua.id_usuario')
             ->leftJoin('rrhh.rrhh_trab', 'sis_usua.id_trabajador', '=', 'rrhh_trab.id_trabajador')
-            ->join('rrhh.rrhh_postu', 'rrhh_postu.id_postulante', '=', 'rrhh_trab.id_postulante')
-            ->join('rrhh.rrhh_perso', 'rrhh_perso.id_persona', '=', 'rrhh_postu.id_persona')
-            ->leftJoin('rrhh.rrhh_rol', 'alm_req.id_rol', '=', 'rrhh_rol.id_rol')
-            ->leftJoin('rrhh.rrhh_rol_concepto', 'rrhh_rol_concepto.id_rol_concepto', '=', 'rrhh_rol.id_rol_concepto')
-            ->leftJoin('administracion.adm_area', 'rrhh_rol.id_area', '=', 'adm_area.id_area')
+            ->leftJoin('rrhh.rrhh_postu', 'rrhh_postu.id_postulante', '=', 'rrhh_trab.id_postulante')
+            ->leftJoin('rrhh.rrhh_perso', 'rrhh_perso.id_persona', '=', 'rrhh_postu.id_persona')
+            // ->leftJoin('rrhh.rrhh_rol', 'alm_req.id_rol', '=', 'rrhh_rol.id_rol')
+            // ->leftJoin('rrhh.rrhh_rol_concepto', 'rrhh_rol_concepto.id_rol_concepto', '=', 'rrhh_rol.id_rol_concepto')
+            // ->leftJoin('administracion.adm_area', 'rrhh_rol.id_area', '=', 'adm_area.id_area')
             // ->leftJoin('proyectos.proy_op_com', 'proy_op_com.id_op_com', '=', 'alm_req.id_op_com')
             // ->leftJoin('proyectos.proy_presup', 'alm_req.id_presupuesto', '=', 'proy_presup.id_presupuesto')
             ->leftJoin('comercial.com_cliente', 'alm_req.id_cliente', '=', 'com_cliente.id_cliente')
@@ -144,10 +144,10 @@ class RequerimientoController extends Controller
                 'sis_usua.usuario',
                 'alm_req.id_rol',
                 'sis_rol.descripcion as descripcion_rol',
-                'rrhh_rol.id_rol_concepto',
-                'rrhh_rol_concepto.descripcion AS rrhh_rol_concepto',
+                // 'rrhh_rol.id_rol_concepto',
+                // 'rrhh_rol_concepto.descripcion AS rrhh_rol_concepto',
                 'alm_req.id_area',
-                'adm_area.descripcion AS area_descripcion',
+                // 'adm_area.descripcion AS area_descripcion',
                 // 'proy_op_com.codigo as codigo_op_com',
                 // 'proy_op_com.descripcion as descripcion_op_com',
                 'alm_req.fecha_registro',
@@ -169,134 +169,142 @@ class RequerimientoController extends Controller
             ->orderBy('alm_req.id_requerimiento', 'asc')
         ->get();
 
-        
+        // return $requerimientos;
         $payload=[];
         $operacion_selected=0;
         $flujo_list_selected=[];
-        $aprobaciones=[];
+    
         $pendiente_aprobacion=[];
-        
-        
-        foreach($requerimientos as $element){
-            
-            $id_doc_aprobacion_req = $element->id_doc_aprob;
-            $id_grupo_req = $element->id_grupo;
-            $id_tipo_requerimiento_req = $element->id_tipo_requerimiento;
-            $id_prioridad_req = $element->id_prioridad;
-            $estado_req = $element->estado;
 
-            $voboList =(new AprobacionController)->getVoBo($id_doc_aprobacion_req); // todas las vobo
+        $allGrupo = Auth::user()->getAllGrupo();
 
-            if($voboList['status']== 200){
-                foreach($voboList['data'] as $vobo){ 
-                    $aprobaciones[]= $vobo; //lista de aprobaciones
-                }
-            }
-            // return $aprobaciones;
-
-            // ##### obteniendo un array de id_flujos de aprobacion ###
-            $id_flujo_array=[];
-            foreach($aprobaciones as $aprobacion){
-                $id_flujo_array[]= $aprobacion->id_flujo;
-            }
-            // #####
-            // return $aprobaciones;
-
-            // ### seleccionar la operacion que corrresponde el req segun grupo, tipo documento , prioridad
-            // $prioridadList=['data'=>[],'status'=>400];
-            $operaciones =(new AprobacionController)->get_operacion('Requerimiento',$id_grupo_req,$id_prioridad_req);
-
-            foreach($operaciones['data'] as $operacion){
-                if($operacion->id_grupo == $id_grupo_req && $operacion->id_tp_documento == $tipo_documento && $operacion->id_prioridad == $id_prioridad_req){ 
-                    $operacion_selected = $operacion->id_operacion;
-                    // ### si tiene agun criterio 
-                    if($operacion->id_grupo_criterios !=null){ // accion si existe algun criterio
-                        // $prioridadArrayList =(new AprobacionController)->getCriterioPrioridad($operacion->id_grupo_criterios);
-                        // if($prioridadList['status']==200){
-                                // if(count($prioridadList['data'] > 0)){
-                                    //  tiene criterio prioridad
-
-                                // }
-                                // return $prioridadArrayList;
-                        // }
-                        // $rangoMonto = $this->getCriterioMonto(); // only declared
-                    }
-                    // ##### seleccion de flujos    
-                    $flujo_list =(new AprobacionController)->getIdFlujo($operacion_selected);
-                    // return $id_flujo_array;
-
-                    $pendiente_aprobacion= [];
-                    // return $pendiente_aprobacion;
-                    //eliminando flujo ya aprobados
-                    foreach ($flujo_list['data'] as $key => $object) {
-                        // if ($object->id_flujo == 3) {
-                            if (!in_array($object->id_flujo,$id_flujo_array)) {
-                                // array_splice($pendiente_aprobacion, $key, 1);
-                                $pendiente_aprobacion[]=$object;
-                                
-                        }
-                    }
-                // return $pendiente_aprobacion;
-
-                    
-                }
-            }
-
-            // filtar requerimientos para usuario en sesion 
-            $allRol = Auth::user()->getAllRol();
-        //    return  $allRol;
-            $id_rol_list=[];
-            foreach($allRol as $rol){
-                $id_rol_list[]= $rol->id_rol; // lista de id_rol del usuario en sesion
-            }
-            if(count($pendiente_aprobacion)>0){
-                if(in_array($pendiente_aprobacion[0]->id_rol, $id_rol_list) == true){
-                
-                    $payload[]=[
-                        'id_requerimiento'=>$element->id_requerimiento,
-                        'id_doc_aprob'=> $id_doc_aprobacion_req,
-                        'id_tipo_requerimiento'=>$element->id_tipo_requerimiento,
-                        'tipo_requerimiento'=>$element->tipo_requerimiento,
-                        'id_tipo_cliente'=>$element->id_tipo_cliente,
-                        'descripcion_tipo_cliente'=>$element->descripcion_tipo_cliente,
-                        'id_prioridad'=>$element->id_prioridad,
-                        'descripcion_prioridad'=>$element->descripcion_prioridad,
-                        'id_periodo'=>$element->id_periodo,
-                        'descripcion_periodo'=>$element->descripcion_periodo,
-                        'codigo'=>$element->codigo,
-                        'concepto'=>$element->concepto,
-                        'id_empresa'=>$element->id_empresa,
-                        'razon_social_empresa'=>$element->razon_social_empresa,
-                        'codigo_sede_empresa'=>$element->codigo_sede_empresa,
-                        'logo_empresa'=>$element->logo_empresa,
-                        'id_grupo'=>$element->id_grupo,
-                        'descripcion_grupo'=>$element->descripcion_grupo,
-                        'fecha_requerimiento'=>$element->fecha_requerimiento,
-                        'observacion'=>$element->observacion,
-                        'name_ubigeo'=>$element->name_ubigeo,
-                        'id_moneda'=>$element->id_moneda,
-                        'desrcipcion_moneda'=>$element->desrcipcion_moneda,
-                        'monto'=>$element->monto,
-                        'fecha_entrega'=>$element->fecha_entrega,
-                        'id_usuario'=>$element->id_usuario,
-                        'id_rol'=>$element->id_rol,
-                        'descripcion_rol'=>$element->descripcion_rol,
-                        'usuario'=>$element->usuario,
-                        'persona'=>$element->persona,
-                        'id_almacen'=>$element->id_almacen,
-                        'descripcion_almacen'=>$element->descripcion_almacen,
-                        'cantidad_aprobados_total_flujo'=> count($aprobaciones).'/'.count($flujo_list['data']),
-                        'aprobaciones'=>$aprobaciones,
-                        'pendiente_aprobacion'=>$pendiente_aprobacion,
-                        'estado'=>$element->estado,
-                        'estado_doc'=>$element->estado_doc
-                    ];
-                }
-            }
-
-
-            
+        foreach($allGrupo as $grupo){
+            $id_grupo_list[]= $grupo->id_grupo; // lista de id_rol del usuario en sesion
         }
+        $list_req=[];
+        foreach($requerimientos as $element){
+            if(in_array($element->id_grupo, $id_grupo_list) == true){
+
+                $id_doc_aprobacion_req = $element->id_doc_aprob;
+                $id_grupo_req = $element->id_grupo;
+                $id_tipo_requerimiento_req = $element->id_tipo_requerimiento;
+                $id_prioridad_req = $element->id_prioridad;
+                $estado_req = $element->estado;
+
+                // $id_doc_aprobacion_req_list[]=$id_doc_aprobacion_req;
+                $voboList=(new AprobacionController)->getVoBo($id_doc_aprobacion_req); // todas las vobo
+                // return $id_doc_aprobacion_req_list;
+                $aprobaciones=[];
+                if($voboList['status']== 200){
+                    foreach($voboList['data'] as $vobo){ 
+                        $aprobaciones[]= $vobo; //lista de aprobaciones
+                    }
+                }
+
+                // ##### obteniendo un array de id_flujos de aprobacion ###
+                $id_flujo_array=[];
+                foreach($aprobaciones as $aprobacion){
+                    $id_flujo_array[]= $aprobacion->id_flujo;
+                }
+                // #####
+                // return $aprobaciones;
+
+                // ### seleccionar la operacion que corrresponde el req segun grupo, tipo documento , prioridad
+                // $prioridadList=['data'=>[],'status'=>400];
+                $operaciones =(new AprobacionController)->get_operacion('Requerimiento',$id_grupo_req,$id_prioridad_req);
+
+                foreach($operaciones['data'] as $operacion){
+                    if($operacion->id_grupo == $id_grupo_req && $operacion->id_tp_documento == $tipo_documento && $operacion->id_prioridad == $id_prioridad_req){ 
+                        $operacion_selected = $operacion->id_operacion;
+                        // ### si tiene agun criterio 
+                        if($operacion->id_grupo_criterios !=null){ // accion si existe algun criterio
+                            // $prioridadArrayList =(new AprobacionController)->getCriterioPrioridad($operacion->id_grupo_criterios);
+                            // if($prioridadList['status']==200){
+                                    // if(count($prioridadList['data'] > 0)){
+                                        //  tiene criterio prioridad
+
+                                    // }
+                                    // return $prioridadArrayList;
+                            // }
+                            // $rangoMonto = $this->getCriterioMonto(); // only declared
+                        }
+                        // ##### seleccion de flujos    
+                        $flujo_list =(new AprobacionController)->getIdFlujo($operacion_selected);
+                        // return $id_flujo_array;
+
+                        $pendiente_aprobacion= [];
+                        $flujo_list_id_rol= [];
+                        // return $pendiente_aprobacion;
+                        //eliminando flujo ya aprobados
+                        foreach ($flujo_list['data'] as $key => $object) {
+                                $flujo_list_id_rol[]=$object->id_rol;
+                                if (!in_array($object->id_flujo,$id_flujo_array)) {
+                                    $pendiente_aprobacion[]=$object;
+                                    
+                            }
+                        }
+                    // return $flujo_list_id_rol;
+                    // $list_req[]=$flujo_list;
+
+                        
+                    }
+                }
+
+                // filtar requerimientos para usuario en sesion 
+                $allRol = Auth::user()->getAllRol();
+                $id_rol_list=[];
+                foreach($allRol as $rol){
+                    $id_rol_list[]= $rol->id_rol; // lista de id_rol del usuario en sesion
+                }
+                // return $flujo_list;
+                // if(count($pendiente_aprobacion)>0){
+                    // if(in_array($flujo_list['data']['id_rol'], $id_rol_list) == true){
+                    if(count(array_intersect($flujo_list_id_rol, $id_rol_list))>0){
+                        $payload[]=[
+                            'id_requerimiento'=>$element->id_requerimiento,
+                            'id_doc_aprob'=> $id_doc_aprobacion_req,
+                            'id_tipo_requerimiento'=>$element->id_tipo_requerimiento,
+                            'tipo_requerimiento'=>$element->tipo_requerimiento,
+                            'id_tipo_cliente'=>$element->id_tipo_cliente,
+                            'descripcion_tipo_cliente'=>$element->descripcion_tipo_cliente,
+                            'id_prioridad'=>$element->id_prioridad,
+                            'descripcion_prioridad'=>$element->descripcion_prioridad,
+                            'id_periodo'=>$element->id_periodo,
+                            'descripcion_periodo'=>$element->descripcion_periodo,
+                            'codigo'=>$element->codigo,
+                            'concepto'=>$element->concepto,
+                            'id_empresa'=>$element->id_empresa,
+                            'razon_social_empresa'=>$element->razon_social_empresa,
+                            'codigo_sede_empresa'=>$element->codigo_sede_empresa,
+                            'logo_empresa'=>$element->logo_empresa,
+                            'id_grupo'=>$element->id_grupo,
+                            'descripcion_grupo'=>$element->descripcion_grupo,
+                            'fecha_requerimiento'=>$element->fecha_requerimiento,
+                            'observacion'=>$element->observacion,
+                            'name_ubigeo'=>$element->name_ubigeo,
+                            'id_moneda'=>$element->id_moneda,
+                            'desrcipcion_moneda'=>$element->desrcipcion_moneda,
+                            'monto'=>$element->monto,
+                            'fecha_entrega'=>$element->fecha_entrega,
+                            'id_usuario'=>$element->id_usuario,
+                            'id_rol'=>$element->id_rol,
+                            'descripcion_rol'=>$element->descripcion_rol,
+                            'usuario'=>$element->usuario,
+                            'persona'=>$element->persona,
+                            'id_almacen'=>$element->id_almacen,
+                            'descripcion_almacen'=>$element->descripcion_almacen,
+                            'cantidad_aprobados_total_flujo'=> count($aprobaciones).'/'.count($flujo_list['data']),
+                            'aprobaciones'=>$aprobaciones,
+                            'pendiente_aprobacion'=>$pendiente_aprobacion,
+                            'estado'=>$element->estado,
+                            'estado_doc'=>$element->estado_doc
+                        ];
+                    }
+                // }
+            }
+        }
+
+
         $output = ['data'=>$payload];
         return $output;
 

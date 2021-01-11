@@ -415,9 +415,9 @@ function listarTablaReq(id_empresa =null,id_sede =null, id_grupo=null){
             {'render': function (data, type, row){
                 let containerOpenBrackets='<center><div class="btn-group" role="group" style="margin-bottom: 5px;">';
                 let containerCloseBrackets='</div></center>';
-                // let btnEditar='<button type="button" class="btn btn-sm btn-log bg-primary" title="Ver o editar" onClick="editarListaReq(' +row['id_requerimiento']+ ');"><i class="fas fa-edit fa-xs"></i></button>';
-                let btnDetalleRapido='<button type="button" class="btn btn-sm btn-log bg-maroon" title="Ver detalle rápido" onClick="viewFlujo(' +row['id_requerimiento']+ ', ' +row['id_doc_aprob']+ ');"><i class="fas fa-eye fa-xs"></i></button>';
-                let btnTracking='<button type="button" class="btn btn-sm btn-log bg-primary" title="Explorar Requerimiento" onClick="tracking_requerimiento(' +row['id_requerimiento']+ ');"><i class="fas fa-globe fa-xs"></i></button>';
+                // let btnEditar='<button type="button" class="btn btn-xs bg-primary" title="Ver o editar" onClick="editarListaReq(' +row['id_requerimiento']+ ');"><i class="fas fa-edit fa-xs"></i></button>';
+                let btnDetalleRapido='<button type="button" class="btn btn-xs btn-info" title="Ver detalle rápido" onClick="viewFlujo(' +row['id_requerimiento']+ ', ' +row['id_doc_aprob']+ ');"><i class="fas fa-eye fa-xs"></i></button>';
+                let btnTracking='<button type="button" class="btn btn-xs bg-primary" title="Explorar Requerimiento" onClick="tracking_requerimiento(' +row['id_requerimiento']+ ');"><i class="fas fa-globe fa-xs"></i></button>';
                 return containerOpenBrackets+btnDetalleRapido+btnTracking+containerCloseBrackets;
                 }
             },        ]

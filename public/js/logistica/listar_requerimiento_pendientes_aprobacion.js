@@ -59,12 +59,33 @@ function listar_requerimientos_pendientes_aprobar(){
             {'data':'estado_doc', 'name':'estado_doc'},
             {'data':'cantidad_aprobados_total_flujo', 'name':'cantidad_aprobados_total_flujo'},
             {'render': function (data, type, row){
+                var list_id_rol_aprob =[];
+                var hasAprobacion =0;
+                if(row.aprobaciones.length>0){
+                    row.aprobaciones.forEach(element => {
+                        list_id_rol_aprob.push(element.id_rol)
+                    });
+
+                    roles.forEach(element => {
+                        if(list_id_rol_aprob.includes(element.id_rol)==true){
+                            hasAprobacion+=1;
+                        }
+                        
+                    });
+                }
+                if(hasAprobacion==0){
+                    disableBtnA= '';
+                } else{
+                    disableBtnA= 'disabled';
+                }
                 let containerOpenBrackets='<center><div class="btn-group" role="group" style="margin-bottom: 5px;">';
                 let containerCloseBrackets='</div></center>';
-                let btnAprobar='<button type="button" class="btn btn-sm btn-success" title="Aprobar Requerimiento" onClick="aprobarRequerimiento(' +row['id_doc_aprob']+ ');"><i class="fas fa-check fa-xs"></i></button>';
-                let btnObservar='<button type="button" class="btn btn-sm btn-warning" title="Observar Requerimiento" onClick="observarRequerimiento(' +row['id_doc_aprob']+ ', ' +row['id_doc_aprob']+ ');"><i class="fas fa-exclamation-triangle fa-xs"></i></button>';
-                let btnAnular='<button type="button" class="btn btn-sm btn-danger" title="Anular Requerimiento" onClick="anularRequerimiento(' +row['id_doc_aprob']+ ');"><i class="fas fa-ban fa-xs"></i></button>';
-                return containerOpenBrackets+btnAprobar+btnObservar+btnAnular+containerCloseBrackets;
+                let btnDetalleRapido='<button type="button" class="btn btn-xs btn-info" title="Ver detalle rápido" onClick="viewFlujo(' +row['id_requerimiento']+ ', ' +row['id_doc_aprob']+ ');"><i class="fas fa-eye fa-xs"></i></button>';
+                let btnTracking='<button type="button" class="btn btn-xs bg-primary" title="Explorar Requerimiento" onClick="tracking_requerimiento(' +row['id_requerimiento']+ ');"><i class="fas fa-globe fa-xs"></i></button>';
+                let btnAprobar='<button type="button" class="btn btn-xs btn-success" title="Aprobar Requerimiento" onClick="aprobarRequerimiento(' +row['id_doc_aprob']+ ');" '+disableBtnA+'><i class="fas fa-check fa-xs"></i></button>';
+                let btnObservar='<button type="button" class="btn btn-xs btn-warning" title="Observar Requerimiento" onClick="observarRequerimiento(' +row['id_doc_aprob']+ ', ' +row['id_doc_aprob']+ ');" '+disableBtnA+'><i class="fas fa-exclamation-triangle fa-xs"></i></button>';
+                let btnAnular='<button type="button" class="btn btn-xs bg-maroon" title="Anular Requerimiento" onClick="anularRequerimiento(' +row['id_doc_aprob']+ ');" '+disableBtnA+'><i class="fas fa-ban fa-xs"></i></button>';
+                return containerOpenBrackets+btnDetalleRapido+btnTracking+btnAprobar+btnObservar+btnAnular+containerCloseBrackets;
                 }
             },        ]
     });

@@ -31,10 +31,11 @@ class LogisticaController extends Controller
 
     function view_lista_requerimientos()
     {
+        $grupos = Auth::user()->getAllGrupo();
         $roles = $this->userSession()['roles'];
         $empresas = $this->select_mostrar_empresas();
         $empresas_am =  $this->select_mostrar_empresas_am();
-        return view('logistica/requerimientos/lista_requerimientos', compact('roles','empresas','empresas_am'));
+        return view('logistica/requerimientos/lista_requerimientos', compact('grupos','roles','empresas','empresas_am'));
     }
 
     function view_gestionar_requerimiento()
@@ -3642,15 +3643,7 @@ class LogisticaController extends Controller
                     $signoCM1=$criterioMonto['signo1'];
                     $montoCM2=$criterioMonto['monto2'];
                     $signoCM2=$criterioMonto['signo2'];
-                    // if($criterioMonto['id_operador1'] >0){
-                    //     $isAllowedCriterioMonto=$this->evalateCriterioMonto($montoReq,$montoCM1,$signoCM1,$montoCM2,$signoCM2);
-                    //     if($isAllowedCriterioMonto == true){
-                    //     //si el monto esta dentro del rango - continuar nivel
-
-                    //     }else{
-                    //     //si el mont0 NO esta dentro del rango - saltar nivel
-                    //     }
-                    // }
+      
 
                 }
 
@@ -4117,9 +4110,9 @@ class LogisticaController extends Controller
                 $name = $det->descripcion_adicional;
             }
 
-            if ($obs == 't' or $obs == '1' or $obs == 'true') {
-                $active = 'checked="checked" disabled';
-            }
+            // if ($obs == 't' or $obs == '1' or $obs == 'true') {
+            //     $active = 'checked="checked" disabled';
+            // }
 
             if ($type == 1) {
                 $html .=
@@ -4436,7 +4429,6 @@ class LogisticaController extends Controller
         $sql_operacion = DB::table('administracion.adm_operacion')
         ->where([
             ['id_grupo', '=', $id_grupo],
-            ['id_area', '=', $id_area],
             ['id_tp_documento', '=', 1],
             ['estado', '=', $id_tipo_doc]])
             ->get();
@@ -11562,20 +11554,21 @@ function makeRevertirOrdenPorRequerimiento($id_orden){
             'adm_flujo.id_operacion',
             'adm_flujo.id_rol',
             DB::raw("(rrhh_perso.nombres) || ' ' || (rrhh_perso.apellido_paterno) || ' ' || (rrhh_perso.apellido_materno) AS nombre_responsable"),
-            'rol_aprobacion.id_area',
-            'rrhh_rol_concepto.descripcion as descripcion_rol',
+            // 'rol_aprobacion.id_area',
+            'sis_rol.descripcion as descripcion_rol',
             'adm_flujo.nombre as nombre_fase',
             'adm_flujo.orden',
             'adm_flujo.estado'
             )
-        ->leftJoin('administracion.rol_aprobacion', 'rol_aprobacion.id_rol_concepto', '=', 'adm_flujo.id_rol')
-        ->leftJoin('rrhh.rrhh_rol_concepto', 'rrhh_rol_concepto.id_rol_concepto', '=', 'rol_aprobacion.id_rol_concepto')
-        ->leftJoin('rrhh.rrhh_trab', 'rrhh_trab.id_trabajador', '=', 'rol_aprobacion.id_trabajador')
+        ->leftJoin('configuracion.sis_rol', 'sis_rol.id_rol', '=', 'adm_flujo.id_rol')
+        ->leftJoin('configuracion.sis_acceso', 'sis_acceso.id_rol', '=', 'sis_rol.id_rol')
+        ->leftJoin('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'sis_acceso.id_usuario')
+        ->leftJoin('rrhh.rrhh_trab', 'rrhh_trab.id_trabajador', '=', 'sis_usua.id_trabajador')
         ->leftJoin('rrhh.rrhh_postu', 'rrhh_postu.id_postulante', '=', 'rrhh_trab.id_postulante')
         ->leftJoin('rrhh.rrhh_perso', 'rrhh_perso.id_persona', '=', 'rrhh_postu.id_persona')
         ->where([
             ['adm_flujo.estado', '=', 1],
-            ['rol_aprobacion.estado', '=', 1],
+            // ['rol_aprobacion.estado', '=', 1],
             // ['rol_aprobacion.id_area', '=', $id_area],
              ['adm_flujo.id_operacion', '=', $id_operacion]
         ])
@@ -11594,7 +11587,7 @@ function makeRevertirOrdenPorRequerimiento($id_orden){
                 'nombre_fase'=>$data->nombre_fase,
                 'id_operacion'=>$data->id_operacion,
                 'id_rol'=>$data->id_rol,
-                'id_area'=>$data->id_area,
+                // 'id_area'=>$data->id_area,
                 'nombre_responsable'=>$data->nombre_responsable,
                 'descripcion_rol'=>$data->descripcion_rol,
                 'orden'=>$data->orden,
@@ -11604,66 +11597,66 @@ function makeRevertirOrdenPorRequerimiento($id_orden){
             ];
         }
 
-        $criterios = DB::table('administracion.adm_detalle_grupo_criterios')
-        ->select(
-            'adm_detalle_grupo_criterios.id_flujo',
-            'adm_detalle_grupo_criterios.id_criterio_prioridad',
-            'adm_prioridad.descripcion as descripcion_prioridad',
-            'adm_criterio_monto.*'
-        )
-        ->leftJoin('administracion.adm_criterio_monto', 'adm_criterio_monto.id_criterio_monto', '=', 'adm_detalle_grupo_criterios.id_criterio_monto')
-        ->leftJoin('administracion.adm_prioridad', 'adm_prioridad.id_prioridad', '=', 'adm_detalle_grupo_criterios.id_criterio_prioridad')
-        ->where([
-            ['adm_detalle_grupo_criterios.estado', '=', 1]
-        ])
-        ->whereIn('adm_detalle_grupo_criterios.id_flujo', $id_flujo_list)
-        ->orderBy('adm_detalle_grupo_criterios.id_detalle_grupo_criterios', 'asc')
-        ->get();
+        // $criterios = DB::table('administracion.adm_detalle_grupo_criterios')
+        // ->select(
+        //     'adm_detalle_grupo_criterios.id_flujo',
+        //     'adm_detalle_grupo_criterios.id_criterio_prioridad',
+        //     'adm_prioridad.descripcion as descripcion_prioridad',
+        //     'adm_criterio_monto.*'
+        // )
+        // ->leftJoin('administracion.adm_criterio_monto', 'adm_criterio_monto.id_criterio_monto', '=', 'adm_detalle_grupo_criterios.id_criterio_monto')
+        // ->leftJoin('administracion.adm_prioridad', 'adm_prioridad.id_prioridad', '=', 'adm_detalle_grupo_criterios.id_criterio_prioridad')
+        // ->where([
+        //     ['adm_detalle_grupo_criterios.estado', '=', 1]
+        // ])
+        // ->whereIn('adm_detalle_grupo_criterios.id_flujo', $id_flujo_list)
+        // ->orderBy('adm_detalle_grupo_criterios.id_detalle_grupo_criterios', 'asc')
+        // ->get();
 
-        $criterio_monto=[];
-        $criterio_prioridad=[];
-        foreach($criterios as $data){
-            if ($data->id_criterio_monto >0) {
-                $criterio_monto[]=[
-                'id_flujo'=>$data->id_flujo,
-                'id_criterio_monto'=>$data->id_criterio_monto,
-                'descripcion'=>$data->descripcion,
-                'id_operador1'=>$data->id_operador1,
-                'monto1'=>$data->monto1,
-                'id_operador2'=>$data->id_operador2,
-                'monto2'=>$data->monto2,
-                'estado'=>$data->estado
-            ];
-            }
+        // $criterio_monto=[];
+        // $criterio_prioridad=[];
+        // foreach($criterios as $data){
+        //     if ($data->id_criterio_monto >0) {
+        //         $criterio_monto[]=[
+        //         'id_flujo'=>$data->id_flujo,
+        //         'id_criterio_monto'=>$data->id_criterio_monto,
+        //         'descripcion'=>$data->descripcion,
+        //         'id_operador1'=>$data->id_operador1,
+        //         'monto1'=>$data->monto1,
+        //         'id_operador2'=>$data->id_operador2,
+        //         'monto2'=>$data->monto2,
+        //         'estado'=>$data->estado
+        //     ];
+        //     }
 
-            if($data->id_criterio_prioridad >0){
-                $criterio_prioridad[]=[
-                    'id_flujo'=>$data->id_flujo,
-                    'id_criterio_prioridad'=>$data->id_criterio_prioridad,
-                    'descripcion'=>$data->descripcion_prioridad
-                ];
-            }
+        //     if($data->id_criterio_prioridad >0){
+        //         $criterio_prioridad[]=[
+        //             'id_flujo'=>$data->id_flujo,
+        //             'id_criterio_prioridad'=>$data->id_criterio_prioridad,
+        //             'descripcion'=>$data->descripcion_prioridad
+        //         ];
+        //     }
 
-        }
-        if(count($criterio_monto) > 0){
-            foreach($flujo_aprobacion as $c1 => $valor1){
-                foreach($criterio_monto as $c2 => $valor2){
-                    if($valor1['id_flujo'] == $valor2['id_flujo']){
-                        $flujo_aprobacion[$c1]['criterio_monto'][]=$valor2;
-                    } 
-                }
-            }
-        }
+        // }
+        // if(count($criterio_monto) > 0){
+        //     foreach($flujo_aprobacion as $c1 => $valor1){
+        //         foreach($criterio_monto as $c2 => $valor2){
+        //             if($valor1['id_flujo'] == $valor2['id_flujo']){
+        //                 $flujo_aprobacion[$c1]['criterio_monto'][]=$valor2;
+        //             } 
+        //         }
+        //     }
+        // }
 
-        if(count($criterio_prioridad) > 0){
-            foreach($flujo_aprobacion as $c1 => $valor1){
-                foreach($criterio_prioridad as $c2 => $valor2){
-                    if($valor1['id_flujo'] == $valor2['id_flujo']){
-                        $flujo_aprobacion[$c1]['criterio_prioridad'][]=$valor2;
-                    } 
-                }
-            }
-        }
+        // if(count($criterio_prioridad) > 0){
+        //     foreach($flujo_aprobacion as $c1 => $valor1){
+        //         foreach($criterio_prioridad as $c2 => $valor2){
+        //             if($valor1['id_flujo'] == $valor2['id_flujo']){
+        //                 $flujo_aprobacion[$c1]['criterio_prioridad'][]=$valor2;
+        //             } 
+        //         }
+        //     }
+        // }
 
         return $flujo_aprobacion;
     }
@@ -11733,11 +11726,14 @@ function makeRevertirOrdenPorRequerimiento($id_orden){
         // Lista de historial aprobación
         $historial_aprobacion = $this->get_historial_aprobacion($id_requerimiento);
         // lista de Solicitud de Cotización
-        $solicitud_de_cotizaciones = $this->get_cotizacion_by_req($id_requerimiento);
+        // $solicitud_de_cotizaciones = $this->get_cotizacion_by_req($id_requerimiento);
+        $solicitud_de_cotizaciones = [];
         // Lista de Cuadros Comparativo
-        $cuadros_comparativos = $this->get_cuadro_comparativo_by_req($id_requerimiento);
+        $cuadros_comparativos = [];
+        // $cuadros_comparativos = $this->get_cuadro_comparativo_by_req($id_requerimiento);
         //lista de ordenes
-        $ordenes = $this->get_orden_by_req($id_requerimiento);
+        // $ordenes = $this->get_orden_by_req($id_requerimiento);
+        $ordenes = [];
 
         // salida
         $output=[
