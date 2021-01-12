@@ -4478,7 +4478,7 @@ class LogisticaController extends Controller
 
         $sql1 = DB::table('almacen.alm_req')->select('id_grupo','id_area')->where('id_requerimiento', $req)->get();
         if(sizeof($sql1) > 0){
-            $sql11 = DB::table('administracion.adm_operacion')->where([['id_grupo', $sql1->first()->id_grupo],['id_area', $sql1->first()->id_area],['id_tp_documento', $id_tipo_doc],['estado', 1]])->get();
+            $sql11 = DB::table('administracion.adm_operacion')->where([['id_grupo', $sql1->first()->id_grupo],['id_tp_documento', $id_tipo_doc],['estado', 1]])->get();
             if(sizeof($sql11) > 0){
                     $sql2 = DB::table('administracion.adm_flujo')->where([['id_operacion', $sql11->first()->id_operacion],['estado', 1]])
                     ->orderby('orden', 'asc')
@@ -11485,56 +11485,56 @@ function makeRevertirOrdenPorRequerimiento($id_orden){
             }
         }
 
-        $req_obs =DB::table('almacen.req_obs')
-                    ->select('req_obs.*')
-                    ->where([['req_obs.id_requerimiento', '=', $req]])
-                    ->orderBy('req_obs.id_observacion', 'asc')
-                    ->get();
-        $cant_req_obs = $req_obs->count();
+        // $req_obs =DB::table('almacen.req_obs')
+        //             ->select('req_obs.*')
+        //             ->where([['req_obs.id_requerimiento', '=', $req]])
+        //             ->orderBy('req_obs.id_observacion', 'asc')
+        //             ->get();
+        // $cant_req_obs = $req_obs->count();
 
-        $id_sustentacion_list=[];
-        if ($cant_req_obs > 0) {
-            foreach ($req_obs as $row) {
-                $id_sustentacion_list[] = $row->id_sustentacion;
-                $id_us = $row->id_usuario;
-                $fechae = $row->fecha_registro;
-                $obs = $row->descripcion;
-                $id_sustentacion = $row->id_sustentacion;
-                $data3[] = array('estado' => 'OBSERVADO', 'usuario' => $id_us, 'fecha' => $fechae, 
-                'nombre_usuario'=>Usuario::find($row->id_usuario)->trabajador->postulante->persona->nombre_completo,
-                'obs' => $obs,
-                'id_sustentacion'=>$id_sustentacion, 'detalle'=>[]
-                );
-            }
-        }
-        $req_sust =DB::table('almacen.req_sust')
-                    ->select('req_sust.*')
-                    ->whereIn('req_sust.id_sustentacion', $id_sustentacion_list)
-                    ->orderBy('req_sust.id_sustentacion', 'asc')
-                    ->get();
-        $cant_req_sust = $req_sust->count();
+        // $id_sustentacion_list=[];
+        // if ($cant_req_obs > 0) {
+        //     foreach ($req_obs as $row) {
+        //         $id_sustentacion_list[] = $row->id_sustentacion;
+        //         $id_us = $row->id_usuario;
+        //         $fechae = $row->fecha_registro;
+        //         $obs = $row->descripcion;
+        //         $id_sustentacion = $row->id_sustentacion;
+        //         $data3[] = array('estado' => 'OBSERVADO', 'usuario' => $id_us, 'fecha' => $fechae, 
+        //         'nombre_usuario'=>Usuario::find($row->id_usuario)->trabajador->postulante->persona->nombre_completo,
+        //         'obs' => $obs,
+        //         'id_sustentacion'=>$id_sustentacion, 'detalle'=>[]
+        //         );
+        //     }
+        // }
+        // $req_sust =DB::table('almacen.req_sust')
+        //             ->select('req_sust.*')
+        //             ->whereIn('req_sust.id_sustentacion', $id_sustentacion_list)
+        //             ->orderBy('req_sust.id_sustentacion', 'asc')
+        //             ->get();
+        // $cant_req_sust = $req_sust->count();
 
-        if ($cant_req_sust > 0) {
-            foreach ($req_sust as $row) {
-                $id_sustentacion = $row->id_sustentacion;
-                $id_us = $row->id_usuario;
-                $fechae = $row->fecha_registro;
-                $obs = $row->descripcion;
-                $data4[] = array('estado' => 'SUSTENTO', 'usuario' => $id_us, 'fecha' => $fechae, 
-                'nombre_usuario'=>Usuario::find($row->id_usuario)->trabajador->postulante->persona->nombre_completo,
-                'obs' => $obs, 'id_sustentacion' =>$id_sustentacion);
-            }
-        }
-        $new_data= $data3;
+        // if ($cant_req_sust > 0) {
+        //     foreach ($req_sust as $row) {
+        //         $id_sustentacion = $row->id_sustentacion;
+        //         $id_us = $row->id_usuario;
+        //         $fechae = $row->fecha_registro;
+        //         $obs = $row->descripcion;
+        //         $data4[] = array('estado' => 'SUSTENTO', 'usuario' => $id_us, 'fecha' => $fechae, 
+        //         'nombre_usuario'=>Usuario::find($row->id_usuario)->trabajador->postulante->persona->nombre_completo,
+        //         'obs' => $obs, 'id_sustentacion' =>$id_sustentacion);
+        //     }
+        // }
+        // $new_data= $data3;
 
-        for ($i=0; $i< $cant_req_obs; $i++){
-            for ($j=0; $j< $cant_req_sust; $j++){
-                if($new_data[$i]['id_sustentacion'] == $data4[$j]['id_sustentacion']){
-                    $new_data[$i]['detalle'][]=$data4[$j];
-                }
-            }
+        // for ($i=0; $i< $cant_req_obs; $i++){
+        //     for ($j=0; $j< $cant_req_sust; $j++){
+        //         if($new_data[$i]['id_sustentacion'] == $data4[$j]['id_sustentacion']){
+        //             $new_data[$i]['detalle'][]=$data4[$j];
+        //         }
+        //     }
 
-        }
+        // }
 
         $dataFinal = array_merge($data1,$data2,$new_data);
         $date = array();

@@ -347,4 +347,60 @@ class AprobacionController extends Controller
         return $output;
     }
 
+
+    public function get_id_doc($id_doc_aprob,$tp_doc){
+        $sql = DB::table('administracion.adm_documentos_aprob')
+        ->where([['id_tp_documento', '=', $tp_doc], 
+        ['id_doc_aprob', '=', $id_doc_aprob]])
+        ->get();
+
+        if ($sql->count() > 0) {
+            $val = $sql->first()->id_doc;
+        } else {
+            $val = 0;
+        }
+        return $val;
+    }
+
+    function observar_documento(Request $request){
+        $id_doc_aprob = $request->id_doc_aprob;
+        $detalle_observacion = $request->detalle_observacion;
+        $id_rol = $request->id_rol;
+        $id_usuario = Auth::user()->id_usuario;
+        // $id_requerimiento = $this->get_id_doc($id_doc_aprob,1);
+
+        $status='';
+        $message ='';
+        $hoy = date('Y-m-d H:i:s');
+        $nuevaAprobacion = DB::table('administracion.adm_aprobacion')->insertGetId(
+            [
+                'id_flujo'              => null,
+                'id_doc_aprob'          => $id_doc_aprob,
+                'id_vobo'               => 3,
+                'id_usuario'            => $id_usuario,
+                'fecha_vobo'            => $hoy,
+                'detalle_observacion'   => $detalle_observacion,
+                'id_rol'                => $id_rol,
+                'id_sustentacion'       => null
+            ],
+            'id_aprobacion'
+        );
+
+        if($nuevaAprobacion > 0){
+            $status = 200;
+            $message = 'OK';
+        }
+        
+        $output=['status'=>$status,'message'=>$message];
+        return $output;
+    }
+    
+
+    function getObservaciones($id_doc_aprob){
+        $obs =  DB::table('administracion.adm_aprobacion')
+        ->where([['id_doc_aprob', $id_doc_aprob],['id_vobo', 3]])
+        ->get();
+
+        return $obs;
+    }
 }

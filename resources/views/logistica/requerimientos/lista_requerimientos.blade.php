@@ -261,7 +261,8 @@
         
         inicializarRutasPendienteAprobacion(
             "{{route('logistica.gestion-logistica.requerimiento.listado.pendientes-aprobacion')}}",
-            "{{route('logistica.gestion-logistica.requerimiento.listado.aprobar-documento')}}"
+            "{{route('logistica.gestion-logistica.requerimiento.listado.aprobar-documento')}}",
+            "{{route('logistica.gestion-logistica.requerimiento.listado.observar-documento')}}"
             // "{{route('logistica.gestion-logistica.requerimiento.listado.empresa')}}",
             // "{{route('logistica.gestion-logistica.requerimiento.listado.select-sede-by-empresa')}}",
             // "{{route('logistica.gestion-logistica.requerimiento.listado.select-grupo-by-sede')}}",

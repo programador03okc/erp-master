@@ -9,19 +9,22 @@
                 </div>
                 <div class="modal-body">
                     <div class="row">
-                        <div class="col-md-12" id="obs-req-detalle">
-                            
+                        <div class="col-md-12" >
+                        <h5>Roles del Usuario</h5>
+                            <div class="input-group-okc">
+                                <select class="form-control input-sm activation" name="rol_usuario">
+                                @foreach ($roles as $rol)
+                                    <option value="{{$rol->id_rol}}" data-id-area="">{{$rol->rol_concepto}}</option>
+                                @endforeach
+                                </select>
+                            </div>
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <div class="row">
                         <div class="col-md-12 text-left">
-                            <input type="hidden" name="id_requerimiento">
-                            <input type="hidden" name="codigo">
-                            <input type="hidden" name="id_area">
-                            <input type="hidden" name="doc_req">
-                            <input type="hidden" name="flujo_req">
+                            <input type="hidden" name="id_doc_aprob">
                             <h5>Motivo/Justificación</h5>
                             <textarea class="form-control input-sm" name="motivo_req" id="motivo_req" rows="5"></textarea>
                         </div>
@@ -29,7 +32,7 @@
                     <br>
                     <div class="row">
                         <div class="col-md-12">
-                            <input type="submit" class="btn btn-sm btn-flat btn-danger" value="Procesar Observación">
+                        <button type="button" class="btn btn-sm btn-success" onClick="GrabarObservacion();">Grabar</button>
                         </div>
                     </div>
                 </div>

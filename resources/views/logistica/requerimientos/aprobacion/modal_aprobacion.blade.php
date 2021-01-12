@@ -9,7 +9,7 @@
                 </div>
                 <div class="modal-body">
                     <div class="row">
-                        <div class="col-md-10">
+                        <div class="col-md-12">
                             <h5>Roles del Usuario</h5>
                             <div class="input-group-okc">
                                 <select class="form-control input-sm activation" name="rol_usuario">

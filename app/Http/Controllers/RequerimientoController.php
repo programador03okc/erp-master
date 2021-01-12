@@ -114,7 +114,7 @@ class RequerimientoController extends Controller
             ->leftJoin('administracion.adm_periodo', 'alm_req.id_periodo', '=', 'adm_periodo.id_periodo')
             ->leftJoin('configuracion.sis_rol', 'alm_req.id_rol', '=', 'sis_rol.id_rol')
             ->leftJoin('administracion.adm_documentos_aprob', 'alm_req.id_requerimiento', '=', 'adm_documentos_aprob.id_doc')
-
+    
             ->select(
                 'alm_req.id_requerimiento',
                 'adm_documentos_aprob.id_doc_aprob',
@@ -203,6 +203,8 @@ class RequerimientoController extends Controller
 
                 // ##### obteniendo un array de id_flujos de aprobacion ###
                 $id_flujo_array=[];
+                $flujo_list_id_rol= [];
+
                 foreach($aprobaciones as $aprobacion){
                     $id_flujo_array[]= $aprobacion->id_flujo;
                 }
@@ -233,7 +235,7 @@ class RequerimientoController extends Controller
                         // return $id_flujo_array;
 
                         $pendiente_aprobacion= [];
-                        $flujo_list_id_rol= [];
+                        // $flujo_list_id_rol= [];
                         // return $pendiente_aprobacion;
                         //eliminando flujo ya aprobados
                         foreach ($flujo_list['data'] as $key => $object) {
@@ -245,6 +247,8 @@ class RequerimientoController extends Controller
                         }
                     // return $flujo_list_id_rol;
                     // $list_req[]=$flujo_list;
+                    $observacion_list=[];
+                    $observacion_list =(new AprobacionController)->getObservaciones($element->id_doc_aprob);
 
                         
                     }
@@ -259,47 +263,51 @@ class RequerimientoController extends Controller
                 // return $flujo_list;
                 // if(count($pendiente_aprobacion)>0){
                     // if(in_array($flujo_list['data']['id_rol'], $id_rol_list) == true){
-                    if(count(array_intersect($flujo_list_id_rol, $id_rol_list))>0){
-                        $payload[]=[
-                            'id_requerimiento'=>$element->id_requerimiento,
-                            'id_doc_aprob'=> $id_doc_aprobacion_req,
-                            'id_tipo_requerimiento'=>$element->id_tipo_requerimiento,
-                            'tipo_requerimiento'=>$element->tipo_requerimiento,
-                            'id_tipo_cliente'=>$element->id_tipo_cliente,
-                            'descripcion_tipo_cliente'=>$element->descripcion_tipo_cliente,
-                            'id_prioridad'=>$element->id_prioridad,
-                            'descripcion_prioridad'=>$element->descripcion_prioridad,
-                            'id_periodo'=>$element->id_periodo,
-                            'descripcion_periodo'=>$element->descripcion_periodo,
-                            'codigo'=>$element->codigo,
-                            'concepto'=>$element->concepto,
-                            'id_empresa'=>$element->id_empresa,
-                            'razon_social_empresa'=>$element->razon_social_empresa,
-                            'codigo_sede_empresa'=>$element->codigo_sede_empresa,
-                            'logo_empresa'=>$element->logo_empresa,
-                            'id_grupo'=>$element->id_grupo,
-                            'descripcion_grupo'=>$element->descripcion_grupo,
-                            'fecha_requerimiento'=>$element->fecha_requerimiento,
-                            'observacion'=>$element->observacion,
-                            'name_ubigeo'=>$element->name_ubigeo,
-                            'id_moneda'=>$element->id_moneda,
-                            'desrcipcion_moneda'=>$element->desrcipcion_moneda,
-                            'monto'=>$element->monto,
-                            'fecha_entrega'=>$element->fecha_entrega,
-                            'id_usuario'=>$element->id_usuario,
-                            'id_rol'=>$element->id_rol,
-                            'descripcion_rol'=>$element->descripcion_rol,
-                            'usuario'=>$element->usuario,
-                            'persona'=>$element->persona,
-                            'id_almacen'=>$element->id_almacen,
-                            'descripcion_almacen'=>$element->descripcion_almacen,
-                            'cantidad_aprobados_total_flujo'=> count($aprobaciones).'/'.count($flujo_list['data']),
-                            'aprobaciones'=>$aprobaciones,
-                            'pendiente_aprobacion'=>$pendiente_aprobacion,
-                            'estado'=>$element->estado,
-                            'estado_doc'=>$element->estado_doc
-                        ];
-                    }
+                        if(count($flujo_list_id_rol)>0){ // si tiene flujo el id_rol
+                            if(count(array_intersect($flujo_list_id_rol, $id_rol_list))>0){
+                                $payload[]=[
+                                    'id_requerimiento'=>$element->id_requerimiento,
+                                    'id_doc_aprob'=> $id_doc_aprobacion_req,
+                                    'id_tipo_requerimiento'=>$element->id_tipo_requerimiento,
+                                    'tipo_requerimiento'=>$element->tipo_requerimiento,
+                                    'id_tipo_cliente'=>$element->id_tipo_cliente,
+                                    'descripcion_tipo_cliente'=>$element->descripcion_tipo_cliente,
+                                    'id_prioridad'=>$element->id_prioridad,
+                                    'descripcion_prioridad'=>$element->descripcion_prioridad,
+                                    'id_periodo'=>$element->id_periodo,
+                                    'descripcion_periodo'=>$element->descripcion_periodo,
+                                    'codigo'=>$element->codigo,
+                                    'concepto'=>$element->concepto,
+                                    'id_empresa'=>$element->id_empresa,
+                                    'razon_social_empresa'=>$element->razon_social_empresa,
+                                    'codigo_sede_empresa'=>$element->codigo_sede_empresa,
+                                    'logo_empresa'=>$element->logo_empresa,
+                                    'id_grupo'=>$element->id_grupo,
+                                    'descripcion_grupo'=>$element->descripcion_grupo,
+                                    'fecha_requerimiento'=>$element->fecha_requerimiento,
+                                    'observacion'=>$element->observacion,
+                                    'name_ubigeo'=>$element->name_ubigeo,
+                                    'id_moneda'=>$element->id_moneda,
+                                    'desrcipcion_moneda'=>$element->desrcipcion_moneda,
+                                    'monto'=>$element->monto,
+                                    'fecha_entrega'=>$element->fecha_entrega,
+                                    'id_usuario'=>$element->id_usuario,
+                                    'id_rol'=>$element->id_rol,
+                                    'descripcion_rol'=>$element->descripcion_rol,
+                                    'usuario'=>$element->usuario,
+                                    'persona'=>$element->persona,
+                                    'id_almacen'=>$element->id_almacen,
+                                    'descripcion_almacen'=>$element->descripcion_almacen,
+                                    'cantidad_aprobados_total_flujo'=> count($aprobaciones).'/'.count($flujo_list['data']),
+                                    'aprobaciones'=>$aprobaciones,
+                                    'pendiente_aprobacion'=>$pendiente_aprobacion,
+                                    'observaciones'=>$observacion_list,
+                                    'estado'=>$element->estado,
+                                    'estado_doc'=>$element->estado_doc
+                                ];
+                            }
+                        }
+                   
                 // }
             }
         }

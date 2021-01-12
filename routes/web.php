@@ -677,6 +677,7 @@ Route::group(['middleware' => ['auth']], function () {
 					
 					Route::get('pendiente-aprobacion', 'RequerimientoController@requerimientos_pendientes_aprobacion')->name('pendientes-aprobacion');
 					Route::post('aprobar-documento', 'AprobacionController@aprobar_documento')->name('aprobar-documento');
+					Route::post('observar-documento', 'AprobacionController@observar_documento')->name('observar-documento');
 					
 					Route::get('lista-ordenes-propias/{empresa?}', 'RequerimientoController@lista_ordenes_propias')->name('lista-ordenes-propias');
 				});
