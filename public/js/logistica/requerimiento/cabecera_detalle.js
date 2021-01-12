@@ -284,7 +284,6 @@ function stateFormRequerimiento(estilo){
                 'input-group-telefono-cliente',
                 'input-group-email-cliente',
                 'input-group-direccion-entrega',
-                'input-group-cuenta',
                 'input-group-nombre-contacto',
                 'input-group-cargo-contacto',
                 'input-group-email-contacto',
@@ -305,6 +304,7 @@ function stateFormRequerimiento(estilo){
                 'input-group-rol-usuario',
                 'input-group-comercial',
                 'input-group-almacen',
+                'input-group-cuenta',
                 'input-group-proyecto'
             ]);
             hiddeElement('mostrar','form-requerimiento',[
@@ -323,7 +323,6 @@ function stateFormRequerimiento(estilo){
                 'input-group-telefono-cliente',
                 'input-group-email-cliente',
                 'input-group-direccion-entrega',
-                'input-group-cuenta',
                 'input-group-nombre-contacto',
                 'input-group-cargo-contacto',
                 'input-group-email-contacto',
