@@ -1123,12 +1123,13 @@ class DistribucionController extends Controller
 
             $requerimiento = null;
 
-            if ($request->agencia !== null){
+            if ($request->tr_id_proveedor !== null){
                 DB::table('almacen.orden_despacho')
                 ->where('id_od',$request->id_od)
                 ->update([
                     'estado'=>25, 
-                    'agencia'=>$request->agencia,
+                    // 'agencia'=>$request->agencia,
+                    'id_transportista'=>$request->tr_id_proveedor,
                     'serie'=>$request->serie,
                     'numero'=>$request->numero,
                     'fecha_transportista'=>$request->fecha_transportista,
@@ -1139,7 +1140,7 @@ class DistribucionController extends Controller
             } else {
                 DB::table('almacen.orden_despacho')
                 ->where('id_od',$request->id_od)
-                ->update(['estado'=>25]);
+                ->update(['estado'=>21]);
                 $requerimiento = $request->id_requerimiento;
             }
 
@@ -2367,5 +2368,18 @@ class DistribucionController extends Controller
     
             DB::rollBack();
         }
+    }
+
+    public function mostrar_transportistas()
+    {
+        $data = DB::table('logistica.log_prove')
+            ->select('log_prove.id_proveedor', 'adm_contri.id_contribuyente', 'adm_contri.nro_documento', 'adm_contri.razon_social','adm_contri.telefono')
+            ->leftjoin('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'log_prove.id_contribuyente')
+            ->where([   ['log_prove.estado', '=', 1],
+                        ['adm_contri.transportista', '=', true]])
+            ->orderBy('adm_contri.nro_documento')
+            ->get();
+        $output['data'] = $data;
+        return response()->json($output);
     }
 }

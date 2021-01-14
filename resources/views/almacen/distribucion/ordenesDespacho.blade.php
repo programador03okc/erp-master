@@ -20,7 +20,7 @@ Panel de Control de Despachos
 @endsection
 
 @section('content')
-<div class="page-main" type="requerimientosPendientes">
+<div class="page-main" type="ordenesDespacho">
     <div class="col-md-12" id="tab-reqPendientes" style="padding-left:0px;padding-right:0px;">
         <ul class="nav nav-tabs" id="myTab">
             <li class="active"><a type="#elaborados">Requerimientos Pendientes <span id="selaborados" class="badge badge-info"></span></a></li>

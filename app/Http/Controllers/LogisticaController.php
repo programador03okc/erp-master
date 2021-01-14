@@ -5591,7 +5591,7 @@ function get_id_usuario_usuario_por_rol($descripcion_rol, $id_sede, $id_empresa)
             $fecha = date('Y-m-d H:i:s');
 
             $exist = DB::table('contabilidad.adm_contri')
-            ->where([['nro_documento','=',$request->nro_documento],['estado','!=',7]])
+            ->where([['nro_documento','=',$request->nro_documento_prov],['estado','!=',7]])
             ->first();
 
             $id_proveedor = 0;
@@ -5599,11 +5599,12 @@ function get_id_usuario_usuario_por_rol($descripcion_rol, $id_sede, $id_empresa)
             if ($exist == null){
                 $id_contribuyente = DB::table('contabilidad.adm_contri')->insertGetId(
                     [
-                        'id_tipo_contribuyente'=>$request->id_tipo_contribuyente, 
+                        // 'id_tipo_contribuyente'=>$request->id_tipo_contribuyente, 
                         'id_doc_identidad'=>$request->id_doc_identidad, 
-                        'nro_documento'=>$request->nro_documento, 
+                        'nro_documento'=>$request->nro_documento_prov, 
                         'razon_social'=>strtoupper($request->razon_social), 
                         'estado'=>1,
+                        'transportista'=>($request->transportista == "si" ? true : false),
                         'fecha_registro'=>$fecha
                     ],
                         'id_contribuyente'
@@ -6899,7 +6900,8 @@ function get_id_usuario_usuario_por_rol($descripcion_rol, $id_sede, $id_empresa)
         $data = DB::table('logistica.log_prove')
             ->select('log_prove.id_proveedor', 'adm_contri.id_contribuyente', 'adm_contri.nro_documento', 'adm_contri.razon_social','adm_contri.telefono')
             ->leftjoin('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'log_prove.id_contribuyente')
-            ->where([['log_prove.estado', '=', 1]])
+            ->where([   ['log_prove.estado', '=', 1],
+                        ['adm_contri.transportista', '=', false]])
             ->orderBy('adm_contri.nro_documento')
             ->get();
         $output['data'] = $data;

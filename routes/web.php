@@ -944,6 +944,7 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::post('despacho_anular_requerimiento', 'DistribucionController@anular_requerimiento');
 					Route::get('anular_orden_despacho/{id}', 'DistribucionController@anular_orden_despacho');
 					Route::get('mostrar_proveedores', 'LogisticaController@mostrar_proveedores');
+					Route::get('mostrar_transportistas', 'DistribucionController@mostrar_transportistas');
 					Route::post('listarGruposDespachados', 'DistribucionController@listarGruposDespachados');
 					Route::post('listarGruposDespachadosPendientesCargo', 'DistribucionController@listarGruposDespachadosPendientesCargo');
 					Route::get('verDetalleGrupoDespacho/{id}', 'DistribucionController@verDetalleGrupoDespacho');

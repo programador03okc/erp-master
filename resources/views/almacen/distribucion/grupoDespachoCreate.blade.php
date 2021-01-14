@@ -36,7 +36,7 @@
                                 <input class="oculto" name="gd_id_proveedor"/>
                                 <input type="text" class="form-control" name="gd_razon_social" placeholder="Seleccione un proveedor..." 
                                     aria-describedby="basic-addon1" disabled="true">
-                                <button type="button" class="input-group-text activation" id="basic-addon1" onClick="proveedorModal();">
+                                <button type="button" class="input-group-text activation" id="basic-addon1" onClick="grupoDespachoTransportistaModal();">
                                     <i class="fa fa-search"></i>
                                 </button>
                                 <button type="button" class="btn-primary activation" title="Agregar Proveedor" onClick="agregar_proveedor();">
