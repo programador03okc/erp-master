@@ -946,6 +946,7 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::post('despacho_anular_requerimiento', 'DistribucionController@anular_requerimiento');
 					Route::get('anular_orden_despacho/{id}', 'DistribucionController@anular_orden_despacho');
 					Route::get('mostrar_proveedores', 'LogisticaController@mostrar_proveedores');
+					Route::get('mostrar_transportistas', 'DistribucionController@mostrar_transportistas');
 					Route::post('listarGruposDespachados', 'DistribucionController@listarGruposDespachados');
 					Route::post('listarGruposDespachadosPendientesCargo', 'DistribucionController@listarGruposDespachadosPendientesCargo');
 					Route::get('verDetalleGrupoDespacho/{id}', 'DistribucionController@verDetalleGrupoDespacho');
@@ -971,9 +972,9 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::post('guardar_producto', 'AlmacenController@guardar_producto');
 
 				});
-	
+				
 				Route::group(['as' => 'trazabilidad-requerimientos.', 'prefix' => 'trazabilidad-requerimientos'], function(){
-	
+					
 					Route::get('index', 'DistribucionController@view_trazabilidad_requerimientos')->name('index');
 					Route::post('listarRequerimientosTrazabilidad', 'DistribucionController@listarRequerimientosTrazabilidad');
 					Route::get('verTrazabilidadRequerimiento/{id}', 'DistribucionController@verTrazabilidadRequerimiento');
@@ -983,8 +984,14 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::post('guardar_od_adjunto', 'DistribucionController@guardar_od_adjunto');
 					Route::get('anular_od_adjunto/{id}', 'DistribucionController@anular_od_adjunto');
 
+				});	
+				
+				Route::group(['as' => 'guias-transportistas.', 'prefix' => 'guias-transportistas'], function(){
+					
+					Route::get('index', 'DistribucionController@view_guias_transportistas')->name('index');
+					Route::get('listarGuiasTransportistas', 'DistribucionController@listarGuiasTransportistas');
+
 				});
-	
 			});
 	
 			Route::group(['as' => 'movimientos.', 'prefix' => 'movimientos'], function(){

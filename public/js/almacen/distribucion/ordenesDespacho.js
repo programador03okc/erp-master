@@ -1,5 +1,21 @@
 let od_seleccionadas = [];
 let permiso_temp = null;
+let origen_tr = '';
+
+function grupoDespachoTransportistaModal(){
+    origen_tr = 'grupoDespacho';
+    proveedorModal();
+}
+
+function transportistaModal(){
+    origen_tr = 'transportista';
+    proveedorModal();
+}
+
+function addProveedorModal(){
+    origen_tr = 'transportista';
+    agregar_proveedor();
+}
 
 function iniciar(permiso){
     $("#tab-reqPendientes section:first form").attr('form', 'formulario');
@@ -166,9 +182,9 @@ function listarRequerimientosConfirmados(permiso){
             },
             {'data': 'codigo_oportunidad', 'name': 'oportunidades.codigo_oportunidad'},
             {'render': function (data, type, row){
-                return formatNumber.decimal(row['monto_total'],'S/',2);
-            }
-        },
+                    return formatNumber.decimal(row['monto_total'],'S/',2);
+                }
+            },
             {'data': 'nombre', 'name': 'entidades.nombre'},
             {'data': 'sede_descripcion_req', 'name': 'sede_req.descripcion'},
             {'data': 'codigo'},
@@ -774,7 +790,7 @@ $('#gruposDespachados tbody').on("click","button.transportista", function(){
         $('[name=agencia]').val('');
         $('[name=serie]').val('');
         $('[name=numero]').val('');
-        $('[name=fecha_transportista]').val('');
+        // $('[name=fecha_transportista]').val('');
         $('[name=codigo_envio]').val('');
         $('[name=importe_flete]').val('');
         $('#submit_od_transportista').removeAttr("disabled");

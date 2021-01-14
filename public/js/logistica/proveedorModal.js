@@ -38,12 +38,36 @@ function listar_proveedores(){
     });
 }
 
+function listar_transportistas(){
+    var vardataTables = funcDatatables();
+    $('#listaProveedor').dataTable({
+        'dom': vardataTables[1],
+        'buttons': vardataTables[2],
+        'language' : vardataTables[0],
+        'bDestroy' : true,
+        'ajax': 'mostrar_transportistas',
+        'columns': [
+            {'data': 'id_proveedor'},
+            {'data': 'id_contribuyente'},
+            {'data': 'nro_documento'},
+            {'data': 'razon_social'},
+            // {'data': 'telefono'}
+        ],
+        'columnDefs': [{ 'aTargets': [0,1], 'sClass': 'invisible'}],
+    });
+}
+
 function proveedorModal(){
     $('#modal-proveedores').modal({
         show: true
     });
-    // clearDataTable();
-    listar_proveedores();
+    var page = $('.page-main').attr('type');
+
+    if (page == "ordenesDespacho"){
+        listar_transportistas();
+    } else {
+        listar_proveedores();
+    }
 }
 
 function selectProveedor(){
@@ -87,9 +111,16 @@ function selectProveedor(){
         $('[name=id_contrib]').val(idCo);
         $('[name=prov_razon_social]').val(des);
     }
-    else if (page == "requerimientosPendientes"){
-        $('[name=gd_id_proveedor]').val(myId);
-        $('[name=gd_razon_social]').val(des);        
+    else if (page == "ordenesDespacho"){
+
+        if (origen_tr == 'grupoDespacho'){
+            $('[name=gd_id_proveedor]').val(myId);
+            $('[name=gd_razon_social]').val(des);
+        } 
+        else if (origen_tr == 'transportista'){
+            $('[name=tr_id_proveedor]').val(myId);
+            $('[name=tr_razon_social]').val(des);
+        }
     }
     else {
         $('[name=id_proveedor]').val(myId);
