@@ -9,7 +9,7 @@ function listarGuiasTransportistas(){
         'buttons': vardataTables[2],
         'language' : vardataTables[0],
         'bDestroy' : true,
-        'serverSide' : true,
+        // 'serverSide' : true,
         // "scrollX": true,
         'ajax': {
             url: 'listarGuiasTransportistas',
