@@ -40,10 +40,13 @@ function listarGuiasTransportistas(){
                 }
             },
             {'render': function (data, type, row){
-                    return row['cod_req'];
+                return (row['cod_req'] !== null ? 
+                        ('<label class="lbl-codigo" title="Abrir Requerimiento" onClick="abrir_requerimiento('+row['id_requerimiento']+')">'+row['cod_req']+'</label>')
+                        : '');
                 }
             },
             {'data': 'codigo'},
+            {'data': 'nombre'},
             {'render': function (data, type, row){
                 return '<span class="label label-'+row['bootstrap_color']+'">'+row['estado_doc']+'</span>'
                 }
@@ -59,4 +62,12 @@ function listarGuiasTransportistas(){
             // }
         ],
     });
+}
+function abrir_requerimiento(id_requerimiento){
+    // Abrir nuevo tab
+    localStorage.setItem("id_requerimiento",id_requerimiento);
+    let url ="/logistica/gestion-logistica/requerimiento/elaboracion/index";
+    var win = window.open(url, '_blank');
+    // Cambiar el foco al nuevo tab (punto opcional)
+    win.focus();
 }

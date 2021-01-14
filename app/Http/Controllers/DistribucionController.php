@@ -2391,13 +2391,14 @@ class DistribucionController extends Controller
         $data = DB::table('almacen.orden_despacho')
             ->select('orden_despacho.*', 'adm_contri.razon_social','oc_propias.orden_am',
             'oc_propias.id as id_oc_propia','oc_propias.url_oc_fisica','alm_req.codigo as cod_req',
-            'adm_estado_doc.estado_doc','adm_estado_doc.bootstrap_color')
+            'adm_estado_doc.estado_doc','adm_estado_doc.bootstrap_color','entidades.nombre')
             ->join('logistica.log_prove', 'log_prove.id_proveedor', '=', 'orden_despacho.id_transportista')
             ->join('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'log_prove.id_contribuyente')
             ->join('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'orden_despacho.id_requerimiento')
             ->leftjoin('mgcp_cuadro_costos.cc','cc.id','=','alm_req.id_cc')
             ->leftjoin('mgcp_oportunidades.oportunidades','oportunidades.id','=','cc.id_oportunidad')
             ->leftjoin('mgcp_acuerdo_marco.oc_propias','oc_propias.id_oportunidad','=','oportunidades.id')
+            ->leftjoin('mgcp_acuerdo_marco.entidades','entidades.id','=','oportunidades.id_entidad')
             ->join('administracion.adm_estado_doc','adm_estado_doc.id_estado_doc','=','orden_despacho.estado')
             ->orderBy('orden_despacho.fecha_transportista','desc')
             ->get();

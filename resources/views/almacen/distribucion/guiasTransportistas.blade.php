@@ -30,6 +30,7 @@ Reporte de Guías Transportista
                         <th>OCAM</th>
                         <th>Cod.Req.</th>
                         <th>OD</th>
+                        <th>Cliente</th>
                         <th>Estado</th>
                     </tr>
                 </thead>
