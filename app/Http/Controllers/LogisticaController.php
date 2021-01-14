@@ -877,7 +877,7 @@ class LogisticaController extends Controller
         // $detalle_req_observacion = '';
         // $descripcion_observacion='';
 
-        if ($estado_req === 3) { // estado observado
+        if ($estado_req == 3) { // estado observado
             // $id_doc_aprob = $this->consult_doc_aprob($id_requerimiento);
             // $countAprob = $this->consult_aprob($id_doc_aprob);
             // $countObs = $this->consult_obs($id_doc_aprob);
@@ -887,7 +887,9 @@ class LogisticaController extends Controller
             // $na_flujo = $niv_aprob['flujo'];
             // $no_aprob = is_numeric($niv_aprob['rol_aprob'] ) >0 ?$niv_aprob['rol_aprob']:5; //id_rol
             // // $obs = $this->get_observacion($id_requerimiento,$na_flujo,$no_aprob,3);
-            $req_observacion = $this->get_header_observacion($id_requerimiento);
+            $num_doc = $this->consult_doc_aprob($id_requerimiento,1); 
+
+            $req_observacion = $this->get_header_observacion($num_doc);
 
         }
 
@@ -1773,6 +1775,8 @@ class LogisticaController extends Controller
             $estado = 1;
             
         }
+
+
         //----------------------------------------------------------------------------
         $id_requerimiento = DB::table('almacen.alm_req')->insertGetId(
             [
@@ -2390,6 +2394,37 @@ class LogisticaController extends Controller
 
     public function actualizar_requerimiento(Request $request, $id_requerimiento)
     {
+        $cantidad_sustentos = (count($request->sustento));
+        $nuevo_estado=3;
+        $cantidadSustentosTrue=0;
+        if($cantidad_sustentos>0){
+            for ($i = 0; $i < $cantidad_sustentos; $i++) {
+                if( $request->sustento[$i]['checked'] == true){
+                    $cantidadSustentosTrue+=1;
+                    $id_sustentacion=  DB::table('almacen.req_sust')
+                    ->insertGetId([  
+                        'descripcion'=>$request->sustento[$i]['sustento'],
+                        'id_usuario'=>Auth::user()->id_usuario,
+                        'estado'=>1,
+                        'fecha_registro'=>date('Y-m-d H:i:s')
+                        ],
+                    'id_sustentacion'
+                    );
+
+                    if($id_sustentacion >0){
+                        // $nuevo_estado = 12; // pendiente Aprobacion
+                        DB::table('administracion.adm_aprobacion')->where('id_aprobacion',  $request->sustento[$i]['id_aprobacion'])
+                        ->update([
+                            'id_sustentacion' => $id_sustentacion
+                        ]);
+                    }    
+                }
+
+            }
+            if($cantidadSustentosTrue == $cantidad_sustentos){
+                $nuevo_estado = 12; // pendiente Aprobacion
+            }
+        }
         $codigo = $request->requerimiento['codigo'];
         $tipo_requerimiento = $request->requerimiento['tipo_requerimiento'];
         $usuario = $request->requerimiento['id_usuario'];
@@ -2414,8 +2449,38 @@ class LogisticaController extends Controller
         $id_area = isset($request->requerimiento['id_area'])?$request->requerimiento['id_area']:null;
         $id_priori = $request->requerimiento['id_prioridad'];
 
+
         if ($id_requerimiento != NULL) {
-            $data_requerimiento = DB::table('almacen.alm_req')->where('id_requerimiento', $id_requerimiento)
+            if($nuevo_estado == 12){
+                $data_requerimiento = DB::table('almacen.alm_req')->where('id_requerimiento', $id_requerimiento)
+                ->update([
+                    'codigo'                => $codigo,
+                    'id_tipo_requerimiento' => $tipo_requerimiento,
+                    'id_usuario'            => $usuario,
+                    'id_rol'                => is_numeric($id_rol) == 1 ? $id_rol : null,
+                    'fecha_requerimiento'   => $fecha_req,
+                    'id_periodo'            => $id_periodo,
+                    'concepto'              => $concepto,
+                    'observacion'           => $observacion,
+                    'tipo_cliente'          => $tipo_cliente,
+                    'id_cliente'            => $id_cliente,
+                    'id_persona'            => $id_persona,
+                    'nro_cuenta'              => $nro_cuenta,
+                    'telefono'              => $telefono,
+                    'email'                 => $email,
+                    'direccion_entrega'     => $direccion_entrega,
+                    'id_ubigeo_entrega'     => $ubigeo,
+                    'id_sede'               => $id_sede,
+                    'id_almacen'            => $id_almacen,
+                    'id_moneda'             => is_numeric($moneda) == 1 ? $moneda : null,
+                    'id_grupo'               => is_numeric($id_grupo) == 1 ? $id_grupo : null,
+                    'id_area'               => is_numeric($id_area) == 1 ? $id_area : null,
+                    'id_prioridad'          => is_numeric($id_priori) == 1 ? $id_priori : null,
+                    'monto'                 => $monto,
+                    'estado'                 => $nuevo_estado
+                ]);
+            }else{
+                $data_requerimiento = DB::table('almacen.alm_req')->where('id_requerimiento', $id_requerimiento)
                 ->update([
                     'codigo'                => $codigo,
                     'id_tipo_requerimiento' => $tipo_requerimiento,
@@ -2441,6 +2506,8 @@ class LogisticaController extends Controller
                     'id_prioridad'          => is_numeric($id_priori) == 1 ? $id_priori : null,
                     'monto'                 => $monto
                 ]);
+            }
+            
 
             $detalle_req=[];
             $count_detalle = count($request->detalle);
@@ -2461,7 +2528,25 @@ class LogisticaController extends Controller
 
 
                     if ($id_det_req > 0) {
-                        $data_detalle = DB::table('almacen.alm_det_req')
+                        if($nuevo_estado==12){
+                            $data_detalle = DB::table('almacen.alm_det_req')
+                            ->where('id_detalle_requerimiento', '=', $id_det_req)
+                            ->update([
+                                'id_requerimiento'      => $id_requerimiento,
+                                'id_item'               => is_numeric($id_item) == 1 ? $id_item : null,
+                                'id_producto'           => is_numeric($id_producto) == 1 ? $id_producto : null,
+                                'precio_referencial'    => $precio_ref,
+                                'cantidad'              => $cantidad,
+                                'lugar_entrega'         => $lugar_entrega,
+                                'descripcion_adicional' => $des_item,
+                                'partida'               => is_numeric($id_parti) == 1 ? $id_parti : null,
+                                'id_unidad_medida'      => is_numeric($id_unit) == 1 ? $id_unit : null,
+                                'id_tipo_item'          => is_numeric($id_tipo_item) == 1 ? $id_tipo_item : null,
+                                'id_almacen_reserva'    => $id_almacen_reserva,
+                                'estado'                => $nuevo_estado
+                            ]);
+                        }else{
+                            $data_detalle = DB::table('almacen.alm_det_req')
                             ->where('id_detalle_requerimiento', '=', $id_det_req)
                             ->update([
                                 'id_requerimiento'      => $id_requerimiento,
@@ -2477,6 +2562,8 @@ class LogisticaController extends Controller
                                 'id_almacen_reserva'    => $id_almacen_reserva,
                                 'estado'                => $estado
                             ]);
+                        }
+
                     } else {
                         $data_detalle = DB::table('almacen.alm_det_req')->insertGetId(
                             [
@@ -4596,39 +4683,65 @@ class LogisticaController extends Controller
         return $sql[0]->cantidad_obs;
     }
 
-    function get_header_observacion($id_req){
+    function get_header_observacion($id_doc_aprob){
         
-        $sql_obs_req = DB::select("SELECT req_obs.id_observacion, req_obs.id_usuario, 
-        (rrhh_perso.nombres) || ' ' || (rrhh_perso.apellido_paterno) || ' ' || (rrhh_perso.apellido_materno) as nombre_completo, 
-        req_obs.descripcion, req_obs.estado 
-        FROM almacen.req_obs
-        LEFT JOIN configuracion.sis_usua on sis_usua.id_usuario = req_obs.id_usuario 
-        LEFT JOIN rrhh.rrhh_trab on rrhh_trab.id_trabajador = sis_usua.id_trabajador 
-        LEFT JOIN rrhh.rrhh_postu on rrhh_postu.id_postulante = rrhh_trab.id_postulante 
-        LEFT JOIN rrhh.rrhh_perso on rrhh_perso.id_persona = rrhh_postu.id_persona
-        where id_observacion in(SELECT MAX(id_observacion) as obs from almacen.req_obs
-        WHERE id_requerimiento=".$id_req." and req_obs.estado=1
-        GROUP BY id_requerimiento, id_usuario ORDER BY obs ASC)");
+        $data=[];
+        $obs =  DB::table('administracion.adm_aprobacion')
+        ->select('adm_aprobacion.*',
+        DB::raw("(rrhh_perso.nombres) || ' ' || (rrhh_perso.apellido_paterno) || ' ' || (rrhh_perso.apellido_materno)  AS nombre_completo")
+        )
+        ->join('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'adm_aprobacion.id_usuario')
+        ->join('rrhh.rrhh_trab', 'rrhh_trab.id_trabajador', '=', 'sis_usua.id_trabajador')
+        ->join('rrhh.rrhh_postu', 'rrhh_postu.id_postulante', '=', 'rrhh_trab.id_postulante')
+        ->join('rrhh.rrhh_perso', 'rrhh_perso.id_persona', '=', 'rrhh_postu.id_persona')
+        ->where([['id_doc_aprob', $id_doc_aprob],['id_vobo', 3]])
+        ->get();
 
-
-
-
-        $id_usu_list=[];
-        $obs=[];
-        if(isset($sql_obs_req) && count($sql_obs_req)>0){
-            foreach ($sql_obs_req as $key => $value) {
-            $id_usu_list[]=$value->id_usuario;
-            
-            $obs[]=[
-                'id_usuario'=> $value->id_usuario, 
-                'nombre_completo'=> $value->nombre_completo, 
-                'descripcion'=>$value->descripcion,
-                'estado'=>$value->estado
-            ];
-            }
-
-        
+        if(isset($obs) && count($obs)>0){
+            foreach ($obs as $key => $value) {                
+                $data[]=[
+                    'id_aprobacion'=> $value->id_aprobacion, 
+                    'id_vobo'=> $value->id_vobo, 
+                    'id_usuario'=> $value->id_usuario, 
+                    'nombre_completo'=> $value->nombre_completo, 
+                    'descripcion'=>$value->detalle_observacion,
+                    'id_rol'=>$value->id_rol,
+                    'id_sustentacion'=>$value->id_sustentacion
+                ];
+                }
         }
+        // $sql_obs_req = DB::select("SELECT req_obs.id_observacion, req_obs.id_usuario, 
+        // (rrhh_perso.nombres) || ' ' || (rrhh_perso.apellido_paterno) || ' ' || (rrhh_perso.apellido_materno) as nombre_completo, 
+        // req_obs.descripcion, req_obs.estado 
+        // FROM almacen.req_obs
+        // LEFT JOIN configuracion.sis_usua on sis_usua.id_usuario = req_obs.id_usuario 
+        // LEFT JOIN rrhh.rrhh_trab on rrhh_trab.id_trabajador = sis_usua.id_trabajador 
+        // LEFT JOIN rrhh.rrhh_postu on rrhh_postu.id_postulante = rrhh_trab.id_postulante 
+        // LEFT JOIN rrhh.rrhh_perso on rrhh_perso.id_persona = rrhh_postu.id_persona
+        // where id_observacion in(SELECT MAX(id_observacion) as obs from almacen.req_obs
+        // WHERE id_requerimiento=".$id_req." and req_obs.estado=1
+        // GROUP BY id_requerimiento, id_usuario ORDER BY obs ASC)");
+
+
+
+
+
+        // $id_usu_list=[];
+        // $obs=[];
+        // if(isset($sql_obs_req) && count($sql_obs_req)>0){
+        //     foreach ($sql_obs_req as $key => $value) {
+        //     $id_usu_list[]=$value->id_usuario;
+            
+        //     $obs[]=[
+        //         'id_usuario'=> $value->id_usuario, 
+        //         'nombre_completo'=> $value->nombre_completo, 
+        //         'descripcion'=>$value->descripcion,
+        //         'estado'=>$value->estado
+        //     ];
+        //     }
+
+        
+        // }
         // $sql_obs_req[0]->obs_item=[];
 
         // $sql_obs_req_det = DB::select("SELECT req_obs.id_observacion, req_obs.id_usuario, CONCAT(rrhh_perso.nombres,' ' ,rrhh_perso.apellido_paterno,' ' ,rrhh_perso.apellido_materno) as nombre_completo, descripcion FROM almacen.req_obs
@@ -4672,7 +4785,7 @@ class LogisticaController extends Controller
         // ->get();
         
 
-        return $sql_obs_req;
+        return $data;
 
     }
 

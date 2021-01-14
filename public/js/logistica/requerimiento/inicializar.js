@@ -38,6 +38,8 @@ var itemSelected ={};
 var UsoDePartida =[];
 var userSession =[];
 var objPromociones =[];
+var sustentoObj =[];
+var action_requerimiento ='';
 
 let tpOptCom  ={};
 
@@ -76,7 +78,6 @@ function inicializar( _rutaLista,
     rutaDetalleCuadroCostos = _rutaDetalleCuadroCostos;
     rutaObtenerCostruirCliente = _rutaObtenerCostruirCliente;
     rutaObtenerGrupoSelectItemParaCpmpra = _rutaObtenerGrupoSelectItemParaCpmpra;
-
 
     listar_almacenes();
 
@@ -117,6 +118,17 @@ function inicializar( _rutaLista,
 
             }
 
+            //variable de lista requerimientos - btn editar requerimiento
+            var idReq = localStorage.getItem('id_req');
+            if (idReq != null){
+                mostrar_requerimiento(idReq);
+                verTrazabilidadRequerimiento(idReq);
+                // localStorage.clear();
+                localStorage.removeItem("id_req");
+                changeStateButton('historial');
+                vista_extendida();
+            }
+
 }
 
 $(function(){
@@ -133,50 +145,44 @@ $(function(){
 
      
 
-    var idGral = localStorage.getItem('idGral');
 
-    if (idGral != null){
-        mostrar_requerimiento(idGral);
-        localStorage.clear();
-        changeStateButton('historial');
-    }
     resizeSide();
     
     $("#form-requerimiento").submit(function(e) {
         e.preventDefault();
     });
 
-    $('#form-obs-sustento').on('submit', function(){
-        var data = $(this).serialize();
-        var ask = confirm('¿Desea guardar el sustento?');
-        if (ask == true){
-            $.ajax({
-                type: 'POST',
-                // headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-                url: '/logistica/guardar_sustento',
-                data: data,
-                beforeSend: function(){
-                    $(document.body).append('<span class="loading"><div></div></span>');
-                },
-                success: function(response){
-                    // console.log(response);
+    // $('#form-obs-sustento').on('submit', function(){
+    //     var data = $(this).serialize();
+    //     var ask = confirm('¿Desea guardar el sustento?');
+    //     if (ask == true){
+    //         $.ajax({
+    //             type: 'POST',
+    //             // headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+    //             url: '/logistica/guardar_sustento',
+    //             data: data,
+    //             beforeSend: function(){
+    //                 $(document.body).append('<span class="loading"><div></div></span>');
+    //             },
+    //             success: function(response){
+    //                 // console.log(response);
                     
-                    $('.loading').remove();
-                    if (response.status == 'ok') {
-                        alert('Se agregó sustento al Requerimiento');
-                        mostrar_requerimiento(response.data);
-                        $('#modal-sustento').modal('hide');
-                    }else {
-                        alert('No se puedo Guardar sustento al requerimiento');
-                        $('#modal-sustento').modal('hide');
-                    }
-                }
-            });
-            return false;
-        }else{
-            return false;
-        }
-    });
+    //                 $('.loading').remove();
+    //                 if (response.status == 'ok') {
+    //                     alert('Se agregó sustento al Requerimiento');
+    //                     mostrar_requerimiento(response.data);
+    //                     $('#modal-sustento').modal('hide');
+    //                 }else {
+    //                     alert('No se puedo Guardar sustento al requerimiento');
+    //                     $('#modal-sustento').modal('hide');
+    //                 }
+    //             }
+    //         });
+    //         return false;
+    //     }else{
+    //         return false;
+    //     }
+    // });
     changeOptComercialSelect(); // label's title of option comercial 
 
 

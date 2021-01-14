@@ -206,6 +206,7 @@
 @include('logistica.requerimientos.modal_justificar_generar_requerimiento')
 @include('logistica.requerimientos.modal_adjuntar_archivos_detalle_requerimiento') 
 <!--  includes -->
+@include('logistica.requerimientos.aprobacion.modal_anular')
 @include('logistica.requerimientos.aprobacion.modal_obs')
 @include('logistica.requerimientos.aprobacion.modal_aprobacion')
 @include('logistica.requerimientos.modal_tracking_requerimiento')
@@ -262,7 +263,8 @@
         inicializarRutasPendienteAprobacion(
             "{{route('logistica.gestion-logistica.requerimiento.listado.pendientes-aprobacion')}}",
             "{{route('logistica.gestion-logistica.requerimiento.listado.aprobar-documento')}}",
-            "{{route('logistica.gestion-logistica.requerimiento.listado.observar-documento')}}"
+            "{{route('logistica.gestion-logistica.requerimiento.listado.observar-documento')}}",
+            "{{route('logistica.gestion-logistica.requerimiento.listado.anular-documento')}}"
             // "{{route('logistica.gestion-logistica.requerimiento.listado.empresa')}}",
             // "{{route('logistica.gestion-logistica.requerimiento.listado.select-sede-by-empresa')}}",
             // "{{route('logistica.gestion-logistica.requerimiento.listado.select-grupo-by-sede')}}",

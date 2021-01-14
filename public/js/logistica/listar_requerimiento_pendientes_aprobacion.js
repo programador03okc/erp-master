@@ -1,11 +1,15 @@
-var rutaListaPendienteAprobacion, rutaListaAprobarDocumento, rutaObservarDocumento;
+var rutaListaPendienteAprobacion, 
+rutaListaAprobarDocumento, 
+rutaObservarDocumento,
+rutaListaAnularDocumento;
 
 
-function inicializarRutasPendienteAprobacion(_rutaListaPendienteAprobacion,_rutaListaAprobarDocumento,_rutaObservarDocumento) {
+function inicializarRutasPendienteAprobacion(_rutaListaPendienteAprobacion,_rutaListaAprobarDocumento,_rutaObservarDocumento,_rutaListaAnularDocumento) {
     
     rutaListaPendienteAprobacion = _rutaListaPendienteAprobacion;
     rutaListaAprobarDocumento = _rutaListaAprobarDocumento;
     rutaObservarDocumento = _rutaObservarDocumento;
+    rutaListaAnularDocumento = _rutaListaAnularDocumento;
 }
 
 
@@ -94,6 +98,10 @@ function listar_requerimientos_pendientes_aprobar(){
                 if(hasObservacionSustentadas != cantidadObservaciones ){
                     disabledBtn= 'disabled';
                 }
+
+                if(row.estado == 7 ){
+                    disabledBtn= 'disabled';
+                }
                 let containerOpenBrackets='<center><div class="btn-group" role="group" style="margin-bottom: 5px;">';
                 let containerCloseBrackets='</div></center>';
                 let btnDetalleRapido='<button type="button" class="btn btn-xs btn-info" title="Ver detalle rápido" onClick="viewFlujo(' +row['id_requerimiento']+ ', ' +row['id_doc_aprob']+ ');"><i class="fas fa-eye fa-xs"></i></button>';
@@ -103,7 +111,21 @@ function listar_requerimientos_pendientes_aprobar(){
                 let btnAnular='<button type="button" class="btn btn-xs bg-maroon" title="Anular Requerimiento" onClick="anularRequerimiento(' +row['id_doc_aprob']+ ');" '+disabledBtn+'><i class="fas fa-ban fa-xs"></i></button>';
                 return containerOpenBrackets+btnDetalleRapido+btnTracking+btnAprobar+btnObservar+btnAnular+containerCloseBrackets;
                 }
-            },        ]
+            },        
+        ],
+        "createdRow": function( row, data, dataIndex){
+            if( data.estado == 2  ){
+                $(row).css('color', '#4fa75b');
+             }
+            if( data.estado == 3  ){
+                $(row).css('color', '#ee9b1f');
+             }
+             if( data.estado == 7  ){
+                $(row).css('color', '#d92b60');
+             }
+          
+
+        }
     });
     let tablelistaitem = document.getElementById(
         'ListaReqPendienteAprobacion_wrapper'
@@ -112,6 +134,14 @@ function listar_requerimientos_pendientes_aprobar(){
 }
 
 
+function openModalAnular(id_doc_aprob){
+    $('#modal-anular-req').modal({
+        show: true,
+        backdrop: 'static',
+        keyboard: false
+    });
+    document.querySelector("form[id='form-anular-requerimiento'] input[name='id_doc_aprob']").value =id_doc_aprob;
+}
 function openModalObservar(id_doc_aprob){
     $('#modal-obs-req').modal({
         show: true,
@@ -128,7 +158,33 @@ function openModalAprob(id_doc_aprob){
     });
     document.querySelector("form[id='form-aprobacion'] input[name='id_doc_aprob']").value =id_doc_aprob;
 }
+function GrabarAnular(){
+    let id_doc_aprob = document.querySelector("form[id='form-anular-requerimiento'] input[name='id_doc_aprob']").value;
+    let id_rol_usuario = document.querySelector("form[id='form-anular-requerimiento'] select[name='rol_usuario']").value;
+    let motivo = document.querySelector("form[id='form-anular-requerimiento'] textarea[name='motivo_req']").value;
+    $.ajax({
+        type: 'POST',
+        url: rutaListaAnularDocumento,
+        data:{'id_doc_aprob':id_doc_aprob,'motivo':motivo,'id_rol':id_rol_usuario},
+        dataType: 'JSON',
+        success: function(response){
+            if(response.status ==200){
+                $('#modal-anular-req').modal('hide');
+                listar_requerimientos_pendientes_aprobar();
+                alert("El requerimiento cambio su estado a denegado");
+            }else{
+                alert("Hubo un problema, no se puedo denegar el requerimiento");
+                console.log(response);
+            }
 
+        }
+    }).fail( function( jqXHR, textStatus, errorThrown ){
+        console.log(jqXHR);
+        console.log(textStatus);
+        console.log(errorThrown);
+    });
+    
+}
 function GrabarAprobacion(){
     let id_doc_aprob = document.querySelector("form[id='form-aprobacion'] input[name='id_doc_aprob']").value;
     let id_rol_usuario = document.querySelector("form[id='form-aprobacion'] select[name='rol_usuario']").value;
@@ -198,6 +254,5 @@ function observarRequerimiento(id_doc_aprob){
 
 }
 function anularRequerimiento(id_doc_aprob){
-    console.log(id_doc_aprob);
-
+    openModalAnular(id_doc_aprob);
 }

@@ -42,6 +42,7 @@
         <input type="hidden" name="tiene_transformacion" value=false>
         <input type="hidden" name="justificacion_generar_requerimiento">
         <input type="hidden" name="id_grupo">
+        <input type="hidden" name="estado">
 
         <div class="row">
                 <div class="col-md-12">
@@ -485,6 +486,8 @@
     </form>
 
 </div>
+@include('logistica.requerimientos.aprobacion.modal_sustento')
+
 @include('publico.personaModal')
 @include('logistica.cotizaciones.clienteModal')
 @include('logistica.cotizaciones.add_cliente')
@@ -505,7 +508,6 @@
 @include('logistica.requerimientos.modal_empresa_area')
 @include('logistica.requerimientos.modal_partidas')
 @include('logistica.requerimientos.modal_detalle_requerimiento')
-@include('logistica.requerimientos.aprobacion.modal_sustento')
 @include('almacen.verRequerimientoEstado')
 @include('logistica.requerimientos.modal_promocion_item')
 

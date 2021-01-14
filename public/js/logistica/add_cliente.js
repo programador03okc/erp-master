@@ -186,12 +186,12 @@ function validaCampos(){
         if (name == '' || name == null){
             text += 'Es necesario que ingrese un Nombre\n';
         }
-        if (ap_p == '' || ap_p == null){
-            text += 'Es necesario que ingrese un Apellido Paterno\n';
-        }
-        if (ap_m == '' || ap_m == null){
-            text += 'Es necesario que ingrese un Apellido Materno\n';
-        }
+        // if (ap_p == '' || ap_p == null){
+        //     text += 'Es necesario que ingrese un Apellido Paterno\n';
+        // }
+        // if (ap_m == '' || ap_m == null){
+        //     text += 'Es necesario que ingrese un Apellido Materno\n';
+        // }
     } 
     else if (tipo == '2') {
         if (razo == '' || razo == null){

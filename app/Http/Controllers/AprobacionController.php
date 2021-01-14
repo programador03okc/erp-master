@@ -367,29 +367,44 @@ class AprobacionController extends Controller
         $detalle_observacion = $request->detalle_observacion;
         $id_rol = $request->id_rol;
         $id_usuario = Auth::user()->id_usuario;
-        // $id_requerimiento = $this->get_id_doc($id_doc_aprob,1);
+        $id_requerimiento = $this->get_id_doc($id_doc_aprob,1);
 
         $status='';
         $message ='';
         $hoy = date('Y-m-d H:i:s');
-        $nuevaAprobacion = DB::table('administracion.adm_aprobacion')->insertGetId(
-            [
-                'id_flujo'              => null,
-                'id_doc_aprob'          => $id_doc_aprob,
-                'id_vobo'               => 3,
-                'id_usuario'            => $id_usuario,
-                'fecha_vobo'            => $hoy,
-                'detalle_observacion'   => $detalle_observacion,
-                'id_rol'                => $id_rol,
-                'id_sustentacion'       => null
-            ],
-            'id_aprobacion'
-        );
+        $estado_observado= 3;
 
-        if($nuevaAprobacion > 0){
-            $status = 200;
-            $message = 'OK';
-        }
+        $requerimiento = DB::table('almacen.alm_req')->where('id_requerimiento', $id_requerimiento)
+        ->update([               
+            'estado' => $estado_observado
+        ]);
+        $detalle_req = DB::table('almacen.alm_det_req')
+        ->where('id_requerimiento', '=', $id_requerimiento)
+        ->update([
+            'estado' => $estado_observado
+        ]);
+        if($requerimiento && $detalle_req >0 ){
+            $nuevaAprobacion = DB::table('administracion.adm_aprobacion')->insertGetId(
+                [
+                    'id_flujo'              => null,
+                    'id_doc_aprob'          => $id_doc_aprob,
+                    'id_vobo'               => 3,
+                    'id_usuario'            => $id_usuario,
+                    'fecha_vobo'            => $hoy,
+                    'detalle_observacion'   => $detalle_observacion,
+                    'id_rol'                => $id_rol,
+                    'id_sustentacion'       => null
+                ],
+                'id_aprobacion'
+            );
+    
+            if($nuevaAprobacion > 0){
+                $status = 200;
+                $message = 'OK';
+            }
+        }      
+
+
         
         $output=['status'=>$status,'message'=>$message];
         return $output;
@@ -403,4 +418,55 @@ class AprobacionController extends Controller
 
         return $obs;
     }
+
+    function anular_documento(Request $request){
+        $id_doc_aprob = $request->id_doc_aprob;
+        $id_requerimiento = $this->get_id_doc($id_doc_aprob,1);
+        $motivo = $request->motivo;
+        $id_rol = $request->id_rol;
+        $id_usuario = Auth::user()->id_usuario;
+        // $estado_anulado = $this->get_estado_doc('Anulado');
+        $estado_anulado = 7;
+        $hoy = date('Y-m-d H:i:s');
+        $status='';
+        $message ='';
+
+        $requerimiento = DB::table('almacen.alm_req')->where('id_requerimiento', $id_requerimiento)
+        ->update([               
+            'estado' => $estado_anulado
+        ]);
+        $detalle_req = DB::table('almacen.alm_det_req')
+        ->where('id_requerimiento', '=', $id_requerimiento)
+        ->update([
+            'estado' => $estado_anulado
+        ]);
+
+        if($requerimiento && $detalle_req >0 ){       
+            $AnularReq = DB::table('administracion.adm_aprobacion')->insertGetId(
+                [
+                    'id_flujo'              => null,
+                    'id_doc_aprob'          => $id_doc_aprob,
+                    'id_vobo'               => 2,
+                    'id_usuario'            => $id_usuario,
+                    'fecha_vobo'            => $hoy,
+                    'detalle_observacion'   => $motivo,
+                    'id_rol'                => $id_rol,
+                    'id_sustentacion'       => null
+                ],
+                'id_aprobacion'
+            );
+    
+            if($AnularReq > 0){
+                $status = 200;
+                $message = 'OK';
+            }
+            
+        }
+
+        $output=['status'=>$status,'message'=>$message];
+
+        return response()->json($output);
+
+    }
+
 }

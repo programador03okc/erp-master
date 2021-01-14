@@ -1,6 +1,6 @@
 <!-- modal obs -->
 <div class="modal fade" tabindex="-1" role="dialog" id="modal-sustento">
-    <div class="modal-dialog" style="width: 24%;">
+    <div class="modal-dialog" style="width: 90%;">
         <div class="modal-content">
             <form id="form-obs-sustento">
                 <div class="modal-header">
@@ -10,15 +10,21 @@
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-md-12">
-                            <input type="hidden" name="id_requerimiento_sustento">
-                            <input type="hidden" name="id_observacion_sustento">
-                            <h5>Motivo/Justificación</h5>
-                            <textarea class="form-control input-sm" name="motivo_sustento" id="motivo_sustento" rows="5"></textarea>
+                            <table class="mytable table table-hover table-condensed table-bordered table-okc-view" id="tablaListaObservacionesPorSustentar" width="100%">
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th>Observación</th>
+                                        <th>Observado por</th>
+                                        <th width="120">Sustento (opcional)</th>
+                                    </tr>
+                                </thead>
+                            </table>
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <input type="submit" class="btn btn-sm btn-flat btn-success" value="Grabar Sustento">
+                    <button type="button" class="btn btn-sm btn-success" onClick="GrabarSustentoRequerimiento();">Guardar Sustento y Requerimiento</button>
                 </div>
             </form>
         </div>

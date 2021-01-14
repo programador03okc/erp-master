@@ -41,6 +41,7 @@ function get_data_requerimiento(){
     fecha_entrega = document.querySelector("form[id='form-requerimiento'] input[name='fecha_entrega']").value;
     tiene_transformacion = document.querySelector("form[id='form-requerimiento'] input[name='tiene_transformacion']").value;
     justificacion_generar_requerimiento = document.querySelector("form[id='form-requerimiento'] input[name='justificacion_generar_requerimiento']").value;
+    estado = document.querySelector("form[id='form-requerimiento'] input[name='estado']").value;
 
     requerimiento = {
         id_requerimiento,
@@ -79,7 +80,8 @@ function get_data_requerimiento(){
         monto,
         fecha_entrega,
         tiene_transformacion,
-        justificacion_generar_requerimiento
+        justificacion_generar_requerimiento,
+        estado
         
     };
 return requerimiento;
@@ -245,23 +247,22 @@ function validaRequerimiento(){
 
 }
 
-function save_requerimiento(action){
-    changeStateButton('guardar');
+
+function actionGuardarEditarRequerimiento(){
+ // requerimiento.id_area = actual_id_area; // update -> id area actual
+    // requerimiento.id_rol = actual_id_rol; // update -> id rol actual
+    // requerimiento.id_grupo = actual_id_grupo; // update -> id area actual
+    // console.log(data);
 
     let actual_id_usuario = userSession.id_usuario;
     let requerimiento = get_data_requerimiento();
+    let detalle_requerimiento = data_item;
+    let data = {requerimiento,detalle:detalle_requerimiento,sustento:sustentoObj};
+
+    requerimiento.id_usuario = actual_id_usuario; //update -> usuario actual
     // console.log(requerimiento);
     
-    let detalle_requerimiento = data_item;
-    requerimiento.id_usuario = actual_id_usuario; //update -> usuario actual
-    // requerimiento.id_area = actual_id_area; // update -> id area actual
-    // requerimiento.id_rol = actual_id_rol; // update -> id rol actual
-    // requerimiento.id_grupo = actual_id_grupo; // update -> id area actual
-    let data = {requerimiento,detalle:detalle_requerimiento};
-    // console.log(data);
-
-    
-    if (action == 'register'){
+    if (action_requerimiento == 'register'){
 
         var msj = validaRequerimiento();
         
@@ -317,7 +318,7 @@ function save_requerimiento(action){
         }
 
         
-    }else if(action == 'edition'){
+    }else if(action_requerimiento == 'edition'){
         // funcion editar
         baseUrl = rutaActualizarRequerimiento+'/'+data.requerimiento.id_requerimiento;
         $.ajax({
@@ -338,4 +339,115 @@ function save_requerimiento(action){
             console.log(errorThrown);
         });   
     }
+}
+function save_requerimiento(action){
+    action_requerimiento= action;
+    // let actual_id_usuario = userSession.id_usuario;
+    let requerimiento = get_data_requerimiento();
+
+    if(requerimiento.estado == 3){
+        openSustento();
+    }else{
+        changeStateButton('guardar');
+
+        actionGuardarEditarRequerimiento();
+    }
+    
+}
+
+function GrabarSustentoRequerimiento(){
+    // guardar requerimiento con sustento
+    let hascheckedTrue=0;
+    if(sustentoObj.length >0){
+        sustentoObj.forEach(element => {
+            if(element.checked == true){
+                hascheckedTrue=+1;
+            }
+        });
+    }
+
+    if(hascheckedTrue>0){
+        actionGuardarEditarRequerimiento();
+        $('#modal-sustento').modal('hide');
+        let requerimiento = get_data_requerimiento();
+        mostrar_requerimiento(requerimiento.id_requerimiento);
+
+
+    }else{
+        alert("Debe seleccionar alguna de las observaciones");
+    }
+
+}
+
+function openSustento(){ 
+    $('#modal-sustento').modal({show: true, backdrop: 'true'});
+    fillTablaListaObservacionesPorSustentar(data.observacion_requerimiento)
+}
+
+function updateCheckSustento(obj){
+    let idSelected =obj.dataset.idAprobacion;
+    sustentoObj.forEach((element, index) => {
+        if (element.id_aprobacion == idSelected) {
+            sustentoObj[index].checked = obj.checked;
+
+        }
+    });
+}
+
+function updateTexareaSustento(event){
+    let idSelected = event.target.dataset.idAprobacion;
+    let textValor = event.target.value;
+    sustentoObj.forEach((element, index) => {
+            if (element.id_aprobacion == idSelected) {
+                sustentoObj[index].sustento = textValor;
+
+            }
+        });
+
+ 
+}
+function fillTablaListaObservacionesPorSustentar(data){
+    sustentoObj=[];
+    data.forEach(element => {
+        sustentoObj.push(
+            {   
+                'id_aprobacion':element.id_aprobacion,
+                'checked':true,
+                'sustento':null
+            }
+        )
+        
+    });
+    var vardataTables = funcDatatables();
+    $('#tablaListaObservacionesPorSustentar').dataTable({
+        bDestroy: true,
+        order: [[0, 'asc']],
+        info:     true,
+        iDisplayLength:2,
+        paging:   true,
+        searching: false,
+        language: vardataTables[0],
+        processing: true,
+        bDestroy: true,
+        data:data ,
+        columns: [
+            {'render':
+                function (data, type, row, meta){
+                    return `<input type="checkbox" data-id-aprobacion="${row.id_aprobacion}" onchange="updateCheckSustento(this);" checked />`;
+                }
+            },
+            { data: 'nombre_completo' },
+            { data: 'descripcion' },
+            {'render':
+                function (data, type, row, meta){
+                    
+                return `<textarea class="form-control" name="sustentacion" data-id-aprobacion="${row.id_aprobacion}" cols="100" rows="100" style="height:50px;" onkeyup ="updateTexareaSustento(event);" ></textarea>`;
+                }
+            }
+        ],
+
+    })
+
+    let tablaListaObservacionesPorSustentar = document.getElementById('tablaListaObservacionesPorSustentar_wrapper');
+    tablaListaObservacionesPorSustentar.childNodes[0].childNodes[0].hidden = true;
 }

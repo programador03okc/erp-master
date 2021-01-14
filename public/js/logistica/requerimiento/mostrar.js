@@ -2,7 +2,6 @@ function mostrar_requerimiento(IdorCode){
     // console.log("mostrar_requeriniento");
 
     document.getElementById('btnCopiar').removeAttribute("disabled");
-
     if (! /^[a-zA-Z0-9]+$/.test(IdorCode)) { // si tiene texto
         url = rutaMostrarRequerimiento+'/'+0+'/'+IdorCode;
     }else{
@@ -20,7 +19,13 @@ function mostrar_requerimiento(IdorCode){
         dataType: 'JSON',
         success: function(response){
             data = response;
-            // console.log(response);
+                if(response.requerimiento[0].id_usuario != auth_user.id_usuario && response.requerimiento[0].estado == 3){// si el req tiene observaciones y el usuario no es el propietario
+                    document.querySelector("button[id='btnEditar']").setAttribute('disabled',true);
+                    document.querySelector("button[id='btnAnular']").setAttribute('disabled',true);
+                }else{
+                    document.querySelector("button[id='btnEditar']").removeAttribute('disabled');
+                    document.querySelector("button[id='btnAnular']").removeAttribute('disabled');
+                }
             if(response['requerimiento'] !== undefined){
                 if(response['requerimiento'][0].id_tipo_requerimiento == 1){ // compra
                     if(response['requerimiento'][0].tipo_cliente == 1 || response['requerimiento'][0].tipo_cliente == 2){ //persona natural o persona juridica
@@ -101,6 +106,7 @@ function mostrar_requerimiento(IdorCode){
                 $('[name=banco]').val(response['requerimiento'][0].id_banco);
                 $('[name=nro_cuenta]').val(response['requerimiento'][0].nro_cuenta);
                 $('[name=cci]').val(response['requerimiento'][0].nro_cuenta_interbancaria);
+                $('[name=estado]').val(response['requerimiento'][0].estado);
                 /* detalle */
                 var detalle_requerimiento = response['det_req'];
                 if(detalle_requerimiento.length === 0){
@@ -175,7 +181,7 @@ function mostrar_requerimiento(IdorCode){
                         gobal_observacion_requerimiento = response.observacion_requerimiento;
                         response.observacion_requerimiento.forEach(element => {
                             htmlObservacionReq +='<div class="col-sm-12">'+
-                        '<blockquote class="blockquoteObservation box-shadow" onclick="levantarObservacion('+element.id_observacion+');" data-toggle="tooltip" data-placement="top" title="Haga clic para agregar una Sustentación">'+
+                        '<blockquote class="blockquoteObservation box-shadow">'+
                         '<p>'+element.descripcion+'</p>'+
                         '<footer><cite title="Source Title">'+element.nombre_completo+'</cite></footer>'+
                         '</blockquote>'+
@@ -198,19 +204,4 @@ function mostrar_requerimiento(IdorCode){
 }
 
 
-function openSustento(id_obs ,id_req){ 
-    $('[name=motivo_sustento]').val('');
-    $('[name=id_requerimiento_sustento]').val(id_req);
-    $('[name=id_observacion_sustento]').val(id_obs);
-    $('#modal-sustento').modal({show: true, backdrop: 'true'});
-}
 
-function levantarObservacion(id_observacion){
-    // console.log(id_observacion);
-    var id_req = $('[name=id_requerimiento]').val();
-    if(id_req > 0){
-        openSustento(id_observacion,id_req);
-    }else{
-        alert("Error, el id es <= 0");
-    } 
-}
