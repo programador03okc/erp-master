@@ -42,6 +42,9 @@ class DistribucionController extends Controller
     function view_trazabilidad_requerimientos(){
         return view('almacen/distribucion/trazabilidadRequerimientos');
     }
+    function view_guias_transportistas(){
+        return view('almacen/distribucion/guiasTransportistas');
+    }
 
     public function actualizaCantidadDespachosTabs(){
         $count_pendientes = DB::table('almacen.alm_req')
@@ -2378,6 +2381,25 @@ class DistribucionController extends Controller
             ->where([   ['log_prove.estado', '=', 1],
                         ['adm_contri.transportista', '=', true]])
             ->orderBy('adm_contri.nro_documento')
+            ->get();
+        $output['data'] = $data;
+        return response()->json($output);
+    }
+
+    public function listarGuiasTransportistas()
+    {
+        $data = DB::table('almacen.orden_despacho')
+            ->select('orden_despacho.*', 'adm_contri.razon_social','oc_propias.orden_am',
+            'oc_propias.id as id_oc_propia','oc_propias.url_oc_fisica','alm_req.codigo as cod_req',
+            'adm_estado_doc.estado_doc','adm_estado_doc.bootstrap_color')
+            ->join('logistica.log_prove', 'log_prove.id_proveedor', '=', 'orden_despacho.id_transportista')
+            ->join('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'log_prove.id_contribuyente')
+            ->join('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'orden_despacho.id_requerimiento')
+            ->leftjoin('mgcp_cuadro_costos.cc','cc.id','=','alm_req.id_cc')
+            ->leftjoin('mgcp_oportunidades.oportunidades','oportunidades.id','=','cc.id_oportunidad')
+            ->leftjoin('mgcp_acuerdo_marco.oc_propias','oc_propias.id_oportunidad','=','oportunidades.id')
+            ->join('administracion.adm_estado_doc','adm_estado_doc.id_estado_doc','=','orden_despacho.estado')
+            ->orderBy('orden_despacho.fecha_transportista','desc')
             ->get();
         $output['data'] = $data;
         return response()->json($output);

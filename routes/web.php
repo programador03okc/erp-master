@@ -970,9 +970,9 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::post('guardar_producto', 'AlmacenController@guardar_producto');
 
 				});
-	
+				
 				Route::group(['as' => 'trazabilidad-requerimientos.', 'prefix' => 'trazabilidad-requerimientos'], function(){
-	
+					
 					Route::get('index', 'DistribucionController@view_trazabilidad_requerimientos')->name('index');
 					Route::post('listarRequerimientosTrazabilidad', 'DistribucionController@listarRequerimientosTrazabilidad');
 					Route::get('verTrazabilidadRequerimiento/{id}', 'DistribucionController@verTrazabilidadRequerimiento');
@@ -982,8 +982,14 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::post('guardar_od_adjunto', 'DistribucionController@guardar_od_adjunto');
 					Route::get('anular_od_adjunto/{id}', 'DistribucionController@anular_od_adjunto');
 
+				});	
+				
+				Route::group(['as' => 'guias-transportistas.', 'prefix' => 'guias-transportistas'], function(){
+					
+					Route::get('index', 'DistribucionController@view_guias_transportistas')->name('index');
+					Route::get('listarGuiasTransportistas', 'DistribucionController@listarGuiasTransportistas');
+
 				});
-	
 			});
 	
 			Route::group(['as' => 'movimientos.', 'prefix' => 'movimientos'], function(){

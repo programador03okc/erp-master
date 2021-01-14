@@ -176,6 +176,9 @@
         @if(Auth::user()->tieneAplicacion(81))
         <li><a href="{{route('logistica.almacen.distribucion.trazabilidad-requerimientos.index')}}"><i class="far fa-circle fa-xs"></i> Trazabilidad </a></li>
         @endif
+        @if(Auth::user()->tieneAplicacion(81))
+        <li><a href="{{route('logistica.almacen.distribucion.guias-transportistas.index')}}"><i class="far fa-circle fa-xs"></i> Guías Transportistas </a></li>
+        @endif
         </ul>
     </li>
     @endif
