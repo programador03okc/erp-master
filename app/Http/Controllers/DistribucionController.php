@@ -42,6 +42,9 @@ class DistribucionController extends Controller
     function view_trazabilidad_requerimientos(){
         return view('almacen/distribucion/trazabilidadRequerimientos');
     }
+    function view_guias_transportistas(){
+        return view('almacen/distribucion/guiasTransportistas');
+    }
 
     public function actualizaCantidadDespachosTabs(){
         $count_pendientes = DB::table('almacen.alm_req')
@@ -1123,12 +1126,13 @@ class DistribucionController extends Controller
 
             $requerimiento = null;
 
-            if ($request->agencia !== null){
+            if ($request->tr_id_proveedor !== null){
                 DB::table('almacen.orden_despacho')
                 ->where('id_od',$request->id_od)
                 ->update([
                     'estado'=>25, 
-                    'agencia'=>$request->agencia,
+                    // 'agencia'=>$request->agencia,
+                    'id_transportista'=>$request->tr_id_proveedor,
                     'serie'=>$request->serie,
                     'numero'=>$request->numero,
                     'fecha_transportista'=>$request->fecha_transportista,
@@ -1139,7 +1143,7 @@ class DistribucionController extends Controller
             } else {
                 DB::table('almacen.orden_despacho')
                 ->where('id_od',$request->id_od)
-                ->update(['estado'=>25]);
+                ->update(['estado'=>21]);
                 $requerimiento = $request->id_requerimiento;
             }
 
@@ -2367,5 +2371,38 @@ class DistribucionController extends Controller
     
             DB::rollBack();
         }
+    }
+
+    public function mostrar_transportistas()
+    {
+        $data = DB::table('logistica.log_prove')
+            ->select('log_prove.id_proveedor', 'adm_contri.id_contribuyente', 'adm_contri.nro_documento', 'adm_contri.razon_social','adm_contri.telefono')
+            ->leftjoin('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'log_prove.id_contribuyente')
+            ->where([   ['log_prove.estado', '=', 1],
+                        ['adm_contri.transportista', '=', true]])
+            ->orderBy('adm_contri.nro_documento')
+            ->get();
+        $output['data'] = $data;
+        return response()->json($output);
+    }
+
+    public function listarGuiasTransportistas()
+    {
+        $data = DB::table('almacen.orden_despacho')
+            ->select('orden_despacho.*', 'adm_contri.razon_social','oc_propias.orden_am',
+            'oc_propias.id as id_oc_propia','oc_propias.url_oc_fisica','alm_req.codigo as cod_req',
+            'adm_estado_doc.estado_doc','adm_estado_doc.bootstrap_color','entidades.nombre')
+            ->join('logistica.log_prove', 'log_prove.id_proveedor', '=', 'orden_despacho.id_transportista')
+            ->join('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'log_prove.id_contribuyente')
+            ->join('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'orden_despacho.id_requerimiento')
+            ->leftjoin('mgcp_cuadro_costos.cc','cc.id','=','alm_req.id_cc')
+            ->leftjoin('mgcp_oportunidades.oportunidades','oportunidades.id','=','cc.id_oportunidad')
+            ->leftjoin('mgcp_acuerdo_marco.oc_propias','oc_propias.id_oportunidad','=','oportunidades.id')
+            ->leftjoin('mgcp_acuerdo_marco.entidades','entidades.id','=','oportunidades.id_entidad')
+            ->join('administracion.adm_estado_doc','adm_estado_doc.id_estado_doc','=','orden_despacho.estado')
+            ->orderBy('orden_despacho.fecha_transportista','desc')
+            ->get();
+        $output['data'] = $data;
+        return response()->json($output);
     }
 }

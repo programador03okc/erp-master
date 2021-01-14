@@ -15,15 +15,6 @@
                             <input type="hidden" name="_token" value="{{csrf_token()}}" id="token">
                             <input class="oculto" name="id_proveedor">
                             <div class="row">
-                                {{-- <div class="col-md-6">
-                                    <h5>Tipo de Contribuyente</h5>
-                                    <select class="form-control" name="id_tipo_contribuyente" required>
-                                        <option value="0" disabled>Elija una opción</option>
-                                        @foreach ($tp_contribuyente as $tp)
-                                            <option value="{{$tp->id_tipo_contribuyente}}">{{$tp->descripcion}}</option>
-                                        @endforeach
-                                    </select>
-                                </div> --}}
                                 <div class="col-md-4">
                                     <h5>Tipo de Documento</h5>
                                     <select class="form-control" name="id_doc_identidad" onchange="evaluarDocumentoSeleccionado(event);" required>
@@ -40,7 +31,8 @@
                                 <div class="col-lg-8">
                                     <h5>Nro. de Documento</h5>
                                     <div class="input-group">
-                                        <input type="number" class="form-control" name="nro_documento" required>
+                                        <input type="text" style="display:none;" name="transportista">
+                                        <input type="number" class="form-control" name="nro_documento_prov" required>
                                         <span class="input-group-btn">
                                             <button id="btnConsultaSunat" class="btn btn-default" type="button" onclick="consultaSunat();"><i class="fa fa-search"></i> Consultar Sunat</button>
                                         </span>
