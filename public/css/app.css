@@ -1616,8 +1616,12 @@ form .select2-container .select2-selection--single {
 
 .blockquoteObservation {
   border-left: 5px solid #c7c715;
+  cursor: pointer;
 }
 
+.blockquoteObservation:hover {
+  border-color: #efef12;
+}
 
 .btn-box-tool,
 .box .box-solid > .box-header .btn {
