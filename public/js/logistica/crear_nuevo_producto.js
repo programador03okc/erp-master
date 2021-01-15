@@ -1,3 +1,15 @@
+function cleanCharacterReference(text){
+    let str = text;
+    characterReferenceList=['&nbsp;','nbsp;','&amp;','amp;',"&lt;"];
+    characterReferenceList.forEach(element => {
+        while (str.search(element) > -1) {
+            str=  str.replace(element,"");
+
+        }
+    });
+        return str;
+
+}
 function crearProducto(){
     $('#modal-crear-nuevo-producto').modal({
         show: true
@@ -15,8 +27,8 @@ function crearProducto(){
     var ordenP_Cuadroc = JSON.parse(sessionStorage.getItem('ordenP_Cuadroc'));
     if(ordenP_Cuadroc !== null && ordenP_Cuadroc.hasOwnProperty('tipo_cuadro') && ordenP_Cuadroc.hasOwnProperty('id_cc')){
         // console.log(tempDetalleItemCCSelect);
-            document.querySelector("div[id='modal-crear-nuevo-producto'] input[name='part_number']").value = tempDetalleItemCCSelect.part_number?tempDetalleItemCCSelect.part_number:null;
-            document.querySelector("div[id='modal-crear-nuevo-producto'] textarea[name='descripcion']").value= tempDetalleItemCCSelect.descripcion?tempDetalleItemCCSelect.descripcion:null;
+            document.querySelector("div[id='modal-crear-nuevo-producto'] input[name='part_number']").value = tempDetalleItemCCSelect.part_number?cleanCharacterReference(tempDetalleItemCCSelect.part_number):null;
+            document.querySelector("div[id='modal-crear-nuevo-producto'] textarea[name='descripcion']").value= tempDetalleItemCCSelect.descripcion?cleanCharacterReference(tempDetalleItemCCSelect.descripcion):null;
 
         }
 
