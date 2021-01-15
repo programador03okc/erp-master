@@ -105,7 +105,7 @@ function openModalItemsParaCompra(){
 function openModalAgregarItemBase(obj) {
     let id_requerimiento = obj.dataset.idRequerimiento;
     reqTrueList=[id_requerimiento];
- 
+    itemsParaCompraList=[];
     limpiarTabla('ListaItemsParaComprar');
  
 
@@ -746,8 +746,9 @@ function llenarTablaListaItemsRequerimientoParaAtenderConAlmacen(data_req,data_a
             {'data': 'unidad_medida'},
             { render: function (data, type, row) { 
                 return  parseInt(row.cantidad - row.suma_transferencias);
-                }
-            },
+            }
+        },
+        {'data': 'razon_social_proveedor_seleccionado'},
             { render: function (data, type, row) { 
                 let estado ='';
                 if(row.suma_transferencias>0){

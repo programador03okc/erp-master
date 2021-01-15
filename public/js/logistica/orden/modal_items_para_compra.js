@@ -172,12 +172,14 @@ function procesarItemParaCompraDetalleCuadroCostos(id) {
         }
     });
     // mostrarCatalogoItems();
-    
+    // console.log(tempDetalleItemsParaCompraCC);
 
     let data_item_CC_selected = {
         'id_item': "",
         'id_producto': "",
         'id_tipo_item': "1",
+        'id_cc_am': detalleItemsParaCompraCCSelected.id_cc_am?detalleItemsParaCompraCCSelected.id_cc_am:null,
+        'id_cc_venta': detalleItemsParaCompraCCSelected.id_cc_venta?detalleItemsParaCompraCCSelected.id_cc_venta:null,
         'part_number': detalleItemsParaCompraCCSelected.part_no,
         'descripcion': cleanCharacterReference(detalleItemsParaCompraCCSelected.descripcion),
         'alm_prod_codigo': "",
@@ -196,7 +198,7 @@ function procesarItemParaCompraDetalleCuadroCostos(id) {
         'tiene_transformacion': false
 
     };
-    console.log(data_item_CC_selected);
+    // console.log(data_item_CC_selected);
 
     buscarItemEnCatalogo(data_item_CC_selected).then(function (data) {
         // Run this when your request was successful
@@ -204,6 +206,8 @@ function procesarItemParaCompraDetalleCuadroCostos(id) {
             // console.log(data)
             // console.log(data[0]);
             data[0].cantidad = data_item_CC_selected.cantidad;
+            data[0].id_cc_am = data_item_CC_selected.id_cc_am;
+            data[0].id_cc_venta = data_item_CC_selected.id_cc_venta;
             data[0].precio = '';
             data[0].tiene_transformacion = false;
 
@@ -382,7 +386,7 @@ function componerTdItemsParaCompra(data, selectCategoria, selectSubCategoria, se
 
             if (data[a].id_producto == '') {
                 row.insertCell(0).innerHTML = data[a].codigo_item ? data[a].codigo_item : '';
-                row.insertCell(1).innerHTML = `<input type="text" class="form-control" name="part_number" value="${data[a].part_number ? data[a].part_number : ''}" data-indice="${a}" onkeyup="updateInputPartNumberModalItemsParaCompra(event);">`;
+                row.insertCell(1).innerHTML = `<input type="text" class="form-control" name="part_number" data-id_cc_am="${data[a].id_cc_am ? data[a].id_cc_am : ''}" data-id_cc_venta="${data[a].id_cc_venta ? data[a].id_cc_venta : ''}"  value="${data[a].part_number ? data[a].part_number : ''}" data-indice="${a}" onkeyup="updateInputPartNumberModalItemsParaCompra(event);">`;
                 row.insertCell(2).innerHTML = makeSelectedToSelect(a, 'categoria', selectCategoria, data[a].id_categoria, '');
                 row.insertCell(3).innerHTML = makeSelectedToSelect(a, 'subcategoria', selectSubCategoria, data[a].id_subcategoria, '');
                 row.insertCell(4).innerHTML = makeSelectedToSelect(a, 'clasificacion', selectClasCategoria, data[a].id_clasif, '');
@@ -551,6 +555,8 @@ function updateInputPartNumberModalItemsParaCompra(event) {
 function guardarItemParaCompraEnCatalogo(obj, index) {
     let tr = obj.parentNode.parentNode.parentNode;
     let inputPartNumber = tr.querySelector("input[name='part_number']").value;
+    let id_cc_am = tr.querySelector("input[name='part_number']").dataset.id_cc_am;
+    let id_cc_venta = tr.querySelector("input[name='part_number']").dataset.id_cc_venta;
     let inputDescripcion = tr.querySelector("span[name='descripcion']").textContent;
     let inputCategoria = tr.querySelector("select[name='categoria']").value;
     let inputSubCategoria = tr.querySelector("select[name='subcategoria']").value;
@@ -562,6 +568,8 @@ function guardarItemParaCompraEnCatalogo(obj, index) {
     if (inputPartNumber, inputCategoria, inputSubCategoria, inputClasificacion, inputUnidadMedida != '') {
         let data = {
             'part_number': (inputPartNumber.length>0)?inputPartNumber:null,
+            'id_cc_am': id_cc_am,
+            'id_cc_venta': id_cc_venta,
             'descripcion': inputDescripcion,
             'id_categoria': inputCategoria,
             'id_subcategoria': inputSubCategoria,

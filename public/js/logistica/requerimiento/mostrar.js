@@ -19,7 +19,7 @@ function mostrar_requerimiento(IdorCode){
         dataType: 'JSON',
         success: function(response){
             data = response;
-                if(response.requerimiento[0].id_usuario != auth_user.id_usuario && response.requerimiento[0].estado == 3){// si el req tiene observaciones y el usuario no es el propietario
+                if((response.requerimiento[0].id_usuario != auth_user.id_usuario && response.requerimiento[0].estado == 3)|| (response.requerimiento[0].estado==2 && auth_user.id_usuario !=42)){// si el req tiene observaciones y el usuario no es el propietario
                     document.querySelector("button[id='btnEditar']").setAttribute('disabled',true);
                     document.querySelector("button[id='btnAnular']").setAttribute('disabled',true);
                 }else{

@@ -2199,6 +2199,8 @@ class OrdenController extends Controller
                         [
                             'id_requerimiento'      => $id_requerimiento,
                             'id_item'               => is_numeric($items[$i]['id_item']) == 1 && $items[$i]['id_item']>0 ? $items[$i]['id_item']:null,
+                            'id_cc_am_filas'        => is_numeric($items[$i]['id_cc_am']) == 1 && $items[$i]['id_cc_am']>0 ? $items[$i]['id_cc_am']:null,
+                            'id_cc_venta_filas'     => is_numeric($items[$i]['id_cc_venta']) == 1 && $items[$i]['id_cc_venta']>0 ? $items[$i]['id_cc_venta']:null,
                             'id_producto'           => is_numeric($items[$i]['id_producto']) == 1 && $items[$i]['id_producto']>0 ? $items[$i]['id_producto']:null,
                             'precio_referencial'    => is_numeric($items[$i]['precio']) == 1 ?$items[$i]['precio']:null,
                             'cantidad'              => $items[$i]['cantidad']?$items[$i]['cantidad']:null,
