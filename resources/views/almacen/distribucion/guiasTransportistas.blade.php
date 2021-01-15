@@ -59,6 +59,7 @@ Reporte de Guías Transportista
     <script src="{{ asset('template/plugins/moment.min.js') }}"></script>
 
     <script src="{{ asset('js/almacen/distribucion/guiasTransportistas.js')}}"></script>
+    <script src="{{ asset('js/almacen/distribucion/verDetalleRequerimiento.js')}}"></script>
 
     <script>
     $(document).ready(function(){

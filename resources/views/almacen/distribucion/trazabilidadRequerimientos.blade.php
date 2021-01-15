@@ -71,6 +71,7 @@ Trazabilidad de Requerimientos
     <script src="{{ asset('js/almacen/distribucion/trazabilidadRequerimientos.js')}}"></script>
     <script src="{{ asset('js/almacen/distribucion/requerimientoDetalle.js')}}"></script>
     <script src="{{ asset('js/almacen/distribucion/ordenDespachoAdjuntos.js')}}"></script>
+    <script src="{{ asset('js/almacen/distribucion/verDetalleRequerimiento.js')}}"></script>
 
     <script>
     $(document).ready(function(){

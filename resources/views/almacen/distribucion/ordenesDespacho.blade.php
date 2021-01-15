@@ -21,6 +21,11 @@ Panel de Control de Despachos
 
 @section('content')
 <div class="page-main" type="ordenesDespacho">
+    <div class="box box-solid">
+        <div class="box-body">
+            Priorización de Despachos
+        </div>
+    </div>
     <div class="col-md-12" id="tab-reqPendientes" style="padding-left:0px;padding-right:0px;">
         <ul class="nav nav-tabs" id="myTab">
             <li class="active"><a type="#elaborados">Requerimientos Pendientes <span id="selaborados" class="badge badge-info"></span></a></li>
@@ -283,8 +288,9 @@ Panel de Control de Despachos
     <script src="{{ asset('js/almacen/distribucion/ordenDespachoAdjuntos.js')}}"></script>
     <script src="{{ asset('js/almacen/distribucion/despachoDetalle.js')}}"></script>
     <script src="{{ asset('js/almacen/distribucion/requerimientoDetalle.js')}}"></script>
-    <script src="{{ asset('js/almacen/distribucion/requerimientoVerDetalle.js')}}"></script>
     <script src="{{ asset('js/almacen/distribucion/requerimientoObs.js')}}"></script>
+    <script src="{{ asset('js/almacen/distribucion/requerimientoVerDetalle.js')}}"></script>
+    <script src="{{ asset('js/almacen/distribucion/verDetalleRequerimiento.js')}}"></script>
     <script src="{{ asset('js/almacen/producto/productoModal.js')}}"></script>
     <script src="{{ asset('js/almacen/producto/productoCreate.js')}}"></script>
     <script src="{{ asset('js/logistica/clienteModal.js')}}"></script>
