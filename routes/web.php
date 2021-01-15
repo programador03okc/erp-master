@@ -983,6 +983,7 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::get('listarAdjuntosOrdenDespacho/{id}', 'DistribucionController@listarAdjuntosOrdenDespacho');
 					Route::post('guardar_od_adjunto', 'DistribucionController@guardar_od_adjunto');
 					Route::get('anular_od_adjunto/{id}', 'DistribucionController@anular_od_adjunto');
+					Route::get('verDetalleRequerimiento/{id}', 'DistribucionController@verDetalleRequerimiento');
 
 				});	
 				
@@ -990,6 +991,7 @@ Route::group(['middleware' => ['auth']], function () {
 					
 					Route::get('index', 'DistribucionController@view_guias_transportistas')->name('index');
 					Route::get('listarGuiasTransportistas', 'DistribucionController@listarGuiasTransportistas');
+					Route::get('verDetalleRequerimiento/{id}', 'DistribucionController@verDetalleRequerimiento');
 
 				});
 			});

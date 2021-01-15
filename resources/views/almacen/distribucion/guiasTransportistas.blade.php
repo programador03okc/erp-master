@@ -34,6 +34,7 @@ Reporte de Guías Transportista
                                 <th>OD</th>
                                 <th>Cliente</th>
                                 <th>Estado</th>
+                                <th></th>
                             </tr>
                         </thead>
                         <tbody></tbody>

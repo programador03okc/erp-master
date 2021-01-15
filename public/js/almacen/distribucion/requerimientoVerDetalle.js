@@ -1,11 +1,6 @@
 var iTableCounter=1;
 var oInnerTable;
 
-// $('#requerimientosEnProceso tbody').on("click","button.detalle", function(){
-//     var data = $('#requerimientosEnProceso').DataTable().row($(this).parents("tr")).data();
-//     console.log(data);
-//     open_detalle_requerimiento(data);
-// });
 $('#requerimientosEnProceso tbody').on('click', 'td button.detalle', function () {
     var tr = $(this).closest('tr');
     var row = table.row( tr );
