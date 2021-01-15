@@ -16,28 +16,34 @@ function listarTrazabilidadRequerimientos(){
         },
         'columns': [
             {'data': 'id_requerimiento'},
-            {'data': 'tipo_req', 'name': 'alm_tp_req.descripcion'},
-            {'data': 'sede_descripcion_req', 'name': 'sede_req.descripcion'},
-            // {'data': 'codigo'},
             {'render': function (data, type, row){
                 return (row['codigo'] !== null ? 
                         ('<label class="lbl-codigo" title="Abrir Requerimiento" onClick="abrir_requerimiento('+row['id_requerimiento']+')">'+row['codigo']+'</label>')
                         : '');
                 }
             },
-            {'data': 'concepto'},
+            // {'data': 'tipo_req', 'name': 'alm_tp_req.descripcion'},
             {'render': function (data, type, row){
-                var tipo = '';
-                switch (row['tipo_cliente']){
-                    case 1 : tipo ='Persona Natural'; break;
-                    case 2 : tipo ='Persona Jurídica'; break;
-                    case 3 : tipo ='Uso Almacén'; break;
-                    case 4 : tipo ='Uso Administrativo'; break;
-                    default: break; 
-                }
-                return (tipo);
+                return (row['orden_am'] !== null ? (`<a href="https://apps1.perucompras.gob.pe//OrdenCompra/obtenerPdfOrdenPublico?ID_OrdenCompra=${row['id_oc_propia']}&ImprimirCompleto=1">
+                    <span class="label label-success">Ver O.E.</span></a>
+                    <a href="${row['url_oc_fisica']}">
+                    <span class="label label-warning">Ver O.F.</span></a> `+row['orden_am']) : row['concepto']);
                 }
             },
+            // {'data': 'concepto'},
+            {'data': 'sede_descripcion_req', 'name': 'sede_req.descripcion'},
+            // {'render': function (data, type, row){
+            //     var tipo = '';
+            //     switch (row['tipo_cliente']){
+            //         case 1 : tipo ='Persona Natural'; break;
+            //         case 2 : tipo ='Persona Jurídica'; break;
+            //         case 3 : tipo ='Uso Almacén'; break;
+            //         case 4 : tipo ='Uso Administrativo'; break;
+            //         default: break; 
+            //     }
+            //     return (tipo);
+            //     }
+            // },
             {'render': function (data, type, row){
                 var cliente = '';
                 switch (row['tipo_cliente']){
@@ -50,15 +56,24 @@ function listarTrazabilidadRequerimientos(){
                 return (cliente);
                 }
             },
-            {'data': 'fecha_requerimiento'},
+            {'render': function (data, type, row){
+                return formatDate(row['fecha_requerimiento']);
+                }
+            },
             {'render': function (data, type, row){
                 return (row['ubigeo_descripcion'] !== null ? row['ubigeo_descripcion'] : '');
                 }
             },
             {'data': 'direccion_entrega'},
             // {'data': 'grupo', 'name': 'adm_grupo.descripcion'},
-            {'data': 'responsable', 'name': 'sis_usua.nombre_corto'},
-            // {'data': 'estado_doc', 'name': 'adm_estado_doc.estado_doc'},
+            // {'data': 'responsable', 'name': 'sis_usua.nombre_corto'},
+            {'render': function (data, type, row){
+                if (row['name']!==null)
+                    return row['name'];
+                else
+                    return row['responsable'];
+                }
+            },
             {'render': function (data, type, row){
                 return '<span class="label label-'+row['bootstrap_color']+'">'+row['estado_doc']+'</span>'
                 }
@@ -79,8 +94,12 @@ function listarTrazabilidadRequerimientos(){
                 return (row['codigo_od'] !== null ? row['codigo_od'] : '')
                 }
             },
-            {'data': 'guias_adicionales'},
-            {'data': 'importe_flete'}
+            {'data': 'guia_transportista'},
+            {'render': function (data, type, row){
+                return (row['importe_flete'] !== null ? 'S/ '+row['importe_flete'] : '')
+                }
+            },
+            // {'data': 'importe_flete'}
         ],
         'columnDefs': [
             {'aTargets': [0], 'sClass': 'invisible'},
@@ -98,7 +117,7 @@ function listarTrazabilidadRequerimientos(){
                 (row['id_od_grupo'] !== null ? `<button type="button" class="imprimir btn btn-success boton" data-toggle="tooltip" 
                     data-placement="bottom" data-id-grupo="${row['id_od_grupo']}" title="Ver Despacho" >
                     <i class="fas fa-file-alt"></i></button>` : '')
-                }, targets: 15
+                }, targets: 13
             }
         ],
     });

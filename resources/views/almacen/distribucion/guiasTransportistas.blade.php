@@ -15,27 +15,31 @@ Reporte de Guías Transportista
 
 @section('content')
 <div class="page-main" type="guiasTransportistas">
-    <div class="row">
-        <div class="col-md-12">
-            <table class="mytable table table-condensed table-bordered table-okc-view" 
-                id="listaGuiasTransportistas">
-                <thead>
-                    <tr>
-                        <th hidden></th>
-                        <th>Guía</th>
-                        <th>Transportista</th>
-                        <th>Fecha Guía</th>
-                        <th>Codigo Envío</th>
-                        <th>Importe</th>
-                        <th>OCAM</th>
-                        <th>Cod.Req.</th>
-                        <th>OD</th>
-                        <th>Cliente</th>
-                        <th>Estado</th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
+    <div class="box box-solid">
+        <div class="box-body">
+            <div class="row">
+                <div class="col-md-12">
+                    <table class="mytable table table-condensed table-bordered table-okc-view" 
+                        id="listaGuiasTransportistas">
+                        <thead>
+                            <tr>
+                                <th hidden></th>
+                                <th>Guía</th>
+                                <th>Transportista</th>
+                                <th>Fecha Guía</th>
+                                <th>Codigo Envío</th>
+                                <th>Importe</th>
+                                <th>OCAM</th>
+                                <th>Cod.Req.</th>
+                                <th>OD</th>
+                                <th>Cliente</th>
+                                <th>Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
 </div>

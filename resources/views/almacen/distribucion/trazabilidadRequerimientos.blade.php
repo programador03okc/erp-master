@@ -15,35 +15,39 @@ Trazabilidad de Requerimientos
 
 @section('content')
 <div class="page-main" type="trazabilidadRequerimientos">
-    <div class="row">
-        <div class="col-md-12">
-            <table class="mytable table table-condensed table-bordered table-okc-view" 
-                id="listaRequerimientosTrazabilidad">
-                <thead>
-                    <tr>
-                        <th hidden></th>
-                        <th>Tipo</th>
-                        <th>Sede Req.</th>
-                        <th>Codigo</th>
-                        <th>Concepto</th>
-                        <th>Tipo Cliente</th>
-                        <th>Cliente</th>
-                        <th>Fecha Req.</th>
-                        <th>Ubigeo Entrega</th>
-                        <th>Dirección Entrega</th>
-                        <th>Generado por</th>
-                        <th>Estado</th>
-                        <!-- <th>OC</th>
-                        <th>Sede OC</th> -->
-                        <!-- <th>Transf.</th> -->
-                        <th>O.D.</th>
-                        <th>Guías Adic.</th>
-                        <th>Importe</th>
-                        <th width="80px">Ver</th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
+    <div class="box box-solid">
+        <div class="box-body">
+            <div class="row">
+                <div class="col-md-12">
+                    <table class="mytable table table-condensed table-bordered table-okc-view" 
+                        id="listaRequerimientosTrazabilidad">
+                        <thead>
+                            <tr>
+                                <th hidden></th>
+                                <th>Codigo</th>
+                                <th>Concepto</th>
+                                <!-- <th>OCAM</th> -->
+                                <th>Sede Req.</th>
+                                <!-- <th>Tipo Cliente</th> -->
+                                <th>Cliente</th>
+                                <th>Fecha Req.</th>
+                                <th>Ubigeo Entrega</th>
+                                <th>Dirección Entrega</th>
+                                <th>Responsable</th>
+                                <th>Estado</th>
+                                <!-- <th>OC</th>
+                                <th>Sede OC</th> -->
+                                <!-- <th>Transf.</th> -->
+                                <th>O.D.</th>
+                                <th>Guía Tra.</th>
+                                <th>Importe</th>
+                                <th width="80px">Ver</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -62,7 +66,8 @@ Trazabilidad de Requerimientos
     <script src="{{ asset('datatables/pdfmake/pdfmake.min.js') }}"></script>
     <script src="{{ asset('datatables/pdfmake/vfs_fonts.js') }}"></script>
     <script src="{{ asset('datatables/JSZip/jszip.min.js') }}"></script>
-    
+    <script src="{{ asset('template/plugins/moment.min.js') }}"></script>
+
     <script src="{{ asset('js/almacen/distribucion/trazabilidadRequerimientos.js')}}"></script>
     <script src="{{ asset('js/almacen/distribucion/requerimientoDetalle.js')}}"></script>
     <script src="{{ asset('js/almacen/distribucion/ordenDespachoAdjuntos.js')}}"></script>

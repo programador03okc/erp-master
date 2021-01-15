@@ -2188,47 +2188,21 @@ class DistribucionController extends Controller
         $data = DB::table('almacen.alm_req')
             ->select('alm_req.*','sis_usua.nombre_corto as responsable','adm_grupo.descripcion as grupo',
             'adm_estado_doc.estado_doc','adm_estado_doc.bootstrap_color',
-            // 'log_ord_compra.codigo as codigo_orden',
-            // 'guia_com.serie','guia_com.numero',
-            // 'trans.id_transferencia','trans.codigo as codigo_transferencia',
             'ubi_dis.descripcion as ubigeo_descripcion',
             'rrhh_perso.nro_documento as dni_persona','alm_almacen.descripcion as almacen_descripcion',
-            // 'alm_almacen.id_sede as sede_requerimiento',
-            // 'log_ord_compra.id_sede as sede_orden',
-            // 'sis_sede.descripcion as sede_descripcion_orden',
             'sede_req.descripcion as sede_descripcion_req',
             'orden_despacho.id_od','orden_despacho.codigo as codigo_od','orden_despacho.estado as estado_od',
-            // 'orden_despacho.guias_adicionales',
-            DB::raw("(orden_despacho.agencia) || ' ' || (orden_despacho.serie) || '-' || (orden_despacho.numero) || ' ' || (orden_despacho.codigo_envio) AS guias_adicionales"),
+            DB::raw("(transportista.razon_social) || ' ' || (orden_despacho.serie) || '-' || (orden_despacho.numero) || ' Cod.' || (orden_despacho.codigo_envio) AS guia_transportista"),
             'orden_despacho.importe_flete',
             'alm_tp_req.descripcion as tipo_req','orden_despacho_grupo.id_od_grupo',
             DB::raw("(rrhh_perso.nombres) || ' ' || (rrhh_perso.apellido_paterno) || ' ' || (rrhh_perso.apellido_materno) AS nombre_persona"),
-            'adm_contri.nro_documento as cliente_ruc','adm_contri.razon_social as cliente_razon_social')
+            'adm_contri.nro_documento as cliente_ruc','adm_contri.razon_social as cliente_razon_social',
+            'oc_propias.orden_am','oc_propias.monto_total','entidades.nombre',
+            'oc_propias.id as id_oc_propia','oc_propias.url_oc_fisica','users.name')
             ->join('almacen.alm_tp_req','alm_tp_req.id_tipo_requerimiento','=','alm_req.id_tipo_requerimiento')
             ->join('configuracion.sis_usua','sis_usua.id_usuario','=','alm_req.id_usuario')
             ->leftjoin('administracion.adm_grupo','adm_grupo.id_grupo','=','alm_req.id_grupo')
             ->join('administracion.adm_estado_doc','adm_estado_doc.id_estado_doc','=','alm_req.estado')
-            // ->leftJoin('logistica.log_ord_compra', function($join)
-            //              {   $join->on('log_ord_compra.id_requerimiento', '=', 'alm_req.id_requerimiento');
-            //                  $join->where('log_ord_compra.estado','!=', 7);
-            //              })
-            // ->leftJoin('administracion.sis_sede','sis_sede.id_sede','=','log_ord_compra.id_sede')
-            // // ->leftJoin('almacen.guia_com','guia_com.id_oc','=','log_ord_compra.id_orden_compra')
-            // // ->leftJoin('almacen.mov_alm','mov_alm.id_guia_com','=','guia_com.id_guia')
-            // ->leftJoin('almacen.guia_com', function($join)
-            //              {   $join->on('guia_com.id_oc', '=', 'log_ord_compra.id_orden_compra');
-            //                  $join->where('guia_com.estado','!=', 7);
-            //              })
-            // ->leftJoin('almacen.guia_ven', function($join)
-            //              {   $join->on('guia_ven.id_guia_com', '=', 'guia_com.id_guia');
-            //                  $join->where('guia_ven.estado','!=', 7);
-            //              })
-            // ->leftJoin('almacen.guia_ven','guia_ven.id_guia_com','=','guia_com.id_guia')
-            // ->leftJoin('almacen.trans', function($join)
-            //              {   $join->on('trans.id_guia_ven', '=', 'guia_ven.id_guia_ven');
-            //                  $join->where('trans.estado','!=', 7);
-            //              })
-            // ->leftJoin('almacen.trans','trans.id_guia_ven','=','guia_ven.id_guia_ven')
             ->leftJoin('almacen.alm_almacen','alm_almacen.id_almacen','=','alm_req.id_almacen')
             ->leftJoin('administracion.sis_sede as sede_req','sede_req.id_sede','=','alm_almacen.id_sede')
             ->leftJoin('configuracion.ubi_dis','ubi_dis.id_dis','=','alm_req.id_ubigeo_entrega')
@@ -2247,7 +2221,14 @@ class DistribucionController extends Controller
                         {   $join->on('orden_despacho_grupo.id_od_grupo', '=', 'orden_despacho_grupo_det.id_od_grupo');
                             $join->where('orden_despacho_grupo.estado','!=', 7);
                         })
-            ->where([['alm_req.estado','!=',7]])
+            ->leftjoin('logistica.log_prove','log_prove.id_proveedor','=','orden_despacho.id_transportista')
+            ->leftjoin('contabilidad.adm_contri as transportista','transportista.id_contribuyente','=','log_prove.id_contribuyente')
+            ->leftjoin('mgcp_cuadro_costos.cc','cc.id','=','alm_req.id_cc')
+            ->leftjoin('mgcp_oportunidades.oportunidades','oportunidades.id','=','cc.id_oportunidad')
+            ->leftjoin('mgcp_acuerdo_marco.oc_propias','oc_propias.id_oportunidad','=','oportunidades.id')
+            ->leftjoin('mgcp_usuarios.users','users.id','=','oc_propias.id_corporativo')
+            ->leftjoin('mgcp_acuerdo_marco.entidades','entidades.id','=','oportunidades.id_entidad')
+                ->where([['alm_req.estado','!=',7]])
             ->orderBy('alm_req.fecha_requerimiento','desc');
             // ->get();
         return datatables($data)->toJson();
