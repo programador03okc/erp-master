@@ -652,7 +652,13 @@ class LogisticaController extends Controller
                 ->leftJoin('finanzas.presup_pardet', 'presup_pardet.id_pardet', '=', 'presup_par.id_pardet')
                 ->leftJoin('administracion.adm_estado_doc', 'alm_det_req.estado', '=', 'adm_estado_doc.id_estado_doc')
                 ->leftJoin('configuracion.sis_moneda', 'alm_det_req.id_moneda', '=', 'sis_moneda.id_moneda')
+                ->leftJoin('mgcp_cuadro_costos.cc_am_filas', 'cc_am_filas.id', '=', 'alm_det_req.id_cc_am_filas')
+                ->leftJoin('mgcp_cuadro_costos.cc_am_proveedores', 'cc_am_proveedores.id', '=', 'cc_am_filas.proveedor_seleccionado')
+                ->leftJoin('mgcp_cuadro_costos.proveedores as proveedores_am', 'proveedores_am.id', '=', 'cc_am_proveedores.id_proveedor')
 
+                ->leftJoin('mgcp_cuadro_costos.cc_venta_filas', 'cc_venta_filas.id', '=', 'alm_det_req.id_cc_venta_filas')
+                ->leftJoin('mgcp_cuadro_costos.cc_venta_proveedor', 'cc_venta_proveedor.id', '=', 'cc_venta_filas.proveedor_seleccionado')
+                ->leftJoin('mgcp_cuadro_costos.proveedores as proveedores_venta', 'proveedores_venta.id', '=', 'cc_venta_filas.proveedor_seleccionado')
                 ->select(
                     'alm_det_req.id_detalle_requerimiento',
                     'alm_req.id_requerimiento',
@@ -691,7 +697,11 @@ class LogisticaController extends Controller
                     'alm_prod.descripcion AS alm_prod_descripcion',
                     
                     'alm_det_req.tiene_transformacion',
-                    // 'alm_prod.id_unidad_medida AS prod_id_unidad_medida',
+                    'alm_det_req.id_cc_am_filas',
+                    'alm_det_req.id_cc_venta_filas',
+                    'proveedores_am.razon_social as razon_social_proveedor_seleccionado_am',
+                    'proveedores_venta.razon_social as razon_social_proveedor_seleccionado_venta',
+                     // 'alm_prod.id_unidad_medida AS prod_id_unidad_medida',
                     // 'alm_und_medida.abreviatura AS prod_unidad_medida_abreviatura',
                     // 'alm_und_medida.descripcion AS prod_unidad_medida_descripcion',
 
@@ -758,6 +768,9 @@ class LogisticaController extends Controller
                             'id_detalle_requerimiento'  => $data->id_detalle_requerimiento,
                             'id_requerimiento'          => $data->id_requerimiento,
                             'tiene_transformacion'      => $data->tiene_transformacion,
+                            'id_cc_am_filas'            => $data->id_cc_am_filas,
+                            'id_cc_venta_filas'         => $data->id_cc_venta_filas,
+                            'razon_social_proveedor_seleccionado' => $data->razon_social_proveedor_seleccionado_am?$data->razon_social_proveedor_seleccionado_am:$data->razon_social_proveedor_seleccionado_venta,
                             'codigo_requerimiento'      => $data->codigo_requerimiento,
                             'id_sede'                   => $data->id_sede,
                             'id_item'                   => $data->id_item_alm_det_req,

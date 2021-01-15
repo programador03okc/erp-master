@@ -24,6 +24,7 @@
                                     <th>DESCRIPCION</th>
                                     <th>UNIDAD</th>
                                     <th>CANTIDAD</th>
+                                    <th>PROVEEDOR</th>
                                     <th>ESTADO ACTUAL</th>
                                     <th style="background:#586c86;">ALMACÉN</th>
                                     <th style="background:#586c86;">CANTIDAD A ATENDER</th>
