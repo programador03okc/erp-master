@@ -178,6 +178,7 @@ function validaRequerimiento(){
     var ubigeo = $('[name=name_ubigeo]').val();
     // var id_almacen = $('[name=id_almacen]').val();
     var telefono_cliente = $('[name=telefono_cliente]').val();
+    var fecha_entrega = $('[name=fecha_entrega]').val();
     var direccion_entrega = $('[name=direccion_entrega]').val();
     var email_cliente = $('[name=email_cliente]').val();
     var id_proyecto = $('[name=id_proyecto]').val();
@@ -198,13 +199,15 @@ function validaRequerimiento(){
             msj+='\n Es necesario que seleccione una Sede';
         }
 
-
         grupos.forEach(element => {
             if(element.id_grupo ==3){ // proyectos
                 if (id_proyecto == '' && id_proyecto == '' ){
                     msj+='\n Es necesario que seleccione un Proyecto';
                 }
-            }else{
+                if (fecha_entrega == '' && fecha_entrega == '' ){
+                    msj+='\n Es necesario que seleccione una fecha entrega';
+                }
+            }else if(element.id_grupo ==2){// comercial
                 if (id_persona == '' && id_cliente == '' ){
                     msj+='\n Es necesario que seleccione un Cliente';
                 }
@@ -224,6 +227,10 @@ function validaRequerimiento(){
                     msj+='\n Es necesario que seleccione una Dirección';
                 }
 
+            }else if(element.id_grupo ==1){
+                if (fecha_entrega == '' && fecha_entrega == '' ){
+                    msj+='\n Es necesario que seleccione una fecha entrega';
+                }
             }
         });
 

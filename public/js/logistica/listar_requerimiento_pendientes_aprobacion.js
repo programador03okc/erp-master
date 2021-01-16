@@ -19,6 +19,7 @@ function listar_requerimientos_pendientes_aprobar(){
         'serverSide': true,
         'bDestroy': true,
         // bInfo:     false,
+        "order": [[ 4, "desc" ]],
         'paging':   true,
         'searching': true,
         'bLengthChange': false,
@@ -68,6 +69,9 @@ function listar_requerimientos_pendientes_aprobar(){
                 var hasAprobacion =0;
                 var cantidadObservaciones =0;
                 var hasObservacionSustentadas =0;
+
+
+
                 if(row.aprobaciones.length>0){
                     row.aprobaciones.forEach(element => {
                         list_id_rol_aprob.push(element.id_rol)
@@ -102,6 +106,24 @@ function listar_requerimientos_pendientes_aprobar(){
                 if(row.estado == 7 ){
                     disabledBtn= 'disabled';
                 }
+                let first_aprob={};
+                if(row.pendiente_aprobacion.length > 0){
+                        first_aprob = row.pendiente_aprobacion.reduce(function(prev, curr) {
+                        return prev.orden < curr.orden ? prev : curr;
+                    });
+
+                    roles.forEach(element => {
+                        if(first_aprob.id_rol==element.id_rol){
+                            disabledBtn='';
+                        }else{
+                            disabledBtn= 'disabled';
+
+                        }
+                        
+                    });
+                }
+
+
                 let containerOpenBrackets='<center><div class="btn-group" role="group" style="margin-bottom: 5px;">';
                 let containerCloseBrackets='</div></center>';
                 let btnDetalleRapido='<button type="button" class="btn btn-xs btn-info" title="Ver detalle rápido" onClick="viewFlujo(' +row['id_requerimiento']+ ', ' +row['id_doc_aprob']+ ');"><i class="fas fa-eye fa-xs"></i></button>';

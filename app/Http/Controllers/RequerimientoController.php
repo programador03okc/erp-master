@@ -166,7 +166,7 @@ class RequerimientoController extends Controller
                 // ['alm_req.tipo_cliente','=',$uso_administracion] // uso administracion
                 // ['alm_req.estado','=',$estado_elaborado] // elaborado
             ])
-            ->orderBy('alm_req.id_requerimiento', 'asc')
+            ->orderBy('alm_req.fecha_registro', 'desc')
         ->get();
 
         // return $requerimientos;
@@ -193,7 +193,6 @@ class RequerimientoController extends Controller
 
                 // $id_doc_aprobacion_req_list[]=$id_doc_aprobacion_req;
                 $voboList=(new AprobacionController)->getVoBo($id_doc_aprobacion_req); // todas las vobo
-                // return $id_doc_aprobacion_req_list;
                 $aprobaciones=[];
                 if($voboList['status']== 200){
                     foreach($voboList['data'] as $vobo){ 

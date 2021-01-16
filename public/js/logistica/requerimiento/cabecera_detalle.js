@@ -277,7 +277,6 @@ function stateFormRequerimiento(estilo){
                 'input-group-comercial',
                 'input-group-almacen',
                 'input-group-cuenta',
-                'input-group-fecha_entrega',
                 'input-group-monto',
                 'input-group-cliente',
                 'input-group-tipo-cliente',
@@ -295,6 +294,7 @@ function stateFormRequerimiento(estilo){
                 'input-group-moneda',
                 'input-group-empresa',
                 'input-group-sede',
+                'input-group-fecha_entrega',
                 'input-group-proyecto'    
             ]); 
             break;
@@ -315,7 +315,7 @@ function stateFormRequerimiento(estilo){
                 'input-group-telefono-cliente',
                 'input-group-email-cliente',
                 'input-group-cliente',
-                'input-group-direccion-entrega',
+                'input-group-fecha_entrega',
                 'input-group-ubigeo-entrega',
                 'input-group-monto',
                 'input-group-cliente',
@@ -330,6 +330,36 @@ function stateFormRequerimiento(estilo){
                 'input-group-direccion-contacto',
                 'input-group-horario-contacto',
     
+            ]); 
+            break;
+            case 6: //compra - administracion
+            hiddeElement('ocultar','form-requerimiento',[
+                'input-group-cliente',
+                'input-group-rol-usuario',
+                'input-group-comercial',
+                'input-group-almacen',
+                'input-group-cuenta',
+                'input-group-proyecto',
+                'input-group-cliente',
+                'input-group-tipo-cliente',
+                'input-group-telefono-cliente',
+                'input-group-email-cliente',
+                'input-group-direccion-entrega',
+                'input-group-nombre-contacto',
+                'input-group-cargo-contacto',
+                'input-group-email-contacto',
+                'input-group-telefono-contacto',
+                'input-group-direccion-contacto',
+                'input-group-horario-contacto'
+            ]);
+            hiddeElement('mostrar','form-requerimiento',[
+                'input-group-moneda',
+                'input-group-empresa',
+                'input-group-sede',
+                'input-group-fecha_entrega',
+                'input-group-ubigeo-entrega',
+                'input-group-monto',
+
             ]); 
             break;
         default:

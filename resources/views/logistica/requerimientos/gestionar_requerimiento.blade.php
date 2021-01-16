@@ -557,9 +557,11 @@
         grupos.forEach(element => {
             if(element.id_grupo ==3){ // proyectos
                 stateFormRequerimiento(4)
-            }else{
+            }else if(element.id_grupo ==2){ // comercial
                 stateFormRequerimiento(5)
-
+                
+            }else if(element.id_grupo ==1){ //administración
+                stateFormRequerimiento(6)
             }
         });
     $(document).ready(function(){
