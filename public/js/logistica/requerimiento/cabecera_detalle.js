@@ -480,6 +480,27 @@ function getDataSelectSede(id_empresa = null){
     }
     return false;
 }
+function getDataSelectSedeSinUbigeo(id_empresa = null){
+    if(id_empresa >0){
+        $.ajax({
+            type: 'GET',
+            headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+            url: rutaSedeByEmpresa+'/' + id_empresa,
+            dataType: 'JSON',
+            success: function(response){ 
+                // console.log(response);  
+                if(response.length ==0){
+                    console.error("usuario no registrado en 'configuracion'.'sis_usua_sede' o el estado del registro es diferente de 1");
+                    alert('No se pudo acceder al listado de Sedes, el usuario debe pertenecer a una Sede y la sede debe estar habilitada');
+                }else{
+                    llenarSelectSede(response);
+                    seleccionarAmacen(response)
+                }
+            }
+        });
+    }
+    return false;
+}
 
 function seleccionarAmacen(data){
     // let firstSede = data[0].id_sede;

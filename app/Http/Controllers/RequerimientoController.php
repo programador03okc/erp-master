@@ -824,6 +824,45 @@ class RequerimientoController extends Controller
 
     }
 
+    function getIdDistrito($nombre){
+        $data = DB::table('configuracion.ubi_dis')
+        ->select('ubi_dis.*')
+        ->where([
+            ['ubi_dis.descripcion', 'like', '%'.$nombre.'%']
+            ])
+        ->get();
+        $id_dis=0;
+        if(count($data)>0){
+            $id_dis = $data->first()->id_dis;
+        }
+        return $id_dis;
+    }
+    function getIdProvincia($nombre){
+        $data = DB::table('configuracion.ubi_prov')
+        ->select('ubi_prov.*')
+        ->where([
+            ['ubi_prov.descripcion', 'like', '%'.$nombre.'%']
+            ])
+        ->get();
+        $id_prov=0;
+        if(count($data)>0){
+            $id_prov = $data->first()->id_prov;
+        }
+        return $id_prov;
+    }
+    function getIdDepartamento($nombre){
+        $data = DB::table('configuracion.ubi_dpto')
+        ->select('ubi_dpto.*')
+        ->where([
+            ['ubi_dpto.descripcion', 'like', '%'.$nombre.'%']
+            ])
+        ->get();
+        $id_dpto=0;
+        if(count($data)>0){
+            $id_dpto = $data->first()->id_dpto;
+        }
+        return $id_dpto;
+    }
 
     function obtenerConstruirCliente(Request $request){
         $status=0;
@@ -834,9 +873,28 @@ class RequerimientoController extends Controller
         $telefono=$request->telefono;
         $direccion=$request->direccion;
         $correo=$request->correo;
+        $ubigeo=$request->ubigeo;
         $cliente=[];
         $fechaHoy = date('Y-m-d H:i:s');
 
+        //decodificar ubigeo
+        $ubigeo_list = array_filter(array_map('trim',explode("/", $ubigeo)));
+        $IdDis=null;
+        if(count($ubigeo_list)==3){
+            $IdDis=  $this->getIdDistrito($ubigeo_list[0]);
+            // $IdProv=  $this->getIdProvincia($ubigeo_list[1]);
+            $IdDpto=  $this->getIdDepartamento($ubigeo_list[2]);
+
+            if($IdDis==0 || $IdDpto == 0){
+                $IdDis=  $this->getIdDistrito($ubigeo_list[2]);
+                // $IdProv=  $this->getIdProvincia($ubigeo_list[1]);
+                $IdDpto=  $this->getIdDepartamento($ubigeo_list[0]);
+            }
+        }
+
+        $id_ubigeo_cliente= $IdDis;
+        $descripcion_ubigeo_cliente= $ubigeo_list[0].'/'.$ubigeo_list[1].'/'.$ubigeo_list[2];
+        //  
         $adm_contri = DB::table('contabilidad.adm_contri')
         ->select(
             'adm_contri.*',
@@ -873,7 +931,9 @@ class RequerimientoController extends Controller
                     'ruc'=>$adm_contri->first()->nro_documento,
                     'telefono'=>$adm_contri->first()->telefono,
                     'direccion'=>$adm_contri->first()->direccion_fiscal,
-                    'correo'=>$adm_contri->first()->email
+                    'correo'=>$adm_contri->first()->email,
+                    'id_ubigeo'=>$id_ubigeo_cliente,
+                    'descripcion_ubigeo'=>$descripcion_ubigeo_cliente
                 ];
 
                 $msj[]=' Cliente encontrado';
@@ -899,7 +959,10 @@ class RequerimientoController extends Controller
                             'ruc'=>$adm_contri->first()->nro_documento,
                             'telefono'=>$adm_contri->first()->telefono,
                             'direccion'=>$adm_contri->first()->direccion_fiscal,
-                            'correo'=>$adm_contri->first()->email
+                            'correo'=>$adm_contri->first()->email,
+                            'id_ubigeo'=>$id_ubigeo_cliente,
+                            'descripcion_ubigeo'=>$descripcion_ubigeo_cliente
+
                         ];
                         $status=200;
                     }else{
@@ -919,7 +982,8 @@ class RequerimientoController extends Controller
                     'direccion_fiscal' => $direccion?$direccion:null,
                     'email' => $correo?$correo:null,
                     'estado' => 1,
-                    'fecha_registro' => $fechaHoy
+                    'fecha_registro' => $fechaHoy,
+                    'transportista' => false
                 ],
                     'id_contribuyente'
                 );
@@ -940,7 +1004,10 @@ class RequerimientoController extends Controller
                     'ruc'=>$ruc,
                     'telefono'=>$telefono,
                     'direccion'=>$direccion,
-                    'correo'=>$correo
+                    'correo'=>$correo,
+                    'id_ubigeo'=>$id_ubigeo_cliente,
+                    'descripcion_ubigeo'=>$descripcion_ubigeo_cliente
+
                 ];
 
                 if($id_contribuyente >0 && $id_cliente >0){

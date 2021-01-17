@@ -228,7 +228,7 @@ function guardarJustificacionGenerarRequerimiento(){
 }
 
 function generarRequerimientoByOrdenCompraPropia(tipo_cuadro,id_cc,id_estado_aprobacion_cc){
-    console.log(id_estado_aprobacion_cc);
+    // console.log(id_estado_aprobacion_cc);
     sessionStorage.removeItem('ordenP_Cuadroc')
 
     if(id_estado_aprobacion_cc == 2){
