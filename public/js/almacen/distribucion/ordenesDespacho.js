@@ -95,9 +95,11 @@ function actualizaCantidadDespachosTabs(){
     });
 }
 
+var tableElaborado;
+
 function listarRequerimientosElaborados(){
     var vardataTables = funcDatatables();
-    $('#requerimientosElaborados').DataTable({
+    tableElaborado = $('#requerimientosElaborados').DataTable({
         'dom': vardataTables[1],
         'buttons': vardataTables[2],
         'language' : vardataTables[0],
@@ -143,24 +145,24 @@ function listarRequerimientosElaborados(){
         'columnDefs': [
             {'aTargets': [0], 'sClass': 'invisible'},
             {'render': function (data, type, row){
-                    return `<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" 
-                        data-placement="bottom" title="Ver Detalle" >
-                        <i class="fas fa-list-ul"></i></button>`;
+                    return '<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" '+
+                    'data-placement="bottom" title="Ver Detalle" data-id="'+row['id_requerimiento']+'">'+
+                    '<i class="fas fa-chevron-down"></i></button>';
                 }, targets: 12
             }
         ],
     });
 }
 
-$('#requerimientosElaborados tbody').on("click","button.detalle", function(){
-    var data = $('#requerimientosElaborados').DataTable().row($(this).parents("tr")).data();
-    console.log(data);
-    open_detalle_requerimiento(data);
-});
-
+// $('#requerimientosElaborados tbody').on("click","button.detalle", function(){
+//     var data = $('#requerimientosElaborados').DataTable().row($(this).parents("tr")).data();
+//     console.log(data);
+//     open_detalle_requerimiento(data);
+// });
+var tableCompras;
 function listarRequerimientosConfirmados(permiso){
     var vardataTables = funcDatatables();
-    $('#requerimientosConfirmados').DataTable({
+    tableCompras = $('#requerimientosConfirmados').DataTable({
         'dom': vardataTables[1],
         'buttons': vardataTables[2],
         'language' : vardataTables[0],
@@ -231,19 +233,19 @@ function listarRequerimientosConfirmados(permiso){
                     (`<button type="button" class="despacho btn btn-success boton" data-toggle="tooltip" 
                         data-placement="bottom" title="Generar Orden de Despacho" >
                         <i class="fas fa-sign-in-alt"></i></button>`) : '') : '')+
-                    (`<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" 
-                        data-placement="bottom" title="Ver Detalle" >
-                        <i class="fas fa-list-ul"></i></button>`);
+                    ('<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" '+
+                        'data-placement="bottom" title="Ver Detalle" data-id="'+row['id_requerimiento']+'">'+
+                        '<i class="fas fa-chevron-down"></i></button>');
                 }, targets: 14
             }
         ],
     });
 }
-$('#requerimientosConfirmados tbody').on("click","button.detalle", function(){
-    var data = $('#requerimientosConfirmados').DataTable().row($(this).parents("tr")).data();
-    console.log(data);
-    open_detalle_requerimiento(data);
-});
+// $('#requerimientosConfirmados tbody').on("click","button.detalle", function(){
+//     var data = $('#requerimientosConfirmados').DataTable().row($(this).parents("tr")).data();
+//     console.log(data);
+//     open_detalle_requerimiento(data);
+// });
 
 $('#requerimientosConfirmados tbody').on("click","button.despacho", function(){
     var data = $('#requerimientosConfirmados').DataTable().row($(this).parents("tr")).data();
@@ -481,9 +483,11 @@ function open_detalle_transferencia(id){
     });
 }
 
+var tableDespachos;
+
 function listarOrdenesPendientes(){
     var vardataTables = funcDatatables();
-    $('#ordenesDespacho').DataTable({
+    tableDespachos = $('#ordenesDespacho').DataTable({
         'dom': vardataTables[1],
         'buttons': vardataTables[2],
         'language' : vardataTables[0],
@@ -540,13 +544,12 @@ function listarOrdenesPendientes(){
             },
             {'render': 
                 function (data, type, row){
-                    return `<button type="button" class="od_detalle btn btn-primary boton" data-toggle="tooltip" 
-                                data-placement="bottom" title="Ver Detalle" data-id="${row['id_requerimiento']}" 
-                                data-codigo="${row['codigo_req']}" data-concepto="${row['concepto']}">
-                                <i class="fas fa-list-ul"></i></button>
-                            <button type="button" class="adjuntar btn btn-${row['count_despacho_adjuntos']>0 ? "warning" : "default" } boton" data-toggle="tooltip" 
+                    return `<button type="button" class="adjuntar btn btn-${row['count_despacho_adjuntos']>0 ? "warning" : "default" } boton" data-toggle="tooltip" 
                                 data-placement="bottom" data-id="${row['id_od']}" data-cod="${row['codigo']}" title="Adjuntar Boleta/Factura" >
-                                <i class="fas fa-paperclip"></i></button>`;
+                                <i class="fas fa-paperclip"></i></button>
+                            <button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" 
+                                data-placement="bottom" title="Ver Detalle" data-id="${row['id_requerimiento']}">
+                                <i class="fas fa-chevron-down"></i></button>`;
                 }
             }
         ],
@@ -579,21 +582,23 @@ function listarOrdenesPendientes(){
         'order': [[1, 'asc']]
     });
     
-    $('#ordenesDespacho tbody').on("click","button.od_detalle", function(){
-        // var data = $('#ordenesDespacho').DataTable().row($(this).parents("tr")).data();
-        // console.log('data.id_od'+data.id_od);
-        // open_detalle_despacho(data);
-        var id = $(this).data('id');
-        var cod = $(this).data('codigo');
-        var con = $(this).data('concepto');
-        var data = {
-            'id_requerimiento': id,
-            'codigo': cod,
-            'concepto': con,
-        };
-        console.log(data);
-        open_detalle_requerimiento(data);
-    });
+    // <button type="button" class="od_detalle btn btn-primary boton" data-toggle="tooltip" 
+    //     data-placement="bottom" title="Ver Detalle" data-id="${row['id_requerimiento']}" 
+    //     data-codigo="${row['codigo_req']}" data-concepto="${row['concepto']}">
+    //     <i class="fas fa-list-ul"></i></button>
+    
+    // $('#ordenesDespacho tbody').on("click","button.od_detalle", function(){
+    //     var id = $(this).data('id');
+    //     var cod = $(this).data('codigo');
+    //     var con = $(this).data('concepto');
+    //     var data = {
+    //         'id_requerimiento': id,
+    //         'codigo': cod,
+    //         'concepto': con,
+    //     };
+    //     console.log(data);
+    //     open_detalle_requerimiento(data);
+    // });
 
     $('#ordenesDespacho tbody').on("click","button.adjuntar", function(){
         var id = $(this).data('id');
@@ -633,9 +638,11 @@ function listarOrdenesPendientes(){
     });
 }
 
+var tableGrupos;
+
 function listarGruposDespachados(permiso){
     var vardataTables = funcDatatables();
-    $('#gruposDespachados').DataTable({
+    tableGrupos = $('#gruposDespachados').DataTable({
         'dom': vardataTables[1],
         'buttons': vardataTables[2],
         'language' : vardataTables[0],
@@ -715,7 +722,10 @@ function listarGruposDespachados(permiso){
                         // 'data-placement="bottom" title="Ver Detalle" >'+
                         // '<i class="fas fa-list-ul"></i></button>'+
                         return (
-                        `<button type="button" class="adjuntar btn btn-${row['count_despacho_adjuntos']>0 ? "warning" : "default"} boton" data-toggle="tooltip" 
+                        `<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" 
+                            data-placement="bottom" title="Ver Detalle" data-id="${row['id_requerimiento']}">
+                            <i class="fas fa-chevron-down"></i></button>
+                        <button type="button" class="adjuntar btn btn-${row['count_despacho_adjuntos']>0 ? "warning" : "default"} boton" data-toggle="tooltip" 
                             data-placement="bottom" data-id="${row['id_od']}" data-cod="${row['codigo_od']}" title="Adjuntar Boleta/Factura" >
                             <i class="fas fa-paperclip"></i></button>`+
                         ((row['confirmacion'] == false && row['estado_od'] == 20)? 
@@ -726,7 +736,10 @@ function listarGruposDespachados(permiso){
                         'data-placement="bottom" data-id="'+row['id_od_grupo_detalle']+'" data-od="'+row['id_od']+'" data-idreq="'+row['id_requerimiento']+'" data-cod-req="'+row['codigo_req']+'" data-concepto="'+row['concepto']+'" title="Revertir" >'+
                         '<i class="fas fa-backspace"></i></button>') : ''));
                     } else {
-                        return `<button type="button" class="adjuntar btn btn-${row['count_despacho_adjuntos']>0 ? "warning" : "default"} boton" data-toggle="tooltip" 
+                        return `<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" 
+                            data-placement="bottom" title="Ver Detalle" data-id="${row['id_requerimiento']}">
+                            <i class="fas fa-chevron-down"></i></button>
+                        <button type="button" class="adjuntar btn btn-${row['count_despacho_adjuntos']>0 ? "warning" : "default"} boton" data-toggle="tooltip" 
                             data-placement="bottom" data-id="${row['id_od']}" data-cod="${row['codigo_od']}" title="Adjuntar Boleta/Factura" >
                             <i class="fas fa-paperclip"></i></button>`;
                     }
@@ -920,9 +933,11 @@ function open_grupo_detalle(data){
     });
 }
 
+var tableCargo;
+
 function listarGruposDespachadosPendientesCargo(permiso){
     var vardataTables = funcDatatables();
-    $('#pendientesRetornoCargo').DataTable({
+    tableCargo = $('#pendientesRetornoCargo').DataTable({
         'dom': vardataTables[1],
         'buttons': vardataTables[2],
         'language' : vardataTables[0],
@@ -1001,7 +1016,10 @@ function listarGruposDespachadosPendientesCargo(permiso){
                         // '<button type="button" class="god_detalle btn btn-primary boton" data-toggle="tooltip" '+
                         // 'data-placement="bottom" title="Ver Detalle" >'+
                         // '<i class="fas fa-list-ul"></i></button>'+
-                        return `<button type="button" class="adjuntar btn btn-${row['count_despacho_adjuntos']>0 ? "warning" : "default"} boton" data-toggle="tooltip" 
+                        return `<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" 
+                            data-placement="bottom" title="Ver Detalle" data-id="${row['id_requerimiento']}">
+                            <i class="fas fa-chevron-down"></i></button>
+                            <button type="button" class="adjuntar btn btn-${row['count_despacho_adjuntos']>0 ? "warning" : "default"} boton" data-toggle="tooltip" 
                             data-placement="bottom" data-id="${row['id_od']}" data-cod="${row['codigo_od']}" title="Agregar Comentarios" >
                             <i class="fas fa-comment-dots"></i></button>
                             <button type="button" class="conforme btn btn-success boton" data-toggle="tooltip" 
