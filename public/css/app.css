@@ -1111,7 +1111,6 @@ span.select2-selection {
 #listaOpcionesTodo tbody td:nth-last-child(9),
 #despachosPendientes tbody td:nth-last-child(10),
 #despachosPendientes tbody td:nth-last-child(9),
-#requerimientosEnProceso tbody td:nth-last-child(11),
 #listaDocsProrrateo tbody td:nth-last-child(10),
 #listaDocsProrrateo tbody td:nth-last-child(11) {
   background: #ffffb0;
@@ -1151,7 +1150,6 @@ span.select2-selection {
 #listaPromocion tbody td:nth-last-child(5),
 #despachosPendientes tbody td:nth-last-child(6),
 #despachosPendientes tbody td:nth-last-child(5),
-#requerimientosEnProceso tbody td:nth-last-child(9),
 #listaSaldos tbody td:nth-last-child(9) {
   background: #d8fcfc;
 }
@@ -1197,7 +1195,6 @@ span.select2-selection {
 #listaCu_filter,
 #listaCuadrosCostos_filter,
 #requerimientosConfirmados_filter,
-#requerimientosEnProceso_filter,
 #listaTransformacionesMadres_filter,
 #listaTransformaciones_filter {
   margin: 0;
@@ -1242,7 +1239,6 @@ span.select2-selection {
 #listaCuadrosCostos_filter label input[type=search],
 #listaTransformacionesMadres_filter label input[type=search],
 #requerimientosConfirmados_filter label input[type=search],
-#requerimientosEnProceso_filter label input[type=search],
 #listaTransformaciones_filter label input[type=search] {
   width: 95%;
 }

@@ -21,11 +21,23 @@ Panel de Control de Despachos
 
 @section('content')
 <div class="page-main" type="ordenesDespacho">
-    <div class="box box-solid">
+    <!-- <div class="box box-solid">
         <div class="box-body">
-            Priorización de Despachos
+            <table width="100%">
+                <tbody>
+                    <tr>
+                        <td>Priorización de Despachos</td>
+                        <td><i class="fas fa-flag red"></i> De 0 a 2 días del Despacho</td>
+                        <td><i class="fas fa-flag orange"></i> De 3 a 5 días del Despacho</td>
+                        <td><i class="fas fa-flag green"></i> De 6 a más días del Despacho</td>
+                        <td><span class="label label-primary"><i class="fas fa-warehouse"></i> Stock </span></td>
+                        <td><span class="label label-success"><i class="fas fa-shopping-cart"></i> Compra</span></td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
-    </div>
+    </div> -->
+    
     <div class="col-md-12" id="tab-reqPendientes" style="padding-left:0px;padding-right:0px;">
         <ul class="nav nav-tabs" id="myTab">
             <li class="active"><a type="#elaborados">Requerimientos Pendientes <span id="selaborados" class="badge badge-info"></span></a></li>
