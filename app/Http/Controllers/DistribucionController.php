@@ -832,6 +832,7 @@ class DistribucionController extends Controller
 
                 $todo = DB::table('almacen.alm_det_req')
                     ->where([['id_requerimiento','=',$request->id_requerimiento],
+                            ['tiene_transformacion','=',false],
                             ['estado','!=',7]])
                     ->count();
 

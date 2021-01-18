@@ -358,6 +358,15 @@ function listarRequerimientosPendientes(permiso){
             }
         ],
         'order': [[ 10, "asc" ],[ 11, "asc" ]],
+        "createdRow": function( row, data, dataIndex){
+            if(data.estado == 28){
+                $(row).css('background-color', '#FACABF');
+                    // $(row.childNodes[1]).css('font-weight', 'bold');
+            }else if(data.estado == 27){
+                $(row).css('background-color', '#FCF699');
+
+            }
+        },
         'columnDefs': [
             {'aTargets': [0], 'sClass': 'invisible'},
             {'render': function (data, type, row){
