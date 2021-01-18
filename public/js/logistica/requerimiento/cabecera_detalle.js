@@ -1105,7 +1105,7 @@ function componerTdItemDetalleRequerimiento(){
     } else {
         getDataAllSelect().then(function (response) {
             if (response.length > 0) {
-                console.log(response);
+                // console.log(response);
                     dataSelect = response;
                     // selectCategoria = response[0].categoria;
                     // selectSubCategoria = response[0].subcategoria; 
