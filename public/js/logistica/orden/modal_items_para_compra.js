@@ -362,11 +362,11 @@ function validarObjItemsParaCompra() {
 
         if (infoStateInput.length > 0) {
 
-            document.querySelector("div[id='modal-agregar-items-para-compra'] button[id='btnIrACrearOrden']").setAttribute('title', 'Falta: ' + infoStateInput.join());
-            document.querySelector("div[id='modal-agregar-items-para-compra'] button[id='btnIrACrearOrden']").setAttribute('disabled', true);
+            document.querySelector("div[id='modal-agregar-items-para-compra'] button[id='btnIrAGuardarItemsEnDetalleRequerimiento']").setAttribute('title', 'Falta: ' + infoStateInput.join());
+            document.querySelector("div[id='modal-agregar-items-para-compra'] button[id='btnIrAGuardarItemsEnDetalleRequerimiento']").setAttribute('disabled', true);
         } else {
-            document.querySelector("div[id='modal-agregar-items-para-compra'] button[id='btnIrACrearOrden']").setAttribute('title', 'Siguiente');
-            document.querySelector("div[id='modal-agregar-items-para-compra'] button[id='btnIrACrearOrden']").removeAttribute('disabled');
+            document.querySelector("div[id='modal-agregar-items-para-compra'] button[id='btnIrAGuardarItemsEnDetalleRequerimiento']").setAttribute('title', 'Siguiente');
+            document.querySelector("div[id='modal-agregar-items-para-compra'] button[id='btnIrAGuardarItemsEnDetalleRequerimiento']").removeAttribute('disabled');
 
         }
     }
@@ -650,7 +650,7 @@ function eliminarItemDeListadoParaCompra(obj, index) {
 }
 
 
-function irACrearOrden() {
+function GuardarItemsEnDetalleRequerimiento() {
     // console.log(reqTrueList);
     // console.log(itemsParaCompraList);
     if(reqTrueList.length ==1){
@@ -670,14 +670,16 @@ function guardarMasItemsAlDetalleRequerimiento(id_requerimiento_list,item_list){
         success: function (response) {
             console.log(response);
             if (response.status == 200) {
+                alert('Item(s) Guardado');
+
                 $('#modal-agregar-items-para-compra').modal('hide');
 
-                $('#modal-orden-requerimiento').modal({
-                    show: true,
-                    backdrop: 'true'
-                });
+                // $('#modal-orden-requerimiento').modal({
+                //     show: true,
+                //     backdrop: 'true'
+                // });
 
-                obtenerRequerimiento(reqTrueList);
+                // obtenerRequerimiento(reqTrueList);
 
             }else{
                 alert('Ocurrio un problema, no se pudo agregar los items al requerimiento');
