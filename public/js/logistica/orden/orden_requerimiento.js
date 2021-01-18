@@ -663,6 +663,8 @@ function guardarAtendidoConAlmacen(){
                     if(response.update_det_req >0){
                         alert("Se realizo con éxito la reserva");
                         getDataItemsRequerimientoParaAtenderConAlmacen(response.id_requerimiento);
+                        $('#listaRequerimientosPendientes').DataTable().ajax.reload();
+
                     }else{
                         alert("Ocurrio un problema al intentar guardar la reserva");
                     }
