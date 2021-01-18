@@ -2,9 +2,11 @@ $(document).ready(function(){
     listarTrazabilidadRequerimientos();
 });
 
+var table;
+
 function listarTrazabilidadRequerimientos(){
     var vardataTables = funcDatatables();
-    $('#listaRequerimientosTrazabilidad').DataTable({
+    table = $('#listaRequerimientosTrazabilidad').DataTable({
         'dom': vardataTables[1],
         'buttons': vardataTables[2],
         'language' : vardataTables[0],
@@ -16,28 +18,34 @@ function listarTrazabilidadRequerimientos(){
         },
         'columns': [
             {'data': 'id_requerimiento'},
-            {'data': 'tipo_req', 'name': 'alm_tp_req.descripcion'},
-            {'data': 'sede_descripcion_req', 'name': 'sede_req.descripcion'},
-            // {'data': 'codigo'},
             {'render': function (data, type, row){
                 return (row['codigo'] !== null ? 
                         ('<label class="lbl-codigo" title="Abrir Requerimiento" onClick="abrir_requerimiento('+row['id_requerimiento']+')">'+row['codigo']+'</label>')
                         : '');
                 }
             },
-            {'data': 'concepto'},
+            // {'data': 'tipo_req', 'name': 'alm_tp_req.descripcion'},
             {'render': function (data, type, row){
-                var tipo = '';
-                switch (row['tipo_cliente']){
-                    case 1 : tipo ='Persona Natural'; break;
-                    case 2 : tipo ='Persona Jurídica'; break;
-                    case 3 : tipo ='Uso Almacén'; break;
-                    case 4 : tipo ='Uso Administrativo'; break;
-                    default: break; 
-                }
-                return (tipo);
+                return (row['orden_am'] !== null ? (`<a href="https://apps1.perucompras.gob.pe//OrdenCompra/obtenerPdfOrdenPublico?ID_OrdenCompra=${row['id_oc_propia']}&ImprimirCompleto=1">
+                    <span class="label label-success">Ver O.E.</span></a>
+                    <a href="${row['url_oc_fisica']}">
+                    <span class="label label-warning">Ver O.F.</span></a> `+row['orden_am']) : row['concepto']);
                 }
             },
+            // {'data': 'concepto'},
+            {'data': 'sede_descripcion_req', 'name': 'sede_req.descripcion'},
+            // {'render': function (data, type, row){
+            //     var tipo = '';
+            //     switch (row['tipo_cliente']){
+            //         case 1 : tipo ='Persona Natural'; break;
+            //         case 2 : tipo ='Persona Jurídica'; break;
+            //         case 3 : tipo ='Uso Almacén'; break;
+            //         case 4 : tipo ='Uso Administrativo'; break;
+            //         default: break; 
+            //     }
+            //     return (tipo);
+            //     }
+            // },
             {'render': function (data, type, row){
                 var cliente = '';
                 switch (row['tipo_cliente']){
@@ -50,15 +58,24 @@ function listarTrazabilidadRequerimientos(){
                 return (cliente);
                 }
             },
-            {'data': 'fecha_requerimiento'},
+            {'render': function (data, type, row){
+                return formatDate(row['fecha_requerimiento']);
+                }
+            },
             {'render': function (data, type, row){
                 return (row['ubigeo_descripcion'] !== null ? row['ubigeo_descripcion'] : '');
                 }
             },
             {'data': 'direccion_entrega'},
             // {'data': 'grupo', 'name': 'adm_grupo.descripcion'},
-            {'data': 'responsable', 'name': 'sis_usua.nombre_corto'},
-            // {'data': 'estado_doc', 'name': 'adm_estado_doc.estado_doc'},
+            // {'data': 'responsable', 'name': 'sis_usua.nombre_corto'},
+            {'render': function (data, type, row){
+                if (row['name']!==null)
+                    return row['name'];
+                else
+                    return row['responsable'];
+                }
+            },
             {'render': function (data, type, row){
                 return '<span class="label label-'+row['bootstrap_color']+'">'+row['estado_doc']+'</span>'
                 }
@@ -79,18 +96,25 @@ function listarTrazabilidadRequerimientos(){
                 return (row['codigo_od'] !== null ? row['codigo_od'] : '')
                 }
             },
-            {'data': 'guias_adicionales'},
-            {'data': 'importe_flete'}
+            {'data': 'guia_transportista'},
+            {'render': function (data, type, row){
+                return (row['importe_flete'] !== null ? 'S/ '+row['importe_flete'] : '')
+                }
+            },
+            // {'data': 'importe_flete'}
         ],
         'columnDefs': [
             {'aTargets': [0], 'sClass': 'invisible'},
             {'render': function (data, type, row){
                 return '<button type="button" class="ver btn btn-info boton" data-toggle="tooltip" data-placement="bottom" '+
-                'data-id="'+row['id_requerimiento']+'" title="Ver Trazabilidad" >'+
-                '<i class="fas fa-search"></i></button>'+
-                '<button type="button" class="detalle btn btn-primary boton " data-toggle="tooltip" '+
-                    'data-placement="bottom" title="Ver Detalle" >'+
-                    '<i class="fas fa-list-ul"></i></button>'+
+                    'data-id="'+row['id_requerimiento']+'" title="Ver Trazabilidad" >'+
+                    '<i class="fas fa-search"></i></button>'+
+                // '<button type="button" class="detalle btn btn-primary boton " data-toggle="tooltip" '+
+                //     'data-placement="bottom" title="Ver Detalle" >'+
+                //     '<i class="fas fa-list-ul"></i></button>'+
+                '<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" '+
+                    'data-placement="bottom" title="Ver Detalle" data-id="'+row['id_requerimiento']+'">'+
+                    '<i class="fas fa-chevron-down"></i></button>'+
                 (row['id_od'] !== null ? 
                 `<button type="button" class="adjuntar btn btn-warning boton" data-toggle="tooltip" 
                         data-placement="bottom" data-id="${row['id_od']}" data-cod="${row['codigo_od']}" title="Adjuntar Boleta/Factura" >
@@ -98,7 +122,7 @@ function listarTrazabilidadRequerimientos(){
                 (row['id_od_grupo'] !== null ? `<button type="button" class="imprimir btn btn-success boton" data-toggle="tooltip" 
                     data-placement="bottom" data-id-grupo="${row['id_od_grupo']}" title="Ver Despacho" >
                     <i class="fas fa-file-alt"></i></button>` : '')
-                }, targets: 15
+                }, targets: 13
             }
         ],
     });
@@ -113,11 +137,11 @@ $('#listaRequerimientosTrazabilidad tbody').on("click","button.ver", function(){
     verTrazabilidadRequerimiento(id);
 });
 
-$('#listaRequerimientosTrazabilidad tbody').on("click","button.detalle", function(){
-    var data = $('#listaRequerimientosTrazabilidad').DataTable().row($(this).parents("tr")).data();
-    console.log(data);
-    open_detalle_requerimiento(data);
-});
+// $('#listaRequerimientosTrazabilidad tbody').on("click","button.detalle", function(){
+//     var data = $('#listaRequerimientosTrazabilidad').DataTable().row($(this).parents("tr")).data();
+//     console.log(data);
+//     open_detalle_requerimiento(data);
+// });
 
 $('#listaRequerimientosTrazabilidad tbody').on("click","button.adjuntar", function(){
     var id = $(this).data('id');
@@ -165,6 +189,46 @@ function verTrazabilidadRequerimiento(id_requerimiento){
     });
 
 }
+
+var iTableCounter=1;
+var oInnerTable;
+
+$('#listaRequerimientosTrazabilidad tbody').on('click', 'td button.detalle', function () {
+    var tr = $(this).closest('tr');
+    var row = table.row( tr );
+    var id = $(this).data('id');
+    
+    if ( row.child.isShown() ) {
+        //  This row is already open - close it
+       row.child.hide();
+       tr.removeClass('shown');
+    }
+    else {
+       // Open this row
+    //    row.child( format(iTableCounter, id) ).show();
+       format(iTableCounter, id, row);
+       tr.addClass('shown');
+       // try datatable stuff
+       oInnerTable = $('#listaRequerimientosTrazabilidad_' + iTableCounter).dataTable({
+        //    data: sections, 
+           autoWidth: true, 
+           deferRender: true, 
+           info: false, 
+           lengthChange: false, 
+           ordering: false, 
+           paging: false, 
+           scrollX: false, 
+           scrollY: false, 
+           searching: false, 
+           columns:[ 
+            //   { data:'refCount' },
+            //   { data:'section.codeRange.sNumber.sectionNumber' }, 
+            //   { data:'section.title' }
+            ]
+       });
+       iTableCounter = iTableCounter + 1;
+   }
+});
 
 function abrir_requerimiento(id_requerimiento){
     // Abrir nuevo tab
