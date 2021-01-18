@@ -279,7 +279,7 @@ class DistribucionController extends Controller
             ->orWhere([['alm_req.estado','=',22]])
             // ->orWhere([['alm_req.id_tipo_requerimiento','!=',1], ['alm_req.estado','=',19], 
                     //    ['alm_req.confirmacion_pago','=',true], ['orden_despacho.id_od','=',null]])
-            ->orderBy('alm_req.fecha_requerimiento','desc');
+            ->orderBy('alm_req.fecha_entrega','desc');
             // ->get();
         return datatables($data)->toJson();
         // return response()->json($data);
