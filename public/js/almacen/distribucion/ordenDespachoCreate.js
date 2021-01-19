@@ -362,14 +362,16 @@ function guardar_orden_despacho(data){
             alert(response);
             $('#modal-orden_despacho_create').modal('hide');
             
+            od_seleccionadas = [];
             if (tab_origen == 'confirmados'){
                 // $('#requerimientosConfirmados').DataTable().ajax.reload();
                 listarRequerimientosConfirmados(permiso_temp);
-                od_seleccionadas = [];
             } 
             else if (tab_origen == 'enProceso'){
                 listarRequerimientosPendientes(permiso_temp);
-                od_seleccionadas = [];
+            }
+            else if (tab_origen == 'enTransformacion'){
+                listarRequerimientosEnTransformacion(permiso_temp);
             }
             actualizaCantidadDespachosTabs();
         }

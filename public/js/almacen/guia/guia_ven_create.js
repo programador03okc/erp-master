@@ -38,7 +38,7 @@ function listarDetalleOrdenDespacho(id_od){
                 html += `<tr>
                 <td>${i}</td>
                 <td>${element.codigo}</td>
-                <td>${element.part_number}</td>
+                <td>${element.part_number!==null ? element.part_number:''}</td>
                 <td>${element.descripcion}</td>
                 <td>${element.cantidad}</td>
                 <td>${element.abreviatura}</td>

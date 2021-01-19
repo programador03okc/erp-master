@@ -38,6 +38,39 @@ $('#requerimientosEnProceso tbody').on('click', 'td button.detalle', function ()
    }
 });
 
+$('#requerimientosEnTransformacion tbody').on('click', 'td button.detalle', function () {
+   var tr = $(this).closest('tr');
+   var row = tableTransformacion.row( tr );
+   var id = $(this).data('id');
+   
+   if ( row.child.isShown() ) {
+       //  This row is already open - close it
+      row.child.hide();
+      tr.removeClass('shown');
+   }
+   else {
+      // Open this row
+   //    row.child( format(iTableCounter, id) ).show();
+      format(iTableCounter, id, row);
+      tr.addClass('shown');
+      // try datatable stuff
+      oInnerTable = $('#requerimientosEnTransformacion_' + iTableCounter).dataTable({
+       //    data: sections, 
+          autoWidth: true, 
+          deferRender: true, 
+          info: false, 
+          lengthChange: false, 
+          ordering: false, 
+          paging: false, 
+          scrollX: false, 
+          scrollY: false, 
+          searching: false, 
+          columns:[ ]
+      });
+      iTableCounter = iTableCounter + 1;
+  }
+});
+
 $('#requerimientosElaborados tbody').on('click', 'td button.detalle', function () {
     var tr = $(this).closest('tr');
     var row = tableElaborado.row( tr );

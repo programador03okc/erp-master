@@ -42,7 +42,8 @@ Panel de Control de Despachos
         <ul class="nav nav-tabs" id="myTab">
             <li class="active"><a type="#elaborados">Requerimientos Pendientes <span id="selaborados" class="badge badge-info"></span></a></li>
             <li class=""><a type="#confirmados">Requerimientos en Compras <span id="sconfirmados" class="badge badge-info"></span></a></li>
-            <li class=""><a type="#pendientes">Requerimientos En Proceso <span id="spendientes" class="badge badge-info"></span></a></li>
+            <li class=""><a type="#pendientes">En Proceso <span id="spendientes" class="badge badge-info"></span></a></li>
+            <li class=""><a type="#transformados">En Transformación <span id="stransformados" class="badge badge-info"></span></a></li>
             <li class=""><a type="#despachos">Por Despachar <span id="sdespachos" class="badge badge-info"></span></a></li>
             <li class=""><a type="#sinTransporte">Pendientes de Transporte <span id="ssinTransporte" class="badge badge-info"></span></a></li>
             <li class=""><a type="#retornoCargo">Pendientes de Retorno de Cargo <span id="sretornoCargo" class="badge badge-info"></span></a></li>
@@ -125,14 +126,41 @@ Panel de Control de Despachos
                                         <th>Entidad</th>
                                         <th>Fecha Entrega</th>
                                         <th>Cod.Req.</th>
-                                        <!-- <th>Concepto</th> -->
                                         <th>Fecha Req.</th>
                                         <th>Generado por</th>
                                         <th>Estado</th>
                                         <th>Transf.</th>
                                         <th>O.Despacho</th>
-                                        <!-- <th>Fecha Despacho</th>
-                                        <th>Hora Despacho</th> -->
+                                        <th>Motivo</th>
+                                        <th width="90px">Acción</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </form>
+            </section>
+            <section id="transformados" hidden>
+                <form id="form-transformados" type="register">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <table class="mytable table table-condensed table-bordered table-okc-view" 
+                                id="requerimientosEnTransformacion">
+                                <thead>
+                                    <tr>
+                                        <th hidden></th>
+                                        <th>Orden Elec.</th>
+                                        <th>Cod.CC</th>
+                                        <th>Monto</th>
+                                        <th>Entidad</th>
+                                        <th>Fecha Entrega</th>
+                                        <th>Cod.Req.</th>
+                                        <th>Fecha Req.</th>
+                                        <th>Generado por</th>
+                                        <th>Estado</th>
+                                        <th>Transf.</th>
+                                        <th>O.Despacho</th>
                                         <th>Motivo</th>
                                         <th width="90px">Acción</th>
                                     </tr>
