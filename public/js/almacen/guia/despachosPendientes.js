@@ -73,7 +73,7 @@ function listarDespachosPendientes(permiso){
             {'data': 'fecha_entrega'},
             {'data': 'nombre_corto', 'name': 'sis_usua.nombre_corto'}
         ],
-        'order': [[ 1, "asc" ],[ 2, "asc" ]],
+        'order': [[ 2, "desc" ],[ 3, "desc" ]],
         'columnDefs': [
             {'aTargets': [0], 'sClass': 'invisible'},
             {'render': function (data, type, row){

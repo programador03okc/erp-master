@@ -936,7 +936,8 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::group(['as' => 'despachos.', 'prefix' => 'despachos'], function(){
 					//Ordenes Despacho
 					Route::get('index', 'DistribucionController@view_ordenesDespacho')->name('index');
-					Route::post('listarRequerimientosPendientes', 'DistribucionController@listarRequerimientosPendientes');
+					Route::post('listarRequerimientosEnProceso', 'DistribucionController@listarRequerimientosEnProceso');
+					Route::post('listarRequerimientosEnTransformacion', 'DistribucionController@listarRequerimientosEnTransformacion');
 					Route::get('verDetalleRequerimiento/{id}', 'DistribucionController@verDetalleRequerimiento');
 					Route::get('verDetalleIngreso/{id}', 'DistribucionController@verDetalleIngreso');
 					Route::post('guardar_orden_despacho', 'DistribucionController@guardar_orden_despacho');
