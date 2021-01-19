@@ -203,25 +203,29 @@ function procesarItemParaCompraDetalleCuadroCostos(id) {
     buscarItemEnCatalogo(data_item_CC_selected).then(function (data) {
         // Run this when your request was successful
         if (data.length > 0) {
-            // console.log(data)
-            // console.log(data[0]);
-            data[0].cantidad = data_item_CC_selected.cantidad;
-            data[0].id_cc_am = data_item_CC_selected.id_cc_am;
-            data[0].id_cc_venta = data_item_CC_selected.id_cc_venta;
-            data[0].precio = '';
-            data[0].tiene_transformacion = false;
+            if (data.length == 1) {
+                // console.log(data)
+                // console.log(data[0]);
+                data[0].cantidad = data_item_CC_selected.cantidad;
+                data[0].id_cc_am = data_item_CC_selected.id_cc_am;
+                data[0].id_cc_venta = data_item_CC_selected.id_cc_venta;
+                data[0].precio = '';
+                data[0].tiene_transformacion = false;
 
-            if (data[0].id_moneda == null) {
-                data[0].id_moneda = 1;
-                data[0].moneda = 'Soles';
+                if (data[0].id_moneda == null) {
+                    data[0].id_moneda = 1;
+                    data[0].moneda = 'Soles';
+                }
+                // console.log(data[0]);
+                itemsParaCompraList.push(data[0]);
+                agregarItemATablaListaItemsParaCompra(itemsParaCompraList);
             }
-            // console.log(data[0]);
+            if(data.length >1){
+                alert("La busqueda a tenido más de una coincidencia");
+                console.log(data);
 
-            itemsParaCompraList.push(data[0]);
-            agregarItemATablaListaItemsParaCompra(itemsParaCompraList);
-
+            }
         } else {
-
             itemsParaCompraList.push(data_item_CC_selected);
             agregarItemATablaListaItemsParaCompra(itemsParaCompraList);
 

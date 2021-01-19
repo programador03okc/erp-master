@@ -2130,7 +2130,8 @@ class OrdenController extends Controller
             
         } 
         else if ($descripcion !== null && $descripcion !== ''){
-            $where=[['alm_prod.descripcion','like','%'.$descripcion.'%'],['alm_prod.estado','=',1]];
+            // $where=[['alm_prod.descripcion','like','%'.$descripcion.'%'],['alm_prod.estado','=',1]];
+            $where=[['alm_prod.descripcion','=',$descripcion],['alm_prod.estado','=',1]];
         }
         
         $alm_prod = DB::table('almacen.alm_prod')
