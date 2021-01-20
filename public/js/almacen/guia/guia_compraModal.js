@@ -14,17 +14,21 @@ $(function(){
 });
 
 function guia_compraModal(){
-    $('#modal-guia_compra').modal({
-        show: true
-    });
-    clearDataTable();
+    // clearDataTable();
     let formName = document.getElementsByClassName('page-main')[0].getAttribute('type');
     if (formName =='guia_compra'){
+        $('#modal-guia_compra').modal({
+            show: true
+        });
         listarGuiasCompra();
     } 
     else if (formName =='doc_compra'){
+
         var id_proveedor = $('[name=id_proveedor]').val();
         if (id_proveedor !== null && id_proveedor !== '' && id_proveedor !== 0){
+            $('#modal-guia_compra').modal({
+                show: true
+            });
             listarGuiasProveedor(id_proveedor);
         } else {
             alert('No ha ingresado un proveedor!');
@@ -61,15 +65,15 @@ function listarGuiasCompra(){
     });
 }
 
-function listarGuiasProveedor(id_proveedor){
+function llenarTablaListaGuiasCompra(data){
+    
     var vardataTables = funcDatatables();
     $('#listaGuiasCompra').DataTable({
         'dom': vardataTables[1],
         'buttons': vardataTables[2],
         'language' : vardataTables[0],
         'bDestroy': true,
-        'retrieve': true,
-        'ajax': '/listar_guias_proveedor/'+id_proveedor,
+        'data':data,
         'columns': [
             {'data': 'id_guia'},
             {'data': 'razon_social'},
@@ -89,6 +93,22 @@ function listarGuiasProveedor(id_proveedor){
         'columnDefs': [{ 'aTargets': [0,5], 'sClass': 'invisible'}],
     });
 }
+
+function listarGuiasProveedor(id_proveedor){
+
+    $.ajax({
+        type: 'GET',
+        url:  `listar_guias_proveedor/${id_proveedor}`,
+        dataType: 'JSON',
+        success: function(response){
+            llenarTablaListaGuiasCompra(response.data);
+        }
+    }).fail( function( jqXHR, textStatus, errorThrown ){
+        console.log(jqXHR);
+        console.log(textStatus);
+        console.log(errorThrown);
+    });
+ }
 
 function selectGuiaCompra(){
     var myId = $('.modal-footer #mid_guia_com').text();

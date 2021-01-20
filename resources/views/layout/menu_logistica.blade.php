@@ -108,7 +108,9 @@
                 </a>
                 <ul class="treeview-menu" >
                     @if(Auth::user()->tieneAplicacion(120))
-                    <li><a href="/doc_compra"><i class="far fa-circle fa-xs"></i> Comprobante de compra</a></li>
+                    <!-- <li><a href="/doc_compra"><i class="far fa-circle fa-xs"></i> Comprobante de compra</a></li> -->
+                    <li><a href="{{route('logistica.gestion-logistica.comprobantes.generar_comprobante')}}"><i class="far fa-circle fa-xs"></i> Generar Comprobante de compra</a></li>
+                    <li><a href="{{route('logistica.gestion-logistica.comprobantes.lista_comprobante_compra')}}"><i class="far fa-circle fa-xs"></i> Lista de comprobantes</a></li>
                     @endif
                 </ul>
             </li>

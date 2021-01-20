@@ -41,7 +41,7 @@ function listarOrdenesProveedor(id_proveedor){
         'language' : vardataTables[0],
         'bDestroy': true,
         'retrieve': true,
-        'ajax': '/listar_ordenes_sin_comprobante/'+id_proveedor,
+        'ajax': 'listar_ordenes_sin_comprobante/'+id_proveedor,
         'columns': [
             {'data': 'id_orden_compra'},
             {'data': 'razon_social'},

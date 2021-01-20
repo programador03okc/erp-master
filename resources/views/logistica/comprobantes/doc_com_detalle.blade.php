@@ -10,7 +10,6 @@
             </div>
             <form id="form-doc_compra_detalle"  enctype="multipart/form-data" method="post">
                 <div class="modal-body">
-                    <input type="hidden" name="_token" value="{{csrf_token()}}" id="token">
                     <div class="row">
                         <div class="col-md-3">
                             <h5>Código</h5>
