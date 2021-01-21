@@ -731,19 +731,20 @@ return response()->json($output);
 public function listar_detalle_guia_compra($id_guia)
 {
     $cabecera = DB::table('almacen.guia_com')
-    ->select('guia_com.*','adm_contri.razon_social')
+    ->select('guia_com.*','tp_ope.descripcion as tipo_operacion','adm_contri.razon_social')
+    ->leftjoin('almacen.tp_ope','tp_ope.id_operacion','=','guia_com.id_operacion')
     ->join('logistica.log_prove','log_prove.id_proveedor','=','guia_com.id_proveedor')
     ->join('contabilidad.adm_contri','adm_contri.id_contribuyente','=','log_prove.id_contribuyente')
     ->where([['guia_com.id_guia','=',$id_guia],['guia_com.estado','!=',7]])
     ->get();
 
     $detalle = DB::table('almacen.guia_com_det')
-    ->select('guia_com_det.*','alm_prod.codigo','alm_prod.descripcion','alm_und_medida.descripcion as unidad_medida','log_valorizacion_cotizacion.precio_sin_igv')//cambiar a precio_sin_igv
+    ->select('guia_com_det.*','alm_prod.codigo','alm_prod.descripcion','alm_und_medida.descripcion as unidad_medida')//cambiar a precio_sin_igv
     ->join('almacen.alm_prod','alm_prod.id_producto','=','guia_com_det.id_producto')
     ->join('almacen.alm_und_medida','alm_und_medida.id_unidad_medida','=','guia_com_det.id_unid_med')
 
-    ->leftjoin('logistica.log_det_ord_compra','log_det_ord_compra.id_detalle_orden','=','guia_com_det.id_oc_det')
-    ->leftjoin('logistica.log_valorizacion_cotizacion','log_valorizacion_cotizacion.id_valorizacion_cotizacion','=','log_det_ord_compra.id_valorizacion_cotizacion')
+    // ->leftjoin('logistica.log_det_ord_compra','log_det_ord_compra.id_detalle_orden','=','guia_com_det.id_oc_det')
+    // ->leftjoin('logistica.log_valorizacion_cotizacion','log_valorizacion_cotizacion.id_valorizacion_cotizacion','=','log_det_ord_compra.id_valorizacion_cotizacion')
     ->where([['guia_com_det.id_guia_com','=',$id_guia],
             ['guia_com_det.estado','=',1]])->get()->toArray();
     $output= ['guia'=>$cabecera, 'guia_detalle'=>$detalle];

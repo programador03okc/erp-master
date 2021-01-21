@@ -1,3 +1,4 @@
+var listaGuiaRemision=[];
 var listaDetalleComprobanteCompra=[];
 function get_data_cabecera_comprobante_compra(){
     var comprobanteCompra={
@@ -207,65 +208,162 @@ function listar_guias_prov(id_proveedor){
 
 
 
+function llenarTablaListaGuiaRemision(data){
+    var vardataTables = funcDatatables();
+    $('#ListaGuiaRemision').DataTable({
+        'info': false,
+        'searching': false,
+        'paging':   false,
+        'language' : vardataTables[0],
+        'bDestroy': true,
+        'data':data,
+        'columns': [
+            {'data': 'nro_guia'},
+            {'data': 'fecha_emision'},
+            {'data': 'razon_social'},
+            {'data': 'tipo_operacion'},
+            {'render':
+            function (data, type, row){
+            return '';
+            }
+            },
+        ]
+        // 'columnDefs': [{ 'aTargets': [0,5], 'sClass': 'invisible'}],
+    });
+}
 function llenarTablaListaDetalleGuiaCompra(data){
-    console.log(data);
-    // var vardataTables = funcDatatables();
-    // $('#listaDetalleComprobanteCompra').DataTable({
-    //     'dom': vardataTables[1],
-    //     'buttons': vardataTables[2],
-    //     'language' : vardataTables[0],
-    //     'bDestroy': true,
-    //     'data':data,
-    //     'columns': [
-    //         {'data': 'id_guia'},
-    //         {'data': 'razon_social'},
-    //         {'render':
-    //             function (data, type, row){
-    //                 return (row['serie']+'-'+row['numero']);
-    //             }
-    //         },
-    //         {'render':
-    //             function (data, type, row){
-    //                 return (formatDate(row['fecha_emision']));
-    //             }
-    //         },
-    //         {'data': 'des_estado'},
-    //         {'data': 'id_proveedor'},
-    //     ],
-    //     'columnDefs': [{ 'aTargets': [0,5], 'sClass': 'invisible'}],
-    // });
+    var vardataTables = funcDatatables();
+    $('#listaDetalleComprobanteCompra').DataTable({
+        'info': false,
+        'searching': false,
+        'paging':   false,
+        'language' : vardataTables[0],
+        'bDestroy': true,
+        'data':data,
+        'columns': [
+            {'data': 'nro_guia'},
+            {'data': 'codigo'},
+            {'data': 'descripcion'},
+            {'data': 'cantidad'},
+            {'data': 'unidad_medida'},
+            {'data': 'unitario'},
+            {'data': 'porcentaje_descuento'},
+            {'data': 'total_descuento'},
+            {'data': 'total'},
+            {'render':
+                function (data, type, row){
+                    return '';
+                }
+            }
+        ],
+        // 'columnDefs': [{ 'aTargets': [0,5], 'sClass': 'invisible'}],
+    });
 }
 
 function agregarAListaGuias(data){
+    if(data.guia.length > 0){
+        data.guia.forEach(element => {
+            listaGuiaRemision.push(
+                {
+                    'nro_guia':'GR-'+element.serie+'-'+element.numero,
+                    'id_operacion':element.id_operacion,
+                    'tipo_operacion':element.tipo_operacion, 
+                    'id_proveedor':element.id_proveedor,
+                    'razon_social':element.razon_social,
+                    'fecha_emision':element.fecha_emision,
+                    'subtotal':null,
+                    'total':null,
+                    'porcentaje_descuento':null,
+                    'total_descuento':null,
+                    'importe_total':null
+                }
+            )
+        });
+    }
     if(data.guia_detalle.length > 0){
         data.guia_detalle.forEach(element => {
             listaDetalleComprobanteCompra.push(
                 {
-                    'nro_guia':'GR-'+element.serie+'-'+element.numero,
+                    'nro_guia':'GR-'+data.guia[0].serie+'-'+data.guia[0].numero,
                     'codigo':element.codigo,
                     'descripcion':element.descripcion,
                     'cantidad':element.cantidad,
                     'unitario':element.unitario,
                     'id_unid_med':element.id_unid_med,
                     'unidad_medida':element.unidad_medida,
-                    'porcentaje_descuento':null,
-                    'total_descuento.':null,
-                    'precio_total.':null
+                    'porcentaje_descuento':'',
+                    'total_descuento':'',
+                    // 'precio_total':'',
+                    'total':element.total,
                     
                 }
             );
         });
 
-        console.log(listaDetalleComprobanteCompra);
-
+        // console.log(listaGuiaRemision);
+        // console.log(listaDetalleComprobanteCompra);
+        llenarTablaListaGuiaRemision(listaGuiaRemision);
+        llenarTablaListaDetalleGuiaCompra(listaDetalleComprobanteCompra);
+        CalcSubTotal(listaDetalleComprobanteCompra);
     }else{
         alert('La guía seleccionada no tiene detalle');
     }
- 
 }
 
+function CalcSubTotal(data){
+    var subtotal=0;
+    data.forEach(element => {
+        subtotal+=parseFloat(element.total);
+    });
+    listaGuiaRemision[0]['subtotal']=subtotal;
+    document.querySelector("div[type='doc_compra'] input[name='sub_total']").value=subtotal;
+
+    CalcTotal();
+}
+
+function calcTotalPorcentajeDescuento(event){
+    let porcentaje_descuento = event.target.value;
+    let subtotal = document.querySelector("div[type='doc_compra'] input[name='sub_total']").value;
+    let total_descuento = (subtotal*porcentaje_descuento)/100;
+    document.querySelector("div[type='doc_compra'] input[name='total_descuento']").value=total_descuento;
+    listaGuiaRemision[0]['porcentaje_descuento']=porcentaje_descuento;
+    listaGuiaRemision[0]['total_descuento']=total_descuento;
+
+    CalcTotal();
+}
+
+function CalcTotal(){
+    let subtotal = document.querySelector("div[type='doc_compra'] input[name='sub_total']").value;
+    let total_descuento =document.querySelector("div[type='doc_compra'] input[name='total_descuento']").value;
+    let total = subtotal - parseFloat(total_descuento);
+    document.querySelector("div[type='doc_compra'] input[name='total']").value=total;
+    listaGuiaRemision[0]['total']=total;
+
+    calcIGV();
+    
+}
+
+function calcIGV(){
+    let porcen_igv =document.querySelector("div[type='doc_compra'] input[name='porcen_igv']").value;
+    let total = document.querySelector("div[type='doc_compra'] input[name='total']").value;
+    let total_igv= (parseFloat(total) * parseInt(porcen_igv))/ 100;
+    document.querySelector("div[type='doc_compra'] input[name='total_igv']").value= total_igv;
+    listaGuiaRemision[0]['porcen_igv']=porcen_igv;
+    listaGuiaRemision[0]['total_igv']=total_igv;
+
+    calcImporteTotal();
+}
+
+function calcImporteTotal(){
+    let total =document.querySelector("div[type='doc_compra'] input[name='total']").value;
+    let total_igv =document.querySelector("div[type='doc_compra'] input[name='total_igv']").value;
+    let importe_total = (parseFloat(total)+parseFloat(total_igv)).toFixed(2);
+    document.querySelector("div[type='doc_compra'] input[name='total_a_pagar']").value= importe_total;
+    listaGuiaRemision[0]['importe_total']=importe_total;
+}
+
+
 function agrega_guia(id_guia){
-    console.log(id_guia);
     document.querySelector("div[type='doc_compra'] input[name='id_guia_com']").value= id_guia;
     $.ajax({
         type: 'GET',

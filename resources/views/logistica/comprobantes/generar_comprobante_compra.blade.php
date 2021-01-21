@@ -144,26 +144,8 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <h6>Guía(s) de Remisión</h6>
-                                <table id="guias" class="mytable table table-condensed table-bordered table-okc-view dataTable no-footer" width="100%">
+                                <table id="ListaGuiaRemision" class="mytable table table-condensed table-bordered table-okc-view dataTable no-footer" width="100%">
                                     <thead>
-                                        {{-- <tr>
-                                            <td colSpan='5'>
-                                                <div style="width: 100%; display:flex;">
-                                                    <div style="width:90%;">
-                                                        <select class="form-control js-example-basic-single" name="id_guia">
-                                                        </select>
-                                                    </div>
-                                                    <div style="width:10%;">
-                                                        <button type="button" class="btn btn-success" id="basic-addon2" 
-                                                            style="padding:5px;height:29px;font-size:12px;" 
-                                                            data-toggle="tooltip" data-placement="bottom" title="Agregar Guía"
-                                                            onClick="agrega_guia();">
-                                                            Agregar Guía
-                                                        </button>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                        </tr> --}}
                                         <tr>
                                             <th>Guía Nro</th>
                                             <th>Fecha Emisión</th>
@@ -245,9 +227,9 @@
 
                         <div class="row">
                             <div class="col-md-6">
-                                <button type="button" class="btn btn-secondary" data-toggle="tooltip" 
+                                <!-- <button type="button" class="btn btn-secondary" data-toggle="tooltip" 
                                 data-placement="bottom" title="pruebs" 
-                                onClick="actualiza_totales();">Actualizar</button>
+                                onClick="actualiza_totales();">Actualizar</button> -->
                             </div>
                             <div class="col-md-6">
                                 <table class="mytable table table-condensed table-bordered table-okc-view dataTable no-footer" width="100%">
@@ -260,7 +242,7 @@
                                         <tr>
                                             <td>Descuentos</td>
                                             <td>
-                                                <input type="number" class="porcen activation" name="porcen_descuento" value="0"/>
+                                                <input type="number" class="porcen activation" name="porcen_descuento" onChange="calcTotalPorcentajeDescuento(event);" value="0"/>
                                                 <label>%</label>
                                             </td>
                                             <td><label name="simbolo_moneda"></label><input type="number" class="importe" name="total_descuento" readOnly value="0"/></td>
@@ -273,7 +255,7 @@
                                         <tr>
                                             <td>IGV</td>
                                             <td>
-                                                <input type="number" class="porcen" name="porcen_igv" readOnly value="0"/>
+                                                <input type="number" class="porcen" name="porcen_igv" readOnly value="18"/>
                                                 <label>%</label>
                                             </td>
                                             <td><label name="simbolo_moneda"></label><input type="number" class="importe" name="total_igv" readOnly value="0"/></td>
