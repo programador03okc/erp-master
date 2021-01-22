@@ -26,7 +26,9 @@ class OrdenesPendientesController extends Controller
         $clasificaciones = AlmacenController::mostrar_guia_clas_cbo();
         $usuarios = AlmacenController::select_usuarios();
         $motivos_anu = AlmacenController::select_motivo_anu();
-        return view('almacen/guias/ordenesPendientes', compact('almacenes','tp_doc','tp_operacion','clasificaciones','usuarios','motivos_anu'));
+        $monedas = AlmacenController::mostrar_moneda_cbo();
+        return view('almacen/guias/ordenesPendientes', compact('almacenes','tp_doc','tp_operacion',
+        'clasificaciones','usuarios','motivos_anu','monedas'));
     }
 
     public function listarOrdenesPendientes(){
@@ -66,7 +68,7 @@ class OrdenesPendientesController extends Controller
             'alm_almacen.descripcion as almacen_descripcion',
             // 'sede_req.descripcion as sede_requerimiento_descripcion',
             // 'sede_req.id_sede as sede_requerimiento',
-            'guia_com.serie','guia_com.numero',
+            'guia_com.serie','guia_com.numero','tp_ope.descripcion as operacion_descripcion'
             // 'alm_req.id_requerimiento','alm_req.estado as estado_requerimiento',
             // 'alm_req.id_tipo_requerimiento','alm_req.id_almacen as almacen_requerimiento',
             // 'trans.id_transferencia','guia_ven_trans.id_guia_ven as id_guia_ven_trans',
@@ -97,6 +99,7 @@ class OrdenesPendientesController extends Controller
             //              })
             // ->join('configuracion.sis_moneda','sis_moneda.id_moneda','=','log_ord_compra.id_moneda')
             ->join('configuracion.sis_usua','sis_usua.id_usuario','=','mov_alm.usuario')
+            ->join('almacen.tp_ope','tp_ope.id_operacion','=','mov_alm.id_operacion')
             // ->leftJoin('almacen.guia_ven','guia_ven.id_guia_com','=','mov_alm.id_guia_com')
             ->where([['mov_alm.estado','!=',7],['mov_alm.id_tp_mov','=',1]])
             ->orderBy('mov_alm.fecha_emision','desc');
@@ -1125,6 +1128,99 @@ class OrdenesPendientesController extends Controller
             DB::rollBack();
             // return response()->json($e);
         }
+    }
+
+    function obtenerGuia($id)
+    {
+        $guia = DB::table('almacen.guia_com')
+        ->select('guia_com.id_guia','guia_com.id_proveedor','adm_contri.razon_social',
+        'guia_com.serie','guia_com.numero')
+        ->join('logistica.log_prove','log_prove.id_proveedor','=','guia_com.id_proveedor')
+        ->join('contabilidad.adm_contri','adm_contri.id_contribuyente','=','log_prove.id_contribuyente')
+        ->where('guia_com.id_guia',$id)
+        ->first();
+
+        $detalle = DB::table('almacen.guia_com_det')
+        ->select('guia_com_det.*','log_ord_compra.codigo as cod_orden','alm_prod.codigo','alm_prod.descripcion',
+        'alm_prod.part_number','alm_und_medida.abreviatura','log_det_ord_compra.precio')
+        ->join('logistica.log_det_ord_compra','log_det_ord_compra.id_detalle_orden','=','guia_com_det.id_oc_det')
+        ->join('logistica.log_ord_compra','log_ord_compra.id_orden_compra','=','log_det_ord_compra.id_orden_compra')
+        ->join('almacen.alm_prod','alm_prod.id_producto','=','guia_com_det.id_producto')
+        ->join('almacen.alm_und_medida','alm_und_medida.id_unidad_medida','=','alm_prod.id_unidad_medida')
+        ->where('guia_com_det.id_guia_com',$id)
+        ->get();
+
+        $igv = DB::table('contabilidad.cont_impuesto')
+        ->where('codigo','IGV')->first();
+
+        return response()->json(['guia'=>$guia, 'detalle'=>$detalle, 'igv'=>$igv->porcentaje]);
+    }
+
+    public function guardar_doc_compra(Request $request)
+    {
+        try {
+            DB::beginTransaction();
+
+            $id_usuario = Auth::user()->id_usuario;
+            $fecha = date('Y-m-d H:i:s');
+
+            $id_doc = DB::table('almacen.doc_com')->insertGetId(
+                [
+                    'serie' => $request->serie_doc,
+                    'numero' => $request->numero_doc,
+                    'id_tp_doc' => $request->id_tp_doc,
+                    'id_proveedor' => $request->id_proveedor,
+                    'fecha_emision' => $request->fecha_emision_doc,
+                    'fecha_vcmto' => $request->fecha_emision_doc,
+                    // 'id_condicion' => $request->id_condicion,
+                    // 'credito_dias' => $request->credito_dias,
+                    'moneda' => $request->moneda,
+                    // 'tipo_cambio' => $request->tipo_cambio,
+                    'sub_total' => $request->sub_total,
+                    // 'total_descuento' => $request->total_descuento,
+                    // 'porcen_descuento' => $request->porcen_descuento,
+                    // 'total' => $request->importe,
+                    'total_igv' => $request->igv,
+                    // 'total_ant_igv' => $request->total_ant_igv,
+                    'porcen_igv' => $request->porcentaje_igv,
+                    // 'porcen_anticipo' => $request->porcen_anticipo,
+                    // 'total_otros' => $request->total_otros,
+                    'total_a_pagar' => $request->total,
+                    'usuario' => $id_usuario,
+                    'registrado_por' => $id_usuario,
+                    'estado' => 1,
+                    'fecha_registro' => $fecha,
+                ],
+                    'id_doc_com'
+                );
+
+            $items = json_decode($request->detalle_items);
+
+            foreach ($items as $item) {
+                DB::table('almacen.doc_com_det')
+                ->insert([
+                    'id_doc' => $id_doc,
+                    'id_guia_com_det' => $item->id_guia_com_det,
+                    'id_item' => $item->id_producto,
+                    'cantidad' => $item->cantidad,
+                    'id_unid_med' => $item->id_unid_med,
+                    'precio_unitario' => $item->precio,
+                    'sub_total' => $item->sub_total,
+                    'porcen_dscto' => $item->porcentaje_dscto,
+                    'total_dscto' => $item->total_dscto,
+                    'precio_total' => $item->total,
+                    'estado' => 1,
+                    'fecha_registro' => $fecha,
+                ]);
+            }
+            DB::commit();
+            return response()->json($id_doc);
+            
+        } catch (\PDOException $e) {
+            // Woopsy
+            DB::rollBack();
+        }
+
     }
 
 }

@@ -918,30 +918,37 @@ function formatDecimalDigitos(number,digitos){
     return newNumber;
 }
 
- /* Formato miles y decimales 000,000.00 */
+ /* Formato miles y decimales 000,000.00 
+ Ejemplo: formatNumber.decimal(total,'',-2)*/
 var formatNumber = {
     separador: ",", // separador para los miles
     sepDecimal: '.', // separador para los decimales
     formatear:function (num, digitos){
         num +='';
         var splitStr = num.split('.');
+        
         var splitLeft = splitStr[0];
         var dig = Math.abs(digitos);
         var ceros = '';
-        if (splitStr[1] !== undefined){
+        var decimales;
+        
             //completa los ceros en decimales
-            var decimales = dig - splitStr[1].length;
-            if (decimales > 0){
-                while (ceros.length < decimales){
-                    ceros += '0';
-                }
+        if (splitStr[1] !== undefined){
+            decimales = dig - splitStr[1].length;
+        } else {
+            decimales = dig;
+        }
+        if (decimales > 0){
+            while (ceros.length < decimales){
+                ceros += "0";
             }
         }
-        var splitRight = splitStr.length > 1 ? this.sepDecimal + splitStr[1] : '';
+        var splitRight = splitStr.length > 1 ? this.sepDecimal + splitStr[1] : '.';
         var regx = /(\d+)(\d{3})/;
         while (regx.test(splitLeft)) {
             splitLeft = splitLeft.replace(regx, '$1' + this.separador + '$2');
         }
+        
         return this.simbol + splitLeft + splitRight + ceros;
     },
     new:function(num, simbol, digitos){ //agrega string (puede ser la moneda) delante del nro

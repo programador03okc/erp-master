@@ -143,7 +143,7 @@ class AlmacenController extends Controller
         $unidades = AlmacenController::mostrar_unidades_cbo();
         $posiciones = $this->mostrar_posiciones_cbo();
         $ubicaciones = $this->mostrar_ubicaciones_cbo();
-        $monedas = $this->mostrar_moneda_cbo();
+        $monedas = AlmacenController::mostrar_moneda_cbo();
         return view('almacen/producto/producto', compact('clasificaciones','subcategorias','categorias','unidades','posiciones','ubicaciones','monedas'));
     }
     function view_almacenes(){
@@ -182,7 +182,7 @@ class AlmacenController extends Controller
         // $motivos = $this->mostrar_motivos_cbo();
         $clasificaciones = $this->mostrar_guia_clas_cbo();
         $tp_doc = $this->mostrar_tp_doc_cbo();
-        $monedas = $this->mostrar_moneda_cbo();
+        $monedas = AlmacenController::mostrar_moneda_cbo();
         $tp_doc_almacen = $this->tp_doc_almacen_cbo_ing();
         $tp_operacion = $this->tp_operacion_cbo_ing();
         $tp_contribuyente = $this->tp_contribuyente_cbo();
@@ -228,7 +228,7 @@ class AlmacenController extends Controller
         $clasificaciones = $this->mostrar_guia_clas_cbo();
         $condiciones = $this->mostrar_condiciones_cbo();
         $tp_doc = $this->mostrar_tp_doc_cbo();
-        $moneda = $this->mostrar_moneda_cbo();
+        $moneda = AlmacenController::mostrar_moneda_cbo();
         $usuarios = $this->select_usuarios();
         return view('almacen/documentos/doc_venta', compact('sedes','clasificaciones','condiciones','tp_doc','moneda','usuarios'));
     }
@@ -736,7 +736,7 @@ class AlmacenController extends Controller
             ->get();
         return $data;
     }
-    public function mostrar_moneda_cbo()
+    public static function mostrar_moneda_cbo()
     {
         $data = DB::table('configuracion.sis_moneda')
             ->select('sis_moneda.id_moneda','sis_moneda.simbolo','sis_moneda.descripcion')
@@ -2770,16 +2770,17 @@ class AlmacenController extends Controller
 
         $detalle = DB::table('almacen.mov_alm_det')
             ->select('mov_alm_det.*','alm_prod.codigo','alm_prod.codigo_anexo','alm_prod.descripcion',
-            'alm_ubi_posicion.codigo as cod_posicion','alm_und_medida.abreviatura',
-            'sis_moneda.simbolo','log_valorizacion_cotizacion.subtotal','guia_com_det.unitario',
+            // 'alm_ubi_posicion.codigo as cod_posicion',
+            'alm_und_medida.abreviatura',
+            'sis_moneda.simbolo','log_det_ord_compra.subtotal','log_det_ord_compra.precio as unitario',
             'guia_com_det.unitario_adicional','alm_prod.series')
             ->join('almacen.alm_prod','alm_prod.id_producto','=','mov_alm_det.id_producto')
-            ->leftjoin('almacen.alm_ubi_posicion','alm_ubi_posicion.id_posicion','=','mov_alm_det.id_posicion')
+            // ->leftjoin('almacen.alm_ubi_posicion','alm_ubi_posicion.id_posicion','=','mov_alm_det.id_posicion')
             ->join('almacen.alm_und_medida','alm_und_medida.id_unidad_medida','=','alm_prod.id_unidad_medida')
             ->leftjoin('configuracion.sis_moneda','sis_moneda.id_moneda','=','alm_prod.id_moneda')
             ->leftjoin('almacen.guia_com_det','guia_com_det.id_guia_com_det','=','mov_alm_det.id_guia_com_det')
             ->leftjoin('logistica.log_det_ord_compra','log_det_ord_compra.id_detalle_orden','=','guia_com_det.id_oc_det')
-            ->leftjoin('logistica.log_valorizacion_cotizacion','log_valorizacion_cotizacion.id_valorizacion_cotizacion','=','log_det_ord_compra.id_valorizacion_cotizacion')
+            // ->leftjoin('logistica.log_valorizacion_cotizacion','log_valorizacion_cotizacion.id_valorizacion_cotizacion','=','log_det_ord_compra.id_valorizacion_cotizacion')
             ->where([['mov_alm_det.id_mov_alm','=',$id],['mov_alm_det.estado','=',1]])
             ->get();
         $ocs = [];
@@ -2951,7 +2952,6 @@ class AlmacenController extends Controller
                             <th>Nro</th>
                             <th>Código</th>
                             <th width=40% >Descripción</th>
-                            <th>Posición</th>
                             <th>Cant.</th>
                             <th>Unid.</th>
                             <th>Mnd.</th>
@@ -2984,7 +2984,6 @@ class AlmacenController extends Controller
                             <td class="right">'.$i.'</td>
                             <td>'.$det->codigo.'</td>
                             <td>'.$det->descripcion.' '.$series.'</td>
-                            <td>'.$det->cod_posicion.'</td>
                             <td class="right">'.$det->cantidad.'</td>
                             <td>'.$det->abreviatura.'</td>
                             <td>'.$det->simbolo.'</td>
