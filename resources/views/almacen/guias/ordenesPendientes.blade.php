@@ -25,7 +25,7 @@ Pendientes de Ingreso
         <ul class="nav nav-tabs" id="myTab">
             <li class="active"><a type="#pendientes">Ordenes Pendientes de Llegada</a></li>
             <li class=""><a type="#transformaciones">Transformaciones Pendientes de Ingreso</a></li>
-            <li class=""><a type="#ingresadas">Ordenes Ingresadas Almacén</a></li>
+            <li class=""><a type="#ingresadas">Ingresos a Almacén</a></li>
         </ul>
         <div class="content-tabs">
             <section id="pendientes" >
@@ -107,20 +107,21 @@ Pendientes de Ingreso
                                     <tr>
                                         <th hidden></th>
                                         <!-- <th>Cod.Orden</th> -->
-                                        <th>Sede Guía</th>
+                                        <!-- <th>Sede Guía</th> -->
+                                        <th>Guía Compra</th>
                                         <th>R.U.C.</th>
                                         <th>Razon Social</th>
                                         <!-- <th>SoftLink</th> -->
                                         <!-- <th>Req.</th> -->
                                         <!-- <th>Sede Req.</th> -->
                                         <!-- <th>Concepto</th> -->
-                                        <th>Guía Compra</th>
                                         <th>Ingreso</th>
+                                        <th>Operación</th>
                                         <th>Almacén</th>
                                         <th>Fecha Ingreso</th>
                                         <th>Responsable</th>
                                         <!-- <th>Trans.</th> -->
-                                        <th width="100px"></th>
+                                        <th width="90px"></th>
                                     </tr>
                                 </thead>
                                 <tbody></tbody>
@@ -140,6 +141,7 @@ Pendientes de Ingreso
 @include('almacen.guias.guia_com_obs')
 @include('almacen.guias.guia_ven_obs')
 @include('almacen.guias.guia_com_series')
+@include('almacen.documentos.doc_com_create')
 
 @endsection
 
@@ -162,6 +164,7 @@ Pendientes de Ingreso
     <script src="{{ asset('js/almacen/guia/ordenes_ver_detalle.js')}}"></script>
     <script src="{{ asset('js/almacen/guia/guia_com_create.js')}}"></script>
     <script src="{{ asset('js/almacen/guia/guia_com_det_series.js')}}"></script>
+    <script src="{{ asset('js/almacen/documentos/doc_com_create.js')}}"></script>
     <script>
     $(document).ready(function(){
         seleccionarMenu(window.location);

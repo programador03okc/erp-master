@@ -115,15 +115,12 @@ function listarOrdenesPendientes(){
             {'render': 
                 function (data, type, row){
                     if (acceso == '1') {
-                        return '<button type="button" class="ver-detalle btn btn-primary boton" data-toggle="tooltip" '+
-                        'data-placement="bottom" title="Ver Detalle" data-id="'+row['id_orden_compra']+'">'+
-                        '<i class="fas fa-chevron-down"></i></button>'+
-                        // '<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" '+
-                        //     'data-placement="bottom" title="Ver Detalle" >'+
-                        //     '<i class="fas fa-list-ul"></i></button>'+
-                        '<button type="button" class="guia btn btn-info boton" data-toggle="tooltip" '+
-                            'data-placement="bottom" title="Generar Guía" >'+
-                            '<i class="fas fa-sign-in-alt"></i></button>';
+                        return `<button type="button" class="ver-detalle btn btn-primary boton" data-toggle="tooltip" 
+                            data-placement="bottom" title="Ver Detalle" data-id="${row['id_orden_compra']}">
+                            <i class="fas fa-chevron-down"></i></button>
+                        <button type="button" class="guia btn btn-info boton" data-toggle="tooltip" 
+                            data-placement="bottom" title="Generar Guía" >
+                            <i class="fas fa-sign-in-alt"></i></button>`;
                     } else {
                         return '<button type="button" class="ver-detalle btn btn-primary boton" data-toggle="tooltip" '+
                         'data-placement="bottom" title="Ver Detalle" data-id="'+row['id_orden_compra']+'">'+
@@ -246,14 +243,20 @@ function listarOrdenesEntregadas(){
         },
         'columns': [
             {'data': 'id_mov_alm'},
-            {'data': 'sede_guia_descripcion', 'name': 'sede_guia.descripcion'},
-            {'data': 'nro_documento', 'name': 'adm_contri.nro_documento'},
-            {'data': 'razon_social', 'name': 'adm_contri.razon_social'},
+            // {'data': 'sede_guia_descripcion', 'name': 'sede_guia.descripcion'},
             {'render': function (data, type, row){
                     return row['serie']+'-'+row['numero'];
                 }
             },
-            {'data': 'codigo'},
+            {'data': 'nro_documento', 'name': 'adm_contri.nro_documento'},
+            {'data': 'razon_social', 'name': 'adm_contri.razon_social'},
+            {'render': function (data, type, row){
+                    return (row['codigo'] !== null ? 
+                    ('<label class="lbl-codigo" title="Abrir Ingreso" onClick="abrir_ingreso('+row['id_mov_alm']+')">'+row['codigo']+'</label>')
+                    : '');
+                }
+            },
+            {'data': 'operacion_descripcion', 'name': 'tp_ope.descripcion'},
             {'data': 'almacen_descripcion', 'name': 'alm_almacen.descripcion'},
             {'data': 'fecha_emision'},
             {'data': 'nombre_corto', 'name': 'sis_usua.nombre_corto'}
@@ -267,30 +270,20 @@ function listarOrdenesEntregadas(){
                         return '<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" '+
                             'data-placement="bottom" title="Ver Detalle" data-id="'+row['id_mov_alm']+'" data-cod="'+row['codigo']+'">'+
                             '<i class="fas fa-list-ul"></i></button>'+
-                        '<button type="button" class="ingreso btn btn-warning boton" data-toggle="tooltip" '+
-                            'data-placement="bottom" title="Ver Ingreso" data-id="'+row['id_mov_alm']+'">'+
-                            '<i class="fas fa-file-alt"></i></button>'+
-                        '<button type="button" class="transferencia btn btn-success boton" data-toggle="tooltip" '+
-                            'data-placement="bottom" title="Generar Transferencia" data-id="'+row['id_guia_com']+'">'+
-                            '<i class="fas fa-exchange-alt"></i></button>'+
-                        // '<button type="button" class="ver_guias btn btn-warning boton" data-toggle="tooltip" '+
-                        //     'data-placement="bottom" title="Ver Guías" data-id="'+row.id_orden_compra+'">'+
+                        // '<button type="button" class="ingreso btn btn-warning boton" data-toggle="tooltip" '+
+                        //     'data-placement="bottom" title="Ver Ingreso" data-id="'+row['id_mov_alm']+'">'+
                         //     '<i class="fas fa-file-alt"></i></button>'+
-                        ( //row['codigo_trans'] == null ? 
+                        
+                        // '<button type="button" class="transferencia btn btn-success boton" data-toggle="tooltip" '+
+                        //     'data-placement="bottom" title="Generar Transferencia" data-id="'+row['id_guia_com']+'">'+
+                        //     '<i class="fas fa-exchange-alt"></i></button>'+
                         '<button type="button" class="anular btn btn-danger boton" data-toggle="tooltip" '+
                         'data-placement="bottom" title="Anular Ingreso" data-id="'+row['id_mov_alm']+'" data-guia="'+row['id_guia_com']+'" data-oc="'+row['id_orden_compra']+'">'+
-                        '<i class="fas fa-trash"></i></button>' //: ''
-                        );
-                        // (
-                        // ((row['id_tipo_requerimiento'] == 1 && (row['sede_orden'] !== row['sede_requerimiento'] && row['codigo_trans'] == null)) ||
-                        //  (row['id_tipo_requerimiento'] == 3 && (row['sede_orden'] !== row['sede_requerimiento'] && row['codigo_trans'] == null))) ? 
-                        //     ('<button type="button" class="transferencia btn btn-success boton" data-toggle="tooltip" '+
-                        //     'data-placement="bottom" title="Generar Transferencia" >'+
-                        //     '<i class="fas fa-exchange-alt"></i></button>') : 
-                        //     ((row['codigo_trans'] !== null && row['estado_trans'] == 17) ?
-                        //     '<button type="button" class="anular_sal btn btn-danger boton" data-toggle="tooltip" '+
-                        //     'data-placement="bottom" title="Anular Salida" data-id="'+row['id_salida_trans']+'" data-guia="'+row['id_guia_ven_trans']+'" data-trans="'+row['id_transferencia']+'">'+
-                        //     '<i class="fas fa-trash"></i></button>' : ''));
+                        '<i class="fas fa-trash"></i></button>'+
+                        (row['id_operacion'] == 2 ? `<button type="button" class="doc btn btn-info boton" data-toggle="tooltip" 
+                            data-placement="bottom" title="Generar Factura" data-guia="${row['id_guia_com']}">
+                            <i class="fas fa-file-medical"></i></button>`:'')
+                        ;
                     } else {
                         return '<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" '+
                             'data-placement="bottom" title="Ver Detalle" data-id="'+row['id_mov_alm']+'" data-cod="'+row['codigo']+'">'+
@@ -312,11 +305,10 @@ $('#ordenesEntregadas tbody').on("click","button.detalle", function(){
     open_detalle_movimiento(id_mov_alm, codigo);
 });
 
-$('#ordenesEntregadas tbody').on("click","button.ingreso", function(){
-    var id_mov_alm = $(this).data('id');
+function abrir_ingreso(id_mov_alm){
     var id = encode5t(id_mov_alm);
     window.open('imprimir_ingreso/'+id);
-});
+}
 
 $('#ordenesEntregadas tbody').on("click","button.anular", function(){
     var id_mov_alm = $(this).data('id');
@@ -355,6 +347,11 @@ $('#ordenesEntregadas tbody').on("click","button.anular_sal", function(){
     $('[name=observacion_guia_ven]').val('');
 
     $("#submitGuiaVenObs").removeAttr("disabled");
+});
+
+$('#ordenesEntregadas tbody').on("click","button.doc", function(){
+    var id_guia = $(this).data('guia');
+    open_doc_create(id_guia);
 });
 
 $("#form-guia_ven_obs").on("submit", function(e){

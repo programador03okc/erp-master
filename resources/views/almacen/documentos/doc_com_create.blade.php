@@ -1,75 +1,103 @@
 <div class="modal fade" tabindex="-1" role="dialog" id="modal-doc_create">
-    <div class="modal-dialog">
-        <div class="modal-content" style="width:450px;">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="close"><span aria-hidden="true">&times;</span></button>
-                <h3 class="modal-title">Generar Comprobante de Compra</h3>
-            </div>
-            <div class="modal-body">
-                <div class="row">
-                    <div class="col-md-12">
-                        <h5>Tipo de Documento</h5>
-                        <select class="form-control activation js-example-basic-single" name="id_tp_doc">
-                            <option value="0">Elija una opción</option>
-                            @foreach ($tp_doc as $tp)
-                                <option value="{{$tp->id_tp_doc}}">{{$tp->cod_sunat}} - {{$tp->descripcion}}</option>
-                            @endforeach
-                        </select>
-                    </div>
+    <div class="modal-dialog"  style="width:1200px;">
+        <div class="modal-content">
+            <form id="form-doc_create">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="close"><span aria-hidden="true">&times;</span></button>
+                    <h3 class="modal-title">Generar Documento de Compra</h3>
                 </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <h5>Serie-Número</h5>
-                        <div class="input-group">
-                            <input type="text" class="form-control activation" 
-                                name="serie_doc" placeholder="F001">
-                            <span class="input-group-addon">-</span>
-                            <input type="text" class="form-control activation" 
-                                name="numero_doc" onBlur="ceros_numero_doc();" placeholder="000000">
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <h5>Fecha de Emisión</h5>
-                        <input type="date" class="form-control activation" name="fecha_emision_doc">
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-12">
-                        <h5>Proveedor</h5>
-                        <select class="form-control js-example-basic-single" name="id_proveedor">
-                            <option value="0">Elija una opción</option>
-                            @foreach ($proveedores as $prov)
-                                <option value="{{$prov->id_proveedor}}">{{$prov->nro_documento}} - {{$prov->razon_social}}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-12">
-                        <h5>Motivo</h5>
-                        <textarea name="motivo" id="motivo" cols="56" rows="3"></textarea>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-12">
-                        <h5>Importe</h5>
-                        <div style="display:flex;">
-                            <input type="text" name="simbolo" class="form-control group-elemento" style="width:40px;text-align:center;" readOnly/>
-                            <input type="number" name="importe" class="form-control group-elemento" style="text-align: right;" />
-                            <select class="form-control group-elemento activation" name="moneda" onChange="moneda();">
+                <div class="modal-body">
+                    <input type="text" style="display:none;" name="id_doc_com">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <h5>Tipo de Documento</h5>
+                            <select class="form-control js-example-basic-single" name="id_tp_doc">
                                 <option value="0">Elija una opción</option>
-                                @foreach ($monedas as $mon)
-                                    <option value="{{$mon->id_moneda}}">{{$mon->descripcion}} - {{$mon->simbolo}}</option>
+                                @foreach ($tp_doc as $tp)
+                                    <option value="{{$tp->id_tp_doc}}">{{$tp->cod_sunat}} - {{$tp->descripcion}}</option>
                                 @endforeach
                             </select>
                         </div>
+                        <div class="col-md-4">
+                            <h5>Serie-Número</h5>
+                            <div class="input-group">
+                                <input type="text" class="form-control" name="serie_doc" placeholder="F001" required>
+                                <span class="input-group-addon">-</span>
+                                <input type="text" class="form-control" name="numero_doc" onBlur="ceros_numero_doc();" required placeholder="000000">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <h5>Fecha de Emisión</h5>
+                            <input type="date" class="form-control" name="fecha_emision_doc">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <h5>Proveedor</h5>
+                            <input type="text" style="display:none;" name="id_proveedor">
+                            <input type="text" class="form-control" name="proveedor_razon_social" readOnly>
+                        </div>
+                        <div class="col-md-4">
+                            <h5>Importe Total</h5>
+                            <div style="display:flex;">
+                                <input type="text" name="simbolo" class="form-control group-elemento" style="width:40px;text-align:center;" readOnly/>
+                                <input type="text" name="importe" class="form-control group-elemento" style="text-align: right;" readOnly/>
+                                <select class="form-control group-elemento" name="moneda" onChange="changeMoneda();">
+                                    <option value="0">Elija una opción</option>
+                                    @foreach ($monedas as $mon)
+                                        <option value="{{$mon->id_moneda}}" data-sim="{{$mon->simbolo}}">{{$mon->descripcion}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <h5>Serie-Número (Guía)</h5>
+                            <div class="input-group">
+                                <input type="text" style="display:none;" name="id_guia" >
+                                <input type="text" class="form-control" name="serie_guia" readOnly>
+                                <span class="input-group-addon">-</span>
+                                <input type="text" class="form-control" name="numero_guia" readOnly>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- <div class="row">
+                        <div class="col-md-12">
+                            <h5>Motivo</h5>
+                            <textarea name="motivo" id="motivo" cols="56" rows="3"></textarea>
+                        </div>
+                    </div> -->
+                    <div class="row">
+                        <div class="col-md-12">
+                            <table class="mytable table table-condensed table-bordered table-okc-view" width="100%" 
+                                id="detalleItems"  style="margin-top:10px; margin-bottom: 0px;">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>O.C.</th>
+                                        <th>Código</th>
+                                        <th>PartNumber</th>
+                                        <th>Descripción</th>
+                                        <th>Cantidad</th>
+                                        <th>Unid</th>
+                                        <th width="110px">Unitario</th>
+                                        <th>Sub Total</th>
+                                        <th width="110px">% Dscto</th>
+                                        <th width="110px">Dcsto</th>
+                                        <th>Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                                <tfoot></tfoot>
+                            </table>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="modal-footer">
-                <label id="mid_doc_com" style="display: none;"></label>
-                <button class="btn btn-sm btn-success" onClick="guardar_doc_create();">Guardar</button>
-            </div>
+                <div class="modal-footer">
+                    <!-- <label id="mid_doc_com" style="display: none;"></label> -->
+                    <!-- <button class="btn btn-sm btn-success" onClick="guardar_doc_create();">Guardar</button> -->
+                    <input type="submit" id="submit_doc_com_create" class="btn btn-success" value="Guardar"/>
+                </div>
+            </form>
         </div>
     </div>
 </div>
