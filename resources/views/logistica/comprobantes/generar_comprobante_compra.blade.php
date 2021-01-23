@@ -212,11 +212,10 @@
                                                 <th>Descripción</th>
                                                 <th>Cantidad</th>
                                                 <th>Unidad</th>
-                                                <th>Unitario</th>
+                                                <th>Precio U.</th>
                                                 <th>%Dscto</th>
                                                 <th>Total Dscto</th>
                                                 <th>Precio Total</th>
-                                                <th>Acción</th>
                                             </tr>
                                         </thead>
                                         <tbody></tbody>
@@ -232,7 +231,7 @@
                                 onClick="actualiza_totales();">Actualizar</button> -->
                             </div>
                             <div class="col-md-6">
-                                <table class="mytable table table-condensed table-bordered table-okc-view dataTable no-footer" width="100%">
+                                <table class="mytable table table-condensed table-bordered table-okc-view dataTable no-footer" width="100%" id="TablaDetalleComprobanteCompra">
                                     <tbody>
                                         <tr>
                                             <td width="50%">SubTotal</td>
@@ -255,7 +254,7 @@
                                         <tr>
                                             <td>IGV</td>
                                             <td>
-                                                <input type="number" class="porcen" name="porcen_igv" readOnly value="18"/>
+                                                <input type="number" class="porcen" name="porcen_igv" readOnly/>
                                                 <label>%</label>
                                             </td>
                                             <td><label name="simbolo_moneda"></label><input type="number" class="importe" name="total_igv" readOnly value="0"/></td>
@@ -286,6 +285,12 @@
 @endsection
 
 @section('scripts')
+    <script>
+    var igv = {!! json_encode($igv) !!};
+    document.querySelector("table[id='TablaDetalleComprobanteCompra'] input[name='porcen_igv']").value = igv.porcentaje;
+
+    </script>
+
     <script src="{{ asset('datatables/DataTables/js/jquery.dataTables.min.js') }}"></script>
     <script src="{{ asset('datatables/DataTables/js/dataTables.bootstrap.min.js') }}"></script>
     <script src="{{ asset('datatables/Buttons/js/dataTables.buttons.min.js') }}"></script>

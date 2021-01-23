@@ -124,7 +124,13 @@ class ComprobanteCompraController extends Controller
         return $data;
     }
 
-    
+    function get_igv(){
+
+    $igv = DB::table('contabilidad.cont_impuesto')
+        ->where('codigo','IGV')->first();
+        return $igv;
+    }
+
     function view_genera_comprobante_compra(){
         $proveedores = $this->mostrar_proveedores_cbo();
         $clasificaciones = $this->mostrar_guia_clas_cbo();
@@ -136,7 +142,8 @@ class ComprobanteCompraController extends Controller
         $usuarios = $this->select_usuarios();
         $tp_contribuyente = $this->tp_contribuyente_cbo();
         $sis_identidad = $this->sis_identidad_cbo();
-        return view('logistica/comprobantes/generar_comprobante_compra', compact('proveedores','clasificaciones','condiciones','tp_doc','moneda','detracciones','impuestos','usuarios','tp_contribuyente','sis_identidad'));
+        $igv = $this->get_igv();
+        return view('logistica/comprobantes/generar_comprobante_compra', compact('igv','proveedores','clasificaciones','condiciones','tp_doc','moneda','detracciones','impuestos','usuarios','tp_contribuyente','sis_identidad'));
     }
 
     public function listar_docs_compra(){
@@ -250,38 +257,66 @@ class ComprobanteCompraController extends Controller
 
     public function guardar_doc_compra(Request $request)
     {
+        $doc_com= $request->doc_com;
+        $doc_com_detalle= $request->doc_com_detalle;
         $usuario = Auth::user();
         $fecha = date('Y-m-d H:i:s');
         $id_doc = DB::table('almacen.doc_com')->insertGetId(
             [
-                'serie' => $request->serie,
-                'numero' => $request->numero,
-                'id_tp_doc' => $request->id_tp_doc,
-                'id_proveedor' => $request->id_proveedor,
-                'fecha_emision' => $request->fecha_emision,
-                'fecha_vcmto' => $request->fecha_vcmto,
-                'id_condicion' => $request->id_condicion,
-                'credito_dias' => $request->credito_dias,
-                'moneda' => $request->moneda,
-                'tipo_cambio' => $request->tipo_cambio,
-                'sub_total' => $request->sub_total,
-                'total_descuento' => $request->total_descuento,
-                'porcen_descuento' => $request->porcen_descuento,
-                'total' => $request->total,
-                'total_igv' => $request->total_igv,
-                'total_ant_igv' => $request->total_ant_igv,
-                'porcen_igv' => $request->porcen_igv,
-                'porcen_anticipo' => $request->porcen_anticipo,
-                'total_otros' => $request->total_otros,
-                'total_a_pagar' => $request->total_a_pagar,
-                'usuario' => $request->usuario,
+                'serie' => $doc_com['serie'],
+                'numero' => $doc_com['numero'],
+                'id_tp_doc' => $doc_com['id_tp_doc'],
+                'id_proveedor' => $doc_com['id_proveedor'],
+                'fecha_emision' => $doc_com['fecha_emision'],
+                'fecha_vcmto' => $doc_com['fecha_vcmto'],
+                'id_condicion' => $doc_com['id_condicion'],
+                'credito_dias' => $doc_com['credito_dias'],
+                'moneda' => $doc_com['moneda'],
+                'tipo_cambio' => $doc_com['tipo_cambio'],
+                'sub_total' => $doc_com['sub_total'],
+                'total_descuento' => $doc_com['total_descuento'],
+                'porcen_descuento' => $doc_com['porcen_descuento'],
+                'total' => $doc_com['total'],
+                'total_igv' => $doc_com['total_igv'],
+                'total_ant_igv' => $doc_com['total_ant_igv'],
+                'porcen_igv' => $doc_com['porcen_igv'],
+                'porcen_anticipo' => $doc_com['porcen_anticipo'],
+                'total_otros' => $doc_com['total_otros'],
+                'total_a_pagar' => $doc_com['total_a_pagar'],
+                'usuario' => $doc_com['usuario'],
                 'registrado_por' => $usuario->id_usuario,
                 'estado' => 1,
                 'fecha_registro' => $fecha,
             ],
                 'id_doc_com'
             );
-        return response()->json(["id_doc"=>$id_doc,"id_proveedor"=>$request->id_proveedor]);
+
+            $count_doc_com_detalle = count($doc_com_detalle);
+            if ($count_doc_com_detalle > 0) {
+                for ($i = 0; $i < $count_doc_com_detalle; $i++) {
+                    $id_doc_det = DB::table('almacen.doc_com_det')->insertGetId(
+                        [
+                            'id_doc' => $id_doc,
+                            'id_item' => $doc_com_detalle[$i]['id_item'],
+                            'cantidad' => $doc_com_detalle[$i]['cantidad'],
+                            'id_unid_med' => $doc_com_detalle[$i]['id_unid_med'],
+                            'precio_unitario' => $doc_com_detalle[$i]['unitario'],
+                            'sub_total' => $doc_com_detalle[$i]['sub_total'],
+                            'porcen_dscto' => $doc_com_detalle[$i]['porcentaje_descuento'],
+                            'total_dscto' => $doc_com_detalle[$i]['total_descuento'],
+                            'precio_total' => $doc_com_detalle[$i]['total'],
+                            'id_guia_com_det' => $doc_com_detalle[$i]['id'],
+                            'estado' => 1,
+                            'fecha_registro' => $fecha,
+                            'obs' => null
+                        ],
+                        'id_doc_det'
+                    );
+                }
+            }
+
+        return response()->json(["id_doc"=>$id_doc]);
+
     }
 
     public function update_doc_compra(Request $request)
@@ -739,8 +774,9 @@ public function listar_detalle_guia_compra($id_guia)
     ->get();
 
     $detalle = DB::table('almacen.guia_com_det')
-    ->select('guia_com_det.*','alm_prod.codigo','alm_prod.descripcion','alm_und_medida.descripcion as unidad_medida')//cambiar a precio_sin_igv
+    ->select('guia_com_det.*','alm_item.id_item','alm_prod.codigo','alm_prod.descripcion','alm_und_medida.descripcion as unidad_medida')//cambiar a precio_sin_igv
     ->join('almacen.alm_prod','alm_prod.id_producto','=','guia_com_det.id_producto')
+    ->leftjoin('almacen.alm_item','alm_item.id_producto','=','alm_prod.id_producto')
     ->join('almacen.alm_und_medida','alm_und_medida.id_unidad_medida','=','guia_com_det.id_unid_med')
 
     // ->leftjoin('logistica.log_det_ord_compra','log_det_ord_compra.id_detalle_orden','=','guia_com_det.id_oc_det')
