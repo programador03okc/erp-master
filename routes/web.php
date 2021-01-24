@@ -1047,7 +1047,8 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::get('transferencia/{id}', 'OrdenesPendientesController@transferencia');
 					Route::get('obtenerGuia/{id}', 'OrdenesPendientesController@obtenerGuia');
 					Route::post('guardar_doc_compra', 'OrdenesPendientesController@guardar_doc_compra');
-
+					Route::get('documentos_ver/{id}', 'OrdenesPendientesController@documentos_ver');
+					
 				});
 	
 				Route::group(['as' => 'pendientes-salida.', 'prefix' => 'pendientes-salida'], function(){
@@ -1606,6 +1607,8 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::get('presupuesto/{area_id}', 'Tesoreria\AjaxController@getPresupuesto')->name('presupuesto');
 	});
 
+
+Route::get('documentos_ver/{id}', 'OrdenesPendientesController@documentos_ver');
 
 Route::get('soft_tipos_cambio', 'AlmacenController@soft_tipos_cambio');
 Route::get('transformacion_nextId/{fec}/{id}', 'CustomizacionController@transformacion_nextId');

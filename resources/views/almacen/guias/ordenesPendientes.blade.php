@@ -142,6 +142,7 @@ Pendientes de Ingreso
 @include('almacen.guias.guia_ven_obs')
 @include('almacen.guias.guia_com_series')
 @include('almacen.documentos.doc_com_create')
+@include('almacen.documentos.doc_com_ver')
 
 @endsection
 
@@ -159,12 +160,14 @@ Pendientes de Ingreso
     <script src="{{ asset('template/plugins/select2/select2.min.js') }}"></script>
     <script src="{{ asset('template/plugins/jquery-datatables-checkboxes/js/dataTables.checkboxes.min.js') }}"></script>
     <script src="{{ asset('template/plugins/js-xlsx/xlsx.full.min.js') }}"></script>
-    
+    <script src="{{ asset('template/plugins/moment.min.js') }}"></script>
+
     <script src="{{ asset('js/almacen/guia/ordenesPendientes.js')}}"></script>
     <script src="{{ asset('js/almacen/guia/ordenes_ver_detalle.js')}}"></script>
     <script src="{{ asset('js/almacen/guia/guia_com_create.js')}}"></script>
     <script src="{{ asset('js/almacen/guia/guia_com_det_series.js')}}"></script>
     <script src="{{ asset('js/almacen/documentos/doc_com_create.js')}}"></script>
+    <script src="{{ asset('js/almacen/documentos/doc_com_ver.js')}}"></script>
     <script>
     $(document).ready(function(){
         seleccionarMenu(window.location);

@@ -68,7 +68,13 @@ class OrdenesPendientesController extends Controller
             'alm_almacen.descripcion as almacen_descripcion',
             // 'sede_req.descripcion as sede_requerimiento_descripcion',
             // 'sede_req.id_sede as sede_requerimiento',
-            'guia_com.serie','guia_com.numero','tp_ope.descripcion as operacion_descripcion'
+            'guia_com.serie','guia_com.numero','tp_ope.descripcion as operacion_descripcion',
+            DB::raw("(SELECT count(distinct id_doc_com) FROM almacen.doc_com AS d
+                        INNER JOIN almacen.guia_com_det AS guia
+                        on(guia.id_guia_com = mov_alm.id_guia_com)
+                        INNER JOIN almacen.doc_com_det AS doc
+                        on(doc.id_guia_com_det = guia.id_guia_com_det)
+                        WHERE d.id_doc_com = doc.id_doc) AS count_facturas")
             // 'alm_req.id_requerimiento','alm_req.estado as estado_requerimiento',
             // 'alm_req.id_tipo_requerimiento','alm_req.id_almacen as almacen_requerimiento',
             // 'trans.id_transferencia','guia_ven_trans.id_guia_ven as id_guia_ven_trans',
@@ -1221,6 +1227,36 @@ class OrdenesPendientesController extends Controller
             DB::rollBack();
         }
 
+    }
+
+    public function documentos_ver($id_guia)
+    {
+        $docs = DB::table('almacen.guia_com')
+        ->select('doc_com.id_doc_com','doc_com.serie', 'doc_com.numero','doc_com.fecha_emision',
+        'cont_tp_doc.descripcion as tp_doc','adm_contri.nro_documento','adm_contri.razon_social',
+        'sis_moneda.simbolo','doc_com.total_a_pagar','doc_com.sub_total','doc_com.total_igv')
+        ->join('almacen.guia_com_det','guia_com_det.id_guia_com','=','guia_com.id_guia')
+        ->join('almacen.doc_com_det','doc_com_det.id_guia_com_det','=','guia_com_det.id_guia_com_det')
+        ->join('almacen.doc_com','doc_com.id_doc_com','=','doc_com_det.id_doc')
+        ->join('logistica.log_prove','log_prove.id_proveedor','=','doc_com.id_proveedor')
+        ->join('contabilidad.adm_contri','adm_contri.id_contribuyente','=','log_prove.id_contribuyente')
+        ->join('contabilidad.cont_tp_doc','cont_tp_doc.id_tp_doc','=','doc_com.id_tp_doc')
+        ->join('configuracion.sis_moneda','sis_moneda.id_moneda','=','doc_com.moneda')
+        ->where('guia_com.id_guia',$id_guia)
+        ->distinct()
+        ->get();
+
+        $detalles = DB::table('almacen.guia_com')
+        ->select('doc_com_det.*','alm_prod.codigo','alm_prod.descripcion','alm_prod.part_number',
+        'alm_und_medida.abreviatura','guia_com.serie','guia_com.numero')
+        ->join('almacen.guia_com_det','guia_com_det.id_guia_com','=','guia_com.id_guia')
+        ->leftjoin('almacen.doc_com_det','doc_com_det.id_guia_com_det','=','guia_com_det.id_guia_com_det')
+        ->join('almacen.alm_prod','alm_prod.id_producto','=','doc_com_det.id_item')
+        ->join('almacen.alm_und_medida','alm_und_medida.id_unidad_medida','=','doc_com_det.id_unid_med')
+        ->where('guia_com.id_guia',$id_guia)
+        ->get();
+
+        return response()->json(['docs'=>$docs,'detalles'=>$detalles]);
     }
 
 }

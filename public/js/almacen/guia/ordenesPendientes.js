@@ -280,7 +280,7 @@ function listarOrdenesEntregadas(){
                         '<button type="button" class="anular btn btn-danger boton" data-toggle="tooltip" '+
                         'data-placement="bottom" title="Anular Ingreso" data-id="'+row['id_mov_alm']+'" data-guia="'+row['id_guia_com']+'" data-oc="'+row['id_orden_compra']+'">'+
                         '<i class="fas fa-trash"></i></button>'+
-                        (row['id_operacion'] == 2 ? `<button type="button" class="doc btn btn-info boton" data-toggle="tooltip" 
+                        (row['id_operacion'] == 2 ? `<button type="button" class="${row['count_facturas']>0?'ver_doc':'doc'} btn btn-${row['count_facturas']>0?'info':'default'} boton" data-toggle="tooltip" 
                             data-placement="bottom" title="Generar Factura" data-guia="${row['id_guia_com']}">
                             <i class="fas fa-file-medical"></i></button>`:'')
                         ;
@@ -352,6 +352,11 @@ $('#ordenesEntregadas tbody').on("click","button.anular_sal", function(){
 $('#ordenesEntregadas tbody').on("click","button.doc", function(){
     var id_guia = $(this).data('guia');
     open_doc_create(id_guia);
+});
+
+$('#ordenesEntregadas tbody').on("click","button.ver_doc", function(){
+    var id_guia = $(this).data('guia');
+    documentosVer(id_guia);
 });
 
 $("#form-guia_ven_obs").on("submit", function(e){
