@@ -263,6 +263,11 @@ function guardar_guia_create(data){
                 if (tra!==''){
                     listarTransformaciones();
                 } else {
+                    var rspta = confirm('¿Desea ingresar ahora el documento de compra?')
+                    
+                    if (rspta){
+                        open_doc_create(response['id_guia']);
+                    }
                     listarOrdenesPendientes();
                 }
                 // var id = encode5t(id_ingreso);

@@ -644,7 +644,7 @@ class OrdenesPendientesController extends Controller
                     }
             DB::commit();
             // return response()->json($detalle_oc);
-            return response()->json(['id_ingreso'=>$id_ingreso,'msj_trans'=>$msj_trans]);
+            return response()->json(['id_ingreso'=>$id_ingreso,'msj_trans'=>$msj_trans,'id_guia'=>$id_guia]);
             
         } catch (\PDOException $e) {
             // Woopsy
@@ -1218,6 +1218,10 @@ class OrdenesPendientesController extends Controller
                     'estado' => 1,
                     'fecha_registro' => $fecha,
                 ]);
+
+                DB::table('almacen.mov_alm_det')
+                ->where('id_guia_com_det',$item->id_guia_com_det)
+                ->update(['valorizacion'=>$item->total]);
             }
             DB::commit();
             return response()->json($id_doc);

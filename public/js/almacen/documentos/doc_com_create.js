@@ -168,13 +168,30 @@ $("#form-doc_create").on("submit", function(e){
     e.preventDefault();
     var id_doc_com = $('[name=id_doc_com]').val();
     var serial = $(this).serialize();
+    var listaItemsDetalle = [];
+    var nuevo = null;
+
+    listaItems.forEach(element => {
+        nuevo = {
+            'id_guia_com_det'   : element.id_guia_com_det,
+            'id_producto'       : element.id_producto,
+            'cantidad'          : element.cantidad,
+            'id_unid_med'       : element.id_unid_med,
+            'precio'            : element.precio,
+            'sub_total'         : element.sub_total,
+            'porcentaje_dscto'  : element.porcentaje_dscto,
+            'total_dscto'       : element.total_dscto,
+            'total'             : element.total,
+        }
+        listaItemsDetalle.push(nuevo);
+    });
     
     var data =  serial+
                 '&sub_total='+totales.sub_total+
                 '&porcentaje_igv='+totales.porcentaje_igv+
                 '&igv='+totales.igv+
                 '&total='+totales.total+
-                '&detalle_items='+JSON.stringify(listaItems);
+                '&detalle_items='+JSON.stringify(listaItemsDetalle);
     console.log(data);
     guardar_doc_create(data);
     
