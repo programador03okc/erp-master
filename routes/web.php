@@ -766,12 +766,13 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('mostrar_proveedores', 'LogisticaController@mostrar_proveedores');
 				Route::get('listar_guias_proveedor/{id?}', 'AlmacenController@listar_guias_proveedor');
 				Route::get('listar_detalle_guia_compra/{id?}', 'ComprobanteCompraController@listar_detalle_guia_compra');
+				Route::get('tipo_cambio_compra/{fecha}', 'AlmacenController@tipo_cambio_compra');
+				Route::post('guardar_doc_compra', 'ComprobanteCompraController@guardar_doc_compra');
 
 				Route::get('generar_comprobante', 'ComprobanteCompraController@view_genera_comprobante_compra')->name('generar_comprobante');
 				Route::get('listar_docs_compra', 'ComprobanteCompraController@listar_docs_compra');
 				Route::get('listar_doc_guias/{id?}', 'ComprobanteCompraController@listar_doc_guias');
 				Route::get('listar_doc_items/{id?}', 'ComprobanteCompraController@listar_doc_items');
-				Route::post('guardar_doc_compra', 'ComprobanteCompraController@guardar_doc_compra');
 				Route::post('actualizar_doc_compra', 'ComprobanteCompraController@update_doc_compra');
 				Route::post('update_doc_detalle', 'ComprobanteCompraController@update_doc_detalle');
 				Route::get('anular_doc_detalle/{id?}', 'ComprobanteCompraController@anular_doc_detalle');
