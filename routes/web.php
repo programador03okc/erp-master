@@ -956,11 +956,25 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::get('verDetalleRequerimiento/{id}', 'DistribucionController@verDetalleRequerimiento');
 					Route::get('verRequerimientoAdjuntos/{id}', 'DistribucionController@verRequerimientoAdjuntos');
 	
-	
 				});
 	
 			});
 	
+			Route::group(['as' => 'control-stock.', 'prefix' => 'control-stock'], function(){
+	
+				Route::group(['as' => 'importar.', 'prefix' => 'importar'], function(){
+	
+					Route::get('index', 'Almacen\StockController@view_importar')->name('index');
+	
+				});
+	
+				Route::group(['as' => 'toma-inventario.', 'prefix' => 'toma-inventario'], function(){
+	
+					Route::get('index', 'Almacen\StockController@view_toma_inventario')->name('index');
+	
+				});
+			});
+
 			Route::group(['as' => 'distribucion.', 'prefix' => 'distribucion'], function(){
 	
 				Route::group(['as' => 'despachos.', 'prefix' => 'despachos'], function(){

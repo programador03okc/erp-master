@@ -256,23 +256,23 @@
                 </ul>
             </li>
             @endif -->
-            <!-- @if(Auth::user()->tieneSubModulo(20))
+            <!-- @if(Auth::user()->tieneSubModulo(20)) -->
             <li class="treeview">
-                <a href="#"><i class="fas fa-truck"></i> Distribución
+                <a href="#"><i class="fab fa-stack-overflow"></i> Control de Stock
                     <span class="pull-right-container">
                     <i class="fa fa-angle-left pull-right"></i>
                     </span>
                 </a>
                 <ul class="treeview-menu">
-                @if(Auth::user()->tieneAplicacion(80))
-                <li><a href="{{route('logistica.almacen.distribucion.despachos.index')}}"><i class="far fa-circle fa-xs"></i> Gestión de Despachos </a></li>
-                @endif
-                @if(Auth::user()->tieneAplicacion(81))
-                <li><a href="{{route('logistica.almacen.distribucion.trazabilidad-requerimientos.index')}}"><i class="far fa-circle fa-xs"></i> Trazabilidad </a></li>
-                @endif
+                <!-- @if(Auth::user()->tieneAplicacion(80)) -->
+                <li><a href="{{route('logistica.almacen.control-stock.importar.index')}}"><i class="far fa-circle fa-xs"></i> Inicial / Importar </a></li>
+                <!-- @endif
+                @if(Auth::user()->tieneAplicacion(81)) -->
+                <li><a href="{{route('logistica.almacen.control-stock.toma-inventario.index')}}"><i class="far fa-circle fa-xs"></i> Toma de Inventario </a></li>
+                <!-- @endif -->
                 </ul>
             </li>
-            @endif -->
+            <!-- @endif -->
             @if(Auth::user()->tieneSubModulo(21))
             <li class="treeview">
                 <a href="#"><i class="fab fa-medium-m"></i> Movimientos
