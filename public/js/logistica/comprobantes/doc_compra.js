@@ -52,97 +52,66 @@ $(function(){
     }
     tipo_cambio();
 });
-// function mostrar_doc_compra(id_doc_com){
-//     if (id_doc_com !== null){
-//         $.ajax({
-//             type: 'GET',
-//             headers: {'X-CSRF-TOKEN': token},
-//             url: '/mostrar_doc_com/'+id_doc_com,
-//             dataType: 'JSON',
-//             success: function(response){
-//                 // console.log(response);
-//                 $('[name=id_doc_com]').val(response[0].id_doc_com);
-//                 $('[name=serie]').val(response[0].serie);
-//                 $('#serie').text(response[0].serie);
-//                 $('[name=numero]').val(response[0].numero);
-//                 $('#numero').text(response[0].numero);
-//                 $('[name=id_tp_doc]').val(response[0].id_tp_doc).trigger('change.select2');
-//                 $('[name=fecha_emision]').val(response[0].fecha_emision);
-//                 $('[name=fecha_vcmto]').val(response[0].fecha_vcmto);
-//                 $('[name=id_condicion]').val(response[0].id_condicion);
-//                 $('[name=credito_dias]').val(response[0].credito_dias);
-//                 $('[name=id_proveedor]').val(response[0].id_proveedor);
-//                 $('[name=prov_razon_social]').val(response[0].nro_documento + ' - ' + response[0].razon_social);
-//                 $('[name=moneda]').val(response[0].moneda);
-//                 $('[name=usuario]').val(response[0].usuario).trigger('change.select2');
-//                 $('[name=sub_total]').val(formatDecimal(response[0].sub_total));
-//                 $('[name=total_descuento]').val(formatDecimal(response[0].total_descuento));
-//                 $('[name=porcen_igv]').val(formatDecimal(response[0].porcen_igv));
-//                 $('[name=porcen_descuento]').val(formatDecimal(response[0].porcen_descuento));
-//                 $('[name=total]').val(formatDecimal(response[0].total));
-//                 $('[name=total_igv]').val(formatDecimal(response[0].total_igv));
-//                 $('[name=total_ant_igv]').val(formatDecimal(response[0].total_ant_igv));
-//                 $('[name=total_a_pagar]').val(formatDecimal(response[0].total_a_pagar));
-//                 $('[name=cod_estado]').val(response[0].estado);
-//                 $('#estado label').text('');
-//                 $('#estado label').text(response[0].estado_doc);
-//                 $('#fecha_registro label').text('');
-//                 $('#fecha_registro label').text(response[0].fecha_registro);
-//                 $('#registrado_por label').text('');
-//                 $('#registrado_por label').text(response[0].nombre_corto);
-//                 $('[name=simbolo_moneda]').text(response[0].simbolo)
 
-//                 listar_guias_prov(response[0].id_proveedor);
-//                 // console.log(response[0].doc_com_det);
+function mostrar_doc_compra(id_doc_com){
+    if (id_doc_com !== null){
+        $.ajax({
+            type: 'GET',
+            url: 'mostrar_doc_com/'+id_doc_com,
+            dataType: 'JSON',
+            success: function(response){
+                console.log(response);
+                $('[name=id_doc_com]').val(response[0].id_doc_com);
+                $('[name=serie]').val(response[0].serie);
+                $('#serie').text(response[0].serie);
+                $('[name=numero]').val(response[0].numero);
+                $('#numero').text(response[0].numero);
+                $('[name=id_tp_doc]').val(response[0].id_tp_doc).trigger('change.select2');
+                $('[name=fecha_emision]').val(response[0].fecha_emision);
+                $('[name=fecha_vcmto]').val(response[0].fecha_vcmto);
+                $('[name=id_condicion]').val(response[0].id_condicion);
+                $('[name=credito_dias]').val(response[0].credito_dias);
+                $('[name=id_proveedor]').val(response[0].id_proveedor);
+                $('[name=prov_razon_social]').val(response[0].nro_documento + ' - ' + response[0].razon_social);
+                $('[name=moneda]').val(response[0].moneda);
+                $('[name=usuario]').val(response[0].usuario).trigger('change.select2');
+                $('[name=sub_total]').val(formatDecimal(response[0].sub_total));
+                $('[name=total_descuento]').val(formatDecimal(response[0].total_descuento));
+                $('[name=porcen_igv]').val(formatDecimal(response[0].porcen_igv));
+                $('[name=porcen_descuento]').val(formatDecimal(response[0].porcen_descuento));
+                $('[name=total]').val(formatDecimal(response[0].total));
+                $('[name=total_igv]').val(formatDecimal(response[0].total_igv));
+                $('[name=total_ant_igv]').val(formatDecimal(response[0].total_ant_igv));
+                $('[name=total_a_pagar]').val(formatDecimal(response[0].total_a_pagar));
+                $('[name=cod_estado]').val(response[0].estado);
+                $('#estado label').text('');
+                $('#estado label').text(response[0].estado_doc);
+                $('#fecha_registro label').text('');
+                $('#fecha_registro label').text(response[0].fecha_registro);
+                $('#registrado_por label').text('');
+                $('#registrado_por label').text(response[0].nombre_corto);
+                $('[name=simbolo_moneda]').text(response[0].simbolo)
+
+                // listar_guias_prov(response[0].id_proveedor);
+                // console.log(response[0].doc_com_det);
                 
-//                 if(response[0].doc_com_det.length > 0){
-//                     listar_doc_com_orden(response[0].id_doc_com)
-//                 }else{
-//                     listar_doc_guias(response[0].id_doc_com);
-//                     listar_doc_items(response[0].id_doc_com);
-//                 }
+                // if(response[0].doc_com_det.length > 0){
+                //     listar_doc_com_orden(response[0].id_doc_com)
+                // }else{
+                //     listar_doc_guias(response[0].id_doc_com);
+                //     listar_doc_items(response[0].id_doc_com);
+                // }
                 
-//                 localStorage.removeItem("id_doc_com");
-//             }
-//         }).fail( function( jqXHR, textStatus, errorThrown ){
-//             console.log(jqXHR);
-//             console.log(textStatus);
-//             console.log(errorThrown);
-//         });   
-//     }
-// }
-// function listar_doc_guias(id_doc){
-//     $('#guias tbody').html('');
-//     $.ajax({
-//         type: 'GET',
-//         headers: {'X-CSRF-TOKEN': token},
-//         url: '/listar_doc_guias/'+id_doc,
-//         dataType: 'JSON',
-//         success: function(response){
-//             $('#guias tbody').html(response);
-//         }
-//     }).fail( function( jqXHR, textStatus, errorThrown ){
-//         console.log(jqXHR);
-//         console.log(textStatus);
-//         console.log(errorThrown);
-//     });
-// }
-// function listar_doc_items(id_doc){
-//     $('#listaDetalle tbody').html('');
-//     $.ajax({
-//         type: 'GET',
-//         // headers: {'X-CSRF-TOKEN': token},
-//         url: '/listar_doc_items/'+id_doc,
-//         dataType: 'JSON',
-//         success: function(response){
-//             $('#listaDetalle tbody').html(response);
-//         }
-//     }).fail( function( jqXHR, textStatus, errorThrown ){
-//         console.log(jqXHR);
-//         console.log(textStatus);
-//         console.log(errorThrown);
-//     });
-// }
+                localStorage.removeItem("id_doc_com");
+            }
+        }).fail( function( jqXHR, textStatus, errorThrown ){
+            console.log(jqXHR);
+            console.log(textStatus);
+            console.log(errorThrown);
+        });   
+    }
+}
+
 function save_doc_compra(data, action){
 
     let doc_com= get_data_cabecera_comprobante_compra();
@@ -154,6 +123,7 @@ function save_doc_compra(data, action){
         baseUrl = 'actualizar_doc_compra';
     }
 
+    console.log({'doc_com':doc_com, 'doc_com_detalle':doc_com_detalle});
     $.ajax({
         type: 'POST',
         url: baseUrl,
@@ -181,29 +151,23 @@ function save_doc_compra(data, action){
     });
 }
 
-function listar_guias_prov(id_proveedor){
-    // console.log('id_proveedor'+id_proveedor);
-    $.ajax({
-        type: 'GET',
-        headers: {'X-CSRF-TOKEN': token},
-        url: '/listar_guias_prov/'+id_proveedor,
-        dataType: 'JSON',
-        success: function(response){
-            // console.log(response);
-            var option = '';
-            for (var i=0;i<response.length;i++){
-                option +='<option value="'+response[i].id_guia+'">'+
-                    response[i].guia+' - '+response[i].razon_social+' - '+
-                    response[i].estado_doc+'</option>';
-            }
-            $('[name=id_guia]').html('<option value="0" disabled selected>Elija una opción</option>'+option);
-        }
-    }).fail( function( jqXHR, textStatus, errorThrown ){
-        console.log(jqXHR);
-        console.log(textStatus);
-        console.log(errorThrown);
-    });
-}
+// function listar_guias_prov(id_proveedor){
+//     // console.log('id_proveedor'+id_proveedor);
+//     $.ajax({
+//         type: 'GET',
+//         headers: {'X-CSRF-TOKEN': token},
+//         url: 'listar_guias_prov/'+id_proveedor,
+//         dataType: 'JSON',
+//         success: function(response){
+//             console.log(response);
+       
+//         }
+//     }).fail( function( jqXHR, textStatus, errorThrown ){
+//         console.log(jqXHR);
+//         console.log(textStatus);
+//         console.log(errorThrown);
+//     });
+// }
 
 
 
@@ -270,6 +234,7 @@ function updatePorcentajeDescuento(e){
             tr.querySelector("input[name='total_descuento']").value=montoDescuento;
             let newTotal = (parseFloat(total)-parseFloat(montoDescuento));
             tr.querySelector("span[name='total']").textContent=newTotal;
+            listaDetalleComprobanteCompra[index].total_descuento = montoDescuento;
             listaDetalleComprobanteCompra[index].total = newTotal;
         
 
@@ -359,11 +324,13 @@ function llenarTablaListaDetalleGuiaCompra(data){
 }
 
 function agregarAListaGuias(data){
+    console.log(data);
     if(data.guia.length > 0){
         data.guia.forEach(element => {
             listaGuiaRemision.push(
                 {
                     'nro_guia':'GR-'+element.serie+'-'+element.numero,
+                    'id_guia':element.id_guia_com,
                     'id_operacion':element.id_operacion,
                     'tipo_operacion':element.tipo_operacion, 
                     'id_proveedor':element.id_proveedor,
@@ -384,6 +351,7 @@ function agregarAListaGuias(data){
                 {
                     'id':element.id_guia_com_det,
                     'id_item':element.id_item,
+                    'id_guia':element.id_guia_com,
                     'nro_guia':'GR-'+data.guia[0].serie+'-'+data.guia[0].numero,
                     'codigo':element.codigo,
                     'descripcion':element.descripcion,
@@ -480,6 +448,40 @@ function agrega_guia(id_guia){
         console.log(textStatus);
         console.log(errorThrown);
     });
+
+// function listar_doc_guias(id_doc){
+//     $('#guias tbody').html('');
+//     $.ajax({
+//         type: 'GET',
+//         headers: {'X-CSRF-TOKEN': token},
+//         url: '/listar_doc_guias/'+id_doc,
+//         dataType: 'JSON',
+//         success: function(response){
+//             $('#guias tbody').html(response);
+//         }
+//     }).fail( function( jqXHR, textStatus, errorThrown ){
+//         console.log(jqXHR);
+//         console.log(textStatus);
+//         console.log(errorThrown);
+//     });
+// }
+// function listar_doc_items(id_doc){
+//     $('#listaDetalle tbody').html('');
+//     $.ajax({
+//         type: 'GET',
+//         // headers: {'X-CSRF-TOKEN': token},
+//         url: '/listar_doc_items/'+id_doc,
+//         dataType: 'JSON',
+//         success: function(response){
+//             $('#listaDetalle tbody').html(response);
+//         }
+//     }).fail( function( jqXHR, textStatus, errorThrown ){
+//         console.log(jqXHR);
+//         console.log(textStatus);
+//         console.log(errorThrown);
+//     });
+// } 
+
     // var id_guia = $('[name=id_guia]').val();
     // var id_proveedor = $('[name=id_proveedor]').val();
     // var id_doc_com = $('[name=id_doc_com]').val();
