@@ -241,10 +241,10 @@
                                         <tr>
                                             <td>Descuentos</td>
                                             <td>
-                                                <input type="number" class="porcen activation" name="porcen_descuento" onChange="calcTotalPorcentajeDescuento(event);" value="0"/>
+                                                <input type="number" class="porcen activation" name="porcen_dscto" onChange="calcTotalPorcentajeDescuento(event);" value="0"/>
                                                 <label>%</label>
                                             </td>
-                                            <td><label name="simbolo_moneda"></label><input type="number" class="importe" name="total_descuento" readOnly value="0"/></td>
+                                            <td><label name="simbolo_moneda"></label><input type="number" class="importe" name="total_dscto" readOnly value="0"/></td>
                                         </tr>
                                         <tr>
                                             <td>Total</td>

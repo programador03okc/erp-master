@@ -160,7 +160,7 @@ class ComprobanteCompraController extends Controller
 
     public function listar_doc_guias($id_doc){
         $guias = DB::table('almacen.doc_com_guia')
-        ->select('doc_com_guia.*',DB::raw("CONCAT('GR-',guia_com.serie,'-',guia_com.numero) as guia"),
+        ->select('doc_com_guia.*',DB::raw("CONCAT('GR-',guia_com.serie,'-',guia_com.numero) as nro_guia"),
         'guia_com.fecha_emision as fecha_guia','tp_ope.descripcion as des_operacion',
         'adm_contri.razon_social')
         ->join('almacen.guia_com','guia_com.id_guia','=','doc_com_guia.id_guia_com')
@@ -209,7 +209,7 @@ class ComprobanteCompraController extends Controller
     public function listar_doc_items($id_doc){
         $detalle = DB::table('almacen.doc_com_det')
             ->select('doc_com_det.*','alm_prod.codigo','alm_prod.descripcion',
-            DB::raw("CONCAT('GR-',guia_com.serie,'-',guia_com.numero) as guia"),
+            DB::raw("CONCAT('GR-',guia_com.serie,'-',guia_com.numero) as nro_guia"),
             'alm_und_medida.abreviatura')
             ->join('almacen.alm_item','alm_item.id_item','=','doc_com_det.id_item')
             ->join('almacen.alm_prod','alm_prod.id_producto','=','alm_item.id_producto')
@@ -275,7 +275,7 @@ class ComprobanteCompraController extends Controller
                 'tipo_cambio' => $doc_com['tipo_cambio'],
                 'sub_total' => $doc_com['sub_total'],
                 'total_descuento' => $doc_com['total_descuento'],
-                'porcen_descuento' => $doc_com['porcen_descuento'],
+                'porcen_descuento' => $doc_com['porcen_dscto'],
                 'total' => $doc_com['total'],
                 'total_igv' => $doc_com['total_igv'],
                 'total_ant_igv' => $doc_com['total_ant_igv'],
@@ -348,7 +348,7 @@ class ComprobanteCompraController extends Controller
                 'tipo_cambio' => $request->tipo_cambio,
                 'sub_total' => $request->sub_total,
                 'total_descuento' => $request->total_descuento,
-                'porcen_descuento' => $request->porcen_descuento,
+                'porcen_descuento' => $request->porcen_dscto,
                 'total' => $request->total,
                 'total_igv' => $request->total_igv,
                 'total_ant_igv' => $request->total_ant_igv,
@@ -433,12 +433,18 @@ class ComprobanteCompraController extends Controller
         $doc_det = DB::table('almacen.doc_com_det')
         ->select(
             'doc_com_det.*',
+            'guia_com.id_operacion',
+            'tp_ope.descripcion as tipo_operacion',
             'doc_com_guia.id_guia_com as id_guia',
+            DB::raw("CONCAT('GR-',guia_com.serie,'-',guia_com.numero) as nro_guia"),
             'alm_prod.codigo',
             'alm_prod.descripcion',
             'alm_und_medida.descripcion as unidad_medida'
         )
         ->join('almacen.doc_com_guia','doc_com_guia.id_doc_com','=','doc_com_det.id_doc')
+        ->leftjoin('almacen.guia_com','guia_com.id_guia','=','doc_com_guia.id_guia_com')
+        ->leftjoin('almacen.tp_ope','tp_ope.id_operacion','=','guia_com.id_operacion')
+
         ->join('almacen.alm_item','alm_item.id_item','=','doc_com_det.id_item')
         ->join('almacen.alm_prod','alm_prod.id_producto','=','alm_item.id_producto')
         ->join('almacen.alm_und_medida','alm_und_medida.id_unidad_medida','=','doc_com_det.id_unid_med')
@@ -449,7 +455,7 @@ class ComprobanteCompraController extends Controller
 
 
         $guias = DB::table('almacen.doc_com_guia')
-            ->select('guia_com.*','tp_ope.descripcion as tipo_operacion',DB::raw("CONCAT('GR-',guia_com.serie,'-',guia_com.numero) as guia"),
+            ->select('guia_com.*','tp_ope.descripcion as tipo_operacion',DB::raw("CONCAT('GR-',guia_com.serie,'-',guia_com.numero) as nro_guia"),
             'adm_contri.razon_social','adm_estado_doc.estado_doc')
             ->join('almacen.doc_com','doc_com.id_doc_com','=','doc_com_guia.id_doc_com')
             ->leftjoin('almacen.guia_com','guia_com.id_guia','=','doc_com_guia.id_guia_com')
@@ -483,7 +489,7 @@ class ComprobanteCompraController extends Controller
 
     // public function listar_guias_prov($id_proveedor){
     //     $data = DB::table('almacen.guia_com')
-    //         ->select('guia_com.*',DB::raw("CONCAT('GR-',guia_com.serie,'-',guia_com.numero) as guia"),
+    //         ->select('guia_com.*',DB::raw("CONCAT('GR-',guia_com.serie,'-',guia_com.numero) as nro_guia"),
     //         'adm_contri.razon_social','adm_estado_doc.estado_doc')
     //         ->join('logistica.log_prove','log_prove.id_proveedor','=','guia_com.id_proveedor')
     //         ->join('contabilidad.adm_contri','adm_contri.id_contribuyente','=','log_prove.id_contribuyente')
@@ -624,7 +630,7 @@ class ComprobanteCompraController extends Controller
 
         $doc_com_det = DB::table('almacen.doc_com_det')
         ->select('doc_com_det.*','alm_prod.codigo','alm_prod.descripcion',
-        DB::raw("CONCAT('GR-',guia_com.serie,'-',guia_com.numero) as guia"),
+        DB::raw("CONCAT('GR-',guia_com.serie,'-',guia_com.numero) as nro_guia"),
         'alm_und_medida.abreviatura',
         'log_ord_compra.codigo as codigo_orden'
         )
@@ -652,7 +658,7 @@ class ComprobanteCompraController extends Controller
                 'tipo_cambio'=>$data->tipo_cambio,
                 'sub_total'=>$data->sub_total,
                 'total_descuento'=>$data->total_descuento,
-                'porcen_descuento'=>$data->porcen_descuento,
+                'porcen_descuento'=>$data->porcen_dscto,
                 'total'=>$data->total,
                 'total_igv'=>$data->total_igv,
                 'total_ant_igv'=>$data->total_ant_igv,
@@ -722,7 +728,7 @@ class ComprobanteCompraController extends Controller
 public function mostrar_doc_detalle($id_doc_det){
     $data = DB::table('almacen.doc_com_det')
         ->select('doc_com_det.*','alm_prod.codigo','alm_prod.descripcion',
-        DB::raw("CONCAT('GR-',guia_com.serie,'-',guia_com.numero) as guia"),
+        DB::raw("CONCAT('GR-',guia_com.serie,'-',guia_com.numero) as nro_guia"),
         'alm_und_medida.abreviatura')
         ->join('almacen.alm_item','alm_item.id_item','=','doc_com_det.id_item')
         ->join('almacen.alm_prod','alm_prod.id_producto','=','alm_item.id_producto')
@@ -755,7 +761,7 @@ public function actualiza_totales_doc($por_dscto, $id_doc, $fecha_emision){
     ->update([
         'sub_total'=>$detalle->sub_total,
         'total_descuento'=>$dscto,
-        'porcen_descuento'=>$por_dscto,
+        'porcen_descuento'=>$porcen_dscto,
         'total'=>$total,
         'total_igv'=>$igv,
         'total_ant_igv'=>0,

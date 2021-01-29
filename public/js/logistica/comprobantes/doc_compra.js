@@ -16,8 +16,8 @@ function get_data_cabecera_comprobante_compra(){
         'moneda' : document.querySelector("div[type='doc_compra'] select[name='moneda']").value,
         'tipo_cambio' : document.querySelector("div[type='doc_compra'] input[name='tipo_cambio']").value,
         'sub_total' : document.querySelector("div[type='doc_compra'] input[name='sub_total']").value,
-        'total_descuento' : document.querySelector("div[type='doc_compra'] input[name='total_descuento']").value,
-        'porcen_descuento' : document.querySelector("div[type='doc_compra'] input[name='porcen_descuento']").value,
+        'total_dscto' : document.querySelector("div[type='doc_compra'] input[name='total_dscto']").value,
+        'porcen_dscto' : document.querySelector("div[type='doc_compra'] input[name='porcen_dscto']").value,
         'total' : document.querySelector("div[type='doc_compra'] input[name='total']").value,
         'total_igv' : document.querySelector("div[type='doc_compra'] input[name='total_igv']").value,
         'total_ant_igv' :'',
@@ -37,6 +37,8 @@ function get_data_cabecera_comprobante_compra(){
 
 
 function nuevo_doc_compra(){
+    listaGuiaRemision=[];
+    listaDetalleComprobanteCompra=[];
     // console.log(auth_user);
     $('#form-doc_compra')[0].reset();
     $('[name=usuario]').val(auth_user.id_usuario);
@@ -60,7 +62,7 @@ function mostrar_doc_compra(id_doc_com){
             url: 'mostrar_doc_com/'+id_doc_com,
             dataType: 'JSON',
             success: function(response){
-                console.log(response);
+                // console.log(response);
                 $('[name=id_doc_com]').val(response[0].id_doc_com);
                 $('[name=serie]').val(response[0].serie);
                 $('#serie').text(response[0].serie);
@@ -76,9 +78,9 @@ function mostrar_doc_compra(id_doc_com){
                 $('[name=moneda]').val(response[0].moneda);
                 $('[name=usuario]').val(response[0].usuario).trigger('change.select2');
                 $('[name=sub_total]').val(formatDecimal(response[0].sub_total));
-                $('[name=total_descuento]').val(formatDecimal(response[0].total_descuento));
+                $('[name=total_dscto]').val(formatDecimal(response[0].total_dscto));
                 $('[name=porcen_igv]').val(formatDecimal(response[0].porcen_igv));
-                $('[name=porcen_descuento]').val(formatDecimal(response[0].porcen_descuento));
+                $('[name=porcen_dscto]').val(formatDecimal(response[0].porcen_dscto));
                 $('[name=total]').val(formatDecimal(response[0].total));
                 $('[name=total_igv]').val(formatDecimal(response[0].total_igv));
                 $('[name=total_ant_igv]').val(formatDecimal(response[0].total_ant_igv));
@@ -94,7 +96,14 @@ function mostrar_doc_compra(id_doc_com){
 
                 // listar_guias_prov(response[0].id_proveedor);
                 // console.log(response[0].doc_com_det);
-                
+                if(response[0].guias.length >0){
+                    agregarObjGuia(response[0].guias);
+                    llenarTablaListaGuiaRemision(listaGuiaRemision);
+                }
+                if(response[0].doc_com_det.length >0){
+                    agregarObjDetalleGuiaCompra(response[0].doc_com_det);
+                    llenarTablaListaDetalleGuiaCompra(listaDetalleComprobanteCompra);
+                }
                 // if(response[0].doc_com_det.length > 0){
                 //     listar_doc_com_orden(response[0].id_doc_com)
                 // }else{
@@ -112,6 +121,52 @@ function mostrar_doc_compra(id_doc_com){
     }
 }
 
+function agregarObjGuia(data){
+    data.forEach(element => {
+        listaGuiaRemision.push(
+            {
+                'nro_guia':element.nro_guia,
+                'id_guia':element.id_guia_com,
+                'id_operacion':element.id_operacion,
+                'tipo_operacion':element.tipo_operacion, 
+                'id_proveedor':element.id_proveedor,
+                'razon_social':element.razon_social,
+                'fecha_emision':element.fecha_emision,
+                'subtotal':null,
+                'total':null,
+                'porcen_dscto':0,
+                'total_dscto':0,
+                'importe_total':null
+            }
+        )
+
+    });
+
+}
+function agregarObjDetalleGuiaCompra(data){
+    data.forEach(element => {
+        listaDetalleComprobanteCompra.push(
+            {
+                'id':element.id_guia_com_det,
+                'id_item':element.id_item,
+                'id_guia':element.id_guia,
+                'nro_guia':element.nro_guia,
+                'codigo':element.codigo,
+                'descripcion':element.descripcion,
+                'cantidad':element.cantidad,
+                'precio_unitario':element.precio_unitario,
+                'id_unid_med':element.id_unid_med,
+                'unidad_medida':element.unidad_medida,
+                'porcen_dscto':element.porcen_dscto,
+                'total_dscto':element.total_dscto,
+                'sub_total':(parseInt(element.cantidad) * parseFloat(element.precio_unitario)),
+                'total':(parseInt(element.cantidad) * parseFloat(element.precio_unitario))-parseFloat(element.total_dscto)
+                
+            }
+        );
+    });
+}
+
 function save_doc_compra(data, action){
 
     let doc_com= get_data_cabecera_comprobante_compra();
@@ -123,7 +178,6 @@ function save_doc_compra(data, action){
         baseUrl = 'actualizar_doc_compra';
     }
 
-    console.log({'doc_com':doc_com, 'doc_com_detalle':doc_com_detalle});
     $.ajax({
         type: 'POST',
         url: baseUrl,
@@ -205,8 +259,8 @@ function updateUnitario(e){
     }
     listaDetalleComprobanteCompra.forEach((element, index) => {
         if (element.id == id_guia_com_det) {
-            listaDetalleComprobanteCompra[index].unitario = valor;
-            let sub_total = (parseInt(listaDetalleComprobanteCompra[index].cantidad)*parseFloat(listaDetalleComprobanteCompra[index].unitario));
+            listaDetalleComprobanteCompra[index].precio_unitario = valor;
+            let sub_total = (parseInt(listaDetalleComprobanteCompra[index].cantidad)*parseFloat(listaDetalleComprobanteCompra[index].precio_unitario));
             listaDetalleComprobanteCompra[index].sub_total = sub_total;
             listaDetalleComprobanteCompra[index].total = sub_total;
             tr.querySelector("span[name='total']").textContent=sub_total;
@@ -228,13 +282,13 @@ function updatePorcentajeDescuento(e){
 
     listaDetalleComprobanteCompra.forEach((element, index) => {
         if (element.id == id_guia_com_det) {
-            listaDetalleComprobanteCompra[index].porcentaje_descuento = valor;
-            let total = (parseInt(listaDetalleComprobanteCompra[index].cantidad)*parseFloat(listaDetalleComprobanteCompra[index].unitario));
+            listaDetalleComprobanteCompra[index].porcen_dscto = valor;
+            let total = (parseInt(listaDetalleComprobanteCompra[index].cantidad)*parseFloat(listaDetalleComprobanteCompra[index].precio_unitario));
             let montoDescuento=(parseFloat(total)*parseFloat(valor))/100;
-            tr.querySelector("input[name='total_descuento']").value=montoDescuento;
+            tr.querySelector("input[name='total_dscto']").value=montoDescuento;
             let newTotal = (parseFloat(total)-parseFloat(montoDescuento));
             tr.querySelector("span[name='total']").textContent=newTotal;
-            listaDetalleComprobanteCompra[index].total_descuento = montoDescuento;
+            listaDetalleComprobanteCompra[index].total_dscto = montoDescuento;
             listaDetalleComprobanteCompra[index].total = newTotal;
         
 
@@ -250,10 +304,10 @@ function resetPorcentajeDescuento(e){
     let tr= e.currentTarget.parentElement.parentElement;
     let id_guia_com_det= e.target.dataset.id;
 
-    tr.querySelector("input[name='porcentaje_descuento']").value=0;
+    tr.querySelector("input[name='porcen_dscto']").value=0;
     listaDetalleComprobanteCompra.forEach((element, index) => {
         if (element.id == id_guia_com_det) {
-            listaDetalleComprobanteCompra[index].porcentaje_descuento = 0;
+            listaDetalleComprobanteCompra[index].porcen_dscto = 0;
         }
     });
 }
@@ -269,8 +323,8 @@ function updateTotalDescuento(e){
     }
     listaDetalleComprobanteCompra.forEach((element, index) => {
         if (element.id == id_guia_com_det) {
-            listaDetalleComprobanteCompra[index].total_descuento = valor;
-            let newTotal= parseFloat(listaDetalleComprobanteCompra[index].cantidad * listaDetalleComprobanteCompra[index].unitario)-parseFloat(valor)
+            listaDetalleComprobanteCompra[index].total_dscto = valor;
+            let newTotal= parseFloat(listaDetalleComprobanteCompra[index].cantidad * listaDetalleComprobanteCompra[index].precio_unitario)-parseFloat(valor)
             tr.querySelector("span[name='total']").textContent=newTotal;
             listaDetalleComprobanteCompra[index].total = newTotal;
 
@@ -297,19 +351,19 @@ function llenarTablaListaDetalleGuiaCompra(data){
             {'data': 'unidad_medida'},
             {'render':
             function (data, type, row){
-                return  `<input type="text" class="form-control" name="unitario" data-id="${row.id}" onkeyup ="updateUnitario(event);" value="${row.unitario?row.unitario:''}" style="
+                return  `<input type="text" class="form-control" name="precio_unitario" data-id="${row.id}" onkeyup ="updateUnitario(event);" value="${row.precio_unitario?row.precio_unitario:''}" style="
                 width: 80px;">`;
             }
             },
             {'render':
             function (data, type, row){
-                return  `<input type="text" class="form-control" name="porcentaje_descuento" data-id="${row.id}" onkeyup ="updatePorcentajeDescuento(event);" value="${row.porcentaje_descuento?row.porcentaje_descuento:''}" style="
+                return  `<input type="text" class="form-control" name="porcen_dscto" data-id="${row.id}" onkeyup ="updatePorcentajeDescuento(event);" value="${row.porcen_dscto?row.porcen_dscto:''}" style="
                 width: 40px;">`;
             }
             },
             {'render':
             function (data, type, row){
-                return  `<input type="text" class="form-control" name="total_descuento" data-id="${row.id}" onkeyup ="updateTotalDescuento(event);" value="${row.total_descuento?row.total_descuento:''}" style="
+                return  `<input type="text" class="form-control" name="total_dscto" data-id="${row.id}" onkeyup ="updateTotalDescuento(event);" value="${row.total_dscto?row.total_dscto:''}" style="
                 width: 80px;">`;
             }
             },
@@ -324,7 +378,7 @@ function llenarTablaListaDetalleGuiaCompra(data){
 }
 
 function agregarAListaGuias(data){
-    console.log(data);
+    // console.log(data);
     if(data.guia.length > 0){
         data.guia.forEach(element => {
             listaGuiaRemision.push(
@@ -338,8 +392,8 @@ function agregarAListaGuias(data){
                     'fecha_emision':element.fecha_emision,
                     'subtotal':null,
                     'total':null,
-                    'porcentaje_descuento':0,
-                    'total_descuento':0,
+                    'porcen_dscto':0,
+                    'total_dscto':0,
                     'importe_total':null
                 }
             )
@@ -356,12 +410,12 @@ function agregarAListaGuias(data){
                     'codigo':element.codigo,
                     'descripcion':element.descripcion,
                     'cantidad':element.cantidad,
-                    'unitario':element.unitario,
-                    'sub_total':(parseInt(element.cantidad) * parseFloat(element.unitario)),
+                    'precio_unitario':element.unitario,
+                    'sub_total':((parseInt(element.cantidad)) * (parseFloat(element.unitario))),
                     'id_unid_med':element.id_unid_med,
                     'unidad_medida':element.unidad_medida,
-                    'porcentaje_descuento':0,
-                    'total_descuento':0,
+                    'porcen_dscto':0,
+                    'total_dscto':0,
                     // 'precio_total':'',
                     'total':element.total,
                     
@@ -391,20 +445,20 @@ function CalcSubTotal(data){
 }
 
 function calcTotalPorcentajeDescuento(event){
-    let porcentaje_descuento = event.target.value;
+    let porcen_dscto = event.target.value;
     let subtotal = document.querySelector("table[id='TablaDetalleComprobanteCompra'] input[name='sub_total']").value;
-    let total_descuento = (subtotal*porcentaje_descuento)/100;
-    document.querySelector("table[id='TablaDetalleComprobanteCompra'] input[name='total_descuento']").value=total_descuento;
-    listaGuiaRemision[0]['porcentaje_descuento']=porcentaje_descuento;
-    listaGuiaRemision[0]['total_descuento']=total_descuento;
+    let total_dscto = (subtotal*porcen_dscto)/100;
+    document.querySelector("table[id='TablaDetalleComprobanteCompra'] input[name='total_dscto']").value=total_dscto;
+    listaGuiaRemision[0]['porcen_dscto']=porcen_dscto;
+    listaGuiaRemision[0]['total_dscto']=total_dscto;
 
     CalcTotal();
 }
 
 function CalcTotal(){
     let subtotal = document.querySelector("table[id='TablaDetalleComprobanteCompra'] input[name='sub_total']").value;
-    let total_descuento =document.querySelector("table[id='TablaDetalleComprobanteCompra'] input[name='total_descuento']").value;
-    let total = subtotal - parseFloat(total_descuento);
+    let total_dscto =document.querySelector("table[id='TablaDetalleComprobanteCompra'] input[name='total_dscto']").value;
+    let total = subtotal - parseFloat(total_dscto);
     document.querySelector("table[id='TablaDetalleComprobanteCompra'] input[name='total']").value=total;
     listaGuiaRemision[0]['total']=total;
 
@@ -615,7 +669,7 @@ function change_dias(){
     }
 }
 // function actualiza_totales(){
-//     var por = $('[name=porcen_descuento]').val();
+//     var por = $('[name=porcen_dscto]').val();
 //     var id = $('[name=id_doc_com]').val();
 //     var fecha = $('[name=fecha_emision]').val();
 //     $.ajax({
@@ -638,7 +692,7 @@ function change_dias(){
 //     //     var tds = parseFloat($(this).find("td input[name=precio_total]").val());
 //     //     sub_total += tds;
 //     // });
-//     // var dscto = parseFloat($('[name=total_descuento]').val());
+//     // var dscto = parseFloat($('[name=total_dscto]').val());
 //     // $('[name=porcen_igv]').val(18);
 //     // var total = sub_total + dscto;
 //     // var total_igv = total * 18/100;
