@@ -34,11 +34,16 @@ function get_data_cabecera_comprobante_compra(){
     return comprobanteCompra;
 }
 
-
+function editar_doc_compra(){
+    document.querySelector("button[name='btnAgregarGuia']").removeAttribute("disabled");
+    document.querySelector("button[name='btnAgregarOrden']").removeAttribute("disabled");
+}
 
 function nuevo_doc_compra(){
     listaGuiaRemision=[];
     listaDetalleComprobanteCompra=[];
+    document.querySelector("button[name='btnAgregarGuia']").removeAttribute("disabled");
+    document.querySelector("button[name='btnAgregarOrden']").removeAttribute("disabled");
     // console.log(auth_user);
     $('#form-doc_compra')[0].reset();
     $('[name=usuario]').val(auth_user.id_usuario);
@@ -80,7 +85,7 @@ function mostrar_doc_compra(id_doc_com){
                 $('[name=sub_total]').val(formatDecimal(response[0].sub_total));
                 $('[name=total_dscto]').val(formatDecimal(response[0].total_dscto));
                 $('[name=porcen_igv]').val(formatDecimal(response[0].porcen_igv));
-                $('[name=porcen_dscto]').val(formatDecimal(response[0].porcen_dscto));
+                $('[name=porcen_dscto]').val(formatDecimal(response[0].porcen_dscto?response[0].porcen_dscto:0));
                 $('[name=total]').val(formatDecimal(response[0].total));
                 $('[name=total_igv]').val(formatDecimal(response[0].total_igv));
                 $('[name=total_ant_igv]').val(formatDecimal(response[0].total_ant_igv));
@@ -122,11 +127,13 @@ function mostrar_doc_compra(id_doc_com){
 }
 
 function agregarObjGuia(data){
+    // console.log(data);
     data.forEach(element => {
         listaGuiaRemision.push(
             {
+                'id_doc_com_guia':element.id_doc_com_guia?element.id_doc_com_guia:null,
                 'nro_guia':element.nro_guia,
-                'id_guia':element.id_guia_com,
+                'id_guia':element.id_guia,
                 'id_operacion':element.id_operacion,
                 'tipo_operacion':element.tipo_operacion, 
                 'id_proveedor':element.id_proveedor,
@@ -136,18 +143,22 @@ function agregarObjGuia(data){
                 'total':null,
                 'porcen_dscto':0,
                 'total_dscto':0,
-                'importe_total':null
+                'importe_total':null,
+                'estado':1
             }
         )
 
     });
 
 }
+ 
 function agregarObjDetalleGuiaCompra(data){
+    // console.log(data);
     data.forEach(element => {
         listaDetalleComprobanteCompra.push(
             {
                 'id':element.id_guia_com_det,
+                'id_doc_det':element.id_doc_det,
                 'id_item':element.id_item,
                 'id_guia':element.id_guia,
                 'nro_guia':element.nro_guia,
@@ -160,7 +171,8 @@ function agregarObjDetalleGuiaCompra(data){
                 'porcen_dscto':element.porcen_dscto,
                 'total_dscto':element.total_dscto,
                 'sub_total':(parseInt(element.cantidad) * parseFloat(element.precio_unitario)),
-                'total':(parseInt(element.cantidad) * parseFloat(element.precio_unitario))-parseFloat(element.total_dscto)
+                'total':(parseInt(element.cantidad) * parseFloat(element.precio_unitario))-parseFloat(element.total_dscto),
+                'estado':1
                 
             }
         );
@@ -171,24 +183,29 @@ function save_doc_compra(data, action){
 
     let doc_com= get_data_cabecera_comprobante_compra();
     let doc_com_detalle= listaDetalleComprobanteCompra;
+    let guia_remision= listaGuiaRemision;
    
     if (action == 'register'){
         baseUrl = 'guardar_doc_compra';
     } else if (action == 'edition'){
         baseUrl = 'actualizar_doc_compra';
     }
+    console.log({'doc_com':doc_com, 'guia_remision':guia_remision,'doc_com_detalle':doc_com_detalle});
 
     $.ajax({
         type: 'POST',
         url: baseUrl,
-        data: {'doc_com':doc_com, 'doc_com_detalle':doc_com_detalle},
+        data: {'doc_com':doc_com, 'guia_remision':guia_remision, 'doc_com_detalle':doc_com_detalle},
         dataType: 'JSON',
         success: function(response){
             // console.log(response);
             if (response['id_doc'] > 0){
-                alert('Documento registrado con éxito');
-                
                 if (action == 'register'){
+                    alert('Documento registrado con éxito');
+                }                
+                if (action == 'edition'){
+                    alert('Documento actualizado con éxito');
+
                     $('[name=cod_estado]').val('1');
                     $('#estado label').text('Elaborado');
                 }
@@ -227,6 +244,9 @@ function save_doc_compra(data, action){
 
 
 function llenarTablaListaGuiaRemision(data){
+
+    var newData =  data.filter(element => element.estado != 7); 
+
     var vardataTables = funcDatatables();
     $('#ListaGuiaRemision').DataTable({
         'info': false,
@@ -234,7 +254,7 @@ function llenarTablaListaGuiaRemision(data){
         'paging':   false,
         'language' : vardataTables[0],
         'bDestroy': true,
-        'data':data,
+        'data':newData,
         'columns': [
             {'data': 'nro_guia'},
             {'data': 'fecha_emision'},
@@ -242,14 +262,45 @@ function llenarTablaListaGuiaRemision(data){
             {'data': 'tipo_operacion'},
             {'render':
             function (data, type, row){
-            return '';
+            return `<div class="btn-group" role="group">
+                        <button type="button" class="btn btn-danger btn-xs" name="btnEliminarGuiayDetalle" title="Eliminar Guía y Detalle" data-id-guia="${row.id_guia}" onclick="eliminarGuiayDetalleGuua(this);">
+                            <i class="fas fa-trash fa-sm"></i>
+                        </button>
+                    </div>`;
             }
             },
         ]
         // 'columnDefs': [{ 'aTargets': [0,5], 'sClass': 'invisible'}],
     });
 }
+function eliminarGuiayDetalleGuua(obj){
+    let id_guia = obj.dataset.idGuia;
+    listaGuiaRemision.forEach((element,index) => {
+        if(element.id_guia == id_guia){
+            if(element.estado == null){
+                listaGuiaRemision.splice( index, 1 );
+            }else{
+                listaGuiaRemision[index].estado =7;
+            }
+        }
+    });
+    listaDetalleComprobanteCompra.forEach((element,index) => {
+        if(element.id_guia == id_guia){
+            if(element.estado == null){
+                listaDetalleComprobanteCompra.splice( index, 1 );
+            }else{
+                listaDetalleComprobanteCompra[index].estado =7;
+            }
 
+        }
+    });
+    llenarTablaListaGuiaRemision(listaGuiaRemision);
+    llenarTablaListaDetalleGuiaCompra(listaDetalleComprobanteCompra);
+    CalcSubTotal(listaDetalleComprobanteCompra);
+
+
+
+}
 function updateUnitario(e){
     let id_guia_com_det= e.target.dataset.id;
     let valor = e.target.value;
@@ -335,6 +386,8 @@ function updateTotalDescuento(e){
 }
 
 function llenarTablaListaDetalleGuiaCompra(data){
+    var newData =  data.filter(element => element.estado != 7); 
+
     var vardataTables = funcDatatables();
     $('#listaDetalleComprobanteCompra').DataTable({
         'info': false,
@@ -342,7 +395,7 @@ function llenarTablaListaDetalleGuiaCompra(data){
         'paging':   false,
         'language' : vardataTables[0],
         'bDestroy': true,
-        'data':data,
+        'data':newData,
         'columns': [
             {'data': 'nro_guia'},
             {'data': 'codigo'},
@@ -383,8 +436,9 @@ function agregarAListaGuias(data){
         data.guia.forEach(element => {
             listaGuiaRemision.push(
                 {
+                    'id_doc_com_guia':element.id_doc_com_guia?element.id_doc_com_guia:null,
                     'nro_guia':'GR-'+element.serie+'-'+element.numero,
-                    'id_guia':element.id_guia_com,
+                    'id_guia':element.id_guia,
                     'id_operacion':element.id_operacion,
                     'tipo_operacion':element.tipo_operacion, 
                     'id_proveedor':element.id_proveedor,
@@ -394,7 +448,9 @@ function agregarAListaGuias(data){
                     'total':null,
                     'porcen_dscto':0,
                     'total_dscto':0,
-                    'importe_total':null
+                    'importe_total':null,
+                    'estado':null
+
                 }
             )
         });
@@ -404,9 +460,10 @@ function agregarAListaGuias(data){
             listaDetalleComprobanteCompra.push(
                 {
                     'id':element.id_guia_com_det,
+                    'id_doc_det':null,
                     'id_item':element.id_item,
-                    'id_guia':element.id_guia_com,
-                    'nro_guia':'GR-'+data.guia[0].serie+'-'+data.guia[0].numero,
+                    'id_guia':element.id_guia,
+                    'nro_guia':element.nro_guia,
                     'codigo':element.codigo,
                     'descripcion':element.descripcion,
                     'cantidad':element.cantidad,
@@ -418,6 +475,8 @@ function agregarAListaGuias(data){
                     'total_dscto':0,
                     // 'precio_total':'',
                     'total':element.total,
+                    'estado':null
+
                     
                 }
             );
@@ -435,12 +494,17 @@ function agregarAListaGuias(data){
 
 function CalcSubTotal(data){
     var subtotal=0;
-    data.forEach(element => {
-        subtotal+=parseFloat(element.total);
-    });
-    listaGuiaRemision[0]['subtotal']=subtotal;
+    if(data.length > 0){
+        data.forEach(element => {
+            if(element.estado != 7){
+                subtotal+=parseFloat(element.total);
+            }
+        });
+    }
+    if(listaGuiaRemision.length >0){
+        listaGuiaRemision[0]['subtotal']=subtotal;
+    }    
     document.querySelector("table[id='TablaDetalleComprobanteCompra'] input[name='sub_total']").value=subtotal;
-
     CalcTotal();
 }
 
@@ -456,11 +520,14 @@ function calcTotalPorcentajeDescuento(event){
 }
 
 function CalcTotal(){
+    
     let subtotal = document.querySelector("table[id='TablaDetalleComprobanteCompra'] input[name='sub_total']").value;
-    let total_dscto =document.querySelector("table[id='TablaDetalleComprobanteCompra'] input[name='total_dscto']").value;
+    let total_dscto =document.querySelector("table[id='TablaDetalleComprobanteCompra'] input[name='total_dscto']").value?document.querySelector("table[id='TablaDetalleComprobanteCompra'] input[name='total_dscto']").value:0;
     let total = subtotal - parseFloat(total_dscto);
     document.querySelector("table[id='TablaDetalleComprobanteCompra'] input[name='total']").value=total;
-    listaGuiaRemision[0]['total']=total;
+    if(listaGuiaRemision.length >0){
+        listaGuiaRemision[0]['total']=total;
+    }
 
     calcIGV();
     
@@ -471,8 +538,11 @@ function calcIGV(){
     let total = document.querySelector("table[id='TablaDetalleComprobanteCompra'] input[name='total']").value;
     let total_igv= (parseFloat(total) * parseInt(porcen_igv))/ 100;
     document.querySelector("table[id='TablaDetalleComprobanteCompra'] input[name='total_igv']").value= total_igv;
-    listaGuiaRemision[0]['porcen_igv']=porcen_igv;
-    listaGuiaRemision[0]['total_igv']=total_igv;
+    if(listaGuiaRemision.length >0){
+        listaGuiaRemision[0]['porcen_igv']=porcen_igv;
+        listaGuiaRemision[0]['total_igv']=total_igv;
+    }
+
 
     calcImporteTotal();
 }
@@ -482,7 +552,9 @@ function calcImporteTotal(){
     let total_igv =document.querySelector("table[id='TablaDetalleComprobanteCompra'] input[name='total_igv']").value;
     let importe_total = (parseFloat(total)+parseFloat(total_igv)).toFixed(2);
     document.querySelector("table[id='TablaDetalleComprobanteCompra'] input[name='total_a_pagar']").value= importe_total;
-    listaGuiaRemision[0]['importe_total']=importe_total;
+    if(listaGuiaRemision.length >0){
+        listaGuiaRemision[0]['importe_total']=importe_total;
+    }
 }
 
 

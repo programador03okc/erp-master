@@ -206,59 +206,60 @@ class ComprobanteCompraController extends Controller
         return response()->json($data);
     }
 
-    public function listar_doc_items($id_doc){
-        $detalle = DB::table('almacen.doc_com_det')
-            ->select('doc_com_det.*','alm_prod.codigo','alm_prod.descripcion',
-            DB::raw("CONCAT('GR-',guia_com.serie,'-',guia_com.numero) as nro_guia"),
-            'alm_und_medida.abreviatura')
-            ->join('almacen.alm_item','alm_item.id_item','=','doc_com_det.id_item')
-            ->join('almacen.alm_prod','alm_prod.id_producto','=','alm_item.id_producto')
-            ->join('almacen.guia_com_det','guia_com_det.id_guia_com_det','=','doc_com_det.id_guia_com_det')
-            ->join('almacen.guia_com','guia_com.id_guia','=','guia_com_det.id_guia_com')
-            ->join('almacen.alm_und_medida','alm_und_medida.id_unidad_medida','=','doc_com_det.id_unid_med')
-            ->where([['doc_com_det.id_doc','=',$id_doc],
-                    ['doc_com_det.estado','=',1]])
-            ->get();
-        $html = '';
-        foreach($detalle as $det){
-            $html .= '
-            <tr id="det-'.$det->id_doc_det.'">
-                <td>'.$det->guia.'</td>
-                <td>'.$det->codigo.'</td>
-                <td>'.$det->descripcion.'</td>
-                <td><input type="number" class="input-data right" name="cantidad" 
-                    value="'.$det->cantidad.'" onChange="calcula_total('.$det->id_doc_det.');" 
-                    disabled="true"/>
-                </td>
-                <td>'.$det->abreviatura.'</td>
-                <td><input type="number" class="input-data right" name="precio_unitario" 
-                    value="'.$det->precio_unitario.'" onChange="calcula_total('.$det->id_doc_det.');" 
-                    disabled="true"/>
-                </td>
-                <td><input type="number" class="input-data right" name="porcen_dscto" 
-                    value="'.$det->porcen_dscto.'" onChange="calcula_dscto('.$det->id_doc_det.');" 
-                    disabled="true"/>
-                </td>
-                <td><input type="number" class="input-data right" name="total_dscto" 
-                    value="'.$det->total_dscto.'" onChange="calcula_total('.$det->id_doc_det.');" 
-                    disabled="true"/>
-                </td>
-                <td><input type="number" class="input-data right" name="precio_total" 
-                    value="'.$det->precio_total.'" disabled="true"/>
-                </td>
-                <td style="display:flex;">
-                    <i class="fas fa-pen-square icon-tabla blue boton" data-toggle="tooltip" data-placement="bottom" title="Editar Item" onClick="editar_detalle('.$det->id_doc_det.');"></i>
-                    <i class="fas fa-trash icon-tabla red boton" data-toggle="tooltip" data-placement="bottom" title="Anular Item" onClick="anular_detalle('.$det->id_doc_det.');"></i>
-                </td>
-            </tr>';
-        }
-        return json_encode($html);
-    }
+    // public function listar_doc_items($id_doc){
+    //     $detalle = DB::table('almacen.doc_com_det')
+    //         ->select('doc_com_det.*','alm_prod.codigo','alm_prod.descripcion',
+    //         DB::raw("CONCAT('GR-',guia_com.serie,'-',guia_com.numero) as nro_guia"),
+    //         'alm_und_medida.abreviatura')
+    //         ->join('almacen.alm_item','alm_item.id_item','=','doc_com_det.id_item')
+    //         ->join('almacen.alm_prod','alm_prod.id_producto','=','alm_item.id_producto')
+    //         ->join('almacen.guia_com_det','guia_com_det.id_guia_com_det','=','doc_com_det.id_guia_com_det')
+    //         ->join('almacen.guia_com','guia_com.id_guia','=','guia_com_det.id_guia_com')
+    //         ->join('almacen.alm_und_medida','alm_und_medida.id_unidad_medida','=','doc_com_det.id_unid_med')
+    //         ->where([['doc_com_det.id_doc','=',$id_doc],
+    //                 ['doc_com_det.estado','=',1]])
+    //         ->get();
+    //     $html = '';
+    //     foreach($detalle as $det){
+    //         $html .= '
+    //         <tr id="det-'.$det->id_doc_det.'">
+    //             <td>'.$det->guia.'</td>
+    //             <td>'.$det->codigo.'</td>
+    //             <td>'.$det->descripcion.'</td>
+    //             <td><input type="number" class="input-data right" name="cantidad" 
+    //                 value="'.$det->cantidad.'" onChange="calcula_total('.$det->id_doc_det.');" 
+    //                 disabled="true"/>
+    //             </td>
+    //             <td>'.$det->abreviatura.'</td>
+    //             <td><input type="number" class="input-data right" name="precio_unitario" 
+    //                 value="'.$det->precio_unitario.'" onChange="calcula_total('.$det->id_doc_det.');" 
+    //                 disabled="true"/>
+    //             </td>
+    //             <td><input type="number" class="input-data right" name="porcen_dscto" 
+    //                 value="'.$det->porcen_dscto.'" onChange="calcula_dscto('.$det->id_doc_det.');" 
+    //                 disabled="true"/>
+    //             </td>
+    //             <td><input type="number" class="input-data right" name="total_dscto" 
+    //                 value="'.$det->total_dscto.'" onChange="calcula_total('.$det->id_doc_det.');" 
+    //                 disabled="true"/>
+    //             </td>
+    //             <td><input type="number" class="input-data right" name="precio_total" 
+    //                 value="'.$det->precio_total.'" disabled="true"/>
+    //             </td>
+    //             <td style="display:flex;">
+    //                 <i class="fas fa-pen-square icon-tabla blue boton" data-toggle="tooltip" data-placement="bottom" title="Editar Item" onClick="editar_detalle('.$det->id_doc_det.');"></i>
+    //                 <i class="fas fa-trash icon-tabla red boton" data-toggle="tooltip" data-placement="bottom" title="Anular Item" onClick="anular_detalle('.$det->id_doc_det.');"></i>
+    //             </td>
+    //         </tr>';
+    //     }
+    //     return json_encode($html);
+    // }
 
     public function guardar_doc_compra(Request $request)
     {
         $doc_com= $request->doc_com;
         $doc_com_detalle= $request->doc_com_detalle;
+        $guia_remision= $request->guia_remision;
         $usuario = Auth::user();
         $fecha = date('Y-m-d H:i:s');
         $id_doc = DB::table('almacen.doc_com')->insertGetId(
@@ -274,7 +275,7 @@ class ComprobanteCompraController extends Controller
                 'moneda' => $doc_com['moneda'],
                 'tipo_cambio' => $doc_com['tipo_cambio'],
                 'sub_total' => $doc_com['sub_total'],
-                'total_descuento' => $doc_com['total_descuento'],
+                'total_descuento' => $doc_com['total_dscto'],
                 'porcen_descuento' => $doc_com['porcen_dscto'],
                 'total' => $doc_com['total'],
                 'total_igv' => $doc_com['total_igv'],
@@ -300,10 +301,10 @@ class ComprobanteCompraController extends Controller
                             'id_item' => $doc_com_detalle[$i]['id_item'],
                             'cantidad' => $doc_com_detalle[$i]['cantidad'],
                             'id_unid_med' => $doc_com_detalle[$i]['id_unid_med'],
-                            'precio_unitario' => $doc_com_detalle[$i]['unitario'],
+                            'precio_unitario' => $doc_com_detalle[$i]['precio_unitario'],
                             'sub_total' => $doc_com_detalle[$i]['sub_total'],
-                            'porcen_dscto' => $doc_com_detalle[$i]['porcentaje_descuento'],
-                            'total_dscto' => $doc_com_detalle[$i]['total_descuento'],
+                            'porcen_dscto' => $doc_com_detalle[$i]['porcen_dscto'],
+                            'total_dscto' => $doc_com_detalle[$i]['total_dscto'],
                             'precio_total' => $doc_com_detalle[$i]['total'],
                             'id_guia_com_det' => $doc_com_detalle[$i]['id'],
                             'estado' => 1,
@@ -313,10 +314,18 @@ class ComprobanteCompraController extends Controller
                         'id_doc_det'
                     );
 
+    
+                }
+            }
+            $count_guia_remision = count($guia_remision);
+            if ($count_guia_remision > 0) {
+                for ($i = 0; $i < $count_guia_remision; $i++) {
+ 
+
                     $id_doc_com_guia = DB::table('almacen.doc_com_guia')->insertGetId(
                         [
                             'id_doc_com' => $id_doc,
-                            'id_guia_com' => $doc_com_detalle[$i]['id_guia'],
+                            'id_guia_com' => $guia_remision[$i]['id_guia'],
                             'estado' => 1,
                             'fecha_registro' => $fecha
                         ],
@@ -333,34 +342,120 @@ class ComprobanteCompraController extends Controller
     {
         $fecha = date('Y-m-d H:i:s');
         $usuario = Auth::user();
-        $data = DB::table('almacen.doc_com')
-            ->where('id_doc_com',$request->id_doc_com)
+        $doc_com= $request->doc_com;
+        $doc_com_detalle= $request->doc_com_detalle;
+        $guia_remision= $request->guia_remision;
+
+        DB::table('almacen.doc_com')
+            ->where('id_doc_com',$doc_com['id_doc_com'])
             ->update([
-                'serie' => $request->serie,
-                'numero' => $request->numero,
-                'id_tp_doc' => $request->id_tp_doc,
-                'id_proveedor' => $request->id_proveedor,
-                'fecha_emision' => $request->fecha_emision,
-                'fecha_vcmto' => $request->fecha_vcmto,
-                'id_condicion' => $request->id_condicion,
-                'credito_dias' => $request->credito_dias,
-                'moneda' => $request->moneda,
-                'tipo_cambio' => $request->tipo_cambio,
-                'sub_total' => $request->sub_total,
-                'total_descuento' => $request->total_descuento,
-                'porcen_descuento' => $request->porcen_dscto,
-                'total' => $request->total,
-                'total_igv' => $request->total_igv,
-                'total_ant_igv' => $request->total_ant_igv,
-                'porcen_igv' => $request->porcen_igv,
-                'porcen_anticipo' => $request->porcen_anticipo,
-                'total_otros' => $request->total_otros,
-                'total_a_pagar' => $request->total_a_pagar,
-                'usuario' => $request->usuario,
+                'serie' => $doc_com['serie'],
+                'numero' => $doc_com['numero'],
+                'id_tp_doc' => $doc_com['id_tp_doc'],
+                'id_proveedor' => $doc_com['id_proveedor'],
+                'fecha_emision' => $doc_com['fecha_emision'],
+                'fecha_vcmto' => $doc_com['fecha_vcmto'],
+                'id_condicion' => $doc_com['id_condicion'],
+                'credito_dias' => $doc_com['credito_dias'],
+                'moneda' => $doc_com['moneda'],
+                'tipo_cambio' => $doc_com['tipo_cambio'],
+                'sub_total' => $doc_com['sub_total'],
+                'total_descuento' => $doc_com['total_dscto'],
+                'porcen_descuento' => $doc_com['porcen_dscto'],
+                'total' => $doc_com['total'],
+                'total_igv' => $doc_com['total_igv'],
+                'total_ant_igv' => $doc_com['total_ant_igv'],
+                'porcen_igv' => $doc_com['porcen_igv'],
+                'porcen_anticipo' => $doc_com['porcen_anticipo'],
+                'total_otros' => $doc_com['total_otros'],
+                'total_a_pagar' => $doc_com['total_a_pagar'],
+                'usuario' => $doc_com['usuario'],
                 'registrado_por' => $usuario->id_usuario,
             ]);
-        return response()->json($data);
-    }
+
+            $count_doc_com_detalle = count($doc_com_detalle);
+            $doc_com_detalle_incluida =[];
+            if ($count_doc_com_detalle > 0) {
+                for ($i = 0; $i < $count_doc_com_detalle; $i++) {
+                    if($doc_com_detalle[$i]['id_doc_det'] >0){ //update or delete
+                        if($doc_com_detalle[$i]['estado'] ==7){ // delete?
+                            $delete_doc_det = DB::table('almacen.doc_com_det')
+                            ->where('id_doc_det', $doc_com_detalle[$i]['id_doc_det'])
+                            ->update(['estado' => 7]);
+                        }else{ // update
+                            $update_doc_det = DB::table('almacen.doc_com_det')
+                            ->where('id_doc_det', $doc_com_detalle[$i]['id_doc_det'])
+                            ->update(
+                                [
+                                    'id_doc' => $doc_com['id_doc_com'],
+                                    'id_item' => $doc_com_detalle[$i]['id_item'],
+                                    'cantidad' => $doc_com_detalle[$i]['cantidad'],
+                                    'id_unid_med' => $doc_com_detalle[$i]['id_unid_med'],
+                                    'precio_unitario' => $doc_com_detalle[$i]['precio_unitario'],
+                                    'sub_total' => $doc_com_detalle[$i]['sub_total'],
+                                    'porcen_dscto' => $doc_com_detalle[$i]['porcen_dscto'],
+                                    'total_dscto' => $doc_com_detalle[$i]['total_dscto'],
+                                    'precio_total' => $doc_com_detalle[$i]['total'],
+                                    'id_guia_com_det' => $doc_com_detalle[$i]['id'],
+                                    'estado' => 1,
+                                    'fecha_registro' => $fecha,
+                                    'obs' => null
+                                ]);
+                        }
+
+                    }else{ //insert
+                        if($doc_com_detalle[$i]['estado'] ==null){ 
+                            $id_doc_det = DB::table('almacen.doc_com_det')->insertGetId(
+                                [
+                                    'id_doc' => $doc_com['id_doc_com'],
+                                    'id_item' => $doc_com_detalle[$i]['id_item'],
+                                    'cantidad' => $doc_com_detalle[$i]['cantidad'],
+                                    'id_unid_med' => $doc_com_detalle[$i]['id_unid_med'],
+                                    'precio_unitario' => $doc_com_detalle[$i]['precio_unitario'],
+                                    'sub_total' => $doc_com_detalle[$i]['sub_total'],
+                                    'porcen_dscto' => $doc_com_detalle[$i]['porcen_dscto'],
+                                    'total_dscto' => $doc_com_detalle[$i]['total_dscto'],
+                                    'precio_total' => $doc_com_detalle[$i]['total'],
+                                    'id_guia_com_det' => $doc_com_detalle[$i]['id'],
+                                    'estado' => 1,
+                                    'fecha_registro' => $fecha,
+                                    'obs' => null
+                                ],
+                                'id_doc_det'
+                            );
+                        }
+
+                    }
+            }
+        }
+
+        $count_guia_remision = count($guia_remision);
+        if ($count_guia_remision > 0) {
+            for ($i = 0; $i < $count_guia_remision; $i++) {
+                if($guia_remision[$i]['estado'] == 7 ) { // delete
+                    // registrar nueva guia
+                    $delete_id_doc_com_guia = DB::table('almacen.doc_com_det')
+                    ->where('id_doc_com_guia', $guia_remision[$i]['id_doc_com_guia'])
+                    ->update(['estado' => 7]);
+
+                }else{ // insert
+                    if($guia_remision[$i]['estado'] == null ) {
+                        $id_doc_com_guia = DB::table('almacen.doc_com_guia')->insertGetId(
+                            [
+                                'id_doc_com' => $doc_com['id_doc_com'],
+                                'id_guia_com' => $guia_remision[$i]['id_guia'],
+                                'estado' => 1,
+                                'fecha_registro' => $fecha
+                            ],
+                            'id_doc_com_guia'
+                        );
+                    }
+                }
+            }
+        }
+
+            return response()->json(["id_doc"=>$doc_com['id_doc_com']]);
+        }
 
     public function update_doc_detalle(Request $request)
     {
@@ -433,39 +528,58 @@ class ComprobanteCompraController extends Controller
         $doc_det = DB::table('almacen.doc_com_det')
         ->select(
             'doc_com_det.*',
-            'guia_com.id_operacion',
-            'tp_ope.descripcion as tipo_operacion',
-            'doc_com_guia.id_guia_com as id_guia',
+            // 'guia_com.id_operacion',
+            // 'tp_ope.descripcion as tipo_operacion',
+            'guia_com.id_guia',
             DB::raw("CONCAT('GR-',guia_com.serie,'-',guia_com.numero) as nro_guia"),
             'alm_prod.codigo',
             'alm_prod.descripcion',
             'alm_und_medida.descripcion as unidad_medida'
         )
-        ->join('almacen.doc_com_guia','doc_com_guia.id_doc_com','=','doc_com_det.id_doc')
-        ->leftjoin('almacen.guia_com','guia_com.id_guia','=','doc_com_guia.id_guia_com')
-        ->leftjoin('almacen.tp_ope','tp_ope.id_operacion','=','guia_com.id_operacion')
+        ->join('almacen.doc_com','doc_com.id_doc_com','=','doc_com_det.id_doc')
+        ->join('almacen.doc_com_guia','doc_com_guia.id_doc_com','=','doc_com.id_doc_com')
+        ->join('almacen.guia_com_det','guia_com_det.id_guia_com_det','=','doc_com_det.id_guia_com_det')
+        ->join('almacen.guia_com','guia_com.id_guia','=','guia_com_det.id_guia_com')
+        // ->join('almacen.tp_ope','tp_ope.id_operacion','=','guia_com.id_operacion')
 
         ->join('almacen.alm_item','alm_item.id_item','=','doc_com_det.id_item')
         ->join('almacen.alm_prod','alm_prod.id_producto','=','alm_item.id_producto')
         ->join('almacen.alm_und_medida','alm_und_medida.id_unidad_medida','=','doc_com_det.id_unid_med')
 
         ->where('doc_com_det.id_doc',$id)
+        ->distinct()
+
         ->get();
         
 
 
-        $guias = DB::table('almacen.doc_com_guia')
-            ->select('guia_com.*','tp_ope.descripcion as tipo_operacion',DB::raw("CONCAT('GR-',guia_com.serie,'-',guia_com.numero) as nro_guia"),
+        // $guias = DB::table('almacen.doc_com_guia')
+        //     ->select('guia_com.*','tp_ope.descripcion as tipo_operacion',DB::raw("CONCAT('GR-',guia_com.serie,'-',guia_com.numero) as nro_guia"),
+        //     'adm_contri.razon_social','adm_estado_doc.estado_doc')
+        //     ->join('almacen.doc_com','doc_com.id_doc_com','=','doc_com_guia.id_doc_com')
+        //     ->join('almacen.guia_com','guia_com.id_guia','=','doc_com_guia.id_guia_com')
+        //     ->join('logistica.log_prove','log_prove.id_proveedor','=','guia_com.id_proveedor')
+        //     ->join('contabilidad.adm_contri','adm_contri.id_contribuyente','=','log_prove.id_contribuyente')
+        //     ->join('administracion.adm_estado_doc','adm_estado_doc.id_estado_doc','=','guia_com.estado')
+        //     ->join('almacen.tp_ope','tp_ope.id_operacion','=','guia_com.id_operacion')
+
+        //     ->where([['doc_com_guia.estado','=',1],
+        //                 ['doc_com.id_doc_com','=',$id]])
+        //     ->get();
+
+            $guias = DB::table('almacen.guia_com')
+            ->select('guia_com.*','doc_com_guia.id_doc_com_guia','tp_ope.descripcion as tipo_operacion',DB::raw("CONCAT('GR-',guia_com.serie,'-',guia_com.numero) as nro_guia"),
             'adm_contri.razon_social','adm_estado_doc.estado_doc')
-            ->join('almacen.doc_com','doc_com.id_doc_com','=','doc_com_guia.id_doc_com')
-            ->leftjoin('almacen.guia_com','guia_com.id_guia','=','doc_com_guia.id_guia_com')
+            ->join('almacen.doc_com_guia','doc_com_guia.id_guia_com','=','guia_com.id_guia')
+
             ->join('logistica.log_prove','log_prove.id_proveedor','=','guia_com.id_proveedor')
             ->join('contabilidad.adm_contri','adm_contri.id_contribuyente','=','log_prove.id_contribuyente')
             ->join('administracion.adm_estado_doc','adm_estado_doc.id_estado_doc','=','guia_com.estado')
-            ->leftjoin('almacen.tp_ope','tp_ope.id_operacion','=','guia_com.id_operacion')
+            ->join('almacen.tp_ope','tp_ope.id_operacion','=','guia_com.id_operacion')
 
-            ->where([['doc_com_guia.estado','=',1],
-                        ['doc_com.id_doc_com','=',$id]])
+            ->where([['guia_com.estado','=',1],
+                        ['doc_com_guia.id_doc_com','=',$id]])
+            ->distinct()
             ->get();
          
         $collect = collect($doc->first());
@@ -820,7 +934,16 @@ public function listar_detalle_guia_compra($id_guia)
     ->get();
 
     $detalle = DB::table('almacen.guia_com_det')
-    ->select('guia_com_det.*','alm_item.id_item','alm_prod.codigo','alm_prod.descripcion','alm_und_medida.descripcion as unidad_medida')//cambiar a precio_sin_igv
+    ->select('guia_com_det.*',
+    'guia_com.id_guia',
+    DB::raw("CONCAT('GR-',guia_com.serie,'-',guia_com.numero) as nro_guia"),
+
+    'alm_item.id_item',
+    'alm_prod.codigo',
+    'alm_prod.descripcion',
+    'alm_und_medida.descripcion as unidad_medida'
+    )//cambiar a precio_sin_igv
+    ->join('almacen.guia_com','guia_com.id_guia','=','guia_com_det.id_guia_com')
     ->join('almacen.alm_prod','alm_prod.id_producto','=','guia_com_det.id_producto')
     ->leftjoin('almacen.alm_item','alm_item.id_producto','=','alm_prod.id_producto')
     ->join('almacen.alm_und_medida','alm_und_medida.id_unidad_medida','=','guia_com_det.id_unid_med')

@@ -152,9 +152,9 @@
                                             <th>Proveedor</th>
                                             <th>Tp Operación</th>
                                             <th width="10%">
-                                                <i class="fas fa-plus-square icon-tabla green boton" 
-                                                    data-toggle="tooltip" data-placement="bottom" 
-                                                    title="Agregar Guía" onClick="guia_compraModal();"></i>
+                                            <button type="button" class="btn-success" title="Agregar Guía" name="btnAgregarGuia" onClick="guia_compraModal();" disabled="disabled">
+                                                <i class="fas fa-plus"></i>
+                                            </button>
                                             </th>
                                         </tr>
                                     </thead>
@@ -165,24 +165,6 @@
                                 <h6>Orden de Compra</h6>
                                 <table id="ordenes" class="mytable table table-condensed table-bordered table-okc-view dataTable no-footer" width="100%">
                                     <thead>
-                                        {{-- <tr>
-                                            <td colSpan='5'>
-                                                <div style="width: 100%; display:flex;">
-                                                    <div style="width:90%;">
-                                                        <select class="form-control js-example-basic-single" name="id_guia">
-                                                        </select>
-                                                    </div>
-                                                    <div style="width:10%;">
-                                                        <button type="button" class="btn btn-success" id="basic-addon2" 
-                                                            style="padding:5px;height:29px;font-size:12px;" 
-                                                            data-toggle="tooltip" data-placement="bottom" title="Agregar Guía"
-                                                            onClick="agrega_guia();">
-                                                            Agregar Orden
-                                                        </button>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                        </tr> --}}
                                         <tr>
                                             <th hidden>Id Orden</th>
                                             <th>Código Orden</th>
@@ -190,9 +172,9 @@
                                             <th>Proveedor</th>
                                             <th>Tp Operación</th>
                                             <th width="10%">
-                                                <i class="fas fa-plus-square icon-tabla green boton" 
-                                                    data-toggle="tooltip" data-placement="bottom" 
-                                                    title="Agregar Orden" onClick="orden_compraModal();"></i>
+                                                <button type="button" class="btn-success" title="Agregar Orden" name="btnAgregarOrden" onClick="orden_compraModal();" disabled="disabled">
+                                                    <i class="fas fa-plus"></i>
+                                                </button>
                                             </th>
                                         </tr>
                                     </thead>

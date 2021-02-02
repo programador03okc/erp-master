@@ -165,6 +165,9 @@ $(document).ready(function(){
 					else if (page == 'guia_venta'){
 						$('[name=modo]').val('edicion');
 					}
+					else if (page == 'doc_compra'){
+						editar_doc_compra();
+					}
 				}
             break;
 			case 'btnAnular':

@@ -53,6 +53,8 @@ function selectDocCompra(){
 
     if (page == "doc_compra"){
         // console.log(myId);
+        listaGuiaRemision=[];
+        listaDetalleComprobanteCompra=[];
         mostrar_doc_compra(myId);
     }    
     $('#modal-doc_compra').modal('hide');
