@@ -485,9 +485,9 @@ class ComprobanteCompraController extends Controller
         $guias = DB::table('almacen.doc_com_guia')
         ->join('almacen.guia_com','guia_com.id_guia','=','doc_com_guia.id_guia_com')
         ->where([['doc_com_guia.id_doc_com','=', $id],
-                 ['doc_com_guia.estado','=',1],
-                 ['guia_com.estado','!=',7]])
-                 ->count();
+                ['doc_com_guia.estado','=',1],
+                ['guia_com.estado','!=',7]])
+                ->count();
 
         $rspta = '';
         if ($guias > 0){

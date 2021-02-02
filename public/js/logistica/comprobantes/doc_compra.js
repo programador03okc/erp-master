@@ -642,29 +642,30 @@ function agrega_guia(id_guia){
     // }
 }
 
-// function anular_doc_compra(ids){
-//     baseUrl = '/anular_doc_compra/'+ids;
-//     $.ajax({
-//         type: 'GET',
-//         headers: {'X-CSRF-TOKEN': token},
-//         url: baseUrl,
-//         dataType: 'JSON',
-//         success: function(response){
-//             if (response.length > 0){
-//                 alert('No es posible anular. '+response);
-//             } else {
-//                 changeStateButton('anular');
-//                 // $('#estado label').text('Anulado');
-//                 // $('[name=cod_estado]').val('7');
-//                 mostrar_doc_com(ids);
-//             }
-//         }
-//     }).fail( function( jqXHR, textStatus, errorThrown ){
-//         console.log(jqXHR);
-//         console.log(textStatus);
-//         console.log(errorThrown);
-//     });
-// }
+function anular_doc_compra(ids){
+    baseUrl = 'anular_doc_compra/'+ids;
+    console.log(baseUrl);
+    $.ajax({
+        type: 'GET',
+        url: baseUrl,
+        dataType: 'JSON',
+        success: function(response){
+            if (response.length > 0){
+                alert('No es posible anular. '+response);
+            } else {
+                alert("Documento Anulado");
+                changeStateButton('anular');
+                // $('#estado label').text('Anulado');
+                // $('[name=cod_estado]').val('7');
+                mostrar_doc_com(ids);
+            }
+        }
+    }).fail( function( jqXHR, textStatus, errorThrown ){
+        console.log(jqXHR);
+        console.log(textStatus);
+        console.log(errorThrown);
+    });
+}
 
 // function anular_guia(id_guia,id_doc_com_guia){
 //     var id_doc = $('[name=id_doc_com]').val();
