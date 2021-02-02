@@ -644,7 +644,6 @@ function agrega_guia(id_guia){
 
 function anular_doc_compra(ids){
     baseUrl = 'anular_doc_compra/'+ids;
-    console.log(baseUrl);
     $.ajax({
         type: 'GET',
         url: baseUrl,

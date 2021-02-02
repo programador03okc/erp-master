@@ -20,18 +20,33 @@
 
     <div class="row">
             <div class="col-md-12">
-            
+                <div class="row">
+                    <div class="col-sm-12">
+                        <!-- <caption>Requerimientos: Registrados | Aprobados</caption> -->
+                        <table class="mytable table table-hover table-condensed table-bordered table-okc-view" id="listaComprobantesCompra" width="100%">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Serie</th>
+                                    <th>Número</th>
+                                    <th>Tipo Doc.</th>
+                                    <th>Fecha Emisión</th>
+                                    <th>Condición</th>
+                                    <th>Proveedor</th>
+                                    <th>Fecha Vencimiento</th>
+                                    <th>Moneda</th>
+                                    <th>Total a Pagar</th>
+                                    <th>Estado</th>
+                                    <th width="150">ACCIÓN</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
 
             </div>
     </div>
 </div>
-@include('logistica.comprobantes.doc_compraModal')
-@include('logistica.comprobantes.orden_compraModal')
-@include('logistica.comprobantes.detalle_ordenModal')
-@include('logistica.comprobantes.doc_com_detalle')
-@include('almacen.guias.guia_compraModal')
-@include('logistica.cotizaciones.proveedorModal')
-@include('logistica.cotizaciones.add_proveedor')
 @endsection
 
 @section('scripts')
@@ -44,13 +59,10 @@
     <script src="{{ asset('datatables/pdfmake/pdfmake.min.js') }}"></script>
     <script src="{{ asset('datatables/pdfmake/vfs_fonts.js') }}"></script>
     <script src="{{ asset('datatables/JSZip/jszip.min.js') }}"></script>
+    <script src="{{ asset('template/plugins/moment.min.js') }}"></script>
 
+    <script src="{{('/js/logistica/comprobantes/listado_doc_compra.js')}}"></script>
     <script src="{{('/js/logistica/comprobantes/doc_compra.js')}}"></script>
-    <script src="{{('/js/logistica/comprobantes/doc_compraModal.js')}}"></script>
-    <script src="{{('/js/logistica/comprobantes/orden_compraModal.js')}}"></script>
-    <script src="{{('/js/logistica/comprobantes/doc_com_detalle.js')}}"></script>
-    <script src="{{('/js/almacen/guia/guia_compraModal.js')}}"></script>
-    <script src="{{('/js/logistica/proveedorModal.js')}}"></script>
-    <script src="{{('/js/logistica/add_proveedor.js')}}"></script>
+ 
 
 @endsection
