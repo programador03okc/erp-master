@@ -20,7 +20,7 @@ function listarDocsCompra(){
         'dom': vardataTables[1],
         'buttons': vardataTables[2],
         'language' : vardataTables[0],
-        'ajax': '/listar_docs_compra',
+        'ajax': 'listar_docs_compra',
         'columns': [
             {'data': 'id_doc_com'},
             {'data': 'razon_social'},
@@ -44,7 +44,6 @@ function doc_compraModal(){
     $('#modal-doc_compra').modal({
         show: true
     });
-    clearDataTable();
     listarDocsCompra();
 }
 
@@ -54,6 +53,8 @@ function selectDocCompra(){
 
     if (page == "doc_compra"){
         // console.log(myId);
+        listaGuiaRemision=[];
+        listaDetalleComprobanteCompra=[];
         mostrar_doc_compra(myId);
     }    
     $('#modal-doc_compra').modal('hide');

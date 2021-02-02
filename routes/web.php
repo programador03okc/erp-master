@@ -768,6 +768,7 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('listar_detalle_guia_compra/{id?}', 'ComprobanteCompraController@listar_detalle_guia_compra');
 				Route::get('tipo_cambio_compra/{fecha}', 'AlmacenController@tipo_cambio_compra');
 				Route::post('guardar_doc_compra', 'ComprobanteCompraController@guardar_doc_compra');
+				// Route::get('listar_guias_prov/{id?}', 'ComprobanteCompraController@listar_guias_prov');
 
 				Route::get('generar_comprobante', 'ComprobanteCompraController@view_genera_comprobante_compra')->name('generar_comprobante');
 				Route::get('listar_docs_compra', 'ComprobanteCompraController@listar_docs_compra');
@@ -778,7 +779,6 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('anular_doc_detalle/{id?}', 'ComprobanteCompraController@anular_doc_detalle');
 				Route::get('anular_doc_compra/{id?}', 'ComprobanteCompraController@anular_doc_compra');
 				Route::get('mostrar_doc_com/{id?}', 'ComprobanteCompraController@mostrar_doc_com');
-				Route::get('listar_guias_prov/{id?}', 'ComprobanteCompraController@listar_guias_prov');
 				Route::get('guardar_doc_items_guia/{id?}/{id_doc?}', 'ComprobanteCompraController@guardar_doc_items_guia');
 				Route::get('mostrar_doc_detalle/{id?}', 'ComprobanteCompraController@mostrar_doc_detalle');
 				Route::get('actualiza_totales_doc/{por?}/{id?}/{fec?}', 'ComprobanteCompraController@actualiza_totales_doc'); 
