@@ -17,33 +17,20 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <button type="button" class="btn btn-primary">Crear Nuevo Rol</button>
+                        <!-- <button type="button" class="btn btn-primary">Crear Nuevo Rol</button> -->
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-md-3">
-                        <h5>Nombre de Nuevo Rol</h5>
-                        <input type="text" class="form-control icd-okc" name="" />
-                    </div>
-                    <div class="col-md-3">
-                        <h5>Asignar A</h5>
-                        <select class="form-control icd-okc" name="" id="">
-                            <option value="">Usuario     1</option>
-                            <option value="">Usuario     2</option>
-                            <option value="">Usuario     3</option>
-                        </select>
-                    </div>
-                </div>
+ 
                 <br>
                 <div class="row">
                     <div class="col-md-12">
                             <!-- Nav tabs -->
-                        <ul class="nav nav-tabs" role="tablist">
-                        <li role="presentation" class="active"><a href="#modulo1" aria-controls="modulo1" role="tab" data-toggle="tab">modulo 1</a></li>
-                        <li role="presentation" class=""><a href="#modulo2" onClick="vista_extendida();" aria-controls="modulo2" role="tab" data-toggle="tab">modulo 2</a></li>
+                        <ul class="nav nav-tabs" role="tablist" id="tab_modulos">
+                            <li role="presentation" class="active"><a href="#modulo1" aria-controls="modulo1" role="tab" data-toggle="tab">modulo 1</a></li>
+                            <li role="presentation" class=""><a href="#modulo2" onClick="vista_extendida();" aria-controls="modulo2" role="tab" data-toggle="tab">modulo 2</a></li>
                         </ul>
                         <!-- Tab panes -->
-                        <div class="tab-content">
+                        <div class="tab-content" id="tabpanel_modulos">
                             <div role="tabpanel" class="tab-pane active" id="modulo1">
                                     <div class="panel panel-default">
                                         <div class="panel-body" style="overflow: scroll; height: 35vh;">

@@ -198,7 +198,131 @@ function accesoUsuario(id){
         show: true,
         backdrop: 'static'
     });
+
+    buildArbolSistema();
 }
+
+function buildArbolSistema(){
+    $.ajax({
+        type: 'GET',
+        url: 'arbol/',
+        dataType: 'JSON',
+        success: function(response){
+            console.log(response);
+            let li='';
+            let tabModulo='';
+            let htmlSubModulo='';
+            let subModuloArray=[];
+            response.forEach((element,index) => {
+                if(element.sub_modulo != undefined){
+                    element.sub_modulo.forEach(sm => {
+
+                        htmlSubModulo = '<div class="col-md-12">'+
+                            '<div class="checkbox">'+
+                            '<label style="font-weight:bold;">'+
+                                '<input type="checkbox" value="">'+
+                                sm.descripcion+
+                            '</label>';
+                            let sub_modulo_hijo='';
+                            if(sm.sub_modulo_hijo != undefined){
+                                sm.sub_modulo_hijo.forEach(smh => {
+                                    sub_modulo_hijo+=
+                                        '<label style="display:block; margin-left:21px">'+
+                                        '<input type="checkbox" value="" data-id-padre="'+smh.id_padre+'" data-id-modulo="'+smh.id_modulo+'" >'+
+                                        smh.modulo+
+                                        '</label>';
+
+                                    if(smh.aplicacion != undefined){
+                                        smh.aplicacion.forEach(a => {
+                                            sub_modulo_hijo+=
+                                            '<label style="display:block; margin-left:41px">'+
+                                            '<input type="checkbox" value="" data-id-sub-modulo="'+a.id_sub_modulo+'" data-id-aplicacion="'+a.id_aplicacion+'" >'+
+                                            a.descripcion+
+                                            '</label>';
+
+                                            if(a.accion != undefined){
+                                                a.accion.forEach(a => {
+                                                    if(a.permiso == true){
+                                                        sub_modulo_hijo+=
+                                                        '<label style="display:block; margin-left:81px">'+
+                                                        '<input type="checkbox" value="" data-id-aplicacion="'+a.id_aplicacion+'" data-id-accion="'+a.id_accion+'"  checked>'+
+                                                        a.descripcion+
+                                                        '</label>';
+                                                    }else{
+                                                        sub_modulo_hijo+=
+                                                        '<label style="display:block; margin-left:81px">'+
+                                                        '<input type="checkbox" value="" data-id-aplicacion="'+a.id_aplicacion+'" data-id-accion="'+a.id_accion+'" >'+
+                                                        a.descripcion+
+                                                        '</label>';
+                                                    }
+        
+                                                });
+                                            }
+
+                                        });
+                                    }
+
+                                });
+                            }
+                        htmlSubModulo+= sub_modulo_hijo
+                        htmlSubModulo += '</div>'+
+                        '</div>'
+                        
+                             subModuloArray.push( {
+                                'id_padre':sm.id_padre,
+                                'html':htmlSubModulo
+                                });
+                        
+                    });
+                }
+                if(index ==0){
+                    li +=`<li role="presentation" class="active"><a href="#${element.id_modulo}" aria-controls="${element.modulo}" role="tab" data-toggle="tab">${element.modulo}</a></li>`;
+                    tabModulo=`
+                        <div role="tabpanel" class="tab-pane active" id="${element.id_modulo}">
+                        <div class="panel panel-default">
+                            <div class="panel-body" style="overflow: scroll; height: 35vh;">
+                                <div class="row" name="panel_body">
+                                
+                                </div>
+                            </div>
+                        </div>
+                </div>`;
+                }else{
+                    li +=`<li role="presentation" class=""><a href="#${element.id_modulo}" onClick="vista_extendida();" aria-controls="${element.modulo}" role="tab" data-toggle="tab">${element.modulo}</a></li>`;
+                    tabModulo+=`
+                        <div role="tabpanel" class="tab-pane" id="${element.id_modulo}">
+                        <div class="panel panel-default">
+                            <div class="panel-body" style="overflow: scroll; height: 35vh;">
+                                <div class="row" name="panel_body">
+                                </div>
+                            </div>
+                        </div>
+                    </div>`;
+                    }
+            });
+            
+            document.querySelector("ul[id='tab_modulos']").innerHTML=li;
+            document.querySelector("div[id='tabpanel_modulos']").innerHTML=tabModulo;
+            // console.log(subModuloArray);
+            let tabpanel_modulos_children_length= document.querySelector("div[id='tabpanel_modulos']").children.length;
+            let tabpanel_modulos_children= document.querySelector("div[id='tabpanel_modulos']").children;
+            for (let index = 0; index < tabpanel_modulos_children_length; index++) {
+                const id_tab_panel = tabpanel_modulos_children[index].getAttribute('id');
+                subModuloArray.forEach(sma => {
+                    if(sma.id_padre == id_tab_panel){
+                        tabpanel_modulos_children[index].querySelector("div[name='panel_body']").innerHTML+=sma.html;
+                    }
+                });
+            }
+
+        }
+    }).fail( function( jqXHR, textStatus, errorThrown ){
+        console.log(jqXHR);
+        console.log(textStatus);
+        console.log(errorThrown);
+    });
+}
+
 function anularUsuario(id){
     var rspta = confirm('¿Está seguro que desea anular éste usuario?');
     

@@ -769,9 +769,9 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('tipo_cambio_compra/{fecha}', 'AlmacenController@tipo_cambio_compra');
 				Route::post('guardar_doc_compra', 'ComprobanteCompraController@guardar_doc_compra');
 				// Route::get('listar_guias_prov/{id?}', 'ComprobanteCompraController@listar_guias_prov');
+				Route::get('listar_docs_compra', 'ComprobanteCompraController@listar_docs_compra');
 
 				Route::get('generar_comprobante', 'ComprobanteCompraController@view_genera_comprobante_compra')->name('generar_comprobante');
-				Route::get('listar_docs_compra', 'ComprobanteCompraController@listar_docs_compra');
 				Route::get('listar_doc_guias/{id?}', 'ComprobanteCompraController@listar_doc_guias');
 				Route::get('listar_doc_items/{id?}', 'ComprobanteCompraController@listar_doc_items');
 				Route::post('actualizar_doc_compra', 'ComprobanteCompraController@update_doc_compra');
@@ -1491,6 +1491,7 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::post('guardar_usuarios', 'ConfiguracionController@guardar_usuarios');
 		Route::get('listar_trabajadores', 'ProyectosController@listar_trabajadores');
 		Route::get('anular_usuario/{id}', 'ConfiguracionController@anular_usuario');
+		Route::get('arbol', 'ConfiguracionController@arbol_modulos')->name('arbol');
 		
 		Route::group(['as' => 'usuario.', 'prefix' => 'usuario'], function(){
 			Route::get('password-user-decode/{id?}', 'ConfiguracionController@getPasswordUserDecode')->name('password-user-decode');

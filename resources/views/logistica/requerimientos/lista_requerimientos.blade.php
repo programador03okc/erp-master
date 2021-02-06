@@ -235,7 +235,7 @@
         // console.log(roles);
         grupos.forEach(element => {
             if(element.id_grupo ==2){ // comercial
-                document.querySelector("div[type='lista_requerimiento'] ul").children[1].children[0].setAttribute("class",'hidden')
+                document.querySelector("div[type='lista_requerimiento'] ul").children[2].children[0].setAttribute("class",'hidden')
                 document.querySelector("div[type='lista_requerimiento'] ul").children[0].setAttribute("class",'active')
                 document.querySelector("div[type='lista_requerimiento'] div[class='tab-content']").children[1].setAttribute('class','tab-pane')
                 document.querySelector("div[type='lista_requerimiento'] div[class='tab-content']").children[0].setAttribute("class",'tab-pane active')

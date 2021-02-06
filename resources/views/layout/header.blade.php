@@ -13,7 +13,12 @@
             <ul class="nav navbar-nav">
                 <!-- <li class="okc-li-mod"><a href="#" class="btn" id="like" data-name="Espejito espejito...quien es el más bonito">Test Socket</a></li> -->
                 <li><a href="/modulos">Módulos</a></li>
-                <li><a href="{{route('configuracion.index')}}">Configuración</a></li>
+                @foreach(Auth::user()->getAllRol() as $rol)
+                    @if($rol->id_rol == 6)
+                    <li><a href="{{route('configuracion.index')}}">Configuración</a></li>
+                    @endif
+                @endforeach    
+
                 <li class="info-docs"><a href="#" data-toggle="modal" data-target="#modal-sobre-erp">Sobre Agile</a></li>
                 <!-- <li><span onclick="modalSobreERP();" style="cursor:pointer;"></span></li> -->
                 <li class="dropdown">

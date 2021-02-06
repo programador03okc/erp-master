@@ -1689,4 +1689,147 @@ public function anular_configuracion_socket($id){
         return response()->json($output);
 
     }
+
+    public function arbol_modulos(){
+
+        $allRol = Auth::user()->getAllRol();
+        $idRolList=[];
+        foreach($allRol as $rol){
+                $idRolList[]= $rol->id_rol;
+        }
+
+        $sis_accion_rol = DB::table('configuracion.sis_accion_rol')
+        ->select('sis_accion_rol.*')
+        ->whereIn('id_rol', $idRolList)
+        ->where([['estado', '=', 1]])
+        ->orderBy('id_accion_rol', 'asc')
+        ->get();
+
+        $idAccionRol=[];
+        foreach ($sis_accion_rol as $data){
+            $idAccionRol[]=$data->id_accion;
+        }
+        
+
+        $sis_modulo = DB::table('configuracion.sis_modulo')
+        ->select('sis_modulo.*')
+        ->where([['estado', '=', 1]])
+        ->orderBy('descripcion', 'asc')
+        ->get();
+
+        $arbol_modulo=[];
+        $arbol_sub_modulo=[];
+        foreach($sis_modulo as $data){
+            if($data->tipo_modulo ==1){
+                $arbol_modulo[]=[
+                    'id_modulo'=>$data->id_modulo,
+                    'modulo'=>$data->descripcion,
+                    'sub_modulo'=>[]
+                ];
+            }
+            if($data->tipo_modulo ==2){
+                $arbol_sub_modulo[]=[
+                    'id_modulo'=>$data->id_modulo,
+                    'id_padre'=>$data->id_padre,
+                    'modulo'=>$data->descripcion
+                ];
+            }
+        }
+
+        foreach($arbol_modulo as $key_am => $am){
+            foreach($sis_modulo as $key_sm => $sm){
+                if($am['id_modulo'] == $sm->id_padre){
+                    $arbol_modulo[$key_am]['sub_modulo'][]=[
+                        'id_sub_modulo'=>$sm->id_modulo,
+                        'id_padre'=>$sm->id_padre,
+                        'descripcion'=>$sm->descripcion,
+                        'sub_modulo_hijo'=>[]
+                    ];
+                }
+            }
+        }
+
+        foreach($arbol_modulo as $key_am => $am){
+            foreach($am['sub_modulo'] as $key_sm => $sm){
+                foreach($arbol_sub_modulo as $key_asm => $asm){
+                    if($sm['id_sub_modulo'] == $asm['id_padre']){
+                        $arbol_modulo[$key_am]['sub_modulo'][$key_sm]['sub_modulo_hijo'][]= $asm ;
+                    } 
+
+                }
+            }
+        }
+
+        $sis_aplicacion = DB::table('configuracion.sis_aplicacion')
+        ->select('sis_aplicacion.id_aplicacion','sis_aplicacion.id_sub_modulo','sis_aplicacion.descripcion')
+        ->where([['estado', '=', 1]])
+        ->orderBy('descripcion', 'asc')
+        ->get();
+    
+
+
+        foreach($arbol_modulo as $key_am => $am){
+            foreach($am['sub_modulo'] as $key_sm => $sm){
+                if(isset($sm['sub_modulo_hijo'])){
+                    foreach($sm['sub_modulo_hijo'] as $key_sh => $sh){
+                        foreach($sis_aplicacion as $key_sa => $sa){
+                            if($sa->id_sub_modulo == $sh['id_modulo']){
+                                $arbol_modulo[$key_am]['sub_modulo'][$key_sm]['sub_modulo_hijo'][$key_sh]['aplicacion'][]= [
+                                    'id_aplicacion'=>$sa->id_aplicacion,
+                                    'id_sub_modulo'=>$sa->id_sub_modulo,
+                                    'descripcion'=>$sa->descripcion,
+                                    'accion'=>[]
+                                    ] ;
+                            } 
+    
+                        }
+                    }
+
+                }
+            }
+        }
+
+        $sis_accion = DB::table('configuracion.sis_accion')
+        ->select('sis_accion.id_accion','sis_accion.id_aplicacion','sis_accion.descripcion')
+        ->where([['estado', '=', 1]])
+        ->orderBy('id_accion', 'asc')
+        ->get();
+
+
+        foreach($arbol_modulo as $key_am => $am){
+            foreach($am['sub_modulo'] as $key_sm => $sm){
+                if(isset($sm['sub_modulo_hijo'])){
+                    foreach($sm['sub_modulo_hijo'] as $key_sh => $sh){
+                        if(isset($sh['aplicacion'])){
+                            foreach($sh['aplicacion'] as $key_a => $ap){
+                                foreach($sis_accion as $key_ac => $ac){
+                                    if($ac->id_aplicacion == $ap['id_aplicacion']){
+                                        if(in_array($ac->id_accion,$idAccionRol)==true){
+                                            $arbol_modulo[$key_am]['sub_modulo'][$key_sm]['sub_modulo_hijo'][$key_sh]['aplicacion'][$key_a]['accion'][]= [
+                                                'id_accion'=> $ac->id_accion,
+                                                'id_aplicacion'=> $ac->id_aplicacion,
+                                                'descripcion'=> $ac->descripcion,
+                                                'permiso'=> true
+                                                ] ;
+                                        }else{
+                                            $arbol_modulo[$key_am]['sub_modulo'][$key_sm]['sub_modulo_hijo'][$key_sh]['aplicacion'][$key_a]['accion'][]= [
+                                                'id_accion'=> $ac->id_accion,
+                                                'id_aplicacion'=> $ac->id_aplicacion,
+                                                'descripcion'=> $ac->descripcion,
+                                                'permiso'=> false
+                                                ] ;
+                                        }
+                                    } 
+                                }
+                            }
+                        }
+
+                    }
+                }
+            }
+        }
+
+    return $arbol_modulo;
+
+    }
 }
