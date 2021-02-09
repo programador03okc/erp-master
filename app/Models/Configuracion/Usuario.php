@@ -137,6 +137,15 @@ class Usuario extends Authenticatable
 		return $roles;
 	}
 
+	public function getAllRolUser($id)
+	{
+		$roles = DB::table('configuracion.sis_acceso')
+		->select('sis_acceso.*','sis_rol.descripcion')
+		->join('configuracion.sis_rol','sis_rol.id_rol','=','sis_acceso.id_rol')
+		->where('sis_acceso.id_usuario',$id)
+		->get();
+		return $roles;
+	}
 
 
 

@@ -3,17 +3,14 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="close"><span aria-hidden="true">&times;</span></button>
-                <h3 class="modal-title" id="title-detalle_nota_lanzamiento">Asignar Acceosos a Usuario</h3>
+                <h3 class="modal-title" id="title-detalle_nota_lanzamiento">Asignar Accesos</h3>
             </div>
             <div class="modal-body">
                 <input type="hidden" class="form-control icd-okc" name="id_detalle_nota_lanzamiento" />
                 <div class="form-inline">
                     <div class="form-group">
                     <label for="exampleInputName2">Lista de Roles</label>
-                        <select class="form-control icd-okc" name="" id="">
-                            <option value="">Rol 1</option>
-                            <option value="">Rol 2</option>
-                            <option value="">Rol 3</option>
+                        <select class="form-control icd-okc" name="roles_usuario" id="roles_usuario" onChange="buildArbolSistema();">
                         </select>
                     </div>
                     <div class="form-group">
@@ -123,7 +120,7 @@
             </div>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-sm btn-primary" name="btnActualizarDetalleNota" onClick="actualizarDetalleNotaLanzamiento();">Actualizar</button>
+                <button class="btn btn-sm btn-primary" name="btnActualizarAccesoUsuario" onClick="actualizarAccesoUsuario();">Actualizar</button>
 
             </div>
         </div>

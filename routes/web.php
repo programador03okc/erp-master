@@ -1491,7 +1491,9 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::post('guardar_usuarios', 'ConfiguracionController@guardar_usuarios');
 		Route::get('listar_trabajadores', 'ProyectosController@listar_trabajadores');
 		Route::get('anular_usuario/{id}', 'ConfiguracionController@anular_usuario');
-		Route::get('arbol', 'ConfiguracionController@arbol_modulos')->name('arbol');
+		Route::get('lista-roles-usuario/{id}', 'ConfiguracionController@lista_roles_usuario');
+		Route::get('arbol-acceso/{id_rol}', 'ConfiguracionController@arbol_modulos')->name('arbol-acceso');
+		Route::put('actualizar-accesos-usuario', 'ConfiguracionController@actualizar_accesos_usuario');
 		
 		Route::group(['as' => 'usuario.', 'prefix' => 'usuario'], function(){
 			Route::get('password-user-decode/{id?}', 'ConfiguracionController@getPasswordUserDecode')->name('password-user-decode');

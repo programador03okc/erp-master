@@ -179,6 +179,7 @@
     <script src="{{ asset('datatables/JSZip/jszip.min.js') }}"></script>
     
     <script src="{{('/js/configuracion/usuario.js')}}"></script>
+    <script src="{{('/js/configuracion/modal_asignar_accesos.js')}}"></script>
     <script src="{{ asset('js/proyectos/residentes/trabajadorModal.js')}}"></script>
 
 @endsection

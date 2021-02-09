@@ -109,6 +109,11 @@ class ConfiguracionController extends Controller{
         return $data;
     }
 
+    function lista_roles_usuario($id){
+        $rolesUsuario = Auth::user()->getAllRolUser($id);
+		return $rolesUsuario;
+
+    }
     function lista_roles(){
 		$roles = DB::table('configuracion.sis_rol')
 		->select('sis_rol.*')
@@ -1690,13 +1695,14 @@ public function anular_configuracion_socket($id){
 
     }
 
-    public function arbol_modulos(){
+    public function arbol_modulos($id_rol){
 
-        $allRol = Auth::user()->getAllRol();
-        $idRolList=[];
-        foreach($allRol as $rol){
-                $idRolList[]= $rol->id_rol;
-        }
+        // $allRol = Auth::user()->getAllRol();
+        // $idRolList=[];
+        // foreach($allRol as $rol){
+        //         $idRolList[]= $rol->id_rol;
+        // }
+        $idRolList[]=$id_rol;
 
         $sis_accion_rol = DB::table('configuracion.sis_accion_rol')
         ->select('sis_accion_rol.*')
@@ -1831,5 +1837,60 @@ public function anular_configuracion_socket($id){
 
     return $arbol_modulo;
 
+    }
+
+
+   public function actualizar_accesos_usuario(Request $request){
+        $id_rol= $request->id_rol;
+        $accesos= $request->accesos;
+        $status=0;
+
+        $accion_rol_usuario_actual = DB::table('configuracion.sis_accion_rol')
+        ->select('sis_accion_rol.*')
+        ->where([['id_rol','=',$id_rol]])
+        ->orderBy('id_accion_rol', 'asc')
+        ->get();
+
+        $id_accion_rol_usuario_actual_list=[];
+        foreach($accion_rol_usuario_actual as $data){
+            $id_accion_rol_usuario_actual_list[]=$data->id_accion;
+        }
+
+        $count_accesos= count($accesos);
+        $id_accion_list=[];
+        if ($count_accesos > 0) {
+            for ($i = 0; $i < $count_accesos; $i++) {
+                if(in_array($accesos[$i]['id_accion'],$id_accion_rol_usuario_actual_list)==true){
+                    //actualizar 
+                    $update = DB::table('configuracion.sis_accion_rol')->where([['id_accion', $accesos[$i]['id_accion']],['id_rol',$id_rol]])
+                    ->update([
+                        'estado' => $accesos[$i]['valor']=='true'?1:0
+                    ]);
+                    $status=200;
+
+                }else{
+                    //crear nuevo id_accion_rol
+                    $id_accion_rol = DB::table('configuracion.sis_accion_rol')->insertGetId(
+                        [
+                            'id_rol'    => $id_rol,
+                            'id_accion' => $accesos[$i]['id_accion'],
+                            'estado'    => $accesos[$i]['valor']=='true'?1:0
+                            
+                        ],
+                        'id_accion_rol'
+                    );
+                    if($id_accion_rol>0){
+                        $status=200;
+                        
+                    }else{
+                        $status=204;
+                    }
+
+                }
+            }
+        }
+
+        $output=['status'=>$status];
+        return response()->json($output);
     }
 }
