@@ -23,8 +23,9 @@ function inicializarRutasListado(
     rutaVerFlujos = _rutaVerFlujos;
     rutaExplorarRequerimiento = _rutaExplorarRequerimiento;
     rutaListaOrdenesPropias = _rutaListaOrdenesPropias;
+    let año_publicacion = document.querySelector("form[id='form-ordenesPropias'] select[id='descripcion_año_publicacion']").value;
 
-    listar_ordenes_propias();
+    listar_ordenes_propias(null,año_publicacion);
     listar_requerimientos_elaborados('OK COMPUTER');
     vista_extendida();
 
@@ -59,8 +60,9 @@ $(function(){
 
  
 
-function listar_ordenes_propias(){
-    let id_empresa = document.querySelector("form[id='form-ordenesPropias'] select[id='id_empresa_select']").value;
+function listar_ordenes_propias(id_empresa= null,year_publicacion =null){
+    // let id_empresa = document.querySelector("form[id='form-ordenesPropias'] select[id='id_empresa_select']").value;
+
     $('#ListaOrdenesPropias').DataTable({
         'processing': true,
         'serverSide': true,
@@ -73,7 +75,7 @@ function listar_ordenes_propias(){
         'iDisplayLength':50,
         'ajax': {
             // url:'/logistica/requerimiento/lista/'+id_empresa+'/'+id_sede+'/'+id_grupo,
-            url:rutaListaOrdenesPropias+'/'+id_empresa,
+            url:rutaListaOrdenesPropias+'/'+id_empresa+'/'+year_publicacion,
             type:'GET',
             data: {_token: "{{csrf_token()}}"}
         },
@@ -282,6 +284,16 @@ function listar_requerimientos_elaborados(name){
 function handleChangeFilterEmpresaListReqByEmpresa(e) {
     listarTablaReq(e.target.value)
     getDataSelectSede(e.target.value);
+}
+function handleChangeFilterEmpresaListOrdenesPropiasByEmpresa(e) {
+    let año_publicacion = document.querySelector("form[id='form-ordenesPropias'] select[id='descripcion_año_publicacion']").value;
+
+    listar_ordenes_propias(e.target.value,año_publicacion);
+}
+function handleChangeFilterEmpresaListOrdenesPropiasByAñoPublicacion(e) {
+    let id_empresa = document.querySelector("form[id='form-ordenesPropias'] select[id='id_empresa_select']").value;
+
+    listar_ordenes_propias(id_empresa,e.target.value);
 }
 
 function getDataSelectSede(id_empresa = null){

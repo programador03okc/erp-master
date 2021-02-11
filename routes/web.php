@@ -680,7 +680,7 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::post('observar-documento', 'AprobacionController@observar_documento')->name('observar-documento');
 					Route::post('anular-documento', 'AprobacionController@anular_documento')->name('anular-documento');
 					
-					Route::get('lista-ordenes-propias/{empresa?}', 'RequerimientoController@lista_ordenes_propias')->name('lista-ordenes-propias');
+					Route::get('lista-ordenes-propias/{empresa?}/{year_publicacion?}', 'RequerimientoController@lista_ordenes_propias')->name('lista-ordenes-propias');
 				});
 			});
 			

@@ -37,10 +37,21 @@
                                                 <div class="col-md-4">
                                                     <h5>Empresa</h5>
                                                     <div style="display:flex;">
-                                                    <select class="form-control" id="id_empresa_select" onChange="handleChangeFilterEmpresaListReqByEmpresa(event);">
+                                                    <select class="form-control" id="id_empresa_select" onChange="handleChangeFilterEmpresaListOrdenesPropiasByEmpresa(event);">
                                                             <option value="0">Todas las Empresas</option>
                                                             @foreach ($empresas_am as $emp)
                                                                 <option value="{{$emp->id}}">{{$emp->empresa}}</option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <h5>Año de publicación</h5>
+                                                    <div style="display:flex;">
+                                                    <select class="form-control" id="descripcion_año_publicacion" onChange="handleChangeFilterEmpresaListOrdenesPropiasByAñoPublicacion(event);">
+                                                           
+                                                            @foreach ($periodos as $periodo)
+                                                                <option value="{{$periodo->descripcion}}">{{$periodo->descripcion}}</option>
                                                             @endforeach
                                                         </select>
                                                     </div>

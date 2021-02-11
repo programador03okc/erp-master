@@ -35,7 +35,9 @@ class LogisticaController extends Controller
         $roles = $this->userSession()['roles'];
         $empresas = $this->select_mostrar_empresas();
         $empresas_am =  $this->select_mostrar_empresas_am();
-        return view('logistica/requerimientos/lista_requerimientos', compact('grupos','roles','empresas','empresas_am'));
+        $periodos = $this->mostrar_periodos();
+
+        return view('logistica/requerimientos/lista_requerimientos', compact('periodos','grupos','roles','empresas','empresas_am'));
     }
 
     function view_gestionar_requerimiento()

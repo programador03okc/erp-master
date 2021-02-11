@@ -609,7 +609,13 @@ class RequerimientoController extends Controller
     }
 
 
-    function lista_ordenes_propias($id_empresa){
+    function lista_ordenes_propias($id_empresa,$year_publicacion){
+
+        $hasWhere=[];
+        
+        if($id_empresa >0){
+            $hasWhere[]=['oc_propias.id_empresa','=',$id_empresa];
+        }
 
         $oc_propias = DB::table('mgcp_acuerdo_marco.oc_propias')
         ->select(
@@ -644,8 +650,15 @@ class RequerimientoController extends Controller
         ->leftJoin('mgcp_cuadro_costos.cc_venta_filas', 'cc_venta_filas.id', '=', 'cc.id')
         ->leftJoin('mgcp_cuadro_costos.cc_am_filas', 'cc_am_filas.id', '=', 'cc.id')
         ->leftJoin('almacen.alm_req', 'alm_req.id_cc', '=', 'cc.id')
-        ->orderBy('oc_propias.fecha_publicacion', 'desc')
-        ->get();
+        ->where($hasWhere)
+        // ->whereYear($hasWhereYear)
+        ->orderBy('oc_propias.fecha_publicacion', 'desc');
+
+        if($year_publicacion != 'null'){
+            $oc_propias->whereYear('oc_propias.fecha_publicacion','=',$year_publicacion)->get();
+        }else{
+            $oc_propias->get();
+        }
 
         return datatables($oc_propias)->toJson();
     }
