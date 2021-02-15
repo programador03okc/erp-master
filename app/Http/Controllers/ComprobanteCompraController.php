@@ -146,7 +146,7 @@ class ComprobanteCompraController extends Controller
         return view('logistica/comprobantes/generar_comprobante_compra', compact('igv','proveedores','clasificaciones','condiciones','tp_doc','moneda','detracciones','impuestos','usuarios','tp_contribuyente','sis_identidad'));
     }
 
-    public function listar_docs_compra(){
+    public function getListaComporbantesCompra(){
         $data = DB::table('almacen.doc_com')
         ->select(
             'doc_com.*',
@@ -167,9 +167,16 @@ class ComprobanteCompraController extends Controller
 
         ->where('doc_com.estado','!=',7)
         ->get();
+        return $data;
+    }
+
+    public function listar_docs_compra(){
+        $data = $this->getListaComporbantesCompra();
         $output['data'] = $data;
         return response()->json($output);
     }
+
+ 
 
     public function listar_doc_guias($id_doc){
         $guias = DB::table('almacen.doc_com_guia')

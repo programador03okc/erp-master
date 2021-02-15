@@ -770,7 +770,7 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::post('guardar_doc_compra', 'ComprobanteCompraController@guardar_doc_compra');
 				// Route::get('listar_guias_prov/{id?}', 'ComprobanteCompraController@listar_guias_prov');
 				Route::get('listar_docs_compra', 'ComprobanteCompraController@listar_docs_compra');
-
+ 
 				Route::get('generar_comprobante', 'ComprobanteCompraController@view_genera_comprobante_compra')->name('generar_comprobante');
 				Route::get('listar_doc_guias/{id?}', 'ComprobanteCompraController@listar_doc_guias');
 				Route::get('listar_doc_items/{id?}', 'ComprobanteCompraController@listar_doc_items');

@@ -24,12 +24,14 @@ function llenarTablaListaComprobanteCompra(data){
 
     var vardataTables = funcDatatables();
     $('#listaComprobantesCompra').DataTable({
-        'info': false,
-        'searching': false,
-        'paging':   false,
+        'dom': vardataTables[1],
+        'buttons': vardataTables[2],
         'language' : vardataTables[0],
         'bDestroy': true,
         'data':data,
+        'buttons': [
+            'excel','print'
+        ],
         'columns': [
             {'render':
                 function (data, type, row,meta){
@@ -55,7 +57,8 @@ function llenarTablaListaComprobanteCompra(data){
                     </div>`;
             }
             },
-        ]
+        ],
+        
         // 'columnDefs': [{ 'aTargets': [0,5], 'sClass': 'invisible'}],
     });
 }
