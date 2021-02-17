@@ -1309,7 +1309,8 @@ function fillEstados(id_estado_actual){
             {'30':'CONFIRMADA'},
             {'31':'FACTURADA'},
             {'20':'DESPACHADO'},
-            {'26':'EN TRANSITO'}
+            {'26':'EN TRANSITO'},
+            {'15':'ATENCIÓN PARCIAL'}
     ];
 
 
