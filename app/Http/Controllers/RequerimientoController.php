@@ -1040,4 +1040,43 @@ class RequerimientoController extends Controller
         return response()->json($output);
     }
 
+    public function guardar_sub_categoria(Request $request){
+       
+        $codigo =  (new AlmacenController)->subcategoria_nextId($request->id_categoria);
+        $des = strtoupper($request->descripcion);
+        $fecha = date('Y-m-d H:i:s');
+        $usuario = Auth::user()->id_usuario;
+        $msj = '';
+        $status = 0;
+        $data = [];
+
+        $count = DB::table('almacen.alm_subcat')
+        ->where([['descripcion','=',$des],['estado','=',1]])
+        ->count();
+
+        if ($count == 0){
+            $data = DB::table('almacen.alm_subcat')->insertGetId(
+                [
+                    'codigo' => $codigo,
+                    // 'id_categoria' => $request->id_categoria,
+                    'descripcion' => $des,
+                    'estado' => 1,
+                    'fecha_registro' => $fecha,
+                    'registrado_por' => $usuario
+                ],
+                    'id_subcategoria'
+                );
+                $status= 200;
+                $msj='Guardado';
+
+                $subcategoriaList = (new AlmacenController)->mostrar_subcategorias_cbo();
+
+        } else {
+            $msj = 'No es posible guardar. Ya existe una subcategoria con dicha descripción';
+            $status= 204;
+        }
+        $output=['status'=>$status,'msj'=>$msj,'data'=>$subcategoriaList];
+        return response()->json($output);
+    }
+
 }

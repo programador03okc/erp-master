@@ -18,13 +18,16 @@
                             </select>
                         </div>
                         <div class="col-md-4">
-                            <h5>SubCategoría</h5>
-                            <select class="form-control activation js-example-basic-single" name="id_subcategoria" required>
-                                <!-- <option value="0">Elija una opción</option> -->
-                                @foreach ($subcategorias as $subcat)
-                                    <option value="{{$subcat->id_subcategoria}}">{{$subcat->descripcion}}</option>
-                                @endforeach
-                            </select>
+                            <h5>Marca</h5>
+                            <div style="display:flex;">
+                                <select class="form-control activation js-example-basic-single" name="id_subcategoria" required>
+                                    <!-- <option value="0">Elija una opción</option> -->
+                                    @foreach ($subcategorias as $subcat)
+                                        <option value="{{$subcat->id_subcategoria}}">{{$subcat->descripcion}}</option>
+                                    @endforeach
+                                </select>
+                                <button type="button" class="btn-success" title="Agregar Marca" name="btnAddMarca" onclick="agregar_nueva_marca();"><i class="fas fa-plus"></i></button>
+                            </div>
                         </div>
                         <div class="col-md-4">
                             <h5>Clasificación</h5>
