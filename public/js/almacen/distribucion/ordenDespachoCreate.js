@@ -501,7 +501,7 @@ function validaOrdenDespacho(){
     var ubig = $('[name=ubigeo]').val();
     var dir = $('[name=direccion_destino]').val();
     var telf = $('[name=telefono_cliente]').val();
-    var mail = $('[name=correo_cliente]').val();
+    // var mail = $('[name=correo_cliente]').val();
     var hora = $('[name=hora_despacho]').val();
     var msj = '';
 
@@ -523,9 +523,9 @@ function validaOrdenDespacho(){
     if (telf == ''){
         msj+='\n Es necesario que ingrese un Teléfono';
     }
-    if (mail == ''){
-        msj+='\n Es necesario que ingrese un Email';
-    }
+    // if (mail == ''){
+    //     msj+='\n Es necesario que ingrese un Email';
+    // }
     if (hora == ''){
         msj+='\n Es necesario que ingrese una Hora';
     }

@@ -707,10 +707,12 @@ class OrdenesPendientesController extends Controller
                 $searchedValue = $det->id_requerimiento;
                 $existe = false;
                 
-                foreach($array_padres as $padre){
-                    if ($padre->id_requerimiento == $searchedValue){
-                        $existe = true;
-                        break;
+                if (count($array_padres) > 0){
+                    foreach($array_padres as $padre){
+                        if ($padre['id_requerimiento'] == $searchedValue){
+                            $existe = true;
+                            break;
+                        }
                     }
                 }
                 if ($existe == false){
