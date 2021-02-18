@@ -270,8 +270,8 @@ function listar_requerimientos_elaborados(name){
         url: rutaGetIdEmpresa,
         dataType: 'JSON',
         data:data,
-        success: function(response){            
-            document.querySelector('div[type="lista_requerimiento"] select[id="id_empresa_select"]').value = response;
+        success: function(response){  
+            // document.querySelector('div[type="lista_requerimiento"] select[id="id_empresa_select"]').value = response;
             listarTablaReq(response,null, null)
             getDataSelectSede(response);
         }
