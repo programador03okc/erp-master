@@ -58,6 +58,7 @@ function format ( table_id, id, row ) {
                     <td style="border: none;">${element.codigo_oportunidad!==null ? element.codigo_oportunidad : ''}</td>
                     <td style="border: none;">${element.oportunidad!==null ? element.oportunidad : ''}</td>
                     <td style="border: none;">${element.nombre!==null ? element.nombre : ''}</td>
+                    <td style="border: none;">${element.user_name!==null ? element.user_name : ''}</td>
                     <td style="border: none;"><label class="lbl-codigo" title="Abrir Requerimiento" onClick="abrir_requerimiento(${element.id_requerimiento})">${element.codigo_req}</label> ${element.sede_req}</td>
                     <td style="border: none;">${element.codigo}</td>
                     <td style="border: none;">${element.part_number}</td>
@@ -76,6 +77,7 @@ function format ( table_id, id, row ) {
                         <th style="border: none;">Cod.CC</th>
                         <th style="border: none;">Oportunidad</th>
                         <th style="border: none;">Entidad</th>
+                        <th style="border: none;">Corporativo</th>
                         <th style="border: none;">Cod.Req.</th>
                         <th style="border: none;">Código</th>
                         <th style="border: none;">PartNumber</th>

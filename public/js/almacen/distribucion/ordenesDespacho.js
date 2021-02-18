@@ -137,6 +137,7 @@ function listarRequerimientosElaborados(){
             {'data': 'fecha_requerimiento'},
             // {'data': 'direccion_entrega'},
             // {'data': 'grupo', 'name': 'adm_grupo.descripcion'},
+            {'data': 'user_name', 'name': 'users.name'},
             {'data': 'responsable', 'name': 'sis_usua.nombre_corto'},
             // {'data': 'estado_doc', 'name': 'adm_estado_doc.estado_doc'},
             {'render': function (data, type, row){
@@ -154,7 +155,7 @@ function listarRequerimientosElaborados(){
                     return '<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" '+
                     'data-placement="bottom" title="Ver Detalle" data-id="'+row['id_requerimiento']+'">'+
                     '<i class="fas fa-chevron-down"></i></button>';
-                }, targets: 12
+                }, targets: 13
             }
         ],
     });
@@ -204,6 +205,7 @@ function listarRequerimientosConfirmados(permiso){
             },
             {'data': 'direccion_entrega'},
             // {'data': 'grupo', 'name': 'adm_grupo.descripcion'},
+            {'data': 'user_name', 'name': 'users.name'},
             {'data': 'responsable', 'name': 'sis_usua.nombre_corto'},
             // {'data': 'estado_doc', 'name': 'adm_estado_doc.estado_doc'},
             {'render': function (data, type, row){
@@ -242,7 +244,7 @@ function listarRequerimientosConfirmados(permiso){
                     ('<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" '+
                         'data-placement="bottom" title="Ver Detalle" data-id="'+row['id_requerimiento']+'">'+
                         '<i class="fas fa-chevron-down"></i></button>');
-                }, targets: 14
+                }, targets: 15
             }
         ],
     });
@@ -307,6 +309,7 @@ function listarRequerimientosPendientes(permiso){
             // },
             // {'data': 'direccion_entrega'},
             // {'data': 'grupo', 'name': 'adm_grupo.descripcion'},
+            {'data': 'user_name', 'name': 'users.name'},
             {'data': 'responsable', 'name': 'sis_usua.nombre_corto'},
             // {'data': 'estado_doc', 'name': 'adm_estado_doc.estado_doc'},
             {'render': function (data, type, row){
@@ -412,7 +415,7 @@ function listarRequerimientosPendientes(permiso){
                     'data-placement="bottom" title="Ver Detalle" data-id="'+row['id_requerimiento']+'">'+
                     '<i class="fas fa-chevron-down"></i></button>'
                 }
-                }, targets: 13
+                }, targets: 14
             }
         ],
     });
@@ -550,6 +553,7 @@ function listarRequerimientosEnTransformacion(permiso){
             // },
             // {'data': 'direccion_entrega'},
             // {'data': 'grupo', 'name': 'adm_grupo.descripcion'},
+            {'data': 'user_name', 'name': 'users.name'},
             {'data': 'responsable', 'name': 'sis_usua.nombre_corto'},
             // {'data': 'estado_doc', 'name': 'adm_estado_doc.estado_doc'},
             {'render': function (data, type, row){
@@ -654,7 +658,7 @@ function listarRequerimientosEnTransformacion(permiso){
                     'data-placement="bottom" title="Ver Detalle" data-id="'+row['id_requerimiento']+'">'+
                     '<i class="fas fa-chevron-down"></i></button>'
                 }
-                }, targets: 13
+                }, targets: 14
             }
         ],
     });
@@ -739,6 +743,7 @@ function listarOrdenesPendientes(){
             // {'data': 'direccion_destino'},
             {'data': 'fecha_despacho'},
             {'data': 'fecha_entrega'},
+            {'data': 'user_name', 'name': 'users.name'},
             {'data': 'nombre_corto', 'name': 'sis_usua.nombre_corto'},
             {'render': 
                 function (data, type, row){
@@ -894,6 +899,7 @@ function listarGruposDespachados(permiso){
             //     }
             // },
             {'data': 'concepto', 'name': 'alm_req.concepto'},
+            {'data': 'user_name', 'name': 'users.name'},
             // {'data': 'almacen_descripcion', 'name': 'alm_almacen.descripcion'},
             // {'data': 'ubigeo_descripcion', 'name': 'ubi_dis.descripcion'},
             // {'data': 'direccion_destino', 'name': 'orden_despacho.direccion_destino'},
@@ -1189,6 +1195,7 @@ function listarGruposDespachadosPendientesCargo(permiso){
             //     }
             // },
             {'data': 'concepto', 'name': 'alm_req.concepto'},
+            {'data': 'user_name', 'name': 'users.name'},
             // {'data': 'almacen_descripcion', 'name': 'alm_almacen.descripcion'},
             // {'data': 'ubigeo_descripcion', 'name': 'ubi_dis.descripcion'},
             // {'data': 'direccion_destino', 'name': 'orden_despacho.direccion_destino'},

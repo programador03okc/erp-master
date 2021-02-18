@@ -68,6 +68,7 @@ Panel de Control de Despachos
                                         <th>Fecha Req.</th>
                                         <!-- <th>Ubigeo Entrega</th>
                                         <th>Dirección Entrega</th> -->
+                                        <th>Corporativo</th>
                                         <th>Generado por</th>
                                         <th>Estado</th>
                                         <th>Motivo</th>
@@ -99,6 +100,7 @@ Panel de Control de Despachos
                                         <th>Fecha Req.</th>
                                         <th>Ubigeo Entrega</th>
                                         <th>Dirección Entrega</th>
+                                        <th>Corporativo</th>
                                         <th>Generado por</th>
                                         <th>Estado</th>
                                         <th>Motivo</th>
@@ -127,6 +129,7 @@ Panel de Control de Despachos
                                         <th>Fecha Entrega</th>
                                         <th>Cod.Req.</th>
                                         <th>Fecha Req.</th>
+                                        <th>Corporativo</th>
                                         <th>Generado por</th>
                                         <th>Estado</th>
                                         <th>Transf.</th>
@@ -157,6 +160,7 @@ Panel de Control de Despachos
                                         <th>Fecha Entrega</th>
                                         <th>Cod.Req.</th>
                                         <th>Fecha Req.</th>
+                                        <th>Corporativo</th>
                                         <th>Generado por</th>
                                         <th>Estado</th>
                                         <th>Transf.</th>
@@ -194,6 +198,7 @@ Panel de Control de Despachos
                                         <th>Dirección Destino</th> -->
                                         <th>Fecha Despacho</th>
                                         <th>Fecha Entrega</th>
+                                        <th>Corporativo</th>
                                         <th>Generado por</th>
                                         <th>Estado</th>
                                         <th>Motivo</th>
@@ -231,6 +236,7 @@ Panel de Control de Despachos
                                         <!-- <th>Almacén</th> -->
                                         <!-- <th>Ubigeo</th> -->
                                         <!-- <th>Dirección</th> -->
+                                        <th>Corporativo</th>
                                         <th>Fecha Despacho</th>
                                         <th>Despachador</th>
                                         <th>Tipo Entrega</th>
@@ -267,6 +273,7 @@ Panel de Control de Despachos
                                         <!-- <th>Almacén</th> -->
                                         <!-- <th>Ubigeo</th> -->
                                         <!-- <th>Dirección</th> -->
+                                        <th>Corporativo</th>
                                         <th>Fecha Despacho</th>
                                         <th>Despachador</th>
                                         <th>Tipo Entrega</th>

@@ -123,7 +123,8 @@ class OrdenesPendientesController extends Controller
                 'alm_prod.descripcion','alm_und_medida.abreviatura','alm_req.codigo as codigo_req',
                 'adm_estado_doc.estado_doc','adm_estado_doc.bootstrap_color','sis_sede.descripcion as sede_req',
                 'oc_propias.orden_am','oportunidades.oportunidad','oportunidades.codigo_oportunidad',
-                'entidades.nombre','oc_propias.id as id_oc_propia','oc_propias.url_oc_fisica'
+                'entidades.nombre','oc_propias.id as id_oc_propia','oc_propias.url_oc_fisica',
+                'users.name as user_name'
             )
             ->leftjoin('almacen.alm_item', 'alm_item.id_item', '=', 'log_det_ord_compra.id_item')
             ->leftjoin('almacen.alm_prod', 'alm_prod.id_producto', '=', 'alm_item.id_producto')
@@ -135,6 +136,7 @@ class OrdenesPendientesController extends Controller
             ->leftjoin('administracion.sis_sede', 'sis_sede.id_sede', '=', 'alm_req.id_sede')
             ->leftjoin('mgcp_cuadro_costos.cc','cc.id','=','alm_req.id_cc')
             ->leftjoin('mgcp_oportunidades.oportunidades','oportunidades.id','=','cc.id_oportunidad')
+            ->leftjoin('mgcp_usuarios.users','users.id','=','oportunidades.id_responsable')
             ->leftjoin('mgcp_acuerdo_marco.oc_propias','oc_propias.id_oportunidad','=','oportunidades.id')
             ->leftjoin('mgcp_acuerdo_marco.entidades','entidades.id','=','oportunidades.id_entidad')
             ->join('administracion.adm_estado_doc', 'adm_estado_doc.id_estado_doc', '=', 'log_det_ord_compra.estado')

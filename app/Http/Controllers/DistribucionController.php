@@ -129,7 +129,8 @@ class DistribucionController extends Controller
             // 'rrhh_perso.nro_documento as dni_persona','alm_almacen.descripcion as almacen_descripcion',
             'alm_req.id_sede as sede_requerimiento','sede_req.descripcion as sede_descripcion_req',
             'oc_propias.orden_am','oportunidades.oportunidad','oportunidades.codigo_oportunidad',
-            'entidades.nombre','oc_propias.id as id_oc_propia','oc_propias.url_oc_fisica','oc_propias.monto_total'
+            'entidades.nombre','oc_propias.id as id_oc_propia','oc_propias.url_oc_fisica',
+            'oc_propias.monto_total','users.name as user_name'
             // 'alm_tp_req.descripcion as tipo_req',
             // DB::raw("(rrhh_perso.nombres) || ' ' || (rrhh_perso.apellido_paterno) || ' ' || (rrhh_perso.apellido_materno) AS nombre_persona"),
                     // 'adm_contri.nro_documento as cliente_ruc','adm_contri.razon_social as cliente_razon_social',
@@ -139,6 +140,7 @@ class DistribucionController extends Controller
             // ->leftjoin('administracion.adm_grupo','adm_grupo.id_grupo','=','alm_req.id_grupo')
             ->leftjoin('mgcp_cuadro_costos.cc','cc.id','=','alm_req.id_cc')
             ->leftjoin('mgcp_oportunidades.oportunidades','oportunidades.id','=','cc.id_oportunidad')
+            ->leftjoin('mgcp_usuarios.users','users.id','=','oportunidades.id_responsable')
             ->leftjoin('mgcp_acuerdo_marco.oc_propias','oc_propias.id_oportunidad','=','oportunidades.id')
             ->leftjoin('mgcp_acuerdo_marco.entidades','entidades.id','=','oportunidades.id_entidad')
             ->join('administracion.adm_estado_doc','adm_estado_doc.id_estado_doc','=','alm_req.estado')
@@ -169,12 +171,14 @@ class DistribucionController extends Controller
             // DB::raw("(rrhh_perso.nombres) || ' ' || (rrhh_perso.apellido_paterno) || ' ' || (rrhh_perso.apellido_materno) AS nombre_persona"),
             // 'adm_contri.nro_documento as cliente_ruc','adm_contri.razon_social as cliente_razon_social',
             'oc_propias.orden_am','oportunidades.oportunidad','oportunidades.codigo_oportunidad',
-            'entidades.nombre','orden_despacho.id_od','oc_propias.id as id_oc_propia','oc_propias.url_oc_fisica','oc_propias.monto_total'
+            'entidades.nombre','orden_despacho.id_od','oc_propias.id as id_oc_propia','oc_propias.url_oc_fisica',
+            'oc_propias.monto_total','users.name as user_name'
             //,'orden_despacho.codigo as codigo_od','orden_despacho.estado as estado_od'
             )
             // ->join('almacen.alm_tp_req','alm_tp_req.id_tipo_requerimiento','=','alm_req.id_tipo_requerimiento')
             ->leftjoin('mgcp_cuadro_costos.cc','cc.id','=','alm_req.id_cc')
             ->leftjoin('mgcp_oportunidades.oportunidades','oportunidades.id','=','cc.id_oportunidad')
+            ->leftjoin('mgcp_usuarios.users','users.id','=','oportunidades.id_responsable')
             ->leftjoin('mgcp_acuerdo_marco.oc_propias','oc_propias.id_oportunidad','=','oportunidades.id')
             ->leftjoin('mgcp_acuerdo_marco.entidades','entidades.id','=','oportunidades.id_entidad')
             ->join('configuracion.sis_usua','sis_usua.id_usuario','=','alm_req.id_usuario')
@@ -231,12 +235,15 @@ class DistribucionController extends Controller
                         trans.id_requerimiento = alm_req.id_requerimiento
                         and trans.estado = 14) AS count_transferencia_recibida"),
             'oc_propias.orden_am','oportunidades.oportunidad','oportunidades.codigo_oportunidad','entidades.id as id_entidad',
-            'entidades.nombre','orden_despacho.id_od','oc_propias.id as id_oc_propia','oc_propias.url_oc_fisica','oc_propias.monto_total',
+            'entidades.nombre','orden_despacho.id_od','oc_propias.id as id_oc_propia','oc_propias.url_oc_fisica',
+            'oc_propias.monto_total','users.name as user_name',
             'entidades.responsable as entidad_persona','entidades.direccion as entidad_direccion','entidades.telefono as entidad_telefono','entidades.correo as entidad_email',
-            'adm_ctb_contac.nombre as contacto_persona','adm_ctb_contac.direccion as contacto_direccion','adm_ctb_contac.telefono as contacto_telefono','adm_ctb_contac.email as contacto_email'
+            'adm_ctb_contac.nombre as contacto_persona','adm_ctb_contac.direccion as contacto_direccion',
+            'adm_ctb_contac.telefono as contacto_telefono','adm_ctb_contac.email as contacto_email'
             )
             ->leftjoin('mgcp_cuadro_costos.cc','cc.id','=','alm_req.id_cc')
             ->leftjoin('mgcp_oportunidades.oportunidades','oportunidades.id','=','cc.id_oportunidad')
+            ->leftjoin('mgcp_usuarios.users','users.id','=','oportunidades.id_responsable')
             ->leftjoin('mgcp_acuerdo_marco.oc_propias','oc_propias.id_oportunidad','=','oportunidades.id')
             ->leftjoin('contabilidad.adm_ctb_contac','adm_ctb_contac.id_datos_contacto','=','oc_propias.id_contacto')
             ->leftjoin('mgcp_acuerdo_marco.entidades','entidades.id','=','oportunidades.id_entidad')
@@ -295,12 +302,15 @@ class DistribucionController extends Controller
                         trans.id_requerimiento = alm_req.id_requerimiento
                         and trans.estado = 14) AS count_transferencia_recibida"),
             'oc_propias.orden_am','oportunidades.oportunidad','oportunidades.codigo_oportunidad','entidades.id as id_entidad',
-            'entidades.nombre','orden_despacho.id_od','oc_propias.id as id_oc_propia','oc_propias.url_oc_fisica','oc_propias.monto_total',
+            'entidades.nombre','orden_despacho.id_od','oc_propias.id as id_oc_propia','oc_propias.url_oc_fisica',
+            'oc_propias.monto_total','users.name as user_name',
             'entidades.responsable as entidad_persona','entidades.direccion as entidad_direccion','entidades.telefono as entidad_telefono','entidades.correo as entidad_email',
-            'adm_ctb_contac.nombre as contacto_persona','adm_ctb_contac.direccion as contacto_direccion','adm_ctb_contac.telefono as contacto_telefono','adm_ctb_contac.email as contacto_email'
+            'adm_ctb_contac.nombre as contacto_persona','adm_ctb_contac.direccion as contacto_direccion',
+            'adm_ctb_contac.telefono as contacto_telefono','adm_ctb_contac.email as contacto_email'
             )
             ->leftjoin('mgcp_cuadro_costos.cc','cc.id','=','alm_req.id_cc')
             ->leftjoin('mgcp_oportunidades.oportunidades','oportunidades.id','=','cc.id_oportunidad')
+            ->leftjoin('mgcp_usuarios.users','users.id','=','oportunidades.id_responsable')
             ->leftjoin('mgcp_acuerdo_marco.oc_propias','oc_propias.id_oportunidad','=','oportunidades.id')
             ->leftjoin('contabilidad.adm_ctb_contac','adm_ctb_contac.id_datos_contacto','=','oc_propias.id_contacto')
             ->leftjoin('mgcp_acuerdo_marco.entidades','entidades.id','=','oportunidades.id_entidad')
@@ -343,7 +353,8 @@ class DistribucionController extends Controller
                     orden_despacho_adjunto.id_od = orden_despacho.id_od
                     and orden_despacho_adjunto.estado != 7) AS count_despacho_adjuntos"),
         'oc_propias.orden_am','oportunidades.oportunidad','oportunidades.codigo_oportunidad','oc_propias.monto_total',
-        'entidades.nombre','orden_despacho.id_od','oc_propias.id as id_oc_propia','oc_propias.url_oc_fisica')
+        'entidades.nombre','orden_despacho.id_od','oc_propias.id as id_oc_propia','oc_propias.url_oc_fisica',
+        'users.name as user_name')
         ->leftjoin('comercial.com_cliente','com_cliente.id_cliente','=','orden_despacho.id_cliente')
         ->leftjoin('contabilidad.adm_contri','adm_contri.id_contribuyente','=','com_cliente.id_contribuyente')
         ->leftjoin('rrhh.rrhh_perso','rrhh_perso.id_persona','=','orden_despacho.id_persona')
@@ -351,6 +362,7 @@ class DistribucionController extends Controller
         ->join('almacen.alm_req','alm_req.id_requerimiento','=','orden_despacho.id_requerimiento')
         ->leftjoin('mgcp_cuadro_costos.cc','cc.id','=','alm_req.id_cc')
         ->leftjoin('mgcp_oportunidades.oportunidades','oportunidades.id','=','cc.id_oportunidad')
+        ->leftjoin('mgcp_usuarios.users','users.id','=','oportunidades.id_responsable')
         ->leftjoin('mgcp_acuerdo_marco.oc_propias','oc_propias.id_oportunidad','=','oportunidades.id')
         ->leftjoin('mgcp_acuerdo_marco.entidades','entidades.id','=','oportunidades.id_entidad')
         ->join('administracion.adm_estado_doc','adm_estado_doc.id_estado_doc','=','alm_req.estado')
@@ -373,6 +385,7 @@ class DistribucionController extends Controller
         'orden_despacho_grupo.codigo as codigo_odg','orden_despacho.estado as estado_od',
         'oc_propias.orden_am','oportunidades.oportunidad','oportunidades.codigo_oportunidad','oc_propias.monto_total',
         'entidades.nombre','orden_despacho.id_od','oc_propias.id as id_oc_propia','oc_propias.url_oc_fisica',
+        'users.name as user_name',
         DB::raw("(SELECT COUNT(*) FROM almacen.orden_despacho_adjunto where
                     orden_despacho_adjunto.id_od = orden_despacho.id_od
                     and orden_despacho_adjunto.estado != 7) AS count_despacho_adjuntos"))
@@ -389,6 +402,7 @@ class DistribucionController extends Controller
         ->join('almacen.alm_req','alm_req.id_requerimiento','=','orden_despacho.id_requerimiento')
         ->leftjoin('mgcp_cuadro_costos.cc','cc.id','=','alm_req.id_cc')
         ->leftjoin('mgcp_oportunidades.oportunidades','oportunidades.id','=','cc.id_oportunidad')
+        ->leftjoin('mgcp_usuarios.users','users.id','=','oportunidades.id_responsable')
         ->leftjoin('mgcp_acuerdo_marco.oc_propias','oc_propias.id_oportunidad','=','oportunidades.id')
         ->leftjoin('mgcp_acuerdo_marco.entidades','entidades.id','=','oportunidades.id_entidad')
         ->join('administracion.adm_estado_doc','adm_estado_doc.id_estado_doc','=','alm_req.estado')
@@ -410,6 +424,7 @@ class DistribucionController extends Controller
         'orden_despacho_grupo.codigo as codigo_odg','orden_despacho.estado as estado_od',
         'oc_propias.orden_am','oportunidades.oportunidad','oportunidades.codigo_oportunidad','oc_propias.monto_total',
         'entidades.nombre','orden_despacho.id_od','oc_propias.id as id_oc_propia','oc_propias.url_oc_fisica',
+        'users.name as user_name',
         DB::raw("(SELECT COUNT(*) FROM almacen.orden_despacho_adjunto where
                     orden_despacho_adjunto.id_od = orden_despacho.id_od
                     and orden_despacho_adjunto.estado != 7) AS count_despacho_adjuntos"))
@@ -426,6 +441,7 @@ class DistribucionController extends Controller
         ->join('almacen.alm_req','alm_req.id_requerimiento','=','orden_despacho.id_requerimiento')
         ->leftjoin('mgcp_cuadro_costos.cc','cc.id','=','alm_req.id_cc')
         ->leftjoin('mgcp_oportunidades.oportunidades','oportunidades.id','=','cc.id_oportunidad')
+        ->leftjoin('mgcp_usuarios.users','users.id','=','oportunidades.id_responsable')
         ->leftjoin('mgcp_acuerdo_marco.oc_propias','oc_propias.id_oportunidad','=','oportunidades.id')
         ->leftjoin('mgcp_acuerdo_marco.entidades','entidades.id','=','oportunidades.id_entidad')
         ->join('administracion.adm_estado_doc','adm_estado_doc.id_estado_doc','=','alm_req.estado')
