@@ -158,7 +158,6 @@ function selectProducto(){
     if (form == undefined){
         var form = $('.page-main form[type=edition]').attr('id');
     }
-    console.log('form:'+form);
 
     if (page == "producto"){
         if (form == "form-general"){
@@ -245,6 +244,17 @@ function selectProducto(){
         }
         detalle_sale.push(producto);
         mostrarSale();
+    }
+    else if (page == 'ordenesPendientes'){
+        var sel = {
+            'id_producto': myId,
+            'part_number': part,
+            'codigo': code,
+            'descripcion': desc,
+            'abreviatura': abre,
+            'series': false
+        }
+        agregarProducto(sel);
     }
     $('#modal-producto').modal('hide');
 }

@@ -23,12 +23,18 @@ class OrdenesPendientesController extends Controller
         $almacenes = AlmacenController::mostrar_almacenes_cbo();
         $tp_doc = AlmacenController::mostrar_tp_doc_cbo();
         $tp_operacion = AlmacenController::tp_operacion_cbo_ing();
-        $clasificaciones = AlmacenController::mostrar_guia_clas_cbo();
+        $clasificaciones_guia = AlmacenController::mostrar_guia_clas_cbo();
         $usuarios = AlmacenController::select_usuarios();
         $motivos_anu = AlmacenController::select_motivo_anu();
         $monedas = AlmacenController::mostrar_moneda_cbo();
+        $categorias = AlmacenController::mostrar_categorias_cbo();
+        $subcategorias = AlmacenController::mostrar_subcategorias_cbo();
+        $clasificaciones = AlmacenController::mostrar_clasificaciones_cbo();
+        $unidades = AlmacenController::mostrar_unidades_cbo();
+
         return view('almacen/guias/ordenesPendientes', compact('almacenes','tp_doc','tp_operacion',
-        'clasificaciones','usuarios','motivos_anu','monedas'));
+        'clasificaciones_guia','usuarios','motivos_anu','monedas','categorias','subcategorias',
+        'clasificaciones','unidades'));
     }
 
     public function listarOrdenesPendientes(){
@@ -179,10 +185,11 @@ class OrdenesPendientesController extends Controller
         foreach ($detalle as $det) {
             
             array_push($ids_detalle, ['id_oc_det'=>$det->id_detalle_orden,'series'=>[]]);
+            
             $cantidad = ($det->cantidad - $det->suma_cantidad_guias);
 
-            $html.='<tr id="'.$det->id_detalle_orden.'">
-                <td><input type="checkbox" value="'.$det->id_detalle_orden.'" checked/></td>
+            $html.='<tr>
+                <td><input type="checkbox" data-tipo="orden" value="'.$det->id_detalle_orden.'" checked/></td>
                 <td>'.$det->codigo_oc.'</td>
                 <td>'.$det->codigo.'</td>
                 <td>'.$det->part_number.'</td>
@@ -191,12 +198,14 @@ class OrdenesPendientesController extends Controller
                 <td>'.$det->abreviatura.'</td>
                 <td>'.$det->precio.'</td>
                 <td>'.$det->subtotal.'</td>
-                <td><input type="text" class="oculto" id="series" value="'.$det->series.'" data-partnumber="'.$det->part_number.'"/>';
-                if ($det->series == true) {
-                    $html.='<i class="fas fa-bars icon-tabla boton" data-toggle="tooltip" data-placement="bottom" title="Agregar Series" onClick="agrega_series('.$det->id_detalle_orden.');"></i>';
-                }
-                $html.='</td>
+                <td>
+                    <input type="text" class="oculto" id="series" value="'.$det->series.'" data-partnumber="'.$det->part_number.'"/>
+                    <i class="fas fa-bars icon-tabla boton" data-toggle="tooltip" data-placement="bottom" title="Agregar Series" onClick="agrega_series('.$det->id_detalle_orden.');"></i>
+                </td>
             </tr>';
+            // if ($det->series == true) {
+            //     $html.='';
+            // }
             $i++;
         }
         return json_encode(['html'=>$html, 'ids_detalle'=>$ids_detalle]);
@@ -443,9 +452,11 @@ class OrdenesPendientesController extends Controller
                     }
                     else {
                         $ids_ocd = [];
-                    
+                        
                         foreach($detalle_oc as $d){
-                            array_push($ids_ocd, $d->id_detalle_orden);
+                            if ($d->id_detalle_orden !== null){
+                                array_push($ids_ocd, $d->id_detalle_orden);
+                            }
                         }
                         
                         $detalle = DB::table('logistica.log_det_ord_compra')
@@ -480,8 +491,6 @@ class OrdenesPendientesController extends Controller
                                 [
                                     "id_guia_com" => $id_guia,
                                     "id_producto" => $det->id_producto,
-                                    // "id_posicion" => (isset($posicion) ? $posicion->id_posicion : null),
-                                    // "id_posicion" => $posicion->id_posicion,
                                     "cantidad" => $cantidad,
                                     "id_unid_med" => $det->id_unidad_medida,
                                     "usuario" => $id_usuario,
@@ -489,7 +498,6 @@ class OrdenesPendientesController extends Controller
                                     "unitario" => $det->precio,
                                     "total" => (floatval($det->precio) * floatval($cantidad)),
                                     "unitario_adicional" => 0,
-                                    // "id_guia_ven_det" =>,
                                     'estado' => 1,
                                     'fecha_registro' => $fecha_registro,
                                 ],
@@ -578,7 +586,57 @@ class OrdenesPendientesController extends Controller
                                     ->where('id_detalle_requerimiento',$det->id_detalle_requerimiento)
                                     ->update(['estado' => 27]);
                             }
+                        }
 
+                        foreach ($detalle_oc as $det) {
+
+                            if ($det->id_detalle_orden == null){
+                                //Guardo los items de la guia
+                                $id_guia_com_det = DB::table('almacen.guia_com_det')->insertGetId(
+                                    [
+                                        "id_guia_com" => $id_guia,
+                                        "id_producto" => $det->id_producto,
+                                        "cantidad" => $det->cantidad,
+                                        // "id_unid_med" => $det->id_unidad_medida,
+                                        "usuario" => $id_usuario,
+                                        // "id_oc_det" => null,
+                                        "unitario" => 0.01,
+                                        "total" => (0.01 * floatval($det->cantidad)),
+                                        "unitario_adicional" => 0,
+                                        'estado' => 1,
+                                        'fecha_registro' => $fecha_registro,
+                                    ],
+                                        'id_guia_com_det'
+                                    );
+                                //agrega series
+                                foreach ($det->series as $serie) {
+                                    DB::table('almacen.alm_prod_serie')->insert(
+                                        [
+                                            'id_prod' => $det->id_producto,
+                                            'id_almacen' => $request->id_almacen,
+                                            'serie' => $serie,
+                                            'estado' => 1,
+                                            'fecha_registro' => $fecha_registro,
+                                            'id_guia_det' => $id_guia_com_det
+                                        ]
+                                    );
+                                }
+                                //Guardo los items del ingreso
+                                $id_det = DB::table('almacen.mov_alm_det')->insertGetId(
+                                    [
+                                        'id_mov_alm' => $id_ingreso,
+                                        'id_producto' => $det->id_producto,
+                                        // 'id_posicion' => $det->id_posicion,
+                                        'cantidad' => $det->cantidad,
+                                        'valorizacion' => (0.01 * floatval($det->cantidad)),
+                                        'usuario' => $id_usuario,
+                                        'id_guia_com_det' => $id_guia_com_det,
+                                        'estado' => 1,
+                                        'fecha_registro' => $fecha_registro,
+                                    ],
+                                        'id_mov_alm_det'
+                                    );
+                            }
                         }
                         // return $detalle;
                         $msj_trans = $this->generarTransferencias($request->id_almacen, $detalle);

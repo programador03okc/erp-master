@@ -54,10 +54,17 @@ function guardarProducto(data){
             if (response['msj'].length > 0){
                 alert(response['msj']);
             } else {
-                alert('Producto registrado con éxito');
-                $('#modal-productoCreate').modal('hide');
-                detalle_sale.push(response['producto']);
-                mostrarSale();
+                var page = $('.page-main').attr('type');
+                
+                if (page == 'ordenesPendientes'){
+                    $('#modal-productoCreate').modal('hide');
+                    agregarProducto(response['producto']);
+                } else {
+                    alert('Producto registrado con éxito');
+                    $('#modal-productoCreate').modal('hide');
+                    detalle_sale.push(response['producto']);
+                    mostrarSale();
+                }
             }
         }
     }).fail( function( jqXHR, textStatus, errorThrown ){

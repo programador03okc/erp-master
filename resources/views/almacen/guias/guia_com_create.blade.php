@@ -53,7 +53,7 @@
                             <h5>Clasif. de los Bienes y Servicios</h5>
                             <select class="form-control" name="id_guia_clas" readOnly required>
                                 <option value="0">Elija una opción</option>
-                                @foreach ($clasificaciones as $clas)
+                                @foreach ($clasificaciones_guia as $clas)
                                     <option value="{{$clas->id_clasificacion}}">{{$clas->descripcion}}</option>
                                 @endforeach
                             </select>
@@ -76,7 +76,11 @@
                                         <th>Unid</th>
                                         <th>Unitario</th>
                                         <th>Total</th>
-                                        <th></th>
+                                        <th width="5%">
+                                            <i class="fas fa-plus-circle icon-tabla green boton" 
+                                            data-toggle="tooltip" data-placement="bottom" 
+                                            title="Agregar Item" onClick="productoModal();"></i>
+                                        </th>
                                     </tr>
                                 </thead>
                                 <tbody></tbody>

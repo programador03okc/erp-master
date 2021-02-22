@@ -119,9 +119,7 @@ function listar_detalle_transformacion(id){
                 <td>${element.abreviatura}</td>
                 <td>${formatNumber.decimal(element.valor_unitario,'',2)}</td>
                 <td>${formatNumber.decimal(element.valor_total,'',2)}</td>
-                ${( element.series
-                    ? '<td><input type="text" class="oculto" id="series" value="'+element.series+'" data-partnumber="'+element.part_number+'"/><i class="fas fa-bars icon-tabla boton" data-toggle="tooltip" data-placement="bottom" title="Agregar Series" onClick="agrega_series_transformacion('+"'s"+element.id_sobrante+"'"+');"></i></td>' 
-                    : '<td></td>')}
+                <td><input type="text" class="oculto" id="series" value="${element.series}" data-partnumber="${element.part_number}"/><i class="fas fa-bars icon-tabla boton" data-toggle="tooltip" data-placement="bottom" title="Agregar Series" onClick="agrega_series_transformacion('${"'s"+element.id_sobrante+"'"}');"></i></td>
                 </tr>`;
                 i++;
                 series_transformacion.push({
@@ -141,9 +139,7 @@ function listar_detalle_transformacion(id){
                 <td>${element.abreviatura}</td>
                 <td>${formatNumber.decimal(element.valor_unitario,'',2)}</td>
                 <td>${formatNumber.decimal(element.valor_total,'',2)}</td>
-                ${( element.series
-                    ? '<td><input type="text" class="oculto" id="series" value="'+element.series+'" data-partnumber="'+element.part_number+'"/><i class="fas fa-bars icon-tabla boton" data-toggle="tooltip" data-placement="bottom" title="Agregar Series" onClick="agrega_series_transformacion('+"'t"+element.id_transformado+"'"+');"></i></td>' 
-                    : '<td></td>')}
+                ${'<td><input type="text" class="oculto" id="series" value="'+element.series+'" data-partnumber="'+element.part_number+'"/><i class="fas fa-bars icon-tabla boton" data-toggle="tooltip" data-placement="bottom" title="Agregar Series" onClick="agrega_series_transformacion('+"'t"+element.id_transformado+"'"+');"></i></td>' }
                 </tr>`;
                 i++;
                 series_transformacion.push({
@@ -199,43 +195,55 @@ $("#form-guia_create").on("submit", function(e){
             var json = series_transformacion.find(element => element.id == abr+id);
             console.log(json.series);
             var series = (json !== null ? json.series : []);
-            var requiereSeries = $(this).find('td input[id=series]').val();
-            var part_number = $(this).find('td input[id=series]').data('partnumber');
+            // var requiereSeries = $(this).find('td input[id=series]').val();
+            // var part_number = $(this).find('td input[id=series]').data('partnumber');
             
-            if (requiereSeries == 'true' && series.length == 0){
-                validaCampos += 'El producto con Part Number '+part_number+' requiere que ingrese Series.\n'; 
-            }
+            // if (requiereSeries == 'true' && series.length == 0){
+            //     validaCampos += 'El producto con Part Number '+part_number+' requiere que ingrese Series.\n'; 
+            // }
             
             var cant = $(this)[0].childNodes[11].innerHTML;
             var unit = $(this)[0].childNodes[15].innerHTML;
             detalle.push({ 
-                'id'  : id,
-                'tipo'  : tipo,
-                'id_producto'  : id_producto,
-                'cantidad'     : cant,
-                'unitario'     : unit,
-                'series'       : series
+                'id'            : id,
+                'tipo'          : tipo,
+                'id_producto'   : id_producto,
+                'cantidad'      : cant,
+                'unitario'      : unit,
+                'series'        : series
             });
         });
     } else {
         $("#detalleOrdenSeleccionadas input[type=checkbox]:checked").each(function(){
-            var id_oc_det = $(this).val();
-            var json = oc_det_seleccionadas.find(element => element.id_oc_det == id_oc_det);
-            var series = (json !== null ? json.series : []);
-            var requiereSeries = $(this).parent().parent().find('td input[id=series]').val();
-            var part_number = $(this).parent().parent().find('td input[id=series]').data('partnumber');
+            var id = $(this).val();
+            var tipo = $(this).data('tipo');
             
-            if (requiereSeries == '1' && series.length == 0){
+            if (tipo == 'orden'){
+                var json = oc_det_seleccionadas.find(element => element.id_oc_det == id);
+            }
+            else if (tipo == 'producto'){
+                var json = oc_det_seleccionadas.find(element => element.id_producto == id);
+            }
+            var series = (json !== null ? json.series : []);
+            var cantidad = $(this).parent().parent().find('td input[id='+(tipo == 'producto' ? 'p' : '')+id+'cantidad]').val();
+
+            if (series.length > 0 && series.length < parseFloat(cantidad)){
+                var part_number = $(this).parent().parent().find('td input[id=series]').data('partnumber');
                 validaCampos += 'El producto con Part Number '+part_number+' requiere que ingrese Series.\n'; 
             }
+            // var requiereSeries = $(this).parent().parent().find('td input[id=series]').val();
+            
+            // if (requiereSeries == '1' && series.length == 0){
+            //     validaCampos += 'El producto con Part Number '+part_number+' requiere que ingrese Series.\n'; 
+            // }
     
             detalle.push({ 
-                'id_detalle_orden'  : id_oc_det,
-                'cantidad'          : $(this).parent().parent().find('td input[id='+id_oc_det+'cantidad]').val(),
+                'id_detalle_orden'  : (tipo == 'orden' ? id : null),
+                'cantidad'          : cantidad,
+                'id_producto'       : (tipo == 'producto' ? id : null),
                 'series'            : series
             });
         });
-
     }    
     if (validaCampos.length > 0){
         alert(validaCampos);
@@ -279,4 +287,30 @@ function guardar_guia_create(data){
         console.log(textStatus);
         console.log(errorThrown);
     });
+}
+
+function agregarProducto(producto){
+
+    oc_det_seleccionadas.push({ 
+        'id_producto'  : parseInt(producto.id_producto),
+        'series'       : []
+    });
+    let tr = `<tr>
+        <td><input type="checkbox" data-tipo="producto" value="${producto.id_producto}" checked/></td>
+        <td></td>
+        <td>${producto.codigo}</td>
+        <td>${producto.part_number}</td>
+        <td>${producto.descripcion}</td>
+        <td><input type="number" id="${'p'+producto.id_producto+'cantidad'}" value="1" min="1" style="width:80px;"/></td>
+        <td>${producto.abreviatura}</td>
+        <td>0.01</td>
+        <td>0.01</td>
+        <td>
+            <input type="text" class="oculto" id="series" value="${producto.series}" data-partnumber="${producto.part_number}"/>
+            <i class="fas fa-bars icon-tabla boton" data-toggle="tooltip" data-placement="bottom" title="Agregar Series" 
+            onClick="agrega_series_producto(${producto.id_producto});"></i>
+        </td>
+    </tr>`;
+
+    $("#detalleOrdenSeleccionadas>tbody").append(tr);
 }

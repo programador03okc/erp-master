@@ -10,6 +10,7 @@
             <input type="text" class="oculto" name="id_guia_det"/>
             <input type="text" class="oculto" name="anulados"/>
             <input type="text" class="oculto" name="id_oc_det"/>
+            <input type="text" class="oculto" name="id_producto"/>
             <input type="text" class="oculto" name="id_detalle_transformacion"/>
                 <div class="row">
                     <div class="col-md-12">
@@ -71,7 +72,7 @@
             </div>
             <div class="modal-footer">
                 <label id="mid_barra" style="display: none;"></label>
-                <button class="btn btn-sm btn-success" onClick="guardar_series();">Agregar</button>
+                <button class="btn btn-sm btn-success" onClick="guardar_series();">Guardar</button>
             </div>
         </div>
     </div>

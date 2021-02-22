@@ -5,6 +5,7 @@ function agrega_series(id_oc_det){
     $('#modal-guia_com_barras').modal({
         show: true
     });
+    $('#listaBarras tbody').html('');
     var json = oc_det_seleccionadas.find(element => element.id_oc_det == id_oc_det);
     console.log(json);
     
@@ -15,16 +16,13 @@ function agrega_series(id_oc_det){
         }
     }
 
-    // listarSeries(id_guia_det);
-    // cant_items = $("#"+id_oc_det+" td").find("input[id=cantidad]").val();
     cant_items = $("#"+id_oc_det+"cantidad").val();
 
     $('[name=id_oc_det]').val(id_oc_det);
     $('[name=id_detalle_transformacion]').val('');
-    // $('#descripcion').text(descripcion);
+    $('[name=id_producto]').val('');
     $('[name=serie_prod]').val('');
-    $('#listaBarras tbody').val('');
-    
+        
 }
 
 function agrega_series_transformacion(id){
@@ -32,6 +30,7 @@ function agrega_series_transformacion(id){
     $('#modal-guia_com_barras').modal({
         show: true
     });
+    $('#listaBarras tbody').html('');
     var json = series_transformacion.find(element => element.id == id);
     console.log(json);
     
@@ -45,15 +44,44 @@ function agrega_series_transformacion(id){
 
     $('[name=id_oc_det]').val('');
     $('[name=id_detalle_transformacion]').val(id);
+    $('[name=id_producto]').val('');
     $('[name=serie_prod]').val('');
-    $('#listaBarras tbody').val('');
+    
+}
+
+function agrega_series_producto(id){
+    console.log('agrega_series_producto');
+    $('#modal-guia_com_barras').modal({
+        show: true
+    });
+    $('#listaBarras tbody').html('');
+    var json = oc_det_seleccionadas.find(element => element.id_producto == id);
+    console.log(json);
+    
+    if (json !== null){
+        
+        if (json.series.length > 0){
+            json_series = json.series;
+            cargar_series();
+        }
+    }
+
+    cant_items = $("#p"+id+"cantidad").val();
+
+    $('[name=id_oc_det]').val('');
+    $('[name=id_detalle_transformacion]').val('');
+    $('[name=id_producto]').val(id);
+    $('[name=serie_prod]').val('');
+    
 }
 
 function cargar_series(){
     var tr = '';
     var i = 1;
+    
     json_series.forEach(serie => {
-        tr+=`<tr id="reg-${serie}">
+        
+        tr +=`<tr id="reg-${serie}">
                 <td hidden>0</td>
                 <td class="numero">${i}</td>
                 <td><input type="text" class="oculto" name="series" value="${serie}"/>${serie}</td>
@@ -61,6 +89,7 @@ function cargar_series(){
             </tr>`;
         i++;
     });
+    console.log(tr);
     $('#listaBarras tbody').html(tr);
     $('[name=serie_prod]').focus();
 }
@@ -119,6 +148,7 @@ function eliminar_serie(serie){
 
 function guardar_series(){
     var id_oc_det = $('[name=id_oc_det]').val();
+    var id_producto = $('[name=id_producto]').val();
     var id_detalle_transformacion = $('[name=id_detalle_transformacion]').val();
     
     if (id_oc_det !== ''){
@@ -138,6 +168,15 @@ function guardar_series(){
         }
         console.log(json);
         console.log(series_transformacion);
+    }
+    else if (id_producto !== ''){
+        var json = oc_det_seleccionadas.find(element => element.id_producto == id_producto);
+        
+        if (json !== null){
+            json.series = json_series;
+        }
+        console.log(json);
+        console.log(oc_det_seleccionadas);
     }
     $('#modal-guia_com_barras').modal('hide');
 }

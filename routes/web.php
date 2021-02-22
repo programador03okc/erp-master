@@ -1064,7 +1064,9 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::get('obtenerGuia/{id}', 'OrdenesPendientesController@obtenerGuia');
 					Route::post('guardar_doc_compra', 'OrdenesPendientesController@guardar_doc_compra');
 					Route::get('documentos_ver/{id}', 'OrdenesPendientesController@documentos_ver');
-					
+					Route::get('mostrar_prods', 'AlmacenController@mostrar_prods');
+					Route::post('guardar_producto', 'AlmacenController@guardar_producto')->name('guardar-producto');
+
 				});
 	
 				Route::group(['as' => 'pendientes-salida.', 'prefix' => 'pendientes-salida'], function(){

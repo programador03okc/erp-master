@@ -18,7 +18,7 @@
                             </select>
                         </div>
                         <div class="col-md-4">
-                            <h5>SubCategoría</h5>
+                            <h5>Marca</h5>
                             <select class="form-control activation js-example-basic-single" name="id_subcategoria" required>
                                 <!-- <option value="0">Elija una opción</option> -->
                                 @foreach ($subcategorias as $subcat)
@@ -50,7 +50,7 @@
                                 @endforeach
                             </select>
                         </div>
-                        <div class="col-md-4">
+                        <!-- <div class="col-md-4">
                             <div class="form-group">
                                 <h5></h5>
                                 <div class="icheckbox_flat-blue">
@@ -59,12 +59,14 @@
                                     </label>
                                 </div> Control de Series
                             </div>
-                        </div>
+                        </div> -->
                     </div>
                     <div class="row">
                         <div class="col-md-12">
                             <h5>Descripción</h5>
-                            <input type="text" class="form-control activation" name="descripcion" onkeyup="mayus(this);" required>
+                            <textarea name="descripcion" class="form-control activation" id="descripcion" 
+                            onkeyup="mayus(this);" cols="50" rows="5" required></textarea>
+                            <!-- <input type="text" class="form-control activation" name="descripcion"  required> -->
                         </div>
                     </div>
                 </div>
