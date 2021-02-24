@@ -57,14 +57,15 @@ function mostrarListaItems(){
         // total_item = parseFloat(element.cantidad * element.precio);
         element.porcentaje_dscto = (element.porcentaje_dscto !== undefined ? element.porcentaje_dscto : 0);
         element.total_dscto = (element.total_dscto !== undefined ? element.total_dscto : 0);
+        element.precio = (element.precio !== null ? element.precio : 0.01);
         element.sub_total = (parseFloat(element.cantidad) * parseFloat(element.precio));
         element.total = (element.sub_total - element.total_dscto);
         sub_total += element.total;
 
         html+=`<tr>
         <td>${i}</td>
-        <td>${element.cod_orden}</td>
-        <td>${element.codigo}</td>
+        <td>${element.cod_orden!==null?element.cod_orden:''}</td>
+        <td>${element.codigo!==null?element.codigo:''}</td>
         <td>${element.part_number!==null?element.part_number:''}</td>
         <td>${element.descripcion}</td>
         <td>${element.cantidad}</td>

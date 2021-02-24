@@ -167,14 +167,66 @@ function listar_detalle_ordenes_seleccionadas(data){
         data: data,
         dataType: 'JSON',
         success: function(response){
-            $('#detalleOrdenSeleccionadas tbody').html(response['html']);
-            oc_det_seleccionadas = response['ids_detalle'];
+            var cant = 0;
+            console.log(response);
+            response.forEach(function(element){
+                cant = parseFloat(element.cantidad) - parseFloat(element.suma_cantidad_guias!==null ? element.suma_cantidad_guias : 0);
+                oc_det_seleccionadas.push({
+                    'id_oc_det'  : element.id_detalle_orden,
+                    'id_producto': null,
+                    'codigo_oc'  : element.codigo_oc,
+                    'codigo'     : element.codigo,
+                    'part_number': element.part_number,
+                    'descripcion': element.descripcion,
+                    'cantidad'   : cant,
+                    'id_unid_med': element.id_unidad_medida,
+                    'abreviatura': element.abreviatura,
+                    'precio'     : element.precio,
+                    'subtotal'   : element.subtotal,
+                    'series'     : []
+                });
+            });
+            mostrar_ordenes_seleccionadas();
         }
     }).fail( function( jqXHR, textStatus, errorThrown ){
         console.log(jqXHR);
         console.log(textStatus);
         console.log(errorThrown);
     });
+}
+
+function mostrar_ordenes_seleccionadas(){
+    var html = '';
+    var html_ser = '';
+    var i = 1;
+    
+    oc_det_seleccionadas.forEach(function(element){
+        html_ser = '';
+        element.series.forEach(function(serie){
+            html_ser += '<br>'+serie;
+        });
+        html +=`<tr>
+            <td><input type="checkbox" data-tipo="${element.id_oc_det!==null?'orden':'producto'}" 
+                value="${element.id_oc_det!==null ? element.id_oc_det : element.id_producto}" checked/></td>
+            <td>${element.codigo_oc!==null ? element.codigo_oc : ''}</td>
+            <td>${element.codigo}</td>
+            <td>${element.part_number!==null ? element.part_number : ''}</td>
+            <td>${element.descripcion+' <strong>'+html_ser+'</strong>'}</td>
+            <td><input type="number" id="${element.id_oc_det!==null ? element.id_oc_det : 'p'+element.id_producto}cantidad" value="${element.cantidad}" 
+                min="1" ${element.id_oc_det!==null ? `max="${element.cantidad}"` : ''} style="width:80px;"/></td>
+            <td>${element.abreviatura}</td>
+            <td>${element.precio}</td>
+            <td>${element.subtotal}</td>
+            <td>
+                <input type="text" class="oculto" id="series" value="${element.series}" 
+                data-partnumber="${element.part_number!==null ? element.part_number : element.codigo}"/>
+                <i class="fas fa-bars icon-tabla boton" data-toggle="tooltip" data-placement="bottom" title="Agregar Series" 
+                onClick="${element.id_oc_det!==null ? `agrega_series(${element.id_oc_det});` : `agrega_series_producto(${element.id_producto});`}"></i>
+            </td>
+        </tr>`;
+        i++;
+    });
+    $('#detalleOrdenSeleccionadas tbody').html(html);
 }
 
 $("#form-guia_create").on("submit", function(e){
@@ -217,19 +269,20 @@ $("#form-guia_create").on("submit", function(e){
         $("#detalleOrdenSeleccionadas input[type=checkbox]:checked").each(function(){
             var id = $(this).val();
             var tipo = $(this).data('tipo');
-            
+            var json = null;
+
             if (tipo == 'orden'){
-                var json = oc_det_seleccionadas.find(element => element.id_oc_det == id);
+                json = oc_det_seleccionadas.find(element => element.id_oc_det == id);
             }
             else if (tipo == 'producto'){
-                var json = oc_det_seleccionadas.find(element => element.id_producto == id);
+                json = oc_det_seleccionadas.find(element => element.id_producto == id);
             }
             var series = (json !== null ? json.series : []);
             var cantidad = $(this).parent().parent().find('td input[id='+(tipo == 'producto' ? 'p' : '')+id+'cantidad]').val();
 
             if (series.length > 0 && series.length < parseFloat(cantidad)){
                 var part_number = $(this).parent().parent().find('td input[id=series]').data('partnumber');
-                validaCampos += 'El producto con Part Number '+part_number+' requiere que ingrese Series.\n'; 
+                validaCampos += 'El producto '+part_number+' requiere que se complete las Series.\n'; 
             }
             // var requiereSeries = $(this).parent().parent().find('td input[id=series]').val();
             
@@ -241,6 +294,7 @@ $("#form-guia_create").on("submit", function(e){
                 'id_detalle_orden'  : (tipo == 'orden' ? id : null),
                 'cantidad'          : cantidad,
                 'id_producto'       : (tipo == 'producto' ? id : null),
+                'id_unid_med'       : json.id_unid_med,
                 'series'            : series
             });
         });
@@ -290,27 +344,37 @@ function guardar_guia_create(data){
 }
 
 function agregarProducto(producto){
-
     oc_det_seleccionadas.push({ 
+        'id_oc_det'    : null,
         'id_producto'  : parseInt(producto.id_producto),
+        'codigo_oc'    : null,
+        'codigo'       : producto.codigo,
+        'part_number'  : producto.part_number,
+        'descripcion'  : producto.descripcion,
+        'cantidad'     : 1,
+        'id_unid_med'  : producto.id_unidad_medida,
+        'abreviatura'  : producto.abreviatura,
+        'precio'       : 0.01,
+        'subtotal'     : 0.01,
         'series'       : []
     });
-    let tr = `<tr>
-        <td><input type="checkbox" data-tipo="producto" value="${producto.id_producto}" checked/></td>
-        <td></td>
-        <td>${producto.codigo}</td>
-        <td>${producto.part_number}</td>
-        <td>${producto.descripcion}</td>
-        <td><input type="number" id="${'p'+producto.id_producto+'cantidad'}" value="1" min="1" style="width:80px;"/></td>
-        <td>${producto.abreviatura}</td>
-        <td>0.01</td>
-        <td>0.01</td>
-        <td>
-            <input type="text" class="oculto" id="series" value="${producto.series}" data-partnumber="${producto.part_number}"/>
-            <i class="fas fa-bars icon-tabla boton" data-toggle="tooltip" data-placement="bottom" title="Agregar Series" 
-            onClick="agrega_series_producto(${producto.id_producto});"></i>
-        </td>
-    </tr>`;
+    mostrar_ordenes_seleccionadas();
+    // let tr = `<tr>
+    //     <td><input type="checkbox" data-tipo="producto" value="${producto.id_producto}" checked/></td>
+    //     <td></td>
+    //     <td>${producto.codigo}</td>
+    //     <td>${producto.part_number}</td>
+    //     <td>${producto.descripcion}</td>
+    //     <td><input type="number" id="${'p'+producto.id_producto+'cantidad'}" value="1" min="1" style="width:80px;"/></td>
+    //     <td>${producto.abreviatura}</td>
+    //     <td>0.01</td>
+    //     <td>0.01</td>
+    //     <td>
+    //         <input type="text" class="oculto" id="series" value="${producto.series}" data-partnumber="${producto.part_number}"/>
+    //         <i class="fas fa-bars icon-tabla boton" data-toggle="tooltip" data-placement="bottom" title="Agregar Series" 
+    //         onClick="agrega_series_producto(${producto.id_producto});"></i>
+    //     </td>
+    // </tr>`;
 
-    $("#detalleOrdenSeleccionadas>tbody").append(tr);
+    // $("#detalleOrdenSeleccionadas>tbody").append(tr);
 }

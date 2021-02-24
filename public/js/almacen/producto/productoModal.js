@@ -251,6 +251,7 @@ function selectProducto(){
             'part_number': part,
             'codigo': code,
             'descripcion': desc,
+            'id_unidad_medida': unid,
             'abreviatura': abre,
             'series': false
         }

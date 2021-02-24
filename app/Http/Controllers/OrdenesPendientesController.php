@@ -178,37 +178,35 @@ class OrdenesPendientesController extends Controller
                     ['log_det_ord_compra.estado','!=',28]])
             ->get();
         
-        $html = '';
-        $i = 1;
-        $ids_detalle = [];
+        // $html = '';
+        // $i = 1;
+        // $ids_detalle = [];
 
-        foreach ($detalle as $det) {
+        // foreach ($detalle as $det) {
             
-            array_push($ids_detalle, ['id_oc_det'=>$det->id_detalle_orden,'series'=>[]]);
+        //     array_push($ids_detalle, ['id_oc_det'=>$det->id_detalle_orden,'series'=>[]]);
             
-            $cantidad = ($det->cantidad - $det->suma_cantidad_guias);
+        //     $cantidad = ($det->cantidad - $det->suma_cantidad_guias);
 
-            $html.='<tr>
-                <td><input type="checkbox" data-tipo="orden" value="'.$det->id_detalle_orden.'" checked/></td>
-                <td>'.$det->codigo_oc.'</td>
-                <td>'.$det->codigo.'</td>
-                <td>'.$det->part_number.'</td>
-                <td>'.$det->descripcion.'</td>
-                <td><input type="number" id="'.$det->id_detalle_orden.'cantidad" value="'.$cantidad.'" min="1" max="'.$cantidad.'" style="width:80px;"/></td>
-                <td>'.$det->abreviatura.'</td>
-                <td>'.$det->precio.'</td>
-                <td>'.$det->subtotal.'</td>
-                <td>
-                    <input type="text" class="oculto" id="series" value="'.$det->series.'" data-partnumber="'.$det->part_number.'"/>
-                    <i class="fas fa-bars icon-tabla boton" data-toggle="tooltip" data-placement="bottom" title="Agregar Series" onClick="agrega_series('.$det->id_detalle_orden.');"></i>
-                </td>
-            </tr>';
-            // if ($det->series == true) {
-            //     $html.='';
-            // }
-            $i++;
-        }
-        return json_encode(['html'=>$html, 'ids_detalle'=>$ids_detalle]);
+        //     $html.='<tr>
+        //         <td><input type="checkbox" data-tipo="orden" value="'.$det->id_detalle_orden.'" checked/></td>
+        //         <td>'.$det->codigo_oc.'</td>
+        //         <td>'.$det->codigo.'</td>
+        //         <td>'.$det->part_number.'</td>
+        //         <td>'.$det->descripcion.'</td>
+        //         <td><input type="number" id="'.$det->id_detalle_orden.'cantidad" value="'.$cantidad.'" min="1" max="'.$cantidad.'" style="width:80px;"/></td>
+        //         <td>'.$det->abreviatura.'</td>
+        //         <td>'.$det->precio.'</td>
+        //         <td>'.$det->subtotal.'</td>
+        //         <td>
+        //             <input type="text" class="oculto" id="series" value="'.$det->series.'" data-partnumber="'.$det->part_number.'"/>
+        //             <i class="fas fa-bars icon-tabla boton" data-toggle="tooltip" data-placement="bottom" title="Agregar Series" onClick="agrega_series('.$det->id_detalle_orden.');"></i>
+        //         </td>
+        //     </tr>';
+        //     $i++;
+        // }
+        // return json_encode(['html'=>$html, 'ids_detalle'=>$ids_detalle]);
+        return response()->json($detalle);
     }
 
     public function detalleMovimiento($id_mov_alm){
@@ -597,7 +595,7 @@ class OrdenesPendientesController extends Controller
                                         "id_guia_com" => $id_guia,
                                         "id_producto" => $det->id_producto,
                                         "cantidad" => $det->cantidad,
-                                        // "id_unid_med" => $det->id_unidad_medida,
+                                        "id_unid_med" => $det->id_unid_med,
                                         "usuario" => $id_usuario,
                                         // "id_oc_det" => null,
                                         "unitario" => 0.01,
@@ -1211,11 +1209,12 @@ class OrdenesPendientesController extends Controller
         $detalle = DB::table('almacen.guia_com_det')
         ->select('guia_com_det.*','log_ord_compra.codigo as cod_orden','alm_prod.codigo','alm_prod.descripcion',
         'alm_prod.part_number','alm_und_medida.abreviatura','log_det_ord_compra.precio')
-        ->join('logistica.log_det_ord_compra','log_det_ord_compra.id_detalle_orden','=','guia_com_det.id_oc_det')
-        ->join('logistica.log_ord_compra','log_ord_compra.id_orden_compra','=','log_det_ord_compra.id_orden_compra')
+        ->leftjoin('logistica.log_det_ord_compra','log_det_ord_compra.id_detalle_orden','=','guia_com_det.id_oc_det')
+        ->leftjoin('logistica.log_ord_compra','log_ord_compra.id_orden_compra','=','log_det_ord_compra.id_orden_compra')
         ->join('almacen.alm_prod','alm_prod.id_producto','=','guia_com_det.id_producto')
         ->join('almacen.alm_und_medida','alm_und_medida.id_unidad_medida','=','alm_prod.id_unidad_medida')
         ->where('guia_com_det.id_guia_com',$id)
+        ->orderBy('guia_com_det.id_guia_com_det')
         ->get();
 
         $igv = DB::table('contabilidad.cont_impuesto')

@@ -6,6 +6,8 @@ function agrega_series(id_oc_det){
         show: true
     });
     $('#listaBarras tbody').html('');
+    json_series = [];
+
     var json = oc_det_seleccionadas.find(element => element.id_oc_det == id_oc_det);
     console.log(json);
     
@@ -31,6 +33,8 @@ function agrega_series_transformacion(id){
         show: true
     });
     $('#listaBarras tbody').html('');
+    json_series = [];
+
     var json = series_transformacion.find(element => element.id == id);
     console.log(json);
     
@@ -50,11 +54,13 @@ function agrega_series_transformacion(id){
 }
 
 function agrega_series_producto(id){
-    console.log('agrega_series_producto');
+    console.log('agrega_series_producto'+id);
     $('#modal-guia_com_barras').modal({
         show: true
     });
     $('#listaBarras tbody').html('');
+    json_series = [];
+
     var json = oc_det_seleccionadas.find(element => element.id_producto == id);
     console.log(json);
     
@@ -95,9 +101,6 @@ function cargar_series(){
 }
 
 function handleKeyPress(event){
-    console.log(event);
-    console.log('key:'+event.which);
-
     var exeptuados = ['/','"',"'",'*','+','#','$','%','&','(',')','=','?','¿','¡','!','.','¨','^','´','`','_',',',';','>','<','|','°','¬'];
 
     if (event.which == 13) {
@@ -159,6 +162,7 @@ function guardar_series(){
         }
         console.log(json);
         console.log(oc_det_seleccionadas);
+        mostrar_ordenes_seleccionadas();
     }
     else if (id_detalle_transformacion !== ''){
         var json = series_transformacion.find(element => element.id == id_detalle_transformacion);
@@ -177,6 +181,7 @@ function guardar_series(){
         }
         console.log(json);
         console.log(oc_det_seleccionadas);
+        mostrar_ordenes_seleccionadas();
     }
     $('#modal-guia_com_barras').modal('hide');
 }

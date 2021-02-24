@@ -136,8 +136,8 @@ Pendientes de Ingreso
 </div>
 @include('almacen.guias.ordenDetalle')
 @include('almacen.guias.movimientoDetalle')
-@include('almacen.guias.ordenesGuias')
 @include('almacen.guias.guia_com_create')
+@include('almacen.guias.ordenesGuias')
 @include('almacen.guias.guia_com_obs')
 @include('almacen.guias.guia_ven_obs')
 @include('almacen.guias.guia_com_series')
