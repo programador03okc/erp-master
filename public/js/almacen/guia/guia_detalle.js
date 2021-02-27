@@ -120,14 +120,14 @@ function guardar_guia_detalle(id,unid_med){
     });
 }
 
-function calcula_total(id_guia_det){
-    var cant = $('#reg-'+id_guia_det+' input[name=cantidad]').val();
-    var unit = $('#reg-'+id_guia_det+' input[name=unitario]').val();
+function calcula_total(id_guia_com_det){
+    var cant = $('#reg-'+id_guia_com_det+' input[name=cantidad]').val();
+    var unit = $('#reg-'+id_guia_com_det+' input[name=unitario]').val();
     console.log('cant'+cant+' unit'+unit);
     if (cant !== '' && unit !== '') {
-        $('#reg-'+id_guia_det+' input[name=total]').val(cant * unit);
+        $('#reg-'+id_guia_com_det+' input[name=total]').val(cant * unit);
     } else {
-        $('#reg-'+id_guia_det+' input[name=total]').val(0);
+        $('#reg-'+id_guia_com_det+' input[name=total]').val(0);
     }
 }
 function calcula_total_oc(id_oc_det){

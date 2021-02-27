@@ -695,13 +695,13 @@ function copiar_unitario(){
         var pro = $(this)[0].id.split("-");
         var tds = parseFloat($(this).find("td input[name=unit]").val());
         console.log('unitario:'+tds);
-        console.log('id_guia_det:'+pro[1]);
+        console.log('id_guia_com_det:'+pro[1]);
         id[r] = pro[1];
         uni[r] = tds;
         r++;
     });
     var data =  'id_guia='+id_guia+
-                '&id_guia_det='+id+
+                '&id_guia_com_det='+id+
                 '&unitario='+uni;
     console.log(data);
     $.ajax({
@@ -808,7 +808,7 @@ function listar_guia_detalle(id_prorrateo){
 }
 function guardar_prorrateo_detalle(){
     console.log('guardar_prorrateo_detalle');
-    var id_guia_det = [];
+    var id_guia_com_det = [];
     var total_det = [];
     var id_prorrateo = $('[name=id_prorrateo]').val();
     var imp_comp = $('[name=importe_prorrateo]').val();
@@ -816,7 +816,7 @@ function guardar_prorrateo_detalle(){
     var suma_total = 0;
 
     $("input[type=checkbox]:checked").each(function(){
-        id_guia_det[r] = $(this)[0].parentElement.parentElement.id;
+        id_guia_com_det[r] = $(this)[0].parentElement.parentElement.id;
         var columnas = $(this)[0].parentElement.parentElement.querySelectorAll("td");
         var imp = parseFloat(columnas[6].innerHTML);
         total_det[r] = imp;
@@ -824,7 +824,7 @@ function guardar_prorrateo_detalle(){
         suma_total += imp;
         ++r;
     });
-    var data =  'id_guia_com_det='+id_guia_det+
+    var data =  'id_guia_com_det='+id_guia_com_det+
                 '&total_det='+total_det+
                 '&id_prorrateo='+id_prorrateo+
                 '&importe_comp='+imp_comp+

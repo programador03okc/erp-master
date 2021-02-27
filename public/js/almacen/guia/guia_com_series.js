@@ -1,24 +1,24 @@
 
-function agrega_series(id_guia_det, descripcion){
-    var canti = $("#reg-"+id_guia_det+" td").find("input[name=cantidad]").val();
+function agrega_series(id_guia_com_det, descripcion){
+    var canti = $("#reg-"+id_guia_com_det+" td").find("input[name=cantidad]").val();
     console.log("agrega_series()");
     $('#modal-guia_com_barras').modal({
         show: true
     });
     // clearDataTable();
-    listarSeries(id_guia_det);
-    $('[name=id_guia_det]').val(id_guia_det);
+    listarSeries(id_guia_com_det);
+    $('[name=id_guia_com_det]').val(id_guia_com_det);
     $('[name=cant_items]').val(canti);
     $('#descripcion').text(descripcion);
     $('[name=serie_prod]').val('');
     $('#listaBarras tbody').val('');
     
 }
-function listarSeries(id_guia_det){
+function listarSeries(id_guia_com_det){
     $.ajax({
         type: 'GET',
         headers: {'X-CSRF-TOKEN': token},
-        url: 'listar_series/'+id_guia_det,
+        url: 'listar_series/'+id_guia_com_det,
         dataType: 'JSON',
         success: function(response){
             console.log(response);
@@ -109,10 +109,10 @@ function guardar_series(){
             }
         });
         
-        var id_guia_det = $('[name=id_guia_det]').val();
+        var id_guia_com_det = $('[name=id_guia_com_det]').val();
         var anulados = $('[name=anulados]').val();
     
-        var data = 'id_guia_det='+id_guia_det+'&series='+series+'&anulados='+anulados;
+        var data = 'id_guia_com_det='+id_guia_com_det+'&series='+series+'&anulados='+anulados;
         console.log(data);
 
         $.ajax({
@@ -143,12 +143,12 @@ function guardar_series(){
         if (cant > items){
             var rspta = confirm("¿Desea actualizar la cantidad del detalle?");
             if (rspta == true){
-                var id_guia_det = $('[name=id_guia_det]').val();
-                console.log('id_guia'+id_guia_det+' cant'+cant);
-                console.log($("#reg-"+id_guia_det+" ").find('td').eq(4).find('input').val());
-                // $("#reg-"+id_guia_det+" td").find("input[name=cantidad]").removeAttr('disabled');
-                editar_detalle(id_guia_det, 1);
-                $('#reg-'+id_guia_det+' input[name=cantidad]').val(cant);
+                var id_guia_com_det = $('[name=id_guia_com_det]').val();
+                console.log('id_guia'+id_guia_com_det+' cant'+cant);
+                console.log($("#reg-"+id_guia_com_det+" ").find('td').eq(4).find('input').val());
+                // $("#reg-"+id_guia_com_det+" td").find("input[name=cantidad]").removeAttr('disabled');
+                editar_detalle(id_guia_com_det, 1);
+                $('#reg-'+id_guia_com_det+' input[name=cantidad]').val(cant);
             }
         }
     }

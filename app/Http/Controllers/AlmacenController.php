@@ -2036,7 +2036,7 @@ class AlmacenController extends Controller
             DB::raw("('GR') || '-' || (guia_com.serie) || '-' || (guia_com.numero) as guia_com"),
             DB::raw("('GR') || '-' || (guia_ven.serie) || '-' || (guia_ven.numero) as guia_ven"))
             ->join('almacen.alm_almacen','alm_almacen.id_almacen','=','alm_prod_serie.id_almacen')
-            ->join('almacen.guia_com_det','guia_com_det.id_guia_com_det','=','alm_prod_serie.id_guia_det')
+            ->join('almacen.guia_com_det','guia_com_det.id_guia_com_det','=','alm_prod_serie.id_guia_com_det')
             ->join('almacen.guia_com','guia_com.id_guia','=','guia_com_det.id_guia_com')
             ->leftjoin('almacen.guia_ven_det','guia_ven_det.id_guia_ven_det','=','alm_prod_serie.id_guia_ven_det')
             ->leftjoin('almacen.guia_ven','guia_ven.id_guia_ven','=','guia_ven_det.id_guia_ven')
@@ -2966,7 +2966,7 @@ class AlmacenController extends Controller
                         if ($det->series){
                             $det_series = DB::table('almacen.alm_prod_serie')
                             ->where([['alm_prod_serie.id_prod','=',$det->id_producto],
-                                     ['alm_prod_serie.id_guia_det','=',$det->id_guia_com_det]])
+                                     ['alm_prod_serie.id_guia_com_det','=',$det->id_guia_com_det]])
                             ->get();
                 
                             if (isset($det_series)){
@@ -3135,7 +3135,7 @@ class AlmacenController extends Controller
         ->get();
         
         foreach($data as $det){
-            $id_guia_det = $det->id_guia_com_det;
+            $id_guia_com_det = $det->id_guia_com_det;
             $oc = $det->cod_orden;
             $codigo = $det->codigo;
             $descripcion = $det->descripcion;
@@ -3173,7 +3173,7 @@ class AlmacenController extends Controller
             if ($chk == 'true'){
                 $det_series = DB::table('almacen.alm_prod_serie')
                 ->where([['alm_prod_serie.id_prod','=',$det->id_producto],
-                         ['alm_prod_serie.id_guia_det','=',$id_guia_det],
+                         ['alm_prod_serie.id_guia_com_det','=',$id_guia_com_det],
                          ['alm_prod_serie.estado','=',1]])
                 ->get();
     
@@ -3192,7 +3192,7 @@ class AlmacenController extends Controller
             }
 
             $html .= 
-            '<tr id="reg-'.$id_guia_det.'">
+            '<tr id="reg-'.$id_guia_com_det.'">
                 <td>'.$oc.'</td>
                 <td>'.$det->guia_ven.'</td>
                 <td><input type="text" class="oculto" name="series" value="'.$chk.'"/><input type="number" class="oculto" name="nro_series" value="'.$nro_series.'"/>'.$codigo.'</td>
@@ -3209,17 +3209,17 @@ class AlmacenController extends Controller
                         }
                     $html.='</select>
                 </td>
-                <td><input type="number" class="input-data right" name="cantidad" value="'.$cantidad.'" onChange="calcula_total('.$id_guia_det.');" disabled="true"/></td>
+                <td><input type="number" class="input-data right" name="cantidad" value="'.$cantidad.'" onChange="calcula_total('.$id_guia_com_det.');" disabled="true"/></td>
                 <td>'.$abrev.'</td>
-                <td><input type="number" class="input-data right" name="unitario" value="'.$unitario.'" onChange="calcula_total('.$id_guia_det.');" disabled="true"/></td>
+                <td><input type="number" class="input-data right" name="unitario" value="'.$unitario.'" onChange="calcula_total('.$id_guia_com_det.');" disabled="true"/></td>
                 <td><input type="number" class="input-data right" name="total" value="'.$total.'" disabled="true"/></td>
                 <td style="display:flex;">';
                     if ($chk == "true") {
-                        $html.='<i class="fas fa-bars icon-tabla boton" data-toggle="tooltip" data-placement="bottom" title="Agregar Series" onClick="agrega_series('.$id_guia_det.','.$codigo.');"></i>';
+                        $html.='<i class="fas fa-bars icon-tabla boton" data-toggle="tooltip" data-placement="bottom" title="Agregar Series" onClick="agrega_series('.$id_guia_com_det.','.$codigo.');"></i>';
                     }
-                    $html.='<i class="fas fa-pen-square icon-tabla blue visible boton" data-toggle="tooltip" data-placement="bottom" title="Editar Item" onClick="editar_detalle('.$id_guia_det.','.$tiene.');"></i>
-                    <i class="fas fa-save icon-tabla green oculto boton" data-toggle="tooltip" data-placement="bottom" title="Guardar Item" onClick="update_detalle('.$id_guia_det.');"></i>
-                    <i class="fas fa-trash icon-tabla red boton" data-toggle="tooltip" data-placement="bottom" title="Anular Item" onClick="anular_detalle('.$id_guia_det.');"></i>
+                    $html.='<i class="fas fa-pen-square icon-tabla blue visible boton" data-toggle="tooltip" data-placement="bottom" title="Editar Item" onClick="editar_detalle('.$id_guia_com_det.','.$tiene.');"></i>
+                    <i class="fas fa-save icon-tabla green oculto boton" data-toggle="tooltip" data-placement="bottom" title="Guardar Item" onClick="update_detalle('.$id_guia_com_det.');"></i>
+                    <i class="fas fa-trash icon-tabla red boton" data-toggle="tooltip" data-placement="bottom" title="Anular Item" onClick="anular_detalle('.$id_guia_com_det.');"></i>
                 </td>
             </tr>';
         }
@@ -3595,7 +3595,7 @@ class AlmacenController extends Controller
         if (!empty($request->series)){
             $id = DB::table('almacen.guia_com_det')
             ->select('guia_com_det.*','guia_com.id_almacen')
-            ->where('id_guia_com_det',$request->id_guia_det)
+            ->where('id_guia_com_det',$request->id_guia_com_det)
             ->join('almacen.guia_com','guia_com.id_guia','=','guia_com_det.id_guia_com')
             ->first();
     
@@ -3608,7 +3608,7 @@ class AlmacenController extends Controller
                         'serie'=>$serie,
                         'estado'=>1,
                         'fecha_registro'=>$fecha,
-                        'id_guia_det'=>$request->id_guia_det
+                        'id_guia_com_det'=>$request->id_guia_com_det
                     ],
                     'id_prod_serie'
                 );
@@ -3627,9 +3627,9 @@ class AlmacenController extends Controller
 
         return response()->json($data);
     }
-    public function listar_series($id_guia_det){
+    public function listar_series($id_guia_com_det){
         $series = DB::table('almacen.alm_prod_serie')
-        ->where([['id_guia_det','=',$id_guia_det],
+        ->where([['id_guia_com_det','=',$id_guia_com_det],
                  ['estado','=',1]])
         ->get();
         return response()->json($series);
@@ -3638,7 +3638,7 @@ class AlmacenController extends Controller
         $series = DB::table('almacen.alm_prod_serie')
         ->select('alm_prod_serie.*',
         DB::raw("(tp_doc_almacen.abreviatura) || '-' || (guia_com.serie) || '-' || (guia_com.numero) as guia_com"))
-        ->join('almacen.guia_com_det','guia_com_det.id_guia_com_det','=','alm_prod_serie.id_guia_det')
+        ->join('almacen.guia_com_det','guia_com_det.id_guia_com_det','=','alm_prod_serie.id_guia_com_det')
         ->join('almacen.guia_com','guia_com.id_guia','=','guia_com_det.id_guia_com')
         ->join('almacen.tp_doc_almacen','tp_doc_almacen.id_tp_doc_almacen','=','guia_com.id_tp_doc_almacen')
         ->where([['alm_prod_serie.id_guia_ven_det','=',$id_guia_ven_det],
@@ -3650,7 +3650,7 @@ class AlmacenController extends Controller
         $series = DB::table('almacen.alm_prod_serie')
         ->select('alm_prod_serie.*','guia_com.fecha_emision',
         DB::raw("(tp_doc_almacen.abreviatura) || '-' || (guia_com.serie) || '-' || (guia_com.numero) as guia_com"))
-        ->join('almacen.guia_com_det','guia_com_det.id_guia_com_det','=','alm_prod_serie.id_guia_det')
+        ->join('almacen.guia_com_det','guia_com_det.id_guia_com_det','=','alm_prod_serie.id_guia_com_det')
         ->join('almacen.guia_com','guia_com.id_guia','=','guia_com_det.id_guia_com')
         ->join('almacen.tp_doc_almacen','tp_doc_almacen.id_tp_doc_almacen','=','guia_com.id_tp_doc_almacen')
         ->where([['alm_prod_serie.id_prod','=',$id_prod],
@@ -3669,7 +3669,7 @@ class AlmacenController extends Controller
         ->leftjoin('almacen.guia_ven_det','guia_ven_det.id_guia_ven_det','=','alm_prod_serie.id_guia_ven_det')
         ->leftjoin('almacen.guia_ven','guia_ven.id_guia_ven','=','guia_ven_det.id_guia_ven')
         ->leftjoin('almacen.tp_doc_almacen as tp_doc_ven','tp_doc_ven.id_tp_doc_almacen','=','guia_ven.id_tp_doc_almacen')
-        ->leftjoin('almacen.guia_com_det','guia_com_det.id_guia_com_det','=','alm_prod_serie.id_guia_det')
+        ->leftjoin('almacen.guia_com_det','guia_com_det.id_guia_com_det','=','alm_prod_serie.id_guia_com_det')
         ->leftjoin('almacen.guia_com','guia_com.id_guia','=','guia_com_det.id_guia_com')
         ->leftjoin('almacen.tp_doc_almacen as tp_doc_com','tp_doc_com.id_tp_doc_almacen','=','guia_com.id_tp_doc_almacen')
         ->where([['alm_prod_serie.serie','=',$serie],['alm_prod_serie.estado','=',1]])
@@ -7422,7 +7422,7 @@ class AlmacenController extends Controller
         $valor = $total_comp / ($suma_total > 0 ? $suma_total : 1);
 
         foreach($data as $det){
-            $id_guia_det = $det->id_guia_com_det;
+            $id_guia_com_det = $det->id_guia_com_det;
             $oc = $det->cod_orden;
             $codigo = $det->codigo;
             $descripcion = $det->descripcion;
@@ -7434,7 +7434,7 @@ class AlmacenController extends Controller
 
             $adic = DB::table('almacen.guia_com_prorrateo_det')
             ->select(DB::raw('sum(guia_com_prorrateo_det.importe) as importe_adicional'))
-            ->where('id_guia_com_det',$id_guia_det)
+            ->where('id_guia_com_det',$id_guia_com_det)
             ->first();
 
             $adicional = round(($valor * $total),4,PHP_ROUND_HALF_UP) + round($adic->importe_adicional,4,PHP_ROUND_HALF_UP);
@@ -7446,7 +7446,7 @@ class AlmacenController extends Controller
             $unit = round(($costo_total/$cantidad),4,PHP_ROUND_HALF_UP);
 
             $html .= 
-            '<tr id="det-'.$id_guia_det.'">
+            '<tr id="det-'.$id_guia_com_det.'">
                 <td>'.$oc.'</td>
                 <td>'.$codigo.'</td>
                 <td>'.$descripcion.'</td>
@@ -7581,18 +7581,18 @@ class AlmacenController extends Controller
     }
     /**Update adicional guia detalle */
     public function update_guia_detalle_adic(Request $request){
-        $id = explode(',',$request->id_guia_det);
+        $id = explode(',',$request->id_guia_com_det);
         $unitario = explode(',',$request->unitario);
         $count = count($id);
         $update = '';
 
         for ($i=0; $i<$count; $i++){
-            $id_guia_det = $id[$i];
+            $id_guia_com_det = $id[$i];
             $unit = $unitario[$i];
 
             //Obtiene guia detalle
             $det = DB::table('almacen.guia_com_det')
-            ->where('id_guia_com_det',$id_guia_det)
+            ->where('id_guia_com_det',$id_guia_com_det)
             ->first();
 
             //Calcula el nuevo unitario adicional 
@@ -7602,20 +7602,20 @@ class AlmacenController extends Controller
 
             //Actualiza el total OJO:no mueve el unitario
             $update = DB::table('almacen.guia_com_det')
-            ->where('id_guia_com_det',$id_guia_det)
+            ->where('id_guia_com_det',$id_guia_com_det)
             ->update(['unitario_adicional'=>$nuevo_adic,
                       'total'=>$total]);
 
             //Obtiene ingreso detalle
             $ing = DB::table('almacen.mov_alm_det')
-            ->where([['id_guia_com_det','=',$id_guia_det],['estado','!=',7]])
+            ->where([['id_guia_com_det','=',$id_guia_com_det],['estado','!=',7]])
             ->first();
 
             //Actualiza valorizacion 
             if (isset($ing)){
                 $valor = ($det->unitario + $nuevo_adic) * $ing->cantidad;
                 $update = DB::table('almacen.mov_alm_det')
-                ->where('id_guia_com_det',$id_guia_det)
+                ->where('id_guia_com_det',$id_guia_com_det)
                 ->update([ 'valorizacion' => $valor ]);
             }
         }
@@ -8569,7 +8569,7 @@ class AlmacenController extends Controller
         ->leftjoin('contabilidad.adm_contri as contri_cliente','contri_cliente.id_contribuyente','=','com_cliente.id_contribuyente')
         ->leftjoin('almacen.tp_doc_almacen as tp_doc_ven','tp_doc_ven.id_tp_doc_almacen','=','guia_ven.id_tp_doc_almacen')
         ->leftjoin('almacen.alm_almacen as alm_ven','alm_ven.id_almacen','=','guia_ven.id_almacen')
-        ->leftjoin('almacen.guia_com_det','guia_com_det.id_guia_com_det','=','alm_prod_serie.id_guia_det')
+        ->leftjoin('almacen.guia_com_det','guia_com_det.id_guia_com_det','=','alm_prod_serie.id_guia_com_det')
         ->leftjoin('almacen.guia_com','guia_com.id_guia','=','guia_com_det.id_guia_com')
         ->leftjoin('logistica.log_prove','log_prove.id_proveedor','=','guia_com.id_proveedor')
         ->leftjoin('contabilidad.adm_contri as contri_prove','contri_prove.id_contribuyente','=','log_prove.id_contribuyente')

@@ -1065,7 +1065,9 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::post('guardar_doc_compra', 'OrdenesPendientesController@guardar_doc_compra');
 					Route::get('documentos_ver/{id}', 'OrdenesPendientesController@documentos_ver');
 					Route::get('mostrar_prods', 'AlmacenController@mostrar_prods');
+					Route::get('mostrar_series/{id}', 'OrdenesPendientesController@mostrar_series');
 					Route::post('guardar_producto', 'AlmacenController@guardar_producto')->name('guardar-producto');
+					Route::post('actualizar_series', 'OrdenesPendientesController@actualizar_series')->name('actualizar-series');
 
 				});
 	

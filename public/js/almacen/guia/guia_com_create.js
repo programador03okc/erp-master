@@ -318,7 +318,7 @@ function guardar_guia_create(data){
         success: function(response){
             console.log(response);
             if (response['id_ingreso'] > 0){
-                alert('Ingreso Almacén generado con éxito. '+response['msj_trans']);
+                alert('Ingreso Almacén generado con éxito. ');
                 $('#modal-guia_create').modal('hide');
                 
                 var tra = $('[name=id_transformacion]').val();

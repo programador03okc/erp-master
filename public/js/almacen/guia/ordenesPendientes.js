@@ -268,7 +268,7 @@ function listarOrdenesEntregadas(){
                 function (data, type, row){
                     if (acceso == '1') {
                         return '<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" '+
-                            'data-placement="bottom" title="Ver Detalle" data-id="'+row['id_mov_alm']+'" data-cod="'+row['codigo']+'">'+
+                            'data-placement="bottom" title="Ver Detalle" data-id="'+row['id_guia_com']+'" data-cod="'+row['codigo']+'">'+
                             '<i class="fas fa-list-ul"></i></button>'+
                         // '<button type="button" class="ingreso btn btn-warning boton" data-toggle="tooltip" '+
                         //     'data-placement="bottom" title="Ver Ingreso" data-id="'+row['id_mov_alm']+'">'+
@@ -299,10 +299,10 @@ function listarOrdenesEntregadas(){
 }
 
 $('#ordenesEntregadas tbody').on("click","button.detalle", function(){
-    var id_mov_alm = $(this).data('id');
+    var id_guia_com = $(this).data('id');
     var codigo = $(this).data('cod');
     // console.log(data);
-    open_detalle_movimiento(id_mov_alm, codigo);
+    open_detalle_movimiento(id_guia_com, codigo);
 });
 
 function abrir_ingreso(id_mov_alm){
@@ -476,32 +476,31 @@ function listar_detalle_orden(id_orden){
     });
 }
 
-function listar_detalle_movimiento(id_mov_alm){
-    console.log('id_mov_alm',id_mov_alm);
+function listar_detalle_movimiento(id_guia_com){
+    console.log('id_guia_com',id_guia_com);
     $.ajax({
         type: 'GET',
-        url: 'detalleMovimiento/'+id_mov_alm,
+        url: 'detalleMovimiento/'+id_guia_com,
         dataType: 'JSON',
         success: function(response){
             console.log(response);
             var html = '';
             var i = 1;
             response.forEach(element => {
-                html+='<tr id="'+element.id_mov_alm_det+'">'+
-                '<td>'+i+'</td>'+
-                '<td>'+element.codigo+'</td>'+
-                '<td>'+element.part_number+'</td>'+
-                '<td>'+element.categoria+'</td>'+
-                '<td>'+element.subcategoria+'</td>'+
-                '<td>'+element.descripcion+'</td>'+
-                '<td>'+element.cantidad+'</td>'+
-                '<td>'+element.abreviatura+'</td>'+
-                '<td>'+(element.serie !== null ? (element.serie+'-'+element.numero) : '')+'</td>'+
-                '<td>'+(element.codigo_orden !== null ? element.codigo_orden : '')+'</td>'+
-                '<td>'+(element.codigo_req !== null ? element.codigo_req : '')+'</td>'+
-                '<td>'+(element.sede_req !== null ? element.sede_req : '')+'</td>'+
-                // '<td><span class="label label-'+element.bootstrap_color+'">'+element.estado_doc+'</span></td>'+
-                '</tr>';
+                html+=`<tr>
+                <td>${i}</td>
+                <td>${element.codigo}</td>
+                <td>${element.part_number!==null?element.part_number:''}</td>
+                <td>${element.descripcion}</td>
+                <td>${element.cantidad}</td>
+                <td>${element.abreviatura}</td>
+                <td>${element.serie !== null ? (element.serie+'-'+element.numero) : ''}</td>
+                <td>${element.codigo_orden !== null ? element.codigo_orden : ''}</td>
+                <td>${element.codigo_req !== null ? element.codigo_req : ''}</td>
+                <td>${element.sede_req !== null ? element.sede_req : ''}</td>
+                <td><i class="fas fa-bars icon-tabla boton" data-toggle="tooltip" data-placement="bottom" 
+                title="Agregar Series" onClick="open_guia_series_edit(${element.id_guia_com_det});"></i></td>
+                </tr>`;
                 i++;
             });
             $('#detalleMovimiento tbody').html(html);

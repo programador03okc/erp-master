@@ -209,27 +209,44 @@ class OrdenesPendientesController extends Controller
         return response()->json($detalle);
     }
 
-    public function detalleMovimiento($id_mov_alm){
-        $detalle = DB::table('almacen.mov_alm_det')
+    public function detalleMovimiento($id_guia){
+        $detalle = DB::table('almacen.guia_com_det')
             ->select(
-                'mov_alm_det.*','alm_prod.codigo','alm_prod.part_number','alm_cat_prod.descripcion as categoria',
-                'alm_subcat.descripcion as subcategoria','alm_prod.descripcion','alm_und_medida.abreviatura',
+                'guia_com_det.*','alm_prod.codigo','alm_prod.part_number','alm_prod.descripcion','alm_und_medida.abreviatura',
                 'log_ord_compra.codigo as codigo_orden','guia_com.serie','guia_com.numero','alm_req.codigo as codigo_req',
                 'sis_sede.descripcion as sede_req'
             )
-            ->leftjoin('almacen.guia_com_det', 'guia_com_det.id_guia_com_det', '=', 'mov_alm_det.id_guia_com_det')
             ->leftjoin('almacen.guia_com', 'guia_com.id_guia', '=', 'guia_com_det.id_guia_com')
             ->leftjoin('logistica.log_det_ord_compra', 'log_det_ord_compra.id_detalle_orden', '=', 'guia_com_det.id_oc_det')
             ->leftjoin('logistica.log_ord_compra', 'log_ord_compra.id_orden_compra', '=', 'log_det_ord_compra.id_orden_compra')
-            ->leftjoin('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'log_ord_compra.id_requerimiento')
+            ->leftjoin('almacen.alm_det_req', 'alm_det_req.id_detalle_requerimiento', '=', 'log_det_ord_compra.id_detalle_requerimiento')
+            ->leftjoin('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'alm_det_req.id_requerimiento')
             ->leftjoin('administracion.sis_sede', 'sis_sede.id_sede', '=', 'alm_req.id_sede')
-            ->leftjoin('almacen.alm_prod', 'alm_prod.id_producto', '=', 'mov_alm_det.id_producto')
-            ->leftjoin('almacen.alm_cat_prod', 'alm_cat_prod.id_categoria', '=', 'alm_prod.id_categoria')
-            ->leftjoin('almacen.alm_subcat', 'alm_subcat.id_subcategoria', '=', 'alm_prod.id_subcategoria')
+            ->leftjoin('almacen.alm_prod', 'alm_prod.id_producto', '=', 'guia_com_det.id_producto')
             ->leftjoin('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'alm_prod.id_unidad_medida')
-            ->where([['mov_alm_det.id_mov_alm', '=', $id_mov_alm],['mov_alm_det.estado','!=',7]])
+            ->where([['guia_com_det.id_guia_com', '=', $id_guia],['guia_com_det.estado','!=',7]])
             ->get();
         return response()->json($detalle);
+    }
+
+    public function mostrar_series($id_guia_com_det){
+        $series = DB::table('almacen.alm_prod_serie')
+        ->select('alm_prod_serie.*')
+        ->where([['alm_prod_serie.id_guia_com_det','=',$id_guia_com_det],
+                ['alm_prod_serie.estado','=',1]])
+        ->get();
+        return response()->json($series);
+    }
+
+    public function actualizar_series(Request $request){
+        $lista = json_decode($request->series);
+        
+        foreach ($lista as $s){
+            $data = DB::table('almacen.alm_prod_serie')
+            ->where('id_prod_serie',$s->id_prod_serie)
+            ->update(['serie'=>$s->serie]);
+        }
+        return response()->json($data); 
     }
 
     public function verGuiasOrden($id_orden){
@@ -351,7 +368,7 @@ class OrdenesPendientesController extends Controller
                                             'serie' => $serie,
                                             'estado' => 1,
                                             'fecha_registro' => $fecha_registro,
-                                            'id_guia_det' => $id_guia_com_det
+                                            'id_guia_com_det' => $id_guia_com_det
                                         ]
                                     );
                                 }
@@ -510,7 +527,7 @@ class OrdenesPendientesController extends Controller
                                         'serie' => $serie,
                                         'estado' => 1,
                                         'fecha_registro' => $fecha_registro,
-                                        'id_guia_det' => $id_guia_com_det
+                                        'id_guia_com_det' => $id_guia_com_det
                                     ]
                                 );
                             }
@@ -615,7 +632,7 @@ class OrdenesPendientesController extends Controller
                                             'serie' => $serie,
                                             'estado' => 1,
                                             'fecha_registro' => $fecha_registro,
-                                            'id_guia_det' => $id_guia_com_det
+                                            'id_guia_com_det' => $id_guia_com_det
                                         ]
                                     );
                                 }
@@ -637,7 +654,7 @@ class OrdenesPendientesController extends Controller
                             }
                         }
                         // return $detalle;
-                        $msj_trans = $this->generarTransferencias($request->id_almacen, $detalle);
+                        // $msj_trans = $this->generarTransferencias($request->id_almacen, $detalle);
 
                         //vuelve a jalar para traer los ids guia_det
                         $nuevo_detalle = DB::table('logistica.log_det_ord_compra')
@@ -702,7 +719,7 @@ class OrdenesPendientesController extends Controller
                     }
             DB::commit();
             // return response()->json($detalle_oc);
-            return response()->json(['id_ingreso'=>$id_ingreso,'msj_trans'=>$msj_trans,'id_guia'=>$id_guia]);
+            return response()->json(['id_ingreso'=>$id_ingreso,'id_guia'=>$id_guia]);
             
         } catch (\PDOException $e) {
             // Woopsy
@@ -1132,7 +1149,7 @@ class OrdenesPendientesController extends Controller
                     foreach ($detalle as $det) {
                         //Anula las series relacionadas
                         DB::table('almacen.alm_prod_serie')
-                        ->where([['id_guia_det','=',$det->id_guia_com_det],
+                        ->where([['id_guia_com_det','=',$det->id_guia_com_det],
                                  ['id_prod','=',$det->id_producto]])
                         ->update(['estado' => 7]);
                         //Quita estado de la orden

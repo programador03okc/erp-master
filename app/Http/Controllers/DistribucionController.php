@@ -737,7 +737,7 @@ class DistribucionController extends Controller
            $join->where('guia_com_det.estado','!=', 7);
         })
         ->leftJoin('almacen.alm_prod_serie', function($join)
-        {  $join->on('alm_prod_serie.id_guia_det', '=', 'guia_com_det.id_guia_com_det');
+        {  $join->on('alm_prod_serie.id_guia_com_det', '=', 'guia_com_det.id_guia_com_det');
            $join->where('alm_prod_serie.estado','!=', 7);
         })
         ->leftJoin('almacen.guia_com', 'guia_com.id_guia', '=', 'guia_com_det.id_guia_com')

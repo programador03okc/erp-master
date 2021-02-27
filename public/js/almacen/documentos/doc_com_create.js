@@ -114,12 +114,12 @@ function mostrarListaItems(){
 
 $('#detalleItems tbody').on("change", ".unitario", function(){
     
-    let id_guia_det = $(this).data('id');
+    let id_guia_com_det = $(this).data('id');
     let unitario = parseFloat($(this).val());
     console.log('unitario: '+unitario);
-    // let item = listaItems.find(element => element.id_guia_com_det == id_guia_det);
+    // let item = listaItems.find(element => element.id_guia_com_det == id_guia_com_det);
     listaItems.forEach(element => {
-        if (element.id_guia_com_det == id_guia_det){
+        if (element.id_guia_com_det == id_guia_com_det){
             element.precio = unitario;
             element.sub_total = (unitario * parseFloat(element.cantidad));
             element.total = (element.sub_total - element.total_dscto);
@@ -131,13 +131,13 @@ $('#detalleItems tbody').on("change", ".unitario", function(){
 
 $('#detalleItems tbody').on("change", ".porcentaje_dscto", function(){
     
-    let id_guia_det = $(this).data('id');
+    let id_guia_com_det = $(this).data('id');
     let porcentaje_dscto = parseFloat($(this).val());
     let unitario = 0;
     console.log('porcentaje_dscto: '+porcentaje_dscto);
-    // let item = listaItems.find(element => element.id_guia_com_det == id_guia_det);
+    // let item = listaItems.find(element => element.id_guia_com_det == id_guia_com_det);
     listaItems.forEach(element => {
-        if (element.id_guia_com_det == id_guia_det){
+        if (element.id_guia_com_det == id_guia_com_det){
 
             element.porcentaje_dscto = porcentaje_dscto;
             element.total_dscto = (porcentaje_dscto * element.sub_total / 100);
@@ -150,12 +150,12 @@ $('#detalleItems tbody').on("change", ".porcentaje_dscto", function(){
 
 $('#detalleItems tbody').on("change", ".total_dscto", function(){
     
-    let id_guia_det = $(this).data('id');
+    let id_guia_com_det = $(this).data('id');
     let total_dscto = parseFloat($(this).val());
     console.log('total_dscto: '+total_dscto);
-    // let item = listaItems.find(element => element.id_guia_com_det == id_guia_det);
+    // let item = listaItems.find(element => element.id_guia_com_det == id_guia_com_det);
     listaItems.forEach(element => {
-        if (element.id_guia_com_det == id_guia_det){
+        if (element.id_guia_com_det == id_guia_com_det){
             element.porcentaje_dscto = 0;
             element.total_dscto = total_dscto;
             element.total = (element.sub_total - total_dscto);

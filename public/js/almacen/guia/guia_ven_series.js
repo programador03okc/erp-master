@@ -9,10 +9,10 @@ function open_series(id_guia_ven_det, descripcion, cant, id_producto){
     $('#descripcion').text(descripcion);
 }
 
-function listarSeries(id_guia_det){
+function listarSeries(id_guia_com_det){
     $.ajax({
         type: 'GET',
-        url: 'listar_series_guia_ven/'+id_guia_det,
+        url: 'listar_series_guia_ven/'+id_guia_com_det,
         dataType: 'JSON',
         success: function(response){
             console.log(response);

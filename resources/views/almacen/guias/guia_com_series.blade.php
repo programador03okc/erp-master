@@ -7,12 +7,12 @@
             </div>
             <div class="modal-body">
             <input type="text" class="oculto" name="cant_items"/>
-            <input type="text" class="oculto" name="id_guia_det"/>
+            <input type="text" class="oculto" name="id_guia_com_det"/>
             <input type="text" class="oculto" name="anulados"/>
             <input type="text" class="oculto" name="id_oc_det"/>
             <input type="text" class="oculto" name="id_producto"/>
             <input type="text" class="oculto" name="id_detalle_transformacion"/>
-                <div class="row">
+                <div class="row cabecera">
                     <div class="col-md-12">
                         <label>Ingrese una serie:</label>
                         <div style="width: 100%; display:flex; font-size:12px;">
@@ -25,13 +25,13 @@
                                     style="padding:0px;height:34px;width:98%;height:30px;font-size:12px;" onClick="agregar_serie();"
                                     data-toggle="tooltip" data-placement="right" title="Agregar Serie">
                                     <i class="fas fa-plus"></i> 
-                                     Agregar
+                                    Agregar
                                 </button>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="row">
+                <div class="row cabecera">
                     <div class="col-md-12">
                         <form id="frm-example" name="frm-example">
                             <label>Seleccione un archivo:</label>
@@ -41,14 +41,6 @@
                                 data-buttonName="btn-primary" data-buttonText="Importar"
                                 data-size="sm" data-iconName="fa fa-folder-open" 
                                 accept="application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"/>
-                            {{-- <input type="file" id="importar"> --}}
-                            {{-- style="padding:0px;height:34px;width:98%;height:30px;font-size:12px;"  --}}
-                            {{-- <button type="button" class="btn btn-danger" id="basic-addon2" 
-                                onClick="limpiar_serie();" data-toggle="tooltip" data-placement="right" title="Limpiar">
-                                <i class="fas fa-backspace"></i>
-                            </button> --}}
-                            {{-- <button id="btn-example-file-reset" type="button">Reset file</button> --}}
-                            {{-- <button id="reset" type="button" onClick="limpiar_serie();">Reset file</button> --}}
                         </form>
                     </div>
                 </div>

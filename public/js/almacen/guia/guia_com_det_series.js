@@ -24,7 +24,7 @@ function agrega_series(id_oc_det){
     $('[name=id_detalle_transformacion]').val('');
     $('[name=id_producto]').val('');
     $('[name=serie_prod]').val('');
-        
+    $('#cabecera').show();
 }
 
 function agrega_series_transformacion(id){
@@ -50,7 +50,7 @@ function agrega_series_transformacion(id){
     $('[name=id_detalle_transformacion]').val(id);
     $('[name=id_producto]').val('');
     $('[name=serie_prod]').val('');
-    
+    $('#cabecera').show();
 }
 
 function agrega_series_producto(id){
@@ -78,7 +78,7 @@ function agrega_series_producto(id){
     $('[name=id_detalle_transformacion]').val('');
     $('[name=id_producto]').val(id);
     $('[name=serie_prod]').val('');
-    
+    $('#cabecera').show();
 }
 
 function cargar_series(){
@@ -150,6 +150,7 @@ function eliminar_serie(serie){
 }
 
 function guardar_series(){
+    var id_guia_com_det = $('[name=id_guia_com_det]').val();
     var id_oc_det = $('[name=id_oc_det]').val();
     var id_producto = $('[name=id_producto]').val();
     var id_detalle_transformacion = $('[name=id_detalle_transformacion]').val();
@@ -182,6 +183,34 @@ function guardar_series(){
         console.log(json);
         console.log(oc_det_seleccionadas);
         mostrar_ordenes_seleccionadas();
+    }
+    else if (id_guia_com_det !== ''){
+        let series = [];
+        $('#listaBarras tbody tr').each(function(index) {
+            let serie = $(this).find('[name=series]').val();
+            let id = $(this)[0].id;
+            series.push({
+                'id_guia_com_det':id_guia_com_det,
+                'id_prod_serie':id,
+                'serie':serie
+            });
+        });
+        var data = 'series='+JSON.stringify(series);
+        console.log(data);
+        $.ajax({
+            type: 'POST',
+            url: 'actualizar_series',
+            data: data,
+            dataType: 'JSON',
+            success: function(response){
+                console.log(response);
+                alert('Se actualizaron las series con éxito.');
+            }
+        }).fail( function( jqXHR, textStatus, errorThrown ){
+            console.log(jqXHR);
+            console.log(textStatus);
+            console.log(errorThrown);
+        });
     }
     $('#modal-guia_com_barras').modal('hide');
 }

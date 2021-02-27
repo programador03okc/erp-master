@@ -4,7 +4,7 @@
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" 
                 aria-label="close"><span aria-hidden="true">&times;</span></button>
-                <h3 class="modal-title">Ver Detalle </h3>
+                <h3 class="modal-title">Ver Detalle Ingreso</h3>
             </div>
             <div class="modal-body">
                 <div class="row">
@@ -20,8 +20,6 @@
                                             <th>#</th>
                                             <th>Código</th>
                                             <th>PartNumber</th>
-                                            <th>Categoría</th>
-                                            <th>SubCategoría</th>
                                             <th>Descripción</th>
                                             <th>Cantidad</th>
                                             <th>Unid</th>
@@ -29,6 +27,7 @@
                                             <th>Orden Compra</th>
                                             <th>Requerimiento</th>
                                             <th>Sede Req.</th>
+                                            <th></th>
                                         </tr>
                                     </thead>
                                     <tbody></tbody>
