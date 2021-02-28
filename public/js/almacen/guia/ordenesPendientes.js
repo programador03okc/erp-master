@@ -405,6 +405,7 @@ function open_detalle_movimiento(id, codigo){
         show: true
     });
     $('#cabecera').text(codigo);
+    $('[name=id_guia_com_detalle]').val(id);
     listar_detalle_movimiento(id);
 }
 function cargar_almacenes(sede){
@@ -476,22 +477,27 @@ function listar_detalle_orden(id_orden){
     });
 }
 
-function listar_detalle_movimiento(id_guia_com){
-    console.log('id_guia_com',id_guia_com);
+function listar_detalle_movimiento(id_guia_com_detalle){
+    console.log('id_guia_com_detalle',id_guia_com_detalle);
     $.ajax({
         type: 'GET',
-        url: 'detalleMovimiento/'+id_guia_com,
+        url: 'detalleMovimiento/'+id_guia_com_detalle,
         dataType: 'JSON',
         success: function(response){
             console.log(response);
             var html = '';
+            var html_ser = '';
             var i = 1;
             response.forEach(element => {
+                html_ser = '';
+                element.series.forEach(function(item){
+                    html_ser += '<br>'+item.serie;
+                });
                 html+=`<tr>
                 <td>${i}</td>
                 <td>${element.codigo}</td>
                 <td>${element.part_number!==null?element.part_number:''}</td>
-                <td>${element.descripcion}</td>
+                <td>${element.descripcion +'<strong>'+ html_ser}</strong></td>
                 <td>${element.cantidad}</td>
                 <td>${element.abreviatura}</td>
                 <td>${element.serie !== null ? (element.serie+'-'+element.numero) : ''}</td>

@@ -359,22 +359,4 @@ function agregarProducto(producto){
         'series'       : []
     });
     mostrar_ordenes_seleccionadas();
-    // let tr = `<tr>
-    //     <td><input type="checkbox" data-tipo="producto" value="${producto.id_producto}" checked/></td>
-    //     <td></td>
-    //     <td>${producto.codigo}</td>
-    //     <td>${producto.part_number}</td>
-    //     <td>${producto.descripcion}</td>
-    //     <td><input type="number" id="${'p'+producto.id_producto+'cantidad'}" value="1" min="1" style="width:80px;"/></td>
-    //     <td>${producto.abreviatura}</td>
-    //     <td>0.01</td>
-    //     <td>0.01</td>
-    //     <td>
-    //         <input type="text" class="oculto" id="series" value="${producto.series}" data-partnumber="${producto.part_number}"/>
-    //         <i class="fas fa-bars icon-tabla boton" data-toggle="tooltip" data-placement="bottom" title="Agregar Series" 
-    //         onClick="agrega_series_producto(${producto.id_producto});"></i>
-    //     </td>
-    // </tr>`;
-
-    // $("#detalleOrdenSeleccionadas>tbody").append(tr);
 }

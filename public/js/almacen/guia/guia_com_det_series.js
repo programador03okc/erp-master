@@ -204,6 +204,8 @@ function guardar_series(){
             dataType: 'JSON',
             success: function(response){
                 console.log(response);
+                var id = $('[name=id_guia_com_detalle]').val();
+                listar_detalle_movimiento(id);
                 alert('Se actualizaron las series con éxito.');
             }
         }).fail( function( jqXHR, textStatus, errorThrown ){

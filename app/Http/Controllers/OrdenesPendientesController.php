@@ -226,7 +226,33 @@ class OrdenesPendientesController extends Controller
             ->leftjoin('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'alm_prod.id_unidad_medida')
             ->where([['guia_com_det.id_guia_com', '=', $id_guia],['guia_com_det.estado','!=',7]])
             ->get();
-        return response()->json($detalle);
+
+            $lista = [];
+
+            foreach ($detalle as $det) {
+
+                $series = DB::table('almacen.alm_prod_serie')
+                ->select('alm_prod_serie.*')
+                ->where([['alm_prod_serie.id_guia_com_det','=',$det->id_guia_com_det],
+                        ['alm_prod_serie.estado','=',1]])
+                ->get();
+
+                array_push($lista, [
+                    'id_guia_com_det' => $det->id_guia_com_det,
+                    'codigo' => $det->codigo,
+                    'part_number' => $det->part_number,
+                    'descripcion' => $det->descripcion,
+                    'cantidad' => $det->cantidad,
+                    'abreviatura' => $det->abreviatura,
+                    'serie' => $det->serie,
+                    'numero' => $det->numero,
+                    'codigo_orden' => $det->codigo_orden,
+                    'codigo_req' => $det->codigo_req,
+                    'sede_req' => $det->sede_req,
+                    'series' => $series
+                ]);
+            }
+        return response()->json($lista);
     }
 
     public function mostrar_series($id_guia_com_det){

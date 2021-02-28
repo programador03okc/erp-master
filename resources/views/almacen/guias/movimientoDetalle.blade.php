@@ -9,6 +9,7 @@
             <div class="modal-body">
                 <div class="row">
                     <div class="col-md-12">
+                        <input type="text" name="id_guia_com_detalle" class="oculto"/>
                         <div class="panel panel-default">
                             <div class="panel-heading" id="cabecera">Detalle
                             </div>
