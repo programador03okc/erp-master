@@ -16,7 +16,7 @@ $(function(){
 function guia_compraModal(){
     // clearDataTable();
     let formName = document.getElementsByClassName('page-main')[0].getAttribute('type');
-    if (formName =='guia_compra'){
+    if (formName =='guia_compra' || formName == 'transferencias'){
         $('#modal-guia_compra').modal({
             show: true
         });
@@ -47,21 +47,24 @@ function listarGuiasCompra(){
         'ajax': 'listar_guias_compra',
         'columns': [
             {'data': 'id_guia'},
-            {'data': 'razon_social'},
             {'render':
                 function (data, type, row){
                     return (row['serie']+'-'+row['numero']);
                 }
             },
+            {'data': 'razon_social'},
+            {'data': 'almacen_descripcion'},
             {'render':
                 function (data, type, row){
                     return (formatDate(row['fecha_emision']));
                 }
             },
+            {'data': 'codigo'},
             {'data': 'des_estado'},
             {'data': 'id_proveedor'},
         ],
-        'columnDefs': [{ 'aTargets': [0,5], 'sClass': 'invisible'}],
+        'columnDefs': [{ 'aTargets': [0,7], 'sClass': 'invisible'}],
+        'order': [[0, 'desc']]
     });
 }
 
@@ -123,6 +126,11 @@ function selectGuiaCompra(){
     else if (page == "doc_compra"){
         if (myId !== null && myId !== ''){
             agrega_guia(myId);
+        }
+    }
+    else if (page == "transferencias"){
+        if (myId !== null && myId !== ''){
+            generar_transferencia(myId);
         }
     } 
     $('#modal-guia_compra').modal('hide');

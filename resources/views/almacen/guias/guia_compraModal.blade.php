@@ -11,9 +11,11 @@
                     <thead>
                         <tr>
                             <th hidden>Id</th>
-                            <th>Proveedor</th>
                             <th>Serie-Número</th>
+                            <th>Proveedor</th>
+                            <th>Almacén</th>
                             <th>Fecha Emisión</th>
+                            <th>Ingreso</th>
                             <th>Estado</th>
                             <th hidden></th>
                         </tr>

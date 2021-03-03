@@ -20,7 +20,7 @@ Gestión de Transferencias
 @endsection
 
 @section('content')
-<div class="page-main" type="transferencias_pendientes">
+<div class="page-main" type="transferencias">
     <div class="col-md-12" id="tab-transferencias"  style="padding-left:0px;padding-right:0px;">
         <ul class="nav nav-tabs" id="myTab">
             <li class="active"><a type="#porEnviar">Transferencias Pendientes de Enviar</a></li>
@@ -31,21 +31,21 @@ Gestión de Transferencias
             <section id="porEnviar" >
                 <form id="form-porEnviar" type="register">
                     <div class="row">
+                        <div class="col-md-2"><label>Almacén Origen:</label></div>
                         <div class="col-md-4">
-                            <h5>Almacén Origen</h5>
+                            <!-- <label>Almacén Origen:</label> -->
                             <select class="form-control" name="id_almacen_origen_lista" onChange="listarTransferenciasPorEnviar();">
-                                <option value="0" selected>Elija una opción</option>
+                                <option value="0" selected>Mostrar Todos</option>
                                 @foreach ($almacenes as $alm)
                                     <option value="{{$alm->id_almacen}}">{{$alm->descripcion}}</option>
                                 @endforeach
                             </select>
                         </div>
-                        <!-- <div class="col-md-4">
-                            <h5>Actualizar</h5>
-                            <button type="button" class="btn btn-primary" data-toggle="tooltip" 
-                                data-placement="bottom" title="Actualizar" 
-                                onClick="listarTransferenciasPorEnviar();">Actualizar</button>
-                        </div> -->
+                        <div class="col-md-6 right">
+                            <button type="button" class="btn btn-success" data-toggle="tooltip" 
+                                data-placement="bottom" title="Nueva Transferencia" 
+                                onClick="guia_compraModal();">Nueva Transferencia</button>
+                        </div>
                     </div>
                     <div class="row">
                         <div class="col-md-12">
@@ -174,6 +174,7 @@ Gestión de Transferencias
         </div>
     </div>
 </div>
+@include('almacen.guias.guia_compraModal')
 @include('almacen.transferencias.transferenciaRecibir')
 @include('almacen.transferencias.transferenciaEnviar')
 @include('almacen.transferencias.transferenciaDetalle')
@@ -200,6 +201,8 @@ Gestión de Transferencias
     <script src="{{ asset('js/almacen/transferencias/listar_transferencias.js')}}"></script>
     <script src="{{ asset('js/almacen/transferencias/transferenciaRecibir.js')}}"></script>
     <script src="{{ asset('js/almacen/transferencias/transferenciaEnviar.js')}}"></script>
+    <script src="{{ asset('js/almacen/guia/guia_compraModal.js')}}"></script>
+    <script src="{{ asset('js/almacen/transferencias/transferenciaCreate.js')}}"></script>
     <script>
     $(document).ready(function(){
         seleccionarMenu(window.location);

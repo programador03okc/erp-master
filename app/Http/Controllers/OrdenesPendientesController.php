@@ -802,7 +802,7 @@ class OrdenesPendientesController extends Controller
                     ->where('id_almacen',$id_almacen_origen)->first();
 
         foreach($detalle_oc as $det){
-
+            //sede de requerimiento !== sede de la guia
             if ($det->id_sede !== $sede->id_sede){
 
                 $searchedValue = $det->id_requerimiento;

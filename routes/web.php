@@ -1060,7 +1060,7 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::get('detalleMovimiento/{id}', 'OrdenesPendientesController@detalleMovimiento');
 					Route::post('listarTransformacionesProcesadas', 'CustomizacionController@listarTransformacionesProcesadas');
 					Route::get('listarDetalleTransformacion/{id}', 'CustomizacionController@listarDetalleTransformacion');
-					Route::get('transferencia/{id}', 'OrdenesPendientesController@transferencia');
+					// Route::get('transferencia/{id}', 'OrdenesPendientesController@transferencia');
 					Route::get('obtenerGuia/{id}', 'OrdenesPendientesController@obtenerGuia');
 					Route::post('guardar_doc_compra', 'OrdenesPendientesController@guardar_doc_compra');
 					Route::get('documentos_ver/{id}', 'OrdenesPendientesController@documentos_ver');
@@ -1210,7 +1210,9 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::get('listarSeries/{id}', 'TransferenciaController@listarSeries');
 					Route::get('listarSeriesVen/{id}', 'TransferenciaController@listarSeriesVen');
 					Route::get('anular_transferencia/{id}', 'TransferenciaController@anular_transferencia');
-					
+					Route::get('listar_guias_compra', 'AlmacenController@listar_guias_compra');
+					Route::get('transferencia/{id}', 'OrdenesPendientesController@transferencia');
+
 				});
 	
 			});

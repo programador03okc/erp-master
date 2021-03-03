@@ -41,7 +41,7 @@ Panel de Control de Despachos
     <div class="col-md-12" id="tab-reqPendientes" style="padding-left:0px;padding-right:0px;">
         <ul class="nav nav-tabs" id="myTab">
             <li class="active"><a type="#elaborados">Requerimientos Pendientes <span id="selaborados" class="badge badge-info"></span></a></li>
-            <li class=""><a type="#confirmados">Requerimientos en Compras <span id="sconfirmados" class="badge badge-info"></span></a></li>
+            <li class=""><a type="#confirmados">En Compras <span id="sconfirmados" class="badge badge-info"></span></a></li>
             <li class=""><a type="#pendientes">En Proceso <span id="spendientes" class="badge badge-info"></span></a></li>
             <li class=""><a type="#transformados">En Transformación <span id="stransformados" class="badge badge-info"></span></a></li>
             <li class=""><a type="#despachos">Por Despachar <span id="sdespachos" class="badge badge-info"></span></a></li>

@@ -327,10 +327,10 @@ $('#ordenesEntregadas tbody').on("click","button.anular", function(){
     $("#submitGuiaObs").removeAttr("disabled");
 });
 
-$('#ordenesEntregadas tbody').on("click","button.transferencia", function(){
-    var id_guia = $(this).data('id');
-    generar_transferencia(id_guia);
-});
+// $('#ordenesEntregadas tbody').on("click","button.transferencia", function(){
+//     var id_guia = $(this).data('id');
+//     generar_transferencia(id_guia);
+// });
 
 $('#ordenesEntregadas tbody').on("click","button.anular_sal", function(){
     var id_mov_alm = $(this).data('id');
@@ -359,38 +359,38 @@ $('#ordenesEntregadas tbody').on("click","button.ver_doc", function(){
     documentosVer(id_guia);
 });
 
-$("#form-guia_ven_obs").on("submit", function(e){
-    console.log('submit');
-    e.preventDefault();
-    var data = $(this).serialize();
-    console.log(data);
-    anular_transferencia_salida(data);
-});
+// $("#form-guia_ven_obs").on("submit", function(e){
+//     console.log('submit');
+//     e.preventDefault();
+//     var data = $(this).serialize();
+//     console.log(data);
+//     anular_transferencia_salida(data);
+// });
 
-function anular_transferencia_salida(data){
-    $("#submitGuiaVenObs").attr('disabled','true');
-    $.ajax({
-        type: 'POST',
-        url: 'anular_transferencia_salida',
-        data: data,
-        dataType: 'JSON',
-        success: function(response){
-            console.log(response);
-            if (response.length > 0){
-                alert(response);
-                $('#modal-guia_ven_obs').modal('hide');
-            } else {
-                alert('Salida Almacén anulada con éxito');
-                $('#modal-guia_ven_obs').modal('hide');
-                $('#ordenesEntregadas').DataTable().ajax.reload();
-            }
-        }
-    }).fail( function( jqXHR, textStatus, errorThrown ){
-        console.log(jqXHR);
-        console.log(textStatus);
-        console.log(errorThrown);
-    });
-}
+// function anular_transferencia_salida(data){
+//     $("#submitGuiaVenObs").attr('disabled','true');
+//     $.ajax({
+//         type: 'POST',
+//         url: 'anular_transferencia_salida',
+//         data: data,
+//         dataType: 'JSON',
+//         success: function(response){
+//             console.log(response);
+//             if (response.length > 0){
+//                 alert(response);
+//                 $('#modal-guia_ven_obs').modal('hide');
+//             } else {
+//                 alert('Salida Almacén anulada con éxito');
+//                 $('#modal-guia_ven_obs').modal('hide');
+//                 $('#ordenesEntregadas').DataTable().ajax.reload();
+//             }
+//         }
+//     }).fail( function( jqXHR, textStatus, errorThrown ){
+//         console.log(jqXHR);
+//         console.log(textStatus);
+//         console.log(errorThrown);
+//     });
+// }
 
 function open_detalle(data){
     $('#modal-ordenDetalle').modal({
@@ -600,18 +600,18 @@ function anular_ingreso(data){
     });
 }
 
-function generar_transferencia(id_guia){
-    $.ajax({
-        type: 'GET',
-        url: 'transferencia/'+id_guia,
-        dataType: 'JSON',
-        success: function(response){
-            console.log(response);
-            alert(response);
-        }
-    }).fail( function( jqXHR, textStatus, errorThrown ){
-        console.log(jqXHR);
-        console.log(textStatus);
-        console.log(errorThrown);
-    });
-}
+// function generar_transferencia(id_guia){
+//     $.ajax({
+//         type: 'GET',
+//         url: 'transferencia/'+id_guia,
+//         dataType: 'JSON',
+//         success: function(response){
+//             console.log(response);
+//             alert(response);
+//         }
+//     }).fail( function( jqXHR, textStatus, errorThrown ){
+//         console.log(jqXHR);
+//         console.log(textStatus);
+//         console.log(errorThrown);
+//     });
+// }

@@ -67,7 +67,7 @@ function listarTransferenciasPorEnviar(){
             {'data': 'nombre_corto', 'name': 'sis_usua.nombre_corto'},
             {'render': function (data, type, row){
                 if (valor_permiso == '1') {
-                    return `<button type="button" class="guia btn btn-success boton" data-toggle="tooltip" 
+                    return `<button type="button" class="guia btn btn-primary boton" data-toggle="tooltip" 
                             data-placement="bottom" data-id="${row['id_transferencia']}" data-cod="${row['id_requerimiento']}" title="Generar Guía" >
                             <i class="fas fa-sign-in-alt"></i></button>
                         <button type="button" class="anular btn btn-danger boton" data-toggle="tooltip" 
@@ -105,7 +105,7 @@ function listarTransferenciasPorEnviar(){
             }
         ],
         'select': 'multi',
-        'order': [[1, 'asc']]
+        'order': [[1, 'desc']]
     });
     
     $($('#listaTransferenciasPorEnviar').DataTable().table().container()).on('ifChanged', '.dt-checkboxes', function(event){
