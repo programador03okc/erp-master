@@ -33,29 +33,34 @@ function getDataCuadroCostos(cc){
         let itemsConTransformacionList=[];
         if(res.status ==200){
             tempDetalleItemsCC= res.data;
-            tempDetalleItemsCC.forEach(element => {
-                if(element['descripcion_producto_transformado'] != null  || element['descripcion_producto_transformado' != '']){
-                    cantidadTransformaciones+=1;
-                    itemsConTransformacionList.push({
-                        'id':element.id,
-                        'part_no_producto_transformado':element.part_no_producto_transformado,
-                        'descripcion_producto_transformado':(element.descripcion_producto_transformado.replace("nbsp;","").replace("&nbsp;","").replace("&amp;","")).trim(),
-                        'comentario_producto_transformado':element.comentario_producto_transformado,
-                        'cantidad':element.cantidad
-
-                    });
+            if(res.data.length >0){
+                tempDetalleItemsCC.forEach(element => {
+                    if(element['descripcion_producto_transformado'] != null  || element['descripcion_producto_transformado' != '']){
+                        cantidadTransformaciones+=1;
+                        itemsConTransformacionList.push({
+                            'id':element.id,
+                            'part_no_producto_transformado':element.part_no_producto_transformado,
+                            'descripcion_producto_transformado':(element.descripcion_producto_transformado.replace("nbsp;","").replace("&nbsp;","").replace("&amp;","")).trim(),
+                            'comentario_producto_transformado':element.comentario_producto_transformado,
+                            'cantidad':element.cantidad
+    
+                        });
+                    }
+                });
+                // console.log(itemsConTransformacionList);
+                if(cantidadTransformaciones >0){
+                    document.querySelector("form[id='form-requerimiento'] input[name='tiene_transformacion']").value= true;
+                    document.querySelector("fieldset[id='group-detalle-items-transformados']").removeAttribute('hidden');
+                    llenarItemsTransformados(itemsConTransformacionList)
+                }else{
+                    document.querySelector("form[id='form-requerimiento'] input[name='tiene_transformacion']").value= false;
+                    document.querySelector("fieldset[id='group-detalle-cuadro-costos']").removeAttribute('hidden');
+                    llenarDetalleCuadroCostos(res.data);
                 }
-            });
-            // console.log(itemsConTransformacionList);
-            if(cantidadTransformaciones >0){
-                document.querySelector("form[id='form-requerimiento'] input[name='tiene_transformacion']").value= true;
-                document.querySelector("fieldset[id='group-detalle-items-transformados']").removeAttribute('hidden');
-                llenarItemsTransformados(itemsConTransformacionList)
             }else{
-                document.querySelector("form[id='form-requerimiento'] input[name='tiene_transformacion']").value= false;
-                document.querySelector("fieldset[id='group-detalle-cuadro-costos']").removeAttribute('hidden');
-                llenarDetalleCuadroCostos(res.data);
+                alert("Hubo un problema al intentar encontrar el detalle del cuadro de costos");
             }
+
 
         }
     }).catch(function(err) {

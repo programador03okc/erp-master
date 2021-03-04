@@ -76,8 +76,8 @@ function listar_ordenes_propias(id_empresa= null,year_publicacion =null){
         'ajax': {
             // url:'/logistica/requerimiento/lista/'+id_empresa+'/'+id_sede+'/'+id_grupo,
             url:rutaListaOrdenesPropias+'/'+id_empresa+'/'+year_publicacion,
-            type:'GET',
-            data: {_token: "{{csrf_token()}}"}
+            type:'GET'
+            // data: {_token: "{{csrf_token()}}"}
         },
         'columns':[
             {'render': function (data, type, row,meta){
@@ -88,9 +88,9 @@ function listar_ordenes_propias(id_empresa= null,year_publicacion =null){
                 return `${row['orden_am']}`;
                 }
             },
-            {'data':'empresa', 'name':'empresa'},
-            {'data':'am', 'name':'am'},
-            {'data':'entidad', 'name':'entidad'},
+            {'data':'empresa', 'name':'empresas.empresa'},
+            {'data':'am', 'name':'acuerdo_marco.descripcion_corta'},
+            {'data':'entidad', 'name':'entidades.nombre'},
             {'data':'fecha_publicacion', 'name':'fecha_publicacion'},
             {'data':'estado_oc', 'name':'estado_oc'},
             {'data':'fecha_estado', 'name':'fecha_estado'},
