@@ -617,6 +617,7 @@ class RequerimientoController extends Controller
             $hasWhere[]=['oc_propias.id_empresa','=',$id_empresa];
         }
 
+        
         $oc_propias = DB::table('mgcp_acuerdo_marco.oc_propias')
         ->select(
             'oc_propias.*',
@@ -632,12 +633,10 @@ class RequerimientoController extends Controller
             'alm_req.codigo as codigo_requerimiento',
             'cc.tipo_cuadro',
             'cc_am_filas.id as id_am_filas',
-            DB::raw("(SELECT COUNT(*) FROM mgcp_cuadro_costos.cc_am_filas 
-            WHERE cc_am_filas.descripcion_producto_transformado NOTNULL 
-            AND cc_am_filas.id_cc_am=cc.id ) as cantidad_producto_con_transformacion"),
             'cc_venta_filas.id as id_venta_filas',
             'oportunidades.id_tipo_negocio',
-            'tipos_negocio.tipo as tipo_negocio'
+            'tipos_negocio.tipo as tipo_negocio',
+            DB::raw("(SELECT COUNT(id) FROM mgcp_cuadro_costos.cc_am_filas WHERE cc_am_filas.descripcion_producto_transformado IS NOT NULL AND cc_am_filas.id_cc_am =cc.id ) AS cantidad_producto_con_transformacion")
             )
         ->leftJoin('mgcp_acuerdo_marco.empresas', 'empresas.id', '=', 'oc_propias.id_empresa')
         ->leftJoin('mgcp_acuerdo_marco.entidades', 'entidades.id', '=', 'oc_propias.id_entidad')
@@ -660,7 +659,21 @@ class RequerimientoController extends Controller
             $oc_propias->get();
         }
 
-        return datatables($oc_propias)->toJson();
+        // return datatables($oc_propias)->toJson();
+       return Datatables::of($oc_propias)
+    //    ->filterColumn('cantidad_producto_con_transformacion', function($query, $keyword) {
+    //     $sql = "(SELECT COUNT(*) FROM mgcp_cuadro_costos.cc_am_filas 
+    //     WHERE cc_am_filas.descripcion_producto_transformado IS NOT NULL 
+    //     AND cc_am_filas.id_cc_am = cc.id ) AS cantidad_producto_con_transformacion";
+    //     $query->whereRaw($sql);
+
+    //     })
+        ->toJson();
+
+        // ->make(true);
+        // return response()->json($response);
+
+
     }
     function cuadro_costos($id_cc){
         $cc = DB::table('mgcp_acuerdo_marco.oc_propias')
@@ -751,13 +764,18 @@ class RequerimientoController extends Controller
         ->where('cc.id','=',$id_cc)  
         ->get();
         
-        $tipo_cuadro=0;
-        if(count($cc)>0){
-            $tipo_cuadro = $cc->first()->tipo_cuadro;
-        }
+        // $tipo_cuadro=0;
+        // if(count($cc)>0){
+        //     $tipo_cuadro = $cc->first()->tipo_cuadro;
+        // }
+        
+        // donde esta el id_cc si en cc_am_filas o en cc_venta_filas
+        $count_id_cc_in_cc_am_filas = DB::table('mgcp_cuadro_costos.cc_am_filas')->select('cc_am_filas.*')->where('cc_am_filas.id_cc_am','=',$id_cc)->count();
+        $count_id_cc_in_cc_venta_filas = DB::table('mgcp_cuadro_costos.cc_venta_filas')->select('cc_venta_filas.*')->where('cc_am_filas.id_cc_am','=',$id_cc)->count();
 
-        if($tipo_cuadro>0){
-            if($tipo_cuadro == 1){ // acuerdo marco
+
+        // if($tipo_cuadro>0){
+            if($count_id_cc_in_cc_am_filas > 0){ // acuerdo marco
 
                 $det_cc = DB::table('mgcp_cuadro_costos.cc_am_filas')
                 ->select(
@@ -791,7 +809,7 @@ class RequerimientoController extends Controller
                 ->get();
                 $status =200;
                 $msj='Ok';
-            }elseif($tipo_cuadro ==0){ // venta
+            }elseif($count_id_cc_in_cc_venta_filas >0){ // venta
                 $det_cc = DB::table('mgcp_cuadro_costos.cc_venta_filas')
                 ->select(
                     'cc_venta_filas.id',
@@ -824,8 +842,8 @@ class RequerimientoController extends Controller
                 $status =204;
                 $msj='el tipo de negocio no esta comprendido en la consulta.';
             }
-        }
-        $output=['status'=>$status, 'mensaje'=>$msj, 'data'=>$det_cc];
+        // }
+        $output=['status'=>$status, 'mensaje'=>$msj, 'data'=>$det_cc?$det_cc:[]];
         return $output;
         
 
@@ -837,44 +855,35 @@ class RequerimientoController extends Controller
 
     }
 
+ 
     function getIdDistrito($nombre){
         $data = DB::table('configuracion.ubi_dis')
         ->select('ubi_dis.*')
         ->where([
-            ['ubi_dis.descripcion', 'like', '%'.$nombre.'%']
+            ['ubi_dis.descripcion', '=', $nombre]
             ])
-        ->get();
-        $id_dis=0;
-        if(count($data)>0){
-            $id_dis = $data->first()->id_dis;
-        }
-        return $id_dis;
+        ->first();
+        return ($data!==null ? $data->id_dis : 0);
     }
+
     function getIdProvincia($nombre){
         $data = DB::table('configuracion.ubi_prov')
         ->select('ubi_prov.*')
         ->where([
-            ['ubi_prov.descripcion', 'like', '%'.$nombre.'%']
+            ['ubi_prov.descripcion', '=', $nombre]
             ])
-        ->get();
-        $id_prov=0;
-        if(count($data)>0){
-            $id_prov = $data->first()->id_prov;
-        }
-        return $id_prov;
+        ->first();
+        return ($data!==null ? $data->id_prov : 0);
     }
+
     function getIdDepartamento($nombre){
         $data = DB::table('configuracion.ubi_dpto')
         ->select('ubi_dpto.*')
         ->where([
-            ['ubi_dpto.descripcion', 'like', '%'.$nombre.'%']
+            ['ubi_dpto.descripcion', '=', $nombre]
             ])
-        ->get();
-        $id_dpto=0;
-        if(count($data)>0){
-            $id_dpto = $data->first()->id_dpto;
-        }
-        return $id_dpto;
+        ->first();
+        return ($data!==null ? $data->id_dpto : 0);
     }
 
     function obtenerConstruirCliente(Request $request){
