@@ -771,7 +771,7 @@ class RequerimientoController extends Controller
         
         // donde esta el id_cc si en cc_am_filas o en cc_venta_filas
         $count_id_cc_in_cc_am_filas = DB::table('mgcp_cuadro_costos.cc_am_filas')->select('cc_am_filas.*')->where('cc_am_filas.id_cc_am','=',$id_cc)->count();
-        $count_id_cc_in_cc_venta_filas = DB::table('mgcp_cuadro_costos.cc_venta_filas')->select('cc_venta_filas.*')->where('cc_am_filas.id_cc_am','=',$id_cc)->count();
+        $count_id_cc_in_cc_venta_filas = DB::table('mgcp_cuadro_costos.cc_venta_filas')->select('cc_venta_filas.*')->where('cc_venta_filas.id_cc_venta','=',$id_cc)->count();
 
 
         // if($tipo_cuadro>0){
