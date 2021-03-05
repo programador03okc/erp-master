@@ -95,8 +95,8 @@ function open_guia_transferencia_create(){
         $('[name=id_guia_com]').val('');
         $('[name=id_sede]').val(sede_origen);
         $('[name=id_mov_alm]').val('');
-        // $('[name=id_requerimiento]').val(data.id_requerimiento);
-        // $('[name=id_transferencia]').val(data.id_transferencia);
+        $('[name=id_requerimiento]').val('');
+        $('[name=id_transferencia]').val('');
         $("#submit_transferencia").removeAttr("disabled");
         
         cargar_almacenes(sede_destino, 'id_almacen_destino');

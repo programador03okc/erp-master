@@ -79,8 +79,9 @@ Gestión de Transferencias
             <section id="pendientes" hidden>
                 <form id="form-pendientes" type="register">
                     <div class="row">
+                        <div class="col-md-2"><label>Almacén Destino:</label></div>
                         <div class="col-md-4">
-                            <h5>Almacén Destino</h5>
+                            <!-- <h5>Almacén Destino</h5> -->
                             <select class="form-control" name="id_almacen_destino_lista" onChange="listarTransferenciasPendientes();">
                                 <option value="0" selected>Elija una opción</option>
                                 @foreach ($almacenes as $alm)
@@ -88,12 +89,12 @@ Gestión de Transferencias
                                 @endforeach
                             </select>
                         </div>
-                        <div class="col-md-4">
+                        <!-- <div class="col-md-4">
                             <h5>Actualizar</h5>
                             <button type="button" class="btn btn-primary" data-toggle="tooltip" 
                                 data-placement="bottom" title="Actualizar" 
                                 onClick="listarTransferenciasPendientes();">Actualizar</button>
-                        </div>
+                        </div> -->
                     </div>
                     <div class="row">
                         <div class="col-md-12">
@@ -128,8 +129,9 @@ Gestión de Transferencias
             <section id="recibidas" hidden>
                 <form id="form-recibidas" type="register">
                     <div class="row">
+                        <div class="col-md-2"><label>Almacén Destino:</label></div>
                         <div class="col-md-4">
-                            <h5>Almacén Destino</h5>
+                            <!-- <h5>Almacén Destino</h5> -->
                             <select class="form-control" name="id_almacen_dest_recibida" onChange="listarTransferenciasRecibidas();">
                                 <option value="0" selected>Elija una opción</option>
                                 @foreach ($almacenes as $alm)
@@ -175,6 +177,7 @@ Gestión de Transferencias
     </div>
 </div>
 @include('almacen.guias.guia_compraModal')
+@include('almacen.guias.guia_com_ver')
 @include('almacen.transferencias.transferenciaRecibir')
 @include('almacen.transferencias.transferenciaEnviar')
 @include('almacen.transferencias.transferenciaDetalle')

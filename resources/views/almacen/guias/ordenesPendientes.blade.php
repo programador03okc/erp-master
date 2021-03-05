@@ -60,7 +60,7 @@ Pendientes de Ingreso
                             </table>
                             @if(Auth::user()->tieneAccion(83))
                                 <button type="button" class="btn btn-success" data-toggle="tooltip" data-placement="bottom" 
-                                title="Crear Guía / Ingreso" onClick="open_guia_create_seleccionadas();">Generar Guía</button>
+                                title="Crear Guía / Ingreso" onClick="open_guia_create_seleccionadas();">Ingresar Guía</button>
                             @endif
                         </div>
                     </div>

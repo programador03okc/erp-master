@@ -42,7 +42,7 @@ function listarGuiasCompra(){
         'dom': vardataTables[1],
         'buttons': vardataTables[2],
         'language' : vardataTables[0],
-        'bDestroy': true,
+        'destroy': true,
         'retrieve': true,
         'ajax': 'listar_guias_compra',
         'columns': [
@@ -94,6 +94,7 @@ function llenarTablaListaGuiasCompra(data){
             {'data': 'id_proveedor'},
         ],
         'columnDefs': [{ 'aTargets': [0,5], 'sClass': 'invisible'}],
+        'order': [[0, 'desc']]
     });
 }
 
@@ -130,7 +131,7 @@ function selectGuiaCompra(){
     }
     else if (page == "transferencias"){
         if (myId !== null && myId !== ''){
-            generar_transferencia(myId);
+            ver_transferencia(myId);
         }
     } 
     $('#modal-guia_compra').modal('hide');

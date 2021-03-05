@@ -204,7 +204,7 @@ function listarTransformaciones(){
                 function (data, type, row){
                     if (acceso == '1') {
                         return '<button type="button" class="guia btn btn-info boton" data-toggle="tooltip" '+
-                            'data-placement="bottom" title="Generar Guía" >'+
+                            'data-placement="bottom" title="Ingresar Guía" >'+
                             '<i class="fas fa-sign-in-alt"></i></button>'+
                             '<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" '+
                             'data-placement="bottom" title="Ver Detalle" >'+

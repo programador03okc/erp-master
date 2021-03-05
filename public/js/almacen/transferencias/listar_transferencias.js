@@ -105,7 +105,7 @@ function listarTransferenciasPorEnviar(){
             }
         ],
         'select': 'multi',
-        'order': [[1, 'desc']]
+        'order': [[0, 'desc']]
     });
     
     $($('#listaTransferenciasPorEnviar').DataTable().table().container()).on('ifChanged', '.dt-checkboxes', function(event){
