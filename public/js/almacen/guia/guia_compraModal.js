@@ -60,7 +60,7 @@ function listarGuiasCompra(){
                 }
             },
             {'data': 'codigo'},
-            {'data': 'des_estado'},
+            {'data': 'operacion'},
             {'data': 'id_proveedor'},
         ],
         'columnDefs': [{ 'aTargets': [0,7], 'sClass': 'invisible'}],

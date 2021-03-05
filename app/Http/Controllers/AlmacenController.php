@@ -2256,11 +2256,11 @@ class AlmacenController extends Controller
     public function listar_guias_compra()
     {
         $data = DB::table('almacen.guia_com')
-        ->select('guia_com.*','adm_contri.razon_social','adm_estado_doc.estado_doc as des_estado',
+        ->select('guia_com.*','adm_contri.razon_social','tp_ope.descripcion as operacion',
         'alm_almacen.descripcion as almacen_descripcion','mov_alm.codigo')
         ->leftjoin('logistica.log_prove','log_prove.id_proveedor','=','guia_com.id_proveedor')
         ->leftjoin('contabilidad.adm_contri','adm_contri.id_contribuyente','=','log_prove.id_contribuyente')
-        ->leftjoin('administracion.adm_estado_doc','adm_estado_doc.id_estado_doc','=','guia_com.estado')
+        ->leftjoin('almacen.tp_ope','tp_ope.id_operacion','=','guia_com.id_operacion')
         ->join('almacen.alm_almacen','alm_almacen.id_almacen','=','guia_com.id_almacen')
         ->leftjoin('almacen.mov_alm','mov_alm.id_guia_com','=','guia_com.id_guia')
             ->where([['guia_com.estado','!=',7]])
