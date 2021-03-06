@@ -662,12 +662,10 @@ class DistribucionController extends Controller
 
     public function verDetalleRequerimiento($id_requerimiento){
         $detalles = DB::table('almacen.alm_det_req')
-            ->select('alm_det_req.*','alm_almacen.descripcion as almacen_descripcion',
-                    'adm_estado_doc.estado_doc','adm_estado_doc.bootstrap_color',
+            ->select('alm_det_req.*','adm_estado_doc.estado_doc','adm_estado_doc.bootstrap_color',
                     'alm_prod.descripcion as producto_descripcion','alm_prod.codigo as producto_codigo',
                     'alm_prod.series','alm_req.id_almacen',
-                    'alm_und_medida.abreviatura','alm_cat_prod.descripcion as categoria',
-                    'alm_subcat.descripcion as subcategoria','alm_prod.part_number',
+                    'alm_und_medida.abreviatura','alm_prod.part_number',
                     DB::raw("(SELECT SUM(cantidad) 
                         FROM almacen.orden_despacho_det AS odd
                         INNER JOIN almacen.orden_despacho AS od
@@ -711,16 +709,21 @@ class DistribucionController extends Controller
                     //     FROM almacen.trans_detalle 
                     //     WHERE   trans_detalle.id_requerimiento_detalle = alm_det_req.id_detalle_requerimiento AND
                     //         trans_detalle.estado = 14) AS suma_transferencias_recibidas")
-                            )
+                    'almacen_guia.id_almacen as id_almacen_guia_com','almacen_guia.descripcion as almacen_guia_com_descripcion',
+                    'almacen_reserva.descripcion as almacen_reserva_descripcion')
             ->leftJoin('almacen.alm_prod', 'alm_prod.id_producto', '=', 'alm_det_req.id_producto')
-            ->leftJoin('almacen.alm_cat_prod', 'alm_cat_prod.id_categoria', '=', 'alm_prod.id_categoria')
-            ->leftJoin('almacen.alm_subcat', 'alm_subcat.id_subcategoria', '=', 'alm_prod.id_subcategoria')
             ->leftJoin('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'alm_det_req.id_unidad_medida')
-            ->leftJoin('almacen.alm_almacen', 'alm_almacen.id_almacen', '=', 'alm_det_req.id_almacen_reserva')
+            // ->leftJoin('almacen.alm_almacen', 'alm_almacen.id_almacen', '=', 'alm_det_req.id_almacen_reserva')
             ->join('administracion.adm_estado_doc', 'adm_estado_doc.id_estado_doc', '=', 'alm_det_req.estado')
             ->join('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'alm_det_req.id_requerimiento')
+            ->leftJoin('logistica.log_det_ord_compra','log_det_ord_compra.id_detalle_requerimiento','=','alm_det_req.id_detalle_requerimiento')
+            ->leftJoin('almacen.guia_com_det','guia_com_det.id_oc_det','=','log_det_ord_compra.id_detalle_orden')
+            ->leftJoin('almacen.guia_com','guia_com.id_guia','=','guia_com_det.id_guia_com')
+            ->leftJoin('almacen.alm_almacen as almacen_guia','almacen_guia.id_almacen','=','guia_com.id_almacen')
+            ->leftJoin('almacen.alm_almacen as almacen_reserva','almacen_reserva.id_almacen','=','alm_det_req.id_almacen_reserva')
             ->where([['alm_det_req.id_requerimiento','=',$id_requerimiento],['alm_det_req.estado','!=',7]])
             ->get();
+
         return response()->json($detalles);
     }
 
@@ -1097,7 +1100,7 @@ class DistribucionController extends Controller
     public function listarOrdenesDespachoPendientes(Request $request){
         $data = DB::table('almacen.orden_despacho')
         ->select('orden_despacho.*','adm_contri.nro_documento','adm_contri.razon_social',
-        'alm_req.codigo as codigo_req','alm_req.concepto','ubi_dis.descripcion as ubigeo_descripcion',
+        'alm_req.codigo as codigo_req','alm_req.concepto',
         'sis_usua.nombre_corto','adm_estado_doc.estado_doc','adm_estado_doc.bootstrap_color',
         DB::raw("(rrhh_perso.nombres) || ' ' || (rrhh_perso.apellido_paterno) || ' ' || (rrhh_perso.apellido_materno) AS nombre_persona"),
         'alm_almacen.descripcion as almacen_descripcion')
@@ -1106,7 +1109,6 @@ class DistribucionController extends Controller
         ->leftjoin('rrhh.rrhh_perso','rrhh_perso.id_persona','=','orden_despacho.id_persona')
         ->leftjoin('almacen.alm_almacen','alm_almacen.id_almacen','=','orden_despacho.id_almacen')
         ->join('almacen.alm_req','alm_req.id_requerimiento','=','orden_despacho.id_requerimiento')
-        ->join('configuracion.ubi_dis','ubi_dis.id_dis','=','orden_despacho.ubigeo_destino')
         ->join('configuracion.sis_usua','sis_usua.id_usuario','=','orden_despacho.registrado_por')
         ->join('administracion.adm_estado_doc','adm_estado_doc.id_estado_doc','=','orden_despacho.estado')
         ->where('orden_despacho.estado',1);

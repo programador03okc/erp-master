@@ -223,15 +223,12 @@ class TransferenciaController extends Controller
     public function listar_transferencia_detalle($id_transferencia){
         $detalle = DB::table('almacen.trans_detalle')
         ->select('trans_detalle.*','alm_prod.codigo','alm_prod.descripcion','alm_prod.series',
-        'alm_und_medida.abreviatura','alm_prod.part_number','alm_cat_prod.descripcion as categoria',
-        'alm_subcat.descripcion as subcategoria','guia_com.serie','guia_com.numero',
+        'alm_und_medida.abreviatura','alm_prod.part_number','guia_com.serie','guia_com.numero',
         'adm_estado_doc.estado_doc','adm_estado_doc.bootstrap_color')
         ->join('almacen.alm_prod','alm_prod.id_producto','=','trans_detalle.id_producto')
         ->join('almacen.alm_und_medida','alm_und_medida.id_unidad_medida','=','alm_prod.id_unidad_medida')
-        ->join('almacen.alm_cat_prod','alm_cat_prod.id_categoria','=','alm_prod.id_categoria')
-        ->join('almacen.alm_subcat','alm_subcat.id_subcategoria','=','alm_prod.id_subcategoria')
         ->join('administracion.adm_estado_doc','adm_estado_doc.id_estado_doc','=','trans_detalle.estado')
-        ->leftJoin('almacen.guia_com_det','guia_com_det.id_guia_com_det','=','trans_detalle.id_guia_com_det')
+        ->leftJoin('almacen.guia_com_det','guia_com_det.id_trans_detalle','=','trans_detalle.id_trans_detalle')
         ->leftJoin('almacen.guia_com','guia_com.id_guia','=','guia_com_det.id_guia_com')
         ->where([['trans_detalle.id_transferencia','=',$id_transferencia],
                  ['trans_detalle.estado','!=',7]])
@@ -255,27 +252,28 @@ class TransferenciaController extends Controller
         ->where([['guia_ven_det.id_guia_ven','=',$id_guia_ven],
                  ['guia_ven_det.estado','!=',7]])
         ->get();
-        
-        // $html = '';
-        // foreach($detalle as $d){
-        //     $html.='
-        //     <tr id="'.$d->id_guia_ven_det.'">
-        //         <td><input type="checkbox" checked change="onCheck('.$d->id_guia_ven_det.');"/></td>
-        //         <td>'.$d->codigo_trans.'</td>
-        //         <td>'.$d->codigo.'</td>
-        //         <td>'.$d->part_number.'</td>
-        //         <td>'.$d->categoria.'</td>
-        //         <td>'.$d->subcategoria.'</td>
-        //         <td>'.$d->descripcion.'</td>
-        //         <td>'.$d->cantidad.'</td>
-        //         <td><input type="number" class="input-data right" style="width:80px;" name="cantidad_recibida" value="'.$d->cantidad.'" max="'.$d->cantidad.'"/></td>
-        //         <td>'.$d->abreviatura.'</td>
-        //         <td><input type="text" class="input-data" name="observacion"/></td>
-        //     </tr>
-        //     ';
-        // }
-        // return json_encode($html);
-        return response()->json($detalle);
+
+        $lista_detalle = [];
+
+        foreach ($detalle as $det) {
+            $series = DB::table('almacen.alm_prod_serie')
+            ->where('id_guia_ven_det',$det->id_guia_ven_det)
+            ->get();
+
+            array_push($lista_detalle, [
+                'id_guia_ven_det' => $det->id_guia_ven_det,
+                'codigo_trans' => $det->codigo_trans,
+                'codigo_req' => $det->codigo_req,
+                'concepto' => $det->concepto,
+                'codigo' => $det->codigo,
+                'part_number' => $det->part_number,
+                'descripcion' => $det->descripcion,
+                'cantidad' => $det->cantidad,
+                'abreviatura' => $det->abreviatura,
+                'series' => $series
+            ]);
+        }
+        return response()->json($lista_detalle);
     }
 
     public function anular_transferencia($id_transferencia){
@@ -538,17 +536,11 @@ class TransferenciaController extends Controller
             ->select('guia_ven.*','adm_empresa.id_contribuyente as empresa_contribuyente',
             'log_prove.id_proveedor as empresa_proveedor','com_cliente.id_contribuyente as cliente_contribuyente',
             'prove_cliente.id_proveedor as cliente_proveedor')
-            // 'log_ord_compra.id_requerimiento',
-            // 'alm_req.id_tipo_requerimiento','alm_req.tipo_cliente'
             ->join('administracion.sis_sede','sis_sede.id_sede','=','guia_ven.id_sede')
             ->join('administracion.adm_empresa','adm_empresa.id_empresa','=','sis_sede.id_empresa')
             ->leftJoin('logistica.log_prove','log_prove.id_contribuyente','=','adm_empresa.id_contribuyente')
             ->leftJoin('comercial.com_cliente','com_cliente.id_cliente','=','guia_ven.id_cliente')
             ->leftJoin('logistica.log_prove as prove_cliente','prove_cliente.id_contribuyente','=','com_cliente.id_contribuyente')
-            // ->leftJoin('almacen.mov_alm','mov_alm.id_guia_ven','=','guia_ven.id_guia_ven')
-            // ->leftJoin('almacen.guia_com','guia_com.id_guia','=','guia_ven.id_guia_com')
-            // ->leftJoin('logistica.log_ord_compra','log_ord_compra.id_orden_compra','=','guia_com.id_oc')
-            // ->leftJoin('almacen.alm_req','alm_req.id_requerimiento','=','log_ord_compra.id_requerimiento')
             ->where('guia_ven.id_guia_ven',$request->id_guia_ven)
             ->first();
             
@@ -647,13 +639,9 @@ class TransferenciaController extends Controller
                     $id_guia_com_det = DB::table('almacen.guia_com_det')->insertGetId([
                         'id_guia_com' => $id_guia_com,
                         'id_producto' => $det->id_producto,
-                        // 'id_posicion' => (($d->ubicacion !== '' && $d->ubicacion !== '0' && $d->ubicacion !== null) ? $d->ubicacion : null),
                         'cantidad' => $d->cantidad_recibida,
                         'id_unid_med' => $det->id_unid_med,
                         'id_guia_ven_det' => $d->id_guia_ven_det,
-                        // 'unitario' => $det->unitario,
-                        // 'unitario_adicional' => 0,
-                        // 'total' => $det->total,
                         'usuario' => $usuario->id_usuario,
                         'estado' => 1,
                         'fecha_registro' => $fecha
@@ -663,8 +651,8 @@ class TransferenciaController extends Controller
                     
                     $series = DB::table('almacen.alm_prod_serie')
                     ->select('alm_prod_serie.serie')
-                    ->leftJoin('almacen.trans_detalle', 'trans_detalle.id_guia_com_det', '=', 'alm_prod_serie.id_guia_com_det')
-                    ->where([['trans_detalle.id_trans_detalle','=',$det->id_trans_det]])
+                    ->where([['alm_prod_serie.id_guia_ven_det','=',$d->id_guia_ven_det],
+                             ['alm_prod_serie.estado','!=',7]])
                     ->get();
 
                     foreach ($series as $s) {
@@ -694,7 +682,6 @@ class TransferenciaController extends Controller
                     DB::table('almacen.mov_alm_det')->insertGetId([
                         'id_mov_alm' => $id_ingreso,
                         'id_producto' => $det->id_producto,
-                        // 'id_posicion' => (($d->ubicacion !== '' && $d->ubicacion !== '0' && $d->ubicacion !== null) ? $d->ubicacion : null),
                         'cantidad' => $d->cantidad_recibida,
                         'valorizacion' => ($unitario * $d->cantidad_recibida),
                         'usuario' => $usuario->id_usuario,
@@ -765,20 +752,22 @@ class TransferenciaController extends Controller
 
                     $suma = DB::table('almacen.trans_detalle')
                     ->where([['id_requerimiento_detalle','=',$det->id_requerimiento_detalle],
-                            ['estado','=',14]])
+                            ['estado','=',14]])//Recibido
                     ->sum('cantidad');
 
                     if ($suma >= $det_req->cantidad){
                         DB::table('almacen.alm_det_req')
                         ->where('id_detalle_requerimiento',$det->id_requerimiento_detalle)
-                        ->update([  'estado'=>14,//Recibido
+                        ->update([  'estado'=>28,//En Almacen Total
+                            //'estado'=>14,//Recibido
                                     'id_almacen_reserva'=>$request->id_almacen_destino]);
                     }
                 }
 
                 $count_recibido = DB::table('almacen.alm_det_req')
                 ->where([['id_requerimiento','=',$r->id_requerimiento],
-                        ['estado','=',14]])
+                         ['estado','=',28]])
+                        // ['estado','=',14]
                 ->count();
 
                 $count_todo = DB::table('almacen.alm_det_req')
@@ -986,19 +975,21 @@ class TransferenciaController extends Controller
 
             if ($trans_sel !== null){
                 $detalle = DB::table('almacen.trans_detalle')
-                ->select('trans_detalle.*','alm_prod.id_unidad_medida',
+                ->select('trans_detalle.*','alm_prod.id_unidad_medida','guia_com_det.id_guia_com_det',
                 DB::raw('(mov_alm_det.valorizacion / mov_alm_det.cantidad) as unitario'))
                 ->join('almacen.alm_prod','alm_prod.id_producto','=','trans_detalle.id_producto')
                 ->leftjoin('almacen.guia_com_det','guia_com_det.id_trans_detalle','=','trans_detalle.id_trans_detalle')
+                ->leftjoin('almacen.mov_alm_det','mov_alm_det.id_guia_com_det','=','guia_com_det.id_guia_com_det')
                 ->whereIn('trans_detalle.id_transferencia',$trans_sel)
                 ->where('trans_detalle.estado',17)
                 ->get();
             } else {
                 $detalle = DB::table('almacen.trans_detalle')
-                ->select('trans_detalle.*','alm_prod.id_unidad_medida',
+                ->select('trans_detalle.*','alm_prod.id_unidad_medida','guia_com_det.id_guia_com_det',
                 DB::raw('(mov_alm_det.valorizacion / mov_alm_det.cantidad) as unitario'))
                 ->join('almacen.alm_prod','alm_prod.id_producto','=','trans_detalle.id_producto')
-                ->leftjoin('almacen.mov_alm_det','mov_alm_det.id_guia_com_det','=','trans_detalle.id_guia_com_det')
+                ->leftjoin('almacen.guia_com_det','guia_com_det.id_trans_detalle','=','trans_detalle.id_trans_detalle')
+                ->leftjoin('almacen.mov_alm_det','mov_alm_det.id_guia_com_det','=','guia_com_det.id_guia_com_det')
                 ->where([['trans_detalle.id_transferencia',$request->id_transferencia],['trans_detalle.estado','=',17]])
                 ->get();
             }
@@ -1017,10 +1008,12 @@ class TransferenciaController extends Controller
                         'id_guia_ven_det'
                     );
                 //Guardo relacion guia_ven_det en las series
-                DB::table('almacen.alm_prod_serie')
-                ->where([['id_guia_com_det','=',$det->id_guia_com_det],
-                         ['id_prod','=',$det->id_producto],['estado','!=',7]])
-                ->update(['id_guia_ven_det'=>$id_guia_ven_det]);
+                if ($det->id_guia_com_det!==null){
+                    DB::table('almacen.alm_prod_serie')
+                    ->where([['id_guia_com_det','=',$det->id_guia_com_det],
+                             ['id_prod','=',$det->id_producto],['estado','!=',7]])
+                    ->update(['id_guia_ven_det'=>$id_guia_ven_det]);
+                }
                 //Guardo los items de la salida
                 $id_det = DB::table('almacen.mov_alm_det')->insertGetId(
                     [
@@ -1225,41 +1218,83 @@ class TransferenciaController extends Controller
         ->select('trans_detalle.*','alm_prod.codigo','alm_prod.descripcion','alm_prod.series',
         'alm_cat_prod.descripcion as categoria','alm_subcat.descripcion as subcategoria',
         'alm_prod.part_number','alm_und_medida.abreviatura','trans.codigo as codigo_trans',
-        'adm_estado_doc.estado_doc','alm_req.codigo as codigo_req','alm_req.concepto')
+        'alm_req.codigo as codigo_req','alm_req.concepto','guia_com_det.id_guia_com_det')
         ->join('almacen.trans','trans.id_transferencia','=','trans_detalle.id_transferencia')
         ->join('almacen.alm_prod','alm_prod.id_producto','=','trans_detalle.id_producto')
         ->join('almacen.alm_und_medida','alm_und_medida.id_unidad_medida','=','alm_prod.id_unidad_medida')
         ->join('almacen.alm_cat_prod','alm_cat_prod.id_categoria','=','alm_prod.id_categoria')
         ->join('almacen.alm_subcat','alm_subcat.id_subcategoria','=','alm_prod.id_subcategoria')
-        ->join('administracion.adm_estado_doc','adm_estado_doc.id_estado_doc','=','trans_detalle.estado')
         ->join('almacen.alm_det_req','alm_det_req.id_detalle_requerimiento','=','trans_detalle.id_requerimiento_detalle')
         ->join('almacen.alm_req','alm_req.id_requerimiento','=','alm_det_req.id_requerimiento')
+        ->leftjoin('almacen.guia_com_det','guia_com_det.id_trans_detalle','=','trans_detalle.id_trans_detalle')
         ->where([['trans_detalle.id_transferencia','=',$id_trans],
                  ['trans_detalle.estado','!=',7]])
         ->get();
-        return response()->json($detalle);
+
+        $lista_detalle = [];
+
+        foreach ($detalle as $det) {
+            $series = DB::table('almacen.alm_prod_serie')
+            ->where('id_guia_com_det',$det->id_guia_com_det)
+            ->get();
+
+            array_push($lista_detalle, [
+                'id_guia_com_det' => $det->id_guia_com_det,
+                'codigo_trans' => $det->codigo_trans,
+                'codigo_req' => $det->codigo_req,
+                'concepto' => $det->concepto,
+                'codigo' => $det->codigo,
+                'part_number' => $det->part_number,
+                'descripcion' => $det->descripcion,
+                'cantidad' => $det->cantidad,
+                'abreviatura' => $det->abreviatura,
+                'series' => $series
+            ]);
+        }
+
+        return response()->json($lista_detalle);
     }
 
     public function listarDetalleTransferenciasSeleccionadas(Request $request){
         $transferencias = json_decode($request->trans_seleccionadas);
         $detalle = DB::table('almacen.trans_detalle')
-        ->select('trans_detalle.*',
-        'adm_estado_doc.estado_doc','alm_req.codigo as codigo_req','alm_req.concepto',
-        'alm_prod.codigo','alm_prod.part_number','alm_prod.series',
-        'alm_cat_prod.descripcion as categoria','alm_subcat.descripcion as subcategoria',
-        'alm_prod.descripcion','alm_und_medida.abreviatura','trans.codigo as codigo_trans')
+        ->select('trans_detalle.*','alm_req.codigo as codigo_req','alm_req.concepto',
+        'alm_prod.codigo','alm_prod.part_number','alm_prod.series','alm_cat_prod.descripcion as categoria',
+        'alm_subcat.descripcion as subcategoria','alm_prod.descripcion','alm_und_medida.abreviatura',
+        'trans.codigo as codigo_trans','guia_com_det.id_guia_com_det')
         ->join('almacen.trans','trans.id_transferencia','=','trans_detalle.id_transferencia')
-        ->join('administracion.adm_estado_doc','adm_estado_doc.id_estado_doc','=','trans_detalle.estado')
         ->leftjoin('almacen.alm_prod', 'alm_prod.id_producto', '=', 'trans_detalle.id_producto')
         ->leftjoin('almacen.alm_cat_prod', 'alm_cat_prod.id_categoria', '=', 'alm_prod.id_categoria')
         ->leftjoin('almacen.alm_subcat', 'alm_subcat.id_subcategoria', '=', 'alm_prod.id_subcategoria')
         ->leftjoin('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'alm_prod.id_unidad_medida')
         ->join('almacen.alm_det_req','alm_det_req.id_detalle_requerimiento','=','trans_detalle.id_requerimiento_detalle')
         ->join('almacen.alm_req','alm_req.id_requerimiento','=','alm_det_req.id_requerimiento')
+        ->leftjoin('almacen.guia_com_det','guia_com_det.id_trans_detalle','=','trans_detalle.id_trans_detalle')
         ->where('trans_detalle.estado',1)
         ->whereIn('trans_detalle.id_transferencia',$transferencias)
         ->get();
-        return response()->json($detalle);
+        
+        $lista_detalle = [];
+
+        foreach ($detalle as $det) {
+            $series = DB::table('almacen.alm_prod_serie')
+            ->where('id_guia_com_det',$det->id_guia_com_det)
+            ->get();
+
+            array_push($lista_detalle, [
+                'id_guia_com_det' => $det->id_guia_com_det,
+                'codigo_trans' => $det->codigo_trans,
+                'codigo_req' => $det->codigo_req,
+                'concepto' => $det->concepto,
+                'codigo' => $det->codigo,
+                'part_number' => $det->part_number,
+                'descripcion' => $det->descripcion,
+                'cantidad' => $det->cantidad,
+                'abreviatura' => $det->abreviatura,
+                'series' => $series
+            ]);
+        }
+        return response()->json($lista_detalle);
     }
 
     public function listarSeries($id_guia_com_det){

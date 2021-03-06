@@ -29,29 +29,37 @@ function listar_guia_transferencia_detalle(id_guia_ven){
     $('#listaTransferenciaDetalleRecibir tbody').html('');
     $.ajax({
         type: 'GET',
-        // headers: {'X-CSRF-TOKEN': token},
         url: 'listar_guia_transferencia_detalle/'+id_guia_ven,
         dataType: 'JSON',
         success: function(response){
+
             console.log(response);
             var html='';
+            var html_series='';
             var i = 1;
+
             response.forEach(element => {
+                html_series = '';
+                element.series.forEach(ser => {
+                    if (html_series==''){
+                        html_series+=ser.serie;
+                    } else {
+                        html_series+='<br>'+ser.serie;
+                    }
+                });
                 html+=`<tr id="${element.id_guia_ven_det}">
                 <td><input type="checkbox" checked/></td>
                 <td style="background-color: LightCyan;">${element.codigo_trans}</td>
-                <td style="background-color: LightCyan;">${element.codigo_req}</td>
-                <td style="background-color: LightCyan;">${element.concepto}</td>
+                <td style="background-color: LightCyan;">${element.codigo_req!==null?element.codigo_req:''}</td>
+                <td style="background-color: LightCyan;">${element.concepto!==null?element.concepto:''}</td>
                 <td>${element.codigo}</td>
-                <td style="background-color: navajowhite;">${element.part_number}</td>
+                <td style="background-color: navajowhite;">${element.part_number!==null?element.part_number:''}</td>
                 <td style="background-color: navajowhite;">${element.descripcion}</td>
                 <td><input type="number" class="input-data right" style="width:80px;" name="cantidad_recibida" value="${element.cantidad}" max="${element.cantidad}"/></td>
                 <td>${element.abreviatura}</td>
                 <td><input type="text" class="input-data" name="observacion"/></td>
-                <td>${(element.series ? `<i class="fas fa-bars icon-tabla boton" data-toggle="tooltip" data-placement="bottom" 
-                    title="Ver Series" onClick="listarSeriesVen(${element.id_guia_ven_det});"></i>` : '')}</td>
+                <td><strong>${html_series}</strong></td>
                 </tr>`;
-                // onClick="agrega_series('.$det->id_detalle_orden.');"
                 i++;
             });
             $('#listaTransferenciaDetalleRecibir tbody').html(html);

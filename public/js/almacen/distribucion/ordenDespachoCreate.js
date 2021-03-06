@@ -78,7 +78,11 @@ function open_despacho_create(data){
     detalleRequerimiento(data.id_requerimiento).then(function (response) {
 
         var html = '';
-        console.log('det');
+        var almacenes = [];
+        var almacenes_des = [];
+        var despachos_pendientes = 0;
+
+        console.log(response);
         response.forEach(element => {
             var ing = (element.suma_ingresos !== null ? parseFloat(element.suma_ingresos) : 0);//ingresos por compra
             var stock = (element.stock_comprometido !== null ? element.stock_comprometido : 0);
@@ -86,6 +90,8 @@ function open_despacho_create(data){
             var cant = ing + stock - (element.suma_despachos_internos !== null ? parseFloat(element.suma_despachos_internos) : 0);
             
             if (cant > 0){
+                despachos_pendientes++;
+                
                 html+='<tr id="'+element.id_detalle_requerimiento+'">'+
                 '<td><input type="checkbox" id="detalle" value="'+element.id_detalle_requerimiento+'" onChange="changeCheckIngresa(this,'+element.id_detalle_requerimiento+');"/></td>'+
                 '<td>'+(element.producto_codigo !== null ? element.producto_codigo : '')+'</td>'+
@@ -101,7 +107,10 @@ function open_despacho_create(data){
                 '<td><i class="fas fa-code-branch boton btn btn-primary" data-toggle="tooltip" data-placement="bottom" title="Agregar Instrucciones" onClick="verInstrucciones('+element.id_detalle_requerimiento+');"></i>'+
                 (element.series ? '<i class="fas fa-bars icon-tabla boton" data-toggle="tooltip" data-placement="bottom" title="Ver Series" onClick="verSeries('+element.id_detalle_requerimiento+');"></i>' : '')+
                 '</td></tr>';
-                
+            } else {
+                if (!element.tiene_transformacion && element.estado !== 28 && element.estado !== 10){//En Almacen Total o Culminado
+                    despachos_pendientes++;
+                }
             }
             detalle_requerimiento.push({
                 'id_detalle_requerimiento'  : element.id_detalle_requerimiento,
@@ -127,16 +136,60 @@ function open_despacho_create(data){
                     'abreviatura'               : element.abreviatura,
                     'cantidad'                  : element.cantidad,
                 });
+            } else {
+                
+                if (element.id_almacen_reserva !== null){
+                    if (!almacenes.includes(element.id_almacen_reserva)){
+                        almacenes.push(element.id_almacen_reserva);
+                        almacenes_des.push(element.almacen_reserva_descripcion);
+                    }
+                } 
+                else if (element.id_almacen_guia_com !== null){
+                    if (!almacenes.includes(element.id_almacen_guia_com)){
+                        almacenes.push(element.id_almacen_guia_com);
+                        almacenes_des.push(element.almacen_guia_com_descripcion);
+                    }
+                }
             }
         });
 
         $('#detalleRequerimientoOD tbody').html(html);
         mostrarSale();
+        console.log(almacenes_des);
+        console.log('despachos_pendientes: '+despachos_pendientes);
 
-        if (data.tiene_transformacion && 
-            data.count_despachos_internos == 0){
-            $('[name=aplica_cambios]').prop('checked', true);
-            on();
+        if (data.tiene_transformacion){
+            // data.count_despachos_internos == 0
+            if (despachos_pendientes > 0){
+                if (almacenes.length == 1){
+                    $('[name=id_almacen]').val(almacenes[0]);
+                    $('[name=almacen_descripcion]').val(almacenes_des[0]);        
+                    $('[name=aplica_cambios]').prop('checked', true);
+                    on();
+                }
+                else if (almacenes.length == 0){
+                    alert('Es necesario que los productos esten en almacen.');
+                    $('#modal-orden_despacho_create').modal('hide');
+                } 
+                else {
+                    console.log(almacenes_des);
+                    alert('Los productos no pueden estar en más de un Almacén: \n'+almacenes_des);
+                    $('#modal-orden_despacho_create').modal('hide');
+                }
+            } else {
+                if (data.count_despachos_internos > 0){
+                    var id_alm = $('[name=id_almacen]').val();
+                    var amsj = '';
+                    almacenes.forEach(alm => {
+                        if (alm !== id_alm){
+                            amsj +='El almacen es diferente. Debe realizar una transferencia';
+                        }
+                    });
+                    alert(amsj);
+                    $('[name=aplica_cambios]').prop('checked', false);
+                    off();
+                }
+            }
         } else {
             $('[name=aplica_cambios]').prop('checked', false);
             off();
@@ -503,29 +556,30 @@ function validaOrdenDespacho(){
     var telf = $('[name=telefono_cliente]').val();
     // var mail = $('[name=correo_cliente]').val();
     var hora = $('[name=hora_despacho]').val();
+    var aplica = $('[name=aplica_cambios_valor]').val();
     var msj = '';
 
-    if (tpcli == 1){
-        if (perso == ''){
-            msj+='\n Es necesario que ingrese los datos del Cliente';
+    if (aplica == 'no'){
+
+        if (tpcli == 1){
+            if (perso == ''){
+                msj+='\n Es necesario que ingrese los datos del Cliente';
+            }
+        } else if (tpcli == 2){
+            if (clie == ''){
+                msj+='\n Es necesario que ingrese los datos del Cliente';
+            }
         }
-    } else if (tpcli == 2){
-        if (clie == ''){
-            msj+='\n Es necesario que ingrese los datos del Cliente';
+        if (ubig == ''){
+            msj+='\n Es necesario que ingrese un Ubigeo Destino';
+        }
+        if (dir == ''){
+            msj+='\n Es necesario que ingrese una Dirección Destino';
+        }
+        if (telf == ''){
+            msj+='\n Es necesario que ingrese un Teléfono';
         }
     }
-    if (ubig == ''){
-        msj+='\n Es necesario que ingrese un Ubigeo Destino';
-    }
-    if (dir == ''){
-        msj+='\n Es necesario que ingrese una Dirección Destino';
-    }
-    if (telf == ''){
-        msj+='\n Es necesario que ingrese un Teléfono';
-    }
-    // if (mail == ''){
-    //     msj+='\n Es necesario que ingrese un Email';
-    // }
     if (hora == ''){
         msj+='\n Es necesario que ingrese una Hora';
     }

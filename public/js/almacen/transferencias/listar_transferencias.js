@@ -456,13 +456,11 @@ function detalle_transferencia(id_transferencia){
                 html+=`<tr>
                 <td>${i}</td>
                 <td>${element.codigo}</td>
-                <td style="background-color: LightCyan;">${element.part_number}</td>
-                <td style="background-color: LightCyan;">${element.categoria}</td>
-                <td style="background-color: LightCyan;">${element.subcategoria}</td>
+                <td style="background-color: LightCyan;">${element.part_number!==null?element.part_number:''}</td>
                 <td style="background-color: LightCyan;">${element.descripcion}</td>
-                <td style="background-color: MistyRose;">${element.cantidad}</td>
+                <td>${element.cantidad}</td>
                 <td>${element.abreviatura}</td>
-                <td style="background-color: NavajoWhite;">${element.serie !== null ? element.serie+'-'+element.numero : ''}</td>
+                <td>${element.serie !== null ? element.serie+'-'+element.numero : ''}</td>
                 <td><span class="label label-${element.bootstrap_color}">${element.estado_doc}</span></td>
                 <td>${(element.series ? `<i class="fas fa-bars icon-tabla boton" data-toggle="tooltip" data-placement="bottom" 
                     title="Ver Series" onClick="listarSeries(${element.id_guia_com_det});"></i>` : '')}</td>

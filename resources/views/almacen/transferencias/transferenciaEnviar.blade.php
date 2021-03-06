@@ -28,11 +28,11 @@
                         </div>
                         <div class="col-md-4">
                             <h5>Fecha de Emisión</h5>
-                            <input type="date" class="form-control activation" name="fecha_emision" value="<?=date('Y-m-d');?>" >
+                            <input type="date" class="form-control activation" name="fecha_emision">
                         </div>
                         <div class="col-md-4">
                             <h5>Fecha Almacén</h5>
-                            <input type="date" class="form-control" name="fecha_almacen" value="<?=date('Y-m-d');?>">
+                            <input type="date" class="form-control" name="fecha_almacen">
                         </div>
                     </div>
                     <div class="row">
@@ -80,8 +80,7 @@
                                         <th>Descripción</th>
                                         <th>Cantidad</th>
                                         <th>Unid</th>
-                                        <th>Estado</th>
-                                        <th></th>
+                                        <th>Series</th>
                                     </tr>
                                 </thead>
                                 <tbody></tbody>

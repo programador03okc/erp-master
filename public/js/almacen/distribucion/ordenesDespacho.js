@@ -681,6 +681,11 @@ $('#requerimientosEnTransformacion tbody').on("click","button.anular_od", functi
     }
 });
 
+$('#requerimientosEnTransformacion tbody').on("click","button.detalle_trans", function(){
+    var id = $(this).data('id');
+    open_detalle_transferencia(id);
+});
+
 $('#requerimientosEnTransformacion tbody').on("click","button.adjuntar", function(){
     var id = $(this).data('id');
     var cod = $(this).data('cod');

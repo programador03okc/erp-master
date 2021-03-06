@@ -46,7 +46,7 @@
                             <td>Cant.Recibida</td>
                             <td>Und</td>
                             <td width="10%">Observación</td>
-                            <td></td>
+                            <td>Series</td>
                         </tr>
                     </thead>
                     <tbody></tbody>

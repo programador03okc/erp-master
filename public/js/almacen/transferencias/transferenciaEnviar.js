@@ -32,6 +32,8 @@ function openGenerarGuia(data){
     $('[name=trans_serie]').val('');
     $('[name=trans_numero]').val('');
     $('[name=id_guia_com]').val('');
+    $('[name=fecha_emision]').val(fecha_actual());
+    $('[name=fecha_almacen]').val(fecha_actual());
     $('[name=id_sede]').val(data.id_sede_origen);
     $('[name=id_mov_alm]').val('');
     $('[name=id_requerimiento]').val(data.id_requerimiento);
@@ -93,6 +95,8 @@ function open_guia_transferencia_create(){
         $('[name=trans_serie]').val('');
         $('[name=trans_numero]').val('');
         $('[name=id_guia_com]').val('');
+        $('[name=fecha_emision]').val(fecha_actual());
+        $('[name=fecha_almacen]').val(fecha_actual());
         $('[name=id_sede]').val(sede_origen);
         $('[name=id_mov_alm]').val('');
         $('[name=id_requerimiento]').val('');
@@ -169,23 +173,30 @@ function listarDetalleTransferenciaSeleccionadas(data){
 }
 
 function mostrarDetalleTransferencia(listaDetalle){
-    var html='';
+    var html = '';
+    var html_series = '';
     var i = 1;
+
     listaDetalle.forEach(element => {
+        html_series = '';
+        element.series.forEach(ser => {
+            if (html_series==''){
+                html_series+=ser.serie;
+            } else {
+                html_series+='<br>'+ser.serie;
+            }
+        });
         html+=`<tr>
         <td>${i}</td>
         <td style="background-color: LightCyan;">${element.codigo_trans}</td>
-        <td style="background-color: LightCyan;">${element.codigo_req}</td>
-        <td style="background-color: LightCyan;">${element.concepto}</td>
+        <td style="background-color: LightCyan;">${element.codigo_req!==null?element.codigo_req:''}</td>
+        <td style="background-color: LightCyan;">${element.concepto!==null?element.concepto:''}</td>
         <td>${element.codigo}</td>
-        <td style="background-color: navajowhite;">${element.part_number}</td>
+        <td style="background-color: navajowhite;">${element.part_number!==null?element.part_number:''}</td>
         <td style="background-color: navajowhite;">${element.descripcion}</td>
         <td>${element.cantidad}</td>
         <td>${element.abreviatura}</td>
-        <td>${element.estado_doc}</td>
-        <td>${(element.series ? `<i class="fas fa-bars icon-tabla boton" data-toggle="tooltip" data-placement="bottom" 
-            title="Ver Series" onClick="listarSeries(${element.id_guia_com_det});"></i>` : '')}</td>
-        </tr>`;
+        <td><strong>${html_series}</strong></tr>`;
         // onClick="agrega_series('.$det->id_detalle_orden.');"
         i++;
     });

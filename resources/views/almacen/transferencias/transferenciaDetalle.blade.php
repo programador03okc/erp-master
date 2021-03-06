@@ -24,8 +24,6 @@
                             <td width="3%">Nro</td>
                             <td width="10%">Código</td>
                             <td>PartNumber</td>
-                            <td>Categoría</td>
-                            <td>SubCategoría</td>
                             <td>Descripción</td>
                             <td>Cantidad</td>
                             <td>Und</td>

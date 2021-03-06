@@ -42,6 +42,7 @@ function listarTransformaciones(){
             }
         ],
         'columnDefs': [{ 'aTargets': [0], 'sClass': 'invisible'}],
+        'order': [[ 0, "desc" ]],
     });
 }
 
