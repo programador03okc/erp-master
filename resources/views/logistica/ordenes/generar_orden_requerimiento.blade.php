@@ -95,6 +95,7 @@
                                                 <tr>
                                                 <th width="10">#</th>
                                                 <th width="20">OC</th>
+                                                <th width="20">OC Softlink</th>
                                                 <th width="20">OCAM</th>
                                                 <th width="20">Cliente</th>
                                                 <th width="30">Mayorista</th>

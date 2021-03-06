@@ -23,71 +23,12 @@
                 <div>
                     <!-- Nav tabs -->
                     <ul class="nav nav-tabs" role="tablist">
-                        <li role="presentation" class="active"><a href="#ordenesPropias" onClick="listar_ordenes_propias();" aria-controls="ordenesPropias" role="tab" data-toggle="tab">Ordenes Propias</a></li>
-                        <li role="presentation" class=""><a href="#requerimientosElaborados" onClick="listar_requerimientos_elaborados('OK COMPUTER');" aria-controls="requerimientosElaborados" role="tab" data-toggle="tab">Requerimientos Elaborados</a></li>
+                        <li role="presentation" class="active"><a href="#requerimientosElaborados" onClick="listar_requerimientos_elaborados('OK COMPUTER');" aria-controls="requerimientosElaborados" role="tab" data-toggle="tab">Requerimientos Elaborados</a></li>
                         <li role="presentation" class=""><a href="#requerimientosPendientesAprobacion" onClick="vista_extendida(); listar_requerimientos_pendientes_aprobar();" aria-controls="requerimientosPendientesAprobacion" role="tab" data-toggle="tab">Requerimientos Pendientes de Aprobación</a></li>
                     </ul>
                     <!-- Tab panes -->
                     <div class="tab-content">
-                        <div role="tabpanel" class="tab-pane active" id="ordenesPropias">
-                                <div class="panel panel-default">
-                                    <div class="panel-body">
-                                        <form id="form-ordenesPropias" type="register">
-                                            <div class="row">
-                                                <div class="col-md-4">
-                                                    <h5>Empresa</h5>
-                                                    <div style="display:flex;">
-                                                    <select class="form-control" id="id_empresa_select" onChange="handleChangeFilterEmpresaListOrdenesPropiasByEmpresa(event);">
-                                                            <option value="0">Todas las Empresas</option>
-                                                            @foreach ($empresas_am as $emp)
-                                                                <option value="{{$emp->id}}">{{$emp->empresa}}</option>
-                                                            @endforeach
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-4">
-                                                    <h5>Año de publicación</h5>
-                                                    <div style="display:flex;">
-                                                    <select class="form-control" id="descripcion_año_publicacion" onChange="handleChangeFilterEmpresaListOrdenesPropiasByAñoPublicacion(event);">
-                                                           
-                                                            @foreach ($periodos as $periodo)
-                                                                <option value="{{$periodo->descripcion}}">{{$periodo->descripcion}}</option>
-                                                            @endforeach
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div class="row">
-                                                <div class="col-sm-12">
-                                                    <!-- <caption>Requerimientos: Registrados | Aprobados</caption> -->
-                                                    <table class="mytable table table-hover table-condensed table-bordered table-okc-view" id="ListaOrdenesPropias" width="100%">
-                                                        <thead>
-                                                            <tr>
-                                                                <th></th>
-                                                                <th>#</th>
-                                                                <th>Empresa</th>
-                                                                <th>AM</th>
-                                                                <th>Entidad</th>
-                                                                <th>Fecha publicación</th>
-                                                                <th>Estado O/C</th>
-                                                                <th>Fecha Estado</th>
-                                                                <th>Estado Entrega</th>
-                                                                <th>Fecha Entrega</th>
-                                                                <th>Total</th>
-                                                                <th>Estado Aprob. CC</th>
-                                                                <th>Tipo Cuadro</th>
-                                                                <th width="150">ACCIÓN</th>
-                                                            </tr>
-                                                        </thead>
-                                                    </table>
-                                                </div>
-                                            </div>
-                                        </form>
-                                    </div>
-                                </div>
-                        </div>
-                        <div role="tabpanel" class="tab-pane" id="requerimientosElaborados">
+                        <div role="tabpanel" class="tab-pane active" id="requerimientosElaborados">
                                 <div class="panel panel-default">
                                     <div class="panel-body">
                                         <form id="form-requerimientosElaborados" type="register">
@@ -246,7 +187,6 @@
         // console.log(roles);
         grupos.forEach(element => {
             if(element.id_grupo ==2){ // comercial
-                document.querySelector("div[type='lista_requerimiento'] ul").children[2].children[0].setAttribute("class",'hidden')
                 document.querySelector("div[type='lista_requerimiento'] ul").children[0].setAttribute("class",'active')
                 document.querySelector("div[type='lista_requerimiento'] div[class='tab-content']").children[1].setAttribute('class','tab-pane')
                 document.querySelector("div[type='lista_requerimiento'] div[class='tab-content']").children[0].setAttribute("class",'tab-pane active')
@@ -267,8 +207,7 @@
             "{{route('logistica.gestion-logistica.requerimiento.listado.select-sede-by-empresa')}}",
             "{{route('logistica.gestion-logistica.requerimiento.listado.select-grupo-by-sede')}}",
             "{{route('logistica.gestion-logistica.requerimiento.listado.ver-flujos')}}",
-            "{{route('logistica.gestion-logistica.requerimiento.listado.explorar-requerimiento')}}",
-            "{{route('logistica.gestion-logistica.requerimiento.listado.lista-ordenes-propias')}}"
+            "{{route('logistica.gestion-logistica.requerimiento.listado.explorar-requerimiento')}}"
             );
         
         inicializarRutasPendienteAprobacion(

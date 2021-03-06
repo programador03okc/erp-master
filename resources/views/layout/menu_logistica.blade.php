@@ -11,10 +11,11 @@
         </a>
         <ul class="treeview-menu">
         @if(Auth::user()->tieneAplicacion(102))
-            <li><a href="{{route('logistica.gestion-logistica.requerimiento.elaboracion.index')}}"><i class="far fa-circle fa-xs"></i> Elaborar</a></li>
+            <li><a href="{{route('logistica.gestion-logistica.ocam.index')}}"><i class="far fa-circle fa-xs"></i> Listado OCAM</a></li>
+            <li><a href="{{route('logistica.gestion-logistica.requerimiento.elaboracion.index')}}"><i class="far fa-circle fa-xs"></i> Elaborar Requerimiento</a></li>
         @endif
         @if(Auth::user()->tieneAplicacion(103))
-            <li><a href="{{route('logistica.gestion-logistica.requerimiento.listado.index')}}"><i class="far fa-circle fa-xs"></i> Listado</a></li>
+            <li><a href="{{route('logistica.gestion-logistica.requerimiento.listado.index')}}"><i class="far fa-circle fa-xs"></i> Listado Requerimientos</a></li>
         @endif
         </ul>
     </li>

@@ -1208,7 +1208,7 @@ function listar_ordenes_en_proceso(permisoRevertirOrden){
         'dom': vardataTables[1],
         'buttons': vardataTables[2],
         'language' : vardataTables[0],
-        'order': [[7, 'desc']],
+        'order': [10, 'desc'],
         'destroy' : true,
         'ajax': rutaOrdenesEnProceso,
         'columns': [
@@ -1217,7 +1217,11 @@ function listar_ordenes_en_proceso(permisoRevertirOrden){
             }
             },
             { render: function (data, type, row) {     
-                return `<span class="label label-default" onClick="verOrdenModal(this);" data-id-estado-detalle-orden-compra="${row.id_detalle_orden_estado}" data-id-orden-compra="${row.detalle_orden_id_orden_compra}" data-id-detalle-orden-compra="${row.detalle_orden_id_detalle_orden}"  data-codigo-requerimiento="${row.codigo_requerimiento}" data-id-requerimiento="${row.orden_id_requerimiento}" data-codigo-item="${row.alm_prod_codigo}" style="cursor: pointer;" title="Ver Orden">${row.orden_codigo_softlink}</span>`;
+                return `<span class="label label-primary" onClick="verOrdenModal(this);" data-id-estado-detalle-orden-compra="${row.id_detalle_orden_estado}" data-id-orden-compra="${row.detalle_orden_id_orden_compra}" data-id-detalle-orden-compra="${row.detalle_orden_id_detalle_orden}"  data-codigo-requerimiento="${row.codigo_requerimiento}" data-id-requerimiento="${row.orden_id_requerimiento}" data-codigo-item="${row.alm_prod_codigo}" style="cursor: pointer;" title="Ver Orden">${row.orden_codigo}</span>`;
+                }
+            },
+            { render: function (data, type, row) {     
+                return `${row.orden_codigo_softlink}`;
 
                 }
             },
@@ -1453,12 +1457,13 @@ function verOrdenModal(obj){
 
 function llenarCabeceraOrde(data){
     // console.log(data);
-    document.querySelector("span[id='inputCodigo']").textContent = data.codigo_softlink;
+    document.querySelector("span[id='inputCodigo']").textContent = data.codigo;
     document.querySelector("p[id='inputProveedor']").textContent = data.razon_social+' RUC: '+data.nro_documento;
     document.querySelector("p[id='inputFecha']").textContent = data.fecha;
     document.querySelector("p[id='inputMoneda']").textContent = data.simbolo;
     document.querySelector("p[id='inputCondicion']").textContent = data.condicion+' '+data.plazo_dias+' días';
     document.querySelector("p[id='inputPlazoEntrega']").textContent = data.plazo_entrega;
+    document.querySelector("p[id='inputCodigoSoftlink']").textContent = data.codigo_softlink;
     let estadoOrdenHabilitadasActualizar=[17,20,26,30,31];
 
     if(estadoOrdenHabilitadasActualizar.includes(data.id_estado)==true){
