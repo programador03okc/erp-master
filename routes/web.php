@@ -613,6 +613,14 @@ Route::group(['middleware' => ['auth']], function () {
 
 		Route::group(['as' => 'gestion-logistica.', 'prefix' => 'gestion-logistica'], function(){
 
+			Route::group(['as' => 'ocam.', 'prefix' => 'ocam'], function(){
+				Route::get('index', 'OCAMController@view_lista_ocams')->name('index');
+				Route::group(['as' => 'listado.', 'prefix' => 'listado'], function(){
+					Route::get('ordenes-propias/{empresa?}/{year_publicacion?}/{condicion?}', 'OCAMController@lista_ordenes_propias')->name('ordenes-propias');
+
+				});
+			});
+
 			Route::group(['as' => 'requerimiento.', 'prefix' => 'requerimiento'], function(){
 
 				Route::group(['as' => 'elaboracion.', 'prefix' => 'elaboracion'], function(){
@@ -666,6 +674,7 @@ Route::group(['middleware' => ['auth']], function () {
 				
 
 				});
+
 				Route::group(['as' => 'listado.', 'prefix' => 'listado'], function(){
 					Route::get('index', 'LogisticaController@view_lista_requerimientos')->name('index');
 					Route::get('listar/{empresa?}/{sede?}/{grupo?}', 'LogisticaController@listar_requerimiento_v2')->name('listar');
@@ -681,7 +690,6 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::post('observar-documento', 'AprobacionController@observar_documento')->name('observar-documento');
 					Route::post('anular-documento', 'AprobacionController@anular_documento')->name('anular-documento');
 					
-					Route::get('lista-ordenes-propias/{empresa?}/{year_publicacion?}', 'RequerimientoController@lista_ordenes_propias')->name('lista-ordenes-propias');
 				});
 			});
 			

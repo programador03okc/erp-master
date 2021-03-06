@@ -1,9 +1,10 @@
 <div class="modal fade" tabindex="-1" role="dialog" id="modal-ver-orden">
-    <div class="modal-dialog" style="width: 80%;">
+    <div class="modal-dialog" style="width: 85%;">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="close"><span aria-hidden="true">&times;</span></button>
-                <h3 class="modal-title">Orden de Compra <span id="inputCodigo"></span></h3>
+                <h3 class="modal-title text-center">ORDEN DE COMPRA</h3>
+                <h4 class="modal-title text-center"><span id="inputCodigo" style="color:dodgerblue;"></span></h3>
             </div>
             <div class="modal-body">
                 <div class="row">
@@ -17,6 +18,10 @@
                                 <label class="col-sm-1 control-label" style="text-align: left;">Estado:</label>
                                 <div class="col-sm-2">
                                 <p class="form-control-static" id="inputEstado"></p>
+                                </div>
+                                <label class="col-sm-1 control-label" style="text-align: left;">OC Softlink:</label>
+                                <div class="col-sm-2">
+                                    <p class="form-control-static" id="inputCodigoSoftlink"></p>
                                 </div>
                                 <label class="col-sm-1 control-label" style="text-align: left;">Fecha:</label>
                                 <div class="col-sm-2">
@@ -36,9 +41,8 @@
                                 <div class="col-sm-2">
                                     <p class="form-control-static" id="inputCondicion"></p>
                                 </div>
-
-
                             </div>
+   
                         </form>
                     </div>
                 </div>

@@ -286,12 +286,14 @@ function listar_detalle_orden_requerimiento(data){
         bDestroy: true,
         order: [[0, 'asc']],
         info:     false,
-        scrollY: '30vh',
+        // scrollY: '40vh',
         scrollCollapse: true,
         paging:   false,
+        // pageLength: 5,
         searching: false,
         language: vardataTables[0],
         processing: true,
+        responsive: true,
         bDestroy: true,
         data:data,
         columns: [
@@ -327,11 +329,9 @@ function listar_detalle_orden_requerimiento(data){
             },            
             {'render':
                 function (data, type, row, meta){
-                    if(row.estado ==7){
-                        return '<input type="text" class="form-control" name="cantidad" data-row="'+(meta.row+1)+'" data-id_requerimiento="'+(row.id_requerimiento?row.id_requerimiento:0)+'" data-id_detalle_requerimiento="'+(row.id_detalle_requerimiento?row.id_detalle_requerimiento:0)+'" value="'+row.cantidad+'" onChange="updateInputCantidad(event);" style="width: 70px;" disabled/>';
-                    }else{
-                        return '<input type="text" class="form-control" name="cantidad" data-row="'+(meta.row+1)+'" data-id_requerimiento="'+(row.id_requerimiento?row.id_requerimiento:0)+'" data-id_detalle_requerimiento="'+(row.id_detalle_requerimiento?row.id_detalle_requerimiento:0)+'" value="'+row.cantidad+'" onChange="updateInputCantidad(event);" style="width: 70px;"/>';
-                    }
+                    // return '<input type="text" class="form-control" name="cantidad" data-row="'+(meta.row+1)+'" data-id_requerimiento="'+(row.id_requerimiento?row.id_requerimiento:0)+'" data-id_detalle_requerimiento="'+(row.id_detalle_requerimiento?row.id_detalle_requerimiento:0)+'" value="'+row.cantidad+'" onChange="updateInputCantidad(event);" style="width: 70px;" disabled/>';
+                    return row.cantidad;
+                
                 }, 'name':'cantidad'
             },
             {'render':
@@ -401,7 +401,7 @@ function listar_detalle_orden_requerimiento(data){
             { width: '40px', targets: 3 },
             { width: '50px', targets: 4 },
             { width: '20px', targets: 5 },
-            { width: '20px', targets: 6 },
+            { width: '15px', targets: 6 },
             { width: '20px', targets: 7 , sClass: 'invisible'},
             { width: '20px', targets: 8 },
             { width: '20px', targets: 9 },
