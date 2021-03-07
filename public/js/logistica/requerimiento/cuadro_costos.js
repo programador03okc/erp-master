@@ -137,7 +137,7 @@ function llenarCabeceraCuadroCostos(data){
 
     getOrBuildCustomer(data.nombre_entidad,data.ruc_entidad,data.telefono,data.direccion_entidad,data.correo,data.ubigeo_entidad).then(function(res) {
         // Run this when your request was successful
-        // console.log(res);
+        console.log(res);
         if(res.status ==200){
             document.querySelector("input[name='id_cliente']").value =res.data.id_cliente?res.data.id_cliente:'';
             document.querySelector("input[name='cliente_ruc']").value =res.data.ruc?res.data.ruc:'';
@@ -147,7 +147,7 @@ function llenarCabeceraCuadroCostos(data){
             document.querySelector("input[name='direccion_entrega']").value =res.data.direccion?res.data.direccion:'';
             document.querySelector("input[name='telefono_cliente']").value =res.data.telefono?res.data.telefono:'';
             document.querySelector("input[name='email_cliente']").value =res.data.correo?res.data.correo:'';
-            document.querySelector("input[name='ubigeo']").value =res.data.id_ubigeo_cliente?res.data.id_ubigeo_cliente:'';
+            document.querySelector("input[name='ubigeo']").value =res.data.id_ubigeo?res.data.id_ubigeo:'';
             document.querySelector("input[name='name_ubigeo']").value =res.data.descripcion_ubigeo?res.data.descripcion_ubigeo:'';
             // console.log(res.mensaje);
         }else{
