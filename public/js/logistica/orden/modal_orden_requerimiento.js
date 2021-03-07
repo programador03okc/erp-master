@@ -515,6 +515,28 @@ function validaOrdenRequerimiento(){
     if (id_proveedor == ''){
         msj+='\n Es necesario que seleccione un Proveedor';
     }
+    let cantidadInconsistenteInputPrecio=0;
+    let inputPrecio= document.querySelectorAll("table[id='listaDetalleOrden'] input[name='precio']");
+    inputPrecio.forEach((element)=>{
+        if(element.value == null || element.value =='' || element.value ==0){
+            cantidadInconsistenteInputPrecio++;
+        }
+    })
+    if(cantidadInconsistenteInputPrecio>0){
+        msj+='\n Es necesario que ingrese un precio / precio mayor a cero';
+
+    }
+    let cantidadInconsistenteInputCantidadAComprar=0;
+    let inputCantidadAComprar= document.querySelectorAll("table[id='listaDetalleOrden'] input[name='cantidad_a_comprar']");
+    inputCantidadAComprar.forEach((element)=>{
+        if(element.value == null || element.value =='' || element.value ==0){
+            cantidadInconsistenteInputCantidadAComprar++;
+        }
+    })
+    if(cantidadInconsistenteInputCantidadAComprar>0){
+        msj+='\n Es necesario que ingrese una cantidad a comprar / cantidad a comprar mayor a cero';
+
+    }           
     return  msj;
 }
 
@@ -897,7 +919,7 @@ $("#form-modal-orden-requerimiento").on("submit", function(e){
 
 
 function guardar_orden_requerimiento(data){
-    console.log(data);
+    // console.log(data);
     
     var msj = validaOrdenRequerimiento();
     if (msj.length > 0){

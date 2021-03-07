@@ -125,6 +125,7 @@ function openModalAgregarItemBase(obj) {
 function openModalCrearOrdenCompra() {
     reqTrueList=[];
     itemsParaCompraList=[];
+    detalleRequerimientoSelected=[];
     limpiarTabla('ListaItemsParaComprar');
     if (listCheckReq.length > 0) {
         listCheckReq.forEach(element => {
