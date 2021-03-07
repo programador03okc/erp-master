@@ -42,9 +42,12 @@ Gestión de Transferencias
                             </select>
                         </div>
                         <div class="col-md-6 right">
+                            <button type="button" class="btn btn-info" data-toggle="tooltip" 
+                                data-placement="bottom" title="Nueva Transferencia" 
+                                onClick="guia_compraModal();">Nueva Transferencia con Guía</button>
                             <button type="button" class="btn btn-success" data-toggle="tooltip" 
                                 data-placement="bottom" title="Nueva Transferencia" 
-                                onClick="guia_compraModal();">Nueva Transferencia</button>
+                                onClick="modalRequerimiento();">Nueva Transferencia con Req.</button>
                         </div>
                     </div>
                     <div class="row">
@@ -176,6 +179,7 @@ Gestión de Transferencias
         </div>
     </div>
 </div>
+@include('logistica.requerimientos.modal_historial_requerimiento')
 @include('almacen.guias.guia_compraModal')
 @include('almacen.guias.guia_com_ver')
 @include('almacen.transferencias.transferenciaRecibir')
@@ -204,12 +208,16 @@ Gestión de Transferencias
     <script src="{{ asset('js/almacen/transferencias/listar_transferencias.js')}}"></script>
     <script src="{{ asset('js/almacen/transferencias/transferenciaRecibir.js')}}"></script>
     <script src="{{ asset('js/almacen/transferencias/transferenciaEnviar.js')}}"></script>
+    <script src="{{ asset('js/logistica/requerimiento/historial.js')}}"></script>
     <script src="{{ asset('js/almacen/guia/guia_compraModal.js')}}"></script>
     <script src="{{ asset('js/almacen/transferencias/transferenciaCreate.js')}}"></script>
     <script>
     $(document).ready(function(){
         seleccionarMenu(window.location);
         iniciar('{{Auth::user()->tieneAccion(91)}}','{{Auth::user()->id_usuario}}');
+        inicializar(
+            "{{route('logistica.gestion-logistica.requerimiento.elaboracion.lista-modal')}}"
+        );
     });
     </script>
 @endsection

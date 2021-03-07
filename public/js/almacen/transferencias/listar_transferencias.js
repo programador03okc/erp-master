@@ -2,6 +2,12 @@ let valor_permiso = null;
 let usuario_session = null;
 let trans_seleccionadas = [];
 
+var rutaListaRequerimientoModal;
+
+function inicializar(_rutaLista){
+    rutaListaRequerimientoModal = _rutaLista;
+}
+
 function iniciar(permiso, usuario){
     // clearDataTable();
     $("#tab-transferencias section:first form").attr('form', 'formulario');
@@ -105,7 +111,7 @@ function listarTransferenciasPorEnviar(){
             }
         ],
         'select': 'multi',
-        'order': [[0, 'desc']]
+        'order': [[2, 'desc']]
     });
     
     $($('#listaTransferenciasPorEnviar').DataTable().table().container()).on('ifChanged', '.dt-checkboxes', function(event){

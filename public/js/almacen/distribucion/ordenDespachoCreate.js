@@ -185,9 +185,14 @@ function open_despacho_create(data){
                             amsj +='El almacen es diferente. Debe realizar una transferencia';
                         }
                     });
-                    alert(amsj);
-                    $('[name=aplica_cambios]').prop('checked', false);
-                    off();
+                    
+                    if (amsj !== ''){
+                        alert(amsj);
+                        $('#modal-orden_despacho_create').modal('hide');
+                    } else {
+                        $('[name=aplica_cambios]').prop('checked', false);
+                        off();
+                    }
                 }
             }
         } else {
