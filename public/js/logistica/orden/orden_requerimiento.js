@@ -1144,7 +1144,11 @@ function listar_requerimientos_pendientes(permisoCrearOrdenPorRequerimiento,id_e
                 return `<input type="checkbox" data-id-requerimiento="${row.id_requerimiento}" />`;
                 }
             },
-            {'data': 'codigo'},
+            { render: function (data, type, row) { 
+                 return `<label class="lbl-codigo" title="Abrir Requerimiento" onClick="abrir_requerimiento(${row.id_requerimiento})">${row.codigo}</label>`;
+                }
+            },
+        
             {'data': 'concepto'},
             {'data': 'tipo_req_desc'},
             { render: function (data, type, row) { 
@@ -1199,6 +1203,13 @@ function listar_requerimientos_pendientes(permisoCrearOrdenPorRequerimiento,id_e
 
         }
     });
+}
+
+function abrir_requerimiento(id_requerimiento){
+    localStorage.setItem('id_requerimiento', id_requerimiento);
+    let url ="/logistica/gestion-logistica/requerimiento/elaboracion/index";
+    var win = window.open(url, '_blank');
+    win.focus();  
 }
 
 
@@ -1628,7 +1639,7 @@ function margeObjArrayToDetalleReqSelected(){
         linksToReqObjArray=[];
         payload_orden =get_header_orden_requerimiento();
         payload_orden.detalle= detalleRequerimientoSelected;
-    sendDataToSaveOrden(payload_orden);
+        guardar_orden_requerimiento(payload_orden);
 
     }else{
         alert('hubo un error al intentar vincular el item con el requerimiento');

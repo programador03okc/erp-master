@@ -355,9 +355,9 @@ function listar_detalle_orden_requerimiento(data){
             {'render':
                 function (data, type, row, meta){
                     if(row.estado == 7){
-                        return '<input type="text" class="form-control" name="cantidad_a_comprar" data-row="'+(meta.row+1)+'" data-id_requerimiento="'+(row.id_requerimiento?row.id_requerimiento:0)+'" data-id_detalle_requerimiento="'+(row.id_detalle_requerimiento?row.id_detalle_requerimiento:0)+'"   onchange="updateInputCantidadAComprar(event);" value="'+row.cantidad_a_comprar+'" style="width:70px;" disabled />';
+                        return '<input type="text" class="form-control" name="cantidad_a_comprar" data-row="'+(meta.row+1)+'" data-id_requerimiento="'+(row.id_requerimiento?row.id_requerimiento:0)+'" data-id_detalle_requerimiento="'+(row.id_detalle_requerimiento?row.id_detalle_requerimiento:0)+'"   onchange="updateInputCantidadAComprar(event);" value="'+(row.cantidad_a_comprar?row.cantidad_a_comprar:row.cantidad)+'" style="width:70px;" disabled />';
                     }else{
-                        return '<input type="text" class="form-control" name="cantidad_a_comprar" data-row="'+(meta.row+1)+'" data-id_requerimiento="'+(row.id_requerimiento?row.id_requerimiento:0)+'" data-id_detalle_requerimiento="'+(row.id_detalle_requerimiento?row.id_detalle_requerimiento:0)+'"   onchange="updateInputCantidadAComprar(event);" value="'+row.cantidad_a_comprar+'" style="width:70px;"/>';
+                        return '<input type="text" class="form-control" name="cantidad_a_comprar" data-row="'+(meta.row+1)+'" data-id_requerimiento="'+(row.id_requerimiento?row.id_requerimiento:0)+'" data-id_detalle_requerimiento="'+(row.id_detalle_requerimiento?row.id_detalle_requerimiento:0)+'"   onchange="updateInputCantidadAComprar(event);" value="'+(row.cantidad_a_comprar?row.cantidad_a_comprar:row.cantidad)+'" style="width:70px;"/>';
                     }
                 } , 'name':'cantidad_a_comprar'
             },
@@ -828,7 +828,7 @@ $("#form-modal-orden-requerimiento").on("submit", function(e){
             payload_orden =get_header_orden_requerimiento();
             payload_orden.detalle= detalleRequerimientoSelected;
             // payload_orden += '&detalle_requerimiento='+JSON.stringify(detalleRequerimientoSelected);
-            sendDataToSaveOrden(payload_orden);
+            guardar_orden_requerimiento(payload_orden);
 
         }else if(coutReqInObj >1){
             // console.log('open modal to select item/req');
@@ -842,13 +842,13 @@ $("#form-modal-orden-requerimiento").on("submit", function(e){
         }else{ //no existen nuevos item argregados, guardar nromal (no habra que guardar en req)
             payload_orden =get_header_orden_requerimiento();
             payload_orden.detalle= detalleRequerimientoSelected;
-            sendDataToSaveOrden(payload_orden);
+            guardar_orden_requerimiento(payload_orden);
     
         }
     }else{ // sin guardar en req
         payload_orden =get_header_orden_requerimiento();
         payload_orden.detalle= detalleRequerimientoSelected;
-    sendDataToSaveOrden(payload_orden);
+    guardar_orden_requerimiento(payload_orden);
     }
 
     // let itemsChecked=[];
@@ -878,22 +878,22 @@ $("#form-modal-orden-requerimiento").on("submit", function(e){
 
 });
 
-function sendDataToSaveOrden(payload){
+// function sendDataToSaveOrden(payload){
     // console.log(payload);
-    let hasNull = hasNullCantidadAComprar();
+    // let hasNull = hasNullCantidadAComprar();
 
-    if(hasNull ==true){
-        var ask = confirm('Tiene seleccionado producto(s) con cantidad a comprar igual a cero/vacio. ¿desea continuar?');
-        if (ask == true){
-        guardar_orden_requerimiento(payload);
-    payload_orden =[];
-    }else{
-            return false;
-        } 
-    }else{
-        guardar_orden_requerimiento(payload);
-    }
-}
+    // if(hasNull ==true){
+    //     var ask = confirm('Tiene seleccionado producto(s) con cantidad a comprar igual a cero/vacio. ¿desea continuar?');
+    //     if (ask == true){
+    //     guardar_orden_requerimiento(payload);
+    // payload_orden =[];
+    // }else{
+    //         return false;
+    //     } 
+    // }else{
+        // guardar_orden_requerimiento(payload);
+    // }
+// }
 
 
 function guardar_orden_requerimiento(data){

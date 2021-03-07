@@ -99,9 +99,9 @@ function listar_ordenes_propias(tabla,id_empresa= null,year_publicacion =null, c
                 btnVerOrdenFisica='<a class="btn btn-sm btn-default" title="O/C escaneada" href="'+row['url_oc_fisica']+'" target="_blank"><i class="far fa-file-alt"></i></a>';
                 if(row['id_estado_aprobacion_cc'] ==3){
                     if(row['id_requerimiento'] >0){
-                        btnGenerarRequerimiento='<button type="button" class="btn btn-sm bg-green" title="Generar Requerimiento" disabled><i class="fas fa-registered"></i></button>';
+                        btnGenerarRequerimiento='';
                     }else{
-                        btnGenerarRequerimiento='<button type="button" class="btn btn-sm bg-green" title="Generar Requerimiento" onClick="generarRequerimientoByOrdenCompraPropia('+row['tipo_cuadro']+','+row['id_cc']+','+row['id_estado_aprobacion_cc']+')"><i class="fas fa-registered"></i></button>';
+                        btnGenerarRequerimiento='<button type="button" class="btn btn-sm bg-primary" title="Generar Requerimiento" onClick="generarRequerimientoByOrdenCompraPropia('+row['tipo_cuadro']+','+row['id_cc']+','+row['id_estado_aprobacion_cc']+')"><i class="fas fa-registered"></i></button>';
                     }
                 }
                 else if(row['id_estado_aprobacion_cc'] ==2){
@@ -115,7 +115,7 @@ function listar_ordenes_propias(tabla,id_empresa= null,year_publicacion =null, c
                     btnGenerarRequerimiento='';
                 }
                 if(row['id_requerimiento'] >0){
-                    btnIrRequerimiento='<a type="button" class="btn btn-sm bg-info" title="Ir Requerimiento '+row['codigo_requerimiento']+'" onClick="irRequerimientoByOrdenCompraPropia('+row['id_requerimiento'] +')"><i class="fas fa-file-prescription"></i></a>';
+                    btnIrRequerimiento='<a type="button" class="btn btn-sm btn-info" title="Ir Requerimiento '+row['codigo_requerimiento']+'" onClick="irRequerimientoByOrdenCompraPropia('+row['id_requerimiento'] +')"><i class="fas fa-file-prescription"></i></a>';
                 }else{
                     btnIrRequerimiento='';
                 }
@@ -221,7 +221,9 @@ function generarRequerimientoByOrdenCompraPropia(tipo_cuadro,id_cc,id_estado_apr
         };
         // console.log(data);
         sessionStorage.setItem('ordenP_Cuadroc', JSON.stringify(data));
-        window.location.href = '/logistica/gestion-logistica/requerimiento/elaboracion/index'; //using a named route
+        let url ="/logistica/gestion-logistica/requerimiento/elaboracion/index";
+        var win = window.open(url, '_blank');
+        win.focus();
     }
 
 }
@@ -229,6 +231,8 @@ function generarRequerimientoByOrdenCompraPropia(tipo_cuadro,id_cc,id_estado_apr
 function irRequerimientoByOrdenCompraPropia(id_requerimiento){
 
     localStorage.setItem('id_requerimiento', id_requerimiento);
-    window.location.href='/logistica/gestion-logistica/requerimiento/elaboracion/index';
+    let url ="/logistica/gestion-logistica/requerimiento/elaboracion/index";
+    var win = window.open(url, '_blank');
+    win.focus();
 
 }
