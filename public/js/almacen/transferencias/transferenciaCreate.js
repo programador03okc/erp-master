@@ -80,6 +80,14 @@ function generar_transferencia(){
     });
 }
 
+$("#form-ver_requerimiento").on("submit", function(e){
+    e.preventDefault();
+    var data = $(this).serialize();
+    console.log(data);
+    var id = $('[name=id_requerimiento]').val();
+    generar_transferencia_requerimiento(id);
+});
+
 function generar_transferencia_requerimiento(id_requerimiento){
     $.ajax({
         type: 'GET',
@@ -109,6 +117,7 @@ function ver_requerimiento(id_requerimiento){
                 show: true
             });
             $('[name=id_requerimiento]').val(response['requerimiento'].id_requerimiento);
+            $('[name=codigo_req]').text(response['requerimiento'].codigo);
             $('[name=concepto]').text(response['requerimiento'].concepto);
             $('[name=fecha_requerimiento]').text(response['requerimiento'].fecha_requerimiento);
             $('[name=sede_requerimiento]').text(response['requerimiento'].sede_requerimiento);
