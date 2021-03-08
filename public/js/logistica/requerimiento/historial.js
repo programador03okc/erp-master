@@ -94,14 +94,14 @@ function inicializarSelect(){
 
 function selectRequerimiento(){
     // console.log("selectRequerimiento");
-    inicializarSelect();
     var id = $('#id_requerimiento').text();
     var page = $('.page-main').attr('type');
     var form = $('.page-main form[type=register]').attr('id');
-
+    
     if (page=='transferencias'){
-        generarTransferencia(id);
+        ver_requerimiento(id);
     } else {
+        inicializarSelect();
         clearForm(form); //function.js
         changeStateButton('historial'); //init.js
         mostrar_requerimiento(id); // mostrar.js

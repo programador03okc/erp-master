@@ -1221,6 +1221,8 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::get('listar_guias_compra', 'TransferenciaController@listar_guias_compra');
 					Route::get('transferencia/{id}', 'OrdenesPendientesController@transferencia');
 					Route::get('verGuiaCompraTransferencia/{id}', 'TransferenciaController@verGuiaCompraTransferencia');
+					Route::get('verRequerimiento/{id}', 'TransferenciaController@verRequerimiento');
+					Route::get('generarTransferenciaRequerimiento/{id}', 'TransferenciaController@generarTransferenciaRequerimiento');
 
 				});
 	
