@@ -1295,8 +1295,11 @@ class AlmacenController extends Controller
                 ],  'id_item');
 
             $producto = DB::table('almacen.alm_prod')
-                    ->select('alm_prod.*','alm_und_medida.abreviatura')
+                    ->select('alm_prod.*','alm_und_medida.abreviatura','alm_cat_prod.descripcion as categoria','alm_subcat.descripcion as subcategoria')
                     ->join('almacen.alm_und_medida','alm_und_medida.id_unidad_medida','=','alm_prod.id_unidad_medida')
+                    ->join('almacen.alm_cat_prod','alm_cat_prod.id_categoria','=','alm_prod.id_categoria')
+                    ->join('almacen.alm_subcat','alm_subcat.id_subcategoria','=','alm_prod.id_subcategoria')
+        
                     ->where('id_producto',$id_producto)->first();
             
             return response()->json(['msj'=>$msj,'id_item'=>$id_item, 'id_producto'=>$id_producto,'producto'=>$producto]);
