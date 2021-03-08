@@ -1,5 +1,5 @@
 <div class="modal fade" tabindex="-1" role="dialog" id="modal-crear-nuevo-producto" style="overflow-y:scroll;">
-    <div class="modal-dialog"  style="width: 800px;">
+    <div class="modal-dialog"  style="width: 880px;">
         <div class="modal-content">
             <form id="form-crear-nuevo-producto">
                 <div class="modal-header">
@@ -66,7 +66,7 @@
                     <div class="row">
                         <div class="col-md-12">
                             <h5>Descripción</h5>
-                            <textarea name="descripcion"   class="form-control activation" id="" cols="30" rows="10" onkeyup="mayus(this);" required></textarea>
+                            <textarea name="descripcion"  class="form-control activation"  cols="30" rows="10" wrap="soft" onkeyup="mayus(this);" required></textarea>
                         </div>
                     </div>
                 </div>

@@ -1,6 +1,6 @@
 function cleanCharacterReference(text){
     let str = text;
-    characterReferenceList=['&nbsp;','nbsp;','&amp;','amp;',"&lt;"];
+    characterReferenceList=['&nbsp;','nbsp;','&amp;','amp;',"&lt;",/(\r\n|\n|\r)/gm];
     characterReferenceList.forEach(element => {
         while (str.search(element) > -1) {
             str=  str.replace(element,"");
