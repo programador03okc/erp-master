@@ -182,6 +182,7 @@ Gestión de Transferencias
 @include('logistica.requerimientos.modal_historial_requerimiento')
 @include('almacen.guias.guia_compraModal')
 @include('almacen.guias.guia_com_ver')
+@include('almacen.transferencias.ver_requerimiento')
 @include('almacen.transferencias.transferenciaRecibir')
 @include('almacen.transferencias.transferenciaEnviar')
 @include('almacen.transferencias.transferenciaDetalle')
