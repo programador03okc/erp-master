@@ -15,7 +15,9 @@ class AuthToViewComposer {
 			$autIni = Auth::user();
 			$area = 'CAMBIAR';//Area::findorFail($autIni->trabajador->roles->first()->pivot->id_area);
 			$autenticado = $autIni->toArray();
-			$autenticado['id_rol'] = 'CAMBIAR';//$autIni->trabajador->roles->first()->pivot->id_rol;
+			// $autenticado['id_rol'] = 'CAMBIAR';//$autIni->trabajador->roles->first()->pivot->id_rol;
+			$autenticado['roles'] = Auth::user()->getAllRol();
+			// $autenticado['grupos'] = Auth::user()->getAllGrupo();
 			$autenticado['id_rol_concepto'] = 'CAMBIAR';//$autIni->trabajador->roles->first()->id_rol_concepto;
 			$autenticado['rol'] = 'CAMBIAR';//$autIni->trabajador->roles->first()->descripcion;
 			$autenticado['cargo'] = 'CAMBIAR';//$autIni->cargo;

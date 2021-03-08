@@ -135,6 +135,7 @@ function updateInObjPrecioReferencial(rowNumber,idReq,idDetReq,valor){
 }
 
 function updateInObjCantidadAComprar(rowNumber, idReq,idDetReq,valor){
+    console.log(valor);
     if(idReq >0 && idDetReq >0){
         detalleRequerimientoSelected.forEach((element,index) => {
             if(element.id_requerimiento == idReq){
@@ -248,16 +249,17 @@ function updateInputCantidad(event){
     // console.log(detalleRequerimientoSelected);
 }
 function updateInputCantidadAComprar(event){
+
     let nuevoValor =event.target.value;
     let idRequerimientoSelected= event.target.dataset.id_requerimiento;
     let idDetalleRequerimientoSelected = event.target.dataset.id_detalle_requerimiento;
     let rowNumberSelected = event.target.dataset.row;
-    let sizeInputCantidad = document.querySelectorAll("input[name='cantidad']").length;
+    let sizeInputCantidad = document.querySelectorAll("span[name='cantidad']").length;
     let cantidad =0;
     for (let index = 0; index < sizeInputCantidad; index++) {
-        let row = document.querySelectorAll("input[name='cantidad']")[index].dataset.row;
+        let row = document.querySelectorAll("span[name='cantidad']")[index].dataset.row;
         if(row == rowNumberSelected){
-            cantidad = document.querySelectorAll("input[name='cantidad']")[index].value;
+            cantidad = document.querySelectorAll("span[name='cantidad']")[index].textContent;
             if(parseFloat(nuevoValor) <= parseFloat(cantidad)){                
                 // actualizar datadetreq cantidad
                 updateInObjCantidadAComprar(rowNumberSelected,idRequerimientoSelected,idDetalleRequerimientoSelected,nuevoValor);
@@ -268,10 +270,9 @@ function updateInputCantidadAComprar(event){
             }
             
             if(parseFloat(nuevoValor) > parseFloat(cantidad)){
-                console.log(nuevoValor);
-                console.log(cantidad);
                 alert("La cantidad a comprar no puede ser mayor a la cantidad `solicitada");
                 document.querySelectorAll("input[name='cantidad_a_comprar']")[index].value= cantidad;
+                updateInObjCantidadAComprar(rowNumberSelected,idRequerimientoSelected,idDetalleRequerimientoSelected,cantidad);
 
             }
         }
@@ -330,7 +331,7 @@ function listar_detalle_orden_requerimiento(data){
             {'render':
                 function (data, type, row, meta){
                     // return '<input type="text" class="form-control" name="cantidad" data-row="'+(meta.row+1)+'" data-id_requerimiento="'+(row.id_requerimiento?row.id_requerimiento:0)+'" data-id_detalle_requerimiento="'+(row.id_detalle_requerimiento?row.id_detalle_requerimiento:0)+'" value="'+row.cantidad+'" onChange="updateInputCantidad(event);" style="width: 70px;" disabled/>';
-                    return row.cantidad;
+                    return '<span name="cantidad" data-row="'+(meta.row+1)+'" data-id_requerimiento="'+(row.id_requerimiento?row.id_requerimiento:0)+'" data-id_detalle_requerimiento="'+(row.id_detalle_requerimiento?row.id_detalle_requerimiento:0)+'">'+row.cantidad+'</span>';
                 
                 }, 'name':'cantidad'
             },
@@ -357,6 +358,8 @@ function listar_detalle_orden_requerimiento(data){
                     if(row.estado == 7){
                         return '<input type="text" class="form-control" name="cantidad_a_comprar" data-row="'+(meta.row+1)+'" data-id_requerimiento="'+(row.id_requerimiento?row.id_requerimiento:0)+'" data-id_detalle_requerimiento="'+(row.id_detalle_requerimiento?row.id_detalle_requerimiento:0)+'"   onchange="updateInputCantidadAComprar(event);" value="'+(row.cantidad_a_comprar?row.cantidad_a_comprar:row.cantidad)+'" style="width:70px;" disabled />';
                     }else{
+                        updateInObjCantidadAComprar((meta.row+1),(row.id_requerimiento),(row.id_detalle_requerimiento),(row.cantidad));
+
                         return '<input type="text" class="form-control" name="cantidad_a_comprar" data-row="'+(meta.row+1)+'" data-id_requerimiento="'+(row.id_requerimiento?row.id_requerimiento:0)+'" data-id_detalle_requerimiento="'+(row.id_detalle_requerimiento?row.id_detalle_requerimiento:0)+'"   onchange="updateInputCantidadAComprar(event);" value="'+(row.cantidad_a_comprar?row.cantidad_a_comprar:row.cantidad)+'" style="width:70px;"/>';
                     }
                 } , 'name':'cantidad_a_comprar'
@@ -919,7 +922,7 @@ $("#form-modal-orden-requerimiento").on("submit", function(e){
 
 
 function guardar_orden_requerimiento(data){
-    // console.log(data);
+    console.log(data);
     
     var msj = validaOrdenRequerimiento();
     if (msj.length > 0){

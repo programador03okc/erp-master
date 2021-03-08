@@ -18,13 +18,27 @@ function mostrar_requerimiento(IdorCode){
         url: baseUrl,
         dataType: 'JSON',
         success: function(response){
+            // console.log(auth_user);
             data = response;
-                if((response.requerimiento[0].id_usuario != auth_user.id_usuario && response.requerimiento[0].estado == 3)|| (response.requerimiento[0].estado==2 && auth_user.id_usuario !=42)){// si el req tiene observaciones y el usuario no es el propietario
-                    document.querySelector("button[id='btnEditar']").setAttribute('disabled',true);
-                    document.querySelector("button[id='btnAnular']").setAttribute('disabled',true);
-                }else{
+            
+            let permisoBtn = false; 
+            if(response.requerimiento[0].id_usuario == auth_user.id_usuario && response.requerimiento[0].estado == 3){ // usuario creador de rquerimiento y que estado de req = observado
+                permisoBtn = true;
+            }
+            auth_user.roles.forEach((r)=>{ // solo rol programador
+                if(r.id_rol ==6){ permisoBtn = true; }
+            });
+
+            if(auth_user.id_usuario == 64){ // id usuario = Ricardo
+                permisoBtn = true;
+            }
+ 
+                if(permisoBtn) {// si el req tiene observaciones y el usuario no es el propietario
                     document.querySelector("button[id='btnEditar']").removeAttribute('disabled');
                     document.querySelector("button[id='btnAnular']").removeAttribute('disabled');
+                }else{
+                    document.querySelector("button[id='btnEditar']").setAttribute('disabled',true);
+                    document.querySelector("button[id='btnAnular']").setAttribute('disabled',true);
                 }
             if(response['requerimiento'] !== undefined){
                 if(response['requerimiento'][0].id_tipo_requerimiento == 1){ // compra

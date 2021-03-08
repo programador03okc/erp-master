@@ -2375,7 +2375,8 @@ class LogisticaController extends Controller
             if($hasPermission == true){
                 $requerimiento = DB::table('almacen.alm_req')->where('id_requerimiento', $id)
                 ->update([               
-                    'estado' => $estado_anulado
+                    'estado' => $estado_anulado,
+                    'id_cc'=> null
                 ]);
                 $detalle_re = DB::table('almacen.alm_det_req')
                 ->where('id_requerimiento', '=', $id)

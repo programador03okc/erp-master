@@ -31,6 +31,7 @@ function anular_requerimiento(id_req){
                     nuevo_req();
                 }else if((response.status_requerimiento ==200 && response.status_transferencia == 0) || (response.status_requerimiento ==200 && response.status_transferencia == 400)){
                     alert("Requerimiento Anulado.");
+                    mostrar_requerimiento(id_req);
                 }else if(response.status_requerimiento ==400){
                     alert("Hubo un problema, No se puede Anular el Requerimiento");
                 }else{
