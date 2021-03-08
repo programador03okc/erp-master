@@ -1413,8 +1413,6 @@ class TransferenciaController extends Controller
         ->where([['id_requerimiento','=',$id_requerimiento]])
         ->first();
 
-        $valor_transformacion = ($req->estado == 10 ? true : false);
-
         $detalle_req = DB::table('almacen.alm_det_req')
         ->select('alm_det_req.*','alm_req.id_almacen','sis_sede.id_sede as id_sede_reserva',
         'almacen_guia.id_almacen as id_almacen_guia',
@@ -1429,12 +1427,9 @@ class TransferenciaController extends Controller
         ->leftjoin('administracion.sis_sede as sede_guia','sede_guia.id_sede','=','almacen_guia.id_sede')
         ->where([['alm_det_req.id_requerimiento','=',$id_requerimiento],
                 ['alm_det_req.estado','!=',7],
-                ['tiene_transformacion','=',$valor_transformacion]])
+                ['alm_det_req.tiene_transformacion','=',$req->tiene_transformacion]])
         ->get();
 
-        return $detalle_req;
-
-        
 
         $sede = $req->id_sede;
         $id_almacen_destino = $req->id_almacen;
