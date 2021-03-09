@@ -65,6 +65,11 @@ function llenarTablaDetalleCuadroCostos(data) {
         'dom': 'Bfrtip',
         'paging': false,
         'searching': false,
+                'order': false,
+        'columnDefs': [{
+            'targets': "_all",
+            'orderable': false
+        }],
         'data': data,
         'columns': [
             {
@@ -114,12 +119,12 @@ function llenarTablaDetalleCuadroCostos(data) {
             },
             {
                 'render': function (data, type, row) {
-                    return `<button class="btn btn-xs btn-default" onclick="procesarItemParaCompraDetalleCuadroCostos(${row['id']});" title="Agregar Item" style="background-color:#714fa7; color:white;"><i class="fas fa-plus"></i></button>`;
+                    return `<button class="btn btn-xs btn-default"data-id="${row.id}" onclick="procesarItemParaCompraDetalleCuadroCostos(this,${row['id']});" title="Agregar Item" style="background-color:#714fa7; color:white;"><i class="fas fa-plus"></i></button>`;
                 }
             }
         ]
     });
-
+    $('#ListaModalDetalleCuadroCostos thead th').off('click')
     document.querySelector("table[id='ListaModalDetalleCuadroCostos']").tHead.style.fontSize = '11px',
         document.querySelector("table[id='ListaModalDetalleCuadroCostos']").tBodies[0].style.fontSize = '11px';
     dataTableListaModalDetalleCuadroCostos.buttons().destroy();
@@ -163,8 +168,24 @@ function cleanCharacterReference(text){
 
 }
 
-function procesarItemParaCompraDetalleCuadroCostos(id) {
+function quitarItemDetalleCuadroCostosDeTabla(obj,id){
+    if(itemsParaCompraList.length >0){
+        itemsParaCompraList.forEach(element => {
+            if(element.id == id){
+                obj.parentNode.parentNode.remove();
+            }
+        });
+    }else{
+        alert("no se agrego correctamente el item base");
+        log(itemsParaCompraList);
+    }
+
+}
+
+function procesarItemParaCompraDetalleCuadroCostos(obj,id) {
     let detalleItemsParaCompraCCSelected = '';
+ 
+
     // console.log(tempDetalleItemsParaCompraCC);
     tempDetalleItemsParaCompraCC.forEach(element => {
         if (element.id == id) {
@@ -175,6 +196,9 @@ function procesarItemParaCompraDetalleCuadroCostos(id) {
     // console.log(tempDetalleItemsParaCompraCC);
 
     let data_item_CC_selected = {
+        'id': detalleItemsParaCompraCCSelected.id?detalleItemsParaCompraCCSelected.id:null,
+        'id_cc_am_filas': detalleItemsParaCompraCCSelected.id_cc_am_filas?detalleItemsParaCompraCCSelected.id_cc_am_filas:null,
+        'id_cc_venta_filas': detalleItemsParaCompraCCSelected.id_cc_venta_filas?detalleItemsParaCompraCCSelected.id_cc_venta_filas:null,
         'id_item': "",
         'id_producto': "",
         'id_tipo_item': "1",
@@ -198,7 +222,7 @@ function procesarItemParaCompraDetalleCuadroCostos(id) {
         'tiene_transformacion': false
 
     };
-    // console.log(data_item_CC_selected);
+   
 
     buscarItemEnCatalogo(data_item_CC_selected).then(function (data) {
         // Run this when your request was successful
@@ -206,6 +230,9 @@ function procesarItemParaCompraDetalleCuadroCostos(id) {
             if (data.length == 1) {
                 // console.log(data)
                 // console.log(data[0]);
+                data[0].id = data_item_CC_selected.id;
+                data[0].id_cc_am_filas = data_item_CC_selected.id_cc_am_filas;
+                data[0].id_cc_venta_filas = data_item_CC_selected.id_cc_venta_filas;
                 data[0].cantidad = data_item_CC_selected.cantidad;
                 data[0].id_cc_am = data_item_CC_selected.id_cc_am;
                 data[0].id_cc_venta = data_item_CC_selected.id_cc_venta;
@@ -218,6 +245,8 @@ function procesarItemParaCompraDetalleCuadroCostos(id) {
                 }
                 // console.log(data[0]);
                 itemsParaCompraList.push(data[0]);
+                quitarItemDetalleCuadroCostosDeTabla(obj,id);
+
                 agregarItemATablaListaItemsParaCompra(itemsParaCompraList);
             }
             if(data.length >1){
@@ -227,6 +256,8 @@ function procesarItemParaCompraDetalleCuadroCostos(id) {
             }
         } else {
             itemsParaCompraList.push(data_item_CC_selected);
+            quitarItemDetalleCuadroCostosDeTabla(obj,id);
+
             agregarItemATablaListaItemsParaCompra(itemsParaCompraList);
 
             alert('No se encontró el producto seleccionado en el catalogo');
@@ -420,7 +451,7 @@ function componerTdItemsParaCompra(data, selectCategoria, selectSubCategoria, se
 
             }
             // btnAction += `<button class="btn btn-primary btn-sm" name="btnRemplazarItem" data-toggle="tooltip" title="Remplazar" onClick="buscarRemplazarItemParaCompra(this, ${a});" ${hasAttrDisabled}><i class="fas fa-search"></i></button>`;
-            btnAction += `<button class="btn btn-danger btn-sm"   name="btnEliminarItem" data-toggle="tooltip" title="Eliminar" onclick="eliminarItemDeListadoParaCompra(this, ${a});" ${hasAttrDisabled} ><i class="fas fa-trash-alt"></i></button>`;
+            btnAction += `<button class="btn btn-danger btn-sm"   name="btnEliminarItem" data-toggle="tooltip" title="Eliminar" data-id="${data[a].id}" onclick="eliminarItemDeListadoParaCompra(this, ${a});" ${hasAttrDisabled} ><i class="fas fa-trash-alt"></i></button>`;
             btnAction += `</div>`;
             tdBtnAction.innerHTML = btnAction;
 
@@ -634,9 +665,51 @@ function actualizarIndicesDeTabla(){
             trs[index].querySelector("select[name='clasificacion']").dataset.indice = i;
             trs[index].querySelector("select[name='unidad_medida']").dataset.indice = i;
             trs[index].querySelector("input[name='cantidad']").dataset.indice = i;
-            trs[index].querySelector("select[name='moneda']").dataset.indice = i;
-            trs[index].querySelector("input[name='precio']").dataset.indice = i;
+            // trs[index].querySelector("select[name='moneda']").dataset.indice = i;
+            // trs[index].querySelector("input[name='precio']").dataset.indice = i;
             i++;
+    }
+
+}
+
+function retornarItemAlDetalleCC(id){
+
+    var table = document.querySelector("table[id='ListaModalDetalleCuadroCostos'] tbody")
+    var trs = table.querySelectorAll("tr");
+    let idItemDetCCList=[];
+
+    if(trs.length>0){
+        trs.forEach(tr => {
+            idItemDetCCList.push(tr.children[9].children[0].dataset.id )
+        });
+    }
+
+    if(!idItemDetCCList.includes(id)){
+        tempDetalleItemsParaCompraCC.forEach(element => {
+            if(element.id == id){
+                var row = table.insertRow(-1);
+                    row.style.cursor = "default";
+    
+                    row.insertCell(0).innerHTML = element.part_no?element.part_no:'';
+                    row.insertCell(1).innerHTML = element.descripcion?element.descripcion:'';
+                    row.insertCell(2).innerHTML = element.pvu_oc?element.pvu_oc:'';
+                    row.insertCell(3).innerHTML = element.flete_oc?element.flete_oc:'';
+                    row.insertCell(4).innerHTML = element.cantidad?element.cantidad:'';
+                    row.insertCell(5).innerHTML = element.garantia?element.garantia:'';
+                    row.insertCell(6).innerHTML = element.razon_social_proveedor?element.razon_social_proveedor:'';
+                    row.insertCell(7).innerHTML = element.nombre_autor?element.nombre_autor:'';
+                    row.insertCell(8).innerHTML = element.fecha_creacion?element.fecha_creacion:'';
+                    row.insertCell(9).innerHTML = `<button class="btn btn-xs btn-default" data-id="${element.id}"
+                    onclick="procesarItemParaCompraDetalleCuadroCostos(this,${element.id});" 
+                    title="Agregar Item" 
+                    style="background-color:#714fa7; 
+                    color:white;">
+                    <i class="fas fa-plus"></i>
+                    </button>`;
+                
+            }
+            
+        });
     }
 
 }
@@ -644,8 +717,12 @@ function actualizarIndicesDeTabla(){
 function eliminarItemDeListadoParaCompra(obj, index) {
     // console.log(obj,index);
 
-    let row = obj.parentNode.parentNode.parentNode;
-    row.remove(row);
+    let id = obj.dataset.id;
+    let tr = obj.parentNode.parentNode.parentNode;
+    tr.remove(tr);
+
+    
+    retornarItemAlDetalleCC(id);
 
     itemsParaCompraList = itemsParaCompraList.filter((item, i) => i !== index);
 
@@ -677,6 +754,7 @@ function guardarMasItemsAlDetalleRequerimiento(id_requerimiento_list,item_list){
                 alert('Item(s) Guardado');
 
                 $('#modal-agregar-items-para-compra').modal('hide');
+                $('#listaRequerimientosPendientes').DataTable().ajax.reload();
 
                 // $('#modal-orden-requerimiento').modal({
                 //     show: true,

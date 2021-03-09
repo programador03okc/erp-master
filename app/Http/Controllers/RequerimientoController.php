@@ -715,6 +715,7 @@ class RequerimientoController extends Controller
                 $det_cc = DB::table('mgcp_cuadro_costos.cc_am_filas')
                 ->select(
                     'cc_am_filas.id',
+                    'cc_am_filas.id as id_cc_am_filas',
                     'cc_am_filas.id_cc_am',
                     'cc_am_filas.part_no',
                     'cc_am_filas.descripcion',
@@ -748,6 +749,7 @@ class RequerimientoController extends Controller
                 $det_cc = DB::table('mgcp_cuadro_costos.cc_venta_filas')
                 ->select(
                     'cc_venta_filas.id',
+                    'cc_am_filas.id as id_cc_venta_filas',
                     'cc_venta_filas.id_cc_venta',
                     'cc_venta_filas.part_no',
                     'cc_venta_filas.descripcion',

@@ -40,7 +40,7 @@
                         <div class="row">
                             <div class="col-sm-12">
                                 <fieldset class="group-importes" ><legend style="background: #5d4d6d;"><h6 name='titulo_tabla_detalle_cc'>Detalles de cuadro de Costos</h6></legend>
-                                <table class="mytable table table-striped table-condensed table-bordered dataTable no-footer" id="ListaModalDetalleCuadroCostos" width="100%" style="width: 100%;background: #f8f3f9;">
+                                <table class="mytable table table-striped table-condensed table-bordered" id="ListaModalDetalleCuadroCostos" width="100%" style="width: 100%;background: #f8f3f9;">
                                     <thead>
                                         <tr>
                                             <th>Part No.</th>
