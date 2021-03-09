@@ -211,7 +211,9 @@ class OrdenController extends Controller
             'sis_sede.descripcion as empresa_sede',
             'adm_estado_doc.estado_doc',
             'adm_estado_doc.bootstrap_color',
-            DB::raw("(CASE WHEN alm_req.estado = 1 THEN 'Habilitado' ELSE 'Deshabilitado' END) AS estado_desc")
+            DB::raw("(CASE WHEN alm_req.estado = 1 THEN 'Habilitado' ELSE 'Deshabilitado' END) AS estado_desc"),
+            DB::raw("(SELECT  COUNT(alm_det_req.id_detalle_requerimiento) FROM almacen.alm_det_req
+            WHERE alm_det_req.id_requerimiento = alm_req.id_requerimiento and alm_det_req.tiene_transformacion=false)::integer as cantidad_items_base")
     //         DB::raw("(SELECT  COUNT(log_ord_compra.id_orden_compra) FROM logistica.log_ord_compra
     // WHERE log_ord_compra.id_grupo_cotizacion = log_detalle_grupo_cotizacion.id_grupo_cotizacion)::integer as cantidad_orden"),
     //         DB::raw("(SELECT  COUNT(mov_alm.id_mov_alm) FROM almacen.mov_alm
@@ -2200,8 +2202,8 @@ class OrdenController extends Controller
                         [
                             'id_requerimiento'      => $id_requerimiento,
                             'id_item'               => is_numeric($items[$i]['id_item']) == 1 && $items[$i]['id_item']>0 ? $items[$i]['id_item']:null,
-                            'id_cc_am_filas'        => is_numeric($items[$i]['id_cc_am']) == 1 && $items[$i]['id_cc_am']>0 ? $items[$i]['id_cc_am']:null,
-                            'id_cc_venta_filas'     => is_numeric($items[$i]['id_cc_venta']) == 1 && $items[$i]['id_cc_venta']>0 ? $items[$i]['id_cc_venta']:null,
+                            'id_cc_am_filas'        => is_numeric($items[$i]['id_cc_am_filas']) == 1 && $items[$i]['id_cc_am_filas']>0 ? $items[$i]['id_cc_am_filas']:null,
+                            'id_cc_venta_filas'     => is_numeric($items[$i]['id_cc_venta_filas']) == 1 && $items[$i]['id_cc_venta_filas']>0 ? $items[$i]['id_cc_venta_filas']:null,
                             'id_producto'           => is_numeric($items[$i]['id_producto']) == 1 && $items[$i]['id_producto']>0 ? $items[$i]['id_producto']:null,
                             'precio_referencial'    => is_numeric($items[$i]['precio']) == 1 ?$items[$i]['precio']:null,
                             'cantidad'              => $items[$i]['cantidad']?$items[$i]['cantidad']:null,

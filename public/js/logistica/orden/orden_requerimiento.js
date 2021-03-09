@@ -93,6 +93,7 @@ function openModalItemsParaCompra(){
         // Run this when your request was successful
         if (data.status == 200) {
             tempDetalleItemsParaCompraCC = data.data;
+            // console.log(tempDetalleItemsParaCompraCC);
             llenarTablaDetalleCuadroCostos(data.data);
         }
  
@@ -864,82 +865,6 @@ function getDataListaItemsCuadroCostosPorIdRequerimiento(reqTrueList) {
     });
 }
 
-// function obtenerListaItemsCuadroCostosPorIdRequerimiento(reqTrueList)
-
-function llenarTablaDetalleCuadroCostos(data) {
-    // limpiarTabla('ListaModalDetalleCuadroCostos');
-
-    var dataTableListaModalDetalleCuadroCostos = $('#ListaModalDetalleCuadroCostos').DataTable({
-        'processing': false,
-        'serverSide': false,
-        'bDestroy': true,
-        'bInfo': false,
-        'dom': 'Bfrtip',
-        'paging': false,
-        'searching': false,
-        'data': data,
-        'columns': [
-            {
-                'render': function (data, type, row) {
-                    return `${row['part_no']?row['part_no']:''}`;
-                }
-            },
-            {
-                'render': function (data, type, row) {
-                    return `${row['descripcion']}`;
-                }
-            },
-            {
-                'render': function (data, type, row) {
-                    return `${row['pvu_oc']}`;
-                }
-            },
-            {
-                'render': function (data, type, row) {
-                    return `${row['flete_oc']}`;
-                }
-            },
-            {
-                'render': function (data, type, row) {
-                    return `${row['cantidad']}`;
-                }
-            },
-            {
-                'render': function (data, type, row) {
-                    return `${row['garantia']?row['garantia']:''}`;
-                }
-            },
-            {
-                'render': function (data, type, row) {
-                    return `${row['razon_social_proveedor']}`;
-                }
-            },
-            {
-                'render': function (data, type, row) {
-                    return `${row['nombre_autor']}`;
-                }
-            },
-            {
-                'render': function (data, type, row) {
-                    return `${row['fecha_creacion']}`;
-                }
-            },
-            {
-                'render': function (data, type, row) {
-                    return `<button class="btn btn-xs btn-default" onclick="procesarItemParaCompraDetalleCuadroCostos(${row['id']});" title="Agregar Item" style="background-color:#714fa7; color:white;"><i class="fas fa-plus"></i></button>`;
-                }
-            }
-        ]
-    });
-
-    document.querySelector("table[id='ListaModalDetalleCuadroCostos']").tHead.style.fontSize = '11px',
-        document.querySelector("table[id='ListaModalDetalleCuadroCostos']").tBodies[0].style.fontSize = '11px';
-    dataTableListaModalDetalleCuadroCostos.buttons().destroy();
-    document.querySelector("table[id='ListaModalDetalleCuadroCostos'] thead").style.backgroundColor = "#5d4d6d";
-    $('#ListaModalDetalleCuadroCostos tr').css('cursor', 'default');
-
-
-}
 
 
 function llenarListaModalVerCuadroCostos(data) {
@@ -1168,7 +1093,22 @@ function listar_requerimientos_pendientes(permisoCrearOrdenPorRequerimiento,id_e
             {'data': 'fecha_requerimiento'},
             { render: function (data, type, row) {
                 // if(permisoCrearOrdenPorRequerimiento == '1') {
-                    return ('<div class="btn-group" role="group">'+
+                    let tieneTransformacion= row.tiene_transformacion;
+                    let cantidadItemBase= row.cantidad_items_base;
+                    if(tieneTransformacion == true && cantidadItemBase== 0){
+                        return ('<div class="btn-group" role="group">'+
+                        '<button type="button" class="btn btn-primary btn-xs" name="btnAgregarItemBase" title="Agregar items del base" data-id-requerimiento="'+row.id_requerimiento+'"  onclick="openModalAgregarItemBase(this);"  style="background:#b498d0;">'+
+                            '<i class="fas fa-puzzle-piece fa-sm"></i>'+
+                        '</button>'+
+                    '</div>'+
+                    '<div class="btn-group" role="group">'+
+                        '<button type="button" class="btn btn-info btn-xs" name="btnVercuadroCostos" title="Ver Cuadro Costos" data-id-requerimiento="'+row.id_requerimiento+'"  onclick="openModalCuadroCostos(this);">'+
+                            '<i class="fas fa-eye fa-sm"></i>'+
+                        '</button>'+
+
+                    '</div>');
+                    }else{
+                        return ('<div class="btn-group" role="group">'+
                         '<button type="button" class="btn btn-primary btn-xs" name="btnOpenModalAtenderConAlmacen" title="Atender con almacén" data-id-requerimiento="'+row.id_requerimiento+'"  onclick="openModalAtenderConAlmacen(this);">'+
                             '<i class="fas fa-dolly fa-sm"></i>'+
                         '</button>'+
@@ -1185,6 +1125,8 @@ function listar_requerimientos_pendientes(permisoCrearOrdenPorRequerimiento,id_e
                         '</button>'+
 
                     '</div>');
+                    }
+
                     // }else{
                     //     return ''
                     // }
