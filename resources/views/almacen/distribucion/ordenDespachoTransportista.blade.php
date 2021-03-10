@@ -4,7 +4,7 @@
             <form id="form-orden_despacho_transportista">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="close"><span aria-hidden="true">&times;</span></button>
-                    <h3 class="modal-title">Datos del Transportista</h3>
+                    <h3 class="modal-title">Guía del Transportista</h3>
                 </div>
                 <div class="modal-body">
                     <input type="text" class="oculto" name="id_od"/>

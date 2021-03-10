@@ -25,8 +25,6 @@ function open_despacho_create(data){
     $('[name=contacto_cliente]').val(data.contacto_persona !== null ? data.contacto_persona : data.entidad_persona);
     $('[name=id_cc]').val(data.id_cc);
     $('[name=hora_despacho]').val(hora_actual());
-    console.log($('[name=hora_despacho]').val());
-    console.log(hora_actual());
     $('[name=part_number_transformado]').val('');
     $('[name=cantidad_transformado]').val('');
     $('[name=descripcion_transformado]').val('');
@@ -147,7 +145,7 @@ function open_despacho_create(data){
                 }
             }
             else {
-                if (element.estado == 28 && element.id_almacen_reserva !== null){
+                if ((element.estado == 28 || element.estado == 19 || element.estado == 10) && element.id_almacen_reserva !== null){
                     if (!almacenes_ext.includes(element.id_almacen_reserva)){
                         almacenes_ext.push(element.id_almacen_reserva);
                         almacenes_ext_des.push(element.almacen_reserva_descripcion);
@@ -497,6 +495,7 @@ function on(){
 }
 
 function off(){
+    console.log('Aqui off');
     $("#detalleItemsReq").hide();
     $("[name=aplica_cambios_valor]").val('no');
     $('#name_title').text('Despacho Externo');

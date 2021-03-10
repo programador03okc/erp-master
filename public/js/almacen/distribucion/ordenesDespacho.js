@@ -944,13 +944,16 @@ function listarGruposDespachados(permiso){
                         `<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" 
                             data-placement="bottom" title="Ver Detalle" data-id="${row['id_requerimiento']}">
                             <i class="fas fa-chevron-down"></i></button>
+
                         <button type="button" class="adjuntar btn btn-${row['count_despacho_adjuntos']>0 ? "warning" : "default"} boton" data-toggle="tooltip" 
                             data-placement="bottom" data-id="${row['id_od']}" data-cod="${row['codigo_od']}" title="Adjuntar Boleta/Factura" >
                             <i class="fas fa-paperclip"></i></button>`+
+
                         ((row['confirmacion'] == false && row['estado_od'] == 20)? 
                         ('<button type="button" class="transportista btn btn-success boton" data-toggle="tooltip" '+
                         'data-placement="bottom" data-id="'+row['id_od_grupo_detalle']+'" data-od="'+row['id_od']+'" data-idreq="'+row['id_requerimiento']+'" data-cod-req="'+row['codigo_req']+'" data-concepto="'+row['concepto']+'" data-mov="'+row['mov_entrega']+'" title="Agregar Datos del Transportista" >'+
                         '<i class="fas fa-shuttle-van"></i></button>'+
+
                         '<button type="button" class="revertir btn btn-danger boton" data-toggle="tooltip" '+
                         'data-placement="bottom" data-id="'+row['id_od_grupo_detalle']+'" data-od="'+row['id_od']+'" data-idreq="'+row['id_requerimiento']+'" data-cod-req="'+row['codigo_req']+'" data-concepto="'+row['concepto']+'" title="Revertir" >'+
                         '<i class="fas fa-backspace"></i></button>') : ''));
@@ -1062,15 +1065,6 @@ $('#gruposDespachados tbody').on("click","button.revertir", function(){
     if (rspta){
         despacho_revertir_despacho(data);
     }
-    // $('#modal-despacho_obs').modal({
-    //     show: true
-    // });
-
-    // $('[name=obs_id_od_grupo_detalle]').val(id_od_grupo_detalle);
-    // $('[name=obs_id_od]').val(id_od);
-    // $('[name=obs_id_requerimiento]').val(id_req);
-    // $("#codigo_odg").text(cod_req +' - '+concepto+' - '+"No Entregado");
-    // $("#btnDespachoObs").removeAttr("disabled");
 });
 
 function despacho_transportista(data){
@@ -1239,12 +1233,15 @@ function listarGruposDespachadosPendientesCargo(permiso){
                         return `<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" 
                             data-placement="bottom" title="Ver Detalle" data-id="${row['id_requerimiento']}">
                             <i class="fas fa-chevron-down"></i></button>
+
                             <button type="button" class="adjuntar btn btn-${row['count_despacho_adjuntos']>0 ? "warning" : "default"} boton" data-toggle="tooltip" 
                             data-placement="bottom" data-id="${row['id_od']}" data-cod="${row['codigo_od']}" title="Agregar Comentarios" >
                             <i class="fas fa-comment-dots"></i></button>
+
                             <button type="button" class="conforme btn btn-success boton" data-toggle="tooltip" 
                             data-placement="bottom" data-id="${row['id_od_grupo_detalle']}" data-od="${row['id_od']}" data-idreq="${row['id_requerimiento']}" data-cod-req="${row['codigo_req']}" data-concepto="${row['concepto']}" title="Confirmar Entrega" >
                             <i class="fas fa-check"></i></button>
+                            
                             <button type="button" class="no_conforme btn btn-danger boton" data-toggle="tooltip" 
                             data-placement="bottom" data-id="${row['id_od_grupo_detalle']}" data-od="${row['id_od']}" data-idreq="${row['id_requerimiento']}" data-cod-req="${row['codigo_req']}" data-concepto="${row['concepto']}" title="Revertir" >
                             <i class="fas fa-backspace"></i></button>`;
