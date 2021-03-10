@@ -6,7 +6,7 @@ function agregar_producto_sobrante(sel){
     console.log(sel);
     var row = `<tr>
         <td>${sel.codigo}</td>
-        <td>${sel.part_number}</td>
+        <td>${sel.part_number!==null?sel.part_number:''}</td>
         <td>${sel.descripcion}</td>
         <td><input type="number" class="form-control calcula" name="cantidad" id="cantidad"></td>
         <td>${sel.unid_med}</td>

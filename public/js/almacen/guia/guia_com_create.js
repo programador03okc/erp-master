@@ -113,7 +113,7 @@ function listar_detalle_transformacion(id){
                 <td>${i}</td>
                 <td></td>
                 <td><input style="display:none" id="producto" data-tipo="sobrante" value="${element.id_producto}"/>${element.cod_prod}</td>
-                <td>${element.part_number}</td>
+                <td>${element.part_number!==null?element.part_number:''}</td>
                 <td>${element.descripcion}</td>
                 <td>${element.cantidad}</td>
                 <td>${element.abreviatura}</td>

@@ -1060,7 +1060,7 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::get('detalleOrden/{id}', 'OrdenesPendientesController@detalleOrden');
 					Route::post('guardar_guia_com_oc', 'OrdenesPendientesController@guardar_guia_com_oc');
 					Route::get('verGuiasOrden/{id}', 'OrdenesPendientesController@verGuiasOrden');
-					Route::post('guardar_guia_transferencia', 'OrdenesPendientesController@guardar_guia_transferencia');
+					// Route::post('guardar_guia_transferencia', 'OrdenesPendientesController@guardar_guia_transferencia');
 					Route::post('anular_ingreso', 'OrdenesPendientesController@anular_ingreso');
 					Route::get('cargar_almacenes/{id}', 'AlmacenController@cargar_almacenes');
 					Route::get('imprimir_ingreso/{id}', 'AlmacenController@imprimir_ingreso');
@@ -1202,7 +1202,7 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::get('listar_transferencias_recibidas/{ori}', 'TransferenciaController@listar_transferencias_recibidas');
 					Route::get('listar_transferencia_detalle/{id}', 'TransferenciaController@listar_transferencia_detalle');
 					Route::post('guardar_ingreso_transferencia', 'TransferenciaController@guardar_ingreso_transferencia');
-					Route::post('update_guia_transferencia', 'TransferenciaController@update_guia_transferencia');
+					Route::post('guardar_salida_transferencia', 'TransferenciaController@guardar_salida_transferencia');
 					Route::post('anular_transferencia_ingreso', 'TransferenciaController@anular_transferencia_ingreso');
 					Route::get('ingreso_transferencia/{id}', 'TransferenciaController@ingreso_transferencia');
 					Route::get('transferencia_nextId/{id}', 'TransferenciaController@transferencia_nextId');
@@ -1283,6 +1283,7 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::get('mostrar_prods', 'AlmacenController@mostrar_prods');
 					Route::get('imprimir_ingreso/{id}', 'AlmacenController@imprimir_ingreso');
 					Route::get('imprimir_salida/{id}', 'AlmacenController@imprimir_salida');
+					Route::post('guardar_producto', 'AlmacenController@guardar_producto');
 
 				});
 	

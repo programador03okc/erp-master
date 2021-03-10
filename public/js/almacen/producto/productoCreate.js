@@ -59,7 +59,27 @@ function guardarProducto(data){
                 if (page == 'ordenesPendientes'){
                     $('#modal-productoCreate').modal('hide');
                     agregarProducto(response['producto']);
-                } else {
+                }
+                else if (page == "transformacion"){
+                    var sel = {
+                        'id_producto': response['producto'].id_producto,
+                        'part_number': response['producto'].part_number,
+                        'codigo': response['producto'].codigo,
+                        'descripcion': response['producto'].descripcion,
+                        'unid_med': response['producto'].id_unidad_medida
+                    }
+                    if (origen == 'transformado'){
+                        agregar_producto_transformado(sel);
+                    } 
+                    else if (origen == 'sobrante'){
+                        agregar_producto_sobrante(sel);
+                    }
+                    else if (origen == 'materia'){
+                        agregar_producto_materia(sel);
+                    }
+                    $('#modal-productoCreate').modal('hide');
+                }
+                else {
                     alert('Producto registrado con éxito');
                     $('#modal-productoCreate').modal('hide');
                     detalle_sale.push(response['producto']);

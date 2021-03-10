@@ -809,6 +809,15 @@ function fecha_actual(){
     return (yy + "-" + mm + "-" + dd);
 }
 
+function hora_actual(){
+    var fecha = new Date();
+    var h = fecha.getHours();
+    var m = fecha.getMinutes();
+    if (m < 10){
+        m = '0'+m;
+    }
+    return (h + ":" + m );
+}
 /* Sumar dias a una fecha dada */
 function sumaFecha(d, fecha){
 

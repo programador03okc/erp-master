@@ -1,33 +1,14 @@
-let origen = null;
-
-// function openTransferenciaGuia(data){
-//     origen = 'transferencia_por_orden';
-//     $('#modal-transferenciaGuia').modal({
-//         show: true
-//     });
-    
-//     $('[name=id_almacen_origen]').val(data.id_almacen);
-//     $('[name=trans_serie]').val('');
-//     $('[name=trans_numero]').val('');
-//     $('[name=id_guia_com]').val(data.id_guia_com);
-//     $('[name=id_sede]').val(data.sede_orden);
-//     $('[name=id_mov_alm]').val(data.id_mov_alm);
-//     $('[name=id_requerimiento]').val(data.id_requerimiento);
-//     $("#submit_transferencia").removeAttr("disabled");
-//     if (data.almacen_requerimiento !== null){
-//         $('[name=id_almacen_destino]').val(data.almacen_requerimiento);
-//     } else {
-//         cargar_almacenes(data.sede_requerimiento, 'id_almacen_destino');
-//     }
-//     // var tp_doc_almacen = 2;//guia venta
-//     // next_serie_numero(data.sede_orden,tp_doc_almacen);
-// }
+// let origen = null;
+let id_trans_seleccionadas = [];
 
 function openGenerarGuia(data){
-    origen = 'transferencia_por_requerimiento';
+    // origen = 'transferencia_por_requerimiento';
+    id_trans_seleccionadas = [];
+
     $('#modal-transferenciaGuia').modal({
         show: true
     });
+
     $('[name=id_almacen_origen]').val(data.id_almacen_origen);
     $('[name=trans_serie]').val('');
     $('[name=trans_numero]').val('');
@@ -50,8 +31,6 @@ function openGenerarGuia(data){
     // next_serie_numero(data.sede_orden,tp_doc_almacen);
 }
 
-let id_trans_seleccionadas = [];
-
 function open_guia_transferencia_create(){
     var alm_origen = null;
     var alm_destino = null;
@@ -60,7 +39,7 @@ function open_guia_transferencia_create(){
     var dif_ori = 0;
     var dif_des = 0;
     id_trans_seleccionadas = [];
-    origen = 'transferencia_por_requerimiento';
+    // origen = 'transferencia_por_requerimiento';
 
     trans_seleccionadas.forEach(element => {
         id_trans_seleccionadas.push(element.id_transferencia);
@@ -266,45 +245,45 @@ $("#form-transferenciaGuia").on("submit", function(e){
     var data = $(this).serialize();
     console.log(data);
 
-    if (origen == 'transferencia_por_orden'){
-        guardar_transferencia(data);
-    } 
-    else if (origen == 'transferencia_por_requerimiento'){
+    // if (origen == 'transferencia_por_orden'){
+    //     guardar_transferencia(data);
+    // } 
+    // else if (origen == 'transferencia_por_requerimiento'){
         data+='&trans_seleccionadas='+JSON.stringify(id_trans_seleccionadas);
-        update_transferencia(data);
-    }
+        salida_transferencia(data);
+    // }
 });
 
-function guardar_transferencia(data){
-    var msj = validaCampos();
-    if (msj.length > 0){
-        alert(msj);
-    } else {
-        $("#submit_transferencia").attr('disabled','true');
-        $.ajax({
-            type: 'POST',
-            url: 'guardar_guia_transferencia',
-            data: data,
-            dataType: 'JSON',
-            success: function(response){
-                console.log(response);
-                if (response > 0){
-                    alert('Salida Almacén generada con éxito');
-                    $('#modal-transferenciaGuia').modal('hide');
-                    $('#ordenesEntregadas').DataTable().ajax.reload();
-                    // var id = encode5t(response);
-                    // window.open('imprimir_salida/'+id);
-                }
-            }
-        }).fail( function( jqXHR, textStatus, errorThrown ){
-            console.log(jqXHR);
-            console.log(textStatus);
-            console.log(errorThrown);
-        });
-    }
-}
+// function guardar_transferencia(data){
+//     var msj = validaCampos();
+//     if (msj.length > 0){
+//         alert(msj);
+//     } else {
+//         $("#submit_transferencia").attr('disabled','true');
+//         $.ajax({
+//             type: 'POST',
+//             url: 'guardar_guia_transferencia',
+//             data: data,
+//             dataType: 'JSON',
+//             success: function(response){
+//                 console.log(response);
+//                 if (response > 0){
+//                     alert('Salida Almacén generada con éxito');
+//                     $('#modal-transferenciaGuia').modal('hide');
+//                     $('#ordenesEntregadas').DataTable().ajax.reload();
+//                     // var id = encode5t(response);
+//                     // window.open('imprimir_salida/'+id);
+//                 }
+//             }
+//         }).fail( function( jqXHR, textStatus, errorThrown ){
+//             console.log(jqXHR);
+//             console.log(textStatus);
+//             console.log(errorThrown);
+//         });
+//     }
+// }
 
-function update_transferencia(data){
+function salida_transferencia(data){
     var msj = validaCampos();
     if (msj.length > 0){
         alert(msj);
@@ -312,7 +291,7 @@ function update_transferencia(data){
         $("#submit_transferencia").attr('disabled','true');
         $.ajax({
             type: 'POST',
-            url: 'update_guia_transferencia',
+            url: 'guardar_salida_transferencia',
             data: data,
             dataType: 'JSON',
             success: function(response){
@@ -341,10 +320,10 @@ function validaCampos(){
     var resp = $('[name=responsable_destino_trans]').val();
     var text = '';
 
-    if (serie == '' || serie == '0000'){
+    if (serie == '' || serie == '0000' || serie == '0'){
         text +='Es necesario que ingrese una Serie\n';
     }
-    if (numero == '' || serie == '0000000'){
+    if (numero == '' || numero == '0000000' || numero == '0'){
         text +='Es necesario que ingrese un Número\n';
     }
     if (alm_ori == '' || alm_ori == '0'){
