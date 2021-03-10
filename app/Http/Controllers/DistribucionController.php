@@ -153,6 +153,7 @@ class DistribucionController extends Controller
             // ->leftJoin('comercial.com_cliente','com_cliente.id_cliente','=','alm_req.id_cliente')
             // ->leftJoin('contabilidad.adm_contri','adm_contri.id_contribuyente','=','com_cliente.id_contribuyente')
             ->where([['alm_req.estado','=',1]])//muestra todos los reservados  ['alm_req.confirmacion_pago','=',false]
+            ->orWhere([['alm_req.estado','=',2]])
             // ->orWhere([['alm_req.id_tipo_requerimiento','!=',1], ['alm_req.estado','=',19], ['alm_req.confirmacion_pago','=',false]])
             ->orderBy('alm_req.fecha_requerimiento','desc');
             // ->get();

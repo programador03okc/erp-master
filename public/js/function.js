@@ -813,6 +813,9 @@ function hora_actual(){
     var fecha = new Date();
     var h = fecha.getHours();
     var m = fecha.getMinutes();
+    if (h < 10){
+        h = '0'+h;
+    }
     if (m < 10){
         m = '0'+m;
     }

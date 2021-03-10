@@ -29,7 +29,7 @@ function open_despacho_create(data){
     $('[name=cantidad_transformado]').val('');
     $('[name=descripcion_transformado]').val('');
     $('[name=comentario_transformado]').val('');
-
+    console.log(hora_actual());
     // $('#'+data.documento+'').prop('checked', true);
     if (data.tipo_cliente == 1){
         $('#Boleta').prop('checked', true);

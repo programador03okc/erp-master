@@ -1356,8 +1356,7 @@ class TransferenciaController extends Controller
         ->leftjoin('almacen.alm_almacen as almacen_guia','almacen_guia.id_almacen','=','guia_com.id_almacen')
         ->leftjoin('administracion.sis_sede as sede_guia','sede_guia.id_sede','=','almacen_guia.id_sede')
         ->where([['alm_det_req.id_requerimiento','=',$id_requerimiento],
-                ['alm_det_req.estado','!=',7],
-                ['alm_det_req.tiene_transformacion','=',$req->tiene_transformacion]])
+                ['alm_det_req.estado','!=',7]])
         ->get();
 
 
@@ -1366,25 +1365,42 @@ class TransferenciaController extends Controller
 
         $id_trans_detalle_list=[];
 
+        $items_transf = [];
+        $items_base = [];
+        $almacen_transf = [];
+        $almacen_base = [];
+
         $array_items = [];
         $array_almacen = [];
 
         foreach ($detalle_req as $det) {
         
-            if ($det->id_sede_guia !== null && $sede !== $det->id_sede_guia){
-                array_push($array_items, $det);
-            
-                if (!in_array($det->id_almacen_guia, $array_almacen)){
-                    array_push($array_almacen, $det->id_almacen_guia);
-                }
-            } 
-            else if ($det->id_sede_reserva !== null && $sede !== $det->id_sede_reserva){
-                array_push($array_items, $det);
-            
-                if (!in_array($det->id_almacen_reserva, $array_almacen)){
-                    array_push($array_almacen, $det->id_almacen_reserva);
+            $sede = ($det->id_sede_guia !== null ? $det->id_sede_guia : $det->id_sede_reserva);
+            $almacen = ($det->id_almacen_guia !== null ? $det->id_almacen_guia : $det->id_almacen_reserva);
+
+            if ($sede !== null && $req->id_sede !== $sede){
+                
+                if ($det->tiene_transformacion){
+                    array_push($items_transf, $det);
+                    if (!in_array($almacen, $almacen_transf)){
+                        array_push($almacen_transf, $almacen);
+                    }
+                } else {
+                    array_push($items_base, $det);
+                    if (!in_array($almacen, $almacen_base)){
+                        array_push($almacen_base, $almacen);
+                    }
                 }
             }
+        }
+
+        if (count($items_transf) > 0){
+            $array_items = $items_transf;
+            $array_almacen = $almacen_transf;
+        }
+        else if (count($items_base) > 0){
+            $array_items = $items_base;
+            $array_almacen = $almacen_base;
         }
 
         $fecha = date('Y-m-d H:i:s');
@@ -1465,21 +1481,26 @@ class TransferenciaController extends Controller
         ->leftjoin('administracion.sis_sede as sede_guia','sede_guia.id_sede','=','almacen_guia.id_sede')
         ->leftjoin('almacen.alm_prod','alm_prod.id_producto','=','alm_det_req.id_producto')
         ->leftjoin('almacen.alm_und_medida','alm_und_medida.id_unidad_medida','=','alm_prod.id_unidad_medida')
-        ->where([['alm_det_req.id_requerimiento','=',$id],
-                 ['alm_det_req.tiene_transformacion','=',$req->tiene_transformacion]])
+        ->where([['alm_det_req.id_requerimiento','=',$id]])
         ->get();
 
-        $array_items = [];
+        $items_base = [];
+        $items_transf = [];
 
         foreach ($req_detalle as $det) {
         
             if (($det->id_sede_guia !== null && $req->id_sede !== $det->id_sede_guia) ||
                 ($det->id_sede_reserva !== null && $req->id_sede !== $det->id_sede_reserva)){
-                array_push($array_items, $det);
+                
+                if ($det->tiene_transformacion){
+                    array_push($items_transf, $det);
+                } else {
+                    array_push($items_base, $det);
+                }
             }
         }
 
-        return response()->json(['requerimiento'=>$req,'detalle'=>$array_items]);
+        return response()->json(['requerimiento'=>$req,'detalle'=>(count($items_transf)>0 ? $items_transf : $items_base)]);
     }
 
     
