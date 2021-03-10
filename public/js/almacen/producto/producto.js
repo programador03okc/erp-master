@@ -78,6 +78,7 @@ function mostrar_producto(id){
             console.log(response['producto'][0]);
             console.log(response);
             $('[name=id_producto]').val(response['producto'][0].id_producto);
+            $('[name=codigo]').val(response['producto'][0].codigo);
             $('#codigo').text(response['producto'][0].codigo);
             $('[name=codigo_anexo]').val(response['producto'][0].codigo_anexo);
             $('[name=part_number]').val(response['producto'][0].part_number);
@@ -99,12 +100,12 @@ function mostrar_producto(id){
             $('[name=estado]').val(response['producto'][0].estado);
             $('[name=notas]').val(response['producto'][0].notas);
             $('[name=id_moneda]').val(response['producto'][0].id_moneda);
-            // if (response['producto'][0].imagen !== "" &&
-            //     response['producto'][0].imagen !== null){
-            //     $('#img').attr('src','files/productos/'+response['producto'][0].imagen);
-            // } else {
-            //     $('#img').attr('src','img/product-default.png');
-            // }
+            if (response['producto'][0].imagen !== "" &&
+                response['producto'][0].imagen !== null){
+                $('#img').attr('src','/files/almacen/productos/'+response['producto'][0].imagen);
+            } else {
+                $('#img').attr('src','/images/product-default.png');
+            }
             $('[id=fecha_registro] label').text('');
             $('[id=fecha_registro] label').append(formatDateHour(response['producto'][0].fecha_registro));
 
@@ -234,7 +235,7 @@ function guardar_imagen(){
                 alert('Imagen cargada con exito');
                 console.log($('#img')[0]);
                 setTimeout(function(){
-                    $('#img').attr('src', 'files/productos/'+response.imagen+'?ver=' + timestamp);
+                    $('#img').attr('src', '/files/almacen/productos/'+response.imagen+'?ver=' + timestamp);
                     console.log('Después del ajax: ' + $('#img').attr('src') );
                 }, 500); 
             }
@@ -282,26 +283,26 @@ function validaProducto(){
     var id_subcategoria = $('[name=id_subcategoria]').val();
     var id_clasif = $('[name=id_clasif]').val();
     var descripcion = $('[name=descripcion]').val();
-    var part_number = $('[name=part_number]').val();
+    // var part_number = $('[name=part_number]').val();
     // var id_moneda = $('[name=id_moneda]').val();
     var id_unidad_medida = $('[name=id_unidad_medida]').val();
     var msj = '';
 
-    if (id_categoria == '0'){
+    if (id_categoria == '' || id_categoria == '0'){
         msj+='\n Es necesario que elija una Categoría';
     }
-    if (id_subcategoria == '0'){
+    if (id_subcategoria == '' || id_subcategoria == '0'){
         msj+='\n Es necesario que elija una SubCategoría';
     }
-    if (id_clasif == '0'){
+    if (id_clasif == '' || id_clasif == '0'){
         msj+='\n Es necesario que alija una Clasificación';
     }
     if (descripcion == ''){
         msj+='\n Es necesario que ingrese una Descripción';
     }
-    if (part_number == ''){
-        msj+='\n Es necesario que ingrese una Part Number';
-    }
+    // if (part_number == ''){
+    //     msj+='\n Es necesario que ingrese una Part Number';
+    // }
     if (id_unidad_medida == '0'){
         msj+='\n Es necesario que seleccione una Unidad de Medida';
     }

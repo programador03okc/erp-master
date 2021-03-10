@@ -1221,21 +1221,19 @@ class AlmacenController extends Controller
         $namefile = "";
         if ($request->codigo !== "" && $request->codigo !== null){
             $nfile = $request->file('imagen');
+
             if (isset($nfile)){
-                $namefile = $request->codigo.'.'.$nfile->getClientOriginalExtension();
-                \File::delete(public_path('productos/'.$namefile));
-                // if (file_exists(public_path('productos/'+$namefile))){
-                //     unlink(public_path('productos/'+$namefile));
-                // }else{
-                //     dd('El archivo no existe.');
-                // }
-                Storage::disk('archivos')->put('productos/'.$namefile, \File::get($nfile));
-            } else {
-                $namefile = null;
+                
+                $extension = pathinfo($nfile->getClientOriginalName(), PATHINFO_EXTENSION);
+                $namefile = $request->codigo.'.'.$extension;
+
+                \File::delete(public_path('almacen/productos/'.$namefile));
+                Storage::disk('archivos')->put('almacen/productos/'.$namefile, \File::get($nfile));
+            
+                $update = DB::table('almacen.alm_prod')
+                ->where('id_producto', $request->id_producto)
+                ->update(['imagen' => $namefile]);    
             }
-            $update = DB::table('almacen.alm_prod')
-            ->where('id_producto', $request->id_producto)
-            ->update(['imagen' => $namefile]);    
         }
 
         if ($update){
@@ -1343,10 +1341,10 @@ class AlmacenController extends Controller
                     'notas' => $request->notas,
                 ]);
 
-                $id_item = DB::table('almacen.alm_prod')
-                ->select('alm_prod.id_item')
+                $id_item = DB::table('almacen.alm_item')
+                ->select('alm_item.id_item')
                 ->where('id_producto', $id_producto)
-                ->get()->first();
+                ->first();
 
         } else {
             $msj = 'No es posible actualizar. Ya existe un producto con la misma descripción y/o Part Number.';

@@ -36,7 +36,7 @@
         
     </legend> -->
     <input type="hidden" name="id_producto" primary="ids">
-    <div class="col-md-12" id="tab-producto">
+    <div class="col-md-12" id="tab-producto" style="padding-right:0px;padding-left:0px">
         <ul class="nav nav-tabs" id="myTab">
             <li class="active"><a type="#general">Datos Generales</a></li>
             <li class=""><a type="#promocion">Promociones</a></li>
@@ -46,7 +46,9 @@
         <div class="content-tabs">
             <section id="general" hidden>
                 <form id="form-general" type="register">  <!--form="formulario"-->
+                <input type="hidden" name="_token" value="{{csrf_token()}}" id="token">
                 <input type="text" class="oculto" name="id_producto">
+                <input type="text" class="oculto" name="codigo">
                     <div class="row">
                         <div class="col-md-3">
                             <div class="row">
@@ -90,7 +92,6 @@
                             </div>
                         </div>
                         <div class="col-md-9">
-                            <input type="hidden" name="_token" value="{{csrf_token()}}" id="token">
                             <div class="row" style="margin-bottom: 0;margin-top: 0;">
                                 <div class="col-md-12">
                                     <ol class="breadcrumb"  style="padding-left: 20px;padding-right: 10px;">
@@ -168,7 +169,7 @@
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-md-5">
+                                <div class="col-md-4">
                                     <fieldset class="group-importes"><legend><h6>Unidades de Medida</h6></legend>
                                         <table id="unidad" class="table-group">
                                             <tbody>
@@ -210,7 +211,7 @@
                                         </table>
                                     </fieldset>
                                 </div>
-                                <div class="col-md-7">
+                                <div class="col-md-8">
                                     <h5>Notas</h5>
                                     <textarea name="notas" class="form-control activation" rows="8" cols="30"></textarea>
                                 </div>
