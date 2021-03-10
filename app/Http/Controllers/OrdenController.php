@@ -2274,9 +2274,13 @@ class OrdenController extends Controller
             foreach ($data as $det) {
                 $updateDetReq += DB::table('almacen.alm_det_req')
                     ->where('id_detalle_requerimiento',$det['id_detalle_requerimiento'])
-                    ->update(['stock_comprometido'=>$det['cantidad_a_atender'],'id_almacen_reserva'=>$det['id_almacen_reserva']>0?$det['id_almacen_reserva']:null]); 
+                    ->update(['stock_comprometido'=>$det['cantidad_a_atender'],
+                    'id_almacen_reserva'=>$det['id_almacen_reserva']>0?$det['id_almacen_reserva']:null,
+                    'estado'=>27
+                    ]); 
             }
 
+            (new LogisticaController)->actualizarEstadoRequerimientoAtendido([$id_requerimiento]);
             // (new LogisticaController)->generarTransferenciaRequerimiento($id_requerimiento, $id_sede, $data);
 
             $output=[
