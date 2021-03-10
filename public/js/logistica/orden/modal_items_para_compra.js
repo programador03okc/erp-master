@@ -243,7 +243,7 @@ function procesarItemParaCompraDetalleCuadroCostos(obj,id) {
                     data[0].id_moneda = 1;
                     data[0].moneda = 'Soles';
                 }
-                // console.log(data[0]);
+                console.log(data[0]);
                 itemsParaCompraList.push(data[0]);
                 quitarItemDetalleCuadroCostosDeTabla(obj,id);
 
@@ -406,6 +406,23 @@ function validarObjItemsParaCompra() {
         }
     }
 }
+function quitarItemsDetalleCuadroCostosAgregadosACompra(data){
+    let idList=[];
+    // console.log(data);
+    data.forEach(element => {
+        idList.push(element.id_cc_am_filas?element.id_cc_am_filas:element.id_cc_venta_filas); 
+    });
+
+    var tableBody = document.querySelector("table[id='ListaModalDetalleCuadroCostos'] tbody");
+    let trs = tableBody.querySelectorAll('tr');
+
+    trs.forEach(tr => {
+        if(idList.includes(parseInt(tr.children[9].children[0].dataset.id))){
+            tr.remove();
+        }
+        
+    });
+}
 
 function componerTdItemsParaCompra(data, selectCategoria, selectSubCategoria, selectClasCategoria, selectMoneda, selectUnidadMedida) {
     // console.log(data);
@@ -420,7 +437,7 @@ function componerTdItemsParaCompra(data, selectCategoria, selectSubCategoria, se
             var row = table.insertRow(-1);
 
             if (data[a].id_producto == '') {
-                row.insertCell(0).innerHTML = data[a].codigo_item ? data[a].codigo_item : '';
+                row.insertCell(0).innerHTML = data[a].alm_prod_codigo ? data[a].alm_prod_codigo : '';
                 row.insertCell(1).innerHTML = `<input type="text" class="form-control" name="part_number" data-id_cc_am="${data[a].id_cc_am ? data[a].id_cc_am : ''}" data-id_cc_venta="${data[a].id_cc_venta ? data[a].id_cc_venta : ''}"  value="${data[a].part_number ? data[a].part_number : ''}" data-indice="${a}" onkeyup="updateInputPartNumberModalItemsParaCompra(event);">`;
                 row.insertCell(2).innerHTML = makeSelectedToSelect(a, 'categoria', selectCategoria, data[a].id_categoria, '');
                 row.insertCell(3).innerHTML = makeSelectedToSelect(a, 'subcategoria', selectSubCategoria, data[a].id_subcategoria, '');
@@ -429,7 +446,7 @@ function componerTdItemsParaCompra(data, selectCategoria, selectSubCategoria, se
                 row.insertCell(6).innerHTML = makeSelectedToSelect(a, 'unidad_medida', selectUnidadMedida, data[a].id_unidad_medida, '');
                 row.insertCell(7).innerHTML = `<input type="text" class="form-control" name="cantidad" data-indice="${a}" onkeyup ="updateInputCantidadModalItemsParaCompra(event);" value="${data[a].cantidad}">`;
             } else {
-                row.insertCell(0).innerHTML = data[a].codigo_item ? data[a].codigo_item : '';
+                row.insertCell(0).innerHTML = data[a].alm_prod_codigo ? data[a].alm_prod_codigo : '';
                 row.insertCell(1).innerHTML = `<input type="text" class="form-control" name="part_number" value="${data[a].part_number ? data[a].part_number : ''}" data-indice="${a}" onkeyup="updateInputPartNumberModalItemsParaCompra(event);" disabled>`;
                 row.insertCell(2).innerHTML = makeSelectedToSelect(a, 'categoria', selectCategoria, data[a].id_categoria, 'disabled');
                 row.insertCell(3).innerHTML = makeSelectedToSelect(a, 'subcategoria', selectSubCategoria, data[a].id_subcategoria, 'disabled');
@@ -458,8 +475,9 @@ function componerTdItemsParaCompra(data, selectCategoria, selectSubCategoria, se
 
         }
     }
-
+    quitarItemsDetalleCuadroCostosAgregadosACompra(data);
     validarObjItemsParaCompra();
+
 }
 
 
@@ -674,7 +692,7 @@ function actualizarIndicesDeTabla(){
 
 function retornarItemAlDetalleCC(id){
 
-    var table = document.querySelector("table[id='ListaModalDetalleCuadroCostos'] tbody")
+    var table = document.querySelector("table[id='ListaModalDetalleCuadroCostos'] tbody");
     var trs = table.querySelectorAll("tr");
     let idItemDetCCList=[];
 

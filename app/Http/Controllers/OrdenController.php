@@ -529,15 +529,37 @@ class OrdenController extends Controller
         $requerimientoList = $request->requerimientoList;
         $tieneItems=false;
         $alm_det_req = DB::table('almacen.alm_det_req')
-        ->select('alm_det_req.*')
+        ->rightJoin('almacen.alm_item', 'alm_item.id_item', '=', 'alm_det_req.id_item')
+        ->leftJoin('almacen.alm_prod', 'alm_item.id_producto', '=', 'alm_prod.id_producto')
+        ->leftJoin('almacen.alm_cat_prod', 'alm_cat_prod.id_categoria', '=', 'alm_prod.id_categoria')
+        ->leftJoin('almacen.alm_subcat','alm_subcat.id_subcategoria','=','alm_prod.id_subcategoria')
+        ->leftJoin('almacen.alm_clasif', 'alm_clasif.id_clasificacion', '=', 'alm_prod.id_clasif')
+        ->leftJoin('almacen.alm_und_medida', 'alm_det_req.id_unidad_medida', '=', 'alm_und_medida.id_unidad_medida')
+        ->select('alm_det_req.*',
+        DB::raw("(CASE 
+        WHEN alm_det_req.id_cc_am_filas isNUll THEN alm_det_req.id_cc_venta_filas 
+        WHEN alm_det_req.id_cc_venta_filas isNUll THEN alm_det_req.id_cc_am_filas 
+        ELSE null END) AS id"),
+        'alm_cat_prod.id_categoria',
+        'alm_cat_prod.descripcion as categoria',
+        'alm_subcat.id_subcategoria',
+        'alm_subcat.descripcion as subcategoria',
+        'alm_clasif.id_clasificacion as id_clasif',
+        'alm_clasif.descripcion as clasificacion',
+        'alm_prod.codigo AS alm_prod_codigo',
+        'alm_prod.part_number',
+        'alm_prod.descripcion AS descripcion',
+        'alm_und_medida.descripcion AS unidad_medida'
+
+        )
         ->where([['alm_det_req.tiene_transformacion',false],['alm_det_req.estado',1]])
         ->whereIn('alm_det_req.id_requerimiento',$requerimientoList)
         ->get();
 
-        if(count($alm_det_req)>0){
-            $tieneItems=true;
-        }
-        return response()->json($tieneItems);
+        // if(count($alm_det_req)>0){
+        //     $tieneItems=true;
+        // }
+        return response()->json($alm_det_req);
     }
 
     public function get_detalle_requerimiento_orden(Request $request )

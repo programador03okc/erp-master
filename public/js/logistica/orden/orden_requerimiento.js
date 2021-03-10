@@ -110,9 +110,12 @@ function openModalAgregarItemBase(obj) {
     limpiarTabla('ListaItemsParaComprar');
  
 
-    tieneItemsParaCompra(reqTrueList).then(function (tieneItems) {
-        // console.log(tieneItems);
-            openModalItemsParaCompra();
+    tieneItemsParaCompra(reqTrueList).then(function (data) {
+        
+
+        openModalItemsParaCompra();
+        itemsParaCompraList=data;
+        agregarItemATablaListaItemsParaCompra(data);
 
     }).catch(function (err) {
         // Run this when promise was rejected via reject()
@@ -135,7 +138,7 @@ function openModalCrearOrdenCompra() {
             }
         });
 
-    tieneItemsParaCompra(reqTrueList).then(function (tieneItems) {
+    // tieneItemsParaCompra(reqTrueList).then(function (tieneItems) {
         // console.log(tieneItems);
         // if(tieneItems == true){
             openModalOrdenRequerimiento();
@@ -143,10 +146,10 @@ function openModalCrearOrdenCompra() {
         //     openModalItemsParaCompra();
         // }
 
-    }).catch(function (err) {
-        // Run this when promise was rejected via reject()
-        console.log(err)
-    })
+    // }).catch(function (err) {
+    //     // Run this when promise was rejected via reject()
+    //     console.log(err)
+    // })
         // obtenerRequerimiento(reqTrueList);
         // cleanFormModalOrdenRequerimiento();
         // console.log(reqTrueList);

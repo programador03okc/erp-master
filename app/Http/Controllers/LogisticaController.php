@@ -5015,6 +5015,7 @@ class LogisticaController extends Controller
 	
 					if ($req->count() > 0) {
 						$codigo = $req->first()->codigo;
+						$concepto = $req->first()->concepto;
 						$id_usuario_propietario = $req->first()->id_usuario;
 						$id_empresa = $req->first()->id_empresa;
 						$id_sede = $req->first()->id_sede;
@@ -5022,11 +5023,12 @@ class LogisticaController extends Controller
 						$email_destinatario= $this->get_email_usuario_por_rol('Logístico Compras', $id_sede, $id_empresa);
 						// $email_destinatario[]= $this->get_email_usuario_por_rol('Coordinador', $id_sede, $id_empresa);
 						$email_destinatario[]= 'administracionventas@okcomputer.com.pe'; 
+						// $email_destinatario[]= 'programador03@okcomputer.com.pe'; 
 						$payload=[
 							'id_empresa'=>$id_empresa,
 							'email_destinatario'=>$email_destinatario,
 							'titulo'=>'Nuevo Requerimiento de Compra:  '.$codigo,
-							'mensaje'=>'Se Creo un nuevo requerimiento de compra: '.$codigo
+							'mensaje'=>'Se Creo un nuevo requerimiento de compra <br> <span style="color:#1e90ff;">'.$codigo.'</span> <br> '.$concepto.' <br><br> Este correo es generado de manera automática, por favor no responder. <br> Saludos <br> Módulo de Logística y Almacenes <br> System AGILE'
 						];
                         if(count($email_destinatario)>0){
                             $estado_envio =(new CorreoController)->enviar_correo_a_usuario($payload);
