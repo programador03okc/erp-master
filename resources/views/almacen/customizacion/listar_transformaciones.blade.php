@@ -2,13 +2,13 @@
 @include('layout.menu_logistica')
 
 @section('cabecera')
-Gestión de Customizaciones
+Gestión de Transformaciones
 @endsection
 
 @section('breadcrumb')
 <ol class="breadcrumb">
   <li><a href="{{route('logistica.index')}}"><i class="fas fa-tachometer-alt"></i> Logística y Almacenes</a></li>
-  <li>Customización</li>
+  <li>Transformación</li>
   <li class="active">@yield('cabecera')</li>
 </ol>
 @endsection
