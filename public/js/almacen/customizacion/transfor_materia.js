@@ -112,8 +112,8 @@ function listar_materias(id_transformacion){
                 suma_materias += parseFloat(element.valor_total);
                 html += `<tr id="${element.id_materia}">
                     <td>${element.codigo !== null ? element.codigo : ''}</td>
-                    <td>${element.part_number !== null ? element.part_number : element.part_number_cc}</td>
-                    <td>${element.descripcion !== null ? element.descripcion : element.descripcion_cc}</td>
+                    <td>${element.part_number !== null ? element.part_number : (element.part_number_cc!==null?element.part_number_cc:'')}</td>
+                    <td>${element.descripcion !== null ? element.descripcion : (element.descripcion_cc!==null?element.descripcion_cc:'')}</td>
                     <td>${element.cantidad}</td>
                     <td>${element.abreviatura !== null ? element.abreviatura : ''}</td>
                     <td>${element.valor_unitario}</td>

@@ -805,16 +805,16 @@ class DistribucionController extends Controller
                     'id_od'
             );
 
-            //Agrega accion en requerimiento
-            DB::table('almacen.alm_req_obs')
-            ->insert([  'id_requerimiento'=>$request->id_requerimiento,
-                        'accion'=>'ORDEN DE DESPACHO',
+            if ($request->aplica_cambios_valor == 'si'){
+                //Agrega accion en requerimiento
+                DB::table('almacen.alm_req_obs')
+                ->insert([  'id_requerimiento'=>$request->id_requerimiento,
+                        'accion'=>'DESPACHO INTERNO',
                         'descripcion'=>'Se generó la Orden de Despacho '.$codigo,
                         'id_usuario'=>$usuario,
                         'fecha_registro'=>date('Y-m-d H:i:s')
                 ]);
 
-            if ($request->aplica_cambios_valor == 'si'){
                 $fecha_actual = date('Y-m-d');
                 $codTrans = $this->transformacion_nextId($fecha_actual);
 
@@ -930,6 +930,15 @@ class DistribucionController extends Controller
 
             }
             else {
+                //Agrega accion en requerimiento
+                DB::table('almacen.alm_req_obs')
+                ->insert([  'id_requerimiento'=>$request->id_requerimiento,
+                        'accion'=>'DESPACHO EXTERNO',
+                        'descripcion'=>'Se generó la Orden de Despacho '.$codigo,
+                        'id_usuario'=>$usuario,
+                        'fecha_registro'=>date('Y-m-d H:i:s')
+                ]);
+
                 if ($request->tiene_transformacion == 'si'){
                     $data = json_decode($request->detalle_sale);
                     
@@ -2237,7 +2246,7 @@ class DistribucionController extends Controller
             ->leftJoin('almacen.orden_despacho', function($join)
                          {   $join->on('orden_despacho.id_requerimiento', '=', 'alm_req.id_requerimiento');
                              $join->where('orden_despacho.estado','!=', 7);
-                             $join->where('orden_despacho.aplica_cambios','!=', false);
+                             $join->where('orden_despacho.aplica_cambios','=', false);
                          })
             ->leftJoin('almacen.orden_despacho_grupo_det', function($join)
                         {   $join->on('orden_despacho_grupo_det.id_od', '=', 'orden_despacho.id_od');

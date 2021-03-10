@@ -109,8 +109,8 @@ function listar_sobrantes(id_transformacion){
                 suma_sobrante += parseFloat(element.valor_total);
                 html += `<tr id="${element.id_sobrante}">
                     <td>${element.codigo !== null ? element.codigo : ''}</td>
-                    <td>${element.part_number_prod !== null ? element.part_number_prod : element.part_number}</td>
-                    <td>${element.descripcion_prod !== null ? element.descripcion_prod : element.descripcion}</td>
+                    <td>${element.part_number_prod !== null ? element.part_number_prod : (element.part_number!==null?element.part_number:'')}</td>
+                    <td>${element.descripcion_prod !== null ? element.descripcion_prod : (element.descripcion!==null?element.descripcion:'')}</td>
                     <td>${element.cantidad}</td>
                     <td>${element.abreviatura !== null ? element.abreviatura : ''}</td>
                     <td>${element.valor_unitario}</td>
