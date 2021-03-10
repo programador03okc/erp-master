@@ -101,7 +101,7 @@ function listar_ordenes_propias(tabla,id_empresa= null,year_publicacion =null, c
                     if(row['id_requerimiento'] >0){
                         btnGenerarRequerimiento='';
                     }else{
-                        btnGenerarRequerimiento='<button type="button" class="btn btn-sm bg-primary" title="Generar Requerimiento" onClick="generarRequerimientoByOrdenCompraPropia('+row['tipo_cuadro']+','+row['id_cc']+','+row['id_estado_aprobacion_cc']+')"><i class="fas fa-registered"></i></button>';
+                        btnGenerarRequerimiento='<button type="button" class="btn btn-sm btn-success" title="Generar Requerimiento" onClick="generarRequerimientoByOrdenCompraPropia('+row['tipo_cuadro']+','+row['id_cc']+','+row['id_estado_aprobacion_cc']+')"><i class="fas fa-registered"></i></button>';
                     }
                 }
                 else if(row['id_estado_aprobacion_cc'] ==2){

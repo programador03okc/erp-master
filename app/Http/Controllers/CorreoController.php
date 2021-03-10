@@ -269,7 +269,8 @@ class CorreoController extends Controller
         $message = (new \Swift_Message($asunto))
         ->setFrom([$yourEmail])
         ->setTo([$destinatario])
-        ->setBody($contenido)
+        // ->setBody($contenido)
+        ->addPart($contenido,'text/html')
         // ->attach($attachment)
         ;
         
@@ -460,7 +461,7 @@ class CorreoController extends Controller
             $message = (new \Swift_Message($payload['titulo']))
             ->setFrom([$yourEmail => 'ERP'])
             ->setTo($payload['email_destinatario'])
-            ->setBody($payload['mensaje']);
+            ->addPart($payload['mensaje'],'text/html');
             if($mailer->send($message)){            
                 $msg = "Se envio un correo de notificación";
                 $status = 200;
