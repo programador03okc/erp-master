@@ -24,6 +24,9 @@ function open_despacho_create(data){
     $('[name=correo_cliente]').val(data.contacto_email !== null ? data.contacto_email : data.entidad_email);
     $('[name=contacto_cliente]').val(data.contacto_persona !== null ? data.contacto_persona : data.entidad_persona);
     $('[name=id_cc]').val(data.id_cc);
+    $('[name=hora_despacho]').val(hora_actual());
+    console.log($('[name=hora_despacho]').val());
+    console.log(hora_actual());
     $('[name=part_number_transformado]').val('');
     $('[name=cantidad_transformado]').val('');
     $('[name=descripcion_transformado]').val('');
@@ -81,6 +84,9 @@ function open_despacho_create(data){
         var almacenes = [];
         var almacenes_des = [];
         var despachos_pendientes = 0;
+        var almacenes_ext = [];
+        var almacenes_ext_des = [];
+        var despachos_ext_pendientes = 0;
 
         console.log(response);
         response.forEach(element => {
@@ -89,55 +95,44 @@ function open_despacho_create(data){
             // var tran = (element.suma_transferencias_recibidas !== null ? parseFloat(element.suma_transferencias_recibidas) : 0);//ingresos por transferencias recibidas
             var cant = ing + stock - (element.suma_despachos_internos !== null ? parseFloat(element.suma_despachos_internos) : 0);
             
-            if (cant > 0){
-                despachos_pendientes++;
-                
-                html+='<tr id="'+element.id_detalle_requerimiento+'">'+
-                '<td><input type="checkbox" id="detalle" value="'+element.id_detalle_requerimiento+'" onChange="changeCheckIngresa(this,'+element.id_detalle_requerimiento+');"/></td>'+
-                '<td>'+(element.producto_codigo !== null ? element.producto_codigo : '')+'</td>'+
-                '<td>'+(element.part_number !== null ? element.part_number : '')+'</td>'+
-                '<td>'+(element.producto_descripcion !== null ? element.producto_descripcion : element.descripcion_adicional)+'</td>'+
-                // '<td>'+(element.almacen_descripcion !== null ? element.almacen_descripcion : '')+'</td>'+
-                '<td>'+element.cantidad+'</td>'+
-                '<td>'+(element.abreviatura !== null ? element.abreviatura : '')+'</td>'+
-                '<td>'+(ing + stock)+'</td>'+
-                '<td>'+(element.suma_despachos_internos !== null ? element.suma_despachos_internos : '0')+'</td>'+
-                '<td><input type="number" id="'+element.id_detalle_requerimiento+'cantidad" value="'+cant+'" max="'+cant+'" min="0" style="width: 80px;"/></td>'+
-                '<td><span class="label label-'+element.bootstrap_color+'">'+element.estado_doc+'</span></td>'+
-                '<td><i class="fas fa-code-branch boton btn btn-primary" data-toggle="tooltip" data-placement="bottom" title="Agregar Instrucciones" onClick="verInstrucciones('+element.id_detalle_requerimiento+');"></i>'+
-                (element.series ? '<i class="fas fa-bars icon-tabla boton" data-toggle="tooltip" data-placement="bottom" title="Ver Series" onClick="verSeries('+element.id_detalle_requerimiento+');"></i>' : '')+
-                '</td></tr>';
-            } else {
-                if (!element.tiene_transformacion && element.estado !== 28 && element.estado !== 10){//En Almacen Total o Culminado
+            if (!element.tiene_transformacion){
+
+                if (cant > 0){
                     despachos_pendientes++;
+                    
+                    html+='<tr id="'+element.id_detalle_requerimiento+'">'+
+                    '<td><input type="checkbox" id="detalle" value="'+element.id_detalle_requerimiento+'" onChange="changeCheckIngresa(this,'+element.id_detalle_requerimiento+');"/></td>'+
+                    '<td>'+(element.producto_codigo !== null ? element.producto_codigo : '')+'</td>'+
+                    '<td>'+(element.part_number !== null ? element.part_number : '')+'</td>'+
+                    '<td>'+(element.producto_descripcion !== null ? element.producto_descripcion : element.descripcion_adicional)+'</td>'+
+                    // '<td>'+(element.almacen_descripcion !== null ? element.almacen_descripcion : '')+'</td>'+
+                    '<td>'+element.cantidad+'</td>'+
+                    '<td>'+(element.abreviatura !== null ? element.abreviatura : '')+'</td>'+
+                    '<td>'+(ing + stock)+'</td>'+
+                    '<td>'+(element.suma_despachos_internos !== null ? element.suma_despachos_internos : '0')+'</td>'+
+                    '<td><input type="number" id="'+element.id_detalle_requerimiento+'cantidad" value="'+cant+'" max="'+cant+'" min="0" style="width: 80px;"/></td>'+
+                    '<td><span class="label label-'+element.bootstrap_color+'">'+element.estado_doc+'</span></td>'+
+                    '<td><i class="fas fa-code-branch boton btn btn-primary" data-toggle="tooltip" data-placement="bottom" title="Agregar Instrucciones" onClick="verInstrucciones('+element.id_detalle_requerimiento+');"></i>'+
+                    (element.series ? '<i class="fas fa-bars icon-tabla boton" data-toggle="tooltip" data-placement="bottom" title="Ver Series" onClick="verSeries('+element.id_detalle_requerimiento+');"></i>' : '')+
+                    '</td></tr>';
+                } else {
+                    if (element.estado !== 28 && element.estado !== 10){//En Almacen Total o Culminado
+                        despachos_pendientes++;
+                    }
                 }
-            }
-            detalle_requerimiento.push({
-                'id_detalle_requerimiento'  : element.id_detalle_requerimiento,
-                'id_producto'               : element.id_producto,
-                'cantidad'                  : element.cantidad,
-                'suma_ingresos'             : element.suma_ingresos,
-                'suma_despachos'            : element.suma_despachos_internos,
-                'stock_comprometido'        : element.stock_comprometido,
-                'part_number_transformado'  : null,
-                'descripcion_transformado'  : null,
-                'comentario_transformado'   : null,
-                'cantidad_transformado'     : null,
-            });
-            
-            if (element.tiene_transformacion){
-                detalle_sale.push({
+                detalle_requerimiento.push({
                     'id_detalle_requerimiento'  : element.id_detalle_requerimiento,
                     'id_producto'               : element.id_producto,
-                    'part_number'               : element.part_number,
-                    'codigo'                    : element.producto_codigo,
-                    'descripcion'               : element.producto_descripcion,
-                    'id_unidad_medida'          : element.id_unidad_medida,
-                    'abreviatura'               : element.abreviatura,
                     'cantidad'                  : element.cantidad,
+                    'suma_ingresos'             : element.suma_ingresos,
+                    'suma_despachos'            : element.suma_despachos_internos,
+                    'stock_comprometido'        : element.stock_comprometido,
+                    'part_number_transformado'  : null,
+                    'descripcion_transformado'  : null,
+                    'comentario_transformado'   : null,
+                    'cantidad_transformado'     : null,
                 });
-            } else {
-                
+
                 if (element.id_almacen_reserva !== null){
                     if (!almacenes.includes(element.id_almacen_reserva)){
                         almacenes.push(element.id_almacen_reserva);
@@ -151,12 +146,36 @@ function open_despacho_create(data){
                     }
                 }
             }
+            else {
+                if (element.estado == 28 && element.id_almacen_reserva !== null){
+                    if (!almacenes_ext.includes(element.id_almacen_reserva)){
+                        almacenes_ext.push(element.id_almacen_reserva);
+                        almacenes_ext_des.push(element.almacen_reserva_descripcion);
+                    }
+                    despachos_ext_pendientes++;
+                }
+                detalle_sale.push({
+                    'id_detalle_requerimiento'  : element.id_detalle_requerimiento,
+                    'id_producto'               : element.id_producto,
+                    'part_number'               : element.part_number,
+                    'codigo'                    : element.producto_codigo,
+                    'descripcion'               : element.producto_descripcion,
+                    'id_unidad_medida'          : element.id_unidad_medida,
+                    'abreviatura'               : element.abreviatura,
+                    'cantidad'                  : element.cantidad,
+                });
+            }
         });
 
         $('#detalleRequerimientoOD tbody').html(html);
         mostrarSale();
         console.log(almacenes_des);
         console.log('despachos_pendientes: '+despachos_pendientes);
+        
+        console.log(almacenes_ext);
+        console.log(almacenes_ext_des);
+        console.log('despachos_ext_pendientes: '+despachos_ext_pendientes);
+        console.log(data);
 
         if (data.tiene_transformacion){
             // data.count_despachos_internos == 0
@@ -177,21 +196,26 @@ function open_despacho_create(data){
                     $('#modal-orden_despacho_create').modal('hide');
                 }
             } else {
-                if (data.count_despachos_internos > 0){
-                    var id_alm = $('[name=id_almacen]').val();
-                    var amsj = '';
-                    almacenes.forEach(alm => {
-                        if (alm !== id_alm){
-                            amsj +='El almacen es diferente. Debe realizar una transferencia';
+                if (despachos_ext_pendientes > 0){
+                    if (almacenes_ext.length == 1){
+                        var id_alm = $('[name=id_almacen]').val();
+                        
+                        if (parseInt(almacenes_ext[0]) !== parseInt(id_alm)){
+                            alert('El almacén es diferente. Debe realizar una transferencia. '+almacenes_ext_des[0]);
+                            $('#modal-orden_despacho_create').modal('hide');
+                        } else {
+                            $('[name=aplica_cambios]').prop('checked', false);
+                            off();
                         }
-                    });
-                    
-                    if (amsj !== ''){
-                        alert(amsj);
+                    }
+                    else if (almacenes_ext.length == 0){
+                        alert('Es necesario que los productos transformados esten en Almacén.');
                         $('#modal-orden_despacho_create').modal('hide');
-                    } else {
-                        $('[name=aplica_cambios]').prop('checked', false);
-                        off();
+                    } 
+                    else {
+                        console.log(almacenes_ext_des);
+                        alert('Los productos transformados no pueden estar en más de un Almacén: \n'+almacenes_ext_des);
+                        $('#modal-orden_despacho_create').modal('hide');
                     }
                 }
             }

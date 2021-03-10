@@ -97,7 +97,7 @@ function generar_transferencia_requerimiento(id_requerimiento){
             console.log(response);
             alert(response);
             listarTransferenciasPorEnviar();
-            $('#modal-guia_com_ver').modal('hide')
+            $('#modal-ver_requerimiento').modal('hide');
         }
     }).fail( function( jqXHR, textStatus, errorThrown ){
         console.log(jqXHR);

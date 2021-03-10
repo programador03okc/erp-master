@@ -6,7 +6,7 @@ function agregar_producto_transformado(sel){
     console.log(sel);
     var row = `<tr>
         <td>${sel.codigo}</td>
-        <td>${sel.part_number}</td>
+        <td>${sel.part_number!==null?sel.part_number:''}</td>
         <td>${sel.descripcion}</td>
         <td><input type="number" class="form-control calcula" name="cantidad" id="cantidad"></td>
         <td>${sel.unid_med}</td>
@@ -107,7 +107,7 @@ function listar_transformados(id_transformacion){
             response.forEach(element => {
                 html += `<tr id="${element.id_transformado}">
                     <td>${element.codigo}</td>
-                    <td>${element.part_number}</td>
+                    <td>${element.part_number!==null?element.part_number:''}</td>
                     <td>${element.descripcion}</td>
                     <td>${element.cantidad}</td>
                     <td>${element.abreviatura}</td>
