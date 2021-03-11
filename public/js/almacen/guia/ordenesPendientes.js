@@ -56,6 +56,20 @@ function listarOrdenesPendientes(){
             {'data': 'id_orden_compra'},
             {'data': 'codigo_softlink'},
             {'data': 'codigo'},
+            {'render': function (data, type, row){
+                var dias_restantes = restarFechas(fecha_actual(), sumaFecha(row['plazo_entrega'], row['fecha']));
+                // var dias_restantes = 3;
+                var porc = dias_restantes * 100 / parseFloat(row['plazo_entrega']);
+                var color = (porc > 50 ? 'success' : ((porc <= 50 && porc > 20) ? 'warning' : 'danger'));
+                return `<div class="progress-group">
+                            <span class="progress-text">Nro días Restantes   </span>
+                            <span class="float-right"><b>${dias_restantes}</b> / ${row['plazo_entrega']}</span>
+                            <div class="progress progress-sm">
+                                <div class="progress-bar bg-${color}" style="width: ${porc}%"></div>
+                            </div>
+                        </div>`;
+                }
+            },
             {'data': 'sede_descripcion', 'name': 'sis_sede.descripcion'},
             {'data': 'razon_social', 'name': 'adm_contri.razon_social'},
             // {'data': 'codigo_softlink', 'name': 'log_ord_compra.codigo_softlink'},
@@ -126,7 +140,7 @@ function listarOrdenesPendientes(){
                         'data-placement="bottom" title="Ver Detalle" data-id="'+row['id_orden_compra']+'">'+
                         '<i class="fas fa-chevron-down"></i></button>';
                     }
-                }, targets: 8
+                }, targets: 9
             }
          ],
         'select': 'multi',

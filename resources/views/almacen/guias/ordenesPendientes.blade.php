@@ -40,6 +40,7 @@ Pendientes de Ingreso
                                         <th></th>
                                         <th>Orden SoftLink</th>
                                         <th>Cod.Orden</th>
+                                        <th>Días para que llegue</th>
                                         <th>Sede Orden</th>
                                         <th>Proveedor</th>
                                         <th>Fecha Emisión</th>
