@@ -127,9 +127,22 @@
                     </div>
                 </div>
                 <div id="detalleItemsReq">
+                
+                    <div class="modal-header" style="display:flex;padding-top: 0px;">
+                        <h4 class="modal-title blue"><i class="fas fa-arrow-circle-right blue"></i> Instrucciones Generales: </h4>
+                    </div>
+                    <div class="modal-body" >
+                        <div class="row">
+                            <div class="col-md-12">
+                                <textarea name="descripcion_sobrantes" id="descripcion_sobrantes" cols="150" rows="5"></textarea>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="modal-header" style="display:flex;padding-top: 0px;">
                         <h4 class="modal-title green"><i class="fas fa-arrow-alt-circle-down green"></i> Productos base: </h4>
                     </div>
+                    
                     <div class="modal-body" style="padding-bottom:0px;">
                         <div class="row">
                             <div class="col-md-12">
@@ -156,17 +169,6 @@
                                     </thead>
                                     <tbody></tbody>
                                 </table>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="modal-header" style="display:flex;padding-top: 0px;">
-                        <h4 class="modal-title blue"><i class="fas fa-arrow-circle-right blue"></i> Productos sobrantes: </h4>
-                    </div>
-                    <div class="modal-body" >
-                        <div class="row">
-                            <div class="col-md-12">
-                                <textarea name="descripcion_sobrantes" id="descripcion_sobrantes" cols="150" rows="5"></textarea>
                             </div>
                         </div>
                     </div>

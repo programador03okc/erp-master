@@ -51,7 +51,7 @@
                     <div class="row">
                         <div class="col-md-6">
                             <h5>Código de Envío</h5>
-                            <input type="text" name="codigo_envio" class="form-control" required/>
+                            <input type="text" name="codigo_envio" class="form-control"/>
                         </div>
                         <div class="col-md-6">
                             <h5>Monto Flete (S/)</h5>

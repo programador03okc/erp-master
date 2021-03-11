@@ -62,8 +62,8 @@ function listarOrdenesPendientes(){
                 var porc = dias_restantes * 100 / parseFloat(row['plazo_entrega']);
                 var color = (porc > 50 ? 'success' : ((porc <= 50 && porc > 20) ? 'warning' : 'danger'));
                 return `<div class="progress-group">
-                            <span class="progress-text">Nro días Restantes   </span>
-                            <span class="float-right"><b>${dias_restantes}</b> / ${row['plazo_entrega']}</span>
+                            <span class="progress-text">Nro días Restantes</span>
+                            <span class="float-right"><b> ${dias_restantes}</b> / ${row['plazo_entrega']}</span>
                             <div class="progress progress-sm">
                                 <div class="progress-bar bg-${color}" style="width: ${porc}%"></div>
                             </div>

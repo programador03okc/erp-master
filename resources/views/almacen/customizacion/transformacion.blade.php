@@ -98,7 +98,7 @@ Hoja de Transformación
             </div>
             <div class="row" style="padding-left: 10px;padding-right: 10px;margin-top: 0px;">
                 <div class="col-md-12">
-                    <h5>Productos sobrantes</h5>
+                    <h5>Instrucciones Generales:</h5>
                     <input name="id_estado" style="display:none"/>
                     <label id="descripcion_sobrantes"></label>
                 </div>

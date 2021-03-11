@@ -1048,7 +1048,7 @@ class DistribucionController extends Controller
                 $contenido = ' para el '.$req->codigo.' '.$req->concepto.' 
         Empresa: '.$empresa->razon_social.'
                 
-        Datos del Cliente:
+        Datos del Cliente: <br>
         - '.($request->documento == 'Boleta' ? 'DNI: '.$request->dni_persona : 'RUC: '.$request->cliente_ruc).'
         - '.($request->documento == 'Boleta' ? 'Nombres y Apellidos: '.$request->nombre_persona : 'Razon Social: '.$request->cliente_razon_social).'
         - Dirección: '.$request->direccion_destino.'
@@ -1061,40 +1061,52 @@ class DistribucionController extends Controller
         ? ('Ver Orden Física: '.$req->url_oc_fisica.' 
         Ver Orden Electrónica: https://apps1.perucompras.gob.pe//OrdenCompra/obtenerPdfOrdenPublico?ID_OrdenCompra='.$req->id_oc_propia.'&ImprimirCompleto=1') : '').'
 
-        *Este correo es generado de manera automatica, por favor no responder.
+        *Este correo es generado de manera automática, por favor no responder.
         
         Saludos,
-        Módulo de Logística y Almacenes
+        Módulo de Despachos
         System AGILE
         ';
             
                 $contenido_facturacion = '
-        Favor de generar '.$request->documento.$contenido;
+    Favor de generar '.$request->documento.$contenido;
     
                 $contenido_almacen = '
-        Favor de generar Guía de Venta'.$contenido;
+    Favor de generar Guía de Venta'.$contenido;
     
-                $destinatario_facturacion = 'programador01@okcomputer.com.pe';
-                $destinatario_almacen = 'asistente.almacenilo@okcomputer.com.pe';
                 $msj = '';
-    
-                $rspta_facturacion = CorreoController::enviar_correo( $empresa->id_empresa, $destinatario_facturacion, 
-                                                                      $asunto_facturacion, $contenido_facturacion);
-                $rspta_almacen = CorreoController::enviar_correo( $empresa->id_empresa, $destinatario_almacen, 
-                                                                  $asunto_almacen, $contenido_almacen);
-    
-                if ($rspta_facturacion !== 'Mensaje Enviado.'){
-                    $msj = 'No se pudo enviar el mensaje a '.$destinatario_facturacion;
-                } else {
-                    $msj = 'Mensaje enviado correctamente a '.$destinatario_facturacion;
+                $email_destinatario[] = 'asistente.contable.lima@okcomputer.com.pe'; 
+                $email_destinatario[] = 'asistente.contable@okcomputer.com.pe'; 
+				$email_destinatario[] = 'programador01@okcomputer.com.pe'; 
+                // $destinatario_facturacion = 'programador01@okcomputer.com.pe';
+                // $destinatario_almacen = 'asistente.almacenilo@okcomputer.com.pe';
+                $payload=[
+                    'id_empresa'=>$empresa->id_empresa,
+                    'email_destinatario'=>$email_destinatario,
+                    'titulo'=>$asunto_facturacion,
+                    'mensaje'=>$contenido_facturacion
+                ];
+
+                if (count($email_destinatario) > 0){
+                    $estado_envio = CorreoController::enviar_correo_a_usuario($payload);
                 }
-                if ($rspta_almacen !== 'Mensaje Enviado.'){
-                    $msj .= '
-    No se pudo enviar el mensaje a '.$destinatario_almacen;
-                } else {
-                    $msj .= '
-    Mensaje enviado correctamente a '.$destinatario_almacen;
-                }
+                // $rspta_facturacion = CorreoController::enviar_correo( $empresa->id_empresa, $destinatario_facturacion, 
+                //                                                       $asunto_facturacion, $contenido_facturacion);
+                // $rspta_almacen = CorreoController::enviar_correo( $empresa->id_empresa, $destinatario_almacen, 
+                //                                                   $asunto_almacen, $contenido_almacen);
+    
+    //             if ($rspta_facturacion !== 'Mensaje Enviado.'){
+    //                 $msj = 'No se pudo enviar el mensaje a '.$destinatario_facturacion;
+    //             } else {
+    //                 $msj = 'Mensaje enviado correctamente a '.$destinatario_facturacion;
+    //             }
+    //             if ($rspta_almacen !== 'Mensaje Enviado.'){
+    //                 $msj .= '
+    // No se pudo enviar el mensaje a '.$destinatario_almacen;
+    //             } else {
+    //                 $msj .= '
+    // Mensaje enviado correctamente a '.$destinatario_almacen;
+    //             }
             } else {
                 $msj = 'Se guardó existosamente la Orden de Despacho y Hoja de Transformación';
             }
