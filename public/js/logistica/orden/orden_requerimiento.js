@@ -10,7 +10,8 @@ rutaSedeByEmpresa,
 rutaDocumentosVinculadosOrden,
 rutaTieneItemsParaCompra,
 rutaGuardarItemsEnDetalleRequerimiento,
-rutaGuardarAtencionConAlmacen
+rutaGuardarAtencionConAlmacen,
+rutaGenerarOrdenRequerimientoPDF
 ;
 
 var listCheckReq=[];
@@ -38,7 +39,8 @@ function inicializar(
     _rutaDocumentosVinculadosOrden,
     _rutaTieneItemsParaCompra,
     _rutaGuardarItemsEnDetalleRequerimiento,
-    _rutaGuardarAtencionConAlmacen
+    _rutaGuardarAtencionConAlmacen,
+    _rutaGenerarOrdenRequerimientoPDF
     ) {
     
     rutaRequerimientosPendientes = _rutaRequerimientosPendientes;
@@ -53,6 +55,7 @@ function inicializar(
     rutaTieneItemsParaCompra = _rutaTieneItemsParaCompra;
     rutaGuardarItemsEnDetalleRequerimiento = _rutaGuardarItemsEnDetalleRequerimiento;
     rutaGuardarAtencionConAlmacen = _rutaGuardarAtencionConAlmacen;
+    rutaGenerarOrdenRequerimientoPDF = _rutaGenerarOrdenRequerimientoPDF;
 
 }
 function tieneItemsParaCompra(requerimientoList) {
@@ -1241,6 +1244,8 @@ function listar_ordenes_en_proceso(permisoRevertirOrden){
             { render: function (data, type, row) {               
                 if (permisoRevertirOrden == '1') {
                     return ('<div class="btn-group btn-group-sm" role="group">'+
+                            '<button type="button" class="btn btn-default btn-xs" name="btnGenerarOrdenRequerimientoPDF" title="Descargar Orden" data-id-requerimiento="'+row.orden_id_requerimiento+'"  data-codigo-requerimiento="'+row.codigo_requerimiento+'" data-id-orden-compra="'+row.orden_id_orden_compra+'" onclick="generarOrdenRequerimientoPDF(this);">'+
+                            '<i class="fas fa-file-download fa-xs"></i>'+
                             '<button type="button" class="btn btn-danger btn-xs" name="btnEliminarAtencionOrdenRequerimiento" title="Revertir Atención" data-id-requerimiento="'+row.orden_id_requerimiento+'"  data-codigo-requerimiento="'+row.codigo_requerimiento+'" data-id-orden-compra="'+row.orden_id_orden_compra+'" onclick="eliminarAtencionOrdenRequerimiento(this);">'+
                             '<i class="fas fa-backspace fa-xs"></i>'+
                             '</button>'+
@@ -1502,6 +1507,10 @@ function llenarTablaItemsOrden(data){
     tablelistaitem.childNodes[0].childNodes[0].hidden = true;
 }
 
+function generarOrdenRequerimientoPDF(obj){
+    let id_orden = obj.dataset.idOrdenCompra;
+    window.open(rutaGenerarOrdenRequerimientoPDF+'/'+id_orden);
+} 
 
 function eliminarAtencionOrdenRequerimiento(obj){
     let codigo_requerimiento = obj.dataset.codigoRequerimiento;

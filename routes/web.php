@@ -755,13 +755,13 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::post('guardar-atencion-con-almacen', 'OrdenController@guardarAtencionConAlmacen')->name('guardar-atencion-con-almacen'); 
 					Route::post('tiene-items-para-compra', 'OrdenController@tieneItemsParaCompra')->name('tiene-items-para-compra'); 
 					Route::get('listar-almacenes', 'AlmacenController@mostrar_almacenes')->name('listar-almacenes');
-
+					Route::get('generar-orden-pdf/{id?}', 'OrdenController@generar_orden_por_requerimiento_pdf')->name('generar-orden-por-requerimiento-pdf'); // PDF
 
 				});
 				Route::group(['as' => 'lista-ordenes.', 'prefix' => 'por-requerimiento'], function(){
 					Route::get('vista_listar_ordenes', 'OrdenController@view_listar_ordenes')->name('index');
 					Route::get('listar_todas_ordenes', 'OrdenController@listar_todas_ordenes');
-					Route::get('generar_orden_pdf/{id}', 'OrdenController@generar_orden_pdf'); // PDF
+					// Route::get('generar_orden_pdf/{id}', 'OrdenController@generar_orden_pdf'); // PDF
 					Route::get('verSession', 'LogisticaController@verSession'); 
 					Route::get('explorar-orden/{id_orden}', 'LogisticaController@explorar_orden'); 
 					Route::put('guardar_aprobacion_orden/', 'LogisticaController@guardar_aprobacion_orden'); 
