@@ -183,7 +183,8 @@
             "{{route('logistica.gestion-logistica.orden.por-requerimiento.documentos-vinculados')}}",
             "{{route('logistica.gestion-logistica.orden.por-requerimiento.tiene-items-para-compra')}}",
             "{{route('logistica.gestion-logistica.orden.por-requerimiento.guardar-items-detalle-requerimiento')}}",
-            "{{route('logistica.gestion-logistica.orden.por-requerimiento.guardar-atencion-con-almacen')}}"
+            "{{route('logistica.gestion-logistica.orden.por-requerimiento.guardar-atencion-con-almacen')}}",
+            "{{route('logistica.gestion-logistica.orden.por-requerimiento.generar-orden-por-requerimiento-pdf')}}"
 
             );
         inicializarModalItemsParaCompra(
