@@ -21,47 +21,20 @@ Gestión de Transformaciones
             <div class="col-md-12" id="tab-transformaciones" style="padding-left:0px;padding-right:0px;">
 
                 <ul class="nav nav-tabs" id="myTab">
-                    <!-- <li class="active"><a data-toggle="tab" href="#cc">Cuadros de Costos</a></li> -->
-                    <li class="active"><a data-toggle="tab" href="#htm">Hojas de Transformación</a></li>
+                    <li class="active"><a data-toggle="tab" href="#htp">Hojas de Transformación Pendientes</a></li>
+                    <li class=""><a data-toggle="tab" href="#htm">Hojas de Transformación Culminadas</a></li>
                     <!-- <li class=""><a data-toggle="tab" href="#hth">Hojas de Transformación Hijas</a></li> -->
                 </ul>
 
                 <div class="tab-content">
-                    <!-- <div id="cc" class="tab-pane fade in active">
+                    <div id="htp" class="tab-pane fade in active">
                         <br>
-                        <form id="form-cc" type="register">
+                        <form id="form-htp" type="register">
                             <div class="row">
                                 <div class="col-md-12">
 
                                     <table class="mytable table table-condensed table-bordered table-okc-view" 
-                                        id="listaCuadrosCostos">
-                                        <thead>
-                                            <tr>
-                                                <th hidden></th>
-                                                <th>Código</th>
-                                                <th>Oportunidad</th>
-                                                <th>Cliente</th>
-                                                <th>Estado</th>
-                                                <th>Prioridad</th>
-                                                <th>Fecha Entrega</th>
-                                                <th>Tipo Cuadro</th>
-                                                <th>Responsable</th>
-                                                <th>Acción</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody style="font-size: 11px;"></tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </form>
-                    </div> -->
-                    <div id="htm" class="tab-pane fade in active">
-                        <br>
-                        <form id="form-htm" type="register">
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <table class="mytable table table-condensed table-bordered table-okc-view" 
-                                        id="listaTransformacionesMadres">
+                                        id="listaTransformacionesPendientes">
                                         <thead>
                                             <tr>
                                                 <th hidden></th>
@@ -71,6 +44,38 @@ Gestión de Transformaciones
                                                 <th>Entidad</th>
                                                 <th>Fecha Registro</th>
                                                 <th>Código</th>
+                                                <th>Código Req.</th>
+                                                <th>Fecha Entrega</th>
+                                                <th>Fecha Inicio</th>
+                                                <th>Fecha Proceso</th>
+                                                <th>Almacén</th>
+                                                <th>Estado</th>
+                                                <th width="8%">Acción</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody style="font-size: 11px;"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div id="htm" class="tab-pane fade in ">
+                        <br>
+                        <form id="form-htm" type="register">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <table class="mytable table table-condensed table-bordered table-okc-view" 
+                                        id="listaTransformaciones">
+                                        <thead>
+                                            <tr>
+                                                <th hidden></th>
+                                                <th>Orden Elec.</th>
+                                                <th>Cuadro Costo</th>
+                                                <th>Oportunidad</th>
+                                                <th>Entidad</th>
+                                                <th>Fecha Registro</th>
+                                                <th>Código</th>
+                                                <th>Código Req.</th>
                                                 <th>Fecha Entrega</th>
                                                 <th>Fecha Inicio</th>
                                                 <th>Fecha Proceso</th>
@@ -78,7 +83,7 @@ Gestión de Transformaciones
                                                 <th>Responsable</th>
                                                 <th>Observación</th>
                                                 <th>Estado</th>
-                                                <th width="10%">Acción</th>
+                                                <th width="8%">Acción</th>
                                             </tr>
                                         </thead>
                                         <tbody style="font-size: 11px;"></tbody>
@@ -121,17 +126,17 @@ Gestión de Transformaciones
 
         let gestionCustomizacion = new GestionCustomizacion('{{Auth::user()->tieneAccion(125)}}');
 
-        $('#btnActualizarTransformacionesMadres').on('click',()=>{
-            gestionCustomizacion.listarTransformaciones();
-        })
         $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
             let tab = $(e.target).attr("href") // activated tab
-            // if (tab=='#cc')
-            // {
-            //     $('#listaCuadrosCostos').DataTable().ajax.reload();
-            // }
-            // else 
-            if (tab=='#htm')
+            if (tab=='#htp')
+            {
+                if ($('#listaTransformacionesPendientes tbody tr').length > 0){
+                    $('#listaTransformacionesPendientes').DataTable().ajax.reload();
+                } else {
+                    gestionCustomizacion.listarTransformacionesPendientes();
+                }
+            }
+            else if (tab=='#htm')
             {
                 if ($('#listaTransformacionesMadres tbody tr').length > 0){
                     $('#listaTransformacionesMadres').DataTable().ajax.reload();
@@ -139,10 +144,10 @@ Gestión de Transformaciones
                     gestionCustomizacion.listarTransformaciones();
                 }
             }
-            else if (tab=='#hth')
-            {
-                $('#listaTransformacionesHijas').DataTable().ajax.reload();
-            }
+            // else if (tab=='#hth')
+            // {
+            //     $('#listaTransformacionesHijas').DataTable().ajax.reload();
+            // }
          });
     });
     </script>

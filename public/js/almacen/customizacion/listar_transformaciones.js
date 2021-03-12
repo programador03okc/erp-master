@@ -3,10 +3,10 @@ class GestionCustomizacion
     constructor(permiso)
     {
         this.permiso = permiso;
-        // this.listarCuadrosCostos();
+        this.listarTransformacionesPendientes();
         this.listarTransformaciones();
     }
-
+/*
     listarCuadrosCostos() {
         const permiso = this.permiso;
         var vardataTables = funcDatatables();
@@ -37,22 +37,75 @@ class GestionCustomizacion
             'columnDefs': [
                 {'aTargets': [0], 'sClass': 'invisible'},
                 {'render': function (data, type, row){
-                    // console.log(permiso == '1');
-                        // if (permiso !== '1') {
                             return `<button type="button" class="generar_transformacion btn btn-success btn-sm " data-toggle="tooltip"
                             data-placement="bottom" data-id="${row['id']}" data-tipo="${row['tipo_cuadro']}" data-oportunidad="${row['oportunidad']}" 
                             title="Generar Hoja de Transformación"><i class="fas fa-angle-double-right"></i></button>`;
-                        // }
+                        
                     }, targets: 9
                 }
             ],
         });
         generar("#listaCuadrosCostos tbody", tabla);
     }
+*/
+    listarTransformacionesPendientes(){
+        var vardataTables = funcDatatables();
+        var tabla = $('#listaTransformacionesPendientes').DataTable({
+            'dom': vardataTables[1],
+            'buttons': vardataTables[2],
+            'language' : vardataTables[0],
+            'destroy':true,
+            'ajax' : 'listar_transformaciones_pendientes',
+            'columns': [
+                {'data': 'id_transformacion'},
+                {'data': 'orden_am', 'name': 'oc_propias.orden_am'},
+                {'data': 'codigo_oportunidad', 'name': 'oportunidades.codigo_oportunidad'},
+                {'data': 'oportunidad', 'name': 'oportunidades.oportunidad'},
+                {'data': 'nombre', 'name': 'entidades.nombre'},
+                {'render':
+                    function (data, type, row){
+                        return (formatDate(row['fecha_registro']));
+                    }
+                },
+                {'render':
+                    function (data, type, row){
+                        return ('<label class="lbl-codigo" title="Abrir Transformación" onClick="abrir_transformacion('+row['id_transformacion']+')">'+row['codigo']+'</label>');
+                    }
+                },
+                {'data': 'codigo_req'},
+                {'data': 'fecha_entrega'},
+                {'data': 'fecha_inicio'},
+                {'data': 'fecha_transformacion'},
+                // {'render':
+                //     function (data, type, row){
+                //         return (formatDate(row['fecha_transformacion']));
+                //     }
+                // },
+                // {'data': 'codigo_oportunidad'},
+                {'data': 'descripcion'},
+                // {'data': 'nombre_registrado'},
+                {'render':
+                    function (data, type, row){
+                        return ('<span class="label label-'+row['bootstrap_color']+'">'+row['estado_doc']+'</span>');
+                    }
+                },
+                {'render':
+                    function (data, type, row){
+                        return ('<button type="button" class="anular btn btn-danger boton" data-toggle="tooltip" '+
+                                    'data-placement="bottom" title="Anular" >'+
+                                    '<i class="fas fa-trash"></i></button>');
+                    }
+                },
+            ],
+            'order': [[ 0, "desc" ]],
+            'columnDefs': [{ 'aTargets': [0], 'sClass': 'invisible'}],
+        });
+    }
+
 
     listarTransformaciones(){
         var vardataTables = funcDatatables();
-        var tabla = $('#listaTransformacionesMadres').DataTable({
+        var tabla = $('#listaTransformaciones').DataTable({
             'dom': vardataTables[1],
             'buttons': vardataTables[2],
             'language' : vardataTables[0],
@@ -78,6 +131,7 @@ class GestionCustomizacion
                         return ('<label class="lbl-codigo" title="Abrir Transformación" onClick="abrir_transformacion('+row['id_transformacion']+')">'+row['codigo']+'</label>');
                     }
                 },
+                {'data': 'codigo_req'},
                 {'data': 'fecha_entrega'},
                 {'data': 'fecha_inicio'},
                 {'data': 'fecha_transformacion'},
@@ -104,11 +158,7 @@ class GestionCustomizacion
                                     
                                 '<button type="button" class="ingreso btn btn-primary boton" data-toggle="tooltip" '+
                                     'data-placement="bottom" title="Ver Ingreso" data-id="'+row['id_transformacion']+'">'+
-                                    '<i class="fas fa-search"></i></button>'+
-                                
-                                '<button type="button" class="anular btn btn-danger boton" data-toggle="tooltip" '+
-                                    'data-placement="bottom" title="Anular" >'+
-                                    '<i class="fas fa-trash"></i></button>');
+                                    '<i class="fas fa-search"></i></button>');
                     }
                 },
             ],

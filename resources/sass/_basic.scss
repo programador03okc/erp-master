@@ -1115,7 +1115,7 @@ span.select2-selection{
 #listaCuadrosCostos_filter,
 #requerimientosConfirmados_filter,
 // #requerimientosEnProceso_filter,
-#listaTransformacionesMadres_filter,
+#listaTransformacionesPendientes_filter,
 #listaTransformaciones_filter
 {
     margin: 0;
@@ -1160,6 +1160,7 @@ span.select2-selection{
 #listaTransformacionesMadres_filter label input[type="search"],
 #requerimientosConfirmados_filter label input[type="search"],
 // #requerimientosEnProceso_filter label input[type="search"],
+#listaTransformacionesPendientes_filter label input[type="search"],
 #listaTransformaciones_filter label input[type="search"]
 {
     width: 95%;

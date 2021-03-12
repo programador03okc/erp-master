@@ -9,14 +9,15 @@ date_default_timezone_set('America/Lima');
 
 class CustomizacionController extends Controller
 {
-    
-    public function listar_todas_transformaciones(){
+    public function listar_transformaciones_pendientes(){
         $data = DB::table('almacen.transformacion')
         ->select('transformacion.*','adm_contri.razon_social','alm_almacen.descripcion',
         'respon.nombre_corto as nombre_responsable','regist.nombre_corto as nombre_registrado',
         'adm_estado_doc.estado_doc','adm_estado_doc.bootstrap_color',
         'oc_propias.orden_am','oportunidades.oportunidad','oportunidades.codigo_oportunidad',
-        'entidades.nombre')
+        'entidades.nombre','alm_req.codigo as codigo_req')
+        ->join('almacen.orden_despacho','orden_despacho.id_od','=','transformacion.id_od')
+        ->join('almacen.alm_req','alm_req.id_requerimiento','=','orden_despacho.id_requerimiento')
         ->join('almacen.alm_almacen','alm_almacen.id_almacen','=','transformacion.id_almacen')
         ->join('administracion.sis_sede','sis_sede.id_sede','=','alm_almacen.id_sede')
         ->join('administracion.adm_empresa','adm_empresa.id_empresa','=','sis_sede.id_empresa')
@@ -28,7 +29,34 @@ class CustomizacionController extends Controller
         ->leftjoin('mgcp_oportunidades.oportunidades','oportunidades.id','=','cc.id_oportunidad')
         ->leftjoin('mgcp_acuerdo_marco.oc_propias','oc_propias.id_oportunidad','=','oportunidades.id')
         ->leftjoin('mgcp_acuerdo_marco.entidades','entidades.id','=','oportunidades.id_entidad')
-        ->where([['transformacion.estado','!=',7]])
+        ->where([['transformacion.estado','!=',7],['transformacion.estado','!=',10]])
+        ->orderBy('fecha_registro','desc')
+        ->get();
+        $output['data'] = $data;
+        return response()->json($output);
+    }
+
+    public function listar_todas_transformaciones(){
+        $data = DB::table('almacen.transformacion')
+        ->select('transformacion.*','adm_contri.razon_social','alm_almacen.descripcion',
+        'respon.nombre_corto as nombre_responsable','regist.nombre_corto as nombre_registrado',
+        'adm_estado_doc.estado_doc','adm_estado_doc.bootstrap_color',
+        'oc_propias.orden_am','oportunidades.oportunidad','oportunidades.codigo_oportunidad',
+        'entidades.nombre','alm_req.codigo as codigo_req')
+        ->join('almacen.orden_despacho','orden_despacho.id_od','=','transformacion.id_od')
+        ->join('almacen.alm_req','alm_req.id_requerimiento','=','orden_despacho.id_requerimiento')
+        ->join('almacen.alm_almacen','alm_almacen.id_almacen','=','transformacion.id_almacen')
+        ->join('administracion.sis_sede','sis_sede.id_sede','=','alm_almacen.id_sede')
+        ->join('administracion.adm_empresa','adm_empresa.id_empresa','=','sis_sede.id_empresa')
+        ->join('contabilidad.adm_contri','adm_contri.id_contribuyente','=','adm_empresa.id_contribuyente')
+        ->leftjoin('configuracion.sis_usua as respon','respon.id_usuario','=','transformacion.responsable')
+        ->join('configuracion.sis_usua as regist','regist.id_usuario','=','transformacion.registrado_por')
+        ->join('administracion.adm_estado_doc','adm_estado_doc.id_estado_doc','=','transformacion.estado')
+        ->leftjoin('mgcp_cuadro_costos.cc','cc.id','=','transformacion.id_cc')
+        ->leftjoin('mgcp_oportunidades.oportunidades','oportunidades.id','=','cc.id_oportunidad')
+        ->leftjoin('mgcp_acuerdo_marco.oc_propias','oc_propias.id_oportunidad','=','oportunidades.id')
+        ->leftjoin('mgcp_acuerdo_marco.entidades','entidades.id','=','oportunidades.id_entidad')
+        ->where([['transformacion.estado','=',10]])
         ->orderBy('fecha_registro','desc')
         ->get();
         $output['data'] = $data;

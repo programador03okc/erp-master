@@ -1195,7 +1195,7 @@ span.select2-selection {
 #listaCu_filter,
 #listaCuadrosCostos_filter,
 #requerimientosConfirmados_filter,
-#listaTransformacionesMadres_filter,
+#listaTransformacionesPendientes_filter,
 #listaTransformaciones_filter {
   margin: 0;
 }
@@ -1239,6 +1239,7 @@ span.select2-selection {
 #listaCuadrosCostos_filter label input[type=search],
 #listaTransformacionesMadres_filter label input[type=search],
 #requerimientosConfirmados_filter label input[type=search],
+#listaTransformacionesPendientes_filter label input[type=search],
 #listaTransformaciones_filter label input[type=search] {
   width: 95%;
 }

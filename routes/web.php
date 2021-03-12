@@ -1234,6 +1234,7 @@ Route::group(['middleware' => ['auth']], function () {
 					//Transformaciones
 					Route::get('index', 'AlmacenController@view_listar_transformaciones')->name('index');
 					Route::get('listar_todas_transformaciones', 'CustomizacionController@listar_todas_transformaciones');
+					Route::get('listar_transformaciones_pendientes', 'CustomizacionController@listar_transformaciones_pendientes');
 					Route::post('listarCuadrosCostos', 'CustomizacionController@listarCuadrosCostos');
 					Route::post('generarTransformacion', 'CustomizacionController@generarTransformacion');
 					Route::get('listar_almacenes', 'AlmacenController@mostrar_almacenes');
