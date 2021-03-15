@@ -331,3 +331,12 @@ function actualizaTotales(){
     $('[name=costo_transformacion]').text(formatDecimalDigitos((total_materias + total_directos + total_indirectos - total_sobrantes),2));
 
 }
+
+function imprimirTransformacion(){
+    var id = $('[name=id_transformacion]').val();
+    if (id !== null && id !== ''){
+        window.open('imprimir_transformacion/'+id);
+    } else {
+        alert('Debe seleccionar una Hoja de Transformación.');
+    }
+}

@@ -81,6 +81,9 @@ Hoja de Transformación
                 </div>
                 <div class="col-md-3" style="padding-left: 10px;padding-right: 0px;padding-top: 15px;">
                     <!-- <div class="col-md-10" style="text-align:right;"> -->
+                        <button type="button" class="btn btn-info btn-sm" onClick="imprimirTransformacion();" 
+                            data-toggle="tooltip" data-placement="bottom" title="Imprimir Transformación">
+                            Imprimir <i class="fas fa-step-forward"></i> </button>
                         <button type="button" class="btn btn-primary btn-sm" onClick="openIniciar();" 
                             data-toggle="tooltip" data-placement="bottom" title="Iniciar Transformación">
                             Iniciar <i class="fas fa-step-forward"></i> </button>
@@ -108,7 +111,7 @@ Hoja de Transformación
     <div class="row">
         <div class="col-md-12">
             <div class="panel panel-info" style="margin-bottom: 0px;">
-                <div class="panel-heading"><strong>Materias Primas</strong></div>
+                <div class="panel-heading"><strong>Productos Base</strong></div>
                 <table id="listaMateriasPrimas" class="table">
                     <thead>
                         <tr style="background: lightskyblue;">
@@ -183,32 +186,6 @@ Hoja de Transformación
     </div>
     <div class="row">
         <div class="col-md-12">
-            <div class="panel panel-danger" style="margin-bottom: 0px;" >
-                <div class="panel-heading"><strong>Sobrantes</strong></div>
-                <table id="listaSobrantes" class="table">
-                    <thead>
-                        <tr style="background: lightcoral;">
-                            <th>Código</th>
-                            <th>Part Number</th>
-                            <th width='40%'>Descripción</th>
-                            <th>Cant.</th>
-                            <th>Unid.</th>
-                            <th>Unit.</th>
-                            <th>Total</th>
-                            <th width='8%' style="padding:0px;">
-                                <i class="fas fa-plus-square icon-tabla green boton add-new-sobrante" 
-                                    id="addSobrante" data-toggle="tooltip" data-placement="bottom" 
-                                    title="Agregar Producto" onClick="openProductoSobranteModal();"></i>
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-12">
             <div class="panel panel-success" style="margin-bottom: 0px;" >
                 <div class="panel-heading"><strong>Productos Transformados</strong></div>
                 <table id="listaProductoTransformado" class="table">
@@ -225,6 +202,32 @@ Hoja de Transformación
                                 <i class="fas fa-plus-square icon-tabla green boton add-new-transformado" 
                                     id="addTransformado" data-toggle="tooltip" data-placement="bottom" 
                                     title="Agregar Producto" onClick="openProductoTransformadoModal();"></i>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-danger" style="margin-bottom: 0px;" >
+                <div class="panel-heading"><strong>Productos Sobrantes</strong></div>
+                <table id="listaSobrantes" class="table">
+                    <thead>
+                        <tr style="background: lightcoral;">
+                            <th>Código</th>
+                            <th>Part Number</th>
+                            <th width='40%'>Descripción</th>
+                            <th>Cant.</th>
+                            <th>Unid.</th>
+                            <th>Unit.</th>
+                            <th>Total</th>
+                            <th width='8%' style="padding:0px;">
+                                <i class="fas fa-plus-square icon-tabla green boton add-new-sobrante" 
+                                    id="addSobrante" data-toggle="tooltip" data-placement="bottom" 
+                                    title="Agregar Producto" onClick="openProductoSobranteModal();"></i>
                             </th>
                         </tr>
                     </thead>

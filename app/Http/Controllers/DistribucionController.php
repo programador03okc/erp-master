@@ -1976,7 +1976,7 @@ class DistribucionController extends Controller
         ->get()->count();
 
         $val = AlmacenController::leftZero(3,($cantidad + 1));
-        $nextId = "TF-".$yyyy."-".$val;
+        $nextId = "HT-".$yyyy."-".$val;
         return $nextId;
     }
        

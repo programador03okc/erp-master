@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Dompdf\Dompdf;
+use PDF;
+
 date_default_timezone_set('America/Lima');
 
 class CustomizacionController extends Controller
@@ -889,5 +892,245 @@ class CustomizacionController extends Controller
         ->where('cc.id',$id_cc)
         ->get();
         return $materia_prima;
+    }
+
+    public function imprimir_transformacion($id_transformacion){
+        
+        $result = DB::table('almacen.transformacion')
+        ->select('transformacion.*','oc_propias.orden_am','oportunidades.codigo_oportunidad',
+                 'alm_almacen.descripcion as almacen_descripcion','alm_req.codigo as codigo_req',
+                 'guia_ven.serie','guia_ven.numero','adm_contri.nro_documento','adm_contri.razon_social',
+                 'sis_usua.nombre_corto','adm_empresa.logo_empresa')
+        ->join('almacen.orden_despacho','orden_despacho.id_od','=','transformacion.id_od')
+        ->join('almacen.alm_req','alm_req.id_requerimiento','=','orden_despacho.id_requerimiento')
+        ->join('almacen.alm_almacen','alm_almacen.id_almacen','=','transformacion.id_almacen')
+        ->join('administracion.sis_sede','sis_sede.id_sede','=','alm_almacen.id_sede')
+        ->join('administracion.adm_empresa','adm_empresa.id_empresa','=','sis_sede.id_empresa')
+        ->join('contabilidad.adm_contri','adm_contri.id_contribuyente','=','adm_empresa.id_contribuyente')
+        ->leftjoin('almacen.guia_ven', function($join)
+                {   $join->on('guia_ven.id_od', '=', 'transformacion.id_od');
+                    $join->where('guia_ven.estado','!=', 7);
+                })
+        ->leftjoin('mgcp_cuadro_costos.cc','cc.id','=','transformacion.id_cc')
+        ->leftjoin('mgcp_oportunidades.oportunidades','oportunidades.id','=','cc.id_oportunidad')
+        ->leftjoin('mgcp_acuerdo_marco.oc_propias','oc_propias.id_oportunidad','=','oportunidades.id')
+        ->leftjoin('configuracion.sis_usua','sis_usua.id_usuario','=','transformacion.registrado_por')
+        ->where('transformacion.id_transformacion',$id_transformacion)
+        ->first();
+
+        $detalle = DB::table('almacen.transfor_materia')
+        ->select('transfor_materia.*','alm_prod.codigo','alm_prod.descripcion','alm_prod.part_number',
+        'alm_und_medida.abreviatura','orden_despacho_det.part_number_transformado','orden_despacho_det.descripcion_transformado',
+        'orden_despacho_det.comentario_transformado','orden_despacho_det.cantidad_transformado')
+        ->join('almacen.alm_prod','alm_prod.id_producto','=','transfor_materia.id_producto')
+        ->join('almacen.alm_und_medida','alm_und_medida.id_unidad_medida','=','alm_prod.id_unidad_medida')
+        ->leftjoin('almacen.orden_despacho_det','orden_despacho_det.id_od_detalle','=','transfor_materia.id_od_detalle')
+        ->where('id_transformacion',$id_transformacion)
+        ->get();
+
+        $detalle_transfor = DB::table('almacen.transfor_transformado')
+        ->select('transfor_transformado.*','alm_prod.codigo','alm_prod.descripcion','alm_prod.part_number',
+        'alm_und_medida.abreviatura')
+        ->join('almacen.alm_prod','alm_prod.id_producto','=','transfor_transformado.id_producto')
+        ->join('almacen.alm_und_medida','alm_und_medida.id_unidad_medida','=','alm_prod.id_unidad_medida')
+        ->where('id_transformacion',$id_transformacion)
+        ->get();
+
+        $detalle_sobrante = DB::table('almacen.transfor_sobrante')
+        ->select('transfor_sobrante.*','alm_prod.codigo','alm_prod.descripcion','alm_prod.part_number',
+        'alm_und_medida.abreviatura')
+        ->join('almacen.alm_prod','alm_prod.id_producto','=','transfor_sobrante.id_producto')
+        ->join('almacen.alm_und_medida','alm_und_medida.id_unidad_medida','=','alm_prod.id_unidad_medida')
+        ->where('id_transformacion',$id_transformacion)
+        ->get();
+
+        $fecha_actual = date('Y-m-d');
+        $hora_actual = date('H:i:s');
+
+        $html = '
+        <html>
+            <head>
+                <style type="text/css">
+                *{ 
+                    font-family: "DejaVu Sans";
+                }
+                table{
+                    width:100%;
+                    font-size:11px;
+                }
+                #detalle thead{
+                    padding: 4px;
+                    font-size:10px;
+                    
+                }
+                #detalle tbody tr td{
+                    font-size:10px;
+                    padding: 4px;
+                }
+                .right{
+                    text-align: right;
+                }
+                .sup{
+                    vertical-align:top;
+                }
+                </style>
+            </head>
+            <body>
+                <table width="100%">
+                    <tr>
+                        <td>
+                            <img src=".'.$result->logo_empresa.'" height="75px">
+                        </td>
+                        <td>
+                            <p style="text-align:right;font-size:10px;margin:0px;"><strong>SYSTEM AGILE v2.1</strong></p>
+                            <p style="text-align:right;font-size:10px;margin:0px;">Fecha: '.$fecha_actual.'</p>
+                            <p style="text-align:right;font-size:10px;margin:0px;">Hora : '.$hora_actual.'</p>
+                        </td>
+                    </tr>
+                </table>
+                <h3 style="margin:0px; padding:0px;"><center>HOJA DE TRANSFORMACIÓN</center></h3>
+                <h3 style="margin:0px; padding:0px;"><center>'.$result->codigo.'</center></h3>
+                <h5><center>'.$result->almacen_descripcion.'</center></h5>
+                
+                <table border="0">
+                    <tr>
+                        <td class="subtitle">Requerimiento</td>
+                        <td width=5px>:</td>
+                        <td width=250px>'.$result->codigo_req.'</td>
+                        <td>Nro OCAM</td>
+                        <td width=5px>:</td>
+                        <td>'.$result->orden_am.'</td>
+                    </tr>
+                    <tr>
+                        <td class="subtitle">Guía de Remisión</td>
+                        <td width=5px>:</td>
+                        <td width=250px>'.$result->serie.'-'.$result->numero.'</td>
+                        <td>Codigo CC</td>
+                        <td width=5px>:</td>
+                        <td>'.$result->codigo_oportunidad.'</td>
+                    </tr>
+                    <tr>
+                        <td class="subtitle">Instrucciones Generales</td>
+                        <td width=5px>:</td>
+                        <td colSpan="4">'.$result->descripcion_sobrantes.'</td>
+                    </tr>
+                </table>
+                <br/>
+                <table id="detalle">
+                    <thead style="background-color: #bce8f1;">
+                        <tr>
+                            <th colSpan="10"><center>Productos Base</center></th>
+                        </tr>
+                        <tr>
+                            <th>#</th>
+                            <th>Código</th>
+                            <th>Part Number</th>
+                            <th width="40%">Descripción</th>
+                            <th>Cant.</th>
+                            <th>Unid.</th>
+                            <th colSpan="4">Instrucciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>';
+                    $i = 1;
+
+                    foreach($detalle as $det){
+                        $html.='
+                        <tr>
+                            <td class="right">'.$i.'</td>
+                            <td>'.$det->codigo.'</td>
+                            <td>'.$det->part_number.'</td>
+                            <td>'.$det->descripcion.'</td>
+                            <td class="right">'.$det->cantidad.'</td>
+                            <td>'.$det->abreviatura.'</td>
+                            <td>'.$det->part_number_transformado.'</td>
+                            <td>'.$det->descripcion_transformado.'</td>
+                            <td>'.$det->cantidad_transformado.'</td>
+                            <td>'.$det->comentario_transformado.'</td>
+                        </tr>';
+                        $i++;
+                    }
+                $html.='</tbody></table>';
+
+                    if (count($detalle_transfor)>0){
+                        $html.='<br/>
+                        <table id="detalle">
+                        <thead style="background-color: #c0f7c0;">
+                            <tr>
+                                <th colSpan="6"><center>Productos Transformados</center></th>
+                            </tr>
+                            <tr>
+                                <th>#</th>
+                                <th>Código</th>
+                                <th>Part Number</th>
+                                <th>Descripción</th>
+                                <th>Cant.</th>
+                                <th>Unid.</th>
+                            </tr>
+                        </thead>
+                        <tbody>';
+                        $i = 1;
+
+                        foreach($detalle_transfor as $det){
+                            $html.='
+                            <tr>
+                                <td class="right">'.$i.'</td>
+                                <td>'.$det->codigo.'</td>
+                                <td>'.$det->part_number.'</td>
+                                <td>'.$det->descripcion.'</td>
+                                <td class="right">'.$det->cantidad.'</td>
+                                <td>'.$det->abreviatura.'</td>
+                            </tr>';
+                            $i++;
+                        }
+                        $html.='</tbody></table>';
+                    }
+                    if (count($detalle_sobrante)>0){
+                        $html.='<br/>
+                        <table id="detalle">
+                        <thead style="background-color: #ebccd1;">
+                            <tr>
+                                <th colSpan="6"><center>Productos Sobrantes</center></th>
+                            </tr>
+                            <tr>
+                                <th>#</th>
+                                <th>Código</th>
+                                <th>Part Number</th>
+                                <th>Descripción</th>
+                                <th>Cant.</th>
+                                <th>Unid.</th>
+                            </tr>
+                        </thead>
+                        <tbody>';
+                        $i = 1;
+
+                        foreach($detalle_sobrante as $det){
+                            $html.='
+                            <tr>
+                                <td class="right">'.$i.'</td>
+                                <td>'.$det->codigo.'</td>
+                                <td>'.$det->part_number.'</td>
+                                <td>'.$det->descripcion.'</td>
+                                <td class="right">'.$det->cantidad.'</td>
+                                <td>'.$det->abreviatura.'</td>
+                            </tr>';
+                            $i++;
+                        }
+                        $html.='</tbody></table>';
+                    }
+                $html.='
+                
+                
+                <footer style="position:absolute;bottom:0px;right:0px;">
+                    <p style="text-align:right;font-size:10px;">Elaborado por: '.$result->nombre_corto.' '.$result->fecha_registro.'</p>
+                </footer>
+            </body>
+        </html>';
+        
+        $pdf = \App::make('dompdf.wrapper');
+        $pdf->loadHTML($html);
+
+        return $pdf->download($result->codigo.'.pdf');
+        return $pdf->stream();
     }
 }

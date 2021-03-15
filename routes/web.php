@@ -1285,6 +1285,7 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::get('imprimir_ingreso/{id}', 'AlmacenController@imprimir_ingreso');
 					Route::get('imprimir_salida/{id}', 'AlmacenController@imprimir_salida');
 					Route::post('guardar_producto', 'AlmacenController@guardar_producto');
+					Route::get('imprimir_transformacion/{id}', 'CustomizacionController@imprimir_transformacion');
 
 				});
 	
