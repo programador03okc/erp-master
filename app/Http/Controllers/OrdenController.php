@@ -324,7 +324,7 @@ class OrdenController extends Controller
             'log_ord_compra.id_cta_principal as orden_id_cta_principal',
             'log_ord_compra.id_cta_alternativa as orden_id_cta_alternativa',
             'log_ord_compra.id_cta_detraccion as orden_id_cta_detraccion',
-            'log_ord_compra.personal_responsable as orden_personal_responsable',
+            'log_ord_compra.personal_autorizado as orden_personal_autorizado',
             'log_ord_compra.plazo_entrega as orden_plazo_entrega',
             'log_ord_compra.en_almacen as orden_en_almacen',
             'log_ord_compra.id_occ as orden_id_occ',
@@ -1076,7 +1076,7 @@ class OrdenController extends Controller
                 'adm_tp_docum.descripcion AS tipo_documento',
                 'log_ord_compra.fecha',
                 'log_ord_compra.id_usuario',
-                DB::raw("(pers.nombres) || ' ' || (pers.apellido_paterno) || ' ' || (pers.apellido_materno) as nombre_usuario"),
+                DB::raw("concat(pers.nombres,' - ',pers.apellido_paterno,' - ',pers.apellido_materno) as nombre_usuario"),
                 'log_ord_compra.id_moneda',
                 'sis_moneda.simbolo as moneda_simbolo',
                 'log_ord_compra.igv_porcentaje',
@@ -1091,7 +1091,9 @@ class OrdenController extends Controller
                 'adm_contri.telefono AS telefono_proveedor',
                 'adm_contri.direccion_fiscal AS direccion_fiscal_proveedor',
                 'adm_contri.email AS email_proveedor',
+                DB::raw("(dis_prov.descripcion) || ' - ' || (prov_prov.descripcion) || ' - ' || (dpto_prov.descripcion)  AS ubigeo_proveedor"),
                 'log_ord_compra.codigo',
+                'log_ord_compra.id_condicion',
                 'log_cdn_pago.descripcion AS condicion_pago',
                 'log_ord_compra.plazo_dias',
                 'log_ord_compra.id_cta_principal',
@@ -1100,17 +1102,23 @@ class OrdenController extends Controller
                 'cta_alter.nro_cuenta as nro_cuenta_alternativa',
                 'log_ord_compra.id_cta_detraccion',
                 'cta_detra.nro_cuenta as nro_cuenta_detraccion',
-                DB::raw("(adm_ctb_contac.nombre) || ' - ' || (adm_ctb_contac.cargo) as nombre_personal_responsable"),
                 'log_ord_compra.plazo_entrega',
                 'log_ord_compra.en_almacen',
                 'log_ord_compra.id_occ',
                 'log_ord_compra.id_sede',
+                'log_ord_compra.direccion_destino',
+                'log_ord_compra.ubigeo_destino',
+                DB::raw("(dis_destino.descripcion) || ' - ' || (prov_destino.descripcion) || ' - ' || (dpto_destino.descripcion)  AS ubigeo_destino"),
+                'log_ord_compra.personal_autorizado',
+                DB::raw("concat(pers_aut.nombres,' ',pers_aut.apellido_paterno,' ',pers_aut.apellido_materno) AS nombre_personal_autorizado"),
                 'contrib.razon_social as razon_social_empresa',
+                'contrib.direccion_fiscal as direccion_fiscal_empresa',
+                DB::raw("(dis_empresa.descripcion) || ' - ' || (prov_empresa.descripcion) || ' - ' || (dpto_empresa.descripcion)  AS ubigeo_empresa"),
                 'sis_sede.codigo as codigo_sede_empresa',
                 'sis_sede.id_empresa',
                 'contab_sis_identi.descripcion AS tipo_doc_empresa',
                 'contab_contri.nro_documento AS nro_documento_empresa',
-                'sis_sede.direccion AS direccion_fiscal_empresa',
+                'sis_sede.direccion AS direccion_fiscal_empresa_sede',
                 'contab_contri.telefono AS telefono_empresa',
                 'contab_contri.email AS email_empresa',
                 'adm_empresa.logo_empresa',
@@ -1118,7 +1126,16 @@ class OrdenController extends Controller
                 'alm_req.codigo as codigo_requerimiento',
                 'log_ord_compra.fecha AS fecha_orden',
                 'sis_moneda.descripcion as moneda_descripcion',
-                'log_ord_compra.personal_responsable'
+                'log_ord_compra.personal_autorizado',
+                'log_ord_compra.id_contacto',
+                'adm_ctb_contac.nombre as nombre_contacto',
+                'adm_ctb_contac.telefono as telefono_contacto',
+                'adm_ctb_contac.email as email_contacto',
+                'adm_ctb_contac.cargo as cargo_contacto',
+                'adm_ctb_contac.direccion as direccion_contacto',
+                'adm_ctb_contac.horario as horario_contacto',
+                DB::raw("(dis_contac.descripcion) || ' ' || (prov_contac.descripcion) || ' ' || (dpto_contac.descripcion)  AS ubigeo_contacto")
+
             )
             ->Join('administracion.adm_tp_docum', 'adm_tp_docum.id_tp_documento', '=', 'log_ord_compra.id_tp_documento')
             ->leftJoin('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'log_ord_compra.id_usuario')
@@ -1127,7 +1144,7 @@ class OrdenController extends Controller
             ->leftJoin('rrhh.rrhh_perso as pers', 'pers.id_persona', '=', 'post.id_persona')
             ->leftJoin('configuracion.sis_moneda', 'sis_moneda.id_moneda', '=', 'log_ord_compra.id_moneda')
             ->leftJoin('logistica.log_cdn_pago', 'log_cdn_pago.id_condicion_pago', '=', 'log_ord_compra.id_condicion')
-            ->leftJoin('contabilidad.adm_ctb_contac', 'adm_ctb_contac.id_datos_contacto', '=', 'log_ord_compra.personal_responsable')
+            // ->leftJoin('contabilidad.adm_ctb_contac', 'adm_ctb_contac.id_datos_contacto', '=', 'log_ord_compra.personal_responsable')
             ->join('logistica.log_prove', 'log_prove.id_proveedor', '=', 'log_ord_compra.id_proveedor')
             ->Join('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'log_prove.id_contribuyente')
             ->Join('contabilidad.sis_identi', 'sis_identi.id_doc_identidad', '=', 'adm_contri.id_doc_identidad')
@@ -1140,6 +1157,23 @@ class OrdenController extends Controller
             ->leftjoin('contabilidad.adm_cta_contri as cta_prin','cta_prin.id_cuenta_contribuyente','=','log_ord_compra.id_cta_principal')
             ->leftjoin('contabilidad.adm_cta_contri as cta_alter','cta_alter.id_cuenta_contribuyente','=','log_ord_compra.id_cta_alternativa')
             ->leftjoin('contabilidad.adm_cta_contri as cta_detra','cta_detra.id_cuenta_contribuyente','=','log_ord_compra.id_cta_detraccion')
+            ->leftJoin('contabilidad.adm_ctb_contac', 'adm_ctb_contac.id_datos_contacto', '=', 'log_ord_compra.id_contacto')
+            ->leftJoin('rrhh.rrhh_trab as trab_aut', 'trab_aut.id_trabajador', '=', 'log_ord_compra.personal_autorizado')
+            ->leftJoin('rrhh.rrhh_postu as post_aut', 'post_aut.id_postulante', '=', 'trab_aut.id_postulante')
+            ->leftJoin('rrhh.rrhh_perso as pers_aut', 'pers_aut.id_persona', '=', 'post_aut.id_persona')
+            ->leftJoin('configuracion.ubi_dis as dis_prov', 'adm_contri.ubigeo', '=', 'dis_prov.id_dis')
+            ->leftJoin('configuracion.ubi_prov as prov_prov', 'dis_prov.id_prov', '=', 'prov_prov.id_prov')
+            ->leftJoin('configuracion.ubi_dpto as dpto_prov', 'prov_prov.id_dpto', '=', 'dpto_prov.id_dpto')
+            ->leftJoin('configuracion.ubi_dis as dis_contac', 'adm_ctb_contac.ubigeo', '=', 'dis_contac.id_dis')
+            ->leftJoin('configuracion.ubi_prov as prov_contac', 'dis_contac.id_prov', '=', 'prov_contac.id_prov')
+            ->leftJoin('configuracion.ubi_dpto as dpto_contac', 'prov_contac.id_dpto', '=', 'dpto_contac.id_dpto')
+            ->leftJoin('configuracion.ubi_dis as dis_empresa', 'contab_contri.ubigeo', '=', 'dis_empresa.id_dis')
+            ->leftJoin('configuracion.ubi_prov as prov_empresa', 'dis_empresa.id_prov', '=', 'prov_empresa.id_prov')
+            ->leftJoin('configuracion.ubi_dpto as dpto_empresa', 'prov_empresa.id_dpto', '=', 'dpto_empresa.id_dpto')
+            ->leftJoin('configuracion.ubi_dis as dis_destino', 'log_ord_compra.ubigeo_destino', '=', 'dis_destino.id_dis')
+            ->leftJoin('configuracion.ubi_prov as prov_destino', 'dis_destino.id_prov', '=', 'prov_destino.id_prov')
+            ->leftJoin('configuracion.ubi_dpto as dpto_destino', 'prov_destino.id_dpto', '=', 'dpto_destino.id_dpto')
+
             ->where([
                 ['log_ord_compra.id_orden_compra', '=', $id_orden_compra],
                 ['log_ord_compra.estado', '!=', 7]
@@ -1154,11 +1188,12 @@ class OrdenController extends Controller
             'log_det_ord_compra.id_item',
             'alm_item.codigo AS codigo_item',
             'alm_prod.descripcion AS descripcion_producto',
-            'alm_prod.codigo AS producto_codigo',
+            'alm_prod.codigo AS codigo_producto',
+            'alm_prod.part_number',
             'log_det_ord_compra.garantia',
             'log_det_ord_compra.estado',
             'log_det_ord_compra.personal_autorizado',
-            DB::raw("(pers_aut.nombres) || ' ' || (pers_aut.apellido_paterno) || ' ' || (pers_aut.apellido_materno) AS nombre_personal_autorizado"),
+            // DB::raw("(pers_aut.nombres) || ' ' || (pers_aut.apellido_paterno) || ' ' || (pers_aut.apellido_materno) AS nombre_personal_autorizado"),
             'log_det_ord_compra.lugar_despacho',
             'log_det_ord_compra.descripcion_adicional',
             'log_det_ord_compra.cantidad',
@@ -1182,68 +1217,91 @@ class OrdenController extends Controller
         ->get();
 
 
-        $orden_header_orden = [];
-        $orden_header_proveedor = [];
-        $orden_header_empresa = [];
-        $orden_condiciones = [];
-        $det_orden = [];
+        $head = [];
+        $detalle = [];
 
         if(count($head_orden_compra)>0){
             foreach ($head_orden_compra as $data) {
-                $orden_header_orden = [
+                $head = [
                     'id_orden_compra' => $data->id_orden_compra,
-                    'codigo' => $data->codigo,
-                    'tipo_documento' => $data->tipo_documento,
-                    'fecha_orden' => $data->fecha_orden,
-                    'nombre_usuario' => $data->nombre_usuario,
-                    'nombre_personal_responsable' => $data->nombre_personal_responsable,
-                    'codigo_requerimiento' => $data->codigo_requerimiento,
-                    'moneda_simbolo' => $data->moneda_simbolo,
-                    'monto_igv' => $data->monto_igv,
-                    'monto_total' => $data->monto_total,
-                    'moneda_descripcion' => $data->moneda_descripcion,
-                ];
-                $orden_header_proveedor = [
-                    'id_proveedor' => $data->id_proveedor,
-                    'razon_social_proveedor' => $data->razon_social_proveedor,
-                    'tipo_doc_proveedor' => $data->tipo_doc_proveedor,
-                    'nro_documento_proveedor' => $data->nro_documento_proveedor,
-                    'telefono_proveedor' => $data->telefono_proveedor,
-                    'direccion_fiscal_proveedor' => $data->direccion_fiscal_proveedor,
-                    'email_proveedor' => $data->email_proveedor
-                ];
-                $orden_header_empresa = [
-                    'id_empresa' => $data->id_empresa,
-                    'razon_social_empresa' => $data->razon_social_empresa,
-                    'tipo_doc_empresa' => $data->tipo_doc_empresa,
-                    'nro_documento_empresa' => $data->nro_documento_empresa,
-                    'direccion_fiscal_empresa' => $data->direccion_fiscal_empresa,
-                    'telefono_empresa' => $data->telefono_empresa,
-                    'email_empresa' => $data->email_empresa,
                     'logo_empresa'=>$data->logo_empresa,
-                    'codigo_sede_empresa'=>$data->codigo_sede_empresa
+                    'codigo' => $data->codigo,
+                    'fecha_orden' => $data->fecha_orden,
+                    'tipo_documento' => $data->tipo_documento,
+                    'codigo_requerimiento' => $data->codigo_requerimiento,
+                    'fecha_registro' => $data->fecha,
+                    'moneda_simbolo' => $data->moneda_simbolo, 
+                    // 'monto_igv' => $data->monto_igv,
+                    // 'monto_total' => $data->monto_total,
+                    // 'moneda_descripcion' => $data->moneda_descripcion 
+                    // 'nombre_usuario' => $data->nombre_usuario,
+                    'proveedor' => [
+                        'id_proveedor' => $data->id_proveedor,
+                        'razon_social_proveedor' => $data->razon_social_proveedor,
+                        'tipo_doc_proveedor' => $data->tipo_doc_proveedor,
+                        'nro_documento_proveedor' => $data->nro_documento_proveedor,
+                        'telefono_proveedor' => $data->telefono_proveedor,
+                        'direccion_fiscal_proveedor' => $data->direccion_fiscal_proveedor,
+                        'ubigeo_proveedor' => $data->ubigeo_proveedor,
+
+                        'contacto'=>[
+                            'nombre_contacto' => $data->nombre_contacto,
+                            'telefono_contacto' => $data->telefono_contacto,
+                            'email_contacto' => $data->email_contacto,
+                            'cargo_contacto' => $data->cargo_contacto,
+                            'direccion_contacto' => $data->direccion_contacto,
+                            'horario_contacto' => $data->horario_contacto,
+                            'ubigeo_contacto' => $data->ubigeo_contacto
+                        ],
+                    ], 
+                
+                    'condicion_compra'=>[
+                        'id_condicion' => $data->id_condicion,
+                        'condicion_pago' => $data->condicion_pago,
+                        'plazo_dias' => $data->plazo_dias
+
+                    ],
+                    'datos_para_despacho'=>[
+                        'id_empresa' => $data->id_empresa,
+                        'sede'=>$data->codigo_sede_empresa,   
+                        'razon_social_empresa' => $data->razon_social_empresa,
+                        'tipo_doc_empresa' => $data->tipo_doc_empresa,
+                        'nro_documento_empresa' => $data->nro_documento_empresa,
+                        'direccion_sede' => $data->direccion_fiscal_empresa_sede,
+                        'direccion_destino'=>$data->direccion_destino,
+                        'ubigeo_destino'=>$data->ubigeo_destino,
+                        'personal_autorizado' => $data->personal_autorizado,
+                        'nombre_personal_autorizado' => $data->nombre_personal_autorizado 
+                    ],
+                    'facturar_a_nombre'=>[
+                        'id_empresa' => $data->id_empresa,
+                        'razon_social_empresa' => $data->razon_social_empresa,
+                        'tipo_doc_empresa' => $data->tipo_doc_empresa,
+                        'nro_documento_empresa' => $data->nro_documento_empresa,
+                        'direccion_fiscal_empresa' => $data->direccion_fiscal_empresa,
+                        'ubigeo_empresa'=>$data->ubigeo_empresa,
+                        // 'direccion_sede' => $data->direccion_fiscal_empresa_sede,
+                        // 'telefono_empresa' => $data->telefono_empresa,
+                        'email_empresa' => $data->email_empresa,
+                        'sede'=>$data->codigo_sede_empresa
+                    ],
+                    'nombre_usuario' => $data->nombre_usuario
                 ];
-                $orden_condiciones = [
-                    // 'tipo_doc_contable' => $data->tipo_doc_contable,
-                    'condicion_pago' => $data->condicion_pago,
-                    'plazo_dias' => $data->plazo_dias,
-                    // 'condicion_credito_dias' => $data->condicion_credito_dias,
-                    'nro_cuenta_principal' => $data->nro_cuenta_principal,
-                    'nro_cuenta_alternativa' => $data->nro_cuenta_alternativa,
-                    'nro_cuenta_detraccion' => $data->nro_cuenta_detraccion
-                ];
+
     
             }
         }
 
+        $idDetalleReqList=[];
         if(count($detalle_orden_compra)>0){
             foreach ($detalle_orden_compra as $data) {
-                $det_orden[] = [
+                $detalle[] = [
                     'id_detalle_requerimiento' => $data->id_detalle_requerimiento,
                     'id_item' => $data->id_item,
                     'codigo_item' => $data->codigo_item,
+                    'codigo_producto' => $data->codigo_producto,
                     'descripcion_producto' => $data->descripcion_producto,
-                    // 'descripcion_requerimiento' => $data->descripcion_requerimiento,
+                    'part_number' => $data->part_number,
                     'descripcion_adicional' => $data->descripcion_adicional,
                     'cantidad' => $data->cantidad,
                     'id_unidad_medida' => $data->id_unidad_medida,
@@ -1256,19 +1314,40 @@ class OrdenController extends Controller
                     // 'plazo_entrega' => $data->plazo_entrega,
                     // 'incluye_igv' => $data->incluye_igv,
                     'garantia' => $data->garantia,
-                    'lugar_despacho' => $data->lugar_despacho,
-                    'nombre_personal_autorizado' => $data->nombre_personal_autorizado 
+                    'lugar_despacho' => $data->lugar_despacho
+                    // 'nombre_personal_autorizado' => $data->nombre_personal_autorizado 
                 ];
+                $idDetalleReqList[]=$data->id_detalle_requerimiento;
             }
         }
 
+        if(count($idDetalleReqList) > 0){
+            $req = DB::table('almacen.alm_det_req')
+            ->select(
+                'alm_req.id_requerimiento',
+                'alm_req.codigo',
+                'alm_req.concepto'
+                )
+            ->join('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'alm_det_req.id_requerimiento')
+            ->whereIn('alm_det_req.id_detalle_requerimiento',$idDetalleReqList)
+            ->distinct()
+            ->get();
+
+            if(count($req) >0){
+                foreach($req as $data){
+                    $codigoReqList[]=$data->codigo;
+                }
+            }
+        }
+
+        $codigoReqText = implode(",", $codigoReqList);
+
         $result = [
-            'header_orden' => $orden_header_orden,
-            'header_proveedor' => $orden_header_proveedor,
-            'header_empresa' => $orden_header_empresa,
-            'condiciones' => $orden_condiciones,
-            'detalle_orden' => $det_orden 
+            'head' => $head,
+            'detalle' => $detalle 
         ];
+
+        $result['head']['codigo_requerimiento']=$codigoReqText;
 
         return $result;
     }
@@ -1276,7 +1355,7 @@ class OrdenController extends Controller
     {
         $ordenArray = $this->get_orden_por_requerimiento($id_orden_compra);
         // return $ordenArray;
-        $sizeOrdenHeader=count($ordenArray['header_orden']);
+        $sizeOrdenHeader=count($ordenArray['head']);
         
         if($sizeOrdenHeader == 0){
             $html = 'Error en documento';
@@ -1312,7 +1391,7 @@ class OrdenController extends Controller
                 }
                 .tablePDF,
                 .tablePDF tr td{
-                    border: 1px solid #dbdbdb;
+                    border: .5px solid #dbdbdb;
                 }
                 .tablePDF tr td{
                     padding: 5px;
@@ -1349,13 +1428,6 @@ class OrdenController extends Controller
                 hr{
                     color:#cc352a;
                 }
-                footer {
-                    position: absolute;
-                    bottom: 0;
-                    width: 100%;
-                    height: auto;
-                }
-       
                 .tablePDF .noBorder{
                     border:none;
                     border-left:none;
@@ -1365,42 +1437,72 @@ class OrdenController extends Controller
                 .textBold{
                     font-weight:bold;
                 }
+                footer{
+                    position:relative;
+                }
+                .pie_de_pagina{
+                    position: absolute;
+                    bottom:0px;
+                    right:0px;
+                }
+
             </style>
             </head>
             <body>
-                <img src=".'.$ordenArray['header_empresa']['logo_empresa'].'" alt="Logo" height="75px">
+            
+                        <img src=".'.$ordenArray['head']['logo_empresa'].'" alt="Logo" height="75px">
                 <br>
                 <hr>
-                <h1><center>' . $ordenArray['header_orden']['tipo_documento'] . '<br>' . $ordenArray['header_orden']['codigo'] . '</center></h1>
-                <table style="border:none;">
+                <h1><center>' . $ordenArray['head']['tipo_documento'] . '<br>' . $ordenArray['head']['codigo'] . '</center></h1>
+                <table border="0" >
                     <tr>
-                        <td class="subtitle verticalTop">Sr.(s)</td>
-                        <td class="subtitle verticalTop">:</td>
-                        <td width="50%" class="verticalTop">' . $ordenArray['header_proveedor']['razon_social_proveedor'] . '</td>
-                        <td width="15%" class="subtitle verticalTop">Fecha de Emisión</td>
-                        <td class="subtitle verticalTop">:</td>
-                        <td>' . substr($ordenArray['header_orden']['fecha_orden'], 0, 11) . '</td>
+                        <td nowrap  width="15%" class="subtitle verticalTop">Sr.(s):</td>
+                        <td width="50%" class="verticalTop">' . $ordenArray['head']['proveedor']['nro_documento_proveedor'].' - '.$ordenArray['head']['proveedor']['razon_social_proveedor'] . '</td>
+                        <td nowrap  width="15%" class="subtitle verticalTop">Fecha de Emisión:</td>
+                        <td>' . substr($ordenArray['head']['fecha_orden'], 0, 11) . '</td>
                     </tr>
                     <tr>
-                        <td class="subtitle">Dirección</td>
-                        <td class="subtitle verticalTop">:</td>
-                        <td class="verticalTop">' . $ordenArray['header_proveedor']['direccion_fiscal_proveedor'] . '</td>
+                        <td nowrap  width="15%" class="subtitle">Dirección:</td>
+                        <td class="verticalTop">' . $ordenArray['head']['proveedor']['direccion_fiscal_proveedor'] .'<br>'.$ordenArray['head']['proveedor']['ubigeo_proveedor'] .'</td>
+                        <td nowrap  width="15%" class="subtitle verticalTop"> Teléfono:</td>
+                        <td class="verticalTop">' . $ordenArray['head']['proveedor']['telefono_proveedor']. '</td>
                     </tr>
                     <tr>
-                        <td class="subtitle">Telefono</td>
-                        <td class="subtitle verticalTop">:</td>
-                        <td class="verticalTop">' . $ordenArray['header_proveedor']['telefono_proveedor'] . '</td>
+                        <td nowrap  width="15%" class="subtitle">Contacto:</td>
+                        <td class="verticalTop">' . $ordenArray['head']['proveedor']['contacto']['nombre_contacto'] . ' - '.$ordenArray['head']['proveedor']['contacto']['cargo_contacto'] . '</td>
+                        <td nowrap  width="15%" class="subtitle">Req. :</td>
+                        <td class="verticalTop left">' . $ordenArray['head']['codigo_requerimiento'] . '</td
                     </tr>
                     <tr>
-                        <td class="subtitle">Contacto</td>
-                        <td class="subtitle verticalTop">:</td>
-                        <td class="verticalTop">' . $ordenArray['header_proveedor']['email_proveedor'] . '</td>
+                        <td nowrap  width="15%" class="subtitle">Forma de Pago:</td>
+                        <td  class="verticalTop left">' . $ordenArray['head']['condicion_compra']['condicion_pago'] . '</td>';
+
+                        if($ordenArray['head']['condicion_compra']['id_condicion'] ==2){
+                            $html.='<tr>
+                                        <td nowrap  width="15%" class="subtitle">Plazo:</td>
+                                        <td  class="verticalTop left">' . $ordenArray['head']['condicion_compra']['plazo_dias'] . '';
+                                        if ($ordenArray['condiciones']['plazo_dias'] > 0) {
+                                            $html .= ' días </td>';
+                                        }else{
+                                            $html .= '</td>';
+                                        }
+                            
+                        }
+
+                    $html.='</tr>
+                    <tr>
+                        <td width="15%" class="verticalTop subtitle">Facturar a:</td>
+                        <td colSpan="3" class="verticalTop">' . $ordenArray['head']['facturar_a_nombre']['razon_social_empresa'].' '.$ordenArray['head']['facturar_a_nombre']['tipo_doc_empresa'].': '.$ordenArray['head']['facturar_a_nombre']['nro_documento_empresa'].', <br>con dirección: '.$ordenArray['head']['facturar_a_nombre']['direccion_fiscal_empresa'] .',<br>'.$ordenArray['head']['facturar_a_nombre']['ubigeo_empresa'].'</td>
+                        <td></td>
+                        <td></td>
                     </tr>
                     <tr>
-                        <td class="subtitle">Responsable</td>
-                        <td class="subtitle verticalTop">:</td>
-                        <td class="verticalTop">' . $ordenArray['header_orden']['nombre_personal_responsable'] . '</td>
-                    </tr>
+                        <td width="15%"class="verticalTop subtitle">Despachar a:</td>
+                        <td class="verticalTop">' . $ordenArray['head']['datos_para_despacho']['direccion_destino'] .'<br>'.$ordenArray['head']['datos_para_despacho']['ubigeo_destino'] .'</td>
+                        <td width="15%" class="verticalTop subtitle">Autorizado:</td>
+                        <td class="verticalTop">' . $ordenArray['head']['datos_para_despacho']['nombre_personal_autorizado'] .'</td>
+                    </tr>>
+>
                 </table>';
 
                 $html.='<p class="left" style="color:#d04f46">';
@@ -1427,21 +1529,28 @@ class OrdenController extends Controller
                 <table width="100%" class="tablePDF" border=0>
                 <thead>
                     <tr class="subtitle">
-                        <td width="2%">#</td>
-                        <td width="48%">Descripción</td>
+                        <td width="15%">Código</td>
+                        <td width="20%">Part Number</td>
+                        <td width="40%">Descripción</td>
                         <td width="5%">Und</td>
                         <td width="5%">Cant.</td>
                         <td width="5%">Precio</td>
-                        <td width="5%">IGV</td>
                         <td width="5%">Monto Dscto</td>
                         <td width="5%">Total</td>
                     </tr>   
                 </thead>';
 
-        $total = 0;
-        foreach ($ordenArray['detalle_orden'] as $key => $data) {
+        // $total = 0;
+        foreach ($ordenArray['detalle'] as $key => $data) {
+            $monto_neto =+ ($data['cantidad'] * $data['precio']) ;
+            $igv =(($monto_neto)*0.18);
+            $monto_total =($monto_neto+$igv);
+
+
             $html .= '<tr>';
-            $html .= '<td>' . ($key + 1) . '</td>';
+            // $html .= '<td>' . ($key + 1) . '</td>';
+            $html .= '<td>' . $data['codigo_producto'] . '</td>';
+            $html .= '<td>' . $data['part_number'] . '</td>';
             if($data['descripcion_adicional'] != null && strlen($data['descripcion_adicional']) > 0){
 
                 $html .= '<td>' . ($data['codigo_item'] ? $data['codigo_item'] : '0') . ' - ' . ($data['descripcion_producto'] ? $data['descripcion_producto'] : $data['descripcion_requerimiento']) . '<br><small><ul><li>'.$data['descripcion_detalle_orden'].'</li></ul></small></td>';
@@ -1451,125 +1560,41 @@ class OrdenController extends Controller
             }
             $html .= '<td>' . $data['unidad_medida'] . '</td>';
             $html .= '<td class="right">' . $data['cantidad'] . '</td>';
-            $html .= '<td class="right">' . $data['precio'] . '</td>';
-            $html .= '<td class="right">' . number_format((($data['cantidad'] * $data['precio']) - (($data['cantidad']* $data['precio'])/1.18)),2,'.','') . '</td>';
+            $html .= '<td class="right">' . number_format($data['precio'],2,'.','') . '</td>';
+            // $html .= '<td class="right">' . number_format((($data['cantidad'] * $data['precio']) - (($data['cantidad']* $data['precio'])/1.18)),2,'.','') . '</td>';
             $html .= '<td class="right"> </td>';
-            $html .= '<td class="right">' . $data['cantidad'] * $data['precio'] . '</td>';
+            $html .= '<td class="right">' . number_format($data['cantidad'] * $data['precio'],2,'.','') . '</td>';
             $html .= '</tr>';
-            $total = $total + ($data['cantidad'] * $data['precio']);
+            // $total = $total + ($data['cantidad'] * $data['precio']);
         }
+
+
 
         $html .= '
                 <tr>
-                    <td class="right noBorder textBold"  colspan="7">Monto Neto '.$ordenArray['header_orden']['moneda_simbolo'].'</td>
-                    <td class="right  noBorder textBold">' . $total . '</td>
+                    <td class="right noBorder textBold"  colspan="7">Monto Neto '.$ordenArray['head']['moneda_simbolo'].'</td>
+                    <td class="right  noBorder textBold">' . number_format($monto_neto,2,'.','') . '</td>
                 </tr>
                 <tr>
-                    <td class="right noBorder textBold"  colspan="7">IGV '.$ordenArray['header_orden']['moneda_simbolo'].'</td>
-                    <td class="right noBorder textBold">' . $ordenArray['header_orden']['monto_igv'] . '</td>
+                    <td class="right noBorder textBold"  colspan="7">IGV '.$ordenArray['head']['moneda_simbolo'].'</td>
+                    <td class="right noBorder textBold">' . number_format($igv,2,'.','') . '</td>
                 </tr>
                 <tr>
-                    <td class="right noBorder textBold"  colspan="7">Monto Total '.$ordenArray['header_orden']['moneda_simbolo'].'</td>
-                    <td class="right noBorder textBold">' . $ordenArray['header_orden']['monto_total'] . '</td>
+                    <td class="right noBorder textBold"  colspan="7">Monto Total '.$ordenArray['head']['moneda_simbolo'].'</td>
+                    <td class="right noBorder textBold">' . number_format($monto_total,2,'.','') . '</td>
                 </tr>
                 </table>
                 <br>
-
-                <p class="subtitle">Datos para Despacho</p>
-                <table width="100%" class="tablePDF" border=0>
-                    <thead>
-                        <tr class="subtitle">
-                            <td width="2%">#</td>
-                            <td width="38%">Descripción</td>
-                            <td width="30%">Lugar de Despacho</td>
-                            <td width="30%">Personal Autorizado</td>
-                        </tr>
-                    </thead>
-        ';
-            $total = 0;
-            foreach ($ordenArray['detalle_orden'] as $key => $data) {
-                $contador= $key + 1;
-                $codigo= $data['codigo_item'] ? $data['codigo_item'] : '0';
-                $desItem= $data['descripcion_producto'] ? $data['descripcion_producto'] : $data['descripcion_requerimiento'];
-                $lugarDesp= $data['lugar_despacho'];
-                $persAut= $data['nombre_personal_autorizado'];
- 
-                $html .= '<tr>';
-                $html .= '<td>' . $contador. '</td>';
-                $html .= '<td>' .$codigo.'-'. $desItem . '</td>';
-                $html .= '<td class="right">' . $lugarDesp . '</td>';
-                $html .= '<td class="right">' . $persAut . '</td>';
-                $html .= '</tr>';
-            }
-
-        $html.= '</table>
                 <br>
-                <p class="subtitle">Condición de Compra</p>
-                <table border="0">
-                    <tr>
-                        <td width="20%"class="verticalTop">Forma de Pago</td>
-                        <td width="5%" class="verticalTop">:</td>
-                        <td width="70%" class="verticalTop">' . $ordenArray['condiciones']['condicion_pago'] . '</td>
-                    </tr>
-                    <tr>
-                        <td width="20%" class="verticalTop">Plazo</td>
-                        <td width="5%" class="verticalTop">:</td>
-                        <td width="70%" class="verticalTop">' . $ordenArray['condiciones']['plazo_dias'] . '';
-        if ($ordenArray['condiciones']['plazo_dias'] > 0) {
-            $html .= ' días';
-        }
-        $html .= '</td>
-                    </tr>
-                    <tr>
-                        <td width="20%"class="verticalTop">Req.</td>
-                        <td width="5%" class="verticalTop">:</td>
-                        <td width="70%" class="verticalTop">' . $ordenArray['header_orden']['codigo_requerimiento'] . '</td>
-                    </tr>
-                    <br>
-                </table>
- 
-                <br>
-                <p class="subtitle">Datos de Facturación</p>
-                <table border="0" style=" padding-bottom:4px;">
-                    <tr>
-                        <td width="20%" class="verticalTop">Razon Social</td>
-                        <td width="5%" class="verticalTop">:</td>
-                        <td width="70%" class="verticalTop">' . $ordenArray['header_empresa']['razon_social_empresa'] . '</td>
-                    </tr>
-                    <tr>
-                        <td width="20%"class="verticalTop">' . $ordenArray['header_empresa']['tipo_doc_empresa'] . '</td>
-                        <td width="5%" class="verticalTop">:</td>
-                        <td width="70%" class="verticalTop">' . $ordenArray['header_empresa']['nro_documento_empresa'] . '</td>
-                    </tr>
-                    <tr>
-                        <td width="20%"class="verticalTop">Dirección</td>
-                        <td width="5%" class="verticalTop">:</td>
-                        <td width="70%" class="verticalTop">' . $ordenArray['header_empresa']['direccion_fiscal_empresa'] . '</td>
-                    </tr>
-                    <tr>
-                        <td width="20%"class="verticalTop">Generado por:</td>
-                        <td width="5%" class="verticalTop">:</td>
-                        <td witth="70%" class="verticalTop">' . $ordenArray['header_orden']['nombre_usuario'] . '</td>
-                    </tr>
-                </table>
                 
                 
-                <footer class="left" style="font-size:7px;">
-                <div style="border-top: 1px solid red !important;"></div>
-                <table >
-                    <tr>
-                        <td>Oficina</td>
-                        <td>'.$ordenArray['header_empresa']['direccion_fiscal_empresa'].'-'.$ordenArray['header_empresa']['codigo_sede_empresa'].'</td>
-                    </tr>
-                    <tr>
-                        <td>Teléfono</td>
-                        <td>'.$ordenArray['header_empresa']['telefono_empresa'].'</td>
-                    </tr>
-                    <tr>
-                        <td>Email</td>
-                        <td>'.$ordenArray['header_empresa']['email_empresa'].'</td>
-                    </tr>
-                </footer>
+                <br>
+
+                    <footer>
+                        <p style="font-size:7px; " class="pie_de_pagina">GENERADO POR:' . $ordenArray['head']['nombre_usuario'] .  '</p>
+                        <p style="font-size:7px; " class="pie_de_pagina">' . $ordenArray['head']['fecha_registro'] .  '</p>
+                    </footer>
+                
             </body>
             
         </html>';
