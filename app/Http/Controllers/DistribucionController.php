@@ -820,7 +820,7 @@ class DistribucionController extends Controller
 
                 $id_transformacion = DB::table('almacen.transformacion')
                     ->insertGetId([
-                        'fecha_transformacion'=>$fecha_actual,
+                        // 'fecha_transformacion'=>$fecha_actual,
                         'codigo'=>$codTrans,
                         // 'responsable'=>$usuario,
                         'id_od'=>$id_od,

@@ -34,25 +34,33 @@ Hoja de Transformación
                     <input type="hidden" name="id_transformacion" primary="ids">
                     
                     <div class="row">
-                        <div class="col-md-2">
+                        <div class="col-md-1">
                             <h5>Código</h5>
-                            <input type="text" name="codigo" class="form-control" readOnly/>
+                            <span id="codigo"></span>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-2">
                             <h5>Almacén</h5>
-                            <input type="text" name="almacen_descripcion" class="form-control" readOnly/>
+                            <span id="almacen_descripcion"></span>
+                        </div>
+                        <div class="col-md-2">
+                            <h5>OCAM</h5>
+                            <span id="orden_am"></span>
                         </div>
                         <div class="col-md-2">
                             <h5>Cuadro Costos</h5>
-                            <input type="text" name="codigo_oportunidad" class="form-control" readOnly/>
+                            <span id="codigo_oportunidad"></span>
                         </div>
                         <div class="col-md-2">
                             <h5>Orden Despacho</h5>
-                            <input type="text" name="codigo_od" class="form-control" readOnly/>
+                            <span id="codigo_od"></span>
+                        </div>
+                        <div class="col-md-1">
+                            <h5>Requerimiento</h5>
+                            <span id="codigo_req"></span>
                         </div>
                         <div class="col-md-2">
                             <h5>Guía Remisión</h5>
-                            <input type="text" name="serie-numero" class="form-control" readOnly/>
+                            <span id="serie-numero"></span>
                         </div>
                     </div>
                 </div>
@@ -64,11 +72,11 @@ Hoja de Transformación
                     <span id="estado_doc"></span>
                 </div>
                 <div class="col-md-2">
-                    <h5>Fecha Registro</h5>
-                    <span id="fecha_registro"></span>
+                    <h5>Fecha Inicio</h5>
+                    <span id="fecha_inicio"></span>
                 </div>
                 <div class="col-md-2">
-                    <h5>Fecha Transformación</h5>
+                    <h5>Fecha Proceso</h5>
                     <span id="fecha_transformacion"></span>
                 </div>
                 <div class="col-md-2">
@@ -83,19 +91,19 @@ Hoja de Transformación
                     <!-- <div class="col-md-10" style="text-align:right;"> -->
                         <button type="button" class="btn btn-info btn-sm" onClick="imprimirTransformacion();" 
                             data-toggle="tooltip" data-placement="bottom" title="Imprimir Transformación">
-                            Imprimir <i class="fas fa-step-forward"></i> </button>
+                            <i class="fas fa-print"></i> </button>
                         <button type="button" class="btn btn-primary btn-sm" onClick="openIniciar();" 
                             data-toggle="tooltip" data-placement="bottom" title="Iniciar Transformación">
                             Iniciar <i class="fas fa-step-forward"></i> </button>
                         <button type="button" class="btn btn-success btn-sm" onClick="openProcesar();" 
                             data-toggle="tooltip" data-placement="bottom" title="Procesar Transformación">
                             Procesar <i class="fas fa-step-forward"></i> </button>
-                        <button type="button" class="btn btn-warning btn-sm" data-toggle="tooltip" 
+                        <!-- <button type="button" class="btn btn-warning btn-sm" data-toggle="tooltip" 
                             data-placement="bottom" title="Ver Salida de Almacén" 
                             onClick="abrir_salida();">S</button>
                         <button type="button" class="btn btn-info btn-sm" data-toggle="tooltip" 
                             data-placement="bottom" title="Ver Ingreso a Almacén" 
-                            onClick="abrir_ingreso();">I</button>
+                            onClick="abrir_ingreso();">I</button> -->
                     <!-- </div> -->
                 </div>
             </div>

@@ -43,11 +43,12 @@ function mostrar_transformacion(id){
         success: function(response){
             console.log(response);
             $('[name=id_transformacion]').val(response.id_transformacion);
-            $('[name=codigo_oportunidad]').val(response.codigo_oportunidad);
+            $('#codigo_oportunidad').text(response.codigo_oportunidad);
+            $('#orden_am').text(response.orden_am);
             // $('[name=id_empresa]').val(response.id_empresa).trigger('change.select2');
             // $('[name=serie]').val(response.serie);
             // $('[name=numero]').val(response.numero);
-            $('[name=almacen_descripcion]').val(response.almacen_descripcion);
+            $('#almacen_descripcion').text(response.almacen_descripcion);
             $('[name=total_materias]').val(response.total_materias);
             $('[name=total_directos]').val(response.total_directos);
             $('[name=costo_primo]').val(response.costo_primo);
@@ -55,12 +56,13 @@ function mostrar_transformacion(id){
             $('[name=total_sobrantes]').val(response.total_sobrantes);
             $('[name=costo_transformacion]').val(response.costo_transformacion);
             // $('[name=cod_estado]').val(response.estado);
-            $('[name=codigo]').val(response.codigo);
-            $('[name=codigo_od]').val(response.cod_od);
-            $('[name=serie-numero]').val(response.serie+'-'+response.numero);
+            $('#codigo').text(response.codigo);
+            $('#codigo_od').text(response.cod_od);
+            $('#codigo_req').text(response.codigo_req);
+            $('#serie-numero').text(response.serie+'-'+response.numero);
             // $('#fecha_registro label').text('');
-            $('#fecha_transformacion').text(formatDateHour(response.fecha_transformacion));
-            $('#fecha_registro').text(formatDateHour(response.fecha_registro));
+            $('#fecha_transformacion').text(response.fecha_transformacion!==null?formatDateHour(response.fecha_transformacion):'');
+            $('#fecha_inicio').text(response.fecha_inicio!==null?formatDateHour(response.fecha_inicio):'');
             $('#nombre_responsable').text(response.nombre_corto);
             $('#observacion').text(response.observacion);
             $('#descripcion_sobrantes').text(response.descripcion_sobrantes);

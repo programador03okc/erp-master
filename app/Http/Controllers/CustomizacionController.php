@@ -18,7 +18,7 @@ class CustomizacionController extends Controller
         'respon.nombre_corto as nombre_responsable','regist.nombre_corto as nombre_registrado',
         'adm_estado_doc.estado_doc','adm_estado_doc.bootstrap_color',
         'oc_propias.orden_am','oportunidades.oportunidad','oportunidades.codigo_oportunidad',
-        'entidades.nombre','alm_req.codigo as codigo_req')
+        'entidades.nombre','alm_req.codigo as codigo_req','alm_req.fecha_entrega as fecha_entrega_req')
         ->join('almacen.orden_despacho','orden_despacho.id_od','=','transformacion.id_od')
         ->join('almacen.alm_req','alm_req.id_requerimiento','=','orden_despacho.id_requerimiento')
         ->join('almacen.alm_almacen','alm_almacen.id_almacen','=','transformacion.id_almacen')
@@ -45,7 +45,7 @@ class CustomizacionController extends Controller
         'respon.nombre_corto as nombre_responsable','regist.nombre_corto as nombre_registrado',
         'adm_estado_doc.estado_doc','adm_estado_doc.bootstrap_color',
         'oc_propias.orden_am','oportunidades.oportunidad','oportunidades.codigo_oportunidad',
-        'entidades.nombre','alm_req.codigo as codigo_req')
+        'entidades.nombre','alm_req.codigo as codigo_req','alm_req.fecha_entrega as fecha_entrega_req')
         ->join('almacen.orden_despacho','orden_despacho.id_od','=','transformacion.id_od')
         ->join('almacen.alm_req','alm_req.id_requerimiento','=','orden_despacho.id_requerimiento')
         ->join('almacen.alm_almacen','alm_almacen.id_almacen','=','transformacion.id_almacen')
@@ -123,10 +123,10 @@ class CustomizacionController extends Controller
 
     public function mostrar_transformacion($id_transformacion){
         $data = DB::table('almacen.transformacion')
-        ->select('transformacion.*','oportunidades.codigo_oportunidad',
+        ->select('transformacion.*','oportunidades.codigo_oportunidad','oc_propias.orden_am',
                  'adm_estado_doc.estado_doc','adm_estado_doc.bootstrap_color','sis_usua.nombre_corto',
                  'orden_despacho.codigo as cod_od','alm_almacen.descripcion as almacen_descripcion',
-                 'alm_req.codigo as cod_req','guia_ven.serie','guia_ven.numero')
+                 'alm_req.codigo as codigo_req','guia_ven.serie','guia_ven.numero')
         ->leftjoin('almacen.orden_despacho','orden_despacho.id_od','=','transformacion.id_od')
         ->leftjoin('almacen.alm_almacen','alm_almacen.id_almacen','=','transformacion.id_almacen')
         ->leftjoin('almacen.alm_req','alm_req.id_requerimiento','=','orden_despacho.id_requerimiento')
@@ -136,6 +136,7 @@ class CustomizacionController extends Controller
                 })
         ->leftjoin('mgcp_cuadro_costos.cc','cc.id','=','transformacion.id_cc')
         ->leftjoin('mgcp_oportunidades.oportunidades','oportunidades.id','=','cc.id_oportunidad')
+        ->leftjoin('mgcp_acuerdo_marco.oc_propias','oc_propias.id_oportunidad','=','oportunidades.id')
         ->leftjoin('administracion.adm_estado_doc','adm_estado_doc.id_estado_doc','=','transformacion.estado')
         ->leftjoin('configuracion.sis_usua','sis_usua.id_usuario','=','transformacion.responsable')
         ->where('transformacion.id_transformacion',$id_transformacion)
@@ -899,7 +900,7 @@ class CustomizacionController extends Controller
         $result = DB::table('almacen.transformacion')
         ->select('transformacion.*','oc_propias.orden_am','oportunidades.codigo_oportunidad',
                  'alm_almacen.descripcion as almacen_descripcion','alm_req.codigo as codigo_req',
-                 'orden_despacho.fecha_entrega','orden_despacho.hora_despacho','entidades.nombre',
+                 'alm_req.fecha_entrega','guia_ven.fecha_registro as fecha_almacen','orden_despacho.fecha_registro as fecha_despacho','entidades.nombre',
                  'guia_ven.serie','guia_ven.numero','adm_contri.nro_documento','adm_contri.razon_social',
                  'sis_usua.nombre_corto','adm_empresa.logo_empresa')
         ->join('almacen.orden_despacho','orden_despacho.id_od','=','transformacion.id_od')
@@ -983,11 +984,6 @@ class CustomizacionController extends Controller
                         <td>
                             <img src=".'.$result->logo_empresa.'" height="75px">
                         </td>
-                        <td>
-                            <p style="text-align:right;font-size:10px;margin:0px;"><strong>SYSTEM AGILE v2.1</strong></p>
-                            <p style="text-align:right;font-size:10px;margin:0px;">Fecha: '.$fecha_actual.'</p>
-                            <p style="text-align:right;font-size:10px;margin:0px;">Hora : '.$hora_actual.'</p>
-                        </td>
                     </tr>
                 </table>
                 <h3 style="margin:0px; padding:0px;"><center>HOJA DE TRANSFORMACIÓN</center></h3>
@@ -996,33 +992,41 @@ class CustomizacionController extends Controller
                 
                 <table border="0">
                     <tr>
-                        <td class="subtitle">Requerimiento</td>
+                        <td width=100px>Requerimiento</td>
                         <td width=5px>:</td>
-                        <td width=300px>'.$result->codigo_req.'</td>
-                        <td>Guía de Remisión</td>
+                        <td width=320px>'.$result->codigo_req.'</td>
+                        <td>Guía Remisión</td>
                         <td width=5px>:</td>
                         <td>'.$result->serie.'-'.$result->numero.'</td>
                     </tr>
                     <tr>
-                        <td class="subtitle">Nro OCAM</td>
+                        <td width=100px>Nro OCAM</td>
                         <td width=5px>:</td>
-                        <td width=300px>'.$result->orden_am.'</td>
-                        <td>Codigo CC</td>
+                        <td width=320px>'.$result->orden_am.'</td>
+                        <td>Fecha Despacho</td>
                         <td width=5px>:</td>
-                        <td>'.$result->codigo_oportunidad.'</td>
+                        <td width=150px>'.$result->fecha_despacho.'</td>
                     </tr>
                     <tr>
-                        <td class="subtitle">Entidad/Cliente</td>
+                        <td width=100px>Codigo CC</td>
                         <td width=5px>:</td>
-                        <td width=300px>'.$result->nombre.'</td>
+                        <td width=320px>'.$result->codigo_oportunidad.'</td>
+                        <td>Fecha Almacén</td>
+                        <td width=5px>:</td>
+                        <td>'.$result->fecha_almacen.'</td>
+                    </tr>
+                    <tr>
+                        <td width=100px>Entidad/Cliente</td>
+                        <td width=5px>:</td>
+                        <td width=320px>'.$result->nombre.'</td>
                         <td>Fecha Entrega</td>
                         <td width=5px>:</td>
-                        <td>'.$result->fecha_entrega.' '.$result->hora_despacho.'</td>
+                        <td>'.$result->fecha_entrega.'</td>
                     </tr>
                     <tr>
-                        <td class="subtitle">Instrucciones Generales</td>
+                        <td width=100px>Instrucciones Generales</td>
                         <td width=5px>:</td>
-                        <td colSpan="4">'.$result->descripcion_sobrantes.'</td>
+                        <td colSpan2"4">'.$result->descripcion_sobrantes.'</td>
                     </tr>
                 </table>
                 <br/>
@@ -1132,7 +1136,8 @@ class CustomizacionController extends Controller
                 
                 
                 <footer style="position:absolute;bottom:0px;right:0px;">
-                    <p style="text-align:right;font-size:10px;">Elaborado por: '.$result->nombre_corto.' '.$result->fecha_registro.'</p>
+                    <p style="text-align:right;font-size:10px;margin-bottom:0px;">Elaborado por: '.$result->nombre_corto.' - Impreso el: '.$fecha_actual.' '.$hora_actual.'</p>
+                    <p style="text-align:right;font-size:10px;margin-top:0px;"><strong>SYSTEM AGILE v2.1</strong></p>
                 </footer>
             </body>
         </html>';

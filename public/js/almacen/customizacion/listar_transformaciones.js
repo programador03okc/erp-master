@@ -58,24 +58,24 @@ class GestionCustomizacion
             'ajax' : 'listar_transformaciones_pendientes',
             'columns': [
                 {'data': 'id_transformacion'},
-                {'data': 'orden_am', 'name': 'oc_propias.orden_am'},
-                {'data': 'codigo_oportunidad', 'name': 'oportunidades.codigo_oportunidad'},
-                {'data': 'oportunidad', 'name': 'oportunidades.oportunidad'},
-                {'data': 'nombre', 'name': 'entidades.nombre'},
-                {'render':
-                    function (data, type, row){
-                        return (formatDate(row['fecha_registro']));
-                    }
-                },
                 {'render':
                     function (data, type, row){
                         return ('<label class="lbl-codigo" title="Abrir Transformación" onClick="abrir_transformacion('+row['id_transformacion']+')">'+row['codigo']+'</label>');
                     }
                 },
+                {'data': 'fecha_entrega_req'},
+                {'data': 'orden_am', 'name': 'oc_propias.orden_am'},
+                // {'data': 'codigo_oportunidad', 'name': 'oportunidades.codigo_oportunidad'},
+                // {'data': 'oportunidad', 'name': 'oportunidades.oportunidad'},
+                {'data': 'nombre', 'name': 'entidades.nombre'},
                 {'data': 'codigo_req'},
-                {'data': 'fecha_entrega'},
+                {'render':
+                    function (data, type, row){
+                        return (formatDateHour(row['fecha_registro']));
+                    }
+                },
                 {'data': 'fecha_inicio'},
-                {'data': 'fecha_transformacion'},
+                // {'data': 'fecha_transformacion'},
                 // {'render':
                 //     function (data, type, row){
                 //         return (formatDate(row['fecha_transformacion']));
@@ -91,9 +91,9 @@ class GestionCustomizacion
                 },
                 {'render':
                     function (data, type, row){
-                        return ('<button type="button" class="anular btn btn-danger boton" data-toggle="tooltip" '+
-                                    'data-placement="bottom" title="Anular" >'+
-                                    '<i class="fas fa-trash"></i></button>');
+                        return ('<button type="button" class="imprimir btn btn-info boton" data-toggle="tooltip" '+
+                                    'data-placement="bottom" title="Imprimir Hoja de Transformación" data-id="'+row['id_transformacion']+'">'+
+                                    '<i class="fas fa-print"></i></button>');
                     }
                 },
             ],
@@ -101,7 +101,6 @@ class GestionCustomizacion
             'columnDefs': [{ 'aTargets': [0], 'sClass': 'invisible'}],
         });
     }
-
 
     listarTransformaciones(){
         var vardataTables = funcDatatables();
@@ -117,22 +116,24 @@ class GestionCustomizacion
             // },
             'columns': [
                 {'data': 'id_transformacion'},
-                {'data': 'orden_am', 'name': 'oc_propias.orden_am'},
-                {'data': 'codigo_oportunidad', 'name': 'oportunidades.codigo_oportunidad'},
-                {'data': 'oportunidad', 'name': 'oportunidades.oportunidad'},
-                {'data': 'nombre', 'name': 'entidades.nombre'},
-                {'render':
-                    function (data, type, row){
-                        return (formatDate(row['fecha_registro']));
-                    }
-                },
                 {'render':
                     function (data, type, row){
                         return ('<label class="lbl-codigo" title="Abrir Transformación" onClick="abrir_transformacion('+row['id_transformacion']+')">'+row['codigo']+'</label>');
                     }
                 },
+                {'data': 'fecha_entrega_req'},
+                
+                {'data': 'orden_am', 'name': 'oc_propias.orden_am'},
+                // {'data': 'codigo_oportunidad', 'name': 'oportunidades.codigo_oportunidad'},
+                // {'data': 'oportunidad', 'name': 'oportunidades.oportunidad'},
+                {'data': 'nombre', 'name': 'entidades.nombre'},
+                // {'render':
+                //     function (data, type, row){
+                //         return (formatDate(row['fecha_registro']));
+                //     }
+                // },
                 {'data': 'codigo_req'},
-                {'data': 'fecha_entrega'},
+                {'data': 'fecha_registro'},
                 {'data': 'fecha_inicio'},
                 {'data': 'fecha_transformacion'},
                 // {'render':
@@ -145,11 +146,11 @@ class GestionCustomizacion
                 {'data': 'nombre_responsable'},
                 {'data': 'observacion'},
                 // {'data': 'nombre_registrado'},
-                {'render':
-                    function (data, type, row){
-                        return ('<span class="label label-'+row['bootstrap_color']+'">'+row['estado_doc']+'</span>');
-                    }
-                },
+                // {'render':
+                //     function (data, type, row){
+                //         return ('<span class="label label-'+row['bootstrap_color']+'">'+row['estado_doc']+'</span>');
+                //     }
+                // },
                 {'render':
                     function (data, type, row){
                         return ('<button type="button" class="salida btn btn-success boton" data-toggle="tooltip" '+
@@ -168,12 +169,21 @@ class GestionCustomizacion
     }
 }
 
-$('#listaTransformacionesMadres tbody').on("click","button.ingreso", function(){
+$('#listaTransformacionesPendientes tbody').on("click","button.imprimir", function(){
+    var id = $(this).data('id');
+    if (id !== null && id !== ''){
+        window.open('imprimir_transformacion/'+id);
+    } else {
+        alert('Debe seleccionar una Hoja de Transformación.');
+    }
+});
+
+$('#listaTransformaciones tbody').on("click","button.ingreso", function(){
     var id = $(this).data('id');
     abrir_ingreso(id);
 });
 
-$('#listaTransformacionesMadres tbody').on("click","button.salida", function(){
+$('#listaTransformaciones tbody').on("click","button.salida", function(){
     var id = $(this).data('id');
     abrir_salida(id);
 });
@@ -443,5 +453,8 @@ function anular(tbody, tabla){
 function abrir_transformacion(id_transformacion){
     console.log('abrir_transformacio'+id_transformacion);
     localStorage.setItem("id_transfor",id_transformacion);
-    location.assign("/logistica/almacen/customizacion/hoja-transformacion/index");
+    // location.assign("/logistica/almacen/customizacion/hoja-transformacion/index");
+    var win = window.open("/logistica/almacen/customizacion/hoja-transformacion/index", '_blank');
+    // Cambiar el foco al nuevo tab (punto opcional)
+    win.focus();
 }

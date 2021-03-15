@@ -38,16 +38,16 @@ Gestión de Transformaciones
                                         <thead>
                                             <tr>
                                                 <th hidden></th>
-                                                <th>Orden Elec.</th>
-                                                <th>Cuadro Costo</th>
-                                                <th>Oportunidad</th>
-                                                <th>Entidad</th>
-                                                <th>Fecha Registro</th>
                                                 <th>Código</th>
-                                                <th>Código Req.</th>
                                                 <th>Fecha Entrega</th>
+                                                <th>OCAM</th>
+                                                <!-- <th>Cuadro Costo</th>
+                                                <th>Oportunidad</th> -->
+                                                <th>Entidad</th>
+                                                <th>Requerim.</th>
+                                                <th>Fecha Despacho</th>
                                                 <th>Fecha Inicio</th>
-                                                <th>Fecha Proceso</th>
+                                                <!-- <th>Fecha Procesado</th> -->
                                                 <th>Almacén</th>
                                                 <th>Estado</th>
                                                 <th width="8%">Acción</th>
@@ -69,20 +69,20 @@ Gestión de Transformaciones
                                         <thead>
                                             <tr>
                                                 <th hidden></th>
-                                                <th>Orden Elec.</th>
-                                                <th>Cuadro Costo</th>
-                                                <th>Oportunidad</th>
-                                                <th>Entidad</th>
-                                                <th>Fecha Registro</th>
                                                 <th>Código</th>
-                                                <th>Código Req.</th>
                                                 <th>Fecha Entrega</th>
+                                                <th>OCAM</th>
+                                                <!-- <th>Cuadro Costo</th>
+                                                <th>Oportunidad</th> -->
+                                                <th>Entidad</th>
+                                                <th>Requerim.</th>
+                                                <th>Fecha Despacho</th>
                                                 <th>Fecha Inicio</th>
                                                 <th>Fecha Proceso</th>
                                                 <th>Almacén</th>
                                                 <th>Responsable</th>
-                                                <th>Observación</th>
-                                                <th>Estado</th>
+                                                <th>Obs.</th>
+                                                <!-- <th>Estado</th> -->
                                                 <th width="8%">Acción</th>
                                             </tr>
                                         </thead>
