@@ -52,7 +52,7 @@ function listarDespachosPendientes(permiso){
                     }
                 }
             },
-            {'data': 'fecha_despacho'},
+            {'data': 'fecha_entrega'},
             {'data': 'hora_despacho'},
             {'data': 'codigo'},
             {'render': 
@@ -68,9 +68,7 @@ function listarDespachosPendientes(permiso){
             {'data': 'codigo_req', 'name': 'alm_req.codigo'},
             {'data': 'concepto', 'name': 'alm_req.concepto'},
             {'data': 'almacen_descripcion', 'name': 'alm_almacen.descripcion'},
-            // {'data': 'ubigeo_descripcion', 'name': 'ubi_dis.descripcion'},
-            // {'data': 'direccion_destino'},
-            {'data': 'fecha_entrega'},
+            {'data': 'fecha_despacho'},
             {'data': 'nombre_corto', 'name': 'sis_usua.nombre_corto'}
         ],
         'order': [[ 2, "desc" ],[ 3, "desc" ]],

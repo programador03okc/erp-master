@@ -899,6 +899,7 @@ class CustomizacionController extends Controller
         $result = DB::table('almacen.transformacion')
         ->select('transformacion.*','oc_propias.orden_am','oportunidades.codigo_oportunidad',
                  'alm_almacen.descripcion as almacen_descripcion','alm_req.codigo as codigo_req',
+                 'orden_despacho.fecha_entrega','orden_despacho.hora_despacho','entidades.nombre',
                  'guia_ven.serie','guia_ven.numero','adm_contri.nro_documento','adm_contri.razon_social',
                  'sis_usua.nombre_corto','adm_empresa.logo_empresa')
         ->join('almacen.orden_despacho','orden_despacho.id_od','=','transformacion.id_od')
@@ -914,6 +915,7 @@ class CustomizacionController extends Controller
         ->leftjoin('mgcp_cuadro_costos.cc','cc.id','=','transformacion.id_cc')
         ->leftjoin('mgcp_oportunidades.oportunidades','oportunidades.id','=','cc.id_oportunidad')
         ->leftjoin('mgcp_acuerdo_marco.oc_propias','oc_propias.id_oportunidad','=','oportunidades.id')
+        ->leftjoin('mgcp_acuerdo_marco.entidades','entidades.id','=','oportunidades.id_entidad')
         ->leftjoin('configuracion.sis_usua','sis_usua.id_usuario','=','transformacion.registrado_por')
         ->where('transformacion.id_transformacion',$id_transformacion)
         ->first();
@@ -996,18 +998,26 @@ class CustomizacionController extends Controller
                     <tr>
                         <td class="subtitle">Requerimiento</td>
                         <td width=5px>:</td>
-                        <td width=250px>'.$result->codigo_req.'</td>
-                        <td>Nro OCAM</td>
+                        <td width=300px>'.$result->codigo_req.'</td>
+                        <td>Guía de Remisión</td>
                         <td width=5px>:</td>
-                        <td>'.$result->orden_am.'</td>
+                        <td>'.$result->serie.'-'.$result->numero.'</td>
                     </tr>
                     <tr>
-                        <td class="subtitle">Guía de Remisión</td>
+                        <td class="subtitle">Nro OCAM</td>
                         <td width=5px>:</td>
-                        <td width=250px>'.$result->serie.'-'.$result->numero.'</td>
+                        <td width=300px>'.$result->orden_am.'</td>
                         <td>Codigo CC</td>
                         <td width=5px>:</td>
                         <td>'.$result->codigo_oportunidad.'</td>
+                    </tr>
+                    <tr>
+                        <td class="subtitle">Entidad/Cliente</td>
+                        <td width=5px>:</td>
+                        <td width=300px>'.$result->nombre.'</td>
+                        <td>Fecha Entrega</td>
+                        <td width=5px>:</td>
+                        <td>'.$result->fecha_entrega.' '.$result->hora_despacho.'</td>
                     </tr>
                     <tr>
                         <td class="subtitle">Instrucciones Generales</td>
@@ -1130,7 +1140,7 @@ class CustomizacionController extends Controller
         $pdf = \App::make('dompdf.wrapper');
         $pdf->loadHTML($html);
 
-        return $pdf->download($result->codigo.'.pdf');
         return $pdf->stream();
+        return $pdf->download($result->codigo.'.pdf');
     }
 }

@@ -18,11 +18,11 @@
                             <input type="text" class="form-control" name="almacen_descripcion" readOnly>
                         </div>
                         <div class="col-md-3">
-                            <h5>Fecha de Despacho</h5>
-                            <input type="date" class="form-control" name="fecha_despacho" value="<?=date('Y-m-d');?>">
+                            <h5>Última Fecha de Entrega</h5>
+                            <input type="date" class="form-control" name="fecha_entrega" value="<?=date('Y-m-d');?>">
                         </div>
                         <div class="col-md-3">
-                            <h5>Hora de Despacho</h5>
+                            <h5>Hora de Entrega</h5>
                             <input type="time" class="form-control" name="hora_despacho">
                         </div>
                     </div>
@@ -79,8 +79,8 @@
                                 </div>
                             </div>
                             <div class="col-md-3">
-                                <h5>Última Fecha de Entrega</h5>
-                                <input type="date" class="form-control" name="fecha_entrega" value="<?=date('Y-m-d');?>">
+                                <h5>Fecha de Despacho</h5>
+                                <input type="date" class="form-control" name="fecha_despacho" value="<?=date('Y-m-d');?>">
                             </div>
                         </div>
                         <div class="row">
