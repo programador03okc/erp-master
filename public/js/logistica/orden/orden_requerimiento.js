@@ -658,32 +658,41 @@ function guardarAtendidoConAlmacen(){
     newItemsParaAtenderConAlmacenList = itemsParaAtenderConAlmacenList.filter(function( obj ) {
         return (obj.id_almacen_reserva >0) && (obj.cantidad_a_atender >0);
     });
-
-    console.log(newItemsParaAtenderConAlmacenList);
-    if(newItemsParaAtenderConAlmacenList.length >0){
-        $.ajax({
-                type: 'POST',
-                url: rutaGuardarAtencionConAlmacen,
-                data: {'lista_items':newItemsParaAtenderConAlmacenList},
-                dataType: 'JSON',
-                success: function (response) {
-                    // console.log(response);
-                    if(response.update_det_req >0){
-                        alert("Se realizo con éxito la reserva");
-                        getDataItemsRequerimientoParaAtenderConAlmacen(response.id_requerimiento);
-                        $('#listaRequerimientosPendientes').DataTable().ajax.reload();
-
-                    }else{
-                        alert("Ocurrio un problema al intentar guardar la reserva");
+    var hasCantidadNoPermitida = false;
+    newItemsParaAtenderConAlmacenList.forEach(element => {
+        if(element.cantidad_a_atender > element.cantidad){
+            alert("No puede reservar una 'cantidad a atender' mayor a la 'cantidad' ");
+            hasCantidadNoPermitida=true;
+        } 
+    });
+    if(hasCantidadNoPermitida== false){
+        console.log(newItemsParaAtenderConAlmacenList);
+        if(newItemsParaAtenderConAlmacenList.length >0){
+            $.ajax({
+                    type: 'POST',
+                    url: rutaGuardarAtencionConAlmacen,
+                    data: {'lista_items':newItemsParaAtenderConAlmacenList},
+                    dataType: 'JSON',
+                    success: function (response) {
+                        // console.log(response);
+                        if(response.update_det_req >0){
+                            alert("Se realizo con éxito la reserva");
+                            getDataItemsRequerimientoParaAtenderConAlmacen(response.id_requerimiento);
+                            $('#listaRequerimientosPendientes').DataTable().ajax.reload();
+    
+                        }else{
+                            alert("Ocurrio un problema al intentar guardar la reserva");
+                        }
                     }
-                }
-            }).fail(function (jqXHR, textStatus, errorThrown) {
-                console.log(jqXHR);
-                console.log(textStatus);
-                console.log(errorThrown);
-            });
-    }else{
-        alert("seleccione un almacén y especifique una cantidad a atender mayor a cero.");
+                }).fail(function (jqXHR, textStatus, errorThrown) {
+                    console.log(jqXHR);
+                    console.log(textStatus);
+                    console.log(errorThrown);
+                });
+        }else{
+            alert("seleccione un almacén y especifique una cantidad a atender mayor a cero.");
+        }
+
     }
 
 }
@@ -755,7 +764,8 @@ function llenarTablaListaItemsRequerimientoParaAtenderConAlmacen(data_req,data_a
             {'data': 'descripcion'},
             {'data': 'unidad_medida'},
             { render: function (data, type, row) { 
-                return  parseInt(row.cantidad - row.suma_transferencias);
+                // return  parseInt(row.cantidad - row.suma_transferencias);
+                return  parseInt(row.cantidad);
             }
         },
         {'data': 'razon_social_proveedor_seleccionado'},
@@ -799,7 +809,7 @@ function llenarTablaListaItemsRequerimientoParaAtenderConAlmacen(data_req,data_a
             function (data, type, row, meta){
                 let action='';
                 if(row.tiene_transformacion == false){
-                    action =`<input type="text" name="cantidad_a_atender" class="form-control" style="width: 70px; background:lightsteelblue;" data-indice="${meta.row}" onkeyup="updateInputCantidadAAtender(this,event);" value="0" />`;
+                    action =`<input type="text" name="cantidad_a_atender" class="form-control" style="width: 70px; background:lightsteelblue;" data-indice="${meta.row}" onkeyup="updateInputCantidadAAtender(this,event);" value="${parseInt(row.stock_comprometido?row.stock_comprometido:0)}" />`;
                     updateObjCantidadAAtender(meta.row,0);
                 } 
                 return action;
