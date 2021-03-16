@@ -459,7 +459,7 @@ class CorreoController extends Controller
                     ->setPassword($yourPassword);
             $mailer = new Swift_Mailer($transport);
             $message = (new \Swift_Message($payload['titulo']))
-            ->setFrom([$yourEmail => 'ERP'])
+            ->setFrom([$yourEmail => 'SYSTEM AGILE'])
             ->setTo($payload['email_destinatario'])
             ->addPart($payload['mensaje'],'text/html');
             if($mailer->send($message)){            

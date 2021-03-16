@@ -1032,42 +1032,42 @@ class DistribucionController extends Controller
                         ['alm_det_req.tiene_transformacion','=',($request->tiene_transformacion == 'si' ? true : false)]])
                 ->get();
     
-                $text = '';
+                $text = '<table><tbody>';
                 $i = 1;
                 foreach ($items as $item) {
-                    $text .= $i.'.- '.($item->item_part_number !== null ? $item->item_part_number : $item->prod_part_number).
-                    ' '.($item->item_descripcion !== null ? $item->item_descripcion : $item->prod_descripcion).
-                    '   Cantidad: '.$item->cantidad.' '.($item->item_unid !== null ? $item->item_unid : $item->prod_unid).
-                    '   Precio: '.($item->precio_referencial !== null ? ($item->simbolo.' '.$item->precio_referencial) : 0).'
-                    ';
+                    $text .= '<tr>
+                    <td>'.$i.'.-</td><td>'.($item->item_part_number !== null ? $item->item_part_number : $item->prod_part_number).'</td>
+                    <td>'.($item->item_descripcion !== null ? $item->item_descripcion : $item->prod_descripcion).'</td>
+                    <td> Cantidad: '.$item->cantidad.' '.($item->item_unid !== null ? $item->item_unid : $item->prod_unid).'</td>
+                    <td> Precio: '.($item->precio_referencial !== null ? ($item->simbolo.' '.$item->precio_referencial) : 0).'</td>
+                    </tr>';
                     $i++;
                 }
+                $text .= '</tbody></table>';
+                $asunto_facturacion = 'Generar '.$request->documento.' para el Requerimiento '.$req->codigo.' '.$req->concepto;
+                $asunto_almacen = 'Generar Guía de Venta para el Requerimiento '.$req->codigo.' '.$req->concepto;
     
-                $asunto_facturacion = 'Generar '.$request->documento.' para el '.$req->codigo.' '.$req->concepto;
-                $asunto_almacen = 'Generar Guía de Venta para el '.$req->codigo.' '.$req->concepto;
-    
-                $contenido = ' para el '.$req->codigo.' '.$req->concepto.' 
-        Empresa: '.$empresa->razon_social.'
+                $contenido = ' para el Requerimiento '.$req->codigo.' '.$req->concepto.' <br>
+                <br>Empresa: '.$empresa->razon_social.'<br>
                 
-        Datos del Cliente: <br>
-        - '.($request->documento == 'Boleta' ? 'DNI: '.$request->dni_persona : 'RUC: '.$request->cliente_ruc).'
-        - '.($request->documento == 'Boleta' ? 'Nombres y Apellidos: '.$request->nombre_persona : 'Razon Social: '.$request->cliente_razon_social).'
-        - Dirección: '.$request->direccion_destino.'
-        - Fecha Despacho: '.$request->fecha_despacho.'
-        - Hora Despacho: '.$request->hora_despacho.'
-    
-        Descripcion de Items:
+        <br>Datos del Cliente: <br>
+        - '.($request->documento == 'Boleta' ? 'DNI: '.$request->dni_persona : 'RUC: '.$request->cliente_ruc).'<br>
+        - '.($request->documento == 'Boleta' ? 'Nombres y Apellidos: '.$request->nombre_persona : 'Razon Social: '.$request->cliente_razon_social).'<br>
+        - Dirección: '.$request->direccion_destino.'<br>
+        - Fecha Despacho: '.$request->fecha_despacho.'<br>
+        - Hora Despacho: '.$request->hora_despacho.'<br>
+        <br>
+        Descripción de Items:<br>
                     '.$text.'
         '.($req->id_oc_propia !== null 
-        ? ('Ver Orden Física: '.$req->url_oc_fisica.' 
-        Ver Orden Electrónica: https://apps1.perucompras.gob.pe//OrdenCompra/obtenerPdfOrdenPublico?ID_OrdenCompra='.$req->id_oc_propia.'&ImprimirCompleto=1') : '').'
-
+        ? ('<br>Ver Orden Física: '.$req->url_oc_fisica.' 
+        <br>Ver Orden Electrónica: https://apps1.perucompras.gob.pe//OrdenCompra/obtenerPdfOrdenPublico?ID_OrdenCompra='.$req->id_oc_propia.'&ImprimirCompleto=1') : '').'
+        <br><br>
         *Este correo es generado de manera automática, por favor no responder.
-        
-        Saludos,
-        Módulo de Despachos
-        System AGILE
-        ';
+        <br><br>
+        Saludos,<br>
+        Módulo de Despachos<br>
+        SYSTEM AGILE';
             
                 $contenido_facturacion = '
     Favor de generar '.$request->documento.$contenido;
@@ -1076,9 +1076,10 @@ class DistribucionController extends Controller
     Favor de generar Guía de Venta'.$contenido;
     
                 $msj = '';
-                $email_destinatario[] = 'asistente.contable.lima@okcomputer.com.pe'; 
-                $email_destinatario[] = 'asistente.contable@okcomputer.com.pe'; 
-				$email_destinatario[] = 'programador01@okcomputer.com.pe'; 
+                // $email_destinatario[] = 'asistente.contable.lima@okcomputer.com.pe';
+                // $email_destinatario[] = 'asistente.contable@okcomputer.com.pe';
+				$email_destinatario[] = 'programador01@okcomputer.com.pe';
+				// $email_destinatario[] = 'administracionventas@okcomputer.com.pe';
                 // $destinatario_facturacion = 'programador01@okcomputer.com.pe';
                 // $destinatario_almacen = 'asistente.almacenilo@okcomputer.com.pe';
                 $payload=[
@@ -1089,7 +1090,7 @@ class DistribucionController extends Controller
                 ];
 
                 if (count($email_destinatario) > 0){
-                    $estado_envio = CorreoController::enviar_correo_a_usuario($payload);
+                    $estado_envio = (new CorreoController)->enviar_correo_a_usuario($payload);
                 }
                 // $rspta_facturacion = CorreoController::enviar_correo( $empresa->id_empresa, $destinatario_facturacion, 
                 //                                                       $asunto_facturacion, $contenido_facturacion);

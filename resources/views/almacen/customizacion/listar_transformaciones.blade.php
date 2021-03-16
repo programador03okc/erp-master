@@ -145,10 +145,6 @@ Gestión de Transformaciones
                     gestionCustomizacion.listarTransformaciones();
                 }
             }
-            // else if (tab=='#hth')
-            // {
-            //     $('#listaTransformacionesHijas').DataTable().ajax.reload();
-            // }
          });
     });
     </script>
