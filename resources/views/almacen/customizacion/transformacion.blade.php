@@ -92,7 +92,7 @@ Hoja de Transformación
                         <button type="button" class="btn btn-info btn-sm" onClick="imprimirTransformacion();" 
                             data-toggle="tooltip" data-placement="bottom" title="Imprimir Transformación">
                             <i class="fas fa-print"></i> </button>
-                        <button type="button" class="btn btn-primary btn-sm" onClick="openIniciar();" 
+                        <button type="button" class="btn btn-warning btn-sm" onClick="openIniciar();" 
                             data-toggle="tooltip" data-placement="bottom" title="Iniciar Transformación">
                             Iniciar <i class="fas fa-step-forward"></i> </button>
                         <button type="button" class="btn btn-success btn-sm" onClick="openProcesar();" 

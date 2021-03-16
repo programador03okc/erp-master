@@ -38,6 +38,7 @@ Gestión de Transformaciones
                                         <thead>
                                             <tr>
                                                 <th hidden></th>
+                                                <th></th>
                                                 <th>Código</th>
                                                 <th>Fecha Entrega</th>
                                                 <th>OCAM</th>
@@ -50,7 +51,7 @@ Gestión de Transformaciones
                                                 <!-- <th>Fecha Procesado</th> -->
                                                 <th>Almacén</th>
                                                 <th>Estado</th>
-                                                <th width="8%">Acción</th>
+                                                <th width="5%">Acción</th>
                                             </tr>
                                         </thead>
                                         <tbody style="font-size: 11px;"></tbody>

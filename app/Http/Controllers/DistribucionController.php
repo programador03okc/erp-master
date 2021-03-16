@@ -835,6 +835,7 @@ class DistribucionController extends Controller
                         'total_sobrantes'=>0,
                         'costo_transformacion'=>0,
                         'registrado_por'=>$usuario,
+                        'conformidad'=>false,
                         'tipo_cambio'=>1,
                         'fecha_registro'=>date('Y-m-d H:i:s'),
                         'estado'=>1,

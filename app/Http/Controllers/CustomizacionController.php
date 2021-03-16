@@ -675,10 +675,25 @@ class CustomizacionController extends Controller
         return response()->json($ing->id_mov_alm);
     }
 
+    public function recibido_conforme_transformacion($id){
+        $data = DB::table('almacen.transformacion')
+        ->where('id_transformacion',$id)
+        ->update([  'conformidad'=>true  ]);
+        return response()->json($data);
+    }
+
+    public function no_conforme_transformacion($id){
+        $data = DB::table('almacen.transformacion')
+        ->where('id_transformacion',$id)
+        ->update([  'conformidad'=>false  ]);
+        return response()->json($data);
+    }
+
     public function iniciar_transformacion($id){
         $data = DB::table('almacen.transformacion')
         ->where('id_transformacion',$id)
         ->update([  'estado'=>24,//iniciado
+                    'conformidad'=>true,
                     'fecha_inicio'=>date('Y-m-d H:i:s')
                     ]);
         return response()->json($data);
