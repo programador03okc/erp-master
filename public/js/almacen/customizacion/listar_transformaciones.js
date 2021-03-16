@@ -60,6 +60,21 @@ class GestionCustomizacion
                 {'data': 'id_transformacion'},
                 {'render':
                     function (data, type, row){
+                        return (row['estado'] == 21 ? (row['conformidad'] ? 
+                        `<button type="button" class="conformidad btn btn-success boton" data-toggle="tooltip" 
+                        data-placement="bottom" data-id="${row['id_transformacion']}" title="Cambiar a No Conforme" >
+                        <i class="fas fa-check"></i></button>` : 
+
+                        `<button type="button" class="noconformidad btn btn-danger boton" data-toggle="tooltip" 
+                        data-placement="bottom" data-id="${row['id_transformacion']}" title="Cambiar a Recibido Conforme" >
+                        <i class="fas fa-times"></i></button>`) : 
+                        
+                        row['estado'] == 24 ? '<i class="fas fa-check green" style="font-size: 15px;"></i>'
+                        : '<i class="fas fa-check-double blue"  style="font-size: 15px;"></i>');
+                    }
+                },
+                {'render':
+                    function (data, type, row){
                         return ('<label class="lbl-codigo" title="Abrir Transformación" onClick="abrir_transformacion('+row['id_transformacion']+')">'+row['codigo']+'</label>');
                     }
                 },
@@ -91,9 +106,14 @@ class GestionCustomizacion
                 },
                 {'render':
                     function (data, type, row){
-                        return ('<button type="button" class="imprimir btn btn-info boton" data-toggle="tooltip" '+
-                                    'data-placement="bottom" title="Imprimir Hoja de Transformación" data-id="'+row['id_transformacion']+'">'+
-                                    '<i class="fas fa-print"></i></button>');
+                        return (`<button type="button" class="imprimir btn btn-info boton" data-toggle="tooltip" 
+                                    data-placement="bottom" title="Imprimir Hoja de Transformación" data-id="${row['id_transformacion']}">
+                                    <i class="fas fa-print"></i></button>`+
+                                (row['estado'] == 21 ? //entregado
+                                `<button type="button" class="iniciar btn btn-info boton" data-toggle="tooltip" 
+                                    data-placement="bottom" title="Iniciar Transformación" data-id="${row['id_transformacion']}">
+                                    <i class="fas fa-step-forward"></i></button>`: '' )
+                                );
                     }
                 },
             ],
@@ -176,6 +196,58 @@ $('#listaTransformacionesPendientes tbody').on("click","button.imprimir", functi
     } else {
         alert('Debe seleccionar una Hoja de Transformación.');
     }
+});
+
+// $('#listaTransformacionesPendientes tbody').on("mouseover","button.conformidad", function(){
+//     $(this).find('i.fas').removeClass('fa-check');
+//     $(this).find('i.fas').addClass('fa-times');
+// });
+// $('#listaTransformacionesPendientes tbody').on("mouseout","button.conformidad", function(){
+//     $(this).find('i.fas').removeClass('fa-times');
+//     $(this).find('i.fas').addClass('fa-check');
+// });
+
+$('#listaTransformacionesPendientes tbody').on("click","button.conformidad", function(){
+    var id = $(this).data('id');
+    $.ajax({
+        type: 'GET',
+        url: 'no_conforme_transformacion/'+id,
+        dataType: 'JSON',
+        success: function(response){
+            console.log(response);
+            $('#listaTransformacionesPendientes').DataTable().ajax.reload();
+        }
+    }).fail( function( jqXHR, textStatus, errorThrown ){
+        console.log(jqXHR);
+        console.log(textStatus);
+        console.log(errorThrown);
+    });
+});
+
+// $('#listaTransformacionesPendientes tbody').on("mouseover","button.noconformidad", function(){
+//     $(this).find('i.fas').removeClass('fa-times');
+//     $(this).find('i.fas').addClass('fa-check');
+// });
+// $('#listaTransformacionesPendientes tbody').on("mouseout","button.noconformidad", function(){
+//     $(this).find('i.fas').removeClass('fa-check');
+//     $(this).find('i.fas').addClass('fa-times');
+// });
+
+$('#listaTransformacionesPendientes tbody').on("click","button.noconformidad", function(){
+    var id = $(this).data('id');
+    $.ajax({
+        type: 'GET',
+        url: 'recibido_conforme_transformacion/'+id,
+        dataType: 'JSON',
+        success: function(response){
+            console.log(response);
+            $('#listaTransformacionesPendientes').DataTable().ajax.reload();
+        }
+    }).fail( function( jqXHR, textStatus, errorThrown ){
+        console.log(jqXHR);
+        console.log(textStatus);
+        console.log(errorThrown);
+    });
 });
 
 $('#listaTransformaciones tbody').on("click","button.ingreso", function(){

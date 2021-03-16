@@ -439,7 +439,7 @@ function guardar_orden_despacho(data){
         dataType: 'JSON',
         success: function(response){
             console.log(response);
-            alert(response);
+            alert('Orden de Despacho guardada con éxito.');
             $('#modal-orden_despacho_create').modal('hide');
             
             od_seleccionadas = [];
