@@ -866,6 +866,7 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::get('mostrar_prods', 'AlmacenController@mostrar_prods');
 					Route::get('mostrar_prods_almacen/{id}', 'AlmacenController@mostrar_prods_almacen');
 					Route::get('mostrar_producto/{id}', 'AlmacenController@mostrar_producto');
+					Route::get('mostrar_categorias_tipo/{id}', 'AlmacenController@mostrar_categorias_tipo');
 					Route::post('guardar_producto', 'AlmacenController@guardar_producto');
 					Route::post('actualizar_producto', 'AlmacenController@update_producto');
 					Route::get('anular_producto/{id}', 'AlmacenController@anular_producto');

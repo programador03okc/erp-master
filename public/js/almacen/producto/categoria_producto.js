@@ -1,3 +1,41 @@
+$(function(){
+    var vardataTables = funcDatatables();
+
+    $('#listaCategoria').dataTable({
+        'dom': vardataTables[1],
+        'buttons': vardataTables[2],
+        'language' : vardataTables[0],
+        'ajax': 'listar_categorias',
+        'columns': [
+            {'data': 'id_categoria'},
+            {'data': 'codigo'},
+            {'data': 'tipo_descripcion'},
+            {'data': 'descripcion'}
+        ],
+        'columnDefs': [{ 'aTargets': [0], 'sClass': 'invisible'}],
+    });
+
+    $('.group-table .mytable tbody').on('click', 'tr', function(){
+        var status = $("#form-categoria").attr('type');
+        var form = $('.page-main form[type=register]').attr('id');
+
+        if (status !== "edition"){
+            if ($(this).hasClass('eventClick')){
+                $(this).removeClass('eventClick');
+            } else {
+                $('.dataTable').dataTable().$('tr.eventClick').removeClass('eventClick');
+                $(this).addClass('eventClick');
+            }
+            var id = $(this)[0].firstChild.innerHTML;
+            clearForm(form);
+            mostrar_categoria(id);
+            changeStateButton('historial');
+        }
+    });
+
+    
+});
+
 function mostrar_categoria(id){
     baseUrl = 'mostrar_categoria/'+id;
     $.ajax({
@@ -41,7 +79,7 @@ function save_categoria(data, action){
             if (response.length > 0){
                 alert(response);
             } else {
-                alert('Categoria registrado con exito');
+                alert('SubCategoría registrado con éxito');
                 $('#listaCategoria').DataTable().ajax.reload();
                 changeStateButton('guardar');
                 $('#form-categoria').attr('type', 'register');
@@ -66,8 +104,8 @@ function anular_categoria(ids){
         success: function(response){
             console.log(response);
             if (response >= 1){
-                alert('No es posible anular. \nLa categoria seleccionada está relacionada con '
-                +response+' subcategoría(s).');
+                alert('No es posible anular. \nLa subcategoria seleccionada está relacionada con '
+                +response+' marca(s).');
             }
             else {
                 $.ajax({
@@ -78,7 +116,7 @@ function anular_categoria(ids){
                     success: function(response){
                         console.log(response);
                         if (response > 0){
-                            alert('Categoria anulada con exito');
+                            alert('SubCategoría anulada con éxito');
                             $('#listaCategoria').DataTable().ajax.reload();
                             changeStateButton('anular');
                             clearForm('form-categoria');

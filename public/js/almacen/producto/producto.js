@@ -100,12 +100,14 @@ function mostrar_producto(id){
             $('[name=estado]').val(response['producto'][0].estado);
             $('[name=notas]').val(response['producto'][0].notas);
             $('[name=id_moneda]').val(response['producto'][0].id_moneda);
+
             if (response['producto'][0].imagen !== "" &&
                 response['producto'][0].imagen !== null){
                 $('#img').attr('src','/files/almacen/productos/'+response['producto'][0].imagen);
             } else {
                 $('#img').attr('src','/images/product-default.png');
             }
+
             $('[id=fecha_registro] label').text('');
             $('[id=fecha_registro] label').append(formatDateHour(response['producto'][0].fecha_registro));
 
@@ -126,7 +128,34 @@ function mostrar_producto(id){
     });
 }
 
-$("[name=id_categoria]").change( function() {
+$("[name=id_tipo_producto]").on('change', function() {
+    var id_tipo = $(this).val();
+    console.log(id_tipo);
+    $.ajax({
+        type: 'GET',
+        headers: {'X-CSRF-TOKEN': token},
+        url: 'mostrar_categorias_tipo/'+id_tipo,
+        dataType: 'JSON',
+        success: function(response){
+            console.log(response);
+
+            if (response.length > 0){
+                $('[name=id_categoria]').html('');
+                html = '<option value="0" >Elija una opción</option>';
+                response.forEach(element => {
+                    html+=`<option value="${element.id_categoria}" >${element.descripcion}</option>`;
+                });
+                $('[name=id_categoria]').html(html);
+            }
+        }
+    }).fail( function( jqXHR, textStatus, errorThrown ){
+        console.log(jqXHR);
+        console.log(textStatus);
+        console.log(errorThrown);
+    });
+});
+
+$("[name=id_categoria]").on('change', function() {
     var id = $('[name=id_producto]').val();
     if (id == ''){
         var sel = $(this).find('option:selected').text();
@@ -136,7 +165,7 @@ $("[name=id_categoria]").change( function() {
     console.log($(this).val());
 });
 
-$("[name=id_subcategoria]").change( function() {
+$("[name=id_subcategoria]").on('change', function() {
     var id = $('[name=id_producto]').val();
     if (id == ''){
         var sel = $(this).find('option:selected').text();
@@ -289,10 +318,10 @@ function validaProducto(){
     var msj = '';
 
     if (id_categoria == '' || id_categoria == '0'){
-        msj+='\n Es necesario que elija una Categoría';
+        msj+='\n Es necesario que elija una SubCategoría';
     }
     if (id_subcategoria == '' || id_subcategoria == '0'){
-        msj+='\n Es necesario que elija una SubCategoría';
+        msj+='\n Es necesario que elija una Marca';
     }
     if (id_clasif == '' || id_clasif == '0'){
         msj+='\n Es necesario que alija una Clasificación';

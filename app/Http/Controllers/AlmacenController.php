@@ -137,14 +137,15 @@ class AlmacenController extends Controller
         return view('almacen/producto/prod_catalogo');
     }
     function view_producto(){
+        $tipos = AlmacenController::mostrar_tipos_cbo();
         $clasificaciones = AlmacenController::mostrar_clasificaciones_cbo();
         $subcategorias = AlmacenController::mostrar_subcategorias_cbo();
-        $categorias = AlmacenController::mostrar_categorias_cbo();
+        // $categorias = AlmacenController::mostrar_categorias_cbo();
         $unidades = AlmacenController::mostrar_unidades_cbo();
         $posiciones = $this->mostrar_posiciones_cbo();
         $ubicaciones = $this->mostrar_ubicaciones_cbo();
         $monedas = AlmacenController::mostrar_moneda_cbo();
-        return view('almacen/producto/producto', compact('clasificaciones','subcategorias','categorias','unidades','posiciones','ubicaciones','monedas'));
+        return view('almacen/producto/producto', compact('tipos','clasificaciones','subcategorias','unidades','posiciones','ubicaciones','monedas'));
     }
     function view_almacenes(){
         $sedes = $this->mostrar_sedes_cbo();
@@ -893,6 +894,13 @@ class AlmacenController extends Controller
         $output['data'] = $data;
         return response()->json($output);
     }
+    public function mostrar_categorias_tipo($id_tipo){
+        $data = DB::table('almacen.alm_cat_prod')
+            ->where([['estado', '=', 1],['id_tipo_producto', '=', $id_tipo]])
+                ->orderBy('descripcion')
+                ->get();
+        return response()->json($data);
+    }
     public function mostrar_categoria($id){
         $data = DB::table('almacen.alm_cat_prod')
         ->select('alm_cat_prod.*', 'alm_tp_prod.descripcion as tipo_descripcion',
@@ -1193,25 +1201,29 @@ class AlmacenController extends Controller
         return response()->json($data);
     }
 
-    public function next_correlativo_prod($id_categoria, $id_subcategoria, $id_clasif)
+    public function next_correlativo_prod()
     {
+        // $cantidad = DB::table('almacen.alm_prod')
+        //     ->where([['id_categoria', '=', $id_categoria],
+        //             ['id_subcategoria', '=', $id_subcategoria],
+        //             ['id_clasif','=',$id_clasif]])
+        //     ->get()->count();
+
+        // $subcat = DB::table('almacen.alm_subcat')->select('codigo')
+        //     ->where('id_subcategoria', $id_subcategoria)
+        //     ->first();
+
+        // $cat = DB::table('almacen.alm_cat_prod')->select('codigo')
+        //     ->where('id_categoria', $id_categoria)
+        //     ->first();
+
         $cantidad = DB::table('almacen.alm_prod')
-            ->where([['id_categoria', '=', $id_categoria],
-                    ['id_subcategoria', '=', $id_subcategoria],
-                    ['id_clasif','=',$id_clasif]])
+            ->where([['estado','!=',7]])
             ->get()->count();
 
-        $subcat = DB::table('almacen.alm_subcat')->select('codigo')
-            ->where('id_subcategoria', $id_subcategoria)
-            ->first();
-
-        $cat = DB::table('almacen.alm_cat_prod')->select('codigo')
-            ->where('id_categoria', $id_categoria)
-            ->first();
-
-        $clasif = AlmacenController::leftZero(2,$id_clasif);
-        $prod = AlmacenController::leftZero(3,$cantidad+1);
-        $nextId = $cat->codigo.$subcat->codigo.$clasif.$prod;
+        // $clasif = AlmacenController::leftZero(2,$id_clasif);
+        $nextId = AlmacenController::leftZero(7, ($cantidad + 1));
+        // $nextId = $cat->codigo.$subcat->codigo.$clasif.$prod;
         return $nextId;
     }
 
@@ -1248,7 +1260,7 @@ class AlmacenController extends Controller
     public function guardar_producto(Request $request)
     {
         $fecha = date('Y-m-d H:i:s');
-        $codigo = $this->next_correlativo_prod($request->id_categoria, $request->id_subcategoria, $request->id_clasif);
+        $codigo = $this->next_correlativo_prod();
         $msj = '';
         $des = strtoupper($request->descripcion);
 

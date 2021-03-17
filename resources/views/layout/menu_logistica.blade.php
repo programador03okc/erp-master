@@ -203,13 +203,13 @@
                 </a>
                 <ul class="treeview-menu">
                 @if(Auth::user()->tieneAplicacion(70))
-                <li><a href="{{route('logistica.almacen.catalogos.tipos.index')}}"><i class="far fa-circle fa-xs"></i> Tipo </a></li>
+                <li><a href="{{route('logistica.almacen.catalogos.tipos.index')}}"><i class="far fa-circle fa-xs"></i> Categoría </a></li>
                 @endif
                 @if(Auth::user()->tieneAplicacion(71))
-                <li><a href="{{route('logistica.almacen.catalogos.categorias.index')}}"><i class="far fa-circle fa-xs"></i> Categoría</a></li>
+                <li><a href="{{route('logistica.almacen.catalogos.categorias.index')}}"><i class="far fa-circle fa-xs"></i> SubCategoría</a></li>
                 @endif
                 @if(Auth::user()->tieneAplicacion(72))
-                <li><a href="{{route('logistica.almacen.catalogos.sub-categorias.index')}}"><i class="far fa-circle fa-xs"></i> SubCategoría</a></li>
+                <li><a href="{{route('logistica.almacen.catalogos.sub-categorias.index')}}"><i class="far fa-circle fa-xs"></i> Marca</a></li>
                 @endif
                 @if(Auth::user()->tieneAplicacion(73))
                 <li><a href="{{route('logistica.almacen.catalogos.clasificaciones.index')}}"><i class="far fa-circle fa-xs"></i> Clasificación</a></li>

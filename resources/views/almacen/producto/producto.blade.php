@@ -61,16 +61,16 @@
                                             data-buttonName="btn-primary" data-buttonText="Seleccionar imagen"
                                             data-size="sm" data-iconName="fa fa-folder-open" data-disabled="true">
                                     </div>
-                                    <div class="row" style="margin-bottom: 0;">
-                                        <div class="col-md-12">
-                                            <div class="form-group">
+                                    <!-- <div class="row" style="margin-bottom: 0;">
+                                        <div class="col-md-12"> -->
+                                            <!-- <div class="form-group">
                                                 <h5></h5>
                                                 <div class="icheckbox_flat-blue">
                                                     <label style="display:flex;">
                                                         <input type="checkbox" class="flat-red" name="series" value="0">
                                                     </label>
                                                 </div> Control de Series
-                                            </div>
+                                            </div> -->
                                             <!-- <div class="form-group">
                                                 <h5></h5>
                                                 <div class="icheckbox_flat-blue">
@@ -79,22 +79,50 @@
                                                     </label>
                                                 </div> Afecto a I.G.V. (Gravado)
                                             </div> -->
-                                        </div>
-                                    </div>
-                                    <div class="row">
+                                        <!-- </div>
+                                    </div> -->
+                                    <!-- <div class="row">
                                         <fieldset class="group-importes" style="margin-top: 0px;"><legend><h6>Códigos Antiguos</h6></legend>
                                             <table id="antiguos" class="table-group">
                                                 <tbody></tbody>
                                             </table>
                                         </fieldset>
-                                    </div>
+                                    </div> -->
+                                    
                                 </div>
                             </div>
+                            <fieldset class="group-importes"><legend><h6>Unidad Equivalente</h6></legend>
+                                <table id="unidad" class="table-group">
+                                    <tbody>
+                                        <tr>
+                                            <td>Cantidad x Presentación:</td>
+                                            <td>
+                                                <div class="input-group">
+                                                    <input type="number" class="form-control activation" name="cant_pres" disabled="true"/>
+                                                    <span class="input-group-addon" name="abr_id_unid_equi"></span>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Unidad Equivalente:</td>
+                                            <td>
+                                                <select class="form-control activation " style="font-size:12px;" 
+                                                    name="id_unid_equi" disabled="true" onChange="unid_abrev('id_unid_equi');">
+                                                    <option value="0">Elija una opción</option>
+                                                    @foreach ($unidades as $unid)
+                                                        <option value="{{$unid->id_unidad_medida}}">{{$unid->descripcion}} - {{$unid->abreviatura}}</option>
+                                                    @endforeach
+                                                </select>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </fieldset>
                         </div>
                         <div class="col-md-9">
                             <div class="row" style="margin-bottom: 0;margin-top: 0;">
                                 <div class="col-md-12">
-                                    <ol class="breadcrumb"  style="padding-left: 20px;padding-right: 10px;">
+                                    <ol class="breadcrumb"  style="padding-left: 20px;padding-right: 10px;margin-bottom:0px">
                                         <li><label id="codigo"></label></li>
                                         <li><label id="tipo_descripcion"></label></li>
                                         <li><label id="cat_descripcion"></label></li>
@@ -103,15 +131,21 @@
                                 </div>
                                 <div class="col-md-4">
                                     <h5>Categoría</h5>
-                                    <select class="form-control activation js-example-basic-single" name="id_categoria" disabled="true">
-                                        <option value="0">Elija una opción</option>
-                                        @foreach ($categorias as $cat)
-                                            <option value="{{$cat->id_categoria}}">{{$cat->descripcion}}</option>
+                                    <select class="form-control activation js-example-basic-single" name="id_tipo_producto" disabled="true">
+                                        <option value="0" >Elija una opción</option>
+                                        @foreach ($tipos as $tp)
+                                            <option value="{{$tp->id_tipo_producto}}">{{$tp->descripcion}}</option>
                                         @endforeach
                                     </select>
                                 </div>
                                 <div class="col-md-4">
                                     <h5>SubCategoría</h5>
+                                    <select class="form-control activation js-example-basic-single" name="id_categoria" disabled="true">
+                                        
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <h5>Marca</h5>
                                     <select class="form-control activation js-example-basic-single" name="id_subcategoria" disabled="true">
                                         <option value="0">Elija una opción</option>
                                         @foreach ($subcategorias as $subcat)
@@ -119,20 +153,8 @@
                                         @endforeach
                                     </select>
                                 </div>
-                                <!-- {{-- <div class="col-md-4">
-                                    <h5>Subcategoría</h5>
-                                    <div class="input-group-okc">
-                                        <input type="hidden" name="id_subcategoria" >
-                                        <input type="text" class="form-control" aria-describedby="basic-addon2" 
-                                            readonly name="subcat_descripcion" disabled="true">
-                                        <div class="input-group-append">
-                                            <button type="button" class="input-group-text" id="basic-addon2"
-                                                onClick="subCategoriaModal();">
-                                                <i class="fa fa-search"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div> --}} -->
+                            </div>
+                            <div class="row">
                                 <div class="col-md-4">
                                     <h5>Clasificación</h5>
                                     <select class="form-control activation js-example-basic-single" name="id_clasif" disabled="true">
@@ -142,22 +164,36 @@
                                         @endforeach
                                     </select>
                                 </div>
-                            </div>
-                            <div class="row" style="margin-bottom: 0;">
-                                <div class="col-md-12">
-                                    <h5>Descripción</h5>
-                                    <input type="text" class="form-control activation" name="descripcion" onkeyup="mayus(this);" disabled="true">
-                                </div>
-                            </div>
-                            <div class="row" style="margin-bottom: 0;">
-                                <div class="col-md-4">
-                                    <h5>Código Anexo</h5>
-                                    <input type="text" class="form-control activation" name="codigo_anexo" disabled="true">
-                                </div>              
                                 <div class="col-md-4">
                                     <h5>Part Number</h5>
                                     <input type="text" class="form-control activation" name="part_number" disabled="true">
                                 </div>
+                                <div class="col-md-4">
+                                    <h5>Unidad Medida</h5>
+                                    <select class="form-control activation " name="id_unidad_medida" 
+                                        disabled="true" onChange="unid_abrev('id_unidad_medida');">
+                                        <option value="0">Elija una opción</option>
+                                        @foreach ($unidades as $unid)
+                                            <option value="{{$unid->id_unidad_medida}}">{{$unid->descripcion}}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row" style="margin-bottom: 0;">
+                                <div class="col-md-12">
+                                    <h5>Descripción</h5>
+                                    <textarea name="descripcion" class="form-control activation" rows="5" cols="10"
+                                    onkeyup="mayus(this);"></textarea>
+                                    <!-- <input type="text" class="form-control activation" name="descripcion" onkeyup="mayus(this);" disabled="true"> -->
+                                </div>
+                            </div>
+                            <div class="row" style="margin-bottom: 0;">
+                                <!-- <div class="col-md-4">
+                                    <h5>Código Anexo</h5>
+                                    <input type="text" class="form-control activation" name="codigo_anexo" disabled="true">
+                                </div>               -->
+                            </div>
+                            <div class="row">
                                 <div class="col-sm-4">
                                     <h5>Moneda</h5>
                                     <select class="form-control group-elemento activation" name="id_moneda" disabled="true">
@@ -167,52 +203,8 @@
                                         @endforeach
                                     </select>
                                 </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <fieldset class="group-importes"><legend><h6>Unidades de Medida</h6></legend>
-                                        <table id="unidad" class="table-group">
-                                            <tbody>
-                                                <tr>
-                                                    <td>Unidad de Medida:</td>
-                                                    <td>
-                                                        <span hidden name="abr_id_unidad_medida"></span>
-                                                        <select class="form-control activation " name="id_unidad_medida" 
-                                                            disabled="true" onChange="unid_abrev('id_unidad_medida');">
-                                                            <option value="0">Elija una opción</option>
-                                                            @foreach ($unidades as $unid)
-                                                                <option value="{{$unid->id_unidad_medida}}">{{$unid->descripcion}} - {{$unid->abreviatura}}</option>
-                                                            @endforeach
-                                                        </select>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>Cantidad x Presentación:</td>
-                                                    <td>
-                                                        <div class="input-group">
-                                                            <input type="number" class="form-control activation" name="cant_pres" disabled="true"/>
-                                                            <span class="input-group-addon" name="abr_id_unid_equi"></span>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>Unidad Equivalente:</td>
-                                                    <td>
-                                                        <select class="form-control activation " style="font-size:12px;" 
-                                                            name="id_unid_equi" disabled="true" onChange="unid_abrev('id_unid_equi');">
-                                                            <option value="0">Elija una opción</option>
-                                                            @foreach ($unidades as $unid)
-                                                                <option value="{{$unid->id_unidad_medida}}">{{$unid->descripcion}} - {{$unid->abreviatura}}</option>
-                                                            @endforeach
-                                                        </select>
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </fieldset>
-                                </div>
                                 <div class="col-md-8">
-                                    <h5>Notas</h5>
+                                    <h5>Especificaciones del Producto</h5>
                                     <textarea name="notas" class="form-control activation" rows="8" cols="30"></textarea>
                                 </div>
                             </div>
