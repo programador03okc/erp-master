@@ -1122,8 +1122,8 @@ class OrdenController extends Controller
                 'contab_contri.telefono AS telefono_empresa',
                 'contab_contri.email AS email_empresa',
                 'adm_empresa.logo_empresa',
-                'log_ord_compra.id_requerimiento',
-                'alm_req.codigo as codigo_requerimiento',
+                // 'log_ord_compra.id_requerimiento',
+                // 'alm_req.codigo as codigo_requerimiento',
                 'log_ord_compra.fecha AS fecha_orden',
                 'sis_moneda.descripcion as moneda_descripcion',
                 'log_ord_compra.personal_autorizado',
@@ -1148,7 +1148,7 @@ class OrdenController extends Controller
             ->join('logistica.log_prove', 'log_prove.id_proveedor', '=', 'log_ord_compra.id_proveedor')
             ->Join('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'log_prove.id_contribuyente')
             ->Join('contabilidad.sis_identi', 'sis_identi.id_doc_identidad', '=', 'adm_contri.id_doc_identidad')
-            ->leftJoin('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'log_ord_compra.id_requerimiento')
+            // ->leftJoin('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'log_ord_compra.id_requerimiento')
             ->leftJoin('administracion.sis_sede', 'sis_sede.id_sede', '=', 'log_ord_compra.id_sede')
             ->leftJoin('administracion.adm_empresa', 'adm_empresa.id_empresa', '=', 'sis_sede.id_empresa')
             ->leftJoin('contabilidad.adm_contri as contab_contri', 'contab_contri.id_contribuyente', '=', 'adm_empresa.id_contribuyente')
@@ -1228,7 +1228,7 @@ class OrdenController extends Controller
                     'codigo' => $data->codigo,
                     'fecha_orden' => $data->fecha_orden,
                     'tipo_documento' => $data->tipo_documento,
-                    'codigo_requerimiento' => $data->codigo_requerimiento,
+                    // 'codigo_requerimiento' => $data->codigo_requerimiento,
                     'fecha_registro' => $data->fecha,
                     'moneda_simbolo' => $data->moneda_simbolo, 
                     // 'monto_igv' => $data->monto_igv,
@@ -1258,7 +1258,9 @@ class OrdenController extends Controller
                     'condicion_compra'=>[
                         'id_condicion' => $data->id_condicion,
                         'condicion_pago' => $data->condicion_pago,
-                        'plazo_dias' => $data->plazo_dias
+                        'plazo_dias' => $data->plazo_dias,
+                        'plazo_entrega' => $data->plazo_entrega
+
 
                     ],
                     'datos_para_despacho'=>[
@@ -1321,12 +1323,15 @@ class OrdenController extends Controller
             }
         }
 
+        $codigoReqList=[];
+        $idCcList=[];
         if(count($idDetalleReqList) > 0){
             $req = DB::table('almacen.alm_det_req')
             ->select(
                 'alm_req.id_requerimiento',
                 'alm_req.codigo',
-                'alm_req.concepto'
+                'alm_req.concepto',
+                'alm_req.id_cc'
                 )
             ->join('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'alm_det_req.id_requerimiento')
             ->whereIn('alm_det_req.id_detalle_requerimiento',$idDetalleReqList)
@@ -1336,9 +1341,26 @@ class OrdenController extends Controller
             if(count($req) >0){
                 foreach($req as $data){
                     $codigoReqList[]=$data->codigo;
+                    $idCcList[]=$data->id_cc;
                 }
             }
+
+            $cdc = DB::table('mgcp_cuadro_costos.cc')
+            ->select(
+                'oportunidades.codigo_oportunidad',
+                'users.name as nombre_responsable'
+                )
+            ->join('mgcp_oportunidades.oportunidades', 'oportunidades.id', '=', 'cc.id_oportunidad')
+            ->join('mgcp_cuadro_costos.responsables', 'responsables.id', '=', 'oportunidades.id_responsable')
+            ->join('mgcp_usuarios.users', 'users.id', '=', 'oportunidades.id_responsable')
+            ->whereIn('cc.id',$idCcList)
+            ->distinct()
+            ->get();
         }
+
+
+
+
 
         $codigoReqText = implode(",", $codigoReqList);
 
@@ -1348,6 +1370,8 @@ class OrdenController extends Controller
         ];
 
         $result['head']['codigo_requerimiento']=$codigoReqText;
+        $result['head']['codigo_cc']=$cdc->first()->codigo_oportunidad?$cdc->first()->codigo_oportunidad:'';
+        $result['head']['nombre_responsable_cc']=$cdc->first()->nombre_responsable?$cdc->first()->nombre_responsable:'';
 
         return $result;
     }
@@ -1470,39 +1494,9 @@ class OrdenController extends Controller
                     <tr>
                         <td nowrap  width="15%" class="subtitle">Contacto:</td>
                         <td class="verticalTop">' . $ordenArray['head']['proveedor']['contacto']['nombre_contacto'] . ' - '.$ordenArray['head']['proveedor']['contacto']['cargo_contacto'] . '</td>
-                        <td nowrap  width="15%" class="subtitle">Req. :</td>
-                        <td class="verticalTop left">' . $ordenArray['head']['codigo_requerimiento'] . '</td
+                         
                     </tr>
-                    <tr>
-                        <td nowrap  width="15%" class="subtitle">Forma de Pago:</td>
-                        <td  class="verticalTop left">' . $ordenArray['head']['condicion_compra']['condicion_pago'] . '</td>';
-
-                        if($ordenArray['head']['condicion_compra']['id_condicion'] ==2){
-                            $html.='<tr>
-                                        <td nowrap  width="15%" class="subtitle">Plazo:</td>
-                                        <td  class="verticalTop left">' . $ordenArray['head']['condicion_compra']['plazo_dias'] . '';
-                                        if ($ordenArray['condiciones']['plazo_dias'] > 0) {
-                                            $html .= ' días </td>';
-                                        }else{
-                                            $html .= '</td>';
-                                        }
-                            
-                        }
-
-                    $html.='</tr>
-                    <tr>
-                        <td width="15%" class="verticalTop subtitle">Facturar a:</td>
-                        <td colSpan="3" class="verticalTop">' . $ordenArray['head']['facturar_a_nombre']['razon_social_empresa'].' '.$ordenArray['head']['facturar_a_nombre']['tipo_doc_empresa'].': '.$ordenArray['head']['facturar_a_nombre']['nro_documento_empresa'].', <br>con dirección: '.$ordenArray['head']['facturar_a_nombre']['direccion_fiscal_empresa'] .',<br>'.$ordenArray['head']['facturar_a_nombre']['ubigeo_empresa'].'</td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td width="15%"class="verticalTop subtitle">Despachar a:</td>
-                        <td class="verticalTop">' . $ordenArray['head']['datos_para_despacho']['direccion_destino'] .'<br>'.$ordenArray['head']['datos_para_despacho']['ubigeo_destino'] .'</td>
-                        <td width="15%" class="verticalTop subtitle">Autorizado:</td>
-                        <td class="verticalTop">' . $ordenArray['head']['datos_para_despacho']['nombre_personal_autorizado'] .'</td>
-                    </tr>>
->
+ 
                 </table>';
 
                 $html.='<p class="left" style="color:#d04f46">';
@@ -1585,10 +1579,80 @@ class OrdenController extends Controller
                 </tr>
                 </table>
                 <br>
+                <br>';
+                
+        
+                $html.='
+                <table width="100%" border=0>
+                <caption class="left subtitle" style="padding-bottom:10px; font-size:0.6rem">Condición de Compra:</caption>
+
+                <tr>
+                <td nowrap  width="15%" class="subtitle">Forma de Pago: </td>
+                <td  class="verticalTop left">' . $ordenArray['head']['condicion_compra']['condicion_pago'] . '</td>';
+
+                if($ordenArray['head']['condicion_compra']['id_condicion'] ==2){
+                    $html.='<tr>
+                                <td nowrap  width="15%" class="subtitle">Plazo: </td>
+                                <td  class="verticalTop left">' . $ordenArray['head']['condicion_compra']['plazo_dias'] . '';
+                                if ($ordenArray['condiciones']['plazo_dias'] > 0) {
+                                    $html .= ' días </td>';
+                                }else{
+                                    $html .= '</td>';
+                                }
+                    
+                }
+
+            $html.=' 
+                    <td width="15%" class="verticalTop subtitle">Plazo entrega: </td>
+                    <td class="verticalTop">' . $ordenArray['head']['condicion_compra']['plazo_entrega'].' Días</td>
+            
+                </tr>
+                <tr>
+                    <td width="15%" class="verticalTop subtitle">CDC / Req.: </td>
+                    <td class="verticalTop">' . ($ordenArray['head']['codigo_cc']?$ordenArray['head']['codigo_cc']:$ordenArray['head']['codigo_requerimiento']) . '</td
+                    <td nowrap width="15%" class="verticalTop subtitle">Ejecutivo Responsable: </td>
+                    <td class="verticalTop ">' . ($ordenArray['head']['nombre_responsable_cc']) . '</td
+                </tr>
+                </table>
+                <br>
+                ';                
+       $html.='
+                <table width="100%" border=0>
+                <caption class="left subtitle" style="padding-bottom:10px; font-size:0.6rem">Datos para el Despacho:</caption>
+
+                <tr>
+                    <td nowrap  width="15%" class="verticalTop subtitle">Destino / Dirección: </td>
+                    <td class="verticalTop">' . $ordenArray['head']['datos_para_despacho']['direccion_destino'] .'<br>'.$ordenArray['head']['datos_para_despacho']['ubigeo_destino'] .'</td>
+                    <td width="15%" class="verticalTop subtitle">Autorizado:</td>
+                    <td class="verticalTop">' . $ordenArray['head']['datos_para_despacho']['nombre_personal_autorizado'] .'</td>
+                </tr>
+                </table>
                 <br>
                 
-                
-                <br>
+        ';
+
+        $html.='
+            <table width="100%" border=0>
+                <caption class="left subtitle" style="padding-bottom:10px; font-size:0.6rem">Facturar a Nombre:</caption>
+
+                <tr>
+                    <td nowrap  width="15%" class="verticalTop subtitle">Razón Social: </td>
+                    <td class="verticalTop">' . $ordenArray['head']['facturar_a_nombre']['razon_social_empresa'].'</td>
+                </tr>
+                <tr>
+                    <td nowrap  width="15%" class="verticalTop subtitle">RUC: </td>
+                    <td class="verticalTop">' . $ordenArray['head']['facturar_a_nombre']['nro_documento_empresa'].'</td>
+                </tr>
+                <tr>
+                    <td nowrap  width="15%" class="verticalTop subtitle">Dirección: </td>
+                    <td class="verticalTop">' .$ordenArray['head']['facturar_a_nombre']['direccion_fiscal_empresa'] .',<br>'.$ordenArray['head']['facturar_a_nombre']['ubigeo_empresa'].'</td>
+
+                </tr>
+            </table>
+            <br>
+        ';
+
+        $html.= '<br>
 
                     <footer>
                         <p style="font-size:7px; " class="pie_de_pagina">GENERADO POR:' . $ordenArray['head']['nombre_usuario'] .  '</p>
