@@ -666,7 +666,7 @@ function guardarAtendidoConAlmacen(){
         } 
     });
     if(hasCantidadNoPermitida== false){
-        console.log(newItemsParaAtenderConAlmacenList);
+        // console.log(newItemsParaAtenderConAlmacenList);
         if(newItemsParaAtenderConAlmacenList.length >0){
             $.ajax({
                     type: 'POST',
@@ -741,6 +741,9 @@ function updateInputCantidadAAtender(obj,event){
 
 function llenarTablaListaItemsRequerimientoParaAtenderConAlmacen(data_req,data_almacenes){
     // console.log(data_req);
+  
+    console.log(itemsParaAtenderConAlmacenList);
+
     var vardataTables = funcDatatables();
     $('#listaItemsRequerimientoParaAtenderConAlmacen').dataTable({
         'scrollY':        '50vh',
@@ -810,7 +813,7 @@ function llenarTablaListaItemsRequerimientoParaAtenderConAlmacen(data_req,data_a
                 let action='';
                 if(row.tiene_transformacion == false){
                     action =`<input type="text" name="cantidad_a_atender" class="form-control" style="width: 70px; background:lightsteelblue;" data-indice="${meta.row}" onkeyup="updateInputCantidadAAtender(this,event);" value="${parseInt(row.stock_comprometido?row.stock_comprometido:0)}" />`;
-                    updateObjCantidadAAtender(meta.row,0);
+                    updateObjCantidadAAtender(meta.row,row.stock_comprometido);
                 } 
                 return action;
                 }
@@ -838,8 +841,8 @@ function llenarTablaListaItemsRequerimientoParaAtenderConAlmacen(data_req,data_a
 function AtendidoPorAlmacen(obj){ // ya no se usa
     let id_requerimiento = obj.dataset.id_requerimiento;
     let id_detalle_requerimiento = obj.dataset.id_detalle_requerimiento;
-    console.log(id_requerimiento);
-    console.log(id_detalle_requerimiento);
+    // console.log(id_requerimiento);
+    // console.log(id_detalle_requerimiento);
 
     $.ajax({
         type: 'PUT',
