@@ -76,7 +76,7 @@ function save_subcategoria(data, action){
             if (response.length > 0){
                 alert(response);
             } else { 
-                alert('SubCategoria registrado con exito');
+                alert('Marca registrada con éxito');
                 $('#listaSubCategoria').DataTable().ajax.reload();
                 changeStateButton('guardar');
                 $('#form-subcategoria').attr('type', 'register');
@@ -101,7 +101,7 @@ function anular_subcategoria(ids){
         success: function(response){
             console.log(response);
             if (response >= 1){
-                alert('No es posible anular. \nLa subcategoria seleccionada está relacionada con '
+                alert('No es posible anular. \nLa marca seleccionada está relacionada con '
                 +response+' producto(s).');
             }
             else {
@@ -113,7 +113,7 @@ function anular_subcategoria(ids){
                     success: function(response){
                         console.log(response);
                         if (response > 0){
-                            alert('SubCategoria anulada con exito');
+                            alert('Marca anulada con éxito');
                             $('#listaSubCategoria').DataTable().ajax.reload();
                             changeStateButton('anular');
                             clearForm('form-subcategoria');

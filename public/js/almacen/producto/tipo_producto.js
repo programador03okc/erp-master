@@ -9,17 +9,7 @@ $(function(){
         'ajax': 'listar_tipos',
         'columns': [
             {'data': 'id_tipo_producto'},
-            {'data': 'descripcion'},
-            {'render':
-                function (data, type, row){
-                    return ((row['estado'] == 1) ? 'Activo' : 'Inactivo');
-                }
-            },
-            {'render':
-                function (data, type, row){
-                    return (formatDate(row['fecha_registro']));
-                }
-            }
+            {'data': 'descripcion'}
         ],
         'columnDefs': [{ 'aTargets': [0], 'sClass': 'invisible'}]
     });
@@ -82,7 +72,7 @@ function save_tipo(data, action){
             if (response.length > 0){
                 alert(response);
             } else {
-                alert('Tipo registrado con éxito');
+                alert('Categoría registrada con éxito');
                 $('#listaTipo').DataTable().ajax.reload();
                 changeStateButton('guardar');
                 $('#form-tipo').attr('type', 'register');
@@ -120,7 +110,7 @@ function anular_tipo(ids){
                         if (response.length > 0){
                             alert(response);
                         } else {
-                            alert('Tipo anulado con exito');
+                            alert('Categoría anulada con éxito');
                             $('#listaTipo').DataTable().ajax.reload();
                             changeStateButton('anular');
                             clearForm('form-tipo');

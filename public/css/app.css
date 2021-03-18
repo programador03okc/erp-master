@@ -1200,6 +1200,9 @@ span.select2-selection {
 #listaCu_filter,
 #listaCuadrosCostos_filter,
 #requerimientosConfirmados_filter,
+#requerimientosEnProceso_filter,
+#requerimientosEnTransformacion_filter,
+#pendientesRetornoCargo_filter,
 #listaTransformacionesPendientes_filter,
 #listaTransformaciones_filter {
   margin: 0;
@@ -1244,6 +1247,9 @@ span.select2-selection {
 #listaCuadrosCostos_filter label input[type=search],
 #listaTransformacionesMadres_filter label input[type=search],
 #requerimientosConfirmados_filter label input[type=search],
+#requerimientosEnProceso_filter label input[type=search],
+#requerimientosEnTransformacion_filter label input[type=search],
+#pendientesRetornoCargo_filter label input[type=search],
 #listaTransformacionesPendientes_filter label input[type=search],
 #listaTransformaciones_filter label input[type=search] {
   width: 95%;

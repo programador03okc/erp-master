@@ -12,7 +12,7 @@
 @endif
 
 @section('cabecera')
-    SubCategoría
+    Marca
 @endsection
 
 @section('breadcrumb')
@@ -35,7 +35,6 @@
                             <th hidden>Id</th>
                             <th>Código</th>
                             <th>Descripción</th>
-                            {{-- <th>Estado</th> --}}
                         </tr>
                     </thead>
                     <tbody></tbody>
@@ -52,37 +51,11 @@
                         <input type="text" class="form-control" readonly name="codigo">
                     </div>
                 </div>
-                {{-- <div class="row">
-                    <div class="col-md-4">
-                        <h5>Tipo</h5>
-                        <input type="text" class="form-control" readonly name="tipo_descripcion">                        
-                    </div>
-                    <div class="col-md-5">
-                        <h5>Categoria</h5>
-                        <div class="input-group-okc">
-                            <input type="hidden" class="form-control" name="id_categoria">
-                            <input type="text" class="form-control" readonly 
-                                aria-describedby="basic-addon2" name="cat_descripcion">
-                            <div class="input-group-append">
-                                <button type="button" class="input-group-text" id="basic-addon2" onClick="categoriaModal();">
-                                    <i class="fa fa-search"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div> --}}
                 <div class="row">
                     <div class="col-md-12">
                         <h5>Descripción</h5>
                         <input type="text" class="form-control activation" name="descripcion">
                     </div>
-                    {{-- <div class="col-md-3">
-                        <h5>Estado</h5>
-                        <select class="form-control activation" name="estado" readonly>
-                            <option value="1" selected>Activo</option>
-                            <option value="2">Inactivo</option>
-                        </select>
-                    </div> --}}
                 </div>
                 <div class="row">
                     <div class="col-md-12">
