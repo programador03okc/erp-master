@@ -8,7 +8,7 @@ $(function(){
         'ajax': 'listar_categorias',
         'columns': [
             {'data': 'id_categoria'},
-            {'data': 'codigo'},
+            // {'data': 'codigo'},
             {'data': 'tipo_descripcion'},
             {'data': 'descripcion'}
         ],
@@ -45,7 +45,7 @@ function mostrar_categoria(id){
         dataType: 'JSON',
         success: function(response){
             $('[name=id_categoria]').val(response[0].id_categoria);
-            $('[name=codigo]').val(response[0].codigo);
+            // $('[name=codigo]').val(response[0].codigo);
             $('[name=id_tipo_producto]').val(response[0].id_tipo_producto);
             $('[name=descripcion]').val(response[0].descripcion);
             // $('[name=estado]').val(response[0].estado);

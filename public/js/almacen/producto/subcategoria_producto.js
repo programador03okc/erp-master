@@ -27,7 +27,7 @@ function listarSubCategorias(){
         'ajax': 'listar_subcategorias',
         'columns': [
             {'data': 'id_subcategoria'},
-            {'data': 'codigo'},
+            // {'data': 'codigo'},
             {'data': 'descripcion'},
             // {'data': 'estado'}
         ],
@@ -44,7 +44,7 @@ function mostrar_subcategoria(id){
         success: function(response){
             console.log(response[0]);
             $('[name=id_subcategoria]').val(response[0].id_subcategoria);
-            $('[name=codigo]').val(response[0].codigo);
+            // $('[name=codigo]').val(response[0].codigo);
             $('[name=descripcion]').val(response[0].descripcion);
             $('[name=estado]').val(response[0].estado);
             $('#fecha_registro label').text('');

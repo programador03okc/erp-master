@@ -33,7 +33,7 @@
                     <thead>
                         <tr>
                             <th hidden>Id</th>
-                            <th>Código</th>
+                            <!-- <th>Código</th> -->
                             <th>Categoría</th>
                             <th>Descripción</th>
                         </tr>
@@ -46,11 +46,11 @@
             <form id="form-categoria" type="register" form="formulario">
                 <input type="hidden" name="_token" value="{{csrf_token()}}" id="token">
                 <div class="row">
-                    <div class="col-md-4">
+                    <!-- <div class="col-md-4">
                         <h5>Codigo</h5>
                         <input type="hidden" class="form-control" name="id_categoria" primary="ids">
                         <input type="text" class="form-control" readonly name="codigo">
-                    </div>
+                    </div> -->
                     <div class="col-md-8">
                         <h5>Categoría</h5>
                         <select class="form-control" name="id_tipo_producto" disabled="true">
