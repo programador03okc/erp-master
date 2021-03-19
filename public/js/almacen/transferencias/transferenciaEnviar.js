@@ -182,36 +182,36 @@ function mostrarDetalleTransferencia(listaDetalle){
     $('#detalleTransferencia tbody').html(html);
 }
 
-function listarSeries(id_guia_com_det){
-    $('#modal-ver_series').modal({
-        show: true
-    });
-    $.ajax({
-        type: 'GET',
-        url: 'listarSeries/'+id_guia_com_det,
-        dataType: 'JSON',
-        success: function(response){
-            console.log(response);
-            var tr = '';
-            var i = 1;
-            response.forEach(element => {
-                tr+=`<tr id="${element.id_prod_serie}">
-                        <td class="numero">${i}</td>
-                        <td class="serie">${element.serie}</td>
-                        <td>${element.guia_com}</td>
-                        </tr>`;
-                    });
-                    // <td><i class="btn btn-danger fas fa-trash fa-lg" ></i>
-            // onClick="eliminar_serie('+"'"+response[i].id_prod_serie+"'"+');"
-            $('#listaSeries tbody').html(tr);
-            $('[name=serie_prod]').focus();
-        }
-    }).fail( function( jqXHR, textStatus, errorThrown ){
-        console.log(jqXHR);
-        console.log(textStatus);
-        console.log(errorThrown);
-    });
-}
+// function listarSeries(id_guia_com_det){
+//     $('#modal-ver_series').modal({
+//         show: true
+//     });
+//     $.ajax({
+//         type: 'GET',
+//         url: 'listarSeries/'+id_guia_com_det,
+//         dataType: 'JSON',
+//         success: function(response){
+//             console.log(response);
+//             var tr = '';
+//             var i = 1;
+//             response.forEach(element => {
+//                 tr+=`<tr id="${element.id_prod_serie}">
+//                         <td class="numero">${i}</td>
+//                         <td class="serie">${element.serie}</td>
+//                         <td>${element.guia_com}</td>
+//                         </tr>`;
+//                     });
+//                     // <td><i class="btn btn-danger fas fa-trash fa-lg" ></i>
+//             // onClick="eliminar_serie('+"'"+response[i].id_prod_serie+"'"+');"
+//             $('#listaSeries tbody').html(tr);
+//             $('[name=serie_prod]').focus();
+//         }
+//     }).fail( function( jqXHR, textStatus, errorThrown ){
+//         console.log(jqXHR);
+//         console.log(textStatus);
+//         console.log(errorThrown);
+//     });
+// }
 
 function next_serie_numero(id_sede,id_tp_doc){
     if (id_sede !== null && id_tp_doc !== null){

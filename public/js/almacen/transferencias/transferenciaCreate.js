@@ -129,25 +129,25 @@ function ver_requerimiento(id_requerimiento){
 
             response['detalle'].forEach(element => {
                 
-                // html_serie = '';
-                // element.series.forEach(ser => {
-                //     if (html_serie == ''){
-                //         html_serie += ser.serie;
-                //     } else {
-                //         html_serie += '<br>'+ser.serie;
-                //     }
-                // });
+                html_serie = '';
+                element.series.forEach(ser => {
+                    if (html_serie == ''){
+                        html_serie += ser.serie;
+                    } else {
+                        html_serie += '<br>'+ser.serie;
+                    }
+                });
 
                 html+=`<tr>
                 <td>${i}</td>
                 <td>${element.codigo_orden!==null?element.codigo_orden:''}</td>
-                <td>${(element.id_sede_guia!==null?element.sede_guia_descripcion:(element.id_sede_reserva!==null?element.sede_reserva_descripcion:''))}</td>
+                <td>${element.sede}</td>
                 <td>${element.codigo}</td>
                 <td>${element.part_number!==null?element.part_number:''}</td>
                 <td>${element.descripcion}</td>
                 <td>${element.cantidad}</td>
                 <td>${element.abreviatura}</td>
-                <td></td>
+                <td><strong>${html_serie}</strong></td>
                 </tr>`;
                 i++;
             });

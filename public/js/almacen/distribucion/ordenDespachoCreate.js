@@ -29,6 +29,7 @@ function open_despacho_create(data){
     $('[name=cantidad_transformado]').val('');
     $('[name=descripcion_transformado]').val('');
     $('[name=comentario_transformado]').val('');
+    $('[name=contenido]').val('');
     console.log(hora_actual());
     // $('#'+data.documento+'').prop('checked', true);
     if (data.tipo_cliente == 1){
@@ -218,8 +219,28 @@ function open_despacho_create(data){
                 }
             }
         } else {
-            $('[name=aplica_cambios]').prop('checked', false);
-            off();
+            if (despachos_pendientes > 0){
+                if (almacenes.length == 1){
+                    var id_alm = $('[name=id_almacen]').val();
+                        
+                    if (parseInt(almacenes[0]) !== parseInt(id_alm)){
+                        alert('El almacén es diferente. Debe realizar una transferencia. '+almacenes_des[0]);
+                        $('#modal-orden_despacho_create').modal('hide');
+                    } else {
+                        $('[name=aplica_cambios]').prop('checked', false);
+                        off();
+                    }      
+                }
+                else if (almacenes.length == 0){
+                    alert('Es necesario que los productos esten en almacen.');
+                    $('#modal-orden_despacho_create').modal('hide');
+                } 
+                else {
+                    console.log(almacenes_des);
+                    alert('Los productos no pueden estar en más de un Almacén: \n'+almacenes_des);
+                    $('#modal-orden_despacho_create').modal('hide');
+                }
+            }
         }
 
     }).catch(function (err) {

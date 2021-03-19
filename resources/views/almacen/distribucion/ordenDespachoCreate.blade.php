@@ -17,14 +17,34 @@
                             <input type="text" class="oculto" name="id_almacen" >
                             <input type="text" class="form-control" name="almacen_descripcion" readOnly>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-6">
+                            <h5>Cliente</h5>
+                            <div style="display:flex;"> 
+                                <input type="text" class="oculto" name="id_cliente" >
+                                <input type="text" class="form-control" name="cliente_ruc" style="display: none; width: 130px;" readOnly>
+                                <input type="text" class="form-control" name="cliente_razon_social" style="display: none;" readOnly>
+
+                                <input type="text" class="oculto" name="id_persona" >
+                                <input type="text" class="form-control" name="dni_persona" style="width: 130px;" readOnly>
+                                <input type="text" class="form-control" name="nombre_persona" readOnly>
+
+                                <button type="button" title="Seleccionar Cliente" name="btnCliente" 
+                                onClick="openCliente();" class="input-group-text btn-primary" >
+                                <i class="fas fa-user-tie"></i></button>
+
+                                <button type="button" class="btn-success" title="Agregar Cliente" name="btnAddCliente" 
+                                onClick="agregar_cliente();">
+                                <i class="fas fa-plus"></i></button>
+                            </div>
+                        </div>
+                        <!-- <div class="col-md-3">
                             <h5>Última Fecha de Entrega</h5>
                             <input type="date" class="form-control" name="fecha_entrega" value="<?=date('Y-m-d');?>">
                         </div>
                         <div class="col-md-3">
                             <h5>Hora de Entrega</h5>
                             <input type="time" class="form-control" name="hora_despacho">
-                        </div>
+                        </div> -->
                     </div>
                     <div id="despachoExterno">
                         <div class="row">
@@ -42,32 +62,6 @@
                                 <h5>Persona Contacto</h5>
                                 <input type="text" class="form-control" name="contacto_cliente" readOnly>
                             </div>
-                            <div class="col-md-6">
-                                <h5>Cliente</h5>
-                                <div style="display:flex;"> 
-                                    <input type="text" class="oculto" name="id_cliente" >
-                                    <input type="text" class="form-control" name="cliente_ruc" style="display: none; width: 130px;" readOnly>
-                                    <input type="text" class="form-control" name="cliente_razon_social" style="display: none;" readOnly>
-
-                                    <input type="text" class="oculto" name="id_persona" >
-                                    <input type="text" class="form-control" name="dni_persona" style="width: 130px;" readOnly>
-                                    <input type="text" class="form-control" name="nombre_persona" readOnly>
-
-                                    <button type="button" title="Seleccionar Cliente" name="btnCliente" 
-                                    onClick="openCliente();" class="input-group-text btn-primary" >
-                                    <i class="fas fa-user-tie"></i></button>
-
-                                    <button type="button" class="btn-success" title="Agregar Cliente" name="btnAddCliente" 
-                                    onClick="agregar_cliente();">
-                                    <i class="fas fa-plus"></i></button>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <h5>Dirección Destino</h5>
-                                <input type="text" class="form-control" name="direccion_destino" readOnly>
-                            </div>
                             <div class="col-md-3">
                                 <h5>Ubigeo Destino</h5>
                                 <div style="display:flex;">
@@ -79,29 +73,8 @@
                                 </div>
                             </div>
                             <div class="col-md-3">
-                                <h5>Fecha de Despacho</h5>
-                                <input type="date" class="form-control" name="fecha_despacho" value="<?=date('Y-m-d');?>">
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-4">
-                                <h5>Correo Cliente</h5>
-                                <input type="text" class="form-control" name="correo_cliente" readOnly>
-                            </div>
-                            <div class="col-md-2">
-                                <h5>Teléfono</h5>
-                                <input type="text" class="form-control" name="telefono_cliente" readOnly>
-                            </div>
-                            <div class="col-md-3">
-                                <h5>Tipo de Entrega</h5>
-                                <select class="form-control" name="tipo_entrega">
-                                    <option value="MISMA CIUDAD">MISMA CIUDAD</option>
-                                    <option value="OTRAS CIUDADES">OTRAS CIUDADES</option>
-                                </select>
-                            </div>
-                            <div class="col-md-3">
-                                <h5>Elija el documento que desea emitir:</h5>
-                                <div class="form-group">
+                                <!-- <h5>Elija el documento que desea emitir:</h5> -->
+                                <div class="form-group ">
                                     <div class="radio">
                                         <label>
                                         <input type="radio" name="optionsRadios" id="Boleta" value="Boleta" checked="">
@@ -116,15 +89,55 @@
                                     </div>
                                 </div>
                             </div>
+                            <!-- <div class="col-md-3">
+                                <h5>Fecha de Despacho</h5>
+                                <input type="date" class="form-control" name="fecha_despacho" value="<?=date('Y-m-d');?>">
+                            </div> -->
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <h5>Dirección Destino</h5>
+                                        <input type="text" class="form-control" name="direccion_destino" readOnly>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        <h5>Correo Cliente</h5>
+                                        <input type="text" class="form-control" name="correo_cliente" readOnly>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <h5>Teléfono</h5>
+                                        <input type="text" class="form-control" name="telefono_cliente" readOnly>
+                                    </div>
+                                    <!-- <div class="col-md-3">
+                                        <h5>Tipo de Entrega</h5>
+                                        <select class="form-control" name="tipo_entrega">
+                                            <option value="MISMA CIUDAD">MISMA CIUDAD</option>
+                                            <option value="OTRAS CIUDADES">OTRAS CIUDADES</option>
+                                        </select>
+                                    </div> -->
+                                </div>   
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <h5></h5>
+                                        <input class="oculto" name="aplica_cambios_valor"/>
+                                        <input type="checkbox" name="aplica_cambios" id="aplica_cambios" style="margin-right: 10px; margin-left: 7px;"/> Aplica Cambios
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <h5>Agregar Contenido Adicional al Correo</h5>
+                                        <textarea name="contenido" id="contenido" cols="73" rows="8" required></textarea>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <h5></h5>
-                            <input class="oculto" name="aplica_cambios_valor"/>
-                            <input type="checkbox" name="aplica_cambios" id="aplica_cambios" style="margin-right: 10px; margin-left: 7px;"/> Aplica Cambios
-                        </div>
-                    </div>
+                    
                 </div>
                 <div id="detalleItemsReq">
                 
