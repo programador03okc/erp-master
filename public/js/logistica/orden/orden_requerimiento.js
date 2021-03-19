@@ -85,6 +85,21 @@ function openModalOrdenRequerimiento(){
     // console.log(reqTrueList);
     obtenerRequerimiento(reqTrueList);
 }
+
+function cleanPartNumbreCharacters(data){
+    // console.log(data);
+    data.forEach((element,index )=> {
+        if(element.part_no !=null || element.part_no != undefined){
+            data[index].part_no =cleanCharacterReference(element.part_no) ;
+        }
+    });
+    console.log(data);
+    return data;
+}
+
+
+
+
 function openModalItemsParaCompra(){
     $('#modal-agregar-items-para-compra').modal({
         show: true,
@@ -95,9 +110,10 @@ function openModalItemsParaCompra(){
     getDataListaItemsCuadroCostosPorIdRequerimiento(reqTrueList).then(function (data) {
         // Run this when your request was successful
         if (data.status == 200) {
-            tempDetalleItemsParaCompraCC = data.data;
-            // console.log(tempDetalleItemsParaCompraCC);
-            llenarTablaDetalleCuadroCostos(data.data);
+            
+            tempDetalleItemsParaCompraCC = cleanPartNumbreCharacters(data.data);;
+            console.log(tempDetalleItemsParaCompraCC);
+            llenarTablaDetalleCuadroCostos(tempDetalleItemsParaCompraCC);
         }
  
     }).catch(function (err) {
