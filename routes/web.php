@@ -755,7 +755,11 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::post('guardar-atencion-con-almacen', 'OrdenController@guardarAtencionConAlmacen')->name('guardar-atencion-con-almacen'); 
 					Route::post('tiene-items-para-compra', 'OrdenController@tieneItemsParaCompra')->name('tiene-items-para-compra'); 
 					Route::get('listar-almacenes', 'AlmacenController@mostrar_almacenes')->name('listar-almacenes');
+					Route::get('crear', 'OrdenController@view_crear_orden_requerimiento')->name('vista-crear-orden');
+					Route::get('listar_ubigeos', 'AlmacenController@listar_ubigeos');
+					Route::get('lista_contactos_proveedor/{id_proveedor?}', 'OrdenController@lista_contactos_proveedor');
 					Route::get('generar-orden-pdf/{id?}', 'OrdenController@generar_orden_por_requerimiento_pdf')->name('generar-orden-por-requerimiento-pdf'); // PDF
+					Route::get('listar_trabajadores', 'ProyectosController@listar_trabajadores');
 
 				});
 				Route::group(['as' => 'lista-ordenes.', 'prefix' => 'por-requerimiento'], function(){

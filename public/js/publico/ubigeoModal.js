@@ -11,8 +11,18 @@ $(function(){
         var myId = $(this)[0].firstChild.innerHTML;
         var ubig = $(this)[0].childNodes[2].innerHTML;
 
-        $('[name=ubigeo]').val(myId);    
-        $('[name=name_ubigeo]').val(ubig);    
+
+ 
+        var page = $('.page-main').attr('type');
+        // console.log(page);
+        if(page =='crear-orden-requerimiento'){
+            $('[name=ubigeo_proveedor]').val(myId);    
+            $('[name=ubigeo_proveedor_descripcion]').val(ubig);  
+          
+        }else{
+            $('[name=ubigeo]').val(myId);    
+            $('[name=name_ubigeo]').val(ubig);    
+        }
         $('#modal-ubigeo').modal('hide');
     });
 });

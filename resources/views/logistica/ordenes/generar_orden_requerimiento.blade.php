@@ -77,9 +77,10 @@
                                             </table>
                                             <div class="row">
                                                 <div class="col-md-12 right">
-                                                    <button class="btn btn-warning" type="button" id="btnCrearOrdenCompra" onClick="openModalCrearOrdenCompra();" disabled>
+                                                    <button class="btn btn-warning" type="button" id="btnCrearOrdenCompra" onClick="crearOrdenCompra();" disabled>
                                                         Crear Orden <i class="fas fa-file-invoice"></i>
                                                     </button>
+ 
                                                 </div>
                                             </div>
                                         </form>
@@ -193,11 +194,11 @@
             "{{route('logistica.gestion-logistica.orden.por-requerimiento.grupo-select-item-para-compra')}}",
             "{{route('logistica.gestion-logistica.orden.por-requerimiento.guardar-items-detalle-requerimiento')}}"
         );
-        inicializarModalOrdenRequerimiento(
-            "{{route('logistica.gestion-logistica.orden.por-requerimiento.detalle-requerimiento-orden')}}",
-            "{{route('logistica.gestion-logistica.orden.por-requerimiento.guardar')}}"
+        // inicializarModalOrdenRequerimiento(
+        //     "{{route('logistica.gestion-logistica.orden.por-requerimiento.detalle-requerimiento-orden')}}",
+        //     "{{route('logistica.gestion-logistica.orden.por-requerimiento.guardar')}}"
 
-        );
+        // );
             tieneAccion('{{Auth::user()->tieneAccion(114)}}','{{Auth::user()->tieneAccion(115)}}');
     });
     </script>

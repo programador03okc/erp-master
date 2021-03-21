@@ -7025,8 +7025,20 @@ function get_id_usuario_usuario_por_rol($descripcion_rol, $id_sede, $id_empresa)
     public function mostrar_proveedores()
     {
         $data = DB::table('logistica.log_prove')
-            ->select('log_prove.id_proveedor', 'adm_contri.id_contribuyente', 'adm_contri.nro_documento', 'adm_contri.razon_social','adm_contri.telefono')
+            ->select('log_prove.id_proveedor', 
+            'adm_contri.id_contribuyente', 
+            'adm_contri.nro_documento', 
+            'adm_contri.razon_social',
+            'adm_contri.telefono',
+            'adm_contri.direccion_fiscal',
+            'adm_contri.ubigeo',
+            DB::raw("(ubi_dis.descripcion) || ' - ' || (ubi_prov.descripcion) || ' - ' || (ubi_dpto.descripcion)  AS ubigeo_descripcion")
+            )
             ->leftjoin('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'log_prove.id_contribuyente')
+            // ->leftJoin('configuracion.ubi_dis','ubi_dis.id_dis','=','adm_contri.ubigeo')
+            ->leftJoin('configuracion.ubi_dis', 'adm_contri.ubigeo', '=', 'ubi_dis.id_dis')
+            ->leftJoin('configuracion.ubi_prov', 'ubi_dis.id_prov', '=', 'ubi_prov.id_prov')
+            ->leftJoin('configuracion.ubi_dpto', 'ubi_prov.id_dpto', '=', 'ubi_dpto.id_dpto')
             ->where([   ['log_prove.estado', '=', 1],
                         ['adm_contri.transportista', '=', false]])
             ->orderBy('adm_contri.nro_documento')

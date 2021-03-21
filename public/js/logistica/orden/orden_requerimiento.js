@@ -145,6 +145,28 @@ function openModalAgregarItemBase(obj) {
         // console.log(reqTrueList);
  
 }
+function crearOrdenCompra() {
+    reqTrueList=[];
+    itemsParaCompraList=[];
+    detalleRequerimientoSelected=[];
+    limpiarTabla('ListaItemsParaComprar');
+    if (listCheckReq.length > 0) {
+        listCheckReq.forEach(element => {
+            if (element.stateCheck == true) {
+                reqTrueList.push(element.id_req)
+            }
+        });
+ 
+        // console.log(data);
+        sessionStorage.setItem('reqCheckedList', JSON.stringify(listCheckReq));
+        let url ="/logistica/gestion-logistica/orden/por-requerimiento/crear";
+        var win = window.open(url, '_blank');
+        win.focus();
+
+    } else {
+        alert("No existe Requerimiento seleccionado");
+    }
+}
 function openModalCrearOrdenCompra() {
     reqTrueList=[];
     itemsParaCompraList=[];

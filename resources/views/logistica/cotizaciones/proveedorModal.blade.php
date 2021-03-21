@@ -14,7 +14,10 @@
                             <th hidden></th>
                             <th>RUC</th>
                             <th>Razon Social</th>
-                            <!-- <th>Telefono</th> -->
+                            <th>Telefono</th>
+                            <th>Dirección</th>
+                            <th>ubigeo</th>
+                            <th>ubigeo descripcion</th>
                         </tr>
                     </thead>
                     <tbody></tbody>
@@ -25,6 +28,10 @@
                 <label id="id_contribuyente" style="display: none;"></label>
                 <label id="ruc" style="display: none;"></label>
                 <label id="select_razon_social" style="display: none;"></label>
+                <label id="select_direccion_fiscal" style="display: none;"></label>
+                <label id="select_telefono" style="display: none;"></label>
+                <label id="select_ubigeo_descripcion" style="display: none;"></label>
+                <label id="select_ubigeo" style="display: none;"></label>
                 <button class="btn btn-sm btn-success" onClick="selectProveedor();">Aceptar</button>
             </div>
         </div>

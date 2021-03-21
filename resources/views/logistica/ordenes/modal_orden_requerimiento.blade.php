@@ -103,6 +103,18 @@
                                 <button type="button" class="btn-primary activation" title="Agregar Proveedor" onClick="agregar_proveedor();"><i class="fas fa-plus"></i></button>
                             </div>
                         </div>
+                        <div class="col-md-3" id="group-proveedor">
+                            <h5>Contacto</h5>
+                            <div style="display:flex;">
+                                <input class="oculto" name="id_contacto"/>
+                                <input type="text" class="form-control" name="razon_social" disabled
+                                    aria-describedby="basic-addon1" required>
+                                <button type="button" class="group-text" id="basic-addon1" onClick="contactoModal();">
+                                    <i class="fa fa-search"></i>
+                                </button> 
+                                <button type="button" class="btn-primary activation" title="Agregar Contacto" onClick="agregar_contacto();"><i class="fas fa-plus"></i></button>
+                            </div>
+                        </div>
                         <div class="col-md-6 left" hidden>
                             <h5>&nbsp;</h5>
                             <button class="btn btn-primary" type="button" id="btnAgregarNuevoItem" onClick="agregarNuevoItem();" >

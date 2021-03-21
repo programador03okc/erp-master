@@ -42,6 +42,50 @@ class OrdenController extends Controller
 
         return view('logistica/ordenes/generar_orden_requerimiento', compact('sedes','empresas','sis_identidad','tp_documento', 'tp_moneda','tp_doc','condiciones','clasificaciones','subcategorias','categorias','unidades','unidades_medida','monedas'));
     }
+    function view_crear_orden_requerimiento()
+    {
+        $condiciones = $this->select_condiciones();
+        $tp_moneda = $this->select_moneda();
+        $tp_documento = $this->select_documento();
+        $sis_identidad = $this->select_sis_identidad();
+        $sedes = $this->select_sedes();
+        $empresas = $this->select_mostrar_empresas();
+        $tp_doc = $this->select_tp_doc();
+        $clasificaciones = (new AlmacenController)->mostrar_clasificaciones_cbo();
+        $subcategorias = (new AlmacenController)->mostrar_subcategorias_cbo();
+        $categorias = (new AlmacenController)->mostrar_categorias_cbo();
+        $unidades = (new AlmacenController)->mostrar_unidades_cbo();
+
+        $unidades_medida = (new LogisticaController)->mostrar_unidad_medida();
+        $monedas = (new LogisticaController)->mostrar_moneda();
+        // $sedes = Auth::user()->sedesAcceso();
+
+        return view('logistica/ordenes/crear_orden_requerimiento', compact('sedes','empresas','sis_identidad','tp_documento', 'tp_moneda','tp_doc','condiciones','clasificaciones','subcategorias','categorias','unidades','unidades_medida','monedas'));
+    }
+
+    function lista_contactos_proveedor($id_proveedor){
+        
+        $data = DB::table('logistica.log_prove')
+        ->select(
+            'adm_ctb_contac.id_datos_contacto as id_contacto',
+            'adm_ctb_contac.nombre as nombre_contacto',
+            'adm_ctb_contac.cargo as cargo_contacto',
+            'adm_ctb_contac.email as email_contacto',
+            'adm_ctb_contac.telefono as telefono_contacto',
+            'adm_ctb_contac.direccion as direccion_contacto',
+            'adm_ctb_contac.ubigeo as ubigeo_contacto'
+        )
+        // ->leftJoin('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'log_prove.id_contribuyente')
+        ->leftJoin('contabilidad.adm_ctb_contac', 'adm_ctb_contac.id_contribuyente', '=', 'log_prove.id_contribuyente')
+        ->where('log_prove.id_proveedor',$id_proveedor)
+        ->orderby('adm_ctb_contac.nombre','asc')
+        ->get();
+        
+
+        return response()->json(['data'=>$data]);
+
+
+    }
 
     public function select_moneda(){
         $data = DB::table('configuracion.sis_moneda')
@@ -576,6 +620,9 @@ class OrdenController extends Controller
             ->leftJoin('administracion.sis_sede', 'sis_sede.id_sede', '=', 'alm_req.id_sede')
             ->leftJoin('administracion.adm_empresa', 'adm_empresa.id_empresa', '=', 'sis_sede.id_empresa')
             ->leftJoin('contabilidad.adm_contri as contrib', 'adm_empresa.id_contribuyente', '=', 'contrib.id_contribuyente')
+            ->leftJoin('configuracion.ubi_dis as dis_empresa_sede', 'sis_sede.id_ubigeo', '=', 'dis_empresa_sede.id_dis')
+            ->leftJoin('configuracion.ubi_prov as prov_empresa_sede', 'dis_empresa_sede.id_prov', '=', 'prov_empresa_sede.id_prov')
+            ->leftJoin('configuracion.ubi_dpto as dpto_empresa_sede', 'prov_empresa_sede.id_dpto', '=', 'dpto_empresa_sede.id_dpto')
             ->leftJoin('administracion.adm_estado_doc', 'alm_req.estado', '=', 'adm_estado_doc.id_estado_doc')
             
             ->leftJoin('configuracion.sis_usua', 'alm_req.id_usuario', '=', 'sis_usua.id_usuario')
@@ -593,6 +640,14 @@ class OrdenController extends Controller
             ->leftJoin('configuracion.ubi_dis', 'alm_req.id_ubigeo_entrega', '=', 'ubi_dis.id_dis')
             ->leftJoin('configuracion.ubi_prov', 'ubi_dis.id_prov', '=', 'ubi_prov.id_prov')
             ->leftJoin('configuracion.ubi_dpto', 'ubi_prov.id_dpto', '=', 'ubi_dpto.id_dpto')
+            
+            ->leftJoin('mgcp_cuadro_costos.cc', 'cc.id', '=', 'alm_req.id_cc')
+            ->leftJoin('mgcp_oportunidades.oportunidades', 'oportunidades.id', '=', 'cc.id_oportunidad')
+            ->leftJoin('mgcp_cuadro_costos.responsables', 'responsables.id', '=', 'oportunidades.id_responsable')
+            ->leftJoin('mgcp_usuarios.users', 'users.id', '=', 'oportunidades.id_responsable')
+
+
+
 
             ->select(
                 'alm_req.id_requerimiento',
@@ -606,7 +661,12 @@ class OrdenController extends Controller
                 'sis_sede.id_empresa',
                 'alm_req.id_grupo',
                 'contrib.razon_social as razon_social_empresa',
+                'contrib.nro_documento AS nro_documento_empresa',
                 'sis_sede.codigo as codigo_sede_empresa',
+                'sis_sede.direccion AS direccion_fiscal_empresa_sede',
+                'sis_sede.id_ubigeo AS id_ubigeo_empresa_sede',
+                DB::raw("(dis_empresa_sede.descripcion) || ' - ' || (prov_empresa_sede.descripcion) || ' - ' || (dpto_empresa_sede.descripcion)  AS ubigeo_empresa_sede"),
+
                 'adm_empresa.logo_empresa',
                 'alm_req.fecha_requerimiento',
                 'alm_req.id_periodo',
@@ -638,6 +698,9 @@ class OrdenController extends Controller
                 DB::raw("(ubi_dis.descripcion) || ' ' || (ubi_prov.descripcion) || ' ' || (ubi_dpto.descripcion)  AS name_ubigeo"),
                 'alm_req.direccion_entrega',
                 'alm_req.id_almacen',
+                'oportunidades.codigo_oportunidad',
+                'users.name as nombre_ejecutivo_responsable',
+                'alm_req.id_cc',
                 DB::raw("(CASE WHEN alm_req.estado = 1 THEN 'Habilitado' ELSE 'Deshabilitado' END) AS estado_desc")
             )
             ->whereIn('alm_req.id_requerimiento', $requerimientoList)
@@ -666,7 +729,11 @@ class OrdenController extends Controller
                     'id_empresa' => $data->id_empresa,
                     'id_grupo' => $data->id_grupo,
                     'id_sede' => $data->id_sede,
+                    'id_ubigeo_empresa_sede' => $data->id_ubigeo_empresa_sede,
                     'razon_social_empresa' => $data->razon_social_empresa,
+                    'nro_documento_empresa' => $data->nro_documento_empresa,
+                    'direccion_fiscal_empresa_sede' => $data->direccion_fiscal_empresa_sede,
+                    'ubigeo_empresa_sede' => $data->ubigeo_empresa_sede,
                     'codigo_sede_empresa' => $data->codigo_sede_empresa,
                     'logo_empresa' => $data->logo_empresa,
                     'fecha_requerimiento' => $data->fecha_requerimiento,
@@ -694,7 +761,11 @@ class OrdenController extends Controller
                     'id_ubigeo_entrega' => $data->id_ubigeo_entrega,
                     'name_ubigeo' => $data->name_ubigeo,
                     'direccion_entrega' => $data->direccion_entrega,
-                    'id_almacen' => $data->id_almacen
+                    'id_almacen' => $data->id_almacen,
+                    'codigo_oportunidad' => $data->codigo_oportunidad,
+                    'nombre_ejecutivo_responsable' => $data->nombre_ejecutivo_responsable,
+                    'id_cc' => $data->id_cc
+
                     
                 ];
             };
@@ -1146,8 +1217,8 @@ class OrdenController extends Controller
             ->leftJoin('logistica.log_cdn_pago', 'log_cdn_pago.id_condicion_pago', '=', 'log_ord_compra.id_condicion')
             // ->leftJoin('contabilidad.adm_ctb_contac', 'adm_ctb_contac.id_datos_contacto', '=', 'log_ord_compra.personal_responsable')
             ->join('logistica.log_prove', 'log_prove.id_proveedor', '=', 'log_ord_compra.id_proveedor')
-            ->Join('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'log_prove.id_contribuyente')
-            ->Join('contabilidad.sis_identi', 'sis_identi.id_doc_identidad', '=', 'adm_contri.id_doc_identidad')
+            ->leftJoin('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'log_prove.id_contribuyente')
+            ->leftJoin('contabilidad.sis_identi', 'sis_identi.id_doc_identidad', '=', 'adm_contri.id_doc_identidad')
             // ->leftJoin('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'log_ord_compra.id_requerimiento')
             ->leftJoin('administracion.sis_sede', 'sis_sede.id_sede', '=', 'log_ord_compra.id_sede')
             ->leftJoin('administracion.adm_empresa', 'adm_empresa.id_empresa', '=', 'sis_sede.id_empresa')
@@ -1180,6 +1251,7 @@ class OrdenController extends Controller
             ])
             ->get();
 
+            // return $head_orden_compra;
 
         $detalle_orden_compra = DB::table('logistica.log_det_ord_compra')
             ->select(
@@ -1351,11 +1423,16 @@ class OrdenController extends Controller
                 'users.name as nombre_responsable'
                 )
             ->join('mgcp_oportunidades.oportunidades', 'oportunidades.id', '=', 'cc.id_oportunidad')
-            ->join('mgcp_cuadro_costos.responsables', 'responsables.id', '=', 'oportunidades.id_responsable')
-            ->join('mgcp_usuarios.users', 'users.id', '=', 'oportunidades.id_responsable')
+            ->LeftJoin('mgcp_cuadro_costos.responsables', 'responsables.id', '=', 'oportunidades.id_responsable')
+            ->LeftJoin('mgcp_usuarios.users', 'users.id', '=', 'oportunidades.id_responsable')
             ->whereIn('cc.id',$idCcList)
             ->distinct()
             ->get();
+
+            $codigo_oportunidad=count($cdc)>0 ?$cdc->first()->codigo_oportunidad:'';
+            $nombre_responsable=count($cdc)>0 ?$cdc->first()->nombre_responsable:'';
+            // dd( $cdc );
+
         }
 
 
@@ -1368,11 +1445,11 @@ class OrdenController extends Controller
             'head' => $head,
             'detalle' => $detalle 
         ];
-
+        
         $result['head']['codigo_requerimiento']=$codigoReqText;
-        $result['head']['codigo_cc']=$cdc->first()->codigo_oportunidad?$cdc->first()->codigo_oportunidad:'';
-        $result['head']['nombre_responsable_cc']=$cdc->first()->nombre_responsable?$cdc->first()->nombre_responsable:'';
-
+        $result['head']['codigo_cc']= isset($codigo_oportunidad)?$codigo_oportunidad:'';
+        $result['head']['nombre_responsable_cc']=isset($nombre_responsable)?$nombre_responsable:'';
+        
         return $result;
     }
     public function imprimir_orden_por_requerimiento_pdf($id_orden_compra)
@@ -1594,7 +1671,7 @@ class OrdenController extends Controller
                     $html.='<tr>
                                 <td nowrap  width="15%" class="subtitle">Plazo: </td>
                                 <td  class="verticalTop left">' . $ordenArray['head']['condicion_compra']['plazo_dias'] . '';
-                                if ($ordenArray['condiciones']['plazo_dias'] > 0) {
+                                if ($ordenArray['head']['condicion_compra']['plazo_dias'] > 0) {
                                     $html .= ' días </td>';
                                 }else{
                                     $html .= '</td>';
@@ -2077,21 +2154,25 @@ class OrdenController extends Controller
                     'id_usuario' => $usuario,
                     'id_moneda' => ($request->id_moneda?$request->id_moneda:null),
                     'id_proveedor' => $request->id_proveedor,
+                    'id_contacto' => $request->id_contacto_proveedor,
                     'codigo' => $codigo,
-                    'monto_subtotal' => $request->monto_subtotal?$request->monto_subtotal:null,
-                    'igv_porcentaje' => $request->igv_porcentaje?$request->igv_porcentaje:null,
-                    'monto_igv' => $request->monto_igv?$request->monto_igv:null,
-                    'monto_total' => $request->monto_total?$request->monto_total:null,
+                // 'monto_subtotal' => $request->monto_subtotal?$request->monto_subtotal:null,
+                // 'igv_porcentaje' => $request->igv_porcentaje?$request->igv_porcentaje:null,
+                // 'monto_igv' => $request->monto_igv?$request->monto_igv:null,
+                // 'monto_total' => $request->monto_total?$request->monto_total:null,
                     'plazo_entrega' => $request->plazo_entrega?$request->plazo_entrega:null,
                     'id_condicion' => $request->id_condicion?$request->id_condicion:null,
                     'plazo_dias' => $request->plazo_dias?$request->plazo_dias:null,
                     'id_cotizacion' => $request->id_cotizacion?$request->id_cotizacion:null,
-                    'id_cta_principal' => $request->id_cta_principal?$request->id_cta_principal:null,
-                    'id_cta_alternativa' => $request->id_cta_alternativa?$request->id_cta_alternativa:null,
-                    'id_cta_detraccion' => $request->id_cta_detraccion?$request->id_cta_detraccion:null,
-                    'personal_responsable' => $request->contacto_responsable?$request->contacto_responsable:null,
-                    'id_sede' => $request->sede?$request->sede:null,
-                    'id_requerimiento' => $request->id_requerimiento,
+                // 'id_cta_principal' => $request->id_cta_principal?$request->id_cta_principal:null,
+                // 'id_cta_alternativa' => $request->id_cta_alternativa?$request->id_cta_alternativa:null,
+                // 'id_cta_detraccion' => $request->id_cta_detraccion?$request->id_cta_detraccion:null,
+                    'personal_autorizado' => $request->id_trabajador?$request->id_trabajador:null,
+                    'id_occ' => $request->id_cc?$request->id_cc:null,
+                    'id_sede' => $request->id_sede?$request->id_sede:null,
+                    'direccion_destino' => $request->direccion_destino?$request->direccion_destino:null,
+                    'ubigeo_destino' => $request->id_ubigeo_destino?$request->id_ubigeo_destino:null,
+                    // 'id_requerimiento' => $request->id_requerimiento,
                     'en_almacen' => false,
                     'estado' => 17,
                     'codigo_softlink' => ($request->codigo_orden!==null ? $request->codigo_orden : ''),
@@ -2100,12 +2181,12 @@ class OrdenController extends Controller
             );
 
             $dataDetalle = $request->detalle;
-            Debugbar::info($request->plazo_dias);
-            Debugbar::info($request->detalle);
-            Debugbar::info($request['detalle']);
-            Debugbar::info(json_encode($request));
-            Debugbar::info(json_encode($request->detalle));
-            Debugbar::info($dataDetalle);
+            // Debugbar::info($request->plazo_dias);
+            // Debugbar::info($request->detalle);
+            // Debugbar::info($request['detalle']);
+            // Debugbar::info(json_encode($request));
+            // Debugbar::info(json_encode($request->detalle));
+            // Debugbar::info($dataDetalle);
 
 
             // if(is_array($dataDetalle)){
@@ -2513,7 +2594,6 @@ class OrdenController extends Controller
 
         $pdf->loadHTML($this->imprimir_orden_por_requerimiento_pdf($id));
         // return response()->json($this->imprimir_orden_por_requerimiento_pdf($id));
- 
         return $pdf->stream();
         return $pdf->download('orden_de_compra.pdf');
     }
