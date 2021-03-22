@@ -1123,7 +1123,9 @@ span.select2-selection{
 #requerimientosEnTransformacion_filter,
 #pendientesRetornoCargo_filter,
 #listaTransformacionesPendientes_filter,
-#listaTransformaciones_filter
+#listaTransformaciones_filter,
+#listaSerie_filter,
+#listaUbicacion_filter
 {
     margin: 0;
 }
@@ -1170,7 +1172,9 @@ span.select2-selection{
 #requerimientosEnTransformacion_filter label input[type="search"],
 #pendientesRetornoCargo_filter label input[type="search"],
 #listaTransformacionesPendientes_filter label input[type="search"],
-#listaTransformaciones_filter label input[type="search"]
+#listaTransformaciones_filter label input[type="search"],
+#listaSerie_filter label input[type="search"],
+#listaUbicacion_filter label input[type="search"]
 {
     width: 95%;
 }

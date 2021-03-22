@@ -24,15 +24,17 @@ function listar_ubicaciones(producto){
         'ajax': 'listar_ubicaciones_producto/'+producto,
         'columns': [
             {'data': 'id_prod_ubi'},
-            {'data': 'codigo'},
+            {'data': 'id_almacen'},
             {'data': 'alm_descripcion'},
             {'data': 'cod_posicion'},
             {'data': 'stock'},
-            {'render':
-                function (data, type, row){
-                    return ((row['estado'] == 1) ? 'Activo' : 'Inactivo');
-                }
-            }
+            {'data': 'costo_promedio'},
+            {'data': 'valorizacion'},
+            // {'render':
+            //     function (data, type, row){
+            //         return ((row['estado'] == 1) ? 'Activo' : 'Inactivo');
+            //     }
+            // }
         ],
         'columnDefs': [{ 'aTargets': [0], 'sClass': 'invisible'}],
     });

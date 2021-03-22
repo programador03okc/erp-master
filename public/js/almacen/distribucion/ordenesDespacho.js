@@ -928,7 +928,7 @@ function listarGruposDespachados(permiso){
             {'render': 
                 function (data, type, row){
                     if (row['estado_od'] == 20){
-                        return 'Pendiente de que <strong>Distribución</strong> confirme la Entrega';
+                        return 'Pendiente de que se ingrese la <strong>Guía de Transportista</strong>';
                     } else {
                         return '';
                     }
@@ -1217,8 +1217,8 @@ function listarGruposDespachadosPendientesCargo(permiso){
             },
             {'render': 
                 function (data, type, row){
-                    if (row['estado_od'] == 20){
-                        return 'Pendiente de que <strong>Distribución</strong> confirme la Entrega';
+                    if (row['estado_od'] == 25){
+                        return 'Pendiente de la llegada a Provincia';
                     } else {
                         return '';
                     }

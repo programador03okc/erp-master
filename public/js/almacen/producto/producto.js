@@ -78,7 +78,7 @@ function mostrar_producto(id){
             console.log(response['producto'][0]);
             console.log(response);
             $('[name=id_producto]').val(response['producto'][0].id_producto);
-            $('[name=codigo]').val(response['producto'][0].codigo);
+            // $('[name=codigo]').val(response['producto'][0].codigo);
             $('#codigo').text(response['producto'][0].codigo);
             $('[name=codigo_anexo]').val(response['producto'][0].codigo_anexo);
             $('[name=part_number]').val(response['producto'][0].part_number);
@@ -86,6 +86,7 @@ function mostrar_producto(id){
             $('[name=id_unidad_medida]').val(response['producto'][0].id_unidad_medida);
             $('[name=id_subcategoria]').val(response['producto'][0].id_subcategoria).trigger('change.select2');
             $('[name=id_categoria]').val(response['producto'][0].id_categoria).trigger('change.select2');
+            $('[name=id_tipo_producto]').val(response['producto'][0].id_tipo_producto).trigger('change.select2');
             $('[name=id_clasif]').val(response['producto'][0].id_clasif).trigger('change.select2');
             $('#tipo_descripcion').text(response['producto'][0].tipo_descripcion);
             $('#cat_descripcion').text(response['producto'][0].cat_descripcion);

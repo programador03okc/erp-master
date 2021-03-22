@@ -141,7 +141,10 @@
                                 <div class="col-md-4">
                                     <h5>SubCategoría</h5>
                                     <select class="form-control activation js-example-basic-single" name="id_categoria" disabled="true">
-                                        
+                                        <option value="0" >Elija una opción</option>
+                                        @foreach ($categorias as $cat)
+                                            <option value="{{$cat->id_categoria}}">{{$cat->descripcion}}</option>
+                                        @endforeach
                                     </select>
                                 </div>
                                 <div class="col-md-4">
@@ -239,7 +242,7 @@
                 <form id="form-ubicacion" type="register">
                     <input type="hidden" name="id_producto">
                     <div class="row">
-                        <div class="col-md-12">
+                        <div class="col-md-10">
                             <table class="mytable table table-condensed table-bordered table-okc-view" width="100%"
                                 id="listaUbicacion">
                                 <thead>
@@ -249,7 +252,9 @@
                                         <td>Almacén</td>
                                         <td>Posición</td>
                                         <td>Stock</td>
-                                        <td>Estado</td>
+                                        <td>Costo Promedio</td>
+                                        <td>Valorización</td>
+                                        <!-- <td>Estado</td> -->
                                     </tr>
                                 </thead>
                                 <tbody></tbody>
@@ -272,7 +277,7 @@
                                         <td>Serie</td>
                                         <td>Guía Compra</td>
                                         <td>Guía Venta</td>
-                                        <td>Estado</td>
+                                        <td>Fecha Registro</td>
                                     </tr>
                                 </thead>
                                 <tbody></tbody>

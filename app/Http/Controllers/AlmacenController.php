@@ -140,12 +140,12 @@ class AlmacenController extends Controller
         $tipos = AlmacenController::mostrar_tipos_cbo();
         $clasificaciones = AlmacenController::mostrar_clasificaciones_cbo();
         $subcategorias = AlmacenController::mostrar_subcategorias_cbo();
-        // $categorias = AlmacenController::mostrar_categorias_cbo();
+        $categorias = AlmacenController::mostrar_categorias_cbo();
         $unidades = AlmacenController::mostrar_unidades_cbo();
         $posiciones = $this->mostrar_posiciones_cbo();
         $ubicaciones = $this->mostrar_ubicaciones_cbo();
         $monedas = AlmacenController::mostrar_moneda_cbo();
-        return view('almacen/producto/producto', compact('tipos','clasificaciones','subcategorias','unidades','posiciones','ubicaciones','monedas'));
+        return view('almacen/producto/producto', compact('tipos','categorias','clasificaciones','subcategorias','unidades','posiciones','ubicaciones','monedas'));
     }
     function view_almacenes(){
         $sedes = $this->mostrar_sedes_cbo();
@@ -1186,7 +1186,8 @@ class AlmacenController extends Controller
         $producto = DB::table('almacen.alm_prod')
         ->select('alm_prod.*', 'alm_subcat.descripcion as subcat_descripcion',
                 'alm_cat_prod.descripcion as cat_descripcion',
-                'alm_tp_prod.descripcion as tipo_descripcion')
+                'alm_tp_prod.descripcion as tipo_descripcion',
+                'alm_tp_prod.id_tipo_producto')
         ->leftjoin('almacen.alm_subcat','alm_subcat.id_subcategoria','=','alm_prod.id_subcategoria')
         ->leftjoin('almacen.alm_cat_prod','alm_cat_prod.id_categoria','=','alm_prod.id_categoria')
         ->leftjoin('almacen.alm_tp_prod','alm_tp_prod.id_tipo_producto','=','alm_cat_prod.id_tipo_producto')
@@ -1983,18 +1984,16 @@ class AlmacenController extends Controller
         return response()->json($data);
     }
     /** Producto Ubicacion */
-    public function mostrar_ubicaciones_producto($id)
+    public function listar_ubicaciones_producto($id)
     {
         $data = DB::table('almacen.alm_prod_ubi')
-            ->select('alm_prod_ubi.*','alm_almacen.codigo',
+            ->select('alm_prod_ubi.*',//'alm_almacen.codigo',
                 'alm_almacen.descripcion as alm_descripcion',
                 'alm_ubi_posicion.codigo as cod_posicion')
-            ->join('almacen.alm_ubi_posicion','alm_ubi_posicion.id_posicion','=','alm_prod_ubi.id_posicion')
-            ->join('almacen.alm_ubi_nivel','alm_ubi_nivel.id_nivel','=','alm_ubi_posicion.id_nivel')
-            ->join('almacen.alm_ubi_estante','alm_ubi_estante.id_estante','=','alm_ubi_nivel.id_estante')
-            ->join('almacen.alm_almacen','alm_almacen.id_almacen','=','alm_ubi_estante.id_almacen')
-            ->where([['alm_prod_ubi.id_producto', '=', $id]])
-            ->orderBy('cod_posicion')
+            ->leftjoin('almacen.alm_ubi_posicion','alm_ubi_posicion.id_posicion','=','alm_prod_ubi.id_posicion')
+            // ->join('almacen.alm_almacen','alm_almacen.id_almacen','=','alm_prod_ubi.id_almacen')
+            ->where([['alm_prod_ubi.id_producto', '=', $id],['alm_prod_ubi.estado','!=',7]])
+            ->orderBy('id_almacen')
                 ->get();
         $output['data'] = $data;
         return response()->json($output);
@@ -2561,12 +2560,12 @@ class AlmacenController extends Controller
         // ->whereMonth('fecha_emision','=',$mes)
         ->count();
         
-        $alm = DB::table('almacen.alm_almacen')
-        ->where('id_almacen',$id_alm)->first();
+        // $alm = DB::table('almacen.alm_almacen')
+        // ->where('id_almacen',$id_alm)->first();
 
         $correlativo = AlmacenController::leftZero(3, $data+1);
         
-        $codigo = $tp.'-'.$alm->codigo.'-'.$anio.'-'.$correlativo;
+        $codigo = $tp.'-'.$id_alm.'-'.$anio.'-'.$correlativo;
 
         return $codigo;
     }

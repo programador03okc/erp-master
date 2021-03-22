@@ -11,6 +11,7 @@
                     <input type="text" class="oculto" name="id_sede"/>
                     <input type="text" class="oculto" name="id_cc"/>
                     <input type="text" class="oculto" name="tiene_transformacion"/>
+                    <input type="date" class="oculto" name="fecha_entrega"/>
                     <div class="row">
                         <div class="col-md-6">
                             <h5>Almacén</h5>

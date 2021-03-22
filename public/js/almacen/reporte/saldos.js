@@ -121,13 +121,8 @@ function listarSaldos(){
             {'render':
                 function (data, type, row){
                     if(row['stock_almacenes'][1]['id_almacen'] == 2){
-                        // if(row['stock_almacenes'][1]['stock'] >0){
-                        //     return ('<button class="btn btn-sm btn-info" onClick="selectValue(this,'+row['stock_almacenes'][1]['id_almacen']+',\''+row['stock_almacenes'][1]['almacen_descripcion']+'\');">'+row['stock_almacenes'][1]['stock']+'</button>')
-
-                        // }else{
-                                return row['stock_almacenes'][1]['stock'];
-                        // }
-                    }else{
+                        return row['stock_almacenes'][1]['stock'];
+                    } else {
                         return '-';
                     }
                 }
@@ -137,11 +132,10 @@ function listarSaldos(){
                     if(row['stock_almacenes'][1]['id_almacen'] == 2){
                         if(row['stock_almacenes'][1]['cantidad_reserva'] >0){
                             return ('<button class="btn btn-sm btn-info" onClick="openReservados('+row['id_producto']+','+row['stock_almacenes'][1]['id_almacen']+')">'+row['stock_almacenes'][1]['cantidad_reserva']+' </button>')
-                        }else{
+                        } else {
                             return (row['stock_almacenes'][1]['cantidad_reserva']);
                         }
-                        // return (row['stock_almacenes'][1]['cantidad_reserva']);
-                    }else{
+                    } else {
                         return '-';
                     }
                 }
