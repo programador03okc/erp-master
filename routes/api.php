@@ -16,10 +16,9 @@ use Illuminate\Http\Request;
 //     return $request->user();
 // });
 
- 
+Route::post('api/logistica/gestion-logistica/requerimiento/elaboracion/guardar', 'LogisticaController@guardar_requerimiento');
 
 
- 
 
 
 
