@@ -760,6 +760,8 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::get('lista_contactos_proveedor/{id_proveedor?}', 'OrdenController@lista_contactos_proveedor');
 					Route::get('generar-orden-pdf/{id?}', 'OrdenController@generar_orden_por_requerimiento_pdf')->name('generar-orden-por-requerimiento-pdf'); // PDF
 					Route::get('listar_trabajadores', 'ProyectosController@listar_trabajadores');
+					Route::post('guardar_contacto', 'OrdenController@guardar_contacto');
+
 
 				});
 				Route::group(['as' => 'lista-ordenes.', 'prefix' => 'por-requerimiento'], function(){

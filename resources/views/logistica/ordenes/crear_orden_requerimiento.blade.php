@@ -281,6 +281,7 @@
 @include('publico.ubigeoModal')
 @include('logistica.ordenes.modal_contacto_proveedor')
 @include('logistica.ordenes.modal_trabajadores')
+@include('logistica.ordenes.agregar_contacto_proveedor')
 
 @include('logistica.ordenes.modal_ver_cuadro_costos')
 @include('logistica.ordenes.modal_documentos_vinculados')
@@ -305,6 +306,7 @@
     <script src="{{ asset('js/publico/ubigeoModal.js')}}"></script>
     <script src="{{('/js/logistica/orden/proveedorContactoModal.js')}}"></script>
     <script src="{{('/js/logistica/orden/trabajadorModal.js')}}"></script>
+    <script src="{{('/js/logistica/orden/agregarContacto.js')}}"></script>
 
  
     <script src="{{('/js/logistica/orden/crear_orden_requerimiento.js')}}"></script>

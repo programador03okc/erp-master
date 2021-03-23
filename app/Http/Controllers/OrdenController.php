@@ -2761,4 +2761,35 @@ class OrdenController extends Controller
             DB::rollBack();
         }
     }
+
+    public function guardar_contacto(Request $request)
+    {
+        $status=0;
+        $data=[];
+
+        $id_datos_contacto = DB::table('contabilidad.adm_ctb_contac')->insertGetId(
+            [
+                'id_contribuyente' => $request->id_contribuyente,
+                'nombre' => $request->nombre,
+                'telefono' => $request->telefono,
+                'email' => $request->email,
+                'cargo' => $request->cargo,
+                'direccion' => $request->direccion,
+                'fecha_registro' => date('Y-m-d H:i:s')
+            ],
+            'id_datos_contacto'
+        );
+        if($id_datos_contacto >0){
+            $status=200;
+            $data = DB::table('contabilidad.adm_ctb_contac')
+                ->where([
+                    ['id_datos_contacto', '=', $id_datos_contacto]
+                ])
+                ->first();
+        }
+
+        $output = ['status'=>$status,'data'=>$data];
+ 
+        return json_encode($output);
+    }
 }
