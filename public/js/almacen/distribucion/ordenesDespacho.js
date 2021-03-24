@@ -1172,32 +1172,18 @@ function listarGruposDespachadosPendientesCargo(permiso){
             },
             {'data': 'codigo_oportunidad', 'name': 'oportunidades.codigo_oportunidad'},
             {'render': function (data, type, row){
-                return formatNumber.decimal(row['monto_total'],'S/',2);
-            }
-        },
+                    return formatNumber.decimal(row['monto_total'],'S/',2);
+                }
+            },
             {'data': 'nombre', 'name': 'entidades.nombre'},
-            // {'data': 'codigo_odg', 'name': 'orden_despacho_grupo.codigo'},
-            // {'data': 'codigo_od', 'name': 'orden_despacho.codigo'},
             {'render': 
                 function (data, type, row){
                     return ('<label class="lbl-codigo" title="Abrir Despacho" onClick="openDespacho('+row['id_od_grupo']+')">'+row['codigo_od']+'</label>');
                 }
             },
             {'data': 'codigo_req', 'name': 'alm_req.codigo'},
-            // {'render': 
-            //     function (data, type, row){
-            //         if (row['cliente_razon_social'] !== null){
-            //             return row['cliente_razon_social'];
-            //         } else if (row['cliente_persona'] !== null){
-            //             return row['cliente_persona'];
-            //         }
-            //     }
-            // },
             {'data': 'concepto', 'name': 'alm_req.concepto'},
             {'data': 'user_name', 'name': 'users.name'},
-            // {'data': 'almacen_descripcion', 'name': 'alm_almacen.descripcion'},
-            // {'data': 'ubigeo_descripcion', 'name': 'ubi_dis.descripcion'},
-            // {'data': 'direccion_destino', 'name': 'orden_despacho.direccion_destino'},
             {'data': 'fecha_despacho', 'name': 'orden_despacho_grupo.fecha_despacho'},
             {'render': 
                 function (data, type, row){
@@ -1227,23 +1213,24 @@ function listarGruposDespachadosPendientesCargo(permiso){
             {'render': 
                 function (data, type, row){
                     if (permiso == '1') {
-                        // '<button type="button" class="god_detalle btn btn-primary boton" data-toggle="tooltip" '+
-                        // 'data-placement="bottom" title="Ver Detalle" >'+
-                        // '<i class="fas fa-list-ul"></i></button>'+
-                        return `<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" 
-                            data-placement="bottom" title="Ver Detalle" data-id="${row['id_requerimiento']}">
+                        return `
+                            <button type="button" class="estados btn btn-primary boton" data-toggle="tooltip" 
+                            data-placement="bottom" title="Ver Detalle" data-id="${row['id_od']}">
                             <i class="fas fa-chevron-down"></i></button>
 
-                            <button type="button" class="adjuntar btn btn-${row['count_despacho_adjuntos']>0 ? "warning" : "default"} boton" data-toggle="tooltip" 
-                            data-placement="bottom" data-id="${row['id_od']}" data-cod="${row['codigo_od']}" title="Agregar Comentarios" >
-                            <i class="fas fa-comment-dots"></i></button>
+                            <button type="button" class="adjuntar btn btn-info boton" data-toggle="tooltip" 
+                            data-placement="bottom" data-id="${row['id_od']}" data-codod="${row['codigo_od']}" 
+                            data-idreq="${row['id_requerimiento']}" data-estreq="${row['estado_req']}" title="Nuevo Estado">
+                            <i class="fas fa-map-marker-alt"></i></button>
 
                             <button type="button" class="conforme btn btn-success boton" data-toggle="tooltip" 
-                            data-placement="bottom" data-id="${row['id_od_grupo_detalle']}" data-od="${row['id_od']}" data-idreq="${row['id_requerimiento']}" data-cod-req="${row['codigo_req']}" data-concepto="${row['concepto']}" title="Confirmar Entrega" >
+                            data-placement="bottom" data-id="${row['id_od_grupo_detalle']}" data-od="${row['id_od']}" 
+                            data-idreq="${row['id_requerimiento']}" data-cod-req="${row['codigo_req']}" data-concepto="${row['concepto']}" title="Confirmar Entrega" >
                             <i class="fas fa-check"></i></button>
                             
                             <button type="button" class="no_conforme btn btn-danger boton" data-toggle="tooltip" 
-                            data-placement="bottom" data-id="${row['id_od_grupo_detalle']}" data-od="${row['id_od']}" data-idreq="${row['id_requerimiento']}" data-cod-req="${row['codigo_req']}" data-concepto="${row['concepto']}" title="Revertir" >
+                            data-placement="bottom" data-id="${row['id_od_grupo_detalle']}" data-od="${row['id_od']}" 
+                            data-idreq="${row['id_requerimiento']}" data-cod-req="${row['codigo_req']}" data-concepto="${row['concepto']}" title="Revertir" >
                             <i class="fas fa-backspace"></i></button>`;
                     }
                 }
@@ -1259,16 +1246,55 @@ function listarGruposDespachadosPendientesCargo(permiso){
 
 $('#pendientesRetornoCargo tbody').on("click","button.adjuntar", function(){
     var id = $(this).data('id');
-    var cod = $(this).data('cod');
-    $('#modal-despachoAdjuntos').modal({
+    var cod = $(this).data('codod');
+    var req = $(this).data('idreq');
+    var est = $(this).data('estreq');
+
+    $('#modal-ordenDespachoEstados').modal({
         show: true
     });
-    listarAdjuntos(id);
+    // $('#modal-despachoAdjuntos').modal({
+    //     show: true
+    // });
+    // listarAdjuntos(id);
     $('[name=id_od]').val(id);
+    $('[name=id_requerimiento]').val(req);
     $('[name=codigo_od]').val(cod);
-    $('[name=descripcion]').val('');
-    $('[name=archivo_adjunto]').val('');
-    $('[name=proviene_de]').val('retornoCargo');
+    $('[name=observacion]').val('');
+    $('[name=adjunto]').val('');
+
+    var sel = '';
+    switch (est) {
+        case 25:
+            sel = ` <option value="32" default>En Ag. Trans. Provincias</option>
+                    <option value="33">Salió hacia Cliente </option>
+                    <option value="34">Recibió en custodia </option>
+                    <option value="35">Cliente rechaza </option>
+                    <option value="21">Entregado Conforme </option>`;
+            break;
+        case 32:
+            sel = ` <option value="33">Salió hacia Cliente </option>
+                    <option value="34">Recibió en custodia </option>
+                    <option value="35">Cliente rechaza </option>
+                    <option value="21">Entregado Conforme </option>`;
+            break;
+        case 33:
+            sel = ` <option value="34">Recibió en custodia </option>
+                    <option value="35">Cliente rechaza </option>
+                    <option value="21">Entregado Conforme </option>`;
+            break;
+        case 34:
+            sel = ` <option value="35">Cliente rechaza </option>
+                    <option value="21">Entregado Conforme </option>`;
+            break;
+        case 35:
+            sel = ` <option value="21">Entregado Conforme </option>`;
+            break;
+        default:
+            break;
+    } 
+    $('[name=estado]').html(sel);
+    $('#submit_ordenDespachoEstados').removeAttr('disabled');
 });
 
 $('#pendientesRetornoCargo tbody').on("click","button.conforme", function(){
@@ -1304,6 +1330,140 @@ $('#pendientesRetornoCargo tbody').on("click","button.no_conforme", function(){
         despacho_no_conforme(data);
     }
 });
+
+var iTableCounter=1;
+var oInnerTable;
+$('#pendientesRetornoCargo tbody').on('click', 'td button.estados', function () {
+    var tr = $(this).closest('tr');
+    var row = tableCargo.row( tr );
+    console.log($(this).data('id'));
+    var id = $(this).data('id');
+    console.log(id);
+    
+    if ( row.child.isShown() ) {
+       row.child.hide();
+       tr.removeClass('shown');
+    }
+    else {
+       formatTimeLine(iTableCounter, id, row);
+       tr.addClass('shown');
+       oInnerTable = $('#pendientesRetornoCargo_' + iTableCounter).dataTable({
+        //    data: sections, 
+           autoWidth: true, 
+           deferRender: true, 
+           info: false, 
+           lengthChange: false, 
+           ordering: false, 
+           paging: false, 
+           scrollX: false, 
+           scrollY: false, 
+           searching: false, 
+           columns:[ ]
+       });
+       iTableCounter = iTableCounter + 1;
+    }
+});
+
+function formatTimeLine ( table_id, id, row ) {
+
+    $.ajax({
+        type: 'GET',
+        url: 'getTimelineOrdenDespacho/'+id,
+        dataType: 'JSON',
+        success: function(response){
+            console.log(response);
+            var html = `<div class="row">
+            <div class="col-md-12">
+            
+              <div style="display:inline-block;width:100%;">
+                <ul class="timeline timeline-horizontal">`;
+            var i = 1;
+            
+            response.forEach(element => {
+                
+                if (element.accion == 20){
+                    html+=`<li class="timeline-item">
+                    <div class="timeline-badge bgfuxia"><i class="glyphicon glyphicon-time"></i></div>
+                    <div class="timeline-panel borderfuxia">
+                        <div class="timeline-heading">
+                        <p><small class="text-muted colorfuxia">${element.fecha_despacho}<br>
+                        <strong>${element.estado_doc}</strong><br>
+                        ${element.mov_entrega}<br>${element.razon_social_despacho!==null?
+                            element.razon_social_despacho:
+                            element.responsable_despacho}</small></p>
+                        </div>
+                    </div>
+                    </li>`;
+                }
+                else if (element.accion == 25){
+                    html+=`<li class="timeline-item">
+                    <div class="timeline-badge bggreendark"><i class="glyphicon glyphicon-time"></i></div>
+                    <div class="timeline-panel bordergreendark">
+                        <div class="timeline-heading">
+                        <p><small class="text-muted colorgreendark">${element.fecha_transportista}<br>
+                        <strong>${element.estado_doc}</strong><br>
+                        ${element.observacion} ${element.razon_social_transportista}
+                        Cod.Envío:${element.codigo_envio}</small><br></p>
+                        </div>
+                    </div>
+                    </li>`;
+                }
+                else {
+                    html+=`<li class="timeline-item">
+                    <div class="timeline-badge ${element.accion == 32 ? 'bggreenlight' : (element.accion == 33 ? 'bgyellow' : 'bgdark')}">
+                    <i class="glyphicon glyphicon-time"></i></div>
+                    <div class="timeline-panel ${element.accion == 32 ? 'bordergreenlight' : (element.accion == 33 ? 'borderyellow' : 'borderdark')} ">
+                        <div class="timeline-heading">
+                        <p><small class="text-muted ${element.accion == 32 ? 'colorgreenlight' : (element.accion == 33 ? 'coloryellow' : 'colordark')}">${element.fecha_registro}<br>
+                        <strong>${element.estado_doc}</strong><br>
+                        ${element.observacion}</small></p>
+                        </div>
+                    </div>
+                    </li>`;
+                }
+            });
+            html+=`</ul>
+            </div>
+            </div>
+            </div>`;
+            row.child( html ).show();
+        }
+    }).fail( function( jqXHR, textStatus, errorThrown ){
+        console.log(jqXHR);
+        console.log(textStatus);
+        console.log(errorThrown);
+    });
+}
+
+$("#form-ordenDespachoEstados").on("submit", function(e){
+    e.preventDefault();
+    $('#submit_ordenDespachoEstados').attr('disabled','true');
+    despacho_estado();
+});
+
+function despacho_estado(){
+    var formData = new FormData($('#form-ordenDespachoEstados')[0]);
+    $.ajax({
+        type: 'POST',
+        url: 'guardarEstadoTimeLine',
+        data: formData,
+        cache: false,
+        contentType: false,
+        processData: false,
+        dataType: 'JSON',
+        success: function(response){
+            console.log(response);
+            $('#modal-ordenDespachoEstados').modal('hide');
+            $('#pendientesRetornoCargo').DataTable().ajax.reload();
+            actualizaCantidadDespachosTabs();
+            alert('Se guardó el estado con éxito');
+        }
+    }).fail( function( jqXHR, textStatus, errorThrown ){
+        console.log(jqXHR);
+        console.log(textStatus);
+        console.log(errorThrown);
+    });
+}
 
 function despacho_conforme(data){
     $.ajax({
@@ -1344,3 +1504,4 @@ function despacho_no_conforme(data){
         console.log(errorThrown);
     });
 }
+

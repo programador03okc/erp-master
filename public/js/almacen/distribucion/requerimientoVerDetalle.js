@@ -226,36 +226,36 @@ $('#gruposDespachados tbody').on('click', 'td button.detalle', function () {
   }
 });
 
-$('#pendientesRetornoCargo tbody').on('click', 'td button.detalle', function () {
-   var tr = $(this).closest('tr');
-   var row = tableCargo.row( tr );
-   console.log($(this).data('id'));
-   var id = $(this).data('id');
-   console.log(id);
+// $('#pendientesRetornoCargo tbody').on('click', 'td button.detalle', function () {
+//    var tr = $(this).closest('tr');
+//    var row = tableCargo.row( tr );
+//    console.log($(this).data('id'));
+//    var id = $(this).data('id');
+//    console.log(id);
    
-   if ( row.child.isShown() ) {
-      row.child.hide();
-      tr.removeClass('shown');
-   }
-   else {
-      format(iTableCounter, id, row);
-      tr.addClass('shown');
-      oInnerTable = $('#pendientesRetornoCargo_' + iTableCounter).dataTable({
-       //    data: sections, 
-          autoWidth: true, 
-          deferRender: true, 
-          info: false, 
-          lengthChange: false, 
-          ordering: false, 
-          paging: false, 
-          scrollX: false, 
-          scrollY: false, 
-          searching: false, 
-          columns:[ ]
-      });
-      iTableCounter = iTableCounter + 1;
-   }
-});
+//    if ( row.child.isShown() ) {
+//       row.child.hide();
+//       tr.removeClass('shown');
+//    }
+//    else {
+//       format(iTableCounter, id, row);
+//       tr.addClass('shown');
+//       oInnerTable = $('#pendientesRetornoCargo_' + iTableCounter).dataTable({
+//        //    data: sections, 
+//           autoWidth: true, 
+//           deferRender: true, 
+//           info: false, 
+//           lengthChange: false, 
+//           ordering: false, 
+//           paging: false, 
+//           scrollX: false, 
+//           scrollY: false, 
+//           searching: false, 
+//           columns:[ ]
+//       });
+//       iTableCounter = iTableCounter + 1;
+//    }
+// });
 
 function abrir_requerimiento(id_requerimiento){
     // Abrir nuevo tab

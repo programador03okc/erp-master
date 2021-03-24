@@ -1025,6 +1025,8 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::get('mostrar_prods', 'AlmacenController@mostrar_prods');
 					Route::get('verSeries/{id}', 'DistribucionController@verSeries');
 					Route::post('guardar_producto', 'AlmacenController@guardar_producto');
+					Route::get('getTimelineOrdenDespacho/{id}', 'DistribucionController@getTimelineOrdenDespacho');
+					Route::post('guardarEstadoTimeLine', 'DistribucionController@guardarEstadoTimeLine');
 
 				});
 				
