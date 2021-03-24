@@ -110,7 +110,9 @@ class DistribucionController extends Controller
         ->join('almacen.orden_despacho','orden_despacho.id_od','=','orden_despacho_grupo_det.id_od')
         ->join('almacen.alm_req','alm_req.id_requerimiento','=','orden_despacho.id_requerimiento')
         ->join('administracion.adm_estado_doc','adm_estado_doc.id_estado_doc','=','alm_req.estado')
-        ->where([['orden_despacho_grupo_det.estado','!=',7],['alm_req.estado','=',25]])//Pendiente de cargo
+        ->where('orden_despacho_grupo_det.estado',1)
+        ->whereIn('alm_req.estado',[25,32,33,34,35])
+        // ->where([['orden_despacho_grupo_det.estado','!=',7],['alm_req.estado','=',25]])//Pendiente de cargo
         ->count();
         
         return response()->json(['count_pendientes'=>$count_pendientes,
@@ -417,28 +419,24 @@ class DistribucionController extends Controller
         $data = DB::table('almacen.orden_despacho_grupo_det')
         ->select('orden_despacho_grupo_det.*','orden_despacho_grupo.fecha_despacho','orden_despacho.codigo as codigo_od',
         'orden_despacho_grupo.observaciones','orden_despacho.direccion_destino','sis_usua.nombre_corto as trabajador_despacho',
-        'adm_contri.razon_social as proveedor_despacho','cliente.razon_social as cliente_razon_social',
-        DB::raw("(rrhh_perso.nombres) || ' ' || (rrhh_perso.apellido_paterno) || ' ' || (rrhh_perso.apellido_materno) AS cliente_persona"),
+        'adm_contri.razon_social as proveedor_despacho',//'cliente.razon_social as cliente_razon_social',
+        // DB::raw("(rrhh_perso.nombres) || ' ' || (rrhh_perso.apellido_paterno) || ' ' || (rrhh_perso.apellido_materno) AS cliente_persona"),
         'alm_req.codigo as codigo_req','alm_req.concepto','alm_req.id_requerimiento',
-        'ubi_dis.descripcion as ubigeo_descripcion','orden_despacho_grupo.mov_entrega',
-        'adm_estado_doc.estado_doc','adm_estado_doc.bootstrap_color','alm_almacen.descripcion as almacen_descripcion',
+        'orden_despacho_grupo.mov_entrega',
+        'adm_estado_doc.estado_doc','adm_estado_doc.bootstrap_color',//'alm_almacen.descripcion as almacen_descripcion',
         'orden_despacho_grupo.codigo as codigo_odg','orden_despacho.estado as estado_od',
         'oc_propias.orden_am','oportunidades.oportunidad','oportunidades.codigo_oportunidad','oc_propias.monto_total',
         'entidades.nombre','orden_despacho.id_od','oc_propias.id as id_oc_propia','oc_propias.url_oc_fisica',
-        'users.name as user_name',
-        DB::raw("(SELECT COUNT(*) FROM almacen.orden_despacho_adjunto where
-                    orden_despacho_adjunto.id_od = orden_despacho.id_od
-                    and orden_despacho_adjunto.estado != 7) AS count_despacho_adjuntos"))
+        'users.name as user_name','alm_req.estado as estado_req')
         ->join('almacen.orden_despacho_grupo','orden_despacho_grupo.id_od_grupo','=','orden_despacho_grupo_det.id_od_grupo')
         ->leftjoin('configuracion.sis_usua','sis_usua.id_usuario','=','orden_despacho_grupo.responsable')
         ->leftjoin('logistica.log_prove','log_prove.id_proveedor','=','orden_despacho_grupo.id_proveedor')
         ->leftjoin('contabilidad.adm_contri','adm_contri.id_contribuyente','=','log_prove.id_contribuyente')
-        // ->join('administracion.adm_estado_doc','adm_estado_doc.id_estado_doc','=','orden_despacho_grupo.estado')
         ->join('almacen.orden_despacho','orden_despacho.id_od','=','orden_despacho_grupo_det.id_od')
-        ->leftjoin('comercial.com_cliente','com_cliente.id_cliente','=','orden_despacho.id_cliente')
-        ->leftjoin('contabilidad.adm_contri as cliente','cliente.id_contribuyente','=','com_cliente.id_contribuyente')
-        ->leftjoin('rrhh.rrhh_perso','rrhh_perso.id_persona','=','orden_despacho.id_persona')
-        ->leftjoin('almacen.alm_almacen','alm_almacen.id_almacen','=','orden_despacho.id_almacen')
+        // ->leftjoin('comercial.com_cliente','com_cliente.id_cliente','=','orden_despacho.id_cliente')
+        // ->leftjoin('contabilidad.adm_contri as cliente','cliente.id_contribuyente','=','com_cliente.id_contribuyente')
+        // ->leftjoin('rrhh.rrhh_perso','rrhh_perso.id_persona','=','orden_despacho.id_persona')
+        // ->leftjoin('almacen.alm_almacen','alm_almacen.id_almacen','=','orden_despacho.id_almacen')
         ->join('almacen.alm_req','alm_req.id_requerimiento','=','orden_despacho.id_requerimiento')
         ->leftjoin('mgcp_cuadro_costos.cc','cc.id','=','alm_req.id_cc')
         ->leftjoin('mgcp_oportunidades.oportunidades','oportunidades.id','=','cc.id_oportunidad')
@@ -446,8 +444,8 @@ class DistribucionController extends Controller
         ->leftjoin('mgcp_acuerdo_marco.oc_propias','oc_propias.id_oportunidad','=','oportunidades.id')
         ->leftjoin('mgcp_acuerdo_marco.entidades','entidades.id','=','oportunidades.id_entidad')
         ->join('administracion.adm_estado_doc','adm_estado_doc.id_estado_doc','=','alm_req.estado')
-        ->join('configuracion.ubi_dis','ubi_dis.id_dis','=','orden_despacho.ubigeo_destino')
-        ->where([['orden_despacho_grupo_det.estado','!=',7],['orden_despacho.estado','=',25]]);
+        ->where('orden_despacho_grupo_det.estado',1)
+        ->whereIn('alm_req.estado',[25,32,33,34,35]);
         //->get();
         return datatables($data)->toJson();
     }
@@ -1070,18 +1068,18 @@ class DistribucionController extends Controller
                 $msj = '';
 				$email_destinatario[] = 'programador01@okcomputer.com.pe';
 				$email_destinatario[] = 'administracionventas@okcomputer.com.pe';
-                $email_destinatario[] = 'asistente.contable.lima@okcomputer.com.pe';
-                $email_destinatario[] = 'asistente.contable@okcomputer.com.pe';
-				$email_destinatario[] = 'administracionventas@okcomputer.com.pe';
-				$email_destinatario[] = 'asistente.almacenlima1@okcomputer.com.pe';
-				$email_destinatario[] = 'asistente.almacenlima2@okcomputer.com.pe';
-				$email_destinatario[] = 'asistente.almacenlima@okcomputer.com.pe';
-				$email_destinatario[] = 'logistica.lima@okcomputer.com.pe';
-				$email_destinatario[] = 'soporte.lima@okcomputer.com.pe';
-				$email_destinatario[] = 'contadorgeneral@okcomputer.com.pe';
-				$email_destinatario[] = 'infraestructura@okcomputer.com.pe';
-				$email_destinatario[] = 'lenovo@okcomputer.com.pe';
-				$email_destinatario[] = 'logistica@okcomputer.com.pe';
+                // $email_destinatario[] = 'asistente.contable.lima@okcomputer.com.pe';
+                // $email_destinatario[] = 'asistente.contable@okcomputer.com.pe';
+				// $email_destinatario[] = 'administracionventas@okcomputer.com.pe';
+				// $email_destinatario[] = 'asistente.almacenlima1@okcomputer.com.pe';
+				// $email_destinatario[] = 'asistente.almacenlima2@okcomputer.com.pe';
+				// $email_destinatario[] = 'asistente.almacenlima@okcomputer.com.pe';
+				// $email_destinatario[] = 'logistica.lima@okcomputer.com.pe';
+				// $email_destinatario[] = 'soporte.lima@okcomputer.com.pe';
+				// $email_destinatario[] = 'contadorgeneral@okcomputer.com.pe';
+				// $email_destinatario[] = 'infraestructura@okcomputer.com.pe';
+				// $email_destinatario[] = 'lenovo@okcomputer.com.pe';
+				// $email_destinatario[] = 'logistica@okcomputer.com.pe';
                 $payload=[
                     'id_empresa'=>$req->id_empresa,
                     'email_destinatario'=>$email_destinatario,
@@ -1189,9 +1187,17 @@ class DistribucionController extends Controller
                 //Agrega accion en requerimiento
                 DB::table('almacen.alm_req_obs')
                 ->insert([  'id_requerimiento'=>$d->id_requerimiento,
-                            'accion'=>'DESPACHADO',
+                            'accion'=>'SALIÓ DE OFICINA',
                             'descripcion'=>'Requerimiento Despachado',
                             'id_usuario'=>$id_usuario,
+                            'fecha_registro'=>date('Y-m-d H:i:s')
+                    ]);
+                //Agrega al timeline
+                DB::table('almacen.orden_despacho_obs')
+                ->insert([  'id_od'=> $d->id_od,
+                            'accion'=>20,
+                            'observacion'=>$request->mov_entrega,
+                            'registrado_por'=>$id_usuario,
                             'fecha_registro'=>date('Y-m-d H:i:s')
                     ]);
 
@@ -1207,7 +1213,8 @@ class DistribucionController extends Controller
     public function despacho_transportista(Request $request){
         try {
             DB::beginTransaction();
-
+            
+            $id_usuario = Auth::user()->id_usuario;
             $requerimiento = null;
 
             if ($request->tr_id_proveedor !== null){
@@ -1223,24 +1230,24 @@ class DistribucionController extends Controller
                     'codigo_envio'=>$request->codigo_envio,
                     'importe_flete'=>$request->importe_flete
                     ]);
+
+                DB::table('almacen.orden_despacho_obs')
+                ->insert([
+                    'id_od'=>$request->id_od,
+                    'accion'=>25,
+                    'observacion'=>'Guía Transportista: '.$request->serie.'-'.$request->numero,
+                    'registrado_por'=>$id_usuario,
+                    'fecha_registro'=>date('Y-m-d H:i:s')
+                    ]);
+
                 $requerimiento = $request->con_id_requerimiento;
+
             } else {
                 $data = DB::table('almacen.orden_despacho')
                 ->where('id_od',$request->id_od)
                 ->update(['estado'=>21]);
                 $requerimiento = $request->id_requerimiento;
             }
-
-            $id_usuario = Auth::user()->id_usuario;
-
-            // $data = DB::table('almacen.orden_despacho_obs')
-            //     ->insert([
-            //         'id_od'=>$request->id_od,
-            //         'accion'=>'TRANSPORTANDOSE',
-            //         'observacion'=>'Se agrego los Datos del transportista. '.$request->serie.'-'.$request->numero,
-            //         'registrado_por'=>$id_usuario,
-            //         'fecha_registro'=>date('Y-m-d H:i:s')
-            //         ]);
             
             if ($requerimiento !== null){
                 DB::table('almacen.alm_req')
@@ -1290,7 +1297,7 @@ class DistribucionController extends Controller
             DB::table('almacen.orden_despacho_obs')
             ->insert([
                     'id_od'=>$request->id_od,
-                    'accion'=>'ENTREGADO',
+                    'accion'=>21,
                     'observacion'=>'Entregado Conforme',
                     'registrado_por'=>$id_usuario,
                     'fecha_registro'=>date('Y-m-d H:i:s')
@@ -2425,5 +2432,64 @@ class DistribucionController extends Controller
             ->get();
         $output['data'] = $data;
         return response()->json($output);
+    }
+
+    public function getTimelineOrdenDespacho($id_od)
+    {
+        $obs = DB::table('almacen.orden_despacho_obs')
+        ->select('orden_despacho_obs.*','transportista.razon_social as razon_social_transportista',
+        'orden_despacho.codigo_envio','orden_despacho.fecha_transportista','orden_despacho.importe_flete',
+        'orden_despacho_grupo.mov_entrega','adm_contri.razon_social as razon_social_despacho',
+        'sis_usua.nombre_corto as responsable_despacho','orden_despacho_grupo.fecha_despacho',
+        'adm_estado_doc.estado_doc')
+        ->join('almacen.orden_despacho','orden_despacho.id_od','=','orden_despacho_obs.id_od')
+        ->join('administracion.adm_estado_doc','adm_estado_doc.id_estado_doc','=','orden_despacho_obs.accion')
+        ->join('almacen.orden_despacho_grupo_det', function($join)
+                         {  $join->on('orden_despacho_grupo_det.id_od', '=', 'orden_despacho_obs.id_od');
+                            $join->where('orden_despacho_grupo_det.estado','!=', 7);
+                         })
+        ->join('almacen.orden_despacho_grupo','orden_despacho_grupo.id_od_grupo','=','orden_despacho_grupo_det.id_od_grupo')
+        ->leftjoin('logistica.log_prove','log_prove.id_proveedor','=','orden_despacho_grupo.id_proveedor')
+        ->leftjoin('contabilidad.adm_contri','adm_contri.id_contribuyente','=','log_prove.id_contribuyente')
+        ->leftjoin('configuracion.sis_usua','sis_usua.id_usuario','=','orden_despacho_grupo.responsable')
+        ->leftjoin('logistica.log_prove as log_transportista','log_transportista.id_proveedor','=','orden_despacho.id_transportista')
+        ->leftjoin('contabilidad.adm_contri as transportista','transportista.id_contribuyente','=','log_transportista.id_contribuyente')
+            ->where('orden_despacho_obs.id_od',$id_od)
+            ->get();
+        return response()->json($obs);
+    }
+
+    public function guardarEstadoTimeLine(Request $request){
+        $id_usuario = Auth::user()->id_usuario;
+        $file = $request->file('adjunto');
+        $id = 0;
+
+        DB::table('almacen.alm_req')
+        ->where('id_requerimiento',$request->id_requerimiento)
+        ->update(['estado'=>$request->estado]);
+
+        $id_obs = DB::table('almacen.orden_despacho_obs')
+        ->insertGetId([ 'id_od'=> $request->id_od,
+                        'accion'=>$request->estado,
+                        'observacion'=>$request->observacion,
+                        'registrado_por'=>$id_usuario,
+                        'fecha_registro'=>date('Y-m-d H:i:s')
+            ],'id_obs');
+
+        if (isset($file)){
+            //obtenemos el nombre del archivo
+            $extension = pathinfo($file->getClientOriginalName(), PATHINFO_EXTENSION);
+            $nombre = $id_obs.'.'.$request->codigo_od.'.'.$extension;
+            //indicamos que queremos guardar un nuevo archivo en el disco local
+            \File::delete(public_path('almacen/trazabilidad_envio/'.$nombre));
+            \Storage::disk('archivos')->put('almacen/trazabilidad_envio/'.$nombre,\File::get($file));
+            
+            DB::table('almacen.orden_despacho_obs')
+            ->where('id_obs',$id_obs)
+            ->update([ 'adjunto'=>$nombre ]);
+        }
+
+
+        return response()->json($id_obs);
     }
 }

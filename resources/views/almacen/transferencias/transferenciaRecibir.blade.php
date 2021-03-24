@@ -13,8 +13,8 @@
                 <input type="text" class="oculto" name="guia_ingreso_compra" >
                 <div class="row">
                     <div class="col-md-3">
-                        <h5>Fecha Almacén</h5>
-                        <input type="date" class="form-control" name="fecha_almacen" value="<?=date('Y-m-d');?>"/>
+                        <h5>Fecha Ingreso</h5>
+                        <input type="date" class="form-control" name="fecha_almacen" value="<?=date('Y-m-d');?>" required/>
                     </div>
                     <div class="col-md-4">
                         <h5>Almacén Destino</h5>

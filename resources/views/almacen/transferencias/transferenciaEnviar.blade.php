@@ -31,7 +31,7 @@
                             <input type="date" class="form-control activation" name="fecha_emision">
                         </div>
                         <div class="col-md-4">
-                            <h5>Fecha Almacén</h5>
+                            <h5>Fecha Salida</h5>
                             <input type="date" class="form-control" name="fecha_almacen">
                         </div>
                     </div>

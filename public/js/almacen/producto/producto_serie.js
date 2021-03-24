@@ -28,12 +28,14 @@ function listar_series(producto){
             {'data': 'serie'},
             {'data': 'guia_com'},
             {'data': 'guia_ven'},
-            {'render':
-                function (data, type, row){
-                    return ((row['estado'] == 1) ? 'Activo' : 'Inactivo');
-                }
-            }
-        ]
+            {'data': 'fecha_registro'},
+            // {'render':
+            //     function (data, type, row){
+            //         return ((row['estado'] == 1) ? 'Activo' : 'Inactivo');
+            //     }
+            // }
+        ],
+        'columnDefs': [{ 'aTargets': [0], 'sClass': 'invisible'}],
     });
 }
 function mostrar_serie(id){

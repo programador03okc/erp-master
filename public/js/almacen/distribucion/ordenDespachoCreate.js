@@ -71,7 +71,7 @@ function open_despacho_create(data){
     $('#detalleSale tbody').html('');
             
     $('[name=fecha_despacho]').val(fecha_actual());
-    $('[name=fecha_entrega]').val(fecha_actual());
+    $('[name=fecha_entrega]').val(data.fecha_entrega);
     
     detalle_requerimiento = [];
     detalle_ingresa = [];

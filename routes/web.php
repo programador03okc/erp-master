@@ -882,7 +882,7 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::post('crear_promocion', 'AlmacenController@crear_promocion');
 					Route::get('anular_promocion/{id}', 'AlmacenController@anular_promocion');
 					
-					Route::get('listar_ubicaciones_producto/{id}', 'AlmacenController@mostrar_ubicaciones_producto');
+					Route::get('listar_ubicaciones_producto/{id}', 'AlmacenController@listar_ubicaciones_producto');
 					Route::get('mostrar_ubicacion/{id}', 'AlmacenController@mostrar_ubicacion');
 					Route::post('guardar_ubicacion', 'AlmacenController@guardar_ubicacion');
 					Route::post('actualizar_ubicacion', 'AlmacenController@update_ubicacion');
@@ -1031,6 +1031,8 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::get('mostrar_prods', 'AlmacenController@mostrar_prods');
 					Route::get('verSeries/{id}', 'DistribucionController@verSeries');
 					Route::post('guardar_producto', 'AlmacenController@guardar_producto');
+					Route::get('getTimelineOrdenDespacho/{id}', 'DistribucionController@getTimelineOrdenDespacho');
+					Route::post('guardarEstadoTimeLine', 'DistribucionController@guardarEstadoTimeLine');
 
 				});
 				
