@@ -2500,14 +2500,21 @@ Route::get('decode5t/{id}', 'EquipoController@decode5t');
 
 
 	/**Contabilidad */
+	Route::group(['as' => 'contabilidad.', 'prefix' => 'contabilidad'], function(){
+		Route::get('index', 'ContabilidadController@view_main_contabilidad')->name('index');
+		Route::group(['as' => 'ventas.', 'prefix' => 'ventas'], function(){
+			Route::get('listar', 'ContabilidadController@view_listar_ventas')->name('vista-listar-ventas');
+			Route::get('registro', 'ContabilidadController@view_registro_ventas')->name('vista-registro-ventas');
+		});
+	});
+	
 	Route::get('cta_contable', 'ContabilidadController@view_cta_contable');
 	Route::get('mostrar_cta_contables', 'ContabilidadController@mostrar_cuentas_contables');
 	Route::get('comprobante_compra', 'ContabilidadController@view_comprobante_compra');
 	Route::get('ordenes_sin_facturar/{id_empresa}/{all_or_id_orden}', 'ContabilidadController@ordenes_sin_facturar');
 	Route::post('guardar_comprobante_compra', 'ContabilidadController@guardar_comprobante_compra');
 	Route::get('lista_comprobante_compra/{id_sede}/{all_or_id_doc_com}', 'ContabilidadController@lista_comprobante_compra');
-
-
+	
 	// APIs de Terceros
 	Route::get('consulta_sunat/{nro_documento?}', 'HynoTechController@consulta_sunat');
 

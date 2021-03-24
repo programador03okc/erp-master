@@ -1549,9 +1549,14 @@ class OrdenController extends Controller
 
             </style>
             </head>
-            <body>
+            <body>';
             
-                        <img src=".'.$ordenArray['head']['logo_empresa'].'" alt="Logo" height="75px">
+                if($ordenArray['head']['logo_empresa'] != null){
+                    $html.='<img src=".'.$ordenArray['head']['logo_empresa'].'" alt="Logo" height="75px">';
+                }
+
+            $html.='
+            
                 <br>
                 <hr>
                 <h1><center>' . $ordenArray['head']['tipo_documento'] . '<br>' . $ordenArray['head']['codigo'] . '</center></h1>
