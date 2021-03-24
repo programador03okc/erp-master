@@ -1268,26 +1268,28 @@ $('#pendientesRetornoCargo tbody').on("click","button.adjuntar", function(){
         case 25:
             sel = ` <option value="32" default>En Ag. Trans. Provincias</option>
                     <option value="33">Salió hacia Cliente </option>
-                    <option value="34">Recibió en custodia </option>
-                    <option value="35">Cliente rechaza </option>
+                    <option value="34">Cliente recoge en Agencia </option>
+                    <option value="35">Recibió en custodia </option>
+                    <option value="36">Cliente rechaza </option>
                     <option value="21">Entregado Conforme </option>`;
             break;
         case 32:
             sel = ` <option value="33">Salió hacia Cliente </option>
-                    <option value="34">Recibió en custodia </option>
-                    <option value="35">Cliente rechaza </option>
+                    <option value="34">Cliente recoge en Agencia </option>
+                    <option value="35">Recibió en custodia </option>
+                    <option value="36">Cliente rechaza </option>
                     <option value="21">Entregado Conforme </option>`;
             break;
-        case 33:
-            sel = ` <option value="34">Recibió en custodia </option>
-                    <option value="35">Cliente rechaza </option>
-                    <option value="21">Entregado Conforme </option>`;
-            break;
-        case 34:
-            sel = ` <option value="35">Cliente rechaza </option>
+        case 33: case 34:
+            sel = ` <option value="35">Recibió en custodia </option>
+                    <option value="36">Cliente rechaza </option>
                     <option value="21">Entregado Conforme </option>`;
             break;
         case 35:
+            sel = ` <option value="36">Cliente rechaza </option>
+                    <option value="21">Entregado Conforme </option>`;
+            break;
+        case 36:
             sel = ` <option value="21">Entregado Conforme </option>`;
             break;
         default:
@@ -1410,11 +1412,14 @@ function formatTimeLine ( table_id, id, row ) {
                 }
                 else {
                     html+=`<li class="timeline-item">
-                    <div class="timeline-badge ${element.accion == 32 ? 'bggreenlight' : (element.accion == 33 ? 'bgyellow' : 'bgdark')}">
+                    <div class="timeline-badge ${element.accion == 32 ? 'bggreenlight' : 
+                    ((element.accion == 33 || element.accion == 34) ? 'bgyellow' : 'bgdark')}">
                     <i class="glyphicon glyphicon-time"></i></div>
-                    <div class="timeline-panel ${element.accion == 32 ? 'bordergreenlight' : (element.accion == 33 ? 'borderyellow' : 'borderdark')} ">
+                    <div class="timeline-panel ${element.accion == 32 ? 'bordergreenlight' : 
+                    ((element.accion == 33 || element.accion == 34) ? 'borderyellow' : 'borderdark')} ">
                         <div class="timeline-heading">
-                        <p><small class="text-muted ${element.accion == 32 ? 'colorgreenlight' : (element.accion == 33 ? 'coloryellow' : 'colordark')}">${element.fecha_registro}<br>
+                        <p><small class="text-muted ${element.accion == 32 ? 'colorgreenlight' : 
+                        ((element.accion == 33 || element.accion == 34) ? 'coloryellow' : 'colordark')}">${element.fecha_registro}<br>
                         <strong>${element.estado_doc}</strong><br>
                         ${element.observacion}</small></p>
                         </div>
