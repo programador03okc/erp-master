@@ -112,7 +112,6 @@ function llenarCabeceraCuadroCostos(data){
     document.querySelector("select[name='tipo_requerimiento']").value =1;
     document.querySelector("input[name='confirmacion_pago']").value =true;
     document.querySelector("input[name='concepto']").value =data.orden_am;
-    document.querySelector("select[name='periodo']").value =2;
     document.querySelector("select[name='prioridad']").value =1;
     document.querySelector("select[id='empresa']").value =data.id_empresa;
     getDataSelectSedeSinUbigeo(data.id_empresa);
