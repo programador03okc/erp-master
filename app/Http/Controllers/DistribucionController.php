@@ -1971,7 +1971,7 @@ class DistribucionController extends Controller
         $yyyy = date('Y',strtotime($fecha_transformacion));
         
         $cantidad = DB::table('almacen.transformacion')
-        ->whereYear('fecha_transformacion','=',$yyyy)
+        ->whereYear('fecha_registro','=',$yyyy)
         ->where([['estado','!=',7]])
         ->get()->count();
 
