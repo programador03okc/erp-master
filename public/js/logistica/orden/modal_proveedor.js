@@ -69,7 +69,7 @@ function listar_transportistas(){
 }
 
 function proveedorModal(){
-    $('#modal-proveedor').modal({
+    $('#modal-proveedores').modal({
         show: true
     });
     var page = $('.page-main').attr('type');
@@ -148,7 +148,7 @@ function selectProveedor(){
         $('[name=ubigeo_proveedor_descripcion]').val(ubi_des);  
     }
     
-    $('#modal-proveedor').modal('hide');
+    $('#modal-proveedores').modal('hide');
 }
 
 
