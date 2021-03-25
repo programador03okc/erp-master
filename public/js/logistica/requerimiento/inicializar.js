@@ -128,7 +128,9 @@ function inicializar( _rutaLista,
                 changeStateButton('historial');
                 vista_extendida();
             }
+            var today = new Date();
 
+            $('[name=periodo]').val(today.getFullYear());
 }
 
 $(function(){
