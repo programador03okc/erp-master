@@ -13,7 +13,7 @@
 
                 </div>
             </div>
-                <table class="mytable table table-striped table-condensed table-bordered" id="listaItems">
+                <table class="mytable table table-condensed table-bordered table-okc-view" id="listaItems">
                     <thead>
                         <tr>
                             <th></th>

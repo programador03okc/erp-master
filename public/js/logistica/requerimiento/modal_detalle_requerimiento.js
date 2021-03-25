@@ -651,12 +651,12 @@ function listarItems() {
         // 'buttons': vardataTables[2],
         // "dom": '<"toolbar">frtip',
 
-        'scrollY': '30vh',
-        'scrollCollapse': true,
+        // 'scrollY': '30vh',
+        // 'scrollCollapse': true,
         'language' : vardataTables[0],
         'processing': true,
         "bDestroy": true,
-        "scrollX": true,
+        // "scrollX": true,
         'ajax': '/logistica/mostrar_items',
         'columns': [
             {'data': 'id_item'},
