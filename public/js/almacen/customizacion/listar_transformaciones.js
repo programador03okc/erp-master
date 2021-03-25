@@ -70,7 +70,7 @@ class GestionCustomizacion
                         <i class="fas fa-times"></i></button>`) : 
                         
                         row['estado'] == 24 ? '<i class="fas fa-check green" style="font-size: 15px;"></i>'
-                        : '<i class="fas fa-check-double blue"  style="font-size: 15px;"></i>');
+                        : (row['estado'] == 1 ? '' : '<i class="fas fa-check-double blue"  style="font-size: 15px;"></i>'));
                     }
                 },
                 {'render':
