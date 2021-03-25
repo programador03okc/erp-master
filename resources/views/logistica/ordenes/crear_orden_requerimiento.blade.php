@@ -53,7 +53,7 @@
                         </div>
                         <div class="col-md-2" id="group-fecha_emision_orden" >
                             <h5>Fecha Emisión</h5>
-                            <input class="form-control" name="fecha_emision" type="date" min={{ date('Y-m-d H:i:s') }} value={{ date('Y-m-d H:i:s') }} >
+                            <input class="form-control" name="fecha_emision" type="date" >
                         </div>
 
                         <div class="col-md-3" id="group-datos_para_despacho-logo_empresa">
