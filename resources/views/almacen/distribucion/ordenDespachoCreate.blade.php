@@ -132,7 +132,7 @@
                                 <div class="row">
                                     <div class="col-md-12">
                                         <h5>Agregar Contenido Adicional al Correo</h5>
-                                        <textarea name="contenido" id="contenido" cols="73" rows="8" required></textarea>
+                                        <textarea name="contenido" id="contenido" cols="73" rows="8"></textarea>
                                     </div>
                                 </div>
                             </div>
