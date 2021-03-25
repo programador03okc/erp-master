@@ -11,11 +11,19 @@ $(function(){
         var idCo = $(this)[0].childNodes[1].innerHTML;
         var ruc = $(this)[0].childNodes[2].innerHTML;
         var des = $(this)[0].childNodes[3].innerHTML;
+        var dir = $(this)[0].childNodes[4].innerHTML;
+        var tel = $(this)[0].childNodes[5].innerHTML;
+        var ubi = $(this)[0].childNodes[6].innerHTML;
+        var ubi_des = $(this)[0].childNodes[7].innerHTML;
 
         $('.modal-footer #id_proveedor').text(idTr);
         $('.modal-footer #id_contribuyente').text(idCo);
         $('.modal-footer #ruc').text(ruc);
         $('.modal-footer #select_razon_social').text(des);
+        $('.modal-footer #select_direccion_fiscal').text(dir);
+        $('.modal-footer #select_telefono').text(tel);
+        $('.modal-footer #select_ubigeo').text(ubi);
+        $('.modal-footer #select_ubigeo_descripcion').text(ubi_des);
     });
 });
 
@@ -31,9 +39,13 @@ function listar_proveedores(){
             {'data': 'id_proveedor'},
             {'data': 'id_contribuyente'},
             {'data': 'nro_documento'},
-            {'data': 'razon_social'}
+            {'data': 'razon_social'},
+            {'data': 'direccion_fiscal'},
+            {'data': 'telefono'},
+            {'data': 'ubigeo'},
+            {'data': 'ubigeo_descripcion'},
         ],
-        'columnDefs': [{ 'aTargets': [0,1], 'sClass': 'invisible'}],
+        'columnDefs': [{ 'aTargets': [0,1,4,5,6,7], 'sClass': 'invisible'}],
     });
 }
 
@@ -57,7 +69,7 @@ function listar_transportistas(){
 }
 
 function proveedorModal(){
-    $('#modal-proveedores').modal({
+    $('#modal-proveedor').modal({
         show: true
     });
     var page = $('.page-main').attr('type');
@@ -73,6 +85,10 @@ function selectProveedor(){
     var myId = $('.modal-footer #id_proveedor').text();
     var idCo = $('.modal-footer #id_contribuyente').text();
     var des = $('.modal-footer #select_razon_social').text();
+    var dir = $('.modal-footer #select_direccion_fiscal').text();
+    var tel = $('.modal-footer #select_telefono').text();
+    var ubi = $('.modal-footer #select_ubigeo').text();
+    var ubi_des = $('.modal-footer #select_ubigeo_descripcion').text();
     var ruc = $('.modal-footer #ruc').text();
     var page = $('.page-main').attr('type');
     // console.log('page: '+page);
@@ -126,9 +142,13 @@ function selectProveedor(){
         $('[name=id_proveedor]').val(myId);
         $('[name=id_contrib]').val(idCo);
         $('[name=razon_social]').val(des);   
+        $('[name=direccion_proveedor]').val(dir); 
+        $('[name=telefono_proveedor]').val(tel);  
+        $('[name=ubigeo_proveedor]').val(ubi);  
+        $('[name=ubigeo_proveedor_descripcion]').val(ubi_des);  
     }
     
-    $('#modal-proveedores').modal('hide');
+    $('#modal-proveedor').modal('hide');
 }
 
 

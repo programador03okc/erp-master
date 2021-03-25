@@ -276,7 +276,7 @@
     
     </form>
 </div>
-@include('logistica.cotizaciones.proveedorModal')
+@include('logistica.ordenes.modal_proveedor')
 @include('logistica.cotizaciones.add_proveedor')
 @include('publico.ubigeoModal')
 @include('logistica.ordenes.modal_contacto_proveedor')
@@ -301,7 +301,7 @@
     <script src="{{ asset('datatables/JSZip/jszip.min.js') }}"></script>
     <script src="{{ asset('template/plugins/select2/select2.min.js') }}"></script>
     <!-- <script src="{{('/js/logistica/generar_orden.js')}}"></script> -->
-    <script src="{{('/js/logistica/proveedorModal.js')}}"></script>
+    <script src="{{('/js/logistica/orden/modal_proveedor.js')}}"></script>
     <script src="{{('/js/logistica/add_proveedor.js')}}"></script>
     <script src="{{ asset('js/publico/ubigeoModal.js')}}"></script>
     <script src="{{('/js/logistica/orden/proveedorContactoModal.js')}}"></script>
