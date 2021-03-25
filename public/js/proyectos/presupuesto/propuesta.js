@@ -106,7 +106,12 @@ function mostrar_propuesta(id){
 
 function refresh_partidas(){
     var id = $('[name=id_presup]').val();
-    listar_partidas_propuesta(id);
+    
+    if (id !== ''){
+        listar_partidas_propuesta(id);
+    } else {
+        alert('Aun no existe una propuesta');
+    }
 }
 
 function listar_partidas_propuesta(id_pres){

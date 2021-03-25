@@ -17,6 +17,10 @@ Cronograma Propuesta
 </ol>
 @endsection
 
+@section('estilos')
+<link rel="stylesheet" href="{{ asset('template/plugins/gantt/dhtmlxgantt.css') }}">
+@endsection
+
 @section('content')
 <div class="page-main" type="cronopro">
     <form id="form-cronopro" type="register" form="formulario">
@@ -123,6 +127,7 @@ Cronograma Propuesta
     <script src="{{ asset('datatables/pdfmake/vfs_fonts.js') }}"></script>
     <script src="{{ asset('datatables/JSZip/jszip.min.js') }}"></script>
     <script src="{{ asset('template/plugins/moment.min.js') }}"></script>
+    <script src="{{ asset('template/plugins/gantt/dhtmlxgantt.js') }}"></script>
 
     <script src="{{ asset('js/proyectos/cronograma/cronopro.js')}}"></script>
     <script src="{{ asset('js/proyectos/presupuesto/verAcu.js')}}"></script>

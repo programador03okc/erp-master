@@ -3113,6 +3113,7 @@ class ProyectosController extends Controller
                     $fecha_fin = date("Y-m-d",strtotime($partida->fecha_emision."+ ".round($duracion,0,PHP_ROUND_HALF_UP)." days"));
                     $nuevo = [
                         'id_partida' => $partida->id_partida,
+                        'id_cu_partida' => $partida->id_cu_partida,
                         'id_presupuesto' => $partida->id_cd,
                         'tipo' => 'cd',
                         'nro_orden' => $i,
@@ -3146,6 +3147,7 @@ class ProyectosController extends Controller
 
         $ci = [
             'id_partida' => null,
+            'id_cu_partida' => null,
             'id_presupuesto' => $id_presupuesto,
             'tipo' => 'ci',
             'nro_orden' => $i,
@@ -3167,6 +3169,7 @@ class ProyectosController extends Controller
 
         $gg = [
             'id_partida' => null,
+            'id_cu_partida' => null,
             'id_presupuesto' => $id_presupuesto,
             'tipo' => 'gg',
             'nro_orden' => $i,
@@ -6860,8 +6863,8 @@ class ProyectosController extends Controller
                     $det_oc = DB::table('almacen.alm_det_req')
                         ->select(DB::raw('SUM(alm_det_req.cantidad * alm_det_req.precio_referencial) as suma_req'))
                         // DB::raw('SUM(log_valorizacion_cotizacion.precio_sin_igv) as suma_sin_igv'))
-                        ->leftjoin('logistica.valoriza_coti_detalle','valoriza_coti_detalle.id_detalle_requerimiento','=','alm_det_req.id_detalle_requerimiento')
-                        ->leftjoin('logistica.log_valorizacion_cotizacion','log_valorizacion_cotizacion.id_valorizacion_cotizacion','=','valoriza_coti_detalle.id_valorizacion_cotizacion')
+                        // ->leftjoin('logistica.valoriza_coti_detalle','valoriza_coti_detalle.id_detalle_requerimiento','=','alm_det_req.id_detalle_requerimiento')
+                        // ->leftjoin('logistica.log_valorizacion_cotizacion','log_valorizacion_cotizacion.id_valorizacion_cotizacion','=','valoriza_coti_detalle.id_valorizacion_cotizacion')
                         ->where([['alm_det_req.partida','=',$par->id_partida],
                                 // ['valoriza_coti_detalle.estado','=',1],
                                 // ['log_valorizacion_cotizacion.estado','!=',7],
@@ -7429,18 +7432,18 @@ class ProyectosController extends Controller
             ->orderBy('relacionado','asc')
             ->get();
     
-            $data = DB::table('proyectos.proy_ci_compo')
-            ->insertGetId([
-                'id_ci' => $id_presupuesto,
-                'codigo' => '01',
-                'descripcion' => 'Almacenes / Alojamiento / Alimentación',
-                'cod_padre' => '',
-                'total_comp' => 0,
-                'fecha_registro' => date('Y-m-d H:i:s'),
-                'estado' => 1
-            ],
-                'id_ci_compo'
-            );
+            // $data = DB::table('proyectos.proy_ci_compo')
+            // ->insertGetId([
+            //     'id_ci' => $id_presupuesto,
+            //     'codigo' => '01',
+            //     'descripcion' => 'Almacenes / Alojamiento / Alimentación',
+            //     'cod_padre' => '',
+            //     'total_comp' => 0,
+            //     'fecha_registro' => date('Y-m-d H:i:s'),
+            //     'estado' => 1
+            // ],
+            //     'id_ci_compo'
+            // );
     
             foreach($titulos as $d){
                 $codigo = substr($d->relacionado, 2, (strlen($d->relacionado)-2));
@@ -8961,15 +8964,15 @@ class ProyectosController extends Controller
     public function ver_detalle_partida($id_partida)
     {
         $det_req = DB::table('almacen.alm_det_req')
-        ->select('alm_det_req.*','moneda_req.simbolo as moneda_req','log_valorizacion_cotizacion.precio_sin_igv',
-        'log_valorizacion_cotizacion.cantidad_cotizada','alm_req.codigo as cod_req','alm_req.concepto','alm_req.fecha_requerimiento',
+        ->select('alm_det_req.*','moneda_req.simbolo as moneda_req','log_det_ord_compra.precio as precio_sin_igv',
+        'log_det_ord_compra.cantidad as cantidad_cotizada','alm_req.codigo as cod_req','alm_req.concepto','alm_req.fecha_requerimiento',
         'log_ord_compra.id_orden_compra','log_ord_compra.codigo as cod_orden','log_ord_compra.fecha as fecha_orden',
         'adm_contri.nro_documento','adm_contri.razon_social','sis_moneda.simbolo as moneda_oc')
         ->join('almacen.alm_req','alm_req.id_requerimiento','=','alm_det_req.id_requerimiento')
         ->join('configuracion.sis_moneda as moneda_req','moneda_req.id_moneda','=','alm_req.id_moneda')
-        ->leftjoin('logistica.valoriza_coti_detalle','valoriza_coti_detalle.id_detalle_requerimiento','=','alm_det_req.id_detalle_requerimiento')
-        ->leftjoin('logistica.log_valorizacion_cotizacion','log_valorizacion_cotizacion.id_valorizacion_cotizacion','=','valoriza_coti_detalle.id_valorizacion_cotizacion')
-        ->leftjoin('logistica.log_det_ord_compra','log_det_ord_compra.id_valorizacion_cotizacion','=','log_valorizacion_cotizacion.id_valorizacion_cotizacion')
+        // ->leftjoin('logistica.valoriza_coti_detalle','valoriza_coti_detalle.id_detalle_requerimiento','=','alm_det_req.id_detalle_requerimiento')
+        // ->leftjoin('logistica.log_valorizacion_cotizacion','log_valorizacion_cotizacion.id_valorizacion_cotizacion','=','valoriza_coti_detalle.id_valorizacion_cotizacion')
+        ->leftjoin('logistica.log_det_ord_compra','log_det_ord_compra.id_valorizacion_cotizacion','=','alm_det_req.id_detalle_requerimiento')
         ->leftjoin('logistica.log_ord_compra','log_ord_compra.id_orden_compra','=','log_det_ord_compra.id_orden_compra')
         ->leftjoin('logistica.log_prove','log_prove.id_proveedor','=','log_ord_compra.id_proveedor')
         ->leftjoin('contabilidad.adm_contri','adm_contri.id_contribuyente','=','log_prove.id_contribuyente')
