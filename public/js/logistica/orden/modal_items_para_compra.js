@@ -372,7 +372,7 @@ function makeSelectedToSelect(indice, type, data, id, hasDisabled) {
 function validarObjItemsParaCompra() {
     infoStateInput = [];
     if (itemsParaCompraList.length > 0) {
-        // console.log(itemsParaCompraList);
+        console.log(itemsParaCompraList);
         itemsParaCompraList.forEach(element => {
             if (element.id_producto == '' || element.id_producto == null) {
                 infoStateInput.push('Guardar item');
@@ -745,6 +745,8 @@ function eliminarItemDeListadoParaCompra(obj, index) {
     itemsParaCompraList = itemsParaCompraList.filter((item, i) => i !== index);
 
     actualizarIndicesDeTabla();
+    validarObjItemsParaCompra();
+
     // console.log(itemsParaCompraList);
 }
 
@@ -754,6 +756,7 @@ function GuardarItemsEnDetalleRequerimiento() {
     // console.log(itemsParaCompraList);
     if(reqTrueList.length ==1){
         guardarMasItemsAlDetalleRequerimiento(reqTrueList,itemsParaCompraList); // solo un id_requerimiento;
+        validarObjItemsParaCompra();
     }else{
         alert("Lo sentimos, La implementación para generar orden mas de un requerimiento aun no esta completa, Seleccione solo un requerimiento");
     }
