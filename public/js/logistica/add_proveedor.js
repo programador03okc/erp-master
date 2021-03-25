@@ -34,7 +34,13 @@ function agregar_proveedor(){
 
     $("#submitProveedor").removeAttr("disabled");
 }
-
+function ubigeoModalProveedor(){
+    $('#modal-ubigeo').modal({
+        show: true
+    });
+    modalPage='modal-proveedor';
+    listarUbigeos();
+}
 function guardar_proveedor(){
     let ruc = $('[name=nro_documento_prov]').val();
     let tp = $('[name=id_doc_identidad]').val();

@@ -341,13 +341,16 @@ function hasCheckedGuardarEnRequerimiento(){
 }
 
 
+
 $("#form-crear-orden-requerimiento").on("submit", function(e){
     e.preventDefault();
-    var data = $(this).serialize();
-    var detalle_requerimiento = [];
-    payload_orden = data;
+    // var data = $(this).serialize();
+    // var detalle_requerimiento = [];
+    // payload_orden = data;
     // console.log(detalleRequerimientoSelected);
     let hasCheck = hasCheckedGuardarEnRequerimiento();
+    payload_orden =get_header_orden_requerimiento();
+
     if(hasCheck == true){
         let coutReqInObj =countRequirementsInObj();
         if(coutReqInObj == 1){
@@ -361,7 +364,6 @@ $("#form-crear-orden-requerimiento").on("submit", function(e){
                 }
             });
 
-            payload_orden =get_header_orden_requerimiento();
             payload_orden.detalle= detalleRequerimientoSelected;
             // payload_orden += '&detalle_requerimiento='+JSON.stringify(detalleRequerimientoSelected);
             guardar_orden_requerimiento(payload_orden);
@@ -376,7 +378,6 @@ $("#form-crear-orden-requerimiento").on("submit", function(e){
 
             
         }else{ //no existen nuevos item argregados, guardar nromal (no habra que guardar en req)
-            payload_orden =get_header_orden_requerimiento();
             payload_orden.detalle= detalleRequerimientoSelected;
             guardar_orden_requerimiento(payload_orden);
     
@@ -386,17 +387,36 @@ $("#form-crear-orden-requerimiento").on("submit", function(e){
         payload_orden.detalle= detalleRequerimientoSelected;
     guardar_orden_requerimiento(payload_orden);
     }
-});
 
+
+});
+// function validarCamposOrden(data){
+//     var infoStateInput =[];
+
+//     if(!data.plazo_entrega >0){
+//         infoStateInput.push('Ingrese el prazo de entrega');
+//     }
+//     if(!data.id_proveedor >0){
+//         infoStateInput.push('Ingrese el un proveedor');
+//     }
+//     if(data.direccion_destino ==null || data.direccion_destino ==''){
+//         infoStateInput.push('Ingrese el una dirección de destino');
+//     }
+//     return infoStateInput;
+// }
 function validaOrdenRequerimiento(){
     var codigo_orden = $('[name=codigo_orden]').val();
     var id_proveedor = $('[name=id_proveedor]').val();
+    var plazo_entrega = $('[name=plazo_entrega]').val();
     var msj = '';
     if (codigo_orden == ''){
         msj+='\n Es necesario que ingrese un código de orden Softlink';
     }
     if (id_proveedor == ''){
         msj+='\n Es necesario que seleccione un Proveedor';
+    }
+    if (plazo_entrega == ''){
+        msj+='\n Es necesario que ingrese un plazo de entrega';
     }
     let cantidadInconsistenteInputPrecio=0;
     let inputPrecio= document.querySelectorAll("table[id='listaDetalleOrden'] input[name='precio']");
@@ -832,7 +852,7 @@ function updateInputCantidadAComprar(event){
         let row = document.querySelectorAll("span[name='cantidad']")[index].dataset.row;
         if(row == rowNumberSelected){
             cantidad = document.querySelectorAll("span[name='cantidad']")[index].textContent;
-            if(parseFloat(nuevoValor) <= parseFloat(cantidad)){                
+            if(parseFloat(nuevoValor) >0){                
                 // actualizar datadetreq cantidad
                 updateInObjCantidadAComprar(rowNumberSelected,idRequerimientoSelected,idDetalleRequerimientoSelected,nuevoValor);
                 calcTotalDetalleRequerimiento(idDetalleRequerimientoSelected,rowNumberSelected);
@@ -841,12 +861,12 @@ function updateInputCantidadAComprar(event){
                 // 
             }
             
-            if(parseFloat(nuevoValor) > parseFloat(cantidad)){
-                alert("La cantidad a comprar no puede ser mayor a la cantidad `solicitada");
-                document.querySelectorAll("input[name='cantidad_a_comprar']")[index].value= cantidad;
-                updateInObjCantidadAComprar(rowNumberSelected,idRequerimientoSelected,idDetalleRequerimientoSelected,cantidad);
+            // if(parseFloat(nuevoValor) > parseFloat(cantidad)){
+            //     alert("La cantidad a comprar no puede ser mayor a la cantidad `solicitada");
+            //     document.querySelectorAll("input[name='cantidad_a_comprar']")[index].value= cantidad;
+            //     updateInObjCantidadAComprar(rowNumberSelected,idRequerimientoSelected,idDetalleRequerimientoSelected,cantidad);
 
-            }
+            // }
         }
     }
 }
