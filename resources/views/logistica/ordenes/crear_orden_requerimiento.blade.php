@@ -197,7 +197,7 @@
                             <div style="display:flex;">
                                 <input class="oculto" name="id_ubigeo_destino"/>
                                 <input type="text" name="ubigeo_destino" class="form-control group-elemento" readOnly >
-                                <button type="button" class="group-text" onClick="contactoModal();">
+                                <button type="button" class="group-text" onClick="ubigeoModal();">
                                     <i class="fa fa-search"></i>
                                 </button> 
                             </div>

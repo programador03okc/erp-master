@@ -14,6 +14,18 @@ class ContabilidadController extends Controller
     public function __construct(){
         // session_start();
     }
+    function view_main_contabilidad(){
+        return view('contabilidad/main');
+    }
+    
+    function view_listar_ventas(){
+        return view('contabilidad/ventas/vista_listar');
+    }
+    
+    function view_registro_ventas(){
+        return view('contabilidad/ventas/vista_registro');
+    }
+    
     function view_cta_contable(){
         return view('contabilidad/cta_contable');
     }

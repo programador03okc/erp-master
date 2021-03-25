@@ -1067,7 +1067,7 @@ class DistribucionController extends Controller
     
                 $msj = '';
 				$email_destinatario[] = 'programador01@okcomputer.com.pe';
-				$email_destinatario[] = 'administracionventas@okcomputer.com.pe';
+				// $email_destinatario[] = 'administracionventas@okcomputer.com.pe';
                 // $email_destinatario[] = 'asistente.contable.lima@okcomputer.com.pe';
                 // $email_destinatario[] = 'asistente.contable@okcomputer.com.pe';
 				// $email_destinatario[] = 'administracionventas@okcomputer.com.pe';

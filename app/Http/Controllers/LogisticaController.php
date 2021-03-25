@@ -5022,10 +5022,10 @@ class LogisticaController extends Controller
 						$id_empresa = $req->first()->id_empresa;
 						$id_sede = $req->first()->id_sede;
 	
-						$email_destinatario= $this->get_email_usuario_por_rol('Logístico Compras', $id_sede, $id_empresa);
+						// $email_destinatario= $this->get_email_usuario_por_rol('Logístico Compras', $id_sede, $id_empresa);
 						// $email_destinatario[]= $this->get_email_usuario_por_rol('Coordinador', $id_sede, $id_empresa);
-						$email_destinatario[]= 'administracionventas@okcomputer.com.pe'; 
-						// $email_destinatario[]= 'programador03@okcomputer.com.pe'; 
+						// $email_destinatario[]= 'administracionventas@okcomputer.com.pe'; 
+						$email_destinatario[]= 'programador03@okcomputer.com.pe'; 
 						$payload=[
 							'id_empresa'=>$id_empresa,
 							'email_destinatario'=>$email_destinatario,
@@ -5730,6 +5730,9 @@ function get_id_usuario_usuario_por_rol($descripcion_rol, $id_sede, $id_empresa)
                         'id_doc_identidad'=>$request->id_doc_identidad, 
                         'nro_documento'=>$request->nro_documento_prov, 
                         'razon_social'=>strtoupper($request->razon_social), 
+                        'direccion_fiscal'=>isset($request->direccion_fiscal)?$request->direccion_fiscal:null, 
+                        'telefono'=>isset($request->telefono)?$request->telefono:null, 
+                        'ubigeo'=>isset($request->ubigeo)?$request->ubigeo:null, 
                         'estado'=>1,
                         'transportista'=>($request->transportista == "si" ? true : false),
                         'fecha_registro'=>$fecha

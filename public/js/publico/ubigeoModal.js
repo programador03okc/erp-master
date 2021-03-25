@@ -1,3 +1,4 @@
+var modalPage='';
 $(function(){
     /* Seleccionar valor del DataTable */
     $('#listaUbigeos tbody').on('click', 'tr', function(){
@@ -11,18 +12,24 @@ $(function(){
         var myId = $(this)[0].firstChild.innerHTML;
         var ubig = $(this)[0].childNodes[2].innerHTML;
 
+        let page = document.getElementsByClassName('page-main')[0].getAttribute('type');
 
- 
-        var page = $('.page-main').attr('type');
         // console.log(page);
         if(page =='crear-orden-requerimiento'){
-            $('[name=ubigeo_proveedor]').val(myId);    
-            $('[name=ubigeo_proveedor_descripcion]').val(ubig);  
           
+            if(modalPage=='modal-proveedor'){
+                $('[name=ubigeo]').val(myId);    
+                $('[name=name_ubigeo]').val(ubig);   
+            }else{
+                $('[name=id_ubigeo_destino]').val(myId);    
+                $('[name=ubigeo_destino]').val(ubig);  
+            }
+
         }else{
             $('[name=ubigeo]').val(myId);    
             $('[name=name_ubigeo]').val(ubig);    
         }
+        modalPage='';
         $('#modal-ubigeo').modal('hide');
     });
 });
