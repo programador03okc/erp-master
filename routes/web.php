@@ -683,9 +683,10 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::get('empresa', 'LogisticaController@getIdEmpresa')->name('empresa');
 					Route::get('select-sede-by-empresa/{id?}', 'LogisticaController@select_sede_by_empresa')->name('select-sede-by-empresa');
 					Route::get('select-grupo-by-sede/{id?}', 'LogisticaController@select_grupo_by_sede')->name('select-grupo-by-sede');
+					// Route::get('select-prioridad', 'LogisticaController@select_prioridad')->name('select-prioridad');
 					Route::get('ver-flujos/{req?}/{doc?}', 'LogisticaController@flujo_aprobacion')->name('ver-flujos');
 					Route::get('explorar-requerimiento/{id_requerimiento?}', 'LogisticaController@explorar_requerimiento')->name('explorar-requerimiento');
-					Route::get('elaborados/{empresa?}/{sede?}/{grupo?}', 'LogisticaController@listar_requerimientos_elaborados')->name('elaborados');
+					Route::get('elaborados/{empresa?}/{sede?}/{grupo?}/{prioridad?}', 'LogisticaController@listar_requerimientos_elaborados')->name('elaborados');
 					
 					Route::get('pendiente-aprobacion', 'RequerimientoController@requerimientos_pendientes_aprobacion')->name('pendientes-aprobacion');
 					Route::post('aprobar-documento', 'AprobacionController@aprobar_documento')->name('aprobar-documento');

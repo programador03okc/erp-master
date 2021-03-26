@@ -33,18 +33,18 @@
                                     <div class="panel-body">
                                         <form id="form-requerimientosElaborados" type="register">
                                             <div class="row">
-                                                <div class="col-md-4">
+                                                <div class="col-md-3">
                                                     <h5>Empresa</h5>
                                                     <div style="display:flex;">
                                                     <select class="form-control" id="id_empresa_select" onChange="handleChangeFilterEmpresaListReqByEmpresa(event);">
-                                                            <option value="0" disabled>Elija una opción</option>
+                                                            <option value="0" >Elija una opción</option>
                                                             @foreach ($empresas as $emp)
                                                                 <option value="{{$emp->id_empresa}}" data-url-logo="{{$emp->logo_empresa}}">{{$emp->razon_social}}</option>
                                                             @endforeach
                                                         </select>
                                                     </div>
                                                 </div>
-                                                <div class="col-md-4">
+                                                <div class="col-md-3">
                                                     <h5>Sede</h5>
                                                     <div style="display:flex;">
                                                     <select class="form-control" id="id_sede_select" onChange="handleChangeFilterSedeListReqByEmpresa(event);" disabled>
@@ -52,12 +52,24 @@
                                                         </select>
                                                     </div>
                                                 </div>
-                                                <div class="col-md-4">
+                                                <div class="col-md-3">
                                                     <h5>Grupo</h5>
                                                     <div style="display:flex;">
                                                     <select class="form-control" id="id_grupo_select" onChange="handleChangeFilterGrupoListReqByEmpresa(event);" disabled>
                                                             <option value="0" >Todas</option>
                                                         </select>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <h5>Prioridad</h5>
+                                                    <div style="display:flex;">
+                                                    <select class="form-control" id="id_prioridad_select" onChange="handleChangeFilterPrioridad(event);" >
+                                                        <option value="0" >Todas</option>
+                                                        @foreach ($prioridades as $prioridad)
+                                                            <option value="{{$prioridad->id_prioridad}}">{{$prioridad->descripcion}}</option>
+                                                        @endforeach
+                                                    </select>
+                                                        
                                                     </div>
                                                 </div>
                                             </div>

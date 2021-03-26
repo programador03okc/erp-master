@@ -91,7 +91,11 @@ function listar_requerimientos_elaborados(name){
 
 
 function handleChangeFilterEmpresaListReqByEmpresa(e) {
-    listarTablaReq(e.target.value)
+    let id_sede = document.querySelector('div[type="lista_requerimiento"] select[id="id_sede_select"]').value;
+    let id_grupo = document.querySelector('div[type="lista_requerimiento"] select[id="id_grupo_select"]').value;
+    let id_prioridad = document.querySelector('div[type="lista_requerimiento"] select[id="id_prioridad_select"]').value;
+
+    listarTablaReq(e.target.value,id_sede,id_grupo,id_prioridad);
     getDataSelectSede(e.target.value);
 }
 
@@ -154,20 +158,28 @@ function getDataSelectGrupo(id_sede){
 }
 
 function llenarSelectGrupo(data){
-    let selectSede = document.querySelector('div[type="lista_requerimiento"] select[id="id_grupo_select"]');
+    let selectGrupo = document.querySelector('div[type="lista_requerimiento"] select[id="id_grupo_select"]');
     let html= '<option value="0">Todas</option>';
     data.forEach(element => {
     html+='<option value="'+element.id_grupo+'">'+ element.descripcion +'</option>'
     });
 
-    selectSede.innerHTML=html;
+    selectGrupo.innerHTML=html;
     document.querySelector('div[type="lista_requerimiento"] select[id="id_grupo_select"]').removeAttribute('disabled');
 }
 
 function handleChangeFilterGrupoListReqByEmpresa(e){
     let id_empresa = document.querySelector('div[type="lista_requerimiento"] select[id="id_empresa_select"]').value;
     let id_sede = document.querySelector('div[type="lista_requerimiento"] select[id="id_sede_select"]').value;
-    listarTablaReq(id_empresa,id_sede,e.target.value);
+    let id_prioridad = document.querySelector('div[type="lista_requerimiento"] select[id="id_prioridad_select"]').value;
+
+    listarTablaReq(id_empresa,id_sede,e.target.value,id_prioridad);
+}
+function handleChangeFilterPrioridad(e){
+    let id_empresa = document.querySelector('div[type="lista_requerimiento"] select[id="id_empresa_select"]').value;
+    let id_sede = document.querySelector('div[type="lista_requerimiento"] select[id="id_sede_select"]').value;
+    let id_grupo = document.querySelector('div[type="lista_requerimiento"] select[id="id_grupo_select"]').value;
+    listarTablaReq(id_empresa,id_sede,id_grupo,e.target.value);
 }
 
 function vista_extendida(){
@@ -175,13 +187,13 @@ function vista_extendida(){
     body.classList.add("sidebar-collapse"); 
 }
 
-function listarTablaReq(id_empresa =null,id_sede =null, id_grupo=null){
+function listarTablaReq(id_empresa =null,id_sede =null, id_grupo=null,id_prioridad=null){
     // console.log(id_empresa);
     // console.log(id_sede);
     // console.log(id_grupo);
     
     // var vardataTables = funcDatatables();
-    $('#ListaReq').DataTable({
+        $('#ListaReq').DataTable({
         'processing': true,
         'serverSide': true,
         'bDestroy': true,
@@ -189,11 +201,10 @@ function listarTablaReq(id_empresa =null,id_sede =null, id_grupo=null){
         'paging':   true,
         'searching': true,
         'bLengthChange': false,
-
         'iDisplayLength':50,
         'ajax': {
             // url:'/logistica/requerimiento/lista/'+id_empresa+'/'+id_sede+'/'+id_grupo,
-            url:rutaListaElaborados+'/'+id_empresa+'/'+id_sede+'/'+id_grupo,
+            url:rutaListaElaborados+'/'+id_empresa+'/'+id_sede+'/'+id_grupo+'/'+id_prioridad,
             type:'GET',
             data: {_token: "{{csrf_token()}}"}
         },
@@ -248,6 +259,8 @@ function listarTablaReq(id_empresa =null,id_sede =null, id_grupo=null){
                     $(row).css('color', '#d92b60');
                 }
             },
+            'initComplete': function () {
+            }
     });
     // $('#ListaReq').dataTable({
     //     'dom': 'frtip',

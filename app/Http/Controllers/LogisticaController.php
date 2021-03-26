@@ -36,8 +36,10 @@ class LogisticaController extends Controller
         $empresas = $this->select_mostrar_empresas();
         $empresas_am =  $this->select_mostrar_empresas_am();
         $periodos = $this->mostrar_periodos();
+        $prioridades = $this->mostrar_prioridad();
 
-        return view('logistica/requerimientos/lista_requerimientos', compact('periodos','grupos','roles','empresas','empresas_am'));
+
+        return view('logistica/requerimientos/lista_requerimientos', compact('periodos','grupos','roles','empresas','empresas_am','prioridades'));
     }
 
     function view_gestionar_requerimiento()
@@ -3384,7 +3386,7 @@ class LogisticaController extends Controller
         $array = array('id'=>$id_area_rol, 'msg'=>$msg);
         return $array;
     }
-    public function listar_requerimientos_elaborados($id_empresa,$id_sede,$id_grupo){
+    public function listar_requerimientos_elaborados($id_empresa,$id_sede,$id_grupo,$id_prioridad){
 
         $estado_anulado= $this->get_estado_doc('Anulado');
         $hasWhere=[
@@ -3394,13 +3396,16 @@ class LogisticaController extends Controller
         ];
 
         if($id_empresa >0){
-            $hasWhere[]=['sis_sede.id_empresa', '=', $id_empresa];
+            $hasWhere[]=['alm_req.id_empresa', '=', $id_empresa];
         }
         if($id_sede >0){
-            $hasWhere[]=['sis_sede.id_sede', '=', $id_sede];
+            $hasWhere[]=['alm_req.id_sede', '=', $id_sede];
         }
         if($id_grupo >0){
             $hasWhere[]=['adm_grupo.id_grupo', '=', $id_grupo];
+        }
+        if($id_prioridad >0){
+            $hasWhere[]=['alm_req.id_prioridad', '=', $id_prioridad];
         }
 
         $req     = array();
