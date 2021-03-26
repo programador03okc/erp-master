@@ -112,7 +112,7 @@ function openModalItemsParaCompra(){
         if (data.status == 200) {
             
             tempDetalleItemsParaCompraCC = cleanPartNumbreCharacters(data.data);;
-            console.log(tempDetalleItemsParaCompraCC);
+            // console.log(tempDetalleItemsParaCompraCC);
             llenarTablaDetalleCuadroCostos(tempDetalleItemsParaCompraCC);
         }
  
@@ -145,6 +145,16 @@ function openModalAgregarItemBase(obj) {
         // console.log(reqTrueList);
  
 }
+function crearOrdenPorRequerimiento(obj){
+    reqTrueList.push(obj.dataset.idRequerimiento)
+
+    sessionStorage.setItem('reqCheckedList', JSON.stringify(reqTrueList));
+    let url ="/logistica/gestion-logistica/orden/por-requerimiento/crear";
+    var win = window.open(url, '_blank');
+    win.focus();
+    
+}
+
 function crearOrdenCompra() {
     reqTrueList=[];
     itemsParaCompraList=[];
@@ -158,7 +168,7 @@ function crearOrdenCompra() {
         });
  
         // console.log(data);
-        sessionStorage.setItem('reqCheckedList', JSON.stringify(listCheckReq));
+        sessionStorage.setItem('reqCheckedList', JSON.stringify(reqTrueList));
         let url ="/logistica/gestion-logistica/orden/por-requerimiento/crear";
         var win = window.open(url, '_blank');
         win.focus();
@@ -296,7 +306,7 @@ function evalSelectedCheckReq(id,stateCheck){
 
 }
 
-$('#listaRequerimientosPendientes tbody').on('click', 'tr', function () {
+$('#listaRequerimientosPendientes tbody').on('click','tr',function () {
     if ($(this).hasClass('eventClick')) {
         $(this).removeClass('eventClick')
     } else {
@@ -1174,8 +1184,11 @@ function listar_requerimientos_pendientes(permisoCrearOrdenPorRequerimiento,id_e
                         '</button>'+
                     '</div>'+
                     '<div class="btn-group" role="group">'+
-                        '<button type="button" class="btn btn-warning btn-xs" name="btnAgregarItemARequeriento" title="Agregar items para compra" data-id-requerimiento="'+row.id_requerimiento+'"  onclick="openModalAgregarItemARequerimiento(this);">'+
-                            '<i class="fas fa-plus-circle fa-sm"></i>'+
+                        // '<button type="button" class="btn btn-warning btn-xs" name="btnAgregarItemARequeriento" title="Agregar items para compra" data-id-requerimiento="'+row.id_requerimiento+'"  onclick="openModalAgregarItemARequerimiento(this);">'+
+                        //     '<i class="fas fa-plus-circle fa-sm"></i>'+
+                        // '</button>'+
+                        '<button type="button" class="btn btn-warning btn-xs" name="btnCrearOrdenPorRequerimiento" title="Crear Orden" data-id-requerimiento="'+row.id_requerimiento+'"  onclick="crearOrdenPorRequerimiento(this);">'+
+                            '<i class="fas fa-file-invoice"></i>'+
                         '</button>'+
                         '<button type="button" class="btn btn-info btn-xs" name="btnVercuadroCostos" title="Ver Cuadro Costos" data-id-requerimiento="'+row.id_requerimiento+'"  onclick="openModalCuadroCostos(this);">'+
                             '<i class="fas fa-eye fa-sm"></i>'+

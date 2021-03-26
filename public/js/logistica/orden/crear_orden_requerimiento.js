@@ -12,19 +12,10 @@ function inicializarModalOrdenRequerimiento(
     rutaGuardarOrdenPorRequerimiento = _rutaGuardarOrdenPorRequerimiento;
 
 
-    var reqCheckedList = JSON.parse(sessionStorage.getItem('reqCheckedList'));
-    // console.log(reqCheckedList);
+    var reqTrueList = JSON.parse(sessionStorage.getItem('reqCheckedList'));
 
-    reqTrueList=[];
-
-    if (reqCheckedList.length > 0) {
-        reqCheckedList.forEach(element => {
-            if (element.stateCheck == true) {
-                reqTrueList.push(element.id_req)
-            }
-        });
+    if (reqTrueList.length > 0) {
         obtenerRequerimiento(reqTrueList);
-
     } else {
         alert("No existe Requerimiento seleccionado");
     }
