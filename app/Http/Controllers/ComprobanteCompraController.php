@@ -543,79 +543,57 @@ class ComprobanteCompraController extends Controller
             ->join('logistica.log_prove','log_prove.id_proveedor','=','doc_com.id_proveedor')
             ->join('contabilidad.adm_contri','adm_contri.id_contribuyente','=','log_prove.id_contribuyente')
             ->where('doc_com.id_doc_com',$id)
-            ->get();
+            ->first();
 
         $doc_det = DB::table('almacen.doc_com_det')
-        ->select(
-            'doc_com_det.*',
-            // 'guia_com.id_operacion',
-            // 'tp_ope.descripcion as tipo_operacion',
-            'guia_com.id_guia',
-            DB::raw("CONCAT('GR-',guia_com.serie,'-',guia_com.numero) as nro_guia"),
-            'alm_prod.codigo',
-            'alm_prod.descripcion',
-            'alm_und_medida.descripcion as unidad_medida'
+        ->select('doc_com_det.*',
+                'guia_com.id_guia',
+                DB::raw("CONCAT('GR-',guia_com.serie,'-',guia_com.numero) as nro_guia"),
+                'alm_prod.codigo',
+                'alm_prod.part_number',
+                'alm_prod.descripcion',
+                'alm_und_medida.abreviatura'
         )
         ->join('almacen.doc_com','doc_com.id_doc_com','=','doc_com_det.id_doc')
-        ->join('almacen.doc_com_guia','doc_com_guia.id_doc_com','=','doc_com.id_doc_com')
         ->join('almacen.guia_com_det','guia_com_det.id_guia_com_det','=','doc_com_det.id_guia_com_det')
         ->join('almacen.guia_com','guia_com.id_guia','=','guia_com_det.id_guia_com')
-        // ->join('almacen.tp_ope','tp_ope.id_operacion','=','guia_com.id_operacion')
-
-        ->join('almacen.alm_item','alm_item.id_item','=','doc_com_det.id_item')
-        ->join('almacen.alm_prod','alm_prod.id_producto','=','alm_item.id_producto')
+        ->join('almacen.alm_prod','alm_prod.id_producto','=','doc_com_det.id_item')
         ->join('almacen.alm_und_medida','alm_und_medida.id_unidad_medida','=','doc_com_det.id_unid_med')
-
         ->where('doc_com_det.id_doc',$id)
-        ->distinct()
-
         ->get();
         
+        $guias = DB::table('almacen.doc_com_det')
+        ->select('guia_com.id_guia','tp_ope.descripcion as tipo_operacion',
+        DB::raw("CONCAT('GR-',guia_com.serie,'-',guia_com.numero) as nro_guia"),
+        'adm_contri.razon_social','guia_com.fecha_emision')
+        ->join('almacen.guia_com_det','guia_com_det.id_guia_com_det','=','doc_com_det.id_guia_com_det')
+        ->join('almacen.guia_com','guia_com.id_guia','=','guia_com_det.id_guia_com')
+        ->join('logistica.log_prove','log_prove.id_proveedor','=','guia_com.id_proveedor')
+        ->join('contabilidad.adm_contri','adm_contri.id_contribuyente','=','log_prove.id_contribuyente')
+        ->join('almacen.tp_ope','tp_ope.id_operacion','=','guia_com.id_operacion')
+        ->where([['doc_com_det.estado','!=',7],
+                ['doc_com_det.id_doc','=',$id]])
+        ->distinct()
+        ->get();
 
-
-        // $guias = DB::table('almacen.doc_com_guia')
-        //     ->select('guia_com.*','tp_ope.descripcion as tipo_operacion',DB::raw("CONCAT('GR-',guia_com.serie,'-',guia_com.numero) as nro_guia"),
-        //     'adm_contri.razon_social','adm_estado_doc.estado_doc')
-        //     ->join('almacen.doc_com','doc_com.id_doc_com','=','doc_com_guia.id_doc_com')
-        //     ->join('almacen.guia_com','guia_com.id_guia','=','doc_com_guia.id_guia_com')
-        //     ->join('logistica.log_prove','log_prove.id_proveedor','=','guia_com.id_proveedor')
-        //     ->join('contabilidad.adm_contri','adm_contri.id_contribuyente','=','log_prove.id_contribuyente')
-        //     ->join('administracion.adm_estado_doc','adm_estado_doc.id_estado_doc','=','guia_com.estado')
-        //     ->join('almacen.tp_ope','tp_ope.id_operacion','=','guia_com.id_operacion')
-
-        //     ->where([['doc_com_guia.estado','=',1],
-        //                 ['doc_com.id_doc_com','=',$id]])
-        //     ->get();
-
-            $guias = DB::table('almacen.guia_com')
-            ->select('guia_com.*','doc_com_guia.id_doc_com_guia','tp_ope.descripcion as tipo_operacion',DB::raw("CONCAT('GR-',guia_com.serie,'-',guia_com.numero) as nro_guia"),
-            'adm_contri.razon_social','adm_estado_doc.estado_doc')
-            ->join('almacen.doc_com_guia','doc_com_guia.id_guia_com','=','guia_com.id_guia')
-
-            ->join('logistica.log_prove','log_prove.id_proveedor','=','guia_com.id_proveedor')
+        if (count($guias)>0){
+            $ordenes = DB::table('almacen.doc_com_det')
+            ->select('log_ord_compra.id_orden_compra','log_ord_compra.codigo',
+            'adm_contri.razon_social','log_ord_compra.fecha')
+            ->join('almacen.guia_com_det','guia_com_det.id_guia_com_det','=','doc_com_det.id_guia_com_det')
+            ->join('logistica.log_det_ord_compra','log_det_ord_compra.id_detalle_orden','=','guia_com_det.id_oc_det')
+            ->join('logistica.log_ord_compra','log_ord_compra.id_orden_compra','=','log_det_ord_compra.id_orden_compra')
+            ->join('logistica.log_prove','log_prove.id_proveedor','=','log_ord_compra.id_proveedor')
             ->join('contabilidad.adm_contri','adm_contri.id_contribuyente','=','log_prove.id_contribuyente')
-            ->join('administracion.adm_estado_doc','adm_estado_doc.id_estado_doc','=','guia_com.estado')
-            ->join('almacen.tp_ope','tp_ope.id_operacion','=','guia_com.id_operacion')
-
-            ->where([['guia_com.estado','=',1],
-                        ['doc_com_guia.id_doc_com','=',$id]])
+            ->where([['doc_com_det.estado','!=',7],
+                    ['doc_com_det.id_doc','=',$id]])
             ->distinct()
             ->get();
+        } else {
+            $ordenes = [];
+        }
          
-        $collect = collect($doc->first());
-        
-        if(count($doc_det)>0){
-            $collect->put('doc_com_det',$doc_det);
-        }else{
-            $collect->put('doc_com_det',[]);
-        }
-        if(count($guias)>0){
-            $collect->put('guias',$guias);
-        }else{
-            $collect->put('guias',[]);
-        }
-
-        return response()->json([$collect]);
+        return response()->json(['doc'=>$doc,'detalle'=>$doc_det,'guias'=>$guias,'ordenes'=>$ordenes]);
     }
 
 

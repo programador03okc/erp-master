@@ -5,7 +5,7 @@
 @endsection
 
 @section('cabecera')
-    Generar Comprobante de Compra
+    Documento de Compra
 @endsection
 @section('breadcrumb')
 <ol class="breadcrumb">
@@ -17,24 +17,21 @@
 @endsection
 @section('content')
 <div class="page-main" type="doc_compra">
-    <legend class="mylegend">
+    <!-- <legend class="mylegend">
         <ol class="breadcrumb">
-            <li><label>Fact</label></li>
+            <li><label id="tp_documento"></label></li>
             <li><label id="serie"></label></li>
             <li><label id="numero"></label>
-            {{-- <button type="submit" class="btn btn-success" data-toggle="tooltip" data-placement="bottom" title="Generar Ingreso a Almacén" onClick="generar_ingreso();">Generar Ingreso </button>
-            <button type="submit" class="btn btn-primary" data-toggle="tooltip" data-placement="bottom" title="Generar Factura de Compra" onClick="generar_factura();">Generar Factura </button></li> --}}
         </ol>
-    </legend>
-    <div class="row">
-            <div class="col-md-12">
-                <div class="panel-body">
+    </legend> -->
+    <!-- <div class="row">
+            <div class="col-md-12"> -->
+                <div class="panel-body" style="padding:0px;">
                     <fieldset class="group-table">
                     <!-- form cabecera -->
                         <form id="form-doc_compra" type="register" form="formulario">
                             <input type="text" class="oculto" name="id_doc_com" primary="ids">
                             <input type="text" class="oculto" name="id_guia_com">
-                            {{-- <input type="text" class="oculto" name="id_doc"> --}}
                                 <div class="row">
                                     <div class="col-md-3">
                                         <h5>Serie-Número</h5>
@@ -74,7 +71,6 @@
                                             </select>
                                             <input type="number" name="credito_dias" class="form-control activation group-elemento" style="text-align:right;" disabled/>
                                             <input type="text" value="días" class="form-control group-elemento" style="width:60px;text-align:center;" disabled/>
-                                            {{-- <span type="text" class="form-control group-elemento" style="width:100px;text-align:center;">días</span> --}}
                                         </div>
                                     </div>
                                     <div class="col-md-6">
@@ -170,7 +166,7 @@
                                             <th>Código Orden</th>
                                             <th>Fecha Emisión</th>
                                             <th>Proveedor</th>
-                                            <th>Tp Operación</th>
+                                            <!-- <th>Tp Operación</th> -->
                                             <th width="10%">
                                                 <button type="button" class="btn-success" title="Agregar Orden" name="btnAgregarOrden" onClick="orden_compraModal();" disabled="disabled">
                                                     <i class="fas fa-plus"></i>
@@ -254,8 +250,8 @@
                         </div>
                     </fieldset>
                 </div>
-            </div>
-        </div>
+            <!-- </div>
+        </div> -->
 </div>
 @include('logistica.comprobantes.doc_compraModal')
 @include('logistica.comprobantes.orden_compraModal')

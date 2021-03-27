@@ -468,5 +468,22 @@ class AprobacionController extends Controller
         return response()->json($output);
 
     }
+    
+    public function listarRequerimientosAprobados(){
+        $data = DB::table('almacen.alm_req')
+            ->select('alm_req.*','sis_usua.nombre_corto as responsable',
+            'adm_estado_doc.estado_doc','adm_estado_doc.bootstrap_color',
+            'sis_sede.descripcion as sede_descripcion',
+            'alm_tp_req.descripcion as tipo_req','sis_moneda.simbolo'
+            )
+            ->join('almacen.alm_tp_req','alm_tp_req.id_tipo_requerimiento','=','alm_req.id_tipo_requerimiento')
+            ->join('configuracion.sis_usua','sis_usua.id_usuario','=','alm_req.id_usuario')
+            ->join('administracion.adm_estado_doc','adm_estado_doc.id_estado_doc','=','alm_req.estado')
+            ->leftJoin('administracion.sis_sede','sis_sede.id_sede','=','alm_req.id_sede')
+            ->leftJoin('configuracion.sis_moneda','sis_moneda.id_moneda','=','alm_req.id_moneda')
+            ->where('alm_req.estado',2)
+            ->orWhere('alm_req.estado',8);
 
+        return datatables($data)->toJson();
+    }
 }
