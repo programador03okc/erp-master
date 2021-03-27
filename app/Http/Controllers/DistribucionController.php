@@ -49,9 +49,7 @@ class DistribucionController extends Controller
     public function actualizaCantidadDespachosTabs(){
         $count_pendientes = DB::table('almacen.alm_req')
         ->where([['alm_req.estado','=',1]])
-            // ->where([['alm_req.estado','=',1], ['alm_req.confirmacion_pago','=',false]])//muestra todos los reservados
-            // ->orWhere([['alm_req.id_tipo_requerimiento','!=',1], ['alm_req.estado','=',19], ['alm_req.confirmacion_pago','=',false]])
-                ->count();
+        ->count();
 
         $count_confirmados = DB::table('almacen.alm_req')
             ->leftJoin('almacen.orden_despacho', function($join){   
@@ -61,9 +59,7 @@ class DistribucionController extends Controller
             // ->where([['alm_req.estado','=',1], ['alm_req.confirmacion_pago','=',true]])
             ->orWhere([['alm_req.estado','=',5]])
             ->orWhere([['alm_req.estado','=',15]])
-            // ->orWhere([['alm_req.id_tipo_requerimiento','!=',1], ['alm_req.estado','=',19], 
-            //         ['alm_req.confirmacion_pago','=',true], ['orden_despacho.id_od','=',null]])
-                ->count();
+            ->count();
         
         $count_en_proceso = DB::table('almacen.alm_req')
             ->leftJoin('almacen.orden_despacho', function($join){   
@@ -72,12 +68,9 @@ class DistribucionController extends Controller
                 $join->where('orden_despacho.estado','!=', 7);
             })
             ->where('alm_req.estado',17)
-            // ->orWhere('alm_req.estado',10)
-            // ->orWhere('alm_req.estado',29)
             ->orWhere('alm_req.estado',27)
             ->orWhere('alm_req.estado',28)
             ->orWhere([['alm_req.estado','=',19], ['alm_req.confirmacion_pago','=',true]])
-            // ->orWhere('alm_req.estado',22)
             ->count();
 
         $count_en_transformacion = DB::table('almacen.alm_req')
@@ -86,12 +79,8 @@ class DistribucionController extends Controller
                 $join->where('orden_despacho.aplica_cambios', '=', false);
                 $join->where('orden_despacho.estado','!=', 7);
             })
-            // ->where('alm_req.estado',17)
             ->orWhere('alm_req.estado',10)
             ->orWhere('alm_req.estado',29)
-            // ->orWhere('alm_req.estado',27)
-            // ->orWhere('alm_req.estado',28)
-            // ->orWhere([['alm_req.estado','=',19], ['alm_req.confirmacion_pago','=',true]])
             ->orWhere('alm_req.estado',22)
             ->count();
 
@@ -112,7 +101,6 @@ class DistribucionController extends Controller
         ->join('administracion.adm_estado_doc','adm_estado_doc.id_estado_doc','=','alm_req.estado')
         ->where('orden_despacho_grupo_det.estado',1)
         ->whereIn('alm_req.estado',[25,32,33,34,35])
-        // ->where([['orden_despacho_grupo_det.estado','!=',7],['alm_req.estado','=',25]])//Pendiente de cargo
         ->count();
         
         return response()->json(['count_pendientes'=>$count_pendientes,
@@ -127,19 +115,12 @@ class DistribucionController extends Controller
         $data = DB::table('almacen.alm_req')
             ->select('alm_req.*','sis_usua.nombre_corto as responsable',
             'adm_estado_doc.estado_doc','adm_estado_doc.bootstrap_color',
-            // DB::raw("(ubi_dis.descripcion) || ' - ' || (ubi_prov.descripcion) || ' - ' || (ubi_dpto.descripcion) AS ubigeo_descripcion"),
-            // 'rrhh_perso.nro_documento as dni_persona','alm_almacen.descripcion as almacen_descripcion',
             'alm_req.id_sede as sede_requerimiento','sede_req.descripcion as sede_descripcion_req',
             'oc_propias.orden_am','oportunidades.oportunidad','oportunidades.codigo_oportunidad',
             'entidades.nombre','oc_propias.id as id_oc_propia','oc_propias.url_oc_fisica',
             'oc_propias.monto_total','users.name as user_name'
-            // 'alm_tp_req.descripcion as tipo_req',
-            // DB::raw("(rrhh_perso.nombres) || ' ' || (rrhh_perso.apellido_paterno) || ' ' || (rrhh_perso.apellido_materno) AS nombre_persona"),
-                    // 'adm_contri.nro_documento as cliente_ruc','adm_contri.razon_social as cliente_razon_social',
             )
-            // ->join('almacen.alm_tp_req','alm_tp_req.id_tipo_requerimiento','=','alm_req.id_tipo_requerimiento')
             ->join('configuracion.sis_usua','sis_usua.id_usuario','=','alm_req.id_usuario')
-            // ->leftjoin('administracion.adm_grupo','adm_grupo.id_grupo','=','alm_req.id_grupo')
             ->leftjoin('mgcp_cuadro_costos.cc','cc.id','=','alm_req.id_cc')
             ->leftjoin('mgcp_oportunidades.oportunidades','oportunidades.id','=','cc.id_oportunidad')
             ->leftjoin('mgcp_usuarios.users','users.id','=','oportunidades.id_responsable')
@@ -147,20 +128,11 @@ class DistribucionController extends Controller
             ->leftjoin('mgcp_acuerdo_marco.entidades','entidades.id','=','oportunidades.id_entidad')
             ->join('administracion.adm_estado_doc','adm_estado_doc.id_estado_doc','=','alm_req.estado')
             ->leftJoin('administracion.sis_sede as sede_req','sede_req.id_sede','=','alm_req.id_sede')
-            // ->leftJoin('almacen.alm_almacen','alm_almacen.id_almacen','=','alm_req.id_almacen')
-            // ->leftJoin('configuracion.ubi_dis','ubi_dis.id_dis','=','alm_req.id_ubigeo_entrega')
-            // ->leftJoin('configuracion.ubi_prov','ubi_prov.id_prov','=','ubi_dis.id_prov')
-            // ->leftJoin('configuracion.ubi_dpto','ubi_dpto.id_dpto','=','ubi_prov.id_dpto')
-            // ->leftJoin('rrhh.rrhh_perso','rrhh_perso.id_persona','=','alm_req.id_persona')
-            // ->leftJoin('comercial.com_cliente','com_cliente.id_cliente','=','alm_req.id_cliente')
-            // ->leftJoin('contabilidad.adm_contri','adm_contri.id_contribuyente','=','com_cliente.id_contribuyente')
             ->where([['alm_req.estado','=',1]])//muestra todos los reservados  ['alm_req.confirmacion_pago','=',false]
             ->orWhere([['alm_req.estado','=',2]])
             // ->orWhere([['alm_req.id_tipo_requerimiento','!=',1], ['alm_req.estado','=',19], ['alm_req.confirmacion_pago','=',false]])
             ->orderBy('alm_req.fecha_requerimiento','desc');
-            // ->get();
         return datatables($data)->toJson();
-        // return response()->json($data);
     }
 
     public function listarRequerimientosConfirmados(){
@@ -168,46 +140,30 @@ class DistribucionController extends Controller
             ->select('alm_req.*','sis_usua.nombre_corto as responsable',
             'adm_estado_doc.estado_doc','adm_estado_doc.bootstrap_color',
             DB::raw("(ubi_dis.descripcion) || ' - ' || (ubi_prov.descripcion) || ' - ' || (ubi_dpto.descripcion) AS ubigeo_descripcion"),
-            // 'rrhh_perso.nro_documento as dni_persona','alm_almacen.descripcion as almacen_descripcion',
             'alm_req.id_sede as sede_requerimiento','sede_req.descripcion as sede_descripcion_req',
-            // 'alm_tp_req.descripcion as tipo_req',
-            // DB::raw("(rrhh_perso.nombres) || ' ' || (rrhh_perso.apellido_paterno) || ' ' || (rrhh_perso.apellido_materno) AS nombre_persona"),
-            // 'adm_contri.nro_documento as cliente_ruc','adm_contri.razon_social as cliente_razon_social',
             'oc_propias.orden_am','oportunidades.oportunidad','oportunidades.codigo_oportunidad',
             'entidades.nombre','orden_despacho.id_od','oc_propias.id as id_oc_propia','oc_propias.url_oc_fisica',
             'oc_propias.monto_total','users.name as user_name'
-            //,'orden_despacho.codigo as codigo_od','orden_despacho.estado as estado_od'
             )
-            // ->join('almacen.alm_tp_req','alm_tp_req.id_tipo_requerimiento','=','alm_req.id_tipo_requerimiento')
             ->leftjoin('mgcp_cuadro_costos.cc','cc.id','=','alm_req.id_cc')
             ->leftjoin('mgcp_oportunidades.oportunidades','oportunidades.id','=','cc.id_oportunidad')
             ->leftjoin('mgcp_usuarios.users','users.id','=','oportunidades.id_responsable')
             ->leftjoin('mgcp_acuerdo_marco.oc_propias','oc_propias.id_oportunidad','=','oportunidades.id')
             ->leftjoin('mgcp_acuerdo_marco.entidades','entidades.id','=','oportunidades.id_entidad')
             ->join('configuracion.sis_usua','sis_usua.id_usuario','=','alm_req.id_usuario')
-            // ->leftjoin('administracion.adm_grupo','adm_grupo.id_grupo','=','alm_req.id_grupo')
             ->join('administracion.adm_estado_doc','adm_estado_doc.id_estado_doc','=','alm_req.estado')
             ->leftJoin('administracion.sis_sede as sede_req','sede_req.id_sede','=','alm_req.id_sede')
-            // ->leftJoin('almacen.alm_almacen','alm_almacen.id_almacen','=','alm_req.id_almacen')
             ->leftJoin('configuracion.ubi_dis','ubi_dis.id_dis','=','alm_req.id_ubigeo_entrega')
             ->leftJoin('configuracion.ubi_prov','ubi_prov.id_prov','=','ubi_dis.id_prov')
             ->leftJoin('configuracion.ubi_dpto','ubi_dpto.id_dpto','=','ubi_prov.id_dpto')
-            // ->leftJoin('rrhh.rrhh_perso','rrhh_perso.id_persona','=','alm_req.id_persona')
-            // ->leftJoin('comercial.com_cliente','com_cliente.id_cliente','=','alm_req.id_cliente')
-            // ->leftJoin('contabilidad.adm_contri','adm_contri.id_contribuyente','=','com_cliente.id_contribuyente')
             ->leftJoin('almacen.orden_despacho', function($join)
                          {  $join->on('orden_despacho.id_requerimiento', '=', 'alm_req.id_requerimiento');
                             $join->where('orden_despacho.estado','!=', 7);
                          })
-            // ->where([['alm_req.estado','=',1], ['alm_req.confirmacion_pago','=',true]])
             ->orWhere([['alm_req.estado','=',5]])
             ->orWhere([['alm_req.estado','=',15]])
-            // ->orWhere([['alm_req.id_tipo_requerimiento','!=',1], ['alm_req.estado','=',19], 
-            //            ['alm_req.confirmacion_pago','=',true], ['orden_despacho.id_od','=',null]])
             ->orderBy('alm_req.fecha_requerimiento','desc');
-            // ->get();
         return datatables($data)->toJson();
-        // return response()->json($data);
     }
 
     public function listarRequerimientosEnProceso(){

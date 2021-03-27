@@ -1513,6 +1513,28 @@ Route::group(['middleware' => ['auth']], function () {
 		});
 	});
 
+
+	
+	/**Contabilidad */
+	Route::group(['as' => 'contabilidad.', 'prefix' => 'contabilidad'], function(){
+		
+		Route::get('index', 'ContabilidadController@view_main_contabilidad')->name('index');
+
+		Route::group(['as' => 'ventas.', 'prefix' => 'ventas'], function(){
+			Route::get('listar', 'ContabilidadController@view_listar_ventas')->name('vista-listar-ventas');
+			Route::get('registro', 'ContabilidadController@view_registro_ventas')->name('vista-registro-ventas');
+		});
+
+		Route::group(['as' => 'pagos.', 'prefix' => 'pagos'], function(){
+			Route::get('index', 'ContabilidadController@view_requerimiento_pagos')->name('index');
+			Route::post('listarRequerimientosPagos', 'ContabilidadController@listarRequerimientosPagos')->name('listar-requerimiento-pagos');
+			Route::post('procesarPago', 'ContabilidadController@procesarPago')->name('procesar-pagos');
+		});
+
+	});
+	
+
+
 	Route::get('migrar_venta_directa/{id}', 'MigrateSoftLinkController@migrar_venta_directa');
 	Route::get('prue/{id}', 'OrdenesPendientesController@prue');
 	Route::get('prueba', 'MigrateSoftLinkController@prueba');
@@ -2503,15 +2525,6 @@ Route::get('decode5t/{id}', 'EquipoController@decode5t');
 	Route::get('/logistica/historial_precios_excel', 'LogisticaController@historial_precios_excel');
 
 
-	/**Contabilidad */
-	Route::group(['as' => 'contabilidad.', 'prefix' => 'contabilidad'], function(){
-		Route::get('index', 'ContabilidadController@view_main_contabilidad')->name('index');
-		Route::group(['as' => 'ventas.', 'prefix' => 'ventas'], function(){
-			Route::get('listar', 'ContabilidadController@view_listar_ventas')->name('vista-listar-ventas');
-			Route::get('registro', 'ContabilidadController@view_registro_ventas')->name('vista-registro-ventas');
-		});
-	});
-	
 	Route::get('cta_contable', 'ContabilidadController@view_cta_contable');
 	Route::get('mostrar_cta_contables', 'ContabilidadController@mostrar_cuentas_contables');
 	Route::get('comprobante_compra', 'ContabilidadController@view_comprobante_compra');

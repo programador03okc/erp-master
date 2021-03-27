@@ -8,6 +8,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Auth;
 
 class ContabilidadController extends Controller
 {
@@ -18,6 +19,10 @@ class ContabilidadController extends Controller
         return view('contabilidad/main');
     }
     
+    function view_requerimiento_pagos(){
+        return view('contabilidad/pagos/requerimientoPagos');
+    }
+
     function view_listar_ventas(){
         return view('contabilidad/ventas/vista_listar');
     }
@@ -29,6 +34,72 @@ class ContabilidadController extends Controller
     function view_cta_contable(){
         return view('contabilidad/cta_contable');
     }
+
+
+    function listarRequerimientosPagos(){
+        $data = DB::table('almacen.alm_req')
+            ->select('alm_req.*','sis_sede.descripcion as sede_descripcion',
+            'sis_usua.nombre_corto as responsable',
+            'adm_estado_doc.estado_doc','adm_estado_doc.bootstrap_color',
+            'alm_req_pago.fecha_pago','alm_req_pago.observacion',
+            'registrado_por.nombre_corto as usuario_pago',
+            'sis_moneda.simbolo'
+            )
+            ->join('administracion.sis_sede','sis_sede.id_sede','=','alm_req.id_sede')
+            ->join('configuracion.sis_usua','sis_usua.id_usuario','=','alm_req.id_usuario')
+            ->join('administracion.adm_estado_doc','adm_estado_doc.id_estado_doc','=','alm_req.estado')
+            ->leftJoin('almacen.alm_req_pago','alm_req_pago.id_requerimiento','=','alm_req.id_requerimiento')
+            ->leftJoin('configuracion.sis_usua as registrado_por','registrado_por.id_usuario','=','alm_req_pago.registrado_por')
+            ->leftJoin('configuracion.sis_moneda','sis_moneda.id_moneda','=','alm_req.id_moneda')
+            ->where('alm_req.estado',8)
+            ->orWhere('alm_req.estado',9)
+            ->orderBy('alm_req.fecha_requerimiento','desc');
+        return datatables($data)->toJson();
+    }
+
+    function procesarPago(Request $request){
+        
+        try {
+            DB::beginTransaction();
+
+            $id_usuario = Auth::user()->id_usuario;
+            $file = $request->file('adjunto');
+            $id = 0;
+
+            $id_pago = DB::table('almacen.alm_req_pago')
+            ->insertGetId([ 'id_requerimiento'=> $request->id_requerimiento,
+                            'fecha_pago'=>$request->fecha_pago,
+                            'observacion'=>$request->observacion,
+                            'registrado_por'=>$id_usuario,
+                            'estado'=>1,
+                            'fecha_registro'=>date('Y-m-d H:i:s')
+                ],'id_pago');
+
+            if (isset($file)){
+                //obtenemos el nombre del archivo
+                $extension = pathinfo($file->getClientOriginalName(), PATHINFO_EXTENSION);
+                $nombre = $id_pago.'.'.$request->codigo.'.'.$extension;
+                //indicamos que queremos guardar un nuevo archivo en el disco local
+                \File::delete(public_path('almacen/requerimiento_pagos/'.$nombre));
+                \Storage::disk('archivos')->put('almacen/requerimiento_pagos/'.$nombre,\File::get($file));
+                
+                DB::table('almacen.alm_req_pago')
+                ->where('id_pago',$id_pago)
+                ->update([ 'adjunto'=>$nombre ]);
+            }
+            
+            DB::table('almacen.alm_req')
+            ->where('id_requerimiento',$request->id_requerimiento)
+            ->update(['estado'=>9]);//procesado
+
+            DB::commit();
+            return response()->json($id_pago);
+            
+        } catch (\PDOException $e) {
+            DB::rollBack();
+        }
+    }
+
     function mostrar_cuentas_contables(){
         $padres = DB::table('contabilidad.cont_cta_cble')->where('cod_padre', null)->get();
         $array = [];
@@ -135,42 +206,7 @@ class ContabilidadController extends Controller
         return response()->json($data);
 
     }
-    // public function mostrar_tipo_contribuyentes()
-    // {
-    //     $data = tipo_contribuyente::all();
-    //      return response()->json($data);
 
-    // }
-    // public function mostrar_tipo_contribuyente($id)
-    // {
-    //     try {
-    //     $data = tipo_contribuyente::where('id_tipo_contribuyente', $id)->first();
-    //     return response()->json($data);
-    // } catch(QueryException $e) {
-    //     // return Response::json(['error' => 'Error msg'], 404); // Status code here
-    //     return Redirect::to('/login-me')->with('msg', ' Sorry something went worng. Please try again.');
-    // }
-
-    // }
-    // public function guardar_tipo_contribuyente(Request $request){
-    //     $data = tipo_contribuyente::create($request->all());
-    //       return response()->json($data);
-
-    // }
-    // public function eliminar_tipo_contribuyente($id){
-    //     $data = tipo_contribuyente::where('id_tipo_contribuyente', $id)->delete();
-    //     return response()->json($data);
-
-    // }
-    // public function actualizar_tipo_contribuyente(Request $request, $id){
-    //     $item = tipo_contribuyente::where('id_tipo_contribuyente', $id)->first();
-    //     // $item->id_tipo_contribuyente = $request->id_tipo_contribuyente;
-    //     $item->descripcion = $request->descripcion;
-    //     $item->estado = $request->estado;
-    //     $item->save();
-    //     return response()->json($item);
-    // }
-    //
     public function fill_input_contribuyentes(){
 
          $adm_tp_contri = DB::table('contabilidad.adm_tp_contri')
@@ -212,32 +248,6 @@ class ContabilidadController extends Controller
         return response()->json($data);
 
     }
-//     public function fill_input_rubro(){
-
-//         $adm_contri = DB::table('adm_contri')
-//                    ->select(
-//                        'adm_contri.id_contribuyente',
-//                        'adm_contri.razon_social'
-//                    )
-//                    ->where([
-//                        ['adm_contri.estado', '=', 1]
-//                        ])
-//                    ->get();
-//         $adm_rubro = DB::table('adm_rubro')
-//                 ->select(
-//                     'adm_rubro.id_rubro',
-//                     'adm_rubro.descripcion'
-//                 )
-//                 ->where([
-//                     ['adm_rubro.estado', '=', 1]
-//                     ])
-//                 ->get();
- 
-//        $data = ["adm_contri"=>$adm_contri,"adm_rubro"=>$adm_rubro];   
-
-//        return response()->json($data);
-
-//    }
     public function fill_input_empresas(){
 
         $adm_contri = DB::table('contabilidad.adm_contri')
@@ -385,350 +395,102 @@ class ContabilidadController extends Controller
  
  }
 
-public function mostrar_contribuyente($id)
-    {
-        try {
-            $result = DB::table('contabilidad.adm_contri')
-             ->select(
-             'adm_contri.id_contribuyente', 
-             'adm_contri.razon_social', 
-             'adm_contri.estado', 
-             'adm_contri.fecha_registro'
-             )
-            
-             ->where([
-                 ['adm_contri.id_contribuyente', '=', $id],
+    public function mostrar_contribuyente($id)
+        {
+            try {
+                $result = DB::table('contabilidad.adm_contri')
+                ->select(
+                'adm_contri.id_contribuyente', 
+                'adm_contri.razon_social', 
+                'adm_contri.estado', 
+                'adm_contri.fecha_registro'
+                )
+                
+                ->where([
+                    ['adm_contri.id_contribuyente', '=', $id],
+                    ['adm_contri.estado', '=', 1]
+                    ])
+                ->get();
+        return response()->json($result);
+        } catch(QueryException $e) {
+            // return Response::json(['error' => 'Error msg'], 404); // Status code here
+            return Redirect::to('/login-me')->with('msg', ' Sorry something went worng. Please try again.');
+        }
+    }
+    public function mostrar_contribuyente_data_contribuyente($id){
+            try {
+                $result = DB::table('contabilidad.adm_contri')
+                ->leftJoin('adm_tp_contri', 'adm_contri.id_tipo_contribuyente', '=', 'adm_tp_contri.id_tipo_contribuyente')
+                ->leftJoin('sis_pais', 'adm_contri.id_pais', '=', 'sis_pais.id_pais')
+                ->leftJoin('adm_ctb_rubro', 'adm_contri.id_contribuyente', '=', 'adm_ctb_rubro.id_contribuyente')
+                ->leftJoin('sis_identi', 'adm_contri.id_doc_identidad', '=', 'sis_identi.id_doc_identidad')
+                ->leftJoin(DB::raw("(SELECT 
+                adm_rubro.id_rubro,
+                adm_rubro.descripcion
+                FROM adm_rubro ) as rubro"),function($join){
+                $join->on("rubro.id_rubro","=","adm_ctb_rubro.id_rubro");
+                })
+                ->select(
+                'adm_contri.id_contribuyente', 
+                'adm_contri.id_tipo_contribuyente', 
+                'adm_tp_contri.descripcion AS adm_tip_contri_descripcion',
+                'adm_contri.razon_social', 
+                'rubro.id_rubro',
+                'rubro.descripcion AS descripcion_rubro',
+                'adm_contri.nro_documento', 
+                'adm_contri.telefono', 
+                'adm_contri.celular', 
+                'adm_contri.direccion_fiscal', 
+                'adm_contri.ubigeo', 
+                'adm_contri.id_pais', 
+                'sis_pais.descripcion AS sis_pais_descripcion', 
+                'adm_contri.estado', 
+                'adm_contri.fecha_registro', 
+                'sis_identi.id_doc_identidad', 
+                'sis_identi.descripcion as sis_identi_descripcion'
+
+    
+                )
+                ->where([
+                    ['adm_contri.id_contribuyente', '=', $id],
                 ['adm_contri.estado', '=', 1]
                 ])
-             ->get();
-    return response()->json($result);
-    } catch(QueryException $e) {
-        // return Response::json(['error' => 'Error msg'], 404); // Status code here
-        return Redirect::to('/login-me')->with('msg', ' Sorry something went worng. Please try again.');
-    }
-}
-public function mostrar_contribuyente_data_contribuyente($id){
-        try {
-            $result = DB::table('contabilidad.adm_contri')
-            ->leftJoin('adm_tp_contri', 'adm_contri.id_tipo_contribuyente', '=', 'adm_tp_contri.id_tipo_contribuyente')
-            ->leftJoin('sis_pais', 'adm_contri.id_pais', '=', 'sis_pais.id_pais')
-            ->leftJoin('adm_ctb_rubro', 'adm_contri.id_contribuyente', '=', 'adm_ctb_rubro.id_contribuyente')
-            ->leftJoin('sis_identi', 'adm_contri.id_doc_identidad', '=', 'sis_identi.id_doc_identidad')
-            ->leftJoin(DB::raw("(SELECT 
-            adm_rubro.id_rubro,
-            adm_rubro.descripcion
-            FROM adm_rubro ) as rubro"),function($join){
-            $join->on("rubro.id_rubro","=","adm_ctb_rubro.id_rubro");
-            })
-             ->select(
-             'adm_contri.id_contribuyente', 
-             'adm_contri.id_tipo_contribuyente', 
-             'adm_tp_contri.descripcion AS adm_tip_contri_descripcion',
-             'adm_contri.razon_social', 
-             'rubro.id_rubro',
-             'rubro.descripcion AS descripcion_rubro',
-             'adm_contri.nro_documento', 
-             'adm_contri.telefono', 
-             'adm_contri.celular', 
-             'adm_contri.direccion_fiscal', 
-             'adm_contri.ubigeo', 
-             'adm_contri.id_pais', 
-             'sis_pais.descripcion AS sis_pais_descripcion', 
-             'adm_contri.estado', 
-             'adm_contri.fecha_registro', 
-             'sis_identi.id_doc_identidad', 
-             'sis_identi.descripcion as sis_identi_descripcion'
+                ->get();
 
- 
-             )
-             ->where([
-                ['adm_contri.id_contribuyente', '=', $id],
-               ['adm_contri.estado', '=', 1]
-               ])
-             ->get();
-
- 
-    $lastId = "";
-        foreach($result as $data){
-            if ($data->id_contribuyente !== $lastId) {
-                $contribuyente[] = [
-                    'id_contribuyente'=> $data->id_contribuyente,
-                    'id_tipo_contribuyente'=> $data->id_tipo_contribuyente,
-                    'adm_tip_contri_descripcion'=>$data->adm_tip_contri_descripcion,
-                    'razon_social'=> $data->razon_social,
-                    'id_rubro'=> $data->id_rubro,
-                    'descripcion_rubro'=> $data->descripcion_rubro,
-                    
-                    'id_doc_identidad'=>$data->id_doc_identidad,
-                    'doc_identi'=>$data->sis_identi_descripcion,
-                    'nro_documento'=>$data->nro_documento,
-                    'telefono'=> $data->telefono,
-                    'celular'=> $data->celular,
-                    'direccion_fiscal'=> $data->direccion_fiscal,
-                    'ubigeo'=> $data->ubigeo,
-                    'id_pais'=> $data->id_pais,
-                    'sis_pais_descripcion'=> $data->sis_pais_descripcion,
-                    'fecha_registro'=> $data->fecha_registro,
-                    'estado'=> $data->estado
-                ];  
-                $lastId = $data->id_contribuyente;
-              } 
-    };
-    return response()->json($contribuyente);
-
-    } catch(QueryException $e) {
-        // return Response::json(['error' => 'Error msg'], 404); // Status code here
-        return Redirect::to('/login-me')->with('msg', ' Sorry something went worng. Please try again.');
-    }
-}
-// public function mostrar_contribuyente_data_contribuyente_rubro($id){
-//         try {
-//             $result = DB::table('adm_contri')
-//             ->leftJoin('sis_pais', 'adm_contri.id_pais', '=', 'sis_pais.id_pais')
-//             ->leftJoin('adm_ctb_rubro', 'adm_contri.id_contribuyente', '=', 'adm_ctb_rubro.id_contribuyente')
-//                  ->leftJoin(DB::raw("(SELECT 
-//                 adm_rubro.id_rubro,
-//                 adm_rubro.descripcion
-//                 FROM adm_rubro ) as rubro"),function($join){
-//                 $join->on("rubro.id_rubro","=","adm_ctb_rubro.id_rubro");
-//                 })
-//              ->select(
-//              'adm_contri.id_contribuyente', 
-//              'adm_contri.razon_social', 
-//              'rubro.id_rubro AS id_rubro',
-//              'rubro.descripcion',
-//              'adm_contri.estado'
-//              )
-//              ->where([
-//                 ['adm_contri.id_contribuyente', '=', $id],
-//                ['adm_contri.estado', '=', 1]
-//                ])
-//              ->get();
-
- 
-//     $lastId = "";
-//         foreach($result as $data){
-//             if ($data->id_contribuyente !== $lastId) {
-//                 $contribuyente[] = [
-//                     'id_contribuyente'=> $data->id_contribuyente,
-//                     'razon_social'=> $data->razon_social,
-//                     'id_rubro'=>$data->id_rubro,
-//                     'descripcion'=>$data->descripcion,
-//                     'estado'=> $data->estado
-//                 ];  
-//                 $lastId = $data->id_contribuyente;
-//               } 
-//     };
-//     return response()->json($contribuyente);
-
-//     } catch(QueryException $e) {
-//         // return Response::json(['error' => 'Error msg'], 404); // Status code here
-//         return Redirect::to('/login-me')->with('msg', ' Sorry something went worng. Please try again.');
-//     }
-// }
-
-// public function mostrar_contribuyente_data_contribuyente_contacto($id){
-//     try {
-//         $result = DB::table('adm_contri')
-//         ->leftJoin('sis_pais', 'adm_contri.id_pais', '=', 'sis_pais.id_pais')
-//          ->leftJoin('adm_ctb_contac', 'adm_contri.id_contribuyente', '=', 'adm_ctb_contac.id_contribuyente')
-//          ->select(
-//           'adm_ctb_contac.id_contribuyente',
-//          'adm_contri.razon_social', 
-//         'adm_ctb_contac.id_datos_contacto', 
-//         'adm_ctb_contac.nombre', 
-//         'adm_ctb_contac.cargo',
-//         'adm_ctb_contac.telefono', 
-//         'adm_ctb_contac.email', 
-//         'adm_ctb_contac.estado',
-//         'adm_ctb_contac.fecha_registro'
-//          )
-//          ->where([
-//             ['adm_ctb_contac.id_contribuyente', '=', $id],
-//            ['adm_ctb_contac.estado', '=', 1]
-//            ])
-//          ->get();
-
-
-//     $lastId = "";
-//     foreach($result as $data){
-//         if ($data->id_contribuyente !== $lastId) {
-//             $contribuyente[] = [
-//                 'id_contribuyente'=> $data->id_contribuyente,
-//                 'razon_social'=> $data->razon_social,
-//                 'id_datos_contacto'=>$data->id_datos_contacto,
-//                 'nombre'=>$data->nombre,
-//                 'cargo'=>$data->cargo,
-//                 'telefono'=> $data->telefono,
-//                 'email'=> $data->email,
-//                 'estado'=> $data->estado,
-//                 'fecha_registro'=> $data->fecha_registro
-//             ];  
-//             $lastId = $data->id_contribuyente;
-//           } 
-//     };
-//     return response()->json($contribuyente);
-
-//     } catch(QueryException $e) {
-//         // return Response::json(['error' => 'Error msg'], 404); // Status code here
-//         return Redirect::to('/login-me')->with('msg', ' Sorry something went worng. Please try again.');
-//     }
-// }
-
-// public function mostrar_contribuyente($id)
-//     {
-//         try {
-//             $result = DB::table('adm_contri')
-//             ->leftJoin('adm_tp_contri', 'adm_contri.id_tipo_contribuyente', '=', 'adm_tp_contri.id_tipo_contribuyente')
-//             ->leftJoin('sis_pais', 'adm_contri.id_pais', '=', 'sis_pais.id_pais')
-//             ->leftJoin('adm_ctb_rubro', 'adm_contri.id_contribuyente', '=', 'adm_ctb_rubro.id_contribuyente')
-//             ->leftJoin('adm_ctb_contac', 'adm_contri.id_contribuyente', '=', 'adm_ctb_contac.id_contribuyente')
-//             ->leftJoin('sis_identi', 'adm_contri.id_doc_identidad', '=', 'sis_identi.id_doc_identidad')
-//             ->leftJoin('adm_cta_contri', 'adm_contri.id_contribuyente', '=', 'adm_cta_contri.id_contribuyente')
-//             ->leftJoin('adm_tp_cta', 'adm_cta_contri.id_tipo_cuenta', '=', 'adm_tp_cta.id_tipo_cuenta')
-//             ->leftJoin('cont_banco', 'adm_cta_contri.id_banco', '=', 'cont_banco.id_banco')
-//                  ->leftJoin(DB::raw("(SELECT 
-//                 adm_contri.id_contribuyente,
-//                 adm_contri.razon_social
-//                 FROM adm_contri ) as banco"),function($join){
-//                 $join->on("banco.id_contribuyente","=","cont_banco.id_contribuyente");
-//                 })
-//                  ->leftJoin(DB::raw("(SELECT 
-//                 adm_rubro.id_rubro,
-//                 adm_rubro.descripcion
-//                 FROM adm_rubro ) as rubro"),function($join){
-//                 $join->on("rubro.id_rubro","=","adm_ctb_rubro.id_rubro");
-//                 })
-//                  ->leftJoin(DB::raw("(SELECT 
-//                 adm_tp_cta.id_tipo_cuenta,
-//                 adm_tp_cta.descripcion
-//                 FROM adm_tp_cta ) as tp_cuenta"),function($join){
-//                 $join->on("tp_cuenta.id_tipo_cuenta","=","adm_cta_contri.id_tipo_cuenta");
-//                 })
-//              ->select(
-//              'adm_contri.id_contribuyente', 
-//              'adm_contri.id_tipo_contribuyente', 
-//              'adm_tp_contri.descripcion AS adm_tip_contri_descripcion',
-//              'adm_contri.razon_social', 
-//              'adm_contri.nro_documento', 
-//              'adm_contri.telefono', 
-//              'adm_contri.celular', 
-//              'adm_contri.direccion_fiscal', 
-//              'adm_contri.ubigeo', 
-//              'adm_contri.id_pais', 
-//              'sis_pais.descripcion AS sis_pais_descripcion', 
-//              'adm_contri.estado', 
-//              'adm_contri.fecha_registro', 
-//              'sis_identi.id_doc_identidad as sis_identi_id_doc_identidad', 
-//              'sis_identi.descripcion as sis_identi_descripcion', 
-//             'rubro.id_rubro AS id_rubro',
-//              'rubro.descripcion AS rubro_descripcion',
-//              'adm_ctb_contac.id_contribuyente as adm_ctb_contacto_id_contribuyente',
-//              'adm_ctb_contac.nombre', 
-//              'adm_ctb_contac.cargo',
-//              'adm_ctb_contac.telefono AS adm_ctb_contac_telefono', 
-//              'adm_ctb_contac.email', 
-//              'adm_ctb_contac.estado AS estado_adm_ctb_contac',
-//              'adm_ctb_contac.fecha_registro AS adm_ctb_contac_fecha_registro',
-//              'adm_cta_contri.id_cuenta_contribuyente',
-//              'adm_cta_contri.id_contribuyente AS adm_cta_contri_id_contribuyente',
-//              'adm_cta_contri.id_banco',
-//              'banco.razon_social AS banco_razon_social',
-//              'cont_banco.codigo AS cont_banco_codigo',
-//              'adm_cta_contri.id_tipo_cuenta',
-//              'tp_cuenta.descripcion AS tp_cuenta_descripcion',
-//              'adm_tp_cta.descripcion AS adm_tp_cta_descripcion',
-//              'adm_cta_contri.nro_cuenta',
-//              'adm_cta_contri.nro_cuenta_interbancaria',
-//              'adm_cta_contri.fecha_registro AS adm_cta_contri_fecha_registro'
-//              )
-//              ->where('adm_contri.id_contribuyente', '=', $id)
-//              ->get();
-
-
-//          foreach($result as $data){
-//             $contacto[]=[
-//                 'id_contribuyente'=> $data->adm_ctb_contacto_id_contribuyente,
-//                 'nombre'=> $data->nombre,
-//                 'cargo'=> $data->cargo,
-//                 'telefono'=> $data->adm_ctb_contac_telefono,
-//                 'email'=> $data->email,
-//                 'fecha_registro_contacto'=> $data->adm_ctb_contac_fecha_registro,              
-//                 'estado'=> $data->estado_adm_ctb_contac
-//             ];      
-//         };
-
-//         $lastId = "";
-//          foreach($result as $data){
-//             if ($data->adm_cta_contri_id_contribuyente !== $lastId) {
-//             $cuenta[]=[
-//                 'id_cuenta_contribuyente'=> $data->id_cuenta_contribuyente,
-//                 'id_contribuyente'=> $data->adm_cta_contri_id_contribuyente,
-//                 'id_banco'=> $data->id_banco,
-//                 'banco_razon_social'=> $data->banco_razon_social,
-//                 'cont_banco_codigo'=> $data->cont_banco_codigo,
-//                  'id_tipo_cuenta'=> $data->id_tipo_cuenta,
-//                  'tp_cuenta_descripcion'=> $data->tp_cuenta_descripcion,
-//                 'nro_cuenta'=> $data->nro_cuenta,
-//                 'nro_cuenta_interbancaria'=> $data->nro_cuenta_interbancaria,
-//                 'adm_cta_contri_fecha_registro'=> $data->adm_cta_contri_fecha_registro             
-//              ]; 
-//              $lastId = $data->adm_cta_contri_id_contribuyente;
-
-//             }      
-//         };
-        
     
-//     $lastId = "";
-//         foreach($result as $data){
-//             if ($data->id_contribuyente !== $lastId) {
-//                 $contribuyente[] = [
-//                     'id_contribuyente'=> $data->id_contribuyente,
-//                     'id_tipo_contribuyente'=> $data->id_tipo_contribuyente,
-//                     'adm_tip_contri_descripcion'=>$data->adm_tip_contri_descripcion,
-//                     'razon_social'=> $data->razon_social,
-//                     'sis_identi_id_doc_identidad'=>$data->sis_identi_id_doc_identidad,
-//                     'doc_identi'=>$data->sis_identi_descripcion,
-//                     'nro_documento'=>$data->nro_documento,
-//                     'id_rubro'=>$data->id_rubro,
-//                     'rubro_descripcion'=>$data->rubro_descripcion,
-//                     'telefono'=> $data->telefono,
-//                     'celular'=> $data->celular,
-//                     'direccion_fiscal'=> $data->direccion_fiscal,
-//                     'ubigeo'=> $data->ubigeo,
-//                     'id_pais'=> $data->id_pais,
-//                     'sis_pais_descripcion'=> $data->sis_pais_descripcion,
-//                     'fecha_registro'=> $data->fecha_registro,
-//                     'estado'=> $data->estado
-//                 ];  
-//                 $lastId = $data->id_contribuyente;
-//               } 
-//     };
-    
-//      for($j=0; $j< sizeof($contacto);$j++){
-//         for($i=0; $i< sizeof($contribuyente);$i++){
-//             if($contacto[$j]['id_contribuyente'] === $contribuyente[$i]['id_contribuyente']){
-//                 $contribuyente[$i]['contacto'][]=$contacto[$j];
-//             }
-//         }
-//     }
+        $lastId = "";
+            foreach($result as $data){
+                if ($data->id_contribuyente !== $lastId) {
+                    $contribuyente[] = [
+                        'id_contribuyente'=> $data->id_contribuyente,
+                        'id_tipo_contribuyente'=> $data->id_tipo_contribuyente,
+                        'adm_tip_contri_descripcion'=>$data->adm_tip_contri_descripcion,
+                        'razon_social'=> $data->razon_social,
+                        'id_rubro'=> $data->id_rubro,
+                        'descripcion_rubro'=> $data->descripcion_rubro,
+                        
+                        'id_doc_identidad'=>$data->id_doc_identidad,
+                        'doc_identi'=>$data->sis_identi_descripcion,
+                        'nro_documento'=>$data->nro_documento,
+                        'telefono'=> $data->telefono,
+                        'celular'=> $data->celular,
+                        'direccion_fiscal'=> $data->direccion_fiscal,
+                        'ubigeo'=> $data->ubigeo,
+                        'id_pais'=> $data->id_pais,
+                        'sis_pais_descripcion'=> $data->sis_pais_descripcion,
+                        'fecha_registro'=> $data->fecha_registro,
+                        'estado'=> $data->estado
+                    ];  
+                    $lastId = $data->id_contribuyente;
+                } 
+        };
+        return response()->json($contribuyente);
 
-//     for($j=0; $j< sizeof($cuenta);$j++){
-//         for($i=0; $i< sizeof($contribuyente);$i++){
-//             if($cuenta[$j]['id_contribuyente'] === $contribuyente[$i]['id_contribuyente']){
-//                 $contribuyente[$i]['cuenta'][]=$cuenta[$j];
-//             }
-//         }
-//     }
-
-//     return response()->json($contribuyente);
-
-//     } catch(QueryException $e) {
-//         // return Response::json(['error' => 'Error msg'], 404); // Status code here
-//         return Redirect::to('/login-me')->with('msg', ' Sorry something went worng. Please try again.');
-//     }
-
-// }
+        } catch(QueryException $e) {
+            // return Response::json(['error' => 'Error msg'], 404); // Status code here
+            return Redirect::to('/login-me')->with('msg', ' Sorry something went worng. Please try again.');
+        }
+    }
     public function guardar_contribuyente(Request $request){
         $data = DB::table('contabilidad.adm_contri')->insertGetId(
             [
@@ -759,11 +521,6 @@ public function mostrar_contribuyente_data_contribuyente($id){
         }
     }
     public function eliminar_contribuyente($id){
-        //  $data = DB::table('adm_ctb_rubro')->where('id_contribuyente', '=', $id)->delete();
-        // if($data >0 || $data ==""){
-        //     $data2 = DB::table('adm_contri')->where('id_contribuyente', '=', $id)->delete();
-        //     return response()->json($data2);
-        // }
         $data = DB::table('contabilidad.adm_contri')->where('id_contribuyente', $id)
         ->update([
              'estado' => 0
