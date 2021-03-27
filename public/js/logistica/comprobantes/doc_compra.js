@@ -1,6 +1,8 @@
 var listaGuiaRemision=[];
 var listaDetalleComprobanteCompra=[];
+
 function get_data_cabecera_comprobante_compra(){
+
     var comprobanteCompra={
         'id_doc_com': document.querySelector("div[type='doc_compra'] input[name='id_doc_com']").value,
         'id_guia_com': document.querySelector("div[type='doc_compra'] input[name='id_guia_com']").value,
@@ -68,52 +70,57 @@ function mostrar_doc_compra(id_doc_com){
             dataType: 'JSON',
             success: function(response){
                 // console.log(response);
-                $('[name=id_doc_com]').val(response[0].id_doc_com);
-                $('[name=serie]').val(response[0].serie);
-                $('#serie').text(response[0].serie);
-                $('[name=numero]').val(response[0].numero);
-                $('#numero').text(response[0].numero);
-                $('[name=id_tp_doc]').val(response[0].id_tp_doc).trigger('change.select2');
-                $('[name=fecha_emision]').val(response[0].fecha_emision);
-                $('[name=fecha_vcmto]').val(response[0].fecha_vcmto);
-                $('[name=id_condicion]').val(response[0].id_condicion);
-                $('[name=credito_dias]').val(response[0].credito_dias);
-                $('[name=id_proveedor]').val(response[0].id_proveedor);
-                $('[name=prov_razon_social]').val(response[0].nro_documento + ' - ' + response[0].razon_social);
-                $('[name=moneda]').val(response[0].moneda);
-                $('[name=usuario]').val(response[0].usuario).trigger('change.select2');
-                $('[name=sub_total]').val(formatDecimal(response[0].sub_total));
-                $('[name=total_dscto]').val(formatDecimal(response[0].total_dscto));
-                $('[name=porcen_igv]').val(formatDecimal(response[0].porcen_igv));
-                $('[name=porcen_dscto]').val(formatDecimal(response[0].porcen_dscto?response[0].porcen_dscto:0));
-                $('[name=total]').val(formatDecimal(response[0].total));
-                $('[name=total_igv]').val(formatDecimal(response[0].total_igv));
-                $('[name=total_ant_igv]').val(formatDecimal(response[0].total_ant_igv));
-                $('[name=total_a_pagar]').val(formatDecimal(response[0].total_a_pagar));
-                $('[name=cod_estado]').val(response[0].estado);
+                $('[name=id_doc_com]').val(response['doc'].id_doc_com);
+                $('[name=serie]').val(response['doc'].serie);
+                $('#serie').text(response['doc'].serie);
+                $('[name=numero]').val(response['doc'].numero);
+                $('#numero').text(response['doc'].numero);
+                $('[name=id_tp_doc]').val(response['doc'].id_tp_doc).trigger('change.select2');
+                $('[name=fecha_emision]').val(response['doc'].fecha_emision);
+                $('[name=fecha_vcmto]').val(response['doc'].fecha_vcmto);
+                $('[name=id_condicion]').val(response['doc'].id_condicion);
+                $('[name=credito_dias]').val(response['doc'].credito_dias);
+                $('[name=id_proveedor]').val(response['doc'].id_proveedor);
+                $('[name=prov_razon_social]').val(response['doc'].nro_documento + ' - ' + response['doc'].razon_social);
+                $('[name=moneda]').val(response['doc'].moneda);
+                $('[name=usuario]').val(response['doc'].usuario).trigger('change.select2');
+                $('[name=sub_total]').val(formatDecimal(response['doc'].sub_total));
+                $('[name=total_dscto]').val(formatDecimal(response['doc'].total_dscto));
+                $('[name=porcen_igv]').val(formatDecimal(response['doc'].porcen_igv));
+                $('[name=porcen_dscto]').val(formatDecimal(response['doc'].porcen_dscto?response['doc'].porcen_dscto:0));
+                $('[name=total]').val(formatDecimal(response['doc'].total));
+                $('[name=total_igv]').val(formatDecimal(response['doc'].total_igv));
+                $('[name=total_ant_igv]').val(formatDecimal(response['doc'].total_ant_igv));
+                $('[name=total_a_pagar]').val(formatDecimal(response['doc'].total_a_pagar));
+                $('[name=cod_estado]').val(response['doc'].estado);
                 $('#estado label').text('');
-                $('#estado label').text(response[0].estado_doc);
+                $('#estado label').text(response['doc'].estado_doc);
                 $('#fecha_registro label').text('');
-                $('#fecha_registro label').text(response[0].fecha_registro);
+                $('#fecha_registro label').text(response['doc'].fecha_registro);
                 $('#registrado_por label').text('');
-                $('#registrado_por label').text(response[0].nombre_corto);
-                $('[name=simbolo_moneda]').text(response[0].simbolo)
+                $('#registrado_por label').text(response['doc'].nombre_corto);
+                $('[name=simbolo_moneda]').text(response['doc'].simbolo)
 
-                // listar_guias_prov(response[0].id_proveedor);
-                // console.log(response[0].doc_com_det);
-                if(response[0].guias.length >0){
-                    agregarObjGuia(response[0].guias);
-                    llenarTablaListaGuiaRemision(listaGuiaRemision);
+                // listar_guias_prov(response['doc'].id_proveedor);
+                // console.log(response['doc'].doc_com_det);
+                if (response['guias'].length >0){
+                    // agregarObjGuia(response['doc'].guias);
+                    llenarTablaListaGuiaRemision(response['guias']);
                 }
-                if(response[0].doc_com_det.length >0){
-                    agregarObjDetalleGuiaCompra(response[0].doc_com_det);
-                    llenarTablaListaDetalleGuiaCompra(listaDetalleComprobanteCompra);
+                if (response['detalle'].length > 0){
+                    // agregarObjDetalleGuiaCompra(response['doc'].doc_com_det);
+                    llenarTablaListaDetalleGuiaCompra(response['detalle']);
                 }
-                // if(response[0].doc_com_det.length > 0){
-                //     listar_doc_com_orden(response[0].id_doc_com)
+                console.log(response['ordenes']);
+                if (response['ordenes'].length > 0){
+                    // agregarObjDetalleGuiaCompra(response['doc'].doc_com_det);
+                    llenarTablaListaOrdenes(response['ordenes']);
+                }
+                // if(response['doc'].doc_com_det.length > 0){
+                //     listar_doc_com_orden(response['doc'].id_doc_com)
                 // }else{
-                //     listar_doc_guias(response[0].id_doc_com);
-                //     listar_doc_items(response[0].id_doc_com);
+                //     listar_doc_guias(response['doc'].id_doc_com);
+                //     listar_doc_items(response['doc'].id_doc_com);
                 // }
                 
                 localStorage.removeItem("id_doc_com");
@@ -124,6 +131,29 @@ function mostrar_doc_compra(id_doc_com){
             console.log(errorThrown);
         });   
     }
+}
+
+function llenarTablaListaOrdenes(ordenes)
+{
+    console.log(ordenes);
+    var html = '';
+    ordenes.forEach(element => {
+        html+=`<tr id="${element.id_orden_compra}">
+        <td hidden>${element.id_orden_compra}</td>
+        <td>${element.codigo}</td>
+        <td>${element.fecha}</td>
+        <td>${element.razon_social}</td>
+        <td>
+        <div class="btn-group" role="group">
+            <button type="button" class="btn btn-danger btn-xs" name="btnEliminarOrden" title="Eliminar Orden y Detalle" 
+                data-id-orden="${element.id_orden_compra}" onclick="eliminarOrden(this);">
+                <i class="fas fa-trash fa-sm"></i>
+            </button>
+        </div>
+        </td>
+        </tr>`;
+    });
+    $('#ordenes tbody').html(html);
 }
 
 function agregarObjGuia(data){
@@ -152,32 +182,32 @@ function agregarObjGuia(data){
 
 }
  
-function agregarObjDetalleGuiaCompra(data){
-    // console.log(data);
-    data.forEach(element => {
-        listaDetalleComprobanteCompra.push(
-            {
-                'id':element.id_guia_com_det,
-                'id_doc_det':element.id_doc_det,
-                'id_item':element.id_item,
-                'id_guia':element.id_guia,
-                'nro_guia':element.nro_guia,
-                'codigo':element.codigo,
-                'descripcion':element.descripcion,
-                'cantidad':element.cantidad,
-                'precio_unitario':element.precio_unitario,
-                'id_unid_med':element.id_unid_med,
-                'unidad_medida':element.unidad_medida,
-                'porcen_dscto':element.porcen_dscto,
-                'total_dscto':element.total_dscto,
-                'sub_total':(parseInt(element.cantidad) * parseFloat(element.precio_unitario)),
-                'total':(parseInt(element.cantidad) * parseFloat(element.precio_unitario))-parseFloat(element.total_dscto),
-                'estado':1
+// function agregarObjDetalleGuiaCompra(data){
+//     // console.log(data);
+//     data.forEach(element => {
+//         listaDetalleComprobanteCompra.push(
+//             {
+//                 'id':element.id_guia_com_det,
+//                 'id_doc_det':element.id_doc_det,
+//                 'id_item':element.id_item,
+//                 'id_guia':element.id_guia,
+//                 'nro_guia':element.nro_guia,
+//                 'codigo':element.codigo,
+//                 'descripcion':element.descripcion,
+//                 'cantidad':element.cantidad,
+//                 'precio_unitario':element.precio_unitario,
+//                 'id_unid_med':element.id_unid_med,
+//                 'unidad_medida':element.unidad_medida,
+//                 'porcen_dscto':element.porcen_dscto,
+//                 'total_dscto':element.total_dscto,
+//                 'sub_total':(parseInt(element.cantidad) * parseFloat(element.precio_unitario)),
+//                 'total':(parseInt(element.cantidad) * parseFloat(element.precio_unitario))-parseFloat(element.total_dscto),
+//                 'estado':1
                 
-            }
-        );
-    });
-}
+//             }
+//         );
+//     });
+// }
 
 function save_doc_compra(data, action){
 
@@ -245,33 +275,54 @@ function save_doc_compra(data, action){
 
 function llenarTablaListaGuiaRemision(data){
 
-    var newData =  data.filter(element => element.estado != 7); 
+    // var newData =  data.filter(element => element.estado != 7); 
 
-    var vardataTables = funcDatatables();
-    $('#ListaGuiaRemision').DataTable({
-        'info': false,
-        'searching': false,
-        'paging':   false,
-        'language' : vardataTables[0],
-        'bDestroy': true,
-        'data':newData,
-        'columns': [
-            {'data': 'nro_guia'},
-            {'data': 'fecha_emision'},
-            {'data': 'razon_social'},
-            {'data': 'tipo_operacion'},
-            {'render':
-            function (data, type, row){
-            return `<div class="btn-group" role="group">
-                        <button type="button" class="btn btn-danger btn-xs" name="btnEliminarGuiayDetalle" title="Eliminar Guía y Detalle" data-id-guia="${row.id_guia}" onclick="eliminarGuiayDetalleGuua(this);">
-                            <i class="fas fa-trash fa-sm"></i>
-                        </button>
-                    </div>`;
-            }
-            },
-        ]
-        // 'columnDefs': [{ 'aTargets': [0,5], 'sClass': 'invisible'}],
+    console.log(ordenes);
+    var html = '';
+    data.forEach(element => {
+        html+=`<tr id="${element.id_guia}">
+        <td hidden>${element.id_guia}</td>
+        <td>${element.nro_guia}</td>
+        <td>${element.fecha_emision}</td>
+        <td>${element.razon_social}</td>
+        <td>${element.tipo_operacion}</td>
+        <td>
+        <div class="btn-group" role="group">
+            <button type="button" class="btn btn-danger btn-xs" name="btnEliminarGuia" title="Eliminar Guia y Detalle" 
+                data-id-guia="${element.id_guia}" onclick="eliminarGuia(this);">
+                <i class="fas fa-trash fa-sm"></i>
+            </button>
+        </div>
+        </td>
+        </tr>`;
     });
+    $('#ListaGuiaRemision tbody').html(html);
+
+    // var vardataTables = funcDatatables();
+    // $('#ListaGuiaRemision').DataTable({
+    //     'info': false,
+    //     'searching': false,
+    //     'paging':   false,
+    //     'language' : vardataTables[0],
+    //     'bDestroy': true,
+    //     'data':newData,
+    //     'columns': [
+    //         {'data': 'nro_guia'},
+    //         {'data': 'fecha_emision'},
+    //         {'data': 'razon_social'},
+    //         {'data': 'tipo_operacion'},
+    //         {'render':
+    //         function (data, type, row){
+    //         return `<div class="btn-group" role="group">
+    //                     <button type="button" class="btn btn-danger btn-xs" name="btnEliminarGuiayDetalle" title="Eliminar Guía y Detalle" data-id-guia="${row.id_guia}" onclick="eliminarGuiayDetalleGuua(this);">
+    //                         <i class="fas fa-trash fa-sm"></i>
+    //                     </button>
+    //                 </div>`;
+    //         }
+    //         },
+    //     ]
+    //     // 'columnDefs': [{ 'aTargets': [0,5], 'sClass': 'invisible'}],
+    // });
 }
 function eliminarGuiayDetalleGuua(obj){
     let id_guia = obj.dataset.idGuia;
@@ -386,6 +437,7 @@ function updateTotalDescuento(e){
 }
 
 function llenarTablaListaDetalleGuiaCompra(data){
+    console.log(data);
     var newData =  data.filter(element => element.estado != 7); 
 
     var vardataTables = funcDatatables();
@@ -401,7 +453,7 @@ function llenarTablaListaDetalleGuiaCompra(data){
             {'data': 'codigo'},
             {'data': 'descripcion'},
             {'data': 'cantidad'},
-            {'data': 'unidad_medida'},
+            {'data': 'abreviatura'},
             {'render':
             function (data, type, row){
                 return  `<input type="text" class="form-control" name="precio_unitario" data-id="${row.id}" onkeyup ="updateUnitario(event);" value="${row.precio_unitario?row.precio_unitario:''}" style="
