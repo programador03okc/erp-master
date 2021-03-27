@@ -35,8 +35,8 @@ function listarRequerimientosAprobados() {
                 return `
                     <div>
                     <button type="button" style="padding-left:8px;padding-right:7px;" class="adjunto btn btn-warning boton" data-toggle="tooltip" 
-                        data-placement="bottom" data-id="${row['id_requerimiento']}" title="Ver Adjuntos" >
-                        <i class="fas fa-file-download"></i></button>
+                        data-placement="bottom" data-id="${row['id_requerimiento']}" title="Mandar A Pago" >
+                        <i class="far fa-credit-card"></i></button>
                     <button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" 
                         data-placement="bottom" title="Ver Detalle" >
                         <i class="fas fa-list-ul"></i></button>
