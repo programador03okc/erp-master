@@ -188,20 +188,14 @@ function vista_extendida(){
 }
 
 function listarTablaReq(id_empresa =null,id_sede =null, id_grupo=null,id_prioridad=null){
-    // console.log(id_empresa);
-    // console.log(id_sede);
-    // console.log(id_grupo);
-    
-    // var vardataTables = funcDatatables();
-        $('#ListaReq').DataTable({
-        'processing': true,
+    var vardataTables = funcDatatables();
+    $('#ListaReq').DataTable({
+        'dom': vardataTables[1],
+        'buttons': vardataTables[2],
+        'language' : vardataTables[0],
+        // 'processing': true,
         'serverSide': true,
-        'bDestroy': true,
-        // bInfo:     false,
-        'paging':   true,
-        'searching': true,
-        'bLengthChange': false,
-        'iDisplayLength':50,
+        'destroy': true,
         'ajax': {
             // url:'/logistica/requerimiento/lista/'+id_empresa+'/'+id_sede+'/'+id_grupo,
             url:rutaListaElaborados+'/'+id_empresa+'/'+id_sede+'/'+id_grupo+'/'+id_prioridad,

@@ -14,17 +14,15 @@ function inicializarRutasPendienteAprobacion(_rutaListaPendienteAprobacion,_ruta
 
 
 function listar_requerimientos_pendientes_aprobar(){
+    var vardataTables = funcDatatables();
     $('#ListaReqPendienteAprobacion').DataTable({
-        'processing': true,
+        'dom': vardataTables[1],
+        'buttons': vardataTables[2],
+        'language' : vardataTables[0],
+        // 'processing': true,
         'serverSide': true,
-        'bDestroy': true,
-        // bInfo:     false,
+        'destroy': true,
         "order": [[ 4, "desc" ]],
-        'paging':   true,
-        'searching': true,
-        'bLengthChange': false,
-
-        'iDisplayLength':50,
         'ajax': {
             url:rutaListaPendienteAprobacion,
             type:'GET',

@@ -26,7 +26,6 @@ class RequerimientoPago
                 {'data': 'fecha_requerimiento'},
                 {'data': 'sede_descripcion', 'name': 'sis_sede.descripcion'},
                 {'data': 'responsable', 'name': 'sis_usua.nombre_corto'},
-                // {'data': 'monto'},
                 {'render': 
                     function (data, type, row){
                         return (row['simbolo']+(row['monto']!==null ? row['monto'] : 0));

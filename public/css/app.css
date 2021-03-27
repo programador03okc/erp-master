@@ -1206,6 +1206,9 @@ span.select2-selection {
 #listaTransformacionesPendientes_filter,
 #listaTransformaciones_filter,
 #listaSerie_filter,
+#listaRequerimientos_filter,
+#ListaReq_filter,
+#ListaRequerimientosAprobados_filter,
 #listaUbicacion_filter {
   margin: 0;
 }
@@ -1255,6 +1258,8 @@ span.select2-selection {
 #listaTransformacionesPendientes_filter label input[type=search],
 #listaTransformaciones_filter label input[type=search],
 #listaSerie_filter label input[type=search],
+#listaRequerimientos_filter label input[type=search],
+#ListaRequerimientosAprobados_filter label input[type=search],
 #listaUbicacion_filter label input[type=search] {
   width: 95%;
 }
