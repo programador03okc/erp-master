@@ -644,7 +644,7 @@ function listar_sedes(){
 
 
 function listarItems() {
-    // console.log('listaItems');
+    console.log('listaItems');
     var vardataTables = funcDatatables();
    var tablaListaItems =  $('#listaItems').dataTable({
         // 'dom': vardataTables[1],
@@ -695,12 +695,22 @@ function listarItems() {
             // console.log(tempDetalleItemCCSelect);
             if(tempDetalleItemCCSelect.hasOwnProperty('descripcion')){
                 if(tempDetalleItemCCSelect.descripcion.length >0){
-                    $('#text-info-item-vinculado').attr('title',tempDetalleItemCCSelect.descripcion);
+                    $('#text-info-item-vinculado').attr('title',tempDetalleItemCCSelect.part_number);
                     $('#text-info-item-vinculado').removeAttr('hidden');
-                    $('#example_filter input').val(tempDetalleItemCCSelect.descripcion);
-                    this.api().search(tempDetalleItemCCSelect.descripcion).draw();
+                    $('#example_filter input').val(tempDetalleItemCCSelect.part_number);
+                    this.api().search(tempDetalleItemCCSelect.part_number).draw();
                     document.querySelector("input[type='search']").focus();
-                    document.querySelector("input[type='search']").setSelectionRange(tempDetalleItemCCSelect.descripcion.length,tempDetalleItemCCSelect.descripcion.length );
+                    document.querySelector("input[type='search']").setSelectionRange(tempDetalleItemCCSelect.part_number.length,tempDetalleItemCCSelect.part_number.length );
+
+                    if(this.api().page.info().recordsDisplay ==0){
+                        $('#text-info-item-vinculado').attr('title',tempDetalleItemCCSelect.descripcion);
+                        $('#text-info-item-vinculado').removeAttr('hidden');
+                        $('#example_filter input').val(tempDetalleItemCCSelect.descripcion);
+                        this.api().search(tempDetalleItemCCSelect.descripcion).draw();
+                        document.querySelector("input[type='search']").focus();
+                        document.querySelector("input[type='search']").setSelectionRange(tempDetalleItemCCSelect.descripcion.length,tempDetalleItemCCSelect.descripcion.length );
+
+                    }
 
                 }
             }
