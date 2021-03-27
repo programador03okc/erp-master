@@ -247,8 +247,10 @@ function validaRequerimiento(){
         if (id_almacen == '0' || id_almacen == null){
             msj+='\n Es necesario que seleccione un Almacén';
         }
-    }
+    }else if((tipo_requerimiento ==0)){  // compra - uso almacen
+        msj+='\n Es necesario que seleccione un Tipo de Requerimiento';
 
+    }
 
     return msj;
 

@@ -5027,9 +5027,9 @@ class LogisticaController extends Controller
 						$id_empresa = $req->first()->id_empresa;
 						$id_sede = $req->first()->id_sede;
 	
-						$email_destinatario= $this->get_email_usuario_por_rol('Logístico Compras', $id_sede, $id_empresa);
+						// $email_destinatario= $this->get_email_usuario_por_rol('Logístico Compras', $id_sede, $id_empresa);
 						// $email_destinatario[]= $this->get_email_usuario_por_rol('Coordinador', $id_sede, $id_empresa);
-						$email_destinatario[]= 'administracionventas@okcomputer.com.pe'; 
+						// $email_destinatario[]= 'administracionventas@okcomputer.com.pe'; 
 						$email_destinatario[]= 'programador03@okcomputer.com.pe'; 
 						$payload=[
 							'id_empresa'=>$id_empresa,

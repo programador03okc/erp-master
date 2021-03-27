@@ -57,6 +57,7 @@
                 <div class="col-md-2">
                         <h5 >Tipo de Requerimiento:</h5> 
                         <select class="form-control input-sm activation" name="tipo_requerimiento" onChange="changeOptTipoReqSelect(event);">
+                            <option value="">Elija una opción</option>
                             @foreach ($tipo_requerimiento as $tipo)
                                 <option value="{{$tipo->id_tipo_requerimiento}}">{{$tipo->descripcion}}</option>
                             @endforeach                
@@ -65,12 +66,7 @@
                     <div class="col-md-2">
                         <h5>Código</h5>
                         <div style="display:flex;">
-                            <input type="text" class="form-control" name="codigo" placeholder="">
-                            <!-- <div class="input-group-append"> -->
-                                <button type="button" class="btn-warning" id="basic-addon1" onClick="get_requerimiento_por_codigo();">
-                                    <i class="fa fa-search"></i>
-                                </button>
-                            <!-- </div>-->
+                            <input type="text" class="form-control" name="codigo" placeholder="" readOnly>
                         </div>
                     </div>
                     <div class="col-md-2">
@@ -536,6 +532,7 @@
     <script src="{{ asset('js/logistica/requerimiento/historial.js') }}"></script>
     <script src="{{ asset('js/logistica/requerimiento/modal_detalle_requerimiento.js') }}"></script>
     <script src="{{ asset('js/logistica/requerimiento/mostrar.js') }}"></script>
+    <script src="{{ asset('js/logistica/requerimiento/tipo_formulario.js') }}"></script>
     <script src="{{ asset('js/logistica/requerimiento/cabecera_detalle.js') }}"></script>
     <script src="{{ asset('js/logistica/requerimiento/inicializar.js') }}"></script>
     <script src="{{ asset('js/logistica/requerimiento/public.js') }}"></script>
@@ -555,17 +552,23 @@
 
     <script>
         var grupos = {!! json_encode($grupos) !!};
-        // console.log(grupos);
+        var id_grupo_usuario_sesion_list= [];
         grupos.forEach(element => {
-            if(element.id_grupo ==3){ // proyectos
-                stateFormRequerimiento(4)
-            }else if(element.id_grupo ==2){ // comercial
-                stateFormRequerimiento(5)
-                
-            }else if(element.id_grupo ==1){ //administración
-                stateFormRequerimiento(6)
-            }
+            id_grupo_usuario_sesion_list.push(element.id_grupo);
         });
+        
+        cambiarTipoFormulario();
+
+        // grupos.forEach(element => {
+        //     if(element.id_grupo ==3){ // proyectos
+        //         cambiarTipoFormulario(4)
+        //     }else if(element.id_grupo ==2){ // comercial
+        //         cambiarTipoFormulario(5)
+                
+        //     }else if(element.id_grupo ==1){ //administración
+        //         cambiarTipoFormulario(6)
+        //     }
+        // });
     $(document).ready(function(){
         seleccionarMenu(window.location);
         var descripcion_grupo='{{Auth::user()->getGrupo()->descripcion}}';

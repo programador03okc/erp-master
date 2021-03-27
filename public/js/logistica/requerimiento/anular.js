@@ -12,6 +12,7 @@ function nuevo_req(){
     $('[name=id_usuario_req]').val('');
     $('[name=id_estado_doc]').val('');
     $('[name=id_requerimiento]').val('');
+ 
 
 
 }

@@ -109,10 +109,10 @@ function mostrar_cuadro_costos_modal(){
     }
 }
 
-function get_requerimiento_por_codigo(){
-    var codigo = $('[name=codigo]').val();
-    mostrar_requerimiento(codigo);
-}
+// function get_requerimiento_por_codigo(){
+//     var codigo = $('[name=codigo]').val();
+//     mostrar_requerimiento(codigo);
+// }
 
 
 function changeMonedaSelect(e){
@@ -127,247 +127,9 @@ function changeMonedaSelect(e){
 
 }
 
-function limpiarSelectTipoCliente(){
-    let selectElement = document.querySelector("form[id='form-requerimiento'] select[name='tipo_cliente']");
-    if(selectElement !=null){
-        while (selectElement.options.length > 0) {                
-            selectElement.remove(0);
-        }    
-    }
-}
 
-function createOptionTipoCliente(tipoRequerimiento){  
-    let selectTipoCliente = document.querySelector("form[id='form-requerimiento'] select[name='tipo_cliente']");
-    if(selectTipoCliente !=null){
-        let array = [];
-        switch (tipoRequerimiento) {
-        case 'COMPRA':
-        case '1':
-            limpiarSelectTipoCliente();
-            array =[
-                {descripcion:'Persona Natural', valor: 1},
-                {descripcion:'Persona Juridica', valor: 2}
-                // {descripcion:'Uso Almacen', valor: 3},
-                // {descripcion:'Uso Administración', valor: 4}
-            ]
-            array.forEach(element => {
-                let option = document.createElement("option");
-                option.text = element.descripcion;
-                option.value = element.valor;
-                selectTipoCliente.add(option);
-            });
-            break;
-            case 'VENTA':
-            case '2':
-                limpiarSelectTipoCliente();
-                array =[
-                    {descripcion:'Persona Natural', valor: 1},
-                    {descripcion:'Persona Juridica', valor: 2}
-                ]
-                array.forEach(element => {
-                    let option = document.createElement("option");
-                    option.text = element.descripcion;
-                    option.value = element.valor;
-                    selectTipoCliente.add(option);
-                });
-                break;
-            case 'USO_ALMACEN':
-            case '3':
-                limpiarSelectTipoCliente();
-                array =[
-                    {descripcion:'Uso Almacen', valor: 3},
-                    {descripcion:'Uso Administración', valor: 4}
-                ]
-                array.forEach(element => {
-                    let option = document.createElement("option");
-                    option.text = element.descripcion;
-                    option.value = element.valor;
-                    selectTipoCliente.add(option);
-                });
-                break;
-        
-            default:
-    
-                break;
-        }
-        return false;
-    }
-   
-}
-function stateFormRequerimiento(estilo){
-    // console.log(estilo);
-    switch (estilo) {
-        case 1:
-            hiddeElement('ocultar','form-requerimiento',[
-                // 'input-group-proyecto',
-                'input-group-rol-usuario',
-                'input-group-comercial',
-                'input-group-almacen',
-                'input-group-cuenta'
-            ]);
-            hiddeElement('mostrar','form-requerimiento',[
-                'input-group-moneda',
-                'input-group-empresa',
-                'input-group-sede',
-                'input-group-tipo-cliente',
-                'input-group-telefono-cliente',
-                'input-group-email-cliente',
-                'input-group-cliente',
-                'input-group-direccion-entrega',
-                'input-group-ubigeo-entrega',
-                'input-group-monto'
-    
-            ]); 
-            break;
-    
-        case 2:
-            hiddeElement('ocultar','form-requerimiento',[
-                'input-group-moneda',
-                'input-group-empresa',
-                'input-group-rol-usuario',
-                'input-group-sede',
-                'input-group-telefono-cliente',
-                'input-group-email-cliente',
-                'input-group-cliente',
-                'input-group-direccion-entrega',
-                'input-group-cuenta',
-                'input-group-ubigeo-entrega',
-                'input-group-proyecto',
-                'input-group-comercial',
-                'input-group-monto'
-            ]);
-            hiddeElement('mostrar','form-requerimiento',[
-                'input-group-almacen',
-                'input-group-tipo-cliente'
-        
-            ]);
 
-            document.querySelector("div[id='input-group-almacen'] h5").textContent = 'Almacén que solicita';
-            document.querySelector("form[id='form-requerimiento'] select[name='rol_usuario']").value='';
 
-        break;
-    
-        case 3:
-            document.querySelector("div[id='input-group-almacen'] h5").textContent = 'Almacén';
-            document.querySelector("form[id='form-requerimiento'] select[name='rol_usuario']").value='';
-
-            hiddeElement('ocultar','form-requerimiento',[
-                'input-group-rol-usuario',
-                'input-group-proyecto',
-                'input-group-comercial',
-                'input-group-almacen'
-            ]);
-            hiddeElement('mostrar','form-requerimiento',[
-                'input-group-sede',
-                'input-group-tipo-cliente',
-                'input-group-telefono-cliente',
-                'input-group-email-cliente',
-                'input-group-empresa',
-                'input-group-tipo-cliente',
-                'input-group-cliente',
-                'input-group-direccion-entrega',
-                'input-group-monto'
-    
-            ]);
-            break;
-            case 4: //compra - proyectos
-            hiddeElement('ocultar','form-requerimiento',[
-                'input-group-cliente',
-                'input-group-rol-usuario',
-                'input-group-comercial',
-                'input-group-almacen',
-                'input-group-cuenta',
-                'input-group-monto',
-                'input-group-cliente',
-                'input-group-tipo-cliente',
-                'input-group-telefono-cliente',
-                'input-group-email-cliente',
-                'input-group-direccion-entrega',
-                'input-group-nombre-contacto',
-                'input-group-cargo-contacto',
-                'input-group-email-contacto',
-                'input-group-telefono-contacto',
-                'input-group-direccion-contacto',
-                'input-group-horario-contacto'
-            ]);
-            hiddeElement('mostrar','form-requerimiento',[
-                'input-group-moneda',
-                'input-group-empresa',
-                'input-group-sede',
-                'input-group-fecha_entrega',
-                'input-group-proyecto'    
-            ]); 
-            break;
-            case 5: //compra - comercial, otros
-            hiddeElement('ocultar','form-requerimiento',[
-                'input-group-cliente',
-                'input-group-rol-usuario',
-                'input-group-comercial',
-                'input-group-almacen',
-                'input-group-cuenta',
-                'input-group-proyecto'
-            ]);
-            hiddeElement('mostrar','form-requerimiento',[
-                'input-group-moneda',
-                'input-group-empresa',
-                'input-group-sede',
-                'input-group-tipo-cliente',
-                'input-group-telefono-cliente',
-                'input-group-email-cliente',
-                'input-group-cliente',
-                'input-group-fecha_entrega',
-                'input-group-ubigeo-entrega',
-                'input-group-monto',
-                'input-group-cliente',
-                'input-group-tipo-cliente',
-                'input-group-telefono-cliente',
-                'input-group-email-cliente',
-                'input-group-direccion-entrega',
-                'input-group-nombre-contacto',
-                'input-group-cargo-contacto',
-                'input-group-email-contacto',
-                'input-group-telefono-contacto',
-                'input-group-direccion-contacto',
-                'input-group-horario-contacto',
-    
-            ]); 
-            break;
-            case 6: //compra - administracion
-            hiddeElement('ocultar','form-requerimiento',[
-                'input-group-cliente',
-                'input-group-rol-usuario',
-                'input-group-comercial',
-                'input-group-almacen',
-                'input-group-cuenta',
-                'input-group-proyecto',
-                'input-group-cliente',
-                'input-group-tipo-cliente',
-                'input-group-telefono-cliente',
-                'input-group-email-cliente',
-                'input-group-direccion-entrega',
-                'input-group-nombre-contacto',
-                'input-group-cargo-contacto',
-                'input-group-email-contacto',
-                'input-group-telefono-contacto',
-                'input-group-direccion-contacto',
-                'input-group-horario-contacto'
-            ]);
-            hiddeElement('mostrar','form-requerimiento',[
-                'input-group-moneda',
-                'input-group-empresa',
-                'input-group-sede',
-                'input-group-fecha_entrega',
-                'input-group-ubigeo-entrega',
-                'input-group-monto',
-
-            ]); 
-            break;
-        default:
-            break;
-    }
-    
-
-}
 function limpiarFormRequerimiento(){
     document.querySelector("div[id='input-group-fecha']").setAttribute('class','col-md-2');
     document.querySelector("form[id='form-requerimiento'] input[name='id_cliente']").value='';
@@ -404,22 +166,7 @@ function getNexCodigoRequerimiento(tipo_requerimiento){
     });
 }
 
-function changeOptTipoReqSelect(e){
-    if(e.target.value == 1){
-        createOptionTipoCliente('COMPRA');
-        stateFormRequerimiento(1);
-        limpiarFormRequerimiento();
-        document.querySelector("div[id='input-group-almacen'] h5").textContent = 'Almacén que solicita';
-    }else if(e.target.value == 2){ //venta directa
-        createOptionTipoCliente('VENTA');
-        stateFormRequerimiento(3)
-        // listar_almacenes();
-    }else if(e.target.value == 3){
-        createOptionTipoCliente('USO_ALMACEN');
-        stateFormRequerimiento(2);
-    }
-    getNexCodigoRequerimiento(e.target.value);
-}
+
 
 
 
@@ -538,13 +285,13 @@ function changeTipoCliente(e,id =null){
     if (option == 1){ // persona natural
  
         limpiarFormRequerimiento()
-        grupos.forEach(element => {
-            if(element.id_grupo ==3){ // proyectos
-                stateFormRequerimiento(4)
-            }else{
-                stateFormRequerimiento(5)
-            }
-        });
+        // grupos.forEach(element => {
+        //     if(element.id_grupo ==3){ // proyectos
+        //         stateFormRequerimiento(4)
+        //     }else{
+        //         stateFormRequerimiento(5)
+        //     }
+        // });
         document.querySelector("form[id='form-requerimiento'] input[name='cliente_ruc']").style.display ='none';
         document.querySelector("form[id='form-requerimiento'] input[name='cliente_razon_social']").style.display = 'none';
         document.querySelector("form[id='form-requerimiento'] input[name='nombre_persona']").style.display ='block';
@@ -558,16 +305,16 @@ function changeTipoCliente(e,id =null){
         document.querySelector("form[id='form-requerimiento'] input[name='nombre_persona']").style.display ='none';
         document.querySelector("form[id='form-requerimiento'] input[name='dni_persona']").style.display ='none';
         limpiarFormRequerimiento()
-        stateFormRequerimiento(1);
+        // stateFormRequerimiento(1);
 
     }else if(option == 3 ){ // uso almacen
         limpiarFormRequerimiento()
-        stateFormRequerimiento(2);
+        // stateFormRequerimiento(2);
         listar_almacenes();
     
     }else if(option == 4 ){ // uso administracinón
         limpiarFormRequerimiento()
-        stateFormRequerimiento(1);
+        // stateFormRequerimiento(1);
         
     }
 }

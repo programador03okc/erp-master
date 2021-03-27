@@ -112,6 +112,8 @@ function inicializar( _rutaLista,
                 getDataCuadroCostos(ordenP_Cuadroc);
                 document.querySelector("input[name='fecha_entrega']").setAttribute('disabled',true);
                 document.querySelector("div[id='input-group-monto'] h5").textContent ='Monto OC';
+                mostrarTipoForm('MGCP');
+
             }else{
                 // console.log('no se encontro cuadro de costos, variable de sesión ordenP_Cuadroc vacia');
                 document.querySelector("fieldset[id='group-detalle-cuadro-costos']").setAttribute('hidden',true);
