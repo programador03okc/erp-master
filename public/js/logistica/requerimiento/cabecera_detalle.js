@@ -1,3 +1,23 @@
+function nuevo_req(){
+    data_item=[];
+    data=[];
+    adjuntos=[];
+    adjuntosRequerimiento=[];
+    onlyAdjuntosRequerimiento=[];
+    $('#form-requerimiento')[0].reset();
+    $('#body_detalle_requerimiento').html('<tr id="default_tr"><td></td><td colspan="12"> No hay datos registrados</td></tr>');
+    $('#body_adjuntos_requerimiento').html('<tr id="default_tr"><td></td><td colspan="3"> No hay datos registrados</td></tr>');
+    $('#body_lista_trazabilidad_requerimiento').html('<tr id="default_tr"><td></td><td colspan="5"> No hay datos registrados</td></tr>');
+    $('#estado_doc').text('');
+    $('[name=id_usuario_req]').val('');
+    $('[name=id_estado_doc]').val('');
+    $('[name=id_requerimiento]').val('');
+    vista_extendida();
+
+
+
+}
+
 function llenarTablaCuadroCostosComercial(data){
     var vardataTables = funcDatatables();
     $('#listaCuadroCostos').dataTable({
@@ -728,8 +748,177 @@ function isNumberKey(evt){
         return false;
     return true;
 }
+ 
+ 
+function agregarServicio(){
+    var tipo_requerimiento = $('[name=tipo_requerimiento]').val();
+
+    if(tipo_requerimiento >0){
+        let item = {
+            'id_detalle_requerimiento': null,
+            'id_item': null,
+            'codigo': null,
+            'part_number': null,
+            'des_item': '',
+            'cantidad': 1,
+            'id_producto': null,
+            'id_servicio': 0,
+            'id_equipo': null,
+            'id_tipo_item': 2,
+            'id_unidad_medida': 38,
+            'categoria': null,
+            'subcategoria': null,
+            'precio_referencial':null,
+            'id_tipo_moneda':1,
+            'lugar_entrega':null,
+            'id_partida':null,
+            'cod_partida':null,
+            'des_partida':null,
+            'id_almacen_reserva':null,
+            'almacen_descripcion':null,
+            'id_cc_am_filas':null,
+            'id_cc_venta_filas': null,
+            'tiene_transformacion':false,
+            'estado':1
+        };
+        data_item.push(item);
+        componerTdItemDetalleRequerimiento();
+                
+    }else{
+        alert("Debe seleccionar un tipo de requerimiento");
+    }
+
+    
+}
+
+function updateInputDescripcionItem(event){
+    let nuevoValor = event.target.value;
+    let indiceSelected = event.target.dataset.indice;
+    data_item.forEach((element, index) => {
+        if (index == indiceSelected) {
+            data_item[index].des_item = nuevoValor;
+
+        }
+    });
+}
+function updateInputCantidadItem(event){
+    let nuevoValor = event.target.value;
+    let indiceSelected = event.target.dataset.indice;
+    data_item.forEach((element, index) => {
+        if (index == indiceSelected) {
+            data_item[index].cantidad = nuevoValor;
+
+        }
+    });
+}
+
+function updateInputPrecioReferencialItem(event){
+    let nuevoValor = event.target.value;
+    let indiceSelected = event.target.dataset.indice;
+    data_item.forEach((element, index) => {
+        if (index == indiceSelected) {
+            data_item[index].precio_referencial = nuevoValor;
+
+        }
+    });
+}
 
 
+function makeSelectedToSelect(indice, type, data, id, hasDisabled) {
+    let html = '';
+    switch (type) {
+        // case 'categoria':
+        //     html = `<select class="form-control" name="categoria" ${hasDisabled} data-indice="${indice}">`;
+        //     data.forEach(item => {
+        //         if (item.id_categoria == id) {
+        //             html += `<option value="${item.id_categoria}" selected>${item.descripcion}</option>`;
+        //         } else {
+        //             html += `<option value="${item.id_categoria}">${item.descripcion}</option>`;
+        //         }
+        //     });
+        //     html += '</select>';
+        //     break;
+        // case 'subcategoria':
+        //     html = `<select class="form-control" name="subcategoria" ${hasDisabled} data-indice="${indice}" >`;
+        //     data.forEach(item => {
+        //         if (item.id_subcategoria == id) {
+        //             html += `<option value="${item.id_subcategoria}" selected>${item.descripcion}</option>`;
+        //         } else {
+        //             html += `<option value="${item.id_subcategoria}">${item.descripcion}</option>`;
+        //         }
+        //     });
+        //     html += '</select>';
+        //     break;
+        // case 'clasificacion':
+        //     html = `<select class="form-control" name="clasificacion" ${hasDisabled} data-indice="${indice}"  >`;
+        //     data.forEach(item => {
+        //         if (item.id_clasificacion == id) {
+        //             html += `<option value="${item.id_clasificacion}" selected>${item.descripcion}</option>`;
+        //         } else {
+        //             html += `<option value="${item.id_clasificacion}">${item.descripcion}</option>`;
+
+        //         }
+        //     });
+        //     html += '</select>';
+        //     break;
+        case 'unidad_medida':
+            html = `<select class="form-control" name="unidad_medida" ${hasDisabled} data-indice="${indice}" onChange="updateInputUnidadMedidaItem(event);">`;
+            data.forEach(item => {
+                if (item.id_unidad_medida == id) {
+                    html += `<option value="${item.id_unidad_medida}" selected>${item.descripcion}</option>`;
+                } else {
+                    html += `<option value="${item.id_unidad_medida}">${item.descripcion}</option>`;
+
+                }
+            });
+            html += '</select>';
+            break;
+        case 'moneda':
+            html = `<select class="form-control" name="moneda" ${hasDisabled} data-indice="${indice}" onChange="updateInputMonedaItem(event);">`;
+            data.forEach(item => {
+                if (item.id_moneda == id) {
+                    html += `<option value="${item.id_moneda}" selected>${item.descripcion}</option>`;
+                } else {
+                    html += `<option value="${item.id_moneda}">${item.descripcion}</option>`;
+
+                }
+            });
+            html += '</select>';
+            break;
+
+        default:
+            break;
+    }
+
+    return html;
+}
+
+function updateInputUnidadMedidaItem(event){
+    let idValor = event.target.value;
+    let textValor = event.target.options[event.target.selectedIndex].textContent;
+    let indiceSelected = event.target.dataset.indice;
+
+    data_item.forEach((element, index) => {
+        if (index == indiceSelected) {
+            data_item[index].id_unidad_medida = parseInt(idValor);
+            data_item[index].unidad_medida = textValor;
+
+        }
+    });
+}
+function updateInputMonedaItem(event){
+    let idValor = event.target.value;
+    let textValor = event.target.options[event.target.selectedIndex].textContent;
+    let indiceSelected = event.target.dataset.indice;
+
+    data_item.forEach((element, index) => {
+        if (index == indiceSelected) {
+            data_item[index].id_tipo_moneda = parseInt(idValor);
+            data_item[index].moneda = textValor;
+
+        }
+    });
+}
 
 
 function llenarTablaListaDetalleRequerimiento(data,selectMoneda,selectUnidadMedida){
@@ -742,8 +931,54 @@ function llenarTablaListaDetalleRequerimiento(data,selectMoneda,selectUnidadMedi
     for (var a = 0; a < data.length; a++) {
             var row = table.insertRow(-1);
 
-            if (data[a].id_producto == '') {
-                alert("lo siento, ocurrio un problema: El item seleccionado no tiene un Id producto");
+            if (data[a].id_producto == '' || data[a].id_producto == null) {
+                if(data[a].id_servicio==0){ // 0 = existe un item para servicio
+                    var id_grupo = document.querySelector("form[id='form-requerimiento'] input[name='id_grupo']").value;
+
+                    row.insertCell(0).innerHTML = data[a].id_item ? data[a].id_item : '';
+                    row.insertCell(1).innerHTML = data[a].codigo ? data[a].codigo : '';
+                    row.insertCell(2).innerHTML =  data[a].part_number ? data[a].part_number : '';
+                    row.insertCell(3).innerHTML = data[a].categoria ? data[a].categoria : '';
+                    row.insertCell(4).innerHTML = data[a].subcategoria ? data[a].subcategoria : '';
+                    row.insertCell(5).innerHTML = ` <textarea  class="form-control" name="descripcion" data-indice="" onkeyup ="updateInputDescripcionItem(event);">${data[a].des_item ? data[a].des_item : ''}</textarea>`;
+                    row.insertCell(6).innerHTML = makeSelectedToSelect(a, 'unidad_medida', selectUnidadMedida, 38, '');
+                    row.insertCell(7).innerHTML = `<input type="text" class="form-control" name="cantidad" data-indice="${a}" onkeyup ="updateInputCantidadItem(event);" value="${data[a].cantidad}">`;
+                    row.insertCell(8).innerHTML = `<input type="text" class="form-control" name="precio_referencial" data-indice="${a}" onkeyup ="updateInputPrecioReferencialItem(event);" value="${data[a].precio_referencial?data[a].precio_referencial:''}">`;
+                    row.insertCell(9).innerHTML = makeSelectedToSelect(a, 'moneda', selectMoneda, 1, '');
+                    
+                    var tdBtnAction=null;
+                    if(id_grupo == 3){
+                        document.querySelector("table[id='ListaDetalleRequerimiento']").tHead.children[0].cells[10].setAttribute('class','');                
+                        row.insertCell(10).innerHTML =  data[a].cod_partida ? data[a].cod_partida : '';
+    
+                        tdBtnAction = row.insertCell(11);
+    
+                    }else{
+                        tdBtnAction = row.insertCell(10);
+    
+                    }
+    
+                    var btnAction = '';
+                    // tdBtnAction.className = classHiden;
+                    var hasAttrDisabled = '';
+                    tdBtnAction.setAttribute('width', 'auto');
+                    var id_proyecto = document.querySelector("form[id='form-requerimiento'] select[name='id_proyecto']").value;
+        
+                    btnAction = `<div class="btn-group btn-group-sm" role="group" aria-label="Second group"><center>`;
+                    if (id_proyecto > 0) {
+                        btnAction += `<button class="btn btn-warning btn-sm"  name="btnMostarPartidas" data-toggle="tooltip" title="Partida" onClick=" partidasModal(${data[a].id_item});" ${hasAttrDisabled}><i class="fas fa-money-check"></i></button>`;
+                    }else{
+                        btnAction += `<button class="btn btn-warning btn-sm"  name="btnMostarPartidas" data-toggle="tooltip" title="Para mostrar partidas debe seleccionar un proyecto" onClick=" partidasModal(${data[a].id_item});" disabled><i class="fas fa-money-check"></i></button>`;
+                    }
+                    // btnAction += `<button class="btn btn-primary btn-sm" name="btnRemplazarItem" data-toggle="tooltip" title="Remplazar" onClick="buscarRemplazarItemParaCompra(this, ${a});" ${hasAttrDisabled}><i class="fas fa-search"></i></button>`;
+                    btnAction += `<button class="btn btn-primary btn-sm" name="btnAdjuntarArchivos" data-toggle="tooltip" title="Adjuntos" onClick="archivosAdjuntosModal(event, ${a});" ${hasAttrDisabled}X><i class="fas fa-paperclip"></i></button>`;
+                    btnAction += `<button class="btn btn-danger btn-sm"   name="btnEliminarItem" data-toggle="tooltip" title="Eliminar" onclick="eliminarItemDeListado(this,${data[a].id_item});" ${hasAttrDisabled} ><i class="fas fa-trash-alt"></i></button>`;
+                    btnAction += `</center></div>`;
+                    tdBtnAction.innerHTML = btnAction;
+                }else{
+
+                    alert("lo siento, ocurrio un problema: El item seleccionado no tiene un Id producto");
+                }
 
             } else {
                 var id_grupo = document.querySelector("form[id='form-requerimiento'] input[name='id_grupo']").value;

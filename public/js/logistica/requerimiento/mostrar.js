@@ -46,20 +46,24 @@ function mostrar_requerimiento(IdorCode){
                         // stateFormRequerimiento(1);
                         grupos.forEach(element => {
                             if(element.id_grupo ==3){ // proyectos
-                                stateFormRequerimiento(4)
+                                mostrarTipoForm('BIENES_SERVICIOS_PROYECTOS');
+
                              }else{
-                                stateFormRequerimiento(5) // otro
+                                mostrarTipoForm('BIENES_SERVICIOS');
                 
                             }
                         });
                     }
                     if(response['requerimiento'][0].tipo_cliente == 3  ){ // uso almacen
-                        stateFormRequerimiento(2);
+                        mostrarTipoForm('BIENES_SERVICIOS');
+
                     }
                 }else if(response['requerimiento'][0].id_tipo_requerimiento ==2){ //venta directa
-                    stateFormRequerimiento(3);
+                    mostrarTipoForm('BIENES_SERVICIOS');
+
                 }else if(response['requerimiento'][0].id_tipo_requerimiento ==3){ // pedido almacén
-                    stateFormRequerimiento(2);
+                    mostrarTipoForm('BIENES_SERVICIOS');
+
                 }
 
                 $('[name=id_usuario_req]').val(response['requerimiento'][0].id_usuario);

@@ -568,10 +568,9 @@ function fill_input_detalle_requerimiento(item){
 // modal catalogo items
 function catalogoItemsModal(){  
     $('#modal-detalle-requerimiento').modal('hide');
- 
+
     var tipo_requerimiento = $('[name=tipo_requerimiento]').val();
-    var tipo_cliente = $('[name=tipo_cliente]').val();
-    if (tipo_requerimiento == 1 ){
+    if (tipo_requerimiento == 1 || tipo_requerimiento == 2|| tipo_requerimiento == 3){
         $('#modal-catalogo-items').modal({
             show: true,
             backdrop: 'true',
@@ -581,16 +580,8 @@ function catalogoItemsModal(){
         listarItems();
 
 
-    }
-    else if(tipo_requerimiento == 2){
-        var almacen = $('[name=id_almacen]').val();
-        // console.log(almacen);
-        
-        saldosModal(almacen);
-    }
-    else if(tipo_requerimiento ==3 ){ // pedido almacen
-        var almacen = $('[name=id_almacen]').val();        
-        saldosModal(almacen);
+    }else{
+        alert("Debe seleccionar un tipo de requerimiento");
     }
 
 }
@@ -644,7 +635,7 @@ function listar_sedes(){
 
 
 function listarItems() {
-    console.log('listaItems');
+    // console.log('listaItems');
     var vardataTables = funcDatatables();
    var tablaListaItems =  $('#listaItems').dataTable({
         // 'dom': vardataTables[1],
@@ -963,123 +954,11 @@ function agregarItemATablaListaDetalleRequerimiento(item){
     }
 }
 
-function makeSelectedToSelect(indice, type, data, id, hasDisabled) {
-    let html = '';
-    switch (type) {
-        // case 'categoria':
-        //     html = `<select class="form-control" name="categoria" ${hasDisabled} data-indice="${indice}">`;
-        //     data.forEach(item => {
-        //         if (item.id_categoria == id) {
-        //             html += `<option value="${item.id_categoria}" selected>${item.descripcion}</option>`;
-        //         } else {
-        //             html += `<option value="${item.id_categoria}">${item.descripcion}</option>`;
-        //         }
-        //     });
-        //     html += '</select>';
-        //     break;
-        // case 'subcategoria':
-        //     html = `<select class="form-control" name="subcategoria" ${hasDisabled} data-indice="${indice}" >`;
-        //     data.forEach(item => {
-        //         if (item.id_subcategoria == id) {
-        //             html += `<option value="${item.id_subcategoria}" selected>${item.descripcion}</option>`;
-        //         } else {
-        //             html += `<option value="${item.id_subcategoria}">${item.descripcion}</option>`;
-        //         }
-        //     });
-        //     html += '</select>';
-        //     break;
-        // case 'clasificacion':
-        //     html = `<select class="form-control" name="clasificacion" ${hasDisabled} data-indice="${indice}"  >`;
-        //     data.forEach(item => {
-        //         if (item.id_clasificacion == id) {
-        //             html += `<option value="${item.id_clasificacion}" selected>${item.descripcion}</option>`;
-        //         } else {
-        //             html += `<option value="${item.id_clasificacion}">${item.descripcion}</option>`;
 
-        //         }
-        //     });
-        //     html += '</select>';
-        //     break;
-        case 'unidad_medida':
-            html = `<select class="form-control" name="unidad_medida" ${hasDisabled} data-indice="${indice}" onChange="updateInputUnidadMedidaItem(event);">`;
-            data.forEach(item => {
-                if (item.id_unidad_medida == id) {
-                    html += `<option value="${item.id_unidad_medida}" selected>${item.descripcion}</option>`;
-                } else {
-                    html += `<option value="${item.id_unidad_medida}">${item.descripcion}</option>`;
 
-                }
-            });
-            html += '</select>';
-            break;
-        case 'moneda':
-            html = `<select class="form-control" name="moneda" ${hasDisabled} data-indice="${indice}" onChange="updateInputMonedaItem(event);">`;
-            data.forEach(item => {
-                if (item.id_moneda == id) {
-                    html += `<option value="${item.id_moneda}" selected>${item.descripcion}</option>`;
-                } else {
-                    html += `<option value="${item.id_moneda}">${item.descripcion}</option>`;
 
-                }
-            });
-            html += '</select>';
-            break;
 
-        default:
-            break;
-    }
 
-    return html;
-}
-
-function updateInputUnidadMedidaItem(event){
-    let idValor = event.target.value;
-    let textValor = event.target.options[event.target.selectedIndex].textContent;
-    let indiceSelected = event.target.dataset.indice;
-
-    data_item.forEach((element, index) => {
-        if (index == indiceSelected) {
-            data_item[index].id_unidad_medida = parseInt(idValor);
-            data_item[index].unidad_medida = textValor;
-
-        }
-    });
-}
-function updateInputMonedaItem(event){
-    let idValor = event.target.value;
-    let textValor = event.target.options[event.target.selectedIndex].textContent;
-    let indiceSelected = event.target.dataset.indice;
-
-    data_item.forEach((element, index) => {
-        if (index == indiceSelected) {
-            data_item[index].id_tipo_moneda = parseInt(idValor);
-            data_item[index].moneda = textValor;
-
-        }
-    });
-}
-
-function updateInputPrecioReferencialItem(event){
-    let nuevoValor = event.target.value;
-    let indiceSelected = event.target.dataset.indice;
-    data_item.forEach((element, index) => {
-        if (index == indiceSelected) {
-            data_item[index].precio_referencial = nuevoValor;
-
-        }
-    });
-}
-
-function updateInputCantidadItem(event){
-    let nuevoValor = event.target.value;
-    let indiceSelected = event.target.dataset.indice;
-    data_item.forEach((element, index) => {
-        if (index == indiceSelected) {
-            data_item[index].cantidad = nuevoValor;
-
-        }
-    });
-}
 
 
 

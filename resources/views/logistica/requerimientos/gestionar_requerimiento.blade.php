@@ -361,10 +361,16 @@
                             <th width="70">PRECIO REF.</th>
                             <th width="70">MONEDA</th>
                             <th class="oculto" width="70">PARTIDA</th>
-                            <th width="120">
-                                <center><button type="button" class="btn btn-xs btn-success activation" onClick="catalogoItemsModal();" id="btn-add"
-                                data-toggle="tooltip" data-placement="bottom"  title="Agregar Detalle" disabled><i class="fas fa-plus"></i>
-                            </button></center>
+                            <th width="140">
+          
+                                <center>
+                                <button type="button" class="btn btn-xs btn-success activation" onClick="catalogoItemsModal();" id="btn-add-producto"
+                                data-toggle="tooltip" data-placement="bottom"  title="Agregar Detalle" disabled><i class="fas fa-plus"></i> Producto
+                                </button>
+                                <button type="button" class="btn btn-xs btn-success activation" onClick="agregarServicio();" id="btn-add-servicio"
+                                data-toggle="tooltip" data-placement="bottom"  title="Agregar Detalle" disabled><i class="fas fa-plus"></i> Servicio
+                            </button>
+                            </center>
                         </th>
                     </tr>
                 </thead>

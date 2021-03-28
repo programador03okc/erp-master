@@ -151,8 +151,9 @@ function mostrarTipoForm(tipo){
                 'input-group-telefono-contacto',
                 'input-group-direccion-contacto',
                 'input-group-horario-contacto',
-
             ]); 
+            cambiarVisibilidadBtn("btn-add-servicio","ocultar")
+
         break;
 
         case 'CMS':
@@ -176,6 +177,8 @@ function mostrarTipoForm(tipo){
                 'input-group-monto'
     
             ]); 
+            cambiarVisibilidadBtn("btn-add-servicio","mostrar")
+
         break;
 
         case 'BIENES_SERVICIOS':
@@ -197,15 +200,15 @@ function mostrarTipoForm(tipo){
                 'input-group-telefono-contacto',
                 'input-group-direccion-contacto',
                 'input-group-horario-contacto'
-
                 ]);
             hiddeElement('mostrar','form-requerimiento',[
                 'input-group-moneda',
                 'input-group-empresa',
                 'input-group-sede',
                 'input-group-ubigeo-entrega'
-    
             ]); 
+            cambiarVisibilidadBtn("btn-add-servicio","mostrar")
+
         break;
 
         case 'BIENES_SERVICIOS_PROYECTOS': //bienes y servicios - proyectos
@@ -241,6 +244,8 @@ function mostrarTipoForm(tipo){
                 'input-group-fecha_entrega',
                 'input-group-proyecto'    
             ]); 
+            cambiarVisibilidadBtn("btn-add-servicio","mostrar")
+
         break;
 
             // case 2:
@@ -330,5 +335,18 @@ function mostrarTipoForm(tipo){
             // break;
         default:
             break;
+    }
+}
+
+function cambiarVisibilidadBtn(name,estado){
+    let actualClass= document.querySelector("button[id='"+name+"']").className;
+    let newclass='';
+    if(estado == 'ocultar'){
+        newclass = actualClass.concat(' invisible');
+        document.querySelector("button[id='"+name+"']").setAttribute('class',newclass);
+    }else if(estado =='mostrar'){
+        newclass= actualClass.replace('invisible', '');
+        document.querySelector("button[id='"+name+"']").setAttribute('class',newclass);
+
     }
 }
