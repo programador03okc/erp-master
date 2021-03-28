@@ -940,7 +940,7 @@ function llenarTablaListaDetalleRequerimiento(data,selectMoneda,selectUnidadMedi
                     row.insertCell(2).innerHTML =  data[a].part_number ? data[a].part_number : '';
                     row.insertCell(3).innerHTML = data[a].categoria ? data[a].categoria : '';
                     row.insertCell(4).innerHTML = data[a].subcategoria ? data[a].subcategoria : '';
-                    row.insertCell(5).innerHTML = ` <textarea  class="form-control" name="descripcion" data-indice="" onkeyup ="updateInputDescripcionItem(event);">${data[a].des_item ? data[a].des_item : ''}</textarea>`;
+                    row.insertCell(5).innerHTML = ` <textarea  class="form-control" name="descripcion" data-indice="${a}" onkeyup ="updateInputDescripcionItem(event);">${data[a].des_item ? data[a].des_item : ''}</textarea>`;
                     row.insertCell(6).innerHTML = makeSelectedToSelect(a, 'unidad_medida', selectUnidadMedida, 38, '');
                     row.insertCell(7).innerHTML = `<input type="text" class="form-control" name="cantidad" data-indice="${a}" onkeyup ="updateInputCantidadItem(event);" value="${data[a].cantidad}">`;
                     row.insertCell(8).innerHTML = `<input type="text" class="form-control" name="precio_referencial" data-indice="${a}" onkeyup ="updateInputPrecioReferencialItem(event);" value="${data[a].precio_referencial?data[a].precio_referencial:''}">`;
