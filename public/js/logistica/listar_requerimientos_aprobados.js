@@ -34,9 +34,9 @@ function listarRequerimientosAprobados() {
             {'render': function (data, type, row){
                 return `
                     <div>
-                    <button type="button" style="padding-left:8px;padding-right:7px;" class="adjunto btn btn-warning boton" data-toggle="tooltip" 
-                        data-placement="bottom" data-id="${row['id_requerimiento']}" title="Mandar A Pago" >
-                        <i class="far fa-credit-card"></i></button>
+                    <button type="button" style="padding-left:8px;padding-right:7px;" class="pago btn btn-warning boton" data-toggle="tooltip" 
+                        data-placement="bottom" data-id="${row['id_requerimiento']}" data-cod="${row['codigo']}" title="Mandar A Pago" >
+                        <i class="fas fa-hand-holding-usd"></i></button>
                     <button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" 
                         data-placement="bottom" title="Ver Detalle" >
                         <i class="fas fa-list-ul"></i></button>
@@ -47,4 +47,36 @@ function listarRequerimientosAprobados() {
             }
         ],
     });
+
+    $('#ListaRequerimientosAprobados tbody').on("click","button.pago", function(){
+        var id = $(this).data('id');
+        var cod = $(this).data('cod');
+        var rspta = confirm('¿Está seguro que desea mandar a Pago el '+cod+'?');
+        
+        if (rspta){
+            requerimientoAPago(id);
+        }
+    });
+}
+
+
+function requerimientoAPago(id)
+{
+    $.ajax({
+        type: 'GET',
+        url: 'requerimientoAPago/'+id,
+        dataType: 'JSON',
+        success: function(response){
+            console.log(response);
+            if (response > 0){
+                alert('Se envió correctamente a Pago');
+                $('#ListaRequerimientosAprobados').DataTable().ajax.reload();
+            }
+        }
+    }).fail( function( jqXHR, textStatus, errorThrown ){
+        console.log(jqXHR);
+        console.log(textStatus);
+        console.log(errorThrown);
+    });
+
 }

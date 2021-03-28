@@ -693,6 +693,7 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::post('observar-documento', 'AprobacionController@observar_documento')->name('observar-documento');
 					Route::post('anular-documento', 'AprobacionController@anular_documento')->name('anular-documento');
 					Route::post('listarRequerimientosAprobados', 'AprobacionController@listarRequerimientosAprobados')->name('listar-requerimientos-aprobados');
+					Route::get('requerimientoAPago/{id}', 'AprobacionController@requerimientoAPago')->name('requerimiento-a-pago');
 					
 				});
 			});

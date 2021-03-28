@@ -25,7 +25,7 @@
                 <ul class="nav nav-tabs" role="tablist">
                     <li role="presentation" class="active"><a href="#requerimientosElaborados" onClick="listar_requerimientos_elaborados('OK COMPUTER');" aria-controls="requerimientosElaborados" role="tab" data-toggle="tab">Requerimientos Elaborados</a></li>
                     <li role="presentation" class=""><a href="#requerimientosPendientesAprobacion" onClick="vista_extendida(); listar_requerimientos_pendientes_aprobar();" aria-controls="requerimientosPendientesAprobacion" role="tab" data-toggle="tab">Requerimientos Pendientes de Aprobación</a></li>
-                    <li role="presentation" class=""><a href="#requerimientosAprobados" onClick="vista_extendida(); listar_requerimientos_aprobados();" aria-controls="requerimientosAprobados" role="tab" data-toggle="tab">Requerimientos Aprobados</a></li>
+                    <li role="presentation" class=""><a href="#requerimientosAprobados" aria-controls="requerimientosAprobados" role="tab" data-toggle="tab">Requerimientos Aprobados</a></li>
                 </ul>
                 <!-- Tab panes -->
                 <div class="tab-content">
@@ -216,9 +216,9 @@
     <script src="{{ asset('datatables/pdfmake/vfs_fonts.js') }}"></script>
     <script src="{{ asset('datatables/JSZip/jszip.min.js') }}"></script>
 
-    <script src="{{asset('js/logistica/listar_requerimiento.js')}}"></script>
-    <script src="{{asset('js/logistica/listar_requerimiento_pendientes_aprobacion.js')}}"></script>
-    <script src="{{asset('js/logistica/requerimiento/listar_requerimientos_aprobados.js')}}"></script>
+    <script src="{{ asset('js/logistica/listar_requerimiento.js') }}"></script>
+    <script src="{{ asset('js/logistica/listar_requerimiento_pendientes_aprobacion.js') }}"></script>
+    <script src="{{ asset('js/logistica/listar_requerimientos_aprobados.js') }}"></script>
 
     <script>
 
@@ -255,14 +255,22 @@
             "{{route('logistica.gestion-logistica.requerimiento.listado.aprobar-documento')}}",
             "{{route('logistica.gestion-logistica.requerimiento.listado.observar-documento')}}",
             "{{route('logistica.gestion-logistica.requerimiento.listado.anular-documento')}}"
-            // "{{route('logistica.gestion-logistica.requerimiento.listado.empresa')}}",
-            // "{{route('logistica.gestion-logistica.requerimiento.listado.select-sede-by-empresa')}}",
-            // "{{route('logistica.gestion-logistica.requerimiento.listado.select-grupo-by-sede')}}",
-            // "{{route('logistica.gestion-logistica.requerimiento.listado.ver-flujos')}}",
-            // "{{route('logistica.gestion-logistica.requerimiento.listado.explorar-requerimiento')}}"
             );
 
-            listarRequerimientosAprobados();
+        listarRequerimientosAprobados();
+
+        $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+            let tab = $(e.target).attr("href") // activated tab
+            if (tab == '#requerimientosElaborados'){
+                $('#ListaReq').DataTable().ajax.reload();
+            }
+            else if (tab == '#requerimientosPendientesAprobacion'){
+                $('#ListaReqPendientesAprobacion').DataTable().ajax.reload();
+            } 
+            else if (tab == '#requerimientosAprobados'){
+                $('#ListaRequerimientosAprobados').DataTable().ajax.reload();
+            }
+        });
      });
     </script>
 @endsection

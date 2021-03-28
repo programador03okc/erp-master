@@ -469,7 +469,8 @@ class AprobacionController extends Controller
 
     }
     
-    public function listarRequerimientosAprobados(){
+    public function listarRequerimientosAprobados()
+    {
         $data = DB::table('almacen.alm_req')
             ->select('alm_req.*','sis_usua.nombre_corto as responsable',
             'adm_estado_doc.estado_doc','adm_estado_doc.bootstrap_color',
@@ -485,5 +486,14 @@ class AprobacionController extends Controller
             ->orWhere('alm_req.estado',8);
 
         return datatables($data)->toJson();
+    }
+
+    public function requerimientoAPago($id)
+    {
+        $req = DB::table('almacen.alm_req')
+        ->where('id_requerimiento',$id)
+        ->update(['estado'=>8]);
+        
+        return response()->json($req);
     }
 }
