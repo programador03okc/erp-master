@@ -1450,10 +1450,12 @@ class TransferenciaController extends Controller
                 $array_items = $items_base;
                 $array_almacen = $almacen_base;
             }
-/*
+
             $fecha = date('Y-m-d H:i:s');
             $id_usuario = Auth::user()->id_usuario;
             $msj = '';
+            $detalle_agrega = [];
+            $agrega = [];
             
             foreach ($array_almacen as $alm){
                 $codigo = TransferenciaController::transferencia_nextId($alm);
@@ -1464,47 +1466,48 @@ class TransferenciaController extends Controller
                     $msj .= ', '.$codigo;
                 }
 
-                $id_trans = DB::table('almacen.trans')->insertGetId(
-                    [
-                        'id_almacen_origen' => $alm,
-                        'id_almacen_destino' => $id_almacen_destino,
-                        'codigo' => $codigo,
-                        'id_requerimiento' =>  $req->id_requerimiento,
-                        'id_guia_ven' => null,
-                        'responsable_origen' => null,
-                        'responsable_destino' => null,
-                        'fecha_transferencia' => date('Y-m-d'),
-                        'registrado_por' => $id_usuario,
-                        'estado' => 1,
-                        'fecha_registro' => $fecha
-                    ],
-                        'id_transferencia'
-                    );
+                // $id_trans = DB::table('almacen.trans')->insertGetId(
+                //     [
+                //         'id_almacen_origen' => $alm,
+                //         'id_almacen_destino' => $id_almacen_destino,
+                //         'codigo' => $codigo,
+                //         'id_requerimiento' =>  $req->id_requerimiento,
+                //         'id_guia_ven' => null,
+                //         'responsable_origen' => null,
+                //         'responsable_destino' => null,
+                //         'fecha_transferencia' => date('Y-m-d'),
+                //         'registrado_por' => $id_usuario,
+                //         'estado' => 1,
+                //         'fecha_registro' => $fecha
+                //     ],
+                //         'id_transferencia'
+                //     );
 
                 foreach ($array_items as $item) {
 
                     $id_almacen_origen = ($det->id_almacen_guia !== null ? $det->id_almacen_guia : ($det->id_almacen_reserva!==null?$det->id_almacen_reserva:null));
+                    array_push($agrega, ['id_almacen_origen'=>$id_almacen_origen,'alm'=>$alm]);
                     
                     if (intVal($id_almacen_origen) === intVal($alm)){
-                        $id_trans_detalle_list[]= DB::table('almacen.trans_detalle')->insertGetId(
-                        [
-                            'id_transferencia' => $id_trans,
-                            'id_producto' => $item->id_producto,
-                            'cantidad' => (($det->stock_comprometido!==null && $det->stock_comprometido > 0)?$det->stock_comprometido:$det->cantidad),
-                            'estado' => 1,
-                            'fecha_registro' => $fecha,
-                            'id_requerimiento_detalle' => $item->id_detalle_requerimiento
-                        ],
-                        'id_trans_detalle'
-                        );
+                        array_push($detalle_agrega, $item);
+                        // DB::table('almacen.trans_detalle')->insert(
+                        // [
+                        //     'id_transferencia' => $id_trans,
+                        //     'id_producto' => $item->id_producto,
+                        //     'cantidad' => (($det->stock_comprometido!==null && $det->stock_comprometido > 0)?$det->stock_comprometido:$det->cantidad),
+                        //     'estado' => 1,
+                        //     'fecha_registro' => $fecha,
+                        //     'id_requerimiento_detalle' => $item->id_detalle_requerimiento
+                        // ]);
 
                     }
                 }
             }
-*/
+
             DB::commit();
-            return response()->json(['array_almacen'=>$array_almacen,'array_items'=>$array_items]);
+            // return response()->json(['array_almacen'=>$array_almacen,'array_items'=>$array_items]);
             // return response()->json($msj);
+            return response()->json(['detalle_agrega'=>$detalle_agrega,'agrega'=>$agrega]);
             
         } catch (\PDOException $e) {
             DB::rollBack();
