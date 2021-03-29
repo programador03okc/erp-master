@@ -1483,9 +1483,9 @@ class TransferenciaController extends Controller
 
                 foreach ($array_items as $item) {
 
-                    $id_almacen_origen = ($det->id_almacen_guia !== null ? $det->id_almacen_guia : $det->id_almacen_reserva);
+                    $id_almacen_origen = ($det->id_almacen_guia !== null ? $det->id_almacen_guia : ($det->id_almacen_reserva!==null?$det->id_almacen_reserva:null));
                     
-                    if ($id_almacen_origen == $alm){
+                    if (intVal($id_almacen_origen) === intVal($alm)){
                         $id_trans_detalle_list[]= DB::table('almacen.trans_detalle')->insertGetId(
                         [
                             'id_transferencia' => $id_trans,
@@ -1503,6 +1503,7 @@ class TransferenciaController extends Controller
             }
 
             DB::commit();
+            // return response()->json(['array_almacen'=>$array_almacen,'array_items'=>$array_items]);
             return response()->json($msj);
             
         } catch (\PDOException $e) {
