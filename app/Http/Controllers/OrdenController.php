@@ -2621,12 +2621,12 @@ class OrdenController extends Controller
         $descripcion = $request->descripcion;
         $where=[];
         if ($part_number !== null && $part_number !== ''){
-            $where=[['alm_prod.part_number','=',$part_number],['alm_prod.estado','=',1]];
+            $where=[['alm_prod.part_number','=',strtoupper($part_number)],['alm_prod.estado','=',1]];
             
         } 
         else if ($descripcion !== null && $descripcion !== ''){
             // $where=[['alm_prod.descripcion','like','%'.$descripcion.'%'],['alm_prod.estado','=',1]];
-            $where=[['alm_prod.descripcion','=',$descripcion],['alm_prod.estado','=',1]];
+            $where=[['alm_prod.descripcion','=',strtoupper($descripcion)],['alm_prod.estado','=',1]];
         }
         
         $alm_prod = DB::table('almacen.alm_prod')
