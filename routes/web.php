@@ -672,6 +672,7 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::get('proyectos-activos', 'ProyectosController@listar_proyectos_activos')->name('proyectos-activos');
 					Route::get('listar-partidas/{id_grupo?}/{id_proyecto?}', 'ProyectosController@listar_partidas')->name('listar-partidas');
 					Route::get('grupo-select-item-para-compra', 'OrdenController@getGrupoSelectItemParaCompra')->name('grupo-select-item-para-compra');
+					Route::get('mostrar-centro-costos', 'CentroCostoController@mostrarCentroCostos')->name('mostrar-centro-costos');
 
 				
 

@@ -1871,7 +1871,8 @@ class LogisticaController extends Controller
                             'id_almacen_reserva'    => is_numeric($detalle_reqArray[$i]['id_almacen_reserva']) == 1 ? $detalle_reqArray[$i]['id_almacen_reserva']:null,
                             'id_cc_am_filas'        => is_numeric($detalle_reqArray[$i]['id_cc_am_filas']) == 1 ? $detalle_reqArray[$i]['id_cc_am_filas']:null,
                             'id_cc_venta_filas'     => is_numeric($detalle_reqArray[$i]['id_cc_venta_filas']) == 1 ? $detalle_reqArray[$i]['id_cc_venta_filas']:null,
-                            'tiene_transformacion'  => $detalle_reqArray[$i]['tiene_transformacion']?$detalle_reqArray[$i]['tiene_transformacion']:false
+                            'tiene_transformacion'  => $detalle_reqArray[$i]['tiene_transformacion']?$detalle_reqArray[$i]['tiene_transformacion']:false,
+                            'centro_costos_id'      => isset($detalle_reqArray[$i]['id_centro_costos'])?$detalle_reqArray[$i]['id_centro_costos']:null
 
                         ],
                         'id_detalle_requerimiento'
