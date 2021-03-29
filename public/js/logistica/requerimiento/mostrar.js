@@ -159,6 +159,9 @@ function mostrar_requerimiento(IdorCode){
                         'id_partida':detalle_requerimiento[x].id_partida,
                         'cod_partida':detalle_requerimiento[x].codigo_partida,
                         'des_partida':detalle_requerimiento[x].descripcion_partida,
+                        'id_centro_costo':detalle_requerimiento[x].id_centro_costo,
+                        'codigo_centro_costo':detalle_requerimiento[x].codigo_centro_costo,
+                        'id_partida':detalle_requerimiento[x].id_partida,
                         'obs':detalle_requerimiento[x].obs,
                         'estado':detalle_requerimiento[x].estado
                     };

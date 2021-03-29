@@ -632,8 +632,8 @@ class LogisticaController extends Controller
                 ];
             };
 
-            $alm_det_req = DB::table('almacen.alm_item')
-                ->rightJoin('almacen.alm_det_req', 'alm_item.id_item', '=', 'alm_det_req.id_item')
+            $alm_det_req = DB::table('almacen.alm_det_req')
+                ->leftJoin('almacen.alm_item', 'alm_item.id_item', '=', 'alm_det_req.id_item')
                 ->leftJoin('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'alm_det_req.id_requerimiento')
                 ->leftJoin('almacen.alm_prod', 'alm_item.id_producto', '=', 'alm_prod.id_producto')
                 ->leftJoin('logistica.log_servi', 'alm_item.id_servicio', '=', 'log_servi.id_servicio')
@@ -649,9 +649,9 @@ class LogisticaController extends Controller
                 // ->leftJoin('almacen.alm_cat_prod', 'alm_cat_prod.id_categoria', '=', 'alm_subcategoria.id_categoria')
                 // ->leftJoin('almacen.alm_tp_prod', 'alm_tp_prod.id_tipo_producto', '=', 'alm_cat_prod.id_tipo_producto')
                 ->leftJoin('logistica.equipo', 'alm_item.id_equipo', '=', 'equipo.id_equipo')
-
+                
                 ->leftJoin('almacen.alm_det_req_adjuntos', 'alm_det_req_adjuntos.id_detalle_requerimiento', '=', 'alm_det_req.id_detalle_requerimiento')
-
+                
                 ->leftJoin('finanzas.presup_par', 'presup_par.id_partida', '=', 'alm_det_req.partida')
                 ->leftJoin('finanzas.presup_pardet', 'presup_pardet.id_pardet', '=', 'presup_par.id_pardet')
                 ->leftJoin('administracion.adm_estado_doc', 'alm_det_req.estado', '=', 'adm_estado_doc.id_estado_doc')
@@ -663,6 +663,8 @@ class LogisticaController extends Controller
                 ->leftJoin('mgcp_cuadro_costos.cc_venta_filas', 'cc_venta_filas.id', '=', 'alm_det_req.id_cc_venta_filas')
                 ->leftJoin('mgcp_cuadro_costos.cc_venta_proveedor', 'cc_venta_proveedor.id', '=', 'cc_venta_filas.proveedor_seleccionado')
                 ->leftJoin('mgcp_cuadro_costos.proveedores as proveedores_venta', 'proveedores_venta.id', '=', 'cc_venta_filas.proveedor_seleccionado')
+
+                ->leftJoin('finanzas.centro_costo', 'centro_costo.id_centro_costo', '=', 'alm_det_req.centro_costo_id')
                 ->select(
                     'alm_det_req.id_detalle_requerimiento',
                     'alm_req.id_requerimiento',
@@ -688,6 +690,8 @@ class LogisticaController extends Controller
                     'alm_det_req.partida',
                     'presup_par.codigo AS codigo_partida',
                     'presup_pardet.descripcion AS descripcion_partida',
+                    'alm_det_req.centro_costo_id as id_centro_costo',
+                    'centro_costo.codigo as codigo_centro_costo',
                     
                     'alm_item.id_item',
                     'alm_det_req.id_producto',
@@ -832,6 +836,8 @@ class LogisticaController extends Controller
 
                             'id_partida'                    => $data->partida,
                             'codigo_partida'                => $data->codigo_partida,
+                            'id_centro_costo'                => $data->id_centro_costo,
+                            'codigo_centro_costo'            => $data->codigo_centro_costo,
                             'descripcion_partida'           => $data->descripcion_partida,
                             'suma_transferencias'           => $data->suma_transferencias,
 
@@ -1872,7 +1878,7 @@ class LogisticaController extends Controller
                             'id_cc_am_filas'        => is_numeric($detalle_reqArray[$i]['id_cc_am_filas']) == 1 ? $detalle_reqArray[$i]['id_cc_am_filas']:null,
                             'id_cc_venta_filas'     => is_numeric($detalle_reqArray[$i]['id_cc_venta_filas']) == 1 ? $detalle_reqArray[$i]['id_cc_venta_filas']:null,
                             'tiene_transformacion'  => $detalle_reqArray[$i]['tiene_transformacion']?$detalle_reqArray[$i]['tiene_transformacion']:false,
-                            'centro_costos_id'      => isset($detalle_reqArray[$i]['id_centro_costos'])?$detalle_reqArray[$i]['id_centro_costos']:null
+                            'centro_costo_id'      => isset($detalle_reqArray[$i]['id_centro_costo'])?$detalle_reqArray[$i]['id_centro_costo']:null
 
                         ],
                         'id_detalle_requerimiento'

@@ -298,7 +298,18 @@ function agregarItem(){
     
     let widthGroupBtnAction='auto';
 
-    
+    let cantidadIdPartidas=0;
+    let cantidadIdCentroCostos=0;
+
+    for (var a = 0; a < data_item.length; a++) {
+        if(data_item[a].id_partida >0){
+            cantidadIdPartidas++;
+        }
+        if(data_item[a].id_centro_costo >0){
+            cantidadIdCentroCostos++;
+        }
+    }
+
 
     for(var a=0;a < data_item.length;a++){
         if(data_item[a].estado !=7){
@@ -316,15 +327,13 @@ function agregarItem(){
                 descripcion_unidad = data_item[a].unidad;
             }
             row.insertCell(0).innerHTML = data_item[a].id_item?data_item[a].id_item:'0';
-            row.insertCell(1).innerHTML = data_item[a].cod_item?data_item[a].cod_item:'0';
+            row.insertCell(1).innerHTML = data_item[a].cod_item?data_item[a].cod_item:'-';
             row.insertCell(2).innerHTML = data_item[a].part_number?data_item[a].part_number:'-';
-            row.insertCell(3).innerHTML = data_item[a].categoria?data_item[a].categoria:'-';
-            row.insertCell(4).innerHTML = data_item[a].subcategoria?data_item[a].subcategoria:'-';
-            row.insertCell(5).innerHTML = data_item[a].des_item?data_item[a].des_item:'-';
-            row.insertCell(6).innerHTML = descripcion_unidad;
-            row.insertCell(7).innerHTML = data_item[a].cantidad?data_item[a].cantidad:'0';
-            row.insertCell(8).innerHTML = data_item[a].precio_referencial?data_item[a].precio_referencial:'0';
-            row.insertCell(9).innerHTML = data_item[a].tipo_moneda?data_item[a].tipo_moneda:'';
+            row.insertCell(3).innerHTML = data_item[a].des_item?data_item[a].des_item:'-';
+            row.insertCell(4).innerHTML = descripcion_unidad;
+            row.insertCell(5).innerHTML = data_item[a].cantidad?data_item[a].cantidad:'0';
+            row.insertCell(6).innerHTML = data_item[a].precio_referencial?data_item[a].precio_referencial:'0';
+            row.insertCell(7).innerHTML = data_item[a].tipo_moneda?data_item[a].tipo_moneda:'';
 
             // row.insertCell(9).innerHTML = data_item[a].fecha_entrega?data_item[a].fecha_entrega:null;
             // row.insertCell(10).innerHTML = data_item[a].lugar_entrega?data_item[a].lugar_entrega:'-';
@@ -333,17 +342,29 @@ function agregarItem(){
             var id_proyecto = document.querySelector("form[id='form-requerimiento'] select[name='id_proyecto']").value;
             var tdBtnAction = '';
 
-            if(id_grupo == 3){
-                document.querySelector("table[id='ListaDetalleRequerimiento']").tHead.children[0].cells[10].setAttribute('class','');                
-                row.insertCell(10).innerHTML =  data_item[a].cod_partida ? data_item[a].cod_partida : '';
+            if((id_grupo == 3 && data_item[a].id_partida > 0 ) || (cantidadIdPartidas >0)){
+                document.querySelector("table[id='ListaDetalleRequerimiento']").tHead.children[0].cells[8].setAttribute('class','');                
+                row.insertCell(8).innerHTML =  data_item[a].cod_partida ? data_item[a].cod_partida : '';
 
-                tdBtnAction = row.insertCell(11);
+                if(data_item[a].id_centro_costo >0 || (cantidadIdPartidas >0 && cantidadIdCentroCostos >0)){
+                    document.querySelector("table[id='ListaDetalleRequerimiento']").tHead.children[0].cells[9].setAttribute('class','');                
+                    row.insertCell(9).innerHTML =  data_item[a].codigo_centro_costo ? data_item[a].codigo_centro_costo : '';
+                    tdBtnAction = row.insertCell(10);
+        
+                }else{
+                    tdBtnAction = row.insertCell(9);
+                }
 
+
+            }else if(data_item[a].id_centro_costo >0 || (cantidadIdCentroCostos >0)){
+                document.querySelector("table[id='ListaDetalleRequerimiento']").tHead.children[0].cells[9].setAttribute('class','');                
+                row.insertCell(8).innerHTML =  data_item[a].codigo_centro_costo ? data_item[a].codigo_centro_costo : '';
+
+                tdBtnAction = row.insertCell(9);
             }else{
-                tdBtnAction = row.insertCell(10);
+                tdBtnAction = row.insertCell(8);
 
             }
-            
             // tdBtnAction.className = classHiden;
             var btnAction = '';
             var hasAttrDisabled ='';
