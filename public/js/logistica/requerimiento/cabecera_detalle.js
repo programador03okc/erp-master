@@ -929,6 +929,16 @@ function llenarTablaListaDetalleRequerimiento(data,selectMoneda,selectUnidadMedi
     var table = document.getElementById("ListaDetalleRequerimiento");
 
     // console.log(data);
+    let cantidadIdPartidas=0;
+    let cantidadIdCentroCostos=0;
+    for (var a = 0; a < data.length; a++) {
+        if(data[a].id_partida >0){
+            cantidadIdPartidas++;
+        }
+        if(data[a].id_centro_costo >0){
+            cantidadIdCentroCostos++;
+        }
+    }
 
     for (var a = 0; a < data.length; a++) {
             var row = table.insertRow(-1);
@@ -940,36 +950,35 @@ function llenarTablaListaDetalleRequerimiento(data,selectMoneda,selectUnidadMedi
                     row.insertCell(0).innerHTML = data[a].id_item ? data[a].id_item : '';
                     row.insertCell(1).innerHTML = data[a].codigo ? data[a].codigo : '';
                     row.insertCell(2).innerHTML =  data[a].part_number ? data[a].part_number : '';
-                    row.insertCell(3).innerHTML = data[a].categoria ? data[a].categoria : '';
-                    row.insertCell(4).innerHTML = data[a].subcategoria ? data[a].subcategoria : '';
-                    row.insertCell(5).innerHTML = ` <textarea  class="form-control" name="descripcion" data-indice="${a}" onkeyup ="updateInputDescripcionItem(event);">${data[a].des_item ? data[a].des_item : ''}</textarea>`;
-                    row.insertCell(6).innerHTML = makeSelectedToSelect(a, 'unidad_medida', selectUnidadMedida, 38, '');
-                    row.insertCell(7).innerHTML = `<input type="text" class="form-control" name="cantidad" data-indice="${a}" onkeyup ="updateInputCantidadItem(event);" value="${data[a].cantidad}">`;
-                    row.insertCell(8).innerHTML = `<input type="text" class="form-control" name="precio_referencial" data-indice="${a}" onkeyup ="updateInputPrecioReferencialItem(event);" value="${data[a].precio_referencial?data[a].precio_referencial:''}">`;
-                    row.insertCell(9).innerHTML = makeSelectedToSelect(a, 'moneda', selectMoneda, 1, '');
+                    row.insertCell(3).innerHTML = ` <textarea  class="form-control" name="descripcion" data-indice="${a}" onkeyup ="updateInputDescripcionItem(event);">${data[a].des_item ? data[a].des_item : ''}</textarea>`;
+                    row.insertCell(4).innerHTML = makeSelectedToSelect(a, 'unidad_medida', selectUnidadMedida, 38, '');
+                    row.insertCell(5).innerHTML = `<input type="text" class="form-control" name="cantidad" data-indice="${a}" onkeyup ="updateInputCantidadItem(event);" value="${data[a].cantidad}">`;
+                    row.insertCell(6).innerHTML = `<input type="text" class="form-control" name="precio_referencial" data-indice="${a}" onkeyup ="updateInputPrecioReferencialItem(event);" value="${data[a].precio_referencial?data[a].precio_referencial:''}">`;
+                    row.insertCell(7).innerHTML = makeSelectedToSelect(a, 'moneda', selectMoneda, 1, '');
                     
                     var tdBtnAction=null;
-                    if(id_grupo == 3 && data[a].id_partida > 0 ){
-                        document.querySelector("table[id='ListaDetalleRequerimiento']").tHead.children[0].cells[10].setAttribute('class','');                
-                        row.insertCell(10).innerHTML =  data[a].cod_partida ? data[a].cod_partida : '';
+                    if((id_grupo == 3 && data[a].id_partida > 0 ) || (cantidadIdPartidas >0)){
+                        document.querySelector("table[id='ListaDetalleRequerimiento']").tHead.children[0].cells[8].setAttribute('class','');                
+                        row.insertCell(8).innerHTML =  data[a].cod_partida ? data[a].cod_partida : '';
     
-                        if(data[a].id_centro_costo >0){
-                            document.querySelector("table[id='ListaDetalleRequerimiento']").tHead.children[0].cells[11].setAttribute('class','');                
-                            row.insertCell(11).innerHTML =  data[a].codigo_centro_costos ? data[a].codigo_centro_costos : '';
+                        if(data[a].id_centro_costo >0 || (cantidadIdPartidas >0 && cantidadIdCentroCostos >0)){
+                            document.querySelector("table[id='ListaDetalleRequerimiento']").tHead.children[0].cells[9].setAttribute('class','');                
+                            row.insertCell(9).innerHTML =  data[a].codigo_centro_costos ? data[a].codigo_centro_costos : '';
+                            tdBtnAction = row.insertCell(10);
                 
                         }else{
-                            tdBtnAction = row.insertCell(12);
+                            tdBtnAction = row.insertCell(9);
                         }
-
     
-                    }else if(data[a].id_centro_costo >0){
-                        document.querySelector("table[id='ListaDetalleRequerimiento']").tHead.children[0].cells[11].setAttribute('class','');                
-                        row.insertCell(10).innerHTML =  data[a].codigo_centro_costos ? data[a].codigo_centro_costos : '';
     
-                        tdBtnAction = row.insertCell(11);
+                    }else if(data[a].id_centro_costo >0 || (cantidadIdCentroCostos >0)){
+                        document.querySelector("table[id='ListaDetalleRequerimiento']").tHead.children[0].cells[9].setAttribute('class','');                
+                        row.insertCell(8).innerHTML =  data[a].codigo_centro_costos ? data[a].codigo_centro_costos : '';
+    
+                        tdBtnAction = row.insertCell(9);
                     }else{
-                        tdBtnAction = row.insertCell(10);
-
+                        tdBtnAction = row.insertCell(8);
+    
                     }
     
                     var btnAction = '';
@@ -997,41 +1006,44 @@ function llenarTablaListaDetalleRequerimiento(data,selectMoneda,selectUnidadMedi
 
             } else {
                 var id_grupo = document.querySelector("form[id='form-requerimiento'] input[name='id_grupo']").value;
+      
 
                 row.insertCell(0).innerHTML = data[a].id_item ? data[a].id_item : '';
                 row.insertCell(1).innerHTML = data[a].codigo ? data[a].codigo : '';
                 row.insertCell(2).innerHTML =  data[a].part_number ? data[a].part_number : '';
-                row.insertCell(3).innerHTML = data[a].categoria ? data[a].categoria : '';
-                row.insertCell(4).innerHTML = data[a].subcategoria ? data[a].subcategoria : '';
-                row.insertCell(5).innerHTML = `<span name="descripcion">${data[a].des_item ? data[a].des_item : ''}</span> `;
-                row.insertCell(6).innerHTML = makeSelectedToSelect(a, 'unidad_medida', selectUnidadMedida, data[a].id_unidad_medida, '');
-                row.insertCell(7).innerHTML = `<input type="text" class="form-control" name="cantidad" data-indice="${a}" onkeyup ="updateInputCantidadItem(event);" value="${data[a].cantidad}">`;
-                row.insertCell(8).innerHTML = `<input type="text" class="form-control" name="precio_referencial" data-indice="${a}" onkeyup ="updateInputPrecioReferencialItem(event);" value="${data[a].precio_referencial?data[a].precio_referencial:''}">`;
-                row.insertCell(9).innerHTML = makeSelectedToSelect(a, 'moneda', selectMoneda, data[a].id_unidad_medida, '');
+                row.insertCell(3).innerHTML = `<span name="descripcion">${data[a].des_item ? data[a].des_item : ''}</span> `;
+                row.insertCell(4).innerHTML = makeSelectedToSelect(a, 'unidad_medida', selectUnidadMedida, data[a].id_unidad_medida, '');
+                row.insertCell(5).innerHTML = `<input type="text" class="form-control" name="cantidad" data-indice="${a}" onkeyup ="updateInputCantidadItem(event);" value="${data[a].cantidad}">`;
+                row.insertCell(6).innerHTML = `<input type="text" class="form-control" name="precio_referencial" data-indice="${a}" onkeyup ="updateInputPrecioReferencialItem(event);" value="${data[a].precio_referencial?data[a].precio_referencial:''}">`;
+                row.insertCell(7).innerHTML = makeSelectedToSelect(a, 'moneda', selectMoneda, data[a].id_unidad_medida, '');
                 
                 var tdBtnAction=null;
-                if(id_grupo == 3 && data[a].id_partida > 0 ){
-                    document.querySelector("table[id='ListaDetalleRequerimiento']").tHead.children[0].cells[10].setAttribute('class','');                
-                    row.insertCell(10).innerHTML =  data[a].cod_partida ? data[a].cod_partida : '';
 
-                    if(data[a].id_centro_costo >0){
-                        document.querySelector("table[id='ListaDetalleRequerimiento']").tHead.children[0].cells[11].setAttribute('class','');                
-                        row.insertCell(11).innerHTML =  data[a].codigo_centro_costos ? data[a].codigo_centro_costos : '';
-            
+                    if((id_grupo == 3 && data[a].id_partida > 0 ) || (cantidadIdPartidas >0)){
+                        document.querySelector("table[id='ListaDetalleRequerimiento']").tHead.children[0].cells[8].setAttribute('class','');                
+                        row.insertCell(8).innerHTML =  data[a].cod_partida ? data[a].cod_partida : '';
+    
+                        if(data[a].id_centro_costo >0 || (cantidadIdPartidas >0 && cantidadIdCentroCostos >0)){
+                            document.querySelector("table[id='ListaDetalleRequerimiento']").tHead.children[0].cells[9].setAttribute('class','');                
+                            row.insertCell(9).innerHTML =  data[a].codigo_centro_costos ? data[a].codigo_centro_costos : '';
+                            tdBtnAction = row.insertCell(10);
+                
+                        }else{
+                            tdBtnAction = row.insertCell(9);
+                        }
+    
+    
+                    }else if(data[a].id_centro_costo >0 || (cantidadIdCentroCostos >0)){
+                        document.querySelector("table[id='ListaDetalleRequerimiento']").tHead.children[0].cells[9].setAttribute('class','');                
+                        row.insertCell(8).innerHTML =  data[a].codigo_centro_costos ? data[a].codigo_centro_costos : '';
+    
+                        tdBtnAction = row.insertCell(9);
                     }else{
-                        tdBtnAction = row.insertCell(12);
+                        tdBtnAction = row.insertCell(8);
+    
                     }
+                
 
-
-                }else if(data[a].id_centro_costo >0){
-                    document.querySelector("table[id='ListaDetalleRequerimiento']").tHead.children[0].cells[11].setAttribute('class','');                
-                    row.insertCell(10).innerHTML =  data[a].codigo_centro_costos ? data[a].codigo_centro_costos : '';
-
-                    tdBtnAction = row.insertCell(11);
-                }else{
-                    tdBtnAction = row.insertCell(10);
-
-                }
 
                 var btnAction = '';
                 // tdBtnAction.className = classHiden;

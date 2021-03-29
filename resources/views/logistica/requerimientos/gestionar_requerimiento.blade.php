@@ -353,8 +353,6 @@
                             <th class="invisible">#</th>
                             <th width="70">CODIGO</th>
                             <th width="70">PART NUMBER</th>
-                            <th width="70">CATEGORÍA</th>
-                            <th width="70">SUBCATEGORÍA</th>
                             <th width="200">DESCRIPCION</th>
                             <th width="60">UNIDAD</th>
                             <th width="70">CANTIDAD</th>
