@@ -195,7 +195,6 @@
 </div>
 
 <!-- 1re include para evitar error al cargar modal -->
-@include('logistica.requerimientos.modal_justificar_generar_requerimiento')
 @include('logistica.requerimientos.modal_adjuntar_archivos_detalle_requerimiento') 
 <!--  includes -->
 @include('logistica.requerimientos.aprobacion.modal_anular')

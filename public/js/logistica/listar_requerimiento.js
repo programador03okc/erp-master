@@ -57,16 +57,7 @@ $(function(){
 
 
 
-function guardarJustificacionGenerarRequerimiento(){
-    sessionStorage.removeItem('justificacion_generar_requerimiento')
 
-    let data = {
-        id_cc: document.querySelector("div[id='modal-justificar-generar-requerimiento'] label[name='id_cc']").textContent,
-        contenido:document.querySelector("div[id='modal-justificar-generar-requerimiento'] textarea[id='motivo_generar_requerimiento']").value
-    }
-    sessionStorage.setItem('justificacion_generar_requerimiento', JSON.stringify(data));
-    window.location.href = '/logistica/gestion-logistica/requerimiento/elaboracion/index'; //using a named route
-}
 
 
 function listar_requerimientos_elaborados(name){  

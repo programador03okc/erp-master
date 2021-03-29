@@ -147,6 +147,7 @@
         </div>
 </div>
 
+@include('logistica.requerimientos.modal_justificar_generar_requerimiento')
 
 @endsection
 
