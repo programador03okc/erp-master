@@ -895,6 +895,32 @@ class RequerimientoController extends Controller
                     'descripcion_ubigeo'=>$descripcion_ubigeo_cliente
                 ];
 
+                if($adm_contri->first()->direccion_fiscal == null || $adm_contri->first()->direccion_fiscal ==''){
+                    DB::table('contabilidad.adm_contri')
+                    ->where('id_contribuyente', $id_contribuyente)
+                    ->update(['direccion_fiscal' => $direccion?$direccion:null]);
+                    $cliente[0]['direccion']=$direccion;
+
+                    DB::table('contabilidad.adm_contri')
+                    ->where('id_contribuyente', $id_contribuyente)
+                    ->update(['ubigeo' => $id_ubigeo_cliente?$id_ubigeo_cliente:null]); 
+                    $cliente[0]['id_ubigeo']=$id_ubigeo_cliente;
+                }
+                if($adm_contri->first()->telefono == null || $adm_contri->first()->telefono ==''){
+                    DB::table('contabilidad.adm_contri')
+                    ->where('id_contribuyente', $id_contribuyente)
+                    ->update(['telefono' => $telefono?$telefono:null]); 
+                    $cliente[0]['telefono']=$id_ubtelefonoigeo_cliente;
+
+                }
+                if($adm_contri->first()->email == null || $adm_contri->first()->email ==''){
+                    DB::table('contabilidad.adm_contri')
+                    ->where('id_contribuyente', $id_contribuyente)
+                    ->update(['email' => $correo?$correo:null]); 
+                    $cliente[0]['correo']=$correo;
+
+                }
+
                 $msj[]=' Cliente encontrado';
                 $status=200;
 
