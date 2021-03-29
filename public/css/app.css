@@ -1641,10 +1641,34 @@ form .select2-container .select2-selection--single {
 .blockquoteObservation:hover {
   border-color: #efef12;
 }
+.box-body{
+  display: block;
+  padding: 0;
+  
+}
+.okc-cc{
+	width: 100%;
+	display: block;
+	padding: 6.5px 10px;
+	border-top: 1px solid #ccc;
+  cursor: pointer;
+}
+.okc-cc:first-child{
+	border-top: 0;
+}
+.okc-niv-1{ font-weight: bold; background-color: #dedbdb; }
+.okc-niv-2{padding-left: 10px;}
+.okc-niv-3{ padding-left: 30px; }
+.okc-niv-4{ padding-left: 70px; }
 
+.okc-niv-3,
+.okc-niv-4{
+	font-style: italic;
+	cursor: pointer;
+}
 .btn-box-tool,
 .box .box-solid > .box-header .btn {
-  color: #fff !important;
+  color: #999 !important;
 }
 
 .okc-box-title,

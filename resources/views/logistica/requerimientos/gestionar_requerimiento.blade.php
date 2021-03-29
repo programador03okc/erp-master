@@ -361,6 +361,7 @@
                             <th width="70">PRECIO REF.</th>
                             <th width="70">MONEDA</th>
                             <th class="oculto" width="70">PARTIDA</th>
+                            <th class="oculto" width="70">C.Costos</th>
                             <th width="140">
           
                                 <center>
@@ -510,6 +511,7 @@
 @include('almacen.producto.saldosModal')
 @include('logistica.requerimientos.modal_empresa_area')
 @include('logistica.requerimientos.modal_partidas')
+@include('logistica.requerimientos.modal_centro_costos')
 @include('logistica.requerimientos.modal_detalle_requerimiento')
 @include('almacen.verRequerimientoEstado')
 @include('logistica.requerimientos.modal_promocion_item')

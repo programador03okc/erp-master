@@ -779,6 +779,8 @@ function agregarServicio(){
             'id_cc_am_filas':null,
             'id_cc_venta_filas': null,
             'tiene_transformacion':false,
+            'id_centro_costo':null,
+            'codigo_centro_costo':null,
             'estado':1
         };
         data_item.push(item);
@@ -947,15 +949,27 @@ function llenarTablaListaDetalleRequerimiento(data,selectMoneda,selectUnidadMedi
                     row.insertCell(9).innerHTML = makeSelectedToSelect(a, 'moneda', selectMoneda, 1, '');
                     
                     var tdBtnAction=null;
-                    if(id_grupo == 3){
+                    if(id_grupo == 3 && data[a].id_partida > 0 ){
                         document.querySelector("table[id='ListaDetalleRequerimiento']").tHead.children[0].cells[10].setAttribute('class','');                
                         row.insertCell(10).innerHTML =  data[a].cod_partida ? data[a].cod_partida : '';
     
-                        tdBtnAction = row.insertCell(11);
+                        if(data[a].id_centro_costo >0){
+                            document.querySelector("table[id='ListaDetalleRequerimiento']").tHead.children[0].cells[11].setAttribute('class','');                
+                            row.insertCell(11).innerHTML =  data[a].codigo_centro_costos ? data[a].codigo_centro_costos : '';
+                
+                        }else{
+                            tdBtnAction = row.insertCell(12);
+                        }
+
     
+                    }else if(data[a].id_centro_costo >0){
+                        document.querySelector("table[id='ListaDetalleRequerimiento']").tHead.children[0].cells[11].setAttribute('class','');                
+                        row.insertCell(10).innerHTML =  data[a].codigo_centro_costos ? data[a].codigo_centro_costos : '';
+    
+                        tdBtnAction = row.insertCell(11);
                     }else{
                         tdBtnAction = row.insertCell(10);
-    
+
                     }
     
                     var btnAction = '';
@@ -971,6 +985,7 @@ function llenarTablaListaDetalleRequerimiento(data,selectMoneda,selectUnidadMedi
                         btnAction += `<button class="btn btn-warning btn-sm"  name="btnMostarPartidas" data-toggle="tooltip" title="Para mostrar partidas debe seleccionar un proyecto" onClick=" partidasModal(${data[a].id_item});" disabled><i class="fas fa-money-check"></i></button>`;
                     }
                     // btnAction += `<button class="btn btn-primary btn-sm" name="btnRemplazarItem" data-toggle="tooltip" title="Remplazar" onClick="buscarRemplazarItemParaCompra(this, ${a});" ${hasAttrDisabled}><i class="fas fa-search"></i></button>`;
+                    btnAction += `<button class="btn btn-warning btn-sm" name="btnCentroCostos" data-toggle="tooltip" title="Centro de Costos" onClick="centroCostosModal(event, ${a});" ${hasAttrDisabled}X><i class="fas fa-donate"></i></button>`;
                     btnAction += `<button class="btn btn-primary btn-sm" name="btnAdjuntarArchivos" data-toggle="tooltip" title="Adjuntos" onClick="archivosAdjuntosModal(event, ${a});" ${hasAttrDisabled}X><i class="fas fa-paperclip"></i></button>`;
                     btnAction += `<button class="btn btn-danger btn-sm"   name="btnEliminarItem" data-toggle="tooltip" title="Eliminar" onclick="eliminarItemDeListado(this,${data[a].id_item});" ${hasAttrDisabled} ><i class="fas fa-trash-alt"></i></button>`;
                     btnAction += `</center></div>`;
@@ -995,12 +1010,24 @@ function llenarTablaListaDetalleRequerimiento(data,selectMoneda,selectUnidadMedi
                 row.insertCell(9).innerHTML = makeSelectedToSelect(a, 'moneda', selectMoneda, data[a].id_unidad_medida, '');
                 
                 var tdBtnAction=null;
-                if(id_grupo == 3){
+                if(id_grupo == 3 && data[a].id_partida > 0 ){
                     document.querySelector("table[id='ListaDetalleRequerimiento']").tHead.children[0].cells[10].setAttribute('class','');                
                     row.insertCell(10).innerHTML =  data[a].cod_partida ? data[a].cod_partida : '';
 
-                    tdBtnAction = row.insertCell(11);
+                    if(data[a].id_centro_costo >0){
+                        document.querySelector("table[id='ListaDetalleRequerimiento']").tHead.children[0].cells[11].setAttribute('class','');                
+                        row.insertCell(11).innerHTML =  data[a].codigo_centro_costos ? data[a].codigo_centro_costos : '';
+            
+                    }else{
+                        tdBtnAction = row.insertCell(12);
+                    }
 
+
+                }else if(data[a].id_centro_costo >0){
+                    document.querySelector("table[id='ListaDetalleRequerimiento']").tHead.children[0].cells[11].setAttribute('class','');                
+                    row.insertCell(10).innerHTML =  data[a].codigo_centro_costos ? data[a].codigo_centro_costos : '';
+
+                    tdBtnAction = row.insertCell(11);
                 }else{
                     tdBtnAction = row.insertCell(10);
 
@@ -1019,6 +1046,7 @@ function llenarTablaListaDetalleRequerimiento(data,selectMoneda,selectUnidadMedi
                     btnAction += `<button class="btn btn-warning btn-sm"  name="btnMostarPartidas" data-toggle="tooltip" title="Para mostrar partidas debe seleccionar un proyecto" onClick=" partidasModal(${data[a].id_item});" disabled><i class="fas fa-money-check"></i></button>`;
                 }
                 // btnAction += `<button class="btn btn-primary btn-sm" name="btnRemplazarItem" data-toggle="tooltip" title="Remplazar" onClick="buscarRemplazarItemParaCompra(this, ${a});" ${hasAttrDisabled}><i class="fas fa-search"></i></button>`;
+                btnAction += `<button class="btn btn-warning btn-sm" name="btnCentroCostos" data-toggle="tooltip" title="Centro de Costos" onClick="centroCostosModal(event, ${a});" ${hasAttrDisabled}X><i class="fas fa-donate"></i></button>`;
                 btnAction += `<button class="btn btn-primary btn-sm" name="btnAdjuntarArchivos" data-toggle="tooltip" title="Adjuntos" onClick="archivosAdjuntosModal(event, ${a});" ${hasAttrDisabled}X><i class="fas fa-paperclip"></i></button>`;
                 btnAction += `<button class="btn btn-danger btn-sm"   name="btnEliminarItem" data-toggle="tooltip" title="Eliminar" onclick="eliminarItemDeListado(this,${data[a].id_item});" ${hasAttrDisabled} ><i class="fas fa-trash-alt"></i></button>`;
                 btnAction += `</center></div>`;
@@ -1027,6 +1055,87 @@ function llenarTablaListaDetalleRequerimiento(data,selectMoneda,selectUnidadMedi
     }
 }
 
+function centroCostosModal(event,indice){
+    $('#modal-centro-costos').modal({
+        show: true
+    });
+    // let indiceSelected = event.target.dataset.indice;
+    document.querySelector("div[id='modal-centro-costos'] label[id='indice_item']").textContent=indice;
+
+    listarCentroCostos();
+}
+
+function selectCC(id_cuadro_costos,codigo){
+
+let indiceSeleccionado = document.querySelector("div[id='modal-centro-costos'] label[id='indice_item']").textContent;
+
+if(data_item.length >0){
+    data_item.forEach((element, index) => {
+        if (index == indiceSeleccionado) {
+            data_item[index].id_centro_costo = parseInt(id_cuadro_costos);
+            data_item[index].codigo_centro_costos = codigo;
+
+        }
+    });
+    $('#modal-centro-costos').modal('hide');
+    componerTdItemDetalleRequerimiento();
+
+
+}else{
+    alert("hubo un problema, no se puedo encontrar el listado de item para asignarle una partida");
+}
+}
+
+function listarCentroCostos(){
+    $.ajax({
+        type: 'GET',
+        url: 'mostrar-centro-costos',
+        dataType: 'JSON',
+        success: function(response){
+            var html = '';
+            response.forEach((padre,index) => {
+                if(padre.id_padre == null){
+                    html+=`
+                    <div class="panel panel-default">
+                        <div class="panel-heading" role="tab" id="heading${index}">
+                            <h4 class="panel-title">
+                                <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse${index}" aria-expanded="false" aria-controls="collapse${index}" >
+                                    ${padre.descripcion} 
+                                    <div class="box-tools pull-right">
+                                        <button type="button" class="btn btn-box-tool" style="position:absolute; right:20px; margin-top:-5px;" data-toggle="collapse">
+                                            <i class="fa fa-plus"></i>
+                                        </button>
+                                    </div>
+                                </a>
+                            </h4>
+                        </div>
+                        <div id="collapse${index}" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading${index}" >   
+                            <div class="box-body" style="display: block;">`;
+                            response.forEach(hijo => {
+                                if(padre.id_centro_costo == hijo.id_padre){
+                                    if((hijo.id_padre > 0) && (hijo.estado ==1)){
+                                        if(hijo.nivel == 2){
+                                            html+= `<div class="okc-cc okc-niv-2" onClick="selectCC(${hijo.id_centro_costo} , '${hijo.codigo}');"> ${hijo.codigo} - ${hijo.descripcion} </div>`;
+                                        }else if(hijo.nivel == 3){
+                                            html+= `<div class="okc-cc okc-niv-3" onClick="selectCC(${hijo.id_centro_costo} , '${hijo.codigo}');"> ${hijo.codigo} - ${hijo.descripcion} </div>`;
+                                        }
+                                    }
+                                }
+                            });
+                                    
+                            html+= `</div></div></div>`;
+                }
+        });
+        document.querySelector("div[name='centro-costos-panel']").innerHTML=html;
+        
+
+    }
+    }).fail( function( jqXHR, textStatus, errorThrown ){
+        console.log(jqXHR);
+        console.log(textStatus);
+        console.log(errorThrown);
+    });
+}
 // modal partidas
 function partidasModal(id_item){  
     console.log(id_item);

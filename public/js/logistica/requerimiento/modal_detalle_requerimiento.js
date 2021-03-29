@@ -909,6 +909,8 @@ function selectItem(){
             'id_partida':null,
             'cod_partida':null,
             'des_partida':null,
+            'id_centro_costo':null,
+            'codigo_centro_costo':null,
             'id_almacen_reserva':null,
             'almacen_descripcion':null,
             'id_cc_am_filas':id_cc_am_filas,
@@ -1042,6 +1044,8 @@ function agregarPromociones(){
                 'precio_referencial':null,
                 'fecha_entrega':null,
                 'id_partida':null,
+                'id_centro_costo':null,
+                'codigo_centro_costo':null,
                 'cantidad':1,
                 'id_almacen_reserva':null
     
