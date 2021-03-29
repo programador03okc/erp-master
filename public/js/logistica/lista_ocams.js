@@ -196,7 +196,7 @@ function handleChangeFilterEmpresaListOrdenesPropiasVinculadasByAñoPublicacion(
     listar_ordenes_propias('ListaOrdenesPropiasVinculadas',id_empresa,e.target.value,'VINCULADAS');
 }
 function generarRequerimientoByOrdenCompraPropia(tipo_cuadro,id_cc,id_estado_aprobacion_cc){
-    // console.log(id_estado_aprobacion_cc);
+    // console.log(tipo_cuadro,id_cc,id_estado_aprobacion_cc);
     sessionStorage.removeItem('ordenP_Cuadroc')
 
     if(id_estado_aprobacion_cc == 2){
@@ -226,6 +226,17 @@ function generarRequerimientoByOrdenCompraPropia(tipo_cuadro,id_cc,id_estado_apr
         win.focus();
     }
 
+}
+
+function guardarJustificacionGenerarRequerimiento(){
+    sessionStorage.removeItem('justificacion_generar_requerimiento')
+
+    let data = {
+        id_cc: document.querySelector("div[id='modal-justificar-generar-requerimiento'] label[name='id_cc']").textContent,
+        contenido:document.querySelector("div[id='modal-justificar-generar-requerimiento'] textarea[id='motivo_generar_requerimiento']").value
+    }
+    sessionStorage.setItem('justificacion_generar_requerimiento', JSON.stringify(data));
+    window.location.href = '/logistica/gestion-logistica/requerimiento/elaboracion/index'; //using a named route
 }
 
 function irRequerimientoByOrdenCompraPropia(id_requerimiento){
