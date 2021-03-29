@@ -1423,10 +1423,10 @@ class TransferenciaController extends Controller
 
             foreach ($detalle_req as $det) {
             
-                $sede = ($det->id_sede_guia !== null ? $det->id_sede_guia : ($det->id_sede_reserva!==null ? $det->id_sede_reserva : null));
+                // $sede = ($det->id_sede_guia !== null ? $det->id_sede_guia : ($det->id_sede_reserva!==null ? $det->id_sede_reserva : null));
                 $almacen = ($det->id_almacen_guia !== null ? $det->id_almacen_guia : ($det->id_almacen_reserva!==null ? $det->id_almacen_reserva : null));
 
-                if ($sede !== null && $req->id_sede !== $sede){
+                if ($almacen !== null && $id_almacen_destino !== $almacen){
 
                     if ($det->tiene_transformacion){
                         array_push($items_transf, $det);
