@@ -21,6 +21,7 @@ function listarDocsCompra(){
         'buttons': vardataTables[2],
         'language' : vardataTables[0],
         'ajax': '/listar_docs_compra',
+        'destroy': true,
         'columns': [
             {'data': 'id_doc_com'},
             {'data': 'razon_social'},
