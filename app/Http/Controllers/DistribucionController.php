@@ -1036,6 +1036,7 @@ class DistribucionController extends Controller
 				// $email_destinatario[] = 'infraestructura@okcomputer.com.pe';
 				// $email_destinatario[] = 'lenovo@okcomputer.com.pe';
 				// $email_destinatario[] = 'logistica@okcomputer.com.pe';
+				// $email_destinatario[] = 'dapaza@okcomputer.com.pe';
                 $payload=[
                     'id_empresa'=>$req->id_empresa,
                     'email_destinatario'=>$email_destinatario,
