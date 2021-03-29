@@ -1485,7 +1485,7 @@ class TransferenciaController extends Controller
 
                 foreach ($array_items as $item) {
 
-                    $id_almacen_origen = ($det->id_almacen_guia !== null ? $det->id_almacen_guia : ($det->id_almacen_reserva!==null?$det->id_almacen_reserva:null));
+                    $id_almacen_origen = ($item->id_almacen_guia !== null ? $item->id_almacen_guia : ($item->id_almacen_reserva!==null?$item->id_almacen_reserva:null));
                     array_push($agrega, ['id_almacen_origen'=>$id_almacen_origen,'alm'=>$alm]);
                     
                     if (intVal($id_almacen_origen) === intVal($alm)){
