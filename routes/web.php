@@ -694,6 +694,7 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::post('anular-documento', 'AprobacionController@anular_documento')->name('anular-documento');
 					Route::post('listarRequerimientosAprobados', 'AprobacionController@listarRequerimientosAprobados')->name('listar-requerimientos-aprobados');
 					Route::get('requerimientoAPago/{id}', 'AprobacionController@requerimientoAPago')->name('requerimiento-a-pago');
+					Route::get('detalleRequerimiento/{id}', 'AprobacionController@detalleRequerimiento')->name('detalle-requerimiento');
 					
 				});
 			});
@@ -1532,6 +1533,7 @@ Route::group(['middleware' => ['auth']], function () {
 			Route::get('index', 'ContabilidadController@view_requerimiento_pagos')->name('index');
 			Route::post('listarRequerimientosPagos', 'ContabilidadController@listarRequerimientosPagos')->name('listar-requerimiento-pagos');
 			Route::post('procesarPago', 'ContabilidadController@procesarPago')->name('procesar-pagos');
+			Route::get('detalleRequerimiento/{id}', 'AprobacionController@detalleRequerimiento')->name('detalle-requerimiento');
 		});
 
 	});
