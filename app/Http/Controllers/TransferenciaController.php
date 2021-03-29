@@ -1466,39 +1466,39 @@ class TransferenciaController extends Controller
                     $msj .= ', '.$codigo;
                 }
 
-                // $id_trans = DB::table('almacen.trans')->insertGetId(
-                //     [
-                //         'id_almacen_origen' => $alm,
-                //         'id_almacen_destino' => $id_almacen_destino,
-                //         'codigo' => $codigo,
-                //         'id_requerimiento' =>  $req->id_requerimiento,
-                //         'id_guia_ven' => null,
-                //         'responsable_origen' => null,
-                //         'responsable_destino' => null,
-                //         'fecha_transferencia' => date('Y-m-d'),
-                //         'registrado_por' => $id_usuario,
-                //         'estado' => 1,
-                //         'fecha_registro' => $fecha
-                //     ],
-                //         'id_transferencia'
-                //     );
+                $id_trans = DB::table('almacen.trans')->insertGetId(
+                    [
+                        'id_almacen_origen' => $alm,
+                        'id_almacen_destino' => $id_almacen_destino,
+                        'codigo' => $codigo,
+                        'id_requerimiento' =>  $req->id_requerimiento,
+                        'id_guia_ven' => null,
+                        'responsable_origen' => null,
+                        'responsable_destino' => null,
+                        'fecha_transferencia' => date('Y-m-d'),
+                        'registrado_por' => $id_usuario,
+                        'estado' => 1,
+                        'fecha_registro' => $fecha
+                    ],
+                        'id_transferencia'
+                    );
 
                 foreach ($array_items as $item) {
 
                     $id_almacen_origen = ($item->id_almacen_guia !== null ? $item->id_almacen_guia : ($item->id_almacen_reserva!==null?$item->id_almacen_reserva:null));
-                    array_push($agrega, ['id_almacen_origen'=>$id_almacen_origen,'alm'=>$alm]);
+                    // array_push($agrega, ['id_almacen_origen'=>$id_almacen_origen,'alm'=>$alm]);
                     
                     if (intVal($id_almacen_origen) === intVal($alm)){
-                        array_push($detalle_agrega, $item);
-                        // DB::table('almacen.trans_detalle')->insert(
-                        // [
-                        //     'id_transferencia' => $id_trans,
-                        //     'id_producto' => $item->id_producto,
-                        //     'cantidad' => (($det->stock_comprometido!==null && $det->stock_comprometido > 0)?$det->stock_comprometido:$det->cantidad),
-                        //     'estado' => 1,
-                        //     'fecha_registro' => $fecha,
-                        //     'id_requerimiento_detalle' => $item->id_detalle_requerimiento
-                        // ]);
+                        // array_push($detalle_agrega, $item);
+                        DB::table('almacen.trans_detalle')->insert(
+                        [
+                            'id_transferencia' => $id_trans,
+                            'id_producto' => $item->id_producto,
+                            'cantidad' => (($item->stock_comprometido!==null && $item->stock_comprometido > 0)?$item->stock_comprometido:$item->cantidad),
+                            'estado' => 1,
+                            'fecha_registro' => $fecha,
+                            'id_requerimiento_detalle' => $item->id_detalle_requerimiento
+                        ]);
 
                     }
                 }
@@ -1506,8 +1506,8 @@ class TransferenciaController extends Controller
 
             DB::commit();
             // return response()->json(['array_almacen'=>$array_almacen,'array_items'=>$array_items]);
-            // return response()->json($msj);
-            return response()->json(['detalle_agrega'=>$detalle_agrega,'agrega'=>$agrega]);
+            return response()->json($msj);
+            // return response()->json(['detalle_agrega'=>$detalle_agrega,'agrega'=>$agrega]);
             
         } catch (\PDOException $e) {
             DB::rollBack();
