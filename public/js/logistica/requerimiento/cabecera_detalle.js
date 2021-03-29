@@ -1,5 +1,7 @@
 function nuevo_req(){
     data_item=[];
+    document.querySelector("table[id='ListaDetalleRequerimiento']").tHead.children[0].cells[8].setAttribute('class','oculto'); 
+    document.querySelector("table[id='ListaDetalleRequerimiento']").tHead.children[0].cells[9].setAttribute('class','oculto'); 
     data=[];
     adjuntos=[];
     adjuntosRequerimiento=[];
@@ -963,7 +965,7 @@ function llenarTablaListaDetalleRequerimiento(data,selectMoneda,selectUnidadMedi
     
                         if(data[a].id_centro_costo >0 || (cantidadIdPartidas >0 && cantidadIdCentroCostos >0)){
                             document.querySelector("table[id='ListaDetalleRequerimiento']").tHead.children[0].cells[9].setAttribute('class','');                
-                            row.insertCell(9).innerHTML =  data[a].codigo_centro_costos ? data[a].codigo_centro_costos : '';
+                            row.insertCell(9).innerHTML =  data[a].codigo_centro_costo ? data[a].codigo_centro_costo : '';
                             tdBtnAction = row.insertCell(10);
                 
                         }else{
@@ -973,7 +975,7 @@ function llenarTablaListaDetalleRequerimiento(data,selectMoneda,selectUnidadMedi
     
                     }else if(data[a].id_centro_costo >0 || (cantidadIdCentroCostos >0)){
                         document.querySelector("table[id='ListaDetalleRequerimiento']").tHead.children[0].cells[9].setAttribute('class','');                
-                        row.insertCell(8).innerHTML =  data[a].codigo_centro_costos ? data[a].codigo_centro_costos : '';
+                        row.insertCell(8).innerHTML =  data[a].codigo_centro_costo ? data[a].codigo_centro_costo : '';
     
                         tdBtnAction = row.insertCell(9);
                     }else{
@@ -993,7 +995,6 @@ function llenarTablaListaDetalleRequerimiento(data,selectMoneda,selectUnidadMedi
                     }else{
                         btnAction += `<button class="btn btn-warning btn-sm"  name="btnMostarPartidas" data-toggle="tooltip" title="Para mostrar partidas debe seleccionar un proyecto" onClick=" partidasModal(${data[a].id_item});" disabled><i class="fas fa-money-check"></i></button>`;
                     }
-                    // btnAction += `<button class="btn btn-primary btn-sm" name="btnRemplazarItem" data-toggle="tooltip" title="Remplazar" onClick="buscarRemplazarItemParaCompra(this, ${a});" ${hasAttrDisabled}><i class="fas fa-search"></i></button>`;
                     btnAction += `<button class="btn btn-warning btn-sm" name="btnCentroCostos" data-toggle="tooltip" title="Centro de Costos" onClick="centroCostosModal(event, ${a});" ${hasAttrDisabled}X><i class="fas fa-donate"></i></button>`;
                     btnAction += `<button class="btn btn-primary btn-sm" name="btnAdjuntarArchivos" data-toggle="tooltip" title="Adjuntos" onClick="archivosAdjuntosModal(event, ${a});" ${hasAttrDisabled}X><i class="fas fa-paperclip"></i></button>`;
                     btnAction += `<button class="btn btn-danger btn-sm"   name="btnEliminarItem" data-toggle="tooltip" title="Eliminar" onclick="eliminarItemDeListado(this,${data[a].id_item});" ${hasAttrDisabled} ><i class="fas fa-trash-alt"></i></button>`;
@@ -1025,9 +1026,9 @@ function llenarTablaListaDetalleRequerimiento(data,selectMoneda,selectUnidadMedi
     
                         if(data[a].id_centro_costo >0 || (cantidadIdPartidas >0 && cantidadIdCentroCostos >0)){
                             document.querySelector("table[id='ListaDetalleRequerimiento']").tHead.children[0].cells[9].setAttribute('class','');                
-                            row.insertCell(9).innerHTML =  data[a].codigo_centro_costos ? data[a].codigo_centro_costos : '';
+                            row.insertCell(9).innerHTML =  data[a].codigo_centro_costo ? data[a].codigo_centro_costo : '';
                             tdBtnAction = row.insertCell(10);
-                
+
                         }else{
                             tdBtnAction = row.insertCell(9);
                         }
@@ -1035,12 +1036,12 @@ function llenarTablaListaDetalleRequerimiento(data,selectMoneda,selectUnidadMedi
     
                     }else if(data[a].id_centro_costo >0 || (cantidadIdCentroCostos >0)){
                         document.querySelector("table[id='ListaDetalleRequerimiento']").tHead.children[0].cells[9].setAttribute('class','');                
-                        row.insertCell(8).innerHTML =  data[a].codigo_centro_costos ? data[a].codigo_centro_costos : '';
-    
+                        row.insertCell(8).innerHTML =  data[a].codigo_centro_costo ? data[a].codigo_centro_costo : '';
+
                         tdBtnAction = row.insertCell(9);
                     }else{
                         tdBtnAction = row.insertCell(8);
-    
+
                     }
                 
 
@@ -1085,7 +1086,7 @@ if(data_item.length >0){
     data_item.forEach((element, index) => {
         if (index == indiceSeleccionado) {
             data_item[index].id_centro_costo = parseInt(id_cuadro_costos);
-            data_item[index].codigo_centro_costos = codigo;
+            data_item[index].codigo_centro_costo = codigo;
 
         }
     });
