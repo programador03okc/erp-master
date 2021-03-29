@@ -16,7 +16,10 @@ class ContabilidadController extends Controller
         // session_start();
     }
     function view_main_contabilidad(){
-        return view('contabilidad/main');
+        $pagos_pendientes = DB::table('almacen.alm_req')
+        ->where('estado',8)->count();
+
+        return view('contabilidad/main', compact('pagos_pendientes'));
     }
     
     function view_requerimiento_pagos(){
