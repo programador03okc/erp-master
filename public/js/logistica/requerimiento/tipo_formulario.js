@@ -187,6 +187,7 @@ function mostrarTipoForm(tipo){
                 'input-group-rol-usuario',
                 'input-group-comercial',
                 'input-group-almacen',
+                'input-group-ubigeo-entrega',
                 'input-group-cuenta',
                 'input-group-cliente',
                 'input-group-tipo-cliente',
@@ -204,8 +205,8 @@ function mostrarTipoForm(tipo){
             hiddeElement('mostrar','form-requerimiento',[
                 'input-group-moneda',
                 'input-group-empresa',
-                'input-group-sede',
-                'input-group-ubigeo-entrega'
+                'input-group-sede'
+                
             ]); 
             cambiarVisibilidadBtn("btn-add-servicio","mostrar")
 
@@ -217,6 +218,7 @@ function mostrarTipoForm(tipo){
                 'input-group-rol-usuario',
                 'input-group-comercial',
                 'input-group-almacen',
+                'input-group-ubigeo-entrega',
                 'input-group-cuenta',
                 'input-group-monto',
                 'input-group-cliente',
