@@ -2411,6 +2411,7 @@ class DistribucionController extends Controller
         ->leftjoin('logistica.log_prove as log_transportista','log_transportista.id_proveedor','=','orden_despacho.id_transportista')
         ->leftjoin('contabilidad.adm_contri as transportista','transportista.id_contribuyente','=','log_transportista.id_contribuyente')
             ->where('orden_despacho_obs.id_od',$id_od)
+            ->orderBy('orden_despacho_obs.id_obs')
             ->get();
         return response()->json($obs);
     }
