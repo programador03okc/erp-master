@@ -1450,7 +1450,7 @@ class TransferenciaController extends Controller
                 $array_items = $items_base;
                 $array_almacen = $almacen_base;
             }
-
+/*
             $fecha = date('Y-m-d H:i:s');
             $id_usuario = Auth::user()->id_usuario;
             $msj = '';
@@ -1501,10 +1501,10 @@ class TransferenciaController extends Controller
                     }
                 }
             }
-
+*/
             DB::commit();
-            // return response()->json(['array_almacen'=>$array_almacen,'array_items'=>$array_items]);
-            return response()->json($msj);
+            return response()->json(['array_almacen'=>$array_almacen,'array_items'=>$array_items]);
+            // return response()->json($msj);
             
         } catch (\PDOException $e) {
             DB::rollBack();
