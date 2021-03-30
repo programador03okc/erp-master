@@ -967,22 +967,6 @@ Route::group(['middleware' => ['auth']], function () {
 	
 			});
 	
-			Route::group(['as' => 'pagos.', 'prefix' => 'pagos'], function(){
-	
-				Route::group(['as' => 'confirmacion-pagos.', 'prefix' => 'confirmacion-pagos'], function(){
-	
-					Route::get('index', 'DistribucionController@view_requerimientoPagos')->name('index');
-					Route::post('listarRequerimientosPendientesPagos', 'DistribucionController@listarRequerimientosPendientesPagos');
-					Route::post('listarRequerimientosConfirmadosPagos', 'DistribucionController@listarRequerimientosConfirmadosPagos');
-					Route::post('pago_confirmado', 'DistribucionController@pago_confirmado');
-					Route::post('pago_no_confirmado', 'DistribucionController@pago_no_confirmado');
-					Route::get('verDetalleRequerimiento/{id}', 'DistribucionController@verDetalleRequerimiento');
-					Route::get('verRequerimientoAdjuntos/{id}', 'DistribucionController@verRequerimientoAdjuntos');
-	
-				});
-	
-			});
-	
 			Route::group(['as' => 'control-stock.', 'prefix' => 'control-stock'], function(){
 	
 				Route::group(['as' => 'importar.', 'prefix' => 'importar'], function(){
@@ -1526,11 +1510,30 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::get('index', 'Tesoreria\RequerimientoPagoController@view_main_tesoreria')->name('index');
 
 		Route::group(['as' => 'pagos.', 'prefix' => 'pagos'], function(){
-			Route::get('index', 'Tesoreria\RequerimientoPagoController@view_requerimiento_pagos')->name('index');
-			Route::post('listarRequerimientosPagos', 'Tesoreria\RequerimientoPagoController@listarRequerimientosPagos')->name('listar-requerimiento-pagos');
-			Route::post('procesarPago', 'Tesoreria\RequerimientoPagoController@procesarPago')->name('procesar-pagos');
-			Route::get('detalleRequerimiento/{id}', 'AprobacionController@detalleRequerimiento')->name('detalle-requerimiento');
+
+			Route::group(['as' => 'confirmacion-pagos.', 'prefix' => 'confirmacion-pagos'], function(){
+
+				Route::get('index', 'DistribucionController@view_confirmacionPago')->name('index');
+				Route::post('listarRequerimientosPendientesPagos', 'DistribucionController@listarRequerimientosPendientesPagos');
+				Route::post('listarRequerimientosConfirmadosPagos', 'DistribucionController@listarRequerimientosConfirmadosPagos');
+				Route::post('pago_confirmado', 'DistribucionController@pago_confirmado');
+				Route::post('pago_no_confirmado', 'DistribucionController@pago_no_confirmado');
+				Route::get('verDetalleRequerimiento/{id}', 'DistribucionController@verDetalleRequerimiento');
+				Route::get('verRequerimientoAdjuntos/{id}', 'DistribucionController@verRequerimientoAdjuntos');
+	
+			});
+
+			Route::group(['as' => 'requerimiento-pagos.', 'prefix' => 'requerimiento-pagos'], function(){
+
+				Route::get('index', 'Tesoreria\RequerimientoPagoController@view_requerimiento_pagos')->name('index');
+				Route::post('listarRequerimientosPagos', 'Tesoreria\RequerimientoPagoController@listarRequerimientosPagos')->name('listar-requerimiento-pagos');
+				Route::post('procesarPago', 'Tesoreria\RequerimientoPagoController@procesarPago')->name('procesar-pagos');
+				Route::get('detalleRequerimiento/{id}', 'AprobacionController@detalleRequerimiento')->name('detalle-requerimiento');
+
+			});
+			
 		});
+		
 
 	});
 	
@@ -1588,7 +1591,7 @@ Route::group(['middleware' => ['auth']], function () {
 
 
 //Route::get('login', 'Tesoreria\LoginController@showLoginForm')->name('login');
-
+/*
 	Route::group(['middleware' => ['roles:1,2,3,15,22,7,38'], 'prefix' => 'tesoreria', 'as' => 'tesoreria.'], function () {
 
 		$roles['programador'] = [7, 38 //Programador
@@ -1644,7 +1647,7 @@ Route::group(['middleware' => ['auth']], function () {
 		/*
 		Route::get('crear_tablas', 'TesoreriaController@crearTablas');
 		Route::get('crear_uno', 'TesoreriaController@crearUno');
-		Route::get('llenar_data', 'TesoreriaController@llenarDataInicial');*/
+		Route::get('llenar_data', 'TesoreriaController@llenarDataInicial');
 		Route::get('eliminar_tablas', 'TesoreriaController@eliminarTablas');
 
 		Route::group(['middleware' => ['roles:' . implode(',', $roles['programador'])], 'prefix' => 'administracion', 'as' => 'administracion.'], function () {
@@ -1682,7 +1685,7 @@ Route::group(['middleware' => ['auth']], function () {
 		
 		Route::get('presupuesto/{area_id}', 'Tesoreria\AjaxController@getPresupuesto')->name('presupuesto');
 	});
-
+*/
 
 Route::get('documentos_ver/{id}', 'OrdenesPendientesController@documentos_ver');
 
