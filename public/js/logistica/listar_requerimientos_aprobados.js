@@ -34,9 +34,11 @@ function listarRequerimientosAprobados() {
             {'render': function (data, type, row){
                 return `
                     <div>
-                        <button type="button" style="padding-left:8px;padding-right:7px;" class="pago btn btn-warning boton" data-toggle="tooltip" 
+                        ${row['estado'] == 2 ? 
+                        `<button type="button" style="padding-left:8px;padding-right:7px;" class="pago btn btn-warning boton" data-toggle="tooltip" 
                             data-placement="bottom" data-id="${row['id_requerimiento']}" data-cod="${row['codigo']}" title="Mandar A Pago" >
-                            <i class="fas fa-hand-holding-usd"></i></button>
+                            <i class="fas fa-hand-holding-usd"></i></button>`:''}
+
                         <button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" 
                             data-placement="bottom" data-id="${row['id_requerimiento']}" title="Ver Detalle" >
                             <i class="fas fa-chevron-down"></i></button>
@@ -113,6 +115,7 @@ function formatDetalle(table_id, id, row)
                     '<td style="border: none;">'+(element.producto_descripcion !== null ? element.producto_descripcion : element.descripcion_adicional)+'</td>'+
                     '<td style="border: none;">'+element.cantidad+'</td>'+
                     '<td style="border: none;">'+(element.abreviatura !== null ? element.abreviatura : '')+'</td>'+
+                    '<td style="border: none;">'+(element.precio_referencial!==null?element.precio_referencial:'0')+'</td>'+
                     '<td style="border: none;"><span class="label label-'+element.bootstrap_color+'">'+element.estado_doc+'</span></td>'+
                     '</tr>';
                     i++;
@@ -127,6 +130,7 @@ function formatDetalle(table_id, id, row)
                         <th style="border: none;">Descripción</th>
                         <th style="border: none;">Cantidad</th>
                         <th style="border: none;">Unid.</th>
+                        <th style="border: none;">Precio</th>
                         <th style="border: none;">Estado</th>
                     </tr>
                 </thead>

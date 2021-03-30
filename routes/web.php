@@ -1520,20 +1520,15 @@ Route::group(['middleware' => ['auth']], function () {
 
 
 	
-	/**Contabilidad */
-	Route::group(['as' => 'contabilidad.', 'prefix' => 'contabilidad'], function(){
+	/**Tesoreria */
+	Route::group(['as' => 'tesoreria.', 'prefix' => 'tesoreria'], function(){
 		
-		Route::get('index', 'ContabilidadController@view_main_contabilidad')->name('index');
-
-		Route::group(['as' => 'ventas.', 'prefix' => 'ventas'], function(){
-			Route::get('listar', 'ContabilidadController@view_listar_ventas')->name('vista-listar-ventas');
-			Route::get('registro', 'ContabilidadController@view_registro_ventas')->name('vista-registro-ventas');
-		});
+		Route::get('index', 'Tesoreria\RequerimientoPagoController@view_main_tesoreria')->name('index');
 
 		Route::group(['as' => 'pagos.', 'prefix' => 'pagos'], function(){
-			Route::get('index', 'ContabilidadController@view_requerimiento_pagos')->name('index');
-			Route::post('listarRequerimientosPagos', 'ContabilidadController@listarRequerimientosPagos')->name('listar-requerimiento-pagos');
-			Route::post('procesarPago', 'ContabilidadController@procesarPago')->name('procesar-pagos');
+			Route::get('index', 'Tesoreria\RequerimientoPagoController@view_requerimiento_pagos')->name('index');
+			Route::post('listarRequerimientosPagos', 'Tesoreria\RequerimientoPagoController@listarRequerimientosPagos')->name('listar-requerimiento-pagos');
+			Route::post('procesarPago', 'Tesoreria\RequerimientoPagoController@procesarPago')->name('procesar-pagos');
 			Route::get('detalleRequerimiento/{id}', 'AprobacionController@detalleRequerimiento')->name('detalle-requerimiento');
 		});
 

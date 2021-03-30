@@ -15,24 +15,6 @@
 
     <div class="col-md-3">
         <!-- small box -->
-        <div class="small-box bg-blue">
-            <div class="icon">
-                <i class="fas fa-file-prescription"></i>
-                </div>
-                <div class="inner">
-                    <h3>0</h3>
-                    <p style="font-size:15px;display:flex;width:20px;">Ventas</p>
-                </div>
-                @if(Auth::user()->tieneAplicacion(102))
-                <a href="{{route('contabilidad.index')}}" class="small-box-footer">Ir <i class="fa fa-arrow-circle-right"></i></a>
-                @else
-                <a href="#" class="small-box-footer">Ir <i class="fa fa-arrow-circle-right"></i></a>
-                @endif
-        </div>
-    </div>
-
-    <div class="col-md-3">
-        <!-- small box -->
         <div class="small-box bg-orange">
             <div class="icon">
                 <i class="fas fa-file-prescription"></i>

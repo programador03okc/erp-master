@@ -1,5 +1,5 @@
 @extends('layout.main')
-@include('layout.menu_contabilidad')
+@include('layout.menu_tesoreria')
 
 @section('cabecera')
 Procesar Pago de Requerimientos
@@ -7,7 +7,7 @@ Procesar Pago de Requerimientos
 
 @section('breadcrumb')
 <ol class="breadcrumb">
-  <li><a href="{{route('contabilidad.index')}}"><i class="fas fa-tachometer-alt"></i> Contabilidad</a></li>
+  <li><a href="{{route('tesoreria.index')}}"><i class="fas fa-tachometer-alt"></i> Tesorería</a></li>
   <li>Pagos</li>
   <li class="active">@yield('cabecera')</li>
 </ol>
@@ -50,7 +50,7 @@ Procesar Pago de Requerimientos
 </div>
 
     
-@include('contabilidad.pagos.procesarPago')
+@include('tesoreria.ReqPagos.procesarPago')
 <!-- @include('almacen.distribucion.requerimientoDetalle')
 @include('almacen.distribucion.verRequerimientoAdjuntos') -->
 @endsection
@@ -66,7 +66,7 @@ Procesar Pago de Requerimientos
     <script src="{{ asset('datatables/pdfmake/vfs_fonts.js') }}"></script>
     <script src="{{ asset('datatables/JSZip/jszip.min.js') }}"></script>
 
-    <script src="{{ asset('js/contabilidad/pagos/requerimientoPagos.js')}}"></script>
+    <script src="{{ asset('js/tesoreria/ReqPagos/requerimientoPagos.js')}}"></script>
     <!-- <script src="{{ asset('js/almacen/distribucion/requerimientoDetalle.js')}}"></script> -->
     <script>
     $(document).ready(function(){
