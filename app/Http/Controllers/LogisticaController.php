@@ -2520,6 +2520,8 @@ class LogisticaController extends Controller
         $moneda = $request->requerimiento['id_moneda'];
         $id_area = isset($request->requerimiento['id_area'])?$request->requerimiento['id_area']:null;
         $id_priori = $request->requerimiento['id_prioridad'];
+        $fuente_id = $request->requerimiento['fuente'];
+        $fuente_det_id = $request->requerimiento['fuente_det'];
 
 
         if ($id_requerimiento != NULL) {
@@ -2549,6 +2551,8 @@ class LogisticaController extends Controller
                     'id_area'               => is_numeric($id_area) == 1 ? $id_area : null,
                     'id_prioridad'          => is_numeric($id_priori) == 1 ? $id_priori : null,
                     'monto'                 => $monto,
+                    'fuente_id'              => $fuente_id,
+                    'fuente_det_idmonto'     => $fuente_det_id,
                     'estado'                 => $nuevo_estado
                 ]);
             }else{
@@ -2597,6 +2601,8 @@ class LogisticaController extends Controller
                     $id_tipo_item = isset($request->detalle[$i]['id_tipo_item'])?$request->detalle[$i]['id_tipo_item']:null;
                     $estado = isset($request->detalle[$i]['estado'])?$request->detalle[$i]['estado']:1;
                     $id_almacen_reserva = is_numeric($request->detalle[$i]['id_almacen_reserva']) == 1 ? $request->detalle[$i]['id_almacen_reserva']:null;
+                    $stock_comprometido = isset($request->detalle[$i]['stock_comprometido'])? $request->detalle[$i]['stock_comprometido']:null;
+                    $proveedor_id = isset($request->detalle[$i]['id_proveedor'])? $request->detalle[$i]['id_proveedor']:null;
 
 
                     if ($id_det_req > 0) {
@@ -2615,6 +2621,8 @@ class LogisticaController extends Controller
                                 'id_unidad_medida'      => is_numeric($id_unit) == 1 ? $id_unit : null,
                                 'id_tipo_item'          => is_numeric($id_tipo_item) == 1 ? $id_tipo_item : null,
                                 'id_almacen_reserva'    => $id_almacen_reserva,
+                                'stock_comprometido'    => $stock_comprometido,
+                                'proveedor_id'          => $proveedor_id,
                                 'estado'                => $nuevo_estado
                             ]);
                         }else{
