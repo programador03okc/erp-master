@@ -102,7 +102,8 @@ function mostrar_requerimiento(IdorCode){
                 $('[name=fuente_det_id]').val(response['requerimiento'][0].fuente_det_id);
                 
                 if(response['requerimiento'][0].fuente_det_id>0){ // mostrar fuente_det
-                    document.querySelector("form[id='form-requerimiento'] div[id='input-group-det']").removeAttribute('hidden');
+                    document.querySelector("form[id='form-requerimiento'] div[id='input-group-fuente_det']").removeAttribute('hidden');
+                    selectFuente(null,response['requerimiento'][0].fuente_id);
                 }
 
                 $('#estado_doc').text(response['requerimiento'][0].estado_doc);

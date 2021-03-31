@@ -7,6 +7,9 @@ function nuevo_req(){
     adjuntosRequerimiento=[];
     onlyAdjuntosRequerimiento=[];
     $('#form-requerimiento')[0].reset();
+    limpiarSelectFuenteDet();
+    document.querySelector("form[id='form-requerimiento'] div[id='input-group-fuente_det']").setAttribute('hidden',true);
+
     $('#body_detalle_requerimiento').html('<tr id="default_tr"><td></td><td colspan="12"> No hay datos registrados</td></tr>');
     $('#body_adjuntos_requerimiento').html('<tr id="default_tr"><td></td><td colspan="3"> No hay datos registrados</td></tr>');
     $('#body_lista_trazabilidad_requerimiento').html('<tr id="default_tr"><td></td><td colspan="5"> No hay datos registrados</td></tr>');
@@ -1338,8 +1341,12 @@ function limpiarSelectFuenteDet(){
     }
 }
 
-function selectFuente(event){
-    let fuente_id = event.target.value;
+function selectFuente(event,fuente_id=null){
+    
+    if(fuente_id ==null){
+        fuente_id = event.target.value;
+    }
+    
     $.ajax({
         type: 'GET',
         url: 'mostrar-fuente-detalle/'+fuente_id,
@@ -1347,9 +1354,8 @@ function selectFuente(event){
         success: function(response){
             if(response.length >0){
                 //mostrar select fuente_det 
-                document.querySelector("form[id='form-requerimiento'] div[id='input-group-det']").removeAttribute('hidden');
-
-                let selectElement = document.querySelector("form[id='form-requerimiento'] div[id='input-group-det'] select[name='fuente_det_id']");
+                document.querySelector("form[id='form-requerimiento'] div[id='input-group-fuente_det']").removeAttribute('hidden');
+                let selectElement = document.querySelector("form[id='form-requerimiento'] div[id='input-group-fuente_det'] select[name='fuente_det_id']");
                 // limpiar select
                 limpiarSelectFuenteDet();
                 // llenar select
@@ -1364,7 +1370,7 @@ function selectFuente(event){
             }else{
                 //mantener oculto fuente_det
                 limpiarSelectFuenteDet();
-                document.querySelector("form[id='form-requerimiento'] div[id='input-group-det']").setAttribute('hidden',true);
+                document.querySelector("form[id='form-requerimiento'] div[id='input-group-fuente_det']").setAttribute('hidden',true);
 
             }
 
