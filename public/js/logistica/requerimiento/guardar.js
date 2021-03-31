@@ -357,7 +357,7 @@ function save_requerimiento(action){
     if(requerimiento.estado == 3){
         openSustento();
     }else{
-        changeStateButton('guardar');
+        // changeStateButton('guardar');
 
         actionGuardarEditarRequerimiento();
     }
