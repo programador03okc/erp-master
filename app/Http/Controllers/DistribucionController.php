@@ -1013,6 +1013,8 @@ class DistribucionController extends Controller
                     if (count($email_destinatario) > 0){
                         $estado_envio = (new CorreoController)->enviar_correo_despacho($payload, $smpt_setting);
                     }
+                } else {
+                    $msj = 'Se guardó existosamente la Orden de Despacho';
                 }
             } else {
                 $msj = 'Se guardó existosamente la Orden de Despacho y Hoja de Transformación';
