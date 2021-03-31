@@ -4,6 +4,7 @@ class RequerimientoPago
     {
         this.permisoConfirmarDenegarPago = permisoConfirmarDenegarPago;
         this.listarRequerimientos();
+        this.listarComprobantes();
     }
 
     listarRequerimientos() {
@@ -60,6 +61,55 @@ class RequerimientoPago
         });
     }
 
+    listarComprobantes(){
+        var vardataTables = funcDatatables();
+        $('#listaComprobantes').DataTable({
+            'dom': vardataTables[1],
+            'buttons': vardataTables[2],
+            'language' : vardataTables[0],
+            'destroy': true,
+            'serverSide' : true,
+            'ajax': {
+                url: 'listarComprobantesPagos',
+                type: 'POST'
+            },
+            'columns': [
+                {'data': 'id_doc_com'},
+                {'data': 'tipo_documento', 'name': 'cont_tp_doc.descripcion'},
+                {'data': 'serie'},
+                {'data': 'numero'},
+                {'data': 'razon_social', 'name': 'adm_contri.razon_social'},
+                {'data': 'fecha_emision'},
+                {'data': 'condicion_pago', 'name': 'log_cdn_pago.descripcion'},
+                {'data': 'fecha_vcmto'},
+                {'data': 'simbolo', 'name': 'sis_moneda.simbolo'},
+                {'data': 'total_a_pagar'},
+                {'data': 'fecha_pago'},
+                {'data': 'observacion'},
+                {'data': 'usuario_pago', 'name':'registrado_por.nombre_corto'},
+                {'render': function (data, type, row){
+                    return '<span class="label label-'+row['bootstrap_color']+'">'+row['estado_doc']+'</span>'
+                    }
+                },
+                {'render':
+                    function (data, type, row){
+                    return `<div class="btn-group" role="group">
+                    ${row['estado'] == 8 ?
+                            `<button type="button" style="padding-left:8px;padding-right:7px;" class="adjunto btn btn-danger boton" data-toggle="tooltip" 
+                                data-placement="bottom" data-id="${row['id_doc_com']}" data-cod="${row['serie']+'-'+row['numero']}" title="Procesar Pago" >
+                                <i class="far fa-credit-card"></i></button>`:''}
+                            <button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" 
+                                data-placement="bottom" data-id="${row['id_doc_com']}" title="Ver Detalle" >
+                                <i class="fas fa-chevron-down"></i></button>
+                        </div>`;
+                    }
+                },
+            ],
+            
+            'columnDefs': [{ 'aTargets': [0], 'sClass': 'invisible'}],
+        });
+    
+    }
 }
 
 $('#listaRequerimientos tbody').on("click","button.adjunto", function(){
@@ -69,9 +119,57 @@ $('#listaRequerimientos tbody').on("click","button.adjunto", function(){
         show: true
     });
     $('[name=id_requerimiento]').val(id_requerimiento);
+    $('[name=id_doc_com]').val('');
     $('[name=codigo]').val(codigo);
     $('#submit_procesarPago').removeAttr('disabled');
 });
+
+$('#listaComprobantes tbody').on("click","button.adjunto", function(){
+    var id_doc_com = $(this).data('id');
+    var codigo = $(this).data('cod');
+    $('#modal-procesarPago').modal({
+        show: true
+    });
+    $('[name=id_doc_com]').val(id_doc_com);
+    $('[name=id_requerimiento]').val('');
+    $('[name=codigo]').val(codigo);
+    $('#submit_procesarPago').removeAttr('disabled');
+});
+
+$("#form-procesarPago").on("submit", function(e){
+    e.preventDefault();
+    $('#submit_procesarPago').attr('disabled','true');
+    procesarPago();
+});
+
+function procesarPago(){
+    var formData = new FormData($('#form-procesarPago')[0]);
+    var id_requerimiento = $('[name=id_requerimiento]').val();
+    var id_doc_com = $('[name=id_doc_com]').val();
+    $.ajax({
+        type: 'POST',
+        url: 'procesarPago',
+        data: formData,
+        cache: false,
+        contentType: false,
+        processData: false,
+        dataType: 'JSON',
+        success: function(response){
+            console.log(response);
+            $('#modal-procesarPago').modal('hide');
+            
+            if (id_requerimiento!==''){
+                $('#listaRequerimientos').DataTable().ajax.reload();
+            } else if (id_doc_com!==''){
+                $('#listaComprobantes').DataTable().ajax.reload();
+            }
+        }
+    }).fail( function( jqXHR, textStatus, errorThrown ){
+        console.log(jqXHR);
+        console.log(textStatus);
+        console.log(errorThrown);
+    });
+}
 
 var iTableCounter=1;
 var oInnerTable;
@@ -164,32 +262,4 @@ function formatDetalle(table_id, id, row)
         console.log(errorThrown);
     });
 
-}
-
-$("#form-procesarPago").on("submit", function(e){
-    e.preventDefault();
-    $('#submit_procesarPago').attr('disabled','true');
-    procesarPago();
-});
-
-function procesarPago(){
-    var formData = new FormData($('#form-procesarPago')[0]);
-    $.ajax({
-        type: 'POST',
-        url: 'procesarPago',
-        data: formData,
-        cache: false,
-        contentType: false,
-        processData: false,
-        dataType: 'JSON',
-        success: function(response){
-            console.log(response);
-            $('#modal-procesarPago').modal('hide');
-            $('#listaRequerimientos').DataTable().ajax.reload();
-        }
-    }).fail( function( jqXHR, textStatus, errorThrown ){
-        console.log(jqXHR);
-        console.log(textStatus);
-        console.log(errorThrown);
-    });
 }

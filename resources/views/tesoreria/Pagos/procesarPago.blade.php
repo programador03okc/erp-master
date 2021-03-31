@@ -12,6 +12,7 @@
                 <div class="modal-body">
                     <div class="row">
                         <input type="text" class="oculto" name="id_requerimiento"/>
+                        <input type="text" class="oculto" name="id_doc_com"/>
                         <input type="text" class="oculto" name="codigo"/>
                         <div class="col-md-6">
                             <h5>Fecha del Pago</h5>

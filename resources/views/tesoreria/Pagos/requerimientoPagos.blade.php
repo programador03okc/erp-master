@@ -2,7 +2,7 @@
 @include('layout.menu_tesoreria')
 
 @section('cabecera')
-Procesar Pago de Requerimientos
+Procesar Pagos
 @endsection
 
 @section('breadcrumb')
@@ -19,31 +19,81 @@ Procesar Pago de Requerimientos
     <div class="box box-solid">
         <div class="box-body">
             <div class="col-md-12" style="padding-top:10px;padding-bottom:10px;">
-                <div class="row">
-                    <div class="col-md-12">
-                        <table class="mytable table table-condensed table-bordered table-okc-view" 
-                            id="listaRequerimientos">
-                            <thead>
-                                <tr>
-                                    <th hidden></th>
-                                    <!-- <th>Tipo</th> -->
-                                    <th>Codigo</th>
-                                    <th>Concepto</th>
-                                    <th>Fecha Req.</th>
-                                    <th>Emp-Sede</th>
-                                    <th>Responsable</th>
-                                    <th>Monto</th>
-                                    <th>Fecha Pago</th>
-                                    <th>Motivo</th>
-                                    <th>Procesado por</th>
-                                    <th>Estado</th>
-                                    <th width="90px">Acción</th>
-                                </tr>
-                            </thead>
-                            <tbody></tbody>
-                        </table>
+                
+                <ul class="nav nav-tabs" id="myTab">
+                    <li class="active"><a data-toggle="tab" href="#requerimientos">Requerimientos</a></li>
+                    <li class=""><a data-toggle="tab" href="#comprobantes">Comprobantes</a></li>
+                </ul>
+
+                <div class="tab-content">
+
+                    <div id="requerimientos" class="tab-pane fade in active">
+                        <br>
+                        <form id="form-requerimientos" type="register">
+
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <table class="mytable table table-condensed table-bordered table-okc-view" 
+                                        id="listaRequerimientos">
+                                        <thead>
+                                            <tr>
+                                                <th hidden></th>
+                                                <!-- <th>Tipo</th> -->
+                                                <th>Codigo</th>
+                                                <th>Concepto</th>
+                                                <th>Fecha Req.</th>
+                                                <th>Emp-Sede</th>
+                                                <th>Responsable</th>
+                                                <th>Monto</th>
+                                                <th>Fecha Pago</th>
+                                                <th>Motivo</th>
+                                                <th>Procesado por</th>
+                                                <th>Estado</th>
+                                                <th width="90px">Acción</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody></tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                        </form>
                     </div>
+                    <div id="comprobantes" class="tab-pane fade">
+                        <br>
+                        <form id="form-comprobantes" type="register">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <table class="mytable table table-condensed table-bordered table-okc-view" 
+                                        id="listaComprobantes">
+                                        <thead>
+                                            <tr>
+                                                <th hidden>#</th>
+                                                <th>Tipo Doc.</th>
+                                                <th>Serie</th>
+                                                <th>Número</th>
+                                                <th>Proveedor</th>
+                                                <th>Fecha Emisión</th>
+                                                <th>Condición</th>
+                                                <th>Fecha Vencimiento</th>
+                                                <th>Moneda</th>
+                                                <th>Total a Pagar</th>
+                                                <th>Fecha Pago</th>
+                                                <th>Motivo</th>
+                                                <th>Procesado por</th>
+                                                <th>Estado</th>
+                                                <th>Acción</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
                 </div>
+
             </div>
         </div>
     </div>
@@ -74,17 +124,16 @@ Procesar Pago de Requerimientos
 
         let requerimientoPago=new RequerimientoPago('{{Auth::user()->tieneAccion(78)}}');
 
-        // $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
-        //     let tab = $(e.target).attr("href") // activated tab
-        //     if (tab=='#pendientes')
-        //     {
-        //         $('#requerimientosPendientes').DataTable().ajax.reload();
-        //     }
-        //     else
-        //     {
-        //         $('#requerimientosConfirmados').DataTable().ajax.reload();
-        //     }
-        //  });
+        $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+            let tab = $(e.target).attr("href") // activated tab
+
+            if (tab=='#requerimientos'){
+                $('#listaRequerimientos').DataTable().ajax.reload();
+            }
+            else if (tab=='#comprobantes'){
+                $('#listaComprobantes').DataTable().ajax.reload();
+            }
+         });
     });
     </script>
 @endsection

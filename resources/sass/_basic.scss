@@ -1130,6 +1130,7 @@ span.select2-selection{
 #ListaRequerimientosAprobados_filter,
 #listaProveedor_filter,
 #listaComprobantesCompra_filter,
+#listaComprobantes_filter,
 #listaUbicacion_filter
 {
     margin: 0;
@@ -1183,6 +1184,7 @@ span.select2-selection{
 #ListaRequerimientosAprobados_filter label input[type="search"],
 #listaProveedorCollapse_filter label input[type="search"],
 #listaComprobantesCompra_filter label input[type="search"],
+#listaComprobantes_filter label input[type="search"],
 #listaUbicacion_filter label input[type="search"]
 {
     width: 95%;

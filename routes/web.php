@@ -1530,6 +1530,7 @@ Route::group(['middleware' => ['auth']], function () {
 
 				Route::get('index', 'Tesoreria\RequerimientoPagoController@view_requerimiento_pagos')->name('index');
 				Route::post('listarRequerimientosPagos', 'Tesoreria\RequerimientoPagoController@listarRequerimientosPagos')->name('listar-requerimiento-pagos');
+				Route::post('listarComprobantesPagos', 'Tesoreria\RequerimientoPagoController@listarComprobantesPagos')->name('listar-comprobante-pagos');
 				Route::post('procesarPago', 'Tesoreria\RequerimientoPagoController@procesarPago')->name('procesar-pagos');
 				Route::get('detalleRequerimiento/{id}', 'AprobacionController@detalleRequerimiento')->name('detalle-requerimiento');
 

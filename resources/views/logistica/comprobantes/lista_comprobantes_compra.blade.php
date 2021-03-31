@@ -25,7 +25,8 @@
                 <div class="row">
                     <div class="col-sm-12">
                         <!-- <caption>Requerimientos: Registrados | Aprobados</caption> -->
-                        <table class="mytable table table-hover table-condensed table-bordered table-okc-view" id="listaComprobantesCompra" width="100%">
+                        <table class="mytable table table-hover table-condensed table-bordered table-okc-view" 
+                            id="listaComprobantesCompra" width="100%">
                             <thead>
                                 <tr>
                                     <th hidden>#</th>
@@ -39,7 +40,7 @@
                                     <th>Moneda</th>
                                     <th>Total a Pagar</th>
                                     <th>Estado</th>
-                                    <th>ACCIÓN</th>
+                                    <th>Acción</th>
                                 </tr>
                             </thead>
                         </table>

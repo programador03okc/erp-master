@@ -51,6 +51,31 @@ class RequerimientoPagoController extends Controller
         return datatables($data)->toJson();
     }
 
+    
+    public function listarComprobantesPagos(){
+        $data = DB::table('almacen.doc_com')
+        ->select(
+            'doc_com.*','adm_contri.razon_social',
+            'adm_estado_doc.estado_doc','adm_estado_doc.bootstrap_color',
+            'sis_moneda.simbolo','log_cdn_pago.descripcion AS condicion_pago',
+            'cont_tp_doc.descripcion as tipo_documento',
+            'req_pagos.fecha_pago','req_pagos.observacion',
+            'registrado_por.nombre_corto as usuario_pago',
+            )
+        ->join('logistica.log_prove','log_prove.id_proveedor','=','doc_com.id_proveedor')
+        ->join('contabilidad.adm_contri','adm_contri.id_contribuyente','=','log_prove.id_contribuyente')
+        ->join('administracion.adm_estado_doc','adm_estado_doc.id_estado_doc','=','doc_com.estado')
+        ->leftJoin('configuracion.sis_moneda','sis_moneda.id_moneda','=','doc_com.moneda')
+        ->leftJoin('logistica.log_cdn_pago', 'log_cdn_pago.id_condicion_pago', '=', 'doc_com.id_condicion')
+        ->leftJoin('contabilidad.cont_tp_doc', 'cont_tp_doc.id_tp_doc', '=', 'doc_com.id_tp_doc')
+        ->leftJoin('tesoreria.req_pagos','req_pagos.id_doc_com','=','doc_com.id_doc_com')
+        ->leftJoin('configuracion.sis_usua as registrado_por','registrado_por.id_usuario','=','req_pagos.registrado_por')
+        ->where('doc_com.estado','=',8)
+        ->orWhere('doc_com.estado','=',9);
+
+        return datatables($data)->toJson();
+    }
+
     function procesarPago(Request $request){
         
         try {
@@ -61,6 +86,7 @@ class RequerimientoPagoController extends Controller
 
             $id_pago = DB::table('tesoreria.req_pagos')
             ->insertGetId([ 'id_requerimiento'=> $request->id_requerimiento,
+                            'id_doc_com'=>$request->id_doc_com,
                             'fecha_pago'=>$request->fecha_pago,
                             'observacion'=>$request->observacion,
                             'registrado_por'=>$id_usuario,
@@ -81,9 +107,16 @@ class RequerimientoPagoController extends Controller
                 ->update([ 'adjunto'=>$nombre ]);
             }
             
-            DB::table('almacen.alm_req')
-            ->where('id_requerimiento',$request->id_requerimiento)
-            ->update(['estado'=>9]);//procesado
+            if ($request->id_requerimiento!==null){
+                DB::table('almacen.alm_req')
+                ->where('id_requerimiento',$request->id_requerimiento)
+                ->update(['estado'=>9]);//procesado
+            }
+            else if ($request->id_doc_com!==null){
+                DB::table('almacen.doc_com')
+                ->where('id_doc_com',$request->id_doc_com)
+                ->update(['estado'=>9]);//procesado
+            }
 
             DB::commit();
             return response()->json($id_pago);
