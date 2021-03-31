@@ -999,14 +999,14 @@ function llenarTablaListaDetalleRequerimiento(data,selectMoneda,selectUnidadMedi
                     }else{
                         if(tipo_requerimiento !=2){
 
-                            btnAction += `<button type="button" class="btn btn-warning btn-xs"  name="btnMostarPartidas" data-toggle="tooltip" title="Para mostrar partidas debe seleccionar un proyecto" onClick=" partidasModal(${data[a].id_item});" disabled><i class="fas fa-money-check"></i></button>`;
+                            btnAction += `<button type="button" class="btn btn-warning btn-xs"  name="btnMostarPartidas" data-toggle="tooltip" title="Para mostrar partidas debe seleccionar un proyecto" onClick=" partidasModal(${data[a].id_item});" ${hasAttrDisabled}><i class="fas fa-money-check"></i></button>`;
                         }
                     }
-                    btnAction += `<button type="button" class="btn btn-warning btn-xs" name="btnCentroCostos" data-toggle="tooltip" title="Centro de Costos" onClick="centroCostosModal(event, ${a});" ${hasAttrDisabled}X><i class="fas fa-donate"></i></button>`;
+                    btnAction += `<button type="button" class="btn btn-warning btn-xs" name="btnCentroCostos" data-toggle="tooltip" title="Centro de Costos" onClick="centroCostosModal(event, ${a});" ${hasAttrDisabled}><i class="fas fa-donate"></i></button>`;
                     
                     if(tipo_requerimiento !=2){
 
-                        btnAction += `<button type="button" class="btn btn-default btn-xs" name="btnAdjuntarArchivos" data-toggle="tooltip" title="Adjuntos" onClick="archivosAdjuntosModal(event, ${a});" ${hasAttrDisabled}X><i class="fas fa-paperclip"></i></button>`;
+                        btnAction += `<button type="button" class="btn btn-default btn-xs" name="btnAdjuntarArchivos" data-toggle="tooltip" title="Adjuntos" onClick="archivosAdjuntosModal(event, ${a});" ${hasAttrDisabled}><i class="fas fa-paperclip"></i></button>`;
                     }
                     btnAction += `<button type="button" class="btn btn-danger btn-xs"   name="btnEliminarItem" data-toggle="tooltip" title="Eliminar" onclick="eliminarItemDeListado(this,${data[a].id_item});" ${hasAttrDisabled} ><i class="fas fa-trash-alt"></i></button>`;
                     btnAction += `</center></div>`;
@@ -1077,7 +1077,7 @@ function llenarTablaListaDetalleRequerimiento(data,selectMoneda,selectUnidadMedi
                 btnAction += `<button type="button" class="btn btn-warning btn-xs" name="btnCentroCostos" data-toggle="tooltip" title="Centro de Costos" onClick="centroCostosModal(event, ${a});" ${hasAttrDisabled}><i class="fas fa-donate"></i></button>`;
                 if(tipo_requerimiento ==2){ // tipo = CMS
                     btnAction += `<button type="button" class="btn btn-xs" name="btnAlmacenReservaModal" data-toggle="tooltip" title="Almacén Reserva" onClick="modalAlmacenReserva(this, ${a});" ${hasAttrDisabled} style="background:#b498d0; color: #f5f5f5;"><i class="fas fa-puzzle-piece fa-sm"></i></button>`;
-                    btnAction += `<button type="button" class="btn btn-primary btn-xs" name="btnModalSeleccionarCrearProveedor data-toggle="tooltip" title="Proveedor" onClick="modalSeleccionarCrearProveedor(event, ${a});" ${hasAttrDisabled}X><i class="fas fa-user-tie"></i></button>`;
+                    btnAction += `<button type="button" class="btn btn-primary btn-xs" name="btnModalSeleccionarCrearProveedor data-toggle="tooltip" title="Proveedor" onClick="modalSeleccionarCrearProveedor(event, ${a});" ${hasAttrDisabled}><i class="fas fa-user-tie"></i></button>`;
 
                 }
                 if(tipo_requerimiento !=2){

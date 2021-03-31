@@ -26,7 +26,10 @@ function modalAlmacenReserva(obj,indice){
             select_almacen_reserva.add(option);
         });
 
-        let cantidad_item = obj.parentNode.parentNode.parentNode.parentNode.children[5].children[0].value;
+        let cantidad_item_input = obj.parentNode.parentNode.parentNode.parentNode.children[5].children[0];
+        let cantidad_item_td = obj.parentNode.parentNode.parentNode.parentNode.children[5];
+
+        let cantidad_item = cantidad_item_input?cantidad_item_input.value:cantidad_item_td.textContent;
         document.querySelector("div[id='modal-almacen-reserva'] input[id='cantidad_reserva']").value= cantidad_item;
     });
 

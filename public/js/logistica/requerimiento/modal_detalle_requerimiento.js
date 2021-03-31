@@ -309,6 +309,7 @@ function agregarItem(){
             cantidadIdCentroCostos++;
         }
     }
+    var tipo_requerimiento = document.querySelector("form[id='form-requerimiento'] select[name='tipo_requerimiento']").value;
 
 
     for(var a=0;a < data_item.length;a++){
@@ -373,14 +374,33 @@ function agregarItem(){
                 }else{
                     hasAttrDisabled = '';
                 }
-            tdBtnAction.setAttribute('width',widthGroupBtnAction);
+   
+
+            tdBtnAction.setAttribute('width', 'auto');
+            var id_proyecto = document.querySelector("form[id='form-requerimiento'] select[name='id_proyecto']").value;
+
             btnAction = `<div class="btn-group btn-group-sm" role="group" aria-label="Second group"><center>`;
-            btnAction += `<button class="btn btn-secondary btn-sm"  name="btnEditarItem" data-toggle="tooltip" title="Editar" onClick="detalleRequerimientoModal(event, ${a});" '+hasAttrDisabled+'><i class="fas fa-edit"></i></button>`;
-            btnAction += `<button class="btn btn-primary btn-sm" name="btnAdjuntarArchivos" data-toggle="tooltip" title="Adjuntos" onClick="archivosAdjuntosModal(event, ${a});" '+hasAttrDisabled+'><i class="fas fa-paperclip"></i></button>`;
-            btnAction += `<button class="btn btn-danger btn-sm"   name="btnEliminarItem" data-toggle="tooltip" title="Eliminar" onclick="eliminarItemDetalleRequerimiento(event, ${a});" '+hasAttrDisabled+' ><i class="fas fa-trash-alt"></i></button>`;
+            if (id_proyecto > 0) {
+                btnAction += `<button type="button" class="btn btn-warning btn-xs activation"  name="btnMostarPartidas" data-toggle="tooltip" title="Partida" onClick=" partidasModal(${data_item[a].id_item});" ${hasAttrDisabled}><i class="fas fa-money-check"></i></button>`;
+            }else{
+                if(tipo_requerimiento !=2){
+
+                    btnAction += `<button type="button" class="btn btn-warning btn-xs activation"  name="btnMostarPartidas" data-toggle="tooltip" title="Para mostrar partidas debe seleccionar un proyecto" onClick=" partidasModal(${data_item[a].id_item});" ${hasAttrDisabled}><i class="fas fa-money-check"></i></button>`;
+                }
+            }
+            btnAction += `<button type="button" class="btn btn-warning btn-xs activation" name="btnCentroCostos" data-toggle="tooltip" title="Centro de Costos" onClick="centroCostosModal(event, ${a});" ${hasAttrDisabled}><i class="fas fa-donate"></i></button>`;
+            if(tipo_requerimiento ==2){ // tipo = CMS
+                btnAction += `<button type="button" class="btn btn-xs activation" name="btnAlmacenReservaModal" data-toggle="tooltip" title="Almacén Reserva" onClick="modalAlmacenReserva(this, ${a});" ${hasAttrDisabled} style="background:#b498d0; color: #f5f5f5;"><i class="fas fa-puzzle-piece fa-sm"></i></button>`;
+                btnAction += `<button type="button" class="btn btn-primary btn-xs activation" name="btnModalSeleccionarCrearProveedor data-toggle="tooltip" title="Proveedor" onClick="modalSeleccionarCrearProveedor(event, ${a});" ${hasAttrDisabled}><i class="fas fa-user-tie"></i></button>`;
+
+            }
+            if(tipo_requerimiento !=2){
+
+                btnAction += `<button type="button" class="btn btn-default btn-xs activation" name="btnAdjuntarArchivos" data-toggle="tooltip" title="Adjuntos" onClick="archivosAdjuntosModal(event, ${a});" ${hasAttrDisabled} ><i class="fas fa-paperclip"></i></button>`;
+            }
+            btnAction += `<button type="button" class="btn btn-danger btn-xs activation"   name="btnEliminarItem" data-toggle="tooltip" title="Eliminar" onclick="eliminarItemDeListado(this,${data_item[a].id_item});" ${hasAttrDisabled} ><i class="fas fa-trash-alt"></i></button>`;
             btnAction += `</center></div>`;
             tdBtnAction.innerHTML = btnAction;
-        
 
         }
     }
