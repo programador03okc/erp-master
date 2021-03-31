@@ -1920,14 +1920,14 @@ class LogisticaController extends Controller
                     'fecha_registro'=>date('Y-m-d H:i:s')
         ]);
 
-        if($request->requerimiento['tipo_requerimiento'] == 2 || $request->requerimiento['tipo_requerimiento'] == 3){ //venta diracta o pedido almacen
-            $this->generarTransferenciaRequerimiento($id_requerimiento, $request->requerimiento['id_sede'], $detalle_req);
-        }
+        // if($request->requerimiento['tipo_requerimiento'] == 2 || $request->requerimiento['tipo_requerimiento'] == 3){ //venta diracta o pedido almacen
+        //     $this->generarTransferenciaRequerimiento($id_requerimiento, $request->requerimiento['id_sede'], $detalle_req);
+        // }
 
-        if($request->requerimiento['tipo_requerimiento'] == 1){ //compra
+        // if($request->requerimiento['tipo_requerimiento'] == 1){ //compra
             $this->componer_email_requerimiento($id_requerimiento, 'NUEVO', $request->requerimiento['tipo_requerimiento']);
             $this->crear_notificacion_nuevo_requerimiento($id_requerimiento);
-        }
+        // }
         
         }
             DB::commit();
@@ -5019,46 +5019,107 @@ class LogisticaController extends Controller
             $estado_envio=[];
  
             if($opcion == 'NUEVO'){
-                if($tipo == 1 || $tipo == 2){ //compra o venta
+                if($tipo == 1){ //compra o venta
 					$req = DB::table('almacen.alm_req')
 					->select('alm_req.*')
-					->where([
-						['alm_req.id_requerimiento', '=', $id]
-					])
-					->get();
+					->where('alm_req.id_requerimiento',$id)
+					->first();
 	
-					if ($req->count() > 0) {
-						$codigo = $req->first()->codigo;
-						$concepto = $req->first()->concepto;
-						$id_usuario_propietario = $req->first()->id_usuario;
-						$id_empresa = $req->first()->id_empresa;
-						$id_sede = $req->first()->id_sede;
-	
-						// $email_destinatario= $this->get_email_usuario_por_rol('Logístico Compras', $id_sede, $id_empresa);
-						// $email_destinatario[]= $this->get_email_usuario_por_rol('Coordinador', $id_sede, $id_empresa);
-						// $email_destinatario[]= 'administracionventas@okcomputer.com.pe'; 
-						$email_destinatario[]= 'programador03@okcomputer.com.pe'; 
-						$payload=[
-							'id_empresa'=>$id_empresa,
-							'email_destinatario'=>$email_destinatario,
-							'titulo'=>'Nuevo Requerimiento de Compra:  '.$codigo,
-							'mensaje'=>'Se Creo un nuevo requerimiento de compra <br> <span style="color:#1e90ff;">'.$codigo.'</span> <br> '.$concepto.' <br><br> Este correo es generado de manera automática, por favor no responder. <br> Saludos <br> Módulo de Logística y Almacenes <br> System AGILE'
-						];
-                        if(count($email_destinatario)>0){
-                            $estado_envio =(new CorreoController)->enviar_correo_a_usuario($payload);
-                        }
+                    $id_usuario_propietario = $req->id_usuario;
+                    $id_sede = $req->id_sede;
 
-	
-					}
+                    // $email_destinatario= $this->get_email_usuario_por_rol('Logístico Compras', $id_sede, $id_empresa);
+                    // $email_destinatario[]= $this->get_email_usuario_por_rol('Coordinador', $id_sede, $id_empresa);
+                    // $email_destinatario[]= 'administracionventas@okcomputer.com.pe'; 
+                    $email_destinatario[]= 'programador03@okcomputer.com.pe'; 
+                    $payload=[
+                        'id_empresa'=>$req->id_empresa,
+                        'email_destinatario'=>$email_destinatario,
+                        'titulo'=>'Nuevo Requerimiento de Compra:  '.$req->codigo,
+                        'mensaje'=>'Se Creo un nuevo requerimiento de compra <br> <span style="color:#1e90ff;">'.$req->codigo.'</span> 
+                        <br> '.$req->concepto.' <br><br> Este correo es generado de manera automática, por favor no responder. 
+                        <br> Saludos <br> Módulo de Logística y Almacenes <br> SYSTEM AGILE'
+                    ];
+                    if(count($email_destinatario)>0){
+                        $estado_envio =(new CorreoController)->enviar_correo_a_usuario($payload);
+                    }	
                 }
+                else if ($tipo == 2){
+                    $req = DB::table('almacen.alm_req')
+					->select('alm_req.*','sis_sede.descripcion as sede_descripcion','sis_moneda.simbolo',
+                    DB::raw("(rrhh_perso.nombres) || ' ' || (rrhh_perso.apellido_paterno) || ' ' || (rrhh_perso.apellido_materno) AS nombre_persona"),
+                    'adm_contri.razon_social as cliente_razon_social',
+                    'rrhh_perso.nro_documento as dni','adm_contri.nro_documento as ruc')
+                    ->join('administracion.sis_sede','sis_sede.id_sede','=','alm_req.id_sede')
+                    ->leftJoin('configuracion.sis_moneda','sis_moneda.id_moneda','=','alm_req.id_moneda')
+                    ->leftJoin('rrhh.rrhh_perso','rrhh_perso.id_persona','=','alm_req.id_persona')
+                    ->leftJoin('comercial.com_cliente','com_cliente.id_cliente','=','alm_req.id_cliente')
+                    ->leftJoin('contabilidad.adm_contri','adm_contri.id_contribuyente','=','com_cliente.id_contribuyente')
+                    ->where('alm_req.id_requerimiento',$id)
+					->first();
+	
+                    $items = DB::table('almacen.alm_det_req')
+                    ->select('alm_det_req.cantidad','alm_det_req.precio_referencial',
+                    'alm_und_medida.abreviatura','alm_prod.part_number','alm_prod.codigo','alm_prod.descripcion',
+                    'sis_moneda.simbolo')
+                    ->join('almacen.alm_req','alm_req.id_requerimiento','=','alm_det_req.id_requerimiento')
+                    ->leftJoin('configuracion.sis_moneda','sis_moneda.id_moneda','=','alm_req.id_moneda')
+                    ->leftJoin('almacen.alm_prod','alm_prod.id_producto','=','alm_det_req.id_producto')       
+                    ->leftJoin('almacen.alm_und_medida','alm_und_medida.id_unidad_medida','=','alm_prod.id_unidad_medida')
+                    ->where([['alm_det_req.id_requerimiento','=',$req->id_requerimiento],
+                            ['alm_det_req.estado','!=',7],
+                            ['alm_det_req.tiene_transformacion','=',($req->tiene_transformacion == 'si' ? true : false)]])
+                    ->get();
+        
+                    $text_items = '<table><tbody>';
+                    $i = 1;
+                    foreach ($items as $item) {
+                        $text_items .= '<tr>
+                        <td>'.$i.'.-</td><td>'.$item->part_number.'</td>
+                        <td>'.$item->descripcion.'</td>
+                        <td> Cantidad: '.$item->cantidad.' '.$item->abreviatura.'</td>
+                        <td> Precio: '.($item->precio_referencial !== null ? ($item->simbolo.' '.$item->precio_referencial) : 0).'</td>
+                        </tr>';
+                        $i++;
+                    }
+                    $text_items .= '</tbody></table>';
 
-
-            }
-            if($opcion == 'OBSERVAR'){
-                
-            }
- 
-            
+                    $doc = ($req->id_persona !== null ? 'Boleta' : ($req->id_cliente !== null ? 'Factura' : ''));
+                    $asunto = 'Venta Directa | '.$req->sede_descripcion.' | '.$doc.' | '.$req->concepto;
+                    
+                    $contenido = '
+                    Favor su apoyo con la documentación del Req. Nro. '.$req->codigo.' '.$req->concepto.'<br>
+                    Favor generar '.$doc.'<br>'.$req->observacion.'<br>
+                    <br>Datos de los Productos<br>
+                    '.$text_items.'<br>TOTAL '.$req->simbolo.$req->monto.'<br>
+                    <br>Datos del Cliente<br>
+                    Nombre:'.($req->nombre_persona!==null?$req->nombre_persona:$req->cliente_razon_social).'<br>
+                    '.($req->dni!==null?('DNI: '.$req->dni):('RUC: '.$req->ruc)).'<br>
+                    Dirección:'.$req->direccion_entrega.'<br>
+                    Teléfono:'.$req->telefono.'<br>
+                    <br> Saludos <br> Módulo de Logística y Almacenes <br> SYSTEM AGILE';
+                    // $email_destinatario[]= 'administracionventas@okcomputer.com.pe'; 
+                    $email_destinatario[]= 'programador01@okcomputer.com.pe'; 
+                    $payload=[
+                        'id_empresa'=>$req->id_empresa,
+                        'email_destinatario'=>$email_destinatario,
+                        'titulo'=>$asunto,
+                        'mensaje'=>$contenido
+                    ];
+    
+                    $smpt_setting=[
+                        'smtp_server'=>'smtp.office365.com',
+                        'port'=>587,
+                        'encryption'=>'tls',
+                        'email'=>'administracionventas@okcomputer.com.pe',
+                        'password'=>'Logistica1505'
+                    ];
+    
+                    if (count($email_destinatario) > 0){
+                        $estado_envio = (new CorreoController)->enviar_correo_despacho($payload, $smpt_setting);
+                    }
+                }
+            }            
 
         return $estado_envio;
 	}
