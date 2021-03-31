@@ -127,7 +127,9 @@ function mostrarTipoForm(tipo){
                 'input-group-comercial',
                 'input-group-almacen',
                 'input-group-cuenta',
-                'input-group-proyecto'
+                'input-group-proyecto',
+                'input-group-fuente'
+
             ]);
             hiddeElement('mostrar','form-requerimiento',[
                 'input-group-moneda',
@@ -162,11 +164,19 @@ function mostrarTipoForm(tipo){
                 'input-group-rol-usuario',
                 'input-group-comercial',
                 'input-group-almacen',
-                'input-group-cuenta'
+                'input-group-proyecto',    
+                'input-group-cuenta',
+                'input-group-nombre-contacto',
+                'input-group-cargo-contacto',
+                'input-group-email-contacto',
+                'input-group-telefono-contacto',
+                'input-group-direccion-contacto',
+                'input-group-horario-contacto'
                 ]);
             hiddeElement('mostrar','form-requerimiento',[
                 'input-group-moneda',
                 'input-group-empresa',
+                'input-group-fuente',
                 'input-group-sede',
                 'input-group-tipo-cliente',
                 'input-group-telefono-cliente',
@@ -200,7 +210,8 @@ function mostrarTipoForm(tipo){
                 'input-group-email-contacto',
                 'input-group-telefono-contacto',
                 'input-group-direccion-contacto',
-                'input-group-horario-contacto'
+                'input-group-horario-contacto',
+                'input-group-fuente'
                 ]);
             hiddeElement('mostrar','form-requerimiento',[
                 'input-group-moneda',
@@ -237,7 +248,8 @@ function mostrarTipoForm(tipo){
                 'input-group-email-contacto',
                 'input-group-telefono-contacto',
                 'input-group-direccion-contacto',
-                'input-group-horario-contacto'
+                'input-group-horario-contacto',
+                'input-group-fuente'
             ]);
             hiddeElement('mostrar','form-requerimiento',[
                 'input-group-moneda',

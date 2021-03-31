@@ -42,6 +42,8 @@ function get_data_requerimiento(){
     tiene_transformacion = document.querySelector("form[id='form-requerimiento'] input[name='tiene_transformacion']").value;
     justificacion_generar_requerimiento = document.querySelector("form[id='form-requerimiento'] input[name='justificacion_generar_requerimiento']").value;
     estado = document.querySelector("form[id='form-requerimiento'] input[name='estado']").value;
+    fuente = document.querySelector("form[id='form-requerimiento'] select[name='fuente_id']").value;
+    fuente_det = document.querySelector("form[id='form-requerimiento'] select[name='fuente_det_id']").value;
 
     requerimiento = {
         id_requerimiento,
@@ -81,7 +83,9 @@ function get_data_requerimiento(){
         fecha_entrega,
         tiene_transformacion,
         justificacion_generar_requerimiento,
-        estado
+        estado,
+        fuente,
+        fuente_det
         
     };
 return requerimiento;
@@ -357,8 +361,6 @@ function save_requerimiento(action){
     if(requerimiento.estado == 3){
         openSustento();
     }else{
-        changeStateButton('guardar');
-
         actionGuardarEditarRequerimiento();
     }
     

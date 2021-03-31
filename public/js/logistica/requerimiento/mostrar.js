@@ -97,7 +97,13 @@ function mostrar_requerimiento(IdorCode){
                 $('[name=id_almacen]').val(response['requerimiento'][0].id_almacen);
                 $('[name=monto]').val(response['requerimiento'][0].monto);
                 $('[name=fecha_entrega]').val(response['requerimiento'][0].fecha_entrega);
+
+                $('[name=fuente_id]').val(response['requerimiento'][0].fuente_id);
+                $('[name=fuente_det_id]').val(response['requerimiento'][0].fuente_det_id);
                 
+                if(response['requerimiento'][0].fuente_det_id>0){ // mostrar fuente_det
+                    document.querySelector("form[id='form-requerimiento'] div[id='input-group-det']").removeAttribute('hidden');
+                }
 
                 $('#estado_doc').text(response['requerimiento'][0].estado_doc);
                 $('#estado_doc').removeClass();
@@ -152,6 +158,7 @@ function mostrar_requerimiento(IdorCode){
                         'id_unidad_medida':detalle_requerimiento[x].id_unidad_medida,
                         'unidad':detalle_requerimiento[x].unidad_medida,
                         'cantidad':detalle_requerimiento[x].cantidad,
+                        'stock_comprometido':detalle_requerimiento[x].stock_comprometido,
                         'precio_referencial':detalle_requerimiento[x].precio_referencial,
                         'id_tipo_moneda':detalle_requerimiento[x].id_tipo_moneda,
                         'tipo_moneda':detalle_requerimiento[x].tipo_moneda,
@@ -164,6 +171,8 @@ function mostrar_requerimiento(IdorCode){
                         'codigo_centro_costo':detalle_requerimiento[x].codigo_centro_costo,
                         'id_partida':detalle_requerimiento[x].id_partida,
                         'obs':detalle_requerimiento[x].obs,
+                        'tiene_transformacion':detalle_requerimiento[x].tiene_transformacion,
+                        'proveedor_id':detalle_requerimiento[x].proveedor_id,
                         'estado':detalle_requerimiento[x].estado
                     };
                         for(j=0; j<detalle_requerimiento[x].adjunto.length; j++){

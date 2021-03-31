@@ -157,7 +157,22 @@
                     <input type="date" class="form-control input-sm activation" name="fecha_entrega">
                 </div>
             </div>
-
+            <div id="input-group-fuente">
+                <div class="col-md-2" >
+                    <h5>Fuente</h5>
+                    <select class="form-control activation " name="fuente_id" onChange="selectFuente(event);">
+                            <option value="0">Elija una opción</option>
+                        @foreach ($fuentes as $fuente)
+                            <option value="{{$fuente->id_fuente}}">{{$fuente->descripcion}}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="col-md-2" id="input-group-det" hidden >
+                    <h5>Detalle Fuente</h5>
+                    <select class="form-control activation " name="fuente_det_id">
+                    </select>
+                </div>
+            </div>
             <div class="col-md-4" id="input-group-almacen" hidden>
                 <h5>Almacén que solicita</h5>
                 <select class="form-control activation " name="id_almacen">
@@ -221,7 +236,7 @@
                     </select>
                 </div>
             </div>
-            <div class="col-md-4 form-inline" id="input-group-cliente" >
+            <div class="col-md-4" id="input-group-cliente" >
                 <h5>Cliente</h5>
                 <div style="display:flex;">
                     <input type="text" class="oculto" name="id_cliente" >

@@ -1326,3 +1326,54 @@ function selectPartida(id_partida){
     document.querySelectorAll('[id^="pres"]')[0].setAttribute('class','oculto' );
 
 }
+
+
+function limpiarSelectFuenteDet(){
+    let selectElement = document.querySelector("form[id='form-requerimiento'] div[id='input-group-det'] select[name='fuente_det_id']");
+
+    if(selectElement !=null){
+        while (selectElement.options.length > 0) {                
+            selectElement.remove(0);
+        }    
+    }
+}
+
+function selectFuente(event){
+    let fuente_id = event.target.value;
+    $.ajax({
+        type: 'GET',
+        url: 'mostrar-fuente-detalle/'+fuente_id,
+        dataType: 'JSON',
+        success: function(response){
+            if(response.length >0){
+                //mostrar select fuente_det 
+                document.querySelector("form[id='form-requerimiento'] div[id='input-group-det']").removeAttribute('hidden');
+
+                let selectElement = document.querySelector("form[id='form-requerimiento'] div[id='input-group-det'] select[name='fuente_det_id']");
+                // limpiar select
+                limpiarSelectFuenteDet();
+                // llenar select
+                response.forEach(element => {
+                    let option = document.createElement("option");
+                    option.text = element.descripcion;
+                    option.value = element.id_fuente_det;
+                    selectElement.add(option);
+                });
+                
+
+            }else{
+                //mantener oculto fuente_det
+                limpiarSelectFuenteDet();
+                document.querySelector("form[id='form-requerimiento'] div[id='input-group-det']").setAttribute('hidden',true);
+
+            }
+
+  
+        }
+    }).fail( function( jqXHR, textStatus, errorThrown ){
+        console.log(jqXHR);
+        console.log(textStatus);
+        console.log(errorThrown);
+    });
+
+}

@@ -61,8 +61,9 @@ class LogisticaController extends Controller
         $categorias = (new AlmacenController)->mostrar_categorias_cbo();
         $unidades = (new AlmacenController)->mostrar_unidades_cbo();
         $proyectos_activos = (new ProyectosController)->listar_proyectos_activos();
+        $fuentes = $this->mostrar_fuentes();
 
-        return view('logistica/requerimientos/gestionar_requerimiento', compact('grupos','sis_identidad','tipo_requerimiento','monedas', 'prioridades', 'empresas', 'unidades_medida','roles','periodos','bancos','tipos_cuenta','clasificaciones','subcategorias','categorias','unidades','proyectos_activos'));
+        return view('logistica/requerimientos/gestionar_requerimiento', compact('grupos','sis_identidad','tipo_requerimiento','monedas', 'prioridades', 'empresas', 'unidades_medida','roles','periodos','bancos','tipos_cuenta','clasificaciones','subcategorias','categorias','unidades','proyectos_activos','fuentes'));
     }
 
     function view_gestionar_cotizaciones()
@@ -382,6 +383,23 @@ class LogisticaController extends Controller
         return $data;
     }
 
+    function mostrar_fuentes(){
+        $data = DB::table('almacen.fuente')
+        ->select('fuente.*')
+        ->where('fuente.estado', 1)
+        ->orderBy('fuente.id_fuente', 'asc')
+        ->get();
+    return $data;
+    }
+
+    function mostrarFuenteDetalle($fuente_id){
+        $data = DB::table('almacen.fuente_det')
+        ->select('fuente_det.*')
+        ->where([['fuente_det.estado', 1],['fuente_det.fuente_id',$fuente_id]])
+        ->orderBy('fuente_det.id_fuente_det', 'asc')
+        ->get();
+    return $data;
+    }
 
 
     public function mostrar_requerimientos($option)
@@ -558,6 +576,8 @@ class LogisticaController extends Controller
                 'alm_req.nro_cuenta',
                 'alm_req.nro_cuenta_interbancaria',
                 'alm_req.tiene_transformacion',
+                'alm_req.fuente_id',
+                'alm_req.fuente_det_id',
                 DB::raw("(CASE WHEN alm_req.estado = 1 THEN 'Habilitado' ELSE 'Deshabilitado' END) AS estado_desc")
             )
             ->where([
@@ -627,6 +647,8 @@ class LogisticaController extends Controller
                     'email' => $data->email,
                     'id_almacen' => $data->id_almacen,
                     'monto' => $data->monto,
+                    'fuente_id' => $data->fuente_id,
+                    'fuente_det_id' => $data->fuente_det_id,
                     'tiene_transformacion' => $data->tiene_transformacion
                     
                 ];
@@ -706,6 +728,7 @@ class LogisticaController extends Controller
                     'alm_prod.descripcion AS alm_prod_descripcion',
                     
                     'alm_det_req.tiene_transformacion',
+                    'alm_det_req.proveedor_id',
                     'alm_det_req.id_cc_am_filas',
                     'alm_det_req.id_cc_venta_filas',
                     'proveedores_am.razon_social as razon_social_proveedor_seleccionado_am',
@@ -778,6 +801,7 @@ class LogisticaController extends Controller
                             'id_detalle_requerimiento'  => $data->id_detalle_requerimiento,
                             'id_requerimiento'          => $data->id_requerimiento,
                             'tiene_transformacion'      => $data->tiene_transformacion,
+                            'proveedor_id'              => $data->proveedor_id,
                             'id_cc_am_filas'            => $data->id_cc_am_filas,
                             'id_cc_venta_filas'         => $data->id_cc_venta_filas?$data->id_cc_venta_filas:null,
                             'razon_social_proveedor_seleccionado' => $data->razon_social_proveedor_seleccionado_am?$data->razon_social_proveedor_seleccionado_am:$data->razon_social_proveedor_seleccionado_venta,
@@ -790,7 +814,7 @@ class LogisticaController extends Controller
                             'id_almacen_reserva'        => $data->id_almacen_reserva,
                             'almacen_reserva'           => $data->almacen_reserva,
                             'cantidad'                  => $data->cantidad,
-                            'stock_comprometido'                  => $data->stock_comprometido,
+                            'stock_comprometido'        => $data->stock_comprometido,
                             'suma_transferencias'       => $data->suma_transferencias,
                             'id_unidad_medida'          => $data->id_unidad_medida,
                             'unidad_medida'             => $data->unidad_medida,
@@ -1765,7 +1789,7 @@ class LogisticaController extends Controller
             $correlativo = $this->leftZero(4, ($num + 1));
             $codigo = "{$documento}V{$yy}{$correlativo}";
         }else{
-       
+
                 $mes = date('m', strtotime("now"));
                 $yy = date('y', strtotime("now"));
                 $yyyy = date('Y', strtotime("now"));
@@ -1789,6 +1813,9 @@ class LogisticaController extends Controller
             return 0;
         }else{
 
+        $detalle_reqArray = $request->detalle;
+        $count_detalle_req = count($detalle_reqArray);
+
         if($request->requerimiento['tipo_requerimiento'] ==1){
             $estado = 1;
             if($request->requerimiento['id_cc'] != null || $request->requerimiento['id_cc'] != ''){
@@ -1796,7 +1823,21 @@ class LogisticaController extends Controller
             }
         }
         elseif($request->requerimiento['tipo_requerimiento'] ==2){
-            $estado = 19;
+
+            $cantidad_reservas=0;
+            for ($i = 0; $i < $count_detalle_req; $i++) {
+                if($detalle_reqArray[$i]['id_almacen_reserva']>0){
+                    ++$cantidad_reservas;
+                }
+            }
+
+            if($cantidad_reservas == $count_detalle_req){
+                $estado = 19;
+            }else{
+                $estado = 1;
+
+            }
+
         }
         else{
             $estado = 1;
@@ -1840,7 +1881,9 @@ class LogisticaController extends Controller
                 'fecha_entrega'         => isset($request->requerimiento['fecha_entrega'])?$request->requerimiento['fecha_entrega']:null,
                 'id_cc'                 => isset($request->requerimiento['id_cc'])?$request->requerimiento['id_cc']:null,
                 'tipo_cuadro'           => isset($request->requerimiento['tipo_cuadro'])?$request->requerimiento['tipo_cuadro']:null,
-                'tiene_transformacion'   => isset($request->requerimiento['tiene_transformacion'])?$request->requerimiento['tiene_transformacion']:false
+                'tiene_transformacion'  => isset($request->requerimiento['tiene_transformacion'])?$request->requerimiento['tiene_transformacion']:false,
+                'fuente_id'             => isset($request->requerimiento['fuente'])?$request->requerimiento['fuente']:null,
+                'fuente_det_id'         => isset($request->requerimiento['fuente_det'])?$request->requerimiento['fuente_det']:null
             ],
             'id_requerimiento'
         );
@@ -1854,8 +1897,6 @@ class LogisticaController extends Controller
             $this->actualizar_email_cliente($request->requerimiento['tipo_cliente'],$request->requerimiento['id_persona'],$request->requerimiento['id_cliente'],$request->requerimiento['email']);
         }
         $detalle_req=[];
-        $detalle_reqArray = $request->detalle;
-        $count_detalle_req = count($detalle_reqArray);
         if ($count_detalle_req > 0) {
             for ($i = 0; $i < $count_detalle_req; $i++) {
                     $alm_det_req = DB::table('almacen.alm_det_req')->insertGetId(
