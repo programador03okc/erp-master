@@ -1,13 +1,13 @@
 @extends('layout.main')
-@include('layout.menu_logistica')
+@include('layout.menu_tesoreria')
 
 @section('cabecera')
-Confirmación de Pagos
+Procesar Pagos
 @endsection
 
 @section('breadcrumb')
 <ol class="breadcrumb">
-  <li><a href="{{route('logistica.index')}}"><i class="fas fa-tachometer-alt"></i> Logística y Almacenes</a></li>
+  <li><a href="{{route('tesoreria.index')}}"><i class="fas fa-tachometer-alt"></i> Tesorería</a></li>
   <li>Pagos</li>
   <li class="active">@yield('cabecera')</li>
 </ol>
@@ -18,32 +18,36 @@ Confirmación de Pagos
 
     <div class="box box-solid">
         <div class="box-body">
-            <div class="col-md-12" id="tab-reqPendientes" style="padding-left:0px;padding-right:0px;">
-
+            <div class="col-md-12" style="padding-top:10px;padding-bottom:10px;">
+                
                 <ul class="nav nav-tabs" id="myTab">
-                    <li class="active"><a data-toggle="tab" href="#pendientes">Requerimientos Pendientes</a></li>
-                    <li class=""><a data-toggle="tab" href="#confirmados">Requerimientos Confirmados</a></li>
+                    <li class="active"><a data-toggle="tab" href="#requerimientos">Requerimientos</a></li>
+                    <li class=""><a data-toggle="tab" href="#comprobantes">Comprobantes</a></li>
                 </ul>
 
                 <div class="tab-content">
-                    <div id="pendientes" class="tab-pane fade in active">
+
+                    <div id="requerimientos" class="tab-pane fade in active">
                         <br>
-                        <form id="form-pendientes" type="register">
+                        <form id="form-requerimientos" type="register">
+
                             <div class="row">
                                 <div class="col-md-12">
                                     <table class="mytable table table-condensed table-bordered table-okc-view" 
-                                        id="requerimientosPendientes">
+                                        id="listaRequerimientos">
                                         <thead>
                                             <tr>
                                                 <th hidden></th>
-                                                <th>Tipo</th>
+                                                <!-- <th>Tipo</th> -->
                                                 <th>Codigo</th>
                                                 <th>Concepto</th>
                                                 <th>Fecha Req.</th>
-                                                <th>Ubigeo Entrega</th>
-                                                <th>Dirección Entrega</th>
+                                                <th>Emp-Sede</th>
                                                 <th>Responsable</th>
                                                 <th>Monto</th>
+                                                <th>Fecha Pago</th>
+                                                <th>Motivo</th>
+                                                <th>Procesado por</th>
                                                 <th>Estado</th>
                                                 <th width="90px">Acción</th>
                                             </tr>
@@ -52,29 +56,33 @@ Confirmación de Pagos
                                     </table>
                                 </div>
                             </div>
+
                         </form>
                     </div>
-                    <div id="confirmados" class="tab-pane fade">
+                    <div id="comprobantes" class="tab-pane fade">
                         <br>
-                        <form id="form-confirmados" type="register">
+                        <form id="form-comprobantes" type="register">
                             <div class="row">
                                 <div class="col-md-12">
                                     <table class="mytable table table-condensed table-bordered table-okc-view" 
-                                        id="requerimientosConfirmados">
+                                        id="listaComprobantes">
                                         <thead>
                                             <tr>
-                                                <th hidden></th>
-                                                <th>Tipo</th>
-                                                <th>Codigo</th>
-                                                <th>Concepto</th>
-                                                <th>Fecha Req.</th>
-                                                <th>Ubigeo Entrega</th>
-                                                <th>Dirección Entrega</th>
-                                                <th>Responsable</th>
+                                                <th hidden>#</th>
+                                                <th>Tipo Doc.</th>
+                                                <th>Serie</th>
+                                                <th>Número</th>
+                                                <th>Proveedor</th>
+                                                <th>Fecha Emisión</th>
+                                                <th>Condición</th>
+                                                <th>Fecha Vencimiento</th>
+                                                <th>Moneda</th>
+                                                <th>Total a Pagar</th>
+                                                <th>Fecha Pago</th>
+                                                <th>Motivo</th>
+                                                <th>Procesado por</th>
                                                 <th>Estado</th>
-                                                <th>Confirmación</th>
-                                                <th>Observación</th>
-                                                <th width="150px">Acción</th>
+                                                <th>Acción</th>
                                             </tr>
                                         </thead>
                                         <tbody></tbody>
@@ -83,16 +91,18 @@ Confirmación de Pagos
                             </div>
                         </form>
                     </div>
+
                 </div>
+
             </div>
         </div>
     </div>
 </div>
 
     
-@include('almacen.distribucion.requerimientoDetalle')
-@include('almacen.distribucion.requerimientoObs')
-@include('almacen.distribucion.verRequerimientoAdjuntos')
+@include('tesoreria.pagos.procesarPago')
+<!-- @include('almacen.distribucion.requerimientoDetalle')
+@include('almacen.distribucion.verRequerimientoAdjuntos') -->
 @endsection
 
 @section('scripts')
@@ -106,8 +116,8 @@ Confirmación de Pagos
     <script src="{{ asset('datatables/pdfmake/vfs_fonts.js') }}"></script>
     <script src="{{ asset('datatables/JSZip/jszip.min.js') }}"></script>
 
-    <script src="{{ asset('js/almacen/pagos/requerimientoPagos.js')}}"></script>
-    <script src="{{ asset('js/almacen/distribucion/requerimientoDetalle.js')}}"></script>
+    <script src="{{ asset('js/tesoreria/pagos/requerimientoPagos.js')}}"></script>
+    <!-- <script src="{{ asset('js/almacen/distribucion/requerimientoDetalle.js')}}"></script> -->
     <script>
     $(document).ready(function(){
         seleccionarMenu(window.location);
@@ -116,17 +126,14 @@ Confirmación de Pagos
 
         $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
             let tab = $(e.target).attr("href") // activated tab
-            if (tab=='#pendientes')
-            {
-                $('#requerimientosPendientes').DataTable().ajax.reload();
+
+            if (tab=='#requerimientos'){
+                $('#listaRequerimientos').DataTable().ajax.reload();
             }
-            else
-            {
-                $('#requerimientosConfirmados').DataTable().ajax.reload();
+            else if (tab=='#comprobantes'){
+                $('#listaComprobantes').DataTable().ajax.reload();
             }
          });
-        //requerimientoPago.listarRequerimientosPendientes();
-        //iniciar('{{Auth::user()->tieneAccion(78)}}');
     });
     </script>
 @endsection

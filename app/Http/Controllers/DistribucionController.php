@@ -35,9 +35,9 @@ class DistribucionController extends Controller
         $motivos_anu = AlmacenController::select_motivo_anu();
         return view('almacen/guias/despachosPendientes', compact('tp_operacion','clasificaciones','usuarios','motivos_anu'));
     }
-    function view_requerimientoPagos(){
+    function view_confirmacionPago(){
         // $usuarios = AlmacenController::select_usuarios();
-        return view('almacen/pagos/requerimientoPagos');
+        return view('tesoreria/pagos/confirmacionPago');
     }
     function view_trazabilidad_requerimientos(){
         return view('almacen/distribucion/trazabilidadRequerimientos');
@@ -551,26 +551,28 @@ class DistribucionController extends Controller
 
     public function listarRequerimientosPendientesPagos(Request $request){
         $data = DB::table('almacen.alm_req')
-            ->select('alm_req.*','sis_usua.nombre_corto as responsable','adm_grupo.descripcion as grupo',
-            'adm_grupo.id_sede','adm_estado_doc.estado_doc','adm_estado_doc.bootstrap_color',
-            'ubi_dis.descripcion as ubigeo_descripcion',
-            'rrhh_perso.nro_documento as dni_persona','alm_almacen.descripcion as almacen_descripcion',
-            'alm_almacen.id_sede as sede_almacen',
+            ->select('alm_req.*','sis_usua.nombre_corto as responsable',//'adm_grupo.descripcion as grupo','adm_grupo.id_sede',
+            'adm_estado_doc.estado_doc','adm_estado_doc.bootstrap_color',
+            'sis_sede.descripcion as sede_descripcion',
+            // 'ubi_dis.descripcion as ubigeo_descripcion',
+            // 'rrhh_perso.nro_documento as dni_persona','alm_almacen.descripcion as almacen_descripcion',
+            // 'alm_almacen.id_sede as sede_almacen',
             'alm_tp_req.descripcion as tipo_req','sis_moneda.simbolo',
             DB::raw("(rrhh_perso.nombres) || ' ' || (rrhh_perso.apellido_paterno) || ' ' || (rrhh_perso.apellido_materno) AS nombre_persona"),
-            'adm_contri.nro_documento as cliente_ruc','adm_contri.razon_social as cliente_razon_social')
+            'adm_contri.razon_social as cliente_razon_social')
             ->join('almacen.alm_tp_req','alm_tp_req.id_tipo_requerimiento','=','alm_req.id_tipo_requerimiento')
             ->join('configuracion.sis_usua','sis_usua.id_usuario','=','alm_req.id_usuario')
-            ->leftjoin('administracion.adm_grupo','adm_grupo.id_grupo','=','alm_req.id_grupo')
+            ->join('administracion.sis_sede','sis_sede.id_sede','=','alm_req.id_sede')
+            // ->leftjoin('administracion.adm_grupo','adm_grupo.id_grupo','=','alm_req.id_grupo')
             ->join('administracion.adm_estado_doc','adm_estado_doc.id_estado_doc','=','alm_req.estado')
-            ->leftJoin('almacen.alm_almacen','alm_almacen.id_almacen','=','alm_req.id_almacen')
-            ->leftJoin('configuracion.ubi_dis','ubi_dis.id_dis','=','alm_req.id_ubigeo_entrega')
+            // ->leftJoin('almacen.alm_almacen','alm_almacen.id_almacen','=','alm_req.id_almacen')
+            // ->leftJoin('configuracion.ubi_dis','ubi_dis.id_dis','=','alm_req.id_ubigeo_entrega')
             ->leftJoin('rrhh.rrhh_perso','rrhh_perso.id_persona','=','alm_req.id_persona')
             ->leftJoin('comercial.com_cliente','com_cliente.id_cliente','=','alm_req.id_cliente')
             ->leftJoin('contabilidad.adm_contri','adm_contri.id_contribuyente','=','com_cliente.id_contribuyente')
             ->leftJoin('configuracion.sis_moneda','sis_moneda.id_moneda','=','alm_req.id_moneda')
-            ->where([['alm_req.estado','=',1],['alm_req.confirmacion_pago','=',false],['alm_req.tipo_cliente','!=',3],['alm_req.tipo_cliente','!=',4]])
-            ->orWhere([['alm_req.estado','=',19],['alm_req.id_tipo_requerimiento','=',2],['alm_req.confirmacion_pago','=',false]]);//muestra todos los reservados
+            ->where([['alm_req.id_tipo_requerimiento','=',2],['alm_req.estado','=',1]])
+            ->orWhere([['alm_req.id_tipo_requerimiento','=',2],['alm_req.estado','=',19]]);
             // ->get();
         return datatables($data)->toJson();
     }
@@ -945,13 +947,6 @@ class DistribucionController extends Controller
 
             if ($request->aplica_cambios_valor == 'no'){
 
-                // $empresa = DB::table('administracion.sis_sede')
-                // ->select('adm_empresa.id_empresa','adm_contri.razon_social')
-                // ->join('administracion.adm_empresa','adm_empresa.id_empresa','=','sis_sede.id_empresa')
-                // ->join('contabilidad.adm_contri','adm_contri.id_contribuyente','=','adm_empresa.id_contribuyente')
-                // ->where('id_sede',$request->id_sede)->first();
-    
-            // if ($empresa !== null){
                 $req = DB::table('almacen.alm_req')
                 ->select('alm_req.*','oc_propias.id as id_oc_propia','oc_propias.url_oc_fisica','entidades.nombre',
                 'adm_contri.razon_social','oportunidades.codigo_oportunidad','adm_empresa.codigo as codigo_empresa',
@@ -965,95 +960,59 @@ class DistribucionController extends Controller
                 ->join('contabilidad.adm_contri','adm_contri.id_contribuyente','=','adm_empresa.id_contribuyente')
                 ->where('id_requerimiento',$request->id_requerimiento)
                 ->first();
-    
-                // $items = DB::table('almacen.alm_det_req')
-                // ->select('alm_det_req.cantidad','alm_det_req.precio_referencial',
-                // DB::raw("(item_cat.descripcion) || ' ' || (item_subcat.descripcion) || ' ' || (item.descripcion) AS item_descripcion"),
-                // DB::raw("(prod_cat.descripcion) || ' ' || (prod_subcat.descripcion) || ' ' || (prod.descripcion) AS prod_descripcion"),
-                // 'item_unidad.abreviatura as item_unid','prod_unidad.abreviatura as prod_unid',
-                // 'item.part_number as item_part_number','prod.part_number as prod_part_number',
-                // 'sis_moneda.simbolo')
-                // ->join('almacen.alm_req','alm_req.id_requerimiento','=','alm_det_req.id_requerimiento')
-                // ->leftJoin('configuracion.sis_moneda','sis_moneda.id_moneda','=','alm_req.id_moneda')
-                // ->leftJoin('almacen.alm_item','alm_item.id_item','=','alm_det_req.id_item')
-                // ->leftJoin('almacen.alm_prod as item','item.id_producto','=','alm_item.id_producto')
-                // ->leftJoin('almacen.alm_und_medida as item_unidad','item_unidad.id_unidad_medida','=','item.id_unidad_medida')
-                // ->leftJoin('almacen.alm_cat_prod as item_cat','item_cat.id_categoria','=','item.id_categoria')
-                // ->leftJoin('almacen.alm_subcat as item_subcat','item_subcat.id_subcategoria','=','item.id_subcategoria')
-    
-                // ->leftJoin('almacen.alm_prod as prod','prod.id_producto','=','alm_det_req.id_producto')
-                // ->leftJoin('almacen.alm_und_medida as prod_unidad','prod_unidad.id_unidad_medida','=','prod.id_unidad_medida')
-                // ->leftJoin('almacen.alm_cat_prod as prod_cat','prod_cat.id_categoria','=','prod.id_categoria')
-                // ->leftJoin('almacen.alm_subcat as prod_subcat','prod_subcat.id_subcategoria','=','prod.id_subcategoria')
+
+                if ($req->id_tipo_requerimiento == 1){
+
+                    $asunto_facturacion = $req->orden_am.' | '.$req->nombre.' | '.$req->codigo_oportunidad.' | '.$req->codigo_empresa;
+                    // $asunto_facturacion = 'Generar '.$request->documento.' para el Requerimiento '.$req->codigo.' '.$req->concepto;
+                    $contenido_facturacion = '
+                    Favor de generar documentación: <br>- '.($request->documento=='Factura'? $request->documento.'<br>- Guía<br>- Certificado de Garantía<br>- CCI<br>':'<br>').' 
+                    <br>Requerimiento '.$req->codigo.'
+                    <br>Entidad: '.$req->nombre.'
+                    <br>Empresa: '.$req->razon_social.'
+                    <br>'.$request->contenido.'<br>
+            <br>'.($req->id_oc_propia !== null 
+            ? ('Ver Orden Física: '.$req->url_oc_fisica.' 
+            <br>Ver Orden Electrónica: https://apps1.perucompras.gob.pe//OrdenCompra/obtenerPdfOrdenPublico?ID_OrdenCompra='.$req->id_oc_propia.'&ImprimirCompleto=1') : '').'
+            <br><br>
+            Saludos,<br>
+            Módulo de Despachos<br>
+            SYSTEM AGILE';
                 
-                // ->where([['alm_det_req.id_requerimiento','=',$request->id_requerimiento],
-                //         ['alm_det_req.estado','!=',7],
-                //         ['alm_det_req.tiene_transformacion','=',($request->tiene_transformacion == 'si' ? true : false)]])
-                // ->get();
+                    $msj = '';
+                    $email_destinatario[] = 'programador01@okcomputer.com.pe';
+                    $email_destinatario[] = 'administracionventas@okcomputer.com.pe';
+                    // $email_destinatario[] = 'asistente.contable.lima@okcomputer.com.pe';
+                    // $email_destinatario[] = 'asistente.contable@okcomputer.com.pe';
+                    // $email_destinatario[] = 'administracionventas@okcomputer.com.pe';
+                    // $email_destinatario[] = 'asistente.almacenlima1@okcomputer.com.pe';
+                    // $email_destinatario[] = 'asistente.almacenlima2@okcomputer.com.pe';
+                    // $email_destinatario[] = 'asistente.almacenlima@okcomputer.com.pe';
+                    // $email_destinatario[] = 'logistica.lima@okcomputer.com.pe';
+                    // $email_destinatario[] = 'soporte.lima@okcomputer.com.pe';
+                    // $email_destinatario[] = 'contadorgeneral@okcomputer.com.pe';
+                    // $email_destinatario[] = 'infraestructura@okcomputer.com.pe';
+                    // $email_destinatario[] = 'lenovo@okcomputer.com.pe';
+                    // $email_destinatario[] = 'logistica@okcomputer.com.pe';
+                    // $email_destinatario[] = 'dapaza@okcomputer.com.pe';
+                    $payload=[
+                        'id_empresa'=>$req->id_empresa,
+                        'email_destinatario'=>$email_destinatario,
+                        'titulo'=>$asunto_facturacion,
+                        'mensaje'=>$contenido_facturacion
+                    ];
     
-                // $text = '<table><tbody>';
-                // $i = 1;
-                // foreach ($items as $item) {
-                //     $text .= '<tr>
-                //     <td>'.$i.'.-</td><td>'.($item->item_part_number !== null ? $item->item_part_number : $item->prod_part_number).'</td>
-                //     <td>'.($item->item_descripcion !== null ? $item->item_descripcion : $item->prod_descripcion).'</td>
-                //     <td> Cantidad: '.$item->cantidad.' '.($item->item_unid !== null ? $item->item_unid : $item->prod_unid).'</td>
-                //     <td> Precio: '.($item->precio_referencial !== null ? ($item->simbolo.' '.$item->precio_referencial) : 0).'</td>
-                //     </tr>';
-                //     $i++;
-                // }
-                // $text .= '</tbody></table>';
-
-                $asunto_facturacion = $req->orden_am.' | '.$req->nombre.' | '.$req->codigo_oportunidad.' | '.$req->codigo_empresa;
-                // $asunto_facturacion = 'Generar '.$request->documento.' para el Requerimiento '.$req->codigo.' '.$req->concepto;
-                $contenido_facturacion = '
-                Favor de generar documentación: <br>- '.($request->documento=='Factura'? $request->documento.'<br>- Guía<br>- Certificado de Garantía<br>- CCI<br>':'<br>').' 
-                <br>Requerimiento '.$req->codigo.'
-                <br>Entidad: '.$req->nombre.'
-                <br>Empresa: '.$req->razon_social.'
-                <br>'.$request->contenido.'<br>
-        <br>'.($req->id_oc_propia !== null 
-        ? ('Ver Orden Física: '.$req->url_oc_fisica.' 
-        <br>Ver Orden Electrónica: https://apps1.perucompras.gob.pe//OrdenCompra/obtenerPdfOrdenPublico?ID_OrdenCompra='.$req->id_oc_propia.'&ImprimirCompleto=1') : '').'
-        <br><br>
-        Saludos,<br>
-        Módulo de Despachos<br>
-        SYSTEM AGILE';
-            
+                    $smpt_setting=[
+                        'smtp_server'=>'smtp.office365.com',
+                        'port'=>587,
+                        'encryption'=>'tls',
+                        'email'=>'administracionventas@okcomputer.com.pe',
+                        'password'=>'Logistica1505'
+                    ];
     
-                $msj = '';
-				$email_destinatario[] = 'programador01@okcomputer.com.pe';
-				$email_destinatario[] = 'administracionventas@okcomputer.com.pe';
-                // $email_destinatario[] = 'asistente.contable.lima@okcomputer.com.pe';
-                // $email_destinatario[] = 'asistente.contable@okcomputer.com.pe';
-				// $email_destinatario[] = 'administracionventas@okcomputer.com.pe';
-				// $email_destinatario[] = 'asistente.almacenlima1@okcomputer.com.pe';
-				// $email_destinatario[] = 'asistente.almacenlima2@okcomputer.com.pe';
-				// $email_destinatario[] = 'asistente.almacenlima@okcomputer.com.pe';
-				// $email_destinatario[] = 'logistica.lima@okcomputer.com.pe';
-				// $email_destinatario[] = 'soporte.lima@okcomputer.com.pe';
-				// $email_destinatario[] = 'contadorgeneral@okcomputer.com.pe';
-				// $email_destinatario[] = 'infraestructura@okcomputer.com.pe';
-				// $email_destinatario[] = 'lenovo@okcomputer.com.pe';
-				// $email_destinatario[] = 'logistica@okcomputer.com.pe';
-				// $email_destinatario[] = 'dapaza@okcomputer.com.pe';
-                $payload=[
-                    'id_empresa'=>$req->id_empresa,
-                    'email_destinatario'=>$email_destinatario,
-                    'titulo'=>$asunto_facturacion,
-                    'mensaje'=>$contenido_facturacion
-                ];
-
-                $smpt_setting=[
-                    'smtp_server'=>'smtp.office365.com',
-                    'port'=>587,
-                    'encryption'=>'tls',
-                    'email'=>'administracionventas@okcomputer.com.pe',
-                    'password'=>'Logistica1505'
-                ];
-
-                if (count($email_destinatario) > 0){
-                    $estado_envio = (new CorreoController)->enviar_correo_despacho($payload, $smpt_setting);
+                    if (count($email_destinatario) > 0){
+                        $estado_envio = (new CorreoController)->enviar_correo_despacho($payload, $smpt_setting);
+                    }
                 }
             } else {
                 $msj = 'Se guardó existosamente la Orden de Despacho y Hoja de Transformación';

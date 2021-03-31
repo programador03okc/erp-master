@@ -1215,6 +1215,7 @@ class OrdenesPendientesController extends Controller
                 ->where('id_guia_com_det',$item->id_guia_com_det)
                 ->update(['valorizacion'=>$item->total]);
             }
+            
             DB::commit();
             return response()->json($id_doc);
             

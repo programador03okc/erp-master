@@ -151,20 +151,6 @@
         </ul>
     </li>
     @endif
-    <!-- @if(Auth::user()->tieneSubModulo(19))
-    <li class="treeview">
-        <a href="#"><i class="fas fa-hand-holding-usd"></i> <span> Pagos</span>
-            <span class="pull-right-container">
-            <i class="fa fa-angle-left pull-right"></i>
-            </span>
-        </a>
-        <ul class="treeview-menu">
-            @if(Auth::user()->tieneAplicacion(79))
-            <li><a href="{{route('logistica.almacen.pagos.confirmacion-pagos.index')}}"><i class="far fa-circle fa-xs"></i> Confirmación de Pagos </a></li>
-            @endif
-        </ul>
-    </li>
-    @endif -->
     @if(Auth::user()->tieneSubModulo(20))
     <li class="treeview">
         <a href="#"><i class="fas fa-truck"></i> <span> Distribución</span>
@@ -243,20 +229,6 @@
                 </ul>
             </li>
             @endif
-            <!-- @if(Auth::user()->tieneSubModulo(19))
-            <li class="treeview">
-                <a href="#"><i class="fas fa-hand-holding-usd"></i> Pagos
-                    <span class="pull-right-container">
-                    <i class="fa fa-angle-left pull-right"></i>
-                    </span>
-                </a>
-                <ul class="treeview-menu">
-                    @if(Auth::user()->tieneAplicacion(79))
-                    <li><a href="{{route('logistica.almacen.pagos.confirmacion-pagos.index')}}"><i class="far fa-circle fa-xs"></i> Confirmación de Pagos </a></li>
-                    @endif
-                </ul>
-            </li>
-            @endif -->
             <!-- @if(Auth::user()->tieneSubModulo(20)) -->
             <!-- <li class="treeview">
                 <a href="#"><i class="fab fa-stack-overflow"></i> Control de Stock

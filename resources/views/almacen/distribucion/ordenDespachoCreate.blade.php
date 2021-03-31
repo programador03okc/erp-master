@@ -19,7 +19,7 @@
                             <input type="text" class="form-control" name="almacen_descripcion" readOnly>
                         </div>
                         <div class="col-md-6">
-                            <h5>Cliente</h5>
+                            <h5>Cliente / Entidad</h5>
                             <div style="display:flex;"> 
                                 <input type="text" class="oculto" name="id_cliente" >
                                 <input type="text" class="form-control" name="cliente_ruc" style="display: none; width: 130px;" readOnly>
