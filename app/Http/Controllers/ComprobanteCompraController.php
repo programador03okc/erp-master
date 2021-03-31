@@ -146,16 +146,45 @@ class ComprobanteCompraController extends Controller
         return view('logistica/comprobantes/generar_comprobante_compra', compact('igv','proveedores','clasificaciones','condiciones','tp_doc','moneda','detracciones','impuestos','usuarios','tp_contribuyente','sis_identidad'));
     }
 
-    public function getListaComporbantesCompra(){
+    // public function getListaComprobantesCompra(){
+    //     $data = DB::table('almacen.doc_com')
+    //     ->select(
+    //         'doc_com.*',
+    //         'adm_contri.razon_social',
+    //         'adm_estado_doc.estado_doc',
+    //         'adm_estado_doc.bootstrap_color',
+    //         'sis_moneda.descripcion as moneda',
+    //         'log_cdn_pago.descripcion AS condicion_pago',
+    //         'cont_tp_doc.descripcion as tipo_documento'
+    //         )
+    //     ->join('logistica.log_prove','log_prove.id_proveedor','=','doc_com.id_proveedor')
+    //     ->join('contabilidad.adm_contri','adm_contri.id_contribuyente','=','log_prove.id_contribuyente')
+    //     ->join('administracion.adm_estado_doc','adm_estado_doc.id_estado_doc','=','doc_com.estado')
+    //     ->leftJoin('configuracion.sis_moneda','sis_moneda.id_moneda','=','doc_com.moneda')
+    //     ->leftJoin('logistica.log_cdn_pago', 'log_cdn_pago.id_condicion_pago', '=', 'doc_com.id_condicion')
+    //     ->leftJoin('contabilidad.cont_tp_doc', 'cont_tp_doc.id_tp_doc', '=', 'doc_com.id_tp_doc')
+
+    //     ->where('doc_com.estado','!=',7)
+    //     ->get();
+    //     return $data;
+    // }
+
+    // public function listar_docs_compra(){
+    //     $data = $this->getListaComprobantesCompra();
+    //     $output['data'] = $data;
+    //     return response()->json($output);
+    // }
+
+    public function listar_docs_compra(){
         $data = DB::table('almacen.doc_com')
         ->select(
             'doc_com.*',
             'adm_contri.razon_social',
-            'adm_estado_doc.estado_doc as des_estado',
-            'sis_moneda.descripcion as moneda',
+            'adm_estado_doc.estado_doc',
+            'adm_estado_doc.bootstrap_color',
+            'sis_moneda.simbolo',
             'log_cdn_pago.descripcion AS condicion_pago',
             'cont_tp_doc.descripcion as tipo_documento'
-
             )
         ->join('logistica.log_prove','log_prove.id_proveedor','=','doc_com.id_proveedor')
         ->join('contabilidad.adm_contri','adm_contri.id_contribuyente','=','log_prove.id_contribuyente')
@@ -163,20 +192,10 @@ class ComprobanteCompraController extends Controller
         ->leftJoin('configuracion.sis_moneda','sis_moneda.id_moneda','=','doc_com.moneda')
         ->leftJoin('logistica.log_cdn_pago', 'log_cdn_pago.id_condicion_pago', '=', 'doc_com.id_condicion')
         ->leftJoin('contabilidad.cont_tp_doc', 'cont_tp_doc.id_tp_doc', '=', 'doc_com.id_tp_doc')
+        ->where('doc_com.estado','!=',7);
 
-
-        ->where('doc_com.estado','!=',7)
-        ->get();
-        return $data;
+        return datatables($data)->toJson();
     }
-
-    public function listar_docs_compra(){
-        $data = $this->getListaComporbantesCompra();
-        $output['data'] = $data;
-        return response()->json($output);
-    }
-
- 
 
     public function listar_doc_guias($id_doc){
         $guias = DB::table('almacen.doc_com_guia')
@@ -969,4 +988,14 @@ function view_lista_comprobantes_compra(){
     $sis_identidad = $this->sis_identidad_cbo();
     return view('logistica/comprobantes/lista_comprobantes_compra', compact('proveedores','clasificaciones','condiciones','tp_doc','moneda','detracciones','impuestos','usuarios','tp_contribuyente','sis_identidad'));
 }
+
+    public function documentoAPago($id)
+    {
+        $doc = DB::table('almacen.doc_com')
+        ->where('id_doc_com',$id)
+        ->update(['estado'=>8]);
+
+        return response()->json($doc);
+    }
+
 }

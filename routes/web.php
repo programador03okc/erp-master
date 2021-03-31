@@ -793,7 +793,7 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('tipo_cambio_compra/{fecha}', 'AlmacenController@tipo_cambio_compra');
 				Route::post('guardar_doc_compra', 'ComprobanteCompraController@guardar_doc_compra');
 				// Route::get('listar_guias_prov/{id?}', 'ComprobanteCompraController@listar_guias_prov');
-				Route::get('listar_docs_compra', 'ComprobanteCompraController@listar_docs_compra');
+				Route::post('listar_docs_compra', 'ComprobanteCompraController@listar_docs_compra');
  
 				Route::get('generar_comprobante', 'ComprobanteCompraController@view_genera_comprobante_compra')->name('generar_comprobante');
 				Route::get('listar_doc_guias/{id?}', 'ComprobanteCompraController@listar_doc_guias');
@@ -811,8 +811,9 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('listar_doc_com_orden/{id_doc?}', 'ComprobanteCompraController@listar_doc_com_orden');
 				Route::get('getOrdenByDetOrden/{id_det_orden?}', 'ComprobanteCompraController@getOrdenByDetOrden');
 				Route::get('anular_orden_doc_com/{id_doc_com?}/{id_orden_compra?}', 'ComprobanteCompraController@anular_orden_doc_com');
-
+				
 				Route::get('lista_comprobante_compra', 'ComprobanteCompraController@view_lista_comprobantes_compra')->name('lista_comprobante_compra');
+				Route::get('documentoAPago/{id}', 'ComprobanteCompraController@documentoAPago');
 
 			});
 

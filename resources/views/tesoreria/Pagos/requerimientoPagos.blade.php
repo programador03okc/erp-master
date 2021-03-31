@@ -18,33 +18,33 @@ Procesar Pago de Requerimientos
 
     <div class="box box-solid">
         <div class="box-body">
-            
-            <div class="row">
-                <div class="col-md-12">
-                    <table class="mytable table table-condensed table-bordered table-okc-view" 
-                        id="listaRequerimientos">
-                        <thead>
-                            <tr>
-                                <th hidden></th>
-                                <!-- <th>Tipo</th> -->
-                                <th>Codigo</th>
-                                <th>Concepto</th>
-                                <th>Fecha Req.</th>
-                                <th>Emp-Sede</th>
-                                <th>Responsable</th>
-                                <th>Monto</th>
-                                <th>Fecha Pago</th>
-                                <th>Motivo</th>
-                                <th>Procesado por</th>
-                                <th>Estado</th>
-                                <th width="90px">Acción</th>
-                            </tr>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
+            <div class="col-md-12" style="padding-top:10px;padding-bottom:10px;">
+                <div class="row">
+                    <div class="col-md-12">
+                        <table class="mytable table table-condensed table-bordered table-okc-view" 
+                            id="listaRequerimientos">
+                            <thead>
+                                <tr>
+                                    <th hidden></th>
+                                    <!-- <th>Tipo</th> -->
+                                    <th>Codigo</th>
+                                    <th>Concepto</th>
+                                    <th>Fecha Req.</th>
+                                    <th>Emp-Sede</th>
+                                    <th>Responsable</th>
+                                    <th>Monto</th>
+                                    <th>Fecha Pago</th>
+                                    <th>Motivo</th>
+                                    <th>Procesado por</th>
+                                    <th>Estado</th>
+                                    <th width="90px">Acción</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
-            
         </div>
     </div>
 </div>
