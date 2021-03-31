@@ -154,7 +154,9 @@ function mostrarTipoForm(tipo){
                 'input-group-direccion-contacto',
                 'input-group-horario-contacto',
             ]); 
-            cambiarVisibilidadBtn("btn-add-servicio","ocultar")
+            cambiarVisibilidadBtn("btn-add-servicio","ocultar");
+            cambiarVisibilidadBtn("btn-crear-producto","mostrar");
+
 
         break;
 
@@ -187,7 +189,8 @@ function mostrarTipoForm(tipo){
                 'input-group-monto'
     
             ]); 
-            cambiarVisibilidadBtn("btn-add-servicio","mostrar")
+            cambiarVisibilidadBtn("btn-add-servicio","mostrar");
+            cambiarVisibilidadBtn("btn-crear-producto","ocultar");
 
         break;
 
@@ -219,7 +222,9 @@ function mostrarTipoForm(tipo){
                 'input-group-sede'
                 
             ]); 
-            cambiarVisibilidadBtn("btn-add-servicio","mostrar")
+            cambiarVisibilidadBtn("btn-add-servicio","mostrar");
+            cambiarVisibilidadBtn("btn-crear-producto","ocultar");
+
 
         break;
 
@@ -258,7 +263,9 @@ function mostrarTipoForm(tipo){
                 'input-group-fecha_entrega',
                 'input-group-proyecto'    
             ]); 
-            cambiarVisibilidadBtn("btn-add-servicio","mostrar")
+            cambiarVisibilidadBtn("btn-add-servicio","mostrar");
+            cambiarVisibilidadBtn("btn-crear-producto","ocultar");
+
 
         break;
 

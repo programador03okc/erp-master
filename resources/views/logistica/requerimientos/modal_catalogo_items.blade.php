@@ -8,7 +8,7 @@
             <div class="modal-body">
             <div class="row">
                 <div class="col-md-12">
-                <button class="btn btn-sm btn-primary" onclick="crearProducto();">Crear Producto</button>
+                <button class="btn btn-sm btn-primary" id="btn-crear-producto" onclick="crearProducto();">Crear Producto</button>
                 <span class="text-info" id="text-info-item-vinculado" title="" hidden> Existe un item del CC Viculado <span class="badge label-danger" onClick="eliminarVinculoItemCC();" style="position: absolute;margin-top: -5px;margin-left: 5px; cursor:pointer" title="Eliminar vínculo">×</span></span>
 
                 </div>
