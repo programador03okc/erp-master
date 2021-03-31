@@ -167,7 +167,7 @@
                         @endforeach
                     </select>
                 </div>
-                <div class="col-md-2" id="input-group-det" hidden >
+                <div class="col-md-2" id="input-group-fuente_det" hidden >
                     <h5>Detalle Fuente</h5>
                     <select class="form-control activation " name="fuente_det_id">
                     </select>

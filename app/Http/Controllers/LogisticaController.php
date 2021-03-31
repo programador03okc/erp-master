@@ -2466,7 +2466,7 @@ class LogisticaController extends Controller
 
     public function actualizar_requerimiento(Request $request, $id_requerimiento)
     {
-        $cantidad_sustentos = (count($request->sustento));
+        $cantidad_sustentos = isset($request->sustento)?(count($request->sustento)):0;
         $nuevo_estado=3;
         $cantidadSustentosTrue=0;
         if($cantidad_sustentos>0){
