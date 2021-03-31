@@ -13,16 +13,18 @@ function open_despacho_create(data){
     $('[name=tipo_entrega]').val('MISMA CIUDAD').trigger('change.select2');
     $('[name=id_requerimiento]').val(data.id_requerimiento);
     $('[name=tiene_transformacion]').val(data.tiene_transformacion ? 'si' : 'no');
-    $('[name=direccion_destino]').val(data.contacto_direccion !== null ? data.contacto_direccion : data.entidad_direccion);
+    $('[name=direccion_destino]').val(data.contacto_direccion !== null ? data.contacto_direccion : (data.entidad_direccion!==null?data.entidad_direccion:data.direccion_entrega));
     $('[name=ubigeo]').val(data.id_ubigeo_entrega);
     $('[name=name_ubigeo]').val(data.ubigeo_descripcion);
     $('[name=tipo_cliente]').val(data.tipo_cliente);
     $('[name=id_almacen]').val((data.id_almacen !== null && data.id_almacen !== 0) ? data.id_almacen : '');
     $('[name=almacen_descripcion]').val(data.almacen_descripcion !== null ? data.almacen_descripcion : '');
     $('[name=id_sede]').val(data.sede_requerimiento !== null ? data.sede_requerimiento : '');
-    $('[name=telefono_cliente]').val(data.contacto_telefono !== null ? data.contacto_telefono : data.entidad_telefono);
-    $('[name=correo_cliente]').val(data.contacto_email !== null ? data.contacto_email : data.entidad_email);
-    $('[name=contacto_cliente]').val(data.contacto_persona !== null ? data.contacto_persona : data.entidad_persona);
+    $('[name=telefono_cliente]').val(data.contacto_telefono !== null ? data.contacto_telefono : (data.entidad_telefono!==null?data.entidad_telefono:data.telefono));
+    $('[name=correo_cliente]').val(data.contacto_email !== null ? data.contacto_email : (data.entidad_email!==null?data.entidad_email:data.email));
+    $('[name=contacto_cliente]').val(data.contacto_persona !== null ? data.contacto_persona : 
+        (data.entidad_persona!==null ? data.entidad_persona:
+        (data.nombre_persona!==null?data.nombre_persona:data.cliente_razon_social)));
     $('[name=id_cc]').val(data.id_cc);
     $('[name=hora_despacho]').val(hora_actual());
     $('[name=part_number_transformado]').val('');

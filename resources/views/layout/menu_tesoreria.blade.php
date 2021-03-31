@@ -11,9 +11,8 @@
             </span>
         </a>
         <ul class="treeview-menu">
-            <li><a href="{{route('tesoreria.pagos.index')}}"><i class="far fa-circle fa-xs"></i> Procesar Pagos </a></li>
-            <!-- <li><a href=""><i class="far fa-circle fa-xs"></i> Cuentas de Detracción </a></li>
-            <li><a href=""><i class="far fa-circle fa-xs"></i> Impuestos </a></li> -->
+            <li><a href="{{route('tesoreria.pagos.confirmacion-pagos.index')}}"><i class="far fa-circle fa-xs"></i> Confirmación de Pagos </a></li>
+            <li><a href="{{route('tesoreria.pagos.requerimiento-pagos.index')}}"><i class="far fa-circle fa-xs"></i> Procesar Pagos </a></li>
         </ul>
     </li>
 

@@ -50,7 +50,7 @@ Procesar Pago de Requerimientos
 </div>
 
     
-@include('tesoreria.ReqPagos.procesarPago')
+@include('tesoreria.pagos.procesarPago')
 <!-- @include('almacen.distribucion.requerimientoDetalle')
 @include('almacen.distribucion.verRequerimientoAdjuntos') -->
 @endsection
@@ -66,7 +66,7 @@ Procesar Pago de Requerimientos
     <script src="{{ asset('datatables/pdfmake/vfs_fonts.js') }}"></script>
     <script src="{{ asset('datatables/JSZip/jszip.min.js') }}"></script>
 
-    <script src="{{ asset('js/tesoreria/ReqPagos/requerimientoPagos.js')}}"></script>
+    <script src="{{ asset('js/tesoreria/pagos/requerimientoPagos.js')}}"></script>
     <!-- <script src="{{ asset('js/almacen/distribucion/requerimientoDetalle.js')}}"></script> -->
     <script>
     $(document).ready(function(){

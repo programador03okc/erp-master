@@ -20,11 +20,14 @@ class RequerimientoPagoController extends Controller
         $pagos_pendientes = DB::table('almacen.alm_req')
         ->where('estado',8)->count();
 
-        return view('tesoreria/main', compact('pagos_pendientes'));
+        $confirmaciones_pendientes = DB::table('almacen.alm_req')
+        ->where([['estado','=',19],['confirmacion_pago','=',false]])->count();
+
+        return view('tesoreria/main', compact('pagos_pendientes','confirmaciones_pendientes'));
     }
     
     function view_requerimiento_pagos(){
-        return view('tesoreria/ReqPagos/requerimientoPagos');
+        return view('tesoreria/Pagos/requerimientoPagos');
     }
 
     function listarRequerimientosPagos(){

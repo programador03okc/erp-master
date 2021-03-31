@@ -1,5 +1,5 @@
 <div class="modal fade" tabindex="-1" role="dialog" id="modal-requerimiento_obs" style="overflow-y:scroll;">
-    <div class="modal-dialog"  style="width: 700px;">
+    <div class="modal-dialog"  style="width: 500px;">
         <div class="modal-content">
             <form id="form-requerimiento_obs">
                 <div class="modal-header">
@@ -13,8 +13,8 @@
                     <input type="text" class="oculto" name="boton_origen">
                     <div class="row">
                         <div class="col-md-12">
-                            <h5>Ingrese el motivo</h5>
-                            <textarea name="obs_motivo" id="obs_motivo" cols="95" rows="5" required></textarea>
+                            <h5>Ingrese su Comentario de conformidad</h5>
+                            <textarea name="obs_motivo" id="obs_motivo" cols="70" rows="5" required></textarea>
                         </div>
                     </div>
                 </div>
