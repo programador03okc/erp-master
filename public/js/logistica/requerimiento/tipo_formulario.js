@@ -347,8 +347,13 @@ function cambiarVisibilidadBtn(name,estado){
         newclass = actualClass.concat(' invisible');
         document.querySelector("button[id='"+name+"']").setAttribute('class',newclass);
     }else if(estado =='mostrar'){
-        newclass= actualClass.replace('invisible', '');
+
+        while (actualClass.search("invisible") >= 0) {
+            actualClass= actualClass.replace("invisible","");
+        }
+        newclass =actualClass;
         document.querySelector("button[id='"+name+"']").setAttribute('class',newclass);
+
 
     }
 }

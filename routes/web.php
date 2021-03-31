@@ -652,6 +652,8 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::get('mostrar-archivos-adjuntos-requerimiento/{id_requerimiento?}', 'LogisticaController@mostrar_archivos_adjuntos_requerimiento');
 					Route::get('listar_almacenes', 'AlmacenController@mostrar_almacenes');
 					Route::get('mostrar-sede', 'ConfiguracionController@mostrarSede');
+					Route::get('mostrar_proveedores', 'LogisticaController@mostrar_proveedores');
+					Route::post('guardar_proveedor', 'LogisticaController@guardar_proveedor');
 					Route::get('verTrazabilidadRequerimiento/{id}', 'DistribucionController@verTrazabilidadRequerimiento');
 					Route::get('getCodigoRequerimiento/{id}', 'LogisticaController@getCodigoRequerimiento');
 					Route::get('mostrar-archivos-adjuntos/{id_detalle_requerimiento}', 'LogisticaController@mostrar_archivos_adjuntos');

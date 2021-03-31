@@ -41,28 +41,29 @@ function mostrar_requerimiento(IdorCode){
                     document.querySelector("button[id='btnAnular']").setAttribute('disabled',true);
                 }
             if(response['requerimiento'] !== undefined){
-                if(response['requerimiento'][0].id_tipo_requerimiento == 1){ // compra
-                    if(response['requerimiento'][0].tipo_cliente == 1 || response['requerimiento'][0].tipo_cliente == 2){ //persona natural o persona juridica
-                        // stateFormRequerimiento(1);
-                        grupos.forEach(element => {
-                            if(element.id_grupo ==3){ // proyectos
-                                mostrarTipoForm('BIENES_SERVICIOS_PROYECTOS');
+                if(response['requerimiento'][0].id_tipo_requerimiento == 1){ 
+                    mostrarTipoForm('MGCP');
 
-                             }else{
-                                mostrarTipoForm('BIENES_SERVICIOS');
-                
-                            }
-                        });
-                    }
-                    if(response['requerimiento'][0].tipo_cliente == 3  ){ // uso almacen
+                    // if(response['requerimiento'][0].tipo_cliente == 1 || response['requerimiento'][0].tipo_cliente == 2){ //persona natural o persona juridica
+
+                    // }
+                    if(response['requerimiento'][0].tipo_cliente == 3  ){ 
                         mostrarTipoForm('BIENES_SERVICIOS');
 
                     }
-                }else if(response['requerimiento'][0].id_tipo_requerimiento ==2){ //venta directa
-                    mostrarTipoForm('BIENES_SERVICIOS');
+                }else if(response['requerimiento'][0].id_tipo_requerimiento ==2){ 
+                    mostrarTipoForm('CMS');
 
-                }else if(response['requerimiento'][0].id_tipo_requerimiento ==3){ // pedido almacén
-                    mostrarTipoForm('BIENES_SERVICIOS');
+                }else if(response['requerimiento'][0].id_tipo_requerimiento ==3){ 
+                    grupos.forEach(element => {
+                        if(element.id_grupo ==3){ // proyectos
+                            mostrarTipoForm('BIENES_SERVICIOS_PROYECTOS');
+
+                        }else{
+                            mostrarTipoForm('BIENES_SERVICIOS');
+            
+                        }
+                    });
 
                 }
 

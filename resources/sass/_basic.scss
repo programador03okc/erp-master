@@ -1128,6 +1128,7 @@ span.select2-selection{
 #listaRequerimientos_filter,
 #ListaReq_filter,
 #ListaRequerimientosAprobados_filter,
+#listaProveedor_filter,
 #listaUbicacion_filter
 {
     margin: 0;
@@ -1179,6 +1180,7 @@ span.select2-selection{
 #listaSerie_filter label input[type="search"],
 #listaRequerimientos_filter label input[type="search"],
 #ListaRequerimientosAprobados_filter label input[type="search"],
+#listaProveedorCollapse_filter label input[type="search"],
 #listaUbicacion_filter label input[type="search"]
 {
     width: 95%;

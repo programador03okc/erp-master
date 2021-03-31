@@ -215,10 +215,9 @@
                 <div class="input-group-okc">
                         <select name="tipo_cliente" onChange="changeTipoCliente(event);"
                         class="form-control activation" style="width:100px" required>
-                        <!-- <option value="0">Elija una opción</option> -->
-                        <!-- <option value="1" default>Persona Natural</option>
+                        <option value="0">Elija una opción</option>
+                        <option value="1" default>Persona Natural</option>
                         <option value="2">Persona Juridica</option>
-                        <option value="3">Uso Almacén</option> -->
                     </select>
                 </div>
             </div>
@@ -489,6 +488,8 @@
 </div>
 @include('logistica.requerimientos.aprobacion.modal_sustento')
 
+@include('logistica.requerimientos.modal_almacen_reserva')
+@include('logistica.requerimientos.modal_seleccionar_crear_proveedor')
 @include('publico.personaModal')
 @include('logistica.cotizaciones.clienteModal')
 @include('logistica.cotizaciones.add_cliente')
@@ -541,6 +542,8 @@
     <script src="{{ asset('js/logistica/requerimiento/tipo_formulario.js') }}"></script>
     <script src="{{ asset('js/logistica/requerimiento/cabecera_detalle.js') }}"></script>
     <script src="{{ asset('js/logistica/requerimiento/inicializar.js') }}"></script>
+    <script src="{{ asset('js/logistica/requerimiento/modal_almacen_reserva.js')}}"></script>
+    <script src="{{ asset('js/logistica/requerimiento/modal_seleccionar_crear_proveedor.js')}}"></script>
     <script src="{{ asset('js/logistica/requerimiento/public.js') }}"></script>
     <script src="{{ asset('js/logistica/adjuntar_archivos_req.js') }}"></script>
     <script src="{{ asset('js/publico/modal_area.js')}}"></script>

@@ -1259,9 +1259,15 @@ span.select2-selection {
 #listaTransformaciones_filter label input[type=search],
 #listaSerie_filter label input[type=search],
 #listaRequerimientos_filter label input[type=search],
+#listaProveedorCollapse_filter label input[type=search],
 #ListaRequerimientosAprobados_filter label input[type=search],
 #listaUbicacion_filter label input[type=search] {
   width: 95%;
+}
+
+#listaProveedorCollapse_filter {
+  margin-top: 0px;
+
 }
 
 .subtitulo_blue {

@@ -1875,6 +1875,8 @@ class LogisticaController extends Controller
                             'fecha_registro'        => date('Y-m-d H:i:s'),
                             'estado'                => ($request->requerimiento['tipo_requerimiento'] ==2?19:1),
                             'id_almacen_reserva'    => is_numeric($detalle_reqArray[$i]['id_almacen_reserva']) == 1 ? $detalle_reqArray[$i]['id_almacen_reserva']:null,
+                            'stock_comprometido'    => isset($detalle_reqArray[$i]['stock_comprometido'])?$detalle_reqArray[$i]['stock_comprometido']:null,
+                            'proveedor_id'          => isset($detalle_reqArray[$i]['proveedor_id'])?$detalle_reqArray[$i]['proveedor_id']:null,
                             'id_cc_am_filas'        => is_numeric($detalle_reqArray[$i]['id_cc_am_filas']) == 1 ? $detalle_reqArray[$i]['id_cc_am_filas']:null,
                             'id_cc_venta_filas'     => is_numeric($detalle_reqArray[$i]['id_cc_venta_filas']) == 1 ? $detalle_reqArray[$i]['id_cc_venta_filas']:null,
                             'tiene_transformacion'  => $detalle_reqArray[$i]['tiene_transformacion']?$detalle_reqArray[$i]['tiene_transformacion']:false,
@@ -5724,8 +5726,8 @@ function get_id_usuario_usuario_por_rol($descripcion_rol, $id_sede, $id_empresa)
 
 
     public function guardar_proveedor(Request $request){
-        try {
-            DB::beginTransaction();
+        // try {
+        //     DB::beginTransaction();
 
             $fecha = date('Y-m-d H:i:s');
 
@@ -5762,12 +5764,12 @@ function get_id_usuario_usuario_por_rol($descripcion_rol, $id_sede, $id_empresa)
                     );
             }
             
-            DB::commit();
-            return response()->json(['id_proveedor'=>$id_proveedor,'razon_social'=>strtoupper($request->razon_social)]);
+            // DB::commit();
+            return response()->json(['id_proveedor'=>$id_proveedor,'razon_social'=>strtoupper($request->razon_social),'ruc'=>$request->nro_documento_prov,'exist'=>$exist ]);
             
-        } catch (\PDOException $e) {
-            DB::rollBack();
-        }
+        // } catch (\PDOException $e) {
+        //     DB::rollBack();
+        // }
         // $data = DB::table('logistica.log_prove')
         //     ->select('log_prove.id_proveedor','adm_contri.nro_documento','adm_contri.razon_social')
         //     ->join('contabilidad.adm_contri','adm_contri.id_contribuyente','=','log_prove.id_contribuyente')
