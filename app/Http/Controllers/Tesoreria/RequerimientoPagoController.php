@@ -48,6 +48,7 @@ class RequerimientoPagoController extends Controller
             ->where('alm_req.estado',8)
             ->orWhere('alm_req.estado',9)
             ->orderBy('alm_req.fecha_requerimiento','desc');
+
         return datatables($data)->toJson();
     }
 
@@ -60,7 +61,7 @@ class RequerimientoPagoController extends Controller
             'sis_moneda.simbolo','log_cdn_pago.descripcion AS condicion_pago',
             'cont_tp_doc.descripcion as tipo_documento',
             'req_pagos.fecha_pago','req_pagos.observacion',
-            'registrado_por.nombre_corto as usuario_pago',
+            'registrado_por.nombre_corto as usuario_pago'
             )
         ->join('logistica.log_prove','log_prove.id_proveedor','=','doc_com.id_proveedor')
         ->join('contabilidad.adm_contri','adm_contri.id_contribuyente','=','log_prove.id_contribuyente')
@@ -115,8 +116,8 @@ class RequerimientoPagoController extends Controller
                 $extension = pathinfo($file->getClientOriginalName(), PATHINFO_EXTENSION);
                 $nombre = $id_pago.'.'.$request->codigo.'.'.$extension;
                 //indicamos que queremos guardar un nuevo archivo en el disco local
-                \File::delete(public_path('tesoreria/requerimiento_pagos/'.$nombre));
-                \Storage::disk('archivos')->put('tesoreria/requerimiento_pagos/'.$nombre,\File::get($file));
+                \File::delete(public_path('tesoreria/pagos/'.$nombre));
+                \Storage::disk('archivos')->put('tesoreria/pagos/'.$nombre,\File::get($file));
                 
                 DB::table('tesoreria.req_pagos')
                 ->where('id_pago',$id_pago)
