@@ -1533,6 +1533,7 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::post('listarComprobantesPagos', 'Tesoreria\RequerimientoPagoController@listarComprobantesPagos')->name('listar-comprobante-pagos');
 				Route::post('procesarPago', 'Tesoreria\RequerimientoPagoController@procesarPago')->name('procesar-pagos');
 				Route::get('detalleRequerimiento/{id}', 'AprobacionController@detalleRequerimiento')->name('detalle-requerimiento');
+				Route::get('detalleComprobante/{id}', 'Tesoreria\RequerimientoPagoController@detalleComprobante')->name('detalle-comprobante');
 
 			});
 			

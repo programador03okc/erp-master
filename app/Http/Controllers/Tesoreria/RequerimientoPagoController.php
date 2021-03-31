@@ -76,6 +76,22 @@ class RequerimientoPagoController extends Controller
         return datatables($data)->toJson();
     }
 
+    public function detalleComprobante($id_doc_com)
+    {
+        $detalles = DB::table('almacen.doc_com_det')
+            ->select('doc_com_det.*','adm_estado_doc.estado_doc','adm_estado_doc.bootstrap_color',
+                    'alm_prod.descripcion as producto_descripcion','alm_prod.codigo as producto_codigo',
+                    'alm_und_medida.abreviatura','alm_prod.part_number')
+            ->leftJoin('almacen.alm_prod', 'alm_prod.id_producto', '=', 'doc_com_det.id_item')
+            ->leftJoin('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'doc_com_det.id_unid_med')
+            ->join('administracion.adm_estado_doc', 'adm_estado_doc.id_estado_doc', '=', 'doc_com_det.estado')
+            ->where([['doc_com_det.id_doc','=',$id_doc_com],
+                     ['doc_com_det.estado','!=',7]])
+            ->get();
+
+        return response()->json($detalles);
+    }
+
     function procesarPago(Request $request){
         
         try {

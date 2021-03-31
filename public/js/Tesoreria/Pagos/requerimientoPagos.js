@@ -63,7 +63,7 @@ class RequerimientoPago
 
     listarComprobantes(){
         var vardataTables = funcDatatables();
-        $('#listaComprobantes').DataTable({
+        tableComprobantes = $('#listaComprobantes').DataTable({
             'dom': vardataTables[1],
             'buttons': vardataTables[2],
             'language' : vardataTables[0],
@@ -185,7 +185,7 @@ $('#listaRequerimientos tbody').on('click', 'td button.detalle', function () {
         tr.removeClass('shown');
     }
     else {
-        formatDetalle(iTableCounter, id, row);
+        formatDetalleRequerimiento(iTableCounter, id, row);
         tr.addClass('shown');
         oInnerTable = $('#listaRequerimientos_' + iTableCounter).dataTable({
             //    data: sections, 
@@ -204,7 +204,40 @@ $('#listaRequerimientos tbody').on('click', 'td button.detalle', function () {
     }
 });
 
-function formatDetalle(table_id, id, row)
+var iTableCounterComp=1;
+var oInnerTableComp;
+var tableComprobantes;
+
+$('#listaComprobantes tbody').on('click', 'td button.detalle', function () {
+    var tr = $(this).closest('tr');
+    var row = tableComprobantes.row( tr );
+    var id = $(this).data('id');
+    
+    if ( row.child.isShown() ) {
+        row.child.hide();
+        tr.removeClass('shown');
+    }
+    else {
+        formatDetalleComprobante(iTableCounterComp, id, row);
+        tr.addClass('shown');
+        oInnerTableComp = $('#listaComprobantes_' + iTableCounterComp).dataTable({
+            //    data: sections, 
+            autoWidth: true, 
+            deferRender: true, 
+            info: false, 
+            lengthChange: false, 
+            ordering: false, 
+            paging: false, 
+            scrollX: false, 
+            scrollY: false, 
+            searching: false, 
+            columns:[ ]
+        });
+        iTableCounterComp = iTableCounterComp + 1;
+    }
+});
+
+function formatDetalleRequerimiento(table_id, id, row)
 {
     $.ajax({
         type: 'GET',
@@ -240,6 +273,72 @@ function formatDetalle(table_id, id, row)
                         <th style="border: none;">Cantidad</th>
                         <th style="border: none;">Unid.</th>
                         <th style="border: none;">Precio</th>
+                        <th style="border: none;">Estado</th>
+                    </tr>
+                </thead>
+                <tbody>${html}</tbody>
+                </table>`;
+            }
+            else {
+                var tabla = `<table class="table table-sm" style="border: none;" 
+                id="detalle_${table_id}">
+                <tbody>
+                    <tr><td>No hay registros para mostrar</td></tr>
+                </tbody>
+                </table>`;
+            }
+            row.child( tabla ).show();
+        }
+    }).fail( function( jqXHR, textStatus, errorThrown ){
+        console.log(jqXHR);
+        console.log(textStatus);
+        console.log(errorThrown);
+    });
+
+}
+
+function formatDetalleComprobante(table_id, id, row)
+{
+    $.ajax({
+        type: 'GET',
+        url: 'detalleComprobante/'+id,
+        dataType: 'JSON',
+        success: function(response){
+            console.log(response);
+            var html = '';
+            var i = 1;
+            
+            if (response.length > 0){
+                response.forEach(element => {
+                    html+='<tr id="'+element.id_doc_det+'">'+
+                    '<td style="border: none;">'+i+'</td>'+
+                    '<td style="border: none;">'+(element.producto_codigo !== null ? element.producto_codigo : '')+'</td>'+
+                    '<td style="border: none;">'+(element.part_number !== null ? element.part_number : '')+'</td>'+
+                    '<td style="border: none;">'+(element.producto_descripcion !== null ? element.producto_descripcion : element.descripcion_adicional)+'</td>'+
+                    '<td style="border: none;">'+element.cantidad+'</td>'+
+                    '<td style="border: none;">'+(element.abreviatura !== null ? element.abreviatura : '')+'</td>'+
+                    '<td style="border: none;">'+(element.precio_unitario!==null?element.precio_unitario:'0')+'</td>'+
+                    '<td style="border: none;">'+(element.sub_total!==null?element.sub_total:'0')+'</td>'+
+                    '<td style="border: none;">'+(element.total_dscto!==null?element.total_dscto:'0')+'</td>'+
+                    '<td style="border: none;">'+(element.precio_total!==null?element.precio_total:'0')+'</td>'+
+                    '<td style="border: none;"><span class="label label-'+element.bootstrap_color+'">'+element.estado_doc+'</span></td>'+
+                    '</tr>';
+                    i++;
+                });
+                var tabla = `<table class="table table-sm" style="border: none;" 
+                id="detalle_${table_id}">
+                <thead style="color: black;background-color: #c7cacc;">
+                    <tr>
+                        <th style="border: none;">#</th>
+                        <th style="border: none;">Código</th>
+                        <th style="border: none;">PartNumber</th>
+                        <th style="border: none;">Descripción</th>
+                        <th style="border: none;">Cantidad</th>
+                        <th style="border: none;">Unid.</th>
+                        <th style="border: none;">Unitario</th>
+                        <th style="border: none;">SubTotal</th>
+                        <th style="border: none;">Dscto</th>
+                        <th style="border: none;">Total</th>
                         <th style="border: none;">Estado</th>
                     </tr>
                 </thead>
