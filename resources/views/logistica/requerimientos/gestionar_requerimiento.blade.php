@@ -160,17 +160,27 @@
             <div id="input-group-fuente">
                 <div class="col-md-2" >
                     <h5>Fuente</h5>
-                    <select class="form-control activation " name="fuente_id" onChange="selectFuente(event);">
-                            <option value="0">Elija una opción</option>
-                        @foreach ($fuentes as $fuente)
-                            <option value="{{$fuente->id_fuente}}">{{$fuente->descripcion}}</option>
-                        @endforeach
-                    </select>
+                    <div style="display:flex">
+                        <select class="form-control activation " name="fuente_id" onChange="selectFuente(event);">
+                                <option value="0">Elija una opción</option>
+                            @foreach ($fuentes as $fuente)
+                                <option value="{{$fuente->id_fuente}}">{{$fuente->descripcion}}</option>
+                            @endforeach
+                        </select>
+                        <button type="button" class="btn-primary" title="Agregar Fuente" name="bnt-agregar-fuente" onclick="agregarFuenteModal();">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                    </div>
                 </div>
                 <div class="col-md-2" id="input-group-fuente_det" hidden >
                     <h5>Detalle Fuente</h5>
-                    <select class="form-control activation " name="fuente_det_id">
-                    </select>
+                    <div style="display:flex">
+                        <select class="form-control activation " name="fuente_det_id">
+                        </select>
+                        <button type="button" class="btn-primary" title="Agregar Detalle Fuente" name="bnt-agregar-detalle-fuente" onclick="agregarDetalleFuenteModal();">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                    </div>
                 </div>
             </div>
             <div class="col-md-4" id="input-group-almacen" hidden>
@@ -513,7 +523,8 @@
 
 </div>
 @include('logistica.requerimientos.aprobacion.modal_sustento')
-
+@include('logistica.requerimientos.modal_agregar_fuente')
+@include('logistica.requerimientos.modal_agregar_detalle_fuente')
 @include('logistica.requerimientos.modal_almacen_reserva')
 @include('logistica.requerimientos.modal_seleccionar_crear_proveedor')
 @include('publico.personaModal')
@@ -540,6 +551,7 @@
 @include('logistica.requerimientos.modal_detalle_requerimiento')
 @include('almacen.verRequerimientoEstado')
 @include('logistica.requerimientos.modal_promocion_item')
+
 
 @endsection
 
