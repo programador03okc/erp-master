@@ -1875,7 +1875,9 @@ class LogisticaController extends Controller
                 'email'                 => isset($request->requerimiento['email'])?$request->requerimiento['email']:null,
                 'id_ubigeo_entrega'     => isset($request->requerimiento['ubigeo'])?$request->requerimiento['ubigeo']:null,
                 'id_almacen'            => isset($request->requerimiento['id_almacen'])?$request->requerimiento['id_almacen']:null,
-                'confirmacion_pago'     => isset($request->requerimiento['fuente'])?($request->requerimiento['fuente'] == 2 ? true : false):false,
+                'confirmacion_pago'     => ($request->requerimiento['tipo_requerimiento'] == 2
+                                            ? ($request->requerimiento['fuente'] == 2 ? true : false)
+                                            : true),
                 'monto'                 => isset($request->requerimiento['monto'])?$request->requerimiento['monto']:null,
                 'fecha_entrega'         => isset($request->requerimiento['fecha_entrega'])?$request->requerimiento['fecha_entrega']:null,
                 'id_cc'                 => isset($request->requerimiento['id_cc'])?$request->requerimiento['id_cc']:null,
