@@ -319,7 +319,6 @@ function guardar_guia_create(data){
             console.log(response);
             if (response['id_ingreso'] > 0){
                 alert('Ingreso Almacén generado con éxito. ');
-                $('#modal-guia_create').modal('hide');
                 
                 var tra = $('[name=id_transformacion]').val();
                 if (tra!==''){
@@ -332,6 +331,7 @@ function guardar_guia_create(data){
                     }
                     listarOrdenesPendientes();
                 }
+                $('#modal-guia_create').modal('hide');
                 // var id = encode5t(id_ingreso);
                 // window.open('imprimir_ingreso/'+id);
             }

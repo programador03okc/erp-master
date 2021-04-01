@@ -1131,6 +1131,8 @@ span.select2-selection{
 #listaProveedor_filter,
 #listaComprobantesCompra_filter,
 #listaComprobantes_filter,
+#despachosPendientes_filter,
+#despachosEntregados_filter,
 #listaUbicacion_filter
 {
     margin: 0;
@@ -1185,6 +1187,8 @@ span.select2-selection{
 #listaProveedorCollapse_filter label input[type="search"],
 #listaComprobantesCompra_filter label input[type="search"],
 #listaComprobantes_filter label input[type="search"],
+#despachosPendientes_filter label input[type="search"],
+#despachosEntregados_filter label input[type="search"],
 #listaUbicacion_filter label input[type="search"]
 {
     width: 95%;

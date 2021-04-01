@@ -427,19 +427,75 @@ class DistribucionController extends Controller
         return response()->json($data);
     }
 
-    public function verDetalleDespacho($id_od){
+    public function verDetalleDespacho($id_od)
+    {
         $data = DB::table('almacen.orden_despacho_det')
         ->select('orden_despacho_det.*','alm_prod.codigo','alm_prod.descripcion',
-        'alm_ubi_posicion.codigo as posicion','alm_und_medida.abreviatura','alm_prod.part_number',
-        'alm_cat_prod.descripcion as categoria','alm_subcat.descripcion as subcategoria')
+        'alm_und_medida.abreviatura','alm_prod.part_number','alm_prod.id_unidad_medida',
+        'guia_oc.id_guia_com_det as id_guia_oc_det','guia_trans.id_guia_ven_det as id_guia_trans_det',
+        'orden_despacho.id_almacen','goc.id_almacen as id_almacen_oc','gtr.id_almacen as id_almacen_tr')
+
+        ->join('almacen.orden_despacho','orden_despacho.id_od','=','orden_despacho_det.id_od')
         ->leftJoin('almacen.alm_prod','alm_prod.id_producto','=','orden_despacho_det.id_producto')
-        ->leftJoin('almacen.alm_cat_prod','alm_cat_prod.id_categoria','=','alm_prod.id_categoria')
-        ->leftJoin('almacen.alm_subcat','alm_subcat.id_subcategoria','=','alm_prod.id_subcategoria')
         ->leftJoin('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'alm_prod.id_unidad_medida')
-        ->leftJoin('almacen.alm_ubi_posicion','alm_ubi_posicion.id_posicion','=','orden_despacho_det.id_posicion')
+        ->leftJoin('logistica.log_det_ord_compra', function($join){
+            $join->on('log_det_ord_compra.id_detalle_requerimiento', '=', 'orden_despacho_det.id_detalle_requerimiento');
+            $join->where('log_det_ord_compra.estado','!=', 7);
+        })
+        ->leftJoin('almacen.guia_com_det as guia_oc', function($join){
+            $join->on('guia_oc.id_oc_det', '=', 'log_det_ord_compra.id_detalle_orden');
+            $join->where('guia_oc.estado','!=', 7);
+        })
+        ->leftjoin('almacen.guia_com as goc','goc.id_guia','=','guia_oc.id_guia_com')
+        ->leftjoin('almacen.trans_detalle','trans_detalle.id_requerimiento_detalle','=','orden_despacho_det.id_detalle_requerimiento')
+        ->leftJoin('almacen.guia_ven_det', function($join){
+            $join->on('guia_ven_det.id_trans_det', '=', 'trans_detalle.id_trans_detalle');
+            $join->where('guia_ven_det.estado','!=', 7);
+        })
+        ->leftJoin('almacen.guia_com_det as guia_trans', function($join){
+            $join->on('guia_trans.id_guia_ven_det', '=', 'guia_ven_det.id_guia_ven_det');
+            $join->where('guia_trans.estado','!=', 7);
+        })
+        ->leftjoin('almacen.guia_com as gtr','gtr.id_guia','=','guia_trans.id_guia_com')        
         ->where([['orden_despacho_det.id_od','=',$id_od],['orden_despacho_det.estado','!=',7]])
         ->get();
-        return response()->json($data);
+
+        $lista = [];
+        
+        foreach ($data as $det) {
+
+            $series = [];
+            
+            if ($det->id_guia_oc_det !== null && $det->id_almacen_oc !== null &&
+                $det->id_almacen_oc == $det->id_almacen){
+
+                $series = DB::table('almacen.alm_prod_serie')
+                    ->where('id_guia_com_det',$det->id_guia_oc_det)
+                    ->get();
+            }
+            else if ($det->id_guia_trans_det !== null && $det->id_almacen_tr !== null &&
+                     $det->id_almacen_tr == $det->id_almacen){
+                    
+                    $series = DB::table('almacen.alm_prod_serie')
+                        ->where('id_guia_com_det',$det->id_guia_trans_det)
+                        ->get();
+            }
+
+            array_push($lista, [
+                'id_od_detalle' => $det->id_od_detalle,
+                'id_detalle_requerimiento' => $det->id_detalle_requerimiento,
+                'id_producto' => $det->id_producto,
+                'id_unidad_medida' => $det->id_unidad_medida,
+                'codigo' => $det->codigo,
+                'part_number' => $det->part_number,
+                'descripcion' => $det->descripcion,
+                'cantidad' => $det->cantidad,
+                'abreviatura' => $det->abreviatura,
+                'series' => $series
+            ]);
+        }
+
+        return response()->json($lista);
     }
 
 
@@ -673,8 +729,16 @@ class DistribucionController extends Controller
             // ->leftJoin('almacen.alm_almacen', 'alm_almacen.id_almacen', '=', 'alm_det_req.id_almacen_reserva')
             ->join('administracion.adm_estado_doc', 'adm_estado_doc.id_estado_doc', '=', 'alm_det_req.estado')
             ->join('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'alm_det_req.id_requerimiento')
-            ->leftJoin('logistica.log_det_ord_compra','log_det_ord_compra.id_detalle_requerimiento','=','alm_det_req.id_detalle_requerimiento')
-            ->leftJoin('almacen.guia_com_det','guia_com_det.id_oc_det','=','log_det_ord_compra.id_detalle_orden')
+            ->leftJoin('logistica.log_det_ord_compra', function($join){
+                    $join->on('log_det_ord_compra.id_detalle_requerimiento', '=', 'alm_det_req.id_detalle_requerimiento');
+                    $join->where('log_det_ord_compra.estado','!=', 7);
+                })
+            // ->leftJoin('logistica.log_det_ord_compra','log_det_ord_compra.id_detalle_requerimiento','=','alm_det_req.id_detalle_requerimiento')
+            ->leftJoin('almacen.guia_com_det', function($join){
+                    $join->on('guia_com_det.id_oc_det', '=', 'log_det_ord_compra.id_detalle_orden');
+                    $join->where('guia_com_det.estado','!=', 7);
+                })
+            // ->leftJoin('almacen.guia_com_det','guia_com_det.id_oc_det','=','log_det_ord_compra.id_detalle_orden')
             ->leftJoin('almacen.guia_com','guia_com.id_guia','=','guia_com_det.id_guia_com')
             ->leftJoin('almacen.alm_almacen as almacen_guia','almacen_guia.id_almacen','=','guia_com.id_almacen')
             ->leftJoin('almacen.alm_almacen as almacen_reserva','almacen_reserva.id_almacen','=','alm_det_req.id_almacen_reserva')
@@ -1399,13 +1463,13 @@ class DistribucionController extends Controller
                         ],
                             'id_mov_alm'
                         );
-
-                    $detalle = DB::table('almacen.orden_despacho_det')
-                    ->select('orden_despacho_det.*','alm_prod.id_unidad_medida')
-                    ->join('almacen.alm_prod','alm_prod.id_producto','=','orden_despacho_det.id_producto')
-                    ->where([['orden_despacho_det.id_od','=',$request->id_od],
-                            ['orden_despacho_det.estado','!=',7]])
-                    ->get();
+                        // $detalle = DB::table('almacen.orden_despacho_det')
+                        // ->select('orden_despacho_det.*','alm_prod.id_unidad_medida')
+                        // ->join('almacen.alm_prod','alm_prod.id_producto','=','orden_despacho_det.id_producto')
+                        // ->where([['orden_despacho_det.id_od','=',$request->id_od],
+                        //         ['orden_despacho_det.estado','!=',7]])
+                        // ->get();
+                    $detalle = json_decode($request->detalle);
                     //orden de despacho estado   procesado
                     $est = ($request->id_operacion == 27 ? 22 : 23);
                     $aplica_cambios = ($request->id_operacion == 27 ? true : false);
@@ -1424,6 +1488,15 @@ class DistribucionController extends Controller
                         ],
                             'id_guia_ven_det'
                         );
+
+                        if (count($det->series) > 0){
+                            
+                            foreach ($det->series as $s) {
+                                DB::table('almacen.alm_prod_serie')
+                                ->where('id_prod_serie', $s->id_prod_serie)
+                                ->update(['id_guia_ven_det' => $id_guia_ven_det]);
+                            }
+                        }
                         //obtener costo promedio
                         $saldos_ubi = DB::table('almacen.alm_prod_ubi')
                         ->where([['id_producto','=',$det->id_producto],

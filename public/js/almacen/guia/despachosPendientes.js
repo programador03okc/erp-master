@@ -152,7 +152,14 @@ function listarDespachosEntregados(permiso){
         'columns': [
             {'data': 'id_mov_alm'},
             {'data': 'fecha_emision'},
+            {'data': 'almacen_descripcion', 'name': 'alm_almacen.descripcion'},
             {'data': 'codigo_od', 'name': 'orden_despacho.codigo'},
+            {'data': 'codigo'},
+            {'render': function (data, type, row){
+                    return row['serie']+'-'+row['numero'];
+                }
+            },
+            {'data': 'codigo_requerimiento', 'name': 'alm_req.codigo'},
             {'render': 
                 function (data, type, row){
                     if (row['razon_social'] !== null){
@@ -162,13 +169,7 @@ function listarDespachosEntregados(permiso){
                     }
                 }
             },
-            {'data': 'codigo_requerimiento', 'name': 'alm_req.codigo'},
             {'data': 'concepto', 'name': 'alm_req.concepto'},
-            {'data': 'almacen_descripcion', 'name': 'alm_almacen.descripcion'},
-            {'render': function (data, type, row){
-                    return row['serie']+'-'+row['numero'];
-                }
-            },
             {'data': 'nombre_corto', 'name': 'sis_usua.nombre_corto'}
         ],
         'order': [[ 1, "desc" ]],
@@ -192,7 +193,7 @@ function listarDespachosEntregados(permiso){
                             'data-placement="bottom" title="Ver Salida" data-id="'+row['id_mov_alm']+'">'+
                             '<i class="fas fa-file-alt"></i></button>'
                     }
-                }, targets: 9
+                }, targets: 10
                 // '<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" '+
                 //     'data-placement="bottom" title="Ver Detalle" data-id="'+row.id_mov_alm+'">'+
                 //     '<i class="fas fa-list-ul"></i></button>'+
