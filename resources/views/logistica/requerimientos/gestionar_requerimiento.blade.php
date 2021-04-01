@@ -148,7 +148,7 @@
                 <h5>Monto Total</h5>
                 <div class="input-group-okc">
                     <div class="input-group-addon" id="montoMoneda" style="width: auto;">S/.</div>
-                    <input type="text" class="form-control activation" name="monto">
+                    <input type="text" class="form-control activation" name="monto" readOnly>
                 </div>
             </div>
             <div class="col-md-2" id="input-group-fecha_entrega">
@@ -194,7 +194,6 @@
                         </div>                            
                     </div>
                 </div>
-       
 
 
             <div id="input-group-comercial" hidden>
@@ -223,7 +222,7 @@
                 </div>
             </div>
         </div>
-       
+
         <div class="row">
             <div class="col-md-2 form-inline" id="input-group-tipo-cliente" >
                 <h5>Tipo Cliente</h5>
@@ -253,8 +252,7 @@
                     <!-- </div> 
                     <div class="input-group-append"> class="input-group-text         -->
                         <button type="button" class="btn-success" title="Agregar Cliente" name="btnAddCliente" 
-                        onClick="agregar_cliente();"
-                         ><i class="fas fa-plus"></i></button>
+                        onClick="agregar_cliente();"><i class="fas fa-plus"></i></button>
                     <!-- </div> -->
                 </div>
             </div>
@@ -375,7 +373,6 @@
                             <th class="oculto" width="70">PARTIDA</th>
                             <th class="oculto" width="70">C.Costos</th>
                             <th width="140">
-          
                                 <center>
                                 <button type="button" class="btn btn-xs btn-success activation" onClick="catalogoItemsModal();" id="btn-add-producto"
                                 data-toggle="tooltip" data-placement="bottom"  title="Agregar Detalle" disabled><i class="fas fa-plus"></i> Producto
@@ -394,6 +391,20 @@
                         </tr>
                     </tbody>
                 </table>
+                <div class="row">
+                    <div class="col-md-8"></div>
+                    <div class="col-md-2">
+                        <table class="table table-condensed table-small" style="border: none;margin-bottom: 0px;">
+                            <tbody>
+                                <tr>
+                                <td width="60%" style="text-align: right; font-weight: bold;">Monto Total:</td>
+                                <td width="10%"></td>
+                                <td style="font-weight: bold;"><label name="total"> <span name="simbolo_moneda">S/.</span> 0.00</label></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
     </fieldset>
