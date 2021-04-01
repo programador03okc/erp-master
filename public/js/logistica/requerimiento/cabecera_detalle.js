@@ -1332,7 +1332,7 @@ function selectPartida(id_partida){
 
 
 function limpiarSelectFuenteDet(){
-    let selectElement = document.querySelector("form[id='form-requerimiento'] div[id='input-group-det'] select[name='fuente_det_id']");
+    let selectElement = document.querySelector("form[id='form-requerimiento'] div[id='input-group-fuente_det'] select[name='fuente_det_id']");
 
     if(selectElement !=null){
         while (selectElement.options.length > 0) {                
