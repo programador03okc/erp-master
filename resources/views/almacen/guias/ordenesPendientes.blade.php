@@ -135,17 +135,17 @@ Pendientes de Ingreso
         </div>
     </div>
 </div>
+@include('almacen.documentos.doc_com_create')
 @include('almacen.guias.ordenDetalle')
-@include('almacen.guias.movimientoDetalle')
 @include('almacen.guias.guia_com_create')
-@include('almacen.guias.ordenesGuias')
-@include('almacen.guias.guia_com_obs')
-@include('almacen.guias.guia_ven_obs')
 @include('almacen.guias.guia_com_series')
+@include('almacen.guias.guia_com_obs')
+@include('almacen.documentos.doc_com_ver')
 @include('almacen.producto.productoModal')
 @include('almacen.producto.productoCreate')
-@include('almacen.documentos.doc_com_create')
-@include('almacen.documentos.doc_com_ver')
+@include('almacen.guias.movimientoDetalle')
+@include('almacen.guias.ordenesGuias')
+<!-- @include('almacen.guias.guia_ven_obs') -->
 
 @endsection
 

@@ -1,4 +1,4 @@
-<div class="modal fade" tabindex="-1" role="dialog" id="modal-doc_create">
+<div class="modal fade" tabindex="-1" role="dialog" id="modal-doc_create" style="overflow-y: scroll;">
     <div class="modal-dialog"  style="width:1200px;">
         <div class="modal-content">
             <form id="form-doc_create">

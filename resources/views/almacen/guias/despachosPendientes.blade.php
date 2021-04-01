@@ -66,12 +66,13 @@ Pendientes de Salida
                                     <tr>
                                         <th hidden></th>
                                         <th>Fecha Salida</th>
-                                        <th>Cod.Orden</th>
-                                        <th>Cliente</th>
-                                        <th>Req.</th>
-                                        <th>Concepto</th>
                                         <th>Almacén</th>
+                                        <th>Cod.OD</th>
+                                        <th>Codigo</th>
                                         <th>Guia</th>
+                                        <th>Req.</th>
+                                        <th>Cliente</th>
+                                        <th>Concepto</th>
                                         <th>Responsable</th>
                                         <th width="120px"></th>
                                     </tr>

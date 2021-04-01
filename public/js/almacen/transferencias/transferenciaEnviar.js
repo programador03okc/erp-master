@@ -175,7 +175,7 @@ function mostrarDetalleTransferencia(listaDetalle){
         <td style="background-color: navajowhite;">${element.descripcion}</td>
         <td>${element.cantidad}</td>
         <td>${element.abreviatura}</td>
-        <td><strong>${html_series}</strong></tr>`;
+        <td><strong>${html_series}</strong></td></tr>`;
         // onClick="agrega_series('.$det->id_detalle_orden.');"
         i++;
     });

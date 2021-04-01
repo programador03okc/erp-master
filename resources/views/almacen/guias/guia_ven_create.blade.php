@@ -66,6 +66,7 @@
                                         <th>Descripción</th>
                                         <th>Cantidad</th>
                                         <th>Unid</th>
+                                        <th>Series</th>
                                     </tr>
                                 </thead>
                                 <tbody></tbody>

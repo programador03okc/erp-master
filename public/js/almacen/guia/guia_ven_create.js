@@ -25,6 +25,8 @@ function open_guia_create(data){
     // next_serie_numero(data.id_sede,tp_doc_almacen);
 }
 
+let detalle = [];
+
 function listarDetalleOrdenDespacho(id_od){
     $.ajax({
         type: 'GET',
@@ -34,7 +36,17 @@ function listarDetalleOrdenDespacho(id_od){
             console.log(response);
             var html = '';
             var i = 1;
+            detalle = response;
+
             response.forEach(element => {
+                html_series = '';
+                element.series.forEach(ser => {
+                    if (html_series==''){
+                        html_series+=ser.serie;
+                    } else {
+                        html_series+='<br>'+ser.serie;
+                    }
+                });
                 html += `<tr>
                 <td>${i}</td>
                 <td>${element.codigo}</td>
@@ -42,6 +54,7 @@ function listarDetalleOrdenDespacho(id_od){
                 <td>${element.descripcion}</td>
                 <td>${element.cantidad}</td>
                 <td>${element.abreviatura}</td>
+                <td><strong>${html_series}</strong></td>
                 </tr>`;
             });
             $('#detalleGuiaVenta tbody').html(html);
@@ -53,36 +66,36 @@ function listarDetalleOrdenDespacho(id_od){
     });
 }
 
-function next_serie_numero(id_sede,id_tp_doc){
-    if (id_sede !== null && id_tp_doc !== null){
-        $.ajax({
-            type: 'GET',
-            url: 'next_serie_numero_guia/'+id_sede+'/'+id_tp_doc,
-            dataType: 'JSON',
-            success: function(response){
-                console.log(response);
-                if (response !== ''){
-                    $('[name=serie]').val(response.serie);
-                    $('[name=numero]').val(response.numero);
-                    $('[name=id_serie_numero]').val(response.id_serie_numero);
-                } else {
-                    $('[name=serie]').val('');
-                    $('[name=numero]').val('');
-                    $('[name=id_serie_numero]').val('');
-                }
-            }
-        }).fail( function( jqXHR, textStatus, errorThrown ){
-            console.log(jqXHR);
-            console.log(textStatus);
-            console.log(errorThrown);
-        });
-    }
-}
+// function next_serie_numero(id_sede,id_tp_doc){
+//     if (id_sede !== null && id_tp_doc !== null){
+//         $.ajax({
+//             type: 'GET',
+//             url: 'next_serie_numero_guia/'+id_sede+'/'+id_tp_doc,
+//             dataType: 'JSON',
+//             success: function(response){
+//                 console.log(response);
+//                 if (response !== ''){
+//                     $('[name=serie]').val(response.serie);
+//                     $('[name=numero]').val(response.numero);
+//                     $('[name=id_serie_numero]').val(response.id_serie_numero);
+//                 } else {
+//                     $('[name=serie]').val('');
+//                     $('[name=numero]').val('');
+//                     $('[name=id_serie_numero]').val('');
+//                 }
+//             }
+//         }).fail( function( jqXHR, textStatus, errorThrown ){
+//             console.log(jqXHR);
+//             console.log(textStatus);
+//             console.log(errorThrown);
+//         });
+//     }
+// }
 
 $("#form-guia_ven_create").on("submit", function(e){
     console.log('submit');
     e.preventDefault();
-    var data = $(this).serialize();
+    var data = $(this).serialize()+'&detalle='+JSON.stringify(detalle);
     console.log(data);
     guardar_guia_create(data);
 });
