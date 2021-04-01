@@ -143,11 +143,14 @@ function mostrar_cuadro_costos_modal(){
 function changeMonedaSelect(e){
     if( e.target.value == 1){
         document.querySelector("div[id='montoMoneda']").textContent='S/.';
+        document.querySelector("form[id='form-requerimiento'] table span[name='simbolo_moneda']").textContent= 'S/.';
 
     }else if( e.target.value ==2){
         document.querySelector("div[id='montoMoneda']").textContent='$';
+        document.querySelector("form[id='form-requerimiento'] table span[name='simbolo_moneda']").textContent= '$';
     }else{
         document.querySelector("div[id='montoMoneda']").textContent='';
+        document.querySelector("form[id='form-requerimiento'] table span[name='simbolo_moneda']").textContent= '';
     }
 
 }
@@ -817,6 +820,8 @@ function updateInputCantidadItem(event){
 
         }
     });
+    updateMontoTotalRequerimiento();
+
 }
 
 function updateInputPrecioReferencialItem(event){
@@ -828,8 +833,25 @@ function updateInputPrecioReferencialItem(event){
 
         }
     });
+    updateMontoTotalRequerimiento();
 }
 
+function updateMontoTotalRequerimiento(){
+    let sumSubTotal=0;
+    if(data_item.length > 0){
+        data_item.forEach(element => {
+            sumSubTotal+= parseFloat(parseInt(element.cantidad) * parseFloat(element.precio_referencial?element.precio_referencial:0));
+        });
+    }else{
+        alert("El item no se agrego correctamente");
+    }
+
+   let montoTotal=(Math.round(sumSubTotal * 100) / 100).toFixed(2);
+
+   document.querySelector("form[id='form-requerimiento'] input[name='monto']").value= montoTotal;
+   document.querySelector("form[id='form-requerimiento'] table label[name='total']").textContent= montoTotal;
+
+}
 
 function makeSelectedToSelect(indice, type, data, id, hasDisabled) {
     let html = '';
@@ -1332,7 +1354,7 @@ function selectPartida(id_partida){
 
 
 function limpiarSelectFuenteDet(){
-    let selectElement = document.querySelector("form[id='form-requerimiento'] div[id='input-group-det'] select[name='fuente_det_id']");
+    let selectElement = document.querySelector("form[id='form-requerimiento'] div[id='input-group-fuente_det'] select[name='fuente_det_id']");
 
     if(selectElement !=null){
         while (selectElement.options.length > 0) {                
