@@ -1405,3 +1405,17 @@ function selectFuente(event,fuente_id=null){
     });
 
 }
+
+
+function agregarFuenteModal(){
+    $('#modal-agregar-fuente').modal({
+        show: true,
+        backdrop: 'true'
+    });
+}
+function agregarDetalleFuenteModal(){
+    $('#modal-agregar-detalle-fuente').modal({
+        show: true,
+        backdrop: 'true'
+    });
+}
