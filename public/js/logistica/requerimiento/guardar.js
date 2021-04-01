@@ -307,13 +307,14 @@ function actionGuardarEditarRequerimiento(){
                 success: function(response){
                     // console.log(response);
                     if (response > 0){
-                        changeStateButton('guardar');
                         let lastIdRequerimiento =  response;
                         mostrar_requerimiento(lastIdRequerimiento);
                         verTrazabilidadRequerimiento(lastIdRequerimiento);
-
+                        
+                        changeStateButton('guardar');
                         $('#form-requerimiento').attr('type', 'register');
                         changeStateInput('form-requerimiento', true);
+
                         alert("Requerimiento Guardado");
                         sessionStorage.removeItem('ordenP_Cuadroc')
                         get_notificaciones_sin_leer_interval(); 
@@ -344,6 +345,8 @@ function actionGuardarEditarRequerimiento(){
                 if (response > 0){
                     alert("Requerimiento Actualizado");
                     changeStateButton('guardar');
+                    $('#form-requerimiento').attr('type', 'register');
+                    changeStateInput('form-requerimiento', true);
                 }
             }
         }).fail( function(jqXHR, textStatus, errorThrown){

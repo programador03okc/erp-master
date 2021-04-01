@@ -1787,7 +1787,7 @@ class LogisticaController extends Controller
             ->whereYear('fecha_registro', '=', $yyyy)
             ->count();
             $correlativo = $this->leftZero(4, ($num + 1));
-            $codigo = "{$documento}V{$yy}{$correlativo}";
+            $codigo = "{$documento}E-{$yy}{$correlativo}";
         }else{
 
                 $mes = date('m', strtotime("now"));
@@ -1801,11 +1801,13 @@ class LogisticaController extends Controller
                 $correlativo = $this->leftZero(4, ($num + 1));
                 $tp = '';
                 if ($request->requerimiento['tipo_requerimiento'] == 1){
-                $tp = 'C';
+                    $tp = 'M';
                 } else if ($request->requerimiento['tipo_requerimiento'] == 3){
-                    $tp = 'PA';
+                    $tp = 'BS';
+                } else if ($request->requerimiento['tipo_requerimiento'] == 4){
+                    $tp = 'V';
                 }
-                $codigo = "{$documento}{$tp}{$yy}{$correlativo}";
+                $codigo = "{$documento}{$tp}-{$yy}{$correlativo}";
                 
         }
 
@@ -1835,13 +1837,10 @@ class LogisticaController extends Controller
                 $estado = 19;
             }else{
                 $estado = 1;
-
             }
-
         }
         else{
             $estado = 1;
-            
         }
 
 
@@ -1876,14 +1875,14 @@ class LogisticaController extends Controller
                 'email'                 => isset($request->requerimiento['email'])?$request->requerimiento['email']:null,
                 'id_ubigeo_entrega'     => isset($request->requerimiento['ubigeo'])?$request->requerimiento['ubigeo']:null,
                 'id_almacen'            => isset($request->requerimiento['id_almacen'])?$request->requerimiento['id_almacen']:null,
-                'confirmacion_pago'     => isset($request->requerimiento['confirmacion_pago'])?$request->requerimiento['confirmacion_pago']:false,
+                'confirmacion_pago'     => isset($request->requerimiento['fuente'])?($request->requerimiento['fuente'] == 2 ? true : false):false,
                 'monto'                 => isset($request->requerimiento['monto'])?$request->requerimiento['monto']:null,
                 'fecha_entrega'         => isset($request->requerimiento['fecha_entrega'])?$request->requerimiento['fecha_entrega']:null,
                 'id_cc'                 => isset($request->requerimiento['id_cc'])?$request->requerimiento['id_cc']:null,
                 'tipo_cuadro'           => isset($request->requerimiento['tipo_cuadro'])?$request->requerimiento['tipo_cuadro']:null,
                 'tiene_transformacion'  => isset($request->requerimiento['tiene_transformacion'])?$request->requerimiento['tiene_transformacion']:false,
-                'fuente_id'             => isset($request->requerimiento['fuente'])?$request->requerimiento['fuente']:null,
-                'fuente_det_id'         => isset($request->requerimiento['fuente_det'])?$request->requerimiento['fuente_det']:null
+                'fuente_id'             => (isset($request->requerimiento['fuente']) && $request->requerimiento['fuente']>0)?$request->requerimiento['fuente']:null,
+                'fuente_det_id'         => (isset($request->requerimiento['fuente_det']) && $request->requerimiento['fuente_det']>0)?$request->requerimiento['fuente_det']:null
             ],
             'id_requerimiento'
         );
@@ -1969,7 +1968,7 @@ class LogisticaController extends Controller
 
         // if($request->requerimiento['tipo_requerimiento'] == 1){ //compra
             $this->componer_email_requerimiento($id_requerimiento, 'NUEVO', $request->requerimiento['tipo_requerimiento']);
-            $this->crear_notificacion_nuevo_requerimiento($id_requerimiento);
+            // $this->crear_notificacion_nuevo_requerimiento($id_requerimiento);
         // }
         
         }
@@ -2466,37 +2465,68 @@ class LogisticaController extends Controller
 
     public function actualizar_requerimiento(Request $request, $id_requerimiento)
     {
-        $cantidad_sustentos = isset($request->sustento)?(count($request->sustento)):0;
-        $nuevo_estado=3;
-        $cantidadSustentosTrue=0;
-        if($cantidad_sustentos>0){
-            for ($i = 0; $i < $cantidad_sustentos; $i++) {
-                if( $request->sustento[$i]['checked'] == true){
-                    $cantidadSustentosTrue+=1;
-                    $id_sustentacion=  DB::table('almacen.req_sust')
-                    ->insertGetId([  
-                        'descripcion'=>$request->sustento[$i]['sustento'],
-                        'id_usuario'=>Auth::user()->id_usuario,
-                        'estado'=>1,
-                        'fecha_registro'=>date('Y-m-d H:i:s')
-                        ],
-                    'id_sustentacion'
-                    );
-
-                    if($id_sustentacion >0){
-                        // $nuevo_estado = 12; // pendiente Aprobacion
-                        DB::table('administracion.adm_aprobacion')->where('id_aprobacion',  $request->sustento[$i]['id_aprobacion'])
-                        ->update([
-                            'id_sustentacion' => $id_sustentacion
-                        ]);
-                    }    
-                }
-
-            }
-            if($cantidadSustentosTrue == $cantidad_sustentos){
-                $nuevo_estado = 12; // pendiente Aprobacion
+        if($request->requerimiento['tipo_requerimiento'] ==1){
+            $nuevo_estado = 1;
+            if($request->requerimiento['id_cc'] != null || $request->requerimiento['id_cc'] != ''){
+                $nuevo_estado = 2;
             }
         }
+        elseif($request->requerimiento['tipo_requerimiento'] ==2){
+
+            $cantidad_reservas=0;
+            $detalle_reqArray = $request->detalle;
+            $count_detalle_req = count($detalle_reqArray);
+            for ($i = 0; $i < $count_detalle_req; $i++) {
+                if($detalle_reqArray[$i]['id_almacen_reserva']>0){
+                    ++$cantidad_reservas;
+                }
+            }
+
+            if($cantidad_reservas == $count_detalle_req){
+                $nuevo_estado = 19;
+            }else{
+                $nuevo_estado = 1;
+            }
+        }
+        else{
+            
+            $cantidad_sustentos = isset($request->sustento)?(count($request->sustento)):0;
+            $nuevo_estado=3;
+            $cantidadSustentosTrue=0;
+
+            if($cantidad_sustentos>0){
+                for ($i = 0; $i < $cantidad_sustentos; $i++) {
+                    if( $request->sustento[$i]['checked'] == true){
+                        $cantidadSustentosTrue+=1;
+                        $id_sustentacion=  DB::table('almacen.req_sust')
+                        ->insertGetId([  
+                            'descripcion'=>$request->sustento[$i]['sustento'],
+                            'id_usuario'=>Auth::user()->id_usuario,
+                            'estado'=>1,
+                            'fecha_registro'=>date('Y-m-d H:i:s')
+                            ],
+                        'id_sustentacion'
+                        );
+
+                        if($id_sustentacion >0){
+                            // $nuevo_estado = 12; // pendiente Aprobacion
+                            DB::table('administracion.adm_aprobacion')->where('id_aprobacion',  $request->sustento[$i]['id_aprobacion'])
+                            ->update([
+                                'id_sustentacion' => $id_sustentacion
+                            ]);
+                        }    
+                    }
+
+                }
+                if($cantidadSustentosTrue == $cantidad_sustentos){
+                    $nuevo_estado = 12; // pendiente Aprobacion
+                }
+            } else {
+                $nuevo_estado = 1;
+            }
+        }
+
+        
         $codigo = $request->requerimiento['codigo'];
         $tipo_requerimiento = $request->requerimiento['tipo_requerimiento'];
         $usuario = $request->requerimiento['id_usuario'];
@@ -5081,7 +5111,7 @@ class LogisticaController extends Controller
 
                     // $email_destinatario= $this->get_email_usuario_por_rol('Logístico Compras', $id_sede, $id_empresa);
                     // $email_destinatario[]= $this->get_email_usuario_por_rol('Coordinador', $id_sede, $id_empresa);
-                    $email_destinatario[]= 'administracionventas@okcomputer.com.pe'; 
+                    // $email_destinatario[]= 'administracionventas@okcomputer.com.pe'; 
                     $email_destinatario[]= 'programador03@okcomputer.com.pe'; 
                     $payload=[
                         'id_empresa'=>$req->id_empresa,
