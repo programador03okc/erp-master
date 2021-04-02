@@ -392,6 +392,70 @@ class LogisticaController extends Controller
     return $data;
     }
 
+    function mostrarFuente(){
+        $data = DB::table('almacen.fuente')
+        ->select('fuente.*')
+        ->where([['fuente.estado', 1]])
+        ->orderBy('fuente.id_fuente', 'asc')
+        ->get();
+    // return $data;
+    return response()->json(["data" => $data]);
+
+    }
+
+    function guardarFuente(Request $request){
+        $status=0;
+        $descripcion = $request->descripcion;
+        $id_fuente = DB::table('almacen.fuente')->insertGetId(
+            [
+                'descripcion' => $descripcion,
+                'estado' => 1
+            ],
+            'id_fuente'
+        );
+        if($id_fuente>0){
+            $status=200;
+        }
+
+        return response()->json(["id_fuente"=>$id_fuente,"status"=>$status]);
+
+    }
+
+    function anularFuente(Request $request){
+        $status=0;
+        $id_fuente = $request->id_fuente;
+        $update = DB::table('almacen.fuente')
+        ->where('id_fuente', $id_fuente)
+        ->update([
+            'estado'=> 7
+        ]);
+
+        if($update){
+            $status=200;
+        }
+
+        return response()->json(["status"=>$status]);
+
+    }
+
+    function actualizarFuente(Request $request){
+        $status=0;
+        $id_fuente = $request->id_fuente;
+        $descripcion = $request->descripcion;
+        $update = DB::table('almacen.fuente')
+        ->where('id_fuente', $id_fuente)
+        ->update([
+            'descripcion'=> $descripcion
+        ]);
+
+        if($update){
+            $status=200;
+        }
+
+        return response()->json(["status"=>$status]);
+
+    }
+
     function mostrarFuenteDetalle($fuente_id){
         $data = DB::table('almacen.fuente_det')
         ->select('fuente_det.*')
@@ -399,6 +463,62 @@ class LogisticaController extends Controller
         ->orderBy('fuente_det.id_fuente_det', 'asc')
         ->get();
     return $data;
+    }
+
+
+    function guardarDetalleFuente(Request $request){
+        $status=0;
+        $id_fuente = $request->id_fuente;
+        $descripcion = $request->descripcion;
+        $id_fuente_det = DB::table('almacen.fuente_det')->insertGetId(
+            [
+                'descripcion' => $descripcion,
+                'fuente_id' => $id_fuente,
+                'estado' => 1
+            ],
+            'id_fuente_det'
+        );
+        if($id_fuente_det>0){
+            $status=200;
+        }
+
+        return response()->json(["id_fuente_det"=>$id_fuente_det,"status"=>$status]);
+
+    }
+
+    function actualizarDetalleFuente(Request $request){
+        $status=0;
+        $id_fuente_det = $request->id_fuente_det;
+        $descripcion = $request->descripcion;
+        $update = DB::table('almacen.fuente_det')
+        ->where('id_fuente_det', $id_fuente_det)
+        ->update([
+            'descripcion'=> $descripcion
+        ]);
+
+        if($update){
+            $status=200;
+        }
+
+        return response()->json(["status"=>$status]);
+
+    }
+
+    function anularDetalleFuente(Request $request){
+        $status=0;
+        $id_fuente_det = $request->id_fuente_det;
+        $update = DB::table('almacen.fuente_det')
+        ->where('id_fuente_det', $id_fuente_det)
+        ->update([
+            'estado'=> 7
+        ]);
+
+        if($update){
+            $status=200;
+        }
+
+        return response()->json(["status"=>$status]);
+
     }
 
 

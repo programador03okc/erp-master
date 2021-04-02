@@ -1352,6 +1352,56 @@ function selectPartida(id_partida){
 
 }
 
+// fuente 
+function agregarFuenteModal(){
+    $('#modal-agregar-fuente').modal({
+        show: true,
+        backdrop: 'true'
+    });
+
+    llenarTablaListaFuentes();
+}
+
+function llenarTablaListaFuentes(){
+    var vardataTables = funcDatatables();
+
+    $('#listaFuente').dataTable({
+        "order": [[ 0, "asc" ]],
+        'dom': vardataTables[1],
+        'buttons': [
+        ],
+        'language' : vardataTables[0],
+        'serverSide' : false,
+        'bInfo': false,
+        "bLengthChange" : false,
+        'paging': true,
+        'searching': false,
+        'bDestroy' : true,
+        'ajax': 'mostrar-fuente',
+        'columns': [
+            {'data': 'id_fuente'},
+            {'render':
+                function (data, type, row, meta){
+                    return meta.row+1;
+                }
+            },
+            {'data': 'descripcion'},
+            {'render':
+            function (data, type, row, meta){
+                return `<div class="btn-group btn-group-xs  " role="group" aria-label="Second group">
+                                <button type="button" class="btn btn-info btn-xs" name="btnEditarFuente" data-toggle="tooltip" title="Editar Fuente" onclick="editarFuente(this, ${row.id_fuente});"><i class="fas fa-edit"></i></button>
+                                <button type="button" class="btn btn-warning btn-xs" name="btnAgregarDetalleFuente" data-toggle="tooltip" title="Agregar Detalle Fuente" onclick="agregarDetalleFuenteModal(event, ${row.id_fuente});"><i class="fas fa-cookie-bite"></i></button>
+                                <button type="button" class="btn btn-danger btn-xs" name="btnAnularFuente" data-toggle="tooltip" title="Anular Fuente" onclick="anularFuente(${row.id_fuente});"><i class="fas fa-trash-alt"></i></button>
+                        </div>`;
+            }
+        }
+        ],
+        'columnDefs': [
+        { 'aTargets': [0], 'sClass': 'invisible'}
+ 
+    ],
+    });
+}
 
 function limpiarSelectFuenteDet(){
     let selectElement = document.querySelector("form[id='form-requerimiento'] div[id='input-group-fuente_det'] select[name='fuente_det_id']");
@@ -1407,15 +1457,309 @@ function selectFuente(event,fuente_id=null){
 }
 
 
-function agregarFuenteModal(){
-    $('#modal-agregar-fuente').modal({
-        show: true,
-        backdrop: 'true'
-    });
+
+
+
+function agregarFuente(){
+    let nombre_fuente = document.querySelector("div[id='modal-agregar-fuente'] input[name='nombre_fuente']").value;
+    if(nombre_fuente.length >0){
+        $.ajax({
+            type: 'POST',
+            url: 'guardar-fuente',
+            data: {'descripcion':nombre_fuente},
+            dataType: 'JSON',
+            beforeSend: function(){
+            },
+            success: function(response){
+                // console.log(response);
+                if (response.status == '200') {
+                    agregarFuenteEnSelect(response.id_fuente,nombre_fuente);
+                    $('#listaFuente').DataTable().ajax.reload();
+                }else {
+                    alert('hubo un error, No se puedo guardar');
+                }
+            }
+        });
+    }else{
+        alert("Debe ingresar una descripción");
+    }
+
 }
+
+function agregarFuenteEnSelect(id,descripcion){
+    let selectElement = document.querySelector("form[id='form-requerimiento'] div[id='input-group-fuente'] select[name='fuente_id']");
+    let option = document.createElement("option");
+    option.text = descripcion;
+    option.value = id;
+    selectElement.add(option);
+    
+}
+
+function anularFuente(id_fuente){
+    if(id_fuente >0){
+        $.ajax({
+            type: 'POST',
+            url: 'anular-fuente',
+            data: {'id_fuente':id_fuente},
+            dataType: 'JSON',
+            beforeSend: function(){
+            },
+            success: function(response){
+                // console.log(response);
+                if (response.status == '200') {
+                    removerFuenteEnSelect(id_fuente);
+                    $('#listaFuente').DataTable().ajax.reload();
+                    alert("Se anuló la fuente");
+                }else {
+                    alert('hubo un error, No se puedo guardar');
+                }
+            }
+        });
+    }
+}
+
+function removerFuenteEnSelect(id_fuente){
+    let selectElement = document.querySelector("form[id='form-requerimiento'] div[id='input-group-fuente'] select[name='fuente_id']");
+    for (var i=0; i<selectElement.length; i++) {
+        if (selectElement.options[i].value == id_fuente)
+        selectElement.remove(i);
+    }
+}
+
+function editarFuente(obj,id_fuente){
+    let tr =obj.parentNode.parentNode.parentNode;
+    let tdDescripcion = tr.childNodes[2];
+    let TextDescripcion = tr.childNodes[2].textContent;
+    tr.childNodes[2].textContent=''
+    var input = document.createElement("input");
+    input.type = "text";
+    input.className = "form-control input-sm"; 
+    input.value = TextDescripcion; 
+    tdDescripcion.appendChild(input);
+
+    var btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "btn btn-success btn-sm"; 
+    btn.innerHTML = '<i class="fas fa-save fa-lg"></i>'; 
+    btn.onclick =function() {
+        actualizarFuente(id_fuente,this);
+    } ; 
+    tdDescripcion.appendChild(btn);
+}
+
+function actualizarFuente(id_fuente, obj){
+    let nuevaDescripcion =obj.parentNode.querySelector("input").value;
+
+    if(id_fuente >0){
+        $.ajax({
+            type: 'POST',
+            url: 'actualizar-fuente',
+            data: {'id_fuente':id_fuente,'descripcion':nuevaDescripcion},
+            dataType: 'JSON',
+            beforeSend: function(){
+            },
+            success: function(response){
+                // console.log(response);
+                if (response.status == '200') {
+                    // $('#listaFuente').DataTable().ajax.reload();
+                    alert("Se actualizo la fuente");
+                    obj.parentNode.parentNode.childNodes[2].textContent= nuevaDescripcion;
+                }else {
+                    alert('hubo un error, No se puedo actualizar');
+                }
+            }
+        });
+    }
+}
+
+// detalle fuente
+
 function agregarDetalleFuenteModal(){
     $('#modal-agregar-detalle-fuente').modal({
         show: true,
         backdrop: 'true'
     });
+
+    llenarTablaListaDetalleFuentes();
+} 
+
+function llenarTablaListaDetalleFuentes(){
+    let fuente_id = document.querySelector("form[id='form-requerimiento'] div[id='input-group-fuente'] select[name='fuente_id']").value;
+
+    $.ajax({
+        type: 'GET',
+        url: 'mostrar-fuente-detalle/'+fuente_id,
+        dataType: 'JSON',
+        success: function(response){
+            if(response.length >0){
+            
+                construirTablaDetalleFuente(response);
+                
+
+            }else{
+                //mantener oculto fuente_det
+                limpiarSelectFuenteDet();
+                document.querySelector("form[id='form-requerimiento'] div[id='input-group-fuente_det']").setAttribute('hidden',true);
+
+            }
+        }
+    }).fail( function( jqXHR, textStatus, errorThrown ){
+        console.log(jqXHR);
+        console.log(textStatus);
+        console.log(errorThrown);
+    });
+
+}
+
+
+function construirTablaDetalleFuente(data){
+    var vardataTables = funcDatatables();
+    $('#listaDetalleFuente').dataTable({
+        "order": [[ 0, "asc" ]],
+        'dom': vardataTables[1],
+        'buttons': [
+        ],
+        'language' : vardataTables[0],
+        'serverSide' : false,
+        'bInfo': false,
+        "bLengthChange" : false,
+        'paging': true,
+        'searching': false,
+        'bDestroy' : true,
+        'data': data,
+        'columns': [
+            {'data': 'id_fuente_det'},
+            {'render':
+                function (data, type, row, meta){
+                    return meta.row+1;
+                }
+            },
+            {'data': 'descripcion'},
+            {'render':
+            function (data, type, row, meta){
+                return `<div class="btn-group btn-group-xs  " role="group" aria-label="Second group">
+                                <button type="button" class="btn btn-info btn-xs" name="btnEditarDetalleFuente" data-toggle="tooltip" title="Editar Detalle Fuente" onclick="editarDetalleFuente(this, ${row.id_fuente_det});"><i class="fas fa-edit"></i></button>
+                                <button type="button" class="btn btn-danger btn-xs" name="btnAnularDetalleFuente" data-toggle="tooltip" title="Anular Detalle Fuente" onclick="anularDetalleFuente(${row.id_fuente_det});"><i class="fas fa-trash-alt"></i></button>
+                        </div>`;
+            }
+        }
+        ],
+        'columnDefs': [
+        { 'aTargets': [0], 'sClass': 'invisible'}
+ 
+    ],
+    });
+}
+
+
+function agregarDetalleFuente(){
+    let id_fuente = document.querySelector("form[id='form-requerimiento'] div[id='input-group-fuente'] select[name='fuente_id']").value;
+    let nombre_detalle_fuente = document.querySelector("div[id='modal-agregar-detalle-fuente'] input[name='nombre_detalle_fuente']").value;
+    if(nombre_detalle_fuente.length >0){
+        $.ajax({
+            type: 'POST',
+            url: 'guardar-detalle-fuente',
+            data: {'id_fuente':id_fuente,'descripcion':nombre_detalle_fuente},
+            dataType: 'JSON',
+            beforeSend: function(){
+            },
+            success: function(response){
+                if (response.status == '200') {
+                    agregarDetalleFuenteEnSelect(response.id_fuente_det,nombre_detalle_fuente);
+                    llenarTablaListaDetalleFuentes();
+                }else {
+                    alert('hubo un error, No se puedo guardar');
+                }
+            }
+        });
+    }else{
+        alert("Debe ingresar una descripción");
+    }
+
+}
+
+function agregarDetalleFuenteEnSelect(id_fuente_det,descripcion){
+    let selectElement = document.querySelector("form[id='form-requerimiento'] div[id='input-group-fuente_det'] select[name='fuente_det_id']");
+    let option = document.createElement("option");
+    option.text = descripcion;
+    option.value = id_fuente_det;
+    selectElement.add(option);
+}
+
+
+
+function editarDetalleFuente(obj,id_fuente_det){
+    let tr =obj.parentNode.parentNode.parentNode;
+    let tdDescripcion = tr.childNodes[2];
+    let TextDescripcion = tr.childNodes[2].textContent;
+    tr.childNodes[2].textContent=''
+    var input = document.createElement("input");
+    input.type = "text";
+    input.className = "form-control input-sm"; 
+    input.value = TextDescripcion; 
+    tdDescripcion.appendChild(input);
+
+    var btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "btn btn-success btn-sm"; 
+    btn.innerHTML = '<i class="fas fa-save fa-lg"></i>'; 
+    btn.onclick =function() {
+        actualizarDetalleFuente(id_fuente_det,this);
+    } ; 
+    tdDescripcion.appendChild(btn);
+}
+
+function actualizarDetalleFuente(id_fuente_det,obj){
+    let nuevaDescripcion =obj.parentNode.querySelector("input").value;
+
+    if(id_fuente_det >0){
+        $.ajax({
+            type: 'POST',
+            url: 'actualizar-detalle-fuente',
+            data: {'id_fuente_det':id_fuente_det,'descripcion':nuevaDescripcion},
+            dataType: 'JSON',
+            beforeSend: function(){
+            },
+            success: function(response){
+                if (response.status == '200') {
+                    alert("Se actualizo el detalle de fuente");
+                    obj.parentNode.parentNode.childNodes[2].textContent= nuevaDescripcion;
+                }else {
+                    alert('hubo un error, No se puedo actualizar');
+                }
+            }
+        });
+    }
+}
+
+
+function anularDetalleFuente(id_fuente_det){
+    if(id_fuente_det >0){
+        $.ajax({
+            type: 'POST',
+            url: 'anular-detalle-fuente',
+            data: {'id_fuente_det':id_fuente_det},
+            dataType: 'JSON',
+            beforeSend: function(){
+            },
+            success: function(response){
+                // console.log(response);
+                if (response.status == '200') {
+                    removerDetalleFuenteEnSelect(id_fuente_det);
+                    llenarTablaListaDetalleFuentes();
+                    alert("Se anuló el detalle de fuente");
+                }else {
+                    alert('hubo un error, No se puedo guardar');
+                }
+            }
+        });
+    }
+}
+
+function removerDetalleFuenteEnSelect(id_fuente_det){
+    let selectElement = document.querySelector("form[id='form-requerimiento'] div[id='input-group-fuente_det'] select[name='fuente_det_id']");
+    for (var i=0; i<selectElement.length; i++) {
+        if (selectElement.options[i].value == id_fuente_det)
+        selectElement.remove(i);
+    }
 }
