@@ -675,7 +675,14 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::get('listar-partidas/{id_grupo?}/{id_proyecto?}', 'ProyectosController@listar_partidas')->name('listar-partidas');
 					Route::get('grupo-select-item-para-compra', 'OrdenController@getGrupoSelectItemParaCompra')->name('grupo-select-item-para-compra');
 					Route::get('mostrar-centro-costos', 'CentroCostoController@mostrarCentroCostos')->name('mostrar-centro-costos');
+					Route::get('mostrar-fuente', 'LogisticaController@mostrarFuente')->name('mostrar-fuente');
+					Route::post('guardar-fuente', 'LogisticaController@guardarFuente')->name('guardar-fuente');
+					Route::post('anular-fuente', 'LogisticaController@anularFuente')->name('anular-fuente');
+					Route::post('actualizar-fuente', 'LogisticaController@actualizarFuente')->name('actualizar-fuente');
+					Route::post('guardar-detalle-fuente', 'LogisticaController@guardarDetalleFuente')->name('guardar-detalle-fuente');
 					Route::get('mostrar-fuente-detalle/{fuente_id?}', 'LogisticaController@mostrarFuenteDetalle')->name('mostrar-fuente-detalle');
+					Route::post('anular-detalle-fuente', 'LogisticaController@anularDetalleFuente')->name('anular-detalle-fuente');
+					Route::post('actualizar-detalle-fuente', 'LogisticaController@actualizarDetalleFuente')->name('actualizar-detalle-fuente');
 
 				
 

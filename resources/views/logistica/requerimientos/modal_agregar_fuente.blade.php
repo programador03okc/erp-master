@@ -1,5 +1,5 @@
 <div class="modal fade" tabindex="-1" role="dialog" id="modal-agregar-fuente">
-    <div class="modal-dialog" style="width: 40%;">
+    <div class="modal-dialog" style="width: 30%;">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="close"><span aria-hidden="true">&times;</span></button>
@@ -18,37 +18,23 @@
                     </div>
 
                 </div>
-                <br>
-                <table class="mytable table table-striped table-condensed table-bordered" id="listaFuente">
-                    <thead>
-                        <tr>
-                            <th class="hidden"></th>
-                            <th class="hidden"></th>
-                            <th>#</th>
-                            <th>DESCRIPCION</th>
-                            <th>ACCIÓN</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td>
-                                <div class="btn-group btn-group-sm" role="group" aria-label="Second group">
-                                    <center><button type="button" class="btn btn-warning btn-xs" name="btnAgregarDetalleFuente" data-toggle="tooltip" title="Agregar Detalle Fuente" onclick="agregarDetalleFuenteModal(event, 0);"><i class="fas fa-cookie-bite"></i></button>
-                                            <button type="button" class="btn btn-danger btn-xs" name="btnAnularFuente" data-toggle="tooltip" title="AnularFuente" onclick="anularFuente();"><i class="fas fa-trash-alt"></i></button>
-                                        </center>
-                                </div>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <div class="modal-footer">
-                <label style="display: none;" id="id_fuente"></label>
-                <button type="button" class="btn-success" title="Guardar" name="btnGuardaFuente" onclick="guardar_fuente();">Guardar</button>
+                <div class="row">
+                    <div class="col-md-12">
+                        <table class="mytable table table-hover table-condensed table-bordered table-okc-view dataTable no-footer" id="listaFuente" width="100%">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>#</th>
+                                    <th>DESCRIPCION</th>
+                                    <th>ACCIÓN</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>
