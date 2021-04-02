@@ -2754,7 +2754,7 @@ class LogisticaController extends Controller
                     $estado = isset($request->detalle[$i]['estado'])?$request->detalle[$i]['estado']:1;
                     $id_almacen_reserva = is_numeric($request->detalle[$i]['id_almacen_reserva']) == 1 ? $request->detalle[$i]['id_almacen_reserva']:null;
                     $stock_comprometido = isset($request->detalle[$i]['stock_comprometido'])? $request->detalle[$i]['stock_comprometido']:null;
-                    $proveedor_id = isset($request->detalle[$i]['id_proveedor'])? $request->detalle[$i]['id_proveedor']:null;
+                    $proveedor_id = isset($request->detalle[$i]['proveedor_id'])? $request->detalle[$i]['proveedor_id']:null;
 
 
                     if ($id_det_req > 0) {
@@ -2792,6 +2792,8 @@ class LogisticaController extends Controller
                                 'id_unidad_medida'      => is_numeric($id_unit) == 1 ? $id_unit : null,
                                 'id_tipo_item'          => is_numeric($id_tipo_item) == 1 ? $id_tipo_item : null,
                                 'id_almacen_reserva'    => $id_almacen_reserva,
+                                'stock_comprometido'    => $stock_comprometido,
+                                'proveedor_id'          => $proveedor_id,
                                 'estado'                => $estado
                             ]);
                         }
