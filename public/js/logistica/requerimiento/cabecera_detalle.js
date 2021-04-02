@@ -1071,6 +1071,19 @@ function llenarTablaListaDetalleRequerimiento(data,selectMoneda,selectUnidadMedi
                         document.querySelector("table[id='ListaDetalleRequerimiento']").tHead.children[0].cells[9].setAttribute('class','');                
                         row.insertCell(8).innerHTML =  data[a].codigo_centro_costo ? data[a].codigo_centro_costo : '';
 
+                        if(data[a].id_almacen_reserva >0 || data[a].proveedor_id >0){
+                            document.querySelector("table[id='ListaDetalleRequerimiento']").tHead.children[0].cells[10].setAttribute('class','');                
+                            row.insertCell(9).innerHTML =  data[a].almacen_reserva ? data[a].almacen_reserva : data[a].proveedor_razon_social;
+                            tdBtnAction = row.insertCell(10);
+        
+                        }else{
+        
+                            tdBtnAction = row.insertCell(9);
+                        }
+                    }else if(data[a].id_almacen_reserva >0 || data[a].proveedor_id >0){
+                        document.querySelector("table[id='ListaDetalleRequerimiento']").tHead.children[0].cells[10].setAttribute('class','');                
+                        row.insertCell(8).innerHTML =  data[a].almacen_reserva ? data[a].almacen_reserva : data[a].proveedor_razon_social;
+
                         tdBtnAction = row.insertCell(9);
                     }else{
                         tdBtnAction = row.insertCell(8);

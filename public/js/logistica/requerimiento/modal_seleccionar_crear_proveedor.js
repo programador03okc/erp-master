@@ -74,7 +74,7 @@ function selectProveedorCollapse(){
     var indiceSelected = $('.modal-footer #indice').text();
     var myId = $('.modal-footer #id_proveedor').text();
     // var idCo = $('.modal-footer #id_contribuyente').text();
-    // var des = $('.modal-footer #select_razon_social').text();
+    var prov = $('.modal-footer #select_razon_social').text();
     var page = $('.page-main').attr('type');
 
     if (page == "requerimiento"){
@@ -85,10 +85,13 @@ function selectProveedorCollapse(){
                 data_item.forEach((element, index) => {
                     if (index == indiceSelected) {
                         data_item[index].proveedor_id = parseInt(myId);
+                        data_item[index].proveedor_razon_social = prov;
                         data_item[index].id_almacen_reserva = null;
+                        data_item[index].almacen_reserva = null;
                         data_item[index].stock_comprometido = null;
                     }
                 });
+                componerTdItemDetalleRequerimiento();
 
                 alert("Item actualizado, Se asignó un proveedor al item");
     

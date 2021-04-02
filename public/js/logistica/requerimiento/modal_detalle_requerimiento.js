@@ -361,6 +361,19 @@ function agregarItem(){
                 document.querySelector("table[id='ListaDetalleRequerimiento']").tHead.children[0].cells[9].setAttribute('class','');                
                 row.insertCell(8).innerHTML =  data_item[a].codigo_centro_costo ? data_item[a].codigo_centro_costo : '';
 
+                if(data_item[a].id_almacen_reserva >0 || data_item[a].proveedor_id >0){
+                    document.querySelector("table[id='ListaDetalleRequerimiento']").tHead.children[0].cells[10].setAttribute('class','');                
+                    row.insertCell(9).innerHTML =  data_item[a].almacen_reserva ? data_item[a].almacen_reserva : data_item[a].proveedor_razon_social;
+                    tdBtnAction = row.insertCell(10);
+
+                }else{
+
+                    tdBtnAction = row.insertCell(9);
+                }
+            }else if(data_item[a].id_almacen_reserva >0 || data_item[a].proveedor_id >0){
+                document.querySelector("table[id='ListaDetalleRequerimiento']").tHead.children[0].cells[10].setAttribute('class','');                
+                row.insertCell(8).innerHTML =  data_item[a].almacen_reserva ? data_item[a].almacen_reserva : data_item[a].proveedor_razon_social;
+
                 tdBtnAction = row.insertCell(9);
             }else{
                 tdBtnAction = row.insertCell(8);

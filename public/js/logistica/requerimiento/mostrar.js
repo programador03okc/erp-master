@@ -154,7 +154,7 @@ function mostrar_requerimiento(IdorCode){
                         'categoria':detalle_requerimiento[x].categoria,
                         'subcategoria':detalle_requerimiento[x].subcategoria,
                         'id_almacen_reserva':detalle_requerimiento[x].id_almacen_reserva,
-                        'almacen_descripcion':detalle_requerimiento[x].almacen_reserva,
+                        'almacen_reserva':detalle_requerimiento[x].almacen_reserva,
                         'des_item':detalle_requerimiento[x].descripcion?detalle_requerimiento[x].descripcion:detalle_requerimiento[x].descripcion_adicional, 
                         'id_unidad_medida':detalle_requerimiento[x].id_unidad_medida,
                         'unidad':detalle_requerimiento[x].unidad_medida,
@@ -174,6 +174,7 @@ function mostrar_requerimiento(IdorCode){
                         'obs':detalle_requerimiento[x].obs,
                         'tiene_transformacion':detalle_requerimiento[x].tiene_transformacion,
                         'proveedor_id':detalle_requerimiento[x].proveedor_id,
+                        'proveedor_razon_social':detalle_requerimiento[x].proveedor_razon_social,
                         'estado':detalle_requerimiento[x].estado
                     };
                         for(j=0; j<detalle_requerimiento[x].adjunto.length; j++){

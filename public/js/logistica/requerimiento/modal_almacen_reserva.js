@@ -59,21 +59,26 @@ function construirSelectReservaAlmacen(){
 
 
 function agregarReservaAlmacen(){
-    let select_almacen_reserva = document.querySelector("div[id='modal-almacen-reserva'] select[id='almacen_reserva']").value;
+    let select_almacen_reserva = document.querySelector("div[id='modal-almacen-reserva'] select[id='almacen_reserva']");
+    let select_almacen_reserva_id = select_almacen_reserva.value;
+    let select_almacen_reserva_text= select_almacen_reserva.options[select_almacen_reserva.selectedIndex].textContent;
     let cantidad_reserva = document.querySelector("div[id='modal-almacen-reserva'] input[id='cantidad_reserva']").value;
     let indiceSeleccionado = document.querySelector("div[id='modal-almacen-reserva'] label[id='indice']").textContent;
     
     if(indiceSeleccionado >= 0){
-        if(select_almacen_reserva >0 && cantidad_reserva >0){
+        if(select_almacen_reserva_id >0 && cantidad_reserva >0){
             data_item.forEach((element, index) => {
                 if (index == indiceSeleccionado) {
-                    data_item[index].id_almacen_reserva = parseInt(select_almacen_reserva);
+                    data_item[index].id_almacen_reserva = parseInt(select_almacen_reserva_id);
+                    data_item[index].almacen_reserva = select_almacen_reserva_text;
                     data_item[index].stock_comprometido = parseInt(cantidad_reserva);
                     data_item[index].proveedor_id = null;
+                    data_item[index].proveedor_razon_social = null;
 
         
                 }
             });
+            componerTdItemDetalleRequerimiento();
             alert("Item actualizado, Se asignó un proveedor al item");
 
             $('#modal-almacen-reserva').modal('hide');

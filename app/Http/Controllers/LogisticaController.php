@@ -807,6 +807,9 @@ class LogisticaController extends Controller
                 ->leftJoin('mgcp_cuadro_costos.proveedores as proveedores_venta', 'proveedores_venta.id', '=', 'cc_venta_filas.proveedor_seleccionado')
 
                 ->leftJoin('finanzas.centro_costo', 'centro_costo.id_centro_costo', '=', 'alm_det_req.centro_costo_id')
+                ->leftJoin('logistica.log_prove', 'log_prove.id_proveedor', '=', 'alm_det_req.proveedor_id')
+                ->leftJoin('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'log_prove.id_contribuyente')
+
                 ->select(
                     'alm_det_req.id_detalle_requerimiento',
                     'alm_req.id_requerimiento',
@@ -849,6 +852,7 @@ class LogisticaController extends Controller
                     
                     'alm_det_req.tiene_transformacion',
                     'alm_det_req.proveedor_id',
+                    'adm_contri.razon_social as proveedor_razon_social',
                     'alm_det_req.id_cc_am_filas',
                     'alm_det_req.id_cc_venta_filas',
                     'proveedores_am.razon_social as razon_social_proveedor_seleccionado_am',
@@ -922,6 +926,7 @@ class LogisticaController extends Controller
                             'id_requerimiento'          => $data->id_requerimiento,
                             'tiene_transformacion'      => $data->tiene_transformacion,
                             'proveedor_id'              => $data->proveedor_id,
+                            'proveedor_razon_social'    => $data->proveedor_razon_social,
                             'id_cc_am_filas'            => $data->id_cc_am_filas,
                             'id_cc_venta_filas'         => $data->id_cc_venta_filas?$data->id_cc_venta_filas:null,
                             'razon_social_proveedor_seleccionado' => $data->razon_social_proveedor_seleccionado_am?$data->razon_social_proveedor_seleccionado_am:$data->razon_social_proveedor_seleccionado_venta,
