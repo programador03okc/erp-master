@@ -628,6 +628,7 @@ class DistribucionController extends Controller
             ->leftJoin('contabilidad.adm_contri','adm_contri.id_contribuyente','=','com_cliente.id_contribuyente')
             ->leftJoin('configuracion.sis_moneda','sis_moneda.id_moneda','=','alm_req.id_moneda')
             ->where([['alm_req.id_tipo_requerimiento','=',2],['alm_req.estado','=',1]])
+            ->orWhere([['alm_req.id_tipo_requerimiento','=',2],['alm_req.estado','=',2]])
             ->orWhere([['alm_req.id_tipo_requerimiento','=',2],['alm_req.estado','=',19]]);
             // ->get();
         return datatables($data)->toJson();
@@ -1875,8 +1876,9 @@ class DistribucionController extends Controller
 
             $data = DB::table('almacen.alm_req')
             ->where('id_requerimiento',$request->obs_id_requerimiento)
-            ->update(['confirmacion_pago'=>true,
-                      'obs_confirmacion'=>$request->obs_motivo
+            ->update(['confirmacion_pago' => true,
+                      'estado' => ($request->estado == 1 ? 2 : $request->estado),
+                      'obs_confirmacion' => $request->obs_motivo
                       ]);
 
             $id_usuario = Auth::user()->id_usuario;

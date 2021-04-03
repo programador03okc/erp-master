@@ -11,6 +11,7 @@
                 <div class="modal-body">
                     <input type="text" class="oculto" name="obs_id_requerimiento">
                     <input type="text" class="oculto" name="boton_origen">
+                    <input type="text" class="oculto" name="estado">
                     <div class="row">
                         <div class="col-md-12">
                             <h5>Ingrese su Comentario de conformidad</h5>
