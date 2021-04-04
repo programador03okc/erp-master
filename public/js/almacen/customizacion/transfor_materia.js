@@ -105,29 +105,39 @@ function listar_materias(id_transformacion){
         dataType: 'JSON',
         success: function(response){
             var html = '';
+            var html_series = '';
             var suma_materias = 0;
-            var est = $('[name=id_estado]').val();
+            // var est = $('[name=id_estado]').val();
 
             response.forEach(element => {
+                html_series = '';
+                element.series.forEach(ser => {
+                    if (html_series==''){
+                        html_series+=ser.serie;
+                    } else {
+                        html_series+='<br>'+ser.serie;
+                    }
+                });
                 suma_materias += parseFloat(element.valor_total);
                 html += `<tr id="${element.id_materia}">
                     <td>${element.codigo !== null ? element.codigo : ''}</td>
-                    <td>${element.part_number !== null ? element.part_number : (element.part_number_cc!==null?element.part_number_cc:'')}</td>
-                    <td>${element.descripcion !== null ? element.descripcion : (element.descripcion_cc!==null?element.descripcion_cc:'')}</td>
+                    <td>${element.part_number !== null ? element.part_number : ''}</td>
+                    <td>${element.descripcion !== null ? element.descripcion : ''}</td>
                     <td>${element.cantidad}</td>
                     <td>${element.abreviatura !== null ? element.abreviatura : ''}</td>
                     <td>${element.valor_unitario}</td>
                     <td>${element.valor_total}</td>
-                    <td style="background:Thistle;">${element.part_number_transformado!==null?element.part_number_transformado:''}</td>
-                    <td style="background:Thistle;">${element.descripcion_transformado!==null?element.descripcion_transformado:''}</td>
-                    <td style="background:Thistle;">${element.cantidad_transformado!==null?element.cantidad_transformado:''}</td>
-                    <td style="background:Thistle;">${element.comentario_transformado!==null?element.comentario_transformado:''}</td>
+                    <td style="background:Thistle;">${element.part_number_transformado!==null ? element.part_number_transformado : ''}</td>
+                    <td style="background:Thistle;">${element.descripcion_transformado!==null ? element.descripcion_transformado : ''}</td>
+                    <td style="background:Thistle;">${element.cantidad_transformado!==null ? element.cantidad_transformado : ''}</td>
+                    <td style="background:Thistle;">${element.comentario_transformado!==null ? element.comentario_transformado : ''}</td>
                     <td style="padding:0px;">
-                        ${(est == 24) ? `<i class="fas fa-trash icon-tabla red boton delete" 
-                        data-toggle="tooltip" data-placement="bottom" title="Eliminar" ></i>` : ''}
+                        ${html_series}
                     </td>
                 </tr>`;
             });
+            // ${(est == 24) ? `<i class="fas fa-trash icon-tabla red boton delete" 
+            // data-toggle="tooltip" data-placement="bottom" title="Eliminar" ></i>` : ''}
             $('#listaMateriasPrimas tbody').html(html);
             $('[name=total_materias]').text(formatDecimalDigitos(suma_materias,2));
             actualizaTotales();

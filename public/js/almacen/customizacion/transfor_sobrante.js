@@ -105,28 +105,31 @@ function listar_sobrantes(id_transformacion){
             var suma_sobrante = 0;
             var est = $('[name=id_estado]').val();
 
-            response.forEach(element => {
-                suma_sobrante += parseFloat(element.valor_total);
-                html += `<tr id="${element.id_sobrante}">
-                    <td>${element.codigo !== null ? element.codigo : ''}</td>
-                    <td>${element.part_number_prod !== null ? element.part_number_prod : (element.part_number!==null?element.part_number:'')}</td>
-                    <td>${element.descripcion_prod !== null ? element.descripcion_prod : (element.descripcion!==null?element.descripcion:'')}</td>
-                    <td>${element.cantidad}</td>
-                    <td>${element.abreviatura !== null ? element.abreviatura : ''}</td>
-                    <td>${element.valor_unitario}</td>
-                    <td>${element.valor_total}</td>
-                    <td style="padding:0px;">
-                        ${(est == 24) ? `<i class="fas fa-trash icon-tabla red boton delete" 
-                        data-toggle="tooltip" data-placement="bottom" title="Eliminar" ></i>` : ''}
-                    </td>
-                </tr>`;
-            });
-            $('#listaSobrantes tbody').html(html);
-            $('[name=total_sobrantes]').text(formatDecimalDigitos(suma_sobrante,2));
-            // var costo_primo = parseFloat($('[name=costo_primo]').text());
-            // var total_indirectos = parseFloat($('[name=total_indirectos]').text());
-            // $('[name=costo_transformacion]').text(formatDecimalDigitos((costo_primo + total_indirectos - suma_sobrante),2));
-            actualizaTotales();
+            if (response.length > 0){
+
+                response.forEach(element => {
+                    suma_sobrante += parseFloat(element.valor_total);
+                    html += `<tr id="${element.id_sobrante}">
+                        <td>${element.codigo !== null ? element.codigo : ''}</td>
+                        <td>${element.part_number_prod !== null ? element.part_number_prod : (element.part_number!==null?element.part_number:'')}</td>
+                        <td>${element.descripcion_prod !== null ? element.descripcion_prod : (element.descripcion!==null?element.descripcion:'')}</td>
+                        <td>${element.cantidad}</td>
+                        <td>${element.abreviatura !== null ? element.abreviatura : ''}</td>
+                        <td>${element.valor_unitario}</td>
+                        <td>${element.valor_total}</td>
+                        <td style="padding:0px;">
+                            ${(est == 24) ? `<i class="fas fa-trash icon-tabla red boton delete" 
+                            data-toggle="tooltip" data-placement="bottom" title="Eliminar" ></i>` : ''}
+                        </td>
+                    </tr>`;
+                });
+                $('#listaSobrantes tbody').html(html);
+                $('[name=total_sobrantes]').text(formatDecimalDigitos(suma_sobrante,2));
+                // var costo_primo = parseFloat($('[name=costo_primo]').text());
+                // var total_indirectos = parseFloat($('[name=total_indirectos]').text());
+                // $('[name=costo_transformacion]').text(formatDecimalDigitos((costo_primo + total_indirectos - suma_sobrante),2));
+                actualizaTotales();
+            }
         }
     }).fail( function( jqXHR, textStatus, errorThrown ){
         console.log(jqXHR);

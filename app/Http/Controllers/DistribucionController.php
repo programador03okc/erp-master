@@ -796,8 +796,8 @@ class DistribucionController extends Controller
 
         try {
             DB::beginTransaction();
-
-            $codigo = $this->ODnextId(date('Y-m-d'),$request->id_sede);
+            $cambios = ($request->aplica_cambios_valor == 'si' ? true : false);
+            $codigo = $this->ODnextId(date('Y-m-d'),$request->id_almacen,$cambios);
             $usuario = Auth::user()->id_usuario;
 
             $id_od = DB::table('almacen.orden_despacho')
@@ -815,7 +815,7 @@ class DistribucionController extends Controller
                     'fecha_despacho'=>date('Y-m-d'),
                     'hora_despacho'=>date('H:i:s'),
                     'fecha_entrega'=>$request->fecha_entrega,
-                    'aplica_cambios'=>($request->aplica_cambios_valor == 'si' ? true : false),
+                    'aplica_cambios'=>$cambios,
                     'registrado_por'=>$usuario,
                     'tipo_entrega'=>$request->tipo_entrega,
                     'fecha_registro'=>date('Y-m-d H:i:s'),
@@ -1933,22 +1933,25 @@ class DistribucionController extends Controller
         }
     }
 
-
-    public function ODnextId($fecha_despacho,$id_sede){
+    public function ODnextId($fecha_despacho,$id_almacen,$aplica_cambios){
         $yyyy = date('Y',strtotime($fecha_despacho));
+        $yy = date('y',strtotime($fecha_despacho));
         
         $cantidad = DB::table('almacen.orden_despacho')
         ->whereYear('fecha_despacho','=',$yyyy)
-        ->where([['id_sede','=',$id_sede],['estado','!=',7]])
+        ->where([['id_almacen','=',$id_almacen],
+                ['aplica_cambios','=',$aplica_cambios],
+                ['estado','!=',7]])
         ->get()->count();
 
         $val = AlmacenController::leftZero(3,($cantidad + 1));
-        $nextId = "OD-".$yyyy."-".$val;
+        $nextId = "OD".($aplica_cambios?"I-":"E-").$id_almacen."-".$yy.$val;
         return $nextId;
     }
 
     public function grupoODnextId($fecha_despacho,$id_sede){
         $yyyy = date('Y',strtotime($fecha_despacho));
+        $yy = date('y',strtotime($fecha_despacho));
         
         $cantidad = DB::table('almacen.orden_despacho_grupo')
         ->whereYear('fecha_despacho','=',$yyyy)
@@ -1956,12 +1959,13 @@ class DistribucionController extends Controller
         ->get()->count();
 
         $val = AlmacenController::leftZero(3,($cantidad + 1));
-        $nextId = "D-".$yyyy."-".$val;
+        $nextId = "D-".$yy.$val;
         return $nextId;
     }
 
     public function transformacion_nextId($fecha_transformacion){
         $yyyy = date('Y',strtotime($fecha_transformacion));
+        $yy = date('y',strtotime($fecha_transformacion));
         
         $cantidad = DB::table('almacen.transformacion')
         ->whereYear('fecha_registro','=',$yyyy)
@@ -1969,7 +1973,7 @@ class DistribucionController extends Controller
         ->get()->count();
 
         $val = AlmacenController::leftZero(3,($cantidad + 1));
-        $nextId = "HT-".$yyyy."-".$val;
+        $nextId = "HT-".$yy.$val;
         return $nextId;
     }
        

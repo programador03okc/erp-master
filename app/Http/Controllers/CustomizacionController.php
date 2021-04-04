@@ -229,6 +229,7 @@ class CustomizacionController extends Controller
             );
         return response()->json($id_materia);
     }
+
     public function update_materia(Request $request)
     {
         $data = DB::table('almacen.transfor_materia')
@@ -239,18 +240,84 @@ class CustomizacionController extends Controller
                 ]);
         return response()->json($data);
     }
-    public function listar_materias($id_transformacion){
+
+    public function listar_materias($id_transformacion)
+    {
         $data = DB::table('almacen.transfor_materia')
         ->select('transfor_materia.*','alm_prod.codigo','alm_prod.descripcion',
         'alm_prod.part_number','alm_und_medida.abreviatura','alm_prod.series','orden_despacho_det.part_number_transformado',
-        'orden_despacho_det.descripcion_transformado','orden_despacho_det.comentario_transformado','orden_despacho_det.cantidad_transformado')
+        'orden_despacho_det.descripcion_transformado','orden_despacho_det.comentario_transformado','orden_despacho_det.cantidad_transformado',
+        'guia_oc.id_guia_com_det as id_guia_oc_det','guia_trans.id_guia_ven_det as id_guia_trans_det',
+        'transformacion.id_almacen','goc.id_almacen as id_almacen_oc','gtr.id_almacen as id_almacen_tr')
+
         ->leftjoin('almacen.alm_prod','alm_prod.id_producto','=','transfor_materia.id_producto')
         ->leftjoin('almacen.alm_und_medida','alm_und_medida.id_unidad_medida','=','alm_prod.id_unidad_medida')
         ->leftjoin('almacen.orden_despacho_det','orden_despacho_det.id_od_detalle','=','transfor_materia.id_od_detalle')
+        ->leftjoin('almacen.transformacion','transformacion.id_transformacion','=','transfor_materia.id_transformacion')
+        ->leftJoin('logistica.log_det_ord_compra', function($join){
+            $join->on('log_det_ord_compra.id_detalle_requerimiento', '=', 'orden_despacho_det.id_detalle_requerimiento');
+            $join->where('log_det_ord_compra.estado','!=', 7);
+        })
+        ->leftJoin('almacen.guia_com_det as guia_oc', function($join){
+            $join->on('guia_oc.id_oc_det', '=', 'log_det_ord_compra.id_detalle_orden');
+            $join->where('guia_oc.estado','!=', 7);
+        })
+        ->leftjoin('almacen.guia_com as goc','goc.id_guia','=','guia_oc.id_guia_com')
+        ->leftjoin('almacen.trans_detalle','trans_detalle.id_requerimiento_detalle','=','orden_despacho_det.id_detalle_requerimiento')
+        ->leftJoin('almacen.guia_ven_det', function($join){
+            $join->on('guia_ven_det.id_trans_det', '=', 'trans_detalle.id_trans_detalle');
+            $join->where('guia_ven_det.estado','!=', 7);
+        })
+        ->leftJoin('almacen.guia_com_det as guia_trans', function($join){
+            $join->on('guia_trans.id_guia_ven_det', '=', 'guia_ven_det.id_guia_ven_det');
+            $join->where('guia_trans.estado','!=', 7);
+        })
+        ->leftjoin('almacen.guia_com as gtr','gtr.id_guia','=','guia_trans.id_guia_com')
         ->where([['transfor_materia.id_transformacion','=',$id_transformacion],
                  ['transfor_materia.estado','=',1]])
         ->get();
-        return response()->json($data);
+        
+        $lista = [];
+        
+        foreach ($data as $det) {
+
+            $series = [];
+            
+            if ($det->id_guia_oc_det !== null && $det->id_almacen_oc !== null &&
+                $det->id_almacen_oc == $det->id_almacen){
+
+                $series = DB::table('almacen.alm_prod_serie')
+                    ->where('id_guia_com_det',$det->id_guia_oc_det)
+                    ->get();
+            }
+            else if ($det->id_guia_trans_det !== null && $det->id_almacen_tr !== null &&
+                     $det->id_almacen_tr == $det->id_almacen){
+                    
+                    $series = DB::table('almacen.alm_prod_serie')
+                        ->where('id_guia_com_det',$det->id_guia_trans_det)
+                        ->get();
+            }
+
+            array_push($lista, [
+                'id_materia' => $det->id_materia,
+                'id_od_detalle' => $det->id_od_detalle,
+                'id_producto' => $det->id_producto,
+                'codigo' => $det->codigo,
+                'part_number' => $det->part_number,
+                'descripcion' => $det->descripcion,
+                'cantidad' => $det->cantidad,
+                'abreviatura' => $det->abreviatura,
+                'valor_unitario' => $det->valor_unitario,
+                'valor_total' => $det->valor_total,
+                'part_number_transformado' => $det->part_number_transformado,
+                'descripcion_transformado' => $det->descripcion_transformado,
+                'cantidad_transformado' => $det->cantidad_transformado,
+                'comentario_transformado' => $det->comentario_transformado,
+                'series' => $series
+            ]);
+        }
+
+        return response()->json($lista);
     }
 
     public function anular_materia(Request $request, $id)

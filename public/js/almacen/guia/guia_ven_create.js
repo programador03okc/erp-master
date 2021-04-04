@@ -35,6 +35,7 @@ function listarDetalleOrdenDespacho(id_od){
         success: function(response){
             console.log(response);
             var html = '';
+            var html_series = '';
             var i = 1;
             detalle = response;
 

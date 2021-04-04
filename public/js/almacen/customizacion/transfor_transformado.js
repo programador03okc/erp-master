@@ -104,22 +104,25 @@ function listar_transformados(id_transformacion){
             var html = '';
             var est = $('[name=id_estado]').val();
 
-            response.forEach(element => {
-                html += `<tr id="${element.id_transformado}">
-                    <td>${element.codigo}</td>
-                    <td>${element.part_number!==null?element.part_number:''}</td>
-                    <td>${element.descripcion}</td>
-                    <td>${element.cantidad}</td>
-                    <td>${element.abreviatura}</td>
-                    <td>${element.valor_unitario}</td>
-                    <td>${element.valor_total}</td>
-                    <td style="padding:0px;">
-                        ${(est !== 9 && est !== 7) ? `<i class="fas fa-trash icon-tabla red boton delete" 
-                        data-toggle="tooltip" data-placement="bottom" title="Eliminar" ></i>` : ''}
-                    </td>
-                </tr>`;
-            });
-            $('#listaProductoTransformado tbody').html(html);
+            if (response.length > 0){
+
+                response.forEach(element => {
+                    html += `<tr id="${element.id_transformado}">
+                        <td>${element.codigo}</td>
+                        <td>${element.part_number!==null?element.part_number:''}</td>
+                        <td>${element.descripcion}</td>
+                        <td>${element.cantidad}</td>
+                        <td>${element.abreviatura}</td>
+                        <td>${element.valor_unitario}</td>
+                        <td>${element.valor_total}</td>
+                        <td style="padding:0px;">
+                            ${(est !== 9 && est !== 7) ? `<i class="fas fa-trash icon-tabla red boton delete" 
+                            data-toggle="tooltip" data-placement="bottom" title="Eliminar" ></i>` : ''}
+                        </td>
+                    </tr>`;
+                });
+                $('#listaProductoTransformado tbody').html(html);
+            }
             // total_transformado();
         }
     }).fail( function( jqXHR, textStatus, errorThrown ){

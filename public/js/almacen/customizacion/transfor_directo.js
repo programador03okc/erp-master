@@ -9,7 +9,8 @@ function listar_directos(id_transformacion){
             var suma_servicios = 0;
             var est = $('[name=id_estado]').val();
 
-            response.forEach(element => {
+            if (response.length > 0){
+                response.forEach(element => {
                 suma_servicios += parseFloat(element.valor_total);
                 html += `<tr id="${element.id_directo}">
                     <td>${element.descripcion}</td>
@@ -19,12 +20,13 @@ function listar_directos(id_transformacion){
                         data-toggle="tooltip" data-placement="bottom" title="Eliminar" ></i>` : ''}
                     </td>
                 </tr>`;
-            });
-            $('#listaServiciosDirectos tbody').html(html);
-            $('[name=total_directos]').text(formatDecimalDigitos(suma_servicios,2));
-            // var materias = parseFloat($('[name=total_materias]').text());
-            // $('[name=costo_primo]').text(formatDecimalDigitos((suma_servicios + materias),2));
-            actualizaTotales();
+                });
+                $('#listaServiciosDirectos tbody').html(html);
+                $('[name=total_directos]').text(formatDecimalDigitos(suma_servicios,2));
+                // var materias = parseFloat($('[name=total_materias]').text());
+                // $('[name=costo_primo]').text(formatDecimalDigitos((suma_servicios + materias),2));
+                actualizaTotales();
+            }
         }
     }).fail( function( jqXHR, textStatus, errorThrown ){
         console.log(jqXHR);

@@ -110,7 +110,7 @@ class GestionCustomizacion
                                     data-placement="bottom" title="Imprimir Hoja de Transformación" data-id="${row['id_transformacion']}">
                                     <i class="fas fa-print"></i></button>`+
                                 (row['estado'] == 21 ? //entregado
-                                `<button type="button" class="iniciar btn btn-info boton" data-toggle="tooltip" 
+                                `<button type="button" class="iniciar btn btn-primary boton" data-toggle="tooltip" 
                                     data-placement="bottom" title="Iniciar Transformación" data-id="${row['id_transformacion']}">
                                     <i class="fas fa-step-forward"></i></button>`: '' )
                                 );
