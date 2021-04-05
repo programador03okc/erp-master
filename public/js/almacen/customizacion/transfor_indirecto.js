@@ -9,23 +9,26 @@ function listar_indirectos(id_transformacion){
             var suma_indirectos = 0;
             var est = $('[name=id_estado]').val();
 
-            response.forEach(element => {
-                suma_indirectos += parseFloat(element.valor_total);
-                html += `<tr id="${element.id_indirecto}">
-                    <td>${element.cod_item}</td>
-                    <td>${element.tasa}</td>
-                    <td>${element.parametro}</td>
-                    <td>${element.valor_unitario}</td>
-                    <td>${element.valor_total}</td>
-                    <td style="padding:0px;">
-                        ${(est == 24) ? `<i class="fas fa-trash icon-tabla red boton delete" 
-                        data-toggle="tooltip" data-placement="bottom" title="Eliminar" ></i>` : ''}
-                    </td>
-                </tr>`;
-            });
-            $('#listaCostosIndirectos tbody').html(html);
-            $('[name=total_indirectos]').text(formatDecimalDigitos(suma_indirectos,2));
-            actualizaTotales();
+            if (response.length > 0){
+
+                response.forEach(element => {
+                    suma_indirectos += parseFloat(element.valor_total);
+                    html += `<tr id="${element.id_indirecto}">
+                        <td>${element.cod_item}</td>
+                        <td>${element.tasa}</td>
+                        <td>${element.parametro}</td>
+                        <td>${element.valor_unitario}</td>
+                        <td>${element.valor_total}</td>
+                        <td style="padding:0px;">
+                            ${(est == 24) ? `<i class="fas fa-trash icon-tabla red boton delete" 
+                            data-toggle="tooltip" data-placement="bottom" title="Eliminar" ></i>` : ''}
+                        </td>
+                    </tr>`;
+                });
+                $('#listaCostosIndirectos tbody').html(html);
+                $('[name=total_indirectos]').text(formatDecimalDigitos(suma_indirectos,2));
+                actualizaTotales();
+            }
         }
     }).fail( function( jqXHR, textStatus, errorThrown ){
         console.log(jqXHR);

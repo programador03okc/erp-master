@@ -18,7 +18,7 @@ Gestión de Transformaciones
 
     <div class="box box-solid">
         <div class="box-body">
-            <div class="col-md-12" id="tab-transformaciones" style="padding-left:0px;padding-right:0px;">
+            <div class="col-md-12" id="tab-transformaciones" style="padding-top:10px;padding-bottom:10px;">
 
                 <ul class="nav nav-tabs" id="myTab">
                     <li class="active"><a data-toggle="tab" href="#htp">Hojas de Transformación Pendientes</a></li>
@@ -51,7 +51,7 @@ Gestión de Transformaciones
                                                 <!-- <th>Fecha Procesado</th> -->
                                                 <th>Almacén</th>
                                                 <th>Estado</th>
-                                                <th width="5%">Acción</th>
+                                                <th width="8%">Acción</th>
                                             </tr>
                                         </thead>
                                         <tbody style="font-size: 11px;"></tbody>
