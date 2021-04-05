@@ -88,6 +88,19 @@ function changeOptTipoReqSelect(e){
     getNexCodigoRequerimiento(e.target.value);
 }
 
+function autoSelectTipoRequerimientoPorUsuarioEnSesion(){
+    if(id_grupo_usuario_sesion_list.includes(1)){ //Administración
+        document.querySelector("div[type='requerimiento'] select[name='tipo_requerimiento']").value =3;
+    }else if(id_grupo_usuario_sesion_list.includes(2)){ //Comercial
+        document.querySelector("div[type='requerimiento'] select[name='tipo_requerimiento']").value =1;
+    }else if(id_grupo_usuario_sesion_list.includes(3)){ //proyectos
+        document.querySelector("div[type='requerimiento'] select[name='tipo_requerimiento']").value =3;
+    }else if(id_grupo_usuario_sesion_list.includes(4)){ //Gerencia
+        document.querySelector("div[type='requerimiento'] select[name='tipo_requerimiento']").value =3;
+    }else if(id_grupo_usuario_sesion_list.includes(5)){ //Control Interno
+        document.querySelector("div[type='requerimiento'] select[name='tipo_requerimiento']").value =3;
+    }
+}
 
 function cambiarTipoFormulario(tipo=null){
     if(tipo ==null){
@@ -269,91 +282,6 @@ function mostrarTipoForm(tipo){
 
         break;
 
-            // case 2:
-        //     hiddeElement('ocultar','form-requerimiento',[
-        //         'input-group-moneda',
-        //         'input-group-empresa',
-        //         'input-group-rol-usuario',
-        //         'input-group-sede',
-        //         'input-group-telefono-cliente',
-        //         'input-group-email-cliente',
-        //         'input-group-cliente',
-        //         'input-group-direccion-entrega',
-        //         'input-group-cuenta',
-        //         'input-group-ubigeo-entrega',
-        //         'input-group-proyecto',
-        //         'input-group-comercial',
-        //         'input-group-monto',
-        //         'input-group-contacto'
-        //     ]);
-        //     hiddeElement('mostrar','form-requerimiento',[
-        //         'input-group-almacen',
-        //         'input-group-tipo-cliente'
-        
-        //     ]);
-
-        //     document.querySelector("div[id='input-group-almacen'] h5").textContent = 'Almacén que solicita';
-        //     document.querySelector("form[id='form-requerimiento'] select[name='rol_usuario']").value='';
-
-        // break;
-    
-        // case 'VENTA':
-        //     document.querySelector("div[id='input-group-almacen'] h5").textContent = 'Almacén';
-        //     document.querySelector("form[id='form-requerimiento'] select[name='rol_usuario']").value='';
-
-        //     hiddeElement('ocultar','form-requerimiento',[
-        //         'input-group-rol-usuario',
-        //         'input-group-proyecto',
-        //         'input-group-comercial',
-        //         'input-group-almacen'
-                
-
-        //     ]);
-        //     hiddeElement('mostrar','form-requerimiento',[
-        //         'input-group-sede',
-        //         'input-group-tipo-cliente',
-        //         'input-group-telefono-cliente',
-        //         'input-group-email-cliente',
-        //         'input-group-empresa',
-        //         'input-group-tipo-cliente',
-        //         'input-group-cliente',
-        //         'input-group-direccion-entrega',
-        //         'input-group-monto'
-    
-        //     ]);
-        //     break;
-
-
-            // case 6: //compra - administracion
-            // hiddeElement('ocultar','form-requerimiento',[
-            //     'input-group-cliente',
-            //     'input-group-rol-usuario',
-            //     'input-group-comercial',
-            //     'input-group-almacen',
-            //     'input-group-cuenta',
-            //     'input-group-proyecto',
-            //     'input-group-cliente',
-            //     'input-group-tipo-cliente',
-            //     'input-group-telefono-cliente',
-            //     'input-group-email-cliente',
-            //     'input-group-direccion-entrega',
-            //     'input-group-nombre-contacto',
-            //     'input-group-cargo-contacto',
-            //     'input-group-email-contacto',
-            //     'input-group-telefono-contacto',
-            //     'input-group-direccion-contacto',
-            //     'input-group-horario-contacto'
-            // ]);
-            // hiddeElement('mostrar','form-requerimiento',[
-            //     'input-group-moneda',
-            //     'input-group-empresa',
-            //     'input-group-sede',
-            //     'input-group-fecha_entrega',
-            //     'input-group-ubigeo-entrega',
-            //     'input-group-monto',
-
-            // ]); 
-            // break;
         default:
             break;
     }

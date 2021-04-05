@@ -223,20 +223,20 @@
 
         var roles = {!! json_encode($roles) !!};
         var grupos = {!! json_encode($grupos) !!};
-        // console.log(roles);
-        grupos.forEach(element => {
-            if(element.id_grupo ==2){ // comercial
-                document.querySelector("div[type='lista_requerimiento'] ul").children[0].setAttribute("class",'active')
-                document.querySelector("div[type='lista_requerimiento'] div[class='tab-content']").children[1].setAttribute('class','tab-pane')
-                document.querySelector("div[type='lista_requerimiento'] div[class='tab-content']").children[0].setAttribute("class",'tab-pane active')
+        console.log(roles);
+        // grupos.forEach(element => {
+        //     if(element.id_grupo ==2){ // comercial
+        //         document.querySelector("div[type='lista_requerimiento'] ul").children[0].setAttribute("class",'active')
+        //         document.querySelector("div[type='lista_requerimiento'] div[class='tab-content']").children[1].setAttribute('class','tab-pane')
+        //         document.querySelector("div[type='lista_requerimiento'] div[class='tab-content']").children[0].setAttribute("class",'tab-pane active')
 
-            }else{
-                document.querySelector("div[type='lista_requerimiento'] ul").children[0].children[0].setAttribute("class",'hidden')
-                document.querySelector("div[type='lista_requerimiento'] ul").children[1].setAttribute("class",'active')
-                document.querySelector("div[type='lista_requerimiento'] div[class='tab-content']").children[0].setAttribute('class','tab-pane')
-                document.querySelector("div[type='lista_requerimiento'] div[class='tab-content']").children[1].setAttribute("class",'tab-pane active')
-            }
-        });
+        //     }else{
+        //         document.querySelector("div[type='lista_requerimiento'] ul").children[0].children[0].setAttribute("class",'hidden')
+        //         document.querySelector("div[type='lista_requerimiento'] ul").children[1].setAttribute("class",'active')
+        //         document.querySelector("div[type='lista_requerimiento'] div[class='tab-content']").children[0].setAttribute('class','tab-pane')
+        //         document.querySelector("div[type='lista_requerimiento'] div[class='tab-content']").children[1].setAttribute("class",'tab-pane active')
+        //     }
+        // });
 
     $(document).ready(function(){
         seleccionarMenu(window.location);

@@ -1550,7 +1550,7 @@ function llenarTablaItemsOrden(data){
             { data: 'descripcion' },
             { data: 'unidad_medida' },
             { data: 'cantidad' },
-            { data: 'precio_referencial' },
+            { data: 'precio_unitario' },
             { data: 'subtotal' },
             {'render':
                 function (data, type, row, meta){
@@ -1806,7 +1806,7 @@ function fill_input_detalle_requerimiento(item){
     $('[name=descripcion_item]').val(item.descripcion_adicional);
     $('[name=unidad_medida_item]').val(item.id_unidad_medida);
     $('[name=cantidad_item]').val(item.cantidad);
-    $('[name=precio_ref_item]').val(item.precio_referencial);
+    $('[name=precio_ref_item]').val(item.precio_unitario);
     $('[name=estado]').val(item.estado);
 }
 
@@ -1836,7 +1836,7 @@ function get_data_detalle_requerimiento(){
     // var und_text = und.options[und.selectedIndex].text;   
     var und_text = $('[name=unidad_medida_item]').find('option:selected').text();
     var cantidad = $('[name=cantidad_item]').val();
-    var precio_referencial = $('[name=precio_ref_item]').val();
+    var precio_unitario = $('[name=precio_ref_item]').val();
     var id_tipo_moneda = $('[name=tipo_moneda]').val();
     var tipo_moneda = $('[name=tipo_moneda] option:selected').text()
     var categoria = $('[name=categoria]').val();
@@ -1871,7 +1871,7 @@ function get_data_detalle_requerimiento(){
         'id_unidad_medida':parseInt(id_unidad_medida),
         'unidad':und_text,
         'cantidad':parseFloat(cantidad),
-        'precio_referencial':parseFloat(precio_referencial)?parseFloat(precio_referencial):null,
+        'precio_unitario':parseFloat(precio_unitario)?parseFloat(precio_unitario):null,
         'id_tipo_moneda':id_tipo_moneda,
         'tipo_moneda':tipo_moneda,
         'categoria':categoria,
@@ -1929,14 +1929,14 @@ function llenar_tabla_items_para_compra(data_item_para_compra){
         if(data_item_para_compra[a].estado !=7){
             
             var row = table.insertRow(-1);
-    
+    ``
             row.insertCell(0).innerHTML = data_item_para_compra[a].cod_item?data_item_para_compra[a].cod_item:'0';
             row.insertCell(1).innerHTML = data_item_para_compra[a].part_number?data_item_para_compra[a].part_number:'-';
             row.insertCell(2).innerHTML = data_item_para_compra[a].des_item?data_item_para_compra[a].des_item:'-';
             row.insertCell(3).innerHTML = data_item_para_compra[a].unidad?data_item_para_compra[a].unidad:'-';
             row.insertCell(4).innerHTML = data_item_para_compra[a].cantidad?data_item_para_compra[a].cantidad:'0';
             row.insertCell(5).innerHTML = data_item_para_compra[a].tipo_moneda?data_item_para_compra[a].tipo_moneda:'';
-            row.insertCell(6).innerHTML = data_item_para_compra[a].precio_referencial?data_item_para_compra[a].precio_referencial:'0';
+            row.insertCell(6).innerHTML = data_item_para_compra[a].precio_unitario?data_item_para_compra[a].precio_unitario:'0';
 
             var tdBtnAction = row.insertCell(7);
             tdBtnAction.setAttribute('width','auto');

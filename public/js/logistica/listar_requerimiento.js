@@ -21,7 +21,16 @@ function inicializarRutasListado(
     rutaVerFlujos = _rutaVerFlujos;
     rutaExplorarRequerimiento = _rutaExplorarRequerimiento;
 
-    listar_requerimientos_elaborados('OK COMPUTER');
+    let fisrtRolUsuario = roles.slice(0,1).shift();
+
+    let fisrtIdRolUsuario = fisrtRolUsuario.id_grupo;
+    if(fisrtIdRolUsuario>0){
+        listarTablaReq(null,null,fisrtIdRolUsuario,null);
+    }else{
+        listarTablaReq(null,null,null,null);
+
+    }
+
     vista_extendida();
 
 }
@@ -60,7 +69,7 @@ $(function(){
 
 
 
-function listar_requerimientos_elaborados(name){  
+function listar_requerimientos_elaborados(name=null){  
     let data={nombre:name};
     $.ajax({
         type: 'GET',
@@ -211,7 +220,7 @@ function listarTablaReq(id_empresa =null,id_sede =null, id_grupo=null,id_priorid
             {'data':'fecha_requerimiento', 'name':'fecha_requerimiento'},
             {'data':'tipo_requerimiento', 'name':'tipo_requerimiento'},
             {'render': function (data, type, row){
-                    return row['razon_social']+ ' '+row['tipo_documento_identidad']+': '+row['nro_documento'];
+                    return (row['razon_social']?row['razon_social']:'')+ ' '+(row['tipo_documento_identidad']?row['tipo_documento_identidad']:'')+': '+(row['nro_documento']?row['nro_documento']:'');
             }
             },            
             {'render': function (data, type, row){

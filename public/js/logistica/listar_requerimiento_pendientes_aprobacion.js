@@ -10,6 +10,7 @@ function inicializarRutasPendienteAprobacion(_rutaListaPendienteAprobacion,_ruta
     rutaListaAprobarDocumento = _rutaListaAprobarDocumento;
     rutaObservarDocumento = _rutaObservarDocumento;
     rutaListaAnularDocumento = _rutaListaAnularDocumento;
+    listar_requerimientos_pendientes_aprobar();
 }
 
 

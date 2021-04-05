@@ -76,15 +76,8 @@ class RequerimientoController extends Controller
     }
     
     public function requerimientos_pendientes_aprobacion(){
-        // $id_usuario = Auth::user()->id_usuario;
-        // $nombre_corto = Auth::user()->nombre_corto;
-        // $rolActual = Auth::user()->rol;
-        // $allRol = Auth::user()->getAllRol();
-        // $allGrupo = Auth::user()->getAllGrupo();
-
-        // $estado_elaborado =(new LogisticaController)->get_estado_doc('Elaborado');
-        // $uso_administracion =(new LogisticaController)->get_tipo_cliente('Uso Administración');
-        $compra =(new LogisticaController)->get_tipo_requerimiento('Compra');
+        // $compra =(new LogisticaController)->get_tipo_requerimiento('Compra');
+        $tipo_requerimiento =3; // Bienes y Servicios
         $tipo_documento = 1; // Requerimientos
         
         $requerimientos = DB::table('almacen.alm_req')
@@ -162,7 +155,7 @@ class RequerimientoController extends Controller
                 'alm_req.fecha_entrega'
             )
             ->where([
-                ['alm_req.id_tipo_requerimiento','=',$compra] // compra
+                ['alm_req.id_tipo_requerimiento','=',$tipo_requerimiento]
                 // ['alm_req.tipo_cliente','=',$uso_administracion] // uso administracion
                 // ['alm_req.estado','=',$estado_elaborado] // elaborado
             ])
@@ -215,7 +208,7 @@ class RequerimientoController extends Controller
                 $operaciones =(new AprobacionController)->get_operacion('Requerimiento',$id_grupo_req,$id_prioridad_req);
 
                 foreach($operaciones['data'] as $operacion){
-                    if($operacion->id_grupo == $id_grupo_req && $operacion->id_tp_documento == $tipo_documento && $operacion->id_prioridad == $id_prioridad_req){ 
+                    if($operacion->id_grupo == $id_grupo_req && $operacion->id_tp_documento == $tipo_documento){ 
                         $operacion_selected = $operacion->id_operacion;
                         // ### si tiene agun criterio 
                         if($operacion->id_grupo_criterios !=null){ // accion si existe algun criterio

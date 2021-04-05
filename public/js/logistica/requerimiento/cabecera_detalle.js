@@ -8,6 +8,7 @@ function nuevo_req(){
     onlyAdjuntosRequerimiento=[];
     $('#form-requerimiento')[0].reset();
     limpiarSelectFuenteDet();
+    autoSelectTipoRequerimientoPorUsuarioEnSesion();
     document.querySelector("form[id='form-requerimiento'] div[id='input-group-fuente_det']").setAttribute('hidden',true);
 
     $('#body_detalle_requerimiento').html('<tr id="default_tr"><td></td><td colspan="12"> No hay datos registrados</td></tr>');
@@ -1146,6 +1147,7 @@ function llenarTablaListaDetalleRequerimiento(data,selectMoneda,selectUnidadMedi
                     btnAction += `<button type="button" class="btn btn-default btn-xs" name="btnAdjuntarArchivos" data-toggle="tooltip" title="Adjuntos" onClick="archivosAdjuntosModal(event, ${a});" ${hasAttrDisabled}><i class="fas fa-paperclip"></i></button>`;
                 }
                 btnAction += `<button type="button" class="btn btn-danger btn-xs"   name="btnEliminarItem" data-toggle="tooltip" title="Eliminar" onclick="eliminarItemDeListado(this,${data[a].id_item});" ${hasAttrDisabled} ><i class="fas fa-trash-alt"></i></button>`;
+
                 btnAction += `</center></div>`;
                 tdBtnAction.innerHTML = btnAction;
             }

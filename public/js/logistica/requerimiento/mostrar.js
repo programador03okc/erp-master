@@ -38,9 +38,11 @@ function mostrar_requerimiento(IdorCode){
                 if(permisoBtn) {// si el req tiene observaciones y el usuario no es el propietario
                     document.querySelector("button[id='btnEditar']").removeAttribute('disabled');
                     document.querySelector("button[id='btnAnular']").removeAttribute('disabled');
+                    document.querySelectorAll("button[id='btnGuardar']")[1].removeAttribute('disabled');
                 }else{
                     document.querySelector("button[id='btnEditar']").setAttribute('disabled',true);
                     document.querySelector("button[id='btnAnular']").setAttribute('disabled',true);
+                    document.querySelectorAll("button[id='btnGuardar']")[1].setAttribute('disabled',true);
                 }
             if(response['requerimiento'] !== undefined){
                 if(response['requerimiento'][0].id_tipo_requerimiento == 1){ 

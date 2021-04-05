@@ -45,7 +45,7 @@ class AprobacionController extends Controller
             $adm_operacion = DB::table('administracion.adm_operacion')
             ->where([
                 ['id_tp_documento', '=', $data_tipo_documento['data']], 
-                ['id_prioridad', '=', $prioridad ], 
+                // ['id_prioridad', '=', $prioridad ], 
                 ['id_grupo', '=', $grupo ], 
                 ['estado', '=', 1] 
                 ])

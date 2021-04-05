@@ -911,7 +911,7 @@ function guardarMasItemsAlDetalleRequerimiento(id_requerimiento_list,item_list){
 //             'lugar_entrega': null,
 //             'obs': null,
 //             'part_number': part_number,
-//             'precio_referencial': 0,
+//             'precio_unitario': 0,
 //             'stock_comprometido': 0,
 //             'subtotal': 0,
 //             'unidad_medida': unidad_medida_item

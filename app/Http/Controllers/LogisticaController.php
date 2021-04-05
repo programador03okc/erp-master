@@ -2712,7 +2712,7 @@ class LogisticaController extends Controller
                     'id_prioridad'          => is_numeric($id_priori) == 1 ? $id_priori : null,
                     'monto'                 => $monto,
                     'fuente_id'              => $fuente_id,
-                    'fuente_det_idmonto'     => $fuente_det_id,
+                    'fuente_det_id'          => $fuente_det_id,
                     'estado'                 => $nuevo_estado
                 ]);
             }else{
@@ -2729,7 +2729,7 @@ class LogisticaController extends Controller
                     'tipo_cliente'          => $tipo_cliente,
                     'id_cliente'            => $id_cliente,
                     'id_persona'            => $id_persona,
-                    'nro_cuenta'              => $nro_cuenta,
+                    'nro_cuenta'            => $nro_cuenta,
                     'telefono'              => $telefono,
                     'email'                 => $email,
                     'direccion_entrega'     => $direccion_entrega,
@@ -3613,6 +3613,7 @@ class LogisticaController extends Controller
         return $array;
     }
     public function listar_requerimientos_elaborados($id_empresa,$id_sede,$id_grupo,$id_prioridad){
+
 
         $estado_anulado= $this->get_estado_doc('Anulado');
         $hasWhere=[

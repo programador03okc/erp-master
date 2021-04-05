@@ -172,17 +172,21 @@ function statusBtnOpenProyectoModal(value){
 //    }
 //    return passMount;
 // }
-function update_data_item(indice,item){
-    data_item[indice]=item;
-    llenar_tabla_detalle_requerimiento(data_item);
-}
+
 
 function aceptarCambiosItem(){ // del modal-detalle-requerimiento
-    var id_det = $('[name=id_detalle_requerimiento]').val();
-    var id_req = $('[name=id_requerimiento]').val();
-    let item = get_data_detalle_requerimiento();
+  // var id_det = $('[name=id_detalle_requerimiento]').val();
+    // var id_req = $('[name=id_requerimiento]').val();
+    // let item = get_data_detalle_requerimiento();
+    let unidad_medida_item = document.querySelector("div[id='modal-detalle-requerimiento'] select[name='unidad_medida_item']").value;
+    let cantidad_item = document.querySelector("div[id='modal-detalle-requerimiento'] input[name='cantidad_item']").value;
+
     if(indice >= 0){
-        update_data_item(indice, item);
+        data_item[indice].id_unidad_medida = unidad_medida_item;
+        data_item[indice].unidad = document.querySelector("div[id='modal-detalle-requerimiento'] select[name='unidad_medida_item']").options[document.querySelector("div[id='modal-detalle-requerimiento'] select[name='unidad_medida_item']").selectedIndex].textContent;
+        data_item[indice].cantidad = cantidad_item;
+
+        llenar_tabla_detalle_requerimiento(data_item);
         $('#modal-detalle-requerimiento').modal('hide');
 
 
@@ -409,6 +413,7 @@ function agregarItem(){
 
                 btnAction += `<button type="button" class="btn btn-default btn-xs activation" name="btnAdjuntarArchivos" data-toggle="tooltip" title="Adjuntos" onClick="archivosAdjuntosModal(event, ${a});" ${hasAttrDisabled} ><i class="fas fa-paperclip"></i></button>`;
             }
+            btnAction += `<button type="button" class="btn btn-info btn-xs" name="btnEditarItem" data-toggle="tooltip" title="Editar" onclick="detalleRequerimientoModal(event,${a});" ${hasAttrDisabled} ><i class="fas fa-edit"></i></button>`;
             btnAction += `<button type="button" class="btn btn-danger btn-xs activation"   name="btnEliminarItem" data-toggle="tooltip" title="Eliminar" onclick="eliminarItemDeListado(this,${data_item[a].id_item});" ${hasAttrDisabled} ><i class="fas fa-trash-alt"></i></button>`;
             btnAction += `</center></div>`;
             tdBtnAction.innerHTML = btnAction;
@@ -593,7 +598,7 @@ switch (option) {
 }
 
 function fill_input_detalle_requerimiento(item){
-    // console.log(item);
+    console.log(item);
     $('[name=id_tipo_item]').val(item.id_tipo_item);
     $('[name=id_item]').val(item.id_item);
     $('[name=id_producto]').val(item.id_producto);
