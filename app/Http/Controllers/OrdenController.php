@@ -783,7 +783,8 @@ class OrdenController extends Controller
                     'alm_req.codigo AS codigo_requerimiento',
                     'alm_det_req.id_requerimiento',
                     'alm_det_req.id_item AS id_item_alm_det_req',
-                    'alm_det_req.precio_referencial',
+                    'alm_det_req.precio_unitario',
+                    'alm_det_req.subtotal',
                     'alm_det_req.cantidad',
                     'alm_det_req.id_unidad_medida',
                     'und_medida_det_req.descripcion AS unidad_medida',
@@ -840,7 +841,7 @@ class OrdenController extends Controller
                 $detalle_requerimiento = [];
                 foreach ($alm_det_req as $data) {
                     if ($data->id_detalle_requerimiento !== $lastId) {
-                        $subtotal =+ $data->cantidad *  $data->precio_referencial;
+                        $subtotal =+ $data->cantidad *  $data->precio_unitario;
                         // $total = $subtotal;
                         $detalle_requerimiento[] = [
                             'id_detalle_requerimiento'  => $data->id_detalle_requerimiento,
@@ -850,7 +851,8 @@ class OrdenController extends Controller
                             'cantidad'                  => $data->cantidad - ($data->stock_comprometido?$data->stock_comprometido:0) - ($this->cantidadCompradaDetalleOrden($data->id_detalle_requerimiento)),
                             'id_unidad_medida'          => $data->id_unidad_medida,
                             'unidad_medida'             => $data->unidad_medida,
-                            'precio_referencial'        => $data->precio_referencial,
+                            'precio_unitario'           => $data->precio_unitario,
+                            'subtotal'                  => $data->subtotal,
                             'descripcion_adicional'     => $data->descripcion_adicional,
                             'lugar_entrega'             => $data->lugar_entrega,
                             'fecha_registro'            => $data->fecha_registro_alm_det_req,
@@ -2221,7 +2223,7 @@ class OrdenController extends Controller
                             'id_detalle_requerimiento'=> ($d['id_detalle_requerimiento'] ? $d['id_detalle_requerimiento'] : null),
                             'cantidad'=> $d['cantidad_a_comprar'],
                             'id_unidad_medida'=> $d['id_unidad_medida'],
-                            'precio'=> $d['precio_referencial'],
+                            'precio'=> $d['precio_unitario'],
                             // 'subtotal'=> ($d->precio_referencial * $d->cantidad),
                             'subtotal'=> $d['subtotal']?$d['subtotal']:0,
                             'estado'=> 17
@@ -2234,7 +2236,7 @@ class OrdenController extends Controller
                                     'id_requerimiento'      => ($d['id_requerimiento'] ? $d['id_requerimiento'] : null),
                                     'id_item'               => ($d['id_item'] ? $d['id_item'] : null),
                                     'id_producto'           => ($d['id_producto'] ? $d['id_producto'] : null),
-                                    'precio_referencial'    => ($d['precio_referencial'] ? $d['precio_referencial'] : null),
+                                    'precio_unitario'    => ($d['precio_unitario'] ? $d['precio_unitario'] : null),
                                     'cantidad'              => ($d['cantidad_a_comprar'] ? $d['cantidad_a_comprar'] : null),
                                     'lugar_entrega'         => null,
                                     'descripcion_adicional' => ($d['descripcion_adicional'] ? $d['descripcion_adicional'] : null),
@@ -2255,7 +2257,7 @@ class OrdenController extends Controller
                                 'id_detalle_requerimiento'=> $id_new_det_req,
                                 'cantidad'=> $d['cantidad_a_comprar']?$d['cantidad_a_comprar']:null,
                                 'id_unidad_medida'=> $d['id_unidad_medida']?$d['id_unidad_medida']:null,
-                                'precio'=> $d['precio_referencial']?$d['precio_referencial']:null,
+                                'precio'=> $d['precio_unitario']?$d['precio_unitario']:null,
                                 'subtotal'=> $d->subtotal?$d->subtotal:null,
                                 'estado'=> 17
                             ]);
@@ -2507,7 +2509,7 @@ class OrdenController extends Controller
             'alm_req.codigo AS codigo_requerimiento',
             'alm_det_req.id_requerimiento',
             'alm_det_req.id_item AS id_item_alm_det_req',
-            'alm_det_req.precio_referencial',
+            'alm_det_req.precio_unitario',
             // 'alm_det_req.cantidad',
             // 'alm_det_req.id_unidad_medida',
             'und_medida_det_req.descripcion AS unidad_medida',
@@ -2542,7 +2544,7 @@ class OrdenController extends Controller
             $detalle_orden = [];
             foreach ($log_det_ord_compra as $data) {
                 if ($data->id_detalle_requerimiento !== $lastId) {
-                    $subtotal =+ $data->cantidad *  $data->precio_referencial;
+                    $subtotal =+ $data->cantidad *  $data->precio_unitario;
                     $total = $subtotal;
                     $detalle_orden[] = [
                         'id_detalle_orden'          => $data->id_detalle_orden,
@@ -2554,7 +2556,7 @@ class OrdenController extends Controller
                         'cantidad'                  => $data->cantidad,
                         'id_unidad_medida'             => $data->id_unidad_medida,
                         'unidad_medida'             => $data->unidad_medida,
-                        'precio_referencial'        => $data->precio_referencial,
+                        'precio_unitario'        => $data->precio_unitario,
                         'descripcion_adicional'     => $data->descripcion_adicional,
                         'lugar_entrega'             => $data->lugar_entrega,
                         'fecha_registro'            => $data->fecha_registro_alm_det_req,
@@ -2698,7 +2700,7 @@ class OrdenController extends Controller
                             'id_cc_am_filas'        => is_numeric($items[$i]['id_cc_am_filas']) == 1 && $items[$i]['id_cc_am_filas']>0 ? $items[$i]['id_cc_am_filas']:null,
                             'id_cc_venta_filas'     => is_numeric($items[$i]['id_cc_venta_filas']) == 1 && $items[$i]['id_cc_venta_filas']>0 ? $items[$i]['id_cc_venta_filas']:null,
                             'id_producto'           => is_numeric($items[$i]['id_producto']) == 1 && $items[$i]['id_producto']>0 ? $items[$i]['id_producto']:null,
-                            'precio_referencial'    => is_numeric($items[$i]['precio']) == 1 ?$items[$i]['precio']:null,
+                            'precio_unitario'    => is_numeric($items[$i]['precio']) == 1 ?$items[$i]['precio']:null,
                             'cantidad'              => $items[$i]['cantidad']?$items[$i]['cantidad']:null,
                             'id_moneda'             => $items[$i]['id_moneda']?$items[$i]['id_moneda']:null,
                             'descripcion_adicional' => isset($items[$i]['descripcion'])?$items[$i]['descripcion']:null,

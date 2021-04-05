@@ -817,7 +817,8 @@ class LogisticaController extends Controller
                     'alm_req.id_sede',
                     'alm_det_req.id_requerimiento',
                     'alm_det_req.id_item AS id_item_alm_det_req',
-                    'alm_det_req.precio_referencial',
+                    'alm_det_req.precio_unitario',
+                    'alm_det_req.subtotal',
                     'alm_det_req.cantidad',
                     'alm_det_req.stock_comprometido',
                     'alm_det_req.id_unidad_medida',
@@ -943,7 +944,8 @@ class LogisticaController extends Controller
                             'suma_transferencias'       => $data->suma_transferencias,
                             'id_unidad_medida'          => $data->id_unidad_medida,
                             'unidad_medida'             => $data->unidad_medida,
-                            'precio_referencial'        => $data->precio_referencial,
+                            'precio_unitario'           => $data->precio_unitario,
+                            'subtotal'                  => $data->subtotal,
                             'descripcion_adicional'     => $data->descripcion_adicional,
                             'lugar_entrega'             => $data->lugar_entrega,
                             'fecha_registro'            => $data->fecha_registro_alm_det_req,
@@ -1139,7 +1141,7 @@ class LogisticaController extends Controller
                         [
                             'id_requerimiento'      => $data_req,
                             'id_item'               => is_numeric($detalle_reqArray[$i]['id_item']) == 1 && $detalle_reqArray[$i]['id_item']>0 ? $detalle_reqArray[$i]['id_item']:null,
-                            'precio_referencial'    => is_numeric($detalle_reqArray[$i]['precio_referencial']) == 1 ?$detalle_reqArray[$i]['precio_referencial']:null,
+                            'precio_unitario'    => is_numeric($detalle_reqArray[$i]['precio_unitario']) == 1 ?$detalle_reqArray[$i]['precio_unitario']:null,
                             'cantidad'              => $detalle_reqArray[$i]['cantidad']?$detalle_reqArray[$i]['cantidad']:null,
                             'fecha_entrega'         => $detalle_reqArray[$i]['fecha_entrega']?$detalle_reqArray[$i]['fecha_entrega']:null,
                             'lugar_entrega'         => $detalle_reqArray[$i]['lugar_entrega']?$detalle_reqArray[$i]['lugar_entrega']:null,
@@ -1320,10 +1322,10 @@ class LogisticaController extends Controller
             $html .= '<td >' . $data['fecha_entrega'] . '</td>';
             $html .= '<td >' . $data['unidad_medida'] . '</td>';
             $html .= '<td class="right">' . $data['cantidad'] . '</td>';
-            $html .= '<td class="right">S/.' . $data['precio_referencial'] . '</td>';
-            $html .= '<td class="right">S/.' . $data['cantidad'] * $data['precio_referencial'] . '</td>';
+            $html .= '<td class="right">S/.' . $data['precio_unitario'] . '</td>';
+            $html .= '<td class="right">S/.' . $data['cantidad'] * $data['precio_unitario'] . '</td>';
             $html .= '</tr>';
-            $total = $total + ($data['cantidad'] * $data['precio_referencial']);
+            $total = $total + ($data['cantidad'] * $data['precio_unitario']);
         }
         $html .= '
             <tr>
@@ -2031,7 +2033,8 @@ class LogisticaController extends Controller
                             'id_requerimiento'      => $id_requerimiento,
                             'id_item'               => is_numeric($detalle_reqArray[$i]['id_item']) == 1 && $detalle_reqArray[$i]['id_item']>0 ? $detalle_reqArray[$i]['id_item']:null,
                             'id_producto'           => is_numeric($detalle_reqArray[$i]['id_producto']) == 1 && $detalle_reqArray[$i]['id_producto']>0 ? $detalle_reqArray[$i]['id_producto']:null,
-                            'precio_referencial'    => is_numeric($detalle_reqArray[$i]['precio_referencial']) == 1 ?$detalle_reqArray[$i]['precio_referencial']:null,
+                            'precio_unitario'       => is_numeric($detalle_reqArray[$i]['precio_unitario']) == 1 ?$detalle_reqArray[$i]['precio_unitario']:null,
+                            'subtotal'              => is_numeric($detalle_reqArray[$i]['subtotal']) == 1 ?$detalle_reqArray[$i]['subtotal']:null,
                             'cantidad'              => $detalle_reqArray[$i]['cantidad']?$detalle_reqArray[$i]['cantidad']:null,
                             'id_moneda'             => $detalle_reqArray[$i]['id_tipo_moneda']?$detalle_reqArray[$i]['id_tipo_moneda']:null,
                             'lugar_entrega'         => isset($detalle_reqArray[$i]['lugar_entrega'])?$detalle_reqArray[$i]['lugar_entrega']:null,
@@ -2749,7 +2752,8 @@ class LogisticaController extends Controller
                     $id_det_req = $request->detalle[$i]['id_detalle_requerimiento'];
                     $id_item = isset($request->detalle[$i]['id_item'])?$request->detalle[$i]['id_item']:null;
                     $id_producto = isset($request->detalle[$i]['id_producto'])?$request->detalle[$i]['id_producto']:null;
-                    $precio_ref = isset($request->detalle[$i]['precio_referencial'])?$request->detalle[$i]['precio_referencial']:null;
+                    $precio_unitario = isset($request->detalle[$i]['precio_unitario'])?$request->detalle[$i]['precio_unitario']:null;
+                    $subtotal = isset($request->detalle[$i]['subtotal'])?$request->detalle[$i]['subtotal']:null;
                     $cantidad = isset($request->detalle[$i]['cantidad'])?$request->detalle[$i]['cantidad']:null;
                     $lugar_entrega = isset($request->detalle[$i]['lugar_entrega'])?$request->detalle[$i]['lugar_entrega']:null;
                     $des_item = isset($request->detalle[$i]['des_item'])?$request->detalle[$i]['des_item']:null;
@@ -2770,7 +2774,8 @@ class LogisticaController extends Controller
                                 'id_requerimiento'      => $id_requerimiento,
                                 'id_item'               => is_numeric($id_item) == 1 ? $id_item : null,
                                 'id_producto'           => is_numeric($id_producto) == 1 ? $id_producto : null,
-                                'precio_referencial'    => $precio_ref,
+                                'precio_unitario'       => $precio_unitario,
+                                'subtotal'              => $subtotal,
                                 'cantidad'              => $cantidad,
                                 'lugar_entrega'         => $lugar_entrega,
                                 'descripcion_adicional' => $des_item,
@@ -2789,7 +2794,8 @@ class LogisticaController extends Controller
                                 'id_requerimiento'      => $id_requerimiento,
                                 'id_item'               => is_numeric($id_item) == 1 ? $id_item : null,
                                 'id_producto'           => is_numeric($id_producto) == 1 ? $id_producto : null,
-                                'precio_referencial'    => $precio_ref,
+                                'precio_unitario'       => $precio_unitario,
+                                'subtotal'              => $subtotal,
                                 'cantidad'              => $cantidad,
                                 'lugar_entrega'         => $lugar_entrega,
                                 'descripcion_adicional' => $des_item,
@@ -2809,7 +2815,8 @@ class LogisticaController extends Controller
                                 'id_requerimiento'      => $id_requerimiento,
                                 'id_item'               => is_numeric($id_item) == 1 ? $id_item : null,
                                 'id_producto'           => is_numeric($id_producto) == 1 ? $id_producto : null,
-                                'precio_referencial'    => $precio_ref,
+                                'precio_unitario'       => $precio_unitario,
+                                'subtotal'              => $subtotal,
                                 'cantidad'              => $cantidad,
                                 'lugar_entrega'         => $lugar_entrega,
                                 'descripcion_adicional' => $des_item,
@@ -3302,7 +3309,8 @@ class LogisticaController extends Controller
             'alm_det_req.id_detalle_requerimiento',
             'alm_det_req.id_requerimiento',
             'alm_det_req.id_item',
-            'alm_det_req.precio_referencial',
+            'alm_det_req.precio_unitario',
+            'alm_det_req.subtotal',
             'alm_det_req.cantidad',
             'alm_det_req.descripcion_adicional',
             'alm_det_req.partida',
@@ -3322,7 +3330,8 @@ class LogisticaController extends Controller
                     'id_detalle_requerimiento'=> $data->id_detalle_requerimiento,
                     'id_requerimiento'=> $data->id_requerimiento,
                     'id_item'=> $data->id_item,
-                    'precio_referencial'=> $data->precio_referencial,
+                    'precio_unitario'=> $data->precio_unitario,
+                    'subtotal'=> $data->subtotal,
                     'cantidad'=> $data->cantidad,
                     'descripcion_adicional'=> $data->descripcion_adicional,
                     'partida'=> $data->partida,
@@ -3731,7 +3740,8 @@ class LogisticaController extends Controller
             'alm_det_req.id_detalle_requerimiento',
             'alm_det_req.id_requerimiento',
             'alm_det_req.id_item',
-            'alm_det_req.precio_referencial',
+            'alm_det_req.precio_unitario',
+            'alm_det_req.subtotal',
             'alm_det_req.cantidad',
             'alm_det_req.descripcion_adicional',
             'alm_det_req.partida',
@@ -3756,7 +3766,8 @@ class LogisticaController extends Controller
                     'id_detalle_requerimiento'=> $data->id_detalle_requerimiento,
                     'id_requerimiento'=> $data->id_requerimiento,
                     'id_item'=> $data->id_item,
-                    'precio_referencial'=> $data->precio_referencial,
+                    'precio_unitario'=> $data->precio_unitario,
+                    'subtotal'=> $data->subtotal,
                     'cantidad'=> $data->cantidad,
                     'descripcion_adicional'=> $data->descripcion_adicional,
                     'partida'=> $data->partida,
@@ -3768,7 +3779,7 @@ class LogisticaController extends Controller
                     'id_tipo_item'=> $data->id_tipo_item
                 ];
 
-                // $total = intval($data->cantidad) * floatval($data->precio_referencial);
+                // $total = intval($data->cantidad) * floatval($data->precio_unitario);
                 // $aux_sum = $aux_sum + floatval($total);
                 // $req[0]['monto_total_referencial']= $simbolo_moneda.(number_format($aux_sum,2,'.', ''));
 
@@ -3838,7 +3849,7 @@ class LogisticaController extends Controller
             $detalle = $row['detalle'];
             $aux_sum=0;
             foreach($detalle as $data){
-                $total = intval($data['cantidad']) * floatval($data['precio_referencial']);
+                $total = intval($data['cantidad']) * floatval($data['precio_unitario']);
                 $aux_sum = $aux_sum + floatval($total);
             }
             $monto_total_referencial= $simbolo_moneda.(number_format($aux_sum,2,'.', ''));
@@ -4410,7 +4421,7 @@ class LogisticaController extends Controller
         foreach ($detail as $clave => $det) {
             $id_det = $det->id_detalle_requerimiento;
             $id_item = $det->id_item;
-            $precio = $det->precio_referencial;
+            $precio = $det->precio_unitario;
             $cant = $det->cantidad;
             $id_part = $det->partida;
             $unit = $det->unidad_medida_descripcion;
@@ -5269,7 +5280,7 @@ class LogisticaController extends Controller
 					->first();
 	
                     $items = DB::table('almacen.alm_det_req')
-                    ->select('alm_det_req.cantidad','alm_det_req.precio_referencial',
+                    ->select('alm_det_req.cantidad','alm_det_req.precio_unitario',
                     'alm_und_medida.abreviatura','alm_prod.part_number','alm_prod.codigo','alm_prod.descripcion',
                     'sis_moneda.simbolo')
                     ->join('almacen.alm_req','alm_req.id_requerimiento','=','alm_det_req.id_requerimiento')
@@ -5288,7 +5299,7 @@ class LogisticaController extends Controller
                         <td>'.$i.'.-</td><td>'.$item->part_number.'</td>
                         <td>'.$item->descripcion.'</td>
                         <td> Cantidad: '.$item->cantidad.' '.$item->abreviatura.'</td>
-                        <td> Precio: '.($item->precio_referencial !== null ? ($item->simbolo.' '.$item->precio_referencial) : 0).'</td>
+                        <td> Precio: '.($item->precio_unitario !== null ? ($item->simbolo.' '.$item->precio_unitario) : 0).'</td>
                         </tr>';
                         $i++;
                     }
@@ -6519,7 +6530,7 @@ function get_id_usuario_usuario_por_rol($descripcion_rol, $id_sede, $id_empresa)
                 'id_detalle_requerimiento'=> $detalle->id_detalle_requerimiento,
                 'id_requerimiento'=> $detalle->id_requerimiento,
                 'id_item'=> $detalle->id_item, 
-                'precio_referencial'=> $detalle->precio_referencial,
+                'precio_unitario'=> $detalle->precio_unitario,
                 'cantidad'=> $detalle->cantidad,
                 'fecha_entrega'=> $detalle->fecha_entrega,
                 'descripcion_adicional'=> $detalle->descripcion_adicional,
@@ -6757,7 +6768,7 @@ function get_id_usuario_usuario_por_rol($descripcion_rol, $id_sede, $id_empresa)
                     'id_detalle_requerimiento'=> $detalle->id_detalle_requerimiento,
                     'id_requerimiento'=> $detalle->id_requerimiento,
                     'id_item'=> $detalle->id_item, 
-                    'precio_referencial'=> $detalle->precio_referencial,
+                    'precio_unitario'=> $detalle->precio_unitario,
                     'cantidad'=> $detalle->cantidad,
                     'fecha_entrega'=> $detalle->fecha_entrega,
                     'descripcion_adicional'=> $detalle->descripcion_adicional,
@@ -7154,7 +7165,7 @@ function get_id_usuario_usuario_por_rol($descripcion_rol, $id_sede, $id_empresa)
     //             'alm_req.id_requerimiento',
     //             'alm_req.codigo as cod_req',
     //             'log_valorizacion_cotizacion.cantidad_cotizada as cantidad',
-    //             'alm_det_req.precio_referencial',
+    //             'alm_det_req.precio_unitario',
     //             'alm_det_req.id_tipo_item',
     //             'alm_det_req.descripcion_adicional',
     //             'alm_det_req.stock_comprometido',
@@ -7197,7 +7208,7 @@ function get_id_usuario_usuario_por_rol($descripcion_rol, $id_sede, $id_empresa)
     //                 <td>' . ($item->descripcion ? $item->descripcion : $item->descripcion_adicional) . '</td>
     //                 <td>' . $item->unidad_medida . '</td>
     //                 <td>' . $item->cantidad . '</td>
-    //                 <td>' . $item->precio_referencial . '</td>
+    //                 <td>' . $item->precio_unitario . '</td>
     //                 <td> <input type="number" min="0" max="'.$item->cantidad.'" value="'.$item->stock_comprometido .'" class="form-control activation stock_comprometido" data-id-det-req="'.$item->id_detalle_requerimiento.'"  data-id-req="'.$item->id_requerimiento.'"name="stock_comprometido[]" disabled></td>
     //                 <td>
     //                     <button type="button" class="btn btn-primary btn-sm" title="Ver Saldos" 
@@ -7887,7 +7898,7 @@ function get_id_usuario_usuario_por_rol($descripcion_rol, $id_sede, $id_empresa)
                 'alm_item.id_servicio',
                 'alm_det_req.id_requerimiento',
                 'alm_det_req.id_item',
-                'alm_det_req.precio_referencial',
+                'alm_det_req.precio_unitario',
                 'alm_det_req.cantidad',
                 'alm_det_req.lugar_entrega',
                 'alm_det_req.descripcion_adicional',
@@ -7930,7 +7941,7 @@ function get_id_usuario_usuario_por_rol($descripcion_rol, $id_sede, $id_empresa)
                     'descripcion' => $data->descripcion ? $data->descripcion : $data->descripcion_adicional,
                     'cantidad' => intval($data->cantidad),
                     'cantidad_cotizada' => intval($data->cantidad_cotizada),
-                    'precio_referencial'=>$data->precio_referencial,
+                    'precio_unitario'=>$data->precio_unitario,
                     'lugar_entrega'=>$data->lugar_entrega,
                     'id_unidad_medida' => $data->id_unidad_medida,
                     'unidad_medida_descripcion' => $data->unidad_medida_descripcion,
@@ -10614,7 +10625,7 @@ function makeRevertirOrdenPorRequerimiento($id_orden){
     //             'alm_item.id_servicio',
     //             'alm_item.id_equipo',
     //             'alm_det_req.cantidad',
-    //             'alm_det_req.precio_referencial',
+    //             'alm_det_req.precio_unitario',
     //             'log_valorizacion_cotizacion.id_valorizacion_cotizacion',
     //             'log_valorizacion_cotizacion.id_cotizacion',
     //             'log_valorizacion_cotizacion.id_detalle_requerimiento',
@@ -10766,7 +10777,7 @@ function makeRevertirOrdenPorRequerimiento($id_orden){
                 'alm_item.id_equipo',
                 'alm_det_req.cantidad',
                 'alm_det_req.id_unidad_medida',
-                'alm_det_req.precio_referencial',
+                'alm_det_req.precio_unitario',
                 'log_valorizacion_cotizacion.id_valorizacion_cotizacion',
                 'log_valorizacion_cotizacion.id_cotizacion',
                 'valoriza_coti_detalle.id_detalle_requerimiento',
@@ -10821,7 +10832,7 @@ function makeRevertirOrdenPorRequerimiento($id_orden){
                                 'id_equipo'=>$data->id_equipo,
                                 'cantidad'=>$data->cantidad,
                                 'id_unidad_medida'=>$data->id_unidad_medida,
-                                'precio_referencial'=>$data->precio_referencial,
+                                'precio_unitario'=>$data->precio_unitario,
                                 'id_valorizacion_cotizacion'=>$data->id_valorizacion_cotizacion,
                                 'id_cotizacion'=>$data->id_cotizacion,
                                 'id_detalle_requerimiento'=>$data->id_detalle_requerimiento,
@@ -10903,7 +10914,7 @@ function makeRevertirOrdenPorRequerimiento($id_orden){
                 'alm_item.id_servicio',
                 'alm_item.id_equipo',
                 'alm_det_req.cantidad',
-                'alm_det_req.precio_referencial',
+                'alm_det_req.precio_unitario',
                 'alm_det_req.lugar_entrega as lugar_entrega_requerimiento',
                 'alm_det_req.descripcion_adicional as descripcion_adicional_detalle_requerimiento',
                 'log_valorizacion_cotizacion.id_valorizacion_cotizacion',
@@ -11128,7 +11139,7 @@ function makeRevertirOrdenPorRequerimiento($id_orden){
                 WHEN alm_item.id_servicio isNUll AND alm_item.id_producto isNull THEN 'und' 
                 ELSE 'nulo' END) AS unidad_medida
                 "),
-                'alm_det_req.precio_referencial'
+                'alm_det_req.precio_unitario'
             )
             ->leftJoin('almacen.alm_det_req', 'alm_det_req.id_requerimiento', '=', 'alm_req.id_requerimiento')
             ->leftJoin('almacen.alm_item', 'alm_item.id_item', '=', 'alm_det_req.id_item')
@@ -11247,7 +11258,7 @@ function makeRevertirOrdenPorRequerimiento($id_orden){
                 'descripcion' => $data->descripcion,
                 'cantidad' => $data->cantidad,
                 'unidad_medida' => $data->unidad_medida,
-                'precio_referencial' => $data->precio_referencial
+                'precio_unitario' => $data->precio_unitario
             ];
         }
         // merge item with same quantity
@@ -11265,7 +11276,7 @@ function makeRevertirOrdenPorRequerimiento($id_orden){
                             $detReqWithoutDuplicated[$key]['merge']=[
                                 'id_requerimiento'=>$dataDetReq['id_requerimiento'],
                                 'id_detalle_requerimiento'=>$dataDetReq['id_detalle_requerimiento'],
-                                'precio_referencial'=>$dataDetReq['precio_referencial'],
+                                'precio_unitario'=>$dataDetReq['precio_unitario'],
                                 'fecha_entrega'=>$dataDetReq['fecha_entrega'],
                                 'unidad_medida'=>$dataDetReq['unidad_medida']
                             ];
@@ -11757,7 +11768,7 @@ function makeRevertirOrdenPorRequerimiento($id_orden){
                     <td>' . $row['descripcion'] . '</td>
                     <td>' . $row['cantidad'] . '</td>
                     <td>' . $row['unidad_medida'] . '</td>
-                    <td>' . $row['precio_referencial'] . '</td>';
+                    <td>' . $row['precio_unitario'] . '</td>';
 
             foreach ($row['proveedores'] as $item) {
                 if (count((array) $item['valorizacion']) > 0) {
@@ -12846,7 +12857,7 @@ function makeRevertirOrdenPorRequerimiento($id_orden){
                 'id_unidad_medida'=> 0,
                 'unidad'=> '',
                 'cantidad'=> $det->cantidad,
-                'precio_referencial'=> $det->importe,
+                'precio_unitario'=> $det->importe,
                 'fecha_entrega'=> $det->fecha_entrega,
                 'lugar_entrega'=> $lugar,
                 'id_partida'=> 0,

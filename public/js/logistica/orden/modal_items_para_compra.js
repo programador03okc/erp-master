@@ -377,15 +377,15 @@ function validarObjItemsParaCompra() {
             if (element.id_producto == '' || element.id_producto == null) {
                 infoStateInput.push('Guardar item');
             }
-            if (element.id_categoria == '' || element.id_categoria == null) {
-                infoStateInput.push('Completar Categoría');
-            }
-            if (element.id_subcategoria == '' || element.id_subcategoria == null) {
-                infoStateInput.push('Completar Subcategoría');
-            }
-            if (element.id_clasif == '' || element.id_clasif == null) {
-                infoStateInput.push('Completar Clasificación');
-            }
+            // if (element.id_categoria == '' || element.id_categoria == null) {
+            //     infoStateInput.push('Completar Categoría');
+            // }
+            // if (element.id_subcategoria == '' || element.id_subcategoria == null) {
+            //     infoStateInput.push('Completar Subcategoría');
+            // }
+            // if (element.id_clasif == '' || element.id_clasif == null) {
+            //     infoStateInput.push('Completar Clasificación');
+            // }
             if (element.id_unidad_medida == '' || element.id_unidad_medida == null) {
                 infoStateInput.push('Completar Unidad de Medida');
             }

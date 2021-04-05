@@ -1,6 +1,8 @@
 function mostrar_requerimiento(IdorCode){
     // console.log("mostrar_requeriniento");
-
+    document.querySelector("table[id='ListaDetalleRequerimiento']").tHead.children[0].cells[9].setAttribute('class','oculto'); 
+    document.querySelector("table[id='ListaDetalleRequerimiento']").tHead.children[0].cells[10].setAttribute('class','oculto'); 
+    document.querySelector("table[id='ListaDetalleRequerimiento']").tHead.children[0].cells[11].setAttribute('class','oculto'); 
     document.getElementById('btnCopiar').removeAttribute("disabled");
     if (! /^[a-zA-Z0-9]+$/.test(IdorCode)) { // si tiene texto
         url = rutaMostrarRequerimiento+'/'+0+'/'+IdorCode;
@@ -133,6 +135,16 @@ function mostrar_requerimiento(IdorCode){
                 $('[name=nro_cuenta]').val(response['requerimiento'][0].nro_cuenta);
                 $('[name=cci]').val(response['requerimiento'][0].nro_cuenta_interbancaria);
                 $('[name=estado]').val(response['requerimiento'][0].estado);
+
+                let simboloMoneda='';
+                if(response['requerimiento'][0].id_moneda==1){
+                    simboloMoneda= 'S/.';
+                }else if(response['requerimiento'][0].id_moneda ==2 ){
+                    simboloMoneda= '$';
+
+                }
+                document.querySelector("form[id='form-requerimiento'] table label[name='total']").textContent= simboloMoneda+Math.round(response['requerimiento'][0].monto).toFixed(2);
+
                 /* detalle */
                 var detalle_requerimiento = response['det_req'];
                 if(detalle_requerimiento.length === 0){
@@ -160,7 +172,8 @@ function mostrar_requerimiento(IdorCode){
                         'unidad':detalle_requerimiento[x].unidad_medida,
                         'cantidad':detalle_requerimiento[x].cantidad,
                         'stock_comprometido':detalle_requerimiento[x].stock_comprometido,
-                        'precio_referencial':detalle_requerimiento[x].precio_referencial,
+                        'precio_unitario':detalle_requerimiento[x].precio_unitario,
+                        'subtotal':detalle_requerimiento[x].subtotal,
                         'id_tipo_moneda':detalle_requerimiento[x].id_tipo_moneda,
                         'tipo_moneda':detalle_requerimiento[x].tipo_moneda,
                         'fecha_entrega':detalle_requerimiento[x].fecha_entrega,

@@ -114,7 +114,7 @@ function fillListaItemsRequerimientosVinculados(){
             },
             {'render':
                 function (data, type, row, meta){
-                    return row.precio_referencial;
+                    return row.precio_unitario;
                 }
             },
             {'render':
@@ -552,9 +552,9 @@ function listar_detalle_orden_requerimiento(data){
             {'render':
                 function (data, type, row, meta){
                     if(row.estado ==7){
-                        return '<input type="text" class="form-control" name="precio" data-row="'+(meta.row+1)+'" data-id_requerimiento="'+(row.id_requerimiento?row.id_requerimiento:0)+'" data-id_detalle_requerimiento="'+(row.id_detalle_requerimiento?row.id_detalle_requerimiento:0)+'" value="'+(row.precio_referencial?row.precio_referencial:"")+'" onChange="updateInputPrecio(event);" style="width:70px;" disabled/>';
+                        return '<input type="text" class="form-control" name="precio" data-row="'+(meta.row+1)+'" data-id_requerimiento="'+(row.id_requerimiento?row.id_requerimiento:0)+'" data-id_detalle_requerimiento="'+(row.id_detalle_requerimiento?row.id_detalle_requerimiento:0)+'" value="'+(row.precio_unitario?row.precio_unitario:"")+'" onChange="updateInputPrecio(event);" style="width:70px;" disabled/>';
                     }else{
-                        return '<input type="text" class="form-control" name="precio" data-row="'+(meta.row+1)+'" data-id_requerimiento="'+(row.id_requerimiento?row.id_requerimiento:0)+'" data-id_detalle_requerimiento="'+(row.id_detalle_requerimiento?row.id_detalle_requerimiento:0)+'" value="'+(row.precio_referencial?row.precio_referencial:"")+'" onChange="updateInputPrecio(event);" style="width:70px;"/>';
+                        return '<input type="text" class="form-control" name="precio" data-row="'+(meta.row+1)+'" data-id_requerimiento="'+(row.id_requerimiento?row.id_requerimiento:0)+'" data-id_detalle_requerimiento="'+(row.id_detalle_requerimiento?row.id_detalle_requerimiento:0)+'" value="'+(row.precio_unitario?row.precio_unitario:"")+'" onChange="updateInputPrecio(event);" style="width:70px;"/>';
                     }
                 } , 'name':'precio'
             },
@@ -699,7 +699,7 @@ function updateInObjPrecioReferencial(rowNumber,idReq,idDetReq,valor){
         detalleRequerimientoSelected.forEach((element,index) => {
             if(element.id_requerimiento == idReq){
                 if(element.id_detalle_requerimiento == idDetReq){
-                detalleRequerimientoSelected[index].precio_referencial = valor;
+                detalleRequerimientoSelected[index].precio_unitario = valor;
                 }
             }
         });
@@ -709,7 +709,7 @@ function updateInObjPrecioReferencial(rowNumber,idReq,idDetReq,valor){
             // console.log(element.id);
             // console.log(rowNumber);
             if(element.id == rowNumber){
-                detalleRequerimientoSelected[index].precio_referencial = valor;
+                detalleRequerimientoSelected[index].precio_unitario = valor;
                 
             }
         });

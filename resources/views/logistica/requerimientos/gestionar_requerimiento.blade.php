@@ -378,8 +378,9 @@
                             <th width="200">DESCRIPCION</th>
                             <th width="60">UNIDAD</th>
                             <th width="70">CANTIDAD</th>
-                            <th width="70">PRECIO REF.</th>
+                            <th width="70">PRECIO U.</th>
                             <th width="70">MONEDA</th>
+                            <th width="70">SUBTOTAL</th>
                             <th class="oculto" width="70">PARTIDA</th>
                             <th class="oculto" width="70">C.Costos</th>
                             <th class="oculto" width="70">Atendido Por</th>

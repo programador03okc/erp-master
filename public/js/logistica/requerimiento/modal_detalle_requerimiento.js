@@ -104,7 +104,7 @@ function statusBtnOpenProyectoModal(value){
 //        // first, convert data into a Map with reduce
 //            counts = ListOfItems.reduce((prev, curr) => {
 //            let count = prev.get(curr.id_partida) || 0;
-//            let sum_prec_ref = (parseFloat(curr.precio_referencial) * parseFloat(curr.cantidad)) + parseInt(count);
+//            let sum_prec_ref = (parseFloat(curr.precio_unitario) * parseFloat(curr.cantidad)) + parseInt(count);
 //            prev.set(curr.id_partida, sum_prec_ref );
 //            return prev;
 //        }, new Map());
@@ -333,50 +333,48 @@ function agregarItem(){
             row.insertCell(3).innerHTML = data_item[a].des_item?data_item[a].des_item:'-';
             row.insertCell(4).innerHTML = descripcion_unidad;
             row.insertCell(5).innerHTML = data_item[a].cantidad?data_item[a].cantidad:'0';
-            row.insertCell(6).innerHTML = data_item[a].precio_referencial?data_item[a].precio_referencial:'0';
+            row.insertCell(6).innerHTML = data_item[a].precio_unitario?data_item[a].precio_unitario:'0';
             row.insertCell(7).innerHTML = data_item[a].tipo_moneda?data_item[a].tipo_moneda:'';
+            row.insertCell(8).innerHTML = data_item[a].subtotal ? data_item[a].subtotal : '';
 
-            // row.insertCell(9).innerHTML = data_item[a].fecha_entrega?data_item[a].fecha_entrega:null;
-            // row.insertCell(10).innerHTML = data_item[a].lugar_entrega?data_item[a].lugar_entrega:'-';
-            // row.insertCell(11).innerHTML = data_item[a].almacen_descripcion?data_item[a].almacen_descripcion:'-';
             var id_grupo = document.querySelector("form[id='form-requerimiento'] input[name='id_grupo']").value;
             var id_proyecto = document.querySelector("form[id='form-requerimiento'] select[name='id_proyecto']").value;
             var tdBtnAction = '';
 
             if((id_grupo == 3 && data_item[a].id_partida > 0 ) || (cantidadIdPartidas >0)){
-                document.querySelector("table[id='ListaDetalleRequerimiento']").tHead.children[0].cells[8].setAttribute('class','');                
-                row.insertCell(8).innerHTML =  data_item[a].cod_partida ? data_item[a].cod_partida : '';
+                document.querySelector("table[id='ListaDetalleRequerimiento']").tHead.children[0].cells[9].setAttribute('class','');            
+                row.insertCell(9).innerHTML =  data_item[a].cod_partida ? data_item[a].cod_partida : '';
 
                 if(data_item[a].id_centro_costo >0 || (cantidadIdPartidas >0 && cantidadIdCentroCostos >0)){
-                    document.querySelector("table[id='ListaDetalleRequerimiento']").tHead.children[0].cells[9].setAttribute('class','');                
-                    row.insertCell(9).innerHTML =  data_item[a].codigo_centro_costo ? data_item[a].codigo_centro_costo : '';
-                    tdBtnAction = row.insertCell(10);
+                    document.querySelector("table[id='ListaDetalleRequerimiento']").tHead.children[0].cells[10].setAttribute('class','');            
+                    row.insertCell(10).innerHTML =  data_item[a].codigo_centro_costo ? data_item[a].codigo_centro_costo : '';
+                    tdBtnAction = row.insertCell(11);
         
                 }else{
-                    tdBtnAction = row.insertCell(9);
+                    tdBtnAction = row.insertCell(10);
                 }
 
 
             }else if(data_item[a].id_centro_costo >0 || (cantidadIdCentroCostos >0)){
-                document.querySelector("table[id='ListaDetalleRequerimiento']").tHead.children[0].cells[9].setAttribute('class','');                
-                row.insertCell(8).innerHTML =  data_item[a].codigo_centro_costo ? data_item[a].codigo_centro_costo : '';
+                document.querySelector("table[id='ListaDetalleRequerimiento']").tHead.children[0].cells[10].setAttribute('class','');             
+                row.insertCell(9).innerHTML =  data_item[a].codigo_centro_costo ? data_item[a].codigo_centro_costo : '';
 
                 if(data_item[a].id_almacen_reserva >0 || data_item[a].proveedor_id >0){
-                    document.querySelector("table[id='ListaDetalleRequerimiento']").tHead.children[0].cells[10].setAttribute('class','');                
-                    row.insertCell(9).innerHTML =  data_item[a].almacen_reserva ? data_item[a].almacen_reserva : data_item[a].proveedor_razon_social;
-                    tdBtnAction = row.insertCell(10);
+                    document.querySelector("table[id='ListaDetalleRequerimiento']").tHead.children[0].cells[11].setAttribute('class','');          
+                    row.insertCell(10).innerHTML =  data_item[a].almacen_reserva ? data_item[a].almacen_reserva : data_item[a].proveedor_razon_social;
+                    tdBtnAction = row.insertCell(11);
 
                 }else{
 
-                    tdBtnAction = row.insertCell(9);
+                    tdBtnAction = row.insertCell(10);
                 }
             }else if(data_item[a].id_almacen_reserva >0 || data_item[a].proveedor_id >0){
-                document.querySelector("table[id='ListaDetalleRequerimiento']").tHead.children[0].cells[10].setAttribute('class','');                
-                row.insertCell(8).innerHTML =  data_item[a].almacen_reserva ? data_item[a].almacen_reserva : data_item[a].proveedor_razon_social;
+                document.querySelector("table[id='ListaDetalleRequerimiento']").tHead.children[0].cells[11].setAttribute('class','');            
+                row.insertCell(9).innerHTML =  data_item[a].almacen_reserva ? data_item[a].almacen_reserva : data_item[a].proveedor_razon_social;
 
-                tdBtnAction = row.insertCell(9);
+                tdBtnAction = row.insertCell(10);
             }else{
-                tdBtnAction = row.insertCell(8);
+                tdBtnAction = row.insertCell(9);
 
             }
             // tdBtnAction.className = classHiden;
@@ -552,7 +550,7 @@ switch (option) {
             // first, convert data into a Map with reduce
                 counts = ListOfItems.reduce((prev, curr) => {
                 let count = prev.get(curr.id_partida) || 0;
-                prev.set(curr.id_partida, (parseFloat(curr.precio_referencial) *parseFloat(curr.cantidad)) + count);
+                prev.set(curr.id_partida, (parseFloat(curr.precio_unitario) *parseFloat(curr.cantidad)) + count);
                 return prev;
             }, new Map());
     
@@ -607,7 +605,7 @@ function fill_input_detalle_requerimiento(item){
     $('[name=descripcion_item]').val(item.des_item);
     $('[name=unidad_medida_item]').val(item.id_unidad_medida);
     $('[name=cantidad_item]').val(item.cantidad);
-    $('[name=precio_ref_item]').val(item.precio_referencial);
+    $('[name=precio_ref_item]').val(item.precio_unitario);
     $('[name=fecha_entrega_item]').val(item.fecha_entrega);
     $('[name=lugar_entrega_item]').val(item.lugar_entrega);
     $('[name=id_partida]').val(item.id_partida);
@@ -957,7 +955,8 @@ function selectItem(){
             'id_unidad_medida': document.querySelector("div[id='modal-catalogo-items'] div[class='modal-footer'] label[id='id_unidad_medida']").textContent,
             'categoria': document.querySelector("div[id='modal-catalogo-items'] div[class='modal-footer'] label[id='categoria']").textContent,
             'subcategoria': document.querySelector("div[id='modal-catalogo-items'] div[class='modal-footer'] label[id='subcategoria']").textContent,
-            'precio_referencial':null,
+            'precio_unitario':null,
+            'subtotal':null,
             'id_tipo_moneda':1,
             'lugar_entrega':null,
             'id_partida':null,
@@ -1095,7 +1094,8 @@ function agregarPromociones(){
                 'unidad':element.unidad_medida,
                 'id_item':null,
                 'id_tipo_item':null,
-                'precio_referencial':null,
+                'precio_unitario':null,
+                'subtotal':null,
                 'fecha_entrega':null,
                 'id_partida':null,
                 'id_centro_costo':null,
