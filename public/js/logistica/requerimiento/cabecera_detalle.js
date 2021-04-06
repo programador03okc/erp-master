@@ -1043,14 +1043,7 @@ function llenarTablaListaDetalleRequerimiento(data,selectMoneda,selectUnidadMedi
                     var id_proyecto = document.querySelector("form[id='form-requerimiento'] select[name='id_proyecto']").value;
         
                     btnAction = `<div class="btn-group btn-group-sm" role="group" aria-label="Second group"><center>`;
-                    if (id_proyecto > 0) {
-                        btnAction += `<button type="button" class="btn btn-warning btn-xs"  name="btnMostarPartidas" data-toggle="tooltip" title="Partida" onClick=" partidasModal(${data[a].id_item});" ${hasAttrDisabled}><i class="fas fa-money-check"></i></button>`;
-                    }else{
-                        if(tipo_requerimiento !=2){
 
-                            btnAction += `<button type="button" class="btn btn-warning btn-xs"  name="btnMostarPartidas" data-toggle="tooltip" title="Para mostrar partidas debe seleccionar un proyecto" onClick=" partidasModal(${data[a].id_item});" ${hasAttrDisabled}><i class="fas fa-money-check"></i></button>`;
-                        }
-                    }
                     btnAction += `<button type="button" class="btn btn-warning btn-xs" name="btnCentroCostos" data-toggle="tooltip" title="Centro de Costos" onClick="centroCostosModal(event, ${a});" ${hasAttrDisabled}><i class="fas fa-donate"></i></button>`;
                     
                     if(tipo_requerimiento !=2){
