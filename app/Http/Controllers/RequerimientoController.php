@@ -903,7 +903,7 @@ class RequerimientoController extends Controller
                     DB::table('contabilidad.adm_contri')
                     ->where('id_contribuyente', $id_contribuyente)
                     ->update(['telefono' => $telefono?$telefono:null]); 
-                    $cliente[0]['telefono']=$id_ubtelefonoigeo_cliente;
+                    $cliente[0]['telefono']=$telefono;
 
                 }
                 if($adm_contri->first()->email == null || $adm_contri->first()->email ==''){
@@ -1041,6 +1041,27 @@ class RequerimientoController extends Controller
             $status= 204;
         }
         $output=['status'=>$status,'msj'=>$msj,'data'=>$subcategoriaList];
+        return response()->json($output);
+    }
+    public function buscarStockEnAlmacenes($id_item){
+       
+    
+        $msj = '';
+        $status = 0;
+        $data = [];
+
+        if ($id_item > 0){
+            $data = DB::table('almacen.alm_almacen')
+            ->select('alm_almacen.id_almacen','alm_almacen.codigo','alm_almacen.descripcion')
+            ->where([['alm_almacen.estado', '=', 1]])
+                ->orderBy('codigo')
+                ->get();
+
+        } else {
+            $msj = 'No es posible guardar. Ya existe una subcategoria con dicha descripción';
+            $status= 204;
+        }
+        $output=['status'=>$status,'msj'=>$msj,'data'=>$data];
         return response()->json($output);
     }
 
