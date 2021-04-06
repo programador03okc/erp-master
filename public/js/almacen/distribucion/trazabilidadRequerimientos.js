@@ -1,5 +1,6 @@
 $(document).ready(function(){
     listarTrazabilidadRequerimientos();
+    vista_extendida();
 });
 
 var table;
