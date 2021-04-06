@@ -111,7 +111,8 @@ class GestionCustomizacion
                                     <i class="fas fa-print"></i></button>`+
                                 (row['estado'] == 21 ? //entregado
                                 `<button type="button" class="iniciar btn btn-primary boton" data-toggle="tooltip" 
-                                    data-placement="bottom" title="Iniciar Transformación" data-id="${row['id_transformacion']}">
+                                    data-placement="bottom" title="Iniciar Transformación" data-id="${row['id_transformacion']}"
+                                    data-estado="${row['estado']}">
                                     <i class="fas fa-step-forward"></i></button>`: '' )
                                 );
                     }
@@ -198,6 +199,16 @@ $('#listaTransformacionesPendientes tbody').on("click","button.imprimir", functi
     }
 });
 
+$('#listaTransformacionesPendientes tbody').on("click","button.iniciar", function(){
+    var id = $(this).data('id');
+    var estado = $(this).data('estado');
+
+    if (id !== null && id !== ''){
+        openIniciar(id,estado);
+    } else {
+        alert('Debe seleccionar una Hoja de Transformación.');
+    }
+});
 // $('#listaTransformacionesPendientes tbody').on("mouseover","button.conformidad", function(){
 //     $(this).find('i.fas').removeClass('fa-check');
 //     $(this).find('i.fas').addClass('fa-times');
@@ -249,6 +260,36 @@ $('#listaTransformacionesPendientes tbody').on("click","button.noconformidad", f
         console.log(errorThrown);
     });
 });
+
+function openIniciar(id_transformacion,est){
+    if (est == '1'){
+        alert('A la espera de que Almacén genere la salida de los productos.');
+    }
+    else if (est == '9'){
+        alert('La transformación ya fue procesada.');
+    } 
+    else if (est == '7'){
+        alert('No puede procesar. La transformación esta Anulada.');
+    }
+    else if (est == '24'){
+        alert('Ésta Transformación ya fue iniciada.');
+    } 
+    else if (est == '21'){
+        $.ajax({
+            type: 'GET',
+            url: 'iniciar_transformacion/'+id_transformacion,
+            dataType: 'JSON',
+            success: function(response){
+                console.log(response);
+                $('#listaTransformacionesPendientes').DataTable().ajax.reload();
+            }
+        }).fail( function( jqXHR, textStatus, errorThrown ){
+            console.log(jqXHR);
+            console.log(textStatus);
+            console.log(errorThrown);
+        });
+    } 
+}
 
 $('#listaTransformaciones tbody').on("click","button.ingreso", function(){
     var id = $(this).data('id');

@@ -1259,6 +1259,7 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::get('imprimir_transformacion/{id}', 'CustomizacionController@imprimir_transformacion');
 					Route::get('recibido_conforme_transformacion/{id}', 'CustomizacionController@recibido_conforme_transformacion');
 					Route::get('no_conforme_transformacion/{id}', 'CustomizacionController@no_conforme_transformacion');
+					Route::get('iniciar_transformacion/{id}', 'CustomizacionController@iniciar_transformacion');
 
 				});
 	
