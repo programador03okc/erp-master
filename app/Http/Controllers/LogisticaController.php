@@ -1292,21 +1292,20 @@ class LogisticaController extends Controller
                     <td class="verticalTop"></td>
                 </tr>
                 </table>
-                <br>
-                <hr>
-                <br>
-                <p class="subtitle">1.- DENOMINACIÓN DE LA ADQUISICIÓN</p>
-                <div class="texttab">' . $requerimiento['requerimiento'][0]['concepto'] . '</div>';
+                <br>';
+                
+                // <br>
+                // <p class="subtitle">1.- DENOMINACIÓN DE LA ADQUISICIÓN</p>
+                // <div class="texttab">' . $requerimiento['requerimiento'][0]['concepto'] . '</div>
+                // <p class="subtitle">3.- DESCRIPCIÓN POR ITEM</p>
 
-        $html .=   '</div>
-                <p class="subtitle">3.- DESCRIPCIÓN POR ITEM</p>
+        $html .= '</div>
                 <table width="100%" class="tablePDF" border=0>
                 <thead>
                     <tr class="subtitle">
                         <td width="3%">#</td>
                         <td width="10%">Item</td>
                         <td width="30%">Descripcion</td>
-                        <td width="9%">Fecha Entrega</td>
                         <td width="5%">Und.</td>
                         <td width="5%">Cant.</td>
                         <td width="6%">Precio Ref.</td>
@@ -1319,7 +1318,6 @@ class LogisticaController extends Controller
             $html .= '<td >' . ($key + 1) . '</td>';
             $html .= '<td >' . $data['codigo_item'] . '</td>';
             $html .= '<td >' . ($data['descripcion'] ? $data['descripcion'] : $data['descripcion_adicional']) . '</td>';
-            $html .= '<td >' . $data['fecha_entrega'] . '</td>';
             $html .= '<td >' . $data['unidad_medida'] . '</td>';
             $html .= '<td class="right">' . $data['cantidad'] . '</td>';
             $html .= '<td class="right">S/.' . $data['precio_unitario'] . '</td>';
@@ -1329,7 +1327,7 @@ class LogisticaController extends Controller
         }
         $html .= '
             <tr>
-                <td  class="right" style="font-weight:bold;" colspan="7">TOTAL</td>
+                <td  class="right" style="font-weight:bold;" colspan="6">TOTAL</td>
                 <td class="right">S/.' . $total . '</td>
             </tr>
             </table>
