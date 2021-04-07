@@ -79,7 +79,7 @@ function agregarReservaAlmacen(){
                 }
             });
             componerTdItemDetalleRequerimiento();
-            alert("Item actualizado, Se asignó un proveedor al item");
+            alert("Producto actualizado vinculado al "+select_almacen_reserva_text);
 
             $('#modal-almacen-reserva').modal('hide');
             // console.log(data_item);

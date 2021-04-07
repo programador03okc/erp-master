@@ -2286,7 +2286,7 @@ class EquipoController extends Controller
 
     public function listar_partidas($id_grupo,$id_proyecto=null){
         
-        if($id_proyecto != null || $id_proyecto != ''){ 
+        if($id_proyecto =! null || $id_proyecto =! ''){ 
             
             $presup = DB::table('proyectos.proy_presup')
             ->select('presup.*')

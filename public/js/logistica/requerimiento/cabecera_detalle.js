@@ -1043,11 +1043,13 @@ function llenarTablaListaDetalleRequerimiento(data,selectMoneda,selectUnidadMedi
                     var id_proyecto = document.querySelector("form[id='form-requerimiento'] select[name='id_proyecto']").value;
         
                     btnAction = `<div class="btn-group btn-group-sm" role="group" aria-label="Second group"><center>`;
-
+                    if (tipo_requerimiento ==3 ) {
+                            btnAction += `<button type="button" class="btn btn-warning btn-xs"  name="btnMostarPartidas" data-toggle="tooltip" title="Partidas" onClick=" partidasModal(${a});" ${hasAttrDisabled}><i class="fas fa-money-check"></i></button>`;
+                        
+                    } 
                     btnAction += `<button type="button" class="btn btn-primary btn-xs" name="btnCentroCostos" data-toggle="tooltip" title="Centro de Costos" style="background: #3c763d;" onClick="centroCostosModal(event, ${a});" ${hasAttrDisabled}><i class="fas fa-donate"></i></button>`;
                     
                     if(tipo_requerimiento !=2){
-
                         btnAction += `<button type="button" class="btn btn-default btn-xs" name="btnAdjuntarArchivos" data-toggle="tooltip" title="Adjuntos" onClick="archivosAdjuntosModal(event, ${a});" ${hasAttrDisabled}><i class="fas fa-paperclip"></i></button>`;
                     }
                     btnAction += `<button type="button" class="btn btn-danger btn-xs"   name="btnEliminarItem" data-toggle="tooltip" title="Eliminar" onclick="eliminarItemDeListado(this,${data[a].id_item});" ${hasAttrDisabled} ><i class="fas fa-trash-alt"></i></button>`;
@@ -1120,23 +1122,19 @@ function llenarTablaListaDetalleRequerimiento(data,selectMoneda,selectUnidadMedi
                 var id_proyecto = document.querySelector("form[id='form-requerimiento'] select[name='id_proyecto']").value;
     
                 btnAction = `<div class="btn-group btn-group-sm" role="group" aria-label="Second group"><center>`;
-                if (id_proyecto > 0) {
-                    btnAction += `<button type="button" class="btn btn-warning btn-xs"  name="btnMostarPartidas" data-toggle="tooltip" title="Partida" onClick=" partidasModal(${data[a].id_item});" ${hasAttrDisabled}><i class="fas fa-money-check"></i></button>`;
-                }else{
-                    if(tipo_requerimiento !=2){
-
-                    btnAction += `<button type="button" class="btn btn-warning btn-xs"  name="btnMostarPartidas" data-toggle="tooltip" title="Para mostrar partidas debe seleccionar un proyecto" onClick=" partidasModal(${data[a].id_item});" disabled><i class="fas fa-money-check"></i></button>`;
-                    }
-                }
+                if (tipo_requerimiento ==3 ) {
+                        btnAction += `<button type="button" class="btn btn-warning btn-xs"  name="btnMostarPartidas" data-toggle="tooltip" title="Partidas" onClick=" partidasModal(${a});" ${hasAttrDisabled}><i class="fas fa-money-check"></i></button>`;
+                } 
+                
         
                 // btnAction += `<button type="button" class="btn btn-primary btn-xs" name="btnRemplazarItem" data-toggle="tooltip" title="Remplazar" onClick="buscarRemplazarItemParaCompra(this, ${a});" ${hasAttrDisabled}><i class="fas fa-search"></i></button>`;
                 btnAction += `<button type="button" class="btn btn-primary btn-xs" name="btnCentroCostos" data-toggle="tooltip" title="Centro de Costos" style="background: #3c763d;" onClick="centroCostosModal(event, ${a});" ${hasAttrDisabled}><i class="fas fa-donate"></i></button>`;
                 if(tipo_requerimiento ==3){ // tipo = bienes y servicios
-                    btnAction += `<button type="button" class="btn btn-primary btn-xs" name="btnBuscarEnAlmacen" data-toggle="tooltip" title="Buscar Stock en Almacenes" style="background:#b498d0;" onClick="buscarStockEnAlmacenesModal(${data[a].id_item});" ${hasAttrDisabled}><i class="fas fa-warehouse"></i></button>`;
-
+                    // btnAction += `<button type="button" class="btn btn-primary btn-xs" name="btnBuscarEnAlmacen" data-toggle="tooltip" title="Buscar Stock en Almacenes" style="background:#b498d0;" onClick="buscarStockEnAlmacenesModal(${data[a].id_item});" ${hasAttrDisabled}><i class="fas fa-warehouse"></i></button>`;
+                    btnAction += `<button type="button" class="btn btn-xs" name="btnAlmacenReservaModal" data-toggle="tooltip" title="Almacén Reserva" onClick="modalAlmacenReserva(this, ${a});" ${hasAttrDisabled} style="background:#b498d0; color: #f5f5f5;"><i class="fas fa-warehouse"></i></button>`;
                 }
                 if(tipo_requerimiento ==2){ // tipo = CMS
-                    btnAction += `<button type="button" class="btn btn-xs" name="btnAlmacenReservaModal" data-toggle="tooltip" title="Almacén Reserva" onClick="modalAlmacenReserva(this, ${a});" ${hasAttrDisabled} style="background:#b498d0; color: #f5f5f5;"><i class="fas fa-puzzle-piece fa-sm"></i></button>`;
+                    btnAction += `<button type="button" class="btn btn-xs" name="btnAlmacenReservaModal" data-toggle="tooltip" title="Almacén Reserva" onClick="modalAlmacenReserva(this, ${a});" ${hasAttrDisabled} style="background:#b498d0; color: #f5f5f5;"><i class="fas fa-warehouse"></i></button>`;
                     btnAction += `<button type="button" class="btn btn-primary btn-xs" name="btnModalSeleccionarCrearProveedor data-toggle="tooltip" title="Proveedor" onClick="modalSeleccionarCrearProveedor(event, ${a});" ${hasAttrDisabled}><i class="fas fa-user-tie"></i></button>`;
 
                 }
@@ -1233,22 +1231,39 @@ function listarCentroCostos(){
     });
 }
 // modal partidas
-function partidasModal(id_item){  
-    console.log(id_item);
+function partidasModal(indice){  
+    // console.log(indice);
     var id_grupo = document.querySelector("form[id='form-requerimiento'] input[name='id_grupo']").value;
     var id_proyecto = document.querySelector("form[id='form-requerimiento'] select[name='id_proyecto']").value;
-    
-    if (id_grupo !== ''){
-        if (id_proyecto != ''){
+    var usuarioProyectos = false;
+        grupos.forEach(element => {
+            if(element.id_grupo ==3){ // proyectos
+                usuarioProyectos=true
+            }
+        });
+    if (id_grupo > 0){
+        if (usuarioProyectos == true){
+            if (id_proyecto >0){
+                $('#modal-partidas').modal({
+                    show: true,
+                    backdrop: 'true'
+                });
+                document.querySelector("div[id='modal-partidas'] label[id='indice']").textContent =  indice;
+                listarPartidas(id_grupo,id_proyecto);
+            } else {
+                alert('hubo un problema, asegurese de seleccionar un proyecto antes de continuar.');
+            }
+
+        }else{
             $('#modal-partidas').modal({
                 show: true,
                 backdrop: 'true'
             });
-            document.querySelector("div[id='modal-partidas'] label[id='id_item']").textContent =  id_item;
+            document.querySelector("div[id='modal-partidas'] label[id='indice']").textContent =  indice;
             listarPartidas(id_grupo,id_proyecto);
-        } else {
-            alert('hubo un problema, asegurese de seleccionar un proyecto antes de continuar.');
+
         }
+        
     }else{
         alert("Ocurrio un problema, no se puedo seleccionar el grupo al que pertence el usuario.");
     }
@@ -1354,11 +1369,11 @@ function selectPartida(id_partida){
         'importe_total': importe_total
     };
 
-    let id_item_modal_partida = document.querySelector("div[id='modal-partidas'] label[id='id_item']").textContent;
-    if(id_item_modal_partida >0){
+    let indice_modal_partida = document.querySelector("div[id='modal-partidas'] label[id='indice']").textContent;
+    if(indice_modal_partida >=0){
         if(data_item.length >0){
             data_item.forEach((element, index) => {
-                if (element.id_item == id_item_modal_partida) {
+                if (index == indice_modal_partida) {
                     data_item[index].id_partida = parseInt(id_partida);
                     data_item[index].cod_partida = codigoPartidaSelected;
                     data_item[index].des_partida = descripcion;

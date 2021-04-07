@@ -524,7 +524,7 @@
     </form>
 
 </div>
-@include('logistica.requerimientos.modal_buscar_stock_almacenes')
+<!-- @include('logistica.requerimientos.modal_buscar_stock_almacenes') -->
 @include('logistica.requerimientos.aprobacion.modal_sustento')
 @include('logistica.requerimientos.modal_agregar_fuente')
 @include('logistica.requerimientos.modal_agregar_detalle_fuente')
@@ -568,7 +568,7 @@
     <script src="{{ asset('datatables/pdfmake/pdfmake.min.js') }}"></script>
     <script src="{{ asset('datatables/pdfmake/vfs_fonts.js') }}"></script>
     <script src="{{ asset('datatables/JSZip/jszip.min.js') }}"></script>
-    <script src="{{ asset('js/logistica/requerimiento/modal_buscar_stock_almacenes.js') }}"></script>
+    <!-- <script src="{{ asset('js/logistica/requerimiento/modal_buscar_stock_almacenes.js') }}"></script> -->
     <script src="{{ asset('js/logistica/requerimiento/cuadro_costos.js') }}"></script>
     <script src="{{ asset('js/logistica/requerimiento/historial.js') }}"></script>
     <script src="{{ asset('js/logistica/requerimiento/trazabilidad.js') }}"></script>

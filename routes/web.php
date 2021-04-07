@@ -660,7 +660,7 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::post('save_cliente', 'LogisticaController@save_cliente');
 					Route::get('listar_saldos/{id}', 'AlmacenController@listar_saldos');
 					Route::get('listar_opciones', 'ProyectosController@listar_opciones');
-					Route::get('listar_partidas/{id_grupo}/{id_op_com}', 'EquipoController@listar_partidas');
+					Route::get('listar_partidas/{id_grupo?}/{id_op_com?}', 'EquipoController@listar_partidas');
 					Route::get('listar-saldos-por-almacen', 'AlmacenController@listar_saldos_por_almacen');
 					Route::get('listar-saldos-por-almacen/{id_producto}', 'AlmacenController@listar_saldos_por_almacen_producto');
 					Route::get('obtener-promociones/{id_producto}/{id_almacen}', 'LogisticaController@obtener_promociones');
