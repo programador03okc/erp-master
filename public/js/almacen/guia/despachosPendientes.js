@@ -52,7 +52,7 @@ function listarDespachosPendientes(permiso){
                     }
                 }
             },
-            {'data': 'fecha_entrega'},
+            {'data': 'fecha_despacho'},
             {'data': 'hora_despacho'},
             {'data': 'codigo'},
             {'render': 
