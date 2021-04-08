@@ -2155,14 +2155,14 @@ class OrdenController extends Controller
             $id_orden = DB::table('logistica.log_ord_compra')
             ->insertGetId(
                 [
-                    'id_grupo_cotizacion' => $request->id_grupo_cotizacion?$request->id_grupo_cotizacion:null,
+                    'id_grupo_cotizacion' => isset($request->id_grupo_cotizacion)?$request->id_grupo_cotizacion:null,
                     'id_tp_documento' =>  $tp_doc,
                     'fecha' => date('Y-m-d H:i:s'),
-                    'id_usuario' => $usuario,
+                    'id_usuario' => $usuario?$usuario:null,
                     'id_moneda' => ($request->id_moneda?$request->id_moneda:null),
                     'id_proveedor' => $request->id_proveedor,
-                    'id_contacto' => $request->id_contacto_proveedor,
-                    'codigo' => $codigo,
+                    'id_contacto' => $request->id_contacto_proveedor?$request->id_contacto_proveedor:null,
+                    'codigo' => $codigo?$codigo:null,
                 // 'monto_subtotal' => $request->monto_subtotal?$request->monto_subtotal:null,
                 // 'igv_porcentaje' => $request->igv_porcentaje?$request->igv_porcentaje:null,
                 // 'monto_igv' => $request->monto_igv?$request->monto_igv:null,
@@ -2178,7 +2178,7 @@ class OrdenController extends Controller
                     'id_occ' => $request->id_cc?$request->id_cc:null,
                     'id_sede' => $request->id_sede?$request->id_sede:null,
                     'direccion_destino' => $request->direccion_destino?$request->direccion_destino:null,
-                    'ubigeo_destino' => $request->id_ubigeo_destino?$request->id_ubigeo_destino:null,
+                    'ubigeo_destino' => isset($request->id_ubigeo_destino)?$request->id_ubigeo_destino:null,
                     // 'id_requerimiento' => $request->id_requerimiento,
                     'en_almacen' => false,
                     'estado' => 17,

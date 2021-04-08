@@ -24,7 +24,7 @@
                 <h4>General</h4>
                 <fieldset class="group-table">   
                     <div class="row">
-                        <div class="col-md-3"  id="group-tipo_orden">
+                        <div class="col-md-2"  id="group-tipo_orden">
                             <h5>Tipo de Orden</h5>
                             <select class="form-control" name="id_tipo_doc" >
                                 <option value="0">Elija una opción</option>
@@ -55,9 +55,17 @@
                             <h5>Fecha Emisión</h5>
                             <input class="form-control" name="fecha_emision" type="date" >
                         </div>
-
-                        <div class="col-md-3" id="group-datos_para_despacho-logo_empresa">
-                                <img id="logo_empresa" src="/images/img-default.jpg" alt=""  style=" height:90px; !important">
+                        <div class="col-md-2" id="group-empresa">
+                            <h5>Empresa</h5>
+                            <select class="form-control " name="id_empresa" onChange="changeOptEmpresaSelect(event)">
+                                @foreach ($empresas as $empresa)
+                                    <option value="{{$empresa->id_empresa}}" >{{$empresa->razon_social}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <h5>&nbsp;</h5>
+                        <div class="col-md-2" id="group-datos_para_despacho-logo_empresa">
+                                <img id="logo_empresa" src="/images/img-default.jpg" alt=""  style=" height:30px; !important;width:80px; !important;">
                         </div>
 
                     </div>
@@ -185,11 +193,18 @@
                 <h4>Datos para el Despacho </h4>
                 <fieldset class="group-table">   
                     <div class="row">
+                        <div class="col-md-2" id="group-datos_para_despacho-sede">
+                            <h5>Sede</h5>
+                            <select class="form-control " name="id_sede" onChange="llenarUbigeo(event)">
+                                @foreach ($sedes as $sede)
+                                    <option value="{{$sede->id_sede}}" >{{$sede->descripcion}}</option>
+                                @endforeach
+                            </select>
+                        </div>
                         <div class="col-md-6" id="group-datos_para_despacho-direccion_destino">
                             <h5>Dirección Entrega</h5>
                             <div style="display:flex;">
-                                <input class="oculto" name="id_sede">
-                                <input type="text" name="direccion_destino" class="form-control group-elemento" >
+                                 <input type="text" name="direccion_destino" class="form-control group-elemento" >
                             </div>
                         </div>
                         <div class="col-md-3" id="group-datos_para_despacho-ubigeo_entrega">

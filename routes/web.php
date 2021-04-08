@@ -779,6 +779,7 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::get('generar-orden-pdf/{id?}', 'OrdenController@generar_orden_por_requerimiento_pdf')->name('generar-orden-por-requerimiento-pdf'); // PDF
 					Route::get('listar_trabajadores', 'ProyectosController@listar_trabajadores');
 					Route::post('guardar_contacto', 'OrdenController@guardar_contacto');
+					Route::get('select-sede-by-empresa/{id?}', 'LogisticaController@select_sede_by_empresa')->name('select-sede-by-empresa');
 
 
 				});
