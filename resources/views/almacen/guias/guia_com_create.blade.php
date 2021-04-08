@@ -1,4 +1,4 @@
-<div class="modal fade" tabindex="-1" role="dialog" id="modal-guia_create">
+<div class="modal fade" tabindex="-1" role="dialog" id="modal-guia_create"  style="overflow-y: scroll;">
     <div class="modal-dialog" style="width:900px;">
         <div class="modal-content" >
             <form id="form-guia_create">

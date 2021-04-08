@@ -106,55 +106,74 @@ function listar_detalle_transformacion(id){
         dataType: 'JSON',
         success: function(response){
             console.log(response);
-            var html = '';
-            var i = 1;
             response['sobrantes'].forEach(function(element){
-                html+=`<tr id="${element.id_sobrante}" >
-                <td>${i}</td>
-                <td></td>
-                <td><input style="display:none" id="producto" data-tipo="sobrante" value="${element.id_producto}"/>${element.cod_prod}</td>
-                <td>${element.part_number!==null?element.part_number:''}</td>
-                <td>${element.descripcion}</td>
-                <td>${element.cantidad}</td>
-                <td>${element.abreviatura}</td>
-                <td>${formatNumber.decimal(element.valor_unitario,'',2)}</td>
-                <td>${formatNumber.decimal(element.valor_total,'',2)}</td>
-                <td><input type="text" class="oculto" id="series" value="${element.series}" data-partnumber="${element.part_number}"/><i class="fas fa-bars icon-tabla boton" data-toggle="tooltip" data-placement="bottom" title="Agregar Series" onClick="agrega_series_transformacion('${"'s"+element.id_sobrante+"'"}');"></i></td>
-                </tr>`;
-                i++;
                 series_transformacion.push({
-                    'id'        : 's'+element.id_sobrante,
-                    'series'    : [],
-                    'cantidad'  : element.cantidad
+                    'id'            : 's'+element.id_sobrante,
+                    'id_detalle'    : element.id_sobrante,
+                    'series'        : [],
+                    'tipo'          : 'sobrante',
+                    'cantidad'      : element.cantidad,
+                    'id_producto'   : element.id_producto,
+                    'cod_prod'      : element.cod_prod,
+                    'part_number'   : element.part_number,
+                    'descripcion'   : element.descripcion,
+                    'cantidad'      : element.cantidad,
+                    'abreviatura'   : element.abreviatura,
+                    'valor_unitario': element.valor_unitario,
+                    'valor_total'   : element.valor_total
                 });
             });
             response['transformados'].forEach(function(element){
-                html+=`<tr id="${element.id_transformado}" >
-                <td>${i}</td>
-                <td></td>
-                <td><input style="display:none" id="producto" data-tipo="transformado" value="${element.id_producto}"/>${element.cod_prod}</td>
-                <td>${element.part_number}</td>
-                <td>${element.descripcion}</td>
-                <td>${element.cantidad}</td>
-                <td>${element.abreviatura}</td>
-                <td>${formatNumber.decimal(element.valor_unitario,'',2)}</td>
-                <td>${formatNumber.decimal(element.valor_total,'',2)}</td>
-                ${'<td><input type="text" class="oculto" id="series" value="'+element.series+'" data-partnumber="'+element.part_number+'"/><i class="fas fa-bars icon-tabla boton" data-toggle="tooltip" data-placement="bottom" title="Agregar Series" onClick="agrega_series_transformacion('+"'t"+element.id_transformado+"'"+');"></i></td>' }
-                </tr>`;
-                i++;
                 series_transformacion.push({
-                    'id'        : 't'+element.id_transformado,
-                    'series'    : [],
-                    'cantidad'  : element.cantidad
+                    'id'            : 't'+element.id_transformado,
+                    'id_detalle'    : element.id_transformado,
+                    'series'        : [],
+                    'tipo'          : 'transformado',
+                    'cantidad'      : element.cantidad,
+                    'id_producto'   : element.id_producto,
+                    'cod_prod'      : element.cod_prod,
+                    'part_number'   : element.part_number,
+                    'descripcion'   : element.descripcion,
+                    'cantidad'      : element.cantidad,
+                    'abreviatura'   : element.abreviatura,
+                    'valor_unitario': element.valor_unitario,
+                    'valor_total'   : element.valor_total
                 });
             });
-            $('#detalleOrdenSeleccionadas tbody').html(html);
+            mostrar_detalle_transformacion();
         }
     }).fail( function( jqXHR, textStatus, errorThrown ){
         console.log(jqXHR);
         console.log(textStatus);
         console.log(errorThrown);
     });
+}
+
+function mostrar_detalle_transformacion(){
+    var html = '';
+    var html_ser = '';
+    var i = 1;
+    
+    series_transformacion.forEach(function(element){
+        html_ser = '';
+        element.series.forEach(function(serie){
+            html_ser += '<br>'+serie;
+        });
+        html+=`<tr>
+            <td>${i}</td>
+            <td></td>
+            <td>${element.cod_prod}</td>
+            <td>${element.part_number}</td>
+            <td>${element.descripcion+' <strong>'+html_ser+'</strong>'}</td>
+            <td>${element.cantidad}</td>
+            <td>${element.abreviatura}</td>
+            <td>${formatNumber.decimal(element.valor_unitario,'',2)}</td>
+            <td>${formatNumber.decimal(element.valor_total,'',2)}</td>
+            ${'<td><input type="text" class="oculto" id="series" value="'+element.series+'" data-partnumber="'+element.part_number+'"/><i class="fas fa-bars icon-tabla boton" data-toggle="tooltip" data-placement="bottom" title="Agregar Series" onClick="agrega_series_transformacion('+"'"+element.id+"'"+');"></i></td>' }
+            </tr>`;
+        i++;
+    });
+    $('#detalleOrdenSeleccionadas tbody').html(html);
 }
 
 function listar_detalle_ordenes_seleccionadas(data){
@@ -238,32 +257,36 @@ $("#form-guia_create").on("submit", function(e){
     var ope = $('[name=id_operacion]').val();
 
     if (ope == 26){
-        $("#detalleOrdenSeleccionadas tbody tr").each(function(){
-            var id = $(this)[0].id;
-            var id_producto = $(this).find('td input[id=producto]').val();
-            var tipo = $(this).find('td input[id=producto]').data('tipo');
-            var abr = (tipo == 'sobrante' ? 's' : 't');
+        // $("#detalleOrdenSeleccionadas tbody tr").each(function(){
+        //     var id = $(this)[0].id;
+        //     var id_producto = $(this).find('td input[id=producto]').val();
+        //     var tipo = $(this).find('td input[id=producto]').data('tipo');
+        //     var abr = (tipo == 'sobrante' ? 's' : 't');
 
-            var json = series_transformacion.find(element => element.id == abr+id);
-            console.log(json.series);
-            var series = (json !== null ? json.series : []);
-            // var requiereSeries = $(this).find('td input[id=series]').val();
-            // var part_number = $(this).find('td input[id=series]').data('partnumber');
-            
-            // if (requiereSeries == 'true' && series.length == 0){
-            //     validaCampos += 'El producto con Part Number '+part_number+' requiere que ingrese Series.\n'; 
-            // }
-            
-            var cant = $(this)[0].childNodes[11].innerHTML;
-            var unit = $(this)[0].childNodes[15].innerHTML;
+        //     var json = series_transformacion.find(element => element.id == abr+id);
+        //     console.log(json.series);
+        //     var series = (json !== null ? json.series : []);
+
+        //     var cant = $(this)[0].childNodes[11].innerHTML;
+        //     var unit = $(this)[0].childNodes[15].innerHTML;
+        //     detalle.push({ 
+        //         'id'            : id,
+        //         'tipo'          : tipo,
+        //         'id_producto'   : id_producto,
+        //         'cantidad'      : cant,
+        //         'unitario'      : unit,
+        //         'series'        : series
+        //     });
+        // });
+        series_transformacion.forEach(function(element){
             detalle.push({ 
-                'id'            : id,
-                'tipo'          : tipo,
-                'id_producto'   : id_producto,
-                'cantidad'      : cant,
-                'unitario'      : unit,
-                'series'        : series
-            });
+                    'id'            : element.id_detalle,
+                    'tipo'          : element.tipo,
+                    'id_producto'   : element.id_producto,
+                    'cantidad'      : element.cantidad,
+                    'unitario'      : element.valor_unitario,
+                    'series'        : element.series
+                });
         });
     } else {
         $("#detalleOrdenSeleccionadas input[type=checkbox]:checked").each(function(){
@@ -284,12 +307,6 @@ $("#form-guia_create").on("submit", function(e){
                 var part_number = $(this).parent().parent().find('td input[id=series]').data('partnumber');
                 validaCampos += 'El producto '+part_number+' requiere que se complete las Series.\n'; 
             }
-            // var requiereSeries = $(this).parent().parent().find('td input[id=series]').val();
-            
-            // if (requiereSeries == '1' && series.length == 0){
-            //     validaCampos += 'El producto con Part Number '+part_number+' requiere que ingrese Series.\n'; 
-            // }
-    
             detalle.push({ 
                 'id_detalle_orden'  : (tipo == 'orden' ? id : null),
                 'cantidad'          : cantidad,
