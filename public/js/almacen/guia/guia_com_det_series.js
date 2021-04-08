@@ -173,6 +173,7 @@ function guardar_series(){
         }
         console.log(json);
         console.log(series_transformacion);
+        mostrar_detalle_transformacion();
     }
     else if (id_producto !== ''){
         var json = oc_det_seleccionadas.find(element => element.id_producto == id_producto);
@@ -265,6 +266,7 @@ $(document).ready(function(){
                     // } else {
                         if (cant <= items){
                             $('#listaBarras tbody').append(td);
+                            json_series.push(result.Hoja1[i].serie);
                         } else {
                             msj = true;
                         }
