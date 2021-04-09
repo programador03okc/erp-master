@@ -489,7 +489,7 @@ function loadHeadRequerimiento(data){
     document.querySelector("input[name='direccion_destino']").value=data.direccion_fiscal_empresa_sede?data.direccion_fiscal_empresa_sede:'';
     document.querySelector("input[name='id_ubigeo_destino']").value=data.id_ubigeo_empresa_sede?data.id_ubigeo_empresa_sede:'';
     document.querySelector("input[name='ubigeo_destino']").value=data.ubigeo_empresa_sede?data.ubigeo_empresa_sede:'';
-    document.querySelector("select[name='id_empresa']").value=data.id_empresa?data.id_empresa:'';
+    // document.querySelector("select[name='id_empresa']").value=data.id_empresa?data.id_empresa:'';
     document.querySelector("select[name='id_sede']").value=data.id_sede?data.id_sede:'';
     document.querySelector("input[name='id_cc']").value=data.id_cc?data.id_cc:'';
  }
@@ -952,10 +952,14 @@ function openModalEliminarItemOrden(obj){
 
 
 
-function changeOptEmpresaSelect(event){
-    let id_empresa = event.target.value;
-    getDataSelectSede(id_empresa);
+function changeSede(obj){
+    var id_empresa = obj.options[obj.selectedIndex].getAttribute('data-id-empresa');
+    var id_ubigeo = obj.options[obj.selectedIndex].getAttribute('data-id-ubigeo');
+    var ubigeo_descripcion = obj.options[obj.selectedIndex].getAttribute('data-ubigeo-descripcion');
+    var direccion = obj.options[obj.selectedIndex].getAttribute('data-direccion');
+
     changeLogoEmprsa(id_empresa);
+    llenarUbigeo(direccion,id_ubigeo,ubigeo_descripcion);
 }
 function changeLogoEmprsa(id_empresa){
     switch (id_empresa) {
@@ -999,58 +1003,8 @@ function changeLogoEmprsa(id_empresa){
     }
 }
 
-function getDataSelectSede(id_empresa = null){
-    if(id_empresa >0){
-        $.ajax({
-            type: 'GET',
-            url: 'select-sede-by-empresa/' + id_empresa,
-            dataType: 'JSON',
-            success: function(response){ 
-                // console.log(response);  
-                if(response.length ==0){
-                    console.error("usuario no registrado en 'configuracion'.'sis_usua_sede' o el estado del registro es diferente de 1");
-                    alert('No se pudo acceder al listado de Sedes, el usuario debe pertenecer a una Sede y la sede debe estar habilitada');
-                }else{
-                    llenarSelectSede(response);
-                    // seleccionarAmacen(response)
-                    llenarUbigeo();
-                }
-            }
-        });
-    }
-    return false;
+function llenarUbigeo(direccion,id_ubigeo,ubigeo_descripcion){
+    document.querySelector("input[name='direccion_destino']").value=direccion;
+    document.querySelector("input[name='id_ubigeo_destino']").value=id_ubigeo;
+    document.querySelector("input[name='ubigeo_destino']").value=ubigeo_descripcion;
 }
-
-function llenarSelectSede(array){
-
-    let selectElement = document.querySelector("div[id='group-datos_para_despacho-sede'] select[name='id_sede']");
-    
-    if(selectElement.options.length>0){
-        var i, L = selectElement.options.length - 1;
-        for(i = L; i >= 0; i--) {
-            selectElement.remove(i);
-        }
-    }
-
-    array.forEach(element => {
-        let option = document.createElement("option");
-        option.text = element.descripcion;
-        option.value = element.id_sede;
-        option.setAttribute('data-ubigeo',element.id_ubigeo?element.id_ubigeo:'');
-        option.setAttribute('data-name-ubigeo',element.ubigeo_descripcion?element.ubigeo_descripcion:'');
-        selectElement.add(option);
-    });
-
- 
-
-}
-
-function llenarUbigeo(){
-    var ubigeo =document.querySelector("select[name='id_sede']").options[document.querySelector("select[name='id_sede']").selectedIndex].dataset.ubigeo;
-    var name_ubigeo =document.querySelector("select[name='id_sede']").options[document.querySelector("select[name='id_sede']").selectedIndex].dataset.nameUbigeo;
-    document.querySelector("input[name='id_ubigeo_destino']").value=ubigeo;
-    document.querySelector("input[name='ubigeo_destino']").value=name_ubigeo;
-    
- 
-}
- 

@@ -53,13 +53,13 @@
                         </div>
                         <div class="col-md-2" id="group-fecha_emision_orden" >
                             <h5>Fecha Emisión</h5>
-                            <input class="form-control" name="fecha_emision" type="date" >
+                            <input class="form-control" name="fecha_emision" type="date" value={{ date('Y-m-d H:i:s') }}>
                         </div>
-                        <div class="col-md-2" id="group-empresa">
-                            <h5>Empresa</h5>
-                            <select class="form-control " name="id_empresa" onChange="changeOptEmpresaSelect(event)">
-                                @foreach ($empresas as $empresa)
-                                    <option value="{{$empresa->id_empresa}}" >{{$empresa->razon_social}}</option>
+                        <div class="col-md-2" id="group-datos_para_despacho-sede">
+                            <h5>Empresa - Sede</h5>
+                            <select class="form-control " name="id_sede" onChange="changeSede(this);">
+                                @foreach ($sedes as $sede)
+                                    <option value="{{$sede->id_sede}}" data-id-empresa="{{$sede->id_empresa}}" data-direccion="{{$sede->direccion}}"  data-id-ubigeo="{{$sede->id_ubigeo}}" data-ubigeo-descripcion="{{$sede->ubigeo_descripcion}}" >{{$sede->descripcion}}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -193,14 +193,6 @@
                 <h4>Datos para el Despacho </h4>
                 <fieldset class="group-table">   
                     <div class="row">
-                        <div class="col-md-2" id="group-datos_para_despacho-sede">
-                            <h5>Sede</h5>
-                            <select class="form-control " name="id_sede" onChange="llenarUbigeo(event)">
-                                @foreach ($sedes as $sede)
-                                    <option value="{{$sede->id_sede}}" >{{$sede->descripcion}}</option>
-                                @endforeach
-                            </select>
-                        </div>
                         <div class="col-md-6" id="group-datos_para_despacho-direccion_destino">
                             <h5>Dirección Entrega</h5>
                             <div style="display:flex;">

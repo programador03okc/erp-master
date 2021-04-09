@@ -48,8 +48,9 @@ class OrdenController extends Controller
         $tp_moneda = $this->select_moneda();
         $tp_documento = $this->select_documento();
         $sis_identidad = $this->select_sis_identidad();
-        $sedes = $this->select_sedes();
-        $empresas = $this->select_mostrar_empresas();
+        // $sedes = $this->select_sedes();
+        $sedes = $this->select_empresa_sede();
+        // $empresas = $this->select_mostrar_empresas();
         $tp_doc = $this->select_tp_doc();
         $clasificaciones = (new AlmacenController)->mostrar_clasificaciones_cbo();
         $subcategorias = (new AlmacenController)->mostrar_subcategorias_cbo();
@@ -60,7 +61,7 @@ class OrdenController extends Controller
         $monedas = (new LogisticaController)->mostrar_moneda();
         // $sedes = Auth::user()->sedesAcceso();
 
-        return view('logistica/ordenes/crear_orden_requerimiento', compact('sedes','empresas','sis_identidad','tp_documento', 'tp_moneda','tp_doc','condiciones','clasificaciones','subcategorias','categorias','unidades','unidades_medida','monedas'));
+        return view('logistica/ordenes/crear_orden_requerimiento', compact('sedes','sis_identidad','tp_documento', 'tp_moneda','tp_doc','condiciones','clasificaciones','subcategorias','categorias','unidades','unidades_medida','monedas'));
     }
 
     function lista_contactos_proveedor($id_proveedor){
@@ -104,6 +105,19 @@ class OrdenController extends Controller
             ->select(
                 'sis_sede.*'
             )
+            ->orderBy('sis_sede.id_empresa', 'asc')
+            ->get();
+        return $data;
+    }
+
+    public function select_empresa_sede()
+    {
+        $data = DB::table('administracion.sis_sede')
+            ->select(
+                'sis_sede.*', 'ubi_dis.descripcion as ubigeo_descripcion'
+            )
+            ->leftJoin('configuracion.ubi_dis','ubi_dis.id_dis','=','sis_sede.id_ubigeo')
+            ->where('sis_sede.estado','=','1')
             ->orderBy('sis_sede.id_empresa', 'asc')
             ->get();
         return $data;
