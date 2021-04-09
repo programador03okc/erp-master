@@ -18,7 +18,7 @@ function open_guia_create(data){
     $('[name=almacen_descripcion]').val(data.almacen_descripcion);
     $('#serie').text('');
     $('#numero').text('');
-
+    detalle = [];
     listarDetalleOrdenDespacho(data.id_od);
     // cargar_almacenes(data.id_sede, 'id_almacen');
     // var tp_doc_almacen = 2;//guia venta
@@ -37,10 +37,22 @@ function listarDetalleOrdenDespacho(id_od){
             var html = '';
             var html_series = '';
             var i = 1;
-            detalle = response;
+            // detalle = response;
 
             response.forEach(element => {
                 html_series = '';
+                detalle.push({ 
+                    'id_od_detalle'             : element.id_od_detalle,
+                    'id_producto'               : element.id_producto,
+                    'cantidad'                  : element.cantidad,
+                    'id_unidad_medida'          : element.id_unidad_medida,
+                    'id_detalle_requerimiento'  : element.id_detalle_requerimiento,
+                    // 'codigo'                    : element.codigo,
+                    // 'part_number'               : encodeURIComponent(element.part_number),
+                    // 'descripcion'               : encodeURIComponent(element.descripcion),
+                    // 'abreviatura'               : element.abreviatura,
+                    'series'                    : element.series
+                });
                 element.series.forEach(ser => {
                     if (html_series==''){
                         html_series+=ser.serie;
@@ -96,13 +108,15 @@ function listarDetalleOrdenDespacho(id_od){
 $("#form-guia_ven_create").on("submit", function(e){
     console.log('submit');
     e.preventDefault();
-    var data = $(this).serialize()+'&detalle='+JSON.stringify(detalle);
+    var ser = $(this).serialize();
+    var data = ser+'&detalle='+JSON.stringify(detalle);
     console.log(data);
     guardar_guia_create(data);
 });
 
 function guardar_guia_create(data){
     $("#submit_guia").attr('disabled','true');
+
     $.ajax({
         type: 'POST',
         url: 'guardar_guia_despacho',
@@ -110,13 +124,12 @@ function guardar_guia_create(data){
         dataType: 'JSON',
         success: function(id_salida){
             console.log(id_salida);
-            if (id_salida > 0){
+
                 alert('Salida de Almacén generada con éxito');
                 $('#modal-guia_ven_create').modal('hide');
                 $('#despachosPendientes').DataTable().ajax.reload();
                 // var id = encode5t(id_salida);
                 // window.open('imprimir_salida/'+id);                
-            }
         }
     }).fail( function( jqXHR, textStatus, errorThrown ){
         console.log(jqXHR);

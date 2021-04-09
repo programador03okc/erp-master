@@ -1464,19 +1464,25 @@ class DistribucionController extends Controller
                         ],
                             'id_mov_alm'
                         );
-                        // $detalle = DB::table('almacen.orden_despacho_det')
-                        // ->select('orden_despacho_det.*','alm_prod.id_unidad_medida')
-                        // ->join('almacen.alm_prod','alm_prod.id_producto','=','orden_despacho_det.id_producto')
-                        // ->where([['orden_despacho_det.id_od','=',$request->id_od],
-                        //         ['orden_despacho_det.estado','!=',7]])
-                        // ->get();
-                    $detalle = json_decode($request->detalle);
+
+                    // $detalles = DB::table('almacen.orden_despacho_det')
+                    // ->select('orden_despacho_det.*','alm_prod.id_unidad_medida')
+                    // ->join('almacen.alm_prod','alm_prod.id_producto','=','orden_despacho_det.id_producto')
+                    // ->where([['orden_despacho_det.id_od','=',$request->id_od],
+                    //         ['orden_despacho_det.estado','!=',7]])
+                    // ->get();
+                    // $detalle = $this->verDetalleDespacho($request->id_od);
                     //orden de despacho estado   procesado
                     $est = ($request->id_operacion == 27 ? 22 : 23);
                     $aplica_cambios = ($request->id_operacion == 27 ? true : false);
                     $count_est = 0;
-
+                    $detalle = json_decode($request->detalle);//No fucniona el json_decode
+                    // dd($detalle);
+                    // exit();
+                    // return  response()->json($detalles);
+                    
                     foreach ($detalle as $det) {
+                        // echo $det['cantidad'];
                         //guardo los items de la guia ven
                         $id_guia_ven_det = DB::table('almacen.guia_ven_det')->insertGetId([
                             'id_guia_ven' => $id_guia_ven,
