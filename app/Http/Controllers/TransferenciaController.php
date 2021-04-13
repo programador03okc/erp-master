@@ -1429,12 +1429,28 @@ class TransferenciaController extends Controller
                 if ($almacen !== null && $id_almacen_destino !== $almacen){
 
                     if ($det->tiene_transformacion){
-                        array_push($items_transf, $det);
+                        $exist = false;
+                        foreach ($items_transf as $item){
+                            if ($item->id_detalle_requerimiento == $det->id_detalle_requerimiento){
+                                $exist = true;
+                            }
+                        }
+                        if (!$exist){
+                            array_push($items_transf, $det);
+                        }
                         if (!in_array($almacen, $almacen_transf)){
                             array_push($almacen_transf, $almacen);
                         }
                     } else {
-                        array_push($items_base, $det);
+                        $exist = false;
+                        foreach ($items_transf as $item){
+                            if ($item->id_detalle_requerimiento == $det->id_detalle_requerimiento){
+                                $exist = true;
+                            }
+                        }
+                        if (!$exist){
+                            array_push($items_base, $det);
+                        }
                         if (!in_array($almacen, $almacen_base)){
                             array_push($almacen_base, $almacen);
                         }
@@ -1559,6 +1575,7 @@ class TransferenciaController extends Controller
                 ($det->id_sede_reserva !== null && $req->id_sede !== $det->id_sede_reserva)){
                 
                 $item_det = [
+                    'id_detalle_requerimiento' => $det->id_detalle_requerimiento,
                     'codigo_orden' => ($det->codigo_orden!==null?$det->codigo_orden:null),
                     'sede' => ($det->id_sede_guia!==null?$det->sede_guia_descripcion:($det->id_sede_reserva!==null?$det->sede_reserva_descripcion:'')),
                     'codigo' => $det->codigo,
@@ -1570,10 +1587,26 @@ class TransferenciaController extends Controller
                 ];
 
                 if ($det->tiene_transformacion){
-                    array_push($items_transf, $item_det);
+                    $exist = false;
+                    foreach ($items_transf as $item){
+                        if ($item->id_detalle_requerimiento == $det->id_detalle_requerimiento){
+                            $exist = true;
+                        }
+                    }
+                    if (!$exist){
+                        array_push($items_transf, $item_det);
+                    }
                     // array_push($items_transf, $det);
                 } else {
-                    array_push($items_base, $item_det);
+                    $exist = false;
+                    foreach ($items_base as $item){
+                        if ($item->id_detalle_requerimiento == $det->id_detalle_requerimiento){
+                            $exist = true;
+                        }
+                    }
+                    if (!$exist){
+                        array_push($items_base, $item_det);
+                    }
                     // array_push($items_base, $det);
                 }
             }

@@ -5250,8 +5250,9 @@ class LogisticaController extends Controller
 
                     // $email_destinatario= $this->get_email_usuario_por_rol('Logístico Compras', $id_sede, $id_empresa);
                     // $email_destinatario[]= $this->get_email_usuario_por_rol('Coordinador', $id_sede, $id_empresa);
-                    // $email_destinatario[]= 'administracionventas@okcomputer.com.pe'; 
-                    $email_destinatario[]= 'programador03@okcomputer.com.pe'; 
+                    $email_destinatario[]= 'administracionventas@okcomputer.com.pe'; 
+                    // $email_destinatario[]= 'programador03@okcomputer.com.pe'; 
+                    // $email_destinatario[]= 'programador01@okcomputer.com.pe'; 
                     $payload=[
                         'id_empresa'=>$req->id_empresa,
                         'email_destinatario'=>$email_destinatario,
@@ -5310,34 +5311,46 @@ class LogisticaController extends Controller
                     $contenido = '
                     Favor su apoyo con la documentación del Req. Nro. '.$req->codigo.' '.$req->concepto.'<br>
                     Favor generar '.$doc.'<br>'.$req->observacion.'<br>
-                    <br>Datos de los Productos<br>
-                    '.$text_items.'<br>TOTAL '.$req->simbolo.$req->monto.'<br>
                     <br>Datos del Cliente<br>
                     Nombre:'.($req->nombre_persona!==null?$req->nombre_persona:$req->cliente_razon_social).'<br>
                     '.($req->dni!==null?('DNI: '.$req->dni):('RUC: '.$req->ruc)).'<br>
                     Dirección:'.$req->direccion_entrega.'<br>
                     Teléfono:'.$req->telefono.'<br>
+                    <br>Datos de los Productos<br>
+                    '.$text_items.'<br>TOTAL '.$req->simbolo.$req->monto.'<br>
                     <br> Saludos <br> Módulo de Logística y Almacenes <br> SYSTEM AGILE';
-                    // $email_destinatario[]= 'administracionventas@okcomputer.com.pe'; 
+
+                    $email_destinatario[]= 'distribucion@okcomputer.com.pe'; 
+                    $email_destinatario[]= 'administracionventas@okcomputer.com.pe'; 
+                    $email_destinatario[]= 'programador03@okcomputer.com.pe'; 
                     $email_destinatario[]= 'programador01@okcomputer.com.pe'; 
+                    
+                    // $payload=[
+                    //     'id_empresa'=>$req->id_empresa,
+                    //     'email_destinatario'=>$email_destinatario,
+                    //     'titulo'=>$asunto,
+                    //     'mensaje'=>$contenido
+                    // ];
+    
+                    // $smpt_setting=[
+                    //     'smtp_server'=>'smtp.office365.com',
+                    //     'port'=>587,
+                    //     'encryption'=>'tls',
+                    //     'email'=>'administracionventas@okcomputer.com.pe',
+                    //     'password'=>'Logistica1505'
+                    // ];
                     $payload=[
                         'id_empresa'=>$req->id_empresa,
                         'email_destinatario'=>$email_destinatario,
                         'titulo'=>$asunto,
                         'mensaje'=>$contenido
                     ];
-    
-                    $smpt_setting=[
-                        'smtp_server'=>'smtp.office365.com',
-                        'port'=>587,
-                        'encryption'=>'tls',
-                        'email'=>'administracionventas@okcomputer.com.pe',
-                        'password'=>'Logistica1505'
-                    ];
-    
-                    if (count($email_destinatario) > 0){
-                        $estado_envio = (new CorreoController)->enviar_correo_despacho($payload, $smpt_setting);
-                    }
+                    if(count($email_destinatario)>0){
+                        $estado_envio =(new CorreoController)->enviar_correo_a_usuario($payload);
+                    }	
+                    // if (count($email_destinatario) > 0){
+                    //     $estado_envio = (new CorreoController)->enviar_correo_despacho($payload, $smpt_setting);
+                    // }
                 }
             }            
 
