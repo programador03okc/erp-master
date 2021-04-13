@@ -120,17 +120,35 @@ function agregar_serie(){
     var serie = $('[name=serie_prod]').val().trim();
     
     if (serie !== '') {
-        var cant = $('#listaBarras tbody tr').length + 1;
-        var td = '<tr id="reg-'+serie+'"><td hidden>0</td><td class="numero">'+cant+'</td><td><input type="text" class="oculto" name="series" value="'+serie+'"/>'+serie+'</td><td><i class="btn btn-danger fas fa-trash fa-lg" onClick="eliminar_serie('+"'"+serie+"'"+');"></i></td></tr>';
-        console.log('cant:'+cant+' items:'+cant_items);
         
-        if (cant <= cant_items){
-            $('#listaBarras tbody').append(td);
-            $('[name=serie_prod]').val('');
-            // var id_oc_det = $('[name=id_oc_det]').val();
-            json_series.push(serie);
+        var agrega = false;
+
+        if (json_series.length > 0){
+            const found = json_series.find(element => element == serie);
+            console.log('found'+found);
+
+            if (found == undefined){
+                agrega = true;
+            }
         } else {
-            alert('Ha superado la cantidad del producto!\nYa no puede agregar mas series.');
+            agrega = true;
+        }
+            
+        if (agrega){
+            var cant = $('#listaBarras tbody tr').length + 1;
+            var td = '<tr id="reg-'+serie+'"><td hidden>0</td><td class="numero">'+cant+'</td><td><input type="text" class="oculto" name="series" value="'+serie+'"/>'+serie+'</td><td><i class="btn btn-danger fas fa-trash fa-lg" onClick="eliminar_serie('+"'"+serie+"'"+');"></i></td></tr>';
+            console.log('cant:'+cant+' items:'+cant_items);
+            
+            if (cant <= cant_items){
+                $('#listaBarras tbody').append(td);
+                $('[name=serie_prod]').val('');
+                // var id_oc_det = $('[name=id_oc_det]').val();
+                json_series.push(serie);
+            } else {
+                alert('Ha superado la cantidad del producto!\nYa no puede agregar mas series.');
+            }
+        } else {
+            $('[name=serie_prod]').val('');
         }
     } else {
         alert('El campo serie esta vacío!');
@@ -257,20 +275,32 @@ $(document).ready(function(){
                 // rspta = confirm('Las series importadas superan la cantidad. ¿Desea agregarlas de todos modos?');
             }
             if (rspta){
-                for(i=0;i<result.Hoja1.length;i++){
+                for(i=0; i<result.Hoja1.length; i++){
                     console.log(result.Hoja1[i].serie);
-                    cant++;
-                    td = '<tr id="reg-'+result.Hoja1[i].serie+'"><td hidden>0</td><td class="numero">'+cant+'</td><td><input type="text" class="oculto" name="series" value="'+result.Hoja1[i].serie+'"/>'+result.Hoja1[i].serie+'</td><td><i class="btn btn-danger fas fa-trash fa-lg " onClick="eliminar_serie('+result.Hoja1[i].serie+');"></i></td></tr>';
-                    // if (rspta){
-                    //     $('#listaBarras tbody').append(td);
-                    // } else {
+                    var serie = result.Hoja1[i].serie;
+                    var agrega = false;
+
+                    if (json_series.length > 0){
+                        const found = json_series.find(element => element == serie);
+                        console.log('found'+found);
+                        
+                        if (found == undefined){
+                            agrega = true;
+                        }
+                    } else {
+                        agrega = true;
+                    }
+
+                    if (agrega){
+                        cant++;
+                        td = '<tr id="reg-'+serie+'"><td hidden>0</td><td class="numero">'+cant+'</td><td><input type="text" class="oculto" name="series" value="'+serie+'"/>'+serie+'</td><td><i class="btn btn-danger fas fa-trash fa-lg " onClick="eliminar_serie('+serie+');"></i></td></tr>';
                         if (cant <= items){
                             $('#listaBarras tbody').append(td);
-                            json_series.push(result.Hoja1[i].serie);
+                            json_series.push(serie);
                         } else {
                             msj = true;
                         }
-                    // }
+                    }
                 }
                 if (msj){
                     alert('No se cargaron todas las series porque superan a la cantidad del producto.');

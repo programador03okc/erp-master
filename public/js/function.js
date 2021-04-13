@@ -840,7 +840,7 @@ function sumaFecha(d, fecha){
     dia = (dia < 10) ? ("0" + dia) : dia;
     var fechaFinal = anno+sep+mes+sep+dia;
 
-    console.log(fechaFinal);
+    // console.log(fechaFinal);
     return fechaFinal;
 }
 
