@@ -119,20 +119,21 @@
                                             <option value="OTRAS CIUDADES">OTRAS CIUDADES</option>
                                         </select>
                                     </div> -->
+                                    <input class="oculto" name="aplica_cambios_valor"/>
+                                    <input class="oculto" type="checkbox" name="aplica_cambios" id="aplica_cambios" 
+                                    style="margin-right: 10px; margin-left: 7px;"/> 
                                 </div>   
-                                <div class="row">
+                                <!-- <div class="row">
                                     <div class="col-md-6">
                                         <h5></h5>
-                                        <input class="oculto" name="aplica_cambios_valor"/>
-                                        <input type="checkbox" name="aplica_cambios" id="aplica_cambios" style="margin-right: 10px; margin-left: 7px;"/> Aplica Cambios
                                     </div>
-                                </div>
+                                </div> -->
                             </div>
                             <div class="col-md-6">
                                 <div class="row">
                                     <div class="col-md-12">
                                         <h5>Agregar Contenido Adicional al Correo</h5>
-                                        <textarea name="contenido" id="contenido" cols="73" rows="8"></textarea>
+                                        <textarea name="contenido" id="contenido" cols="73" rows="5"></textarea>
                                     </div>
                                 </div>
                             </div>
