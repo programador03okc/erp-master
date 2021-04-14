@@ -297,8 +297,11 @@ function listarRequerimientosPendientes(permiso){
                 return (row['fecha_entrega'] !== null ? formatDate(row['fecha_entrega']) : '');
                 }
             },
-            {'data': 'codigo'},
-            // {'data': 'concepto'},
+            // {'data': 'codigo'},
+            {'render': function (data, type, row){
+                    return (row['codigo']+' <strong>'+row['sede_descripcion_req']+'</strong>');
+                }
+            },
             {'render': function (data, type, row){
                 return (row['fecha_requerimiento'] !== null ? formatDate(row['fecha_requerimiento']) : '');
                 }
@@ -541,8 +544,12 @@ function listarRequerimientosEnTransformacion(permiso){
                 return (row['fecha_entrega'] !== null ? formatDate(row['fecha_entrega']) : '');
                 }
             },
-            {'data': 'codigo'},
+            // {'data': 'codigo'},
             // {'data': 'concepto'},
+            {'render': function (data, type, row){
+                    return (row['codigo']+' <strong>'+row['sede_descripcion_req']+'</strong>');
+                }
+            },
             {'render': function (data, type, row){
                 return (row['fecha_requerimiento'] !== null ? formatDate(row['fecha_requerimiento']) : '');
                 }

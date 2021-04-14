@@ -23,8 +23,8 @@ function open_despacho_create(data){
     $('[name=telefono_cliente]').val(data.contacto_telefono !== null ? data.contacto_telefono : (data.entidad_telefono!==null?data.entidad_telefono:data.telefono));
     $('[name=correo_cliente]').val(data.contacto_email !== null ? data.contacto_email : (data.entidad_email!==null?data.entidad_email:data.email));
     $('[name=contacto_cliente]').val(data.contacto_persona !== null ? data.contacto_persona : 
-        (data.entidad_persona!==null ? data.entidad_persona:
-        (data.nombre_persona!==null?data.nombre_persona:data.cliente_razon_social)));
+        (data.entidad_persona!==null ? data.entidad_persona
+        : (data.nombre_persona!==null ? data.nombre_persona : data.cliente_razon_social)));
     $('[name=id_cc]').val(data.id_cc);
     $('[name=hora_despacho]').val(hora_actual());
     $('[name=part_number_transformado]').val('');
@@ -33,7 +33,7 @@ function open_despacho_create(data){
     $('[name=comentario_transformado]').val('');
     $('[name=contenido]').val('');
     console.log(hora_actual());
-    // $('#'+data.documento+'').prop('checked', true);
+    
     if (data.tipo_cliente == 1){
         $('#Boleta').prop('checked', true);
     } 
@@ -71,7 +71,7 @@ function open_despacho_create(data){
     $("#despachoExterno").show();
 
     $('#detalleSale tbody').html('');
-            
+    
     $('[name=fecha_despacho]').val(fecha_actual());
     $('[name=fecha_entrega]').val(data.fecha_entrega);
     
