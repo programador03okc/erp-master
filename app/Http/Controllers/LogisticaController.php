@@ -9622,17 +9622,7 @@ function makeRevertirOrdenPorRequerimiento($id_orden){
 
 
 
-    public function anular_orden_compra($id_orden)
-    {
 
-    $orden = DB::table('logistica.log_ord_compra')
-            ->where('id_orden_compra', $id_orden)
-            ->update(['estado' => 7]);
-    $detalle_orden = DB::table('logistica.log_det_ord_compra')
-            ->where('id_orden_compra', $id_orden)
-        ->update(['estado' => 7]);
-        return response()->json($orden);
-    }
 
 
     public function actualizar_item_det_req($id_item,$id_detalle_requerimiento){

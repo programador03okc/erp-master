@@ -757,6 +757,7 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::get('items-ordenes-en-proceso', 'OrdenController@lista_items_ordenes_en_proceso')->name('ordenes-en-proceso'); 
 					Route::post('detalle-requerimiento-orden', 'OrdenController@get_detalle_requerimiento_orden')->name('detalle-requerimiento-orden'); 
 					Route::post('guardar', 'OrdenController@guardar_orden_por_requerimiento')->name('guardar');
+					Route::post('actualizar', 'OrdenController@actualizar_orden_por_requerimiento')->name('actualizar');
 					Route::put('revertir/{id_orden?}', 'LogisticaController@revertir_orden_requerimiento')->name('revertir');
 					Route::get('mostrar_proveedores', 'LogisticaController@mostrar_proveedores');
 					Route::post('guardar_proveedor', 'LogisticaController@guardar_proveedor');
@@ -773,13 +774,16 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::post('guardar-atencion-con-almacen', 'OrdenController@guardarAtencionConAlmacen')->name('guardar-atencion-con-almacen'); 
 					Route::post('tiene-items-para-compra', 'OrdenController@tieneItemsParaCompra')->name('tiene-items-para-compra'); 
 					Route::get('listar-almacenes', 'AlmacenController@mostrar_almacenes')->name('listar-almacenes');
-					Route::get('crear', 'OrdenController@view_crear_orden_requerimiento')->name('vista-crear-orden');
+					Route::get('crear', 'OrdenController@view_crear_orden_requerimiento')->name('crear-orden');
 					Route::get('listar_ubigeos', 'AlmacenController@listar_ubigeos');
 					Route::get('lista_contactos_proveedor/{id_proveedor?}', 'OrdenController@lista_contactos_proveedor');
 					Route::get('generar-orden-pdf/{id?}', 'OrdenController@generar_orden_por_requerimiento_pdf')->name('generar-orden-por-requerimiento-pdf'); // PDF
 					Route::get('listar_trabajadores', 'ProyectosController@listar_trabajadores');
 					Route::post('guardar_contacto', 'OrdenController@guardar_contacto');
 					Route::get('select-sede-by-empresa/{id?}', 'LogisticaController@select_sede_by_empresa')->name('select-sede-by-empresa');
+					Route::get('listar-ordenes-elaboradas', 'OrdenController@listar_ordenes_elaboradas');
+					Route::get('mostrar-orden/{id_orden?}', 'OrdenController@mostrarOrden');
+					Route::get('anular-orden/{id}', 'OrdenController@anular_orden');
 
 
 				});
@@ -2493,7 +2497,7 @@ Route::get('decode5t/{id}', 'EquipoController@decode5t');
 	Route::get('detalle_cotizacion/{id}', 'LogisticaController@detalle_cotizacion');
 	Route::post('guardar_orden_compra', 'LogisticaController@guardar_orden_compra');
 	Route::post('update_orden_compra', 'LogisticaController@update_orden_compra');
-	Route::get('anular_orden_compra/{id}', 'LogisticaController@anular_orden_compra');
+	// Route::get('anular_orden_compra/{id}', 'LogisticaController@anular_orden_compra');
 	Route::get('mostrar_cuentas_bco/{id}', 'LogisticaController@mostrar_cuentas_bco');
 	Route::get('listar_ordenes', 'LogisticaController@listar_ordenes');
 	Route::get('listar_ordenes_proveedor/{id}', 'LogisticaController@listar_ordenes_proveedor');

@@ -55,16 +55,7 @@ function handlechangeCondicion(event){
     }
 
 }
-function nueva_orden(){
-    $('[name=razon_social]').val('');
-    $('#listaDetalleOrden tbody').html('');
-    $('[name=monto_subtotal]').val('0');
-    $('[name=igv_porcentaje]').val('0');
-    $('[name=monto_igv]').val('0');
-    $('[name=monto_total]').val('0');
-    $('#codigo').val('');
-    $('#fecha').val('');
-}
+
 function detalle_cotizacion(id_cotizacion){
     
 

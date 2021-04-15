@@ -117,8 +117,8 @@ function openModal(type, active){
             cotizacionModal();
 
         break;
-        case 'orden':
-            ordenModal();
+        case 'crear-orden-requerimiento':
+            ordenesElaboradasModal();
         break;
         
         /* administracion */
@@ -423,8 +423,8 @@ function eventRegister(type, data, action, frm_active){
         case 'requerimiento':
             save_requerimiento(action);
         break;
-        case 'orden':
-            save_orden_compra(data, action);
+        case 'crear-orden-requerimiento':
+            save_orden(data, action);
         break;
         case 'proveedores':
             save_form(data, action, frm_active);
@@ -693,8 +693,8 @@ function anularRegister(type, ids, active){
         case 'requerimiento':
             anular_requerimiento(ids);
         break;
-        case 'orden':
-            anular_orden_compra(ids);
+        case 'crear-orden-requerimiento':
+            anular_orden(ids);
         break;
         //Tesoreria
         case 'tesoreria_solicitudes':
