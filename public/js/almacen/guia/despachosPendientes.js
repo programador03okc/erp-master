@@ -270,6 +270,8 @@ $('#despachosEntregados tbody').on("click","button.cambio", function(){
     $('[name=id_salida]').val(id_mov_alm);
     $('[name=id_guia_ven]').val(id_guia);
     $('[name=id_od]').val(id_od);
-
+    $('[name=serie_nuevo]').val('');
+    $('[name=numero_nuevo]').val('');
+    
     $("#submit_guia_ven_cambio").removeAttr("disabled");
 });

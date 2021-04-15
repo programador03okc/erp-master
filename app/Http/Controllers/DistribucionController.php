@@ -1046,21 +1046,21 @@ class DistribucionController extends Controller
                 
                     $msj = '';
                     $email_destinatario[] = 'programador01@okcomputer.com.pe';
-                    $email_destinatario[] = 'administracionventas@okcomputer.com.pe';
-                    $email_destinatario[] = 'asistente.contable.lima@okcomputer.com.pe';
-                    $email_destinatario[] = 'asistente.contable@okcomputer.com.pe';
-                    $email_destinatario[] = 'administracionventas@okcomputer.com.pe';
-                    $email_destinatario[] = 'asistente.almacenlima1@okcomputer.com.pe';
-                    $email_destinatario[] = 'asistente.almacenlima2@okcomputer.com.pe';
-                    $email_destinatario[] = 'asistente.almacenlima@okcomputer.com.pe';
-                    $email_destinatario[] = 'logistica.lima@okcomputer.com.pe';
-                    $email_destinatario[] = 'soporte.lima@okcomputer.com.pe';
-                    $email_destinatario[] = 'contadorgeneral@okcomputer.com.pe';
-                    $email_destinatario[] = 'infraestructura@okcomputer.com.pe';
-                    $email_destinatario[] = 'lenovo@okcomputer.com.pe';
-                    $email_destinatario[] = 'logistica@okcomputer.com.pe';
-                    $email_destinatario[] = 'dapaza@okcomputer.com.pe';
-                    $email_destinatario[] = 'asistente.logistica@okcomputer.com.pe';
+                    // $email_destinatario[] = 'administracionventas@okcomputer.com.pe';
+                    // $email_destinatario[] = 'asistente.contable.lima@okcomputer.com.pe';
+                    // $email_destinatario[] = 'asistente.contable@okcomputer.com.pe';
+                    // $email_destinatario[] = 'administracionventas@okcomputer.com.pe';
+                    // $email_destinatario[] = 'asistente.almacenlima1@okcomputer.com.pe';
+                    // $email_destinatario[] = 'asistente.almacenlima2@okcomputer.com.pe';
+                    // $email_destinatario[] = 'asistente.almacenlima@okcomputer.com.pe';
+                    // $email_destinatario[] = 'logistica.lima@okcomputer.com.pe';
+                    // $email_destinatario[] = 'soporte.lima@okcomputer.com.pe';
+                    // $email_destinatario[] = 'contadorgeneral@okcomputer.com.pe';
+                    // $email_destinatario[] = 'infraestructura@okcomputer.com.pe';
+                    // $email_destinatario[] = 'lenovo@okcomputer.com.pe';
+                    // $email_destinatario[] = 'logistica@okcomputer.com.pe';
+                    // $email_destinatario[] = 'dapaza@okcomputer.com.pe';
+                    // $email_destinatario[] = 'asistente.logistica@okcomputer.com.pe';
                     $payload=[
                         'id_empresa'=>$req->id_empresa,
                         'email_destinatario'=>$email_destinatario,
@@ -1995,10 +1995,10 @@ class DistribucionController extends Controller
     
         try {
             DB::beginTransaction();
-    
+            
             $id_usuario = Auth::user()->id_usuario;
             $msj = '';
-    
+            
             $sal = DB::table('almacen.mov_alm')
             ->where('id_mov_alm', $request->id_salida)
             ->first();
@@ -2006,42 +2006,20 @@ class DistribucionController extends Controller
             if ($sal->revisado == 0){
                 //si existe una orden
                 if ($request->id_od !== null) {
-                    //Verifica si ya fue despachado
-                    $od = DB::table('almacen.orden_despacho')
-                    ->select('orden_despacho.*','adm_estado_doc.estado_doc')
-                    ->join('administracion.adm_estado_doc','adm_estado_doc.id_estado_doc','=','orden_despacho.estado')
-                    ->where('id_od',$request->id_od)
-                    ->first();
-                    //si la orden de despacho es despacho externo
-                    if ($od->estado == 23){
-                        //Anula la Guia
-                        $update = DB::table('almacen.guia_ven')
-                        ->where('id_guia_ven', $request->id_guia_ven)
-                        ->update([  'serie' => $request->serie_nuevo,
-                                    'numero'=> $request->numero_nuevo ]);
-                        //Agrega motivo anulacion a la guia
-                        DB::table('almacen.guia_ven_obs')->insert(
-                            [
-                                'id_guia_ven'=>$request->id_guia_ven,
-                                'observacion'=>'Se cambió la serie-número de la Guía Venta a '.$request->serie_nuevo.'-'.$request->numero_nuevo,
-                                'registrado_por'=>$id_usuario,
-                                'id_motivo_anu'=>$request->id_motivo_obs_cambio,
-                                'fecha_registro'=>date('Y-m-d H:i:s')
-                            ]);
-
-                        if ($od->id_requerimiento !== null){
-                            //Agrega accion en requerimiento
-                            DB::table('almacen.alm_req_obs')
-                            ->insert([  'id_requerimiento'=>$od->id_requerimiento,
-                                        'accion'=>'CAMBIO DE SERIE-NUMERO',
-                                        'descripcion'=>'Se cambió la serie-número de la Guía Venta a '.$request->serie_nuevo.'-'.$request->numero_nuevo,
-                                        'id_usuario'=>$id_usuario,
-                                        'fecha_registro'=>date('Y-m-d H:i:s')
-                                ]);
-                        }
-                    } else {
-                        $msj = 'La Orden de Despacho ya está con '.$od->estado_doc;
-                    }
+                    //Anula la Guia
+                    $update = DB::table('almacen.guia_ven')
+                    ->where('id_guia_ven', $request->id_guia_ven)
+                    ->update([  'serie' => $request->serie_nuevo,
+                                'numero'=> $request->numero_nuevo ]);
+                    //Agrega motivo anulacion a la guia
+                    DB::table('almacen.guia_ven_obs')->insert(
+                        [
+                            'id_guia_ven'=>$request->id_guia_ven,
+                            'observacion'=>'Se cambió la serie-número de la Guía Venta a '.$request->serie_nuevo.'-'.$request->numero_nuevo,
+                            'registrado_por'=>$id_usuario,
+                            'id_motivo_anu'=>$request->id_motivo_obs_cambio,
+                            'fecha_registro'=>date('Y-m-d H:i:s')
+                        ]);
                 } else {
                     $msj = 'No existe una orden de despacho enlazada';
                 }
@@ -2052,7 +2030,7 @@ class DistribucionController extends Controller
             return response()->json($msj);
             
         } catch (\PDOException $e) {
-    
+            
             DB::rollBack();
         }
     }
@@ -2064,7 +2042,7 @@ class DistribucionController extends Controller
     
             $id_usuario = Auth::user()->id_usuario;
             $msj = '';
-    
+            
             $sal = DB::table('almacen.mov_alm')
             ->where('id_mov_alm', $request->id_salida)
             ->first();

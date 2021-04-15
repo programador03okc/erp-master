@@ -294,7 +294,11 @@ function listarOrdenesEntregadas(){
                         '<button type="button" class="anular btn btn-danger boton" data-toggle="tooltip" '+
                         'data-placement="bottom" title="Anular Ingreso" data-id="'+row['id_mov_alm']+'" data-guia="'+row['id_guia_com']+'" data-oc="'+row['id_orden_compra']+'">'+
                         '<i class="fas fa-trash"></i></button>'+
-                        (row['id_operacion'] == 2 ? `<button type="button" class="${row['count_facturas']>0?'ver_doc':'doc'} btn btn-${row['count_facturas']>0?'info':'default'} boton" data-toggle="tooltip" 
+                        `<button type="button" class="cambio btn btn-success boton" data-toggle="tooltip" 
+                            data-placement="bottom" title="Cambiar Serie-Número" data-id="${row['id_mov_alm']}" 
+                            data-guia="${row['id_guia_com']}"><i class="fas fa-sync-alt"></i></button>`+
+                        (row['id_operacion'] == 2 ? 
+                        `<button type="button" class="${row['count_facturas']>0?'ver_doc':'doc'} btn btn-${row['count_facturas']>0?'info':'default'} boton" data-toggle="tooltip" 
                             data-placement="bottom" title="Generar Factura" data-guia="${row['id_guia_com']}">
                             <i class="fas fa-file-medical"></i></button>`:'')
                         ;
@@ -339,6 +343,22 @@ $('#ordenesEntregadas tbody').on("click","button.anular", function(){
     $('[name=observacion]').val('');
 
     $("#submitGuiaObs").removeAttr("disabled");
+});
+
+$('#ordenesEntregadas tbody').on("click","button.cambio", function(){
+    var id_mov_alm = $(this).data('id');
+    var id_guia = $(this).data('guia');
+
+    $('#modal-guia_com_cambio').modal({
+        show: true
+    });
+
+    $('[name=id_ingreso]').val(id_mov_alm);
+    $('[name=id_guia_com]').val(id_guia);
+    $('[name=serie_nuevo]').val('');
+    $('[name=numero_nuevo]').val('');
+
+    $("#submit_guia_com_cambio").removeAttr("disabled");
 });
 
 // $('#ordenesEntregadas tbody').on("click","button.transferencia", function(){

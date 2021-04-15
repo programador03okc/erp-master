@@ -1256,4 +1256,49 @@ class OrdenesPendientesController extends Controller
         return response()->json(['docs'=>$docs,'detalles'=>$detalles]);
     }
 
+    public function cambio_serie_numero(Request $request){
+    
+        try {
+            DB::beginTransaction();
+            
+            $id_usuario = Auth::user()->id_usuario;
+            $msj = '';
+            
+            $ing = DB::table('almacen.mov_alm')
+            ->where('id_mov_alm', $request->id_ingreso)
+            ->first();
+            //si la ingreso no esta revisada
+            if ($ing->revisado == 0){
+                //si existe una orden
+                if ($ing->id_guia_com !== null) {
+                    //Anula la Guia
+                    $update = DB::table('almacen.guia_com')
+                    ->where('id_guia', $ing->id_guia_com)
+                    ->update([  'serie' => $request->serie_nuevo,
+                                'numero'=> $request->numero_nuevo ]);
+                    //Agrega motivo anulacion a la guia
+                    DB::table('almacen.guia_com_obs')->insert(
+                        [
+                            'id_guia_com'=>$ing->id_guia_com,
+                            'observacion'=>'Se cambió la serie-número de la Guía Compra a '.$request->serie_nuevo.'-'.$request->numero_nuevo,
+                            'registrado_por'=>$id_usuario,
+                            'id_motivo_anu'=>$request->id_motivo_obs_cambio,
+                            'fecha_registro'=>date('Y-m-d H:i:s')
+                        ]);
+
+                } else {
+                    $msj = 'No existe una orden de despacho enlazada';
+                }
+            } else {
+                $msj = 'El ingreso ya fue revisada por el Jefe de Almacén';
+            }
+            DB::commit();
+            return response()->json($msj);
+            
+        } catch (\PDOException $e) {
+            
+            DB::rollBack();
+        }
+    }
+
 }

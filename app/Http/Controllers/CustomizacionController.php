@@ -78,14 +78,10 @@ class CustomizacionController extends Controller
                  'entidades.nombre')
         ->join('almacen.orden_despacho','orden_despacho.id_od','=','transformacion.id_od')
         ->join('almacen.alm_almacen','alm_almacen.id_almacen','=','transformacion.id_almacen')
-        // ->join('administracion.sis_sede','sis_sede.id_sede','=','alm_almacen.id_sede')
-        // ->join('administracion.adm_empresa','adm_empresa.id_empresa','=','sis_sede.id_empresa')
-        // ->join('contabilidad.adm_contri','adm_contri.id_contribuyente','=','adm_empresa.id_contribuyente')
-        // ->join('logistica.log_prove','log_prove.id_contribuyente','=','adm_contri.id_contribuyente')
         ->join('almacen.alm_req','alm_req.id_requerimiento','=','orden_despacho.id_requerimiento')
         ->join('almacen.guia_ven', function($join)
                 {   $join->on('guia_ven.id_od', '=', 'transformacion.id_od');
-                    $join->where('guia_ven.estado','<>', 7);
+                    $join->where('guia_ven.estado','!=', 7);
                 })
         ->leftjoin('mgcp_cuadro_costos.cc','cc.id','=','transformacion.id_cc')
         ->leftjoin('mgcp_oportunidades.oportunidades','oportunidades.id','=','cc.id_oportunidad')

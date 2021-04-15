@@ -122,7 +122,7 @@ Pendientes de Ingreso
                                         <th>Fecha Ingreso</th>
                                         <th>Responsable</th>
                                         <!-- <th>Trans.</th> -->
-                                        <th width="90px"></th>
+                                        <th width="110px"></th>
                                     </tr>
                                 </thead>
                                 <tbody></tbody>
@@ -140,12 +140,12 @@ Pendientes de Ingreso
 @include('almacen.guias.guia_com_create')
 @include('almacen.guias.guia_com_series')
 @include('almacen.guias.guia_com_obs')
+@include('almacen.guias.guia_com_cambio')
 @include('almacen.documentos.doc_com_ver')
 @include('almacen.producto.productoModal')
 @include('almacen.producto.productoCreate')
 @include('almacen.guias.movimientoDetalle')
 @include('almacen.guias.ordenesGuias')
-<!-- @include('almacen.guias.guia_ven_obs') -->
 
 @endsection
 
@@ -168,6 +168,7 @@ Pendientes de Ingreso
     <script src="{{ asset('js/almacen/guia/ordenesPendientes.js')}}"></script>
     <script src="{{ asset('js/almacen/guia/ordenes_ver_detalle.js')}}"></script>
     <script src="{{ asset('js/almacen/guia/guia_com_create.js')}}"></script>
+    <script src="{{ asset('js/almacen/guia/guia_com_cambio.js')}}"></script>
     <script src="{{ asset('js/almacen/guia/guia_com_det_series.js')}}"></script>
     <script src="{{ asset('js/almacen/guia/guia_com_det_series_edit.js')}}"></script>
     <script src="{{ asset('js/almacen/producto/productoModal.js')}}"></script>
