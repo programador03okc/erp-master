@@ -61,7 +61,10 @@
                     <li><a href="/generar_orden"><i class="far fa-circle fa-xs"></i> Por Cotización</a></li>
                     @endif
                     @if(Auth::user()->tieneAplicacion(108))
-                    <li><a href="{{route('logistica.gestion-logistica.orden.por-requerimiento.index')}}"><i class="far fa-circle fa-xs"></i> Por Requerimiento</a></li>
+                    <li><a href="{{route('logistica.gestion-logistica.orden.por-requerimiento.index')}}"><i class="far fa-circle fa-xs"></i> Pendientes</a></li>
+                    @endif
+                    @if(Auth::user()->tieneAplicacion(108))
+                    <li><a href="{{route('logistica.gestion-logistica.orden.por-requerimiento.crear-orden')}}"><i class="far fa-circle fa-xs"></i> Elaborar</a></li>
                     @endif
                     @if(Auth::user()->tieneAplicacion(109))
                     <li><a href="{{route('logistica.gestion-logistica.orden.lista-ordenes.index')}}"><i class="far fa-circle fa-xs"></i> Listado</a></li>

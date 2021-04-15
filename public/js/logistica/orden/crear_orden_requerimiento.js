@@ -13,20 +13,48 @@ function inicializarModalOrdenRequerimiento(
 
 
     var reqTrueList = JSON.parse(sessionStorage.getItem('reqCheckedList'));
-
-    if (reqTrueList.length > 0) {
+    if (reqTrueList !=null && (reqTrueList.length > 0)) {
         obtenerRequerimiento(reqTrueList);
-    } else {
-        alert("No existe Requerimiento seleccionado");
-    }
+        changeStateButton('editar');
+        // changeStateButton('historial');
+        changeStateInput('form-crear-orden-requerimiento', false);
+        let btnVinculoAReq= `<span class="text-info" id="text-info-req-vinculado" > <a onClick="window.location.reload();" style="cursor:pointer;" title="Recargar con Valores Iniciales del Requerimiento">(vinculado a un Requerimiento)</a> <span class="badge label-danger" onClick="eliminarVinculoReq();" style="position: absolute;margin-top: -5px;margin-left: 5px; cursor:pointer" title="Eliminar vínculo">×</span></span>`;
+        document.querySelector("section[class='content-header']").children[0].innerHTML+=btnVinculoAReq;
+
+    }  
 
 }
 
-// $(function(){
+function nueva_orden(){
+    fechaHoy();
+    document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='id_proveedor']").value='';
+    document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='id_contrib']").value='';
+    document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='direccion_proveedor']").value='';
+    document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='ubigeo_proveedor']").value='';
+    document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='ubigeo_proveedor_descripcion']").value='';
+    document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='id_contacto_proveedor']").value='';
+    document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='contacto_proveedor_nombre']").value='';
+    document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='contacto_proveedor_telefono']").value='';
+    document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='cdc_req']").value='';
+    document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='ejecutivo_responsable']").value='';
+    document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='id_ubigeo_destino']").value='';
+    document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='ubigeo_destino']").value='';
+    document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='id_trabajador']").value='';
+    document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='nombre_persona_autorizado']").value='';
+    document.querySelector("form[id='form-crear-orden-requerimiento'] span[name='codigo_orden_interno']").textContent='';
+    document.querySelector("var[name='total']").textContent= '';
+
+
+    limpiarTabla('listaDetalleOrden');
+}
+
+function eliminarVinculoReq(){
+    sessionStorage.removeItem('reqCheckedList');
+    window.location.reload();
+}
 
 
 
-// });
 function handlechangeCondicion(event){
     let condicion= document.getElementsByName('id_condicion')[0];
     let text_condicion = condicion.options[condicion.selectedIndex].text;
@@ -64,7 +92,7 @@ function getDetalleYRequerimientoOrden(idReqList){
 function fillListaItemsRequerimientosVinculados(){
     // console.log(listCheckReq);
     let data=detalleRequerimientoSelected.filter(item => item.id > 0)
-    console.log(data);
+    // console.log(data);
     var vardataTables1 = funcDatatables();
     $('#listaItemsRequerimientosVinculados').dataTable({
  
@@ -261,7 +289,9 @@ function fillListaRequerimientosVinculados(){
 }
 
 function get_header_orden_requerimiento(){
-    let id_tipo_doc = document.querySelector("div[type='crear-orden-requerimiento'] select[name='id_tipo_doc']").value;
+    let id_orden = document.querySelector("div[type='crear-orden-requerimiento'] input[name='id_orden']").value;
+    let id_tp_documento = document.querySelector("div[type='crear-orden-requerimiento'] select[name='id_tp_documento']").value;
+
     let id_moneda = document.querySelector("div[type='crear-orden-requerimiento'] select[name='id_moneda']").value;
     let codigo_orden = document.querySelector("div[type='crear-orden-requerimiento'] input[name='codigo_orden']").value;
     let fecha_emision = document.querySelector("div[type='crear-orden-requerimiento'] input[name='fecha_emision']").value;
@@ -273,9 +303,9 @@ function get_header_orden_requerimiento(){
     let id_condicion = document.querySelector("div[type='crear-orden-requerimiento'] select[name='id_condicion']").value;
     let plazo_dias = document.querySelector("div[type='crear-orden-requerimiento'] input[name='plazo_dias']").value;
     let plazo_entrega = document.querySelector("div[type='crear-orden-requerimiento'] input[name='plazo_entrega']").value;
-    let id_tp_documento = document.querySelector("div[type='crear-orden-requerimiento'] select[name='id_tp_documento']").value;
     let id_cc = document.querySelector("div[type='crear-orden-requerimiento'] input[name='id_cc']").value;
-    
+    let id_tp_doc = document.querySelector("div[type='crear-orden-requerimiento'] select[name='id_tp_doc']").value;
+
     let id_sede = document.querySelector("div[type='crear-orden-requerimiento'] select[name='id_sede']").value;
     let direccion_destino = document.querySelector("div[type='crear-orden-requerimiento'] input[name='direccion_destino']").value;
     let id_ubigeo_destino = document.querySelector("div[type='crear-orden-requerimiento'] input[name='id_ubigeo_destino']").value;
@@ -283,19 +313,20 @@ function get_header_orden_requerimiento(){
     let id_trabajador = document.querySelector("div[type='crear-orden-requerimiento'] input[name='id_trabajador']").value;
 
     let data = {
-        'id_tipo_doc':id_tipo_doc, 
+        'id_orden':id_orden,
+        'id_tp_documento':id_tp_documento,
         'id_moneda':id_moneda, 
         'codigo_orden':codigo_orden, 
         'fecha_emision':fecha_emision, 
-
+        
         'id_proveedor':id_proveedor, 
         'id_contrib':id_contrib,
         'id_contacto_proveedor':id_contacto_proveedor,
-
+        
         'id_condicion':id_condicion, 
         'plazo_dias':plazo_dias, 
         'plazo_entrega':plazo_entrega, 
-        'id_tp_documento':id_tp_documento,
+        'id_tp_doc':id_tp_doc, 
         'id_cc':id_cc,
 
         'id_sede':id_sede, 
@@ -332,16 +363,11 @@ function hasCheckedGuardarEnRequerimiento(){
 }
 
 
-
-$("#form-crear-orden-requerimiento").on("submit", function(e){
-    e.preventDefault();
-    // var data = $(this).serialize();
-    // var detalle_requerimiento = [];
-    // payload_orden = data;
-    // console.log(detalleRequerimientoSelected);
+function save_orden(data, action){
+    // console.log(data);
+    // console.log(action);
     let hasCheck = hasCheckedGuardarEnRequerimiento();
     payload_orden =get_header_orden_requerimiento();
-
     if(hasCheck == true){
         let coutReqInObj =countRequirementsInObj();
         if(coutReqInObj == 1){
@@ -357,7 +383,7 @@ $("#form-crear-orden-requerimiento").on("submit", function(e){
 
             payload_orden.detalle= detalleRequerimientoSelected;
             // payload_orden += '&detalle_requerimiento='+JSON.stringify(detalleRequerimientoSelected);
-            guardar_orden_requerimiento(payload_orden);
+            guardar_orden_requerimiento(action,payload_orden);
 
         }else if(coutReqInObj >1){
             // console.log('open modal to select item/req');
@@ -370,17 +396,16 @@ $("#form-crear-orden-requerimiento").on("submit", function(e){
             
         }else{ //no existen nuevos item argregados, guardar nromal (no habra que guardar en req)
             payload_orden.detalle= detalleRequerimientoSelected;
-            guardar_orden_requerimiento(payload_orden);
+            guardar_orden_requerimiento(action,payload_orden);
     
         }
     }else{ // sin guardar en req
         payload_orden =get_header_orden_requerimiento();
-        payload_orden.detalle= detalleRequerimientoSelected;
-    guardar_orden_requerimiento(payload_orden);
+        payload_orden.detalle= (typeof detalleRequerimientoSelected !='undefined')?detalleRequerimientoSelected:detalleOrdenList;
+        guardar_orden_requerimiento(action,payload_orden);
     }
-
-
-});
+}
+ 
 // function validarCamposOrden(data){
 //     var infoStateInput =[];
 
@@ -434,41 +459,66 @@ function validaOrdenRequerimiento(){
     return  msj;
 }
 
-function guardar_orden_requerimiento(data){
+function guardar_orden_requerimiento(action,data){
+    console.log(action);
     console.log(data);
+    if (action == 'register'){
+        var msj = validaOrdenRequerimiento();
+        if (msj.length > 0){
+            alert(msj);
+        } else{
+            $.ajax({
+                type: 'POST',
+                url: 'guardar',
+                data: data,
+                dataType: 'JSON',
+                success: function(response){
+                    console.log(response);
+                    if (response > 0){
+                        alert('Orden de registrada con éxito');
+                        changeStateButton('guardar');
+                        $('#form-crear-orden-requerimiento').attr('type', 'register');
+                        changeStateInput('form-crear-orden-requerimiento', true);
+
+                        sessionStorage.removeItem('reqCheckedList');
+                        window.open("/logistica/gestion-logistica/orden/por-requerimiento/generar-orden-pdf/"+response, '_blank');
+                        // location.href = "/logistica/gestion-logistica/orden/por-requerimiento/index";
+
+                    }
+                }
+            }).fail( function( jqXHR, textStatus, errorThrown ){
+                console.log(jqXHR);
+                console.log(textStatus);
+                console.log(errorThrown);
+            });
+        }
     
-    var msj = validaOrdenRequerimiento();
-    if (msj.length > 0){
-        alert(msj);
-    } else{
+    }else if(action == 'edition'){
         $.ajax({
             type: 'POST',
-            url: rutaGuardarOrdenPorRequerimiento,
+            url: 'actualizar',
             data: data,
             dataType: 'JSON',
             success: function(response){
-                console.log(response);
+                // console.log(response);
                 if (response > 0){
-                    alert('Orden de registrada con éxito');
-                    $('#modal-orden-requerimiento').modal('hide');
-                    $('#listaRequerimientosPendientes').DataTable().ajax.reload();
-                    sessionStorage.removeItem('reqCheckedList');
-                    // $('#listaComprasEnProceso').DataTable().ajax.reload();
-                    window.open("/logistica/gestion-logistica/orden/por-requerimiento/generar-orden-pdf/"+response, '_blank');
-                    
-                    location.href = "/logistica/gestion-logistica/orden/por-requerimiento/index";
-
-                    // window.open("/logistica/gestion-logistica/orden/por-requerimiento/index","_self");
-                    // win.focus();  
-
+                    alert("Orden Actualizada");
+                    changeStateButton('guardar');
+                    $('#form-crear-orden-requerimiento').attr('type', 'register');
+                    changeStateInput('form-crear-orden-requerimiento', true);
                 }
             }
-        }).fail( function( jqXHR, textStatus, errorThrown ){
+        }).fail( function(jqXHR, textStatus, errorThrown){
             console.log(jqXHR);
             console.log(textStatus);
             console.log(errorThrown);
-        });
+        });   
+    }else{
+        alert("Hubo un error en la acción de la botonera, el action no esta definido");
     }
+
+
+ 
 }
 
 
@@ -596,7 +646,7 @@ function listar_detalle_orden_requerimiento(data){
                     }else{
                         action = `
                         <div class="btn-group btn-group-sm" role="group">
-                            <button type="button" class="btn btn-danger btn-sm" name="btnOpenModalEliminarItemOrden" title="Eliminar Item" data-row="${(meta.row+1)}" data-id_requerimiento="${(row.id_requerimiento?row.id_requerimiento:0)}" data-id_detalle_requerimiento="${(row.id_detalle_requerimiento?row.id_detalle_requerimiento:0)}"  onclick="openModalEliminarItemOrden(this);">
+                            <button type="button" class="btn btn-danger btn-sm activation" name="btnOpenModalEliminarItemOrden" title="Eliminar Item" data-row="${(meta.row+1)}" data-id_requerimiento="${(row.id_requerimiento?row.id_requerimiento:0)}" data-id_detalle_requerimiento="${(row.id_detalle_requerimiento?row.id_detalle_requerimiento:0)}"  onclick="openModalEliminarItemOrden(this);">
                             <i class="fas fa-trash fa-sm"></i>
                             </button>
                         </div>
@@ -648,7 +698,7 @@ function obtenerRequerimiento(reqTrueList){
             data:{'requerimientoList':reqTrueList},
             dataType: 'JSON',
             success: function(response){
-                console.log(response);
+                // console.log(response);
                 response.det_req.forEach(element => {
                     if(element.cantidad !=0){
                         detalleRequerimientoSelected.push(element);
