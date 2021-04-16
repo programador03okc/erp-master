@@ -1,5 +1,5 @@
 @extends('layout.main')
-@include('layout.menu_logistica')
+@include('layout.menu_almacen')
 
 @if(Auth::user()->tieneAccion(76))
     @section('option')
@@ -17,7 +17,7 @@
 
 @section('breadcrumb')
 <ol class="breadcrumb">
-  <li><a href="{{route('logistica.index')}}"><i class="fas fa-tachometer-alt"></i> Logística y Almacenes</a></li>
+  <li><a href="{{route('almacen.index')}}"><i class="fas fa-tachometer-alt"></i> Almacenes</a></li>
   <li>Ubicaciones</li>
   <li class="active">@yield('cabecera')</li>
 </ol>
@@ -34,7 +34,6 @@
             </ul>
             <div class="content-tabs">
                 <section id="estante" hidden>
-                    {{-- <div class="page-main" type="estante"> --}}
                         <form id="form-estante" type="register">
                         <input type="hidden" name="_token" value="{{csrf_token()}}" id="token">
                             <div class="row">
@@ -88,10 +87,8 @@
                                 </div>
                             </div>
                         </form>
-                    {{-- </div> --}}
                 </section>
                 <section id="nivel" hidden>
-                    {{-- <div class="page-main" type="nivel"> --}}
                         <form id="form-nivel" type="register">
                         <input type="hidden" name="_token" value="{{csrf_token()}}" id="token">
                             <div class="row">
@@ -153,7 +150,6 @@
                                 </div>
                             </div>
                         </form>
-                    {{-- </div> --}}
                 </section>
                 <section id="posicion" hidden>
                     <form id="form-posicion" type="register">

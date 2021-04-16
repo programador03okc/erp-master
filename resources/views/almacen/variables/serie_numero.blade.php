@@ -1,5 +1,15 @@
 @extends('layout.main')
-@include('layout.menu_logistica')
+@include('layout.menu_almacen')
+
+@if(Auth::user()->tieneAccion(129))
+    @section('option')
+        @include('layout.option')
+    @endsection
+@elseif(Auth::user()->tieneAccion(128))
+    @section('option')
+        @include('layout.option_historial')
+    @endsection
+@endif
 
 @section('cabecera')
 Series-Numeros
@@ -11,7 +21,7 @@ Series-Numeros
 
 @section('breadcrumb')
 <ol class="breadcrumb">
-  <li><a href="{{route('logistica.index')}}"><i class="fas fa-tachometer-alt"></i> Logística y Almacenes</a></li>
+  <li><a href="{{route('almacen.index')}}"><i class="fas fa-tachometer-alt"></i> Almacenes</a></li>
   <li>Variables</li>
   <li class="active">@yield('cabecera')</li>
 </ol>

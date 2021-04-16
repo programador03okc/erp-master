@@ -1,11 +1,11 @@
 @extends('layout.main')
 @include('layout.menu_logistica')
 @section('cabecera')
-    Dashboard Logística y Almacenes
+    Dashboard Logística
 @endsection
 @section('breadcrumb')
 <ol class="breadcrumb">
-    <li><a href="{{route('logistica.index')}}"><i class="fas fa-tachometer-alt"></i> Logística y Almacenes</a></li>
+    <li><a href="{{route('logistica.index')}}"><i class="fas fa-tachometer-alt"></i> Logística</a></li>
     <li class="active">@yield('cabecera')</li>
 </ol>
 @endsection
@@ -57,28 +57,12 @@
                     <p style="font-size:15px;display:flex;width:20px;">Despachos Pendientes</p>
                 </div>
                 @if(Auth::user()->tieneAplicacion(80))
-                <a href="{{route('logistica.almacen.distribucion.despachos.index')}}" class="small-box-footer">Ir <i class="fa fa-arrow-circle-right"></i></a>
+                <a href="{{route('logistica.distribucion.despachos.index')}}" class="small-box-footer">Ir <i class="fa fa-arrow-circle-right"></i></a>
                 @else
                 <a href="#" class="small-box-footer">Ir <i class="fa fa-arrow-circle-right"></i></a>
                 @endif
         </div>
         
-    </div>
-    <div class="col-md-3">
-        <div class="small-box bg-green">
-            <div class="icon">
-                <i class="fas fa-code-branch"></i>
-                </div>
-                <div class="inner">
-                    <h3>{{$cantidad_transformaciones_pendientes}}</h3>
-                    <p style="font-size:15px;display:flex;width:20px;">Transformaciones Pendientes</p>
-                </div>
-                @if(Auth::user()->tieneAplicacion(79))
-                <a href="{{route('logistica.almacen.customizacion.gestion-customizaciones.index')}}" class="small-box-footer">Ir <i class="fa fa-arrow-circle-right"></i></a>
-                @else
-                <a href="#" class="small-box-footer">Ir <i class="fa fa-arrow-circle-right"></i></a>
-                @endif
-        </div>
     </div>
 
 </div>
@@ -107,71 +91,13 @@
                         <tbody></tbody>
                     </table>
                 </div>
-                <a href="{{route('logistica.almacen.reportes.saldos.index')}}" >
+                <a href="{{route('almacen.reportes.saldos.index')}}" >
                     <button type="button" class="btn btn-success" style="display:block;">
                     <i class="fas fa-box-open"></i> Ver Saldos Actuales en Almacén</button>
                 </a>
             </div>
             <div class="col-md-8">
                 <canvas id="chartRequerimientos" width="600" height="300"></canvas>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="small-box bg-maroon">
-                    <div class="icon">
-                        <i class="fas fa-sign-in-alt"></i>
-                        </div>
-                        <div class="inner">
-                            <h3>{{$cantidad_ingresos_pendientes}}</h3>
-                            <p style="font-size:15px;display:flex;width:20px;">Ingresos Pendientes</p>
-                        </div>
-                        @if(Auth::user()->tieneAplicacion(82))
-                        <a href="{{route('logistica.almacen.movimientos.pendientes-ingreso.index')}}" class="small-box-footer">Ir <i class="fa fa-arrow-circle-right"></i></a>
-                        @else
-                        <a href="#" class="small-box-footer">Ir <i class="fa fa-arrow-circle-right"></i></a>
-                        @endif
-                    <!-- </div> -->
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-12">
-                <div class="small-box bg-purple">
-                    <div class="icon">
-                        <i class="fas fa-sign-out-alt"></i>
-                    </div>
-                    <div class="inner">
-                        <h3>{{$cantidad_salidas_pendientes}}</h3>
-                        <p style="font-size:15px;display:flex;width:20px;">Salidas Pendientes</p>
-                    </div>
-                    @if(Auth::user()->tieneAplicacion(83))
-                    <a href="{{route('logistica.almacen.movimientos.pendientes-salida.index')}}" class="small-box-footer">Ir <i class="fa fa-arrow-circle-right"></i></a>
-                    @else
-                    <a href="#" class="small-box-footer">Ir <i class="fa fa-arrow-circle-right"></i></a>
-                    @endif
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-12">
-                <div class="small-box bg-yellow">
-                    <div class="icon">
-                        <i class="fas fa-exchange-alt"></i>
-                    </div>
-                    <div class="inner">
-                        <h3>{{$cantidad_transferencias_pendientes}}</h3>
-                        <p style="font-size:15px;display:flex;width:20px;">Transferencias Pendientes</p>
-                    </div>
-                    @if(Auth::user()->tieneAplicacion(86))
-                    <a href="{{route('logistica.almacen.transferencias.gestion-transferencias.index')}}" class="small-box-footer">Ir <i class="fa fa-arrow-circle-right"></i></a>
-                    @else
-                    <a href="#" class="small-box-footer">Ir <i class="fa fa-arrow-circle-right"></i></a>
-                    @endif
-                    <!-- </div> -->
-                </div>
             </div>
         </div>
     </div>

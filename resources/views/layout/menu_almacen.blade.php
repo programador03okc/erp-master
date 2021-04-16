@@ -9,13 +9,13 @@
         </a>
         <ul class="treeview-menu">
             @if(Auth::user()->tieneAplicacion(70))
-            <li><a href="{{route('almacen.catalogos.tipos.index')}}"> Tipo de Producto </a></li>
+            <li><a href="{{route('almacen.catalogos.tipos.index')}}"> Categoría </a></li>
             @endif
             @if(Auth::user()->tieneAplicacion(71))
-            <li><a href="{{route('almacen.catalogos.categorias.index')}}"> Categoría</a></li>
+            <li><a href="{{route('almacen.catalogos.categorias.index')}}"> SubCategoría</a></li>
             @endif
             @if(Auth::user()->tieneAplicacion(72))
-            <li><a href="{{route('almacen.catalogos.sub-categorias.index')}}"> SubCategoría</a></li>
+            <li><a href="{{route('almacen.catalogos.sub-categorias.index')}}"> Marca</a></li>
             @endif
             @if(Auth::user()->tieneAplicacion(73))
             <li><a href="{{route('almacen.catalogos.clasificaciones.index')}}"> Clasificación</a></li>
@@ -47,33 +47,23 @@
         </ul>
     </li>
     @endif
-    @if(Auth::user()->tieneSubModulo(19))
-    <li class="treeview">
-        <a href="#">
-        <i class="fas fa-hand-holding-usd"></i> <span>Pagos</span> <i class="fa fa-angle-left pull-right"></i>
-        </a>
-        <ul class="treeview-menu">
-            @if(Auth::user()->tieneAplicacion(79))
-            <li><a href="{{route('almacen.pagos.confirmacion-pagos.index')}}"> Confirmación de Pagos </a></li>
-            @endif
-        </ul>
-    </li>
-    @endif
-    @if(Auth::user()->tieneSubModulo(20))
-    <li class="treeview">
-        <a href="#">
-            <i class="fas fa-truck"></i> <span>Distribución</span> <i class="fa fa-angle-left pull-right"></i>
-        </a>
-        <ul class="treeview-menu">
-            @if(Auth::user()->tieneAplicacion(80))
-            <li><a href="{{route('almacen.distribucion.despachos.index')}}"> Gestión de Despachos </a></li>
-            @endif
-            @if(Auth::user()->tieneAplicacion(81))
-            <li><a href="{{route('almacen.distribucion.trazabilidad-requerimientos.index')}}"> Trazabilidad </a></li>
-            @endif
-        </ul>
-    </li>
-    @endif
+    <!-- @if(Auth::user()->tieneSubModulo(20)) -->
+            <!-- <li class="treeview">
+                <a href="#"><i class="fab fa-stack-overflow"></i> Control de Stock
+                    <span class="pull-right-container">
+                    <i class="fa fa-angle-left pull-right"></i>
+                    </span>
+                </a>
+                <ul class="treeview-menu">
+                @if(Auth::user()->tieneAplicacion(80))
+                <li><a href="{{route('almacen.control-stock.importar.index')}}"><i class="far fa-circle fa-xs"></i> Inicial / Importar </a></li>
+                @endif
+                @if(Auth::user()->tieneAplicacion(81))
+                <li><a href="{{route('almacen.control-stock.toma-inventario.index')}}"><i class="far fa-circle fa-xs"></i> Toma de Inventario </a></li>
+                @endif
+                </ul>
+            </li> -->
+            <!-- @endif -->
     @if(Auth::user()->tieneSubModulo(21))
     <li class="treeview">
         <a href="#">
@@ -110,11 +100,11 @@
     @if(Auth::user()->tieneSubModulo(41))
     <li class="treeview">
         <a href="#">
-        <i class="fas fa-code-branch"></i> <span>Customización</span> <i class="fa fa-angle-left pull-right"></i>
+        <i class="fas fa-code-branch"></i> <span>Transformación</span> <i class="fa fa-angle-left pull-right"></i>
         </a>
         <ul class="treeview-menu">
             @if(Auth::user()->tieneAplicacion(87))
-            <li><a href="{{route('almacen.customizacion.gestion-customizaciones.index')}}"> Gestión de Customizaciones </a></li>
+            <li><a href="{{route('almacen.customizacion.gestion-customizaciones.index')}}"> Transformaciones </a></li>
             @endif
             @if(Auth::user()->tieneAplicacion(88))
             <li><a href="{{route('almacen.customizacion.hoja-transformacion.index')}}"> Hoja de Transformación </a></li>

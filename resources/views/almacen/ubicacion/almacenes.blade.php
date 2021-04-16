@@ -1,5 +1,5 @@
 @extends('layout.main')
-@include('layout.menu_logistica')
+@include('layout.menu_almacen')
 
 @if(Auth::user()->tieneAccion(74))
     @section('option')
@@ -17,7 +17,7 @@
 
 @section('breadcrumb')
 <ol class="breadcrumb">
-  <li><a href="{{route('logistica.index')}}"><i class="fas fa-tachometer-alt"></i> Logística y Almacenes</a></li>
+  <li><a href="{{route('almacen.index')}}"><i class="fas fa-tachometer-alt"></i> Almacenes</a></li>
   <li>Ubicaciones</li>
   <li class="active">@yield('cabecera')</li>
 </ol>
@@ -36,7 +36,6 @@
                             <th>Cód.</th>
                             <th>Descripción</th>
                             <th>Tipo</th>
-                            {{-- <th>Estado</th> --}}
                         </tr>
                     </thead>
                     <tbody></tbody>
@@ -86,7 +85,6 @@
                                 </button>
                             </div>
                         </div>
-                        {{-- <input type="text" class="form-control activation" name="ubigeo" disabled="true"> --}}
                     </div>
                 </div>
                 <div class="row">

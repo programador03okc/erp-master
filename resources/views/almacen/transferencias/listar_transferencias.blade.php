@@ -1,5 +1,5 @@
 @extends('layout.main')
-@include('layout.menu_logistica')
+@include('layout.menu_almacen')
 
 @section('cabecera')
 Gestión de Transferencias
@@ -13,7 +13,7 @@ Gestión de Transferencias
 
 @section('breadcrumb')
 <ol class="breadcrumb">
-  <li><a href="{{route('logistica.index')}}"><i class="fas fa-tachometer-alt"></i> Logística y Almacenes</a></li>
+  <li><a href="{{route('almacen.index')}}"><i class="fas fa-tachometer-alt"></i> Almacenes</a></li>
   <li>Transferencias</li>
   <li class="active">@yield('cabecera')</li>
 </ol>

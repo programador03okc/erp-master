@@ -1,8 +1,15 @@
 @extends('layout.main')
-@include('layout.menu_logistica')
-@section('option')
-    @include('layout.option')
-@endsection
+@include('layout.menu_almacen')
+
+@if(Auth::user()->tieneAccion(135))
+    @section('option')
+        @include('layout.option')
+    @endsection
+@elseif(Auth::user()->tieneAccion(134))
+    @section('option')
+        @include('layout.option_historial')
+    @endsection
+@endif
 
 @section('cabecera')
     Unidades de Medida
@@ -10,7 +17,7 @@
 
 @section('breadcrumb')
 <ol class="breadcrumb">
-  <li><a href="{{route('logistica.index')}}"><i class="fas fa-tachometer-alt"></i> Almacén</a></li>
+  <li><a href="{{route('almacen.index')}}"><i class="fas fa-tachometer-alt"></i> Almacenes</a></li>
   <li>Variables</li>
   <li class="active">@yield('cabecera')</li>
 </ol>

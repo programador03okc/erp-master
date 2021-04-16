@@ -1,5 +1,5 @@
 @extends('layout.main')
-@include('layout.menu_logistica')
+@include('layout.menu_almacen')
 
 @section('cabecera')
     Catálogo de Productos
@@ -14,13 +14,9 @@
                     <thead>
                         <tr>
                             <th></th>
-                            <th>Cod</th>
                             <th>Tipo</th>
-                            <th>Cod</th>
                             <th>Categoría</th>
-                            <th>Cod</th>
                             <th>Subcatgoría</th>
-                            <th>Cod</th>
                             <th>Clasificación</th>
                             <th>Código</th>
                             <th>Descripción</th>
