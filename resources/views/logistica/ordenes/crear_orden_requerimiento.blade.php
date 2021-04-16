@@ -1,6 +1,7 @@
 @extends('layout.main')
 @include('layout.menu_logistica')
 @section('option')
+    @include('layout.option')
 @endsection
 
 @section('cabecera')
@@ -18,15 +19,16 @@
 @section('content')
 <div class="page-main" type="crear-orden-requerimiento">
     <form id="form-crear-orden-requerimiento" type="register" form="formulario">
+    <input type="hidden" name="id_orden" primary="ids">
 
         <div class="row">
             <div class="col-md-12">
-                <h4>General</h4>
+                <h4 style="display:flex;justify-content: space-between;">General &nbsp;<span style="color:blue;" name="codigo_orden_interno"></span> </h4> 
                 <fieldset class="group-table">   
                     <div class="row">
                         <div class="col-md-2"  id="group-tipo_orden">
                             <h5>Tipo de Orden</h5>
-                            <select class="form-control" name="id_tipo_doc" >
+                            <select class="form-control activation" name="id_tp_documento" >
                                 <option value="0">Elija una opción</option>
                                 @foreach ($tp_documento as $tp)
                                     @if($tp->descripcion == 'Orden de Compra')
@@ -40,7 +42,7 @@
 
                         <div class="col-md-2" id="group-fecha_orden">
                             <h5>Moneda</h5>
-                            <select class="form-control " name="id_moneda" >
+                            <select class="form-control activation" name="id_moneda" >
                                 @foreach ($tp_moneda as $tpm)
                                     <option value="{{$tpm->id_moneda}}" data-simbolo-moneda="{{$tpm->simbolo}}" >{{$tpm->descripcion}} ( {{$tpm->simbolo}} )</option>
                                 @endforeach
@@ -49,15 +51,20 @@
 
                         <div class="col-md-2" id="group-codigo_orden" >
                             <h5>Código Orden Softlink</h5>
-                            <input class="form-control" name="codigo_orden" type="text" placeholder="">
+                            <input class="form-control activation" name="codigo_orden" type="text" placeholder="">
                         </div>
                         <div class="col-md-2" id="group-fecha_emision_orden" >
                             <h5>Fecha Emisión</h5>
-                            <input class="form-control" name="fecha_emision" type="date" value={{ date('Y-m-d H:i:s') }}>
+                            <div style="display:flex">
+                                <input class="form-control activation" name="fecha_emision" type="datetime-local"  value={{ date('Y-m-d\TH:i') }}>
+                                <button type="button" class="group-text" onClick="fechaHoy();">
+                                HOY
+                                </button> 
+                            </div>
                         </div>
                         <div class="col-md-2" id="group-datos_para_despacho-sede">
                             <h5>Empresa - Sede</h5>
-                            <select class="form-control " name="id_sede" onChange="changeSede(this);">
+                            <select class="form-control activation " name="id_sede" onChange="changeSede(this);">
                                 @foreach ($sedes as $sede)
                                     <option value="{{$sede->id_sede}}" data-id-empresa="{{$sede->id_empresa}}" data-direccion="{{$sede->direccion}}"  data-id-ubigeo="{{$sede->id_ubigeo}}" data-ubigeo-descripcion="{{$sede->ubigeo_descripcion}}" >{{$sede->descripcion}}</option>
                                 @endforeach
@@ -65,7 +72,7 @@
                         </div>
                         <h5>&nbsp;</h5>
                         <div class="col-md-2" id="group-datos_para_despacho-logo_empresa">
-                                <img id="logo_empresa" src="/images/img-default.jpg" alt=""  style=" height:30px; !important;width:80px; !important;">
+                                <img id="logo_empresa" src="/images/img-default.jpg" alt=""  style="height: 56px; !important;width: 100%; !important;margin-top: -20px;">
                         </div>
 
                     </div>
@@ -137,7 +144,7 @@
                         <div class="col-md-3" id="group-condicion_compra-forma_pago">
                             <h5>Forma de Pago</h5>
                             <div style="display:flex;">
-                                <select class="form-control group-elemento" name="id_condicion" onchange="handlechangeCondicion(event);"
+                                <select class="form-control group-elemento activation" name="id_condicion" onchange="handlechangeCondicion(event);"
                                     style="width:100%; text-align:center;" >
                                     @foreach ($condiciones as $cond)
                                         <option value="{{$cond->id_condicion_pago}}">{{$cond->descripcion}}</option>
@@ -151,7 +158,7 @@
                         <div class="col-md-2" id="group-condicion_compra-plazo_entrega">
                             <h5>Plazo Entrega</h5>
                             <div style="display:flex;">
-                                <input type="number" name="plazo_entrega" class="form-control group-elemento" style="text-align:right;" >
+                                <input type="number" name="plazo_entrega" class="form-control group-elemento activation" style="text-align:right;" >
                                 <input type="text" value="días" class="form-control group-elemento" style="width:60px;text-align:center;" readOnly >
                             </div>
                         </div>
@@ -171,7 +178,7 @@
                         </div>
                         <div class="col-md-3" id="group-tipo_documento">
                             <h5>Tipo de Documento</h5>
-                            <select class="form-control " name="id_tp_documento">
+                            <select class="form-control activation" name="id_tp_doc">
                                 <option value="0">Elija una opción</option>
                                 @foreach ($tp_doc as $tp)
                                     @if($tp->descripcion == 'Factura')
@@ -196,7 +203,7 @@
                         <div class="col-md-6" id="group-datos_para_despacho-direccion_destino">
                             <h5>Dirección Entrega</h5>
                             <div style="display:flex;">
-                                 <input type="text" name="direccion_destino" class="form-control group-elemento" >
+                                 <input type="text" name="direccion_destino" class="form-control group-elemento activation" >
                             </div>
                         </div>
                         <div class="col-md-3" id="group-datos_para_despacho-ubigeo_entrega">
@@ -266,11 +273,6 @@
 
         <br>
 
-        <div class="row">
-            <div class="col-md-12 text-right">
-                <input type="submit" id="submit_orden_requerimiento" class="btn btn-success" value="Guardar">
-            </div>
-        </div>
 
         <div class="form-inline">
             <div class="checkbox" id="check-guarda_en_requerimiento" style="display:none">
@@ -283,6 +285,7 @@
     
     </form>
 </div>
+@include('logistica.ordenes.modal_ordenes_elaboradas')
 @include('logistica.ordenes.modal_proveedor')
 @include('logistica.cotizaciones.add_proveedor')
 @include('publico.ubigeoModal')
@@ -308,6 +311,7 @@
     <script src="{{ asset('datatables/JSZip/jszip.min.js') }}"></script>
     <script src="{{ asset('template/plugins/select2/select2.min.js') }}"></script>
     <!-- <script src="{{('/js/logistica/generar_orden.js')}}"></script> -->
+    <script src="{{('/js/logistica/orden/modal_ordenes_elaboradas.js')}}"></script>
     <script src="{{('/js/logistica/orden/modal_proveedor.js')}}"></script>
     <script src="{{('/js/logistica/add_proveedor.js')}}"></script>
     <script src="{{ asset('js/publico/ubigeoModal.js')}}"></script>
@@ -317,11 +321,14 @@
 
  
     <script src="{{('/js/logistica/orden/crear_orden_requerimiento.js')}}"></script>
+    <script src="{{('/js/logistica/orden/anular_orden.js')}}"></script>
     <!-- <script src="{{('/js/logistica/crear_nuevo_producto.js')}}"></script> -->
     <script src="{{ asset('template/plugins/moment.min.js') }}"></script>
 
     <script>
+
     $(document).ready(function(){
+        seleccionarMenu(window.location);
         inicializarModalOrdenRequerimiento(
             "{{route('logistica.gestion-logistica.orden.por-requerimiento.detalle-requerimiento-orden')}}",
             "{{route('logistica.gestion-logistica.orden.por-requerimiento.guardar')}}"

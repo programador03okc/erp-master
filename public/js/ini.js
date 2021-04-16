@@ -74,7 +74,7 @@ $(document).ready(function(){
 				else if (page == 'equi_sol'){
 					nuevo_equi_sol();
 				}
-				else if (page == 'orden'){
+				else if (page == 'crear-orden-requerimiento'){
 					nueva_orden();
 				}
 				else if (page == 'requerimiento'){
@@ -202,6 +202,14 @@ $(document).ready(function(){
 				}
 				else if (page == 'categoria'){
 					$('[name=id_tipo_producto]').attr('disabled',true);
+				}
+				else if (page == 'crear-orden-requerimiento'){
+					var reqTrueList = JSON.parse(sessionStorage.getItem('reqCheckedList'));
+
+					if (reqTrueList !=null && (reqTrueList.length > 0)) {
+						window.location.reload();
+
+					}
 				}
             break;
 			case 'btnCopiar':
