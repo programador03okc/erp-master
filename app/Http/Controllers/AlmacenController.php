@@ -153,7 +153,7 @@ class AlmacenController extends Controller
         return view('almacen/ubicacion/almacenes', compact('sedes','tipos'));
     }
     function view_ubicacion(){
-        $almacenes = $this->mostrar_almacenes_cbo();
+        $almacenes = AlmacenController::mostrar_almacenes_cbo();
         $estantes = $this->mostrar_estantes_cbo();
         $niveles = $this->mostrar_niveles_cbo();
         return view('almacen/ubicacion/ubicacion', compact('almacenes','estantes','niveles'));
@@ -178,7 +178,7 @@ class AlmacenController extends Controller
     
     function view_guia_compra(){
         $proveedores = $this->mostrar_proveedores_cbo();
-        $almacenes = $this->mostrar_almacenes_cbo();
+        $almacenes = AlmacenController::mostrar_almacenes_cbo();
         $posiciones = $this->mostrar_posiciones_cbo();
         // $motivos = $this->mostrar_motivos_cbo();
         $clasificaciones = $this->mostrar_guia_clas_cbo();
@@ -194,11 +194,11 @@ class AlmacenController extends Controller
         return view('almacen/guias/guia_compra', compact('proveedores','almacenes','posiciones','clasificaciones','tp_doc','monedas','tp_doc_almacen','tp_operacion','tp_contribuyente','sis_identidad','tp_prorrateo','usuarios','motivos_anu'));
     }
     function view_guia_venta(){
-        $almacenes = $this->mostrar_almacenes_cbo();
+        $almacenes = AlmacenController::mostrar_almacenes_cbo();
         $posiciones = $this->mostrar_posiciones_cbo();
         // $motivos = $this->mostrar_motivos_cbo();
         $clasificaciones = $this->mostrar_guia_clas_cbo();
-        // $empresas = $this->select_empresa();
+        // $empresas = AlmacenController::select_empresa();
         $sedes = $this->mostrar_sedes_cbo();
         $proveedores = $this->mostrar_proveedores_cbo();
         $tp_doc_almacen = $this->tp_doc_almacen_cbo_sal();
@@ -224,7 +224,7 @@ class AlmacenController extends Controller
     //     return view('almacen/documentos/doc_compra', compact('proveedores','clasificaciones','condiciones','tp_doc','moneda','detracciones','impuestos','usuarios','tp_contribuyente','sis_identidad'));
     // }
     function view_doc_venta(){
-        // $empresas = $this->select_empresa();
+        // $empresas = AlmacenController::select_empresa();
         $sedes = $this->mostrar_sedes_cbo();
         $clasificaciones = $this->mostrar_guia_clas_cbo();
         $condiciones = $this->mostrar_condiciones_cbo();
@@ -236,59 +236,59 @@ class AlmacenController extends Controller
     function view_cola_atencion(){
         // $motivos = $this->mostrar_motivos_cbo();
         $clasificaciones = $this->mostrar_guia_clas_cbo();
-        $almacenes = $this->mostrar_almacenes_cbo();
+        $almacenes = AlmacenController::mostrar_almacenes_cbo();
         return view('almacen/reportes/cola_atencion', compact('clasificaciones','almacenes'));
     }
     function view_kardex_general(){
-        $empresas = $this->select_empresa();
-        $almacenes = $this->mostrar_almacenes_cbo();
+        $empresas = AlmacenController::select_empresa();
+        $almacenes = AlmacenController::mostrar_almacenes_cbo();
         return view('almacen/reportes/kardex_general', compact('almacenes','empresas'));
     }
     function view_kardex_detallado(){
-        $empresas = $this->select_empresa();
-        $almacenes = $this->mostrar_almacenes_cbo();
+        $empresas = AlmacenController::select_empresa();
+        $almacenes = AlmacenController::mostrar_almacenes_cbo();
         return view('almacen/reportes/kardex_detallado', compact('almacenes','empresas'));
     }
-    function view_saldos(){
-        $almacenes = $this->mostrar_almacenes_cbo();
-        return view('almacen/reportes/saldos', compact('almacenes'));
-    }
+    // function view_saldos(){
+    //     $almacenes = AlmacenController::mostrar_almacenes_cbo();
+    //     return view('almacen/reportes/saldos', compact('almacenes'));
+    // }
     function view_tipo_doc_almacen(){
         $tp_doc = $this->mostrar_tp_doc_cbo();
         return view('almacen/variables/tipo_doc_almacen', compact('tp_doc'));
     }
     function view_ingresos(){
-        $empresas = $this->select_empresa();
-        $almacenes = $this->mostrar_almacenes_cbo();
+        $empresas = AlmacenController::select_empresa();
+        $almacenes = AlmacenController::mostrar_almacenes_cbo();
         $tp_doc_almacen = $this->tp_doc_almacen_cbo_ing();
         $tp_operacion = $this->tp_operacion_cbo_ing();
         $usuarios = $this->select_almaceneros();
         return view('almacen/reportes/lista_ingresos', compact('almacenes','empresas','tp_doc_almacen','tp_operacion','usuarios'));
     }
     function view_salidas(){
-        $empresas = $this->select_empresa();
-        $almacenes = $this->mostrar_almacenes_cbo();
+        $empresas = AlmacenController::select_empresa();
+        $almacenes = AlmacenController::mostrar_almacenes_cbo();
         $tp_doc_almacen = $this->tp_doc_almacen_cbo_sal();
         $tp_operacion = AlmacenController::tp_operacion_cbo_sal();
         $usuarios = $this->select_almaceneros();
         return view('almacen/reportes/lista_salidas', compact('almacenes','empresas','tp_doc_almacen','tp_operacion','usuarios'));
     }
     function view_busqueda_ingresos(){
-        $empresas = $this->select_empresa();
-        $almacenes = $this->mostrar_almacenes_cbo();
+        $empresas = AlmacenController::select_empresa();
+        $almacenes = AlmacenController::mostrar_almacenes_cbo();
         $tp_doc_almacen = $this->tp_doc_almacen_cbo_ing();
         return view('almacen/reportes/busqueda_ingresos', compact('almacenes','empresas','tp_doc_almacen'));
     }
     function view_busqueda_salidas(){
-        $empresas = $this->select_empresa();
-        $almacenes = $this->mostrar_almacenes_cbo();
+        $empresas = AlmacenController::select_empresa();
+        $almacenes = AlmacenController::mostrar_almacenes_cbo();
         $tp_doc_almacen = $this->tp_doc_almacen_cbo_sal();
         return view('almacen/reportes/busqueda_salidas', compact('almacenes','empresas','tp_doc_almacen'));
     }
 
     function view_transformacion(){
-        $almacenes = $this->mostrar_almacenes_cbo();
-        $empresas = $this->select_empresa();
+        $almacenes = AlmacenController::mostrar_almacenes_cbo();
+        $empresas = AlmacenController::select_empresa();
         $clasificaciones = AlmacenController::mostrar_clasificaciones_cbo();
         $subcategorias = AlmacenController::mostrar_subcategorias_cbo();
         $categorias = AlmacenController::mostrar_categorias_cbo();
@@ -298,7 +298,7 @@ class AlmacenController extends Controller
         compact('almacenes','empresas','usuarios','categorias','subcategorias','unidades','clasificaciones'));
     }
     function view_listar_transformaciones(){
-        $almacenes = $this->mostrar_almacenes_cbo();
+        $almacenes = AlmacenController::mostrar_almacenes_cbo();
         // $usuarios = $this->select_usuarios_almacen();
         $usuarios = $this->select_usuarios();
         return view('almacen/customizacion/listar_transformaciones', compact('almacenes','usuarios'));
@@ -308,11 +308,11 @@ class AlmacenController extends Controller
         $sedes = $this->mostrar_sedes_cbo();
         return view('almacen/variables/serie_numero', compact('tipos','sedes'));
     }
-    function view_kardex_series(){
-        $empresas = $this->select_empresa();
-        $almacenes = $this->mostrar_almacenes_cbo();
-        return view('almacen/reportes/kardex_series', compact('almacenes','empresas'));
-    }
+    // function view_kardex_series(){
+    //     $empresas = AlmacenController::select_empresa();
+    //     $almacenes = AlmacenController::mostrar_almacenes_cbo();
+    //     return view('almacen/reportes/kardex_series', compact('almacenes','empresas'));
+    // }
     function view_docs_prorrateo(){
         // $tp_doc = $this->mostrar_tp_doc_cbo();
         return view('almacen/reportes/docs_prorrateo');
@@ -423,7 +423,7 @@ class AlmacenController extends Controller
             ->get();
         return $data;
     }
-    public function select_empresa(){
+    public static function select_empresa(){
         $data = DB::table('administracion.adm_empresa')
             ->join('contabilidad.adm_contri', 'adm_empresa.id_contribuyente', '=', 'adm_contri.id_contribuyente')
             ->select('adm_empresa.id_empresa', 'adm_contri.nro_documento', 'adm_contri.razon_social')->where('adm_empresa.estado', '=', 1)
@@ -585,14 +585,14 @@ class AlmacenController extends Controller
                 ->get();
         return $data;
     }
-    public static function mostrar_almacenes_cbo(){
-        $data = DB::table('almacen.alm_almacen')
-            ->select('alm_almacen.id_almacen','alm_almacen.codigo','alm_almacen.descripcion')
-            ->where([['alm_almacen.estado', '=', 1]])
-                ->orderBy('codigo')
-                ->get();
-        return $data;
-    }
+    // public static function mostrar_almacenes_cbo(){
+    //     $data = DB::table('almacen.alm_almacen')
+    //         ->select('alm_almacen.id_almacen','alm_almacen.codigo','alm_almacen.descripcion')
+    //         ->where([['alm_almacen.estado', '=', 1]])
+    //             ->orderBy('codigo')
+    //             ->get();
+    //     return $data;
+    // }
     public function cargar_almacenes($id_sede){
         $data = DB::table('almacen.alm_almacen')
         ->select('alm_almacen.*','sis_sede.descripcion as sede_descripcion',
@@ -4619,7 +4619,7 @@ class AlmacenController extends Controller
         }
         return response()->json($movimientos);
     }
-    public function listar_saldos($almacen)
+    /*public function listar_saldos($almacen)
     {
         $data = DB::table('almacen.alm_prod_ubi')
             ->select('alm_item.id_item','alm_prod_ubi.*','alm_prod.codigo','alm_prod.descripcion','alm_ubi_posicion.codigo as cod_posicion',
@@ -4783,7 +4783,7 @@ class AlmacenController extends Controller
         // return response()->json($nueva_data);
         $output['data'] = $nueva_data;
         return response()->json($output);
-    }
+    }*/
     
     public function listar_saldos_por_almacen()
     {
@@ -8561,44 +8561,44 @@ class AlmacenController extends Controller
         return $html;
     }
 
-    public function listar_kardex_serie($serie, $descripcion){
-        $hasWhere = [];
-        if ($serie !== 'null'){
-            $hasWhere = ['alm_prod_serie.serie','=',$serie];
-        }
-        else if ($descripcion !== 'null'){
-            $hasWhere = ['alm_prod.descripcion','like','%'.strtoupper($descripcion).'%'];
-        }
-        $data = DB::table('almacen.alm_prod_serie')
-        ->select('alm_prod_serie.*','alm_prod.descripcion',
-        'guia_com.fecha_emision as fecha_guia_com',
-        'guia_ven.fecha_emision as fecha_guia_ven',
-        'contri_cliente.razon_social as razon_social_cliente',
-        'contri_prove.razon_social as razon_social_prove',
-        'alm_com.descripcion as almacen_compra','alm_ven.descripcion as almacen_venta',
-        DB::raw("(tp_doc_com.abreviatura) || '-' || (guia_com.serie) || '-' || (guia_com.numero) as guia_com"),
-        DB::raw("(tp_doc_ven.abreviatura) || '-' || (guia_ven.serie) || '-' || (guia_ven.numero) as guia_ven"))
-        ->leftjoin('almacen.guia_ven_det','guia_ven_det.id_guia_ven_det','=','alm_prod_serie.id_guia_ven_det')
-        ->leftjoin('almacen.guia_ven','guia_ven.id_guia_ven','=','guia_ven_det.id_guia_ven')
-        ->leftjoin('comercial.com_cliente','com_cliente.id_cliente','=','guia_ven.id_cliente')
-        ->leftjoin('contabilidad.adm_contri as contri_cliente','contri_cliente.id_contribuyente','=','com_cliente.id_contribuyente')
-        ->leftjoin('almacen.tp_doc_almacen as tp_doc_ven','tp_doc_ven.id_tp_doc_almacen','=','guia_ven.id_tp_doc_almacen')
-        ->leftjoin('almacen.alm_almacen as alm_ven','alm_ven.id_almacen','=','guia_ven.id_almacen')
-        ->leftjoin('almacen.guia_com_det','guia_com_det.id_guia_com_det','=','alm_prod_serie.id_guia_com_det')
-        ->leftjoin('almacen.guia_com','guia_com.id_guia','=','guia_com_det.id_guia_com')
-        ->leftjoin('logistica.log_prove','log_prove.id_proveedor','=','guia_com.id_proveedor')
-        ->leftjoin('contabilidad.adm_contri as contri_prove','contri_prove.id_contribuyente','=','log_prove.id_contribuyente')
-        ->leftjoin('almacen.tp_doc_almacen as tp_doc_com','tp_doc_com.id_tp_doc_almacen','=','guia_com.id_tp_doc_almacen')
-        ->leftjoin('almacen.alm_almacen as alm_com','alm_com.id_almacen','=','guia_com.id_almacen')
-        ->join('almacen.alm_prod','alm_prod.id_producto','=','alm_prod_serie.id_prod')
-        ->where([['alm_prod_serie.estado','=',1],
-                 ['alm_prod.estado','=',1],
-                 $hasWhere])
-        ->orderBy('alm_prod_serie.serie')
-        ->get();
-        $output['data'] = $data;
-        return response()->json(($output));
-    }
+    // public function listar_kardex_serie($serie, $descripcion){
+    //     $hasWhere = [];
+    //     if ($serie !== 'null'){
+    //         $hasWhere = ['alm_prod_serie.serie','=',$serie];
+    //     }
+    //     else if ($descripcion !== 'null'){
+    //         $hasWhere = ['alm_prod.descripcion','like','%'.strtoupper($descripcion).'%'];
+    //     }
+    //     $data = DB::table('almacen.alm_prod_serie')
+    //     ->select('alm_prod_serie.*','alm_prod.descripcion',
+    //     'guia_com.fecha_emision as fecha_guia_com',
+    //     'guia_ven.fecha_emision as fecha_guia_ven',
+    //     'contri_cliente.razon_social as razon_social_cliente',
+    //     'contri_prove.razon_social as razon_social_prove',
+    //     'alm_com.descripcion as almacen_compra','alm_ven.descripcion as almacen_venta',
+    //     DB::raw("(tp_doc_com.abreviatura) || '-' || (guia_com.serie) || '-' || (guia_com.numero) as guia_com"),
+    //     DB::raw("(tp_doc_ven.abreviatura) || '-' || (guia_ven.serie) || '-' || (guia_ven.numero) as guia_ven"))
+    //     ->leftjoin('almacen.guia_ven_det','guia_ven_det.id_guia_ven_det','=','alm_prod_serie.id_guia_ven_det')
+    //     ->leftjoin('almacen.guia_ven','guia_ven.id_guia_ven','=','guia_ven_det.id_guia_ven')
+    //     ->leftjoin('comercial.com_cliente','com_cliente.id_cliente','=','guia_ven.id_cliente')
+    //     ->leftjoin('contabilidad.adm_contri as contri_cliente','contri_cliente.id_contribuyente','=','com_cliente.id_contribuyente')
+    //     ->leftjoin('almacen.tp_doc_almacen as tp_doc_ven','tp_doc_ven.id_tp_doc_almacen','=','guia_ven.id_tp_doc_almacen')
+    //     ->leftjoin('almacen.alm_almacen as alm_ven','alm_ven.id_almacen','=','guia_ven.id_almacen')
+    //     ->leftjoin('almacen.guia_com_det','guia_com_det.id_guia_com_det','=','alm_prod_serie.id_guia_com_det')
+    //     ->leftjoin('almacen.guia_com','guia_com.id_guia','=','guia_com_det.id_guia_com')
+    //     ->leftjoin('logistica.log_prove','log_prove.id_proveedor','=','guia_com.id_proveedor')
+    //     ->leftjoin('contabilidad.adm_contri as contri_prove','contri_prove.id_contribuyente','=','log_prove.id_contribuyente')
+    //     ->leftjoin('almacen.tp_doc_almacen as tp_doc_com','tp_doc_com.id_tp_doc_almacen','=','guia_com.id_tp_doc_almacen')
+    //     ->leftjoin('almacen.alm_almacen as alm_com','alm_com.id_almacen','=','guia_com.id_almacen')
+    //     ->join('almacen.alm_prod','alm_prod.id_producto','=','alm_prod_serie.id_prod')
+    //     ->where([['alm_prod_serie.estado','=',1],
+    //              ['alm_prod.estado','=',1],
+    //              $hasWhere])
+    //     ->orderBy('alm_prod_serie.serie')
+    //     ->get();
+    //     $output['data'] = $data;
+    //     return response()->json(($output));
+    // }
 
     public function listar_documentos_adicionales(){
         $data = DB::table('almacen.guia_com_prorrateo')
