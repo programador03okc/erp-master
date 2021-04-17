@@ -1091,6 +1091,7 @@ span.select2-selection {
 #listaMttoPendientes tbody td:last-child,
 #listaDetalleProrrateo tbody td:nth-last-child(1),
 #listaSaldos tbody td:nth-last-child(8),
+#listaSaldos tbody td:nth-last-child(7),
 #listaTransferenciasPorRecibir tbody td:nth-last-child(3),
 #listaTransferenciasPorRecibir tbody td:nth-last-child(4),
 #listaTransferenciasRecibidas tbody td:nth-last-child(8),
@@ -1154,8 +1155,7 @@ span.select2-selection {
 #listaDocsProrrateo tbody td:nth-last-child(12),
 #listaPromocion tbody td:nth-last-child(5),
 #despachosPendientes tbody td:nth-last-child(6),
-#despachosPendientes tbody td:nth-last-child(5),
-#listaSaldos tbody td:nth-last-child(9) {
+#despachosPendientes tbody td:nth-last-child(5) {
   background: #d8fcfc;
 }
 

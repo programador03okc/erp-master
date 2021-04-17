@@ -1498,12 +1498,12 @@ Route::group(['middleware' => ['auth']], function () {
 
 			Route::group(['as' => 'saldos.', 'prefix' => 'saldos'], function(){
 
-				Route::get('index', 'AlmacenController@view_saldos')->name('index');
-				Route::get('listar_saldos/{id}', 'AlmacenController@listar_saldos');
-				Route::get('listar_saldos_todo', 'AlmacenController@listar_saldos_todo');
-				Route::get('verRequerimientosReservados/{id}/{alm}', 'DistribucionController@verRequerimientosReservados');
-				Route::get('tipo_cambio_compra/{fecha}', 'AlmacenController@tipo_cambio_compra');
-				Route::get('listar-saldos-por-almacen', 'AlmacenController@listar_saldos_por_almacen');
+				Route::get('index', 'Almacen\ReportesController@view_saldos')->name('index');
+				Route::get('listar_saldos/{id}', 'Almacen\ReportesController@listar_saldos');
+				Route::get('listar_saldos_todo', 'Almacen\ReportesController@listar_saldos_todo');
+				Route::get('verRequerimientosReservados/{id}/{alm}', 'Almacen\ReportesController@verRequerimientosReservados');
+				Route::get('tipo_cambio_compra/{fecha}', 'Almacen\ReportesController@tipo_cambio_compra');
+				// Route::get('listar-saldos-por-almacen', 'Almacen\ReportesController@listar_saldos_por_almacen');
 
 			});
 
@@ -1577,8 +1577,8 @@ Route::group(['middleware' => ['auth']], function () {
 
 			Route::group(['as' => 'kardex-series.', 'prefix' => 'kardex-series'], function(){
 
-				Route::get('index', 'AlmacenController@view_kardex_series')->name('index');
-				Route::get('listar_kardex_serie/{serie}/{des}', 'AlmacenController@listar_kardex_serie');
+				Route::get('index', 'Almacen\ReportesController@view_kardex_series')->name('index');
+				Route::get('listar_kardex_serie/{serie}/{des}', 'Almacen\ReportesController@listar_kardex_serie');
 				Route::get('datos_producto/{id}', 'AlmacenController@datos_producto');
 				Route::get('mostrar_prods', 'AlmacenController@mostrar_prods');
 				Route::get('mostrar_prods_almacen/{id}', 'AlmacenController@mostrar_prods_almacen');
