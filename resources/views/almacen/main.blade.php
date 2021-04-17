@@ -115,7 +115,7 @@
         <div class="col-md-3">
             <div class="small-box bg-maroon">
                 <div class="icon">
-                    <i class="fas fa-exchange-alt"></i>
+                    <i class="fas fa-code-branch"></i>
                 </div>
                 <div class="inner">
                     <h3>{{$cantidad_transformaciones_pendientes}}</h3>
