@@ -103,22 +103,6 @@
                 </ul>
             </li>
             @endif
-            @if(Auth::user()->tieneSubModulo(44))
-            <li class="treeview">
-                <a href="#"><i class="fas fa-receipt"></i> Comprobantes
-                    <span class="pull-right-container">
-                    <i class="fa fa-angle-left pull-right"></i>
-                    </span>
-                </a>
-                <ul class="treeview-menu" >
-                    @if(Auth::user()->tieneAplicacion(120))
-                    <!-- <li><a href="/doc_compra"><i class="far fa-circle fa-xs"></i> Comprobante de compra</a></li> -->
-                    <li><a href="{{route('logistica.gestion-logistica.comprobantes.generar_comprobante')}}"><i class="far fa-circle fa-xs"></i> Documento de compra</a></li>
-                    <li><a href="{{route('logistica.gestion-logistica.comprobantes.lista_comprobante_compra')}}"><i class="far fa-circle fa-xs"></i> Reporte de comprobantes</a></li>
-                    @endif
-                </ul>
-            </li>
-            @endif
             @if(Auth::user()->tieneSubModulo(26))
             <li class="treeview">
                 <a href="#"><i class="fas fa-chart-bar"></i> Reportes

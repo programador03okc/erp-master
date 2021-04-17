@@ -1,5 +1,5 @@
 @extends('layout.main')
-@include('layout.menu_logistica')
+@include('layout.menu_almacen')
 @section('option')
     @include('layout.option')
 @endsection
@@ -9,8 +9,7 @@
 @endsection
 @section('breadcrumb')
 <ol class="breadcrumb">
-    <li><a href="{{route('logistica.index')}}"><i class="fas fa-tachometer-alt"></i> Logística y Almacenes</a></li>
-    <li>Compras</li>
+    <li><a href="{{route('almacen.index')}}"><i class="fas fa-tachometer-alt"></i> Almacenes</a></li>
     <li>Comprobantes</li>
     <li class="active">@yield('cabecera')</li>
 </ol>
