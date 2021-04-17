@@ -1,5 +1,5 @@
 @extends('layout.main')
-@include('layout.menu_logistica')
+@include('layout.menu_almacen')
 
 @section('cabecera')
 Saldos Actuales
@@ -11,7 +11,7 @@ Saldos Actuales
 
 @section('breadcrumb')
 <ol class="breadcrumb">
-  <li><a href="{{route('logistica.index')}}"><i class="fas fa-tachometer-alt"></i> Logística y Almacenes</a></li>
+  <li><a href="{{route('almacen.index')}}"><i class="fas fa-tachometer-alt"></i> Almacenes</a></li>
   <li>Reportes</li>
   <li class="active">@yield('cabecera')</li>
 </ol>
@@ -63,7 +63,7 @@ Saldos Actuales
                                     <th>Soles</th>
                                     <th>Dolar</th>
                                     <th>Costo Promedio</th> -->
-                                    <th>Almacén</th>
+                                    <th width="15%">Almacén</th>
                                 </tr>
                             </thead>
                             <tbody></tbody>

@@ -17,15 +17,6 @@ function mostrarSaldos(){
     }
 }
 
-// $("[name=todos_almacenes]").on( 'change', function() {
-//     if( $(this).is(':checked') ) {
-//         var url = 'listar_saldos_todo';
-//         listarSaldos(url);
-//     } else {
-//         mostrarSaldos();
-//     }
-// });
-
 function listarSaldos(url){
 
     var vardataTables = funcDatatables();
@@ -105,7 +96,7 @@ function verRequerimientosReservados(id_producto,id_almacen){
                 '<td><label class="lbl-codigo" title="Abrir Requerimiento" onClick="abrir_requerimiento('+element.id_requerimiento+')">'+element.codigo+'</label></td>'+
                 '<td>'+element.concepto+'</td>'+
                 '<td>'+element.almacen_descripcion+'</td>'+
-                '<td>'+element.cantidad+'</td>'+
+                '<td>'+(element.stock_comprometido!==null?element.cantidad:element.cantidad)+'</td>'+
                 '<td>'+element.nombre_corto+'</td>'+
                 '</tr>';
                 i++;
@@ -119,21 +110,21 @@ function verRequerimientosReservados(id_producto,id_almacen){
     });
 }
 
-function tipo_cambio(){
-    $.ajax({
-        type: 'GET',
-        url: 'tipo_cambio_compra/'+fecha_actual(),
-        dataType: 'JSON',
-        success: function(response){
-            console.log(response);
-            $('[name=tipo_cambio]').val(response);
-        }
-    }).fail( function( jqXHR, textStatus, errorThrown ){
-        console.log(jqXHR);
-        console.log(textStatus);
-        console.log(errorThrown);
-    });
-}
+// function tipo_cambio(){
+//     $.ajax({
+//         type: 'GET',
+//         url: 'tipo_cambio_compra/'+fecha_actual(),
+//         dataType: 'JSON',
+//         success: function(response){
+//             console.log(response);
+//             $('[name=tipo_cambio]').val(response);
+//         }
+//     }).fail( function( jqXHR, textStatus, errorThrown ){
+//         console.log(jqXHR);
+//         console.log(textStatus);
+//         console.log(errorThrown);
+//     });
+// }
 
 function abrir_requerimiento(id_requerimiento){
     // Abrir nuevo tab
