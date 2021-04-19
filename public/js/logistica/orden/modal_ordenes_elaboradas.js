@@ -28,7 +28,7 @@ function listarOrdenesElaboradas(){
                 {'data': 'moneda_simbolo'},
                 {'data': 'condicion'},
                 {'data': 'plazo_entrega'},
-                {'data': 'codigo_sede_empresa'},
+                {'data': 'descripcion_sede_empresa'},
                 {'data': 'direccion_destino'},
                 {'data': 'ubigeo_destino'},
                 {'data': 'estado_doc'}
