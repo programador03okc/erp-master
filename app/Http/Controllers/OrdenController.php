@@ -1069,7 +1069,7 @@ class OrdenController extends Controller
         $data = DB::table('logistica.log_ord_compra')
         ->select(
             'log_ord_compra.*',
-            'sis_sede.codigo as codigo_sede_empresa',
+            'sis_sede.descripcion as descripcion_sede_empresa',
             DB::raw("(dis_destino.descripcion) || ' - ' || (prov_destino.descripcion) || ' - ' || (dpto_destino.descripcion)  AS ubigeo_destino"),
             DB::raw("(CASE 
             WHEN log_ord_compra.id_condicion = 1 THEN log_cdn_pago.descripcion 
