@@ -1579,7 +1579,8 @@ Route::group(['middleware' => ['auth']], function () {
 			Route::group(['as' => 'kardex-series.', 'prefix' => 'kardex-series'], function(){
 
 				Route::get('index', 'Almacen\ReportesController@view_kardex_series')->name('index');
-				Route::get('listar_kardex_serie/{serie}/{des}', 'Almacen\ReportesController@listar_kardex_serie');
+				Route::get('listar_serie_productos/{serie}/{des}/{cod}/{part}', 'Almacen\ReportesController@listar_serie_productos');
+				Route::get('listar_kardex_serie/{serie}/{id_prod}', 'Almacen\ReportesController@listar_kardex_serie');
 				Route::get('datos_producto/{id}', 'AlmacenController@datos_producto');
 				Route::get('mostrar_prods', 'AlmacenController@mostrar_prods');
 				Route::get('mostrar_prods_almacen/{id}', 'AlmacenController@mostrar_prods_almacen');

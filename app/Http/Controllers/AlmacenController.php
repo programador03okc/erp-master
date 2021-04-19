@@ -585,14 +585,14 @@ class AlmacenController extends Controller
                 ->get();
         return $data;
     }
-    // public static function mostrar_almacenes_cbo(){
-    //     $data = DB::table('almacen.alm_almacen')
-    //         ->select('alm_almacen.id_almacen','alm_almacen.codigo','alm_almacen.descripcion')
-    //         ->where([['alm_almacen.estado', '=', 1]])
-    //             ->orderBy('codigo')
-    //             ->get();
-    //     return $data;
-    // }
+    public static function mostrar_almacenes_cbo(){
+        $data = DB::table('almacen.alm_almacen')
+            ->select('alm_almacen.id_almacen','alm_almacen.codigo','alm_almacen.descripcion')
+            ->where([['alm_almacen.estado', '=', 1]])
+                ->orderBy('codigo')
+                ->get();
+        return $data;
+    }
     public function cargar_almacenes($id_sede){
         $data = DB::table('almacen.alm_almacen')
         ->select('alm_almacen.*','sis_sede.descripcion as sede_descripcion',
@@ -4784,7 +4784,7 @@ class AlmacenController extends Controller
         $output['data'] = $nueva_data;
         return response()->json($output);
     }*/
-    
+    //Deshabilitar
     public function listar_saldos_por_almacen()
     {
         $data = DB::table('almacen.alm_item')
