@@ -2,7 +2,7 @@
 @include('layout.menu_almacen')
 
 @section('cabecera')
-Kardex de Series
+Búsqueda sensitiva de Series
 @endsection
 
 @section('estilos')
@@ -25,21 +25,24 @@ Kardex de Series
             <div class="col-md-12" style="padding-top:10px;padding-bottom:10px;">
 
                 <div class="row">
-                    <div class="col-md-5">
-                        <h5>Ingrese el Número de Serie</h5>
+                    <div class="col-md-2">
+                        <h5>Serie</h5>
                         <input type="text" class="form-control" name="serie" placeholder="Ingrese un Nro. de Serie..."/>
                     </div>
-                    <div class="col-md-7">
-                        <h5>Seleccione el producto</h5>
+                    <div class="col-md-2">
+                        <h5>Código</h5>
+                        <input type="text" class="form-control" name="codigo" placeholder="Ingrese un Código..."/>
+                    </div>
+                    <div class="col-md-2">
+                        <h5>Part-Number</h5>
+                        <input type="text" class="form-control" name="part_number" placeholder="Ingrese un Part Number..."/>
+                    </div>
+                    <div class="col-md-6">
+                        <h5>Descripción</h5>
                         <div class="input-group-okc">
                             <input class="oculto" name="id_producto"/>
                             <input type="text" class="form-control" placeholder="Ingrese la descripción de un producto..." 
                                 aria-describedby="basic-addon2" name="descripcion"/>
-                            {{-- <div class="input-group-append">
-                                <button type="button" class="input-group-text" id="basic-addon2" onClick="productoModal();">
-                                    <i class="fa fa-search"></i>
-                                </button>
-                            </div> --}}
                         </div>
                     </div>
                 </div>
@@ -48,17 +51,9 @@ Kardex de Series
                         <button type="button" class="btn btn-primary" data-toggle="tooltip" 
                             data-placement="bottom" title="Generar Kardex" 
                             onClick="listarKardexSeries();">Actualizar Kardex</button>
-                        {{-- <button type="submit" class="btn btn-success" data-toggle="tooltip" 
-                            data-placement="bottom" title="Exportar Kardex" 
-                            onClick="download_kardex_excel();">Excel</button> --}}
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-md-12">
-                        <table id ="datos_producto" class="table-group">
-                            <tbody></tbody>
-                        </table>
-                    </div>
                     <div class="col-md-12">
                         <table class="mytable table table-condensed table-bordered table-okc-view" 
                             id="listaKardexSeries">
@@ -66,15 +61,9 @@ Kardex de Series
                                 <tr>
                                     <th hidden></th>
                                     <th>Serie</th>
-                                    <th>Descripción</th>
-                                    <th>Fec.Ingreso</th>
-                                    <th>Doc.Ingreso</th>
-                                    <th>Proveedor</th>
-                                    <th>Alm.Ingreso</th>
-                                    <th>Fec.Salida</th>
-                                    <th>Doc.Salida</th>
-                                    <th>Cliente</th>
-                                    <th>Alm.Salida</th>
+                                    <th>Código</th>
+                                    <th>Part Number</th>
+                                    <th width="70%">Descripción</th>
                                 </tr>
                             </thead>
                             <tbody></tbody>
@@ -87,7 +76,7 @@ Kardex de Series
     </div>
     
 </div>
-@include('almacen.producto.productoModal')
+@include('almacen.reportes.modalKardexSerie')
 @endsection
 
 @section('scripts')
@@ -103,7 +92,6 @@ Kardex de Series
     <script src="{{ asset('template/plugins/select2/select2.min.js') }}"></script>
 
     <script src="{{ asset('js/almacen/reporte/kardex_series.js')}}"></script>
-    <script src="{{ asset('js/almacen/producto/productoModal.js')}}"></script>
     <script>
     $(document).ready(function(){
         seleccionarMenu(window.location);

@@ -585,14 +585,14 @@ class AlmacenController extends Controller
                 ->get();
         return $data;
     }
-    // public static function mostrar_almacenes_cbo(){
-    //     $data = DB::table('almacen.alm_almacen')
-    //         ->select('alm_almacen.id_almacen','alm_almacen.codigo','alm_almacen.descripcion')
-    //         ->where([['alm_almacen.estado', '=', 1]])
-    //             ->orderBy('codigo')
-    //             ->get();
-    //     return $data;
-    // }
+    public static function mostrar_almacenes_cbo(){
+        $data = DB::table('almacen.alm_almacen')
+            ->select('alm_almacen.id_almacen','alm_almacen.codigo','alm_almacen.descripcion')
+            ->where([['alm_almacen.estado', '=', 1]])
+                ->orderBy('codigo')
+                ->get();
+        return $data;
+    }
     public function cargar_almacenes($id_sede){
         $data = DB::table('almacen.alm_almacen')
         ->select('alm_almacen.*','sis_sede.descripcion as sede_descripcion',
@@ -3649,14 +3649,15 @@ class AlmacenController extends Controller
         ->get();
         return response()->json($series);
     }
-    public function listar_series_guia_ven($id_guia_ven_det){
+    public function listar_series_guia_ven($id_producto){
         $series = DB::table('almacen.alm_prod_serie')
         ->select('alm_prod_serie.*',
         DB::raw("(tp_doc_almacen.abreviatura) || '-' || (guia_com.serie) || '-' || (guia_com.numero) as guia_com"))
         ->join('almacen.guia_com_det','guia_com_det.id_guia_com_det','=','alm_prod_serie.id_guia_com_det')
         ->join('almacen.guia_com','guia_com.id_guia','=','guia_com_det.id_guia_com')
         ->join('almacen.tp_doc_almacen','tp_doc_almacen.id_tp_doc_almacen','=','guia_com.id_tp_doc_almacen')
-        ->where([['alm_prod_serie.id_guia_ven_det','=',$id_guia_ven_det],
+        ->where([['alm_prod_serie.id_prod','=',$id_producto],
+                 ['alm_prod_serie.id_guia_ven_det','=',null],
                  ['alm_prod_serie.estado','=',1]])
         ->get();
         return response()->json($series);
@@ -4784,7 +4785,7 @@ class AlmacenController extends Controller
         $output['data'] = $nueva_data;
         return response()->json($output);
     }*/
-    
+    //Deshabilitar
     public function listar_saldos_por_almacen()
     {
         $data = DB::table('almacen.alm_item')

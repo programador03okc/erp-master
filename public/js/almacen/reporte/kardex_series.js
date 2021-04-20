@@ -8,12 +8,17 @@ $(function(){
 function listarKardexSeries(){
     var serie = $('[name=serie]').val();
     var descripcion = $('[name=descripcion]').val();
-    console.log('serie:'+serie);
-    $('.dataTable').dataTable().fnDestroy();
+    var codigo = $('[name=codigo]').val();
+    var part_number = $('[name=part_number]').val();
 
-    if (serie == '' && descripcion == ''){
+    console.log('serie:'+serie);
+
+    if (serie == '' && codigo == '' && part_number == '' && descripcion == ''){
         alert('No ha ingresado ningún parametro de entrada!');
-    } else {
+    } 
+    else {
+        $('.dataTable').dataTable().fnDestroy();
+
         var vardataTables = funcDatatables();
         $('#listaKardexSeries').dataTable({
             'dom': vardataTables[1],
@@ -21,41 +26,67 @@ function listarKardexSeries(){
             'language' : vardataTables[0],
             'bDestroy': true,
             'retrieve': true,
-            'ajax': 'listar_kardex_serie/'+(serie !== '' ? serie : null)+'/'+(descripcion !== '' ? descripcion : null),
+            'ajax': 'listar_serie_productos/'+(serie !== '' ? serie : null)+'/'+(descripcion !== '' ? descripcion : null)
+            +'/'+(codigo !== '' ? codigo : null)+'/'+(part_number !== '' ? part_number : null),
             'columns': [
                 {'data': 'id_prod_serie'},
                 {'data': 'serie'},
+                {'data': 'codigo'},
+                {'data': 'part_number'},
                 {'data': 'descripcion'},
-                {'data': 'fecha_guia_com'},
-                {'data': 'guia_com'},
-                {'data': 'razon_social_prove'},
-                {'data': 'almacen_compra'},
-                {'data': 'fecha_guia_ven'},
-                {'data': 'guia_ven'},
-                {'data': 'razon_social_cliente'},
-                {'data': 'almacen_venta'},
             ],
             'columnDefs': [{ 'aTargets': [0], 'sClass': 'invisible'}],
         });
     }
 }
 
-// function download_kardex_excel(){
-//     var prod = $('[name=id_producto]').val();
-//     var fini = $('[name=fecha_inicio]').val();
-//     var ffin = $('[name=fecha_fin]').val();
-//     var alm = $('[name=almacen]').val();
-//     console.log(prod+'/'+alm+'/'+fini+'/'+ffin);
-//     window.open('kardex_detallado/'+prod+'/'+alm+'/'+fini+'/'+ffin);
-// }
+$('#listaKardexSeries tbody').on("click","tr", function(){
+    var data = $('#listaKardexSeries').DataTable().row($(this)).data();
+    console.log(data);
+    $('#modal-modalKardexSerie').modal({
+        show: true
+    });
+    $('#serie').text(data.serie);
+    $('#codigo').text(data.codigo);
+    $('#part_number').text(data.part_number);
+    $('#descripcion').text(data.descripcion);
+    listar_kardex_serie(data.serie, data.id_prod);
+});
 
-function datos_producto(id_producto){
+function listar_kardex_serie(serie, id_prod){
     $.ajax({
         type: 'GET',
-        url: 'datos_producto/'+id_producto,
+        url: 'listar_kardex_serie/'+serie+'/'+id_prod,
         dataType: 'JSON',
         success: function(response){
-            $('#datos_producto tbody').html(response);
+            console.log(response);
+            var html = '';
+            response.forEach(element => {
+                html+=`<tr>
+                <td><span class="ver label label-success" data-id="${element.id_prod}" >I</span></td>
+                <td>${element.ingreso_codigo}</td>
+                <td>${element.almacen_compra}</td>
+                <td>${element.fecha_guia_com}</td>
+                <td>${element.guia_com}</td>
+                <td>${element.doc_com}</td>
+                <td>${element.razon_social_prove}</td>
+                <td>${element.operacion_compra}</td>
+                <td>${element.responsable_compra}</td>
+                </tr>
+                ${element.id_guia_ven_det!==null ?
+                `<tr>
+                <td><span class="ver label label-danger" data-id="${element.id_prod}" >S</span></td>
+                <td>${element.salida_codigo}</td>
+                <td>${element.almacen_venta}</td>
+                <td>${element.fecha_guia_ven}</td>
+                <td>${element.guia_ven}</td>
+                <td></td>
+                <td>${element.razon_social_cliente}</td>
+                <td>${element.operacion_venta}</td>
+                <td>${element.responsable_venta}</td>
+                </tr>` : ''}`;
+            });
+            $('#listaMovimientosSerie tbody').html(html);
         }
     }).fail( function( jqXHR, textStatus, errorThrown ){
         console.log(jqXHR);

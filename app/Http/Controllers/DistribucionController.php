@@ -465,34 +465,49 @@ class DistribucionController extends Controller
         foreach ($data as $det) {
 
             $series = [];
-            
-            if ($det->id_guia_oc_det !== null && $det->id_almacen_oc !== null &&
-                $det->id_almacen_oc == $det->id_almacen){
+            $exist = false;
 
-                $series = DB::table('almacen.alm_prod_serie')
-                    ->where('id_guia_com_det',$det->id_guia_oc_det)
-                    ->get();
+            foreach ($lista as $item){
+                if ($item['id_od_detalle'] == $det->id_od_detalle){
+                    $exist = true;
+                }
             }
-            else if ($det->id_guia_trans_det !== null && $det->id_almacen_tr !== null &&
-                     $det->id_almacen_tr == $det->id_almacen){
-                    
+
+            if (!$exist){
+                $id_guia_com_det = null;
+
+                if ($det->id_guia_oc_det !== null && $det->id_almacen_oc !== null &&
+                    $det->id_almacen_oc == $det->id_almacen)
+                    {
+                    $id_guia_com_det = $det->id_guia_oc_det;
                     $series = DB::table('almacen.alm_prod_serie')
-                        ->where('id_guia_com_det',$det->id_guia_trans_det)
+                        ->where('id_guia_com_det',$det->id_guia_oc_det)
                         ->get();
+                }
+                else if ($det->id_guia_trans_det !== null && $det->id_almacen_tr !== null &&
+                         $det->id_almacen_tr == $det->id_almacen)
+                        {
+                        $id_guia_com_det = $det->id_guia_trans_det;
+                        $series = DB::table('almacen.alm_prod_serie')
+                            ->where('id_guia_com_det',$det->id_guia_trans_det)
+                            ->get();
+                }
+    
+                array_push($lista, [
+                    'id_od_detalle' => $det->id_od_detalle,
+                    'id_detalle_requerimiento' => $det->id_detalle_requerimiento,
+                    'id_guia_com_det' => $id_guia_com_det,
+                    'id_producto' => $det->id_producto,
+                    'id_unidad_medida' => $det->id_unidad_medida,
+                    'codigo' => $det->codigo,
+                    'part_number' => $det->part_number,
+                    'descripcion' => $det->descripcion,
+                    'cantidad' => $det->cantidad,
+                    'abreviatura' => $det->abreviatura,
+                    'series' => $series
+                ]);
             }
 
-            array_push($lista, [
-                'id_od_detalle' => $det->id_od_detalle,
-                'id_detalle_requerimiento' => $det->id_detalle_requerimiento,
-                'id_producto' => $det->id_producto,
-                'id_unidad_medida' => $det->id_unidad_medida,
-                'codigo' => $det->codigo,
-                'part_number' => $det->part_number,
-                'descripcion' => $det->descripcion,
-                'cantidad' => $det->cantidad,
-                'abreviatura' => $det->abreviatura,
-                'series' => $series
-            ]);
         }
 
         return response()->json($lista);
