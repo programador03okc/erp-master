@@ -3649,14 +3649,15 @@ class AlmacenController extends Controller
         ->get();
         return response()->json($series);
     }
-    public function listar_series_guia_ven($id_guia_ven_det){
+    public function listar_series_guia_ven($id_producto){
         $series = DB::table('almacen.alm_prod_serie')
         ->select('alm_prod_serie.*',
         DB::raw("(tp_doc_almacen.abreviatura) || '-' || (guia_com.serie) || '-' || (guia_com.numero) as guia_com"))
         ->join('almacen.guia_com_det','guia_com_det.id_guia_com_det','=','alm_prod_serie.id_guia_com_det')
         ->join('almacen.guia_com','guia_com.id_guia','=','guia_com_det.id_guia_com')
         ->join('almacen.tp_doc_almacen','tp_doc_almacen.id_tp_doc_almacen','=','guia_com.id_tp_doc_almacen')
-        ->where([['alm_prod_serie.id_guia_ven_det','=',$id_guia_ven_det],
+        ->where([['alm_prod_serie.id_prod','=',$id_producto],
+                 ['alm_prod_serie.id_guia_ven_det','=',null],
                  ['alm_prod_serie.estado','=',1]])
         ->get();
         return response()->json($series);

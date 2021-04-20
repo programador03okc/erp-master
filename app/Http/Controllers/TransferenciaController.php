@@ -37,47 +37,6 @@ class TransferenciaController extends Controller
         return $data;
     }
 
-    // public function listar_transferencias_pendientes($destino){
-    //     $data = DB::table('almacen.trans')
-    //     ->select('trans.*','guia_ven.fecha_emision as fecha_guia',
-    //     DB::raw("(guia_ven.serie) || ' ' || (guia_ven.numero) as guia_ven"),
-    //     DB::raw("(guia_com.serie) || ' ' || (guia_com.numero) as guia_com"),
-    //     'alm_origen.descripcion as alm_origen_descripcion',
-    //     'alm_destino.descripcion as alm_destino_descripcion',
-    //     'usu_origen.nombre_corto as nombre_origen',
-    //     'usu_destino.nombre_corto as nombre_destino',
-    //     'usu_registro.nombre_corto as nombre_registro',
-    //     'adm_estado_doc.estado_doc','adm_estado_doc.bootstrap_color',
-    //     'guia_ven.id_guia_com as guia_ingreso_compra','mov_alm.id_mov_alm as id_salida',
-    //     'log_ord_compra.codigo as codigo_orden','alm_req.codigo as codigo_req',
-    //     'alm_req.concepto as concepto_req','req_directo.id_requerimiento as id_requerimiento_directo',
-    //     'req_directo.codigo as codigo_req_directo','req_directo.concepto as concepto_req_directo')
-    //     ->leftJoin('almacen.mov_alm','mov_alm.id_guia_ven','=','trans.id_guia_ven')
-    //     ->leftJoin('almacen.guia_ven','guia_ven.id_guia_ven','=','trans.id_guia_ven')
-    //     ->leftJoin('almacen.guia_com as guia_compra','guia_compra.id_guia','=','guia_ven.id_guia_com')
-    //     ->leftJoin('logistica.log_ord_compra', function($join)
-    //     {   $join->on('log_ord_compra.id_orden_compra', '=', 'guia_compra.id_oc');
-    //         $join->where('log_ord_compra.estado','!=', 7);
-    //     })
-    //     ->leftJoin('almacen.alm_req', function($join)
-    //     {   $join->on('alm_req.id_requerimiento', '=', 'log_ord_compra.id_requerimiento');
-    //         $join->where('alm_req.estado','!=', 7);
-    //     })
-    //     ->leftJoin('almacen.guia_com','guia_com.id_guia','=','trans.id_guia_com')
-    //     ->join('almacen.alm_almacen as alm_origen','alm_origen.id_almacen','=','trans.id_almacen_origen')
-    //     ->leftJoin('almacen.alm_almacen as alm_destino','alm_destino.id_almacen','=','trans.id_almacen_destino')
-    //     ->leftJoin('configuracion.sis_usua as usu_origen','usu_origen.id_usuario','=','trans.responsable_origen')
-    //     ->leftJoin('configuracion.sis_usua as usu_destino','usu_destino.id_usuario','=','trans.responsable_destino')
-    //     ->leftJoin('almacen.alm_req as req_directo','req_directo.id_requerimiento','=','trans.id_requerimiento')
-    //     ->join('configuracion.sis_usua as usu_registro','usu_registro.id_usuario','=','trans.registrado_por')
-    //     ->join('administracion.adm_estado_doc','adm_estado_doc.id_estado_doc','=','trans.estado')
-    //     ->where([['trans.id_almacen_destino','=',$destino],
-    //              ['trans.estado','!=',7],
-    //              ['trans.estado','!=',14]])
-    //     ->get();
-    //     $output['data'] = $data;
-    //     return response()->json($output);
-    // }
     public function listarTransferenciasPorRecibir($destino){
         if ($destino == '0'){
             $data = DB::table('almacen.trans')

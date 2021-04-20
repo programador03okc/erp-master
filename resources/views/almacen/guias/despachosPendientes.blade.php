@@ -91,7 +91,7 @@ Pendientes de Salida
 @include('almacen.distribucion.despachoDetalle')
 @include('almacen.guias.guia_ven_obs')
 @include('almacen.guias.guia_ven_cambio')
-@include('almacen.guias.guia_com_series')
+@include('almacen.guias.guia_ven_series')
 @endsection
 
 @section('scripts')
@@ -109,8 +109,8 @@ Pendientes de Salida
     <script src="{{ asset('js/almacen/guia/despachosPendientes.js')}}"></script>
     <script src="{{ asset('js/almacen/guia/guia_ven_create.js')}}"></script>
     <script src="{{ asset('js/almacen/distribucion/despachoDetalle.js')}}"></script>
-    <script src="{{ asset('js/almacen/guia/guia_com_det_series.js')}}"></script>
     <script src="{{ asset('js/almacen/guia/guia_ven_cambio.js')}}"></script>
+    <script src="{{ asset('js/almacen/guia/guia_ven_series.js')}}"></script>
     <script>
     $(document).ready(function(){
         seleccionarMenu(window.location);

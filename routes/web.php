@@ -1258,7 +1258,8 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('verDetalleDespacho/{id}', 'DistribucionController@verDetalleDespacho');
 				Route::get('imprimir_salida/{id}', 'AlmacenController@imprimir_salida');
 				Route::get('anular_orden_despacho/{id}', 'DistribucionController@anular_orden_despacho');
-
+				Route::get('listar_series_guia_ven/{id}', 'AlmacenController@listar_series_guia_ven');
+				
 			});
 
 			Route::group(['as' => 'guias-compra.', 'prefix' => 'guias-compra'], function(){
