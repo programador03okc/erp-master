@@ -118,16 +118,7 @@ function listar_detalle_orden(data){
         'data': data,
         'columns': [
             {'data': 'id_detalle_requerimiento'},
-            {'render':
-            function (data, type, row){
-                let checkbox =
-                '<input type="checkbox" name="checkIdDetalleOrden" data-id-detalle-orden="' +
-                row.id_detalle_requerimiento +
-                '" checked />'
-            return checkbox
-            }
-            },
-            {'data': 'codigo_item'},
+            {'data': 'part_number'},
             {'data': 'descripcion_producto'},
             {'data': 'cantidad_cotizada'},
             {'data': 'unidad_medida_cotizado'},

@@ -3082,7 +3082,7 @@ class LogisticaController extends Controller
         $data = DB::table('almacen.alm_item')
             ->select(
                 'alm_item.id_item',
-                'alm_item.codigo',
+                'alm_prod.codigo',
                 'alm_item.id_producto',
                 'alm_item.id_servicio',
                 'alm_item.id_equipo',
@@ -5250,9 +5250,9 @@ class LogisticaController extends Controller
 
                     // $email_destinatario= $this->get_email_usuario_por_rol('Logístico Compras', $id_sede, $id_empresa);
                     // $email_destinatario[]= $this->get_email_usuario_por_rol('Coordinador', $id_sede, $id_empresa);
-                    $email_destinatario[]= 'administracionventas@okcomputer.com.pe'; 
+                    // $email_destinatario[]= 'administracionventas@okcomputer.com.pe'; 
                     $email_destinatario[]= 'programador03@okcomputer.com.pe'; 
-                    $email_destinatario[]= 'programador01@okcomputer.com.pe'; 
+                    // $email_destinatario[]= 'programador01@okcomputer.com.pe'; 
                     $payload=[
                         'id_empresa'=>$req->id_empresa,
                         'email_destinatario'=>$email_destinatario,

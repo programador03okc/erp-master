@@ -15,7 +15,6 @@ rutaGenerarOrdenRequerimientoPDF
 ;
 
 var listCheckReq=[];
-var detalleRequerimientoSelected = [];
 var selectRequirementsToLink='';
 var linksToReqObjArray=[];
 var payload_orden=[];
@@ -158,7 +157,7 @@ function crearOrdenPorRequerimiento(obj){
 function crearOrdenCompra() {
     reqTrueList=[];
     itemsParaCompraList=[];
-    detalleRequerimientoSelected=[];
+    detalleOrdenList=[];
     limpiarTabla('ListaItemsParaComprar');
     if (listCheckReq.length > 0) {
         listCheckReq.forEach(element => {
@@ -180,7 +179,7 @@ function crearOrdenCompra() {
 function openModalCrearOrdenCompra() {
     reqTrueList=[];
     itemsParaCompraList=[];
-    detalleRequerimientoSelected=[];
+    detalleOrdenList=[];
     limpiarTabla('ListaItemsParaComprar');
     if (listCheckReq.length > 0) {
         listCheckReq.forEach(element => {
@@ -483,9 +482,9 @@ function selectItem(){
             'part_number': part_number,
             'categoria': categoria,
             'subcategoria': subcategoria,
-            'precio': null,
+            'precio_unitario': null,
             'id_moneda': 1,
-            'stock_comprometido': 0,
+            'stock_comprometido': null,
             'subtotal': 0,
             'unidad_medida': unidad_medida_item,
             'tiene_transformacion': false
@@ -1643,7 +1642,7 @@ function agregarItemsWithChecked(){
 
 function margeObjArrayToDetalleReqSelected(){
     let countChanges=0;
-    detalleRequerimientoSelected.forEach(drs => {
+    detalleOrdenList.forEach(drs => {
         linksToReqObjArray.forEach(ltr => {
             if(drs.id==ltr.id_nuevo_item){
                 countChanges+=1;
@@ -1651,13 +1650,13 @@ function margeObjArrayToDetalleReqSelected(){
             }
         });
     });
-    // console.log(detalleRequerimientoSelected);
+    // console.log(detalleOrdenList);
     if(countChanges>0){
         alert(`se vinculo con exito ${countChanges} item(s)`);
         $('#modal-vincular-item-requerimiento').modal('hide');
         linksToReqObjArray=[];
         payload_orden =get_header_orden_requerimiento();
-        payload_orden.detalle= detalleRequerimientoSelected;
+        payload_orden.detalle= detalleOrdenList;
         guardar_orden_requerimiento(payload_orden);
 
     }else{
@@ -1670,61 +1669,25 @@ function margeObjArrayToDetalleReqSelected(){
 
 
 
-function updateEstadoDetalleRequerimiento(id_detalle_requerimiento,estado){
+// function updateEstadoDetalleRequerimiento(id_detalle_requerimiento,estado){
 
-    return new Promise(function(resolve, reject) {
-    $.ajax({
-        type: 'PUT',
-        url:rutaActualizarEstadoDetalleRequerimiento+'/'+id_detalle_requerimiento+'/'+estado,
-        dataType: 'JSON',
-        success(response) {
-            resolve(response) // Resolve promise and go to then() 
-        },
-        error: function(err) {
-        reject(err) // Reject the promise and go to catch()
-        }
-        });
-    });
-}
+//     return new Promise(function(resolve, reject) {
+//     $.ajax({
+//         type: 'PUT',
+//         url:'actualizar-estado-detalle-requerimiento/'+id_detalle_requerimiento+'/'+estado,
+//         dataType: 'JSON',
+//         success(response) {
+//             resolve(response) // Resolve promise and go to then() 
+//         },
+//         error: function(err) {
+//         reject(err) // Reject the promise and go to catch()
+//         }
+//         });
+//     });
+// }
 
 
-function eliminarItemOrden(){
-    let codigoItemSelected= document.querySelector("div[id='modal-confirmar-eliminar-item'] div[class='modal-footer'] label[id='codigo_item']").textContent;
-    let descripcionItemSelected= document.querySelector("div[id='modal-confirmar-eliminar-item'] div[class='modal-footer'] label[id='descripcion_item']").textContent;
-    let rowSelected =document.querySelector("div[id='modal-confirmar-eliminar-item'] div[class='modal-footer'] label[id='row']").textContent;
-    let idRequerimientoSelected = document.querySelector("div[id='modal-confirmar-eliminar-item'] div[class='modal-footer'] label[id='id_requerimiento']").textContent;
-    let idDetalleRequerimientoSelected = document.querySelector("div[id='modal-confirmar-eliminar-item'] div[class='modal-footer'] label[id='id_detalle_requerimiento']").textContent;
-    let motivo = document.querySelector("div[id='modal-confirmar-eliminar-item'] textarea[name='motivo']").value;
 
-    var ask = confirm('Esta seguro que quiere anular el item '+codigoItemSelected+' '+descripcionItemSelected+' del requerimiento ?');
-    if (ask == true){
-
-        if(idDetalleRequerimientoSelected > 0){
-        // 
-            updateEstadoDetalleRequerimiento(idDetalleRequerimientoSelected,7).then(function(data) {
-                // Run this when your request was successful
-                console.log(data)
-                if(data.status ==200){
-                    eliminarItemDeObj(rowSelected,idDetalleRequerimientoSelected);
-                    afectarEstadoEliminadoFilaTablaListaDetalleOrden(rowSelected,motivo);
-                    alert('se anulo el item en el requerimiento');
-                }
-        
-            }).catch(function(err) {
-                // Run this when promise was rejected via reject()
-                console.log(err)
-            })
-        // 
-        }else{
-            eliminarItemDeObj(rowSelected,idDetalleRequerimientoSelected);
-            afectarEstadoEliminadoFilaTablaListaDetalleOrden(rowSelected,motivo);
-        }
-
-        
-    }else{
-        return false;
-    }
-}
 
 
 
@@ -1969,9 +1932,9 @@ function agregarItemATablaListaDetalleOrden(newItem){
 
     //actualizar id con number row a los nuevos item agregados
     let rowNumber = table.rows(i).nodes()[0].childNodes[5].children[0].dataset.row; 
-    detalleRequerimientoSelected.forEach((element,index) => {
+    detalleOrdenList.forEach((element,index) => {
         if(element.id == 0){
-            detalleRequerimientoSelected[index].id = parseInt(rowNumber);
+            detalleOrdenList[index].id = parseInt(rowNumber);
             
         }
     });

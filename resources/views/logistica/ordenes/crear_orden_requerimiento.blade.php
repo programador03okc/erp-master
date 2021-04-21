@@ -240,9 +240,9 @@
                     id="listaDetalleOrden" style="margin-bottom: 0px;">
                     <thead>
                         <tr>
-                            <th></th>
+                    
                             <th>REQ.</th>
-                            <th>COD. ITEM</th>
+                            <th>PART NUMBER</th>
                             <th>PRODUCTO</th>
                             <th>UNIDAD</th>
                             <th>CANTIDAD</th>
@@ -250,7 +250,12 @@
                             <th>STOCK COMPROMETIDO</th>
                             <th>CANTIDAD A COMPRAR</th>
                             <th>TOTAL</th>
-                            <th>ACCIÓN</th>
+                            <th>
+                            <center>
+                                <button type="button" class="btn btn-xs btn-success activation" onclick="catalogoProductosModal();" id="btn-add-producto" data-toggle="tooltip" data-placement="bottom" title="Agregar Detalle"><i class="fas fa-plus"></i> Producto
+                                </button>
+                            </center>
+                            </th>
                         </tr>
                     </thead>
                     <tbody></tbody>
@@ -285,6 +290,8 @@
     
     </form>
 </div>
+@include('logistica.requerimientos.modal_catalogo_items')
+
 @include('logistica.ordenes.modal_ordenes_elaboradas')
 @include('logistica.ordenes.modal_proveedor')
 @include('logistica.cotizaciones.add_proveedor')
@@ -296,7 +303,6 @@
 @include('logistica.ordenes.modal_ver_cuadro_costos')
 @include('logistica.ordenes.modal_documentos_vinculados')
 @include('logistica.requerimientos.modal_vincular_item_requerimiento')
-@include('logistica.ordenes.modal_confirmar_eliminar_item')
 @endsection
 
 @section('scripts')
@@ -311,6 +317,7 @@
     <script src="{{ asset('datatables/JSZip/jszip.min.js') }}"></script>
     <script src="{{ asset('template/plugins/select2/select2.min.js') }}"></script>
     <!-- <script src="{{('/js/logistica/generar_orden.js')}}"></script> -->
+    <script src="{{('/js/logistica/orden/modal_agregar_producto.js')}}"></script>
     <script src="{{('/js/logistica/orden/modal_ordenes_elaboradas.js')}}"></script>
     <script src="{{('/js/logistica/orden/modal_proveedor.js')}}"></script>
     <script src="{{('/js/logistica/add_proveedor.js')}}"></script>
@@ -321,6 +328,7 @@
 
  
     <script src="{{('/js/logistica/orden/crear_orden_requerimiento.js')}}"></script>
+    <!-- <script src="{{('/js/logistica/orden/orden_requerimiento.js')}}"></script> -->
     <script src="{{('/js/logistica/orden/anular_orden.js')}}"></script>
     <!-- <script src="{{('/js/logistica/crear_nuevo_producto.js')}}"></script> -->
     <script src="{{ asset('template/plugins/moment.min.js') }}"></script>

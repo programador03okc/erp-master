@@ -1116,3 +1116,22 @@ function vista_extendida(){
     let body=document.getElementsByTagName('body')[0];
     body.classList.add("sidebar-collapse"); 
 }
+
+
+function cambiarVisibilidadBtn(name,estado){
+    let actualClass= document.querySelector("button[id='"+name+"']").className;
+    let newclass='';
+    if(estado == 'ocultar'){
+        newclass = actualClass.concat(' invisible');
+        document.querySelector("button[id='"+name+"']").setAttribute('class',newclass);
+    }else if(estado =='mostrar'){
+
+        while (actualClass.search("invisible") >= 0) {
+            actualClass= actualClass.replace("invisible","");
+        }
+        newclass =actualClass;
+        document.querySelector("button[id='"+name+"']").setAttribute('class',newclass);
+
+
+    }
+}
