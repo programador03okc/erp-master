@@ -141,16 +141,7 @@ function loadDetailOrden(data){
         bDestroy: true,
         data:data,
         columns: [
-            {'render':
-                function (data, type, row, meta){
-                    if(row.estado == 7){
-                        return '<input type="checkbox" checked data-id-detalle-requerimiento="' + row.id_detalle_requerimiento + '"  disabled />';
-                    }else{
-                        return '<input type="checkbox" checked data-id-detalle-requerimiento="' + row.id_detalle_requerimiento + '" '+hasAttrDisabled+' />';
-
-                    }
-                }, 'name':'checkbox'
-            },
+ 
             {'render':
                 function (data, type, row, meta){
                     return row.codigo_requerimiento;
@@ -158,8 +149,8 @@ function loadDetailOrden(data){
             },
             {'render':
                 function (data, type, row, meta){
-                    return row.codigo_item;
-                }, 'name':'codigo_item'
+                    return row.part_number;
+                }, 'name':'part_number'
             },
             {'render':
                 function (data, type, row, meta){
@@ -180,9 +171,9 @@ function loadDetailOrden(data){
             {'render':
                 function (data, type, row, meta){
                     if(row.estado ==7){
-                        return '<input type="text" class="form-control activation" name="precio" data-row="'+(meta.row+1)+'" data-id_requerimiento="'+(row.id_requerimiento?row.id_requerimiento:0)+'" data-id_detalle_requerimiento="'+(row.id_detalle_requerimiento?row.id_detalle_requerimiento:0)+'" value="'+(row.precio_unitario?row.precio_unitario:"")+'" onChange="updateDetalleOrdenListPrecio(event);" style="width:70px;" disabled/>';
+                        return '<input type="text" class="form-control activation" name="precio" data-key="'+(row.id)+'" data-row="'+(meta.row+1)+'" data-id_requerimiento="'+(row.id_requerimiento?row.id_requerimiento:0)+'" data-id_detalle_requerimiento="'+(row.id_detalle_requerimiento?row.id_detalle_requerimiento:0)+'" value="'+(row.precio_unitario?row.precio_unitario:"")+'" onChange="updateDetalleOrdenListPrecio(event);" style="width:70px;" disabled/>';
                     }else{
-                        return '<input type="text" class="form-control activation" name="precio" data-row="'+(meta.row+1)+'" data-id_requerimiento="'+(row.id_requerimiento?row.id_requerimiento:0)+'" data-id_detalle_requerimiento="'+(row.id_detalle_requerimiento?row.id_detalle_requerimiento:0)+'" value="'+(row.precio_unitario?row.precio_unitario:"")+'" onChange="updateDetalleOrdenListPrecio(event);" style="width:70px;" '+hasAttrDisabled+'/>';
+                        return '<input type="text" class="form-control activation" name="precio" data-key="'+(row.id)+'" data-row="'+(meta.row+1)+'" data-id_requerimiento="'+(row.id_requerimiento?row.id_requerimiento:0)+'" data-id_detalle_requerimiento="'+(row.id_detalle_requerimiento?row.id_detalle_requerimiento:0)+'" value="'+(row.precio_unitario?row.precio_unitario:"")+'" onChange="updateDetalleOrdenListPrecio(event);" style="width:70px;" '+hasAttrDisabled+'/>';
                     }
                 } , 'name':'precio'
             },
@@ -199,17 +190,17 @@ function loadDetailOrden(data){
                 function (data, type, row, meta){
 
                     if(row.estado == 7){
-                        return '<input type="text" class="form-control activation" name="cantidad_a_comprar" data-row="'+(meta.row+1)+'" data-id_requerimiento="'+(row.id_requerimiento?row.id_requerimiento:0)+'" data-id_detalle_requerimiento="'+(row.id_detalle_requerimiento?row.id_detalle_requerimiento:0)+'"   onchange="updateDetalleOrdenListCantidadAComprar(event);" value="'+(row.cantidad?row.cantidad:'')+'" style="width:70px;" disabled />';
+                        return '<input type="text" class="form-control activation" name="cantidad_a_comprar" data-key="'+(row.id)+'" data-row="'+(meta.row+1)+'" data-id_requerimiento="'+(row.id_requerimiento?row.id_requerimiento:0)+'" data-id_detalle_requerimiento="'+(row.id_detalle_requerimiento?row.id_detalle_requerimiento:0)+'"   onchange="updateDetalleOrdenListCantidadAComprar(event);" value="'+(row.cantidad?row.cantidad:'')+'" style="width:70px;" disabled />';
                     }else{
                         // updateInObjCantidadAComprar((meta.row+1),(row.id_requerimiento),(row.id_detalle_requerimiento),(row.cantidad));
 
-                        return '<input type="text" class="form-control activation" name="cantidad_a_comprar" data-row="'+(meta.row+1)+'" data-id_requerimiento="'+(row.id_requerimiento?row.id_requerimiento:0)+'" data-id_detalle_requerimiento="'+(row.id_detalle_requerimiento?row.id_detalle_requerimiento:0)+'"   onchange="updateDetalleOrdenListCantidadAComprar(event);" value="'+(row.cantidad_a_comprar?row.cantidad_a_comprar:'')+'" style="width:70px;"'+hasAttrDisabled+'/>';
+                        return '<input type="text" class="form-control activation" name="cantidad_a_comprar" data-key="'+(row.id)+'" data-row="'+(meta.row+1)+'" data-id_requerimiento="'+(row.id_requerimiento?row.id_requerimiento:0)+'" data-id_detalle_requerimiento="'+(row.id_detalle_requerimiento?row.id_detalle_requerimiento:0)+'"   onchange="updateDetalleOrdenListCantidadAComprar(event);" value="'+(row.cantidad_a_comprar?row.cantidad_a_comprar:'')+'" style="width:70px;"'+hasAttrDisabled+'/>';
                     }
                 } , 'name':'cantidad_a_comprar'
             },
             {'render':
                 function (data, type, row, meta){
-                    return '<div name="subtotal" data-row="'+(meta.row+1)+'" data-id_requerimiento="'+(row.id_requerimiento?row.id_requerimiento:0)+'" data-id_detalle_requerimiento="'+(row.id_detalle_requerimiento?row.id_detalle_requerimiento:0)+'">'+(row.subtotal?((parseFloat(row.subtotal).toFixed(2))):'')+'</div>';
+                    return '<div name="subtotal" data-key="'+(row.id)+'" data-row="'+(meta.row+1)+'" data-id_requerimiento="'+(row.id_requerimiento?row.id_requerimiento:0)+'" data-id_detalle_requerimiento="'+(row.id_detalle_requerimiento?row.id_detalle_requerimiento:0)+'">'+(row.subtotal?((parseFloat(row.subtotal).toFixed(2))):'')+'</div>';
                 } , 'name':'subtotal'
             },
             {'render':
@@ -225,7 +216,7 @@ function loadDetailOrden(data){
                     }else{
                         action = `
                         <div class="btn-group btn-group-sm" role="group">
-                            <button type="button" class="btn btn-danger btn-sm activation" name="btnOpenModalEliminarItemOrden" title="Eliminar Item" data-row="${(meta.row+1)}" data-id_requerimiento="${(row.id_requerimiento?row.id_requerimiento:0)}" data-id_detalle_requerimiento="${(row.id_detalle_requerimiento?row.id_detalle_requerimiento:0)}"  onclick="openModalEliminarItemOrden(this);" ${hasAttrDisabled}>
+                            <button type="button" class="btn btn-danger btn-sm activation" name="btnOpenModalEliminarItemOrden" title="Eliminar Item" data-key="${(row.id)}" data-row="${(meta.row)}" data-id_requerimiento="${(row.id_requerimiento?row.id_requerimiento:0)}" data-id_detalle_requerimiento="${(row.id_detalle_requerimiento?row.id_detalle_requerimiento:0)}"  onclick="openModalEliminarItemOrden(this);" ${hasAttrDisabled}>
                             <i class="fas fa-trash fa-sm"></i>
                             </button>
                         </div>
@@ -247,17 +238,17 @@ function loadDetailOrden(data){
 
         },
         columnDefs: [
-            { width: '10px', targets: 0 },
+             
+            { width: '20px', targets: 0 },
             { width: '20px', targets: 1 },
-            { width: '20px', targets: 2 },
-            { width: '40px', targets: 3 },
-            { width: '50px', targets: 4 },
-            { width: '20px', targets: 5 ,sClass: 'invisible'},
-            { width: '15px', targets: 6 },
-            { width: '20px', targets: 7 , sClass: 'invisible'},
+            { width: '40px', targets: 2 },
+            { width: '50px', targets: 3 },
+            { width: '20px', targets: 4 ,sClass: 'invisible'},
+            { width: '15px', targets: 5 },
+            { width: '20px', targets: 6 , sClass: 'invisible'},
+            { width: '20px', targets: 7 },
             { width: '20px', targets: 8 },
-            { width: '20px', targets: 9 },
-            { width: '30px', targets: 10, sClass:'text-center' }
+            { width: '30px', targets: 9, sClass:'text-center' }
         ],
     
         order: [[1, "asc"]]
@@ -272,21 +263,19 @@ function loadDetailOrden(data){
 function updateDetalleOrdenListPrecio(event){
 
     let nuevoValor =event.target.value;
-    let idRequerimientoSelected= event.target.dataset.id_requerimiento;
+    let key= event.target.dataset.key;
     let idDetalleRequerimientoSelected = event.target.dataset.id_detalle_requerimiento;
     let rowNumberSelected = event.target.dataset.row;
  
     if(parseFloat(nuevoValor) >0){                
-        if(idRequerimientoSelected >0 && idDetalleRequerimientoSelected >0){
+       
             detalleOrdenList.forEach((element,index) => {
-                if(element.id_requerimiento == idRequerimientoSelected){
-                    if(element.id_detalle_requerimiento == idDetalleRequerimientoSelected){
+                if(element.id == key){
                         detalleOrdenList[index].precio_unitario = nuevoValor;
-                    }
                 }
             });
-        }
-        calcTotalDetalleOrden(idDetalleRequerimientoSelected,rowNumberSelected);
+        
+        calcTotalDetalleOrden(key);
     }
 }
 
@@ -294,44 +283,40 @@ function updateDetalleOrdenListCantidadAComprar(event){
     // console.log(detalleOrdenList);
 
     let nuevoValor =event.target.value;
-    let idRequerimientoSelected= event.target.dataset.id_requerimiento;
+    let key= event.target.dataset.key;
     let idDetalleRequerimientoSelected = event.target.dataset.id_detalle_requerimiento;
     let rowNumberSelected = event.target.dataset.row;
  
     if(parseFloat(nuevoValor) >0){                
-        if(idRequerimientoSelected >0 && idDetalleRequerimientoSelected >0){
             detalleOrdenList.forEach((element,index) => {
-                if(element.id_requerimiento == idRequerimientoSelected){
-                    if(element.id_detalle_requerimiento == idDetalleRequerimientoSelected){
+                if(element.id == key){
                         detalleOrdenList[index].cantidad_a_comprar = nuevoValor;
-                    }
+
                 }
             });
-        }
-        calcTotalDetalleOrden(idDetalleRequerimientoSelected,rowNumberSelected);
+    
+        calcTotalDetalleOrden(key);
     }
 }
 
 
-function calcTotalDetalleOrden(idDetalleRequerimientoSelected,rowNumberSelected){
+function calcTotalDetalleOrden(keySelected){
     let sizeInputTotal = document.querySelectorAll("div[name='subtotal']").length;
     for (let index = 0; index < sizeInputTotal; index++) {
-        let rowNumber = document.querySelectorAll("div[name='subtotal']")[index].dataset.row;
-        let idReq = document.querySelectorAll("div[name='subtotal']")[index].dataset.id_requerimiento;
-        if(rowNumber == rowNumberSelected){
+        let key = document.querySelectorAll("div[name='subtotal']")[index].dataset.key;
+        if(key == keySelected){
             let precio = document.querySelectorAll("input[name='precio']")[index].value?document.querySelectorAll("input[name='precio']")[index].value:0;
             let cantidad =document.querySelectorAll("input[name='cantidad_a_comprar']")[index].value;
             let subtotal = (parseFloat(precio) * parseFloat(cantidad)).toFixed(2);
             document.querySelectorAll("div[name='subtotal']")[index].textContent=subtotal;
-            if(rowNumberSelected >0 && idDetalleRequerimientoSelected >0){
+       
                 detalleOrdenList.forEach((element,index) => {
-                    if(element.id_requerimiento == idReq){
-                        if(element.id_detalle_requerimiento == idDetalleRequerimientoSelected){
+                    if(element.id == key){
                             detalleOrdenList[index].subtotal = subtotal;
-                        }
+                        
                     }
                 });
-            }
+            
         }
     }
     

@@ -858,6 +858,7 @@ class OrdenController extends Controller
                         $subtotal =+ $data->cantidad *  $data->precio_unitario;
                         // $total = $subtotal;
                         $detalle_requerimiento[] = [
+                            'id'                        => $data->id_detalle_requerimiento,
                             'id_detalle_requerimiento'  => $data->id_detalle_requerimiento,
                             'id_requerimiento'          => $data->id_requerimiento,
                             'codigo_requerimiento'      => $data->codigo_requerimiento,
@@ -1222,6 +1223,7 @@ class OrdenController extends Controller
 
         $detalle_orden_compra = DB::table('logistica.log_det_ord_compra')
         ->select(
+        'log_det_ord_compra.id_detalle_orden as id',
         'log_det_ord_compra.id_detalle_orden',
         'log_det_ord_compra.id_orden_compra',
         'alm_req.id_requerimiento',
@@ -1264,6 +1266,7 @@ class OrdenController extends Controller
     if(count($detalle_orden_compra)>0){
         foreach ($detalle_orden_compra as $data) {
             $detalle[] = [
+                'id' => $data->id,
                 'id_detalle_orden' => $data->id_detalle_orden,
                 'id_detalle_requerimiento' => $data->id_detalle_requerimiento,
                 'id_requerimiento' => $data->id_requerimiento,
@@ -2515,7 +2518,7 @@ class OrdenController extends Controller
             foreach($dataDetalle as $d) {
                 $allidReqList[]= $d['id_requerimiento'];
 
-                if($d['cantidad_a_comprar'] > 0){
+                if($d['cantidad_a_comprar'] > 0 && $d['estado'] != 7){
                     if($guardarEnRequerimiento == false){
                         DB::table('logistica.log_det_ord_compra')
                         ->insert([
@@ -2765,9 +2768,9 @@ class OrdenController extends Controller
             foreach($dataDetalle as $d) {
                 $allidReqList[]= $d['id_requerimiento'];
 
-                if($d['cantidad_a_comprar'] > 0){
+                if($d['cantidad_a_comprar'] > 0 && $d['estado'] > 0){
                     DB::table('logistica.log_det_ord_compra')
-                    ->where('log_det_ord_compra.id_orden_compra',$d['id_detalle_orden'])
+                    ->where('log_det_ord_compra.id_detalle_orden',$d['id_detalle_orden'])
                     ->update([
                         'id_orden_compra'=>$id_orden,
                         'id_item'=> ($d['id_item'] ? $d['id_item'] : null),
@@ -2776,9 +2779,27 @@ class OrdenController extends Controller
                         'cantidad'=> $d['cantidad_a_comprar'],
                         'id_unidad_medida'=> $d['id_unidad_medida'],
                         'precio'=> $d['precio_unitario'],
-                        'descripcion_adicional'=> $d['descripcion_adicional'],
+                        'descripcion_adicional'=> $d['descripcion_producto'],
                         'subtotal'=> $d['subtotal']?$d['subtotal']:0,
-                        'estado'=> 17
+                        'estado'=> $d['estado']?$d['estado']:17
+                    ]);
+                    
+
+                }
+
+                if($d['cantidad_a_comprar'] > 0 && $d['estado'] == 0){
+                    DB::table('logistica.log_det_ord_compra')
+                    ->insert([
+                        'id_orden_compra'=>$id_orden,
+                        'id_item'=> ($d['id_item'] ? $d['id_item'] : null),
+                        'id_producto'=> (isset($d['id_producto']) ? $d['id_producto'] : null),
+                        'id_detalle_requerimiento'=>  null,
+                        'cantidad'=> $d['cantidad_a_comprar'],
+                        'id_unidad_medida'=> $d['id_unidad_medida'],
+                        'precio'=> $d['precio_unitario'],
+                        'descripcion_adicional'=> $d['descripcion_producto'],
+                        'subtotal'=> $d['subtotal']?$d['subtotal']:0,
+                        'estado'=> 1
                     ]);
                     
 

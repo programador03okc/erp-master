@@ -147,7 +147,6 @@
 @include('logistica.cotizaciones.add_proveedor')
 @include('logistica.ordenes.ordenesModal')
 @include('logistica.requerimientos.modal_vincular_item_requerimiento')
-@include('logistica.ordenes.modal_confirmar_eliminar_item')
 @endsection
 
 @section('scripts')
@@ -166,7 +165,6 @@
     <script src="{{('/js/logistica/add_proveedor.js')}}"></script>
     <script src="{{('/js/logistica/orden/orden_requerimiento.js')}}"></script>
     <script src="{{('/js/logistica/orden/modal_items_para_compra.js')}}"></script>
-    <script src="{{('/js/logistica/orden/modal_orden_requerimiento.js')}}"></script>
     <script src="{{('/js/logistica/crear_nuevo_producto.js')}}"></script>
     <script src="{{ asset('template/plugins/moment.min.js') }}"></script>
 
