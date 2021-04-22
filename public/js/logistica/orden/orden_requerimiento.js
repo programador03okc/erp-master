@@ -701,10 +701,15 @@ function llenarTablaListaItemsRequerimientoParaAgregarItem(data){
 
 function guardarAtendidoConAlmacen(){
     var newItemsParaAtenderConAlmacenList = [];
-
+    var itemsBaseList = [];
+    itemsBaseList = itemsParaAtenderConAlmacenList.filter(function( obj ) {
+        return (obj.tiene_transformacion ==false);
+    });
+    // console.log(itemsBaseList);
     newItemsParaAtenderConAlmacenList = itemsParaAtenderConAlmacenList.filter(function( obj ) {
         return (obj.id_almacen_reserva >0) && (obj.cantidad_a_atender >0);
     });
+    // console.log(newItemsParaAtenderConAlmacenList);
     var hasCantidadNoPermitida = false;
     newItemsParaAtenderConAlmacenList.forEach(element => {
         if(element.cantidad_a_atender > element.cantidad){
@@ -713,12 +718,11 @@ function guardarAtendidoConAlmacen(){
         } 
     });
     if(hasCantidadNoPermitida== false){
-        // console.log(newItemsParaAtenderConAlmacenList);
         if(newItemsParaAtenderConAlmacenList.length >0){
             $.ajax({
                     type: 'POST',
                     url: rutaGuardarAtencionConAlmacen,
-                    data: {'lista_items':newItemsParaAtenderConAlmacenList},
+                    data: {'lista_items_reservar':newItemsParaAtenderConAlmacenList,'lista_items_base':itemsBaseList},
                     dataType: 'JSON',
                     success: function (response) {
                         // console.log(response);

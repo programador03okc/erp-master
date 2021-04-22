@@ -2259,10 +2259,10 @@ class LogisticaController extends Controller
 
 
         foreach($alm_det_req as $det_req){
-                if($det_req->estado == 27 ){
+                if($det_req->estado == '27' ){
                     $total_estado_almacen_parcial +=1;
                 }
-                if($det_req->estado == 28 ){
+                if($det_req->estado == '28' ){
                     $total_estado_almacen_total +=1;
                 }
         }

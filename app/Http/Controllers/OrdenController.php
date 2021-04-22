@@ -3246,17 +3246,26 @@ class OrdenController extends Controller
 
         try {
             DB::beginTransaction();
-
-            $data = $request->lista_items;
-            $id_requerimiento = $data[0]['id_requerimiento'];
-            $id_sede = $data[0]['id_sede'];
+            $estado =27;
+            $lista_items_reservar = $request->lista_items_reservar;
+            $total_lista_items_reservar = count($lista_items_reservar);
+            $lista_items_base = $request->lista_items_base;
+            $total_lista_items_base = count($lista_items_base);
+            $id_requerimiento = $lista_items_reservar[0]['id_requerimiento'];
+            $id_sede = $lista_items_reservar[0]['id_sede'];
             $updateDetReq=0;
-            foreach ($data as $det) {
+
+            if($total_lista_items_reservar==$total_lista_items_base){
+                $estado = 28; // Almacén Total
+            }else{
+                $estado = 27; // Almacén Parcial
+            }
+            foreach ($lista_items_reservar as $det) {
                 $updateDetReq += DB::table('almacen.alm_det_req')
                     ->where('id_detalle_requerimiento',$det['id_detalle_requerimiento'])
                     ->update(['stock_comprometido'=>$det['cantidad_a_atender'],
                     'id_almacen_reserva'=>$det['id_almacen_reserva']>0?$det['id_almacen_reserva']:null,
-                    'estado'=>27
+                    'estado'=>$estado
                     ]); 
             }
 
