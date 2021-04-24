@@ -9,7 +9,7 @@
                 <div class="row">
                     <div class="col-md-12 btn-group right" role="group" style="margin-bottom: 5px;">
                         <span id='group-inputGuardarAtendidoConAlmacen'>
-                            <button class="btn btn-success" type="button" id="btnGuardarAtendidoConAlmacen" onClick="guardarAtendidoConAlmacen();">
+                            <button class="btn btn-success" type="button" id="btnGuardarAtendidoConAlmacen" onClick="requerimientoPendienteView.guardarAtendidoConAlmacen();">
                                 <i class="fas fa-save"></i> Guardar
                             </button>
                         </span>

@@ -768,6 +768,7 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::post('guardar-producto', 'AlmacenController@guardar_producto')->name('guardar-producto');
 					Route::get('documentos-vinculados/{id_orden?}', 'OrdenController@documentosVinculadosOrden')->name('documentos-vinculados');
 					Route::post('lista_items-cuadro-costos-por-requerimiento', 'OrdenController@get_lista_items_cuadro_costos_por_id_requerimiento')->name('lista_items-cuadro-costos-por-requerimiento');
+					Route::post('lista_items-cuadro-costos-por-requerimiento-pendiente-compra', 'OrdenController@get_lista_items_cuadro_costos_por_id_requerimiento_pendiente_compra')->name('lista_items-cuadro-costos-por-requerimiento-pendiente-compra');
 					Route::post('buscar-item-catalogo', 'OrdenController@buscarItemCatalogo')->name('buscar-item-catalogo');
 					Route::get('grupo-select-item-para-compra', 'OrdenController@getGrupoSelectItemParaCompra')->name('grupo-select-item-para-compra');
 					Route::post('guardar-items-detalle-requerimiento', 'OrdenController@guardarItemsEnDetalleRequerimiento')->name('guardar-items-detalle-requerimiento'); 

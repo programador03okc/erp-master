@@ -35,7 +35,7 @@
                                                 <div class="col-md-4">
                                                     <h5>Empresa</h5>
                                                     <div style="display:flex;">
-                                                    <select class="form-control" id="id_empresa_select_req" onChange="handleChangeFilterReqByEmpresa(event);">
+                                                    <select class="form-control" id="id_empresa_select_req" onChange="requerimientoPendienteView.handleChangeFilterReqByEmpresa(event);">
                                                             <option value=null>Todas las Empresas</option>
                                                             @foreach ($empresas as $emp)
                                                                 <option value="{{$emp->id_empresa}}" data-url-logo="{{$emp->logo_empresa}}">{{$emp->razon_social}}</option>
@@ -46,14 +46,14 @@
                                                 <div class="col-md-3">
                                                     <h5>Sede</h5>
                                                     <div style="display:flex;">
-                                                    <select class="form-control" id="id_sede_select_req" onChange="handleChangeFilterReqBySede(event);" disabled>
+                                                    <select class="form-control" id="id_sede_select_req" onChange="requerimientoPendienteView.handleChangeFilterReqBySede(event);" disabled>
                                                             <option value="0">Elija una opción</option>
                                                         </select>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-3">
                                                     <h5>&nbsp;</h5>
-                                                        <input type="checkbox" id="incluir_sede" onchange="handleChangeIncluirSede(event)" /> Inlcuir Sede
+                                                        <input type="checkbox" id="incluir_sede" onchange="requerimientoPendienteView.handleChangeIncluirSede(event)" /> Inlcuir Sede
                                                 </div>
                                             </div>
                                             <table class="mytable table table-condensed table-bordered table-okc-view" 
@@ -160,44 +160,47 @@
     <script src="{{ asset('datatables/pdfmake/vfs_fonts.js') }}"></script>
     <script src="{{ asset('datatables/JSZip/jszip.min.js') }}"></script>
     <script src="{{ asset('template/plugins/select2/select2.min.js') }}"></script>
-    <!-- <script src="{{('/js/logistica/generar_orden.js')}}"></script> -->
-    <script src="{{('/js/logistica/proveedorModal.js')}}"></script>
+    <script src="{{('/js/logistica/orden/RequerimientoPendienteModel.js')}}"></script>
+    <script src="{{('/js/logistica/orden/RequerimientoPendienteView.js')}}"></script>
+    <script src="{{('/js/logistica/orden/RequerimientoPendienteController.js')}}"></script>
+    <script src="{{('/js/logistica/CustomTabla.js')}}"></script>
+    <!-- <script src="{{('/js/logistica/proveedorModal.js')}}"></script>
     <script src="{{('/js/logistica/add_proveedor.js')}}"></script>
     <script src="{{('/js/logistica/orden/orden_requerimiento.js')}}"></script>
     <script src="{{('/js/logistica/orden/modal_items_para_compra.js')}}"></script>
-    <script src="{{('/js/logistica/crear_nuevo_producto.js')}}"></script>
+    <script src="{{('/js/logistica/crear_nuevo_producto.js')}}"></script> -->
     <script src="{{ asset('template/plugins/moment.min.js') }}"></script>
 
     <script>
     $(document).ready(function(){
         seleccionarMenu(window.location);
-        inicializar(
-            "{{route('logistica.gestion-logistica.orden.por-requerimiento.requerimientos-pendientes')}}",
-            "{{route('logistica.gestion-logistica.orden.por-requerimiento.ordenes-en-proceso')}}",
-            "{{route('logistica.gestion-logistica.orden.por-requerimiento.revertir')}}",
-            "{{route('logistica.gestion-logistica.orden.por-requerimiento.actualizar-estado-orden')}}",
-            "{{route('logistica.gestion-logistica.orden.por-requerimiento.actualizar-estado-detalle-orden')}}",
-            "{{route('logistica.gestion-logistica.orden.por-requerimiento.actualizar-estado-detalle-requerimiento')}}",
-            "{{route('logistica.gestion-logistica.cotizacion.gestionar.select-sede-by-empresa')}}",
-            "{{route('logistica.gestion-logistica.orden.por-requerimiento.documentos-vinculados')}}",
-            "{{route('logistica.gestion-logistica.orden.por-requerimiento.tiene-items-para-compra')}}",
-            "{{route('logistica.gestion-logistica.orden.por-requerimiento.guardar-items-detalle-requerimiento')}}",
-            "{{route('logistica.gestion-logistica.orden.por-requerimiento.guardar-atencion-con-almacen')}}",
-            "{{route('logistica.gestion-logistica.orden.por-requerimiento.generar-orden-por-requerimiento-pdf')}}"
+        // inicializar(
+        //     "{{route('logistica.gestion-logistica.orden.por-requerimiento.requerimientos-pendientes')}}",
+        //     "{{route('logistica.gestion-logistica.orden.por-requerimiento.ordenes-en-proceso')}}",
+        //     "{{route('logistica.gestion-logistica.orden.por-requerimiento.revertir')}}",
+        //     "{{route('logistica.gestion-logistica.orden.por-requerimiento.actualizar-estado-orden')}}",
+        //     "{{route('logistica.gestion-logistica.orden.por-requerimiento.actualizar-estado-detalle-orden')}}",
+        //     "{{route('logistica.gestion-logistica.orden.por-requerimiento.actualizar-estado-detalle-requerimiento')}}",
+        //     "{{route('logistica.gestion-logistica.cotizacion.gestionar.select-sede-by-empresa')}}",
+        //     "{{route('logistica.gestion-logistica.orden.por-requerimiento.documentos-vinculados')}}",
+        //     "{{route('logistica.gestion-logistica.orden.por-requerimiento.tiene-items-para-compra')}}",
+        //     "{{route('logistica.gestion-logistica.orden.por-requerimiento.guardar-items-detalle-requerimiento')}}",
+        //     "{{route('logistica.gestion-logistica.orden.por-requerimiento.guardar-atencion-con-almacen')}}",
+        //     "{{route('logistica.gestion-logistica.orden.por-requerimiento.generar-orden-por-requerimiento-pdf')}}"
 
-            );
-        inicializarModalItemsParaCompra(
-            "{{route('logistica.gestion-logistica.orden.por-requerimiento.lista_items-cuadro-costos-por-requerimiento')}}",
-            "{{route('logistica.gestion-logistica.orden.por-requerimiento.buscar-item-catalogo')}}",
-            "{{route('logistica.gestion-logistica.orden.por-requerimiento.grupo-select-item-para-compra')}}",
-            "{{route('logistica.gestion-logistica.orden.por-requerimiento.guardar-items-detalle-requerimiento')}}"
-        );
+        //     );
+        // inicializarModalItemsParaCompra(
+        //     "{{route('logistica.gestion-logistica.orden.por-requerimiento.lista_items-cuadro-costos-por-requerimiento')}}",
+        //     "{{route('logistica.gestion-logistica.orden.por-requerimiento.buscar-item-catalogo')}}",
+        //     "{{route('logistica.gestion-logistica.orden.por-requerimiento.grupo-select-item-para-compra')}}",
+        //     "{{route('logistica.gestion-logistica.orden.por-requerimiento.guardar-items-detalle-requerimiento')}}"
+        // );
         // inicializarModalOrdenRequerimiento(
         //     "{{route('logistica.gestion-logistica.orden.por-requerimiento.detalle-requerimiento-orden')}}",
         //     "{{route('logistica.gestion-logistica.orden.por-requerimiento.guardar')}}"
 
         // );
-            tieneAccion('{{Auth::user()->tieneAccion(114)}}','{{Auth::user()->tieneAccion(115)}}');
+            // tieneAccion('{{Auth::user()->tieneAccion(114)}}','{{Auth::user()->tieneAccion(115)}}');
     });
     </script>
 @endsection

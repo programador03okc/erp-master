@@ -583,6 +583,107 @@ class OrdenController extends Controller
 
     }
 
+    public function get_lista_items_cuadro_costos_por_id_requerimiento_pendiente_compra(Request $request)
+    {
+        $requerimientoList = $request->requerimientoList;
+        $temp_data=[];
+        $data=[];
+
+        if(count($requerimientoList)>0){
+
+            $alm_req = DB::table('almacen.alm_req')
+            ->select('alm_req.id_cc')
+            ->whereIn('alm_req.id_requerimiento', $requerimientoList)
+            ->orderBy('alm_req.id_requerimiento', 'desc')
+            ->get();
+
+            $alm_det_req = DB::table('almacen.alm_det_req')
+            ->select('alm_det_req.stock_comprometido','alm_det_req.id_almacen_reserva','alm_det_req.id_cc_am_filas','alm_det_req.id_cc_venta_filas')
+            ->whereIn('alm_det_req.id_requerimiento', $requerimientoList)
+            ->orderBy('alm_det_req.id_detalle_requerimiento', 'desc')
+            ->get();
+
+    
+
+            foreach($alm_req as $element){
+                $temp_data[]=((new RequerimientoController)->get_detalle_cuadro_costos($element->id_cc)['data']);
+            }
+            $idAgregadosList=[];
+            if(count($temp_data)>0){
+                foreach($temp_data as $arr){
+                    foreach($arr as $value){
+                            foreach($alm_det_req as $det_req ){
+                                if( ($value->id == $det_req->id_cc_am_filas) || ($value->id == $det_req->id_cc_venta_filas) ){
+                                    $idAgregadosList[]= $value->id;
+                                    if(($value->cantidad > ($det_req->stock_comprometido>=0?$det_req->stock_comprometido:0)) && ($det_req->id_almacen_reserva > 0) ){
+                                        $data[]=[
+                                            'id'=> $value->id,
+                                            'id_cc_am'=> $value->id_cc_am,
+                                            'id_cc_am_filas'=> $value->id_cc_am_filas,
+                                            'cantidad'=> ($value->cantidad - ($det_req->stock_comprometido >0?$det_req->stock_comprometido:0)),
+                                            'comentario_producto_transformado'=> $value->comentario_producto_transformado, 
+                                            'descripcion'=> $value->descripcion, 
+                                            'descripcion_producto_transformado'=> $value->descripcion_producto_transformado,
+                                            'fecha_creacion'=> $value->fecha_creacion,
+                                            'flete_oc'=> $value->flete_oc,
+                                            'garantia'=> $value->garantia,
+                                            'id_autor'=> $value->id_autor,
+                                            'nombre_autor'=> $value->nombre_autor,
+                                            'part_no'=> $value->part_no, 
+                                            'part_no_producto_transformado'=> $value->part_no_producto_transformado,
+                                            'proveedor_seleccionado'=> $value->proveedor_seleccionado, 
+                                            'pvu_oc'=> $value->pvu_oc,
+                                            'razon_social_proveedor'=> $value->razon_social_proveedor,
+                                            'ruc_proveedor'=> $value->ruc_proveedor
+                                        ];
+                                            
+                                    }
+
+                                }
+
+                        }
+                    }
+                }
+
+                foreach($temp_data as $arr){
+                    foreach($arr as $value){
+                        if(in_array($value->id,$idAgregadosList,true)==false){
+                            $data[]=[
+                                'id'=> $value->id,
+                                'id_cc_am'=> $value->id_cc_am,
+                                'id_cc_am_filas'=> $value->id_cc_am_filas,
+                                'cantidad'=> ($value->cantidad - ($det_req->stock_comprometido >0?$det_req->stock_comprometido:0)),
+                                'comentario_producto_transformado'=> $value->comentario_producto_transformado, 
+                                'descripcion'=> $value->descripcion, 
+                                'descripcion_producto_transformado'=> $value->descripcion_producto_transformado,
+                                'fecha_creacion'=> $value->fecha_creacion,
+                                'flete_oc'=> $value->flete_oc,
+                                'garantia'=> $value->garantia,
+                                'id_autor'=> $value->id_autor,
+                                'nombre_autor'=> $value->nombre_autor,
+                                'part_no'=> $value->part_no, 
+                                'part_no_producto_transformado'=> $value->part_no_producto_transformado,
+                                'proveedor_seleccionado'=> $value->proveedor_seleccionado, 
+                                'pvu_oc'=> $value->pvu_oc,
+                                'razon_social_proveedor'=> $value->razon_social_proveedor,
+                                'ruc_proveedor'=> $value->ruc_proveedor
+                            ];
+                        }
+                    }
+                }
+                $status = 200;
+
+            }else{
+                $status = 204;
+            }
+        }
+
+        $output=['status'=>$status, 'data'=>$data];
+
+        return response()->json($output);
+
+    }
+
     public function tieneItemsParaCompra(Request $request ){
         $requerimientoList = $request->requerimientoList;
         $tieneItems=false;
@@ -610,7 +711,7 @@ class OrdenController extends Controller
         'alm_und_medida.descripcion AS unidad_medida'
 
         )
-        ->where([['alm_det_req.tiene_transformacion',false],['alm_det_req.estado',1]])
+        ->where([['alm_det_req.tiene_transformacion',false],['alm_det_req.id_almacen_reserva',null]])
         ->whereIn('alm_det_req.id_requerimiento',$requerimientoList)
         ->get();
 
