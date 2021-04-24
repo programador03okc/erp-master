@@ -527,14 +527,6 @@ class RequerimientoPendienteView {
         return html;
     }
 
-    cleanPartNumbreCharacters(data){
-        data.forEach((element,index )=> {
-            if(element.part_no !=null || element.part_no != undefined){
-                data[index].part_no =requerimientoPendienteCtrl.cleanCharacterReference(element.part_no) ;
-            }
-        });
-        return data;
-    }
 
     llenarTablaDetalleCuadroCostos(data){
         var dataTableListaModalDetalleCuadroCostos = $('#ListaModalDetalleCuadroCostos').DataTable({

@@ -209,7 +209,7 @@ class RequerimientoPendienteCtrl{
 
        return requerimientoPendienteModel.getDataListaItemsCuadroCostosPorIdRequerimientoPendienteCompra(reqTrueList).then(function(response) {
             if (response.status == 200) {
-                let detalleItemsParaCompraCCPendienteCompra =  requerimientoPendienteView.cleanPartNumbreCharacters(response.data);
+                let detalleItemsParaCompraCCPendienteCompra =  requerimientoPendienteCtrl.cleanPartNumbreCharacters(response.data);
                 requerimientoPendienteView.llenarTablaDetalleCuadroCostos(detalleItemsParaCompraCCPendienteCompra);
             }
         }).catch(function(err) {
