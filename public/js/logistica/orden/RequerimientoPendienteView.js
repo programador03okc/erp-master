@@ -330,26 +330,9 @@ class RequerimientoPendienteView {
 
     // Agregar item base
     openModalAgregarItemBase(obj){
-        requerimientoPendienteCtrl.openModalAgregarItemBase(obj).then(function(res) {
-            requerimientoPendienteView.componerTdItemsParaCompra(res.data,res.categoria,res.subcategoria,res.clasificacion,res.moneda,res.unidad_medida);
-            // itemsParaCompraList=res;
-
+            requerimientoPendienteCtrl.openModalAgregarItemBase(obj);
             requerimientoPendienteCtrl.getDataListaItemsCuadroCostosPorIdRequerimiento();
-            requerimientoPendienteCtrl.getDataListaItemsCuadroCostosPorIdRequerimientoPendienteCompra().then(function(response) {
-                if (response.status == 200) {
-                    let detalleItemsParaCompraCCPendienteCompra =  requerimientoPendienteView.cleanPartNumbreCharacters(response.data);
-                    requerimientoPendienteView.llenarTablaDetalleCuadroCostos(detalleItemsParaCompraCCPendienteCompra);
-                }
-            }).catch(function(err) {
-                console.log(err)
-            })
-
-
-        }).catch(function(err) {
-            console.log(err)
-        })
-
-
+            requerimientoPendienteCtrl.getDataListaItemsCuadroCostosPorIdRequerimientoPendienteCompra();
     }
 
 

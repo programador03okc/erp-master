@@ -177,7 +177,13 @@ class RequerimientoPendienteCtrl{
             backdrop: 'static'
         });
 
-        return requerimientoPendienteModel.tieneItemsParaCompra(reqTrueList);
+        
+        return requerimientoPendienteModel.tieneItemsParaCompra(reqTrueList).then(function(res) {
+            itemsParaCompraList= res.data;
+            requerimientoPendienteView.componerTdItemsParaCompra(res.data,res.categoria,res.subcategoria,res.clasificacion,res.moneda,res.unidad_medida);
+        }).catch(function(err) {
+            console.log(err)
+        })
 
     }
 
@@ -200,7 +206,15 @@ class RequerimientoPendienteCtrl{
     }
 
     getDataListaItemsCuadroCostosPorIdRequerimientoPendienteCompra(){
-        return requerimientoPendienteModel.getDataListaItemsCuadroCostosPorIdRequerimientoPendienteCompra(reqTrueList);
+
+       return requerimientoPendienteModel.getDataListaItemsCuadroCostosPorIdRequerimientoPendienteCompra(reqTrueList).then(function(response) {
+            if (response.status == 200) {
+                let detalleItemsParaCompraCCPendienteCompra =  requerimientoPendienteView.cleanPartNumbreCharacters(response.data);
+                requerimientoPendienteView.llenarTablaDetalleCuadroCostos(detalleItemsParaCompraCCPendienteCompra);
+            }
+        }).catch(function(err) {
+            console.log(err)
+        })
     }
 
     guardarItemParaCompraEnCatalogo(obj,indice){

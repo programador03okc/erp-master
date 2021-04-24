@@ -126,8 +126,6 @@ class RequerimientoPendienteModel {
                 url:  `tiene-items-para-compra`,
                 dataType: 'JSON',
                 success(response) {
-                    // console.log(response);
-                    itemsParaCompraList=response;
 
                     if (dataSelect.length > 0) {
                         resolve({'data':response,
