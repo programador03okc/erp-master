@@ -164,12 +164,7 @@ class RequerimientoPendienteCtrl{
     }
 
     // Agregar item base
-    openModalAgregarItemBase(obj){
-        let id_requerimiento = obj.dataset.idRequerimiento;
-        reqTrueList=[id_requerimiento];
-        itemsParaCompraList=[];
-
-
+    openModalAgregarItemBase(){
         this.limpiarTabla('ListaItemsParaComprar');
 
         $('#modal-agregar-items-para-compra').modal({
@@ -177,14 +172,28 @@ class RequerimientoPendienteCtrl{
             backdrop: 'static'
         });
 
+    }
+
+    tieneItemsParaCompra(obj){
+        let id_requerimiento = obj.dataset.idRequerimiento;
+        reqTrueList=[id_requerimiento];
+        itemsParaCompraList=[];
         
         return requerimientoPendienteModel.tieneItemsParaCompra(reqTrueList).then(function(res) {
             itemsParaCompraList= res.data;
+            if(itemsParaCompraList.length >0){
+                //validar y habilitar boton guardar
+                // requerimientoPendienteCtrl.validarObjItemsParaCompra();
+
+            }
             requerimientoPendienteView.componerTdItemsParaCompra(res.data,res.categoria,res.subcategoria,res.clasificacion,res.moneda,res.unidad_medida);
+            if(res.tiene_total_items_agregados==true){
+                requerimientoPendienteView.totalItemsAgregadosParaCompraCompletada();
+            }
+
         }).catch(function(err) {
             console.log(err)
         })
-
     }
 
     cleanPartNumbreCharacters(data){
@@ -209,8 +218,12 @@ class RequerimientoPendienteCtrl{
 
        return requerimientoPendienteModel.getDataListaItemsCuadroCostosPorIdRequerimientoPendienteCompra(reqTrueList).then(function(response) {
             if (response.status == 200) {
+
                 let detalleItemsParaCompraCCPendienteCompra =  requerimientoPendienteCtrl.cleanPartNumbreCharacters(response.data);
                 requerimientoPendienteView.llenarTablaDetalleCuadroCostos(detalleItemsParaCompraCCPendienteCompra);
+                // if(response.tiene_total_items_agregados==true){
+                //     requerimientoPendienteView.totalItemsAgregadosParaCompraCompletada();
+                // }
             }
         }).catch(function(err) {
             console.log(err)
@@ -411,44 +424,22 @@ class RequerimientoPendienteCtrl{
             
         });
     }
-    validarObjItemsParaCompra(){
-        infoStateInput = [];
-        if ((itemsParaCompraList).length > 0) {
-            console.log((itemsParaCompraList));
-            (itemsParaCompraList).forEach(element => {
-                if (element.id_producto == '' || element.id_producto == null) {
-                    infoStateInput.push('Guardar item');
-                }
-                // if (element.id_categoria == '' || element.id_categoria == null) {
-                //     infoStateInput.push('Completar Categoría');
-                // }
-                // if (element.id_subcategoria == '' || element.id_subcategoria == null) {
-                //     infoStateInput.push('Completar Subcategoría');
-                // }
-                // if (element.id_clasif == '' || element.id_clasif == null) {
-                //     infoStateInput.push('Completar Clasificación');
-                // }
-                if (element.id_unidad_medida == '' || element.id_unidad_medida == null) {
-                    infoStateInput.push('Completar Unidad de Medida');
-                }
-                if (element.cantidad == '' || element.cantidad == null) {
-                    infoStateInput.push('Completar Cantidad');
-                }
-    
+
+ 
+
+    guardarItemsEnDetalleRequerimiento(){
+        if(reqTrueList.length ==1){
+            requerimientoPendienteCtrl.guardarMasItemsAlDetalleRequerimiento(reqTrueList,itemsParaCompraList).then(function (response) {
+                    RequerimientoPendienteView.agregarItemsBaseParaCompraFinalizado(response.status);
+            }).catch(function (err) {
+                console.log(err)
             });
-    
-            if (infoStateInput.length > 0) {
-    
-                document.querySelector("div[id='modal-agregar-items-para-compra'] button[id='btnIrAGuardarItemsEnDetalleRequerimiento']").setAttribute('title', 'Falta: ' + infoStateInput.join());
-                document.querySelector("div[id='modal-agregar-items-para-compra'] button[id='btnIrAGuardarItemsEnDetalleRequerimiento']").setAttribute('disabled', true);
-            } else {
-                document.querySelector("div[id='modal-agregar-items-para-compra'] button[id='btnIrAGuardarItemsEnDetalleRequerimiento']").setAttribute('title', 'Siguiente');
-                document.querySelector("div[id='modal-agregar-items-para-compra'] button[id='btnIrAGuardarItemsEnDetalleRequerimiento']").removeAttribute('disabled');
-    
-            }
+
+        }else{
+            alert("Lo sentimos, La implementación para generar orden mas de un requerimiento aun no esta completa, Seleccione solo un requerimiento");
         }
     }
-
+ 
     // ver detalle cuadro de costos
     openModalCuadroCostos(obj){
         let id_requerimiento_seleccionado = obj.dataset.idRequerimiento;

@@ -128,7 +128,8 @@ class RequerimientoPendienteModel {
                 success(response) {
 
                     if (dataSelect.length > 0) {
-                        resolve({'data':response,
+                        resolve({'data':response.det_req,
+                                'tiene_total_items_agregados':response.tiene_total_items_agregados,
                                 'categoria':dataSelect[0].categoria,
                                 'subcategoria':dataSelect[0].subcategoria,
                                 'clasificacion': dataSelect[0].clasificacion,
@@ -140,7 +141,8 @@ class RequerimientoPendienteModel {
                             if (res.length > 0) {
                                 dataSelect = res;
                 
-                                resolve({'data':response,
+                                resolve({'data':response.det_req,
+                                'tiene_total_items_agregados':response.tiene_total_items_agregados,
                                 'categoria':res[0].categoria,
                                 'subcategoria':res[0].subcategoria,
                                 'clasificacion': res[0].clasificacion,
@@ -186,6 +188,23 @@ class RequerimientoPendienteModel {
                 type: 'POST',
                 url: `lista_items-cuadro-costos-por-requerimiento-pendiente-compra`,
                 data: { 'requerimientoList': reqTrueList },
+                dataType: 'JSON',
+                success(response) {
+                    resolve(response) // Resolve promise and go to then() 
+                },
+                error: function (err) {
+                    reject(err) // Reject the promise and go to catch()
+                }
+            });
+        });
+    }
+
+    guardarMasItemsAlDetalleRequerimiento(id_requerimiento_list,item_list){
+        return new Promise(function (resolve, reject) {
+            $.ajax({
+                type: 'POST',
+                url: `guardar-items-detalle-requerimiento`,
+                data: { 'id_requerimiento_list': id_requerimiento_list, 'items':item_list },
                 dataType: 'JSON',
                 success(response) {
                     resolve(response) // Resolve promise and go to then() 

@@ -588,6 +588,7 @@ class OrdenController extends Controller
         $requerimientoList = $request->requerimientoList;
         $temp_data=[];
         $data=[];
+        $totalItemsAgregadosADetalleRequerimiento=null;
 
         if(count($requerimientoList)>0){
 
@@ -604,10 +605,13 @@ class OrdenController extends Controller
             ->get();
 
     
+            $cantidadItemsRequerimiento= count($alm_det_req);
 
             foreach($alm_req as $element){
                 $temp_data[]=((new RequerimientoController)->get_detalle_cuadro_costos($element->id_cc)['data']);
             }
+            $cantidadItemsDetalleCuadroCosto= count($temp_data[0]);
+
             $idAgregadosList=[];
             if(count($temp_data)>0){
                 foreach($temp_data as $arr){
@@ -676,9 +680,16 @@ class OrdenController extends Controller
             }else{
                 $status = 204;
             }
+
+            if($cantidadItemsRequerimiento == $cantidadItemsDetalleCuadroCosto){
+                $totalItemsAgregadosADetalleRequerimiento=true;
+            }else{
+                $totalItemsAgregadosADetalleRequerimiento=false;
+
+            }
         }
 
-        $output=['status'=>$status, 'data'=>$data];
+        $output=['status'=>$status, 'data'=>$data, 'tiene_total_items_agregados'=>$totalItemsAgregadosADetalleRequerimiento];
 
         return response()->json($output);
 
@@ -687,6 +698,8 @@ class OrdenController extends Controller
     public function tieneItemsParaCompra(Request $request ){
         $requerimientoList = $request->requerimientoList;
         $tieneItems=false;
+        $totalItemsAgregadosADetalleRequerimiento=null;
+
         $alm_det_req = DB::table('almacen.alm_det_req')
         ->rightJoin('almacen.alm_item', 'alm_item.id_item', '=', 'alm_det_req.id_item')
         ->leftJoin('almacen.alm_prod', 'alm_item.id_producto', '=', 'alm_prod.id_producto')
@@ -715,10 +728,39 @@ class OrdenController extends Controller
         ->whereIn('alm_det_req.id_requerimiento',$requerimientoList)
         ->get();
 
+
+        $alm_req = DB::table('almacen.alm_req')
+        ->select('alm_req.id_cc')
+        ->whereIn('alm_req.id_requerimiento', $requerimientoList)
+        ->orderBy('alm_req.id_requerimiento', 'desc')
+        ->get();
+
+        $alm_det_req_agregados = DB::table('almacen.alm_det_req')
+        ->select('alm_det_req.stock_comprometido','alm_det_req.id_almacen_reserva','alm_det_req.id_cc_am_filas','alm_det_req.id_cc_venta_filas')
+        ->whereIn('alm_det_req.id_requerimiento', $requerimientoList)
+        ->orderBy('alm_det_req.id_detalle_requerimiento', 'desc')
+        ->get();
+
+            $cantidadItemsRequerimiento= count($alm_det_req_agregados);
+
+            foreach($alm_req as $element){
+                $temp_data[]=((new RequerimientoController)->get_detalle_cuadro_costos($element->id_cc)['data']);
+            }
+            $cantidadItemsDetalleCuadroCosto= count($temp_data[0]);
+
+            if($cantidadItemsRequerimiento == $cantidadItemsDetalleCuadroCosto){
+                $totalItemsAgregadosADetalleRequerimiento=true;
+            }else{
+                $totalItemsAgregadosADetalleRequerimiento=false;
+
+            }
+
         // if(count($alm_det_req)>0){
         //     $tieneItems=true;
         // }
-        return response()->json($alm_det_req);
+        $output=['det_req'=>$alm_det_req, 'tiene_total_items_agregados'=>$totalItemsAgregadosADetalleRequerimiento];
+
+        return response()->json($output);
     }
 
     public function get_detalle_requerimiento_orden(Request $request )

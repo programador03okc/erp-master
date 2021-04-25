@@ -64,7 +64,7 @@
 
                     <div class="row">
                         <div class="col-md-12 right">
-                            <button class="btn btn-success" role="button"   id="btnIrAGuardarItemsEnDetalleRequerimiento" onClick="GuardarItemsEnDetalleRequerimiento();" disabled>
+                            <button class="btn btn-success" role="button"   id="btnIrAGuardarItemsEnDetalleRequerimiento" onClick="requerimientoPendienteView.guardarItemsEnDetalleRequerimiento();" disabled>
                                 Guardar<i class="fas fa-chevron-circle-right"></i>
                             </button>
                         </div>

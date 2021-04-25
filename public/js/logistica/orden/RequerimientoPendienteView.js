@@ -330,9 +330,12 @@ class RequerimientoPendienteView {
 
     // Agregar item base
     openModalAgregarItemBase(obj){
-            requerimientoPendienteCtrl.openModalAgregarItemBase(obj);
+            requerimientoPendienteCtrl.openModalAgregarItemBase();
+            requerimientoPendienteCtrl.tieneItemsParaCompra(obj);
             requerimientoPendienteCtrl.getDataListaItemsCuadroCostosPorIdRequerimiento();
             requerimientoPendienteCtrl.getDataListaItemsCuadroCostosPorIdRequerimientoPendienteCompra();
+            requerimientoPendienteCtrl.validarObjItemsParaCompra();
+
     }
 
 
@@ -602,6 +605,33 @@ class RequerimientoPendienteView {
         dataTableListaModalDetalleCuadroCostos.buttons().destroy();
         document.querySelector("table[id='ListaModalDetalleCuadroCostos'] thead").style.backgroundColor = "#5d4d6d";
         $('#ListaModalDetalleCuadroCostos tr').css('cursor', 'default');
+    
+    }
+
+    guardarItemsEnDetalleRequerimiento(){
+        requerimientoPendienteCtrl.guardarItemsEnDetalleRequerimiento();
+
+    }
+
+    agregarItemsBaseParaCompraFinalizado(status){
+        if (status == 200) {
+            alert('Item(s) Guardado');
+            $('#modal-agregar-items-para-compra').modal('hide');
+            $('#listaRequerimientosPendientes').DataTable().ajax.reload();
+         }else{
+            alert('Ocurrio un problema, no se pudo agregar los items al requerimiento');
+        }
+
+    }
+
+    totalItemsAgregadosParaCompraCompletada(){
+        
+        alert('Ya fueron agregados todos los items disponibles del Cuadro de Costos al Requerimiento');
+        document.querySelector("div[id='modal-agregar-items-para-compra'] button[id='btnIrAGuardarItemsEnDetalleRequerimiento']").setAttribute('disabled', true);
+        let btnEliminarItem = document.querySelectorAll("div[id='modal-agregar-items-para-compra'] button[name='btnEliminarItem']");
+        for (var i = 0; i< btnEliminarItem.length; i++){
+            btnEliminarItem[i].setAttribute('disabled',true);
+        }
     
     }
 
