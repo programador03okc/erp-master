@@ -1991,7 +1991,7 @@ class AlmacenController extends Controller
                 'alm_almacen.descripcion as alm_descripcion',
                 'alm_ubi_posicion.codigo as cod_posicion')
             ->leftjoin('almacen.alm_ubi_posicion','alm_ubi_posicion.id_posicion','=','alm_prod_ubi.id_posicion')
-            // ->join('almacen.alm_almacen','alm_almacen.id_almacen','=','alm_prod_ubi.id_almacen')
+            ->join('almacen.alm_almacen','alm_almacen.id_almacen','=','alm_prod_ubi.id_almacen')
             ->where([['alm_prod_ubi.id_producto', '=', $id],['alm_prod_ubi.estado','!=',7]])
             ->orderBy('id_almacen')
                 ->get();
