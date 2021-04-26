@@ -451,9 +451,14 @@ class RequerimientoPendienteCtrl{
         
 
     }
+
     // Crear orden por requerimiento
     crearOrdenPorRequerimiento(obj){
-
+        reqTrueList.push(obj.dataset.idRequerimiento)
+        sessionStorage.setItem('reqCheckedList', JSON.stringify(reqTrueList));
+        let url ="/logistica/gestion-logistica/orden/por-requerimiento/crear";
+        var win = window.open(url, '_blank');
+        win.focus();
     }
 
 

@@ -1,0 +1,25 @@
+class OrdenModel {
+    constructor () {
+    }
+
+    // modal listar items catalogo
+    getlistarItems(){
+        return new Promise(function(resolve, reject) {
+            $.ajax({
+                type: 'GET',
+                url:`/logistica/mostrar_items`,
+                dataType: 'JSON',
+                success(response) {
+                    resolve(response.data);
+                },
+                error: function(err) {
+                reject(err) // Reject the promise and go to catch()
+                }
+                });
+            });
+    }
+}
+
+
+const ordenModel = new OrdenModel();
+

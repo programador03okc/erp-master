@@ -144,7 +144,7 @@
                         <div class="col-md-3" id="group-condicion_compra-forma_pago">
                             <h5>Forma de Pago</h5>
                             <div style="display:flex;">
-                                <select class="form-control group-elemento activation" name="id_condicion" onchange="handlechangeCondicion(event);"
+                                <select class="form-control group-elemento activation" name="id_condicion" onchange="ordenView.handlechangeCondicion(event);"
                                     style="width:100%; text-align:center;" >
                                     @foreach ($condiciones as $cond)
                                         <option value="{{$cond->id_condicion_pago}}">{{$cond->descripcion}}</option>
@@ -252,7 +252,7 @@
                             <th>TOTAL</th>
                             <th>
                             <center>
-                                <button type="button" class="btn btn-xs btn-success activation" onclick="catalogoProductosModal();" id="btn-add-producto" data-toggle="tooltip" data-placement="bottom" title="Agregar Detalle"><i class="fas fa-plus"></i> Producto
+                                <button type="button" class="btn btn-xs btn-success activation" onclick="ordenView.catalogoProductosModal();" id="btn-add-producto" data-toggle="tooltip" data-placement="bottom" title="Agregar Detalle"><i class="fas fa-plus"></i> Producto
                                 </button>
                             </center>
                             </th>
@@ -290,7 +290,7 @@
     
     </form>
 </div>
-@include('logistica.requerimientos.modal_catalogo_items')
+@include('logistica.ordenes.modal_catalogo_items')
 
 @include('logistica.ordenes.modal_ordenes_elaboradas')
 @include('logistica.ordenes.modal_proveedor')
@@ -317,7 +317,6 @@
     <script src="{{ asset('datatables/JSZip/jszip.min.js') }}"></script>
     <script src="{{ asset('template/plugins/select2/select2.min.js') }}"></script>
     <!-- <script src="{{('/js/logistica/generar_orden.js')}}"></script> -->
-    <script src="{{('/js/logistica/orden/modal_agregar_producto.js')}}"></script>
     <script src="{{('/js/logistica/orden/modal_ordenes_elaboradas.js')}}"></script>
     <script src="{{('/js/logistica/orden/modal_proveedor.js')}}"></script>
     <script src="{{('/js/logistica/add_proveedor.js')}}"></script>
@@ -327,21 +326,24 @@
     <script src="{{('/js/logistica/orden/agregarContacto.js')}}"></script>
 
  
-    <script src="{{('/js/logistica/orden/crear_orden_requerimiento.js')}}"></script>
-    <!-- <script src="{{('/js/logistica/orden/orden_requerimiento.js')}}"></script> -->
-    <script src="{{('/js/logistica/orden/anular_orden.js')}}"></script>
-    <!-- <script src="{{('/js/logistica/crear_nuevo_producto.js')}}"></script> -->
+    <!-- <script src="{{('/js/logistica/orden/crear_orden_requerimiento.js')}}"></script> -->
+    <script src="{{('/js/logistica/orden/OrdenModel.js')}}"></script>
+    <script src="{{('/js/logistica/orden/OrdenView.js')}}"></script>
+    <script src="{{('/js/logistica/orden/OrdenController.js')}}"></script>
+    <script src="{{('/js/logistica/CustomTabla.js')}}"></script>
+
+    <!-- <script src="{{('/js/logistica/orden/anular_orden.js')}}"></script> -->
     <script src="{{ asset('template/plugins/moment.min.js') }}"></script>
 
     <script>
 
     $(document).ready(function(){
         seleccionarMenu(window.location);
-        inicializarModalOrdenRequerimiento(
-            "{{route('logistica.gestion-logistica.orden.por-requerimiento.detalle-requerimiento-orden')}}",
-            "{{route('logistica.gestion-logistica.orden.por-requerimiento.guardar')}}"
+        // inicializarModalOrdenRequerimiento(
+        //     "{{route('logistica.gestion-logistica.orden.por-requerimiento.detalle-requerimiento-orden')}}",
+        //     "{{route('logistica.gestion-logistica.orden.por-requerimiento.guardar')}}"
 
-        );
+        // );
     });
     </script>
 @endsection

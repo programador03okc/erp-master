@@ -1,0 +1,512 @@
+var detalleOrdenList=[];
+
+class OrdenCtrl{
+    constructor(OrdenView) {
+        this.ordenView = OrdenView;
+    }
+    init() {
+        this.ordenView.init();
+    }
+
+    // limpiar tabla
+    limpiarTabla(identificador){
+        const customTabla = new CustomTabla(identificador); //CustomTabla.js
+        customTabla.limpiarTabla;
+    }
+
+    obtenerRequerimiento(reqTrueList){
+        this.limpiarTabla('listaDetalleOrden');
+
+        detalleOrdenList=[];
+        $.ajax({
+            type: 'POST',
+            url: 'detalle-requerimiento-orden',
+            data:{'requerimientoList':reqTrueList},
+            dataType: 'JSON',
+            success: function(response){
+                // console.log(response);
+                response.det_req.forEach(element => {
+                    if(element.cantidad !=0){
+                        detalleOrdenList.push(
+                            {
+                                'id': element.id,
+                                'id_detalle_requerimiento': element.id_detalle_requerimiento,
+                                'codigo_item': element.codigo_item,
+                                'id_producto':element.id_producto,
+                                'id_item': element.id_item,
+                                'id_tipo_item': element.id_tipo_item,
+                                'id_requerimiento':element.id_requerimiento,
+                                'codigo_requerimiento': element.codigo_requerimiento,
+                                'cantidad': element.cantidad,
+                                'cantidad_a_comprar': element.cantidad_a_comprar,
+                                'descripcion_producto':element.descripcion,
+                                'descripcion_adicional':element.descripcion_adicional,
+                                'estado': element.estado,
+                                'fecha_registro':element.fecha_registro,
+                                'id_unidad_medida':element.id_unidad_medida,
+                                'lugar_entrega': element.lugar_entrega,
+                                'observacion': element.observacion,
+                                'part_number': element.part_number,
+                                'precio_unitario':element.precio_unitario,
+                                'stock_comprometido':element.stock_comprometido,
+                                'subtotal':element.subtotal,
+                                'unidad_medida':element.unidad_medida
+                            }
+                        );
+                        // console.log(detalleOrdenList);
+                        if(detalleOrdenList.length ==0){
+                            alert("No puede generar una orden sin antes agregar item(s) base");
+        
+                        }else{
+                            ordenView.loadHeadRequerimiento(response.requerimiento[0]);
+                            ordenView.listar_detalle_orden_requerimiento(detalleOrdenList);
+                        }
+                    }
+                });
+            }
+        }).fail( function( jqXHR, textStatus, errorThrown ){
+            console.log(jqXHR);
+            console.log(textStatus);
+            console.log(errorThrown);
+        });
+    }
+
+    updateInObjCantidadAComprar(rowNumber, idReq,idDetReq,valor){
+        if(idReq >0 && idDetReq >0){
+            detalleOrdenList.forEach((element,index) => {
+                if(element.id_requerimiento == idReq){
+                    if(element.id_detalle_requerimiento == idDetReq){
+                    detalleOrdenList[index].cantidad_a_comprar = valor;
+                    }
+                }
+            });
+        }
+    
+        if(idReq ==0 && idDetReq ==0){
+            detalleOrdenList.forEach((element,index) => {
+                if(element.id == rowNumber){
+                    detalleOrdenList[index].cantidad_a_comprar = valor;
+                    
+                }
+            });
+        }
+    }
+
+    updateInputPrecio(event){
+        let nuevoValor =event.target.value;
+        let idRequerimientoSelected= event.target.dataset.id_requerimiento;
+        let idDetalleRequerimientoSelected = event.target.dataset.id_detalle_requerimiento;
+        let rowNumber = event.target.dataset.row;
+        this.updateInObjPrecioReferencial(rowNumber,idRequerimientoSelected,idDetalleRequerimientoSelected,nuevoValor);
+    
+        this.calcTotalDetalleRequerimiento(idDetalleRequerimientoSelected,rowNumber);
+    }
+
+    updateInObjPrecioReferencial(rowNumber,idReq,idDetReq,valor){
+        if(idReq >0 && idDetReq >0){
+            detalleOrdenList.forEach((element,index) => {
+                if(element.id_requerimiento == idReq){
+                    if(element.id_detalle_requerimiento == idDetReq){
+                    detalleOrdenList[index].precio_unitario = valor;
+                    }
+                }
+            });
+        }
+        if(idReq ==0 && idDetReq ==0){
+            detalleOrdenList.forEach((element,index) => {
+                // console.log(element.id);
+                // console.log(rowNumber);
+                if(element.id == rowNumber){
+                    detalleOrdenList[index].precio_unitario = valor;
+                    
+                }
+            });
+        }
+    }
+
+    calcTotalDetalleRequerimiento(idDetalleRequerimientoSelected,rowNumberSelected){
+        let sizeInputTotal = document.querySelectorAll("div[name='subtotal']").length;
+        for (let index = 0; index < sizeInputTotal; index++) {
+            let rowNumber = document.querySelectorAll("div[name='subtotal']")[index].dataset.row;
+            let idReq = document.querySelectorAll("div[name='subtotal']")[index].dataset.id_requerimiento;
+            if(rowNumber == rowNumberSelected){
+                let precio = document.querySelectorAll("input[name='precio']")[index].value?document.querySelectorAll("input[name='precio']")[index].value:0;
+                let cantidad =( document.querySelectorAll("input[name='cantidad_a_comprar']")[index].value)>0?document.querySelectorAll("input[name='cantidad_a_comprar']")[index].value:document.querySelectorAll("input[name='cantidad']")[index].value;
+                let subtotal = (parseFloat(precio) * parseFloat(cantidad)).toFixed(2);
+                document.querySelectorAll("div[name='subtotal']")[index].textContent=subtotal;
+                ordenCtrl.updateInObjSubtotal(rowNumberSelected,idReq,idDetalleRequerimientoSelected,subtotal);
+            }
+        }
+        let total =0;
+        let simbolo_moneda_selected = document.querySelector("select[name='id_moneda']")[document.querySelector("select[name='id_moneda']").selectedIndex].dataset.simboloMoneda;
+        for (let index = 0; index < sizeInputTotal; index++) {
+            let num = document.querySelectorAll("div[name='subtotal']")[index].textContent?document.querySelectorAll("div[name='subtotal']")[index].textContent:0;
+            total += parseFloat(num);
+        }
+        // console.log(total);
+        document.querySelector("var[name='total']").textContent= (simbolo_moneda_selected) + (total);
+    }
+
+    updateInObjSubtotal(rowNumber,idReq,idDetReq,valor){
+        if(idReq >0 && idDetReq >0){
+            detalleOrdenList.forEach((element,index) => {
+                if(element.id_requerimiento == idReq){
+                    if(element.id_detalle_requerimiento == idDetReq){
+                    detalleOrdenList[index].subtotal = valor;
+                    }
+                }
+            });
+        }
+        if(idReq ==0 && idDetReq ==0){
+            detalleOrdenList.forEach((element,index) => {
+                if(element.id == rowNumber){
+                    detalleOrdenList[index].subtotal = valor;
+                    
+                }
+            });
+        }
+    }
+
+    updateInputStockComprometido(event){
+
+    }
+    updateInputCantidadAComprar(event){
+        let nuevoValor =event.target.value;
+        let idRequerimientoSelected= event.target.dataset.id_requerimiento;
+        let idDetalleRequerimientoSelected = event.target.dataset.id_detalle_requerimiento;
+        let rowNumberSelected = event.target.dataset.row;
+        let sizeInputCantidad = document.querySelectorAll("span[name='cantidad']").length;
+        let cantidad =0;
+        for (let index = 0; index < sizeInputCantidad; index++) {
+            let row = document.querySelectorAll("span[name='cantidad']")[index].dataset.row;
+            if(row == rowNumberSelected){
+                cantidad = document.querySelectorAll("span[name='cantidad']")[index].textContent;
+                if(parseFloat(nuevoValor) >0){                
+                    // actualizar datadetreq cantidad
+                    ordenCtrl.updateInObjCantidadAComprar(rowNumberSelected,idRequerimientoSelected,idDetalleRequerimientoSelected,nuevoValor);
+                    ordenCtrl.calcTotalDetalleRequerimiento(idDetalleRequerimientoSelected,rowNumberSelected);
+    
+                    // console.log(detalleOrdenList);
+                    // 
+                }
+                
+                // if(parseFloat(nuevoValor) > parseFloat(cantidad)){
+                //     alert("La cantidad a comprar no puede ser mayor a la cantidad `solicitada");
+                //     document.querySelectorAll("input[name='cantidad_a_comprar']")[index].value= cantidad;
+                //     updateInObjCantidadAComprar(rowNumberSelected,idRequerimientoSelected,idDetalleRequerimientoSelected,cantidad);
+    
+                // }
+            }
+        }
+    }
+
+    openModalEliminarItemOrden(obj){
+        var ask = confirm('Esta seguro que quiere anular el item ?');
+        if (ask == true){
+            // let codigoItemSelected=obj.parentNode.parentNode.parentNode.childNodes[2].textContent;
+            // let descripcionItemSelected=obj.parentNode.parentNode.parentNode.childNodes[3].textContent;
+            let rowNumber = obj.dataset.row;
+            // let idRequerimientoSelected = obj.dataset.id_requerimiento;
+            let key = obj.dataset.key
+            let idDetalleRequerimiento = obj.dataset.id_detalle_requerimiento
+            this.eliminarItemDeObj(key);
+            ordenView.afectarEstadoEliminadoFilaTablaListaDetalleOrden(rowNumber,'Error de Ingreso');
+        }else{
+            return false;
+        }
+    }
+
+    eliminarItemDeObj(keySelected){
+        let OperacionEliminar= false;
+        if(keySelected.length >0){
+            if(typeof detalleOrdenList =='undefined'){
+                detalleOrdenList.forEach((element,index) => {
+                    if(element.id == keySelected){
+                        if(element.estado ==0){
+                            detalleOrdenList.splice( index, 1 );
+                            OperacionEliminar=true;
+                        }else{
+                            detalleOrdenList[index].estado=7;
+                            OperacionEliminar=true;
+                        }
+                    }
+                });
+            }else{
+                detalleOrdenList.forEach((element,index) => {
+                    if(element.id == keySelected){
+                        if(element.estado ==0){
+                            detalleOrdenList.splice( index, 1 );
+                            OperacionEliminar=true;
+                        }else{
+                            detalleOrdenList[index].estado=7;
+                            OperacionEliminar=true;
+                        }
+                    }
+                });
+            } 
+        } 
+    
+        if(OperacionEliminar==false){
+            alert("hubo un error al intentar eliminar el item");
+        }
+    }
+
+    // agregar nuevo producto
+    getcatalogoProductos(){
+    
+        return ordenModel.getlistarItems();
+    }
+
+    selectItem(){
+        let data = {
+            'id': this.makeId(),
+            'cantidad': 1,
+            'cantidad_a_comprar': 1,
+            'codigo_item': null,
+            'codigo_producto': document.querySelector("div[id='modal-catalogo-items'] div[class='modal-footer'] label[id='codigo']").textContent,
+            'codigo_requerimiento': "RC210005",
+            'descripcion_adicional': null,
+            'descripcion_producto': document.querySelector("div[id='modal-catalogo-items'] div[class='modal-footer'] label[id='descripcion']").textContent,
+            'estado': 0,
+            'garantia': null,
+            'id_detalle_orden': null,
+            'id_detalle_requerimiento': null,
+            'id_item': document.querySelector("div[id='modal-catalogo-items'] div[class='modal-footer'] label[id='id_item']").textContent,
+            'id_producto': parseInt(document.querySelector("div[id='modal-catalogo-items'] div[class='modal-footer'] label[id='id_producto']").textContent),
+            'id_requerimiento': null,
+            'id_unidad_medida': document.querySelector("div[id='modal-catalogo-items'] div[class='modal-footer'] label[id='id_unidad_medida']").textContent,
+            'lugar_despacho': null,
+            'part_number': document.querySelector("div[id='modal-catalogo-items'] div[class='modal-footer'] label[id='part_number']").textContent,
+            'precio_unitario': 0,
+            'id_moneda': 1,
+            'stock_comprometido': null,
+            'subtotal': 0,
+            'tiene_transformacion': false,
+            'unidad_medida': document.querySelector("div[id='modal-catalogo-items'] div[class='modal-footer'] label[id='unidad_medida']").textContent
+         
+            };
+            this.agregarProductoADetalleOrdenList(data);
+        
+            $('#modal-catalogo-items').modal('hide');
+    }
+
+    makeId (){
+        let ID = "";
+        let characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        for ( var i = 0; i < 12; i++ ) {
+          ID += characters.charAt(Math.floor(Math.random() * 36));
+        }
+        return ID;
+    }
+
+    agregarProductoADetalleOrdenList(data){
+        if(typeof detalleOrdenList != 'undefined'){
+            detalleOrdenList.push(data);
+            ordenView.loadDetailOrden(detalleOrdenList);
+    
+        }else{
+            alert("Hubo un problema al agregar el producto al Listado");
+        }
+    }
+
+    calcTotalOrdenDetalleList(){
+        let sizeInputTotal = document.querySelectorAll("div[name='subtotal']").length;
+        let total =0;
+        let simbolo_moneda_selected = document.querySelector("select[name='id_moneda']")[document.querySelector("select[name='id_moneda']").selectedIndex].dataset.simboloMoneda;
+        for (let index = 0; index < sizeInputTotal; index++) {
+            let num = document.querySelectorAll("div[name='subtotal']")[index].textContent?document.querySelectorAll("div[name='subtotal']")[index].textContent:0;
+            total += parseFloat(num);
+        }
+        document.querySelector("var[name='total']").textContent= (simbolo_moneda_selected) + (total);
+    }
+
+    updateDetalleOrdenListPrecio(event){
+        let nuevoValor =event.target.value;
+        let key= event.target.dataset.key;
+        let idDetalleRequerimientoSelected = event.target.dataset.id_detalle_requerimiento;
+        let rowNumberSelected = event.target.dataset.row;
+     
+        if(parseFloat(nuevoValor) >0){                
+           
+                detalleOrdenList.forEach((element,index) => {
+                    if(element.id == key){
+                            detalleOrdenList[index].precio_unitario = nuevoValor;
+                    }
+                });
+            
+            this.calcTotalDetalleOrden(key);
+        }
+    }
+
+    updateDetalleOrdenListCantidadAComprar(event){
+        let nuevoValor =event.target.value;
+        let key= event.target.dataset.key;
+        let idDetalleRequerimientoSelected = event.target.dataset.id_detalle_requerimiento;
+        let rowNumberSelected = event.target.dataset.row;
+     
+        if(parseFloat(nuevoValor) >0){                
+                detalleOrdenList.forEach((element,index) => {
+                    if(element.id == key){
+                            detalleOrdenList[index].cantidad_a_comprar = nuevoValor;
+    
+                    }
+                });
+        
+            this.calcTotalDetalleOrden(key);
+        }
+    }
+
+    calcTotalDetalleOrden(keySelected){
+        let sizeInputTotal = document.querySelectorAll("div[name='subtotal']").length;
+        for (let index = 0; index < sizeInputTotal; index++) {
+            let key = document.querySelectorAll("div[name='subtotal']")[index].dataset.key;
+            if(key == keySelected){
+                let precio = document.querySelectorAll("input[name='precio']")[index].value?document.querySelectorAll("input[name='precio']")[index].value:0;
+                let cantidad =document.querySelectorAll("input[name='cantidad_a_comprar']")[index].value;
+                let subtotal = (parseFloat(precio) * parseFloat(cantidad)).toFixed(2);
+                document.querySelectorAll("div[name='subtotal']")[index].textContent=subtotal;
+                    detalleOrdenList.forEach((element,index) => {
+                        if(element.id == key){
+                                detalleOrdenList[index].subtotal = subtotal;
+                            
+                        }
+                    });
+                
+            }
+        }
+        
+        this.calcTotalOrdenDetalleList();
+    
+    }
+
+    calcTotalOrdenDetalleList(){
+        let sizeInputTotal = document.querySelectorAll("div[name='subtotal']").length;
+        let total =0;
+        let simbolo_moneda_selected = document.querySelector("select[name='id_moneda']")[document.querySelector("select[name='id_moneda']").selectedIndex].dataset.simboloMoneda;
+        for (let index = 0; index < sizeInputTotal; index++) {
+            let num = document.querySelectorAll("div[name='subtotal']")[index].textContent?document.querySelectorAll("div[name='subtotal']")[index].textContent:0;
+            total += parseFloat(num);
+        }
+        document.querySelector("var[name='total']").textContent= (simbolo_moneda_selected) + (total);
+    
+    }
+
+    // guardar orden
+    countRequirementsInObj(){
+        let idRequerimientoList=[];
+        let size=0;
+        listCheckReq.forEach(element => {
+            if(element.stateCheck ==true){
+                idRequerimientoList.push(element.id_req);
+            } 
+        });
+        let idRequerimientoListUnique = Array.from(new Set(idRequerimientoList));
+        // console.log(idRequerimientoList);
+        // console.log(idRequerimientoListUnique);
+        size = idRequerimientoListUnique.length;
+        return size;
+    }
+
+    validaOrdenRequerimiento(){
+        var codigo_orden = $('[name=codigo_orden]').val();
+        var id_proveedor = $('[name=id_proveedor]').val();
+        var plazo_entrega = $('[name=plazo_entrega]').val();
+        var msj = '';
+        if (codigo_orden == ''){
+            msj+='\n Es necesario que ingrese un código de orden Softlink';
+        }
+        if (id_proveedor == ''){
+            msj+='\n Es necesario que seleccione un Proveedor';
+        }
+        if (plazo_entrega == ''){
+            msj+='\n Es necesario que ingrese un plazo de entrega';
+        }
+        let cantidadInconsistenteInputPrecio=0;
+        // let inputPrecio= document.querySelectorAll("table[id='listaDetalleOrden'] input[name='precio']");
+        detalleOrdenList.forEach((element)=>{
+            if(!parseFloat(element.precio_unitario) >0  && element.estado !=7){
+                cantidadInconsistenteInputPrecio++;
+            }
+        })
+        if(cantidadInconsistenteInputPrecio>0){
+            msj+='\n Es necesario que ingrese un precio / precio mayor a cero';
+    
+        }
+        let cantidadInconsistenteInputCantidadAComprar=0;
+        let inputCantidadAComprar= document.querySelectorAll("table[id='listaDetalleOrden'] input[name='cantidad_a_comprar']");
+        inputCantidadAComprar.forEach((element)=>{
+            if(element.value == null || element.value =='' || element.value ==0){
+                cantidadInconsistenteInputCantidadAComprar++;
+            }
+        })
+        if(cantidadInconsistenteInputCantidadAComprar>0){
+            msj+='\n Es necesario que ingrese una cantidad a comprar / cantidad a comprar mayor a cero';
+    
+        }           
+        return  msj;
+    }
+
+    guardar_orden_requerimiento(action,data){
+        if (action == 'register'){
+            var msj = this.validaOrdenRequerimiento();
+            if (msj.length > 0){
+                alert(msj);
+            } else{
+                $.ajax({
+                    type: 'POST',
+                    url: 'guardar',
+                    data: data,
+                    dataType: 'JSON',
+                    success: function(response){
+                        console.log(response);
+                        if (response > 0){
+                            alert('Orden de registrada con éxito');
+                            changeStateButton('guardar');
+                            $('#form-crear-orden-requerimiento').attr('type', 'register');
+                            changeStateInput('form-crear-orden-requerimiento', true);
+    
+                            sessionStorage.removeItem('reqCheckedList');
+                            window.open("/logistica/gestion-logistica/orden/por-requerimiento/generar-orden-pdf/"+response, '_blank');
+                            // location.href = "/logistica/gestion-logistica/orden/por-requerimiento/index";
+    
+                        }
+                    }
+                }).fail( function( jqXHR, textStatus, errorThrown ){
+                    console.log(jqXHR);
+                    console.log(textStatus);
+                    console.log(errorThrown);
+                });
+            }
+        
+        }else if(action == 'edition'){
+            $.ajax({
+                type: 'POST',
+                url: 'actualizar',
+                data: data,
+                dataType: 'JSON',
+                success: function(response){
+                    // console.log(response);
+                    if (response > 0){
+                        alert("Orden Actualizada");
+                        changeStateButton('guardar');
+                        $('#form-crear-orden-requerimiento').attr('type', 'register');
+                        changeStateInput('form-crear-orden-requerimiento', true);
+                    }
+                }
+            }).fail( function(jqXHR, textStatus, errorThrown){
+                console.log(jqXHR);
+                console.log(textStatus);
+                console.log(errorThrown);
+            });   
+        }else{
+            alert("Hubo un error en la acción de la botonera, el action no esta definido");
+        }
+    }
+
+}
+
+const ordenCtrl = new OrdenCtrl(ordenView);
+
+window.onload = function() {
+    ordenView.init();
+};
