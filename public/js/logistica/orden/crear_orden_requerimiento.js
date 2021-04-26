@@ -565,16 +565,6 @@ function listar_detalle_orden_requerimiento(data){
         columns: [
             {'render':
                 function (data, type, row, meta){
-                    if(row.estado == 7){
-                        return '<input type="checkbox" checked data-id-detalle-requerimiento="' + row.id_detalle_requerimiento + '"  disabled />';
-                    }else{
-                        return '<input type="checkbox" checked data-id-detalle-requerimiento="' + row.id_detalle_requerimiento + '"  />';
-
-                    }
-                }, 'name':'checkbox'
-            },
-            {'render':
-                function (data, type, row, meta){
                     return row.codigo_requerimiento;
                 }, 'name':'codigo_requerimiento'
             },
@@ -663,17 +653,16 @@ function listar_detalle_orden_requerimiento(data){
             }
         },
         columnDefs: [
-            { width: '10px', targets: 0 },
+            { width: '20px', targets: 0 },
             { width: '20px', targets: 1 },
-            { width: '20px', targets: 2 },
-            { width: '40px', targets: 3 },
-            { width: '50px', targets: 4 },
-            { width: '20px', targets: 5 },
-            { width: '15px', targets: 6 },
-            { width: '20px', targets: 7 , sClass: 'invisible'},
+            { width: '40px', targets: 2 },
+            { width: '50px', targets: 3 },
+            { width: '20px', targets: 4 },
+            { width: '15px', targets: 5 },
+            { width: '20px', targets: 6 , sClass: 'invisible'},
+            { width: '20px', targets: 7 },
             { width: '20px', targets: 8 },
-            { width: '20px', targets: 9 },
-            { width: '30px', targets: 10, sClass:'text-center' }
+            { width: '30px', targets: 9, sClass:'text-center' }
         ],
     
         order: [[1, "asc"]]
