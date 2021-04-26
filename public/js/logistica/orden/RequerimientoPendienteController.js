@@ -189,6 +189,8 @@ class RequerimientoPendienteCtrl{
             requerimientoPendienteView.componerTdItemsParaCompra(res.data,res.categoria,res.subcategoria,res.clasificacion,res.moneda,res.unidad_medida);
             if(res.tiene_total_items_agregados==true){
                 requerimientoPendienteView.totalItemsAgregadosParaCompraCompletada();
+            }else{
+                requerimientoPendienteView.totalItemsAgregadosParaCompraPendiente();
             }
 
         }).catch(function(err) {
@@ -425,6 +427,31 @@ class RequerimientoPendienteCtrl{
         });
     }
 
+    updateInputCantidadModalItemsParaCompra(event){
+        let nuevoValor = event.target.value;
+        let indiceSelected = event.target.dataset.indice;
+        itemsParaCompraList.forEach((element, index) => {
+            if (index == indiceSelected) {
+                itemsParaCompraList[index].cantidad = nuevoValor;
+    
+            }
+        });
+        this.validarObjItemsParaCompra();
+    
+    }
+
+    updateInputPartNumberModalItemsParaCompra(event){
+        let nuevoValor = event.target.value;
+        let indiceSelected = event.target.dataset.indice;
+    
+        itemsParaCompraList.forEach((element, index) => {
+            if (index == indiceSelected) {
+                itemsParaCompraList[index].part_number = nuevoValor;
+    
+            }
+        });
+        this.validarObjItemsParaCompra();
+    }
  
 
     guardarItemsEnDetalleRequerimiento(){

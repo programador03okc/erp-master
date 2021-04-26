@@ -359,16 +359,16 @@ class RequerimientoPendienteView {
                     row.insertCell(4).innerHTML = this.makeSelectedToSelect(a, 'clasificacion', selectClasCategoria, data[a].id_clasif, '');
                     row.insertCell(5).innerHTML = `<span name="descripcion">${data[a].descripcion ? data[a].descripcion : '-'}</span> `;
                     row.insertCell(6).innerHTML = this.makeSelectedToSelect(a, 'unidad_medida', selectUnidadMedida, data[a].id_unidad_medida, '');
-                    row.insertCell(7).innerHTML = `<input type="text" class="form-control" name="cantidad" data-indice="${a}" onkeyup ="updateInputCantidadModalItemsParaCompra(event);" value="${data[a].cantidad}">`;
+                    row.insertCell(7).innerHTML = `<input type="text" class="form-control" name="cantidad" data-indice="${a}" onkeyup ="requerimientoPendienteView.updateInputCantidadModalItemsParaCompra(event);" value="${data[a].cantidad}">`;
                 } else {
                     row.insertCell(0).innerHTML = data[a].alm_prod_codigo ? data[a].alm_prod_codigo : '';
-                    row.insertCell(1).innerHTML = `<input type="text" class="form-control" name="part_number" value="${data[a].part_number ? data[a].part_number : ''}" data-indice="${a}" onkeyup="updateInputPartNumberModalItemsParaCompra(event);" disabled>`;
+                    row.insertCell(1).innerHTML = `<input type="text" class="form-control" name="part_number" value="${data[a].part_number ? data[a].part_number : ''}" data-indice="${a}" onkeyup="requerimientoPendienteView.updateInputPartNumberModalItemsParaCompra(event);" disabled>`;
                     row.insertCell(2).innerHTML = this.makeSelectedToSelect(a, 'categoria', selectCategoria, data[a].id_categoria, 'disabled');
                     row.insertCell(3).innerHTML = this.makeSelectedToSelect(a, 'subcategoria', selectSubCategoria, data[a].id_subcategoria, 'disabled');
                     row.insertCell(4).innerHTML = this.makeSelectedToSelect(a, 'clasificacion', selectClasCategoria, data[a].id_clasif, 'disabled');
                     row.insertCell(5).innerHTML = `<span name="descripcion">${data[a].descripcion ? data[a].descripcion : '-'}</span> `;
                     row.insertCell(6).innerHTML = this.makeSelectedToSelect(a, 'unidad_medida', selectUnidadMedida, data[a].id_unidad_medida, '');
-                    row.insertCell(7).innerHTML = `<input type="text" class="form-control" name="cantidad" data-indice="${a}" onkeyup="updateInputCantidadModalItemsParaCompra(event);" value="${data[a].cantidad}">`;
+                    row.insertCell(7).innerHTML = `<input type="text" class="form-control" name="cantidad" data-indice="${a}" onkeyup="requerimientoPendienteView.updateInputCantidadModalItemsParaCompra(event);" value="${data[a].cantidad}">`;
                 }
     
                 var tdBtnAction = row.insertCell(8);
@@ -391,6 +391,13 @@ class RequerimientoPendienteView {
         // requerimientoPendienteCtrl.quitarItemsDetalleCuadroCostosAgregadosACompra(data);
         // requerimientoPendienteCtrl.validarObjItemsParaCompra();
 
+    }
+
+    updateInputCantidadModalItemsParaCompra(event){
+        requerimientoPendienteCtrl.updateInputCantidadModalItemsParaCompra(event);
+    }
+    updateInputPartNumberModalItemsParaCompra(event){
+        requerimientoPendienteCtrl.updateInputPartNumberModalItemsParaCompra(event);
     }
 
     guardarItemParaCompraEnCatalogo(obj,indice){
@@ -594,7 +601,7 @@ class RequerimientoPendienteView {
                 },
                 {
                     'render': function (data, type, row) {
-                        return `<button class="btn btn-xs btn-default"data-id="${row.id}" onclick="procesarItemParaCompraDetalleCuadroCostos(this,${row['id']});" title="Agregar Item" style="background-color:#714fa7; color:white;"><i class="fas fa-plus"></i></button>`;
+                        return `<button class="btn btn-xs btn-default"data-id="${row.id}" onclick="requerimientoPendienteCtrl.procesarItemParaCompraDetalleCuadroCostos(this,${row['id']});" title="Agregar Item" style="background-color:#714fa7; color:white;"><i class="fas fa-plus"></i></button>`;
                     }
                 }
             ]
@@ -634,6 +641,16 @@ class RequerimientoPendienteView {
         }
     
     }
+    totalItemsAgregadosParaCompraPendiente(){
+        
+        document.querySelector("div[id='modal-agregar-items-para-compra'] button[id='btnIrAGuardarItemsEnDetalleRequerimiento']").removeAttribute('disabled');
+        let btnEliminarItem = document.querySelectorAll("div[id='modal-agregar-items-para-compra'] button[name='btnEliminarItem']");
+        for (var i = 0; i< btnEliminarItem.length; i++){
+            btnEliminarItem[i].removeAttribute('disabled');
+        }
+    
+    }
+
 
     // ver detalle cuadro de costos
     openModalCuadroCostos(obj){
