@@ -4,7 +4,7 @@
 @endsection
 
 @section('cabecera')
-    Generar Orden por Requerimiento
+    Pendientes
 @endsection
 
 @section('breadcrumb')

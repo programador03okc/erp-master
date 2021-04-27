@@ -55,7 +55,7 @@
                     </div>
                 </div>
                 <div class="col-md-2">
-                        <h5 >Tipo de Requerimiento:</h5> 
+                        <h5 >Tipo de requerimiento:</h5> 
                         <select class="form-control input-sm activation" name="tipo_requerimiento" onChange="changeOptTipoReqSelect(event);">
                             <option value="">Elija una opción</option>
                             @foreach ($tipo_requerimiento as $tipo)
@@ -86,7 +86,7 @@
                             </select>
                     </div>
                     <div class="col-md-2" id="input-group-rol-usuario" hidden>
-                        <h5>Roles del Usuario</h5>
+                        <h5>Roles del usuario</h5>
                         <div class="input-group-okc">
                             <select class="form-control input-sm activation" name="rol_usuario">
                             @foreach ($roles as $rol)
@@ -107,7 +107,7 @@
                 <input type="text" class="form-control activation" name="concepto">
             </div>
             <div class="col-md-2"  id="input-group-fecha">
-                <h5>Fecha Creación</h5>
+                <h5>Fecha creación</h5>
                 <input type="date" class="form-control" name="fecha_requerimiento" disabled="true" min={{ date('Y-m-d H:i:s') }} value={{ date('Y-m-d H:i:s') }}>
             </div>
             <!-- <div class="form-group row"> -->
@@ -129,7 +129,7 @@
                     </select>
             </div>
             <div class="col-md-2" id="input-group-ubigeo-entrega" >
-                <h5>Ubigeo Entrega</h5>
+                <h5>Ubigeo entrega</h5>
                 <div style="display:flex;">
                     <input type="text" class="oculto" name="ubigeo" >
                     <input type="text" class="form-control" name="name_ubigeo" readOnly>
@@ -145,7 +145,7 @@
                 </select>
             </div>
             <div class="col-md-2" id="input-group-monto">
-                <h5>Monto Total</h5>
+                <h5>Monto total</h5>
                 <div class="input-group-okc">
                     <div class="input-group-addon" id="montoMoneda" style="width: auto;">S/.</div>
                     <input type="text" class="form-control activation" name="monto" readOnly>
@@ -153,7 +153,7 @@
             </div>
             <div class="col-md-2" id="input-group-fecha_entrega">
                 <div class="form-group">
-                    <h5>Fecha Limite Entrega</h5>
+                    <h5>Fecha límite entrega</h5>
                     <input type="date" class="form-control input-sm activation" name="fecha_entrega">
                 </div>
             </div>
@@ -173,7 +173,7 @@
                     </div>
                 </div>
                 <div class="col-md-2" id="input-group-fuente_det" hidden >
-                    <h5>Detalle Fuente</h5>
+                    <h5>Detalle fuente</h5>
                     <div style="display:flex">
                         <select class="form-control activation " name="fuente_det_id">
                         </select>
@@ -235,7 +235,7 @@
 
         <div class="row">
             <div class="col-md-2 form-inline" id="input-group-tipo-cliente" >
-                <h5>Tipo Cliente</h5>
+                <h5>Tipo cliente</h5>
                 <div class="input-group-okc">
                         <select name="tipo_cliente" onChange="changeTipoCliente(event);"
                         class="form-control activation" style="width:100px" required>
@@ -267,7 +267,7 @@
                 </div>
             </div>
             <div class="col-md-2" id="input-group-telefono-cliente" >
-                <h5>Teléfono Cliente</h5>
+                <h5>Teléfono cliente</h5>
                 <div style="display:flex;">
                     <input type="text" class="form-control activation" name="telefono_cliente" onkeypress="return isNumberKey(event)"  disabled>
                         <button type="button" class="btn-primary" title="Buscar Teléfonos" name="btnSearchPhone"  onClick="telefonosClienteModal();">
@@ -276,7 +276,7 @@
                 </div>
             </div>
             <div class="col-md-2" id="input-group-email-cliente" >
-                <h5>Correo Cliente</h5>
+                <h5>Correo cliente</h5>
                 <div style="display:flex;">
                     <input type="email" class="form-control activation" name="email_cliente"  disabled>
                         <button type="button" class="btn-primary" title="Buscar Teléfonos" name="btnSearchPhone"  onClick="emailClienteModal();">
@@ -285,7 +285,7 @@
                 </div>
             </div>
             <div class="col-md-2" id="input-group-direccion-entrega" >
-                <h5>Dirección Cliente</h5>
+                <h5>Dirección cliente</h5>
                 <div style="display:flex;">
                     <input type="text" class="form-control activation" name="direccion_entrega"  disabled>
                     <button type="button" class="btn-primary" title="Buscar Dirección" name="btnSearchAddress" onClick="direccionesClienteModal();">
@@ -320,37 +320,37 @@
         </div>
         <div class="row">
             <div class="col-md-4" id="input-group-nombre-contacto" >
-                <h5>Nombre Contacto</h5>
+                <h5>Nombre contacto</h5>
                 <div style="display:flex;">
                     <input type="text" class="form-control" name="nombre_contacto"  disabled>
                 </div>
             </div>
             <div class="col-md-2" id="input-group-cargo-contacto" >
-                <h5>Cargo Contacto</h5>
+                <h5>Cargo contacto</h5>
                 <div style="display:flex;">
                     <input type="text" class="form-control" name="cargo_contacto"  disabled>
                 </div>
             </div>
             <div class="col-md-4" id="input-group-email-contacto" >
-                <h5>Email Contacto</h5>
+                <h5>Email contacto</h5>
                 <div style="display:flex;">
                     <input type="text" class="form-control" name="email_contacto"  disabled>
                 </div>
             </div>
             <div class="col-md-2" id="input-group-telefono-contacto" >
-                <h5>Teléfono Contacto</h5>
+                <h5>Teléfono contacto</h5>
                 <div style="display:flex;">
                     <input type="text" class="form-control" name="telefono_contacto"  disabled>
                 </div>
             </div>
             <div class="col-md-4" id="input-group-direccion-contacto" >
-                <h5>Dirección Entrega</h5>
+                <h5>Dirección entrega</h5>
                 <div style="display:flex;">
                     <input type="text" class="form-control" name="direccion_contacto"  disabled>
                 </div>
             </div>
             <div class="col-md-2" id="input-group-horario-contacto" >
-                <h5>Horario Atención</h5>
+                <h5>Horario atención</h5>
                 <div style="display:flex;">
                     <input type="text" class="form-control" name="horario_contacto"  disabled>
                 </div>
@@ -442,7 +442,6 @@
         </div>
     </fieldset>   
     <br>
-    <br>
     <fieldset class="group-table" id="group-detalle-cuadro-costos" hidden>
         <div class="row">
             <div class="col-sm-12">
@@ -468,13 +467,7 @@
             </div>
         </div>
     </fieldset>   
-    <br>
-    <div class="row">
-        <div class="col-md-12 text-right">
-            <button type="submit" class="btn-okc" id="btnGuardar"><i class="fas fa-save fa-lg"></i> Guardar</button>
-        </div>
-    </div>
-    <br>
+
     <fieldset class="group-table"> 
     <div class="row">
         <div class="col-md-4">
@@ -519,7 +512,15 @@
         </div>
     </div>
     </fieldset>  
+    <br>
     <div class="row" id="observaciones_requerimiento"></div> 
+
+    <div class="row">
+            <div class="col-md-12 text-right">
+                <button type="submit" class="btn-okc" id="btnGuardar"><i class="fas fa-save fa-lg"></i> Guardar</button>
+            </div>
+        </div>
+        <br>
         
     </form>
 
