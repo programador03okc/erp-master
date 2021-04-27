@@ -64,7 +64,7 @@
                         </div>
                         <div class="col-md-2" id="group-datos_para_despacho-sede">
                             <h5>Empresa - Sede</h5>
-                            <select class="form-control activation " name="id_sede" onChange="changeSede(this);">
+                            <select class="form-control activation " name="id_sede" onChange="ordenView.changeSede(this);">
                                 @foreach ($sedes as $sede)
                                     <option value="{{$sede->id_sede}}" data-id-empresa="{{$sede->id_empresa}}" data-direccion="{{$sede->direccion}}"  data-id-ubigeo="{{$sede->id_ubigeo}}" data-ubigeo-descripcion="{{$sede->ubigeo_descripcion}}" >{{$sede->descripcion}}</option>
                                 @endforeach

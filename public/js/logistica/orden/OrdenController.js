@@ -71,6 +71,23 @@ class OrdenCtrl{
         });
     }
 
+    changeSede(obj){
+        var id_empresa = obj.options[obj.selectedIndex].getAttribute('data-id-empresa');
+        var id_ubigeo = obj.options[obj.selectedIndex].getAttribute('data-id-ubigeo');
+        var ubigeo_descripcion = obj.options[obj.selectedIndex].getAttribute('data-ubigeo-descripcion');
+        var direccion = obj.options[obj.selectedIndex].getAttribute('data-direccion');
+        ordenView.changeLogoEmprsa(id_empresa);
+        this.llenarUbigeo(direccion,id_ubigeo,ubigeo_descripcion);
+    }
+
+    llenarUbigeo(direccion,id_ubigeo,ubigeo_descripcion){
+        document.querySelector("input[name='direccion_destino']").value=direccion;
+        document.querySelector("input[name='id_ubigeo_destino']").value=id_ubigeo;
+        document.querySelector("input[name='ubigeo_destino']").value=ubigeo_descripcion;
+    }
+
+
+
     updateInObjCantidadAComprar(rowNumber, idReq,idDetReq,valor){
         if(idReq >0 && idDetReq >0){
             detalleOrdenList.forEach((element,index) => {

@@ -16,6 +16,36 @@ class OrdenView {
         }  
     }
 
+    changeSede(obj){
+        ordenCtrl.changeSede(obj);
+    }
+
+    changeLogoEmprsa(id_empresa){
+        switch (id_empresa) {
+            case '1':
+                document.querySelector("div[id='group-datos_para_despacho-logo_empresa'] img[id='logo_empresa']").setAttribute('src','/images/logo_okc.png');
+                break;
+            case '2':
+                document.querySelector("div[id='group-datos_para_despacho-logo_empresa'] img[id='logo_empresa']").setAttribute('src','/images/logo_proyectec.png');
+                break;
+            case '3':
+                document.querySelector("div[id='group-datos_para_despacho-logo_empresa'] img[id='logo_empresa']").setAttribute('src','/images/logo_smart.png');
+                break;
+            case '4':
+                document.querySelector("div[id='group-datos_para_despacho-logo_empresa'] img[id='logo_empresa']").setAttribute('src','/images/jedeza_logo.png');
+                break;
+            case '5':
+                document.querySelector("div[id='group-datos_para_despacho-logo_empresa'] img[id='logo_empresa']").setAttribute('src','/images/rbdb_logo.png');
+                break;
+            case '6':
+                document.querySelector("div[id='group-datos_para_despacho-logo_empresa'] img[id='logo_empresa']").setAttribute('src','/images/protecnologia_logo.png');
+                break;
+            default:
+                document.querySelector("div[id='group-datos_para_despacho-logo_empresa'] img[id='logo_empresa']").setAttribute('src','/images/img-default.jpg');
+                break;
+        }
+    }
+
     handlechangeCondicion(event){
         let condicion= document.getElementsByName('id_condicion')[0];
         let text_condicion = condicion.options[condicion.selectedIndex].text;
