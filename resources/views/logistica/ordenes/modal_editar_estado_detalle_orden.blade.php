@@ -28,7 +28,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                     <button type="button" onclick="updateEstadoDetalleOrdenCompra();" class="btn btn-sm btn-success">Actualizar</button>
+                     <button type="button" onclick="requerimientoPendienteView.updateEstadoDetalleOrdenCompra();" class="btn btn-sm btn-success">Actualizar</button>
                 </div>
             </form>
         </div>

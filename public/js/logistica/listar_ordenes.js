@@ -103,7 +103,7 @@ function imprimir_orden(event){
     let id_orden = event.currentTarget.dataset.idOrdenCompra;
     
     if (id_orden > 0){
-    window.open('generar_orden_pdf/'+id_orden);
+    window.open('generar-orden-pdf/'+id_orden);
     }
 }
 // function imprimir_orden(tbody,tabla){

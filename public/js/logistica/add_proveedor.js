@@ -30,6 +30,12 @@ function agregar_proveedor(){
     $('[name=nro_documento_prov]').val('');
     $('[name=id_doc_identidad]').val('2');
     $('[name=direccion_fiscal]').val('');
+    $('[name=direccion_proveedor]').val('');
+    $('[name=ubigeo_proveedor]').val('');
+    $('[name=ubigeo_proveedor_descripcion]').val('');
+    $('[name=id_contacto_proveedor]').val('');
+    $('[name=contacto_proveedor_nombre]').val('');
+    $('[name=contacto_proveedor_telefono]').val('');
     $('[name=razon_social]').val('');
 
     $("#submitProveedor").removeAttr("disabled");
