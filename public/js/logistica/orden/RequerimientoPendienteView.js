@@ -960,22 +960,22 @@ class RequerimientoPendienteView {
                 },
                 {
                     'render': function (data, type, row) {
-                        return `${row['descripcion']}`;
+                        return `${row['descripcion']?row['descripcion']:''}`;
                     }
                 },
                 {
                     'render': function (data, type, row) {
-                        return `${row['pvu_oc']}`;
+                        return `${row['pvu_oc']?row['pvu_oc']:''}`;
                     }
                 },
                 {
                     'render': function (data, type, row) {
-                        return `${row['flete_oc']}`;
+                        return `${row['flete_oc']?row['flete_oc']:''}`;
                     }
                 },
                 {
                     'render': function (data, type, row) {
-                        return `${row['cantidad']}`;
+                        return `${row['cantidad']?row['cantidad']:''}`;
                     }
                 },
                 {
@@ -985,17 +985,17 @@ class RequerimientoPendienteView {
                 },
                 {
                     'render': function (data, type, row) {
-                        return `${row['razon_social_proveedor']}`;
+                        return `${row['razon_social_proveedor']?row['razon_social_proveedor']:''}`;
                     }
                 },
                 {
                     'render': function (data, type, row) {
-                        return `${row['nombre_autor']}`;
+                        return `${row['nombre_autor']?row['nombre_autor']:''}`;
                     }
                 },
                 {
                     'render': function (data, type, row) {
-                        return `${row['fecha_creacion']}`;
+                        return `${row['fecha_creacion']?row['fecha_creacion']:''}`;
                     }
                 },
                 {
