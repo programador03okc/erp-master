@@ -85,13 +85,12 @@ class RequerimientoPendienteView {
                             '<button type="button" class="btn btn-primary btn-xs" name="btnAgregarItemBase" title="Agregar items del base" data-id-requerimiento="'+row.id_requerimiento+'"  onclick="requerimientoPendienteView.openModalAgregarItemBase(this);"  style="background:#b498d0;">'+
                                 '<i class="fas fa-puzzle-piece fa-sm"></i>'+
                             '</button>'+
-                        '</div>'+
-                        '<div class="btn-group" role="group">'+
-                            // '<button type="button" class="btn btn-warning btn-xs" name="btnAgregarItemARequeriento" title="Agregar items para compra" data-id-requerimiento="'+row.id_requerimiento+'"  onclick="openModalAgregarItemARequerimiento(this);">'+
-                            //     '<i class="fas fa-plus-circle fa-sm"></i>'+
-                            // '</button>'+
-                            '<button type="button" class="btn btn-warning btn-xs" name="btnCrearOrdenPorRequerimiento" title="Crear Orden" data-id-requerimiento="'+row.id_requerimiento+'"  onclick="requerimientoPendienteView.crearOrdenPorRequerimiento(this);">'+
+  
+                            '<button type="button" class="btn btn-warning btn-xs" name="btnCrearOrdenPorRequerimiento" title="Crear Orden de Compra" data-id-requerimiento="'+row.id_requerimiento+'"  onclick="requerimientoPendienteView.crearOrdenPorRequerimiento(this);">'+
                                 '<i class="fas fa-file-invoice"></i>'+
+                            '</button>'+
+                            '<button type="button" class="btn btn-danger btn-xs" name="btnCrearOrdenServicioPorRequerimiento" title="Crear Orden de Servicio" data-id-requerimiento="'+row.id_requerimiento+'"  onclick="openModalAgregarItemARequerimiento(this);">'+
+                                '<i class="fas fa-file-invoice fa-sm"></i>'+
                             '</button>'+
                             '<button type="button" class="btn btn-info btn-xs" name="btnVercuadroCostos" title="Ver Cuadro Costos" data-id-requerimiento="'+row.id_requerimiento+'"  onclick="requerimientoPendienteView.openModalCuadroCostos(this);">'+
                                 '<i class="fas fa-eye fa-sm"></i>'+

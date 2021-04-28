@@ -93,7 +93,7 @@ class RequerimientoPendienteModel {
         return new Promise(function(resolve, reject) {
                 $.ajax({
                     type: 'POST',
-                    url: `actualizar-estado/`,
+                    url: `actualizar-estado`,
                     data:{'id_orden_compra':id_orden_compra, 'id_estado_orden_selected':id_estado_orden_selected},
                     dataType: 'JSON',
                     success(response) {
@@ -109,7 +109,7 @@ class RequerimientoPendienteModel {
         return new Promise(function(resolve, reject) {
                 $.ajax({
                     type: 'POST',
-                    url: `actualizar-estado-detalle/`,
+                    url: `actualizar-estado-detalle`,
                     data:{'id_detalle_orden_compra':id_detalle_orden_compra, 'id_estado_detalle_orden_selected':id_estado_detalle_orden_selected},
                     dataType: 'JSON',
                     success(response) {
