@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Dompdf\Dompdf;
+use Illuminate\Support\Facades\App;
 use PDF;
 
 date_default_timezone_set('America/Lima');
@@ -207,7 +208,7 @@ class CustomizacionController extends Controller
                 'total_sobrantes' => $request->total_sobrantes,
                 'costo_transformacion' => $request->costo_transformacion
             ]);
-        return response()->json($id_transformacion);
+        return response()->json($data);
     }
     public function guardar_materia(Request $request)
     {
@@ -1221,7 +1222,7 @@ class CustomizacionController extends Controller
             </body>
         </html>';
         
-        $pdf = \App::make('dompdf.wrapper');
+        $pdf = App::make('dompdf.wrapper');
         $pdf->loadHTML($html);
 
         return $pdf->stream();

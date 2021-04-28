@@ -567,7 +567,7 @@ function abrir_transformacion(id_transformacion){
     console.log('abrir_transformacio'+id_transformacion);
     localStorage.setItem("id_transfor",id_transformacion);
     // location.assign("/logistica/almacen/customizacion/hoja-transformacion/index");
-    var win = window.open("/logistica/almacen/customizacion/hoja-transformacion/index", '_blank');
+    var win = window.open("/almacen/customizacion/hoja-transformacion/index", '_blank');
     // Cambiar el foco al nuevo tab (punto opcional)
     win.focus();
 }

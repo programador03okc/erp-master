@@ -11,8 +11,9 @@ use Dompdf\Dompdf;
 use PDF;
 
 use Carbon\Carbon;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
-date_default_timezone_set('America/Lima');
+//date_default_timezone_set('America/Lima');
 
 class DistribucionController extends Controller
 {
@@ -1855,7 +1856,7 @@ class DistribucionController extends Controller
             </body>
         </html>';
 
-        $pdf = \App::make('dompdf.wrapper');
+        $pdf = App::make('dompdf.wrapper');
         $pdf->loadHTML($html);
         return $pdf->stream();
         return $pdf->download('despacho.pdf');
@@ -2341,8 +2342,8 @@ class DistribucionController extends Controller
             $extension = pathinfo($file->getClientOriginalName(), PATHINFO_EXTENSION);
             $nombre = $request->codigo_od.'.'.$request->numero.'.'.$extension;
             //indicamos que queremos guardar un nuevo archivo en el disco local
-            \File::delete(public_path('almacen/orden_despacho/'.$nombre));
-            \Storage::disk('archivos')->put('almacen/orden_despacho/'.$nombre,\File::get($file));
+            File::delete(public_path('almacen/orden_despacho/'.$nombre));
+            Storage::disk('archivos')->put('almacen/orden_despacho/'.$nombre,File::get($file));
             
             $id = DB::table('almacen.orden_despacho_adjunto')->insertGetId(
                 [
@@ -2479,8 +2480,8 @@ class DistribucionController extends Controller
             $extension = pathinfo($file->getClientOriginalName(), PATHINFO_EXTENSION);
             $nombre = $id_obs.'.'.$request->codigo_od.'.'.$extension;
             //indicamos que queremos guardar un nuevo archivo en el disco local
-            \File::delete(public_path('almacen/trazabilidad_envio/'.$nombre));
-            \Storage::disk('archivos')->put('almacen/trazabilidad_envio/'.$nombre,\File::get($file));
+            File::delete(public_path('almacen/trazabilidad_envio/'.$nombre));
+            Storage::disk('archivos')->put('almacen/trazabilidad_envio/'.$nombre,File::get($file));
             
             DB::table('almacen.orden_despacho_obs')
             ->where('id_obs',$id_obs)

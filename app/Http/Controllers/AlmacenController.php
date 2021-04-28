@@ -1,6 +1,8 @@
 <?php
 
 namespace App\Http\Controllers;
+
+use App\Helpers\Almacen\AlmacenDashboardHelper;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 
@@ -14,6 +16,7 @@ use App\Models\almacen\mov_alm_det as MovDetalle;
 use App\Models\almacen\guia_com as GuiaCompra;
 use Illuminate\Support\Collection as Collection;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
 date_default_timezone_set('America/Lima');
 
@@ -24,9 +27,11 @@ class AlmacenController extends Controller
     }
     function view_main_almacen()
     {
+        $almacenDashboardHelper= new AlmacenDashboardHelper();
+
         $cantidades = AlmacenController::cantidades_main();
         $cantidad_requerimientos = $cantidades['requerimientos'];
-        $cantidad_ordenes_pendientes = $cantidades['orden'];
+        $cantidad_ordenes_pendientes = $almacenDashboardHelper->obtenerOrdenes();//$cantidades['orden'];
         $cantidad_despachos_pendientes = $cantidades['despachos'];
         $cantidad_ingresos_pendientes = $cantidades['ingresos'];
         $cantidad_salidas_pendientes = $cantidades['salidas'];
@@ -116,7 +121,8 @@ class AlmacenController extends Controller
         ->orWhere('estado',24)
         ->count();
 
-        return (['requerimientos'=>$req,'orden'=>$orden,'despachos'=>$despachos,'ingresos'=>$ingresos, 'salidas'=>$salidas, 
+        return (['requerimientos'=>$req,'orden'=>$orden,'despachos'=>$despachos,
+        'ingresos'=>$ingresos, 'salidas'=>$salidas, 
         'transferencias'=>$transferencias, 'transformaciones_pend'=>$transformaciones_pend]);
     }
 
@@ -1240,8 +1246,8 @@ class AlmacenController extends Controller
                 $extension = pathinfo($nfile->getClientOriginalName(), PATHINFO_EXTENSION);
                 $namefile = $request->codigo.'.'.$extension;
 
-                \File::delete(public_path('almacen/productos/'.$namefile));
-                Storage::disk('archivos')->put('almacen/productos/'.$namefile, \File::get($nfile));
+                File::delete(public_path('almacen/productos/'.$namefile));
+                Storage::disk('archivos')->put('almacen/productos/'.$namefile, File::get($nfile));
             
                 $update = DB::table('almacen.alm_prod')
                 ->where('id_producto', $request->id_producto)
@@ -3013,7 +3019,7 @@ class AlmacenController extends Controller
             </body>
         </html>';
         
-        $pdf = \App::make('dompdf.wrapper');
+        $pdf = App::make('dompdf.wrapper');
         $pdf->loadHTML($html);
 
         return $pdf->stream();
@@ -4437,7 +4443,7 @@ class AlmacenController extends Controller
             </body>
         </html>';
 
-        $pdf = \App::make('dompdf.wrapper');
+        $pdf = App::make('dompdf.wrapper');
         $pdf->loadHTML($html);
         return $pdf->stream();
         return $pdf->download('salida.pdf');
@@ -7203,7 +7209,7 @@ class AlmacenController extends Controller
             </body>
         </html>';
         
-        $pdf = \App::make('dompdf.wrapper');
+        $pdf = App::make('dompdf.wrapper');
         $pdf->loadHTML($html);
 
         return $pdf->stream();
@@ -8361,7 +8367,7 @@ class AlmacenController extends Controller
             $html = $this->guia_ok_computer($data, $nuevo_detalle);
         }
 
-        $pdf = \App::make('dompdf.wrapper');
+        $pdf = App::make('dompdf.wrapper');
         $pdf->loadHTML($html);
 
         return $pdf->stream();
