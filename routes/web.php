@@ -1,6 +1,9 @@
 <?php
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Route;
 
 //  Route::get('/{path?}', function () {
 //      return view('index');
@@ -610,6 +613,7 @@ Route::group(['middleware' => ['auth']], function () {
 	});
 
 	Route::group(['as' => 'logistica.', 'prefix' => 'logistica'], function(){
+		
 		// Logística
 		Route::get('index', 'LogisticaController@view_main_logistica')->name('index');
 
@@ -967,8 +971,8 @@ Route::group(['middleware' => ['auth']], function () {
 			// });
 
 			Route::group(['as' => 'distribucion.', 'prefix' => 'distribucion'], function(){
-	
-				Route::group(['as' => 'despachos.', 'prefix' => 'despachos'], function(){
+	//PENDIENTE
+				Route::group(['as' => 'despachos.', 'prefix' => 'control-despachos'], function(){
 					//Ordenes Despacho
 					Route::get('index', 'DistribucionController@view_ordenesDespacho')->name('index');
 					Route::post('listarRequerimientosEnProceso', 'DistribucionController@listarRequerimientosEnProceso');
