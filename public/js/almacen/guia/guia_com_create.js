@@ -167,14 +167,33 @@ function mostrar_detalle_transformacion(){
             <td>${element.descripcion+' <strong>'+html_ser+'</strong>'}</td>
             <td>${element.cantidad}</td>
             <td>${element.abreviatura}</td>
-            <td>${formatNumber.decimal(element.valor_unitario,'',2)}</td>
-            <td>${formatNumber.decimal(element.valor_total,'',2)}</td>
-            ${'<td><input type="text" class="oculto" id="series" value="'+element.series+'" data-partnumber="'+element.part_number+'"/><i class="fas fa-bars icon-tabla boton" data-toggle="tooltip" data-placement="bottom" title="Agregar Series" onClick="agrega_series_transformacion('+"'"+element.id+"'"+');"></i></td>' }
+            <td><input type="number" class="form-control unitario" style="width:120px;" data-id="${element.id}" step="0.001" 
+                value="${element.valor_unitario}"/></td>
+            <td>${formatNumber.decimal(element.valor_total,'',-2)}</td>
+            ${`<td><input type="text" class="oculto" id="series" value="${element.series}" data-partnumber="${element.part_number}"/>
+                <i class="fas fa-bars icon-tabla boton" data-toggle="tooltip" data-placement="bottom" title="Agregar Series" 
+                onClick="agrega_series_transformacion(${"'"+element.id+"'"});"></i></td>` }
             </tr>`;
         i++;
     });
     $('#detalleOrdenSeleccionadas tbody').html(html);
 }
+
+$('#detalleOrdenSeleccionadas tbody').on("change", ".unitario", function(){
+    
+    let id = $(this).data('id');
+    let unitario = parseFloat($(this).val());
+    console.log('unitario: '+unitario);
+    
+    series_transformacion.forEach(element => {
+        if (element.id == id){
+            element.valor_unitario = unitario;
+            element.valor_total = (unitario * parseFloat(element.cantidad));
+        }
+    });
+    console.log(series_transformacion);
+    mostrar_detalle_transformacion();
+});
 
 function listar_detalle_ordenes_seleccionadas(data){
     console.log(oc_seleccionadas);
@@ -259,24 +278,11 @@ $("#form-guia_create").on("submit", function(e){
     if (ope == 26){
         // $("#detalleOrdenSeleccionadas tbody tr").each(function(){
         //     var id = $(this)[0].id;
-        //     var id_producto = $(this).find('td input[id=producto]').val();
-        //     var tipo = $(this).find('td input[id=producto]').data('tipo');
-        //     var abr = (tipo == 'sobrante' ? 's' : 't');
+        //     var unitario = $(this).find('td input[id=unitario]').val();
+        //     console.log(unitario);
 
-        //     var json = series_transformacion.find(element => element.id == abr+id);
-        //     console.log(json.series);
-        //     var series = (json !== null ? json.series : []);
-
-        //     var cant = $(this)[0].childNodes[11].innerHTML;
-        //     var unit = $(this)[0].childNodes[15].innerHTML;
-        //     detalle.push({ 
-        //         'id'            : id,
-        //         'tipo'          : tipo,
-        //         'id_producto'   : id_producto,
-        //         'cantidad'      : cant,
-        //         'unitario'      : unit,
-        //         'series'        : series
-        //     });
+        //     var json = series_transformacion.find(element => element.id == id);
+        //     json.valor_unitario = unitario;
         // });
         series_transformacion.forEach(function(element){
             detalle.push({ 

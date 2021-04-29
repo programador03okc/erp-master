@@ -301,17 +301,12 @@ class OrdenesPendientesController extends Controller
             // database queries here
             $id_ingreso = null;
             $msj_trans = '';
-            // if ($request->id_orden_compra !== null){
+            
             $id_tp_doc_almacen = 1;
             $id_usuario = Auth::user()->id_usuario;
             $fecha_registro = date('Y-m-d H:i:s');
-                
-                // $orden = DB::table('logistica.log_ord_compra')
-                // ->where('id_orden_compra',$request->id_orden_compra)
-                // ->first();
-                
-                // if (isset($orden)){
-                    //Genero la Guia
+            
+            //Genero la Guia
             $id_guia = DB::table('almacen.guia_com')->insertGetId(
                 [
                     'id_tp_doc_almacen' => $id_tp_doc_almacen,

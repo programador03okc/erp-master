@@ -41,7 +41,8 @@ class ReportesController extends Controller
             // 'alm_prod_antiguo.cod_antiguo','alm_item.id_item',
             'alm_prod.id_moneda','alm_prod.id_unidad_medida',
             DB::raw("(SELECT SUM(alm_det_req.cantidad) FROM almacen.alm_det_req 
-            WHERE (alm_det_req.estado=19 or alm_det_req.estado=28 or alm_det_req.estado=27)
+            WHERE ( alm_det_req.estado=19 or alm_det_req.estado=28 or alm_det_req.estado=27
+                    or alm_det_req.estado=22)
             AND alm_det_req.id_producto=alm_prod_ubi.id_producto 
             AND alm_det_req.id_almacen_reserva=alm_prod_ubi.id_almacen ) as cantidad_reserva"),
             'alm_almacen.descripcion as almacen_descripcion')
@@ -129,7 +130,8 @@ class ReportesController extends Controller
             // 'alm_prod_antiguo.cod_antiguo',
             'alm_prod.id_moneda','alm_prod.id_unidad_medida',
             DB::raw("(SELECT SUM(alm_det_req.stock_comprometido) FROM almacen.alm_det_req 
-            WHERE (alm_det_req.estado=19 or alm_det_req.estado=28 or alm_det_req.estado=27)
+            WHERE ( alm_det_req.estado=19 or alm_det_req.estado=28 or alm_det_req.estado=27
+                    or alm_det_req.estado=22)
             AND alm_det_req.id_producto=alm_prod_ubi.id_producto 
             AND alm_det_req.id_almacen_reserva=alm_prod_ubi.id_almacen ) as cantidad_reserva"),
             'alm_almacen.descripcion as almacen_descripcion')

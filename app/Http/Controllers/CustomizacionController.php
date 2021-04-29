@@ -74,11 +74,14 @@ class CustomizacionController extends Controller
                  'alm_req.codigo as cod_req','guia_ven.serie','guia_ven.numero',
                  'adm_estado_doc.estado_doc','alm_almacen.id_sede','orden_despacho.id_od',
                  'adm_estado_doc.bootstrap_color',
-                //  'log_prove.id_proveedor','adm_contri.razon_social',
+                 'log_prove.id_proveedor',
                  'oc_propias.orden_am','oportunidades.oportunidad','oportunidades.codigo_oportunidad',
                  'entidades.nombre')
         ->join('almacen.orden_despacho','orden_despacho.id_od','=','transformacion.id_od')
         ->join('almacen.alm_almacen','alm_almacen.id_almacen','=','transformacion.id_almacen')
+        ->join('administracion.sis_sede','sis_sede.id_sede','=','alm_almacen.id_sede')
+        ->join('administracion.adm_empresa','adm_empresa.id_empresa','=','sis_sede.id_empresa')
+        ->leftjoin('logistica.log_prove','log_prove.id_contribuyente','=','adm_empresa.id_contribuyente')
         ->join('almacen.alm_req','alm_req.id_requerimiento','=','orden_despacho.id_requerimiento')
         ->join('almacen.guia_ven', function($join)
                 {   $join->on('guia_ven.id_od', '=', 'transformacion.id_od');

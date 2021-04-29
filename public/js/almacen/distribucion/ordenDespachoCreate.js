@@ -91,10 +91,10 @@ function open_despacho_create(data){
 
         console.log(response);
         response.forEach(element => {
-            var ing = (element.suma_ingresos !== null ? parseFloat(element.suma_ingresos) : 0);//ingresos por compra
+            // var ing = (element.suma_ingresos !== null ? parseFloat(element.suma_ingresos) : 0);//ingresos por compra
             var stock = (element.stock_comprometido !== null ? element.stock_comprometido : 0);
             // var tran = (element.suma_transferencias_recibidas !== null ? parseFloat(element.suma_transferencias_recibidas) : 0);//ingresos por transferencias recibidas
-            var cant = ing + stock - (element.suma_despachos_internos !== null ? parseFloat(element.suma_despachos_internos) : 0);
+            var cant = /*ing +*/ stock - (element.suma_despachos_internos !== null ? parseFloat(element.suma_despachos_internos) : 0);
             
             if (!element.tiene_transformacion){
 
@@ -109,7 +109,7 @@ function open_despacho_create(data){
                     // '<td>'+(element.almacen_descripcion !== null ? element.almacen_descripcion : '')+'</td>'+
                     '<td>'+element.cantidad+'</td>'+
                     '<td>'+(element.abreviatura !== null ? element.abreviatura : '')+'</td>'+
-                    '<td>'+(ing + stock)+'</td>'+
+                    '<td>'+(stock)+'</td>'+
                     '<td>'+(element.suma_despachos_internos !== null ? element.suma_despachos_internos : '0')+'</td>'+
                     '<td><input type="number" id="'+element.id_detalle_requerimiento+'cantidad" value="'+cant+'" max="'+cant+'" min="0" style="width: 80px;"/></td>'+
                     '<td><span class="label label-'+element.bootstrap_color+'">'+element.estado_doc+'</span></td>'+
@@ -559,11 +559,11 @@ function on_todos(){
     console.log('on_todos');
     // detalle_ingresa = detalle_requerimiento;
     detalle_requerimiento.forEach(function(element){
-        var ing = (element.suma_ingresos !== null ? parseFloat(element.suma_ingresos) : 0);//ingresos por compra
+        // var ing = (element.suma_ingresos !== null ? parseFloat(element.suma_ingresos) : 0);//ingresos por compra
         var stock = (element.stock_comprometido !== null ? element.stock_comprometido : 0);
         // var tran = (element.suma_transferencias_recibidas !== null ? parseFloat(element.suma_transferencias_recibidas) : 0);//ingresos por transferencias recibidas
-        var cant = ing + stock - (element.suma_despachos !== null ? parseFloat(element.suma_despachos) : 0);
-        console.log('ingresos '+ing);
+        var cant = stock - (element.suma_despachos !== null ? parseFloat(element.suma_despachos) : 0);
+        // console.log('ingresos '+ing);
         console.log('stock '+stock);
         console.log(element);
         console.log('cantidad '+cant);
