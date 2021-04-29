@@ -154,7 +154,7 @@ class AlmacenController extends Controller
         return view('almacen/producto/producto', compact('tipos','categorias','clasificaciones','subcategorias','unidades','posiciones','ubicaciones','monedas'));
     }
     function view_almacenes(){
-        $sedes = $this->mostrar_sedes_cbo();
+        $sedes = AlmacenController::mostrar_sedes_cbo();
         $tipos = $this->mostrar_tp_almacen_cbo();
         return view('almacen/ubicacion/almacenes', compact('sedes','tipos'));
     }
@@ -205,7 +205,7 @@ class AlmacenController extends Controller
         // $motivos = $this->mostrar_motivos_cbo();
         $clasificaciones = $this->mostrar_guia_clas_cbo();
         // $empresas = AlmacenController::select_empresa();
-        $sedes = $this->mostrar_sedes_cbo();
+        $sedes = AlmacenController::mostrar_sedes_cbo();
         $proveedores = $this->mostrar_proveedores_cbo();
         $tp_doc_almacen = $this->tp_doc_almacen_cbo_sal();
         $tp_operacion = AlmacenController::tp_operacion_cbo_sal();
@@ -231,7 +231,7 @@ class AlmacenController extends Controller
     // }
     function view_doc_venta(){
         // $empresas = AlmacenController::select_empresa();
-        $sedes = $this->mostrar_sedes_cbo();
+        $sedes = AlmacenController::mostrar_sedes_cbo();
         $clasificaciones = $this->mostrar_guia_clas_cbo();
         $condiciones = $this->mostrar_condiciones_cbo();
         $tp_doc = $this->mostrar_tp_doc_cbo();
@@ -311,7 +311,7 @@ class AlmacenController extends Controller
     }
     function view_serie_numero(){
         $tipos = $this->select_cont_tp_doc();
-        $sedes = $this->mostrar_sedes_cbo();
+        $sedes = AlmacenController::mostrar_sedes_cbo();
         return view('almacen/variables/serie_numero', compact('tipos','sedes'));
     }
     // function view_kardex_series(){
@@ -581,7 +581,7 @@ class AlmacenController extends Controller
                 ->get();
         return $data;
     }
-    public function mostrar_sedes_cbo(){
+    public static function mostrar_sedes_cbo(){
         $data = DB::table('administracion.sis_sede')
             ->select('sis_sede.*','adm_contri.razon_social','adm_contri.nro_documento')
             ->join('administracion.adm_empresa','adm_empresa.id_empresa','=','sis_sede.id_empresa')
@@ -725,7 +725,7 @@ class AlmacenController extends Controller
             ->get();
         return $data;
     }
-    public function mostrar_condiciones_cbo()
+    public static function mostrar_condiciones_cbo()
     {
         $data = DB::table('logistica.log_cdn_pago')
             ->select('log_cdn_pago.id_condicion_pago','log_cdn_pago.descripcion')
