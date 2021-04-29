@@ -5,8 +5,9 @@ class OrdenView {
     init() {
         // this.renderCrearOrdenModule(null,null);
         var reqTrueList = JSON.parse(sessionStorage.getItem('reqCheckedList'));
+        var tipoOrden = sessionStorage.getItem('tipoOrden');
         if (reqTrueList !=null && (reqTrueList.length > 0)) {
-            ordenCtrl.obtenerRequerimiento(reqTrueList);
+            ordenCtrl.obtenerRequerimiento(reqTrueList,tipoOrden);
             changeStateButton('editar');
             // changeStateButton('historial');
             changeStateInput('form-crear-orden-requerimiento', false);
@@ -61,20 +62,19 @@ class OrdenView {
         }
     }
 
-    loadHeadRequerimiento(data){
+    loadHeadRequerimiento(data,idTipoOrden){
+        document.querySelector("select[name='id_tp_documento']").value=idTipoOrden;
         document.querySelector("img[id='logo_empresa']").setAttribute("src",data.logo_empresa);
         document.querySelector("input[name='cdc_req']").value=data.codigo_oportunidad?data.codigo_oportunidad:data.codigo;
         document.querySelector("input[name='ejecutivo_responsable']").value=data.nombre_ejecutivo_responsable?data.nombre_ejecutivo_responsable:'';
         document.querySelector("input[name='direccion_destino']").value=data.direccion_fiscal_empresa_sede?data.direccion_fiscal_empresa_sede:'';
         document.querySelector("input[name='id_ubigeo_destino']").value=data.id_ubigeo_empresa_sede?data.id_ubigeo_empresa_sede:'';
         document.querySelector("input[name='ubigeo_destino']").value=data.ubigeo_empresa_sede?data.ubigeo_empresa_sede:'';
-        // document.querySelector("select[name='id_empresa']").value=data.id_empresa?data.id_empresa:'';
         document.querySelector("select[name='id_sede']").value=data.id_sede?data.id_sede:'';
         document.querySelector("input[name='id_cc']").value=data.id_cc?data.id_cc:'';
     }
 
     listar_detalle_orden_requerimiento(data){
- 
         $('#listaDetalleOrden').DataTable({
             'info':     false,
             'scrollCollapse': true,
@@ -495,6 +495,7 @@ class OrdenView {
     // mostrar info si esta vinculado con un requerimiento
     eliminarVinculoReq(){
         sessionStorage.removeItem('reqCheckedList');
+        sessionStorage.removeItem('tipoOrden');
         window.location.reload();
     }
 

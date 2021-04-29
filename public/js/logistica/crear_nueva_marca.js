@@ -20,7 +20,7 @@ function guardar_nueva_marca(){
     }else{
         $.ajax({
             type: 'POST',
-            url: 'guardar_marca',
+            url: '/almacen/catalogos/sub-categorias/guardar-marca',
             data: data,
             dataType: 'JSON',
             success: function(response){

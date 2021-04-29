@@ -2,6 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Comercial\CuadroCosto\CcAmFila;
+use App\Models\Comercial\CuadroCosto\CuadroCosto;
+use App\Models\Configuracion\Departamento;
+use App\Models\Configuracion\Distrito;
 use Illuminate\Support\Facades\DB;
 
 use Illuminate\Http\Request;
@@ -677,8 +681,7 @@ class RequerimientoController extends Controller
         $status =0;
         $msj='';
 
-        $cc = DB::table('mgcp_cuadro_costos.cc')
-        ->select(
+        $cc = CuadroCosto::select(
             'cc.id as id_cc',
             'cc.tipo_cuadro',
             'cc.id_oportunidad',
@@ -698,15 +701,14 @@ class RequerimientoController extends Controller
         // }
         
         // donde esta el id_cc si en cc_am_filas o en cc_venta_filas
-        $count_id_cc_in_cc_am_filas = DB::table('mgcp_cuadro_costos.cc_am_filas')->select('cc_am_filas.*')->where('cc_am_filas.id_cc_am','=',$id_cc)->count();
-        $count_id_cc_in_cc_venta_filas = DB::table('mgcp_cuadro_costos.cc_venta_filas')->select('cc_venta_filas.*')->where('cc_venta_filas.id_cc_venta','=',$id_cc)->count();
+        //$count_id_cc_in_cc_am_filas = DB::table('mgcp_cuadro_costos.cc_am_filas')->select('cc_am_filas.*')->where('cc_am_filas.id_cc_am','=',$id_cc)->count();
+        //$count_id_cc_in_cc_venta_filas = DB::table('mgcp_cuadro_costos.cc_venta_filas')->select('cc_venta_filas.*')->where('cc_venta_filas.id_cc_venta','=',$id_cc)->count();
 
 
         // if($tipo_cuadro>0){
-            if($count_id_cc_in_cc_am_filas > 0){ // acuerdo marco
+           // if($count_id_cc_in_cc_am_filas > 0){ // acuerdo marco
 
-                $det_cc = DB::table('mgcp_cuadro_costos.cc_am_filas')
-                ->select(
+                $det_cc = CcAmFila::select(
                     'cc_am_filas.id',
                     'cc_am_filas.id as id_cc_am_filas',
                     'cc_am_filas.id_cc_am',
@@ -738,7 +740,7 @@ class RequerimientoController extends Controller
                 ->get();
                 $status =200;
                 $msj='Ok';
-            }elseif($count_id_cc_in_cc_venta_filas >0){ // venta
+            /*}elseif($count_id_cc_in_cc_venta_filas >0){ // venta
                 $det_cc = DB::table('mgcp_cuadro_costos.cc_venta_filas')
                 ->select(
                     'cc_venta_filas.id',
@@ -767,11 +769,11 @@ class RequerimientoController extends Controller
                 ->where('cc_venta_filas.id_cc_venta','=',$id_cc)  
                 ->get();
                 $status =200;
-                $msj='Ok';
-            }else{
+                $msj='Ok';*/
+            /*}else{
                 $status =204;
                 $msj='el tipo de negocio no esta comprendido en la consulta.';
-            }
+            }*/
         // }
         $output=['status'=>$status, 'mensaje'=>$msj, 'data'=>$det_cc?$det_cc:[]];
         return $output;
@@ -786,15 +788,7 @@ class RequerimientoController extends Controller
     }
 
  
-    function getIdDistrito($nombre){
-        $data = DB::table('configuracion.ubi_dis')
-        ->select('ubi_dis.*')
-        ->where([
-            ['ubi_dis.descripcion', '=', $nombre]
-            ])
-        ->first();
-        return ($data!==null ? $data->id_dis : 0);
-    }
+
 
     function getIdProvincia($nombre){
         $data = DB::table('configuracion.ubi_prov')
@@ -806,15 +800,7 @@ class RequerimientoController extends Controller
         return ($data!==null ? $data->id_prov : 0);
     }
 
-    function getIdDepartamento($nombre){
-        $data = DB::table('configuracion.ubi_dpto')
-        ->select('ubi_dpto.*')
-        ->where([
-            ['ubi_dpto.descripcion', '=', $nombre]
-            ])
-        ->first();
-        return ($data!==null ? $data->id_dpto : 0);
-    }
+    
 
     function obtenerConstruirCliente(Request $request){
         $status=0;
@@ -833,14 +819,14 @@ class RequerimientoController extends Controller
         $ubigeo_list = array_filter(array_map('trim',explode("/", $ubigeo)));
         $IdDis=null;
         if(count($ubigeo_list)==3){
-            $IdDis=  $this->getIdDistrito($ubigeo_list[0]);
+            $IdDis=  Distrito::getIdDistrito($ubigeo_list[0]);
             // $IdProv=  $this->getIdProvincia($ubigeo_list[1]);
-            $IdDpto=  $this->getIdDepartamento($ubigeo_list[2]);
+            $IdDpto=  Departamento::getIdDepartamento($ubigeo_list[2]);
 
             if($IdDis==0 || $IdDpto == 0){
-                $IdDis=  $this->getIdDistrito($ubigeo_list[2]);
+                $IdDis=  Distrito::getIdDistrito($ubigeo_list[2]);
                 // $IdProv=  $this->getIdProvincia($ubigeo_list[1]);
-                $IdDpto=  $this->getIdDepartamento($ubigeo_list[0]);
+                $IdDpto=  Departamento::getIdDepartamento($ubigeo_list[0]);
             }
         }
 
@@ -1005,44 +991,7 @@ class RequerimientoController extends Controller
         return response()->json($output);
     }
 
-    public function guardar_sub_categoria(Request $request){
-       
-        $codigo =  (new AlmacenController)->subcategoria_nextId($request->id_categoria);
-        $des = strtoupper($request->descripcion);
-        $fecha = date('Y-m-d H:i:s');
-        $usuario = Auth::user()->id_usuario;
-        $msj = '';
-        $status = 0;
-        $data = [];
 
-        $count = DB::table('almacen.alm_subcat')
-        ->where([['descripcion','=',$des],['estado','=',1]])
-        ->count();
-
-        if ($count == 0){
-            $data = DB::table('almacen.alm_subcat')->insertGetId(
-                [
-                    'codigo' => $codigo,
-                    // 'id_categoria' => $request->id_categoria,
-                    'descripcion' => $des,
-                    'estado' => 1,
-                    'fecha_registro' => $fecha,
-                    'registrado_por' => $usuario
-                ],
-                    'id_subcategoria'
-                );
-                $status= 200;
-                $msj='Guardado';
-
-                $subcategoriaList = (new AlmacenController)->mostrar_subcategorias_cbo();
-
-        } else {
-            $msj = 'No es posible guardar. Ya existe una subcategoria con dicha descripción';
-            $status= 204;
-        }
-        $output=['status'=>$status,'msj'=>$msj,'data'=>$subcategoriaList];
-        return response()->json($output);
-    }
     public function buscarStockEnAlmacenes($id_item){
        
     

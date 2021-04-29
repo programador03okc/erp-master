@@ -64,13 +64,14 @@
                                                     <th>Check</th>
                                                     <th>Código</th>
                                                     <th>Concepto</th>
+                                                    <th>Fecha creación</th>
                                                     <th>Tipo Req.</th>
                                                     <th>Proveedor/Entidad</th>
                                                     <th>Empresa - Sede</th>
                                                     <th>Autor</th>
+                                                    
                                                     <th>Estado</th>
-                                                    <th>Fecha</th>
-                                                    <th>Acción</th>
+                                                    <th width="130px">Acción</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody></tbody>

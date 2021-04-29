@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 
 //  Route::get('/{path?}', function () {
 //      return view('index');
@@ -609,6 +610,8 @@ Route::group(['middleware' => ['auth']], function () {
 		});
 	});
 
+
+
 	Route::group(['as' => 'logistica.', 'prefix' => 'logistica'], function(){
 		// Logística
 		Route::get('index', 'LogisticaController@view_main_logistica')->name('index');
@@ -667,7 +670,7 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::post('migrar_venta_directa', 'MigrateSoftLinkController@migrar_venta_directa');
 					Route::get('siguiente-codigo-requerimiento/{id_tipo_requerimiento?}', 'RequerimientoController@nextCodigoRequerimiento')->name('siguiente-codigo-requerimiento');
 					Route::post('guardar-producto', 'AlmacenController@guardar_producto')->name('guardar-producto');
-					Route::post('guardar_marca', 'RequerimientoController@guardar_sub_categoria');
+					
 					Route::get('cuadro-costos/{id_cc?}', 'RequerimientoController@cuadro_costos')->name('cuadro-costos');
 					Route::get('detalle-cuadro-costos/{id_cc?}', 'RequerimientoController@detalle_cuadro_costos')->name('detalle-cuadro-costos');
 					Route::post('obtener-construir-cliente', 'RequerimientoController@obtenerConstruirCliente')->name('obtener-construir-cliente');
@@ -752,7 +755,7 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::group(['as' => 'por-requerimiento.', 'prefix' => 'por-requerimiento'], function(){
 					Route::get('index', 'OrdenController@view_generar_orden_requerimiento')->name('index');
 					// generar oreden por requerimiento
-					Route::get('requerimientos-pendientes/{id_empresa?}/{id_sede?}', 'OrdenController@listar_requerimientos_pendientes')->name('requerimientos-pendientes'); 
+					Route::get('requerimientos-pendientes/{id_empresa?}/{id_sede?}', 'OrdenController@listarRequerimientosPendientes')->name('requerimientos-pendientes'); 
 					Route::get('ordenes-en-proceso', 'OrdenController@lista_ordenes_en_proceso')->name('ordenes-en-proceso'); 
 					Route::get('items-ordenes-en-proceso', 'OrdenController@lista_items_ordenes_en_proceso')->name('ordenes-en-proceso'); 
 					Route::post('detalle-requerimiento-orden', 'OrdenController@get_detalle_requerimiento_orden')->name('detalle-requerimiento-orden'); 
@@ -1093,6 +1096,8 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::post('actualizar_subcategoria', 'AlmacenController@update_sub_categoria');
 				Route::get('anular_subcategoria/{id}', 'AlmacenController@anular_sub_categoria');
 				Route::get('revisarSubCat/{id}', 'AlmacenController@subcat_revisar');
+
+				Route::post('guardar-marca', 'Almacen\Catalogo\SubCategoriaController@guardar')->name('guardar-marca');
 				
 			});
 

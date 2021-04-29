@@ -23,7 +23,7 @@ class RequerimientoPendienteView {
     }
 
     construirTablaListaRequerimientosPendientes(data){
-        var vardataTables = funcDatatables();
+        vista_extendida();
         $('#listaRequerimientosPendientes').DataTable({
             'dom': vardataTables[1],
             'buttons': vardataTables[2],
@@ -46,6 +46,7 @@ class RequerimientoPendienteView {
                 },
             
                 {'data': 'concepto'},
+                {'data': 'fecha_requerimiento'},
                 {'data': 'tipo_req_desc'},
                 { render: function (data, type, row) { 
                     let entidad = '';
@@ -60,8 +61,8 @@ class RequerimientoPendienteView {
                 {'data': 'empresa_sede'},
                 {'data': 'usuario'},
                 {'data': 'estado_doc'},
-                {'data': 'fecha_requerimiento'},
                 { render: function (data, type, row) {
+
                     // if(permisoCrearOrdenPorRequerimiento == '1') {
                         let tieneTransformacion= row.tiene_transformacion;
                         let cantidadItemBase= row.cantidad_items_base;
@@ -78,24 +79,25 @@ class RequerimientoPendienteView {
     
                         '</div>');
                         }else{
-                            return ('<div class="btn-group" role="group">'+
-                            '<button type="button" class="btn btn-primary btn-xs" name="btnOpenModalAtenderConAlmacen" title="Atender con almacén" data-id-requerimiento="'+row.id_requerimiento+'"  onclick="requerimientoPendienteView.atenderConAlmacen(this);">'+
-                                '<i class="fas fa-dolly fa-sm"></i>'+
-                            '</button>'+
-                            '<button type="button" class="btn btn-primary btn-xs" name="btnAgregarItemBase" title="Agregar items del base" data-id-requerimiento="'+row.id_requerimiento+'"  onclick="requerimientoPendienteView.openModalAgregarItemBase(this);"  style="background:#b498d0;">'+
-                                '<i class="fas fa-puzzle-piece fa-sm"></i>'+
-                            '</button>'+
-  
-                            '<button type="button" class="btn btn-warning btn-xs" name="btnCrearOrdenPorRequerimiento" title="Crear Orden de Compra" data-id-requerimiento="'+row.id_requerimiento+'"  onclick="requerimientoPendienteView.crearOrdenPorRequerimiento(this);">'+
-                                '<i class="fas fa-file-invoice"></i>'+
-                            '</button>'+
-                            '<button type="button" class="btn btn-danger btn-xs" name="btnCrearOrdenServicioPorRequerimiento" title="Crear Orden de Servicio" data-id-requerimiento="'+row.id_requerimiento+'"  onclick="openModalAgregarItemARequerimiento(this);">'+
-                                '<i class="fas fa-file-invoice fa-sm"></i>'+
-                            '</button>'+
-                            '<button type="button" class="btn btn-info btn-xs" name="btnVercuadroCostos" title="Ver Cuadro Costos" data-id-requerimiento="'+row.id_requerimiento+'"  onclick="requerimientoPendienteView.openModalCuadroCostos(this);">'+
-                                '<i class="fas fa-eye fa-sm"></i>'+
-                            '</button>'+
-                        '</div>');
+                            let openDiv = '<div class="btn-group" role="group">';
+                            let btnAtenderAlmacen= '<button type="button" class="btn btn-primary btn-xs" name="btnOpenModalAtenderConAlmacen" title="Atender con almacén" data-id-requerimiento="'+row.id_requerimiento+'"  onclick="requerimientoPendienteView.atenderConAlmacen(this);"><i class="fas fa-dolly fa-sm"></i></button>';
+                            let btnAgregarItemBase= '<button type="button" class="btn btn-primary btn-xs" name="btnAgregarItemBase" title="Agregar items del base" data-id-requerimiento="'+row.id_requerimiento+'"  onclick="requerimientoPendienteView.openModalAgregarItemBase(this);"  style="background:#b498d0;"><i class="fas fa-puzzle-piece fa-sm"></i></button>';
+                            let btnCrearOrdenCompra= '<button type="button" class="btn btn-warning btn-xs" name="btnCrearOrdenCompraPorRequerimiento" title="Crear Orden de Compra" data-id-requerimiento="'+row.id_requerimiento+'"  onclick="requerimientoPendienteView.crearOrdenCompraPorRequerimiento(this);"><i class="fas fa-file-invoice"></i></button>';
+                            let btnCrearOrdenServicio= '<button type="button" class="btn btn-danger btn-xs" name="btnCrearOrdenServicioPorRequerimiento" title="Crear Orden de Servicio" data-id-requerimiento="'+row.id_requerimiento+'"  onclick="requerimientoPendienteView.crearOrdenServicioPorRequerimiento(this);"><i class="fas fa-file-invoice fa-sm"></i></button>';
+                            let btnVercuadroCostos= '<button type="button" class="btn btn-info btn-xs" name="btnVercuadroCostos" title="Ver Cuadro Costos" data-id-requerimiento="'+row.id_requerimiento+'"  onclick="requerimientoPendienteView.openModalCuadroCostos(this);"><i class="fas fa-eye fa-sm"></i></button>';
+                            let closeDiv = '</div>';
+
+                            let cantidadItemTipoServicio = 0;
+                            row.detalle.forEach(element => {
+                                if(element.id_tipo_item ==2){
+                                    cantidadItemTipoServicio +=1;
+                                }
+                            });
+                            if(cantidadItemTipoServicio >=1){
+                                return (openDiv+btnAtenderAlmacen+btnAgregarItemBase+btnCrearOrdenCompra+btnCrearOrdenServicio+btnVercuadroCostos+closeDiv);
+                            }else{
+                                return (openDiv+btnAtenderAlmacen+btnAgregarItemBase+btnCrearOrdenCompra+btnVercuadroCostos+closeDiv);
+                            }
                         }
                     },
                 }
@@ -1128,8 +1130,13 @@ class RequerimientoPendienteView {
     }
 
     // Crear orden por requerimiento
-    crearOrdenPorRequerimiento(obj){
-        requerimientoPendienteCtrl.crearOrdenPorRequerimiento(obj);
+    crearOrdenCompraPorRequerimiento(obj){
+        requerimientoPendienteCtrl.crearOrdenCompraPorRequerimiento(obj);
+
+    }
+    // Crear orden de servicio por requerimiento
+    crearOrdenServicioPorRequerimiento(obj){
+        requerimientoPendienteCtrl.crearOrdenServicioPorRequerimiento(obj);
 
     }
 }

@@ -14,9 +14,18 @@ class OrdenCtrl{
         customTabla.limpiarTabla;
     }
 
-    obtenerRequerimiento(reqTrueList){
+    obtenerRequerimiento(reqTrueList,tipoOrden){
         this.limpiarTabla('listaDetalleOrden');
+        let idTipoItem = 0;
+        let idTipoOrden = 0;
+        if(tipoOrden== 'COMPRA'){
+            idTipoItem=1;
+            idTipoOrden=2;
+        }else if(tipoOrden =='SERVICIO'){
+            idTipoItem=2;
+            idTipoOrden=3;
 
+        }
         detalleOrdenList=[];
         $.ajax({
             type: 'POST',
@@ -24,9 +33,8 @@ class OrdenCtrl{
             data:{'requerimientoList':reqTrueList},
             dataType: 'JSON',
             success: function(response){
-                // console.log(response);
                 response.det_req.forEach(element => {
-                    if(element.cantidad !=0){
+                    if(element.cantidad !=0 && element.id_tipo_item==idTipoItem){
                         detalleOrdenList.push(
                             {
                                 'id': element.id,
@@ -53,12 +61,11 @@ class OrdenCtrl{
                                 'unidad_medida':element.unidad_medida
                             }
                         );
-                        // console.log(detalleOrdenList);
                         if(detalleOrdenList.length ==0){
                             alert("No puede generar una orden sin antes agregar item(s) base");
         
                         }else{
-                            ordenView.loadHeadRequerimiento(response.requerimiento[0]);
+                            ordenView.loadHeadRequerimiento(response.requerimiento[0],idTipoOrden);
                             ordenView.listar_detalle_orden_requerimiento(detalleOrdenList);
                         }
                     }
