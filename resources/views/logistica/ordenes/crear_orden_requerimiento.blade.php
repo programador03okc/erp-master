@@ -27,7 +27,7 @@
                 <fieldset class="group-table">   
                     <div class="row">
                         <div class="col-md-2"  id="group-tipo_orden">
-                            <h5>Tipo de Orden</h5>
+                            <h5>Tipo de orden</h5>
                             <select class="form-control activation" name="id_tp_documento" >
                                 <option value="0">Elija una opción</option>
                                 @foreach ($tp_documento as $tp)
@@ -50,11 +50,11 @@
                         </div>
 
                         <div class="col-md-2" id="group-codigo_orden" >
-                            <h5>Código Orden Softlink</h5>
+                            <h5>Código orden softlink</h5>
                             <input class="form-control activation" name="codigo_orden" type="text" placeholder="">
                         </div>
                         <div class="col-md-2" id="group-fecha_emision_orden" >
-                            <h5>Fecha Emisión</h5>
+                            <h5>Fecha emisión</h5>
                             <div style="display:flex">
                                 <input class="form-control activation" name="fecha_emision" type="datetime-local"  value={{ date('Y-m-d\TH:i') }}>
                                 <button type="button" class="group-text" onClick="fechaHoy();">
@@ -81,7 +81,7 @@
         </div>
         <div class="row">
             <div class="col-md-12">
-                <h4>Datos del Proveedor</h4>
+                <h4>Datos del proveedor</h4>
                 <fieldset class="group-table">   
                     <div class="row">
                         <div class="col-md-6" id="group-nombre_proveedor">
@@ -97,14 +97,14 @@
                             </div>
                         </div>
                         <div class="col-md-6" id="group-direccion_proveedor">
-                            <h5>Dirección de Proveedor</h5>
+                            <h5>Dirección de proveedor</h5>
                             <div style="display:flex;">
                                 <input type="text" class="form-control" name="direccion_proveedor" readOnly>
                             </div>
                         </div>
 
                         <div class="col-md-3" id="group-ubigeo_proveedor">
-                            <h5>Ubigeo de Proveedor</h5>
+                            <h5>Ubigeo de proveedor</h5>
                             <div style="display:flex;">
                                 <input class="oculto" name="ubigeo_proveedor">
                                 <input type="text" class="form-control" name="ubigeo_proveedor_descripcion" readOnly >
@@ -113,7 +113,7 @@
                         </div>
 
                         <div class="col-md-3" id="group-contacto_proveedor_nombre">
-                            <h5>Nombre de Contacto</h5>
+                            <h5>Nombre de contacto</h5>
                             <div style="display:flex;">
                                 <input class="oculto" name="id_contacto_proveedor">
                                 <input type="text" class="form-control" name="contacto_proveedor_nombre" readOnly>
@@ -125,7 +125,7 @@
                         </div>
 
                         <div class="col-md-3" id="group-contacto_proveedor_telefono">
-                            <h5>Telefono de Contacto</h5>
+                            <h5>Telefono de contacto</h5>
                             <div style="display:flex;">
                                 <input type="text" class="form-control" name="contacto_proveedor_telefono" readOnly >
                             </div>
@@ -138,11 +138,11 @@
 
         <div class="row">
             <div class="col-md-12">
-                <h4>Condición de Compra </h4>
+                <h4>Condición de compra </h4>
                 <fieldset class="group-table">   
                     <div class="row">
                         <div class="col-md-3" id="group-condicion_compra-forma_pago">
-                            <h5>Forma de Pago</h5>
+                            <h5>Forma de pago</h5>
                             <div style="display:flex;">
                                 <select class="form-control group-elemento activation" name="id_condicion" onchange="ordenView.handlechangeCondicion(event);"
                                     style="width:100%; text-align:center;" >
@@ -150,13 +150,13 @@
                                         <option value="{{$cond->id_condicion_pago}}">{{$cond->descripcion}}</option>
                                     @endforeach
                                 </select>
-                                <input type="number" name="plazo_dias"  class="form-control group-elemento invisible" style="text-align:right; width:80px;" >
+                                <input type="number" name="plazo_dias"  min="0" class="form-control group-elemento invisible" style="text-align:right; width:80px;" >
                                 <input type="text" value="días" name="text_dias" class="form-control group-elemento invisible" style="width:40px;text-align:center;" readOnly/>
                             </div>
                         </div>
 
                         <div class="col-md-2" id="group-condicion_compra-plazo_entrega">
-                            <h5>Plazo Entrega</h5>
+                            <h5>Plazo entrega</h5>
                             <div style="display:flex;">
                                 <input type="number" name="plazo_entrega" class="form-control group-elemento activation" style="text-align:right;" >
                                 <input type="text" value="días" class="form-control group-elemento" style="width:60px;text-align:center;" readOnly >
@@ -171,13 +171,13 @@
                             </div>
                         </div>
                         <div class="col-md-2" id="group-condicion_compra-ejecutivo_responsable">
-                            <h5>Ejecutivo Responsable</h5>
+                            <h5>Ejecutivo responsable</h5>
                             <div style="display:flex;">
                                 <input type="text" name="ejecutivo_responsable" class="form-control group-elemento" readOnly >
                             </div>
                         </div>
                         <div class="col-md-3" id="group-tipo_documento">
-                            <h5>Tipo de Documento</h5>
+                            <h5>Tipo de documento</h5>
                             <select class="form-control activation" name="id_tp_doc">
                                 <option value="0">Elija una opción</option>
                                 @foreach ($tp_doc as $tp)
@@ -197,7 +197,7 @@
 
         <div class="row">
             <div class="col-md-12">
-                <h4>Datos para el Despacho </h4>
+                <h4>Datos para el despacho </h4>
                 <fieldset class="group-table">   
                     <div class="row">
                         <div class="col-md-6" id="group-datos_para_despacho-direccion_destino">
@@ -207,7 +207,7 @@
                             </div>
                         </div>
                         <div class="col-md-3" id="group-datos_para_despacho-ubigeo_entrega">
-                            <h5>Ubigeo Entrega</h5>
+                            <h5>Ubigeo entrega</h5>
                             <div style="display:flex;">
                                 <input class="oculto" name="id_ubigeo_destino"/>
                                 <input type="text" name="ubigeo_destino" class="form-control group-elemento" readOnly >
@@ -218,7 +218,7 @@
                         </div>
 
                         <div class="col-md-3" id="group-datos_para_despacho-personal_autorizado">
-                            <h5>Personal Autorizado</h5>
+                            <h5>Personal autorizado</h5>
                             <div style="display:flex;">
                                 <input class="oculto" name="id_trabajador"/>
                                 <input type="text" name="nombre_persona_autorizado" class="form-control group-elemento" readOnly >

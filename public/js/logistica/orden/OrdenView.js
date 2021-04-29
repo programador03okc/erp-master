@@ -63,6 +63,9 @@ class OrdenView {
     }
 
     loadHeadRequerimiento(data,idTipoOrden){
+        if(idTipoOrden==3){ // orden de servicio
+            this.ocultarBtnCrearProducto();
+        }
         document.querySelector("select[name='id_tp_documento']").value=idTipoOrden;
         document.querySelector("img[id='logo_empresa']").setAttribute("src",data.logo_empresa);
         document.querySelector("input[name='cdc_req']").value=data.codigo_oportunidad?data.codigo_oportunidad:data.codigo;
@@ -605,8 +608,8 @@ function save_orden(data, action){
     }
 }
 
-function anular_orden_compra(ids){
-    baseUrl = '/anular_orden_compra/'+ids;
+function anular_orden(ids){
+    baseUrl = 'anular-orden/'+ids;
     $.ajax({
         type: 'GET',
         url: baseUrl,

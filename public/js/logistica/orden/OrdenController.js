@@ -482,7 +482,7 @@ class OrdenCtrl{
                     data: data,
                     dataType: 'JSON',
                     success: function(response){
-                        console.log(response);
+                        // console.log(response);
                         if (response > 0){
                             alert('Orden de registrada con éxito');
                             changeStateButton('guardar');
@@ -490,6 +490,7 @@ class OrdenCtrl{
                             changeStateInput('form-crear-orden-requerimiento', true);
     
                             sessionStorage.removeItem('reqCheckedList');
+                            sessionStorage.removeItem('tipoOrden');
                             window.open("/logistica/gestion-logistica/orden/por-requerimiento/generar-orden-pdf/"+response, '_blank');
                             // location.href = "/logistica/gestion-logistica/orden/por-requerimiento/index";
     
