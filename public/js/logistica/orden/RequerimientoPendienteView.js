@@ -153,28 +153,28 @@ class RequerimientoPendienteView {
                     }
                 },
                 { render: function (data, type, row) {     
-                    return `${row.orden_codigo_softlink}`;
+                    return `${row.orden_codigo_softlink?row.orden_codigo_softlink:''}`;
     
                     }
                 },
                 { render: function (data, type, row) {     
-                    return `${row.concepto}`;
+                    return `${row.concepto?row.concepto:''}`;
                     }
                 },
                 { render: function (data, type, row) {     
-                    return `${row.razon_social_cliente}`;
+                    return `${row.razon_social_cliente?row.razon_social_cliente:''}`;
                     }
                 },
                 { render: function (data, type, row) {     
-                    return `${row.razon_social}`;
+                    return `${row.razon_social?row.razon_social:''}`;
                     }
                 },
                 { render: function (data, type, row) {     
-                    return `${row.subcategoria}`;
+                    return `${row.subcategoria?row.subcategoria:''}`;
                     }
                 },
                 { render: function (data, type, row) {     
-                    return `${row.categoria}`;
+                    return `${row.categoria?row.categoria:''}`;
                     }
                 },
                 { render: function (data, type, row) {     
@@ -182,15 +182,15 @@ class RequerimientoPendienteView {
                     }
                 },
                 { render: function (data, type, row) {     
-                    return `${row.alm_prod_descripcion}`;
+                    return `${row.alm_prod_descripcion?row.alm_prod_descripcion:''}`;
                     }
                 },
                 { render: function (data, type, row) {     
-                    return `${row.orden_fecha}`;
+                    return `${row.orden_fecha?row.orden_fecha:''}`;
                     }
                 },
                 { render: function (data, type, row) {     
-                    return `${row.orden_plazo_entrega}`;
+                    return `${row.orden_plazo_entrega?row.orden_plazo_entrega:''}`;
                     }
                 },
                 { render: function (data, type, row) {     

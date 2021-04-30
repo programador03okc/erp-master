@@ -435,6 +435,7 @@ class OrdenCtrl{
         var codigo_orden = $('[name=codigo_orden]').val();
         var id_proveedor = $('[name=id_proveedor]').val();
         var plazo_entrega = $('[name=plazo_entrega]').val();
+        var id_tp_documento = $('[name=id_tp_documento]').val();
         var msj = '';
         if (codigo_orden == ''){
             msj+='\n Es necesario que ingrese un código de orden Softlink';
@@ -442,7 +443,7 @@ class OrdenCtrl{
         if (id_proveedor == ''){
             msj+='\n Es necesario que seleccione un Proveedor';
         }
-        if (plazo_entrega == ''){
+        if (id_tp_documento!= '3' && plazo_entrega == ''){
             msj+='\n Es necesario que ingrese un plazo de entrega';
         }
         let cantidadInconsistenteInputPrecio=0;
@@ -475,6 +476,9 @@ class OrdenCtrl{
             var msj = this.validaOrdenRequerimiento();
             if (msj.length > 0){
                 alert(msj);
+                changeStateButton('editar');
+                changeStateInput('form-crear-orden-requerimiento', false);
+
             } else{
                 $.ajax({
                     type: 'POST',

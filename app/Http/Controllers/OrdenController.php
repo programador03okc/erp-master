@@ -402,7 +402,7 @@ class OrdenController extends Controller
         ->leftJoin('almacen.alm_det_req', 'alm_det_req.id_detalle_requerimiento', '=', 'log_det_ord_compra.id_detalle_requerimiento')
         ->leftJoin('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'alm_det_req.id_requerimiento')
 
-        ->where([['log_det_ord_compra.estado', '!=', 7]])
+        ->where([['log_det_ord_compra.tipo_item_id', '!=', 2],['log_det_ord_compra.estado', '!=', 7]])
         ->get();
 
         $detalle_orden_list = collect($detalle_orden_obj)->map(function($x){ return (array) $x; })->toArray(); 
@@ -477,6 +477,7 @@ class OrdenController extends Controller
             'log_det_ord_compra.id_unidad_medida as detalle_orden_id_unidad_medida',
             'log_det_ord_compra.subtotal as detalle_orden_subtotal',
             'log_det_ord_compra.id_detalle_requerimiento as detalle_orden_id_detalle_requerimiento',
+            'log_det_ord_compra.tipo_item_id',
             'alm_det_req.observacion',
             'alm_req.concepto',
             'alm_req.id_cliente',
@@ -2675,24 +2676,16 @@ class OrdenController extends Controller
                     'id_proveedor' => $request->id_proveedor,
                     'id_contacto' => $request->id_contacto_proveedor?$request->id_contacto_proveedor:null,
                     'codigo' => $codigo?$codigo:null,
-                // 'monto_subtotal' => $request->monto_subtotal?$request->monto_subtotal:null,
-                // 'igv_porcentaje' => $request->igv_porcentaje?$request->igv_porcentaje:null,
-                // 'monto_igv' => $request->monto_igv?$request->monto_igv:null,
-                // 'monto_total' => $request->monto_total?$request->monto_total:null,
                     'plazo_entrega' => $request->plazo_entrega?$request->plazo_entrega:null,
                     'id_condicion' => $request->id_condicion?$request->id_condicion:null,
                     'plazo_dias' => $request->plazo_dias?$request->plazo_dias:null,
                     'id_cotizacion' => $request->id_cotizacion?$request->id_cotizacion:null,
-                // 'id_cta_principal' => $request->id_cta_principal?$request->id_cta_principal:null,
-                // 'id_cta_alternativa' => $request->id_cta_alternativa?$request->id_cta_alternativa:null,
-                // 'id_cta_detraccion' => $request->id_cta_detraccion?$request->id_cta_detraccion:null,
                     'id_tp_doc' =>  isset($request->id_tp_doc)?$request->id_tp_doc:null,
                     'personal_autorizado' => $request->id_trabajador?$request->id_trabajador:null,
                     'id_occ' => $request->id_cc?$request->id_cc:null,
                     'id_sede' => $request->id_sede?$request->id_sede:null,
                     'direccion_destino' => $request->direccion_destino?$request->direccion_destino:null,
                     'ubigeo_destino' => isset($request->id_ubigeo_destino)?$request->id_ubigeo_destino:null,
-                    // 'id_requerimiento' => $request->id_requerimiento,
                     'en_almacen' => false,
                     'estado' => 17,
                     'codigo_softlink' => ($request->codigo_orden!==null ? $request->codigo_orden : ''),
@@ -2702,26 +2695,6 @@ class OrdenController extends Controller
 
             $dataDetalle = $request->detalle;
             // Debugbar::info($request->plazo_dias);
-            // Debugbar::info($request->detalle);
-            // Debugbar::info($request['detalle']);
-            // Debugbar::info(json_encode($request));
-            // Debugbar::info(json_encode($request->detalle));
-            // Debugbar::info($dataDetalle);
-
-
-            // if(is_array($dataDetalle)){
-            //     foreach($dataDetalle as $d){
-            //         //Do something.
-            //         $done='oki';
-            //     }
-            // }else{
-            //     $done='nop';
-
-            // }
-            // return ($done);
-            // return ($request->detalle_requerimiento);
-            // return response()->json($request->detalle_requerimiento);
-
 
             $allidReqList=[];
             foreach($dataDetalle as $d) {
@@ -2741,6 +2714,7 @@ class OrdenController extends Controller
                             'descripcion_adicional'=> $d['descripcion_adicional'],
                             // 'subtotal'=> ($d->precio_referencial * $d->cantidad),
                             'subtotal'=> $d['subtotal']?$d['subtotal']:0,
+                            'tipo_item_id'=> $d['id_tipo_item']?$d['id_tipo_item']:null,
                             'estado'=> 17
                             // 'fecha_registro'=> date('Y-m-d H:i:s')
                         ]);
@@ -2792,7 +2766,7 @@ class OrdenController extends Controller
             $countAtendido=0;
             
                 foreach ($dataDetalle as $d) {
-                    if(($d['cantidad_a_comprar'] + $d['stock_comprometido'] ) == $d['cantidad'] ){
+                    if(($d['id_tipo_item']==1) && (($d['cantidad_a_comprar'] + $d['stock_comprometido'] ) == $d['cantidad']) ){
                         $countAtendido+=1;
                         $idRequerimientoAtentidosTotalList[]=$d['id_requerimiento'];
 
@@ -2808,7 +2782,7 @@ class OrdenController extends Controller
                         }
 
                     }
-                    if((($d['cantidad_a_comprar'] + $d['stock_comprometido'] )>0) && (($d['cantidad_a_comprar'] + $d['stock_comprometido'] ) < $d['cantidad'])){
+                    if(($d['id_tipo_item']==1) && (($d['cantidad_a_comprar'] + $d['stock_comprometido'] )>0) && (($d['cantidad_a_comprar'] + $d['stock_comprometido'] ) < $d['cantidad'])){
                         $idRequerimientoAtentidosParcialList[]=$d['id_requerimiento'];
                         if($this->cambioElEstadoActualDetalleReq($d['id_detalle_requerimiento']) == false ){
                             DB::table('almacen.alm_det_req')
@@ -2821,6 +2795,18 @@ class OrdenController extends Controller
                                 
                             ); 
                         }
+                    }
+
+                    if(($d['id_tipo_item']==2)){ // servicio
+                        DB::table('almacen.alm_det_req')
+                        ->where('id_detalle_requerimiento',$d['id_detalle_requerimiento'])
+                        ->update(
+                            [
+                                'estado'=>5,
+                                'stock_comprometido'=> $d['stock_comprometido']?$d['stock_comprometido']:0
+                            ]
+                            
+                        ); 
                     }
                 } 
                 if(count($idRequerimientoAtentidosTotalList)>0){
@@ -2989,6 +2975,7 @@ class OrdenController extends Controller
                         'id_unidad_medida'=> $d['id_unidad_medida'],
                         'precio'=> $d['precio_unitario'],
                         'descripcion_adicional'=> $d['descripcion_producto'],
+                        'tipo_item_id'=> $d['id_tipo_item']?$d['id_tipo_item']:null,
                         'subtotal'=> $d['subtotal']?$d['subtotal']:0,
                         'estado'=> $d['estado']?$d['estado']:17
                     ]);
@@ -3007,6 +2994,7 @@ class OrdenController extends Controller
                         'id_unidad_medida'=> $d['id_unidad_medida'],
                         'precio'=> $d['precio_unitario'],
                         'descripcion_adicional'=> $d['descripcion_producto'],
+                        'tipo_item_id'=> $d['id_tipo_item']?$d['id_tipo_item']:null,
                         'subtotal'=> $d['subtotal']?$d['subtotal']:0,
                         'estado'=> 1
                     ]);
