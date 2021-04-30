@@ -656,12 +656,14 @@ class LogisticaController extends Controller
                 'alm_req.id_moneda',
                 'alm_req.id_proyecto',
                 'proy_proyecto.codigo as codigo_proyecto',
+                'proy_proyecto.descripcion as descripcion_proyecto',
                 'alm_req.id_periodo',
                 'alm_req.id_prioridad',
                 'adm_estado_doc.estado_doc',
                 'adm_estado_doc.bootstrap_color',
                 'sis_sede.id_empresa',
                 'alm_req.id_grupo',
+                'adm_grupo.descripcion as grupo_descripcion',
                 'contrib.razon_social as razon_social_empresa',
                 'sis_sede.codigo as codigo_sede_empresa',
                 'adm_empresa.logo_empresa',
@@ -731,12 +733,14 @@ class LogisticaController extends Controller
                     'id_moneda' => $data->id_moneda,
                     'id_proyecto' => $data->id_proyecto,
                     'codigo_proyecto' => $data->codigo_proyecto,
+                    'descripcion_proyecto' => $data->descripcion_proyecto,
                     'id_periodo' => $data->id_periodo,
                     'estado_doc' => $data->estado_doc,
                     'bootstrap_color' => $data->bootstrap_color,
                     'id_prioridad' => $data->id_prioridad,
                     'id_empresa' => $data->id_empresa,
                     'id_grupo' => $data->id_grupo,
+                    'grupo_descripcion' => $data->grupo_descripcion,
                     'id_sede' => $data->id_sede,
                     'razon_social_empresa' => $data->razon_social_empresa,
                     'codigo_sede_empresa' => $data->codigo_sede_empresa,
@@ -1286,19 +1290,24 @@ class LogisticaController extends Controller
                     <td class="verticalTop">' . $requerimiento['requerimiento'][0]['razon_social_empresa'].' - '.$requerimiento['requerimiento'][0]['codigo_sede_empresa'] . '</td>
                 </tr>
                 <tr>
-                    <td class="subtitle">Área</td>
+                    <td class="subtitle">Gerencia</td>
                     <td class="subtitle verticalTop">:</td>
-                    <td class="verticalTop">' . $requerimiento['requerimiento'][0]['area_descripcion'] . '</td>
+                    <td class="verticalTop">' . $requerimiento['requerimiento'][0]['grupo_descripcion'] . '</td>
                 </tr>
                 <tr>
                     <td class="subtitle top">Proyecto</td>
                     <td class="subtitle verticalTop">:</td>
-                    <td class="verticalTop justify" colspan="4" ></td>
+                    <td class="verticalTop justify" colspan="4" >'.$requerimiento['requerimiento'][0]['codigo_proyecto'].' - '. $requerimiento['requerimiento'][0]['descripcion_proyecto'] . '</td>
                 </tr>    
                 <tr>
                     <td class="subtitle">Presupuesto</td>
                     <td class="subtitle verticalTop">:</td>
                     <td class="verticalTop"></td>
+                </tr>
+                <tr>
+                    <td class="subtitle">Observación</td>
+                    <td class="subtitle verticalTop">:</td>
+                    <td class="verticalTop">'. $requerimiento['requerimiento'][0]['observacion'] .'</td>
                 </tr>
                 </table>
                 <br>';
