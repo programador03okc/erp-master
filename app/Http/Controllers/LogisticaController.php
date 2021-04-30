@@ -524,13 +524,21 @@ class LogisticaController extends Controller
 
     public function mostrar_requerimientos($option)
     {
+       
+        $grupos = Auth::user()->getAllGrupo();
+        
+        foreach($grupos as $grupo){
+            $idGrupoList[]=$grupo->id_grupo;
+        }
+
         if($option == 'SHOW_ALL'){
             $hasWhere = ['alm_req.estado','>',0];
         }
         if($option == 'ONLY_ACTIVOS'  ){
             $hasWhere = ['alm_req.estado', '!=', 7];
-
         }
+    
+    
 
         $alm_req = DB::table('almacen.alm_req')
             ->join('almacen.alm_tp_req', 'alm_req.id_tipo_requerimiento', '=', 'alm_tp_req.id_tipo_requerimiento')
@@ -595,6 +603,7 @@ class LogisticaController extends Controller
 
             )
             ->where([$hasWhere])
+            ->whereIn('alm_req.id_grupo',$idGrupoList)
             ->orderBy('alm_req.id_requerimiento', 'desc')
             ->get();
         return response()->json(["data" => $alm_req]);
