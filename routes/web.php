@@ -1253,6 +1253,8 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::post('guardar_producto', 'AlmacenController@guardar_producto')->name('guardar-producto');
 				Route::post('actualizar_series', 'OrdenesPendientesController@actualizar_series')->name('actualizar-series');
 				Route::post('cambio_serie_numero', 'OrdenesPendientesController@cambio_serie_numero')->name('cambio-series');
+				Route::get('verGuiaCompraTransferencia/{id}', 'TransferenciaController@verGuiaCompraTransferencia');
+				Route::get('transferencia/{id}', 'OrdenesPendientesController@transferencia');
 
 			});
 

@@ -16,8 +16,10 @@ function open_guia_create(data){
     $('[name=id_persona]').val(data.id_persona);
     $('[name=id_requerimiento]').val(data.id_requerimiento);
     $('[name=almacen_descripcion]').val(data.almacen_descripcion);
-    $('#serie').text('');
-    $('#numero').text('');
+    $('[name=serie]').val('');
+    $('[name=numero]').val('');
+    // $('#serie').text('');
+    // $('#numero').text('');
     detalle = [];
     listarDetalleOrdenDespacho(data.id_od);
     // cargar_almacenes(data.id_sede, 'id_almacen');

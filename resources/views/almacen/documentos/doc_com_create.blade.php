@@ -9,7 +9,7 @@
                 <div class="modal-body">
                     <input type="text" style="display:none;" name="id_doc_com">
                     <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <h5>Tipo de Documento</h5>
                             <select class="form-control js-example-basic-single" name="id_tp_doc">
                                 <option value="0">Elija una opción</option>
@@ -18,7 +18,7 @@
                                 @endforeach
                             </select>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <h5>Serie-Número</h5>
                             <div class="input-group">
                                 <input type="text" class="form-control" name="serie_doc" placeholder="F001" required>
@@ -26,18 +26,27 @@
                                 <input type="text" class="form-control" name="numero_doc" onBlur="ceros_numero_doc();" required placeholder="000000">
                             </div>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <h5>Fecha de Emisión</h5>
                             <input type="date" class="form-control" name="fecha_emision_doc">
                         </div>
+                        <div class="col-md-3">
+                            <h5>Empresa-Sede</h5>
+                            <select class="form-control js-example-basic-single" name="id_sede">
+                                <option value="0">Elija una opción</option>
+                                @foreach ($sedes as $sede)
+                                    <option value="{{$sede->id_sede}}">{{$sede->descripcion}}</option>
+                                @endforeach
+                            </select>
+                        </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <h5>Proveedor</h5>
                             <input type="text" style="display:none;" name="id_proveedor">
                             <input type="text" class="form-control" name="proveedor_razon_social" readOnly>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <h5>Importe Total</h5>
                             <div style="display:flex;">
                                 <input type="text" name="simbolo" class="form-control group-elemento" style="width:40px;text-align:center;" readOnly/>
@@ -50,7 +59,7 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <h5>Serie-Número (Guía)</h5>
                             <div class="input-group">
                                 <input type="text" style="display:none;" name="id_guia" >
@@ -59,13 +68,20 @@
                                 <input type="text" class="form-control" name="numero_guia" readOnly>
                             </div>
                         </div>
-                    </div>
-                    <!-- <div class="row">
-                        <div class="col-md-12">
-                            <h5>Motivo</h5>
-                            <textarea name="motivo" id="motivo" cols="56" rows="3"></textarea>
+                        <div class="col-md-3">
+                            <h5>Condición de compra</h5>
+                            <div style="display:flex;">
+                                <select class="form-control group-elemento" name="id_condicion" style="width:150px;">
+                                    <option value="0">Elija una opción</option>
+                                    @foreach ($condiciones as $con)
+                                        <option value="{{$con->id_condicion_pago}}">{{$con->descripcion}}</option>
+                                    @endforeach
+                                </select>
+                                <input type="text" name="credito_dias" class="form-control group-elemento" style="text-align: right;"/>
+                                <input type="text" class="form-control group-elemento" style="width:50px;text-align:center;" value="días" readOnly/>
+                            </div>
                         </div>
-                    </div> -->
+                    </div>
                     <div class="row">
                         <div class="col-md-12">
                             <table class="mytable table table-condensed table-bordered table-okc-view" width="100%" 

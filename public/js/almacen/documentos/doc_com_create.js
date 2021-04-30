@@ -37,6 +37,10 @@ function obtenerGuía(id){
             
             if (response['detalle'].length > 0){
                 listaItems = response['detalle'];
+                $('[name=id_condicion]').val(listaItems[0].id_condicion);
+                $('[name=credito_dias]').val(listaItems[0].plazo_dias);
+                $('[name=id_sede]').val(listaItems[0].id_sede);
+                
                 totales = {'porcentaje_igv' : parseFloat(response['igv'])};
                 mostrarListaItems();
             }

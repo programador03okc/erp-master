@@ -13,16 +13,18 @@ function documentosVer(id){
                 html+=`<tr>
                     <th colSpan="2">Documento: </th>
                     <td colSpan="3">${element.tp_doc+' '+element.serie+'-'+element.numero}</td>
-                    <td></td>
-                    <th colSpan="3">Fecha Emisión: </th>
-                    <td colSpan="3">${formatDate(element.fecha_emision)}</td>
+                    <th colSpan="2">Fecha Emisión: </th>
+                    <td colSpan="2">${formatDate(element.fecha_emision)}</td>
+                    <th colSpan="2">Empresa-Sede: </th>
+                    <td colSpan="3">${element.sede_descripcion}</td>
                 </tr>
                 <tr>
                     <th colSpan="2">Proveedor: </th>
                     <td colSpan="3">${element.nro_documento+' - '+element.razon_social}</td>
-                    <td></td>
-                    <th colSpan="3">Importe: </th>
-                    <td colSpan="3">${formatNumber.decimal(element.total_a_pagar,element.simbolo,-2)}</td>
+                    <th colSpan="2">Importe: </th>
+                    <td colSpan="2">${formatNumber.decimal(element.total_a_pagar,element.simbolo,-2)}</td>
+                    <th colSpan="2">Condición: </th>
+                    <td colSpan="3">${element.condicion_descripcion+(element.credito_dias!==null?(element.credito_dias+' días'):'')}</td>
                 </tr>
                 <tr><td colSpan="12"></td></tr>
                 <tr style="background-color: Gainsboro;">

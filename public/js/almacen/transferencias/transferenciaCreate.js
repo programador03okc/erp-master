@@ -70,8 +70,12 @@ function generar_transferencia(){
         success: function(response){
             console.log(response);
             alert(response);
-            listarTransferenciasPorEnviar();
-            $('#modal-guia_com_ver').modal('hide')
+            $('#modal-guia_com_ver').modal('hide');
+            let formName = document.getElementsByClassName('page-main')[0].getAttribute('type');
+            
+            if (formName =='transferencias'){
+                listarTransferenciasPorEnviar();
+            }
         }
     }).fail( function( jqXHR, textStatus, errorThrown ){
         console.log(jqXHR);

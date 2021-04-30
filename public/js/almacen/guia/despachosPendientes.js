@@ -177,7 +177,7 @@ function listarDespachosEntregados(permiso){
             {'aTargets': [0], 'sClass': 'invisible'},
             {'render': function (data, type, row){
                     if (permiso == '1') {
-                        return `<button type="button" class="salida btn btn-warning boton" data-toggle="tooltip" 
+                        return `<button type="button" class="salida btn btn-info boton" data-toggle="tooltip" 
                             data-placement="bottom" title="Ver Salida" data-id="${row['id_mov_alm']}">
                             <i class="fas fa-file-alt"></i></button>
 
@@ -185,11 +185,11 @@ function listarDespachosEntregados(permiso){
                                 data-placement="bottom" title="Anular Salida" data-id="${row['id_mov_alm']}" data-guia="${row['id_guia_ven']}"
                                 data-od="${row['id_od']}"><i class="fas fa-trash"></i></button>
                                 
-                            <button type="button" class="cambio btn btn-success boton" data-toggle="tooltip" 
+                            <button type="button" class="cambio btn btn-warning boton" data-toggle="tooltip" 
                                 data-placement="bottom" title="Cambiar Serie-Número" data-id="${row['id_mov_alm']}" data-guia="${row['id_guia_ven']}"
                                 data-od="${row['id_od']}"><i class="fas fa-sync-alt"></i></button>`;
                     } else {
-                        return '<button type="button" class="salida btn btn-warning boton" data-toggle="tooltip" '+
+                        return '<button type="button" class="salida btn btn-info boton" data-toggle="tooltip" '+
                             'data-placement="bottom" title="Ver Salida" data-id="'+row['id_mov_alm']+'">'+
                             '<i class="fas fa-file-alt"></i></button>'
                     }

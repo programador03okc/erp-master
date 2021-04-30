@@ -1,5 +1,5 @@
 <div class="modal fade" tabindex="-1" role="dialog" id="modal-guia_create"  style="overflow-y: scroll;">
-    <div class="modal-dialog" style="width:900px;">
+    <div class="modal-dialog" style="width:1200px;">
         <div class="modal-content" >
             <form id="form-guia_create">
                 <div class="modal-header">
@@ -77,9 +77,9 @@
                                         <th>Unitario</th>
                                         <th>Total</th>
                                         <th width="5%">
-                                            <i class="fas fa-plus-circle icon-tabla green boton" 
+                                            <!-- <i class="fas fa-plus-circle icon-tabla green boton" 
                                             data-toggle="tooltip" data-placement="bottom" 
-                                            title="Agregar Item" onClick="productoModal();"></i>
+                                            title="Agregar Item" onClick="productoModal();"></i> -->
                                         </th>
                                     </tr>
                                 </thead>

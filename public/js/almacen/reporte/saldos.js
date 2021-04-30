@@ -42,7 +42,7 @@ function listarSaldos(url){
             {'render':
                 function (data, type, row){
                     if(row['cantidad_reserva'] !== null){
-                        return '<h4><span class="ver label label-danger" data-id="'+row['id_producto']+'" data-almacen="'+row['id_almacen']+'" >'+row['cantidad_reserva']+' </span></h4>';
+                        return '<h5 style="margin-top: 0px;margin-bottom: 0px;"><span class="ver label label-danger" data-id="'+row['id_producto']+'" data-almacen="'+row['id_almacen']+'" >'+row['cantidad_reserva']+' </span></h5>';
                         // return '<button type="button" class="ver btn btn-info boton" data-toggle="tooltip" '+
                         // 'data-placement="bottom" title="Ver Requerimientos" '+
                         // '<i class="fas fa-list-ul"></i></button>';
@@ -96,7 +96,7 @@ function verRequerimientosReservados(id_producto,id_almacen){
                 '<td><label class="lbl-codigo" title="Abrir Requerimiento" onClick="abrir_requerimiento('+element.id_requerimiento+')">'+element.codigo+'</label></td>'+
                 '<td>'+element.concepto+'</td>'+
                 '<td>'+element.almacen_descripcion+'</td>'+
-                '<td>'+(element.stock_comprometido!==null?element.cantidad:element.cantidad)+'</td>'+
+                '<td>'+(element.stock_comprometido!==null?element.stock_comprometido:element.cantidad)+'</td>'+
                 '<td>'+element.nombre_corto+'</td>'+
                 '</tr>';
                 i++;
