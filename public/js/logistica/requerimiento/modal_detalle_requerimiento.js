@@ -387,7 +387,7 @@ function agregarItem(){
             // tdBtnAction.className = classHiden;
             var btnAction = '';
             var hasAttrDisabled ='';
-                if(document.querySelector("button[id='btnEditar']").hasAttribute('disabled')== false){
+                if(document.querySelector("button[id='btnEditar']").hasAttribute('disabled')== true){
                     hasAttrDisabled ='disabled';
                 }else{
                     hasAttrDisabled = '';
@@ -406,7 +406,7 @@ function agregarItem(){
             btnAction += `<button type="button" class="btn btn-primary btn-xs activation" name="btnCentroCostos" data-toggle="tooltip" title="Centro de Costos" style="background: #3c763d;" onClick="centroCostosModal(event, ${a});" ${hasAttrDisabled}><i class="fas fa-donate"></i></button>`;
             if(tipo_requerimiento ==3){ // tipo = Bienes y Servicios
                 // btnAction += `<button type="button" class="btn btn-primary btn-xs" name="btnBuscarEnAlmacen" data-toggle="tooltip" title="Buscar Stock en Almacenes" style="background:#b498d0;" onClick="buscarStockEnAlmacenesModal(${data_item[a].id_item});" ${hasAttrDisabled}><i class="fas fa-warehouse"></i></button>`;
-                btnAction += `<button type="button" class="btn btn-xs activation" name="btnAlmacenReservaModal" data-toggle="tooltip" title="Almacén Reserva" onClick="modalAlmacenReserva(this, ${a});" ${hasAttrDisabled} style="background:#b498d0; color: #f5f5f5;"><i class="ffas fa-warehouse"></i></button>`;
+                btnAction += `<button type="button" class="btn btn-xs activation" name="btnAlmacenReservaModal" data-toggle="tooltip" title="Almacén Reserva" onClick="modalAlmacenReserva(this, ${a});" ${hasAttrDisabled} style="background:#b498d0; color: #f5f5f5;"><i class="fas fa-warehouse"></i></button>`;
 
             }
             if(tipo_requerimiento ==2){ // tipo = CMS

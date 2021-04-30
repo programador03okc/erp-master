@@ -20,7 +20,12 @@ function mostrar_requerimiento(IdorCode){
         url: baseUrl,
         dataType: 'JSON',
         success: function(response){
-            // console.log(auth_user);
+            console.log(auth_user);
+            let idGrupoList=[];
+            auth_user.grupos.forEach(element => {
+                idGrupoList.push(element.id_grupo);
+            });
+
             data = response;
             
             let permisoBtn = false; 
@@ -31,10 +36,10 @@ function mostrar_requerimiento(IdorCode){
                 if(r.id_rol ==6){ permisoBtn = true; }
             });
 
-            if(auth_user.id_usuario == 64){ // id usuario = Ricardo
+            // if(auth_user.id_usuario == 64 || idGrupoList.includes(response['requerimiento'][0].id_grupo)){ 
+            if((auth_user.id_usuario == 64 || auth_user.id_usuario == response['requerimiento'][0].id_usuario) && ([1,3].includes(response['requerimiento'][0].estado))){ // id usuario = Ricardo
                 permisoBtn = true;
             }
- 
                 if(permisoBtn) {// si el req tiene observaciones y el usuario no es el propietario
                     document.querySelector("button[id='btnEditar']").removeAttribute('disabled');
                     document.querySelector("button[id='btnAnular']").removeAttribute('disabled');
