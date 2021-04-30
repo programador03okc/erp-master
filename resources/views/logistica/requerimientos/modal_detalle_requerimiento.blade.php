@@ -61,10 +61,10 @@
                                 <input type="number" min="1" class="form-control input-sm activation" name="cantidad_item" step="1">
                             </div>
                         </div>
-                        <div class="col-md-2" hidden>
+                        <div class="col-md-2">
                             <div class="input-group-okc">
                                 <div class="form-group">
-                                    <h5>Precio Ref. <i class="fas fa-question-circle" data-toggle="tooltip" data-placement="top" title="Precio Unitario Incluye IGV"></i></h5>
+                                    <h5>Precio Unitario <i class="fas fa-question-circle" data-toggle="tooltip" data-placement="top" title="Precio Unitario Incluye IGV"></i></h5>
                                     <div style="display:flex;">
                                         <input type="number" class="form-control input-sm activation" name="precio_ref_item" step="any" width="200px">
                                         <div class="input-group-append">

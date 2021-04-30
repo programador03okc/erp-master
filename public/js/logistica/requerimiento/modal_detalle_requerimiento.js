@@ -180,11 +180,14 @@ function aceptarCambiosItem(){ // del modal-detalle-requerimiento
     // let item = get_data_detalle_requerimiento();
     let unidad_medida_item = document.querySelector("div[id='modal-detalle-requerimiento'] select[name='unidad_medida_item']").value;
     let cantidad_item = document.querySelector("div[id='modal-detalle-requerimiento'] input[name='cantidad_item']").value;
+    let precio_unitario = document.querySelector("div[id='modal-detalle-requerimiento'] input[name='precio_ref_item']").value;
 
     if(indice >= 0){
         data_item[indice].id_unidad_medida = unidad_medida_item;
         data_item[indice].unidad = document.querySelector("div[id='modal-detalle-requerimiento'] select[name='unidad_medida_item']").options[document.querySelector("div[id='modal-detalle-requerimiento'] select[name='unidad_medida_item']").selectedIndex].textContent;
         data_item[indice].cantidad = cantidad_item;
+        data_item[indice].precio_unitario = precio_unitario;
+        data_item[indice].subtotal = (Math.round((cantidad_item * precio_unitario) * 100) / 100).toFixed(2);
 
         llenar_tabla_detalle_requerimiento(data_item);
         $('#modal-detalle-requerimiento').modal('hide');
