@@ -146,6 +146,7 @@ Pendientes de Ingreso
 @include('almacen.producto.productoCreate')
 @include('almacen.guias.movimientoDetalle')
 @include('almacen.guias.ordenesGuias')
+@include('almacen.guias.guia_com_ver')
 
 @endsection
 
@@ -175,6 +176,7 @@ Pendientes de Ingreso
     <script src="{{ asset('js/almacen/producto/productoCreate.js')}}"></script>
     <script src="{{ asset('js/almacen/documentos/doc_com_create.js')}}"></script>
     <script src="{{ asset('js/almacen/documentos/doc_com_ver.js')}}"></script>
+    <script src="{{ asset('js/almacen/transferencias/transferenciaCreate.js')}}"></script>
     <script>
     $(document).ready(function(){
         seleccionarMenu(window.location);
