@@ -17,6 +17,7 @@ rutaObtenerCostruirCliente,
 rutaObtenerGrupoSelectItemParaCpmpra
 ;
 
+var detalleItemsCC=[];
 var tempDetalleItemsCC=[];
 var tempDetalleItemCCSelect={};
 var dataSelect = [];

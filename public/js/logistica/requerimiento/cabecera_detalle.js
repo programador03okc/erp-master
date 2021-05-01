@@ -1,3 +1,4 @@
+
 function nuevo_req(){
     data_item=[];
     document.querySelector("table[id='ListaDetalleRequerimiento']").tHead.children[0].cells[9].setAttribute('class','oculto'); 
@@ -78,7 +79,6 @@ function get_cuadro_costos_comercial(){
         url: baseUrl,
         dataType: 'JSON',
         success: function(response){
-            // console.log(response);
             if(response.length >0){
                 llenarTablaCuadroCostosComercial(response);
             }else{
@@ -1052,7 +1052,7 @@ function llenarTablaListaDetalleRequerimiento(data,selectMoneda,selectUnidadMedi
                     if(tipo_requerimiento !=2){
                         btnAction += `<button type="button" class="btn btn-default btn-xs" name="btnAdjuntarArchivos" data-toggle="tooltip" title="Adjuntos" onClick="archivosAdjuntosModal(event, ${a});" ${hasAttrDisabled}><i class="fas fa-paperclip"></i></button>`;
                     }
-                    btnAction += `<button type="button" class="btn btn-danger btn-xs"   name="btnEliminarItem" data-toggle="tooltip" title="Eliminar" onclick="eliminarItemDeListado(this,${data[a].id_item});" ${hasAttrDisabled} ><i class="fas fa-trash-alt"></i></button>`;
+                    btnAction += `<button type="button" class="btn btn-danger btn-xs"   name="btnEliminarItem" data-toggle="tooltip" title="Eliminar" onclick="eliminarItemDeListado(this,${data[a].id_producto});" ${hasAttrDisabled} ><i class="fas fa-trash-alt"></i></button>`;
                     btnAction += `</center></div>`;
                     tdBtnAction.innerHTML = btnAction;
                 }else{
@@ -1141,7 +1141,7 @@ function llenarTablaListaDetalleRequerimiento(data,selectMoneda,selectUnidadMedi
                 if(tipo_requerimiento !=2){
                     btnAction += `<button type="button" class="btn btn-default btn-xs" name="btnAdjuntarArchivos" data-toggle="tooltip" title="Adjuntos" onClick="archivosAdjuntosModal(event, ${a});" ${hasAttrDisabled}><i class="fas fa-paperclip"></i></button>`;
                 }
-                btnAction += `<button type="button" class="btn btn-danger btn-xs"   name="btnEliminarItem" data-toggle="tooltip" title="Eliminar" onclick="eliminarItemDeListado(this,${data[a].id_item});" ${hasAttrDisabled} ><i class="fas fa-trash-alt"></i></button>`;
+                btnAction += `<button type="button" class="btn btn-danger btn-xs"   name="btnEliminarItem" data-toggle="tooltip" title="Eliminar" onclick="eliminarItemDeListado(this,${data[a].id_producto});" ${hasAttrDisabled} ><i class="fas fa-trash-alt"></i></button>`;
 
                 btnAction += `</center></div>`;
                 tdBtnAction.innerHTML = btnAction;
@@ -1304,9 +1304,24 @@ function apertura(id_presup){
 
 function eliminarItemDeListado(obj,id){
     let row = obj.parentNode.parentNode.parentNode.parentNode;
+    let idCcAmFilas =data_item.find(item => item.id_producto == id).id_cc_am_filas;
+
     row.remove(row);
-    data_item = data_item.filter((item, i) => item.id_item != id);
+    
+
+    data_item = data_item.filter((item, i) => item.id_producto != id);
+
     componerTdItemDetalleRequerimiento();
+    agregarItemDeTablaDetalleCuadroCostos(idCcAmFilas);
+}
+
+function agregarItemDeTablaDetalleCuadroCostos(idCcAmFilas){
+    detalleItemsCC.forEach(element => {
+        if(element.id_cc_am_filas == idCcAmFilas){
+            tempDetalleItemsCC.push(element);
+            llenarDetalleCuadroCostos(tempDetalleItemsCC);
+        }
+    });
 }
 
 function componerTdItemDetalleRequerimiento(){

@@ -982,7 +982,7 @@ function selectItem(){
             'estado':1
         };
         agregarItemATablaListaDetalleRequerimiento(data_item_selected);
-
+        quitarItemDeTablaDetalleCuadroCostos(data_item_selected);
         // let btnVerUltimasCompras = document.getElementsByName('btnVerUltimasCompras')[0];
         // btnVerUltimasCompras.removeAttribute('disabled');
         // btnVerUltimasCompras.setAttribute('class','btn btn-sm btn-default');
@@ -1017,6 +1017,21 @@ function agregarItemATablaListaDetalleRequerimiento(item){
     }else{
         alert("lo siento, el item seleccionado no tiene un Id producto");
     }
+}
+function quitarItemDeTablaDetalleCuadroCostos(item){
+    // console.log(item);
+    // console.log(tempDetalleItemCCSelect);
+    // console.log(detalleItemsCC);
+    // console.log(tempDetalleItemsCC);
+    let trs =document.querySelectorAll("form[id='form-requerimiento'] table[id='ListaDetalleCuadroCostos'] tbody tr");
+    tempDetalleItemsCC = tempDetalleItemsCC.filter((element, i) => element.id_cc_am_filas != item.id_cc_am_filas);
+
+    trs.forEach((tr,indice) => {
+        if(tr.querySelector("td button").dataset.key == item.id_cc_am_filas){
+            tr.remove();
+        }
+ 
+    });
 }
 
 
