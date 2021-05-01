@@ -146,6 +146,8 @@ function guardarProducto(data){
                     'estado':1
                 };
                 agregarItemATablaListaDetalleRequerimiento(item);
+                quitarItemDeTablaDetalleCuadroCostos(item);
+
                 // listarItems();
                 // console.log(response['producto']);
                 // let tablaListaItems =  $('#listaItems').dataTable();

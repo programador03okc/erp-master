@@ -1,3 +1,4 @@
+
 function getCabeceraCuadroCostos(id){
     return new Promise(function(resolve, reject) {
     $.ajax({
@@ -33,6 +34,7 @@ function getDataCuadroCostos(cc){
         let itemsConTransformacionList=[];
         if(res.status ==200){
             tempDetalleItemsCC= res.data;
+            detalleItemsCC= res.data;
             if(res.data.length >0){
                 tempDetalleItemsCC.forEach(element => {
                     if(element['descripcion_producto_transformado'] != null  || element['descripcion_producto_transformado' != '']){
@@ -136,7 +138,7 @@ function llenarCabeceraCuadroCostos(data){
 
     getOrBuildCustomer(data.nombre_entidad,data.ruc_entidad,data.telefono,data.direccion_entidad,data.correo,data.ubigeo_entidad).then(function(res) {
         // Run this when your request was successful
-        console.log(res);
+        // console.log(res);
         if(res.status ==200){
             document.querySelector("input[name='id_cliente']").value =res.data.id_cliente?res.data.id_cliente:'';
             document.querySelector("input[name='cliente_ruc']").value =res.data.ruc?res.data.ruc:'';
@@ -177,7 +179,7 @@ function llenarItemsTransformados(data){
             {'data':'cantidad'},
             {'data':'comentario_producto_transformado'},
             {'render': function (data, type, row){
-                return `<button class="btn btn-xs btn-default" onclick="procesarItemDetalleCuadroCostos(${row['id']},'ITEM_CON_TRANSFORMACION');" title="Agregar Item" style="background-color:#a7904f; color:white;"><i class="fas fa-plus"></i></button>`;
+                return `<button class="btn btn-xs btn-default" data-key="${row['id']}" onclick="procesarItemDetalleCuadroCostos(${row['id']},'ITEM_CON_TRANSFORMACION');" title="Agregar Item" style="background-color:#a7904f; color:white;"><i class="fas fa-plus"></i></button>`;
                 }
             }
         ]
@@ -216,7 +218,7 @@ function llenarDetalleCuadroCostos(data){
             {'data':'nombre_autor'},
             {'data':'fecha_creacion'}, 
             {'render': function (data, type, row){
-                return `<button class="btn btn-xs btn-default" onclick="procesarItemDetalleCuadroCostos(${row['id']},'ITEM_SIN_TRANSFORMACION');" title="Agregar Item" style="background-color:#714fa7; color:white;"><i class="fas fa-plus"></i></button>`;
+                return `<button class="btn btn-xs btn-default" data-key="${row['id']}" onclick="procesarItemDetalleCuadroCostos(${row['id']},'ITEM_SIN_TRANSFORMACION');" title="Agregar Item" style="background-color:#714fa7; color:white;"><i class="fas fa-plus"></i></button>`;
                 }
             }
         ]
@@ -271,11 +273,13 @@ function procesarItemDetalleCuadroCostos(id_detalle_cc,tipo_item){
     if(tipo_item =='ITEM_SIN_TRANSFORMACION'){
         let descripcionParseText = ((detalle_cc_selected.descripcion).replace("&lt;","<").replace("nbsp;","").replace("&nbsp;","").replace("&amp;","")).trim();
         let partNumberParseText = detalle_cc_selected.part_no? detalle_cc_selected.part_no:'';
+        let precioUnitarioOC = detalle_cc_selected.pvu_oc? detalle_cc_selected.pvu_oc:0;
         let cantidadParseText = detalle_cc_selected.cantidad;
         tempDetalleItemCCSelect={
             'part_number':document.querySelector("div[id='modal-crear-nuevo-producto'] input[name='part_number']").value= partNumberParseText,
             'descripcion':document.querySelector("div[id='modal-crear-nuevo-producto'] textarea[name='descripcion']").value= descripcionParseText,
             'cantidad':cantidadParseText,
+            'precio_unitario': precioUnitarioOC,
             'id_cc_am_filas':id_cc_am_filas,
             'id_cc_venta_filas':id_cc_venta_filas
             }
