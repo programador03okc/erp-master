@@ -273,11 +273,13 @@ function procesarItemDetalleCuadroCostos(id_detalle_cc,tipo_item){
     if(tipo_item =='ITEM_SIN_TRANSFORMACION'){
         let descripcionParseText = ((detalle_cc_selected.descripcion).replace("&lt;","<").replace("nbsp;","").replace("&nbsp;","").replace("&amp;","")).trim();
         let partNumberParseText = detalle_cc_selected.part_no? detalle_cc_selected.part_no:'';
+        let precioUnitarioOC = detalle_cc_selected.pvu_oc? detalle_cc_selected.pvu_oc:0;
         let cantidadParseText = detalle_cc_selected.cantidad;
         tempDetalleItemCCSelect={
             'part_number':document.querySelector("div[id='modal-crear-nuevo-producto'] input[name='part_number']").value= partNumberParseText,
             'descripcion':document.querySelector("div[id='modal-crear-nuevo-producto'] textarea[name='descripcion']").value= descripcionParseText,
             'cantidad':cantidadParseText,
+            'precio_unitario': precioUnitarioOC,
             'id_cc_am_filas':id_cc_am_filas,
             'id_cc_venta_filas':id_cc_venta_filas
             }

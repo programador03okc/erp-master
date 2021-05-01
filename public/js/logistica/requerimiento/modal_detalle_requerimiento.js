@@ -965,7 +965,7 @@ function selectItem(){
             'id_unidad_medida': document.querySelector("div[id='modal-catalogo-items'] div[class='modal-footer'] label[id='id_unidad_medida']").textContent,
             'categoria': document.querySelector("div[id='modal-catalogo-items'] div[class='modal-footer'] label[id='categoria']").textContent,
             'subcategoria': document.querySelector("div[id='modal-catalogo-items'] div[class='modal-footer'] label[id='subcategoria']").textContent,
-            'precio_unitario':null,
+            'precio_unitario':tempDetalleItemCCSelect.precio_unitario,
             'subtotal':null,
             'id_tipo_moneda':1,
             'lugar_entrega':null,
