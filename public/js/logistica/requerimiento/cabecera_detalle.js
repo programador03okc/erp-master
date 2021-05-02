@@ -838,6 +838,7 @@ function updateInputPrecioUnitarioItem(obj,event){
     });
 
     updateMontoTotalRequerimiento();
+    calcMontoLimiteDePartida();
 }
 
 function updateSubtotalItem(obj,indiceSelected){
@@ -1389,12 +1390,15 @@ function selectPartida(id_partida){
         if(data_item.length >0){
             data_item.forEach((element, index) => {
                 if (index == indice_modal_partida) {
+                    // itemSelected= data_item[index];
                     data_item[index].id_partida = parseInt(id_partida);
                     data_item[index].cod_partida = codigoPartidaSelected;
                     data_item[index].des_partida = descripcion;
         
                 }
             });
+            calcMontoLimiteDePartida();
+            registrarPartida();
         }else{
             alert("hubo un problema, no se puedo encontrar el listado de item para asignarle una partida");
         }
@@ -1420,6 +1424,67 @@ function selectPartida(id_partida){
     document.querySelectorAll('[id^="pres"]')[0].setAttribute('class','oculto' );
 
 }
+
+function registrarPartida(){
+
+    if( ListOfPartidaSelected.filter(function(partida){ return partida.id_partida === idPartidaSelected }).length  == 0){
+        partidaSelected.monto_acumulado=0;
+        ListOfPartidaSelected.push(partidaSelected);
+    }
+}
+
+function calcMontoLimiteDePartida(){
+
+    let partidasItems = {};
+    let output = [];
+
+    data_item.forEach(item => {
+
+        //Si la id_partida no existe en partidasItems entonces
+        //la creamos e inicializamos el arreglo de items. 
+        if( !partidasItems.hasOwnProperty(item.id_partida)){
+            partidasItems[item.id_partida] = {
+                items: []
+            }
+        }
+          //Agregamos los datos de items. 
+            partidasItems[item.id_partida].items.push({
+                'id_producto': item.id_producto,
+                'descripcion': item.des_item,
+                // id_partida: item.id_partida,
+                'subtotal': parseFloat(item.subtotal)
+            })
+    });
+
+    // console.log(Object.keys(partidasItems));
+    if(Object.keys(partidasItems).length > 0){
+        Object.values(partidasItems).forEach((element,indice) => {
+            // console.log(Object.keys(partidasItems)[indice]);
+            // console.log(element);
+            if(!partidasItems[Object.keys(partidasItems)[indice]].hasOwnProperty('suma_total')){
+                // console.log(element.items);
+                let sumaSubtotal=(element.items).reduce((accum, obj) => accum + (obj.subtotal>0?obj.subtotal:0), 0);
+                let sumaSubtotalPorPartida = parseFloat((Math.round(sumaSubtotal * 100) / 100).toFixed(2));
+                partidasItems[Object.keys(partidasItems)[indice]]['suma_total']=sumaSubtotalPorPartida;
+
+                    ListOfPartidaSelected.forEach(partida => {
+                        if((partida.id_partida == Object.keys(partidasItems)[indice]) && (sumaSubtotalPorPartida > parseFloat(partida.importe_total))){
+                            output.push(`Se a excedido +${sumaSubtotalPorPartida- parseFloat(partida.importe_total)} el importe asiganado para la partida "${partida.codigo} - ${partida.descripcion}", la partida tiene un monto máximo de ${partida.importe_total}`);
+                        }
+                    });
+            }
+        });
+    }
+
+
+    // console.log(partidasItems);
+    if(output.length >0){
+        alert(output);
+    }
+
+    return false;
+}
+
 
 // fuente 
 function agregarFuenteModal(){
