@@ -160,7 +160,6 @@ function changeMonedaSelect(e){
 
 
 function limpiarFormRequerimiento(){
-    document.querySelector("div[id='input-group-fecha']").setAttribute('class','col-md-2');
     document.querySelector("form[id='form-requerimiento'] input[name='id_cliente']").value='';
     document.querySelector("form[id='form-requerimiento'] input[name='id_persona']").value='';
     document.querySelector("form[id='form-requerimiento'] input[name='dni_persona']").value='';
@@ -190,7 +189,7 @@ function getNexCodigoRequerimiento(tipo_requerimiento){
         url: rutaNextCodigoRequerimiento+'/' + tipo_requerimiento,
         dataType: 'JSON',
         success: function(response){ 
-            document.querySelector("form[id='form-requerimiento'] input[name='codigo']").value = response.data;
+            document.querySelector("form[id='form-requerimiento'] span[name='codigo']").textContent = response.data;
         }
     });
 }

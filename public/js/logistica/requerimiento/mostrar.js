@@ -81,7 +81,7 @@ function mostrar_requerimiento(IdorCode){
                 $('[name=id_estado_doc]').val(response['requerimiento'][0].id_estado_doc);
                 $('[name=id_requerimiento]').val(response['requerimiento'][0].id_requerimiento);
                 $('[name=tipo_requerimiento]').val(response['requerimiento'][0].id_tipo_requerimiento);
-                $('[name=codigo]').val(response['requerimiento'][0].codigo);
+                $('[name=codigo]').text(response['requerimiento'][0].codigo);
                 $('[name=concepto]').val(response['requerimiento'][0].concepto);
                 $('[name=fecha_requerimiento]').val(response['requerimiento'][0].fecha_requerimiento);
                 $('[name=prioridad]').val(response['requerimiento'][0].id_prioridad);

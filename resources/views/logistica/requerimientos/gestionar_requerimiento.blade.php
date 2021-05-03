@@ -25,12 +25,7 @@
 
 @section('content')
 <div class="page-main" type="requerimiento">
-<form id="form-requerimiento" type="register" form="formulario">
-
-
-
-
-    <fieldset class="group-table">   
+    <form id="form-requerimiento" type="register" form="formulario">
         <input type="hidden" name="id_usuario_session">
         <input type="hidden" name="id_usuario_req">
         <input type="hidden" name="id_estado_doc">
@@ -45,325 +40,394 @@
         <input type="hidden" name="estado">
 
         <div class="row">
-                <div class="col-md-12">
-                    <div class="input-group pull-right">
+            <div class="col-md-6" id="group-barra-secundaria">
+                <div class="input-group pull-left" style="display:flex;">
                         <button type="button" name="btn-imprimir-requerimento-pdf" class="btn btn-info btn-sm" onclick="ImprimirRequerimientoPdf()" disabled><i class="fas fa-print"></i></button>
                         &nbsp;
                         <button type="button" name="btn-migrar-requerimiento" class="btn btn-success btn-sm" 
                             data-toggle="tooltip" data-placement="bottom" title="Migrar Requerimiento a Softlink"
                             onclick="migrarRequerimiento()" disabled><i class="fas fa-paper-plane"></i></button>
-                    </div>
                 </div>
-                <div class="col-md-2">
-                        <h5 >Tipo de requerimiento:</h5> 
-                        <select class="form-control input-sm activation" name="tipo_requerimiento" onChange="changeOptTipoReqSelect(event);">
-                            <option value="">Elija una opción</option>
-                            @foreach ($tipo_requerimiento as $tipo)
-                                <option value="{{$tipo->id_tipo_requerimiento}}">{{$tipo->descripcion}}</option>
-                            @endforeach                
-                        </select>
-                    </div>
-                    <div class="col-md-2">
-                        <h5>Código</h5>
-                        <div style="display:flex;">
-                            <input type="text" class="form-control" name="codigo" placeholder="" readOnly>
-                        </div>
-                    </div>
-                    <div class="col-md-2">
-                        <h5>Periodo</h5>
-                        <select class="form-control activation" name="periodo" disabled="true">
-                            @foreach ($periodos as $periodo)
-                                <option value="{{$periodo->id_periodo}}">{{$periodo->descripcion}}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="col-md-2">
-                            <h5>Prioridad</h5>
-                            <select class="form-control activation" name="prioridad" disabled="true">
-                                @foreach ($prioridades as $prioridad)
-                                    <option value="{{$prioridad->id_prioridad}}">{{$prioridad->descripcion}}</option>
-                                @endforeach
-                            </select>
-                    </div>
-                    <div class="col-md-2" id="input-group-rol-usuario" hidden>
-                        <h5>Roles del usuario</h5>
-                        <div class="input-group-okc">
-                            <select class="form-control input-sm activation" name="rol_usuario">
-                            @foreach ($roles as $rol)
-                                <option value="{{$rol->id_rol}}">{{$rol->rol_concepto}}</option>
-                            @endforeach
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-md-2">
-                        <h5>Estado:</h5> <h2><span class="label" id="estado_doc">&nbsp;</span></h2>
-                    </div>
-                    
+            </div>
+            <div class="col-md-6">
+                <div class="pull-right" id="estado-requerimiento">
+                    <h2 class="text-center"><span class="label" id="estado_doc">&nbsp;</span></h2>
+                </div>
+            </div>
         </div>
 
         <div class="row">
-            <div class="col-md-6">
-                <h5>Concepto/Motivo</h5>
-                <input type="text" class="form-control activation" name="concepto">
-            </div>
-            <div class="col-md-2"  id="input-group-fecha">
-                <h5>Fecha creación</h5>
-                <input type="date" class="form-control" name="fecha_requerimiento" disabled="true" min={{ date('Y-m-d H:i:s') }} value={{ date('Y-m-d H:i:s') }}>
-            </div>
-            <!-- <div class="form-group row"> -->
-            <div class="col-md-2" id="input-group-empresa">
-                <h5>Empresa</h5>
-                <select name="empresa" id="empresa" class="form-control activation" onChange="changeOptEmpresaSelect(event)"
-                    required>
-                    <option value="">Elija una opción</option>
-                    @foreach ($empresas as $empresa)
-                        <option value="{{$empresa->id_empresa}}">{{ $empresa->contribuyente->razon_social}}</option>
-                    @endforeach
-                </select>
-            </div>
-            <div class="col-md-2" id="input-group-sede" >
-                <h5>Sede</h5>
-                    <select name="sede" name="sede" class="form-control activation" onChange="changeOptUbigeo(event)"
-                        required>
-                        <option value="">Elija una opción</option>
-                    </select>
-            </div>
-            <div class="col-md-2" id="input-group-ubigeo-entrega" >
-                <h5>Ubigeo entrega</h5>
-                <div style="display:flex;">
-                    <input type="text" class="oculto" name="ubigeo" >
-                    <input type="text" class="form-control" name="name_ubigeo" readOnly>
-                    <button type="button" title="Seleccionar Ubigeo" class="btn-primary" onClick="ubigeoModal();" ><i class="far fa-compass"></i></button>
-                </div>
-            </div>
-            <div class="col-md-2" id="input-group-moneda">
-                <h5>Moneda</h5>
-                <select class="form-control activation" name="moneda" onChange="changeMonedaSelect(event)" disabled="true">
-                @foreach ($monedas as $moneda)
-                    <option value="{{$moneda->id_moneda}}">{{$moneda->descripcion}}</option>
-                @endforeach
-                </select>
-            </div>
-            <div class="col-md-2" id="input-group-monto">
-                <h5>Monto total</h5>
-                <div class="input-group-okc">
-                    <div class="input-group-addon" id="montoMoneda" style="width: auto;">S/.</div>
-                    <input type="text" class="form-control activation" name="monto" readOnly>
-                </div>
-            </div>
-            <div class="col-md-2" id="input-group-fecha_entrega">
-                <div class="form-group">
-                    <h5>Fecha límite entrega</h5>
-                    <input type="date" class="form-control input-sm activation" name="fecha_entrega">
-                </div>
-            </div>
-            <div id="input-group-fuente">
-                <div class="col-md-2" >
-                    <h5>Fuente</h5>
-                    <div style="display:flex">
-                        <select class="form-control activation " name="fuente_id" onChange="selectFuente(event);">
-                                <option value="0">Elija una opción</option>
-                            @foreach ($fuentes as $fuente)
-                                <option value="{{$fuente->id_fuente}}">{{$fuente->descripcion}}</option>
+            <div class="col-md-12">
+                <h4 style="display:flex;justify-content: space-between;">General &nbsp;<span style="color:blue;" name="codigo"></span></h4> 
+                <fieldset class="group-table">   
+                    <div class="row">
+                        <div class="col-md-2" id="group-tipo_requerimiento">
+                            <h5 >Tipo de requerimiento:</h5> 
+                            <select class="form-control input-sm activation" name="tipo_requerimiento" onChange="changeOptTipoReqSelect(event);">
+                                <option value="">Elija una opción</option>
+                                @foreach ($tipo_requerimiento as $tipo)
+                                    <option value="{{$tipo->id_tipo_requerimiento}}">{{$tipo->descripcion}}</option>
+                                @endforeach                
+                            </select>
+                        </div>
+
+                        <div class="col-md-2" id="input-group-moneda">
+                            <h5>Moneda</h5>
+                            <select class="form-control activation" name="moneda" onChange="changeMonedaSelect(event)" disabled="true">
+                            @foreach ($monedas as $moneda)
+                                <option value="{{$moneda->id_moneda}}">{{$moneda->descripcion}}</option>
                             @endforeach
-                        </select>
-                        <button type="button" class="btn-primary" title="Agregar Fuente" name="bnt-agregar-fuente" onclick="agregarFuenteModal();">
-                            <i class="fas fa-plus"></i>
-                        </button>
-                    </div>
-                </div>
-                <div class="col-md-2" id="input-group-fuente_det" hidden >
-                    <h5>Detalle fuente</h5>
-                    <div style="display:flex">
-                        <select class="form-control activation " name="fuente_det_id">
-                        </select>
-                        <button type="button" class="btn-primary" title="Agregar Detalle Fuente" name="bnt-agregar-detalle-fuente" onclick="agregarDetalleFuenteModal();">
-                            <i class="fas fa-plus"></i>
-                        </button>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4" id="input-group-almacen" hidden>
-                <h5>Almacén que solicita</h5>
-                <select class="form-control activation " name="id_almacen">
-                </select>
-            </div>
-            
-                <div class="col-md-12" id="input-group-proyecto">
-                    <h5>Proyecto</h5>
-                    <div style="display:flex;">
-                        <input type="hidden" class="form-control" name="descripcion_grupo">
-                        <input type="text" name="codigo_proyecto" class="form-control group-elemento" style="width:130px; text-align:center;" readonly>
-                        <div class="input-group-okc">
-                            <select class="form-control activation" name="id_proyecto" onChange="selectedProyecto(event);">
-                                <option value="0">Seleccione un Proyecto</option>
-                                @foreach ($proyectos_activos as $proyecto)
-                                    <option value="{{$proyecto->id_proyecto}}" data-codigo="{{$proyecto->codigo}}">{{$proyecto->descripcion}}</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-6">
+                            <h5>Concepto/Motivo</h5>
+                            <input type="text" class="form-control activation" name="concepto">
+                        </div>
+
+                        <div class="col-md-2">
+                            <h5>Periodo</h5>
+                            <select class="form-control activation" name="periodo" disabled="true">
+                                @foreach ($periodos as $periodo)
+                                    <option value="{{$periodo->id_periodo}}">{{$periodo->descripcion}}</option>
                                 @endforeach
                             </select>
-                        </div>                            
+                        </div>
+                        <div class="col-md-2">
+                                <h5>Prioridad</h5>
+                                <select class="form-control activation" name="prioridad" disabled="true">
+                                    @foreach ($prioridades as $prioridad)
+                                        <option value="{{$prioridad->id_prioridad}}">{{$prioridad->descripcion}}</option>
+                                    @endforeach
+                                </select>
+                        </div>
+
+                        <div class="col-md-2" id="input-group-rol-usuario" hidden>
+                            <h5>Roles del usuario</h5>
+                            <div class="input-group-okc">
+                                <select class="form-control input-sm activation" name="rol_usuario">
+                                @foreach ($roles as $rol)
+                                    <option value="{{$rol->id_rol}}">{{$rol->rol_concepto}}</option>
+                                @endforeach
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-md-2" id="input-group-empresa">
+                            <h5>Empresa</h5>
+                            <select name="empresa" id="empresa" class="form-control activation" onChange="changeOptEmpresaSelect(event)" required>
+                                <option value="">Elija una opción</option>
+                                @foreach ($empresas as $empresa)
+                                    <option value="{{$empresa->id_empresa}}">{{ $empresa->contribuyente->razon_social}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="col-md-2" id="input-group-sede" >
+                            <h5>Sede</h5>
+                            <select name="sede" name="sede" class="form-control activation" onChange="changeOptUbigeo(event)" required>
+                                <option value="">Elija una opción</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-2" id="input-group-fecha_entrega">
+                            <div class="form-group">
+                                <h5>Fecha límite entrega</h5>
+                                <input type="date" class="form-control input-sm activation" name="fecha_entrega">
+                            </div>
+                        </div>
+
+                        <div id="input-group-fuente">
+                            <div class="col-md-2" >
+                                <h5>Fuente</h5>
+                                <div style="display:flex">
+                                    <select class="form-control activation " name="fuente_id" onChange="selectFuente(event);">
+                                            <option value="0">Elija una opción</option>
+                                        @foreach ($fuentes as $fuente)
+                                            <option value="{{$fuente->id_fuente}}">{{$fuente->descripcion}}</option>
+                                        @endforeach
+                                    </select>
+                                    <button type="button" class="btn-primary" title="Agregar Fuente" name="bnt-agregar-fuente" onclick="agregarFuenteModal();">
+                                        <i class="fas fa-plus"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="col-md-2" id="input-group-fuente_det" hidden >
+                                <h5>Detalle fuente</h5>
+                                <div style="display:flex">
+                                    <select class="form-control activation " name="fuente_det_id">
+                                    </select>
+                                    <button type="button" class="btn-primary" title="Agregar Detalle Fuente" name="bnt-agregar-detalle-fuente" onclick="agregarDetalleFuenteModal();">
+                                        <i class="fas fa-plus"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-2" id="input-group-monto">
+                            <h5>Monto total</h5>
+                            <div class="input-group-okc">
+                                <div class="input-group-addon" id="montoMoneda" style="width: auto;">S/.</div>
+                                <input type="text" class="form-control activation" name="monto" readOnly>
+                            </div>
+                        </div>
                     </div>
-                </div>
+                </fieldset>
+            </div>
+        </div>
 
 
-            <div id="input-group-comercial" hidden>
-                <div class="col-md-2" >
-                    <h5>Comercial</h5>
-                    <select class="form-control activation" name="tpOptCom" disabled="true" onChange="changeOptComercialSelect();">
-                        <option value="1">Orden C. Cliente</option>
-                        <option value="2">Cuadro Costos</option>
-                        <option value="3">Gastos Operativos</option>
-                    </select>
-                </div>
-                <div class="col-md-6">
-                    <h5 id="title-option-comercial">Código</h5>
-                    <div style="display:flex;">
-                        <input hidden="true" type="text" name="idOtpCom" class="activation">
-                        <input type="text" name="codigo_occ" class="form-control group-elemento" style="width:130px; text-align:center;" readonly>
-                        <div class="input-group-okc">
-                            <input type="text" class="form-control" name="occ" placeholder="" aria-describedby="basic-addon4" disabled="true">
-                            <div class="input-group-append">
-                                <button type="button" class="input-group-text" onClick="mostrar_cuadro_costos_modal();">
-                                    <i class="fa fa-search"></i>
+
+        <div class="row" hidden>
+            <div class="col-md-12">
+                <h4 style="display:flex;justify-content: space-between;">Almacén</h4> 
+                <fieldset class="group-table">   
+                    <div class="row">
+                        <div class="col-md-4" id="input-group-almacen" hidden>
+                            <h5>Almacén que solicita</h5>
+                            <select class="form-control activation " name="id_almacen">
+                            </select>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+        </div>
+
+
+        <div class="row" id="input-group-proyecto">
+            <div class="col-md-12">
+                <h4 style="display:flex;justify-content: space-between;">Proyecto</h4> 
+                <fieldset class="group-table">   
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h5>Nombre</h5>
+                            <div style="display:flex;">
+                                <input type="hidden" class="form-control" name="descripcion_grupo">
+                                <input type="text" name="codigo_proyecto" class="form-control group-elemento" style="width:130px; text-align:center;" readonly>
+                                <div class="input-group-okc">
+                                    <select class="form-control activation" name="id_proyecto" onChange="selectedProyecto(event);">
+                                        <option value="0">Seleccione un Proyecto</option>
+                                        @foreach ($proyectos_activos as $proyecto)
+                                            <option value="{{$proyecto->id_proyecto}}" data-codigo="{{$proyecto->codigo}}">{{$proyecto->descripcion}}</option>
+                                        @endforeach
+                                    </select>
+                                </div>                            
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <h4 style="display:flex;justify-content: space-between;">Cliente</h4> 
+                <fieldset class="group-table">   
+                    <div class="row">
+                        <div class="col-md-2 form-inline" id="input-group-tipo-cliente" >
+                            <h5>Tipo cliente</h5>
+                            <div class="input-group-okc">
+                                    <select name="tipo_cliente" onChange="changeTipoCliente(event);"
+                                    class="form-control activation" style="width:100px" required>
+                                    <option value="0">Elija una opción</option>
+                                    <option value="1" default>Persona Natural</option>
+                                    <option value="2">Persona Juridica</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4" id="input-group-cliente" >
+                            <h5>Cliente</h5>
+                            <div style="display:flex;">
+                                <input type="text" class="oculto" name="id_cliente" >
+                                <input type="text" class="form-control activation" name="cliente_ruc"  style="width: 120px; display: none;">
+                                <input type="text" class="form-control activation" name="cliente_razon_social" style="display: none;">
+
+                                <input type="text" class="oculto" name="id_persona" >
+                                <input type="text" class="form-control activation" name="dni_persona" style="width: 120px;">
+                                <input type="text" class="form-control activation" name="nombre_persona" >
+
+                                <!-- <div class="input-group-append">         -->
+                                    <button type="button" class="btn-primary" title="Seleccionar Cliente" name="btnCliente" 
+                                    onClick="openCliente();"  ><i class="fas fa-user-tie"></i></button>
+                                <!-- </div> 
+                                <div class="input-group-append"> class="input-group-text         -->
+                                    <button type="button" class="btn-success" title="Agregar Cliente" name="btnAddCliente" 
+                                    onClick="agregar_cliente();"><i class="fas fa-plus"></i></button>
+                                <!-- </div> -->
+                            </div>
+                        </div>
+
+                        <div class="col-md-2" id="input-group-ubigeo-entrega" >
+                            <h5>Ubigeo entrega</h5>
+                            <div style="display:flex;">
+                                <input type="text" class="oculto" name="ubigeo" >
+                                <input type="text" class="form-control" name="name_ubigeo" readOnly>
+                                <button type="button" title="Seleccionar Ubigeo" class="btn-primary" onClick="ubigeoModal();" ><i class="far fa-compass"></i></button>
+                            </div>
+                        </div>
+                        <div class="col-md-2" id="input-group-telefono-cliente" >
+                            <h5>Teléfono cliente</h5>
+                            <div style="display:flex;">
+                                <input type="text" class="form-control activation" name="telefono_cliente" onkeypress="return isNumberKey(event)"  disabled>
+                                    <button type="button" class="btn-primary" title="Buscar Teléfonos" name="btnSearchPhone"  onClick="telefonosClienteModal();">
+                                        <i class="fas fa-address-book"></i>
+                                    </button>
+                            </div>
+                        </div>
+                        <div class="col-md-2" id="input-group-email-cliente" >
+                            <h5>Correo cliente</h5>
+                            <div style="display:flex;">
+                                <input type="email" class="form-control activation" name="email_cliente"  disabled>
+                                    <button type="button" class="btn-primary" title="Buscar Teléfonos" name="btnSearchPhone"  onClick="emailClienteModal();">
+                                        <i class="fas fa-address-book"></i>
+                                    </button>
+                            </div>
+                        </div>
+                        <div class="col-md-2" id="input-group-direccion-entrega" >
+                            <h5>Dirección cliente</h5>
+                            <div style="display:flex;">
+                                <input type="text" class="form-control activation" name="direccion_entrega"  disabled>
+                                <button type="button" class="btn-primary" title="Buscar Dirección" name="btnSearchAddress" onClick="direccionesClienteModal();">
+                                    <i class="fas fa-location-arrow"></i>
                                 </button>
                             </div>
-                        </div>                            
+                        </div>
+
                     </div>
-                </div>
+                </fieldset>
+            </div>
+        </div>
+
+
+        <div class="row" hidden>
+            <div class="col-md-12">
+                <h4 style="display:flex;justify-content: space-between;">Cuentas bancarias </h4> 
+                <fieldset class="group-table">   
+                    <div class="row">
+                        <div class="col-md-2" id="input-group-cuenta">
+                            <h5>Cuenta</h5>
+                            <div style="display:flex;">
+                                <input type="text" class="oculto" name="id_cuenta" >
+                                <select class="form-control activation" name="banco" readOnly>
+                                    @foreach ($bancos as $banco)
+                                        <option value="{{$banco->id_banco}}">{{$banco->razon_social}}</option>
+                                    @endforeach
+                                </select>
+                                <select class="form-control activation" name="tipo_cuenta" readOnly>
+                                    @foreach ($tipos_cuenta as $tipo)
+                                        <option value="{{$tipo->id_tipo_cuenta}}">{{$tipo->descripcion}}</option>
+                                    @endforeach
+                                </select>
+                                <input type="text" class="form-control activation" name="nro_cuenta" placeholder="Nro Cuenta" readOnly>
+                                <input type="text" class="form-control activation" name="cci" placeholder="CCI" readOnly>
+                                <button type="button" class="btn-primary" title="Buscar Cuenta" name="btnSearchAccount" onClick="cuentaClienteModal();">
+                                    <i class="fas fa-piggy-bank"></i>
+                                </button>
+                                <button type="button" class="btn-success" title="Agregar Cuenta" name="btnAddAccount" onClick="agregarCuentaClienteModal();">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
             </div>
         </div>
 
         <div class="row">
-            <div class="col-md-2 form-inline" id="input-group-tipo-cliente" >
-                <h5>Tipo cliente</h5>
-                <div class="input-group-okc">
-                        <select name="tipo_cliente" onChange="changeTipoCliente(event);"
-                        class="form-control activation" style="width:100px" required>
-                        <option value="0">Elija una opción</option>
-                        <option value="1" default>Persona Natural</option>
-                        <option value="2">Persona Juridica</option>
-                    </select>
-                </div>
+            <div class="col-md-12">
+                <h4 style="display:flex;justify-content: space-between;">Contacto cliente</h4> 
+                <fieldset class="group-table">   
+                    <div class="row">
+                        <div class="col-md-4" id="input-group-nombre-contacto" >
+                            <h5>Nombre contacto</h5>
+                            <div style="display:flex;">
+                                <input type="text" class="form-control" name="nombre_contacto"  disabled>
+                            </div>
+                        </div>
+                        <div class="col-md-2" id="input-group-cargo-contacto" >
+                            <h5>Cargo contacto</h5>
+                            <div style="display:flex;">
+                                <input type="text" class="form-control" name="cargo_contacto"  disabled>
+                            </div>
+                        </div>
+                        <div class="col-md-4" id="input-group-email-contacto" >
+                            <h5>Email contacto</h5>
+                            <div style="display:flex;">
+                                <input type="text" class="form-control" name="email_contacto"  disabled>
+                            </div>
+                        </div>
+                        <div class="col-md-2" id="input-group-telefono-contacto" >
+                            <h5>Teléfono contacto</h5>
+                            <div style="display:flex;">
+                                <input type="text" class="form-control" name="telefono_contacto"  disabled>
+                            </div>
+                        </div>
+                        <div class="col-md-4" id="input-group-direccion-contacto" >
+                            <h5>Dirección entrega</h5>
+                            <div style="display:flex;">
+                                <input type="text" class="form-control" name="direccion_contacto"  disabled>
+                            </div>
+                        </div>
+                        <div class="col-md-2" id="input-group-horario-contacto" >
+                            <h5>Horario atención</h5>
+                            <div style="display:flex;">
+                                <input type="text" class="form-control" name="horario_contacto"  disabled>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
             </div>
-            <div class="col-md-4" id="input-group-cliente" >
-                <h5>Cliente</h5>
-                <div style="display:flex;">
-                    <input type="text" class="oculto" name="id_cliente" >
-                    <input type="text" class="form-control activation" name="cliente_ruc"  style="width: 120px; display: none;">
-                    <input type="text" class="form-control activation" name="cliente_razon_social" style="display: none;">
+        </div>
 
-                    <input type="text" class="oculto" name="id_persona" >
-                    <input type="text" class="form-control activation" name="dni_persona" style="width: 120px;">
-                    <input type="text" class="form-control activation" name="nombre_persona" >
 
-                    <!-- <div class="input-group-append">         -->
-                        <button type="button" class="btn-primary" title="Seleccionar Cliente" name="btnCliente" 
-                        onClick="openCliente();"  ><i class="fas fa-user-tie"></i></button>
-                    <!-- </div> 
-                    <div class="input-group-append"> class="input-group-text         -->
-                        <button type="button" class="btn-success" title="Agregar Cliente" name="btnAddCliente" 
-                        onClick="agregar_cliente();"><i class="fas fa-plus"></i></button>
-                    <!-- </div> -->
-                </div>
-            </div>
-            <div class="col-md-2" id="input-group-telefono-cliente" >
-                <h5>Teléfono cliente</h5>
-                <div style="display:flex;">
-                    <input type="text" class="form-control activation" name="telefono_cliente" onkeypress="return isNumberKey(event)"  disabled>
-                        <button type="button" class="btn-primary" title="Buscar Teléfonos" name="btnSearchPhone"  onClick="telefonosClienteModal();">
-                            <i class="fas fa-address-book"></i>
-                        </button>
-                </div>
-            </div>
-            <div class="col-md-2" id="input-group-email-cliente" >
-                <h5>Correo cliente</h5>
-                <div style="display:flex;">
-                    <input type="email" class="form-control activation" name="email_cliente"  disabled>
-                        <button type="button" class="btn-primary" title="Buscar Teléfonos" name="btnSearchPhone"  onClick="emailClienteModal();">
-                            <i class="fas fa-address-book"></i>
-                        </button>
-                </div>
-            </div>
-            <div class="col-md-2" id="input-group-direccion-entrega" >
-                <h5>Dirección cliente</h5>
-                <div style="display:flex;">
-                    <input type="text" class="form-control activation" name="direccion_entrega"  disabled>
-                    <button type="button" class="btn-primary" title="Buscar Dirección" name="btnSearchAddress" onClick="direccionesClienteModal();">
-                        <i class="fas fa-location-arrow"></i>
-                    </button>
-                </div>
-            </div>
-            <div class="col-md-6" id="input-group-cuenta" hidden >
-                <h5>Cuenta</h5>
-                <div style="display:flex;">
-                    <input type="text" class="oculto" name="id_cuenta" >
-                    <select class="form-control activation" name="banco" readOnly>
-                        @foreach ($bancos as $banco)
-                            <option value="{{$banco->id_banco}}">{{$banco->razon_social}}</option>
-                        @endforeach
-                    </select>
-                    <select class="form-control activation" name="tipo_cuenta" readOnly>
-                        @foreach ($tipos_cuenta as $tipo)
-                            <option value="{{$tipo->id_tipo_cuenta}}">{{$tipo->descripcion}}</option>
-                        @endforeach
-                    </select>
-                    <input type="text" class="form-control activation" name="nro_cuenta" placeholder="Nro Cuenta" readOnly>
-                    <input type="text" class="form-control activation" name="cci" placeholder="CCI" readOnly>
-                    <button type="button" class="btn-primary" title="Buscar Cuenta" name="btnSearchAccount" onClick="cuentaClienteModal();">
-                        <i class="fas fa-piggy-bank"></i>
-                    </button>
-                    <button type="button" class="btn-success" title="Agregar Cuenta" name="btnAddAccount" onClick="agregarCuentaClienteModal();">
-                        <i class="fas fa-plus"></i>
-                    </button>
-                </div>
+        <div class="row" id="input-group-comercial" hidden>
+            <div class="col-md-12">
+                <h4 style="display:flex;justify-content: space-between;">Comercial</h4> 
+                <fieldset class="group-table">   
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h5>Comercial</h5>
+                            <select class="form-control activation" name="tpOptCom" disabled="true" onChange="changeOptComercialSelect();">
+                                <option value="1">Orden C. Cliente</option>
+                                <option value="2">Cuadro Costos</option>
+                                <option value="3">Gastos Operativos</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <h5 id="title-option-comercial">Código</h5>
+                            <div style="display:flex;">
+                                <input hidden="true" type="text" name="idOtpCom" class="activation">
+                                <input type="text" name="codigo_occ" class="form-control group-elemento" style="width:130px; text-align:center;" readonly>
+                                <div class="input-group-okc">
+                                    <input type="text" class="form-control" name="occ" placeholder="" aria-describedby="basic-addon4" disabled="true">
+                                    <div class="input-group-append">
+                                        <button type="button" class="input-group-text" onClick="mostrar_cuadro_costos_modal();">
+                                            <i class="fa fa-search"></i>
+                                        </button>
+                                    </div>
+                                </div>                            
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
             </div>
         </div>
+
         <div class="row">
-            <div class="col-md-4" id="input-group-nombre-contacto" >
-                <h5>Nombre contacto</h5>
-                <div style="display:flex;">
-                    <input type="text" class="form-control" name="nombre_contacto"  disabled>
-                </div>
-            </div>
-            <div class="col-md-2" id="input-group-cargo-contacto" >
-                <h5>Cargo contacto</h5>
-                <div style="display:flex;">
-                    <input type="text" class="form-control" name="cargo_contacto"  disabled>
-                </div>
-            </div>
-            <div class="col-md-4" id="input-group-email-contacto" >
-                <h5>Email contacto</h5>
-                <div style="display:flex;">
-                    <input type="text" class="form-control" name="email_contacto"  disabled>
-                </div>
-            </div>
-            <div class="col-md-2" id="input-group-telefono-contacto" >
-                <h5>Teléfono contacto</h5>
-                <div style="display:flex;">
-                    <input type="text" class="form-control" name="telefono_contacto"  disabled>
-                </div>
-            </div>
-            <div class="col-md-4" id="input-group-direccion-contacto" >
-                <h5>Dirección entrega</h5>
-                <div style="display:flex;">
-                    <input type="text" class="form-control" name="direccion_contacto"  disabled>
-                </div>
-            </div>
-            <div class="col-md-2" id="input-group-horario-contacto" >
-                <h5>Horario atención</h5>
-                <div style="display:flex;">
-                    <input type="text" class="form-control" name="horario_contacto"  disabled>
-                </div>
+            <div class="col-md-12">
+                <h4 style="display:flex;justify-content: space-between;">Opcional</h4> 
+                <fieldset class="group-table">   
+                    <div class="row">
+                        <div class="col-md-12" id="input-group-observacion">
+                            <h5>Observación:</h5>
+                            <textarea class="form-control activation" name="observacion" cols="100" rows="100" style="height:50px;" disabled></textarea>
+                        </div>
+                    </div>
+                </fieldset>
             </div>
         </div>
-    
-        <div class="row">
-            <div class="col-md-12" id="input-group-observacion">
-                <h5>Observación:</h5>
-                <textarea class="form-control activation" name="observacion" cols="100" rows="100" style="height:50px;" disabled></textarea>
-            </div>
-        </div>
-    </fieldset>
+
     <br>
     <fieldset class="group-table">   
         <div class="row">

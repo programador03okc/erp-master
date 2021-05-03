@@ -5,7 +5,6 @@ function editRequerimiento(){
     let cantidad_aprobaciones = $('[name=cantidad_aprobaciones]').val();
 
     if(id_estado_doc >1 && cantidad_aprobaciones >0){
-        document.getElementsByName('codigo')[0].disabled=true;
         document.getElementsByName('descripcion_item')[0].disabled=true;
         // document.getElementById('basic-addon7').disabled=true;
         document.getElementsByName('unidad_medida_item')[0].disabled=true;
