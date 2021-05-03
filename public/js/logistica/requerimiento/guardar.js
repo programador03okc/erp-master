@@ -8,7 +8,7 @@ function get_data_requerimiento(){
     confirmacion_pago = document.querySelector("form[id='form-requerimiento'] input[name='confirmacion_pago']").value;
 
     id_requerimiento = document.querySelector("form[id='form-requerimiento'] input[name='id_requerimiento']").value;
-    codigo = document.querySelector("form[id='form-requerimiento'] input[name='codigo']").value;
+    // codigo = document.querySelector("form[id='form-requerimiento'] input[name='codigo']").value;
     concepto = document.querySelector("form[id='form-requerimiento'] input[name='concepto']").value;
     fecha_requerimiento = document.querySelector("form[id='form-requerimiento'] input[name='fecha_requerimiento']").value;
     id_prioridad = document.querySelector("form[id='form-requerimiento'] select[name='prioridad']").value;
@@ -51,7 +51,7 @@ function get_data_requerimiento(){
         tipo_cuadro,
         tipo_requerimiento,
         confirmacion_pago,
-        codigo,
+        // codigo,
         concepto,
         fecha_requerimiento,
         id_prioridad,
