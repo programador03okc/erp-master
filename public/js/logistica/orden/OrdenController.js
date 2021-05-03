@@ -288,7 +288,7 @@ class OrdenCtrl{
             'cantidad_a_comprar': 1,
             'codigo_item': null,
             'codigo_producto': document.querySelector("div[id='modal-catalogo-items'] div[class='modal-footer'] label[id='codigo']").textContent,
-            'codigo_requerimiento': "RC210005",
+            'codigo_requerimiento': "",
             'descripcion_adicional': null,
             'descripcion_producto': document.querySelector("div[id='modal-catalogo-items'] div[class='modal-footer'] label[id='descripcion']").textContent,
             'estado': 0,
