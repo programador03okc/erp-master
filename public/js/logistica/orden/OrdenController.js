@@ -476,9 +476,10 @@ class OrdenCtrl{
             var msj = this.validaOrdenRequerimiento();
             if (msj.length > 0){
                 alert(msj);
-                changeStateButton('editar');
-                changeStateInput('form-crear-orden-requerimiento', false);
-
+                // changeStateButton('editar');
+                // changeStateButton('guardar');
+                // $('#form-crear-orden-requerimiento').attr('type', 'register');
+                // changeStateInput('form-crear-orden-requerimiento', false);
             } else{
                 $.ajax({
                     type: 'POST',

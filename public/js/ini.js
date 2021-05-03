@@ -134,7 +134,7 @@ $(document).ready(function(){
 				if (forms!=="form-equi_cat" && forms!=="form-equi_sol" && forms!=="form-equi_tipo"
 				 && forms!=="form-mtto" && forms!=="form-tp_combustible" && forms!=="form-almacenes"
 				 && forms!=="form-tipo" && forms!=="form-categoria" && forms!=="form-clasificacion" 
-				 && forms!=="form-producto" && forms!=="form-requerimiento" && forms!=="form-general"
+				 && forms!=="form-producto" && forms!=="form-requerimiento" && forms!=="form-crear-orden-requerimiento" && forms!=="form-general"
 				 && forms!=="form-doc_venta" && forms!=="form-presint" && forms!=="form-preseje"
 				 && forms!=="form-cronopro" && forms!=="form-cronoeje" && forms!=="form-cronoint" 
 				 && forms!=="form-cronovalint" && forms!=="form-cronovaleje"){
