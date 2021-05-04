@@ -31,7 +31,7 @@ function getDataCuadroCostos(cc){
         // Run this when your request was successful
         // console.log(res)
         let cantidadTransformaciones=0;
-        let itemsConTransformacionList=[];
+ 
         if(res.status ==200){
             tempDetalleItemsCC= res.data;
             detalleItemsCC= res.data;
@@ -57,7 +57,7 @@ function getDataCuadroCostos(cc){
                 }else{
                     document.querySelector("form[id='form-requerimiento'] input[name='tiene_transformacion']").value= false;
                     document.querySelector("fieldset[id='group-detalle-cuadro-costos']").removeAttribute('hidden');
-                    llenarDetalleCuadroCostos(res.data);
+                    llenarDetalleCuadroCostos(tempDetalleItemsCC);
                 }
             }else{
                 alert("Hubo un problema al intentar encontrar el detalle del cuadro de costos");
@@ -287,12 +287,15 @@ function procesarItemDetalleCuadroCostos(id_detalle_cc,tipo_item){
         let descripcionParseText = ((detalle_cc_selected.descripcion_producto_transformado).replace("&lt;","<").replace("nbsp;","").replace("&nbsp;","").replace("&amp;","")).trim();
         let partNumberParseText = detalle_cc_selected.part_no_producto_transformado? detalle_cc_selected.part_no_producto_transformado:'';
         let cantidadParseText = detalle_cc_selected.cantidad;
+        let precioUnitarioOC = detalle_cc_selected.pvu_oc? detalle_cc_selected.pvu_oc:0;
+
         // console.log(cantidadParseText);
 
         tempDetalleItemCCSelect={
             'part_number':document.querySelector("div[id='modal-crear-nuevo-producto'] input[name='part_number']").value= partNumberParseText,
             'descripcion':document.querySelector("div[id='modal-crear-nuevo-producto'] textarea[name='descripcion']").value= descripcionParseText,
             'cantidad':cantidadParseText,
+            'precio_unitario': precioUnitarioOC,
             'id_cc_am_filas':id_cc_am_filas,
             'id_cc_venta_filas':id_cc_venta_filas
         }

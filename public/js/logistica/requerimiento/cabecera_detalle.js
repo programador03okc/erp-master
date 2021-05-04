@@ -1305,6 +1305,7 @@ function apertura(id_presup){
 function eliminarItemDeListado(obj,id){
     let row = obj.parentNode.parentNode.parentNode.parentNode;
     let idCcAmFilas =data_item.find(item => item.id_producto == id).id_cc_am_filas;
+    let tieneTransformacion = document.querySelector("form[id='form-requerimiento'] input[name='tiene_transformacion']").value;
 
     row.remove(row);
     
@@ -1312,7 +1313,12 @@ function eliminarItemDeListado(obj,id){
     data_item = data_item.filter((item, i) => item.id_producto != id);
 
     componerTdItemDetalleRequerimiento();
-    agregarItemDeTablaDetalleCuadroCostos(idCcAmFilas);
+    if(tieneTransformacion == false){
+        agregarItemDeTablaDetalleCuadroCostos(idCcAmFilas);
+    }else{
+        agregarItemDeTablaDetalleCuadroCostosItemTransformado(idCcAmFilas);
+
+    }
 }
 
 function agregarItemDeTablaDetalleCuadroCostos(idCcAmFilas){
@@ -1320,6 +1326,14 @@ function agregarItemDeTablaDetalleCuadroCostos(idCcAmFilas){
         if(element.id_cc_am_filas == idCcAmFilas){
             tempDetalleItemsCC.push(element);
             llenarDetalleCuadroCostos(tempDetalleItemsCC);
+        }
+    });
+}
+function agregarItemDeTablaDetalleCuadroCostosItemTransformado(idCcAmFilas){
+    itemsConTransformacionList.forEach(element => {
+        if(element.id_cc_am_filas == idCcAmFilas){
+            tempItemsConTransformacionList.push(element);
+            llenarItemsTransformados(tempItemsConTransformacionList);
         }
     });
 }

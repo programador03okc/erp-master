@@ -862,6 +862,7 @@ function selectItem(){
         }else if(tempDetalleItemCCSelect.hasOwnProperty('id_cc_venta_filas')){
             id_cc_venta_filas = tempDetalleItemCCSelect.id_cc_venta_filas;
         }
+        let tieneTransformacion = document.querySelector("form[id='form-requerimiento'] input[name='tiene_transformacion']").value;
         let data_item_selected = {
             'id_detalle_requerimiento': null,
             'id_item': document.querySelector("div[id='modal-catalogo-items'] div[class='modal-footer'] label[id='id_item']").textContent,
@@ -870,13 +871,13 @@ function selectItem(){
             'des_item': document.querySelector("div[id='modal-catalogo-items'] div[class='modal-footer'] label[id='descripcion']").textContent,
             'cantidad': tempDetalleItemCCSelect.cantidad?tempDetalleItemCCSelect.cantidad:1,
             'id_producto': parseInt(id_producto),
-            'id_servicio': parseInt(id_servicio),
-            'id_equipo': parseInt(id_equipo),
+            'id_servicio': id_servicio?parseInt(id_servicio):null,
+            'id_equipo': id_equipo?parseInt(id_equipo):null,
             'id_tipo_item': parseInt(id_tipo_item),
             'id_unidad_medida': document.querySelector("div[id='modal-catalogo-items'] div[class='modal-footer'] label[id='id_unidad_medida']").textContent,
             'categoria': document.querySelector("div[id='modal-catalogo-items'] div[class='modal-footer'] label[id='categoria']").textContent,
             'subcategoria': document.querySelector("div[id='modal-catalogo-items'] div[class='modal-footer'] label[id='subcategoria']").textContent,
-            'precio_unitario':tempDetalleItemCCSelect.precio_unitario,
+            'precio_unitario':tempDetalleItemCCSelect.precio_unitario?tempDetalleItemCCSelect.precio_unitario:null,
             'subtotal':null,
             'id_tipo_moneda':1,
             'lugar_entrega':null,
@@ -889,11 +890,13 @@ function selectItem(){
             'almacen_descripcion':null,
             'id_cc_am_filas':id_cc_am_filas,
             'id_cc_venta_filas': id_cc_venta_filas,
-            'tiene_transformacion':document.querySelector("form[id='form-requerimiento'] input[name='tiene_transformacion']").value,
+            'tiene_transformacion':tieneTransformacion,
             'estado':1
         };
+
+        // console.log(tieneTransformacion);
         agregarItemATablaListaDetalleRequerimiento(data_item_selected);
-        quitarItemDeTablaDetalleCuadroCostos(data_item_selected);
+        quitarItemDeTablaDetalleCuadroCostos(data_item_selected,tieneTransformacion);
         // let btnVerUltimasCompras = document.getElementsByName('btnVerUltimasCompras')[0];
         // btnVerUltimasCompras.removeAttribute('disabled');
         // btnVerUltimasCompras.setAttribute('class','btn btn-sm btn-default');
@@ -929,13 +932,20 @@ function agregarItemATablaListaDetalleRequerimiento(item){
         alert("lo siento, el item seleccionado no tiene un Id producto");
     }
 }
-function quitarItemDeTablaDetalleCuadroCostos(item){
+function quitarItemDeTablaDetalleCuadroCostos(item,tieneTransformacion){
     // console.log(item);
     // console.log(tempDetalleItemCCSelect);
     // console.log(detalleItemsCC);
     // console.log(tempDetalleItemsCC);
-    let trs =document.querySelectorAll("form[id='form-requerimiento'] table[id='ListaDetalleCuadroCostos'] tbody tr");
-    tempDetalleItemsCC = tempDetalleItemsCC.filter((element, i) => element.id_cc_am_filas != item.id_cc_am_filas);
+    let trs = [];
+    if(tieneTransformacion == false){
+        trs =document.querySelectorAll("form[id='form-requerimiento'] table[id='ListaDetalleCuadroCostos'] tbody tr");
+        tempDetalleItemsCC = tempDetalleItemsCC.filter((element, i) => element.id_cc_am_filas != item.id_cc_am_filas);
+    }else{
+        trs =document.querySelectorAll("form[id='form-requerimiento'] table[id='ListaDetalleItemstransformado'] tbody tr");
+        tempItemsConTransformacionList = tempItemsConTransformacionList.filter((element, i) => element.id_cc_am_filas != item.id_cc_am_filas);
+
+    }
 
     trs.forEach((tr,indice) => {
         if(tr.querySelector("td button").dataset.key == item.id_cc_am_filas){

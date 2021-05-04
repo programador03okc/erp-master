@@ -20,6 +20,8 @@ rutaObtenerGrupoSelectItemParaCpmpra
 var detalleItemsCC=[];
 var tempDetalleItemsCC=[];
 var tempDetalleItemCCSelect={};
+let itemsConTransformacionList=[];
+let tempItemsConTransformacionList=[];
 var dataSelect = [];
 
 let data = [];

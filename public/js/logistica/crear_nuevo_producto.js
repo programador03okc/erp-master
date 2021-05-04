@@ -132,7 +132,7 @@ function guardarProducto(data){
                     'id_unidad_medida': response.producto.id_unidad_medida,
                     'categoria': response.producto.categoria,
                     'subcategoria': response.producto.subcategoria,
-                    'precio_referencial':null,
+                    'precio_unitario':null,
                     'id_tipo_moneda':1,
                     'lugar_entrega':null,
                     'id_partida':null,

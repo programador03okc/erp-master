@@ -20,7 +20,7 @@ function mostrar_requerimiento(IdorCode){
         url: baseUrl,
         dataType: 'JSON',
         success: function(response){
-            console.log(auth_user);
+            // console.log(auth_user);
             let idGrupoList=[];
             auth_user.grupos.forEach(element => {
                 idGrupoList.push(element.id_grupo);

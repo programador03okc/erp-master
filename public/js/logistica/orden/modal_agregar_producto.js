@@ -144,6 +144,8 @@ function selectItem(){
  
     };
     agregarProductoADetalleOrdenList(data);
+    // agregarItemATablaListaDetalleRequerimiento(data);
+    // quitarItemDeTablaDetalleCuadroCostos(data);
 
     $('#modal-catalogo-items').modal('hide');
 }

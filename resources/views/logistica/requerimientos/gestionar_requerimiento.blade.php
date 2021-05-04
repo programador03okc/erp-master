@@ -71,6 +71,11 @@
                             </select>
                         </div>
 
+                        <div class="col-md-2"  id="input-group-fecha" hidden>
+                            <h5>Fecha Creación</h5>
+                            <input type="date" class="form-control" name="fecha_requerimiento" disabled="true" min={{ date('Y-m-d H:i:s') }} value={{ date('Y-m-d H:i:s') }}>
+                        </div>
+
                         <div class="col-md-2" id="input-group-moneda">
                             <h5>Moneda</h5>
                             <select class="form-control activation" name="moneda" onChange="changeMonedaSelect(event)" disabled="true">
