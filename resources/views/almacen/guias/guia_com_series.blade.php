@@ -8,10 +8,12 @@
             <div class="modal-body">
             <input type="text" class="oculto" name="cant_items"/>
             <input type="text" class="oculto" name="id_guia_com_det"/>
-            <input type="text" class="oculto" name="anulados"/>
             <input type="text" class="oculto" name="id_oc_det"/>
             <input type="text" class="oculto" name="id_producto"/>
             <input type="text" class="oculto" name="id_detalle_transformacion"/>
+            <input type="text" class="oculto" name="id_almacen_detalle"/>
+            <input type="text" class="oculto" name="edit"/>
+            <input type="text" class="oculto" name="anulados"/>
                 <div class="row cabecera">
                     <div class="col-md-12">
                         <label>Ingrese una serie:</label>

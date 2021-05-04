@@ -137,6 +137,7 @@ Pendientes de Ingreso
 </div>
 @include('almacen.documentos.doc_com_create')
 @include('almacen.guias.ordenDetalle')
+@include('almacen.guias.movimientoDetalle')
 @include('almacen.guias.guia_com_create')
 @include('almacen.guias.guia_com_series')
 @include('almacen.guias.guia_com_obs')
@@ -144,7 +145,6 @@ Pendientes de Ingreso
 @include('almacen.documentos.doc_com_ver')
 @include('almacen.producto.productoModal')
 @include('almacen.producto.productoCreate')
-@include('almacen.guias.movimientoDetalle')
 @include('almacen.guias.ordenesGuias')
 @include('almacen.guias.guia_com_ver')
 
@@ -168,6 +168,7 @@ Pendientes de Ingreso
 
     <script src="{{ asset('js/almacen/guia/ordenesPendientes.js')}}"></script>
     <script src="{{ asset('js/almacen/guia/ordenes_ver_detalle.js')}}"></script>
+    <script src="{{ asset('js/almacen/guia/movimientoDetalle.js')}}"></script>
     <script src="{{ asset('js/almacen/guia/guia_com_create.js')}}"></script>
     <script src="{{ asset('js/almacen/guia/guia_com_cambio.js')}}"></script>
     <script src="{{ asset('js/almacen/guia/guia_com_det_series.js')}}"></script>
