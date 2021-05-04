@@ -20,11 +20,12 @@ function agrega_series(id_oc_det){
 
     cant_items = $("#"+id_oc_det+"cantidad").val();
 
+    $('[name=id_guia_com_det]').val('');
     $('[name=id_oc_det]').val(id_oc_det);
     $('[name=id_detalle_transformacion]').val('');
     $('[name=id_producto]').val('');
     $('[name=serie_prod]').val('');
-    $('#cabecera').show();
+    $('.cabecera').show();
 }
 
 function agrega_series_transformacion(id){
@@ -46,11 +47,12 @@ function agrega_series_transformacion(id){
     }
     cant_items = (json !== null ? json.cantidad : 0);
 
+    $('[name=id_guia_com_det]').val('');
     $('[name=id_oc_det]').val('');
     $('[name=id_detalle_transformacion]').val(id);
     $('[name=id_producto]').val('');
     $('[name=serie_prod]').val('');
-    $('#cabecera').show();
+    $('.cabecera').show();
 }
 
 function agrega_series_producto(id){
@@ -74,11 +76,43 @@ function agrega_series_producto(id){
 
     cant_items = $("#p"+id+"cantidad").val();
 
+    $('[name=id_guia_com_det]').val('');
     $('[name=id_oc_det]').val('');
     $('[name=id_detalle_transformacion]').val('');
     $('[name=id_producto]').val(id);
     $('[name=serie_prod]').val('');
-    $('#cabecera').show();
+    $('.cabecera').show();
+}
+
+function agrega_series_guia(id_guia_com_det, cantidad, id_producto, id_almacen){
+    $('#modal-guia_com_barras').modal({
+        show: true
+    });
+    $('#listaBarras tbody').html('');
+    json_series = [];
+
+    var json = guia_detalle.find(element => element.id_guia_com_det == id_guia_com_det);
+    console.log(json);
+    
+    if (json !== null){
+        if (json.series.length > 0){
+            json.series.forEach(element => {
+                json_series.push(element.serie);
+            });
+            cargar_series();
+        }
+    }
+
+    cant_items = cantidad;
+
+    $('[name=id_guia_com_det]').val(id_guia_com_det);
+    $('[name=id_oc_det]').val('');
+    $('[name=id_detalle_transformacion]').val('');
+    $('[name=id_producto]').val(id_producto);
+    $('[name=id_almacen_detalle]').val(id_almacen);
+    $('[name=serie_prod]').val('');
+    $('[name=edit]').val('false');
+    $('.cabecera').show();
 }
 
 function cargar_series(){
@@ -86,13 +120,13 @@ function cargar_series(){
     var i = 1;
     
     json_series.forEach(serie => {
-        
+        console.log(serie.serie);
         tr +=`<tr id="reg-${serie}">
-                <td hidden>0</td>
-                <td class="numero">${i}</td>
-                <td><input type="text" class="oculto" name="series" value="${serie}"/>${serie}</td>
-                <td><i class="btn btn-danger fas fa-trash fa-lg" onClick="eliminar_serie('${serie}');"></i></td>
-            </tr>`;
+            <td hidden>0</td>
+            <td class="numero">${i}</td>
+            <td><input type="text" class="oculto" name="series" value="${serie}"/>${serie}</td>
+            <td><i class="btn btn-danger fas fa-trash fa-lg" onClick="eliminar_serie('${serie}');"></i></td>
+        </tr>`;
         i++;
     });
     console.log(tr);
@@ -125,7 +159,6 @@ function agregar_serie(){
 
         if (json_series.length > 0){
             const found = json_series.find(element => element == serie);
-            console.log('found'+found);
 
             if (found == undefined){
                 agrega = true;
@@ -170,8 +203,9 @@ function eliminar_serie(serie){
 function guardar_series(){
     var id_guia_com_det = $('[name=id_guia_com_det]').val();
     var id_oc_det = $('[name=id_oc_det]').val();
-    var id_producto = $('[name=id_producto]').val();
+    // var id_producto = $('[name=id_producto]').val();
     var id_detalle_transformacion = $('[name=id_detalle_transformacion]').val();
+    var edit = $('[name=edit]').val();
     
     if (id_oc_det !== ''){
         var json = oc_det_seleccionadas.find(element => element.id_oc_det == id_oc_det);
@@ -182,6 +216,7 @@ function guardar_series(){
         console.log(json);
         console.log(oc_det_seleccionadas);
         mostrar_ordenes_seleccionadas();
+        $('#modal-guia_com_barras').modal('hide');
     }
     else if (id_detalle_transformacion !== ''){
         var json = series_transformacion.find(element => element.id == id_detalle_transformacion);
@@ -192,40 +227,90 @@ function guardar_series(){
         console.log(json);
         console.log(series_transformacion);
         mostrar_detalle_transformacion();
+        $('#modal-guia_com_barras').modal('hide');
     }
-    else if (id_producto !== ''){
-        var json = oc_det_seleccionadas.find(element => element.id_producto == id_producto);
+    // else if (id_producto !== ''){
+    //     var json = oc_det_seleccionadas.find(element => element.id_producto == id_producto);
         
-        if (json !== null){
-            json.series = json_series;
-        }
-        console.log(json);
-        console.log(oc_det_seleccionadas);
-        mostrar_ordenes_seleccionadas();
-    }
-    else if (id_guia_com_det !== ''){
+    //     if (json !== null){
+    //         json.series = json_series;
+    //     }
+    //     console.log(json);
+    //     console.log(oc_det_seleccionadas);
+    //     mostrar_ordenes_seleccionadas();
+    // }
+    else if (id_guia_com_det !== '' && edit == 'true'){
         let series = [];
+        let repetidos = 0;
+
         $('#listaBarras tbody tr').each(function(index) {
             let serie = $(this).find('[name=series]').val();
             let id = $(this)[0].id;
-            series.push({
-                'id_guia_com_det':id_guia_com_det,
-                'id_prod_serie':id,
-                'serie':serie
-            });
+            var json = series.find(element => element.serie == serie);
+            
+            console.log(json);
+
+            if (json !== undefined){
+                repetidos++;
+                $(this).find('[name=series]').addClass('resaltar');
+            } else {
+                series.push({
+                    'id_guia_com_det':id_guia_com_det,
+                    'id_prod_serie':id,
+                    'serie':serie
+                });
+                $(this).find('[name=series]').removeClass('resaltar');
+            }
         });
-        var data = 'series='+JSON.stringify(series);
+        
+        if (repetidos > 0){
+            alert('Hay '+repetidos+' repetidos. Revise las series ingresadas!');
+            
+        } else {
+            var data = 'series='+JSON.stringify(series);
+            console.log(data);
+            
+            $.ajax({
+                type: 'POST',
+                url: 'actualizar_series',
+                data: data,
+                dataType: 'JSON',
+                success: function(response){
+                    console.log(response);
+                    var id = $('[name=id_guia_com_detalle]').val();
+                    listar_detalle_movimiento(id);
+                    alert('Se actualizaron las series con éxito.');
+                    $('#modal-guia_com_barras').modal('hide');
+                }
+            }).fail( function( jqXHR, textStatus, errorThrown ){
+                console.log(jqXHR);
+                console.log(textStatus);
+                console.log(errorThrown);
+            });
+        }
+    }
+    else if (id_guia_com_det !== '' && edit == 'false'){
+
+        var id_producto = $('[name=id_producto]').val();
+        var id_almacen = $('[name=id_almacen_detalle]').val();
+
+        var data =  'id_guia_com_det='+id_guia_com_det+
+                    '&id_producto='+id_producto+
+                    '&id_almacen='+id_almacen+
+                    '&series='+JSON.stringify(json_series);
+        
         console.log(data);
         $.ajax({
             type: 'POST',
-            url: 'actualizar_series',
+            url: 'guardar_series',
             data: data,
             dataType: 'JSON',
             success: function(response){
                 console.log(response);
                 var id = $('[name=id_guia_com_detalle]').val();
                 listar_detalle_movimiento(id);
-                alert('Se actualizaron las series con éxito.');
+                alert('Se guardaron las series con éxito.');
+                $('#modal-guia_com_barras').modal('hide');
             }
         }).fail( function( jqXHR, textStatus, errorThrown ){
             console.log(jqXHR);
@@ -233,7 +318,6 @@ function guardar_series(){
             console.log(errorThrown);
         });
     }
-    $('#modal-guia_com_barras').modal('hide');
 }
 
 $(document).ready(function(){

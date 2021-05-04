@@ -180,34 +180,6 @@ class OrdenesPendientesController extends Controller
                     ['log_det_ord_compra.estado','!=',28]])
             ->get();
         
-        // $html = '';
-        // $i = 1;
-        // $ids_detalle = [];
-
-        // foreach ($detalle as $det) {
-            
-        //     array_push($ids_detalle, ['id_oc_det'=>$det->id_detalle_orden,'series'=>[]]);
-            
-        //     $cantidad = ($det->cantidad - $det->suma_cantidad_guias);
-
-        //     $html.='<tr>
-        //         <td><input type="checkbox" data-tipo="orden" value="'.$det->id_detalle_orden.'" checked/></td>
-        //         <td>'.$det->codigo_oc.'</td>
-        //         <td>'.$det->codigo.'</td>
-        //         <td>'.$det->part_number.'</td>
-        //         <td>'.$det->descripcion.'</td>
-        //         <td><input type="number" id="'.$det->id_detalle_orden.'cantidad" value="'.$cantidad.'" min="1" max="'.$cantidad.'" style="width:80px;"/></td>
-        //         <td>'.$det->abreviatura.'</td>
-        //         <td>'.$det->precio.'</td>
-        //         <td>'.$det->subtotal.'</td>
-        //         <td>
-        //             <input type="text" class="oculto" id="series" value="'.$det->series.'" data-partnumber="'.$det->part_number.'"/>
-        //             <i class="fas fa-bars icon-tabla boton" data-toggle="tooltip" data-placement="bottom" title="Agregar Series" onClick="agrega_series('.$det->id_detalle_orden.');"></i>
-        //         </td>
-        //     </tr>';
-        //     $i++;
-        // }
-        // return json_encode(['html'=>$html, 'ids_detalle'=>$ids_detalle]);
         return response()->json($detalle);
     }
 
@@ -216,7 +188,7 @@ class OrdenesPendientesController extends Controller
             ->select(
                 'guia_com_det.*','alm_prod.codigo','alm_prod.part_number','alm_prod.descripcion','alm_und_medida.abreviatura',
                 'log_ord_compra.codigo as codigo_orden','guia_com.serie','guia_com.numero','alm_req.codigo as codigo_req',
-                'sis_sede.descripcion as sede_req'
+                'sis_sede.descripcion as sede_req','guia_com.id_almacen'
             )
             ->leftjoin('almacen.guia_com', 'guia_com.id_guia', '=', 'guia_com_det.id_guia_com')
             ->leftjoin('logistica.log_det_ord_compra', 'log_det_ord_compra.id_detalle_orden', '=', 'guia_com_det.id_oc_det')
@@ -241,6 +213,8 @@ class OrdenesPendientesController extends Controller
 
                 array_push($lista, [
                     'id_guia_com_det' => $det->id_guia_com_det,
+                    'id_almacen' => $det->id_almacen,
+                    'id_producto' => $det->id_producto,
                     'codigo' => $det->codigo,
                     'part_number' => $det->part_number,
                     'descripcion' => $det->descripcion,
@@ -273,6 +247,31 @@ class OrdenesPendientesController extends Controller
             $data = DB::table('almacen.alm_prod_serie')
             ->where('id_prod_serie',$s->id_prod_serie)
             ->update(['serie'=>$s->serie]);
+        }
+        return response()->json($data); 
+    }
+
+    public function guardar_series(Request $request){
+        $lista = json_decode($request->series);
+        $data = null;
+        
+        foreach ($lista as $serie){
+            $exist = DB::table('almacen.alm_prod_serie')
+            ->where([['serie','=',$serie],['id_guia_com_det','=',$request->id_guia_com_det]])
+            ->first();
+
+            if ($exist == null){
+                $data = DB::table('almacen.alm_prod_serie')->insert(
+                    [
+                        'id_prod' => $request->id_producto,
+                        'id_almacen' => $request->id_almacen,
+                        'serie' => $serie,
+                        'estado' => 1,
+                        'fecha_registro' => date('Y-m-d H:i:s'),
+                        'id_guia_com_det' => $request->id_guia_com_det
+                    ]
+                );
+            }
         }
         return response()->json($data); 
     }
@@ -411,6 +410,7 @@ class OrdenesPendientesController extends Controller
                         ],
                             'id_mov_alm_det'
                         );
+
                     OrdenesPendientesController::actualiza_prod_ubi($det->id_producto, $request->id_almacen);
 
                     if ($det->tipo == 'sobrante'){

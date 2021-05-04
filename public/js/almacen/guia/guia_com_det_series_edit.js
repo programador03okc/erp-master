@@ -11,6 +11,7 @@ function open_guia_series_edit(id_guia_com_det){
     $('[name=id_detalle_transformacion]').val('');
     $('[name=id_producto]').val('');
     $('[name=serie_prod]').val('');
+    $('[name=edit]').val('true');
     $('.cabecera').hide();
 
     mostrar_series(id_guia_com_det);

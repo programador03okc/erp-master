@@ -22,13 +22,13 @@
                                             <th>Código</th>
                                             <th>PartNumber</th>
                                             <th>Descripción</th>
-                                            <th>Cantidad</th>
+                                            <th>Cant.</th>
                                             <th>Unid</th>
                                             <th>Guía Compra</th>
                                             <th>Orden Compra</th>
                                             <th>Requerimiento</th>
                                             <th>Sede Req.</th>
-                                            <th></th>
+                                            <th width="80px">Series</th>
                                         </tr>
                                     </thead>
                                     <tbody></tbody>

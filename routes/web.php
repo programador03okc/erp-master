@@ -1249,8 +1249,9 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::post('guardar_doc_compra', 'OrdenesPendientesController@guardar_doc_compra');
 				Route::get('documentos_ver/{id}', 'OrdenesPendientesController@documentos_ver');
 				Route::get('mostrar_prods', 'AlmacenController@mostrar_prods');
-				Route::get('mostrar_series/{id}', 'OrdenesPendientesController@mostrar_series');
 				Route::post('guardar_producto', 'AlmacenController@guardar_producto')->name('guardar-producto');
+				Route::get('mostrar_series/{id}', 'OrdenesPendientesController@mostrar_series');
+				Route::post('guardar_series', 'OrdenesPendientesController@guardar_series')->name('guardar-series');
 				Route::post('actualizar_series', 'OrdenesPendientesController@actualizar_series')->name('actualizar-series');
 				Route::post('cambio_serie_numero', 'OrdenesPendientesController@cambio_serie_numero')->name('cambio-series');
 				Route::get('verGuiaCompraTransferencia/{id}', 'TransferenciaController@verGuiaCompraTransferencia');
