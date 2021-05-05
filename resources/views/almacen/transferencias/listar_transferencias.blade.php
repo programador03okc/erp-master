@@ -42,9 +42,9 @@ Gestión de Transferencias
                             </select>
                         </div>
                         <div class="col-md-6 right">
-                            <button type="button" class="btn btn-info" data-toggle="tooltip" 
+                            <!-- <button type="button" class="btn btn-info" data-toggle="tooltip" 
                                 data-placement="bottom" title="Nueva Transferencia" 
-                                onClick="guia_compraModal();">Nueva Transferencia con Guía</button>
+                                onClick="guia_compraModal();">Nueva Transferencia con Guía</button> -->
                             <button type="button" class="btn btn-success" data-toggle="tooltip" 
                                 data-placement="bottom" title="Nueva Transferencia" 
                                 onClick="modalRequerimiento();">Nueva Transferencia con Req.</button>

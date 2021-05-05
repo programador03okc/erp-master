@@ -458,7 +458,9 @@ class DistribucionController extends Controller
             $join->where('guia_trans.estado','!=', 7);
         })
         ->leftjoin('almacen.guia_com as gtr','gtr.id_guia','=','guia_trans.id_guia_com')        
-        ->where([['orden_despacho_det.id_od','=',$id_od],['orden_despacho_det.estado','!=',7]])
+        ->where([['orden_despacho_det.id_od','=',$id_od],
+                ['orden_despacho_det.estado','!=',7],
+                ['orden_despacho_det.transformado','=',false]])
         ->get();
 
         $lista = [];
@@ -891,7 +893,7 @@ class DistribucionController extends Controller
                         'id_producto'=>$i->id_producto,
                         'id_detalle_requerimiento'=>$i->id_detalle_requerimiento,
                         'cantidad'=>$i->cantidad,
-                        // 'descripcion_producto'=>$i->descripcion,
+                        'transformado'=>false,
                         'part_number_transformado'=>($i->part_number_transformado ? $i->part_number_transformado : null),
                         'descripcion_transformado'=>($i->descripcion_transformado ? $i->descripcion_transformado : null),
                         'comentario_transformado'=>($i->comentario_transformado ? $i->comentario_transformado : null),
@@ -954,10 +956,24 @@ class DistribucionController extends Controller
                 $sale = json_decode($request->detalle_sale);
                 
                 foreach ($sale as $s) {
+                    $id_od_detalle = DB::table('almacen.orden_despacho_det')
+                    ->insertGetId([
+                        'id_od'=>$id_od,
+                        'id_producto'=>$s->id_producto,
+                        'id_detalle_requerimiento'=>$s->id_detalle_requerimiento,
+                        'cantidad'=>$s->cantidad,
+                        'transformado'=>true,
+                        'estado'=>1,
+                        'fecha_registro'=>date('Y-m-d H:i:s')
+                        ],
+                        'id_od_detalle'
+                    );
+
                     DB::table('almacen.transfor_transformado')
                     ->insert([
                         'id_transformacion'=>$id_transformacion,
                         'id_producto'=>$s->id_producto,
+                        'id_od_detalle'=>$id_od_detalle,
                         'cantidad'=>$s->cantidad,
                         'valor_unitario'=>0,
                         'valor_total'=>0,

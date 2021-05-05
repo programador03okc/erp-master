@@ -1363,12 +1363,18 @@ class TransferenciaController extends Controller
         $detalle = DB::table('almacen.guia_com_det')
         ->select('guia_com_det.*','log_ord_compra.codigo as codigo_orden','alm_req.codigo as codigo_req',
         'sis_sede.descripcion as sede_req','alm_prod.codigo','alm_prod.part_number','alm_prod.descripcion',
-        'alm_und_medida.abreviatura')
+        'alm_und_medida.abreviatura','req_od.codigo as codigo_req_od','transformacion.codigo as codigo_transfor',
+        'sede_req_od.descripcion as sede_req_od')
         ->leftjoin('logistica.log_det_ord_compra','log_det_ord_compra.id_detalle_orden','=','guia_com_det.id_oc_det')
         ->leftjoin('logistica.log_ord_compra','log_ord_compra.id_orden_compra','=','log_det_ord_compra.id_orden_compra')
         ->leftjoin('almacen.alm_det_req','alm_det_req.id_detalle_requerimiento','=','log_det_ord_compra.id_detalle_requerimiento')
         ->leftjoin('almacen.alm_req','alm_req.id_requerimiento','=','alm_det_req.id_requerimiento')
         ->leftjoin('administracion.sis_sede','sis_sede.id_sede','=','alm_req.id_sede')
+        ->leftjoin('almacen.transfor_transformado','transfor_transformado.id_transformado','=','guia_com_det.id_transformado')
+        ->leftjoin('almacen.transformacion','transformacion.id_transformacion','=','transfor_transformado.id_transformacion')
+        ->leftjoin('almacen.orden_despacho','orden_despacho.id_od','=','transformacion.id_od')
+        ->leftjoin('almacen.alm_req as req_od','req_od.id_requerimiento','=','orden_despacho.id_requerimiento')
+        ->leftjoin('administracion.sis_sede as sede_req_od','sede_req_od.id_sede','=','req_od.id_sede')
         ->join('almacen.alm_prod','alm_prod.id_producto','=','guia_com_det.id_producto')
         ->join('almacen.alm_und_medida','alm_und_medida.id_unidad_medida','=','alm_prod.id_unidad_medida')
         ->where([['guia_com_det.id_guia_com','=',$id_guia],['guia_com_det.estado','!=',7]])
@@ -1384,8 +1390,9 @@ class TransferenciaController extends Controller
             array_push($lista_detalle, [
                 'id_guia_com_det' => $det->id_guia_com_det,
                 'codigo_orden' => $det->codigo_orden,
-                'codigo_req' => $det->codigo_req,
-                'sede_req' => $det->sede_req,
+                'codigo_transfor' => $det->codigo_transfor,
+                'codigo_req' => ($det->codigo_req!==null ? $det->codigo_req : $det->codigo_req_od),
+                'sede_req' => ($det->sede_req!==null ? $det->sede_req : $det->sede_req_od),
                 'codigo' => $det->codigo,
                 'part_number' => $det->part_number,
                 'descripcion' => $det->descripcion,
@@ -1416,12 +1423,10 @@ class TransferenciaController extends Controller
             ->join('almacen.alm_req','alm_req.id_requerimiento','=','alm_det_req.id_requerimiento')
             ->leftjoin('almacen.alm_almacen','alm_almacen.id_almacen','=','alm_det_req.id_almacen_reserva')
             ->leftjoin('administracion.sis_sede','sis_sede.id_sede','=','alm_almacen.id_sede')
-            // ->leftjoin('logistica.log_det_ord_compra','log_det_ord_compra.id_detalle_requerimiento','=','alm_det_req.id_detalle_requerimiento')
             ->leftJoin('logistica.log_det_ord_compra', function($join){
                 $join->on('log_det_ord_compra.id_detalle_requerimiento', '=', 'alm_det_req.id_detalle_requerimiento');
                 $join->where('log_det_ord_compra.estado','!=', 7);
             })
-            // ->leftjoin('almacen.guia_com_det','guia_com_det.id_oc_det','=','log_det_ord_compra.id_detalle_orden')
             ->leftJoin('almacen.guia_com_det', function($join){
                 $join->on('guia_com_det.id_oc_det', '=', 'log_det_ord_compra.id_detalle_orden');
                 $join->where('guia_com_det.estado','!=', 7);

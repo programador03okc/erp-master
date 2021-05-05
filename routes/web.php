@@ -1232,7 +1232,7 @@ Route::group(['middleware' => ['auth']], function () {
 				//Pendientes de Ingreso
 				Route::get('index', 'OrdenesPendientesController@view_ordenesPendientes')->name('index');
 				Route::post('listarOrdenesPendientes', 'OrdenesPendientesController@listarOrdenesPendientes');
-				Route::post('listarOrdenesEntregadas', 'OrdenesPendientesController@listarOrdenesEntregadas');
+				Route::post('listarIngresos', 'OrdenesPendientesController@listarIngresos');
 				Route::get('detalleOrden/{id}', 'OrdenesPendientesController@detalleOrden');
 				Route::post('guardar_guia_com_oc', 'OrdenesPendientesController@guardar_guia_com_oc');
 				Route::get('verGuiasOrden/{id}', 'OrdenesPendientesController@verGuiasOrden');

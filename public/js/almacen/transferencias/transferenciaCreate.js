@@ -1,4 +1,5 @@
 function ver_transferencia(id_guia){
+    $("#submit_guia_transferencia").removeAttr("disabled");
     $.ajax({
         type: 'GET',
         url: 'verGuiaCompraTransferencia/'+id_guia,
@@ -25,23 +26,22 @@ function ver_transferencia(id_guia){
                 html_serie = '';
                 element.series.forEach(ser => {
                     if (html_serie == ''){
-                        html_serie += ser.serie;
-                    } else {
                         html_serie += '<br>'+ser.serie;
+                    } else {
+                        html_serie += ', '+ser.serie;
                     }
                 });
 
                 html+=`<tr>
                 <td>${i}</td>
-                <td>${element.codigo_orden!==null?element.codigo_orden:''}</td>
+                <td>${element.codigo_orden!==null?element.codigo_orden:(element.codigo_transfor!==null ? element.codigo_transfor : '')}</td>
                 <td>${element.codigo_req!==null?element.codigo_req:''}</td>
                 <td><strong>${element.sede_req!==null?element.sede_req:''}</strong></td>
                 <td>${element.codigo}</td>
                 <td>${element.part_number!==null?element.part_number:''}</td>
-                <td>${element.descripcion}</td>
+                <td>${element.descripcion} <strong>${html_serie}</strong></td>
                 <td>${element.cantidad}</td>
                 <td>${element.abreviatura}</td>
-                <td>${html_serie}</td>
                 </tr>`;
                 i++;
             });
@@ -58,6 +58,7 @@ $("#form-guia_com_ver").on("submit", function(e){
     e.preventDefault();
     var data = $(this).serialize();
     console.log(data);
+    $("#submit_guia_transferencia").attr('disabled','true');
     generar_transferencia();
 });
 
@@ -75,6 +76,9 @@ function generar_transferencia(){
             
             if (formName =='transferencias'){
                 listarTransferenciasPorEnviar();
+            }
+            else if (formName =='ordenesPendientes'){
+                $('#ordenesEntregadas').DataTable().ajax.reload();
             }
         }
     }).fail( function( jqXHR, textStatus, errorThrown ){
@@ -136,9 +140,9 @@ function ver_requerimiento(id_requerimiento){
                 html_serie = '';
                 element.series.forEach(ser => {
                     if (html_serie == ''){
-                        html_serie += ser.serie;
-                    } else {
                         html_serie += '<br>'+ser.serie;
+                    } else {
+                        html_serie += ', '+ser.serie;
                     }
                 });
 
@@ -148,10 +152,9 @@ function ver_requerimiento(id_requerimiento){
                 <td>${element.sede}</td>
                 <td>${element.codigo}</td>
                 <td>${element.part_number!==null?element.part_number:''}</td>
-                <td>${element.descripcion}</td>
+                <td>${element.descripcion} <strong>${html_serie}</strong></td>
                 <td>${element.cantidad}</td>
                 <td>${element.abreviatura}</td>
-                <td><strong>${html_serie}</strong></td>
                 </tr>`;
                 i++;
             });
