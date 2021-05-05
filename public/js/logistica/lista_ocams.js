@@ -93,6 +93,7 @@ function listar_ordenes_propias(tabla,id_empresa= null,year_publicacion =null, c
                 let btnVerOrdenElectronica='';
                 let btnGenerarRequerimiento='';
                 let btnIrRequerimiento='';
+                let btnVerTransformacion='';
                 // let btnEditar='<button type="button" class="btn btn-sm btn-log bg-primary" title="Ver o editar" onClick="editarListaReq(' +row['id_requerimiento']+ ');"><i class="fas fa-edit fa-xs"></i></button>';
                 // let btnDetalleRapido='<button type="button" class="btn btn-default" title="Ver OC Fisica" onclick="location.href='+row['url_oc_fisica']+';"><i class="fas fa-eye fa-xs"></i></button>';
                 btnVerOrdenElectronica='<a class="btn btn-sm btn-default" title="O/C electrónica" href="https://apps1.perucompras.gob.pe//OrdenCompra/obtenerPdfOrdenPublico?ID_OrdenCompra='+row['id']+'&ImprimirCompleto=1" target="_blank"><i class="far fa-file-pdf"></i></a>';
@@ -115,11 +116,19 @@ function listar_ordenes_propias(tabla,id_empresa= null,year_publicacion =null, c
                     btnGenerarRequerimiento='';
                 }
                 if(row['id_requerimiento'] >0){
+                    if(row.cantidad_producto_con_transformacion != null){
+                        if( row.cantidad_producto_con_transformacion >0  ){
+                            btnVerTransformacion='<a type="button" class="btn btn-sm btn-default" style="background:#d8c74ab8;" title="Transformación" onClick="verTransformacion('+row['id_requerimiento'] +')"><i class="fas fa-exchange-alt"></i></a>';
+                        }else{
+
+                            btnVerTransformacion='<a type="button" class="btn btn-sm btn-default" style=" background:#b498d0;" title="Transformación" onClick="verTransformacion('+row['id_requerimiento'] +')"><i class="fas fa-exchange-alt"></i></a>';
+                        }
+                    }
                     btnIrRequerimiento='<a type="button" class="btn btn-sm btn-info" title="Ir Requerimiento '+row['codigo_requerimiento']+'" onClick="irRequerimientoByOrdenCompraPropia('+row['id_requerimiento'] +')"><i class="fas fa-file-prescription"></i></a>';
                 }else{
                     btnIrRequerimiento='';
                 }
-                return containerOpenBrackets+btnVerOrdenElectronica+btnVerOrdenFisica+btnGenerarRequerimiento+btnIrRequerimiento+containerCloseBrackets;
+                return containerOpenBrackets+btnVerOrdenElectronica+btnVerOrdenFisica+btnGenerarRequerimiento+btnVerTransformacion+btnIrRequerimiento+containerCloseBrackets;
                 }
             },
         ],
@@ -239,11 +248,158 @@ function guardarJustificacionGenerarRequerimiento(){
     window.location.href = '/logistica/gestion-logistica/requerimiento/elaboracion/index'; //using a named route
 }
 
-function irRequerimientoByOrdenCompraPropia(id_requerimiento){
+function irRequerimientoByOrdenCompraPropia(idRequerimiento){
 
-    localStorage.setItem('id_requerimiento', id_requerimiento);
+    localStorage.setItem('id_requerimiento', idRequerimiento);
     let url ="/logistica/gestion-logistica/requerimiento/elaboracion/index";
     var win = window.open(url, '_blank');
     win.focus();
 
+}
+function verTransformacion(idRequerimiento){
+    $('#modal-ver-transformacion').modal({
+        show: true,
+    });
+
+    listarProductoTransformado(idRequerimiento,true);
+    listarProductosBase(idRequerimiento,false);
+
+}
+
+
+// producto transformado - modal 
+function listarProductoTransformado(idRequerimiento,tieneTransformacion){
+    getProductosBaseOTransformado(idRequerimiento,tieneTransformacion).then(function(res) {
+        if(res.status ==200){
+            construirTablaProductoTransformado(res.data);
+        }
+    }).catch(function(err) {
+        console.log(err)
+    })
+}
+function listarProductosBase(idRequerimiento,tieneTransformacion){
+    getProductosBaseOTransformado(idRequerimiento,tieneTransformacion).then(function(res) {
+        if(res.status ==200){
+            construirTablaProductoBase(res.data);
+        }
+    }).catch(function(err) {
+        console.log(err)
+    })
+}
+
+function getProductosBaseOTransformado(idRequerimiento,tieneTransformacion){
+    return new Promise(function(resolve, reject) {
+        $.ajax({
+            type: 'GET',
+            url:`listado/producto-base-o-transformado/${idRequerimiento}/${tieneTransformacion}`,
+            dataType: 'JSON',
+            success(response) {
+                resolve(response);
+            },
+            error: function(err) {
+            reject(err) // Reject the promise and go to catch()
+            }
+            });
+        });
+}
+
+function construirTablaProductoTransformado(data){
+    var vardataTables = funcDatatables();
+
+    $('#tableProductoTransformado').DataTable({
+        'dom': vardataTables[1],
+        'buttons': [
+        ],
+        'language' : vardataTables[0],
+        'serverSide' : false,
+        'bInfo': false,
+        "bLengthChange" : false,
+        "scrollCollapse": true,
+        'paging': false,
+        'searching': false,
+        'bDestroy' : true,
+        'data': data,
+        'columns': [
+            {
+                'render': function (data, type, row) {
+                    return `${row['part_number']?row['part_number']:''}`;
+                }
+            },
+            {
+                'render': function (data, type, row) {
+                    return `${row['descripcion_adicional']?row['descripcion_adicional']:''}`;
+                }
+            },
+            {
+                'render': function (data, type, row) {
+                    return `${row['unidad_medida']?row['unidad_medida']:''}`;
+                }
+            },
+            {
+                'render': function (data, type, row) {
+                    return `${row['cantidad']? row['cantidad']:''}`;
+                }
+            },
+            {
+                'render': function (data, type, row) {
+                    return `${row['precio_unitario']?(row['simbolo_moneda']+row['precio_unitario']):''}`;
+                }
+            },
+            {
+                'render': function (data, type, row) {
+                    return `${row['subtotal']?(row['simbolo_moneda']+row['subtotal']):''}`;
+                }
+            }
+        ]
+    });
+}
+function construirTablaProductoBase(data){
+    var vardataTables = funcDatatables();
+
+    $('#tableProductoBase').DataTable({
+        'dom': vardataTables[1],
+        'buttons': [
+        ],
+        'language' : vardataTables[0],
+        'serverSide' : false,
+        'bInfo': false,
+        "bLengthChange" : false,
+        "scrollCollapse": true,
+        'paging': false,
+        'searching': false,
+        'bDestroy' : true,
+        'data': data,
+        'columns': [
+            {
+                'render': function (data, type, row) {
+                    return `${row['part_number']?row['part_number']:''}`;
+                }
+            },
+            {
+                'render': function (data, type, row) {
+                    return `${row['descripcion_adicional']?row['descripcion_adicional']:''}`;
+                }
+            },
+            {
+                'render': function (data, type, row) {
+                    return `${row['unidad_medida']?row['unidad_medida']:''}`;
+                }
+            },
+            {
+                'render': function (data, type, row) {
+                    return `${row['cantidad']? row['cantidad']:''}`;
+                }
+            },
+            {
+                'render': function (data, type, row) {
+                    return `${row['precio_unitario']?(row['simbolo_moneda']+row['precio_unitario']):''}`;
+                }
+            },
+            {
+                'render': function (data, type, row) {
+                    return `${row['subtotal']?(row['simbolo_moneda']+row['subtotal']):''}`;
+                }
+            }
+        ]
+    });
 }

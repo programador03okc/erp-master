@@ -625,6 +625,7 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('index', 'OCAMController@view_lista_ocams')->name('index');
 				Route::group(['as' => 'listado.', 'prefix' => 'listado'], function(){
 					Route::get('ordenes-propias/{empresa?}/{year_publicacion?}/{condicion?}', 'OCAMController@lista_ordenes_propias')->name('ordenes-propias');
+					Route::get('producto-base-o-transformado/{id_requerimiento?}/{tiene_transformacion?}', 'OCAMController@listaProductosBaseoTransformado')->name('producto-base-o-transformado');
 
 				});
 			});

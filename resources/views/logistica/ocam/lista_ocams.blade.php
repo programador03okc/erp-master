@@ -148,6 +148,7 @@
 </div>
 
 @include('logistica.requerimientos.modal_justificar_generar_requerimiento')
+@include('logistica.ocam.modal_ver_transformacion')
 
 @endsection
 
