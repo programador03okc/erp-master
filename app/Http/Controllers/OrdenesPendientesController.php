@@ -68,47 +68,71 @@ class OrdenesPendientesController extends Controller
             'adm_contri.nro_documento','adm_contri.razon_social',
             'sis_usua.nombre_corto','sede_guia.descripcion as sede_guia_descripcion',
             'alm_almacen.descripcion as almacen_descripcion',
-            'guia_com.serie','guia_com.numero','tp_ope.descripcion as operacion_descripcion',
+            'alm_almacen.id_sede','guia_com.serie','guia_com.numero',
+            'tp_ope.descripcion as operacion_descripcion',
             DB::raw("(SELECT count(distinct id_doc_com) FROM almacen.doc_com AS d
-                        INNER JOIN almacen.guia_com_det AS guia
+                    INNER JOIN almacen.guia_com_det AS guia
                         on(guia.id_guia_com = mov_alm.id_guia_com)
-                        INNER JOIN almacen.doc_com_det AS doc
+                    INNER JOIN almacen.doc_com_det AS doc
                         on(doc.id_guia_com_det = guia.id_guia_com_det)
-                        WHERE d.id_doc_com = doc.id_doc) AS count_facturas"),
+                    WHERE d.id_doc_com = doc.id_doc) AS count_facturas"),
             DB::raw("(SELECT COUNT(*) FROM almacen.trans_detalle 
-                        inner join almacen.mov_alm_det on(
-                            mov_alm_det.id_guia_com_det = trans_detalle.id_guia_com_det
-                        )
-                        where
-                            mov_alm_det.id_mov_alm = mov_alm.id_mov_alm
-                            and trans_detalle.estado != 7) AS count_transferencias")
+                    inner join almacen.mov_alm_det on(
+                        mov_alm_det.id_guia_com_det = trans_detalle.id_guia_com_det
+                    )
+                    where
+                        mov_alm_det.id_mov_alm = mov_alm.id_mov_alm
+                        and trans_detalle.estado != 7) AS count_transferencias"),
+            DB::raw("(SELECT COUNT(*) FROM almacen.alm_det_req 
+                    inner join logistica.log_det_ord_compra as log on(
+                            log.id_detalle_requerimiento = alm_det_req.id_detalle_requerimiento and
+                            log.estado != 7
+                    )
+                    inner join almacen.guia_com_det as guia on(
+                            guia.id_oc_det = log.id_detalle_orden and
+                            guia.estado != 7
+                    )
+                    inner join almacen.mov_alm_det as ing on(
+                            ing.id_guia_com_det = guia.id_guia_com_det and
+                            ing.estado != 7
+                    )
+                    inner join almacen.alm_req as req on(
+                            req.id_requerimiento = alm_det_req.id_requerimiento
+                    )
+                    where   ing.id_mov_alm = mov_alm.id_mov_alm
+                            and req.id_sede != alm_almacen.id_sede
+                            and alm_det_req.estado != 7) AS count_sedes_diferentes"),
+            DB::raw("(SELECT COUNT(*) FROM almacen.alm_det_req 
+                    inner join almacen.orden_despacho_det as od on(
+                            od.id_detalle_requerimiento = alm_det_req.id_detalle_requerimiento and
+                            od.estado != 7
+                    )
+                    inner join almacen.transfor_transformado as tra on(
+                            tra.id_od_detalle = od.id_od_detalle and
+                            tra.estado != 7
+                    )
+                    inner join almacen.guia_com_det as guia on(
+                            guia.id_transformado = tra.id_transformado and
+                            guia.estado != 7
+                    )
+                    inner join almacen.mov_alm_det as ing on(
+                            ing.id_guia_com_det = guia.id_guia_com_det and
+                            ing.estado != 7
+                    )
+                    inner join almacen.alm_req as req on(
+                            req.id_requerimiento = alm_det_req.id_requerimiento
+                    )
+                    where   ing.id_mov_alm = mov_alm.id_mov_alm
+                            and req.id_sede != alm_almacen.id_sede
+                            and alm_det_req.estado != 7) AS count_sedes_diferentes_od")
             )
             ->join('almacen.guia_com','guia_com.id_guia','=','mov_alm.id_guia_com')
-            // ->join('logistica.log_ord_compra','log_ord_compra.id_orden_compra','=','guia_com.id_oc')
             ->join('almacen.alm_almacen','alm_almacen.id_almacen','=','guia_com.id_almacen')
             ->join('administracion.sis_sede as sede_guia','sede_guia.id_sede','=','alm_almacen.id_sede')
             ->join('logistica.log_prove','log_prove.id_proveedor','=','guia_com.id_proveedor')
             ->leftJoin('contabilidad.adm_contri','adm_contri.id_contribuyente','=','log_prove.id_contribuyente')
-            // ->leftjoin('almacen.alm_req','alm_req.id_requerimiento','=','log_ord_compra.id_requerimiento')
-            // ->leftjoin('administracion.sis_sede as sede_req','sede_req.id_sede','=','alm_req.id_sede')
-            // ->leftjoin('almacen.alm_almacen','alm_almacen.id_almacen','=','alm_req.id_almacen')
-            // ->leftjoin('almacen.guia_ven','guia_ven.id_guia_com','=','mov_alm.id_guia_com')
-            // ->leftJoin('almacen.guia_ven as guia_ven_trans', function($join)
-            //              {   $join->on('guia_ven_trans.id_guia_com', '=', 'mov_alm.id_guia_com');
-            //                  $join->where('guia_ven_trans.estado','!=', 7);
-            //              })
-            // ->leftJoin('almacen.mov_alm as salida_trans', function($join)
-            //              {   $join->on('salida_trans.id_guia_ven', '=', 'guia_ven_trans.id_guia_ven');
-            //                  $join->where('salida_trans.estado','!=', 7);
-            //              })
-            // ->leftJoin('almacen.trans', function($join)
-            //              {   $join->on('trans.id_guia_ven', '=', 'guia_ven_trans.id_guia_ven');
-            //                  $join->where('trans.estado','!=', 7);
-            //              })
-            // ->join('configuracion.sis_moneda','sis_moneda.id_moneda','=','log_ord_compra.id_moneda')
             ->join('configuracion.sis_usua','sis_usua.id_usuario','=','mov_alm.usuario')
             ->join('almacen.tp_ope','tp_ope.id_operacion','=','mov_alm.id_operacion')
-            // ->leftJoin('almacen.guia_ven','guia_ven.id_guia_com','=','mov_alm.id_guia_com')
             ->where([['mov_alm.estado','!=',7],['mov_alm.id_tp_mov','=',1]])
             ->orderBy('mov_alm.fecha_emision','desc');
             // ->get();

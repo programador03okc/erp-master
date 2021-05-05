@@ -293,10 +293,12 @@ function listarOrdenesEntregadas(){
                         `<button type="button" class="cambio btn btn-warning boton" data-toggle="tooltip" 
                             data-placement="bottom" title="Cambiar Serie-Número" data-id="${row['id_mov_alm']}" 
                             data-guia="${row['id_guia_com']}"><i class="fas fa-sync-alt"></i></button>
-                        ${row['count_transferencias'] == 0 ? 
+
+                        ${(row['count_sedes_diferentes'] > 0 || row['count_sedes_diferentes_od'] > 0) ? 
+                        (row['count_transferencias'] == 0 ? 
                         `<button type="button" class="transferencia btn btn-success boton" data-toggle="tooltip" 
                         data-placement="bottom" title="Generar Transferencia" data-guia="${row['id_guia_com']}">
-                        <i class="fas fa-exchange-alt"></i></button>`:''}`+
+                        <i class="fas fa-exchange-alt"></i></button>`:'') : ''}`+
 
                         (row['id_operacion'] == 2 ? 
                         `<button type="button" class="${row['count_facturas']>0?'ver_doc':'doc'} btn btn-${row['count_facturas']>0?'info':'default'} boton" data-toggle="tooltip" 
