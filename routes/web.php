@@ -789,7 +789,7 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::get('listar_trabajadores', 'ProyectosController@listar_trabajadores');
 					Route::post('guardar_contacto', 'OrdenController@guardar_contacto');
 					Route::get('select-sede-by-empresa/{id?}', 'LogisticaController@select_sede_by_empresa')->name('select-sede-by-empresa');
-					Route::get('listar-ordenes-elaboradas', 'OrdenController@listar_ordenes_elaboradas');
+					Route::get('listar-historial-ordenes-elaboradas', 'OrdenController@listaHistorialOrdenes');
 					Route::get('mostrar-orden/{id_orden?}', 'OrdenController@mostrarOrden');
 					Route::get('anular-orden/{id}', 'OrdenController@anular_orden');
 
@@ -797,7 +797,8 @@ Route::group(['middleware' => ['auth']], function () {
 				});
 				Route::group(['as' => 'lista-ordenes.', 'prefix' => 'por-requerimiento'], function(){
 					Route::get('vista_listar_ordenes', 'OrdenController@view_listar_ordenes')->name('index');
-					Route::get('listar_todas_ordenes', 'OrdenController@listar_todas_ordenes');
+					Route::get('listar-ordenes-elaboradas', 'OrdenController@listarOrdenesElaboradas');
+					Route::get('detalleOrden/{id_orden}', 'OrdenController@detalleOrden');
 					// Route::get('generar_orden_pdf/{id}', 'OrdenController@generar_orden_pdf'); // PDF
 					Route::get('verSession', 'LogisticaController@verSession'); 
 					Route::get('explorar-orden/{id_orden}', 'LogisticaController@explorar_orden'); 

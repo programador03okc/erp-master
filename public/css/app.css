@@ -465,7 +465,7 @@ body .login-box {
 
 .modal .dataTables_wrapper table tbody tr,
 .page-main .dataTables_wrapper table tbody tr {
-  background-color: #fff;
+  /* background-color: #fff; */
   cursor: pointer;
 }
 
@@ -1096,9 +1096,9 @@ span.select2-selection {
 #listaTransferenciasRecibidas tbody td:nth-last-child(8),
 #listaTransferenciasRecibidas tbody td:nth-last-child(7),
 #listaTransferenciasPorEnviar tbody td:nth-last-child(3),
-#listaOrdenes tbody td:nth-last-child(15),
+/* #listaOrdenes tbody td:nth-last-child(15),
 #listaOrdenes tbody td:nth-last-child(16),
-#listaOrdenes tbody td:nth-last-child(17),
+#listaOrdenes tbody td:nth-last-child(17), */
 #listaTransformaciones tbody td:nth-last-child(7),
 #listaTransformaciones tbody td:nth-last-child(6),
 #listaTransformaciones tbody td:nth-last-child(5),
@@ -1144,8 +1144,8 @@ span.select2-selection {
 #listaTransferenciasRecibidas tbody td:nth-last-child(9),
 #listaTransformaciones tbody td:nth-last-child(11),
 #listaTransformacionesPendientes tbody td:nth-last-child(9),
-#listaOrdenes tbody td:nth-last-child(2),
-#listaOrdenes tbody td:nth-last-child(3),
+/* #listaOrdenes tbody td:nth-last-child(2),
+#listaOrdenes tbody td:nth-last-child(3), */
 #listaIngresos tbody td:nth-last-child(20),
 #listaIngresos tbody td:nth-last-child(21),
 #listaOpcionesTodo tbody td:nth-last-child(10),

@@ -109,6 +109,7 @@ function llenarCabeceraCuadroCostos(data){
     changeStateInput('form-requerimiento', false);
     changeStateButton('nuevo');
     nuevo_req();
+    document.querySelector("input[name='fecha_creacion_cc']").value =data.fecha_creacion_cc;
     document.querySelector("input[name='id_cc']").value =data.id_cc;
     document.querySelector("input[name='tipo_cuadro']").value =data.tipo_cuadro;
     document.querySelector("select[name='tipo_requerimiento']").value =1;

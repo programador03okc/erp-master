@@ -29,22 +29,15 @@
                         <th hidden></th>
                         <th>Fecha Em.</th>
                         <th>Nro.Orden</th>
-                        <th>Ruc</th>
+                        <th>Empresa / Sede</th>
                         <th>Proveedor</th>
                         <th>Mnd</th>
-                        <th>SubTotal</th>
-                        <th>Igv</th>
-                        <th>Total</th>
                         <th>Condición</th>
-                        <th>Plazo Entrega</th>
-                        <th>Cta.Prin.</th>
-                        <th>Cta.Alte.</th>
-                        <th>Cta.Detr.</th>
-                        <th>Cod.Cuadro</th>
+                        <th>Dias para que llegue</th>
                         <th>Estado</th>
                         <th>Detalle Pago</th>
                         <th>Archivo Adjunto</th>
-                        <th width='500px'>Acción</th>
+                        <th width='auto'>Acción</th>
                     </tr>
                 </thead>
                 <tbody></tbody>
@@ -104,12 +97,10 @@
 @section('scripts')
     <script src="{{ asset('datatables/DataTables/js/jquery.dataTables.min.js') }}"></script>
     <script src="{{ asset('datatables/DataTables/js/dataTables.bootstrap.min.js') }}"></script>
-    <script src="{{ asset('datatables/Buttons/js/dataTables.buttons.min.js') }}"></script>
-    <script src="{{ asset('datatables/Buttons/js/buttons.bootstrap.min.js') }}"></script>
-    <script src="{{ asset('datatables/Buttons/js/buttons.print.min.js') }}"></script>
-    <script src="{{ asset('datatables/Buttons/js/buttons.html5.min.js') }}"></script>
-    <script src="{{ asset('datatables/pdfmake/pdfmake.min.js') }}"></script>
     <script src="{{ asset('datatables/pdfmake/vfs_fonts.js') }}"></script>
     <script src="{{ asset('datatables/JSZip/jszip.min.js') }}"></script>
-    <script src="{{('/js/logistica/listar_ordenes.js')}}"></script>
+    <script src="{{('/js/logistica/orden/listar_ordenes.js')}}"></script>
+    <script src="{{('/js/logistica/orden/orden_ver_detalle.js')}}"></script>
+    <script src="{{ asset('template/plugins/moment.min.js') }}"></script>
+
 @endsection
