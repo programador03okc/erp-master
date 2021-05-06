@@ -39,9 +39,9 @@ function listar_detalle_movimiento(id_guia_com_detalle){
                 <td>${element.cantidad}</td>
                 <td>${element.abreviatura}</td>
                 <td>${element.serie !== null ? (element.serie+'-'+element.numero) : ''}</td>
-                <td>${element.codigo_orden !== null ? element.codigo_orden : ''}</td>
-                <td>${element.codigo_req !== null ? element.codigo_req : ''}</td>
-                <td>${element.sede_req !== null ? element.sede_req : ''}</td>
+                <td>${element.codigo_orden!==null?element.codigo_orden:(element.codigo_transfor!==null ? element.codigo_transfor : '')}</td>
+                <td>${element.codigo_req!==null?element.codigo_req:''}</td>
+                <td><strong>${element.sede_req!==null?element.sede_req:''}</strong></td>
                 <td>
                     <i class="fas fa-edit icon-tabla boton blue" data-toggle="tooltip" data-placement="bottom" 
                     title="Editar Series" onClick="open_guia_series_edit(${element.id_guia_com_det});"></i>
