@@ -16,7 +16,7 @@ function listarOrdenesElaboradas(){
             'dom': vardataTables[1],
             'buttons': vardataTables[2],
             'language' : vardataTables[0],
-            'ajax': 'listar-ordenes-elaboradas',
+            'ajax': 'listar-historial-ordenes-elaboradas',
             // "dataSrc":'',
             'scrollX': false,
             'columns': [

@@ -1197,91 +1197,124 @@ class OrdenController extends Controller
         return $val;
     }
 
-    public function get_lista_ordes_por_requerimiento(){
+    public function listarOrdenesElaboradas(){
         $ord_compra = DB::table('logistica.log_ord_compra')
-            ->select(
-                'log_ord_compra.*',
-                 // 'log_cdn_pago.descripcion as condicion',
-                DB::raw("(CASE 
-                WHEN log_ord_compra.id_condicion = 1 THEN log_cdn_pago.descripcion 
-                WHEN log_ord_compra.id_condicion = 2 THEN log_cdn_pago.descripcion || ' ' || log_ord_compra.plazo_dias  || ' Días'
-                ELSE null END) AS condicion
-                "),
-                'sis_moneda.simbolo as moneda_simbolo',
-                'sis_moneda.descripcion as moneda_descripcion',
-                'adm_contri.id_contribuyente',
-                'adm_contri.razon_social',
-                'adm_contri.nro_documento',
-                'cta_prin.nro_cuenta as nro_cuenta_prin',
-                'cta_alter.nro_cuenta as nro_cuenta_alter',
-                'cta_detra.nro_cuenta as nro_cuenta_detra',
-                'adm_estado_doc.estado_doc',
-                'adm_estado_doc.bootstrap_color',
-                'log_ord_compra_pago.id_pago',
-                'log_ord_compra_pago.detalle_pago',
-                'log_ord_compra_pago.archivo_adjunto'
-            )
-            ->join('logistica.log_prove', 'log_prove.id_proveedor', '=', 'log_ord_compra.id_proveedor')
-            ->join('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'log_prove.id_contribuyente')
-            ->leftJoin('configuracion.sis_moneda', 'sis_moneda.id_moneda', '=', 'log_ord_compra.id_moneda')
-            ->leftjoin('logistica.log_cdn_pago','log_cdn_pago.id_condicion_pago','=','log_ord_compra.id_condicion')
-            ->leftjoin('contabilidad.adm_cta_contri as cta_prin','cta_prin.id_cuenta_contribuyente','=','log_ord_compra.id_cta_principal')
-            ->leftjoin('contabilidad.adm_cta_contri as cta_alter','cta_alter.id_cuenta_contribuyente','=','log_ord_compra.id_cta_alternativa')
-            ->leftjoin('contabilidad.adm_cta_contri as cta_detra','cta_detra.id_cuenta_contribuyente','=','log_ord_compra.id_cta_detraccion')
-            ->join('administracion.adm_estado_doc','adm_estado_doc.id_estado_doc','=','log_ord_compra.estado')
-            ->leftjoin('logistica.log_ord_compra_pago','log_ord_compra_pago.id_orden_compra','=','log_ord_compra.id_orden_compra')
+        ->select(
+            'log_ord_compra.*',
+            'sis_sede.descripcion as descripcion_sede_empresa',
+
+             // 'log_cdn_pago.descripcion as condicion',
+            DB::raw("(CASE 
+            WHEN log_ord_compra.id_condicion = 1 THEN log_cdn_pago.descripcion 
+            WHEN log_ord_compra.id_condicion = 2 THEN log_cdn_pago.descripcion || ' ' || log_ord_compra.plazo_dias  || ' Días'
+            ELSE null END) AS condicion
+            "),
+            'sis_moneda.simbolo as moneda_simbolo',
+            'sis_moneda.descripcion as moneda_descripcion',
+            'adm_contri.id_contribuyente',
+            'adm_contri.razon_social',
+            'adm_contri.nro_documento',
+            'cta_prin.nro_cuenta as nro_cuenta_prin',
+            'cta_alter.nro_cuenta as nro_cuenta_alter',
+            'cta_detra.nro_cuenta as nro_cuenta_detra',
+            'adm_estado_doc.estado_doc',
+            'adm_estado_doc.bootstrap_color',
+            'log_ord_compra_pago.id_pago',
+            'log_ord_compra_pago.detalle_pago',
+            'log_ord_compra_pago.archivo_adjunto'
+        )
+        ->leftJoin('administracion.sis_sede', 'sis_sede.id_sede', '=', 'log_ord_compra.id_sede')
+        ->join('logistica.log_prove', 'log_prove.id_proveedor', '=', 'log_ord_compra.id_proveedor')
+        ->join('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'log_prove.id_contribuyente')
+        ->leftJoin('configuracion.sis_moneda', 'sis_moneda.id_moneda', '=', 'log_ord_compra.id_moneda')
+        ->leftjoin('logistica.log_cdn_pago','log_cdn_pago.id_condicion_pago','=','log_ord_compra.id_condicion')
+        ->leftjoin('contabilidad.adm_cta_contri as cta_prin','cta_prin.id_cuenta_contribuyente','=','log_ord_compra.id_cta_principal')
+        ->leftjoin('contabilidad.adm_cta_contri as cta_alter','cta_alter.id_cuenta_contribuyente','=','log_ord_compra.id_cta_alternativa')
+        ->leftjoin('contabilidad.adm_cta_contri as cta_detra','cta_detra.id_cuenta_contribuyente','=','log_ord_compra.id_cta_detraccion')
+        ->join('administracion.adm_estado_doc','adm_estado_doc.id_estado_doc','=','log_ord_compra.estado')
+        ->leftjoin('logistica.log_ord_compra_pago','log_ord_compra_pago.id_orden_compra','=','log_ord_compra.id_orden_compra')
 
 
-            ->where([
-                ['log_ord_compra.estado', '!=', 7],
-                ['log_ord_compra.id_grupo_cotizacion', '=', null]
-            ])
-            ->orderBy('log_ord_compra.fecha','desc')
-            ->get();
-            
-            
-            $data=[];
-            $containerOpenBrackets='<div class="btn-group" role="group" style="margin-bottom: 5px; width:100px">';
-            $containerCloseBrackets='</div>';
+        ->where([
+            ['log_ord_compra.estado', '!=', 7],
+            ['log_ord_compra.id_grupo_cotizacion', '=', null]
+        ])
+        ->orderBy('log_ord_compra.fecha','desc')
+        ->get();
+        
+        $data=[];
+        if(count($ord_compra)>0){
+            foreach($ord_compra as $element){
 
-            if(count($ord_compra)>0){
-                foreach($ord_compra as $element){
-
-                    $btnImprimirOrden= '<button type="button" onClick="imprimir_orden(event)" title="Imprimir Orden" class="imprimir_orden btn btn-md btn-warning boton" data-toggle="tooltip" data-placement="bottom" data-id-orden-compra="'.$element->id_orden_compra.'"  data-id-pago=""> <i class="fas fa-file-pdf"></i> </button>';
-
-                    $data[]=[
-                        'id_orden_compra'=> $element->id_orden_compra,
-                        'fecha' => date_format(date_create($element->fecha),'Y-m-d'), 
-                        'codigo'=> '<label class="lbl-codigo" title="Abrir Orden" onClick="abrir_orden('.$element->id_orden_compra.')">'.$element->codigo.'</label>',
-                        'nro_documento'=> $element->nro_documento, 
-                        'razon_social'=> $element->razon_social,
-                        'moneda_simbolo'=> $element->moneda_simbolo, 
-                        'monto_subtotal'=> $element->monto_subtotal, 
-                        'monto_igv'=> $element->monto_igv, 
-                        'monto_total'=>$element->monto_total, 
-                        'condicion'=> $element->condicion, 
-                        'plazo_entrega'=> $element->plazo_entrega, 
-                        'nro_cuenta_prin'=> $element->nro_cuenta_prin, 
-                        'nro_cuenta_alter'=> $element->nro_cuenta_alter, 
-                        'nro_cuenta_detra'=> $element->nro_cuenta_detra,
-                        'codigo_cuadro_comparativo'=> '',
-                        'estado'=> '<center><label class="label label-warning" title="info" style="cursor:pointer;" onClick="viewGroupInfo(event)" data-group-info="" >i</label></center><span class="label label-'.$element->bootstrap_color.'">'.$element->estado_doc.'</span></center>',
-                        'detalle_pago'=> $element->detalle_pago, 
-                        'archivo_adjunto'=> $element->archivo_adjunto,
-                        'botones_accion'=>$containerOpenBrackets.$btnImprimirOrden.$containerCloseBrackets
-                    ];
-                }
+                $data[]=[
+                    'id_orden_compra'=> $element->id_orden_compra,
+                    'id_tp_documento'=> $element->id_tp_documento,
+                    'fecha' => date_format(date_create($element->fecha),'Y-m-d'), 
+                    'codigo'=> $element->codigo,
+                    'descripcion_sede_empresa'=> $element->descripcion_sede_empresa,
+                    'nro_documento'=> $element->nro_documento, 
+                    'razon_social'=> $element->razon_social,
+                    'moneda_simbolo'=> $element->moneda_simbolo, 
+                    'monto_subtotal'=> $element->monto_subtotal, 
+                    'monto_igv'=> $element->monto_igv, 
+                    'monto_total'=>$element->monto_total, 
+                    'condicion'=> $element->condicion, 
+                    'plazo_entrega'=> $element->plazo_entrega, 
+                    'nro_cuenta_prin'=> $element->nro_cuenta_prin, 
+                    'nro_cuenta_alter'=> $element->nro_cuenta_alter, 
+                    'nro_cuenta_detra'=> $element->nro_cuenta_detra,
+                    'codigo_cuadro_comparativo'=> '',
+                    'bootstrap_color'=>$element->bootstrap_color,
+                    'estado_doc'=>$element->estado_doc,
+                    'detalle_pago'=> $element->detalle_pago, 
+                    'archivo_adjunto'=> $element->archivo_adjunto,
+                    
+                ];
             }
+        }
         $output['data'] = $data;
         return $output;
     }
 
-    public function listar_ordenes_elaboradas(){
+    public function detalleOrden($idOrden){
+        $detalle = DB::table('logistica.log_det_ord_compra')
+        ->select(
+            'log_det_ord_compra.*','alm_item.id_producto','alm_prod.codigo',
+            'alm_prod.part_number','alm_cat_prod.descripcion as categoria',
+            'alm_subcat.descripcion as subcategoria','alm_req.id_requerimiento',
+            'alm_prod.descripcion','alm_und_medida.abreviatura','alm_req.codigo as codigo_req',
+            'adm_estado_doc.estado_doc','adm_estado_doc.bootstrap_color','sis_sede.descripcion as sede_req',
+            'oc_propias.orden_am','oportunidades.oportunidad','oportunidades.codigo_oportunidad',
+            'entidades.nombre','oc_propias.id as id_oc_propia','oc_propias.url_oc_fisica',
+            'users.name as user_name'
+        )
+        ->leftjoin('almacen.alm_item', 'alm_item.id_item', '=', 'log_det_ord_compra.id_item')
+        ->leftjoin('almacen.alm_prod', 'alm_prod.id_producto', '=', 'alm_item.id_producto')
+        ->leftjoin('almacen.alm_cat_prod', 'alm_cat_prod.id_categoria', '=', 'alm_prod.id_categoria')
+        ->leftjoin('almacen.alm_subcat', 'alm_subcat.id_subcategoria', '=', 'alm_prod.id_subcategoria')
+        ->leftjoin('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'log_det_ord_compra.id_unidad_medida')
+        ->leftjoin('almacen.alm_det_req', 'alm_det_req.id_detalle_requerimiento', '=', 'log_det_ord_compra.id_detalle_requerimiento')
+        ->leftjoin('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'alm_det_req.id_requerimiento')
+        ->leftjoin('administracion.sis_sede', 'sis_sede.id_sede', '=', 'alm_req.id_sede')
+        ->leftjoin('mgcp_cuadro_costos.cc','cc.id','=','alm_req.id_cc')
+        ->leftjoin('mgcp_oportunidades.oportunidades','oportunidades.id','=','cc.id_oportunidad')
+        ->leftjoin('mgcp_usuarios.users','users.id','=','oportunidades.id_responsable')
+        ->leftjoin('mgcp_acuerdo_marco.oc_propias','oc_propias.id_oportunidad','=','oportunidades.id')
+        ->leftjoin('mgcp_acuerdo_marco.entidades','entidades.id','=','oportunidades.id_entidad')
+        ->join('administracion.adm_estado_doc', 'adm_estado_doc.id_estado_doc', '=', 'log_det_ord_compra.estado')
+        ->where([
+            ['log_det_ord_compra.id_orden_compra', '=', $idOrden]
+        ])
+        ->get();
+    return response()->json($detalle);
+    }
+
+    public function listaHistorialOrdenes(){
         $data = DB::table('logistica.log_ord_compra')
         ->select(
             'log_ord_compra.*',
             'sis_sede.descripcion as descripcion_sede_empresa',
-            DB::raw("(dis_destino.descripcion) || ' - ' || (prov_destino.descripcion) || ' - ' || (dpto_destino.descripcion)  AS ubigeo_destino"),
+            DB::raw("CONCAT(dis_destino.descripcion,' - ',prov_destino.descripcion, ' - ', dpto_destino.descripcion)  AS ubigeo_destino"),
             DB::raw("(CASE 
             WHEN log_ord_compra.id_condicion = 1 THEN log_cdn_pago.descripcion 
             WHEN log_ord_compra.id_condicion = 2 THEN log_cdn_pago.descripcion || ' ' || log_ord_compra.plazo_dias  || ' Días'
@@ -1564,42 +1597,7 @@ class OrdenController extends Controller
 
 
 
-    public function listar_todas_ordenes(){
-        $allRol = Auth::user()->getAllRol();
-        $userSessionRolConceptoList=[];
-        foreach($allRol as $rol){
 
-            $userSessionRolConceptoList[]=$rol->id_rol; //id_rol_concepto actuales
-        }
-
-        $ordenPorCotizacionList=[
-            "data"=>[
-            // ["id_orden_compra"=> 30,
-            // "fecha"=> "2020-08-22",
-            // "codigo"=> "<label class=\"lbl-codigo\" title=\"Abrir Orden\" onClick=\"abrir_orden(31)\">OC-2008-0005</label>",
-            // "nro_documento"=> "20619865472",
-            // "razon_social"=> "MAXIMA SA",
-            // "moneda_simbolo"=> null,
-            // "monto_subtotal"=> null,
-            // "monto_igv"=> null,
-            // "monto_total"=> null,
-            // "condicion"=> "Crédito 12 Días",
-            // "plazo_entrega"=> null,
-            // "nro_cuenta_prin"=> null,
-            // "nro_cuenta_alter"=> null,
-            // "nro_cuenta_detra"=> null,
-            // "codigo_cuadro_comparativo"=> "",
-            // "estado"=> "<center><label class=\"label label-warning\" title=\"info\" style=\"cursor=>pointer;\" onClick=\"viewGroupInfo(event)\" data-group-info=\"\" >i</label></center><span class=\"label label-default\">Elaborado</span></center>",
-            // "detalle_pago"=> null,
-            // "archivo_adjunto"=> null,
-            // "botones_accion"=> ""]
-            ]
-        ];
-        $ordenPorRequerimientoList= $this->get_lista_ordes_por_requerimiento();
-                $returnedTarget =  array_merge((array) $ordenPorCotizacionList['data'], (array) $ordenPorRequerimientoList['data']); 
-                $output = ['data'=>$returnedTarget];
-                return response()->json($output);
-    }
 
     public function groupIncluded($id_orden){
         $sql = DB::table('logistica.log_ord_compra')

@@ -2100,6 +2100,17 @@ class LogisticaController extends Controller
             $texto_justificacion= 'Con CC Pendiente Aprobación. '.$request->requerimiento['justificacion_generar_requerimiento'];
         }
         // trazabilidad requerimiento elaboraod
+
+        if($request->requerimiento['tipo_requerimiento']==1){ // tipo mgcp
+            DB::table('almacen.alm_req_obs')
+            ->insert([  'id_requerimiento'=>$id_requerimiento,
+                        'accion'=>'VINCULADO',
+                        'descripcion'=>'Fecha de creación de Cuadro Costos: '.$request->requerimiento['fecha_creacion_cc'],
+                        'id_usuario'=>Auth::user()->id_usuario,
+                        'fecha_registro'=>$request->requerimiento['fecha_creacion_cc']
+            ]);
+        }
+
         DB::table('almacen.alm_req_obs')
         ->insert([  'id_requerimiento'=>$id_requerimiento,
                     'accion'=>'ELABORADO',
