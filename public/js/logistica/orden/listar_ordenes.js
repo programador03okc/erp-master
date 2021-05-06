@@ -33,37 +33,71 @@ $(function(){
         guardar_aprobación();
     });
 });
+var tablaListaOrdenes;
 function listarOrdenes(){
     var vardataTables = funcDatatables();
-    var tabla = $('#listaOrdenes').DataTable({
+    tablaListaOrdenes = $('#listaOrdenes').DataTable({
         'processing':true,
         'destroy':true,
         'dom': vardataTables[1],
         'buttons': vardataTables[2],
         'language' : vardataTables[0],
-        'ajax': 'listar_todas_ordenes',
+        'ajax': 'listar-ordenes-elaboradas',
         // "dataSrc":'',
         'scrollX': false,
         'columns': [
             {'data': 'id_orden_compra'},
             {'data': 'fecha'},
-            {'data': 'codigo'},
-            {'data': 'nro_documento'},
-            {'data': 'razon_social'},
+            {'render':
+                function (data, type, row, meta){
+                    return '<label class="lbl-codigo" title="Abrir Orden" onClick="abrir_orden('+row.id_orden_compra+')">'+row.codigo+'</label>';
+                }
+            },
+            {'data': 'descripcion_sede_empresa'},
+            {'render':
+            function (data, type, row, meta){
+                return (row.razon_social+' - RUC:'+row.nro_documento)
+            }
+        },
             {'data': 'moneda_simbolo'},
-            {'data': 'monto_subtotal'},
-            {'data': 'monto_igv'},
-            {'data': 'monto_total'},
             {'data': 'condicion'},
-            {'data': 'plazo_entrega'},
-            {'data': 'nro_cuenta_prin'},
-            {'data': 'nro_cuenta_alter'},
-            {'data': 'nro_cuenta_detra'},
-            {'data': 'codigo_cuadro_comparativo'},
-            {'data': 'estado'},
+            {'render':
+                function (data, type, row, meta){
+                    let output='No aplica';
+                    if(row.id_tp_documento ==2){ // orden de compra
+                        let dias_restantes = restarFechas(fecha_actual(), sumaFecha(row['plazo_entrega'], row['fecha']));
+                        var porc = dias_restantes * 100 / (parseFloat(row['plazo_entrega'])).toFixed(2);
+                        var color = (porc > 50 ? 'success' : ((porc <= 50 && porc > 20) ? 'warning' : 'danger'));
+                        output= `<div class="progress-group">
+                        <span class="progress-text">Nro días Restantes</span>
+                        <span class="float-right"><b>${dias_restantes?dias_restantes:''}</b> / ${row.plazo_entrega?row.plazo_entrega:''}</span>
+                        <div class="progress progress-sm">
+                            <div class="progress-bar bg-${color}" style="width: ${(porc<1)?'100':porc}%"></div>
+                        </div>
+                    </div>`;
+
+                    }
+                    return output;
+                }
+            },
+            {'render':
+                function (data, type, row, meta){
+                    return '<center><label class="label label-warning" title="info" style="cursor:pointer;" onClick="viewGroupInfo(event)" data-group-info="" >i</label></center><span class="label label-'+row.bootstrap_color+'">'+row.estado_doc+'</span></center>';
+                }
+            },
             {'data': 'detalle_pago'},
             {'data': 'archivo_adjunto'},
-            {'data': 'botones_accion'}
+            {'render':
+                function (data, type, row, meta){
+                    let containerOpenBrackets='<div class="btn-group" role="group" style="margin-bottom: 5px;">';
+                    let btnImprimirOrden= '<button type="button" onClick="imprimir_orden(event)" title="Imprimir Orden" class="imprimir_orden btn btn-md btn-warning boton" data-toggle="tooltip" data-placement="bottom" data-id-orden-compra="'+row.id_orden_compra+'"  data-id-pago=""> <i class="fas fa-file-pdf"></i> </button>';
+                    let btnVerDetalle= `<button type="button" class="ver-detalle btn btn-primary boton" onclick="verDetalleOrden(this)" data-toggle="tooltip" data-placement="bottom" title="Ver Detalle" data-id="${row.id_orden_compra}">
+                    <i class="fas fa-chevron-down"></i>
+                    </button>`;
+                    let containerCloseBrackets='</div>';
+                    return (containerOpenBrackets+btnVerDetalle+btnImprimirOrden+containerCloseBrackets);
+                }
+            }
             
         ],
         'columnDefs': [{ className: "text-right", 'aTargets': [0], 'sClass': 'invisible'}],
@@ -79,11 +113,11 @@ function listarOrdenes(){
     });
 
     // ver("#listaOrdenes tbody", tabla);
-    aprobar_orden("#listaOrdenes tbody", tabla);
-    pagar("#listaOrdenes tbody", tabla);
-    eliminar("#listaOrdenes tbody", tabla);
+    aprobar_orden("#listaOrdenes tbody", tablaListaOrdenes);
+    pagar("#listaOrdenes tbody", tablaListaOrdenes);
+    eliminar("#listaOrdenes tbody", tablaListaOrdenes);
     // imprimir_orden("#listaOrdenes tbody", tabla);
-    tracking_orden("#listaOrdenes tbody", tabla);
+    tracking_orden("#listaOrdenes tbody", tablaListaOrdenes);
     vista_extendida();
 }
 

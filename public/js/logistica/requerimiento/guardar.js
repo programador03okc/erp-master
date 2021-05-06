@@ -3,6 +3,7 @@ function get_data_requerimiento(){
     let requerimiento = {};
     // console.log(tipo_req);
     tipo_requerimiento = tipo_req;
+    fecha_creacion_cc = document.querySelector("form[id='form-requerimiento'] input[name='fecha_creacion_cc']").value;
     id_cc = document.querySelector("form[id='form-requerimiento'] input[name='id_cc']").value;
     tipo_cuadro = document.querySelector("form[id='form-requerimiento'] input[name='tipo_cuadro']").value;
     confirmacion_pago = document.querySelector("form[id='form-requerimiento'] input[name='confirmacion_pago']").value;
@@ -46,6 +47,7 @@ function get_data_requerimiento(){
 
     requerimiento = {
         id_requerimiento,
+        fecha_creacion_cc,
         id_cc,
         tipo_cuadro,
         tipo_requerimiento,

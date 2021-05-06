@@ -611,6 +611,7 @@ class RequerimientoController extends Controller
         $cc = DB::table('mgcp_acuerdo_marco.oc_propias')
         ->select(
             'cc.id as id_cc',
+            'cc.fecha_creacion as fecha_creacion_cc',
             'cc.tipo_cuadro',
             'oc_propias.id as id_orden_propia',
             'oc_propias.orden_am',
