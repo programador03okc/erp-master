@@ -175,4 +175,85 @@ class OCAMController extends Controller
 
 
     }
+
+    function listaProductosBaseoTransformado($idRequerimiento,$conTransformacion){
+        $status=0;
+        $data = DB::table('almacen.alm_det_req')
+        ->select(
+            'alm_det_req.id_detalle_requerimiento',
+            'alm_req.id_requerimiento',
+            'alm_req.codigo AS codigo_requerimiento',
+            'alm_req.id_sede',
+            'alm_det_req.id_requerimiento',
+            'alm_det_req.id_item AS id_item_alm_det_req',
+            'alm_det_req.precio_unitario',
+            'alm_det_req.subtotal',
+            'alm_det_req.cantidad',
+            'alm_det_req.stock_comprometido',
+            'alm_det_req.id_unidad_medida',
+            'und_medida_det_req.descripcion AS unidad_medida',
+            'alm_det_req.observacion',
+            'alm_det_req.fecha_registro AS fecha_registro_alm_det_req',
+            'alm_det_req.lugar_entrega',
+            'alm_det_req.descripcion_adicional',
+            'alm_det_req.id_tipo_item',
+            'alm_det_req.id_moneda as id_tipo_moneda',
+            'sis_moneda.descripcion as tipo_moneda',
+            'sis_moneda.simbolo as simbolo_moneda',
+            'alm_det_req.estado',
+            'adm_estado_doc.estado_doc',
+            'adm_estado_doc.bootstrap_color',
+            'alm_det_req.partida',
+            'alm_det_req.centro_costo_id as id_centro_costo',
+            'centro_costo.codigo as codigo_centro_costo',
+            'alm_det_req.id_producto',
+            'alm_cat_prod.descripcion as categoria',
+            'alm_subcat.descripcion as subcategoria',
+            'alm_det_req.id_almacen_reserva',
+            'alm_almacen.descripcion as almacen_reserva',
+            'alm_item.codigo AS codigo_item',
+            'alm_item.fecha_registro AS alm_item_fecha_registro',
+            'alm_prod.codigo AS alm_prod_codigo',
+            'alm_prod.part_number',
+            // 'alm_prod.descripcion AS alm_prod_descripcion',
+            'alm_det_req.tiene_transformacion',
+            'alm_det_req.proveedor_id',
+            'adm_contri.nro_documento as proveedor_nro_documento',
+            'adm_contri.razon_social as proveedor_razon_social',
+            'alm_det_req.id_cc_am_filas',
+            'alm_det_req.id_cc_venta_filas',  
+            'alm_det_req_adjuntos.id_adjunto AS adjunto_id_adjunto',
+            'alm_det_req_adjuntos.archivo AS adjunto_archivo',
+            'alm_det_req_adjuntos.estado AS adjunto_estado',
+            'alm_det_req_adjuntos.fecha_registro AS adjunto_fecha_registro',
+            'alm_det_req_adjuntos.id_detalle_requerimiento AS adjunto_id_detalle_requerimiento'
+        )
+        ->leftJoin('almacen.alm_item', 'alm_item.id_item', '=', 'alm_det_req.id_item')
+        ->leftJoin('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'alm_det_req.id_requerimiento')
+        ->leftJoin('almacen.alm_prod', 'alm_item.id_producto', '=', 'alm_prod.id_producto')
+        ->leftJoin('almacen.alm_cat_prod', 'alm_cat_prod.id_categoria', '=', 'alm_prod.id_categoria')
+        ->leftJoin('almacen.alm_subcat','alm_subcat.id_subcategoria','=','alm_prod.id_subcategoria')
+        ->leftJoin('almacen.alm_almacen', 'alm_det_req.id_almacen_reserva', '=', 'alm_almacen.id_almacen')
+        ->leftJoin('configuracion.sis_moneda', 'alm_det_req.id_moneda', '=', 'sis_moneda.id_moneda')
+        ->leftJoin('almacen.alm_und_medida', 'alm_det_req.id_unidad_medida', '=', 'alm_und_medida.id_unidad_medida')
+        ->leftJoin('almacen.alm_und_medida as und_medida_det_req', 'alm_det_req.id_unidad_medida', '=', 'und_medida_det_req.id_unidad_medida')
+        ->leftJoin('almacen.alm_det_req_adjuntos', 'alm_det_req_adjuntos.id_detalle_requerimiento', '=', 'alm_det_req.id_detalle_requerimiento')
+        ->leftJoin('finanzas.centro_costo', 'centro_costo.id_centro_costo', '=', 'alm_det_req.centro_costo_id')
+        ->leftJoin('logistica.log_prove', 'log_prove.id_proveedor', '=', 'alm_det_req.proveedor_id')
+        ->leftJoin('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'log_prove.id_contribuyente')
+        ->leftJoin('administracion.adm_estado_doc', 'alm_det_req.estado', '=', 'adm_estado_doc.id_estado_doc')
+
+        ->where([
+            ['alm_det_req.id_requerimiento', '=', $idRequerimiento],
+            ['alm_det_req.tiene_transformacion', '=', $conTransformacion]
+        ])
+        ->orderBy('alm_det_req.id_detalle_requerimiento', 'asc')
+        ->get();
+
+        if(count($data)>=1){
+            $status = 200;
+        }
+
+    return ['data'=>$data, 'status'=>$status];
+    }
 }

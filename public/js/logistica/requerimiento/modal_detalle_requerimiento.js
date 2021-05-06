@@ -232,7 +232,6 @@ function agregarItem(){
 
     for(var a=0;a < data_item.length;a++){
         if(data_item[a].estado !=7){
-            
             var row = table.insertRow(-1);
             let descripcion_unidad = '';
     
@@ -246,7 +245,13 @@ function agregarItem(){
                 descripcion_unidad = data_item[a].unidad;
             }
             row.insertCell(0).innerHTML = data_item[a].id_item?data_item[a].id_item:'0';
-            row.insertCell(1).innerHTML = data_item[a].cod_item?data_item[a].cod_item:'-';
+            tdCodigo = row.insertCell(1);
+            if(data_item[a].tiene_transformacion == true){
+                tdCodigo.parentNode.style.backgroundColor ="#cccccc";
+                tdCodigo.innerHTML = data_item[a].cod_item?(data_item[a].cod_item+'<span class="badge badge-secondary">Transformado</span>'):'-';
+            }else{
+                tdCodigo.innerHTML = data_item[a].cod_item?data_item[a].cod_item:'-';
+            }
             row.insertCell(2).innerHTML = data_item[a].part_number?data_item[a].part_number:'-';
             row.insertCell(3).innerHTML = data_item[a].des_item?data_item[a].des_item:'-';
             row.insertCell(4).innerHTML = descripcion_unidad;
