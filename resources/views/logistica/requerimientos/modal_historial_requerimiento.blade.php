@@ -12,7 +12,7 @@
                     <input type="checkbox" id="checkViewTodos"> Mostrar Todos (eliminados + anulados)
                     </label>
                 </div>   
-                <table class="mytable table table-striped table-condensed table-bordered dataTable no-footer" id="listaRequerimiento">
+                <table class="mytable table table-striped table-condensed table-bordered table-okc-view" id="listaRequerimiento">
                     <thead>
                         <tr>
                             <th hidden>Id</th>
