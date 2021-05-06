@@ -1,6 +1,5 @@
 function open_doc_create(id_guia){
     console.log('open_doc_create');
-    // $('#modal-doc_guia').modal('hide');
     $('#modal-doc_create').modal({
         show: true
     });
@@ -33,6 +32,88 @@ function obtenerGuía(id){
                 $('[name=id_guia]').val(response['guia'].id_guia);
                 $('[name=serie_guia]').val(response['guia'].serie);
                 $('[name=numero_guia]').val(response['guia'].numero);
+            }
+            
+            if (response['detalle'].length > 0){
+                listaItems = response['detalle'];
+                $('[name=id_condicion]').val(listaItems[0].id_condicion);
+                $('[name=credito_dias]').val(listaItems[0].plazo_dias);
+                $('[name=id_sede]').val(listaItems[0].id_sede);
+                
+                totales = {'porcentaje_igv' : parseFloat(response['igv'])};
+                mostrarListaItems();
+            }
+        }
+    }).fail( function( jqXHR, textStatus, errorThrown ){
+        console.log(jqXHR);
+        console.log(textStatus);
+        console.log(errorThrown);
+    });
+}
+
+function open_doc_create_seleccionadas(){
+    console.log(ingresos_seleccionados);
+    var id_ingresos_seleccionadas = [];
+    var prov = null;
+    var emp = null;
+    var dif_prov = 0;
+    var dif_emp = 0;
+
+    ingresos_seleccionados.forEach(element => {
+        id_ingresos_seleccionadas.push(element.id_mov_alm);
+
+        if (prov == null){
+            prov = element.razon_social;
+        } 
+        else if (element.razon_social !== prov){
+            dif_prov++;
+        }
+        if (emp == null){
+            emp = element.id_empresa;
+        } 
+        else if (element.id_empresa !== emp){
+            dif_emp++;
+        }
+    });
+
+    var text = '';
+    if (dif_prov > 0) text+='Debe seleccionar Guías del mismo proveedor\n';
+    if (dif_emp > 0) text+='Debe seleccionar Guías emitidas para la misma empresa';
+
+    if ((dif_prov + dif_emp) > 0){
+        alert(text);
+    } else {
+
+        $('#modal-doc_create').modal({
+            show: true
+        });
+        var id_tp_doc = 2;
+        $('[name=id_tp_doc]').val(id_tp_doc).trigger('change.select2');
+        $('[name=fecha_emision_doc]').val(fecha_actual());
+        $('[name=serie_doc]').val("");
+        $('[name=numero_doc]').val("");
+        $('[name=moneda]').val(1);
+        $('[name=simbolo]').val("S/");
+        
+        totales.simbolo = "S/";
+        // obtenerGuíaSeleccionadas(id_ingresos_seleccionadas, prov);
+    }
+}
+
+function obtenerGuíaSeleccionadas(id_ingresos_seleccionadas, prov){
+    $.ajax({
+        type: 'GET',
+        url: 'obtenerGuiaSeleccionadas/'+id_ingresos_seleccionadas,
+        dataType: 'JSON',
+        success: function(response){
+            console.log(response);
+
+            if (response['guia'] !== null){
+                $('[name=id_proveedor]').val(response['guia'].id_proveedor);
+                $('[name=proveedor_razon_social]').val(prov);
+                // $('[name=id_guia]').val(response['guia'].id_guia);
+                // $('[name=serie_guia]').val(response['guia'].serie);
+                // $('[name=numero_guia]').val(response['guia'].numero);
             }
             
             if (response['detalle'].length > 0){

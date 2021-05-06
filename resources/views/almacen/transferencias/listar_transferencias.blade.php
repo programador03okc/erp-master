@@ -92,12 +92,6 @@ Gestión de Transferencias
                                 @endforeach
                             </select>
                         </div>
-                        <!-- <div class="col-md-4">
-                            <h5>Actualizar</h5>
-                            <button type="button" class="btn btn-primary" data-toggle="tooltip" 
-                                data-placement="bottom" title="Actualizar" 
-                                onClick="listarTransferenciasPendientes();">Actualizar</button>
-                        </div> -->
                     </div>
                     <div class="row">
                         <div class="col-md-12">
@@ -107,19 +101,12 @@ Gestión de Transferencias
                                     <tr>
                                         <th hidden></th>
                                         <th>Fecha Guía</th>
-                                        <!-- <th>Nro.Trans.</th> -->
                                         <th>Guía Venta</th>
-                                        <!-- <th>Guía Compra</th> -->
-                                        <!-- <th>Fecha de Guía</th> -->
                                         <th>Almacén Origen</th>
                                         <th>Almacén Destino</th>
                                         <th>Responsable Origen</th>
                                         <th>Responsable Destino</th>
-                                        <!-- <th>Registrado por</th> -->
                                         <th>Estado</th>
-                                        <!-- <th>OC</th>
-                                        <th>Req.</th>
-                                        <th>Concepto</th> -->
                                         <th width="10%">Acción</th>
                                     </tr>
                                 </thead>
@@ -142,12 +129,6 @@ Gestión de Transferencias
                                 @endforeach
                             </select>
                         </div>
-                        <!-- <div class="col-md-4">
-                            <h5>Actualizar</h5>
-                            <button type="button" class="btn btn-primary" data-toggle="tooltip" 
-                                data-placement="bottom" title="Actualizar" 
-                                onClick="listarTransferenciasRecibidas();">Actualizar</button>
-                        </div> -->
                     </div>
                     <div class="row">
                         <div class="col-md-12">
@@ -194,13 +175,13 @@ Gestión de Transferencias
 @section('scripts')
     <script src="{{ asset('datatables/DataTables/js/jquery.dataTables.min.js') }}"></script>
     <script src="{{ asset('datatables/DataTables/js/dataTables.bootstrap.min.js') }}"></script>
-    <script src="{{ asset('datatables/Buttons/js/dataTables.buttons.min.js') }}"></script>
+    <!-- <script src="{{ asset('datatables/Buttons/js/dataTables.buttons.min.js') }}"></script>
     <script src="{{ asset('datatables/Buttons/js/buttons.bootstrap.min.js') }}"></script>
     <script src="{{ asset('datatables/Buttons/js/buttons.print.min.js') }}"></script>
     <script src="{{ asset('datatables/Buttons/js/buttons.html5.min.js') }}"></script>
     <script src="{{ asset('datatables/pdfmake/pdfmake.min.js') }}"></script>
     <script src="{{ asset('datatables/pdfmake/vfs_fonts.js') }}"></script>
-    <script src="{{ asset('datatables/JSZip/jszip.min.js') }}"></script>
+    <script src="{{ asset('datatables/JSZip/jszip.min.js') }}"></script> -->
     <script src="{{ asset('template/plugins/moment.min.js') }}"></script>
     <script src="{{ asset('template/plugins/iCheck/icheck.min.js') }}"></script>
     <script src="{{ asset('template/plugins/select2/select2.min.js') }}"></script>

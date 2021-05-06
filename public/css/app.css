@@ -452,30 +452,26 @@ body .login-box {
 
 /* dataTables */
 
-.modal .dataTables_wrapper {
-  font-size: 13px;
-  font-family: "Open Sans", sans-serif;
+/*.modal .dataTables_wrapper{
+    font-size: 13px;
+    font-family: 'Open Sans' , sans-serif;
 }
-
 .modal .dataTables_wrapper table thead,
-.page-main .dataTables_wrapper table thead {
-  background-color: #57616a;
-  color: #fff;
+.page-main .dataTables_wrapper table thead{
+    background-color: #57616a;
+    color: #fff;
 }
-
 .modal .dataTables_wrapper table tbody tr,
-.page-main .dataTables_wrapper table tbody tr {
-  background-color: #fff;
-  cursor: pointer;
+.page-main .dataTables_wrapper table tbody tr{
+    background-color: #fff;
+    cursor: pointer;
 }
-
-.dataTables_wrapper .dataTables_filter {
-  margin-top: 25px;
+.dataTables_wrapper .dataTables_filter{
+    margin-top: 25px;
 }
-
-.dataTables_wrapper .dataTables_filter label {
-  width: 100%;
-}
+.dataTables_wrapper .dataTables_filter label{
+    width: 100%;
+}*/
 
 #planex .select2-container--default .select2-selection--single {
   border-radius: 0;
@@ -517,56 +513,6 @@ body .login-box {
   background-color: #ebebe4;
 }
 
-#listaPersona_wrapper .dataTables_filter label input[type=search],
-#listaAlmacen_wrapper .dataTables_filter label input[type=search],
-#listaTipoAlmacen_wrapper .dataTables_filter label input[type=search],
-#listaHorario_wrapper .dataTables_filter label input[type=search],
-#listaToleranciaF_wrapper .dataTables_filter label input[type=search],
-#listaEstCivil_wrapper .dataTables_filter label input[type=search],
-#listaCondicionDH_wrapper .dataTables_filter label input[type=search],
-#listaConceptoRol_wrapper .dataTables_filter label input[type=search],
-#listaCatOcupacional_wrapper .dataTables_filter label input[type=search],
-#listaNivEstudio_wrapper .dataTables_filter label input[type=search],
-#listaCarrera_wrapper .dataTables_filter label input[type=search],
-#listaTipoTrab_wrapper .dataTables_filter label input[type=search],
-#listaModalidad_wrapper .dataTables_filter label input[type=search],
-#listaTipoPlani_wrapper .dataTables_filter label input[type=search],
-#listaTipoMerito_wrapper .dataTables_filter label input[type=search],
-#listaTipoDemerito_wrapper .dataTables_filter label input[type=search],
-#listaTipoBonif_wrapper .dataTables_filter label input[type=search],
-#listaTipoDscto_wrapper .dataTables_filter label input[type=search],
-#listaTipoReten_wrapper .dataTables_filter label input[type=search],
-#listaTipoAport_wrapper .dataTables_filter label input[type=search],
-#listaPensiones_wrapper .dataTables_filter label input[type=search],
-#listaTolerancia_wrapper .dataTables_filter label input[type=search] {
-  width: 91%;
-}
-
-#listaPostulante_wrapper .dataTables_filter label input[type=search],
-#listaTrabajador_wrapper .dataTables_filter label input[type=search] {
-  width: 94.5%;
-}
-
-#listaTipo_wrapper .dataTables_filter label input[type=search],
-#listaClasificacion_wrapper .dataTables_filter label input[type=search],
-#listaPeriodo_wrapper .dataTables_filter label input[type=search],
-#listaCargo_wrapper .dataTables_filter label input[type=search],
-#listaAportaciones_wrapper .dataTables_filter label input[type=search] {
-  width: 90.5%;
-}
-
-#listaCategoria_wrapper .dataTables_filter label input[type=search] {
-  width: 93.5%;
-}
-
-#listaSubCategoria_wrapper .dataTables_filter label input[type=search] {
-  width: 80%;
-}
-
-#listaProducto_wrapper .dataTables_filter label input[type=search] {
-  width: 95%;
-}
-
 .modal #listaProducto_processing {
   top: 70%;
   text-align: center;
@@ -575,31 +521,28 @@ body .login-box {
   background: transparent !important;
 }
 
-.dataTables_wrapper .dataTables_length {
-  width: 50%;
-  display: inline-block;
-  text-align: left;
+/*
+.dataTables_wrapper .dataTables_length{
+    width: 50%;
+    display: inline-block;
+    text-align: left;
 }
-
-.dataTables_wrapper .dt-buttons {
-  float: none;
-  width: 50%;
-  display: inline-block;
-  text-align: right;
+.dataTables_wrapper .dt-buttons{
+    float: none;
+    width: 50%;
+    display: inline-block;
+    text-align: right;
 }
-
-.dataTables_wrapper .dt-buttons .btn {
-  float: none;
+.dataTables_wrapper .dt-buttons .btn{
+    float: none;
 }
-
 .dataTables_wrapper .dataTables_length select,
-.dataTables_filter label input[type=search] {
-  border-radius: 4px;
+.dataTables_filter label input[type="search"]{
+    border-radius: 4px;
 }
-
-.dataTables_wrapper table tbody {
-  font-size: 12px;
-}
+.dataTables_wrapper table tbody{
+    font-size: 12px;
+}*/
 
 .modal button span i {
   font-size: 18px;
@@ -1158,121 +1101,6 @@ span.select2-selection {
   background: #d8fcfc;
 }
 
-#listaPendientes_filter,
-#listaOpcion_filter,
-#listaInsumo_filter,
-#listaAcu_filter,
-#listaProyecto_filter,
-#listaProducto_filter,
-#listaPromocion_filter,
-#listaProductoCatalogo_filter,
-#kardexGeneral_filter,
-#listaEquiCatalogo_filter,
-#listaMttoPendientes_filter,
-#listaSolicitudes_filter,
-#listaEquipos_filter,
-#listaSolAprobaciones_filter,
-#listaSolTodas_filter,
-#listaDocs_filter,
-#listaMttoRealizados_filter,
-#listaIngresos_filter,
-#listaSalidas_filter,
-#listaBusquedaIngresos_filter,
-#listaSaldos_filter,
-#listaTransferenciasPorRecibir_filter,
-#listaTransferenciasPorEnviar_filter,
-#listaTransferenciasRecibidas_filter,
-#listaAsignaciones_filter,
-#listaOrdenes_filter,
-#listaKardexSeries_filter,
-#listaOpcionesTodo_filter,
-#listaResidentes_filter,
-#listaDocsProrrateo_filter,
-#ordenesPendientes_filter,
-#ordenesEntregadas_filter,
-#requerimientosPendientes_filter,
-#requerimientosElaborados_filter,
-#ordenesDespacho_filter,
-#gruposDespachados_filter,
-#listaRequerimientosTrazabilidad_filter,
-#listaGuiasTransportistas_filter,
-#listaCu_filter,
-#listaCuadrosCostos_filter,
-#requerimientosConfirmados_filter,
-#requerimientosEnProceso_filter,
-#requerimientosEnTransformacion_filter,
-#pendientesRetornoCargo_filter,
-#listaTransformacionesPendientes_filter,
-#listaTransformaciones_filter,
-#listaSerie_filter,
-#listaRequerimientos_filter,
-#ListaReq_filter,
-#ListaRequerimientosAprobados_filter,
-#listaProveedor_filter,
-#listaComprobantesCompra_filter,
-#listaComprobantes_filter,
-#despachosPendientes_filter,
-#despachosEntregados_filter,
-#listaUbicacion_filter {
-  margin: 0;
-}
-
-#listaPendientes_filter label input[type=search],
-#listaOpcion_filter label input[type=search],
-#listaInsumo_filter label input[type=search],
-#listaAcu_filter label input[type=search],
-#listaProyecto_filter label input[type=search],
-#kardexGeneral_filter label input[type=search],
-#listaPromocion_filter label input[type=search],
-#listaProductoCatalogo_filter label input[type=search],
-#listaEquiCatalogo_filter label input[type=search],
-#listaMttoPendientes_filter label input[type=search],
-#listaSolicitudes_filter label input[type=search],
-#listaEquipos_filter label input[type=search],
-#listaSolAprobaciones_filter label input[type=search],
-#listaSolTodas_filter label input[type=search],
-#listaDocs_filter label input[type=search],
-#listaMttoRealizados_filter label input[type=search],
-#listaCotizacion_filter label input[type=search],
-#listaSaldos_filter label input[type=search],
-#listaTransferenciasPorRecibir_filter label input[type=search],
-#listaTransferenciasPorEnviar_filter label input[type=search],
-#listaTransferenciasRecibidas_filter label input[type=search],
-#listaAsignaciones_filter label input[type=search],
-#listaOrdenes_filter label input[type=search],
-#listaKardexSeries_filter label input[type=search],
-#listaOpcionesTodo_filter label input[type=search],
-#listaResidentes_filter label input[type=search],
-#listaDocsProrrateo_filter label input[type=search],
-#ordenesPendientes_filter label input[type=search],
-#ordenesEntregadas_filter label input[type=search],
-#requerimientosPendientes_filter label input[type=search],
-#requerimientosElaborados_filter label input[type=search],
-#ordenesDespacho_filter label input[type=search],
-#gruposDespachados_filter label input[type=search],
-#listaRequerimientosTrazabilidad_filter label input[type=search],
-#listaGuiasTransportistas_filter label input[type=search],
-#listaCu_filter label input[type=search],
-#listaCuadrosCostos_filter label input[type=search],
-#listaTransformacionesMadres_filter label input[type=search],
-#requerimientosConfirmados_filter label input[type=search],
-#requerimientosEnProceso_filter label input[type=search],
-#requerimientosEnTransformacion_filter label input[type=search],
-#pendientesRetornoCargo_filter label input[type=search],
-#listaTransformacionesPendientes_filter label input[type=search],
-#listaTransformaciones_filter label input[type=search],
-#listaSerie_filter label input[type=search],
-#listaRequerimientos_filter label input[type=search],
-#ListaRequerimientosAprobados_filter label input[type=search],
-#listaProveedorCollapse_filter label input[type=search],
-#listaComprobantesCompra_filter label input[type=search],
-#listaComprobantes_filter label input[type=search],
-#despachosPendientes_filter label input[type=search],
-#despachosEntregados_filter label input[type=search],
-#listaUbicacion_filter label input[type=search] {
-  width: 95%;
-}
-
 .subtitulo_blue {
   color: blue !important;
 }
@@ -1530,13 +1358,6 @@ form .select2-container .select2-selection--single {
 
 #ListaReq_wrapper td center .btn-group i {
   font-size: 0.75em;
-}
-
-#ListaReq_wrapper .dataTables_filter label input[type=search],
-#listaIngresos_filter label input[type=search],
-#listaSalidas_filter label input[type=search],
-#listaBusquedaIngresos_filter label input[type=search] {
-  width: 95%;
 }
 
 .btn-log {

@@ -17,29 +17,33 @@ Reporte de Guías Transportista
 <div class="page-main" type="guiasTransportistas">
     <div class="box box-solid">
         <div class="box-body">
-            <div class="row">
-                <div class="col-md-12">
-                    <table class="mytable table table-condensed table-bordered table-okc-view" 
-                        id="listaGuiasTransportistas">
-                        <thead>
-                            <tr>
-                                <th hidden></th>
-                                <th>Guía</th>
-                                <th>Transportista</th>
-                                <th>Fecha Guía</th>
-                                <th>Codigo Envío</th>
-                                <th>Importe</th>
-                                <th>OCAM</th>
-                                <th>Cod.Req.</th>
-                                <th>OD</th>
-                                <th>Cliente</th>
-                                <th>Estado</th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
+            <div class="col-md-12" style="padding-top:10px;padding-bottom:10px;">
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <table class="mytable table table-condensed table-bordered table-okc-view" 
+                            id="listaGuiasTransportistas">
+                            <thead>
+                                <tr>
+                                    <th hidden></th>
+                                    <th>Guía</th>
+                                    <th>Transportista</th>
+                                    <th>Fecha Guía</th>
+                                    <th>Codigo Envío</th>
+                                    <th>Importe</th>
+                                    <th>OCAM</th>
+                                    <th>Cod.Req.</th>
+                                    <th>OD</th>
+                                    <th>Cliente</th>
+                                    <th>Estado</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
                 </div>
+                
             </div>
         </div>
     </div>
@@ -49,13 +53,13 @@ Reporte de Guías Transportista
 @section('scripts')
     <script src="{{ asset('datatables/DataTables/js/jquery.dataTables.min.js') }}"></script>
     <script src="{{ asset('datatables/DataTables/js/dataTables.bootstrap.min.js') }}"></script>
-    <script src="{{ asset('datatables/Buttons/js/dataTables.buttons.min.js') }}"></script>
+    <!-- <script src="{{ asset('datatables/Buttons/js/dataTables.buttons.min.js') }}"></script>
     <script src="{{ asset('datatables/Buttons/js/buttons.bootstrap.min.js') }}"></script>
     <script src="{{ asset('datatables/Buttons/js/buttons.print.min.js') }}"></script>
     <script src="{{ asset('datatables/Buttons/js/buttons.html5.min.js') }}"></script>
     <script src="{{ asset('datatables/pdfmake/pdfmake.min.js') }}"></script>
     <script src="{{ asset('datatables/pdfmake/vfs_fonts.js') }}"></script>
-    <script src="{{ asset('datatables/JSZip/jszip.min.js') }}"></script>
+    <script src="{{ asset('datatables/JSZip/jszip.min.js') }}"></script> -->
     <script src="{{ asset('template/plugins/moment.min.js') }}"></script>
 
     <script src="{{ asset('js/almacen/distribucion/guiasTransportistas.js')}}"></script>

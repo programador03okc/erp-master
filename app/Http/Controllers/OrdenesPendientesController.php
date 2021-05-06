@@ -67,6 +67,7 @@ class OrdenesPendientesController extends Controller
             ->select('mov_alm.*',
             'adm_contri.nro_documento','adm_contri.razon_social',
             'sis_usua.nombre_corto','sede_guia.descripcion as sede_guia_descripcion',
+            'sede_guia.id_empresa',
             'alm_almacen.descripcion as almacen_descripcion',
             'alm_almacen.id_sede','guia_com.serie','guia_com.numero',
             'tp_ope.descripcion as operacion_descripcion',
@@ -1232,6 +1233,34 @@ class OrdenesPendientesController extends Controller
         ->where('codigo','IGV')->first();
 
         return response()->json(['guia'=>$guia, 'detalle'=>$detalle, 'igv'=>$igv->porcentaje]);
+    }
+
+    function obtenerGuiaSeleccionadas($id_guias)
+    {
+        // $guia = DB::table('almacen.guia_com')
+        // ->select('guia_com.id_guia','guia_com.id_proveedor','adm_contri.razon_social',
+        // 'guia_com.serie','guia_com.numero')
+        // ->join('logistica.log_prove','log_prove.id_proveedor','=','guia_com.id_proveedor')
+        // ->join('contabilidad.adm_contri','adm_contri.id_contribuyente','=','log_prove.id_contribuyente')
+        // ->where('guia_com.id_guia',$id)
+        // ->first();
+
+        $detalle = DB::table('almacen.guia_com_det')
+        ->select('guia_com_det.*','log_ord_compra.codigo as cod_orden','alm_prod.codigo','alm_prod.descripcion',
+        'alm_prod.part_number','alm_und_medida.abreviatura','log_det_ord_compra.precio','log_ord_compra.id_condicion',
+        'log_ord_compra.plazo_dias','log_ord_compra.id_sede')
+        ->leftjoin('logistica.log_det_ord_compra','log_det_ord_compra.id_detalle_orden','=','guia_com_det.id_oc_det')
+        ->leftjoin('logistica.log_ord_compra','log_ord_compra.id_orden_compra','=','log_det_ord_compra.id_orden_compra')
+        ->join('almacen.alm_prod','alm_prod.id_producto','=','guia_com_det.id_producto')
+        ->join('almacen.alm_und_medida','alm_und_medida.id_unidad_medida','=','alm_prod.id_unidad_medida')
+        ->whereIn('guia_com_det.id_guia_com',$id_guias)
+        ->orderBy('guia_com_det.id_guia_com_det')
+        ->get();
+
+        $igv = DB::table('contabilidad.cont_impuesto')
+        ->where('codigo','IGV')->first();
+
+        return response()->json(['detalle'=>$detalle, 'igv'=>$igv->porcentaje]);
     }
 
     public function guardar_doc_compra(Request $request)

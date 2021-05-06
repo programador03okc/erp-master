@@ -1,8 +1,10 @@
-function open_guia_create(data){
+let $filaActual;
+function open_guia_create(data,$fila){
     console.log(data);
     $('#modal-guia_create').modal({
         show: true
     });
+    $filaActual=$fila;
     $("#submit_guia").removeAttr("disabled");
     $('[name=id_operacion]').val(2).trigger('change.select2');
     $('[name=id_guia_clas]').val(1);
@@ -269,6 +271,11 @@ function mostrar_ordenes_seleccionadas(){
 
 $("#form-guia_create").on("submit", function(e){
     console.log('submit');
+    alert("guardado");
+    //$filaActual.find('td:eq(1)').html('Nuevo dato');
+    //$('#ordenesPendientes').DataTable().row($filaActual).remove().draw();
+    // $filaActual.remove();
+    // return false;
     e.preventDefault();
     var data = $(this).serialize();
     var detalle = [];
@@ -276,14 +283,6 @@ $("#form-guia_create").on("submit", function(e){
     var ope = $('[name=id_operacion]').val();
 
     if (ope == 26){
-        // $("#detalleOrdenSeleccionadas tbody tr").each(function(){
-        //     var id = $(this)[0].id;
-        //     var unitario = $(this).find('td input[id=unitario]').val();
-        //     console.log(unitario);
-
-        //     var json = series_transformacion.find(element => element.id == id);
-        //     json.valor_unitario = unitario;
-        // });
         series_transformacion.forEach(function(element){
             detalle.push({ 
                     'id'            : element.id_detalle,
