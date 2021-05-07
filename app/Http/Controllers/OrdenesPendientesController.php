@@ -44,22 +44,18 @@ class OrdenesPendientesController extends Controller
             ->select('log_ord_compra.*','log_ord_compra.codigo as codigo_orden','log_ord_compra.codigo_softlink',
             'adm_estado_doc.estado_doc','adm_estado_doc.bootstrap_color','adm_contri.razon_social',
             'sis_usua.nombre_corto','alm_req.fecha_entrega','sis_sede.descripcion as sede_descripcion',
-            // 'sis_moneda.simbolo',
             'alm_req.codigo as codigo_requerimiento','alm_req.concepto')
-            // ->join('administracion.adm_tp_docum','adm_tp_docum.id_tp_documento','=','log_ord_compra.id_tp_documento')
             ->join('administracion.adm_estado_doc','adm_estado_doc.id_estado_doc','=','log_ord_compra.estado')
             ->join('logistica.log_prove','log_prove.id_proveedor','=','log_ord_compra.id_proveedor')
             ->join('contabilidad.adm_contri','adm_contri.id_contribuyente','=','log_prove.id_contribuyente')
             ->join('configuracion.sis_usua','sis_usua.id_usuario','=','log_ord_compra.id_usuario')
-            // ->join('configuracion.sis_moneda','sis_moneda.id_moneda','=','log_ord_compra.id_moneda')
             ->leftjoin('almacen.alm_req','alm_req.id_requerimiento','=','log_ord_compra.id_requerimiento')
             ->join('administracion.sis_sede','sis_sede.id_sede','=','log_ord_compra.id_sede')
             ->where([['log_ord_compra.estado','!=',7],
                     ['log_ord_compra.en_almacen','=',false],
                     ['log_ord_compra.id_tp_documento','=',2]]);//Orden de Compra
-            // ->get();
+
         return datatables($data)->toJson();
-        // return response()->json($data);
     }
     
     public function listarIngresos(){
@@ -685,68 +681,6 @@ class OrdenesPendientesController extends Controller
                     }
                 }
 
-                // foreach ($detalle_oc as $det) {
-
-                //     if ($det->id_detalle_orden == null){
-                //         //Guardo los items de la guia
-                //         $id_guia_com_det = DB::table('almacen.guia_com_det')->insertGetId(
-                //             [
-                //                 "id_guia_com" => $id_guia,
-                //                 "id_producto" => $det->id_producto,
-                //                 "cantidad" => $det->cantidad,
-                //                 "id_unid_med" => $det->id_unid_med,
-                //                 "usuario" => $id_usuario,
-                //                 // "id_oc_det" => null,
-                //                 "unitario" => 0.01,
-                //                 "total" => (0.01 * floatval($det->cantidad)),
-                //                 "unitario_adicional" => 0,
-                //                 'estado' => 1,
-                //                 'fecha_registro' => $fecha_registro,
-                //             ],
-                //                 'id_guia_com_det'
-                //             );
-                //         //agrega series
-                //         foreach ($det->series as $serie) {
-                //             DB::table('almacen.alm_prod_serie')->insert(
-                //                 [
-                //                     'id_prod' => $det->id_producto,
-                //                     'id_almacen' => $request->id_almacen,
-                //                     'serie' => $serie,
-                //                     'estado' => 1,
-                //                     'fecha_registro' => $fecha_registro,
-                //                     'id_guia_com_det' => $id_guia_com_det
-                //                 ]
-                //             );
-                //         }
-                //         //Guardo los items del ingreso
-                //         $id_det = DB::table('almacen.mov_alm_det')->insertGetId(
-                //             [
-                //                 'id_mov_alm' => $id_ingreso,
-                //                 'id_producto' => $det->id_producto,
-                //                 // 'id_posicion' => $det->id_posicion,
-                //                 'cantidad' => $det->cantidad,
-                //                 'valorizacion' => (0.01 * floatval($det->cantidad)),
-                //                 'usuario' => $id_usuario,
-                //                 'id_guia_com_det' => $id_guia_com_det,
-                //                 'estado' => 1,
-                //                 'fecha_registro' => $fecha_registro,
-                //             ],
-                //                 'id_mov_alm_det'
-                //             );
-                //     }
-                // }
-
-                //vuelve a jalar para traer los ids guia_det
-                // $nuevo_detalle = DB::table('logistica.log_det_ord_compra')
-                // ->select('log_det_ord_compra.*','alm_item.id_producto','guia_com_det.id_guia_com_det')
-                // ->leftjoin('almacen.alm_item','alm_item.id_item','=','log_det_ord_compra.id_item')
-                // // ->leftjoin('almacen.guia_com_det','guia_com_det.id_oc_det','=','log_det_ord_compra.id_detalle_orden')
-                // ->leftJoin('almacen.guia_com_det', function($join)
-                //         {   $join->on('guia_com_det.id_oc_det', '=', 'log_det_ord_compra.id_detalle_orden');
-                //             $join->where('guia_com_det.estado','!=', 7);
-                //         })
-                // ->whereIn('id_detalle_orden',$ids_ocd)
-                // ->get();
                 //actualiza estado oc padre
                 foreach ($padres_oc as $padre){
                     $count_alm = DB::table('logistica.log_det_ord_compra')
@@ -798,13 +732,11 @@ class OrdenesPendientesController extends Controller
                 }
             }
             DB::commit();
-            // return response()->json($detalle_oc);
             return response()->json(['id_ingreso'=>$id_ingreso,'id_guia'=>$id_guia]);
             
         } catch (\PDOException $e) {
             // Woopsy
             DB::rollBack();
-            // return response()->json($e);
         }
 
     }

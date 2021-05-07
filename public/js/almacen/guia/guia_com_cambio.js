@@ -32,7 +32,7 @@ function cambio_serie_numero(data){
             } else {
                 alert('Serie-Número cambiado con éxito');
                 $('#modal-guia_com_cambio').modal('hide');
-                $('#ordenesEntregadas').DataTable().ajax.reload();
+                $('#listaIngresos').DataTable().ajax.reload();
             }
         }
     }).fail( function( jqXHR, textStatus, errorThrown ){

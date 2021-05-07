@@ -30,7 +30,7 @@ function iniciar(permiso){
             listarTransformaciones();
         }
         else if (activeForm == "form-ingresadas"){
-            listarOrdenesEntregadas();
+            listarIngresos();
         }
         $(activeTab).attr('hidden', false);//inicio botones (estados)
     });
@@ -42,7 +42,6 @@ var table;
 function listarOrdenesPendientes(){
     var vardataTables = funcDatatables();
     table = $('#ordenesPendientes').DataTable({
-        // dom: 'lBfrtip',
         'dom': vardataTables[1],
         //'buttons': vardataTables[2],
         'language' : vardataTables[0],
@@ -238,9 +237,9 @@ $('#listaTransformaciones tbody').on("click","button.guia", function(){
 
 let ingresos_seleccionados = [];
 
-function listarOrdenesEntregadas(){
+function listarIngresos(){
     var vardataTables = funcDatatables();
-    $('#ordenesEntregadas').DataTable({
+    $('#listaIngresos').DataTable({
         'dom': vardataTables[1],
         // 'buttons': vardataTables[2],
         'language' : vardataTables[0],
@@ -271,7 +270,7 @@ function listarOrdenesEntregadas(){
             {'data': 'nombre_corto', 'name': 'sis_usua.nombre_corto'}
         ],
         'drawCallback': function(){
-            $('#ordenesEntregadas tbody tr td input[type="checkbox"]').iCheck({
+            $('#listaIngresos tbody tr td input[type="checkbox"]').iCheck({
                checkboxClass: 'icheckbox_flat-blue'
             });
          },
@@ -338,11 +337,11 @@ function listarOrdenesEntregadas(){
         "order": [[ 0, "desc" ]],
     });
 
-    $($('#ordenesEntregadas').DataTable().table().container()).on('ifChanged', '.dt-checkboxes', function(event){
-        var cell = $('#ordenesEntregadas').DataTable().cell($(this).closest('td'));
+    $($('#listaIngresos').DataTable().table().container()).on('ifChanged', '.dt-checkboxes', function(event){
+        var cell = $('#listaIngresos').DataTable().cell($(this).closest('td'));
         cell.checkboxes.select(this.checked);
     
-        var data = $('#ordenesEntregadas').DataTable().row($(this).parents("tr")).data();
+        var data = $('#listaIngresos').DataTable().row($(this).parents("tr")).data();
         console.log(this.checked);
     
         if (data !== null && data !== undefined){
@@ -361,13 +360,13 @@ function listarOrdenesEntregadas(){
     });
 }
 
-$('#ordenesEntregadas tbody').on("click","button.transferencia", function(){
+$('#listaIngresos tbody').on("click","button.transferencia", function(){
     var id_guia_com = $(this).data('guia');
     // console.log(data);
     ver_transferencia(id_guia_com);
 });
 
-$('#ordenesEntregadas tbody').on("click","button.detalle", function(){
+$('#listaIngresos tbody').on("click","button.detalle", function(){
     var id_guia_com = $(this).data('id');
     var codigo = $(this).data('cod');
     // console.log(data);
@@ -379,7 +378,7 @@ function abrir_ingreso(id_mov_alm){
     window.open('imprimir_ingreso/'+id);
 }
 
-$('#ordenesEntregadas tbody').on("click","button.anular", function(){
+$('#listaIngresos tbody').on("click","button.anular", function(){
     var id_mov_alm = $(this).data('id');
     var id_guia = $(this).data('guia');
     var id_oc = $(this).data('oc');
@@ -396,7 +395,7 @@ $('#ordenesEntregadas tbody').on("click","button.anular", function(){
     $("#submitGuiaObs").removeAttr("disabled");
 });
 
-$('#ordenesEntregadas tbody').on("click","button.cambio", function(){
+$('#listaIngresos tbody').on("click","button.cambio", function(){
     var id_mov_alm = $(this).data('id');
     var id_guia = $(this).data('guia');
 
@@ -412,7 +411,7 @@ $('#ordenesEntregadas tbody').on("click","button.cambio", function(){
     $("#submit_guia_com_cambio").removeAttr("disabled");
 });
 
-$('#ordenesEntregadas tbody').on("click","button.anular_sal", function(){
+$('#listaIngresos tbody').on("click","button.anular_sal", function(){
     var id_mov_alm = $(this).data('id');
     var id_guia = $(this).data('guia');
     var id_trans = $(this).data('trans');
@@ -429,48 +428,15 @@ $('#ordenesEntregadas tbody').on("click","button.anular_sal", function(){
     $("#submitGuiaVenObs").removeAttr("disabled");
 });
 
-$('#ordenesEntregadas tbody').on("click","button.doc", function(){
+$('#listaIngresos tbody').on("click","button.doc", function(){
     var id_guia = $(this).data('guia');
     open_doc_create(id_guia);
 });
 
-$('#ordenesEntregadas tbody').on("click","button.ver_doc", function(){
+$('#listaIngresos tbody').on("click","button.ver_doc", function(){
     var id_doc = $(this).data('doc');
     documentosVer(id_doc);
 });
-
-// $("#form-guia_ven_obs").on("submit", function(e){
-//     console.log('submit');
-//     e.preventDefault();
-//     var data = $(this).serialize();
-//     console.log(data);
-//     anular_transferencia_salida(data);
-// });
-
-// function anular_transferencia_salida(data){
-//     $("#submitGuiaVenObs").attr('disabled','true');
-//     $.ajax({
-//         type: 'POST',
-//         url: 'anular_transferencia_salida',
-//         data: data,
-//         dataType: 'JSON',
-//         success: function(response){
-//             console.log(response);
-//             if (response.length > 0){
-//                 alert(response);
-//                 $('#modal-guia_ven_obs').modal('hide');
-//             } else {
-//                 alert('Salida Almacén anulada con éxito');
-//                 $('#modal-guia_ven_obs').modal('hide');
-//                 $('#ordenesEntregadas').DataTable().ajax.reload();
-//             }
-//         }
-//     }).fail( function( jqXHR, textStatus, errorThrown ){
-//         console.log(jqXHR);
-//         console.log(textStatus);
-//         console.log(errorThrown);
-//     });
-// }
 
 function open_detalle(data){
     $('#modal-ordenDetalle').modal({
@@ -621,7 +587,7 @@ function anular_ingreso(data){
             } else {
                 alert('Ingreso Almacén anulado con éxito');
                 $('#modal-guia_com_obs').modal('hide');
-                $('#ordenesEntregadas').DataTable().ajax.reload();
+                $('#listaIngresos').DataTable().ajax.reload();
             }
         }
     }).fail( function( jqXHR, textStatus, errorThrown ){
@@ -630,19 +596,3 @@ function anular_ingreso(data){
         console.log(errorThrown);
     });
 }
-
-// function generar_transferencia(id_guia){
-//     $.ajax({
-//         type: 'GET',
-//         url: 'transferencia/'+id_guia,
-//         dataType: 'JSON',
-//         success: function(response){
-//             console.log(response);
-//             alert(response);
-//         }
-//     }).fail( function( jqXHR, textStatus, errorThrown ){
-//         console.log(jqXHR);
-//         console.log(textStatus);
-//         console.log(errorThrown);
-//     });
-// }

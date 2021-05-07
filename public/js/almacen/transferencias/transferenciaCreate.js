@@ -78,7 +78,7 @@ function generar_transferencia(){
                 listarTransferenciasPorEnviar();
             }
             else if (formName =='ordenesPendientes'){
-                $('#ordenesEntregadas').DataTable().ajax.reload();
+                $('#listaIngresos').DataTable().ajax.reload();
             }
         }
     }).fail( function( jqXHR, textStatus, errorThrown ){

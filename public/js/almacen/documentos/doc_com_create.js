@@ -300,7 +300,7 @@ function guardar_doc_create(data){
                 // localStorage.setItem("id_doc",response);
                 $('#modal-doc_create').modal('hide');
                 // location.assign("doc_compra");
-                listarOrdenesEntregadas();
+                listarIngresos();
             }
         }
     }).fail( function( jqXHR, textStatus, errorThrown ){

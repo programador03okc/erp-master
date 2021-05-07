@@ -94,7 +94,7 @@ Pendientes de Ingreso
                         <form id="form-ingresadas" type="register">
                             <div class="row">
                                 <div class="col-md-12">
-                                    <table class="mytable table table-condensed table-bordered table-okc-view" id="ordenesEntregadas">
+                                    <table class="mytable table table-condensed table-bordered table-okc-view" id="listaIngresos">
                                         <thead>
                                             <tr>
                                                 <th hidden></th>
@@ -133,8 +133,8 @@ Pendientes de Ingreso
 @include('almacen.guias.guia_com_obs')
 @include('almacen.guias.guia_com_cambio')
 @include('almacen.documentos.doc_com_ver')
-@include('almacen.producto.productoModal')
-@include('almacen.producto.productoCreate')
+<!-- @include('almacen.producto.productoModal')
+@include('almacen.producto.productoCreate') -->
 @include('almacen.guias.ordenesGuias')
 @include('almacen.guias.guia_com_ver')
 
@@ -163,8 +163,8 @@ Pendientes de Ingreso
 <script src="{{ asset('js/almacen/guia/guia_com_cambio.js')}}"></script>
 <script src="{{ asset('js/almacen/guia/guia_com_det_series.js')}}"></script>
 <script src="{{ asset('js/almacen/guia/guia_com_det_series_edit.js')}}"></script>
-<script src="{{ asset('js/almacen/producto/productoModal.js')}}"></script>
-<script src="{{ asset('js/almacen/producto/productoCreate.js')}}"></script>
+<!-- <script src="{{ asset('js/almacen/producto/productoModal.js')}}"></script>
+<script src="{{ asset('js/almacen/producto/productoCreate.js')}}"></script> -->
 <script src="{{ asset('js/almacen/documentos/doc_com_create.js')}}"></script>
 <script src="{{ asset('js/almacen/documentos/doc_com_ver.js')}}"></script>
 <script src="{{ asset('js/almacen/transferencias/transferenciaCreate.js')}}"></script>
