@@ -2,7 +2,6 @@
 let id_trans_seleccionadas = [];
 
 function openGenerarGuia(data){
-    // origen = 'transferencia_por_requerimiento';
     id_trans_seleccionadas = [];
 
     $('#modal-transferenciaGuia').modal({
@@ -10,6 +9,9 @@ function openGenerarGuia(data){
     });
 
     $('[name=id_almacen_origen]').val(data.id_almacen_origen);
+    $('[name=id_almacen_destino]').val(data.id_almacen_destino);
+    $('[name=almacen_origen_descripcion]').val(data.alm_origen_descripcion);
+    $('[name=almacen_destino_descripcion]').val(data.alm_destino_descripcion);
     $('[name=trans_serie]').val('');
     $('[name=trans_numero]').val('');
     $('[name=id_guia_com]').val('');
@@ -21,10 +23,10 @@ function openGenerarGuia(data){
     $('[name=id_transferencia]').val(data.id_transferencia);
     $("#submit_transferencia").removeAttr("disabled");
     
-    cargar_almacenes(data.id_sede_destino, 'id_almacen_destino');
-    if (data.id_almacen_destino !== null){
-        $('[name=id_almacen_destino]').val(data.id_almacen_destino);
-    }
+    // cargar_almacenes(data.id_sede_destino, 'id_almacen_destino');
+    // if (data.id_almacen_destino !== null){
+    //     $('[name=id_almacen_destino]').val(data.id_almacen_destino);
+    // }
     listarDetalleTransferencia(data.id_transferencia);
     id_trans_seleccionadas.push(data.id_transferencia);
     // var tp_doc_almacen = 2;//guia venta
@@ -34,6 +36,8 @@ function openGenerarGuia(data){
 function open_guia_transferencia_create(){
     var alm_origen = null;
     var alm_destino = null;
+    var alm_origen_des = null;
+    var alm_destino_des = null;
     var sede_origen = null;
     var sede_destino = null;
     var dif_ori = 0;
@@ -46,6 +50,7 @@ function open_guia_transferencia_create(){
 
         if (alm_origen == null){
             alm_origen = element.id_almacen_origen;
+            alm_origen_des = element.alm_origen_descripcion;
             sede_origen = element.id_sede_origen;
         } 
         else if (element.id_almacen_origen !== alm_origen){
@@ -53,6 +58,7 @@ function open_guia_transferencia_create(){
         }
         if (alm_destino == null){
             alm_destino = element.id_almacen_destino;
+            alm_destino_des = element.alm_destino_descripcion;
             sede_destino = element.id_sede_destino;
         } 
         else if (element.id_almacen_destino !== alm_destino){
@@ -71,6 +77,9 @@ function open_guia_transferencia_create(){
             show: true
         });
         $('[name=id_almacen_origen]').val(alm_origen);
+        $('[name=id_almacen_destino]').val(alm_destino);
+        $('[name=almacen_origen_descripcion]').val(alm_origen_des);
+        $('[name=almacen_destino_descripcion]').val(alm_destino_des);
         $('[name=trans_serie]').val('');
         $('[name=trans_numero]').val('');
         $('[name=id_guia_com]').val('');
@@ -82,40 +91,40 @@ function open_guia_transferencia_create(){
         $('[name=id_transferencia]').val('');
         $("#submit_transferencia").removeAttr("disabled");
         
-        cargar_almacenes(sede_destino, 'id_almacen_destino');
-        if (alm_destino !== null){
-            $('[name=id_almacen_destino]').val(alm_destino);
-        }
+        // cargar_almacenes(sede_destino, 'id_almacen_destino');
+        // if (alm_destino !== null){
+        //     $('[name=id_almacen_destino]').val(alm_destino);
+        // }
         var data = 'trans_seleccionadas='+JSON.stringify(id_trans_seleccionadas);
         listarDetalleTransferenciaSeleccionadas(data);
     }
 }
 
-function cargar_almacenes(sede, campo){
-    if (sede !== ''){
-        $.ajax({
-            type: 'GET',
-            url: 'cargar_almacenes/'+sede,
-            dataType: 'JSON',
-            success: function(response){
-                console.log(response);
-                var option = '';
-                for (var i=0; i<response.length; i++){
-                    if (response.length == 1){
-                        option+='<option value="'+response[i].id_almacen+'" selected>'+response[i].codigo+' - '+response[i].descripcion+'</option>';
-                    } else {
-                        option+='<option value="'+response[i].id_almacen+'">'+response[i].codigo+' - '+response[i].descripcion+'</option>';
-                    }
-                }
-                $('[name='+campo+']').html(option);
-            }
-        }).fail( function( jqXHR, textStatus, errorThrown ){
-            console.log(jqXHR);
-            console.log(textStatus);
-            console.log(errorThrown);
-        });
-    }
-}
+// function cargar_almacenes(sede, campo){
+//     if (sede !== ''){
+//         $.ajax({
+//             type: 'GET',
+//             url: 'cargar_almacenes/'+sede,
+//             dataType: 'JSON',
+//             success: function(response){
+//                 console.log(response);
+//                 var option = '';
+//                 for (var i=0; i<response.length; i++){
+//                     if (response.length == 1){
+//                         option+='<option value="'+response[i].id_almacen+'" selected>'+response[i].codigo+' - '+response[i].descripcion+'</option>';
+//                     } else {
+//                         option+='<option value="'+response[i].id_almacen+'">'+response[i].codigo+' - '+response[i].descripcion+'</option>';
+//                     }
+//                 }
+//                 $('[name='+campo+']').html(option);
+//             }
+//         }).fail( function( jqXHR, textStatus, errorThrown ){
+//             console.log(jqXHR);
+//             console.log(textStatus);
+//             console.log(errorThrown);
+//         });
+//     }
+// }
 
 function listarDetalleTransferencia(id_transferencia){
     if (id_transferencia !== ''){

@@ -2790,28 +2790,27 @@ class AlmacenController extends Controller
             ->first();
 
         $detalle = DB::table('almacen.mov_alm_det')
-            ->select('mov_alm_det.*','alm_prod.codigo','alm_prod.codigo_anexo','alm_prod.descripcion',
-            // 'alm_ubi_posicion.codigo as cod_posicion',
-            'alm_und_medida.abreviatura',
-            'sis_moneda.simbolo','log_det_ord_compra.subtotal','log_det_ord_compra.precio as unitario',
-            'guia_com_det.unitario_adicional','alm_prod.series')
+            ->select('mov_alm_det.*','alm_prod.codigo','alm_prod.part_number','alm_prod.descripcion',
+            'alm_und_medida.abreviatura','sis_moneda.simbolo',
+            'log_det_ord_compra.subtotal','log_det_ord_compra.precio as unitario',
+            'guia_com_det.unitario_adicional','alm_prod.series',
+            'log_ord_compra.codigo as codigo_oc')
             ->join('almacen.alm_prod','alm_prod.id_producto','=','mov_alm_det.id_producto')
-            // ->leftjoin('almacen.alm_ubi_posicion','alm_ubi_posicion.id_posicion','=','mov_alm_det.id_posicion')
             ->join('almacen.alm_und_medida','alm_und_medida.id_unidad_medida','=','alm_prod.id_unidad_medida')
             ->leftjoin('configuracion.sis_moneda','sis_moneda.id_moneda','=','alm_prod.id_moneda')
             ->leftjoin('almacen.guia_com_det','guia_com_det.id_guia_com_det','=','mov_alm_det.id_guia_com_det')
             ->leftjoin('logistica.log_det_ord_compra','log_det_ord_compra.id_detalle_orden','=','guia_com_det.id_oc_det')
-            // ->leftjoin('logistica.log_valorizacion_cotizacion','log_valorizacion_cotizacion.id_valorizacion_cotizacion','=','log_det_ord_compra.id_valorizacion_cotizacion')
+            ->leftjoin('logistica.log_ord_compra','log_ord_compra.id_orden_compra','=','log_det_ord_compra.id_orden_compra')
             ->where([['mov_alm_det.id_mov_alm','=',$id],['mov_alm_det.estado','=',1]])
             ->get();
+
         $ocs = [];
         if ($ingreso !== null){
-            $ocs = DB::table('almacen.guia_com_oc')
-                ->select('log_ord_compra.codigo')
-                ->join('logistica.log_ord_compra','log_ord_compra.id_orden_compra','=','guia_com_oc.id_oc')
-                ->where([['guia_com_oc.id_guia_com','=',$ingreso->id_guia_com],
-                        ['guia_com_oc.estado','=',1]])
-                ->get();
+            foreach ($detalle as $det) {
+                if (!in_array($det->codigo_oc, $ocs)){
+                    array_push($ocs, $det->codigo_oc);
+                }
+            }
         }
 
         return ['ingreso'=>$ingreso,'detalle'=>$detalle,'ocs'=>$ocs];
@@ -2834,9 +2833,9 @@ class AlmacenController extends Controller
         $cod_ocs = '';
         foreach($ocs as $oc){
             if ($cod_ocs == ''){
-                $cod_ocs .= $oc->codigo;
+                $cod_ocs .= $oc;
             } else {
-                $cod_ocs .= ', '.$oc->codigo;
+                $cod_ocs .= ', '.$oc;
             }
         }
         $fecha_actual = date('Y-m-d');
@@ -2875,11 +2874,7 @@ class AlmacenController extends Controller
                         <td>
                             <p style="text-align:left;font-size:10px;margin:0px;">'.$ingreso->ruc_empresa.'</p>
                             <p style="text-align:left;font-size:10px;margin:0px;">'.$ingreso->empresa_razon_social.'</p>
-                            <p style="text-align:left;font-size:10px;margin:0px;">.::Sistema ERP v1.0::.</p>
-                        </td>
-                        <td>
-                            <p style="text-align:right;font-size:10px;margin:0px;">Fecha: '.$fecha_actual.'</p>
-                            <p style="text-align:right;font-size:10px;margin:0px;">Hora : '.$hora_actual.'</p>
+                            <p style="text-align:left;font-size:10px;margin:0px;"><strong>SYSTEM AGILE v1.3</strong></p>
                         </td>
                     </tr>
                 </table>
@@ -2888,7 +2883,7 @@ class AlmacenController extends Controller
                 
                 <table border="0">
                     <tr>
-                        <td class="subtitle">Ingreso N°</td>
+                        <td width=100px>Ingreso N°</td>
                         <td width=10px>:</td>
                         <td width=250px>'.$ingreso->codigo.'</td>
                         <td>Fecha Ingreso</td>
@@ -2899,7 +2894,7 @@ class AlmacenController extends Controller
                 if ($ingreso->guia !== null){
                     $html.='
                     <tr>
-                        <td class="subtitle">Guía N°</td>
+                        <td width=100px>Guía N°</td>
                         <td width=10px>:</td>
                         <td>'.$ingreso->guia.'</td>
                         <td>Fecha Guía</td>
@@ -2945,7 +2940,7 @@ class AlmacenController extends Controller
                     if ($cod_ocs !== ''){
                         $html.='
                             <td>'.$ingreso->nro_documento.' - '.$ingreso->razon_social.'</td>
-                            <td>Orden de Compra</td>
+                            <td>Nro. OC</td>
                             <td>:</td>
                             <td>'.$cod_ocs.'</td>
                         ';
@@ -2956,7 +2951,7 @@ class AlmacenController extends Controller
                     $html.='
                     </tr>
                     <tr>
-                        <td class="subtitle">Tipo Movim.</td>
+                        <td width=100px>Tipo Movim.</td>
                         <td>:</td>
                         <td colSpan="4">'.$ingreso->cod_sunat.' '.$ingreso->ope_descripcion.'</td>
                     </tr>
@@ -2972,10 +2967,10 @@ class AlmacenController extends Controller
                         <tr>
                             <th>Nro</th>
                             <th>Código</th>
-                            <th width=40% >Descripción</th>
+                            <th>PartNumber</th>
+                            <th width=50% >Descripción</th>
                             <th>Cant.</th>
                             <th>Unid.</th>
-                            <th>Mnd.</th>
                             <th>Valor.</th>
                         </tr>
                     </thead>
@@ -2984,19 +2979,17 @@ class AlmacenController extends Controller
 
                     foreach($detalle as $det){
                         $series = '';
-                        if ($det->series){
-                            $det_series = DB::table('almacen.alm_prod_serie')
-                            ->where([['alm_prod_serie.id_prod','=',$det->id_producto],
-                                     ['alm_prod_serie.id_guia_com_det','=',$det->id_guia_com_det]])
-                            ->get();
-                
-                            if (isset($det_series)){
-                                foreach($det_series as $s){
-                                    if ($series !== ''){
-                                        $series.= ', '.$s->serie;
-                                    } else {
-                                        $series = 'Serie(s): '.$s->serie;
-                                    }
+                        $det_series = DB::table('almacen.alm_prod_serie')
+                        ->where([['alm_prod_serie.id_prod','=',$det->id_producto],
+                                    ['alm_prod_serie.id_guia_com_det','=',$det->id_guia_com_det]])
+                        ->get();
+            
+                        if (isset($det_series)){
+                            foreach($det_series as $s){
+                                if ($series !== ''){
+                                    $series.= ', '.$s->serie;
+                                } else {
+                                    $series = '<br>Serie(s): '.$s->serie;
                                 }
                             }
                         }
@@ -3004,10 +2997,10 @@ class AlmacenController extends Controller
                         <tr>
                             <td class="right">'.$i.'</td>
                             <td>'.$det->codigo.'</td>
-                            <td>'.$det->descripcion.' '.$series.'</td>
+                            <td>'.$det->part_number.'</td>
+                            <td>'.$det->descripcion.' <strong>'.$series.'</strong></td>
                             <td class="right">'.$det->cantidad.'</td>
                             <td>'.$det->abreviatura.'</td>
-                            <td>'.$det->simbolo.'</td>
                             <td class="right">'.$det->valorizacion.'</td>
                         </tr>';
                         $i++;
@@ -3015,7 +3008,7 @@ class AlmacenController extends Controller
                     $html.='</tbody>
                 </table>
                 <p style="text-align:right;font-size:11px;">Elaborado por: '.$ingreso->nom_usuario.' '.$ingreso->fecha_registro.'</p>
-
+                
             </body>
         </html>';
         
@@ -4226,7 +4219,7 @@ class AlmacenController extends Controller
             ->first();
 
         $detalle = DB::table('almacen.mov_alm_det')
-            ->select('mov_alm_det.*','alm_prod.codigo','alm_prod.descripcion',
+            ->select('mov_alm_det.*','alm_prod.codigo','alm_prod.part_number','alm_prod.descripcion',
             'alm_ubi_posicion.codigo as cod_posicion','alm_und_medida.abreviatura',
             'alm_prod.series','trans.codigo as cod_trans')
             ->join('almacen.alm_prod','alm_prod.id_producto','=','mov_alm_det.id_producto')
@@ -4238,16 +4231,8 @@ class AlmacenController extends Controller
             ->where([['mov_alm_det.id_mov_alm','=',$id],['mov_alm_det.estado','=',1]])
             ->get();
 
-        // $req = [];
-        // foreach($detalle as $d){
-        //     if ($d->cod_req !== null){
-        //         if (in_array($d->cod_req, $req) == false){
-        //             array_push($req, $d->cod_req);
-        //         }
-        //     }
-        // }
-        $fecha_actual = date('Y-m-d');
-        $hora_actual = date('H:i:s');
+        // $fecha_actual = date('Y-m-d');
+        // $hora_actual = date('H:i:s');
 
         $html = '
         <html>
@@ -4282,11 +4267,7 @@ class AlmacenController extends Controller
                         <td>
                             <p style="text-align:left;font-size:10px;margin:0px;">'.$salida->ruc_empresa.'</p>
                             <p style="text-align:left;font-size:10px;margin:0px;">'.$salida->empresa_razon_social.'</p>
-                            <p style="text-align:left;font-size:10px;margin:0px;">.::Sistema ERP v1.0::.</p>
-                        </td>
-                        <td>
-                            <p style="text-align:right;font-size:10px;margin:0px;">Fecha: '.$fecha_actual.'</p>
-                            <p style="text-align:right;font-size:10px;margin:0px;">Hora : '.$hora_actual.'</p>
+                            <p style="text-align:left;font-size:10px;margin:0px;"><strong>SYSTEM AGILE v1.3</strong></p>
                         </td>
                     </tr>
                 </table>
@@ -4295,146 +4276,118 @@ class AlmacenController extends Controller
                 
                 <table border="0">
                     <tr>
-                        <td>Salida N°</td>
+                        <td width=120px>Salida N°</td>
                         <td width=10px>:</td>
-                        <td class="verticalTop">'.$salida->codigo.'</td>
+                        <td width=280px>'.$salida->codigo.'</td>
                         <td>Fecha Salida</td>
                         <td width=10px>:</td>
                         <td>'.$salida->fecha_emision.'</td>
                     </tr>';
+
                 if ($salida->guia !== null){
-                    $html.='
-                    <tr>
-                        <td>Guía de Venta</td>
-                        <td width=10px>:</td>
-                        <td>'.$salida->guia.'</td>
-                        <td>Fecha Guía</td>
-                        <td width=10px>:</td>
-                        <td>'.$salida->fecha_guia.'</td>
-                    </tr>
-                    ';
+                    $html.='<tr>
+                                <td>Guía de Venta</td>
+                                <td width=10px>:</td>
+                                <td>'.$salida->guia.'</td>
+                                <td>Fecha Guía</td>
+                                <td width=10px>:</td>
+                                <td>'.$salida->fecha_guia.'</td>
+                            </tr>';
                 }
                 if ($salida->fecha_transformacion !== null){
-                    $html.='
-                    <tr>
-                        <td>Transformación</td>
-                        <td>:</td>
-                        <td width=250px>'.$salida->cod_transformacion.'</td>
-                        <td width=150px>Fecha Transformación</td>
-                        <td width=10px>:</td>
-                        <td>'.$salida->fecha_transformacion.'</td>
-                    </tr>
-                    ';
+                    $html.='<tr>
+                                <td>Transformación</td>
+                                <td>:</td>
+                                <td width=250px>'.$salida->cod_transformacion.'</td>
+                                <td width=150px>Fecha Transformación</td>
+                                <td width=10px>:</td>
+                                <td>'.$salida->fecha_transformacion.'</td>
+                            </tr>';
                 }
                 if ($salida->doc !== null){
-                    $html.='
-                    <tr>
-                        <td>Documento de Venta</td>
-                        <td>:</td>
-                        <td>'.$salida->doc.'</td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    ';
+                    $html.='<tr>
+                                <td>Documento de Venta</td>
+                                <td>:</td>
+                                <td>'.$salida->doc.'</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>';
                 }
-                // if ($req !== []){
-                //     $cods_req = '';
-                //     for ($i=0; $i<count($req); $i++){
-                //         if ($cods_req == ''){
-                //             $cods_req.= $req[$i];
-                //         } else {
-                //             $cods_req.= $req[$i].', ';
-                //         }
-                //     }
-                //     $html.='
-                //     <tr>
-                //         <td>Requerimiento</td>
-                //         <td>:</td>
-                //         <td colSpan="4">'.$cods_req.'</td>
-                //     </tr>
-                //     ';
-                // }
                 if (isset($salida->cod_trans)){
-                    $html.='
-                    <tr>
-                        <td width=130px>Transferencia</td>
-                        <td>:</td>
-                        <td>'.$salida->cod_trans.'</td>
-                        <td>Fecha Transferencia</td>
-                        <td>:</td>
-                        <td>'.$salida->fecha_transferencia.'</td>
-                    </tr>
-                    <tr>
-                        <td>Almacén Destino</td>
-                        <td>:</td>
-                        <td width=200px>'.$salida->des_alm_destino.'</td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    ';
+                    $html.='<tr>
+                                <td width=130px>Transferencia</td>
+                                <td>:</td>
+                                <td>'.$salida->cod_trans.'</td>
+                                <td>Fecha Transferencia</td>
+                                <td>:</td>
+                                <td>'.$salida->fecha_transferencia.'</td>
+                            </tr>
+                            <tr>
+                                <td>Almacén Destino</td>
+                                <td>:</td>
+                                <td width=200px>'.$salida->des_alm_destino.'</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>';
                 }
 
-                $html.='
-                <tr>
-                    <td>Tipo Movimiento</td>
-                    <td>:</td>
-                    <td colSpan="4">'.$salida->cod_sunat.' '.$salida->ope_descripcion.'</td>
-                </tr>';
+                $html.='<tr>
+                            <td>Tipo Movimiento</td>
+                            <td>:</td>
+                            <td colSpan="4">'.$salida->cod_sunat.' '.$salida->ope_descripcion.'</td>
+                        </tr>';
 
-                $html.='
-                    <tr>
-                        <td>Generado por</td>
-                        <td>:</td>
-                        <td colSpan="4">'.$salida->persona.'</td>
-                    </tr>
-                </table>
-                <br/>
-                <table id="detalle">
-                    <thead>
-                        <tr>
-                            <th>Nro</th>
-                            <th>Código</th>
-                            <th width=45% >Descripción</th>
-                            <th>Posición</th>
-                            <th>Cant.</th>
-                            <th>Unid.</th>
-                            <th>Valor.</th>
+                $html.='<tr>
+                            <td>Generado por</td>
+                            <td>:</td>
+                            <td colSpan="4">'.$salida->persona.'</td>
                         </tr>
-                    </thead>
-                    <tbody>';
+                    </table>
+                    <br/>
+                    <table id="detalle">
+                        <thead>
+                            <tr>
+                                <th>Nro</th>
+                                <th>Código</th>
+                                <th>PartNumber</th>
+                                <th width=45% >Descripción</th>
+                                <th>Cant.</th>
+                                <th>Unid.</th>
+                                <th>Valor.</th>
+                            </tr>
+                        </thead>
+                        <tbody>';
                     $i = 1;
+
                     foreach($detalle as $det){
-                        $chk = ($det->series ? 'true' : 'false');
                         $series = '';
-                        if ($chk == 'true'){
-                            $det_series = DB::table('almacen.alm_prod_serie')
-                            ->where([['alm_prod_serie.id_prod','=',$det->id_producto],
-                                    ['alm_prod_serie.id_guia_ven_det','=',$det->id_guia_ven_det]])
-                            ->get();
-                
-                            if (isset($det_series)){
-                                foreach($det_series as $s){
-                                    if ($series !== ''){
-                                        $series.= ', '.$s->serie;
-                                    } else {
-                                        $series = 'Serie(s): '.$s->serie;
-                                    }
+
+                        $det_series = DB::table('almacen.alm_prod_serie')
+                        ->where([['alm_prod_serie.id_prod','=',$det->id_producto],
+                                ['alm_prod_serie.id_guia_ven_det','=',$det->id_guia_ven_det]])
+                        ->get();
+                        
+                        if (isset($det_series)){
+                            foreach($det_series as $s){
+                                if ($series !== ''){
+                                    $series.= ', '.$s->serie;
+                                } else {
+                                    $series = '<br>Serie(s): '.$s->serie;
                                 }
                             }
                         }
-                        $html.='
-                        <tr>
-                            <td class="right">'.$i.'</td>
-                            <td>'.$det->codigo.'</td>
-                            <td>'.$det->descripcion.' '.$series.'</td>
-                            <td>'.$det->cod_posicion.'</td>
-                            <td class="right">'.$det->cantidad.'</td>
-                            <td>'.$det->abreviatura.'</td>
-                            <td class="right">'.round($det->valorizacion,2,PHP_ROUND_HALF_UP).'</td>
-                        </tr>';
-                        $i++;
+                        $html.='<tr>
+                                    <td class="right">'.$i.'</td>
+                                    <td>'.$det->codigo.'</td>
+                                    <td>'.$det->part_number.'</td>
+                                    <td>'.$det->descripcion.' <strong>'.$series.'</strong></td>
+                                    <td class="right">'.$det->cantidad.'</td>
+                                    <td>'.$det->abreviatura.'</td>
+                                    <td class="right">'.round($det->valorizacion,2,PHP_ROUND_HALF_UP).'</td>
+                                </tr>';
+                                $i++;
                     }
                     $html.='</tbody>
                 </table>
@@ -4449,58 +4402,7 @@ class AlmacenController extends Controller
         return $pdf->download('salida.pdf');
         // return response()->json(['salida'=>$salida,'detalle'=>$detalle]);
     }
-    /*public function guardar_guia_ven(Request $request)
-    {
-        $fecha = date('Y-m-d H:i:s');
-        $id_guia = DB::table('almacen.guia_ven')->insertGetId(
-            [
-                'id_tp_doc_almacen' => $request->id_tp_doc_almacen,
-                'serie' => $request->serie,
-                'numero' => $request->numero,
-                'id_empresa' => $request->id_empresa,
-                'fecha_emision' => $request->fecha_emision,
-                'fecha_almacen' => $request->fecha_almacen,
-                'id_almacen' => $request->id_almacen,
-                'id_motivo' => $request->id_motivo,
-                // 'id_guia_clas' => $request->id_guia_clas,
-                // 'id_guia_cond' => $request->id_guia_cond,
-                'id_cliente' => $request->id_cliente,
-                'usuario' => $request->usuario,
-                'estado' => 1,
-                'fecha_registro' => $fecha,
-            ],
-                'id_guia_ven'
-            );
-        
-            $det = $request->detalle;
-            $array = json_decode($det, true);
-            $count = count($array);
 
-            if ($count > 0){
-                for ($i=0; $i<$count; $i++){
-                    $id_prod = $this->id_producto($array[$i]['id_item']);
-                    
-                    $data = DB::table('almacen.guia_ven_det')->insertGetId(
-                        [
-                            'id_guia_ven' => $id_guia,
-                            'id_producto' => $id_prod,
-                            // 'id_posicion' => $array[$i]['id_posicion'],
-                            'cantidad' => $array[$i]['cantidad'],
-                            // 'id_unid_med' => $array[$i]['id_unid_med'],
-                            // 'id_oc_det' => $array[$i]['id_unid_med'],
-                            // 'unitario' => $array[$i]['unitario'],
-                            // 'total' => $array[$i]['total'],
-                            // 'usuario' => $request->usuario,
-                            // 'estado' => 1,
-                            // 'fecha_registro' => $fecha
-                        ],
-                            'id_guia_ven_det'
-                        );
-                }
-            }
-        // return response()->json(["id_guia"=>$id_guia,"id_proveedor"=>$request->id_proveedor]);
-        return response()->json($id_guia);
-    }*/
     public function kardex_general($almacenes, $finicio, $ffin){
         $alm_array = explode(',',$almacenes);
         

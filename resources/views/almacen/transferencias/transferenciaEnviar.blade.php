@@ -47,21 +47,19 @@
                         </div>
                         <div class="col-md-4">
                             <h5>Almacén Origen</h5>
-                            <select class="form-control" name="id_almacen_origen" readOnly>
-                                <option value="0">Elija una opción</option>
-                                @foreach ($almacenes as $alm)
-                                    <option value="{{$alm->id_almacen}}">{{$alm->descripcion}}</option>
-                                @endforeach
-                            </select>
+                            <input type="text" class="oculto" name="id_almacen_origen">
+                            <input type="text" class="form-control" name="almacen_origen_descripcion" disabled>
                         </div>
                         <div class="col-md-4">
                             <h5>Almacén Destino</h5>
-                            <select class="form-control js-example-basic-single " name="id_almacen_destino" readOnly>
+                            <input type="text" class="oculto" name="id_almacen_destino">
+                            <input type="text" class="form-control" name="almacen_destino_descripcion" disabled>
+                            <!-- <select class="form-control js-example-basic-single " name="id_almacen_destino" readOnly>
                                 <option value="0">Elija una opción</option>
                                 @foreach ($almacenes as $alm)
                                     <option value="{{$alm->id_almacen}}">{{$alm->descripcion}}</option>
                                 @endforeach
-                            </select>
+                            </select> -->
                         </div>
                     </div>
                     <div class="row">

@@ -16,6 +16,7 @@ function open_guia_create(data,$fila){
     $('[name=numero]').val('');
     $('[name=fecha_emision]').val(fecha_actual());
     $('[name=fecha_almacen]').val(fecha_actual());
+    $('#detalleOrdenSeleccionadas tbody').html('');
 
     $('#serie').text('');
     $('#numero').text('');
@@ -68,6 +69,7 @@ function open_guia_create_seleccionadas(){
         $('[name=numero]').val('');
         $('[name=fecha_emision]').val(fecha_actual());
         $('[name=fecha_almacen]').val(fecha_actual());
+        $('#detalleOrdenSeleccionadas tbody').html('');
         $('#serie').text('');
         $('#numero').text('');
         cargar_almacenes(sede, 'id_almacen');

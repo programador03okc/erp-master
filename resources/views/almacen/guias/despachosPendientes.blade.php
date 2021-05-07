@@ -22,7 +22,7 @@ Pendientes de Salida
     <div class="col-md-12" id="tab-ordenes"  style="padding-left:0px;padding-right:0px;">
         <ul class="nav nav-tabs" id="myTab">
             <li class="active"><a type="#pendientes">Despachos Pendientes</a></li>
-            <li class=""><a type="#salidas">Salidas de Almacén</a></li>
+            <li class=""><a type="#salidas">Salidas Procesadas</a></li>
         </ul>
         <div class="content-tabs">
             <section id="pendientes" >

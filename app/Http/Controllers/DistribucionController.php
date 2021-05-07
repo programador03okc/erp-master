@@ -848,11 +848,11 @@ class DistribucionController extends Controller
                 //Agrega accion en requerimiento
                 DB::table('almacen.alm_req_obs')
                 ->insert([  'id_requerimiento'=>$request->id_requerimiento,
-                        'accion'=>'DESPACHO INTERNO',
-                        'descripcion'=>'Se generó la Orden de Despacho '.$codigo,
-                        'id_usuario'=>$usuario,
-                        'fecha_registro'=>date('Y-m-d H:i:s')
-                ]);
+                            'accion'=>'DESPACHO INTERNO',
+                            'descripcion'=>'Se generó la Orden de Despacho '.$codigo,
+                            'id_usuario'=>$usuario,
+                            'fecha_registro'=>date('Y-m-d H:i:s')
+                        ]);
 
                 $fecha_actual = date('Y-m-d');
                 $codTrans = $this->transformacion_nextId($fecha_actual);
@@ -982,7 +982,7 @@ class DistribucionController extends Controller
                     ]);
                 }
 
-            }
+            }//Si es Despacho Externo
             else {
                 //Agrega accion en requerimiento
                 DB::table('almacen.alm_req_obs')
@@ -1005,6 +1005,7 @@ class DistribucionController extends Controller
                             'id_detalle_requerimiento'=>$d->id_detalle_requerimiento,
                             'cantidad'=>$d->cantidad,
                             'estado'=>1,
+                            'transformado'=>false,
                             'fecha_registro'=>date('Y-m-d H:i:s')
                         ]);
     
@@ -1027,7 +1028,7 @@ class DistribucionController extends Controller
                             'id_producto'=>$d->id_producto,
                             'id_detalle_requerimiento'=>$d->id_detalle_requerimiento,
                             'cantidad'=>$d->cantidad,
-                            // 'descripcion_producto'=>$descripcion,
+                            'transformado'=>false,
                             'estado'=>1,
                             'fecha_registro'=>date('Y-m-d H:i:s')
                         ]);

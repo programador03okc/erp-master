@@ -90,15 +90,10 @@ function listarTransferenciasPorEnviar(){
          },
         'columnDefs': [
             {
-                // 'aTargets': [0], 
-                // 'sClass': 'invisible'
                 'targets': 0,
                 'searchable': false,
                 'orderable': false,
                 'className': 'dt-body-center',
-                // 'checkboxes': {
-                //     'selectRow': true
-                //  }
                 'checkboxes': {
                     'selectRow': true,
                     'selectCallback': function(nodes, selected){
@@ -188,15 +183,16 @@ function listarTransferenciasPendientes(){
                         }
                     }
                 },
-                {'render':
-                    function (data, type, row){
-                        if (row['id_guia_ven'] !== null){
-                            return ('<label class="lbl-codigo" title="Abrir Guía" onClick="abrir_guia_venta('+row['id_guia_ven']+')">'+row['guia_ven']+'</label>');
-                        } else {
-                            return '';
-                        }
-                    }
-                },
+                // {'render':
+                //     function (data, type, row){
+                //         if (row['id_guia_ven'] !== null){
+                //             return ('<label class="lbl-codigo" title="Abrir Guía" onClick="abrir_guia_venta('+row['id_guia_ven']+')">'+row['guia_ven']+'</label>');
+                //         } else {
+                //             return '';
+                //         }
+                //     }
+                // },
+                {'data': 'guia_ven'},
                 {'data': 'alm_origen_descripcion'},
                 {'data': 'alm_destino_descripcion'},
                 {'data': 'nombre_origen'},
@@ -232,11 +228,7 @@ function listarTransferenciasPendientes(){
                 }
             ],
         });
-    
     }
-    // atender("#listaTransferenciasPorRecibir tbody", $('#listaTransferenciasPorRecibir').DataTable());
-    // verSalida("#listaTransferenciasPorRecibir tbody", $('#listaTransferenciasPorRecibir').DataTable());
-    // anular("#listaTransferenciasPorRecibir tbody", $('#listaTransferenciasPorRecibir').DataTable());
 }
 
 $('#listaTransferenciasPorRecibir tbody').on("click","button.atender", function(){
@@ -335,36 +327,27 @@ function listarTransferenciasRecibidas(){
                     }
                 },
                 {'data': 'codigo'},
-                {'render':
-                    function (data, type, row){
-                        return ('<label class="lbl-codigo" title="Abrir Guía" onClick="abrir_guia_venta('+row['id_guia_ven']+')">'+row['guia_ven']+'</label>');
-                    }
-                },
-                {'render':
-                    function (data, type, row){
-                        return ('<label class="lbl-codigo" title="Abrir Guía" onClick="abrir_guia_compra('+row['id_guia_com']+')">'+row['guia_com']+'</label>');
-                    }
-                },
-                // {'data': 'fecha_guia'},
+                // {'render':
+                //     function (data, type, row){
+                //         return ('<label class="lbl-codigo" title="Abrir Guía" onClick="abrir_guia_venta('+row['id_guia_ven']+')">'+row['guia_ven']+'</label>');
+                //     }
+                // },
+                // {'render':
+                //     function (data, type, row){
+                //         return ('<label class="lbl-codigo" title="Abrir Guía" onClick="abrir_guia_compra('+row['id_guia_com']+')">'+row['guia_com']+'</label>');
+                //     }
+                // },
+                {'data': 'guia_ven'},
+                {'data': 'guia_com'},
                 {'data': 'alm_origen_descripcion'},
                 {'data': 'alm_destino_descripcion'},
                 {'data': 'nombre_origen'},
                 {'data': 'nombre_destino'},
-                // {'data': 'nombre_registro'},
                 {'render':
                     function (data, type, row){
                         return ('<span class="label label-'+row['bootstrap_color']+'">'+row['estado_doc']+'</span>');
                     }
                 },
-                // {'render':
-                //     function (data, type, row){
-                //         if (row['codigo_orden'] !== null){
-                //             return (row['codigo_orden']);
-                //         } else {
-                //             return '';
-                //         }
-                //     }
-                // },
                 {'render':
                     function (data, type, row){
                         if (row['codigo_req'] !== null){

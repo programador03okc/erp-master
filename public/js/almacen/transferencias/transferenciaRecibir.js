@@ -71,56 +71,6 @@ function listar_guia_transferencia_detalle(id_guia_ven){
     });
 }
 
-// function listarSeriesVen(id_guia_ven_det){
-//     $('#modal-ver_series').modal({
-//         show: true
-//     });
-//     $.ajax({
-//         type: 'GET',
-//         url: 'listarSeriesVen/'+id_guia_ven_det,
-//         dataType: 'JSON',
-//         success: function(response){
-//             console.log(response);
-//             var tr = '';
-//             var i = 1;
-//             response.forEach(element => {
-//                 tr+=`<tr id="${element.id_prod_serie}">
-//                         <td class="numero">${i}</td>
-//                         <td class="serie">${element.serie}</td>
-//                         <td>${element.guia_ven}</td>
-//                         </tr>`;
-//                     });
-//                     // <td><i class="btn btn-danger fas fa-trash fa-lg" ></i>
-//             // onClick="eliminar_serie('+"'"+response[i].id_prod_serie+"'"+');"
-//             $('#listaSeries tbody').html(tr);
-//             $('[name=serie_prod]').focus();
-//         }
-//     }).fail( function( jqXHR, textStatus, errorThrown ){
-//         console.log(jqXHR);
-//         console.log(textStatus);
-//         console.log(errorThrown);
-//     });
-// }
-
-// function listarItems(id_transferencia){
-//     console.log(id_transferencia);
-//     $('#listaTransferenciaDetalle tbody').html('');
-//     $.ajax({
-//         type: 'GET',
-//         // headers: {'X-CSRF-TOKEN': token},
-//         url: 'listar_transferencia_detalle/'+id_transferencia,
-//         dataType: 'JSON',
-//         success: function(response){
-//             console.log(response);
-//             $('#listaTransferenciaDetalle tbody').html(response);
-//         }
-//     }).fail( function( jqXHR, textStatus, errorThrown ){
-//         console.log(jqXHR);
-//         console.log(textStatus);
-//         console.log(errorThrown);
-//     });
-// }
-
 function recibir(){
     var estado = $('[name=estado]').val();
     console.log('estado: '+estado);
