@@ -1406,6 +1406,7 @@ Route::group(['middleware' => ['auth']], function () {
 			
 			Route::get('lista_comprobante_compra', 'ComprobanteCompraController@view_lista_comprobantes_compra')->name('lista_comprobante_compra');
 			Route::get('documentoAPago/{id}', 'ComprobanteCompraController@documentoAPago');
+			Route::get('documentos_ver/{id}', 'OrdenesPendientesController@documentos_ver');
 
 		});
 		

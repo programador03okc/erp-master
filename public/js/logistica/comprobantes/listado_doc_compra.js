@@ -2,23 +2,6 @@ $(function(){
     listar_doc_compra();
 });
 
-// function listar_doc_compra(){
-//     $.ajax({
-//         type: 'GET',
-//         url: 'listar_docs_compra/',
-//         dataType: 'JSON',
-//         success: function(response){
-//             if(response.data.length >0){
-//                 llenarTablaListaComprobanteCompra(response.data);
-//             }
-//         }
-//     }).fail( function( jqXHR, textStatus, errorThrown ){
-//         console.log(jqXHR);
-//         console.log(textStatus);
-//         console.log(errorThrown);
-//     });   
-// }
-
 function listar_doc_compra(){
 
     var vardataTables = funcDatatables();
@@ -51,7 +34,10 @@ function listar_doc_compra(){
                 function (data, type, row){
                 return `<div class="btn-group" role="group">
                             ${row['estado'] == 1 ?
-                            `<button type="button" style="padding-left:8px;padding-right:7px;" class="pago btn btn-warning btn-xs" data-toggle="tooltip" 
+                            `<button type="button" class="ver_doc btn btn-info btn-xs" data-toggle="tooltip" 
+                                data-placement="bottom" title="Ver Comprobante" data-doc="${row['id_doc_com']}">
+                                <i class="fas fa-file-medical"></i></button>
+                            <button type="button" style="padding-left:8px;padding-right:7px;" class="pago btn btn-warning btn-xs" data-toggle="tooltip" 
                                 data-placement="bottom" data-id="${row['id_doc_com']}" data-cod="${row['serie']+'-'+row['numero']}" title="Mandar A Pago" >
                                 <i class="fas fa-hand-holding-usd"></i></button>`:''}
                             <button type="button" class="btn btn-danger btn-xs" name="btnAnularComprobanteCompra" title="Anular" data-id-doc-com="${row.id_doc_com}" onclick="anularComprobanteCompra(this);">
@@ -73,6 +59,12 @@ function listar_doc_compra(){
         if (rspta){
             documentoAPago(id);
         }
+    });
+    
+    $('#listaComprobantesCompra tbody').on("click","button.ver_doc", function(){
+        var id_doc = $(this).data('doc');
+        console.log('id_doc'+id_doc);
+        documentosVer(id_doc);
     });
 }
 

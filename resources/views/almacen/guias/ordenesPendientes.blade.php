@@ -25,9 +25,9 @@ Pendientes de Ingreso
         <div class="page-main" type="ordenesPendientes">
             <div class="col-md-12" id="tab-ordenes" style="padding-left:0px;padding-right:0px;">
                 <ul class="nav nav-tabs" id="myTab">
-                    <li class="active"><a type="#pendientes">Ordenes Pendientes de Llegada</a></li>
+                    <li class="active"><a type="#pendientes">Ordenes Pendientes de Ingreso</a></li>
                     <li class=""><a type="#transformaciones">Transformaciones Pendientes de Ingreso</a></li>
-                    <li class=""><a type="#ingresadas">Ingresos a Almacén</a></li>
+                    <li class=""><a type="#ingresadas">Ingresos Procesados</a></li>
                 </ul>
                 <div class="content-tabs">
                     <section id="pendientes">
@@ -54,7 +54,8 @@ Pendientes de Ingreso
                                         <tfoot></tfoot>
                                     </table>
                                     @if(Auth::user()->tieneAccion(83))
-                                    <button type="button" class="btn btn-success" data-toggle="tooltip" data-placement="bottom" title="Crear Guía / Ingreso" onClick="open_guia_create_seleccionadas();">Ingresar Guía</button>
+                                    <button type="button" class="btn btn-success" data-toggle="tooltip" data-placement="bottom" 
+                                    title="Ingresar Guía de Compra" onClick="open_guia_create_seleccionadas();">Ingresar Guía</button>
                                     @endif
                                 </div>
                             </div>
@@ -113,7 +114,8 @@ Pendientes de Ingreso
                                         <tbody></tbody>
                                         <tfoot></tfoot>
                                     </table>
-                                    <button type="button" class="btn btn-success" data-toggle="tooltip" data-placement="bottom" title="Ingresar Factura/Boleta" onClick="open_doc_create_seleccionadas();">Ingresar Comprobante</button>
+                                    <button type="button" class="btn btn-success" data-toggle="tooltip" data-placement="bottom" 
+                                    title="Ingresar Factura/Boleta" onClick="open_doc_create_seleccionadas();">Ingresar Comprobante</button>
                                 </div>
                             </div>
                         </form>
@@ -133,8 +135,6 @@ Pendientes de Ingreso
 @include('almacen.guias.guia_com_obs')
 @include('almacen.guias.guia_com_cambio')
 @include('almacen.documentos.doc_com_ver')
-<!-- @include('almacen.producto.productoModal')
-@include('almacen.producto.productoCreate') -->
 @include('almacen.guias.ordenesGuias')
 @include('almacen.guias.guia_com_ver')
 
@@ -163,8 +163,6 @@ Pendientes de Ingreso
 <script src="{{ asset('js/almacen/guia/guia_com_cambio.js')}}"></script>
 <script src="{{ asset('js/almacen/guia/guia_com_det_series.js')}}"></script>
 <script src="{{ asset('js/almacen/guia/guia_com_det_series_edit.js')}}"></script>
-<!-- <script src="{{ asset('js/almacen/producto/productoModal.js')}}"></script>
-<script src="{{ asset('js/almacen/producto/productoCreate.js')}}"></script> -->
 <script src="{{ asset('js/almacen/documentos/doc_com_create.js')}}"></script>
 <script src="{{ asset('js/almacen/documentos/doc_com_ver.js')}}"></script>
 <script src="{{ asset('js/almacen/transferencias/transferenciaCreate.js')}}"></script>

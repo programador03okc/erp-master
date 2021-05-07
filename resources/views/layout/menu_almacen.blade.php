@@ -76,12 +76,12 @@
             @if(Auth::user()->tieneAplicacion(83))
             <li><a href="{{route('almacen.movimientos.pendientes-salida.index')}}"> Pendientes de Salida </a></li>
             @endif
-            @if(Auth::user()->tieneAplicacion(84))
+            <!-- @if(Auth::user()->tieneAplicacion(84))
             <li><a href="{{route('almacen.movimientos.guias-compra.index')}}"> Compras - Ingresos </a></li>
             @endif
             @if(Auth::user()->tieneAplicacion(85))
             <li><a href="{{route('almacen.movimientos.guias-venta.index')}}"> Ventas - Salidas </a></li>
-            @endif
+            @endif -->
         </ul>
     </li>
     @endif
@@ -92,8 +92,7 @@
         </a>
         <ul class="treeview-menu" >
             @if(Auth::user()->tieneAplicacion(120))
-            <!-- <li><a href="/doc_compra"><i class="far fa-circle fa-xs"></i> Comprobante de compra</a></li> -->
-            <li><a href="{{route('almacen.comprobantes.generar_comprobante')}}"><i class="far fa-circle fa-xs"></i> Documento de compra</a></li>
+            <!-- <li><a href="{{route('almacen.comprobantes.generar_comprobante')}}"><i class="far fa-circle fa-xs"></i> Documento de compra</a></li> -->
             <li><a href="{{route('almacen.comprobantes.lista_comprobante_compra')}}"><i class="far fa-circle fa-xs"></i> Reporte de comprobantes</a></li>
             @endif
         </ul>
