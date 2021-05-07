@@ -299,9 +299,6 @@ function listarOrdenesEntregadas(){
                         // '<button type="button" class="ingreso btn btn-warning boton" data-toggle="tooltip" '+
                         //     'data-placement="bottom" title="Ver Ingreso" data-id="'+row['id_mov_alm']+'">'+
                         //     '<i class="fas fa-file-alt"></i></button>'+
-                        '<button type="button" class="anular btn btn-danger btn-xs " data-toggle="tooltip" '+
-                        'data-placement="bottom" title="Anular Ingreso" data-id="'+row['id_mov_alm']+'" data-guia="'+row['id_guia_com']+'" data-oc="'+row['id_orden_compra']+'">'+
-                        '<i class="fas fa-trash"></i></button>'+
                         `<button type="button" class="cambio btn btn-warning btn-xs" data-toggle="tooltip" 
                             data-placement="bottom" title="Cambiar Serie-Número" data-id="${row['id_mov_alm']}" 
                             data-guia="${row['id_guia_com']}"><i class="fas fa-sync-alt"></i></button>
@@ -309,12 +306,21 @@ function listarOrdenesEntregadas(){
                         ${(row['count_sedes_diferentes'] > 0 || row['count_sedes_diferentes_od'] > 0) ? 
                         (row['count_transferencias'] == 0 ? 
                         `<button type="button" class="transferencia btn btn-success btn-xs" data-toggle="tooltip" 
-                        data-placement="bottom" title="Generar Transferencia" data-guia="${row['id_guia_com']}">
-                        <i class="fas fa-exchange-alt"></i></button>`:'') : ''}`+
+                            data-placement="bottom" title="Generar Transferencia" data-guia="${row['id_guia_com']}">
+                            <i class="fas fa-exchange-alt"></i></button>
+                        <button type="button" class="anular btn btn-danger btn-xs " data-toggle="tooltip" 
+                            data-placement="bottom" title="Anular Ingreso" data-id="${row['id_mov_alm']}" 
+                            data-guia="${row['id_guia_com']}" data-oc="${row['id_orden_compra']}">
+                            <i class="fas fa-trash"></i></button>`:'') 
+                            : //falta verificar si ya se creo orden de despacho
+                            `<button type="button" class="anular btn btn-danger btn-xs " data-toggle="tooltip" 
+                            data-placement="bottom" title="Anular Ingreso" data-id="${row['id_mov_alm']}" 
+                            data-guia="${row['id_guia_com']}" data-oc="${row['id_orden_compra']}">
+                            <i class="fas fa-trash"></i></button>`}`+
 
                         (row['id_operacion'] == 2 ? 
                         `<button type="button" class="${row['count_facturas']>0?'ver_doc':'doc'} btn btn-${row['count_facturas']>0?'info':'default'} btn-xs" data-toggle="tooltip" 
-                            data-placement="bottom" title="Generar Factura" data-guia="${row['id_guia_com']}">
+                            data-placement="bottom" title="Generar Factura" data-guia="${row['id_guia_com']}" data-doc="${row['id_doc_com']}">
                             <i class="fas fa-file-medical"></i></button>`:'')
                         ;
                     } else {
@@ -345,7 +351,7 @@ function listarOrdenesEntregadas(){
             }
             else {
                 var index = ingresos_seleccionados.findIndex(function(item, i){
-                    return item.id_mov_alm == data.id_mov_alm;
+                    return item.id_guia_com == data.id_guia_com;
                 });
                 if (index !== null){
                     ingresos_seleccionados.splice(index,1);
@@ -406,11 +412,6 @@ $('#ordenesEntregadas tbody').on("click","button.cambio", function(){
     $("#submit_guia_com_cambio").removeAttr("disabled");
 });
 
-// $('#ordenesEntregadas tbody').on("click","button.transferencia", function(){
-//     var id_guia = $(this).data('id');
-//     generar_transferencia(id_guia);
-// });
-
 $('#ordenesEntregadas tbody').on("click","button.anular_sal", function(){
     var id_mov_alm = $(this).data('id');
     var id_guia = $(this).data('guia');
@@ -434,8 +435,8 @@ $('#ordenesEntregadas tbody').on("click","button.doc", function(){
 });
 
 $('#ordenesEntregadas tbody').on("click","button.ver_doc", function(){
-    var id_guia = $(this).data('guia');
-    documentosVer(id_guia);
+    var id_doc = $(this).data('doc');
+    documentosVer(id_doc);
 });
 
 // $("#form-guia_ven_obs").on("submit", function(e){

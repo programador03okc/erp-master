@@ -32,7 +32,7 @@ function documentosVer(id){
                     <th>Guía</th>
                     <th>Código</th>
                     <th>PartNumber</th>
-                    <th width="200px">Descripción</th>
+                    <th>Descripción</th>
                     <th>Cantidad</th>
                     <th>Unid</th>
                     <th>Unitario</th>

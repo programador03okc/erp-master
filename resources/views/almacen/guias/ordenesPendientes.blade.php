@@ -107,7 +107,7 @@ Pendientes de Ingreso
                                                 <th>Almacén</th>
                                                 <th>Fecha Ingreso</th>
                                                 <th>Responsable</th>
-                                                <th width="110px"></th>
+                                                <th width="140px"></th>
                                             </tr>
                                         </thead>
                                         <tbody></tbody>

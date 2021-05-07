@@ -89,7 +89,7 @@
                                 <thead>
                                     <tr>
                                         <th>#</th>
-                                        <th>O.C.</th>
+                                        <th>OC/Guía</th>
                                         <th>Código</th>
                                         <th>PartNumber</th>
                                         <th>Descripción</th>

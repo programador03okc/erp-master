@@ -1258,6 +1258,7 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::post('cambio_serie_numero', 'OrdenesPendientesController@cambio_serie_numero')->name('cambio-series');
 				Route::get('verGuiaCompraTransferencia/{id}', 'TransferenciaController@verGuiaCompraTransferencia');
 				Route::get('transferencia/{id}', 'OrdenesPendientesController@transferencia');
+				Route::post('obtenerGuiaSeleccionadas', 'OrdenesPendientesController@obtenerGuiaSeleccionadas');
 
 			});
 

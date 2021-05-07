@@ -54,16 +54,18 @@ function obtenerGuía(id){
 function open_doc_create_seleccionadas(){
     console.log(ingresos_seleccionados);
     var id_ingresos_seleccionadas = [];
+    var id_prov = null;
     var prov = null;
     var emp = null;
     var dif_prov = 0;
     var dif_emp = 0;
 
     ingresos_seleccionados.forEach(element => {
-        id_ingresos_seleccionadas.push(element.id_mov_alm);
+        id_ingresos_seleccionadas.push(element.id_guia_com);
 
         if (prov == null){
             prov = element.razon_social;
+            id_prov = element.id_proveedor;
         } 
         else if (element.razon_social !== prov){
             dif_prov++;
@@ -96,25 +98,27 @@ function open_doc_create_seleccionadas(){
         $('[name=simbolo]').val("S/");
         
         totales.simbolo = "S/";
-        // obtenerGuíaSeleccionadas(id_ingresos_seleccionadas, prov);
+        obtenerGuíaSeleccionadas(id_ingresos_seleccionadas, prov, id_prov);
     }
 }
 
-function obtenerGuíaSeleccionadas(id_ingresos_seleccionadas, prov){
+function obtenerGuíaSeleccionadas(id_ingresos_seleccionadas, prov, id_prov){
+    var data = 'id_ingresos_seleccionados='+JSON.stringify(id_ingresos_seleccionadas);
     $.ajax({
-        type: 'GET',
-        url: 'obtenerGuiaSeleccionadas/'+id_ingresos_seleccionadas,
+        type: 'POST',
+        url: 'obtenerGuiaSeleccionadas',
+        data: data,
         dataType: 'JSON',
         success: function(response){
             console.log(response);
 
-            if (response['guia'] !== null){
-                $('[name=id_proveedor]').val(response['guia'].id_proveedor);
+            // if (response['guia'] !== null){
+                $('[name=id_proveedor]').val(id_prov);
                 $('[name=proveedor_razon_social]').val(prov);
-                // $('[name=id_guia]').val(response['guia'].id_guia);
-                // $('[name=serie_guia]').val(response['guia'].serie);
-                // $('[name=numero_guia]').val(response['guia'].numero);
-            }
+                $('[name=id_guia]').val('');
+                $('[name=serie_guia]').val('');
+                $('[name=numero_guia]').val('');
+            // }
             
             if (response['detalle'].length > 0){
                 listaItems = response['detalle'];
@@ -149,7 +153,7 @@ function mostrarListaItems(){
 
         html+=`<tr>
         <td>${i}</td>
-        <td>${element.cod_orden!==null?element.cod_orden:''}</td>
+        <td>${(element.serie!==undefined ? (element.serie+'-'+element.numero) : (element.cod_orden!==null?element.cod_orden:''))}</td>
         <td>${element.codigo!==null?element.codigo:''}</td>
         <td>${element.part_number!==null?element.part_number:''}</td>
         <td>${element.descripcion}</td>

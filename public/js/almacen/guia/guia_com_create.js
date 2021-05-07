@@ -271,7 +271,6 @@ function mostrar_ordenes_seleccionadas(){
 
 $("#form-guia_create").on("submit", function(e){
     console.log('submit');
-    alert("guardado");
     //$filaActual.find('td:eq(1)').html('Nuevo dato');
     //$('#ordenesPendientes').DataTable().row($filaActual).remove().draw();
     // $filaActual.remove();

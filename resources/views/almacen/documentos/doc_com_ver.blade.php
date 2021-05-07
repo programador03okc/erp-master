@@ -1,5 +1,5 @@
 <div class="modal fade" tabindex="-1" role="dialog" id="modal-doc_ver">
-    <div class="modal-dialog"  style="width:900px;">
+    <div class="modal-dialog"  style="width:1100px;">
         <div class="modal-content">
             <form id="form-doc_ver">
                 <div class="modal-header">

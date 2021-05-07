@@ -20,143 +20,147 @@ Gestión de Transferencias
 @endsection
 
 @section('content')
-<div class="page-main" type="transferencias">
-    <div class="col-md-12" id="tab-transferencias"  style="padding-left:0px;padding-right:0px;">
-        <ul class="nav nav-tabs" id="myTab">
-            <li class="active"><a type="#porEnviar">Transferencias Pendientes de Enviar</a></li>
-            <li class=""><a type="#pendientes">Transferencias Pendientes de Recibir</a></li>
-            <li class=""><a type="#recibidas">Transferencias Recibidas</a></li>
-        </ul>
-        <div class="content-tabs">
-            <section id="porEnviar" >
-                <form id="form-porEnviar" type="register">
-                    <div class="row">
-                        <div class="col-md-2"><label>Almacén Origen:</label></div>
-                        <div class="col-md-4">
-                            <!-- <label>Almacén Origen:</label> -->
-                            <select class="form-control" name="id_almacen_origen_lista" onChange="listarTransferenciasPorEnviar();">
-                                <option value="0" selected>Mostrar Todos</option>
-                                @foreach ($almacenes as $alm)
-                                    <option value="{{$alm->id_almacen}}">{{$alm->descripcion}}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="col-md-6 right">
-                            <!-- <button type="button" class="btn btn-info" data-toggle="tooltip" 
-                                data-placement="bottom" title="Nueva Transferencia" 
-                                onClick="guia_compraModal();">Nueva Transferencia con Guía</button> -->
-                            <button type="button" class="btn btn-success" data-toggle="tooltip" 
-                                data-placement="bottom" title="Nueva Transferencia" 
-                                onClick="modalRequerimiento();">Nueva Transferencia con Req.</button>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12">
-                            <table class="mytable table table-condensed table-bordered table-okc-view" 
-                                id="listaTransferenciasPorEnviar">
-                                <thead>
-                                    <tr>
-                                        <th hidden></th>
-                                        <th></th>
-                                        <th>Código</th>
-                                        <th>Fecha Registro</th>
-                                        <th>Almacén Origen</th>
-                                        <th>Almacén Destino</th>
-                                        <th>Codigo Req.</th>
-                                        <th>Concepto</th>
-                                        <th>Sede que Solicita</th>
-                                        <th>Elaborado Por</th>
-                                        <th width="10%">Acción</th>
-                                    </tr>
-                                </thead>
-                                <tbody></tbody>
-                            </table>
-                            @if(Auth::user()->tieneAccion(91))
-                            <button type="button" class="btn btn-success" data-toggle="tooltip" data-placement="bottom" 
-                            title="Crear Guía / Salida" onClick="open_guia_transferencia_create();">Generar Guía</button>
-                            @endif
-                        </div>
-                    </div>
-                </form>
-            </section>
-            <section id="pendientes" hidden>
-                <form id="form-pendientes" type="register">
-                    <div class="row">
-                        <div class="col-md-2"><label>Almacén Destino:</label></div>
-                        <div class="col-md-4">
-                            <!-- <h5>Almacén Destino</h5> -->
-                            <select class="form-control" name="id_almacen_destino_lista" onChange="listarTransferenciasPendientes();">
-                                <option value="0" selected>Elija una opción</option>
-                                @foreach ($almacenes as $alm)
-                                    <option value="{{$alm->id_almacen}}" >{{$alm->descripcion}}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12">
-                            <table class="mytable table table-condensed table-bordered table-okc-view" 
-                                id="listaTransferenciasPorRecibir">
-                                <thead>
-                                    <tr>
-                                        <th hidden></th>
-                                        <th>Fecha Guía</th>
-                                        <th>Guía Venta</th>
-                                        <th>Almacén Origen</th>
-                                        <th>Almacén Destino</th>
-                                        <th>Responsable Origen</th>
-                                        <th>Responsable Destino</th>
-                                        <th>Estado</th>
-                                        <th width="10%">Acción</th>
-                                    </tr>
-                                </thead>
-                                <tbody></tbody>
-                            </table>
-                        </div>
-                    </div>
-                </form>
-            </section>
-            <section id="recibidas" hidden>
-                <form id="form-recibidas" type="register">
-                    <div class="row">
-                        <div class="col-md-2"><label>Almacén Destino:</label></div>
-                        <div class="col-md-4">
-                            <!-- <h5>Almacén Destino</h5> -->
-                            <select class="form-control" name="id_almacen_dest_recibida" onChange="listarTransferenciasRecibidas();">
-                                <option value="0" selected>Elija una opción</option>
-                                @foreach ($almacenes as $alm)
-                                    <option value="{{$alm->id_almacen}}" >{{$alm->descripcion}}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12">
-                            <table class="mytable table table-condensed table-bordered table-okc-view" 
-                                id="listaTransferenciasRecibidas">
-                                <thead>
-                                    <tr>
-                                        <th hidden></th>
-                                        <th>Fecha Trans.</th>
-                                        <th>Nro.Trans.</th>
-                                        <th>Guía Venta</th>
-                                        <th>Guía Compra</th>
-                                        <th>Almacén Origen</th>
-                                        <th>Almacén Destino</th>
-                                        <th>Responsable Origen</th>
-                                        <th>Responsable Destino</th>
-                                        <th>Estado</th>
-                                        <th>Req.</th>
-                                        <th>Concepto</th>
-                                        <th width="7%">Acción</th>
-                                    </tr>
-                                </thead>
-                                <tbody></tbody>
-                            </table>
-                        </div>
-                    </div>
-                </form>
-            </section>
+<div class="box box-solid">
+    <div class="box-body">
+        <div class="page-main" type="transferencias">
+            <div class="col-md-12" id="tab-transferencias"  style="padding-left:0px;padding-right:0px;">
+                <ul class="nav nav-tabs" id="myTab">
+                    <li class="active"><a type="#porEnviar">Transferencias Pendientes de Enviar</a></li>
+                    <li class=""><a type="#pendientes">Transferencias Pendientes de Recibir</a></li>
+                    <li class=""><a type="#recibidas">Transferencias Recibidas</a></li>
+                </ul>
+                <div class="content-tabs">
+                    <section id="porEnviar" >
+                        <form id="form-porEnviar" type="register">
+                            <div class="row">
+                                <div class="col-md-2"><label>Almacén Origen:</label></div>
+                                <div class="col-md-4">
+                                    <!-- <label>Almacén Origen:</label> -->
+                                    <select class="form-control" name="id_almacen_origen_lista" onChange="listarTransferenciasPorEnviar();">
+                                        <option value="0" selected>Mostrar Todos</option>
+                                        @foreach ($almacenes as $alm)
+                                            <option value="{{$alm->id_almacen}}">{{$alm->descripcion}}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="col-md-6 right">
+                                    <!-- <button type="button" class="btn btn-info" data-toggle="tooltip" 
+                                        data-placement="bottom" title="Nueva Transferencia" 
+                                        onClick="guia_compraModal();">Nueva Transferencia con Guía</button> -->
+                                    <button type="button" class="btn btn-success" data-toggle="tooltip" 
+                                        data-placement="bottom" title="Nueva Transferencia" 
+                                        onClick="modalRequerimiento();">Nueva Transferencia con Req.</button>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <table class="mytable table table-condensed table-bordered table-okc-view" 
+                                        id="listaTransferenciasPorEnviar">
+                                        <thead>
+                                            <tr>
+                                                <th hidden></th>
+                                                <th></th>
+                                                <th>Código</th>
+                                                <th>Fecha Registro</th>
+                                                <th>Almacén Origen</th>
+                                                <th>Almacén Destino</th>
+                                                <th>Codigo Req.</th>
+                                                <th>Concepto</th>
+                                                <th>Sede que Solicita</th>
+                                                <th>Elaborado Por</th>
+                                                <th width="10%">Acción</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody></tbody>
+                                    </table>
+                                    @if(Auth::user()->tieneAccion(91))
+                                    <button type="button" class="btn btn-success" data-toggle="tooltip" data-placement="bottom" 
+                                    title="Crear Guía / Salida" onClick="open_guia_transferencia_create();">Generar Guía</button>
+                                    @endif
+                                </div>
+                            </div>
+                        </form>
+                    </section>
+                    <section id="pendientes" hidden>
+                        <form id="form-pendientes" type="register">
+                            <div class="row">
+                                <div class="col-md-2"><label>Almacén Destino:</label></div>
+                                <div class="col-md-4">
+                                    <!-- <h5>Almacén Destino</h5> -->
+                                    <select class="form-control" name="id_almacen_destino_lista" onChange="listarTransferenciasPendientes();">
+                                        <option value="0" selected>Elija una opción</option>
+                                        @foreach ($almacenes as $alm)
+                                            <option value="{{$alm->id_almacen}}" >{{$alm->descripcion}}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <table class="mytable table table-condensed table-bordered table-okc-view" 
+                                        id="listaTransferenciasPorRecibir">
+                                        <thead>
+                                            <tr>
+                                                <th hidden></th>
+                                                <th>Fecha Guía</th>
+                                                <th>Guía Venta</th>
+                                                <th>Almacén Origen</th>
+                                                <th>Almacén Destino</th>
+                                                <th>Responsable Origen</th>
+                                                <th>Responsable Destino</th>
+                                                <th>Estado</th>
+                                                <th width="10%">Acción</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </form>
+                    </section>
+                    <section id="recibidas" hidden>
+                        <form id="form-recibidas" type="register">
+                            <div class="row">
+                                <div class="col-md-2"><label>Almacén Destino:</label></div>
+                                <div class="col-md-4">
+                                    <!-- <h5>Almacén Destino</h5> -->
+                                    <select class="form-control" name="id_almacen_dest_recibida" onChange="listarTransferenciasRecibidas();">
+                                        <option value="0" selected>Elija una opción</option>
+                                        @foreach ($almacenes as $alm)
+                                            <option value="{{$alm->id_almacen}}" >{{$alm->descripcion}}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <table class="mytable table table-condensed table-bordered table-okc-view" 
+                                        id="listaTransferenciasRecibidas">
+                                        <thead>
+                                            <tr>
+                                                <th hidden></th>
+                                                <th>Fecha Trans.</th>
+                                                <th>Nro.Trans.</th>
+                                                <th>Guía Venta</th>
+                                                <th>Guía Compra</th>
+                                                <th>Almacén Origen</th>
+                                                <th>Almacén Destino</th>
+                                                <th>Responsable Origen</th>
+                                                <th>Responsable Destino</th>
+                                                <th>Estado</th>
+                                                <th>Req.</th>
+                                                <th>Concepto</th>
+                                                <th width="7%">Acción</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </form>
+                    </section>
+                </div>
+            </div>
         </div>
     </div>
 </div>
