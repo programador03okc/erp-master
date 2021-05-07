@@ -297,10 +297,9 @@ function guardar_doc_create(data){
             console.log('response'+response);
             if (response > 0){
                 alert('Comprobante registrado con éxito');
-                // localStorage.setItem("id_doc",response);
                 $('#modal-doc_create').modal('hide');
-                // location.assign("doc_compra");
-                listarIngresos();
+                // listarIngresos();
+                $('#listaIngresosAlmacen').DataTable().ajax.reload();
             }
         }
     }).fail( function( jqXHR, textStatus, errorThrown ){

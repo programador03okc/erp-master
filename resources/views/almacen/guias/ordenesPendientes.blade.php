@@ -94,7 +94,7 @@ Pendientes de Ingreso
                         <form id="form-ingresadas" type="register">
                             <div class="row">
                                 <div class="col-md-12">
-                                    <table class="mytable table table-condensed table-bordered table-okc-view" id="listaIngresos">
+                                    <table class="mytable table table-condensed table-bordered table-okc-view" id="listaIngresosAlmacen">
                                         <thead>
                                             <tr>
                                                 <th hidden></th>

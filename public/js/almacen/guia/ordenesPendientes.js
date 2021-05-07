@@ -239,7 +239,7 @@ let ingresos_seleccionados = [];
 
 function listarIngresos(){
     var vardataTables = funcDatatables();
-    $('#listaIngresos').DataTable({
+    $('#listaIngresosAlmacen').DataTable({
         'dom': vardataTables[1],
         // 'buttons': vardataTables[2],
         'language' : vardataTables[0],
@@ -270,7 +270,7 @@ function listarIngresos(){
             {'data': 'nombre_corto', 'name': 'sis_usua.nombre_corto'}
         ],
         'drawCallback': function(){
-            $('#listaIngresos tbody tr td input[type="checkbox"]').iCheck({
+            $('#listaIngresosAlmacen tbody tr td input[type="checkbox"]').iCheck({
                checkboxClass: 'icheckbox_flat-blue'
             });
          },
@@ -337,11 +337,11 @@ function listarIngresos(){
         "order": [[ 0, "desc" ]],
     });
 
-    $($('#listaIngresos').DataTable().table().container()).on('ifChanged', '.dt-checkboxes', function(event){
-        var cell = $('#listaIngresos').DataTable().cell($(this).closest('td'));
+    $($('#listaIngresosAlmacen').DataTable().table().container()).on('ifChanged', '.dt-checkboxes', function(event){
+        var cell = $('#listaIngresosAlmacen').DataTable().cell($(this).closest('td'));
         cell.checkboxes.select(this.checked);
     
-        var data = $('#listaIngresos').DataTable().row($(this).parents("tr")).data();
+        var data = $('#listaIngresosAlmacen').DataTable().row($(this).parents("tr")).data();
         console.log(this.checked);
     
         if (data !== null && data !== undefined){
@@ -360,13 +360,13 @@ function listarIngresos(){
     });
 }
 
-$('#listaIngresos tbody').on("click","button.transferencia", function(){
+$('#listaIngresosAlmacen tbody').on("click","button.transferencia", function(){
     var id_guia_com = $(this).data('guia');
     // console.log(data);
     ver_transferencia(id_guia_com);
 });
 
-$('#listaIngresos tbody').on("click","button.detalle", function(){
+$('#listaIngresosAlmacen tbody').on("click","button.detalle", function(){
     var id_guia_com = $(this).data('id');
     var codigo = $(this).data('cod');
     // console.log(data);
@@ -378,7 +378,7 @@ function abrir_ingreso(id_mov_alm){
     window.open('imprimir_ingreso/'+id);
 }
 
-$('#listaIngresos tbody').on("click","button.anular", function(){
+$('#listaIngresosAlmacen tbody').on("click","button.anular", function(){
     var id_mov_alm = $(this).data('id');
     var id_guia = $(this).data('guia');
     var id_oc = $(this).data('oc');
@@ -395,7 +395,7 @@ $('#listaIngresos tbody').on("click","button.anular", function(){
     $("#submitGuiaObs").removeAttr("disabled");
 });
 
-$('#listaIngresos tbody').on("click","button.cambio", function(){
+$('#listaIngresosAlmacen tbody').on("click","button.cambio", function(){
     var id_mov_alm = $(this).data('id');
     var id_guia = $(this).data('guia');
 
@@ -411,7 +411,7 @@ $('#listaIngresos tbody').on("click","button.cambio", function(){
     $("#submit_guia_com_cambio").removeAttr("disabled");
 });
 
-$('#listaIngresos tbody').on("click","button.anular_sal", function(){
+$('#listaIngresosAlmacen tbody').on("click","button.anular_sal", function(){
     var id_mov_alm = $(this).data('id');
     var id_guia = $(this).data('guia');
     var id_trans = $(this).data('trans');
@@ -428,12 +428,12 @@ $('#listaIngresos tbody').on("click","button.anular_sal", function(){
     $("#submitGuiaVenObs").removeAttr("disabled");
 });
 
-$('#listaIngresos tbody').on("click","button.doc", function(){
+$('#listaIngresosAlmacen tbody').on("click","button.doc", function(){
     var id_guia = $(this).data('guia');
     open_doc_create(id_guia);
 });
 
-$('#listaIngresos tbody').on("click","button.ver_doc", function(){
+$('#listaIngresosAlmacen tbody').on("click","button.ver_doc", function(){
     var id_doc = $(this).data('doc');
     documentosVer(id_doc);
 });
@@ -587,7 +587,7 @@ function anular_ingreso(data){
             } else {
                 alert('Ingreso Almacén anulado con éxito');
                 $('#modal-guia_com_obs').modal('hide');
-                $('#listaIngresos').DataTable().ajax.reload();
+                $('#listaIngresosAlmacen').DataTable().ajax.reload();
             }
         }
     }).fail( function( jqXHR, textStatus, errorThrown ){
