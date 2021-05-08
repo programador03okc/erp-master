@@ -765,15 +765,10 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::post('detalle-requerimiento-orden', 'OrdenController@get_detalle_requerimiento_orden')->name('detalle-requerimiento-orden'); 
 					Route::post('guardar', 'OrdenController@guardar_orden_por_requerimiento')->name('guardar');
 					Route::post('actualizar', 'OrdenController@actualizar_orden_por_requerimiento')->name('actualizar');
-					Route::put('revertir/{id_orden?}', 'LogisticaController@revertir_orden_requerimiento')->name('revertir');
 					Route::get('mostrar_proveedores', 'LogisticaController@mostrar_proveedores');
 					Route::post('guardar_proveedor', 'LogisticaController@guardar_proveedor');
-					Route::get	('ver-orden/{id_orden?}', 'OrdenController@ver_orden');
-					Route::post('actualizar-estado', 'OrdenController@update_estado_orden')->name('actualizar-estado-orden'); 
-					Route::post('actualizar-estado-detalle', 'OrdenController@update_estado_item_orden')->name('actualizar-estado-detalle-orden'); 
 					Route::put('actualizar-estado-detalle-requerimiento/{id_detalle_req?}/{estado?}', 'OrdenController@update_estado_detalle_requerimiento')->name('actualizar-estado-detalle-requerimiento'); 
 					Route::post('guardar-producto', 'AlmacenController@guardar_producto')->name('guardar-producto');
-					Route::get('documentos-vinculados/{id_orden?}', 'OrdenController@documentosVinculadosOrden')->name('documentos-vinculados');
 					Route::post('lista_items-cuadro-costos-por-requerimiento', 'OrdenController@get_lista_items_cuadro_costos_por_id_requerimiento')->name('lista_items-cuadro-costos-por-requerimiento');
 					Route::post('lista_items-cuadro-costos-por-requerimiento-pendiente-compra', 'OrdenController@get_lista_items_cuadro_costos_por_id_requerimiento_pendiente_compra')->name('lista_items-cuadro-costos-por-requerimiento-pendiente-compra');
 					Route::post('buscar-item-catalogo', 'OrdenController@buscarItemCatalogo')->name('buscar-item-catalogo');
@@ -797,15 +792,23 @@ Route::group(['middleware' => ['auth']], function () {
 				});
 				Route::group(['as' => 'lista-ordenes.', 'prefix' => 'por-requerimiento'], function(){
 					Route::get('vista_listar_ordenes', 'OrdenController@view_listar_ordenes')->name('index');
-					Route::get('listar-ordenes-elaboradas', 'OrdenController@listarOrdenesElaboradas');
-					Route::get('detalleOrden/{id_orden}', 'OrdenController@detalleOrden');
+					Route::get('listar-ordenes', 'OrdenController@listarOrdenes');
+					Route::get('detalle-orden/{id_orden}', 'OrdenController@detalleOrden');
 					// Route::get('generar_orden_pdf/{id}', 'OrdenController@generar_orden_pdf'); // PDF
 					Route::get('verSession', 'LogisticaController@verSession'); 
 					Route::get('explorar-orden/{id_orden}', 'LogisticaController@explorar_orden'); 
-					Route::put('guardar_aprobacion_orden/', 'LogisticaController@guardar_aprobacion_orden'); 
-					Route::post('guardar_pago_orden', 'LogisticaController@guardar_pago_orden');
-					Route::get('eliminar_pago/{id_pago}', 'LogisticaController@eliminar_pago'); 
-	
+					// Route::put('guardar_aprobacion_orden/', 'LogisticaController@guardar_aprobacion_orden'); 
+					// Route::post('guardar_pago_orden', 'LogisticaController@guardar_pago_orden');
+					// Route::get('eliminar_pago/{id_pago}', 'LogisticaController@eliminar_pago'); 
+
+					// ruta de lista de vista a nivel de item
+					Route::get('listar-detalle-orden', 'OrdenController@listarDetalleOrden')->name('ordenes-en-proceso'); 
+					Route::get	('ver-orden/{id_orden?}', 'OrdenController@ver_orden');
+					Route::post('actualizar-estado', 'OrdenController@update_estado_orden')->name('actualizar-estado-orden'); 
+					Route::post('actualizar-estado-detalle', 'OrdenController@update_estado_item_orden')->name('actualizar-estado-detalle-orden'); 
+					Route::put('revertir/{id_orden?}', 'LogisticaController@revertir_orden_requerimiento')->name('revertir');
+					Route::get('documentos-vinculados/{id_orden?}', 'OrdenController@documentosVinculadosOrden')->name('documentos-vinculados');
+
 					});
 			});
 

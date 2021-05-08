@@ -559,15 +559,4 @@ function eliminar_pago(e){
 
 }
 
-function viewGroupInfo(e){
-    data= JSON.parse(e.target.dataset.groupInfo);
-    // console.log(data);
-    $('#modal-info-grupo').modal({
-        show: true
-    });
-
-    document.getElementById('info-numero_orden').innerHTML= data[0].codigo_orden;
-    document.getElementById('info-numero_requerimiento').innerHTML= data.map((value)=>{return value.codigo_requerimiento});
-    document.getElementById('info-nombre_grupo').innerHTML= data.map((value)=>{return value.nombre_grupo});
-    document.getElementById('info-nombre_area').innerHTML= data.map((value)=>{ return value.nombre_area});
-}
+ 

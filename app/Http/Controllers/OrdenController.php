@@ -423,7 +423,7 @@ class OrdenController extends Controller
         return response()->json($output);
     }
 
-    public function lista_items_ordenes_en_proceso(){
+    public function listarDetalleOrden(){
         $orden_list=[];
         $detalle_orden_list=[];
 
@@ -1197,7 +1197,7 @@ class OrdenController extends Controller
         return $val;
     }
 
-    public function listarOrdenesElaboradas(){
+    public function listarOrdenes(){
         $ord_compra = DB::table('logistica.log_ord_compra')
         ->select(
             'log_ord_compra.*',
@@ -1242,11 +1242,11 @@ class OrdenController extends Controller
         ->orderBy('log_ord_compra.fecha','desc')
         ->get();
         
-        $data=[];
+        $data_orden=[];
         if(count($ord_compra)>0){
             foreach($ord_compra as $element){
 
-                $data[]=[
+                $data_orden[]=[
                     'id_orden_compra'=> $element->id_orden_compra,
                     'id_tp_documento'=> $element->id_tp_documento,
                     'fecha' => date_format(date_create($element->fecha),'Y-m-d'), 
@@ -1268,11 +1268,50 @@ class OrdenController extends Controller
                     'estado_doc'=>$element->estado_doc,
                     'detalle_pago'=> $element->detalle_pago, 
                     'archivo_adjunto'=> $element->archivo_adjunto,
+                    'codigo_requerimiento'=> []
                     
                 ];
             }
         }
-        $output['data'] = $data;
+
+        $detalle_orden = DB::table('logistica.log_ord_compra')
+        ->select(
+            'log_ord_compra.id_orden_compra',
+            'log_det_ord_compra.id_detalle_orden',
+            'alm_req.codigo as codigo_requerimiento'
+            )
+        ->leftJoin('logistica.log_det_ord_compra', 'log_det_ord_compra.id_orden_compra', '=', 'log_ord_compra.id_orden_compra')
+        ->leftJoin('almacen.alm_det_req', 'alm_det_req.id_detalle_requerimiento', '=', 'log_det_ord_compra.id_detalle_requerimiento')
+        ->leftJoin('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'alm_det_req.id_requerimiento')
+        ->where([['log_ord_compra.estado', '!=', 7]])
+        ->orderBy('log_ord_compra.fecha','desc')
+        ->get();
+
+        $data_detalle_orden=[];
+        if(count($ord_compra)>0){
+            foreach($detalle_orden as $element){
+
+                $data_detalle_orden[]=[
+                    'id_orden_compra'=> $element->id_orden_compra,
+                    'id_detalle_orden'=> $element->id_detalle_orden,
+                    'codigo_requerimiento'=> $element->codigo_requerimiento
+                ];
+            }
+        }
+
+      
+
+        foreach ($data_orden as $ordenKey => $ordenValue) {
+            foreach ($data_detalle_orden as $detalleOrdnKey => $detalleOrdenValue) {
+                if($ordenValue['id_orden_compra'] == $detalleOrdenValue['id_orden_compra']){
+                    if(in_array($detalleOrdenValue['codigo_requerimiento'],$data_orden[$ordenKey]['codigo_requerimiento'])==false){
+                        $data_orden[$ordenKey]['codigo_requerimiento'][]=$detalleOrdenValue['codigo_requerimiento'];
+                    }
+                }
+            }
+        }
+
+        $output['data'] = $data_orden;
         return $output;
     }
 
