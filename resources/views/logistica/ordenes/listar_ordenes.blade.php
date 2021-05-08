@@ -21,14 +21,31 @@
     <legend class="mylegend">
     </legend>
     <div class="row">
+        <div class="col-md-1">
+            <div class="input-group">
+                    <button type="button" class="btn btn-default" id="btnFiltroTablaListaOrdenes" title="Filtro" onclick="listaOrdenView.filtroTablaListaOrdenes();"><i class="fas fa-filter"></i> Filtros</button>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="input-group">
+                <div class="input-group-btn">
+                    <button type="button" class="btn btn-default" id="btnTipoVistaPorCabecera" title="Ver tabla a nivel de cabecera" onclick="listaOrdenView.tipoVistaPorCabecera();"><i class="fas fa-columns"></i> Vista a nivel de Cabecera</button>
+                    <button type="button" class="btn btn-default" id="btnTipoVistaPorItemPara" title="Ver tabla a nivel de Items" onclick="listaOrdenView.tipoVistaPorItem();"><i class="fas fa-table"></i> Vista a nivel de Item's</button>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+
+    <div class="row" id="contenedor-tabla-nivel-cabecera">
         <div class="col-md-12">
-            <table class="mytable table table-condensed table-bordered table-okc-view" 
-                id="listaOrdenes">
+            <table class="mytable table table-condensed table-bordered table-okc-view" id="listaOrdenes" style="font-size: 10px;">
                 <thead>
                     <tr>
                         <th hidden></th>
-                        <th>Fecha Em.</th>
                         <th>Nro.Orden</th>
+                        <th >Req./Cuadro Comp.</th>
+                        <th>Fecha Em.</th>
                         <th>Empresa / Sede</th>
                         <th>Proveedor</th>
                         <th>Mnd</th>
@@ -44,54 +61,48 @@
             </table>
         </div>
     </div>
-</div>
 
-<div class="modal fade" tabindex="-1" role="dialog" id="modal-info-grupo">
-    <div class="modal-dialog" style="width: 30%;">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="close"><span aria-hidden="true">&times;</span></button>
-                <h3 class="modal-title">Info</h3>
-            </div>
-            <div class="modal-body">
-                <div class="row">
-                    <div class="col-10">
-                        <table class="table table-bordered table-condensed">
-                        <tr>
-                            <th>Orden</th>
-                            <td id="info-numero_orden"></td>
-                        </tr>
-                        <tr>
-                            <th>Requerimiento</th>
-                            <td id="info-numero_requerimiento"></td>
-
-                        </tr>
-                        <tr>
-                            <th>Grupo</th>
-                            <td id="info-nombre_grupo"></td>
-
-                        </tr>
-                            <th>Area</th>
-                            <td id="info-nombre_area"></td>
-                        </tr>
-                        
-                        </table>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <!-- <label style="display: none;" id="id_detalle_orden"></label>
-                <label style="display: none;" id="id_val_cot"></label>
-                <label style="display: none;" id="new_id_item"></label> -->
-                <!-- <button class="btn btn-sm btn-primary" onClick="actualizarCodigoItem();">Actualizar</button> -->
-            </div>
+    <div class="row" id="contenedor-tabla-nivel-item">
+        <div class="col-md-12">
+            <table class="mytable table table-condensed table-bordered table-okc-view" id="listaDetalleOrden" style="font-size: 10px;">
+                <thead>
+                    <tr>
+                    <th >OC</th>
+                    <th >Req./Cuadro Comp.</th>
+                    <th >OC Softlink</th>
+                    <th >OCAM</th>
+                    <th >Cliente</th>
+                    <th >Mayorista</th>
+                    <th >Marca</th>
+                    <th >Categoría</th>
+                    <th >Part Number</th>
+                    <th >Descripción</th>
+                    <th >Fecha Emisión</th>
+                    <th >Plazo Entrega</th>
+                    <th width="20%">ETA</th>
+                    <th >Sede - Empresa</th>
+                    <th >Estado</th>
+                    <th width="10%">ACCIONES</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>    
         </div>
     </div>
 </div>
 
+
+
+@include('logistica.ordenes.modal_filtro_lista_ordenes_elaboradas')
 @include('logistica.ordenes.modal_explorar_orden')
 @include('logistica.ordenes.modal_aprobar_orden')
 @include('logistica.ordenes.registrar_pago')
+
+@include('logistica.ordenes.modal_ver_orden')
+@include('logistica.ordenes.modal_editar_estado_orden')
+@include('logistica.ordenes.modal_editar_estado_detalle_orden')
+@include('logistica.ordenes.modal_documentos_vinculados')
+
 @endsection
 
 @section('scripts')
@@ -99,8 +110,12 @@
     <script src="{{ asset('datatables/DataTables/js/dataTables.bootstrap.min.js') }}"></script>
     <script src="{{ asset('datatables/pdfmake/vfs_fonts.js') }}"></script>
     <script src="{{ asset('datatables/JSZip/jszip.min.js') }}"></script>
-    <script src="{{('/js/logistica/orden/listar_ordenes.js')}}"></script>
-    <script src="{{('/js/logistica/orden/orden_ver_detalle.js')}}"></script>
+    <!-- <script src="{{('/js/logistica/orden/listar_ordenes.js')}}"></script> -->
+    <!-- <script src="{{('/js/logistica/orden/orden_ver_detalle.js')}}"></script> -->
+
+    <script src="{{('/js/logistica/orden/listaOrdenView.js')}}"></script>
+    <script src="{{('/js/logistica/orden/listaOrdenController.js')}}"></script>
+    <script src="{{('/js/logistica/orden/listaOrdenModel.js')}}"></script>
     <script src="{{ asset('template/plugins/moment.min.js') }}"></script>
 
 @endsection

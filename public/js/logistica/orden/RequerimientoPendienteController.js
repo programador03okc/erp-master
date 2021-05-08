@@ -18,32 +18,6 @@ class RequerimientoPendienteCtrl{
         // return ordenesData;
     }
 
-    // lista ordenes en proceso
-    getOrdenesEnProceso(){
-        return requerimientoPendienteModel.getOrdenesEnProceso();
-
-    }
-
-    eliminarAtencionOrdenRequerimiento(obj){
-        return requerimientoPendienteModel.eliminarAtencionOrdenRequerimiento(obj);
-    }
-    listarDocumentosVinculados(id){
-        return requerimientoPendienteModel.listarDocumentosVinculados(id);
-    }
-
-    ver_orden(id){
-        return requerimientoPendienteModel.ver_orden(id);
-    }
-
-    actualizarEstadoOrdenPorRequerimiento(id_orden_compra,id_estado_orden_selected){
-        return requerimientoPendienteModel.actualizarEstadoOrdenPorRequerimiento(id_orden_compra,id_estado_orden_selected);
-
-    }
-    actualizarEstadoDetalleOrdenPorRequerimiento(id_detalle_orden_compra,id_estado_detalle_orden_selected){
-        return requerimientoPendienteModel.actualizarEstadoDetalleOrdenPorRequerimiento(id_detalle_orden_compra,id_estado_detalle_orden_selected);
-
-    }
-
     // filtros
     getDataSelectSede(id_empresa = null){
         return requerimientoPendienteModel.getDataSelectSede(id_empresa);
