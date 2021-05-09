@@ -496,8 +496,7 @@ class OrdenCtrl{
     
                             sessionStorage.removeItem('reqCheckedList');
                             sessionStorage.removeItem('tipoOrden');
-                            window.open("/logistica/gestion-logistica/orden/por-requerimiento/generar-orden-pdf/"+response, '_blank');
-                            // location.href = "/logistica/gestion-logistica/orden/por-requerimiento/index";
+                            window.open("generar-orden-pdf/"+response, '_blank');
     
                         }
                     }

@@ -72,7 +72,7 @@
                         </div>
                         <h5>&nbsp;</h5>
                         <div class="col-md-2" id="group-datos_para_despacho-logo_empresa">
-                                <img id="logo_empresa" src="/images/img-default.jpg" alt=""  style="height: 56px; !important;width: 100%; !important;margin-top: -20px;">
+                                <img id="logo_empresa" src="/images/img-default.jpg" alt=""  style="height:56px;!important;width:100%;!important;margin-top:-20px;">
                         </div>
 
                     </div>
@@ -290,18 +290,16 @@
     
     </form>
 </div>
-@include('logistica.ordenes.modal_catalogo_items')
-
-@include('logistica.ordenes.modal_ordenes_elaboradas')
-@include('logistica.ordenes.modal_proveedor')
+@include('logistica.gestion_logistica.compras.ordenes.elaborar.modal_catalogo_items')
+@include('logistica.gestion_logistica.compras.ordenes.elaborar.modal_ordenes_elaboradas')
+@include('logistica.gestion_logistica.compras.ordenes.elaborar.modal_proveedor')
 @include('logistica.cotizaciones.add_proveedor')
 @include('publico.ubigeoModal')
-@include('logistica.ordenes.modal_contacto_proveedor')
-@include('logistica.ordenes.modal_trabajadores')
-@include('logistica.ordenes.agregar_contacto_proveedor')
+@include('logistica.gestion_logistica.compras.ordenes.elaborar.modal_contacto_proveedor')
+@include('logistica.gestion_logistica.compras.ordenes.elaborar.modal_trabajadores')
+@include('logistica.gestion_logistica.compras.ordenes.elaborar.agregar_contacto_proveedor')
 
-@include('logistica.ordenes.modal_ver_cuadro_costos')
-@include('logistica.ordenes.modal_documentos_vinculados')
+@include('logistica.gestion_logistica.compras.pendientes.modal_ver_cuadro_costos')
 @include('logistica.requerimientos.modal_vincular_item_requerimiento')
 @endsection
 
@@ -339,11 +337,7 @@
 
     $(document).ready(function(){
         seleccionarMenu(window.location);
-        // inicializarModalOrdenRequerimiento(
-        //     "{{route('logistica.gestion-logistica.orden.por-requerimiento.detalle-requerimiento-orden')}}",
-        //     "{{route('logistica.gestion-logistica.orden.por-requerimiento.guardar')}}"
-
-        // );
+ 
     });
     </script>
 @endsection

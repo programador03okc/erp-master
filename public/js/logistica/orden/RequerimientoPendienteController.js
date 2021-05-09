@@ -636,7 +636,7 @@ class RequerimientoPendienteCtrl{
         reqTrueList.push(obj.dataset.idRequerimiento)
         sessionStorage.setItem('reqCheckedList', JSON.stringify(reqTrueList));
         sessionStorage.setItem('tipoOrden', 'COMPRA');
-        let url ="/logistica/gestion-logistica/orden/por-requerimiento/crear";
+        let url ="/logistica/gestion-logistica/compras/ordenes/elaborar/index";
         var win = window.location.replace(url);
     }
     // Crear orden servicio por requerimiento
@@ -644,7 +644,7 @@ class RequerimientoPendienteCtrl{
         reqTrueList.push(obj.dataset.idRequerimiento)
         sessionStorage.setItem('reqCheckedList', JSON.stringify(reqTrueList));
         sessionStorage.setItem('tipoOrden', 'SERVICIO');
-        let url ="/logistica/gestion-logistica/orden/por-requerimiento/crear";
+        let url ="/logistica/gestion-logistica/compras/ordenes/elaborar/index";
         var win = window.location.replace(url);
     }
 

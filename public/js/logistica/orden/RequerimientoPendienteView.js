@@ -1,3 +1,4 @@
+
 // ============== View =========================
 var vardataTables = funcDatatables();
 
@@ -23,6 +24,9 @@ class RequerimientoPendienteView {
             'language' : vardataTables[0],
             'order': [[10, 'desc']],
             'destroy' : true,
+            "bInfo": true,
+            "bLengthChange": false,
+
             'data': data,
             'columns': [
                 { render: function (data, type, row) { 
@@ -30,7 +34,7 @@ class RequerimientoPendienteView {
                     }
                 },
                 { render: function (data, type, row) { 
-                    return `<input type="checkbox" data-id-requerimiento="${row.id_requerimiento}" />`;
+                    return `<div class="text-center"><input type="checkbox" data-id-requerimiento="${row.id_requerimiento}" /></div>`;
                     }
                 },
                 { render: function (data, type, row) { 
@@ -44,7 +48,7 @@ class RequerimientoPendienteView {
                 { render: function (data, type, row) { 
                     let entidad = '';
                     if(row.id_cliente > 0){
-                        entidad = `${row.cliente_razon_social} RUC: ${row.cliente_ruc}`;
+                        entidad = `${row.cliente_razon_social} ${row.cliente_ruc == null ? '' : ('RUC: '+row.cliente_ruc)}`;
                     }else if(row.id_persona >0){
                         entidad = `${row.nombre_persona}`;
                     }   
@@ -106,12 +110,20 @@ class RequerimientoPendienteView {
                     }else{
                         this.classList.add('eventClick');
                     }
-                    let id = this.childNodes[1].childNodes[0].dataset.idRequerimiento
-                    let stateCheck = this.childNodes[1].childNodes[0].checked
+                    let id = this.childNodes[1].childNodes[0].childNodes[0].dataset.idRequerimiento
+                    let stateCheck = this.childNodes[1].childNodes[0].childNodes[0].checked
                     requerimientoPendienteCtrl.controlListCheckReq(id,stateCheck);
-
-
                 }
+
+                let listaRequerimientosPendientes_filter =document.querySelector("div[id='listaRequerimientosPendientes_filter']");
+                var buttonFiler = document.createElement("button");
+                buttonFiler.type = "button";
+                buttonFiler.className = "btn btn-default pull-left";
+                buttonFiler.style = "margin-right: 30px;";
+                buttonFiler.innerHTML="<i class='fas fa-filter'></i> Filtros";
+                buttonFiler.addEventListener('click',requerimientoPendienteView.abrirModalFiltrosRequerimientosPendientes,false);
+                listaRequerimientosPendientes_filter.appendChild(buttonFiler);
+                
             },
             'columnDefs': [{ 'aTargets': [0], 'sClass': 'invisible'}],
             "createdRow": function( row, data, dataIndex){
@@ -128,6 +140,12 @@ class RequerimientoPendienteView {
         });
     }
 
+    abrirModalFiltrosRequerimientosPendientes() {
+        $('#modal-filtro-requerimientos-pendientes').modal({
+            show: true,
+            backdrop: 'static'
+        });
+    }
 
     statusBtnGenerarOrden(){
         let countStateCheckTrue=0;
@@ -228,11 +246,6 @@ class RequerimientoPendienteView {
             "scrollX": true,
             'data':data_detalle_requerimiento,
             'columns': [
-                {'render':
-                    function (data, type, row,meta){
-                        return meta.row +1
-                    }
-                },
                 {'data': 'codigo_item'},
                 {'data': 'part_number'},
                 {'data': 'descripcion'},
@@ -262,8 +275,8 @@ class RequerimientoPendienteView {
                 function (data, type, row, meta){
                     let select= '';
                     if(row.tiene_transformacion == false){
-                        select =`<select class="form-control" data-indice="${meta.row}" onChange="requerimientoPendienteCtrl.updateSelectAlmacenAAtender(this,event)" style="background:lightsteelblue;">`;
-                        select +=`<option value ="0">Sin Selección</option>`;
+                        select =`<select class="form-control" data-indice="${meta.row}" onChange="requerimientoPendienteCtrl.updateSelectAlmacenAAtender(this,event)" >`;
+                        select +=`<option value ="0">Sin selección</option>`;
                         data_almacenes.forEach(element => {
                             if(row.id_almacen_reserva == element.id_almacen){
                                 select +=`<option value="${element.id_almacen}" data-id-empresa="${element.id_empresa}" selected>${element.descripcion}</option> `;
@@ -283,7 +296,7 @@ class RequerimientoPendienteView {
                 function (data, type, row, meta){
                     let action='';
                     if(row.tiene_transformacion == false){
-                        action =`<input type="text" name="cantidad_a_atender" class="form-control" style="width: 70px; background:lightsteelblue;" data-indice="${meta.row}" onkeyup="requerimientoPendienteCtrl.updateInputCantidadAAtender(this,event);" value="${parseInt(row.stock_comprometido?row.stock_comprometido:0)}" />`;
+                        action =`<input type="text" name="cantidad_a_atender" class="form-control" style="width: 70px; data-indice="${meta.row}" onkeyup="requerimientoPendienteCtrl.updateInputCantidadAAtender(this,event);" value="${parseInt(row.stock_comprometido?row.stock_comprometido:0)}" />`;
 
                         requerimientoPendienteView.updateObjCantidadAAtender(meta.row,row.stock_comprometido);
 
@@ -294,10 +307,10 @@ class RequerimientoPendienteView {
             ],
                 "createdRow": function( row, data, dataIndex){
     
-                    $(row.childNodes[7]).css('background-color', '#586c86');  
-                    $(row.childNodes[7]).css('font-weight', 'bold');
-                    $(row.childNodes[8]).css('background-color', '#586c86');  
-                    $(row.childNodes[8]).css('font-weight', 'bold');
+                    // $(row.childNodes[7]).css('background-color', '#586c86');  
+                    // $(row.childNodes[7]).css('font-weight', 'bold');
+                    // $(row.childNodes[8]).css('background-color', '#586c86');  
+                    // $(row.childNodes[8]).css('font-weight', 'bold');
     
             }
             // 'order': [
@@ -626,7 +639,7 @@ class RequerimientoPendienteView {
         $('#ListaModalDetalleCuadroCostos thead th').off('click')
         document.querySelector("table[id='ListaModalDetalleCuadroCostos']").tHead.style.fontSize = '11px',
             document.querySelector("table[id='ListaModalDetalleCuadroCostos']").tBodies[0].style.fontSize = '11px';
-        dataTableListaModalDetalleCuadroCostos.buttons().destroy();
+        // dataTableListaModalDetalleCuadroCostos.buttons().destroy();
         document.querySelector("table[id='ListaModalDetalleCuadroCostos'] thead").style.backgroundColor = "#5d4d6d";
         $('#ListaModalDetalleCuadroCostos tr').css('cursor', 'default');
     
@@ -741,7 +754,7 @@ class RequerimientoPendienteView {
     
         document.querySelector("table[id='listaModalVerCuadroCostos']").tHead.style.fontSize = '11px',
             document.querySelector("table[id='listaModalVerCuadroCostos']").tBodies[0].style.fontSize = '11px';
-        dataTablelistaModalVerCuadroCostos.buttons().destroy();
+        // dataTablelistaModalVerCuadroCostos.buttons().destroy();
         document.querySelector("table[id='listaModalVerCuadroCostos'] thead").style.backgroundColor = "#5d4d6d";
         $('#listaModalVerCuadroCostos tr').css('cursor', 'default');
     }

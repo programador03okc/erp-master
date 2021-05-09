@@ -5,14 +5,15 @@
 @endsection
 
 @section('cabecera')
-    Lista de Ordenes
+    Listado de Ordenes
 @endsection
 
 @section('breadcrumb')
 <ol class="breadcrumb">
-    <li><a href="{{route('logistica.index')}}"><i class="fas fa-tachometer-alt"></i> Logística y Almacenes</a></li>
+    <li><a href="{{route('logistica.index')}}"><i class="fas fa-tachometer-alt"></i> Logística</a></li>
+    <li>Compras</li>
     <li>Ordenes</li>
-    <li class="active">@yield('cabecera')</li>
+    <li class="active">Listado</li>
 </ol>
 @endsection
 
@@ -93,15 +94,14 @@
 
 
 
-@include('logistica.ordenes.modal_filtro_lista_ordenes_elaboradas')
-@include('logistica.ordenes.modal_explorar_orden')
-@include('logistica.ordenes.modal_aprobar_orden')
-@include('logistica.ordenes.registrar_pago')
+@include('logistica.gestion_logistica.compras.ordenes.listado.modal_filtro_lista_ordenes_elaboradas')
+@include('logistica.gestion_logistica.compras.ordenes.listado.modal_aprobar_orden')
+@include('logistica.gestion_logistica.compras.ordenes.listado.registrar_pago')
 
-@include('logistica.ordenes.modal_ver_orden')
-@include('logistica.ordenes.modal_editar_estado_orden')
-@include('logistica.ordenes.modal_editar_estado_detalle_orden')
-@include('logistica.ordenes.modal_documentos_vinculados')
+@include('logistica.gestion_logistica.compras.ordenes.listado.modal_ver_orden')
+@include('logistica.gestion_logistica.compras.ordenes.listado.modal_editar_estado_orden')
+@include('logistica.gestion_logistica.compras.ordenes.listado.modal_editar_estado_detalle_orden')
+@include('logistica.gestion_logistica.compras.ordenes.listado.modal_documentos_vinculados')
 
 @endsection
 

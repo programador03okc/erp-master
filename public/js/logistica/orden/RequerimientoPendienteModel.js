@@ -88,7 +88,7 @@ class RequerimientoPendienteModel {
             return new Promise(function (resolve, reject) {
                 $.ajax({
                     type: 'GET',
-                    url:  `/logistica/gestion-logistica/orden/por-requerimiento/listar-almacenes`,
+                    url:  `listar-almacenes`,
                     dataType: 'JSON',
                     success(response) {
                         resolve(response) // Resolve promise and go to then() 

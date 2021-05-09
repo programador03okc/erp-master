@@ -1,6 +1,6 @@
 @section('sidebar')
 <ul class="sidebar-menu" data-widget="tree">
-    <li><a href="{{route('logistica.index')}}"><i class="fas fa-tachometer-alt"></i> <span>Logística y Almacenes</span></a></li>
+    <li><a href="{{route('logistica.index')}}"><i class="fas fa-tachometer-alt"></i> <span>Logística</span></a></li>
     @if(Auth::user()->tieneSubModulo(23))
     <li class=" treeview ">
         <a href="#">
@@ -30,20 +30,11 @@
         </a>
         <ul class="treeview-menu">
             @if(Auth::user()->tieneSubModulo(25))
-            <li class="treeview">
-                <a href="#"><i class="fas fa-file-invoice"></i> Requerimientos
-                    <span class="pull-right-container">
-                    <i class="fa fa-angle-left pull-right"></i>
-                    </span>
-                </a>
-                <ul class="treeview-menu" >
                     @if(Auth::user()->tieneAplicacion(108))
-                    <li><a href="{{route('logistica.gestion-logistica.orden.por-requerimiento.index')}}"><i class="far fa-circle fa-xs"></i> Pendientes</a></li>
+                    <li><a href="{{route('logistica.gestion-logistica.compras.pendientes.index')}}"><i class="far fa-circle fa-xs"></i> Pendientes</a></li>
                     @endif
-                </ul>
-            </li>
             @endif
-            @if(Auth::user()->tieneSubModulo(24))
+            <!-- @if(Auth::user()->tieneSubModulo(24))
             <li class="treeview" >
                 <a href="#"><i class="fas fa-file-invoice-dollar"></i> Cotizaciones
                     <span class="pull-right-container">
@@ -62,7 +53,7 @@
                     @endif
                 </ul>
             </li>
-            @endif
+            @endif -->
             @if(Auth::user()->tieneSubModulo(25))
             <li class="treeview">
                 <a href="#"><i class="fas fa-file-invoice"></i> Ordenes
@@ -71,14 +62,11 @@
                     </span>
                 </a>
                 <ul class="treeview-menu" >
-                    @if(Auth::user()->tieneAplicacion(107))
-                    <li><a href="/generar_orden"><i class="far fa-circle fa-xs"></i> Por Cotización</a></li>
-                    @endif
                     @if(Auth::user()->tieneAplicacion(108))
-                    <li><a href="{{route('logistica.gestion-logistica.orden.por-requerimiento.crear-orden')}}"><i class="far fa-circle fa-xs"></i> Elaborar</a></li>
+                    <li><a href="{{route('logistica.gestion-logistica.compras.ordenes.elaborar.index')}}"><i class="far fa-circle fa-xs"></i> Elaborar</a></li>
                     @endif
                     @if(Auth::user()->tieneAplicacion(109))
-                    <li><a href="{{route('logistica.gestion-logistica.orden.lista-ordenes.index')}}"><i class="far fa-circle fa-xs"></i> Listado</a></li>
+                    <li><a href="{{route('logistica.gestion-logistica.compras.ordenes.listado.index')}}"><i class="far fa-circle fa-xs"></i> Listado</a></li>
                     @endif
                 </ul>
             </li>

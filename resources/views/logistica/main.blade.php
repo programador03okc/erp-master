@@ -39,7 +39,7 @@
                     <p style="font-size:15px;display:flex;width:20px;">Compras Pendientes </p>
                 </div>
                 @if(Auth::user()->tieneAplicacion(108))
-                <a href="{{route('logistica.gestion-logistica.orden.por-requerimiento.index')}}" class="small-box-footer">Ir <i class="fa fa-arrow-circle-right"></i></a>
+                <a href="{{route('logistica.gestion-logistica.compras.pendientes.index')}}" class="small-box-footer">Ir <i class="fa fa-arrow-circle-right"></i></a>
                 @else
                 <a href="#" class="small-box-footer">Ir <i class="fa fa-arrow-circle-right"></i></a>
                 @endif

@@ -718,6 +718,68 @@ Route::group(['middleware' => ['auth']], function () {
 				});
 			});
 			
+			Route::group(['as' => 'compras.', 'prefix' => 'compras'], function(){
+				Route::group(['as' => 'pendientes.', 'prefix' => 'pendientes'], function(){
+					Route::get('index', 'ComprasPendientesController@viewComprasPendientes')->name('index');
+					Route::get('requerimientos-pendientes/{id_empresa?}/{id_sede?}', 'ComprasPendientesController@listarRequerimientosPendientes')->name('requerimientos-pendientes'); 
+					Route::post('lista_items-cuadro-costos-por-requerimiento-pendiente-compra', 'ComprasPendientesController@get_lista_items_cuadro_costos_por_id_requerimiento_pendiente_compra')->name('lista_items-cuadro-costos-por-requerimiento-pendiente-compra');
+					Route::post('tiene-items-para-compra', 'ComprasPendientesController@tieneItemsParaCompra')->name('tiene-items-para-compra'); 
+					Route::post('lista_items-cuadro-costos-por-requerimiento', 'ComprasPendientesController@get_lista_items_cuadro_costos_por_id_requerimiento')->name('lista_items-cuadro-costos-por-requerimiento');
+					Route::get('grupo-select-item-para-compra', 'ComprasPendientesController@getGrupoSelectItemParaCompra')->name('grupo-select-item-para-compra');
+					Route::post('guardar-atencion-con-almacen', 'ComprasPendientesController@guardarAtencionConAlmacen')->name('guardar-atencion-con-almacen'); 
+					Route::post('buscar-item-catalogo', 'ComprasPendientesController@buscarItemCatalogo')->name('buscar-item-catalogo');
+					Route::post('guardar-items-detalle-requerimiento', 'ComprasPendientesController@guardarItemsEnDetalleRequerimiento')->name('guardar-items-detalle-requerimiento'); 
+					Route::get('listar-almacenes', 'AlmacenController@mostrar_almacenes')->name('listar-almacenes');
+
+				});
+				
+				Route::group(['as' => 'ordenes.', 'prefix' => 'ordenes'], function(){
+					Route::group(['as' => 'elaborar.', 'prefix' => 'elaborar'], function(){
+						Route::get('index', 'OrdenController@view_crear_orden_requerimiento')->name('index');
+						Route::post('detalle-requerimiento-orden', 'OrdenController@get_detalle_requerimiento_orden')->name('detalle-requerimiento-orden'); 
+						Route::post('guardar', 'OrdenController@guardar_orden_por_requerimiento')->name('guardar');
+						Route::post('actualizar', 'OrdenController@actualizar_orden_por_requerimiento')->name('actualizar');
+						Route::get('mostrar_proveedores', 'LogisticaController@mostrar_proveedores');
+						Route::post('guardar_proveedor', 'LogisticaController@guardar_proveedor');
+						Route::put('actualizar-estado-detalle-requerimiento/{id_detalle_req?}/{estado?}', 'OrdenController@update_estado_detalle_requerimiento')->name('actualizar-estado-detalle-requerimiento'); 
+						Route::post('guardar-producto', 'AlmacenController@guardar_producto')->name('guardar-producto');
+						Route::get('listar-almacenes', 'AlmacenController@mostrar_almacenes')->name('listar-almacenes');
+ 						Route::get('listar_ubigeos', 'AlmacenController@listar_ubigeos');
+						Route::get('lista_contactos_proveedor/{id_proveedor?}', 'OrdenController@lista_contactos_proveedor');
+						Route::get('generar-orden-pdf/{id?}', 'OrdenController@generar_orden_por_requerimiento_pdf')->name('generar-orden-por-requerimiento-pdf'); // PDF
+						Route::get('listar_trabajadores', 'ProyectosController@listar_trabajadores');
+						Route::post('guardar_contacto', 'OrdenController@guardar_contacto');
+						Route::get('select-sede-by-empresa/{id?}', 'LogisticaController@select_sede_by_empresa')->name('select-sede-by-empresa');
+						Route::get('listar-historial-ordenes-elaboradas', 'OrdenController@listaHistorialOrdenes');
+						Route::get('mostrar-orden/{id_orden?}', 'OrdenController@mostrarOrden');
+						Route::get('anular-orden/{id}', 'OrdenController@anular_orden');
+					});
+					Route::group(['as' => 'listado.', 'prefix' => 'listado'], function(){
+						Route::get('index', 'OrdenController@view_listar_ordenes')->name('index');
+						//nivel cabecera
+						Route::get('listar-ordenes', 'OrdenController@listarOrdenes');
+						Route::get('detalle-orden/{id_orden}', 'OrdenController@detalleOrden');
+						// Route::get('generar_orden_pdf/{id}', 'OrdenController@generar_orden_pdf'); // PDF
+						Route::get('verSession', 'LogisticaController@verSession'); 
+						Route::get('explorar-orden/{id_orden}', 'LogisticaController@explorar_orden'); 
+
+						// nivel item
+						Route::get('listar-detalle-orden', 'OrdenController@listarDetalleOrden')->name('ordenes-en-proceso'); 
+						Route::get	('ver-orden/{id_orden?}', 'OrdenController@ver_orden');
+						Route::post('actualizar-estado', 'OrdenController@update_estado_orden')->name('actualizar-estado-orden'); 
+						Route::post('actualizar-estado-detalle', 'OrdenController@update_estado_item_orden')->name('actualizar-estado-detalle-orden'); 
+						Route::put('revertir/{id_orden?}', 'LogisticaController@revertir_orden_requerimiento')->name('revertir');
+						Route::get('documentos-vinculados/{id_orden?}', 'OrdenController@documentosVinculadosOrden')->name('documentos-vinculados');
+	
+
+						// Route::put('guardar_aprobacion_orden/', 'LogisticaController@guardar_aprobacion_orden'); 
+						// Route::post('guardar_pago_orden', 'LogisticaController@guardar_pago_orden');
+						// Route::get('eliminar_pago/{id_pago}', 'LogisticaController@eliminar_pago'); 
+					});
+
+				});
+			});
+
 			Route::group(['as' => 'cotizacion.', 'prefix' => 'cotizacion'], function(){
 				Route::group(['as' => 'gestionar.', 'prefix' => 'gestionar'], function(){
 					Route::get('index', 'LogisticaController@view_gestionar_cotizaciones')->name('index');
@@ -754,63 +816,8 @@ Route::group(['middleware' => ['auth']], function () {
 
 
 					});
-				});
-			Route::group(['as' => 'orden.', 'prefix' => 'orden'], function(){
-				Route::group(['as' => 'por-requerimiento.', 'prefix' => 'por-requerimiento'], function(){
-					Route::get('index', 'OrdenController@view_generar_orden_requerimiento')->name('index');
-					// generar oreden por requerimiento
-					Route::get('requerimientos-pendientes/{id_empresa?}/{id_sede?}', 'OrdenController@listarRequerimientosPendientes')->name('requerimientos-pendientes'); 
-					Route::get('ordenes-en-proceso', 'OrdenController@lista_ordenes_en_proceso')->name('ordenes-en-proceso'); 
-					Route::get('items-ordenes-en-proceso', 'OrdenController@lista_items_ordenes_en_proceso')->name('ordenes-en-proceso'); 
-					Route::post('detalle-requerimiento-orden', 'OrdenController@get_detalle_requerimiento_orden')->name('detalle-requerimiento-orden'); 
-					Route::post('guardar', 'OrdenController@guardar_orden_por_requerimiento')->name('guardar');
-					Route::post('actualizar', 'OrdenController@actualizar_orden_por_requerimiento')->name('actualizar');
-					Route::get('mostrar_proveedores', 'LogisticaController@mostrar_proveedores');
-					Route::post('guardar_proveedor', 'LogisticaController@guardar_proveedor');
-					Route::put('actualizar-estado-detalle-requerimiento/{id_detalle_req?}/{estado?}', 'OrdenController@update_estado_detalle_requerimiento')->name('actualizar-estado-detalle-requerimiento'); 
-					Route::post('guardar-producto', 'AlmacenController@guardar_producto')->name('guardar-producto');
-					Route::post('lista_items-cuadro-costos-por-requerimiento', 'OrdenController@get_lista_items_cuadro_costos_por_id_requerimiento')->name('lista_items-cuadro-costos-por-requerimiento');
-					Route::post('lista_items-cuadro-costos-por-requerimiento-pendiente-compra', 'OrdenController@get_lista_items_cuadro_costos_por_id_requerimiento_pendiente_compra')->name('lista_items-cuadro-costos-por-requerimiento-pendiente-compra');
-					Route::post('buscar-item-catalogo', 'OrdenController@buscarItemCatalogo')->name('buscar-item-catalogo');
-					Route::get('grupo-select-item-para-compra', 'OrdenController@getGrupoSelectItemParaCompra')->name('grupo-select-item-para-compra');
-					Route::post('guardar-items-detalle-requerimiento', 'OrdenController@guardarItemsEnDetalleRequerimiento')->name('guardar-items-detalle-requerimiento'); 
-					Route::post('guardar-atencion-con-almacen', 'OrdenController@guardarAtencionConAlmacen')->name('guardar-atencion-con-almacen'); 
-					Route::post('tiene-items-para-compra', 'OrdenController@tieneItemsParaCompra')->name('tiene-items-para-compra'); 
-					Route::get('listar-almacenes', 'AlmacenController@mostrar_almacenes')->name('listar-almacenes');
-					Route::get('crear', 'OrdenController@view_crear_orden_requerimiento')->name('crear-orden');
-					Route::get('listar_ubigeos', 'AlmacenController@listar_ubigeos');
-					Route::get('lista_contactos_proveedor/{id_proveedor?}', 'OrdenController@lista_contactos_proveedor');
-					Route::get('generar-orden-pdf/{id?}', 'OrdenController@generar_orden_por_requerimiento_pdf')->name('generar-orden-por-requerimiento-pdf'); // PDF
-					Route::get('listar_trabajadores', 'ProyectosController@listar_trabajadores');
-					Route::post('guardar_contacto', 'OrdenController@guardar_contacto');
-					Route::get('select-sede-by-empresa/{id?}', 'LogisticaController@select_sede_by_empresa')->name('select-sede-by-empresa');
-					Route::get('listar-historial-ordenes-elaboradas', 'OrdenController@listaHistorialOrdenes');
-					Route::get('mostrar-orden/{id_orden?}', 'OrdenController@mostrarOrden');
-					Route::get('anular-orden/{id}', 'OrdenController@anular_orden');
-
-
-				});
-				Route::group(['as' => 'lista-ordenes.', 'prefix' => 'por-requerimiento'], function(){
-					Route::get('vista_listar_ordenes', 'OrdenController@view_listar_ordenes')->name('index');
-					Route::get('listar-ordenes', 'OrdenController@listarOrdenes');
-					Route::get('detalle-orden/{id_orden}', 'OrdenController@detalleOrden');
-					// Route::get('generar_orden_pdf/{id}', 'OrdenController@generar_orden_pdf'); // PDF
-					Route::get('verSession', 'LogisticaController@verSession'); 
-					Route::get('explorar-orden/{id_orden}', 'LogisticaController@explorar_orden'); 
-					// Route::put('guardar_aprobacion_orden/', 'LogisticaController@guardar_aprobacion_orden'); 
-					// Route::post('guardar_pago_orden', 'LogisticaController@guardar_pago_orden');
-					// Route::get('eliminar_pago/{id_pago}', 'LogisticaController@eliminar_pago'); 
-
-					// ruta de lista de vista a nivel de item
-					Route::get('listar-detalle-orden', 'OrdenController@listarDetalleOrden')->name('ordenes-en-proceso'); 
-					Route::get	('ver-orden/{id_orden?}', 'OrdenController@ver_orden');
-					Route::post('actualizar-estado', 'OrdenController@update_estado_orden')->name('actualizar-estado-orden'); 
-					Route::post('actualizar-estado-detalle', 'OrdenController@update_estado_item_orden')->name('actualizar-estado-detalle-orden'); 
-					Route::put('revertir/{id_orden?}', 'LogisticaController@revertir_orden_requerimiento')->name('revertir');
-					Route::get('documentos-vinculados/{id_orden?}', 'OrdenController@documentosVinculadosOrden')->name('documentos-vinculados');
-
-					});
 			});
+			
 
 		});
 
@@ -2682,7 +2689,7 @@ Route::get('decode5t/{id}', 'EquipoController@decode5t');
 	Route::get('logistica/cuadro_comparativo/exportar_excel/{id_grupo}', 'LogisticaController@solicitud_cuadro_comparativo_excel');
 	/**Logistica Ordenes */
 	// Route::get('get_ord_list', 'LogisticaController@get_ord_list');
-	Route::get('generar_orden', 'LogisticaController@view_generar_orden');
+	// Route::get('generar_orden', 'LogisticaController@view_generar_orden');
 	Route::get('detalle_cotizacion/{id}', 'LogisticaController@detalle_cotizacion');
 	Route::post('guardar_orden_compra', 'LogisticaController@guardar_orden_compra');
 	Route::post('update_orden_compra', 'LogisticaController@update_orden_compra');

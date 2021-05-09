@@ -90,21 +90,21 @@ class LogisticaController extends Controller
         return view('logistica/cotizaciones/cuadro_comparativo', compact('condiciones','unidades_medida'));
     }
 
-    function view_generar_orden()
-    {
-        $condiciones = $this->select_condiciones();
-        $tp_doc = $this->select_tp_doc();
-        $bancos = $this->select_bancos();
-        $cuentas = $this->select_tipos_cuenta();
-        $responsables = $this->select_responsables();
-        $contactos = $this->select_contacto();
-        $tp_moneda = $this->select_moneda();
-        $tp_documento = $this->select_documento();
-        $sis_identidad = $this->select_sis_identidad();
-        $sedes = $this->select_sedes();
+    // function view_generar_orden()
+    // {
+    //     $condiciones = $this->select_condiciones();
+    //     $tp_doc = $this->select_tp_doc();
+    //     $bancos = $this->select_bancos();
+    //     $cuentas = $this->select_tipos_cuenta();
+    //     $responsables = $this->select_responsables();
+    //     $contactos = $this->select_contacto();
+    //     $tp_moneda = $this->select_moneda();
+    //     $tp_documento = $this->select_documento();
+    //     $sis_identidad = $this->select_sis_identidad();
+    //     $sedes = $this->select_sedes();
 
-        return view('logistica/ordenes/generar_orden', compact('sedes','sis_identidad','condiciones', 'tp_doc', 'bancos', 'cuentas','contactos', 'responsables', 'tp_moneda','tp_documento'));
-    }
+    //     return view('logistica/ordenes/generar_orden', compact('sedes','sis_identidad','condiciones', 'tp_doc', 'bancos', 'cuentas','contactos', 'responsables', 'tp_moneda','tp_documento'));
+    // }
 
 
     function view_lista_proveedores()

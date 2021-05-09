@@ -140,7 +140,7 @@
                 </form> 
             </div>
             <div class="modal-footer">
-                <button class="btn btn-sm btn-success" onClick="listaOrdenView.aplicarFiltros();">Aceptar</button>
+                <button class="btn btn-sm btn-success" onClick="listaOrdenView.aplicarFiltros();">Aplicar</button>
             </div>
         </div>
     </div>
