@@ -34,31 +34,6 @@ Compras pendientes
                                 <div class="row">
                                     <div class="col-md-12">
                                         <form id="form-requerimientosPendientes" type="register">
-                                            <div class="row">
-                                                <div class="col-md-4">
-                                                    <h5>Empresa</h5>
-                                                    <div style="display:flex;">
-                                                        <select class="form-control" id="id_empresa_select_req" onChange="requerimientoPendienteView.handleChangeFilterReqByEmpresa(event);">
-                                                            <option value=null>Todas las Empresas</option>
-                                                            @foreach ($empresas as $emp)
-                                                            <option value="{{$emp->id_empresa}}" data-url-logo="{{$emp->logo_empresa}}">{{$emp->razon_social}}</option>
-                                                            @endforeach
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-3">
-                                                    <h5>Sede</h5>
-                                                    <div style="display:flex;">
-                                                        <select class="form-control" id="id_sede_select_req" onChange="requerimientoPendienteView.handleChangeFilterReqBySede(event);" disabled>
-                                                            <option value="0">Elija una opción</option>
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-3">
-                                                    <h5>&nbsp;</h5>
-                                                    <input type="checkbox" id="incluir_sede" onchange="requerimientoPendienteView.handleChangeIncluirSede(event)" /> Inlcuir Sede
-                                                </div>
-                                            </div>
                                             <table class="mytable table table-condensed table-bordered table-okc-view" id="listaRequerimientosPendientes">
                                                 <thead>
                                                     <tr>

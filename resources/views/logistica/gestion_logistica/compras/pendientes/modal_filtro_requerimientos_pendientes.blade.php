@@ -17,13 +17,15 @@
                         <div class="row">
                             <div class="col-md-4">
                                 <label title="Empresa">
-                                    <input type="checkbox" name="chkEmpresa">&nbsp; Empresa
+                                    <input type="checkbox" name="chkEmpresa" onclick="requerimientoPendienteView.chkEmpresaHandle(event)">&nbsp; Empresa
                                 </label> 
                             </div>
                             <div class="col-md-8">
-                                <select class="form-control input-sm" name="empresa">
-                                    <option>OKC</option>
-                                    <option>PYT</option>
+                                <select class="form-control input-sm" name="empresa" onChange="requerimientoPendienteView.handleChangeFilterReqByEmpresa(event);" readOnly>
+                                    <option value=null>Todas las Empresas</option>
+                                    @foreach ($empresas as $emp)
+                                    <option value="{{$emp->id_empresa}}" data-url-logo="{{$emp->logo_empresa}}">{{$emp->razon_social}}</option>
+                                    @endforeach
                                 </select>
                             </div>
                         </div>
@@ -31,11 +33,11 @@
                         <div class="row">
                             <div class="col-md-4">
                                 <label title="Sede">
-                                    <input type="checkbox" name="chkSede">&nbsp; Sede
+                                    <input type="checkbox" name="chkSede" onclick="requerimientoPendienteView.chkSedeHandle(event);">&nbsp; Sede
                                 </label> 
                             </div>
                             <div class="col-md-8">
-                                <select class="form-control input-sm" name="sede">
+                                <select class="form-control input-sm" name="sede" readOnly>
                                     <option>Lima</option>
                                     <option>Ilo</option>
                                 </select>
