@@ -1053,6 +1053,13 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::get('verDetalleRequerimiento/{id}', 'DistribucionController@verDetalleRequerimiento');
 
 				});
+
+				Route::group(['as' => 'lista-ordenes-despacho.', 'prefix' => 'lista-ordenes-despacho'], function(){
+					
+					Route::get('index', 'Logistica\Distribucion\ListaOrdenesDespachoController@view_ordenes_despacho')->name('index');
+					Route::post('listarOrdenesDespacho', 'Logistica\Distribucion\ListaOrdenesDespachoController@listarOrdenesDespacho');
+
+				});
 			});
 	
 		// });

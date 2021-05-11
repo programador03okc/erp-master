@@ -2,7 +2,7 @@
 @include('layout.menu_logistica')
 
 @section('cabecera')
-Reporte de Guías Transportista
+Lista de Ordenes de Despacho
 @endsection
 
 @section('breadcrumb')
@@ -14,7 +14,7 @@ Reporte de Guías Transportista
 @endsection
 
 @section('content')
-<div class="page-main" type="guiasTransportistas">
+<div class="page-main" type="listaOrdenesDespacho">
     <div class="box box-solid">
         <div class="box-body">
             <div class="col-md-12" style="padding-top:10px;padding-bottom:10px;">
@@ -22,21 +22,21 @@ Reporte de Guías Transportista
                 <div class="row">
                     <div class="col-md-12">
                         <table class="mytable table table-condensed table-bordered table-okc-view" 
-                            id="listaGuiasTransportistas">
+                            id="listaOrdenesDespacho">
                             <thead>
                                 <tr>
                                     <th hidden></th>
-                                    <th>Guía</th>
-                                    <th>Transportista</th>
-                                    <th>Fecha Guía</th>
-                                    <th>Codigo Envío</th>
-                                    <th>Importe</th>
-                                    <th>OCAM</th>
-                                    <th>Cod.Req.</th>
-                                    <th>OD</th>
+                                    <th>Orden Despacho</th>
+                                    <th>Fecha</th>
+                                    <!-- <th>Hora</th> -->
                                     <th>Cliente</th>
+                                    <th>Req.</th>
+                                    <th>Concepto</th>
+                                    <th>Almacén</th>
+                                    <!-- <th>Fecha Desp</th> -->
+                                    <th>Registrado por</th>
                                     <th>Estado</th>
-                                    <th></th>
+                                    <th width="60px"></th>
                                 </tr>
                             </thead>
                             <tbody></tbody>
@@ -53,21 +53,14 @@ Reporte de Guías Transportista
 @section('scripts')
     <script src="{{ asset('datatables/DataTables/js/jquery.dataTables.min.js') }}"></script>
     <script src="{{ asset('datatables/DataTables/js/dataTables.bootstrap.min.js') }}"></script>
-    <!-- <script src="{{ asset('datatables/Buttons/js/dataTables.buttons.min.js') }}"></script>
-    <script src="{{ asset('datatables/Buttons/js/buttons.bootstrap.min.js') }}"></script>
-    <script src="{{ asset('datatables/Buttons/js/buttons.print.min.js') }}"></script>
-    <script src="{{ asset('datatables/Buttons/js/buttons.html5.min.js') }}"></script>
-    <script src="{{ asset('datatables/pdfmake/pdfmake.min.js') }}"></script>
-    <script src="{{ asset('datatables/pdfmake/vfs_fonts.js') }}"></script>
-    <script src="{{ asset('datatables/JSZip/jszip.min.js') }}"></script> -->
     <script src="{{ asset('template/plugins/moment.min.js') }}"></script>
 
-    <script src="{{ asset('js/almacen/distribucion/guiasTransportistas.js')}}"></script>
-    <script src="{{ asset('js/almacen/distribucion/verDetalleRequerimiento.js')}}"></script>
+    <script src="{{ asset('js/almacen/distribucion/listaOrdenesDespacho.js')}}"></script>
 
     <script>
     $(document).ready(function(){
         seleccionarMenu(window.location);
+        listarOrdenesDespacho();
     });
     </script>
 @endsection
