@@ -25,7 +25,7 @@
                                             <th>Cant.</th>
                                             <th>Unid</th>
                                             <th>Guía Compra</th>
-                                            <th>OC/HT</th>
+                                            <th>OC/HT/Tr</th>
                                             <th>Requerimiento</th>
                                             <th>Sede Req.</th>
                                             <th width="80px">Series</th>

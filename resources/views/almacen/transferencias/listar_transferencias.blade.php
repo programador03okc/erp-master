@@ -165,7 +165,7 @@ Gestión de Transferencias
     </div>
 </div>
 @include('logistica.requerimientos.modal_historial_requerimiento')
-@include('almacen.guias.guia_compraModal')
+<!-- @include('almacen.guias.guia_compraModal') -->
 @include('almacen.guias.guia_com_ver')
 @include('almacen.transferencias.ver_requerimiento')
 @include('almacen.transferencias.transferenciaRecibir')
@@ -195,7 +195,7 @@ Gestión de Transferencias
     <script src="{{ asset('js/almacen/transferencias/transferenciaRecibir.js')}}"></script>
     <script src="{{ asset('js/almacen/transferencias/transferenciaEnviar.js')}}"></script>
     <script src="{{ asset('js/logistica/requerimiento/historial.js')}}"></script>
-    <script src="{{ asset('js/almacen/guia/guia_compraModal.js')}}"></script>
+    <!-- <script src="{{ asset('js/almacen/guia/guia_compraModal.js')}}"></script> -->
     <script src="{{ asset('js/almacen/transferencias/transferenciaCreate.js')}}"></script>
     <script>
     $(document).ready(function(){

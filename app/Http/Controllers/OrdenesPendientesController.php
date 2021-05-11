@@ -59,6 +59,7 @@ class OrdenesPendientesController extends Controller
     }
     
     public function listarIngresos(){
+
         $data = DB::table('almacen.mov_alm')
             ->select('mov_alm.*','guia_com.id_proveedor',
             'adm_contri.nro_documento','adm_contri.razon_social',
@@ -67,6 +68,7 @@ class OrdenesPendientesController extends Controller
             'alm_almacen.descripcion as almacen_descripcion',
             'alm_almacen.id_sede','guia_com.serie','guia_com.numero',
             'tp_ope.descripcion as operacion_descripcion',
+
             DB::raw("(SELECT count(distinct id_doc_com) FROM almacen.doc_com AS d
                     INNER JOIN almacen.guia_com_det AS guia
                         on(guia.id_guia_com = mov_alm.id_guia_com)
@@ -86,9 +88,9 @@ class OrdenesPendientesController extends Controller
                     inner join almacen.mov_alm_det on(
                         mov_alm_det.id_guia_com_det = trans_detalle.id_guia_com_det
                     )
-                    where
-                        mov_alm_det.id_mov_alm = mov_alm.id_mov_alm
-                        and trans_detalle.estado != 7) AS count_transferencias"),
+                    where   mov_alm_det.id_mov_alm = mov_alm.id_mov_alm
+                            and trans_detalle.estado != 7) AS count_transferencias"),
+                            
             DB::raw("(SELECT COUNT(*) FROM almacen.alm_det_req 
                     inner join logistica.log_det_ord_compra as log on(
                             log.id_detalle_requerimiento = alm_det_req.id_detalle_requerimiento and
@@ -108,6 +110,7 @@ class OrdenesPendientesController extends Controller
                     where   ing.id_mov_alm = mov_alm.id_mov_alm
                             and req.id_sede != alm_almacen.id_sede
                             and alm_det_req.estado != 7) AS count_sedes_diferentes"),
+
             DB::raw("(SELECT COUNT(*) FROM almacen.alm_det_req 
                     inner join almacen.orden_despacho_det as od on(
                             od.id_detalle_requerimiento = alm_det_req.id_detalle_requerimiento and
@@ -130,7 +133,27 @@ class OrdenesPendientesController extends Controller
                     )
                     where   ing.id_mov_alm = mov_alm.id_mov_alm
                             and req.id_sede != alm_almacen.id_sede
-                            and alm_det_req.estado != 7) AS count_sedes_diferentes_od")
+                            and alm_det_req.estado != 7) AS count_sedes_diferentes_od"),
+
+            DB::raw("(SELECT COUNT(*) FROM almacen.orden_despacho_det as od
+                    inner join almacen.alm_det_req as req on(
+                            req.id_detalle_requerimiento = od.id_detalle_requerimiento and
+                            req.estado != 7
+                    )
+                    inner join logistica.log_det_ord_compra as log on(
+                            log.id_detalle_requerimiento = req.id_detalle_requerimiento and
+                            log.estado != 7
+                    )
+                    inner join almacen.guia_com_det as guia on(
+                            guia.id_oc_det = log.id_detalle_orden and
+                            guia.estado != 7
+                    )
+                    inner join almacen.mov_alm_det as ing on(
+                            ing.id_guia_com_det = guia.id_guia_com_det and
+                            ing.estado != 7
+                    )
+                    where   ing.id_mov_alm = mov_alm.id_mov_alm and
+                            od.estado != 7) AS count_despachos_oc")
             )
             ->join('almacen.guia_com','guia_com.id_guia','=','mov_alm.id_guia_com')
             ->join('almacen.alm_almacen','alm_almacen.id_almacen','=','guia_com.id_almacen')
@@ -211,9 +234,12 @@ class OrdenesPendientesController extends Controller
         $detalle = DB::table('almacen.guia_com_det')
             ->select(
                 'guia_com_det.*','alm_prod.codigo','alm_prod.part_number','alm_prod.descripcion','alm_und_medida.abreviatura',
-                'log_ord_compra.codigo as codigo_orden','guia_com.serie','guia_com.numero','alm_req.codigo as codigo_req',
-                'sis_sede.descripcion as sede_req','guia_com.id_almacen','req_od.codigo as codigo_req_od','transformacion.codigo as codigo_transfor',
-                'sede_req_od.descripcion as sede_req_od'
+                'guia_com.serie','guia_com.numero','guia_com.id_almacen','log_ord_compra.codigo as codigo_orden',
+                'alm_req.codigo as codigo_req','sis_sede.descripcion as sede_req',
+                'req_od.codigo as codigo_req_od','transformacion.codigo as codigo_transfor',
+                'sede_req_od.descripcion as sede_req_od',
+                'trans.codigo as codigo_trans',
+                'req_tra.codigo as codigo_req_trans','sede_tra.descripcion as sede_req_trans'
             )
             ->leftjoin('almacen.guia_com', 'guia_com.id_guia', '=', 'guia_com_det.id_guia_com')
             ->leftjoin('logistica.log_det_ord_compra', 'log_det_ord_compra.id_detalle_orden', '=', 'guia_com_det.id_oc_det')
@@ -221,11 +247,19 @@ class OrdenesPendientesController extends Controller
             ->leftjoin('almacen.alm_det_req', 'alm_det_req.id_detalle_requerimiento', '=', 'log_det_ord_compra.id_detalle_requerimiento')
             ->leftjoin('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'alm_det_req.id_requerimiento')
             ->leftjoin('administracion.sis_sede', 'sis_sede.id_sede', '=', 'alm_req.id_sede')
+
             ->leftjoin('almacen.transfor_transformado','transfor_transformado.id_transformado','=','guia_com_det.id_transformado')
             ->leftjoin('almacen.transformacion','transformacion.id_transformacion','=','transfor_transformado.id_transformacion')
             ->leftjoin('almacen.orden_despacho','orden_despacho.id_od','=','transformacion.id_od')
             ->leftjoin('almacen.alm_req as req_od','req_od.id_requerimiento','=','orden_despacho.id_requerimiento')
             ->leftjoin('administracion.sis_sede as sede_req_od','sede_req_od.id_sede','=','req_od.id_sede')
+
+            ->leftjoin('almacen.trans_detalle','trans_detalle.id_trans_detalle','=','guia_com_det.id_trans_detalle')
+            ->leftjoin('almacen.trans','trans.id_transferencia','=','trans_detalle.id_transferencia')
+            ->leftjoin('almacen.alm_det_req as det_req_tra','det_req_tra.id_detalle_requerimiento','=','trans_detalle.id_requerimiento_detalle')
+            ->leftjoin('almacen.alm_req as req_tra', 'req_tra.id_requerimiento', '=', 'det_req_tra.id_requerimiento')
+            ->leftjoin('administracion.sis_sede as sede_tra', 'sede_tra.id_sede', '=', 'req_tra.id_sede')
+
             ->leftjoin('almacen.alm_prod', 'alm_prod.id_producto', '=', 'guia_com_det.id_producto')
             ->leftjoin('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'alm_prod.id_unidad_medida')
             ->where([['guia_com_det.id_guia_com', '=', $id_guia],['guia_com_det.estado','!=',7]])
@@ -254,8 +288,9 @@ class OrdenesPendientesController extends Controller
                     'numero' => $det->numero,
                     'codigo_orden' => $det->codigo_orden,
                     'codigo_transfor' => $det->codigo_transfor,
-                    'codigo_req' => ($det->codigo_req!==null ? $det->codigo_req : $det->codigo_req_od),
-                    'sede_req' => ($det->sede_req!==null ? $det->sede_req : $det->sede_req_od),
+                    'codigo_trans' => $det->codigo_trans,
+                    'codigo_req' => ($det->codigo_req!==null ? $det->codigo_req : ($det->codigo_req_od!==null?$det->codigo_req_od:$det->codigo_req_trans)),
+                    'sede_req' => ($det->sede_req!==null ? $det->sede_req : ($det->sede_req_od!==null?$det->sede_req_od:$det->sede_req_trans)),
                     'series' => $series
                 ]);
             }
@@ -917,7 +952,7 @@ class OrdenesPendientesController extends Controller
                 if ($id_detalle_requerimiento !== null && 
                     $id_almacen_destino == $padre['id_almacen_destino']){
 
-                    $id_trans_det = DB::table('almacen.trans_detalle')->insertGetId(
+                    DB::table('almacen.trans_detalle')->insertGetId(
                     [
                         'id_transferencia' => $id_trans,
                         'id_producto' => $item->id_producto,
@@ -930,9 +965,9 @@ class OrdenesPendientesController extends Controller
                         'id_trans_detalle'
                     );
 
-                    DB::table('almacen.guia_com_det')
-                    ->where('id_guia_com_det', $item->id_guia_com_det)
-                    ->update(['id_trans_detalle' => $id_trans_det]);
+                    // DB::table('almacen.guia_com_det')
+                    // ->where('id_guia_com_det', $item->id_guia_com_det)
+                    // ->update(['id_trans_detalle' => $id_trans_det]);
                 }
             }
         }
@@ -1029,7 +1064,8 @@ class OrdenesPendientesController extends Controller
                 ->leftjoin('almacen.alm_det_req','alm_det_req.id_detalle_requerimiento','=','log_det_ord_compra.id_detalle_requerimiento')
                 // ->join('almacen.alm_req','alm_req.id_requerimiento','=','alm_det_req.id_requerimiento')
                 ->leftjoin('almacen.orden_despacho','orden_despacho.id_requerimiento','=','alm_det_req.id_requerimiento')
-                ->leftjoin('almacen.trans_detalle','trans_detalle.id_trans_detalle','=','guia_com_det.id_trans_detalle')
+                // ->leftjoin('almacen.trans_detalle','trans_detalle.id_trans_detalle','=','guia_com_det.id_trans_detalle')
+                ->leftjoin('almacen.trans_detalle','trans_detalle.id_guia_com_det','=','guia_com_det.id_guia_com_det')
                 ->leftjoin('almacen.trans','trans.id_transferencia','=','trans_detalle.id_transferencia')
                 ->where([['mov_alm_det.id_mov_alm','=',$request->id_mov_alm],['mov_alm_det.estado','!=',7]])
                 ->get();

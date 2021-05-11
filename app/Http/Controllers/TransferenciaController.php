@@ -187,7 +187,7 @@ class TransferenciaController extends Controller
         ->join('almacen.alm_prod','alm_prod.id_producto','=','trans_detalle.id_producto')
         ->join('almacen.alm_und_medida','alm_und_medida.id_unidad_medida','=','alm_prod.id_unidad_medida')
         ->join('administracion.adm_estado_doc','adm_estado_doc.id_estado_doc','=','trans_detalle.estado')
-        ->leftJoin('almacen.guia_com_det','guia_com_det.id_trans_detalle','=','trans_detalle.id_trans_detalle')
+        ->leftJoin('almacen.guia_com_det','guia_com_det.id_guia_com_det','=','trans_detalle.id_guia_com_det')
         ->leftJoin('almacen.guia_com','guia_com.id_guia','=','guia_com_det.id_guia_com')
         ->where([['trans_detalle.id_transferencia','=',$id_transferencia],
                  ['trans_detalle.estado','!=',7]])
@@ -612,6 +612,7 @@ class TransferenciaController extends Controller
                         'cantidad' => $d->cantidad_recibida,
                         'id_unid_med' => $det->id_unid_med,
                         'id_guia_ven_det' => $d->id_guia_ven_det,
+                        'id_trans_detalle' => ($det->id_trans_det!==null?$det->id_trans_det:null),
                         'usuario' => $usuario->id_usuario,
                         'estado' => 1,
                         'fecha_registro' => $fecha
@@ -910,7 +911,7 @@ class TransferenciaController extends Controller
                 DB::raw('(mov_oc.valorizacion / mov_oc.cantidad) as unitario_oc'))
                 ->join('almacen.alm_prod','alm_prod.id_producto','=','trans_detalle.id_producto')
                 ->leftJoin('almacen.guia_com_det', function($join){
-                    $join->on('guia_com_det.id_trans_detalle', '=', 'trans_detalle.id_trans_detalle');
+                    $join->on('guia_com_det.id_guia_com_det', '=', 'trans_detalle.id_guia_com_det');
                     $join->where('guia_com_det.estado','!=', 7);
                 })
                 ->leftJoin('almacen.mov_alm_det', function($join){
@@ -941,7 +942,7 @@ class TransferenciaController extends Controller
                 DB::raw('(mov_oc.valorizacion / mov_oc.cantidad) as unitario_oc'))
                 ->join('almacen.alm_prod','alm_prod.id_producto','=','trans_detalle.id_producto')
                 ->leftJoin('almacen.guia_com_det', function($join){
-                    $join->on('guia_com_det.id_trans_detalle', '=', 'trans_detalle.id_trans_detalle');
+                    $join->on('guia_com_det.id_guia_com_det', '=', 'trans_detalle.id_guia_com_det');
                     $join->where('guia_com_det.estado','!=', 7);
                 })
                 ->leftJoin('almacen.mov_alm_det', function($join){
@@ -1182,7 +1183,7 @@ class TransferenciaController extends Controller
         })
         ->join('almacen.alm_req','alm_req.id_requerimiento','=','alm_det_req.id_requerimiento')
         ->leftJoin('almacen.guia_com_det', function($join){
-            $join->on('guia_com_det.id_trans_detalle', '=', 'trans_detalle.id_trans_detalle');
+            $join->on('guia_com_det.id_guia_com_det', '=', 'trans_detalle.id_guia_com_det');
             $join->where('guia_com_det.estado','!=', 7);
         })
         ->where([['trans_detalle.id_transferencia','=',$id_trans],
@@ -1247,7 +1248,7 @@ class TransferenciaController extends Controller
         })
         ->join('almacen.alm_req','alm_req.id_requerimiento','=','alm_det_req.id_requerimiento')
         ->leftJoin('almacen.guia_com_det', function($join){
-            $join->on('guia_com_det.id_trans_detalle', '=', 'trans_detalle.id_trans_detalle');
+            $join->on('guia_com_det.id_guia_com_det', '=', 'trans_detalle.id_guia_com_det');
             $join->where('guia_com_det.estado','!=', 7);
         })
         ->where('trans_detalle.estado',1)
@@ -1326,11 +1327,11 @@ class TransferenciaController extends Controller
     {
         $data = DB::table('almacen.guia_com')
         ->select('guia_com.*','adm_contri.razon_social','tp_ope.descripcion as operacion',
-        'alm_almacen.descripcion as almacen_descripcion','mov_alm.codigo',
-        DB::raw("(SELECT COUNT(*) FROM almacen.guia_com_det where
-                    guia_com_det.id_guia_com = guia_com.id_guia
-                    and guia_com_det.id_trans_detalle > 0
-                    and guia_com_det.estado != 7) AS count_transferencias_detalle"))
+        'alm_almacen.descripcion as almacen_descripcion','mov_alm.codigo')
+        // DB::raw("(SELECT COUNT(*) FROM almacen.guia_com_det where
+        //             guia_com_det.id_guia_com = guia_com.id_guia
+        //             and guia_com_det.id_trans_detalle > 0
+        //             and guia_com_det.estado != 7) AS count_transferencias_detalle")
         ->leftjoin('logistica.log_prove','log_prove.id_proveedor','=','guia_com.id_proveedor')
         ->leftjoin('contabilidad.adm_contri','adm_contri.id_contribuyente','=','log_prove.id_contribuyente')
         ->leftjoin('almacen.tp_ope','tp_ope.id_operacion','=','guia_com.id_operacion')
@@ -1340,13 +1341,13 @@ class TransferenciaController extends Controller
             ->orderBy('fecha_emision','desc')
             ->get();
 
-        $lista = [];
-        foreach ($data as $d) {
-            if ($d->count_transferencias_detalle == 0){
-                array_push($lista, $d);
-            }
-        }
-        $output['data'] = $lista;
+        // $lista = [];
+        // foreach ($data as $d) {
+        //     if ($d->count_transferencias_detalle == 0){
+        //         array_push($lista, $d);
+        //     }
+        // }
+        $output['data'] = $data;
         return response()->json($output);
     }
 

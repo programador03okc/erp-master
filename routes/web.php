@@ -1447,7 +1447,7 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('listarSeries/{id}', 'TransferenciaController@listarSeries');
 				Route::get('listarSeriesVen/{id}', 'TransferenciaController@listarSeriesVen');
 				Route::get('anular_transferencia/{id}', 'TransferenciaController@anular_transferencia');
-				Route::get('listar_guias_compra', 'TransferenciaController@listar_guias_compra');
+				// Route::get('listar_guias_compra', 'TransferenciaController@listar_guias_compra');
 				Route::get('transferencia/{id}', 'OrdenesPendientesController@transferencia');
 				Route::get('verGuiaCompraTransferencia/{id}', 'TransferenciaController@verGuiaCompraTransferencia');
 				Route::get('verRequerimiento/{id}', 'TransferenciaController@verRequerimiento');
