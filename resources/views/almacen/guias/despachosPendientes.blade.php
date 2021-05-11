@@ -65,16 +65,17 @@ Pendientes de Salida
                                 <thead>
                                     <tr>
                                         <th hidden></th>
+                                        <th>Orden Despacho</th>
                                         <th>Fecha Salida</th>
                                         <th>Almacén</th>
-                                        <th>Cod.OD</th>
-                                        <th>Codigo</th>
+                                        <th>Salida</th>
                                         <th>Guia</th>
+                                        <th>Operación</th>
                                         <th>Req.</th>
                                         <th>Cliente</th>
                                         <th>Concepto</th>
                                         <th>Responsable</th>
-                                        <th width="120px"></th>
+                                        <th width="70px"></th>
                                     </tr>
                                 </thead>
                                 <tbody></tbody>

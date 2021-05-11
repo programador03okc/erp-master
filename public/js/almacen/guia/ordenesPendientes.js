@@ -136,7 +136,7 @@ function listarOrdenesPendientes(){
             }
          ],
         //'select': 'multi',
-        'order': [[1, 'asc']]
+        'order': [[0, 'desc']]
     });
     
     $($('#ordenesPendientes').DataTable().table().container()).on('ifChanged', '.dt-checkboxes', function(event){
@@ -226,7 +226,7 @@ function listarTransformaciones(){
         'columnDefs': [
             {'aTargets': [0], 'sClass': 'invisible'}
          ],
-        'order': [[1, 'asc']]
+        'order': [[0, 'desc']]
     });
 }
 
@@ -298,24 +298,30 @@ function listarIngresos(){
                         // '<button type="button" class="ingreso btn btn-warning boton" data-toggle="tooltip" '+
                         //     'data-placement="bottom" title="Ver Ingreso" data-id="'+row['id_mov_alm']+'">'+
                         //     '<i class="fas fa-file-alt"></i></button>'+
+                        (row['id_operacion']==21 ? '' : 
                         `<button type="button" class="cambio btn btn-warning btn-xs" data-toggle="tooltip" 
                             data-placement="bottom" title="Cambiar Serie-Número" data-id="${row['id_mov_alm']}" 
-                            data-guia="${row['id_guia_com']}"><i class="fas fa-sync-alt"></i></button>
+                            data-guia="${row['id_guia_com']}"><i class="fas fa-sync-alt"></i></button>`)
 
-                        ${(row['count_sedes_diferentes'] > 0 || row['count_sedes_diferentes_od'] > 0) ? 
-                        (row['count_transferencias'] == 0 ? 
-                        `<button type="button" class="transferencia btn btn-success btn-xs" data-toggle="tooltip" 
-                            data-placement="bottom" title="Generar Transferencia" data-guia="${row['id_guia_com']}">
-                            <i class="fas fa-exchange-alt"></i></button>
-                        <button type="button" class="anular btn btn-danger btn-xs " data-toggle="tooltip" 
-                            data-placement="bottom" title="Anular Ingreso" data-id="${row['id_mov_alm']}" 
-                            data-guia="${row['id_guia_com']}" data-oc="${row['id_orden_compra']}">
-                            <i class="fas fa-trash"></i></button>`:'') 
-                            : //falta verificar si ya se creo orden de despacho
-                            `<button type="button" class="anular btn btn-danger btn-xs " data-toggle="tooltip" 
-                            data-placement="bottom" title="Anular Ingreso" data-id="${row['id_mov_alm']}" 
-                            data-guia="${row['id_guia_com']}" data-oc="${row['id_orden_compra']}">
-                            <i class="fas fa-trash"></i></button>`}`+
+                        +`${(row['count_sedes_diferentes'] > 0 || row['count_sedes_diferentes_od'] > 0) ? 
+                            (row['count_transferencias'] == 0 ? 
+                            `<button type="button" class="transferencia btn btn-success btn-xs" data-toggle="tooltip" 
+                                data-placement="bottom" title="Generar Transferencia" data-guia="${row['id_guia_com']}">
+                                <i class="fas fa-exchange-alt"></i></button>
+                            <button type="button" class="anular btn btn-danger btn-xs " data-toggle="tooltip" 
+                                data-placement="bottom" title="Anular Ingreso" data-id="${row['id_mov_alm']}" 
+                                data-guia="${row['id_guia_com']}" data-oc="${row['id_orden_compra']}">
+                                <i class="fas fa-trash"></i></button>`:'')
+                            : 
+                            (row['id_operacion']==21 ? '' :
+                            (//falta verificar si ya se creo orden de despacho
+                                (row['count_despachos_oc'] > 0 ? '' : 
+                                `<button type="button" class="anular btn btn-danger btn-xs " data-toggle="tooltip" 
+                                data-placement="bottom" title="Anular Ingreso" data-id="${row['id_mov_alm']}" 
+                                data-guia="${row['id_guia_com']}" data-oc="${row['id_orden_compra']}">
+                                <i class="fas fa-trash"></i></button>`)
+                            ))
+                            }`+
 
                         (row['id_operacion'] == 2 ? 
                         `<button type="button" class="${row['count_facturas']>0?'ver_doc':'doc'} btn btn-${row['count_facturas']>0?'info':'default'} btn-xs" data-toggle="tooltip" 

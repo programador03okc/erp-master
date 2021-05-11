@@ -151,49 +151,82 @@ function listarDespachosEntregados(permiso){
         },
         'columns': [
             {'data': 'id_mov_alm'},
+            {'render': 
+                function (data, type, row){
+                    if (row['codigo_od']!==null){
+                        if (row['aplica_cambios']){
+                            return '<span class="label label-danger">'+row['codigo_od']+'</span>';
+                        } else {
+                            return '<span class="label label-primary">'+row['codigo_od']+'</span>';
+                        }
+                    } else {
+                        return '<span class="label label-success">'+row['codigo_trans']+'</span>';
+                    }
+                }
+            },
             {'data': 'fecha_emision'},
             {'data': 'almacen_descripcion', 'name': 'alm_almacen.descripcion'},
-            {'data': 'codigo_od', 'name': 'orden_despacho.codigo'},
-            {'data': 'codigo'},
+            // {'data': 'codigo'},
+            {'render': function (data, type, row){
+                    return (row['codigo'] !== null ? 
+                    ('<label class="lbl-codigo" title="Abrir Salida" onClick="abrir_salida('+row['id_mov_alm']+')">'+row['codigo']+'</label>')
+                    : '');
+                }
+            },
             {'render': function (data, type, row){
                     return row['serie']+'-'+row['numero'];
                 }
             },
-            {'data': 'codigo_requerimiento', 'name': 'alm_req.codigo'},
+            {'data': 'operacion'},
+            // {'data': 'codigo_requerimiento', 'name': 'alm_req.codigo'},
+            {'render': function (data, type, row){
+                    if (row['codigo_requerimiento']!==null){
+                        return row['codigo_requerimiento'];
+                    } 
+                    else if (row['codigo_req_trans']!==null){
+                        return row['codigo_req_trans'];
+                    }
+                }
+            },
             {'render': 
                 function (data, type, row){
                     if (row['razon_social'] !== null){
                         return row['razon_social'];
                     } else if (row['nombre_persona'] !== null){
                         return row['nombre_persona'];
+                    } else {
+                        return '';
                     }
                 }
             },
-            {'data': 'concepto', 'name': 'alm_req.concepto'},
+            // {'data': 'concepto', 'name': 'alm_req.concepto'},
+            {'render': function (data, type, row){
+                    if (row['concepto']!==null){
+                        return row['concepto'];
+                    } 
+                    else if (row['concepto_trans']!==null){
+                        return row['concepto_trans'];
+                    }
+                }
+            },
             {'data': 'nombre_corto', 'name': 'sis_usua.nombre_corto'}
         ],
-        'order': [[ 1, "desc" ]],
+        'order': [[ 0, "desc" ]],
         'columnDefs': [
             {'aTargets': [0], 'sClass': 'invisible'},
             {'render': function (data, type, row){
                     if (permiso == '1') {
-                        return `<button type="button" class="salida btn btn-info boton" data-toggle="tooltip" 
-                            data-placement="bottom" title="Ver Salida" data-id="${row['id_mov_alm']}">
-                            <i class="fas fa-file-alt"></i></button>
-
-                            <button type="button" class="anular btn btn-danger boton" data-toggle="tooltip" 
+                        return  row['id_operacion']==11 ? '' : 
+                                `<button type="button" class="anular btn btn-danger boton" data-toggle="tooltip" 
                                 data-placement="bottom" title="Anular Salida" data-id="${row['id_mov_alm']}" data-guia="${row['id_guia_ven']}"
                                 data-od="${row['id_od']}"><i class="fas fa-trash"></i></button>
                                 
-                            <button type="button" class="cambio btn btn-warning boton" data-toggle="tooltip" 
+                                <button type="button" class="cambio btn btn-warning boton" data-toggle="tooltip" 
                                 data-placement="bottom" title="Cambiar Serie-Número" data-id="${row['id_mov_alm']}" data-guia="${row['id_guia_ven']}"
-                                data-od="${row['id_od']}"><i class="fas fa-sync-alt"></i></button>`;
-                    } else {
-                        return '<button type="button" class="salida btn btn-info boton" data-toggle="tooltip" '+
-                            'data-placement="bottom" title="Ver Salida" data-id="'+row['id_mov_alm']+'">'+
-                            '<i class="fas fa-file-alt"></i></button>'
+                                data-od="${row['id_od']}"><i class="fas fa-sync-alt"></i></button>
+                                `;
                     }
-                }, targets: 10
+                }, targets: 11
                 // '<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" '+
                 //     'data-placement="bottom" title="Ver Detalle" data-id="'+row.id_mov_alm+'">'+
                 //     '<i class="fas fa-list-ul"></i></button>'+
@@ -202,11 +235,16 @@ function listarDespachosEntregados(permiso){
     });
 }
 
-$('#despachosEntregados tbody').on("click","button.salida", function(){
-    var id_mov_alm = $(this).data('id');
+// $('#despachosEntregados tbody').on("click","button.salida", function(){
+//     var id_mov_alm = $(this).data('id');
+//     var id = encode5t(id_mov_alm);
+//     window.open('imprimir_salida/'+id);
+// });
+
+function abrir_salida(id_mov_alm){
     var id = encode5t(id_mov_alm);
     window.open('imprimir_salida/'+id);
-});
+}
 
 $('#despachosEntregados tbody').on("click","button.anular", function(){
     var id_mov_alm = $(this).data('id');
