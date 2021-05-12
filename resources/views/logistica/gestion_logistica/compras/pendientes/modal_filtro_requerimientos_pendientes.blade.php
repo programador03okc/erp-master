@@ -6,7 +6,7 @@
                 <h3 class="modal-title">Filtros</h3>
             </div>
             <div class="modal-body">
-                <form class="form-horizontal" id="formFiltroListaOrdenesElaboradas">
+                <form class="form-horizontal" id="formFiltroListaRequerimientosPendientes">
                     <div class="row">
                         <div class="col-md-12">
                             <small>Seleccione los filtros que desee aplicar y haga clic en aceptar para ejecutar los filtros marcados con check</small>
@@ -17,7 +17,7 @@
                         <div class="row">
                             <div class="col-md-4">
                                 <label title="Empresa">
-                                    <input type="checkbox" name="chkEmpresa" onclick="requerimientoPendienteView.chkEmpresaHandle(event)">&nbsp; Empresa
+                                    <input type="checkbox" name="chkEmpresa" onclick="requerimientoPendienteView.chkEmpresa(event)">&nbsp; Empresa
                                 </label> 
                             </div>
                             <div class="col-md-8">
@@ -33,7 +33,7 @@
                         <div class="row">
                             <div class="col-md-4">
                                 <label title="Sede">
-                                    <input type="checkbox" name="chkSede" onclick="requerimientoPendienteView.chkSedeHandle(event);">&nbsp; Sede
+                                    <input type="checkbox" name="chkSede" onclick="requerimientoPendienteView.chkSede(event);">&nbsp; Sede
                                 </label> 
                             </div>
                             <div class="col-md-8">

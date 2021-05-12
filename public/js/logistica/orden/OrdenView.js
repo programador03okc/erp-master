@@ -42,7 +42,7 @@ class OrdenView {
                 document.querySelector("div[id='group-datos_para_despacho-logo_empresa'] img[id='logo_empresa']").setAttribute('src','/images/protecnologia_logo.png');
                 break;
             default:
-                document.querySelector("div[id='group-datos_para_despacho-logo_empresa'] img[id='logo_empresa']").setAttribute('src','/images/img-default.jpg');
+                document.querySelector("div[id='group-datos_para_despacho-logo_empresa'] img[id='logo_empresa']").setAttribute('src','/images/img-wide.png');
                 break;
         }
     }

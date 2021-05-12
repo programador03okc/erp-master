@@ -10,9 +10,16 @@ class ListaOrdenCtrl {
     init() {
         // this.listaOrdenView.init();
     }
+
+    // filtros
+
+    getDataSelectSede(id_empresa = null){
+        return listaOrdenModel.getDataSelectSede(id_empresa);
+    }
+
     
-    obtenerListaOrdenesElaboradas() {
-        return listaOrdenModel.obtenerListaOrdenesElaboradas();
+    obtenerListaOrdenesElaboradas(tipoOrden, vinculadoPor, empresa, sede, tipoProveedor, enAlmacen, signoOrden, montoOrden, estado) {
+        return listaOrdenModel.obtenerListaOrdenesElaboradas(tipoOrden, vinculadoPor, empresa, sede, tipoProveedor, enAlmacen, signoOrden, montoOrden, estado);
 
     }
 

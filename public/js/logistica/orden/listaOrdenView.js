@@ -38,32 +38,178 @@ class ListaOrdenView {
         listaOrdenView.obtenerListaDetalleOrdenesElaboradas();
 
     }
-    // 
+    
+    // filtros
 
-    aplicarFiltros(){
-        let ChkEtapa =document.querySelector("form[id='formFiltroListaOrdenesElaboradas'] input[name='chkEtapa']").checked;
-        let ChkEstado = document.querySelector("form[id='formFiltroListaOrdenesElaboradas'] input[name='chkEstado']").checked;
 
-        if(ChkEtapa == true){
-            let inputEtapa= document.querySelector("form[id='formFiltroListaOrdenesElaboradas'] select[name='etapa']");
-            let textInputEtapa= inputEtapa.options[inputEtapa.selectedIndex].text;
-            if(document.getElementById("badge-etapa") == undefined){
-                let elementoBadge = listaOrdenView.crearElementoBadge("badge-etapa","Etapa: "+textInputEtapa);
-                document.querySelector("div[id='contenedor-acciones-activas']").appendChild(elementoBadge);
+    chkTipoOrden(e) {
+        if (e.target.checked == true) {
+            document.querySelector("form[id='formFiltroListaOrdenesElaboradas'] select[name='tipoOrden']").removeAttribute('readOnly');
+        } else {
+            document.querySelector("form[id='formFiltroListaOrdenesElaboradas'] select[name='tipoOrden']").setAttribute('readOnly', true);
+        }
+    }
 
+    chkVinculadoPor(e) {
+        if (e.target.checked == true) {
+            document.querySelector("form[id='formFiltroListaOrdenesElaboradas'] select[name='vinculadoPor']").removeAttribute('readOnly');
+        } else {
+            document.querySelector("form[id='formFiltroListaOrdenesElaboradas'] select[name='vinculadoPor']").setAttribute('readOnly', true);
+        }
+    }
+
+    chkEmpresa(e) {
+        if (e.target.checked == true) {
+            document.querySelector("form[id='formFiltroListaOrdenesElaboradas'] select[name='empresa']").removeAttribute('readOnly');
+        } else {
+            document.querySelector("form[id='formFiltroListaOrdenesElaboradas'] select[name='empresa']").setAttribute('readOnly', true);
+        }
+    }
+
+    chkSede(e) {
+        if (e.target.checked == true) {
+            let idEmpresa = document.querySelector("form[id='formFiltroListaOrdenesElaboradas'] select[name='empresa']").value;
+            if(idEmpresa>0){
+                document.querySelector("form[id='formFiltroListaOrdenesElaboradas'] select[name='sede']").removeAttribute('readOnly');
             }else{
-                listaOrdenView.actualizarElementoBadge("badge-etapa","Etapa: "+textInputEtapa);
+                alert("antes debe seleccionar una empresa");
+                document.querySelector("form[id='formFiltroListaOrdenesElaboradas'] input[name='chkSede']").checked=false;
+                document.querySelector("form[id='formFiltroListaOrdenesElaboradas'] select[name='sede']").setAttribute('readOnly', true);
+            }
+        } else {
+            document.querySelector("form[id='formFiltroListaOrdenesElaboradas'] select[name='sede']").setAttribute('readOnly', true);
+        }
+    }
+
+    chkTipoProveedor(e) {
+        if (e.target.checked == true) {
+            document.querySelector("form[id='formFiltroListaOrdenesElaboradas'] select[name='tipoProveedor']").removeAttribute('readOnly');
+        } else {
+            document.querySelector("form[id='formFiltroListaOrdenesElaboradas'] select[name='tipoProveedor']").setAttribute('readOnly', true);
+        }
+    }
+
+    chkEnAlmacen(e) {
+        if (e.target.checked == true) {
+            document.querySelector("form[id='formFiltroListaOrdenesElaboradas'] select[name='enAlmacen']").removeAttribute('readOnly');
+        } else {
+            document.querySelector("form[id='formFiltroListaOrdenesElaboradas'] select[name='enAlmacen']").setAttribute('readOnly', true);
+        }
+    }
+
+    chkMontoOrden(e) {
+        if (e.target.checked == true) {
+            document.querySelector("form[id='formFiltroListaOrdenesElaboradas'] select[name='signoOrden']").removeAttribute('readOnly');
+            document.querySelector("form[id='formFiltroListaOrdenesElaboradas'] input[name='montoOrden']").removeAttribute('readOnly');
+        } else {
+            document.querySelector("form[id='formFiltroListaOrdenesElaboradas'] select[name='signoOrden']").setAttribute('readOnly', true);
+            document.querySelector("form[id='formFiltroListaOrdenesElaboradas'] input[name='montoOrden']").setAttribute('readOnly', true);
+        }
+    }
+    chkEstado(e) {
+        if (e.target.checked == true) {
+            document.querySelector("form[id='formFiltroListaOrdenesElaboradas'] select[name='estado']").removeAttribute('readOnly');
+        } else {
+            document.querySelector("form[id='formFiltroListaOrdenesElaboradas'] select[name='estado']").setAttribute('readOnly', true);
+        }
+    }
+
+    handleChangeFilterReqByEmpresa(event) {
+        let id_empresa = event.target.value;
+        listaOrdenCtrl.getDataSelectSede(id_empresa).then(function (res) {
+            listaOrdenView.llenarSelectSede(res);
+        }).catch(function (err) {
+            console.log(err)
+        })
+
+    }
+
+    llenarSelectSede(array) {
+        let selectElement = document.querySelector("form[id='formFiltroListaOrdenesElaboradas'] select[name='sede']");
+
+        if (selectElement.options.length > 0) {
+            var i, L = selectElement.options.length - 1;
+            for (i = L; i >= 0; i--) {
+                selectElement.remove(i);
             }
         }
-        if(ChkEstado == true){
+
+        array.forEach(element => {
+            let option = document.createElement("option");
+            option.text = element.descripcion;
+            option.value = element.id_sede;
+            selectElement.add(option);
+        });
+    }
+
+
+
+    aplicarFiltros(){
+        let chkTipoOrden =document.querySelector("form[id='formFiltroListaOrdenesElaboradas'] input[name='chkTipoOrden']").checked;
+        let chkVinculadoPor = document.querySelector("form[id='formFiltroListaOrdenesElaboradas'] input[name='chkVinculadoPor']").checked;
+        let chkEmpresa = document.querySelector("form[id='formFiltroListaOrdenesElaboradas'] input[name='chkEmpresa']").checked;
+        let chkSede = document.querySelector("form[id='formFiltroListaOrdenesElaboradas'] input[name='chkSede']").checked;
+        let chkTipoProveedor = document.querySelector("form[id='formFiltroListaOrdenesElaboradas'] input[name='chkTipoProveedor']").checked;
+        let chkEnAlmacen = document.querySelector("form[id='formFiltroListaOrdenesElaboradas'] input[name='chkEnAlmacen']").checked;
+        let chkMontoOrden = document.querySelector("form[id='formFiltroListaOrdenesElaboradas'] input[name='chkMontoOrden']").checked;
+        let chkEstado = document.querySelector("form[id='formFiltroListaOrdenesElaboradas'] input[name='chkEstado']").checked;
+
+        let tipoOrden = null;
+        let vinculadoPor = null;
+        let empresa = null;
+        let sede = null;
+        let tipoProveedor = null;
+        let enAlmacen = null;
+        let signoOrden = null;
+        let montoOrden = null;
+        let estado = null;
+
+        if(chkTipoOrden == true){
+            tipoOrden= document.querySelector("form[id='formFiltroListaOrdenesElaboradas'] select[name='tipoOrden']").value;
+        }
+        if(chkVinculadoPor == true){
+            vinculadoPor= document.querySelector("form[id='formFiltroListaOrdenesElaboradas'] select[name='vinculadoPor']").value;
 
         }
+        if(chkEmpresa == true){
+            empresa= document.querySelector("form[id='formFiltroListaOrdenesElaboradas'] select[name='empresa']").value;
+
+        }
+        if(chkSede == true){
+            sede= document.querySelector("form[id='formFiltroListaOrdenesElaboradas'] select[name='sede']").value;
+            
+        }
+        if(chkTipoProveedor == true){
+            tipoProveedor= document.querySelector("form[id='formFiltroListaOrdenesElaboradas'] select[name='tipoProveedor']").value;
+
+        }
+        if(chkEnAlmacen == true){
+            enAlmacen= document.querySelector("form[id='formFiltroListaOrdenesElaboradas'] select[name='enAlmacen']").value;
+
+        }
+        if(chkMontoOrden == true){
+            signoOrden= document.querySelector("form[id='formFiltroListaOrdenesElaboradas'] select[name='signoOrden']").value;
+            montoOrden= document.querySelector("form[id='formFiltroListaOrdenesElaboradas'] input[name='montoOrden']").value;
+
+            if(montoOrden <= 0 || montoOrden==''){
+                alert("Debe igresar un monto mayor a cero");
+                return false;
+            }
+        }
+        if(chkEstado == true){
+            estado= document.querySelector("form[id='formFiltroListaOrdenesElaboradas'] select[name='estado']").value;
+
+        }
+
+        $('#modal-filtro-lista-ordenes-elaboradas').modal('hide');
+        console.log(tipoOrden);
+        this.obtenerListaOrdenesElaboradas(tipoOrden, vinculadoPor, empresa, sede, tipoProveedor, enAlmacen, signoOrden, montoOrden, estado);
 
         
     }
 
-    obtenerListaOrdenesElaboradas(){
-        listaOrdenCtrl.obtenerListaOrdenesElaboradas().then(function(res) {
+    obtenerListaOrdenesElaboradas(tipoOrden=null, vinculadoPor=null, empresa=null, sede=null, tipoProveedor=null, enAlmacen=null, signoOrden=null, montoOrden=null, estado=null){
+        listaOrdenCtrl.obtenerListaOrdenesElaboradas(tipoOrden, vinculadoPor, empresa, sede, tipoProveedor, enAlmacen, signoOrden, montoOrden, estado).then(function(res) {
             listaOrdenView.construirTablaListaOrdenesElaboradas(res);
         }).catch(function(err) {
             console.log(err)
@@ -141,8 +287,45 @@ class ListaOrdenView {
                 
             ],
             'columnDefs': [{ className: "text-right", 'aTargets': [0], 'sClass': 'invisible'}]
-            ,"initComplete": function(settings, json) {
+            ,"initComplete": function() {
+
+                let listaOrdenes_filter = document.querySelector("div[id='listaOrdenes_filter']");
+                var buttonFiler = document.createElement("button");
+                buttonFiler.type = "button";
+                buttonFiler.className = "btn btn-default pull-left";
+                buttonFiler.style = "margin-right: 30px;";
+                buttonFiler.innerHTML = "<i class='fas fa-filter'></i> Filtros";
+                buttonFiler.addEventListener('click', listaOrdenView.filtroTablaListaOrdenes, false);
+
+                listaOrdenes_filter.appendChild(buttonFiler);                
+
+                // var divGroupBtn = document.createElement("div");
+                // divGroupBtn.className = "input-group-btn";
+                // divGroupBtn.id = "divGroupBtnVistas";
+                // listaOrdenes_filter.appendChild(divGroupBtn);                
+
+
+                // let divGroupBtnVistas = document.querySelector("div[id='divGroupBtnVistas']");
+
                 
+                // var buttonVistaPorCabecera = document.createElement("button");
+                // buttonVistaPorCabecera.type = "button";
+                // buttonVistaPorCabecera.id = "btnTipoVistaPorCabecera";
+                // buttonVistaPorCabecera.className = "btn btn-default pull-left";
+                // buttonVistaPorCabecera.innerHTML = "<i class='fas fa-columns'></i> Vista a nivel de Cabecera";
+                // buttonVistaPorCabecera.addEventListener('click', listaOrdenView.tipoVistaPorCabecera, false);
+
+                // divGroupBtnVistas.appendChild(buttonVistaPorCabecera);         
+                
+                // var buttonVistaPorDetalle = document.createElement("button");
+                // buttonVistaPorDetalle.type = "button";
+                // buttonVistaPorDetalle.id = "btnTipoVistaPorItemPara";
+                // buttonVistaPorDetalle.className = "btn btn-default pull-left";
+                // buttonVistaPorDetalle.style = "margin-right: 30px;";
+                // buttonVistaPorDetalle.innerHTML = "<i class='fas fa-table'></i> Vista a nivel de Item's";
+                // buttonVistaPorDetalle.addEventListener('click', listaOrdenView.tipoVistaPorItem, false);
+
+                // divGroupBtnVistas.appendChild(buttonVistaPorDetalle);                
             }
             // "drawCallback": function (settings) { 
                 // Here the response

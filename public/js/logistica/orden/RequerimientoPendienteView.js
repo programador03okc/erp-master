@@ -154,23 +154,23 @@ class RequerimientoPendienteView {
         });
     }
 
-    chkEmpresaHandle(e) {
+    chkEmpresa(e) {
 
         if (e.target.checked == true) {
-            document.querySelector("form[id='formFiltroListaOrdenesElaboradas'] select[name='empresa']").removeAttribute('readOnly');
+            document.querySelector("form[id='formFiltroListaRequerimientosPendientes'] select[name='empresa']").removeAttribute('readOnly');
 
         } else {
-            document.querySelector("form[id='formFiltroListaOrdenesElaboradas'] select[name='empresa']").setAttribute('readOnly', true);
+            document.querySelector("form[id='formFiltroListaRequerimientosPendientes'] select[name='empresa']").setAttribute('readOnly', true);
 
         }
     }
 
-    chkSedeHandle(e) {
+    chkSede(e) {
 
         if (e.target.checked == true) {
-            document.querySelector("form[id='formFiltroListaOrdenesElaboradas'] select[name='sede']").removeAttribute('readOnly');
+            document.querySelector("form[id='formFiltroListaRequerimientosPendientes'] select[name='sede']").removeAttribute('readOnly');
         } else {
-            document.querySelector("form[id='formFiltroListaOrdenesElaboradas'] select[name='sede']").setAttribute('readOnly', true);
+            document.querySelector("form[id='formFiltroListaRequerimientosPendientes'] select[name='sede']").setAttribute('readOnly', true);
 
         }
     }
@@ -208,15 +208,15 @@ class RequerimientoPendienteView {
         let idEmpresa = null;
         let idSede = null;
 
-        let chkEmpresa = document.querySelector("form[id='formFiltroListaOrdenesElaboradas'] input[name='chkEmpresa']").checked;
-        let chkSede = document.querySelector("form[id='formFiltroListaOrdenesElaboradas'] input[name='chkSede']").checked;
+        let chkEmpresa = document.querySelector("form[id='formFiltroListaRequerimientosPendientes'] input[name='chkEmpresa']").checked;
+        let chkSede = document.querySelector("form[id='formFiltroListaRequerimientosPendientes'] input[name='chkSede']").checked;
 
         if (chkEmpresa == true) {
-            idEmpresa = document.querySelector("form[id='formFiltroListaOrdenesElaboradas'] select[name='empresa']").value;
+            idEmpresa = document.querySelector("form[id='formFiltroListaRequerimientosPendientes'] select[name='empresa']").value;
 
         }
         if (chkSede == true) {
-            idSede = document.querySelector("form[id='formFiltroListaOrdenesElaboradas'] select[name='sede']").value;
+            idSede = document.querySelector("form[id='formFiltroListaRequerimientosPendientes'] select[name='sede']").value;
         }
 
         $('#modal-filtro-requerimientos-pendientes').modal('hide');

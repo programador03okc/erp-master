@@ -130,6 +130,7 @@ function selectItem(){
     'id_detalle_orden': null,
     'id_detalle_requerimiento': null,
     'id_item': document.querySelector("div[id='modal-catalogo-items'] div[class='modal-footer'] label[id='id_item']").textContent,
+    'id_tipo_item':1,
     'id_producto': parseInt(document.querySelector("div[id='modal-catalogo-items'] div[class='modal-footer'] label[id='id_producto']").textContent),
     'id_requerimiento': null,
     'id_unidad_medida': document.querySelector("div[id='modal-catalogo-items'] div[class='modal-footer'] label[id='id_unidad_medida']").textContent,

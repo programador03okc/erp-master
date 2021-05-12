@@ -5,14 +5,14 @@
 @endsection
 
 @section('cabecera')
-    Crear Orden por Requerimiento
+    Elaborar orden
 @endsection
 
 @section('breadcrumb')
 <ol class="breadcrumb">
-    <li><a href="{{route('logistica.index')}}"><i class="fas fa-tachometer-alt"></i> Logística y Almacenes</a></li>
-    <li>Ordenes</li>
-    <li class="active">@yield('cabecera')</li>
+    <li><a href="{{route('logistica.index')}}"><i class="fas fa-tachometer-alt"></i> Logística</a></li>
+    <li>Órdenes</li>
+    <li class="active">Elaborar</li>
 </ol>
 @endsection
 
@@ -72,7 +72,7 @@
                         </div>
                         <h5>&nbsp;</h5>
                         <div class="col-md-2" id="group-datos_para_despacho-logo_empresa">
-                                <img id="logo_empresa" src="/images/img-default.jpg" alt=""  style="height:56px;!important;width:100%;!important;margin-top:-20px;">
+                                <img id="logo_empresa" src="/images/img-wide.png" alt=""  style="height:56px;!important;width:100%;!important;margin-top:-20px;">
                         </div>
 
                     </div>

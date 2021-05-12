@@ -16,122 +16,121 @@
                     <div class="container-filter" style="margin: 0 auto;">
                         <div class="row">
                             <div class="col-md-4">
-                                <label title="Etapa">
-                                    <input type="checkbox" name="chkEtapa">&nbsp; Tipo Orden
+                                <label title="Tipo orden">
+                                    <input type="checkbox" name="chkTipoOrden" onclick="listaOrdenView.chkTipoOrden(event)">&nbsp; Tipo Orden
                                 </label> 
                             </div>
                             <div class="col-md-8">
-                                <select class="form-control input-sm" name="etapa">
-                                    <option>Compra</option>
-                                    <option>Servico</option>
+                                <select class="form-control input-sm" name="tipoOrden" readOnly>
+                                    <option value="2">Orden de Compra</option>
+                                    <option value="3">Orden de Servicio</option>
                                 </select>
                             </div>
                         </div>
                         <br>
                         <div class="row">
                             <div class="col-md-4">
-                                <label title="Etapa">
-                                    <input type="checkbox" name="chkEtapa">&nbsp; Origen
+                                <label title="Vinculado por">
+                                    <input type="checkbox" name="chkVinculadoPor" onclick="listaOrdenView.chkVinculadoPor(event)" >&nbsp; Vinculado por
                                 </label> 
                             </div>
                             <div class="col-md-8">
-                                <select class="form-control input-sm" name="etapa">
-                                    <option>Por Requerimiento</option>
-                                    <option>Por Cotizaciones</option>
+                                <select class="form-control input-sm" name="vinculadoPor" readOnly>
+                                    <option value="CUALQUIERA">Cualquier documento</option>
+                                    <option value="REQUERIMIENTO">Requerimiento</option>
+                                    <!-- <option value="CUADRO_COMPARATIVO">Cuadro comparativo</option> -->
                                 </select>
                             </div>
                         </div>
                         <br>
                         <div class="row">
                             <div class="col-md-4">
-                                <label title="Etapa">
-                                    <input type="checkbox" name="chkEtapa">&nbsp; Empresa
+                                <label title="Empresa">
+                                    <input type="checkbox" name="chkEmpresa" onclick="listaOrdenView.chkEmpresa(event)" readOnly>&nbsp; Empresa
                                 </label> 
                             </div>
                             <div class="col-md-8">
-                                <select class="form-control input-sm" name="etapa">
-                                    <option>OKC</option>
-                                    <option>PYT</option>
+                                <select class="form-control input-sm" name="empresa" onChange="listaOrdenView.handleChangeFilterReqByEmpresa(event);" readOnly>
+                                    <option value=null>Todas las Empresas</option>
+                                    @foreach ($empresas as $emp)
+                                    <option value="{{$emp->id_empresa}}" data-url-logo="{{$emp->logo_empresa}}">{{$emp->razon_social}}</option>
+                                    @endforeach
                                 </select>
                             </div>
                         </div>
                         <br>
                         <div class="row">
                             <div class="col-md-4">
-                                <label title="Etapa">
-                                    <input type="checkbox" name="chkEtapa">&nbsp; Sede
+                                <label title="Sede">
+                                    <input type="checkbox" name="chkSede" onclick="listaOrdenView.chkSede(event)" readOnly>&nbsp; Sede
                                 </label> 
                             </div>
                             <div class="col-md-8">
-                                <select class="form-control input-sm" name="etapa">
-                                    <option>Lima</option>
-                                    <option>Ilo</option>
+                                <select class="form-control input-sm" name="sede" readOnly>
                                 </select>
                             </div>
                         </div>
                         <br>
                         <div class="row">
                             <div class="col-md-4">
-                                <label title="Etapa">
-                                    <input type="checkbox" name="chkEtapa">&nbsp; Tipo Proveedor
+                                <label title="Tipo Proveedor">
+                                    <input type="checkbox" name="chkTipoProveedor" onclick="listaOrdenView.chkTipoProveedor(event)" >&nbsp; Tipo Proveedor
                                 </label> 
                             </div>
                             <div class="col-md-8">
-                                <select class="form-control input-sm" name="etapa">
-                                    <option>Nancional</option>
-                                    <option>Extranjero</option>
+                                <select class="form-control input-sm" name="tipoProveedor" readOnly>
+                                    <option value="NACIONAL">Nancional</option>
+                                    <option value="EXTRANJERO">Extranjero</option>
                                 </select>
                             </div>
                         </div>
                         <br>
                         <div class="row">
                             <div class="col-md-4">
-                                <label title="Etapa">
-                                    <input type="checkbox" name="chkEtapa">&nbsp; En almacen
+                                <label title="En almacén">
+                                    <input type="checkbox" name="chkEnAlmacen" onclick="listaOrdenView.chkEnAlmacen(event)" readOnly>&nbsp; En almacen
                                 </label> 
                             </div>
                             <div class="col-md-8">
-                                <select class="form-control input-sm" name="etapa">
-                                    <option>No</option>
-                                    <option>Si</option>
+                                <select class="form-control input-sm" name="enAlmacen" readOnly>
+                                    <option value="false">No</option>
+                                    <option value="true" >Si</option>
                                 </select>
                             </div>
                         </div>
                         <br>
                         <div class="row">
                             <div class="col-md-4">
-                                <label title="Etapa">
-                                    <input type="checkbox" name="chkEtapa">&nbsp; Monto
+                                <label title="Monto de orden">
+                                    <input type="checkbox" name="chkMontoOrden" onclick="listaOrdenView.chkMontoOrden(event)" readOnly>&nbsp; Monto
                                 </label> 
                             </div>
                             <div class="col-md-2">
-                                <select class="form-control">
-                                    <option> > </option>
-                                    <option> >= </option>
-                                    <option> = </option>
-                                    <option> < </option>
-                                    <option> <= </option>
+                                <select class="form-control" name="signoOrden" readOnly>
+                                    <option value="MAYOR"> > </option>
+                                    <option value="MAYOR_IGUAL"> >= </option>
+                                    <option value="IGUAL"> = </option>
+                                    <option value="MENOR"> < </option>
+                                    <option value="MENOR_IGUAL"> <= </option>
                                 </select>
                             </div>
                             <div class="col-md-6">
-                                <input type="text" class="form-control" placeholder="0.00">
+                                <input type="text" class="form-control" name="montoOrden" placeholder="0.00" readOnly>
                             </div>
                         </div>
                         <br>
                         <div class="row">
                             <div class="col-md-4">
-                                <label title="Etapa">
-                                    <input type="checkbox" name="chkEstado">&nbsp; Estado
+                                <label title="Estado">
+                                    <input type="checkbox" name="chkEstado" onclick="listaOrdenView.chkEstado(event)" readOnly>&nbsp; Estado
                                 </label> 
                             </div>
                             <div class="col-md-8">
-                                <select class="form-control input-sm" name="estado">
-                                    <option>ENVIADA</option>
-                                    <option>CONFIRMADA</option>
-                                    <option>FACTURADA</option>
-                                    <option>DESPACHADO</option>
-                                    <option>EN TRANSITO</option>
-                                    <option>ATENCION PARCIAL</option>
+                                <select class="form-control input-sm" name="estado" readOnly>
+                                    <option value=null>Todas los Estados</option>
+                                    @foreach ($estados as $estado)
+                                    <option value="{{$estado->id_estado}}">{{$estado->descripcion}}</option>
+                                    @endforeach
                                 </select>
                             </div>
                         </div>

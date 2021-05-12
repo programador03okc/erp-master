@@ -2,12 +2,35 @@ class ListaOrdenModel {
     constructor () {
     }
 
+    // filtros
+    getDataSelectSede(id_empresa){
+        
+        return new Promise(function(resolve, reject) {
+            if(id_empresa >0){
+                $.ajax({
+                    type: 'GET',
+                    url: `select-sede-by-empresa/` + id_empresa,
+                    dataType: 'JSON',
+                    success(response) {
+                        resolve(response) // Resolve promise and go to then() 
+                    },
+                    error: function(err) {
+                    reject(err) // Reject the promise and go to catch()
+                    }
+                    });
+                }else{
+                    resolve(false);
+                }
+            });
+         
+    } 
+    // 
 
-    obtenerListaOrdenesElaboradas(){
+    obtenerListaOrdenesElaboradas(tipoOrden=null, vinculadoPor=null, empresa=null, sede=null, tipoProveedor=null, enAlmacen=null, signoOrden=null, montoOrden=null, estado=null){
         return new Promise(function(resolve, reject) {
             $.ajax({
                 type: 'GET',
-                url:`listar-ordenes`,
+                url:`listar-ordenes/${tipoOrden}/${vinculadoPor}/${empresa}/${sede}/${tipoProveedor}/${enAlmacen}/${signoOrden}/${montoOrden}/${estado}`,
                 dataType: 'JSON',
                 success(response) {
                     resolve(response.data);

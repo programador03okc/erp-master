@@ -12,7 +12,6 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 date_default_timezone_set('America/Lima');
 use Debugbar;
 
-
 class OrdenController extends Controller
 {
 
@@ -150,6 +149,14 @@ class OrdenController extends Controller
             ->join('contabilidad.adm_contri', 'adm_empresa.id_contribuyente', '=', 'adm_contri.id_contribuyente')
             ->where('adm_empresa.estado', '=', 1)
             ->orderBy('adm_contri.razon_social', 'asc')
+            ->get();
+        return $data;
+    }
+
+    public function select_mostrar_estados_compra()
+    {
+          $data = DB::table('logistica.estados_compra')
+            ->select('estados_compra.*')
             ->get();
         return $data;
     }
@@ -744,7 +751,10 @@ class OrdenController extends Controller
 
     function view_listar_ordenes()
     {
-        return view('logistica/gestion_logistica/compras/ordenes/listado/listar_ordenes');
+        $empresas = $this->select_mostrar_empresas();
+        $estados = $this->select_mostrar_estados_compra();
+
+        return view('logistica/gestion_logistica/compras/ordenes/listado/listar_ordenes', compact('empresas','estados'));
     }
 
     function consult_doc_aprob($id_doc,$tp_doc)
@@ -759,7 +769,56 @@ class OrdenController extends Controller
         return $val;
     }
 
-    public function listarOrdenes(){
+    public function listarOrdenes($tipoOrden, $vinculadoPor, $empresa, $sede, $tipoProveedor, $enAlmacen, $signoOrden, $montoOrden, $estado){
+       
+        switch ($signoOrden) {
+            case 'MAYOR':
+                $simboloMontoOrden='>';
+
+                break;
+            
+            case 'MENOR':
+                $simboloMontoOrden='<';
+
+                break;
+            
+            case 'IGUAL':
+                $simboloMontoOrden='=';
+
+                break;
+            
+            case 'MAYOR_IGUAL':
+                $simboloMontoOrden='<=';
+
+                break;
+            
+            case 'MENOR_IGUAL':
+                $simboloMontoOrden='<=';
+                break;
+            
+            default:
+                $simboloMontoOrden='>';
+
+                break;
+        }
+
+        $montoOrden= $montoOrden >0?$montoOrden:'0';
+
+        if($vinculadoPor== 'REQUERIMIENTO'){
+            $whereVinculadoPor='log_det_ord_compra.id_detalle_requerimiento > 0';
+        }elseif($vinculadoPor == 'CUADRO_COMPARATIVO'){
+            $whereVinculadoPor='log_det_ord_compra.detalle_cuadro_comparativo_id > 0';
+        }else{
+            $whereVinculadoPor='log_det_ord_compra.id_detalle_requerimiento >0 OR log_det_ord_compra.detalle_cuadro_comparativo_id > 0';
+        }
+
+        if($enAlmacen == 'SI'){
+            $whereEnAlmacen='guia_com_det.id_guia_com_det > 0';
+        }else{
+            $whereEnAlmacen='guia_com_det.id_guia_com_det is null';
+        }
+    
+
         $ord_compra = DB::table('logistica.log_ord_compra')
         ->select(
             'log_ord_compra.*',
@@ -783,7 +842,11 @@ class OrdenController extends Controller
             'adm_estado_doc.bootstrap_color',
             'log_ord_compra_pago.id_pago',
             'log_ord_compra_pago.detalle_pago',
-            'log_ord_compra_pago.archivo_adjunto'
+            'log_ord_compra_pago.archivo_adjunto',
+            DB::raw("(SELECT  coalesce(sum((log_det_ord_compra.cantidad * log_det_ord_compra.precio))*1.18 ,0) AS suma_subtotal
+            FROM logistica.log_det_ord_compra 
+            WHERE   log_det_ord_compra.id_orden_compra = log_ord_compra.id_orden_compra AND
+                    log_det_ord_compra.estado != 7) AS suma_subtotal")
         )
         ->leftJoin('administracion.sis_sede', 'sis_sede.id_sede', '=', 'log_ord_compra.id_sede')
         ->join('logistica.log_prove', 'log_prove.id_proveedor', '=', 'log_ord_compra.id_proveedor')
@@ -799,11 +862,37 @@ class OrdenController extends Controller
 
         ->where([
             ['log_ord_compra.estado', '!=', 7],
-            ['log_ord_compra.id_grupo_cotizacion', '=', null]
+            ['log_ord_compra.id_grupo_cotizacion', '=', null],
+            $tipoOrden >0 ? ['log_ord_compra.id_tp_documento',$tipoOrden]:[null],
+            $empresa >0 ? ['sis_sede.id_empresa',$empresa]:[null],
+            $sede >0 ? ['sis_sede.id_sede',$sede]:[null],
+            ($tipoProveedor =='NACIONAL') ? ['adm_contri.id_pais','=','170']:($tipoProveedor =='EXTRANJERO' ? ['adm_contri.id_pais','=','170']:[null]),
+            $estado >0 ? ['log_ord_compra.estado',$estado]:[null]
+            // $montoOrden >0 ? ['suma_subtotal','>',$montoOrden]:[null]
+
         ])
-        ->orderBy('log_ord_compra.fecha','desc')
-        ->get();
+        ->whereIn('log_ord_compra.id_orden_compra', function($query) use ($whereVinculadoPor)
+            {
+                $query->select('log_det_ord_compra.id_orden_compra')
+                    ->from('logistica.log_det_ord_compra')
+                    ->whereRaw($whereVinculadoPor);
+            })
+        ->whereIn('log_ord_compra.id_orden_compra', function($query) use ($whereEnAlmacen)
+            {
+                $query->select('log_det_ord_compra.id_orden_compra')
+                    ->from('logistica.log_det_ord_compra')
+                    ->leftjoin('almacen.guia_com_det', 'guia_com_det.id_oc_det', '=', 'log_det_ord_compra.id_detalle_orden')
+                    ->whereRaw($whereEnAlmacen);
+            })
+            ->orderBy('log_ord_compra.fecha','desc')
+
+            ->whereRaw('(SELECT  coalesce(sum((log_det_ord_compra.cantidad * log_det_ord_compra.precio))*1.18 ,0)
+            FROM logistica.log_det_ord_compra 
+            WHERE   log_det_ord_compra.id_orden_compra = log_ord_compra.id_orden_compra AND
+                    log_det_ord_compra.estado != 7) '.$simboloMontoOrden.' '.$montoOrden)
+            ->get();
         
+
         $data_orden=[];
         if(count($ord_compra)>0){
             foreach($ord_compra as $element){
@@ -817,7 +906,7 @@ class OrdenController extends Controller
                     'nro_documento'=> $element->nro_documento, 
                     'razon_social'=> $element->razon_social,
                     'moneda_simbolo'=> $element->moneda_simbolo, 
-                    'monto_subtotal'=> $element->monto_subtotal, 
+                    // 'monto_subtotal'=> $element->monto_subtotal, 
                     'monto_igv'=> $element->monto_igv, 
                     'monto_total'=>$element->monto_total, 
                     'condicion'=> $element->condicion, 
@@ -830,6 +919,7 @@ class OrdenController extends Controller
                     'estado_doc'=>$element->estado_doc,
                     'detalle_pago'=> $element->detalle_pago, 
                     'archivo_adjunto'=> $element->archivo_adjunto,
+                    'suma_subtotal'=> $element->suma_subtotal,
                     'codigo_requerimiento'=> []
                     
                 ];

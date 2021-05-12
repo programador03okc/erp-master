@@ -758,8 +758,10 @@ Route::group(['middleware' => ['auth']], function () {
 					});
 					Route::group(['as' => 'listado.', 'prefix' => 'listado'], function(){
 						Route::get('index', 'OrdenController@view_listar_ordenes')->name('index');
-						//nivel cabecera
-						Route::get('listar-ordenes', 'OrdenController@listarOrdenes');
+						Route::get('select-sede-by-empresa/{id?}', 'LogisticaController@sedesAcceso')->name('select-sede-by-empresa');
+
+						//nivel cabecera 
+						Route::get('listar-ordenes/{tipoOrden?}/{vinculadoPor?}/{empresa?}/{sede?}/{tipoProveedor?}/{enAlmacen?}/{signoOrden?}/{montoOrden?}/{estado?}', 'OrdenController@listarOrdenes');
 						Route::get('detalle-orden/{id_orden}', 'OrdenController@detalleOrden');
 						// Route::get('generar_orden_pdf/{id}', 'OrdenController@generar_orden_pdf'); // PDF
 						Route::get('verSession', 'LogisticaController@verSession'); 

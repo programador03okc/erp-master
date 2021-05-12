@@ -21,12 +21,9 @@
 <div class="page-main" type="listar_ordenes">
     <legend class="mylegend">
     </legend>
+
+    <fieldset class="group-table">
     <div class="row">
-        <div class="col-md-1">
-            <div class="input-group">
-                    <button type="button" class="btn btn-default" id="btnFiltroTablaListaOrdenes" title="Filtro" onclick="listaOrdenView.filtroTablaListaOrdenes();"><i class="fas fa-filter"></i> Filtros</button>
-            </div>
-        </div>
         <div class="col-md-3">
             <div class="input-group">
                 <div class="input-group-btn">
@@ -90,6 +87,8 @@
             </table>    
         </div>
     </div>
+    
+    </fieldset>
 </div>
 
 
