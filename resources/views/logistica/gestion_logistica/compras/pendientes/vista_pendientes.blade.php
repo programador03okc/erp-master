@@ -24,7 +24,7 @@ Compras pendientes
                 <!-- Nav tabs -->
                 <ul class="nav nav-tabs" role="tablist">
                     <li role="presentation" class="active"><a href="#requerimientos_pendientes" aria-controls="requerimientos_pendientes" role="tab" data-toggle="tab">Requerimientos pendientes</a></li>
-                    <li role="presentation" class=""><a href="#buena_pros_pendientes"  aria-controls="buena_pros_pendientes" role="tab" data-toggle="tab">Buena pro's pendientes</a></li>
+                    <!-- <li role="presentation" class=""><a href="#buena_pros_pendientes"  aria-controls="buena_pros_pendientes" role="tab" data-toggle="tab" >Buena pro's pendientes</a></li> -->
                 </ul>
                 <!-- Tab panes -->
                 <div class="tab-content">
