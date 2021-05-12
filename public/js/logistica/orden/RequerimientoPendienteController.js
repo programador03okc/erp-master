@@ -135,11 +135,11 @@ class RequerimientoPendienteCtrl{
         itemsBaseList = itemsParaAtenderConAlmacenList.filter(function( obj ) {
             return (obj.tiene_transformacion ==false);
         });
-        // console.log(itemsBaseList);
+        console.log(itemsBaseList);
         newItemsParaAtenderConAlmacenList = itemsParaAtenderConAlmacenList.filter(function( obj ) {
             return (obj.id_almacen_reserva >0) && (obj.cantidad_a_atender >0);
         });
-        // console.log(newItemsParaAtenderConAlmacenList);
+        console.log(newItemsParaAtenderConAlmacenList);
         var hasCantidadNoPermitida = false;
         newItemsParaAtenderConAlmacenList.forEach(element => {
             if(element.cantidad_a_atender > element.cantidad){

@@ -327,7 +327,7 @@ class RequerimientoPendienteView {
                         function (data, type, row, meta) {
                             let action = '';
                             if (row.tiene_transformacion == false) {
-                                action = `<input type="text" name="cantidad_a_atender" class="form-control" style="width: 70px; data-indice="${meta.row}" onkeyup="requerimientoPendienteCtrl.updateInputCantidadAAtender(this,event);" value="${parseInt(row.stock_comprometido ? row.stock_comprometido : 0)}" />`;
+                                action = `<input type="text" name="cantidad_a_atender" class="form-control" style="width: 70px;" data-indice="${meta.row}" onkeyup="requerimientoPendienteCtrl.updateInputCantidadAAtender(this,event);" value="${parseInt(row.stock_comprometido ? row.stock_comprometido : 0)}" />`;
 
                                 requerimientoPendienteView.updateObjCantidadAAtender(meta.row, row.stock_comprometido);
 
@@ -364,8 +364,13 @@ class RequerimientoPendienteView {
         requerimientoPendienteCtrl.guardarAtendidoConAlmacen().then(function (res) {
             if (res.update_det_req > 0) {
                 alert("Se realizo con éxito la reserva");
-                requerimientoPendienteCtrl.getDataItemsRequerimientoParaAtenderConAlmacen(res.id_requerimiento);
-                $('#listaRequerimientosPendientes').DataTable().ajax.reload();
+                requerimientoPendienteCtrl.getDataItemsRequerimientoParaAtenderConAlmacen(res.id_requerimiento).then(function (res) {
+                    requerimientoPendienteView.construirTablaListaItemsRequerimientoParaAtenderConAlmacen(res);
+                }).catch(function (err) {
+                    console.log(err)
+                })
+
+                requerimientoPendienteView.renderRequerimientoPendienteListModule(null,null);
 
             } else {
                 alert("Ocurrio un problema al intentar guardar la reserva");
