@@ -21,12 +21,9 @@
 <div class="page-main" type="listar_ordenes">
     <legend class="mylegend">
     </legend>
+
+    <fieldset class="group-table">
     <div class="row">
-        <div class="col-md-1">
-            <div class="input-group">
-                    <button type="button" class="btn btn-default" id="btnFiltroTablaListaOrdenes" title="Filtro" onclick="listaOrdenView.filtroTablaListaOrdenes();"><i class="fas fa-filter"></i> Filtros</button>
-            </div>
-        </div>
         <div class="col-md-3">
             <div class="input-group">
                 <div class="input-group-btn">
@@ -73,7 +70,7 @@
                     <th >OC Softlink</th>
                     <th >OCAM</th>
                     <th >Cliente</th>
-                    <th >Mayorista</th>
+                    <th >Proveedor</th>
                     <th >Marca</th>
                     <th >Categoría</th>
                     <th >Part Number</th>
@@ -90,11 +87,14 @@
             </table>    
         </div>
     </div>
+    
+    </fieldset>
 </div>
 
 
 
 @include('logistica.gestion_logistica.compras.ordenes.listado.modal_filtro_lista_ordenes_elaboradas')
+@include('logistica.gestion_logistica.compras.ordenes.listado.modal_filtro_lista_items_orden_elaboradas')
 @include('logistica.gestion_logistica.compras.ordenes.listado.modal_aprobar_orden')
 @include('logistica.gestion_logistica.compras.ordenes.listado.registrar_pago')
 

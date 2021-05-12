@@ -56,7 +56,7 @@
             @endif -->
             @if(Auth::user()->tieneSubModulo(25))
             <li class="treeview">
-                <a href="#"><i class="fas fa-file-invoice"></i> Ordenes
+                <a href="#"><i class="fas fa-file-invoice"></i> Órdenes
                     <span class="pull-right-container">
                     <i class="fa fa-angle-left pull-right"></i>
                     </span>

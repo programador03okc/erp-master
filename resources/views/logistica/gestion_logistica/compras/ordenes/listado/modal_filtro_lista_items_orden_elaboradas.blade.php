@@ -1,4 +1,4 @@
-<div class="modal fade" tabindex="-1" role="dialog" id="modal-filtro-lista-ordenes-elaboradas">
+<div class="modal fade" tabindex="-1" role="dialog" id="modal-filtro-lista-items-orden-elaboradas">
     <div class="modal-dialog" style="width: 38%;">
         <div class="modal-content">
             <div class="modal-header">
@@ -6,7 +6,7 @@
                 <h3 class="modal-title">Filtros</h3>
             </div>
             <div class="modal-body">
-                <form class="form-horizontal" id="formFiltroListaOrdenesElaboradas">
+                <form class="form-horizontal" id="formFiltroListaItemsOrdenElaboradas">
                     <div class="row">
                         <div class="col-md-12">
                             <small>Seleccione los filtros que desee aplicar y haga clic en aceptar para ejecutar los filtros marcados con check</small>
@@ -46,7 +46,7 @@
                         <div class="row">
                             <div class="col-md-4">
                                 <label title="Empresa">
-                                    <input type="checkbox" name="chkEmpresa" onclick="listaOrdenView.chkEmpresa(event)">&nbsp; Empresa
+                                    <input type="checkbox" name="chkEmpresa" onclick="listaOrdenView.chkEmpresa(event)" >&nbsp; Empresa
                                 </label> 
                             </div>
                             <div class="col-md-8">
@@ -62,7 +62,7 @@
                         <div class="row">
                             <div class="col-md-4">
                                 <label title="Sede">
-                                    <input type="checkbox" name="chkSede" onclick="listaOrdenView.chkSede(event)" >&nbsp; Sede
+                                    <input type="checkbox" name="chkSede" onclick="listaOrdenView.chkSede(event)">&nbsp; Sede
                                 </label> 
                             </div>
                             <div class="col-md-8">
@@ -101,12 +101,12 @@
                         <br>
                         <div class="row">
                             <div class="col-md-4">
-                                <label title="Monto de orden">
-                                    <input type="checkbox" name="chkMontoOrden" onclick="listaOrdenView.chkMontoOrden(event)" disabled>&nbsp; Monto
+                                <label title="Subtotal">
+                                    <input type="checkbox" name="chkSubtotal" onclick="listaOrdenView.chkSubtotal(event)" disabled>&nbsp; Subtotal
                                 </label> 
                             </div>
                             <div class="col-md-2">
-                                <select class="form-control" name="signoTotalOrden" disabled>
+                                <select class="form-control" name="signoSubtotal" disabled>
                                     <option value="MAYOR"> > </option>
                                     <option value="MAYOR_IGUAL"> >= </option>
                                     <option value="IGUAL"> = </option>
@@ -115,7 +115,7 @@
                                 </select>
                             </div>
                             <div class="col-md-6">
-                                <input type="text" class="form-control" name="montoTotalOrden" placeholder="0.00" disabled>
+                                <input type="text" class="form-control" name="subtotal" placeholder="0.00" disabled>
                             </div>
                         </div>
                         <br>
@@ -139,7 +139,7 @@
                 </form> 
             </div>
             <div class="modal-footer">
-                <button class="btn btn-sm btn-success" onClick="listaOrdenView.aplicarFiltrosVistaCabeceraOrden();">Aplicar</button>
+                <button class="btn btn-sm btn-success" onClick="listaOrdenView.aplicarFiltrosVistaDetalleOrden();">Aplicar</button>
             </div>
         </div>
     </div>

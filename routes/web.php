@@ -758,15 +758,17 @@ Route::group(['middleware' => ['auth']], function () {
 					});
 					Route::group(['as' => 'listado.', 'prefix' => 'listado'], function(){
 						Route::get('index', 'OrdenController@view_listar_ordenes')->name('index');
-						//nivel cabecera
-						Route::get('listar-ordenes', 'OrdenController@listarOrdenes');
+						Route::get('select-sede-by-empresa/{id?}', 'LogisticaController@sedesAcceso')->name('select-sede-by-empresa');
+
+						//nivel cabecera 
+						Route::get('listar-ordenes/{tipoOrden?}/{vinculadoPor?}/{empresa?}/{sede?}/{tipoProveedor?}/{enAlmacen?}/{signoOrden?}/{montoOrden?}/{estado?}', 'OrdenController@listarOrdenes');
 						Route::get('detalle-orden/{id_orden}', 'OrdenController@detalleOrden');
 						// Route::get('generar_orden_pdf/{id}', 'OrdenController@generar_orden_pdf'); // PDF
 						Route::get('verSession', 'LogisticaController@verSession'); 
 						Route::get('explorar-orden/{id_orden}', 'LogisticaController@explorar_orden'); 
 
 						// nivel item
-						Route::get('listar-detalle-orden', 'OrdenController@listarDetalleOrden')->name('ordenes-en-proceso'); 
+						Route::get('listar-detalle-orden/{tipoOrden?}/{vinculadoPor?}/{empresa?}/{sede?}/{tipoProveedor?}/{enAlmacen?}/{signoSubtotal?}/{subtotal?}/{estado?}', 'OrdenController@listarDetalleOrden')->name('ordenes-en-proceso'); 
 						Route::get	('ver-orden/{id_orden?}', 'OrdenController@ver_orden');
 						Route::post('actualizar-estado', 'OrdenController@update_estado_orden')->name('actualizar-estado-orden'); 
 						Route::post('actualizar-estado-detalle', 'OrdenController@update_estado_item_orden')->name('actualizar-estado-detalle-orden'); 

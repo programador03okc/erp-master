@@ -10,9 +10,16 @@ class ListaOrdenCtrl {
     init() {
         // this.listaOrdenView.init();
     }
+
+    // filtros
+
+    getDataSelectSede(id_empresa = null){
+        return listaOrdenModel.getDataSelectSede(id_empresa);
+    }
+
     
-    obtenerListaOrdenesElaboradas() {
-        return listaOrdenModel.obtenerListaOrdenesElaboradas();
+    obtenerListaOrdenesElaboradas(tipoOrden, vinculadoPor, empresa, sede, tipoProveedor, enAlmacen, signoTotalOrden, montoTotalOrden, estado) {
+        return listaOrdenModel.obtenerListaOrdenesElaboradas(tipoOrden, vinculadoPor, empresa, sede, tipoProveedor, enAlmacen, signoTotalOrden, montoTotalOrden, estado);
 
     }
 
@@ -71,8 +78,8 @@ class ListaOrdenCtrl {
     // lista por item
 
 
-    obtenerListaDetalleOrdenesElaboradas() {
-        return listaOrdenModel.obtenerListaDetalleOrdenesElaboradas();
+    obtenerListaDetalleOrdenesElaboradas(tipoOrden, vinculadoPor, empresa, sede, tipoProveedor, enAlmacen, signoSubtotal, subtotal, estado) {
+        return listaOrdenModel.obtenerListaDetalleOrdenesElaboradas(tipoOrden, vinculadoPor, empresa, sede, tipoProveedor, enAlmacen, signoSubtotal, subtotal, estado);
         
     }
     
