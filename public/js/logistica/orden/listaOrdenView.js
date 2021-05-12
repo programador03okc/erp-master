@@ -1,4 +1,6 @@
 var vardataTables = funcDatatables();
+var cantidadFiltrosActivosCabecera=0;
+var cantidadFiltrosActivosDetalle=0;
 
 class ListaOrdenView {
     init() {
@@ -20,21 +22,67 @@ class ListaOrdenView {
         document.querySelector("div[id='contenedor-tabla-nivel-cabecera']").classList.remove('oculto');
         document.querySelector("div[id='contenedor-tabla-nivel-item']").classList.add('oculto');
 
+        listaOrdenView.limpiarFiltrosActivosCabeceraOrden();
         
         listaOrdenView.obtenerListaOrdenesElaboradas();
-
+        
     }
     tipoVistaPorItem(){
         document.querySelector("button[id='btnTipoVistaPorItemPara'").classList.add('active');
         document.querySelector("button[id='btnTipoVistaPorCabecera'").classList.remove('active');
         document.querySelector("div[id='contenedor-tabla-nivel-cabecera']").classList.add('oculto');
         document.querySelector("div[id='contenedor-tabla-nivel-item']").classList.remove('oculto');
+        
+        listaOrdenView.limpiarFiltrosActivosDetalleOrden();
 
         listaOrdenView.obtenerListaDetalleOrdenesElaboradas();
 
     }
     
     // filtros
+
+    limpiarFiltrosActivosCabeceraOrden(){
+        cantidadFiltrosActivosCabecera=0;
+        document.querySelector("form[id='formFiltroListaOrdenesElaboradas'] input[name='chkTipoOrden']").checked=false;
+        document.querySelector("form[id='formFiltroListaOrdenesElaboradas'] select[name='tipoOrden']").setAttribute('disabled',true);
+        document.querySelector("form[id='formFiltroListaOrdenesElaboradas'] input[name='chkVinculadoPor']").checked=false;
+        document.querySelector("form[id='formFiltroListaOrdenesElaboradas'] select[name='vinculadoPor']").setAttribute('disabled',true);
+        document.querySelector("form[id='formFiltroListaOrdenesElaboradas'] input[name='chkEmpresa']").checked=false;
+        document.querySelector("form[id='formFiltroListaOrdenesElaboradas'] select[name='empresa']").setAttribute('disabled',true);
+        document.querySelector("form[id='formFiltroListaOrdenesElaboradas'] input[name='chkSede']").checked=false;
+        document.querySelector("form[id='formFiltroListaOrdenesElaboradas'] select[name='sede']").setAttribute('disabled',true);
+        document.querySelector("form[id='formFiltroListaOrdenesElaboradas'] input[name='chkTipoProveedor']").checked=false;
+        document.querySelector("form[id='formFiltroListaOrdenesElaboradas'] select[name='tipoProveedor']").setAttribute('disabled',true);
+        document.querySelector("form[id='formFiltroListaOrdenesElaboradas'] input[name='chkEnAlmacen']").checked=false;
+        document.querySelector("form[id='formFiltroListaOrdenesElaboradas'] select[name='enAlmacen']").setAttribute('disabled',true);
+        document.querySelector("form[id='formFiltroListaOrdenesElaboradas'] input[name='chkMontoOrden']").checked=false;
+        document.querySelector("form[id='formFiltroListaOrdenesElaboradas'] select[name='signoTotalOrden']").setAttribute('disabled',true);
+        document.querySelector("form[id='formFiltroListaOrdenesElaboradas'] input[name='montoTotalOrden']").setAttribute('disabled',true);
+        document.querySelector("form[id='formFiltroListaOrdenesElaboradas'] input[name='chkEstado']").checked=false;
+        document.querySelector("form[id='formFiltroListaOrdenesElaboradas'] select[name='estado']").setAttribute('disabled',true);
+
+    }
+    limpiarFiltrosActivosDetalleOrden(){
+        cantidadFiltrosActivosDetalle=0;
+        document.querySelector("form[id='formFiltroListaItemsOrdenElaboradas'] input[name='chkTipoOrden']").checked=false;
+        document.querySelector("form[id='formFiltroListaItemsOrdenElaboradas'] select[name='tipoOrden']").setAttribute('disabled',true);
+        document.querySelector("form[id='formFiltroListaItemsOrdenElaboradas'] input[name='chkVinculadoPor']").checked=false;
+        document.querySelector("form[id='formFiltroListaItemsOrdenElaboradas'] select[name='vinculadoPor']").setAttribute('disabled',true);
+        document.querySelector("form[id='formFiltroListaItemsOrdenElaboradas'] input[name='chkEmpresa']").checked=false;
+        document.querySelector("form[id='formFiltroListaItemsOrdenElaboradas'] select[name='empresa']").setAttribute('disabled',true);
+        document.querySelector("form[id='formFiltroListaItemsOrdenElaboradas'] input[name='chkSede']").checked=false;
+        document.querySelector("form[id='formFiltroListaItemsOrdenElaboradas'] select[name='sede']").setAttribute('disabled',true);
+        document.querySelector("form[id='formFiltroListaItemsOrdenElaboradas'] input[name='chkTipoProveedor']").checked=false;
+        document.querySelector("form[id='formFiltroListaItemsOrdenElaboradas'] select[name='tipoProveedor']").setAttribute('disabled',true);
+        document.querySelector("form[id='formFiltroListaItemsOrdenElaboradas'] input[name='chkEnAlmacen']").checked=false;
+        document.querySelector("form[id='formFiltroListaItemsOrdenElaboradas'] select[name='enAlmacen']").setAttribute('disabled',true);
+        document.querySelector("form[id='formFiltroListaItemsOrdenElaboradas'] input[name='chkSubtotal']").checked=false;
+        document.querySelector("form[id='formFiltroListaItemsOrdenElaboradas'] select[name='signoSubtotal']").setAttribute('disabled',true);
+        document.querySelector("form[id='formFiltroListaItemsOrdenElaboradas'] input[name='subtotal']").setAttribute('disabled',true);
+        document.querySelector("form[id='formFiltroListaItemsOrdenElaboradas'] input[name='chkEstado']").checked=false;
+        document.querySelector("form[id='formFiltroListaItemsOrdenElaboradas'] select[name='estado']").setAttribute('disabled',true);
+
+    }
 
     filtroTablaListaOrdenesVistaCabecera(){
         $('#modal-filtro-lista-ordenes-elaboradas').modal({
@@ -64,25 +112,25 @@ class ListaOrdenView {
 
     chkTipoOrden(e) {
         if (e.target.checked == true) {
-            document.querySelector("form[id="+(listaOrdenView.getNameModalActive())+"] select[name='tipoOrden']").removeAttribute('readOnly');
+            document.querySelector("form[id="+(listaOrdenView.getNameModalActive())+"] select[name='tipoOrden']").removeAttribute('disabled');
         } else {
-            document.querySelector("form[id="+(listaOrdenView.getNameModalActive())+"] select[name='tipoOrden']").setAttribute('readOnly', true);
+            document.querySelector("form[id="+(listaOrdenView.getNameModalActive())+"] select[name='tipoOrden']").setAttribute('disabled', true);
         }
     }
 
     chkVinculadoPor(e) {
         if (e.target.checked == true) {
-            document.querySelector("form[id="+(listaOrdenView.getNameModalActive())+"] select[name='vinculadoPor']").removeAttribute('readOnly');
+            document.querySelector("form[id="+(listaOrdenView.getNameModalActive())+"] select[name='vinculadoPor']").removeAttribute('disabled');
         } else {
-            document.querySelector("form[id="+(listaOrdenView.getNameModalActive())+"] select[name='vinculadoPor']").setAttribute('readOnly', true);
+            document.querySelector("form[id="+(listaOrdenView.getNameModalActive())+"] select[name='vinculadoPor']").setAttribute('disabled', true);
         }
     }
 
     chkEmpresa(e) {
         if (e.target.checked == true) {
-            document.querySelector("form[id="+(listaOrdenView.getNameModalActive())+"] select[name='empresa']").removeAttribute('readOnly');
+            document.querySelector("form[id="+(listaOrdenView.getNameModalActive())+"] select[name='empresa']").removeAttribute('disabled');
         } else {
-            document.querySelector("form[id="+(listaOrdenView.getNameModalActive())+"] select[name='empresa']").setAttribute('readOnly', true);
+            document.querySelector("form[id="+(listaOrdenView.getNameModalActive())+"] select[name='empresa']").setAttribute('disabled', true);
         }
     }
 
@@ -90,56 +138,56 @@ class ListaOrdenView {
         if (e.target.checked == true) {
             let idEmpresa = document.querySelector("form[id="+(listaOrdenView.getNameModalActive())+"] select[name='empresa']").value;
             if(idEmpresa>0){
-                document.querySelector("form[id="+(listaOrdenView.getNameModalActive())+"] select[name='sede']").removeAttribute('readOnly');
+                document.querySelector("form[id="+(listaOrdenView.getNameModalActive())+"] select[name='sede']").removeAttribute('disabled');
             }else{
                 alert("antes debe seleccionar una empresa");
                 document.querySelector("form[id="+(listaOrdenView.getNameModalActive())+"] input[name='chkSede']").checked=false;
-                document.querySelector("form[id="+(listaOrdenView.getNameModalActive())+"] select[name='sede']").setAttribute('readOnly', true);
+                document.querySelector("form[id="+(listaOrdenView.getNameModalActive())+"] select[name='sede']").setAttribute('disabled', true);
             }
         } else {
-            document.querySelector("form[id="+(listaOrdenView.getNameModalActive())+"] select[name='sede']").setAttribute('readOnly', true);
+            document.querySelector("form[id="+(listaOrdenView.getNameModalActive())+"] select[name='sede']").setAttribute('disabled', true);
         }
     }
 
     chkTipoProveedor(e) {
         if (e.target.checked == true) {
-            document.querySelector("form[id="+(listaOrdenView.getNameModalActive())+"] select[name='tipoProveedor']").removeAttribute('readOnly');
+            document.querySelector("form[id="+(listaOrdenView.getNameModalActive())+"] select[name='tipoProveedor']").removeAttribute('disabled');
         } else {
-            document.querySelector("form[id="+(listaOrdenView.getNameModalActive())+"] select[name='tipoProveedor']").setAttribute('readOnly', true);
+            document.querySelector("form[id="+(listaOrdenView.getNameModalActive())+"] select[name='tipoProveedor']").setAttribute('disabled', true);
         }
     }
 
     chkEnAlmacen(e) {
         if (e.target.checked == true) {
-            document.querySelector("form[id="+(listaOrdenView.getNameModalActive())+"] select[name='enAlmacen']").removeAttribute('readOnly');
+            document.querySelector("form[id="+(listaOrdenView.getNameModalActive())+"] select[name='enAlmacen']").removeAttribute('disabled');
         } else {
-            document.querySelector("form[id="+(listaOrdenView.getNameModalActive())+"] select[name='enAlmacen']").setAttribute('readOnly', true);
+            document.querySelector("form[id="+(listaOrdenView.getNameModalActive())+"] select[name='enAlmacen']").setAttribute('disabled', true);
         }
     }
 
     chkMontoOrden(e) {
         if (e.target.checked == true) {
-            document.querySelector("form[id="+(listaOrdenView.getNameModalActive())+"] select[name='signoTotalOrden']").removeAttribute('readOnly');
-            document.querySelector("form[id="+(listaOrdenView.getNameModalActive())+"] input[name='montoTotalOrden']").removeAttribute('readOnly');
+            document.querySelector("form[id="+(listaOrdenView.getNameModalActive())+"] select[name='signoTotalOrden']").removeAttribute('disabled');
+            document.querySelector("form[id="+(listaOrdenView.getNameModalActive())+"] input[name='montoTotalOrden']").removeAttribute('disabled');
         } else {
-            document.querySelector("form[id="+(listaOrdenView.getNameModalActive())+"] select[name='signoTotalOrden']").setAttribute('readOnly', true);
-            document.querySelector("form[id="+(listaOrdenView.getNameModalActive())+"] input[name='montoTotalOrden']").setAttribute('readOnly', true);
+            document.querySelector("form[id="+(listaOrdenView.getNameModalActive())+"] select[name='signoTotalOrden']").setAttribute('disabled', true);
+            document.querySelector("form[id="+(listaOrdenView.getNameModalActive())+"] input[name='montoTotalOrden']").setAttribute('disabled', true);
         }
     }
     chkSubtotal(e) {
         if (e.target.checked == true) {
-            document.querySelector("form[id="+(listaOrdenView.getNameModalActive())+"] select[name='signoSubtotal']").removeAttribute('readOnly');
-            document.querySelector("form[id="+(listaOrdenView.getNameModalActive())+"] input[name='subtotal']").removeAttribute('readOnly');
+            document.querySelector("form[id="+(listaOrdenView.getNameModalActive())+"] select[name='signoSubtotal']").removeAttribute('disabled');
+            document.querySelector("form[id="+(listaOrdenView.getNameModalActive())+"] input[name='subtotal']").removeAttribute('disabled');
         } else {
-            document.querySelector("form[id="+(listaOrdenView.getNameModalActive())+"] select[name='signoSubtotal']").setAttribute('readOnly', true);
-            document.querySelector("form[id="+(listaOrdenView.getNameModalActive())+"] input[name='subtotal']").setAttribute('readOnly', true);
+            document.querySelector("form[id="+(listaOrdenView.getNameModalActive())+"] select[name='signoSubtotal']").setAttribute('disabled', true);
+            document.querySelector("form[id="+(listaOrdenView.getNameModalActive())+"] input[name='subtotal']").setAttribute('disabled', true);
         }
     }
     chkEstado(e) {
         if (e.target.checked == true) {
-            document.querySelector("form[id="+(listaOrdenView.getNameModalActive())+"] select[name='estado']").removeAttribute('readOnly');
+            document.querySelector("form[id="+(listaOrdenView.getNameModalActive())+"] select[name='estado']").removeAttribute('disabled');
         } else {
-            document.querySelector("form[id="+(listaOrdenView.getNameModalActive())+"] select[name='estado']").setAttribute('readOnly', true);
+            document.querySelector("form[id="+(listaOrdenView.getNameModalActive())+"] select[name='estado']").setAttribute('disabled', true);
         }
     }
 
@@ -171,7 +219,14 @@ class ListaOrdenView {
         });
     }
 
+    mostrarCantidadFiltrosActivosCabeceraOrden(){
+        document.querySelector("button[id='btnFiltroListaOrdenCabecera'] span[id='cantidadFiltrosActivosCabecera']").textContent= cantidadFiltrosActivosCabecera;
 
+    }
+    mostrarCantidadFiltrosActivosDetalleOrden(){
+        document.querySelector("button[id='btnFiltroListaOrdenDetalle'] span[id='cantidadFiltrosActivosDetalle']").textContent= cantidadFiltrosActivosDetalle;
+
+    }
 
     aplicarFiltrosVistaCabeceraOrden(){
         let chkTipoOrden =document.querySelector("form[id='formFiltroListaOrdenesElaboradas'] input[name='chkTipoOrden']").checked;
@@ -193,30 +248,38 @@ class ListaOrdenView {
         let montoTotalOrden = null;
         let estado = null;
 
+
         if(chkTipoOrden == true){
             tipoOrden= document.querySelector("form[id='formFiltroListaOrdenesElaboradas'] select[name='tipoOrden']").value;
+            cantidadFiltrosActivosCabecera++;
         }
         if(chkVinculadoPor == true){
+            cantidadFiltrosActivosCabecera++;
             vinculadoPor= document.querySelector("form[id='formFiltroListaOrdenesElaboradas'] select[name='vinculadoPor']").value;
 
         }
         if(chkEmpresa == true){
+            cantidadFiltrosActivosCabecera++;
             empresa= document.querySelector("form[id='formFiltroListaOrdenesElaboradas'] select[name='empresa']").value;
 
         }
         if(chkSede == true){
+            cantidadFiltrosActivosCabecera++;
             sede= document.querySelector("form[id='formFiltroListaOrdenesElaboradas'] select[name='sede']").value;
             
         }
         if(chkTipoProveedor == true){
+            cantidadFiltrosActivosCabecera++;
             tipoProveedor= document.querySelector("form[id='formFiltroListaOrdenesElaboradas'] select[name='tipoProveedor']").value;
 
         }
         if(chkEnAlmacen == true){
+            cantidadFiltrosActivosCabecera++;
             enAlmacen= document.querySelector("form[id='formFiltroListaOrdenesElaboradas'] select[name='enAlmacen']").value;
 
         }
         if(chkMontoOrden == true){
+            cantidadFiltrosActivosCabecera++;
             signoTotalOrden= document.querySelector("form[id='formFiltroListaOrdenesElaboradas'] select[name='signoTotalOrden']").value;
             montoTotalOrden= document.querySelector("form[id='formFiltroListaOrdenesElaboradas'] input[name='montoTotalOrden']").value;
 
@@ -226,6 +289,8 @@ class ListaOrdenView {
             }
         }
         if(chkEstado == true){
+            cantidadFiltrosActivosCabecera++;
+
             estado= document.querySelector("form[id='formFiltroListaOrdenesElaboradas'] select[name='estado']").value;
 
         }
@@ -267,30 +332,43 @@ class ListaOrdenView {
 
         if(chkTipoOrden == true){
             tipoOrden= document.querySelector("form[id='formFiltroListaItemsOrdenElaboradas'] select[name='tipoOrden']").value;
+            cantidadFiltrosActivosDetalle++;
         }
         if(chkVinculadoPor == true){
             vinculadoPor= document.querySelector("form[id='formFiltroListaItemsOrdenElaboradas'] select[name='vinculadoPor']").value;
+            cantidadFiltrosActivosDetalle++;
+
 
         }
         if(chkEmpresa == true){
             empresa= document.querySelector("form[id='formFiltroListaItemsOrdenElaboradas'] select[name='empresa']").value;
+            cantidadFiltrosActivosDetalle++;
+
 
         }
         if(chkSede == true){
             sede= document.querySelector("form[id='formFiltroListaItemsOrdenElaboradas'] select[name='sede']").value;
+            cantidadFiltrosActivosDetalle++;
+
             
         }
         if(chkTipoProveedor == true){
             tipoProveedor= document.querySelector("form[id='formFiltroListaItemsOrdenElaboradas'] select[name='tipoProveedor']").value;
+            cantidadFiltrosActivosDetalle++;
+
 
         }
         if(chkEnAlmacen == true){
             enAlmacen= document.querySelector("form[id='formFiltroListaItemsOrdenElaboradas'] select[name='enAlmacen']").value;
+            cantidadFiltrosActivosDetalle++;
+
 
         }
         if(chkSubtotal == true){
             signoSubtotal= document.querySelector("form[id='formFiltroListaItemsOrdenElaboradas'] select[name='signoSubtotal']").value;
             subtotal= document.querySelector("form[id='formFiltroListaItemsOrdenElaboradas'] input[name='subtotal']").value;
+            cantidadFiltrosActivosDetalle++;
+
 
             if(subtotal <= 0 || subtotal==''){
                 alert("Debe igresar un monto mayor a cero");
@@ -299,6 +377,8 @@ class ListaOrdenView {
         }
         if(chkEstado == true){
             estado= document.querySelector("form[id='formFiltroListaItemsOrdenElaboradas'] select[name='estado']").value;
+            cantidadFiltrosActivosDetalle++;
+
 
         }
 
@@ -384,12 +464,16 @@ class ListaOrdenView {
                 let listaOrdenes_filter = document.querySelector("div[id='listaOrdenes_filter']");
                 var buttonFiler = document.createElement("button");
                 buttonFiler.type = "button";
+                buttonFiler.id = "btnFiltroListaOrdenCabecera";
                 buttonFiler.className = "btn btn-default pull-left";
                 buttonFiler.style = "margin-right: 30px;";
-                buttonFiler.innerHTML = "<i class='fas fa-filter'></i> Filtros";
+                buttonFiler.innerHTML = "<i class='fas fa-filter'></i> Filtros: <span id='cantidadFiltrosActivosCabecera'>0</span>";
                 buttonFiler.addEventListener('click', listaOrdenView.filtroTablaListaOrdenesVistaCabecera, false);
 
-                listaOrdenes_filter.appendChild(buttonFiler);                
+                listaOrdenes_filter.appendChild(buttonFiler);     
+                
+                listaOrdenView.mostrarCantidadFiltrosActivosCabeceraOrden();
+
 
                 // var divGroupBtn = document.createElement("div");
                 // divGroupBtn.className = "input-group-btn";
@@ -630,12 +714,16 @@ class ListaOrdenView {
                 let listaDetalleOrden_filter = document.querySelector("div[id='listaDetalleOrden_filter']");
                 var buttonFiler = document.createElement("button");
                 buttonFiler.type = "button";
+                buttonFiler.id = "btnFiltroListaOrdenDetalle";
                 buttonFiler.className = "btn btn-default pull-left";
                 buttonFiler.style = "margin-right: 30px;";
-                buttonFiler.innerHTML = "<i class='fas fa-filter'></i> Filtros";
+                buttonFiler.innerHTML = "<i class='fas fa-filter'></i> Filtros: <span id='cantidadFiltrosActivosDetalle'>0</span>";
                 buttonFiler.addEventListener('click', listaOrdenView.filtroTablaListaOrdenesVistaDetalle, false);
 
-                listaDetalleOrden_filter.appendChild(buttonFiler);                
+                listaDetalleOrden_filter.appendChild(buttonFiler);      
+                
+                listaOrdenView.mostrarCantidadFiltrosActivosDetalleOrden();
+
             
             }
             // 'columnDefs': [{ 'aTargets': [0], 'sClass': 'invisible'}],
