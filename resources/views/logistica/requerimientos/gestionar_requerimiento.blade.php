@@ -41,25 +41,26 @@
         <input type="hidden" name="estado">
 
         <div class="row">
-            <div class="col-md-6" id="group-barra-secundaria">
-                <div class="input-group pull-left" style="display:flex;">
-                        <button type="button" name="btn-imprimir-requerimento-pdf" class="btn btn-info btn-sm" onclick="ImprimirRequerimientoPdf()" disabled><i class="fas fa-print"></i></button>
-                        &nbsp;
-                        <button type="button" name="btn-migrar-requerimiento" class="btn btn-success btn-sm" 
-                            data-toggle="tooltip" data-placement="bottom" title="Migrar Requerimiento a Softlink"
-                            onclick="migrarRequerimiento()" disabled><i class="fas fa-paper-plane"></i></button>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="pull-right" id="estado-requerimiento">
-                    <h2 class="text-center"><span class="label" id="estado_doc">&nbsp;</span></h2>
-                </div>
-            </div>
+                <!-- <div class="col-md-6" id="group-barra-secundaria">
+                    <div class="input-group pull-left" style="display:flex;">
+                            &nbsp;
+                            <button type="button" name="btn-migrar-requerimiento" class="btn btn-success btn-sm" 
+                                data-toggle="tooltip" data-placement="bottom" title="Migrar Requerimiento a Softlink"
+                                onclick="migrarRequerimiento()" disabled><i class="fas fa-paper-plane"></i></button>
+                    </div>
+                </div> -->
+ 
         </div>
 
         <div class="row">
             <div class="col-md-12">
-                <h4 style="display:flex;justify-content: space-between;">General &nbsp;<span style="color:blue;" name="codigo"></span></h4> 
+                <h4 style="display:flex;justify-content: space-between;">General 
+                    <div>
+                        <span class="label" id="estado_doc">&nbsp;</span>
+                        <span style="color:blue;" name="codigo"></span>
+                        <button type="button" name="btn-imprimir-requerimento-pdf" class="btn btn-info btn-sm" onclick="ImprimirRequerimientoPdf()" disabled><i class="fas fa-print"></i></button>
+                    </div>
+                </h4> 
                 <fieldset class="group-table">   
                     <div class="row">
                         <div class="col-md-2" id="group-tipo_requerimiento">
