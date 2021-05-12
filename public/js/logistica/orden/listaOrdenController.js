@@ -18,8 +18,8 @@ class ListaOrdenCtrl {
     }
 
     
-    obtenerListaOrdenesElaboradas(tipoOrden, vinculadoPor, empresa, sede, tipoProveedor, enAlmacen, signoOrden, montoOrden, estado) {
-        return listaOrdenModel.obtenerListaOrdenesElaboradas(tipoOrden, vinculadoPor, empresa, sede, tipoProveedor, enAlmacen, signoOrden, montoOrden, estado);
+    obtenerListaOrdenesElaboradas(tipoOrden, vinculadoPor, empresa, sede, tipoProveedor, enAlmacen, signoTotalOrden, montoTotalOrden, estado) {
+        return listaOrdenModel.obtenerListaOrdenesElaboradas(tipoOrden, vinculadoPor, empresa, sede, tipoProveedor, enAlmacen, signoTotalOrden, montoTotalOrden, estado);
 
     }
 
@@ -78,8 +78,8 @@ class ListaOrdenCtrl {
     // lista por item
 
 
-    obtenerListaDetalleOrdenesElaboradas() {
-        return listaOrdenModel.obtenerListaDetalleOrdenesElaboradas();
+    obtenerListaDetalleOrdenesElaboradas(tipoOrden, vinculadoPor, empresa, sede, tipoProveedor, enAlmacen, signoSubtotal, subtotal, estado) {
+        return listaOrdenModel.obtenerListaDetalleOrdenesElaboradas(tipoOrden, vinculadoPor, empresa, sede, tipoProveedor, enAlmacen, signoSubtotal, subtotal, estado);
         
     }
     

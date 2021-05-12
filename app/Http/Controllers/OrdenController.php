@@ -205,7 +205,56 @@ class OrdenController extends Controller
 
    
 
-    public function listarDetalleOrden(){
+    public function listarDetalleOrden($tipoOrden, $vinculadoPor, $empresa, $sede, $tipoProveedor, $enAlmacen, $signoSubTotal, $subtotal, $estado){
+
+        switch ($signoSubTotal) {
+            case 'MAYOR':
+                $simboloSubtotal='>';
+
+                break;
+            
+            case 'MENOR':
+                $simboloSubtotal='<';
+
+                break;
+            
+            case 'IGUAL':
+                $simboloSubtotal='=';
+
+                break;
+            
+            case 'MAYOR_IGUAL':
+                $simboloSubtotal='>=';
+
+                break;
+            
+            case 'MENOR_IGUAL':
+                $simboloSubtotal='<=';
+                break;
+            
+            default:
+                $simboloSubtotal='>';
+
+                break;
+        }
+
+        $subtotal= $subtotal >0?$subtotal:'0';
+
+        if($vinculadoPor== 'REQUERIMIENTO'){
+            $whereVinculadoPor='log_det_ord_compra.id_detalle_requerimiento > 0';
+        }elseif($vinculadoPor == 'CUADRO_COMPARATIVO'){
+            $whereVinculadoPor='log_det_ord_compra.detalle_cuadro_comparativo_id > 0';
+        }else{
+            $whereVinculadoPor='log_det_ord_compra.id_detalle_requerimiento >0 OR log_det_ord_compra.detalle_cuadro_comparativo_id > 0';
+        }
+
+        if($enAlmacen == 'SI'){
+            $whereEnAlmacen='guia_com_det.id_guia_com_det > 0';
+        }else{
+            $whereEnAlmacen='guia_com_det.id_guia_com_det is null';
+        }
+
+
         $orden_list=[];
         $detalle_orden_list=[];
 
@@ -286,8 +335,29 @@ class OrdenController extends Controller
         ->leftJoin('comercial.com_cliente','com_cliente.id_cliente','=','alm_req.id_cliente')
         ->leftJoin('contabilidad.adm_contri as contri_cli','contri_cli.id_contribuyente','=','com_cliente.id_contribuyente')
 
-        ->where([['log_ord_compra.estado', '!=', 7]])
+        ->where([
+            ['log_ord_compra.estado', '!=', 7],
+            $tipoOrden >0 ? ['log_ord_compra.id_tp_documento',$tipoOrden]:[null],
+            $empresa >0 ? ['sis_sede.id_empresa',$empresa]:[null],
+            $sede >0 ? ['sis_sede.id_sede',$sede]:[null],
+            ($tipoProveedor =='NACIONAL') ? ['adm_contri.id_pais','=','170']:($tipoProveedor =='EXTRANJERO' ? ['adm_contri.id_pais','=','170']:[null]),
+            $estado >0 ? ['log_ord_compra.estado',$estado]:[null]
+            ])
+        ->whereIn('log_ord_compra.id_orden_compra', function($query) use ($whereVinculadoPor)
+        {
+            $query->select('log_det_ord_compra.id_orden_compra')
+                ->from('logistica.log_det_ord_compra')
+                ->whereRaw($whereVinculadoPor);
+        })
+        ->whereIn('log_ord_compra.id_orden_compra', function($query) use ($whereEnAlmacen)
+        {
+            $query->select('log_det_ord_compra.id_orden_compra')
+                ->from('logistica.log_det_ord_compra')
+                ->leftjoin('almacen.guia_com_det', 'guia_com_det.id_oc_det', '=', 'log_det_ord_compra.id_detalle_orden')
+                ->whereRaw($whereEnAlmacen);
+        })
         ->orderBy('log_ord_compra.fecha','desc')
+        ->whereRaw('coalesce((log_det_ord_compra.cantidad * log_det_ord_compra.precio) ,0) '.$simboloSubtotal.' '.$subtotal)
         ->get();
 
         $orden_list = collect($orden_obj)->map(function($x){ return (array) $x; })->toArray(); 
@@ -788,7 +858,7 @@ class OrdenController extends Controller
                 break;
             
             case 'MAYOR_IGUAL':
-                $simboloMontoOrden='<=';
+                $simboloMontoOrden='>=';
 
                 break;
             

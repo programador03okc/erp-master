@@ -70,7 +70,7 @@
                     <th >OC Softlink</th>
                     <th >OCAM</th>
                     <th >Cliente</th>
-                    <th >Mayorista</th>
+                    <th >Proveedor</th>
                     <th >Marca</th>
                     <th >Categoría</th>
                     <th >Part Number</th>
@@ -94,6 +94,7 @@
 
 
 @include('logistica.gestion_logistica.compras.ordenes.listado.modal_filtro_lista_ordenes_elaboradas')
+@include('logistica.gestion_logistica.compras.ordenes.listado.modal_filtro_lista_items_orden_elaboradas')
 @include('logistica.gestion_logistica.compras.ordenes.listado.modal_aprobar_orden')
 @include('logistica.gestion_logistica.compras.ordenes.listado.registrar_pago')
 

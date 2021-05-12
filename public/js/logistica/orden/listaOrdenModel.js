@@ -26,11 +26,11 @@ class ListaOrdenModel {
     } 
     // 
 
-    obtenerListaOrdenesElaboradas(tipoOrden=null, vinculadoPor=null, empresa=null, sede=null, tipoProveedor=null, enAlmacen=null, signoOrden=null, montoOrden=null, estado=null){
+    obtenerListaOrdenesElaboradas(tipoOrden=null, vinculadoPor=null, empresa=null, sede=null, tipoProveedor=null, enAlmacen=null, signoTotalOrden=null, montoTotalOrden=null, estado=null){
         return new Promise(function(resolve, reject) {
             $.ajax({
                 type: 'GET',
-                url:`listar-ordenes/${tipoOrden}/${vinculadoPor}/${empresa}/${sede}/${tipoProveedor}/${enAlmacen}/${signoOrden}/${montoOrden}/${estado}`,
+                url:`listar-ordenes/${tipoOrden}/${vinculadoPor}/${empresa}/${sede}/${tipoProveedor}/${enAlmacen}/${signoTotalOrden}/${montoTotalOrden}/${estado}`,
                 dataType: 'JSON',
                 success(response) {
                     resolve(response.data);
@@ -60,11 +60,11 @@ class ListaOrdenModel {
 
     // lista por item
 
-    obtenerListaDetalleOrdenesElaboradas(){
+    obtenerListaDetalleOrdenesElaboradas(tipoOrden=null, vinculadoPor=null, empresa=null, sede=null, tipoProveedor=null, enAlmacen=null, signoSubtotal=null, subtotal=null, estado=null){
         return new Promise(function(resolve, reject) {
             $.ajax({
                 type: 'GET',
-                url:`listar-detalle-orden`,
+                url:`listar-detalle-orden/${tipoOrden}/${vinculadoPor}/${empresa}/${sede}/${tipoProveedor}/${enAlmacen}/${signoSubtotal}/${subtotal}/${estado}`,
                 dataType: 'JSON',
                 success(response) {
                     resolve(response.data);

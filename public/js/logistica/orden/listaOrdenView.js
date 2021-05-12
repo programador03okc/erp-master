@@ -11,12 +11,7 @@ class ListaOrdenView {
         body.classList.add("sidebar-collapse"); 
     }
 
-    filtroTablaListaOrdenes(){
-        $('#modal-filtro-lista-ordenes-elaboradas').modal({
-            show: true,
-            backdrop: 'true'
-        });
-    }
+
 
     // botonera secundaria 
     tipoVistaPorCabecera(){
@@ -41,76 +36,110 @@ class ListaOrdenView {
     
     // filtros
 
+    filtroTablaListaOrdenesVistaCabecera(){
+        $('#modal-filtro-lista-ordenes-elaboradas').modal({
+            show: true,
+            backdrop: 'true'
+        });
+    }
+
+    filtroTablaListaOrdenesVistaDetalle(){
+        $('#modal-filtro-lista-items-orden-elaboradas').modal({
+            show: true,
+            backdrop: 'true'
+        });
+    }
+
+    getNameModalActive(){
+     
+        if(document.querySelector("div[id='modal-filtro-lista-items-orden-elaboradas']").classList.contains("in")==true){
+            return document.querySelector("div[id='modal-filtro-lista-items-orden-elaboradas'] form").getAttribute('id');
+        }else if(document.querySelector("div[id='modal-filtro-lista-ordenes-elaboradas']").classList.contains("in")==true){
+            return document.querySelector("div[id='modal-filtro-lista-ordenes-elaboradas'] form").getAttribute('id');
+        }else{
+            return null;
+        }
+    
+    }
 
     chkTipoOrden(e) {
         if (e.target.checked == true) {
-            document.querySelector("form[id='formFiltroListaOrdenesElaboradas'] select[name='tipoOrden']").removeAttribute('readOnly');
+            document.querySelector("form[id="+(listaOrdenView.getNameModalActive())+"] select[name='tipoOrden']").removeAttribute('readOnly');
         } else {
-            document.querySelector("form[id='formFiltroListaOrdenesElaboradas'] select[name='tipoOrden']").setAttribute('readOnly', true);
+            document.querySelector("form[id="+(listaOrdenView.getNameModalActive())+"] select[name='tipoOrden']").setAttribute('readOnly', true);
         }
     }
 
     chkVinculadoPor(e) {
         if (e.target.checked == true) {
-            document.querySelector("form[id='formFiltroListaOrdenesElaboradas'] select[name='vinculadoPor']").removeAttribute('readOnly');
+            document.querySelector("form[id="+(listaOrdenView.getNameModalActive())+"] select[name='vinculadoPor']").removeAttribute('readOnly');
         } else {
-            document.querySelector("form[id='formFiltroListaOrdenesElaboradas'] select[name='vinculadoPor']").setAttribute('readOnly', true);
+            document.querySelector("form[id="+(listaOrdenView.getNameModalActive())+"] select[name='vinculadoPor']").setAttribute('readOnly', true);
         }
     }
 
     chkEmpresa(e) {
         if (e.target.checked == true) {
-            document.querySelector("form[id='formFiltroListaOrdenesElaboradas'] select[name='empresa']").removeAttribute('readOnly');
+            document.querySelector("form[id="+(listaOrdenView.getNameModalActive())+"] select[name='empresa']").removeAttribute('readOnly');
         } else {
-            document.querySelector("form[id='formFiltroListaOrdenesElaboradas'] select[name='empresa']").setAttribute('readOnly', true);
+            document.querySelector("form[id="+(listaOrdenView.getNameModalActive())+"] select[name='empresa']").setAttribute('readOnly', true);
         }
     }
 
     chkSede(e) {
         if (e.target.checked == true) {
-            let idEmpresa = document.querySelector("form[id='formFiltroListaOrdenesElaboradas'] select[name='empresa']").value;
+            let idEmpresa = document.querySelector("form[id="+(listaOrdenView.getNameModalActive())+"] select[name='empresa']").value;
             if(idEmpresa>0){
-                document.querySelector("form[id='formFiltroListaOrdenesElaboradas'] select[name='sede']").removeAttribute('readOnly');
+                document.querySelector("form[id="+(listaOrdenView.getNameModalActive())+"] select[name='sede']").removeAttribute('readOnly');
             }else{
                 alert("antes debe seleccionar una empresa");
-                document.querySelector("form[id='formFiltroListaOrdenesElaboradas'] input[name='chkSede']").checked=false;
-                document.querySelector("form[id='formFiltroListaOrdenesElaboradas'] select[name='sede']").setAttribute('readOnly', true);
+                document.querySelector("form[id="+(listaOrdenView.getNameModalActive())+"] input[name='chkSede']").checked=false;
+                document.querySelector("form[id="+(listaOrdenView.getNameModalActive())+"] select[name='sede']").setAttribute('readOnly', true);
             }
         } else {
-            document.querySelector("form[id='formFiltroListaOrdenesElaboradas'] select[name='sede']").setAttribute('readOnly', true);
+            document.querySelector("form[id="+(listaOrdenView.getNameModalActive())+"] select[name='sede']").setAttribute('readOnly', true);
         }
     }
 
     chkTipoProveedor(e) {
         if (e.target.checked == true) {
-            document.querySelector("form[id='formFiltroListaOrdenesElaboradas'] select[name='tipoProveedor']").removeAttribute('readOnly');
+            document.querySelector("form[id="+(listaOrdenView.getNameModalActive())+"] select[name='tipoProveedor']").removeAttribute('readOnly');
         } else {
-            document.querySelector("form[id='formFiltroListaOrdenesElaboradas'] select[name='tipoProveedor']").setAttribute('readOnly', true);
+            document.querySelector("form[id="+(listaOrdenView.getNameModalActive())+"] select[name='tipoProveedor']").setAttribute('readOnly', true);
         }
     }
 
     chkEnAlmacen(e) {
         if (e.target.checked == true) {
-            document.querySelector("form[id='formFiltroListaOrdenesElaboradas'] select[name='enAlmacen']").removeAttribute('readOnly');
+            document.querySelector("form[id="+(listaOrdenView.getNameModalActive())+"] select[name='enAlmacen']").removeAttribute('readOnly');
         } else {
-            document.querySelector("form[id='formFiltroListaOrdenesElaboradas'] select[name='enAlmacen']").setAttribute('readOnly', true);
+            document.querySelector("form[id="+(listaOrdenView.getNameModalActive())+"] select[name='enAlmacen']").setAttribute('readOnly', true);
         }
     }
 
     chkMontoOrden(e) {
         if (e.target.checked == true) {
-            document.querySelector("form[id='formFiltroListaOrdenesElaboradas'] select[name='signoOrden']").removeAttribute('readOnly');
-            document.querySelector("form[id='formFiltroListaOrdenesElaboradas'] input[name='montoOrden']").removeAttribute('readOnly');
+            document.querySelector("form[id="+(listaOrdenView.getNameModalActive())+"] select[name='signoTotalOrden']").removeAttribute('readOnly');
+            document.querySelector("form[id="+(listaOrdenView.getNameModalActive())+"] input[name='montoTotalOrden']").removeAttribute('readOnly');
         } else {
-            document.querySelector("form[id='formFiltroListaOrdenesElaboradas'] select[name='signoOrden']").setAttribute('readOnly', true);
-            document.querySelector("form[id='formFiltroListaOrdenesElaboradas'] input[name='montoOrden']").setAttribute('readOnly', true);
+            document.querySelector("form[id="+(listaOrdenView.getNameModalActive())+"] select[name='signoTotalOrden']").setAttribute('readOnly', true);
+            document.querySelector("form[id="+(listaOrdenView.getNameModalActive())+"] input[name='montoTotalOrden']").setAttribute('readOnly', true);
+        }
+    }
+    chkSubtotal(e) {
+        if (e.target.checked == true) {
+            document.querySelector("form[id="+(listaOrdenView.getNameModalActive())+"] select[name='signoSubtotal']").removeAttribute('readOnly');
+            document.querySelector("form[id="+(listaOrdenView.getNameModalActive())+"] input[name='subtotal']").removeAttribute('readOnly');
+        } else {
+            document.querySelector("form[id="+(listaOrdenView.getNameModalActive())+"] select[name='signoSubtotal']").setAttribute('readOnly', true);
+            document.querySelector("form[id="+(listaOrdenView.getNameModalActive())+"] input[name='subtotal']").setAttribute('readOnly', true);
         }
     }
     chkEstado(e) {
         if (e.target.checked == true) {
-            document.querySelector("form[id='formFiltroListaOrdenesElaboradas'] select[name='estado']").removeAttribute('readOnly');
+            document.querySelector("form[id="+(listaOrdenView.getNameModalActive())+"] select[name='estado']").removeAttribute('readOnly');
         } else {
-            document.querySelector("form[id='formFiltroListaOrdenesElaboradas'] select[name='estado']").setAttribute('readOnly', true);
+            document.querySelector("form[id="+(listaOrdenView.getNameModalActive())+"] select[name='estado']").setAttribute('readOnly', true);
         }
     }
 
@@ -144,7 +173,7 @@ class ListaOrdenView {
 
 
 
-    aplicarFiltros(){
+    aplicarFiltrosVistaCabeceraOrden(){
         let chkTipoOrden =document.querySelector("form[id='formFiltroListaOrdenesElaboradas'] input[name='chkTipoOrden']").checked;
         let chkVinculadoPor = document.querySelector("form[id='formFiltroListaOrdenesElaboradas'] input[name='chkVinculadoPor']").checked;
         let chkEmpresa = document.querySelector("form[id='formFiltroListaOrdenesElaboradas'] input[name='chkEmpresa']").checked;
@@ -160,8 +189,8 @@ class ListaOrdenView {
         let sede = null;
         let tipoProveedor = null;
         let enAlmacen = null;
-        let signoOrden = null;
-        let montoOrden = null;
+        let signoTotalOrden = null;
+        let montoTotalOrden = null;
         let estado = null;
 
         if(chkTipoOrden == true){
@@ -188,10 +217,10 @@ class ListaOrdenView {
 
         }
         if(chkMontoOrden == true){
-            signoOrden= document.querySelector("form[id='formFiltroListaOrdenesElaboradas'] select[name='signoOrden']").value;
-            montoOrden= document.querySelector("form[id='formFiltroListaOrdenesElaboradas'] input[name='montoOrden']").value;
+            signoTotalOrden= document.querySelector("form[id='formFiltroListaOrdenesElaboradas'] select[name='signoTotalOrden']").value;
+            montoTotalOrden= document.querySelector("form[id='formFiltroListaOrdenesElaboradas'] input[name='montoTotalOrden']").value;
 
-            if(montoOrden <= 0 || montoOrden==''){
+            if(montoTotalOrden <= 0 || montoTotalOrden==''){
                 alert("Debe igresar un monto mayor a cero");
                 return false;
             }
@@ -203,17 +232,80 @@ class ListaOrdenView {
 
         $('#modal-filtro-lista-ordenes-elaboradas').modal('hide');
         console.log(tipoOrden);
-        this.obtenerListaOrdenesElaboradas(tipoOrden, vinculadoPor, empresa, sede, tipoProveedor, enAlmacen, signoOrden, montoOrden, estado);
+        this.obtenerListaOrdenesElaboradas(tipoOrden, vinculadoPor, empresa, sede, tipoProveedor, enAlmacen, signoTotalOrden, montoTotalOrden, estado);
 
-        
     }
 
-    obtenerListaOrdenesElaboradas(tipoOrden=null, vinculadoPor=null, empresa=null, sede=null, tipoProveedor=null, enAlmacen=null, signoOrden=null, montoOrden=null, estado=null){
-        listaOrdenCtrl.obtenerListaOrdenesElaboradas(tipoOrden, vinculadoPor, empresa, sede, tipoProveedor, enAlmacen, signoOrden, montoOrden, estado).then(function(res) {
+    obtenerListaOrdenesElaboradas(tipoOrden=null, vinculadoPor=null, empresa=null, sede=null, tipoProveedor=null, enAlmacen=null, signoTotalOrden=null, montoTotalOrden=null, estado=null){
+        listaOrdenCtrl.obtenerListaOrdenesElaboradas(tipoOrden, vinculadoPor, empresa, sede, tipoProveedor, enAlmacen, signoTotalOrden, montoTotalOrden, estado).then(function(res) {
             listaOrdenView.construirTablaListaOrdenesElaboradas(res);
         }).catch(function(err) {
             console.log(err)
         })
+    }
+
+
+    aplicarFiltrosVistaDetalleOrden(){
+        let chkTipoOrden =document.querySelector("form[id='formFiltroListaItemsOrdenElaboradas'] input[name='chkTipoOrden']").checked;
+        let chkVinculadoPor = document.querySelector("form[id='formFiltroListaItemsOrdenElaboradas'] input[name='chkVinculadoPor']").checked;
+        let chkEmpresa = document.querySelector("form[id='formFiltroListaItemsOrdenElaboradas'] input[name='chkEmpresa']").checked;
+        let chkSede = document.querySelector("form[id='formFiltroListaItemsOrdenElaboradas'] input[name='chkSede']").checked;
+        let chkTipoProveedor = document.querySelector("form[id='formFiltroListaItemsOrdenElaboradas'] input[name='chkTipoProveedor']").checked;
+        let chkEnAlmacen = document.querySelector("form[id='formFiltroListaItemsOrdenElaboradas'] input[name='chkEnAlmacen']").checked;
+        let chkSubtotal = document.querySelector("form[id='formFiltroListaItemsOrdenElaboradas'] input[name='chkSubtotal']").checked;
+        let chkEstado = document.querySelector("form[id='formFiltroListaItemsOrdenElaboradas'] input[name='chkEstado']").checked;
+
+        let tipoOrden = null;
+        let vinculadoPor = null;
+        let empresa = null;
+        let sede = null;
+        let tipoProveedor = null;
+        let enAlmacen = null;
+        let signoSubtotal = null;
+        let subtotal = null;
+        let estado = null;
+
+        if(chkTipoOrden == true){
+            tipoOrden= document.querySelector("form[id='formFiltroListaItemsOrdenElaboradas'] select[name='tipoOrden']").value;
+        }
+        if(chkVinculadoPor == true){
+            vinculadoPor= document.querySelector("form[id='formFiltroListaItemsOrdenElaboradas'] select[name='vinculadoPor']").value;
+
+        }
+        if(chkEmpresa == true){
+            empresa= document.querySelector("form[id='formFiltroListaItemsOrdenElaboradas'] select[name='empresa']").value;
+
+        }
+        if(chkSede == true){
+            sede= document.querySelector("form[id='formFiltroListaItemsOrdenElaboradas'] select[name='sede']").value;
+            
+        }
+        if(chkTipoProveedor == true){
+            tipoProveedor= document.querySelector("form[id='formFiltroListaItemsOrdenElaboradas'] select[name='tipoProveedor']").value;
+
+        }
+        if(chkEnAlmacen == true){
+            enAlmacen= document.querySelector("form[id='formFiltroListaItemsOrdenElaboradas'] select[name='enAlmacen']").value;
+
+        }
+        if(chkSubtotal == true){
+            signoSubtotal= document.querySelector("form[id='formFiltroListaItemsOrdenElaboradas'] select[name='signoSubtotal']").value;
+            subtotal= document.querySelector("form[id='formFiltroListaItemsOrdenElaboradas'] input[name='subtotal']").value;
+
+            if(subtotal <= 0 || subtotal==''){
+                alert("Debe igresar un monto mayor a cero");
+                return false;
+            }
+        }
+        if(chkEstado == true){
+            estado= document.querySelector("form[id='formFiltroListaItemsOrdenElaboradas'] select[name='estado']").value;
+
+        }
+
+        $('#modal-filtro-lista-items-orden-elaboradas').modal('hide');
+        
+        this.obtenerListaDetalleOrdenesElaboradas(tipoOrden, vinculadoPor, empresa, sede, tipoProveedor, enAlmacen, signoSubtotal, subtotal, estado);
+
     }
 
     construirTablaListaOrdenesElaboradas(data){
@@ -295,7 +387,7 @@ class ListaOrdenView {
                 buttonFiler.className = "btn btn-default pull-left";
                 buttonFiler.style = "margin-right: 30px;";
                 buttonFiler.innerHTML = "<i class='fas fa-filter'></i> Filtros";
-                buttonFiler.addEventListener('click', listaOrdenView.filtroTablaListaOrdenes, false);
+                buttonFiler.addEventListener('click', listaOrdenView.filtroTablaListaOrdenesVistaCabecera, false);
 
                 listaOrdenes_filter.appendChild(buttonFiler);                
 
@@ -421,8 +513,8 @@ class ListaOrdenView {
 
     // vista nivel de items
 
-    obtenerListaDetalleOrdenesElaboradas(){
-        listaOrdenCtrl.obtenerListaDetalleOrdenesElaboradas().then(function(res) {
+    obtenerListaDetalleOrdenesElaboradas(tipoOrden=null, vinculadoPor=null, empresa=null, sede=null, tipoProveedor=null, enAlmacen=null, signoSubtotal=null, Subtotal=null, estado=null){
+        listaOrdenCtrl.obtenerListaDetalleOrdenesElaboradas(tipoOrden, vinculadoPor, empresa, sede, tipoProveedor, enAlmacen, signoSubtotal, Subtotal, estado).then(function(res) {
             listaOrdenView.construirTablaListaDetalleOrdenesElaboradas(res);
         }).catch(function(err) {
             console.log(err)
@@ -532,7 +624,20 @@ class ListaOrdenView {
                                 '</div>');
                     }   
                 }   
-            ]
+            ],
+            "initComplete": function() {
+
+                let listaDetalleOrden_filter = document.querySelector("div[id='listaDetalleOrden_filter']");
+                var buttonFiler = document.createElement("button");
+                buttonFiler.type = "button";
+                buttonFiler.className = "btn btn-default pull-left";
+                buttonFiler.style = "margin-right: 30px;";
+                buttonFiler.innerHTML = "<i class='fas fa-filter'></i> Filtros";
+                buttonFiler.addEventListener('click', listaOrdenView.filtroTablaListaOrdenesVistaDetalle, false);
+
+                listaDetalleOrden_filter.appendChild(buttonFiler);                
+            
+            }
             // 'columnDefs': [{ 'aTargets': [0], 'sClass': 'invisible'}],
         });
     }
