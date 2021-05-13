@@ -369,7 +369,7 @@ class RequerimientoPendienteView {
 
 
     guardarAtendidoConAlmacen() {
-        requerimientoPendienteCtrl.guardarAtendidoConAlmacen().then(function (res) {
+        requerimientoPendienteCtrl.guardarAtendidoConAlmacen().then(function(res) {
             if (res.update_det_req > 0) {
                 alert("Se realizo con éxito la reserva");
                 requerimientoPendienteCtrl.getDataItemsRequerimientoParaAtenderConAlmacen(res.id_requerimiento).then(function (res) {

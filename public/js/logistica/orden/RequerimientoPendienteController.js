@@ -135,18 +135,19 @@ class RequerimientoPendienteCtrl{
         itemsBaseList = itemsParaAtenderConAlmacenList.filter(function( obj ) {
             return (obj.tiene_transformacion ==false);
         });
-        console.log(itemsBaseList);
+        
         newItemsParaAtenderConAlmacenList = itemsParaAtenderConAlmacenList.filter(function( obj ) {
             return (obj.id_almacen_reserva >0) && (obj.cantidad_a_atender >0);
         });
-        console.log(newItemsParaAtenderConAlmacenList);
         var hasCantidadNoPermitida = false;
         newItemsParaAtenderConAlmacenList.forEach(element => {
-            if(element.cantidad_a_atender > element.cantidad){
+        
+            if(parseInt(element.cantidad_a_atender) > parseInt(element.cantidad)){
                 alert("No puede reservar una 'cantidad a atender' mayor a la 'cantidad' ");
                 hasCantidadNoPermitida=true;
             } 
         });
+        
         if(hasCantidadNoPermitida== false){
             if(newItemsParaAtenderConAlmacenList.length >0){
                 return requerimientoPendienteModel.guardarAtendidoConAlmacen({'lista_items_reservar':newItemsParaAtenderConAlmacenList,'lista_items_base':itemsBaseList});
