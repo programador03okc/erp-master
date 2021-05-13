@@ -42,7 +42,7 @@
 
                         <div class="col-md-2" id="group-fecha_orden">
                             <h5>Moneda</h5>
-                            <select class="form-control activation" name="id_moneda" >
+                            <select class="form-control activation" name="id_moneda" onChange="ordenView.changeMoneda(this);">
                                 @foreach ($tp_moneda as $tpm)
                                     <option value="{{$tpm->id_moneda}}" data-simbolo-moneda="{{$tpm->simbolo}}" >{{$tpm->descripcion}} ( {{$tpm->simbolo}} )</option>
                                 @endforeach
@@ -263,11 +263,19 @@
             </div>
             <div class="col-md-12">
                 <div class="row">
-                    <div class="col-md-8"></div>
-                        <div class="col-md-4">
+                    <div class="col-md-7"></div>
+                        <div class="col-md-3" id="pie-tabla" style="text-align: right;">
                             <dl class="dl-horizontal">
-                                <dt>Total:</dt>
-                                <dd class="text-center"><var name=total></var></dd>
+                                <dt>Monto neto: &nbsp;<var name="simboloMoneda"></var></dt>
+                                <dd class="text-right"> <var name=montoNeto></var></dd>
+                            </dl>
+                            <dl class="dl-horizontal">
+                                <dt>IGV: &nbsp;<var name="simboloMoneda"></var></dt>
+                                <dd class="text-right"><var name=igv></var></dd>
+                            </dl>
+                            <dl class="dl-horizontal">
+                                <dt>Monto total: &nbsp;<var name="simboloMoneda"></var></dt>
+                                <dd class="text-right"><var name=montoTotal></var></dd>
                             </dl>
                         </div>
                     </div>

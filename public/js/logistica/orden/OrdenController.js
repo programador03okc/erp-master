@@ -149,6 +149,7 @@ class OrdenCtrl{
     }
 
     calcTotalDetalleRequerimiento(idDetalleRequerimientoSelected,rowNumberSelected){
+        let simbolo_moneda_selected = document.querySelector("select[name='id_moneda']")[document.querySelector("select[name='id_moneda']").selectedIndex].dataset.simboloMoneda;
         let sizeInputTotal = document.querySelectorAll("div[name='subtotal']").length;
         for (let index = 0; index < sizeInputTotal; index++) {
             let rowNumber = document.querySelectorAll("div[name='subtotal']")[index].dataset.row;
@@ -158,17 +159,23 @@ class OrdenCtrl{
                 let cantidad =( document.querySelectorAll("input[name='cantidad_a_comprar']")[index].value)>0?document.querySelectorAll("input[name='cantidad_a_comprar']")[index].value:document.querySelectorAll("input[name='cantidad']")[index].value;
                 let subtotal = (parseFloat(precio) * parseFloat(cantidad)).toFixed(2);
                 document.querySelectorAll("div[name='subtotal']")[index].textContent=subtotal;
+                document.querySelectorAll("var[name='simboloMoneda']")[index].textContent=simbolo_moneda_selected;
                 ordenCtrl.updateInObjSubtotal(rowNumberSelected,idReq,idDetalleRequerimientoSelected,subtotal);
             }
         }
         let total =0;
-        let simbolo_moneda_selected = document.querySelector("select[name='id_moneda']")[document.querySelector("select[name='id_moneda']").selectedIndex].dataset.simboloMoneda;
         for (let index = 0; index < sizeInputTotal; index++) {
             let num = document.querySelectorAll("div[name='subtotal']")[index].textContent?document.querySelectorAll("div[name='subtotal']")[index].textContent:0;
             total += parseFloat(num);
         }
-        // console.log(total);
-        document.querySelector("var[name='total']").textContent= (simbolo_moneda_selected) + (total);
+
+        let montoNeto= (Math.round(total * 100) / 100).toFixed(2);
+        let igv = (Math.round((total*0.18) * 100) / 100).toFixed(2);
+        let montoTotal= (Math.round((parseFloat(montoNeto)+parseFloat(igv)) * 100) / 100).toFixed(2)
+        document.querySelector("div[id='pie-tabla'] var[name='simboloMoneda']").textContent= simbolo_moneda_selected;
+        document.querySelector("var[name='montoNeto']").textContent=montoNeto;
+        document.querySelector("var[name='igv']").textContent= igv;
+        document.querySelector("var[name='montoTotal']").textContent= montoTotal;
     }
 
     updateInObjSubtotal(rowNumber,idReq,idDetReq,valor){
@@ -333,16 +340,6 @@ class OrdenCtrl{
         }
     }
 
-    calcTotalOrdenDetalleList(){
-        let sizeInputTotal = document.querySelectorAll("div[name='subtotal']").length;
-        let total =0;
-        let simbolo_moneda_selected = document.querySelector("select[name='id_moneda']")[document.querySelector("select[name='id_moneda']").selectedIndex].dataset.simboloMoneda;
-        for (let index = 0; index < sizeInputTotal; index++) {
-            let num = document.querySelectorAll("div[name='subtotal']")[index].textContent?document.querySelectorAll("div[name='subtotal']")[index].textContent:0;
-            total += parseFloat(num);
-        }
-        document.querySelector("var[name='total']").textContent= (simbolo_moneda_selected) + (total);
-    }
 
     updateDetalleOrdenListPrecio(event){
         let nuevoValor =event.target.value;
@@ -411,7 +408,14 @@ class OrdenCtrl{
             let num = document.querySelectorAll("div[name='subtotal']")[index].textContent?document.querySelectorAll("div[name='subtotal']")[index].textContent:0;
             total += parseFloat(num);
         }
-        document.querySelector("var[name='total']").textContent= (simbolo_moneda_selected) + (total);
+
+        let montoNeto= (Math.round(total * 100) / 100).toFixed(2);
+        let igv = (Math.round((total*0.18) * 100) / 100).toFixed(2);
+        let montoTotal= (Math.round((parseFloat(montoNeto)+parseFloat(igv)) * 100) / 100).toFixed(2)
+        document.querySelector("div[id='pie-tabla'] var[name='simboloMoneda']").textContent= simbolo_moneda_selected;
+        document.querySelector("var[name='montoNeto']").textContent=montoNeto;
+        document.querySelector("var[name='igv']").textContent= igv;
+        document.querySelector("var[name='montoTotal']").textContent= montoTotal;
     
     }
 

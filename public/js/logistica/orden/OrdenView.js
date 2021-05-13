@@ -1,6 +1,6 @@
 // ============== View =========================
 var vardataTables = funcDatatables();
-
+var simboloMoneda='';
 class OrdenView {
     init() {
         // this.renderCrearOrdenModule(null,null);
@@ -15,6 +15,25 @@ class OrdenView {
             document.querySelector("section[class='content-header']").children[0].innerHTML+=btnVinculoAReq;
     
         }  
+    }
+    changeMoneda(event){
+        simboloMoneda = event.options[event.selectedIndex].dataset.simboloMoneda;
+
+        this.updateAllSimboloMoneda();
+    }
+
+    updateAllSimboloMoneda(){
+
+        if(simboloMoneda ==''){
+            let selectMoneda= document.querySelector("select[name='id_moneda']");
+            simboloMoneda = selectMoneda.options[selectMoneda.selectedIndex].dataset.simboloMoneda;
+            
+        }
+        let simboloMonedaAll=document.querySelectorAll("var[name='simboloMoneda']");
+        simboloMonedaAll.forEach((element,indice) => {
+            simboloMonedaAll[indice].textContent=simboloMoneda;
+        });
+        
     }
 
     changeSede(obj){
@@ -75,7 +94,10 @@ class OrdenView {
         document.querySelector("input[name='ubigeo_destino']").value=data.ubigeo_empresa_sede?data.ubigeo_empresa_sede:'';
         document.querySelector("select[name='id_sede']").value=data.id_sede?data.id_sede:'';
         document.querySelector("input[name='id_cc']").value=data.id_cc?data.id_cc:'';
+        
+        this.updateAllSimboloMoneda()
     }
+
 
     listar_detalle_orden_requerimiento(data){
         $('#listaDetalleOrden').DataTable({
@@ -118,35 +140,35 @@ class OrdenView {
                 {'render':
                     function (data, type, row, meta){
                         if(row.estado ==7){
-                            return '<input type="text" class="form-control" name="precio" data-row="'+(meta.row+1)+'" data-id_requerimiento="'+(row.id_requerimiento?row.id_requerimiento:0)+'" data-id_detalle_requerimiento="'+(row.id_detalle_requerimiento?row.id_detalle_requerimiento:0)+'" value="'+(row.precio_unitario?row.precio_unitario:"")+'" onChange="ordenCtrl.updateInputPrecio(event);" style="width:70px;" disabled/>';
+                            return '<input type="number" placeholder="0.00" min="0"  class="form-control" name="precio" data-row="'+(meta.row+1)+'" data-id_requerimiento="'+(row.id_requerimiento?row.id_requerimiento:0)+'" data-id_detalle_requerimiento="'+(row.id_detalle_requerimiento?row.id_detalle_requerimiento:0)+'" value="'+(row.precio_unitario?row.precio_unitario:"")+'" onChange="ordenCtrl.updateInputPrecio(event);" style="width:70px;" disabled/>';
                         }else{
-                            return '<input type="text" class="form-control" name="precio" data-row="'+(meta.row+1)+'" data-id_requerimiento="'+(row.id_requerimiento?row.id_requerimiento:0)+'" data-id_detalle_requerimiento="'+(row.id_detalle_requerimiento?row.id_detalle_requerimiento:0)+'" value="'+(row.precio_unitario?row.precio_unitario:"")+'" onChange="ordenCtrl.updateInputPrecio(event);" style="width:70px;"/>';
+                            return '<input type="number" placeholder="0.00" min="0" class="form-control" name="precio" data-row="'+(meta.row+1)+'" data-id_requerimiento="'+(row.id_requerimiento?row.id_requerimiento:0)+'" data-id_detalle_requerimiento="'+(row.id_detalle_requerimiento?row.id_detalle_requerimiento:0)+'" value="'+(row.precio_unitario?row.precio_unitario:"")+'" onChange="ordenCtrl.updateInputPrecio(event);" style="width:70px;"/>';
                         }
                     } , 'name':'precio'
                 },
                 {'render':
                     function (data, type, row, meta){
                         if(row.estado == 7){
-                            return '<input type="text" class="form-control" name="stock_comprometido" data-row="'+(meta.row+1)+'" data-id_requerimiento="'+(row.id_requerimiento?row.id_requerimiento:0)+'" data-id_detalle_requerimiento="'+(row.id_detalle_requerimiento?row.id_detalle_requerimiento:0)+'" value="0" onkeyup ="ordenCtrl.updateInputStockComprometido(event);" onfocusin ="ordenCtrl.updateInputStockComprometido(event);" style="width: 70px;" disabled />';
+                            return '<input type="number" min="0" class="form-control" name="stock_comprometido" data-row="'+(meta.row+1)+'" data-id_requerimiento="'+(row.id_requerimiento?row.id_requerimiento:0)+'" data-id_detalle_requerimiento="'+(row.id_detalle_requerimiento?row.id_detalle_requerimiento:0)+'" value="0" onkeyup ="ordenCtrl.updateInputStockComprometido(event);" onfocusin ="ordenCtrl.updateInputStockComprometido(event);" style="width: 70px;" disabled />';
                         }else{
-                            return '<input type="text" class="form-control" name="stock_comprometido" data-row="'+(meta.row+1)+'" data-id_requerimiento="'+(row.id_requerimiento?row.id_requerimiento:0)+'" data-id_detalle_requerimiento="'+(row.id_detalle_requerimiento?row.id_detalle_requerimiento:0)+'" value="0" onkeyup ="ordenCtrl.updateInputStockComprometido(event);" onfocusin ="ordenCtrl.updateInputStockComprometido(event);" style="width: 70px;"/>';
+                            return '<input type="number" min="0" class="form-control" name="stock_comprometido" data-row="'+(meta.row+1)+'" data-id_requerimiento="'+(row.id_requerimiento?row.id_requerimiento:0)+'" data-id_detalle_requerimiento="'+(row.id_detalle_requerimiento?row.id_detalle_requerimiento:0)+'" value="0" onkeyup ="ordenCtrl.updateInputStockComprometido(event);" onfocusin ="ordenCtrl.updateInputStockComprometido(event);" style="width: 70px;"/>';
                         }
                     }, 'name':'stock_comprometido'
                 },
                 {'render':
                     function (data, type, row, meta){
                         if(row.estado == 7){
-                            return '<input type="text" class="form-control" name="cantidad_a_comprar" data-row="'+(meta.row+1)+'" data-id_requerimiento="'+(row.id_requerimiento?row.id_requerimiento:0)+'" data-id_detalle_requerimiento="'+(row.id_detalle_requerimiento?row.id_detalle_requerimiento:0)+'"   onchange="ordenCtrl.updateInputCantidadAComprar(event);" value="'+(row.cantidad_a_comprar?row.cantidad_a_comprar:row.cantidad)+'" style="width:70px;" disabled />';
+                            return '<input type="number" min="0" class="form-control" name="cantidad_a_comprar" data-row="'+(meta.row+1)+'" data-id_requerimiento="'+(row.id_requerimiento?row.id_requerimiento:0)+'" data-id_detalle_requerimiento="'+(row.id_detalle_requerimiento?row.id_detalle_requerimiento:0)+'"   onchange="ordenCtrl.updateInputCantidadAComprar(event);" value="'+(row.cantidad_a_comprar?row.cantidad_a_comprar:row.cantidad)+'" style="width:70px;" disabled />';
                         }else{
                             ordenCtrl.updateInObjCantidadAComprar((meta.row+1),(row.id_requerimiento),(row.id_detalle_requerimiento),(row.cantidad));
     
-                            return '<input type="text" class="form-control" name="cantidad_a_comprar" data-row="'+(meta.row+1)+'" data-id_requerimiento="'+(row.id_requerimiento?row.id_requerimiento:0)+'" data-id_detalle_requerimiento="'+(row.id_detalle_requerimiento?row.id_detalle_requerimiento:0)+'"   onchange="ordenCtrl.updateInputCantidadAComprar(event);" value="'+(row.cantidad_a_comprar?row.cantidad_a_comprar:row.cantidad)+'" style="width:70px;"/>';
+                            return '<input type="number" min="0" class="form-control" name="cantidad_a_comprar" data-row="'+(meta.row+1)+'" data-id_requerimiento="'+(row.id_requerimiento?row.id_requerimiento:0)+'" data-id_detalle_requerimiento="'+(row.id_detalle_requerimiento?row.id_detalle_requerimiento:0)+'"   onchange="ordenCtrl.updateInputCantidadAComprar(event);" value="'+(row.cantidad_a_comprar?row.cantidad_a_comprar:row.cantidad)+'" style="width:70px;"/>';
                         }
                     } , 'name':'cantidad_a_comprar'
                 },
                 {'render':
                     function (data, type, row, meta){
-                        return '<div name="subtotal" data-row="'+(meta.row+1)+'" data-id_requerimiento="'+(row.id_requerimiento?row.id_requerimiento:0)+'" data-id_detalle_requerimiento="'+(row.id_detalle_requerimiento?row.id_detalle_requerimiento:0)+'"></div>';
+                        return '<div style="display:flex;"><var name="simboloMoneda"></var> <div name="subtotal" data-row="'+(meta.row+1)+'" data-id_requerimiento="'+(row.id_requerimiento?row.id_requerimiento:0)+'" data-id_detalle_requerimiento="'+(row.id_detalle_requerimiento?row.id_detalle_requerimiento:0)+'">0.00</div></div>';
                     } , 'name':'subtotal'
                 },
                 {'render':
@@ -171,6 +193,9 @@ class OrdenView {
                     }
                 }
             ],
+            "initComplete": function() {
+                ordenView.updateAllSimboloMoneda();
+            },
             'rowCallback': function( row, data ) {
                 if ( data.estado == '7' )
                 { 
@@ -392,9 +417,9 @@ class OrdenView {
                 {'render':
                     function (data, type, row, meta){
                         if(row.estado ==7){
-                            return '<input type="text" class="form-control activation" name="precio" data-key="'+(row.id)+'" data-row="'+(meta.row+1)+'" data-id_requerimiento="'+(row.id_requerimiento?row.id_requerimiento:0)+'" data-id_detalle_requerimiento="'+(row.id_detalle_requerimiento?row.id_detalle_requerimiento:0)+'" value="'+(row.precio_unitario?row.precio_unitario:"")+'" onChange="ordenView.updateDetalleOrdenListPrecio(event);" style="width:70px;" disabled/>';
+                            return '<input type="number" placeholder="0.00" min="0"  class="form-control activation" name="precio" data-key="'+(row.id)+'" data-row="'+(meta.row+1)+'" data-id_requerimiento="'+(row.id_requerimiento?row.id_requerimiento:0)+'" data-id_detalle_requerimiento="'+(row.id_detalle_requerimiento?row.id_detalle_requerimiento:0)+'" value="'+(row.precio_unitario?row.precio_unitario:"")+'" onChange="ordenView.updateDetalleOrdenListPrecio(event);" style="width:70px;" disabled/>';
                         }else{
-                            return '<input type="text" class="form-control activation" name="precio" data-key="'+(row.id)+'" data-row="'+(meta.row+1)+'" data-id_requerimiento="'+(row.id_requerimiento?row.id_requerimiento:0)+'" data-id_detalle_requerimiento="'+(row.id_detalle_requerimiento?row.id_detalle_requerimiento:0)+'" value="'+(row.precio_unitario?row.precio_unitario:"")+'" onChange="ordenView.updateDetalleOrdenListPrecio(event);" style="width:70px;" '+hasAttrDisabled+'/>';
+                            return '<input type="number" placeholder="0.00" min="0" class="form-control activation" name="precio" data-key="'+(row.id)+'" data-row="'+(meta.row+1)+'" data-id_requerimiento="'+(row.id_requerimiento?row.id_requerimiento:0)+'" data-id_detalle_requerimiento="'+(row.id_detalle_requerimiento?row.id_detalle_requerimiento:0)+'" value="'+(row.precio_unitario?row.precio_unitario:"")+'" onChange="ordenView.updateDetalleOrdenListPrecio(event);" style="width:70px;" '+hasAttrDisabled+'/>';
                         }
                     } , 'name':'precio'
                 },
@@ -411,17 +436,17 @@ class OrdenView {
                     function (data, type, row, meta){
     
                         if(row.estado == 7){
-                            return '<input type="text" class="form-control activation" name="cantidad_a_comprar" data-key="'+(row.id)+'" data-row="'+(meta.row+1)+'" data-id_requerimiento="'+(row.id_requerimiento?row.id_requerimiento:0)+'" data-id_detalle_requerimiento="'+(row.id_detalle_requerimiento?row.id_detalle_requerimiento:0)+'"   onchange="ordenView.updateDetalleOrdenListCantidadAComprar(event);" value="'+(row.cantidad?row.cantidad:'')+'" style="width:70px;" disabled />';
+                            return '<input type="number" min="0" class="form-control activation" name="cantidad_a_comprar" data-key="'+(row.id)+'" data-row="'+(meta.row+1)+'" data-id_requerimiento="'+(row.id_requerimiento?row.id_requerimiento:0)+'" data-id_detalle_requerimiento="'+(row.id_detalle_requerimiento?row.id_detalle_requerimiento:0)+'"   onchange="ordenView.updateDetalleOrdenListCantidadAComprar(event);" value="'+(row.cantidad?row.cantidad:'')+'" style="width:70px;" disabled />';
                         }else{
                             // updateInObjCantidadAComprar((meta.row+1),(row.id_requerimiento),(row.id_detalle_requerimiento),(row.cantidad));
     
-                            return '<input type="text" class="form-control activation" name="cantidad_a_comprar" data-key="'+(row.id)+'" data-row="'+(meta.row+1)+'" data-id_requerimiento="'+(row.id_requerimiento?row.id_requerimiento:0)+'" data-id_detalle_requerimiento="'+(row.id_detalle_requerimiento?row.id_detalle_requerimiento:0)+'"   onchange="ordenView.updateDetalleOrdenListCantidadAComprar(event);" value="'+(row.cantidad_a_comprar?row.cantidad_a_comprar:'')+'" style="width:70px;"'+hasAttrDisabled+'/>';
+                            return '<input type="number" min="0"class="form-control activation" name="cantidad_a_comprar" data-key="'+(row.id)+'" data-row="'+(meta.row+1)+'" data-id_requerimiento="'+(row.id_requerimiento?row.id_requerimiento:0)+'" data-id_detalle_requerimiento="'+(row.id_detalle_requerimiento?row.id_detalle_requerimiento:0)+'"   onchange="ordenView.updateDetalleOrdenListCantidadAComprar(event);" value="'+(row.cantidad_a_comprar?row.cantidad_a_comprar:'')+'" style="width:70px;"'+hasAttrDisabled+'/>';
                         }
                     } , 'name':'cantidad_a_comprar'
                 },
                 {'render':
                     function (data, type, row, meta){
-                        return '<div name="subtotal" data-key="'+(row.id)+'" data-row="'+(meta.row+1)+'" data-id_requerimiento="'+(row.id_requerimiento?row.id_requerimiento:0)+'" data-id_detalle_requerimiento="'+(row.id_detalle_requerimiento?row.id_detalle_requerimiento:0)+'">'+(row.subtotal?((parseFloat(row.subtotal).toFixed(2))):'')+'</div>';
+                        return '<div style="display:flex;"><var name="simboloMoneda"></var><div name="subtotal" data-key="'+(row.id)+'" data-row="'+(meta.row+1)+'" data-id_requerimiento="'+(row.id_requerimiento?row.id_requerimiento:0)+'" data-id_detalle_requerimiento="'+(row.id_detalle_requerimiento?row.id_detalle_requerimiento:0)+'">'+(row.subtotal?((parseFloat(row.subtotal).toFixed(2))):'')+'</div></div>';
                     } , 'name':'subtotal'
                 },
                 {'render':
@@ -456,6 +481,8 @@ class OrdenView {
             },
             "initComplete": function(settings, json) {
                 ordenCtrl.calcTotalOrdenDetalleList();
+                ordenView.updateAllSimboloMoneda();
+
     
             },
             columnDefs: [
