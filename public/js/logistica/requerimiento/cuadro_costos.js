@@ -33,9 +33,9 @@ function getDataCuadroCostos(cc){
         let cantidadTransformaciones=0;
  
         if(res.status ==200){
-            tempDetalleItemsCC= res.data;
-            detalleItemsCC= res.data;
-            if(res.data.length >0){
+            tempDetalleItemsCC= res.detalle;
+            detalleItemsCC= res.detalle;
+            if(res.detalle.length >0){
                 tempDetalleItemsCC.forEach(element => {
                     if(element['descripcion_producto_transformado'] != null  || element['descripcion_producto_transformado' != '']){
                         cantidadTransformaciones+=1;
