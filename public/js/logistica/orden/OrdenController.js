@@ -46,7 +46,7 @@ class OrdenCtrl{
                                 'id_requerimiento':element.id_requerimiento,
                                 'codigo_requerimiento': element.codigo_requerimiento,
                                 'cantidad': element.cantidad,
-                                'cantidad_a_comprar': element.cantidad_a_comprar,
+                                'cantidad_a_comprar': element.cantidad_a_comprar?element.cantidad_a_comprar:element.cantidad,
                                 'descripcion_producto':element.descripcion,
                                 'descripcion_adicional':element.descripcion_adicional,
                                 'estado': element.estado,
@@ -95,72 +95,43 @@ class OrdenCtrl{
 
 
 
-    updateInObjCantidadAComprar(rowNumber, idReq,idDetReq,valor){
-        if(idReq >0 && idDetReq >0){
-            detalleOrdenList.forEach((element,index) => {
-                if(element.id_requerimiento == idReq){
-                    if(element.id_detalle_requerimiento == idDetReq){
-                    detalleOrdenList[index].cantidad_a_comprar = valor;
-                    }
+    updateInObjCantidadAComprar(id,valor){
+        detalleOrdenList.forEach((element,index) => {
+                if(element.id == id){
+                detalleOrdenList[index].cantidad_a_comprar = valor;
                 }
-            });
-        }
-    
-        if(idReq ==0 && idDetReq ==0){
-            detalleOrdenList.forEach((element,index) => {
-                if(element.id == rowNumber){
-                    detalleOrdenList[index].cantidad_a_comprar = valor;
-                    
-                }
-            });
-        }
+        });
     }
 
     updateInputPrecio(event){
         let nuevoValor =event.target.value;
-        let idRequerimientoSelected= event.target.dataset.id_requerimiento;
-        let idDetalleRequerimientoSelected = event.target.dataset.id_detalle_requerimiento;
-        let rowNumber = event.target.dataset.row;
-        this.updateInObjPrecioReferencial(rowNumber,idRequerimientoSelected,idDetalleRequerimientoSelected,nuevoValor);
-    
-        this.calcTotalDetalleRequerimiento(idDetalleRequerimientoSelected,rowNumber);
+        let id = event.target.dataset.id;
+        this.updateInObjPrecioReferencial(id,nuevoValor);
+        this.calcTotalDetalleRequerimiento(id);
     }
 
-    updateInObjPrecioReferencial(rowNumber,idReq,idDetReq,valor){
-        if(idReq >0 && idDetReq >0){
-            detalleOrdenList.forEach((element,index) => {
-                if(element.id_requerimiento == idReq){
-                    if(element.id_detalle_requerimiento == idDetReq){
-                    detalleOrdenList[index].precio_unitario = valor;
-                    }
-                }
-            });
-        }
-        if(idReq ==0 && idDetReq ==0){
-            detalleOrdenList.forEach((element,index) => {
-                // console.log(element.id);
-                // console.log(rowNumber);
-                if(element.id == rowNumber){
-                    detalleOrdenList[index].precio_unitario = valor;
-                    
-                }
-            });
-        }
+    updateInObjPrecioReferencial(id,valor){
+        
+        detalleOrdenList.forEach((element,index) => {
+            if(element.id == id){
+                detalleOrdenList[index].precio_unitario = valor;
+            }
+
+        });
     }
 
-    calcTotalDetalleRequerimiento(idDetalleRequerimientoSelected,rowNumberSelected){
+    calcTotalDetalleRequerimiento(id){
         let simbolo_moneda_selected = document.querySelector("select[name='id_moneda']")[document.querySelector("select[name='id_moneda']").selectedIndex].dataset.simboloMoneda;
         let sizeInputTotal = document.querySelectorAll("div[name='subtotal']").length;
         for (let index = 0; index < sizeInputTotal; index++) {
-            let rowNumber = document.querySelectorAll("div[name='subtotal']")[index].dataset.row;
-            let idReq = document.querySelectorAll("div[name='subtotal']")[index].dataset.id_requerimiento;
-            if(rowNumber == rowNumberSelected){
+            let idElement = document.querySelectorAll("div[name='subtotal']")[index].dataset.id;
+            if(idElement == id){
                 let precio = document.querySelectorAll("input[name='precio']")[index].value?document.querySelectorAll("input[name='precio']")[index].value:0;
                 let cantidad =( document.querySelectorAll("input[name='cantidad_a_comprar']")[index].value)>0?document.querySelectorAll("input[name='cantidad_a_comprar']")[index].value:document.querySelectorAll("input[name='cantidad']")[index].value;
                 let subtotal = (parseFloat(precio) * parseFloat(cantidad)).toFixed(2);
                 document.querySelectorAll("div[name='subtotal']")[index].textContent=subtotal;
                 document.querySelectorAll("var[name='simboloMoneda']")[index].textContent=simbolo_moneda_selected;
-                ordenCtrl.updateInObjSubtotal(rowNumberSelected,idReq,idDetalleRequerimientoSelected,subtotal);
+                ordenCtrl.updateInObjSubtotal(id,subtotal);
             }
         }
         let total =0;
@@ -178,24 +149,12 @@ class OrdenCtrl{
         document.querySelector("var[name='montoTotal']").textContent= montoTotal;
     }
 
-    updateInObjSubtotal(rowNumber,idReq,idDetReq,valor){
-        if(idReq >0 && idDetReq >0){
-            detalleOrdenList.forEach((element,index) => {
-                if(element.id_requerimiento == idReq){
-                    if(element.id_detalle_requerimiento == idDetReq){
-                    detalleOrdenList[index].subtotal = valor;
-                    }
-                }
-            });
-        }
-        if(idReq ==0 && idDetReq ==0){
-            detalleOrdenList.forEach((element,index) => {
-                if(element.id == rowNumber){
-                    detalleOrdenList[index].subtotal = valor;
-                    
-                }
-            });
-        }
+    updateInObjSubtotal(id,valor){
+        detalleOrdenList.forEach((element,index) => {
+            if(element.id == id){
+                detalleOrdenList[index].subtotal = valor;
+            }
+    });
     }
 
     updateInputStockComprometido(event){
@@ -203,19 +162,17 @@ class OrdenCtrl{
     }
     updateInputCantidadAComprar(event){
         let nuevoValor =event.target.value;
-        let idRequerimientoSelected= event.target.dataset.id_requerimiento;
-        let idDetalleRequerimientoSelected = event.target.dataset.id_detalle_requerimiento;
-        let rowNumberSelected = event.target.dataset.row;
+        let idSelected = event.target.dataset.id;
         let sizeInputCantidad = document.querySelectorAll("span[name='cantidad']").length;
         let cantidad =0;
         for (let index = 0; index < sizeInputCantidad; index++) {
-            let row = document.querySelectorAll("span[name='cantidad']")[index].dataset.row;
-            if(row == rowNumberSelected){
+            let id = document.querySelectorAll("span[name='cantidad']")[index].dataset.id;
+            if(id == idSelected){
                 cantidad = document.querySelectorAll("span[name='cantidad']")[index].textContent;
                 if(parseFloat(nuevoValor) >0){                
                     // actualizar datadetreq cantidad
-                    ordenCtrl.updateInObjCantidadAComprar(rowNumberSelected,idRequerimientoSelected,idDetalleRequerimientoSelected,nuevoValor);
-                    ordenCtrl.calcTotalDetalleRequerimiento(idDetalleRequerimientoSelected,rowNumberSelected);
+                    ordenCtrl.updateInObjCantidadAComprar(idSelected,nuevoValor);
+                    ordenCtrl.calcTotalDetalleRequerimiento(idSelected);
     
                     // console.log(detalleOrdenList);
                     // 
@@ -234,14 +191,8 @@ class OrdenCtrl{
     openModalEliminarItemOrden(obj){
         var ask = confirm('Esta seguro que quiere anular el item ?');
         if (ask == true){
-            // let codigoItemSelected=obj.parentNode.parentNode.parentNode.childNodes[2].textContent;
-            // let descripcionItemSelected=obj.parentNode.parentNode.parentNode.childNodes[3].textContent;
-            let rowNumber = obj.dataset.row;
-            // let idRequerimientoSelected = obj.dataset.id_requerimiento;
-            let key = obj.dataset.key
-            let idDetalleRequerimiento = obj.dataset.id_detalle_requerimiento
-            this.eliminarItemDeObj(key);
-            ordenView.afectarEstadoEliminadoFilaTablaListaDetalleOrden(rowNumber,'Error de Ingreso');
+            ordenView.eliminadoFilaTablaListaDetalleOrden(obj);
+            this.calcTotalOrdenDetalleList();
         }else{
             return false;
         }
@@ -303,6 +254,7 @@ class OrdenCtrl{
             'id_detalle_orden': null,
             'id_detalle_requerimiento': null,
             'id_item': document.querySelector("div[id='modal-catalogo-items'] div[class='modal-footer'] label[id='id_item']").textContent,
+            'id_tipo_item':1,
             'id_producto': parseInt(document.querySelector("div[id='modal-catalogo-items'] div[class='modal-footer'] label[id='id_producto']").textContent),
             'id_requerimiento': null,
             'id_unidad_medida': document.querySelector("div[id='modal-catalogo-items'] div[class='modal-footer'] label[id='id_unidad_medida']").textContent,
@@ -333,47 +285,10 @@ class OrdenCtrl{
     agregarProductoADetalleOrdenList(data){
         if(typeof detalleOrdenList != 'undefined'){
             detalleOrdenList.push(data);
-            ordenView.loadDetailOrden(detalleOrdenList);
+            ordenView.listar_detalle_orden_requerimiento(detalleOrdenList);
     
         }else{
             alert("Hubo un problema al agregar el producto al Listado");
-        }
-    }
-
-
-    updateDetalleOrdenListPrecio(event){
-        let nuevoValor =event.target.value;
-        let key= event.target.dataset.key;
-        let idDetalleRequerimientoSelected = event.target.dataset.id_detalle_requerimiento;
-        let rowNumberSelected = event.target.dataset.row;
-     
-        if(parseFloat(nuevoValor) >0){                
-           
-                detalleOrdenList.forEach((element,index) => {
-                    if(element.id == key){
-                            detalleOrdenList[index].precio_unitario = nuevoValor;
-                    }
-                });
-            
-            this.calcTotalDetalleOrden(key);
-        }
-    }
-
-    updateDetalleOrdenListCantidadAComprar(event){
-        let nuevoValor =event.target.value;
-        let key= event.target.dataset.key;
-        let idDetalleRequerimientoSelected = event.target.dataset.id_detalle_requerimiento;
-        let rowNumberSelected = event.target.dataset.row;
-     
-        if(parseFloat(nuevoValor) >0){                
-                detalleOrdenList.forEach((element,index) => {
-                    if(element.id == key){
-                            detalleOrdenList[index].cantidad_a_comprar = nuevoValor;
-    
-                    }
-                });
-        
-            this.calcTotalDetalleOrden(key);
         }
     }
 

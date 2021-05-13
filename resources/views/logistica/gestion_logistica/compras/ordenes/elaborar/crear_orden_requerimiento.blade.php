@@ -236,51 +236,55 @@
         <br>
         <div class="row">
             <div class="col-md-12">
-                <table class="mytable table table-condensed table-bordered table-okc-view" 
-                    id="listaDetalleOrden" style="margin-bottom: 0px;">
-                    <thead>
-                        <tr>
-                    
-                            <th>REQ.</th>
-                            <th>PART NUMBER</th>
-                            <th>PRODUCTO</th>
-                            <th>UNIDAD</th>
-                            <th>CANTIDAD</th>
-                            <th>PRECIO</th>
-                            <th>STOCK COMPROMETIDO</th>
-                            <th>CANTIDAD A COMPRAR</th>
-                            <th>TOTAL</th>
-                            <th>
-                            <center>
-                                <button type="button" class="btn btn-xs btn-success activation" onclick="ordenView.catalogoProductosModal();" id="btn-add-producto" data-toggle="tooltip" data-placement="bottom" title="Agregar Detalle"><i class="fas fa-plus"></i> Producto
-                                </button>
-                            </center>
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
-            </div>
-            <div class="col-md-12">
-                <div class="row">
-                    <div class="col-md-7"></div>
-                        <div class="col-md-3" id="pie-tabla" style="text-align: right;">
-                            <dl class="dl-horizontal">
-                                <dt>Monto neto: &nbsp;<var name="simboloMoneda"></var></dt>
-                                <dd class="text-right"> <var name=montoNeto></var></dd>
-                            </dl>
-                            <dl class="dl-horizontal">
-                                <dt>IGV: &nbsp;<var name="simboloMoneda"></var></dt>
-                                <dd class="text-right"><var name=igv></var></dd>
-                            </dl>
-                            <dl class="dl-horizontal">
-                                <dt>Monto total: &nbsp;<var name="simboloMoneda"></var></dt>
-                                <dd class="text-right"><var name=montoTotal></var></dd>
-                            </dl>
+                <fieldset class="group-table">
+                    <div class="col-md-12">
+                        <table class="mytable table table-striped table-condensed table-bordered dataTable no-footer" 
+                            id="listaDetalleOrden" style="margin-bottom: 0px;">
+                            <thead style="background-color: grey;">
+                                <tr>
+                            
+                                    <th>REQ.</th>
+                                    <th>PART NUMBER</th>
+                                    <th>PRODUCTO</th>
+                                    <th>UNIDAD</th>
+                                    <th>CANTIDAD</th>
+                                    <th>PRECIO</th>
+                                    <th>STOCK COMPROMETIDO</th>
+                                    <th>CANTIDAD A COMPRAR</th>
+                                    <th>TOTAL</th>
+                                    <th>
+                                    <center>
+                                        <button type="button" class="btn btn-xs btn-success activation" onclick="ordenView.catalogoProductosModal();" id="btn-add-producto" data-toggle="tooltip" data-placement="bottom" title="Agregar Detalle"><i class="fas fa-plus"></i> Producto
+                                        </button>
+                                    </center>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="row">
+                            <div class="col-md-7"></div>
+                                <div class="col-md-3" id="pie-tabla" style="text-align: right;">
+                                    <dl class="dl-horizontal">
+                                        <dt>Monto neto: &nbsp;<var name="simboloMoneda"></var></dt>
+                                        <dd class="text-right"> <var name=montoNeto></var></dd>
+                                    </dl>
+                                    <dl class="dl-horizontal">
+                                        <dt>IGV: &nbsp;<var name="simboloMoneda"></var></dt>
+                                        <dd class="text-right"><var name=igv></var></dd>
+                                    </dl>
+                                    <dl class="dl-horizontal">
+                                        <dt>Monto total: &nbsp;<var name="simboloMoneda"></var></dt>
+                                        <dd class="text-right"><var name=montoTotal></var></dd>
+                                    </dl>
+                                </div>
+                            </div>
+                        <!-- <p class="c"><strong>Total: </strong> <var name="total"></var></p> -->
                         </div>
                     </div>
-                <!-- <p class="c"><strong>Total: </strong> <var name="total"></var></p> -->
-                </div>
+                </fieldset>
             </div>
         </div>
 

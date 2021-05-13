@@ -113,14 +113,20 @@ class RequerimientoPendienteView {
                 }
             ],
             'initComplete': function () {
-                var trs = document.querySelectorAll('#listaRequerimientosPendientes tr');
-                trs.forEach(function (tr) {
-                    tr.addEventListener('click', handleTrClick);
-                });
+
+                var trs = this.$('tr');
+           
+                for (let i = 0; i < trs.length; i++) {
+                    trs[i].addEventListener('click', handleTrClick);
+                }
                 function handleTrClick() {
                     if (this.classList.contains('eventClick')) {
                         this.classList.remove('eventClick');
                     } else {
+                        const rows = Array.from(document.querySelectorAll('tr.eventClick'));
+                        rows.forEach(row => {
+                            row.classList.remove('eventClick');
+                        });
                         this.classList.add('eventClick');
                     }
                     let id = this.childNodes[1].childNodes[0].childNodes[0].dataset.idRequerimiento

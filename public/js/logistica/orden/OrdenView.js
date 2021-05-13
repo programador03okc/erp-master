@@ -101,13 +101,18 @@ class OrdenView {
 
     listar_detalle_orden_requerimiento(data){
         $('#listaDetalleOrden').DataTable({
-            'info':     false,
-            'scrollCollapse': true,
+            'bInfo':     false,
+            // 'scrollCollapse': true,
+            'serverSide': false,
+            'processing': false,
             'paging':   false,
             'searching': false,
             'language' : vardataTables[0],
             'destroy' : true,
+            'dom': 'Bfrtip',
+            'order': false,
             'data': data,
+            'bDestroy': true,
             'columns': [
 
                 {'render':
@@ -133,62 +138,55 @@ class OrdenView {
                 {'render':
                     function (data, type, row, meta){
                         // return '<input type="text" class="form-control" name="cantidad" data-row="'+(meta.row+1)+'" data-id_requerimiento="'+(row.id_requerimiento?row.id_requerimiento:0)+'" data-id_detalle_requerimiento="'+(row.id_detalle_requerimiento?row.id_detalle_requerimiento:0)+'" value="'+row.cantidad+'" onChange="updateInputCantidad(event);" style="width: 70px;" disabled/>';
-                        return '<span name="cantidad" data-row="'+(meta.row+1)+'" data-id_requerimiento="'+(row.id_requerimiento?row.id_requerimiento:0)+'" data-id_detalle_requerimiento="'+(row.id_detalle_requerimiento?row.id_detalle_requerimiento:0)+'">'+row.cantidad+'</span>';
+                        return '<span name="cantidad" data-id="'+(row.id)+'" data-row="'+(meta.row+1)+'" data-id_requerimiento="'+(row.id_requerimiento?row.id_requerimiento:0)+'" data-id_detalle_requerimiento="'+(row.id_detalle_requerimiento?row.id_detalle_requerimiento:0)+'">'+row.cantidad+'</span>';
                     
                     }, 'name':'cantidad'
                 },
                 {'render':
                     function (data, type, row, meta){
                         if(row.estado ==7){
-                            return '<input type="number" placeholder="0.00" min="0"  class="form-control" name="precio" data-row="'+(meta.row+1)+'" data-id_requerimiento="'+(row.id_requerimiento?row.id_requerimiento:0)+'" data-id_detalle_requerimiento="'+(row.id_detalle_requerimiento?row.id_detalle_requerimiento:0)+'" value="'+(row.precio_unitario?row.precio_unitario:"")+'" onChange="ordenCtrl.updateInputPrecio(event);" style="width:70px;" disabled/>';
+                            return '<input type="number" name="precio" data-id="'+(row.id)+'" placeholder="0.00" min="0"  class="form-control" data-row="'+(meta.row+1)+'" data-id_requerimiento="'+(row.id_requerimiento?row.id_requerimiento:0)+'" data-id_detalle_requerimiento="'+(row.id_detalle_requerimiento?row.id_detalle_requerimiento:0)+'" value="'+(row.precio_unitario?row.precio_unitario:"")+'" onChange="ordenCtrl.updateInputPrecio(event);" style="width:70px;" disabled/>';
                         }else{
-                            return '<input type="number" placeholder="0.00" min="0" class="form-control" name="precio" data-row="'+(meta.row+1)+'" data-id_requerimiento="'+(row.id_requerimiento?row.id_requerimiento:0)+'" data-id_detalle_requerimiento="'+(row.id_detalle_requerimiento?row.id_detalle_requerimiento:0)+'" value="'+(row.precio_unitario?row.precio_unitario:"")+'" onChange="ordenCtrl.updateInputPrecio(event);" style="width:70px;"/>';
+                            return '<input type="number" name="precio" data-id="'+(row.id)+'" placeholder="0.00" min="0" class="form-control" data-row="'+(meta.row+1)+'" data-id_requerimiento="'+(row.id_requerimiento?row.id_requerimiento:0)+'" data-id_detalle_requerimiento="'+(row.id_detalle_requerimiento?row.id_detalle_requerimiento:0)+'" value="'+(row.precio_unitario?row.precio_unitario:"")+'" onChange="ordenCtrl.updateInputPrecio(event);" style="width:70px;"/>';
                         }
                     } , 'name':'precio'
                 },
                 {'render':
                     function (data, type, row, meta){
                         if(row.estado == 7){
-                            return '<input type="number" min="0" class="form-control" name="stock_comprometido" data-row="'+(meta.row+1)+'" data-id_requerimiento="'+(row.id_requerimiento?row.id_requerimiento:0)+'" data-id_detalle_requerimiento="'+(row.id_detalle_requerimiento?row.id_detalle_requerimiento:0)+'" value="0" onkeyup ="ordenCtrl.updateInputStockComprometido(event);" onfocusin ="ordenCtrl.updateInputStockComprometido(event);" style="width: 70px;" disabled />';
+                            return '<input type="number" data-id="'+(row.id)+'" min="0" class="form-control" name="stock_comprometido" data-row="'+(meta.row+1)+'" data-id_requerimiento="'+(row.id_requerimiento?row.id_requerimiento:0)+'" data-id_detalle_requerimiento="'+(row.id_detalle_requerimiento?row.id_detalle_requerimiento:0)+'" value="0" onkeyup ="ordenCtrl.updateInputStockComprometido(event);" onfocusin ="ordenCtrl.updateInputStockComprometido(event);" style="width: 70px;" disabled />';
                         }else{
-                            return '<input type="number" min="0" class="form-control" name="stock_comprometido" data-row="'+(meta.row+1)+'" data-id_requerimiento="'+(row.id_requerimiento?row.id_requerimiento:0)+'" data-id_detalle_requerimiento="'+(row.id_detalle_requerimiento?row.id_detalle_requerimiento:0)+'" value="0" onkeyup ="ordenCtrl.updateInputStockComprometido(event);" onfocusin ="ordenCtrl.updateInputStockComprometido(event);" style="width: 70px;"/>';
+                            return '<input type="number" data-id="'+(row.id)+'" min="0" class="form-control" name="stock_comprometido" data-row="'+(meta.row+1)+'" data-id_requerimiento="'+(row.id_requerimiento?row.id_requerimiento:0)+'" data-id_detalle_requerimiento="'+(row.id_detalle_requerimiento?row.id_detalle_requerimiento:0)+'" value="0" onkeyup ="ordenCtrl.updateInputStockComprometido(event);" onfocusin ="ordenCtrl.updateInputStockComprometido(event);" style="width: 70px;"/>';
                         }
                     }, 'name':'stock_comprometido'
                 },
                 {'render':
                     function (data, type, row, meta){
                         if(row.estado == 7){
-                            return '<input type="number" min="0" class="form-control" name="cantidad_a_comprar" data-row="'+(meta.row+1)+'" data-id_requerimiento="'+(row.id_requerimiento?row.id_requerimiento:0)+'" data-id_detalle_requerimiento="'+(row.id_detalle_requerimiento?row.id_detalle_requerimiento:0)+'"   onchange="ordenCtrl.updateInputCantidadAComprar(event);" value="'+(row.cantidad_a_comprar?row.cantidad_a_comprar:row.cantidad)+'" style="width:70px;" disabled />';
+                            return '<input type="number" name="cantidad_a_comprar" data-id="'+(row.id)+'" min="0" class="form-control" data-row="'+(meta.row+1)+'" data-id_requerimiento="'+(row.id_requerimiento?row.id_requerimiento:0)+'" data-id_detalle_requerimiento="'+(row.id_detalle_requerimiento?row.id_detalle_requerimiento:0)+'"   onchange="ordenCtrl.updateInputCantidadAComprar(event);" value="'+(row.cantidad_a_comprar?row.cantidad_a_comprar:row.cantidad)+'" style="width:70px;" disabled />';
                         }else{
-                            ordenCtrl.updateInObjCantidadAComprar((meta.row+1),(row.id_requerimiento),(row.id_detalle_requerimiento),(row.cantidad));
+                            ordenCtrl.updateInObjCantidadAComprar((row.row+1),(row.id_requerimiento),(row.id_detalle_requerimiento),(row.cantidad));
     
-                            return '<input type="number" min="0" class="form-control" name="cantidad_a_comprar" data-row="'+(meta.row+1)+'" data-id_requerimiento="'+(row.id_requerimiento?row.id_requerimiento:0)+'" data-id_detalle_requerimiento="'+(row.id_detalle_requerimiento?row.id_detalle_requerimiento:0)+'"   onchange="ordenCtrl.updateInputCantidadAComprar(event);" value="'+(row.cantidad_a_comprar?row.cantidad_a_comprar:row.cantidad)+'" style="width:70px;"/>';
+                            return '<input type="number" name="cantidad_a_comprar" data-id="'+(row.id)+'" min="0" class="form-control" data-row="'+(meta.row+1)+'" data-id_requerimiento="'+(row.id_requerimiento?row.id_requerimiento:0)+'" data-id_detalle_requerimiento="'+(row.id_detalle_requerimiento?row.id_detalle_requerimiento:0)+'"   onchange="ordenCtrl.updateInputCantidadAComprar(event);" value="'+(row.cantidad_a_comprar?row.cantidad_a_comprar:row.cantidad)+'" style="width:70px;"/>';
                         }
                     } , 'name':'cantidad_a_comprar'
                 },
                 {'render':
                     function (data, type, row, meta){
-                        return '<div style="display:flex;"><var name="simboloMoneda"></var> <div name="subtotal" data-row="'+(meta.row+1)+'" data-id_requerimiento="'+(row.id_requerimiento?row.id_requerimiento:0)+'" data-id_detalle_requerimiento="'+(row.id_detalle_requerimiento?row.id_detalle_requerimiento:0)+'">0.00</div></div>';
+                        return '<div style="display:flex;"><var name="simboloMoneda"></var> <div name="subtotal" data-id="'+(row.id)+'" data-row="'+(meta.row+1)+'" data-id_requerimiento="'+(row.id_requerimiento?row.id_requerimiento:0)+'" data-id_detalle_requerimiento="'+(row.id_detalle_requerimiento?row.id_detalle_requerimiento:0)+'">'+((Math.round((row.cantidad*row.precio_unitario) * 100) / 100).toFixed(2))+'</div></div>';
                     } , 'name':'subtotal'
                 },
                 {'render':
                     function (data, type, row, meta){
-                        let action ='';
-                        if(row.estado ==7){
-                            action = `
-                            <div class="btn-group btn-group-sm" role="group" style="cursor: default;">
-                                <i class="fas fa-sticky-note fa-2x" style="color:orange" title="${(row.observacion?row.observacion:'Sin Observación')}" ></i>
-                            </div>
-                            `;
-                        }else{
-                            action = `
+                
+                        let action = `
                             <div class="btn-group btn-group-sm" role="group">
-                                <button type="button" class="btn btn-danger btn-sm activation" name="btnOpenModalEliminarItemOrden" title="Eliminar Item" data-key="${(row.id)}" data-row="${(meta.row)}" data-id_requerimiento="${(row.id_requerimiento?row.id_requerimiento:0)}" data-id_detalle_requerimiento="${(row.id_detalle_requerimiento?row.id_detalle_requerimiento:0)}"  onclick="ordenCtrl.openModalEliminarItemOrden(this);">
+                                <button type="button" class="btn btn-danger btn-sm activation" name="btnOpenModalEliminarItemOrden" title="Eliminar Item"  data-id="${(row.id)}" data-key="${(row.id)}" data-row="${(meta.row)}" data-id_requerimiento="${(row.id_requerimiento?row.id_requerimiento:0)}" data-id_detalle_requerimiento="${(row.id_detalle_requerimiento?row.id_detalle_requerimiento:0)}"  onclick="ordenCtrl.openModalEliminarItemOrden(this);">
                                 <i class="fas fa-trash fa-sm"></i>
                                 </button>
                             </div>
                             `;
-                        }
+                        
                         return action;
                     }
                 }
@@ -204,6 +202,10 @@ class OrdenView {
             },
    
             'columnDefs': [
+                {
+                    'targets': "_all",
+                    'orderable': false
+                },
                 { width: '10px', targets: 0 },
                 { width: '20px', targets: 1 },
                 { width: '20px', targets: 2 },
@@ -219,6 +221,12 @@ class OrdenView {
     
     
         });
+
+        $('#listaDetalleOrden thead th').off('click')
+        document.querySelector("table[id='listaDetalleOrden']").tHead.style.fontSize = '11px',
+            document.querySelector("table[id='listaDetalleOrden']").tBodies[0].style.fontSize = '11px';
+        document.querySelector("table[id='listaDetalleOrden'] thead").style.backgroundColor = "grey";
+        $('#listaDetalleOrden tr').css('cursor', 'default');
     
         let tablelistaitem = document.getElementById('listaDetalleOrden_wrapper');
         tablelistaitem.childNodes[0].childNodes[0].hidden = true;
@@ -226,27 +234,9 @@ class OrdenView {
     }
     
 
-    afectarEstadoEliminadoFilaTablaListaDetalleOrden(rowSelected,motivo){
-        let sizeTableListaDetalleOrden = document.querySelector("table[id='listaDetalleOrden']").tBodies[0].children.length;
-        for (let index = 0; index < sizeTableListaDetalleOrden; index++) {
-            let row = document.querySelector("table[id='listaDetalleOrden']").tBodies[0].children[index].cells[9].children[0].children[0].dataset.row;
-            if(row ==rowSelected){
-                document.querySelector("table[id='listaDetalleOrden']").tBodies[0].children[index].cells[5].children[0].disabled = true;
-                document.querySelector("table[id='listaDetalleOrden']").tBodies[0].children[index].cells[6].children[0].disabled = true;
-                document.querySelector("table[id='listaDetalleOrden']").tBodies[0].children[index].cells[7].children[0].disabled = true;
-                document.querySelector("table[id='listaDetalleOrden']").tBodies[0].children[index].cells[8].children[0].disabled = true;
-    
-                document.querySelector("table[id='listaDetalleOrden']").tBodies[0].children[index].cells[9].children[0].children[0].disabled = true;
-                document.querySelector("table[id='listaDetalleOrden']").tBodies[0].children[index].cells[9].children[0].children[0].remove();
-                document.querySelector("table[id='listaDetalleOrden']").tBodies[0].children[index].cells[9].children[0].innerHTML=`
-                <div class="btn-group btn-group-sm" role="group" style="cursor: default;">
-                    <i class="fas fa-sticky-note fa-2x" style="color:orange" title="${(motivo?motivo:'Sin Observación')}" ></i>
-                </div>
-                `;
-                document.querySelector("table[id='listaDetalleOrden']").tBodies[0].children[index].setAttribute("style","background:mistyrose; color:indianred;");
-            }
-            
-        }
+    eliminadoFilaTablaListaDetalleOrden(obj){
+        let tr =obj.parentNode.parentNode.parentNode;
+        tr.remove();
     }
     
     
@@ -311,15 +301,23 @@ class OrdenView {
                 [8, 'asc']
             ],
             "initComplete": function(settings, json) {
-                var trs = document.querySelectorAll('#listaItems tr');
-                trs.forEach(function(tr){
-                    tr.addEventListener('click', handleTrClick);
-                    });
+                var trs = this.$('tr');
+           
+                for (let i = 0; i < trs.length; i++) {
+                    trs[i].addEventListener('click', handleTrClick);
+                }
+
                 function handleTrClick(){
                     if(this.classList.contains('eventClick')){
                         this.classList.remove('eventClick');
                     }else{
+                        const rows = Array.from(document.querySelectorAll('tr.eventClick'));
+                        rows.forEach(row => {
+                            row.classList.remove('eventClick');
+                        });
+                        
                         this.classList.add('eventClick');
+
                     }
                     var idItem = this.children[0].innerHTML;
                     var idProd = this.children[1].innerHTML;
@@ -365,158 +363,8 @@ class OrdenView {
         ordenCtrl.selectItem();
     }
 
-    loadDetailOrden(data){
-        var hasAttrDisabled ='';
-        if(document.querySelector("button[id='btnEditar']").hasAttribute('disabled')== false){
-            hasAttrDisabled ='disabled';
-        }else{
-            hasAttrDisabled = '';
-        }
-    
-        var vardataTables = funcDatatables();
-        $('#listaDetalleOrden').DataTable({
-            bDestroy: true,
-            order: [[0, 'asc']],
-            info:     false,
-            scrollCollapse: true,
-            paging:   false,
-            searching: false,
-            language: vardataTables[0],
-            processing: true,
-            responsive: true,
-            bDestroy: true,
-            data:data,
-            columns: [
-     
-                {'render':
-                    function (data, type, row, meta){
-                        return row.codigo_requerimiento;
-                    }, 'name':'codigo_requerimiento'
-                },
-                {'render':
-                    function (data, type, row, meta){
-                        return row.part_number;
-                    }, 'name':'part_number'
-                },
-                {'render':
-                    function (data, type, row, meta){
-                        return row.descripcion_producto;
-                    }, 'name':'descripcion_producto'
-                },
-                {'render':
-                    function (data, type, row, meta){
-                        return row.unidad_medida;
-                    }, 'name':'unidad_medida'
-                },            
-                {'render':
-                    function (data, type, row, meta){
-                        return '<span name="cantidad" data-row="'+(meta.row+1)+'" data-id_requerimiento="'+(row.id_requerimiento?row.id_requerimiento:0)+'" data-id_detalle_requerimiento="'+(row.id_detalle_requerimiento?row.id_detalle_requerimiento:0)+'">'+row.cantidad+'</span>';
-                    
-                    }, 'name':'cantidad'
-                },
-                {'render':
-                    function (data, type, row, meta){
-                        if(row.estado ==7){
-                            return '<input type="number" placeholder="0.00" min="0"  class="form-control activation" name="precio" data-key="'+(row.id)+'" data-row="'+(meta.row+1)+'" data-id_requerimiento="'+(row.id_requerimiento?row.id_requerimiento:0)+'" data-id_detalle_requerimiento="'+(row.id_detalle_requerimiento?row.id_detalle_requerimiento:0)+'" value="'+(row.precio_unitario?row.precio_unitario:"")+'" onChange="ordenView.updateDetalleOrdenListPrecio(event);" style="width:70px;" disabled/>';
-                        }else{
-                            return '<input type="number" placeholder="0.00" min="0" class="form-control activation" name="precio" data-key="'+(row.id)+'" data-row="'+(meta.row+1)+'" data-id_requerimiento="'+(row.id_requerimiento?row.id_requerimiento:0)+'" data-id_detalle_requerimiento="'+(row.id_detalle_requerimiento?row.id_detalle_requerimiento:0)+'" value="'+(row.precio_unitario?row.precio_unitario:"")+'" onChange="ordenView.updateDetalleOrdenListPrecio(event);" style="width:70px;" '+hasAttrDisabled+'/>';
-                        }
-                    } , 'name':'precio'
-                },
-                {'render':
-                    function (data, type, row, meta){
-                        if(row.estado == 7){
-                            return '<input type="text" class="form-control" name="stock_comprometido" data-row="'+(meta.row+1)+'" data-id_requerimiento="'+(row.id_requerimiento?row.id_requerimiento:0)+'" data-id_detalle_requerimiento="'+(row.id_detalle_requerimiento?row.id_detalle_requerimiento:0)+'" value="0" onkeyup ="ordenView.updateInputStockComprometido(event);" onfocusin ="ordenView.updateInputStockComprometido(event);" style="width: 70px;" disabled />';
-                        }else{
-                            return '<input type="text" class="form-control" name="stock_comprometido" data-row="'+(meta.row+1)+'" data-id_requerimiento="'+(row.id_requerimiento?row.id_requerimiento:0)+'" data-id_detalle_requerimiento="'+(row.id_detalle_requerimiento?row.id_detalle_requerimiento:0)+'" value="0" onkeyup ="ordenView.updateInputStockComprometido(event);" onfocusin ="ordenView.updateInputStockComprometido(event);" style="width: 70px;" '+hasAttrDisabled+'/>';
-                        }
-                    }, 'name':'stock_comprometido'
-                },
-                {'render':
-                    function (data, type, row, meta){
-    
-                        if(row.estado == 7){
-                            return '<input type="number" min="0" class="form-control activation" name="cantidad_a_comprar" data-key="'+(row.id)+'" data-row="'+(meta.row+1)+'" data-id_requerimiento="'+(row.id_requerimiento?row.id_requerimiento:0)+'" data-id_detalle_requerimiento="'+(row.id_detalle_requerimiento?row.id_detalle_requerimiento:0)+'"   onchange="ordenView.updateDetalleOrdenListCantidadAComprar(event);" value="'+(row.cantidad?row.cantidad:'')+'" style="width:70px;" disabled />';
-                        }else{
-                            // updateInObjCantidadAComprar((meta.row+1),(row.id_requerimiento),(row.id_detalle_requerimiento),(row.cantidad));
-    
-                            return '<input type="number" min="0"class="form-control activation" name="cantidad_a_comprar" data-key="'+(row.id)+'" data-row="'+(meta.row+1)+'" data-id_requerimiento="'+(row.id_requerimiento?row.id_requerimiento:0)+'" data-id_detalle_requerimiento="'+(row.id_detalle_requerimiento?row.id_detalle_requerimiento:0)+'"   onchange="ordenView.updateDetalleOrdenListCantidadAComprar(event);" value="'+(row.cantidad_a_comprar?row.cantidad_a_comprar:'')+'" style="width:70px;"'+hasAttrDisabled+'/>';
-                        }
-                    } , 'name':'cantidad_a_comprar'
-                },
-                {'render':
-                    function (data, type, row, meta){
-                        return '<div style="display:flex;"><var name="simboloMoneda"></var><div name="subtotal" data-key="'+(row.id)+'" data-row="'+(meta.row+1)+'" data-id_requerimiento="'+(row.id_requerimiento?row.id_requerimiento:0)+'" data-id_detalle_requerimiento="'+(row.id_detalle_requerimiento?row.id_detalle_requerimiento:0)+'">'+(row.subtotal?((parseFloat(row.subtotal).toFixed(2))):'')+'</div></div>';
-                    } , 'name':'subtotal'
-                },
-                {'render':
-                    function (data, type, row, meta){
-                        let action ='';
-    
-                        if(row.estado ==7){
-                            action = `
-                            <div class="btn-group btn-group-sm" role="group" style="cursor: default;">
-                                <i class="fas fa-sticky-note fa-2x" style="color:orange" title="${(row.observacion?row.observacion:'Sin Observación')}" ></i>
-                            </div>
-                            `;
-                        }else{
-                            action = `
-                            <div class="btn-group btn-group-sm" role="group">
-                                <button type="button" class="btn btn-danger btn-sm activation" name="btnOpenModalEliminarItemOrden" title="Eliminar Item" data-key="${(row.id)}" data-row="${(meta.row)}" data-id_requerimiento="${(row.id_requerimiento?row.id_requerimiento:0)}" data-id_detalle_requerimiento="${(row.id_detalle_requerimiento?row.id_detalle_requerimiento:0)}"  onclick="ordenView.openModalEliminarItemOrden(this);" ${hasAttrDisabled}>
-                                <i class="fas fa-trash fa-sm"></i>
-                                </button>
-                            </div>
-                            `;
-                        }
-                        return action;
-                    }
-                }
-            ],
-            rowCallback: function( row, data ) {
-                
-                if ( data.estado == '7' )
-                { 
-                    $('td', row).css({'background-color': 'mistyrose', 'color': 'indianred'});
-                }
-            },
-            "initComplete": function(settings, json) {
-                ordenCtrl.calcTotalOrdenDetalleList();
-                ordenView.updateAllSimboloMoneda();
-
-    
-            },
-            columnDefs: [
-                { width: '20px', targets: 0 },
-                { width: '20px', targets: 1 },
-                { width: '40px', targets: 2 },
-                { width: '50px', targets: 3 },
-                { width: '20px', targets: 4 ,sClass: 'invisible'},
-                { width: '15px', targets: 5 },
-                { width: '20px', targets: 6 , sClass: 'invisible'},
-                { width: '20px', targets: 7 },
-                { width: '20px', targets: 8 },
-                { width: '30px', targets: 9, sClass:'text-center' }
-            ],
-        
-            order: [[1, "asc"]]
-    
-    
-        });
-    
-        let tablelistaitem = document.getElementById('listaDetalleOrden_wrapper');
-        tablelistaitem.childNodes[0].childNodes[0].hidden = true;
-    }
-
-
-    updateDetalleOrdenListPrecio(event){
-        ordenCtrl.updateDetalleOrdenListPrecio(event)
-    }
-    updateInputStockComprometido(event){
-        // deprecated
-    }
-    updateDetalleOrdenListCantidadAComprar(event){
-        ordenCtrl.updateDetalleOrdenListCantidadAComprar(event)
-    }
+ 
+ 
     openModalEliminarItemOrden(obj){
         ordenCtrl.openModalEliminarItemOrden(obj);
 

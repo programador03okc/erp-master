@@ -1891,8 +1891,13 @@ class OrdenController extends Controller
                 </thead>';
 
         // $total = 0;
+        $monto_neto=0;
         foreach ($ordenArray['detalle'] as $key => $data) {
-            $monto_neto =+ ($data['cantidad'] * $data['precio']) ;
+            $monto_neto += ($data['cantidad'] * $data['precio']) ;
+        }
+
+        foreach ($ordenArray['detalle'] as $key => $data) {
+          
             $igv =(($monto_neto)*0.18);
             $monto_total =($monto_neto+$igv);
 
@@ -2462,7 +2467,7 @@ class OrdenController extends Controller
                             'descripcion_adicional'=> $d['descripcion_adicional'],
                             // 'subtotal'=> ($d->precio_referencial * $d->cantidad),
                             'subtotal'=> $d['subtotal']?$d['subtotal']:0,
-                            'tipo_item_id'=> $d['id_tipo_item']?$d['id_tipo_item']:null,
+                            'tipo_item_id'=> (isset($d['id_tipo_item'])?$d['id_tipo_item']:null),
                             'estado'=> 17
                             // 'fecha_registro'=> date('Y-m-d H:i:s')
                         ]);
