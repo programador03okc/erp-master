@@ -15,6 +15,14 @@ class RequerimientoPendienteView {
         })
     }
 
+    abrirRequerimiento(idRequerimiento){
+        // Abrir nuevo tab
+        localStorage.setItem("id_requerimiento",idRequerimiento);
+        let url ="/logistica/gestion-logistica/requerimiento/elaboracion/index";
+        var win = window.open(url, '_blank');
+        // Cambiar el foco al nuevo tab (punto opcional)
+        win.focus();
+    }
 
     construirTablaListaRequerimientosPendientes(data) {
         vista_extendida();
@@ -41,7 +49,7 @@ class RequerimientoPendienteView {
                 },
                 {
                     render: function (data, type, row) {
-                        return `<label class="lbl-codigo" title="Abrir Requerimiento" onClick="abrir_requerimiento(${row.id_requerimiento})">${row.codigo}</label>`;
+                        return `<label class="lbl-codigo" title="Abrir Requerimiento" onClick="requerimientoPendienteView.abrirRequerimiento(${row.id_requerimiento})">${row.codigo}</label>`;
                     }
                 },
 
