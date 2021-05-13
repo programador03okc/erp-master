@@ -1944,20 +1944,9 @@ class OrdenController extends Controller
 
                 <tr>
                 <td nowrap  width="15%" class="subtitle">Forma de Pago: </td>
-                <td  class="verticalTop left">' . $ordenArray['head']['condicion_compra']['condicion_pago'] . '</td>';
+                <td  class="verticalTop left">' . $ordenArray['head']['condicion_compra']['condicion_pago'].' '.(($ordenArray['head']['condicion_compra']['id_condicion'] ==2)?$ordenArray['head']['condicion_compra']['plazo_dias']. ' días':''). '</td>';
 
-                if($ordenArray['head']['condicion_compra']['id_condicion'] ==2){
-                    $html.='<tr>
-                                <td nowrap  width="15%" class="subtitle">Plazo: </td>
-                                <td  class="verticalTop left">' . $ordenArray['head']['condicion_compra']['plazo_dias'] . '';
-                                if ($ordenArray['head']['condicion_compra']['plazo_dias'] > 0) {
-                                    $html .= ' días </td>';
-                                }else{
-                                    $html .= '</td>';
-                                }
-                    
-                }
-
+            
             $html.=' 
                     <td width="15%" class="verticalTop subtitle">Plazo entrega: </td>
                     <td class="verticalTop">' . $ordenArray['head']['condicion_compra']['plazo_entrega'].' Días</td>
