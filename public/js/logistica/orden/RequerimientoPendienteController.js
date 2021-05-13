@@ -364,7 +364,7 @@ class RequerimientoPendienteCtrl{
 
     getDataListaItemsCuadroCostosPorIdRequerimiento(){
         return requerimientoPendienteModel.getDataListaItemsCuadroCostosPorIdRequerimiento(reqTrueList).then(function(response) {
-            tempDetalleItemsParaCompraCC= requerimientoPendienteCtrl.cleanPartNumbreCharacters(response.data);
+            tempDetalleItemsParaCompraCC= requerimientoPendienteCtrl.cleanPartNumbreCharacters(response.detalle);
         }).catch(function(err) {
             console.log(err)
         })
@@ -373,9 +373,8 @@ class RequerimientoPendienteCtrl{
 
     getDataListaItemsCuadroCostosPorIdRequerimientoPendienteCompra(){
 
-       return requerimientoPendienteModel.getDataListaItemsCuadroCostosPorIdRequerimientoPendienteCompra(reqTrueList).then(function(response) {
+        return requerimientoPendienteModel.getDataListaItemsCuadroCostosPorIdRequerimientoPendienteCompra(reqTrueList).then(function(response) {
             if (response.status == 200) {
-
                 let detalleItemsParaCompraCCPendienteCompra =  requerimientoPendienteCtrl.cleanPartNumbreCharacters(response.data);
                 requerimientoPendienteView.llenarTablaDetalleCuadroCostos(detalleItemsParaCompraCCPendienteCompra);
                 // if(response.tiene_total_items_agregados==true){

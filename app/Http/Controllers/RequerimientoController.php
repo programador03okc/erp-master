@@ -684,6 +684,7 @@ class RequerimientoController extends Controller
 
         $cc = CuadroCosto::select(
             'cc.id as id_cc',
+            'oc_propias.orden_am',
             'cc.tipo_cuadro',
             'cc.id_oportunidad',
             'oportunidades.id_tipo_negocio',
@@ -693,8 +694,9 @@ class RequerimientoController extends Controller
 
         ->leftJoin('mgcp_cuadro_costos.estados_aprobacion', 'estados_aprobacion.id', '=', 'cc.estado_aprobacion')
         ->leftJoin('mgcp_oportunidades.oportunidades', 'oportunidades.id', '=', 'cc.id_oportunidad')
+        ->leftJoin('mgcp_acuerdo_marco.oc_propias', 'oc_propias.id_oportunidad', '=', 'oportunidades.id')
         ->where('cc.id','=',$id_cc)  
-        ->get();
+        ->first();
         
         // $tipo_cuadro=0;
         // if(count($cc)>0){
@@ -783,7 +785,7 @@ class RequerimientoController extends Controller
                 $msj='el tipo de negocio no esta comprendido en la consulta.';
             }*/
         // }
-        $output=['status'=>$status, 'mensaje'=>$msj, 'data'=>$det_cc?$det_cc:[]];
+        $output=['status'=>$status, 'mensaje'=>$msj, 'head'=>$cc?$cc:[], 'detalle'=>$det_cc?$det_cc:[]];
         return $output;
         
 

@@ -730,14 +730,20 @@ class RequerimientoPendienteView {
     openModalCuadroCostos(obj) {
         requerimientoPendienteCtrl.openModalCuadroCostos(obj).then(function (res) {
             if (res.status == 200) {
-                requerimientoPendienteView.construirTablaListaDetalleCuadroCostos(res.data);
+                requerimientoPendienteView.llenarCabeceraModalDetalleCuadroCostos(res.head)
+                requerimientoPendienteView.construirTablaListaDetalleCuadroCostos(res.detalle);
             }
         }).catch(function (err) {
             console.log(err)
         })
     }
 
+    llenarCabeceraModalDetalleCuadroCostos(data){
+        document.querySelector("div[id='modal-ver-cuadro-costos'] span[id='codigo']").textContent=data.orden_am;
+    }
+
     construirTablaListaDetalleCuadroCostos(data) {
+
         var dataTablelistaModalVerCuadroCostos = $('#listaModalVerCuadroCostos').DataTable({
             'processing': false,
             'serverSide': false,

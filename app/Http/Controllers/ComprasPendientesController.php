@@ -307,7 +307,7 @@ class ComprasPendientesController extends Controller
             $cantidadItemsRequerimiento= count($alm_det_req);
 
             foreach($alm_req as $element){
-                $temp_data[]=((new RequerimientoController)->get_detalle_cuadro_costos($element->id_cc)['data']);
+                $temp_data[]=((new RequerimientoController)->get_detalle_cuadro_costos($element->id_cc)['detalle']);
             }
             $cantidadItemsDetalleCuadroCosto= count($temp_data[0]);
 
@@ -443,7 +443,7 @@ class ComprasPendientesController extends Controller
             $cantidadItemsRequerimiento= count($alm_det_req_agregados);
 
             foreach($alm_req as $element){
-                $temp_data[]=((new RequerimientoController)->get_detalle_cuadro_costos($element->id_cc)['data']);
+                $temp_data[]=((new RequerimientoController)->get_detalle_cuadro_costos($element->id_cc)['detalle']);
             }
             $cantidadItemsDetalleCuadroCosto= count($temp_data[0]);
 
@@ -478,7 +478,9 @@ class ComprasPendientesController extends Controller
 
 
             foreach($alm_req as $element){
-                $temp_data[]=((new RequerimientoController)->get_detalle_cuadro_costos($element->id_cc)['data']);
+                $cuadroCostos=((new RequerimientoController)->get_detalle_cuadro_costos($element->id_cc));
+                $temp_data[]=$cuadroCostos['detalle'];
+                $headCuadroCostos=$cuadroCostos['head'];
             }
             
             if(count($temp_data)>0){
@@ -494,7 +496,7 @@ class ComprasPendientesController extends Controller
             }
         }
 
-        $output=['status'=>$status, 'data'=>$data];
+        $output=['status'=>$status, 'head'=>$headCuadroCostos,'detalle'=>$data];
 
         return response()->json($output);
 
