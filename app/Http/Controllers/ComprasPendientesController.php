@@ -535,11 +535,18 @@ class ComprasPendientesController extends Controller
             $updateDetReq=0;
 
             if($total_lista_items_reservar==$total_lista_items_base){
+
                 $estado = 28; // Almacén Total
             }else{
                 $estado = 27; // Almacén Parcial
             }
             foreach ($lista_items_reservar as $det) {
+                if($det['cantidad_a_atender']==$det['cantidad']){
+                    $estado = 28; // Almacén Total
+                }elseif($det['cantidad_a_atender'] < $det['cantidad']){
+                    $estado = 27; // Almacén Parcial
+
+                }
                 $updateDetReq += DB::table('almacen.alm_det_req')
                     ->where('id_detalle_requerimiento',$det['id_detalle_requerimiento'])
                     ->update(['stock_comprometido'=>$det['cantidad_a_atender'],
