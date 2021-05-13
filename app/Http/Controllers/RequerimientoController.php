@@ -722,6 +722,11 @@ class RequerimientoController extends Controller
                     'proveedores.razon_social as razon_social_proveedor',
                     'proveedores.ruc as ruc_proveedor',
                     'cc_am_filas.garantia',
+                    'origenes_costeo.origen as origen_costo',
+                    'cc_am_proveedores.precio as costo_unitario_proveedor',
+                    'cc_am_proveedores.plazo as plazo_proveedor',
+                    'cc_am_proveedores.flete as flete_proveedor',
+                    'cc_am_proveedores.comentario as comentario_proveedor',
                     'cc_am_filas.creado_por as id_autor',
                     'users.name as nombre_autor',
                     'cc_am_filas.fecha_creacion',
@@ -736,6 +741,8 @@ class RequerimientoController extends Controller
                 ->leftJoin('mgcp_cuadro_costos.cc_am_proveedores', 'cc_am_proveedores.id', '=', 'cc_am_filas.proveedor_seleccionado')
                 ->leftJoin('mgcp_cuadro_costos.proveedores', 'proveedores.id', '=', 'cc_am_proveedores.id_proveedor')
                 ->leftJoin('mgcp_usuarios.users', 'users.id', '=', 'cc_am_filas.creado_por')
+                ->leftJoin('mgcp_cuadro_costos.origenes_costeo', 'origenes_costeo.id', '=', 'cc_am_filas.id_origen_costeo')
+                // ->leftJoin('mgcp_cuadro_costos.cc_am_proveedores', 'cc_am_proveedores.id_fila', '=', 'cc_am_filas.id')
  
                 ->where('cc_am_filas.id_cc_am','=',$id_cc)  
                 ->get();

@@ -17,7 +17,12 @@
                                     <th>Flete O/C (sinIGV) S/</th>
                                     <th>Cant.</th>
                                     <th>Garant. meses</th>
+                                    <th>Origen Costo</th>
                                     <th>Proveedor seleccionado</th>
+                                    <th>Costo unit. (sinIGV)</th>
+                                    <th>Plazo prov.</th>
+                                    <th>Plete S/ (sinIGV)</th>
+                                    <th>Fondo proveedor</th>
                                     <th>Creado Por</th>
                                     <th>Fecha Creación</th>
                                 </tr>

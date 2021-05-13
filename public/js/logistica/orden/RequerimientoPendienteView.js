@@ -757,7 +757,7 @@ class RequerimientoPendienteView {
                 },
                 {
                     'render': function (data, type, row) {
-                        return `${row['flete_oc']}`;
+                        return `${row['flete_oc'] ? row['flete_oc'] : ''}`;
                     }
                 },
                 {
@@ -772,7 +772,32 @@ class RequerimientoPendienteView {
                 },
                 {
                     'render': function (data, type, row) {
+                        return `${row['origen_costo'] ? row['origen_costo'] : ''}`;
+                    }
+                },
+                {
+                    'render': function (data, type, row) {
                         return `${row['razon_social_proveedor']}`;
+                    }
+                },
+                {
+                    'render': function (data, type, row) {
+                        return `${row['costo_unitario_proveedor'] ? row['costo_unitario_proveedor'] : ''}`;
+                    }
+                },
+                {
+                    'render': function (data, type, row) {
+                        return `${row['plazo_proveedor'] ? row['plazo_proveedor'] : ''}`;
+                    }
+                },
+                {
+                    'render': function (data, type, row) {
+                        return `${row['flete_proveedor'] ? row['flete_proveedor'] : ''}`;
+                    }
+                },
+                {
+                    'render': function (data, type, row) {
+                        return `${row['comentario_proveedor'] ? row['comentario_proveedor'] : ''}`;
                     }
                 },
                 {
