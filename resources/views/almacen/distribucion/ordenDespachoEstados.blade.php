@@ -18,11 +18,6 @@
                             <h5>Estado</h5>
                             <div class="input-group-okc">
                                 <select name="estado" class="form-control" required>
-                                    <option value="32" default>En Ag. Trans. Provincias</option>
-                                    <option value="33">Salió hacia Cliente </option>
-                                    <option value="34">Recibió en custodia </option>
-                                    <option value="35">Cliente rechaza </option>
-                                    <option value="21">Entregado </option>
                                 </select>
                             </div>
                         </div>

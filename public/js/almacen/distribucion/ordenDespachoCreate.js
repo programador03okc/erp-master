@@ -201,7 +201,7 @@ function open_despacho_create(data){
                     if (almacenes_ext.length == 1){
                         var id_alm = $('[name=id_almacen]').val();
                         
-                        if (parseInt(almacenes_ext[0]) !== parseInt(id_alm)){
+                        if (parseInt(almacenes_ext[0]) !== parseInt(id_alm)){//revisar
                             alert('El almacén es diferente. Debe realizar una transferencia. '+almacenes_ext_des[0]);
                             $('#modal-orden_despacho_create').modal('hide');
                         } else {

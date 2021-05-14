@@ -1277,23 +1277,23 @@ $('#pendientesRetornoCargo tbody').on("click","button.adjuntar", function(){
                     <option value="33">Salió hacia Cliente </option>
                     <option value="34">Cliente recoge en Agencia </option>
                     <option value="35">Recibió en custodia </option>
-                    <option value="36">Cliente rechaza </option>
+                    <option value="36">Resolver </option>
                     <option value="21">Entregado Conforme </option>`;
             break;
         case 32:
             sel = ` <option value="33">Salió hacia Cliente </option>
                     <option value="34">Cliente recoge en Agencia </option>
                     <option value="35">Recibió en custodia </option>
-                    <option value="36">Cliente rechaza </option>
+                    <option value="36">Resolver </option>
                     <option value="21">Entregado Conforme </option>`;
             break;
         case 33: case 34:
             sel = ` <option value="35">Recibió en custodia </option>
-                    <option value="36">Cliente rechaza </option>
+                    <option value="36">Resolver </option>
                     <option value="21">Entregado Conforme </option>`;
             break;
         case 35:
-            sel = ` <option value="36">Cliente rechaza </option>
+            sel = ` <option value="36">Resolver </option>
                     <option value="21">Entregado Conforme </option>`;
             break;
         case 36:

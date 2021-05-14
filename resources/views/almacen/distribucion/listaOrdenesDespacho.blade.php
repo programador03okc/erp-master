@@ -2,7 +2,7 @@
 @include('layout.menu_logistica')
 
 @section('cabecera')
-Lista de Ordenes de Despacho
+Requerimientos pendientes de Transformación
 @endsection
 
 @section('breadcrumb')
@@ -22,21 +22,24 @@ Lista de Ordenes de Despacho
                 <div class="row">
                     <div class="col-md-12">
                         <table class="mytable table table-condensed table-bordered table-okc-view" 
-                            id="listaOrdenesDespacho">
+                            id="requerimientosEnProceso">
                             <thead>
                                 <tr>
                                     <th hidden></th>
-                                    <th>Orden Despacho</th>
-                                    <th>Fecha</th>
-                                    <!-- <th>Hora</th> -->
-                                    <th>Cliente</th>
-                                    <th>Req.</th>
-                                    <th>Concepto</th>
-                                    <th>Almacén</th>
-                                    <!-- <th>Fecha Desp</th> -->
-                                    <th>Registrado por</th>
+                                    <th>Orden Elec.</th>
+                                    <th>Cod.CC</th>
+                                    <th>Monto</th>
+                                    <th>Entidad</th>
+                                    <th>Fecha Entrega</th>
+                                    <th>Cod.Req.</th>
+                                    <th>Fecha Req.</th>
+                                    <th>Corporativo</th>
+                                    <th>Generado por</th>
                                     <th>Estado</th>
-                                    <th width="60px"></th>
+                                    <th>Transf.</th>
+                                    <th>O.Despacho</th>
+                                    <th>Motivo</th>
+                                    <th width="90px">Acción</th>
                                 </tr>
                             </thead>
                             <tbody></tbody>
@@ -48,6 +51,9 @@ Lista de Ordenes de Despacho
         </div>
     </div>
 </div>
+@include('almacen.distribucion.transferenciasDetalle')
+@include('almacen.distribucion.ordenDespachoCreate')
+
 @endsection
 
 @section('scripts')
@@ -56,11 +62,13 @@ Lista de Ordenes de Despacho
     <script src="{{ asset('template/plugins/moment.min.js') }}"></script>
 
     <script src="{{ asset('js/almacen/distribucion/listaOrdenesDespacho.js')}}"></script>
+    <script src="{{ asset('js/almacen/distribucion/verDetalleRequerimiento.js')}}"></script>
+    <script src="{{ asset('js/almacen/distribucion/ordenDespachoCreate.js')}}"></script>
 
     <script>
     $(document).ready(function(){
         seleccionarMenu(window.location);
-        listarOrdenesDespacho();
+        listarRequerimientosPendientes();
     });
     </script>
 @endsection
