@@ -64,7 +64,7 @@ Panel de Control de Despachos
                                                 <th>Cod.CC</th>
                                                 <th>Monto </th>
                                                 <th>Entidad</th>
-                                                <th>Sede Req.</th>
+                                                <!-- <th>Sede Req.</th> -->
                                                 <th>Cod.Req.</th>
                                                 <th>Concepto</th>
                                                 <th>Fecha Req.</th>
@@ -96,7 +96,7 @@ Panel de Control de Despachos
                                                 <th>Cod.CC</th>
                                                 <th>Monto</th>
                                                 <th>Entidad</th>
-                                                <th>Sede Req.</th>
+                                                <!-- <th>Sede Req.</th> -->
                                                 <th>Cod.Req.</th>
                                                 <th>Concepto</th>
                                                 <th>Fecha Req.</th>
@@ -166,7 +166,7 @@ Panel de Control de Despachos
                                                 <th>Generado por</th>
                                                 <th>Estado</th>
                                                 <th>Transf.</th>
-                                                <th>O.Despacho</th>
+                                                <th>OD</th>
                                                 <th>Motivo</th>
                                                 <th width="90px">Acción</th>
                                             </tr>
@@ -191,9 +191,9 @@ Panel de Control de Despachos
                                                 <th>Cod.CC</th>
                                                 <th>Monto</th>
                                                 <th>Entidad</th>
-                                                <th>Cod.Req.</th>
+                                                <th>OD</th>
                                                 <th>Cliente</th>
-                                                <th>Requerimiento</th>
+                                                <th>Cod.Req.</th>
                                                 <th>Concepto</th>
                                                 <!-- <th>Almacén</th>
                                                 <th>Ubigeo</th>
@@ -231,7 +231,7 @@ Panel de Control de Despachos
                                                 <th>Monto</th>
                                                 <th>Entidad</th>
                                                 <!-- <th>Despacho</th> -->
-                                                <th>Orden Despacho</th>
+                                                <th>OD</th>
                                                 <th>Cod.Req.</th>
                                                 <!-- <th>Cliente</th> -->
                                                 <th>Concepto</th>
@@ -268,7 +268,7 @@ Panel de Control de Despachos
                                                 <th>Monto</th>
                                                 <th>Entidad</th>
                                                 <!-- <th>Despacho</th> -->
-                                                <th>Orden Despacho</th>
+                                                <th>OD</th>
                                                 <th>Cod.Req.</th>
                                                 <!-- <th>Cliente</th> -->
                                                 <th>Concepto</th>

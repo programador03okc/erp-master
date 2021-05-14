@@ -1063,6 +1063,7 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::post('listarRequerimientosEnProceso', 'Logistica\Distribucion\ListaOrdenesDespachoController@listarRequerimientosEnProceso');
 					Route::get('listarDetalleTransferencias/{id}', 'TransferenciaController@listarDetalleTransferencias');
 					Route::get('verDetalleRequerimiento/{id}', 'DistribucionController@verDetalleRequerimiento');
+					Route::post('guardar_orden_despacho', 'DistribucionController@guardar_orden_despacho');
 
 				});
 			});

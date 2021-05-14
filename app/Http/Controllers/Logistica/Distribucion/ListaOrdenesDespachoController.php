@@ -81,7 +81,7 @@ class ListaOrdenesDespachoController extends Controller
             ->orWhere([['alm_req.estado','=',19], ['alm_req.confirmacion_pago','=',true]])
             // ->orWhere([['alm_req.estado','=',22]])
             ->orderBy('alm_req.fecha_entrega','desc');
+            
         return datatables($data)->toJson();
-        // return response()->json($data);
     }
 }

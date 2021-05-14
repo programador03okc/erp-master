@@ -301,7 +301,7 @@ class DistribucionController extends Controller
         // return response()->json($data);
     }
 
-    public function listarOrdenesDespacho(Request $request){
+    public function listarOrdenesDespacho(){
         $data = DB::table('almacen.orden_despacho')
         ->select('orden_despacho.*',
         'adm_contri.nro_documento', 'adm_contri.razon_social',
@@ -314,12 +314,13 @@ class DistribucionController extends Controller
                     and orden_despacho_adjunto.estado != 7) AS count_despacho_adjuntos"),
         'oc_propias.orden_am','oportunidades.oportunidad','oportunidades.codigo_oportunidad','oc_propias.monto_total',
         'entidades.nombre','orden_despacho.id_od','oc_propias.id as id_oc_propia','oc_propias.url_oc_fisica',
-        'users.name as user_name')
+        'users.name as user_name','sis_sede.descripcion as sede_descripcion_req','alm_req.tiene_transformacion')
         ->leftjoin('comercial.com_cliente','com_cliente.id_cliente','=','orden_despacho.id_cliente')
         ->leftjoin('contabilidad.adm_contri','adm_contri.id_contribuyente','=','com_cliente.id_contribuyente')
         ->leftjoin('rrhh.rrhh_perso','rrhh_perso.id_persona','=','orden_despacho.id_persona')
         ->leftjoin('almacen.alm_almacen','alm_almacen.id_almacen','=','orden_despacho.id_almacen')
         ->join('almacen.alm_req','alm_req.id_requerimiento','=','orden_despacho.id_requerimiento')
+        ->join('administracion.sis_sede','sis_sede.id_sede','=','alm_req.id_sede')
         ->leftjoin('mgcp_cuadro_costos.cc','cc.id','=','alm_req.id_cc')
         ->leftjoin('mgcp_oportunidades.oportunidades','oportunidades.id','=','cc.id_oportunidad')
         ->leftjoin('mgcp_usuarios.users','users.id','=','oportunidades.id_responsable')
@@ -333,7 +334,7 @@ class DistribucionController extends Controller
         return datatables($data)->toJson();
     }
 
-    public function listarGruposDespachados(Request $request){
+    public function listarGruposDespachados(){
         $data = DB::table('almacen.orden_despacho_grupo_det')
         ->select('orden_despacho_grupo_det.*','orden_despacho_grupo.fecha_despacho','orden_despacho.codigo as codigo_od',
         'orden_despacho_grupo.observaciones','orden_despacho.direccion_destino','sis_usua.nombre_corto as trabajador_despacho',
@@ -345,7 +346,7 @@ class DistribucionController extends Controller
         'orden_despacho_grupo.codigo as codigo_odg','orden_despacho.estado as estado_od',
         'oc_propias.orden_am','oportunidades.oportunidad','oportunidades.codigo_oportunidad','oc_propias.monto_total',
         'entidades.nombre','orden_despacho.id_od','oc_propias.id as id_oc_propia','oc_propias.url_oc_fisica',
-        'users.name as user_name',
+        'users.name as user_name','alm_req.tiene_transformacion','sis_sede.descripcion as sede_descripcion_req',
         DB::raw("(SELECT COUNT(*) FROM almacen.orden_despacho_adjunto where
                     orden_despacho_adjunto.id_od = orden_despacho.id_od
                     and orden_despacho_adjunto.estado != 7) AS count_despacho_adjuntos"))
@@ -360,6 +361,7 @@ class DistribucionController extends Controller
         ->leftjoin('rrhh.rrhh_perso','rrhh_perso.id_persona','=','orden_despacho.id_persona')
         ->leftjoin('almacen.alm_almacen','alm_almacen.id_almacen','=','orden_despacho.id_almacen')
         ->join('almacen.alm_req','alm_req.id_requerimiento','=','orden_despacho.id_requerimiento')
+        ->join('administracion.sis_sede','sis_sede.id_sede','=','alm_req.id_sede')
         ->leftjoin('mgcp_cuadro_costos.cc','cc.id','=','alm_req.id_cc')
         ->leftjoin('mgcp_oportunidades.oportunidades','oportunidades.id','=','cc.id_oportunidad')
         ->leftjoin('mgcp_usuarios.users','users.id','=','oportunidades.id_responsable')
