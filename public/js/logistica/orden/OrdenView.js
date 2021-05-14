@@ -193,6 +193,7 @@ class OrdenView {
             ],
             "initComplete": function() {
                 ordenView.updateAllSimboloMoneda();
+                ordenCtrl.calcTotalOrdenDetalleList();
             },
             'rowCallback': function( row, data ) {
                 if ( data.estado == '7' )
