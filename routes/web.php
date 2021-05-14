@@ -1059,7 +1059,9 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::group(['as' => 'lista-ordenes-despacho.', 'prefix' => 'lista-ordenes-despacho'], function(){
 					
 					Route::get('index', 'Logistica\Distribucion\ListaOrdenesDespachoController@view_ordenes_despacho')->name('index');
-					Route::post('listarOrdenesDespacho', 'Logistica\Distribucion\ListaOrdenesDespachoController@listarOrdenesDespacho');
+					Route::post('listarRequerimientosEnProceso', 'Logistica\Distribucion\ListaOrdenesDespachoController@listarRequerimientosEnProceso');
+					Route::get('listarDetalleTransferencias/{id}', 'TransferenciaController@listarDetalleTransferencias');
+					Route::get('verDetalleRequerimiento/{id}', 'DistribucionController@verDetalleRequerimiento');
 
 				});
 			});

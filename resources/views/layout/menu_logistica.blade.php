@@ -146,13 +146,13 @@
             </span>
         </a>
         <ul class="treeview-menu">
+        <li><a href="{{route('logistica.distribucion.lista-ordenes-despacho.index')}}"><i class="far fa-circle fa-xs"></i> Orden de Transformación </a></li>
         @if(Auth::user()->tieneAplicacion(80))
         <li><a href="{{route('logistica.distribucion.despachos.index')}}"><i class="far fa-circle fa-xs"></i> Panel de Control </a></li>
         @endif
         @if(Auth::user()->tieneAplicacion(81))
         <li><a href="{{route('logistica.distribucion.trazabilidad-requerimientos.index')}}"><i class="far fa-circle fa-xs"></i> Trazabilidad </a></li>
         @endif
-        <li><a href="{{route('logistica.distribucion.lista-ordenes-despacho.index')}}"><i class="far fa-circle fa-xs"></i> Lista Ordenes Despacho </a></li>
         @if(Auth::user()->tieneAplicacion(81))
         <li><a href="{{route('logistica.distribucion.guias-transportistas.index')}}"><i class="far fa-circle fa-xs"></i> Guías Transportistas </a></li>
         @endif
