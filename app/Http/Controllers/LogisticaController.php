@@ -2050,7 +2050,7 @@ class LogisticaController extends Controller
                             'id_item'               => is_numeric($detalle_reqArray[$i]['id_item']) == 1 && $detalle_reqArray[$i]['id_item']>0 ? $detalle_reqArray[$i]['id_item']:null,
                             'id_producto'           => is_numeric($detalle_reqArray[$i]['id_producto']) == 1 && $detalle_reqArray[$i]['id_producto']>0 ? $detalle_reqArray[$i]['id_producto']:null,
                             'precio_unitario'       => is_numeric($detalle_reqArray[$i]['precio_unitario']) == 1 ?$detalle_reqArray[$i]['precio_unitario']:null,
-                            'subtotal'              => is_numeric($detalle_reqArray[$i]['subtotal']) == 1 ?$detalle_reqArray[$i]['subtotal']:null,
+                            'subtotal'              => isset($detalle_reqArray[$i]['subtotal']) ?$detalle_reqArray[$i]['subtotal']:null,
                             'cantidad'              => $detalle_reqArray[$i]['cantidad']?$detalle_reqArray[$i]['cantidad']:null,
                             'id_moneda'             => $detalle_reqArray[$i]['id_tipo_moneda']?$detalle_reqArray[$i]['id_tipo_moneda']:null,
                             'lugar_entrega'         => isset($detalle_reqArray[$i]['lugar_entrega'])?$detalle_reqArray[$i]['lugar_entrega']:null,

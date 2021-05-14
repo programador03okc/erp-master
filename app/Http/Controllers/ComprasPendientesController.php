@@ -298,7 +298,7 @@ class ComprasPendientesController extends Controller
             ->get();
 
             $alm_det_req = DB::table('almacen.alm_det_req')
-            ->select('alm_det_req.stock_comprometido','alm_det_req.id_almacen_reserva','alm_det_req.id_cc_am_filas','alm_det_req.id_cc_venta_filas')
+            ->select('alm_det_req.stock_comprometido','alm_det_req.tiene_transformacion','alm_det_req.id_almacen_reserva','alm_det_req.id_cc_am_filas','alm_det_req.id_cc_venta_filas')
             ->whereIn('alm_det_req.id_requerimiento', $requerimientoList)
             ->orderBy('alm_det_req.id_detalle_requerimiento', 'desc')
             ->get();
@@ -316,7 +316,7 @@ class ComprasPendientesController extends Controller
                 foreach($temp_data as $arr){
                     foreach($arr as $value){
                             foreach($alm_det_req as $det_req ){
-                                if( ($value->id == $det_req->id_cc_am_filas) || ($value->id == $det_req->id_cc_venta_filas) ){
+                                if( ($value->id == $det_req->id_cc_am_filas) && ($det_req->tiene_transformacion == false) ){
                                     $idAgregadosList[]= $value->id;
                                     if(($value->cantidad > ($det_req->stock_comprometido>=0?$det_req->stock_comprometido:0)) && ($det_req->id_almacen_reserva > 0) ){
                                         $data[]=[
