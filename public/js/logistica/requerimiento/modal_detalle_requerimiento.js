@@ -1,4 +1,16 @@
 
+function cleanCharacterReference(text){
+    let str = text;
+    characterReferenceList=['&nbsp;','nbsp;','&amp;','amp;','&NBSP;','NBSP;',,"&lt;",/(\r\n|\n|\r)/gm];
+    characterReferenceList.forEach(element => {
+        while (str.search(element) > -1) {
+            str=  str.replace(element,"");
+
+        }
+    });
+        return str.trim();
+
+}
 
 function listarUltimasCompras(id_item,id_detalle_requerimiento) {
     var vardataTables = funcDatatables();
@@ -661,29 +673,38 @@ function listarItems() {
             [8, 'asc']
         ],
         "initComplete": function(settings, json) {
-            // console.log(tempDetalleItemCCSelect);
             if(tempDetalleItemCCSelect.hasOwnProperty('descripcion')){
-                if(tempDetalleItemCCSelect.descripcion.length >0){
-                    $('#text-info-item-vinculado').attr('title',tempDetalleItemCCSelect.part_number);
+            
+                let part_number = cleanCharacterReference(tempDetalleItemCCSelect.part_number);
+                let descripcion = cleanCharacterReference(tempDetalleItemCCSelect.descripcion);
+                // console.log(tempDetalleItemCCSelect.part_number);
+                // console.log(tempDetalleItemCCSelect.descripcion);
+                // console.log(part_number);
+                // console.log(descripcion);
+                if(descripcion.length >0){
+                    $('#text-info-item-vinculado').attr('title',part_number);
                     $('#text-info-item-vinculado').removeAttr('hidden');
-                    $('#example_filter input').val(tempDetalleItemCCSelect.part_number);
-                    this.api().search(tempDetalleItemCCSelect.part_number).draw();
+                    $('#example_filter input').val(part_number);
+                    this.api().search(part_number).draw();
                     document.querySelector("input[type='search']").focus();
-                    document.querySelector("input[type='search']").setSelectionRange(tempDetalleItemCCSelect.part_number.length,tempDetalleItemCCSelect.part_number.length );
+                    document.querySelector("input[type='search']").setSelectionRange(part_number.length,part_number.length );
 
                     if(this.api().page.info().recordsDisplay ==0){
-                        $('#text-info-item-vinculado').attr('title',tempDetalleItemCCSelect.descripcion);
+                        $('#text-info-item-vinculado').attr('title',descripcion);
                         $('#text-info-item-vinculado').removeAttr('hidden');
-                        $('#example_filter input').val(tempDetalleItemCCSelect.descripcion);
-                        this.api().search(tempDetalleItemCCSelect.descripcion).draw();
+                        $('#example_filter input').val(descripcion);
+                        this.api().search(descripcion).draw();
                         document.querySelector("input[type='search']").focus();
-                        document.querySelector("input[type='search']").setSelectionRange(tempDetalleItemCCSelect.descripcion.length,tempDetalleItemCCSelect.descripcion.length );
+                        document.querySelector("input[type='search']").setSelectionRange(descripcion.length,descripcion.length );
+
 
                     }
+         
 
                 }
             }
-          } 
+        } ,
+
     });
 
  
@@ -696,7 +717,7 @@ function listarItems() {
     let listaItems_filter = document.getElementById(
         'listaItems_filter'
     )
-    listaItems_filter.querySelector("input[type='search']").style.width='100%';
+    // listaItems_filter.querySelector("input[type='search']").style.width='100%';
 }
 
 var getSaldosPorAlmacen = function() {

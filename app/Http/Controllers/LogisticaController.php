@@ -788,11 +788,11 @@ class LogisticaController extends Controller
             };
 
             $alm_det_req = DB::table('almacen.alm_det_req')
-                ->leftJoin('almacen.alm_item', 'alm_item.id_item', '=', 'alm_det_req.id_item')
-                ->leftJoin('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'alm_det_req.id_requerimiento')
-                ->leftJoin('almacen.alm_prod', 'alm_item.id_producto', '=', 'alm_prod.id_producto')
-                ->leftJoin('logistica.log_servi', 'alm_item.id_servicio', '=', 'log_servi.id_servicio')
-                ->leftJoin('logistica.log_tp_servi', 'log_tp_servi.id_tipo_servicio', '=', 'log_servi.id_tipo_servicio')
+            ->leftJoin('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'alm_det_req.id_requerimiento')
+            ->leftJoin('almacen.alm_prod', 'alm_det_req.id_producto', '=', 'alm_prod.id_producto')
+            ->leftJoin('almacen.alm_item', 'alm_item.id_producto', '=', 'alm_prod.id_producto')
+                // ->leftJoin('logistica.log_servi', 'alm_item.id_servicio', '=', 'log_servi.id_servicio')
+                // ->leftJoin('logistica.log_tp_servi', 'log_tp_servi.id_tipo_servicio', '=', 'log_servi.id_tipo_servicio')
                 ->leftJoin('almacen.alm_cat_prod', 'alm_cat_prod.id_categoria', '=', 'alm_prod.id_categoria')
                 ->leftJoin('almacen.alm_subcat','alm_subcat.id_subcategoria','=','alm_prod.id_subcategoria')
                 ->leftJoin('almacen.alm_almacen', 'alm_det_req.id_almacen_reserva', '=', 'alm_almacen.id_almacen')
@@ -887,11 +887,11 @@ class LogisticaController extends Controller
                     // 'alm_tp_prod.id_tipo_producto',
                     // 'alm_tp_prod.descripcion AS alm_tp_prod_descripcion',
 
-                    'alm_item.id_servicio',
-                    'log_servi.codigo as log_servi_codigo',
-                    'log_servi.descripcion as log_servi_descripcion',
-                    'log_servi.id_tipo_servicio',
-                    'log_tp_servi.descripcion AS log_tp_servi_descripcion',
+                    // 'alm_item.id_servicio',
+                    // 'log_servi.codigo as log_servi_codigo',
+                    // 'log_servi.descripcion as log_servi_descripcion',
+                    // 'log_servi.id_tipo_servicio',
+                    // 'log_tp_servi.descripcion AS log_tp_servi_descripcion',
 
                     'alm_item.id_equipo',
                     'equipo.descripcion as equipo_descripcion',
@@ -973,20 +973,20 @@ class LogisticaController extends Controller
                             'part_number'                => $data->part_number,
                             'id_tipo_item'                => $data->id_tipo_item,
 
-                            'id_servicio'               => $data->id_servicio,
-                            'log_servi_codigo'           => $data->log_servi_codigo,
-                            'id_tipo_servicio'           => $data->id_tipo_servicio,
-                            'log_tp_servi_descripcion'   => $data->log_tp_servi_descripcion,
+                            // 'id_servicio'               => $data->id_servicio,
+                            // 'log_servi_codigo'           => $data->log_servi_codigo,
+                            // 'id_tipo_servicio'           => $data->id_tipo_servicio,
+                            // 'log_tp_servi_descripcion'   => $data->log_tp_servi_descripcion,
 
                             'id_producto'               => $data->id_producto,
                             'codigo_producto'            => $data->alm_prod_codigo,
                             'codigo_producto'            => $data->alm_prod_codigo,
                             // 'descripcion'               => $requerimiento[0]["id_tipo_requerimiento"] ==1?$data->alm_prod_descripcion:($requerimiento[0]["id_tipo_requerimiento"] ==2?$data->log_servi_descripcion:''),
-                            'descripcion'               => $data->id_tipo_item == 1 ? $data->alm_prod_descripcion : ($data->id_tipo_item == 2 ? $data->log_servi_descripcion : ($data->id_tipo_item == 3 ? $data->equipo_descripcion : $data->descripcion_adicional)),
+                            'descripcion'                   => $data->alm_prod_descripcion,
                             // 'prod_id_unidad_medida'          => $data->prod_id_unidad_medida,
                             // 'prod_unidad_medida_abreviatura'    => $data->prod_unidad_medida_abreviatura,
                             // 'prod_unidad_medida_descripcion'    => $data->prod_unidad_medida_descripcion,
-                            'id_equipo'               => $data->id_equipo,
+                            // 'id_equipo'               => $data->id_equipo,
                             // 'id_clasificacion'             => $data->id_clasificacion,
                             // 'alm_clasif_descripcion'       => $data->alm_clasif_descripcion,
                             // 'id_subcategoria'              => $data->id_subcategoria,

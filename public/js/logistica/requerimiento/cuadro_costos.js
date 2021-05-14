@@ -1,3 +1,15 @@
+function cleanCharacterReference(text){
+    let str = text;
+    characterReferenceList=['&nbsp;','nbsp;','&amp;','amp;','&NBSP;','NBSP;',,"&lt;",/(\r\n|\n|\r)/gm];
+    characterReferenceList.forEach(element => {
+        while (str.search(element) > -1) {
+            str=  str.replace(element,"");
+
+        }
+    });
+        return str.trim();
+
+}
 
 function getCabeceraCuadroCostos(id){
     return new Promise(function(resolve, reject) {
@@ -41,8 +53,8 @@ function getDataCuadroCostos(cc){
                         cantidadTransformaciones+=1;
                         itemsConTransformacionList.push({
                             'id':element.id,
-                            'part_no_producto_transformado':element.part_no_producto_transformado,
-                            'descripcion_producto_transformado':(element.descripcion_producto_transformado.replace("nbsp;","").replace("&nbsp;","").replace("&amp;","")).trim(),
+                            'part_no_producto_transformado':cleanCharacterReference(element.part_no_producto_transformado),
+                            'descripcion_producto_transformado':cleanCharacterReference(element.descripcion_producto_transformado),
                             'comentario_producto_transformado':element.comentario_producto_transformado,
                             'cantidad':element.cantidad
     
@@ -206,9 +218,12 @@ function llenarDetalleCuadroCostos(data){
         'searching': false,
         'data':data,
         'columns':[
-            {'data':'part_no'},
             {'render': function (data, type, row){
-                return `${row['descripcion']}`;
+                return `${cleanCharacterReference(row['part_no'])}`;
+                }
+            },
+            {'render': function (data, type, row){
+                return `${cleanCharacterReference(row['descripcion'])}`;
                 }
             },
             {'data':'pvu_oc'},
@@ -272,8 +287,8 @@ function procesarItemDetalleCuadroCostos(id_detalle_cc,tipo_item){
         id_cc_venta_filas = detalle_cc_selected.id;
     }
     if(tipo_item =='ITEM_SIN_TRANSFORMACION'){
-        let descripcionParseText = ((detalle_cc_selected.descripcion).replace("&lt;","<").replace("nbsp;","").replace("&nbsp;","").replace("&amp;","")).trim();
-        let partNumberParseText = detalle_cc_selected.part_no? detalle_cc_selected.part_no:'';
+        let descripcionParseText = cleanCharacterReference(detalle_cc_selected.descripcion);
+        let partNumberParseText = detalle_cc_selected.part_no? cleanCharacterReference(detalle_cc_selected.part_no):'';
         let precioUnitarioOC = detalle_cc_selected.pvu_oc? detalle_cc_selected.pvu_oc:0;
         let cantidadParseText = detalle_cc_selected.cantidad;
         tempDetalleItemCCSelect={
@@ -285,8 +300,8 @@ function procesarItemDetalleCuadroCostos(id_detalle_cc,tipo_item){
             'id_cc_venta_filas':id_cc_venta_filas
             }
     }else if(tipo_item =='ITEM_CON_TRANSFORMACION'){
-        let descripcionParseText = ((detalle_cc_selected.descripcion_producto_transformado).replace("&lt;","<").replace("nbsp;","").replace("&nbsp;","").replace("&amp;","")).trim();
-        let partNumberParseText = detalle_cc_selected.part_no_producto_transformado? detalle_cc_selected.part_no_producto_transformado:'';
+        let descripcionParseText = cleanCharacterReference(detalle_cc_selected.descripcion_producto_transformado);
+        let partNumberParseText = detalle_cc_selected.part_no_producto_transformado? cleanCharacterReference(detalle_cc_selected.part_no_producto_transformado):'';
         let cantidadParseText = detalle_cc_selected.cantidad;
         let precioUnitarioOC = detalle_cc_selected.pvu_oc? detalle_cc_selected.pvu_oc:0;
 

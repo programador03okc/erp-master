@@ -56,8 +56,8 @@ function fixCloseModalKeyEscapeDetect(){
         }
         if (isEscape) {
             // console.log("Escape");
-            document.querySelector('div[class=\'modal-backdrop fade in\']').remove();
-            document.querySelector('div[class=\'modal-backdrop fade in\']').remove();
+            // document.querySelector('div[class=\'modal-backdrop fade in\']').remove();
+            // document.querySelector('div[class=\'modal-backdrop fade in\']').remove();
 
         }
     };

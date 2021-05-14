@@ -1196,6 +1196,10 @@ form .select2-container .select2-selection--single {
 #listaTrabajadorUser_wrapper .dataTables_filter label input[type=search] {
   width: 82%;
 }
+#listaItems_wrapper .dataTables_filter label input[type="search"]{
+     width: 500%;
+}
+
 
 .flexAccion {
   display: flex;

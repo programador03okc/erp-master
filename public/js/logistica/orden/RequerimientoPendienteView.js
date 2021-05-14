@@ -273,6 +273,7 @@ class RequerimientoPendienteView {
     }
 
     construirTablaListaItemsRequerimientoParaAtenderConAlmacen(data) { // data.almacenes, data.detalle_requerimiento
+        console.log(data);
         let data_detalle_requerimiento = data.detalle_requerimiento;
         let data_almacenes = data.almacenes;
         $('#listaItemsRequerimientoParaAtenderConAlmacen').dataTable({
@@ -289,7 +290,11 @@ class RequerimientoPendienteView {
             'columns': [
                 { 'data': 'codigo_item' },
                 { 'data': 'part_number' },
-                { 'data': 'descripcion' },
+                {
+                    render: function (data, type, row) {
+                        return (row.descripcion?row.descripcion:row.descripcion_adicional);
+                    }
+                },
                 { 'data': 'unidad_medida' },
                 {
                     render: function (data, type, row) {
