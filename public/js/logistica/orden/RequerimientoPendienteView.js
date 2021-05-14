@@ -827,6 +827,38 @@ class RequerimientoPendienteView {
                 },
                 {
                     'render': function (data, type, row) {
+                       let costo = (Math.round((row.cantidad*row.costo_unitario_proveedor) * 100) / 100).toFixed(2);
+                        return `${costo}`;
+                    }
+                },
+                {
+                    'render': function (data, type, row) {
+                        return ``;
+                    }
+                },
+                {
+                    'render': function (data, type, row) {
+                        let totalFleteProveedor= (Math.round((row.cantidad*row.flete_proveedor) * 100) / 100).toFixed(2);
+                        return `${totalFleteProveedor}`;
+                    }
+                },
+                {
+                    'render': function (data, type, row) {
+                        return ``;
+                    }
+                },
+                {
+                    'render': function (data, type, row) {
+                        return ``;
+                    }
+                },
+                {
+                    'render': function (data, type, row) {
+                        return ``;
+                    }
+                },
+                {
+                    'render': function (data, type, row) {
                         return `${row['nombre_autor']}`;
                     }
                 },

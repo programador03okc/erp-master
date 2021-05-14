@@ -23,6 +23,12 @@
                                     <th>Plazo prov.</th>
                                     <th>Plete S/ (sinIGV)</th>
                                     <th>Fondo proveedor</th>
+                                    <th>Costo de compra</th>
+                                    <th>Costo de compra en soles</th>
+                                    <th>Total flete proveedor</th>
+                                    <th>Costo compra + flete</th>
+                                    <th>Monto Adjudic. en soles</th>
+                                    <th>Ganacia</th>
                                     <th>Creado Por</th>
                                     <th>Fecha Creación</th>
                                 </tr>
