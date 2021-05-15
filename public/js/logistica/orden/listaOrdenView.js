@@ -448,12 +448,13 @@ class ListaOrdenView {
                 {'render':
                     function (data, type, row, meta){
                         let containerOpenBrackets='<div class="btn-group" role="group" style="margin-bottom: 5px;">';
-                        let btnImprimirOrden= '<button type="button" onClick="listaOrdenView.imprimir_orden(event)" title="Imprimir Orden" class="imprimir_orden btn btn-md btn-warning boton" data-toggle="tooltip" data-placement="bottom" data-id-orden-compra="'+row.id_orden_compra+'"  data-id-pago=""> <i class="fas fa-file-pdf"></i> </button>';
+                        let btnImprimirOrden= '<button type="button" class="imprimir_orden btn btn-md btn-warning boton" onClick="listaOrdenView.imprimir_orden(event)" title="Imprimir Orden"  data-toggle="tooltip" data-placement="bottom" data-id-orden-compra="'+row.id_orden_compra+'"  data-id-pago=""> <i class="fas fa-file-pdf"></i> </button>';
+                        let btnAnularOrden = '<button type="button" class="btn btn-md btn-danger boton" name="btnAnularOrden" title="Anular orden" data-codigo-orden="'+row.codigo+'" data-id-orden-compra="'+row.id_orden_compra+'" onclick="listaOrdenView.anularOrden(this);"><i class="fas fa-backspace fa-xs"></i></button>';
                         let btnVerDetalle= `<button type="button" class="ver-detalle btn btn-primary boton" onclick="listaOrdenView.verDetalleOrden(this)" data-toggle="tooltip" data-placement="bottom" title="Ver Detalle" data-id="${row.id_orden_compra}">
                         <i class="fas fa-chevron-down"></i>
                         </button>`;
                         let containerCloseBrackets='</div>';
-                        return (containerOpenBrackets+btnVerDetalle+btnImprimirOrden+containerCloseBrackets);
+                        return (containerOpenBrackets+btnVerDetalle+btnImprimirOrden+btnAnularOrden+containerCloseBrackets);
                     }
                 }
                 
@@ -578,8 +579,10 @@ class ListaOrdenView {
     }
 
     abrirOrden(idOrden){
-        console.log(idOrden);
-        console.log('abrir orden');
+        sessionStorage.setItem("idOrden",idOrden);
+        let url ="/logistica/gestion-logistica/compras/ordenes/elaborar/index";
+        var win = window.open(url, '_blank');
+        win.focus();
     }
 
     imprimir_orden(event){
@@ -699,7 +702,7 @@ class ListaOrdenView {
                         return ('<div class="btn-group btn-group-sm" role="group">'+
                                 '<button type="button" class="btn btn-default btn-xs" name="btnGenerarOrdenRequerimientoPDF" title="Descargar Orden" data-id-requerimiento="'+row.orden_id_requerimiento+'"  data-codigo-requerimiento="'+row.codigo_requerimiento+'" data-id-orden-compra="'+row.orden_id_orden_compra+'" onclick="listaOrdenView.generarOrdenRequerimientoPDF(this);">'+
                                 '<i class="fas fa-file-download fa-xs"></i>'+
-                                '<button type="button" class="btn btn-danger btn-xs" name="btnEliminarAtencionOrdenRequerimiento" title="Revertir Atención" data-id-requerimiento="'+row.orden_id_requerimiento+'"  data-codigo-requerimiento="'+row.codigo_requerimiento+'" data-id-orden-compra="'+row.orden_id_orden_compra+'" onclick="listaOrdenView.eliminarAtencionOrdenRequerimiento(this);">'+
+                                '<button type="button" class="btn btn-danger btn-xs" name="btnAnularOrden" title="Anular Orden" data-codigo-orden="'+row.orden_codigo+'" data-id-orden-compra="'+row.orden_id_orden_compra+'" onclick="listaOrdenView.anularOrden(this);">'+
                                 '<i class="fas fa-backspace fa-xs"></i>'+
                                 '</button>'+
                                 '<button type="button" class="btn btn-primary btn-xs" name="btnDocumentosVinculados" title="Ver Documento Vinculados" data-id-requerimiento="'+row.orden_id_requerimiento+'"  data-codigo-requerimiento="'+row.codigo_requerimiento+'" data-id-orden-compra="'+row.orden_id_orden_compra+'" onclick="listaOrdenView.documentosVinculados(this);">'+
@@ -945,15 +948,15 @@ class ListaOrdenView {
         window.open('generar-orden-pdf/'+id_orden);
     }
 
-    eliminarAtencionOrdenRequerimiento(obj){
-        let codigo_requerimiento = obj.dataset.codigoRequerimiento;
+    anularOrden(obj){
+        let codigoOrden = obj.dataset.codigoOrden;
         let id_orden = obj.dataset.idOrdenCompra;
 
-        var ask = confirm('¿Desea revertir el requerimiento '+codigo_requerimiento+'?');
+        var ask = confirm('¿Desea anular la orden '+codigoOrden+'?');
         if (ask == true){
-            listaOrdenCtrl.eliminarAtencionOrdenRequerimiento(id_orden).then(function(res) {
+            listaOrdenCtrl.anularOrden(id_orden).then(function(res) {
                     if (res.status == 200) {
-                        alert(response.mensaje);
+                        alert(res.mensaje);
                         listaOrdenView.tipoVistaPorItem();
                     }else {
                         console.log(res);

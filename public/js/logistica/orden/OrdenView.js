@@ -15,6 +15,12 @@ class OrdenView {
             document.querySelector("section[class='content-header']").children[0].innerHTML+=btnVinculoAReq;
     
         }  
+        var idOrden = sessionStorage.getItem('idOrden');
+        if(idOrden >0){
+            mostrarOrden(idOrden);
+            changeStateButton('historial');
+
+        }
     }
     changeMoneda(event){
         simboloMoneda = event.options[event.selectedIndex].dataset.simboloMoneda;
@@ -484,18 +490,21 @@ function save_orden(data, action){
     }
 }
 
-function anular_orden(ids){
-    baseUrl = 'anular-orden/'+ids;
+function anular_orden(id){
+    baseUrl = 'anular/'+id;
     $.ajax({
-        type: 'GET',
+        type: 'PUT',
         url: baseUrl,
         dataType: 'JSON',
-        success: function(response){
-            if (response > 0){
-                alert('Orden de Compra anulada con éxito');
-                changeStateButton('anular');
-                $('#estado label').text('Anulado');
-                $('[name=cod_estado]').val('2');
+        success: function(res){
+            if (res.status == 200) {
+                alert(res.mensaje);
+                let url ="/logistica/gestion-logistica/compras/ordenes/listado/index";
+                window.location.replace(url);
+            }else {
+                console.log(res);
+                alert(res.mensaje);
+                
             }
         }
     }).fail( function( jqXHR, textStatus, errorThrown ){

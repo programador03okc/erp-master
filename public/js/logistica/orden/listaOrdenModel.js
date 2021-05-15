@@ -127,12 +127,12 @@ class ListaOrdenModel {
     }
 
 
-    eliminarAtencionOrdenRequerimiento(id_orden){
+    anularOrden(id_orden){
 
         return new Promise(function(resolve, reject) {
             $.ajax({
-                type: 'GET',
-                url:`revertir/${id_orden}`,
+                type: 'PUT',
+                url:`anular/${id_orden}`,
                 dataType: 'JSON',
                 success(response) {
                     resolve(response) // Resolve promise and go to then() 

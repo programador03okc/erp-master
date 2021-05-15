@@ -1282,7 +1282,7 @@ class OrdenController extends Controller
                 'descripcion_producto' => $data->descripcion_producto,
                 'part_number' => $data->part_number,
                 'descripcion_adicional' => $data->descripcion_adicional,
-                'cantidad_a_comprar' => $data->cantidad,
+                'cantidad' => $data->cantidad,
                 'id_unidad_medida' => $data->id_unidad_medida,
                 'unidad_medida' => $data->unidad_medida,
                 'precio_unitario' => $data->precio,
@@ -2860,17 +2860,6 @@ class OrdenController extends Controller
 
     }
 
-    public function anular_orden($id_orden)
-    {
-
-    $orden = DB::table('logistica.log_ord_compra')
-            ->where('id_orden_compra', $id_orden)
-            ->update(['estado' => 7]);
-    $detalle_orden = DB::table('logistica.log_det_ord_compra')
-            ->where('id_orden_compra', $id_orden)
-        ->update(['estado' => 7]);
-        return response()->json($orden);
-    }
 
     public function ver_orden($id_orden)
     {
@@ -3105,4 +3094,208 @@ class OrdenController extends Controller
  
         return json_encode($output);
     }
+
+
+
+    function tieneIngresoAlmacen($id_orden){
+        $status=0;
+        $msj=[];
+        $data=[];
+        // buscar en detalle_orden los id_detalle_requerimiento
+        $log_det_ord_compra = DB::table('logistica.log_det_ord_compra')
+        ->select(
+            'log_det_ord_compra.*'
+            )
+        ->where([
+            ['log_det_ord_compra.id_orden_compra','=',$id_orden]
+            ])
+        ->get();
+    
+        // verificar si existe ingreso en almacen 
+        if(count($log_det_ord_compra)>0){
+            foreach($log_det_ord_compra as $data){
+                $id_detalle_orden_list[]=$data->id_detalle_orden;
+            }
+    
+            $guia_com_det = DB::table('almacen.guia_com_det')
+            ->select(
+                'guia_com_det.*'
+                )
+            ->whereIn('guia_com_det.id_oc_det',$id_detalle_orden_list)
+            ->where('guia_com_det.estado',1)
+            ->get();
+            if(count($guia_com_det)>0){
+                $status = 200;
+                $msj[]='La orden tiene items ingresados a almacén';
+                $data=true;
+    
+            }else{
+                $status = 200;
+                $msj[]='La orden aun no tiene items ingresos al almacén';
+                $data=false;
+            }
+    
+        }else{
+            $status = 204;
+            $msj[]='la orden no tiene detalle';
+            $data=false;
+        }
+    
+        $output=['status'=>$status, 'mensaje'=>$msj,'data'=>$data];
+        return $output;  
+    }
+    
+    function makeRevertirOrden($id_orden){
+        $status=0;
+        $msj=[];
+        $output=[];
+        $id_requerimiento_list=[];
+
+       $revertirOrden = DB::table('logistica.log_ord_compra') //revertir orden
+        ->where([
+                ['id_orden_compra',$id_orden]])
+        ->update(
+            [
+                'estado' => 7,
+                'codigo_softlink' => null
+            ]);
+
+       $revertirDetalleOrden = DB::table('logistica.log_det_ord_compra') // revertir detalle orden
+        ->where([['id_orden_compra',$id_orden]])
+        ->update(
+            [
+                'estado' => 7
+            ]);
+        if($revertirOrden > 0){
+            $status=200;
+            $msj[]='Orden Revertida';
+        }else{
+            $status=204;
+            $msj[]='hubo un problema al tratar de revertir la orden';
+
+        }
+        if($revertirDetalleOrden > 0){
+            $status=200;
+            $msj[]='Detalle Orden Revertida';
+        }else{
+            $status=204;
+            $msj[]='hubo un problema al tratar de revertir el detalle de la orden';
+
+        }
+        // revertir requerimiento y detalle requerimiento ==>
+        // buscar en detalle_orden los id_detalle_requerimiento
+        $log_det_ord_compra = DB::table('logistica.log_det_ord_compra')
+        ->select(
+            'log_det_ord_compra.*'
+            )
+        ->where([
+            ['log_det_ord_compra.id_orden_compra','=',$id_orden]
+            ])
+        ->get();
+
+        if(count($log_det_ord_compra)>0){
+            foreach($log_det_ord_compra as $data){
+                $id_detalle_req_list[]=$data->id_detalle_requerimiento;
+            }
+            // buscar id_requerimiento
+            $alm_req = DB::table('almacen.alm_req')
+            ->select(
+                'alm_req.*'
+                )
+            ->leftJoin('almacen.alm_det_req', 'alm_det_req.id_requerimiento', '=', 'alm_req.id_requerimiento')
+            ->whereIn('alm_det_req.id_detalle_requerimiento',$id_detalle_req_list)
+            ->get();
+
+            if(count($alm_req)>0){
+                foreach($alm_req as $data){
+                    $id_requerimiento_list[]= $data->id_requerimiento;
+                }
+
+                if(count($id_requerimiento_list)>0){
+                    DB::table('almacen.alm_req')
+                    ->whereIn('id_requerimiento',$id_requerimiento_list)
+                    ->update(['estado'=>2]);
+            
+                    DB::table('almacen.alm_det_req')
+                    ->whereIn('id_requerimiento',$id_requerimiento_list)
+                    ->where('id_almacen_reserva',null)
+                    ->update(['estado'=>1]);
+                    $status = 200;
+                    $msj[]='se restableció el estado del requerimiento';
+
+                }else{
+                    $status = 204;
+                    $msj[]='hubo un problema, no se pudo restablecer el estado del requerimientos';
+                }
+
+            }//-> si no se encuentra req
+            else{
+                $status = 204;
+                $msj[]='no se encontro requerimientos';
+            }
+
+        }// -> si no tiene detalle la orden
+        else{
+            $status = 204;
+            $msj[]='no se encontro el detalle de la orden';
+
+        }
+
+    $output=['status'=>$status, 'mensaje'=>$msj, 'requerimientoIdList'=>$id_requerimiento_list];
+    return $output;
+
+}
+
+    public function anularOrden($id_orden){
+        try {
+            DB::beginTransaction();
+            $status = 0;
+            $msj = [];
+            $output = [];
+            $requerimientoIdList = [];
+
+            $hasIngreso = $this->TieneingresoAlmacen($id_orden);
+            if($hasIngreso['status'] == 200 && $hasIngreso['data'] == false){
+                $makeRevertirOrden = $this->makeRevertirOrden($id_orden);
+                $status = $makeRevertirOrden['status'];
+                $msj[] = $makeRevertirOrden['mensaje'];
+                $requerimientoIdList = $makeRevertirOrden['requerimientoIdList'];
+            }
+            else{
+                $status= $hasIngreso['status'];
+                $msj[]= $hasIngreso['mensaje'];
+            }
+
+            if($status ==200){
+                $orden = DB::table('logistica.log_ord_compra')
+                ->select(
+                    'log_ord_compra.codigo'
+                )
+                ->where('log_ord_compra.id_orden_compra',$id_orden)
+                ->first();
+
+                for ($i = 0; $i < count($requerimientoIdList); $i++) {
+                    DB::table('almacen.alm_req_obs')
+                    ->insert([  'id_requerimiento'=>$requerimientoIdList[$i],
+                                'accion'=>'ORDEN ANULADA',
+                                'descripcion'=>'Orden '.($orden->codigo?$orden->codigo:"").' anulada',
+                                'id_usuario'=>Auth::user()->id_usuario,
+                                'fecha_registro'=>date('Y-m-d H:i:s')
+                    ]);
+                }
+            }
+
+            $output=['status'=>$status, 'mensaje'=>$msj];
+
+            DB::commit();
+            return response()->json($output);
+
+        } catch (\PDOException $e) {
+            DB::rollBack();
+        }
+    }
+
+
+
+
 }

@@ -98,8 +98,8 @@ class ListaOrdenCtrl {
     }
 
 
-    eliminarAtencionOrdenRequerimiento(obj){
-        return listaOrdenModel.eliminarAtencionOrdenRequerimiento(obj);
+    anularOrden(obj){
+        return listaOrdenModel.anularOrden(obj);
     }
 
     listarDocumentosVinculados(id){

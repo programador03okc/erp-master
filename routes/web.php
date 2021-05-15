@@ -754,7 +754,8 @@ Route::group(['middleware' => ['auth']], function () {
 						Route::get('select-sede-by-empresa/{id?}', 'LogisticaController@select_sede_by_empresa')->name('select-sede-by-empresa');
 						Route::get('listar-historial-ordenes-elaboradas', 'OrdenController@listaHistorialOrdenes');
 						Route::get('mostrar-orden/{id_orden?}', 'OrdenController@mostrarOrden');
-						Route::get('anular-orden/{id}', 'OrdenController@anular_orden');
+						Route::put('anular/{id_orden?}', 'OrdenController@anularOrden')->name('anular');
+
 					});
 					Route::group(['as' => 'listado.', 'prefix' => 'listado'], function(){
 						Route::get('index', 'OrdenController@view_listar_ordenes')->name('index');
@@ -773,7 +774,7 @@ Route::group(['middleware' => ['auth']], function () {
 						Route::get	('ver-orden/{id_orden?}', 'OrdenController@ver_orden');
 						Route::post('actualizar-estado', 'OrdenController@update_estado_orden')->name('actualizar-estado-orden'); 
 						Route::post('actualizar-estado-detalle', 'OrdenController@update_estado_item_orden')->name('actualizar-estado-detalle-orden'); 
-						Route::put('revertir/{id_orden?}', 'LogisticaController@revertir_orden_requerimiento')->name('revertir');
+						Route::put('anular/{id_orden?}', 'OrdenController@anularOrden')->name('anular');
 						Route::get('documentos-vinculados/{id_orden?}', 'OrdenController@documentosVinculadosOrden')->name('documentos-vinculados');
 	
 
