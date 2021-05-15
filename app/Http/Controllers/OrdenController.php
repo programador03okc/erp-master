@@ -1876,16 +1876,16 @@ class OrdenController extends Controller
 
                 $html.='<br>
 
-                <table width="100%" class="tablePDF" border=0>
+                <table width="100%" class="tablePDF" border="0" style="font-size:8px;">
                 <thead>
                     <tr class="subtitle">
-                        <td width="15%">Código</td>
-                        <td width="20%">Part Number</td>
-                        <td width="40%">Descripción</td>
-                        <td width="5%">Und</td>
-                        <td width="5%">Cant.</td>
-                        <td width="5%">Precio</td>
-                        <td width="5%">Monto Dscto</td>
+                        <td width="3%">Código</td>
+                        <td width="3%">Part Number</td>
+                        <td width="20%">Descripción</td>
+                        <td width="3%">Und</td>
+                        <td width="3%">Cant.</td>
+                        <td width="3%">Precio</td>
+                        <td width="3%">Descuento</td>
                         <td width="5%">Total</td>
                     </tr>   
                 </thead>';
@@ -1902,7 +1902,7 @@ class OrdenController extends Controller
             $monto_total =($monto_neto+$igv);
 
 
-            $html .= '<tr>';
+            $html .= '<tr style="text-align:left">';
             // $html .= '<td>' . ($key + 1) . '</td>';
             $html .= '<td>' . $data['codigo_producto'] . '</td>';
             $html .= '<td>' . $data['part_number'] . '</td>';
@@ -1914,11 +1914,11 @@ class OrdenController extends Controller
                 $html .= '<td>' . ($data['codigo_item'] ? $data['codigo_item'] : '0') . ' - ' . ($data['descripcion_producto'] ? $data['descripcion_producto'] : $data['descripcion_requerimiento']) . '</td>';
             }
             $html .= '<td>' . $data['unidad_medida'] . '</td>';
-            $html .= '<td class="right">' . $data['cantidad'] . '</td>';
-            $html .= '<td class="right">' . number_format($data['precio'],2,'.','') . '</td>';
+            $html .= '<td style="text-align:center">' . $data['cantidad'] . '</td>';
+            $html .= '<td style="text-align:center">' . number_format($data['precio'],2,'.','') . '</td>';
             // $html .= '<td class="right">' . number_format((($data['cantidad'] * $data['precio']) - (($data['cantidad']* $data['precio'])/1.18)),2,'.','') . '</td>';
-            $html .= '<td class="right"> </td>';
-            $html .= '<td class="right">' . number_format($data['cantidad'] * $data['precio'],2,'.','') . '</td>';
+            $html .= '<td style="text-align:right"> </td>';
+            $html .= '<td style="text-align:right">' . number_format($data['cantidad'] * $data['precio'],2,'.','') . '</td>';
             $html .= '</tr>';
             // $total = $total + ($data['cantidad'] * $data['precio']);
         }
