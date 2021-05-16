@@ -398,7 +398,16 @@ class ListaOrdenView {
             'dom': 'Bfrtip',
             'scrollX': false,
             'columns': [
-                {'data': 'id_orden_compra'},
+                {'render':
+                function (data, type, row, meta){
+                    return `${row.codigo_oportunidad?row.codigo_oportunidad:''}`;
+                    }
+                },
+                {'render':
+                function (data, type, row, meta){
+                    return (row.razon_social+' - RUC:'+row.nro_documento)
+                }
+                },
                 {'render':
                 function (data, type, row, meta){
                     return '<label class="lbl-codigo" title="Abrir Orden" onClick="listaOrdenView.abrirOrden('+row.id_orden_compra+')">'+row.codigo+'</label>';
@@ -409,15 +418,36 @@ class ListaOrdenView {
                     return (row.codigo_requerimiento)
                     }
                 },
-                {'data': 'fecha'},
-                {'data': 'descripcion_sede_empresa'},
                 {'render':
                     function (data, type, row, meta){
-                        return (row.razon_social+' - RUC:'+row.nro_documento)
+                    return '<center><span class="label label-'+row.bootstrap_color+'">'+row.estado_doc+'</span></center>';
                     }
                 },
-                {'data': 'moneda_simbolo'},
-                {'data': 'condicion'},
+                {'render':
+                    function (data, type, row, meta){
+                    return `${row.fecha_vencimiento_ocam?row.fecha_vencimiento_ocam:''}`;
+                }
+            },
+            {'render':
+            function (data, type, row, meta){
+                        return `${row.fecha_ingreso_almacen?row.fecha_ingreso_almacen:''}`;
+                    }
+                },
+                {'render':
+                    function (data, type, row, meta){
+                        return `${row.estado_aprobacion_cc?row.estado_aprobacion_cc:''}`;
+                    }
+                },
+                {'render':
+                    function (data, type, row, meta){
+                        return `${row.fecha_estado?row.fecha_estado:''}`;
+                    }
+                },
+                {'render':
+                    function (data, type, row, meta){
+                        return `${row.fecha_registro_requerimiento?row.fecha_registro_requerimiento:''}`;
+                    }
+                },
                 {'render':
                     function (data, type, row, meta){
                         let output='No aplica';
@@ -433,23 +463,25 @@ class ListaOrdenView {
                                 <div class="progress-bar bg-${color}" style="width: ${(porc<1)?'100':porc}%"></div>
                             </div>
                         </div>`;
-    
+
                         }
                         return output;
                     }
                 },
-                {'render':
-                    function (data, type, row, meta){
-                        return '<center><span class="label label-'+row.bootstrap_color+'">'+row.estado_doc+'</span></center>';
-                    }
-                },
+                {'data': 'descripcion_sede_empresa'},
+                {'data': 'moneda_simbolo'},
+                {'data': 'condicion'},
+                {'data': 'fecha'},
                 {'data': 'detalle_pago'},
                 {'data': 'archivo_adjunto'},
                 {'render':
                     function (data, type, row, meta){
                         let containerOpenBrackets='<div class="btn-group" role="group" style="margin-bottom: 5px;">';
                         let btnImprimirOrden= '<button type="button" class="imprimir_orden btn btn-md btn-warning boton" onClick="listaOrdenView.imprimir_orden(event)" title="Imprimir Orden"  data-toggle="tooltip" data-placement="bottom" data-id-orden-compra="'+row.id_orden_compra+'"  data-id-pago=""> <i class="fas fa-file-pdf"></i> </button>';
-                        let btnAnularOrden = '<button type="button" class="btn btn-md btn-danger boton" name="btnAnularOrden" title="Anular orden" data-codigo-orden="'+row.codigo+'" data-id-orden-compra="'+row.id_orden_compra+'" onclick="listaOrdenView.anularOrden(this);"><i class="fas fa-backspace fa-xs"></i></button>';
+                        let btnAnularOrden='';
+                        if(![6,27,28].includes(row.estado) ){
+                            btnAnularOrden = '<button type="button" class="btn btn-md btn-danger boton" name="btnAnularOrden" title="Anular orden" data-codigo-orden="'+row.codigo+'" data-id-orden-compra="'+row.id_orden_compra+'" onclick="listaOrdenView.anularOrden(this);"><i class="fas fa-backspace fa-xs"></i></button>';
+                        }
                         let btnVerDetalle= `<button type="button" class="ver-detalle btn btn-primary boton" onclick="listaOrdenView.verDetalleOrden(this)" data-toggle="tooltip" data-placement="bottom" title="Ver Detalle" data-id="${row.id_orden_compra}">
                         <i class="fas fa-chevron-down"></i>
                         </button>`;
@@ -459,7 +491,7 @@ class ListaOrdenView {
                 }
                 
             ],
-            'columnDefs': [{ className: "text-right", 'aTargets': [0], 'sClass': 'invisible'}]
+            'columnDefs': [{ className: "text-right", 'aTargets': [0]}]
             ,"initComplete": function() {
 
                 let listaOrdenes_filter = document.querySelector("div[id='listaOrdenes_filter']");
@@ -474,45 +506,7 @@ class ListaOrdenView {
                 listaOrdenes_filter.appendChild(buttonFiler);     
                 
                 listaOrdenView.mostrarCantidadFiltrosActivosCabeceraOrden();
-
-
-                // var divGroupBtn = document.createElement("div");
-                // divGroupBtn.className = "input-group-btn";
-                // divGroupBtn.id = "divGroupBtnVistas";
-                // listaOrdenes_filter.appendChild(divGroupBtn);                
-
-
-                // let divGroupBtnVistas = document.querySelector("div[id='divGroupBtnVistas']");
-
-                
-                // var buttonVistaPorCabecera = document.createElement("button");
-                // buttonVistaPorCabecera.type = "button";
-                // buttonVistaPorCabecera.id = "btnTipoVistaPorCabecera";
-                // buttonVistaPorCabecera.className = "btn btn-default pull-left";
-                // buttonVistaPorCabecera.innerHTML = "<i class='fas fa-columns'></i> Vista a nivel de Cabecera";
-                // buttonVistaPorCabecera.addEventListener('click', listaOrdenView.tipoVistaPorCabecera, false);
-
-                // divGroupBtnVistas.appendChild(buttonVistaPorCabecera);         
-                
-                // var buttonVistaPorDetalle = document.createElement("button");
-                // buttonVistaPorDetalle.type = "button";
-                // buttonVistaPorDetalle.id = "btnTipoVistaPorItemPara";
-                // buttonVistaPorDetalle.className = "btn btn-default pull-left";
-                // buttonVistaPorDetalle.style = "margin-right: 30px;";
-                // buttonVistaPorDetalle.innerHTML = "<i class='fas fa-table'></i> Vista a nivel de Item's";
-                // buttonVistaPorDetalle.addEventListener('click', listaOrdenView.tipoVistaPorItem, false);
-
-                // divGroupBtnVistas.appendChild(buttonVistaPorDetalle);                
             }
-            // "drawCallback": function (settings) { 
-                // Here the response
-                // var response = settings.json;
-                // console.log(response);
-                
-                // if(response == undefined || response.data.length ==0){
-                //         // alert("No hay ordenes registradas para mostrar");
-                // }
-            // },
         });
 
 
@@ -698,17 +692,17 @@ class ListaOrdenView {
     
                     }
                 },
-                { render: function (data, type, row) {               
-                        return ('<div class="btn-group btn-group-sm" role="group">'+
-                                '<button type="button" class="btn btn-default btn-xs" name="btnGenerarOrdenRequerimientoPDF" title="Descargar Orden" data-id-requerimiento="'+row.orden_id_requerimiento+'"  data-codigo-requerimiento="'+row.codigo_requerimiento+'" data-id-orden-compra="'+row.orden_id_orden_compra+'" onclick="listaOrdenView.generarOrdenRequerimientoPDF(this);">'+
-                                '<i class="fas fa-file-download fa-xs"></i>'+
-                                '<button type="button" class="btn btn-danger btn-xs" name="btnAnularOrden" title="Anular Orden" data-codigo-orden="'+row.orden_codigo+'" data-id-orden-compra="'+row.orden_id_orden_compra+'" onclick="listaOrdenView.anularOrden(this);">'+
-                                '<i class="fas fa-backspace fa-xs"></i>'+
-                                '</button>'+
-                                '<button type="button" class="btn btn-primary btn-xs" name="btnDocumentosVinculados" title="Ver Documento Vinculados" data-id-requerimiento="'+row.orden_id_requerimiento+'"  data-codigo-requerimiento="'+row.codigo_requerimiento+'" data-id-orden-compra="'+row.orden_id_orden_compra+'" onclick="listaOrdenView.documentosVinculados(this);">'+
-                                '<i class="fas fa-folder fa-xs"></i>'+
-                                '</button>'+
-                                '</div>');
+                { render: function (data, type, row) {         
+                        let containerOpenBrackets = '<div class="btn-group btn-group-sm" role="group">';
+                        let btnImprimirOrden = '<button type="button" class="btn btn-default btn-xs" name="btnGenerarOrdenRequerimientoPDF" title="Descargar Orden" data-id-requerimiento="'+row.orden_id_requerimiento+'"  data-codigo-requerimiento="'+row.codigo_requerimiento+'" data-id-orden-compra="'+row.orden_id_orden_compra+'" onclick="listaOrdenView.generarOrdenRequerimientoPDF(this);"><i class="fas fa-file-download fa-xs"></i></button>';
+                        let btnAnularOrden='';
+                        if(![6,27,28].includes(row.orden_estado) ){
+                            btnAnularOrden = '<button type="button" class="btn btn-danger btn-xs" name="btnAnularOrden" title="Anular Orden" data-codigo-orden="'+row.orden_codigo+'" data-id-orden-compra="'+row.orden_id_orden_compra+'" onclick="listaOrdenView.anularOrden(this);"><i class="fas fa-backspace fa-xs"></i></button>';
+                        }
+                        let btnDocumentosVinculados = '<button type="button" class="btn btn-primary btn-xs" name="btnDocumentosVinculados" title="Ver Documento Vinculados" data-id-requerimiento="'+row.orden_id_requerimiento+'"  data-codigo-requerimiento="'+row.codigo_requerimiento+'" data-id-orden-compra="'+row.orden_id_orden_compra+'" onclick="listaOrdenView.documentosVinculados(this);"><i class="fas fa-folder fa-xs"></i></button>';
+                        let containerCloseBrackets = '</div>';
+                        return (containerOpenBrackets+btnImprimirOrden+btnDocumentosVinculados+btnAnularOrden+containerCloseBrackets);
+
                     }   
                 }   
             ],

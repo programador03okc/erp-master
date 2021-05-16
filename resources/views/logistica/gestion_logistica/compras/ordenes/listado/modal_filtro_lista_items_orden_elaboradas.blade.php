@@ -88,7 +88,7 @@
                         <div class="row">
                             <div class="col-md-4">
                                 <label title="En almacén">
-                                    <input type="checkbox" name="chkEnAlmacen" onclick="listaOrdenView.chkEnAlmacen(event)" disabled>&nbsp; En almacen
+                                    <input type="checkbox" name="chkEnAlmacen" onclick="listaOrdenView.chkEnAlmacen(event)" >&nbsp; En almacen
                                 </label> 
                             </div>
                             <div class="col-md-8">
@@ -102,7 +102,7 @@
                         <div class="row">
                             <div class="col-md-4">
                                 <label title="Subtotal">
-                                    <input type="checkbox" name="chkSubtotal" onclick="listaOrdenView.chkSubtotal(event)" disabled>&nbsp; Subtotal
+                                    <input type="checkbox" name="chkSubtotal" onclick="listaOrdenView.chkSubtotal(event)" >&nbsp; Subtotal
                                 </label> 
                             </div>
                             <div class="col-md-2">
@@ -122,7 +122,7 @@
                         <div class="row">
                             <div class="col-md-4">
                                 <label title="Estado">
-                                    <input type="checkbox" name="chkEstado" onclick="listaOrdenView.chkEstado(event)" disabled>&nbsp; Estado
+                                    <input type="checkbox" name="chkEstado" onclick="listaOrdenView.chkEstado(event)" >&nbsp; Estado
                                 </label> 
                             </div>
                             <div class="col-md-8">

@@ -41,18 +41,24 @@
                 <thead>
                     <tr>
                         <th hidden></th>
-                        <th>Nro.Orden</th>
-                        <th >Req./Cuadro Comp.</th>
-                        <th>Fecha Em.</th>
-                        <th>Empresa / Sede</th>
+                        <th>Cuadro costos</th>
                         <th>Proveedor</th>
-                        <th>Mnd</th>
-                        <th>Condición</th>
-                        <th>Dias para que llegue</th>
+                        <th>Nro.orden</th>
+                        <th >Req./Cuadro comp.</th>
                         <th>Estado</th>
-                        <th>Detalle Pago</th>
-                        <th>Archivo Adjunto</th>
-                        <th width='auto'>Acción</th>
+                        <th>Fecha vencimiento</th>
+                        <th>Fecha llegada</th>
+                        <th>Estado aprobación CC</th>
+                        <th>Fecha aprobación CC</th>
+                        <th>Fecha Requerimiento</th>
+                        <th width="50%">Leadtime</th>
+                        <th>Empresa / Sede</th>
+                        <th>Moneda</th>
+                        <th>Condición</th>
+                        <th>Fecha em.</th>
+                        <th>Detalle pago</th>
+                        <th>Archivo adjunto</th>
+                        <th>Acción</th>
                     </tr>
                 </thead>
                 <tbody></tbody>

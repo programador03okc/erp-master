@@ -240,20 +240,6 @@ class OrdenController extends Controller
 
         $subtotal= $subtotal >0?$subtotal:'0';
 
-        if($vinculadoPor== 'REQUERIMIENTO'){
-            $whereVinculadoPor='log_det_ord_compra.id_detalle_requerimiento > 0';
-        }elseif($vinculadoPor == 'CUADRO_COMPARATIVO'){
-            $whereVinculadoPor='log_det_ord_compra.detalle_cuadro_comparativo_id > 0';
-        }else{
-            $whereVinculadoPor='log_det_ord_compra.id_detalle_requerimiento >0 OR log_det_ord_compra.detalle_cuadro_comparativo_id > 0';
-        }
-
-        if($enAlmacen == 'SI'){
-            $whereEnAlmacen='guia_com_det.id_guia_com_det > 0';
-        }else{
-            $whereEnAlmacen='guia_com_det.id_guia_com_det is null';
-        }
-
 
         $orden_list=[];
         $detalle_orden_list=[];
@@ -343,18 +329,27 @@ class OrdenController extends Controller
             ($tipoProveedor =='NACIONAL') ? ['adm_contri.id_pais','=','170']:($tipoProveedor =='EXTRANJERO' ? ['adm_contri.id_pais','=','170']:[null]),
             $estado >0 ? ['log_ord_compra.estado',$estado]:[null]
             ])
-        ->whereIn('log_ord_compra.id_orden_compra', function($query) use ($whereVinculadoPor)
-        {
-            $query->select('log_det_ord_compra.id_orden_compra')
+        ->when(($vinculadoPor !='null'), function($query) use ($vinculadoPor)  {
+            if($vinculadoPor== 'REQUERIMIENTO'){
+                $whereVinculadoPor='log_det_ord_compra.id_detalle_requerimiento > 0';
+            }elseif($vinculadoPor == 'CUADRO_COMPARATIVO'){
+                $whereVinculadoPor='log_det_ord_compra.detalle_cuadro_comparativo_id > 0';
+            }
+            return $query->WhereIn('log_ord_compra.id_orden_compra', function($query) use ($whereVinculadoPor)
+            {
+                $query->select('log_det_ord_compra.id_orden_compra')
                 ->from('logistica.log_det_ord_compra')
                 ->whereRaw($whereVinculadoPor);
+            });
         })
-        ->whereIn('log_ord_compra.id_orden_compra', function($query) use ($whereEnAlmacen)
-        {
-            $query->select('log_det_ord_compra.id_orden_compra')
-                ->from('logistica.log_det_ord_compra')
-                ->leftjoin('almacen.guia_com_det', 'guia_com_det.id_oc_det', '=', 'log_det_ord_compra.id_detalle_orden')
-                ->whereRaw($whereEnAlmacen);
+        ->when(($enAlmacen =='true'), function($query)  {
+            return $query->WhereIn('log_ord_compra.id_orden_compra', function($query)
+            {
+                $query->select('log_det_ord_compra.id_orden_compra')
+                    ->from('logistica.log_det_ord_compra')
+                    ->leftjoin('almacen.guia_com_det', 'guia_com_det.id_oc_det', '=', 'log_det_ord_compra.id_detalle_orden')
+                    ->whereRaw('guia_com_det.id_guia_com_det > 0');
+            });
         })
         ->orderBy('log_ord_compra.fecha','desc')
         ->whereRaw('coalesce((log_det_ord_compra.cantidad * log_det_ord_compra.precio) ,0) '.$simboloSubtotal.' '.$subtotal)
@@ -874,20 +869,9 @@ class OrdenController extends Controller
 
         $montoOrden= $montoOrden >0?$montoOrden:'0';
 
-        if($vinculadoPor== 'REQUERIMIENTO'){
-            $whereVinculadoPor='log_det_ord_compra.id_detalle_requerimiento > 0';
-        }elseif($vinculadoPor == 'CUADRO_COMPARATIVO'){
-            $whereVinculadoPor='log_det_ord_compra.detalle_cuadro_comparativo_id > 0';
-        }else{
-            $whereVinculadoPor='log_det_ord_compra.id_detalle_requerimiento >0 OR log_det_ord_compra.detalle_cuadro_comparativo_id > 0';
-        }
 
-        if($enAlmacen == 'SI'){
-            $whereEnAlmacen='guia_com_det.id_guia_com_det > 0';
-        }else{
-            $whereEnAlmacen='guia_com_det.id_guia_com_det is null';
-        }
-    
+
+     
 
         $ord_compra = DB::table('logistica.log_ord_compra')
         ->select(
@@ -908,7 +892,9 @@ class OrdenController extends Controller
             'cta_prin.nro_cuenta as nro_cuenta_prin',
             'cta_alter.nro_cuenta as nro_cuenta_alter',
             'cta_detra.nro_cuenta as nro_cuenta_detra',
+            'estados_compra.descripcion as estado_compra',
             'adm_estado_doc.estado_doc',
+            'log_ord_compra.estado',
             'adm_estado_doc.bootstrap_color',
             'log_ord_compra_pago.id_pago',
             'log_ord_compra_pago.detalle_pago',
@@ -926,7 +912,8 @@ class OrdenController extends Controller
         ->leftjoin('contabilidad.adm_cta_contri as cta_prin','cta_prin.id_cuenta_contribuyente','=','log_ord_compra.id_cta_principal')
         ->leftjoin('contabilidad.adm_cta_contri as cta_alter','cta_alter.id_cuenta_contribuyente','=','log_ord_compra.id_cta_alternativa')
         ->leftjoin('contabilidad.adm_cta_contri as cta_detra','cta_detra.id_cuenta_contribuyente','=','log_ord_compra.id_cta_detraccion')
-        ->join('administracion.adm_estado_doc','adm_estado_doc.id_estado_doc','=','log_ord_compra.estado')
+        ->leftjoin('administracion.adm_estado_doc','adm_estado_doc.id_estado_doc','=','log_ord_compra.estado')
+        ->leftjoin('logistica.estados_compra','estados_compra.id_estado','=','log_ord_compra.estado')
         ->leftjoin('logistica.log_ord_compra_pago','log_ord_compra_pago.id_orden_compra','=','log_ord_compra.id_orden_compra')
 
 
@@ -941,27 +928,39 @@ class OrdenController extends Controller
             // $montoOrden >0 ? ['suma_subtotal','>',$montoOrden]:[null]
 
         ])
-        ->whereIn('log_ord_compra.id_orden_compra', function($query) use ($whereVinculadoPor)
+
+        ->when(($vinculadoPor !='null'), function($query) use ($vinculadoPor)  {
+            if($vinculadoPor== 'REQUERIMIENTO'){
+                $whereVinculadoPor='log_det_ord_compra.id_detalle_requerimiento > 0';
+            }elseif($vinculadoPor == 'CUADRO_COMPARATIVO'){
+                $whereVinculadoPor='log_det_ord_compra.detalle_cuadro_comparativo_id > 0';
+            }
+            return $query->WhereIn('log_ord_compra.id_orden_compra', function($query) use ($whereVinculadoPor)
             {
                 $query->select('log_det_ord_compra.id_orden_compra')
-                    ->from('logistica.log_det_ord_compra')
-                    ->whereRaw($whereVinculadoPor);
-            })
-        ->whereIn('log_ord_compra.id_orden_compra', function($query) use ($whereEnAlmacen)
+                ->from('logistica.log_det_ord_compra')
+                ->whereRaw($whereVinculadoPor);
+            });
+        })
+
+        ->when(($enAlmacen =='true'), function($query)  {
+            return $query->WhereIn('log_ord_compra.id_orden_compra', function($query)
             {
                 $query->select('log_det_ord_compra.id_orden_compra')
                     ->from('logistica.log_det_ord_compra')
                     ->leftjoin('almacen.guia_com_det', 'guia_com_det.id_oc_det', '=', 'log_det_ord_compra.id_detalle_orden')
-                    ->whereRaw($whereEnAlmacen);
-            })
+                    ->whereRaw('guia_com_det.id_guia_com_det > 0');
+            });
+        })
+
             ->orderBy('log_ord_compra.fecha','desc')
 
             ->whereRaw('(SELECT  coalesce(sum((log_det_ord_compra.cantidad * log_det_ord_compra.precio))*1.18 ,0)
             FROM logistica.log_det_ord_compra 
             WHERE   log_det_ord_compra.id_orden_compra = log_ord_compra.id_orden_compra AND
                     log_det_ord_compra.estado != 7) '.$simboloMontoOrden.' '.$montoOrden)
-            ->get();
-        
+        ->get();
+
 
         $data_orden=[];
         if(count($ord_compra)>0){
@@ -986,6 +985,7 @@ class OrdenController extends Controller
                     'nro_cuenta_detra'=> $element->nro_cuenta_detra,
                     'codigo_cuadro_comparativo'=> '',
                     'bootstrap_color'=>$element->bootstrap_color,
+                    'estado'=>$element->estado,
                     'estado_doc'=>$element->estado_doc,
                     'detalle_pago'=> $element->detalle_pago, 
                     'archivo_adjunto'=> $element->archivo_adjunto,
@@ -1000,11 +1000,23 @@ class OrdenController extends Controller
         ->select(
             'log_ord_compra.id_orden_compra',
             'log_det_ord_compra.id_detalle_orden',
-            'alm_req.codigo as codigo_requerimiento'
+            'alm_req.codigo as codigo_requerimiento',
+            'alm_req.fecha_registro as fecha_registro_requerimiento',
+            'oportunidades.codigo_oportunidad',
+            'oc_propias.fecha_entrega',
+            'guia_com_det.fecha_registro as fecha_ingreso_almacen',
+            'oc_propias.fecha_estado',
+            'cc.estado_aprobacion',
+            'estados_aprobacion.estado as estado_aprobacion'
             )
         ->leftJoin('logistica.log_det_ord_compra', 'log_det_ord_compra.id_orden_compra', '=', 'log_ord_compra.id_orden_compra')
+        ->leftJoin('almacen.guia_com_det', 'guia_com_det.id_oc_det', '=', 'log_det_ord_compra.id_detalle_orden')
         ->leftJoin('almacen.alm_det_req', 'alm_det_req.id_detalle_requerimiento', '=', 'log_det_ord_compra.id_detalle_requerimiento')
         ->leftJoin('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'alm_det_req.id_requerimiento')
+        ->leftJoin('mgcp_cuadro_costos.cc', 'cc.id', '=', 'alm_req.id_cc')
+        ->leftJoin('mgcp_cuadro_costos.estados_aprobacion', 'estados_aprobacion.id', '=', 'cc.estado_aprobacion')
+        ->leftJoin('mgcp_oportunidades.oportunidades', 'oportunidades.id', '=', 'cc.id_oportunidad')
+        ->leftJoin('mgcp_acuerdo_marco.oc_propias', 'oc_propias.id_oportunidad', '=', 'oportunidades.id')
         ->where([['log_ord_compra.estado', '!=', 7]])
         ->orderBy('log_ord_compra.fecha','desc')
         ->get();
@@ -1012,11 +1024,17 @@ class OrdenController extends Controller
         $data_detalle_orden=[];
         if(count($ord_compra)>0){
             foreach($detalle_orden as $element){
-
+                
                 $data_detalle_orden[]=[
                     'id_orden_compra'=> $element->id_orden_compra,
                     'id_detalle_orden'=> $element->id_detalle_orden,
-                    'codigo_requerimiento'=> $element->codigo_requerimiento
+                    'codigo_requerimiento'=> $element->codigo_requerimiento,
+                    'codigo_oportunidad'=> $element->codigo_oportunidad,
+                    'fecha_entrega'=> $element->fecha_entrega,
+                    'fecha_ingreso_almacen'=> $element->fecha_ingreso_almacen,
+                    'estado_aprobacion'=> $element->estado_aprobacion,
+                    'fecha_estado'=> $element->fecha_estado,
+                    'fecha_registro_requerimiento'=> $element->fecha_registro_requerimiento
                 ];
             }
         }
@@ -1028,6 +1046,12 @@ class OrdenController extends Controller
                 if($ordenValue['id_orden_compra'] == $detalleOrdenValue['id_orden_compra']){
                     if(in_array($detalleOrdenValue['codigo_requerimiento'],$data_orden[$ordenKey]['codigo_requerimiento'])==false){
                         $data_orden[$ordenKey]['codigo_requerimiento'][]=$detalleOrdenValue['codigo_requerimiento'];
+                        $data_orden[$ordenKey]['codigo_oportunidad']=$detalleOrdenValue['codigo_oportunidad'];
+                        $data_orden[$ordenKey]['fecha_vencimiento_ocam']=$detalleOrdenValue['fecha_entrega'];
+                        $data_orden[$ordenKey]['fecha_ingreso_almacen']=$detalleOrdenValue['fecha_ingreso_almacen'];
+                        $data_orden[$ordenKey]['estado_aprobacion_cc']=$detalleOrdenValue['estado_aprobacion'];
+                        $data_orden[$ordenKey]['fecha_estado']=$detalleOrdenValue['fecha_estado'];
+                        $data_orden[$ordenKey]['fecha_registro_requerimiento']=$detalleOrdenValue['fecha_registro_requerimiento'];
                     }
                 }
             }
