@@ -37,7 +37,7 @@ Requerimientos pendientes de Transformación
                                     <th>Generado por</th>
                                     <th>Estado</th>
                                     <th>Transf.</th>
-                                    <th>O.Despacho</th>
+                                    <!-- <th>O.Despacho</th> -->
                                     <th>Motivo</th>
                                     <th width="90px">Acción</th>
                                 </tr>

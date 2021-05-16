@@ -131,8 +131,13 @@ function listarRequerimientosElaborados(){
                 }
             },
             {'data': 'nombre', 'name': 'entidades.nombre'},
-            {'data': 'sede_descripcion_req', 'name': 'sede_req.descripcion'},
-            {'data': 'codigo'},
+            // {'data': 'sede_descripcion_req', 'name': 'sede_req.descripcion'},
+            // {'data': 'codigo'},
+            {'render': function (data, type, row){
+                return ('<label class="lbl-codigo" title="Abrir Requerimiento" onClick="abrir_requerimiento('+row['id_requerimiento']+')">'+row['codigo']+'</label>'+
+                    ' <strong>'+row['sede_descripcion_req']+'</strong>'+(row['tiene_transformacion'] ? '<br><i class="fas fa-random red"></i>' : ''));
+                }
+            },
             {'data': 'concepto'},
             {'data': 'fecha_requerimiento'},
             // {'data': 'direccion_entrega'},
@@ -155,7 +160,7 @@ function listarRequerimientosElaborados(){
                     return '<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" '+
                     'data-placement="bottom" title="Ver Detalle" data-id="'+row['id_requerimiento']+'">'+
                     '<i class="fas fa-chevron-down"></i></button>';
-                }, targets: 13
+                }, targets: 12
             }
         ],
     });
@@ -195,8 +200,13 @@ function listarRequerimientosConfirmados(permiso){
                 }
             },
             {'data': 'nombre', 'name': 'entidades.nombre'},
-            {'data': 'sede_descripcion_req', 'name': 'sede_req.descripcion'},
-            {'data': 'codigo'},
+            // {'data': 'sede_descripcion_req', 'name': 'sede_req.descripcion'},
+            // {'data': 'codigo'},
+            {'render': function (data, type, row){
+                return ('<label class="lbl-codigo" title="Abrir Requerimiento" onClick="abrir_requerimiento('+row['id_requerimiento']+')">'+row['codigo']+'</label>'+
+                    ' <strong>'+row['sede_descripcion_req']+'</strong>'+(row['tiene_transformacion'] ? '<br><i class="fas fa-random red"></i>' : ''));
+                }
+            },
             {'data': 'concepto'},
             {'data': 'fecha_requerimiento'},
             {'render': function (data, type, row){
@@ -244,7 +254,7 @@ function listarRequerimientosConfirmados(permiso){
                     ('<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" '+
                         'data-placement="bottom" title="Ver Detalle" data-id="'+row['id_requerimiento']+'">'+
                         '<i class="fas fa-chevron-down"></i></button>');
-                }, targets: 15
+                }, targets: 14
             }
         ],
     });
@@ -288,20 +298,26 @@ function listarRequerimientosPendientes(permiso){
             },
             {'data': 'codigo_oportunidad', 'name': 'oportunidades.codigo_oportunidad'},
             {'render': function (data, type, row){
-                return formatNumber.decimal(row['monto_total'],'S/',2);
-            }
-        },
+                    return formatNumber.decimal(row['monto_total'],'S/',2);
+                }
+            },
             {'data': 'nombre', 'name': 'entidades.nombre'},
             // {'data': 'sede_descripcion_req', 'name': 'sede_req.descripcion'},
             {'render': function (data, type, row){
                 return (row['fecha_entrega'] !== null ? formatDate(row['fecha_entrega']) : '');
                 }
             },
-            // {'data': 'codigo'},
             {'render': function (data, type, row){
-                    return (row['codigo']+' <strong>'+row['sede_descripcion_req']+'</strong>');
+                    return ('<label class="lbl-codigo" title="Abrir Requerimiento" onClick="abrir_requerimiento('+row['id_requerimiento']+')">'+row['codigo']+'</label>'+
+                    ' <strong>'+row['sede_descripcion_req']+'</strong>'+(row['tiene_transformacion'] ? '<br><i class="fas fa-random red"></i>' : ''));
                 }
             },
+            // {'render': function (data, type, row){
+            //     console.log(row['tiene_transformacion']);
+            //         return (row['codigo']+' <strong>'+row['sede_descripcion_req']+'</strong>'+
+            //         +(row['tiene_transformacion']=='t' ? '<br/><i class="fas fa-random red"></i>' : ''));
+            //     }
+            // },
             {'render': function (data, type, row){
                 return (row['fecha_requerimiento'] !== null ? formatDate(row['fecha_requerimiento']) : '');
                 }
@@ -371,12 +387,12 @@ function listarRequerimientosPendientes(permiso){
         ],
         'order': [[ 5, "asc" ]],
         "createdRow": function( row, data, dataIndex){
-            if(data.estado == 28){
-                $(row).css('background-color', '#FACABF');
-                    // $(row.childNodes[1]).css('font-weight', 'bold');
-            }else if(data.estado == 27){
-                $(row).css('background-color', '#FCF699');
-
+            if (!data.tiene_transformacion){
+                if(data.estado == 28){
+                    $(row).css('background-color', '#FACABF');
+                }else if(data.estado == 27){
+                    $(row).css('background-color', '#FCF699');
+                }
             }
         },
         'columnDefs': [
@@ -390,29 +406,28 @@ function listarRequerimientosPendientes(permiso){
                         '<button type="button" class="anular btn btn-danger boton" data-toggle="tooltip" '+
                         'data-placement="bottom" data-id="'+row['id_requerimiento']+'" data-cod="'+row['codigo']+'" title="Anular Requerimiento" >'+
                         '<i class="fas fa-trash"></i></button>' : '')+
-                    (
-                        (
-                        //     (row['estado'] == 19 && row['id_tipo_requerimiento'] == 1 && row['sede_requerimiento'] == row['sede_orden'] && row['id_od'] == null) || //compra 
+                    ((
+                        // (row['estado'] == 19 && row['id_tipo_requerimiento'] == 1 && row['sede_requerimiento'] == row['sede_orden'] && row['id_od'] == null) || //compra 
                         // (row['estado'] == 19 && row['id_tipo_requerimiento'] == 1 && row['sede_requerimiento'] !== row['sede_orden'] && row['id_transferencia'] !== null && row['id_od'] == null) || //compra con transferencia
-                        (row['estado'] == 19 && row['confirmacion_pago'] == true && /*row['id_od'] == null &&*/ row['count_transferencia'] == 0) || //venta directa
-                        (row['estado'] == 10) || (row['estado'] == 22) ||
-                        (row['estado'] == 28) || (row['estado'] == 27) ||
+                        // (row['estado'] == 10) || (row['estado'] == 22) ||
+                        (row['estado'] == 28 && row['tiene_transformacion']==false) || //(row['estado'] == 27) ||
                         (row['estado'] == 19 && row['id_tipo_requerimiento'] !== 1) ||
-                        (row['estado'] == 19 && row['confirmacion_pago'] == true && /*row['id_od'] == null &&*/ row['count_transferencia'] > 0 && row['count_transferencia'] == row['count_transferencia_recibida'])) ? //venta directa con transferencia
+                        (row['estado'] == 19 && row['confirmacion_pago'] == true && row['count_transferencia'] == 0) || //venta directa
+                        (row['estado'] == 19 && row['confirmacion_pago'] == true && row['count_transferencia'] > 0 && row['count_transferencia'] == row['count_transferencia_recibida'])) ? //venta directa con transferencia
                             ('<button type="button" class="despacho btn btn-success boton" data-toggle="tooltip" '+
                             'data-placement="bottom" title="Generar Orden de Despacho" >'+
                             '<i class="fas fa-sign-in-alt"></i></button>') : 
-                        ( row['id_od'] !== null && row['estado_od'] == 1) ?
-                        `<button type="button" class="adjuntar btn btn-${row['count_despacho_adjuntos']>0 ? 'warning' : 'default' } boton" data-toggle="tooltip" 
-                            data-placement="bottom" data-id="${row['id_od']}" data-cod="${row['codigo_od']}" title="Adjuntar Boleta/Factura" >
-                            <i class="fas fa-paperclip"></i></button>
-                        <button type="button" class="anular_od btn btn-danger boton" data-toggle="tooltip" 
-                            data-placement="bottom" data-id="${row['id_od']}" data-cod="${row['codigo_od']}" title="Anular Orden Despacho" >
-                            <i class="fas fa-trash"></i></button>` : '' )+
+                        (row['id_od'] !== null && row['estado_od'] == 1) ?
+                            `<button type="button" class="adjuntar btn btn-${row['count_despacho_adjuntos']>0 ? 'warning' : 'default' } boton" data-toggle="tooltip" 
+                                data-placement="bottom" data-id="${row['id_od']}" data-cod="${row['codigo_od']}" title="Adjuntar Boleta/Factura" >
+                                <i class="fas fa-paperclip"></i></button>
+                            <button type="button" class="anular_od btn btn-danger boton" data-toggle="tooltip" 
+                                data-placement="bottom" data-id="${row['id_od']}" data-cod="${row['codigo_od']}" title="Anular Orden Despacho" >
+                                <i class="fas fa-trash"></i></button>` : '' )+
                         (row['estado'] == 9 ? 
-                        `<button type="button" class="adjuntar btn btn-${row['count_despacho_adjuntos']>0 ? 'warning' : 'default' } boton" data-toggle="tooltip" 
-                            data-placement="bottom" data-id="${row['id_od']}" data-cod="${row['codigo_od']}" title="Adjuntar Boleta/Factura" >
-                            <i class="fas fa-paperclip"></i></button>` : '')
+                            `<button type="button" class="adjuntar btn btn-${row['count_despacho_adjuntos']>0 ? 'warning' : 'default' } boton" data-toggle="tooltip" 
+                                data-placement="bottom" data-id="${row['id_od']}" data-cod="${row['codigo_od']}" title="Adjuntar Boleta/Factura" >
+                                <i class="fas fa-paperclip"></i></button>` : '')
                 } else {
                     return '<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" '+
                     'data-placement="bottom" title="Ver Detalle" data-id="'+row['id_requerimiento']+'">'+
@@ -546,8 +561,13 @@ function listarRequerimientosEnTransformacion(permiso){
             },
             // {'data': 'codigo'},
             // {'data': 'concepto'},
+            // {'render': function (data, type, row){
+            //         return (row['codigo']+' <strong>'+row['sede_descripcion_req']+'</strong>');
+            //     }
+            // },
             {'render': function (data, type, row){
-                    return (row['codigo']+' <strong>'+row['sede_descripcion_req']+'</strong>');
+                return ('<label class="lbl-codigo" title="Abrir Requerimiento" onClick="abrir_requerimiento('+row['id_requerimiento']+')">'+row['codigo']+'</label>'+
+                    ' <strong>'+row['sede_descripcion_req']+'</strong>'+(row['tiene_transformacion'] ? '<br><i class="fas fa-random red"></i>' : ''));
                 }
             },
             {'render': function (data, type, row){
@@ -748,7 +768,12 @@ function listarOrdenesPendientes(){
                 }
             },
             // {'data': 'razon_social', 'name': 'adm_contri.razon_social'},
-            {'data': 'codigo_req', 'name': 'alm_req.codigo'},
+            // {'data': 'codigo_req', 'name': 'alm_req.codigo'},
+            {'render': function (data, type, row){
+                return ('<label class="lbl-codigo" title="Abrir Requerimiento" onClick="abrir_requerimiento('+row['id_requerimiento']+')">'+row['codigo_req']+'</label>'+
+                    ' <strong>'+row['sede_descripcion_req']+'</strong>'+(row['tiene_transformacion'] ? '<br><i class="fas fa-random red"></i>' : ''));
+                }
+            },
             {'data': 'concepto', 'name': 'alm_req.concepto'},
             // {'data': 'almacen_descripcion', 'name': 'alm_almacen.descripcion'},
             // {'data': 'ubigeo_descripcion', 'name': 'ubi_dis.descripcion'},
@@ -900,7 +925,12 @@ function listarGruposDespachados(permiso){
                     return ('<label class="lbl-codigo" title="Abrir Despacho" onClick="openDespacho('+row['id_od_grupo']+')">'+row['codigo_od']+'</label>');
                 }
             },
-            {'data': 'codigo_req', 'name': 'alm_req.codigo'},
+            // {'data': 'codigo_req', 'name': 'alm_req.codigo'},
+            {'render': function (data, type, row){
+                return ('<label class="lbl-codigo" title="Abrir Requerimiento" onClick="abrir_requerimiento('+row['id_requerimiento']+')">'+row['codigo_req']+'</label>'+
+                    ' <strong>'+row['sede_descripcion_req']+'</strong>'+(row['tiene_transformacion'] ? '<br><i class="fas fa-random red"></i>' : ''));
+                }
+            },
             // {'render': 
             //     function (data, type, row){
             //         if (row['cliente_razon_social'] !== null){
@@ -1048,15 +1078,6 @@ $('#gruposDespachados tbody').on("click","button.transportista", function(){
     }
 });
 
-$("#form-orden_despacho_transportista").on("submit", function(e){
-    e.preventDefault();
-    var data = $(this).serialize();
-    console.log(data);
-    $('#submit_od_transportista').attr('disabled','true');
-    despacho_transportista(data);
-    $('#modal-orden_despacho_transportista').modal('hide');
-});
-
 $('#gruposDespachados tbody').on("click","button.revertir", function(){
     var id_od_grupo_detalle = $(this).data('id');
     var id_od = $(this).data('od');
@@ -1073,26 +1094,6 @@ $('#gruposDespachados tbody').on("click","button.revertir", function(){
         despacho_revertir_despacho(data);
     }
 });
-
-function despacho_transportista(data){
-    $.ajax({
-        type: 'POST',
-        url: 'despacho_transportista',
-        data: data,
-        dataType: 'JSON',
-        success: function(response){
-            console.log(response);
-            if (response > 0){
-                $('#gruposDespachados').DataTable().ajax.reload();
-                actualizaCantidadDespachosTabs();
-            }
-        }
-    }).fail( function( jqXHR, textStatus, errorThrown ){
-        console.log(jqXHR);
-        console.log(textStatus);
-        console.log(errorThrown);
-    });
-}
 
 function despacho_revertir_despacho(data){
     $.ajax({
@@ -1225,7 +1226,7 @@ function listarGruposDespachadosPendientesCargo(permiso){
                             data-placement="bottom" title="Ver Detalle" data-id="${row['id_od']}">
                             <i class="fas fa-chevron-down"></i></button>
 
-                            <button type="button" class="adjuntar btn btn-info boton" data-toggle="tooltip" 
+                            <button type="button" class="nuevo btn btn-info boton" data-toggle="tooltip" 
                             data-placement="bottom" data-id="${row['id_od']}" data-codod="${row['codigo_od']}" 
                             data-idreq="${row['id_requerimiento']}" data-estreq="${row['estado_req']}" title="Nuevo Estado">
                             <i class="fas fa-map-marker-alt"></i></button>
@@ -1251,59 +1252,13 @@ function listarGruposDespachadosPendientesCargo(permiso){
     });
 }
 
-$('#pendientesRetornoCargo tbody').on("click","button.adjuntar", function(){
+$('#pendientesRetornoCargo tbody').on("click","button.nuevo", function(){
     var id = $(this).data('id');
     var cod = $(this).data('codod');
     var req = $(this).data('idreq');
     var est = $(this).data('estreq');
 
-    $('#modal-ordenDespachoEstados').modal({
-        show: true
-    });
-    // $('#modal-despachoAdjuntos').modal({
-    //     show: true
-    // });
-    // listarAdjuntos(id);
-    $('[name=id_od]').val(id);
-    $('[name=id_requerimiento]').val(req);
-    $('[name=codigo_od]').val(cod);
-    $('[name=observacion]').val('');
-    $('[name=adjunto]').val('');
-
-    var sel = '';
-    switch (est) {
-        case 25:
-            sel = ` <option value="32" default>En Ag. Trans. Provincias</option>
-                    <option value="33">Salió hacia Cliente </option>
-                    <option value="34">Cliente recoge en Agencia </option>
-                    <option value="35">Recibió en custodia </option>
-                    <option value="36">Resolver </option>
-                    <option value="21">Entregado Conforme </option>`;
-            break;
-        case 32:
-            sel = ` <option value="33">Salió hacia Cliente </option>
-                    <option value="34">Cliente recoge en Agencia </option>
-                    <option value="35">Recibió en custodia </option>
-                    <option value="36">Resolver </option>
-                    <option value="21">Entregado Conforme </option>`;
-            break;
-        case 33: case 34:
-            sel = ` <option value="35">Recibió en custodia </option>
-                    <option value="36">Resolver </option>
-                    <option value="21">Entregado Conforme </option>`;
-            break;
-        case 35:
-            sel = ` <option value="36">Resolver </option>
-                    <option value="21">Entregado Conforme </option>`;
-            break;
-        case 36:
-            sel = ` <option value="21">Entregado Conforme </option>`;
-            break;
-        default:
-            break;
-    } 
-    $('[name=estado]').html(sel);
-    $('#submit_ordenDespachoEstados').removeAttr('disabled');
+    openOrdenDespachoEstado(id,req,cod,est);
 });
 
 $('#pendientesRetornoCargo tbody').on("click","button.conforme", function(){
@@ -1447,36 +1402,6 @@ function formatTimeLine ( table_id, id, row ) {
     });
 }
 
-$("#form-ordenDespachoEstados").on("submit", function(e){
-    e.preventDefault();
-    $('#submit_ordenDespachoEstados').attr('disabled','true');
-    despacho_estado();
-});
-
-function despacho_estado(){
-    var formData = new FormData($('#form-ordenDespachoEstados')[0]);
-    $.ajax({
-        type: 'POST',
-        url: 'guardarEstadoTimeLine',
-        data: formData,
-        cache: false,
-        contentType: false,
-        processData: false,
-        dataType: 'JSON',
-        success: function(response){
-            console.log(response);
-            $('#modal-ordenDespachoEstados').modal('hide');
-            $('#pendientesRetornoCargo').DataTable().ajax.reload();
-            actualizaCantidadDespachosTabs();
-            alert('Se guardó el estado con éxito');
-        }
-    }).fail( function( jqXHR, textStatus, errorThrown ){
-        console.log(jqXHR);
-        console.log(textStatus);
-        console.log(errorThrown);
-    });
-}
-
 function despacho_conforme(data){
     $.ajax({
         type: 'POST',
@@ -1496,24 +1421,3 @@ function despacho_conforme(data){
         console.log(errorThrown);
     });
 }
-
-function despacho_no_conforme(data){
-    $.ajax({
-        type: 'POST',
-        url: 'despacho_no_conforme',
-        data: data,
-        dataType: 'JSON',
-        success: function(response){
-            console.log(response);
-            if (response > 0){
-                $('#pendientesRetornoCargo').DataTable().ajax.reload();
-                actualizaCantidadDespachosTabs();
-            }
-        }
-    }).fail( function( jqXHR, textStatus, errorThrown ){
-        console.log(jqXHR);
-        console.log(textStatus);
-        console.log(errorThrown);
-    });
-}
-

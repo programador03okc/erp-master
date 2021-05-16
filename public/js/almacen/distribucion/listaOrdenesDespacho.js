@@ -28,7 +28,6 @@ function listarRequerimientosPendientes(){
                 }
             },
             {'data': 'nombre', 'name': 'entidades.nombre'},
-            // {'data': 'sede_descripcion_req', 'name': 'sede_req.descripcion'},
             {'render': function (data, type, row){
                 return (row['fecha_entrega'] !== null ? formatDate(row['fecha_entrega']) : '');
                 }
@@ -36,22 +35,15 @@ function listarRequerimientosPendientes(){
             // {'data': 'codigo'},
             {'render': function (data, type, row){
                     return ('<label class="lbl-codigo" title="Abrir Requerimiento" onClick="abrir_requerimiento('+row['id_requerimiento']+')">'+row['codigo']+'</label>'+
-                    ' <strong>'+row['sede_descripcion_req']+'</strong>'+(row['tiene_transformacion'] ? '<i class="fas fa-random"></i>' : ''));
+                    ' <strong>'+row['sede_descripcion_req']+'</strong>'+(row['tiene_transformacion'] ? '<br><i class="fas fa-random red"></i>' : ''));
                 }
             },
             {'render': function (data, type, row){
                 return (row['fecha_requerimiento'] !== null ? formatDate(row['fecha_requerimiento']) : '');
                 }
             },
-            // {'render': function (data, type, row){
-            //     return (row['ubigeo_descripcion'] !== null ? row['ubigeo_descripcion'] : '');
-            //     }
-            // },
-            // {'data': 'direccion_entrega'},
-            // {'data': 'grupo', 'name': 'adm_grupo.descripcion'},
             {'data': 'user_name', 'name': 'users.name'},
             {'data': 'responsable', 'name': 'sis_usua.nombre_corto'},
-            // {'data': 'estado_doc', 'name': 'adm_estado_doc.estado_doc'},
             {'render': function (data, type, row){
                 return '<span class="label label-'+row['bootstrap_color']+'">'+row['estado_doc']+'</span>'
                 }
@@ -63,13 +55,11 @@ function listarRequerimientosPendientes(){
                     '<i class="fas fa-exchange-alt"></i></button>' : ''))
                 }
             },
-            {'render': function (data, type, row){
-                return  (row['count_despachos_internos'] > 0 ? ('<span class="label label-danger">'+row['count_despachos_internos']+' </span>') : '')+
-                        (row['codigo_od'] !== null ? ('<span class="label label-primary">'+row['codigo_od']+'</span>') : '');
-                }
-            },
-            // {'data': 'fecha_despacho', 'name': 'orden_despacho.fecha_despacho'},
-            // {'data': 'hora_despacho', 'name': 'orden_despacho.hora_despacho'},
+            // {'render': function (data, type, row){
+            //     return  (row['count_despachos_internos'] > 0 ? ('<span class="label label-danger">'+row['count_despachos_internos']+' </span>') : '')+
+            //             (row['codigo_od'] !== null ? ('<span class="label label-primary">'+row['codigo_od']+'</span>') : '');
+            //     }
+            // },
             {'render': function (data, type, row){
                     if (row['estado'] == 17){
                         return 'Pendiente de que <strong>Almacén</strong> recepcione la Transferencia';
@@ -107,15 +97,15 @@ function listarRequerimientosPendientes(){
             }
         ],
         'order': [[ 5, "asc" ]],
-        "createdRow": function( row, data, dataIndex){
-            if(data.estado == 28){
-                $(row).css('background-color', '#FACABF');
-                    // $(row.childNodes[1]).css('font-weight', 'bold');
-            }else if(data.estado == 27){
-                $(row).css('background-color', '#FCF699');
+        // "createdRow": function( row, data, dataIndex){
+        //     if(data.estado == 28){
+        //         $(row).css('background-color', '#FACABF');
+        //             // $(row.childNodes[1]).css('font-weight', 'bold');
+        //     }else if(data.estado == 27){
+        //         $(row).css('background-color', '#FCF699');
 
-            }
-        },
+        //     }
+        // },
         'columnDefs': [
             {'aTargets': [0], 'sClass': 'invisible'},
             {'render': function (data, type, row){
@@ -127,8 +117,7 @@ function listarRequerimientosPendientes(){
                         '<button type="button" class="anular btn btn-danger boton" data-toggle="tooltip" '+
                         'data-placement="bottom" data-id="'+row['id_requerimiento']+'" data-cod="'+row['codigo']+'" title="Anular Requerimiento" >'+
                         '<i class="fas fa-trash"></i></button>' : '')+
-                    (
-                        (
+                    ((
                         //     (row['estado'] == 19 && row['id_tipo_requerimiento'] == 1 && row['sede_requerimiento'] == row['sede_orden'] && row['id_od'] == null) || //compra 
                         // (row['estado'] == 19 && row['id_tipo_requerimiento'] == 1 && row['sede_requerimiento'] !== row['sede_orden'] && row['id_transferencia'] !== null && row['id_od'] == null) || //compra con transferencia
                         (row['estado'] == 19 && row['confirmacion_pago'] == true && /*row['id_od'] == null &&*/ row['count_transferencia'] == 0) || //venta directa
@@ -155,7 +144,7 @@ function listarRequerimientosPendientes(){
                 //     'data-placement="bottom" title="Ver Detalle" data-id="'+row['id_requerimiento']+'">'+
                 //     '<i class="fas fa-chevron-down"></i></button>'
                 // }
-                }, targets: 14
+                }, targets: 13
             }
         ],
     });
@@ -214,11 +203,11 @@ function anularOrdenDespacho(id, proviene){
             if (response > 0){
                 if (proviene == 'enProceso'){
                     $('#requerimientosEnProceso').DataTable().ajax.reload();
-                } 
-                else if (proviene == 'enTransformacion'){
-                    $('#requerimientosEnTransformacion').DataTable().ajax.reload();
                 }
-                actualizaCantidadDespachosTabs();
+                // else if (proviene == 'enTransformacion'){
+                //     $('#requerimientosEnTransformacion').DataTable().ajax.reload();
+                // }
+                // actualizaCantidadDespachosTabs();
             }
         }
     }).fail( function( jqXHR, textStatus, errorThrown ){
