@@ -32,13 +32,13 @@
                                     </div>
                                     <div class="col-lg-8">
                                         <h5>Nro. de Documento</h5>
-                                        <div class="input-group">
-                                            <input type="text" style="display:none;" name="transportista">
-                                            <input type="number" class="form-control" name="nro_documento_prov" required>
+                                        <input type="text" style="display:none;" name="transportista">
+                                        <input type="number" class="form-control" name="nro_documento_prov" required>
+                                        <!-- <div class="input-group">
                                             <span class="input-group-btn">
                                                 <button id="btnConsultaSunat" class="btn btn-default" type="button" onclick="consultaSunat();"><i class="fa fa-search"></i> Consultar Sunat</button>
                                             </span>
-                                        </div>
+                                        </div> -->
                                     </div>
                                 </div>
                                 <div class="row">

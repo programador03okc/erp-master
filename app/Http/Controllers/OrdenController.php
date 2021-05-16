@@ -276,16 +276,13 @@ class OrdenController extends Controller
             'adm_contri.razon_social',
             'adm_contri.nro_documento',
             'sis_sede.descripcion as empresa_sede',
-            'adm_estado_doc.estado_doc',
-            'adm_estado_doc.bootstrap_color',
             'log_det_ord_compra.id_detalle_orden as detalle_orden_id_detalle_orden',
             'log_det_ord_compra.id_orden_compra as detalle_orden_id_orden_compra',
             'log_det_ord_compra.id_item as detalle_orden_id_item',
             'log_det_ord_compra.garantia as detalle_orden_garantia',
             'log_det_ord_compra.id_valorizacion_cotizacion as detalle_orden_id_valorizacion_cotizacion',
             'log_det_ord_compra.estado as id_detalle_orden_estado',
-            'adm_estado_doc_detalle_orden.estado_doc as detalle_orden_estado',
-            'adm_estado_doc_detalle_orden.bootstrap_color as detalle_orden_estado_bootstrap_color',
+            'estados_compra.descripcion as detalle_orden_estado',
             'log_det_ord_compra.personal_autorizado as detalle_orden_personal_autorizado',
             'log_det_ord_compra.lugar_despacho as detalle_orden_lugar_despacho',
             'log_det_ord_compra.descripcion_adicional as detalle_orden_descripcion_adicional',
@@ -310,8 +307,7 @@ class OrdenController extends Controller
         ->leftJoin('logistica.log_prove', 'log_prove.id_proveedor', '=', 'log_ord_compra.id_proveedor')
         ->leftJoin('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'log_prove.id_contribuyente')
         ->leftJoin('administracion.sis_sede', 'sis_sede.id_sede', '=', 'log_ord_compra.id_sede')
-        ->leftJoin('administracion.adm_estado_doc', 'log_ord_compra.estado', '=', 'adm_estado_doc.id_estado_doc')
-        ->leftJoin('administracion.adm_estado_doc as adm_estado_doc_detalle_orden', 'log_det_ord_compra.estado', '=', 'adm_estado_doc_detalle_orden.id_estado_doc')
+        ->leftJoin('logistica.estados_compra', 'log_det_ord_compra.estado', '=', 'estados_compra.id_estado')
         ->leftJoin('almacen.alm_item', 'log_det_ord_compra.id_item', '=', 'alm_item.id_item')
         ->leftJoin('almacen.alm_prod', 'alm_prod.id_producto', '=', 'alm_item.id_producto')
         ->leftJoin('almacen.alm_cat_prod', 'alm_cat_prod.id_categoria', '=', 'alm_prod.id_categoria')
@@ -892,10 +888,8 @@ class OrdenController extends Controller
             'cta_prin.nro_cuenta as nro_cuenta_prin',
             'cta_alter.nro_cuenta as nro_cuenta_alter',
             'cta_detra.nro_cuenta as nro_cuenta_detra',
-            'estados_compra.descripcion as estado_compra',
-            'adm_estado_doc.estado_doc',
+            'estados_compra.descripcion as estado_doc',
             'log_ord_compra.estado',
-            'adm_estado_doc.bootstrap_color',
             'log_ord_compra_pago.id_pago',
             'log_ord_compra_pago.detalle_pago',
             'log_ord_compra_pago.archivo_adjunto',
@@ -912,7 +906,6 @@ class OrdenController extends Controller
         ->leftjoin('contabilidad.adm_cta_contri as cta_prin','cta_prin.id_cuenta_contribuyente','=','log_ord_compra.id_cta_principal')
         ->leftjoin('contabilidad.adm_cta_contri as cta_alter','cta_alter.id_cuenta_contribuyente','=','log_ord_compra.id_cta_alternativa')
         ->leftjoin('contabilidad.adm_cta_contri as cta_detra','cta_detra.id_cuenta_contribuyente','=','log_ord_compra.id_cta_detraccion')
-        ->leftjoin('administracion.adm_estado_doc','adm_estado_doc.id_estado_doc','=','log_ord_compra.estado')
         ->leftjoin('logistica.estados_compra','estados_compra.id_estado','=','log_ord_compra.estado')
         ->leftjoin('logistica.log_ord_compra_pago','log_ord_compra_pago.id_orden_compra','=','log_ord_compra.id_orden_compra')
 
@@ -984,7 +977,6 @@ class OrdenController extends Controller
                     'nro_cuenta_alter'=> $element->nro_cuenta_alter, 
                     'nro_cuenta_detra'=> $element->nro_cuenta_detra,
                     'codigo_cuadro_comparativo'=> '',
-                    'bootstrap_color'=>$element->bootstrap_color,
                     'estado'=>$element->estado,
                     'estado_doc'=>$element->estado_doc,
                     'detalle_pago'=> $element->detalle_pago, 
@@ -2899,8 +2891,7 @@ class OrdenController extends Controller
             'cta_prin.nro_cuenta as nro_cuenta_prin',
             'cta_alter.nro_cuenta as nro_cuenta_alter',
             'cta_detra.nro_cuenta as nro_cuenta_detra',
-            'adm_estado_doc.estado_doc',
-            'adm_estado_doc.bootstrap_color',
+            'estados_compra.descripcion as estado_doc',
             'log_ord_compra_pago.id_pago',
             'log_ord_compra_pago.detalle_pago',
             'log_ord_compra_pago.archivo_adjunto'
@@ -2912,7 +2903,7 @@ class OrdenController extends Controller
         ->leftjoin('contabilidad.adm_cta_contri as cta_prin','cta_prin.id_cuenta_contribuyente','=','log_ord_compra.id_cta_principal')
         ->leftjoin('contabilidad.adm_cta_contri as cta_alter','cta_alter.id_cuenta_contribuyente','=','log_ord_compra.id_cta_alternativa')
         ->leftjoin('contabilidad.adm_cta_contri as cta_detra','cta_detra.id_cuenta_contribuyente','=','log_ord_compra.id_cta_detraccion')
-        ->join('administracion.adm_estado_doc','adm_estado_doc.id_estado_doc','=','log_ord_compra.estado')
+        ->leftjoin('logistica.estados_compra','estados_compra.id_estado','=','log_ord_compra.estado')
         ->leftjoin('logistica.log_ord_compra_pago','log_ord_compra_pago.id_orden_compra','=','log_ord_compra.id_orden_compra')
         ->where('log_ord_compra.id_orden_compra','=',$id_orden)
         ->get();
@@ -2931,7 +2922,6 @@ class OrdenController extends Controller
                         'simbolo'        => $data->simbolo,
                         'id_estado'     => $data->estado,
                         'estado_doc'     => $data->estado_doc,
-                        'bootstrap_color'=> $data->bootstrap_color,
                         'id_condicion'   => $data->id_condicion,
                         'plazo_dias'     => $data->plazo_dias,
                         'plazo_entrega'  => $data->plazo_entrega,
@@ -2958,7 +2948,7 @@ class OrdenController extends Controller
         ->leftJoin('almacen.alm_und_medida as und_medida_det_req', 'alm_det_req.id_unidad_medida', '=', 'und_medida_det_req.id_unidad_medida')
         // ->leftJoin('almacen.alm_det_req_adjuntos', 'alm_det_req_adjuntos.id_detalle_requerimiento', '=', 'alm_det_req.id_detalle_requerimiento')
         ->leftJoin('almacen.alm_almacen', 'alm_det_req.id_almacen_reserva', '=', 'alm_almacen.id_almacen')
-        ->leftJoin('administracion.adm_estado_doc', 'log_det_ord_compra.estado', '=', 'adm_estado_doc.id_estado_doc')
+        ->leftjoin('logistica.estados_compra','estados_compra.id_estado','=','log_det_ord_compra.estado')
 
         ->select(
             'log_det_ord_compra.id_detalle_orden',
@@ -2972,8 +2962,7 @@ class OrdenController extends Controller
             'log_det_ord_compra.precio',
             'log_det_ord_compra.cantidad',
             'log_det_ord_compra.estado as id_estado_detalle_orden',
-            'adm_estado_doc.estado_doc as estado_detalle_orden',
-            'adm_estado_doc.bootstrap_color as bootstrap_color_estado_detalle_orden',
+            'estados_compra.descripcion as estado_detalle_orden',
             'alm_det_req.id_detalle_requerimiento',
             'alm_req.id_requerimiento',
             'alm_req.codigo AS codigo_requerimiento',
@@ -3042,8 +3031,7 @@ class OrdenController extends Controller
                         'almacen_reserva'           => $data->almacen_reserva,
                         'subtotal'                  =>  $subtotal,
                         'id_estado_detalle_orden'   => $data->id_estado_detalle_orden,
-                        'estado_detalle_orden'      => $data->estado_detalle_orden,
-                        'bootstrap_color_estado_detalle_orden'  => $data->bootstrap_color_estado_detalle_orden
+                        'estado_detalle_orden'      => $data->estado_detalle_orden
                     ];
                     $lastId = $data->id_detalle_requerimiento;
                 }

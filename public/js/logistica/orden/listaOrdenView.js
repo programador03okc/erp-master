@@ -420,7 +420,7 @@ class ListaOrdenView {
                 },
                 {'render':
                     function (data, type, row, meta){
-                    return '<center><span class="label label-'+row.bootstrap_color+'">'+row.estado_doc+'</span></center>';
+                    return '<center><span class="label label-default">'+row.estado_doc+'</span></center>';
                     }
                 },
                 {'render':
@@ -683,11 +683,11 @@ class ListaOrdenView {
                 },
                 {'data': 'empresa_sede'},
                 { render: function (data, type, row) {    
-                    let estadoDetalleOrdenHabilitadasActualizar=[17,20,26,30,31];
+                    let estadoDetalleOrdenHabilitadasActualizar=[1,2,3,4,5,6,15];
                     if(estadoDetalleOrdenHabilitadasActualizar.includes(row.id_detalle_orden_estado) ==true){
-                        return `<span class="label label-${row.detalle_orden_estado_bootstrap_color}" onClick="listaOrdenView.editarEstadoItemOrden(this);" data-id-estado-detalle-orden-compra="${row.id_detalle_orden_estado}" data-id-orden-compra="${row.detalle_orden_id_orden_compra}" data-id-detalle-orden-compra="${row.detalle_orden_id_detalle_orden}" data-codigo-item="${row.alm_prod_codigo}" style="cursor: pointer;" title="Cambiar Estado de Item">${row.detalle_orden_estado}</span>`;
+                        return `<span class="label label-default" onClick="listaOrdenView.editarEstadoItemOrden(this);" data-id-estado-detalle-orden-compra="${row.id_detalle_orden_estado}" data-id-orden-compra="${row.detalle_orden_id_orden_compra}" data-id-detalle-orden-compra="${row.detalle_orden_id_detalle_orden}" data-codigo-item="${row.alm_prod_codigo}" style="cursor: pointer;" title="Cambiar Estado de Item">${row.detalle_orden_estado}</span>`;
                     }else{
-                        return `<span class="label label-${row.detalle_orden_estado_bootstrap_color}" data-id-estado-detalle-orden-compra="${row.id_detalle_orden_estado}" data-id-orden-compra="${row.detalle_orden_id_orden_compra}" data-id-detalle-orden-compra="${row.detalle_orden_id_detalle_orden}" data-codigo-item="${row.alm_prod_codigo}" style="cursor: default;">${row.detalle_orden_estado}</span>`;
+                        return `<span class="label label-default" data-id-estado-detalle-orden-compra="${row.id_detalle_orden_estado}" data-id-orden-compra="${row.detalle_orden_id_orden_compra}" data-id-detalle-orden-compra="${row.detalle_orden_id_detalle_orden}" data-codigo-item="${row.alm_prod_codigo}" style="cursor: default;">${row.detalle_orden_estado}</span>`;
                     }
     
                     }
@@ -779,12 +779,12 @@ class ListaOrdenView {
                 { data: 'subtotal' },
                 {'render':
                     function (data, type, row, meta){
-                        let estadoDetalleOrdenHabilitadasActualizar=[17,20,26,30,31];
+                        let estadoDetalleOrdenHabilitadasActualizar=[1,2,3,4,5,6,15];
     
                         if(estadoDetalleOrdenHabilitadasActualizar.includes(row.id_estado_detalle_orden)==true){
-                            return `<span class="label label-${row.bootstrap_color_estado_detalle_orden}" onClick="listaOrdenView.editarEstadoItemOrden(this);" data-id-estado-detalle-orden-compra="${row.id_estado_detalle_orden}" data-id-orden-compra="${row.id_orden_compra}" data-id-detalle-orden-compra="${row.id_detalle_orden}" data-codigo-item="${row.codigo_item}" style="cursor: pointer;" title="Cambiar Estado de Item">${row.estado_detalle_orden}</span>`;
+                            return `<span class="label label-default" onClick="listaOrdenView.editarEstadoItemOrden(this);" data-id-estado-detalle-orden-compra="${row.id_estado_detalle_orden}" data-id-orden-compra="${row.id_orden_compra}" data-id-detalle-orden-compra="${row.id_detalle_orden}" data-codigo-item="${row.codigo_item}" style="cursor: pointer;" title="Cambiar Estado de Item">${row.estado_detalle_orden}</span>`;
                         }else{
-                            return `<span class="label label-${row.bootstrap_color_estado_detalle_orden}" data-id-estado-detalle-orden-compra="${row.id_estado_detalle_orden}" data-id-orden-compra="${row.id_orden_compra}" data-id-detalle-orden-compra="${row.id_detalle_orden}" data-codigo-item="${row.codigo_item}" style="cursor: default;" >${row.estado_detalle_orden}</span>`;
+                            return `<span class="label label-default" data-id-estado-detalle-orden-compra="${row.id_estado_detalle_orden}" data-id-orden-compra="${row.id_orden_compra}" data-id-detalle-orden-compra="${row.id_detalle_orden}" data-codigo-item="${row.codigo_item}" style="cursor: default;" >${row.estado_detalle_orden}</span>`;
                         }
                     }
                 }
@@ -805,12 +805,12 @@ class ListaOrdenView {
         document.querySelector("p[id='inputCondicion']").textContent = data.condicion+' '+data.plazo_dias+' días';
         document.querySelector("p[id='inputPlazoEntrega']").textContent = data.plazo_entrega;
         document.querySelector("p[id='inputCodigoSoftlink']").textContent = data.codigo_softlink;
-        let estadoOrdenHabilitadasActualizar=[17,20,26,30,31];
+        let estadoOrdenHabilitadasActualizar=[1,2,3,4,5,6,15];
     
         if(estadoOrdenHabilitadasActualizar.includes(data.id_estado)==true){
-            document.querySelector("p[id='inputEstado']").innerHTML = `<span class="label label-${data.bootstrap_color}" id="estado_orden" onClick="listaOrdenView.editarEstadoOrden(this);" data-id-estado-orden-compra="${data.id_estado}" data-id-orden-compra="${data.id_orden_compra}" data-codigo-orden-compra="${data.codigo_softlink}" style="cursor: pointer;" title="Cambiar Estado de Orden">${data.estado_doc}</span>`
+            document.querySelector("p[id='inputEstado']").innerHTML = `<span class="label label-default" id="estado_orden" onClick="listaOrdenView.editarEstadoOrden(this);" data-id-estado-orden-compra="${data.id_estado}" data-id-orden-compra="${data.id_orden_compra}" data-codigo-orden-compra="${data.codigo_softlink}" style="cursor: pointer;" title="Cambiar Estado de Orden">${data.estado_doc}</span>`
         }else{
-            document.querySelector("p[id='inputEstado']").innerHTML = `<span class="label label-${data.bootstrap_color}" id="estado_orden" data-id-estado-orden-compra="${data.id_estado}" data-id-orden-compra="${data.id_orden_compra}" data-codigo-orden-compra="${data.codigo_softlink}" style="cursor: default;">${data.estado_doc}</span>`
+            document.querySelector("p[id='inputEstado']").innerHTML = `<span class="label label-default" id="estado_orden" data-id-estado-orden-compra="${data.id_estado}" data-id-orden-compra="${data.id_orden_compra}" data-codigo-orden-compra="${data.codigo_softlink}" style="cursor: default;">${data.estado_doc}</span>`
         }
     }
 
@@ -845,43 +845,8 @@ class ListaOrdenView {
         document.querySelector("div[id='modal-editar-estado-detalle-orden'] input[name='id_detalle_orden_compra'").value = id_detalle_orden;
         document.querySelector("div[id='modal-editar-estado-detalle-orden'] span[name='codigo_item_orden_compra'").textContent = codigo_item;
     
-        this.fillEstados(id_estado_actual);
-    }
+        document.querySelector("select[name='estado_detalle_orden']").value=id_estado_actual;
 
-    fillEstados(id_estado_actual){
-        // console.log(id_estado_actual);
-        let html ='';
-        let estados = [
-                {'17':'ENVIADO'},
-                {'30':'CONFIRMADA'},
-                {'31':'FACTURADA'},
-                {'20':'DESPACHADO'},
-                {'26':'EN TRANSITO'},
-                {'15':'ATENCIÓN PARCIAL'}
-        ];
-    
-    
-        if(id_estado_actual > 0 ){
-        estados.forEach(element => {
-                if(id_estado_actual == (Object.keys(element)[0])){
-                    html+=`<option value="${Object.keys(element)[0]}" selected>${Object.values(element)[0]}</option>`;
-                }else{
-                    html+=`<option value="${Object.keys(element)[0]}">${Object.values(element)[0]}</option>`;
-                }
-                
-            });
-            document.querySelector("select[name='estado_orden']").innerHTML = html;
-            document.querySelector("select[name='estado_detalle_orden']").innerHTML = html;
-        }else{
-            estados.forEach(element => {
-                html+=`<option value="${Object.keys(element)[0]}">${Object.values(element)[0]}</option>`;
-                
-            });
-            document.querySelector("select[name='estado_orden']").innerHTML = html;
-            document.querySelector("select[name='estado_detalle_orden']").innerHTML = html;
-        }
-    
-    
     }
 
     updateEstadoOrdenCompra(){
