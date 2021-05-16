@@ -1078,15 +1078,6 @@ $('#gruposDespachados tbody').on("click","button.transportista", function(){
     }
 });
 
-$("#form-orden_despacho_transportista").on("submit", function(e){
-    e.preventDefault();
-    var data = $(this).serialize();
-    console.log(data);
-    $('#submit_od_transportista').attr('disabled','true');
-    despacho_transportista(data);
-    $('#modal-orden_despacho_transportista').modal('hide');
-});
-
 $('#gruposDespachados tbody').on("click","button.revertir", function(){
     var id_od_grupo_detalle = $(this).data('id');
     var id_od = $(this).data('od');
@@ -1103,26 +1094,6 @@ $('#gruposDespachados tbody').on("click","button.revertir", function(){
         despacho_revertir_despacho(data);
     }
 });
-
-function despacho_transportista(data){
-    $.ajax({
-        type: 'POST',
-        url: 'despacho_transportista',
-        data: data,
-        dataType: 'JSON',
-        success: function(response){
-            console.log(response);
-            if (response > 0){
-                $('#gruposDespachados').DataTable().ajax.reload();
-                actualizaCantidadDespachosTabs();
-            }
-        }
-    }).fail( function( jqXHR, textStatus, errorThrown ){
-        console.log(jqXHR);
-        console.log(textStatus);
-        console.log(errorThrown);
-    });
-}
 
 function despacho_revertir_despacho(data){
     $.ajax({
@@ -1255,7 +1226,7 @@ function listarGruposDespachadosPendientesCargo(permiso){
                             data-placement="bottom" title="Ver Detalle" data-id="${row['id_od']}">
                             <i class="fas fa-chevron-down"></i></button>
 
-                            <button type="button" class="adjuntar btn btn-info boton" data-toggle="tooltip" 
+                            <button type="button" class="nuevo btn btn-info boton" data-toggle="tooltip" 
                             data-placement="bottom" data-id="${row['id_od']}" data-codod="${row['codigo_od']}" 
                             data-idreq="${row['id_requerimiento']}" data-estreq="${row['estado_req']}" title="Nuevo Estado">
                             <i class="fas fa-map-marker-alt"></i></button>
@@ -1281,59 +1252,13 @@ function listarGruposDespachadosPendientesCargo(permiso){
     });
 }
 
-$('#pendientesRetornoCargo tbody').on("click","button.adjuntar", function(){
+$('#pendientesRetornoCargo tbody').on("click","button.nuevo", function(){
     var id = $(this).data('id');
     var cod = $(this).data('codod');
     var req = $(this).data('idreq');
     var est = $(this).data('estreq');
 
-    $('#modal-ordenDespachoEstados').modal({
-        show: true
-    });
-    // $('#modal-despachoAdjuntos').modal({
-    //     show: true
-    // });
-    // listarAdjuntos(id);
-    $('[name=id_od]').val(id);
-    $('[name=id_requerimiento]').val(req);
-    $('[name=codigo_od]').val(cod);
-    $('[name=observacion]').val('');
-    $('[name=adjunto]').val('');
-
-    var sel = '';
-    switch (est) {
-        case 25:
-            sel = ` <option value="32" default>En Ag. Trans. Provincias</option>
-                    <option value="33">Salió hacia Cliente </option>
-                    <option value="34">Cliente recoge en Agencia </option>
-                    <option value="35">Recibió en custodia </option>
-                    <option value="36">Resolver </option>
-                    <option value="21">Entregado Conforme </option>`;
-            break;
-        case 32:
-            sel = ` <option value="33">Salió hacia Cliente </option>
-                    <option value="34">Cliente recoge en Agencia </option>
-                    <option value="35">Recibió en custodia </option>
-                    <option value="36">Resolver </option>
-                    <option value="21">Entregado Conforme </option>`;
-            break;
-        case 33: case 34:
-            sel = ` <option value="35">Recibió en custodia </option>
-                    <option value="36">Resolver </option>
-                    <option value="21">Entregado Conforme </option>`;
-            break;
-        case 35:
-            sel = ` <option value="36">Resolver </option>
-                    <option value="21">Entregado Conforme </option>`;
-            break;
-        case 36:
-            sel = ` <option value="21">Entregado Conforme </option>`;
-            break;
-        default:
-            break;
-    } 
-    $('[name=estado]').html(sel);
-    $('#submit_ordenDespachoEstados').removeAttr('disabled');
+    openOrdenDespachoEstado(id,req,cod,est);
 });
 
 $('#pendientesRetornoCargo tbody').on("click","button.conforme", function(){
@@ -1477,36 +1402,6 @@ function formatTimeLine ( table_id, id, row ) {
     });
 }
 
-$("#form-ordenDespachoEstados").on("submit", function(e){
-    e.preventDefault();
-    $('#submit_ordenDespachoEstados').attr('disabled','true');
-    despacho_estado();
-});
-
-function despacho_estado(){
-    var formData = new FormData($('#form-ordenDespachoEstados')[0]);
-    $.ajax({
-        type: 'POST',
-        url: 'guardarEstadoTimeLine',
-        data: formData,
-        cache: false,
-        contentType: false,
-        processData: false,
-        dataType: 'JSON',
-        success: function(response){
-            console.log(response);
-            $('#modal-ordenDespachoEstados').modal('hide');
-            $('#pendientesRetornoCargo').DataTable().ajax.reload();
-            actualizaCantidadDespachosTabs();
-            alert('Se guardó el estado con éxito');
-        }
-    }).fail( function( jqXHR, textStatus, errorThrown ){
-        console.log(jqXHR);
-        console.log(textStatus);
-        console.log(errorThrown);
-    });
-}
-
 function despacho_conforme(data){
     $.ajax({
         type: 'POST',
@@ -1526,24 +1421,3 @@ function despacho_conforme(data){
         console.log(errorThrown);
     });
 }
-
-function despacho_no_conforme(data){
-    $.ajax({
-        type: 'POST',
-        url: 'despacho_no_conforme',
-        data: data,
-        dataType: 'JSON',
-        success: function(response){
-            console.log(response);
-            if (response > 0){
-                $('#pendientesRetornoCargo').DataTable().ajax.reload();
-                actualizaCantidadDespachosTabs();
-            }
-        }
-    }).fail( function( jqXHR, textStatus, errorThrown ){
-        console.log(jqXHR);
-        console.log(textStatus);
-        console.log(errorThrown);
-    });
-}
-

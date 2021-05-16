@@ -26,17 +26,19 @@ Reporte de Guías Transportista
                             <thead>
                                 <tr>
                                     <th hidden></th>
-                                    <th>Guía</th>
-                                    <th>Transportista</th>
-                                    <th>Fecha Guía</th>
-                                    <th>Codigo Envío</th>
-                                    <th>Importe</th>
                                     <th>OCAM</th>
                                     <th>Cod.Req.</th>
                                     <th>OD</th>
                                     <th>Cliente</th>
+                                    <th>Guía</th>
+                                    <th>Transportista</th>
+                                    <th>Fecha</th>
+                                    <th>Codigo Envío</th>
+                                    <th>Importe</th>
+                                    <th>Extras</th>
+                                    <th>Crédito</th>
                                     <th>Estado</th>
-                                    <th></th>
+                                    <th width="35px"></th>
                                 </tr>
                             </thead>
                             <tbody></tbody>

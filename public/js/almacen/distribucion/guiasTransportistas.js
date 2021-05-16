@@ -20,6 +20,20 @@ function listarGuiasTransportistas(){
         'columns': [
             {'data': 'id_od'},
             {'render': function (data, type, row){
+                return (row['orden_am'] !== null ? row['orden_am']+`<a href="https://apps1.perucompras.gob.pe//OrdenCompra/obtenerPdfOrdenPublico?ID_OrdenCompra=${row['id_oc_propia']}&ImprimirCompleto=1">
+                    <span class="label label-success">Ver O.E.</span></a>
+                <a href="${row['url_oc_fisica']}">
+                    <span class="label label-warning">Ver O.F.</span></a>` : '');
+                }
+            },
+            {'render': function (data, type, row){
+                return ('<label class="lbl-codigo" title="Abrir Requerimiento" onClick="abrir_requerimiento('+row['id_requerimiento']+')">'+row['cod_req']+'</label>'+
+                    ' <strong>'+row['sede_descripcion_req']+'</strong>'+(row['tiene_transformacion'] ? '<br><i class="fas fa-random red"></i>' : ''));
+                }
+            },
+            {'data': 'codigo'},
+            {'data': 'nombre'},
+            {'render': function (data, type, row){
                     return 'GT-'+row['serie']+'-'+row['numero'];
                 }
             },
@@ -35,20 +49,14 @@ function listarGuiasTransportistas(){
                 }
             },
             {'render': function (data, type, row){
-                return (row['orden_am'] !== null ? row['orden_am']+`<a href="https://apps1.perucompras.gob.pe//OrdenCompra/obtenerPdfOrdenPublico?ID_OrdenCompra=${row['id_oc_propia']}&ImprimirCompleto=1">
-                    <span class="label label-success">Ver O.E.</span></a>
-                <a href="${row['url_oc_fisica']}">
-                    <span class="label label-warning">Ver O.F.</span></a>` : '');
+                    return 'S/'+formatDecimal(row['extras']);
                 }
             },
             {'render': function (data, type, row){
-                return (row['cod_req'] !== null ? 
-                        ('<label class="lbl-codigo" title="Abrir Requerimiento" onClick="abrir_requerimiento('+row['id_requerimiento']+')">'+row['cod_req']+'</label>')
-                        : '');
+                console.log(row['credito']);
+                    return (row['credito'] ? '<span class="label label-danger">Si</span>' : '<span class="label label-primary">No</span>');
                 }
             },
-            {'data': 'codigo'},
-            {'data': 'nombre'},
             {'render': function (data, type, row){
                 return '<span class="label label-'+row['bootstrap_color']+'">'+row['estado_doc']+'</span>'
                 }
@@ -60,7 +68,7 @@ function listarGuiasTransportistas(){
                     return '<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" '+
                     'data-placement="bottom" title="Ver Detalle" data-id="'+row['id_requerimiento']+'">'+
                     '<i class="fas fa-chevron-down"></i></button>';
-                }, targets: 11
+                }, targets: 13
             }
         ],
     });

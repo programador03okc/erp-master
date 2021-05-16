@@ -14,18 +14,29 @@
                         <input type="text" class="oculto" name="id_od"/>
                         <input type="text" class="oculto" name="codigo_od"/>
                         <input type="text" class="oculto" name="id_requerimiento"/>
-                        <div class="col-md-9">
+                        <div class="col-md-6">
                             <h5>Estado</h5>
                             <div class="input-group-okc">
                                 <select name="estado" class="form-control" required>
                                 </select>
                             </div>
                         </div>
+                        <div class="col-md-3">
+                            <h5>Gasto Extra S/.</h5>
+                            <div class="input-group-okc">
+                                <input type="number" class="form-control" name="gasto_extra"/>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <h5>Plazo excedido</h5>
+                            <input type="checkbox" name="plazo_excedido" 
+                                    style="margin-right: 10px; margin-left: 7px;"/> 
+                        </div>
                     </div>
                     <div class="row">
                         <div class="col-md-12">
                             <h5>Comentario</h5>
-                            <textarea name="observacion" id="observacion" cols="70" rows="5"></textarea>
+                            <textarea name="observacion" id="observacion" cols="70" rows="4"></textarea>
                         </div>
                     </div>
                     <div class="row">

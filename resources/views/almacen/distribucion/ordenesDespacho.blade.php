@@ -343,6 +343,8 @@ Panel de Control de Despachos
     <script src="{{ asset('js/almacen/distribucion/requerimientoObs.js')}}"></script>
     <script src="{{ asset('js/almacen/distribucion/requerimientoVerDetalle.js')}}"></script>
     <script src="{{ asset('js/almacen/distribucion/verDetalleRequerimiento.js')}}"></script>
+    <script src="{{ asset('js/almacen/distribucion/ordenDespachoTransportista.js')}}"></script>
+    <script src="{{ asset('js/almacen/distribucion/ordenDespachoEstado.js')}}"></script>
     <script src="{{ asset('js/almacen/producto/productoModal.js')}}"></script>
     <script src="{{ asset('js/almacen/producto/productoCreate.js')}}"></script>
     <script src="{{ asset('js/logistica/clienteModal.js')}}"></script>
