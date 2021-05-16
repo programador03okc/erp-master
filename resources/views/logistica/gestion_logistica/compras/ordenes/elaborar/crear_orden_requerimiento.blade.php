@@ -337,6 +337,7 @@
 
  
     <!-- <script src="{{('/js/logistica/orden/crear_orden_requerimiento.js')}}"></script> -->
+    <script src="{{ asset('js/publico/consulta_sunat.js')}}"></script>
     <script src="{{('/js/logistica/orden/OrdenModel.js')}}"></script>
     <script src="{{('/js/logistica/orden/OrdenView.js')}}"></script>
     <script src="{{('/js/logistica/orden/OrdenController.js')}}"></script>

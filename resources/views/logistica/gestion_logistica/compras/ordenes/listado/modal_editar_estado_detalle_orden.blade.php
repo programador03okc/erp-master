@@ -20,7 +20,9 @@
                             <h5>Estado</h5>
                             <div style="display:flex;">
                                 <select class="form-control" name="estado_detalle_orden" >
-                                    <option value="0">Elija una opción</option>
+                                    @foreach ($estados as $estado)
+                                        <option value="{{$estado->id_estado}}">{{$estado->descripcion}}</option>
+                                    @endforeach                                
                                 </select>
                             </div>
                         </div>
