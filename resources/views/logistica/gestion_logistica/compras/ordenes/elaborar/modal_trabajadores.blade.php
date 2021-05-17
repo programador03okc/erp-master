@@ -13,16 +13,11 @@
                             <th hidden>Id</th>
                             <th>Nro Documento</th>
                             <th>Nombre</th>
+                            <th>Acción</th>
                         </tr>
                     </thead>
                     <tbody></tbody>
                 </table>
-            </div>
-            <div class="modal-footer">
-                <label id="select_id_trabajador" style="display: none;"></label>
-                <label id="select_nombre_trabajador" style="display: none;"></label>
-                <label id="select_nro_documento_trabajador" style="display: none;"></label>
-                <button class="btn btn-sm btn-success" onClick="selectTrabajador();">Aceptar</button>
             </div>
         </div>
     </div>
