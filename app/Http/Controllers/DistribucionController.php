@@ -86,22 +86,22 @@ class DistribucionController extends Controller
             ->count();
 
         $count_por_despachar = DB::table('almacen.orden_despacho')
-            ->where('orden_despacho.estado',23)
+            ->where('orden_despacho.estado',9)//procesado
             ->count();
 
         $count_despachados = DB::table('almacen.orden_despacho_grupo_det')
         ->join('almacen.orden_despacho','orden_despacho.id_od','=','orden_despacho_grupo_det.id_od')
-        ->join('almacen.alm_req','alm_req.id_requerimiento','=','orden_despacho.id_requerimiento')
-        ->join('administracion.adm_estado_doc','adm_estado_doc.id_estado_doc','=','alm_req.estado')
-        ->where([['orden_despacho_grupo_det.estado','!=',7],['alm_req.estado','=',20]])//Despachado
+        // ->join('almacen.alm_req','alm_req.id_requerimiento','=','orden_despacho.id_requerimiento')
+        // ->join('administracion.adm_estado_doc','adm_estado_doc.id_estado_doc','=','alm_req.estado')
+        ->where([['orden_despacho_grupo_det.estado','!=',7],['orden_despacho.estado','=',10]])//Despachado
         ->count();
 
         $count_cargo = DB::table('almacen.orden_despacho_grupo_det')
         ->join('almacen.orden_despacho','orden_despacho.id_od','=','orden_despacho_grupo_det.id_od')
-        ->join('almacen.alm_req','alm_req.id_requerimiento','=','orden_despacho.id_requerimiento')
-        ->join('administracion.adm_estado_doc','adm_estado_doc.id_estado_doc','=','alm_req.estado')
+        // ->join('almacen.alm_req','alm_req.id_requerimiento','=','orden_despacho.id_requerimiento')
+        // ->join('administracion.adm_estado_doc','adm_estado_doc.id_estado_doc','=','alm_req.estado')
         ->where('orden_despacho_grupo_det.estado',1)
-        ->whereIn('alm_req.estado',[25,32,33,34,35])
+        ->whereIn('orden_despacho.estado',[2,3,4,5,6,7])
         ->count();
         
         return response()->json(['count_pendientes'=>$count_pendientes,
@@ -112,6 +112,7 @@ class DistribucionController extends Controller
                                  'count_despachados'=>$count_despachados,
                                  'count_cargo'=>$count_cargo]);
     }
+
     public function listarRequerimientosElaborados(){
         $data = DB::table('almacen.alm_req')
             ->select('alm_req.*','sis_usua.nombre_corto as responsable',
@@ -301,7 +302,8 @@ class DistribucionController extends Controller
         // return response()->json($data);
     }
 
-    public function listarOrdenesDespacho(){
+    public function listarOrdenesDespacho()
+    {
         $data = DB::table('almacen.orden_despacho')
         ->select('orden_despacho.*',
         'adm_contri.nro_documento', 'adm_contri.razon_social',
@@ -329,12 +331,13 @@ class DistribucionController extends Controller
         ->join('administracion.adm_estado_doc','adm_estado_doc.id_estado_doc','=','alm_req.estado')
         ->join('configuracion.ubi_dis','ubi_dis.id_dis','=','orden_despacho.ubigeo_destino')
         ->join('configuracion.sis_usua','sis_usua.id_usuario','=','orden_despacho.registrado_por')
-        ->where('orden_despacho.estado',23);
+        ->where('orden_despacho.estado',9);
         // ->get();
         return datatables($data)->toJson();
     }
 
-    public function listarGruposDespachados(){
+    public function listarGruposDespachados()
+    {
         $data = DB::table('almacen.orden_despacho_grupo_det')
         ->select('orden_despacho_grupo_det.*','orden_despacho_grupo.fecha_despacho','orden_despacho.codigo as codigo_od',
         'orden_despacho_grupo.observaciones','orden_despacho.direccion_destino','sis_usua.nombre_corto as trabajador_despacho',
@@ -342,7 +345,7 @@ class DistribucionController extends Controller
         DB::raw("(rrhh_perso.nombres) || ' ' || (rrhh_perso.apellido_paterno) || ' ' || (rrhh_perso.apellido_materno) AS cliente_persona"),
         'alm_req.codigo as codigo_req','alm_req.concepto','alm_req.id_requerimiento',
         'ubi_dis.descripcion as ubigeo_descripcion','orden_despacho_grupo.mov_entrega',
-        'adm_estado_doc.estado_doc','adm_estado_doc.bootstrap_color','alm_almacen.descripcion as almacen_descripcion',
+        'estado_envio.descripcion as estado_doc','alm_almacen.descripcion as almacen_descripcion',
         'orden_despacho_grupo.codigo as codigo_odg','orden_despacho.estado as estado_od',
         'oc_propias.orden_am','oportunidades.oportunidad','oportunidades.codigo_oportunidad','oc_propias.monto_total',
         'entidades.nombre','orden_despacho.id_od','oc_propias.id as id_oc_propia','oc_propias.url_oc_fisica',
@@ -367,22 +370,23 @@ class DistribucionController extends Controller
         ->leftjoin('mgcp_usuarios.users','users.id','=','oportunidades.id_responsable')
         ->leftjoin('mgcp_acuerdo_marco.oc_propias','oc_propias.id_oportunidad','=','oportunidades.id')
         ->leftjoin('mgcp_acuerdo_marco.entidades','entidades.id','=','oportunidades.id_entidad')
-        ->join('administracion.adm_estado_doc','adm_estado_doc.id_estado_doc','=','alm_req.estado')
+        ->join('almacen.estado_envio','estado_envio.id_estado','=','orden_despacho.estado')
         ->join('configuracion.ubi_dis','ubi_dis.id_dis','=','orden_despacho.ubigeo_destino')
-        ->where([['orden_despacho_grupo_det.estado','!=',7],['orden_despacho.estado','=',20]]);
+        ->where([['orden_despacho_grupo_det.estado','!=',7],['orden_despacho.estado','=',10]]);
         //->get();
         return datatables($data)->toJson();
     }
 
-    public function listarGruposDespachadosPendientesCargo(Request $request){
+    public function listarGruposDespachadosPendientesCargo()
+    {
         $data = DB::table('almacen.orden_despacho_grupo_det')
         ->select('orden_despacho_grupo_det.*','orden_despacho_grupo.fecha_despacho','orden_despacho.codigo as codigo_od',
         'orden_despacho_grupo.observaciones','orden_despacho.direccion_destino','sis_usua.nombre_corto as trabajador_despacho',
         'adm_contri.razon_social as proveedor_despacho',//'cliente.razon_social as cliente_razon_social',
         // DB::raw("(rrhh_perso.nombres) || ' ' || (rrhh_perso.apellido_paterno) || ' ' || (rrhh_perso.apellido_materno) AS cliente_persona"),
         'alm_req.codigo as codigo_req','alm_req.concepto','alm_req.id_requerimiento',
-        'orden_despacho_grupo.mov_entrega',
-        'adm_estado_doc.estado_doc','adm_estado_doc.bootstrap_color',//'alm_almacen.descripcion as almacen_descripcion',
+        'alm_req.tiene_transformacion','sis_sede.descripcion as sede_descripcion_req',
+        'orden_despacho_grupo.mov_entrega','estado_envio.descripcion as estado_doc',//'alm_almacen.descripcion as almacen_descripcion',
         'orden_despacho_grupo.codigo as codigo_odg','orden_despacho.estado as estado_od',
         'oc_propias.orden_am','oportunidades.oportunidad','oportunidades.codigo_oportunidad','oc_propias.monto_total',
         'entidades.nombre','orden_despacho.id_od','oc_propias.id as id_oc_propia','oc_propias.url_oc_fisica',
@@ -397,14 +401,16 @@ class DistribucionController extends Controller
         // ->leftjoin('rrhh.rrhh_perso','rrhh_perso.id_persona','=','orden_despacho.id_persona')
         // ->leftjoin('almacen.alm_almacen','alm_almacen.id_almacen','=','orden_despacho.id_almacen')
         ->join('almacen.alm_req','alm_req.id_requerimiento','=','orden_despacho.id_requerimiento')
+        ->join('administracion.sis_sede','sis_sede.id_sede','=','alm_req.id_sede')
         ->leftjoin('mgcp_cuadro_costos.cc','cc.id','=','alm_req.id_cc')
         ->leftjoin('mgcp_oportunidades.oportunidades','oportunidades.id','=','cc.id_oportunidad')
         ->leftjoin('mgcp_usuarios.users','users.id','=','oportunidades.id_responsable')
         ->leftjoin('mgcp_acuerdo_marco.oc_propias','oc_propias.id_oportunidad','=','oportunidades.id')
         ->leftjoin('mgcp_acuerdo_marco.entidades','entidades.id','=','oportunidades.id_entidad')
-        ->join('administracion.adm_estado_doc','adm_estado_doc.id_estado_doc','=','alm_req.estado')
+        ->join('almacen.estado_envio','estado_envio.id_estado','=','orden_despacho.estado')
         ->where('orden_despacho_grupo_det.estado',1)
-        ->whereIn('alm_req.estado',[25,32,33,34,35]);
+        ->whereIn('orden_despacho.estado',[2,3,4,5,6,7]);
+        // ->whereIn('alm_req.estado',[25,32,33,34,35]);
         //->get();
         return datatables($data)->toJson();
     }
@@ -625,7 +631,14 @@ class DistribucionController extends Controller
         return response()->json($data);
     }
 
-    public function listarRequerimientosPendientesPagos(Request $request){
+    public function mostrarEstados(Request $request){
+        $estados = DB::table('almacen.estado_envio')
+        ->whereIn('id_estado',json_decode($request->estados))
+        ->get();
+        return response()->json($estados);
+    }
+
+    public function listarRequerimientosPendientesPagos(){
         $data = DB::table('almacen.alm_req')
             ->select('alm_req.*','sis_usua.nombre_corto as responsable',//'adm_grupo.descripcion as grupo','adm_grupo.id_sede',
             'adm_estado_doc.estado_doc','adm_estado_doc.bootstrap_color',
@@ -654,7 +667,7 @@ class DistribucionController extends Controller
         return datatables($data)->toJson();
     }
 
-    public function listarRequerimientosConfirmadosPagos(Request $request){
+    public function listarRequerimientosConfirmadosPagos(){
         $data = DB::table('almacen.alm_req')
             ->select('alm_req.*','sis_usua.nombre_corto as responsable','adm_grupo.descripcion as grupo',
             'adm_grupo.id_sede','adm_estado_doc.estado_doc','adm_estado_doc.bootstrap_color',
@@ -1182,26 +1195,26 @@ class DistribucionController extends Controller
                     'estado'=>1,
                     'fecha_registro'=>date('Y-m-d H:i:s')
                 ]);
-                //actualiza estado despachado
+                //actualiza estado Salio de oficina
                 DB::table('almacen.orden_despacho')
                 ->where('id_od',$d->id_od)
-                ->update(['estado'=>20]);//Despachado
+                ->update(['estado'=>10]);//Salio de oficina
 
                 DB::table('almacen.orden_despacho_det')
                 ->where('id_od',$d->id_od)
-                ->update(['estado'=>20]);//Despachado
+                ->update(['estado'=>10]);//Salio de oficina
 
-                DB::table('almacen.alm_req')
-                ->where('id_requerimiento',$d->id_requerimiento)
-                ->update(['estado'=>20]);//Despachado
+                // DB::table('almacen.alm_req')
+                // ->where('id_requerimiento',$d->id_requerimiento)
+                // ->update(['estado'=>20]);//Despachado
 
-                $req = DB::table('almacen.alm_req')
-                ->where('id_requerimiento',$d->id_requerimiento)->first();
+                // $req = DB::table('almacen.alm_req')
+                // ->where('id_requerimiento',$d->id_requerimiento)->first();
 
-                DB::table('almacen.alm_det_req')
-                ->where([['id_requerimiento','=',$d->id_requerimiento],
-                         ['tiene_transformacion','=',$req->tiene_transformacion]])
-                ->update(['estado'=>20]);//Despachado
+                // DB::table('almacen.alm_det_req')
+                // ->where([['id_requerimiento','=',$d->id_requerimiento],
+                //          ['tiene_transformacion','=',$req->tiene_transformacion]])
+                // ->update(['estado'=>20]);//Despachado
 
                 //Agrega accion en requerimiento
                 DB::table('almacen.alm_req_obs')
@@ -1214,7 +1227,7 @@ class DistribucionController extends Controller
                 //Agrega al timeline
                 DB::table('almacen.orden_despacho_obs')
                 ->insert([  'id_od'=> $d->id_od,
-                            'accion'=>20,
+                            'accion'=>10,
                             'observacion'=>$request->mov_entrega,
                             'registrado_por'=>$id_usuario,
                             'fecha_registro'=>date('Y-m-d H:i:s')
@@ -1240,7 +1253,7 @@ class DistribucionController extends Controller
                 $data = DB::table('almacen.orden_despacho')
                 ->where('id_od',$request->id_od)
                 ->update([
-                    'estado'=>25, 
+                    'estado'=>2, 
                     // 'agencia'=>$request->agencia,
                     'id_transportista'=>$request->tr_id_proveedor,
                     'serie'=>$request->serie,
@@ -1255,7 +1268,7 @@ class DistribucionController extends Controller
                 DB::table('almacen.orden_despacho_obs')
                 ->insert([
                     'id_od'=>$request->id_od,
-                    'accion'=>25,
+                    'accion'=>2,
                     'observacion'=>'Guía Transportista: '.$request->serie.'-'.$request->numero,
                     'registrado_por'=>$id_usuario,
                     'fecha_registro'=>date('Y-m-d H:i:s')
@@ -1271,17 +1284,17 @@ class DistribucionController extends Controller
             // }
             
             if ($request->con_id_requerimiento !== null){
-                DB::table('almacen.alm_req')
-                ->where('id_requerimiento',$request->con_id_requerimiento)
-                ->update(['estado'=>25]);
+                // DB::table('almacen.alm_req')
+                // ->where('id_requerimiento',$request->con_id_requerimiento)
+                // ->update(['estado'=>25]);
 
-                $req = DB::table('almacen.alm_req')
-                ->where('id_requerimiento',$request->con_id_requerimiento)->first();
+                // $req = DB::table('almacen.alm_req')
+                // ->where('id_requerimiento',$request->con_id_requerimiento)->first();
 
-                DB::table('almacen.alm_det_req')
-                ->where([['id_requerimiento','=',$request->con_id_requerimiento],
-                        ['tiene_transformacion','=',$req->tiene_transformacion]])
-                ->update(['estado'=>25]);
+                // DB::table('almacen.alm_det_req')
+                // ->where([['id_requerimiento','=',$request->con_id_requerimiento],
+                //         ['tiene_transformacion','=',$req->tiene_transformacion]])
+                // ->update(['estado'=>25]);
                 //Agrega accion en requerimiento
                 DB::table('almacen.alm_req_obs')
                 ->insert([  'id_requerimiento'=>$request->con_id_requerimiento,
@@ -1298,7 +1311,7 @@ class DistribucionController extends Controller
             DB::rollBack();
         }
     }
-
+/*
     public function despacho_conforme(Request $request){
         try {
             DB::beginTransaction();
@@ -1325,17 +1338,17 @@ class DistribucionController extends Controller
                     ]);
             
             if ($request->id_requerimiento !== null){
-                DB::table('almacen.alm_req')
-                ->where('id_requerimiento',$request->id_requerimiento)
-                ->update(['estado'=>21]);//enregado
+                // DB::table('almacen.alm_req')
+                // ->where('id_requerimiento',$request->id_requerimiento)
+                // ->update(['estado'=>21]);//enregado
 
-                $req = DB::table('almacen.alm_req')
-                ->where('id_requerimiento',$request->id_requerimiento)->first();
+                // $req = DB::table('almacen.alm_req')
+                // ->where('id_requerimiento',$request->id_requerimiento)->first();
 
-                DB::table('almacen.alm_det_req')
-                ->where([['id_requerimiento','=',$request->id_requerimiento],
-                        ['tiene_transformacion','=',$req->tiene_transformacion]])
-                ->update(['estado'=>21]);//entregado
+                // DB::table('almacen.alm_det_req')
+                // ->where([['id_requerimiento','=',$request->id_requerimiento],
+                //         ['tiene_transformacion','=',$req->tiene_transformacion]])
+                // ->update(['estado'=>21]);//entregado
                 //Agrega accion en requerimiento
                 DB::table('almacen.alm_req_obs')
                 ->insert([  'id_requerimiento'=>$request->id_requerimiento,
@@ -1352,7 +1365,7 @@ class DistribucionController extends Controller
             DB::rollBack();
         }
     }
-
+*/
     public function despacho_revertir_despacho(Request $request){
         try {
             DB::beginTransaction();
@@ -1515,16 +1528,8 @@ class DistribucionController extends Controller
                         ],
                             'id_mov_alm'
                         );
-
-                    // $detalles = DB::table('almacen.orden_despacho_det')
-                    // ->select('orden_despacho_det.*','alm_prod.id_unidad_medida')
-                    // ->join('almacen.alm_prod','alm_prod.id_producto','=','orden_despacho_det.id_producto')
-                    // ->where([['orden_despacho_det.id_od','=',$request->id_od],
-                    //         ['orden_despacho_det.estado','!=',7]])
-                    // ->get();
-                    // $detalle = $this->verDetalleDespacho($request->id_od);
                     //orden de despacho estado   procesado
-                    $est = ($request->id_operacion == 27 ? 22 : 23);
+                    $est = ($request->id_operacion == 27 ? 22 : 9);
                     $aplica_cambios = ($request->id_operacion == 27 ? true : false);
                     $count_est = 0;
                     $detalle = json_decode($request->detalle);//No fucniona el json_decode
@@ -2456,21 +2461,29 @@ class DistribucionController extends Controller
         $data = DB::table('almacen.orden_despacho')
             ->select('orden_despacho.*', 'adm_contri.razon_social','oc_propias.orden_am',
             'oc_propias.id as id_oc_propia','oc_propias.url_oc_fisica','alm_req.codigo as cod_req',
-            'adm_estado_doc.estado_doc','adm_estado_doc.bootstrap_color','entidades.nombre',
+            'estado_envio.descripcion as estado_doc','entidades.nombre',
             'alm_req.tiene_transformacion','sis_sede.descripcion as sede_descripcion_req',
+            'orden_despacho_grupo_det.id_od_grupo','orden_despacho_obs.plazo_excedido',
+            'orden_despacho_obs.observacion',
             DB::raw("(SELECT SUM(gasto_extra) 
                         FROM almacen.orden_despacho_obs AS ob
                         WHERE ob.id_od = orden_despacho.id_od) as extras"))
-            ->join('logistica.log_prove', 'log_prove.id_proveedor', '=', 'orden_despacho.id_transportista')
-            ->join('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'log_prove.id_contribuyente')
+            ->leftjoin('logistica.log_prove', 'log_prove.id_proveedor', '=', 'orden_despacho.id_transportista')
+            ->leftjoin('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'log_prove.id_contribuyente')
             ->join('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'orden_despacho.id_requerimiento')
             ->join('administracion.sis_sede', 'sis_sede.id_sede', '=', 'alm_req.id_sede')
             ->leftjoin('mgcp_cuadro_costos.cc','cc.id','=','alm_req.id_cc')
             ->leftjoin('mgcp_oportunidades.oportunidades','oportunidades.id','=','cc.id_oportunidad')
             ->leftjoin('mgcp_acuerdo_marco.oc_propias','oc_propias.id_oportunidad','=','oportunidades.id')
             ->leftjoin('mgcp_acuerdo_marco.entidades','entidades.id','=','oportunidades.id_entidad')
-            ->join('administracion.adm_estado_doc','adm_estado_doc.id_estado_doc','=','orden_despacho.estado')
+            ->join('almacen.estado_envio','estado_envio.id_estado','=','orden_despacho.estado')
+            ->leftjoin('almacen.orden_despacho_grupo_det','orden_despacho_grupo_det.id_od','=','orden_despacho.id_od')
+            ->leftjoin('almacen.orden_despacho_obs', function($join)
+            {  $join->on('orden_despacho_obs.id_od', '=', 'orden_despacho.id_od');
+               $join->where('orden_despacho_obs.accion','=', 8);
+            })
             ->orderBy('orden_despacho.fecha_transportista','desc')
+            ->where('aplica_cambios',false)
             ->get();
         $output['data'] = $data;
         return response()->json($output);
@@ -2483,9 +2496,9 @@ class DistribucionController extends Controller
         'orden_despacho.codigo_envio','orden_despacho.fecha_transportista','orden_despacho.importe_flete',
         'orden_despacho_grupo.mov_entrega','adm_contri.razon_social as razon_social_despacho',
         'sis_usua.nombre_corto as responsable_despacho','orden_despacho_grupo.fecha_despacho',
-        'adm_estado_doc.estado_doc')
+        'estado_envio.descripcion as estado_doc')
         ->join('almacen.orden_despacho','orden_despacho.id_od','=','orden_despacho_obs.id_od')
-        ->join('administracion.adm_estado_doc','adm_estado_doc.id_estado_doc','=','orden_despacho_obs.accion')
+        ->join('almacen.estado_envio','estado_envio.id_estado','=','orden_despacho_obs.accion')
         ->join('almacen.orden_despacho_grupo_det', function($join)
                          {  $join->on('orden_despacho_grupo_det.id_od', '=', 'orden_despacho_obs.id_od');
                             $join->where('orden_despacho_grupo_det.estado','!=', 7);
@@ -2505,11 +2518,21 @@ class DistribucionController extends Controller
     public function guardarEstadoTimeLine(Request $request){
         $id_usuario = Auth::user()->id_usuario;
         $file = $request->file('adjunto');
-        $id = 0;
 
-        DB::table('almacen.alm_req')
-        ->where('id_requerimiento',$request->id_requerimiento)
+        DB::table('almacen.orden_despacho')
+        ->where('id_od',$request->id_od)
         ->update(['estado'=>$request->estado]);
+
+        if ($request->estado == 8){
+            //Agrega accion en requerimiento
+            DB::table('almacen.alm_req_obs')
+            ->insert([  'id_requerimiento'=>$request->id_requerimiento,
+                        'accion'=>'ENTREGADO',
+                        'descripcion'=>'Entregado al cliente',
+                        'id_usuario'=>$id_usuario,
+                        'fecha_registro'=>date('Y-m-d H:i:s')
+                ]);
+        }
 
         $id_obs = DB::table('almacen.orden_despacho_obs')
         ->insertGetId([ 'id_od'=> $request->id_od,
@@ -2524,7 +2547,7 @@ class DistribucionController extends Controller
         if (isset($file)){
             //obtenemos el nombre del archivo
             $extension = pathinfo($file->getClientOriginalName(), PATHINFO_EXTENSION);
-            $nombre = $id_obs.'.'.$request->codigo_od.'.'.$extension;
+            $nombre = $id_obs.'.'.$extension;
             //indicamos que queremos guardar un nuevo archivo en el disco local
             File::delete(public_path('almacen/trazabilidad_envio/'.$nombre));
             Storage::disk('archivos')->put('almacen/trazabilidad_envio/'.$nombre,File::get($file));
@@ -2533,7 +2556,6 @@ class DistribucionController extends Controller
             ->where('id_obs',$id_obs)
             ->update([ 'adjunto'=>$nombre ]);
         }
-
         return response()->json($id_obs);
     }
 }

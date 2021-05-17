@@ -1073,9 +1073,12 @@ span.select2-selection{
 #listaDocsProrrateo tbody td:nth-last-child(12),
 #listaPromocion tbody td:nth-last-child(5),
 #despachosPendientes tbody td:nth-last-child(6),
-#despachosPendientes tbody td:nth-last-child(5)
-// #requerimientosEnProceso tbody td:nth-last-child(9),
-// #listaSaldos tbody td:nth-last-child(9)
+#despachosPendientes tbody td:nth-last-child(5),
+#listaGuiasTransportistas tbody td:nth-last-child(5),
+#listaGuiasTransportistas tbody td:nth-last-child(6),
+#listaGuiasTransportistas tbody td:nth-last-child(7),
+#listaGuiasTransportistas tbody td:nth-last-child(8),
+#listaGuiasTransportistas tbody td:nth-last-child(9)
 {
     background: #d8fcfc;
 }
@@ -1207,7 +1210,7 @@ span.select2-selection{
     // background: #ffffb0;
     background: #c8fbfb;
     color: #000;
-    font-size: 13px;
+    font-size: 11px;
 }
 //// rrhh
 .group-rrhh{

@@ -2,7 +2,7 @@
 @include('layout.menu_logistica')
 
 @section('cabecera')
-Reporte de Guías Transportista
+Trazabilidad de Envío
 @endsection
 
 @section('breadcrumb')
@@ -29,6 +29,8 @@ Reporte de Guías Transportista
                                     <th>OCAM</th>
                                     <th>Cod.Req.</th>
                                     <th>OD</th>
+                                    <th>Fecha Despacho</th>
+                                    <th>Fecha Max Entrega</th>
                                     <th>Cliente</th>
                                     <th>Guía</th>
                                     <th>Transportista</th>
@@ -38,6 +40,8 @@ Reporte de Guías Transportista
                                     <th>Extras</th>
                                     <th>Crédito</th>
                                     <th>Estado</th>
+                                    <th>Entrega a Tiempo</th>
+                                    <th>Obs</th>
                                     <th width="35px"></th>
                                 </tr>
                             </thead>

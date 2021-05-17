@@ -135,7 +135,7 @@ function listarRequerimientosElaborados(){
             // {'data': 'codigo'},
             {'render': function (data, type, row){
                 return ('<label class="lbl-codigo" title="Abrir Requerimiento" onClick="abrir_requerimiento('+row['id_requerimiento']+')">'+row['codigo']+'</label>'+
-                    ' <strong>'+row['sede_descripcion_req']+'</strong>'+(row['tiene_transformacion'] ? '<br><i class="fas fa-random red"></i>' : ''));
+                    ' <strong>'+row['sede_descripcion_req']+'</strong>'+(row['tiene_transformacion'] ? '<br><i class="fas fa-random red" title="Tiene Transformación"></i>' : ''));
                 }
             },
             {'data': 'concepto'},
@@ -204,7 +204,7 @@ function listarRequerimientosConfirmados(permiso){
             // {'data': 'codigo'},
             {'render': function (data, type, row){
                 return ('<label class="lbl-codigo" title="Abrir Requerimiento" onClick="abrir_requerimiento('+row['id_requerimiento']+')">'+row['codigo']+'</label>'+
-                    ' <strong>'+row['sede_descripcion_req']+'</strong>'+(row['tiene_transformacion'] ? '<br><i class="fas fa-random red"></i>' : ''));
+                    ' <strong>'+row['sede_descripcion_req']+'</strong>'+(row['tiene_transformacion'] ? '<br><i class="fas fa-random red" title="Tiene Transformación"></i>' : ''));
                 }
             },
             {'data': 'concepto'},
@@ -309,7 +309,7 @@ function listarRequerimientosPendientes(permiso){
             },
             {'render': function (data, type, row){
                     return ('<label class="lbl-codigo" title="Abrir Requerimiento" onClick="abrir_requerimiento('+row['id_requerimiento']+')">'+row['codigo']+'</label>'+
-                    ' <strong>'+row['sede_descripcion_req']+'</strong>'+(row['tiene_transformacion'] ? '<br><i class="fas fa-random red"></i>' : ''));
+                    ' <strong>'+row['sede_descripcion_req']+'</strong>'+(row['tiene_transformacion'] ? '<br><i class="fas fa-random red" title="Tiene Transformación"></i>' : ''));
                 }
             },
             // {'render': function (data, type, row){
@@ -567,7 +567,7 @@ function listarRequerimientosEnTransformacion(permiso){
             // },
             {'render': function (data, type, row){
                 return ('<label class="lbl-codigo" title="Abrir Requerimiento" onClick="abrir_requerimiento('+row['id_requerimiento']+')">'+row['codigo']+'</label>'+
-                    ' <strong>'+row['sede_descripcion_req']+'</strong>'+(row['tiene_transformacion'] ? '<br><i class="fas fa-random red"></i>' : ''));
+                    ' <strong>'+row['sede_descripcion_req']+'</strong>'+(row['tiene_transformacion'] ? '<br><i class="fas fa-random red" title="Tiene Transformación"></i>' : ''));
                 }
             },
             {'render': function (data, type, row){
@@ -771,7 +771,7 @@ function listarOrdenesPendientes(){
             // {'data': 'codigo_req', 'name': 'alm_req.codigo'},
             {'render': function (data, type, row){
                 return ('<label class="lbl-codigo" title="Abrir Requerimiento" onClick="abrir_requerimiento('+row['id_requerimiento']+')">'+row['codigo_req']+'</label>'+
-                    ' <strong>'+row['sede_descripcion_req']+'</strong>'+(row['tiene_transformacion'] ? '<br><i class="fas fa-random red"></i>' : ''));
+                    ' <strong>'+row['sede_descripcion_req']+'</strong>'+(row['tiene_transformacion'] ? '<br><i class="fas fa-random red" title="Tiene Transformación"></i>' : ''));
                 }
             },
             {'data': 'concepto', 'name': 'alm_req.concepto'},
@@ -914,9 +914,9 @@ function listarGruposDespachados(permiso){
             },
             {'data': 'codigo_oportunidad', 'name': 'oportunidades.codigo_oportunidad'},
             {'render': function (data, type, row){
-                return formatNumber.decimal(row['monto_total'],'S/',2);
-            }
-        },
+                    return formatNumber.decimal(row['monto_total'],'S/',2);
+                }
+            },
             {'data': 'nombre', 'name': 'entidades.nombre'},
             // {'data': 'codigo_odg', 'name': 'orden_despacho_grupo.codigo'},
             // {'data': 'codigo_od', 'name': 'orden_despacho.codigo'},
@@ -928,7 +928,7 @@ function listarGruposDespachados(permiso){
             // {'data': 'codigo_req', 'name': 'alm_req.codigo'},
             {'render': function (data, type, row){
                 return ('<label class="lbl-codigo" title="Abrir Requerimiento" onClick="abrir_requerimiento('+row['id_requerimiento']+')">'+row['codigo_req']+'</label>'+
-                    ' <strong>'+row['sede_descripcion_req']+'</strong>'+(row['tiene_transformacion'] ? '<br><i class="fas fa-random red"></i>' : ''));
+                    ' <strong>'+row['sede_descripcion_req']+'</strong>'+(row['tiene_transformacion'] ? '<br><i class="fas fa-random red" title="Tiene Transformación"></i>' : ''));
                 }
             },
             // {'render': 
@@ -959,12 +959,12 @@ function listarGruposDespachados(permiso){
             // {'data': 'obs_confirmacion'},
             {'render': 
                 function (data, type, row){
-                    return ('<span class="label label-'+row['bootstrap_color']+'">'+row['estado_doc']+'</span>');
+                    return ('<span class="label label-info">'+row['estado_doc']+'</span>');
                 }
             },
             {'render': 
                 function (data, type, row){
-                    if (row['estado_od'] == 20){
+                    if (row['estado_od'] == 8){
                         return 'Pendiente de que se ingrese la <strong>Guía de Transportista</strong>';
                     } else {
                         return '';
@@ -986,7 +986,7 @@ function listarGruposDespachados(permiso){
                             data-placement="bottom" data-id="${row['id_od']}" data-cod="${row['codigo_od']}" title="Adjuntar Boleta/Factura" >
                             <i class="fas fa-paperclip"></i></button>`+
 
-                        ((row['confirmacion'] == false && row['estado_od'] == 20)? 
+                        (row['confirmacion'] == false? 
                         ('<button type="button" class="transportista btn btn-success boton" data-toggle="tooltip" '+
                         'data-placement="bottom" data-id="'+row['id_od_grupo_detalle']+'" data-od="'+row['id_od']+'" data-idreq="'+row['id_requerimiento']+'" data-cod-req="'+row['codigo_req']+'" data-concepto="'+row['concepto']+'" data-mov="'+row['mov_entrega']+'" title="Agregar Datos del Transportista" >'+
                         '<i class="fas fa-shuttle-van"></i></button>'+
@@ -1189,7 +1189,12 @@ function listarGruposDespachadosPendientesCargo(permiso){
                     return ('<label class="lbl-codigo" title="Abrir Despacho" onClick="openDespacho('+row['id_od_grupo']+')">'+row['codigo_od']+'</label>');
                 }
             },
-            {'data': 'codigo_req', 'name': 'alm_req.codigo'},
+            // {'data': 'codigo_req', 'name': 'alm_req.codigo'},
+            {'render': function (data, type, row){
+                return ('<label class="lbl-codigo" title="Abrir Requerimiento" onClick="abrir_requerimiento('+row['id_requerimiento']+')">'+row['codigo_req']+'</label>'+
+                    ' <strong>'+row['sede_descripcion_req']+'</strong>'+(row['tiene_transformacion'] ? '<br><i class="fas fa-random red" title="Tiene Transformación"></i>' : ''));
+                }
+            },
             {'data': 'concepto', 'name': 'alm_req.concepto'},
             {'data': 'user_name', 'name': 'users.name'},
             {'data': 'fecha_despacho', 'name': 'orden_despacho_grupo.fecha_despacho'},
@@ -1206,12 +1211,12 @@ function listarGruposDespachadosPendientesCargo(permiso){
             // {'data': 'obs_confirmacion'},
             {'render': 
                 function (data, type, row){
-                    return ('<span class="label label-'+row['bootstrap_color']+'">'+row['estado_doc']+'</span>');
+                    return ('<span class="label label-warning">'+row['estado_doc']+'</span>');
                 }
             },
             {'render': 
                 function (data, type, row){
-                    if (row['estado_od'] == 25){
+                    if (row['estado_od'] == 2){
                         return 'Pendiente de la llegada a Provincia';
                     } else {
                         return '';
@@ -1228,13 +1233,8 @@ function listarGruposDespachadosPendientesCargo(permiso){
 
                             <button type="button" class="nuevo btn btn-info boton" data-toggle="tooltip" 
                             data-placement="bottom" data-id="${row['id_od']}" data-codod="${row['codigo_od']}" 
-                            data-idreq="${row['id_requerimiento']}" data-estreq="${row['estado_req']}" title="Nuevo Estado">
+                            data-idreq="${row['id_requerimiento']}" data-estreq="${row['estado_od']}" title="Nuevo Estado">
                             <i class="fas fa-map-marker-alt"></i></button>
-
-                            <button type="button" class="conforme btn btn-success boton" data-toggle="tooltip" 
-                            data-placement="bottom" data-id="${row['id_od_grupo_detalle']}" data-od="${row['id_od']}" 
-                            data-idreq="${row['id_requerimiento']}" data-cod-req="${row['codigo_req']}" data-concepto="${row['concepto']}" title="Confirmar Entrega" >
-                            <i class="fas fa-check"></i></button>
                             
                             <button type="button" class="no_conforme btn btn-danger boton" data-toggle="tooltip" 
                             data-placement="bottom" data-id="${row['id_od_grupo_detalle']}" data-od="${row['id_od']}" 
@@ -1251,6 +1251,10 @@ function listarGruposDespachadosPendientesCargo(permiso){
         }],
     });
 }
+{/* <button type="button" class="conforme btn btn-success boton" data-toggle="tooltip" 
+data-placement="bottom" data-id="${row['id_od_grupo_detalle']}" data-od="${row['id_od']}" 
+data-idreq="${row['id_requerimiento']}" data-cod-req="${row['codigo_req']}" data-concepto="${row['concepto']}" title="Confirmar Entrega" >
+<i class="fas fa-check"></i></button> */}
 
 $('#pendientesRetornoCargo tbody').on("click","button.nuevo", function(){
     var id = $(this).data('id');
@@ -1261,22 +1265,22 @@ $('#pendientesRetornoCargo tbody').on("click","button.nuevo", function(){
     openOrdenDespachoEstado(id,req,cod,est);
 });
 
-$('#pendientesRetornoCargo tbody').on("click","button.conforme", function(){
-    var id_od_grupo_detalle = $(this).data('id');
-    var id_od = $(this).data('od');
-    var id_req = $(this).data('idreq');
-    var cod_req = $(this).data('codReq');
-    var concepto = $(this).data('concepto');
+// $('#pendientesRetornoCargo tbody').on("click","button.conforme", function(){
+//     var id_od_grupo_detalle = $(this).data('id');
+//     var id_od = $(this).data('od');
+//     var id_req = $(this).data('idreq');
+//     var cod_req = $(this).data('codReq');
+//     var concepto = $(this).data('concepto');
     
-    var rspta = confirm('¿Está seguro de confirmar la Entrega del '+cod_req+' '+concepto);
+//     var rspta = confirm('¿Está seguro de confirmar la Entrega del '+cod_req+' '+concepto);
 
-    if (rspta){
-        var data =  'id_od_grupo_detalle='+id_od_grupo_detalle+
-                    '&id_od='+id_od+
-                    '&id_requerimiento='+id_req;
-        despacho_conforme(data);
-    }
-});
+//     if (rspta){
+//         var data =  'id_od_grupo_detalle='+id_od_grupo_detalle+
+//                     '&id_od='+id_od+
+//                     '&id_requerimiento='+id_req;
+//         despacho_conforme(data);
+//     }
+// });
 
 $('#pendientesRetornoCargo tbody').on("click","button.no_conforme", function(){
     var id_od_grupo_detalle = $(this).data('id');
@@ -1328,79 +1332,6 @@ $('#pendientesRetornoCargo tbody').on('click', 'td button.estados', function () 
     }
 });
 
-function formatTimeLine ( table_id, id, row ) {
-
-    $.ajax({
-        type: 'GET',
-        url: 'getTimelineOrdenDespacho/'+id,
-        dataType: 'JSON',
-        success: function(response){
-            console.log(response);
-            var html = `<div class="row">
-            <div class="col-md-12">
-            
-              <div style="display:inline-block;width:100%;">
-                <ul class="timeline timeline-horizontal">`;
-            var i = 1;
-            
-            response.forEach(element => {
-                
-                if (element.accion == 20){
-                    html+=`<li class="timeline-item">
-                    <div class="timeline-badge bgfuxia"><i class="glyphicon glyphicon-time"></i></div>
-                    <div class="timeline-panel borderfuxia">
-                        <div class="timeline-heading">
-                        <p><small class="text-muted colorfuxia">${element.fecha_despacho}<br>
-                        <strong>${element.estado_doc}</strong><br>
-                        ${element.mov_entrega}<br>${element.razon_social_despacho!==null?
-                            element.razon_social_despacho:
-                            element.responsable_despacho}</small></p>
-                        </div>
-                    </div>
-                    </li>`;
-                }
-                else if (element.accion == 25){
-                    html+=`<li class="timeline-item">
-                    <div class="timeline-badge bggreendark"><i class="glyphicon glyphicon-time"></i></div>
-                    <div class="timeline-panel bordergreendark">
-                        <div class="timeline-heading">
-                        <p><small class="text-muted colorgreendark">${element.fecha_transportista}<br>
-                        <strong>${element.estado_doc}</strong><br>
-                        ${element.observacion} ${element.razon_social_transportista}
-                        Cod.Envío:${element.codigo_envio}</small><br></p>
-                        </div>
-                    </div>
-                    </li>`;
-                }
-                else {
-                    html+=`<li class="timeline-item">
-                    <div class="timeline-badge ${element.accion == 32 ? 'bggreenlight' : 
-                    ((element.accion == 33 || element.accion == 34) ? 'bgyellow' : 'bgdark')}">
-                    <i class="glyphicon glyphicon-time"></i></div>
-                    <div class="timeline-panel ${element.accion == 32 ? 'bordergreenlight' : 
-                    ((element.accion == 33 || element.accion == 34) ? 'borderyellow' : 'borderdark')} ">
-                        <div class="timeline-heading">
-                        <p><small class="text-muted ${element.accion == 32 ? 'colorgreenlight' : 
-                        ((element.accion == 33 || element.accion == 34) ? 'coloryellow' : 'colordark')}">${element.fecha_registro}<br>
-                        <strong>${element.estado_doc}</strong><br>
-                        ${element.observacion}</small></p>
-                        </div>
-                    </div>
-                    </li>`;
-                }
-            });
-            html+=`</ul>
-            </div>
-            </div>
-            </div>`;
-            row.child( html ).show();
-        }
-    }).fail( function( jqXHR, textStatus, errorThrown ){
-        console.log(jqXHR);
-        console.log(textStatus);
-        console.log(errorThrown);
-    });
-}
 
 function despacho_conforme(data){
     $.ajax({
