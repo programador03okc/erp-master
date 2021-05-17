@@ -192,7 +192,15 @@ class OrdenCtrl{
         var ask = confirm('Esta seguro que quiere anular el item ?');
         if (ask == true){
             ordenView.eliminadoFilaTablaListaDetalleOrden(obj);
-            this.calcTotalOrdenDetalleList();
+            let id= obj.dataset.id;
+            if(id.length >0){
+
+                    detalleOrdenList = detalleOrdenList.filter((item, i) => item.id != id);
+
+                this.calcTotalOrdenDetalleList();
+            }else{
+                alert('Hubo un problema al intentar anular el item');
+            }
         }else{
             return false;
         }
