@@ -13,6 +13,7 @@
                             <th hidden>Id</th>
                             <th>Código</th>
                             <th>Descripción</th>
+                            <th>Acción</th>
                         </tr>
                     </thead>
                     <tbody></tbody>
