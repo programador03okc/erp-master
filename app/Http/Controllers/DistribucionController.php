@@ -2482,7 +2482,11 @@ class DistribucionController extends Controller
             ->leftjoin('mgcp_acuerdo_marco.oc_propias','oc_propias.id_oportunidad','=','oportunidades.id')
             ->leftjoin('mgcp_acuerdo_marco.entidades','entidades.id','=','oportunidades.id_entidad')
             ->join('almacen.estado_envio','estado_envio.id_estado','=','orden_despacho.estado')
-            ->leftjoin('almacen.orden_despacho_grupo_det','orden_despacho_grupo_det.id_od','=','orden_despacho.id_od')
+            ->leftjoin('almacen.orden_despacho_grupo_det', function($join)
+            {  $join->on('orden_despacho_grupo_det.id_od', '=', 'orden_despacho.id_od');
+               $join->where('orden_despacho_grupo_det.estado','!=', 7);
+            })
+            // ->leftjoin('almacen.orden_despacho_grupo_det','orden_despacho_grupo_det.id_od','=','orden_despacho.id_od')
             ->leftjoin('almacen.orden_despacho_obs', function($join)
             {  $join->on('orden_despacho_obs.id_od', '=', 'orden_despacho.id_od');
                $join->where('orden_despacho_obs.accion','=', 8);
