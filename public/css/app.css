@@ -1097,7 +1097,12 @@ span.select2-selection {
 #listaDocsProrrateo tbody td:nth-last-child(12),
 #listaPromocion tbody td:nth-last-child(5),
 #despachosPendientes tbody td:nth-last-child(6),
-#despachosPendientes tbody td:nth-last-child(5) {
+#despachosPendientes tbody td:nth-last-child(5),
+#listaGuiasTransportistas tbody td:nth-last-child(5),
+#listaGuiasTransportistas tbody td:nth-last-child(6),
+#listaGuiasTransportistas tbody td:nth-last-child(7),
+#listaGuiasTransportistas tbody td:nth-last-child(8),
+#listaGuiasTransportistas tbody td:nth-last-child(9) {
   background: #d8fcfc;
 }
 
@@ -1117,7 +1122,7 @@ span.select2-selection {
 .resaltar {
   background: #c8fbfb;
   color: #000;
-  font-size: 13px;
+  font-size: 11px;
 }
 
 .group-rrhh {

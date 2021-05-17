@@ -1,5 +1,6 @@
 $(document).ready(function(){
     listarGuiasTransportistas();
+    vista_extendida();
 });
 
 var table;
@@ -28,37 +29,63 @@ function listarGuiasTransportistas(){
             },
             {'render': function (data, type, row){
                 return ('<label class="lbl-codigo" title="Abrir Requerimiento" onClick="abrir_requerimiento('+row['id_requerimiento']+')">'+row['cod_req']+'</label>'+
-                    ' <strong>'+row['sede_descripcion_req']+'</strong>'+(row['tiene_transformacion'] ? '<br><i class="fas fa-random red"></i>' : ''));
+                    ' <strong>'+row['sede_descripcion_req']+'</strong>'+(row['tiene_transformacion'] ? '<br><i class="fas fa-random red" title="Tiene Transformación"></i>' : ''));
                 }
             },
-            {'data': 'codigo'},
+            // {'data': 'codigo'},
+            {'render': 
+                function (data, type, row){
+                    return row['id_od_grupo']!==null ? ('<label class="lbl-codigo" title="Abrir Despacho" onClick="openDespacho('+row['id_od_grupo']+')">'+row['codigo']+'</label>'):row['codigo'];
+                }
+            },
+            {'render': function (data, type, row){
+                    return (row['fecha_despacho']!==null ? formatDate(row['fecha_despacho']):'');
+                }
+            },
+            {'render': function (data, type, row){
+                    return (row['fecha_entrega']!==null ? formatDate(row['fecha_entrega']):'');
+                }
+            },
             {'data': 'nombre'},
             {'render': function (data, type, row){
-                    return 'GT-'+row['serie']+'-'+row['numero'];
+                    return (row['serie']!==null ? ('GT-'+row['serie']+'-'+row['numero']) : '');
                 }
             },
-            {'data': 'razon_social'},
+            // {'data': 'razon_social'},
             {'render': function (data, type, row){
-                    return formatDate(row['fecha_transportista']);
+                    return (row['propia'] !== null ? (row['propia'] ? row['razon_social'] : 'Movilidad Propia') : '');
+                }
+            },
+            {'render': function (data, type, row){
+                    return (row['fecha_transportista']!==null ? formatDate(row['fecha_transportista']):'');
                 }
             },
             {'data': 'codigo_envio'},
-            // {'data': 'importe_flete'},
             {'render': function (data, type, row){
-                    return 'S/'+formatDecimal(row['importe_flete']);
+                    return (row['importe_flete']!==null ? ('S/'+formatDecimal(row['importe_flete'])) : '');
                 }
             },
             {'render': function (data, type, row){
-                    return 'S/'+formatDecimal(row['extras']);
+                    return row['extras']>0 ? ('S/'+formatDecimal(row['extras'])) : '';
                 }
             },
             {'render': function (data, type, row){
-                console.log(row['credito']);
                     return (row['credito'] ? '<span class="label label-danger">Si</span>' : '<span class="label label-primary">No</span>');
                 }
             },
             {'render': function (data, type, row){
-                return '<span class="label label-'+row['bootstrap_color']+'">'+row['estado_doc']+'</span>'
+                return `<span class="label label-${(row['estado']==1||row['estado']==9||row['estado']==10)?'default':
+                ((row['estado']>=2&&row['estado']<=6) ? 'info' : 
+                (row['estado']==7?'danger':
+                (row['estado']==8?'success':'warning')))}">${row['estado_doc']}</span>`
+                }
+            },
+            {'render': function (data, type, row){
+                    return (row['plazo_excedido']!==undefined && row['plazo_excedido']!==null) ? (!row['plazo_excedido'] ? '<span class="label label-success">Si</span>' : '<span class="label label-danger">No</span>'):'';
+                }
+            },
+            {'render': function (data, type, row){
+                    return (row['observacion']!==undefined && row['observacion']!==null) ? row['observacion']:'';
                 }
             }
         ],
@@ -68,7 +95,7 @@ function listarGuiasTransportistas(){
                     return '<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" '+
                     'data-placement="bottom" title="Ver Detalle" data-id="'+row['id_requerimiento']+'">'+
                     '<i class="fas fa-chevron-down"></i></button>';
-                }, targets: 13
+                }, targets: 17
             }
         ],
     });
@@ -113,6 +140,11 @@ $('#listaGuiasTransportistas tbody').on('click', 'td button.detalle', function (
        iTableCounter = iTableCounter + 1;
    }
 });
+
+function openDespacho(id_od_grupo){
+    var id = encode5t(id_od_grupo);
+    window.open('imprimir_despacho/'+id);
+}
 
 function abrir_requerimiento(id_requerimiento){
     // Abrir nuevo tab

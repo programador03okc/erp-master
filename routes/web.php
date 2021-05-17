@@ -1033,6 +1033,7 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::post('guardar_producto', 'AlmacenController@guardar_producto');
 					Route::get('getTimelineOrdenDespacho/{id}', 'DistribucionController@getTimelineOrdenDespacho');
 					Route::post('guardarEstadoTimeLine', 'DistribucionController@guardarEstadoTimeLine');
+					Route::post('mostrarEstados', 'DistribucionController@mostrarEstados');
 
 				});
 				
@@ -1055,6 +1056,7 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::get('index', 'DistribucionController@view_guias_transportistas')->name('index');
 					Route::get('listarGuiasTransportistas', 'DistribucionController@listarGuiasTransportistas');
 					Route::get('verDetalleRequerimiento/{id}', 'DistribucionController@verDetalleRequerimiento');
+					Route::get('imprimir_despacho/{id}', 'DistribucionController@imprimir_despacho');
 
 				});
 

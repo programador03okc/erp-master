@@ -10,41 +10,51 @@ function openOrdenDespachoEstado(id,req,cod,est){
     $('[name=gasto_extra]').val('');
     $('[name=plazo_excedido]').prop('checked', false);
 
-    var sel = '';
+    var sel = [];
     switch (est) {
-        case 25:
-            sel = ` <option value="32" default>En Ag. Trans. Provincias</option>
-                    <option value="33">Salió hacia Cliente </option>
-                    <option value="34">Cliente recoge en Agencia </option>
-                    <option value="35">Recibió en custodia </option>
-                    <option value="36">Resolver </option>
-                    <option value="21">Entregado Conforme </option>`;
+        case 2:
+            sel = [3,4,5,6,7,8];
             break;
-        case 32:
-            sel = ` <option value="33">Salió hacia Cliente </option>
-                    <option value="34">Cliente recoge en Agencia </option>
-                    <option value="35">Recibió en custodia </option>
-                    <option value="36">Resolver </option>
-                    <option value="21">Entregado Conforme </option>`;
+        case 3:
+            sel = [4,5,6,7,8];
             break;
-        case 33: case 34:
-            sel = ` <option value="35">Recibió en custodia </option>
-                    <option value="36">Resolver </option>
-                    <option value="21">Entregado Conforme </option>`;
+        case 4: case 5:
+            sel = [6,7,8];
             break;
-        case 35:
-            sel = ` <option value="36">Resolver </option>
-                    <option value="21">Entregado Conforme </option>`;
+        case 6:
+            sel = [7,8];
             break;
-        case 36:
-            sel = ` <option value="21">Entregado Conforme </option>`;
+        case 7:
+            sel = [8];
             break;
         default:
             break;
     } 
-    $('[name=estado]').html(sel);
+    mostrarEstados(sel);
     $('#submit_ordenDespachoEstados').removeAttr('disabled');
 
+}
+
+function mostrarEstados(sel){
+    console.log(sel);
+    $.ajax({
+        type: 'POST',
+        url: 'mostrarEstados',
+        data: 'estados='+JSON.stringify(sel),
+        dataType: 'JSON',
+        success: function(response){
+            console.log(response);
+            var html = '';
+            response.forEach(element => {
+                html +=`<option value="${element.id_estado}">${element.descripcion}</option>`
+            });
+            $('[name=estado]').html(html);
+        }
+    }).fail( function( jqXHR, textStatus, errorThrown ){
+        console.log(jqXHR);
+        console.log(textStatus);
+        console.log(errorThrown);
+    });
 }
 
 $("#form-ordenDespachoEstados").on("submit", function(e){
@@ -69,6 +79,82 @@ function despacho_estado(){
             $('#pendientesRetornoCargo').DataTable().ajax.reload();
             actualizaCantidadDespachosTabs();
             alert('Se guardó el estado con éxito');
+        }
+    }).fail( function( jqXHR, textStatus, errorThrown ){
+        console.log(jqXHR);
+        console.log(textStatus);
+        console.log(errorThrown);
+    });
+}
+
+function formatTimeLine ( table_id, id, row ) {
+
+    $.ajax({
+        type: 'GET',
+        url: 'getTimelineOrdenDespacho/'+id,
+        dataType: 'JSON',
+        success: function(response){
+            console.log(response);
+            var html = `<div class="row">
+            <div class="col-md-12">
+            
+              <div style="display:inline-block;width:100%;">
+                <ul class="timeline timeline-horizontal">`;
+            var i = 1;
+            
+            response.forEach(element => {
+                
+                if (element.accion == 10){
+                    html+=`<li class="timeline-item">
+                    <div class="timeline-badge bgfuxia"><i class="glyphicon glyphicon-time"></i></div>
+                    <div class="timeline-panel borderfuxia">
+                        <div class="timeline-heading">
+                        <p><small class="text-muted colorfuxia">${element.fecha_despacho}<br>
+                        <strong>${element.estado_doc}</strong><br>
+                        ${element.mov_entrega}<br>${element.razon_social_despacho!==null?
+                            element.razon_social_despacho:
+                            element.responsable_despacho}</small></p>
+                        </div>
+                    </div>
+                    </li>`;
+                }
+                else if (element.accion == 2){
+                    html+=`<li class="timeline-item">
+                    <div class="timeline-badge bggreendark"><i class="glyphicon glyphicon-time"></i></div>
+                    <div class="timeline-panel bordergreendark">
+                        <div class="timeline-heading">
+                        <p><small class="text-muted colorgreendark">${element.fecha_transportista}<br>
+                        <strong>${element.estado_doc}</strong><br>
+                        ${element.observacion!==null?element.observacion:''} 
+                        ${element.razon_social_transportista!==null?element.razon_social_transportista:'Propia'}
+                        ${element.codigo_envio!==null?('Cod.Envío:'+element.codigo_envio):''}</small><br></p>
+                        </div>
+                    </div>
+                    </li>`;
+                }
+                else {
+                    html+=`<li class="timeline-item">
+                    <div class="timeline-badge ${element.accion == 3 ? 'bggreenlight' : 
+                    ((element.accion == 4 || element.accion == 5) ? 'bgyellow' : 'bgdark')}">
+                    <i class="glyphicon glyphicon-time"></i></div>
+                    <div class="timeline-panel ${element.accion == 3 ? 'bordergreenlight' : 
+                    ((element.accion == 4 || element.accion == 5) ? 'borderyellow' : 'borderdark')} ">
+                        <div class="timeline-heading">
+                        <p><small class="text-muted ${element.accion == 3 ? 'colorgreenlight' : 
+                        ((element.accion == 4 || element.accion == 5) ? 'coloryellow' : 'colordark')}">
+                        ${element.fecha_registro}<br>
+                        <strong>${element.estado_doc}</strong><br>
+                        ${element.observacion!==null?element.observacion:''}</small></p>
+                        </div>
+                    </div>
+                    </li>`;
+                }
+            });
+            html+=`</ul>
+            </div>
+            </div>
+            </div>`;
+            row.child( html ).show();
         }
     }).fail( function( jqXHR, textStatus, errorThrown ){
         console.log(jqXHR);
