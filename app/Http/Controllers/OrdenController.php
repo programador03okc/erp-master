@@ -1102,8 +1102,7 @@ class OrdenController extends Controller
             'adm_contri.id_contribuyente',
             'adm_contri.razon_social',
             'adm_contri.nro_documento',
-            'adm_estado_doc.estado_doc',
-            'adm_estado_doc.bootstrap_color',
+            'estados_compra.descripcion as estado_doc',
             'log_ord_compra_pago.id_pago',
             'log_ord_compra_pago.detalle_pago',
             'log_ord_compra_pago.archivo_adjunto'
@@ -1113,7 +1112,8 @@ class OrdenController extends Controller
         ->join('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'log_prove.id_contribuyente')
         ->leftJoin('configuracion.sis_moneda', 'sis_moneda.id_moneda', '=', 'log_ord_compra.id_moneda')
         ->leftjoin('logistica.log_cdn_pago','log_cdn_pago.id_condicion_pago','=','log_ord_compra.id_condicion')
-        ->join('administracion.adm_estado_doc','adm_estado_doc.id_estado_doc','=','log_ord_compra.estado')
+        ->leftjoin('logistica.estados_compra','estados_compra.id_estado','=','log_ord_compra.estado')
+
         ->leftjoin('logistica.log_ord_compra_pago','log_ord_compra_pago.id_orden_compra','=','log_ord_compra.id_orden_compra')
         ->leftJoin('configuracion.ubi_dis as dis_destino', 'log_ord_compra.ubigeo_destino', '=', 'dis_destino.id_dis')
         ->leftJoin('configuracion.ubi_prov as prov_destino', 'dis_destino.id_prov', '=', 'prov_destino.id_prov')
