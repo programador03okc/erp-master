@@ -13,26 +13,16 @@
                             <th hidden>Id</th>
                             <th hidden></th>
                             <th>RUC</th>
-                            <th>Razon Social</th>
+                            <th>Razon social</th>
                             <th>Telefono</th>
                             <th>Dirección</th>
-                            <th>ubigeo</th>
-                            <th>ubigeo descripcion</th>
+                            <th>Ubigeo</th>
+                            <th>Ubigeo descripcion</th>
+                            <th>Acción</th>
                         </tr>
                     </thead>
                     <tbody></tbody>
                 </table>
-            </div>
-            <div class="modal-footer">
-                <label id="id_proveedor" style="display: none;"></label>
-                <label id="id_contribuyente" style="display: none;"></label>
-                <label id="ruc" style="display: none;"></label>
-                <label id="select_razon_social" style="display: none;"></label>
-                <label id="select_direccion_fiscal" style="display: none;"></label>
-                <label id="select_telefono" style="display: none;"></label>
-                <label id="select_ubigeo_descripcion" style="display: none;"></label>
-                <label id="select_ubigeo" style="display: none;"></label>
-                <button class="btn btn-sm btn-success" onClick="selectProveedor();">Aceptar</button>
             </div>
         </div>
     </div>

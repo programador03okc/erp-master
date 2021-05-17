@@ -57,7 +57,27 @@ function listarContactosProveedor(id_proveedor){
             {'data': 'cargo_contacto'},
             {'data': 'telefono_contacto'},
             {'data': 'email_contacto'},
-            {'data': 'direccion_contacto'}
+            {'data': 'direccion_contacto'},
+            {'render':
+                function (data, type, row){
+                    let action = `
+                        <div class="btn-group btn-group-sm" role="group">
+                            <button type="button" class="btn btn-success btn-sm" name="btnSeleccionarContactoProveedor" title="Seleccionar contacto de proveedor" 
+                            data-id-contacto="${row.id_contacto}"
+                            data-nombre-contacto="${row.nombre_contacto}"
+                            data-cargo-contacto="${row.cargo_contacto}"
+                            data-telefono-contacto="${row.telefono_contacto}"
+                            data-email-contacto="${row.email_contacto}"
+                            data-direccion-contacto="${row.direccion_contacto}"
+                            onclick="selectContactoProveedor(this);">
+                            <i class="fas fa-check"></i>
+                            </button>
+                        </div>
+                        `;
+            
+                    return action;
+                }
+            }
       
       
         ],
@@ -65,34 +85,22 @@ function listarContactosProveedor(id_proveedor){
     });
 }
 
-function selectContactoProveedor(){
-    var id = $('.modal-footer #select_id_contacto').text();
-    var nom = $('.modal-footer #select_nombre_contacto').text();
-    var car = $('.modal-footer #select_cargo_contacto').text();
-    var tel = $('.modal-footer #select_telefono_contacto').text();
-    var ema = $('.modal-footer #select_email_contacto').text();
-    var dir = $('.modal-footer #select_direccion_contacto').text();
-    var page = $('.page-main').attr('type');
-    // console.log('page: '+page);
-    
-    var page = $('.page-main').attr('type');
-    // console.log(page);
-    if(page =='crear-orden-requerimiento'){
+function selectContactoProveedor(obj){
 
-        $('[name=id_contacto_proveedor]').val(id);
-        $('[name=contacto_proveedor_nombre]').val(nom+' - '+ car);
-        $('[name=contacto_proveedor_telefono]').val(tel);   
-    }
+    let idContacto= obj.dataset.idContacto;
+    let nombreContacto= obj.dataset.nombreContacto;
+    let cargoContacto= obj.dataset.cargoContacto;
+    let telefonoContacto= obj.dataset.telefonoContacto;
+    let emailContacto= obj.dataset.emailContacto;
+    let direccionContacto= obj.dataset.direccionContacto;
 
-    else {
-        
-        $('[name=id_contacto_proveedor]').val(id);
-        $('[name=contacto_proveedor_nombre]').val(nom);
-        $('[name=contacto_proveedor_cargo]').val(car);   
-        $('[name=contacto_proveedor_telefono]').val(tel);   
-        $('[name=contacto_proveedor_email]').val(ema); 
-        $('[name=contacto_proveedor_direccion]').val(dir);  
-    }
+    document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='id_contacto_proveedor']").value =idContacto;
+    document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='contacto_proveedor_nombre']").value =nombreContacto;;
+    // document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='contacto_proveedor_cargo']").value =cargoContacto;
+    document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='contacto_proveedor_telefono']").value =telefonoContacto;
+    // document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='contacto_proveedor_email']").value =emailContacto;
+    document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='contacto_proveedor_direccion']").value =direccionContacto;
+
     
     $('#modal-contacto-proveedor').modal('hide');
 }

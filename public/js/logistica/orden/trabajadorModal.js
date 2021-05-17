@@ -43,37 +43,37 @@ function listarTrabajadores(){
         'columns': [
             {'data': 'id_trabajador'},
             {'data': 'nro_documento'},
-            {'data': 'nombre_trabajador'}
+            {'data': 'nombre_trabajador'},
+            {'render':
+                function (data, type, row){
+                    let action = `
+                        <div class="btn-group btn-group-sm" role="group">
+                            <button type="button" class="btn btn-success btn-sm" name="btnSeleccionarTrabajador" title="Seleccionar trabajador" 
+                            data-id-trabajador="${row.id_trabajador}"
+                            data-nombre-trabajador="${row.nombre_trabajador}"
+                            data-nro-documento="${row.nro_documento_trabajador}"
+                            onclick="selectTrabajador(this);">
+                            <i class="fas fa-check"></i>
+                            </button>
+                        </div>
+                        `;
+            
+                    return action;
+                }
+            }
         ],
         'columnDefs': [{ 'aTargets': [0], 'sClass': 'invisible'}],
     });
 }
 
-function selectTrabajador(){
-    var id = $('.modal-footer #select_id_trabajador').text();
-    var doc = $('.modal-footer #select_nro_documento_trabajador').text();
-    var nom = $('.modal-footer #select_nombre_trabajador').text();
+function selectTrabajador(obj){
+    let idTrabajador= obj.dataset.idTrabajador;
+    let nombreTrabajador= obj.dataset.nombreTrabajador;
+    // let nroDocumentoTrabajador= obj.dataset.nroDocumentoTrabajador;
 
-    var page = $('.page-main').attr('type');
-    // console.log('page: '+page);
-    
-    var page = $('.page-main').attr('type');
-    // console.log(page);
-    if(page =='crear-orden-requerimiento'){
-
-        $('[name=id_trabajador]').val(id);
-        $('[name=nombre_persona_autorizado]').val(nom);
-        $('[name=nro_documento_trabajador]').val(doc);   
-     }
-
-    else {
-        
-        $('[name=id_trabajador]').val(id);
-        $('[name=nomre_trabajador]').val(nom);
-        $('[name=nro_documento_trabajador]').val(doc);   
-   
- 
-    }
+    document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='id_trabajador']").value =idTrabajador;
+    document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='nombre_persona_autorizado']").value =nombreTrabajador;
+    // document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='nro_documento_trabajador']").value =nroDocumentoTrabajador;
     
     $('#modal-trabajadores').modal('hide');
 }

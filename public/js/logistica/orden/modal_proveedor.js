@@ -1,31 +1,4 @@
-$(function(){
-    /* Seleccionar valor del DataTable */
-    $('#listaProveedor tbody').on('click', 'tr', function(){
-        if ($(this).hasClass('eventClick')){
-            $(this).removeClass('eventClick');
-        } else {
-            $('#listaProveedor').dataTable().$('tr.eventClick').removeClass('eventClick');
-            $(this).addClass('eventClick');
-        }
-        var idTr = $(this)[0].firstChild.innerHTML;
-        var idCo = $(this)[0].childNodes[1].innerHTML;
-        var ruc = $(this)[0].childNodes[2].innerHTML;
-        var des = $(this)[0].childNodes[3].innerHTML;
-        var dir = $(this)[0].childNodes[4].innerHTML;
-        var tel = $(this)[0].childNodes[5].innerHTML;
-        var ubi = $(this)[0].childNodes[6].innerHTML;
-        var ubi_des = $(this)[0].childNodes[7].innerHTML;
-
-        $('.modal-footer #id_proveedor').text(idTr);
-        $('.modal-footer #id_contribuyente').text(idCo);
-        $('.modal-footer #ruc').text(ruc);
-        $('.modal-footer #select_razon_social').text(des);
-        $('.modal-footer #select_direccion_fiscal').text(dir);
-        $('.modal-footer #select_telefono').text(tel);
-        $('.modal-footer #select_ubigeo').text(ubi);
-        $('.modal-footer #select_ubigeo_descripcion').text(ubi_des);
-    });
-});
+ 
 
 function listar_proveedores(){
     var vardataTables = funcDatatables();
@@ -44,6 +17,28 @@ function listar_proveedores(){
             {'data': 'telefono'},
             {'data': 'ubigeo'},
             {'data': 'ubigeo_descripcion'},
+            {'render':
+                function (data, type, row){
+                    let action = `
+                        <div class="btn-group btn-group-sm" role="group">
+                            <button type="button" class="btn btn-success btn-sm" name="btnSeleccionarProveedor" title="Seleccionar proveedor" 
+                            data-id-proveedor="${row.id_proveedor}"
+                            data-id-contribuyente="${row.id_contribuyente}"
+                            data-razon-social="${row.razon_social}"
+                            data-ruc="${row.nro_documento}"
+                            data-direccion-fiscal="${row.direccion_fiscal}"
+                            data-telefono="${row.telefono}"
+                            data-ubigeo-descripcion="${row.ubigeo_descripcion}"
+                            data-ubigeo="${row.ubigeo}"
+                            onclick="selectProveedor(this);">
+                            <i class="fas fa-check"></i>
+                            </button>
+                        </div>
+                        `;
+            
+                    return action;
+                }
+            }
         ],
         'columnDefs': [{ 'aTargets': [0,1,4,5,6,7], 'sClass': 'invisible'}],
     });
@@ -81,73 +76,26 @@ function proveedorModal(){
     }
 }
 
-function selectProveedor(){
-    var myId = $('.modal-footer #id_proveedor').text();
-    var idCo = $('.modal-footer #id_contribuyente').text();
-    var des = $('.modal-footer #select_razon_social').text();
-    var dir = $('.modal-footer #select_direccion_fiscal').text();
-    var tel = $('.modal-footer #select_telefono').text();
-    var ubi = $('.modal-footer #select_ubigeo').text();
-    var ubi_des = $('.modal-footer #select_ubigeo_descripcion').text();
-    var ruc = $('.modal-footer #ruc').text();
-    var page = $('.page-main').attr('type');
-    // console.log('page: '+page);
-    
-    if (page == "cotizacion"){
-        
-        change_proveedor(myId);
-        $('[name=id_proveedor]').val(myId);
-        $('[name=id_contrib]').val(idCo);
-        $('[name=razon_social]').val(des); 
-        
-        let classModalEditarCotizacion = document.getElementById('modal-editar-cotizacion').getAttribute('class');
-        if(classModalEditarCotizacion ==  "modal fade in"){
-            onChangeProveedorSave();
-        }
+function selectProveedor(obj){
 
-    }
-    else if (page == "guia_compra"){
-        var tab = $("#modal-proveedores .modal-dialog").attr('type');
-        // console.log('form:'+tab);
-        
-        if (tab == "form-general"){
-            $('[name=id_proveedor]').val(myId);
-            $('[name=id_contrib]').val(idCo);
-            $('[name=prov_razon_social]').val(ruc+' - '+des);
-        } 
-        else if (tab == "form-prorrateo"){
-            $('[name=doc_id_proveedor]').val(myId);
-            $('[name=doc_id_contrib]').val(idCo);
-            $('[name=doc_razon_social]').val(des);
-        }
-    }
-    else if (page == "doc_compra"){
-        $('[name=id_proveedor]').val(myId);
-        $('[name=id_contrib]').val(idCo);
-        $('[name=prov_razon_social]').val(des);
-    }
-    else if (page == "ordenesDespacho"){
+    let idProveedor= obj.dataset.idProveedor;
+    let idContribuyente= obj.dataset.idContribuyente;
+    let razonSocial= obj.dataset.razonSocial;
+    // let ruc= obj.dataset.ruc;
+    let direccionFiscal= obj.dataset.direccionFiscal;
+    let telefono= obj.dataset.telefono;
+    let ubigeoDescripcion= obj.dataset.ubigeoDescripcion;
+    let ubigeo= obj.dataset.ubigeo;
 
-        if (origen_tr == 'grupoDespacho'){
-            $('[name=gd_id_proveedor]').val(myId);
-            $('[name=gd_razon_social]').val(des);
-        } 
-        else if (origen_tr == 'transportista'){
-            $('[name=tr_id_proveedor]').val(myId);
-            $('[name=tr_razon_social]').val(des);
-        }
-    }
-    else {
-        
-        $('[name=id_proveedor]').val(myId);
-        $('[name=id_contrib]').val(idCo);
-        $('[name=razon_social]').val(des);   
-        $('[name=direccion_proveedor]').val(dir); 
-        $('[name=telefono_proveedor]').val(tel);  
-        $('[name=ubigeo_proveedor]').val(ubi);  
-        $('[name=ubigeo_proveedor_descripcion]').val(ubi_des);  
-    }
-    
+    document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='id_proveedor']").value =idProveedor;
+    document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='id_contrib']").value =idContribuyente;
+    document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='razon_social']").value =razonSocial;
+    document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='direccion_proveedor']").value =direccionFiscal;
+    // document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='telefono_proveedor']").value =telefono;
+    document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='ubigeo_proveedor']").value =ubigeo;
+    document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='ubigeo_proveedor_descripcion']").value =ubigeoDescripcion;
+ 
+
     $('#modal-proveedores').modal('hide');
 }
 
