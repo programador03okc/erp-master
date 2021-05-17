@@ -601,3 +601,11 @@ function anular_ingreso(data){
         console.log(errorThrown);
     });
 }
+
+function abrirProducto(){
+    // Abrir nuevo tab
+    let url ="/almacen/catalogos/productos/index";
+    var win = window.open(url, '_blank');
+    // Cambiar el foco al nuevo tab (punto opcional)
+    win.focus();
+}

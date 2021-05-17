@@ -203,7 +203,7 @@ Panel de Control de Despachos
                                                 <th>Corporativo</th>
                                                 <th>Generado por</th>
                                                 <th>Estado</th>
-                                                <th>Motivo</th>
+                                                <!-- <th>Motivo</th> -->
                                                 <th width="70px">Acción</th>
                                             </tr>
                                         </thead>
@@ -244,7 +244,7 @@ Panel de Control de Despachos
                                                 <th>Tipo Entrega</th>
                                                 <!-- <th>Confirmación</th> -->
                                                 <th>Estado</th>
-                                                <th>Motivo</th>
+                                                <!-- <th>Motivo</th> -->
                                                 <th width="100px">Acción</th>
                                             </tr>
                                         </thead>

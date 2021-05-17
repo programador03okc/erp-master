@@ -784,14 +784,14 @@ function listarOrdenesPendientes(){
             {'data': 'nombre_corto', 'name': 'sis_usua.nombre_corto'},
             {'render': 
                 function (data, type, row){
-                    return ('<span class="label label-'+row['bootstrap_color']+'">'+row['estado_doc']+'</span>');
+                    return ('<span class="label label-primary">'+row['estado_doc']+'</span>');
                 }
             },
-            {'render': 
-                function (data, type, row){
-                    return 'Pendiente de que <strong>Distribución</strong> genere el Despacho';
-                }
-            },
+            // {'render': 
+            //     function (data, type, row){
+            //         return 'Pendiente de que <strong>Distribución</strong> genere el Despacho';
+            //     }
+            // },
             {'render': 
                 function (data, type, row){
                     return `<button type="button" class="adjuntar btn btn-${row['count_despacho_adjuntos']>0 ? "warning" : "default" } boton" data-toggle="tooltip" 
@@ -962,15 +962,15 @@ function listarGruposDespachados(permiso){
                     return ('<span class="label label-info">'+row['estado_doc']+'</span>');
                 }
             },
-            {'render': 
-                function (data, type, row){
-                    if (row['estado_od'] == 8){
-                        return 'Pendiente de que se ingrese la <strong>Guía de Transportista</strong>';
-                    } else {
-                        return '';
-                    }
-                }
-            },
+            // {'render': 
+            //     function (data, type, row){
+            //         if (row['estado_od'] == 8){
+            //             return 'Pendiente de que se ingrese la <strong>Guía de Transportista</strong>';
+            //         } else {
+            //             return '';
+            //         }
+            //     }
+            // },
             {'render': 
                 function (data, type, row){
                     if (permiso == '1') {
@@ -1298,6 +1298,26 @@ $('#pendientesRetornoCargo tbody').on("click","button.no_conforme", function(){
         despacho_no_conforme(data);
     }
 });
+
+function despacho_no_conforme(data){
+    $.ajax({
+        type: 'POST',
+        url: 'despacho_no_conforme',
+        data: data,
+        dataType: 'JSON',
+        success: function(response){
+            console.log(response);
+            if (response > 0){
+                $('#pendientesRetornoCargo').DataTable().ajax.reload();
+                actualizaCantidadDespachosTabs();
+            }
+        }
+    }).fail( function( jqXHR, textStatus, errorThrown ){
+        console.log(jqXHR);
+        console.log(textStatus);
+        console.log(errorThrown);
+    });
+}
 
 var iTableCounter=1;
 var oInnerTable;

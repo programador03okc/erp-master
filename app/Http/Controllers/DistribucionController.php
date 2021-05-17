@@ -308,7 +308,7 @@ class DistribucionController extends Controller
         ->select('orden_despacho.*',
         'adm_contri.nro_documento', 'adm_contri.razon_social',
         'alm_req.codigo as codigo_req','alm_req.concepto','ubi_dis.descripcion as ubigeo_descripcion',
-        'sis_usua.nombre_corto','adm_estado_doc.estado_doc','adm_estado_doc.bootstrap_color',
+        'sis_usua.nombre_corto','estado_envio.descripcion as estado_doc',//'adm_estado_doc.bootstrap_color',
         DB::raw("(rrhh_perso.nombres) || ' ' || (rrhh_perso.apellido_paterno) || ' ' || (rrhh_perso.apellido_materno) AS nombre_persona"),
         'alm_almacen.descripcion as almacen_descripcion','rrhh_perso.telefono',
         DB::raw("(SELECT COUNT(*) FROM almacen.orden_despacho_adjunto where
@@ -328,7 +328,7 @@ class DistribucionController extends Controller
         ->leftjoin('mgcp_usuarios.users','users.id','=','oportunidades.id_responsable')
         ->leftjoin('mgcp_acuerdo_marco.oc_propias','oc_propias.id_oportunidad','=','oportunidades.id')
         ->leftjoin('mgcp_acuerdo_marco.entidades','entidades.id','=','oportunidades.id_entidad')
-        ->join('administracion.adm_estado_doc','adm_estado_doc.id_estado_doc','=','alm_req.estado')
+        ->join('almacen.estado_envio','estado_envio.id_estado','=','orden_despacho.estado')
         ->join('configuracion.ubi_dis','ubi_dis.id_dis','=','orden_despacho.ubigeo_destino')
         ->join('configuracion.sis_usua','sis_usua.id_usuario','=','orden_despacho.registrado_por')
         ->where('orden_despacho.estado',9);
@@ -1176,8 +1176,8 @@ class DistribucionController extends Controller
                 'fecha_despacho'=>$request->fecha_despacho,
                 'responsable'=>($request->responsable > 0 ? $request->responsable : null),
                 'mov_entrega'=>$request->mov_entrega,
-                'id_proveedor'=>$request->id_proveedor,
-                'observaciones'=>$request->observaciones,
+                // 'id_proveedor'=>$request->id_proveedor,
+                // 'observaciones'=>$request->observaciones,
                 'registrado_por'=>$id_usuario,
                 'estado'=>1,
                 'fecha_registro'=>date('Y-m-d H:i:s')
@@ -1195,14 +1195,15 @@ class DistribucionController extends Controller
                     'estado'=>1,
                     'fecha_registro'=>date('Y-m-d H:i:s')
                 ]);
+                $est = ($request->mov_entrega=='Movilidad de Tercero' ? 10 : 4);
                 //actualiza estado Salio de oficina
                 DB::table('almacen.orden_despacho')
                 ->where('id_od',$d->id_od)
-                ->update(['estado'=>10]);//Salio de oficina
+                ->update(['estado'=>$est]);//Salio de oficina
 
                 DB::table('almacen.orden_despacho_det')
                 ->where('id_od',$d->id_od)
-                ->update(['estado'=>10]);//Salio de oficina
+                ->update(['estado'=>$est]);//Salio de oficina
 
                 // DB::table('almacen.alm_req')
                 // ->where('id_requerimiento',$d->id_requerimiento)
@@ -1227,12 +1228,11 @@ class DistribucionController extends Controller
                 //Agrega al timeline
                 DB::table('almacen.orden_despacho_obs')
                 ->insert([  'id_od'=> $d->id_od,
-                            'accion'=>10,
+                            'accion'=>$est,
                             'observacion'=>$request->mov_entrega,
                             'registrado_por'=>$id_usuario,
                             'fecha_registro'=>date('Y-m-d H:i:s')
                     ]);
-
             }
             DB::commit();
             return response()->json($id_od_grupo);
@@ -1261,7 +1261,7 @@ class DistribucionController extends Controller
                     'fecha_transportista'=>$request->fecha_transportista,
                     'codigo_envio'=>$request->codigo_envio,
                     'importe_flete'=>$request->importe_flete,
-                    'propia'=>((isset($request->transporte_propio)&&$request->transporte_propio=='on')?true:false),
+                    // 'propia'=>((isset($request->transporte_propio)&&$request->transporte_propio=='on')?true:false),
                     'credito'=>((isset($request->credito)&&$request->credito=='on')?true:false),
                     ]);
 
@@ -1372,7 +1372,11 @@ class DistribucionController extends Controller
 
             DB::table('almacen.orden_despacho')
             ->where('id_od',$request->id_od)
-            ->update(['estado'=>23]);
+            ->update(['estado'=>9]);
+
+            DB::table('almacen.orden_despacho_obs')
+            ->where([['id_od','=',$request->id_od],['accion','=',10]])
+            ->delete();
 
             DB::table('almacen.orden_despacho_grupo_det')
             ->where('id_od_grupo_detalle',$request->id_od_grupo_detalle)
@@ -1389,18 +1393,18 @@ class DistribucionController extends Controller
                         'fecha_registro'=>date('Y-m-d H:i:s')
                 ]);
 
-            DB::table('almacen.alm_req')
-            ->where('id_requerimiento',$request->id_requerimiento)
-            ->update(['estado'=>23]);
+            // DB::table('almacen.alm_req')
+            // ->where('id_requerimiento',$request->id_requerimiento)
+            // ->update(['estado'=>10]);
 
-            $req = DB::table('almacen.alm_req')
-            ->where('id_requerimiento',$request->id_requerimiento)
-            ->first();
+            // $req = DB::table('almacen.alm_req')
+            // ->where('id_requerimiento',$request->id_requerimiento)
+            // ->first();
 
-            DB::table('almacen.alm_det_req')
-            ->where([['id_requerimiento','=',$request->id_requerimiento],
-                    ['tiene_transformacion','=',$req->tiene_transformacion]])
-            ->update(['estado'=>23]);
+            // DB::table('almacen.alm_det_req')
+            // ->where([['id_requerimiento','=',$request->id_requerimiento],
+            //         ['tiene_transformacion','=',$req->tiene_transformacion]])
+            // ->update(['estado'=>23]);
  
             DB::commit();
             return response()->json(1);
@@ -1416,7 +1420,7 @@ class DistribucionController extends Controller
 
             DB::table('almacen.orden_despacho')
             ->where('id_od',$request->id_od)
-            ->update([  'estado'=>20,
+            ->update([  'estado'=>10,
                         'id_transportista'=>null,
                         'serie'=>null,
                         'numero'=>null,
@@ -1428,7 +1432,8 @@ class DistribucionController extends Controller
                 ]);
 
             DB::table('almacen.orden_despacho_obs')
-            ->where([['id_od','=',$request->id_od],['accion','=',25]])
+            ->where([['id_od','=',$request->id_od]])
+            ->whereIn('accion',[2,3,4,5,6,7])
             ->delete();
 
             $id_usuario = Auth::user()->id_usuario;
@@ -1441,13 +1446,13 @@ class DistribucionController extends Controller
                         'fecha_registro'=>date('Y-m-d H:i:s')
                 ]);
 
-            DB::table('almacen.alm_det_req')
-                ->where('id_requerimiento',$request->id_requerimiento)
-                ->update(['estado'=>20]);
+            // DB::table('almacen.alm_det_req')
+            //     ->where('id_requerimiento',$request->id_requerimiento)
+            //     ->update(['estado'=>20]);
 
-            DB::table('almacen.alm_req')
-                ->where('id_requerimiento',$request->id_requerimiento)
-                ->update(['estado'=>20]);
+            // DB::table('almacen.alm_req')
+            //     ->where('id_requerimiento',$request->id_requerimiento)
+            //     ->update(['estado'=>20]);
 
             DB::commit();
             return response()->json($data);
