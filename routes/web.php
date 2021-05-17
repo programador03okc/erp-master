@@ -731,6 +731,7 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::post('guardar-items-detalle-requerimiento', 'ComprasPendientesController@guardarItemsEnDetalleRequerimiento')->name('guardar-items-detalle-requerimiento'); 
 					Route::get('listar-almacenes', 'AlmacenController@mostrar_almacenes')->name('listar-almacenes');
 					Route::get('select-sede-by-empresa/{id?}', 'LogisticaController@sedesAcceso')->name('select-sede-by-empresa');
+					Route::post('guardar-producto', 'AlmacenController@guardar_producto')->name('guardar-producto');
 
 
 				});

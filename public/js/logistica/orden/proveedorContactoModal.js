@@ -99,7 +99,7 @@ function selectContactoProveedor(obj){
     // document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='contacto_proveedor_cargo']").value =cargoContacto;
     document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='contacto_proveedor_telefono']").value =telefonoContacto;
     // document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='contacto_proveedor_email']").value =emailContacto;
-    document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='contacto_proveedor_direccion']").value =direccionContacto;
+    // document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='contacto_proveedor_direccion']").value =direccionContacto;
 
     
     $('#modal-contacto-proveedor').modal('hide');
