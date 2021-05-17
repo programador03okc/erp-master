@@ -135,8 +135,7 @@ function listarOrdenesPendientes(){
                 }, targets: 9
             }
          ],
-        //'select': 'multi',
-        'order': [[0, 'desc']]
+        'order': [[6, 'desc']]
     });
     
     $($('#ordenesPendientes').DataTable().table().container()).on('ifChanged', '.dt-checkboxes', function(event){
