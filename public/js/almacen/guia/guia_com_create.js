@@ -224,6 +224,7 @@ function listar_detalle_ordenes_seleccionadas(data){
                 oc_det_seleccionadas.push({
                     'id_oc_det'  : element.id_detalle_orden,
                     'id_producto': null,
+                    'id_categoria': element.id_categoria,
                     'codigo_oc'  : element.codigo_oc,
                     'codigo'     : element.codigo,
                     'part_number': element.part_number,
@@ -261,7 +262,7 @@ function mostrar_ordenes_seleccionadas(){
             <td>${element.codigo_oc!==null ? element.codigo_oc : ''}</td>
             <td>${element.codigo}</td>
             <td>${element.part_number!==null ? element.part_number : ''}</td>
-            <td>${element.descripcion+' <strong>'+html_ser+'</strong>'}</td>
+            <td>${(element.id_categoria==117?'<i class="fas fa-exclamation-triangle orange" title="El producto fue creado con Categoría = Por definir"></i>':'')+element.descripcion+' <strong>'+html_ser+'</strong>'}</td>
             <td><input type="number" id="${element.id_oc_det!==null ? element.id_oc_det : 'p'+element.id_producto}cantidad" value="${element.cantidad}" 
                 min="1" ${element.id_oc_det!==null ? `max="${element.cantidad}"` : ''} style="width:80px;"/></td>
             <td>${element.abreviatura}</td>

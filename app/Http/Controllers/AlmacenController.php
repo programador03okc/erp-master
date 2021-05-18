@@ -925,7 +925,7 @@ class AlmacenController extends Controller
         return $nextId;
     }
     public function guardar_categoria(Request $request){
-        $codigo = $this->categoria_nextId($request->id_tipo_producto);
+        // $codigo = $this->categoria_nextId($request->id_tipo_producto);
         $fecha = date('Y-m-d H:i:s');
         $msj = '';
         $des = strtoupper($request->descripcion);
@@ -937,10 +937,10 @@ class AlmacenController extends Controller
         if ($count == 0){
             $id_categoria = DB::table('almacen.alm_cat_prod')->insertGetId(
                 [
-                    'codigo' => $codigo,
+                    // 'codigo' => $codigo,
                     'id_tipo_producto' => $request->id_tipo_producto,
                     'descripcion' => $des,
-                    'estado' => $request->estado,
+                    'estado' => 1,
                     'fecha_registro' => $fecha
                 ],
                     'id_categoria'
