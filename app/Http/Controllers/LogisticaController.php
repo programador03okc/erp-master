@@ -1317,7 +1317,7 @@ class LogisticaController extends Controller
                 // <p class="subtitle">3.- DESCRIPCIÓN POR ITEM</p>
 
         $html .= '</div>
-                <table width="100%" class="tablePDF" border=0>
+                <table width="100%" class="tablePDF" border=0 style="font-size:10px">
                 <thead>
                     <tr class="subtitle">
                         <td width="10%">Código</td>
@@ -1338,7 +1338,7 @@ class LogisticaController extends Controller
             $html .= '<tr>';
             // $html .= '<td >' . ($key + 1) . '</td>';
             $html .= '<td >' . $data['codigo_producto'] . '</td>';
-            $html .= '<td >' . $data['part_number'] . '</td>';
+            $html .= '<td >' . $data['part_number'] .($data['tiene_transformacion']>0?'<br><span style="display: inline-block; font-size: 8px; background:#ddd; color: #666; border-radius:8px; padding:2px 10px;">Transformado</span>':''). '</td>';
             $html .= '<td >' . ($data['descripcion'] ? $data['descripcion'] : $data['descripcion_adicional']) . '</td>';
             $html .= '<td >' . $data['unidad_medida'] . '</td>';
             $html .= '<td class="right">' . $data['cantidad'] . '</td>';
@@ -4422,7 +4422,8 @@ class LogisticaController extends Controller
         if ($type == 1) {
             $html .=
                 '<thead style="background-color:#5c5c5c; color:#fff;">
-                    <th>N°</th>
+                    <th>Código</th>
+                    <th>Part.No</th>
                     <th>Descripción del Bien o Servicio</th>
                     <th width="150">Partida</th>
                     <th width="90">Fecha Entrega</th>
@@ -4435,7 +4436,8 @@ class LogisticaController extends Controller
         } elseif ($type == 2) {
             $html .=
                 '<thead style="background-color:#5c5c5c; color:#fff;">
-                    <th width="30">N°</th>
+                    <th>Código</th>
+                    <th>Part.No</th>
                     <th>Descripción del Bien o Servicio</th>
                     <th width="150">Partida</th>
                     <th width="90">Fecha Entrega</th>
@@ -4451,7 +4453,7 @@ class LogisticaController extends Controller
         $total = 0;
 
         $detail = DB::table('almacen.alm_det_req')
-            ->select('alm_det_req.*','alm_prod.descripcion as descripcion_producto', 'alm_und_medida.descripcion as unidad_medida_descripcion')
+            ->select('alm_det_req.*','alm_prod.codigo','alm_prod.part_number','alm_prod.descripcion as descripcion_producto', 'alm_und_medida.descripcion as unidad_medida_descripcion')
             ->leftJoin('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'alm_det_req.id_unidad_medida')
             ->leftJoin('almacen.alm_prod', 'alm_prod.id_producto', '=', 'alm_det_req.id_producto')
 
@@ -4460,10 +4462,13 @@ class LogisticaController extends Controller
 
         foreach ($detail as $clave => $det) {
             $id_det = $det->id_detalle_requerimiento;
+            $codigo_producto = $det->codigo;
+            $part_number = $det->part_number;
             $id_item = $det->id_item;
             $precio = $det->precio_unitario;
             $cant = $det->cantidad;
             $id_part = $det->partida;
+            $tiene_transformacion = $det->tiene_transformacion;
             $unit = $det->unidad_medida_descripcion;
             $simbMoneda = $this->consult_moneda($det->id_moneda)->simbolo;
             
@@ -4499,7 +4504,8 @@ class LogisticaController extends Controller
             if ($type == 1) {
                 $html .=
                     '<tr>
-                    <td> ' . ($clave+1) . '</td>
+                    <td> ' .($codigo_producto?$codigo_producto:'') . '</td>
+                    <td> ' .($part_number?$part_number:'') .($tiene_transformacion>0?'<br><span style="display: inline-block; font-size: 8px; background:#ddd; color: #666; border-radius:8px; padding:2px 10px;">Transformado</span>':''). '</td>
                     <td>' . $name . '</td>
                     <td>' . $partida . '</td>
                     <td></td>
@@ -4511,7 +4517,8 @@ class LogisticaController extends Controller
             } elseif ($type == 2) {
                 $html .=
                     '<tr>
-                    <td>' . $cont . '</td>
+                    <td> ' .($codigo_producto?$codigo_producto:'') . '</td>
+                    <td> ' .($part_number?$part_number:'') .($tiene_transformacion>0?'<br><span style="display: inline-block; font-size: 8px; background:#ddd; color: #666; border-radius:8px; padding:2px 10px;">Transformado</span>':''). '</td>
                     <td>' . $name . '</td>
                     <td>' . $partida . '</td>
                     <td></td>
