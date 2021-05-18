@@ -1,5 +1,5 @@
 <div class="modal fade" tabindex="-1" role="dialog" id="modal-grupo_despacho_create" style="overflow-y:scroll;">
-    <div class="modal-dialog"  style="width: 1200px;">
+    <div class="modal-dialog"  style="width: 900px;">
         <div class="modal-content">
             <form id="form-grupo_despacho">
                 <div class="modal-header">
@@ -15,11 +15,11 @@
                         </div>
                     </div> -->
                     <div class="row">
-                        <div class="col-md-2">
+                        <div class="col-md-4">
                             <h5>Fecha de Despacho</h5>
                             <input type="date" class="form-control activation" name="fecha_despacho_grupo" value="<?=date('Y-m-d');?>">
                         </div>
-                        <div class="col-md-2">
+                        <div class="col-md-3">
                             <h5>Tipo de Entrega</h5>
                             <div class="input-group-okc">
                                 <select name="mov_entrega" class="form-control activation" 
@@ -30,7 +30,7 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="col-md-6" id="proveedor">
+                        <!-- <div class="col-md-6" id="proveedor">
                             <h5>Proveedor</h5>
                             <div style="display:flex;">
                                 <input class="oculto" name="gd_id_proveedor"/>
@@ -42,8 +42,8 @@
                                 <button type="button" class="btn-primary activation" title="Agregar Proveedor" onClick="agregar_proveedor();">
                                     <i class="fas fa-plus"></i></button>
                             </div>
-                        </div>
-                        <div class="col-md-6" id="trabajador">
+                        </div> -->
+                        <div class="col-md-5" id="trabajador">
                             <h5>Responsable</h5>
                             <select class="form-control activation" name="responsable_grupo">
                                 <option value="0">Elija una opción</option>
@@ -53,12 +53,12 @@
                             </select>
                         </div>
                     </div>
-                    <div class="row">
+                    <!-- <div class="row">
                         <div class="col-md-12">
                             <h5>Observaciones</h5>
                             <textarea name="observaciones" id="observaciones" cols="160" rows="3"></textarea>
                         </div>
-                    </div>
+                    </div> -->
                 </div>
                 <div>
                     <div class="modal-header" style="display:flex;padding-top: 0px;padding-bottom: 0px;">
@@ -78,7 +78,7 @@
                                             <th>Concepto</th>
                                             <th>Ubigeo</th>
                                             <th>Dirección Destino</th>
-                                            <th>Fecha Despacho</th>
+                                            <!-- <th>Fecha Despacho</th> -->
                                             <th>Fecha Entrega</th>
                                         </tr>
                                     </thead>

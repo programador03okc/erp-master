@@ -66,7 +66,7 @@
                                 <thead>
                                     <tr>
                                         <th>#</th>
-                                        <th>O.C.</th>
+                                        <th>OC/HT</th>
                                         <th>Código</th>
                                         <th>PartNumber</th>
                                         <!-- <th>Categoría</th>
@@ -77,9 +77,9 @@
                                         <th>Unitario</th>
                                         <th>Total</th>
                                         <th width="5%">
-                                            <!-- <i class="fas fa-plus-circle icon-tabla green boton" 
+                                            <i class="fas fa-plus-circle icon-tabla green boton agregarSobrante" 
                                             data-toggle="tooltip" data-placement="bottom" 
-                                            title="Agregar Item" onClick="productoModal();"></i> -->
+                                            title="Agregar Sobrante" onClick="productoModal();"></i>
                                         </th>
                                     </tr>
                                 </thead>

@@ -206,19 +206,19 @@ class OrdenesPendientesController extends Controller
         $ordenes = json_decode($request->oc_seleccionadas);
         $detalle = DB::table('logistica.log_det_ord_compra')
             ->select(
-                'log_det_ord_compra.*','alm_item.id_producto','alm_prod.codigo',
+                'log_det_ord_compra.*','alm_prod.id_producto','alm_prod.codigo',
                 'alm_prod.part_number','alm_cat_prod.descripcion as categoria',
                 'alm_subcat.descripcion as subcategoria','alm_prod.series',
                 'alm_prod.descripcion','alm_und_medida.abreviatura',
-                'log_ord_compra.codigo as codigo_oc',
+                'log_ord_compra.codigo as codigo_oc','alm_prod.id_categoria',
                 DB::raw('(SELECT SUM(guia_com_det.cantidad) FROM almacen.guia_com_det
                           WHERE guia_com_det.id_oc_det = log_det_ord_compra.id_detalle_orden 
                             AND guia_com_det.estado != 7) 
                           AS suma_cantidad_guias')
             )
             ->join('logistica.log_ord_compra', 'log_ord_compra.id_orden_compra', '=', 'log_det_ord_compra.id_orden_compra')
-            ->leftjoin('almacen.alm_item', 'alm_item.id_item', '=', 'log_det_ord_compra.id_item')
-            ->leftjoin('almacen.alm_prod', 'alm_prod.id_producto', '=', 'alm_item.id_producto')
+            // ->leftjoin('almacen.alm_item', 'alm_item.id_item', '=', 'log_det_ord_compra.id_item')
+            ->leftjoin('almacen.alm_prod', 'alm_prod.id_producto', '=', 'log_det_ord_compra.id_producto')
             ->leftjoin('almacen.alm_cat_prod', 'alm_cat_prod.id_categoria', '=', 'alm_prod.id_categoria')
             ->leftjoin('almacen.alm_subcat', 'alm_subcat.id_subcategoria', '=', 'alm_prod.id_subcategoria')
             ->leftjoin('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'log_det_ord_compra.id_unidad_medida')

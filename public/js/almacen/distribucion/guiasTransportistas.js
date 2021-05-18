@@ -53,7 +53,7 @@ function listarGuiasTransportistas(){
             },
             // {'data': 'razon_social'},
             {'render': function (data, type, row){
-                    return (row['propia'] !== null ? (row['propia'] ? row['razon_social'] : 'Movilidad Propia') : '');
+                    return (row['serie']!==null ? (row['razon_social']!==null ? row['razon_social'] : 'Movilidad Propia') : '');
                 }
             },
             {'render': function (data, type, row){

@@ -1098,8 +1098,8 @@ span.select2-selection {
 #listaPromocion tbody td:nth-last-child(5),
 #despachosPendientes tbody td:nth-last-child(6),
 #despachosPendientes tbody td:nth-last-child(5),
-#listaGuiasTransportistas tbody td:nth-last-child(5),
-#listaGuiasTransportistas tbody td:nth-last-child(6),
+#listaGuiasTransportistas tbody td:nth-last-child(11),
+#listaGuiasTransportistas tbody td:nth-last-child(10),
 #listaGuiasTransportistas tbody td:nth-last-child(7),
 #listaGuiasTransportistas tbody td:nth-last-child(8),
 #listaGuiasTransportistas tbody td:nth-last-child(9) {

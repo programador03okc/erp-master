@@ -24,7 +24,7 @@ function crear_grupo_orden_despacho() {
             '<td>'+element.concepto+'</td>'+
             '<td>'+element.ubigeo_descripcion+'</td>'+
             '<td>'+element.direccion_destino+'</td>'+
-            '<td>'+element.fecha_despacho+'</td>'+
+            // '<td>'+element.fecha_despacho+'</td>'+
             '<td>'+element.fecha_entrega+'</td>'+
             '</tr>';
             i++;
@@ -37,7 +37,7 @@ function crear_grupo_orden_despacho() {
             $('[name=id_sede_grupo]').val(sede);
             $('#detalleODs tbody').html(html);
             $("#btnGrupoDespacho").removeAttr("disabled");
-            $("#proveedor").hide();
+            // $("#proveedor").hide();
             $("#trabajador").show();
             console.log(od_seleccionadas);
         }
@@ -60,19 +60,19 @@ function crear_grupo_orden_despacho() {
 $("[name=mov_entrega]").on( 'change', function(e) {
     console.log($(this).val());
     if( $(this).val() == 'Movilidad Propia' ) {
-        $("#proveedor").hide();
+        // $("#proveedor").hide();
         $("#trabajador").show();
     } 
     else if( $(this).val() == 'Movilidad de Tercero' ) {
-        $("#proveedor").show();
+        // $("#proveedor").show();
         $("#trabajador").hide();
     }
     else {
-        $("#proveedor").hide();
+        // $("#proveedor").hide();
         $("#trabajador").hide();
     }
     $('[name=responsable_grupo]').val('');
-    $('[name=gd_id_proveedor]').val('');
+    // $('[name=gd_id_proveedor]').val('');
     $('[name=gd_razon_social]').val('');
 });
 
@@ -81,15 +81,15 @@ function guardar_grupo_despacho(){
     var fdes = $('[name=fecha_despacho_grupo]').val();
     var sede = $('[name=id_sede_grupo]').val();
     var move = $('[name=mov_entrega]').val();
-    var prov = $('[name=gd_id_proveedor]').val();
-    var obs = $('[name=observaciones]').val();
+    // var prov = $('[name=gd_id_proveedor]').val();
+    // var obs = $('[name=observaciones]').val();
 
     var data =  'responsable='+resp+
                 '&fecha_despacho='+fdes+
                 '&id_sede='+sede+
                 '&mov_entrega='+move+
-                '&id_proveedor='+prov+
-                '&observaciones='+obs+
+                // '&id_proveedor='+prov+
+                // '&observaciones='+obs+
                 '&ordenes_despacho='+JSON.stringify(od_seleccionadas);
 
     $("#btnGrupoDespacho").attr('disabled','true');
@@ -106,7 +106,8 @@ function guardar_grupo_despacho(){
                 $('#modal-grupo_despacho_create').modal('hide');
                 var id = encode5t(response);
                 window.open('imprimir_despacho/'+id);
-                $('#ordenesDespacho').DataTable().ajax.reload();
+                // $('#ordenesDespacho').DataTable().ajax.reload();
+                listarOrdenesPendientes();
                 actualizaCantidadDespachosTabs();
             }
         }

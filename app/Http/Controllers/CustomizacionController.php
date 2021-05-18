@@ -97,32 +97,37 @@ class CustomizacionController extends Controller
         return datatables($data)->toJson();
     }
 
-    public function listarDetalleTransformacion($id_transformacion){
+    public function listarDetalleTransformacion($id_transformacion)
+    {
         $sobrantes = DB::table('almacen.transfor_sobrante')
         ->select('transfor_sobrante.id_sobrante','transfor_sobrante.id_producto','transfor_sobrante.cantidad',
         'transfor_sobrante.valor_unitario','transfor_sobrante.valor_total','alm_prod.descripcion',
         'alm_prod.id_unidad_medida','alm_prod.part_number','alm_prod.series',
-        'alm_prod.codigo as cod_prod','alm_und_medida.abreviatura')
+        'alm_prod.codigo as cod_prod','alm_und_medida.abreviatura',
+        'transformacion.codigo')
         ->join('almacen.alm_prod','alm_prod.id_producto','=','transfor_sobrante.id_producto')
         ->join('almacen.alm_und_medida','alm_und_medida.id_unidad_medida','=','alm_prod.id_unidad_medida')
-        ->where('id_transformacion',$id_transformacion)
+        ->join('almacen.transformacion','transformacion.id_transformacion','=','transfor_sobrante.id_transformacion')
+        ->where('transfor_sobrante.id_transformacion',$id_transformacion)
         ->get();
 
         $transformados = DB::table('almacen.transfor_transformado')
         ->select('transfor_transformado.id_transformado','transfor_transformado.id_producto','transfor_transformado.cantidad',
         'transfor_transformado.valor_unitario','transfor_transformado.valor_total','alm_prod.descripcion',
         'alm_prod.id_unidad_medida','alm_prod.part_number','alm_prod.series',
-        'alm_prod.codigo as cod_prod','alm_und_medida.abreviatura')
+        'alm_prod.codigo as cod_prod','alm_und_medida.abreviatura',
+        'transformacion.codigo')
         ->join('almacen.alm_prod','alm_prod.id_producto','=','transfor_transformado.id_producto')
         ->join('almacen.alm_und_medida','alm_und_medida.id_unidad_medida','=','alm_prod.id_unidad_medida')
-        ->where('id_transformacion',$id_transformacion)
-        // ->unionAll($materias)
+        ->join('almacen.transformacion','transformacion.id_transformacion','=','transfor_transformado.id_transformacion')
+        ->where('transfor_transformado.id_transformacion',$id_transformacion)
         ->get();
 
         return response()->json(['sobrantes'=>$sobrantes,'transformados'=>$transformados]);
     }
 
-    public function mostrar_transformacion($id_transformacion){
+    public function mostrar_transformacion($id_transformacion)
+    {
         $data = DB::table('almacen.transformacion')
         ->select('transformacion.*','oportunidades.codigo_oportunidad','oc_propias.orden_am',
                  'adm_estado_doc.estado_doc','adm_estado_doc.bootstrap_color','sis_usua.nombre_corto',

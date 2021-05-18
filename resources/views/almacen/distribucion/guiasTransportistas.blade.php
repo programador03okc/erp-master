@@ -2,7 +2,7 @@
 @include('layout.menu_logistica')
 
 @section('cabecera')
-Trazabilidad de Envío
+Reporte de Despachos
 @endsection
 
 @section('breadcrumb')

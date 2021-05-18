@@ -17,6 +17,7 @@ function open_guia_create(data,$fila){
     $('[name=fecha_emision]').val(fecha_actual());
     $('[name=fecha_almacen]').val(fecha_actual());
     $('#detalleOrdenSeleccionadas tbody').html('');
+    $('.agregarSobrante').hide();
 
     $('#serie').text('');
     $('#numero').text('');
@@ -69,7 +70,10 @@ function open_guia_create_seleccionadas(){
         $('[name=numero]').val('');
         $('[name=fecha_emision]').val(fecha_actual());
         $('[name=fecha_almacen]').val(fecha_actual());
+        
         $('#detalleOrdenSeleccionadas tbody').html('');
+        $('.agregarSobrante').hide();
+        
         $('#serie').text('');
         $('#numero').text('');
         cargar_almacenes(sede, 'id_almacen');
@@ -94,6 +98,8 @@ function open_transformacion_guia_create(data){
     $('[name=numero]').val(data.numero);
     $('[name=fecha_emision]').val(fecha_actual());
     $('[name=fecha_almacen]').val(fecha_actual());
+
+    $('.agregarSobrante').show();
     cargar_almacenes(data.id_sede, 'id_almacen');
     // var data = 'oc_seleccionadas='+JSON.stringify([data.id_orden_compra]);
     listar_detalle_transformacion(data.id_transformacion);
@@ -104,12 +110,14 @@ let series_transformacion = [];
 function listar_detalle_transformacion(id){
     oc_det_seleccionadas = [];
     series_transformacion = [];
+
     $.ajax({
         type: 'GET',
         url: 'listarDetalleTransformacion/'+id,
         dataType: 'JSON',
         success: function(response){
             console.log(response);
+
             response['sobrantes'].forEach(function(element){
                 series_transformacion.push({
                     'id'            : 's'+element.id_sobrante,
@@ -118,10 +126,10 @@ function listar_detalle_transformacion(id){
                     'tipo'          : 'sobrante',
                     'cantidad'      : element.cantidad,
                     'id_producto'   : element.id_producto,
+                    'codigo'        : element.codigo,
                     'cod_prod'      : element.cod_prod,
                     'part_number'   : element.part_number,
                     'descripcion'   : element.descripcion,
-                    'cantidad'      : element.cantidad,
                     'abreviatura'   : element.abreviatura,
                     'valor_unitario': element.valor_unitario,
                     'valor_total'   : element.valor_total
@@ -135,10 +143,10 @@ function listar_detalle_transformacion(id){
                     'tipo'          : 'transformado',
                     'cantidad'      : element.cantidad,
                     'id_producto'   : element.id_producto,
+                    'codigo'        : element.codigo,
                     'cod_prod'      : element.cod_prod,
                     'part_number'   : element.part_number,
                     'descripcion'   : element.descripcion,
-                    'cantidad'      : element.cantidad,
                     'abreviatura'   : element.abreviatura,
                     'valor_unitario': element.valor_unitario,
                     'valor_total'   : element.valor_total
@@ -165,7 +173,7 @@ function mostrar_detalle_transformacion(){
         });
         html+=`<tr>
             <td>${i}</td>
-            <td></td>
+            <td>${element.codigo}</td>
             <td>${element.cod_prod}</td>
             <td>${element.part_number}</td>
             <td>${element.descripcion+' <strong>'+html_ser+'</strong>'}</td>
@@ -216,6 +224,7 @@ function listar_detalle_ordenes_seleccionadas(data){
                 oc_det_seleccionadas.push({
                     'id_oc_det'  : element.id_detalle_orden,
                     'id_producto': null,
+                    'id_categoria': element.id_categoria,
                     'codigo_oc'  : element.codigo_oc,
                     'codigo'     : element.codigo,
                     'part_number': element.part_number,
@@ -253,7 +262,7 @@ function mostrar_ordenes_seleccionadas(){
             <td>${element.codigo_oc!==null ? element.codigo_oc : ''}</td>
             <td>${element.codigo}</td>
             <td>${element.part_number!==null ? element.part_number : ''}</td>
-            <td>${element.descripcion+' <strong>'+html_ser+'</strong>'}</td>
+            <td>${(element.id_categoria==117?'<i class="fas fa-exclamation-triangle orange" title="El producto fue creado con Categoría = Por definir"></i>':'')+element.descripcion+' <strong>'+html_ser+'</strong>'}</td>
             <td><input type="number" id="${element.id_oc_det!==null ? element.id_oc_det : 'p'+element.id_producto}cantidad" value="${element.cantidad}" 
                 min="1" ${element.id_oc_det!==null ? `max="${element.cantidad}"` : ''} style="width:80px;"/></td>
             <td>${element.abreviatura}</td>
@@ -367,19 +376,36 @@ function guardar_guia_create(data){
 }
 
 function agregarProducto(producto){
-    oc_det_seleccionadas.push({ 
-        'id_oc_det'    : null,
-        'id_producto'  : parseInt(producto.id_producto),
-        'codigo_oc'    : null,
-        'codigo'       : producto.codigo,
-        'part_number'  : producto.part_number,
-        'descripcion'  : producto.descripcion,
-        'cantidad'     : 1,
-        'id_unid_med'  : producto.id_unidad_medida,
-        'abreviatura'  : producto.abreviatura,
-        'precio'       : 0.01,
-        'subtotal'     : 0.01,
-        'series'       : []
+    // oc_det_seleccionadas.push({ 
+    //     'id_oc_det'    : null,
+    //     'id_producto'  : parseInt(producto.id_producto),
+    //     'codigo_oc'    : null,
+    //     'codigo'       : producto.codigo,
+    //     'part_number'  : producto.part_number,
+    //     'descripcion'  : producto.descripcion,
+    //     'cantidad'     : 1,
+    //     'id_unid_med'  : producto.id_unidad_medida,
+    //     'abreviatura'  : producto.abreviatura,
+    //     'precio'       : 0.01,
+    //     'subtotal'     : 0.01,
+    //     'series'       : []
+    // });
+    // mostrar_ordenes_seleccionadas();
+    var cod = series_transformacion[0].codigo;
+    series_transformacion.push({
+        'id'            : null,
+        'id_detalle'    : null,
+        'series'        : [],
+        'tipo'          : 'sobrante',
+        'cantidad'      : 1,
+        'id_producto'   : parseInt(producto.id_producto),
+        'codigo'        : cod,
+        'cod_prod'      : producto.codigo,
+        'part_number'   : producto.part_number,
+        'descripcion'   : producto.descripcion,
+        'abreviatura'   : producto.abreviatura,
+        'valor_unitario': 0.01,
+        'valor_total'   : 0.01
     });
-    mostrar_ordenes_seleccionadas();
+    mostrar_detalle_transformacion();
 }

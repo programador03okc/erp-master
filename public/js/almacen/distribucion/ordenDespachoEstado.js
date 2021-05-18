@@ -113,7 +113,7 @@ function formatTimeLine ( table_id, id, row ) {
                         <strong>${element.estado_doc}</strong><br>
                         ${element.mov_entrega}<br>${element.razon_social_despacho!==null?
                             element.razon_social_despacho:
-                            element.responsable_despacho}</small></p>
+                            (element.responsable_despacho!==null?element.responsable_despacho:'')}</small></p>
                         </div>
                     </div>
                     </li>`;

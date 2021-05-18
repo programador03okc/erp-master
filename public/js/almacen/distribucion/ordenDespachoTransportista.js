@@ -28,31 +28,11 @@ function despacho_transportista(data){
     });
 }
 
-$('[name=transporte_propio]').on('change', function(){
-    console.log($(this).is(':checked'));
-    if( $(this).is(':checked') ) {
-        $('#agencia').hide();
-    } else {
-        $('#agencia').show();
-    }
-});
-
-function despacho_no_conforme(data){
-    $.ajax({
-        type: 'POST',
-        url: 'despacho_no_conforme',
-        data: data,
-        dataType: 'JSON',
-        success: function(response){
-            console.log(response);
-            if (response > 0){
-                $('#pendientesRetornoCargo').DataTable().ajax.reload();
-                actualizaCantidadDespachosTabs();
-            }
-        }
-    }).fail( function( jqXHR, textStatus, errorThrown ){
-        console.log(jqXHR);
-        console.log(textStatus);
-        console.log(errorThrown);
-    });
-}
+// $('[name=transporte_propio]').on('change', function(){
+//     console.log($(this).is(':checked'));
+//     if( $(this).is(':checked') ) {
+//         $('#agencia').hide();
+//     } else {
+//         $('#agencia').show();
+//     }
+// });
