@@ -826,9 +826,10 @@ class RequerimientoController extends Controller
         $fechaHoy = date('Y-m-d H:i:s');
 
         //decodificar ubigeo
-        $IdDis=null;
+        $id_ubigeo_cliente=null;
         $descripcion_ubigeo_cliente=null;
         if(isset($ubigeo) && $ubigeo !=null){
+            $IdDis=null;
             $ubigeo_list = array_filter(array_map('trim',explode("/", $ubigeo)));
             if(count($ubigeo_list)==3){
                 $IdDis=  Distrito::getIdDistrito($ubigeo_list[0]);
@@ -847,7 +848,7 @@ class RequerimientoController extends Controller
             $descripcion_ubigeo_cliente= $ubigeo_list[0].'/'.$ubigeo_list[1].'/'.$ubigeo_list[2];
         }
         //  
-        
+
         $adm_contri = DB::table('contabilidad.adm_contri')
         ->select(
             'adm_contri.*',
