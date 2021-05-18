@@ -853,12 +853,12 @@ class RequerimientoController extends Controller
         ->select(
             'adm_contri.*',
             )
-        ->where([
-            ['adm_contri.nro_documento','=',$ruc]
-            ])
-        ->orWhere([
-            ['adm_contri.razon_social','=',$razon_social]
-            ])
+        ->when(($ruc !='null'), function($query) use ($ruc)  {
+            return $query->Where('adm_contri.nro_documento','=',$ruc);
+        })
+        ->when(($razon_social !='null'), function($query) use ($razon_social)  {
+            return $query->Where('adm_contri.razon_social','=',$razon_social);
+        })
         ->get();
         
 
