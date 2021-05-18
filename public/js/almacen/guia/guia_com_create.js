@@ -11,6 +11,8 @@ function open_guia_create(data,$fila){
     $('[name=id_proveedor]').val(data.id_proveedor);
     $('[name=id_sede]').val(data.id_sede);
     $('[name=id_orden_compra]').val(data.id_orden_compra);
+    $('[name=id_od]').val('');
+    $('[name=id_requerimiento]').val('');
     $('[name=id_transformacion]').val('');
     $('[name=serie]').val('');
     $('[name=numero]').val('');
@@ -66,6 +68,8 @@ function open_guia_create_seleccionadas(){
         $('[name=id_proveedor]').val(id_prov);
         $('[name=id_sede]').val(sede);
         $('[name=id_transformacion]').val('');
+        $('[name=id_requerimiento]').val('');
+        $('[name=id_od]').val('');
         $('[name=serie]').val('');
         $('[name=numero]').val('');
         $('[name=fecha_emision]').val(fecha_actual());
@@ -94,6 +98,8 @@ function open_transformacion_guia_create(data){
     $('[name=id_sede]').val(data.id_sede);
     $('[name=id_transformacion]').val(data.id_transformacion);
     $('[name=id_orden_compra]').val('');
+    $('[name=id_od]').val(data.id_od);
+    $('[name=id_requerimiento]').val(data.id_requerimiento);
     $('[name=serie]').val(data.serie);
     $('[name=numero]').val(data.numero);
     $('[name=fecha_emision]').val(fecha_actual());
@@ -175,9 +181,12 @@ function mostrar_detalle_transformacion(){
             <td>${i}</td>
             <td>${element.codigo}</td>
             <td>${element.cod_prod}</td>
-            <td>${element.part_number}</td>
+            <td>${element.part_number!==null ? element.part_number : ''}</td>
             <td>${element.descripcion+' <strong>'+html_ser+'</strong>'}</td>
-            <td>${element.cantidad}</td>
+            <td>${element.tipo=='sobrante'? 
+                `<input type="number" class="form-control cantidad" style="width:120px;" data-id="${element.id}" step="0.001" 
+                value="${element.cantidad}"/>` : element.cantidad}
+            </td>
             <td>${element.abreviatura}</td>
             <td><input type="number" class="form-control unitario" style="width:120px;" data-id="${element.id}" step="0.001" 
                 value="${element.valor_unitario}"/></td>
@@ -201,6 +210,22 @@ $('#detalleOrdenSeleccionadas tbody').on("change", ".unitario", function(){
         if (element.id == id){
             element.valor_unitario = unitario;
             element.valor_total = (unitario * parseFloat(element.cantidad));
+        }
+    });
+    console.log(series_transformacion);
+    mostrar_detalle_transformacion();
+});
+
+$('#detalleOrdenSeleccionadas tbody').on("change", ".cantidad", function(){
+    
+    let id = $(this).data('id');
+    let cantidad = parseFloat($(this).val());
+    console.log('cantidad: '+cantidad);
+    
+    series_transformacion.forEach(element => {
+        if (element.id == id){
+            element.cantidad = cantidad;
+            element.valor_total = (element.valor_unitario * parseFloat(element.cantidad));
         }
     });
     console.log(series_transformacion);
