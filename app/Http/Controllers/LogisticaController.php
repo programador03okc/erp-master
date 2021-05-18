@@ -4441,8 +4441,10 @@ class LogisticaController extends Controller
         $total = 0;
 
         $detail = DB::table('almacen.alm_det_req')
-            ->select('alm_det_req.*', 'alm_und_medida.descripcion as unidad_medida_descripcion')
+            ->select('alm_det_req.*','alm_prod.descripcion as descripcion_producto', 'alm_und_medida.descripcion as unidad_medida_descripcion')
             ->leftJoin('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'alm_det_req.id_unidad_medida')
+            ->leftJoin('almacen.alm_prod', 'alm_prod.id_producto', '=', 'alm_det_req.id_producto')
+
             ->where('id_requerimiento', $id)
             ->get();
 
@@ -4475,7 +4477,7 @@ class LogisticaController extends Controller
                 $unidad = ($prod->id_servicio > 0) ? 'Servicio' : (($prod->id_equipo > 0) ? 'Equipo' : 'S/N');
                 
             } else {
-                $name = $det->descripcion_adicional;
+                $name = $det->descripcion_producto;
             }
 
             // if ($obs == 't' or $obs == '1' or $obs == 'true') {
@@ -5645,10 +5647,14 @@ function get_id_usuario_usuario_por_rol($descripcion_rol, $id_sede, $id_empresa)
     function consulta_nombre_usuario($id_rol){
         $query = DB::table('administracion.rol_aprobacion')
         ->select(
-        DB::raw("(rrhh_perso.nombres) || ' ' || (rrhh_perso.apellido_paterno) || ' ' || (rrhh_perso.apellido_materno)  AS nombre_completo")
+        DB::raw("concat(rrhh_perso.nombres,' ', rrhh_perso.apellido_paterno, ' ',rrhh_perso.apellido_materno)  AS nombre_completo")
         )
+        
+
+        ->when(($id_rol >0), function($query) use ($id_rol)  {
+            return $query->Where('rol_aprobacion.id_rol_concepto','=',$id_rol);
+        })
         ->where([
-            ['rol_aprobacion.id_rol_concepto', '=', $id_rol],
             ['rol_aprobacion.estado', '=', 1]
         ])
         ->join('rrhh.rrhh_trab', 'rrhh_trab.id_trabajador', '=', 'rol_aprobacion.id_trabajador')
