@@ -11,6 +11,8 @@
                     <input type="text" class="oculto" name="id_proveedor">
                     <input type="text" class="oculto" name="id_sede">
                     <input type="text" class="oculto" name="id_transformacion">
+                    <input type="text" class="oculto" name="id_od">
+                    <input type="text" class="oculto" name="id_requerimiento">
                     <div class="row">
                         <div class="col-md-4">
                             <h5>Serie-Número</h5>

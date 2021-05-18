@@ -43,6 +43,10 @@ function listarGuiasTransportistas(){
                 }
             },
             {'render': function (data, type, row){
+                    return (row['serie_ven']!==null ? (row['serie_ven']+'-'+row['numero_ven']):'');
+                }
+            },
+            {'render': function (data, type, row){
                     return (row['fecha_entrega']!==null ? formatDate(row['fecha_entrega']):'');
                 }
             },
@@ -95,7 +99,7 @@ function listarGuiasTransportistas(){
                     return '<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" '+
                     'data-placement="bottom" title="Ver Detalle" data-id="'+row['id_requerimiento']+'">'+
                     '<i class="fas fa-chevron-down"></i></button>';
-                }, targets: 17
+                }, targets: 18
             }
         ],
     });

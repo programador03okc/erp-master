@@ -30,10 +30,11 @@ Reporte de Despachos
                                     <th>Cod.Req.</th>
                                     <th>OD</th>
                                     <th>Fecha Despacho</th>
+                                    <th>Guía Venta</th>
                                     <th>Fecha Max Entrega</th>
                                     <th>Cliente</th>
                                     <th>Guía</th>
-                                    <th>Transportista</th>
+                                    <th>Empresa Transporte</th>
                                     <th>Fecha</th>
                                     <th>Codigo Envío</th>
                                     <th>Importe</th>

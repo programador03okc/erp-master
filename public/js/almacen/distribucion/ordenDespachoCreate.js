@@ -113,7 +113,7 @@ function open_despacho_create(data){
                     '<td>'+(element.suma_despachos_internos !== null ? element.suma_despachos_internos : '0')+'</td>'+
                     '<td><input type="number" id="'+element.id_detalle_requerimiento+'cantidad" value="'+cant+'" max="'+cant+'" min="0" style="width: 80px;"/></td>'+
                     '<td><span class="label label-'+element.bootstrap_color+'">'+element.estado_doc+'</span></td>'+
-                    '<td><i class="fas fa-code-branch boton btn btn-primary" data-toggle="tooltip" data-placement="bottom" title="Agregar Instrucciones" onClick="verInstrucciones('+element.id_detalle_requerimiento+');"></i>'+
+                    '<td>'+(element.descripcion_producto_transformado!==null ? '<i class="fas fa-code-branch boton btn btn-primary" data-toggle="tooltip" data-placement="bottom" title="Agregar Instrucciones" onClick="verInstrucciones('+element.id_detalle_requerimiento+');"></i>' : '')+
                     (element.series ? '<i class="fas fa-bars icon-tabla boton" data-toggle="tooltip" data-placement="bottom" title="Ver Series" onClick="verSeries('+element.id_detalle_requerimiento+');"></i>' : '')+
                     '</td></tr>';
                 } else {
@@ -128,6 +128,7 @@ function open_despacho_create(data){
                     'suma_ingresos'             : element.suma_ingresos,
                     'suma_despachos'            : element.suma_despachos_internos,
                     'stock_comprometido'        : element.stock_comprometido,
+                    'valorizacion'              : element.valorizacion,
                     'part_number_transformado'  : null,
                     'descripcion_transformado'  : null,
                     'comentario_transformado'   : null,
@@ -306,30 +307,6 @@ function verSeries(id_detalle_requerimiento){
     }
 }
 
-function verInstrucciones(id_detalle_requerimiento){
-    $('#modal-od_transformacion').modal({
-        show: true
-    });
-    $('[name=id_detalle_requerimiento]').val(id_detalle_requerimiento);
-    $("#submit_od_transformacion").removeAttr("disabled");
-}
-
-$("#form-od_transformacion").on("submit", function(e){
-    e.preventDefault();
-    var id_detalle_requerimiento = $('[name=id_detalle_requerimiento]').val();
-    var ing = detalle_ingresa.find(element => element.id_detalle_requerimiento == id_detalle_requerimiento);
-    var data = $(this).serializeArray();
-    console.log(data);
-    // var indexed_array = {};
-    $.map(data, function(n, i){
-        ing[n['name']] = n['value'];
-        // indexed_array[n['name']] = n['value'];
-    });
-    // ing.transformacion = indexed_array;
-    console.log(detalle_ingresa);
-    $('#modal-od_transformacion').modal('hide');
-});
-
 function openCliente(){
     var tipoCliente = $('[name=tipo_cliente]').val();
     if (tipoCliente == 1){
@@ -390,16 +367,18 @@ $("#form-orden_despacho").on("submit", function(e){
         $("#detalleRequerimientoOD input[type=checkbox]:checked").each(function(){
             var id_detalle_requerimiento = $(this).val();
             var json = detalle_ingresa.find(element => element.id_detalle_requerimiento == id_detalle_requerimiento);
+
             
             json_detalle_ingresa.push({
                 'cantidad'      : $(this).parent().parent().find('td input[id='+id_detalle_requerimiento+'cantidad]').val(),
                 'id_detalle_requerimiento' : json.id_detalle_requerimiento,
                 'id_producto'   : json.id_producto,
+                'valorizacion'   : json.valorizacion,
                 // 'descripcion'   : json.descripcion_adicional,
-                'part_number_transformado'   : json.part_number_transformado,
-                'descripcion_transformado'   : json.descripcion_transformado,
-                'comentario_transformado'   : json.comentario_transformado,
-                'cantidad_transformado'   : json.cantidad_transformado,
+                // 'part_number_transformado'   : json.part_number_transformado,
+                // 'descripcion_transformado'   : json.descripcion_transformado,
+                // 'comentario_transformado'   : json.comentario_transformado,
+                // 'cantidad_transformado'   : json.cantidad_transformado,
             });
         });
 
@@ -471,7 +450,8 @@ function guardar_orden_despacho(data){
                 listarRequerimientosConfirmados(permiso_temp);
             } 
             else if (tab_origen == 'enProceso'){
-                listarRequerimientosPendientes(permiso_temp);
+                // listarRequerimientosPendientes(permiso_temp);
+                listarRequerimientosPendientes();
             }
             else if (tab_origen == 'enTransformacion'){
                 listarRequerimientosEnTransformacion(permiso_temp);
@@ -542,8 +522,8 @@ $("[name=optionsRadios]").on( 'change', function() {
         } else {
             tipo = 1;
         }
-        $('[name=tipo_cliente]').val(tipo);
-        limpiarCampos(tipo);
+        // $('[name=tipo_cliente]').val(tipo);
+        // limpiarCampos(tipo);
     }
 });
 

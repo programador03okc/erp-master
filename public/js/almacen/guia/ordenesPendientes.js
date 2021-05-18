@@ -124,6 +124,7 @@ function listarOrdenesPendientes(){
                         return `<button type="button" class="ver-detalle btn btn-primary boton" data-toggle="tooltip" 
                             data-placement="bottom" title="Ver Detalle" data-id="${row['id_orden_compra']}">
                             <i class="fas fa-chevron-down"></i></button>
+                            
                         <button type="button" class="guia btn btn-info boton" data-toggle="tooltip" 
                             data-placement="bottom" title="Generar Guía" >
                             <i class="fas fa-sign-in-alt"></i></button>`;
@@ -211,6 +212,7 @@ function listarTransformaciones(){
                         return '<button type="button" class="guia btn btn-info boton" data-toggle="tooltip" '+
                             'data-placement="bottom" title="Ingresar Guía" >'+
                             '<i class="fas fa-sign-in-alt"></i></button>'+
+
                             '<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" '+
                             'data-placement="bottom" title="Ver Detalle" >'+
                             '<i class="fas fa-list-ul"></i></button>';
