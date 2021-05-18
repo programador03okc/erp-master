@@ -980,7 +980,6 @@ class LogisticaController extends Controller
 
                             'id_producto'               => $data->id_producto,
                             'codigo_producto'            => $data->alm_prod_codigo,
-                            'codigo_producto'            => $data->alm_prod_codigo,
                             // 'descripcion'               => $requerimiento[0]["id_tipo_requerimiento"] ==1?$data->alm_prod_descripcion:($requerimiento[0]["id_tipo_requerimiento"] ==2?$data->log_servi_descripcion:''),
                             'descripcion'                   => $data->alm_prod_descripcion,
                             // 'prod_id_unidad_medida'          => $data->prod_id_unidad_medida,
@@ -1321,8 +1320,8 @@ class LogisticaController extends Controller
                 <table width="100%" class="tablePDF" border=0>
                 <thead>
                     <tr class="subtitle">
-                        <td width="3%">#</td>
-                        <td width="10%">Item</td>
+                        <td width="10%">Código</td>
+                        <td width="10%">Part.No</td>
                         <td width="30%">Descripcion</td>
                         <td width="5%">Und.</td>
                         <td width="5%">Cant.</td>
@@ -1331,22 +1330,27 @@ class LogisticaController extends Controller
                     </tr>   
                 </thead>';
         $total = 0;
+        $simbolMonedaRequerimiento = $this->consult_moneda($requerimiento['requerimiento'][0]['id_moneda'])->simbolo;
+
         foreach ($requerimiento['det_req'] as $key => $data) {
+            $simbolMoneda = $this->consult_moneda($data['id_tipo_moneda'])->simbolo;
+
             $html .= '<tr>';
-            $html .= '<td >' . ($key + 1) . '</td>';
-            $html .= '<td >' . $data['codigo_item'] . '</td>';
+            // $html .= '<td >' . ($key + 1) . '</td>';
+            $html .= '<td >' . $data['codigo_producto'] . '</td>';
+            $html .= '<td >' . $data['part_number'] . '</td>';
             $html .= '<td >' . ($data['descripcion'] ? $data['descripcion'] : $data['descripcion_adicional']) . '</td>';
             $html .= '<td >' . $data['unidad_medida'] . '</td>';
             $html .= '<td class="right">' . $data['cantidad'] . '</td>';
-            $html .= '<td class="right">S/.' . $data['precio_unitario'] . '</td>';
-            $html .= '<td class="right">S/.' . $data['cantidad'] * $data['precio_unitario'] . '</td>';
+            $html .= '<td class="right">'.$simbolMoneda. number_format($data['precio_unitario'],2) . '</td>';
+            $html .= '<td class="right">'.$simbolMoneda. number_format($data['cantidad'] * $data['precio_unitario'],2) . '</td>';
             $html .= '</tr>';
             $total = $total + ($data['cantidad'] * $data['precio_unitario']);
         }
         $html .= '
             <tr>
                 <td  class="right" style="font-weight:bold;" colspan="6">TOTAL</td>
-                <td class="right">S/.' . $total . '</td>
+                <td class="right">' .$simbolMonedaRequerimiento. number_format($total,2) . '</td>
             </tr>
             </table>
                 <br/>
