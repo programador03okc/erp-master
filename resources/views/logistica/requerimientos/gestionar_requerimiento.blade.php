@@ -145,7 +145,7 @@
                         </div>
 
                         <div id="input-group-fuente">
-                            <div class="col-md-2" >
+                            <div class="col-md-2">
                                 <h5>Fuente</h5>
                                 <div style="display:flex">
                                     <select class="form-control activation " name="fuente_id" onChange="selectFuente(event);">
@@ -159,7 +159,7 @@
                                     </button>
                                 </div>
                             </div>
-                            <div class="col-md-2" id="input-group-fuente_det" hidden >
+                            <div class="col-md-2" id="input-group-fuente_det">
                                 <h5>Detalle fuente</h5>
                                 <div style="display:flex">
                                     <select class="form-control activation " name="fuente_det_id">
@@ -171,6 +171,7 @@
                             </div>
                         </div>
 
+ 
                         <div class="col-md-2" id="input-group-monto">
                             <h5>Monto total</h5>
                             <div class="input-group-okc">
@@ -341,7 +342,7 @@
             </div>
         </div>
 
-        <div class="row">
+        <div class="row" id="seccion-contacto-cliente">
             <div class="col-md-12">
                 <h4 style="display:flex;justify-content: space-between;">Contacto cliente</h4> 
                 <fieldset class="group-table">   

@@ -176,6 +176,7 @@ function mostrarTipoForm(tipo){
         case 'CMS':
             hiddeElement('ocultar','form-requerimiento',[
                 // 'input-group-proyecto',
+                'seccion-contacto-cliente',
                 'input-group-rol-usuario',
                 'input-group-comercial',
                 'input-group-almacen',
