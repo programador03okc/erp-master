@@ -707,7 +707,8 @@ class DistribucionController extends Controller
         return response()->json($detalles);
     }
 
-    public function verDetalleRequerimiento($id_requerimiento){
+    public function verDetalleRequerimiento($id_requerimiento)
+    {//agregar precios a items base
         $detalles = DB::table('almacen.alm_det_req')
             ->select('alm_det_req.*','adm_estado_doc.estado_doc','adm_estado_doc.bootstrap_color',
                     'alm_prod.descripcion as producto_descripcion','alm_prod.codigo as producto_codigo',
@@ -757,10 +758,12 @@ class DistribucionController extends Controller
                     //     WHERE   trans_detalle.id_requerimiento_detalle = alm_det_req.id_detalle_requerimiento AND
                     //         trans_detalle.estado = 14) AS suma_transferencias_recibidas")
                     'almacen_guia.id_almacen as id_almacen_guia_com','almacen_guia.descripcion as almacen_guia_com_descripcion',
-                    'almacen_reserva.descripcion as almacen_reserva_descripcion')
+                    'almacen_reserva.descripcion as almacen_reserva_descripcion',
+                    'mov_alm_det.valorizacion','cc_am_filas.descripcion_producto_transformado')
+            // ->leftJoin('almacen.alm_almacen', 'alm_almacen.id_almacen', '=', 'alm_det_req.id_almacen_reserva')
+            ->leftJoin('mgcp_cuadro_costos.cc_am_filas', 'cc_am_filas.id', '=', 'alm_det_req.id_cc_am_filas')
             ->leftJoin('almacen.alm_prod', 'alm_prod.id_producto', '=', 'alm_det_req.id_producto')
             ->leftJoin('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'alm_det_req.id_unidad_medida')
-            // ->leftJoin('almacen.alm_almacen', 'alm_almacen.id_almacen', '=', 'alm_det_req.id_almacen_reserva')
             ->join('administracion.adm_estado_doc', 'adm_estado_doc.id_estado_doc', '=', 'alm_det_req.estado')
             ->join('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'alm_det_req.id_requerimiento')
             ->leftJoin('logistica.log_det_ord_compra', function($join){
@@ -771,6 +774,10 @@ class DistribucionController extends Controller
             ->leftJoin('almacen.guia_com_det', function($join){
                     $join->on('guia_com_det.id_oc_det', '=', 'log_det_ord_compra.id_detalle_orden');
                     $join->where('guia_com_det.estado','!=', 7);
+                })
+            ->leftJoin('almacen.mov_alm_det', function($join){
+                    $join->on('mov_alm_det.id_guia_com_det', '=', 'guia_com_det.id_guia_com_det');
+                    $join->where('mov_alm_det.estado','!=', 7);
                 })
             // ->leftJoin('almacen.guia_com_det','guia_com_det.id_oc_det','=','log_det_ord_compra.id_detalle_orden')
             ->leftJoin('almacen.guia_com','guia_com.id_guia','=','guia_com_det.id_guia_com')
@@ -909,15 +916,17 @@ class DistribucionController extends Controller
                         'id_detalle_requerimiento'=>$i->id_detalle_requerimiento,
                         'cantidad'=>$i->cantidad,
                         'transformado'=>false,
-                        'part_number_transformado'=>($i->part_number_transformado ? $i->part_number_transformado : null),
-                        'descripcion_transformado'=>($i->descripcion_transformado ? $i->descripcion_transformado : null),
-                        'comentario_transformado'=>($i->comentario_transformado ? $i->comentario_transformado : null),
-                        'cantidad_transformado'=>($i->cantidad_transformado ? $i->cantidad_transformado : null),
+                        // 'part_number_transformado'=>($i->part_number_transformado ? $i->part_number_transformado : null),
+                        // 'descripcion_transformado'=>($i->descripcion_transformado ? $i->descripcion_transformado : null),
+                        // 'comentario_transformado'=>($i->comentario_transformado ? $i->comentario_transformado : null),
+                        // 'cantidad_transformado'=>($i->cantidad_transformado ? $i->cantidad_transformado : null),
                         'estado'=>1,
                         'fecha_registro'=>date('Y-m-d H:i:s')
                         ],
                         'id_od_detalle'
                     );
+
+                    $val = ($i->valorizacion!==null ? $i->valorizacion : AlmacenController::valorizacion_almacen($i->id_producto, $request->id_almacen));
                     
                     DB::table('almacen.transfor_materia')
                     ->insert([
@@ -925,8 +934,8 @@ class DistribucionController extends Controller
                         'id_producto'=>$i->id_producto,
                         'cantidad'=>$i->cantidad,
                         'id_od_detalle'=>$id_od_detalle,
-                        'valor_unitario'=>0,
-                        'valor_total'=>0,
+                        'valor_unitario'=>($val / $i->cantidad),
+                        'valor_total'=>$val,
                         'estado'=>1,
                         'fecha_registro'=>date('Y-m-d H:i:s')
                     ]);
@@ -2469,7 +2478,7 @@ class DistribucionController extends Controller
             'estado_envio.descripcion as estado_doc','entidades.nombre',
             'alm_req.tiene_transformacion','sis_sede.descripcion as sede_descripcion_req',
             'orden_despacho_grupo_det.id_od_grupo','orden_despacho_obs.plazo_excedido',
-            'orden_despacho_obs.observacion',
+            'orden_despacho_obs.observacion','guia_ven.serie as serie_ven','guia_ven.numero as numero_ven',
             DB::raw("(SELECT SUM(gasto_extra) 
                         FROM almacen.orden_despacho_obs AS ob
                         WHERE ob.id_od = orden_despacho.id_od) as extras"))
@@ -2482,6 +2491,11 @@ class DistribucionController extends Controller
             ->leftjoin('mgcp_acuerdo_marco.oc_propias','oc_propias.id_oportunidad','=','oportunidades.id')
             ->leftjoin('mgcp_acuerdo_marco.entidades','entidades.id','=','oportunidades.id_entidad')
             ->join('almacen.estado_envio','estado_envio.id_estado','=','orden_despacho.estado')
+            // ->leftjoin('almacen.guia_ven','guia_ven.id_od','=','orden_despacho.id_od')
+            ->leftjoin('almacen.guia_ven', function($join)
+            {  $join->on('guia_ven.id_od', '=', 'orden_despacho.id_od');
+               $join->where('guia_ven.estado','!=', 7);
+            })
             ->leftjoin('almacen.orden_despacho_grupo_det', function($join)
             {  $join->on('orden_despacho_grupo_det.id_od', '=', 'orden_despacho.id_od');
                $join->where('orden_despacho_grupo_det.estado','!=', 7);
@@ -2566,5 +2580,21 @@ class DistribucionController extends Controller
             ->update([ 'adjunto'=>$nombre ]);
         }
         return response()->json($id_obs);
+    }
+
+    public function verDetalleInstrucciones($id_detalle_requerimiento){
+        $data = DB::table('almacen.alm_det_req')
+        ->select('cc_am_filas.*')
+        ->join('mgcp_cuadro_costos.cc_am_filas','cc_am_filas.id','=','alm_det_req.id_cc_am_filas')
+        ->where('alm_det_req.id_detalle_requerimiento',$id_detalle_requerimiento)
+        ->first();
+
+        $detalle = DB::table('mgcp_cuadro_costos.cc_fila_movimientos_transformacion')
+        ->select('cc_am_filas.descripcion as ingresa','cc_fila_movimientos_transformacion.sale')
+        ->leftjoin('mgcp_cuadro_costos.cc_am_filas','cc_am_filas.id','=','cc_fila_movimientos_transformacion.id_fila_ingresa')
+        ->where('cc_fila_movimientos_transformacion.id_fila_base',$data->id)
+        ->get();
+        
+        return response()->json(['fila'=>$data,'detalle'=>$detalle]);
     }
 }

@@ -1,5 +1,5 @@
 <div class="modal fade" tabindex="-1" role="dialog" id="modal-od_transformacion" style="overflow-y:scroll;">
-    <div class="modal-dialog"  style="width: 500px;">
+    <div class="modal-dialog"  style="width: 1000px;">
         <div class="modal-content">
             <form id="form-od_transformacion">
                 <div class="modal-header">
@@ -9,31 +9,42 @@
                 <div class="modal-body">
                     <input type="text" class="oculto" name="id_detalle_requerimiento"/>
                     <div class="row">
-                        <div class="col-md-6">
-                            <h5>Part Number</h5>
-                            <input type="text" class="form-control" name="part_number_transformado">
-                        </div>
-                        <div class="col-md-6">
-                            <h5>Cantidad</h5>
-                            <input type="number" class="form-control" name="cantidad_transformado">
+                        <div class="col-md-12">
+                            <label>Item Base</label>
+                            <h5 name="part_no"></h5><h5 name="descripcion"></h5>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-md-12">
-                            <h5>Descripción</h5>
-                            <textarea name="descripcion_transformado" cols="65" rows="5"></textarea>
+                            <label>Item Transformado</label>
+                            <h5 name="part_no_producto_transformado"></h5><h5 name="descripcion_producto_transformado"></h5>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-md-12">
-                            <h5>Comentario</h5>
-                            <textarea name="comentario_transformado" cols="65" rows="5"></textarea>
+                            <label>Opciones Adicionales</label>
+                            <div name="adicionales"></div>
+                        </div>
+                    </div>
+                    <br/>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <label>Ingresos y Salidas para Transformación</label>
+                            <table class="mytable table table-condensed table-bordered table-okc-view" width="100%" id="detalleTransformacion">
+                                <thead>
+                                    <tr>
+                                        <th>Ingresa</th>
+                                        <th>Sale</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
-                <div class="modal-footer">
+                <!-- <div class="modal-footer">
                     <input type="submit" id="submit_od_transformacion" class="btn btn-success" value="Guardar"/>
-                </div>
+                </div> -->
             </form>
         </div>
     </div>

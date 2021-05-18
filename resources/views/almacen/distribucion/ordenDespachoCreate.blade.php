@@ -53,7 +53,7 @@
                                 <h5>Tipo Cliente</h5>
                                 <div class="input-group-okc">
                                     <select name="tipo_cliente" onChange="changeTipoCliente(event);"
-                                        class="form-control activation" style="width:100px" required>
+                                        class="form-control" style="width:100px" required>
                                         <option value="1" default>Persona Natural</option>
                                         <option value="2">Persona Juridica</option>
                                     </select>
@@ -100,17 +100,17 @@
                                 <div class="row">
                                     <div class="col-md-12">
                                         <h5>Dirección Destino</h5>
-                                        <input type="text" class="form-control" name="direccion_destino" readOnly>
+                                        <input type="text" class="form-control" name="direccion_destino" >
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-md-8">
                                         <h5>Correo Cliente</h5>
-                                        <input type="text" class="form-control" name="correo_cliente" readOnly>
+                                        <input type="text" class="form-control" name="correo_cliente" >
                                     </div>
                                     <div class="col-md-4">
                                         <h5>Teléfono</h5>
-                                        <input type="text" class="form-control" name="telefono_cliente" readOnly>
+                                        <input type="text" class="form-control" name="telefono_cliente" >
                                     </div>
                                     <!-- <div class="col-md-3">
                                         <h5>Tipo de Entrega</h5>
@@ -149,7 +149,7 @@
                     <div class="modal-body" >
                         <div class="row">
                             <div class="col-md-12">
-                                <textarea name="descripcion_sobrantes" id="descripcion_sobrantes" cols="150" rows="5"></textarea>
+                                <textarea name="descripcion_sobrantes" id="descripcion_sobrantes" cols="150" rows="3"></textarea>
                             </div>
                         </div>
                     </div>

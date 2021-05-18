@@ -53,6 +53,7 @@ Requerimientos pendientes de Transformación
 </div>
 @include('almacen.distribucion.transferenciasDetalle')
 @include('almacen.distribucion.ordenDespachoCreate')
+@include('almacen.distribucion.ordenDespachoTransformacion')
 
 @endsection
 
@@ -64,6 +65,7 @@ Requerimientos pendientes de Transformación
     <script src="{{ asset('js/almacen/distribucion/listaOrdenesDespacho.js')}}"></script>
     <script src="{{ asset('js/almacen/distribucion/verDetalleRequerimiento.js')}}"></script>
     <script src="{{ asset('js/almacen/distribucion/ordenDespachoCreate.js')}}"></script>
+    <script src="{{ asset('js/almacen/distribucion/ordenDespachoTransformacion.js')}}"></script>
 
     <script>
     $(document).ready(function(){

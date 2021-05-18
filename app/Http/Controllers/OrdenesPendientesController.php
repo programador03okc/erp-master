@@ -422,10 +422,61 @@ class OrdenesPendientesController extends Controller
             $detalle_oc = json_decode($request->detalle);
             
             if ($request->id_operacion == '26'){//transformacion
-                $id_od = null;
-                $id_requerimiento = null;
+                $id_od = $request->id_od;
+                $id_requerimiento = $request->id_requerimiento;
 
                 foreach($detalle_oc as $det){
+                    //Agrega sobrante
+                    $id_sobrante = null;
+
+                    if ($det->tipo == "sobrante"){
+
+                        if ($det->id == null){
+
+                            $id_sobrante = DB::table('almacen.transfor_sobrante')->insertGetId(
+                            [
+                                'id_transformacion' => $request->id_transformacion,
+                                'id_producto' => $det->id_producto,
+                                'cantidad' => $det->cantidad,
+                                'valor_unitario' => $det->unitario,
+                                'valor_total' => (floatval($det->unitario) * floatval($det->cantidad)),
+                                'estado' => 1,
+                                'fecha_registro' => $fecha_registro,
+                            ],
+                                'id_sobrante'
+                            );
+                        } else {
+                            $id_sobrante = $det->id;
+
+                            DB::table('almacen.transfor_sobrante')
+                            ->where('id_sobrante',$id_sobrante)
+                            ->update([  'cantidad'=>$det->cantidad,
+                                        'valor_unitario'=>$det->unitario,
+                                        'valor_total'=>(floatval($det->unitario) * floatval($det->cantidad))]);
+                        }
+                    }
+                    else if ($det->tipo == "transformado"){
+
+                        DB::table('almacen.transfor_transformado')
+                        ->where('id_transformado',$det->id)
+                        ->update([  'valor_unitario'=>$det->unitario,
+                                    'valor_total'=>(floatval($det->unitario) * floatval($det->cantidad))]);
+
+                        if ($id_requerimiento !== null){
+                            //Realiza la reserva en el requerimiento con item tiene transformacion
+                            $det_req = DB::table('almacen.alm_det_req')
+                            ->where([['id_requerimiento','=',$id_requerimiento],
+                                    ['tiene_transformacion','=',true],
+                                    ['id_producto','=',$det->id_producto]])
+                                    ->first();
+                            //realiza la reserva del transformado
+                            DB::table('almacen.alm_det_req')
+                            ->where('id_detalle_requerimiento',$det_req->id_detalle_requerimiento)
+                            ->update([  'id_almacen_reserva'=>$request->id_almacen, //$tra->id_almacen,
+                                        'stock_comprometido'=>$det->cantidad,
+                                        'estado'=>10]);
+                        }
+                    }
                     //Guardo los items de la guia
                     $id_guia_com_det = DB::table('almacen.guia_com_det')->insertGetId(
                         [
@@ -436,7 +487,7 @@ class OrdenesPendientesController extends Controller
                             "usuario" => $id_usuario,
                             "tipo_transfor" => $det->tipo,
                             "id_transformado" => ($det->tipo == "transformado" ? $det->id : null),
-                            "id_sobrante" => ($det->tipo == "sobrante" ? $det->id : null),
+                            "id_sobrante" => ($det->tipo == "sobrante" ? $id_sobrante : null),
                             "unitario" => $det->unitario,
                             "total" => (floatval($det->unitario) * floatval($det->cantidad)),
                             "unitario_adicional" => 0,
@@ -479,46 +530,34 @@ class OrdenesPendientesController extends Controller
 
                     OrdenesPendientesController::actualiza_prod_ubi($det->id_producto, $request->id_almacen);
 
-                    if ($det->tipo == 'sobrante'){
+                    // if ($det->tipo == 'sobrante'){
                         
-                        if ($id_od == null){
-                            $sob = DB::table('almacen.transfor_sobrante')
-                            ->select('orden_despacho.id_od','orden_despacho.id_requerimiento')
-                            ->join('almacen.transformacion','transformacion.id_transformacion','=','transfor_sobrante.id_transformacion')
-                            ->join('almacen.orden_despacho','orden_despacho.id_od','=','transformacion.id_od')
-                            ->where('transfor_sobrante.id_sobrante',$det->id)->first();
+                    //     if ($id_od == null){
+                    //         $sob = DB::table('almacen.transfor_sobrante')
+                    //         ->select('orden_despacho.id_od','orden_despacho.id_requerimiento')
+                    //         ->join('almacen.transformacion','transformacion.id_transformacion','=','transfor_sobrante.id_transformacion')
+                    //         ->join('almacen.orden_despacho','orden_despacho.id_od','=','transformacion.id_od')
+                    //         ->where('transfor_sobrante.id_sobrante',$det->id)->first();
     
-                            $id_od = ($sob !== null ? $sob->id_od : null);
-                            $id_requerimiento = ($sob !== null ? $sob->id_requerimiento : null);
-                        }
-                    }
-                    else if ($det->tipo == 'transformado'){
+                    //         $id_od = ($sob !== null ? $sob->id_od : null);
+                    //         $id_requerimiento = ($sob !== null ? $sob->id_requerimiento : null);
+                    //     }
+                    // }
+                    // else 
+                    // if ($det->tipo == 'transformado'){
                         
-                        $tra = DB::table('almacen.transfor_transformado')
-                        ->select('orden_despacho.id_od','orden_despacho.id_requerimiento','transfor_transformado.id_producto',
-                        'transfor_transformado.cantidad','transformacion.id_almacen')
-                        ->join('almacen.transformacion','transformacion.id_transformacion','=','transfor_transformado.id_transformacion')
-                        ->join('almacen.orden_despacho','orden_despacho.id_od','=','transformacion.id_od')
-                        ->where('transfor_transformado.id_transformado',$det->id)->first();
+                        // $tra = DB::table('almacen.transfor_transformado')
+                        // ->select('orden_despacho.id_od','orden_despacho.id_requerimiento','transfor_transformado.id_producto',
+                        // 'transfor_transformado.cantidad','transformacion.id_almacen')
+                        // ->join('almacen.transformacion','transformacion.id_transformacion','=','transfor_transformado.id_transformacion')
+                        // ->join('almacen.orden_despacho','orden_despacho.id_od','=','transformacion.id_od')
+                        // ->where('transfor_transformado.id_transformado',$det->id)->first();
 
-                        $id_od = ($tra !== null ? $tra->id_od : null);
-                        $id_requerimiento = ($tra !== null ? $tra->id_requerimiento : null);
+                        // $id_od = ($tra !== null ? $tra->id_od : null);
+                        // $id_requerimiento = ($tra !== null ? $tra->id_requerimiento : null);
                         
-                        if ($id_requerimiento!==null){
-                            //Realiza la reserva en el requerimiento con item tiene transformacion
-                            $det_req = DB::table('almacen.alm_det_req')
-                            ->where([['id_requerimiento','=',$id_requerimiento],
-                                    ['tiene_transformacion','=',true],
-                                    ['id_producto','=',$det->id_producto]])
-                                    ->first();
-                            //realiza la reserva del transformado
-                            DB::table('almacen.alm_det_req')
-                            ->where('id_detalle_requerimiento',$det_req->id_detalle_requerimiento)
-                            ->update([  'id_almacen_reserva'=>$tra->id_almacen,
-                                        'stock_comprometido'=>$det->cantidad,
-                                        'estado'=>10]);
-                        }
-                    }
+                        
+                    // }
                     
                 }
                 

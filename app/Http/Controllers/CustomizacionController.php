@@ -73,7 +73,7 @@ class CustomizacionController extends Controller
                  'sis_usua.nombre_corto as nombre_responsable','orden_despacho.codigo as cod_od',
                  'alm_req.codigo as cod_req','guia_ven.serie','guia_ven.numero',
                  'adm_estado_doc.estado_doc','alm_almacen.id_sede','orden_despacho.id_od',
-                 'adm_estado_doc.bootstrap_color',
+                 'adm_estado_doc.bootstrap_color','alm_req.id_requerimiento',
                  'log_prove.id_proveedor',
                  'oc_propias.orden_am','oportunidades.oportunidad','oportunidades.codigo_oportunidad',
                  'entidades.nombre')
@@ -1012,20 +1012,30 @@ class CustomizacionController extends Controller
         $detalle = DB::table('almacen.transfor_materia')
         ->select('transfor_materia.*','alm_prod.codigo','alm_prod.descripcion','alm_prod.part_number',
         'alm_und_medida.abreviatura','orden_despacho_det.part_number_transformado','orden_despacho_det.descripcion_transformado',
-        'orden_despacho_det.comentario_transformado','orden_despacho_det.cantidad_transformado')
+        'orden_despacho_det.comentario_transformado','orden_despacho_det.cantidad_transformado',
+        'cc_am_filas.part_no_producto_transformado','cc_am_filas.descripcion_producto_transformado',
+        'cc_am_filas.etiquetado_producto_transformado',
+        'cc_am_filas.bios_producto_transformado',
+        'cc_am_filas.office_preinstalado_producto_transformado',
+        'cc_am_filas.office_activado_producto_transformado',
+        'cc_am_filas.id'
+        )
         ->join('almacen.alm_prod','alm_prod.id_producto','=','transfor_materia.id_producto')
         ->join('almacen.alm_und_medida','alm_und_medida.id_unidad_medida','=','alm_prod.id_unidad_medida')
         ->leftjoin('almacen.orden_despacho_det','orden_despacho_det.id_od_detalle','=','transfor_materia.id_od_detalle')
+        ->leftjoin('almacen.alm_det_req','alm_det_req.id_detalle_requerimiento','=','orden_despacho_det.id_detalle_requerimiento')
+        ->leftjoin('mgcp_cuadro_costos.cc_am_filas','cc_am_filas.id','=','alm_det_req.id_cc_am_filas')
         ->where('id_transformacion',$id_transformacion)
+        ->orderBy('cc_am_filas.descripcion_producto_transformado','desc')
         ->get();
 
-        $detalle_transfor = DB::table('almacen.transfor_transformado')
-        ->select('transfor_transformado.*','alm_prod.codigo','alm_prod.descripcion','alm_prod.part_number',
-        'alm_und_medida.abreviatura')
-        ->join('almacen.alm_prod','alm_prod.id_producto','=','transfor_transformado.id_producto')
-        ->join('almacen.alm_und_medida','alm_und_medida.id_unidad_medida','=','alm_prod.id_unidad_medida')
-        ->where('id_transformacion',$id_transformacion)
-        ->get();
+        // $detalle_transfor = DB::table('almacen.transfor_transformado')
+        // ->select('transfor_transformado.*','alm_prod.codigo','alm_prod.descripcion','alm_prod.part_number',
+        // 'alm_und_medida.abreviatura')
+        // ->join('almacen.alm_prod','alm_prod.id_producto','=','transfor_transformado.id_producto')
+        // ->join('almacen.alm_und_medida','alm_und_medida.id_unidad_medida','=','alm_prod.id_unidad_medida')
+        // ->where('id_transformacion',$id_transformacion)
+        // ->get();
 
         $detalle_sobrante = DB::table('almacen.transfor_sobrante')
         ->select('transfor_sobrante.*','alm_prod.codigo','alm_prod.descripcion','alm_prod.part_number',
@@ -1121,7 +1131,7 @@ class CustomizacionController extends Controller
                 <table id="detalle">
                     <thead style="background-color: #bce8f1;">
                         <tr>
-                            <th colSpan="10"><center>Productos Base</center></th>
+                            <th colSpan="6"><center>Productos Base</center></th>
                         </tr>
                         <tr>
                             <th>#</th>
@@ -1130,7 +1140,6 @@ class CustomizacionController extends Controller
                             <th width="40%">Descripción</th>
                             <th>Cant.</th>
                             <th>Unid.</th>
-                            <th colSpan="4">Instrucciones</th>
                         </tr>
                     </thead>
                     <tbody>';
@@ -1145,48 +1154,89 @@ class CustomizacionController extends Controller
                             <td>'.$det->descripcion.'</td>
                             <td class="right">'.$det->cantidad.'</td>
                             <td>'.$det->abreviatura.'</td>
-                            <td>'.$det->part_number_transformado.'</td>
-                            <td>'.$det->descripcion_transformado.'</td>
-                            <td>'.$det->cantidad_transformado.'</td>
-                            <td>'.$det->comentario_transformado.'</td>
                         </tr>';
+
+                        if ($det->descripcion_producto_transformado!==null){
+                            $html.='
+                            <tr>
+                                <th></th>
+                                <th colSpan="5" style="background-color: #c0f7c0;"><center>Item Transformado</center></th>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td>'.$det->part_no_producto_transformado.'</td>
+                                <td colSpan="4">'.$det->descripcion_producto_transformado.'</td>
+                            </tr>';
+
+                            $html.='
+                            <tr>
+                                <td></td>
+                                <td colSpan="5">'.($det->etiquetado_producto_transformado?'  Etiquetado: <strong>Si</strong>  ':'  Etiquetado: <strong>No</strong>  ').
+                                ($det->bios_producto_transformado?'  BIOS: <strong>Si</strong>  ':'  BIOS: <strong>No</strong>  ').
+                                ($det->office_preinstalado_producto_transformado?'  Office Preinstalado: <strong>Si</strong>  ':'  Office Preinstalado: <strong>No</strong>  ').
+                                ($det->office_activado_producto_transformado?'  Office Activado: <strong>Si</strong>  ':'  Office Activado: <strong>No</strong>  ').'</td>
+                            </tr>';
+
+                            $ingresaSale = DB::table('mgcp_cuadro_costos.cc_fila_movimientos_transformacion')
+                            ->select('cc_am_filas.descripcion as ingresa','cc_fila_movimientos_transformacion.sale')
+                            ->leftjoin('mgcp_cuadro_costos.cc_am_filas','cc_am_filas.id','=','cc_fila_movimientos_transformacion.id_fila_ingresa')
+                            ->where('cc_fila_movimientos_transformacion.id_fila_base',$det->id)
+                            ->get();
+                            
+                            if (count($ingresaSale)>0){
+                                $html.='
+                                    <tr>
+                                        <td></td>
+                                        <td colSpan="2" style="background-color: #c0f7c0;"><strong>Ingresa</strong></td>
+                                        <td colSpan="3" style="background-color: #c0f7c0;"><strong>Sale</strong></td>
+                                    </tr>';
+                                foreach ($ingresaSale as $val) {
+                                    $html.='
+                                    <tr>
+                                        <td></td>
+                                        <td colSpan="2">'.($val->ingresa!==null ? $val->ingresa : '-').'</td>
+                                        <td colSpan="3">'.($val->sale!==null ? $val->sale : '-').'</td>
+                                    </tr>';
+                                }
+                            }
+                        }
                         $i++;
                     }
                 $html.='</tbody></table>';
 
-                    if (count($detalle_transfor)>0){
-                        $html.='<br/>
-                        <table id="detalle">
-                        <thead style="background-color: #c0f7c0;">
-                            <tr>
-                                <th colSpan="6"><center>Productos Transformados</center></th>
-                            </tr>
-                            <tr>
-                                <th>#</th>
-                                <th>Código</th>
-                                <th>Part Number</th>
-                                <th>Descripción</th>
-                                <th>Cant.</th>
-                                <th>Unid.</th>
-                            </tr>
-                        </thead>
-                        <tbody>';
-                        $i = 1;
+                    // if (count($detalle_transfor)>0){
+                    //     $html.='<br/>
+                    //     <table id="detalle">
+                    //     <thead style="background-color: #c0f7c0;">
+                    //         <tr>
+                    //             <th colSpan="6"><center>Productos Transformados</center></th>
+                    //         </tr>
+                    //         <tr>
+                    //             <th>#</th>
+                    //             <th>Código</th>
+                    //             <th>Part Number</th>
+                    //             <th>Descripción</th>
+                    //             <th>Cant.</th>
+                    //             <th>Unid.</th>
+                    //         </tr>
+                    //     </thead>
+                    //     <tbody>';
+                    //     $i = 1;
 
-                        foreach($detalle_transfor as $det){
-                            $html.='
-                            <tr>
-                                <td class="right">'.$i.'</td>
-                                <td>'.$det->codigo.'</td>
-                                <td>'.$det->part_number.'</td>
-                                <td>'.$det->descripcion.'</td>
-                                <td class="right">'.$det->cantidad.'</td>
-                                <td>'.$det->abreviatura.'</td>
-                            </tr>';
-                            $i++;
-                        }
-                        $html.='</tbody></table>';
-                    }
+                    //     foreach($detalle_transfor as $det){
+                    //         $html.='
+                    //         <tr>
+                    //             <td class="right">'.$i.'</td>
+                    //             <td>'.$det->codigo.'</td>
+                    //             <td>'.$det->part_number.'</td>
+                    //             <td>'.$det->descripcion.'</td>
+                    //             <td class="right">'.$det->cantidad.'</td>
+                    //             <td>'.$det->abreviatura.'</td>
+                    //         </tr>';
+                    //         $i++;
+                    //     }
+                    //     $html.='</tbody></table>';
+                    // }
                     if (count($detalle_sobrante)>0){
                         $html.='<br/>
                         <table id="detalle">
