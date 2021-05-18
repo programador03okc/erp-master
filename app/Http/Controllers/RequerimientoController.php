@@ -826,23 +826,28 @@ class RequerimientoController extends Controller
         $fechaHoy = date('Y-m-d H:i:s');
 
         //decodificar ubigeo
-        $ubigeo_list = array_filter(array_map('trim',explode("/", $ubigeo)));
         $IdDis=null;
-        if(count($ubigeo_list)==3){
-            $IdDis=  Distrito::getIdDistrito($ubigeo_list[0]);
-            // $IdProv=  $this->getIdProvincia($ubigeo_list[1]);
-            $IdDpto=  Departamento::getIdDepartamento($ubigeo_list[2]);
-
-            if($IdDis==0 || $IdDpto == 0){
-                $IdDis=  Distrito::getIdDistrito($ubigeo_list[2]);
+        $descripcion_ubigeo_cliente=null;
+        if(isset($ubigeo) && $ubigeo !=null){
+            $ubigeo_list = array_filter(array_map('trim',explode("/", $ubigeo)));
+            if(count($ubigeo_list)==3){
+                $IdDis=  Distrito::getIdDistrito($ubigeo_list[0]);
                 // $IdProv=  $this->getIdProvincia($ubigeo_list[1]);
-                $IdDpto=  Departamento::getIdDepartamento($ubigeo_list[0]);
-            }
-        }
+                $IdDpto=  Departamento::getIdDepartamento($ubigeo_list[2]);
 
-        $id_ubigeo_cliente= $IdDis;
-        $descripcion_ubigeo_cliente= $ubigeo_list[0].'/'.$ubigeo_list[1].'/'.$ubigeo_list[2];
+                if($IdDis==0 || $IdDpto == 0){
+                    $IdDis=  Distrito::getIdDistrito($ubigeo_list[2]);
+                    // $IdProv=  $this->getIdProvincia($ubigeo_list[1]);
+                    $IdDpto=  Departamento::getIdDepartamento($ubigeo_list[0]);
+                }
+            }
+ 
+
+            $id_ubigeo_cliente= $IdDis;
+            $descripcion_ubigeo_cliente= $ubigeo_list[0].'/'.$ubigeo_list[1].'/'.$ubigeo_list[2];
+        }
         //  
+        
         $adm_contri = DB::table('contabilidad.adm_contri')
         ->select(
             'adm_contri.*',
