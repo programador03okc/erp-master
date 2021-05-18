@@ -4331,6 +4331,7 @@ class LogisticaController extends Controller
             $id_periodo = $row->id_periodo;
             $descripcion_periodo = $row->descripcion_periodo;
             $moneda = $row->id_moneda;
+            $estado_doc = $row->estado_doc;
 
             $infoGrupo = $this->mostrar_nombre_grupo($grupo);
 
@@ -4349,7 +4350,8 @@ class LogisticaController extends Controller
             }
 
             $responsable = Usuario::find($id_usu)->trabajador->postulante->persona->nombre_completo;
-            $simbol = $this->consult_moneda($moneda);
+            $simbolMoneda = $this->consult_moneda($moneda)->simbolo;
+            $descripcionMoneda = $this->consult_moneda($moneda)->descripcion;
         }
 
         $html =
@@ -4390,11 +4392,11 @@ class LogisticaController extends Controller
         if ($type == 1) {
             $html .=
                 '<th>Moneda:</th>
-                    <td>' . $simbol . '</td>';
+                    <td>' . $descripcionMoneda . '</td>';
         } elseif ($type == 2) {
             $html .=
                 '<th>Moneda:</th>
-                    <td>' . $simbol . '</td>
+                    <td>' . $descripcionMoneda . '</td>
                     <td width="100" align="right"><button class="btn btn-primary" onClick="imprimirReq(' . $id . ');"><i class="fas fa-print"></i> Imprimir formato</button></td>
                     <td>&nbsp;</td>
                     <td width="100" align="right"><button class="btn btn-info" onClick="verArchivosAdjuntosRequerimiento(' . $id . ');"><i class="fas fa-folder"></i> Archivos Adjuntos</button></td>';
@@ -4404,6 +4406,10 @@ class LogisticaController extends Controller
             <tr>
                 <th>Periodo:</th>
                 <td colspan="2">' . $descripcion_periodo . '</td>
+            </tr>
+            <tr>
+                <th>Estado:</th>
+                <td colspan="2">' . $estado_doc . '</td>
             </tr>
             </thead>
         </table>
@@ -4455,6 +4461,8 @@ class LogisticaController extends Controller
             $cant = $det->cantidad;
             $id_part = $det->partida;
             $unit = $det->unidad_medida_descripcion;
+            $simbMoneda = $this->consult_moneda($det->id_moneda)->simbolo;
+            
             $active = '';
 
             if (is_numeric($id_part)) {
@@ -4493,8 +4501,8 @@ class LogisticaController extends Controller
                     <td></td>
                     <td>' . $unit . '</td>
                     <td class="text-right">' . number_format($cant, 3) . '</td>
-                    <td class="text-right">' . number_format($precio, 2) . '</td>
-                    <td class="text-right">' . number_format($subtotal, 2) . '</td>
+                    <td class="text-right">' .$simbMoneda. number_format($precio, 2) . '</td>
+                    <td class="text-right">' .$simbMoneda. number_format($subtotal, 2) . '</td>
                 </tr>';
             } elseif ($type == 2) {
                 $html .=
@@ -4505,8 +4513,8 @@ class LogisticaController extends Controller
                     <td></td>
                     <td>' . ($unit ? $unit : $unidad) . '</td>
                     <td class="text-right">' . number_format($cant, 3) . '</td>
-                    <td class="text-right">' . number_format($precio, 2) . '</td>
-                    <td class="text-right">' . number_format($subtotal, 2) . '</td>
+                    <td class="text-right">' .$simbMoneda. number_format($precio, 2) . '</td>
+                    <td class="text-right">' .$simbMoneda. number_format($subtotal, 2) . '</td>
                 </tr>';
             }
 
@@ -4516,7 +4524,7 @@ class LogisticaController extends Controller
         $html .=
             '<tr>
             <th colspan="7" class="text-right">Total:</th>
-            <td class="text-right">' . number_format($total, 2) . '</td>
+            <td class="text-right">' .$simbolMoneda. number_format($total, 2) . '</td>
         </tr>
         </tbody></table>';
 
@@ -5112,8 +5120,11 @@ class LogisticaController extends Controller
 
     function consult_moneda($id)
     {
-        $sql = DB::table('configuracion.sis_moneda')->select('descripcion')->where('id_moneda', '=', $id)->first();
-        return $sql->descripcion;
+        $sql = DB::table('configuracion.sis_moneda')
+        ->select('descripcion','simbolo')
+        ->where('id_moneda', '=', $id)->first();
+
+        return $sql;
     }
 
     // function totalAprobOp($operacion)
@@ -5790,10 +5801,7 @@ function get_id_usuario_usuario_por_rol($descripcion_rol, $id_sede, $id_empresa)
             $allnameUserPrimeraApro = implode(", ", array_map(function($obj) { foreach ($obj as $p => $v) { return $v;} }, $json));
 
             $footer = '<strong>Pendiente </strong><abbr title="'.$allnameUserPrimeraApro.'">'. $usuPrimeraApro.'</abbr>';
-        }elseif($estado_req ==2){
-            $footer='<strong>Aprobado</strong>';
-
-        } 
+        }
 
         // if($sql3->first()->observacion != null){
         //     $footer .= ' <strong> Por Aceptar Sustento:</strong> Logistica' ;
