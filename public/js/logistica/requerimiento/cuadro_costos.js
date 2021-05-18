@@ -87,7 +87,7 @@ function geDetalleCuadroCostos(id){
     return new Promise(function(resolve, reject) {
     $.ajax({
         type: 'GET',
-        url:rutaDetalleCuadroCostos +'/'+id,
+        url:'detalle-cuadro-costos' +'/'+id,
         dataType: 'JSON',
         success(response) {
             resolve(response) // Resolve promise and go to then() 
@@ -102,8 +102,8 @@ function getOrBuildCustomer(razon_social,ruc,telefono,direccion,correo,ubigeo_en
     return new Promise(function(resolve, reject) {
         $.ajax({
             type: 'POST',
-            url:rutaObtenerCostruirCliente,
-            data:{'razon_social':razon_social ,'ruc':ruc,'telefono':telefono,'direccion':direccion,'correo':correo,'ubigeo':ubigeo_entidad},
+            url:'obtener-construir-cliente',
+            data:{'razon_social':razon_social ,'ruc':ruc?ruc:null,'telefono':telefono?telefono:null,'direccion':direccion?direccion:null,'correo':correo?correo:null,'ubigeo':ubigeo_entidad?ubigeo_entidad:null},
             dataType: 'JSON',
             success(response) {
                 resolve(response); // Resolve promise and go to then() 

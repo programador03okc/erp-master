@@ -2204,7 +2204,7 @@ class LogisticaController extends Controller
                         array_push($array_items_sin_transferencia, $det);
                         
                         $this->actualizarEstadoDetalleRequerimientoSinTransferencia($array_items_sin_transferencia);
-                        Debugbar::info('actualizarEstadoDetalleRequerimientoSinTransferencia sede =');
+                        // Debugbar::info('actualizarEstadoDetalleRequerimientoSinTransferencia sede =');
                 }
             }
         }
