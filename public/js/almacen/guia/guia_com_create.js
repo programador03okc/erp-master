@@ -248,7 +248,7 @@ function listar_detalle_ordenes_seleccionadas(data){
                 cant = parseFloat(element.cantidad) - parseFloat(element.suma_cantidad_guias!==null ? element.suma_cantidad_guias : 0);
                 oc_det_seleccionadas.push({
                     'id_oc_det'  : element.id_detalle_orden,
-                    'id_producto': null,
+                    'id_producto': element.id_producto,
                     'id_categoria': element.id_categoria,
                     'codigo_oc'  : element.codigo_oc,
                     'codigo'     : element.codigo,
@@ -287,7 +287,11 @@ function mostrar_ordenes_seleccionadas(){
             <td>${element.codigo_oc!==null ? element.codigo_oc : ''}</td>
             <td>${element.codigo}</td>
             <td>${element.part_number!==null ? element.part_number : ''}</td>
-            <td>${(element.id_categoria==117?'<i class="fas fa-exclamation-triangle orange" title="El producto fue creado con Categoría = Por definir"></i>':'')+element.descripcion+' <strong>'+html_ser+'</strong>'}</td>
+            <td>${(element.id_categoria==117 ?
+                `<i class="fas fa-exclamation-triangle orange" style="cursor:pointer;" onClick="abrirProducto(${element.id_producto});" 
+                title="El producto fue creado con Categoría = Por definir"></i>`:'')
+                +element.descripcion+' <strong>'+html_ser+'</strong>'}
+            </td>
             <td><input type="number" id="${element.id_oc_det!==null ? element.id_oc_det : 'p'+element.id_producto}cantidad" value="${element.cantidad}" 
                 min="1" ${element.id_oc_det!==null ? `max="${element.cantidad}"` : ''} style="width:80px;"/></td>
             <td>${element.abreviatura}</td>
@@ -433,4 +437,11 @@ function agregarProducto(producto){
         'valor_total'   : 0.01
     });
     mostrar_detalle_transformacion();
+}
+
+function abrirProducto(id_producto){
+    console.log('abrirProducto'+id_producto);
+    localStorage.setItem("id_producto",id_producto);
+    var win = window.open("/almacen/catalogos/productos/index", '_blank');
+    win.focus();
 }
