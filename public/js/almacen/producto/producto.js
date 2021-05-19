@@ -1,4 +1,13 @@
 $(function(){
+
+    var id_producto = localStorage.getItem("id_producto");
+    console.log('id_producto'+id_producto);
+    if (id_producto !== null && id_producto !== undefined){
+        mostrar_producto(id_producto);
+        localStorage.removeItem("id_producto");
+        changeStateButton('historial');
+    }
+
     $("[name=id_moneda]").val(1);
     $("#tab-producto section:first form").attr('form', 'formulario');
     /* Efecto para los tabs */
