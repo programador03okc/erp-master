@@ -2428,8 +2428,8 @@ class OrdenController extends Controller
     }
 
     public function guardar_orden_por_requerimiento(Request $request){
-        // try {
-        //     DB::beginTransaction();
+        try {
+            DB::beginTransaction();
 
             $usuario = Auth::user()->id_usuario;
             $tp_doc = ($request->id_tp_documento !== null ? $request->id_tp_documento : 2);
@@ -2458,18 +2458,18 @@ class OrdenController extends Controller
                     'direccion_destino' => $request->direccion_destino?$request->direccion_destino:null,
                     'ubigeo_destino' => isset($request->id_ubigeo_destino)?$request->id_ubigeo_destino:null,
                     'en_almacen' => false,
-                    'estado' => 17,
+                    'estado' => 1,
                     'codigo_softlink' => ($request->codigo_orden!==null ? $request->codigo_orden : ''),
                 ],
                 'id_orden_compra'
             );
 
             $dataDetalle = $request->detalle;
-            // Debugbar::info($request->plazo_dias);
 
             $allidReqList=[];
+            $allIdDetReqList=[];
             foreach($dataDetalle as $d) {
-                $allidReqList[]= $d['id_requerimiento'];
+                $allIdDetReqList[]=$d['id_detalle_requerimiento'];
 
                 if($d['cantidad_a_comprar'] > 0 && $d['estado'] != 7){
                     if($guardarEnRequerimiento == false){
@@ -2486,207 +2486,302 @@ class OrdenController extends Controller
                             // 'subtotal'=> ($d->precio_referencial * $d->cantidad),
                             'subtotal'=> $d['subtotal']?$d['subtotal']:0,
                             'tipo_item_id'=> (isset($d['id_tipo_item'])?$d['id_tipo_item']:null),
-                            'estado'=> 17
+                            'estado'=> 1
                             // 'fecha_registro'=> date('Y-m-d H:i:s')
                         ]);
-                    }elseif($guardarEnRequerimiento == true){
-                        if(isset($d->id ) == true){
-                            $id_new_det_req = DB::table('almacen.alm_det_req')->insertGetId(
-                                [
-                                    'id_requerimiento'      => ($d['id_requerimiento'] ? $d['id_requerimiento'] : null),
-                                    'id_item'               => ($d['id_item'] ? $d['id_item'] : null),
-                                    'id_producto'           => ($d['id_producto'] ? $d['id_producto'] : null),
-                                    'precio_unitario'    => ($d['precio_unitario'] ? $d['precio_unitario'] : null),
-                                    'cantidad'              => ($d['cantidad_a_comprar'] ? $d['cantidad_a_comprar'] : null),
-                                    'lugar_entrega'         => null,
-                                    'descripcion_adicional' => ($d['descripcion_adicional'] ? $d['descripcion_adicional'] : null),
-                                    'partida'               => null,
-                                    'id_unidad_medida'      => ($d['cantidad_a_comprar'] ? $d['cantidad_a_comprar'] : null),
-                                    'id_tipo_item'          => ($d['id_tipo_item'] ? $d['id_tipo_item'] : null),
-                                    'fecha_registro'        => date('Y-m-d H:i:s'),
-                                    'estado'                => ($d['estado'] ? $d['estado'] : null),
-                                    'id_almacen_reserva'     => null
-                                ],
-                                'id_detalle_requerimiento'
-                            );
-
-                            DB::table('logistica.log_det_ord_compra')
-                            ->insert([
-                                'id_orden_compra'=>$id_orden,
-                                'id_item'=> $d['id_item'] ? $d['id_item'] : null,
-                                'id_producto'=> (isset($d['id_producto']) ? $d['id_producto'] : null),
-                                'id_detalle_requerimiento'=> $id_new_det_req,
-                                'cantidad'=> $d['cantidad_a_comprar']?$d['cantidad_a_comprar']:null,
-                                'id_unidad_medida'=> $d['id_unidad_medida']?$d['id_unidad_medida']:null,
-                                'precio'=> $d['precio_unitario']?$d['precio_unitario']:null,
-                                'subtotal'=> $d->subtotal?$d->subtotal:null,
-                                'estado'=> 17
-                            ]);
-                        }
                     }
 
                 }
             }
 
-            $uniqueIdReqList = array_unique($allidReqList);
-
-            $idRequerimientoAtentidosTotalList=[];
-            $idRequerimientoAtentidosParcialList=[];
-
-            $sizeDataDetalle = count($dataDetalle);
-            $countAtendido=0;
+            $nuevoEstadoDeRequerimiento=[];
+            if(isset($id_orden) and $id_orden >0){
+                 $this->actualizarEstadoRequerimientoPorOrdenCreada($id_orden,$codigo);
+            }
             
-                foreach ($dataDetalle as $d) {
-                    if(($d['id_tipo_item']==1) && (($d['cantidad_a_comprar'] + $d['stock_comprometido'] ) == $d['cantidad']) ){
-                        $countAtendido+=1;
-                        $idRequerimientoAtentidosTotalList[]=$d['id_requerimiento'];
 
-                        if($this->cambioElEstadoActualDetalleReq($d['id_detalle_requerimiento']) == false ){
-                            DB::table('almacen.alm_det_req')
-                            ->where('id_detalle_requerimiento',$d['id_detalle_requerimiento'])
-                            ->update(
-                                [
-                                    'estado'=>5, //atendido total
-                                    'stock_comprometido'=> $d['stock_comprometido']?$d['stock_comprometido']:0
-                                ] 
-                            ); 
-                        }
+            // $idRequerimientoAtentidosTotalList=[];
+            // $idRequerimientoAtentidosParcialList=[];
 
-                    }
-                    if(($d['id_tipo_item']==1) && (($d['cantidad_a_comprar'] + $d['stock_comprometido'] )>0) && (($d['cantidad_a_comprar'] + $d['stock_comprometido'] ) < $d['cantidad'])){
-                        $idRequerimientoAtentidosParcialList[]=$d['id_requerimiento'];
-                        if($this->cambioElEstadoActualDetalleReq($d['id_detalle_requerimiento']) == false ){
-                            DB::table('almacen.alm_det_req')
-                            ->where('id_detalle_requerimiento',$d['id_detalle_requerimiento'])
-                            ->update(
-                                [
-                                    'estado'=>15, // atendido parcial
-                                    'stock_comprometido'=> $d['stock_comprometido']?$d['stock_comprometido']:0
-                                ]
+            // $sizeDataDetalle = count($dataDetalle);
+            // $countAtendido=0;
+            
+            //     foreach ($dataDetalle as $d) {
+            //         if(($d['id_tipo_item']==1) && (($d['cantidad_a_comprar'] + ($d['stock_comprometido']?$d['stock_comprometido']:0) ) == $d['cantidad']) ){
+            //             $countAtendido+=1;
+            //             $idRequerimientoAtentidosTotalList[]=$d['id_requerimiento'];
+
+            //             if($this->cambioElEstadoActualDetalleReq($d['id_detalle_requerimiento']) == false ){
+            //                 DB::table('almacen.alm_det_req')
+            //                 ->where('id_detalle_requerimiento',$d['id_detalle_requerimiento'])
+            //                 ->update(
+            //                     [
+            //                         'estado'=>5, //atendido total
+            //                         'stock_comprometido'=> $d['stock_comprometido']?$d['stock_comprometido']:null
+            //                     ] 
+            //                 ); 
+            //             }
+
+            //         }
+            //         if(($d['id_tipo_item']==1) && (($d['cantidad_a_comprar'] + ($d['stock_comprometido']?$d['stock_comprometido']:0) ) < $d['cantidad'])){
+            //             $idRequerimientoAtentidosParcialList[]=$d['id_requerimiento'];
+            //             if($this->cambioElEstadoActualDetalleReq($d['id_detalle_requerimiento']) == false ){
+            //                 DB::table('almacen.alm_det_req')
+            //                 ->where('id_detalle_requerimiento',$d['id_detalle_requerimiento'])
+            //                 ->update(
+            //                     [
+            //                         'estado'=>15, // atendido parcial
+            //                         'stock_comprometido'=> $d['stock_comprometido']?$d['stock_comprometido']:0
+            //                     ]
                                 
-                            ); 
-                        }
-                    }
+            //                 ); 
+            //             }
+            //         }
 
-                    if(($d['id_tipo_item']==2)){ // servicio
-                        DB::table('almacen.alm_det_req')
-                        ->where('id_detalle_requerimiento',$d['id_detalle_requerimiento'])
-                        ->update(
-                            [
-                                'estado'=>5,
-                                'stock_comprometido'=> $d['stock_comprometido']?$d['stock_comprometido']:0
-                            ]
+            //         if(($d['id_tipo_item']==2)){ // servicio
+            //             DB::table('almacen.alm_det_req')
+            //             ->where('id_detalle_requerimiento',$d['id_detalle_requerimiento'])
+            //             ->update(
+            //                 [
+            //                     'estado'=>5,
+            //                     'stock_comprometido'=> $d['stock_comprometido']?$d['stock_comprometido']:0
+            //                 ]
                             
-                        ); 
-                    }
-                } 
-                if(count($idRequerimientoAtentidosTotalList)>0){
-                    foreach ($idRequerimientoAtentidosTotalList as $key => $id_req) {
+            //             ); 
+            //         }
+            //     } 
 
-                        if($countAtendido ==$sizeDataDetalle){
+            //     $idRequerimientoAtentidosTotalList = array_unique($idRequerimientoAtentidosTotalList);
+            //     $idRequerimientoAtentidosParcialList = array_unique($idRequerimientoAtentidosParcialList);
 
-                            if($this->cambioElEstadoActualReq($id_req) == false ){
-                                DB::table('almacen.alm_req')
-                                ->where('id_requerimiento',$id_req)
-                                ->update(['estado'=>5]); // atendido total
+            //     // Debugbar::info($idRequerimientoAtentidosTotalList);
+            //     // Debugbar::info($idRequerimientoAtentidosParcialList);
+
+                
+            //     if(count($idRequerimientoAtentidosTotalList)>0){
+
+
+            //         foreach ($idRequerimientoAtentidosTotalList as $id_req) {
+
+            //             if($countAtendido ==$sizeDataDetalle){
+            //                     DB::table('almacen.alm_req')
+            //                     ->where('id_requerimiento',$id_req)
+            //                     ->update(['estado'=>5]); // atendido total
         
-                                DB::table('almacen.alm_req_obs')
-                                ->insert([  'id_requerimiento'=>$id_req,
-                                            'accion'=>'ATENDIDO TOTAL',
-                                            'descripcion'=>'Se generó Orden de Compra '.$codigo,
-                                            'id_usuario'=>$usuario,
-                                            'fecha_registro'=>date('Y-m-d H:i:s')
-                                ]);
-                            }
-                        }else{
-                            if($this->cambioElEstadoActualReq($id_req) == false ){
-                                DB::table('almacen.alm_req')
-                                ->where('id_requerimiento',$id_req)
-                                ->update(['estado'=>15]); // atendido parcial
+            //                     DB::table('almacen.alm_req_obs')
+            //                     ->insert([  'id_requerimiento'=>$id_req,
+            //                                 'accion'=>'ATENDIDO TOTAL',
+            //                                 'descripcion'=>'Se generó Orden de Compra '.$codigo,
+            //                                 'id_usuario'=>$usuario,
+            //                                 'fecha_registro'=>date('Y-m-d H:i:s')
+            //                     ]);
+                            
+            //             }else{
+            //                     DB::table('almacen.alm_req')
+            //                     ->where('id_requerimiento',$id_req)
+            //                     ->update(['estado'=>15]); // atendido parcial
         
-                                DB::table('almacen.alm_req_obs')
-                                ->insert([  'id_requerimiento'=>$id_req,
-                                            'accion'=>'ATENDIDO PARCIAL',
-                                            'descripcion'=>'Se generó Orden de Compra '.$codigo,
-                                            'id_usuario'=>$usuario,
-                                            'fecha_registro'=>date('Y-m-d H:i:s')
-                                ]);
-                            }
-                        }
+            //                     DB::table('almacen.alm_req_obs')
+            //                     ->insert([  'id_requerimiento'=>$id_req,
+            //                                 'accion'=>'ATENDIDO PARCIAL',
+            //                                 'descripcion'=>'Se generó Orden de Compra '.$codigo,
+            //                                 'id_usuario'=>$usuario,
+            //                                 'fecha_registro'=>date('Y-m-d H:i:s')
+            //                     ]);
 
-                    }
+            //             }
 
-                }
-                if(count($idRequerimientoAtentidosParcialList)>0){
-                    foreach ($idRequerimientoAtentidosParcialList as $key => $id_req) {
-                        if($this->cambioElEstadoActualReq($id_req) == false ){
-                        DB::table('almacen.alm_req')
-                        ->where('id_requerimiento',$id_req)
-                        ->update(['estado'=>15]); // atendido parcial
+            //         }
 
-                        DB::table('almacen.alm_req_obs')
-                        ->insert([  'id_requerimiento'=>$id_req,
-                                    'accion'=>'ATENDIDO PARCIAL',
-                                    'descripcion'=>'Se generó Orden de Compra '.$codigo,
-                                    'id_usuario'=>$usuario,
-                                    'fecha_registro'=>date('Y-m-d H:i:s')
-                        ]);
-                    }
-                }
-            }
-
-            // $alm_det_req = DB::table('almacen.alm_det_req')
-            // ->select(
-            //     'alm_det_req.*'
-            // )
-            // ->whereIn('alm_det_req.id_requerimiento',$uniqueIdReqList)
-            // ->where([
-            //     ['alm_det_req.estado', '!=', 7]
-            //     ])
-            // ->get();
-
-            // $cantidad_det_req_con_orden = DB::table('almacen.alm_det_req')
-            // ->whereIn('alm_det_req.id_requerimiento',$uniqueIdReqList)
-            // ->where([
-            //     ['alm_det_req.estado', '=', 5]
-            //     ])
-            // ->count();
-
-            // $cantidad_det_req=0;
-            // if($alm_det_req){
-            //     $cantidad_det_req = $alm_det_req->count();
-            // }
-
-            // Debugbar::info($cantidad_det_req);
-            // Debugbar::info($cantidad_det_req_con_orden);
-
-            // if($cantidad_det_req == $cantidad_det_req_con_orden){
-            //     DB::table('almacen.alm_req')
-            //     ->whereIn('alm_req.id_requerimiento',$uniqueIdReqList)
-            //     ->update(['estado'=>5]);
-            // }
-
-
-            //Agrega accion en requerimiento
-            // foreach ($uniqueIdReqList as $key => $id_requerimiento) {
-            //     DB::table('almacen.alm_req_obs')
-            //     ->insert([  'id_requerimiento'=>$id_requerimiento,
-            //                 'accion'=>'ATENDIDO',
+            //     }
+            //     if(count($idRequerimientoAtentidosParcialList)>0){
+            //         // Debugbar::info('$idRequerimientoAtentidosParcialList)>0');
+                    
+            //         foreach ($idRequerimientoAtentidosParcialList as $key => $id_req) {
+            //             if($this->cambioElEstadoActualReq($id_req) == false ){
+            //                 DB::table('almacen.alm_req')
+            //                 ->where('id_requerimiento',$id_req)
+            //                 ->update(['estado'=>15]); // atendido parcial
+                            
+            //                 DB::table('almacen.alm_req_obs')
+            //                 ->insert([  'id_requerimiento'=>$id_req,
+            //                 'accion'=>'ATENDIDO PARCIAL',
             //                 'descripcion'=>'Se generó Orden de Compra '.$codigo,
             //                 'id_usuario'=>$usuario,
             //                 'fecha_registro'=>date('Y-m-d H:i:s')
-            //     ]);
-            // }
-  
+            //                 ]);
+            //             }
+            //         }
+            //     } 
 
-        // DB::commit();
+
+        DB::commit();
             return response()->json($id_orden);
 
-        // } catch (\PDOException $e) {
-        //     DB::rollBack();
-        // }
+        } catch (\PDOException $e) {
+            DB::rollBack();
+        }
 
     }
+
+
+    function actualizarEstadoRequerimientoPorOrdenCreada($idOrden,$codigo){
+        $det_orden = DB::table('logistica.log_det_ord_compra')
+        ->select(
+            'log_det_ord_compra.*'
+            )
+        ->where('log_det_ord_compra.id_orden_compra',$idOrden)
+        ->get();
+
+        $hasVinculoDetalleRequerimiento=0;
+        $hasVinculoDetalleCuadroComparativo=0;
+        $idDetalleRequerimientoList=[];
+        $idDetalleCuadroComparativoList=[];
+
+        foreach ($det_orden as $value) {
+            if($value->id_detalle_requerimiento >0){
+                $hasVinculoDetalleRequerimiento++;
+                $idDetalleRequerimientoList[]=$value->id_detalle_requerimiento;
+            }elseif($value->detalle_cuadro_comparativo_id >0){
+                $hasVinculoDetalleCuadroComparativo++;
+                $idDetalleCuadroComparativoList[]=$value->detalle_cuadro_comparativo_id;
+            }
+        }
+
+
+        if($hasVinculoDetalleRequerimiento >0){
+
+            $alm_det_req = DB::table('almacen.alm_det_req')
+            ->select('alm_det_req.*')
+            ->whereIn('alm_det_req.id_detalle_requerimiento',$idDetalleRequerimientoList)
+            ->get();
+
+            // get all id_requerimiento
+            $idRequerimientoList=[];
+            foreach ($alm_det_req as $value) {
+                $idRequerimientoList[]=$value->id_requerimiento;
+            }
+            $idRequerimientoList = array_unique($idRequerimientoList);
+            // Debugbar::info($idRequerimientoList);
+
+            $arrEstadoDetalle=[];
+            $arr=[];
+            foreach ($idRequerimientoList as $idReq) {
+                foreach ($alm_det_req as $detalleReq) {
+                    foreach ($det_orden as $detalleOrden) {
+                        if($idReq ==$detalleReq->id_requerimiento ){
+                            // Debugbar::info($detalleReq->id_detalle_requerimiento);
+                            // Debugbar::info($detalleOrden->id_detalle_requerimiento);
+
+                            if($detalleOrden->id_detalle_requerimiento == $detalleReq->id_detalle_requerimiento){
+                                if((($detalleOrden->cantidad + ($detalleReq->stock_comprometido>0?$detalleReq->stock_comprometido:0)) == $detalleReq->cantidad)){
+                                    // es una atencion total 
+                                    $arrEstadoDetalle[] = [   
+                                                'id_requerimiento'=>$idReq, 
+                                                'id_detalle_requerimiento'=>$detalleReq->id_detalle_requerimiento,
+                                                'estado'=>'ATENDIDO_TOTAL'
+                                                ];
+                                }else{
+                                    // es una atencion parcial
+                                    $arrEstadoDetalle[] = [   
+                                        'id_requerimiento'=>$idReq, 
+                                        'id_detalle_requerimiento'=>$detalleReq->id_detalle_requerimiento,
+                                        'estado'=>'ATENDIDO_PARCIAL'
+                                        ];
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            foreach ($arrEstadoDetalle as $value) {
+                    $arr[$value['id_requerimiento']][] = $value['estado'];
+            }
+
+            $arrEstadoReq=[];
+            foreach ($arr as $k => $value){
+                $arr_unique=array_unique($value);
+                if(count($arr_unique) >1){
+                    $arrEstadoReq[$k]='ATENDIDO_PARCIAL';
+            
+                }else{
+                    $arrEstadoReq[$k]=$arr_unique[0];
+                }
+            
+            }
+
+            // actualizando estados de req cabecera
+            foreach ($arrEstadoReq as $key => $value) {
+                // Debugbar::info($key);
+                // Debugbar::info("--value--");
+                // Debugbar::info($value);
+                // Debugbar::info("--end value--");
+                // Debugbar::info("--value[0]--");
+                // Debugbar::info($value[0]);
+                // Debugbar::info("--end value[0]--");
+                if($value=='ATENDIDO_PARCIAL'){
+
+                    DB::table('almacen.alm_req')
+                    ->where('id_requerimiento',$key)
+                    ->update(['estado'=>15]);  
+
+                    DB::table('almacen.alm_req_obs')
+                    ->insert([  'id_requerimiento'=>$key,
+                                'accion'=>'ATENDIDO PARCIAL',
+                                'descripcion'=>'Se generó Orden de Compra '.$codigo,
+                                'id_usuario'=>Auth::user()->id_usuario,
+                                'fecha_registro'=>date('Y-m-d H:i:s')
+                    ]);
+
+                }elseif($value=='ATENDIDO_TOTAL'){
+                    DB::table('almacen.alm_req')
+                    ->where('id_requerimiento',$key)
+                    ->update(['estado'=>5]);  
+
+                    DB::table('almacen.alm_req_obs')
+                    ->insert([  'id_requerimiento'=>$key,
+                                'accion'=>'ATENDIDO TOTAL',
+                                'descripcion'=>'Se generó Orden de Compra '.$codigo,
+                                'id_usuario'=>Auth::user()->id_usuario,
+                                'fecha_registro'=>date('Y-m-d H:i:s')
+                    ]);
+                }
+            }
+            // actualizando esatado detalle req
+            foreach ($arrEstadoDetalle as $value) {
+            
+                if($value['estado'] == 'ATENDIDO_PARCIAL'){
+                    DB::table('almacen.alm_det_req')
+                    ->where('id_detalle_requerimiento',$value['id_detalle_requerimiento'])
+                    ->update(
+                        [
+                            'estado'=>15
+                        ]
+                    ); 
+                }elseif($value['estado'] == 'ATENDIDO_TOTAL'){
+                    DB::table('almacen.alm_det_req')
+                    ->where('id_detalle_requerimiento',$value['id_detalle_requerimiento'])
+                    ->update(
+                        [
+                            'estado'=>5
+                        ]
+                    );  
+                }
+            }
+
+
+
+        }
+        // Debugbar::info($arrEstadoDetalle);
+
+        // Debugbar::info($arrEstadoReq);
+ 
+        return $arrEstadoReq;
+
+
+    }
+
+
 
     public function actualizar_orden_por_requerimiento(Request $request){
         try {
