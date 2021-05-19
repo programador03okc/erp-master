@@ -519,7 +519,7 @@ class OrdenController extends Controller
                 'sis_sede.codigo as codigo_sede_empresa',
                 'sis_sede.direccion AS direccion_fiscal_empresa_sede',
                 'sis_sede.id_ubigeo AS id_ubigeo_empresa_sede',
-                DB::raw("(dis_empresa_sede.descripcion) || ' - ' || (prov_empresa_sede.descripcion) || ' - ' || (dpto_empresa_sede.descripcion)  AS ubigeo_empresa_sede"),
+                DB::raw("concat(dis_empresa_sede.descripcion, ' - ' ,prov_empresa_sede.descripcion, ' - ' ,dpto_empresa_sede.descripcion)  AS ubigeo_empresa_sede"),
 
                 'adm_empresa.logo_empresa',
                 'alm_req.fecha_requerimiento',
@@ -528,7 +528,7 @@ class OrdenController extends Controller
                 'alm_req.observacion',
                 'alm_tp_req.descripcion AS tp_req_descripcion',
                 'alm_req.id_usuario',
-                DB::raw("(rrhh_perso.nombres) || ' ' || (rrhh_perso.apellido_paterno) || ' ' || (rrhh_perso.apellido_materno)  AS persona"),
+                DB::raw("concat(rrhh_perso.nombres,' ',rrhh_perso.apellido_paterno, ' ', rrhh_perso.apellido_materno)  AS persona"),
                 'sis_usua.usuario',
                 'alm_req.id_rol',
                 'rrhh_rol.id_rol_concepto',
@@ -543,13 +543,13 @@ class OrdenController extends Controller
                 'alm_req.id_sede',
                 'alm_req.id_persona',
                 'perso_natural.nro_documento as dni_persona',
-                DB::raw("(perso_natural.nombres) || ' ' || (perso_natural.apellido_paterno) || ' ' || (perso_natural.apellido_materno)  AS nombre_persona"),
+                DB::raw("concat(perso_natural.nombres, ' ', perso_natural.apellido_paterno, ' ', perso_natural.apellido_materno)  AS nombre_persona"),
                 'alm_req.tipo_cliente',
                 'alm_req.id_cliente',
                 'contri_cliente.nro_documento as cliente_ruc',
                 'contri_cliente.razon_social as cliente_razon_social',
                 'alm_req.id_ubigeo_entrega',
-                DB::raw("(ubi_dis.descripcion) || ' ' || (ubi_prov.descripcion) || ' ' || (ubi_dpto.descripcion)  AS name_ubigeo"),
+                DB::raw("concat(ubi_dis.descripcion, ' ', ubi_prov.descripcion, ' ' , ubi_dpto.descripcion)  AS name_ubigeo"),
                 'alm_req.direccion_entrega',
                 'alm_req.id_almacen',
                 'oportunidades.codigo_oportunidad',
@@ -1928,10 +1928,10 @@ class OrdenController extends Controller
             $html .= '<td>' . $data['part_number'] . '</td>';
             if($data['descripcion_adicional'] != null && strlen($data['descripcion_adicional']) > 0){
 
-                $html .= '<td>' . ($data['codigo_item'] ? $data['codigo_item'] : '0') . ' - ' . ($data['descripcion_adicional'] ? $data['descripcion_adicional'] : $data['descripcion_requerimiento']) . '</td>';
+                $html .= '<td>' . ($data['codigo_item'] ? $data['codigo_item'] : '0') . ' - ' . ($data['descripcion_adicional'] ? $data['descripcion_adicional'] : $data['descripcion_adicional']) . '</td>';
 
             }else{
-                $html .= '<td>' . ($data['codigo_item'] ? $data['codigo_item'] : '0') . ' - ' . ($data['descripcion_producto'] ? $data['descripcion_producto'] : $data['descripcion_requerimiento']) . '</td>';
+                $html .= '<td>' . ($data['codigo_item'] ? $data['codigo_item'] : '0') . ' - ' . ($data['descripcion_producto'] ? $data['descripcion_producto'] : $data['descripcion_adicional']) . '</td>';
             }
             $html .= '<td>' . $data['unidad_medida'] . '</td>';
             $html .= '<td style="text-align:center">' . $data['cantidad'] . '</td>';
