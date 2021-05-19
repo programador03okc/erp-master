@@ -220,7 +220,7 @@ function agregarItem(){
 
 
  function llenar_tabla_detalle_requerimiento(data_item){
-
+    console.log(data_item);
     limpiarTabla('ListaDetalleRequerimiento');
     htmls ='<tr></tr>';
     $('#ListaDetalleRequerimiento tbody').html(htmls);
@@ -241,7 +241,7 @@ function agregarItem(){
     }
     var tipo_requerimiento = document.querySelector("form[id='form-requerimiento'] select[name='tipo_requerimiento']").value;
 
-
+    let hasProveedor=false;
     for(var a=0;a < data_item.length;a++){
         if(data_item[a].estado !=7){
             var row = table.insertRow(-1);
@@ -257,14 +257,14 @@ function agregarItem(){
                 descripcion_unidad = data_item[a].unidad;
             }
             row.insertCell(0).innerHTML = data_item[a].id_item?data_item[a].id_item:'0';
-            tdCodigo = row.insertCell(1);
+            row.insertCell(1).innerHTML = data_item[a].codigo_producto?data_item[a].codigo_producto:'-';
+            tdCodigo = row.insertCell(2);
             if(data_item[a].tiene_transformacion == true){
                 tdCodigo.parentNode.style.backgroundColor ="#cccccc";
-                tdCodigo.innerHTML = data_item[a].cod_item?(data_item[a].cod_item+'<span class="badge badge-secondary">Transformado</span>'):'-';
+                tdCodigo.innerHTML = data_item[a].part_number?(data_item[a].part_number+'<span class="badge badge-secondary">Transformado</span>'):'-';
             }else{
-                tdCodigo.innerHTML = data_item[a].cod_item?data_item[a].cod_item:'-';
+                tdCodigo.innerHTML = data_item[a].part_number?data_item[a].part_number:'-';
             }
-            row.insertCell(2).innerHTML = data_item[a].part_number?data_item[a].part_number:'-';
             row.insertCell(3).innerHTML = data_item[a].des_item?data_item[a].des_item:'-';
             row.insertCell(4).innerHTML = descripcion_unidad;
             row.insertCell(5).innerHTML = data_item[a].cantidad?data_item[a].cantidad:'0';
@@ -298,6 +298,7 @@ function agregarItem(){
                     document.querySelector("table[id='ListaDetalleRequerimiento']").tHead.children[0].cells[11].setAttribute('class','');          
                     row.insertCell(10).innerHTML =  data_item[a].almacen_reserva ? data_item[a].almacen_reserva : data_item[a].proveedor_razon_social;
                     tdBtnAction = row.insertCell(11);
+                    hasProveedor= true;
 
                 }else{
 
@@ -306,11 +307,18 @@ function agregarItem(){
             }else if(data_item[a].id_almacen_reserva >0 || data_item[a].proveedor_id >0){
                 document.querySelector("table[id='ListaDetalleRequerimiento']").tHead.children[0].cells[11].setAttribute('class','');            
                 row.insertCell(9).innerHTML =  data_item[a].almacen_reserva ? data_item[a].almacen_reserva : data_item[a].proveedor_razon_social;
-
                 tdBtnAction = row.insertCell(10);
+                hasProveedor= true;
             }else{
-                tdBtnAction = row.insertCell(9);
+                if(hasProveedor==true){
+                    document.querySelector("table[id='ListaDetalleRequerimiento']").tHead.children[0].cells[11].setAttribute('class','');            
+                    row.insertCell(9).innerHTML = '';
+                    tdBtnAction = row.insertCell(10);
+                }else{
 
+                tdBtnAction = row.insertCell(9);
+                }
+             
             }
             // tdBtnAction.className = classHiden;
             var btnAction = '';
@@ -330,24 +338,26 @@ function agregarItem(){
             if (tipo_requerimiento ==3 ) {
                 btnAction += `<button type="button" class="btn btn-warning btn-xs"  name="btnMostarPartidas" data-toggle="tooltip" title="Partidas" onClick=" partidasModal(${data_item[a].id_item});" ${hasAttrDisabled}><i class="fas fa-money-check"></i></button>`;
             } 
-        
-            btnAction += `<button type="button" class="btn btn-primary btn-xs activation" name="btnCentroCostos" data-toggle="tooltip" title="Centro de Costos" style="background: #3c763d;" onClick="centroCostosModal(event, ${a});" ${hasAttrDisabled}><i class="fas fa-donate"></i></button>`;
+            if(!['1'].includes(tipo_requerimiento)){
+                btnAction += `<button type="button" class="btn btn-primary btn-xs activation" name="btnCentroCostos" data-toggle="tooltip" title="Centro de Costos" style="background: #3c763d;" onClick="centroCostosModal(event, ${a});" ${hasAttrDisabled}><i class="fas fa-donate"></i></button>`;
+            }
             if(tipo_requerimiento ==3){ // tipo = Bienes y Servicios
                 // btnAction += `<button type="button" class="btn btn-primary btn-xs" name="btnBuscarEnAlmacen" data-toggle="tooltip" title="Buscar Stock en Almacenes" style="background:#b498d0;" onClick="buscarStockEnAlmacenesModal(${data_item[a].id_item});" ${hasAttrDisabled}><i class="fas fa-warehouse"></i></button>`;
                 btnAction += `<button type="button" class="btn btn-xs activation" name="btnAlmacenReservaModal" data-toggle="tooltip" title="Almacén Reserva" onClick="modalAlmacenReserva(this, ${a});" ${hasAttrDisabled} style="background:#b498d0; color: #f5f5f5;"><i class="fas fa-warehouse"></i></button>`;
 
             }
             if(tipo_requerimiento ==2){ // tipo = CMS
-                btnAction += `<button type="button" class="btn btn-xs activation" name="btnAlmacenReservaModal" data-toggle="tooltip" title="Almacén Reserva" onClick="modalAlmacenReserva(this, ${a});" ${hasAttrDisabled} style="background:#b498d0; color: #f5f5f5;"><i class="ffas fa-warehouse"></i></button>`;
+                btnAction += `<button type="button" class="btn btn-xs activation" name="btnAlmacenReservaModal" data-toggle="tooltip" title="Almacén Reserva" onClick="modalAlmacenReserva(this, ${a});" ${hasAttrDisabled} style="background:#b498d0; color: #f5f5f5;"><i class="fas fa-warehouse"></i></button>`;
                 btnAction += `<button type="button" class="btn btn-primary btn-xs activation" name="btnModalSeleccionarCrearProveedor data-toggle="tooltip" title="Proveedor" onClick="modalSeleccionarCrearProveedor(event, ${a});" ${hasAttrDisabled}><i class="fas fa-user-tie"></i></button>`;
 
             }
-            if(tipo_requerimiento !=2){
-
+            if(!['1','2'].includes(tipo_requerimiento)){
                 btnAction += `<button type="button" class="btn btn-default btn-xs activation" name="btnAdjuntarArchivos" data-toggle="tooltip" title="Adjuntos" onClick="archivosAdjuntosModal(event, ${a});" ${hasAttrDisabled} ><i class="fas fa-paperclip"></i></button>`;
             }
-            btnAction += `<button type="button" class="btn btn-info btn-xs" name="btnEditarItem" data-toggle="tooltip" title="Editar" onclick="detalleRequerimientoModal(event,${a});" ${hasAttrDisabled} ><i class="fas fa-edit"></i></button>`;
-            btnAction += `<button type="button" class="btn btn-danger btn-xs activation"   name="btnEliminarItem" data-toggle="tooltip" title="Eliminar" onclick="eliminarItemDeListado(this,${data_item[a].id_item});" ${hasAttrDisabled} ><i class="fas fa-trash-alt"></i></button>`;
+            if(tipo_requerimiento !=1){ // tipo = CMS
+                btnAction += `<button type="button" class="btn btn-info btn-xs" name="btnEditarItem" data-toggle="tooltip" title="Editar" onclick="detalleRequerimientoModal(event,${a});" ${hasAttrDisabled} ><i class="fas fa-edit"></i></button>`;
+                btnAction += `<button type="button" class="btn btn-danger btn-xs activation"   name="btnEliminarItem" data-toggle="tooltip" title="Eliminar" onclick="eliminarItemDeListado(this,${data_item[a].id_item});" ${hasAttrDisabled} ><i class="fas fa-trash-alt"></i></button>`;
+            }
             btnAction += `</center></div>`;
             tdBtnAction.innerHTML = btnAction;
 

@@ -981,7 +981,7 @@ function llenarTablaListaDetalleRequerimiento(data,selectMoneda,selectUnidadMedi
     $('#ListaDetalleRequerimiento tbody').html(htmls);
     var table = document.getElementById("ListaDetalleRequerimiento");
 
-    // console.log(data);
+    console.log(data);
     let cantidadIdPartidas=0;
     let cantidadIdCentroCostos=0;
     for (var a = 0; a < data.length; a++) {

@@ -170,6 +170,7 @@ function mostrar_requerimiento(IdorCode){
                         'id_detalle_requerimiento':detalle_requerimiento[x].id_detalle_requerimiento,
                         'part_number':detalle_requerimiento[x].part_number,
                         'cod_item':detalle_requerimiento[x].codigo_item,
+                        'codigo_producto':detalle_requerimiento[x].codigo_producto,
                         'categoria':detalle_requerimiento[x].categoria,
                         'subcategoria':detalle_requerimiento[x].subcategoria,
                         'id_almacen_reserva':detalle_requerimiento[x].id_almacen_reserva,
