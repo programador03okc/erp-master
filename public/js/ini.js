@@ -65,9 +65,12 @@ $(document).ready(function(){
 					nuevo_doc_venta();
 				}
 				else if (page == 'transformacion'){
-					// console.log('page:'+page);
 					nuevo_transformacion();
 				}
+				// else if (page == 'producto'){
+				// 	console.log('page:'+page);
+				// 	nuevo_producto();
+				// }
 				else if (page == 'tp_combustible'){
 					nuevo_tp_combustible();
 				}
