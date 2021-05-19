@@ -712,14 +712,15 @@ class OrdenController extends Controller
                             'lugar_entrega'             => $data->lugar_entrega,
                             'fecha_registro'            => $data->fecha_registro_alm_det_req,
                             'estado'                    => $data->estado,
-                            'codigo_item'                => $data->codigo_item,
-                            'id_tipo_item'                => $data->id_tipo_item,
+                            'codigo_item'               => $data->codigo_item,
+                            'id_tipo_item'              => $data->id_tipo_item,
                             'id_producto'               => $data->id_producto,
+                            'alm_prod_codigo'           => $data->alm_prod_codigo,
                             'part_number'               => $data->part_number,
+                            'descripcion'               => $data->alm_prod_descripcion,
                             'stock_comprometido'        => $data->stock_comprometido,
                             'observacion'               => $data->observacion,
                             'cantidad_a_comprar'        => 0,
-                            'descripcion'               => $data->descripcion_adicional,
                             'subtotal'               =>  $subtotal,
                         ];
                         $lastId = $data->id_detalle_requerimiento;
@@ -1269,7 +1270,7 @@ class OrdenController extends Controller
     )
     ->leftJoin('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'log_det_ord_compra.id_unidad_medida')
     ->leftJoin('almacen.alm_item', 'alm_item.id_item', '=', 'log_det_ord_compra.id_item')
-    ->leftJoin('almacen.alm_prod', 'alm_prod.id_producto', '=', 'alm_item.id_producto')
+    ->leftJoin('almacen.alm_prod', 'alm_prod.id_producto', '=', 'log_det_ord_compra.id_producto')
     ->leftJoin('configuracion.sis_usua as sis_usua_aut', 'sis_usua_aut.id_usuario', '=', 'log_det_ord_compra.personal_autorizado')
     ->leftJoin('rrhh.rrhh_trab as trab_aut', 'trab_aut.id_trabajador', '=', 'sis_usua_aut.id_trabajador')
     ->leftJoin('rrhh.rrhh_postu as post_aut', 'post_aut.id_postulante', '=', 'trab_aut.id_postulante')
@@ -1296,6 +1297,7 @@ class OrdenController extends Controller
                 'id_producto' => $data->id_producto,
                 'codigo_item' => $data->codigo_item,
                 'codigo_producto' => $data->codigo_producto,
+                'descripcion' => $data->descripcion_producto,
                 'descripcion_producto' => $data->descripcion_producto,
                 'part_number' => $data->part_number,
                 'descripcion_adicional' => $data->descripcion_adicional,
