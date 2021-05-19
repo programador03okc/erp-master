@@ -634,6 +634,7 @@ class RequerimientoPendienteCtrl{
     // Crear orden por requerimiento
     crearOrdenCompraPorRequerimiento(obj){
         reqTrueList.push(obj.dataset.idRequerimiento)
+        console.log(reqTrueList);
         sessionStorage.setItem('reqCheckedList', JSON.stringify(reqTrueList));
         sessionStorage.setItem('tipoOrden', 'COMPRA');
         let url ="/logistica/gestion-logistica/compras/ordenes/elaborar/index";
@@ -648,6 +649,22 @@ class RequerimientoPendienteCtrl{
         var win = window.location.replace(url);
     }
 
+    crearOrdenCompra(){
+        reqTrueList=[];
+        listCheckReq = listCheckReq.filter(function( obj ) {
+            return (obj.stateCheck ==true);
+        });
+
+        listCheckReq.forEach(element => {
+            reqTrueList.push(element.id_req);
+            
+        });
+        // console.log(reqTrueList);
+        sessionStorage.setItem('reqCheckedList', JSON.stringify(reqTrueList));
+        sessionStorage.setItem('tipoOrden', 'COMPRA');
+        let url ="/logistica/gestion-logistica/compras/ordenes/elaborar/index";
+        var win = window.location.replace(url);
+    }
 
 }
 

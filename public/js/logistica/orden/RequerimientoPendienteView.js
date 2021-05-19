@@ -887,6 +887,11 @@ class RequerimientoPendienteView {
         requerimientoPendienteCtrl.crearOrdenServicioPorRequerimiento(obj);
 
     }
+
+    crearOrdenCompra() {
+        requerimientoPendienteCtrl.crearOrdenCompra();
+
+    }
 }
 
 const requerimientoPendienteView = new RequerimientoPendienteView();

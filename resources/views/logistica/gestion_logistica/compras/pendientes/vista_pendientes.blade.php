@@ -55,7 +55,7 @@ Compras pendientes
                                             </table>
                                             <div class="row">
                                                 <div class="col-md-12 right">
-                                                    <button class="btn btn-warning" type="button" id="btnCrearOrdenCompra" onClick="crearOrdenCompra();" disabled>
+                                                    <button class="btn btn-warning" type="button" id="btnCrearOrdenCompra" onClick="requerimientoPendienteView.crearOrdenCompra();" disabled>
                                                         Crear Orden <i class="fas fa-file-invoice"></i>
                                                     </button>
 
