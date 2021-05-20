@@ -299,6 +299,7 @@ class ComprasPendientesController extends Controller
 
             $alm_det_req = DB::table('almacen.alm_det_req')
             ->select('alm_det_req.stock_comprometido','alm_det_req.tiene_transformacion','alm_det_req.id_almacen_reserva','alm_det_req.id_cc_am_filas','alm_det_req.id_cc_venta_filas')
+            ->where('alm_det_req.tiene_transformacion', false)
             ->whereIn('alm_det_req.id_requerimiento', $requerimientoList)
             ->orderBy('alm_det_req.id_detalle_requerimiento', 'desc')
             ->get();
@@ -310,6 +311,7 @@ class ComprasPendientesController extends Controller
                 $temp_data[]=((new RequerimientoController)->get_detalle_cuadro_costos($element->id_cc)['detalle']);
             }
             $cantidadItemsDetalleCuadroCosto= count($temp_data[0]);
+            Debugbar::info($temp_data[0]);
 
             $idAgregadosList=[];
             if(count($temp_data)>0){
@@ -348,6 +350,7 @@ class ComprasPendientesController extends Controller
                     }
                 }
 
+                
                 foreach($temp_data as $arr){
                     foreach($arr as $value){
                         if(in_array($value->id,$idAgregadosList,true)==false){
@@ -379,7 +382,8 @@ class ComprasPendientesController extends Controller
             }else{
                 $status = 204;
             }
-
+            Debugbar::info($cantidadItemsRequerimiento);
+            Debugbar::info($cantidadItemsDetalleCuadroCosto);
             if($cantidadItemsRequerimiento == $cantidadItemsDetalleCuadroCosto){
                 $totalItemsAgregadosADetalleRequerimiento=true;
             }else{
@@ -400,8 +404,7 @@ class ComprasPendientesController extends Controller
         $totalItemsAgregadosADetalleRequerimiento=null;
 
         $alm_det_req = DB::table('almacen.alm_det_req')
-        ->rightJoin('almacen.alm_item', 'alm_item.id_item', '=', 'alm_det_req.id_item')
-        ->leftJoin('almacen.alm_prod', 'alm_item.id_producto', '=', 'alm_prod.id_producto')
+        ->leftJoin('almacen.alm_prod', 'alm_det_req.id_producto', '=', 'alm_prod.id_producto')
         ->leftJoin('almacen.alm_cat_prod', 'alm_cat_prod.id_categoria', '=', 'alm_prod.id_categoria')
         ->leftJoin('almacen.alm_subcat','alm_subcat.id_subcategoria','=','alm_prod.id_subcategoria')
         ->leftJoin('almacen.alm_clasif', 'alm_clasif.id_clasificacion', '=', 'alm_prod.id_clasif')
@@ -436,6 +439,7 @@ class ComprasPendientesController extends Controller
 
         $alm_det_req_agregados = DB::table('almacen.alm_det_req')
         ->select('alm_det_req.stock_comprometido','alm_det_req.id_almacen_reserva','alm_det_req.id_cc_am_filas','alm_det_req.id_cc_venta_filas')
+        ->where('alm_det_req.tiene_transformacion', false)
         ->whereIn('alm_det_req.id_requerimiento', $requerimientoList)
         ->orderBy('alm_det_req.id_detalle_requerimiento', 'desc')
         ->get();
@@ -622,10 +626,28 @@ class ComprasPendientesController extends Controller
         $items = $request->items;
         $status='';
         $newIdDetalleRequerimientoList=[];
-
+        $cantidadItemSinCodigoProducto=0;
+        $idProductosGuardadosDetalleReq=[];
+        $msj=[];
         $count_items = count($items);
         if ($count_items > 0) {
+
+
+            $alm_det_req = DB::table('almacen.alm_det_req')
+            ->select(
+                'alm_det_req.*'
+            )
+            ->where([['alm_det_req.id_requerimiento', '=', $id_requerimiento], ['alm_det_req.estado', '!=', 7]])
+            ->get();
+
+            foreach ($alm_det_req as $value) {
+                $dProductosGuardadosDetalleReq[]=$value->id_producto;
+            }
+
+
             for ($i = 0; $i < $count_items; $i++) {
+                if($items[$i]['id_producto']>0 && in_array(!$items[$i]['id_producto'],$idProductosGuardadosDetalleReq)){
+
                     $alm_det_req = DB::table('almacen.alm_det_req')->insertGetId(
 
                         [
@@ -634,7 +656,7 @@ class ComprasPendientesController extends Controller
                             'id_cc_am_filas'        => is_numeric($items[$i]['id_cc_am_filas']) == 1 && $items[$i]['id_cc_am_filas']>0 ? $items[$i]['id_cc_am_filas']:null,
                             'id_cc_venta_filas'     => is_numeric($items[$i]['id_cc_venta_filas']) == 1 && $items[$i]['id_cc_venta_filas']>0 ? $items[$i]['id_cc_venta_filas']:null,
                             'id_producto'           => is_numeric($items[$i]['id_producto']) == 1 && $items[$i]['id_producto']>0 ? $items[$i]['id_producto']:null,
-                            'precio_unitario'    => is_numeric($items[$i]['precio']) == 1 ?$items[$i]['precio']:null,
+                            'precio_unitario'       => is_numeric($items[$i]['precio_unitario']) == 1 ?$items[$i]['precio_unitario']:null,
                             'cantidad'              => $items[$i]['cantidad']?$items[$i]['cantidad']:null,
                             'id_moneda'             => $items[$i]['id_moneda']?$items[$i]['id_moneda']:null,
                             'descripcion_adicional' => isset($items[$i]['descripcion'])?$items[$i]['descripcion']:null,
@@ -650,19 +672,29 @@ class ComprasPendientesController extends Controller
                     );
 
                     $newIdDetalleRequerimientoList[]=$alm_det_req;
+                }else{
+                    $cantidadItemSinCodigoProducto++;
+                }
 
             }
         }
 
-        if($count_items == count($newIdDetalleRequerimientoList)){
+        if($cantidadItemSinCodigoProducto >0){
+            $msj[]='No se pudo agregar un item que no este guardado primero en el catálogo';
+        }
+
+        if(count($newIdDetalleRequerimientoList)>0){
             $status =200;
+            $msj[]='Items guardados!';
         }else{
             $status =204;
+            $msj[]='No se guardaron items';
         }
 
         $output= [
             'id_detalle_requerimiento_list'=>$newIdDetalleRequerimientoList,
-            'status'=>$status
+            'status'=>$status,
+            'mensaje'=>$msj
         ];
 
         return response()->json($output);

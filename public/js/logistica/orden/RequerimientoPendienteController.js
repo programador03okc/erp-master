@@ -189,6 +189,7 @@ class RequerimientoPendienteCtrl{
 
             }
             requerimientoPendienteView.componerTdItemsParaCompra(res.data,res.categoria,res.subcategoria,res.clasificacion,res.moneda,res.unidad_medida);
+            // console.log(res);
             if(res.tiene_total_items_agregados==true){
                 requerimientoPendienteView.totalItemsAgregadosParaCompraCompletada();
             }else{
@@ -375,6 +376,7 @@ class RequerimientoPendienteCtrl{
     getDataListaItemsCuadroCostosPorIdRequerimientoPendienteCompra(){
 
         return requerimientoPendienteModel.getDataListaItemsCuadroCostosPorIdRequerimientoPendienteCompra(reqTrueList).then(function(response) {
+            // console.log(response);
             if (response.status == 200) {
                 let detalleItemsParaCompraCCPendienteCompra =  requerimientoPendienteCtrl.cleanPartNumbreCharacters(response.data);
                 requerimientoPendienteView.llenarTablaDetalleCuadroCostos(detalleItemsParaCompraCCPendienteCompra);
@@ -499,7 +501,16 @@ class RequerimientoPendienteCtrl{
     
                 }
             } else {
-                (itemsParaCompraList).push(data_item_CC_selected);
+                // buscar si ya existe el item en el array
+                let hasSameProduct= false;
+                itemsParaCompraList.forEach(element => {
+                    if(element.id_producto==data_item_CC_selected.id_producto){
+                        hasSameProduct= true;
+                    }
+                });
+                if(hasSameProduct==false){
+                    (itemsParaCompraList).push(data_item_CC_selected);
+                }
                 requerimientoPendienteCtrl.quitarItemDetalleCuadroCostosDeTabla(obj,id);
     
                 requerimientoPendienteCtrl.agregarItemATablaListaItemsParaCompra(itemsParaCompraList);
@@ -609,7 +620,7 @@ class RequerimientoPendienteCtrl{
     guardarItemsEnDetalleRequerimiento(){
         if(reqTrueList.length ==1){
             requerimientoPendienteModel.guardarMasItemsAlDetalleRequerimiento(reqTrueList,itemsParaCompraList).then(function (response) {
-                    requerimientoPendienteView.agregarItemsBaseParaCompraFinalizado(response.status);
+                    requerimientoPendienteView.agregarItemsBaseParaCompraFinalizado(response);
             }).catch(function (err) {
                 console.log(err)
             });

@@ -492,9 +492,9 @@ class RequerimientoPendienteView {
     eliminarItemDeListadoParaCompra(obj, indice) {
         let id = obj.dataset.id;
         let tr = obj.parentNode.parentNode.parentNode;
-        tr.remove(tr);
         requerimientoPendienteCtrl.eliminarItemDeListadoParaCompra(indice)
         this.retornarItemAlDetalleCC(id);
+        tr.remove(tr);
         this.actualizarIndicesDeTabla();
 
 
@@ -510,7 +510,7 @@ class RequerimientoPendienteView {
         //         trs[0].remove();
         //     }
         // }
-        requerimientoPendienteCtrl.limpiarTabla('ListaModalDetalleCuadroCostos');
+        // requerimientoPendienteCtrl.limpiarTabla('ListaModalDetalleCuadroCostos');
 
         if (trs.length > 1) {
             trs.forEach(tr => {
@@ -705,13 +705,14 @@ class RequerimientoPendienteView {
 
     }
 
-    agregarItemsBaseParaCompraFinalizado(status) {
-        if (status == 200) {
-            alert('Item(s) Guardado');
+    agregarItemsBaseParaCompraFinalizado(response) {
+
+        if (response.status == 200) {
+            alert(response.mensaje);
             $('#modal-agregar-items-para-compra').modal('hide');
             requerimientoPendienteView.renderRequerimientoPendienteListModule(null, null);
         } else {
-            alert('Ocurrio un problema, no se pudo agregar los items al requerimiento');
+            alert(response.mensaje);
         }
 
     }
