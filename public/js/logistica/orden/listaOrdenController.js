@@ -106,6 +106,12 @@ class ListaOrdenCtrl {
         return listaOrdenModel.listarDocumentosVinculados(id);
     }
 
+
+    descargarListaOrdenesVistaCabecera(){
+        return listaOrdenModel.descargarListaOrdenesVistaCabecera();
+
+    }
+
 }
 
 const listaOrdenCtrl = new ListaOrdenCtrl(listaOrdenView);

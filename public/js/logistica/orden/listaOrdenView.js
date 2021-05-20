@@ -84,6 +84,10 @@ class ListaOrdenView {
 
     }
 
+    descargarListaOrdenesVistaCabecera(){
+        return listaOrdenCtrl.descargarListaOrdenesVistaCabecera();
+    }
+
     filtroTablaListaOrdenesVistaCabecera(){
         $('#modal-filtro-lista-ordenes-elaboradas').modal({
             show: true,
@@ -472,6 +476,26 @@ class ListaOrdenView {
                 {'data': 'moneda_simbolo'},
                 {'data': 'condicion'},
                 {'data': 'fecha'},
+                {'render':
+                    function (data, type, row, meta){
+                        let fechaOrden =moment(row.fecha);
+                        let fechaRequerimiento =moment(row.fecha);
+                        let tiempoAtencionLogistica = fechaOrden.diff((fechaRequerimiento), 'days');
+                        return `${tiempoAtencionLogistica} días`;
+                    }
+                },
+                {'render':
+                    function (data, type, row, meta){
+                        let fechaIngresoAlmacen =moment(row.fecha_ingreso_almacen);
+                        let fechaOrden =moment(row.fecha);
+                        let tiempoAtencionProveedor = fechaIngresoAlmacen.diff((fechaOrden), 'days');
+                        if(row.fecha_ingreso_almacen !=null){
+                            return `${tiempoAtencionProveedor} días`;
+                        }else{
+                            return '';
+                        }
+                    }
+                },
                 {'data': 'detalle_pago'},
                 {'data': 'archivo_adjunto'},
                 {'render':
@@ -495,17 +519,44 @@ class ListaOrdenView {
             ,"initComplete": function() {
 
                 let listaOrdenes_filter = document.querySelector("div[id='listaOrdenes_filter']");
+
+                var divInputGroup = document.createElement("div");
+                divInputGroup.className = "input-group pull-left";
+                divInputGroup.style = "padding-right: 15px;";
+                listaOrdenes_filter.appendChild(divInputGroup);
+
+                var divInputGroupBtn = document.createElement("div");
+                divInputGroupBtn.className = "input-group-btn";
+                divInputGroup.appendChild(divInputGroupBtn);     
+
                 var buttonFiler = document.createElement("button");
                 buttonFiler.type = "button";
                 buttonFiler.id = "btnFiltroListaOrdenCabecera";
                 buttonFiler.className = "btn btn-default pull-left";
-                buttonFiler.style = "margin-right: 30px;";
                 buttonFiler.innerHTML = "<i class='fas fa-filter'></i> Filtros: <span id='cantidadFiltrosActivosCabecera'>0</span>";
                 buttonFiler.addEventListener('click', listaOrdenView.filtroTablaListaOrdenesVistaCabecera, false);
 
-                listaOrdenes_filter.appendChild(buttonFiler);     
+                divInputGroupBtn.appendChild(buttonFiler);   
+
+                var buttonExportToExcel = document.createElement("button");
+                buttonExportToExcel.type = "button";
+                buttonExportToExcel.id = "btnExportarAExcel";
+                buttonExportToExcel.className = "btn btn-default pull-left";
+                buttonExportToExcel.innerHTML = "<i class='far fa-file-excel'></i> Descargar";
+                buttonExportToExcel.addEventListener('click',  function(){listaOrdenView.descargarListaOrdenesVistaCabecera()}, false);
+
+                divInputGroupBtn.appendChild(buttonExportToExcel);     
                 
                 listaOrdenView.mostrarCantidadFiltrosActivosCabeceraOrden();
+            },
+            "createdRow": function (row, data, dataIndex) {
+               
+                    $(row.childNodes[15]).css('background-color', '#b4effd');
+                    $(row.childNodes[15]).css('font-weight', 'bold');
+                    $(row.childNodes[16]).css('background-color', '#b4effd');
+                    $(row.childNodes[16]).css('font-weight', 'bold');
+                
+
             }
         });
 

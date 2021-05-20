@@ -13149,68 +13149,68 @@ function get_id_usuario_usuario_por_rol($descripcion_rol, $id_sede, $id_empresa)
         return $sql;
     }
 
-    function explorar_orden($id_orden){
-        $orden=[];
-        $flujo_aprobacion=[];
-        $historial_aprobacion=[];
+    // function explorar_orden($id_orden){
+    //     $orden=[];
+    //     $flujo_aprobacion=[];
+    //     $historial_aprobacion=[];
 
-        $orden =  $this->get_header_orden($id_orden);
-        $registro_pago = $this->get_gegistro_pago($id_orden);
-        $entrada_almacen = $this->get_entrada_almacen($id_orden);
-        $despacho = $this->get_depacho($id_orden);
+    //     $orden =  $this->get_header_orden($id_orden);
+    //     $registro_pago = $this->get_gegistro_pago($id_orden);
+    //     $entrada_almacen = $this->get_entrada_almacen($id_orden);
+    //     $despacho = $this->get_depacho($id_orden);
 
-        $requerimiento_orden_list= $this->get_requerimientos_orden($id_orden);
+    //     $requerimiento_orden_list= $this->get_requerimientos_orden($id_orden);
 
-        // $id_grupos_list=[];
-        // $id_areas_list=[];
-        $id_grupo_area_list=[];
+    //     // $id_grupos_list=[];
+    //     // $id_areas_list=[];
+    //     $id_grupo_area_list=[];
 
-        if(count($requerimiento_orden_list)>0){
-            foreach($requerimiento_orden_list as $r){
-                // $id_grupos_list[]=$this->get_id_grupo($r);
-                // $id_areas_list[]=$this->get_id_area($r);
-                $id_grupo_area_list[]= ["id_grupo"=>$this->get_id_grupo($r),'id_area'=>$this->get_id_area($r)];
-            }
-        }
+    //     if(count($requerimiento_orden_list)>0){
+    //         foreach($requerimiento_orden_list as $r){
+    //             // $id_grupos_list[]=$this->get_id_grupo($r);
+    //             // $id_areas_list[]=$this->get_id_area($r);
+    //             $id_grupo_area_list[]= ["id_grupo"=>$this->get_id_grupo($r),'id_area'=>$this->get_id_area($r)];
+    //         }
+    //     }
  
-        $tipo_documento= 2;
-        $id_prioridad= 1;
+    //     $tipo_documento= 2;
+    //     $id_prioridad= 1;
 
-        // get id_operacion
-        $id_operacion_list=[];
-        foreach($id_grupo_area_list as $ga){
-            $id_operacion_list[]=$this->get_id_operacion($ga['id_grupo'],$ga['id_area'],$tipo_documento);
-        }
+    //     // get id_operacion
+    //     $id_operacion_list=[];
+    //     foreach($id_grupo_area_list as $ga){
+    //         $id_operacion_list[]=$this->get_id_operacion($ga['id_grupo'],$ga['id_area'],$tipo_documento);
+    //     }
         
-        // get flujo_aprobación
-        $flujo_aprobacion_orden_list=[];
-        // foreach($id_operacion_list as $op){
-                // $flujo_aprobacion_orden_list[] =  $this->flujo_aprobacion_orden($op)[0];
-        // }
+    //     // get flujo_aprobación
+    //     $flujo_aprobacion_orden_list=[];
+    //     // foreach($id_operacion_list as $op){
+    //             // $flujo_aprobacion_orden_list[] =  $this->flujo_aprobacion_orden($op)[0];
+    //     // }
 
-        // limpiar array de flujo_aprobación si es el mismo id_rol
-        $temp=[];
-        // $new_flujo_aprobacion_orden_list=[];
-        // foreach($flujo_aprobacion_orden_list as $fao){
-        //     if(in_array($fao['id_rol'],$temp)==false){
-        //         $temp[]=$fao['id_rol'];
-        //         $new_flujo_aprobacion_orden_list[]=$fao;
-        //     }
-        // }
+    //     // limpiar array de flujo_aprobación si es el mismo id_rol
+    //     $temp=[];
+    //     // $new_flujo_aprobacion_orden_list=[];
+    //     // foreach($flujo_aprobacion_orden_list as $fao){
+    //     //     if(in_array($fao['id_rol'],$temp)==false){
+    //     //         $temp[]=$fao['id_rol'];
+    //     //         $new_flujo_aprobacion_orden_list[]=$fao;
+    //     //     }
+    //     // }
 
-        $output=[
-            'header'=>$orden,
-            'registro_pago'=>$registro_pago,
-            'entrada_almacen'=>$entrada_almacen,
-            'despacho'=>$despacho,
-            // 'new_flujo_aprobacion_orden_list'=>$new_flujo_aprobacion_orden_list,
-            'new_flujo_aprobacion_orden_list'=>[],
-            'flujo_aprobacion'=>$flujo_aprobacion,
-            'historial_aprobacion'=>$historial_aprobacion
-        ];
+    //     $output=[
+    //         'header'=>$orden,
+    //         'registro_pago'=>$registro_pago,
+    //         'entrada_almacen'=>$entrada_almacen,
+    //         'despacho'=>$despacho,
+    //         // 'new_flujo_aprobacion_orden_list'=>$new_flujo_aprobacion_orden_list,
+    //         'new_flujo_aprobacion_orden_list'=>[],
+    //         'flujo_aprobacion'=>$flujo_aprobacion,
+    //         'historial_aprobacion'=>$historial_aprobacion
+    //     ];
 
-        return response()->json($output);
-    }
+    //     return response()->json($output);
+    // }
 
  
 

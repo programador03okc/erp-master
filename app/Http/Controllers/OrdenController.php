@@ -923,7 +923,7 @@ class OrdenController extends Controller
 
         ])
 
-        ->when(($vinculadoPor !='null'), function($query) use ($vinculadoPor)  {
+        ->when(($vinculadoPor !='null' && $vinculadoPor !=null), function($query) use ($vinculadoPor)  {
             if($vinculadoPor== 'REQUERIMIENTO'){
                 $whereVinculadoPor='log_det_ord_compra.id_detalle_requerimiento > 0';
             }elseif($vinculadoPor == 'CUADRO_COMPARATIVO'){
@@ -3404,6 +3404,115 @@ class OrdenController extends Controller
         } catch (\PDOException $e) {
             DB::rollBack();
         }
+    }
+
+    function listarOrdenesExcel(){
+        $payload = $this->listarOrdenes(null, null, null, null, null, null, null, null, null);
+        $data= $payload['data'];
+        $html = '
+        <html>
+            <head>
+                <style type="text/css">
+                *{ 
+                    font-family: "DejaVu Sans";
+                }
+                table{
+                    width:100%;
+                    font-size:12px;
+                }
+                #detalle thead{
+                    padding: 4px;
+                    background-color: #e5e5e5;
+                }
+                #detalle thead tr td{
+                    padding: 4px;
+                    background-color: #ddd;
+                }
+                #detalle tbody tr td{
+                    font-size:11px;
+                    padding: 4px;
+                }
+                .right{
+                    text-align: right;
+                }
+                .left{
+                    text-align: left;
+                }
+                .sup{
+                    vertical-align:top;
+                }
+                </style>
+            </head>
+            <body>
+                <h3 style="margin:0px;"><center>LISTA DE ORDENES</center></h3>';
+                
+                    $html.='
+                    <table border="0" class="table table-condensed table-bordered table-hover sortable" width="100%">
+                    <thead>
+                        <tr>
+                            <th>Cuadro costos</th>
+                            <th>Proveedor</th>
+                            <th>Nro.orden</th>
+                            <th >Req./Cuadro comp.</th>
+                            <th>Estado</th>
+                            <th>Fecha vencimiento</th>
+                            <th>Fecha llegada</th>
+                            <th>Estado aprobación CC</th>
+                            <th>Fecha aprobación CC</th>
+                            <th>Fecha Requerimiento</th>
+                            <th width="60%">Leadtime</th>
+                            <th>Empresa / Sede</th>
+                            <th>Moneda</th>
+                            <th>Condición</th>
+                            <th>Fecha em.</th>
+                            <th>Tiem. Atenc. Log.</th>
+                            <th>Tiem. Atenc. Prov.</th>
+                            <th>Detalle pago</th>
+                            <th>Archivo adjunto</th>
+                        </tr>
+                    </thead>
+                    <tbody>';
+
+                        foreach($data as $row){
+ 
+
+                                $html.='
+                                <tr>
+                                    <td>'.$row['codigo_oportunidad'].'</td>
+                                    <td>'.$row['razon_social'].' RUC:'.$row['nro_documento'].'</td>
+                                    <td>'.$row['codigo'].'</td>
+                                    <td>'.$row['codigo_requerimiento'][0].'</td>
+                                    <td>'.$row['estado_doc'].'</td>
+                                    <td>'.$row['fecha_vencimiento_ocam'].'</td>
+                                    <td>'.$row['fecha_ingreso_almacen'].'</td>
+                                    <td>'.$row['estado_aprobacion_cc'].'</td>
+                                    <td>'.$row['fecha_estado'].'</td>
+                                    <td>'.$row['fecha_registro_requerimiento'].'</td>
+                                    <td></td>
+                                    <td>'.$row['descripcion_sede_empresa'].'</td>
+                                    <td>'.$row['moneda_simbolo'].'</td>
+                                    <td>'.$row['condicion'].'</td>
+                                    <td>'.$row['fecha'].'</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td>'.$row['detalle_pago'].'</td>
+                                    <td>'.$row['archivo_adjunto'].'</td>
+                                </tr>';
+                        }
+                            $html.='
+                        </tbody>
+                    </table>';
+                    
+                $html.='
+            </body>
+        </html>';
+        
+        return $html;
+    }
+
+    function descargarExcelListaOrdenes(){
+        $data = $this->listarOrdenesExcel();
+        return view('logistica/reportes/lista_ordenes_excel', compact('data'));
     }
 
 

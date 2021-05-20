@@ -768,7 +768,8 @@ Route::group(['middleware' => ['auth']], function () {
 						Route::get('detalle-orden/{id_orden}', 'OrdenController@detalleOrden');
 						// Route::get('generar_orden_pdf/{id}', 'OrdenController@generar_orden_pdf'); // PDF
 						Route::get('verSession', 'LogisticaController@verSession'); 
-						Route::get('explorar-orden/{id_orden}', 'LogisticaController@explorar_orden'); 
+						// Route::get('explorar-orden/{id_orden}', 'LogisticaController@explorar_orden'); 
+						Route::get('descargar-excel-listar-ordenes', 'OrdenController@descargarExcelListaOrdenes');
 
 						// nivel item
 						Route::get('listar-detalle-orden/{tipoOrden?}/{vinculadoPor?}/{empresa?}/{sede?}/{tipoProveedor?}/{enAlmacen?}/{signoSubtotal?}/{subtotal?}/{estado?}', 'OrdenController@listarDetalleOrden')->name('ordenes-en-proceso'); 
