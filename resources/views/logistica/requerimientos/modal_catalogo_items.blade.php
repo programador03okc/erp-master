@@ -3,7 +3,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal-catalogo-items" onClick="$('#modal-catalogo-items').modal('hide');"><span aria-hidden="true">&times;</span></button>
-                <h3 class="modal-title">Lista de items</h3>
+                <h3 class="modal-title">Lista de Productos</h3>
             </div>
             <div class="modal-body">
             <div class="row">

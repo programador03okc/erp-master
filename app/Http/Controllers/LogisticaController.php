@@ -3112,7 +3112,7 @@ class LogisticaController extends Controller
 
     public function mostrar_items()
     {
-        $data = DB::table('almacen.alm_item')
+        $data = DB::table('almacen.alm_prod')
             ->select(
                 'alm_item.id_item',
                 'alm_prod.codigo',
@@ -3138,7 +3138,7 @@ class LogisticaController extends Controller
                 'alm_subcat.descripcion as subcategoria'
 
             )
-            ->leftJoin('almacen.alm_prod', 'alm_prod.id_producto', '=', 'alm_item.id_producto')
+            ->leftJoin('almacen.alm_item', 'alm_prod.id_producto', '=', 'alm_item.id_producto')
             ->leftJoin('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'alm_prod.id_unidad_medida')
             ->leftJoin('logistica.log_servi', 'log_servi.id_servicio', '=', 'alm_item.id_servicio')
             ->leftJoin('logistica.equipo', 'equipo.id_equipo', '=', 'alm_item.id_equipo')
