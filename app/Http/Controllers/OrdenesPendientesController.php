@@ -622,9 +622,9 @@ class OrdenesPendientesController extends Controller
                 }
                 
                 $detalle = DB::table('logistica.log_det_ord_compra')
-                ->select('log_det_ord_compra.*','alm_item.id_producto','alm_req.id_sede','alm_req.id_requerimiento',
+                ->select('log_det_ord_compra.*','alm_prod.id_producto','alm_req.id_sede','alm_req.id_requerimiento',
                             'alm_req.id_almacen as id_almacen_destino')
-                ->leftjoin('almacen.alm_item','alm_item.id_item','=','log_det_ord_compra.id_item')
+                ->leftjoin('almacen.alm_prod','alm_prod.id_producto','=','log_det_ord_compra.id_producto')
                 ->leftjoin('logistica.log_ord_compra','log_ord_compra.id_orden_compra','=','log_det_ord_compra.id_orden_compra')
                 ->leftjoin('almacen.alm_det_req','alm_det_req.id_detalle_requerimiento','=','log_det_ord_compra.id_detalle_requerimiento')
                 ->leftjoin('almacen.alm_req','alm_req.id_requerimiento','=','alm_det_req.id_requerimiento')
