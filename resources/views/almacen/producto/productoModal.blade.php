@@ -7,6 +7,9 @@
                 <h3 class="modal-title">Lista de Productos</h3>
             </div>
             <div class="modal-body">
+                <button type="button" class="btn btn-success nuevo" data-toggle="tooltip" 
+                    data-placement="bottom" title="Nuevo Producto" 
+                    onClick="abrirProducto();">Crear Producto</button>
                 <table class="mytable table table-condensed table-bordered table-okc-view" id="listaProducto">
                     <thead></thead>
                     <tbody></tbody>

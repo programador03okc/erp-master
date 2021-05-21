@@ -74,7 +74,8 @@ class OrdenesPendientesController extends Controller
                         on(guia.id_guia_com = mov_alm.id_guia_com)
                     INNER JOIN almacen.doc_com_det AS doc
                         on(doc.id_guia_com_det = guia.id_guia_com_det)
-                    WHERE d.id_doc_com = doc.id_doc) AS count_facturas"),
+                    WHERE d.id_doc_com = doc.id_doc
+                      and doc.estado != 7) AS count_facturas"),
 
             DB::raw("(SELECT distinct id_doc_com FROM almacen.doc_com AS d
                     INNER JOIN almacen.guia_com_det AS guia on(
@@ -1227,7 +1228,7 @@ class OrdenesPendientesController extends Controller
     {
         $guia = DB::table('almacen.guia_com')
         ->select('guia_com.id_guia','guia_com.id_proveedor','adm_contri.razon_social',
-        'guia_com.serie','guia_com.numero')
+        'guia_com.serie','guia_com.numero','guia_com.id_almacen')
         ->join('logistica.log_prove','log_prove.id_proveedor','=','guia_com.id_proveedor')
         ->join('contabilidad.adm_contri','adm_contri.id_contribuyente','=','log_prove.id_contribuyente')
         ->where('guia_com.id_guia',$id)
@@ -1260,7 +1261,7 @@ class OrdenesPendientesController extends Controller
         $detalle = DB::table('almacen.guia_com_det')
         ->select('guia_com_det.*','log_ord_compra.codigo as cod_orden','alm_prod.codigo','alm_prod.descripcion',
         'alm_prod.part_number','alm_und_medida.abreviatura','log_det_ord_compra.precio','log_ord_compra.id_condicion',
-        'log_ord_compra.plazo_dias','log_ord_compra.id_sede','guia_com.serie','guia_com.numero',
+        'log_ord_compra.plazo_dias','log_ord_compra.id_sede','guia_com.serie','guia_com.numero','guia_com.id_almacen',
         'log_ord_compra.id_moneda','sis_moneda.simbolo')
         ->leftjoin('logistica.log_det_ord_compra','log_det_ord_compra.id_detalle_orden','=','guia_com_det.id_oc_det')
         ->leftjoin('logistica.log_ord_compra','log_ord_compra.id_orden_compra','=','log_det_ord_compra.id_orden_compra')
@@ -1278,6 +1279,14 @@ class OrdenesPendientesController extends Controller
         return response()->json(['detalle'=>$detalle, 'igv'=>$igv->porcentaje]);
     }
 
+    public static function tipo_cambio_compra($fecha){
+        $data = DB::table('contabilidad.cont_tp_cambio')
+        ->where('cont_tp_cambio.fecha','<=',$fecha)
+        ->orderBy('fecha','desc')
+        ->first();
+        return $data->compra;
+    }
+
     public function guardar_doc_compra(Request $request)
     {
         try {
@@ -1285,6 +1294,7 @@ class OrdenesPendientesController extends Controller
 
             $id_usuario = Auth::user()->id_usuario;
             $fecha = date('Y-m-d H:i:s');
+            $tc = OrdenesPendientesController::tipo_cambio_compra($request->fecha_emision_doc);
 
             $id_doc = DB::table('almacen.doc_com')->insertGetId(
                 [
@@ -1298,7 +1308,7 @@ class OrdenesPendientesController extends Controller
                     'credito_dias' => $request->credito_dias,
                     'id_sede' => $request->id_sede,
                     'moneda' => $request->moneda,
-                    // 'tipo_cambio' => $request->tipo_cambio,
+                    'tipo_cambio' => $tc,
                     'sub_total' => $request->sub_total,
                     // 'total_descuento' => $request->total_descuento,
                     // 'porcen_descuento' => $request->porcen_descuento,
@@ -1336,9 +1346,17 @@ class OrdenesPendientesController extends Controller
                     'fecha_registro' => $fecha,
                 ]);
 
+                if ($request->moneda == 2){
+                    $valor = $tc * $item->total;
+                } else {
+                    $valor = $item->total;
+                }
+
                 DB::table('almacen.mov_alm_det')
                 ->where('id_guia_com_det',$item->id_guia_com_det)
-                ->update(['valorizacion'=>$item->total]);
+                ->update(['valorizacion'=>$valor]);
+
+                OrdenesPendientesController::actualiza_prod_ubi($item->id_producto, $request->id_almacen_doc);
             }
             
             DB::commit();
@@ -1351,6 +1369,19 @@ class OrdenesPendientesController extends Controller
 
     }
 
+    public function anular_doc_com($id_doc)
+    {
+        $update = DB::table('almacen.doc_com')
+        ->where('doc_com.id_doc_com',$id_doc)
+        ->update(['estado'=>7]);
+
+        $update = DB::table('almacen.doc_com_det')
+        ->where('doc_com_det.id_doc',$id_doc)
+        ->update(['estado'=>7]);
+
+        return response()->json($update);
+    }
+
     public function documentos_ver($id_doc)
     {
         $docs = DB::table('almacen.doc_com')
@@ -1358,7 +1389,7 @@ class OrdenesPendientesController extends Controller
         'cont_tp_doc.descripcion as tp_doc','adm_contri.nro_documento','adm_contri.razon_social',
         'sis_moneda.simbolo','doc_com.total_a_pagar','doc_com.sub_total','doc_com.total_igv',
         'log_cdn_pago.descripcion as condicion_descripcion','sis_sede.descripcion as sede_descripcion',
-        'doc_com.credito_dias')
+        'doc_com.credito_dias','doc_com.tipo_cambio')
         // ->join('almacen.guia_com_det','guia_com_det.id_guia_com','=','guia_com.id_guia')
         // ->join('almacen.doc_com_det','doc_com_det.id_guia_com_det','=','guia_com_det.id_guia_com_det')
         // ->join('almacen.doc_com','doc_com.id_doc_com','=','doc_com_det.id_doc')

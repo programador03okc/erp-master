@@ -7,6 +7,11 @@
                     <h3 class="modal-title">Documento(s) de Compra</h3>
                 </div>
                 <div class="modal-body">
+                    <input type="text" style="display:none;" name="id_doc_com">
+
+                    <!-- <button type="button" class="anular btn btn-danger btn-xs " data-toggle="tooltip" 
+                        data-placement="bottom" title="Anular Documento" onClick="anularDocCompra();">
+                        <i class="fas fa-trash"></i> Anular Documento</button> -->
                     <div class="row">
                         <div class="col-md-12">
                             <table class="mytable table table-condensed table-bordered table-okc-view" width="100%" 

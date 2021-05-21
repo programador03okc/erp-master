@@ -7,7 +7,9 @@
                     <h3 class="modal-title">Generar Documento de Compra</h3>
                 </div>
                 <div class="modal-body">
-                    <input type="text" style="display:none;" name="id_doc_com">
+                    <!-- <input type="text" style="display:none;" name="id_doc_com"> -->
+                    <input type="text" style="display:none;" name="id_almacen_doc">
+
                     <div class="row">
                         <div class="col-md-3">
                             <h5>Tipo de Documento</h5>

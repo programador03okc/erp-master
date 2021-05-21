@@ -2,9 +2,10 @@ let listaItems = [];
 let totales = {};
 let origenDoc = null;
 
-function open_doc_create(id_guia){
+function open_doc_create(id_guia, oc_ing){
     console.log('open_doc_create');
-    origenDoc = 'guia';
+    origenDoc = oc_ing;
+
     $('#modal-doc_create').modal({
         show: true
     });
@@ -34,6 +35,7 @@ function obtenerGuía(id){
                 $('[name=id_guia]').val(response['guia'].id_guia);
                 $('[name=serie_guia]').val(response['guia'].serie);
                 $('[name=numero_guia]').val(response['guia'].numero);
+                $('[name=id_almacen_doc]').val(response['guia'].id_almacen);
             }
             
             if (response['detalle'].length > 0){
@@ -59,7 +61,7 @@ function obtenerGuía(id){
 
 function open_doc_create_seleccionadas(){
     console.log(ingresos_seleccionados);
-    origenDoc = 'guiasSeleccionadas';
+    origenDoc = 'ing';
     var id_ingresos_seleccionadas = [];
     var id_prov = null;
     var prov = null;
@@ -134,6 +136,7 @@ function obtenerGuíaSeleccionadas(id_ingresos_seleccionadas, prov, id_prov){
                 $('[name=id_sede]').val(listaItems[0].id_sede);
                 $('[name=id_moneda]').val(listaItems[0].id_moneda);
                 $('[name=simbolo]').val(listaItems[0].simbolo);
+                $('[name=id_almacen_doc]').val(listaItems[0].id_almacen);
     
                 totales.simbolo = listaItems[0].simbolo;
 
@@ -309,9 +312,9 @@ function guardar_doc_create(data){
             if (response > 0){
                 alert('Comprobante registrado con éxito');
                 $('#modal-doc_create').modal('hide');
-                // listarIngresos();
-                if (origenDoc=='guiasSeleccionadas'){
-                    $('#listaIngresosAlmacen').DataTable().ajax.reload();
+                if (origenDoc=='ing'){
+                    listarIngresos();
+                    // $('#listaIngresosAlmacen').DataTable().ajax.reload();
                 }
             }
         }

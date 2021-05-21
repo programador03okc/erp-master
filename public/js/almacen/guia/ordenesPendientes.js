@@ -317,10 +317,13 @@ function listarIngresos(){
                             (row['id_operacion']==21 ? '' :
                             (//falta verificar si ya se creo orden de despacho
                                 (row['count_despachos_oc'] > 0 ? '' : 
-                                `<button type="button" class="anular btn btn-danger btn-xs " data-toggle="tooltip" 
-                                data-placement="bottom" title="Anular Ingreso" data-id="${row['id_mov_alm']}" 
-                                data-guia="${row['id_guia_com']}" data-oc="${row['id_orden_compra']}">
-                                <i class="fas fa-trash"></i></button>`)
+                                    (row['count_facturas'] > 0 ? '' :
+                                        `<button type="button" class="anular btn btn-danger btn-xs " data-toggle="tooltip" 
+                                        data-placement="bottom" title="Anular Ingreso" data-id="${row['id_mov_alm']}" 
+                                        data-guia="${row['id_guia_com']}" data-oc="${row['id_orden_compra']}">
+                                        <i class="fas fa-trash"></i></button>`
+                                    )
+                                )
                             ))
                             }`+
 
@@ -437,7 +440,7 @@ $('#listaIngresosAlmacen tbody').on("click","button.anular_sal", function(){
 
 $('#listaIngresosAlmacen tbody').on("click","button.doc", function(){
     var id_guia = $(this).data('guia');
-    open_doc_create(id_guia);
+    open_doc_create(id_guia, 'ing');
 });
 
 $('#listaIngresosAlmacen tbody').on("click","button.ver_doc", function(){

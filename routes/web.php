@@ -1290,6 +1290,7 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('verGuiaCompraTransferencia/{id}', 'TransferenciaController@verGuiaCompraTransferencia');
 				Route::get('transferencia/{id}', 'OrdenesPendientesController@transferencia');
 				Route::post('obtenerGuiaSeleccionadas', 'OrdenesPendientesController@obtenerGuiaSeleccionadas');
+				Route::get('anular_doc_com/{id}', 'OrdenesPendientesController@anular_doc_com');
 
 			});
 

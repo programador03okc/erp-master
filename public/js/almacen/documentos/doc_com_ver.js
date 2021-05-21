@@ -9,12 +9,20 @@ function documentosVer(id){
         success: function(response){
             console.log(response);
             let html = "";
+            $('[name=id_doc_com]').val();
             response['docs'].forEach(element => {
-                html+=`<tr>
+                html+=`
+                <tr>
+                    <td colSpan="14">
+                        <button type="button" class="btn btn-danger btn-xs " data-toggle="tooltip" 
+                        data-placement="bottom" title="Anular Documento" onClick="anularDocCompra(${element.id_doc_com});">
+                        <i class="fas fa-trash"></i> Anular Documento</button>
+                    </td>
+                </tr>
+                <tr>
                     <th colSpan="2">Documento: </th>
-                    <td colSpan="3">${element.tp_doc+' '+element.serie+'-'+element.numero}</td>
-                    <th colSpan="2">Fecha Emisión: </th>
-                    <td colSpan="2">${formatDate(element.fecha_emision)}</td>
+                    <td colSpan="2">${element.tp_doc+' '+element.serie+'-'+element.numero}</td>
+                    <th >Tipo de Cambio: S/ ${element.tipo_cambio}</td>
                     <th colSpan="2">Empresa-Sede: </th>
                     <td colSpan="3">${element.sede_descripcion}</td>
                 </tr>
@@ -77,6 +85,26 @@ function documentosVer(id){
                 <tr><td colSpan="12"></td></tr>`;
             });
             $('#documentos tbody').html(html);
+        }
+    }).fail( function( jqXHR, textStatus, errorThrown ){
+        console.log(jqXHR);
+        console.log(textStatus);
+        console.log(errorThrown);
+    });
+}
+
+function anularDocCompra(id)
+{
+    // var id = $('[name=id_doc_com]').val();
+    $.ajax({
+        type: 'GET',
+        url: 'anular_doc_com/'+id,
+        dataType: 'JSON',
+        success: function(response){
+            console.log(response);
+            alert('Se annulo correctamente el documento.');
+            listarIngresos();
+            $('#modal-doc_ver').modal('hide');
         }
     }).fail( function( jqXHR, textStatus, errorThrown ){
         console.log(jqXHR);

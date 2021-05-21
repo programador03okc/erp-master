@@ -36,6 +36,7 @@ function productoModal(){
     var page = $('.page-main').attr('type');
     console.log('page: '+page);
     var abrir = false;
+    $('.nuevo').hide();
 
     if (page == 'transformacion'){
         abrir = true;
@@ -78,20 +79,21 @@ function listarProductos(){
         '<th hidden>abrev</th>'+
     '</tr>';
     $('#listaProducto thead').html(html);
+    $('.nuevo').show();
 
     var vardataTables = funcDatatables();
     $('#listaProducto').dataTable({
         'dom': vardataTables[1],
         // 'buttons': [],
-        'buttons': [
-            {
-                text: "Crear Producto",
-                className: 'btn btn-primary',
-                action: function(){
-                    abrirProducto();
-                }
-            }
-        ],
+        // 'buttons': [
+        //     {
+        //         text: "Crear Producto",
+        //         className: 'btn btn-primary',
+        //         action: function(){
+        //             abrirProducto();
+        //         }
+        //     }
+        // ],
         'language' : vardataTables[0],
         // 'processing': true,
         'bDestroy' : true,
@@ -122,6 +124,7 @@ function listarProductosAlmacen(id_almacen){
         '<th hidden>posicion</th>'+
     '</tr>';
     $('#listaProducto thead').html(html);
+    $('.nuevo').hide();
 
     var vardataTables = funcDatatables();
     $('#listaProducto').dataTable({
