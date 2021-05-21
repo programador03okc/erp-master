@@ -143,6 +143,7 @@ function mostrar_requerimiento(IdorCode){
                 $('[name=cci]').val(response['requerimiento'][0].nro_cuenta_interbancaria);
                 $('[name=estado]').val(response['requerimiento'][0].estado);
                 $("[name=para_stock_almacen]").prop("checked", response['requerimiento'][0].para_stock_almacen);
+                $('[name=rol_aprobante_id]').val(response['requerimiento'][0].rol_aprobante_id);
 
                 let simboloMoneda='';
                 if(response['requerimiento'][0].id_moneda==1){

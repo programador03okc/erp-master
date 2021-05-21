@@ -142,7 +142,8 @@ function mostrarTipoForm(tipo){
                 'input-group-cuenta',
                 'input-group-proyecto',
                 'input-group-fuente',
-                'input-group-para_stock_almacen'
+                'input-group-para_stock_almacen',
+                'input-group-aprobante'
 
             ]);
             hiddeElement('mostrar','form-requerimiento',[
@@ -189,7 +190,8 @@ function mostrarTipoForm(tipo){
                 'input-group-telefono-contacto',
                 'input-group-direccion-contacto',
                 'input-group-horario-contacto',
-                'input-group-para_stock_almacen'
+                'input-group-para_stock_almacen',
+                'input-group-aprobante'
                 ]);
             hiddeElement('mostrar','form-requerimiento',[
                 'input-group-moneda',
@@ -238,7 +240,8 @@ function mostrarTipoForm(tipo){
                 'input-group-moneda',
                 'input-group-empresa',
                 'input-group-sede',
-                'input-group-para_stock_almacen'
+                'input-group-para_stock_almacen',
+                'input-group-aprobante'
                 
             ]); 
             cambiarVisibilidadBtn("btn-add-servicio","mostrar");
@@ -273,7 +276,8 @@ function mostrarTipoForm(tipo){
                 'input-group-direccion-contacto',
                 'input-group-horario-contacto',
                 'input-group-fuente',
-                'input-group-para_stock_almacen'
+                'input-group-para_stock_almacen',
+                'input-group-aprobante'
             ]);
             hiddeElement('mostrar','form-requerimiento',[
                 'input-group-moneda',

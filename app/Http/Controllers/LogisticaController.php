@@ -62,8 +62,54 @@ class LogisticaController extends Controller
         $unidades = (new AlmacenController)->mostrar_unidades_cbo();
         $proyectos_activos = (new ProyectosController)->listar_proyectos_activos();
         $fuentes = $this->mostrar_fuentes();
+        $aprobantes = $this->mostrarAprobantes();
 
-        return view('logistica/requerimientos/gestionar_requerimiento', compact('grupos','sis_identidad','tipo_requerimiento','monedas', 'prioridades', 'empresas', 'unidades_medida','roles','periodos','bancos','tipos_cuenta','clasificaciones','subcategorias','categorias','unidades','proyectos_activos','fuentes'));
+        return view('logistica/requerimientos/gestionar_requerimiento', compact('aprobantes','grupos','sis_identidad','tipo_requerimiento','monedas', 'prioridades', 'empresas', 'unidades_medida','roles','periodos','bancos','tipos_cuenta','clasificaciones','subcategorias','categorias','unidades','proyectos_activos','fuentes'));
+    }
+
+
+    function mostrarAprobantes(){ 
+        $roles = Auth::User()->getAllGrupo();
+        $mostrarAprobantes=false;
+        $numeroDeOrdenSeleccionado=null;
+        $operacion = DB::table('administracion.adm_operacion')
+        ->select('adm_operacion.*')
+        ->where([['adm_operacion.estado', 1],['adm_operacion.id_grupo',$roles[0]['id_grupo']]]) // el usuario pertenece a un solo grupo
+        ->first();
+
+        $flujos = DB::table('administracion.adm_flujo')
+        ->select('adm_flujo.*')
+        ->where([['adm_flujo.estado', 1],['adm_flujo.id_operacion',$operacion->id_operacion]]) // el usuario pertenece a un solo grupo
+        ->get();
+
+        $ordenList=[];
+        foreach($flujos as $flujo){
+            $ordenList[]=$flujo->orden;
+        }
+        asort($ordenList);
+
+        $contadorRepetidosOrdenList = array_count_values($ordenList);
+
+        foreach($contadorRepetidosOrdenList as $k => $v){
+            if($v >1){
+                $mostrarAprobantes = true;
+                $numeroDeOrdenSeleccionado=$k;
+            }
+        }
+
+        $flujosAprobante=[];
+        if($mostrarAprobantes == true){
+            foreach($flujos as $flujo){
+                if($flujo->orden == $numeroDeOrdenSeleccionado){
+                    $flujosAprobante[]= $flujo;
+                }
+
+            }
+        }
+
+        return $flujosAprobante;
+        // return response()->json($flujosAprobante);
+
     }
 
     function view_gestionar_cotizaciones()
@@ -593,6 +639,7 @@ class LogisticaController extends Controller
                 'alm_req.fecha_entrega',
                 'alm_req.estado',
                 'alm_req.para_stock_almacen',
+                'alm_req.rol_aprobante_id',
                 'adm_estado_doc.estado_doc',
                 'adm_estado_doc.bootstrap_color',
                 DB::raw("(CASE WHEN alm_req.estado = 1 THEN 'Habilitado' ELSE 'Deshabilitado' END) AS estado_desc")
@@ -711,6 +758,7 @@ class LogisticaController extends Controller
                 'alm_req.fuente_id',
                 'alm_req.fuente_det_id',
                 'alm_req.para_stock_almacen',
+                'alm_req.rol_aprobante_id',
                 DB::raw("(CASE WHEN alm_req.estado = 1 THEN 'Habilitado' ELSE 'Deshabilitado' END) AS estado_desc")
             )
             ->where([
@@ -785,7 +833,8 @@ class LogisticaController extends Controller
                     'fuente_id' => $data->fuente_id,
                     'fuente_det_id' => $data->fuente_det_id,
                     'tiene_transformacion' => $data->tiene_transformacion,
-                    'para_stock_almacen' => $data->para_stock_almacen
+                    'para_stock_almacen' => $data->para_stock_almacen,
+                    'rol_aprobante_id' => $data->rol_aprobante_id
                     
                 ];
             };
@@ -2035,7 +2084,8 @@ class LogisticaController extends Controller
                 'tiene_transformacion'  => isset($request->requerimiento['tiene_transformacion'])?$request->requerimiento['tiene_transformacion']:false,
                 'fuente_id'             => (isset($request->requerimiento['fuente']) && $request->requerimiento['fuente']>0)?$request->requerimiento['fuente']:null,
                 'fuente_det_id'         => (isset($request->requerimiento['fuente_det']) && $request->requerimiento['fuente_det']>0)?$request->requerimiento['fuente_det']:null,
-                'para_stock_almacen'    => (isset($request->requerimiento['para_stock_almacen']))?$request->requerimiento['para_stock_almacen']:false
+                'para_stock_almacen'    => (isset($request->requerimiento['para_stock_almacen']))?$request->requerimiento['para_stock_almacen']:false,
+                'rol_aprobante_id'      => (isset($request->requerimiento['rol_aprobante']))?$request->requerimiento['rol_aprobante']:null
             ],
             'id_requerimiento'
         );

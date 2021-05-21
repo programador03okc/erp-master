@@ -223,7 +223,7 @@
 
         var roles = {!! json_encode($roles) !!};
         var grupos = {!! json_encode($grupos) !!};
-        console.log(roles);
+        // console.log(roles);
         // grupos.forEach(element => {
         //     if(element.id_grupo ==2){ // comercial
         //         document.querySelector("div[type='lista_requerimiento'] ul").children[0].setAttribute("class",'active')

@@ -106,21 +106,66 @@ function listar_requerimientos_pendientes_aprobar(){
                     disabledBtn= 'disabled';
                 }
                 let first_aprob={};
+                // console.log(row.pendiente_aprobacion);
                 if(row.pendiente_aprobacion.length > 0){
                         first_aprob = row.pendiente_aprobacion.reduce(function(prev, curr) {
                         return prev.orden < curr.orden ? prev : curr;
                     });
-
-                    roles.forEach(element => {
-                        if(first_aprob.id_rol==element.id_rol){
-                            disabledBtn='';
-                        }else{
-                            disabledBtn= 'disabled';
-
-                        }
-                        
-                    });
+ 
                 }
+                // buscar si la primera aprobación su numero de orden se repite en otro pendiente_aprobacion
+                let aprobRolList=[];
+                row.pendiente_aprobacion.forEach(element => {
+                    if(element.orden == first_aprob.orden){
+                        aprobRolList.push(element.id_rol);
+                    }
+                });
+
+                // si el usuario actual su rol le corresponde aprobar
+                // console.log(row.rol_aprobante_id);
+                // console.log(aprobRolList);
+
+                // si existe varios con mismo orden 
+                    if(aprobRolList.length >1){
+
+                        // si existe un rol aprobante ya definido en el requerimiento
+                        if(row.rol_aprobante_id >0){
+                            roles.forEach(element => {
+                                if(row.rol_aprobante_id==element.id_rol){
+                                // if(aprobRolList.includes(element.id_rol)){
+                                    disabledBtn='';
+                                }else{
+                                    disabledBtn= 'disabled';
+            
+                                }
+                                
+                            });
+                        }else{
+                            roles.forEach(element => {
+                                if(aprobRolList.includes(element.id_rol)){
+                                    disabledBtn='';
+                                }else{
+                                    disabledBtn= 'disabled';
+            
+                                }
+                                
+                            });
+                        }
+
+                    }else{
+                        roles.forEach(element => {
+                            if(first_aprob.id_rol==element.id_rol){
+                                disabledBtn='';
+                            }else{
+                                disabledBtn= 'disabled';
+        
+                            }
+                            
+                        });
+                    }
+
+                
+
 
 
                 let containerOpenBrackets='<center><div class="btn-group" role="group" style="margin-bottom: 5px;">';

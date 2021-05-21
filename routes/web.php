@@ -707,9 +707,10 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::get('explorar-requerimiento/{id_requerimiento?}', 'LogisticaController@explorar_requerimiento')->name('explorar-requerimiento');
 					Route::get('elaborados/{empresa?}/{sede?}/{grupo?}/{prioridad?}', 'LogisticaController@listar_requerimientos_elaborados')->name('elaborados');
 					
+					// Route::get('aprobantes', 'LogisticaController@mostrarAprobantes');
 					Route::get('pendiente-aprobacion', 'RequerimientoController@requerimientos_pendientes_aprobacion')->name('pendientes-aprobacion');
 					Route::post('aprobar-documento', 'AprobacionController@aprobar_documento')->name('aprobar-documento');
-					Route::post('observar-documento', 'AprobacionController@observar_documento')->name('observar-documento');
+					Route::post('aprobar-documento', 'AprobacionController@aprobar_documento')->name('aprobar-documento');
 					Route::post('anular-documento', 'AprobacionController@anular_documento')->name('anular-documento');
 					Route::post('listarRequerimientosAprobados', 'AprobacionController@listarRequerimientosAprobados')->name('listar-requerimientos-aprobados');
 					Route::get('requerimientoAPago/{id}', 'AprobacionController@requerimientoAPago')->name('requerimiento-a-pago');
