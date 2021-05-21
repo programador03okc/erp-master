@@ -184,11 +184,11 @@ function mostrar_detalle_transformacion(){
             <td>${element.part_number!==null ? element.part_number : ''}</td>
             <td>${element.descripcion+' <strong>'+html_ser+'</strong>'}</td>
             <td>${element.tipo=='sobrante'? 
-                `<input type="number" class="form-control cantidad" style="width:120px;" data-id="${element.id}" step="0.001" 
+                `<input type="number" class="form-control cantidad" style="width:120px;" data-idprod="${element.id_producto}" step="0.001" 
                 value="${element.cantidad}"/>` : element.cantidad}
             </td>
             <td>${element.abreviatura}</td>
-            <td><input type="number" class="form-control unitario" style="width:120px;" data-id="${element.id}" step="0.001" 
+            <td><input type="number" class="form-control unitario" style="width:120px;" data-id="${element.tipo=='sobrante'?element.id_producto:element.id}" data-tipo="${element.tipo}" step="0.001" 
                 value="${element.valor_unitario}"/></td>
             <td>${formatNumber.decimal(element.valor_total,'',-2)}</td>
             ${`<td><input type="text" class="oculto" id="series" value="${element.series}" data-partnumber="${element.part_number}"/>
@@ -202,14 +202,22 @@ function mostrar_detalle_transformacion(){
 
 $('#detalleOrdenSeleccionadas tbody').on("change", ".unitario", function(){
     
+    let tipo = $(this).data('tipo');
     let id = $(this).data('id');
     let unitario = parseFloat($(this).val());
     console.log('unitario: '+unitario);
     
     series_transformacion.forEach(element => {
-        if (element.id == id){
-            element.valor_unitario = unitario;
-            element.valor_total = (unitario * parseFloat(element.cantidad));
+        if (tipo=='sobrante'){
+            if (element.id_producto == id){
+                element.valor_unitario = unitario;
+                element.valor_total = (unitario * parseFloat(element.cantidad));
+            }
+        } else {
+            if (element.id == id){
+                element.valor_unitario = unitario;
+                element.valor_total = (unitario * parseFloat(element.cantidad));
+            }
         }
     });
     console.log(series_transformacion);
@@ -218,12 +226,12 @@ $('#detalleOrdenSeleccionadas tbody').on("change", ".unitario", function(){
 
 $('#detalleOrdenSeleccionadas tbody').on("change", ".cantidad", function(){
     
-    let id = $(this).data('id');
+    let idprod = $(this).data('idprod');
     let cantidad = parseFloat($(this).val());
     console.log('cantidad: '+cantidad);
     
     series_transformacion.forEach(element => {
-        if (element.id == id){
+        if (element.id_producto == idprod){
             element.cantidad = cantidad;
             element.valor_total = (element.valor_unitario * parseFloat(element.cantidad));
         }
@@ -388,7 +396,7 @@ function guardar_guia_create(data){
                     var rspta = confirm('¿Desea ingresar ahora el documento de compra?')
                     
                     if (rspta){
-                        open_doc_create(response['id_guia']);
+                        open_doc_create(response['id_guia'], 'oc');
                     }
                     listarOrdenesPendientes();
                 }
@@ -420,23 +428,25 @@ function agregarProducto(producto){
     //     'series'       : []
     // });
     // mostrar_ordenes_seleccionadas();
-    var cod = series_transformacion[0].codigo;
-    series_transformacion.push({
-        'id'            : null,
-        'id_detalle'    : null,
-        'series'        : [],
-        'tipo'          : 'sobrante',
-        'cantidad'      : 1,
-        'id_producto'   : parseInt(producto.id_producto),
-        'codigo'        : cod,
-        'cod_prod'      : producto.codigo,
-        'part_number'   : producto.part_number,
-        'descripcion'   : producto.descripcion,
-        'abreviatura'   : producto.abreviatura,
-        'valor_unitario': 0.01,
-        'valor_total'   : 0.01
-    });
-    mostrar_detalle_transformacion();
+    if (series_transformacion.length > 0){
+        var cod = series_transformacion[0].codigo;
+        series_transformacion.push({
+            'id'            : null,
+            'id_detalle'    : null,
+            'series'        : [],
+            'tipo'          : 'sobrante',
+            'cantidad'      : 1,
+            'id_producto'   : parseInt(producto.id_producto),
+            'codigo'        : cod,
+            'cod_prod'      : producto.codigo,
+            'part_number'   : producto.part_number,
+            'descripcion'   : producto.descripcion,
+            'abreviatura'   : producto.abreviatura,
+            'valor_unitario': 0.01,
+            'valor_total'   : 0.01
+        });
+        mostrar_detalle_transformacion();
+    }
 }
 
 function abrirProducto(id_producto){

@@ -134,11 +134,11 @@ function listarRequerimientosPendientes(){
                             <i class="fas fa-paperclip"></i></button>
                         <button type="button" class="anular_od btn btn-danger boton" data-toggle="tooltip" 
                             data-placement="bottom" data-id="${row['id_od']}" data-cod="${row['codigo_od']}" title="Anular Orden Despacho" >
-                            <i class="fas fa-trash"></i></button>` : '' )+
-                        (row['estado'] == 9 ? 
-                        `<button type="button" class="adjuntar btn btn-${row['count_despacho_adjuntos']>0 ? 'warning' : 'default' } boton" data-toggle="tooltip" 
-                            data-placement="bottom" data-id="${row['id_od']}" data-cod="${row['codigo_od']}" title="Adjuntar Boleta/Factura" >
-                            <i class="fas fa-paperclip"></i></button>` : '')
+                            <i class="fas fa-trash"></i></button>` : '' )
+                        // (row['estado'] == 9 ? 
+                        // `<button type="button" class="adjuntar btn btn-${row['count_despacho_adjuntos']>0 ? 'warning' : 'default' } boton" data-toggle="tooltip" 
+                        //     data-placement="bottom" data-id="${row['id_od']}" data-cod="${row['codigo_od']}" title="Adjuntar Boleta/Factura" >
+                        //     <i class="fas fa-paperclip"></i></button>` : '')
                 // } else {
                 //     return '<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" '+
                 //     'data-placement="bottom" title="Ver Detalle" data-id="'+row['id_requerimiento']+'">'+

@@ -7545,14 +7545,14 @@ class AlmacenController extends Controller
         }
         return response()->json($update);
     }
-    public function tipo_cambio_compra($fecha){
-        $data = DB::table('contabilidad.cont_tp_cambio')
-        ->where('cont_tp_cambio.fecha','<=',$fecha)
-        ->orderBy('fecha','desc')
-        // ->take(1)->get();
-        ->first();
-        return $data->compra;
-    }
+    // public function tipo_cambio_compra($fecha){
+    //     $data = DB::table('contabilidad.cont_tp_cambio')
+    //     ->where('cont_tp_cambio.fecha','<=',$fecha)
+    //     ->orderBy('fecha','desc')
+    //     // ->take(1)->get();
+    //     ->first();
+    //     return $data->compra;
+    // }
     // public function actualiza_totales_doc($por_dscto, $id_doc, $fecha_emision){
     //     $detalle = DB::table('almacen.doc_com_det')
     //     ->select(DB::raw('sum(doc_com_det.precio_total) as sub_total'))
