@@ -50,6 +50,7 @@ class DistribucionController extends Controller
     public function actualizaCantidadDespachosTabs(){
         $count_pendientes = DB::table('almacen.alm_req')
         ->where([['alm_req.estado','=',1]])
+        ->orWhere([['alm_req.estado','=',2]])
         ->count();
 
         $count_confirmados = DB::table('almacen.alm_req')
