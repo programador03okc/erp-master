@@ -43,12 +43,12 @@ function obtenerGuía(id){
                 $('[name=id_condicion]').val(listaItems[0].id_condicion);
                 $('[name=credito_dias]').val(listaItems[0].plazo_dias);
                 $('[name=id_sede]').val(listaItems[0].id_sede);
-                $('[name=id_moneda]').val(listaItems[0].id_moneda);
+                $('[name=moneda]').val(listaItems[0].id_moneda);
                 $('[name=simbolo]').val(listaItems[0].simbolo);
     
-                totales.simbolo = listaItems[0].simbolo;
-            
                 totales = {'porcentaje_igv' : parseFloat(response['igv'])};
+                
+                totales.simbolo = listaItems[0].simbolo;
                 mostrarListaItems();
             }
         }
@@ -134,7 +134,7 @@ function obtenerGuíaSeleccionadas(id_ingresos_seleccionadas, prov, id_prov){
                 $('[name=id_condicion]').val(listaItems[0].id_condicion);
                 $('[name=credito_dias]').val(listaItems[0].plazo_dias);
                 $('[name=id_sede]').val(listaItems[0].id_sede);
-                $('[name=id_moneda]').val(listaItems[0].id_moneda);
+                $('[name=moneda]').val(listaItems[0].id_moneda);
                 $('[name=simbolo]').val(listaItems[0].simbolo);
                 $('[name=id_almacen_doc]').val(listaItems[0].id_almacen);
     
