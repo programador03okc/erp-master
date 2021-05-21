@@ -206,6 +206,8 @@
                                                     <option value="{{$mon->id_moneda}}">{{$mon->descripcion}}</option>
                                                 @endforeach
                                             </select>
+                                            <h5>Creado por:</h5>
+                                            <label id="usuario_registro"></label>
                                         </div>
                                         <div class="col-md-8">
                                             <h5>Especificaciones del Producto</h5>

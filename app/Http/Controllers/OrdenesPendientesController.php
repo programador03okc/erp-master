@@ -173,7 +173,7 @@ class OrdenesPendientesController extends Controller
     public function detalleOrden($id_orden){
         $detalle = DB::table('logistica.log_det_ord_compra')
             ->select(
-                'log_det_ord_compra.*','alm_item.id_producto','alm_prod.codigo',
+                'log_det_ord_compra.*','alm_prod.id_producto','alm_prod.codigo',
                 'alm_prod.part_number','alm_cat_prod.descripcion as categoria',
                 'alm_subcat.descripcion as subcategoria','alm_req.id_requerimiento',
                 'alm_prod.descripcion','alm_und_medida.abreviatura','alm_req.codigo as codigo_req',
@@ -182,8 +182,8 @@ class OrdenesPendientesController extends Controller
                 'entidades.nombre','oc_propias.id as id_oc_propia','oc_propias.url_oc_fisica',
                 'users.name as user_name'
             )
-            ->leftjoin('almacen.alm_item', 'alm_item.id_item', '=', 'log_det_ord_compra.id_item')
-            ->leftjoin('almacen.alm_prod', 'alm_prod.id_producto', '=', 'alm_item.id_producto')
+            // ->leftjoin('almacen.alm_item', 'alm_item.id_item', '=', 'log_det_ord_compra.id_producto')
+            ->leftjoin('almacen.alm_prod', 'alm_prod.id_producto', '=', 'log_det_ord_compra.id_producto')
             ->leftjoin('almacen.alm_cat_prod', 'alm_cat_prod.id_categoria', '=', 'alm_prod.id_categoria')
             ->leftjoin('almacen.alm_subcat', 'alm_subcat.id_subcategoria', '=', 'alm_prod.id_subcategoria')
             ->leftjoin('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'log_det_ord_compra.id_unidad_medida')
