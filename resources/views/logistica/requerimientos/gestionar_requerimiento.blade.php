@@ -143,6 +143,16 @@
                                 <input type="date" class="form-control input-sm activation" name="fecha_entrega">
                             </div>
                         </div>
+                        <div class="col-md-2" id="input-group-para_stock_almacen">
+                            <div class="form-group">
+                                <h5>&nbsp;</h5>
+                                <div class="checkbox">
+                                    <label>
+                                        <input type="checkbox" class="activation" name="para_stock_almacen"> Stock para Almacén
+                                    </label>
+                                    </div>
+                            </div>
+                        </div>
 
                         <div id="input-group-fuente">
                             <div class="col-md-2">
@@ -227,7 +237,7 @@
             </div>
         </div>
 
-        <div class="row">
+        <div class="row" id="seccion-cliente">
             <div class="col-md-12">
                 <h4 style="display:flex;justify-content: space-between;">Cliente</h4> 
                 <fieldset class="group-table">   

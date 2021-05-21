@@ -220,7 +220,7 @@ function agregarItem(){
 
 
  function llenar_tabla_detalle_requerimiento(data_item){
-    console.log(data_item);
+    // console.log(data_item);
     limpiarTabla('ListaDetalleRequerimiento');
     htmls ='<tr></tr>';
     $('#ListaDetalleRequerimiento tbody').html(htmls);

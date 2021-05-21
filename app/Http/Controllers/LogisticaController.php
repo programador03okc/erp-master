@@ -592,6 +592,7 @@ class LogisticaController extends Controller
                 'alm_req.monto',
                 'alm_req.fecha_entrega',
                 'alm_req.estado',
+                'alm_req.para_stock_almacen',
                 'adm_estado_doc.estado_doc',
                 'adm_estado_doc.bootstrap_color',
                 DB::raw("(CASE WHEN alm_req.estado = 1 THEN 'Habilitado' ELSE 'Deshabilitado' END) AS estado_desc")
@@ -709,6 +710,7 @@ class LogisticaController extends Controller
                 'alm_req.tiene_transformacion',
                 'alm_req.fuente_id',
                 'alm_req.fuente_det_id',
+                'alm_req.para_stock_almacen',
                 DB::raw("(CASE WHEN alm_req.estado = 1 THEN 'Habilitado' ELSE 'Deshabilitado' END) AS estado_desc")
             )
             ->where([
@@ -782,7 +784,8 @@ class LogisticaController extends Controller
                     'monto' => $data->monto,
                     'fuente_id' => $data->fuente_id,
                     'fuente_det_id' => $data->fuente_det_id,
-                    'tiene_transformacion' => $data->tiene_transformacion
+                    'tiene_transformacion' => $data->tiene_transformacion,
+                    'para_stock_almacen' => $data->para_stock_almacen
                     
                 ];
             };
@@ -2031,7 +2034,8 @@ class LogisticaController extends Controller
                 'tipo_cuadro'           => isset($request->requerimiento['tipo_cuadro'])?$request->requerimiento['tipo_cuadro']:null,
                 'tiene_transformacion'  => isset($request->requerimiento['tiene_transformacion'])?$request->requerimiento['tiene_transformacion']:false,
                 'fuente_id'             => (isset($request->requerimiento['fuente']) && $request->requerimiento['fuente']>0)?$request->requerimiento['fuente']:null,
-                'fuente_det_id'         => (isset($request->requerimiento['fuente_det']) && $request->requerimiento['fuente_det']>0)?$request->requerimiento['fuente_det']:null
+                'fuente_det_id'         => (isset($request->requerimiento['fuente_det']) && $request->requerimiento['fuente_det']>0)?$request->requerimiento['fuente_det']:null,
+                'para_stock_almacen'    => (isset($request->requerimiento['para_stock_almacen']))?$request->requerimiento['para_stock_almacen']:false
             ],
             'id_requerimiento'
         );

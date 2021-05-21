@@ -141,7 +141,8 @@ function mostrarTipoForm(tipo){
                 'input-group-almacen',
                 'input-group-cuenta',
                 'input-group-proyecto',
-                'input-group-fuente'
+                'input-group-fuente',
+                'input-group-para_stock_almacen'
 
             ]);
             hiddeElement('mostrar','form-requerimiento',[
@@ -151,11 +152,9 @@ function mostrarTipoForm(tipo){
                 'input-group-tipo-cliente',
                 'input-group-telefono-cliente',
                 'input-group-email-cliente',
-                'input-group-cliente',
                 'input-group-fecha_entrega',
                 'input-group-ubigeo-entrega',
                 'input-group-monto',
-                'input-group-cliente',
                 'input-group-tipo-cliente',
                 'input-group-telefono-cliente',
                 'input-group-email-cliente',
@@ -166,6 +165,8 @@ function mostrarTipoForm(tipo){
                 'input-group-telefono-contacto',
                 'input-group-direccion-contacto',
                 'input-group-horario-contacto',
+                'seccion-cliente',
+                'seccion-contacto-cliente'
             ]); 
             cambiarVisibilidadBtn("btn-add-servicio","ocultar");
             cambiarVisibilidadBtn("btn-crear-producto","mostrar");
@@ -187,7 +188,8 @@ function mostrarTipoForm(tipo){
                 'input-group-email-contacto',
                 'input-group-telefono-contacto',
                 'input-group-direccion-contacto',
-                'input-group-horario-contacto'
+                'input-group-horario-contacto',
+                'input-group-para_stock_almacen'
                 ]);
             hiddeElement('mostrar','form-requerimiento',[
                 'input-group-moneda',
@@ -197,7 +199,7 @@ function mostrarTipoForm(tipo){
                 'input-group-tipo-cliente',
                 'input-group-telefono-cliente',
                 'input-group-email-cliente',
-                'input-group-cliente',
+                'seccion-cliente',
                 'input-group-direccion-entrega',
                 'input-group-ubigeo-entrega',
                 'input-group-monto'
@@ -216,7 +218,6 @@ function mostrarTipoForm(tipo){
                 'input-group-almacen',
                 'input-group-ubigeo-entrega',
                 'input-group-cuenta',
-                'input-group-cliente',
                 'input-group-tipo-cliente',
                 'input-group-telefono-cliente',
                 'input-group-email-cliente',
@@ -228,12 +229,16 @@ function mostrarTipoForm(tipo){
                 'input-group-telefono-contacto',
                 'input-group-direccion-contacto',
                 'input-group-horario-contacto',
-                'input-group-fuente'
+                'input-group-fuente',
+                'input-group-proyecto',
+                'seccion-cliente',
+                'seccion-contacto-cliente'
                 ]);
             hiddeElement('mostrar','form-requerimiento',[
                 'input-group-moneda',
                 'input-group-empresa',
-                'input-group-sede'
+                'input-group-sede',
+                'input-group-para_stock_almacen'
                 
             ]); 
             cambiarVisibilidadBtn("btn-add-servicio","mostrar");
@@ -244,14 +249,13 @@ function mostrarTipoForm(tipo){
 
         case 'BIENES_SERVICIOS_PROYECTOS': //bienes y servicios - proyectos
             hiddeElement('ocultar','form-requerimiento',[
-                'input-group-cliente',
                 'input-group-rol-usuario',
                 'input-group-comercial',
                 'input-group-almacen',
                 'input-group-ubigeo-entrega',
                 'input-group-cuenta',
                 'input-group-monto',
-                'input-group-cliente',
+                'seccion-cliente',
                 'input-group-tipo-cliente',
                 'input-group-telefono-cliente',
                 'input-group-email-cliente',
@@ -268,7 +272,8 @@ function mostrarTipoForm(tipo){
                 'input-group-telefono-contacto',
                 'input-group-direccion-contacto',
                 'input-group-horario-contacto',
-                'input-group-fuente'
+                'input-group-fuente',
+                'input-group-para_stock_almacen'
             ]);
             hiddeElement('mostrar','form-requerimiento',[
                 'input-group-moneda',
