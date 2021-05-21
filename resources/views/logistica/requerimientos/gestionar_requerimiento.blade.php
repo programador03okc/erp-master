@@ -155,7 +155,7 @@
                         </div>
                         <div class="col-md-2" id="input-group-aprobante" >
                             <h5>Aprobante</h5>
-                            <select  name="rol_aprobante" class="form-control activation" required>
+                            <select  name="rol_aprobante" class="form-control activation">
                                 @if(count($aprobantes)>0)
                                     <option value="">Elija una opción</option>
                                     @foreach ($aprobantes as $aprobante)
