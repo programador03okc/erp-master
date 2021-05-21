@@ -1,5 +1,10 @@
+let listaItems = [];
+let totales = {};
+let origenDoc = null;
+
 function open_doc_create(id_guia){
     console.log('open_doc_create');
+    origenDoc = 'guia';
     $('#modal-doc_create').modal({
         show: true
     });
@@ -14,9 +19,6 @@ function open_doc_create(id_guia){
     totales.simbolo = "S/";
     obtenerGuía(id_guia);
 }
-
-let listaItems = [];
-let totales = {};
 
 function obtenerGuía(id){
     $.ajax({
@@ -39,7 +41,11 @@ function obtenerGuía(id){
                 $('[name=id_condicion]').val(listaItems[0].id_condicion);
                 $('[name=credito_dias]').val(listaItems[0].plazo_dias);
                 $('[name=id_sede]').val(listaItems[0].id_sede);
-                
+                $('[name=id_moneda]').val(listaItems[0].id_moneda);
+                $('[name=simbolo]').val(listaItems[0].simbolo);
+    
+                totales.simbolo = listaItems[0].simbolo;
+            
                 totales = {'porcentaje_igv' : parseFloat(response['igv'])};
                 mostrarListaItems();
             }
@@ -53,6 +59,7 @@ function obtenerGuía(id){
 
 function open_doc_create_seleccionadas(){
     console.log(ingresos_seleccionados);
+    origenDoc = 'guiasSeleccionadas';
     var id_ingresos_seleccionadas = [];
     var id_prov = null;
     var prov = null;
@@ -125,7 +132,11 @@ function obtenerGuíaSeleccionadas(id_ingresos_seleccionadas, prov, id_prov){
                 $('[name=id_condicion]').val(listaItems[0].id_condicion);
                 $('[name=credito_dias]').val(listaItems[0].plazo_dias);
                 $('[name=id_sede]').val(listaItems[0].id_sede);
-                
+                $('[name=id_moneda]').val(listaItems[0].id_moneda);
+                $('[name=simbolo]').val(listaItems[0].simbolo);
+    
+                totales.simbolo = listaItems[0].simbolo;
+
                 totales = {'porcentaje_igv' : parseFloat(response['igv'])};
                 mostrarListaItems();
             }
@@ -299,7 +310,9 @@ function guardar_doc_create(data){
                 alert('Comprobante registrado con éxito');
                 $('#modal-doc_create').modal('hide');
                 // listarIngresos();
-                $('#listaIngresosAlmacen').DataTable().ajax.reload();
+                if (origenDoc=='guiasSeleccionadas'){
+                    $('#listaIngresosAlmacen').DataTable().ajax.reload();
+                }
             }
         }
     }).fail( function( jqXHR, textStatus, errorThrown ){
