@@ -21,13 +21,9 @@ function verDetalleDespacho(id_od){
                 '<td>'+i+'</td>'+
                 '<td>'+(element.codigo !== null ? element.codigo : '')+'</td>'+
                 '<td>'+(element.part_number !== null ? element.part_number : '')+'</td>'+
-                '<td>'+(element.categoria !== null ? element.categoria : '')+'</td>'+
-                '<td>'+(element.subcategoria !== null ? element.subcategoria : '')+'</td>'+
                 '<td>'+(element.descripcion !== null ? element.descripcion : '')+'</td>'+
                 '<td>'+element.cantidad+'</td>'+
                 '<td>'+(element.abreviatura !== null ? element.abreviatura : '')+'</td>'+
-                '<td>'+(element.posicion !== null ? element.posicion : '')+'</td>'+
-                '<td>'+element.descripcion_producto+'</td>'+
                 '</tr>';
                 i++;
             });

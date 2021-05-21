@@ -78,21 +78,21 @@ function listarRequerimientosPendientes(){
                     else if (row['id_tipo_requerimiento'] !== 1 && row['estado'] == 19 && row['id_od'] == null){
                         return 'Pendiente de que <strong>Distribución</strong> genere la OD';
                     }
-                    else if (row['estado'] == 22){
-                        return 'Pendiente de que <strong>Customización</strong> realice la transformación';
-                    }
-                    else if (row['estado'] == 10){
-                        return 'Pendiente de que <strong>Distribución</strong> realice el Despacho Externo';
-                    }
+                    // else if (row['estado'] == 22){
+                    //     return 'Pendiente de que <strong>Customización</strong> realice la transformación';
+                    // }
+                    // else if (row['estado'] == 10){
+                    //     return 'Pendiente de que <strong>Distribución</strong> realice el Despacho Externo';
+                    // }
                     else if (row['estado'] == 27){
                         return 'Pendiente de que <strong>Almacén</strong> complete los ingresos';
                     }
                     else if (row['estado'] == 28){
-                        return 'Pendiente de que <strong>Distribución</strong> genere la Orden de Despacho';
+                        return 'Pendiente de que <strong>Compras</strong> genere la Orden de Despacho';
                     }
-                    else if (row['estado'] == 29){
-                        return 'Pendiente de que <strong>Almacén</strong> genere la Salida';
-                    }
+                    // else if (row['estado'] == 29){
+                    //     return 'Pendiente de que <strong>Almacén</strong> genere la Salida';
+                    // }
                 }
             }
         ],
@@ -121,8 +121,8 @@ function listarRequerimientosPendientes(){
                         //     (row['estado'] == 19 && row['id_tipo_requerimiento'] == 1 && row['sede_requerimiento'] == row['sede_orden'] && row['id_od'] == null) || //compra 
                         // (row['estado'] == 19 && row['id_tipo_requerimiento'] == 1 && row['sede_requerimiento'] !== row['sede_orden'] && row['id_transferencia'] !== null && row['id_od'] == null) || //compra con transferencia
                         (row['estado'] == 19 && row['confirmacion_pago'] == true && /*row['id_od'] == null &&*/ row['count_transferencia'] == 0) || //venta directa
-                        (row['estado'] == 10) || (row['estado'] == 22) ||
-                        (row['estado'] == 28) || (row['estado'] == 27) ||
+                        // (row['estado'] == 10) || (row['estado'] == 22) ||
+                        (row['estado'] == 28) || //(row['estado'] == 27) ||
                         (row['estado'] == 19 && row['id_tipo_requerimiento'] !== 1) ||
                         (row['estado'] == 19 && row['confirmacion_pago'] == true && /*row['id_od'] == null &&*/ row['count_transferencia'] > 0 && row['count_transferencia'] == row['count_transferencia_recibida'])) ? //venta directa con transferencia
                             ('<button type="button" class="despacho btn btn-success boton" data-toggle="tooltip" '+

@@ -20,13 +20,9 @@
                                             <th>#</th>
                                             <th>Código</th>
                                             <th>PartNumber</th>
-                                            <th>Categoría</th>
-                                            <th>SubCategoría</th>
                                             <th>Descripción</th>
                                             <th>Cantidad</th>
                                             <th>Unid</th>
-                                            <th>Posición</th>
-                                            <th>Descripción OCC</th>
                                             <!-- <th>Estado</th>
                                             <th>Acción</th> -->
                                         </tr>

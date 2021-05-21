@@ -12,8 +12,7 @@
 @section('content')
 
     <div class="row">
-        <div class="col-md-3">
-              <!-- small box -->
+        <!-- <div class="col-md-3">
             <div class="small-box bg-blue">
                 <div class="icon">
                     <i class="fas fa-truck"></i>
@@ -28,7 +27,7 @@
                     <a href="#" class="small-box-footer">Ir <i class="fa fa-arrow-circle-right"></i></a>
                     @endif
             </div>
-        </div>
+        </div> -->
         <div class="col-md-3">
             <div class="small-box bg-orange">
                 <div class="icon">
@@ -47,7 +46,7 @@
             </div>
         </div>
         <div class="col-md-3">
-            <div class="small-box bg-teal">
+            <div class="small-box bg-blue">
                 <div class="icon">
                     <i class="fas fa-sign-out-alt"></i>
                     </div>
@@ -78,6 +77,22 @@
                 <a href="#" class="small-box-footer">Ir <i class="fa fa-arrow-circle-right"></i></a>
                 @endif
                 <!-- </div> -->
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="small-box bg-maroon">
+                <div class="icon">
+                    <i class="fas fa-code-branch"></i>
+                </div>
+                <div class="inner">
+                    <h3>{{$cantidad_transformaciones_pendientes}}</h3>
+                    <p style="font-size:15px;display:flex;width:20px;">Transformaciones Pendientes</p>
+                </div>
+                @if(Auth::user()->tieneAplicacion(87))
+                <a href="{{route('almacen.customizacion.gestion-customizaciones.index')}}" class="small-box-footer">Ir <i class="fa fa-arrow-circle-right"></i></a>
+                @else
+                <a href="#" class="small-box-footer">Ir <i class="fa fa-arrow-circle-right"></i></a>
+                @endif
             </div>
         </div>
     </div>
@@ -112,22 +127,7 @@
         <div class="col-md-6">
             <canvas id="chartRequerimientos" width="600" height="300"></canvas>
         </div>
-        <div class="col-md-3">
-            <div class="small-box bg-maroon">
-                <div class="icon">
-                    <i class="fas fa-code-branch"></i>
-                </div>
-                <div class="inner">
-                    <h3>{{$cantidad_transformaciones_pendientes}}</h3>
-                    <p style="font-size:15px;display:flex;width:20px;">Transformaciones Pendientes</p>
-                </div>
-                @if(Auth::user()->tieneAplicacion(87))
-                <a href="{{route('almacen.customizacion.gestion-customizaciones.index')}}" class="small-box-footer">Ir <i class="fa fa-arrow-circle-right"></i></a>
-                @else
-                <a href="#" class="small-box-footer">Ir <i class="fa fa-arrow-circle-right"></i></a>
-                @endif
-            </div>
-        </div>
+        
     </div>
 <!-- </section> -->
 @include('almacen.verRequerimientoEstado')

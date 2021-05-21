@@ -18,73 +18,77 @@ Pendientes de Salida
 @endsection
 
 @section('content')
-<div class="page-main" type="despachosPendientes">
-    <div class="col-md-12" id="tab-ordenes"  style="padding-left:0px;padding-right:0px;">
-        <ul class="nav nav-tabs" id="myTab">
-            <li class="active"><a type="#pendientes">Despachos Pendientes</a></li>
-            <li class=""><a type="#salidas">Salidas Procesadas</a></li>
-        </ul>
-        <div class="content-tabs">
-            <section id="pendientes" >
-                <form id="form-pendientes" type="register">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <table class="mytable table table-condensed table-bordered table-okc-view" 
-                                id="despachosPendientes" style="width:100px;">
-                                <thead>
-                                    <tr>
-                                        <th hidden></th>
-                                        <th>Tipo</th>
-                                        <th>Fecha Despacho</th>
-                                        <th>Hora Despacho</th>
-                                        <th>Codigo</th>
-                                        <th>Cliente</th>
-                                        <th>Requerimiento</th>
-                                        <th>Concepto</th>
-                                        <th>Almacén</th>
-                                        <!-- <th>Ubigeo</th>
-                                        <th>Dirección Destino</th> -->
-                                        <th>Fecha Entrega</th>
-                                        <th>Registrado por</th>
-                                        <th width="90px">Acción</th>
-                                    </tr>
-                                </thead>
-                                <tbody></tbody>
-                                <tfoot></tfoot>
-                            </table>
-                        </div>
-                    </div>
-                </form>
-            </section>
-            <section id="salidas" hidden>
-                <form id="form-salidas" type="register">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <table class="mytable table table-condensed table-bordered table-okc-view" 
-                                id="despachosEntregados">
-                                <thead>
-                                    <tr>
-                                        <th hidden></th>
-                                        <th>Orden Despacho</th>
-                                        <th>Fecha Salida</th>
-                                        <th>Almacén</th>
-                                        <th>Salida</th>
-                                        <th>Guia</th>
-                                        <th>Operación</th>
-                                        <th>Req.</th>
-                                        <th>Cliente</th>
-                                        <th>Concepto</th>
-                                        <th>Responsable</th>
-                                        <th width="70px"></th>
-                                    </tr>
-                                </thead>
-                                <tbody></tbody>
-                                <tfoot></tfoot>
-                            </table>
-                        </div>
-                    </div>
-                </form>
-            </section>
+<div class="box box-solid">
+    <div class="box-body">
+        <div class="page-main" type="despachosPendientes">
+            <div class="col-md-12" id="tab-ordenes"  style="padding-left:0px;padding-right:0px;">
+                <ul class="nav nav-tabs" id="myTab">
+                    <li class="active"><a type="#pendientes">Despachos Pendientes</a></li>
+                    <li class=""><a type="#salidas">Salidas Procesadas</a></li>
+                </ul>
+                <div class="content-tabs">
+                    <section id="pendientes" >
+                        <form id="form-pendientes" type="register">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <table class="mytable table table-condensed table-bordered table-okc-view" 
+                                        id="despachosPendientes" style="width:100px;">
+                                        <thead>
+                                            <tr>
+                                                <th hidden></th>
+                                                <th>Tipo</th>
+                                                <th>Fecha Despacho</th>
+                                                <th>Hora Despacho</th>
+                                                <th>Codigo</th>
+                                                <th>Cliente</th>
+                                                <th>Requerimiento</th>
+                                                <th>Concepto</th>
+                                                <th>Almacén</th>
+                                                <!-- <th>Ubigeo</th>
+                                                <th>Dirección Destino</th> -->
+                                                <th>Fecha Entrega</th>
+                                                <th>Registrado por</th>
+                                                <th width="90px">Acción</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody></tbody>
+                                        <tfoot></tfoot>
+                                    </table>
+                                </div>
+                            </div>
+                        </form>
+                    </section>
+                    <section id="salidas" hidden>
+                        <form id="form-salidas" type="register">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <table class="mytable table table-condensed table-bordered table-okc-view" 
+                                        id="despachosEntregados">
+                                        <thead>
+                                            <tr>
+                                                <th hidden></th>
+                                                <th>Orden Despacho</th>
+                                                <th>Fecha Salida</th>
+                                                <th>Almacén</th>
+                                                <th>Salida</th>
+                                                <th>Guia</th>
+                                                <th>Operación</th>
+                                                <th>Req.</th>
+                                                <th>Cliente</th>
+                                                <th>Concepto</th>
+                                                <th>Responsable</th>
+                                                <th width="70px"></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody></tbody>
+                                        <tfoot></tfoot>
+                                    </table>
+                                </div>
+                            </div>
+                        </form>
+                    </section>
+                </div>
+            </div>
         </div>
     </div>
 </div>
