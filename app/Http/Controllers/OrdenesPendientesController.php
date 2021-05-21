@@ -1236,9 +1236,11 @@ class OrdenesPendientesController extends Controller
         $detalle = DB::table('almacen.guia_com_det')
         ->select('guia_com_det.*','log_ord_compra.codigo as cod_orden','alm_prod.codigo','alm_prod.descripcion',
         'alm_prod.part_number','alm_und_medida.abreviatura','log_det_ord_compra.precio','log_ord_compra.id_condicion',
-        'log_ord_compra.plazo_dias','log_ord_compra.id_sede')
+        'log_ord_compra.plazo_dias','log_ord_compra.id_sede','log_ord_compra.id_moneda',
+        'sis_moneda.simbolo')
         ->leftjoin('logistica.log_det_ord_compra','log_det_ord_compra.id_detalle_orden','=','guia_com_det.id_oc_det')
         ->leftjoin('logistica.log_ord_compra','log_ord_compra.id_orden_compra','=','log_det_ord_compra.id_orden_compra')
+        ->leftjoin('configuracion.sis_moneda','sis_moneda.id_moneda','=','log_ord_compra.id_moneda')
         ->join('almacen.alm_prod','alm_prod.id_producto','=','guia_com_det.id_producto')
         ->join('almacen.alm_und_medida','alm_und_medida.id_unidad_medida','=','alm_prod.id_unidad_medida')
         ->where('guia_com_det.id_guia_com',$id)
@@ -1258,9 +1260,11 @@ class OrdenesPendientesController extends Controller
         $detalle = DB::table('almacen.guia_com_det')
         ->select('guia_com_det.*','log_ord_compra.codigo as cod_orden','alm_prod.codigo','alm_prod.descripcion',
         'alm_prod.part_number','alm_und_medida.abreviatura','log_det_ord_compra.precio','log_ord_compra.id_condicion',
-        'log_ord_compra.plazo_dias','log_ord_compra.id_sede','guia_com.serie','guia_com.numero')
+        'log_ord_compra.plazo_dias','log_ord_compra.id_sede','guia_com.serie','guia_com.numero',
+        'log_ord_compra.id_moneda','sis_moneda.simbolo')
         ->leftjoin('logistica.log_det_ord_compra','log_det_ord_compra.id_detalle_orden','=','guia_com_det.id_oc_det')
         ->leftjoin('logistica.log_ord_compra','log_ord_compra.id_orden_compra','=','log_det_ord_compra.id_orden_compra')
+        ->leftjoin('configuracion.sis_moneda','sis_moneda.id_moneda','=','log_ord_compra.id_moneda')
         ->join('almacen.alm_prod','alm_prod.id_producto','=','guia_com_det.id_producto')
         ->join('almacen.alm_und_medida','alm_und_medida.id_unidad_medida','=','alm_prod.id_unidad_medida')
         ->join('almacen.guia_com','guia_com.id_guia','=','guia_com_det.id_guia_com')
