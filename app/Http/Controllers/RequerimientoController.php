@@ -156,7 +156,8 @@ class RequerimientoController extends Controller
                 'alm_req.id_almacen',
                 'alm_almacen.descripcion as descripcion_almacen',
                 'alm_req.monto',
-                'alm_req.fecha_entrega'
+                'alm_req.fecha_entrega',
+                'alm_req.rol_aprobante_id'
             )
             ->where([
                 ['alm_req.id_tipo_requerimiento','=',$tipo_requerimiento]
@@ -299,7 +300,8 @@ class RequerimientoController extends Controller
                                     'pendiente_aprobacion'=>$pendiente_aprobacion,
                                     'observaciones'=>$observacion_list,
                                     'estado'=>$element->estado,
-                                    'estado_doc'=>$element->estado_doc
+                                    'estado_doc'=>$element->estado_doc,
+                                    'rol_aprobante_id'=>$element->rol_aprobante_id
                                 ];
                             }
                         }

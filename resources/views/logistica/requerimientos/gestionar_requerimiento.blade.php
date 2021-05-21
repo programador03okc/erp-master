@@ -132,7 +132,7 @@
 
                         <div class="col-md-2" id="input-group-sede" >
                             <h5>Sede</h5>
-                            <select name="sede" name="sede" class="form-control activation" onChange="changeOptUbigeo(event)" required>
+                            <select id="sede" name="sede" class="form-control activation" onChange="changeOptUbigeo(event)" required>
                                 <option value="">Elija una opción</option>
                             </select>
                         </div>
@@ -153,7 +153,19 @@
                                     </div>
                             </div>
                         </div>
-
+                        <div class="col-md-2" id="input-group-aprobante" >
+                            <h5>Aprobante</h5>
+                            <select  name="rol_aprobante" class="form-control activation" required>
+                                @if(count($aprobantes)>0)
+                                    <option value="">Elija una opción</option>
+                                    @foreach ($aprobantes as $aprobante)
+                                        <option value="{{$aprobante->id_rol}}">{{$aprobante->nombre}}</option>
+                                    @endforeach
+                                @else
+                                <option value="">Ninguno para seleccionar</option>
+                                @endif
+                            </select>
+                        </div>
                         <div id="input-group-fuente">
                             <div class="col-md-2">
                                 <h5>Fuente</h5>
