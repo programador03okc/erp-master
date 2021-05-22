@@ -808,7 +808,9 @@ class RequerimientoPendienteView {
                 },
                 {
                     'render': function (data, type, row) {
-                        return `${row['costo_unitario_proveedor'] ? row['costo_unitario_proveedor'] : ''}`;
+                        let simboloMoneda=( row.moneda_costo_unitario_proveedor == 's')?'S/':(row.moneda_costo_unitario_proveedor=='d')?'$':row.moneda_costo_unitario_proveedor;
+
+                        return `${simboloMoneda} ${row['costo_unitario_proveedor'] ? row['costo_unitario_proveedor'] : ''}`;
                     }
                 },
                 {
@@ -823,29 +825,42 @@ class RequerimientoPendienteView {
                 },
                 {
                     'render': function (data, type, row) {
-                        return `${row['comentario_proveedor'] ? row['comentario_proveedor'] : ''}`;
+                        return `${row['fondo_proveedor'] ? ('<span style="color:red">'+row['fondo_proveedor']+' </span>') : 'Ninguno'}`;
                     }
                 },
                 {
                     'render': function (data, type, row) {
-                       let costo = (Math.round((row.cantidad*row.costo_unitario_proveedor) * 100) / 100).toFixed(2);
-                        return `${costo}`;
+                        let simboloMoneda=( row.moneda_costo_unitario_proveedor == 's')?'S/':(row.moneda_costo_unitario_proveedor=='d')?'$':row.moneda_costo_unitario_proveedor;
+
+                       let costoUnitario = (Math.round((row.cantidad*row.costo_unitario_proveedor) * 100) / 100).toFixed(2);
+                        return `${simboloMoneda} ${costoUnitario}`;
                     }
                 },
                 {
                     'render': function (data, type, row) {
-                        return ``;
+                        let costoUnitario = (Math.round((row.cantidad*row.costo_unitario_proveedor) * 100) / 100).toFixed(2);
+                        let tipoCambio = row.tipo_cambio;
+                        let costoUnitarioSoles = costoUnitario * tipoCambio;
+                        return `S/${costoUnitarioSoles}`;
                     }
                 },
                 {
                     'render': function (data, type, row) {
+
                         let totalFleteProveedor= (Math.round((row.cantidad*row.flete_proveedor) * 100) / 100).toFixed(2);
-                        return `${totalFleteProveedor}`;
+                        return `S/${(totalFleteProveedor)}`;
                     }
                 },
                 {
                     'render': function (data, type, row) {
-                        return ``;
+                        let simboloMoneda=( row.moneda_costo_unitario_proveedor == 's')?'S/':(row.moneda_costo_unitario_proveedor=='d')?'$':row.moneda_costo_unitario_proveedor;
+
+                        let totalFleteProveedor= (Math.round((row.cantidad*row.flete_proveedor) * 100) / 100).toFixed(2);
+                        let costoUnitario = (Math.round((row.cantidad*row.costo_unitario_proveedor) * 100) / 100).toFixed(2);
+                        let tipoCambio = row.tipo_cambio;
+                        let costoUnitarioSoles = costoUnitario * tipoCambio;
+                        let costoCompraMasFlete = costoUnitarioSoles + totalFleteProveedor;
+                        return `S/${costoCompraMasFlete}`;
                     }
                 },
                 {

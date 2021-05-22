@@ -686,6 +686,9 @@ class RequerimientoController extends Controller
 
         $cc = CuadroCosto::select(
             'cc.id as id_cc',
+
+            'cc.tipo_cambio',
+            'cc.igv',
             'oc_propias.orden_am',
             'cc.tipo_cuadro',
             'cc.id_oportunidad',
@@ -714,6 +717,8 @@ class RequerimientoController extends Controller
            // if($count_id_cc_in_cc_am_filas > 0){ // acuerdo marco
 
                 $det_cc = CcAmFila::select(
+                    'cc.tipo_cambio',
+                    'cc.igv',
                     'cc_am_filas.id',
                     'cc_am_filas.id as id_cc_am_filas',
                     'cc_am_filas.id_cc_am',
@@ -728,9 +733,10 @@ class RequerimientoController extends Controller
                     'cc_am_filas.garantia',
                     'origenes_costeo.origen as origen_costo',
                     'cc_am_proveedores.precio as costo_unitario_proveedor',
+                    'cc_am_proveedores.moneda as moneda_costo_unitario_proveedor',
                     'cc_am_proveedores.plazo as plazo_proveedor',
                     'cc_am_proveedores.flete as flete_proveedor',
-                    'cc_am_proveedores.comentario as comentario_proveedor',
+                    'fondos_proveedores.descripcion as fondo_proveedor',
                     'cc_am_filas.creado_por as id_autor',
                     'users.name as nombre_autor',
                     'cc_am_filas.fecha_creacion',
@@ -744,6 +750,7 @@ class RequerimientoController extends Controller
                 ->leftJoin('mgcp_oportunidades.tipos_negocio', 'tipos_negocio.id', '=', 'oportunidades.id_tipo_negocio')
                 ->leftJoin('mgcp_cuadro_costos.cc_am_proveedores', 'cc_am_proveedores.id', '=', 'cc_am_filas.proveedor_seleccionado')
                 ->leftJoin('mgcp_cuadro_costos.proveedores', 'proveedores.id', '=', 'cc_am_proveedores.id_proveedor')
+                ->leftJoin('mgcp_cuadro_costos.fondos_proveedores', 'fondos_proveedores.id', '=', 'cc_am_proveedores.id_fondo_proveedor')
                 ->leftJoin('mgcp_usuarios.users', 'users.id', '=', 'cc_am_filas.creado_por')
                 ->leftJoin('mgcp_cuadro_costos.origenes_costeo', 'origenes_costeo.id', '=', 'cc_am_filas.id_origen_costeo')
                 // ->leftJoin('mgcp_cuadro_costos.cc_am_proveedores', 'cc_am_proveedores.id_fila', '=', 'cc_am_filas.id')
