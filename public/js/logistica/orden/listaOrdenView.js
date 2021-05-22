@@ -84,8 +84,8 @@ class ListaOrdenView {
 
     }
 
-    descargarListaOrdenesVistaCabecera(){
-        return listaOrdenCtrl.descargarListaOrdenesVistaCabecera();
+    exportTableToExcel(tableID,filename){
+        return listaOrdenCtrl.exportTableToExcel(tableID,filename);
     }
 
     filtroTablaListaOrdenesVistaCabecera(){
@@ -543,7 +543,7 @@ class ListaOrdenView {
                 buttonExportToExcel.id = "btnExportarAExcel";
                 buttonExportToExcel.className = "btn btn-default pull-left";
                 buttonExportToExcel.innerHTML = "<i class='far fa-file-excel'></i> Descargar";
-                buttonExportToExcel.addEventListener('click',  function(){listaOrdenView.descargarListaOrdenesVistaCabecera()}, false);
+                buttonExportToExcel.addEventListener('click',  function(){listaOrdenView.exportTableToExcel('listaOrdenes','Lista_Ordenes')}, false);
 
                 divInputGroupBtn.appendChild(buttonExportToExcel);     
                 

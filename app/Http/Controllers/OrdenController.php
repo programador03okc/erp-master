@@ -3528,10 +3528,10 @@ class OrdenController extends Controller
         return $html;
     }
 
-    function descargarExcelListaOrdenes(){
-        $data = $this->listarOrdenesExcel();
-        return view('logistica/reportes/lista_ordenes_excel', compact('data'));
-    }
+    // function descargarExcelListaOrdenes(){
+    //     $data = $this->listarOrdenesExcel();
+    //     return view('logistica/reportes/lista_ordenes_excel', compact('data'));
+    // }
 
 
 
