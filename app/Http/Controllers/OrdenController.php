@@ -2655,6 +2655,7 @@ class OrdenController extends Controller
 
             $alm_det_req = DB::table('almacen.alm_det_req')
             ->select('alm_det_req.*')
+            ->where('alm_det_req.estado',1)
             ->whereIn('alm_det_req.id_detalle_requerimiento',$idDetalleRequerimientoList)
             ->get();
 
@@ -2666,8 +2667,16 @@ class OrdenController extends Controller
             $idRequerimientoList = array_unique($idRequerimientoList);
             // Debugbar::info($idRequerimientoList);
 
+            $AllDetalleReqBaseSinAtender = DB::table('almacen.alm_det_req')
+            ->select('alm_det_req.*')
+            ->where([['alm_det_req.estado',1],['alm_det_req.tiene_transformacion',false],['alm_det_req.id_almacen_reserva',null]])
+            ->whereIn('alm_det_req.id_requerimiento',$idRequerimientoList)
+            ->get();
+
+
             $arrEstadoDetalle=[];
             $arr=[];
+            $idDetalleReqAtendidos=[];
             foreach ($idRequerimientoList as $idReq) {
                 foreach ($alm_det_req as $detalleReq) {
                     foreach ($det_orden as $detalleOrden) {
@@ -2676,6 +2685,7 @@ class OrdenController extends Controller
                             // Debugbar::info($detalleOrden->id_detalle_requerimiento);
 
                             if($detalleOrden->id_detalle_requerimiento == $detalleReq->id_detalle_requerimiento){
+                                $idDetalleReqAtendidos[]=$detalleReq->id_detalle_requerimiento;
                                 if((($detalleOrden->cantidad + ($detalleReq->stock_comprometido>0?$detalleReq->stock_comprometido:0)) == $detalleReq->cantidad)){
                                     // es una atencion total 
                                     $arrEstadoDetalle[] = [   
@@ -2709,8 +2719,16 @@ class OrdenController extends Controller
                 }else{
                     $arrEstadoReq[$k]=$arr_unique[0];
                 }
+
+                if(count($idDetalleReqAtendidos) != count($AllDetalleReqBaseSinAtender)){
+                    $arrEstadoReq[$k]='ATENDIDO_PARCIAL';
+                }
             
             }
+            Debugbar::info(count($idDetalleReqAtendidos) != count($AllDetalleReqBaseSinAtender));
+            Debugbar::info($idDetalleReqAtendidos);
+            Debugbar::info($AllDetalleReqBaseSinAtender);
+            Debugbar::info($arrEstadoReq);
 
             // actualizando estados de req cabecera
             foreach ($arrEstadoReq as $key => $value) {
