@@ -3170,7 +3170,7 @@ class LogisticaController extends Controller
             ->select(
                 'alm_item.id_item',
                 'alm_prod.codigo',
-                'alm_item.id_producto',
+                'alm_prod.id_producto',
                 'alm_item.id_servicio',
                 'alm_item.id_equipo',
                 DB::raw("(CASE 
