@@ -961,7 +961,7 @@ function getDataAllSelect() {
 
 function agregarItemATablaListaDetalleRequerimiento(item){
      
-    if(item.id_item > 0 && item.id_producto > 0){
+    if(item.id_producto > 0){
         data_item.push(item);
         componerTdItemDetalleRequerimiento();
     }else{
