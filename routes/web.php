@@ -764,6 +764,7 @@ Route::group(['middleware' => ['auth']], function () {
 						Route::get('select-sede-by-empresa/{id?}', 'LogisticaController@sedesAcceso')->name('select-sede-by-empresa');
 						Route::get('generar-orden-pdf/{id?}', 'OrdenController@generar_orden_por_requerimiento_pdf')->name('generar-orden-por-requerimiento-pdf'); // PDF
 
+						Route::get('facturas/{id_orden}', 'OrdenController@obtenerFacturas');
 						//nivel cabecera 
 						Route::get('listar-ordenes/{tipoOrden?}/{vinculadoPor?}/{empresa?}/{sede?}/{tipoProveedor?}/{enAlmacen?}/{signoOrden?}/{montoOrden?}/{estado?}', 'OrdenController@listarOrdenes');
 						Route::get('detalle-orden/{id_orden}', 'OrdenController@detalleOrden');

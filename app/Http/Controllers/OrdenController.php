@@ -832,6 +832,24 @@ class OrdenController extends Controller
         return $val;
     }
 
+    public function obtenerFacturas($idOrden){
+        $facturas=[];
+        $sql_facturas = DB::table('logistica.log_det_ord_compra')
+        ->select(DB::raw("concat(doc_com.serie, '-', doc_com.numero) AS facturas"))
+        ->join('almacen.guia_com_det', 'guia_com_det.id_oc_det', '=', 'log_det_ord_compra.id_detalle_orden')
+        ->leftjoin('almacen.doc_com_det', 'doc_com_det.id_guia_com_det', '=', 'guia_com_det.id_guia_com_det')
+        ->leftjoin('almacen.doc_com', 'doc_com.id_doc_com', '=', 'doc_com_det.id_doc')
+        ->where('log_det_ord_compra.id_orden_compra',$idOrden)
+        ->get();
+        if(count($sql_facturas)>0){
+            foreach ($sql_facturas as $key => $value) {
+                $facturas[]=$value->facturas;
+            }
+
+        }
+        return array_values(array_unique($facturas));
+    }
+
     public function listarOrdenes($tipoOrden, $vinculadoPor, $empresa, $sede, $tipoProveedor, $enAlmacen, $signoOrden, $montoOrden, $estado){
        
         switch ($signoOrden) {
@@ -899,6 +917,19 @@ class OrdenController extends Controller
             FROM logistica.log_det_ord_compra 
             WHERE   log_det_ord_compra.id_orden_compra = log_ord_compra.id_orden_compra AND
                     log_det_ord_compra.estado != 7) AS suma_subtotal")
+            // DB::raw("( 
+            
+            //     SELECT array_agg(concat(doc_com.serie, '-', doc_com.numero)) AS facturas
+            //     FROM logistica.log_det_ord_compra
+            //     INNER JOIN almacen.guia_com_det on guia_com_det.id_oc_det = log_det_ord_compra.id_detalle_orden
+            //     INNER JOIN almacen.doc_com_det on doc_com_det.id_guia_com_det = guia_com_det.id_guia_com_det
+            //     INNER JOIN almacen.doc_com on doc_com.id_doc_com = doc_com_det.id_doc
+            //     WHERE 
+            //     log_det_ord_compra.id_orden_compra = log_ord_compra.id_orden_compra 
+            //     AND log_det_ord_compra.id_detalle_orden = guia_com_det.id_oc_det 
+            //     AND log_det_ord_compra.estado != 7 
+            //     LIMIT 1 ) as facturas
+            //     ")
         )
         ->leftJoin('administracion.sis_sede', 'sis_sede.id_sede', '=', 'log_ord_compra.id_sede')
         ->join('logistica.log_prove', 'log_prove.id_proveedor', '=', 'log_ord_compra.id_proveedor')
@@ -961,6 +992,7 @@ class OrdenController extends Controller
         if(count($ord_compra)>0){
             foreach($ord_compra as $element){
 
+
                 $data_orden[]=[
                     'id_orden_compra'=> $element->id_orden_compra,
                     'id_tp_documento'=> $element->id_tp_documento,
@@ -984,6 +1016,7 @@ class OrdenController extends Controller
                     'detalle_pago'=> $element->detalle_pago, 
                     'archivo_adjunto'=> $element->archivo_adjunto,
                     'suma_subtotal'=> $element->suma_subtotal,
+                    'facturas'=> $this->obtenerFacturas($element->id_orden_compra),
                     'codigo_requerimiento'=> []
                     
                 ];

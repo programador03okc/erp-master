@@ -34,7 +34,7 @@ class OrdenCtrl{
             dataType: 'JSON',
             success: function(response){
                 response.det_req.forEach(element => {
-                    if(element.cantidad !=0 && element.id_tipo_item==idTipoItem){
+                    if(element.cantidad >0 && (![28,5].includes(element.estado)) && element.id_tipo_item==idTipoItem){
                         detalleOrdenList.push(
                             {
                                 'id': element.id,

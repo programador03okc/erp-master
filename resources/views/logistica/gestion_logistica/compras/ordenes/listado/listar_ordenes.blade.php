@@ -58,6 +58,7 @@
                         <th>Fecha em.</th>
                         <th>Tiem. Atenc. Log.</th>
                         <th>Tiem. Atenc. Prov.</th>
+                        <th>Facturas</th>
                         <th>Detalle pago</th>
                         <th>Archivo adjunto</th>
                         <th width="5%">Acción</th>

@@ -496,6 +496,7 @@ class ListaOrdenView {
                         }
                     }
                 },
+                {'data': 'facturas'},
                 {'data': 'detalle_pago'},
                 {'data': 'archivo_adjunto'},
                 {'render':
