@@ -4919,13 +4919,21 @@ class LogisticaController extends Controller
         $status='';
         $output=[];
 
-        $sql1 = DB::table('almacen.alm_req')->select('id_grupo','id_area')->where('id_requerimiento', $req)->get();
+        $sql1 = DB::table('almacen.alm_req')->select('id_grupo','id_area','rol_aprobante_id')->where('id_requerimiento', $req)->get();
         if(sizeof($sql1) > 0){
             $sql11 = DB::table('administracion.adm_operacion')->where([['id_grupo', $sql1->first()->id_grupo],['id_tp_documento', $id_tipo_doc],['estado', 1]])->get();
             if(sizeof($sql11) > 0){
+                if($sql1->first()->rol_aprobante_id >0){
+                    
+                    $sql2 = DB::table('administracion.adm_flujo')->where([['id_operacion', $sql11->first()->id_operacion],['id_rol', $sql1->first()->rol_aprobante_id],['estado', 1]])
+                    ->orderby('orden', 'asc')
+                    ->get();
+                }else{
+
                     $sql2 = DB::table('administracion.adm_flujo')->where([['id_operacion', $sql11->first()->id_operacion],['estado', 1]])
                     ->orderby('orden', 'asc')
                     ->get();
+                }
 
                     $nombre = ($sql2->count() > 0) ? $sql2->first()->nombre: '';
                     $id_rol = ($sql2->count() > 0) ? $sql2->first()->id_rol: '';
