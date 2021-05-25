@@ -1132,6 +1132,7 @@ function listarCentroCostos(){
         url: 'mostrar-centro-costos',
         dataType: 'JSON',
         success: function(response){
+            // console.log(response);
             var html = '';
             response.forEach((padre,index) => {
                 if(padre.id_padre == null){
@@ -1152,16 +1153,25 @@ function listarCentroCostos(){
                         <div id="collapse${index}" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading${index}" >   
                             <div class="box-body" style="display: block;">`;
                             response.forEach(hijo => {
+                                console.log(hijo);
                                 if(padre.id_centro_costo == hijo.id_padre){
                                     if((hijo.id_padre > 0) && (hijo.estado ==1)){
                                         if(hijo.nivel == 2){
                                             html+= `<div class="okc-cc okc-niv-2" onClick="selectCC(${hijo.id_centro_costo} , '${hijo.codigo}');"> ${hijo.codigo} - ${hijo.descripcion} </div>`;
                                         }
                                     }
+                                    response.forEach(hijo3 => {
+                                        if(hijo.id_centro_costo == hijo3.id_padre){
+                                            if((hijo3.id_padre > 0) && (hijo3.estado ==1)){
+                                                if(hijo3.nivel == 3){
+                                                    html+= `<div class="okc-cc okc-niv-3" onClick="selectCC(${hijo3.id_centro_costo} , '${hijo3.codigo}');"> ${hijo3.codigo} - ${hijo3.descripcion} </div>`;
+                                                }
+                                            }
+                                        }
+                                    });
                                 }
-                                if(hijo.nivel == 3){
-                                    html+= `<div class="okc-cc okc-niv-3" onClick="selectCC(${hijo.id_centro_costo} , '${hijo.codigo}');"> ${hijo.codigo} - ${hijo.descripcion} </div>`;
-                                }
+
+
                             });
 
                             html+= `</div></div></div>`;
