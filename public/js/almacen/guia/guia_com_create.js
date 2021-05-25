@@ -190,7 +190,7 @@ function mostrar_detalle_transformacion(){
             <td>${element.abreviatura}</td>
             <td><input type="number" class="form-control unitario" style="width:120px;" data-id="${element.tipo=='sobrante'?element.id_producto:element.id}" data-tipo="${element.tipo}" step="0.001" 
                 value="${element.valor_unitario}"/></td>
-            <td>${formatNumber.decimal(element.valor_total,'',-2)}</td>
+            <td>${formatNumber.decimal((element.cantidad * element.valor_unitario),'',-4)}</td>
             ${`<td><input type="text" class="oculto" id="series" value="${element.series}" data-partnumber="${element.part_number}"/>
                 <i class="fas fa-bars icon-tabla boton" data-toggle="tooltip" data-placement="bottom" title="Agregar Series" 
                 onClick="agrega_series_transformacion(${"'"+element.id+"'"});"></i></td>` }
@@ -266,7 +266,7 @@ function listar_detalle_ordenes_seleccionadas(data){
                     'id_unid_med': element.id_unidad_medida,
                     'abreviatura': element.abreviatura,
                     'precio'     : element.precio,
-                    'subtotal'   : element.subtotal,
+                    'subtotal'   : (element.cantidad * element.precio),
                     'series'     : []
                 });
             });
@@ -300,11 +300,11 @@ function mostrar_ordenes_seleccionadas(){
                 title="El producto fue creado con Categoría = Por definir"></i>`:'')
                 +element.descripcion+' <strong>'+html_ser+'</strong>'}
             </td>
-            <td><input type="number" id="${element.id_oc_det!==null ? element.id_oc_det : 'p'+element.id_producto}cantidad" value="${element.cantidad}" 
+            <td><input class="right" type="number" id="${element.id_oc_det!==null ? element.id_oc_det : 'p'+element.id_producto}cantidad" value="${element.cantidad}" 
                 min="1" ${element.id_oc_det!==null ? `max="${element.cantidad}"` : ''} style="width:80px;"/></td>
             <td>${element.abreviatura}</td>
-            <td>${element.precio}</td>
-            <td>${element.subtotal}</td>
+            <td class="right">${element.precio}</td>
+            <td class="right">${formatNumber.decimal((element.cantidad * element.precio),'',-4)}</td>
             <td>
                 <input type="text" class="oculto" id="series" value="${element.series}" 
                 data-partnumber="${element.part_number!==null ? element.part_number : element.codigo}"/>
