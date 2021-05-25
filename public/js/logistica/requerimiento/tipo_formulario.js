@@ -268,6 +268,7 @@ function mostrarTipoForm(tipo){
                 'input-group-cuenta',
                 'input-group-monto',
                 'seccion-cliente',
+                'seccion-contacto-cliente',
                 'input-group-tipo-cliente',
                 'input-group-telefono-cliente',
                 'input-group-email-cliente',

@@ -473,20 +473,19 @@
                             <th width="60">UNIDAD</th>
                             <th width="70">CANTIDAD</th>
                             <th width="70">PRECIO U.</th>
-                            <th width="70">MONEDA</th>
                             <th width="70">SUBTOTAL</th>
                             <th width="70">PARTIDA</th>
                             <th width="70">C.Costos</th>
                             <th width="70">Atendido Por</th>
                             <th width="140">
-                                <center>
+                                <div style="display:flex; flex-direction:row;justify-content:space-around;">
                                 <button type="button" class="btn btn-xs btn-success activation" onClick="catalogoItemsModal();" id="btn-add-producto"
                                 data-toggle="tooltip" data-placement="bottom"  title="Agregar Detalle" disabled><i class="fas fa-plus"></i> Producto
                                 </button>
                                 <button type="button" class="btn btn-xs btn-success activation" onClick="agregarServicio();" id="btn-add-servicio"
                                 data-toggle="tooltip" data-placement="bottom"  title="Agregar Detalle" disabled><i class="fas fa-plus"></i> Servicio
                             </button>
-                            </center>
+                            </div>
                         </th>
                     </tr>
                 </thead>

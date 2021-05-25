@@ -268,16 +268,16 @@ function agregarItem(){
             row.insertCell(4).innerHTML = descripcion_unidad;
             row.insertCell(5).innerHTML = data_item[a].cantidad?data_item[a].cantidad:'0';
             row.insertCell(6).innerHTML = data_item[a].precio_unitario?data_item[a].precio_unitario:'0';
-            row.insertCell(7).innerHTML = data_item[a].tipo_moneda?data_item[a].tipo_moneda:'';
-            row.insertCell(8).innerHTML = data_item[a].subtotal ? data_item[a].subtotal : '';
-            row.insertCell(9).innerHTML =  data_item[a].cod_partida ? data_item[a].cod_partida : '';
-            row.insertCell(10).innerHTML =  data_item[a].codigo_centro_costo ? data_item[a].codigo_centro_costo : '';
-            row.insertCell(11).innerHTML =  data_item[a].almacen_reserva ? data_item[a].almacen_reserva : (data_item[a].proveedor_razon_social?data_item[a].proveedor_razon_social:'');
+            // row.insertCell(7).innerHTML = data_item[a].tipo_moneda?data_item[a].tipo_moneda:'';
+            row.insertCell(7).innerHTML = data_item[a].subtotal ? data_item[a].subtotal : '';
+            row.insertCell(8).innerHTML =  data_item[a].cod_partida ? data_item[a].cod_partida : '';
+            row.insertCell(9).innerHTML =  data_item[a].codigo_centro_costo ? data_item[a].codigo_centro_costo : '';
+            row.insertCell(10).innerHTML =  data_item[a].almacen_reserva ? data_item[a].almacen_reserva : (data_item[a].proveedor_razon_social?data_item[a].proveedor_razon_social:'');
 
             var id_grupo = document.querySelector("form[id='form-requerimiento'] input[name='id_grupo']").value;
             var id_proyecto = document.querySelector("form[id='form-requerimiento'] select[name='id_proyecto']").value;
             var tdBtnAction = '';
-            tdBtnAction = row.insertCell(12);
+            tdBtnAction = row.insertCell(11);
 
  
             // tdBtnAction.className = classHiden;
@@ -413,7 +413,7 @@ function detalleRequerimientoModal(event=null,index=null){
 function controlInputModalDetalleRequerimiento(){
     let id_grupo = document.querySelector("form[id='form-requerimiento'] input[name='id_grupo']").value;
     let tipo_requerimiento = document.querySelector("form[id='form-requerimiento'] select[name='tipo_requerimiento']").value;
-    let tipo_cliente = document.querySelector("form[id='form-requerimiento'] select[name='tipo_cliente']")?document.querySelector("form[id='form-requerimiento'] select[name='tipo_cliente']").value:null;
+    // let tipo_cliente = document.querySelector("form[id='form-requerimiento'] select[name='tipo_cliente']")?document.querySelector("form[id='form-requerimiento'] select[name='tipo_cliente']").value:null;
     // console.log(id_grupo);
     // console.log(tipo_requerimiento);
 

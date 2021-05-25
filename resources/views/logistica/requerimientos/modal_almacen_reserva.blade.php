@@ -24,6 +24,7 @@
 			</div>
 			<div class="modal-footer">
                 <label style="display: none;" id="indice"></label>
+                <button type="button" class="btn btn-sm btn-danger" onClick="quitarReservaAlmacen()">Quitar</button>
                 <button type="button" class="btn btn-sm btn-success" onClick="agregarReservaAlmacen()">Aceptar</button>
             </div>
 		</div>

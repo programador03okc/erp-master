@@ -90,3 +90,22 @@ function agregarReservaAlmacen(){
         alert("no se detecto un item seleccionado");
     }
 }
+
+function quitarReservaAlmacen(){
+    let indiceSeleccionado = document.querySelector("div[id='modal-almacen-reserva'] label[id='indice']").textContent;
+    data_item.forEach((element, index) => {
+        if (index == indiceSeleccionado) {
+            data_item[index].id_almacen_reserva = null;
+            data_item[index].almacen_reserva = null;
+            data_item[index].stock_comprometido = null;
+            data_item[index].proveedor_id = null;
+            data_item[index].proveedor_razon_social = null;
+
+
+        }
+    });
+    componerTdItemDetalleRequerimiento();
+
+    $('#modal-almacen-reserva').modal('hide');
+
+}
