@@ -623,8 +623,8 @@ function listarItems() {
             {'data': 'id_unidad_medida'},
             {'render':
                 function (data, type, row){
-                    if(row.id_unidad_medida == 1){
-                        let btnVerSaldos= '<button class="btn btn-sm btn-info" onClick="verSaldoProducto('+row.id_producto+ ');">Stock</button>';
+                    if(row.id_producto > 0){
+                        // let btnVerSaldos= '<button class="btn btn-sm btn-info" onClick="verSaldoProducto('+row.id_producto+ ');">Stock</button>';
                         let btnSeleccionarItem= `<button 
                         class="btn btn-sm btn-success"
                         data-id-producto="${row.id_producto}" 
