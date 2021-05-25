@@ -9,6 +9,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Auth;
+use Debugbar;
 
 date_default_timezone_set('America/Lima');
 
@@ -310,6 +311,28 @@ class AprobacionController extends Controller
 
         // ### determinar flujo , tamaño de flujo
         $flujo = $this->getFlujoByIdDocumento($id_doc_aprob);
+        $id_req=$this->getIdDocByIdDocAprob($id_doc_aprob);
+
+        $sql_req = DB::table('almacen.alm_req')->select('rol_aprobante_id')->where('id_requerimiento', $id_req)->get();
+        if(count($sql_req)>0){
+            if($sql_req->first()->rol_aprobante_id > 0){
+                foreach ($flujo as $value) {
+                    if($sql_req->first()->rol_aprobante_id == $value->id_rol){
+                        $numOrdenAprobante =$value->orden;
+                        
+                    }
+                }
+                
+                foreach ($flujo as $key => $value) {
+                    if(($value->id_rol != $sql_req->first()->rol_aprobante_id ) && ($value->orden == $numOrdenAprobante)){
+                    
+                        array_splice($flujo,$key,1);
+
+                    }
+                }
+            }
+        }
+
         $tamaño_flujo = count($flujo);
         
         $aprobaciones = $this->getVoBo($id_doc_aprob);
@@ -320,14 +343,17 @@ class AprobacionController extends Controller
         // return $aprobacionList;
         $id_flujo = $this->searchIdFlujoByOrden($flujo,$cantidad_aprobaciones +1);
 
+
         if($cantidad_aprobaciones < $tamaño_flujo){
             $nuevaAprobacion= $this->guardar_aprobacion_documento($id_flujo, $id_doc_aprob, $id_vobo, $detalle_observacion, $id_usuario, $id_rol);
             if($nuevaAprobacion >0){
                 $status=200; // No Content
                 $message ='Ok';
                 $aprobaciones = $this->getVoBo($id_doc_aprob);
+                // Debugbar::info($aprobaciones);
                 $aprobacionList =$aprobaciones['data'];
                 $cantidad_aprobaciones =count($aprobacionList);
+
                 if($cantidad_aprobaciones == $tamaño_flujo){
                     $id_req=$this->getIdDocByIdDocAprob($id_doc_aprob);
                     $estado_aprobado= $this->getEstadoDocByName('Aprobado');

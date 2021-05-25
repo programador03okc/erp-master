@@ -188,6 +188,7 @@ class RequerimientoController extends Controller
                 $id_tipo_requerimiento_req = $element->id_tipo_requerimiento;
                 $id_prioridad_req = $element->id_prioridad;
                 $estado_req = $element->estado;
+                $rol_aprobante_id = $element->rol_aprobante_id;
 
                 // $id_doc_aprobacion_req_list[]=$id_doc_aprobacion_req;
                 $voboList=(new AprobacionController)->getVoBo($id_doc_aprobacion_req); // todas las vobo
@@ -242,6 +243,35 @@ class RequerimientoController extends Controller
                                     
                             }
                         }
+
+                    if($rol_aprobante_id >0){
+                                // Debugbar::info('rol_aprobante_id'.$rol_aprobante_id);
+
+                        $numOrdenAprobante=0;
+                        foreach ($flujo_list['data'] as $key => $value) {
+                            if($value->id_rol == $rol_aprobante_id){
+                                $numOrdenAprobante =$value->orden;
+                            }
+                        }
+                        // Debugbar::info('numOrdenAprobante'.$numOrdenAprobante);
+
+                        foreach ($flujo_list['data'] as $key => $value) {
+                            if(($value->id_rol != $rol_aprobante_id) && ($value->orden == $numOrdenAprobante)){
+                                // unset($flujo_list['data'][$key]);
+                                array_splice($flujo_list['data'],$key,1);
+
+
+                            }
+                        }
+                        foreach ($pendiente_aprobacion as $key => $value) {
+                            if(($value->id_rol != $rol_aprobante_id) && ($value->orden == $numOrdenAprobante)){
+                                // unset($pendiente_aprobacion[$key]);
+                                array_splice($pendiente_aprobacion, $key,1);
+
+
+                            }
+                        }
+                    }
                     // return $flujo_list_id_rol;
                     // $list_req[]=$flujo_list;
                     $observacion_list=[];

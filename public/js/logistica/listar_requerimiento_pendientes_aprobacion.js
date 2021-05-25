@@ -115,7 +115,9 @@ function listar_requerimientos_pendientes_aprobar(){
                 }
                 // buscar si la primera aprobación su numero de orden se repite en otro pendiente_aprobacion
                 let aprobRolList=[];
-                row.pendiente_aprobacion.forEach(element => {
+                // console.log(row.pendiente_aprobacion);
+                let pendAprob = row.pendiente_aprobacion;
+                pendAprob.forEach(element => {
                     if(element.orden == first_aprob.orden){
                         aprobRolList.push(element.id_rol);
                     }

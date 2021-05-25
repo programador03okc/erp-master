@@ -4879,7 +4879,6 @@ class LogisticaController extends Controller
         }else{
             $id_operacion=0;
         }
-        Debugbar::info($sql_operacion);
 
         $flujo = DB::table('administracion.adm_flujo')->where([
             ['id_operacion', '=', $id_operacion], 
@@ -5175,20 +5174,26 @@ class LogisticaController extends Controller
     function consult_sgt_aprob($orden,$operacion)
     {
         $sql = DB::table('administracion.adm_flujo')
-                ->select('id_rol')
+                ->select('adm_flujo.id_rol')
                 ->where([['id_operacion', '=', $operacion], ['orden', '=', $orden], ['estado', '=', 1]])
-                ->first();
-        $rol = $sql->id_rol;
+                ->get();
 
-        $trab = DB::table('configuracion.sis_usua')
-            ->select('rrhh_perso.nombres', 'rrhh_perso.apellido_paterno', 'rrhh_perso.apellido_materno', 'sis_rol.descripcion AS rol')
-            ->join('rrhh.rrhh_trab', 'rrhh_trab.id_trabajador', '=', 'sis_usua.id_trabajador')
-            ->join('rrhh.rrhh_postu', 'rrhh_postu.id_postulante', '=', 'rrhh_trab.id_postulante')
-            ->join('rrhh.rrhh_perso', 'rrhh_perso.id_persona', '=', 'rrhh_postu.id_persona')
-            ->join('configuracion.sis_acceso', 'sis_acceso.id_usuario', '=', 'sis_usua.id_usuario')
-            ->join('configuracion.sis_rol', 'sis_rol.id_rol', '=', 'sis_acceso.id_rol')
-            ->where('sis_acceso.id_rol', $rol)->first();
-        $nombre = $trab->nombres . ' ' . $trab->apellido_paterno . ' - ' . $trab->rol;
+       
+        if(count($sql)>0){
+            $trab = DB::table('configuracion.sis_usua')
+                ->select('rrhh_perso.nombres', 'rrhh_perso.apellido_paterno', 'rrhh_perso.apellido_materno', 'sis_rol.descripcion AS rol')
+                ->join('rrhh.rrhh_trab', 'rrhh_trab.id_trabajador', '=', 'sis_usua.id_trabajador')
+                ->join('rrhh.rrhh_postu', 'rrhh_postu.id_postulante', '=', 'rrhh_trab.id_postulante')
+                ->join('rrhh.rrhh_perso', 'rrhh_perso.id_persona', '=', 'rrhh_postu.id_persona')
+                ->join('configuracion.sis_acceso', 'sis_acceso.id_usuario', '=', 'sis_usua.id_usuario')
+                ->join('configuracion.sis_rol', 'sis_rol.id_rol', '=', 'sis_acceso.id_rol')
+                ->where('sis_acceso.id_rol', $sql->first()->id_rol)->first();
+            $nombre = $trab->nombres . ' ' . $trab->apellido_paterno . ' - ' . $trab->rol;
+
+        }else{
+            $nombre='';
+
+        }
         return $nombre;
     }
 
@@ -5845,9 +5850,6 @@ function get_id_usuario_usuario_por_rol($descripcion_rol, $id_sede, $id_empresa)
 
         // $sgt_aprob='-';
         // $sgt_per='-';
-        Debugbar::info($estado_req);
-        Debugbar::info($total_aprob);
-        Debugbar::info($total_flujo);
 
         if ($estado_req == 12 ) {
             if ($total_aprob > 0) {
