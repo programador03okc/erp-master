@@ -96,13 +96,13 @@ function inicializar( _rutaLista,
                 verTrazabilidadRequerimiento(id_requerimiento);
                 localStorage.removeItem("id_requerimiento");
                 changeStateButton('historial');
-                vista_extendida();
+                // vista_extendida();
 
             }
             var ordenP_Cuadroc = JSON.parse(sessionStorage.getItem('ordenP_Cuadroc'));
             var justificacion_generar_requerimiento = JSON.parse(sessionStorage.getItem('justificacion_generar_requerimiento'));
             if(ordenP_Cuadroc !== null && ordenP_Cuadroc.hasOwnProperty('tipo_cuadro') && ordenP_Cuadroc.hasOwnProperty('id_cc')){
-                vista_extendida();
+                // vista_extendida();
                 // console.log(ordenP_Cuadroc);
                 if(justificacion_generar_requerimiento != null){
                     if(ordenP_Cuadroc.id_cc == justificacion_generar_requerimiento.id_cc){
@@ -136,6 +136,8 @@ function inicializar( _rutaLista,
             var today = new Date();
 
             $('[name=periodo]').val(today.getFullYear());
+
+
 }
 
 $(function(){

@@ -728,6 +728,10 @@ ul.nav-tabs li {
   cursor: pointer;
 }
 
+#ListaDetalleRequerimiento tbody tr {
+  cursor: default !important;
+}
+
 .page-main table {
   font-size: 12px;
 }

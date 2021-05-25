@@ -45,7 +45,7 @@
                 <label style="display: none;" id="unidad_medida"></label>
                 <label style="display: none;" id="categoria"></label>
                 <label style="display: none;" id="subcategoria"></label>
-                <button class="btn btn-sm btn-success" onClick="selectItem();">Aceptar</button>
+                <!-- <button class="btn btn-sm btn-success" onClick="selectItem();">Aceptar</button> -->
             </div>
         </div>
     </div>

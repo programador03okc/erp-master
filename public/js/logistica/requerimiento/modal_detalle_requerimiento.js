@@ -664,7 +664,19 @@ function listarItems() {
             {'render':
                 function (data, type, row){
                     if(row.id_unidad_medida == 1){
-                        return ('<button class="btn btn-sm btn-info" onClick="verSaldoProducto('+row.id_producto+ ');">Stock</button>');
+                        let btnVerSaldos= '<button class="btn btn-sm btn-info" onClick="verSaldoProducto('+row.id_producto+ ');">Stock</button>';
+                        let btnSeleccionarItem= `<button 
+                        class="btn btn-sm btn-success"
+                        data-id-producto="${row.id_producto}" 
+                        data-id-item="${row.id_item}" 
+                        data-codigo="${row.codigo}" 
+                        data-part-number="${row.part_number}" 
+                        data-descripcion="${row.descripcion}" 
+                        data-id-unidad-medida="${row.id_unidad_medida}" 
+                        data-categoria="${row.categoria}" 
+                        data-subcategoria="${row.subcategoria}" 
+                        onClick="selectItem(this);"><i class="fas fa-check"></i></button>`;
+                        return btnSeleccionarItem;
                     }else{ 
                         return '';
                     }
@@ -878,19 +890,17 @@ function controlUnidadMedida(){
     }
 }
 
-function selectItem(){
-        // detalleRequerimientoModal(event);
-        let id_producto = document.querySelector("div[id='modal-catalogo-items'] div[class='modal-footer'] label[id='id_producto']").textContent;
-        let id_servicio = document.querySelector("div[id='modal-catalogo-items'] div[class='modal-footer'] label[id='id_servicio']").textContent;
-        let id_equipo = document.querySelector("div[id='modal-catalogo-items'] div[class='modal-footer'] label[id='id_equipo']").textContent;
-        let id_tipo_item=null;
-        if(id_producto >0){
-            id_tipo_item = 1;
-        }else if(id_servicio >0){
-            id_tipo_item = 2;
-        }else if(id_equipo >0){
-            id_tipo_item = 3;
-        }
+function selectItem(obj){
+        let idProducto= obj.dataset.idProducto;
+        let idItem= obj.dataset.idItem;
+        let codigo= obj.dataset.codigo;
+        let partNumber= obj.dataset.partNumber;
+        let descripcion= obj.dataset.descripcion;
+        let idUnidadMedida= obj.dataset.idUnidadMedida;
+        let categoria= obj.dataset.categoria;
+        let subcategoria= obj.dataset.subcategoria;
+        let idTipoItem = 1;
+
         let id_cc_am_filas = null;
         let id_cc_venta_filas=null;
         if( tempDetalleItemCCSelect.hasOwnProperty('id_cc_am_filas')){
@@ -901,18 +911,18 @@ function selectItem(){
         let tieneTransformacion = document.querySelector("form[id='form-requerimiento'] input[name='tiene_transformacion']").value;
         let data_item_selected = {
             'id_detalle_requerimiento': null,
-            'id_item': document.querySelector("div[id='modal-catalogo-items'] div[class='modal-footer'] label[id='id_item']").textContent,
-            'codigo': document.querySelector("div[id='modal-catalogo-items'] div[class='modal-footer'] label[id='codigo']").textContent,
-            'part_number': document.querySelector("div[id='modal-catalogo-items'] div[class='modal-footer'] label[id='part_number']").textContent,
-            'des_item': document.querySelector("div[id='modal-catalogo-items'] div[class='modal-footer'] label[id='descripcion']").textContent,
+            'id_item': idItem,
+            'codigo': codigo,
+            'part_number': partNumber,
+            'des_item': descripcion,
             'cantidad': tempDetalleItemCCSelect.cantidad?tempDetalleItemCCSelect.cantidad:1,
-            'id_producto': parseInt(id_producto),
-            'id_servicio': id_servicio?parseInt(id_servicio):null,
-            'id_equipo': id_equipo?parseInt(id_equipo):null,
-            'id_tipo_item': parseInt(id_tipo_item),
-            'id_unidad_medida': document.querySelector("div[id='modal-catalogo-items'] div[class='modal-footer'] label[id='id_unidad_medida']").textContent,
-            'categoria': document.querySelector("div[id='modal-catalogo-items'] div[class='modal-footer'] label[id='categoria']").textContent,
-            'subcategoria': document.querySelector("div[id='modal-catalogo-items'] div[class='modal-footer'] label[id='subcategoria']").textContent,
+            'id_producto': parseInt(idProducto),
+            'id_servicio': null,
+            'id_equipo': null,
+            'id_tipo_item': parseInt(idTipoItem),
+            'id_unidad_medida': idUnidadMedida,
+            'categoria': categoria,
+            'subcategoria': subcategoria,
             'precio_unitario':tempDetalleItemCCSelect.precio_unitario?tempDetalleItemCCSelect.precio_unitario:null,
             'subtotal':null,
             'id_tipo_moneda':1,

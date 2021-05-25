@@ -12,12 +12,12 @@
 @endif
 
 @section('cabecera')
-    Nuevo Requerimiento
+    Elaborar Requerimiento
 @endsection
 
 @section('breadcrumb')
 <ol class="breadcrumb">
-    <li><a href="{{route('logistica.index')}}"><i class="fas fa-tachometer-alt"></i> Logística y Almacenes</a></li>
+    <li><a href="{{route('logistica.index')}}"><i class="fas fa-tachometer-alt"></i> Logística</a></li>
     <li>Requerimientos</li>
     <li class="active">@yield('cabecera')</li>
 </ol>

@@ -128,7 +128,11 @@ class OrdenCtrl{
             if(idElement == id){
                 let precio = document.querySelectorAll("input[name='precio']")[index].value?document.querySelectorAll("input[name='precio']")[index].value:0;
                 let cantidad =( document.querySelectorAll("input[name='cantidad_a_comprar']")[index].value)>0?document.querySelectorAll("input[name='cantidad_a_comprar']")[index].value:document.querySelectorAll("input[name='cantidad']")[index].value;
-                let subtotal = (parseFloat(precio) * parseFloat(cantidad)).toFixed(2);
+                let calSubtotal =(parseFloat(precio) * parseFloat(cantidad));
+                console.log(calSubtotal);
+                
+                let subtotal = formatDecimalDigitos(calSubtotal,2);
+                console.log(subtotal);
                 document.querySelectorAll("div[name='subtotal']")[index].textContent=subtotal;
                 document.querySelectorAll("var[name='simboloMoneda']")[index].textContent=simbolo_moneda_selected;
                 ordenCtrl.updateInObjSubtotal(id,subtotal);
