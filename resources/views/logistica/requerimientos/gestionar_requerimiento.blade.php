@@ -703,7 +703,7 @@
             id_grupo_usuario_sesion_list.push(element.id_grupo);
         });
         
-        cambiarTipoFormulario();
+        cambiarTipoFormulario('BIENES_SERVICIOS');
 
         // grupos.forEach(element => {
         //     if(element.id_grupo ==3){ // proyectos

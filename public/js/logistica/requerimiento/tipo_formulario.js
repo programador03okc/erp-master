@@ -88,6 +88,10 @@ function changeOptTipoReqSelect(e){
     getNexCodigoRequerimiento(e.target.value);
 }
 
+function autoSelectTipoRequerimientoPorDefecto(){
+    document.querySelector("div[type='requerimiento'] select[name='tipo_requerimiento']").value =3;
+
+}
 function autoSelectTipoRequerimientoPorUsuarioEnSesion(){
     if(id_grupo_usuario_sesion_list.includes(1)){ //Administración
         document.querySelector("div[type='requerimiento'] select[name='tipo_requerimiento']").value =3;

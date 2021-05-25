@@ -7,7 +7,8 @@ function nuevo_req(){
     onlyAdjuntosRequerimiento=[];
     $('#form-requerimiento')[0].reset();
     limpiarSelectFuenteDet();
-    autoSelectTipoRequerimientoPorUsuarioEnSesion();
+    // autoSelectTipoRequerimientoPorUsuarioEnSesion();
+    autoSelectTipoRequerimientoPorDefecto();
     document.querySelector("form[id='form-requerimiento'] div[id='input-group-fuente_det']").setAttribute('hidden',true);
 
     $('#body_detalle_requerimiento').html('<tr id="default_tr"><td></td><td colspan="12"> No hay datos registrados</td></tr>');
