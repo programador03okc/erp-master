@@ -1156,13 +1156,14 @@ function listarCentroCostos(){
                                     if((hijo.id_padre > 0) && (hijo.estado ==1)){
                                         if(hijo.nivel == 2){
                                             html+= `<div class="okc-cc okc-niv-2" onClick="selectCC(${hijo.id_centro_costo} , '${hijo.codigo}');"> ${hijo.codigo} - ${hijo.descripcion} </div>`;
-                                        }else if(hijo.nivel == 3){
-                                            html+= `<div class="okc-cc okc-niv-3" onClick="selectCC(${hijo.id_centro_costo} , '${hijo.codigo}');"> ${hijo.codigo} - ${hijo.descripcion} </div>`;
                                         }
                                     }
                                 }
+                                if(hijo.nivel == 3){
+                                    html+= `<div class="okc-cc okc-niv-3" onClick="selectCC(${hijo.id_centro_costo} , '${hijo.codigo}');"> ${hijo.codigo} - ${hijo.descripcion} </div>`;
+                                }
                             });
-                                    
+
                             html+= `</div></div></div>`;
                 }
         });
