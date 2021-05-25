@@ -135,7 +135,6 @@ function mostrarTipoForm(tipo){
     switch (tipo) {
         case 'MGCP': //Mgcp - comercial
             hiddeElement('ocultar','form-requerimiento',[
-                'input-group-cliente',
                 'input-group-rol-usuario',
                 'input-group-comercial',
                 'input-group-almacen',
