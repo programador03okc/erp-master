@@ -1,8 +1,6 @@
 
 function nuevo_req(){
     data_item=[];
-    document.querySelector("table[id='ListaDetalleRequerimiento']").tHead.children[0].cells[9].setAttribute('class','oculto'); 
-    document.querySelector("table[id='ListaDetalleRequerimiento']").tHead.children[0].cells[10].setAttribute('class','oculto'); 
     data=[];
     adjuntos=[];
     adjuntosRequerimiento=[];
@@ -1010,31 +1008,13 @@ function llenarTablaListaDetalleRequerimiento(data,selectMoneda,selectUnidadMedi
                     row.insertCell(6).innerHTML = `<input type="text" class="form-control" name="precio_unitario" data-indice="${a}" onkeyup ="updateInputPrecioUnitarioItem(this,event);" value="${data[a].precio_unitario?data[a].precio_unitario:''}">`;
                     row.insertCell(7).innerHTML = makeSelectedToSelect(a, 'moneda', selectMoneda, 1, '');
                     row.insertCell(8).innerHTML = data[a].subtotal ? data[a].subtotal : '';
+                    row.insertCell(9).innerHTML =  data[a].cod_partida ? data[a].cod_partida : '';
+                    row.insertCell(10).innerHTML =  data[a].codigo_centro_costo ? data[a].codigo_centro_costo : '';
+                    row.insertCell(11).innerHTML =  data[a].almacen_reserva ? data[a].almacen_reserva : (data[a].proveedor_razon_social?data[a].proveedor_razon_social:'');
                     
                     var tdBtnAction=null;
-                    if((id_grupo == 3 && data[a].id_partida > 0 ) || (cantidadIdPartidas >0)){
-                        document.querySelector("table[id='ListaDetalleRequerimiento']").tHead.children[0].cells[9].setAttribute('class','');              
-                        row.insertCell(9).innerHTML =  data[a].cod_partida ? data[a].cod_partida : '';
-    
-                        if(data[a].id_centro_costo >0 || (cantidadIdPartidas >0 && cantidadIdCentroCostos >0)){
-                            document.querySelector("table[id='ListaDetalleRequerimiento']").tHead.children[0].cells[10].setAttribute('class','');                
-                            row.insertCell(10).innerHTML =  data[a].codigo_centro_costo ? data[a].codigo_centro_costo : '';
-                            tdBtnAction = row.insertCell(11);
-                
-                        }else{
-                            tdBtnAction = row.insertCell(10);
-                        }
-    
-    
-                    }else if(data[a].id_centro_costo >0 || (cantidadIdCentroCostos >0)){
-                        document.querySelector("table[id='ListaDetalleRequerimiento']").tHead.children[0].cells[10].setAttribute('class','');             
-                        row.insertCell(9).innerHTML =  data[a].codigo_centro_costo ? data[a].codigo_centro_costo : ''; 
-    
-                        tdBtnAction = row.insertCell(10);
-                    }else{
-                        tdBtnAction = row.insertCell(9);
-    
-                    }
+                    tdBtnAction = row.insertCell(12);
+                    
     
                     var btnAction = '';
                     // tdBtnAction.className = classHiden;
@@ -1073,46 +1053,12 @@ function llenarTablaListaDetalleRequerimiento(data,selectMoneda,selectUnidadMedi
                 row.insertCell(6).innerHTML = `<input type="text" class="form-control" name="precio_unitario" data-indice="${a}" onkeyup ="updateInputPrecioUnitarioItem(this,event);" value="${data[a].precio_unitario?data[a].precio_unitario:''}">`;
                 row.insertCell(7).innerHTML = makeSelectedToSelect(a, 'moneda', selectMoneda, data[a].id_unidad_medida, '');
                 row.insertCell(8).innerHTML = data[a].subtotal ? data[a].subtotal : '';
-                
+                row.insertCell(9).innerHTML =  data[a].cod_partida ? data[a].cod_partida : ''; 
+                row.insertCell(10).innerHTML =  data[a].codigo_centro_costo ? data[a].codigo_centro_costo : '';
+                row.insertCell(11).innerHTML =  data[a].almacen_reserva ? data[a].almacen_reserva : (data[a].proveedor_razon_social?data[a].proveedor_razon_social:'');
+
                 var tdBtnAction=null;
-
-                    if((id_grupo == 3 && data[a].id_partida > 0 ) || (cantidadIdPartidas >0)){
-                        document.querySelector("table[id='ListaDetalleRequerimiento']").tHead.children[0].cells[9].setAttribute('class','');             
-                        row.insertCell(9).innerHTML =  data[a].cod_partida ? data[a].cod_partida : ''; 
-    
-                        if(data[a].id_centro_costo >0 || (cantidadIdPartidas >0 && cantidadIdCentroCostos >0)){
-                            document.querySelector("table[id='ListaDetalleRequerimiento']").tHead.children[0].cells[10].setAttribute('class','');         
-                            row.insertCell(10).innerHTML =  data[a].codigo_centro_costo ? data[a].codigo_centro_costo : '';
-                            tdBtnAction = row.insertCell(11);
-
-                        }else{
-                            tdBtnAction = row.insertCell(10);
-                        }
-    
-    
-                    }else if(data[a].id_centro_costo >0 || (cantidadIdCentroCostos >0)){
-                        document.querySelector("table[id='ListaDetalleRequerimiento']").tHead.children[0].cells[10].setAttribute('class','');           
-                        row.insertCell(9).innerHTML =  data[a].codigo_centro_costo ? data[a].codigo_centro_costo : ''; 
-
-                        if(data[a].id_almacen_reserva >0 || data[a].proveedor_id >0){
-                            document.querySelector("table[id='ListaDetalleRequerimiento']").tHead.children[0].cells[11].setAttribute('class','');            
-                            row.insertCell(10).innerHTML =  data[a].almacen_reserva ? data[a].almacen_reserva : data[a].proveedor_razon_social;
-                            tdBtnAction = row.insertCell(11);
-        
-                        }else{
-        
-                            tdBtnAction = row.insertCell(10);
-                        }
-                    }else if(data[a].id_almacen_reserva >0 || data[a].proveedor_id >0){
-                        document.querySelector("table[id='ListaDetalleRequerimiento']").tHead.children[0].cells[11].setAttribute('class','');             
-                        row.insertCell(9).innerHTML =  data[a].almacen_reserva ? data[a].almacen_reserva : data[a].proveedor_razon_social; 
-
-                        tdBtnAction = row.insertCell(10);
-                    }else{
-                        tdBtnAction = row.insertCell(9); 
-
-                    }
-                
+                tdBtnAction = row.insertCell(12);
 
 
                 var btnAction = '';
@@ -1434,7 +1380,7 @@ function selectPartida(id_partida){
     //     'codigo_partida':codigoPartidaSelected
     // }
 
-    document.querySelectorAll('[id^="pres"]')[0].setAttribute('class','oculto' );
+    // document.querySelectorAll('[id^="pres"]')[0].setAttribute('class','oculto' );
 
 }
 

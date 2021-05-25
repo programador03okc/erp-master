@@ -1,8 +1,6 @@
 function mostrar_requerimiento(IdorCode){
     // console.log("mostrar_requeriniento");
-    document.querySelector("table[id='ListaDetalleRequerimiento']").tHead.children[0].cells[9].setAttribute('class','oculto'); 
-    document.querySelector("table[id='ListaDetalleRequerimiento']").tHead.children[0].cells[10].setAttribute('class','oculto'); 
-    document.querySelector("table[id='ListaDetalleRequerimiento']").tHead.children[0].cells[11].setAttribute('class','oculto'); 
+
     document.getElementById('btnCopiar').removeAttribute("disabled");
     if (! /^[a-zA-Z0-9]+$/.test(IdorCode)) { // si tiene texto
         url = rutaMostrarRequerimiento+'/'+0+'/'+IdorCode;

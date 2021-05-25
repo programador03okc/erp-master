@@ -164,7 +164,6 @@ function agregarItem(){
     // console.log(table.querySelectorAll('tr')[i].getAttribute('id'));
     
         if ( table.querySelectorAll('tr')[i].getAttribute('id') == "default_tr"){
-        // table.querySelectorAll('tr')[i].setAttribute('class', 'yourID')
             table.deleteRow(i);
         }
     }
@@ -271,55 +270,16 @@ function agregarItem(){
             row.insertCell(6).innerHTML = data_item[a].precio_unitario?data_item[a].precio_unitario:'0';
             row.insertCell(7).innerHTML = data_item[a].tipo_moneda?data_item[a].tipo_moneda:'';
             row.insertCell(8).innerHTML = data_item[a].subtotal ? data_item[a].subtotal : '';
+            row.insertCell(9).innerHTML =  data_item[a].cod_partida ? data_item[a].cod_partida : '';
+            row.insertCell(10).innerHTML =  data_item[a].codigo_centro_costo ? data_item[a].codigo_centro_costo : '';
+            row.insertCell(11).innerHTML =  data_item[a].almacen_reserva ? data_item[a].almacen_reserva : (data_item[a].proveedor_razon_social?data_item[a].proveedor_razon_social:'');
 
             var id_grupo = document.querySelector("form[id='form-requerimiento'] input[name='id_grupo']").value;
             var id_proyecto = document.querySelector("form[id='form-requerimiento'] select[name='id_proyecto']").value;
             var tdBtnAction = '';
+            tdBtnAction = row.insertCell(12);
 
-            if((id_grupo == 3 && data_item[a].id_partida > 0 ) || (cantidadIdPartidas >0)){
-                document.querySelector("table[id='ListaDetalleRequerimiento']").tHead.children[0].cells[9].setAttribute('class','');            
-                row.insertCell(9).innerHTML =  data_item[a].cod_partida ? data_item[a].cod_partida : '';
-
-                if(data_item[a].id_centro_costo >0 || (cantidadIdPartidas >0 && cantidadIdCentroCostos >0)){
-                    document.querySelector("table[id='ListaDetalleRequerimiento']").tHead.children[0].cells[10].setAttribute('class','');            
-                    row.insertCell(10).innerHTML =  data_item[a].codigo_centro_costo ? data_item[a].codigo_centro_costo : '';
-                    tdBtnAction = row.insertCell(11);
-        
-                }else{
-                    tdBtnAction = row.insertCell(10);
-                }
-
-
-            }else if(data_item[a].id_centro_costo >0 || (cantidadIdCentroCostos >0)){
-                document.querySelector("table[id='ListaDetalleRequerimiento']").tHead.children[0].cells[10].setAttribute('class','');             
-                row.insertCell(9).innerHTML =  data_item[a].codigo_centro_costo ? data_item[a].codigo_centro_costo : '';
-
-                if(data_item[a].id_almacen_reserva >0 || data_item[a].proveedor_id >0){
-                    document.querySelector("table[id='ListaDetalleRequerimiento']").tHead.children[0].cells[11].setAttribute('class','');          
-                    row.insertCell(10).innerHTML =  data_item[a].almacen_reserva ? data_item[a].almacen_reserva : data_item[a].proveedor_razon_social;
-                    tdBtnAction = row.insertCell(11);
-                    hasProveedor= true;
-
-                }else{
-
-                    tdBtnAction = row.insertCell(10);
-                }
-            }else if(data_item[a].id_almacen_reserva >0 || data_item[a].proveedor_id >0){
-                document.querySelector("table[id='ListaDetalleRequerimiento']").tHead.children[0].cells[11].setAttribute('class','');            
-                row.insertCell(9).innerHTML =  data_item[a].almacen_reserva ? data_item[a].almacen_reserva : data_item[a].proveedor_razon_social;
-                tdBtnAction = row.insertCell(10);
-                hasProveedor= true;
-            }else{
-                if(hasProveedor==true){
-                    document.querySelector("table[id='ListaDetalleRequerimiento']").tHead.children[0].cells[11].setAttribute('class','');            
-                    row.insertCell(9).innerHTML = '';
-                    tdBtnAction = row.insertCell(10);
-                }else{
-
-                tdBtnAction = row.insertCell(9);
-                }
-             
-            }
+ 
             // tdBtnAction.className = classHiden;
             var btnAction = '';
             var hasAttrDisabled ='';

@@ -475,9 +475,9 @@
                             <th width="70">PRECIO U.</th>
                             <th width="70">MONEDA</th>
                             <th width="70">SUBTOTAL</th>
-                            <th class="oculto" width="70">PARTIDA</th>
-                            <th class="oculto" width="70">C.Costos</th>
-                            <th class="oculto" width="70">Atendido Por</th>
+                            <th width="70">PARTIDA</th>
+                            <th width="70">C.Costos</th>
+                            <th width="70">Atendido Por</th>
                             <th width="140">
                                 <center>
                                 <button type="button" class="btn btn-xs btn-success activation" onClick="catalogoItemsModal();" id="btn-add-producto"
