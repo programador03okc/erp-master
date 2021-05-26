@@ -608,6 +608,7 @@
 
 </div>
 <!-- @include('logistica.requerimientos.modal_buscar_stock_almacenes') -->
+@include('logistica.requerimientos.modal_motivo_detalle_requerimiento')
 @include('logistica.requerimientos.modal_mostrar_archivo_adjunto_requerimiento')
 @include('logistica.requerimientos.aprobacion.modal_sustento')
 @include('logistica.requerimientos.modal_agregar_fuente')
@@ -669,6 +670,7 @@
     <script src="{{ asset('js/logistica/requerimiento/cabecera_detalle.js') }}"></script>
     <script src="{{ asset('js/logistica/requerimiento/inicializar.js') }}"></script>
     <script src="{{ asset('js/logistica/requerimiento/modal_almacen_reserva.js')}}"></script>
+    <script src="{{ asset('js/logistica/requerimiento/modal_motivo_detalle_requerimiento.js')}}"></script>
     <script src="{{ asset('js/logistica/requerimiento/modal_seleccionar_crear_proveedor.js')}}"></script>
     <script src="{{ asset('js/logistica/requerimiento/public.js') }}"></script>
     <script src="{{ asset('js/logistica/adjuntar_archivos_req.js') }}"></script>

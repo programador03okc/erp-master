@@ -1690,10 +1690,10 @@ class LogisticaController extends Controller
 
                     $alm_req_adjuntos = DB::table('almacen.alm_req_adjuntos')->insertGetId(
                         [
-                            'id_requerimiento'          => $detalle_adjunto[0]['id_requerimiento'],
+                            'id_requerimiento'          => $detalle_adjunto[$clave]['id_requerimiento'],
                             'archivo'                   => $name_file,
                             'estado'                    => 1,
-                            'categoria_adjunto_id'      => $detalle_adjunto[0]['categoria_adjunto_id'],
+                            'categoria_adjunto_id'      => $detalle_adjunto[$clave]['categoria_adjunto_id'],
                             'fecha_registro'            => date('Y-m-d H:i:s')
                         ],
                         'id_adjunto'

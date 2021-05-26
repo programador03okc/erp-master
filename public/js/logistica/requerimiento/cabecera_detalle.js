@@ -996,7 +996,7 @@ function llenarTablaListaDetalleRequerimiento(data,selectMoneda,selectUnidadMedi
     $('#ListaDetalleRequerimiento tbody').html(htmls);
     var table = document.getElementById("ListaDetalleRequerimiento");
 
-    console.log(data);
+    // console.log(data);
     let cantidadIdPartidas=0;
     let cantidadIdCentroCostos=0;
     for (var a = 0; a < data.length; a++) {
@@ -1104,6 +1104,8 @@ function llenarTablaListaDetalleRequerimiento(data,selectMoneda,selectUnidadMedi
                 if(tipo_requerimiento !=2){
                     btnAction += `<button type="button" class="btn btn-default btn-xs" name="btnAdjuntarArchivos" data-toggle="tooltip" title="Adjuntos" onClick="archivosAdjuntosModal(event, ${a});" ${hasAttrDisabled}><i class="fas fa-paperclip"></i></button>`;
                 }
+                btnAction += `<button type="button" class="btn btn-danger btn-xs" name="btnMotivo" data-toggle="tooltip" title="Motivo" style="background: #963277;" onClick="motivoModal(event, ${a});" ${hasAttrDisabled}><i class="fas fa-bullseye"></i></button>`;
+
                 btnAction += `<button type="button" class="btn btn-danger btn-xs"   name="btnEliminarItem" data-toggle="tooltip" title="Eliminar" onclick="eliminarItemDeListado(this,'${data[a].id}');" ${hasAttrDisabled} ><i class="fas fa-trash-alt"></i></button>`;
 
                 btnAction += `</center></div>`;
