@@ -6,27 +6,55 @@ var onlyAdjuntosRequerimiento=[];
 //     rutaListaAdjuntosRequerimiento = _rutaListaAdjuntosRequerimiento;
 // }
 
-function llenarTablaAdjuntosRequerimiento(id_req){    
-    // let id_req = document.querySelector("form[id='form-requerimiento'] input[name='id_requerimiento']").value;
+function archivosAdjuntosRequerimientoModal(){
+    $('#modal-mostrar-archivos-adjuntos-requerimiento').modal({
+        show: true
+    });
+        llenarTablaAdjuntosRequerimiento();
+}
+
+function llenarTablaAdjuntosRequerimiento(id_req=null){
+    if(id_req >0){
+        llenarTablaAdjuntosRequerimientoOtrosArchivos(id_req);
+        llenarTablaAdjuntosRequerimientOrdenes(id_req);
+        llenarTablaAdjuntosRequerimientComprobanteBancario(id_req);
+        llenarTablaAdjuntosRequerimientComprobanteContable(id_req);
+    }else{
+        let idRequerimiento= document.querySelector("form[id='form-requerimiento'] input[name='id_requerimiento']").value;
+        if(idRequerimiento>0){
+            id_req =idRequerimiento;    
+            llenarTablaAdjuntosRequerimientoOtrosArchivos(id_req);
+            llenarTablaAdjuntosRequerimientOrdenes(id_req);
+            llenarTablaAdjuntosRequerimientComprobanteBancario(id_req);
+            llenarTablaAdjuntosRequerimientComprobanteContable(id_req);
+        }
+
+    }
+}
+
+function llenarTablaAdjuntosRequerimientoOtrosArchivos(id_req){
     var vardataTables = funcDatatables();
-    $('#listaArchivosAdjuntosRequerimiento').dataTable({
+    $('#tablaAdjuntoOtrosArchivos').dataTable({
         bDestroy: true,
         info:     false,
-        iDisplayLength:10,
-        paging:   false,
+        iDisplayLength:2,
+        lengthChange: false,
+        paging:   true,
         searching: false,
         language: vardataTables[0],
         processing: true,
-        ajax: 'mostrar-archivos-adjuntos-requerimiento/'+id_req,
+        order:[[1,"desc"]],
+        ajax: 'mostrar-archivos-adjuntos-requerimiento/'+id_req+'/'+1,
         columns: [
+
             {'render':
                 function (data, type, row, meta){
-                    return meta.row+1;
+                    return row.archivo;
                 }
             },
             {'render':
                 function (data, type, row, meta){
-                    return row.archivo;
+                    return row.fecha_registro;
                 }
             },
             {'render':
@@ -54,17 +82,181 @@ function llenarTablaAdjuntosRequerimiento(id_req){
                 }
             },
         ],"columnDefs": [
-            { "width": "5%", "targets": 0 },
-            { "width": "70%", "targets": 1 },
-            { "width": "25%", "targets": 2 }
+            { "width": "60%", "targets": 0 },
+            { "width": "30%", "targets": 1 },
+            { "width": "10%", "targets": 2 }
           ]
     })
-
-    let tablelistaitem = document.getElementById(
-        'listaArchivosAdjuntosRequerimiento_wrapper'
-    )
-    tablelistaitem.childNodes[0].childNodes[0].hidden = true
 }
+function llenarTablaAdjuntosRequerimientOrdenes(id_req){
+    var vardataTables = funcDatatables();
+    $('#tablaAdjuntoOrdenes').dataTable({
+        bDestroy: true,
+        info:     false,
+        iDisplayLength:2,
+        lengthChange: false,
+        paging:   true,
+        searching: false,
+        language: vardataTables[0],
+        processing: true,
+        order:[[1,"desc"]],
+        ajax: 'mostrar-archivos-adjuntos-requerimiento/'+id_req+'/'+2,
+        columns: [
+
+            {'render':
+                function (data, type, row, meta){
+                    return row.archivo;
+                }
+            },
+            {'render':
+                function (data, type, row, meta){
+                    return row.fecha_registro;
+                }
+            },
+            {'render':
+                function (data, type, row, meta){
+                    let btns = '<div class="btn-group btn-group-sm" role="group" aria-label="Second group">'+
+                    '<a'+
+                    '    class="btn btn-primary btn-sm "'+
+                    '    name="btnAdjuntarArchivos"'+
+                    '    href="/files/logistica/requerimiento/'+row.archivo+'"'+
+                    '    target="_blank"'+
+                    '    title="Descargar Archivo"'+
+                    '>'+
+                    '    <i class="fas fa-file-download"></i>'+
+                    '</a>'+
+                    '<button'+
+                    '    class="btn btn-danger btn-sm "'+
+                    '    name="btnEliminarAdjuntoRequerimiento"'+
+                    '    onclick="eliminarArchivoAdjuntoRequerimiento(event,'+meta.row+','+row.id_adjunto+')"'+
+                    '    title="Eliminar Archivo"'+
+                    '>'+
+                    '    <i class="fas fa-trash"></i>'+
+                    '</button>'+
+                    '</div>'
+                    return btns;
+                }
+            },
+        ],"columnDefs": [
+            { "width": "60%", "targets": 0 },
+            { "width": "30%", "targets": 1 },
+            { "width": "10%", "targets": 2 }
+          ]
+    })
+}
+function llenarTablaAdjuntosRequerimientComprobanteBancario(id_req){
+    var vardataTables = funcDatatables();
+    $('#tablaAdjuntoComprobanteBancario').dataTable({
+        bDestroy: true,
+        info:     false,
+        iDisplayLength:2,
+        lengthChange: false,
+        paging:   true,
+        searching: false,
+        language: vardataTables[0],
+        processing: true,
+        order:[[1,"desc"]],
+        ajax: 'mostrar-archivos-adjuntos-requerimiento/'+id_req+'/'+3,
+        columns: [
+
+            {'render':
+                function (data, type, row, meta){
+                    return row.archivo;
+                }
+            },
+            {'render':
+                function (data, type, row, meta){
+                    return row.fecha_registro;
+                }
+            },
+            {'render':
+                function (data, type, row, meta){
+                    let btns = '<div class="btn-group btn-group-sm" role="group" aria-label="Second group">'+
+                    '<a'+
+                    '    class="btn btn-primary btn-sm "'+
+                    '    name="btnAdjuntarArchivos"'+
+                    '    href="/files/logistica/requerimiento/'+row.archivo+'"'+
+                    '    target="_blank"'+
+                    '    title="Descargar Archivo"'+
+                    '>'+
+                    '    <i class="fas fa-file-download"></i>'+
+                    '</a>'+
+                    '<button'+
+                    '    class="btn btn-danger btn-sm "'+
+                    '    name="btnEliminarAdjuntoRequerimiento"'+
+                    '    onclick="eliminarArchivoAdjuntoRequerimiento(event,'+meta.row+','+row.id_adjunto+')"'+
+                    '    title="Eliminar Archivo"'+
+                    '>'+
+                    '    <i class="fas fa-trash"></i>'+
+                    '</button>'+
+                    '</div>'
+                    return btns;
+                }
+            },
+        ],"columnDefs": [
+            { "width": "60%", "targets": 0 },
+            { "width": "30%", "targets": 1 },
+            { "width": "10%", "targets": 2 }
+          ]
+    })
+}
+function llenarTablaAdjuntosRequerimientComprobanteContable(id_req){
+    var vardataTables = funcDatatables();
+    $('#tablaAdjuntoComprobanteContable').dataTable({
+        bDestroy: true,
+        info:     false,
+        iDisplayLength:2,
+        lengthChange: false,
+        paging:   true,
+        searching: false,
+        language: vardataTables[0],
+        processing: true,
+        order:[[1,"desc"]],
+        ajax: 'mostrar-archivos-adjuntos-requerimiento/'+id_req+'/'+4,
+        columns: [
+
+            {'render':
+                function (data, type, row, meta){
+                    return row.archivo;
+                }
+            },
+            {'render':
+                function (data, type, row, meta){
+                    return row.fecha_registro;
+                }
+            },
+            {'render':
+                function (data, type, row, meta){
+                    let btns = '<div class="btn-group btn-group-sm" role="group" aria-label="Second group">'+
+                    '<a'+
+                    '    class="btn btn-primary btn-sm "'+
+                    '    name="btnAdjuntarArchivos"'+
+                    '    href="/files/logistica/requerimiento/'+row.archivo+'"'+
+                    '    target="_blank"'+
+                    '    title="Descargar Archivo"'+
+                    '>'+
+                    '    <i class="fas fa-file-download"></i>'+
+                    '</a>'+
+                    '<button'+
+                    '    class="btn btn-danger btn-sm "'+
+                    '    name="btnEliminarAdjuntoRequerimiento"'+
+                    '    onclick="eliminarArchivoAdjuntoRequerimiento(event,'+meta.row+','+row.id_adjunto+')"'+
+                    '    title="Eliminar Archivo"'+
+                    '>'+
+                    '    <i class="fas fa-trash"></i>'+
+                    '</button>'+
+                    '</div>'
+                    return btns;
+                }
+            },
+        ],"columnDefs": [
+            { "width": "60%", "targets": 0 },
+            { "width": "30%", "targets": 1 },
+            { "width": "10%", "targets": 2 }
+          ]
+    })
+}
+
 
 function adjuntoRequerimientoModal(event){
     event.preventDefault();
@@ -75,7 +267,8 @@ function adjuntoRequerimientoModal(event){
                 backdrop: 'static'
             });
             // get_data_archivos_adjuntos(data_item[index].id_detalle_requerimiento);
-            
+            document.querySelector("div[id='group-adjunto-requerimiento'] span[class='buttonText']").textContent ="Seleccionar archivo"
+
         }else{ //no existe id_detalle_requerimiento => es un nuevo requerimiento
             alert("Primero debe guardar el requerimiento");
         }
@@ -85,6 +278,7 @@ function agregarAdjuntoRequerimiento(event){ //agregando nuevo archivo adjunto
    
     //  console.log(event.target.value);
     let id_req = document.querySelector("form[id='form-requerimiento'] input[name='id_requerimiento']").value;
+    let categoria_adjunto_id = document.querySelector("div[id='modal-adjuntar-archivos-requerimiento'] select[name='categoria_adjunto']").value;
     if(parseInt(id_req)>0){
         let fileList = event.target.files;
         let file = fileList[0];
@@ -118,6 +312,7 @@ function agregarAdjuntoRequerimiento(event){ //agregando nuevo archivo adjunto
                 let archivo ={
                     id_adjunto: 0,
                     id_requerimiento: id_req,
+                    categoria_adjunto_id: categoria_adjunto_id?parseInt(categoria_adjunto_id):null,
                     archivo:file.name,
                     fecha_registro: new Date().toJSON().slice(0, 10),
                     estado: 1
@@ -175,11 +370,15 @@ function guardarAdjuntosRequerimiento(){
                 if (response > 0){
                     alert("Archivo(s) Guardado(s)");
                     onlyAdjuntosRequerimiento=[];
-                    $('#listaArchivosAdjuntosRequerimiento').DataTable().ajax.reload();
+                    // $('#listaArchivosAdjuntosRequerimiento').DataTable().ajax.reload();
+                    llenarTablaAdjuntosRequerimiento();
+                    adjuntosRequerimiento=[];
                     let ask = confirm('¿Desea seguir agregando más archivos ?');
                     if (ask == true){
                         return false;
                     }else{
+                        adjuntosRequerimiento=[];
+
                         $('#modal-adjuntar-archivos-requerimiento').modal('hide');
                     }
                 }
@@ -204,7 +403,8 @@ function eliminarArchivoAdjuntoRequerimiento(event,indice,id_adjunto){
                 success: function(response){
                     if(response.status == 'ok'){
                         alert("Archivo Eliminado");
-                        $('#listaArchivosAdjuntosRequerimiento').DataTable().ajax.reload();
+                        llenarTablaAdjuntosRequerimiento();
+                        // $('#listaArchivosAdjuntosRequerimiento').DataTable().ajax.reload();
                     }else{
                         alert("No se pudo eliminar el archivo")
                     }

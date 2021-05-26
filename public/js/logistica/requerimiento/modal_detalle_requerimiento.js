@@ -316,7 +316,7 @@ function agregarItem(){
             }
             if(tipo_requerimiento !=1){ // tipo = CMS
                 btnAction += `<button type="button" class="btn btn-info btn-xs" name="btnEditarItem" data-toggle="tooltip" title="Editar" onclick="detalleRequerimientoModal(event,${a});" ${hasAttrDisabled} ><i class="fas fa-edit"></i></button>`;
-                btnAction += `<button type="button" class="btn btn-danger btn-xs activation"   name="btnEliminarItem" data-toggle="tooltip" title="Eliminar" onclick="eliminarItemDeListado(this,${data_item[a].id_item});" ${hasAttrDisabled} ><i class="fas fa-trash-alt"></i></button>`;
+                btnAction += `<button type="button" class="btn btn-danger btn-xs activation"   name="btnEliminarItem" data-toggle="tooltip" title="Eliminar" onclick="eliminarItemDeListado(this,${data_item[a].id});" ${hasAttrDisabled} ><i class="fas fa-trash-alt"></i></button>`;
             }
             btnAction += `</center></div>`;
             tdBtnAction.innerHTML = btnAction;
@@ -849,6 +849,14 @@ function controlUnidadMedida(){
         disabledControl(selectUnidadMedida,true);
     }
 }
+function makeId(){
+    let ID = "";
+    let characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    for ( var i = 0; i < 12; i++ ) {
+      ID += characters.charAt(Math.floor(Math.random() * 36));
+    }
+    return ID;
+} 
 
 function selectItem(obj){
         let idProducto= obj.dataset.idProducto;
@@ -870,6 +878,7 @@ function selectItem(obj){
         }
         let tieneTransformacion = document.querySelector("form[id='form-requerimiento'] input[name='tiene_transformacion']").value;
         let data_item_selected = {
+            'id': makeId(),
             'id_detalle_requerimiento': null,
             'id_item': idItem,
             'codigo': codigo,

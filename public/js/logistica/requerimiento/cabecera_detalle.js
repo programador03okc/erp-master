@@ -756,12 +756,21 @@ function isNumberKey(evt){
     return true;
 }
  
- 
+function makeId(){
+    let ID = "";
+    let characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    for ( var i = 0; i < 12; i++ ) {
+      ID += characters.charAt(Math.floor(Math.random() * 36));
+    }
+    return ID;
+} 
+
 function agregarServicio(){
     var tipo_requerimiento = $('[name=tipo_requerimiento]').val();
 
     if(tipo_requerimiento >0){
         let item = {
+            'id':makeId(),
             'id_detalle_requerimiento': null,
             'id_item': null,
             'codigo': null,
@@ -868,8 +877,6 @@ function updateMontoTotalRequerimiento(){
         data_item.forEach(element => {
             sumSubTotal+= parseFloat(parseInt(element.cantidad) * parseFloat(element.precio_unitario?element.precio_unitario:0));
         });
-    }else{
-        alert("El item no se agrego correctamente");
     }
 
     let montoTotal=(Math.round(sumSubTotal * 100) / 100).toFixed(2);
@@ -1042,7 +1049,7 @@ function llenarTablaListaDetalleRequerimiento(data,selectMoneda,selectUnidadMedi
                     if(tipo_requerimiento !=2){
                         btnAction += `<button type="button" class="btn btn-default btn-xs" name="btnAdjuntarArchivos" data-toggle="tooltip" title="Adjuntos" onClick="archivosAdjuntosModal(event, ${a});" ${hasAttrDisabled}><i class="fas fa-paperclip"></i></button>`;
                     }
-                    btnAction += `<button type="button" class="btn btn-danger btn-xs"   name="btnEliminarItem" data-toggle="tooltip" title="Eliminar" onclick="eliminarItemDeListado(this,${data[a].id_producto});" ${hasAttrDisabled} ><i class="fas fa-trash-alt"></i></button>`;
+                    btnAction += `<button type="button" class="btn btn-danger btn-xs"   name="btnEliminarItem" data-toggle="tooltip" title="Eliminar" onclick="eliminarItemDeListado(this,'${data[a].id}');" ${hasAttrDisabled} ><i class="fas fa-trash-alt"></i></button>`;
                     btnAction += `</center></div>`;
                     tdBtnAction.innerHTML = btnAction;
                 }else{
@@ -1097,7 +1104,7 @@ function llenarTablaListaDetalleRequerimiento(data,selectMoneda,selectUnidadMedi
                 if(tipo_requerimiento !=2){
                     btnAction += `<button type="button" class="btn btn-default btn-xs" name="btnAdjuntarArchivos" data-toggle="tooltip" title="Adjuntos" onClick="archivosAdjuntosModal(event, ${a});" ${hasAttrDisabled}><i class="fas fa-paperclip"></i></button>`;
                 }
-                btnAction += `<button type="button" class="btn btn-danger btn-xs"   name="btnEliminarItem" data-toggle="tooltip" title="Eliminar" onclick="eliminarItemDeListado(this,${data[a].id_producto});" ${hasAttrDisabled} ><i class="fas fa-trash-alt"></i></button>`;
+                btnAction += `<button type="button" class="btn btn-danger btn-xs"   name="btnEliminarItem" data-toggle="tooltip" title="Eliminar" onclick="eliminarItemDeListado(this,'${data[a].id}');" ${hasAttrDisabled} ><i class="fas fa-trash-alt"></i></button>`;
 
                 btnAction += `</center></div>`;
                 tdBtnAction.innerHTML = btnAction;
@@ -1270,19 +1277,22 @@ function apertura(id_presup){
 
 function eliminarItemDeListado(obj,id){
     let row = obj.parentNode.parentNode.parentNode.parentNode;
-    let idCcAmFilas =data_item.find(item => item.id_producto == id).id_cc_am_filas;
+    let idCcAmFilas =data_item.find(item => item.id_producto == id)?data_item.find(item => item.id_producto == id).id_cc_am_filas:null;
     let tieneTransformacion = document.querySelector("form[id='form-requerimiento'] input[name='tiene_transformacion']").value;
 
     row.remove(row);
     
 
-    data_item = data_item.filter((item, i) => item.id_producto != id);
+    data_item = data_item.filter((item, i) => item.id != id);
     updateMontoTotalRequerimiento();
     componerTdItemDetalleRequerimiento();
-    if(tieneTransformacion == false){
-        agregarItemDeTablaDetalleCuadroCostos(idCcAmFilas);
-    }else{
-        agregarItemDeTablaDetalleCuadroCostosItemTransformado(idCcAmFilas);
+    if(idCcAmFilas !=null){
+        if(tieneTransformacion == false ){
+            agregarItemDeTablaDetalleCuadroCostos(idCcAmFilas);
+        }else{
+            agregarItemDeTablaDetalleCuadroCostosItemTransformado(idCcAmFilas);
+    
+        }
 
     }
 }

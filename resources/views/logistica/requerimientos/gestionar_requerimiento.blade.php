@@ -201,6 +201,15 @@
                                 <input type="text" class="form-control activation" name="monto" readOnly>
                             </div>
                         </div>
+
+                        <div class="col-md-2" id="input-group-adjuntos">
+                            <h5>&nbsp;</h5>
+                            <div class="input-group-okc">
+                            <button type="button" class="btn btn-info" title="Archivos adjuntos" name="bnt-agregar-detalle-fuente" onclick="archivosAdjuntosRequerimientoModal();">
+                            <i class="fas fa-file-archive"></i> Archivos adjuntos
+                            </button>
+                            </div>
+                        </div>
                     </div>
                 </fieldset>
             </div>
@@ -458,6 +467,7 @@
             </div>
         </div>
 
+
     <br>
     <fieldset class="group-table">   
         <div class="row">
@@ -563,28 +573,7 @@
 
     <fieldset class="group-table"> 
     <div class="row">
-        <div class="col-md-4">
-                <fieldset class="group-importes"><legend><h6>Archivos Adjuntos</h6></legend>
-                <table class="mytable table table-striped table-condensed table-bordered dataTable no-footer" id="listaArchivosAdjuntosRequerimiento" width="100%">
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>ARCHIVO</th>
-                            <th width="120">
-                                <center><button class="btn btn-xs btn-success" onClick="adjuntoRequerimientoModal(event);" id="btnAgregarAdjuntoReq"
-                                    data-toggle="tooltip" data-placement="bottom"  title="Agregar Adjunto"><i class="fas fa-plus"></i>
-                                </button></center>
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody id="body_adjuntos_requerimiento">
-                        <tr id="default_tr">
-                            <td colspan="4"> No hay datos registrados</td>
-                        </tr>
-                    </tbody>
-                </table>
-        </div>
-        <div class="col-md-8">
+        <div class="col-md-12">
                 <fieldset class="group-importes"><legend><h6>Trazabilidad de Requerimiento</h6></legend>
                 <table class="mytable table table-striped table-condensed table-bordered dataTable no-footer" id="listaTrazabilidadRequerimiento" width="100%">
                     <thead>
@@ -619,6 +608,7 @@
 
 </div>
 <!-- @include('logistica.requerimientos.modal_buscar_stock_almacenes') -->
+@include('logistica.requerimientos.modal_mostrar_archivo_adjunto_requerimiento')
 @include('logistica.requerimientos.aprobacion.modal_sustento')
 @include('logistica.requerimientos.modal_agregar_fuente')
 @include('logistica.requerimientos.modal_agregar_detalle_fuente')
