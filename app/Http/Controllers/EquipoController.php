@@ -2285,7 +2285,7 @@ class EquipoController extends Controller
         return $array;
     }
 
-    public function listar_partidas($id_grupo,$id_proyecto =null){
+    public function listar_partidas($id_grupo,$id_proyecto){
 
         if($id_proyecto >0){ 
 
