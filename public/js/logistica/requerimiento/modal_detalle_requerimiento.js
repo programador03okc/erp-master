@@ -268,16 +268,16 @@ function agregarItem(){
             row.insertCell(4).innerHTML = descripcion_unidad;
             row.insertCell(5).innerHTML = data_item[a].cantidad?data_item[a].cantidad:'0';
             row.insertCell(6).innerHTML = data_item[a].precio_unitario?data_item[a].precio_unitario:'0';
-            row.insertCell(7).innerHTML = data_item[a].tipo_moneda?data_item[a].tipo_moneda:'';
-            row.insertCell(8).innerHTML = data_item[a].subtotal ? data_item[a].subtotal : '';
-            row.insertCell(9).innerHTML =  data_item[a].cod_partida ? data_item[a].cod_partida : '';
-            row.insertCell(10).innerHTML =  data_item[a].codigo_centro_costo ? data_item[a].codigo_centro_costo : '';
-            row.insertCell(11).innerHTML =  data_item[a].almacen_reserva ? data_item[a].almacen_reserva : (data_item[a].proveedor_razon_social?data_item[a].proveedor_razon_social:'');
+            // row.insertCell(7).innerHTML = data_item[a].tipo_moneda?data_item[a].tipo_moneda:'';
+            row.insertCell(7).innerHTML = data_item[a].subtotal ? data_item[a].subtotal : '';
+            row.insertCell(8).innerHTML =  data_item[a].cod_partida ? data_item[a].cod_partida : '';
+            row.insertCell(9).innerHTML =  data_item[a].codigo_centro_costo ? data_item[a].codigo_centro_costo : '';
+            row.insertCell(10).innerHTML =  data_item[a].almacen_reserva ? data_item[a].almacen_reserva : (data_item[a].proveedor_razon_social?data_item[a].proveedor_razon_social:'');
 
             var id_grupo = document.querySelector("form[id='form-requerimiento'] input[name='id_grupo']").value;
             var id_proyecto = document.querySelector("form[id='form-requerimiento'] select[name='id_proyecto']").value;
             var tdBtnAction = '';
-            tdBtnAction = row.insertCell(12);
+            tdBtnAction = row.insertCell(11);
 
  
             // tdBtnAction.className = classHiden;
@@ -316,7 +316,7 @@ function agregarItem(){
             }
             if(tipo_requerimiento !=1){ // tipo = CMS
                 btnAction += `<button type="button" class="btn btn-info btn-xs" name="btnEditarItem" data-toggle="tooltip" title="Editar" onclick="detalleRequerimientoModal(event,${a});" ${hasAttrDisabled} ><i class="fas fa-edit"></i></button>`;
-                btnAction += `<button type="button" class="btn btn-danger btn-xs activation"   name="btnEliminarItem" data-toggle="tooltip" title="Eliminar" onclick="eliminarItemDeListado(this,${data_item[a].id_item});" ${hasAttrDisabled} ><i class="fas fa-trash-alt"></i></button>`;
+                btnAction += `<button type="button" class="btn btn-danger btn-xs activation"   name="btnEliminarItem" data-toggle="tooltip" title="Eliminar" onclick="eliminarItemDeListado(this,${data_item[a].id});" ${hasAttrDisabled} ><i class="fas fa-trash-alt"></i></button>`;
             }
             btnAction += `</center></div>`;
             tdBtnAction.innerHTML = btnAction;
@@ -413,7 +413,7 @@ function detalleRequerimientoModal(event=null,index=null){
 function controlInputModalDetalleRequerimiento(){
     let id_grupo = document.querySelector("form[id='form-requerimiento'] input[name='id_grupo']").value;
     let tipo_requerimiento = document.querySelector("form[id='form-requerimiento'] select[name='tipo_requerimiento']").value;
-    let tipo_cliente = document.querySelector("form[id='form-requerimiento'] select[name='tipo_cliente']")?document.querySelector("form[id='form-requerimiento'] select[name='tipo_cliente']").value:null;
+    // let tipo_cliente = document.querySelector("form[id='form-requerimiento'] select[name='tipo_cliente']")?document.querySelector("form[id='form-requerimiento'] select[name='tipo_cliente']").value:null;
     // console.log(id_grupo);
     // console.log(tipo_requerimiento);
 
@@ -849,6 +849,14 @@ function controlUnidadMedida(){
         disabledControl(selectUnidadMedida,true);
     }
 }
+function makeId(){
+    let ID = "";
+    let characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    for ( var i = 0; i < 12; i++ ) {
+      ID += characters.charAt(Math.floor(Math.random() * 36));
+    }
+    return ID;
+} 
 
 function selectItem(obj){
         let idProducto= obj.dataset.idProducto;
@@ -870,6 +878,7 @@ function selectItem(obj){
         }
         let tieneTransformacion = document.querySelector("form[id='form-requerimiento'] input[name='tiene_transformacion']").value;
         let data_item_selected = {
+            'id': makeId(),
             'id_detalle_requerimiento': null,
             'id_item': idItem,
             'codigo': codigo,

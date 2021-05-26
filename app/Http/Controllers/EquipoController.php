@@ -12,6 +12,7 @@ use PDF;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 date_default_timezone_set('America/Lima');
+use Debugbar;
 
 class EquipoController extends Controller
 {
@@ -2284,10 +2285,10 @@ class EquipoController extends Controller
         return $array;
     }
 
-    public function listar_partidas($id_grupo,$id_proyecto=null){
-        
-        if($id_proyecto =! null || $id_proyecto =! ''){ 
-            
+    public function listar_partidas($id_grupo,$id_proyecto){
+
+        if($id_proyecto >0){ 
+
             $presup = DB::table('proyectos.proy_presup')
             ->select('presup.*')
             ->leftJoin('finanzas.presup', 'presup.id_presup', '=', 'proy_presup.id_presup')
@@ -2300,7 +2301,6 @@ class EquipoController extends Controller
             ->get();
 
         }else{
-
             $presup = DB::table('finanzas.presup')
             ->where([
                     ['id_grupo','=',$id_grupo],
@@ -2309,6 +2309,7 @@ class EquipoController extends Controller
                     ])
             ->get();
         }
+        // Debugbar::info($presup);
 
         $html = '';
         $userSession=$this->userSession()['roles'];

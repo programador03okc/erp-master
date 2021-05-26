@@ -756,12 +756,21 @@ function isNumberKey(evt){
     return true;
 }
  
- 
+function makeId(){
+    let ID = "";
+    let characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    for ( var i = 0; i < 12; i++ ) {
+      ID += characters.charAt(Math.floor(Math.random() * 36));
+    }
+    return ID;
+} 
+
 function agregarServicio(){
     var tipo_requerimiento = $('[name=tipo_requerimiento]').val();
 
     if(tipo_requerimiento >0){
         let item = {
+            'id':makeId(),
             'id_detalle_requerimiento': null,
             'id_item': null,
             'codigo': null,
@@ -845,10 +854,19 @@ function updateSubtotalItem(obj,indiceSelected){
     let subtotal = parseFloat(parseInt(cantidad) * parseFloat(precio_unitario?precio_unitario:0))
     let montoSubtotal=(Math.round(subtotal * 100) / 100).toFixed(2);
     
+    let IdMoneda =document.querySelector("form[id='form-requerimiento'] select[name='moneda']").value;
+    let simboloMoneda ='';
+    if( IdMoneda== 1){
+        simboloMoneda='S/';
+    }else if(IdMoneda == 2){
+        simboloMoneda='$';
+
+    }
+    
     data_item.forEach((element, index) => {
         if (index == indiceSelected) {
             data_item[index].subtotal = montoSubtotal;
-            obj.parentNode.parentNode.children[8].textContent =montoSubtotal;
+            obj.parentNode.parentNode.children[7].textContent = simboloMoneda+montoSubtotal;
         }
     });
 }
@@ -859,15 +877,13 @@ function updateMontoTotalRequerimiento(){
         data_item.forEach(element => {
             sumSubTotal+= parseFloat(parseInt(element.cantidad) * parseFloat(element.precio_unitario?element.precio_unitario:0));
         });
-    }else{
-        alert("El item no se agrego correctamente");
     }
 
     let montoTotal=(Math.round(sumSubTotal * 100) / 100).toFixed(2);
     let IdMoneda =document.querySelector("form[id='form-requerimiento'] select[name='moneda']").value;
     let simboloMoneda ='';
     if( IdMoneda== 1){
-        simboloMoneda='S/.';
+        simboloMoneda='S/';
     }else if(IdMoneda == 2){
         simboloMoneda='$';
 
@@ -980,7 +996,7 @@ function llenarTablaListaDetalleRequerimiento(data,selectMoneda,selectUnidadMedi
     $('#ListaDetalleRequerimiento tbody').html(htmls);
     var table = document.getElementById("ListaDetalleRequerimiento");
 
-    console.log(data);
+    // console.log(data);
     let cantidadIdPartidas=0;
     let cantidadIdCentroCostos=0;
     for (var a = 0; a < data.length; a++) {
@@ -1005,16 +1021,16 @@ function llenarTablaListaDetalleRequerimiento(data,selectMoneda,selectUnidadMedi
                     row.insertCell(2).innerHTML =  data[a].part_number ? data[a].part_number : '';
                     row.insertCell(3).innerHTML = ` <textarea  class="form-control" name="descripcion" data-indice="${a}" onkeyup ="updateInputDescripcionItem(event);">${data[a].des_item ? data[a].des_item : ''}</textarea>`;
                     row.insertCell(4).innerHTML = makeSelectedToSelect(a, 'unidad_medida', selectUnidadMedida, 38, '');
-                    row.insertCell(5).innerHTML = `<input type="text" class="form-control" name="cantidad" data-indice="${a}" onkeyup ="updateInputCantidadItem(event);" value="${data[a].cantidad}">`;
-                    row.insertCell(6).innerHTML = `<input type="text" class="form-control" name="precio_unitario" data-indice="${a}" onkeyup ="updateInputPrecioUnitarioItem(this,event);" value="${data[a].precio_unitario?data[a].precio_unitario:''}">`;
-                    row.insertCell(7).innerHTML = makeSelectedToSelect(a, 'moneda', selectMoneda, 1, '');
-                    row.insertCell(8).innerHTML = data[a].subtotal ? data[a].subtotal : '';
-                    row.insertCell(9).innerHTML =  data[a].cod_partida ? data[a].cod_partida : '';
-                    row.insertCell(10).innerHTML =  data[a].codigo_centro_costo ? data[a].codigo_centro_costo : '';
-                    row.insertCell(11).innerHTML =  data[a].almacen_reserva ? data[a].almacen_reserva : (data[a].proveedor_razon_social?data[a].proveedor_razon_social:'');
+                    row.insertCell(5).innerHTML = `<input type="number" min="0" class="form-control" name="cantidad" data-indice="${a}" onkeyup ="updateInputCantidadItem(event);" value="${data[a].cantidad}">`;
+                    row.insertCell(6).innerHTML = `<input type="number" min="0" class="form-control" name="precio_unitario" data-indice="${a}" onkeyup ="updateInputPrecioUnitarioItem(this,event);" value="${data[a].precio_unitario?data[a].precio_unitario:''}">`;
+                    // row.insertCell(7).innerHTML = makeSelectedToSelect(a, 'moneda', selectMoneda, 1, '');
+                    row.insertCell(7).innerHTML = data[a].subtotal ? data[a].subtotal : '';
+                    row.insertCell(8).innerHTML =  data[a].cod_partida ? data[a].cod_partida : '';
+                    row.insertCell(9).innerHTML =  data[a].codigo_centro_costo ? data[a].codigo_centro_costo : '';
+                    row.insertCell(10).innerHTML =  data[a].almacen_reserva ? data[a].almacen_reserva : (data[a].proveedor_razon_social?data[a].proveedor_razon_social:'');
                     
                     var tdBtnAction=null;
-                    tdBtnAction = row.insertCell(12);
+                    tdBtnAction = row.insertCell(11);
                     
     
                     var btnAction = '';
@@ -1033,7 +1049,7 @@ function llenarTablaListaDetalleRequerimiento(data,selectMoneda,selectUnidadMedi
                     if(tipo_requerimiento !=2){
                         btnAction += `<button type="button" class="btn btn-default btn-xs" name="btnAdjuntarArchivos" data-toggle="tooltip" title="Adjuntos" onClick="archivosAdjuntosModal(event, ${a});" ${hasAttrDisabled}><i class="fas fa-paperclip"></i></button>`;
                     }
-                    btnAction += `<button type="button" class="btn btn-danger btn-xs"   name="btnEliminarItem" data-toggle="tooltip" title="Eliminar" onclick="eliminarItemDeListado(this,${data[a].id_producto});" ${hasAttrDisabled} ><i class="fas fa-trash-alt"></i></button>`;
+                    btnAction += `<button type="button" class="btn btn-danger btn-xs"   name="btnEliminarItem" data-toggle="tooltip" title="Eliminar" onclick="eliminarItemDeListado(this,'${data[a].id}');" ${hasAttrDisabled} ><i class="fas fa-trash-alt"></i></button>`;
                     btnAction += `</center></div>`;
                     tdBtnAction.innerHTML = btnAction;
                 }else{
@@ -1050,16 +1066,16 @@ function llenarTablaListaDetalleRequerimiento(data,selectMoneda,selectUnidadMedi
                 row.insertCell(2).innerHTML =  data[a].part_number ? data[a].part_number : '';
                 row.insertCell(3).innerHTML = `<span name="descripcion">${data[a].des_item ? data[a].des_item : ''}</span> `;
                 row.insertCell(4).innerHTML = makeSelectedToSelect(a, 'unidad_medida', selectUnidadMedida, data[a].id_unidad_medida, '');
-                row.insertCell(5).innerHTML = `<input type="text" class="form-control" name="cantidad" data-indice="${a}" onkeyup ="updateInputCantidadItem(event);" value="${data[a].cantidad}">`;
-                row.insertCell(6).innerHTML = `<input type="text" class="form-control" name="precio_unitario" data-indice="${a}" onkeyup ="updateInputPrecioUnitarioItem(this,event);" value="${data[a].precio_unitario?data[a].precio_unitario:''}">`;
-                row.insertCell(7).innerHTML = makeSelectedToSelect(a, 'moneda', selectMoneda, data[a].id_unidad_medida, '');
-                row.insertCell(8).innerHTML = data[a].subtotal ? data[a].subtotal : '';
-                row.insertCell(9).innerHTML =  data[a].cod_partida ? data[a].cod_partida : ''; 
-                row.insertCell(10).innerHTML =  data[a].codigo_centro_costo ? data[a].codigo_centro_costo : '';
-                row.insertCell(11).innerHTML =  data[a].almacen_reserva ? data[a].almacen_reserva : (data[a].proveedor_razon_social?data[a].proveedor_razon_social:'');
+                row.insertCell(5).innerHTML = `<input type="number" min="0" class="form-control" name="cantidad" data-indice="${a}" onkeyup ="updateInputCantidadItem(event);" value="${data[a].cantidad}">`;
+                row.insertCell(6).innerHTML = `<input type="number" min="0" class="form-control" name="precio_unitario" data-indice="${a}" onkeyup ="updateInputPrecioUnitarioItem(this,event);" value="${data[a].precio_unitario?data[a].precio_unitario:''}">`;
+                // row.insertCell(7).innerHTML = makeSelectedToSelect(a, 'moneda', selectMoneda, data[a].id_unidad_medida, '');
+                row.insertCell(7).innerHTML = data[a].subtotal ? data[a].subtotal : '';
+                row.insertCell(8).innerHTML =  data[a].cod_partida ? data[a].cod_partida : ''; 
+                row.insertCell(9).innerHTML =  data[a].codigo_centro_costo ? data[a].codigo_centro_costo : '';
+                row.insertCell(10).innerHTML =  data[a].almacen_reserva ? data[a].almacen_reserva : (data[a].proveedor_razon_social?data[a].proveedor_razon_social:'');
 
                 var tdBtnAction=null;
-                tdBtnAction = row.insertCell(12);
+                tdBtnAction = row.insertCell(11);
 
 
                 var btnAction = '';
@@ -1088,7 +1104,9 @@ function llenarTablaListaDetalleRequerimiento(data,selectMoneda,selectUnidadMedi
                 if(tipo_requerimiento !=2){
                     btnAction += `<button type="button" class="btn btn-default btn-xs" name="btnAdjuntarArchivos" data-toggle="tooltip" title="Adjuntos" onClick="archivosAdjuntosModal(event, ${a});" ${hasAttrDisabled}><i class="fas fa-paperclip"></i></button>`;
                 }
-                btnAction += `<button type="button" class="btn btn-danger btn-xs"   name="btnEliminarItem" data-toggle="tooltip" title="Eliminar" onclick="eliminarItemDeListado(this,${data[a].id_producto});" ${hasAttrDisabled} ><i class="fas fa-trash-alt"></i></button>`;
+                btnAction += `<button type="button" class="btn btn-danger btn-xs" name="btnMotivo" data-toggle="tooltip" title="Motivo" style="background: #963277;" onClick="motivoModal(event, ${a});" ${hasAttrDisabled}><i class="fas fa-bullseye"></i></button>`;
+
+                btnAction += `<button type="button" class="btn btn-danger btn-xs"   name="btnEliminarItem" data-toggle="tooltip" title="Eliminar" onclick="eliminarItemDeListado(this,'${data[a].id}');" ${hasAttrDisabled} ><i class="fas fa-trash-alt"></i></button>`;
 
                 btnAction += `</center></div>`;
                 tdBtnAction.innerHTML = btnAction;
@@ -1154,7 +1172,6 @@ function listarCentroCostos(){
                         <div id="collapse${index}" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading${index}" >   
                             <div class="box-body" style="display: block;">`;
                             response.forEach(hijo => {
-                                console.log(hijo);
                                 if(padre.id_centro_costo == hijo.id_padre){
                                     if((hijo.id_padre > 0) && (hijo.estado ==1)){
                                         if(hijo.nivel == 2){
@@ -1262,19 +1279,22 @@ function apertura(id_presup){
 
 function eliminarItemDeListado(obj,id){
     let row = obj.parentNode.parentNode.parentNode.parentNode;
-    let idCcAmFilas =data_item.find(item => item.id_producto == id).id_cc_am_filas;
+    let idCcAmFilas =data_item.find(item => item.id_producto == id)?data_item.find(item => item.id_producto == id).id_cc_am_filas:null;
     let tieneTransformacion = document.querySelector("form[id='form-requerimiento'] input[name='tiene_transformacion']").value;
 
     row.remove(row);
     
 
-    data_item = data_item.filter((item, i) => item.id_producto != id);
-
+    data_item = data_item.filter((item, i) => item.id != id);
+    updateMontoTotalRequerimiento();
     componerTdItemDetalleRequerimiento();
-    if(tieneTransformacion == false){
-        agregarItemDeTablaDetalleCuadroCostos(idCcAmFilas);
-    }else{
-        agregarItemDeTablaDetalleCuadroCostosItemTransformado(idCcAmFilas);
+    if(idCcAmFilas !=null){
+        if(tieneTransformacion == false ){
+            agregarItemDeTablaDetalleCuadroCostos(idCcAmFilas);
+        }else{
+            agregarItemDeTablaDetalleCuadroCostosItemTransformado(idCcAmFilas);
+    
+        }
 
     }
 }

@@ -201,6 +201,19 @@
                                 <input type="text" class="form-control activation" name="monto" readOnly>
                             </div>
                         </div>
+
+
+                    </div>
+
+                    <div class="row">
+                    <div class="col-md-12" id="input-group-adjuntos">
+                            <h5>&nbsp;</h5>
+                            <div class="input-group-okc">
+                            <button type="button" class="btn btn-sm btn-info" title="Archivos adjuntos" name="bnt-agregar-detalle-fuente" onclick="archivosAdjuntosRequerimientoModal();">
+                            <i class="fas fa-file-archive"></i> Archivos adjuntos
+                            </button>
+                            </div>
+                        </div>
                     </div>
                 </fieldset>
             </div>
@@ -458,6 +471,7 @@
             </div>
         </div>
 
+
     <br>
     <fieldset class="group-table">   
         <div class="row">
@@ -473,20 +487,19 @@
                             <th width="60">UNIDAD</th>
                             <th width="70">CANTIDAD</th>
                             <th width="70">PRECIO U.</th>
-                            <th width="70">MONEDA</th>
                             <th width="70">SUBTOTAL</th>
                             <th width="70">PARTIDA</th>
                             <th width="70">C.Costos</th>
                             <th width="70">Atendido Por</th>
                             <th width="140">
-                                <center>
+                                <div style="display:flex; flex-direction:row;justify-content:space-around;">
                                 <button type="button" class="btn btn-xs btn-success activation" onClick="catalogoItemsModal();" id="btn-add-producto"
                                 data-toggle="tooltip" data-placement="bottom"  title="Agregar Detalle" disabled><i class="fas fa-plus"></i> Producto
                                 </button>
                                 <button type="button" class="btn btn-xs btn-success activation" onClick="agregarServicio();" id="btn-add-servicio"
                                 data-toggle="tooltip" data-placement="bottom"  title="Agregar Detalle" disabled><i class="fas fa-plus"></i> Servicio
                             </button>
-                            </center>
+                            </div>
                         </th>
                     </tr>
                 </thead>
@@ -564,28 +577,7 @@
 
     <fieldset class="group-table"> 
     <div class="row">
-        <div class="col-md-4">
-                <fieldset class="group-importes"><legend><h6>Archivos Adjuntos</h6></legend>
-                <table class="mytable table table-striped table-condensed table-bordered dataTable no-footer" id="listaArchivosAdjuntosRequerimiento" width="100%">
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>ARCHIVO</th>
-                            <th width="120">
-                                <center><button class="btn btn-xs btn-success" onClick="adjuntoRequerimientoModal(event);" id="btnAgregarAdjuntoReq"
-                                    data-toggle="tooltip" data-placement="bottom"  title="Agregar Adjunto"><i class="fas fa-plus"></i>
-                                </button></center>
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody id="body_adjuntos_requerimiento">
-                        <tr id="default_tr">
-                            <td colspan="4"> No hay datos registrados</td>
-                        </tr>
-                    </tbody>
-                </table>
-        </div>
-        <div class="col-md-8">
+        <div class="col-md-12">
                 <fieldset class="group-importes"><legend><h6>Trazabilidad de Requerimiento</h6></legend>
                 <table class="mytable table table-striped table-condensed table-bordered dataTable no-footer" id="listaTrazabilidadRequerimiento" width="100%">
                     <thead>
@@ -620,6 +612,8 @@
 
 </div>
 <!-- @include('logistica.requerimientos.modal_buscar_stock_almacenes') -->
+@include('logistica.requerimientos.modal_motivo_detalle_requerimiento')
+@include('logistica.requerimientos.modal_mostrar_archivo_adjunto_requerimiento')
 @include('logistica.requerimientos.aprobacion.modal_sustento')
 @include('logistica.requerimientos.modal_agregar_fuente')
 @include('logistica.requerimientos.modal_agregar_detalle_fuente')
@@ -680,6 +674,7 @@
     <script src="{{ asset('js/logistica/requerimiento/cabecera_detalle.js') }}"></script>
     <script src="{{ asset('js/logistica/requerimiento/inicializar.js') }}"></script>
     <script src="{{ asset('js/logistica/requerimiento/modal_almacen_reserva.js')}}"></script>
+    <script src="{{ asset('js/logistica/requerimiento/modal_motivo_detalle_requerimiento.js')}}"></script>
     <script src="{{ asset('js/logistica/requerimiento/modal_seleccionar_crear_proveedor.js')}}"></script>
     <script src="{{ asset('js/logistica/requerimiento/public.js') }}"></script>
     <script src="{{ asset('js/logistica/adjuntar_archivos_req.js') }}"></script>

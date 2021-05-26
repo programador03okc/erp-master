@@ -63,10 +63,20 @@ class LogisticaController extends Controller
         $proyectos_activos = (new ProyectosController)->listar_proyectos_activos();
         $fuentes = $this->mostrar_fuentes();
         $aprobantes = $this->mostrarAprobantes();
+        $categoria_adjunto = $this->mostrarCategoriaAdjunto();
 
-        return view('logistica/requerimientos/gestionar_requerimiento', compact('aprobantes','grupos','sis_identidad','tipo_requerimiento','monedas', 'prioridades', 'empresas', 'unidades_medida','roles','periodos','bancos','tipos_cuenta','clasificaciones','subcategorias','categorias','unidades','proyectos_activos','fuentes'));
+        return view('logistica/requerimientos/gestionar_requerimiento', compact('categoria_adjunto','aprobantes','grupos','sis_identidad','tipo_requerimiento','monedas', 'prioridades', 'empresas', 'unidades_medida','roles','periodos','bancos','tipos_cuenta','clasificaciones','subcategorias','categorias','unidades','proyectos_activos','fuentes'));
     }
 
+
+    function mostrarCategoriaAdjunto(){
+        $categoria_adjunto = DB::table('almacen.categoria_adjunto')
+        ->select('categoria_adjunto.*')
+        ->where('categoria_adjunto.estado', 1) // el usuario pertenece a un solo grupo
+        ->get();
+
+        return $categoria_adjunto;
+    }
 
     function mostrarAprobantes(){ 
         $roles = Auth::User()->getAllGrupo();
@@ -1498,22 +1508,22 @@ class LogisticaController extends Controller
         return response()->json($data);
     }
 
-    public function mostrar_archivos_adjuntos_requerimiento($id)
+    public function mostrar_archivos_adjuntos_requerimiento($id, $tipo=null)
     {
         $data = DB::table('almacen.alm_req_adjuntos')
             ->select(
-                'alm_req_adjuntos.id_adjunto',
-                'alm_req_adjuntos.id_requerimiento',
-                'alm_req_adjuntos.archivo',
-                'alm_req_adjuntos.estado',
-                'alm_req_adjuntos.fecha_registro',
+                'alm_req_adjuntos.*',
                 DB::raw("(CASE WHEN almacen.alm_req_adjuntos.estado = 1 THEN 'Habilitado' ELSE 'Deshabilitado' END) AS estado_desc")
             )
+            ->when(($tipo >0), function($query) use ($tipo)  {
+                return $query->Where('alm_req_adjuntos.categoria_adjunto_id','=',$tipo);
+            })
             ->where([
                 ['alm_req_adjuntos.id_requerimiento', $id],
                 ['alm_req_adjuntos.estado', 1]
                 ])
-            ->orderBy('alm_req_adjuntos.id_adjunto', 'asc')
+            
+            ->orderBy('alm_req_adjuntos.fecha_registro', 'desc')
             ->get();
 
         return response()->json(['data'=>$data]);
@@ -1675,14 +1685,15 @@ class LogisticaController extends Controller
 
             if (isset($file)) {
                 // $name_file = "R" . time() . $file->getClientOriginalName();
-                $name_file = $codigo_requerimiento.'-'.$nextValId;
+                $name_file = $codigo_requerimiento.'-'.$nextValId.'-'.$detalle_adjunto[0]['archivo'];
                 if ($request->id_requerimiento > 0 || $request->id_requerimiento !== NULL) {
 
                     $alm_req_adjuntos = DB::table('almacen.alm_req_adjuntos')->insertGetId(
                         [
-                            'id_requerimiento'          => $request->id_requerimiento,
+                            'id_requerimiento'          => $detalle_adjunto[$clave]['id_requerimiento'],
                             'archivo'                   => $name_file,
                             'estado'                    => 1,
+                            'categoria_adjunto_id'      => $detalle_adjunto[$clave]['categoria_adjunto_id'],
                             'fecha_registro'            => date('Y-m-d H:i:s')
                         ],
                         'id_adjunto'

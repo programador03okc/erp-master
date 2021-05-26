@@ -656,7 +656,7 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::put('eliminar-archivo-adjunto-detalle-requerimiento/{id_archivo}', 'LogisticaController@eliminar_archivo_adjunto_detalle_requerimiento');
 					Route::post('guardar-archivos-adjuntos-requerimiento', 'LogisticaController@guardar_archivos_adjuntos_requerimiento');
 					Route::put('eliminar-archivo-adjunto-requerimiento/{id_archivo}', 'LogisticaController@eliminar_archivo_adjunto_requerimiento');
-					Route::get('mostrar-archivos-adjuntos-requerimiento/{id_requerimiento?}', 'LogisticaController@mostrar_archivos_adjuntos_requerimiento');
+					Route::get('mostrar-archivos-adjuntos-requerimiento/{id_requerimiento?}/{categoria?}', 'LogisticaController@mostrar_archivos_adjuntos_requerimiento');
 					Route::get('listar_almacenes', 'AlmacenController@mostrar_almacenes');
 					Route::get('mostrar-sede', 'ConfiguracionController@mostrarSede');
 					Route::get('mostrar_proveedores', 'LogisticaController@mostrar_proveedores');
