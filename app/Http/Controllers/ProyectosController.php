@@ -1903,7 +1903,7 @@ class ProyectosController extends Controller
         }
 
         $html = '';
-        $userSession=$this->userSession()['roles'];
+        // $userSession=$this->userSession()['roles'];
         $isVisible ='';
 
         foreach($presup as $p){
