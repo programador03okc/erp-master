@@ -218,6 +218,7 @@ function mostrar_requerimiento(IdorCode){
                     // desbloquear el imprimir requerimiento
                     var btnImprimirRequerimientoPdf = document.getElementsByName("btn-imprimir-requerimento-pdf");
                     disabledControl(btnImprimirRequerimientoPdf,false);
+            
                     
 
                     var btnMigrarRequerimiento = document.getElementsByName("btn-migrar-requerimiento");

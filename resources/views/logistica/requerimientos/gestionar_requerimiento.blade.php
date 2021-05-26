@@ -58,7 +58,8 @@
                     <div>
                         <span class="label" id="estado_doc">&nbsp;</span>
                         <span style="color:blue;" name="codigo"></span>
-                        <button type="button" name="btn-imprimir-requerimento-pdf" class="btn btn-info btn-sm" onclick="ImprimirRequerimientoPdf()" disabled><i class="fas fa-print"></i></button>
+                        <button type="button" name="btn-imprimir-requerimento-pdf" class="btn btn-info btn-sm" onclick="ImprimirRequerimientoPdf()" disabled><i class="fas fa-print"></i> Imprimir</button>
+                        <button type="button" name="btn-adjuntos-requerimiento" class="btn btn-sm btn-warning" title="Archivos adjuntos"  onclick="archivosAdjuntosRequerimientoModal();" disabled><i class="fas fa-file-archive"></i> Adjuntos</button>
                     </div>
                 </h4> 
                 <fieldset class="group-table">   
@@ -205,16 +206,6 @@
 
                     </div>
 
-                    <div class="row">
-                    <div class="col-md-12" id="input-group-adjuntos">
-                            <h5>&nbsp;</h5>
-                            <div class="input-group-okc">
-                            <button type="button" class="btn btn-sm btn-info" title="Archivos adjuntos" name="bnt-agregar-detalle-fuente" onclick="archivosAdjuntosRequerimientoModal();">
-                            <i class="fas fa-file-archive"></i> Archivos adjuntos
-                            </button>
-                            </div>
-                        </div>
-                    </div>
                 </fieldset>
             </div>
         </div>
