@@ -98,7 +98,7 @@ function listarOrdenesPendientes(){
             {'data': 'fecha'},
             {'data': 'nombre_corto', 'name': 'sis_usua.nombre_corto'},
             {'render': function (data, type, row){
-                return '<span class="label label-'+row['bootstrap_color']+'">'+row['estado_doc']+'</span>'
+                return '<span class="label label-default">'+row['estado_doc']+'</span>'
                 }
             },
         ],
