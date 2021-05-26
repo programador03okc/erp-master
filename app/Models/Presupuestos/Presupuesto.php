@@ -23,7 +23,8 @@ class Presupuesto extends Model
         "unid_program",
         "cantidad",
         "estado",
-        "fecha_registro"
+        "fecha_registro",
+        "tp_presup"
     ];
 
     public function grupo()

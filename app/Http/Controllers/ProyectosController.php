@@ -433,14 +433,14 @@ class ProyectosController extends Controller
             ->update([ 'estado' => 7 ]);
         return response()->json($iu);
     }
-    public function delete_iu($id)
-    {
-        DB::table('proyectos.proy_iu')
-            ->where('id_iu', '=', $id)
-            ->delete();
-        // $data = proy_iu::where('id_iu', $id)->delete();
-        return response()->json($data);
-    }
+    // public function delete_iu($id)
+    // {
+    //     DB::table('proyectos.proy_iu')
+    //         ->where('id_iu', '=', $id)
+    //         ->delete();
+    //     // $data = proy_iu::where('id_iu', $id)->delete();
+    //     return response()->json($data);
+    // }
 
     //sistemas de contrato
     public function mostrar_sis_contratos()
@@ -1818,8 +1818,8 @@ class ProyectosController extends Controller
             $extension = pathinfo($file->getClientOriginalName(), PATHINFO_EXTENSION);
             $nombre = $id_contrato.'.'.$request->nro_contrato_proy.'.'.$extension;
             //indicamos que queremos guardar un nuevo archivo en el disco local
-            \File::delete(public_path('proyectos/contratos/'.$nombre));
-            \Storage::disk('archivos')->put('proyectos/contratos/'.$nombre,\File::get($file));
+            File::delete(public_path('proyectos/contratos/'.$nombre));
+            Storage::disk('archivos')->put('proyectos/contratos/'.$nombre,File::get($file));
             
             $update = DB::table('proyectos.proy_contrato')
                 ->where('id_contrato', $id_contrato)
@@ -1873,14 +1873,21 @@ class ProyectosController extends Controller
         
         if($id_proyecto != null || $id_proyecto != ''){ 
             
-            $presup = DB::table('proyectos.proy_presup')
-            ->select('presup.*')
-            ->leftJoin('finanzas.presup', 'presup.id_presup', '=', 'proy_presup.id_presup')
-            ->where([
-                    ['proy_presup.id_proyecto','=',$id_proyecto],
-                    ['proy_presup.estado','=',8],
-                    ['tp_presup','=',4]
+            // $presup = DB::table('proyectos.proy_presup')
+            // ->select('presup.*')
+            // ->leftJoin('finanzas.presup', 'presup.id_presup', '=', 'proy_presup.id_presup')
+            // ->where([
+            //         ['proy_presup.id_proyecto','=',$id_proyecto],
+            //         ['proy_presup.estado','=',8],
+            //         ['tp_presup','=',4]
 
+            //         ])
+            // ->get();
+            $presup = DB::table('finanzas.presup')
+            ->where([
+                    ['id_proyecto','=',$id_proyecto],
+                    ['estado','=',8],
+                    ['tp_presup','=',4]
                     ])
             ->get();
 
@@ -2818,8 +2825,8 @@ class ProyectosController extends Controller
             $extension = pathinfo($file->getClientOriginalName(), PATHINFO_EXTENSION);
             $nombre = $id_contrato.'.'.$request->nro_contrato.'.'.$extension;
             //indicamos que queremos guardar un nuevo archivo en el disco local
-            \File::delete(public_path('proyectos/contratos/'.$nombre));
-            \Storage::disk('archivos')->put('proyectos/contratos/'.$nombre,\File::get($file));
+            File::delete(public_path('proyectos/contratos/'.$nombre));
+            Storage::disk('archivos')->put('proyectos/contratos/'.$nombre,File::get($file));
             
             $update = DB::table('proyectos.proy_contrato')
                 ->where('id_contrato', $id_contrato)
@@ -6261,8 +6268,8 @@ class ProyectosController extends Controller
 
             $nombre = $id_obs.'.'.$extension;
             //indicamos que queremos guardar un nuevo archivo en el disco local
-            \File::delete(public_path('proyectos/presupuestos/partidas_adjunto/'.$nombre));
-            \Storage::disk('archivos')->put('proyectos/presupuestos/partidas_adjunto/'.$nombre,\File::get($file));
+            File::delete(public_path('proyectos/presupuestos/partidas_adjunto/'.$nombre));
+            Storage::disk('archivos')->put('proyectos/presupuestos/partidas_adjunto/'.$nombre,File::get($file));
             
             $update = DB::table('proyectos.proy_obs')
                 ->where('id_obs', $id_obs)
@@ -7240,11 +7247,11 @@ class ProyectosController extends Controller
             if ($nro_dias > 0){
                 $length = ($duracion_total->days / $nro_dias);
             }
-            $periodo;
+            $periodo=[];
             $suma_rango = 0;
-            $i;
+            $i=0;
             $fini = $fini_crono;
-            $ffin;
+            $ffin = date('Y-m-d');
 
             for ($i=1;$i<=$length;$i++) {
                 $suma_rango += $nro_dias;
