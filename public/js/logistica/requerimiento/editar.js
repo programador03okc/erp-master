@@ -26,6 +26,7 @@ function editRequerimiento(){
         var btnAdjuntosRequerimiento = document.getElementsByName("btn-adjuntos-requerimiento");
         disabledControl(btnAdjuntosRequerimiento,false);
 
+
     }
     return null;
 }

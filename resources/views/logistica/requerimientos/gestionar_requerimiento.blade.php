@@ -60,6 +60,7 @@
                         <span style="color:blue;" name="codigo"></span>
                         <button type="button" name="btn-imprimir-requerimento-pdf" class="btn btn-info btn-sm" onclick="ImprimirRequerimientoPdf()" disabled><i class="fas fa-print"></i> Imprimir</button>
                         <button type="button" name="btn-adjuntos-requerimiento" class="btn btn-sm btn-warning" title="Archivos adjuntos"  onclick="archivosAdjuntosRequerimientoModal();" disabled><i class="fas fa-file-archive"></i> Adjuntos</button>
+                        <button type="button" name="btn-ver-trazabilidad-requerimiento" class="btn btn-sm btn-primary" title="Ver Trazabilidads"  onclick="verTrazabilidadRequerimientoModal();" disabled><i class="fas fa-shoe-prints"></i> Trazabilidad</button>
                     </div>
                 </h4> 
                 <fieldset class="group-table">   
@@ -566,29 +567,6 @@
         </div>
     </fieldset>   
 
-    <fieldset class="group-table"> 
-    <div class="row">
-        <div class="col-md-12">
-                <fieldset class="group-importes"><legend><h6>Trazabilidad de Requerimiento</h6></legend>
-                <table class="mytable table table-striped table-condensed table-bordered dataTable no-footer" id="listaTrazabilidadRequerimiento" width="100%">
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>ACCIÓN</th>
-                            <th>OBSERVACIÓN</th>
-                            <th>USUARIO</th>
-                            <th>FECHA</th>
-                        </tr>
-                    </thead>
-                    <tbody id="body_lista_trazabilidad_requerimiento">
-                        <tr id="default_tr">
-                            <td colspan="5"> No hay datos registrados</td>
-                        </tr>
-                    </tbody>
-                </table>
-        </div>
-    </div>
-    </fieldset>  
     <br>
     <div class="row" id="observaciones_requerimiento"></div> 
 
@@ -603,6 +581,7 @@
 
 </div>
 <!-- @include('logistica.requerimientos.modal_buscar_stock_almacenes') -->
+@include('logistica.requerimientos.modal_trazabilidad_requerimiento')
 @include('logistica.requerimientos.modal_motivo_detalle_requerimiento')
 @include('logistica.requerimientos.modal_mostrar_archivo_adjunto_requerimiento')
 @include('logistica.requerimientos.aprobacion.modal_sustento')
@@ -666,6 +645,7 @@
     <script src="{{ asset('js/logistica/requerimiento/inicializar.js') }}"></script>
     <script src="{{ asset('js/logistica/requerimiento/modal_almacen_reserva.js')}}"></script>
     <script src="{{ asset('js/logistica/requerimiento/modal_motivo_detalle_requerimiento.js')}}"></script>
+    <script src="{{ asset('js/logistica/requerimiento/modal_trazabilidad_requerimiento.js')}}"></script>
     <script src="{{ asset('js/logistica/requerimiento/modal_seleccionar_crear_proveedor.js')}}"></script>
     <script src="{{ asset('js/logistica/requerimiento/public.js') }}"></script>
     <script src="{{ asset('js/logistica/adjuntar_archivos_req.js') }}"></script>

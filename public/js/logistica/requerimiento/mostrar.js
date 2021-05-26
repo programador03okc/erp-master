@@ -213,7 +213,7 @@ function mostrar_requerimiento(IdorCode){
                     // console.log(data_item);
                     
                     llenar_tabla_detalle_requerimiento(data_item);
-                    llenarTablaAdjuntosRequerimiento(response['requerimiento'][0].id_requerimiento);
+                    // llenarTablaAdjuntosRequerimiento(response['requerimiento'][0].id_requerimiento);
                     
                     // desbloquear el imprimir requerimiento
                     var btnImprimirRequerimientoPdf = document.getElementsByName("btn-imprimir-requerimento-pdf");

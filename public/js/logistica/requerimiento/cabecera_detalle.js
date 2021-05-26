@@ -19,8 +19,12 @@ function nuevo_req(){
     $('[name=id_estado_doc]').val('');
     $('[name=id_requerimiento]').val('');
     // vista_extendida();
-
-
+    var btnImprimirRequerimiento = document.getElementsByName("btn-imprimir-requerimento-pdf");
+    disabledControl(btnImprimirRequerimiento,true);
+    var btnAdjuntosRequerimiento = document.getElementsByName("btn-adjuntos-requerimiento");
+    disabledControl(btnAdjuntosRequerimiento,true);
+    var btnTrazabilidadRequerimiento = document.getElementsByName("btn-ver-trazabilidad-requerimiento");
+    disabledControl(btnTrazabilidadRequerimiento,true);
 
 }
 
