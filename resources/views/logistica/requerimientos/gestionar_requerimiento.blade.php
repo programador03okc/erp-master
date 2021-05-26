@@ -202,10 +202,14 @@
                             </div>
                         </div>
 
-                        <div class="col-md-2" id="input-group-adjuntos">
+
+                    </div>
+
+                    <div class="row">
+                    <div class="col-md-12" id="input-group-adjuntos">
                             <h5>&nbsp;</h5>
                             <div class="input-group-okc">
-                            <button type="button" class="btn btn-info" title="Archivos adjuntos" name="bnt-agregar-detalle-fuente" onclick="archivosAdjuntosRequerimientoModal();">
+                            <button type="button" class="btn btn-sm btn-info" title="Archivos adjuntos" name="bnt-agregar-detalle-fuente" onclick="archivosAdjuntosRequerimientoModal();">
                             <i class="fas fa-file-archive"></i> Archivos adjuntos
                             </button>
                             </div>

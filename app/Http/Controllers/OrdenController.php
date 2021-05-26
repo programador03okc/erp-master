@@ -2854,7 +2854,6 @@ class OrdenController extends Controller
             $usuario = Auth::user()->id_usuario;
             $id_orden = $request->id_orden;
             $tp_doc = ($request->id_tp_documento !== null ? $request->id_tp_documento : 2);
-            $codigo = $this->nextCodigoOrden($tp_doc);
 
             DB::table('logistica.log_ord_compra')
             ->where('log_ord_compra.id_orden_compra',$id_orden)
@@ -2867,7 +2866,6 @@ class OrdenController extends Controller
                     'id_moneda' => ($request->id_moneda?$request->id_moneda:null),
                     'id_proveedor' => $request->id_proveedor,
                     'id_contacto' => $request->id_contacto_proveedor?$request->id_contacto_proveedor:null,
-                    'codigo' => $codigo?$codigo:null,
 
                     'plazo_entrega' => $request->plazo_entrega?$request->plazo_entrega:null,
                     'id_condicion' => $request->id_condicion?$request->id_condicion:null,
@@ -2879,9 +2877,6 @@ class OrdenController extends Controller
                     'id_sede' => $request->id_sede?$request->id_sede:null,
                     'direccion_destino' => $request->direccion_destino?$request->direccion_destino:null,
                     'ubigeo_destino' => isset($request->id_ubigeo_destino)?$request->id_ubigeo_destino:null,
-                    // 'id_requerimiento' => $request->id_requerimiento,
-                    // 'en_almacen' => false,
-                    'estado' => 17,
                     'codigo_softlink' => ($request->codigo_orden!==null ? $request->codigo_orden : ''),
                 ]
             );
