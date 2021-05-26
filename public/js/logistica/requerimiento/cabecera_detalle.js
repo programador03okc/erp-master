@@ -1252,7 +1252,7 @@ function listarPartidas(id_grupo,id_proyecto){
     // console.log('listar_partidas/'+id_grupo+'/'+id_proyecto);
     $.ajax({
         type: 'GET',
-        url: 'listar_partidas/'+id_grupo+'/'+id_proyecto,
+        url: 'listar-partidas/'+id_grupo+'/'+id_proyecto,
         dataType: 'JSON',
         success: function(response){
             // console.log(response);
