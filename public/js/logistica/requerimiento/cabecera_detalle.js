@@ -1230,7 +1230,7 @@ function partidasModal(indice){
                 backdrop: 'true'
             });
             document.querySelector("div[id='modal-partidas'] label[id='indice']").textContent =  indice;
-            listarPartidas(id_grupo,id_proyecto?id_proyecto:'');
+            listarPartidas(id_grupo,id_proyecto>0?id_proyecto:null);
 
         
         
@@ -1242,7 +1242,7 @@ function partidasModal(indice){
 function listarPartidas(id_grupo,id_proyecto){
     
     if(id_proyecto == 0 || id_proyecto == '' || id_proyecto == null){
-        id_proyecto = null;
+        id_proyecto = '';
     }
     // console.log('listar_partidas/'+id_grupo+'/'+id_proyecto);
     $.ajax({
