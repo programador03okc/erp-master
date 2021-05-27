@@ -1224,27 +1224,15 @@ function partidasModal(indice){
             }
         });
     if (id_grupo > 0){
-        if (usuarioProyectos == true){
-            if (id_proyecto >0){
-                $('#modal-partidas').modal({
-                    show: true,
-                    backdrop: 'true'
-                });
-                document.querySelector("div[id='modal-partidas'] label[id='indice']").textContent =  indice;
-                listarPartidas(id_grupo,id_proyecto);
-            } else {
-                alert('hubo un problema, asegurese de seleccionar un proyecto antes de continuar.');
-            }
-
-        }else{
+  
             $('#modal-partidas').modal({
                 show: true,
                 backdrop: 'true'
             });
             document.querySelector("div[id='modal-partidas'] label[id='indice']").textContent =  indice;
-            listarPartidas(id_grupo,id_proyecto);
+            listarPartidas(id_grupo,id_proyecto?id_proyecto:'');
 
-        }
+        
         
     }else{
         alert("Ocurrio un problema, no se puedo seleccionar el grupo al que pertence el usuario.");
