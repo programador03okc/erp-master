@@ -100,6 +100,7 @@ class OrdenView {
         document.querySelector("input[name='ubigeo_destino']").value=data.ubigeo_empresa_sede?data.ubigeo_empresa_sede:'';
         document.querySelector("select[name='id_sede']").value=data.id_sede?data.id_sede:'';
         document.querySelector("input[name='id_cc']").value=data.id_cc?data.id_cc:'';
+        document.querySelector("textarea[name='observacion']").value=data.observacion?data.observacion:'';
         
         this.updateAllSimboloMoneda()
     }
@@ -414,6 +415,7 @@ class OrdenView {
         let id_ubigeo_destino = document.querySelector("div[type='crear-orden-requerimiento'] input[name='id_ubigeo_destino']").value;
     
         let id_trabajador = document.querySelector("div[type='crear-orden-requerimiento'] input[name='id_trabajador']").value;
+        let observacion = document.querySelector("div[type='crear-orden-requerimiento'] textarea[name='observacion']").value;
     
         let data = {
             'id_orden':id_orden,
@@ -437,6 +439,7 @@ class OrdenView {
             'id_ubigeo_destino':id_ubigeo_destino, 
             
             'id_trabajador':id_trabajador, 
+            'observacion':observacion, 
     
             'detalle':[]
         }
@@ -537,6 +540,7 @@ function nueva_orden(){
     document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='id_trabajador']").value='';
     document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='nombre_persona_autorizado']").value='';
     document.querySelector("form[id='form-crear-orden-requerimiento'] span[name='codigo_orden_interno']").textContent='';
+    document.querySelector("form[id='form-crear-orden-requerimiento'] textarea[name='observacion']").value='';
     document.querySelector("var[name='total']").textContent= '';
 
 

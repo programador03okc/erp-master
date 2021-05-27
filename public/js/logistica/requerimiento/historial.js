@@ -105,7 +105,9 @@ function selectRequerimiento(){
         clearForm(form); //function.js
         changeStateButton('historial'); //init.js
         mostrar_requerimiento(id); // mostrar.js
-        verTrazabilidadRequerimiento(id); // trazabilidad.js
+
+        var btnTrazabilidadRequerimiento = document.getElementsByName("btn-ver-trazabilidad-requerimiento");
+        disabledControl(btnTrazabilidadRequerimiento,false);
     }
         // console.log($(":file").filestyle('disabled'));
     $('#modal-requerimiento').modal('hide');

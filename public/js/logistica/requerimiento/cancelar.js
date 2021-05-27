@@ -11,4 +11,12 @@ function cancelarRequerimiento(){
         disabledControl(btnAdjuntarArchivos,false);
     var btnEliminarItem = document.getElementsByName("btnEliminarItem");
         disabledControl(btnEliminarItem,true);
+
+
+    var btnImprimirRequerimiento = document.getElementsByName("btn-imprimir-requerimento-pdf");
+    disabledControl(btnImprimirRequerimiento,true);
+    var btnAdjuntosRequerimiento = document.getElementsByName("btn-adjuntos-requerimiento");
+    disabledControl(btnAdjuntosRequerimiento,true);
+    var btnTrazabilidadRequerimiento = document.getElementsByName("btn-ver-trazabilidad-requerimiento");
+    disabledControl(btnTrazabilidadRequerimiento,true);
 }

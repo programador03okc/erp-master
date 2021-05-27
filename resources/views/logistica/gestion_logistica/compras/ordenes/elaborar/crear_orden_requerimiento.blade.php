@@ -227,13 +227,21 @@
                                 </button> 
                             </div>
                         </div>
+
+                        <div class="col-md-12" id="group-datos_para_despacho-observacion">
+                            <h5>Observación</h5>
+                            <div style="display:flex;">
+                                <textarea class="form-control activation" name="observacion" cols="100" rows="100" style="height:50px;" disabled></textarea>
+                            </div>
+                        </div>
                     
                     </div>
                 </fieldset>
             </div>
         </div>
+        
 
-        <br>
+        
         <div class="row">
             <div class="col-md-12">
                 <fieldset class="group-table">

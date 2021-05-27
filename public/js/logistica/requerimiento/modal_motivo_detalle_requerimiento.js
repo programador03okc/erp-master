@@ -26,6 +26,7 @@ function agregarMotivo(){
             });
             componerTdItemDetalleRequerimiento();
             alert("Motivo agregado ");
+            vista_extendida();
 
             $('#modal-motivo-detalle-requerimiento').modal('hide');
             // console.log(data_item);

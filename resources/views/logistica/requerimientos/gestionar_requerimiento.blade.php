@@ -58,7 +58,9 @@
                     <div>
                         <span class="label" id="estado_doc">&nbsp;</span>
                         <span style="color:blue;" name="codigo"></span>
-                        <button type="button" name="btn-imprimir-requerimento-pdf" class="btn btn-info btn-sm" onclick="ImprimirRequerimientoPdf()" disabled><i class="fas fa-print"></i></button>
+                        <button type="button" name="btn-imprimir-requerimento-pdf" class="btn btn-info btn-sm" onclick="ImprimirRequerimientoPdf()" disabled><i class="fas fa-print"></i> Imprimir</button>
+                        <button type="button" name="btn-adjuntos-requerimiento" class="btn btn-sm btn-warning" title="Archivos adjuntos"  onclick="archivosAdjuntosRequerimientoModal();" disabled><i class="fas fa-file-archive"></i> Adjuntos</button>
+                        <button type="button" name="btn-ver-trazabilidad-requerimiento" class="btn btn-sm btn-primary" title="Ver Trazabilidads"  onclick="verTrazabilidadRequerimientoModal();" disabled><i class="fas fa-shoe-prints"></i> Trazabilidad</button>
                     </div>
                 </h4> 
                 <fieldset class="group-table">   
@@ -205,16 +207,6 @@
 
                     </div>
 
-                    <div class="row">
-                    <div class="col-md-12" id="input-group-adjuntos">
-                            <h5>&nbsp;</h5>
-                            <div class="input-group-okc">
-                            <button type="button" class="btn btn-sm btn-info" title="Archivos adjuntos" name="bnt-agregar-detalle-fuente" onclick="archivosAdjuntosRequerimientoModal();">
-                            <i class="fas fa-file-archive"></i> Archivos adjuntos
-                            </button>
-                            </div>
-                        </div>
-                    </div>
                 </fieldset>
             </div>
         </div>
@@ -490,9 +482,10 @@
                             <th width="70">SUBTOTAL</th>
                             <th width="70">PARTIDA</th>
                             <th width="70">C.Costos</th>
+                            <th width="70">Motivo</th>
                             <th width="70">Atendido Por</th>
-                            <th width="140">
-                                <div style="display:flex; flex-direction:row;justify-content:space-around;">
+                            <th width="90">
+                                <div style="display:flex; flex-direction:column;">
                                 <button type="button" class="btn btn-xs btn-success activation" onClick="catalogoItemsModal();" id="btn-add-producto"
                                 data-toggle="tooltip" data-placement="bottom"  title="Agregar Detalle" disabled><i class="fas fa-plus"></i> Producto
                                 </button>
@@ -575,29 +568,6 @@
         </div>
     </fieldset>   
 
-    <fieldset class="group-table"> 
-    <div class="row">
-        <div class="col-md-12">
-                <fieldset class="group-importes"><legend><h6>Trazabilidad de Requerimiento</h6></legend>
-                <table class="mytable table table-striped table-condensed table-bordered dataTable no-footer" id="listaTrazabilidadRequerimiento" width="100%">
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>ACCIÓN</th>
-                            <th>OBSERVACIÓN</th>
-                            <th>USUARIO</th>
-                            <th>FECHA</th>
-                        </tr>
-                    </thead>
-                    <tbody id="body_lista_trazabilidad_requerimiento">
-                        <tr id="default_tr">
-                            <td colspan="5"> No hay datos registrados</td>
-                        </tr>
-                    </tbody>
-                </table>
-        </div>
-    </div>
-    </fieldset>  
     <br>
     <div class="row" id="observaciones_requerimiento"></div> 
 
@@ -612,6 +582,7 @@
 
 </div>
 <!-- @include('logistica.requerimientos.modal_buscar_stock_almacenes') -->
+@include('logistica.requerimientos.modal_trazabilidad_requerimiento')
 @include('logistica.requerimientos.modal_motivo_detalle_requerimiento')
 @include('logistica.requerimientos.modal_mostrar_archivo_adjunto_requerimiento')
 @include('logistica.requerimientos.aprobacion.modal_sustento')
@@ -675,6 +646,7 @@
     <script src="{{ asset('js/logistica/requerimiento/inicializar.js') }}"></script>
     <script src="{{ asset('js/logistica/requerimiento/modal_almacen_reserva.js')}}"></script>
     <script src="{{ asset('js/logistica/requerimiento/modal_motivo_detalle_requerimiento.js')}}"></script>
+    <script src="{{ asset('js/logistica/requerimiento/modal_trazabilidad_requerimiento.js')}}"></script>
     <script src="{{ asset('js/logistica/requerimiento/modal_seleccionar_crear_proveedor.js')}}"></script>
     <script src="{{ asset('js/logistica/requerimiento/public.js') }}"></script>
     <script src="{{ asset('js/logistica/adjuntar_archivos_req.js') }}"></script>

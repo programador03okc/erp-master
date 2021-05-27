@@ -314,7 +314,9 @@ function actionGuardarEditarRequerimiento(){
                     if (response > 0){
                         let lastIdRequerimiento =  response;
                         mostrar_requerimiento(lastIdRequerimiento);
-                        verTrazabilidadRequerimiento(lastIdRequerimiento);
+                        // verTrazabilidadRequerimiento(lastIdRequerimiento);
+                        var btnTrazabilidadRequerimiento = document.getElementsByName("btn-ver-trazabilidad-requerimiento");
+                        disabledControl(btnTrazabilidadRequerimiento,false);
                         
                         changeStateButton('guardar');
                         $('#form-requerimiento').attr('type', 'register');

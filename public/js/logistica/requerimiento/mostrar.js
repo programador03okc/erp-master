@@ -195,6 +195,7 @@ function mostrar_requerimiento(IdorCode){
                         'obs':detalle_requerimiento[x].obs,
                         'tiene_transformacion':detalle_requerimiento[x].tiene_transformacion,
                         'proveedor_id':detalle_requerimiento[x].proveedor_id,
+                        'motivo':detalle_requerimiento[x].motivo,
                         'proveedor_razon_social':detalle_requerimiento[x].proveedor_razon_social,
                         'estado':detalle_requerimiento[x].estado
                     };
@@ -213,11 +214,12 @@ function mostrar_requerimiento(IdorCode){
                     // console.log(data_item);
                     
                     llenar_tabla_detalle_requerimiento(data_item);
-                    llenarTablaAdjuntosRequerimiento(response['requerimiento'][0].id_requerimiento);
+                    // llenarTablaAdjuntosRequerimiento(response['requerimiento'][0].id_requerimiento);
                     
                     // desbloquear el imprimir requerimiento
                     var btnImprimirRequerimientoPdf = document.getElementsByName("btn-imprimir-requerimento-pdf");
                     disabledControl(btnImprimirRequerimientoPdf,false);
+            
                     
 
                     var btnMigrarRequerimiento = document.getElementsByName("btn-migrar-requerimiento");

@@ -931,6 +931,7 @@ class LogisticaController extends Controller
                     'adm_contri.razon_social as proveedor_razon_social',
                     'alm_det_req.id_cc_am_filas',
                     'alm_det_req.id_cc_venta_filas',
+                    'alm_det_req.motivo',
                     'proveedores_am.razon_social as razon_social_proveedor_seleccionado_am',
                     'cc_am_filas.proveedor_seleccionado',
                     'proveedores_venta.razon_social as razon_social_proveedor_seleccionado_venta',
@@ -1063,6 +1064,7 @@ class LogisticaController extends Controller
                             'codigo_partida'                => $data->codigo_partida,
                             'id_centro_costo'                => $data->id_centro_costo,
                             'codigo_centro_costo'            => $data->codigo_centro_costo,
+                            'motivo'                        => $data->motivo,
                             'descripcion_partida'           => $data->descripcion_partida,
                             'suma_transferencias'           => $data->suma_transferencias,
 
@@ -2135,7 +2137,8 @@ class LogisticaController extends Controller
                             'id_cc_am_filas'        => is_numeric($detalle_reqArray[$i]['id_cc_am_filas']) == 1 ? $detalle_reqArray[$i]['id_cc_am_filas']:null,
                             'id_cc_venta_filas'     => is_numeric($detalle_reqArray[$i]['id_cc_venta_filas']) == 1 ? $detalle_reqArray[$i]['id_cc_venta_filas']:null,
                             'tiene_transformacion'  => $detalle_reqArray[$i]['tiene_transformacion']?$detalle_reqArray[$i]['tiene_transformacion']:false,
-                            'centro_costo_id'      => isset($detalle_reqArray[$i]['id_centro_costo'])?$detalle_reqArray[$i]['id_centro_costo']:null
+                            'centro_costo_id'       => isset($detalle_reqArray[$i]['id_centro_costo'])?$detalle_reqArray[$i]['id_centro_costo']:null,
+                            'motivo'                => isset($detalle_reqArray[$i]['motivo'])?$detalle_reqArray[$i]['motivo']:null
 
                         ],
                         'id_detalle_requerimiento'
@@ -2859,6 +2862,8 @@ class LogisticaController extends Controller
                     $estado = isset($request->detalle[$i]['estado'])?$request->detalle[$i]['estado']:1;
                     $id_almacen_reserva = is_numeric($request->detalle[$i]['id_almacen_reserva']) == 1 ? $request->detalle[$i]['id_almacen_reserva']:null;
                     $stock_comprometido = isset($request->detalle[$i]['stock_comprometido'])? $request->detalle[$i]['stock_comprometido']:null;
+                    $id_centro_costo = isset($request->detalle[$i]['id_centro_costo'])? $request->detalle[$i]['id_centro_costo']:null;
+                    $motivo = isset($request->detalle[$i]['motivo'])? $request->detalle[$i]['motivo']:null;
                     $proveedor_id = isset($request->detalle[$i]['proveedor_id'])? $request->detalle[$i]['proveedor_id']:null;
 
 
@@ -2880,6 +2885,8 @@ class LogisticaController extends Controller
                                 'id_tipo_item'          => is_numeric($id_tipo_item) == 1 ? $id_tipo_item : null,
                                 'id_almacen_reserva'    => $id_almacen_reserva,
                                 'stock_comprometido'    => $stock_comprometido,
+                                'centro_costo_id'       => $id_centro_costo,
+                                'motivo'                => $motivo,
                                 'proveedor_id'          => $proveedor_id,
                                 'estado'                => $nuevo_estado
                             ]);
@@ -2900,6 +2907,8 @@ class LogisticaController extends Controller
                                 'id_tipo_item'          => is_numeric($id_tipo_item) == 1 ? $id_tipo_item : null,
                                 'id_almacen_reserva'    => $id_almacen_reserva,
                                 'stock_comprometido'    => $stock_comprometido,
+                                'centro_costo_id'       => $id_centro_costo,
+                                'motivo'                => $motivo,
                                 'proveedor_id'          => $proveedor_id,
                                 'estado'                => $estado
                             ]);
@@ -2922,6 +2931,8 @@ class LogisticaController extends Controller
                                 'estado'                => $estado,
                                 'fecha_registro'        => date('Y-m-d H:i:s'),
                                 'id_almacen_reserva'    => $id_almacen_reserva,
+                                'centro_costo_id'       => $id_centro_costo,
+                                'motivo'                => $motivo,
                                 'estado'                => 1
                             ],
                             'id_detalle_requerimiento'
