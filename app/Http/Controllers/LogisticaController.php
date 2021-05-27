@@ -1973,55 +1973,61 @@ class LogisticaController extends Controller
         return $sedes;
     }
 
+    public function cantidadRequerimientos($tipoRequerimiento,$grupo){
+        $yyyy = date('Y', strtotime("now"));
+        $num = DB::table('almacen.alm_req')
+        ->where('id_tipo_requerimiento',$tipoRequerimiento)
+        ->when(($grupo >0), function($query) use ($grupo)  {
+            return $query->Where('id_grupo','=',$grupo);
+        })
+        ->whereYear('fecha_registro', '=', $yyyy)
+        ->count();
+        return $num;
+    }
     public function guardar_requerimiento(Request $request)
     {
-        // tipo requerimiento:
-            // 1 compra
-                // tipo_cliente
-                    // 1 pers.natural
-                    // 2 pers.juridica
-                    // 3 uso almacen
-                    // 4 uso administración
-            // 2 venta directa
-            // 3 pedido almacén
 
     try {
         DB::beginTransaction();
 
         $id_requerimiento=0;
-        if($request->requerimiento['tipo_requerimiento'] == 2){
-            $mes = date('m', strtotime("now"));
-            $yy = date('y', strtotime("now"));
-            $yyyy = date('Y', strtotime("now"));
-            $documento = 'R';
-            $num = DB::table('almacen.alm_req')
-            ->where('id_tipo_requerimiento',2)
-            ->whereYear('fecha_registro', '=', $yyyy)
-            ->count();
-            $correlativo = $this->leftZero(4, ($num + 1));
-            $codigo = "{$documento}E-{$yy}{$correlativo}";
-        }else{
+        $documento = 'R';
+        
 
-                $mes = date('m', strtotime("now"));
-                $yy = date('y', strtotime("now"));
-                $yyyy = date('Y', strtotime("now"));
-                $documento = 'R';
-                $num = DB::table('almacen.alm_req')
-                ->where('id_tipo_requerimiento',$request->requerimiento['tipo_requerimiento'])
-                ->whereYear('fecha_registro', '=', $yyyy)
-                ->count();
-                $correlativo = $this->leftZero(4, ($num + 1));
-                $tp = '';
-                if ($request->requerimiento['tipo_requerimiento'] == 1){
-                    $tp = 'M';
-                } else if ($request->requerimiento['tipo_requerimiento'] == 3){
-                    $tp = 'BS';
-                } else if ($request->requerimiento['tipo_requerimiento'] == 4){
-                    $tp = 'V';
+        switch ($request->requerimiento['tipo_requerimiento']) {
+            case 1: # tipo MGCP
+                $documento.='M';
+                $num = $this->cantidadRequerimientos(1,null);
+                break;
+            
+            case 2: #tipo Ecommerce
+                $documento.='E';
+                $num = $this->cantidadRequerimientos(2,null);
+                break;
+            
+            case 3: #tipo Bienes y servicios
+                if($request->requerimiento['id_grupo']==1){
+                    $documento.='A';
+                    $num = $this->cantidadRequerimientos(3,1); //tipo: BS, grupo: Administración
                 }
-                $codigo = "{$documento}{$tp}-{$yy}{$correlativo}";
-                
+                if($request->requerimiento['id_grupo']==2){ 
+                    $documento.='C';
+                    $num = $this->cantidadRequerimientos(3,2); //tipo: BS, grupo: Comercial
+                }
+                if($request->requerimiento['id_grupo']==3){
+                    $documento.='P';
+                    $num = $this->cantidadRequerimientos(3,3); //tipo: BS, grupo: Proyectos
+                }
+                break;
+            
+            default:
+                $num = 0;
+                break;
         }
+        // $mes = date('m', strtotime("now"));
+        $yy = date('y', strtotime("now"));
+        $correlativo = $this->leftZero(4, ($num + 1));
+        $codigo = "{$documento}-{$yy}{$correlativo}";
 
         if($request->detalle == '' || $request->detalle == null || count($request->detalle)==0){
             return 0;
