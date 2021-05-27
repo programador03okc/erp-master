@@ -482,9 +482,10 @@
                             <th width="70">SUBTOTAL</th>
                             <th width="70">PARTIDA</th>
                             <th width="70">C.Costos</th>
+                            <th width="70">Motivo</th>
                             <th width="70">Atendido Por</th>
-                            <th width="140">
-                                <div style="display:flex; flex-direction:row;justify-content:space-around;">
+                            <th width="90">
+                                <div style="display:flex; flex-direction:column;">
                                 <button type="button" class="btn btn-xs btn-success activation" onClick="catalogoItemsModal();" id="btn-add-producto"
                                 data-toggle="tooltip" data-placement="bottom"  title="Agregar Detalle" disabled><i class="fas fa-plus"></i> Producto
                                 </button>

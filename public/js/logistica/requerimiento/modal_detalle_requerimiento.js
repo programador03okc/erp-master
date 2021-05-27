@@ -219,7 +219,7 @@ function agregarItem(){
 
 
  function llenar_tabla_detalle_requerimiento(data_item){
-    // console.log(data_item);
+    console.log(data_item);
     limpiarTabla('ListaDetalleRequerimiento');
     htmls ='<tr></tr>';
     $('#ListaDetalleRequerimiento tbody').html(htmls);
@@ -272,12 +272,13 @@ function agregarItem(){
             row.insertCell(7).innerHTML = data_item[a].subtotal ? data_item[a].subtotal : '';
             row.insertCell(8).innerHTML =  data_item[a].cod_partida ? data_item[a].cod_partida : '';
             row.insertCell(9).innerHTML =  data_item[a].codigo_centro_costo ? data_item[a].codigo_centro_costo : '';
-            row.insertCell(10).innerHTML =  data_item[a].almacen_reserva ? data_item[a].almacen_reserva : (data_item[a].proveedor_razon_social?data_item[a].proveedor_razon_social:'');
+            row.insertCell(10).innerHTML =  data_item[a].motivo ? data_item[a].motivo : '';
+            row.insertCell(11).innerHTML =  data_item[a].almacen_reserva ? data_item[a].almacen_reserva : (data_item[a].proveedor_razon_social?data_item[a].proveedor_razon_social:'');
 
             var id_grupo = document.querySelector("form[id='form-requerimiento'] input[name='id_grupo']").value;
             var id_proyecto = document.querySelector("form[id='form-requerimiento'] select[name='id_proyecto']").value;
             var tdBtnAction = '';
-            tdBtnAction = row.insertCell(11);
+            tdBtnAction = row.insertCell(12);
 
  
             // tdBtnAction.className = classHiden;
@@ -293,7 +294,7 @@ function agregarItem(){
             tdBtnAction.setAttribute('width', 'auto');
             var id_proyecto = document.querySelector("form[id='form-requerimiento'] select[name='id_proyecto']").value;
 
-            btnAction = `<div class="btn-group btn-group-sm" role="group" aria-label="Second group"><center>`;
+            btnAction = `<div class="btn-group btn-group-xs" role="group" aria-label="Second group" style=" display: grid; grid-template-columns: 1fr 1fr minmax(auto,1fr);">`;
            
             if (tipo_requerimiento ==3 ) {
                 btnAction += `<button type="button" class="btn btn-warning btn-xs"  name="btnMostarPartidas" data-toggle="tooltip" title="Partidas" onClick=" partidasModal(${data_item[a].id_item});" ${hasAttrDisabled}><i class="fas fa-money-check"></i></button>`;
@@ -311,6 +312,8 @@ function agregarItem(){
                 btnAction += `<button type="button" class="btn btn-primary btn-xs activation" name="btnModalSeleccionarCrearProveedor data-toggle="tooltip" title="Proveedor" onClick="modalSeleccionarCrearProveedor(event, ${a});" ${hasAttrDisabled}><i class="fas fa-user-tie"></i></button>`;
 
             }
+            btnAction += `<button type="button" class="btn btn-danger btn-xs" name="btnMotivo" data-toggle="tooltip" title="Motivo" style="background: #963277;" onClick="motivoModal(event, ${a});" ${hasAttrDisabled}><i class="fas fa-bullseye"></i></button>`;
+
             if(!['1','2'].includes(tipo_requerimiento)){
                 btnAction += `<button type="button" class="btn btn-default btn-xs activation" name="btnAdjuntarArchivos" data-toggle="tooltip" title="Adjuntos" onClick="archivosAdjuntosModal(event, ${a});" ${hasAttrDisabled} ><i class="fas fa-paperclip"></i></button>`;
             }
@@ -318,7 +321,7 @@ function agregarItem(){
                 btnAction += `<button type="button" class="btn btn-info btn-xs" name="btnEditarItem" data-toggle="tooltip" title="Editar" onclick="detalleRequerimientoModal(event,${a});" ${hasAttrDisabled} ><i class="fas fa-edit"></i></button>`;
                 btnAction += `<button type="button" class="btn btn-danger btn-xs activation"   name="btnEliminarItem" data-toggle="tooltip" title="Eliminar" onclick="eliminarItemDeListado(this,${data_item[a].id});" ${hasAttrDisabled} ><i class="fas fa-trash-alt"></i></button>`;
             }
-            btnAction += `</center></div>`;
+            btnAction += `</div>`;
             tdBtnAction.innerHTML = btnAction;
 
         }

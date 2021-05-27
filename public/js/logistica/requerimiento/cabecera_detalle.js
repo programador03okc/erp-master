@@ -1031,10 +1031,11 @@ function llenarTablaListaDetalleRequerimiento(data,selectMoneda,selectUnidadMedi
                     row.insertCell(7).innerHTML = data[a].subtotal ? data[a].subtotal : '';
                     row.insertCell(8).innerHTML =  data[a].cod_partida ? data[a].cod_partida : '';
                     row.insertCell(9).innerHTML =  data[a].codigo_centro_costo ? data[a].codigo_centro_costo : '';
-                    row.insertCell(10).innerHTML =  data[a].almacen_reserva ? data[a].almacen_reserva : (data[a].proveedor_razon_social?data[a].proveedor_razon_social:'');
+                    row.insertCell(10).innerHTML =  data[a].motivo ? data[a].motivo : '';
+                    row.insertCell(11).innerHTML =  data[a].almacen_reserva ? data[a].almacen_reserva : (data[a].proveedor_razon_social?data[a].proveedor_razon_social:'');
                     
                     var tdBtnAction=null;
-                    tdBtnAction = row.insertCell(11);
+                    tdBtnAction = row.insertCell(12);
                     
     
                     var btnAction = '';
@@ -1043,7 +1044,7 @@ function llenarTablaListaDetalleRequerimiento(data,selectMoneda,selectUnidadMedi
                     tdBtnAction.setAttribute('width', 'auto');
                     var id_proyecto = document.querySelector("form[id='form-requerimiento'] select[name='id_proyecto']").value;
         
-                    btnAction = `<div class="btn-group btn-group-sm" role="group" aria-label="Second group"><center>`;
+                    btnAction = `<div class="btn-group btn-group-xs" role="group" aria-label="Second group" style=" display: grid; grid-template-columns: 1fr 1fr minmax(auto,1fr); ">`;
                     if (tipo_requerimiento ==3 ) {
                             btnAction += `<button type="button" class="btn btn-warning btn-xs"  name="btnMostarPartidas" data-toggle="tooltip" title="Partidas" onClick=" partidasModal(${a});" ${hasAttrDisabled}><i class="fas fa-money-check"></i></button>`;
                         
@@ -1053,8 +1054,9 @@ function llenarTablaListaDetalleRequerimiento(data,selectMoneda,selectUnidadMedi
                     if(tipo_requerimiento !=2){
                         btnAction += `<button type="button" class="btn btn-default btn-xs" name="btnAdjuntarArchivos" data-toggle="tooltip" title="Adjuntos" onClick="archivosAdjuntosModal(event, ${a});" ${hasAttrDisabled}><i class="fas fa-paperclip"></i></button>`;
                     }
+                    btnAction += `<button type="button" class="btn btn-danger btn-xs" name="btnMotivo" data-toggle="tooltip" title="Motivo" style="background: #963277;" onClick="motivoModal(event, ${a});" ${hasAttrDisabled}><i class="fas fa-bullseye"></i></button>`;
                     btnAction += `<button type="button" class="btn btn-danger btn-xs"   name="btnEliminarItem" data-toggle="tooltip" title="Eliminar" onclick="eliminarItemDeListado(this,'${data[a].id}');" ${hasAttrDisabled} ><i class="fas fa-trash-alt"></i></button>`;
-                    btnAction += `</center></div>`;
+                    btnAction += `</div>`;
                     tdBtnAction.innerHTML = btnAction;
                 }else{
 
@@ -1076,10 +1078,11 @@ function llenarTablaListaDetalleRequerimiento(data,selectMoneda,selectUnidadMedi
                 row.insertCell(7).innerHTML = data[a].subtotal ? data[a].subtotal : '';
                 row.insertCell(8).innerHTML =  data[a].cod_partida ? data[a].cod_partida : ''; 
                 row.insertCell(9).innerHTML =  data[a].codigo_centro_costo ? data[a].codigo_centro_costo : '';
-                row.insertCell(10).innerHTML =  data[a].almacen_reserva ? data[a].almacen_reserva : (data[a].proveedor_razon_social?data[a].proveedor_razon_social:'');
+                row.insertCell(10).innerHTML =  data[a].motivo ? data[a].motivo : '';
+                row.insertCell(11).innerHTML =  data[a].almacen_reserva ? data[a].almacen_reserva : (data[a].proveedor_razon_social?data[a].proveedor_razon_social:'');
 
                 var tdBtnAction=null;
-                tdBtnAction = row.insertCell(11);
+                tdBtnAction = row.insertCell(12);
 
 
                 var btnAction = '';
@@ -1088,7 +1091,7 @@ function llenarTablaListaDetalleRequerimiento(data,selectMoneda,selectUnidadMedi
                 tdBtnAction.setAttribute('width', 'auto');
                 var id_proyecto = document.querySelector("form[id='form-requerimiento'] select[name='id_proyecto']").value;
     
-                btnAction = `<div class="btn-group btn-group-sm" role="group" aria-label="Second group"><center>`;
+                btnAction = `<div class="btn-group btn-group-xs" role="group" aria-label="Second group" style=" display: grid; grid-template-columns: 1fr 1fr minmax(auto,1fr); ">`;
                 if (tipo_requerimiento ==3 ) {
                         btnAction += `<button type="button" class="btn btn-warning btn-xs"  name="btnMostarPartidas" data-toggle="tooltip" title="Partidas" onClick=" partidasModal(${a});" ${hasAttrDisabled}><i class="fas fa-money-check"></i></button>`;
                 } 
@@ -1112,7 +1115,7 @@ function llenarTablaListaDetalleRequerimiento(data,selectMoneda,selectUnidadMedi
 
                 btnAction += `<button type="button" class="btn btn-danger btn-xs"   name="btnEliminarItem" data-toggle="tooltip" title="Eliminar" onclick="eliminarItemDeListado(this,'${data[a].id}');" ${hasAttrDisabled} ><i class="fas fa-trash-alt"></i></button>`;
 
-                btnAction += `</center></div>`;
+                btnAction += `</div>`;
                 tdBtnAction.innerHTML = btnAction;
             }
     }
