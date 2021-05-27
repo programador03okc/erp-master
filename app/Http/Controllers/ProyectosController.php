@@ -1896,6 +1896,7 @@ class ProyectosController extends Controller
             $presup = DB::table('finanzas.presup')
             ->where([
                     ['id_grupo','=',$id_grupo],
+                    ['id_proyecto','=',null],
                     ['estado','=',1],
                     ['tp_presup','=',2]
                     ])
