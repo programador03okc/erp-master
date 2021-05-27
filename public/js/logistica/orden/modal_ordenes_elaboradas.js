@@ -18,6 +18,7 @@ function listarOrdenesElaboradas(){
             'language' : vardataTables[0],
             'ajax': 'listar-historial-ordenes-elaboradas',
             // "dataSrc":'',
+            'order': [[1,'desc']],
             'scrollX': false,
             'columns': [
                 {'data': 'id_orden_compra'},
@@ -116,4 +117,5 @@ function loadHeadOrden(data){
     document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='ubigeo_destino']").value=data.ubigeo_destino?data.ubigeo_destino:'';
     document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='id_trabajador']").value=data.personal_autorizado?data.personal_autorizado:'';
     document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='nombre_persona_autorizado']").value=data.nombre_personal_autorizado?data.nombre_personal_autorizado:'';
+    document.querySelector("form[id='form-crear-orden-requerimiento'] textarea[name='observacion']").value=data.observacion?data.observacion:'';
 }

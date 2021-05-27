@@ -273,6 +273,7 @@ class OrdenController extends Controller
             'log_ord_compra.id_sede as orden_id_sede',
             'log_ord_compra.id_requerimiento as orden_id_requerimiento',
             'log_ord_compra.codigo_softlink as orden_codigo_softlink',
+            'log_ord_compra.observacion',
             'adm_contri.id_contribuyente',
             'adm_contri.razon_social',
             'adm_contri.nro_documento',
@@ -293,7 +294,7 @@ class OrdenController extends Controller
             'log_det_ord_compra.subtotal as detalle_orden_subtotal',
             'log_det_ord_compra.id_detalle_requerimiento as detalle_orden_id_detalle_requerimiento',
             'log_det_ord_compra.tipo_item_id',
-            'alm_det_req.observacion',
+            'alm_det_req.observacion as observacion_requerimiento',
             'alm_req.concepto',
             'alm_req.id_cliente',
             'contri_cli.razon_social as razon_social_cliente',
@@ -526,7 +527,7 @@ class OrdenController extends Controller
                 'alm_req.fecha_requerimiento',
                 'alm_req.id_periodo',
                 'alm_req.id_tipo_requerimiento',
-                'alm_req.observacion',
+                'alm_req.observacion as observacion_requerimiento',
                 'alm_tp_req.descripcion AS tp_req_descripcion',
                 'alm_req.id_usuario',
                 DB::raw("concat(rrhh_perso.nombres,' ',rrhh_perso.apellido_paterno, ' ', rrhh_perso.apellido_materno)  AS persona"),
@@ -602,7 +603,7 @@ class OrdenController extends Controller
                     'id_area' => $data->id_area,
                     'area_descripcion' => $data->area_descripcion,
                     'id_presupuesto' => $data->id_presupuesto,
-                    'observacion' => $data->observacion,
+                    'observacion_requerimiento' => $data->observacion_requerimiento,
                     'fecha_registro' => $data->fecha_registro,
                     'estado' => $data->estado,
                     'estado_desc' => $data->estado_desc,
@@ -1204,6 +1205,7 @@ class OrdenController extends Controller
             'log_ord_compra.personal_autorizado',
             DB::raw("concat(pers_aut.nombres,' ',pers_aut.apellido_paterno,' ',pers_aut.apellido_materno) AS nombre_personal_autorizado"),
             'log_ord_compra.estado',
+            'log_ord_compra.observacion',
             'adm_estado_doc.estado_doc',
             'adm_estado_doc.bootstrap_color'
         )
@@ -1270,7 +1272,8 @@ class OrdenController extends Controller
                     'personal_autorizado' => $data->personal_autorizado,
                     'nombre_personal_autorizado' => $data->nombre_personal_autorizado,
                     'estado' => $data->estado,
-                    'estado_doc' => $data->estado_doc
+                    'estado_doc' => $data->estado_doc,
+                    'observacion' => $data->observacion
 
                 ];
             }
@@ -1502,6 +1505,7 @@ class OrdenController extends Controller
                 'log_ord_compra.id_cta_detraccion',
                 'cta_detra.nro_cuenta as nro_cuenta_detraccion',
                 'log_ord_compra.plazo_entrega',
+                'log_ord_compra.observacion',
                 'log_ord_compra.en_almacen',
                 'log_ord_compra.id_occ',
                 'log_ord_compra.id_sede',
@@ -1631,6 +1635,7 @@ class OrdenController extends Controller
                     // 'codigo_requerimiento' => $data->codigo_requerimiento,
                     'fecha_registro' => $data->fecha,
                     'moneda_simbolo' => $data->moneda_simbolo, 
+                    'observacion' => $data->observacion, 
                     // 'monto_igv' => $data->monto_igv,
                     // 'monto_total' => $data->monto_total,
                     // 'moneda_descripcion' => $data->moneda_descripcion 
@@ -2029,6 +2034,10 @@ class OrdenController extends Controller
                     <td class="verticalTop">' . $ordenArray['head']['datos_para_despacho']['direccion_destino'] .'<br>'.$ordenArray['head']['datos_para_despacho']['ubigeo_destino'] .'</td>
                     <td width="15%" class="verticalTop subtitle">Autorizado:</td>
                     <td class="verticalTop">' . $ordenArray['head']['datos_para_despacho']['nombre_personal_autorizado'] .'</td>
+                </tr>
+                <tr>
+                    <td nowrap  width="15%" class="subtitle">Observación:</td>
+                    <td class="verticalTop">' . $ordenArray['head']['observacion']. '</td>
                 </tr>
                 </table>
                 <br>
@@ -2496,6 +2505,7 @@ class OrdenController extends Controller
                     'en_almacen' => false,
                     'estado' => 1,
                     'codigo_softlink' => ($request->codigo_orden!==null ? $request->codigo_orden : ''),
+                    'observacion' => isset($request->observacion)?$request->observacion:null
                 ],
                 'id_orden_compra'
             );
@@ -2878,6 +2888,7 @@ class OrdenController extends Controller
                     'direccion_destino' => $request->direccion_destino?$request->direccion_destino:null,
                     'ubigeo_destino' => isset($request->id_ubigeo_destino)?$request->id_ubigeo_destino:null,
                     'codigo_softlink' => ($request->codigo_orden!==null ? $request->codigo_orden : ''),
+                    'observacion' => isset($request->observacion)?$request->observacion:null
                 ]
             );
 
@@ -3084,7 +3095,8 @@ class OrdenController extends Controller
                         'igv_porcentaje' => $data->igv_porcentaje,
                         'monto_subtotal' => $data->monto_subtotal,
                         'monto_igv'      => $data->monto_igv,
-                        'monto_total'    => $data->monto_total
+                        'monto_total'    => $data->monto_total,
+                        'observacion'    => $data->observacion
                     ];
                 }
 
