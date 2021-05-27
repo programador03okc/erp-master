@@ -1230,7 +1230,7 @@ function partidasModal(indice){
                 backdrop: 'true'
             });
             document.querySelector("div[id='modal-partidas'] label[id='indice']").textContent =  indice;
-            listarPartidas(id_grupo,id_proyecto?id_proyecto:null);
+            listarPartidas(id_grupo,id_proyecto?id_proyecto:'');
 
         
         
