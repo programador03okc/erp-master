@@ -35,9 +35,12 @@ $("#listaPartidas tbody").on('click', ".agregar-titulo", function(){
     
     filas.forEach(function(e){
         var colum = e.querySelectorAll('td');
-        var padre = colum[4].innerText;
-        if (padre == cod){
-            i++;
+        
+        if (colum.length > 4){
+            var padre = colum[4].innerText;
+            if (padre == cod){
+                i++;
+            }
         }
     });
 

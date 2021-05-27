@@ -6,9 +6,13 @@ $("#listaPartidas tbody").on('click', ".agregar-partida", function(){
     var filas = document.querySelectorAll('#listaPartidas tbody tr');
     filas.forEach(function(e){
         var colum = e.querySelectorAll('td');
-        var padre = colum[5].innerText;
-        if (padre == cod){
-            i++;
+        console.log(colum.length);
+        
+        if (colum.length > 5){
+            var padre = colum[5].innerText;
+            if (padre == cod){
+                i++;
+            }
         }
     });
 
