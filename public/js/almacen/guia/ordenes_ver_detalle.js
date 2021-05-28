@@ -65,8 +65,8 @@ function format ( table_id, id, row ) {
                     <td style="border: none;">${element.descripcion}</td>
                     <td style="border: none;">${element.cantidad}</td>
                     <td style="border: none;">${element.abreviatura}</td>
-                    <td style="border: none;">${formatNumber.decimal(element.precio,'',2)}</td>
-                    <td style="border: none;">${formatNumber.decimal(element.subtotal,'',2)}</td>
+                    <td style="border: none;">${formatNumber.decimal(element.precio,'',-3)}</td>
+                    <td style="border: none;">${formatNumber.decimal((element.precio * element.cantidad),'',-3)}</td>
                     </tr>`;
                 });
                 var tabla = `<table class="table table-sm" style="border: none;" 
