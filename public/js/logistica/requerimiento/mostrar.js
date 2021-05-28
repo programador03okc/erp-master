@@ -18,7 +18,7 @@ function mostrar_requerimiento(IdorCode){
         url: baseUrl,
         dataType: 'JSON',
         success: function(response){
-            // console.log(auth_user);
+            console.log(response);
             let idGrupoList=[];
             auth_user.grupos.forEach(element => {
                 idGrupoList.push(element.id_grupo);
@@ -142,6 +142,8 @@ function mostrar_requerimiento(IdorCode){
                 $('[name=estado]').val(response['requerimiento'][0].estado);
                 $("[name=para_stock_almacen]").prop("checked", response['requerimiento'][0].para_stock_almacen);
                 $('[name=rol_aprobante_id]').val(response['requerimiento'][0].rol_aprobante_id);
+                $('[name=id_trabajador]').val(response['requerimiento'][0].trabajador_id);
+                $('[name=nombre_trabajador]').val(response['requerimiento'][0].nombre_trabajador);
 
                 let simboloMoneda='';
                 if(response['requerimiento'][0].id_moneda==1){
@@ -161,10 +163,10 @@ function mostrar_requerimiento(IdorCode){
                 for (x=0; x<detalle_requerimiento.length; x++){
                     let adjunto=[];
                         items ={
-                        'id_item':detalle_requerimiento[x].id_item,
+                        'id_item':detalle_requerimiento[x].id_item?detalle_requerimiento[x].id_item:null,
                         'id_tipo_item':detalle_requerimiento[x].id_tipo_item,
-                        'id_producto':detalle_requerimiento[x].id_producto,
-                        'id_servicio':detalle_requerimiento[x].id_servicio,
+                        'id_producto':detalle_requerimiento[x].id_producto?detalle_requerimiento[x].id_producto:null,
+                        'id_servicio':detalle_requerimiento[x].id_servicio?detalle_requerimiento[x].id_servicio:null,
                         'id_equipo':detalle_requerimiento[x].id_equipo,
                         'id_requerimiento':response['requerimiento'][0].id_requerimiento,
                         'id_detalle_requerimiento':detalle_requerimiento[x].id_detalle_requerimiento,

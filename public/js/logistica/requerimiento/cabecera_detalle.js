@@ -996,6 +996,7 @@ function updateInputMonedaItem(event){
 
 
 function llenarTablaListaDetalleRequerimiento(data,selectMoneda,selectUnidadMedida){
+    console.log(data);
     htmls = '<tr></tr>';   
     $('#ListaDetalleRequerimiento tbody').html(htmls);
     var table = document.getElementById("ListaDetalleRequerimiento");
@@ -1017,7 +1018,6 @@ function llenarTablaListaDetalleRequerimiento(data,selectMoneda,selectUnidadMedi
             var row = table.insertRow(-1);
 
             if (data[a].id_producto == '' || data[a].id_producto == null) {
-                if(data[a].id_servicio==0){ // 0 = existe un item para servicio
                     var id_grupo = document.querySelector("form[id='form-requerimiento'] input[name='id_grupo']").value;
 
                     row.insertCell(0).innerHTML = data[a].id_item ? data[a].id_item : '';
@@ -1058,10 +1058,7 @@ function llenarTablaListaDetalleRequerimiento(data,selectMoneda,selectUnidadMedi
                     btnAction += `<button type="button" class="btn btn-danger btn-xs"   name="btnEliminarItem" data-toggle="tooltip" title="Eliminar" onclick="eliminarItemDeListado(this,'${data[a].id}');" ${hasAttrDisabled} ><i class="fas fa-trash-alt"></i></button>`;
                     btnAction += `</div>`;
                     tdBtnAction.innerHTML = btnAction;
-                }else{
-
-                    alert("lo siento, ocurrio un problema: El item seleccionado no tiene un Id producto");
-                }
+              
 
             } else {
                 var id_grupo = document.querySelector("form[id='form-requerimiento'] input[name='id_grupo']").value;
