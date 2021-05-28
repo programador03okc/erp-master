@@ -3,6 +3,8 @@ function motivoModal(obj,indice){
         show: true,
         backdrop: 'true'
     });
+    
+    document.querySelector("div[id='modal-motivo-detalle-requerimiento'] textarea[name='motivo']").value ="";
     document.querySelector("div[id='modal-motivo-detalle-requerimiento'] label[id='indice']").textContent = indice;
 
     if(data_item.length > 0){

@@ -46,6 +46,7 @@ function get_data_requerimiento(){
     fuente_det = document.querySelector("form[id='form-requerimiento'] select[name='fuente_det_id']").value;
     para_stock_almacen = document.querySelector("form[id='form-requerimiento'] input[name='para_stock_almacen']").checked;
     rol_aprobante = document.querySelector("form[id='form-requerimiento'] select[name='rol_aprobante']").value;
+    id_trabajador = document.querySelector("form[id='form-requerimiento'] input[name='id_trabajador']").value;
 
     requerimiento = {
         id_requerimiento,
@@ -90,7 +91,8 @@ function get_data_requerimiento(){
         fuente,
         fuente_det,
         para_stock_almacen,
-        rol_aprobante
+        rol_aprobante,
+        id_trabajador
         
     };
 return requerimiento;
