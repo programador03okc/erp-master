@@ -691,6 +691,7 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::post('anular-detalle-fuente', 'LogisticaController@anularDetalleFuente')->name('anular-detalle-fuente');
 					Route::post('actualizar-detalle-fuente', 'LogisticaController@actualizarDetalleFuente')->name('actualizar-detalle-fuente');
 					Route::get('buscar-stock-almacenes/{id_item?}', 'RequerimientoController@buscarStockEnAlmacenes')->name('buscar-stock-almacenes');
+					Route::get('listar_trabajadores', 'ProyectosController@listar_trabajadores');
 
 				
 
