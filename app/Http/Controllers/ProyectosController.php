@@ -8886,7 +8886,7 @@ class ProyectosController extends Controller
                         foreach($partidas_eje as $par){
 
                             $det_req = DB::table('almacen.alm_det_req')
-                            ->select(DB::raw('SUM(alm_det_req.precio_referencial * alm_det_req.cantidad) as suma_req'))
+                            ->select(DB::raw('SUM(alm_det_req.precio_unitario * alm_det_req.cantidad) as suma_req'))
                             ->where([['alm_det_req.partida','=',$par->id_partida],['alm_det_req.estado','!=',7]])
                             ->first();
                             if (isset($det_req)){
@@ -8894,19 +8894,18 @@ class ProyectosController extends Controller
                             }
 
                             $det_oc = DB::table('almacen.alm_det_req')
-                            ->select(DB::raw('SUM(log_valorizacion_cotizacion.precio_sin_igv) as suma_sin_igv'),
-                            DB::raw('SUM(log_valorizacion_cotizacion.subtotal) as suma_con_igv'))
-                            ->join('logistica.valoriza_coti_detalle','valoriza_coti_detalle.id_detalle_requerimiento','=','alm_det_req.id_detalle_requerimiento')
-                            ->join('logistica.log_valorizacion_cotizacion','log_valorizacion_cotizacion.id_valorizacion_cotizacion','=','valoriza_coti_detalle.id_valorizacion_cotizacion')
+                            ->select(DB::raw('SUM((log_det_ord_compra.precio * log_det_ord_compra.cantidad)) as suma_sin_igv'))
+                            ->join('logistica.log_det_ord_compra','log_det_ord_compra.id_detalle_requerimiento','=','alm_det_req.id_detalle_requerimiento')
+                            // ->join('logistica.log_valorizacion_cotizacion','log_valorizacion_cotizacion.id_valorizacion_cotizacion','=','valoriza_coti_detalle.id_valorizacion_cotizacion')
                             ->where([['alm_det_req.partida','=',$par->id_partida],
-                                    ['valoriza_coti_detalle.estado','=',1],
-                                    ['log_valorizacion_cotizacion.estado','!=',7],
+                                    // ['valoriza_coti_detalle.estado','=',1],
+                                    ['log_det_ord_compra.estado','!=',7],
                                     ['alm_det_req.estado','!=',7]])
                             ->first();
                             
                             if (isset($det_oc)){
                                 $total_oc_sin_igv += $det_oc->suma_sin_igv;
-                                $total_oc_con_igv += $det_oc->suma_con_igv;
+                                // $total_oc_con_igv += $det_oc->suma_con_igv;
                             }
                         }
                     }
@@ -8921,7 +8920,7 @@ class ProyectosController extends Controller
                 'estado_doc'=>$op->estado_doc,
                 'total_req'=>$total_req,
                 'total_oc_sin_igv'=>$total_oc_sin_igv,
-                'total_oc_con_igv'=>$total_oc_con_igv,
+                // 'total_oc_con_igv'=>$total_oc_con_igv,
                 'cod_presint'=>(isset($presint) ? $presint->codigo : ''),
                 'cod_propuesta'=>(isset($propuesta) ? $propuesta->codigo : ''),
                 'cod_preseje'=>(isset($preseje) ? $preseje->codigo : ''),
