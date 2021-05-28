@@ -894,7 +894,8 @@ function updateMontoTotalRequerimiento(){
     }
 
    document.querySelector("form[id='form-requerimiento'] input[name='monto']").value= montoTotal;
-   document.querySelector("form[id='form-requerimiento'] table label[name='total']").textContent= simboloMoneda+Math.round(montoTotal).toFixed(2);
+   document.querySelector("form[id='form-requerimiento'] table span[name='simbolo_moneda']").textContent= simboloMoneda;
+   document.querySelector("form[id='form-requerimiento'] table label[name='total']").textContent= Math.round(montoTotal).toFixed(2);
 
 }
 

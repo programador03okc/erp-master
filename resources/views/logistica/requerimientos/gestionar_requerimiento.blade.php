@@ -548,7 +548,7 @@
                                 <tr>
                                 <td width="60%" style="text-align: right; font-weight: bold;">Monto Total:</td>
                                 <td width="10%"></td>
-                                <td style="font-weight: bold;"><label name="total"> <span name="simbolo_moneda">S/.</span> 0.00</label></td>
+                                <td style="display:flex; flex-direction: row; font-weight: bold;"> <span name="simbolo_moneda">S/</span><label name="total"> 0.00</label></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -619,6 +619,7 @@
 
 </div>
 <!-- @include('logistica.requerimientos.modal_buscar_stock_almacenes') -->
+@include('logistica.requerimientos.modal_loader')
 @include('logistica.requerimientos.modal_lista_trabajadores')
 @include('logistica.requerimientos.modal_trazabilidad_requerimiento')
 @include('logistica.requerimientos.modal_motivo_detalle_requerimiento')
