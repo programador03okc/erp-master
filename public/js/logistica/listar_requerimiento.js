@@ -193,7 +193,7 @@ function listarTablaReq(id_empresa =null,id_sede =null, id_grupo=null,id_priorid
         'dom': vardataTables[1],
         'buttons': vardataTables[2],
         'language' : vardataTables[0],
-        // 'processing': true,
+        'order': [[3,'desc']],
         'serverSide': true,
         'destroy': true,
         'ajax': {

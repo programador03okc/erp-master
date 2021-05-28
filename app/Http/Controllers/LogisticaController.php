@@ -2224,7 +2224,7 @@ class LogisticaController extends Controller
         
         }
             DB::commit();
-        return response()->json($id_requerimiento);
+        return response()->json(['id_requerimiento'=>$id_requerimiento,'codigo'=>$codigo]);
 
         } catch (\PDOException $e) {
             DB::rollBack();
@@ -4427,9 +4427,11 @@ class LogisticaController extends Controller
                 'adm_contri.razon_social',
                 'sis_sede.codigo as codigo_sede'
             )
-            ->where('alm_req.id_requerimiento', '=', $id)->get();
+            ->where('alm_req.id_requerimiento', '=', $id)
+            ->orderBy('alm_req.fecha_registro','desc')
+            ->get();
         $html = '';
-
+        
         foreach ($sql as $row) {
             $code = $row->codigo;
             $motivo = $row->concepto;
@@ -4572,12 +4574,14 @@ class LogisticaController extends Controller
             $codigo_producto = $det->codigo;
             $part_number = $det->part_number;
             $id_item = $det->id_item;
+            $id_producto = $det->id_producto;
             $precio = $det->precio_unitario;
             $cant = $det->cantidad;
             $id_part = $det->partida;
             $tiene_transformacion = $det->tiene_transformacion;
             $unit = $det->unidad_medida_descripcion;
             $simbMoneda = $this->consult_moneda($det->id_moneda)->simbolo;
+            $descripcion_adicional = $det->descripcion_adicional;
             
             $active = '';
 
@@ -4591,14 +4595,9 @@ class LogisticaController extends Controller
             $subtotal = $precio * $cant;
             $total += $subtotal;
             $unidad='S/N';
-            if ($id_item != null) {
-                $prod = DB::table('almacen.alm_item')
-                    ->leftJoin('almacen.alm_prod', 'alm_prod.id_producto', '=', 'alm_item.id_producto')
-                    ->leftJoin('logistica.log_servi', 'log_servi.id_servicio', '=', 'alm_item.id_servicio')
-                    ->select('alm_prod.descripcion AS producto', 'log_servi.descripcion AS servicio', 'alm_item.id_producto', 'alm_item.id_servicio', 'alm_item.id_equipo')
-                    ->where('alm_item.id_item', $id_item)->first();
-                $name = ($prod->id_producto != null) ? $prod->producto : $prod->servicio;
-                $unidad = ($prod->id_servicio > 0) ? 'Servicio' : (($prod->id_equipo > 0) ? 'Equipo' : 'S/N');
+            if ($id_producto == null) {
+                $name = $descripcion_adicional;
+                $unidad = 'Servicio';
                 
             } else {
                 $name = $det->descripcion_producto;

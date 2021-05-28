@@ -152,7 +152,8 @@ function mostrar_requerimiento(IdorCode){
                     simboloMoneda= '$';
 
                 }
-                document.querySelector("form[id='form-requerimiento'] table label[name='total']").textContent= simboloMoneda+Math.round(response['requerimiento'][0].monto).toFixed(2);
+                document.querySelector("form[id='form-requerimiento'] table span[name='simbolo_moneda']").textContent= simboloMoneda;
+                document.querySelector("form[id='form-requerimiento'] table label[name='total']").textContent= Math.round(response['requerimiento'][0].monto).toFixed(2);
 
                 /* detalle */
                 var detalle_requerimiento = response['det_req'];
@@ -182,8 +183,8 @@ function mostrar_requerimiento(IdorCode){
                         'unidad':detalle_requerimiento[x].unidad_medida,
                         'cantidad':detalle_requerimiento[x].cantidad,
                         'stock_comprometido':detalle_requerimiento[x].stock_comprometido,
-                        'precio_unitario':detalle_requerimiento[x].precio_unitario,
-                        'subtotal':detalle_requerimiento[x].subtotal,
+                        'precio_unitario':simboloMoneda+(parseFloat(detalle_requerimiento[x].precio_unitario)).toFixed(2),
+                        'subtotal':simboloMoneda+(parseFloat(detalle_requerimiento[x].subtotal)).toFixed(2),
                         'id_tipo_moneda':detalle_requerimiento[x].id_tipo_moneda,
                         'tipo_moneda':detalle_requerimiento[x].tipo_moneda,
                         'fecha_entrega':detalle_requerimiento[x].fecha_entrega,
