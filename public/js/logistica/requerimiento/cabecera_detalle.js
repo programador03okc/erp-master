@@ -997,7 +997,7 @@ function updateInputMonedaItem(event){
 
 
 function llenarTablaListaDetalleRequerimiento(data,selectMoneda,selectUnidadMedida){
-    console.log(data);
+    // console.log(data);
     htmls = '<tr></tr>';   
     $('#ListaDetalleRequerimiento tbody').html(htmls);
     var table = document.getElementById("ListaDetalleRequerimiento");

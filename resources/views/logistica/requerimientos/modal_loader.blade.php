@@ -8,7 +8,7 @@
                 </div>
                 <div name="loader-info"></div>
                 <div name="loader-cuentra-regresiva"></div>
-                <button type="button" class="btn btn-sm btn-danger" onClick="cerrarModalLoader()">Cerrar</button>
+                <button type="button" name="btnCerrarModalLoader" class="btn btn-sm btn-danger oculto" onClick="cerrarModalLoader()">Cerrar</button>
             </div>
         </div>
     </div>

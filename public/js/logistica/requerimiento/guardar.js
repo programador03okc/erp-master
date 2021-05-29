@@ -281,12 +281,22 @@ function cuentaRegresivaModalLoader(totalTime) {
 function cerrarModalLoader(){
     $('#modal-loader').modal('hide');
 }
+function resetModalLoader(){
+    document.querySelector("div[id='modal-loader'] div[name='loader']").classList.remove("oculto");
+    document.querySelector("div[id='modal-loader'] div[name='loader-status']").innerHTML= `<p>Guardando... <br><br><small>Puede tomar unos segundos</small></p>`;
+    document.querySelector("div[id='modal-loader'] div[name='loader-info']").textContent= '';
+    document.querySelector("div[id='modal-loader'] button[name='btnCerrarModalLoader']").classList.add("oculto");
+    document.querySelector("div[id='modal-loader'] div[name='loader-status']").style.color= "#000";
+    document.querySelector("div[id='modal-loader'] div[name='loader-status']").style.fontSize= "1em";
+    document.querySelector("div[id='modal-loader'] div[name='loader-status']").style.fontWeight= "normal";
 
+}
 function actionGuardarEditarRequerimiento(){
  // requerimiento.id_area = actual_id_area; // update -> id area actual
     // requerimiento.id_rol = actual_id_rol; // update -> id rol actual
     // requerimiento.id_grupo = actual_id_grupo; // update -> id area actual
     // console.log(data);
+    resetModalLoader();
 
     let actual_id_usuario = userSession.id_usuario;
     let requerimiento = get_data_requerimiento();
@@ -328,7 +338,6 @@ function actionGuardarEditarRequerimiento(){
                 beforeSend:function(data){ // Are not working with dataType:'jsonp'
 
                     $('#modal-loader').modal({backdrop: 'static', keyboard: false});
-                    document.querySelector("div[id='modal-loader'] div[name='loader']").classList.remove("oculto")
 
                 },
                 success: function(response){
@@ -338,11 +347,12 @@ function actionGuardarEditarRequerimiento(){
                         // showNotificacionUsuario(100); // notificaciones de navegador beta
                         
                         document.querySelector("div[id='modal-loader'] div[name='loader']").classList.add("oculto")
+                        document.querySelector("div[id='modal-loader'] button[name='btnCerrarModalLoader']").classList.remove("oculto")
                         document.querySelector("div[id='modal-loader'] div[name='loader-status']").style.color= "#00a65a";
                         document.querySelector("div[id='modal-loader'] div[name='loader-status']").style.fontSize= "2rem";
                         document.querySelector("div[id='modal-loader'] div[name='loader-status']").style.fontWeight= "bold";
                         document.querySelector("div[id='modal-loader'] div[name='loader-status']").textContent= 'Requerimiento Guardado';
-                        document.querySelector("div[id='modal-loader'] div[name='loader-info']").innerHTML= `<span style="color:#00a65a"><i class="far fa-check-circle"></i></span> <span>Se creó el requerimiento: </span> <a style="color:blue; cursor:pointer; text-align:center;" onclick="mostrar_requerimiento(${response.id_requerimiento})">${response.codigo}</a>`;;
+                        document.querySelector("div[id='modal-loader'] div[name='loader-info']").innerHTML= `<span style="color:#00a65a"><i class="far fa-check-circle"></i></span> <span>Se creó el requerimiento: </span> <a style="color:blue; cursor:pointer; text-align:center;" onclick="mostrar_requerimiento(${response.id_requerimiento})">${response.codigo}</a>`;
                         nuevo_req();
                         cuentaRegresivaModalLoader(5);
                     }else{
