@@ -399,6 +399,7 @@ class OrdenView {
         let id_moneda = document.querySelector("div[type='crear-orden-requerimiento'] select[name='id_moneda']").value;
         let codigo_orden = document.querySelector("div[type='crear-orden-requerimiento'] input[name='codigo_orden']").value;
         let fecha_emision = document.querySelector("div[type='crear-orden-requerimiento'] input[name='fecha_emision']").value;
+        let incluye_igv = document.querySelector("div[type='crear-orden-requerimiento'] input[name='incluye_igv']").checked;
     
         let id_proveedor = document.querySelector("div[type='crear-orden-requerimiento'] input[name='id_proveedor']").value;
         let id_contrib = document.querySelector("div[type='crear-orden-requerimiento'] input[name='id_contrib']").value;
@@ -423,6 +424,7 @@ class OrdenView {
             'id_moneda':id_moneda, 
             'codigo_orden':codigo_orden, 
             'fecha_emision':fecha_emision, 
+            'incluye_igv':incluye_igv, 
             
             'id_proveedor':id_proveedor, 
             'id_contrib':id_contrib,
@@ -445,6 +447,10 @@ class OrdenView {
         }
         
         return data;  
+    }
+
+    incluyeIGVHandle(e){
+        ordenCtrl.calcTotalOrdenDetalleList(e.target.checked);
     }
 }
 
@@ -541,6 +547,7 @@ function nueva_orden(){
     document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='nombre_persona_autorizado']").value='';
     document.querySelector("form[id='form-crear-orden-requerimiento'] span[name='codigo_orden_interno']").textContent='';
     document.querySelector("form[id='form-crear-orden-requerimiento'] textarea[name='observacion']").value='';
+    document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='incluye_igv']").checked=true;
     document.querySelector("var[name='total']").textContent= '';
 
 

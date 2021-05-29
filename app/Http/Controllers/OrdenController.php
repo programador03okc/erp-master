@@ -251,6 +251,7 @@ class OrdenController extends Controller
             'log_ord_compra.id_grupo_cotizacion as orden_id_grupo_cotizacion',
             'log_ord_compra.id_tp_documento as orden_id_tp_documento',
             'log_ord_compra.fecha as orden_fecha',
+            'log_ord_compra.incluye_igv as orden_incluye_igv',
             'log_ord_compra.id_usuario as orden_id_usuario',
             'log_ord_compra.id_moneda as orden_id_moneda',
             'log_ord_compra.igv_porcentaje as orden_igv_porcentaje',
@@ -1003,6 +1004,7 @@ class OrdenController extends Controller
                     'nro_documento'=> $element->nro_documento, 
                     'razon_social'=> $element->razon_social,
                     'moneda_simbolo'=> $element->moneda_simbolo, 
+                    'incluye_igv'=> $element->incluye_igv,
                     // 'monto_subtotal'=> $element->monto_subtotal, 
                     'monto_igv'=> $element->monto_igv, 
                     'monto_total'=>$element->monto_total, 
@@ -1171,6 +1173,7 @@ class OrdenController extends Controller
             'log_ord_compra.id_tp_documento',
             'log_ord_compra.codigo as codigo_orden',
             'log_ord_compra.id_moneda',
+            'log_ord_compra.incluye_igv',
             'sis_moneda.simbolo as moneda_simbolo',
             'sis_moneda.descripcion as moneda_descripcion',
             'log_ord_compra.codigo_softlink',
@@ -1242,6 +1245,7 @@ class OrdenController extends Controller
                     'id_moneda' => $data->id_moneda,
                     'moneda_simbolo' => $data->moneda_simbolo,
                     'moneda_descripcion' => $data->moneda_descripcion,
+                    'incluye_igv' => $data->incluye_igv,
                     'codigo_orden' => $data->codigo_orden,
                     'codigo_softlink' => $data->codigo_softlink,
                     'fecha' => $data->fecha,
@@ -1481,6 +1485,7 @@ class OrdenController extends Controller
                 DB::raw("concat(pers.nombres,' - ',pers.apellido_paterno,' - ',pers.apellido_materno) as nombre_usuario"),
                 'log_ord_compra.id_moneda',
                 'sis_moneda.simbolo as moneda_simbolo',
+                'log_ord_compra.incluye_igv',
                 'log_ord_compra.igv_porcentaje',
                 'log_ord_compra.monto_subtotal', 
                 'log_ord_compra.monto_igv',
@@ -1635,6 +1640,7 @@ class OrdenController extends Controller
                     // 'codigo_requerimiento' => $data->codigo_requerimiento,
                     'fecha_registro' => $data->fecha,
                     'moneda_simbolo' => $data->moneda_simbolo, 
+                    'incluye_igv' => $data->incluye_igv, 
                     'observacion' => $data->observacion, 
                     // 'monto_igv' => $data->monto_igv,
                     // 'monto_total' => $data->monto_total,
@@ -1957,7 +1963,14 @@ class OrdenController extends Controller
 
         foreach ($ordenArray['detalle'] as $key => $data) {
           
-            $igv =(($monto_neto)*0.18);
+            if($ordenArray['head']['incluye_igv'] == true){
+                $igv =(($monto_neto)*0.18);
+
+            }else{
+                $igv =0;
+
+            }
+
             $monto_total =($monto_neto+$igv);
 
 
@@ -2489,6 +2502,7 @@ class OrdenController extends Controller
                     'fecha' => date('Y-m-d H:i:s'),
                     'id_usuario' => $usuario?$usuario:null,
                     'id_moneda' => ($request->id_moneda?$request->id_moneda:null),
+                    'incluye_igv' =>  isset($request->incluye_igv)?$request->incluye_igv:true,
                     'id_proveedor' => $request->id_proveedor,
                     'id_contacto' => $request->id_contacto_proveedor?$request->id_contacto_proveedor:null,
                     'codigo' => $codigo?$codigo:null,
@@ -2873,7 +2887,8 @@ class OrdenController extends Controller
                     'id_tp_documento' =>  $tp_doc,
                     'fecha' => isset($request->fecha_emision)?str_replace("T", " ", $request->fecha_emision):null,
                     'id_usuario' => $usuario?$usuario:null,
-                    'id_moneda' => ($request->id_moneda?$request->id_moneda:null),
+                    'id_moneda' => $request->id_moneda?$request->id_moneda:null,
+                    'incluye_igv' => $request->incluye_igv?$request->incluye_igv:true,
                     'id_proveedor' => $request->id_proveedor,
                     'id_contacto' => $request->id_contacto_proveedor?$request->id_contacto_proveedor:null,
 
@@ -3083,6 +3098,7 @@ class OrdenController extends Controller
                         'codigo'         => $data->codigo,
                         'fecha'          => $data->fecha,
                         'codigo_softlink'=> $data->codigo_softlink,
+                        'incluye_igv'    => $data->incluye_igv,
                         'razon_social'   => $data->razon_social,
                         'nro_documento'  => $data->nro_documento,
                         'condicion'      => $data->condicion,

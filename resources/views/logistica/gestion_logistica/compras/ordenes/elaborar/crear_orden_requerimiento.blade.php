@@ -74,7 +74,16 @@
                         <div class="col-md-2" id="group-datos_para_despacho-logo_empresa">
                                 <img id="logo_empresa" src="/images/img-wide.png" alt=""  style="height:56px;!important;width:100%;!important;margin-top:-20px;">
                         </div>
-
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-2" id="group-datos_para_despacho-sede">
+                            <div class="checkbox">
+                                <label>
+                                <input class="activation" type="checkbox" name="incluye_igv" onclick="ordenView.incluyeIGVHandle(event);" checked > Incluye IGV?
+                                </label>
+                            </div>
+                        </div>
                     </div>
                 </fieldset>
             </div>
