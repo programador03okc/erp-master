@@ -18,7 +18,7 @@ function mostrar_requerimiento(IdorCode){
         url: baseUrl,
         dataType: 'JSON',
         success: function(response){
-            console.log(response);
+            // console.log(response);
             let idGrupoList=[];
             auth_user.grupos.forEach(element => {
                 idGrupoList.push(element.id_grupo);
