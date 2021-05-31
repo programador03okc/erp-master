@@ -37,67 +37,64 @@ class TipoCambioController extends Controller {
 	 * @return \Illuminate\Http\Response
 	 */
 	public function store(Request $request) {
-		//
-		$req = $request->all();
-		$validar = Validator::make($req, [
-			'id' => ['required', function ($attribute, $value, $fail) {
-			$idTip = TipoCambio::find($value);
+		
+		$tpCambio = new TipoCambio();
+		$tpCambio->fecha = $request->input('fecha');
+		$tpCambio->moneda = $request->input('moneda');
+		$tpCambio->compra = $request->input('compra');
+		$tpCambio->venta = $request->input('venta');
+		$tpCambio->estado = 1;
+		$tpCambio->save();
 
-			if(!$idTip){
-				$fail($attribute . ' es invalido ');
-			}
-			}],//'required|exists:cont_tp_cambio,id_tp_cambio',
-			'fecha' => ['required', 'date_format:d/m/Y', function ($attribute, $value, $fail) {
-			$f = Carbon::createFromFormat('d/m/Y', $value);
+		// $tpCambio = TipoCambio::create([
+        //     'fecha'  => request('fecha'),
+        //     'moneda'  => request('moneda'),
+        //     'compra'  => request('compra'),
+        //     'venta'  => request('venta'),
+        //     'estado'  => 1,
+        // ]);
 
-			//dd($f);
-			$dat = TipoCambio::where('fecha', $f)->first();
-			if (!$dat){
-				$fail($attribute . ' es invalido ');
-			}/*
-			dd($dat->toArray());
-			if (!(is_null($dat)) && ($dat->count() != 1)) {
-				$fail($attribute . ' es invalido ');
-			}*/
-			//exists:tipo_cambios,fecha
-		}], 'compra' => 'required|numeric', 'venta' => 'required|numeric']);//->validate();
+		// return response()->json($tpCambio);
+		// $req = $request->all();
+		// $validar = Validator::make($req, [
+		// 	'id' => ['required', function ($attribute, $value, $fail) {
+		// 	$idTip = TipoCambio::find($value);
 
-		if($validar->fails()) {
-			//dump($request->toArray());
-			//dd($validar->errors()->toArray());
-			$responseData = [
-				'error' => true,
-				'msg' => 'Error de Sistema'
-			];
-			return response()->json($responseData);
-			//return response()->json(['success' => false, 'toastr' => 'warning', 'msg' => 'Se encontraron algunos errores.', 'errors' => $validar->errors()], 422);
-		}
-		$objTipoCambio = TipoCambio::find($request->id);
+		// 	if(!$idTip){
+		// 		$fail($attribute . ' es invalido ');
+		// 	}
+		// 	}],
+		// 	'fecha' => ['required', 'date_format:d/m/Y', function ($attribute, $value, $fail) {
+		// 	$f = Carbon::createFromFormat('d/m/Y', $value);
 
-		//dd([Carbon::parse($objTipoCambio->fecha)->startOfDay() , Carbon::createFromFormat('d/m/Y', $request->fecha)->startOfDay()]);
+		// 	$dat = TipoCambio::where('fecha', $f)->first();
+		// 	if (!$dat){
+		// 		$fail($attribute . ' es invalido ');
+		// 	}
+		// 	//exists:tipo_cambios,fecha
+		// }], 'compra' => 'required|numeric', 'venta' => 'required|numeric']);//->validate();
 
-		if( Carbon::parse($objTipoCambio->fecha)->startOfDay() != Carbon::createFromFormat('d/m/Y', $request->fecha)->startOfDay() ){
-			return response()->json(['error' => true, 'toastr' => 'error', 'msg' => 'Error... Contacte con el administrador', 'redirectto' => 'home']);
-		}
+		// if($validar->fails()) {
+		// 	$responseData = [
+		// 		'error' => true,
+		// 		'msg' => 'Error de Sistema'
+		// 	];
+		// 	return response()->json($responseData);
+		// }
+		// $objTipoCambio = TipoCambio::find($request->id);
 
-		//if
-/*
-		if ($objTipoCambio->fecha->format('d/m/Y') != Carbon::createFromFormat('d/m/Y', $req['fecha'])->format('d/m/Y')) {
-			return response()->json(['success' => false, 'toastr' => 'error', 'msg' => 'Error... Contacte con el administrador', 'redirectto' => 'home']);
-		}
-*/
-		$objTipoCambio->compra = $req['compra'];
-		$objTipoCambio->venta = $req['venta'];
-		$objTipoCambio->estado = 1;
+		// if( Carbon::parse($objTipoCambio->fecha)->startOfDay() != Carbon::createFromFormat('d/m/Y', $request->fecha)->startOfDay() ){
+		// 	return response()->json(['error' => true, 'toastr' => 'error', 'msg' => 'Error... Contacte con el administrador', 'redirectto' => 'home']);
+		// }
 
-		if ($objTipoCambio->save()) {
-			$responseData = ['error' => false, 'msg' => ''];
-			return response()->json($responseData);
-		}
+		// $objTipoCambio->compra = $req['compra'];
+		// $objTipoCambio->venta = $req['venta'];
+		// $objTipoCambio->estado = 1;
 
-		//dd([$objTipoCambio->fecha->format('d/m/Y'), Carbon::createFromFormat('d/m/Y', $req['fecha'])->format('d/m/Y')]);
-
-		//dd($objTipoCambio->fecha);
+		// if ($objTipoCambio->save()) {
+		// 	$responseData = ['error' => false, 'msg' => ''];
+		// 	return response()->json($responseData);
+		// }
 
 	}
 
@@ -109,9 +106,14 @@ class TipoCambioController extends Controller {
 	 * @return \Illuminate\Http\Response
 	 */
 	public function show($id) {
-		//
+		$tp = TipoCambio::findOrFile($id);
+		return response()->json($tp); 
 	}
 
+	public function getTipoCambio() {
+		$tp = TipoCambio::all();
+		return response()->json($tp);
+	}
 	/**
 	 * Show the form for editing the specified resource.
 	 *

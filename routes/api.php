@@ -1,7 +1,9 @@
 <?php
 
 use Illuminate\Http\Request;
- /*
+use Illuminate\Support\Facades\Route;
+
+/*
 |--------------------------------------------------------------------------
 | API Routes
 |--------------------------------------------------------------------------
@@ -17,6 +19,14 @@ use Illuminate\Http\Request;
 // });
 
 Route::post('api/logistica/gestion-logistica/requerimiento/elaboracion/guardar', 'LogisticaController@guardar_requerimiento');
+Route::post('api/tesoreria/guardar-tipo-cambio', 'Tesoreria\TipoCambioController@store');
+Route::get('api/getTipoCambio', 'Tesoreria\TipoCambioController@getTipoCambio');
+Route::get('get-cambio', 'ApiController@get');
+
+Route::get('pruebas', function(Request $request){
+    return 'acceso';
+});
+
 
 
 
