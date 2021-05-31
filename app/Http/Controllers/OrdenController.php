@@ -77,7 +77,7 @@ class OrdenController extends Controller
             'adm_ctb_contac.ubigeo as ubigeo_contacto'
         )
         // ->leftJoin('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'log_prove.id_contribuyente')
-        ->leftJoin('contabilidad.adm_ctb_contac', 'adm_ctb_contac.id_contribuyente', '=', 'log_prove.id_contribuyente')
+        ->join('contabilidad.adm_ctb_contac', 'adm_ctb_contac.id_contribuyente', '=', 'log_prove.id_contribuyente')
         ->where('log_prove.id_proveedor',$id_proveedor)
         ->orderby('adm_ctb_contac.nombre','asc')
         ->get();
@@ -1205,8 +1205,15 @@ class OrdenController extends Controller
             'log_ord_compra.direccion_destino',
             'log_ord_compra.ubigeo_destino as ubigeo_destino_id',
             DB::raw("(dis_destino.descripcion) || ' - ' || (prov_destino.descripcion) || ' - ' || (dpto_destino.descripcion)  AS ubigeo_destino"),
-            'log_ord_compra.personal_autorizado',
-            DB::raw("concat(pers_aut.nombres,' ',pers_aut.apellido_paterno,' ',pers_aut.apellido_materno) AS nombre_personal_autorizado"),
+            'log_ord_compra.personal_autorizado_1',
+            DB::raw("concat(pers_aut_1.nombres,' ',pers_aut_1.apellido_paterno,' ',pers_aut_1.apellido_materno) AS nombre_personal_autorizado_1"),
+            'identi_aut_1.descripcion as documento_idendidad_personal_autorizado_1',
+            'pers_aut_1.nro_documento as nro_documento_personal_autorizado_1',
+            'log_ord_compra.personal_autorizado_2',
+            DB::raw("concat(pers_aut_2.nombres,' ',pers_aut_2.apellido_paterno,' ',pers_aut_2.apellido_materno) AS nombre_personal_autorizado_2"),
+            'identi_aut_2.descripcion as documento_idendidad_personal_autorizado_2',
+            'pers_aut_2.nro_documento as nro_documento_personal_autorizado_2',
+
             'log_ord_compra.estado',
             'log_ord_compra.observacion',
             'adm_estado_doc.estado_doc',
@@ -1228,9 +1235,15 @@ class OrdenController extends Controller
         ->leftJoin('configuracion.ubi_dis as dis_destino', 'log_ord_compra.ubigeo_destino', '=', 'dis_destino.id_dis')
         ->leftJoin('configuracion.ubi_prov as prov_destino', 'dis_destino.id_prov', '=', 'prov_destino.id_prov')
         ->leftJoin('configuracion.ubi_dpto as dpto_destino', 'prov_destino.id_dpto', '=', 'dpto_destino.id_dpto')
-        ->leftJoin('rrhh.rrhh_trab as trab_aut', 'trab_aut.id_trabajador', '=', 'log_ord_compra.personal_autorizado')
-        ->leftJoin('rrhh.rrhh_postu as post_aut', 'post_aut.id_postulante', '=', 'trab_aut.id_postulante')
-        ->leftJoin('rrhh.rrhh_perso as pers_aut', 'pers_aut.id_persona', '=', 'post_aut.id_persona')
+        ->leftJoin('rrhh.rrhh_trab as trab_aut_1', 'trab_aut_1.id_trabajador', '=', 'log_ord_compra.personal_autorizado_1')
+        ->leftJoin('rrhh.rrhh_postu as post_aut_1', 'post_aut_1.id_postulante', '=', 'trab_aut_1.id_postulante')
+        ->leftJoin('rrhh.rrhh_perso as pers_aut_1', 'pers_aut_1.id_persona', '=', 'post_aut_1.id_persona')
+        ->leftJoin('contabilidad.sis_identi as identi_aut_1', 'identi_aut_1.id_doc_identidad', '=', 'pers_aut_1.id_documento_identidad')
+        ->leftJoin('rrhh.rrhh_trab as trab_aut_2', 'trab_aut_2.id_trabajador', '=', 'log_ord_compra.personal_autorizado_2')
+        ->leftJoin('rrhh.rrhh_postu as post_aut_2', 'post_aut_2.id_postulante', '=', 'trab_aut_2.id_postulante')
+        ->leftJoin('rrhh.rrhh_perso as pers_aut_2', 'pers_aut_2.id_persona', '=', 'post_aut_2.id_persona')
+        ->leftJoin('contabilidad.sis_identi as identi_aut_2', 'identi_aut_2.id_doc_identidad', '=', 'pers_aut_2.id_documento_identidad')
+
         ->where([
             ['log_ord_compra.id_orden_compra', '=', $id_orden]
         ])
@@ -1273,8 +1286,14 @@ class OrdenController extends Controller
                     'direccion_destino' => $data->direccion_destino,
                     'ubigeo_destino_id' => $data->ubigeo_destino_id,
                     'ubigeo_destino' => $data->ubigeo_destino,
-                    'personal_autorizado' => $data->personal_autorizado,
-                    'nombre_personal_autorizado' => $data->nombre_personal_autorizado,
+                    'personal_autorizado_1' => $data->personal_autorizado_1,
+                    'nombre_personal_autorizado_1' => $data->nombre_personal_autorizado_1,
+                    'documento_idendidad_personal_autorizado_1' => $data->documento_idendidad_personal_autorizado_1,
+                    'nro_documento_personal_autorizado_1' => $data->nro_documento_personal_autorizado_1,
+                    'personal_autorizado_2' => $data->personal_autorizado_2,
+                    'nombre_personal_autorizado_2' => $data->nombre_personal_autorizado_2,
+                    'documento_idendidad_personal_autorizado_2' => $data->documento_idendidad_personal_autorizado_2,
+                    'nro_documento_personal_autorizado_2' => $data->nro_documento_personal_autorizado_2,
                     'estado' => $data->estado,
                     'estado_doc' => $data->estado_doc,
                     'observacion' => $data->observacion
@@ -1517,8 +1536,14 @@ class OrdenController extends Controller
                 'log_ord_compra.direccion_destino',
                 'log_ord_compra.ubigeo_destino',
                 DB::raw("(dis_destino.descripcion) || ' - ' || (prov_destino.descripcion) || ' - ' || (dpto_destino.descripcion)  AS ubigeo_destino"),
-                'log_ord_compra.personal_autorizado',
-                DB::raw("concat(pers_aut.nombres,' ',pers_aut.apellido_paterno,' ',pers_aut.apellido_materno) AS nombre_personal_autorizado"),
+                'log_ord_compra.personal_autorizado_1',
+                DB::raw("concat(pers_aut_1.nombres,' ',pers_aut_1.apellido_paterno,' ',pers_aut_1.apellido_materno) AS nombre_personal_autorizado_1"),
+                'identi_aut_1.descripcion as documento_idendidad_personal_autorizado_1',
+                'pers_aut_1.nro_documento as nro_documento_personal_autorizado_1',
+                'log_ord_compra.personal_autorizado_2',
+                DB::raw("concat(pers_aut_2.nombres,' ',pers_aut_2.apellido_paterno,' ',pers_aut_2.apellido_materno) AS nombre_personal_autorizado_2"),
+                'identi_aut_2.descripcion as documento_idendidad_personal_autorizado_2',
+                'pers_aut_2.nro_documento as nro_documento_personal_autorizado_2',
                 'contrib.razon_social as razon_social_empresa',
                 'contrib.direccion_fiscal as direccion_fiscal_empresa',
                 DB::raw("(dis_empresa.descripcion) || ' - ' || (prov_empresa.descripcion) || ' - ' || (dpto_empresa.descripcion)  AS ubigeo_empresa"),
@@ -1534,7 +1559,6 @@ class OrdenController extends Controller
                 // 'alm_req.codigo as codigo_requerimiento',
                 'log_ord_compra.fecha AS fecha_orden',
                 'sis_moneda.descripcion as moneda_descripcion',
-                'log_ord_compra.personal_autorizado',
                 'log_ord_compra.id_contacto',
                 'adm_ctb_contac.nombre as nombre_contacto',
                 'adm_ctb_contac.telefono as telefono_contacto',
@@ -1566,9 +1590,14 @@ class OrdenController extends Controller
             ->leftjoin('contabilidad.adm_cta_contri as cta_alter','cta_alter.id_cuenta_contribuyente','=','log_ord_compra.id_cta_alternativa')
             ->leftjoin('contabilidad.adm_cta_contri as cta_detra','cta_detra.id_cuenta_contribuyente','=','log_ord_compra.id_cta_detraccion')
             ->leftJoin('contabilidad.adm_ctb_contac', 'adm_ctb_contac.id_datos_contacto', '=', 'log_ord_compra.id_contacto')
-            ->leftJoin('rrhh.rrhh_trab as trab_aut', 'trab_aut.id_trabajador', '=', 'log_ord_compra.personal_autorizado')
-            ->leftJoin('rrhh.rrhh_postu as post_aut', 'post_aut.id_postulante', '=', 'trab_aut.id_postulante')
-            ->leftJoin('rrhh.rrhh_perso as pers_aut', 'pers_aut.id_persona', '=', 'post_aut.id_persona')
+            ->leftJoin('rrhh.rrhh_trab as trab_aut_1', 'trab_aut_1.id_trabajador', '=', 'log_ord_compra.personal_autorizado_1')
+            ->leftJoin('rrhh.rrhh_postu as post_aut_1', 'post_aut_1.id_postulante', '=', 'trab_aut_1.id_postulante')
+            ->leftJoin('rrhh.rrhh_perso as pers_aut_1', 'pers_aut_1.id_persona', '=', 'post_aut_1.id_persona')
+            ->leftJoin('contabilidad.sis_identi as identi_aut_1', 'identi_aut_1.id_doc_identidad', '=', 'pers_aut_1.id_documento_identidad')
+            ->leftJoin('rrhh.rrhh_trab as trab_aut_2', 'trab_aut_2.id_trabajador', '=', 'log_ord_compra.personal_autorizado_2')
+            ->leftJoin('rrhh.rrhh_postu as post_aut_2', 'post_aut_2.id_postulante', '=', 'trab_aut_2.id_postulante')
+            ->leftJoin('rrhh.rrhh_perso as pers_aut_2', 'pers_aut_2.id_persona', '=', 'post_aut_2.id_persona')
+            ->leftJoin('contabilidad.sis_identi as identi_aut_2', 'identi_aut_2.id_doc_identidad', '=', 'pers_aut_2.id_documento_identidad')
             ->leftJoin('configuracion.ubi_dis as dis_prov', 'adm_contri.ubigeo', '=', 'dis_prov.id_dis')
             ->leftJoin('configuracion.ubi_prov as prov_prov', 'dis_prov.id_prov', '=', 'prov_prov.id_prov')
             ->leftJoin('configuracion.ubi_dpto as dpto_prov', 'prov_prov.id_dpto', '=', 'dpto_prov.id_dpto')
@@ -1683,8 +1712,14 @@ class OrdenController extends Controller
                         'direccion_sede' => $data->direccion_fiscal_empresa_sede,
                         'direccion_destino'=>$data->direccion_destino,
                         'ubigeo_destino'=>$data->ubigeo_destino,
-                        'personal_autorizado' => $data->personal_autorizado,
-                        'nombre_personal_autorizado' => $data->nombre_personal_autorizado 
+                        'personal_autorizado_1' => $data->personal_autorizado_1,
+                        'documento_idendidad_personal_autorizado_1' => $data->documento_idendidad_personal_autorizado_1, 
+                        'nro_documento_personal_autorizado_1' => $data->nro_documento_personal_autorizado_1, 
+                        'nombre_personal_autorizado_1' => $data->nombre_personal_autorizado_1,
+                        'personal_autorizado_2' => $data->personal_autorizado_2,
+                        'documento_idendidad_personal_autorizado_2' => $data->documento_idendidad_personal_autorizado_2, 
+                        'nro_documento_personal_autorizado_2' => $data->nro_documento_personal_autorizado_2, 
+                        'nombre_personal_autorizado_2' => $data->nombre_personal_autorizado_2
                     ],
                     'facturar_a_nombre'=>[
                         'id_empresa' => $data->id_empresa,
@@ -2037,16 +2072,20 @@ class OrdenController extends Controller
                 </tr>
                 </table>
                 <br>
-                ';                
-       $html.='
+                ';        
+                
+                $personal_autorizado_1=$ordenArray['head']['datos_para_despacho']['personal_autorizado_1'] >0?($ordenArray['head']['datos_para_despacho']['nombre_personal_autorizado_1'] .' ('.$ordenArray['head']['datos_para_despacho']['documento_idendidad_personal_autorizado_1'].': '.$ordenArray['head']['datos_para_despacho']['nro_documento_personal_autorizado_1'].')'):'';
+                $personal_autorizado_2=$ordenArray['head']['datos_para_despacho']['personal_autorizado_2'] >0?($ordenArray['head']['datos_para_despacho']['nombre_personal_autorizado_2'] .' ('.$ordenArray['head']['datos_para_despacho']['documento_idendidad_personal_autorizado_2'].': '.$ordenArray['head']['datos_para_despacho']['nro_documento_personal_autorizado_2'].')'):'';
+
+        $html.='
                 <table width="100%" border=0>
                 <caption class="left subtitle" style="padding-bottom:10px; font-size:0.6rem">Datos para el Despacho:</caption>
 
                 <tr>
                     <td nowrap  width="15%" class="verticalTop subtitle">Destino / Dirección: </td>
                     <td class="verticalTop">' . $ordenArray['head']['datos_para_despacho']['direccion_destino'] .'<br>'.$ordenArray['head']['datos_para_despacho']['ubigeo_destino'] .'</td>
-                    <td width="15%" class="verticalTop subtitle">Autorizado:</td>
-                    <td class="verticalTop">' . $ordenArray['head']['datos_para_despacho']['nombre_personal_autorizado'] .'</td>
+                    <td width="15%" class="verticalTop subtitle">Personal Autorizado:</td>
+                    <td class="verticalTop">' .$personal_autorizado_1.($personal_autorizado_2?("<br>".$personal_autorizado_2):"").'</td>
                 </tr>
                 <tr>
                     <td nowrap  width="15%" class="subtitle">Observación:</td>
@@ -2511,7 +2550,8 @@ class OrdenController extends Controller
                     'plazo_dias' => $request->plazo_dias?$request->plazo_dias:null,
                     'id_cotizacion' => $request->id_cotizacion?$request->id_cotizacion:null,
                     'id_tp_doc' =>  isset($request->id_tp_doc)?$request->id_tp_doc:null,
-                    'personal_autorizado' => $request->id_trabajador?$request->id_trabajador:null,
+                    'personal_autorizado_1' => $request->personal_autorizado_1?$request->personal_autorizado_1:null,
+                    'personal_autorizado_2' => $request->personal_autorizado_2?$request->personal_autorizado_2:null,
                     'id_occ' => $request->id_cc?$request->id_cc:null,
                     'id_sede' => $request->id_sede?$request->id_sede:null,
                     'direccion_destino' => $request->direccion_destino?$request->direccion_destino:null,
@@ -2897,7 +2937,8 @@ class OrdenController extends Controller
                     'plazo_dias' => $request->plazo_dias?$request->plazo_dias:null,
                     'id_cotizacion' => $request->id_cotizacion?$request->id_cotizacion:null,
                     'id_tp_doc' =>  isset($request->id_tp_doc)?$request->id_tp_doc:null,
-                    'personal_autorizado' => $request->id_trabajador?$request->id_trabajador:null,
+                    'personal_autorizado_1' => $request->personal_autorizado_1?$request->personal_autorizado_1:null,
+                    'personal_autorizado_2' => $request->personal_autorizado_2?$request->personal_autorizado_2:null,
                     'id_occ' => $request->id_cc?$request->id_cc:null,
                     'id_sede' => $request->id_sede?$request->id_sede:null,
                     'direccion_destino' => $request->direccion_destino?$request->direccion_destino:null,

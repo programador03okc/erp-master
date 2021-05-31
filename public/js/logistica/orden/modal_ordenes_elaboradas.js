@@ -116,7 +116,8 @@ function loadHeadOrden(data){
     document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='direccion_destino']").value=data.direccion_destino?data.direccion_destino:'';
     document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='id_ubigeo_destino']").value=data.ubigeo_destino_id?data.ubigeo_destino_id:'';
     document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='ubigeo_destino']").value=data.ubigeo_destino?data.ubigeo_destino:'';
-    document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='id_trabajador']").value=data.personal_autorizado?data.personal_autorizado:'';
+    document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='persona_autorizada_1']").value=data.persona_autorizada_1?data.persona_autorizada_1:'';
+    document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='persona_autorizada_2']").value=data.persona_autorizada_2?data.persona_autorizada_2:'';
     document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='nombre_persona_autorizado']").value=data.nombre_personal_autorizado?data.nombre_personal_autorizado:'';
     document.querySelector("form[id='form-crear-orden-requerimiento'] textarea[name='observacion']").value=data.observacion?data.observacion:'';
 }

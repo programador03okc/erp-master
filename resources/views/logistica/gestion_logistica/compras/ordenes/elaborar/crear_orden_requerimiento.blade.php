@@ -227,11 +227,22 @@
                         </div>
 
                         <div class="col-md-3" id="group-datos_para_despacho-personal_autorizado">
-                            <h5>Personal autorizado</h5>
+                            <h5>Personal autorizado #1</h5>
                             <div style="display:flex;">
-                                <input class="oculto" name="id_trabajador"/>
-                                <input type="text" name="nombre_persona_autorizado" class="form-control group-elemento" readOnly >
-                                <button type="button" class="group-text" onClick="trabajadoresModal();">
+                                <input class="oculto" name="persona_autorizada_1"/>
+                                <input type="text" name="nombre_persona_autorizado_1" class="form-control group-elemento" readOnly >
+                                <button type="button" class="group-text" onClick="trabajadoresModal(1);">
+                                    <i class="fa fa-search"></i>
+                                </button> 
+                            </div>
+                        </div>
+
+                        <div class="col-md-3" id="group-datos_para_despacho-personal_autorizado">
+                            <h5>Personal autorizado #2</h5>
+                            <div style="display:flex;">
+                                <input class="oculto" name="persona_autorizada_2"/>
+                                <input type="text" name="nombre_persona_autorizado_2" class="form-control group-elemento" readOnly >
+                                <button type="button" class="group-text" onClick="trabajadoresModal(2);">
                                     <i class="fa fa-search"></i>
                                 </button> 
                             </div>

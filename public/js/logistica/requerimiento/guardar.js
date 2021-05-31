@@ -352,7 +352,7 @@ function actionGuardarEditarRequerimiento(){
                         document.querySelector("div[id='modal-loader'] div[name='loader-status']").style.fontSize= "2rem";
                         document.querySelector("div[id='modal-loader'] div[name='loader-status']").style.fontWeight= "bold";
                         document.querySelector("div[id='modal-loader'] div[name='loader-status']").textContent= 'Requerimiento Guardado';
-                        document.querySelector("div[id='modal-loader'] div[name='loader-info']").innerHTML= `<span style="color:#00a65a"><i class="far fa-check-circle"></i></span> <span>Se creó el requerimiento: </span> <a style="color:blue; cursor:pointer; text-align:center;" onclick="mostrar_requerimiento(${response.id_requerimiento})">${response.codigo}</a>`;
+                        document.querySelector("div[id='modal-loader'] div[name='loader-info']").innerHTML= `<span style="color:#00a65a"><i class="far fa-check-circle"></i></span> <span>Se creó el requerimiento: </span> <a style="color:blue; cursor:pointer; text-align:center;" onclick="cerrarModalLoader(); mostrar_requerimiento(${response.id_requerimiento});">${response.codigo}</a>`;
                         nuevo_req();
                         cuentaRegresivaModalLoader(5);
                     }else{

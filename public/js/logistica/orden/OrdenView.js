@@ -415,7 +415,8 @@ class OrdenView {
         let direccion_destino = document.querySelector("div[type='crear-orden-requerimiento'] input[name='direccion_destino']").value;
         let id_ubigeo_destino = document.querySelector("div[type='crear-orden-requerimiento'] input[name='id_ubigeo_destino']").value;
     
-        let id_trabajador = document.querySelector("div[type='crear-orden-requerimiento'] input[name='id_trabajador']").value;
+        let persona_autorizada_1 = document.querySelector("div[type='crear-orden-requerimiento'] input[name='persona_autorizada_1']").value;
+        let persona_autorizada_2 = document.querySelector("div[type='crear-orden-requerimiento'] input[name='persona_autorizada_2]").value;
         let observacion = document.querySelector("div[type='crear-orden-requerimiento'] textarea[name='observacion']").value;
     
         let data = {
@@ -440,7 +441,8 @@ class OrdenView {
             'direccion_destino':direccion_destino, 
             'id_ubigeo_destino':id_ubigeo_destino, 
             
-            'id_trabajador':id_trabajador, 
+            'persona_autorizada_1':persona_autorizada_1, 
+            'persona_autorizada_2':persona_autorizada_2, 
             'observacion':observacion, 
     
             'detalle':[]
@@ -543,12 +545,13 @@ function nueva_orden(){
     document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='ejecutivo_responsable']").value='';
     document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='id_ubigeo_destino']").value='';
     document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='ubigeo_destino']").value='';
-    document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='id_trabajador']").value='';
+    document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='persona_autorizada_1']").value='';
+    document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='persona_autorizada_2']").value='';
     document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='nombre_persona_autorizado']").value='';
     document.querySelector("form[id='form-crear-orden-requerimiento'] span[name='codigo_orden_interno']").textContent='';
     document.querySelector("form[id='form-crear-orden-requerimiento'] textarea[name='observacion']").value='';
     document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='incluye_igv']").checked=true;
-    document.querySelector("var[name='total']").textContent= '';
+    // document.querySelector("var[name='total']").textContent= '';
 
 
     limpiarTabla('listaDetalleOrden');

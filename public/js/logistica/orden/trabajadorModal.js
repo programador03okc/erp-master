@@ -19,7 +19,9 @@ $(function(){
       });
 });
 
-function trabajadoresModal(){
+function trabajadoresModal(numero_persona_autorizada){
+    document.querySelector("div[id='modal-trabajadores'] label[id='numero_persona_autorizada']").textContent=numero_persona_autorizada;
+
     var page = $('.page-main').attr('type');
     // console.log(page);
     if(page =='crear-orden-requerimiento'){
@@ -51,7 +53,7 @@ function listarTrabajadores(){
                             <button type="button" class="btn btn-success btn-sm" name="btnSeleccionarTrabajador" title="Seleccionar trabajador" 
                             data-id-trabajador="${row.id_trabajador}"
                             data-nombre-trabajador="${row.nombre_trabajador}"
-                            data-nro-documento="${row.nro_documento_trabajador}"
+                            data-nro-documento="${row.nro_documento}"
                             onclick="selectTrabajador(this);">
                             <i class="fas fa-check"></i>
                             </button>
@@ -69,11 +71,24 @@ function listarTrabajadores(){
 function selectTrabajador(obj){
     let idTrabajador= obj.dataset.idTrabajador;
     let nombreTrabajador= obj.dataset.nombreTrabajador;
-    // let nroDocumentoTrabajador= obj.dataset.nroDocumentoTrabajador;
+    let nroDocumento= obj.dataset.nroDocumento;
+        // document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='nro_documento_trabajador']").value =nroDocumentoTrabajador;
 
-    document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='id_trabajador']").value =idTrabajador;
-    document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='nombre_persona_autorizado']").value =nombreTrabajador;
-    // document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='nro_documento_trabajador']").value =nroDocumentoTrabajador;
+    switch (document.querySelector("div[id='modal-trabajadores'] label[id='numero_persona_autorizada']").textContent) {
+        case '1':
+            document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='persona_autorizada_1']").value =idTrabajador;
+            document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='nombre_persona_autorizado_1']").value =nombreTrabajador+(nroDocumento.length >=8?(' (DNI:'+nroDocumento+')'):'');
+            break;
+    
+        case '2':
+            document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='persona_autorizada_2']").value =idTrabajador;
+            document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='nombre_persona_autorizado_2']").value =nombreTrabajador+(nroDocumento >=9?('  (DNI:'+nroDocumento+')'):'');
+            break;
+    
+        default:
+            break;
+    }
+
     
     $('#modal-trabajadores').modal('hide');
 }

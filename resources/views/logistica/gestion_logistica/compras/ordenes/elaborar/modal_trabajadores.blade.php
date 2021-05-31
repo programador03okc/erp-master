@@ -18,6 +18,8 @@
                     </thead>
                     <tbody></tbody>
                 </table>
+                <label style="display: none;" id="numero_persona_autorizada"></label>
+
             </div>
         </div>
     </div>
