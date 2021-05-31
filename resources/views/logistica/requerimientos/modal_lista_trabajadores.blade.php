@@ -1,4 +1,4 @@
-<div class="modal fade" tabindex="-1" role="dialog" id="modal-trabajadores">
+<div class="modal fade" tabindex="-1" role="dialog" id="modal-lista-trabajadores">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -18,8 +18,6 @@
                     </thead>
                     <tbody></tbody>
                 </table>
-                <label style="display: none;" id="numero_persona_autorizada"></label>
-
             </div>
         </div>
     </div>

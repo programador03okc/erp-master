@@ -85,7 +85,7 @@ function fechaHoy(){
 };
 
 function loadHeadOrden(data){
-
+    console.log(data.incluye_igv);
     document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='id_orden']").value=data.id_orden_compra?data.id_orden_compra:'';
     document.querySelector("form[id='form-crear-orden-requerimiento'] select[name='id_tp_documento']").value=data.id_tp_documento?data.id_tp_documento:'';
     document.querySelector("form[id='form-crear-orden-requerimiento'] select[name='id_moneda']").value=data.id_moneda?data.id_moneda:'';
@@ -94,6 +94,7 @@ function loadHeadOrden(data){
     document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='fecha_emision']").value=data.fecha?data.fecha.replace(" ","T"):'';
     document.querySelector("form[id='form-crear-orden-requerimiento'] select[name='id_sede']").value=data.id_sede?data.id_sede:'';
     document.querySelector("form[id='form-crear-orden-requerimiento'] img[id='logo_empresa']").setAttribute("src",data.logo_empresa);
+    document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='incluye_igv']").checked=data.incluye_igv;
     
     document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='id_proveedor']").value=data.id_proveedor?data.id_proveedor:'';
     document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='id_contrib']").value=data.id_contribuyente?data.id_contribuyente:'';
@@ -115,7 +116,8 @@ function loadHeadOrden(data){
     document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='direccion_destino']").value=data.direccion_destino?data.direccion_destino:'';
     document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='id_ubigeo_destino']").value=data.ubigeo_destino_id?data.ubigeo_destino_id:'';
     document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='ubigeo_destino']").value=data.ubigeo_destino?data.ubigeo_destino:'';
-    document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='id_trabajador']").value=data.personal_autorizado?data.personal_autorizado:'';
+    document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='persona_autorizada_1']").value=data.persona_autorizada_1?data.persona_autorizada_1:'';
+    document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='persona_autorizada_2']").value=data.persona_autorizada_2?data.persona_autorizada_2:'';
     document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='nombre_persona_autorizado']").value=data.nombre_personal_autorizado?data.nombre_personal_autorizado:'';
     document.querySelector("form[id='form-crear-orden-requerimiento'] textarea[name='observacion']").value=data.observacion?data.observacion:'';
 }

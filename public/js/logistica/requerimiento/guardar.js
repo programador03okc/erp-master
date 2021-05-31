@@ -46,6 +46,7 @@ function get_data_requerimiento(){
     fuente_det = document.querySelector("form[id='form-requerimiento'] select[name='fuente_det_id']").value;
     para_stock_almacen = document.querySelector("form[id='form-requerimiento'] input[name='para_stock_almacen']").checked;
     rol_aprobante = document.querySelector("form[id='form-requerimiento'] select[name='rol_aprobante']").value;
+    id_trabajador = document.querySelector("form[id='form-requerimiento'] input[name='id_trabajador']").value;
 
     requerimiento = {
         id_requerimiento,
@@ -90,7 +91,8 @@ function get_data_requerimiento(){
         fuente,
         fuente_det,
         para_stock_almacen,
-        rol_aprobante
+        rol_aprobante,
+        id_trabajador
         
     };
 return requerimiento;
@@ -265,12 +267,36 @@ function validaRequerimiento(){
 
 }
 
+function cuentaRegresivaModalLoader(totalTime) {
+    document.querySelector("div[id='modal-loader'] div[name='loader-cuentra-regresiva']").innerHTML = totalTime;
+    
+    if(totalTime==0){
+            cerrarModalLoader();
+        }else{
+            totalTime-=1;
+            setTimeout("cuentaRegresivaModalLoader("+totalTime+")",1000);
+        }
+    }
 
+function cerrarModalLoader(){
+    $('#modal-loader').modal('hide');
+}
+function resetModalLoader(){
+    document.querySelector("div[id='modal-loader'] div[name='loader']").classList.remove("oculto");
+    document.querySelector("div[id='modal-loader'] div[name='loader-status']").innerHTML= `<p>Guardando... <br><br><small>Puede tomar unos segundos</small></p>`;
+    document.querySelector("div[id='modal-loader'] div[name='loader-info']").textContent= '';
+    document.querySelector("div[id='modal-loader'] button[name='btnCerrarModalLoader']").classList.add("oculto");
+    document.querySelector("div[id='modal-loader'] div[name='loader-status']").style.color= "#000";
+    document.querySelector("div[id='modal-loader'] div[name='loader-status']").style.fontSize= "1em";
+    document.querySelector("div[id='modal-loader'] div[name='loader-status']").style.fontWeight= "normal";
+
+}
 function actionGuardarEditarRequerimiento(){
  // requerimiento.id_area = actual_id_area; // update -> id area actual
     // requerimiento.id_rol = actual_id_rol; // update -> id rol actual
     // requerimiento.id_grupo = actual_id_grupo; // update -> id area actual
     // console.log(data);
+    resetModalLoader();
 
     let actual_id_usuario = userSession.id_usuario;
     let requerimiento = get_data_requerimiento();
@@ -309,23 +335,26 @@ function actionGuardarEditarRequerimiento(){
                 url: baseUrl,
                 data: data,
                 dataType: 'JSON',
+                beforeSend:function(data){ // Are not working with dataType:'jsonp'
+
+                    $('#modal-loader').modal({backdrop: 'static', keyboard: false});
+
+                },
                 success: function(response){
                     // console.log(response);
-                    if (response > 0){
-                        let lastIdRequerimiento =  response;
-                        mostrar_requerimiento(lastIdRequerimiento);
-                        // verTrazabilidadRequerimiento(lastIdRequerimiento);
-                        var btnTrazabilidadRequerimiento = document.getElementsByName("btn-ver-trazabilidad-requerimiento");
-                        disabledControl(btnTrazabilidadRequerimiento,false);
-                        
-                        changeStateButton('guardar');
-                        $('#form-requerimiento').attr('type', 'register');
-                        changeStateInput('form-requerimiento', true);
-
-                        alert("Requerimiento Guardado");
-                        sessionStorage.removeItem('ordenP_Cuadroc')
-                        get_notificaciones_sin_leer_interval(); 
+                    if (response.id_requerimiento > 0){
+                        // get_notificaciones_sin_leer_interval(); 
                         // showNotificacionUsuario(100); // notificaciones de navegador beta
+                        
+                        document.querySelector("div[id='modal-loader'] div[name='loader']").classList.add("oculto")
+                        document.querySelector("div[id='modal-loader'] button[name='btnCerrarModalLoader']").classList.remove("oculto")
+                        document.querySelector("div[id='modal-loader'] div[name='loader-status']").style.color= "#00a65a";
+                        document.querySelector("div[id='modal-loader'] div[name='loader-status']").style.fontSize= "2rem";
+                        document.querySelector("div[id='modal-loader'] div[name='loader-status']").style.fontWeight= "bold";
+                        document.querySelector("div[id='modal-loader'] div[name='loader-status']").textContent= 'Requerimiento Guardado';
+                        document.querySelector("div[id='modal-loader'] div[name='loader-info']").innerHTML= `<span style="color:#00a65a"><i class="far fa-check-circle"></i></span> <span>Se creó el requerimiento: </span> <a style="color:blue; cursor:pointer; text-align:center;" onclick="cerrarModalLoader(); mostrar_requerimiento(${response.id_requerimiento});">${response.codigo}</a>`;
+                        nuevo_req();
+                        cuentaRegresivaModalLoader(5);
                     }else{
                         alert('Hubo un problema al intentar guardar el requerimiento');
  

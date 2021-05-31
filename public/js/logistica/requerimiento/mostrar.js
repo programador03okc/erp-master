@@ -18,7 +18,7 @@ function mostrar_requerimiento(IdorCode){
         url: baseUrl,
         dataType: 'JSON',
         success: function(response){
-            // console.log(auth_user);
+            console.log(response);
             let idGrupoList=[];
             auth_user.grupos.forEach(element => {
                 idGrupoList.push(element.id_grupo);
@@ -142,6 +142,8 @@ function mostrar_requerimiento(IdorCode){
                 $('[name=estado]').val(response['requerimiento'][0].estado);
                 $("[name=para_stock_almacen]").prop("checked", response['requerimiento'][0].para_stock_almacen);
                 $('[name=rol_aprobante_id]').val(response['requerimiento'][0].rol_aprobante_id);
+                $('[name=id_trabajador]').val(response['requerimiento'][0].trabajador_id);
+                $('[name=nombre_trabajador]').val(response['requerimiento'][0].nombre_trabajador);
 
                 let simboloMoneda='';
                 if(response['requerimiento'][0].id_moneda==1){
@@ -150,7 +152,8 @@ function mostrar_requerimiento(IdorCode){
                     simboloMoneda= '$';
 
                 }
-                document.querySelector("form[id='form-requerimiento'] table label[name='total']").textContent= simboloMoneda+Math.round(response['requerimiento'][0].monto).toFixed(2);
+                document.querySelector("form[id='form-requerimiento'] table span[name='simbolo_moneda']").textContent= simboloMoneda;
+                document.querySelector("form[id='form-requerimiento'] table label[name='total']").textContent= Math.round(response['requerimiento'][0].monto).toFixed(2);
 
                 /* detalle */
                 var detalle_requerimiento = response['det_req'];
@@ -161,10 +164,10 @@ function mostrar_requerimiento(IdorCode){
                 for (x=0; x<detalle_requerimiento.length; x++){
                     let adjunto=[];
                         items ={
-                        'id_item':detalle_requerimiento[x].id_item,
+                        'id_item':detalle_requerimiento[x].id_item?detalle_requerimiento[x].id_item:null,
                         'id_tipo_item':detalle_requerimiento[x].id_tipo_item,
-                        'id_producto':detalle_requerimiento[x].id_producto,
-                        'id_servicio':detalle_requerimiento[x].id_servicio,
+                        'id_producto':detalle_requerimiento[x].id_producto?detalle_requerimiento[x].id_producto:null,
+                        'id_servicio':detalle_requerimiento[x].id_servicio?detalle_requerimiento[x].id_servicio:null,
                         'id_equipo':detalle_requerimiento[x].id_equipo,
                         'id_requerimiento':response['requerimiento'][0].id_requerimiento,
                         'id_detalle_requerimiento':detalle_requerimiento[x].id_detalle_requerimiento,
@@ -180,8 +183,8 @@ function mostrar_requerimiento(IdorCode){
                         'unidad':detalle_requerimiento[x].unidad_medida,
                         'cantidad':detalle_requerimiento[x].cantidad,
                         'stock_comprometido':detalle_requerimiento[x].stock_comprometido,
-                        'precio_unitario':detalle_requerimiento[x].precio_unitario,
-                        'subtotal':detalle_requerimiento[x].subtotal,
+                        'precio_unitario':simboloMoneda+(parseFloat(detalle_requerimiento[x].precio_unitario)).toFixed(2),
+                        'subtotal':simboloMoneda+(parseFloat(detalle_requerimiento[x].subtotal)).toFixed(2),
                         'id_tipo_moneda':detalle_requerimiento[x].id_tipo_moneda,
                         'tipo_moneda':detalle_requerimiento[x].tipo_moneda,
                         'fecha_entrega':detalle_requerimiento[x].fecha_entrega,

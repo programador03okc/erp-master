@@ -399,6 +399,7 @@ class OrdenView {
         let id_moneda = document.querySelector("div[type='crear-orden-requerimiento'] select[name='id_moneda']").value;
         let codigo_orden = document.querySelector("div[type='crear-orden-requerimiento'] input[name='codigo_orden']").value;
         let fecha_emision = document.querySelector("div[type='crear-orden-requerimiento'] input[name='fecha_emision']").value;
+        let incluye_igv = document.querySelector("div[type='crear-orden-requerimiento'] input[name='incluye_igv']").checked;
     
         let id_proveedor = document.querySelector("div[type='crear-orden-requerimiento'] input[name='id_proveedor']").value;
         let id_contrib = document.querySelector("div[type='crear-orden-requerimiento'] input[name='id_contrib']").value;
@@ -414,7 +415,8 @@ class OrdenView {
         let direccion_destino = document.querySelector("div[type='crear-orden-requerimiento'] input[name='direccion_destino']").value;
         let id_ubigeo_destino = document.querySelector("div[type='crear-orden-requerimiento'] input[name='id_ubigeo_destino']").value;
     
-        let id_trabajador = document.querySelector("div[type='crear-orden-requerimiento'] input[name='id_trabajador']").value;
+        let persona_autorizada_1 = document.querySelector("div[type='crear-orden-requerimiento'] input[name='persona_autorizada_1']").value;
+        let persona_autorizada_2 = document.querySelector("div[type='crear-orden-requerimiento'] input[name='persona_autorizada_2]").value;
         let observacion = document.querySelector("div[type='crear-orden-requerimiento'] textarea[name='observacion']").value;
     
         let data = {
@@ -423,6 +425,7 @@ class OrdenView {
             'id_moneda':id_moneda, 
             'codigo_orden':codigo_orden, 
             'fecha_emision':fecha_emision, 
+            'incluye_igv':incluye_igv, 
             
             'id_proveedor':id_proveedor, 
             'id_contrib':id_contrib,
@@ -438,13 +441,18 @@ class OrdenView {
             'direccion_destino':direccion_destino, 
             'id_ubigeo_destino':id_ubigeo_destino, 
             
-            'id_trabajador':id_trabajador, 
+            'persona_autorizada_1':persona_autorizada_1, 
+            'persona_autorizada_2':persona_autorizada_2, 
             'observacion':observacion, 
     
             'detalle':[]
         }
         
         return data;  
+    }
+
+    incluyeIGVHandle(e){
+        ordenCtrl.calcTotalOrdenDetalleList(e.target.checked);
     }
 }
 
@@ -537,11 +545,13 @@ function nueva_orden(){
     document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='ejecutivo_responsable']").value='';
     document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='id_ubigeo_destino']").value='';
     document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='ubigeo_destino']").value='';
-    document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='id_trabajador']").value='';
+    document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='persona_autorizada_1']").value='';
+    document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='persona_autorizada_2']").value='';
     document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='nombre_persona_autorizado']").value='';
     document.querySelector("form[id='form-crear-orden-requerimiento'] span[name='codigo_orden_interno']").textContent='';
     document.querySelector("form[id='form-crear-orden-requerimiento'] textarea[name='observacion']").value='';
-    document.querySelector("var[name='total']").textContent= '';
+    document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='incluye_igv']").checked=true;
+    // document.querySelector("var[name='total']").textContent= '';
 
 
     limpiarTabla('listaDetalleOrden');

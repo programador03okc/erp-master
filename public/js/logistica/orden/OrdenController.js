@@ -327,22 +327,45 @@ class OrdenCtrl{
     
     }
 
-    calcTotalOrdenDetalleList(){
+    calcTotalOrdenDetalleList(hasIGV =null){
+        
         let sizeInputTotal = document.querySelectorAll("div[name='subtotal']").length;
         let total =0;
         let simbolo_moneda_selected = document.querySelector("select[name='id_moneda']")[document.querySelector("select[name='id_moneda']").selectedIndex].dataset.simboloMoneda;
-        for (let index = 0; index < sizeInputTotal; index++) {
-            let num = document.querySelectorAll("div[name='subtotal']")[index].textContent?document.querySelectorAll("div[name='subtotal']")[index].textContent:0;
-            total += parseFloat(num);
+
+        if (hasIGV == null){
+            hasIGV= document.querySelector("input[name='incluye_igv']").checked;
         }
 
-        let montoNeto= (Math.round(total * 100) / 100).toFixed(2);
-        let igv = (Math.round((total*0.18) * 100) / 100).toFixed(2);
-        let montoTotal= (Math.round((parseFloat(montoNeto)+parseFloat(igv)) * 100) / 100).toFixed(2)
-        document.querySelector("div[id='pie-tabla'] var[name='simboloMoneda']").textContent= simbolo_moneda_selected;
-        document.querySelector("var[name='montoNeto']").textContent=montoNeto;
-        document.querySelector("var[name='igv']").textContent= igv;
-        document.querySelector("var[name='montoTotal']").textContent= montoTotal;
+        if(hasIGV == true){
+            for (let index = 0; index < sizeInputTotal; index++) {
+                let num = document.querySelectorAll("div[name='subtotal']")[index].textContent?document.querySelectorAll("div[name='subtotal']")[index].textContent:0;
+                total += parseFloat(num);
+            }
+    
+            let montoNeto= (Math.round(total * 100) / 100).toFixed(2);
+            let igv = (Math.round((total*0.18) * 100) / 100).toFixed(2);
+            let montoTotal= (Math.round((parseFloat(montoNeto)+parseFloat(igv)) * 100) / 100).toFixed(2)
+            document.querySelector("div[id='pie-tabla'] var[name='simboloMoneda']").textContent= simbolo_moneda_selected;
+            document.querySelector("var[name='montoNeto']").textContent=montoNeto;
+            document.querySelector("var[name='igv']").textContent= igv;
+            document.querySelector("var[name='montoTotal']").textContent= montoTotal;
+        }else if(hasIGV == false){
+            for (let index = 0; index < sizeInputTotal; index++) {
+                let num = document.querySelectorAll("div[name='subtotal']")[index].textContent?document.querySelectorAll("div[name='subtotal']")[index].textContent:0;
+                total += parseFloat(num);
+            }
+
+            let montoNeto= (Math.round(total * 100) / 100).toFixed(2);
+            let montoTotal= (Math.round((parseFloat(montoNeto)) * 100) / 100).toFixed(2)
+            document.querySelector("div[id='pie-tabla'] var[name='simboloMoneda']").textContent= simbolo_moneda_selected;
+            document.querySelector("var[name='montoNeto']").textContent=montoNeto;
+            document.querySelector("var[name='igv']").textContent= '0.00';
+            document.querySelector("var[name='montoTotal']").textContent= montoTotal;
+        }
+
+
+
     
     }
 

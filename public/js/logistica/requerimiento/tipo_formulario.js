@@ -286,7 +286,6 @@ function mostrarTipoForm(tipo){
                 'input-group-direccion-contacto',
                 'input-group-horario-contacto',
                 'input-group-fuente',
-                'input-group-para_stock_almacen',
                 'input-group-aprobante'
             ]);
             hiddeElement('mostrar','form-requerimiento',[
@@ -294,7 +293,8 @@ function mostrarTipoForm(tipo){
                 'input-group-empresa',
                 'input-group-sede',
                 'input-group-fecha_entrega',
-                'input-group-proyecto'    
+                'input-group-proyecto',
+                'input-group-para_stock_almacen'    
             ]); 
             cambiarVisibilidadBtn("btn-add-servicio","mostrar");
             cambiarVisibilidadBtn("btn-crear-producto","ocultar");

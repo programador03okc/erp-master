@@ -65,7 +65,7 @@
                 </h4> 
                 <fieldset class="group-table">   
                     <div class="row">
-                        <div class="col-md-2" id="group-tipo_requerimiento">
+                        <div class="col-md-2" id="group-tipo_requerimiento" hidden>
                             <h5 >Tipo de requerimiento:</h5> 
                             <select class="form-control input-sm activation" name="tipo_requerimiento" onChange="changeOptTipoReqSelect(event);">
                                 <option value="">Elija una opción</option>
@@ -80,63 +80,78 @@
                             <input type="date" class="form-control" name="fecha_requerimiento" disabled="true" min={{ date('Y-m-d H:i:s') }} value={{ date('Y-m-d H:i:s') }}>
                         </div>
 
-                        <div class="col-md-2" id="input-group-moneda">
-                            <h5>Moneda</h5>
-                            <select class="form-control activation" name="moneda" onChange="changeMonedaSelect(event)" disabled="true">
-                            @foreach ($monedas as $moneda)
-                                <option value="{{$moneda->id_moneda}}">{{$moneda->descripcion}}</option>
-                            @endforeach
-                            </select>
-                        </div>
-
                         <div class="col-md-6">
-                            <h5>Concepto/Motivo</h5>
-                            <input type="text" class="form-control activation" name="concepto">
+                            <div class="form-group">
+                                <h5>Concepto/Motivo</h5>
+                                <input type="text" class="form-control activation" name="concepto">
+                            </div>
                         </div>
 
-                        <div class="col-md-2">
-                            <h5>Periodo</h5>
-                            <select class="form-control activation" name="periodo" disabled="true">
-                                @foreach ($periodos as $periodo)
-                                    <option value="{{$periodo->id_periodo}}">{{$periodo->descripcion}}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="col-md-2">
-                                <h5>Prioridad</h5>
-                                <select class="form-control activation" name="prioridad" disabled="true">
-                                    @foreach ($prioridades as $prioridad)
-                                        <option value="{{$prioridad->id_prioridad}}">{{$prioridad->descripcion}}</option>
-                                    @endforeach
-                                </select>
-                        </div>
-
-                        <div class="col-md-2" id="input-group-rol-usuario" hidden>
-                            <h5>Roles del usuario</h5>
-                            <div class="input-group-okc">
-                                <select class="form-control input-sm activation" name="rol_usuario">
-                                @foreach ($roles as $rol)
-                                    <option value="{{$rol->id_rol}}">{{$rol->rol_concepto}}</option>
+                        <div class="col-md-2" id="input-group-moneda">
+                            <div class="form-group">
+                                <h5>Moneda</h5>
+                                <select class="form-control activation" name="moneda" onChange="changeMonedaSelect(event)" disabled="true">
+                                @foreach ($monedas as $moneda)
+                                    <option value="{{$moneda->id_moneda}}">{{$moneda->descripcion}}</option>
                                 @endforeach
                                 </select>
                             </div>
                         </div>
 
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <h5>Periodo</h5>
+                                <select class="form-control activation" name="periodo" disabled="true">
+                                    @foreach ($periodos as $periodo)
+                                        <option value="{{$periodo->id_periodo}}">{{$periodo->descripcion}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <h5>Prioridad</h5>
+                                <select class="form-control activation" name="prioridad" disabled="true">
+                                    @foreach ($prioridades as $prioridad)
+                                        <option value="{{$prioridad->id_prioridad}}">{{$prioridad->descripcion}}</option>
+                                    @endforeach
+                                </select>    
+                            </div>
+                        </div>
+
+                        <div class="col-md-2" id="input-group-rol-usuario" hidden>
+                            <div class="form-group">
+
+                                <h5>Roles del usuario</h5>
+                                <div class="input-group-okc">
+                                    <select class="form-control input-sm activation" name="rol_usuario">
+                                    @foreach ($roles as $rol)
+                                        <option value="{{$rol->id_rol}}">{{$rol->rol_concepto}}</option>
+                                    @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="col-md-2" id="input-group-empresa">
-                            <h5>Empresa</h5>
-                            <select name="empresa" id="empresa" class="form-control activation" onChange="changeOptEmpresaSelect(event)" required>
-                                <option value="">Elija una opción</option>
-                                @foreach ($empresas as $empresa)
-                                    <option value="{{$empresa->id_empresa}}">{{ $empresa->contribuyente->razon_social}}</option>
-                                @endforeach
-                            </select>
+                            <div class="form-group">
+                                <h5>Empresa</h5>
+                                <select name="empresa" id="empresa" class="form-control activation" onChange="changeOptEmpresaSelect(event)" required>
+                                    <option value="">Elija una opción</option>
+                                    @foreach ($empresas as $empresa)
+                                        <option value="{{$empresa->id_empresa}}">{{ $empresa->contribuyente->razon_social}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
                         </div>
 
                         <div class="col-md-2" id="input-group-sede" >
-                            <h5>Sede</h5>
-                            <select id="sede" name="sede" class="form-control activation" onChange="changeOptUbigeo(event)" required>
-                                <option value="">Elija una opción</option>
-                            </select>
+                            <div class="form-group">
+                                <h5>Sede</h5>
+                                <select id="sede" name="sede" class="form-control activation" onChange="changeOptUbigeo(event)" required>
+                                    <option value="">Elija una opción</option>
+                                </select>
+                            </div>
                         </div>
 
                         <div class="col-md-2" id="input-group-fecha_entrega">
@@ -152,59 +167,81 @@
                                     <label>
                                         <input type="checkbox" class="activation" name="para_stock_almacen"> Stock para Almacén
                                     </label>
-                                    </div>
+                                </div>
                             </div>
                         </div>
+
                         <div class="col-md-2" id="input-group-aprobante" >
-                            <h5>Aprobante</h5>
-                            <select  name="rol_aprobante" class="form-control activation">
-                                @if(count($aprobantes)>0)
-                                    <option value="">Elija una opción</option>
-                                    @foreach ($aprobantes as $aprobante)
-                                        <option value="{{$aprobante->id_rol}}">{{$aprobante->nombre}}</option>
-                                    @endforeach
-                                @else
-                                <option value="">Ninguno para seleccionar</option>
-                                @endif
-                            </select>
+                            <div class="form-group">
+                                <h5>Aprobante</h5>
+                                <select  name="rol_aprobante" class="form-control activation">
+                                    @if(count($aprobantes)>0)
+                                        <option value="">Elija una opción</option>
+                                        @foreach ($aprobantes as $aprobante)
+                                            <option value="{{$aprobante->id_rol}}">{{$aprobante->nombre}}</option>
+                                        @endforeach
+                                    @else
+                                    <option value="">Ninguno para seleccionar</option>
+                                    @endif
+                                </select>
+                            </div>
                         </div>
+
+                        <div class="col-md-2" id="input-group-asignar_trabajador">
+                            <div class="form-group">
+                                <h5>Asignar</h5>
+                                <div style="display:flex;">
+                                    <input class="oculto" name="id_trabajador">
+                                    <input type="text" name="nombre_trabajador" class="form-control group-elemento" placeholder="Trabajador" readonly="">
+                                    <button type="button" class="group-tex btn-primary activation" onclick="listaTrabajadoresModal();">
+                                        <i class="fa fa-search"></i>
+                                    </button> 
+                                </div>
+                            </div>
+                        </div>
+
                         <div id="input-group-fuente">
                             <div class="col-md-2">
-                                <h5>Fuente</h5>
-                                <div style="display:flex">
-                                    <select class="form-control activation " name="fuente_id" onChange="selectFuente(event);">
-                                            <option value="0">Elija una opción</option>
-                                        @foreach ($fuentes as $fuente)
-                                            <option value="{{$fuente->id_fuente}}">{{$fuente->descripcion}}</option>
-                                        @endforeach
-                                    </select>
-                                    <button type="button" class="btn-primary" title="Agregar Fuente" name="bnt-agregar-fuente" onclick="agregarFuenteModal();">
-                                        <i class="fas fa-plus"></i>
-                                    </button>
+                                <div class="form-group">
+                                    <h5>Fuente</h5>
+                                    <div style="display:flex">
+                                        <select class="form-control activation " name="fuente_id" onChange="selectFuente(event);">
+                                                <option value="0">Elija una opción</option>
+                                            @foreach ($fuentes as $fuente)
+                                                <option value="{{$fuente->id_fuente}}">{{$fuente->descripcion}}</option>
+                                            @endforeach
+                                        </select>
+                                        <button type="button" class="btn-primary" title="Agregar Fuente" name="bnt-agregar-fuente" onclick="agregarFuenteModal();">
+                                            <i class="fas fa-plus"></i>
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                             <div class="col-md-2" id="input-group-fuente_det">
-                                <h5>Detalle fuente</h5>
-                                <div style="display:flex">
-                                    <select class="form-control activation " name="fuente_det_id">
-                                    </select>
-                                    <button type="button" class="btn-primary" title="Agregar Detalle Fuente" name="bnt-agregar-detalle-fuente" onclick="agregarDetalleFuenteModal();">
-                                        <i class="fas fa-plus"></i>
-                                    </button>
+                                <div class="form-group">
+                                    <h5>Detalle fuente</h5>
+                                    <div style="display:flex">
+                                        <select class="form-control activation " name="fuente_det_id">
+                                        </select>
+                                        <button type="button" class="btn-primary" title="Agregar Detalle Fuente" name="bnt-agregar-detalle-fuente" onclick="agregarDetalleFuenteModal();">
+                                            <i class="fas fa-plus"></i>
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
  
                         <div class="col-md-2" id="input-group-monto">
-                            <h5>Monto total</h5>
-                            <div class="input-group-okc">
-                                <div class="input-group-addon" id="montoMoneda" style="width: auto;">S/.</div>
-                                <input type="text" class="form-control activation" name="monto" readOnly>
+                            <div class="form-group">
+
+                                <h5>Monto total</h5>
+                                <div class="input-group-okc">
+                                    <div class="input-group-addon" id="montoMoneda" style="width: auto;">S/.</div>
+                                    <input type="text" class="form-control activation" name="monto" readOnly>
+                                </div>
                             </div>
                         </div>
-
-
                     </div>
 
                 </fieldset>
@@ -511,7 +548,7 @@
                                 <tr>
                                 <td width="60%" style="text-align: right; font-weight: bold;">Monto Total:</td>
                                 <td width="10%"></td>
-                                <td style="font-weight: bold;"><label name="total"> <span name="simbolo_moneda">S/.</span> 0.00</label></td>
+                                <td style="display:flex; flex-direction: row; font-weight: bold;"> <span name="simbolo_moneda">S/</span><label name="total"> 0.00</label></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -582,6 +619,8 @@
 
 </div>
 <!-- @include('logistica.requerimientos.modal_buscar_stock_almacenes') -->
+@include('logistica.requerimientos.modal_loader')
+@include('logistica.requerimientos.modal_lista_trabajadores')
 @include('logistica.requerimientos.modal_trazabilidad_requerimiento')
 @include('logistica.requerimientos.modal_motivo_detalle_requerimiento')
 @include('logistica.requerimientos.modal_mostrar_archivo_adjunto_requerimiento')
@@ -629,6 +668,7 @@
     <script src="{{ asset('datatables/pdfmake/vfs_fonts.js') }}"></script>
     <script src="{{ asset('datatables/JSZip/jszip.min.js') }}"></script>
     <!-- <script src="{{ asset('js/logistica/requerimiento/modal_buscar_stock_almacenes.js') }}"></script> -->
+    <script src="{{ asset('js/logistica/requerimiento/modal_lista_trabajadores.js') }}"></script>
     <script src="{{ asset('js/logistica/requerimiento/cuadro_costos.js') }}"></script>
     <script src="{{ asset('js/logistica/requerimiento/historial.js') }}"></script>
     <script src="{{ asset('js/logistica/requerimiento/trazabilidad.js') }}"></script>

@@ -610,6 +610,10 @@ class LogisticaController extends Controller
             ->leftJoin('contabilidad.adm_contri as contri_cliente', 'com_cliente.id_contribuyente', '=', 'contri_cliente.id_contribuyente')
             ->leftJoin('almacen.alm_almacen', 'alm_req.id_almacen', '=', 'alm_almacen.id_almacen')
 
+            ->leftJoin('rrhh.rrhh_trab as trab_asignado', 'alm_req.trabajador_id', '=', 'trab_asignado.id_trabajador')
+            ->leftJoin('rrhh.rrhh_postu as postu_asignado', 'postu_asignado.id_postulante', '=', 'trab_asignado.id_postulante')
+            ->leftJoin('rrhh.rrhh_perso as perso_asignado', 'perso_asignado.id_persona', '=', 'postu_asignado.id_persona')
+
             // ->leftJoin('logistica.log_detalle_grupo_cotizacion', 'log_detalle_grupo_cotizacion.id_requerimiento', '=', 'alm_req.id_requerimiento')
             // ->leftJoin('logistica.log_ord_compra', 'log_ord_compra.id_grupo_cotizacion', '=', 'log_detalle_grupo_cotizacion.id_grupo_cotizacion')
             // ->leftJoin('almacen.guia_com_oc', 'guia_com_oc.id_oc', '=', 'log_ord_compra.id_orden_compra')
@@ -650,6 +654,8 @@ class LogisticaController extends Controller
                 'alm_req.estado',
                 'alm_req.para_stock_almacen',
                 'alm_req.rol_aprobante_id',
+                'alm_req.trabajador_id',
+                DB::raw("(perso_asignado.nombres) || ' ' || (perso_asignado.apellido_paterno) || ' ' || (perso_asignado.apellido_materno)  AS nombre_trabajador"),
                 'adm_estado_doc.estado_doc',
                 'adm_estado_doc.bootstrap_color',
                 DB::raw("(CASE WHEN alm_req.estado = 1 THEN 'Habilitado' ELSE 'Deshabilitado' END) AS estado_desc")
@@ -706,6 +712,11 @@ class LogisticaController extends Controller
             ->leftJoin('configuracion.ubi_dis', 'alm_req.id_ubigeo_entrega', '=', 'ubi_dis.id_dis')
             ->leftJoin('configuracion.ubi_prov', 'ubi_dis.id_prov', '=', 'ubi_prov.id_prov')
             ->leftJoin('configuracion.ubi_dpto', 'ubi_prov.id_dpto', '=', 'ubi_dpto.id_dpto')
+
+            ->leftJoin('rrhh.rrhh_trab as trab_asignado', 'alm_req.trabajador_id', '=', 'trab_asignado.id_trabajador')
+            ->leftJoin('rrhh.rrhh_postu as postu_asignado', 'postu_asignado.id_postulante', '=', 'trab_asignado.id_postulante')
+            ->leftJoin('rrhh.rrhh_perso as perso_asignado', 'perso_asignado.id_persona', '=', 'postu_asignado.id_persona')
+
 
             ->select(
                 'alm_req.id_requerimiento',
@@ -769,6 +780,8 @@ class LogisticaController extends Controller
                 'alm_req.fuente_det_id',
                 'alm_req.para_stock_almacen',
                 'alm_req.rol_aprobante_id',
+                'alm_req.trabajador_id',
+                DB::raw("(perso_asignado.nombres) || ' ' || (perso_asignado.apellido_paterno) || ' ' || (perso_asignado.apellido_materno)  AS nombre_trabajador"),
                 DB::raw("(CASE WHEN alm_req.estado = 1 THEN 'Habilitado' ELSE 'Deshabilitado' END) AS estado_desc")
             )
             ->where([
@@ -844,7 +857,9 @@ class LogisticaController extends Controller
                     'fuente_det_id' => $data->fuente_det_id,
                     'tiene_transformacion' => $data->tiene_transformacion,
                     'para_stock_almacen' => $data->para_stock_almacen,
-                    'rol_aprobante_id' => $data->rol_aprobante_id
+                    'rol_aprobante_id' => $data->rol_aprobante_id,
+                    'trabajador_id' => $data->trabajador_id,
+                    'nombre_trabajador'=>$data->nombre_trabajador
                     
                 ];
             };
@@ -2104,7 +2119,8 @@ class LogisticaController extends Controller
                 'fuente_id'             => (isset($request->requerimiento['fuente']) && $request->requerimiento['fuente']>0)?$request->requerimiento['fuente']:null,
                 'fuente_det_id'         => (isset($request->requerimiento['fuente_det']) && $request->requerimiento['fuente_det']>0)?$request->requerimiento['fuente_det']:null,
                 'para_stock_almacen'    => (isset($request->requerimiento['para_stock_almacen']))?$request->requerimiento['para_stock_almacen']:false,
-                'rol_aprobante_id'      => (isset($request->requerimiento['rol_aprobante']))?$request->requerimiento['rol_aprobante']:null
+                'rol_aprobante_id'      => (isset($request->requerimiento['rol_aprobante']))?$request->requerimiento['rol_aprobante']:null,
+                'trabajador_id'      => (isset($request->requerimiento['id_trabajador']))?$request->requerimiento['id_trabajador']:null
             ],
             'id_requerimiento'
         );
@@ -2208,7 +2224,7 @@ class LogisticaController extends Controller
         
         }
             DB::commit();
-        return response()->json($id_requerimiento);
+        return response()->json(['id_requerimiento'=>$id_requerimiento,'codigo'=>$codigo]);
 
         } catch (\PDOException $e) {
             DB::rollBack();
@@ -2787,6 +2803,9 @@ class LogisticaController extends Controller
         $id_priori = $request->requerimiento['id_prioridad'];
         $fuente_id = $request->requerimiento['fuente'];
         $fuente_det_id = $request->requerimiento['fuente_det'];
+        $para_stock_almacen = isset($request->requerimiento['para_stock_almacen'])?$request->requerimiento['para_stock_almacen']:null;
+        $rol_aprobante_id = isset($request->requerimiento['rol_aprobante_id'])?$request->requerimiento['rol_aprobante_id']:null;
+        $trabajador_id = isset($request->requerimiento['id_trabajador'])?$request->requerimiento['id_trabajador']:null;
 
 
         if ($id_requerimiento != NULL) {
@@ -2818,7 +2837,10 @@ class LogisticaController extends Controller
                     'monto'                 => $monto,
                     'fuente_id'              => $fuente_id,
                     'fuente_det_id'          => $fuente_det_id,
-                    'estado'                 => $nuevo_estado
+                    'estado'                 => $nuevo_estado,
+                    'para_stock_almacen'     => $para_stock_almacen,
+                    'rol_aprobante_id'       => $rol_aprobante_id,
+                    'trabajador_id'          => $trabajador_id
                 ]);
             }else{
                 $data_requerimiento = DB::table('almacen.alm_req')->where('id_requerimiento', $id_requerimiento)
@@ -2845,7 +2867,10 @@ class LogisticaController extends Controller
                     'id_grupo'               => is_numeric($id_grupo) == 1 ? $id_grupo : null,
                     'id_area'               => is_numeric($id_area) == 1 ? $id_area : null,
                     'id_prioridad'          => is_numeric($id_priori) == 1 ? $id_priori : null,
-                    'monto'                 => $monto
+                    'monto'                 => $monto,
+                    'para_stock_almacen'     => $para_stock_almacen,
+                    'rol_aprobante_id'       => $rol_aprobante_id,
+                    'trabajador_id'          => $trabajador_id
                 ]);
             }
             
@@ -4402,9 +4427,11 @@ class LogisticaController extends Controller
                 'adm_contri.razon_social',
                 'sis_sede.codigo as codigo_sede'
             )
-            ->where('alm_req.id_requerimiento', '=', $id)->get();
+            ->where('alm_req.id_requerimiento', '=', $id)
+            ->orderBy('alm_req.fecha_registro','desc')
+            ->get();
         $html = '';
-
+        
         foreach ($sql as $row) {
             $code = $row->codigo;
             $motivo = $row->concepto;
@@ -4547,12 +4574,14 @@ class LogisticaController extends Controller
             $codigo_producto = $det->codigo;
             $part_number = $det->part_number;
             $id_item = $det->id_item;
+            $id_producto = $det->id_producto;
             $precio = $det->precio_unitario;
             $cant = $det->cantidad;
             $id_part = $det->partida;
             $tiene_transformacion = $det->tiene_transformacion;
             $unit = $det->unidad_medida_descripcion;
             $simbMoneda = $this->consult_moneda($det->id_moneda)->simbolo;
+            $descripcion_adicional = $det->descripcion_adicional;
             
             $active = '';
 
@@ -4566,14 +4595,9 @@ class LogisticaController extends Controller
             $subtotal = $precio * $cant;
             $total += $subtotal;
             $unidad='S/N';
-            if ($id_item != null) {
-                $prod = DB::table('almacen.alm_item')
-                    ->leftJoin('almacen.alm_prod', 'alm_prod.id_producto', '=', 'alm_item.id_producto')
-                    ->leftJoin('logistica.log_servi', 'log_servi.id_servicio', '=', 'alm_item.id_servicio')
-                    ->select('alm_prod.descripcion AS producto', 'log_servi.descripcion AS servicio', 'alm_item.id_producto', 'alm_item.id_servicio', 'alm_item.id_equipo')
-                    ->where('alm_item.id_item', $id_item)->first();
-                $name = ($prod->id_producto != null) ? $prod->producto : $prod->servicio;
-                $unidad = ($prod->id_servicio > 0) ? 'Servicio' : (($prod->id_equipo > 0) ? 'Equipo' : 'S/N');
+            if ($id_producto == null) {
+                $name = $descripcion_adicional;
+                $unidad = 'Servicio';
                 
             } else {
                 $name = $det->descripcion_producto;
