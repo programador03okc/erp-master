@@ -12,7 +12,7 @@
 @endif
 
 @section('cabecera')
-    Elaborar Requerimiento
+    Requerimiento
 @endsection
 
 @section('breadcrumb')
