@@ -54,15 +54,27 @@ class RequerimientoController extends Controller
         switch ($tipo_requerimiento) {
             case 1:
                 # code...
-                $identificador= 'C';
+                $identificador= 'M';
             break;
             case 2:
                 # code...
-                $identificador= 'V';
+                $identificador= 'E';
             break;
             case 3:
                 # code...
-                $identificador= 'PA';
+                $grupos = Auth::user()->getAllGrupo();
+                foreach($grupos as $grupo){
+                    $idGrupoList[]=$grupo->id_grupo;
+                }
+                if($idGrupoList[0]== 1){
+                    $identificador= 'A';
+                }
+                if($idGrupoList[0]== 2){
+                    $identificador= 'C';
+                }
+                if($idGrupoList[0]== 3){
+                    $identificador= 'P';
+                }
             break;
             
             default:
