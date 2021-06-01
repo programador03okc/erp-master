@@ -1193,10 +1193,11 @@ class AlmacenController extends Controller
         ->select('alm_prod.*', 'alm_subcat.descripcion as subcat_descripcion',
                 'alm_cat_prod.descripcion as cat_descripcion',
                 'alm_tp_prod.descripcion as tipo_descripcion',
-                'alm_tp_prod.id_tipo_producto')
+                'alm_tp_prod.id_tipo_producto','sis_usua.nombre_corto')
         ->leftjoin('almacen.alm_subcat','alm_subcat.id_subcategoria','=','alm_prod.id_subcategoria')
         ->leftjoin('almacen.alm_cat_prod','alm_cat_prod.id_categoria','=','alm_prod.id_categoria')
         ->leftjoin('almacen.alm_tp_prod','alm_tp_prod.id_tipo_producto','=','alm_cat_prod.id_tipo_producto')
+        ->leftjoin('configuracion.sis_usua','sis_usua.id_usuario','=','alm_prod.id_usuario')
         ->where([['alm_prod.id_producto', '=', $id]])
             ->get();
         
@@ -1267,6 +1268,7 @@ class AlmacenController extends Controller
     public function guardar_producto(Request $request)
     {
         $fecha = date('Y-m-d H:i:s');
+        $id_usuario = Auth::user()->id_usuario;
         $codigo = $this->next_correlativo_prod();
         $msj = '';
         $des = strtoupper($request->descripcion);
@@ -1299,6 +1301,7 @@ class AlmacenController extends Controller
                     'afecto_igv' => ($request->afecto_igv == null || $request->afecto_igv !== '1') ? false : true,
                     'id_moneda' => ($request->id_moneda !== null ? $request->id_moneda : null),
                     'notas' => ($request->notas !== null ? $request->notas : ''),
+                    'id_usuario' => $id_usuario,
                     'estado' => 1,
                     'fecha_registro' => $fecha
                 ],
