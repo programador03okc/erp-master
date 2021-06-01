@@ -1104,13 +1104,13 @@ Route::group(['middleware' => ['auth']], function () {
 	
 			Route::group(['as' => 'tipos.', 'prefix' => 'tipos'], function(){
 				//Tipo Producto
-				Route::get('index', 'AlmacenController@view_tipo')->name('index');
-				Route::get('listar_tipos', 'AlmacenController@mostrar_tp_productos');
-				Route::get('mostrar_tipo/{id}', 'AlmacenController@mostrar_tp_producto');
-				Route::post('guardar_tipo', 'AlmacenController@guardar_tp_producto');
-				Route::post('actualizar_tipo', 'AlmacenController@update_tp_producto');
-				Route::get('anular_tipo/{id}', 'AlmacenController@anular_tp_producto');
-				Route::get('revisarTipo/{id}', 'AlmacenController@tipo_revisar_relacion');
+				Route::get('index', 'Almacen\Catalogo\TipoProductoController@view_tipo')->name('index');
+				Route::get('listar_tipos', 'Almacen\Catalogo\TipoProductoController@mostrar_tp_productos');
+				Route::get('mostrar_tipo/{id}', 'Almacen\Catalogo\TipoProductoController@mostrar_tp_producto');
+				Route::post('guardar_tipo', 'Almacen\Catalogo\TipoProductoController@guardar_tp_producto');
+				Route::post('actualizar_tipo', 'Almacen\Catalogo\TipoProductoController@update_tp_producto');
+				Route::get('anular_tipo/{id}', 'Almacen\Catalogo\TipoProductoController@anular_tp_producto');
+				Route::get('revisarTipo/{id}', 'Almacen\Catalogo\TipoProductoController@tipo_revisar_relacion');
 				
 			});
 
@@ -1154,31 +1154,31 @@ Route::group(['middleware' => ['auth']], function () {
 
 			Route::group(['as' => 'productos.', 'prefix' => 'productos'], function(){
 				//Producto
-				Route::get('index', 'AlmacenController@view_producto')->name('index');
-				Route::get('mostrar_prods', 'AlmacenController@mostrar_prods');
-				Route::get('mostrar_prods_almacen/{id}', 'AlmacenController@mostrar_prods_almacen');
-				Route::get('mostrar_producto/{id}', 'AlmacenController@mostrar_producto');
-				Route::get('mostrar_categorias_tipo/{id}', 'AlmacenController@mostrar_categorias_tipo');
-				Route::post('guardar_producto', 'AlmacenController@guardar_producto');
-				Route::post('actualizar_producto', 'AlmacenController@update_producto');
-				Route::get('anular_producto/{id}', 'AlmacenController@anular_producto');
-				Route::post('guardar_imagen', 'AlmacenController@guardar_imagen');
+				Route::get('index', 'Almacen\ProductoController@view_producto')->name('index');
+				Route::get('mostrar_prods', 'Almacen\ProductoController@mostrar_prods');
+				Route::get('mostrar_prods_almacen/{id}', 'Almacen\ProductoController@mostrar_prods_almacen');
+				Route::get('mostrar_producto/{id}', 'Almacen\ProductoController@mostrar_producto');
+				Route::get('mostrar_categorias_tipo/{id}', 'Almacen\ProductoController@mostrar_categorias_tipo');
+				Route::post('guardar_producto', 'Almacen\ProductoController@guardar_producto');
+				Route::post('actualizar_producto', 'Almacen\ProductoController@update_producto');
+				Route::get('anular_producto/{id}', 'Almacen\ProductoController@anular_producto');
+				Route::post('guardar_imagen', 'Almacen\ProductoController@guardar_imagen');
 				
-				Route::get('listar_promociones/{id}', 'AlmacenController@listar_promociones');
-				Route::post('crear_promocion', 'AlmacenController@crear_promocion');
-				Route::get('anular_promocion/{id}', 'AlmacenController@anular_promocion');
+				Route::get('listar_promociones/{id}', 'Almacen\ProductoController@listar_promociones');
+				Route::post('crear_promocion', 'Almacen\ProductoController@crear_promocion');
+				Route::get('anular_promocion/{id}', 'Almacen\ProductoController@anular_promocion');
 				
-				Route::get('listar_ubicaciones_producto/{id}', 'AlmacenController@listar_ubicaciones_producto');
-				Route::get('mostrar_ubicacion/{id}', 'AlmacenController@mostrar_ubicacion');
-				Route::post('guardar_ubicacion', 'AlmacenController@guardar_ubicacion');
-				Route::post('actualizar_ubicacion', 'AlmacenController@update_ubicacion');
-				Route::get('anular_ubicacion/{id}', 'AlmacenController@anular_ubicacion');
+				Route::get('listar_ubicaciones_producto/{id}', 'Almacen\ProductoController@listar_ubicaciones_producto');
+				Route::get('mostrar_ubicacion/{id}', 'Almacen\ProductoController@mostrar_ubicacion');
+				Route::post('guardar_ubicacion', 'Almacen\ProductoController@guardar_ubicacion');
+				Route::post('actualizar_ubicacion', 'Almacen\ProductoController@update_ubicacion');
+				Route::get('anular_ubicacion/{id}', 'Almacen\ProductoController@anular_ubicacion');
 				
-				Route::get('listar_series_producto/{id}', 'AlmacenController@listar_series_producto');
-				Route::get('mostrar_serie/{id}', 'AlmacenController@mostrar_serie');
-				Route::post('guardar_serie', 'AlmacenController@guardar_serie');
-				Route::post('actualizar_serie', 'AlmacenController@update_serie');
-				Route::get('anular_serie/{id}', 'AlmacenController@anular_serie');
+				Route::get('listar_series_producto/{id}', 'Almacen\ProductoController@listar_series_producto');
+				Route::get('mostrar_serie/{id}', 'Almacen\ProductoController@mostrar_serie');
+				Route::post('guardar_serie', 'Almacen\ProductoController@guardar_serie');
+				Route::post('actualizar_serie', 'Almacen\ProductoController@update_serie');
+				Route::get('anular_serie/{id}', 'Almacen\ProductoController@anular_serie');
 
 			});
 
