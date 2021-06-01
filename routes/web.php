@@ -1142,13 +1142,13 @@ Route::group(['middleware' => ['auth']], function () {
 
 			Route::group(['as' => 'clasificaciones.', 'prefix' => 'clasificaciones'], function(){
 				//Clasificacion
-				Route::get('index', 'AlmacenController@view_clasificacion')->name('index');
-				Route::get('listar_clasificaciones', 'AlmacenController@mostrar_clasificaciones');
-				Route::get('mostrar_clasificacion/{id}', 'AlmacenController@mostrar_clasificacion');
-				Route::post('guardar_clasificacion', 'AlmacenController@guardar_clasificacion');
-				Route::post('actualizar_clasificacion', 'AlmacenController@update_clasificacion');
-				Route::get('anular_clasificacion/{id}', 'AlmacenController@anular_clasificacion');
-				Route::get('revisarClas/{id}', 'AlmacenController@clas_revisar');
+				Route::get('index', 'Almacen\Catalogo\ClasificacionController@view_clasificacion')->name('index');
+				Route::get('listar_clasificaciones', 'Almacen\Catalogo\ClasificacionController@mostrar_clasificaciones');
+				Route::get('mostrar_clasificacion/{id}', 'Almacen\Catalogo\ClasificacionController@mostrar_clasificacion');
+				Route::post('guardar_clasificacion', 'Almacen\Catalogo\ClasificacionController@guardar_clasificacion');
+				Route::post('actualizar_clasificacion', 'Almacen\Catalogo\ClasificacionController@update_clasificacion');
+				Route::get('anular_clasificacion/{id}', 'Almacen\Catalogo\ClasificacionController@anular_clasificacion');
+				Route::get('revisarClas/{id}', 'Almacen\Catalogo\ClasificacionController@clas_revisar');
 				
 			});
 
