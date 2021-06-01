@@ -1128,13 +1128,13 @@ Route::group(['middleware' => ['auth']], function () {
 
 			Route::group(['as' => 'sub-categorias.', 'prefix' => 'sub-categorias'], function(){
 				//Sub Categoria
-				Route::get('index', 'AlmacenController@view_subcategoria')->name('index');
-				Route::get('listar_subcategorias', 'AlmacenController@mostrar_sub_categorias');
-				Route::get('mostrar_subcategoria/{id}', 'AlmacenController@mostrar_sub_categoria');
-				Route::post('guardar_subcategoria', 'AlmacenController@guardar_sub_categoria');
-				Route::post('actualizar_subcategoria', 'AlmacenController@update_sub_categoria');
-				Route::get('anular_subcategoria/{id}', 'AlmacenController@anular_sub_categoria');
-				Route::get('revisarSubCat/{id}', 'AlmacenController@subcat_revisar');
+				Route::get('index', 'Almacen\Catalogo\SubCategoriaController@view_subcategoria')->name('index');
+				Route::get('listar_subcategorias', 'Almacen\Catalogo\SubCategoriaController@mostrar_sub_categorias');
+				Route::get('mostrar_subcategoria/{id}', 'Almacen\Catalogo\SubCategoriaController@mostrar_sub_categoria');
+				Route::post('guardar_subcategoria', 'Almacen\Catalogo\SubCategoriaController@guardar_sub_categoria');
+				Route::post('actualizar_subcategoria', 'Almacen\Catalogo\SubCategoriaController@update_sub_categoria');
+				Route::get('anular_subcategoria/{id}', 'Almacen\Catalogo\SubCategoriaController@anular_sub_categoria');
+				Route::get('revisarSubCat/{id}', 'Almacen\Catalogo\SubCategoriaController@subcat_revisar');
 
 				Route::post('guardar-marca', 'Almacen\Catalogo\SubCategoriaController@guardar')->name('guardar-marca');
 				
