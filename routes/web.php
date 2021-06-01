@@ -1116,13 +1116,13 @@ Route::group(['middleware' => ['auth']], function () {
 
 			Route::group(['as' => 'categorias.', 'prefix' => 'categorias'], function(){
 				//Categoria
-				Route::get('index', 'AlmacenController@view_categoria')->name('index');
-				Route::get('listar_categorias', 'AlmacenController@mostrar_categorias');
-				Route::get('mostrar_categoria/{id}', 'AlmacenController@mostrar_categoria');
-				Route::post('guardar_categoria', 'AlmacenController@guardar_categoria');
-				Route::post('actualizar_categoria', 'AlmacenController@update_categoria');
-				Route::get('anular_categoria/{id}', 'AlmacenController@anular_categoria');
-				Route::get('revisarCat/{id}', 'AlmacenController@cat_revisar');
+				Route::get('index', 'Almacen\Catalogo\CategoriaController@view_categoria')->name('index');
+				Route::get('listar_categorias', 'Almacen\Catalogo\CategoriaController@mostrar_categorias');
+				Route::get('mostrar_categoria/{id}', 'Almacen\Catalogo\CategoriaController@mostrar_categoria');
+				Route::post('guardar_categoria', 'Almacen\Catalogo\CategoriaController@guardar_categoria');
+				Route::post('actualizar_categoria', 'Almacen\Catalogo\CategoriaController@update_categoria');
+				Route::get('anular_categoria/{id}', 'Almacen\Catalogo\CategoriaController@anular_categoria');
+				Route::get('revisarCat/{id}', 'Almacen\Catalogo\CategoriaController@cat_revisar');
 				
 			});
 
