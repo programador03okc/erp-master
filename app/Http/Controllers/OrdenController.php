@@ -267,7 +267,8 @@ class OrdenController extends Controller
             'log_ord_compra.id_cta_principal as orden_id_cta_principal',
             'log_ord_compra.id_cta_alternativa as orden_id_cta_alternativa',
             'log_ord_compra.id_cta_detraccion as orden_id_cta_detraccion',
-            'log_ord_compra.personal_autorizado as orden_personal_autorizado',
+            'log_ord_compra.personal_autorizado_1 as orden_personal_autorizado_1',
+            'log_ord_compra.personal_autorizado_2 as orden_personal_autorizado_2',
             'log_ord_compra.plazo_entrega as orden_plazo_entrega',
             'log_ord_compra.en_almacen as orden_en_almacen',
             'log_ord_compra.id_occ as orden_id_occ',
@@ -311,8 +312,7 @@ class OrdenController extends Controller
         ->leftJoin('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'log_prove.id_contribuyente')
         ->leftJoin('administracion.sis_sede', 'sis_sede.id_sede', '=', 'log_ord_compra.id_sede')
         ->leftJoin('logistica.estados_compra', 'log_det_ord_compra.estado', '=', 'estados_compra.id_estado')
-        ->leftJoin('almacen.alm_item', 'log_det_ord_compra.id_item', '=', 'alm_item.id_item')
-        ->leftJoin('almacen.alm_prod', 'alm_prod.id_producto', '=', 'alm_item.id_producto')
+        ->leftJoin('almacen.alm_prod', 'log_det_ord_compra.id_producto', '=', 'alm_prod.id_producto')
         ->leftJoin('almacen.alm_cat_prod', 'alm_cat_prod.id_categoria', '=', 'alm_prod.id_categoria')
         ->leftJoin('almacen.alm_subcat','alm_subcat.id_subcategoria','=','alm_prod.id_subcategoria')    
         ->leftJoin('almacen.alm_det_req', 'alm_det_req.id_detalle_requerimiento', '=', 'log_det_ord_compra.id_detalle_requerimiento')
