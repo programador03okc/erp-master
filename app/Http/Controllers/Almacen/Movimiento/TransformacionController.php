@@ -1,18 +1,40 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Almacen\Movimiento;
 
+use App\Http\Controllers\Almacen\Catalogo\CategoriaController;
+use App\Http\Controllers\Almacen\Catalogo\ClasificacionController;
+use App\Http\Controllers\Almacen\Catalogo\SubCategoriaController;
+use App\Http\Controllers\Almacen\Ubicacion\AlmacenController;
+use App\Http\Controllers\AlmacenController as GenericoAlmacenController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
-use Dompdf\Dompdf;
 use Illuminate\Support\Facades\App;
-use PDF;
+use App\Http\Controllers\Controller;
 
 date_default_timezone_set('America/Lima');
 
-class CustomizacionController extends Controller
+class TransformacionController extends Controller
 {
+    function view_transformacion(){
+        $almacenes = AlmacenController::mostrar_almacenes_cbo();
+        $empresas = GenericoAlmacenController::select_empresa();
+        $clasificaciones = ClasificacionController::mostrar_clasificaciones_cbo();
+        $subcategorias = SubCategoriaController::mostrar_subcategorias_cbo();
+        $categorias = CategoriaController::mostrar_categorias_cbo();
+        $unidades = GenericoAlmacenController::mostrar_unidades_cbo();
+        $usuarios = GenericoAlmacenController::select_usuarios();
+        return view('almacen/customizacion/transformacion', 
+        compact('almacenes','empresas','usuarios','categorias','subcategorias','unidades','clasificaciones'));
+    }
+
+    function view_listar_transformaciones(){
+        $almacenes = AlmacenController::mostrar_almacenes_cbo();
+        $usuarios = GenericoAlmacenController::select_usuarios();
+        return view('almacen/customizacion/listar_transformaciones', compact('almacenes','usuarios'));
+    }
+    
     public function listar_transformaciones_pendientes(){
         $data = DB::table('almacen.transformacion')
         ->select('transformacion.*','adm_contri.razon_social','alm_almacen.descripcion',
@@ -67,7 +89,8 @@ class CustomizacionController extends Controller
         return response()->json($output);
     }
 
-    public function listarTransformacionesProcesadas(){
+    public function listarTransformacionesProcesadas()
+    {
         $data = DB::table('almacen.transformacion')
         ->select('transformacion.*','alm_almacen.descripcion as almacen_descripcion',
                  'sis_usua.nombre_corto as nombre_responsable','orden_despacho.codigo as cod_od',
@@ -94,6 +117,7 @@ class CustomizacionController extends Controller
         ->join('administracion.adm_estado_doc','adm_estado_doc.id_estado_doc','=','transformacion.estado')
         ->join('configuracion.sis_usua','sis_usua.id_usuario','=','transformacion.responsable')
         ->where([['transformacion.estado','=',9]]);
+
         return datatables($data)->toJson();
     }
 
@@ -164,7 +188,7 @@ class CustomizacionController extends Controller
         ->whereYear('fecha_transformacion','=',$yyyy)
         ->get()->count();
         
-        $val = AlmacenController::leftZero(3,($cantidad + 1));
+        $val = GenericoAlmacenController::leftZero(3,($cantidad + 1));
         $nextId = "HT-".$almacen->codigo."-".$val;
         
         return $nextId;

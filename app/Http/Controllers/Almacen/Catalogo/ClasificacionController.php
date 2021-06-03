@@ -11,7 +11,14 @@ class ClasificacionController extends Controller
     function view_clasificacion(){
         return view('almacen/producto/clasificacion');
     }
-
+    public static function mostrar_clasificaciones_cbo(){
+        $data = DB::table('almacen.alm_clasif')
+            ->select('alm_clasif.id_clasificacion','alm_clasif.descripcion')
+            ->where([['alm_clasif.estado', '=', 1]])
+                ->orderBy('descripcion')
+                ->get();
+        return $data;
+    }
     //Clasificaciones
     public function mostrar_clasificaciones(){
         $data = DB::table('almacen.alm_clasif')
