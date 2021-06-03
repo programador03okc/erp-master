@@ -37,10 +37,9 @@
 
     <div class="row" id="contenedor-tabla-nivel-cabecera">
         <div class="col-md-12">
-            <table class="mytable table table-condensed table-bordered table-okc-view" id="listaOrdenes" style="font-size: 10px;">
+            <table class="mytable table table-condensed table-bordered table-okc-view" id="listaOrdenes" style="font-size: 9px;">
                 <thead>
                     <tr>
-                        <th hidden></th>
                         <th>Cuadro costos</th>
                         <th>Proveedor</th>
                         <th>Nro.orden</th>
@@ -51,7 +50,7 @@
                         <th>Estado aprobación CC</th>
                         <th>Fecha aprobación CC</th>
                         <th>Fecha Requerimiento</th>
-                        <th width="60%">Leadtime</th>
+                        <th>Leadtime</th>
                         <th>Empresa / Sede</th>
                         <th>Moneda</th>
                         <th>Condición</th>
@@ -61,7 +60,7 @@
                         <th>Facturas</th>
                         <th>Detalle pago</th>
                         <th>Archivo adjunto</th>
-                        <th width="5%">Acción</th>
+                        <th style="width:20%">Acción</th>
                     </tr>
                 </thead>
                 <tbody></tbody>
@@ -115,6 +114,8 @@
 @endsection
 
 @section('scripts')
+    <script src="{{('/js/tableToExcel.js')}}"></script>
+
     <script src="{{ asset('datatables/DataTables/js/jquery.dataTables.min.js') }}"></script>
     <script src="{{ asset('datatables/DataTables/js/dataTables.bootstrap.min.js') }}"></script>
     <script src="{{ asset('datatables/pdfmake/vfs_fonts.js') }}"></script>
