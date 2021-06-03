@@ -110,7 +110,7 @@ class Orden extends Model {
                     'detalle_pago'=> $element->detalle_pago, 
                     'archivo_adjunto'=> $element->archivo_adjunto,
                     'suma_subtotal'=> $element->suma_subtotal,
-                    'facturas'=> Orden::obtenerFacturas($element->id_orden_compra),
+                    'facturas'=> implode(',',Orden::obtenerFacturas($element->id_orden_compra)),
                     'codigo_requerimiento'=> []
                     
                 ];
