@@ -16,6 +16,14 @@ class SubCategoriaController extends Controller
         return view('almacen/producto/subcategoria');
     }
 
+    public static function mostrar_subcategorias_cbo(){
+        $data = DB::table('almacen.alm_subcat')
+            ->select('alm_subcat.id_subcategoria','alm_subcat.descripcion')
+            ->where([['alm_subcat.estado', '=', 1]])
+                ->orderBy('descripcion')
+                ->get();
+        return $data;
+    }
     //SubCategorias
     public function mostrar_sub_categorias(){
         $data = DB::table('almacen.alm_subcat')

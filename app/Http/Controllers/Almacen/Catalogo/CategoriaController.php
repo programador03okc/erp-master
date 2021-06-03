@@ -13,6 +13,15 @@ class CategoriaController extends Controller
         $tipos = AlmacenController::mostrar_tipos_cbo();
         return view('almacen/producto/categoria', compact('tipos'));
     }
+
+    public static function mostrar_categorias_cbo(){
+        $data = DB::table('almacen.alm_cat_prod')
+            ->select('alm_cat_prod.id_categoria','alm_cat_prod.descripcion')
+            ->where([['alm_cat_prod.estado', '=', 1]])
+                ->orderBy('descripcion')
+                ->get();
+        return $data;
+    }
     
     //Categorias
     public function mostrar_categorias(){

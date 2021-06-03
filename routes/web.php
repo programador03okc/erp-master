@@ -651,7 +651,7 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::get('listar_ubigeos', 'AlmacenController@listar_ubigeos');
 					Route::get('listar_personas', 'RecursosHumanosController@mostrar_persona_table')->name('listar_personas');
 					Route::get('mostrar_clientes', 'AlmacenController@mostrar_clientes')->name('mostrar_clientes');;
-					Route::get('cargar_almacenes/{id_sede}', 'AlmacenController@cargar_almacenes');
+					Route::get('cargar_almacenes/{id_sede}', 'Almacen\Ubicacion\AlmacenController@cargar_almacenes');
 					Route::post('guardar-archivos-adjuntos-detalle-requerimiento', 'LogisticaController@guardar_archivos_adjuntos_detalle_requerimiento');
 					Route::put('eliminar-archivo-adjunto-detalle-requerimiento/{id_archivo}', 'LogisticaController@eliminar_archivo_adjunto_detalle_requerimiento');
 					Route::post('guardar-archivos-adjuntos-requerimiento', 'LogisticaController@guardar_archivos_adjuntos_requerimiento');
@@ -835,167 +835,6 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::get('getEstadosRequerimientos/{filtro}', 'DistribucionController@getEstadosRequerimientos');
 		Route::get('listarEstadosRequerimientos/{id}/{filtro}', 'DistribucionController@listarEstadosRequerimientos');
 		
-		// Route::group(['as' => 'almacen.', 'prefix' => 'almacen'], function(){
-	
-			// Route::group(['as' => 'catalogos.', 'prefix' => 'catalogos'], function(){
-	
-			// 	Route::group(['as' => 'tipos.', 'prefix' => 'tipos'], function(){
-			// 		//Tipo Producto
-			// 		Route::get('index', 'AlmacenController@view_tipo')->name('index');
-			// 		Route::get('listar_tipos', 'AlmacenController@mostrar_tp_productos');
-			// 		Route::get('mostrar_tipo/{id}', 'AlmacenController@mostrar_tp_producto');
-			// 		Route::post('guardar_tipo', 'AlmacenController@guardar_tp_producto');
-			// 		Route::post('actualizar_tipo', 'AlmacenController@update_tp_producto');
-			// 		Route::get('anular_tipo/{id}', 'AlmacenController@anular_tp_producto');
-			// 		Route::get('revisarTipo/{id}', 'AlmacenController@tipo_revisar_relacion');
-					
-			// 	});
-	
-			// 	Route::group(['as' => 'categorias.', 'prefix' => 'categorias'], function(){
-			// 		//Categoria
-			// 		Route::get('index', 'AlmacenController@view_categoria')->name('index');
-			// 		Route::get('listar_categorias', 'AlmacenController@mostrar_categorias');
-			// 		Route::get('mostrar_categoria/{id}', 'AlmacenController@mostrar_categoria');
-			// 		Route::post('guardar_categoria', 'AlmacenController@guardar_categoria');
-			// 		Route::post('actualizar_categoria', 'AlmacenController@update_categoria');
-			// 		Route::get('anular_categoria/{id}', 'AlmacenController@anular_categoria');
-			// 		Route::get('revisarCat/{id}', 'AlmacenController@cat_revisar');
-					
-			// 	});
-	
-			// 	Route::group(['as' => 'sub-categorias.', 'prefix' => 'sub-categorias'], function(){
-			// 		//Sub Categoria
-			// 		Route::get('index', 'AlmacenController@view_subcategoria')->name('index');
-			// 		Route::get('listar_subcategorias', 'AlmacenController@mostrar_sub_categorias');
-			// 		Route::get('mostrar_subcategoria/{id}', 'AlmacenController@mostrar_sub_categoria');
-			// 		Route::post('guardar_subcategoria', 'AlmacenController@guardar_sub_categoria');
-			// 		Route::post('actualizar_subcategoria', 'AlmacenController@update_sub_categoria');
-			// 		Route::get('anular_subcategoria/{id}', 'AlmacenController@anular_sub_categoria');
-			// 		Route::get('revisarSubCat/{id}', 'AlmacenController@subcat_revisar');
-					
-			// 	});
-	
-			// 	Route::group(['as' => 'clasificaciones.', 'prefix' => 'clasificaciones'], function(){
-			// 		//Clasificacion
-			// 		Route::get('index', 'AlmacenController@view_clasificacion')->name('index');
-			// 		Route::get('listar_clasificaciones', 'AlmacenController@mostrar_clasificaciones');
-			// 		Route::get('mostrar_clasificacion/{id}', 'AlmacenController@mostrar_clasificacion');
-			// 		Route::post('guardar_clasificacion', 'AlmacenController@guardar_clasificacion');
-			// 		Route::post('actualizar_clasificacion', 'AlmacenController@update_clasificacion');
-			// 		Route::get('anular_clasificacion/{id}', 'AlmacenController@anular_clasificacion');
-			// 		Route::get('revisarClas/{id}', 'AlmacenController@clas_revisar');
-					
-			// 	});
-	
-			// 	Route::group(['as' => 'productos.', 'prefix' => 'productos'], function(){
-			// 		//Producto
-			// 		Route::get('index', 'AlmacenController@view_producto')->name('index');
-			// 		Route::get('mostrar_prods', 'AlmacenController@mostrar_prods');
-			// 		Route::get('mostrar_prods_almacen/{id}', 'AlmacenController@mostrar_prods_almacen');
-			// 		Route::get('mostrar_producto/{id}', 'AlmacenController@mostrar_producto');
-			// 		Route::get('mostrar_categorias_tipo/{id}', 'AlmacenController@mostrar_categorias_tipo');
-			// 		Route::post('guardar_producto', 'AlmacenController@guardar_producto');
-			// 		Route::post('actualizar_producto', 'AlmacenController@update_producto');
-			// 		Route::get('anular_producto/{id}', 'AlmacenController@anular_producto');
-			// 		Route::post('guardar_imagen', 'AlmacenController@guardar_imagen');
-					
-			// 		Route::get('listar_promociones/{id}', 'AlmacenController@listar_promociones');
-			// 		Route::post('crear_promocion', 'AlmacenController@crear_promocion');
-			// 		Route::get('anular_promocion/{id}', 'AlmacenController@anular_promocion');
-					
-			// 		Route::get('listar_ubicaciones_producto/{id}', 'AlmacenController@listar_ubicaciones_producto');
-			// 		Route::get('mostrar_ubicacion/{id}', 'AlmacenController@mostrar_ubicacion');
-			// 		Route::post('guardar_ubicacion', 'AlmacenController@guardar_ubicacion');
-			// 		Route::post('actualizar_ubicacion', 'AlmacenController@update_ubicacion');
-			// 		Route::get('anular_ubicacion/{id}', 'AlmacenController@anular_ubicacion');
-					
-			// 		Route::get('listar_series_producto/{id}', 'AlmacenController@listar_series_producto');
-			// 		Route::get('mostrar_serie/{id}', 'AlmacenController@mostrar_serie');
-			// 		Route::post('guardar_serie', 'AlmacenController@guardar_serie');
-			// 		Route::post('actualizar_serie', 'AlmacenController@update_serie');
-			// 		Route::get('anular_serie/{id}', 'AlmacenController@anular_serie');
-	
-			// 	});
-	
-			// 	Route::group(['as' => 'catalogo-productos.', 'prefix' => 'catalogo-productos'], function(){
-			// 		Route::get('index', 'AlmacenController@view_prod_catalogo')->name('index');
-			// 		Route::get('listar_productos', 'AlmacenController@mostrar_productos');
-			// 	});
-	
-			// });
-	
-			// Route::group(['as' => 'ubicaciones.', 'prefix' => 'ubicaciones'], function(){
-	
-			// 	Route::group(['as' => 'tipos-almacen.', 'prefix' => 'tipos-almacen'], function(){
-			// 		//Tipos Almacen
-			// 		Route::get('index', 'AlmacenController@view_tipo_almacen')->name('index');
-			// 		Route::get('listar_tipo_almacen', 'AlmacenController@mostrar_tipo_almacen');
-			// 		Route::get('cargar_tipo_almacen/{id}', 'AlmacenController@mostrar_tipo_almacenes');
-			// 		Route::post('guardar_tipo_almacen', 'AlmacenController@guardar_tipo_almacen');
-			// 		Route::post('editar_tipo_almacen', 'AlmacenController@update_tipo_almacen');
-			// 		Route::get('anular_tipo_almacen/{id}', 'AlmacenController@anular_tipo_almacen');
-	
-			// 	});
-	
-			// 	Route::group(['as' => 'almacenes.', 'prefix' => 'almacenes'], function(){
-			// 		//Almacen
-			// 		Route::get('index', 'AlmacenController@view_almacenes')->name('index');
-			// 		Route::get('listar_almacenes', 'AlmacenController@mostrar_almacenes');
-			// 		Route::get('cargar_almacen/{id}', 'AlmacenController@mostrar_almacen');
-			// 		Route::post('guardar_almacen', 'AlmacenController@guardar_almacen');
-			// 		Route::post('editar_almacen', 'AlmacenController@update_almacen');
-			// 		Route::get('anular_almacen/{id}', 'AlmacenController@anular_almacen');
-			// 		Route::get('listar_ubigeos', 'AlmacenController@listar_ubigeos');
-	
-			// 		Route::get('almacen_posicion/{id}', 'AlmacenController@almacen_posicion');
-	
-			// 	});
-	
-			// 	Route::group(['as' => 'posiciones.', 'prefix' => 'posiciones'], function(){
-			// 		//Almacen
-			// 		Route::get('index', 'AlmacenController@view_ubicacion')->name('index');
-			// 		Route::get('listar_estantes', 'AlmacenController@mostrar_estantes');
-			// 		Route::get('listar_estantes_almacen/{id}', 'AlmacenController@mostrar_estantes_almacen');
-			// 		Route::get('mostrar_estante/{id}', 'AlmacenController@mostrar_estante');
-			// 		Route::post('guardar_estante', 'AlmacenController@guardar_estante');
-			// 		Route::post('actualizar_estante', 'AlmacenController@update_estante');
-			// 		Route::get('anular_estante/{id}', 'AlmacenController@anular_estante');
-			// 		Route::get('revisar_estante/{id}', 'AlmacenController@revisar_estante');
-			// 		Route::post('guardar_estantes', 'AlmacenController@guardar_estantes');
-			// 		Route::get('listar_niveles', 'AlmacenController@mostrar_niveles');
-			// 		Route::get('listar_niveles_estante/{id}', 'AlmacenController@mostrar_niveles_estante');
-			// 		Route::get('mostrar_nivel/{id}', 'AlmacenController@mostrar_nivel');
-			// 		Route::post('guardar_nivel', 'AlmacenController@guardar_nivel');
-			// 		Route::post('actualizar_nivel', 'AlmacenController@update_nivel');
-			// 		Route::get('anular_nivel/{id}', 'AlmacenController@anular_nivel');
-			// 		Route::get('revisar_nivel/{id}', 'AlmacenController@revisar_nivel');
-			// 		Route::post('guardar_niveles', 'AlmacenController@guardar_niveles');
-			// 		Route::get('listar_posiciones', 'AlmacenController@mostrar_posiciones');
-			// 		Route::get('listar_posiciones_nivel/{id}', 'AlmacenController@mostrar_posiciones_nivel');
-			// 		Route::get('mostrar_posicion/{id}', 'AlmacenController@mostrar_posicion');
-			// 		Route::post('guardar_posiciones', 'AlmacenController@guardar_posiciones');
-			// 		Route::get('anular_posicion/{id}', 'AlmacenController@anular_posicion');
-			// 		Route::get('select_posiciones_almacen/{id}', 'AlmacenController@select_posiciones_almacen');
-	
-			// 	});
-	
-			// });
-	
-			// Route::group(['as' => 'control-stock.', 'prefix' => 'control-stock'], function(){
-	
-			// 	Route::group(['as' => 'importar.', 'prefix' => 'importar'], function(){
-	
-			// 		Route::get('index', 'Almacen\StockController@view_importar')->name('index');
-	
-			// 	});
-	
-			// 	Route::group(['as' => 'toma-inventario.', 'prefix' => 'toma-inventario'], function(){
-	
-			// 		Route::get('index', 'Almacen\StockController@view_toma_inventario')->name('index');
-	
-			// 	});
-			// });
-
 			Route::group(['as' => 'distribucion.', 'prefix' => 'distribucion'], function(){
 	//PENDIENTE
 				Route::group(['as' => 'despachos.', 'prefix' => 'control-despachos'], function(){
@@ -1154,31 +993,31 @@ Route::group(['middleware' => ['auth']], function () {
 
 			Route::group(['as' => 'productos.', 'prefix' => 'productos'], function(){
 				//Producto
-				Route::get('index', 'Almacen\ProductoController@view_producto')->name('index');
-				Route::get('mostrar_prods', 'Almacen\ProductoController@mostrar_prods');
-				Route::get('mostrar_prods_almacen/{id}', 'Almacen\ProductoController@mostrar_prods_almacen');
-				Route::get('mostrar_producto/{id}', 'Almacen\ProductoController@mostrar_producto');
-				Route::get('mostrar_categorias_tipo/{id}', 'Almacen\ProductoController@mostrar_categorias_tipo');
-				Route::post('guardar_producto', 'Almacen\ProductoController@guardar_producto');
-				Route::post('actualizar_producto', 'Almacen\ProductoController@update_producto');
-				Route::get('anular_producto/{id}', 'Almacen\ProductoController@anular_producto');
-				Route::post('guardar_imagen', 'Almacen\ProductoController@guardar_imagen');
+				Route::get('index', 'Almacen\Catalogo\ProductoController@view_producto')->name('index');
+				Route::get('mostrar_prods', 'Almacen\Catalogo\ProductoController@mostrar_prods');
+				Route::get('mostrar_prods_almacen/{id}', 'Almacen\Catalogo\ProductoController@mostrar_prods_almacen');
+				Route::get('mostrar_producto/{id}', 'Almacen\Catalogo\ProductoController@mostrar_producto');
+				Route::get('mostrar_categorias_tipo/{id}', 'Almacen\Catalogo\ProductoController@mostrar_categorias_tipo');
+				Route::post('guardar_producto', 'Almacen\Catalogo\ProductoController@guardar_producto');
+				Route::post('actualizar_producto', 'Almacen\Catalogo\ProductoController@update_producto');
+				Route::get('anular_producto/{id}', 'Almacen\Catalogo\ProductoController@anular_producto');
+				Route::post('guardar_imagen', 'Almacen\Catalogo\ProductoController@guardar_imagen');
 				
-				Route::get('listar_promociones/{id}', 'Almacen\ProductoController@listar_promociones');
-				Route::post('crear_promocion', 'Almacen\ProductoController@crear_promocion');
-				Route::get('anular_promocion/{id}', 'Almacen\ProductoController@anular_promocion');
+				Route::get('listar_promociones/{id}', 'Almacen\Catalogo\ProductoController@listar_promociones');
+				Route::post('crear_promocion', 'Almacen\Catalogo\ProductoController@crear_promocion');
+				Route::get('anular_promocion/{id}', 'Almacen\Catalogo\ProductoController@anular_promocion');
 				
-				Route::get('listar_ubicaciones_producto/{id}', 'Almacen\ProductoController@listar_ubicaciones_producto');
-				Route::get('mostrar_ubicacion/{id}', 'Almacen\ProductoController@mostrar_ubicacion');
-				Route::post('guardar_ubicacion', 'Almacen\ProductoController@guardar_ubicacion');
-				Route::post('actualizar_ubicacion', 'Almacen\ProductoController@update_ubicacion');
-				Route::get('anular_ubicacion/{id}', 'Almacen\ProductoController@anular_ubicacion');
+				Route::get('listar_ubicaciones_producto/{id}', 'Almacen\Catalogo\ProductoController@listar_ubicaciones_producto');
+				Route::get('mostrar_ubicacion/{id}', 'Almacen\Catalogo\ProductoController@mostrar_ubicacion');
+				Route::post('guardar_ubicacion', 'Almacen\Catalogo\ProductoController@guardar_ubicacion');
+				Route::post('actualizar_ubicacion', 'Almacen\Catalogo\ProductoController@update_ubicacion');
+				Route::get('anular_ubicacion/{id}', 'Almacen\Catalogo\ProductoController@anular_ubicacion');
 				
-				Route::get('listar_series_producto/{id}', 'Almacen\ProductoController@listar_series_producto');
-				Route::get('mostrar_serie/{id}', 'Almacen\ProductoController@mostrar_serie');
-				Route::post('guardar_serie', 'Almacen\ProductoController@guardar_serie');
-				Route::post('actualizar_serie', 'Almacen\ProductoController@update_serie');
-				Route::get('anular_serie/{id}', 'Almacen\ProductoController@anular_serie');
+				Route::get('listar_series_producto/{id}', 'Almacen\Catalogo\ProductoController@listar_series_producto');
+				Route::get('mostrar_serie/{id}', 'Almacen\Catalogo\ProductoController@mostrar_serie');
+				Route::post('guardar_serie', 'Almacen\Catalogo\ProductoController@guardar_serie');
+				Route::post('actualizar_serie', 'Almacen\Catalogo\ProductoController@update_serie');
+				Route::get('anular_serie/{id}', 'Almacen\Catalogo\ProductoController@anular_serie');
 
 			});
 
@@ -1193,55 +1032,55 @@ Route::group(['middleware' => ['auth']], function () {
 	
 			Route::group(['as' => 'tipos-almacen.', 'prefix' => 'tipos-almacen'], function(){
 				//Tipos Almacen
-				Route::get('index', 'AlmacenController@view_tipo_almacen')->name('index');
-				Route::get('listar_tipo_almacen', 'AlmacenController@mostrar_tipo_almacen');
-				Route::get('cargar_tipo_almacen/{id}', 'AlmacenController@mostrar_tipo_almacenes');
-				Route::post('guardar_tipo_almacen', 'AlmacenController@guardar_tipo_almacen');
-				Route::post('editar_tipo_almacen', 'AlmacenController@update_tipo_almacen');
-				Route::get('anular_tipo_almacen/{id}', 'AlmacenController@anular_tipo_almacen');
+				Route::get('index', 'Almacen\Ubicacion\TipoAlmacenController@view_tipo_almacen')->name('index');
+				Route::get('listar_tipo_almacen', 'Almacen\Ubicacion\TipoAlmacenController@mostrar_tipo_almacen');
+				Route::get('cargar_tipo_almacen/{id}', 'Almacen\Ubicacion\TipoAlmacenController@mostrar_tipo_almacenes');
+				Route::post('guardar_tipo_almacen', 'Almacen\Ubicacion\TipoAlmacenController@guardar_tipo_almacen');
+				Route::post('editar_tipo_almacen', 'Almacen\Ubicacion\TipoAlmacenController@update_tipo_almacen');
+				Route::get('anular_tipo_almacen/{id}', 'Almacen\Ubicacion\TipoAlmacenController@anular_tipo_almacen');
 
 			});
 
 			Route::group(['as' => 'almacenes.', 'prefix' => 'almacenes'], function(){
 				//Almacen
-				Route::get('index', 'AlmacenController@view_almacenes')->name('index');
-				Route::get('listar_almacenes', 'AlmacenController@mostrar_almacenes');
-				Route::get('cargar_almacen/{id}', 'AlmacenController@mostrar_almacen');
-				Route::post('guardar_almacen', 'AlmacenController@guardar_almacen');
-				Route::post('editar_almacen', 'AlmacenController@update_almacen');
-				Route::get('anular_almacen/{id}', 'AlmacenController@anular_almacen');
-				Route::get('listar_ubigeos', 'AlmacenController@listar_ubigeos');
+				Route::get('index', 'Almacen\Ubicacion\AlmacenController@view_almacenes')->name('index');
+				Route::get('listar_almacenes', 'Almacen\Ubicacion\AlmacenController@mostrar_almacenes');
+				Route::get('cargar_almacen/{id}', 'Almacen\Ubicacion\AlmacenController@mostrar_almacen');
+				Route::post('guardar_almacen', 'Almacen\Ubicacion\AlmacenController@guardar_almacen');
+				Route::post('editar_almacen', 'Almacen\Ubicacion\AlmacenController@update_almacen');
+				Route::get('anular_almacen/{id}', 'Almacen\Ubicacion\AlmacenController@anular_almacen');
+				Route::get('listar_ubigeos', 'Almacen\Ubicacion\AlmacenController@listar_ubigeos');
 
-				Route::get('almacen_posicion/{id}', 'AlmacenController@almacen_posicion');
+				Route::get('almacen_posicion/{id}', 'Almacen\Ubicacion\PosicionController@almacen_posicion');
 
 			});
 
 			Route::group(['as' => 'posiciones.', 'prefix' => 'posiciones'], function(){
 				//Almacen
-				Route::get('index', 'AlmacenController@view_ubicacion')->name('index');
-				Route::get('listar_estantes', 'AlmacenController@mostrar_estantes');
-				Route::get('listar_estantes_almacen/{id}', 'AlmacenController@mostrar_estantes_almacen');
-				Route::get('mostrar_estante/{id}', 'AlmacenController@mostrar_estante');
-				Route::post('guardar_estante', 'AlmacenController@guardar_estante');
-				Route::post('actualizar_estante', 'AlmacenController@update_estante');
-				Route::get('anular_estante/{id}', 'AlmacenController@anular_estante');
-				Route::get('revisar_estante/{id}', 'AlmacenController@revisar_estante');
-				Route::post('guardar_estantes', 'AlmacenController@guardar_estantes');
-				Route::get('listar_niveles', 'AlmacenController@mostrar_niveles');
-				Route::get('listar_niveles_estante/{id}', 'AlmacenController@mostrar_niveles_estante');
-				Route::get('mostrar_nivel/{id}', 'AlmacenController@mostrar_nivel');
-				Route::post('guardar_nivel', 'AlmacenController@guardar_nivel');
-				Route::post('actualizar_nivel', 'AlmacenController@update_nivel');
-				Route::get('anular_nivel/{id}', 'AlmacenController@anular_nivel');
-				Route::get('revisar_nivel/{id}', 'AlmacenController@revisar_nivel');
-				Route::post('guardar_niveles', 'AlmacenController@guardar_niveles');
-				Route::get('listar_posiciones', 'AlmacenController@mostrar_posiciones');
-				Route::get('listar_posiciones_nivel/{id}', 'AlmacenController@mostrar_posiciones_nivel');
-				Route::get('mostrar_posicion/{id}', 'AlmacenController@mostrar_posicion');
-				Route::post('guardar_posiciones', 'AlmacenController@guardar_posiciones');
-				Route::get('anular_posicion/{id}', 'AlmacenController@anular_posicion');
-				Route::get('select_posiciones_almacen/{id}', 'AlmacenController@select_posiciones_almacen');
-				Route::get('listar_almacenes', 'AlmacenController@mostrar_almacenes');
+				Route::get('index', 'Almacen\Ubicacion\PosicionController@view_ubicacion')->name('index');
+				Route::get('listar_estantes', 'Almacen\Ubicacion\PosicionController@mostrar_estantes');
+				Route::get('listar_estantes_almacen/{id}', 'Almacen\Ubicacion\PosicionController@mostrar_estantes_almacen');
+				Route::get('mostrar_estante/{id}', 'Almacen\Ubicacion\PosicionController@mostrar_estante');
+				Route::post('guardar_estante', 'Almacen\Ubicacion\PosicionController@guardar_estante');
+				Route::post('actualizar_estante', 'Almacen\Ubicacion\PosicionController@update_estante');
+				Route::get('anular_estante/{id}', 'Almacen\Ubicacion\PosicionController@anular_estante');
+				Route::get('revisar_estante/{id}', 'Almacen\Ubicacion\PosicionController@revisar_estante');
+				Route::post('guardar_estantes', 'Almacen\Ubicacion\PosicionController@guardar_estantes');
+				Route::get('listar_niveles', 'Almacen\Ubicacion\PosicionController@mostrar_niveles');
+				Route::get('listar_niveles_estante/{id}', 'Almacen\Ubicacion\PosicionController@mostrar_niveles_estante');
+				Route::get('mostrar_nivel/{id}', 'Almacen\Ubicacion\PosicionController@mostrar_nivel');
+				Route::post('guardar_nivel', 'Almacen\Ubicacion\PosicionController@guardar_nivel');
+				Route::post('actualizar_nivel', 'Almacen\Ubicacion\PosicionController@update_nivel');
+				Route::get('anular_nivel/{id}', 'Almacen\Ubicacion\PosicionController@anular_nivel');
+				Route::get('revisar_nivel/{id}', 'Almacen\Ubicacion\PosicionController@revisar_nivel');
+				Route::post('guardar_niveles', 'Almacen\Ubicacion\PosicionController@guardar_niveles');
+				Route::get('listar_posiciones', 'Almacen\Ubicacion\PosicionController@mostrar_posiciones');
+				Route::get('listar_posiciones_nivel/{id}', 'Almacen\Ubicacion\PosicionController@mostrar_posiciones_nivel');
+				Route::get('mostrar_posicion/{id}', 'Almacen\Ubicacion\PosicionController@mostrar_posicion');
+				Route::post('guardar_posiciones', 'Almacen\Ubicacion\PosicionController@guardar_posiciones');
+				Route::get('anular_posicion/{id}', 'Almacen\Ubicacion\PosicionController@anular_posicion');
+				Route::get('select_posiciones_almacen/{id}', 'Almacen\Ubicacion\PosicionController@select_posiciones_almacen');
+				Route::get('listar_almacenes', 'Almacen\Ubicacion\AlmacenController@mostrar_almacenes');
 
 			});
 
@@ -1266,49 +1105,53 @@ Route::group(['middleware' => ['auth']], function () {
 	
 			Route::group(['as' => 'pendientes-ingreso.', 'prefix' => 'pendientes-ingreso'], function(){
 				//Pendientes de Ingreso
-				Route::get('index', 'OrdenesPendientesController@view_ordenesPendientes')->name('index');
-				Route::post('listarOrdenesPendientes', 'OrdenesPendientesController@listarOrdenesPendientes');
-				Route::post('listarIngresos', 'OrdenesPendientesController@listarIngresos');
-				Route::get('detalleOrden/{id}', 'OrdenesPendientesController@detalleOrden');
-				Route::post('guardar_guia_com_oc', 'OrdenesPendientesController@guardar_guia_com_oc');
-				Route::get('verGuiasOrden/{id}', 'OrdenesPendientesController@verGuiasOrden');
-				// Route::post('guardar_guia_transferencia', 'OrdenesPendientesController@guardar_guia_transferencia');
-				Route::post('anular_ingreso', 'OrdenesPendientesController@anular_ingreso');
-				Route::get('cargar_almacenes/{id}', 'AlmacenController@cargar_almacenes');
-				Route::get('imprimir_ingreso/{id}', 'AlmacenController@imprimir_ingreso');
-				Route::post('detalleOrdenesSeleccionadas', 'OrdenesPendientesController@detalleOrdenesSeleccionadas');
-				Route::get('detalleMovimiento/{id}', 'OrdenesPendientesController@detalleMovimiento');
-				Route::post('listarTransformacionesProcesadas', 'CustomizacionController@listarTransformacionesProcesadas');
-				Route::get('listarDetalleTransformacion/{id}', 'CustomizacionController@listarDetalleTransformacion');
-				// Route::get('transferencia/{id}', 'OrdenesPendientesController@transferencia');
-				Route::get('obtenerGuia/{id}', 'OrdenesPendientesController@obtenerGuia');
-				Route::post('guardar_doc_compra', 'OrdenesPendientesController@guardar_doc_compra');
-				Route::get('documentos_ver/{id}', 'OrdenesPendientesController@documentos_ver');
-				Route::get('mostrar_prods', 'AlmacenController@mostrar_prods');
-				Route::post('guardar_producto', 'AlmacenController@guardar_producto')->name('guardar-producto');
-				Route::get('mostrar_series/{id}', 'OrdenesPendientesController@mostrar_series');
-				Route::post('guardar_series', 'OrdenesPendientesController@guardar_series')->name('guardar-series');
-				Route::post('actualizar_series', 'OrdenesPendientesController@actualizar_series')->name('actualizar-series');
-				Route::post('cambio_serie_numero', 'OrdenesPendientesController@cambio_serie_numero')->name('cambio-series');
+				Route::get('index', 'Almacen\Movimiento\OrdenesPendientesController@view_ordenesPendientes')->name('index');
+				Route::post('listarOrdenesPendientes', 'Almacen\Movimiento\OrdenesPendientesController@listarOrdenesPendientes');
+				Route::post('listarIngresos', 'Almacen\Movimiento\OrdenesPendientesController@listarIngresos');
+				Route::get('detalleOrden/{id}', 'Almacen\Movimiento\OrdenesPendientesController@detalleOrden');
+				Route::post('guardar_guia_com_oc', 'Almacen\Movimiento\OrdenesPendientesController@guardar_guia_com_oc');
+				Route::get('verGuiasOrden/{id}', 'Almacen\Movimiento\OrdenesPendientesController@verGuiasOrden');
+				// Route::post('guardar_guia_transferencia', 'Almacen\Movimiento\OrdenesPendientesController@guardar_guia_transferencia');
+				Route::post('anular_ingreso', 'Almacen\Movimiento\OrdenesPendientesController@anular_ingreso');
+				Route::get('cargar_almacenes/{id}', 'Almacen\Ubicacion\AlmacenController@cargar_almacenes');
+				Route::get('imprimir_ingreso/{id}', 'Almacen\Movimiento\OrdenesPendientesController@imprimir_ingreso');
+
+				Route::post('detalleOrdenesSeleccionadas', 'Almacen\Movimiento\OrdenesPendientesController@detalleOrdenesSeleccionadas');
+				Route::get('detalleMovimiento/{id}', 'Almacen\Movimiento\OrdenesPendientesController@detalleMovimiento');
+				Route::post('listarTransformacionesProcesadas', 'Almacen\Movimiento\TransformacionController@listarTransformacionesProcesadas');
+				Route::get('listarDetalleTransformacion/{id}', 'Almacen\Movimiento\TransformacionController@listarDetalleTransformacion');
+				// Route::get('transferencia/{id}', 'Almacen\Movimiento\OrdenesPendientesController@transferencia');
+				Route::get('obtenerGuia/{id}', 'Almacen\Movimiento\OrdenesPendientesController@obtenerGuia');
+				Route::post('guardar_doc_compra', 'Almacen\Movimiento\OrdenesPendientesController@guardar_doc_compra');
+				Route::get('documentos_ver/{id}', 'Almacen\Movimiento\OrdenesPendientesController@documentos_ver');
+
+				Route::get('mostrar_prods', 'Almacen\Catalogo\ProductoController@mostrar_prods');
+				Route::post('guardar_producto', 'Almacen\Catalogo\ProductoController@guardar_producto')->name('guardar-producto');
+				
+				Route::get('mostrar_series/{id}', 'Almacen\Movimiento\OrdenesPendientesController@mostrar_series');
+				Route::post('guardar_series', 'Almacen\Movimiento\OrdenesPendientesController@guardar_series')->name('guardar-series');
+				Route::post('actualizar_series', 'Almacen\Movimiento\OrdenesPendientesController@actualizar_series')->name('actualizar-series');
+				Route::post('cambio_serie_numero', 'Almacen\Movimiento\OrdenesPendientesController@cambio_serie_numero')->name('cambio-series');
+				
 				Route::get('verGuiaCompraTransferencia/{id}', 'TransferenciaController@verGuiaCompraTransferencia');
-				Route::get('transferencia/{id}', 'OrdenesPendientesController@transferencia');
-				Route::post('obtenerGuiaSeleccionadas', 'OrdenesPendientesController@obtenerGuiaSeleccionadas');
-				Route::get('anular_doc_com/{id}', 'OrdenesPendientesController@anular_doc_com');
+				Route::get('transferencia/{id}', 'Almacen\Movimiento\OrdenesPendientesController@transferencia');
+				Route::post('obtenerGuiaSeleccionadas', 'Almacen\Movimiento\OrdenesPendientesController@obtenerGuiaSeleccionadas');
+				Route::get('anular_doc_com/{id}', 'Almacen\Movimiento\OrdenesPendientesController@anular_doc_com');
 
 			});
 
 			Route::group(['as' => 'pendientes-salida.', 'prefix' => 'pendientes-salida'], function(){
 				//Pendientes de Salida
-				Route::get('index', 'DistribucionController@view_despachosPendientes')->name('index');
-				Route::post('listarOrdenesDespachoPendientes', 'DistribucionController@listarOrdenesDespachoPendientes');
-				Route::post('guardar_guia_despacho', 'DistribucionController@guardar_guia_despacho');
-				Route::post('listarSalidasDespacho', 'DistribucionController@listarSalidasDespacho');
-				Route::post('anular_salida', 'DistribucionController@anular_salida');
-				Route::post('cambio_serie_numero', 'DistribucionController@cambio_serie_numero');
-				Route::get('verDetalleDespacho/{id}', 'DistribucionController@verDetalleDespacho');
-				Route::get('imprimir_salida/{id}', 'AlmacenController@imprimir_salida');
-				Route::get('anular_orden_despacho/{id}', 'DistribucionController@anular_orden_despacho');
-				Route::get('listar_series_guia_ven/{id}', 'AlmacenController@listar_series_guia_ven');
+				Route::get('index', 'Almacen\Movimiento\SalidasPendientesController@view_despachosPendientes')->name('index');
+				Route::post('listarOrdenesDespachoPendientes', 'Almacen\Movimiento\SalidasPendientesController@listarOrdenesDespachoPendientes');
+				Route::post('guardar_guia_despacho', 'Almacen\Movimiento\SalidasPendientesController@guardar_guia_despacho');
+				Route::post('listarSalidasDespacho', 'Almacen\Movimiento\SalidasPendientesController@listarSalidasDespacho');
+				Route::post('anular_salida', 'Almacen\Movimiento\SalidasPendientesController@anular_salida');
+				Route::post('cambio_serie_numero', 'Almacen\Movimiento\SalidasPendientesController@cambio_serie_numero');
+				Route::get('verDetalleDespacho/{id}', 'Almacen\Movimiento\SalidasPendientesController@verDetalleDespacho');
+				Route::get('imprimir_salida/{id}', 'Almacen\Movimiento\SalidasPendientesController@imprimir_salida');
+				Route::get('anular_orden_despacho/{id}', 'Almacen\Movimiento\SalidasPendientesController@anular_orden_despacho');
+				Route::get('listar_series_guia_ven/{id}', 'Almacen\Movimiento\SalidasPendientesController@listar_series_guia_ven');
 				
 			});
 
@@ -1449,32 +1292,32 @@ Route::group(['middleware' => ['auth']], function () {
 			
 			Route::group(['as' => 'gestion-transferencias.', 'prefix' => 'gestion-transferencias'], function(){
 				//Transferencias
-				Route::get('index', 'TransferenciaController@view_listar_transferencias')->name('index');
-				// Route::get('listar_transferencias_pendientes/{ori}', 'TransferenciaController@listar_transferencias_pendientes');
-				Route::get('listar_transferencias_recibidas/{ori}', 'TransferenciaController@listar_transferencias_recibidas');
-				Route::get('listar_transferencia_detalle/{id}', 'TransferenciaController@listar_transferencia_detalle');
-				Route::post('guardar_ingreso_transferencia', 'TransferenciaController@guardar_ingreso_transferencia');
-				Route::post('guardar_salida_transferencia', 'TransferenciaController@guardar_salida_transferencia');
-				Route::post('anular_transferencia_ingreso', 'TransferenciaController@anular_transferencia_ingreso');
-				Route::get('ingreso_transferencia/{id}', 'TransferenciaController@ingreso_transferencia');
-				Route::get('transferencia_nextId/{id}', 'TransferenciaController@transferencia_nextId');
-				Route::post('anular_transferencia_salida', 'TransferenciaController@anular_transferencia_salida');
-				Route::get('imprimir_ingreso/{id}', 'AlmacenController@imprimir_ingreso');
-				Route::get('imprimir_salida/{id}', 'AlmacenController@imprimir_salida');
-				Route::post('listarTransferenciasPorEnviar/{id}', 'TransferenciaController@listarTransferenciasPorEnviar');
-				Route::get('listarTransferenciasPorRecibir/{id}', 'TransferenciaController@listarTransferenciasPorRecibir');
-				Route::get('cargar_almacenes/{id}', 'AlmacenController@cargar_almacenes');
-				Route::get('listarDetalleTransferencia/{id}', 'TransferenciaController@listarDetalleTransferencia');
-				Route::post('listarDetalleTransferenciasSeleccionadas', 'TransferenciaController@listarDetalleTransferenciasSeleccionadas');
-				Route::get('listar_guia_transferencia_detalle/{id}', 'TransferenciaController@listar_guia_transferencia_detalle');
-				Route::get('listarSeries/{id}', 'TransferenciaController@listarSeries');
-				Route::get('listarSeriesVen/{id}', 'TransferenciaController@listarSeriesVen');
-				Route::get('anular_transferencia/{id}', 'TransferenciaController@anular_transferencia');
-				// Route::get('listar_guias_compra', 'TransferenciaController@listar_guias_compra');
-				Route::get('transferencia/{id}', 'OrdenesPendientesController@transferencia');
-				Route::get('verGuiaCompraTransferencia/{id}', 'TransferenciaController@verGuiaCompraTransferencia');
-				Route::get('verRequerimiento/{id}', 'TransferenciaController@verRequerimiento');
-				Route::get('generarTransferenciaRequerimiento/{id}', 'TransferenciaController@generarTransferenciaRequerimiento');
+				Route::get('index', 'Almacen\Movimiento\TransferenciaController@view_listar_transferencias')->name('index');
+				// Route::get('listar_transferencias_pendientes/{ori}', 'Almacen\Movimiento\TransferenciaController@listar_transferencias_pendientes');
+				Route::get('listar_transferencias_recibidas/{ori}', 'Almacen\Movimiento\TransferenciaController@listar_transferencias_recibidas');
+				Route::get('listar_transferencia_detalle/{id}', 'Almacen\Movimiento\TransferenciaController@listar_transferencia_detalle');
+				Route::post('guardar_ingreso_transferencia', 'Almacen\Movimiento\TransferenciaController@guardar_ingreso_transferencia');
+				Route::post('guardar_salida_transferencia', 'Almacen\Movimiento\TransferenciaController@guardar_salida_transferencia');
+				Route::post('anular_transferencia_ingreso', 'Almacen\Movimiento\TransferenciaController@anular_transferencia_ingreso');
+				Route::get('ingreso_transferencia/{id}', 'Almacen\Movimiento\TransferenciaController@ingreso_transferencia');
+				Route::get('transferencia_nextId/{id}', 'Almacen\Movimiento\TransferenciaController@transferencia_nextId');
+				Route::post('anular_transferencia_salida', 'Almacen\Movimiento\TransferenciaController@anular_transferencia_salida');
+				Route::get('imprimir_ingreso/{id}', 'Almacen\Movimiento\OrdenesPendientesController@imprimir_ingreso');
+				Route::get('imprimir_salida/{id}', 'Almacen\Movimiento\SalidasPendientesController@imprimir_salida');
+				Route::post('listarTransferenciasPorEnviar/{id}', 'Almacen\Movimiento\TransferenciaController@listarTransferenciasPorEnviar');
+				Route::get('listarTransferenciasPorRecibir/{id}', 'Almacen\Movimiento\TransferenciaController@listarTransferenciasPorRecibir');
+				Route::get('cargar_almacenes/{id}', 'Almacen\Ubicacion\AlmacenController@cargar_almacenes');
+				Route::get('listarDetalleTransferencia/{id}', 'Almacen\Movimiento\TransferenciaController@listarDetalleTransferencia');
+				Route::post('listarDetalleTransferenciasSeleccionadas', 'Almacen\Movimiento\TransferenciaController@listarDetalleTransferenciasSeleccionadas');
+				Route::get('listar_guia_transferencia_detalle/{id}', 'Almacen\Movimiento\TransferenciaController@listar_guia_transferencia_detalle');
+				Route::get('listarSeries/{id}', 'Almacen\Movimiento\TransferenciaController@listarSeries');
+				Route::get('listarSeriesVen/{id}', 'Almacen\Movimiento\TransferenciaController@listarSeriesVen');
+				Route::get('anular_transferencia/{id}', 'Almacen\Movimiento\TransferenciaController@anular_transferencia');
+				// Route::get('listar_guias_compra', 'Almacen\Movimiento\TransferenciaController@listar_guias_compra');
+				Route::get('transferencia/{id}', 'Almacen\Movimiento\OrdenesPendientesController@transferencia');
+				Route::get('verGuiaCompraTransferencia/{id}', 'Almacen\Movimiento\TransferenciaController@verGuiaCompraTransferencia');
+				Route::get('verRequerimiento/{id}', 'Almacen\Movimiento\TransferenciaController@verRequerimiento');
+				Route::get('generarTransferenciaRequerimiento/{id}', 'Almacen\Movimiento\TransferenciaController@generarTransferenciaRequerimiento');
 
 			});
 
@@ -1484,64 +1327,64 @@ Route::group(['middleware' => ['auth']], function () {
 
 			Route::group(['as' => 'gestion-customizaciones.', 'prefix' => 'gestion-customizaciones'], function(){
 				//Transformaciones
-				Route::get('index', 'AlmacenController@view_listar_transformaciones')->name('index');
-				Route::get('listar_todas_transformaciones', 'CustomizacionController@listar_todas_transformaciones');
-				Route::get('listar_transformaciones_pendientes', 'CustomizacionController@listar_transformaciones_pendientes');
-				Route::post('listarCuadrosCostos', 'CustomizacionController@listarCuadrosCostos');
-				Route::post('generarTransformacion', 'CustomizacionController@generarTransformacion');
-				Route::get('listar_almacenes', 'AlmacenController@mostrar_almacenes');
-				Route::get('obtenerCuadro/{id}/{tipo}', 'CustomizacionController@obtenerCuadro');
-				Route::get('listar_servicio', 'AlmacenController@mostrar_servicios');
-				Route::get('mostrar_prods', 'AlmacenController@mostrar_prods');
-				Route::get('id_ingreso_transformacion/{id}', 'CustomizacionController@id_ingreso_transformacion');
-				Route::get('id_salida_transformacion/{id}', 'CustomizacionController@id_salida_transformacion');
-				Route::get('imprimir_ingreso/{id}', 'AlmacenController@imprimir_ingreso');
-				Route::get('imprimir_salida/{id}', 'AlmacenController@imprimir_salida');
-				Route::get('imprimir_transformacion/{id}', 'CustomizacionController@imprimir_transformacion');
-				Route::get('recibido_conforme_transformacion/{id}', 'CustomizacionController@recibido_conforme_transformacion');
-				Route::get('no_conforme_transformacion/{id}', 'CustomizacionController@no_conforme_transformacion');
-				Route::get('iniciar_transformacion/{id}', 'CustomizacionController@iniciar_transformacion');
+				Route::get('index', 'Almacen\Movimiento\TransformacionController@view_listar_transformaciones')->name('index');
+				Route::get('listar_todas_transformaciones', 'Almacen\Movimiento\TransformacionController@listar_todas_transformaciones');
+				Route::get('listar_transformaciones_pendientes', 'Almacen\Movimiento\TransformacionController@listar_transformaciones_pendientes');
+				Route::post('listarCuadrosCostos', 'Almacen\Movimiento\TransformacionController@listarCuadrosCostos');
+				Route::post('generarTransformacion', 'Almacen\Movimiento\TransformacionController@generarTransformacion');
+				// Route::get('listar_almacenes', 'AlmacenController@mostrar_almacenes');
+				Route::get('obtenerCuadro/{id}/{tipo}', 'Almacen\Movimiento\TransformacionController@obtenerCuadro');
+				// Route::get('listar_servicio', 'AlmacenController@mostrar_servicios');
+				Route::get('mostrar_prods', 'Almacen\Catalogo\ProductoController@mostrar_prods');
+				Route::get('id_ingreso_transformacion/{id}', 'Almacen\Movimiento\TransformacionController@id_ingreso_transformacion');
+				Route::get('id_salida_transformacion/{id}', 'Almacen\Movimiento\TransformacionController@id_salida_transformacion');
+				Route::get('imprimir_ingreso/{id}', 'Almacen\Movimiento\OrdenesPendientesController@imprimir_ingreso');
+				Route::get('imprimir_salida/{id}', 'Almacen\Movimiento\SalidasPendientesController@imprimir_salida');
+				Route::get('imprimir_transformacion/{id}', 'Almacen\Movimiento\TransformacionController@imprimir_transformacion');
+				Route::get('recibido_conforme_transformacion/{id}', 'Almacen\Movimiento\TransformacionController@recibido_conforme_transformacion');
+				Route::get('no_conforme_transformacion/{id}', 'Almacen\Movimiento\TransformacionController@no_conforme_transformacion');
+				Route::get('iniciar_transformacion/{id}', 'Almacen\Movimiento\TransformacionController@iniciar_transformacion');
 
 			});
 
 			Route::group(['as' => 'hoja-transformacion.', 'prefix' => 'hoja-transformacion'], function(){
 				//Transformaciones
-				Route::get('index', 'AlmacenController@view_transformacion')->name('index');
-				Route::post('guardar_transformacion', 'CustomizacionController@guardar_transformacion');
-				Route::post('update_transformacion', 'CustomizacionController@update_transformacion');
-				Route::get('listar_transformaciones', 'CustomizacionController@listar_transformaciones');
-				Route::get('mostrar_transformacion/{id}', 'CustomizacionController@mostrar_transformacion');
-				Route::get('anular_transformacion/{id}', 'CustomizacionController@anular_transformacion');
-				Route::get('listar_materias/{id}', 'CustomizacionController@listar_materias');
-				Route::get('listar_directos/{id}', 'CustomizacionController@listar_directos');
-				Route::get('listar_indirectos/{id}', 'CustomizacionController@listar_indirectos');
-				Route::get('listar_sobrantes/{id}', 'CustomizacionController@listar_sobrantes');
-				Route::get('listar_transformados/{id}', 'CustomizacionController@listar_transformados');
-				Route::get('iniciar_transformacion/{id}', 'CustomizacionController@iniciar_transformacion');
-				Route::post('procesar_transformacion', 'CustomizacionController@procesar_transformacion');
-				Route::post('guardar_materia', 'CustomizacionController@guardar_materia');
-				Route::post('guardar_directo', 'CustomizacionController@guardar_directo');
-				Route::post('guardar_indirecto', 'CustomizacionController@guardar_indirecto');
-				Route::post('guardar_sobrante', 'CustomizacionController@guardar_sobrante');
-				Route::post('guardar_transformado', 'CustomizacionController@guardar_transformado');
-				Route::post('update_materia', 'CustomizacionController@update_materia');
-				Route::post('update_directo', 'CustomizacionController@update_directo');
-				Route::post('update_indirecto', 'CustomizacionController@update_indirecto');
-				Route::post('update_sobrante', 'CustomizacionController@update_sobrante');
-				Route::post('update_transformado', 'CustomizacionController@update_transformado');
-				Route::get('id_ingreso_transformacion/{id}', 'CustomizacionController@id_ingreso_transformacion');
-				Route::get('id_salida_transformacion/{id}', 'CustomizacionController@id_salida_transformacion');
-				Route::get('anular_materia/{id}', 'CustomizacionController@anular_materia');
-				Route::get('anular_directo/{id}', 'CustomizacionController@anular_directo');
-				Route::get('anular_indirecto/{id}', 'CustomizacionController@anular_indirecto');
-				Route::get('anular_sobrante/{id}', 'CustomizacionController@anular_sobrante');
-				Route::get('anular_transformado/{id}', 'CustomizacionController@anular_transformado');
-				Route::get('listar_servicio', 'AlmacenController@mostrar_servicios');
-				Route::get('mostrar_prods', 'AlmacenController@mostrar_prods');
-				Route::get('imprimir_ingreso/{id}', 'AlmacenController@imprimir_ingreso');
-				Route::get('imprimir_salida/{id}', 'AlmacenController@imprimir_salida');
-				Route::post('guardar_producto', 'AlmacenController@guardar_producto');
-				Route::get('imprimir_transformacion/{id}', 'CustomizacionController@imprimir_transformacion');
+				Route::get('index', 'Almacen\Movimiento\TransformacionController@view_transformacion')->name('index');
+				Route::post('guardar_transformacion', 'Almacen\Movimiento\TransformacionController@guardar_transformacion');
+				Route::post('update_transformacion', 'Almacen\Movimiento\TransformacionController@update_transformacion');
+				Route::get('listar_transformaciones', 'Almacen\Movimiento\TransformacionController@listar_transformaciones');
+				Route::get('mostrar_transformacion/{id}', 'Almacen\Movimiento\TransformacionController@mostrar_transformacion');
+				Route::get('anular_transformacion/{id}', 'Almacen\Movimiento\TransformacionController@anular_transformacion');
+				Route::get('listar_materias/{id}', 'Almacen\Movimiento\TransformacionController@listar_materias');
+				Route::get('listar_directos/{id}', 'Almacen\Movimiento\TransformacionController@listar_directos');
+				Route::get('listar_indirectos/{id}', 'Almacen\Movimiento\TransformacionController@listar_indirectos');
+				Route::get('listar_sobrantes/{id}', 'Almacen\Movimiento\TransformacionController@listar_sobrantes');
+				Route::get('listar_transformados/{id}', 'Almacen\Movimiento\TransformacionController@listar_transformados');
+				Route::get('iniciar_transformacion/{id}', 'Almacen\Movimiento\TransformacionController@iniciar_transformacion');
+				Route::post('procesar_transformacion', 'Almacen\Movimiento\TransformacionController@procesar_transformacion');
+				Route::post('guardar_materia', 'Almacen\Movimiento\TransformacionController@guardar_materia');
+				Route::post('guardar_directo', 'Almacen\Movimiento\TransformacionController@guardar_directo');
+				Route::post('guardar_indirecto', 'Almacen\Movimiento\TransformacionController@guardar_indirecto');
+				Route::post('guardar_sobrante', 'Almacen\Movimiento\TransformacionController@guardar_sobrante');
+				Route::post('guardar_transformado', 'Almacen\Movimiento\TransformacionController@guardar_transformado');
+				Route::post('update_materia', 'Almacen\Movimiento\TransformacionController@update_materia');
+				Route::post('update_directo', 'Almacen\Movimiento\TransformacionController@update_directo');
+				Route::post('update_indirecto', 'Almacen\Movimiento\TransformacionController@update_indirecto');
+				Route::post('update_sobrante', 'Almacen\Movimiento\TransformacionController@update_sobrante');
+				Route::post('update_transformado', 'Almacen\Movimiento\TransformacionController@update_transformado');
+				Route::get('id_ingreso_transformacion/{id}', 'Almacen\Movimiento\TransformacionController@id_ingreso_transformacion');
+				Route::get('id_salida_transformacion/{id}', 'Almacen\Movimiento\TransformacionController@id_salida_transformacion');
+				Route::get('anular_materia/{id}', 'Almacen\Movimiento\TransformacionController@anular_materia');
+				Route::get('anular_directo/{id}', 'Almacen\Movimiento\TransformacionController@anular_directo');
+				Route::get('anular_indirecto/{id}', 'Almacen\Movimiento\TransformacionController@anular_indirecto');
+				Route::get('anular_sobrante/{id}', 'Almacen\Movimiento\TransformacionController@anular_sobrante');
+				Route::get('anular_transformado/{id}', 'Almacen\Movimiento\TransformacionController@anular_transformado');
+				// Route::get('listar_servicio', 'AlmacenController@mostrar_servicios');
+				Route::get('mostrar_prods', 'Almacen\Catalogo\ProductoController@mostrar_prods');
+				Route::get('imprimir_ingreso/{id}', 'Almacen\Movimiento\OrdenesPendientesController@imprimir_ingreso');
+				Route::get('imprimir_salida/{id}', 'Almacen\Movimiento\SalidasPendientesController@imprimir_salida');
+				Route::post('guardar_producto', 'Almacen\Catalogo\ProductoController@guardar_producto');
+				Route::get('imprimir_transformacion/{id}', 'Almacen\Movimiento\TransformacionController@imprimir_transformacion');
 
 			});
 
@@ -1708,36 +1551,36 @@ Route::group(['middleware' => ['auth']], function () {
 
 		Route::group(['as' => 'lista-presupuestos.', 'prefix' => 'lista-presupuestos'], function(){
 			// Lista de Presupuestos
-			Route::get('index', 'PresupuestoController@index')->name('index');
-			Route::get('actualizarPartidas', 'PartidaController@actualizarPartidas')->name('actualizar-partidas');
+			Route::get('index', 'Finanzas\Presupuesto\PresupuestoController@index')->name('index');
+			Route::get('actualizarPartidas', 'Finanzas\Presupuesto\PartidaController@actualizarPartidas')->name('actualizar-partidas');
 	
 		});
 	
 		Route::group(['as' => 'presupuesto.', 'prefix' => 'presupuesto'], function(){
 			// Presupuesto
-			Route::get('create', 'PresupuestoController@create')->name('index');
-			Route::get('mostrarPartidas/{id}', 'PresupuestoController@mostrarPartidas')->name('mostrar-partidas');
-			Route::get('mostrarRequerimientosDetalle/{id}', 'PresupuestoController@mostrarRequerimientosDetalle')->name('mostrar-requerimientos-detalle');
-			Route::post('guardar-presupuesto', 'PresupuestoController@store')->name('guardar-presupuesto');
-			Route::post('actualizar-presupuesto', 'PresupuestoController@update')->name('actualizar-presupuesto');
+			Route::get('create', 'Finanzas\Presupuesto\PresupuestoController@create')->name('index');
+			Route::get('mostrarPartidas/{id}', 'Finanzas\Presupuesto\PresupuestoController@mostrarPartidas')->name('mostrar-partidas');
+			Route::get('mostrarRequerimientosDetalle/{id}', 'Finanzas\Presupuesto\PresupuestoController@mostrarRequerimientosDetalle')->name('mostrar-requerimientos-detalle');
+			Route::post('guardar-presupuesto', 'Finanzas\Presupuesto\PresupuestoController@store')->name('guardar-presupuesto');
+			Route::post('actualizar-presupuesto', 'Finanzas\Presupuesto\PresupuestoController@update')->name('actualizar-presupuesto');
 			
-			Route::post('guardar-titulo', 'TituloController@store')->name('guardar-titulo');
-			Route::post('actualizar-titulo', 'TituloController@update')->name('actualizar-titulo');
-			Route::get('anular-titulo/{id}','TituloController@destroy')->name('anular-titulo');
+			Route::post('guardar-titulo', 'Finanzas\Presupuesto\TituloController@store')->name('guardar-titulo');
+			Route::post('actualizar-titulo', 'Finanzas\Presupuesto\TituloController@update')->name('actualizar-titulo');
+			Route::get('anular-titulo/{id}','Finanzas\Presupuesto\TituloController@destroy')->name('anular-titulo');
 	
-			Route::post('guardar-partida', 'PartidaController@store')->name('guardar-partida');
-			Route::post('actualizar-partida', 'PartidaController@update')->name('actualizar-partida');
-			Route::get('anular-partida/{id}','PartidaController@destroy')->name('anular-partida');
+			Route::post('guardar-partida', 'Finanzas\Presupuesto\PartidaController@store')->name('guardar-partida');
+			Route::post('actualizar-partida', 'Finanzas\Presupuesto\PartidaController@update')->name('actualizar-partida');
+			Route::get('anular-partida/{id}','Finanzas\Presupuesto\PartidaController@destroy')->name('anular-partida');
 	
 		});
 	
 		Route::group(['as' => 'centro-costos.', 'prefix' => 'centro-costos'], function(){
 			//Centro de Costos
-			Route::get('index', 'CentroCostoController@index')->name('index');
-			Route::get('mostrar-centro-costos', 'CentroCostoController@mostrarCentroCostos')->name('mostrar-centro-costos');
-			Route::post('guardar-centro-costo', 'CentroCostoController@store')->name('guardar-centro-costo');
-			Route::post('actualizar-centro-costo', 'CentroCostoController@update')->name('actualizar-centro-costo');
-			Route::get('anular-centro-costo/{id}','CentroCostoController@destroy')->name('anular-centro-costo');
+			Route::get('index', 'Finanzas\CentroCosto\CentroCostoController@index')->name('index');
+			Route::get('mostrar-centro-costos', 'Finanzas\CentroCosto\CentroCostoController@mostrarCentroCostos')->name('mostrar-centro-costos');
+			Route::post('guardar-centro-costo', 'Finanzas\CentroCosto\CentroCostoController@store')->name('guardar-centro-costo');
+			Route::post('actualizar-centro-costo', 'Finanzas\CentroCosto\CentroCostoController@update')->name('actualizar-centro-costo');
+			Route::get('anular-centro-costo/{id}','Finanzas\CentroCosto\CentroCostoController@destroy')->name('anular-centro-costo');
 	
 		});
 	});
@@ -1931,7 +1774,6 @@ Route::group(['middleware' => ['auth']], function () {
 
 Route::get('documentos_ver/{id}', 'OrdenesPendientesController@documentos_ver');
 
-Route::get('soft_tipos_cambio', 'AlmacenController@soft_tipos_cambio');
 Route::get('transformacion_nextId/{fec}/{id}', 'CustomizacionController@transformacion_nextId');
 /* Configuración */
 Route::post('update_password', 'ConfiguracionController@cambiar_clave');
@@ -2033,478 +1875,12 @@ Route::post('grupo_criterio', 'ConfiguracionController@saveGrupoCriterio');
 Route::put('grupo_criterio', 'ConfiguracionController@updateGrupoCriterio');
 
 
-/* Recursos Humanos */
-Route::get('rrhh', 'RecursosHumanosController@view_main');
-Route::get('persona', 'RecursosHumanosController@view_persona');
-Route::get('postulante', 'RecursosHumanosController@view_postulante');
-Route::get('trabajador', 'RecursosHumanosController@view_trabajador');
-Route::get('cargo', 'RecursosHumanosController@view_cargo');
-
-Route::get('periodo', 'RecursosHumanosController@view_periodo');
-Route::get('tareo', 'RecursosHumanosController@view_tareo');
-Route::get('asistencia', 'RecursosHumanosController@view_asistencia');
-Route::get('planilla', 'RecursosHumanosController@view_planilla');
-Route::get('horario', 'RecursosHumanosController@view_horario');
-Route::get('tolerancia', 'RecursosHumanosController@view_tolerancia');
-Route::get('est_civil', 'RecursosHumanosController@view_est_civil');
-Route::get('cond_derecho_hab', 'RecursosHumanosController@view_cond_derecho_hab');
-Route::get('niv_estudios', 'RecursosHumanosController@view_niv_estudio');
-Route::get('carreras', 'RecursosHumanosController@view_carrera');
-Route::get('tipo_trabajador', 'RecursosHumanosController@view_tipo_trabajador');
-Route::get('tipo_contrato', 'RecursosHumanosController@view_tipo_contrato');
-Route::get('modalidad', 'RecursosHumanosController@view_modalidad');
-Route::get('concepto_rol', 'RecursosHumanosController@view_concepto_rol');
-Route::get('cat_ocupacional', 'RecursosHumanosController@view_cat_ocupacional');
-Route::get('tipo_planilla', 'RecursosHumanosController@view_tipo_planilla');
-Route::get('tipo_merito', 'RecursosHumanosController@view_tipo_merito');
-Route::get('tipo_demerito', 'RecursosHumanosController@view_tipo_demerito');
-Route::get('tipo_bonificacion', 'RecursosHumanosController@view_tipo_bonificacion');
-Route::get('tipo_descuento', 'RecursosHumanosController@view_tipo_descuento');
-Route::get('tipo_retencion', 'RecursosHumanosController@view_tipo_retencion');
-Route::get('tipo_aportes', 'RecursosHumanosController@view_tipo_aportes');
-Route::get('derecho_hab', 'RecursosHumanosController@view_derecho_hab');
-Route::get('pension', 'RecursosHumanosController@view_pension');
-Route::get('merito', 'RecursosHumanosController@view_merito');
-Route::get('demerito', 'RecursosHumanosController@view_sancion');
-Route::get('salidas', 'RecursosHumanosController@view_salidas');
-Route::get('prestamos', 'RecursosHumanosController@view_prestamo');
-Route::get('vacaciones', 'RecursosHumanosController@view_vacaciones');
-Route::get('licencia', 'RecursosHumanosController@view_licencia');
-Route::get('horas_ext', 'RecursosHumanosController@view_horas_ext');
-Route::get('cese', 'RecursosHumanosController@view_cese');
-
-Route::get('bonificacion', 'RecursosHumanosController@view_bonificacion');
-Route::get('descuento', 'RecursosHumanosController@view_descuento');
-Route::get('retencion', 'RecursosHumanosController@view_retencion');
-Route::get('aportacion', 'RecursosHumanosController@view_aportacion');
-Route::get('reintegro', 'RecursosHumanosController@view_reintegro');
-
-Route::get('buscar_trabajador_id/{id}/{emp}/{sede}', 'RecursosHumanosController@buscar_trabajador_id');
-
-Route::post('cargar_csv', 'RecursosHumanosController@cargar_horario_reloj');
-Route::get('cargar_data_diaria/{empre}/{sede}/{tipo}/{fecha}', 'RecursosHumanosController@cargar_horario_diario');
-Route::post('grabar_asistencia', 'RecursosHumanosController@grabar_asistencia_diaria');
-Route::post('grabar_asistencia_final', 'RecursosHumanosController@grabar_asistencia_final');
-Route::get('cargar_asistencia/{empre}/{sede}/{tipo}/{ini}/{fin}', 'RecursosHumanosController@cargar_asistencia');
-Route::get('mostrar_permiso_asistencia/{id}/{fecha}', 'RecursosHumanosController@permisos_asistencia');
-Route::get('reporte_tardanzas/{from}/{to}/{empresa}/{sede}', 'RecursosHumanosController@reporte_tardanza');
-Route::get('cargar_data_remun/{emp}/{plani}/{mes}/{anio}/{type}/{empleado}/{grupal}', 'RecursosHumanosController@cargar_remuneraciones'); // SOLO PRUEBAS
-Route::get('cargar_data_spcc/{emp}/{plani}/{mes}/{anio}', 'RecursosHumanosController@remuneracion_spcc'); // SOLO SPCC
-Route::get('procesar_planilla/{emp}/{plani}/{mes}', 'RecursosHumanosController@procesar_planilla'); ///// PLANILLA
-Route::get('generar_planilla_pdf/{emp}/{plani}/{mes}/{anio}', 'RecursosHumanosController@generar_planilla_pdf');
-Route::get('generar_planilla_spcc_pdf/{emp}/{plani}/{mes}/{anio}', 'RecursosHumanosController@generar_planilla_spcc_pdf');
-
-Route::get('reporte_planilla_xls/{emp}/{plani}/{mes}/{anio}/{filter}/{grupal}', 'RecursosHumanosController@reporte_planilla_xls');
-Route::get('reporte_planilla_spcc_xls/{emp}/{plani}/{mes}/{anio}', 'RecursosHumanosController@reporte_planilla_spcc_xls'); // SOLO SPCC
-Route::get('reporte_planilla_grupal_xls/{plani}/{mes}/{anio}/{grupo}', 'RecursosHumanosController@reporte_planilla_grupal_xls');//nueva planilla
-Route::get('generar_vacaciones/{id}', 'RecursosHumanosController@generar_vacaciones_pdf');
-Route::get('reporte_planilla_trabajador_pdf/{emp}/{plani}/{mes}/{anio}/{trab}', 'RecursosHumanosController@reporte_planilla_trabajador_xls');
-Route::get('generar_pdf_trabajdor/{emp}/{plani}/{mes}/{anio}', 'RecursosHumanosController@generar_pdf_trabajdor'); // correo rrhh
-Route::get('reporte_gastos/{plani}/{mes}/{anio}', 'RecursosHumanosController@reporte_gastos');
-
-Route::get('listar_personas', 'RecursosHumanosController@mostrar_persona_table');
-Route::get('cargar_persona/{id}', 'RecursosHumanosController@mostrar_persona_id');
-Route::post('guardar_persona', 'RecursosHumanosController@guardar_persona');
-Route::post('editar_persona', 'RecursosHumanosController@actualizar_persona');
-Route::get('anular_persona/{id}', 'RecursosHumanosController@anular_persona');
-Route::get('digitos_documento/{id}', 'RecursosHumanosController@mostrar_longitud_doc');
-
-Route::get('listar_postulantes', 'RecursosHumanosController@mostrar_postulante_table');
-Route::get('cargar_postulante/{id}', 'RecursosHumanosController@mostrar_postulante_id');
-Route::get('cargar_postulante_dni/{dni}', 'RecursosHumanosController@mostrar_postulante_dni');
-Route::post('guardar_informacion_postulante', 'RecursosHumanosController@guardar_informacion_postulante');
-Route::post('editar_informacion_postulante', 'RecursosHumanosController@actualizar_informacion_postulante');
-Route::get('listar_formacion_acad/{id}', 'RecursosHumanosController@mostrar_formacion_acad');
-Route::post('guardar_formacion_academica', 'RecursosHumanosController@guardar_formacion_academica');
-Route::post('editar_formacion_academica', 'RecursosHumanosController@actualizar_formacion_academica'); //FALTA ANULAR
-Route::get('cargar_formacion_click/{id}', 'RecursosHumanosController@mostrar_formacion_click');
-Route::get('listar_experiencia_lab/{id}', 'RecursosHumanosController@mostrar_experiencia_lab');
-Route::post('guardar_experiencia_laboral', 'RecursosHumanosController@guardar_experiencia_laboral');
-Route::post('editar_experiencia_laboral', 'RecursosHumanosController@actualizar_experiencia_laboral'); //FALTA ANULAR
-Route::get('cargar_experiencia_click/{id}', 'RecursosHumanosController@mostrar_experiencia_click');
-Route::get('listar_datos_extras/{id}', 'RecursosHumanosController@mostrar_datos_extras');
-Route::post('guardar_datos_extras', 'RecursosHumanosController@guardar_dextra_postulante'); //FALTA ANULAR
-Route::get('listar_observaciones/{id}', 'RecursosHumanosController@mostrar_observaciones');
-Route::post('guardar_observacion', 'RecursosHumanosController@guardar_observacion_postulante');
-Route::post('editar_observacion', 'RecursosHumanosController@actualizar_observacion_postulante'); //FALTA ANULAR
-Route::get('cargar_observacion_click/{id}', 'RecursosHumanosController@mostrar_observacion_click');
-
-Route::get('listar_trabajador', 'RecursosHumanosController@mostrar_trabajador_table');
-Route::get('cargar_trabajador/{id}', 'RecursosHumanosController@mostrar_trabajador_id');
-Route::get('cargar_trabajador_dni/{dni}', 'RecursosHumanosController@mostrar_trabajador_dni');
-Route::post('guardar_alta_trabajador', 'RecursosHumanosController@guardar_alta_trabajador');
-Route::post('editar_alta_trabajador', 'RecursosHumanosController@actualizar_alta_trabajador'); //FALTA ANULAR
-Route::get('listar_contrato_trab/{id}', 'RecursosHumanosController@mostrar_contrato_trab');
-Route::post('guardar_contrato_trabajador', 'RecursosHumanosController@guardar_contrato_trabajador');
-Route::post('editar_contrato_trabajador', 'RecursosHumanosController@actualizar_contrato_trabajador'); //FALTA ANULAR
-Route::get('cargar_contrato_click/{id}', 'RecursosHumanosController@mostrar_contrato_click');
-Route::get('listar_rol_trab/{id}', 'RecursosHumanosController@mostrar_rol_trab');
-Route::post('guardar_rol_trabajador', 'RecursosHumanosController@guardar_rol_trabajador');
-Route::post('editar_rol_trabajador', 'RecursosHumanosController@actualizar_rol_trabajador'); //FALTA ANULAR
-Route::get('actualizar_cierre_rol/{id}/{fecha}', 'RecursosHumanosController@actualizar_cierre_rol');
-Route::get('cargar_rol_click/{id}', 'RecursosHumanosController@mostrar_rol_click');
-Route::get('listar_cuentas_trab/{id}', 'RecursosHumanosController@mostrar_cuentas_trab');
-Route::post('guardar_cuentas_trabajador', 'RecursosHumanosController@guardar_cuentas_trabajador');
-Route::post('editar_cuentas_trabajador', 'RecursosHumanosController@actualizar_cuentas_trabajador'); //FALTA ANULAR
-Route::get('cargar_cuenta_click/{id}', 'RecursosHumanosController@mostrar_cuenta_click');
-
-Route::get('mostrar_combos_emp/{id}', 'RecursosHumanosController@buscar_sede');
-Route::get('mostrar_grupo_sede/{id}', 'RecursosHumanosController@buscar_grupo');
-Route::get('mostrar_area_grupo/{id}', 'RecursosHumanosController@buscar_area');
-
-Route::get('listar_cargo', 'RecursosHumanosController@mostrar_cargo_table');
-Route::get('cargar_cargo/{id}', 'RecursosHumanosController@mostrar_cargo_id');
-Route::post('guardar_cargo', 'RecursosHumanosController@guardar_cargo');
-Route::post('editar_cargo', 'RecursosHumanosController@actualizar_cargo');
-Route::get('anular_cargo/{id}', 'RecursosHumanosController@anular_cargo');
-
-Route::get('cargar_trabajador_dni_esc/{dni}', 'RecursosHumanosController@buscar_trab_dni');
-Route::get('cargar_persona_dni_esc/{dni}', 'RecursosHumanosController@buscar_persona_dni');
-
-Route::get('listar_merito/{id}', 'RecursosHumanosController@mostrar_merito_table');
-Route::get('cargar_merito/{id}', 'RecursosHumanosController@mostrar_merito_id');
-Route::post('guardar_merito', 'RecursosHumanosController@guardar_merito');
-Route::post('editar_merito', 'RecursosHumanosController@actualizar_merito');
-Route::get('anular_merito/{id}', 'RecursosHumanosController@anular_merito');
-
-Route::get('listar_sancion/{id}', 'RecursosHumanosController@mostrar_sancion_table');
-Route::get('listar_sancion', 'RecursosHumanosController@mostrar_sancion_table');
-Route::get('cargar_sancion/{id}', 'RecursosHumanosController@mostrar_sancion_id');
-Route::post('guardar_sancion', 'RecursosHumanosController@guardar_sancion');
-Route::post('editar_sancion', 'RecursosHumanosController@actualizar_sancion');
-Route::get('anular_sancion/{id}', 'RecursosHumanosController@anular_sancion');
-
-Route::get('listar_derecho_hab/{id}', 'RecursosHumanosController@mostrar_derechohabiente_table');
-Route::get('cargar_derecho_hab/{id}', 'RecursosHumanosController@mostrar_derechohabiente_id');
-Route::post('guardar_derecho_hab', 'RecursosHumanosController@guardar_derecho_habiente');
-Route::post('editar_derecho_hab', 'RecursosHumanosController@actualizar_derecho_habiente');
-Route::get('anular_derecho_hab/{id}', 'RecursosHumanosController@anular_derecho_habiente');
-
-Route::get('listar_salidas/{id}', 'RecursosHumanosController@mostrar_salidas_table');
-Route::get('cargar_salidas/{id}', 'RecursosHumanosController@mostrar_salidas_id');
-Route::post('guardar_salidas', 'RecursosHumanosController@guardar_salidas');
-Route::post('editar_salidas', 'RecursosHumanosController@actualizar_salidas');
-Route::get('anular_salidas/{id}', 'RecursosHumanosController@anular_salidas');
-
-Route::get('listar_prestamo/{id}', 'RecursosHumanosController@mostrar_prestamo_table');
-Route::get('cargar_prestamo/{id}', 'RecursosHumanosController@mostrar_prestamo_id');
-Route::post('guardar_prestamo', 'RecursosHumanosController@guardar_prestamo');
-Route::post('editar_prestamo', 'RecursosHumanosController@actualizar_prestamo');
-Route::get('anular_prestamo/{id}', 'RecursosHumanosController@anular_prestamo');
-
-Route::get('listar_vacaciones/{id}', 'RecursosHumanosController@mostrar_vacaciones_table');
-Route::get('cargar_vacaciones/{id}', 'RecursosHumanosController@mostrar_vacaciones_id');
-Route::post('guardar_vacaciones', 'RecursosHumanosController@guardar_vacaciones');
-Route::post('editar_vacaciones', 'RecursosHumanosController@actualizar_vacaciones');
-Route::get('anular_vacaciones/{id}', 'RecursosHumanosController@anular_vacaciones');
-
-Route::get('listar_licencia/{id}', 'RecursosHumanosController@mostrar_licencia_table');
-Route::get('cargar_licencia/{id}', 'RecursosHumanosController@mostrar_licencia_id');
-Route::post('guardar_licencia', 'RecursosHumanosController@guardar_licencia');
-Route::post('editar_licencia', 'RecursosHumanosController@actualizar_licencia');
-Route::get('anular_licencia/{id}', 'RecursosHumanosController@anular_licencia');
-
-Route::get('listar_horas_ext/{id}', 'RecursosHumanosController@mostrar_horas_ext_table');
-Route::get('cargar_horas_ext/{id}', 'RecursosHumanosController@mostrar_horas_ext_id');
-Route::post('guardar_horas_ext', 'RecursosHumanosController@guardar_horas_ext');
-Route::post('editar_horas_ext', 'RecursosHumanosController@actualizar_horas_ext');
-Route::get('anular_horas_ext/{id}', 'RecursosHumanosController@anular_horas_ext');
-
-Route::post('guardar_cese', 'RecursosHumanosController@guardar_cese');
-
-Route::get('listar_periodo', 'RecursosHumanosController@mostrar_periodo_table');
-Route::get('cargar_periodo/{id}', 'RecursosHumanosController@mostrar_periodo_id');
-Route::post('guardar_periodo', 'RecursosHumanosController@guardar_periodo');
-Route::post('editar_periodo', 'RecursosHumanosController@actualizar_periodo');
-Route::get('anular_periodo/{id}', 'RecursosHumanosController@anular_periodo');
-
-Route::get('listar_horarios', 'RecursosHumanosController@mostrar_horarios_table');
-Route::get('cargar_horario/{id}', 'RecursosHumanosController@mostrar_horario_id');
-Route::post('guardar_horario', 'RecursosHumanosController@guardar_horario');
-Route::post('editar_horario', 'RecursosHumanosController@actualizar_horario');
-Route::get('anular_horario/{id}', 'RecursosHumanosController@anular_horario');
-
-Route::get('listar_tolerancias', 'RecursosHumanosController@mostrar_tolerancia_table');
-Route::get('cargar_tolerancia/{id}', 'RecursosHumanosController@mostrar_tolerancia_id');
-Route::post('guardar_tolerancia', 'RecursosHumanosController@guardar_tolerancia');
-Route::post('editar_tolerancia', 'RecursosHumanosController@actualizar_tolerancia');
-Route::get('anular_tolerancia/{id}', 'RecursosHumanosController@anular_tolerancia');
-
-Route::get('listar_estado_civil', 'RecursosHumanosController@mostrar_estado_civil_table');
-Route::get('cargar_est_civil/{id}', 'RecursosHumanosController@mostrar_est_civil_id');
-Route::post('guardar_est_civil', 'RecursosHumanosController@guardar_estado_civil');
-Route::post('editar_est_civil', 'RecursosHumanosController@actualizar_estado_civil');
-Route::get('anular_est_civil/{id}', 'RecursosHumanosController@anular_estado_civil');
-
-Route::get('listar_condi_derecho_hab', 'RecursosHumanosController@mostrar_condiciondh_table');
-Route::get('cargar_cond_derecho_hab/{id}', 'RecursosHumanosController@mostrar_condiciondh_id');
-Route::post('guardar_cond_derecho_hab', 'RecursosHumanosController@guardar_condicion_dh');
-Route::post('editar_cond_derecho_hab', 'RecursosHumanosController@actualizar_condicion_dh');
-Route::get('anular_cond_derecho_hab/{id}', 'RecursosHumanosController@anular_condicion_dh');
-
-Route::get('listar_nivel_estudio', 'RecursosHumanosController@mostrar_nivel_estudio_table');
-Route::get('cargar_nivel_estudio/{id}', 'RecursosHumanosController@mostrar_nivel_estudios_id');
-Route::post('guardar_nivel_estudio', 'RecursosHumanosController@guardar_nivel_estudio');
-Route::post('editar_nivel_estudio', 'RecursosHumanosController@actualizar_nivel_estudio');
-Route::get('anular_nivel_estudio/{id}', 'RecursosHumanosController@anular_nivel_estudio');
-
-Route::get('listar_carrera', 'RecursosHumanosController@mostrar_carrera_table');
-Route::get('cargar_carrera/{id}', 'RecursosHumanosController@mostrar_carrera_id');
-Route::post('guardar_carrera', 'RecursosHumanosController@guardar_carrera');
-Route::post('editar_carrera', 'RecursosHumanosController@actualizar_carrera');
-Route::get('anular_carrera/{id}', 'RecursosHumanosController@anular_carrera');
-
-Route::get('listar_tipo_trabajador', 'RecursosHumanosController@mostrar_tipo_trabajador_table');
-Route::get('cargar_tipo_trabajador/{id}', 'RecursosHumanosController@mostrar_tipo_trabajador_id');
-Route::post('guardar_tipo_trabajador', 'RecursosHumanosController@guardar_tipo_trabajador');
-Route::post('editar_tipo_trabajador', 'RecursosHumanosController@actualizar_tipo_trabajador');
-Route::get('anular_tipo_trabajador/{id}', 'RecursosHumanosController@anular_tipo_trabajador');
-
-Route::get('listar_tipo_contrato', 'RecursosHumanosController@mostrar_tipo_contrato_table');
-Route::get('cargar_tipo_contrato/{id}', 'RecursosHumanosController@mostrar_tipo_contrato_id');
-Route::post('guardar_tipo_contrato', 'RecursosHumanosController@guardar_tipo_contrato');
-Route::post('editar_tipo_contrato', 'RecursosHumanosController@actualizar_tipo_contrato');
-Route::get('anular_tipo_contrato/{id}', 'RecursosHumanosController@anular_tipo_contrato');
-
-Route::get('listar_modalidad', 'RecursosHumanosController@mostrar_modalidad_table');
-Route::get('cargar_modalidad/{id}', 'RecursosHumanosController@mostrar_modalidad_id');
-Route::post('guardar_modalidad', 'RecursosHumanosController@guardar_modalidad');
-Route::post('editar_modalidad', 'RecursosHumanosController@actualizar_modalidad');
-Route::get('anular_modalidad/{id}', 'RecursosHumanosController@anular_modalidad');
-
-Route::get('listar_concepto_rol', 'RecursosHumanosController@mostrar_concepto_rol_table');
-Route::get('cargar_concepto_rol/{id}', 'RecursosHumanosController@mostrar_concepto_rol_id');
-Route::post('guardar_concepto_rol', 'RecursosHumanosController@guardar_concepto_rol');
-Route::post('editar_concepto_rol', 'RecursosHumanosController@actualizar_concepto_rol');
-Route::get('anular_concepto_rol/{id}', 'RecursosHumanosController@anular_concepto_rol');
-
-Route::get('listar_categoria_ocupacional', 'RecursosHumanosController@mostrar_categoria_ocupacional');
-Route::get('cargar_categoria_ocupacional/{id}', 'RecursosHumanosController@mostrar_categoria_ocupacional_id');
-Route::post('guardar_categoria_ocupacional', 'RecursosHumanosController@guardar_categoria_ocupacional');
-Route::post('editar_categoria_ocupacional', 'RecursosHumanosController@actualizar_categoria_ocupacional');
-Route::get('anular_categoria_ocupacional/{id}', 'RecursosHumanosController@anular_categoria_ocupacional');
-
-Route::get('listar_tipo_planilla', 'RecursosHumanosController@mostrar_tipo_planilla_table');
-Route::get('cargar_tipo_planilla/{id}', 'RecursosHumanosController@mostrar_tipo_planilla_id');
-Route::post('guardar_tipo_planilla', 'RecursosHumanosController@guardar_tipo_planilla');
-Route::post('editar_tipo_planilla', 'RecursosHumanosController@actualizar_tipo_planilla');
-Route::get('anular_tipo_planilla/{id}', 'RecursosHumanosController@anular_tipo_planilla');
-
-Route::get('listar_tipo_merito', 'RecursosHumanosController@mostrar_tipo_merito_table');
-Route::get('cargar_tipo_merito/{id}', 'RecursosHumanosController@mostrar_tipo_merito_id');
-Route::post('guardar_tipo_merito', 'RecursosHumanosController@guardar_tipo_merito');
-Route::post('editar_tipo_merito', 'RecursosHumanosController@actualizar_tipo_merito');
-Route::get('anular_tipo_merito/{id}', 'RecursosHumanosController@anular_tipo_merito');
-
-Route::get('listar_tipo_demerito', 'RecursosHumanosController@mostrar_tipo_demerito_table');
-Route::get('cargar_tipo_demerito/{id}', 'RecursosHumanosController@mostrar_tipo_demerito_id');
-Route::post('guardar_tipo_demerito', 'RecursosHumanosController@guardar_tipo_demerito');
-Route::post('editar_tipo_demerito', 'RecursosHumanosController@actualizar_tipo_demerito');
-Route::get('anular_tipo_demerito/{id}', 'RecursosHumanosController@anular_tipo_demerito');
-
-Route::get('listar_tipo_bonificacion', 'RecursosHumanosController@mostrar_tipo_bonificacion_table');
-Route::get('cargar_tipo_bonificacion/{id}', 'RecursosHumanosController@mostrar_tipo_bonificacion_id');
-Route::post('guardar_tipo_bonificacion', 'RecursosHumanosController@guardar_tipo_bonificacion');
-Route::post('editar_tipo_bonificacion', 'RecursosHumanosController@actualizar_tipo_bonificacion');
-Route::get('anular_tipo_bonificacion/{id}', 'RecursosHumanosController@anular_tipo_bonificacion');
-
-Route::get('listar_tipo_descuento', 'RecursosHumanosController@mostrar_tipo_descuento_table');
-Route::get('cargar_tipo_descuento/{id}', 'RecursosHumanosController@mostrar_tipo_descuento_id');
-Route::post('guardar_tipo_descuento', 'RecursosHumanosController@guardar_tipo_descuento');
-Route::post('editar_tipo_descuento', 'RecursosHumanosController@actualizar_tipo_descuento');
-Route::get('anular_tipo_descuento/{id}', 'RecursosHumanosController@anular_tipo_descuento');
-
-Route::get('listar_tipo_retencion', 'RecursosHumanosController@mostrar_tipo_retencion_table');
-Route::get('cargar_tipo_retencion/{id}', 'RecursosHumanosController@mostrar_tipo_retencion_id');
-Route::post('guardar_tipo_retencion', 'RecursosHumanosController@guardar_tipo_retencion');
-Route::post('editar_tipo_retencion', 'RecursosHumanosController@actualizar_tipo_retencion');
-Route::get('anular_tipo_retencion/{id}', 'RecursosHumanosController@anular_tipo_retencion');
-
-Route::get('listar_tipo_aporte', 'RecursosHumanosController@mostrar_tipo_aporte_table');
-Route::get('cargar_tipo_aporte/{id}', 'RecursosHumanosController@mostrar_tipo_aporte_id');
-Route::post('guardar_tipo_aporte', 'RecursosHumanosController@guardar_tipo_aporte');
-Route::post('editar_tipo_aporte', 'RecursosHumanosController@actualizar_tipo_aporte');
-Route::get('anular_tipo_aporte/{id}', 'RecursosHumanosController@anular_tipo_aporte');
-
-Route::get('listar_pension', 'RecursosHumanosController@mostrar_pension_table');
-Route::get('cargar_pension/{id}', 'RecursosHumanosController@mostrar_pension_id');
-Route::post('guardar_pension', 'RecursosHumanosController@guardar_pension');
-Route::post('editar_pension', 'RecursosHumanosController@actualizar_pension');
-Route::get('anular_pension/{id}', 'RecursosHumanosController@anular_pension');
-
-Route::get('cargar_regimen/{id}', 'RecursosHumanosController@cargar_regimen');
-
-Route::get('listar_bonificacion/{id}', 'RecursosHumanosController@mostrar_bonificacion_table');
-Route::get('cargar_bonificacion/{id}', 'RecursosHumanosController@mostrar_bonificacion_id');
-Route::post('guardar_bonificacion', 'RecursosHumanosController@guardar_bonificacion');
-Route::post('editar_bonificacion', 'RecursosHumanosController@actualizar_bonificacion');
-Route::get('anular_bonificacion/{id}', 'RecursosHumanosController@anular_bonificacion');
-
-Route::get('listar_descuento/{id}', 'RecursosHumanosController@mostrar_descuento_table');
-Route::get('cargar_descuento/{id}', 'RecursosHumanosController@mostrar_descuento_id');
-Route::post('guardar_descuento', 'RecursosHumanosController@guardar_descuento');
-Route::post('editar_descuento', 'RecursosHumanosController@actualizar_descuento');
-Route::get('anular_descuento/{id}', 'RecursosHumanosController@anular_descuento');
-
-Route::get('listar_retencion/{id}', 'RecursosHumanosController@mostrar_retencion_table');
-Route::get('cargar_retencion/{id}', 'RecursosHumanosController@mostrar_retencion_id');
-Route::post('guardar_retencion', 'RecursosHumanosController@guardar_retencion');
-Route::post('editar_retencion', 'RecursosHumanosController@actualizar_retencion');
-Route::get('anular_retencion/{id}', 'RecursosHumanosController@anular_retencion');
-
-Route::get('listar_aportacion', 'RecursosHumanosController@mostrar_aportacion_table');
-Route::get('cargar_aportacion/{id}', 'RecursosHumanosController@mostrar_aportacion_id');
-Route::post('guardar_aportacion', 'RecursosHumanosController@guardar_aportacion');
-Route::post('editar_aportacion', 'RecursosHumanosController@actualizar_aportacion');
-Route::get('anular_aportacion/{id}', 'RecursosHumanosController@anular_aportacion');
-
-Route::get('listar_reintegro/{id}', 'RecursosHumanosController@mostrar_reintegro_table');
-Route::get('cargar_reintegro/{id}', 'RecursosHumanosController@mostrar_reintegro_id');
-Route::post('guardar_reintegro', 'RecursosHumanosController@guardar_reintegro');
-Route::post('editar_reintegro', 'RecursosHumanosController@actualizar_reintegro');
-Route::get('anular_reintegro/{id}', 'RecursosHumanosController@anular_reintegro');
-
-// REPORTE RRHH
-Route::get('datos_personal', 'RecursosHumanosController@view_cv');
-Route::get('busqueda_postulante', 'RecursosHumanosController@view_busq_postu');
-Route::get('grupo_trabajador', 'RecursosHumanosController@view_grupo_trab');
-Route::get('cumple', 'RecursosHumanosController@view_cumple');
-Route::get('datos_generales', 'RecursosHumanosController@view_datos_generales');
-Route::get('reporte_afp', 'RecursosHumanosController@view_reporte_afp');
-
-Route::get('buscar_postulantes/{filtro}/{desc}', 'RecursosHumanosController@buscar_postulantes_reporte');
-Route::get('buscar_grupo_trabajador/{emp}/{grupo}', 'RecursosHumanosController@grupo_trabajador_reporte');
-Route::get('buscar_cumple/{filtro}', 'RecursosHumanosController@onomastico_reporte');
-Route::get('cargar_detalle_postulante/{id}', 'RecursosHumanosController@cargar_detalle_postulante');
-Route::get('buscar_datos_generales/{tipo}', 'RecursosHumanosController@datos_generales_reporte');
-Route::get('buscar_reporte_afp', 'RecursosHumanosController@reporte_afp');
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-// /* Almacen */
-
-/**Producto */
-
-/* Producto Ubicacion */
-
-
-/* ProductoUbicacion Serie */
-
-
-/* Servicios */
-
-Route::get('tipoServ', 'AlmacenController@view_tipo_servicio');
-Route::get('listar_tipoServ', 'AlmacenController@mostrar_tp_servicios');
-Route::get('mostrar_tipoServ/{id}', 'AlmacenController@mostrar_tp_servicio');
-Route::post('guardar_tipoServ', 'AlmacenController@guardar_tp_servicio');
-Route::post('actualizar_tipoServ', 'AlmacenController@update_tp_servicio');
-Route::get('anular_tipoServ/{id}', 'AlmacenController@anular_tp_servicio');
-Route::get('servicio', 'AlmacenController@view_servicio');
-Route::get('listar_servicio', 'AlmacenController@mostrar_servicios');
-Route::get('mostrar_servicio/{id}', 'AlmacenController@mostrar_servicio');
-Route::post('guardar_servicio', 'AlmacenController@guardar_servicio');
-Route::post('actualizar_servicio', 'AlmacenController@update_servicio');
-Route::get('anular_servicio/{id}', 'AlmacenController@anular_servicio');
-
-/**Guia Compra */
-
-
-
 
 // Route::get('requerimientosPendientes', 'DistribucionController@view_requerimientosPendientes');
 
 
 Route::get('grupoDespachos', 'DistribucionController@view_grupoDespachos');
 
-
-
-
-/**Guia Venta */
-
-
-Route::get('listar_occ', 'AlmacenController@listar_occ');
-Route::get('listar_kardex', 'AlmacenController@listar_kardex');
-Route::get('migrar_docs_compra', 'AlmacenController@migrar_docs_compra');
-
-
-Route::get('listar_occ', 'LogisticaController@listar_occ');
-Route::get('listar_occ_pendientes', 'LogisticaController@listar_occ_pendientes');
-Route::get('copiar_items_occ/{id}', 'LogisticaController@copiar_items_occ');
-Route::get('copiar_items_occ_doc/{id}/{doc}', 'AlmacenController@copiar_items_occ_doc');
-Route::get('next_serie_numero_doc/{id}/{tp}', 'AlmacenController@next_serie_numero_doc');
-
-Route::get('actualiza_totales_doc_ven/{id}', 'AlmacenController@actualiza_totales_doc_ven');
-
-
-
-/**Doc Venta */
-
-Route::get('doc_venta', 'AlmacenController@view_doc_venta');
-Route::get('listar_docs_venta', 'AlmacenController@listar_docs_venta');
-Route::get('mostrar_doc_venta/{id}', 'AlmacenController@mostrar_doc_venta');
-Route::post('guardar_doc_venta', 'AlmacenController@guardar_doc_venta');
-Route::post('actualizar_doc_venta', 'AlmacenController@update_doc_venta');
-Route::get('anular_doc_venta/{id}', 'AlmacenController@anular_doc_venta');
-Route::get('listar_guias_emp/{id}', 'AlmacenController@listar_guias_emp');
-Route::get('guardar_docven_items_guia/{guia}/{id}', 'AlmacenController@guardar_docven_items_guia');
-Route::get('listar_docven_items/{id}', 'AlmacenController@listar_docven_items');
-Route::get('listar_docven_guias/{id}', 'AlmacenController@listar_docven_guias');
-Route::get('anular_guiaven/{id}/{guia}', 'AlmacenController@anular_guiaven');
-Route::post('guardar_docven_detalle', 'AlmacenController@guardar_docven_detalle');
-Route::post('update_docven_detalle', 'AlmacenController@update_docven_detalle');
-
-Route::get('saldo_actual/{id}/{ubi}', 'AlmacenController@saldo_actual');
-Route::get('costo_promedio/{id}/{ubi}', 'AlmacenController@costo_promedio');
-Route::post('tipo_cambio/{fecha}', 'AlmacenController@tipo_cambio');
-Route::get('cola_atencion', 'AlmacenController@view_cola_atencion');
-Route::get('listar_requerimientos', 'AlmacenController@listar_requerimientos');
-Route::get('listar_items_req/{id}', 'AlmacenController@listar_items_req');
-Route::post('generar_salida', 'AlmacenController@generar_salida');
-Route::post('guardar_guia_ven', 'AlmacenController@guardar_guia_ven');
-Route::get('imprimir_salida/{id}', 'AlmacenController@imprimir_salida');
-Route::get('req_almacen/{id}', 'AlmacenController@req_almacen');
-
-
-
-/**Kardex de Almacen */
-Route::get('movimientos_producto/{id}/{prod}', 'AlmacenController@movimientos_producto');
-Route::get('verifica_posiciones/{id}', 'AlmacenController@verifica_posiciones');
-
-Route::get('saldo_producto/{id}/{prod}/{fec}', 'AlmacenController@saldo_producto');
-
-
-
-/* Proyectos */
-
-Route::get('html_presupuesto_proyecto/{id}', 'ProyectosController@html_presupuesto_proyecto');
-
-
-
-
-// Route::get('mostrar_todo_presint/{id}', 'ProyectosController@mostrar_presupuesto_completo');
-Route::get('suma_partidas_ci/{padre}/{id}', 'ProyectosController@suma_partidas_ci');
-Route::get('suma_partidas_gg/{padre}/{id}', 'ProyectosController@suma_partidas_gg');
-Route::get('actualiza_totales/{id}', 'ProyectosController@actualiza_totales');
-
-
-Route::get('cd/{id}', 'ProyectosController@cd');
-
-
-
-
-
-
-
-
-Route::get('listar_acus_cd/{id}', 'ProyectosController@listar_acus_cd');
-
-Route::get('solo_cd/{id}', 'ProyectosController@solo_cd');
-Route::get('actualiza_padres/{id}/{padre}', 'ProyectosController@actualiza_padres');
-
-Route::post('add_unid_med', 'AlmacenController@add_unid_med');
 
 /* Maquinaria y Equipos */
 Route::get('equi_tipo', 'EquipoController@view_equi_tipo');
@@ -2679,14 +2055,6 @@ Route::get('decode5t/{id}', 'EquipoController@decode5t');
 	Route::get('gestionar_proveedores', 'LogisticaController@view_lista_proveedores');
 	Route::get('logistica/listar_proveedores', 'LogisticaController@listar_proveedores');
 	Route::get('mostrar_proveedor/{id_proveedor}', 'LogisticaController@mostrar_proveedor');
-
-
-
-
-	// Route::get('form_enviar_correo', 'CorreoController@crear');
-	// Route::post('cargar_archivo_correo', 'CorreoController@store');
-	// Route::get('generar_cotizacion_excel/{id_cotizacion}', 'CorreoController@generarCotizacionInServer');
-	// Route::get('descartar_archivo_adjunto/{id}/{tipo_doc}', 'CorreoController@discardFileInServer');
 
 
 
