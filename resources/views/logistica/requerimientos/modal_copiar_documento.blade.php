@@ -115,7 +115,7 @@
                                     <label>Roles del Usuario</label>
                                     <select class="form-control input-sm" name="rol_usuario" id="textRolUsuario" >
                                     @foreach ($roles as $rol)
-                                    <option value="{{$rol->id_rol}}">{{$rol->rol_concepto}}</option>
+                                    <option value="{{$rol->id_rol}}">{{$rol->descripcion}}</option>
 
                                     @endforeach
                                     </select>

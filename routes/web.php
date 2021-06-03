@@ -634,7 +634,11 @@ Route::group(['middleware' => ['auth']], function () {
 
 				Route::group(['as' => 'elaboracion.', 'prefix' => 'elaboracion'], function(){
 
-					Route::get('index', 'LogisticaController@view_gestionar_requerimiento')->name('index');
+					Route::get('index', 'Logistica\RequerimientoController@index')->name('index');
+					Route::get('mostrar-partidas/{idGrupo?}/{idProyecto?}', 'Logistica\RequerimientoController@mostrarPartidas')->name('mostrar-partidas');
+					Route::get('mostrar-centro-costos', 'CentroCostoController@mostrarCentroCostos')->name('mostrar-centro-costos');
+
+
 					Route::get('lista-modal/{option?}', 'LogisticaController@mostrar_requerimientos')->name('lista-modal');
 					Route::get('mostrar-requerimiento/{id?}/{codigo?}', 'LogisticaController@mostrar_requerimiento')->name('mostrar-requerimiento');
 					Route::post('guardar', 'LogisticaController@guardar_requerimiento')->name('guardar');
@@ -679,9 +683,7 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::get('detalle-cuadro-costos/{id_cc?}', 'RequerimientoController@detalle_cuadro_costos')->name('detalle-cuadro-costos');
 					Route::post('obtener-construir-cliente', 'RequerimientoController@obtenerConstruirCliente')->name('obtener-construir-cliente');
 					Route::get('proyectos-activos', 'ProyectosController@listar_proyectos_activos')->name('proyectos-activos');
-					Route::get('listar-partidas/{id_grupo?}/{id_proyecto?}', 'ProyectosController@listar_partidas')->name('listar-partidas');
 					Route::get('grupo-select-item-para-compra', 'ComprasPendientesController@getGrupoSelectItemParaCompra')->name('grupo-select-item-para-compra');
-					Route::get('mostrar-centro-costos', 'CentroCostoController@mostrarCentroCostos')->name('mostrar-centro-costos');
 					Route::get('mostrar-fuente', 'LogisticaController@mostrarFuente')->name('mostrar-fuente');
 					Route::post('guardar-fuente', 'LogisticaController@guardarFuente')->name('guardar-fuente');
 					Route::post('anular-fuente', 'LogisticaController@anularFuente')->name('anular-fuente');

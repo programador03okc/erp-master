@@ -2,6 +2,7 @@
 
 namespace App\Models\Configuracion;
 
+use App\Models\Logistica\Empresa;
 use App\Models\Tesoreria\Area;
 use App\Models\Tesoreria\Rol;
 use Illuminate\Contracts\Session\Session;

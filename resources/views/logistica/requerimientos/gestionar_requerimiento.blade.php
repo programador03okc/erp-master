@@ -3,16 +3,16 @@
 
 @if(Auth::user()->tieneAccion(102))
 @section('option')
-    @include('layout.option')
+@include('layout.option')
 @endsection
 @elseif(Auth::user()->tieneAccion(103))
 @section('option')
-        @include('layout.option_historial')
-    @endsection
+@include('layout.option_historial')
+@endsection
 @endif
 
 @section('cabecera')
-    Requerimiento
+Requerimiento
 @endsection
 
 @section('breadcrumb')
@@ -23,6 +23,13 @@
 </ol>
 @endsection
 
+<style>
+    table thead th {
+        vertical-align: middle !important;
+        text-align: center !important;
+    }
+</style>
+
 @section('content')
 <div class="page-main" type="requerimiento">
     <form id="form-requerimiento" type="register" form="formulario">
@@ -30,7 +37,7 @@
         <input type="hidden" name="id_usuario_req">
         <input type="hidden" name="id_estado_doc">
         <input type="hidden" name="id_requerimiento" primary="ids">
-        <input type="hidden" name="cantidad_aprobaciones">        
+        <input type="hidden" name="cantidad_aprobaciones">
         <input type="hidden" name="confirmacion_pago">
         <input type="hidden" name="fecha_creacion_cc">
         <input type="hidden" name="id_cc">
@@ -41,41 +48,29 @@
         <input type="hidden" name="estado">
 
         <div class="row">
-                <!-- <div class="col-md-6" id="group-barra-secundaria">
-                    <div class="input-group pull-left" style="display:flex;">
-                            &nbsp;
-                            <button type="button" name="btn-migrar-requerimiento" class="btn btn-success btn-sm" 
-                                data-toggle="tooltip" data-placement="bottom" title="Migrar Requerimiento a Softlink"
-                                onclick="migrarRequerimiento()" disabled><i class="fas fa-paper-plane"></i></button>
-                    </div>
-                </div> -->
- 
-        </div>
-
-        <div class="row">
             <div class="col-md-12">
-                <h4 style="display:flex;justify-content: space-between;">General 
+                <h4 style="display:flex;justify-content: space-between;">General
                     <div>
                         <span class="label" id="estado_doc">&nbsp;</span>
                         <span style="color:blue;" name="codigo"></span>
                         <button type="button" name="btn-imprimir-requerimento-pdf" class="btn btn-info btn-sm" onclick="ImprimirRequerimientoPdf()" disabled><i class="fas fa-print"></i> Imprimir</button>
-                        <button type="button" name="btn-adjuntos-requerimiento" class="btn btn-sm btn-warning" title="Archivos adjuntos"  onclick="archivosAdjuntosRequerimientoModal();" disabled><i class="fas fa-file-archive"></i> Adjuntos</button>
-                        <button type="button" name="btn-ver-trazabilidad-requerimiento" class="btn btn-sm btn-primary" title="Ver Trazabilidads"  onclick="verTrazabilidadRequerimientoModal();" disabled><i class="fas fa-shoe-prints"></i> Trazabilidad</button>
+                        <button type="button" name="btn-adjuntos-requerimiento" class="btn btn-sm btn-warning" title="Archivos adjuntos" onclick="archivosAdjuntosRequerimientoModal();" disabled><i class="fas fa-file-archive"></i> Adjuntos</button>
+                        <button type="button" name="btn-ver-trazabilidad-requerimiento" class="btn btn-sm btn-primary" title="Ver Trazabilidads" onclick="verTrazabilidadRequerimientoModal();" disabled><i class="fas fa-shoe-prints"></i> Trazabilidad</button>
                     </div>
-                </h4> 
-                <fieldset class="group-table">   
+                </h4>
+                <fieldset class="group-table">
                     <div class="row">
                         <div class="col-md-2" id="group-tipo_requerimiento" hidden>
-                            <h5 >Tipo de requerimiento:</h5> 
+                            <h5>Tipo de requerimiento:</h5>
                             <select class="form-control input-sm activation" name="tipo_requerimiento" onChange="changeOptTipoReqSelect(event);">
                                 <option value="">Elija una opción</option>
                                 @foreach ($tipo_requerimiento as $tipo)
-                                    <option value="{{$tipo->id_tipo_requerimiento}}">{{$tipo->descripcion}}</option>
-                                @endforeach                
+                                <option value="{{$tipo->id_tipo_requerimiento}}">{{$tipo->descripcion}}</option>
+                                @endforeach
                             </select>
                         </div>
 
-                        <div class="col-md-2"  id="input-group-fecha" hidden>
+                        <div class="col-md-2" id="input-group-fecha" hidden>
                             <h5>Fecha Creación</h5>
                             <input type="date" class="form-control" name="fecha_requerimiento" disabled="true" min={{ date('Y-m-d H:i:s') }} value={{ date('Y-m-d H:i:s') }}>
                         </div>
@@ -91,9 +86,9 @@
                             <div class="form-group">
                                 <h5>Moneda</h5>
                                 <select class="form-control activation" name="moneda" onChange="changeMonedaSelect(event)" disabled="true">
-                                @foreach ($monedas as $moneda)
+                                    @foreach ($monedas as $moneda)
                                     <option value="{{$moneda->id_moneda}}">{{$moneda->descripcion}}</option>
-                                @endforeach
+                                    @endforeach
                                 </select>
                             </div>
                         </div>
@@ -103,7 +98,7 @@
                                 <h5>Periodo</h5>
                                 <select class="form-control activation" name="periodo" disabled="true">
                                     @foreach ($periodos as $periodo)
-                                        <option value="{{$periodo->id_periodo}}">{{$periodo->descripcion}}</option>
+                                    <option value="{{$periodo->id_periodo}}">{{$periodo->descripcion}}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -113,9 +108,9 @@
                                 <h5>Prioridad</h5>
                                 <select class="form-control activation" name="prioridad" disabled="true">
                                     @foreach ($prioridades as $prioridad)
-                                        <option value="{{$prioridad->id_prioridad}}">{{$prioridad->descripcion}}</option>
+                                    <option value="{{$prioridad->id_prioridad}}">{{$prioridad->descripcion}}</option>
                                     @endforeach
-                                </select>    
+                                </select>
                             </div>
                         </div>
 
@@ -125,9 +120,9 @@
                                 <h5>Roles del usuario</h5>
                                 <div class="input-group-okc">
                                     <select class="form-control input-sm activation" name="rol_usuario">
-                                    @foreach ($roles as $rol)
-                                        <option value="{{$rol->id_rol}}">{{$rol->rol_concepto}}</option>
-                                    @endforeach
+                                        @foreach ($roles as $rol)
+                                        <option value="{{$rol->id_rol}}">{{$rol->descripcion}}</option>
+                                        @endforeach
                                     </select>
                                 </div>
                             </div>
@@ -139,13 +134,13 @@
                                 <select name="empresa" id="empresa" class="form-control activation" onChange="changeOptEmpresaSelect(event)" required>
                                     <option value="">Elija una opción</option>
                                     @foreach ($empresas as $empresa)
-                                        <option value="{{$empresa->id_empresa}}">{{ $empresa->contribuyente->razon_social}}</option>
+                                    <option value="{{$empresa->id_empresa}}">{{ $empresa->contribuyente->razon_social}}</option>
                                     @endforeach
                                 </select>
                             </div>
                         </div>
 
-                        <div class="col-md-2" id="input-group-sede" >
+                        <div class="col-md-2" id="input-group-sede">
                             <div class="form-group">
                                 <h5>Sede</h5>
                                 <select id="sede" name="sede" class="form-control activation" onChange="changeOptUbigeo(event)" required>
@@ -160,26 +155,16 @@
                                 <input type="date" class="form-control input-sm activation" name="fecha_entrega">
                             </div>
                         </div>
-                        <div class="col-md-2" id="input-group-para_stock_almacen">
-                            <div class="form-group">
-                                <h5>&nbsp;</h5>
-                                <div class="checkbox">
-                                    <label>
-                                        <input type="checkbox" class="activation" name="para_stock_almacen"> Stock para Almacén
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
 
-                        <div class="col-md-2" id="input-group-aprobante" >
+                        <div class="col-md-2" id="input-group-aprobante">
                             <div class="form-group">
-                                <h5>Aprobante</h5>
-                                <select  name="rol_aprobante" class="form-control activation">
+                                <h5>División</h5>
+                                <select name="rol_aprobante" class="form-control activation">
                                     @if(count($aprobantes)>0)
-                                        <option value="">Elija una opción</option>
-                                        @foreach ($aprobantes as $aprobante)
-                                            <option value="{{$aprobante->id_rol}}">{{$aprobante->nombre}}</option>
-                                        @endforeach
+                                    <option value="">Elija una opción</option>
+                                    @foreach ($aprobantes as $aprobante)
+                                    <option value="{{$aprobante->id_rol}}">{{$aprobante->nombre}}</option>
+                                    @endforeach
                                     @else
                                     <option value="">Ninguno para seleccionar</option>
                                     @endif
@@ -187,15 +172,25 @@
                             </div>
                         </div>
 
+                        <div class="col-md-2" id="input-group-para_stock_almacen">
+                            <div class="form-group">
+                                <h5>&nbsp;</h5>
+                                <div class="checkbox">
+                                    <label>
+                                        <input type="checkbox" class="activation" name="para_stock_almacen" onclick="changeStockParaAlmacen(event);"> Stock para Almacén
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
                         <div class="col-md-2" id="input-group-asignar_trabajador">
                             <div class="form-group">
-                                <h5>Asignar</h5>
+                                <h5>Solicitado por</h5>
                                 <div style="display:flex;">
                                     <input class="oculto" name="id_trabajador">
                                     <input type="text" name="nombre_trabajador" class="form-control group-elemento" placeholder="Trabajador" readonly="">
                                     <button type="button" class="group-tex btn-primary activation" onclick="listaTrabajadoresModal();">
                                         <i class="fa fa-search"></i>
-                                    </button> 
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -206,9 +201,9 @@
                                     <h5>Fuente</h5>
                                     <div style="display:flex">
                                         <select class="form-control activation " name="fuente_id" onChange="selectFuente(event);">
-                                                <option value="0">Elija una opción</option>
+                                            <option value="0">Elija una opción</option>
                                             @foreach ($fuentes as $fuente)
-                                                <option value="{{$fuente->id_fuente}}">{{$fuente->descripcion}}</option>
+                                            <option value="{{$fuente->id_fuente}}">{{$fuente->descripcion}}</option>
                                             @endforeach
                                         </select>
                                         <button type="button" class="btn-primary" title="Agregar Fuente" name="bnt-agregar-fuente" onclick="agregarFuenteModal();">
@@ -231,7 +226,7 @@
                             </div>
                         </div>
 
- 
+
                         <div class="col-md-2" id="input-group-monto">
                             <div class="form-group">
 
@@ -252,8 +247,8 @@
 
         <div class="row" hidden>
             <div class="col-md-12">
-                <h4 style="display:flex;justify-content: space-between;">Almacén</h4> 
-                <fieldset class="group-table">   
+                <h4 style="display:flex;justify-content: space-between;">Almacén</h4>
+                <fieldset class="group-table">
                     <div class="row">
                         <div class="col-md-4" id="input-group-almacen" hidden>
                             <h5>Almacén que solicita</h5>
@@ -268,8 +263,8 @@
 
         <div class="row" id="input-group-proyecto">
             <div class="col-md-12">
-                <h4 style="display:flex;justify-content: space-between;">Proyecto</h4> 
-                <fieldset class="group-table">   
+                <h4 style="display:flex;justify-content: space-between;">Proyecto</h4>
+                <fieldset class="group-table">
                     <div class="row">
                         <div class="col-md-12">
                             <h5>Nombre</h5>
@@ -280,10 +275,10 @@
                                     <select class="form-control activation" name="id_proyecto" onChange="selectedProyecto(event);">
                                         <option value="0">Seleccione un Proyecto</option>
                                         @foreach ($proyectos_activos as $proyecto)
-                                            <option value="{{$proyecto->id_proyecto}}" data-codigo="{{$proyecto->codigo}}">{{$proyecto->descripcion}}</option>
+                                        <option value="{{$proyecto->id_proyecto}}" data-codigo="{{$proyecto->codigo}}">{{$proyecto->descripcion}}</option>
                                         @endforeach
                                     </select>
-                                </div>                            
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -293,14 +288,13 @@
 
         <div class="row" id="seccion-cliente">
             <div class="col-md-12">
-                <h4 style="display:flex;justify-content: space-between;">Cliente</h4> 
-                <fieldset class="group-table">   
+                <h4 style="display:flex;justify-content: space-between;">Cliente</h4>
+                <fieldset class="group-table">
                     <div class="row">
-                        <div class="col-md-2 form-inline" id="input-group-tipo-cliente" >
+                        <div class="col-md-2 form-inline" id="input-group-tipo-cliente">
                             <h5>Tipo cliente</h5>
                             <div class="input-group-okc">
-                                    <select name="tipo_cliente" onChange="changeTipoCliente(event);"
-                                    class="form-control activation" style="width:100px" required>
+                                <select name="tipo_cliente" onChange="changeTipoCliente(event);" class="form-control activation" style="width:100px" required>
                                     <option value="0">Elija una opción</option>
                                     <option value="1" default>Persona Natural</option>
                                     <option value="2">Persona Juridica</option>
@@ -308,58 +302,56 @@
                             </div>
                         </div>
 
-                        <div class="col-md-4" id="input-group-cliente" >
+                        <div class="col-md-4" id="input-group-cliente">
                             <h5>Cliente</h5>
                             <div style="display:flex;">
-                                <input type="text" class="oculto" name="id_cliente" >
-                                <input type="text" class="form-control activation" name="cliente_ruc"  style="width: 120px; display: none;">
+                                <input type="text" class="oculto" name="id_cliente">
+                                <input type="text" class="form-control activation" name="cliente_ruc" style="width: 120px; display: none;">
                                 <input type="text" class="form-control activation" name="cliente_razon_social" style="display: none;">
 
-                                <input type="text" class="oculto" name="id_persona" >
+                                <input type="text" class="oculto" name="id_persona">
                                 <input type="text" class="form-control activation" name="dni_persona" style="width: 120px;">
-                                <input type="text" class="form-control activation" name="nombre_persona" >
+                                <input type="text" class="form-control activation" name="nombre_persona">
 
                                 <!-- <div class="input-group-append">         -->
-                                    <button type="button" class="btn-primary" title="Seleccionar Cliente" name="btnCliente" 
-                                    onClick="openCliente();"  ><i class="fas fa-user-tie"></i></button>
+                                <button type="button" class="btn-primary" title="Seleccionar Cliente" name="btnCliente" onClick="openCliente();"><i class="fas fa-user-tie"></i></button>
                                 <!-- </div> 
                                 <div class="input-group-append"> class="input-group-text         -->
-                                    <button type="button" class="btn-success" title="Agregar Cliente" name="btnAddCliente" 
-                                    onClick="agregar_cliente();"><i class="fas fa-plus"></i></button>
+                                <button type="button" class="btn-success" title="Agregar Cliente" name="btnAddCliente" onClick="agregar_cliente();"><i class="fas fa-plus"></i></button>
                                 <!-- </div> -->
                             </div>
                         </div>
 
-                        <div class="col-md-2" id="input-group-ubigeo-entrega" >
+                        <div class="col-md-2" id="input-group-ubigeo-entrega">
                             <h5>Ubigeo entrega</h5>
                             <div style="display:flex;">
-                                <input type="text" class="oculto" name="ubigeo" >
+                                <input type="text" class="oculto" name="ubigeo">
                                 <input type="text" class="form-control" name="name_ubigeo" readOnly>
-                                <button type="button" title="Seleccionar Ubigeo" class="btn-primary" onClick="ubigeoModal();" ><i class="far fa-compass"></i></button>
+                                <button type="button" title="Seleccionar Ubigeo" class="btn-primary" onClick="ubigeoModal();"><i class="far fa-compass"></i></button>
                             </div>
                         </div>
-                        <div class="col-md-2" id="input-group-telefono-cliente" >
+                        <div class="col-md-2" id="input-group-telefono-cliente">
                             <h5>Teléfono cliente</h5>
                             <div style="display:flex;">
-                                <input type="text" class="form-control activation" name="telefono_cliente" onkeypress="return isNumberKey(event)"  disabled>
-                                    <button type="button" class="btn-primary" title="Buscar Teléfonos" name="btnSearchPhone"  onClick="telefonosClienteModal();">
-                                        <i class="fas fa-address-book"></i>
-                                    </button>
+                                <input type="text" class="form-control activation" name="telefono_cliente" onkeypress="return isNumberKey(event)" disabled>
+                                <button type="button" class="btn-primary" title="Buscar Teléfonos" name="btnSearchPhone" onClick="telefonosClienteModal();">
+                                    <i class="fas fa-address-book"></i>
+                                </button>
                             </div>
                         </div>
-                        <div class="col-md-2" id="input-group-email-cliente" >
+                        <div class="col-md-2" id="input-group-email-cliente">
                             <h5>Correo cliente</h5>
                             <div style="display:flex;">
-                                <input type="email" class="form-control activation" name="email_cliente"  disabled>
-                                    <button type="button" class="btn-primary" title="Buscar Teléfonos" name="btnSearchPhone"  onClick="emailClienteModal();">
-                                        <i class="fas fa-address-book"></i>
-                                    </button>
+                                <input type="email" class="form-control activation" name="email_cliente" disabled>
+                                <button type="button" class="btn-primary" title="Buscar Teléfonos" name="btnSearchPhone" onClick="emailClienteModal();">
+                                    <i class="fas fa-address-book"></i>
+                                </button>
                             </div>
                         </div>
-                        <div class="col-md-2" id="input-group-direccion-entrega" >
+                        <div class="col-md-2" id="input-group-direccion-entrega">
                             <h5>Dirección cliente</h5>
                             <div style="display:flex;">
-                                <input type="text" class="form-control activation" name="direccion_entrega"  disabled>
+                                <input type="text" class="form-control activation" name="direccion_entrega" disabled>
                                 <button type="button" class="btn-primary" title="Buscar Dirección" name="btnSearchAddress" onClick="direccionesClienteModal();">
                                     <i class="fas fa-location-arrow"></i>
                                 </button>
@@ -374,21 +366,21 @@
 
         <div class="row" hidden>
             <div class="col-md-12">
-                <h4 style="display:flex;justify-content: space-between;">Cuentas bancarias </h4> 
-                <fieldset class="group-table">   
+                <h4 style="display:flex;justify-content: space-between;">Cuentas bancarias </h4>
+                <fieldset class="group-table">
                     <div class="row">
                         <div class="col-md-2" id="input-group-cuenta">
                             <h5>Cuenta</h5>
                             <div style="display:flex;">
-                                <input type="text" class="oculto" name="id_cuenta" >
+                                <input type="text" class="oculto" name="id_cuenta">
                                 <select class="form-control activation" name="banco" readOnly>
                                     @foreach ($bancos as $banco)
-                                        <option value="{{$banco->id_banco}}">{{$banco->razon_social}}</option>
+                                    <option value="{{$banco->id_banco}}">{{$banco->razon_social}}</option>
                                     @endforeach
                                 </select>
                                 <select class="form-control activation" name="tipo_cuenta" readOnly>
                                     @foreach ($tipos_cuenta as $tipo)
-                                        <option value="{{$tipo->id_tipo_cuenta}}">{{$tipo->descripcion}}</option>
+                                    <option value="{{$tipo->id_tipo_cuenta}}">{{$tipo->descripcion}}</option>
                                     @endforeach
                                 </select>
                                 <input type="text" class="form-control activation" name="nro_cuenta" placeholder="Nro Cuenta" readOnly>
@@ -408,43 +400,43 @@
 
         <div class="row" id="seccion-contacto-cliente">
             <div class="col-md-12">
-                <h4 style="display:flex;justify-content: space-between;">Contacto cliente</h4> 
-                <fieldset class="group-table">   
+                <h4 style="display:flex;justify-content: space-between;">Contacto cliente</h4>
+                <fieldset class="group-table">
                     <div class="row">
-                        <div class="col-md-4" id="input-group-nombre-contacto" >
+                        <div class="col-md-4" id="input-group-nombre-contacto">
                             <h5>Nombre contacto</h5>
                             <div style="display:flex;">
-                                <input type="text" class="form-control" name="nombre_contacto"  disabled>
+                                <input type="text" class="form-control" name="nombre_contacto" disabled>
                             </div>
                         </div>
-                        <div class="col-md-2" id="input-group-cargo-contacto" >
+                        <div class="col-md-2" id="input-group-cargo-contacto">
                             <h5>Cargo contacto</h5>
                             <div style="display:flex;">
-                                <input type="text" class="form-control" name="cargo_contacto"  disabled>
+                                <input type="text" class="form-control" name="cargo_contacto" disabled>
                             </div>
                         </div>
-                        <div class="col-md-4" id="input-group-email-contacto" >
+                        <div class="col-md-4" id="input-group-email-contacto">
                             <h5>Email contacto</h5>
                             <div style="display:flex;">
-                                <input type="text" class="form-control" name="email_contacto"  disabled>
+                                <input type="text" class="form-control" name="email_contacto" disabled>
                             </div>
                         </div>
-                        <div class="col-md-2" id="input-group-telefono-contacto" >
+                        <div class="col-md-2" id="input-group-telefono-contacto">
                             <h5>Teléfono contacto</h5>
                             <div style="display:flex;">
-                                <input type="text" class="form-control" name="telefono_contacto"  disabled>
+                                <input type="text" class="form-control" name="telefono_contacto" disabled>
                             </div>
                         </div>
-                        <div class="col-md-4" id="input-group-direccion-contacto" >
+                        <div class="col-md-4" id="input-group-direccion-contacto">
                             <h5>Dirección entrega</h5>
                             <div style="display:flex;">
-                                <input type="text" class="form-control" name="direccion_contacto"  disabled>
+                                <input type="text" class="form-control" name="direccion_contacto" disabled>
                             </div>
                         </div>
-                        <div class="col-md-2" id="input-group-horario-contacto" >
+                        <div class="col-md-2" id="input-group-horario-contacto">
                             <h5>Horario atención</h5>
                             <div style="display:flex;">
-                                <input type="text" class="form-control" name="horario_contacto"  disabled>
+                                <input type="text" class="form-control" name="horario_contacto" disabled>
                             </div>
                         </div>
                     </div>
@@ -455,8 +447,8 @@
 
         <div class="row" id="input-group-comercial" hidden>
             <div class="col-md-12">
-                <h4 style="display:flex;justify-content: space-between;">Comercial</h4> 
-                <fieldset class="group-table">   
+                <h4 style="display:flex;justify-content: space-between;">Comercial</h4>
+                <fieldset class="group-table">
                     <div class="row">
                         <div class="col-md-12">
                             <h5>Comercial</h5>
@@ -478,7 +470,7 @@
                                             <i class="fa fa-search"></i>
                                         </button>
                                     </div>
-                                </div>                            
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -488,8 +480,8 @@
 
         <div class="row">
             <div class="col-md-12">
-                <h4 style="display:flex;justify-content: space-between;">Opcional</h4> 
-                <fieldset class="group-table">   
+                <h4 style="display:flex;justify-content: space-between;">Opcional</h4>
+                <fieldset class="group-table">
                     <div class="row">
                         <div class="col-md-12" id="input-group-observacion">
                             <h5>Observación:</h5>
@@ -501,122 +493,135 @@
         </div>
 
 
-    <br>
-    <fieldset class="group-table">   
-        <div class="row">
-            <div class="col-sm-12">
-                <fieldset class="group-importes"><legend><h6>Item's de Requerimiento</h6></legend>
-                <table class="mytable table table-striped table-condensed table-bordered dataTable no-footer" id="ListaDetalleRequerimiento" width="100%">
-                    <thead>
-                        <tr>
-                            <th class="invisible">#</th>
-                            <th width="70">CODIGO</th>
-                            <th width="70">PART NUMBER</th>
-                            <th width="200">DESCRIPCION</th>
-                            <th width="60">UNIDAD</th>
-                            <th width="70">CANTIDAD</th>
-                            <th width="70">PRECIO U.</th>
-                            <th width="70">SUBTOTAL</th>
-                            <th width="70">PARTIDA</th>
-                            <th width="70">C.Costos</th>
-                            <th width="70">Motivo</th>
-                            <th width="70">Atendido Por</th>
-                            <th width="90">
-                                <div style="display:flex; flex-direction:column;">
-                                <button type="button" class="btn btn-xs btn-success activation" onClick="catalogoItemsModal();" id="btn-add-producto"
-                                data-toggle="tooltip" data-placement="bottom"  title="Agregar Detalle" disabled><i class="fas fa-plus"></i> Producto
-                                </button>
-                                <button type="button" class="btn btn-xs btn-success activation" onClick="agregarServicio();" id="btn-add-servicio"
-                                data-toggle="tooltip" data-placement="bottom"  title="Agregar Detalle" disabled><i class="fas fa-plus"></i> Servicio
+        <br>
+        <fieldset class="group-table">
+            <div class="row">
+                <div class="col-sm-12">
+                    <fieldset class="group-importes">
+                        <legend>
+                            <h6>Item's de Requerimiento</h6>
+                        </legend>
+                        <div class="btn-group" role="group" aria-label="...">
+                            <button type="button" class="btn btn-xs btn-success activation" id="btn-add-producto" data-toggle="tooltip" data-placement="bottom" title="Agregar Detalle" disabled><i class="fas fa-plus"></i> Producto
+                            </button> <!--  onClick="catalogoItemsModal();" -->
+                            <button type="button" class="btn btn-xs btn-primary activation" id="btn-add-servicio" data-toggle="tooltip" data-placement="bottom" title="Agregar Detalle" disabled><i class="fas fa-plus"></i> Servicio
                             </button>
-                            </div>
-                        </th>
-                    </tr>
-                </thead>
-                    <tbody id="body_detalle_requerimiento">
-                        <tr id="default_tr">
-                            <td></td>
-                            <td colspan="11"> No hay datos registrados</td>
-                        </tr>
-                    </tbody>
-                </table>
-                <div class="row">
-                    <div class="col-md-8"></div>
-                    <div class="col-md-2">
-                        <table class="table table-condensed table-small" style="border: none;margin-bottom: 0px;">
-                            <tbody>
+                        </div>
+                        <table class="table table-striped table-condensed table-bordered" id="ListaDetalleRequerimiento" width="100%">
+                            <thead>
                                 <tr>
-                                <td width="60%" style="text-align: right; font-weight: bold;">Monto Total:</td>
-                                <td width="10%"></td>
-                                <td style="display:flex; flex-direction: row; font-weight: bold;"> <span name="simbolo_moneda">S/</span><label name="total"> 0.00</label></td>
+                                    <th style="width: 3%">#</th>
+                                    <th style="width: 6%">Part number</th>
+                                    <th style="width: 15%">Descripción</th>
+                                    <th style="width: 10%">Unidad</th>
+                                    <th style="width: 10%">Cantidad</th>
+                                    <th style="width: 10%">Precio U.</th>
+                                    <th style="width: 10%">Subtotal</th>
+                                    <th style="width: 10%">Partida</th>
+                                    <th style="width: 10%">C.Costos</th>
+                                    <th style="width: 15%">Motivo</th>
+                                    <th style="width: 10%">Acciones</th>
                                 </tr>
+                            </thead>
+                            <tbody id="body_detalle_requerimiento">
+                                
                             </tbody>
                         </table>
-                    </div>
+                        <div class="row">
+                                 <table class="table table-condensed table-small" style="border: none;margin-bottom: 0px;">
+                                    <tbody>
+                                        <tr>
+                                            <td style="width: 5%"></td>
+                                            <td style="width: 6%"></td>
+                                            <td style="width: 10%"></td>
+                                            <td style="width: 10%"></td>
+                                            <td style="width: 10%"></td>
+                                            <td style="width: 10%"></td>
+                                            <td style="width: 10%; text-align:right;">Total: <span name="simbolo_moneda">S/</span><label name="total"> 0.00</label></td>
+                                            <td style="width: 10%"></td>
+                                            <td style="width: 10%"></td>
+                                            <td style="width: 15%"></td>
+                                            <td style="width: 10%"></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                         </div>
+            </div>
+        </fieldset>
+        <br>
+        <fieldset class="group-table" id="group-detalle-items-transformados" hidden>
+            <div class="row">
+                <div class="col-sm-12">
+                    <fieldset class="group-importes">
+                        <legend style="background: #968a30;">
+                            <h6 name='titulo_tabla_detalle_items_transfomados'>Detalles Items Transformados</h6>
+                        </legend>
+                        <table class="mytable table table-striped table-condensed table-bordered dataTable no-footer" id="ListaDetalleItemstransformado" width="100%" style="width: 100%;background: #968a30;">
+                            <thead>
+                                <tr>
+                                    <th>Part No.</th>
+                                    <th>Descripción</th>
+                                    <th>Cant.</th>
+                                    <th>Comentario</th>
+                                    <th>Acción</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
                 </div>
             </div>
-        </div>
-    </fieldset>
-    <br>
-    <fieldset class="group-table" id="group-detalle-items-transformados" hidden>
-        <div class="row">
-            <div class="col-sm-12">
-                <fieldset class="group-importes" ><legend style="background: #968a30;"><h6 name='titulo_tabla_detalle_items_transfomados'>Detalles Items Transformados</h6></legend>
-                <table class="mytable table table-striped table-condensed table-bordered dataTable no-footer" id="ListaDetalleItemstransformado" width="100%" style="width: 100%;background: #968a30;">
-                    <thead>
-                        <tr>
-                            <th>Part No.</th>
-                            <th>Descripción</th>
-                            <th>Cant.</th>
-                            <th>Comentario</th>
-                            <th>Acción</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    </tbody>
-                </table>
+        </fieldset>
+        <br>
+        <fieldset class="group-table" id="group-detalle-cuadro-costos" hidden>
+            <div class="row">
+                <div class="col-sm-12">
+                    <fieldset class="group-importes">
+                        <legend style="background: #5d4d6d;">
+                            <h6 name='titulo_tabla_detalle_cc'>Detalles de cuadro de Costos</h6>
+                        </legend>
+                        <table class="mytable table table-striped table-condensed table-bordered dataTable no-footer" id="ListaDetalleCuadroCostos" width="100%" style="width: 100%;background: #f8f3f9;">
+                            <thead>
+                                <tr>
+                                    <th>Part No.</th>
+                                    <th>Descripción</th>
+                                    <th>P.V.U. O/C (sinIGV) S/</th>
+                                    <th>Flete O/C (sinIGV) S/</th>
+                                    <th>Cant.</th>
+                                    <th>Garant. meses</th>
+                                    <th>Proveedor seleccionado</th>
+                                    <th>Creado Por</th>
+                                    <th>Fecha Creación</th>
+                                    <th>Acción</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                </div>
             </div>
-        </div>
-    </fieldset>   
-    <br>
-    <fieldset class="group-table" id="group-detalle-cuadro-costos" hidden>
+        </fieldset>
+
+        <br>
+        <div class="row" id="observaciones_requerimiento"></div>
+
         <div class="row">
-            <div class="col-sm-12">
-                <fieldset class="group-importes" ><legend style="background: #5d4d6d;"><h6 name='titulo_tabla_detalle_cc'>Detalles de cuadro de Costos</h6></legend>
-                <table class="mytable table table-striped table-condensed table-bordered dataTable no-footer" id="ListaDetalleCuadroCostos" width="100%" style="width: 100%;background: #f8f3f9;">
-                    <thead>
-                        <tr>
-                            <th>Part No.</th>
-                            <th>Descripción</th>
-                            <th>P.V.U. O/C (sinIGV) S/</th>
-                            <th>Flete O/C (sinIGV) S/</th>
-                            <th>Cant.</th>
-                            <th>Garant. meses</th>
-                            <th>Proveedor seleccionado</th>
-                            <th>Creado Por</th>
-                            <th>Fecha Creación</th>
-                            <th>Acción</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </fieldset>   
-
-    <br>
-    <div class="row" id="observaciones_requerimiento"></div> 
-
-    <div class="row">
             <div class="col-md-12 text-right">
                 <button type="submit" class="btn-okc" id="btnGuardar"><i class="fas fa-save fa-lg"></i> Guardar</button>
             </div>
         </div>
         <br>
-        
+
     </form>
 
+</div>
+
+<div class="hidden" id="divOculto">
+    <select id="selectUnidadMedida">
+        @foreach ($unidadesMedida as $unidad)
+        <option value="{{$unidad->id_unidad_medida}}">{{$unidad->descripcion}}</option>
+        @endforeach
+    </select>
 </div>
 <!-- @include('logistica.requerimientos.modal_buscar_stock_almacenes') -->
 @include('logistica.requerimientos.modal_loader')
@@ -658,74 +663,88 @@
 @endsection
 
 @section('scripts')
-    <script src="{{ asset('datatables/DataTables/js/jquery.dataTables.min.js') }}"></script>
-    <script src="{{ asset('datatables/DataTables/js/dataTables.bootstrap.min.js') }}"></script>
-    <script src="{{ asset('datatables/Buttons/js/dataTables.buttons.min.js') }}"></script>
-    <script src="{{ asset('datatables/Buttons/js/buttons.bootstrap.min.js') }}"></script>
-    <script src="{{ asset('datatables/Buttons/js/buttons.print.min.js') }}"></script>
-    <script src="{{ asset('datatables/Buttons/js/buttons.html5.min.js') }}"></script>
-    <script src="{{ asset('datatables/pdfmake/pdfmake.min.js') }}"></script>
-    <script src="{{ asset('datatables/pdfmake/vfs_fonts.js') }}"></script>
-    <script src="{{ asset('datatables/JSZip/jszip.min.js') }}"></script>
-    <!-- <script src="{{ asset('js/logistica/requerimiento/modal_buscar_stock_almacenes.js') }}"></script> -->
-    <script src="{{ asset('js/logistica/requerimiento/modal_lista_trabajadores.js') }}"></script>
-    <script src="{{ asset('js/logistica/requerimiento/cuadro_costos.js') }}"></script>
-    <script src="{{ asset('js/logistica/requerimiento/historial.js') }}"></script>
-    <script src="{{ asset('js/logistica/requerimiento/trazabilidad.js') }}"></script>
-    <script src="{{ asset('js/logistica/requerimiento/editar.js') }}"></script>
-    <script src="{{ asset('js/logistica/requerimiento/cancelar.js') }}"></script>
-    <script src="{{ asset('js/logistica/requerimiento/anular.js') }}"></script>
-    <script src="{{ asset('js/logistica/requerimiento/guardar.js') }}"></script>
-    <script src="{{ asset('js/logistica/requerimiento/adjuntos.js') }}"></script>
-    <script src="{{ asset('js/logistica/requerimiento/duplicar_requerimiento.js') }}"></script>
-    <script src="{{ asset('js/logistica/requerimiento/historial.js') }}"></script>
-    <script src="{{ asset('js/logistica/requerimiento/modal_detalle_requerimiento.js') }}"></script>
-    <script src="{{ asset('js/logistica/requerimiento/mostrar.js') }}"></script>
-    <script src="{{ asset('js/logistica/requerimiento/tipo_formulario.js') }}"></script>
-    <script src="{{ asset('js/logistica/requerimiento/cabecera_detalle.js') }}"></script>
-    <script src="{{ asset('js/logistica/requerimiento/inicializar.js') }}"></script>
-    <script src="{{ asset('js/logistica/requerimiento/modal_almacen_reserva.js')}}"></script>
-    <script src="{{ asset('js/logistica/requerimiento/modal_motivo_detalle_requerimiento.js')}}"></script>
-    <script src="{{ asset('js/logistica/requerimiento/modal_trazabilidad_requerimiento.js')}}"></script>
-    <script src="{{ asset('js/logistica/requerimiento/modal_seleccionar_crear_proveedor.js')}}"></script>
-    <script src="{{ asset('js/logistica/requerimiento/public.js') }}"></script>
-    <script src="{{ asset('js/logistica/adjuntar_archivos_req.js') }}"></script>
-    <script src="{{ asset('js/publico/modal_area.js')}}"></script>
-    <!-- <script src="{{ asset('js/proyectos/opcion/opcionModal.js')}}"></script> -->
-    <script src="{{ asset('js/publico/ubigeoModal.js')}}"></script>
-    <script src="{{ asset('js/publico/personaModal.js')}}"></script>
-    <script src="{{ asset('js/publico/hiddenElement.js')}}"></script>
-    <script src="{{ asset('js/logistica/clienteModal.js')}}"></script>
-    <script src="{{ asset('js/logistica/add_cliente.js')}}"></script>
-    <script src="{{ asset('js/logistica/crear_nuevo_producto.js')}}"></script>
-    <script src="{{ asset('js/logistica/crear_nueva_marca.js')}}"></script>
-    <script src="{{ asset('js/almacen/producto/saldosModal.js')}}"></script>
-    <script src="{{ asset('js/publico/consulta_sunat.js')}}"></script>
-    <script src="{{ asset('template/plugins/moment.min.js') }}"></script>
+<script src="{{ asset('js/util.js')}}"></script>
 
-    <script>
-        var grupos = {!! json_encode($grupos) !!};
-        var id_grupo_usuario_sesion_list= [];
-        grupos.forEach(element => {
-            id_grupo_usuario_sesion_list.push(element.id_grupo);
-        });
-        
-        autoSelectTipoRequerimientoPorDefecto();
-        // grupos.forEach(element => {
-        //     if(element.id_grupo ==3){ // proyectos
-        //         cambiarTipoFormulario(4)
-        //     }else if(element.id_grupo ==2){ // comercial
-        //         cambiarTipoFormulario(5)
-                
-        //     }else if(element.id_grupo ==1){ //administración
-        //         cambiarTipoFormulario(6)
-        //     }
-        // });
-    $(document).ready(function(){
+<script src="{{ asset('datatables/DataTables/js/jquery.dataTables.min.js') }}"></script>
+<script src="{{ asset('datatables/DataTables/js/dataTables.bootstrap.min.js') }}"></script>
+<script src="{{ asset('datatables/Buttons/js/dataTables.buttons.min.js') }}"></script>
+<script src="{{ asset('datatables/Buttons/js/buttons.bootstrap.min.js') }}"></script>
+<script src="{{ asset('datatables/Buttons/js/buttons.print.min.js') }}"></script>
+<script src="{{ asset('datatables/Buttons/js/buttons.html5.min.js') }}"></script>
+<script src="{{ asset('datatables/pdfmake/pdfmake.min.js') }}"></script>
+<script src="{{ asset('datatables/pdfmake/vfs_fonts.js') }}"></script>
+<script src="{{ asset('datatables/JSZip/jszip.min.js') }}"></script>
+<!-- <script src="{{ asset('js/logistica/requerimiento/modal_buscar_stock_almacenes.js') }}"></script> -->
+<script src="{{ asset('js/logistica/requerimiento/modal_lista_trabajadores.js') }}"></script>
+<script src="{{ asset('js/logistica/requerimiento/cuadro_costos.js') }}"></script>
+<script src="{{ asset('js/logistica/requerimiento/historial.js') }}"></script>
+<script src="{{ asset('js/logistica/requerimiento/trazabilidad.js') }}"></script>
+<script src="{{ asset('js/logistica/requerimiento/editar.js') }}"></script>
+<script src="{{ asset('js/logistica/requerimiento/cancelar.js') }}"></script>
+<script src="{{ asset('js/logistica/requerimiento/anular.js') }}"></script>
+<script src="{{ asset('js/logistica/requerimiento/guardar.js') }}"></script>
+<script src="{{ asset('js/logistica/requerimiento/adjuntos.js') }}"></script>
+<script src="{{ asset('js/logistica/requerimiento/duplicar_requerimiento.js') }}"></script>
+<script src="{{ asset('js/logistica/requerimiento/historial.js') }}"></script>
+<script src="{{ asset('js/logistica/requerimiento/modal_detalle_requerimiento.js') }}"></script>
+<script src="{{ asset('js/logistica/requerimiento/mostrar.js') }}"></script>
+<script src="{{ asset('js/logistica/requerimiento/tipo_formulario.js') }}"></script>
+<script src="{{ asset('js/logistica/requerimiento/cabecera_detalle.js') }}"></script>
+<script src="{{ asset('js/logistica/requerimiento/inicializar.js') }}"></script>
+<script src="{{ asset('js/logistica/requerimiento/modal_almacen_reserva.js')}}"></script>
+<script src="{{ asset('js/logistica/requerimiento/modal_motivo_detalle_requerimiento.js')}}"></script>
+<script src="{{ asset('js/logistica/requerimiento/modal_trazabilidad_requerimiento.js')}}"></script>
+<script src="{{ asset('js/logistica/requerimiento/modal_seleccionar_crear_proveedor.js')}}"></script>
+<script src="{{ asset('js/logistica/requerimiento/public.js') }}"></script>
+<script src="{{ asset('js/logistica/adjuntar_archivos_req.js') }}"></script>
+<script src="{{ asset('js/publico/modal_area.js')}}"></script>
+<!-- <script src="{{ asset('js/proyectos/opcion/opcionModal.js')}}"></script> -->
+<script src="{{ asset('js/publico/ubigeoModal.js')}}"></script>
+<script src="{{ asset('js/publico/personaModal.js')}}"></script>
+<script src="{{ asset('js/publico/hiddenElement.js')}}"></script>
+<script src="{{ asset('js/logistica/clienteModal.js')}}"></script>
+<script src="{{ asset('js/logistica/add_cliente.js')}}"></script>
+<script src="{{ asset('js/logistica/crear_nuevo_producto.js')}}"></script>
+<script src="{{ asset('js/logistica/crear_nueva_marca.js')}}"></script>
+<script src="{{ asset('js/almacen/producto/saldosModal.js')}}"></script>
+<script src="{{ asset('js/publico/consulta_sunat.js')}}"></script>
+<script src="{{ asset('template/plugins/moment.min.js') }}"></script>
+
+<script src="{{ asset('js/logistica/requerimiento/RequerimientoView.js')}}"></script>
+<script src="{{ asset('js/logistica/requerimiento/RequerimientoController.js')}}"></script>
+<script src="{{ asset('js/logistica/requerimiento/RequerimientoModel.js')}}"></script>
+
+
+
+<script>
+    var grupos = JSON.parse('{!!$grupos!!}');
+
+    var id_grupo_usuario_sesion_list = [];
+    grupos.forEach(element => {
+        id_grupo_usuario_sesion_list.push(element.id_grupo);
+    });
+
+    autoSelectTipoRequerimientoPorDefecto();
+    // grupos.forEach(element => {
+    //     if(element.id_grupo ==3){ // proyectos
+    //         cambiarTipoFormulario(4)
+    //     }else if(element.id_grupo ==2){ // comercial
+    //         cambiarTipoFormulario(5)
+
+    //     }else if(element.id_grupo ==1){ //administración
+    //         cambiarTipoFormulario(6)
+    //     }
+    // });
+    $(document).ready(function() {
+        $('#btnNuevo').trigger('click');
         seleccionarMenu(window.location);
-        var descripcion_grupo='{{Auth::user()->getGrupo()->descripcion}}';
-        var id_grupo='{{Auth::user()->getGrupo()->id_grupo}}';
+        var descripcion_grupo = '{{Auth::user()->getGrupo()->descripcion}}';
+        var id_grupo = '{{Auth::user()->getGrupo()->id_grupo}}';
         document.querySelector("form[id='form-requerimiento'] input[name='id_grupo']").value = id_grupo;
+
+
+        // const nuevoView = new NuevoRequerimientoView();
+        // nuevoView.agregarFilaEvent();
 
         // controlInput(id_grupo,descripcion_grupo);
         inicializar(
@@ -746,8 +765,7 @@
             "{{route('logistica.gestion-logistica.requerimiento.elaboracion.detalle-cuadro-costos')}}",
             "{{route('logistica.gestion-logistica.requerimiento.elaboracion.obtener-construir-cliente')}}",
             "{{route('logistica.gestion-logistica.requerimiento.elaboracion.grupo-select-item-para-compra')}}"
-
-            );
+        );
     });
-    </script>
+</script>
 @endsection
