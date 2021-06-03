@@ -52,7 +52,6 @@ Requerimiento
                 <h4 style="display:flex;justify-content: space-between;">General
                     <div>
                         <span class="label" id="estado_doc">&nbsp;</span>
-                        <span style="color:blue;" name="codigo"></span>
                         <button type="button" name="btn-imprimir-requerimento-pdf" class="btn btn-info btn-sm" onclick="ImprimirRequerimientoPdf()" disabled><i class="fas fa-print"></i> Imprimir</button>
                         <button type="button" name="btn-adjuntos-requerimiento" class="btn btn-sm btn-warning" title="Archivos adjuntos" onclick="archivosAdjuntosRequerimientoModal();" disabled><i class="fas fa-file-archive"></i> Adjuntos</button>
                         <button type="button" name="btn-ver-trazabilidad-requerimiento" class="btn btn-sm btn-primary" title="Ver Trazabilidads" onclick="verTrazabilidadRequerimientoModal();" disabled><i class="fas fa-shoe-prints"></i> Trazabilidad</button>
@@ -85,7 +84,7 @@ Requerimiento
                         <div class="col-md-2" id="input-group-moneda">
                             <div class="form-group">
                                 <h5>Moneda</h5>
-                                <select class="form-control activation" name="moneda" onChange="changeMonedaSelect(event)" disabled="true">
+                                <select class="form-control activation" name="moneda" onChange="requerimientoView.changeMonedaSelect(event)" disabled="true">
                                     @foreach ($monedas as $moneda)
                                     <option value="{{$moneda->id_moneda}}">{{$moneda->descripcion}}</option>
                                     @endforeach
@@ -131,7 +130,7 @@ Requerimiento
                         <div class="col-md-2" id="input-group-empresa">
                             <div class="form-group">
                                 <h5>Empresa</h5>
-                                <select name="empresa" id="empresa" class="form-control activation" onChange="changeOptEmpresaSelect(event)" required>
+                                <select name="empresa" id="empresa" class="form-control activation" onChange="requerimientoView.changeOptEmpresaSelect(event)" required>
                                     <option value="">Elija una opción</option>
                                     @foreach ($empresas as $empresa)
                                     <option value="{{$empresa->id_empresa}}">{{ $empresa->contribuyente->razon_social}}</option>
@@ -143,7 +142,7 @@ Requerimiento
                         <div class="col-md-2" id="input-group-sede">
                             <div class="form-group">
                                 <h5>Sede</h5>
-                                <select id="sede" name="sede" class="form-control activation" onChange="changeOptUbigeo(event)" required>
+                                <select id="sede" name="sede" class="form-control activation" onChange="requerimientoView.changeOptUbigeo(event)" required>
                                     <option value="">Elija una opción</option>
                                 </select>
                             </div>
@@ -177,7 +176,7 @@ Requerimiento
                                 <h5>&nbsp;</h5>
                                 <div class="checkbox">
                                     <label>
-                                        <input type="checkbox" class="activation" name="para_stock_almacen" onclick="changeStockParaAlmacen(event);"> Stock para Almacén
+                                        <input type="checkbox" class="activation" name="para_stock_almacen" onclick="requerimientoView.changeStockParaAlmacen(event);"> Stock para Almacén
                                     </label>
                                 </div>
                             </div>
@@ -753,12 +752,10 @@ Requerimiento
             "{{route('logistica.gestion-logistica.requerimiento.elaboracion.guardar')}}",
             "{{route('logistica.gestion-logistica.requerimiento.elaboracion.actualizar')}}",
             "{{route('logistica.gestion-logistica.requerimiento.elaboracion.anular')}}",
-            "{{route('logistica.gestion-logistica.requerimiento.elaboracion.select-sede-by-empresa')}}",
             "{{route('logistica.gestion-logistica.requerimiento.elaboracion.copiar-requerimiento')}}",
             "{{route('logistica.gestion-logistica.requerimiento.elaboracion.telefonos-cliente')}}",
             "{{route('logistica.gestion-logistica.requerimiento.elaboracion.direcciones-cliente')}}",
             "{{route('logistica.gestion-logistica.requerimiento.elaboracion.emails-cliente')}}",
-            "{{route('logistica.gestion-logistica.requerimiento.elaboracion.siguiente-codigo-requerimiento')}}",
             "{{route('logistica.gestion-logistica.requerimiento.elaboracion.cuentas-cliente')}}",
             "{{route('logistica.gestion-logistica.requerimiento.elaboracion.guardar-cuentas-cliente')}}",
             "{{route('logistica.gestion-logistica.requerimiento.elaboracion.cuadro-costos')}}",

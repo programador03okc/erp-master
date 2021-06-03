@@ -85,7 +85,6 @@ function changeOptTipoReqSelect(e){
 
         }
     }
-    getNexCodigoRequerimiento(e.target.value);
 }
 
 function autoSelectTipoRequerimientoPorDefecto(){

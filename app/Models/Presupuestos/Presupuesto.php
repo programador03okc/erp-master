@@ -74,9 +74,6 @@ class Presupuesto extends Model
             ->get();
         }
 
-        $html = '';
-        $isVisible ='';
-
         foreach($presup as $p){
             $titulos = DB::table('finanzas.presup_titu')
                 ->where([['id_presup','=',$p->id_presup],
@@ -90,38 +87,8 @@ class Presupuesto extends Model
                         ['presup_par.estado','=',1]])
                 ->orderBy('presup_par.codigo')
                 ->get();
-            $html .='
-            <div id='.$p->codigo.' class="panel panel-primary" style="width:100%;">
-                <h5 onclick="apertura('.$p->id_presup.');" class="panel-heading" style="cursor: pointer; margin: 0;">
-                '.$p->descripcion.' </h5>
-                <div id="pres-'.$p->id_presup.'" class="oculto" style="width:100%;">
-                    <table class="table table-bordered partidas" width="100%">
-                        <tbody> 
-                ';
-                foreach($titulos as $ti){
-                    $html .='
-                    <tr id="com-'.$ti->id_titulo.'">
-                        <td><strong>'.$ti->codigo.'</strong></td>
-                        <td><strong>'.$ti->descripcion.'</strong></td>
-                        <td class="right '.$isVisible.'"><strong>'.$ti->total.'</strong></td>
-                    </tr>';
-                    foreach($partidas as $par){
-                        if ($ti->codigo == $par->cod_padre){
-                            $html .='
-                            <tr id="par-'.$par->id_partida.'" onclick="requerimientoView.selectPartida('.$par->id_partida.');" style="cursor: pointer; margin: 0;">
-                                <td name="codigo">'.$par->codigo.'</td>
-                                <td name="descripcion">'.$par->des_pardet.'</td>
-                                <td name="importe_total" class="right '.$isVisible.'">'.$par->importe_total.'</td>
-                            </tr>';
-                        }
-                    }
-                }
-            $html .='
-                    </tbody>
-                </table>
-            </div>
-        </div>';
         }
-        return json_encode($html);
+        
+        return json_encode(['presupuesto'=>$presup,'titulos'=>$titulos,'partidas'=>$partidas]);
     }
 }

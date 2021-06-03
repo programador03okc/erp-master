@@ -3,7 +3,141 @@ var tempObjectBtnCentroCostos;
 class RequerimientoView {
     init() {
         this.agregarFilaEvent();
+        $('[name=periodo]').val(today.getFullYear());
+
     }
+    // cabecera requerimiento
+    changeMonedaSelect(e) {
+        if (e.target.value == 1) {
+            document.querySelector("div[id='montoMoneda']").textContent = 'S/';
+            document.querySelector("form[id='form-requerimiento'] table span[class='moneda']").textContent = 'S/';
+            document.querySelector("form[id='form-requerimiento'] table span[name='simbolo_moneda']").textContent = 'S/';
+
+        } else if (e.target.value == 2) {
+            document.querySelector("div[id='montoMoneda']").textContent = '$';
+            document.querySelector("form[id='form-requerimiento'] table span[class='moneda']").textContent = '$';
+            document.querySelector("form[id='form-requerimiento'] table span[name='simbolo_moneda']").textContent = '$';
+        } else {
+            document.querySelector("div[id='montoMoneda']").textContent = '';
+            document.querySelector("form[id='form-requerimiento'] table span[class='moneda']").textContent = '';
+        }
+    }
+
+    changeOptEmpresaSelect(e){
+        let id_empresa = e.target.value;
+        this.getDataSelectSede(id_empresa);
+    }
+
+    getDataSelectSede(idEmpresa = null){
+        if(idEmpresa >0){
+            requerimientoCtrl.obtenerSede(idEmpresa).then(function (res) {
+                requerimientoView.llenarSelectSede(res);
+                requerimientoView.seleccionarAmacen(res)
+                requerimientoView.llenarUbigeo();
+            }).catch(function (err) {
+                console.log(err)
+            })
+        }
+        return false;
+    }
+
+    llenarSelectSede(array){
+
+        let selectElement = document.querySelector("div[id='input-group-sede'] select[name='sede']");
+        
+        if(selectElement.options.length>0){
+            var i, L = selectElement.options.length - 1;
+            for(i = L; i >= 0; i--) {
+                selectElement.remove(i);
+            }
+        }
+    
+        array.forEach(element => {
+            let option = document.createElement("option");
+            option.text = element.descripcion;
+            option.value = element.id_sede;
+            if(element.codigo == 'LIMA' || element.codigo == 'Lima'){ // default sede lima
+                option.setAttribute('selected','selected');
+    
+            }
+            option.setAttribute('data-ubigeo',element.id_ubigeo);
+            option.setAttribute('data-name-ubigeo',element.ubigeo_descripcion);
+            selectElement.add(option);
+        });
+    
+    }
+    
+    seleccionarAmacen(data){
+        // let firstSede = data[0].id_sede;
+        let id_empresa_selected =  document.querySelector("select[id='empresa']").value;
+        let selectAlmacen = document.querySelector("div[id='input-group-almacen'] select[name='id_almacen']");
+        if(selectAlmacen.options.length>0){
+            var i, L = selectAlmacen.options.length - 1;
+            for(i = L; i > 0; i--) {
+                if(selectAlmacen.options[i].dataset.idEmpresa == id_empresa_selected){
+                     if( [4,10,11,12,13,14].includes(parseInt(selectAlmacen.options[i].dataset.idSede)) == true){ ///default almacen lima
+                        selectAlmacen.options[i].setAttribute('selected',true);
+                    }
+                }
+            }
+        }
+    }
+
+    llenarUbigeo(){
+        var ubigeo =document.querySelector("select[name='sede']").options[document.querySelector("select[name='sede']").selectedIndex].dataset.ubigeo;
+        var name_ubigeo =document.querySelector("select[name='sede']").options[document.querySelector("select[name='sede']").selectedIndex].dataset.nameUbigeo;
+        document.querySelector("input[name='ubigeo']").value=ubigeo;
+        document.querySelector("input[name='name_ubigeo']").value=name_ubigeo;        
+        var sede = $('[name=sede]').val();
+    }
+
+    changeOptUbigeo(e){
+        var ubigeo =document.querySelector("select[name='sede']").options[document.querySelector("select[name='sede']").selectedIndex].dataset.ubigeo;
+        var name_ubigeo =document.querySelector("select[name='sede']").options[document.querySelector("select[name='sede']").selectedIndex].dataset.nameUbigeo;
+        var sede = $('[name=sede]').val();
+    
+        document.querySelector("input[name='ubigeo']").value=ubigeo;
+        document.querySelector("input[name='name_ubigeo']").value=name_ubigeo;
+        this.cargar_almacenes(sede);
+    }
+
+    cargar_almacenes(sede){
+        if (sede !== ''){
+            requerimientoCtrl.obtenerAlmacenes(sede).then(function (res) {
+                var option = '';
+                for (var i=0; i<res.length; i++){
+                    if (res.length == 1){
+                        option+='<option data-id-sede="'+res[i].id_sede+'" data-id-empresa="'+res[i].id_empresa+'" value="'+res[i].id_almacen+'" selected>'+res[i].codigo+' - '+res[i].descripcion+'</option>';
+
+                    } else {
+                        option+='<option data-id-sede="'+res[i].id_sede+'" data-id-empresa="'+res[i].id_empresa+'" value="'+res[i].id_almacen+'">'+res[i].codigo+' - '+res[i].descripcion+'</option>';
+
+                    }
+                }
+                $('[name=id_almacen]').html('<option value="0" disabled selected>Elija una opción</option>'+option);
+            }).catch(function (err) {
+                console.log(err)
+            })
+        }
+    }
+
+    changeStockParaAlmacen(event) {
+
+        switch (event.target.checked) {
+            case true:
+                document.querySelector("div[id='input-group-asignar_trabajador']").classList.add("oculto");
+                break;
+                case false:
+                document.querySelector("div[id='input-group-asignar_trabajador']").classList.remove("oculto");
+                
+                break;
+        
+            default:
+                break;
+        }
+    }
+
+    // detalle requerimiento
 
     agregarFilaEvent() {
         document.querySelector("button[id='btn-add-producto']").addEventListener('click', (event) => {
@@ -13,7 +147,7 @@ class RequerimientoView {
             let tipoRequerimiento = document.querySelector("form[id='form-requerimiento'] select[name='tipo_requerimiento']").value;
             let idGrupo = document.querySelector("form[id='form-requerimiento'] input[name='id_grupo']").value;
 
-            document.querySelector("tbody[id='body_detalle_requerimiento']").insertAdjacentHTML('beforeend',`<tr style="text-align:center">
+            document.querySelector("tbody[id='body_detalle_requerimiento']").insertAdjacentHTML('beforeend', `<tr style="text-align:center">
             <td></td>
             <td><input class="form-control input-sm" type="text" name="part-number[]" placeholder="Part number"></td>
             <td><textarea class="form-control input-sm" name="descripcion[]" placeholder="Descripción"></textarea></td>
@@ -42,7 +176,7 @@ class RequerimientoView {
             let tipoRequerimiento = document.querySelector("form[id='form-requerimiento'] select[name='tipo_requerimiento']").value;
             let idGrupo = document.querySelector("form[id='form-requerimiento'] input[name='id_grupo']").value;
 
-            document.querySelector("tbody[id='body_detalle_requerimiento']").insertAdjacentHTML('beforeend',`<tr style="text-align:center">
+            document.querySelector("tbody[id='body_detalle_requerimiento']").insertAdjacentHTML('beforeend', `<tr style="text-align:center">
             <td></td>
             <td></td>
             <td><textarea class="form-control input-sm" name="descripcion[]" placeholder="Descripción"></textarea></td>
@@ -66,37 +200,37 @@ class RequerimientoView {
         });
     }
 
-    updateContadorItem(){
-        let TableTBody =document.querySelector("tbody[id='body_detalle_requerimiento']");
+    updateContadorItem() {
+        let TableTBody = document.querySelector("tbody[id='body_detalle_requerimiento']");
         // let TableTbodySize= TableTbody.childElementCount;
-        let childrenTableTbody= TableTBody.children;
+        let childrenTableTbody = TableTBody.children;
 
         for (let index = 0; index < childrenTableTbody.length; index++) {
-            childrenTableTbody[index].firstElementChild.textContent=index+1
+            childrenTableTbody[index].firstElementChild.textContent = index + 1
         }
     }
 
-    updateSubtotal(obj){
-        let tr =obj.closest("tr");
+    updateSubtotal(obj) {
+        let tr = obj.closest("tr");
         let cantidad = parseFloat(tr.querySelector("input[class~='cantidad']").value);
         let precioUnitario = parseFloat(tr.querySelector("input[class~='precio']").value);
-        let subtotal = ( cantidad* precioUnitario);
-        tr.querySelector("span[class='subtotal']").textContent= Util.formatoNumero(subtotal,2);
+        let subtotal = (cantidad * precioUnitario);
+        tr.querySelector("span[class='subtotal']").textContent = Util.formatoNumero(subtotal, 2);
         this.calcularTotal();
-        
+
     }
 
-    calcularTotal(){
+    calcularTotal() {
         let TableTBody = document.querySelector("tbody[id='body_detalle_requerimiento']");
-        let childrenTableTbody= TableTBody.children;
-        let total =0;
+        let childrenTableTbody = TableTBody.children;
+        let total = 0;
         for (let index = 0; index < childrenTableTbody.length; index++) {
             console.log(childrenTableTbody[index]);
             let cantidad = parseFloat(childrenTableTbody[index].querySelector("input[class~='cantidad']").value);
             let precioUnitario = parseFloat(childrenTableTbody[index].querySelector("input[class~='precio']").value);
-            total+= (cantidad*precioUnitario);
+            total += (cantidad * precioUnitario);
         }
-        document.querySelector("label[name='total']").textContent= Util.formatoNumero(total,2);
+        document.querySelector("label[name='total']").textContent = Util.formatoNumero(total, 2);
     }
 
     // partidas 
@@ -130,7 +264,66 @@ class RequerimientoView {
     }
 
     construirListaPartidas(data) {
-        document.querySelector("div[id='listaPartidas']").innerHTML = data;
+        let html = '';
+        let isVisible = '';
+        data['presupuesto'].forEach(resup => {
+            html += ` 
+            <div id='${resup.codigo}' class="panel panel-primary" style="width:100%; height: 60%; overflow: auto;">
+                <h5 class="panel-heading" style="margin: 0; cursor: pointer;" onclick="requerimientoView.apertura(${resup.id_presup}); requerimientoView.changeBtnIcon(this);">
+                <i class="fas fa-chevron-right"></i>
+                    &nbsp; ${resup.descripcion} 
+                </h5>
+                <div id="pres-${resup.id_presup}" class="oculto" style="width:100%;">
+                    <table class="table table-bordered table-condensed partidas" width="100%" style="font-size:0.9em">
+                        <tbody> 
+            `;
+
+            data['titulos'].forEach(titulo => {
+                html += `
+                <tr id="com-${titulo.id_titulo}">
+                    <td><strong>${titulo.codigo}</strong></td>
+                    <td><strong>${titulo.descripcion}</strong></td>
+                    <td class="right ${isVisible}"><strong>${titulo.total}</strong></td>
+                </tr> `;
+
+                data['partidas'].forEach(partida => {
+                    if (titulo.codigo == partida.cod_padre) {
+                        html += `<tr id="par-${partida.id_partida}">
+                            <td style="width:15%; text-align:left;" name="codigo">${partida.codigo}</td>
+                            <td style="width:75%; text-align:left;" name="descripcion">${partida.des_pardet}</td>
+                            <td style="width:15%; text-align:right;" name="importe_total" class="right ${isVisible}">${partida.importe_total}</td>
+                            <td style="width:5%; text-align:center;"><button class="btn btn-success btn-xs" onclick="requerimientoView.selectPartida(${partida.id_partida});">Seleccionar</button></td>
+                        </tr>`;
+                    }
+                });
+            });
+            html += `
+                    </tbody>
+                </table>
+            </div>
+        </div>`;
+        });
+        document.querySelector("div[id='listaPartidas']").innerHTML = html;
+    }
+
+    apertura(id_presup) {
+        if ($("#pres-" + id_presup + " ").attr('class') == 'oculto') {
+            $("#pres-" + id_presup + " ").removeClass('oculto');
+            $("#pres-" + id_presup + " ").addClass('visible');
+        } else {
+            $("#pres-" + id_presup + " ").removeClass('visible');
+            $("#pres-" + id_presup + " ").addClass('oculto');
+        }
+    }
+
+    changeBtnIcon(obj) {
+        let actualClass = obj.children[0].className;
+        if (actualClass == 'fas fa-chevron-right') {
+
+            obj.children[0].classList.replace('fa-chevron-right', 'fa-chevron-down')
+        } else {
+            obj.children[0].classList.replace('fa-chevron-down', 'fa-chevron-right')
+        }
     }
 
     selectPartida(idPartida) {
@@ -140,9 +333,9 @@ class RequerimientoView {
         tempObjectBtnPartida.nextElementSibling.value = idPartida;
         tempObjectBtnPartida.textContent = 'Cambiar';
 
-        let tr =tempObjectBtnPartida.closest("tr");
-        tr.querySelector("p[class='descripcion-partida']").textContent= descripcion
-        tr.querySelector("p[class='descripcion-partida']").setAttribute('title',codigo);
+        let tr = tempObjectBtnPartida.closest("tr");
+        tr.querySelector("p[class='descripcion-partida']").textContent = descripcion
+        tr.querySelector("p[class='descripcion-partida']").setAttribute('title', codigo);
 
         $('#modal-partidas').modal('hide');
         tempObjectBtnPartida = null;
@@ -215,27 +408,33 @@ class RequerimientoView {
     }
 
 
-    selectCentroCosto(idCentroCosto,codigo,descripcion){
+    selectCentroCosto(idCentroCosto, codigo, descripcion) {
 
 
         tempObjectBtnCentroCostos.nextElementSibling.value = idCentroCosto;
         tempObjectBtnCentroCostos.textContent = 'Cambiar';
 
-        let tr =tempObjectBtnCentroCostos.closest("tr");
-        tr.querySelector("p[class='descripcion-centro-costo']").textContent= descripcion
-        tr.querySelector("p[class='descripcion-centro-costo']").setAttribute('title',codigo);
+        let tr = tempObjectBtnCentroCostos.closest("tr");
+        tr.querySelector("p[class='descripcion-centro-costo']").textContent = descripcion
+        tr.querySelector("p[class='descripcion-centro-costo']").setAttribute('title', codigo);
 
         $('#modal-centro-costos').modal('hide');
         tempObjectBtnCentroCostos = null;
         // componerTdItemDetalleRequerimiento();
     }
 
-    eliminarItem(obj){
-        let tr =obj.closest("tr");
+    eliminarItem(obj) {
+        let tr = obj.closest("tr");
         tr.remove();
-
         this.updateContadorItem();
 
+    }
+
+    adjuntarArchivoItem(obj) {
+        $('#modal-adjuntar-archivos-detalle-requerimiento').modal({
+            show: true,
+            backdrop: 'true'
+        });
     }
 
 }

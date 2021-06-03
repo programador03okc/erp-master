@@ -6,6 +6,15 @@ class RequerimientoCtrl{
         this.requerimientoView.init();
     }
 
+    obtenerSede(idEmpresa){
+        return requerimientoModel.obtenerSede(idEmpresa);
+
+    }
+    obtenerAlmacenes(sede){
+        return requerimientoModel.obtenerAlmacenes(sede);
+
+    }
+
     obtenerListaPartidas(idGrupo,idProyecto){
         if(idProyecto == 0 || idProyecto == '' || idProyecto == null){
             idProyecto = '';

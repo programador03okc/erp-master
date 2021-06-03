@@ -676,7 +676,6 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::get('listar-saldos-por-almacen/{id_producto}', 'AlmacenController@listar_saldos_por_almacen_producto');
 					Route::get('obtener-promociones/{id_producto}/{id_almacen}', 'LogisticaController@obtener_promociones');
 					Route::post('migrar_venta_directa', 'MigrateSoftLinkController@migrar_venta_directa');
-					Route::get('siguiente-codigo-requerimiento/{id_tipo_requerimiento?}', 'RequerimientoController@nextCodigoRequerimiento')->name('siguiente-codigo-requerimiento');
 					Route::post('guardar-producto', 'AlmacenController@guardar_producto')->name('guardar-producto');
 					
 					Route::get('cuadro-costos/{id_cc?}', 'RequerimientoController@cuadro_costos')->name('cuadro-costos');

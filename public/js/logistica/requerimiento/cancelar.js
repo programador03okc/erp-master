@@ -3,7 +3,7 @@ function cancelarRequerimiento(){
     document.getElementById('btnCopiar').setAttribute("disabled",true);
     $('#estado_doc').text('');
 
-    $('#body_detalle_requerimiento').html('<tr id="default_tr"><td></td><td colspan="7"> No hay datos registrados</td></tr>');
+    // $('#body_detalle_requerimiento').html('<tr id="default_tr"><td></td><td colspan="7"> No hay datos registrados</td></tr>');
     $('[name=codigo]').val('');
     var btnEditarItem = document.getElementsByName("btnEditarItem");
         disabledControl(btnEditarItem,true);

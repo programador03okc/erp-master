@@ -144,22 +144,7 @@ function mostrar_cuadro_costos_modal(){
 // }
 
 
-function changeMonedaSelect(e){
-    if( e.target.value == 1){
-        document.querySelector("div[id='montoMoneda']").textContent='S/';
-        document.querySelector("form[id='form-requerimiento'] table span[class='moneda']").textContent= 'S/';
-        document.querySelector("form[id='form-requerimiento'] table span[name='simbolo_moneda']").textContent= 'S/';
 
-    }else if( e.target.value ==2){
-        document.querySelector("div[id='montoMoneda']").textContent='$';
-        document.querySelector("form[id='form-requerimiento'] table span[class='moneda']").textContent= '$';
-        document.querySelector("form[id='form-requerimiento'] table span[name='simbolo_moneda']").textContent= '$';
-    }else{
-        document.querySelector("div[id='montoMoneda']").textContent='';
-        document.querySelector("form[id='form-requerimiento'] table span[class='moneda']").textContent= '';
-    }
-
-}
 
 
 
@@ -187,79 +172,16 @@ function limpiarFormRequerimiento(){
 
 }
 
-function getNexCodigoRequerimiento(tipo_requerimiento){
-    $.ajax({
-        type: 'GET',
-        headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-        url: rutaNextCodigoRequerimiento+'/' + tipo_requerimiento,
-        dataType: 'JSON',
-        success: function(response){ 
-            document.querySelector("form[id='form-requerimiento'] span[name='codigo']").textContent = response.data;
-        }
-    });
-}
+ 
 
 
 
 
+ 
 
-function changeOptEmpresaSelect(e){
-    let id_empresa = e.target.value;
-    getDataSelectSede(id_empresa);
-}
+ 
 
-function llenarSelectSede(array){
-
-    let selectElement = document.querySelector("div[id='input-group-sede'] select[name='sede']");
-    
-    if(selectElement.options.length>0){
-        var i, L = selectElement.options.length - 1;
-        for(i = L; i >= 0; i--) {
-            selectElement.remove(i);
-        }
-    }
-
-    array.forEach(element => {
-        let option = document.createElement("option");
-        option.text = element.descripcion;
-        option.value = element.id_sede;
-        if(element.codigo == 'LIMA' || element.codigo == 'Lima'){ // default sede lima
-            option.setAttribute('selected','selected');
-
-        }
-        option.setAttribute('data-ubigeo',element.id_ubigeo);
-        option.setAttribute('data-name-ubigeo',element.ubigeo_descripcion);
-        selectElement.add(option);
-    });
-
-    // console.log(selectElement.value);
-    // let id_empresa = document.querySelector("div[id='requerimiento'] select[id='id_empresa_select_req']");
-    // let id_sede= selectElement.value;
-
-}
-
-function getDataSelectSede(id_empresa = null){
-    if(id_empresa >0){
-        $.ajax({
-            type: 'GET',
-            headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-            url: rutaSedeByEmpresa+'/' + id_empresa,
-            dataType: 'JSON',
-            success: function(response){ 
-                // console.log(response);  
-                if(response.length ==0){
-                    console.error("usuario no registrado en 'configuracion'.'sis_usua_sede' o el estado del registro es diferente de 1");
-                    alert('No se pudo acceder al listado de Sedes, el usuario debe pertenecer a una Sede y la sede debe estar habilitada');
-                }else{
-                    llenarSelectSede(response);
-                    seleccionarAmacen(response)
-                    llenarUbigeo();
-                }
-            }
-        });
-    }
-    return false;
-}
+ 
 function getDataSelectSedeSinUbigeo(id_empresa = null){
     if(id_empresa >0){
         $.ajax({
@@ -282,31 +204,9 @@ function getDataSelectSedeSinUbigeo(id_empresa = null){
     return false;
 }
 
-function seleccionarAmacen(data){
-    // let firstSede = data[0].id_sede;
-    let id_empresa_selected =  document.querySelector("select[id='empresa']").value;
-    let selectAlmacen = document.querySelector("div[id='input-group-almacen'] select[name='id_almacen']");
-    if(selectAlmacen.options.length>0){
-        var i, L = selectAlmacen.options.length - 1;
-        for(i = L; i > 0; i--) {
-            if(selectAlmacen.options[i].dataset.idEmpresa == id_empresa_selected){
-                 if( [4,10,11,12,13,14].includes(parseInt(selectAlmacen.options[i].dataset.idSede)) == true){ ///default almacen lima
-                    selectAlmacen.options[i].setAttribute('selected',true);
-                }
-            }
-        }
-    }
-}
 
-function llenarUbigeo(){
-    var ubigeo =document.querySelector("select[name='sede']").options[document.querySelector("select[name='sede']").selectedIndex].dataset.ubigeo;
-    var name_ubigeo =document.querySelector("select[name='sede']").options[document.querySelector("select[name='sede']").selectedIndex].dataset.nameUbigeo;
-    document.querySelector("input[name='ubigeo']").value=ubigeo;
-    document.querySelector("input[name='name_ubigeo']").value=name_ubigeo;
-    
-    var sede = $('[name=sede]').val();
-    // cargar_almacenes(sede);
-}
+
+ 
 
 
 function changeTipoCliente(e,id =null){
@@ -364,43 +264,7 @@ function openCliente(){
 
 
 
-function changeOptUbigeo(e){
-    var ubigeo =document.querySelector("select[name='sede']").options[document.querySelector("select[name='sede']").selectedIndex].dataset.ubigeo;
-    var name_ubigeo =document.querySelector("select[name='sede']").options[document.querySelector("select[name='sede']").selectedIndex].dataset.nameUbigeo;
-    var sede = $('[name=sede]').val();
-
-    document.querySelector("input[name='ubigeo']").value=ubigeo;
-    document.querySelector("input[name='name_ubigeo']").value=name_ubigeo;
-    cargar_almacenes(sede);
-}
-
-function cargar_almacenes(sede){
-    if (sede !== ''){
-        $.ajax({
-            type: 'GET',
-            url: 'cargar_almacenes/'+sede,
-            dataType: 'JSON',
-            success: function(response){
-                // console.log(response);
-                var option = '';
-                for (var i=0; i<response.length; i++){
-                    if (response.length == 1){
-                        option+='<option data-id-sede="'+response[i].id_sede+'" data-id-empresa="'+response[i].id_empresa+'" value="'+response[i].id_almacen+'" selected>'+response[i].codigo+' - '+response[i].descripcion+'</option>';
-
-                    } else {
-                        option+='<option data-id-sede="'+response[i].id_sede+'" data-id-empresa="'+response[i].id_empresa+'" value="'+response[i].id_almacen+'">'+response[i].codigo+' - '+response[i].descripcion+'</option>';
-
-                    }
-                }
-                $('[name=id_almacen]').html('<option value="0" disabled selected>Elija una opción</option>'+option);
-            }
-        }).fail( function( jqXHR, textStatus, errorThrown ){
-            console.log(jqXHR);
-            console.log(textStatus);
-            console.log(errorThrown);
-        });
-    }
-}
+ 
 
 
 function telefonosClienteModal(){
@@ -1227,16 +1091,6 @@ function listarCentroCostos(){
 //         console.log(errorThrown);
 //     });
 // }
-function apertura(id_presup){
-    if ($("#pres-"+id_presup+" ").attr('class') == 'oculto'){
-        $("#pres-"+id_presup+" ").removeClass('oculto');
-        $("#pres-"+id_presup+" ").addClass('visible');
-    } else {
-        $("#pres-"+id_presup+" ").removeClass('visible');
-        $("#pres-"+id_presup+" ").addClass('oculto');
-    }
-}
-
 
 
 function eliminarItemDeListado(obj,id){
@@ -1438,21 +1292,7 @@ function calcMontoLimiteDePartida(){
     return false;
 }
 
-function  changeStockParaAlmacen(event) {
 
-    switch (event.target.checked) {
-        case true:
-            document.querySelector("div[id='input-group-asignar_trabajador']").classList.add("oculto");
-            break;
-            case false:
-            document.querySelector("div[id='input-group-asignar_trabajador']").classList.remove("oculto");
-            
-            break;
-    
-        default:
-            break;
-    }
-}
 
 // fuente 
 function agregarFuenteModal(){

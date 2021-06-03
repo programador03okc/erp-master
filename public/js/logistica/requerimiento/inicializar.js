@@ -3,12 +3,10 @@ rutaMostrarRequerimiento,
 rutaGuardarRequerimiento,
 rutaActualizarRequerimiento,
 rutaAnularRequerimiento,
-rutaSedeByEmpresa,
 rutaCopiarRequerimiento,
 rutaTelefonosCliente,
 rutaDireccionesCliente,
 rutaEmailCliente,
-rutaNextCodigoRequerimiento,
 rutaCuentasCliente,
 rutaGuardarCuentacliente,
 rutaCuadroCostos,
@@ -51,12 +49,10 @@ function inicializar( _rutaLista,
     _rutaGuardarRequerimiento,
     _rutaActualizarRequerimiento,
     _rutaAnularRequerimiento,
-    _rutaSedeByEmpresa,
     _rutaCopiarRequerimiento,
     _rutaTelefonosCliente,
     _rutaDireccionesCliente,
     _rutaEmailCliente,
-    _rutaNextCodigoRequerimiento,
     _rutaCuentasCliente,
     _rutaGuardarCuentacliente,
     _rutaCuadroCostos,
@@ -69,12 +65,10 @@ function inicializar( _rutaLista,
     rutaGuardarRequerimiento = _rutaGuardarRequerimiento;
     rutaActualizarRequerimiento = _rutaActualizarRequerimiento;
     rutaAnularRequerimiento = _rutaAnularRequerimiento;
-    rutaSedeByEmpresa = _rutaSedeByEmpresa;
     rutaCopiarRequerimiento = _rutaCopiarRequerimiento;
     rutaTelefonosCliente = _rutaTelefonosCliente;
     rutaDireccionesCliente = _rutaDireccionesCliente;
     rutaEmailCliente = _rutaEmailCliente;
-    rutaNextCodigoRequerimiento = _rutaNextCodigoRequerimiento;
     rutaCuentasCliente = _rutaCuentasCliente;
     rutaGuardarCuentacliente = _rutaGuardarCuentacliente;
     rutaCuadroCostos = _rutaCuadroCostos;
@@ -87,7 +81,7 @@ function inicializar( _rutaLista,
             let selectTipoRequerimiento = document.querySelector("form[id='form-requerimiento'] select[name='tipo_requerimiento']").value;
             createOptionTipoCliente(selectTipoRequerimiento);
             
-            getNexCodigoRequerimiento(selectTipoRequerimiento);
+       
 
             var id_requerimiento = localStorage.getItem("id_requerimiento");
 
