@@ -107,14 +107,9 @@ class ListaOrdenCtrl {
     }
 
 
-    exportTableToExcel(tableID,filename){
-        // https://github.com/linways/table-to-excel
-        TableToExcel.convert(document.getElementById(tableID), {
-            name: "Lista_Ordenes.xlsx",
-            sheet: {
-                name: "Sheet 1"
-            }
-        });
+    descargarListaOrdenesVistaCabecera(){
+        return listaOrdenModel.descargarListaOrdenesVistaCabecera();
+
     }
 
 }

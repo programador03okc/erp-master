@@ -114,8 +114,6 @@
 @endsection
 
 @section('scripts')
-    <script src="{{('/js/tableToExcel.js')}}"></script>
-
     <script src="{{ asset('datatables/DataTables/js/jquery.dataTables.min.js') }}"></script>
     <script src="{{ asset('datatables/DataTables/js/dataTables.bootstrap.min.js') }}"></script>
     <script src="{{ asset('datatables/pdfmake/vfs_fonts.js') }}"></script>

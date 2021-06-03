@@ -84,8 +84,10 @@ class ListaOrdenView {
 
     }
 
-    exportTableToExcel(tableID,filename){
-        return listaOrdenCtrl.exportTableToExcel(tableID,filename);
+    exportTableToExcel(tableID){
+        if(tableID =='listaOrdenes'){
+            return listaOrdenCtrl.descargarListaOrdenesVistaCabecera();
+        }
     }
 
     filtroTablaListaOrdenesVistaCabecera(){
@@ -479,7 +481,7 @@ class ListaOrdenView {
                 {'render':
                     function (data, type, row, meta){
                         let fechaOrden =moment(row.fecha);
-                        let fechaRequerimiento =moment(row.fecha);
+                        let fechaRequerimiento =moment(row.fecha_registro_requerimiento);
                         let tiempoAtencionLogistica = fechaOrden.diff((fechaRequerimiento), 'days');
                         return `${tiempoAtencionLogistica} días`;
                     }
@@ -544,7 +546,7 @@ class ListaOrdenView {
                 buttonExportToExcel.id = "btnExportarAExcel";
                 buttonExportToExcel.className = "btn btn-default pull-left";
                 buttonExportToExcel.innerHTML = "<i class='far fa-file-excel'></i> Descargar";
-                buttonExportToExcel.addEventListener('click',  function(){listaOrdenView.exportTableToExcel('listaOrdenes','Lista_Ordenes')}, false);
+                buttonExportToExcel.addEventListener('click',  function(){listaOrdenView.exportTableToExcel('listaOrdenes')}, false);
 
                 divInputGroupBtn.appendChild(buttonExportToExcel);     
                 
