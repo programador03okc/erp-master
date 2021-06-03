@@ -211,15 +211,15 @@ function listarTransformaciones(){
                     if (acceso == '1') {
                         return '<button type="button" class="guia btn btn-info boton" data-toggle="tooltip" '+
                             'data-placement="bottom" title="Ingresar Guía" >'+
-                            '<i class="fas fa-sign-in-alt"></i></button>'+
+                            '<i class="fas fa-sign-in-alt"></i></button>';
 
-                            '<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" '+
-                            'data-placement="bottom" title="Ver Detalle" >'+
-                            '<i class="fas fa-list-ul"></i></button>';
+                            // '<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" '+
+                            // 'data-placement="bottom" title="Ver Detalle" >'+
+                            // '<i class="fas fa-list-ul"></i></button>';
                     } else {
-                        return '<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" '+
-                            'data-placement="bottom" title="Ver Detalle" >'+
-                            '<i class="fas fa-list-ul"></i></button>';
+                        // return '<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" '+
+                        //     'data-placement="bottom" title="Ver Detalle" >'+
+                        //     '<i class="fas fa-list-ul"></i></button>';
                     }
                 }
             }
@@ -252,7 +252,7 @@ function listarIngresos(){
         },
         'columns': [
             {'data': 'id_mov_alm'},
-            // , 'sClass': 'invisible' {'data': 'sede_guia_descripcion', 'name': 'sede_guia.descripcion'},
+            {'data': 'fecha_emision'},
             {'render': function (data, type, row){
                     return row['serie']+'-'+row['numero'];
                 }
@@ -267,7 +267,6 @@ function listarIngresos(){
             },
             {'data': 'operacion_descripcion', 'name': 'tp_ope.descripcion'},
             {'data': 'almacen_descripcion', 'name': 'alm_almacen.descripcion'},
-            {'data': 'fecha_emision'},
             {'data': 'nombre_corto', 'name': 'sis_usua.nombre_corto'}
         ],
         'drawCallback': function(){

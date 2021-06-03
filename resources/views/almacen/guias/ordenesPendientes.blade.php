@@ -100,13 +100,13 @@ Pendientes de Ingreso
                                             <tr>
                                                 <th hidden></th>
                                                 <th></th>
+                                                <th>Fecha Ingreso</th>
                                                 <th>Guía Compra</th>
                                                 <th>R.U.C.</th>
                                                 <th>Razon Social</th>
                                                 <th>Ingreso</th>
                                                 <th>Operación</th>
                                                 <th>Almacén</th>
-                                                <th>Fecha Ingreso</th>
                                                 <th>Responsable</th>
                                                 <th width="140px"></th>
                                             </tr>
