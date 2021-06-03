@@ -50,7 +50,7 @@
                         <th>Estado aprobación CC</th>
                         <th>Fecha aprobación CC</th>
                         <th>Fecha Requerimiento</th>
-                        <th>Leadtime</th>
+                        <th style="width:20%">Leadtime</th>
                         <th>Empresa / Sede</th>
                         <th>Moneda</th>
                         <th>Condición</th>
@@ -60,7 +60,7 @@
                         <th>Facturas</th>
                         <th>Detalle pago</th>
                         <th>Archivo adjunto</th>
-                        <th style="width:20%">Acción</th>
+                        <th >Acción</th>
                     </tr>
                 </thead>
                 <tbody></tbody>

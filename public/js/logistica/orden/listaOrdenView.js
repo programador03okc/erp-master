@@ -501,7 +501,7 @@ class ListaOrdenView {
                 {'data': 'archivo_adjunto'},
                 {'render':
                     function (data, type, row, meta){
-                        let containerOpenBrackets='<div class="btn-group" role="group" style="margin-bottom: 5px;">';
+                        let containerOpenBrackets='<div class="btn-group" role="group" style="margin-bottom: 5px;display: flex;flex-direction: row;flex-wrap: nowrap;">';
                         let btnImprimirOrden= '<button type="button" class="imprimir_orden btn btn-md btn-warning boton" onClick="listaOrdenView.imprimir_orden(event)" title="Imprimir Orden"  data-toggle="tooltip" data-placement="bottom" data-id-orden-compra="'+row.id_orden_compra+'"  data-id-pago=""> <i class="fas fa-file-pdf"></i> </button>';
                         let btnAnularOrden='';
                         if(![6,27,28].includes(row.estado) ){
