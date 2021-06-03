@@ -707,6 +707,22 @@ class ListaOrdenView {
                     return `${row.alm_prod_descripcion?row.alm_prod_descripcion:''}`;
                     }
                 },
+                // { render: function (data, type, row) {     
+                //     return `${row.detalle_orden_precio?row.detalle_orden_cantidad:''}`;
+                //     }
+                // },
+                { render: function (data, type, row) {     
+                    return `${row.detalle_orden_precio?(parseFloat(row.detalle_orden_precio).toFixed(2)):''}`;
+                    }
+                },
+                // { render: function (data, type, row) {     
+                //     return `${row.cdc_cantidad?row.cdc_cantidad:''}`;
+                //     }
+                // },
+                { render: function (data, type, row) {     
+                    return `${row.cdc_precio?row.cdc_precio:''}`;
+                    }
+                },
                 { render: function (data, type, row) {     
                     return `${row.orden_fecha?moment(row.orden_fecha).format('YYYY-MM-DD'):''}`;
                     }
