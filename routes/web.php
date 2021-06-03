@@ -1022,8 +1022,8 @@ Route::group(['middleware' => ['auth']], function () {
 			});
 
 			Route::group(['as' => 'catalogo-productos.', 'prefix' => 'catalogo-productos'], function(){
-				Route::get('index', 'AlmacenController@view_prod_catalogo')->name('index');
-				Route::get('listar_productos', 'AlmacenController@mostrar_productos');
+				Route::get('index', 'Almacen\Catalogo\ProductoController@view_prod_catalogo')->name('index');
+				Route::get('listar_productos', 'Almacen\Catalogo\ProductoController@mostrar_productos');
 			});
 
 		});
@@ -1394,11 +1394,11 @@ Route::group(['middleware' => ['auth']], function () {
 
 			Route::group(['as' => 'saldos.', 'prefix' => 'saldos'], function(){
 
-				Route::get('index', 'Almacen\ReportesController@view_saldos')->name('index');
-				Route::get('listar_saldos/{id}', 'Almacen\ReportesController@listar_saldos');
-				Route::get('listar_saldos_todo', 'Almacen\ReportesController@listar_saldos_todo');
-				Route::get('verRequerimientosReservados/{id}/{alm}', 'Almacen\ReportesController@verRequerimientosReservados');
-				Route::get('tipo_cambio_compra/{fecha}', 'Almacen\ReportesController@tipo_cambio_compra');
+				Route::get('index', 'Almacen\Reporte\SaldosController@view_saldos')->name('index');
+				Route::get('listar_saldos/{id}', 'Almacen\Reporte\SaldosController@listar_saldos');
+				Route::get('listar_saldos_todo', 'Almacen\Reporte\SaldosController@listar_saldos_todo');
+				Route::get('verRequerimientosReservados/{id}/{alm}', 'Almacen\Reporte\SaldosController@verRequerimientosReservados');
+				Route::get('tipo_cambio_compra/{fecha}', 'Almacen\Reporte\SaldosController@tipo_cambio_compra');
 				// Route::get('listar-saldos-por-almacen', 'Almacen\ReportesController@listar_saldos_por_almacen');
 
 			});
@@ -1465,20 +1465,20 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('listar_kardex_producto/{id}/{alm}/{fini}/{ffin}', 'AlmacenController@kardex_producto');
 				Route::get('kardex_detallado/{id}/{alm}/{fini}/{ffin}', 'AlmacenController@download_kardex_producto');
 				Route::get('select_almacenes_empresa/{id}', 'AlmacenController@select_almacenes_empresa');
-				Route::get('datos_producto/{id}', 'AlmacenController@datos_producto');
-				Route::get('mostrar_prods', 'AlmacenController@mostrar_prods');
-				Route::get('mostrar_prods_almacen/{id}', 'AlmacenController@mostrar_prods_almacen');
+				Route::get('datos_producto/{id}', 'Almacen\Reporte\KardexSerieController@datos_producto');
+				Route::get('mostrar_prods', 'Almacen\Catalogo\ProductoController@mostrar_prods');
+				Route::get('mostrar_prods_almacen/{id}', 'Almacen\Catalogo\ProductoController@mostrar_prods_almacen');
 
 			});
 
 			Route::group(['as' => 'kardex-series.', 'prefix' => 'kardex-series'], function(){
 
-				Route::get('index', 'Almacen\ReportesController@view_kardex_series')->name('index');
-				Route::get('listar_serie_productos/{serie}/{des}/{cod}/{part}', 'Almacen\ReportesController@listar_serie_productos');
-				Route::get('listar_kardex_serie/{serie}/{id_prod}', 'Almacen\ReportesController@listar_kardex_serie');
-				Route::get('datos_producto/{id}', 'AlmacenController@datos_producto');
-				Route::get('mostrar_prods', 'AlmacenController@mostrar_prods');
-				Route::get('mostrar_prods_almacen/{id}', 'AlmacenController@mostrar_prods_almacen');
+				Route::get('index', 'Almacen\Reporte\KardexSerieController@view_kardex_series')->name('index');
+				Route::get('listar_serie_productos/{serie}/{des}/{cod}/{part}', 'Almacen\Reporte\KardexSerieController@listar_serie_productos');
+				Route::get('listar_kardex_serie/{serie}/{id_prod}', 'Almacen\Reporte\KardexSerieController@listar_kardex_serie');
+				Route::get('datos_producto/{id}', 'Almacen\Reporte\KardexSerieController@datos_producto');
+				Route::get('mostrar_prods', 'Almacen\Catalogo\ProductoController@mostrar_prods');
+				Route::get('mostrar_prods_almacen/{id}', 'Almacen\Catalogo\ProductoController@mostrar_prods_almacen');
 				
 			});
 

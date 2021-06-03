@@ -1,12 +1,13 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Finanzas\Presupuesto;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\Presupuestos\Presupuesto;
 use App\Models\Presupuestos\Grupo;
 use App\Models\Presupuestos\Moneda;
+use App\Http\Controllers\Controller;
 
 class PresupuestoController extends Controller
 {

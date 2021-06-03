@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Finanzas\Presupuesto;
 
 use Illuminate\Http\Request;
 use App\Models\Presupuestos\Partida;
 use App\Models\Presupuestos\Titulo;
+use App\Http\Controllers\Controller;
 
 use Illuminate\Support\Facades\DB;
 

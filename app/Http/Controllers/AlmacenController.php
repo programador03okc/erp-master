@@ -4,18 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Helpers\Almacen\AlmacenDashboardHelper;
 use Illuminate\Http\Request;
-use Illuminate\Http\RedirectResponse;
 
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\File;
-use Dompdf\Dompdf;
-use PDF;
-use App\Models\almacen\mov_alm as Movimiento;
-use App\Models\almacen\mov_alm_det as MovDetalle;
-use App\Models\almacen\guia_com as GuiaCompra;
-use Illuminate\Support\Collection as Collection;
-use Carbon\Carbon;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
 date_default_timezone_set('America/Lima');
@@ -127,21 +117,14 @@ class AlmacenController extends Controller
     }
 
 
-
-
-    function view_prod_catalogo(){
-        return view('almacen/producto/prod_catalogo');
-    }
-
-
-    function view_tipo_servicio(){
-        return view('almacen/variables/tipoServ');
-    }
-    function view_servicio(){
-        $tipos = $this->mostrar_tp_servicios_cbo();
-        $detracciones = $this->mostrar_detracciones_cbo();
-        return view('almacen/variables/servicio', compact('tipos','detracciones'));
-    }
+    // function view_tipo_servicio(){
+    //     return view('almacen/variables/tipoServ');
+    // }
+    // function view_servicio(){
+    //     $tipos = $this->mostrar_tp_servicios_cbo();
+    //     $detracciones = $this->mostrar_detracciones_cbo();
+    //     return view('almacen/variables/servicio', compact('tipos','detracciones'));
+    // }
     function view_tipo_movimiento(){
         return view('almacen/variables/tipo_movimiento');
     }
@@ -183,19 +166,6 @@ class AlmacenController extends Controller
         $motivos_anu = AlmacenController::select_motivo_anu();
         return view('almacen/guias/guia_venta', compact('almacenes','posiciones','clasificaciones','sedes','proveedores','tp_doc_almacen','tp_operacion','tp_contribuyente','sis_identidad','usuarios','motivos_anu'));
     }
-    // function view_doc_compra(){
-    //     $proveedores = $this->mostrar_proveedores_cbo();
-    //     $clasificaciones = $this->mostrar_guia_clas_cbo();
-    //     $condiciones = $this->mostrar_condiciones_cbo();
-    //     $tp_doc = $this->mostrar_tp_doc_cbo();
-    //     $moneda = $this->mostrar_moneda_cbo();
-    //     $detracciones = $this->mostrar_detracciones_cbo();
-    //     $impuestos = $this->mostrar_impuestos_cbo();
-    //     $usuarios = $this->select_usuarios();
-    //     $tp_contribuyente = $this->tp_contribuyente_cbo();
-    //     $sis_identidad = AlmacenController::sis_identidad_cbo();
-    //     return view('almacen/documentos/doc_compra', compact('proveedores','clasificaciones','condiciones','tp_doc','moneda','detracciones','impuestos','usuarios','tp_contribuyente','sis_identidad'));
-    // }
     function view_doc_venta(){
         // $empresas = AlmacenController::select_empresa();
         $sedes = AlmacenController::mostrar_sedes_cbo();
@@ -205,12 +175,6 @@ class AlmacenController extends Controller
         $moneda = AlmacenController::mostrar_moneda_cbo();
         $usuarios = $this->select_usuarios();
         return view('almacen/documentos/doc_venta', compact('sedes','clasificaciones','condiciones','tp_doc','moneda','usuarios'));
-    }
-    function view_cola_atencion(){
-        // $motivos = $this->mostrar_motivos_cbo();
-        $clasificaciones = $this->mostrar_guia_clas_cbo();
-        $almacenes = AlmacenController::mostrar_almacenes_cbo();
-        return view('almacen/reportes/cola_atencion', compact('clasificaciones','almacenes'));
     }
     function view_kardex_general(){
         $empresas = AlmacenController::select_empresa();
@@ -222,10 +186,6 @@ class AlmacenController extends Controller
         $almacenes = AlmacenController::mostrar_almacenes_cbo();
         return view('almacen/reportes/kardex_detallado', compact('almacenes','empresas'));
     }
-    // function view_saldos(){
-    //     $almacenes = AlmacenController::mostrar_almacenes_cbo();
-    //     return view('almacen/reportes/saldos', compact('almacenes'));
-    // }
     function view_tipo_doc_almacen(){
         $tp_doc = $this->mostrar_tp_doc_cbo();
         return view('almacen/variables/tipo_doc_almacen', compact('tp_doc'));
@@ -264,11 +224,6 @@ class AlmacenController extends Controller
         $sedes = AlmacenController::mostrar_sedes_cbo();
         return view('almacen/variables/serie_numero', compact('tipos','sedes'));
     }
-    // function view_kardex_series(){
-    //     $empresas = AlmacenController::select_empresa();
-    //     $almacenes = AlmacenController::mostrar_almacenes_cbo();
-    //     return view('almacen/reportes/kardex_series', compact('almacenes','empresas'));
-    // }
     function view_docs_prorrateo(){
         // $tp_doc = $this->mostrar_tp_doc_cbo();
         return view('almacen/reportes/docs_prorrateo');
@@ -710,14 +665,14 @@ class AlmacenController extends Controller
     }
 
     ///////////////////////////////////
-    public function mostrar_impuesto($cod, $fecha){
-        $data = DB::table('contabilidad.cont_impuesto')
-        ->select('cont_impuesto.*')
-            ->where([['codigo','=',$cod],['fecha_inicio','<',$fecha]])
-            ->orderBy('fecha_inicio','desc')
-            ->first();
-        return $data;
-    }
+    // public function mostrar_impuesto($cod, $fecha){
+    //     $data = DB::table('contabilidad.cont_impuesto')
+    //     ->select('cont_impuesto.*')
+    //         ->where([['codigo','=',$cod],['fecha_inicio','<',$fecha]])
+    //         ->orderBy('fecha_inicio','desc')
+    //         ->first();
+    //     return $data;
+    // }
 
     public function mostrar_clientes()
     {
@@ -747,21 +702,7 @@ class AlmacenController extends Controller
     
     //Productos
 
-    public function mostrar_productos(){
-        $data = DB::table('almacen.alm_prod')
-            ->select('alm_prod.id_producto','alm_prod.codigo','alm_prod.descripcion',
-            'alm_subcat.codigo as cod_sub_cat','alm_subcat.descripcion as subcat_descripcion',
-            'alm_cat_prod.codigo as cod_cat','alm_cat_prod.descripcion as cat_descripcion',
-            'alm_tp_prod.id_tipo_producto','alm_tp_prod.descripcion as tipo_descripcion',
-            'alm_clasif.id_clasificacion','alm_clasif.descripcion as clasif_descripcion')
-            ->join('almacen.alm_subcat','alm_subcat.id_subcategoria','=','alm_prod.id_subcategoria')
-            ->join('almacen.alm_cat_prod','alm_cat_prod.id_categoria','=','alm_prod.id_categoria')
-            ->join('almacen.alm_tp_prod','alm_tp_prod.id_tipo_producto','=','alm_cat_prod.id_tipo_producto')
-            ->join('almacen.alm_clasif','alm_clasif.id_clasificacion','=','alm_prod.id_clasif')
-            ->get();
-            $output['data'] = $data;
-        return response()->json($output);
-    }
+
     
     
     
@@ -2670,172 +2611,6 @@ class AlmacenController extends Controller
         }
         return response()->json($movimientos);
     }
-    /*public function listar_saldos($almacen)
-    {
-        $data = DB::table('almacen.alm_prod_ubi')
-            ->select('alm_item.id_item','alm_prod_ubi.*','alm_prod.codigo','alm_prod.descripcion','alm_ubi_posicion.codigo as cod_posicion',
-            'alm_und_medida.abreviatura','alm_prod.codigo_anexo','alm_prod.part_number','sis_moneda.simbolo',
-            'alm_cat_prod.descripcion as des_categoria',
-            'alm_subcat.descripcion as des_subcategoria','alm_clasif.descripcion as des_clasificacion',
-            'alm_prod_antiguo.cod_antiguo','alm_prod.id_moneda','alm_prod.id_unidad_medida',
-            DB::raw("(SELECT SUM(alm_det_req.cantidad) FROM almacen.alm_det_req 
-            WHERE alm_det_req.estado=19 
-            AND alm_det_req.id_producto=alm_prod_ubi.id_producto 
-            AND alm_det_req.id_almacen_reserva=alm_prod_ubi.id_almacen ) as cantidad_reserva"),
-            'alm_almacen.descripcion as almacen_descripcion')
-            ->leftjoin('almacen.alm_ubi_posicion','alm_ubi_posicion.id_posicion','=','alm_prod_ubi.id_posicion')
-            // ->join('almacen.alm_ubi_nivel','alm_ubi_nivel.id_nivel','=','alm_ubi_posicion.id_nivel')
-            // ->join('almacen.alm_ubi_estante','alm_ubi_estante.id_estante','=','alm_ubi_nivel.id_estante')
-            ->join('almacen.alm_almacen','alm_almacen.id_almacen','=','alm_prod_ubi.id_almacen')
-            ->join('almacen.alm_prod','alm_prod.id_producto','=','alm_prod_ubi.id_producto')
-            ->join('almacen.alm_item','alm_item.id_producto','=','alm_prod.id_producto')
-            ->join('almacen.alm_und_medida','alm_und_medida.id_unidad_medida','=','alm_prod.id_unidad_medida')
-            ->leftjoin('configuracion.sis_moneda','sis_moneda.id_moneda','=','alm_prod.id_moneda')
-            ->leftjoin('almacen.alm_clasif','alm_clasif.id_clasificacion','=','alm_prod.id_clasif')
-            ->leftjoin('almacen.alm_subcat','alm_subcat.id_subcategoria','=','alm_prod.id_subcategoria')
-            ->leftjoin('almacen.alm_cat_prod','alm_cat_prod.id_categoria','=','alm_prod.id_categoria')
-            ->leftjoin('almacen.alm_prod_antiguo','alm_prod_antiguo.id_producto','=','alm_prod.id_producto')
-            // ->leftjoin('almacen.alm_det_req','alm_det_req.id_producto','=','alm_prod.id_producto')
-            ->where([['alm_prod_ubi.estado','=',1],['alm_prod_ubi.id_almacen','=',$almacen]])
-            ->get();
-        
-        $nueva_data = [];
-        $fecha = date('Y-m-d');
-        $tipo_cambio_compra = $this->tipo_cambio_compra($fecha);
-
-        foreach($data as $d){
-            // $saldos = $this->saldo_producto($almacen, $d->id_producto, $fecha);
-            // $costo = ($saldos['saldo'] !== 0 ? ($saldos['valorizacion'] / $saldos['saldo']) : 0);
-
-            $soles = 0;
-            $dolares = 0;
-
-            if ($d->id_moneda == 1){
-                $dolares = $d->valorizacion * $tipo_cambio_compra;
-                $soles = $d->valorizacion;
-            } 
-            else if ($d->id_moneda == 2){
-                $dolares = $d->valorizacion;
-                $soles = $d->valorizacion / $tipo_cambio_compra;
-            }
-            else {
-                $soles = $d->valorizacion;
-                $dolares = $d->valorizacion * $tipo_cambio_compra;
-            }
-            $nuevo = [
-                'id_prod_ubi'=> $d->id_prod_ubi,
-                'id_item'=> $d->id_item,
-                'id_producto'=> $d->id_producto,
-                'id_almacen'=> $d->id_almacen,
-                'codigo'=> $d->codigo,
-                'codigo_anexo'=> $d->codigo_anexo,
-                'part_number'=> $d->part_number,
-                'cod_antiguo'=> $d->cod_antiguo,
-                'descripcion'=> $d->descripcion,
-                'abreviatura'=> $d->abreviatura,
-                'id_unidad_medida'=> $d->id_unidad_medida,
-                'stock'=> $d->stock,
-                'simbolo'=> $d->simbolo,
-                'id_moneda'=> $d->id_moneda,
-                'soles'=> round($soles,4,PHP_ROUND_HALF_UP),
-                'dolares'=> round($dolares,4,PHP_ROUND_HALF_UP),
-                'costo_promedio'=> round($d->costo_promedio,4,PHP_ROUND_HALF_UP),
-                'cantidad_reserva'=> $d->cantidad_reserva,
-                'almacen_descripcion'=> $d->almacen_descripcion,
-                // 'cod_posicion'=> $d->cod_posicion,
-                'des_clasificacion'=> $d->des_clasificacion,
-                'des_categoria'=> $d->des_categoria,
-                'des_subcategoria'=> $d->des_subcategoria,
-            ];
-            array_push($nueva_data,$nuevo);
-        }
-        // return response()->json($nueva_data);
-        $output['data'] = $nueva_data;
-        return response()->json($output);
-    }
-
-    public function listar_saldos_todo()
-    {
-        $data = DB::table('almacen.alm_prod_ubi')
-            ->select('alm_prod_ubi.*','alm_prod.codigo','alm_prod.descripcion','alm_ubi_posicion.codigo as cod_posicion',
-            'alm_und_medida.abreviatura','alm_prod.codigo_anexo','alm_prod.part_number','sis_moneda.simbolo',
-            'alm_cat_prod.descripcion as des_categoria',
-            'alm_subcat.descripcion as des_subcategoria','alm_clasif.descripcion as des_clasificacion',
-            'alm_prod_antiguo.cod_antiguo','alm_prod.id_moneda','alm_prod.id_unidad_medida',
-            DB::raw("(SELECT SUM(alm_det_req.cantidad) FROM almacen.alm_det_req 
-            WHERE alm_det_req.estado=19 
-            AND alm_det_req.id_producto=alm_prod_ubi.id_producto 
-            AND alm_det_req.id_almacen_reserva=alm_prod_ubi.id_almacen ) as cantidad_reserva"),
-            'alm_almacen.descripcion as almacen_descripcion')
-            ->leftjoin('almacen.alm_ubi_posicion','alm_ubi_posicion.id_posicion','=','alm_prod_ubi.id_posicion')
-            // ->join('almacen.alm_ubi_nivel','alm_ubi_nivel.id_nivel','=','alm_ubi_posicion.id_nivel')
-            // ->join('almacen.alm_ubi_estante','alm_ubi_estante.id_estante','=','alm_ubi_nivel.id_estante')
-            ->join('almacen.alm_almacen','alm_almacen.id_almacen','=','alm_prod_ubi.id_almacen')
-            ->join('almacen.alm_prod','alm_prod.id_producto','=','alm_prod_ubi.id_producto')
-            ->join('almacen.alm_und_medida','alm_und_medida.id_unidad_medida','=','alm_prod.id_unidad_medida')
-            ->leftjoin('configuracion.sis_moneda','sis_moneda.id_moneda','=','alm_prod.id_moneda')
-            ->leftjoin('almacen.alm_clasif','alm_clasif.id_clasificacion','=','alm_prod.id_clasif')
-            ->leftjoin('almacen.alm_subcat','alm_subcat.id_subcategoria','=','alm_prod.id_subcategoria')
-            ->leftjoin('almacen.alm_cat_prod','alm_cat_prod.id_categoria','=','alm_prod.id_categoria')
-            ->leftjoin('almacen.alm_prod_antiguo','alm_prod_antiguo.id_producto','=','alm_prod.id_producto')
-            // ->leftjoin('almacen.alm_det_req','alm_det_req.id_producto','=','alm_prod.id_producto')
-            ->where([['alm_prod_ubi.estado','=',1]])
-            ->get();
-        
-        $nueva_data = [];
-        $fecha = date('Y-m-d');
-        $tipo_cambio_compra = $this->tipo_cambio_compra($fecha);
-
-        foreach($data as $d){
-            // $saldos = $this->saldo_producto($almacen, $d->id_producto, $fecha);
-            // $costo = ($saldos['saldo'] !== 0 ? ($saldos['valorizacion'] / $saldos['saldo']) : 0);
-
-            $soles = 0;
-            $dolares = 0;
-
-            if ($d->id_moneda == 1){
-                $dolares = $d->valorizacion * $tipo_cambio_compra;
-                $soles = $d->valorizacion;
-            } 
-            else if ($d->id_moneda == 2){
-                $dolares = $d->valorizacion;
-                $soles = $d->valorizacion / $tipo_cambio_compra;
-            }
-            else {
-                $soles = $d->valorizacion;
-                $dolares = $d->valorizacion * $tipo_cambio_compra;
-            }
-            $nuevo = [
-                'id_prod_ubi'=> $d->id_prod_ubi,
-                'id_producto'=> $d->id_producto,
-                'id_almacen'=> $d->id_almacen,
-                'codigo'=> $d->codigo,
-                'codigo_anexo'=> $d->codigo_anexo,
-                'part_number'=> $d->part_number,
-                'cod_antiguo'=> $d->cod_antiguo,
-                'descripcion'=> $d->descripcion,
-                'abreviatura'=> $d->abreviatura,
-                'id_unidad_medida'=> $d->id_unidad_medida,
-                'stock'=> $d->stock,
-                'simbolo'=> $d->simbolo,
-                'id_moneda'=> $d->id_moneda,
-                'soles'=> round($soles,4,PHP_ROUND_HALF_UP),
-                'dolares'=> round($dolares,4,PHP_ROUND_HALF_UP),
-                'costo_promedio'=> round($d->costo_promedio,4,PHP_ROUND_HALF_UP),
-                'cantidad_reserva'=> $d->cantidad_reserva,
-                'almacen_descripcion'=> $d->almacen_descripcion,
-                // 'cod_posicion'=> $d->cod_posicion,
-                'des_clasificacion'=> $d->des_clasificacion,
-                'des_categoria'=> $d->des_categoria,
-                'des_subcategoria'=> $d->des_subcategoria,
-            ];
-            array_push($nueva_data,$nuevo);
-        }
-        // return response()->json($nueva_data);
-        $output['data'] = $nueva_data;
-        return response()->json($output);
-    }*/
-    //Deshabilitar
     public function listar_saldos_por_almacen()
     {
         $data = DB::table('almacen.alm_item')
@@ -3237,13 +3012,7 @@ class AlmacenController extends Controller
             ]);
         return response()->json($data);
     }
-    public function prueba($id){
-        $trans = DB::table('almacen.trans')
-        ->where([['id_guia_ven','=',$id],['estado','=',1]])
-        ->first();
-        $rspta = isset($trans);
-        return response()->json($rspta);
-    }
+    
     public function anular_guia_venta(Request $request)
     {
         $rspta = '';
@@ -4641,50 +4410,7 @@ class AlmacenController extends Controller
         $output['data'] = $data;
         return response()->json($output);
     }
-    public function datos_producto($id_producto){
-        $producto = DB::table('almacen.alm_prod')
-        ->select('alm_prod.*','alm_und_medida.abreviatura','alm_subcat.descripcion as des_subcategoria',
-        'alm_cat_prod.descripcion as des_categoria','alm_tp_prod.descripcion as des_tipo',
-        'alm_tp_prod.id_tipo_producto','alm_cat_prod.codigo as cat_codigo','alm_ubi_posicion.codigo as cod_posicion',
-        'alm_subcat.codigo as subcat_codigo','alm_clasif.descripcion as des_clasificacion')
-        ->join('almacen.alm_subcat','alm_subcat.id_subcategoria','=','alm_prod.id_subcategoria')
-        ->join('almacen.alm_cat_prod','alm_cat_prod.id_categoria','=','alm_prod.id_categoria')
-        ->join('almacen.alm_tp_prod','alm_tp_prod.id_tipo_producto','=','alm_cat_prod.id_tipo_producto')
-        ->join('almacen.alm_und_medida','alm_und_medida.id_unidad_medida','=','alm_prod.id_unidad_medida')
-        ->join('almacen.alm_clasif','alm_clasif.id_clasificacion','=','alm_prod.id_clasif')
-        ->leftjoin('almacen.alm_prod_ubi','alm_prod_ubi.id_producto','=','alm_prod.id_producto')
-        ->leftjoin('almacen.alm_ubi_posicion','alm_ubi_posicion.id_posicion','=','alm_prod_ubi.id_posicion')
-        ->where('alm_prod.id_producto',$id_producto)
-        ->first();
-
-        $html = '
-            <tr>
-                <th width="80px">Código</th>
-                <td>'.$producto->codigo.'</td>
-                <th width="80px">Descripción</th>
-                <td>'.$producto->descripcion.'</td>
-                <th width="80px">Unid.Med.</th>
-                <td>'.$producto->abreviatura.'</td>
-            </tr>
-            <tr>
-                <th>Tipo</th>
-                <td width="23%">'.$producto->des_tipo.'</td>
-                <th>Categoría</th>
-                <td>'.$producto->des_categoria.'</td>
-                <th>Sub-Categoría</th>
-                <td>'.$producto->des_subcategoria.'</td>
-            </tr>
-            <tr>
-                <th>Clasificación</th>
-                <td>'.$producto->des_clasificacion.'</td>
-                <th>Cod.Anexo</th>
-                <td>'.$producto->codigo_anexo.'</td>
-                <th>Ubicación</th>
-                <td>'.$producto->cod_posicion.'</td>
-            </tr>
-            ';
-        return json_encode($html);
-    }
+    
     public function listar_kardex_producto($id_producto,$almacen,$finicio,$ffin){
         $html = '';
         $data = DB::table('almacen.mov_alm_det')
@@ -6612,45 +6338,6 @@ class AlmacenController extends Controller
         return $html;
     }
 
-    // public function listar_kardex_serie($serie, $descripcion){
-    //     $hasWhere = [];
-    //     if ($serie !== 'null'){
-    //         $hasWhere = ['alm_prod_serie.serie','=',$serie];
-    //     }
-    //     else if ($descripcion !== 'null'){
-    //         $hasWhere = ['alm_prod.descripcion','like','%'.strtoupper($descripcion).'%'];
-    //     }
-    //     $data = DB::table('almacen.alm_prod_serie')
-    //     ->select('alm_prod_serie.*','alm_prod.descripcion',
-    //     'guia_com.fecha_emision as fecha_guia_com',
-    //     'guia_ven.fecha_emision as fecha_guia_ven',
-    //     'contri_cliente.razon_social as razon_social_cliente',
-    //     'contri_prove.razon_social as razon_social_prove',
-    //     'alm_com.descripcion as almacen_compra','alm_ven.descripcion as almacen_venta',
-    //     DB::raw("(tp_doc_com.abreviatura) || '-' || (guia_com.serie) || '-' || (guia_com.numero) as guia_com"),
-    //     DB::raw("(tp_doc_ven.abreviatura) || '-' || (guia_ven.serie) || '-' || (guia_ven.numero) as guia_ven"))
-    //     ->leftjoin('almacen.guia_ven_det','guia_ven_det.id_guia_ven_det','=','alm_prod_serie.id_guia_ven_det')
-    //     ->leftjoin('almacen.guia_ven','guia_ven.id_guia_ven','=','guia_ven_det.id_guia_ven')
-    //     ->leftjoin('comercial.com_cliente','com_cliente.id_cliente','=','guia_ven.id_cliente')
-    //     ->leftjoin('contabilidad.adm_contri as contri_cliente','contri_cliente.id_contribuyente','=','com_cliente.id_contribuyente')
-    //     ->leftjoin('almacen.tp_doc_almacen as tp_doc_ven','tp_doc_ven.id_tp_doc_almacen','=','guia_ven.id_tp_doc_almacen')
-    //     ->leftjoin('almacen.alm_almacen as alm_ven','alm_ven.id_almacen','=','guia_ven.id_almacen')
-    //     ->leftjoin('almacen.guia_com_det','guia_com_det.id_guia_com_det','=','alm_prod_serie.id_guia_com_det')
-    //     ->leftjoin('almacen.guia_com','guia_com.id_guia','=','guia_com_det.id_guia_com')
-    //     ->leftjoin('logistica.log_prove','log_prove.id_proveedor','=','guia_com.id_proveedor')
-    //     ->leftjoin('contabilidad.adm_contri as contri_prove','contri_prove.id_contribuyente','=','log_prove.id_contribuyente')
-    //     ->leftjoin('almacen.tp_doc_almacen as tp_doc_com','tp_doc_com.id_tp_doc_almacen','=','guia_com.id_tp_doc_almacen')
-    //     ->leftjoin('almacen.alm_almacen as alm_com','alm_com.id_almacen','=','guia_com.id_almacen')
-    //     ->join('almacen.alm_prod','alm_prod.id_producto','=','alm_prod_serie.id_prod')
-    //     ->where([['alm_prod_serie.estado','=',1],
-    //              ['alm_prod.estado','=',1],
-    //              $hasWhere])
-    //     ->orderBy('alm_prod_serie.serie')
-    //     ->get();
-    //     $output['data'] = $data;
-    //     return response()->json(($output));
-    // }
-
     public function listar_documentos_adicionales(){
         $data = DB::table('almacen.guia_com_prorrateo')
         ->select('guia_com_prorrateo.*','doc_com.serie','doc_com.numero')
@@ -6708,20 +6395,4 @@ class AlmacenController extends Controller
 
 
 }
-
-        // DB::transaction(function(){
-        //     Prueba::whereId('20008')->update('ruta_2','Man-33')->all();
-        // });
-        // DB::beginTransaction();
-        // try {
-        //     $post->comments()->save($comment);
-        //     $post->last_comment_at = now();
-        //     $post->save();
-        //     DB::commit();
-        // } catch (\Exception $e) {
-        //     DB::rollback();
-        //     throw $e;
-        // } catch (\Throwable $e) {
-        //     DB::rollback();
-        //     throw $e;
 

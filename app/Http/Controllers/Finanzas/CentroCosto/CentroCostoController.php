@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Finanzas\CentroCosto;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use App\Models\Presupuestos\CentroCosto;
+use App\Http\Controllers\Controller;
 
 class CentroCostoController extends Controller
 {

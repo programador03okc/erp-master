@@ -24,6 +24,10 @@ class ProductoController extends Controller
         return view('almacen/producto/producto', compact('tipos','categorias','clasificaciones','subcategorias','unidades','monedas'));
     }
 
+    function view_prod_catalogo(){
+        return view('almacen/producto/prod_catalogo');
+    }
+
     public function mostrar_prods(){
         $prod = DB::table('almacen.alm_prod')
             ->select('alm_prod.id_producto', 'alm_prod.codigo', 'alm_prod.descripcion',
@@ -407,4 +411,21 @@ class ProductoController extends Controller
         return response()->json($data);
     }
 
+    //Catalogo Producto
+    public function mostrar_productos(){
+        $data = DB::table('almacen.alm_prod')
+            ->select('alm_prod.id_producto','alm_prod.codigo','alm_prod.descripcion',
+            'alm_subcat.codigo as cod_sub_cat','alm_subcat.descripcion as subcat_descripcion',
+            'alm_cat_prod.codigo as cod_cat','alm_cat_prod.descripcion as cat_descripcion',
+            'alm_tp_prod.id_tipo_producto','alm_tp_prod.descripcion as tipo_descripcion',
+            'alm_clasif.id_clasificacion','alm_clasif.descripcion as clasif_descripcion')
+            ->join('almacen.alm_subcat','alm_subcat.id_subcategoria','=','alm_prod.id_subcategoria')
+            ->join('almacen.alm_cat_prod','alm_cat_prod.id_categoria','=','alm_prod.id_categoria')
+            ->join('almacen.alm_tp_prod','alm_tp_prod.id_tipo_producto','=','alm_cat_prod.id_tipo_producto')
+            ->join('almacen.alm_clasif','alm_clasif.id_clasificacion','=','alm_prod.id_clasif')
+            ->get();
+            $output['data'] = $data;
+        return response()->json($output);
+    }
+    
 }
