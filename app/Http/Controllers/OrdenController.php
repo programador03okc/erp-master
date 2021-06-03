@@ -295,6 +295,8 @@ class OrdenController extends Controller
             'log_det_ord_compra.descripcion_adicional as detalle_orden_descripcion_adicional',
             'log_det_ord_compra.cantidad as detalle_orden_cantidad',
             'log_det_ord_compra.precio as detalle_orden_precio',
+            'cc_am_filas.cantidad as cdc_cantidad',
+            'cc_am_filas.pvu_oc as cdc_precio',
             'log_det_ord_compra.id_unidad_medida as detalle_orden_id_unidad_medida',
             'log_det_ord_compra.subtotal as detalle_orden_subtotal',
             'log_det_ord_compra.id_detalle_requerimiento as detalle_orden_id_detalle_requerimiento',
@@ -322,6 +324,7 @@ class OrdenController extends Controller
         ->leftJoin('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'alm_det_req.id_requerimiento')
         ->leftJoin('comercial.com_cliente','com_cliente.id_cliente','=','alm_req.id_cliente')
         ->leftJoin('contabilidad.adm_contri as contri_cli','contri_cli.id_contribuyente','=','com_cliente.id_contribuyente')
+        ->leftJoin('mgcp_cuadro_costos.cc_am_filas', 'cc_am_filas.id', '=', 'alm_det_req.id_cc_am_filas')
 
         ->where([
             ['log_ord_compra.estado', '!=', 7],

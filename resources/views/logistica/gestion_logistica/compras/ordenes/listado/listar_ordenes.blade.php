@@ -83,6 +83,10 @@
                     <th >Categoría</th>
                     <th >Part Number</th>
                     <th >Descripción</th>
+                    <!-- <th >Cantidad Orden</th> -->
+                    <th >Precio Orden</th>
+                    <!-- <th >Cantidad CC</th> -->
+                    <th >Precio CC</th>
                     <th >Fecha Emisión</th>
                     <th >Plazo Entrega</th>
                     <th width="20%">ETA</th>

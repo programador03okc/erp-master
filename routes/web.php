@@ -657,7 +657,7 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::post('guardar-archivos-adjuntos-requerimiento', 'LogisticaController@guardar_archivos_adjuntos_requerimiento');
 					Route::put('eliminar-archivo-adjunto-requerimiento/{id_archivo}', 'LogisticaController@eliminar_archivo_adjunto_requerimiento');
 					Route::get('mostrar-archivos-adjuntos-requerimiento/{id_requerimiento?}/{categoria?}', 'LogisticaController@mostrar_archivos_adjuntos_requerimiento');
-					Route::get('listar_almacenes', 'AlmacenController@mostrar_almacenes');
+					Route::get('listar_almacenes', 'Almacen\Ubicacion\AlmacenController@mostrar_almacenes');
 					Route::get('mostrar-sede', 'ConfiguracionController@mostrarSede');
 					Route::get('mostrar_proveedores', 'LogisticaController@mostrar_proveedores');
 					Route::post('guardar_proveedor', 'LogisticaController@guardar_proveedor');
@@ -681,7 +681,7 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::get('proyectos-activos', 'ProyectosController@listar_proyectos_activos')->name('proyectos-activos');
 					Route::get('listar-partidas/{id_grupo?}/{id_proyecto?}', 'ProyectosController@listar_partidas')->name('listar-partidas');
 					Route::get('grupo-select-item-para-compra', 'ComprasPendientesController@getGrupoSelectItemParaCompra')->name('grupo-select-item-para-compra');
-					Route::get('mostrar-centro-costos', 'CentroCostoController@mostrarCentroCostos')->name('mostrar-centro-costos');
+					Route::get('mostrar-centro-costos', 'Finanzas\CentroCosto\CentroCostoController@mostrarCentroCostos')->name('mostrar-centro-costos');
 					Route::get('mostrar-fuente', 'LogisticaController@mostrarFuente')->name('mostrar-fuente');
 					Route::post('guardar-fuente', 'LogisticaController@guardarFuente')->name('guardar-fuente');
 					Route::post('anular-fuente', 'LogisticaController@anularFuente')->name('anular-fuente');
