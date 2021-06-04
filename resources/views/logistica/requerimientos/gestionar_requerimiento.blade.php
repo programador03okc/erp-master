@@ -510,41 +510,32 @@ Requerimiento
                             <thead>
                                 <tr>
                                     <th style="width: 3%">#</th>
-                                    <th style="width: 6%">Part number</th>
-                                    <th style="width: 15%">Descripción</th>
-                                    <th style="width: 10%">Unidad</th>
-                                    <th style="width: 10%">Cantidad</th>
-                                    <th style="width: 10%">Precio U.</th>
-                                    <th style="width: 10%">Subtotal</th>
                                     <th style="width: 10%">Partida</th>
                                     <th style="width: 10%">C.Costos</th>
+                                    <th style="width: 10%">Part number</th>
+                                    <th >Descripción de item</th>
+                                    <th style="width: 10%">Unidad</th>
+                                    <th style="width: 6%">Cantidad</th>
+                                    <th style="width: 8%">Precio U.</th>
+                                    <th style="width: 6%">Subtotal</th>
                                     <th style="width: 15%">Motivo</th>
-                                    <th style="width: 10%">Acciones</th>
+                                    <th style="width: 7%">Acciones</th>
                                 </tr>
                             </thead>
                             <tbody id="body_detalle_requerimiento">
                                 
                             </tbody>
+                            <tfoot>
+                            <tr>
+                                            
+                                <td colspan="8" class="text-right"><strong>Total:</strong></td>
+                                <td class="text-right"><span name="simbolo_moneda">S/</span><label name="total"> 0.00</label></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            </tfoot>
                         </table>
-                        <div class="row">
-                                 <table class="table table-condensed table-small" style="border: none;margin-bottom: 0px;">
-                                    <tbody>
-                                        <tr>
-                                            <td style="width: 5%"></td>
-                                            <td style="width: 6%"></td>
-                                            <td style="width: 10%"></td>
-                                            <td style="width: 10%"></td>
-                                            <td style="width: 10%"></td>
-                                            <td style="width: 10%"></td>
-                                            <td style="width: 10%; text-align:right;">Total: <span name="simbolo_moneda">S/</span><label name="total"> 0.00</label></td>
-                                            <td style="width: 10%"></td>
-                                            <td style="width: 10%"></td>
-                                            <td style="width: 15%"></td>
-                                            <td style="width: 10%"></td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                         </div>
             </div>
         </fieldset>
         <br>
@@ -571,7 +562,6 @@ Requerimiento
                 </div>
             </div>
         </fieldset>
-        <br>
         <fieldset class="group-table" id="group-detalle-cuadro-costos" hidden>
             <div class="row">
                 <div class="col-sm-12">
@@ -600,17 +590,13 @@ Requerimiento
                 </div>
             </div>
         </fieldset>
-
-        <br>
-        <div class="row" id="observaciones_requerimiento"></div>
-
         <div class="row">
             <div class="col-md-12 text-right">
                 <button type="submit" class="btn-okc" id="btnGuardar"><i class="fas fa-save fa-lg"></i> Guardar</button>
             </div>
         </div>
         <br>
-
+        <div class="row" id="observaciones_requerimiento"></div>
     </form>
 
 </div>
@@ -682,7 +668,7 @@ Requerimiento
 <script src="{{ asset('js/logistica/requerimiento/cancelar.js') }}"></script>
 <script src="{{ asset('js/logistica/requerimiento/anular.js') }}"></script>
 <script src="{{ asset('js/logistica/requerimiento/guardar.js') }}"></script>
-<script src="{{ asset('js/logistica/requerimiento/adjuntos.js') }}"></script>
+<!-- <script src="{{ asset('js/logistica/requerimiento/adjuntos.js') }}"></script> -->
 <script src="{{ asset('js/logistica/requerimiento/duplicar_requerimiento.js') }}"></script>
 <script src="{{ asset('js/logistica/requerimiento/historial.js') }}"></script>
 <script src="{{ asset('js/logistica/requerimiento/modal_detalle_requerimiento.js') }}"></script>
@@ -735,7 +721,7 @@ Requerimiento
     //     }
     // });
     $(document).ready(function() {
-        $('#btnNuevo').trigger('click');
+        // $('#btnNuevo').trigger('click');
         seleccionarMenu(window.location);
         var descripcion_grupo = '{{Auth::user()->getGrupo()->descripcion}}';
         var id_grupo = '{{Auth::user()->getGrupo()->id_grupo}}';

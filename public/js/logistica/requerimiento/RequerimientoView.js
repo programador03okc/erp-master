@@ -1,9 +1,12 @@
+
 var tempObjectBtnPartida;
 var tempObjectBtnCentroCostos;
+var tempObjectBtnInputFile;
+
 class RequerimientoView {
     init() {
         this.agregarFilaEvent();
-        $('[name=periodo]').val(today.getFullYear());
+        // $('[name=periodo]').val(today.getFullYear());
 
     }
     // cabecera requerimiento
@@ -149,18 +152,22 @@ class RequerimientoView {
 
             document.querySelector("tbody[id='body_detalle_requerimiento']").insertAdjacentHTML('beforeend', `<tr style="text-align:center">
             <td></td>
-            <td><input class="form-control input-sm" type="text" name="part-number[]" placeholder="Part number"></td>
+            <td><p class="descripcion-partida">(NO SELECCIONADO)</p><button type="button" class="btn btn-xs btn-info" name="partida" onclick="requerimientoView.cargarModalPartidas(this)">Seleccionar</button> <input type="text" name="id-partida[]" hidden></td>
+            <td><p class="descripcion-centro-costo">(NO SELECCIONADO)</p><button type="button" class="btn btn-xs btn-primary" name="centroCostos" onclick="requerimientoView.cargarModalCentroCostos(this)">Seleccionar</button> <input type="text" name="id-centro-costo[]" hidden></td>
+            <td><input class="form-control input-sm" type="text" name="partNumber[]" placeholder="Part number"></td>
             <td><textarea class="form-control input-sm" name="descripcion[]" placeholder="Descripción"></textarea></td>
             <td><select name="unidad[]" class="form-control input-sm">${document.querySelector("select[id='selectUnidadMedida']").innerHTML}</select></td>
-            <td><input class="form-control input-sm cantidad" type="number" min="1" name="cantidad[]" onkeyup ="requerimientoView.updateSubtotal(this);"  placeholder="0"></td>
-            <td><input class="form-control input-sm precio" type="number" min="0" name="precio-unitario[]" onkeyup="requerimientoView.updateSubtotal(this)" placeholder="0.00"></td>
-            <td style="text-align:right;"><span class="moneda" name="simbolo_moneda[]">S/</span><span class="subtotal" name="subtotal[]">0.00</span></td>
-            <td><p class="descripcion-partida">(NO SELECCIONADO)</p><button type="button" class="btn btn-xs btn-info" name="partida" onclick="requerimientoView.cargarModalPartidas(this)">Seleccionar</button> <input type="text" name="id-partida[]" hidden></td>
-            <td><p class="descripcion-centro-costo">(NO SELECCIONADO)</p><button type="button" class="btn btn-xs btn-primary" name="centro-costos" onclick="requerimientoView.cargarModalCentroCostos(this)">Seleccionar</button> <input type="text" name="id-centro-costo[]" hidden></td>
-            <td><textarea class="form-control input-sm" name="motivo[]" placeholder="Motivo de requerimiento de item"></textarea></td>
+            <td>
+                <div class="form-group">
+                    <input class="form-control input-sm cantidad text-right" type="number" min="1" name="cantidad[]" onkeyup ="requerimientoView.updateSubtotal(this);" placeholder="Cantidad">
+                </div>
+            </td>
+            <td><input class="form-control input-sm precio text-right" type="number" min="0" name="precioUnitario[]" onkeyup="requerimientoView.updateSubtotal(this)" placeholder="Precio U."></td>
+            <td style="text-align:right;"><span class="moneda" name="simboloMoneda[]">S/</span><span class="subtotal" name="subtotal[]">0.00</span></td>
+            <td><textarea class="form-control input-sm" name="motivo[]" placeholder="Motivo de requerimiento de item (opcional)"></textarea></td>
             <td>
                 <div class="btn-group" role="group">
-                    <button type="button" class="btn btn-warning btn-xs" name="btnAdjuntarArchivoItem[]" title="Adjuntos" onclick="requerimientoView.adjuntarArchivoItem(this)" ><i class="fas fa-paperclip"></i></button>
+                    <button type="button" class="btn btn-warning btn-xs" name="btnAdjuntarArchivoItem[]" title="Adjuntos" onclick="requerimientoView.adjuntarArchivoItem(this)" ><i class="fas fa-paperclip"></i></button> 
                     <button type="button" class="btn btn-danger btn-xs" name="btnEliminarItem[]" title="Eliminar" onclick="requerimientoView.eliminarItem(this)" ><i class="fas fa-trash-alt"></i></button>
                 </div>
             </td>
@@ -178,15 +185,15 @@ class RequerimientoView {
 
             document.querySelector("tbody[id='body_detalle_requerimiento']").insertAdjacentHTML('beforeend', `<tr style="text-align:center">
             <td></td>
-            <td></td>
+            <td><p class="descripcion-partida">(NO SELECCIONADO)</p><button type="button" class="btn btn-xs btn-info" name="centroCostos" onclick="requerimientoView.cargarModalPartidas(this)">Seleccionar</button> <input type="text" name="id-centro-costo[]" hidden></td>
+            <td><p class="descripcion-centro-costo">(NO SELECCIONADO)</p><button type="button" class="btn btn-xs btn-primary" name="partida" onclick="requerimientoView.cargarModalCentroCostos(this)">Seleccionar</button> <input type="text" name="id-partida[]" hidden></td>
+            <td>(Servicio)<input type="hidden" name="partNumber[]"></td>
             <td><textarea class="form-control input-sm" name="descripcion[]" placeholder="Descripción"></textarea></td>
             <td><select name="unidad[]" class="form-control input-sm">${document.querySelector("select[id='selectUnidadMedida']").innerHTML}</select></td>
-            <td><input class="form-control input-sm cantidad" type="number" min="1" name="cantidad[]" onkeyup ="requerimientoView.updateInputCantidadItem(this);"  placeholder="0"></td>
-            <td><input class="form-control input-sm precio" type="number" min="0" name="precio-unitario[]" onkeyup="requerimientoView.updateInputPrecioUnitarioItem(this)" placeholder="0.00"></td>
-            <td style="text-align:right;"><span class="moneda" name="simbolo_moneda[]">S/</span><span class="subtotal" name="subtotal[]">0.00</span></td>
-            <td><button type="button" class="btn btn-xs btn-info" name="partida" onclick="requerimientoView.cargarModalPartidas(this)">Seleccionar</button> <input type="text" name="id-partida[]" hidden></td>
-            <td><button type="button" class="btn btn-xs btn-primary" name="centro-costos" onclick="requerimientoView.cargarModalCentroCostos(this)">Seleccionar</button> <input type="text" name="id-centro-costo[]" hidden></td>
-            <td><textarea class="form-control input-sm" name="motivo[]" placeholder="Motivo de requerimiento de item"></textarea></td>
+            <td><input class="form-control input-sm cantidad text-right" type="number" min="1" name="cantidad[]" onkeyup ="requerimientoView.updateSubtotal(this);" placeholder="Cantidad"></td>
+            <td><input class="form-control input-sm precio text-right" type="number" min="0" name="precioUnitario[]" onkeyup="requerimientoView.updateSubtotal(this)" placeholder="Precio U."></td>
+            <td style="text-align:right;"><span class="moneda" name="simboloMoneda[]">S/</span><span class="subtotal" name="subtotal[]">0.00</span></td>
+            <td><textarea class="form-control input-sm" name="motivo[]" placeholder="Motivo de requerimiento de item (opcional)"></textarea></td>
             <td>
                 <div class="btn-group" role="group">
                     <button type="button" class="btn btn-warning btn-xs" name="btnAdjuntarArchivoItem[]" title="Adjuntos" onclick="requerimientoView.adjuntarArchivoItem(this)" ><i class="fas fa-paperclip"></i></button>
@@ -217,7 +224,6 @@ class RequerimientoView {
         let subtotal = (cantidad * precioUnitario);
         tr.querySelector("span[class='subtotal']").textContent = Util.formatoNumero(subtotal, 2);
         this.calcularTotal();
-
     }
 
     calcularTotal() {
@@ -225,9 +231,9 @@ class RequerimientoView {
         let childrenTableTbody = TableTBody.children;
         let total = 0;
         for (let index = 0; index < childrenTableTbody.length; index++) {
-            console.log(childrenTableTbody[index]);
-            let cantidad = parseFloat(childrenTableTbody[index].querySelector("input[class~='cantidad']").value);
-            let precioUnitario = parseFloat(childrenTableTbody[index].querySelector("input[class~='precio']").value);
+            // console.log(childrenTableTbody[index]);
+            let cantidad = parseFloat(childrenTableTbody[index].querySelector("input[class~='cantidad']").value?childrenTableTbody[index].querySelector("input[class~='cantidad']").value:0);
+            let precioUnitario = parseFloat(childrenTableTbody[index].querySelector("input[class~='precio']").value?childrenTableTbody[index].querySelector("input[class~='precio']").value:0);
             total += (cantidad * precioUnitario);
         }
         document.querySelector("label[name='total']").textContent = Util.formatoNumero(total, 2);
@@ -268,7 +274,7 @@ class RequerimientoView {
         let isVisible = '';
         data['presupuesto'].forEach(resup => {
             html += ` 
-            <div id='${resup.codigo}' class="panel panel-primary" style="width:100%; height: 60%; overflow: auto;">
+            <div id='${resup.codigo}' class="panel panel-primary" style="width:100%; overflow: auto;">
                 <h5 class="panel-heading" style="margin: 0; cursor: pointer;" onclick="requerimientoView.apertura(${resup.id_presup}); requerimientoView.changeBtnIcon(this);">
                 <i class="fas fa-chevron-right"></i>
                     &nbsp; ${resup.descripcion} 
@@ -364,33 +370,37 @@ class RequerimientoView {
         data.forEach((padre, index) => {
             if (padre.id_padre == null) {
                 html += `
-                <div class="panel panel-default">
-                    <div class="panel-heading" role="tab" id="heading${index}">
-                        <h4 class="panel-title">
-                            <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse${index}" aria-expanded="false" aria-controls="collapse${index}" >
-                                ${padre.descripcion} 
-                                <div class="box-tools pull-right">
-                                    <button type="button" class="btn btn-box-tool" style="position:absolute; right:20px; margin-top:-5px;" data-toggle="collapse">
-                                        <i class="fa fa-plus"></i>
-                                    </button>
-                                </div>
-                            </a>
-                        </h4>
-                    </div>
-                    <div id="collapse${index}" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading${index}" >   
-                        <div class="box-body" style="display: block;">`;
+                <div id='${index}' class="panel panel-primary" style="width:100%; overflow: auto;">
+                <h5 class="panel-heading" style="margin: 0; cursor: pointer;" onclick="requerimientoView.apertura(${index}); requerimientoView.changeBtnIcon(this);">
+                <i class="fas fa-chevron-right"></i>
+                    &nbsp; ${padre.descripcion} 
+                </h5>
+                <div id="pres-${index}" class="oculto" style="width:100%;">
+                    <table class="table table-bordered table-condensed partidas" width="100%" style="font-size:0.9em">
+                        <tbody>`;
+        
                 data.forEach(hijo => {
                     if (padre.id_centro_costo == hijo.id_padre) {
                         if ((hijo.id_padre > 0) && (hijo.estado == 1)) {
                             if (hijo.nivel == 2) {
-                                html += `<div class="okc-cc okc-niv-2" onClick="requerimientoView.selectCentroCosto(${hijo.id_centro_costo} , '${hijo.codigo}' ,'${hijo.descripcion}');"> ${hijo.codigo} - ${hijo.descripcion} </div>`;
+                                html += `
+                                <tr id="com-${hijo.id_centro_costo}">
+                                    <td><strong>${hijo.codigo}</strong></td>
+                                    <td><strong>${hijo.descripcion}</strong></td>
+                                    <td style="width:5%; text-align:center;"><button class="btn btn-success btn-xs" onclick="requerimientoView.selectCentroCosto(${hijo.id_centro_costo},'${hijo.codigo}','${hijo.descripcion}');">Seleccionar</button></td>
+                                </tr> `;
                             }
                         }
                         data.forEach(hijo3 => {
                             if (hijo.id_centro_costo == hijo3.id_padre) {
                                 if ((hijo3.id_padre > 0) && (hijo3.estado == 1)) {
                                     if (hijo3.nivel == 3) {
-                                        html += `<div class="okc-cc okc-niv-3" onClick="requerimientoView.selectCentroCosto(${hijo3.id_centro_costo} , '${hijo3.codigo}','${hijo3.descripcion}');"> ${hijo3.codigo} - ${hijo3.descripcion} </div>`;
+                                        html += `
+                                        <tr id="com-${hijo3.id_centro_costo}">
+                                            <td>${hijo3.codigo}</td>
+                                            <td>${hijo3.descripcion}</td>
+                                            <td style="width:5%; text-align:center;"><button class="btn btn-success btn-xs" onclick="requerimientoView.selectCentroCosto(${hijo3.id_centro_costo},'${hijo3.codigo}','${hijo3.descripcion}');">Seleccionar</button></td>
+                                        </tr> `;
                                     }
                                 }
                             }
@@ -399,13 +409,63 @@ class RequerimientoView {
 
 
                 });
-
-                html += `</div></div></div>`;
+                html += `
+                </tbody>
+            </table>
+        </div>
+    </div>`;
             }
         });
         document.querySelector("div[name='centro-costos-panel']").innerHTML = html;
 
     }
+    // construirCentroCostos(data) {
+    //     var html = '';
+    //     data.forEach((padre, index) => {
+    //         if (padre.id_padre == null) {
+    //             html += `
+    //             <div class="panel panel-default">
+    //                 <div class="panel-heading" role="tab" id="heading${index}">
+    //                     <h4 class="panel-title">
+    //                         <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse${index}" aria-expanded="false" aria-controls="collapse${index}" >
+    //                             ${padre.descripcion} 
+    //                             <div class="box-tools pull-right">
+    //                                 <button type="button" class="btn btn-box-tool" style="position:absolute; right:20px; margin-top:-5px;" data-toggle="collapse">
+    //                                     <i class="fa fa-plus"></i>
+    //                                 </button>
+    //                             </div>
+    //                         </a>
+    //                     </h4>
+    //                 </div>
+    //                 <div id="collapse${index}" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading${index}" >   
+    //                     <div class="box-body" style="display: block;">`;
+    //             data.forEach(hijo => {
+    //                 if (padre.id_centro_costo == hijo.id_padre) {
+    //                     if ((hijo.id_padre > 0) && (hijo.estado == 1)) {
+    //                         if (hijo.nivel == 2) {
+    //                             html += `<div class="okc-cc okc-niv-2" onClick="requerimientoView.selectCentroCosto(${hijo.id_centro_costo} , '${hijo.codigo}' ,'${hijo.descripcion}');"> ${hijo.codigo} - ${hijo.descripcion} </div>`;
+    //                         }
+    //                     }
+    //                     data.forEach(hijo3 => {
+    //                         if (hijo.id_centro_costo == hijo3.id_padre) {
+    //                             if ((hijo3.id_padre > 0) && (hijo3.estado == 1)) {
+    //                                 if (hijo3.nivel == 3) {
+    //                                     html += `<div class="okc-cc okc-niv-3" onClick="requerimientoView.selectCentroCosto(${hijo3.id_centro_costo} , '${hijo3.codigo}','${hijo3.descripcion}');"> ${hijo3.codigo} - ${hijo3.descripcion} </div>`;
+    //                                 }
+    //                             }
+    //                         }
+    //                     });
+    //                 }
+
+
+    //             });
+
+    //             html += `</div></div></div>`;
+    //         }
+    //     });
+    //     document.querySelector("div[name='centro-costos-panel']").innerHTML = html;
+
+    // }
 
 
     selectCentroCosto(idCentroCosto, codigo, descripcion) {
@@ -427,14 +487,99 @@ class RequerimientoView {
         let tr = obj.closest("tr");
         tr.remove();
         this.updateContadorItem();
-
+        this.calcularTotal();
     }
 
+    // adjuntos detalle requerimiento
+
     adjuntarArchivoItem(obj) {
+
+        tempObjectBtnInputFile = obj;
         $('#modal-adjuntar-archivos-detalle-requerimiento').modal({
             show: true,
             backdrop: 'true'
         });
+    }
+
+    agregarAdjunto(event){
+        //  console.log(event.target.value);
+        let fileList = event.target.files;
+        let file = fileList[0];
+        let extension = file.name.match(/(?<=\.)\w+$/g)[0].toLowerCase(); // assuming that this file has any extension
+        //  console.log(extension);
+        if (extension === 'dwg' 
+            || extension === 'dwt' 
+            || extension === 'cdr' 
+            || extension === 'back' 
+            || extension === 'backup' 
+            || extension === 'psd' 
+            || extension === 'sql' 
+            || extension === 'exe' 
+            || extension === 'html' 
+            || extension === 'js' 
+            || extension === 'php' 
+            || extension === 'ai' 
+            || extension === 'mp4' 
+            || extension === 'mp3' 
+            || extension === 'avi' 
+            || extension === 'mkv' 
+            || extension === 'flv' 
+            || extension === 'mov' 
+            || extension === 'wmv' 
+            ) {
+                alert('Extensión de archivo incorrecta (NO se permite .'+extension+').  La entrada del archivo se borra.');
+                event.target.value = '';
+            }
+            else {
+                // let archivo ={
+                //     id_adjunto: 0,
+                //     id_requerimiento: id_req,
+                //     id_detalle_requerimiento: id_detalle_requerimiento,
+                //     archivo:file.name,
+                //     fecha_registro: new Date().toJSON().slice(0, 10),
+                //     estado: 1
+                //     // file:event.target.files[0]
+                // }
+                // let only_file = event.target.files[0]
+                // let inputFile = tempObjectBtnInputFile.parentNode.querySelector("input[type='file']");
+                // inputFile.value=fileList;
+                // nuevoFormulario.append(inputFile.name, event.target.files[0]);
+
+                // console.log(inputFile.name);
+                // console.log(inputFile);
+
+
+                // formData.append('adjunto_item[]', event.target.files[0], file.name);
+
+                
+        }
+    }
+
+    actionGuardarEditarRequerimiento(){
+        let continuar = true;
+        if(document.querySelector("tbody[id='body_detalle_requerimiento']").childElementCount==0){
+            alert("Ingrese por lo menos un producto/servicio");
+            return false;
+        }
+
+        let tbodyChildren=document.querySelector("tbody[id='body_detalle_requerimiento']").children;
+        for (let index = 0; index < tbodyChildren.length; index++) {
+            if(tbodyChildren[index].querySelector("input[class~='cantidad']").value == ''){
+                var newSpanInfo = document.createElement("span");
+                newSpanInfo.classList.add('text-danger');
+                newSpanInfo.textContent = 'Ingrese una cantidad';
+                tbodyChildren[index].querySelector("input[class~='cantidad']").closest('td').appendChild(newSpanInfo);
+                tbodyChildren[index].querySelector("input[class~='cantidad']").closest('td').querySelector("div[class~='form-group']").classList.add('has-error');
+
+            }
+            
+        }
+     
+        if(continuar){
+            console.log("se va a guardar");
+        }else{
+            console.log("no se va a guardar");
+        }
     }
 
 }

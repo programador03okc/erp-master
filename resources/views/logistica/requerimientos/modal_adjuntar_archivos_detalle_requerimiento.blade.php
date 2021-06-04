@@ -3,13 +3,13 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="close"><span aria-hidden="true">&times;</span></button>
-                <h3 class="modal-title">Archivos Adjuntos</h3>
+                <h3 class="modal-title">Archivos adjuntos de item</h3>
             </div>
             <div class="modal-body">
                 <div class="row" id="section_upload_files">
                     <div class="col-md-12">
                         <div class="input-group-okc">
-                            <input type="file" name="nombre_archivo" class="custom-file-input" onchange="agregarAdjunto(event); return false;" />
+                            <input type="file" name="nombre_archivo" class="custom-file-input" onchange="requerimientoView.agregarAdjunto(event); return false;" multiple />
                         </div>
                     </div>
 

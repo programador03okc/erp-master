@@ -292,53 +292,61 @@ function resetModalLoader(){
 
 }
 
-function actionGuardarEditarRequerimiento(){
-    var data = $("#form-requerimiento").serializeArray();
 
-    data.push({
-        items:cantidadElementosDetalleRequerimiento
-    });
+// function actionGuardarEditarRequerimiento(){
+//     // var data = $("#form-requerimiento").serializeArray();
+//     var formData = new FormData($('#form-requerimiento')[0]);
 
+//     // var num= document.querySelectorAll('adjunto-item').files.length;
+
+//     // for (var i = 0; i < num; i++) {
+//     //     formData.append("adjunto-item[]", document.querySelectorAll('adjunto-item').files[i]);
+//     // }
+//     // data.push({
+//     //     items:cantidadElementosDetalleRequerimiento
+//     // });
     
-            baseUrl = rutaGuardarRequerimiento;
-            $.ajax({
-                type: 'POST',
-                url: baseUrl,
-                data: data,
-                dataType: 'JSON',
-                beforeSend:function(data){ // Are not working with dataType:'jsonp'
+//             baseUrl = rutaGuardarRequerimiento;
+//             $.ajax({
+//                 type: 'POST',
+//                 url: baseUrl,
+//                 data: formData,
+//                 processData:false,
+//                 contentType:false,
+//                 dataType: 'JSON',
+//                 beforeSend:function(data){ // Are not working with dataType:'jsonp'
 
-                    // $('#modal-loader').modal({backdrop: 'static', keyboard: false});
+//                     // $('#modal-loader').modal({backdrop: 'static', keyboard: false});
 
-                },
-                success: function(response){
-                    // console.log(response);
-                    // if (response.id_requerimiento > 0){
-                    //     // get_notificaciones_sin_leer_interval(); 
-                    //     // showNotificacionUsuario(100); // notificaciones de navegador beta
+//                 },
+//                 success: function(response){
+//                     // console.log(response);
+//                     // if (response.id_requerimiento > 0){
+//                     //     // get_notificaciones_sin_leer_interval(); 
+//                     //     // showNotificacionUsuario(100); // notificaciones de navegador beta
                         
-                    //     document.querySelector("div[id='modal-loader'] div[name='loader']").classList.add("oculto")
-                    //     document.querySelector("div[id='modal-loader'] button[name='btnCerrarModalLoader']").classList.remove("oculto")
-                    //     document.querySelector("div[id='modal-loader'] div[name='loader-status']").style.color= "#00a65a";
-                    //     document.querySelector("div[id='modal-loader'] div[name='loader-status']").style.fontSize= "2rem";
-                    //     document.querySelector("div[id='modal-loader'] div[name='loader-status']").style.fontWeight= "bold";
-                    //     document.querySelector("div[id='modal-loader'] div[name='loader-status']").textContent= 'Requerimiento Guardado';
-                    //     document.querySelector("div[id='modal-loader'] div[name='loader-info']").innerHTML= `<span style="color:#00a65a"><i class="far fa-check-circle"></i></span> <span>Se creó el requerimiento: </span> <a style="color:blue; cursor:pointer; text-align:center;" onclick="cerrarModalLoader(); mostrar_requerimiento(${response.id_requerimiento});">${response.codigo}</a>`;
-                    //     nuevo_req();
-                    //     cuentaRegresivaModalLoader(5);
-                    // }else{
-                    //     cerrarModalLoader();
-                    //     alert('Hubo un problema al intentar guardar el requerimiento');
-                    // }
-                }
-            }).fail( function(jqXHR, textStatus, errorThrown){
-                console.log(jqXHR);
-                console.log(textStatus);
-                console.log(errorThrown);
-            });  
+//                     //     document.querySelector("div[id='modal-loader'] div[name='loader']").classList.add("oculto")
+//                     //     document.querySelector("div[id='modal-loader'] button[name='btnCerrarModalLoader']").classList.remove("oculto")
+//                     //     document.querySelector("div[id='modal-loader'] div[name='loader-status']").style.color= "#00a65a";
+//                     //     document.querySelector("div[id='modal-loader'] div[name='loader-status']").style.fontSize= "2rem";
+//                     //     document.querySelector("div[id='modal-loader'] div[name='loader-status']").style.fontWeight= "bold";
+//                     //     document.querySelector("div[id='modal-loader'] div[name='loader-status']").textContent= 'Requerimiento Guardado';
+//                     //     document.querySelector("div[id='modal-loader'] div[name='loader-info']").innerHTML= `<span style="color:#00a65a"><i class="far fa-check-circle"></i></span> <span>Se creó el requerimiento: </span> <a style="color:blue; cursor:pointer; text-align:center;" onclick="cerrarModalLoader(); mostrar_requerimiento(${response.id_requerimiento});">${response.codigo}</a>`;
+//                     //     nuevo_req();
+//                     //     cuentaRegresivaModalLoader(5);
+//                     // }else{
+//                     //     cerrarModalLoader();
+//                     //     alert('Hubo un problema al intentar guardar el requerimiento');
+//                     // }
+//                 }
+//             }).fail( function(jqXHR, textStatus, errorThrown){
+//                 console.log(jqXHR);
+//                 console.log(textStatus);
+//                 console.log(errorThrown);
+//             });  
         
 
-}
+// }
 
 // function actionGuardarEditarRequerimiento(){
 //  // requerimiento.id_area = actual_id_area; // update -> id area actual
@@ -449,7 +457,7 @@ function save_requerimiento(action){
     if(requerimiento.estado == 3){
         openSustento();
     }else{
-        actionGuardarEditarRequerimiento();
+        requerimientoView.actionGuardarEditarRequerimiento();
     }
     
 }
