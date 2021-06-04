@@ -416,7 +416,7 @@ class OrdenView {
         let id_ubigeo_destino = document.querySelector("div[type='crear-orden-requerimiento'] input[name='id_ubigeo_destino']").value;
     
         let persona_autorizada_1 = document.querySelector("div[type='crear-orden-requerimiento'] input[name='persona_autorizada_1']").value;
-        let persona_autorizada_2 = document.querySelector("div[type='crear-orden-requerimiento'] input[name='persona_autorizada_2]").value;
+        let persona_autorizada_2 = document.querySelector("div[type='crear-orden-requerimiento'] input[name='persona_autorizada_2']").value;
         let observacion = document.querySelector("div[type='crear-orden-requerimiento'] textarea[name='observacion']").value;
     
         let data = {
