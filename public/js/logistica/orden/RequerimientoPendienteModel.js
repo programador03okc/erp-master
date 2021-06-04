@@ -57,7 +57,7 @@ class RequerimientoPendienteModel {
                 url:`/logistica/gestion-logistica/requerimiento/elaboracion/mostrar-requerimiento/${id_requerimiento}/0`,
                 dataType: 'JSON',
                 success(response) {
-                    if(response.det_req.length >0 || response.det_req !=undefined){
+                    if(response.det_req !=undefined && response.det_req.length >0){
                         itemsParaAtenderConAlmacenList=response.det_req;
                         itemsParaAtenderConAlmacenList.forEach((element,index) => {
                             itemsParaAtenderConAlmacenList[index].cantidad_a_atender =0;
