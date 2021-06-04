@@ -731,7 +731,7 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::post('guardar-atencion-con-almacen', 'ComprasPendientesController@guardarAtencionConAlmacen')->name('guardar-atencion-con-almacen'); 
 					Route::post('buscar-item-catalogo', 'ComprasPendientesController@buscarItemCatalogo')->name('buscar-item-catalogo');
 					Route::post('guardar-items-detalle-requerimiento', 'ComprasPendientesController@guardarItemsEnDetalleRequerimiento')->name('guardar-items-detalle-requerimiento'); 
-					Route::get('listar-almacenes', 'AlmacenController@mostrar_almacenes')->name('listar-almacenes');
+					Route::get('listar-almacenes', 'Almacen\Ubicacion\AlmacenController@mostrar_almacenes')->name('listar-almacenes');
 					Route::get('select-sede-by-empresa/{id?}', 'LogisticaController@sedesAcceso')->name('select-sede-by-empresa');
 					Route::post('guardar-producto', 'AlmacenController@guardar_producto')->name('guardar-producto');
 
@@ -748,8 +748,8 @@ Route::group(['middleware' => ['auth']], function () {
 						Route::post('guardar_proveedor', 'LogisticaController@guardar_proveedor');
 						Route::put('actualizar-estado-detalle-requerimiento/{id_detalle_req?}/{estado?}', 'OrdenController@update_estado_detalle_requerimiento')->name('actualizar-estado-detalle-requerimiento'); 
 						Route::post('guardar-producto', 'AlmacenController@guardar_producto')->name('guardar-producto');
-						Route::get('listar-almacenes', 'AlmacenController@mostrar_almacenes')->name('listar-almacenes');
- 						Route::get('listar_ubigeos', 'AlmacenController@listar_ubigeos');
+						Route::get('listar-almacenes', 'Almacen\Ubicacion\AlmacenController@mostrar_almacenes')->name('listar-almacenes');
+ 						Route::get('listar_ubigeos', 'Almacen\Ubicacion\AlmacenController@listar_ubigeos');
 						Route::get('lista_contactos_proveedor/{id_proveedor?}', 'OrdenController@lista_contactos_proveedor');
 						Route::get('generar-orden-pdf/{id?}', 'OrdenController@generar_orden_por_requerimiento_pdf')->name('generar-orden-por-requerimiento-pdf'); // PDF
 						Route::get('listar_trabajadores', 'ProyectosController@listar_trabajadores');
