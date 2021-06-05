@@ -12,18 +12,17 @@ class RequerimientoView {
     // cabecera requerimiento
     changeMonedaSelect(e) {
         if (e.target.value == 1) {
+            document.querySelector("form[id='form-requerimiento'] span[name='simboloMoneda']").textContent = 'S/';
             document.querySelector("div[id='montoMoneda']").textContent = 'S/';
-            document.querySelector("form[id='form-requerimiento'] table span[class='moneda']").textContent = 'S/';
+            document.querySelector("form[id='form-requerimiento'] table span[class='moneda']")?document.querySelector("form[id='form-requerimiento'] table span[class='moneda']").textContent = 'S/':null;
             document.querySelector("form[id='form-requerimiento'] table span[name='simbolo_moneda']").textContent = 'S/';
-
+            
         } else if (e.target.value == 2) {
+            document.querySelector("form[id='form-requerimiento'] span[name='simboloMoneda']").textContent = '$';
             document.querySelector("div[id='montoMoneda']").textContent = '$';
-            document.querySelector("form[id='form-requerimiento'] table span[class='moneda']").textContent = '$';
+            document.querySelector("form[id='form-requerimiento'] table span[class='moneda']")?document.querySelector("form[id='form-requerimiento'] table span[class='moneda']").textContent = '$':null;
             document.querySelector("form[id='form-requerimiento'] table span[name='simbolo_moneda']").textContent = '$';
-        } else {
-            document.querySelector("div[id='montoMoneda']").textContent = '';
-            document.querySelector("form[id='form-requerimiento'] table span[class='moneda']").textContent = '';
-        }
+        } 
     }
 
     changeOptEmpresaSelect(e){
