@@ -77,7 +77,7 @@ Requerimiento
                         <div class="col-md-6">
                             <div class="form-group">
                                 <h5>Concepto/Motivo</h5>
-                                <input type="text" class="form-control activation" name="concepto">
+                                <input type="text" class="form-control activation" name="concepto" onkeyup ="requerimientoView.updateConcepto(this);">
                             </div>
                         </div>
 
@@ -130,7 +130,7 @@ Requerimiento
                         <div class="col-md-2" id="input-group-empresa">
                             <div class="form-group">
                                 <h5>Empresa</h5>
-                                <select name="empresa" id="empresa" class="form-control activation" onChange="requerimientoView.changeOptEmpresaSelect(event)" required>
+                                <select name="empresa" id="empresa" class="form-control activation" onChange="requerimientoView.changeOptEmpresaSelect(event); requerimientoView.updateEmpresa(this);">
                                     <option value="">Elija una opción</option>
                                     @foreach ($empresas as $empresa)
                                     <option value="{{$empresa->id_empresa}}">{{ $empresa->contribuyente->razon_social}}</option>
@@ -142,7 +142,7 @@ Requerimiento
                         <div class="col-md-2" id="input-group-sede">
                             <div class="form-group">
                                 <h5>Sede</h5>
-                                <select id="sede" name="sede" class="form-control activation" onChange="requerimientoView.changeOptUbigeo(event)" required>
+                                <select id="sede" name="sede" class="form-control activation" onChange="requerimientoView.changeOptUbigeo(event);">
                                     <option value="">Elija una opción</option>
                                 </select>
                             </div>

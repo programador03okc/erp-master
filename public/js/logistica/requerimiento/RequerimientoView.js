@@ -140,6 +140,28 @@ class RequerimientoView {
         }
     }
 
+    updateConcepto(obj){
+        if(obj.value.length >0){
+            obj.closest('div').classList.remove("has-error");
+            if(obj.closest("div").querySelector("span")){
+                obj.closest("div").querySelector("span").remove();
+            }   
+        }else{
+            obj.closest('div').classList.add("has-error");
+        }
+    }
+    updateEmpresa(obj){
+        if(obj.value.length >0){
+            obj.closest('div').classList.remove("has-error");
+            if(obj.closest("div").querySelector("span")){
+                obj.closest("div").querySelector("span").remove();
+            }   
+        }else{
+            obj.closest('div').classList.add("has-error");
+        }
+    }
+
+
     // detalle requerimiento
 
     agregarFilaEvent() {
@@ -155,14 +177,20 @@ class RequerimientoView {
             <td><p class="descripcion-partida">(NO SELECCIONADO)</p><button type="button" class="btn btn-xs btn-info" name="partida" onclick="requerimientoView.cargarModalPartidas(this)">Seleccionar</button> <input type="text" name="id-partida[]" hidden></td>
             <td><p class="descripcion-centro-costo">(NO SELECCIONADO)</p><button type="button" class="btn btn-xs btn-primary" name="centroCostos" onclick="requerimientoView.cargarModalCentroCostos(this)">Seleccionar</button> <input type="text" name="id-centro-costo[]" hidden></td>
             <td><input class="form-control input-sm" type="text" name="partNumber[]" placeholder="Part number"></td>
-            <td><textarea class="form-control input-sm" name="descripcion[]" placeholder="Descripción"></textarea></td>
+            <td>
+                <div class="form-group">
+                    <textarea class="form-control input-sm descripcion" name="descripcion[]" placeholder="Descripción" onkeyup ="requerimientoView.updateDescripcionItem(this);"></textarea></td>
+                </div>
             <td><select name="unidad[]" class="form-control input-sm">${document.querySelector("select[id='selectUnidadMedida']").innerHTML}</select></td>
             <td>
                 <div class="form-group">
-                    <input class="form-control input-sm cantidad text-right" type="number" min="1" name="cantidad[]" onkeyup ="requerimientoView.updateSubtotal(this);" placeholder="Cantidad">
+                    <input class="form-control input-sm cantidad text-right" type="number" min="1" name="cantidad[]" onkeyup ="requerimientoView.updateSubtotal(this); requerimientoView.updateCantidadItem(this);" placeholder="Cantidad">
                 </div>
             </td>
-            <td><input class="form-control input-sm precio text-right" type="number" min="0" name="precioUnitario[]" onkeyup="requerimientoView.updateSubtotal(this)" placeholder="Precio U."></td>
+            <td>
+                <div class="form-group">
+                    <input class="form-control input-sm precio text-right" type="number" min="0" name="precioUnitario[]" onkeyup="requerimientoView.updateSubtotal(this); requerimientoView.updatePrecioItem(this);" placeholder="Precio U."></td>
+                </div>  
             <td style="text-align:right;"><span class="moneda" name="simboloMoneda[]">S/</span><span class="subtotal" name="subtotal[]">0.00</span></td>
             <td><textarea class="form-control input-sm" name="motivo[]" placeholder="Motivo de requerimiento de item (opcional)"></textarea></td>
             <td>
@@ -188,10 +216,22 @@ class RequerimientoView {
             <td><p class="descripcion-partida">(NO SELECCIONADO)</p><button type="button" class="btn btn-xs btn-info" name="centroCostos" onclick="requerimientoView.cargarModalPartidas(this)">Seleccionar</button> <input type="text" name="id-centro-costo[]" hidden></td>
             <td><p class="descripcion-centro-costo">(NO SELECCIONADO)</p><button type="button" class="btn btn-xs btn-primary" name="partida" onclick="requerimientoView.cargarModalCentroCostos(this)">Seleccionar</button> <input type="text" name="id-partida[]" hidden></td>
             <td>(Servicio)<input type="hidden" name="partNumber[]"></td>
-            <td><textarea class="form-control input-sm" name="descripcion[]" placeholder="Descripción"></textarea></td>
+            <td>
+                <div class="form-group">
+                    <textarea class="form-control input-sm descripcion" name="descripcion[]" placeholder="Descripción" onkeyup ="requerimientoView.updateDescripcionItem(this);"></textarea>
+                </div>
+            </td>
             <td><select name="unidad[]" class="form-control input-sm">${document.querySelector("select[id='selectUnidadMedida']").innerHTML}</select></td>
-            <td><input class="form-control input-sm cantidad text-right" type="number" min="1" name="cantidad[]" onkeyup ="requerimientoView.updateSubtotal(this);" placeholder="Cantidad"></td>
-            <td><input class="form-control input-sm precio text-right" type="number" min="0" name="precioUnitario[]" onkeyup="requerimientoView.updateSubtotal(this)" placeholder="Precio U."></td>
+            <td>
+                <div class="form-group">
+                    <input class="form-control input-sm cantidad text-right" type="number" min="1" name="cantidad[]" onkeyup ="requerimientoView.updateSubtotal(this); requerimientoView.updateCantidadItem(this);" placeholder="Cantidad">
+                </div>
+            </td>
+            <td>
+                <div class="form-group">
+                    <input class="form-control input-sm precio text-right" type="number" min="0" name="precioUnitario[]" onkeyup="requerimientoView.updateSubtotal(this); requerimientoView.updatePrecioItem(this);" placeholder="Precio U.">
+                </div>
+            </td>
             <td style="text-align:right;"><span class="moneda" name="simboloMoneda[]">S/</span><span class="subtotal" name="subtotal[]">0.00</span></td>
             <td><textarea class="form-control input-sm" name="motivo[]" placeholder="Motivo de requerimiento de item (opcional)"></textarea></td>
             <td>
@@ -224,6 +264,44 @@ class RequerimientoView {
         let subtotal = (cantidad * precioUnitario);
         tr.querySelector("span[class='subtotal']").textContent = Util.formatoNumero(subtotal, 2);
         this.calcularTotal();
+    }
+
+    
+    updateCantidadItem(obj){
+        let text = obj.value;
+        if(text.length>0){
+            obj.closest("div").classList.remove('has-error');
+            if(obj.closest("td").querySelector("span")){
+                obj.closest("td").querySelector("span").remove();
+            }
+        }else{
+            obj.closest("div").classList.add('has-error');
+        }
+    
+    }
+    updatePrecioItem(obj){
+        let text = obj.value;
+        if(text.length>0){
+            obj.closest("div").classList.remove('has-error');
+            if(obj.closest("td").querySelector("span")){
+                obj.closest("td").querySelector("span").remove();
+            }            
+        }else{
+            obj.closest("div").classList.add('has-error');
+        }
+    
+    }
+    updateDescripcionItem(obj){
+        let text = obj.value;
+        if(text.length>0){
+            obj.closest("div").classList.remove('has-error');
+            if(obj.closest("td").querySelector("span")){
+                obj.closest("td").querySelector("span").remove();
+            }
+        }else{
+            obj.closest("div").classList.add('has-error');
+        }
+    
     }
 
     calcularTotal() {
@@ -562,8 +640,26 @@ class RequerimientoView {
             return false;
         }
 
+        if(document.querySelector("input[name='concepto']").value == ''){
+            var newSpanInfo = document.createElement("span");
+            newSpanInfo.classList.add('text-danger');
+            newSpanInfo.textContent = '(Ingrese un concepto/motivo)';
+            document.querySelector("input[name='concepto']").closest('div').querySelector("h5").appendChild(newSpanInfo);
+            document.querySelector("input[name='concepto']").closest('div').classList.add('has-error');
+
+        }
+        if(document.querySelector("select[name='empresa']").value == 0){
+            var newSpanInfo = document.createElement("span");
+            newSpanInfo.classList.add('text-danger');
+            newSpanInfo.textContent = '(Seleccione una empresa)';
+            document.querySelector("select[name='empresa']").closest('div').querySelector("h5").appendChild(newSpanInfo);
+            document.querySelector("select[name='empresa']").closest('div').classList.add('has-error');
+
+        }
+
         let tbodyChildren=document.querySelector("tbody[id='body_detalle_requerimiento']").children;
         for (let index = 0; index < tbodyChildren.length; index++) {
+
             if(tbodyChildren[index].querySelector("input[class~='cantidad']").value == ''){
                 var newSpanInfo = document.createElement("span");
                 newSpanInfo.classList.add('text-danger');
@@ -572,7 +668,26 @@ class RequerimientoView {
                 tbodyChildren[index].querySelector("input[class~='cantidad']").closest('td').querySelector("div[class~='form-group']").classList.add('has-error');
 
             }
-            
+            if(tbodyChildren[index].querySelector("input[class~='precio']").value == ''){
+                var newSpanInfo = document.createElement("span");
+                newSpanInfo.classList.add('text-danger');
+                newSpanInfo.textContent = 'Ingrese un precio';
+                tbodyChildren[index].querySelector("input[class~='precio']").closest('td').appendChild(newSpanInfo);
+                tbodyChildren[index].querySelector("input[class~='precio']").closest('td').querySelector("div[class~='form-group']").classList.add('has-error');
+
+            }
+            if(tbodyChildren[index].querySelector("textarea[class~='descripcion']")){
+                if(tbodyChildren[index].querySelector("textarea[class~='descripcion']").value == ''){
+                    var newSpanInfo = document.createElement("span");
+                    newSpanInfo.classList.add('text-danger');
+                    newSpanInfo.textContent = 'Ingrese una descripción';
+                    tbodyChildren[index].querySelector("textarea[class~='descripcion']").closest('td').appendChild(newSpanInfo);
+                    tbodyChildren[index].querySelector("textarea[class~='descripcion']").closest('td').querySelector("div[class~='form-group']").classList.add('has-error');
+    
+                }
+                
+
+            }
         }
      
         if(continuar){
