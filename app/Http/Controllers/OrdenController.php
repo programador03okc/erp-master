@@ -3546,8 +3546,8 @@ class OrdenController extends Controller
 
 
     public function exportExcelListaOrdenes(){
-        return Orden::reporteListaOrdenes();
-        // return Excel::download(new ListOrdenesHeadExport, 'lista_ordenes.xlsx');
+        // return Orden::reporteListaOrdenes();
+        return Excel::download(new ListOrdenesHeadExport, 'lista_ordenes.xlsx');
     }
 
 

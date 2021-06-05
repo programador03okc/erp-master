@@ -5,6 +5,7 @@ namespace App\Models\Logistica;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use PhpParser\Node\Expr\New_;
 
 class Orden extends Model {
 
@@ -76,27 +77,19 @@ class Orden extends Model {
         if(count($ord_compra)>0){
             foreach($ord_compra as $element){
 
-                $fechaHoy =Carbon::now();
-                $fechaOrden = Carbon::create($element->fecha);
-                $fechaLlegada=$fechaOrden->addDays($element->plazo_entrega);
 
-                $fechaRegistroRequerimiento= Carbon::create($element->fecha_registro_requerimiento);
-                $fechaRegistroAlmacen= Carbon::create($element->fecha_ingreso_almacen);
 
                 $data_orden[]=[
                     'id_orden_compra'=> $element->id_orden_compra,
                     'id_tp_documento'=> $element->id_tp_documento,
                     'fecha' => date_format(date_create($element->fecha),'Y-m-d'), 
+                    // 'fecha' => $element->fecha, 
                     'codigo'=> $element->codigo,
                     'descripcion_sede_empresa'=> $element->descripcion_sede_empresa,
                     'nro_documento'=> $element->nro_documento, 
                     'razon_social'=> $element->razon_social,
                     'moneda_simbolo'=> $element->moneda_simbolo, 
                     'incluye_igv'=> $element->incluye_igv,
-                    'leadtime'=> $fechaLlegada->toDateString(),
-                    'dias_restantes'=> $fechaLlegada->diffInDays($fechaHoy->toDateString()),
-                    'tiempo_atencion_logistica'=>$fechaRegistroRequerimiento->diffInDays($fechaHoy->toDateString()),
-                    'tiempo_atencion_almacen'=>$fechaRegistroAlmacen->diffInDays($fechaHoy->toDateString()),
                     'monto_igv'=> $element->monto_igv, 
                     'monto_total'=>$element->monto_total, 
                     'condicion'=> $element->condicion, 
@@ -152,10 +145,10 @@ class Orden extends Model {
                     'codigo_requerimiento'=> $element->codigo_requerimiento,
                     'codigo_oportunidad'=> $element->codigo_oportunidad,
                     'fecha_entrega'=> $element->fecha_entrega,
-                    'fecha_ingreso_almacen'=> $element->fecha_ingreso_almacen,
+                    'fecha_ingreso_almacen'=>date_format(date_create($element->fecha_ingreso_almacen),'Y-m-d'),
                     'estado_aprobacion'=> $element->estado_aprobacion,
                     'fecha_estado'=> $element->fecha_estado,
-                    'fecha_registro_requerimiento'=> $element->fecha_registro_requerimiento
+                    'fecha_registro_requerimiento'=> date_format(date_create($element->fecha_registro_requerimiento),'Y-m-d')
                 ];
             }
         }
@@ -179,6 +172,20 @@ class Orden extends Model {
 
         $data=[];
         foreach($data_orden as $d){
+            $fechaHoy =Carbon::now();
+            $fechaOrden = Carbon::create($d['fecha']);
+            $fechaLlegada= Carbon::create($d['fecha'])->addDays($d['plazo_entrega']);
+            $diasRestantes = $fechaLlegada->diffInDays($fechaHoy);
+
+            // $fechaRegistroRequerimiento = new Carbon($d['fecha_registro_requerimiento']);
+            // $fechaRegistroAlmacen=  new Carbon($d['fecha_ingreso_almacen']);
+
+            $fechaRegistroRequerimiento = $d['fecha_registro_requerimiento'];
+            $fechaRegistroAlmacen = $d['fecha_ingreso_almacen'];
+
+          
+            $tiempo_atencion_logistica =$fechaOrden->diffInDays($fechaRegistroRequerimiento);
+            $tiempo_atencion_almacen = $fechaOrden->diffInDays($fechaRegistroAlmacen);
             $data[]=[
                 'codigo_cuadro_costos'=>$d['codigo_oportunidad'],
                 'proveedor'=>$d['razon_social'],
@@ -186,18 +193,18 @@ class Orden extends Model {
                 'codigo_requerimiento_o_codigo_cuadro_comparativo'=>$d['codigo_requerimiento']?$d['codigo_requerimiento']:$d['codigo_cuadro_comparativo'],
                 'estado'=>$d['estado_doc'],
                 'fecha_vencimiento'=>$d['fecha_vencimiento_ocam'],
-                'fecha_llegada'=>$d['fecha_ingreso_almacen'],
+                'fecha_llegada'=>$fechaRegistroAlmacen,
                 'estado_aprobacion_cc'=>$d['estado_aprobacion_cc'],
                 'fecha_estado'=>$d['fecha_estado'],
-                'fecha_registro_requerimiento'=>$d['fecha_registro_requerimiento'],
-                'leadtime'=>$d['leadtime'].' (días restantes: '.$d['dias_restantes'].')',
+                'fecha_registro_requerimiento'=>$fechaRegistroRequerimiento,
+                'leadtime'=>$fechaLlegada->toDateString().' (días restantes: '.$diasRestantes.')',
                 'empresa_sede'=>$d['descripcion_sede_empresa'],
                 'moneda'=>$d['moneda_simbolo'],
                 'condicion'=>$d['condicion'],
                 'fecha_orden'=>$d['fecha'],
-                'tiempo_atencion_logistica'=>$d['tiempo_atencion_logistica'],
-                'tiempo_atencion_almacen'=>$d['tiempo_atencion_almacen'],
-                'facturas'=>$d['facturas'],
+                'tiempo_atencion_logistica'=>isset($tiempo_atencion_logistica)?$tiempo_atencion_logistica:'',
+                'tiempo_atencion_almacen'=>isset($tiempo_atencion_almacen)?$tiempo_atencion_almacen:'',
+                'facturas'=>$fechaOrden,
                 'detalle_pago'=>$d['detalle_pago']
             ];
         }

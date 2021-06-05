@@ -490,7 +490,7 @@ class ListaOrdenView {
                     function (data, type, row, meta){
                         let fechaIngresoAlmacen =moment(row.fecha_ingreso_almacen);
                         let fechaOrden =moment(row.fecha);
-                        let tiempoAtencionProveedor = fechaIngresoAlmacen.diff((fechaOrden), 'days');
+                        let tiempoAtencionProveedor = fechaOrden.diff((fechaIngresoAlmacen), 'days');
                         if(row.fecha_ingreso_almacen !=null){
                             return `${tiempoAtencionProveedor} días`;
                         }else{
