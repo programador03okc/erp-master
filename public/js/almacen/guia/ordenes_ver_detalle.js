@@ -85,7 +85,7 @@ function format ( table_id, id, row ) {
                         <th style="border: none;">Descripción</th>
                         <th style="border: none;">Cant.</th>
                         <th style="border: none;">Und.Med</th>
-                        <th style="border: none;">Cant.Ingresada</th>
+                        <th style="border: none;">Cant. Ingresada</th>
                         <th style="border: none;">Unitario</th>
                         <th style="border: none;">Total</th>
                     </tr>
