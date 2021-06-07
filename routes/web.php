@@ -1133,7 +1133,7 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::post('actualizar_series', 'Almacen\Movimiento\OrdenesPendientesController@actualizar_series')->name('actualizar-series');
 				Route::post('cambio_serie_numero', 'Almacen\Movimiento\OrdenesPendientesController@cambio_serie_numero')->name('cambio-series');
 				
-				Route::get('verGuiaCompraTransferencia/{id}', 'TransferenciaController@verGuiaCompraTransferencia');
+				Route::get('verGuiaCompraTransferencia/{id}', 'Almacen\Movimiento\TransferenciaController@verGuiaCompraTransferencia');
 				Route::get('transferencia/{id}', 'Almacen\Movimiento\OrdenesPendientesController@transferencia');
 				Route::post('obtenerGuiaSeleccionadas', 'Almacen\Movimiento\OrdenesPendientesController@obtenerGuiaSeleccionadas');
 				Route::get('anular_doc_com/{id}', 'Almacen\Movimiento\OrdenesPendientesController@anular_doc_com');
