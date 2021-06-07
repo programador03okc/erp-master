@@ -79,6 +79,7 @@ function listarOrdenesPendientes(){
             {'data': 'id_orden_compra'},
             {'data': 'codigo_softlink'},
             {'data': 'codigo'},
+            {'data': 'nombre_corto'},
             {'render': function (data, type, row){
                 var dias_restantes = restarFechas(fecha_actual(), sumaFecha(row['plazo_entrega'], row['fecha']));
                 // var dias_restantes = 3;
@@ -133,7 +134,7 @@ function listarOrdenesPendientes(){
                         'data-placement="bottom" title="Ver Detalle" data-id="'+row['id_orden_compra']+'">'+
                         '<i class="fas fa-chevron-down"></i></button>';
                     }
-                }, targets: 9
+                }, targets: 10
             }
          ],
         'order': [[6, 'desc']]
@@ -511,6 +512,7 @@ function listar_detalle_orden(id_orden){
                 '<td>'+element.descripcion+'</td>'+
                 '<td>'+element.cantidad+'</td>'+
                 '<td>'+element.abreviatura+'</td>'+
+                '<td>'+(element.cantidad_ingresada!==null?element.cantidad_ingresada:'0')+'</td>'+
                 '<td><span class="label label-'+element.bootstrap_color+'">'+element.estado_doc+'</span></td>'+
                 '</tr>';
                 i++;

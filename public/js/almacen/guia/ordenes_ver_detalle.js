@@ -65,6 +65,7 @@ function format ( table_id, id, row ) {
                     <td style="border: none;">${element.descripcion}</td>
                     <td style="border: none;">${element.cantidad}</td>
                     <td style="border: none;">${element.abreviatura}</td>
+                    <td style="border: none;">${element.cantidad_ingresada!==null?element.cantidad_ingresada:'0'}</td>
                     <td style="border: none;">${formatNumber.decimal(element.precio,'',-3)}</td>
                     <td style="border: none;">${formatNumber.decimal((element.precio * element.cantidad),'',-3)}</td>
                     </tr>`;
@@ -82,8 +83,9 @@ function format ( table_id, id, row ) {
                         <th style="border: none;">Código</th>
                         <th style="border: none;">PartNumber</th>
                         <th style="border: none;">Descripción</th>
-                        <th style="border: none;">Cantidad</th>
+                        <th style="border: none;">Cant.</th>
                         <th style="border: none;">Und.Med</th>
+                        <th style="border: none;">Cant.Ingresada</th>
                         <th style="border: none;">Unitario</th>
                         <th style="border: none;">Total</th>
                     </tr>

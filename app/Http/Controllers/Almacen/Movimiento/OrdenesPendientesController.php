@@ -47,7 +47,7 @@ class OrdenesPendientesController extends Controller
             ->select('log_ord_compra.*','log_ord_compra.codigo as codigo_orden','log_ord_compra.codigo_softlink',
             'estados_compra.descripcion as estado_doc','adm_contri.razon_social',
             'sis_usua.nombre_corto','alm_req.fecha_entrega','sis_sede.descripcion as sede_descripcion',
-            'alm_req.codigo as codigo_requerimiento','alm_req.concepto')
+            'alm_req.codigo as codigo_requerimiento','alm_req.concepto','sis_usua.nombre_corto')
             ->join('logistica.estados_compra','estados_compra.id_estado','=','log_ord_compra.estado')
             ->join('logistica.log_prove','log_prove.id_proveedor','=','log_ord_compra.id_proveedor')
             ->join('contabilidad.adm_contri','adm_contri.id_contribuyente','=','log_prove.id_contribuyente')
@@ -183,7 +183,10 @@ class OrdenesPendientesController extends Controller
                 'adm_estado_doc.estado_doc','adm_estado_doc.bootstrap_color','sis_sede.descripcion as sede_req',
                 'oc_propias.orden_am','oportunidades.oportunidad','oportunidades.codigo_oportunidad',
                 'entidades.nombre','oc_propias.id as id_oc_propia','oc_propias.url_oc_fisica',
-                'users.name as user_name'
+                'users.name as user_name',
+                DB::raw("(SELECT SUM(cantidad) FROM almacen.guia_com_det where
+                    guia_com_det.id_oc_det = log_det_ord_compra.id_detalle_orden
+                    and guia_com_det.estado != 7) AS cantidad_ingresada")
             )
             // ->leftjoin('almacen.alm_item', 'alm_item.id_item', '=', 'log_det_ord_compra.id_producto')
             ->leftjoin('almacen.alm_prod', 'alm_prod.id_producto', '=', 'log_det_ord_compra.id_producto')
@@ -489,7 +492,7 @@ class OrdenesPendientesController extends Controller
                             "cantidad" => $det->cantidad,
                             // "id_unid_med" => $det->id_unidad_medida,
                             "usuario" => $id_usuario,
-                            "tipo_transfor" => $det->tipo,
+                            // "tipo_transfor" => $det->tipo,
                             "id_transformado" => ($det->tipo == "transformado" ? $det->id : null),
                             "id_sobrante" => ($det->tipo == "sobrante" ? $id_sobrante : null),
                             "unitario" => $det->unitario,
