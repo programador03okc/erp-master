@@ -290,6 +290,18 @@ function listarIngresos(){
                     }
                 }
             },
+            {
+                'render': 
+                    function (data, type, row) { 
+                        return row.ordenes_compra;
+                    }, targets: 9
+            },
+            {
+                'render': 
+                    function (data, type, row) { 
+                        return row.comprobantes;
+                    }, targets: 10
+            },
             {'render': 
                 function (data, type, row){
                     if (acceso == '1') {
@@ -340,7 +352,7 @@ function listarIngresos(){
                             'data-placement="bottom" title="Ver Ingreso" data-id="'+row['id_mov_alm']+'">'+
                             '<i class="fas fa-file-alt"></i></button>'
                     }
-                }, targets: 9
+                }, targets: 11
             }    
         ],
         'select': 'multi',

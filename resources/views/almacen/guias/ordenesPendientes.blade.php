@@ -109,6 +109,8 @@ Pendientes de Ingreso
                                                 <th>Operación</th>
                                                 <th>Almacén</th>
                                                 <th>Responsable</th>
+                                                <th>Ordenes</th>
+                                                <th>Facturas</th>
                                                 <th width="140px"></th>
                                             </tr>
                                         </thead>

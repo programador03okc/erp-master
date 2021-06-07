@@ -140,7 +140,10 @@ class TransformacionController extends Controller
         'transfor_transformado.valor_unitario','transfor_transformado.valor_total','alm_prod.descripcion',
         'alm_prod.id_unidad_medida','alm_prod.part_number','alm_prod.series',
         'alm_prod.codigo as cod_prod','alm_und_medida.abreviatura',
-        'transformacion.codigo')
+        'transformacion.codigo',
+        DB::raw("(SELECT SUM(valor_total) FROM almacen.transfor_materia AS d
+                WHERE d.id_transformacion = transfor_transformado.id_transformacion
+                and   d.estado != 7) AS suma_materia"))
         ->join('almacen.alm_prod','alm_prod.id_producto','=','transfor_transformado.id_producto')
         ->join('almacen.alm_und_medida','alm_und_medida.id_unidad_medida','=','alm_prod.id_unidad_medida')
         ->join('almacen.transformacion','transformacion.id_transformacion','=','transfor_transformado.id_transformacion')

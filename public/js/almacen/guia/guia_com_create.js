@@ -154,8 +154,8 @@ function listar_detalle_transformacion(id){
                     'part_number'   : element.part_number,
                     'descripcion'   : element.descripcion,
                     'abreviatura'   : element.abreviatura,
-                    'valor_unitario': element.valor_unitario,
-                    'valor_total'   : element.valor_total
+                    'valor_unitario': (element.suma_materia/element.cantidad),
+                    'valor_total'   : element.suma_materia
                 });
             });
             mostrar_detalle_transformacion();

@@ -13,6 +13,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 use App\Http\Controllers\Controller;
+use App\Models\Almacen\Movimiento;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
 date_default_timezone_set('America/Lima');
@@ -62,9 +63,8 @@ class OrdenesPendientesController extends Controller
     }
     
     public function listarIngresos(){
-
-        $data = DB::table('almacen.mov_alm')
-            ->select('mov_alm.*','guia_com.id_proveedor',
+    
+        $data = Movimiento::select('mov_alm.*','guia_com.id_proveedor',
             'adm_contri.nro_documento','adm_contri.razon_social',
             'sis_usua.nombre_corto','sede_guia.descripcion as sede_guia_descripcion',
             'sede_guia.id_empresa',
