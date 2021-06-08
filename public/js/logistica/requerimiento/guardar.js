@@ -291,107 +291,164 @@ function resetModalLoader(){
     document.querySelector("div[id='modal-loader'] div[name='loader-status']").style.fontWeight= "normal";
 
 }
-function actionGuardarEditarRequerimiento(){
- // requerimiento.id_area = actual_id_area; // update -> id area actual
-    // requerimiento.id_rol = actual_id_rol; // update -> id rol actual
-    // requerimiento.id_grupo = actual_id_grupo; // update -> id area actual
-    // console.log(data);
-    resetModalLoader();
 
-    let actual_id_usuario = userSession.id_usuario;
-    let requerimiento = get_data_requerimiento();
-    let detalle_requerimiento = data_item;
-    let data = {requerimiento,detalle:detalle_requerimiento,sustento:sustentoObj};
 
-    requerimiento.id_usuario = actual_id_usuario; //update -> usuario actual
-    // console.log(requerimiento);
+// function actionGuardarEditarRequerimiento(){
+//     // var data = $("#form-requerimiento").serializeArray();
+//     var formData = new FormData($('#form-requerimiento')[0]);
+
+//     // var num= document.querySelectorAll('adjunto-item').files.length;
+
+//     // for (var i = 0; i < num; i++) {
+//     //     formData.append("adjunto-item[]", document.querySelectorAll('adjunto-item').files[i]);
+//     // }
+//     // data.push({
+//     //     items:cantidadElementosDetalleRequerimiento
+//     // });
     
-    if (action_requerimiento == 'register'){
+//             baseUrl = rutaGuardarRequerimiento;
+//             $.ajax({
+//                 type: 'POST',
+//                 url: baseUrl,
+//                 data: formData,
+//                 processData:false,
+//                 contentType:false,
+//                 dataType: 'JSON',
+//                 beforeSend:function(data){ // Are not working with dataType:'jsonp'
 
-        var msj = validaRequerimiento();
-        
-        if (msj.length > 0){
-            alert(msj);
-        } else{
-                        // funcion guardar nuevo
+//                     // $('#modal-loader').modal({backdrop: 'static', keyboard: false});
 
-            data.requerimiento.id_estado_doc =1  // estado elaborado 
-            data.requerimiento.estado = 1  // estado 
-            
-            if(document.querySelector("form[id='form-requerimiento'] select[name='tipo_requerimiento']").value == 1 && document.querySelector("form[id='form-requerimiento'] select[name='tipo_cliente']").value == 3){ // Compra y Uso Almacen
-            let almacen_id_sede =document.querySelector("form[id='form-requerimiento'] select[name='id_almacen']").options[document.querySelector("select[name='id_almacen']").selectedIndex].dataset.idSede;
-            let almacen_id_empresa =document.querySelector("form[id='form-requerimiento'] select[name='id_almacen']").options[document.querySelector("select[name='id_almacen']").selectedIndex].dataset.idEmpresa;
-                // update id_sede, id_empresa
-            data.requerimiento.id_empresa =almacen_id_empresa;
-            data.requerimiento.id_sede = almacen_id_sede;
-            
-        
-            }
-            // console.log(data);
-            
-            baseUrl = rutaGuardarRequerimiento;
-            $.ajax({
-                type: 'POST',
-                url: baseUrl,
-                data: data,
-                dataType: 'JSON',
-                beforeSend:function(data){ // Are not working with dataType:'jsonp'
-
-                    $('#modal-loader').modal({backdrop: 'static', keyboard: false});
-
-                },
-                success: function(response){
-                    // console.log(response);
-                    if (response.id_requerimiento > 0){
-                        // get_notificaciones_sin_leer_interval(); 
-                        // showNotificacionUsuario(100); // notificaciones de navegador beta
+//                 },
+//                 success: function(response){
+//                     // console.log(response);
+//                     // if (response.id_requerimiento > 0){
+//                     //     // get_notificaciones_sin_leer_interval(); 
+//                     //     // showNotificacionUsuario(100); // notificaciones de navegador beta
                         
-                        document.querySelector("div[id='modal-loader'] div[name='loader']").classList.add("oculto")
-                        document.querySelector("div[id='modal-loader'] button[name='btnCerrarModalLoader']").classList.remove("oculto")
-                        document.querySelector("div[id='modal-loader'] div[name='loader-status']").style.color= "#00a65a";
-                        document.querySelector("div[id='modal-loader'] div[name='loader-status']").style.fontSize= "2rem";
-                        document.querySelector("div[id='modal-loader'] div[name='loader-status']").style.fontWeight= "bold";
-                        document.querySelector("div[id='modal-loader'] div[name='loader-status']").textContent= 'Requerimiento Guardado';
-                        document.querySelector("div[id='modal-loader'] div[name='loader-info']").innerHTML= `<span style="color:#00a65a"><i class="far fa-check-circle"></i></span> <span>Se creó el requerimiento: </span> <a style="color:blue; cursor:pointer; text-align:center;" onclick="cerrarModalLoader(); mostrar_requerimiento(${response.id_requerimiento});">${response.codigo}</a>`;
-                        nuevo_req();
-                        cuentaRegresivaModalLoader(5);
-                    }else{
-                        cerrarModalLoader();
-                        alert('Hubo un problema al intentar guardar el requerimiento');
-                    }
-                }
-            }).fail( function(jqXHR, textStatus, errorThrown){
-                console.log(jqXHR);
-                console.log(textStatus);
-                console.log(errorThrown);
-            });  
-        }
+//                     //     document.querySelector("div[id='modal-loader'] div[name='loader']").classList.add("oculto")
+//                     //     document.querySelector("div[id='modal-loader'] button[name='btnCerrarModalLoader']").classList.remove("oculto")
+//                     //     document.querySelector("div[id='modal-loader'] div[name='loader-status']").style.color= "#00a65a";
+//                     //     document.querySelector("div[id='modal-loader'] div[name='loader-status']").style.fontSize= "2rem";
+//                     //     document.querySelector("div[id='modal-loader'] div[name='loader-status']").style.fontWeight= "bold";
+//                     //     document.querySelector("div[id='modal-loader'] div[name='loader-status']").textContent= 'Requerimiento Guardado';
+//                     //     document.querySelector("div[id='modal-loader'] div[name='loader-info']").innerHTML= `<span style="color:#00a65a"><i class="far fa-check-circle"></i></span> <span>Se creó el requerimiento: </span> <a style="color:blue; cursor:pointer; text-align:center;" onclick="cerrarModalLoader(); mostrar_requerimiento(${response.id_requerimiento});">${response.codigo}</a>`;
+//                     //     nuevo_req();
+//                     //     cuentaRegresivaModalLoader(5);
+//                     // }else{
+//                     //     cerrarModalLoader();
+//                     //     alert('Hubo un problema al intentar guardar el requerimiento');
+//                     // }
+//                 }
+//             }).fail( function(jqXHR, textStatus, errorThrown){
+//                 console.log(jqXHR);
+//                 console.log(textStatus);
+//                 console.log(errorThrown);
+//             });  
+        
+
+// }
+
+// function actionGuardarEditarRequerimiento(){
+//  // requerimiento.id_area = actual_id_area; // update -> id area actual
+//     // requerimiento.id_rol = actual_id_rol; // update -> id rol actual
+//     // requerimiento.id_grupo = actual_id_grupo; // update -> id area actual
+//     // console.log(data);
+//     resetModalLoader();
+
+//     let actual_id_usuario = userSession.id_usuario;
+//     let requerimiento = get_data_requerimiento();
+//     let detalle_requerimiento = data_item;
+//     let data = {requerimiento,detalle:detalle_requerimiento,sustento:sustentoObj};
+
+//     requerimiento.id_usuario = actual_id_usuario; //update -> usuario actual
+//     // console.log(requerimiento);
+    
+//     if (action_requerimiento == 'register'){
+
+//         var msj = validaRequerimiento();
+        
+//         if (msj.length > 0){
+//             alert(msj);
+//         } else{
+//                         // funcion guardar nuevo
+
+//             data.requerimiento.id_estado_doc =1  // estado elaborado 
+//             data.requerimiento.estado = 1  // estado 
+            
+//             if(document.querySelector("form[id='form-requerimiento'] select[name='tipo_requerimiento']").value == 1 && document.querySelector("form[id='form-requerimiento'] select[name='tipo_cliente']").value == 3){ // Compra y Uso Almacen
+//             let almacen_id_sede =document.querySelector("form[id='form-requerimiento'] select[name='id_almacen']").options[document.querySelector("select[name='id_almacen']").selectedIndex].dataset.idSede;
+//             let almacen_id_empresa =document.querySelector("form[id='form-requerimiento'] select[name='id_almacen']").options[document.querySelector("select[name='id_almacen']").selectedIndex].dataset.idEmpresa;
+//                 // update id_sede, id_empresa
+//             data.requerimiento.id_empresa =almacen_id_empresa;
+//             data.requerimiento.id_sede = almacen_id_sede;
+            
+        
+//             }
+//             // console.log(data);
+            
+//             baseUrl = rutaGuardarRequerimiento;
+//             $.ajax({
+//                 type: 'POST',
+//                 url: baseUrl,
+//                 data: data,
+//                 dataType: 'JSON',
+//                 beforeSend:function(data){ // Are not working with dataType:'jsonp'
+
+//                     $('#modal-loader').modal({backdrop: 'static', keyboard: false});
+
+//                 },
+//                 success: function(response){
+//                     // console.log(response);
+//                     if (response.id_requerimiento > 0){
+//                         // get_notificaciones_sin_leer_interval(); 
+//                         // showNotificacionUsuario(100); // notificaciones de navegador beta
+                        
+//                         document.querySelector("div[id='modal-loader'] div[name='loader']").classList.add("oculto")
+//                         document.querySelector("div[id='modal-loader'] button[name='btnCerrarModalLoader']").classList.remove("oculto")
+//                         document.querySelector("div[id='modal-loader'] div[name='loader-status']").style.color= "#00a65a";
+//                         document.querySelector("div[id='modal-loader'] div[name='loader-status']").style.fontSize= "2rem";
+//                         document.querySelector("div[id='modal-loader'] div[name='loader-status']").style.fontWeight= "bold";
+//                         document.querySelector("div[id='modal-loader'] div[name='loader-status']").textContent= 'Requerimiento Guardado';
+//                         document.querySelector("div[id='modal-loader'] div[name='loader-info']").innerHTML= `<span style="color:#00a65a"><i class="far fa-check-circle"></i></span> <span>Se creó el requerimiento: </span> <a style="color:blue; cursor:pointer; text-align:center;" onclick="cerrarModalLoader(); mostrar_requerimiento(${response.id_requerimiento});">${response.codigo}</a>`;
+//                         nuevo_req();
+//                         cuentaRegresivaModalLoader(5);
+//                     }else{
+//                         cerrarModalLoader();
+//                         alert('Hubo un problema al intentar guardar el requerimiento');
+//                     }
+//                 }
+//             }).fail( function(jqXHR, textStatus, errorThrown){
+//                 console.log(jqXHR);
+//                 console.log(textStatus);
+//                 console.log(errorThrown);
+//             });  
+//         }
 
         
-    }else if(action_requerimiento == 'edition'){
-        // funcion editar
-        baseUrl = rutaActualizarRequerimiento+'/'+data.requerimiento.id_requerimiento;
-        $.ajax({
-            type: 'PUT',
-            url: baseUrl,
-            data: data,
-            dataType: 'JSON',
-            success: function(response){
-                // console.log(response);
-                if (response > 0){
-                    alert("Requerimiento Actualizado");
-                    changeStateButton('guardar');
-                    $('#form-requerimiento').attr('type', 'register');
-                    changeStateInput('form-requerimiento', true);
-                }
-            }
-        }).fail( function(jqXHR, textStatus, errorThrown){
-            console.log(jqXHR);
-            console.log(textStatus);
-            console.log(errorThrown);
-        });   
-    }
-}
+//     }else if(action_requerimiento == 'edition'){
+//         // funcion editar
+//         baseUrl = rutaActualizarRequerimiento+'/'+data.requerimiento.id_requerimiento;
+//         $.ajax({
+//             type: 'PUT',
+//             url: baseUrl,
+//             data: data,
+//             dataType: 'JSON',
+//             success: function(response){
+//                 // console.log(response);
+//                 if (response > 0){
+//                     alert("Requerimiento Actualizado");
+//                     changeStateButton('guardar');
+//                     $('#form-requerimiento').attr('type', 'register');
+//                     changeStateInput('form-requerimiento', true);
+//                 }
+//             }
+//         }).fail( function(jqXHR, textStatus, errorThrown){
+//             console.log(jqXHR);
+//             console.log(textStatus);
+//             console.log(errorThrown);
+//         });   
+//     }
+// }
 function save_requerimiento(action){
     action_requerimiento= action;
     // let actual_id_usuario = userSession.id_usuario;
@@ -400,7 +457,7 @@ function save_requerimiento(action){
     if(requerimiento.estado == 3){
         openSustento();
     }else{
-        actionGuardarEditarRequerimiento();
+        requerimientoView.actionGuardarEditarRequerimiento();
     }
     
 }

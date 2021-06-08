@@ -3,14 +3,12 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="close"><span aria-hidden="true">&times;</span></button>
-                <h3 class="modal-title">Archivos Adjuntos</h3>
+                <h3 class="modal-title">Archivos adjuntos de item</h3>
             </div>
             <div class="modal-body">
-                <div class="row" id="section_upload_files">
+                <div class="row">
                     <div class="col-md-12">
-                        <div class="input-group-okc">
-                            <input type="file" name="nombre_archivo" class="custom-file-input" onchange="agregarAdjunto(event); return false;" />
-                        </div>
+                        <input type="file" class="filestyle" data-input="false" name="nombre_archivo" onchange="requerimientoView.agregarAdjuntoItem(event);" />
                     </div>
 
                 </div>
@@ -18,28 +16,14 @@
                 <table class="mytable table table-striped table-condensed table-bordered" id="listaArchivos">
                     <thead>
                         <tr>
-                            <th class="hidden"></th>
-                            <th class="hidden"></th>
-                            <th>#</th>
                             <th>DESCRIPCION</th>
                             <th>ACCIÓN</th>
-                            
                         </tr>
                     </thead>
-                    <tbody></tbody>
+                    <tbody id="body_archivos_item"></tbody>
                 </table>
             </div>
             <div class="modal-footer">
-                <label style="display: none;" id="id_archivo_adjunto"></label>
-                <label style="display: none;" id="id_requerimiento"></label>
-                <label style="display: none;" id="id_detalle_requerimiento"></label>
-                <!-- <button class="btn btn-sm btn-success" onClick="guardarAdjuntos();">Aceptar</button> -->
-                <button
-                    type="button"
-                    class="btn btn-info"
-                    onClick="guardarAdjuntos();"
-                    ><i class="fas fa-file-upload"></i> Subir Archivo
-                </button>
             </div>
         </div>
     </div>

@@ -39,57 +39,57 @@ class RequerimientoController extends Controller
         return $zeros . $number;
     }
     
-    public function nextCodigoRequerimiento($tipo_requerimiento){
-        $yy = date('y', strtotime("now"));
-        $yyyy = date('Y', strtotime("now"));
-        $documento = 'R';
+    // public function nextCodigoRequerimiento($tipo_requerimiento){
+    //     $yy = date('y', strtotime("now"));
+    //     $yyyy = date('Y', strtotime("now"));
+    //     $documento = 'R';
 
-        $num = DB::table('almacen.alm_req')
-        ->where('id_tipo_requerimiento',$tipo_requerimiento)
-        ->whereYear('fecha_registro', '=', $yyyy)
-        ->count();
+    //     $num = DB::table('almacen.alm_req')
+    //     ->where('id_tipo_requerimiento',$tipo_requerimiento)
+    //     ->whereYear('fecha_registro', '=', $yyyy)
+    //     ->count();
 
-        $identificador='';
+    //     $identificador='';
 
-        switch ($tipo_requerimiento) {
-            case 1:
-                # code...
-                $identificador= 'M';
-            break;
-            case 2:
-                # code...
-                $identificador= 'E';
-            break;
-            case 3:
-                # code...
-                $grupos = Auth::user()->getAllGrupo();
-                foreach($grupos as $grupo){
-                    $idGrupoList[]=$grupo->id_grupo;
-                }
-                if($idGrupoList[0]== 1){
-                    $identificador= 'A';
-                }
-                if($idGrupoList[0]== 2){
-                    $identificador= 'C';
-                }
-                if($idGrupoList[0]== 3){
-                    $identificador= 'P';
-                }
-            break;
+    //     switch ($tipo_requerimiento) {
+    //         case 1:
+    //             # code...
+    //             $identificador= 'M';
+    //         break;
+    //         case 2:
+    //             # code...
+    //             $identificador= 'E';
+    //         break;
+    //         case 3:
+    //             # code...
+    //             $grupos = Auth::user()->getAllGrupo();
+    //             foreach($grupos as $grupo){
+    //                 $idGrupoList[]=$grupo->id_grupo;
+    //             }
+    //             if($idGrupoList[0]== 1){
+    //                 $identificador= 'A';
+    //             }
+    //             if($idGrupoList[0]== 2){
+    //                 $identificador= 'C';
+    //             }
+    //             if($idGrupoList[0]== 3){
+    //                 $identificador= 'P';
+    //             }
+    //         break;
             
-            default:
-                $identificador= '';
-                # code...
-                break;
-        }
+    //         default:
+    //             $identificador= '';
+    //             # code...
+    //             break;
+    //     }
 
-        $correlativo = $this->leftZero(4, ($num + 1));
-        $codigo = "{$documento}{$identificador}{$yy}{$correlativo}";
+    //     $correlativo = $this->leftZero(4, ($num + 1));
+    //     $codigo = "{$documento}{$identificador}{$yy}{$correlativo}";
 
-        $output = ['data'=>$codigo];
-        return $output;
+    //     $output = ['data'=>$codigo];
+    //     return $output;
 
-    }
+    // }
     
     public function requerimientos_pendientes_aprobacion(){
         // $compra =(new LogisticaController)->get_tipo_requerimiento('Compra');

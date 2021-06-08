@@ -1,10 +1,10 @@
 <!-- Modal Centro costos -->
 <div class="modal fade" role="dialog" id="modal-centro-costos">
-	<div class="modal-dialog" style="width: 30%;">
+	<div class="modal-dialog" style="width: 50%;">
 		<div class="modal-content">
 			<div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal-centro-costos" onClick="$('#modal-centro-costos').modal('hide');"><span aria-hidden="true">&times;</span></button>
-				<h3 class="modal-title">Seleccionar Centro Costos</h3>
+				<h3 class="modal-title">Seleccionar centro de costo</h3>
 			</div>
 			<div class="modal-body">
 				<div class="row">

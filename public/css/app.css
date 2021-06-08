@@ -544,6 +544,7 @@ body .login-box {
     font-size: 12px;
 }*/
 
+
 .modal button span i {
   font-size: 18px;
 }
@@ -724,9 +725,7 @@ ul.nav-tabs li {
   border: 1px solid #ddd;
 }
 
-.group-table table tr {
-  cursor: pointer;
-}
+
 
 #ListaDetalleRequerimiento tbody tr {
   cursor: default !important;

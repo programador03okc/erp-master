@@ -85,7 +85,6 @@ function changeOptTipoReqSelect(e){
 
         }
     }
-    getNexCodigoRequerimiento(e.target.value);
 }
 
 function autoSelectTipoRequerimientoPorDefecto(){
@@ -141,7 +140,6 @@ function cambiarTipoFormulario(tipo=null){
 
 
 function mostrarTipoForm(tipo){
-    // console.log(tipo);
     switch (tipo) {
         case 'MGCP': //Mgcp - comercial
             hiddeElement('ocultar','form-requerimiento',[
