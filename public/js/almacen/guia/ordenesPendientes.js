@@ -79,7 +79,7 @@ function listarOrdenesPendientes(){
             {'data': 'id_orden_compra'},
             {'data': 'codigo_softlink'},
             {'data': 'codigo'},
-            {'data': 'nombre_corto'},
+            {'data': 'nombre_corto', 'name': 'sis_usua.nombre_corto'},
             {'render': function (data, type, row){
                 var dias_restantes = restarFechas(fecha_actual(), sumaFecha(row['plazo_entrega'], row['fecha']));
                 // var dias_restantes = 3;
