@@ -683,6 +683,7 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::post('obtener-construir-cliente', 'RequerimientoController@obtenerConstruirCliente')->name('obtener-construir-cliente');
 					Route::get('proyectos-activos', 'ProyectosController@listar_proyectos_activos')->name('proyectos-activos');
 					Route::get('grupo-select-item-para-compra', 'ComprasPendientesController@getGrupoSelectItemParaCompra')->name('grupo-select-item-para-compra');
+					Route::get('mostrar-centro-costos', 'Finanzas\CentroCosto\CentroCostoController@mostrarCentroCostos')->name('mostrar-centro-costos');
 					Route::get('mostrar-fuente', 'LogisticaController@mostrarFuente')->name('mostrar-fuente');
 					Route::post('guardar-fuente', 'LogisticaController@guardarFuente')->name('guardar-fuente');
 					Route::post('anular-fuente', 'LogisticaController@anularFuente')->name('anular-fuente');
