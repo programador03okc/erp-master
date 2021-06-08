@@ -79,6 +79,7 @@ function listarOrdenesPendientes(){
             {'data': 'id_orden_compra'},
             {'data': 'codigo_softlink'},
             {'data': 'codigo'},
+            {'data': 'nombre_corto'},
             {'render': function (data, type, row){
                 var dias_restantes = restarFechas(fecha_actual(), sumaFecha(row['plazo_entrega'], row['fecha']));
                 // var dias_restantes = 3;
@@ -98,7 +99,7 @@ function listarOrdenesPendientes(){
             {'data': 'fecha'},
             {'data': 'nombre_corto', 'name': 'sis_usua.nombre_corto'},
             {'render': function (data, type, row){
-                return '<span class="label label-default">'+row['estado_doc']+'</span>'
+                return '<span class="label label-'+(row['estado_doc']=='Enviado'?'default':'warning')+'">'+row['estado_doc']+'</span>'
                 }
             },
         ],
@@ -133,7 +134,7 @@ function listarOrdenesPendientes(){
                         'data-placement="bottom" title="Ver Detalle" data-id="'+row['id_orden_compra']+'">'+
                         '<i class="fas fa-chevron-down"></i></button>';
                     }
-                }, targets: 9
+                }, targets: 10
             }
          ],
         'order': [[6, 'desc']]
@@ -211,15 +212,15 @@ function listarTransformaciones(){
                     if (acceso == '1') {
                         return '<button type="button" class="guia btn btn-info boton" data-toggle="tooltip" '+
                             'data-placement="bottom" title="Ingresar Guía" >'+
-                            '<i class="fas fa-sign-in-alt"></i></button>'+
+                            '<i class="fas fa-sign-in-alt"></i></button>';
 
-                            '<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" '+
-                            'data-placement="bottom" title="Ver Detalle" >'+
-                            '<i class="fas fa-list-ul"></i></button>';
+                            // '<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" '+
+                            // 'data-placement="bottom" title="Ver Detalle" >'+
+                            // '<i class="fas fa-list-ul"></i></button>';
                     } else {
-                        return '<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" '+
-                            'data-placement="bottom" title="Ver Detalle" >'+
-                            '<i class="fas fa-list-ul"></i></button>';
+                        // return '<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" '+
+                        //     'data-placement="bottom" title="Ver Detalle" >'+
+                        //     '<i class="fas fa-list-ul"></i></button>';
                     }
                 }
             }
@@ -252,7 +253,7 @@ function listarIngresos(){
         },
         'columns': [
             {'data': 'id_mov_alm'},
-            // , 'sClass': 'invisible' {'data': 'sede_guia_descripcion', 'name': 'sede_guia.descripcion'},
+            {'data': 'fecha_emision'},
             {'render': function (data, type, row){
                     return row['serie']+'-'+row['numero'];
                 }
@@ -267,7 +268,6 @@ function listarIngresos(){
             },
             {'data': 'operacion_descripcion', 'name': 'tp_ope.descripcion'},
             {'data': 'almacen_descripcion', 'name': 'alm_almacen.descripcion'},
-            {'data': 'fecha_emision'},
             {'data': 'nombre_corto', 'name': 'sis_usua.nombre_corto'}
         ],
         'drawCallback': function(){
@@ -289,6 +289,18 @@ function listarIngresos(){
                         $('input[type="checkbox"]', nodes).iCheck('update');
                     }
                 }
+            },
+            {
+                'render': 
+                    function (data, type, row) { 
+                        return row.ordenes_compra;
+                    }, targets: 9
+            },
+            {
+                'render': 
+                    function (data, type, row) { 
+                        return row.comprobantes;
+                    }, targets: 10
             },
             {'render': 
                 function (data, type, row){
@@ -340,7 +352,7 @@ function listarIngresos(){
                             'data-placement="bottom" title="Ver Ingreso" data-id="'+row['id_mov_alm']+'">'+
                             '<i class="fas fa-file-alt"></i></button>'
                     }
-                }, targets: 9
+                }, targets: 11
             }    
         ],
         'select': 'multi',
@@ -512,6 +524,7 @@ function listar_detalle_orden(id_orden){
                 '<td>'+element.descripcion+'</td>'+
                 '<td>'+element.cantidad+'</td>'+
                 '<td>'+element.abreviatura+'</td>'+
+                '<td>'+(element.cantidad_ingresada!==null?element.cantidad_ingresada:'0')+'</td>'+
                 '<td><span class="label label-'+element.bootstrap_color+'">'+element.estado_doc+'</span></td>'+
                 '</tr>';
                 i++;

@@ -699,10 +699,10 @@ class LogisticaController extends Controller
             
             ->leftJoin('configuracion.sis_usua', 'alm_req.id_usuario', '=', 'sis_usua.id_usuario')
             ->leftJoin('rrhh.rrhh_trab', 'sis_usua.id_trabajador', '=', 'rrhh_trab.id_trabajador')
-            ->join('rrhh.rrhh_postu', 'rrhh_postu.id_postulante', '=', 'rrhh_trab.id_postulante')
-            ->join('rrhh.rrhh_perso', 'rrhh_perso.id_persona', '=', 'rrhh_postu.id_persona')
+            ->leftJoin('rrhh.rrhh_postu', 'rrhh_postu.id_postulante', '=', 'rrhh_trab.id_postulante')
+            ->leftJoin('rrhh.rrhh_perso', 'rrhh_perso.id_persona', '=', 'rrhh_postu.id_persona')
             ->leftJoin('rrhh.rrhh_rol', 'alm_req.id_rol', '=', 'rrhh_rol.id_rol')
-            ->leftJoin('rrhh.rrhh_rol_concepto', 'rrhh_rol_concepto.id_rol_concepto', '=', 'rrhh_rol.id_rol_concepto')
+            // ->leftJoin('rrhh.rrhh_rol_concepto', 'rrhh_rol_concepto.id_rol_concepto', '=', 'rrhh_rol.id_rol_concepto')
             ->leftJoin('administracion.adm_area', 'rrhh_rol.id_area', '=', 'adm_area.id_area')
             ->leftJoin('proyectos.proy_proyecto', 'alm_req.id_proyecto', '=', 'proy_proyecto.id_proyecto')
             ->leftJoin('proyectos.proy_presup', 'alm_req.id_presupuesto', '=', 'proy_presup.id_presupuesto')
@@ -742,11 +742,11 @@ class LogisticaController extends Controller
                 'alm_req.observacion',
                 'alm_tp_req.descripcion AS tp_req_descripcion',
                 'alm_req.id_usuario',
-                DB::raw("(rrhh_perso.nombres) || ' ' || (rrhh_perso.apellido_paterno) || ' ' || (rrhh_perso.apellido_materno)  AS persona"),
+                DB::raw("concat(rrhh_perso.nombres, ' ', rrhh_perso.apellido_paterno, ' ', rrhh_perso.apellido_materno)  AS persona"),
                 'sis_usua.usuario',
                 'alm_req.id_rol',
                 'rrhh_rol.id_rol_concepto',
-                'rrhh_rol_concepto.descripcion AS rrhh_rol_concepto',
+                // 'rrhh_rol_concepto.descripcion AS rrhh_rol_concepto',
                 'alm_req.id_area',
                 'adm_area.descripcion AS area_descripcion',
                 // 'proy_op_com.codigo as codigo_op_com',
@@ -757,13 +757,13 @@ class LogisticaController extends Controller
                 'alm_req.id_sede',
                 'alm_req.id_persona',
                 'perso_natural.nro_documento as dni_persona',
-                DB::raw("(perso_natural.nombres) || ' ' || (perso_natural.apellido_paterno) || ' ' || (perso_natural.apellido_materno)  AS nombre_persona"),
+                DB::raw("concat(perso_natural.nombres, ' ' ,perso_natural.apellido_paterno, ' ' ,perso_natural.apellido_materno)  AS nombre_persona"),
                 'alm_req.tipo_cliente',
                 'alm_req.id_cliente',
                 'contri_cliente.nro_documento as cliente_ruc',
                 'contri_cliente.razon_social as cliente_razon_social',
                 'alm_req.id_ubigeo_entrega',
-                DB::raw("(ubi_dis.descripcion) || ' ' || (ubi_prov.descripcion) || ' ' || (ubi_dpto.descripcion)  AS name_ubigeo"),
+                DB::raw("concat(ubi_dis.descripcion, ' ' ,ubi_prov.descripcion, ' ' ,ubi_dpto.descripcion)  AS name_ubigeo"),
                 'alm_req.direccion_entrega',
                 'alm_req.telefono',
                 'alm_req.email',
@@ -781,7 +781,7 @@ class LogisticaController extends Controller
                 'alm_req.para_stock_almacen',
                 'alm_req.rol_aprobante_id',
                 'alm_req.trabajador_id',
-                DB::raw("(perso_asignado.nombres) || ' ' || (perso_asignado.apellido_paterno) || ' ' || (perso_asignado.apellido_materno)  AS nombre_trabajador"),
+                DB::raw("concat(perso_asignado.nombres, ' ' ,perso_asignado.apellido_paterno, ' ' ,perso_asignado.apellido_materno)  AS nombre_trabajador"),
                 DB::raw("(CASE WHEN alm_req.estado = 1 THEN 'Habilitado' ELSE 'Deshabilitado' END) AS estado_desc")
             )
             ->where([
@@ -789,7 +789,7 @@ class LogisticaController extends Controller
             ])
             ->orderBy('alm_req.id_requerimiento', 'asc')
             ->get();
-
+        
         if (sizeof($alm_req) <= 0) {
             $alm_req = [];
             return response()->json($alm_req);

@@ -84,8 +84,10 @@ class ListaOrdenView {
 
     }
 
-    exportTableToExcel(tableID,filename){
-        return listaOrdenCtrl.exportTableToExcel(tableID,filename);
+    exportTableToExcel(tableID){
+        if(tableID =='listaOrdenes'){
+            return listaOrdenCtrl.descargarListaOrdenesVistaCabecera();
+        }
     }
 
     filtroTablaListaOrdenesVistaCabecera(){
@@ -479,7 +481,7 @@ class ListaOrdenView {
                 {'render':
                     function (data, type, row, meta){
                         let fechaOrden =moment(row.fecha);
-                        let fechaRequerimiento =moment(row.fecha);
+                        let fechaRequerimiento =moment(row.fecha_registro_requerimiento);
                         let tiempoAtencionLogistica = fechaOrden.diff((fechaRequerimiento), 'days');
                         return `${tiempoAtencionLogistica} días`;
                     }
@@ -488,7 +490,7 @@ class ListaOrdenView {
                     function (data, type, row, meta){
                         let fechaIngresoAlmacen =moment(row.fecha_ingreso_almacen);
                         let fechaOrden =moment(row.fecha);
-                        let tiempoAtencionProveedor = fechaIngresoAlmacen.diff((fechaOrden), 'days');
+                        let tiempoAtencionProveedor = fechaOrden.diff((fechaIngresoAlmacen), 'days');
                         if(row.fecha_ingreso_almacen !=null){
                             return `${tiempoAtencionProveedor} días`;
                         }else{
@@ -501,7 +503,7 @@ class ListaOrdenView {
                 {'data': 'archivo_adjunto'},
                 {'render':
                     function (data, type, row, meta){
-                        let containerOpenBrackets='<div class="btn-group" role="group" style="margin-bottom: 5px;">';
+                        let containerOpenBrackets='<div class="btn-group" role="group" style="margin-bottom: 5px;display: flex;flex-direction: row;flex-wrap: nowrap;">';
                         let btnImprimirOrden= '<button type="button" class="imprimir_orden btn btn-md btn-warning boton" onClick="listaOrdenView.imprimir_orden(event)" title="Imprimir Orden"  data-toggle="tooltip" data-placement="bottom" data-id-orden-compra="'+row.id_orden_compra+'"  data-id-pago=""> <i class="fas fa-file-pdf"></i> </button>';
                         let btnAnularOrden='';
                         if(![6,27,28].includes(row.estado) ){
@@ -544,7 +546,7 @@ class ListaOrdenView {
                 buttonExportToExcel.id = "btnExportarAExcel";
                 buttonExportToExcel.className = "btn btn-default pull-left";
                 buttonExportToExcel.innerHTML = "<i class='far fa-file-excel'></i> Descargar";
-                buttonExportToExcel.addEventListener('click',  function(){listaOrdenView.exportTableToExcel('listaOrdenes','Lista_Ordenes')}, false);
+                buttonExportToExcel.addEventListener('click',  function(){listaOrdenView.exportTableToExcel('listaOrdenes')}, false);
 
                 divInputGroupBtn.appendChild(buttonExportToExcel);     
                 
@@ -703,6 +705,22 @@ class ListaOrdenView {
                 },
                 { render: function (data, type, row) {     
                     return `${row.alm_prod_descripcion?row.alm_prod_descripcion:''}`;
+                    }
+                },
+                // { render: function (data, type, row) {     
+                //     return `${row.detalle_orden_precio?row.detalle_orden_cantidad:''}`;
+                //     }
+                // },
+                { render: function (data, type, row) {     
+                    return `${row.detalle_orden_precio?(parseFloat(row.detalle_orden_precio).toFixed(2)):''}`;
+                    }
+                },
+                // { render: function (data, type, row) {     
+                //     return `${row.cdc_cantidad?row.cdc_cantidad:''}`;
+                //     }
+                // },
+                { render: function (data, type, row) {     
+                    return `${row.cdc_precio?row.cdc_precio:''}`;
                     }
                 },
                 { render: function (data, type, row) {     

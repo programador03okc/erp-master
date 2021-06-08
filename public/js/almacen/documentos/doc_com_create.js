@@ -175,16 +175,16 @@ function mostrarListaItems(){
         <td>${element.abreviatura}</td>
         <td>
             <input type="number" class="form-control right unitario" value="${element.precio}" 
-            data-id="${element.id_guia_com_det}" min="0" step="0.001"/>
+            data-id="${element.id_guia_com_det}" min="0" step="0.0001"/>
         </td>
         <td class="right">${formatNumber.decimal(element.sub_total,'',-4)}</td>
         <td>
             <input type="number" class="form-control right porcentaje_dscto" value="${element.porcentaje_dscto}" 
-            data-id="${element.id_guia_com_det}" min="0" step="0.001"/>
+            data-id="${element.id_guia_com_det}" min="0" step="0.0001"/>
         </td>
         <td>
             <input type="number" class="form-control right total_dscto" value="${element.total_dscto}" 
-            data-id="${element.id_guia_com_det}" min="0" step="0.001"/>
+            data-id="${element.id_guia_com_det}" min="0" step="0.0001"/>
         </td>
         <td class="right">${formatNumber.decimal(element.total,'',-4)}</td>
         </tr>`;

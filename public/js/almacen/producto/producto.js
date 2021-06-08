@@ -110,6 +110,7 @@ function mostrar_producto(id){
             $('[name=estado]').val(response['producto'][0].estado);
             $('[name=notas]').val(response['producto'][0].notas);
             $('[name=id_moneda]').val(response['producto'][0].id_moneda);
+            $('#usuario_registro').text(response['producto'][0].nombre_corto);
 
             if (response['producto'][0].imagen !== "" &&
                 response['producto'][0].imagen !== null){

@@ -1,15 +1,12 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Almacen\Movimiento;
+
+use App\Http\Controllers\AlmacenController as GenericoAlmacenController;
 use Illuminate\Http\Request;
-use Illuminate\Http\RedirectResponse;
+use App\Http\Controllers\Controller;
 
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\File;
-use Dompdf\Dompdf;
-use PDF;
-use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 date_default_timezone_set('America/Lima');
 
@@ -19,11 +16,10 @@ class TransferenciaController extends Controller
         // session_start();
     }
     function view_listar_transferencias(){
-        $clasificaciones = AlmacenController::mostrar_guia_clas_cbo();
-        // $almacenes = AlmacenController::mostrar_almacenes_cbo();
+        $clasificaciones = GenericoAlmacenController::mostrar_guia_clas_cbo();
         $almacenes = $this->listarAlmacenesAcceso();
-        $usuarios = AlmacenController::select_usuarios();
-        $motivos_anu = AlmacenController::select_motivo_anu();
+        $usuarios = GenericoAlmacenController::select_usuarios();
+        $motivos_anu = GenericoAlmacenController::select_motivo_anu();
         return view('almacen/transferencias/listar_transferencias', compact('clasificaciones','almacenes','usuarios','motivos_anu'));
     }
 
@@ -570,7 +566,7 @@ class TransferenciaController extends Controller
                     'id_guia'
                 );
 
-            $codigo = AlmacenController::nextMovimiento(1,
+            $codigo = GenericoAlmacenController::nextMovimiento(1,
                 $request->fecha_almacen,
                 $request->id_almacen_destino);
 
@@ -882,7 +878,7 @@ class TransferenciaController extends Controller
                 ->update(['estado' => 17]);
             }
             //Genero la salida
-            $codigo = AlmacenController::nextMovimiento(2,//salida
+            $codigo = GenericoAlmacenController::nextMovimiento(2,//salida
             $request->fecha_almacen,
             $request->id_almacen_origen);
 
@@ -1046,69 +1042,6 @@ class TransferenciaController extends Controller
             // return response()->json($e);
         }
     }
-
-    // public static function generarTransferenciaRequerimiento(Request $request){
-    //     $sede = $request->id_sede;
-
-    //     if ($request->id_tipo_requerimiento == 2 || $request->id_tipo_requerimiento == 3){
-    //         $array_items = [];
-    //         $array_almacen = [];
-
-    //         foreach ($request->detalle_items as $det) {
-    //             $almacen = DB::table('almacen.alm_almacen')
-    //             ->select('sis_sede.id_sede')
-    //             ->join('administracion.sis_sede','sis_sede.id_sede','=','alm_almacen.id_sede')
-    //             ->where('id_almacen',$det->id_almacen_reserva)
-    //             ->first();
-                
-    //             if ($almacen !== null && $sede !== $almacen->id_sede){
-    //                 array_push($array_items, $det);
-
-    //                 if (!in_array($det->almacen_reserva, $array_almacen)){
-    //                     array_push($array_almacen, $det->almacen_reserva);
-    //                 }
-    //             }
-    //         }
-
-    //         foreach ($array_almacen as $alm){
-                
-    //             $fecha = date('Y-m-d H:i:s');
-    //             $codigo = TransferenciaController::transferencia_nextId($alm);
-    //             $id_usuario = Auth::user()->id_usuario;
-    //             $guardar = false;
-
-    //             $id_trans = DB::table('almacen.trans')->insertGetId(
-    //                 [
-    //                     'id_almacen_origen' => $alm,
-    //                     'id_almacen_destino' => $request->id_almacen_destino,
-    //                     'codigo' => $codigo,
-    //                     'id_requerimiento' => $request->id_requerimiento,
-    //                     'id_guia_ven' => null,
-    //                     'responsable_origen' => null,
-    //                     'responsable_destino' => null,
-    //                     'fecha_transferencia' => date('Y-m-d'),
-    //                     'registrado_por' => $id_usuario,
-    //                     'estado' => 1,
-    //                     'fecha_registro' => $fecha
-    //                 ],
-    //                     'id_transferencia'
-    //                 );
-                
-    //             foreach ($array_items as $item) {
-    //                 if ($item->id_almacen_reserva == $alm){
-    //                     DB::table('almacen.trans_detalle')->insert(
-    //                     [
-    //                         'id_transferencia' => $id_trans,
-    //                         'id_producto' => $item->id_producto,
-    //                         'cantidad' => $item->cantidad,
-    //                         'estado' => 1,
-    //                         'fecha_registro' => $fecha
-    //                     ]);
-    //                 }
-    //             }
-    //         }
-    //     }
-    // }
 
     public function listarDetalleTransferencias($id_requerimiento){
         $trans = DB::table('almacen.trans')
@@ -1318,7 +1251,7 @@ class TransferenciaController extends Controller
         ->where([['id_almacen_origen','=',$id_alm_origen],
                 ['estado','!=',7]])
         ->get()->count();
-        $val = AlmacenController::leftZero(3,($cantidad + 1));
+        $val = GenericoAlmacenController::leftZero(3,($cantidad + 1));
         $nextId = "Tr-".$id_alm_origen."-".$val;
         return $nextId;
     }
@@ -1713,7 +1646,7 @@ class TransferenciaController extends Controller
             //     ->where('id_mov_alm',$request->id_mov_alm)
             //     ->update(['id_transferencia'=>$id_trans]);
             //Genero la salida
-            $codigo = AlmacenController::nextMovimiento(2,//salida
+            $codigo = GenericoAlmacenController::nextMovimiento(2,//salida
             $request->fecha_almacen,
             $request->id_almacen_origen);
 
@@ -1776,8 +1709,8 @@ class TransferenciaController extends Controller
                         ['id_almacen','=',$request->id_almacen_origen]])
                 ->first();
                 //Traer stockActual
-                $saldo = AlmacenController::saldo_actual_almacen($det->id_producto, $request->id_almacen_origen);
-                $valor = AlmacenController::valorizacion_almacen($det->id_producto, $request->id_almacen_origen);
+                $saldo = GenericoAlmacenController::saldo_actual_almacen($det->id_producto, $request->id_almacen_origen);
+                $valor = GenericoAlmacenController::valorizacion_almacen($det->id_producto, $request->id_almacen_origen);
                 $cprom = ($saldo > 0 ? $valor/$saldo : 0);
                 //guardo saldos actualizados
                 if ($ubi !== null){//si no existe -> creo la ubicacion

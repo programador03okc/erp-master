@@ -57,25 +57,30 @@ class RequerimientoPendienteModel {
                 url:`/logistica/gestion-logistica/requerimiento/elaboracion/mostrar-requerimiento/${id_requerimiento}/0`,
                 dataType: 'JSON',
                 success(response) {
-                    itemsParaAtenderConAlmacenList=response.det_req;
-                    itemsParaAtenderConAlmacenList.forEach((element,index) => {
-                        itemsParaAtenderConAlmacenList[index].cantidad_a_atender =0;
-                        
-                    });
+                    if(response.det_req !=undefined && response.det_req.length >0){
+                        itemsParaAtenderConAlmacenList=response.det_req;
+                        itemsParaAtenderConAlmacenList.forEach((element,index) => {
+                            itemsParaAtenderConAlmacenList[index].cantidad_a_atender =0;
+                            
+                        });
+                        requerimientoPendienteModel.getAlmacenes().then(function (res) {
+                            // Run this when your request was successful
+                            let data_almacenes= res.data;
+                            if (data_almacenes.length > 0) {
+                                resolve({'detalle_requerimiento':response.det_req,'almacenes':data_almacenes}); // Resolve promise and go to then() 
+                            } else {
+                            
+                            }
+                    
+                        }).catch(function (err) {
+                            // Run this when promise was rejected via reject()
+                            console.log(err)
+                        })
 
-                    requerimientoPendienteModel.getAlmacenes().then(function (res) {
-                        // Run this when your request was successful
-                        let data_almacenes= res.data;
-                        if (data_almacenes.length > 0) {
-                            resolve({'detalle_requerimiento':response.det_req,'almacenes':data_almacenes}); // Resolve promise and go to then() 
-                        } else {
-                        
-                        }
-                
-                    }).catch(function (err) {
-                        // Run this when promise was rejected via reject()
-                        console.log(err)
-                    })
+                    }else{
+                        alert("Hubo un error, no se puedo cargar la data del requerimiento.");
+                    }
+
                 },
                 error: function(err) {
                 reject(err) // Reject the promise and go to catch()

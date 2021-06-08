@@ -12,7 +12,10 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 date_default_timezone_set('America/Lima');
 use Debugbar;
 use PDO;
-
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\ListOrdenesHeadExport;
+use App\Models\Logistica\Orden;
+use Carbon\Carbon;
 class OrdenController extends Controller
 {
 
@@ -267,7 +270,8 @@ class OrdenController extends Controller
             'log_ord_compra.id_cta_principal as orden_id_cta_principal',
             'log_ord_compra.id_cta_alternativa as orden_id_cta_alternativa',
             'log_ord_compra.id_cta_detraccion as orden_id_cta_detraccion',
-            'log_ord_compra.personal_autorizado as orden_personal_autorizado',
+            'log_ord_compra.personal_autorizado_1 as orden_personal_autorizado_1',
+            'log_ord_compra.personal_autorizado_2 as orden_personal_autorizado_2',
             'log_ord_compra.plazo_entrega as orden_plazo_entrega',
             'log_ord_compra.en_almacen as orden_en_almacen',
             'log_ord_compra.id_occ as orden_id_occ',
@@ -291,6 +295,8 @@ class OrdenController extends Controller
             'log_det_ord_compra.descripcion_adicional as detalle_orden_descripcion_adicional',
             'log_det_ord_compra.cantidad as detalle_orden_cantidad',
             'log_det_ord_compra.precio as detalle_orden_precio',
+            'cc_am_filas.cantidad as cdc_cantidad',
+            'cc_am_filas.pvu_oc as cdc_precio',
             'log_det_ord_compra.id_unidad_medida as detalle_orden_id_unidad_medida',
             'log_det_ord_compra.subtotal as detalle_orden_subtotal',
             'log_det_ord_compra.id_detalle_requerimiento as detalle_orden_id_detalle_requerimiento',
@@ -311,14 +317,14 @@ class OrdenController extends Controller
         ->leftJoin('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'log_prove.id_contribuyente')
         ->leftJoin('administracion.sis_sede', 'sis_sede.id_sede', '=', 'log_ord_compra.id_sede')
         ->leftJoin('logistica.estados_compra', 'log_det_ord_compra.estado', '=', 'estados_compra.id_estado')
-        ->leftJoin('almacen.alm_item', 'log_det_ord_compra.id_item', '=', 'alm_item.id_item')
-        ->leftJoin('almacen.alm_prod', 'alm_prod.id_producto', '=', 'alm_item.id_producto')
+        ->leftJoin('almacen.alm_prod', 'log_det_ord_compra.id_producto', '=', 'alm_prod.id_producto')
         ->leftJoin('almacen.alm_cat_prod', 'alm_cat_prod.id_categoria', '=', 'alm_prod.id_categoria')
         ->leftJoin('almacen.alm_subcat','alm_subcat.id_subcategoria','=','alm_prod.id_subcategoria')    
         ->leftJoin('almacen.alm_det_req', 'alm_det_req.id_detalle_requerimiento', '=', 'log_det_ord_compra.id_detalle_requerimiento')
         ->leftJoin('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'alm_det_req.id_requerimiento')
         ->leftJoin('comercial.com_cliente','com_cliente.id_cliente','=','alm_req.id_cliente')
         ->leftJoin('contabilidad.adm_contri as contri_cli','contri_cli.id_contribuyente','=','com_cliente.id_contribuyente')
+        ->leftJoin('mgcp_cuadro_costos.cc_am_filas', 'cc_am_filas.id', '=', 'alm_det_req.id_cc_am_filas')
 
         ->where([
             ['log_ord_compra.estado', '!=', 7],
@@ -484,8 +490,8 @@ class OrdenController extends Controller
             
             ->leftJoin('configuracion.sis_usua', 'alm_req.id_usuario', '=', 'sis_usua.id_usuario')
             ->leftJoin('rrhh.rrhh_trab', 'sis_usua.id_trabajador', '=', 'rrhh_trab.id_trabajador')
-            ->join('rrhh.rrhh_postu', 'rrhh_postu.id_postulante', '=', 'rrhh_trab.id_postulante')
-            ->join('rrhh.rrhh_perso', 'rrhh_perso.id_persona', '=', 'rrhh_postu.id_persona')
+            ->leftJoin('rrhh.rrhh_postu', 'rrhh_postu.id_postulante', '=', 'rrhh_trab.id_postulante')
+            ->leftJoin('rrhh.rrhh_perso', 'rrhh_perso.id_persona', '=', 'rrhh_postu.id_persona')
             ->leftJoin('rrhh.rrhh_rol', 'alm_req.id_rol', '=', 'rrhh_rol.id_rol')
             ->leftJoin('rrhh.rrhh_rol_concepto', 'rrhh_rol_concepto.id_rol_concepto', '=', 'rrhh_rol.id_rol_concepto')
             ->leftJoin('administracion.adm_area', 'rrhh_rol.id_area', '=', 'adm_area.id_area')
@@ -994,6 +1000,9 @@ class OrdenController extends Controller
         if(count($ord_compra)>0){
             foreach($ord_compra as $element){
 
+                $fechaHoy =Carbon::now();
+                $fechaOrden = Carbon::create($element->fecha);
+                $fechaLlegada=$fechaOrden->addDays($element->plazo_entrega);
 
                 $data_orden[]=[
                     'id_orden_compra'=> $element->id_orden_compra,
@@ -1005,7 +1014,8 @@ class OrdenController extends Controller
                     'razon_social'=> $element->razon_social,
                     'moneda_simbolo'=> $element->moneda_simbolo, 
                     'incluye_igv'=> $element->incluye_igv,
-                    // 'monto_subtotal'=> $element->monto_subtotal, 
+                    'leadtime'=> $fechaLlegada->toDateString(),
+                    'dias_restantes'=> $fechaLlegada->diffInDays($fechaHoy->toDateString()),
                     'monto_igv'=> $element->monto_igv, 
                     'monto_total'=>$element->monto_total, 
                     'condicion'=> $element->condicion, 
@@ -1089,6 +1099,7 @@ class OrdenController extends Controller
 
         $output['data'] = $data_orden;
         return $output;
+ 
     }
 
     public function detalleOrden($idOrden){
@@ -3532,115 +3543,12 @@ class OrdenController extends Controller
         }
     }
 
-    function listarOrdenesExcel(){
-        $payload = $this->listarOrdenes(null, null, null, null, null, null, null, null, null);
-        $data= $payload['data'];
-        $html = '
-        <html>
-            <head>
-                <style type="text/css">
-                *{ 
-                    font-family: "DejaVu Sans";
-                }
-                table{
-                    width:100%;
-                    font-size:12px;
-                }
-                #detalle thead{
-                    padding: 4px;
-                    background-color: #e5e5e5;
-                }
-                #detalle thead tr td{
-                    padding: 4px;
-                    background-color: #ddd;
-                }
-                #detalle tbody tr td{
-                    font-size:11px;
-                    padding: 4px;
-                }
-                .right{
-                    text-align: right;
-                }
-                .left{
-                    text-align: left;
-                }
-                .sup{
-                    vertical-align:top;
-                }
-                </style>
-            </head>
-            <body>
-                <h3 style="margin:0px;"><center>LISTA DE ORDENES</center></h3>';
-                
-                    $html.='
-                    <table border="0" class="table table-condensed table-bordered table-hover sortable" width="100%">
-                    <thead>
-                        <tr>
-                            <th>Cuadro costos</th>
-                            <th>Proveedor</th>
-                            <th>Nro.orden</th>
-                            <th >Req./Cuadro comp.</th>
-                            <th>Estado</th>
-                            <th>Fecha vencimiento</th>
-                            <th>Fecha llegada</th>
-                            <th>Estado aprobación CC</th>
-                            <th>Fecha aprobación CC</th>
-                            <th>Fecha Requerimiento</th>
-                            <th width="60%">Leadtime</th>
-                            <th>Empresa / Sede</th>
-                            <th>Moneda</th>
-                            <th>Condición</th>
-                            <th>Fecha em.</th>
-                            <th>Tiem. Atenc. Log.</th>
-                            <th>Tiem. Atenc. Prov.</th>
-                            <th>Detalle pago</th>
-                            <th>Archivo adjunto</th>
-                        </tr>
-                    </thead>
-                    <tbody>';
 
-                        foreach($data as $row){
- 
 
-                                $html.='
-                                <tr>
-                                    <td>'.$row['codigo_oportunidad'].'</td>
-                                    <td>'.$row['razon_social'].' RUC:'.$row['nro_documento'].'</td>
-                                    <td>'.$row['codigo'].'</td>
-                                    <td>'.$row['codigo_requerimiento'][0].'</td>
-                                    <td>'.$row['estado_doc'].'</td>
-                                    <td>'.$row['fecha_vencimiento_ocam'].'</td>
-                                    <td>'.$row['fecha_ingreso_almacen'].'</td>
-                                    <td>'.$row['estado_aprobacion_cc'].'</td>
-                                    <td>'.$row['fecha_estado'].'</td>
-                                    <td>'.$row['fecha_registro_requerimiento'].'</td>
-                                    <td></td>
-                                    <td>'.$row['descripcion_sede_empresa'].'</td>
-                                    <td>'.$row['moneda_simbolo'].'</td>
-                                    <td>'.$row['condicion'].'</td>
-                                    <td>'.$row['fecha'].'</td>
-                                    <td></td>
-                                    <td></td>
-                                    <td>'.$row['detalle_pago'].'</td>
-                                    <td>'.$row['archivo_adjunto'].'</td>
-                                </tr>';
-                        }
-                            $html.='
-                        </tbody>
-                    </table>';
-                    
-                $html.='
-            </body>
-        </html>';
-        
-        return $html;
+    public function exportExcelListaOrdenes(){
+        // return Orden::reporteListaOrdenes();
+        return Excel::download(new ListOrdenesHeadExport, 'lista_ordenes.xlsx');
     }
-
-    // function descargarExcelListaOrdenes(){
-    //     $data = $this->listarOrdenesExcel();
-    //     return view('logistica/reportes/lista_ordenes_excel', compact('data'));
-    // }
-
 
 
 

@@ -176,11 +176,11 @@ class GestionCustomizacion
                     function (data, type, row){
                         return ('<button type="button" class="salida btn btn-success boton" data-toggle="tooltip" '+
                                     'data-placement="bottom" title="Ver Salida" data-id="'+row['id_transformacion']+'">'+
-                                    '<i class="fas fa-search"></i></button>'+
+                                    '<i class="fas fa-sign-out-alt"></i></button>'+
                                     
                                 '<button type="button" class="ingreso btn btn-primary boton" data-toggle="tooltip" '+
                                     'data-placement="bottom" title="Ver Ingreso" data-id="'+row['id_transformacion']+'">'+
-                                    '<i class="fas fa-search"></i></button>');
+                                    '<i class="fas fa-sign-in-alt"></i></button>');
                     }
                 },
             ],
