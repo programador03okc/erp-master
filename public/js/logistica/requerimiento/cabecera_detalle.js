@@ -1,4 +1,3 @@
-
 function nuevo_req(){
     data_item=[];
     data=[];
@@ -22,7 +21,7 @@ function nuevo_req(){
     var btnImprimirRequerimiento = document.getElementsByName("btn-imprimir-requerimento-pdf");
     disabledControl(btnImprimirRequerimiento,true);
     var btnAdjuntosRequerimiento = document.getElementsByName("btn-adjuntos-requerimiento");
-    disabledControl(btnAdjuntosRequerimiento,true);
+    disabledControl(btnAdjuntosRequerimiento,false);
     var btnTrazabilidadRequerimiento = document.getElementsByName("btn-ver-trazabilidad-requerimiento");
     disabledControl(btnTrazabilidadRequerimiento,true);
 

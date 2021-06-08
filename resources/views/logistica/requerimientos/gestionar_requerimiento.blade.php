@@ -32,7 +32,7 @@ Requerimiento
 
 @section('content')
 <div class="page-main" type="requerimiento">
-    <form id="form-requerimiento" type="register" form="formulario">
+    <form id="form-requerimiento" type="register"  enctype="multipart/form-data" form="formulario">
         <input type="hidden" name="id_usuario_session">
         <input type="hidden" name="id_usuario_req">
         <input type="hidden" name="id_estado_doc">
@@ -53,7 +53,10 @@ Requerimiento
                     <div>
                         <span class="label" id="estado_doc">&nbsp;</span>
                         <button type="button" name="btn-imprimir-requerimento-pdf" class="btn btn-info btn-sm" onclick="ImprimirRequerimientoPdf()" disabled><i class="fas fa-print"></i> Imprimir</button>
-                        <button type="button" name="btn-adjuntos-requerimiento" class="btn btn-sm btn-warning" title="Archivos adjuntos" onclick="archivosAdjuntosRequerimientoModal();" disabled><i class="fas fa-file-archive"></i> Adjuntos</button>
+                        <button type="button" name="btn-adjuntos-requerimiento" class="btn btn-sm btn-warning" title="Archivos adjuntos" onclick="requerimientoView.adjuntarArchivoRequerimiento();" disabled><i class="fas fa-file-archive"></i> 
+                        <span class="badge" name="cantidadAdjuntosRequerimiento" style="position:absolute; right: 178px; border: solid 0.1px;">0</span>    
+                        Adjuntos
+                        </button>
                         <button type="button" name="btn-ver-trazabilidad-requerimiento" class="btn btn-sm btn-primary" title="Ver Trazabilidads" onclick="verTrazabilidadRequerimientoModal();" disabled><i class="fas fa-shoe-prints"></i> Trazabilidad</button>
                     </div>
                 </h4>
@@ -511,7 +514,7 @@ Requerimiento
                                 <tr>
                                     <th style="width: 3%">#</th>
                                     <th style="width: 10%">Partida</th>
-                                    <th style="width: 10%">C.Costos</th>
+                                    <th style="width: 10%">C.Costo</th>
                                     <th style="width: 10%">Part number</th>
                                     <th >Descripción de item</th>
                                     <th style="width: 10%">Unidad</th>
@@ -613,7 +616,7 @@ Requerimiento
 @include('logistica.requerimientos.modal_lista_trabajadores')
 @include('logistica.requerimientos.modal_trazabilidad_requerimiento')
 @include('logistica.requerimientos.modal_motivo_detalle_requerimiento')
-@include('logistica.requerimientos.modal_mostrar_archivo_adjunto_requerimiento')
+@include('logistica.requerimientos.modal_adjuntar_archivos_requerimiento')
 @include('logistica.requerimientos.aprobacion.modal_sustento')
 @include('logistica.requerimientos.modal_agregar_fuente')
 @include('logistica.requerimientos.modal_agregar_detalle_fuente')
@@ -630,7 +633,6 @@ Requerimiento
 @include('logistica.requerimientos.modal_telefonos_cliente')
 @include('logistica.requerimientos.modal_cuadro_costos_comercial')
 @include('logistica.requerimientos.modal_copiar_documento')
-@include('logistica.requerimientos.modal_adjuntar_archivos_requerimiento')
 @include('logistica.requerimientos.modal_adjuntar_archivos_detalle_requerimiento')
 @include('logistica.requerimientos.modal_historial_requerimiento')
 @include('logistica.requerimientos.modal_catalogo_items')
@@ -649,7 +651,7 @@ Requerimiento
 
 @section('scripts')
 <script src="{{ asset('js/util.js')}}"></script>
-
+<script src="https://cdn.jsdelivr.net/npm/gasparesganga-jquery-loading-overlay@2.1.7/dist/loadingoverlay.min.js"></script>
 <script src="{{ asset('datatables/DataTables/js/jquery.dataTables.min.js') }}"></script>
 <script src="{{ asset('datatables/DataTables/js/dataTables.bootstrap.min.js') }}"></script>
 <script src="{{ asset('datatables/Buttons/js/dataTables.buttons.min.js') }}"></script>

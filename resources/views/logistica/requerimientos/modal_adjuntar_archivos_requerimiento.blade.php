@@ -1,42 +1,34 @@
 <div class="modal fade" tabindex="-1" role="dialog" id="modal-adjuntar-archivos-requerimiento">
-    <div class="modal-dialog" style="width: 30%;">
+    <div class="modal-dialog" style="width: 80%;">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="close"><span aria-hidden="true">&times;</span></button>
-                <h3 class="modal-title">Archivos Adjuntos al Requerimiento</h3>
+                <h3 class="modal-title">Archivos adjuntos de requerimiento</h3>
             </div>
             <div class="modal-body">
-                <div class="row" id="section_upload_files">
-                    <div class="col-md-12">
-                        <div class="form-group">
-                            <label for="categoria_adjunto">Tipo archivo:</label>
-                            <select name="categoria_adjunto" id="categoria_adjunto" class="form-control">
-                            @foreach ($categoria_adjunto as $categoria)
-                                        <option value="{{$categoria->id_categoria_adjunto}}">{{$categoria->descripcion}}</option>
-                            @endforeach
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-md-12">
-                        <div class="form-group" id="group-adjunto-requerimiento">
-                            <label for="categoria_adjunto">Cargar archivo:</label>
-                            <input type="file" name="nombre_archivo" class="custom-file-input" placeholder="Seleccionar archivo"
-                            onchange="agregarAdjuntoRequerimiento(event); return false;"
-                            />
-                        </div>
-                    </div>
 
+                <div class="row">
+                    <div class="col-md-12">
+                        <input type="file" name="nombre_archivo" class="custom-file-input" placeholder="Seleccionar archivo" onchange="requerimientoView.agregarAdjuntoRequerimiento(event); return false;" />
+                    </div>
                 </div>
-            </div>
-            <div class="modal-footer">
-                <button
-                    type="button"
-                    class="btn btn-success"
-                    onClick="guardarAdjuntosRequerimiento();"
-                    ><i class="fas fa-file-upload"></i> Subir Archivo
-                </button>
+                <br>
+                <table class="table table-bordered table-condensed table-hover no-footer" id="listaArchivosRequerimiento" width="100%">
+                    <thead style=" background: #f4f4f4; ">
+                        <tr>
+                            <th width="200">Descripción</th>
+                            <th width="60">Tipo</th>
+                            <th width="70">Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody id="body_archivos_requerimiento">
+                    </tbody>
+                </table>
+
+
+
+
             </div>
         </div>
     </div>
 </div>
-
