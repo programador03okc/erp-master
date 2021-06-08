@@ -255,30 +255,28 @@ function agregarItem(){
             }else{
                 descripcion_unidad = data_item[a].unidad;
             }
-            row.insertCell(0).innerHTML = data_item[a].id_item?data_item[a].id_item:'0';
-            row.insertCell(1).innerHTML = data_item[a].codigo_producto?data_item[a].codigo_producto:'-';
-            tdCodigo = row.insertCell(2);
+            row.insertCell(0).innerHTML = data_item[a].codigo_producto?data_item[a].codigo_producto:'-';
+            tdPartNumber = row.insertCell(1);
             if(data_item[a].tiene_transformacion == true){
-                tdCodigo.parentNode.style.backgroundColor ="#cccccc";
-                tdCodigo.innerHTML = data_item[a].part_number?(data_item[a].part_number+'<span class="badge badge-secondary">Transformado</span>'):'-';
+                tdPartNumber.parentNode.style.backgroundColor ="#cccccc";
+                tdPartNumber.innerHTML = data_item[a].part_number?(data_item[a].part_number+'<span class="badge badge-secondary">Transformado</span>'):'-';
             }else{
-                tdCodigo.innerHTML = data_item[a].part_number?data_item[a].part_number:'-';
+                tdPartNumber.innerHTML = data_item[a].part_number?data_item[a].part_number:'-';
             }
-            row.insertCell(3).innerHTML = data_item[a].des_item?data_item[a].des_item:'-';
-            row.insertCell(4).innerHTML = descripcion_unidad;
-            row.insertCell(5).innerHTML = data_item[a].cantidad?data_item[a].cantidad:'0';
-            row.insertCell(6).innerHTML = data_item[a].precio_unitario?data_item[a].precio_unitario:'0';
-            // row.insertCell(7).innerHTML = data_item[a].tipo_moneda?data_item[a].tipo_moneda:'';
-            row.insertCell(7).innerHTML = data_item[a].subtotal ? data_item[a].subtotal : '';
-            row.insertCell(8).innerHTML =  data_item[a].cod_partida ? data_item[a].cod_partida : '';
-            row.insertCell(9).innerHTML =  data_item[a].codigo_centro_costo ? data_item[a].codigo_centro_costo : '';
-            row.insertCell(10).innerHTML =  data_item[a].motivo ? data_item[a].motivo : '';
-            row.insertCell(11).innerHTML =  data_item[a].almacen_reserva ? data_item[a].almacen_reserva : (data_item[a].proveedor_razon_social?data_item[a].proveedor_razon_social:'');
+            row.insertCell(2).innerHTML = data_item[a].des_item?data_item[a].des_item:'-';
+            row.insertCell(3).innerHTML = descripcion_unidad;
+            row.insertCell(4).innerHTML = data_item[a].cantidad?data_item[a].cantidad:'0';
+            row.insertCell(5).innerHTML = data_item[a].precio_unitario?data_item[a].precio_unitario:'0';
+            row.insertCell(6).innerHTML = data_item[a].subtotal ? data_item[a].subtotal : '';
+            row.insertCell(7).innerHTML =  data_item[a].cod_partida ? data_item[a].cod_partida : '';
+            row.insertCell(8).innerHTML =  data_item[a].codigo_centro_costo ? data_item[a].codigo_centro_costo : '';
+            row.insertCell(9).innerHTML =  data_item[a].motivo ? data_item[a].motivo : '';
+            row.insertCell(10).innerHTML =  data_item[a].almacen_reserva ? data_item[a].almacen_reserva : (data_item[a].proveedor_razon_social?data_item[a].proveedor_razon_social:'');
 
             var id_grupo = document.querySelector("form[id='form-requerimiento'] input[name='id_grupo']").value;
             var id_proyecto = document.querySelector("form[id='form-requerimiento'] select[name='id_proyecto']").value;
             var tdBtnAction = '';
-            tdBtnAction = row.insertCell(12);
+            tdBtnAction = row.insertCell(11);
 
  
             // tdBtnAction.className = classHiden;

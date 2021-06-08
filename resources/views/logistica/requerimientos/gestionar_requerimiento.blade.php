@@ -12,7 +12,7 @@
 @endif
 
 @section('cabecera')
-    Elaborar Requerimiento
+    Requerimiento
 @endsection
 
 @section('breadcrumb')
@@ -509,7 +509,6 @@
                 <table class="mytable table table-striped table-condensed table-bordered dataTable no-footer" id="ListaDetalleRequerimiento" width="100%">
                     <thead>
                         <tr>
-                            <th class="invisible">#</th>
                             <th width="70">CODIGO</th>
                             <th width="70">PART NUMBER</th>
                             <th width="200">DESCRIPCION</th>

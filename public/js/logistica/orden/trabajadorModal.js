@@ -76,12 +76,12 @@ function selectTrabajador(obj){
 
     switch (document.querySelector("div[id='modal-trabajadores'] label[id='numero_persona_autorizada']").textContent) {
         case '1':
-            document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='persona_autorizada_1']").value =idTrabajador;
+            document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='personal_autorizado_1']").value =idTrabajador;
             document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='nombre_persona_autorizado_1']").value =nombreTrabajador+(nroDocumento.length >=8?(' (DNI:'+nroDocumento+')'):'');
             break;
     
         case '2':
-            document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='persona_autorizada_2']").value =idTrabajador;
+            document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='personal_autorizado_2']").value =idTrabajador;
             document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='nombre_persona_autorizado_2']").value =nombreTrabajador+(nroDocumento >=9?('  (DNI:'+nroDocumento+')'):'');
             break;
     

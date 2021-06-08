@@ -356,8 +356,8 @@ function actionGuardarEditarRequerimiento(){
                         nuevo_req();
                         cuentaRegresivaModalLoader(5);
                     }else{
+                        cerrarModalLoader();
                         alert('Hubo un problema al intentar guardar el requerimiento');
- 
                     }
                 }
             }).fail( function(jqXHR, textStatus, errorThrown){

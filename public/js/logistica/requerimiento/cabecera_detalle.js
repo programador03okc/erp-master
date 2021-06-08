@@ -853,8 +853,8 @@ function updateInputPrecioUnitarioItem(obj,event){
 }
 
 function updateSubtotalItem(obj,indiceSelected){
-    let cantidad =obj.parentNode.parentNode.children[5].querySelector("input").value;
-    let precio_unitario =obj.parentNode.parentNode.children[6].querySelector("input").value;
+    let cantidad =obj.parentNode.parentNode.children[4].querySelector("input").value;
+    let precio_unitario =obj.parentNode.parentNode.children[5].querySelector("input").value;
     let subtotal = parseFloat(parseInt(cantidad) * parseFloat(precio_unitario?precio_unitario:0))
     let montoSubtotal=(Math.round(subtotal * 100) / 100).toFixed(2);
     
@@ -870,7 +870,7 @@ function updateSubtotalItem(obj,indiceSelected){
     data_item.forEach((element, index) => {
         if (index == indiceSelected) {
             data_item[index].subtotal = montoSubtotal;
-            obj.parentNode.parentNode.children[7].textContent = simboloMoneda+montoSubtotal;
+            obj.parentNode.parentNode.children[6].textContent = simboloMoneda+montoSubtotal;
         }
     });
 }
@@ -1021,22 +1021,21 @@ function llenarTablaListaDetalleRequerimiento(data,selectMoneda,selectUnidadMedi
             if (data[a].id_producto == '' || data[a].id_producto == null) {
                     var id_grupo = document.querySelector("form[id='form-requerimiento'] input[name='id_grupo']").value;
 
-                    row.insertCell(0).innerHTML = data[a].id_item ? data[a].id_item : '';
-                    row.insertCell(1).innerHTML = data[a].codigo ? data[a].codigo : '';
-                    row.insertCell(2).innerHTML =  data[a].part_number ? data[a].part_number : '';
-                    row.insertCell(3).innerHTML = ` <textarea  class="form-control" name="descripcion" data-indice="${a}" onkeyup ="updateInputDescripcionItem(event);">${data[a].des_item ? data[a].des_item : ''}</textarea>`;
-                    row.insertCell(4).innerHTML = makeSelectedToSelect(a, 'unidad_medida', selectUnidadMedida, 38, '');
-                    row.insertCell(5).innerHTML = `<input type="number" min="0" class="form-control" name="cantidad" data-indice="${a}" onkeyup ="updateInputCantidadItem(event);" value="${data[a].cantidad}">`;
-                    row.insertCell(6).innerHTML = `<input type="number" min="0" class="form-control" name="precio_unitario" data-indice="${a}" onkeyup ="updateInputPrecioUnitarioItem(this,event);" value="${data[a].precio_unitario?data[a].precio_unitario:''}">`;
+                    row.insertCell(0).innerHTML = data[a].codigo ? data[a].codigo : '';
+                    row.insertCell(1).innerHTML =  data[a].part_number ? data[a].part_number : '';
+                    row.insertCell(2).innerHTML = ` <textarea  class="form-control" name="descripcion" data-indice="${a}" onkeyup ="updateInputDescripcionItem(event);">${data[a].des_item ? data[a].des_item : ''}</textarea>`;
+                    row.insertCell(3).innerHTML = makeSelectedToSelect(a, 'unidad_medida', selectUnidadMedida, 38, '');
+                    row.insertCell(4).innerHTML = `<input type="number" min="0" class="form-control" name="cantidad" data-indice="${a}" onkeyup ="updateInputCantidadItem(event);" value="${data[a].cantidad}">`;
+                    row.insertCell(5).innerHTML = `<input type="number" min="0" class="form-control" name="precio_unitario" data-indice="${a}" onkeyup ="updateInputPrecioUnitarioItem(this,event);" value="${data[a].precio_unitario?data[a].precio_unitario:''}">`;
                     // row.insertCell(7).innerHTML = makeSelectedToSelect(a, 'moneda', selectMoneda, 1, '');
-                    row.insertCell(7).innerHTML = data[a].subtotal ? data[a].subtotal : '';
-                    row.insertCell(8).innerHTML =  data[a].cod_partida ? data[a].cod_partida : '';
-                    row.insertCell(9).innerHTML =  data[a].codigo_centro_costo ? data[a].codigo_centro_costo : '';
-                    row.insertCell(10).innerHTML =  data[a].motivo ? data[a].motivo : '';
-                    row.insertCell(11).innerHTML =  data[a].almacen_reserva ? data[a].almacen_reserva : (data[a].proveedor_razon_social?data[a].proveedor_razon_social:'');
+                    row.insertCell(6).innerHTML = data[a].subtotal ? data[a].subtotal : '';
+                    row.insertCell(7).innerHTML =  data[a].cod_partida ? data[a].cod_partida : '';
+                    row.insertCell(8).innerHTML =  data[a].codigo_centro_costo ? data[a].codigo_centro_costo : '';
+                    row.insertCell(9).innerHTML =  data[a].motivo ? data[a].motivo : '';
+                    row.insertCell(10).innerHTML =  data[a].almacen_reserva ? data[a].almacen_reserva : (data[a].proveedor_razon_social?data[a].proveedor_razon_social:'');
                     
                     var tdBtnAction=null;
-                    tdBtnAction = row.insertCell(12);
+                    tdBtnAction = row.insertCell(11);
                     
     
                     var btnAction = '';
@@ -1065,22 +1064,21 @@ function llenarTablaListaDetalleRequerimiento(data,selectMoneda,selectUnidadMedi
                 var id_grupo = document.querySelector("form[id='form-requerimiento'] input[name='id_grupo']").value;
       
 
-                row.insertCell(0).innerHTML = data[a].id_item ? data[a].id_item : '';
-                row.insertCell(1).innerHTML = data[a].codigo ? data[a].codigo : '';
-                row.insertCell(2).innerHTML =  data[a].part_number ? data[a].part_number : '';
-                row.insertCell(3).innerHTML = `<span name="descripcion">${data[a].des_item ? data[a].des_item : ''}</span> `;
-                row.insertCell(4).innerHTML = makeSelectedToSelect(a, 'unidad_medida', selectUnidadMedida, data[a].id_unidad_medida, '');
-                row.insertCell(5).innerHTML = `<input type="number" min="0" class="form-control" name="cantidad" data-indice="${a}" onkeyup ="updateInputCantidadItem(event);" value="${data[a].cantidad}">`;
-                row.insertCell(6).innerHTML = `<input type="number" min="0" class="form-control" name="precio_unitario" data-indice="${a}" onkeyup ="updateInputPrecioUnitarioItem(this,event);" value="${data[a].precio_unitario?data[a].precio_unitario:''}">`;
+                row.insertCell(0).innerHTML = data[a].codigo ? data[a].codigo : '';
+                row.insertCell(1).innerHTML =  data[a].part_number ? data[a].part_number : '';
+                row.insertCell(2).innerHTML = `<span name="descripcion">${data[a].des_item ? data[a].des_item : ''}</span> `;
+                row.insertCell(3).innerHTML = makeSelectedToSelect(a, 'unidad_medida', selectUnidadMedida, data[a].id_unidad_medida, '');
+                row.insertCell(4).innerHTML = `<input type="number" min="0" class="form-control" name="cantidad" data-indice="${a}" onkeyup ="updateInputCantidadItem(event);" value="${data[a].cantidad}">`;
+                row.insertCell(5).innerHTML = `<input type="number" min="0" class="form-control" name="precio_unitario" data-indice="${a}" onkeyup ="updateInputPrecioUnitarioItem(this,event);" value="${data[a].precio_unitario?data[a].precio_unitario:''}">`;
                 // row.insertCell(7).innerHTML = makeSelectedToSelect(a, 'moneda', selectMoneda, data[a].id_unidad_medida, '');
-                row.insertCell(7).innerHTML = data[a].subtotal ? data[a].subtotal : '';
-                row.insertCell(8).innerHTML =  data[a].cod_partida ? data[a].cod_partida : ''; 
-                row.insertCell(9).innerHTML =  data[a].codigo_centro_costo ? data[a].codigo_centro_costo : '';
-                row.insertCell(10).innerHTML =  data[a].motivo ? data[a].motivo : '';
-                row.insertCell(11).innerHTML =  data[a].almacen_reserva ? data[a].almacen_reserva : (data[a].proveedor_razon_social?data[a].proveedor_razon_social:'');
+                row.insertCell(6).innerHTML = data[a].subtotal ? data[a].subtotal : '';
+                row.insertCell(7).innerHTML =  data[a].cod_partida ? data[a].cod_partida : ''; 
+                row.insertCell(8).innerHTML =  data[a].codigo_centro_costo ? data[a].codigo_centro_costo : '';
+                row.insertCell(9).innerHTML =  data[a].motivo ? data[a].motivo : '';
+                row.insertCell(10).innerHTML =  data[a].almacen_reserva ? data[a].almacen_reserva : (data[a].proveedor_razon_social?data[a].proveedor_razon_social:'');
 
                 var tdBtnAction=null;
-                tdBtnAction = row.insertCell(12);
+                tdBtnAction = row.insertCell(11);
 
 
                 var btnAction = '';
@@ -1271,10 +1269,10 @@ function apertura(id_presup){
 
 
 function eliminarItemDeListado(obj,id){
-    let row = obj.parentNode.parentNode.parentNode.parentNode;
+    let row = obj.parentNode.parentNode.parentNode;
     let idCcAmFilas =data_item.find(item => item.id_producto == id)?data_item.find(item => item.id_producto == id).id_cc_am_filas:null;
     let tieneTransformacion = document.querySelector("form[id='form-requerimiento'] input[name='tiene_transformacion']").value;
-
+console.log(row);
     row.remove(row);
     
 
