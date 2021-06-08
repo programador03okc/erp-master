@@ -50,21 +50,21 @@ class LogisticaController extends Controller
         return view('logistica/cotizaciones/gestionar_cotizaciones', compact('empresas', 'tp_contribuyente', 'sis_identidad'));
     }
 
-    function view_valoriacion()
-    {
-        $unidades_medida = $this->mostrar_unidad_medida();
-        $condiciones = $this->select_condiciones();
-        $empresas = $this->select_mostrar_empresas();
+    // function view_valoriacion()
+    // {
+    //     $unidades_medida = $this->mostrar_unidad_medida();
+    //     $condiciones = $this->select_condiciones();
+    //     $empresas = $this->select_mostrar_empresas();
 
-        return view('logistica/cotizaciones/gestionar_valorizacion', compact('condiciones','unidades_medida','empresas'));
-    }
-    function view_cuadro_comparativo()
-    {
-        $unidades_medida = $this->mostrar_unidad_medida();
-        $condiciones = $this->select_condiciones();
+    //     return view('logistica/cotizaciones/gestionar_valorizacion', compact('condiciones','unidades_medida','empresas'));
+    // }
+    // function view_cuadro_comparativo()
+    // {
+    //     $unidades_medida = $this->mostrar_unidad_medida();
+    //     $condiciones = $this->select_condiciones();
 
-        return view('logistica/cotizaciones/cuadro_comparativo', compact('condiciones','unidades_medida'));
-    }
+    //     return view('logistica/cotizaciones/cuadro_comparativo', compact('condiciones','unidades_medida'));
+    // }
 
     // function view_generar_orden()
     // {

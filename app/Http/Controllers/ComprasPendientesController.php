@@ -1,6 +1,9 @@
 <?php
 
 namespace App\Http\Controllers;
+
+use App\Models\Almacen\UnidadMedida;
+use App\Models\Configuracion\Moneda;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
@@ -36,8 +39,8 @@ class ComprasPendientesController extends Controller
         $categorias = (new AlmacenController)->mostrar_categorias_cbo();
         $unidades = (new AlmacenController)->mostrar_unidades_cbo();
 
-        $unidades_medida = (new LogisticaController)->mostrar_unidad_medida();
-        $monedas = (new LogisticaController)->mostrar_moneda();
+        $unidades_medida = UnidadMedida::mostrar();
+        $monedas = Moneda::mostrar();
         // $sedes = Auth::user()->sedesAcceso();
 
         return view('logistica/gestion_logistica/compras/pendientes/vista_pendientes', compact('sedes','empresas','sis_identidad','tp_documento', 'tp_moneda','tp_doc','condiciones','clasificaciones','subcategorias','categorias','unidades','unidades_medida','monedas'));
