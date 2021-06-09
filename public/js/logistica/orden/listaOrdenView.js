@@ -501,7 +501,7 @@ class ListaOrdenView {
                 {'data': 'facturas'},
                 {'render':
                     function (data, type, row, meta){
-                        return (parseFloat(row.monto_total_presup)).toFixed(2);
+                        return row.monto_total_presup>0?(parseFloat(row.monto_total_presup)).toFixed(2):'(No aplica)';
 
                     }
                 },
