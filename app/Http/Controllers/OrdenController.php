@@ -925,12 +925,22 @@ class OrdenController extends Controller
             FROM logistica.log_det_ord_compra 
             WHERE   log_det_ord_compra.id_orden_compra = log_ord_compra.id_orden_compra AND
                     log_det_ord_compra.estado != 7) AS monto_total_orden"),
-            DB::raw("(SELECT  coalesce(sum((cc_am_filas.cantidad * cc_am_filas.pvu_oc))*1.18 ,0) AS monto_total_presup
+            DB::raw("(SELECT  coalesce(oportunidades.importe) AS monto_total_presup
             FROM logistica.log_det_ord_compra 
             INNER JOIN almacen.alm_det_req on alm_det_req.id_detalle_requerimiento = log_det_ord_compra.id_detalle_requerimiento
-            INNER JOIN mgcp_cuadro_costos.cc_am_filas on cc_am_filas.id = alm_det_req.id_cc_am_filas
+            INNER JOIN almacen.alm_req on alm_req.id_requerimiento = alm_det_req.id_requerimiento
+            INNER JOIN mgcp_cuadro_costos.cc on cc.id = alm_req.id_cc
+            INNER JOIN mgcp_oportunidades.oportunidades on oportunidades.id = cc.id_oportunidad
 
-            WHERE log_det_ord_compra.id_orden_compra = log_ord_compra.id_orden_compra AND logistica.log_det_ord_compra.estado != 7) AS monto_total_presup")
+            WHERE log_det_ord_compra.id_orden_compra = log_ord_compra.id_orden_compra AND
+             logistica.log_det_ord_compra.estado != 7 LIMIT 1) AS monto_total_presup")
+            // DB::raw("(SELECT  coalesce(sum((cc_am_filas.cantidad * cc_am_filas.pvu_oc))*1.18 ,0) AS monto_total_presup
+            // FROM logistica.log_det_ord_compra 
+            // LEFT JOIN almacen.alm_det_req on alm_det_req.id_detalle_requerimiento = log_det_ord_compra.id_detalle_requerimiento
+            // LEFT JOIN mgcp_cuadro_costos.cc_am_filas on cc_am_filas.id = alm_det_req.id_cc_am_filas
+
+            // WHERE log_det_ord_compra.id_orden_compra = log_ord_compra.id_orden_compra AND
+            //  logistica.log_det_ord_compra.estado != 7) AS monto_total_presup")
             // DB::raw("( 
             
             //     SELECT array_agg(concat(doc_com.serie, '-', doc_com.numero)) AS facturas
