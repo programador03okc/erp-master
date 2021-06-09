@@ -921,10 +921,16 @@ class OrdenController extends Controller
             'log_ord_compra_pago.id_pago',
             'log_ord_compra_pago.detalle_pago',
             'log_ord_compra_pago.archivo_adjunto',
-            DB::raw("(SELECT  coalesce(sum((log_det_ord_compra.cantidad * log_det_ord_compra.precio))*1.18 ,0) AS suma_subtotal
+            DB::raw("(SELECT  coalesce(sum((log_det_ord_compra.cantidad * log_det_ord_compra.precio))*1.18 ,0) AS monto_total_orden
             FROM logistica.log_det_ord_compra 
             WHERE   log_det_ord_compra.id_orden_compra = log_ord_compra.id_orden_compra AND
-                    log_det_ord_compra.estado != 7) AS suma_subtotal")
+                    log_det_ord_compra.estado != 7) AS monto_total_orden"),
+            DB::raw("(SELECT  coalesce(sum((cc_am_filas.cantidad * cc_am_filas.pvu_oc))*1.18 ,0) AS monto_total_presup
+            FROM logistica.log_det_ord_compra 
+            INNER JOIN almacen.alm_det_req on alm_det_req.id_detalle_requerimiento = log_det_ord_compra.id_detalle_requerimiento
+            INNER JOIN mgcp_cuadro_costos.cc_am_filas on cc_am_filas.id = alm_det_req.id_cc_am_filas
+
+            WHERE log_det_ord_compra.id_orden_compra = log_ord_compra.id_orden_compra AND logistica.log_det_ord_compra.estado != 7) AS monto_total_presup")
             // DB::raw("( 
             
             //     SELECT array_agg(concat(doc_com.serie, '-', doc_com.numero)) AS facturas
@@ -1028,7 +1034,8 @@ class OrdenController extends Controller
                     'estado_doc'=>$element->estado_doc,
                     'detalle_pago'=> $element->detalle_pago, 
                     'archivo_adjunto'=> $element->archivo_adjunto,
-                    'suma_subtotal'=> $element->suma_subtotal,
+                    'monto_total_presup'=> $element->monto_total_presup,
+                    'monto_total_orden'=> $element->monto_total_orden,
                     'facturas'=> $this->obtenerFacturas($element->id_orden_compra),
                     'codigo_requerimiento'=> []
                     

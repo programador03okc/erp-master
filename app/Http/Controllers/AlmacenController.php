@@ -812,30 +812,7 @@ class AlmacenController extends Controller
         return response()->json($data);
     }
     
-    public function add_unid_med(Request $request)
-    {
-        $fecha = date('Y-m-d H:i:s');
-        $id_unidad_medida = DB::table('almacen.alm_und_medida')->insertGetId(
-            [
-                'descripcion' => $request->descripcion_unidad,
-                'abreviatura' => $request->abreviatura_unidad,
-                'estado' => 1
-            ],
-                'id_unidad_medida'
-            );
-        $unid = DB::table('almacen.alm_und_medida')
-            ->where('estado',1)->orderBy('descripcion','asc')->get();
 
-        $html = '';
-        foreach($unid as $unid){
-            if ($id_unidad_medida == $unid->id_unidad_medida){
-                $html .= '<option value="'.$unid->id_unidad_medida.'" selected>'.$unid->descripcion.'</option>';
-            } else {
-                $html .= '<option value="'.$unid->id_unidad_medida.'">'.$unid->descripcion.'</option>';
-            }
-        }
-        return json_encode($html);
-    }
     /**Guia Compra */
     public function listar_guias_compra()
     {
