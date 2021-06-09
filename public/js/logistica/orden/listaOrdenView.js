@@ -499,8 +499,17 @@ class ListaOrdenView {
                     }
                 },
                 {'data': 'facturas'},
-                {'data': 'detalle_pago'},
-                {'data': 'archivo_adjunto'},
+                {'render':
+                    function (data, type, row, meta){
+                        return (parseFloat(row.monto_total_presup)).toFixed(2);
+
+                    }
+                },
+                {'render':
+                    function (data, type, row, meta){
+                        return (parseFloat(row.monto_total_orden)).toFixed(2);
+                    }
+                },
                 {'render':
                     function (data, type, row, meta){
                         let containerOpenBrackets='<div class="btn-group" role="group" style="margin-bottom: 5px;display: flex;flex-direction: row;flex-wrap: nowrap;">';
