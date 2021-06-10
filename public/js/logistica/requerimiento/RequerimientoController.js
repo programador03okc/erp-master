@@ -25,6 +25,11 @@ class RequerimientoCtrl{
     obtenerCentroCostos(){
         return requerimientoModel.obtenerCentroCostos();
     }
+
+    getcategoriaAdjunto(){
+        return requerimientoModel.getcategoriaAdjunto();
+
+    }
 }
 
 const requerimientoCtrl = new RequerimientoCtrl(requerimientoView);

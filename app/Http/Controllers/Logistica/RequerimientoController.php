@@ -58,4 +58,9 @@ class RequerimientoController extends Controller
         return Presupuesto::mostrarPartidas($idGrupo,$idProyecto);
 
     }
+
+    public function mostrarCategoriaAdjunto(){
+        return CategoriaAdjunto::mostrar();
+
+    }
 }

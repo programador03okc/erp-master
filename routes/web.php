@@ -638,6 +638,7 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::get('index', 'Logistica\RequerimientoController@index')->name('index');
 					Route::get('mostrar-partidas/{idGrupo?}/{idProyecto?}', 'Logistica\RequerimientoController@mostrarPartidas')->name('mostrar-partidas');
 					Route::get('mostrar-centro-costos', 'CentroCostoController@mostrarCentroCostos')->name('mostrar-centro-costos');
+					Route::get('mostrar-categoria-adjunto', 'Logistica\RequerimientoController@mostrarCategoriaAdjunto')->name('mostrar-categoria-adjunto');
 
 
 					Route::get('lista-modal/{option?}', 'LogisticaController@mostrar_requerimientos')->name('lista-modal');

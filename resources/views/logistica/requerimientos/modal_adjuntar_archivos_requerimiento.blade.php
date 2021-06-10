@@ -13,8 +13,8 @@
                     </div>
                 </div>
                 <br>
-                <table class="table table-bordered table-condensed table-hover no-footer" id="listaArchivosRequerimiento" width="100%">
-                    <thead style=" background: #f4f4f4; ">
+                <table class="mytable table table-striped table-condensed table-bordered" id="listaArchivosRequerimiento" width="100%">
+                    <thead>
                         <tr>
                             <th width="200">Descripción</th>
                             <th width="60">Tipo</th>

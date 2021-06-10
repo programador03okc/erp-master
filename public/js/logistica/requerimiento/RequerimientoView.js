@@ -61,6 +61,7 @@ class RequerimientoView {
                 selectElement.remove(i);
             }
         }
+  
 
         array.forEach(element => {
             let option = document.createElement("option");
@@ -74,6 +75,10 @@ class RequerimientoView {
             option.setAttribute('data-name-ubigeo', element.ubigeo_descripcion);
             selectElement.add(option);
         });
+
+        if(array.length >0 ){
+            this.updateSede(selectElement);
+        }
 
     }
 
@@ -153,6 +158,27 @@ class RequerimientoView {
             obj.closest('div').classList.remove("has-error");
             if (obj.closest("div").querySelector("span")) {
                 obj.closest("div").querySelector("span").remove();
+
+            }
+        } else {
+            obj.closest('div').classList.add("has-error");
+        }
+    }
+    updateSede(obj) {
+        if (obj.value.length > 0) {
+            obj.closest('div').classList.remove("has-error");
+            if (obj.closest("div").querySelector("span")) {
+                obj.closest("div").querySelector("span").remove();
+            }
+        } else {
+            obj.closest('div').classList.add("has-error");
+        }
+    }
+    updateFechaLimite(obj) {
+        if (obj.value.length > 0) {
+            obj.closest('div').classList.remove("has-error");
+            if (obj.closest("div").querySelector("span")) {
+                obj.closest("div").querySelector("span").remove();
             }
         } else {
             obj.closest('div').classList.add("has-error");
@@ -180,8 +206,16 @@ class RequerimientoView {
 
             document.querySelector("tbody[id='body_detalle_requerimiento']").insertAdjacentHTML('beforeend', `<tr style="text-align:center">
             <td></td>
-            <td><p class="descripcion-partida">(NO SELECCIONADO)</p><button type="button" class="btn btn-xs btn-info" name="partida" onclick="requerimientoView.cargarModalPartidas(this)">Seleccionar</button> <input type="text" name="id-partida[]" hidden></td>
-            <td><p class="descripcion-centro-costo">(NO SELECCIONADO)</p><button type="button" class="btn btn-xs btn-primary" name="centroCostos" onclick="requerimientoView.cargarModalCentroCostos(this)">Seleccionar</button> <input type="text" name="id-centro-costo[]" hidden></td>
+            <td><p class="descripcion-partida">(NO SELECCIONADO)</p><button type="button" class="btn btn-xs btn-info" name="partida" onclick="requerimientoView.cargarModalPartidas(this)">Seleccionar</button> 
+                <div class="form-group">
+                    <input type="text" class="partida" name="id-partida[]" hidden>
+                </div>
+            </td>
+            <td><p class="descripcion-centro-costo">(NO SELECCIONADO)</p><button type="button" class="btn btn-xs btn-primary" name="centroCostos" onclick="requerimientoView.cargarModalCentroCostos(this)">Seleccionar</button> 
+                <div class="form-group">
+                    <input type="text" class="centroCosto" name="id-centro-costo[]" hidden>
+                </div>
+            </td>
             <td><input class="form-control input-sm" type="text" name="partNumber[]" placeholder="Part number"></td>
             <td>
                 <div class="form-group">
@@ -223,8 +257,16 @@ class RequerimientoView {
 
             document.querySelector("tbody[id='body_detalle_requerimiento']").insertAdjacentHTML('beforeend', `<tr style="text-align:center">
             <td></td>
-            <td><p class="descripcion-partida">(NO SELECCIONADO)</p><button type="button" class="btn btn-xs btn-info" name="centroCostos" onclick="requerimientoView.cargarModalPartidas(this)">Seleccionar</button> <input type="text" name="id-centro-costo[]" hidden></td>
-            <td><p class="descripcion-centro-costo">(NO SELECCIONADO)</p><button type="button" class="btn btn-xs btn-primary" name="partida" onclick="requerimientoView.cargarModalCentroCostos(this)">Seleccionar</button> <input type="text" name="id-partida[]" hidden></td>
+            <td><p class="descripcion-partida">(NO SELECCIONADO)</p><button type="button" class="btn btn-xs btn-info" name="centroCostos" onclick="requerimientoView.cargarModalPartidas(this)">Seleccionar</button> 
+                <div class="form-group">
+                    <input type="text" class="partida" name="id-partida[]" hidden>
+                </div>
+                </td>
+            <td><p class="descripcion-centro-costo">(NO SELECCIONADO)</p><button type="button" class="btn btn-xs btn-primary" name="partida" onclick="requerimientoView.cargarModalCentroCostos(this)">Seleccionar</button> 
+                <div class="form-group">
+                    <input type="text" class="centroCosto" name="id-centro-costo[]" hidden>
+                </div>
+            </td>
             <td>(Servicio)<input type="hidden" name="partNumber[]"></td>
             <td>
                 <div class="form-group">
@@ -278,6 +320,29 @@ class RequerimientoView {
         this.calcularTotal();
     }
 
+
+    updatePartidaItem(obj) {
+        let text = obj.value;
+        if (text.length > 0) {
+            obj.closest("div").classList.remove('has-error');
+            if (obj.closest("td").querySelector("span")) {
+                obj.closest("td").querySelector("span").remove();
+            }
+        } else {
+            obj.closest("div").classList.add('has-error');
+        }
+    }
+    updateCentroCostoItem(obj) {
+        let text = obj.value;
+        if (text.length > 0) {
+            obj.closest("div").classList.remove('has-error');
+            if (obj.closest("td").querySelector("span")) {
+                obj.closest("td").querySelector("span").remove();
+            }
+        } else {
+            obj.closest("div").classList.add('has-error');
+        }
+    }
 
     updateCantidadItem(obj) {
         let text = obj.value;
@@ -425,13 +490,14 @@ class RequerimientoView {
         let codigo = $("#par-" + idPartida + " ").find("td[name=codigo]")[0].innerHTML;
         let descripcion = $("#par-" + idPartida + " ").find("td[name=descripcion]")[0].innerHTML;
         // let importe_total = $("#par-"+idPartida+" ").find("td[name=importe_total]")[0].innerHTML;
-        tempObjectBtnPartida.nextElementSibling.value = idPartida;
+        tempObjectBtnPartida.nextElementSibling.querySelector("input").value = idPartida;
         tempObjectBtnPartida.textContent = 'Cambiar';
 
         let tr = tempObjectBtnPartida.closest("tr");
         tr.querySelector("p[class='descripcion-partida']").textContent = descripcion
         tr.querySelector("p[class='descripcion-partida']").setAttribute('title', codigo);
 
+        this.updatePartidaItem(tempObjectBtnPartida.nextElementSibling.querySelector("input"));
         $('#modal-partidas').modal('hide');
         tempObjectBtnPartida = null;
     }
@@ -560,13 +626,13 @@ class RequerimientoView {
     selectCentroCosto(idCentroCosto, codigo, descripcion) {
 
 
-        tempObjectBtnCentroCostos.nextElementSibling.value = idCentroCosto;
+        tempObjectBtnCentroCostos.nextElementSibling.querySelector("input").value = idCentroCosto;
         tempObjectBtnCentroCostos.textContent = 'Cambiar';
 
         let tr = tempObjectBtnCentroCostos.closest("tr");
         tr.querySelector("p[class='descripcion-centro-costo']").textContent = descripcion
         tr.querySelector("p[class='descripcion-centro-costo']").setAttribute('title', codigo);
-
+        this.updateCentroCostoItem(tempObjectBtnCentroCostos.nextElementSibling.querySelector("input"));
         $('#modal-centro-costos').modal('hide');
         tempObjectBtnCentroCostos = null;
         // componerTdItemDetalleRequerimiento();
@@ -588,7 +654,6 @@ class RequerimientoView {
         document.querySelector("div[id='modal-adjuntar-archivos-requerimiento'] div[class='bootstrap-filestyle input-group'] input[type='text']").classList.add('oculto');
         document.querySelector("div[id='modal-adjuntar-archivos-requerimiento'] span[class='buttonText']").textContent ="Agregar archivo";
 
-        // llenarTablaAdjuntosRequerimiento();
     }
     agregarAdjuntoRequerimiento(event) {
         let archivoAdjunto = new ArchivoAdjunto(event.target.files);
@@ -639,24 +704,6 @@ class RequerimientoView {
     }
 
     actionGuardarEditarRequerimiento() {
-
-        // var customElement = $("<div>", {
-        //     "css"   : {
-        //         "font-size"     : "24px",
-        //         "text-align"    : "center",
-        //         "padding"       : "0px",
-        //         "margin-top"    : "-400px"
-        //     },
-        //     "class" : "your-custom-class",
-        //     "text"  : "Guardando requerimiento!"
-        // });
-
-        // $('#wrapper-okc').LoadingOverlay("show", {
-        //     imageAutoResize: true,
-        //     progress: true,
-        //     custom:customElement,
-        //     imageColor: "#3c8dbc"
-        // });
         
  
         let continuar = true;
@@ -666,49 +713,112 @@ class RequerimientoView {
         }
 
         if (document.querySelector("input[name='concepto']").value == '') {
-            let newSpanInfo = document.createElement("span");
-            newSpanInfo.classList.add('text-danger');
-            newSpanInfo.textContent = '(Ingrese un concepto/motivo)';
-            document.querySelector("input[name='concepto']").closest('div').querySelector("h5").appendChild(newSpanInfo);
-            document.querySelector("input[name='concepto']").closest('div').classList.add('has-error');
+            continuar = false;
+            if(document.querySelector("input[name='concepto']").closest('div').querySelector("span")==null){
+                let newSpanInfo = document.createElement("span");
+                newSpanInfo.classList.add('text-danger');
+                newSpanInfo.textContent = '(Ingrese un concepto/motivo)';
+                document.querySelector("input[name='concepto']").closest('div').querySelector("h5").appendChild(newSpanInfo);
+                document.querySelector("input[name='concepto']").closest('div').classList.add('has-error');
+            }
 
         }
+
         if (document.querySelector("select[name='empresa']").value == 0) {
-            let newSpanInfo = document.createElement("span");
-            newSpanInfo.classList.add('text-danger');
-            newSpanInfo.textContent = '(Seleccione una empresa)';
-            document.querySelector("select[name='empresa']").closest('div').querySelector("h5").appendChild(newSpanInfo);
-            document.querySelector("select[name='empresa']").closest('div').classList.add('has-error');
+            continuar = false;
+            if(document.querySelector("select[name='empresa']").closest('div').querySelector("span")==null){
+                let newSpanInfo = document.createElement("span");
+                newSpanInfo.classList.add('text-danger');
+                newSpanInfo.textContent = '(Seleccione una empresa)';
+                document.querySelector("select[name='empresa']").closest('div').querySelector("h5").appendChild(newSpanInfo);
+                document.querySelector("select[name='empresa']").closest('div').classList.add('has-error');
+            }
+        }
+
+        if (document.querySelector("select[name='sede']").value == 0) {
+            continuar = false;
+            if(document.querySelector("select[name='sede']").closest('div').querySelector("span")==null){
+                let newSpanInfo = document.createElement("span");
+                newSpanInfo.classList.add('text-danger');
+                newSpanInfo.textContent = '(Seleccione una sede)';
+                document.querySelector("select[name='sede']").closest('div').querySelector("h5").appendChild(newSpanInfo);
+                document.querySelector("select[name='sede']").closest('div').classList.add('has-error');
+            }
+
+        }
+
+        if (document.querySelector("input[name='fecha_entrega']").value == '') {
+            continuar = false;
+            if(document.querySelector("input[name='fecha_entrega']").closest('div').querySelector("span")==null){
+                let newSpanInfo = document.createElement("span");
+                newSpanInfo.classList.add('text-danger');
+                newSpanInfo.textContent = '(Seleccione una fecha de entrega)';
+                document.querySelector("input[name='fecha_entrega']").closest('div').querySelector("h5").appendChild(newSpanInfo);
+                document.querySelector("input[name='fecha_entrega']").closest('div').classList.add('has-error');
+            }
 
         }
 
         let tbodyChildren = document.querySelector("tbody[id='body_detalle_requerimiento']").children;
         for (let index = 0; index < tbodyChildren.length; index++) {
 
-            if (tbodyChildren[index].querySelector("input[class~='cantidad']").value == '') {
-                let newSpanInfo = document.createElement("span");
-                newSpanInfo.classList.add('text-danger');
-                newSpanInfo.textContent = 'Ingrese una cantidad';
-                tbodyChildren[index].querySelector("input[class~='cantidad']").closest('td').appendChild(newSpanInfo);
-                tbodyChildren[index].querySelector("input[class~='cantidad']").closest('td').querySelector("div[class~='form-group']").classList.add('has-error');
-
-            }
-            if (tbodyChildren[index].querySelector("input[class~='precio']").value == '') {
-                let newSpanInfo = document.createElement("span");
-                newSpanInfo.classList.add('text-danger');
-                newSpanInfo.textContent = 'Ingrese un precio';
-                tbodyChildren[index].querySelector("input[class~='precio']").closest('td').appendChild(newSpanInfo);
-                tbodyChildren[index].querySelector("input[class~='precio']").closest('td').querySelector("div[class~='form-group']").classList.add('has-error');
-
-            }
-            if (tbodyChildren[index].querySelector("textarea[class~='descripcion']")) {
-                if (tbodyChildren[index].querySelector("textarea[class~='descripcion']").value == '') {
+            if (tbodyChildren[index].querySelector("input[class~='partida']").value == '') {
+                continuar = false;
+                if(tbodyChildren[index].querySelector("input[class~='partida']").closest('td').querySelector("span")==null){
                     let newSpanInfo = document.createElement("span");
                     newSpanInfo.classList.add('text-danger');
-                    newSpanInfo.textContent = 'Ingrese una descripción';
-                    tbodyChildren[index].querySelector("textarea[class~='descripcion']").closest('td').appendChild(newSpanInfo);
-                    tbodyChildren[index].querySelector("textarea[class~='descripcion']").closest('td').querySelector("div[class~='form-group']").classList.add('has-error');
+                    newSpanInfo.textContent = 'Ingrese una partida';
+                    tbodyChildren[index].querySelector("input[class~='partida']").closest('td').appendChild(newSpanInfo);
+                    tbodyChildren[index].querySelector("input[class~='partida']").closest('td').querySelector("div[class~='form-group']").classList.add('has-error');
+                }
 
+            }
+            if (tbodyChildren[index].querySelector("input[class~='centroCosto']").value == '') {
+                continuar = false;
+                if(tbodyChildren[index].querySelector("input[class~='centroCosto']").closest('td').querySelector("span")==null){
+                    let newSpanInfo = document.createElement("span");
+                    newSpanInfo.classList.add('text-danger');
+                    newSpanInfo.textContent = 'Ingrese un centro de costo';
+                    tbodyChildren[index].querySelector("input[class~='centroCosto']").closest('td').appendChild(newSpanInfo);
+                    tbodyChildren[index].querySelector("input[class~='centroCosto']").closest('td').querySelector("div[class~='form-group']").classList.add('has-error');
+                }
+
+            }
+
+            if (tbodyChildren[index].querySelector("input[class~='cantidad']").value == '') {
+                continuar = false;
+                if(tbodyChildren[index].querySelector("input[class~='cantidad']").closest('td').querySelector("span")==null){
+                    let newSpanInfo = document.createElement("span");
+                    newSpanInfo.classList.add('text-danger');
+                    newSpanInfo.textContent = 'Ingrese una cantidad';
+                    tbodyChildren[index].querySelector("input[class~='cantidad']").closest('td').appendChild(newSpanInfo);
+                    tbodyChildren[index].querySelector("input[class~='cantidad']").closest('td').querySelector("div[class~='form-group']").classList.add('has-error');
+                }
+
+            }
+
+            if (tbodyChildren[index].querySelector("input[class~='precio']").value == '') {
+                continuar = false;
+                if(tbodyChildren[index].querySelector("input[class~='precio']").closest('td').querySelector("span")==null){
+                    let newSpanInfo = document.createElement("span");
+                    newSpanInfo.classList.add('text-danger');
+                    newSpanInfo.textContent = 'Ingrese un precio';
+                    tbodyChildren[index].querySelector("input[class~='precio']").closest('td').appendChild(newSpanInfo);
+                    tbodyChildren[index].querySelector("input[class~='precio']").closest('td').querySelector("div[class~='form-group']").classList.add('has-error');
+                }
+
+            }
+
+            if (tbodyChildren[index].querySelector("textarea[class~='descripcion']")) {
+                if (tbodyChildren[index].querySelector("textarea[class~='descripcion']").value == '') {
+                    continuar = false;
+                    if(tbodyChildren[index].querySelector("textarea[class~='descripcion']").closest('td').querySelector("span")==null){
+                        let newSpanInfo = document.createElement("span");
+                        newSpanInfo.classList.add('text-danger');
+                        newSpanInfo.textContent = 'Ingrese una descripción';
+                        tbodyChildren[index].querySelector("textarea[class~='descripcion']").closest('td').appendChild(newSpanInfo);
+                        tbodyChildren[index].querySelector("textarea[class~='descripcion']").closest('td').querySelector("div[class~='form-group']").classList.add('has-error');
+                    }
                 }
 
 
@@ -726,11 +836,19 @@ class RequerimientoView {
                 });
                 tempArchivoAdjuntoItemList.forEach(element => {
                     if (ItemWithIdRegisterList.includes(element.idRegister) == true) {
-                        formData.append(`archivoAdjunto${element.idRegister}[]`, element.file, element.nameFile);
+                        formData.append(`archivoAdjuntoItem${element.idRegister}[]`, element.file, element.nameFile);
                     }
                 });
 
             }
+
+            if(tempArchivoAdjuntoRequerimientoList.length >0){
+                tempArchivoAdjuntoRequerimientoList.forEach(element => {
+                    formData.append(`archivoAdjuntoRequerimiento${element.id}[]`, element.file, element.nameFile);
+                });
+
+            }
+    
             $.ajax({
                 type: 'POST',
                 url: 'guardar',
@@ -741,7 +859,23 @@ class RequerimientoView {
                 beforeSend: function (data) { // Are not working with dataType:'jsonp'
 
                     // $('#modal-loader').modal({backdrop: 'static', keyboard: false});
+                    var customElement = $("<div>", {
+                        "css"   : {
+                            "font-size"     : "24px",
+                            "text-align"    : "center",
+                            "padding"       : "0px",
+                            "margin-top"    : "-400px"
+                        },
+                        "class" : "your-custom-class",
+                        "text"  : "Guardando requerimiento..."
+                    });
 
+                    $('#wrapper-okc').LoadingOverlay("show", {
+                        imageAutoResize: true,
+                        progress: true,
+                        custom:customElement,
+                        imageColor: "#3c8dbc"
+                    });
                 },
                 success: function (response) {
                     if(response.status ==200){
@@ -813,47 +947,80 @@ class ArchivoAdjunto {
         }
     }
 
-    addToTablaArchivosRequerimiento(nameFile) {
+    addToTablaArchivosRequerimiento(id,nameFile) {
+        
+        requerimientoCtrl.getcategoriaAdjunto().then((res)=> {
+            this.construirRegistroEnTablaAdjuntosRequerimiento(id,nameFile,res);
 
-        document.querySelector("tbody[id='body_archivos_requerimiento']").insertAdjacentHTML('beforeend', `<tr style="text-align:center">
+        }).catch(function(err) {
+            console.log(err)
+        })
+
+    }
+
+    construirRegistroEnTablaAdjuntosRequerimiento(id,nameFile,data){
+        let html='';
+        html=`<tr id="${id}" style="text-align:center">
         <td style="text-align:left;">${nameFile}</td>
         <td>
-            <select class="form-control" name="categoriaAdjunto"></select>
+            <select class="form-control" name="categoriaAdjunto" onChange="ArchivoAdjunto.changeCategoriaAdjunto(this)">
+        `;
+        data.forEach(element => {
+            html+=`<option value="${element.id_categoria_adjunto}">${element.descripcion}</option>`
+        });
+        html+=`</select>
         </td>
         <td>
             <div class="btn-group" role="group">
-                <button type="button" class="btn btn-info btn-xs" name="btnDescargarArchivoItem" title="Descargar" onclick="ArchivoAdjunto.descargarArchivoItem('${nameFile}');" ><i class="fas fa-file-archive"></i></button>
-                <button type="button" class="btn btn-danger btn-xs" name="btnEliminarArchivoItem" title="Eliminar" onclick="ArchivoAdjunto.eliminarArchivoItem(this,'${nameFile}');" ><i class="fas fa-trash-alt"></i></button>
+                <button type="button" class="btn btn-info btn-xs" name="btnDescargarArchivoRequerimiento" title="Descargar" onclick="ArchivoAdjunto.descargarArchivoRequerimieto('${id}');" ><i class="fas fa-file-archive"></i></button>
+                <button type="button" class="btn btn-danger btn-xs" name="btnEliminarArchivoRequerimiento" title="Eliminar" onclick="ArchivoAdjunto.eliminarArchivoRequerimiento(this,'${id}');" ><i class="fas fa-trash-alt"></i></button>
+            </div>
+        </td>
+        </tr>`;
+
+        document.querySelector("tbody[id='body_archivos_requerimiento']").insertAdjacentHTML('beforeend',html);
+
+    }
+
+    static changeCategoriaAdjunto(obj) {
+        if(tempArchivoAdjuntoRequerimientoList.length >0){
+            let indice = tempArchivoAdjuntoRequerimientoList.findIndex(elemnt => elemnt.id === obj.closest('tr').id);
+            tempArchivoAdjuntoRequerimientoList[indice].category=obj.value;
+        }else{
+            alert("Hubo un error inesperado en la lista de adjuntos por requerimiento, la cantidad de adjuntos es cero");
+        }
+    }
+
+
+    addToTablaArchivosItem(id,nameFile) {
+
+        document.querySelector("tbody[id='body_archivos_item']").insertAdjacentHTML('beforeend', `<tr id="${id}" style="text-align:center">
+        <td  style="text-align:left;">${nameFile}</td>
+        <td>
+            <div class="btn-group" role="group">
+                <button type="button" class="btn btn-info btn-xs" name="btRequerimietocargarArchivoItem" title="Descargar" onclick="ArchivoAdjunto.descargarArchivoItem('${id}');" ><i class="fas fa-file-archive"></i></button>
+                <button type="button" class="btn btn-danger btn-xs" name="btnEliminarArchivoItem" title="Eliminar" onclick="ArchivoAdjunto.eliminarArchivoItem(this,'${id}');" ><i class="fas fa-trash-alt"></i></button>
             </div>
         </td>
         </tr>
         `);
     }
 
-
-    addToTablaArchivosItem(idRegister, nameFile) {
-
-        document.querySelector("tbody[id='body_archivos_item']").insertAdjacentHTML('beforeend', `<tr style="text-align:center">
-        <td style="text-align:left;">${nameFile}</td>
-        <td>
-            <div class="btn-group" role="group">
-                <button type="button" class="btn btn-info btn-xs" name="btnDescargarArchivoItem" title="Descargar" onclick="ArchivoAdjunto.descargarArchivoItem('${idRegister}','${nameFile}');" ><i class="fas fa-file-archive"></i></button>
-                <button type="button" class="btn btn-danger btn-xs" name="btnEliminarArchivoItem" title="Eliminar" onclick="ArchivoAdjunto.eliminarArchivoItem(this,'${idRegister}','${nameFile}');" ><i class="fas fa-trash-alt"></i></button>
-            </div>
-        </td>
-        </tr>
-        `);
-    }
-
-    static eliminarArchivoItem(obj,idRegister, nameFile) {
+    static eliminarArchivoRequerimiento(obj,id) {
         // console.log('eliminar archivo ' + idRegister + nameFile);
         obj.closest("tr").remove();
-        tempArchivoAdjuntoItemList = tempArchivoAdjuntoItemList.filter((element, i) => element.nameFile != nameFile);
+        tempArchivoAdjuntoRequerimientoList = tempArchivoAdjuntoRequerimientoList.filter((element, i) => element.id != id);
+        ArchivoAdjunto.updateContadorTotalAdjuntosRequerimiento();
+    }
+
+    static eliminarArchivoItem(obj,id) {
+        obj.closest("tr").remove();
+        tempArchivoAdjuntoItemList = tempArchivoAdjuntoItemList.filter((element, i) => element.id != id);
         ArchivoAdjunto.updateContadorTotalAdjuntosPorItem();
     }
 
     static updateContadorTotalAdjuntosRequerimiento(){
-        
+
         document.querySelector("span[name='cantidadAdjuntosRequerimiento']").textContent= tempArchivoAdjuntoRequerimientoList.length;
     }
 
@@ -884,8 +1051,9 @@ class ArchivoAdjunto {
             const nameFile = this.getName();
             const typeFile = this.getType();
             const sizeFile = this.getSize();
-
+            const id = requerimientoView.makeId();
             tempArchivoAdjuntoRequerimientoList.push({
+                id:id , 
                 category: 1, //default
                 nameFile: nameFile,
                 typeFile: typeFile,
@@ -894,7 +1062,7 @@ class ArchivoAdjunto {
             });
 
             ArchivoAdjunto.updateContadorTotalAdjuntosRequerimiento();
-            this.addToTablaArchivosRequerimiento(nameFile);
+            this.addToTablaArchivosRequerimiento(id,nameFile);
 
         } else {
             alert(`La extensión del archivo .${typeFile} no esta permitido`);
@@ -908,8 +1076,10 @@ class ArchivoAdjunto {
             const nameFile = this.getName();
             const typeFile = this.getType();
             const sizeFile = this.getSize();
+            const id = requerimientoView.makeId();
 
             tempArchivoAdjuntoItemList.push({
+                id:id , 
                 idRegister: tempIdRegisterActive,
                 nameFile: nameFile,
                 typeFile: typeFile,
@@ -918,7 +1088,7 @@ class ArchivoAdjunto {
             });
 
             ArchivoAdjunto.updateContadorTotalAdjuntosPorItem();
-            this.addToTablaArchivosItem(tempIdRegisterActive, nameFile)
+            this.addToTablaArchivosItem(id, nameFile)
 
         } else {
             alert(`La extensión del archivo .${typeFile} no esta permitido`);

@@ -145,7 +145,7 @@ Requerimiento
                         <div class="col-md-2" id="input-group-sede">
                             <div class="form-group">
                                 <h5>Sede</h5>
-                                <select id="sede" name="sede" class="form-control activation" onChange="requerimientoView.changeOptUbigeo(event);">
+                                <select id="sede" name="sede" class="form-control activation" onChange="requerimientoView.changeOptUbigeo(event); requerimientoView.updateSede(this);">
                                     <option value="">Elija una opción</option>
                                 </select>
                             </div>
@@ -154,7 +154,7 @@ Requerimiento
                         <div class="col-md-2" id="input-group-fecha_entrega">
                             <div class="form-group">
                                 <h5>Fecha límite entrega</h5>
-                                <input type="date" class="form-control input-sm activation" name="fecha_entrega">
+                                <input type="date" class="form-control input-sm activation" name="fecha_entrega" onChange="requerimientoView.updateFechaLimite(this);">
                             </div>
                         </div>
 
@@ -607,7 +607,7 @@ Requerimiento
 <div class="hidden" id="divOculto">
     <select id="selectUnidadMedida">
         @foreach ($unidadesMedida as $unidad)
-        <option value="{{$unidad->id_unidad_medida}}">{{$unidad->descripcion}}</option>
+        <option value="{{$unidad->id_unidad_medida}}" {{$unidad->id_unidad_medida=='1' ? 'selected' : ''}}>{{$unidad->descripcion}}</option>
         @endforeach
     </select>
 </div>
