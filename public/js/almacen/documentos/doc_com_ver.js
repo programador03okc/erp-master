@@ -57,9 +57,9 @@ function documentosVer(id){
                     html += `<tr>
                         <td>${i}</td>
                         <td>${item.serie!==null?(item.serie+'-'+item.numero):''}</td>
-                        <td>${item.codigo}</td>
+                        <td>${item.codigo!==null?item.codigo:''}</td>
                         <td>${item.part_number!==null?item.part_number:''}</td>
-                        <td>${item.descripcion}</td>
+                        <td>${item.descripcion!==null?item.descripcion:item.servicio_descripcion}</td>
                         <td class="right">${item.cantidad}</td>
                         <td>${item.abreviatura}</td>
                         <td class="right">${item.precio_unitario}</td>

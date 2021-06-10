@@ -343,7 +343,7 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('totales_propuesta/{id}', 'ProyectosController@totales_propuesta');
 				Route::get('mostrar_total_presint/{id}', 'ProyectosController@mostrar_total_presint');
 				Route::get('copiar_partidas_presint/{id}/{pr}', 'ProyectosController@copiar_partidas_presint');
-				Route::get('listar_opciones', 'ProyectosController@listar_opciones');
+				Route::get('listar_opciones', 'Proyectos\Opciones\OpcionesController@listar_opciones');
 				
 				Route::get('listar_obs_cd/{id}', 'ProyectosController@listar_obs_cd');
 				Route::get('listar_obs_ci/{id}', 'ProyectosController@listar_obs_ci');
@@ -416,7 +416,7 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('anular_contrato/{id}', 'ProyectosController@anular_contrato');
 				Route::get('mostrar_presupuestos_acu/{id}', 'ProyectosController@mostrar_presupuestos_acu');
 				Route::get('html_presupuestos_acu/{id}', 'ProyectosController@html_presupuestos_acu');
-				Route::get('listar_opciones', 'ProyectosController@listar_opciones');
+				Route::get('listar_opciones', 'Proyectos\Opciones\OpcionesController@listar_opciones');
 
 			});
 			

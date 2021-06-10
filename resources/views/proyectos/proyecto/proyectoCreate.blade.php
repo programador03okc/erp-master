@@ -17,15 +17,18 @@
                         <div class="col-md-9">
                             <h5>Descripción</h5>
                             <input class="oculto" name="id_op_com">
-                            <div style="width: 100%; display:flex;">
-                                <div style="width:94%; display:flex;">
+                            <div style="display:flex;">
+                                <div style="width:95%; display:flex;">
                                     <input type="text" name="nombre_opcion" class="form-control input-sm" readOnly/>
                                 </div>
-                                <div style="width:6%;">
-                                    <span class="input-group-addon input-sm" style="cursor:pointer;"  
+                                <div>
+                                    <!-- <span class="input-group-addon input-sm" style="cursor:pointer;"  
                                         onClick="open_opcion_modal();">
                                         <i class="fas fa-search"></i>
-                                    </span>
+                                    </span> -->
+                                    <button type="button" class="input-group-text activation btn-primary" id="basic-addon1" onClick="open_opcion_modal();">
+                                        <i class="fa fa-search"></i>
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -60,7 +63,6 @@
                                     <i class="fa fa-search"></i>
                                 </button>
                             </div>
-                            {{-- boton para Crear Opciones --}}
                         </div>
                     </div>
                     <div class="row">
@@ -109,14 +111,14 @@
                                 @endforeach
                             </select>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <h5>Fecha Inicio / Fecha Fin</h5>
                             <div style="display:flex;">
                                 <input type="date" name="fecha_inicio" value="<?=date('Y-m-d');?>" onChange="change_fechas();" class="form-control"/>
                                 <input type="date" name="fecha_fin" value="<?=date('Y-m-d');?>" class="form-control" />
                             </div>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-2">
                             <h5>Jornal x día</h5>
                             <div class="input-group">
                                 <input type="number" name="jornal" class="form-control"/>

@@ -170,7 +170,9 @@ function mostrarListaItems(){
         <td>${(element.serie!==undefined ? (element.serie+'-'+element.numero) : (element.cod_orden!==null?element.cod_orden:''))}</td>
         <td>${element.codigo!==null?element.codigo:''}</td>
         <td>${element.part_number!==null?element.part_number:''}</td>
-        <td>${element.descripcion}</td>
+        <td>${element.id_producto==null
+            ?`<input type="text" class="form-control descripcion" value="${element.descripcion}" data-id="${element.id_guia_com_det}"/>`
+            :element.descripcion}</td>
         <td>${element.cantidad}</td>
         <td>${element.abreviatura}</td>
         <td>
@@ -214,6 +216,20 @@ function mostrarListaItems(){
     $('#detalleItems tfoot').html(html_foot);
     $('[name=importe]').val(formatNumber.decimal(totales.total,'',-2));
 }
+
+$('#detalleItems tbody').on("change", ".descripcion", function(){
+    
+    let id_guia_com_det = $(this).data('id');
+    let descripcion = $(this).val();
+    console.log('descripcion: '+descripcion);
+    listaItems.forEach(element => {
+        if (element.id_guia_com_det == id_guia_com_det){
+            element.descripcion = descripcion;
+            console.log(element);
+        }
+    });
+    mostrarListaItems();
+});
 
 $('#detalleItems tbody').on("change", ".unitario", function(){
     
@@ -279,6 +295,7 @@ $("#form-doc_create").on("submit", function(e){
         nuevo = {
             'id_guia_com_det'   : element.id_guia_com_det,
             'id_producto'       : element.id_producto,
+            'descripcion'       : (element.id_producto == null ? element.descripcion : ''),
             'cantidad'          : element.cantidad,
             'id_unid_med'       : element.id_unid_med,
             'precio'            : element.precio,
@@ -340,4 +357,31 @@ function changeMoneda(){
         $('[name=simbolo]').val("");
         $('[name=sim]').text("");
     }
+}
+
+function agregarServicio(){
+    let count = $('#detalleItems tbody tr').length + 1;
+    console.log(count);
+    
+    nuevo = {
+        'abreviatura': "SER",
+        'cantidad': "1",
+        'cod_orden': "",
+        'codigo': "",
+        'descripcion': "",
+        'estado': 1,
+        'id_guia_com': null,
+        'id_guia_com_det': count,
+        'id_producto': null,
+        'id_unid_med': 29,//Servicio
+        'part_number': "",
+        'porcentaje_dscto': 0,
+        'precio': 0,
+        'sub_total': 0,
+        'total': 0,
+        'total_dscto': 0
+    }
+
+    listaItems.push(nuevo);
+    mostrarListaItems();
 }

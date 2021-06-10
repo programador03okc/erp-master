@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Comercial\ClienteController;
+use App\Http\Controllers\Proyectos\Catalogos\GenericoController;
+use App\Models\Presupuestos\CentroCosto;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 
@@ -74,14 +77,14 @@ class ProyectosController extends Controller
         return view('proyectos/reportes/curvas');
     }
     function view_proyecto(){
-        $clientes = $this->mostrar_clientes_cbo();
-        $monedas = $this->mostrar_monedas_cbo();
-        $tipos = $this->mostrar_tipos_cbo();
-        $sistemas = $this->mostrar_sis_contrato_cbo();
-        $modalidades = $this->mostrar_modalidad_cbo();
-        $unid_program = $this->mostrar_unid_program_cbo();
-        $tipo_contrato = $this->mostrar_tipo_contrato_cbo();
-        $empresas = $this->mostrar_empresas_cbo();
+        $clientes = ClienteController::mostrar_clientes_cbo();
+        $monedas = GenericoController::mostrar_monedas_cbo();
+        $tipos = GenericoController::mostrar_tipos_cbo();
+        $sistemas = GenericoController::mostrar_sis_contrato_cbo();
+        $modalidades = GenericoController::mostrar_modalidad_cbo();
+        $unid_program = GenericoController::mostrar_unid_program_cbo();
+        $tipo_contrato = GenericoController::mostrar_tipo_contrato_cbo();
+        $empresas = GenericoController::mostrar_empresas_cbo();
         return view('proyectos/proyecto/proyecto', compact('clientes','monedas','tipos','sistemas','modalidades','unid_program','tipo_contrato','empresas'));
     }
 
@@ -129,14 +132,6 @@ class ProyectosController extends Controller
         $data = DB::table('proyectos.proy_tp_insumo')
         ->select('proy_tp_insumo.id_tp_insumo','proy_tp_insumo.descripcion')
         ->where('estado',1)->get();
-        return $data;
-    }
-
-    public function mostrar_tipo_contrato_cbo(){
-        $data = DB::table('proyectos.proy_tp_contrato')
-        ->select('proy_tp_contrato.id_tp_contrato','proy_tp_contrato.descripcion')
-        ->where([['proy_tp_contrato.estado','=',1]])
-            ->get();
         return $data;
     }
 
@@ -560,7 +555,7 @@ class ProyectosController extends Controller
                 ->whereYear('fecha_inicio', '=', $yyyy)
                 ->count();
 
-        $number = $this->leftZero(3,$data+1);
+        $number = GenericoController::leftZero(3,$data+1);
         $result = "PY-".$code_emp."-".$anio."-".$number;
 
         return $result;
@@ -568,65 +563,90 @@ class ProyectosController extends Controller
 
     public function guardar_proyecto(Request $request)
     {
-        $codigo = $this->nextProyecto($request->id_empresa, $request->fecha_inicio);
-        $id_usuario = Auth::user()->id_usuario;
+        try {
+            DB::beginTransaction();
 
-        $id_proyecto = DB::table('proyectos.proy_proyecto')->insertGetId(
-            [
-                'tp_proyecto' => $request->tp_proyecto,
-                'empresa' => $request->id_empresa,
-                'descripcion' => $request->nombre_opcion,
-                'cliente' => $request->id_cliente,
-                'fecha_inicio' => $request->fecha_inicio,
-                'fecha_fin' => $request->fecha_fin,
-                'elaborado_por' => $id_usuario,
+            $codigo = $this->nextProyecto($request->id_empresa, $request->fecha_inicio);
+            $id_usuario = Auth::user()->id_usuario;
+
+            //Proyectos
+            $id_padre = 71;
+            $count = CentroCosto::where('id_padre',$id_padre)->where('estado',1)->count();
+            $nro = $count + 1;
+            $codigo = '03.03.'.(($nro<10) ? ('0'.$nro) : $nro);
+
+            $centro = CentroCosto::create([
                 'codigo' => $codigo,
-                'modalidad' => $request->modalidad,
-                'sis_contrato' => $request->sis_contrato,
-                'moneda' => $request->moneda,
-                'plazo_ejecucion' => $request->plazo_ejecucion,
-                'unid_program' => $request->unid_program,
-                'id_op_com' => $request->id_op_com,
-                'importe' => $request->importe,
-                'jornal' => $request->jornal,
-                'estado' => 1,
-                'fecha_registro' => date('Y-m-d H:i:s')
-            ],
-                'id_proyecto'
-            );
-
-        $id_contrato = DB::table('proyectos.proy_contrato')->insertGetId(
-            [
-                'nro_contrato' => $request->nro_contrato_proy,
-                'fecha_contrato' => $request->fecha_contrato_proy,
-                'descripcion' => $request->descripcion_proy,
-                'moneda' => $request->moneda_contrato,
-                'importe' => $request->importe_contrato_proy,
-                // 'archivo_adjunto' => $nombre,
-                'id_proyecto' => $id_proyecto,
-                'id_tp_contrato' => $request->id_tp_contrato_proy,
-                'estado' => 1,
-                'fecha_registro' => date('Y-m-d H:i:s')
-            ],
-                'id_contrato'
-            );
-        //obtenemos el campo file definido en el formulario
-        $file = $request->file('primer_adjunto');
-        if (isset($file)){
-            //obtenemos el nombre del archivo 
-            $extension = pathinfo($file->getClientOriginalName(), PATHINFO_EXTENSION);
-            $nombre = $id_contrato.'.'.$request->nro_contrato_proy.'.'.$extension;
-            //indicamos que queremos guardar un nuevo archivo en el disco local
-            File::delete(public_path('proyectos/contratos/'.$nombre));
-            Storage::disk('archivos')->put('proyectos/contratos/'.$nombre,File::get($file));
+                'descripcion' => $request->nombre_opcion,
+                'id_padre' => $id_padre,
+                'nivel' => 3,
+                'estado' => 1
+            ]);
             
-            $update = DB::table('proyectos.proy_contrato')
-                ->where('id_contrato', $id_contrato)
-                ->update(['archivo_adjunto' => $nombre]); 
-        } else {
-            $nombre = null;
+            $id_proyecto = DB::table('proyectos.proy_proyecto')->insertGetId(
+                [
+                    'tp_proyecto' => $request->tp_proyecto,
+                    'empresa' => $request->id_empresa,
+                    'descripcion' => $request->nombre_opcion,
+                    'cliente' => $request->id_cliente,
+                    'fecha_inicio' => $request->fecha_inicio,
+                    'fecha_fin' => $request->fecha_fin,
+                    'elaborado_por' => $id_usuario,
+                    'codigo' => $codigo,
+                    'modalidad' => $request->modalidad,
+                    'sis_contrato' => $request->sis_contrato,
+                    'moneda' => $request->moneda,
+                    'plazo_ejecucion' => $request->plazo_ejecucion,
+                    'unid_program' => $request->unid_program,
+                    'id_op_com' => $request->id_op_com,
+                    'importe' => $request->importe,
+                    'jornal' => $request->jornal,
+                    'id_centro_costo' => $centro->id_centro_costo,
+                    'estado' => 1,
+                    'fecha_registro' => date('Y-m-d H:i:s')
+                ],
+                    'id_proyecto'
+                );
+
+            $id_contrato = DB::table('proyectos.proy_contrato')->insertGetId(
+                [
+                    'nro_contrato' => $request->nro_contrato_proy,
+                    'fecha_contrato' => $request->fecha_contrato_proy,
+                    'descripcion' => $request->descripcion_proy,
+                    'moneda' => $request->moneda_contrato,
+                    'importe' => $request->importe_contrato_proy,
+                    // 'archivo_adjunto' => $nombre,
+                    'id_proyecto' => $id_proyecto,
+                    'id_tp_contrato' => $request->id_tp_contrato_proy,
+                    'estado' => 1,
+                    'fecha_registro' => date('Y-m-d H:i:s')
+                ],
+                    'id_contrato'
+                );
+            //obtenemos el campo file definido en el formulario
+            $file = $request->file('primer_adjunto');
+            if (isset($file)){
+                //obtenemos el nombre del archivo 
+                $extension = pathinfo($file->getClientOriginalName(), PATHINFO_EXTENSION);
+                $nombre = $id_contrato.'.'.$request->nro_contrato_proy.'.'.$extension;
+                //indicamos que queremos guardar un nuevo archivo en el disco local
+                File::delete(public_path('proyectos/contratos/'.$nombre));
+                Storage::disk('archivos')->put('proyectos/contratos/'.$nombre,File::get($file));
+                
+                $update = DB::table('proyectos.proy_contrato')
+                    ->where('id_contrato', $id_contrato)
+                    ->update(['archivo_adjunto' => $nombre]); 
+            } else {
+                $nombre = null;
+            }
+            
+            DB::commit();
+            // return response()->json($msj);
+            return response()->json($id_proyecto);
+            
+        } catch (\PDOException $e) {
+            DB::rollBack();
         }
-        return response()->json($id_proyecto);
     }
     public function actualizar_proyecto(Request $request)
     {

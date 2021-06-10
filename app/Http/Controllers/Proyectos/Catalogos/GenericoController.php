@@ -30,6 +30,13 @@ class GenericoController extends Controller
             ->get();
             return $data;
     }
+    public static function mostrar_tipo_contrato_cbo(){
+        $data = DB::table('proyectos.proy_tp_contrato')
+        ->select('proy_tp_contrato.id_tp_contrato','proy_tp_contrato.descripcion')
+        ->where([['proy_tp_contrato.estado','=',1]])
+            ->get();
+        return $data;
+    }
     public static function mostrar_empresas_cbo(){
         $data = DB::table('administracion.adm_empresa')
         ->select('adm_empresa.id_empresa', 'adm_contri.nro_documento', 'adm_contri.razon_social')
