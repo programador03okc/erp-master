@@ -652,7 +652,7 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::get('emails-cliente/{id_persona?}/{id_cliente?}', 'LogisticaController@emails_cliente')->name('emails-cliente');
 					Route::get('listar_ubigeos', 'AlmacenController@listar_ubigeos');
 					Route::get('listar_personas', 'RecursosHumanosController@mostrar_persona_table')->name('listar_personas');
-					Route::get('mostrar_clientes', 'AlmacenController@mostrar_clientes')->name('mostrar_clientes');;
+					Route::get('mostrar_clientes', 'Comercial\ClienteController@mostrar_clientes')->name('mostrar_clientes');;
 					Route::get('cargar_almacenes/{id_sede}', 'Almacen\Ubicacion\AlmacenController@cargar_almacenes');
 					Route::post('guardar-archivos-adjuntos-detalle-requerimiento', 'LogisticaController@guardar_archivos_adjuntos_detalle_requerimiento');
 					Route::put('eliminar-archivo-adjunto-detalle-requerimiento/{id_archivo}', 'LogisticaController@eliminar_archivo_adjunto_detalle_requerimiento');
@@ -866,7 +866,7 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::post('guardar_od_adjunto', 'DistribucionController@guardar_od_adjunto');
 					Route::get('anular_od_adjunto/{id}', 'DistribucionController@anular_od_adjunto');
 					Route::post('guardar_proveedor', 'LogisticaController@guardar_proveedor');
-					Route::get('mostrar_clientes', 'AlmacenController@mostrar_clientes');
+					Route::get('mostrar_clientes', 'Comercial\ClienteController@mostrar_clientes');
 					Route::get('listar_personas', 'RecursosHumanosController@mostrar_persona_table');
 					Route::get('listarDetalleTransferencias/{id}', 'TransferenciaController@listarDetalleTransferencias');
 					Route::get('listar_ubigeos', 'AlmacenController@listar_ubigeos');
@@ -1245,8 +1245,8 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('mostrar_prods', 'AlmacenController@mostrar_prods');
 				Route::get('mostrar_prods_almacen/{id}', 'AlmacenController@mostrar_prods_almacen');
 
-				Route::get('mostrar_clientes', 'AlmacenController@mostrar_clientes');
-				Route::get('mostrar_clientes_empresa', 'AlmacenController@mostrar_clientes_empresa');
+				Route::get('mostrar_clientes', 'Comercial\ClienteController@mostrar_clientes');
+				Route::get('mostrar_clientes_empresa', 'Comercial\ClienteController@mostrar_clientes_empresa');
 				Route::post('save_cliente', 'LogisticaController@save_cliente');
 				Route::get('imprimir_salida/{id}', 'AlmacenController@imprimir_salida');
 				// Route::get('anular_guia/{doc}/{guia}', 'AlmacenController@anular_guia');
@@ -1425,8 +1425,8 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('update_revisado/{id}/{rev}/{obs}', 'AlmacenController@update_revisado');
 
 				Route::get('select_almacenes_empresa/{id}', 'AlmacenController@select_almacenes_empresa');
-				Route::get('mostrar_clientes', 'AlmacenController@mostrar_clientes');
-				Route::get('mostrar_clientes_empresa', 'AlmacenController@mostrar_clientes_empresa');
+				Route::get('mostrar_clientes', 'Comercial\ClienteController@mostrar_clientes');
+				Route::get('mostrar_clientes_empresa', 'Comercial\ClienteController@mostrar_clientes_empresa');
 				Route::get('listar_transportistas_com', 'AlmacenController@listar_transportistas_com');
 				Route::get('listar_transportistas_ven', 'AlmacenController@listar_transportistas_ven');
 				
