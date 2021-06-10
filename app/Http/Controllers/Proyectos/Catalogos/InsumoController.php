@@ -2,18 +2,22 @@
 
 namespace App\Http\Controllers\Proyectos\Catalogos;
 
+use App\Http\Controllers\AlmacenController;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Proyectos\Variables\CategoriaInsumoController;
+use App\Http\Controllers\Proyectos\Variables\IuController;
+use App\Http\Controllers\Proyectos\Variables\TipoInsumoController;
 use Illuminate\Support\Facades\DB;
 
 class InsumoController extends Controller
 {
     
     function view_insumo(){
-        $tipos = $this->mostrar_tipos_insumos_cbo();
-        $unidades = $this->mostrar_unidades_cbo();
-        $ius = $this->mostrar_ius_cbo();
-        $categorias = $this->select_categorias_insumos();
+        $tipos = TipoInsumoController::mostrar_tipos_insumos_cbo();
+        $unidades = AlmacenController::mostrar_unidades_cbo();
+        $ius = IuController::mostrar_ius_cbo();
+        $categorias = CategoriaInsumoController::select_categorias_insumos();
         return view('proyectos/insumo/insumo', compact('tipos','unidades','ius','categorias'));
     }
     

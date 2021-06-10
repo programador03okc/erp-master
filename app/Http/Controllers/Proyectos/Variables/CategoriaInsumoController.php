@@ -10,7 +10,15 @@ class CategoriaInsumoController extends Controller
 {
     function view_cat_insumo(){
         return view('proyectos/variables/cat_insumo');
-    }    
+    }
+    
+    public static function select_categorias_insumos(){
+        $data = DB::table('proyectos.proy_insumo_cat')
+            ->select('proy_insumo_cat.id_categoria','proy_insumo_cat.descripcion')
+            ->where('estado',1)
+            ->get();
+        return $data;
+    }
     //Categoria de Insumos
     public function listar_cat_insumos()
     {

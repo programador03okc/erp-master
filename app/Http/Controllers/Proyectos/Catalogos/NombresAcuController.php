@@ -4,13 +4,14 @@ namespace App\Http\Controllers\Proyectos\Catalogos;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Proyectos\Variables\CategoriaAcuController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class NombresAcuController extends Controller
 {
     function view_nombres_cu(){
-        $categorias = $this->select_categorias_acus();
+        $categorias = CategoriaAcuController::select_categorias_acus();
         return view('proyectos/acu/cu', compact('categorias'));
     }
 
@@ -28,6 +29,20 @@ class NombresAcuController extends Controller
         $output['data'] = $data;
         return response()->json($output);
     }
+
+    public function next_cod_acu(){
+        $data = DB::table('proyectos.proy_cu')
+            ->orderBy('codigo','desc')
+            ->where('estado',1)
+            ->first();
+
+        $codigo = 1;
+        if (isset($data)){
+            $codigo = ((int)$data->codigo)+1;
+        }
+        return GenericoController::leftZero(4,$codigo);
+    }
+    
     public function guardar_cu(Request $request)
     {
         $codigo = $this->next_cod_acu();
