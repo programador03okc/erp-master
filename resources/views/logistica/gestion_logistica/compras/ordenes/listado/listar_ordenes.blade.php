@@ -44,7 +44,7 @@
                         <th>Proveedor</th>
                         <th>Nro.orden</th>
                         <th >Req./Cuadro comp.</th>
-                        <th>Estado</th>
+                        <th style="width:5%">Estado</th>
                         <th>Fecha vencimiento</th>
                         <th>Fecha llegada</th>
                         <th>Estado aprobación CC</th>
@@ -52,14 +52,14 @@
                         <th>Fecha Requerimiento</th>
                         <th style="width:20%">Leadtime</th>
                         <th>Empresa / Sede</th>
-                        <th>Moneda</th>
+                        <th style="width:5%">Moneda</th>
                         <th>Condición</th>
                         <th>Fecha em.</th>
-                        <th>Tiem. Atenc. Log.</th>
-                        <th>Tiem. Atenc. Prov.</th>
+                        <th style="width:5%">Tiem. Atenc. Log.</th>
+                        <th style="width:5%">Tiem. Atenc. Prov.</th>
                         <th>Facturas</th>
-                        <th>Detalle pago</th>
-                        <th>Archivo adjunto</th>
+                        <th>Monto Presup. CC</th>
+                        <th>Monto Orden</th>
                         <th >Acción</th>
                     </tr>
                 </thead>
