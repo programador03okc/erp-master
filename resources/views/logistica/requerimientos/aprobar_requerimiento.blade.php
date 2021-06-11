@@ -5,14 +5,14 @@
 @endsection
 
 @section('cabecera')
-Listado de requerimientos
+Aprobar requerimiento
 @endsection
 
 @section('breadcrumb')
 <ol class="breadcrumb">
     <li><a href="{{route('logistica.index')}}"><i class="fas fa-tachometer-alt"></i> Logística</a></li>
     <li>Requerimientos</li>
-    <li class="active">Listado</li>
+    <li class="active">Aprobar</li>
 </ol>
 @endsection
 
@@ -64,25 +64,42 @@ Listado de requerimientos
                             </div>
                         </div>
                     </div>
-                    <table class="mytable table table-hover table-condensed table-bordered table-okc-view" id="ListaReq" width="100%">
-                        <thead>
-                            <tr>
-                                <th class="text-center">Prio.</th>
-                                <th class="text-center">Código</th>
-                                <th class="text-center" style="width:20%">Concepto</th>
-                                <th class="text-center">Fecha entrega</th>
-                                <th class="text-center">Tipo</th>
-                                <th class="text-center" style="width:10%">Empresa</th>
-                                <th class="text-center">Grupo</th>
-                                <th class="text-center">Creado por</th>
-                                <th class="text-center" style="width:8%">Estado</th>
-                                <th class="text-center" style="width:5%">Acción</th>
-                            </tr>
-                        </thead>
-                    </table>
 
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <!-- <caption>Requerimientos: Registrados | Aprobados</caption> -->
+                            <table class="mytable table table-hover table-condensed table-bordered table-okc-view" id="ListaReqPendienteAprobacion" width="100%">
+                                <thead>
+                                    <tr>
+                                        <!-- <th class="text-center">Prio.</th>
+                                        <th class="text-center">Código</th>
+                                        <th class="text-center" style="width:20%">Concepto</th>
+                                        <th class="text-center">Fecha entrega</th>
+                                        <th class="text-center">Tipo</th>
+                                        <th class="text-center" style="width:10%">Empresa</th>
+                                        <th class="text-center">Grupo</th>
+                                        <th class="text-center">Creado por</th>
+                                        <th class="text-center" style="width:8%">Estado</th>
+                                        <th class="text-center" style="width:5%">Acción</th> -->
+                                        <th width="10"></th>
+                                        <th></th>
+                                        <th>CODIGO</th>
+                                        <th width="150">CONCEPTO</th>
+                                        <th>FECHA</th>
+                                        <th>TIPO REQ.</th>
+                                        <th>TIPO CLIENTE</th>
+                                        <th width="120">EMPRESA</th>
+                                        <th>GRUPO / PROYECTO</th>
+                                        <th>CREADO POR</th>
+                                        <th width="70">ESTADO</th>
+                                        <th width="50">Aprob/Total</th>
+                                        <th width="120">ACCIÓN</th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
                 </form>
-
             </fieldset>
         </div>
     </div>
@@ -134,17 +151,14 @@ Listado de requerimientos
     <script src="{{ asset('datatables/pdfmake/vfs_fonts.js') }}"></script>
     <script src="{{ asset('datatables/JSZip/jszip.min.js') }}"></script> -->
 
-<script src="{{ asset('js/logistica/requerimiento/listaRequerimientoView.js') }}"></script>
-<script src="{{ asset('js/logistica/requerimiento/listaRequerimientoController.js') }}"></script>
-<script src="{{ asset('js/logistica/requerimiento/listaRequerimientoView.js') }}"></script>
-
+<script src="{{ asset('js/logistica/listar_requerimiento_pendientes_aprobacion.js') }}"></script>
+<script src="{{ asset('js/logistica/listar_requerimientos_aprobados.js') }}"></script>
 
 <script>
 
-    var roles = JSON.parse('{!!$roles!!}');
-    var grupos = JSON.parse('{!!$grupos!!}');
+var roles = JSON.parse('{!!$roles!!}');
+var grupos = JSON.parse('{!!$grupos!!}');
 
-    // console.log(roles);
     // grupos.forEach(element => {
     //     if(element.id_grupo ==2){ // comercial
     //         document.querySelector("div[type='lista_requerimiento'] ul").children[0].setAttribute("class",'active')
@@ -161,34 +175,17 @@ Listado de requerimientos
 
     $(document).ready(function() {
         seleccionarMenu(window.location);
-        inicializarRutasListado(
-            "{{route('logistica.gestion-logistica.requerimiento.listado.elaborados')}}",
-            "{{route('logistica.gestion-logistica.requerimiento.listado.empresa')}}",
-            "{{route('logistica.gestion-logistica.requerimiento.listado.select-sede-by-empresa')}}",
-            "{{route('logistica.gestion-logistica.requerimiento.listado.select-grupo-by-sede')}}",
-            "{{route('logistica.gestion-logistica.requerimiento.listado.ver-flujos')}}",
-            "{{route('logistica.gestion-logistica.requerimiento.listado.explorar-requerimiento')}}"
+ 
+        inicializarRutasPendienteAprobacion(
+            "{{route('logistica.gestion-logistica.requerimiento.listado.pendientes-aprobacion')}}",
+            "{{route('logistica.gestion-logistica.requerimiento.listado.aprobar-documento')}}",
+            "{{route('logistica.gestion-logistica.requerimiento.listado.observar-documento')}}",
+            "{{route('logistica.gestion-logistica.requerimiento.listado.anular-documento')}}"
         );
 
-        // inicializarRutasPendienteAprobacion(
-        //     "{{route('logistica.gestion-logistica.requerimiento.listado.pendientes-aprobacion')}}",
-        //     "{{route('logistica.gestion-logistica.requerimiento.listado.aprobar-documento')}}",
-        //     "{{route('logistica.gestion-logistica.requerimiento.listado.observar-documento')}}",
-        //     "{{route('logistica.gestion-logistica.requerimiento.listado.anular-documento')}}"
-        //     );
+        listar_requerimientos_pendientes_aprobar();
 
-        // listarRequerimientosAprobados();
-
-        $('a[data-toggle="tab"]').on('shown.bs.tab', function(e) {
-            let tab = $(e.target).attr("href") // activated tab
-            if (tab == '#requerimientosElaborados') {
-                $('#ListaReq').DataTable().ajax.reload();
-            } else if (tab == '#requerimientosPendientesAprobacion') {
-                $('#ListaReqPendientesAprobacion').DataTable().ajax.reload();
-            } else if (tab == '#requerimientosAprobados') {
-                $('#ListaRequerimientosAprobados').DataTable().ajax.reload();
-            }
-        });
+ 
     });
 </script>
 @endsection

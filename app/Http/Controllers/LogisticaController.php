@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Administracion\Periodo;
+use App\Models\Administracion\Prioridad;
 use Illuminate\Support\Facades\DB;
 
 // use Mail;
@@ -29,18 +31,6 @@ date_default_timezone_set('America/Lima');
 class LogisticaController extends Controller
 {
 
-    function view_lista_requerimientos()
-    {
-        $grupos = Auth::user()->getAllGrupo();
-        $roles = $this->userSession()['roles'];
-        $empresas = $this->select_mostrar_empresas();
-        $empresas_am =  $this->select_mostrar_empresas_am();
-        $periodos = $this->mostrar_periodos();
-        $prioridades = $this->mostrar_prioridad();
-
-
-        return view('logistica/requerimientos/lista_requerimientos', compact('periodos','grupos','roles','empresas','empresas_am','prioridades'));
-    }
 
     function view_gestionar_cotizaciones()
     {
@@ -1889,235 +1879,235 @@ class LogisticaController extends Controller
     }
     public function guardar_requerimiento(Request $request)
     {
-        dd($request->all());
-        exit();   
-        // try {
-        // DB::beginTransaction();
+        // dd($request->all());
+        // exit();   
+        try {
+        DB::beginTransaction();
 
-        // $id_requerimiento=0;
-        // $documento = 'R';
+        $id_requerimiento=0;
+        $documento = 'R';
         
 
-        // switch ($request->requerimiento['tipo_requerimiento']) {
-        //     case 1: # tipo MGCP
-        //         $documento.='M';
-        //         $num = $this->cantidadRequerimientos(1,null);
-        //         break;
+        switch ($request->requerimiento['tipo_requerimiento']) {
+            case 1: # tipo MGCP
+                $documento.='M';
+                $num = $this->cantidadRequerimientos(1,null);
+                break;
             
-        //     case 2: #tipo Ecommerce
-        //         $documento.='E';
-        //         $num = $this->cantidadRequerimientos(2,null);
-        //         break;
+            case 2: #tipo Ecommerce
+                $documento.='E';
+                $num = $this->cantidadRequerimientos(2,null);
+                break;
             
-        //     case 3: #tipo Bienes y servicios
-        //         if($request->requerimiento['id_grupo']==1){
-        //             $documento.='A';
-        //             $num = $this->cantidadRequerimientos(3,1); //tipo: BS, grupo: Administración
-        //         }
-        //         if($request->requerimiento['id_grupo']==2){ 
-        //             $documento.='C';
-        //             $num = $this->cantidadRequerimientos(3,2); //tipo: BS, grupo: Comercial
-        //         }
-        //         if($request->requerimiento['id_grupo']==3){
-        //             $documento.='P';
-        //             $num = $this->cantidadRequerimientos(3,3); //tipo: BS, grupo: Proyectos
-        //         }
-        //         break;
+            case 3: #tipo Bienes y servicios
+                if($request->requerimiento['id_grupo']==1){
+                    $documento.='A';
+                    $num = $this->cantidadRequerimientos(3,1); //tipo: BS, grupo: Administración
+                }
+                if($request->requerimiento['id_grupo']==2){ 
+                    $documento.='C';
+                    $num = $this->cantidadRequerimientos(3,2); //tipo: BS, grupo: Comercial
+                }
+                if($request->requerimiento['id_grupo']==3){
+                    $documento.='P';
+                    $num = $this->cantidadRequerimientos(3,3); //tipo: BS, grupo: Proyectos
+                }
+                break;
             
-        //     default:
-        //         $num = 0;
-        //         break;
-        // }
-        // // $mes = date('m', strtotime("now"));
-        // $yy = date('y', strtotime("now"));
-        // $correlativo = $this->leftZero(4, ($num + 1));
-        // $codigo = "{$documento}-{$yy}{$correlativo}";
+            default:
+                $num = 0;
+                break;
+        }
+        // $mes = date('m', strtotime("now"));
+        $yy = date('y', strtotime("now"));
+        $correlativo = $this->leftZero(4, ($num + 1));
+        $codigo = "{$documento}-{$yy}{$correlativo}";
 
-        // if($request->detalle == '' || $request->detalle == null || count($request->detalle)==0){
-        //     return 0;
-        // }else{
+        if($request->detalle == '' || $request->detalle == null || count($request->detalle)==0){
+            return 0;
+        }else{
 
-        // $detalle_reqArray = $request->detalle;
-        // $count_detalle_req = count($detalle_reqArray);
+        $detalle_reqArray = $request->detalle;
+        $count_detalle_req = count($detalle_reqArray);
 
-        // if($request->requerimiento['tipo_requerimiento'] ==1){
-        //     $estado = 1;
-        //     if($request->requerimiento['id_cc'] != null || $request->requerimiento['id_cc'] != ''){
-        //         $estado = 2;
-        //     }
-        // }
-        // elseif($request->requerimiento['tipo_requerimiento'] ==2){
+        if($request->requerimiento['tipo_requerimiento'] ==1){
+            $estado = 1;
+            if($request->requerimiento['id_cc'] != null || $request->requerimiento['id_cc'] != ''){
+                $estado = 2;
+            }
+        }
+        elseif($request->requerimiento['tipo_requerimiento'] ==2){
 
-        //     $cantidad_reservas=0;
-        //     for ($i = 0; $i < $count_detalle_req; $i++) {
-        //         if($detalle_reqArray[$i]['id_almacen_reserva']>0){
-        //             ++$cantidad_reservas;
-        //         }
-        //     }
+            $cantidad_reservas=0;
+            for ($i = 0; $i < $count_detalle_req; $i++) {
+                if($detalle_reqArray[$i]['id_almacen_reserva']>0){
+                    ++$cantidad_reservas;
+                }
+            }
 
-        //     if($cantidad_reservas == $count_detalle_req){
-        //         $estado = 19;
-        //     }else{
-        //         $estado = 1;
-        //     }
-        // }
-        // else{
-        //     $estado = 1;
-        // }
+            if($cantidad_reservas == $count_detalle_req){
+                $estado = 19;
+            }else{
+                $estado = 1;
+            }
+        }
+        else{
+            $estado = 1;
+        }
 
 
-        // //----------------------------------------------------------------------------
-        // $id_requerimiento = DB::table('almacen.alm_req')->insertGetId(
-        //     [
-        //         'codigo'                => $codigo,
-        //         'id_tipo_requerimiento' => $request->requerimiento['tipo_requerimiento'],
-        //         'id_usuario'            => Auth::user()->id_usuario,
-        //         'id_rol'                => isset($request->requerimiento['id_rol'])?$request->requerimiento['id_rol']:null,
-        //         'fecha_requerimiento'   => isset($request->requerimiento['fecha_requerimiento'])?$request->requerimiento['fecha_requerimiento']:null,
-        //         'id_periodo'            => $request->requerimiento['id_periodo'],
-        //         'concepto'              => isset($request->requerimiento['concepto'])?strtoupper($request->requerimiento['concepto']):null,
-        //         'id_moneda'             => isset($request->requerimiento['id_moneda'])?$request->requerimiento['id_moneda']:null,
-        //         'id_proyecto'             => isset($request->requerimiento['id_proyecto'])?$request->requerimiento['id_proyecto']:null,
-        //         'observacion'           => isset($request->requerimiento['observacion'])?$request->requerimiento['observacion']:null,
-        //         'id_grupo'              => isset($request->requerimiento['id_grupo'])?$request->requerimiento['id_grupo']:null,
-        //         'id_area'               => isset($request->requerimiento['id_area'])?$request->requerimiento['id_area']:null,
-        //         'id_prioridad'          => isset($request->requerimiento['id_prioridad'])?$request->requerimiento['id_prioridad']:null,
-        //         'fecha_registro'        => date('Y-m-d H:i:s'),
-        //         'estado'                => $estado,
-        //         'id_empresa'            => isset($request->requerimiento['id_empresa'])?$request->requerimiento['id_empresa']:null,
-        //         'id_sede'               => isset($request->requerimiento['id_sede'])?$request->requerimiento['id_sede']:null,
-        //         'tipo_cliente'          => isset($request->requerimiento['tipo_cliente'])?$request->requerimiento['tipo_cliente']:null,
-        //         'id_cliente'            => isset($request->requerimiento['id_cliente'])?$request->requerimiento['id_cliente']:null,
-        //         'id_persona'            => isset($request->requerimiento['id_persona'])?$request->requerimiento['id_persona']:null,
-        //         'direccion_entrega'     => isset($request->requerimiento['direccion_entrega'])?$request->requerimiento['direccion_entrega']:null,
-        //         'id_cuenta'             => isset($request->requerimiento['id_cuenta'])?$request->requerimiento['id_cuenta']:null,
-        //         'nro_cuenta'            => isset($request->requerimiento['nro_cuenta'])?$request->requerimiento['nro_cuenta']:null,
-        //         'nro_cuenta_interbancaria'     => isset($request->requerimiento['cci'])?$request->requerimiento['cci']:null,
-        //         'telefono'              => isset($request->requerimiento['telefono'])?$request->requerimiento['telefono']:null,
-        //         'email'                 => isset($request->requerimiento['email'])?$request->requerimiento['email']:null,
-        //         'id_ubigeo_entrega'     => isset($request->requerimiento['ubigeo'])?$request->requerimiento['ubigeo']:null,
-        //         'id_almacen'            => isset($request->requerimiento['id_almacen'])?$request->requerimiento['id_almacen']:null,
-        //         'confirmacion_pago'     => ($request->requerimiento['tipo_requerimiento'] == 2
-        //                                     ? ($request->requerimiento['fuente'] == 2 ? true : false)
-        //                                     : true),
-        //         'monto'                 => isset($request->requerimiento['monto'])?$request->requerimiento['monto']:null,
-        //         'fecha_entrega'         => isset($request->requerimiento['fecha_entrega'])?$request->requerimiento['fecha_entrega']:null,
-        //         'id_cc'                 => isset($request->requerimiento['id_cc'])?$request->requerimiento['id_cc']:null,
-        //         'tipo_cuadro'           => isset($request->requerimiento['tipo_cuadro'])?$request->requerimiento['tipo_cuadro']:null,
-        //         'tiene_transformacion'  => isset($request->requerimiento['tiene_transformacion'])?$request->requerimiento['tiene_transformacion']:false,
-        //         'fuente_id'             => (isset($request->requerimiento['fuente']) && $request->requerimiento['fuente']>0)?$request->requerimiento['fuente']:null,
-        //         'fuente_det_id'         => (isset($request->requerimiento['fuente_det']) && $request->requerimiento['fuente_det']>0)?$request->requerimiento['fuente_det']:null,
-        //         'para_stock_almacen'    => (isset($request->requerimiento['para_stock_almacen']))?$request->requerimiento['para_stock_almacen']:false,
-        //         'rol_aprobante_id'      => (isset($request->requerimiento['rol_aprobante']))?$request->requerimiento['rol_aprobante']:null,
-        //         'trabajador_id'      => (isset($request->requerimiento['id_trabajador']))?$request->requerimiento['id_trabajador']:null
-        //     ],
-        //     'id_requerimiento'
-        // );
+        //----------------------------------------------------------------------------
+        $id_requerimiento = DB::table('almacen.alm_req')->insertGetId(
+            [
+                'codigo'                => $codigo,
+                'id_tipo_requerimiento' => $request->requerimiento['tipo_requerimiento'],
+                'id_usuario'            => Auth::user()->id_usuario,
+                'id_rol'                => isset($request->requerimiento['id_rol'])?$request->requerimiento['id_rol']:null,
+                'fecha_requerimiento'   => isset($request->requerimiento['fecha_requerimiento'])?$request->requerimiento['fecha_requerimiento']:null,
+                'id_periodo'            => $request->requerimiento['id_periodo'],
+                'concepto'              => isset($request->requerimiento['concepto'])?strtoupper($request->requerimiento['concepto']):null,
+                'id_moneda'             => isset($request->requerimiento['id_moneda'])?$request->requerimiento['id_moneda']:null,
+                'id_proyecto'             => isset($request->requerimiento['id_proyecto'])?$request->requerimiento['id_proyecto']:null,
+                'observacion'           => isset($request->requerimiento['observacion'])?$request->requerimiento['observacion']:null,
+                'id_grupo'              => isset($request->requerimiento['id_grupo'])?$request->requerimiento['id_grupo']:null,
+                'id_area'               => isset($request->requerimiento['id_area'])?$request->requerimiento['id_area']:null,
+                'id_prioridad'          => isset($request->requerimiento['id_prioridad'])?$request->requerimiento['id_prioridad']:null,
+                'fecha_registro'        => date('Y-m-d H:i:s'),
+                'estado'                => $estado,
+                'id_empresa'            => isset($request->requerimiento['id_empresa'])?$request->requerimiento['id_empresa']:null,
+                'id_sede'               => isset($request->requerimiento['id_sede'])?$request->requerimiento['id_sede']:null,
+                'tipo_cliente'          => isset($request->requerimiento['tipo_cliente'])?$request->requerimiento['tipo_cliente']:null,
+                'id_cliente'            => isset($request->requerimiento['id_cliente'])?$request->requerimiento['id_cliente']:null,
+                'id_persona'            => isset($request->requerimiento['id_persona'])?$request->requerimiento['id_persona']:null,
+                'direccion_entrega'     => isset($request->requerimiento['direccion_entrega'])?$request->requerimiento['direccion_entrega']:null,
+                'id_cuenta'             => isset($request->requerimiento['id_cuenta'])?$request->requerimiento['id_cuenta']:null,
+                'nro_cuenta'            => isset($request->requerimiento['nro_cuenta'])?$request->requerimiento['nro_cuenta']:null,
+                'nro_cuenta_interbancaria'     => isset($request->requerimiento['cci'])?$request->requerimiento['cci']:null,
+                'telefono'              => isset($request->requerimiento['telefono'])?$request->requerimiento['telefono']:null,
+                'email'                 => isset($request->requerimiento['email'])?$request->requerimiento['email']:null,
+                'id_ubigeo_entrega'     => isset($request->requerimiento['ubigeo'])?$request->requerimiento['ubigeo']:null,
+                'id_almacen'            => isset($request->requerimiento['id_almacen'])?$request->requerimiento['id_almacen']:null,
+                'confirmacion_pago'     => ($request->requerimiento['tipo_requerimiento'] == 2
+                                            ? ($request->requerimiento['fuente'] == 2 ? true : false)
+                                            : true),
+                'monto'                 => isset($request->requerimiento['monto'])?$request->requerimiento['monto']:null,
+                'fecha_entrega'         => isset($request->requerimiento['fecha_entrega'])?$request->requerimiento['fecha_entrega']:null,
+                'id_cc'                 => isset($request->requerimiento['id_cc'])?$request->requerimiento['id_cc']:null,
+                'tipo_cuadro'           => isset($request->requerimiento['tipo_cuadro'])?$request->requerimiento['tipo_cuadro']:null,
+                'tiene_transformacion'  => isset($request->requerimiento['tiene_transformacion'])?$request->requerimiento['tiene_transformacion']:false,
+                'fuente_id'             => (isset($request->requerimiento['fuente']) && $request->requerimiento['fuente']>0)?$request->requerimiento['fuente']:null,
+                'fuente_det_id'         => (isset($request->requerimiento['fuente_det']) && $request->requerimiento['fuente_det']>0)?$request->requerimiento['fuente_det']:null,
+                'para_stock_almacen'    => (isset($request->requerimiento['para_stock_almacen']))?$request->requerimiento['para_stock_almacen']:false,
+                'rol_aprobante_id'      => (isset($request->requerimiento['rol_aprobante']))?$request->requerimiento['rol_aprobante']:null,
+                'trabajador_id'      => (isset($request->requerimiento['id_trabajador']))?$request->requerimiento['id_trabajador']:null
+            ],
+            'id_requerimiento'
+        );
         
   
 
-        // // guardar telefono cliente 
-        // if($request->requerimiento['telefono'] != null || $request->requerimiento['telefono'] != '' || $request->requerimiento['email'] != ''){
-        //     $this->actualizar_telefono_cliente($request->requerimiento['tipo_cliente'],$request->requerimiento['id_persona'],$request->requerimiento['id_cliente'],$request->requerimiento['telefono']);
-        //     $this->actualizar_direccion_cliente($request->requerimiento['tipo_cliente'],$request->requerimiento['id_persona'],$request->requerimiento['id_cliente'],$request->requerimiento['direccion_entrega']);
-        //     $this->actualizar_email_cliente($request->requerimiento['tipo_cliente'],$request->requerimiento['id_persona'],$request->requerimiento['id_cliente'],$request->requerimiento['email']);
+        // guardar telefono cliente 
+        if($request->requerimiento['telefono'] != null || $request->requerimiento['telefono'] != '' || $request->requerimiento['email'] != ''){
+            $this->actualizar_telefono_cliente($request->requerimiento['tipo_cliente'],$request->requerimiento['id_persona'],$request->requerimiento['id_cliente'],$request->requerimiento['telefono']);
+            $this->actualizar_direccion_cliente($request->requerimiento['tipo_cliente'],$request->requerimiento['id_persona'],$request->requerimiento['id_cliente'],$request->requerimiento['direccion_entrega']);
+            $this->actualizar_email_cliente($request->requerimiento['tipo_cliente'],$request->requerimiento['id_persona'],$request->requerimiento['id_cliente'],$request->requerimiento['email']);
+        }
+        $detalle_req=[];
+        if ($count_detalle_req > 0) {
+            for ($i = 0; $i < $count_detalle_req; $i++) {
+                    $alm_det_req = DB::table('almacen.alm_det_req')->insertGetId(
+
+                        [
+                            'id_requerimiento'      => $id_requerimiento,
+                            'id_item'               => is_numeric($detalle_reqArray[$i]['id_item']) == 1 && $detalle_reqArray[$i]['id_item']>0 ? $detalle_reqArray[$i]['id_item']:null,
+                            'id_producto'           => is_numeric($detalle_reqArray[$i]['id_producto']) == 1 && $detalle_reqArray[$i]['id_producto']>0 ? $detalle_reqArray[$i]['id_producto']:null,
+                            'precio_unitario'       => is_numeric($detalle_reqArray[$i]['precio_unitario']) == 1 ?$detalle_reqArray[$i]['precio_unitario']:null,
+                            'subtotal'              => isset($detalle_reqArray[$i]['subtotal']) ?$detalle_reqArray[$i]['subtotal']:null,
+                            'cantidad'              => $detalle_reqArray[$i]['cantidad']?$detalle_reqArray[$i]['cantidad']:null,
+                            'id_moneda'             => $detalle_reqArray[$i]['id_tipo_moneda']?$detalle_reqArray[$i]['id_tipo_moneda']:null,
+                            'lugar_entrega'         => isset($detalle_reqArray[$i]['lugar_entrega'])?$detalle_reqArray[$i]['lugar_entrega']:null,
+                            'descripcion_adicional' => isset($detalle_reqArray[$i]['des_item'])?$detalle_reqArray[$i]['des_item']:null,
+                            'partida'               => is_numeric($detalle_reqArray[$i]['id_partida']) == 1 && $detalle_reqArray[$i]['id_partida']>0 ?$detalle_reqArray[$i]['id_partida']:null,
+                            'id_unidad_medida'      => is_numeric($detalle_reqArray[$i]['id_unidad_medida']) == 1 ? $detalle_reqArray[$i]['id_unidad_medida'] : null,
+                            'id_tipo_item'          => is_numeric($detalle_reqArray[$i]['id_tipo_item']) == 1 ? $detalle_reqArray[$i]['id_tipo_item']:null,
+                            'fecha_registro'        => date('Y-m-d H:i:s'),
+                            'estado'                => ($request->requerimiento['tipo_requerimiento'] ==2?19:1),
+                            'id_almacen_reserva'    => is_numeric($detalle_reqArray[$i]['id_almacen_reserva']) == 1 ? $detalle_reqArray[$i]['id_almacen_reserva']:null,
+                            'stock_comprometido'    => isset($detalle_reqArray[$i]['stock_comprometido'])?$detalle_reqArray[$i]['stock_comprometido']:null,
+                            'proveedor_id'          => isset($detalle_reqArray[$i]['proveedor_id'])?$detalle_reqArray[$i]['proveedor_id']:null,
+                            'id_cc_am_filas'        => is_numeric($detalle_reqArray[$i]['id_cc_am_filas']) == 1 ? $detalle_reqArray[$i]['id_cc_am_filas']:null,
+                            'id_cc_venta_filas'     => is_numeric($detalle_reqArray[$i]['id_cc_venta_filas']) == 1 ? $detalle_reqArray[$i]['id_cc_venta_filas']:null,
+                            'tiene_transformacion'  => $detalle_reqArray[$i]['tiene_transformacion']?$detalle_reqArray[$i]['tiene_transformacion']:false,
+                            'centro_costo_id'       => isset($detalle_reqArray[$i]['id_centro_costo'])?$detalle_reqArray[$i]['id_centro_costo']:null,
+                            'motivo'                => isset($detalle_reqArray[$i]['motivo'])?$detalle_reqArray[$i]['motivo']:null
+
+                        ],
+                        'id_detalle_requerimiento'
+                    );
+
+                    $detalle_req[]=[
+                        'id_detalle_requerimiento'=> $alm_det_req,
+                        'id_producto'=> is_numeric($detalle_reqArray[$i]['id_producto']) == 1 && $detalle_reqArray[$i]['id_producto']>0 ? $detalle_reqArray[$i]['id_producto']:null,
+                        'id_item' => is_numeric($detalle_reqArray[$i]['id_item']) == 1 && $detalle_reqArray[$i]['id_item']>0 ? $detalle_reqArray[$i]['id_item']:null,
+                        'cantidad' => $detalle_reqArray[$i]['cantidad']?$detalle_reqArray[$i]['cantidad']:null,
+                        'cantidad_a_atender' => $detalle_reqArray[$i]['cantidad']?$detalle_reqArray[$i]['cantidad']:null,
+                        'id_almacen_reserva'=> is_numeric($detalle_reqArray[$i]['id_almacen_reserva']) == 1 ? $detalle_reqArray[$i]['id_almacen_reserva']:null,
+                        'estado' => ($request->requerimiento['tipo_requerimiento'] ==2?19:1)
+                    ];
+            }
+        }
+
+        $data_doc_aprob = DB::table('administracion.adm_documentos_aprob')->insertGetId(
+            [
+                'id_tp_documento' => 1,
+                'codigo_doc'      => $codigo,
+                'id_doc'          => $id_requerimiento
+
+            ],
+            'id_doc_aprob'
+        );
+
+
+        $texto_justificacion='';
+        if(isset($request->requerimiento['justificacion_generar_requerimiento'])?$request->requerimiento['justificacion_generar_requerimiento']:null){
+            $texto_justificacion= 'Con CC Pendiente Aprobación. '.$request->requerimiento['justificacion_generar_requerimiento'];
+        }
+        // trazabilidad requerimiento elaboraod
+
+        if($request->requerimiento['tipo_requerimiento']==1){ // tipo mgcp
+            DB::table('almacen.alm_req_obs')
+            ->insert([  'id_requerimiento'=>$id_requerimiento,
+                        'accion'=>'VINCULADO',
+                        'descripcion'=>'Fecha de creación de Cuadro Costos: '.$request->requerimiento['fecha_creacion_cc'],
+                        'id_usuario'=>Auth::user()->id_usuario,
+                        'fecha_registro'=>$request->requerimiento['fecha_creacion_cc']
+            ]);
+        }
+
+        DB::table('almacen.alm_req_obs')
+        ->insert([  'id_requerimiento'=>$id_requerimiento,
+                    'accion'=>'ELABORADO',
+                    'descripcion'=>'Requerimiento elaborado.'.$texto_justificacion,
+                    'id_usuario'=>Auth::user()->id_usuario,
+                    'fecha_registro'=>date('Y-m-d H:i:s')
+        ]);
+
+        // if($request->requerimiento['tipo_requerimiento'] == 2 || $request->requerimiento['tipo_requerimiento'] == 3){ //venta diracta o pedido almacen
+        //     $this->generarTransferenciaRequerimiento($id_requerimiento, $request->requerimiento['id_sede'], $detalle_req);
         // }
-        // $detalle_req=[];
-        // if ($count_detalle_req > 0) {
-        //     for ($i = 0; $i < $count_detalle_req; $i++) {
-        //             $alm_det_req = DB::table('almacen.alm_det_req')->insertGetId(
 
-        //                 [
-        //                     'id_requerimiento'      => $id_requerimiento,
-        //                     'id_item'               => is_numeric($detalle_reqArray[$i]['id_item']) == 1 && $detalle_reqArray[$i]['id_item']>0 ? $detalle_reqArray[$i]['id_item']:null,
-        //                     'id_producto'           => is_numeric($detalle_reqArray[$i]['id_producto']) == 1 && $detalle_reqArray[$i]['id_producto']>0 ? $detalle_reqArray[$i]['id_producto']:null,
-        //                     'precio_unitario'       => is_numeric($detalle_reqArray[$i]['precio_unitario']) == 1 ?$detalle_reqArray[$i]['precio_unitario']:null,
-        //                     'subtotal'              => isset($detalle_reqArray[$i]['subtotal']) ?$detalle_reqArray[$i]['subtotal']:null,
-        //                     'cantidad'              => $detalle_reqArray[$i]['cantidad']?$detalle_reqArray[$i]['cantidad']:null,
-        //                     'id_moneda'             => $detalle_reqArray[$i]['id_tipo_moneda']?$detalle_reqArray[$i]['id_tipo_moneda']:null,
-        //                     'lugar_entrega'         => isset($detalle_reqArray[$i]['lugar_entrega'])?$detalle_reqArray[$i]['lugar_entrega']:null,
-        //                     'descripcion_adicional' => isset($detalle_reqArray[$i]['des_item'])?$detalle_reqArray[$i]['des_item']:null,
-        //                     'partida'               => is_numeric($detalle_reqArray[$i]['id_partida']) == 1 && $detalle_reqArray[$i]['id_partida']>0 ?$detalle_reqArray[$i]['id_partida']:null,
-        //                     'id_unidad_medida'      => is_numeric($detalle_reqArray[$i]['id_unidad_medida']) == 1 ? $detalle_reqArray[$i]['id_unidad_medida'] : null,
-        //                     'id_tipo_item'          => is_numeric($detalle_reqArray[$i]['id_tipo_item']) == 1 ? $detalle_reqArray[$i]['id_tipo_item']:null,
-        //                     'fecha_registro'        => date('Y-m-d H:i:s'),
-        //                     'estado'                => ($request->requerimiento['tipo_requerimiento'] ==2?19:1),
-        //                     'id_almacen_reserva'    => is_numeric($detalle_reqArray[$i]['id_almacen_reserva']) == 1 ? $detalle_reqArray[$i]['id_almacen_reserva']:null,
-        //                     'stock_comprometido'    => isset($detalle_reqArray[$i]['stock_comprometido'])?$detalle_reqArray[$i]['stock_comprometido']:null,
-        //                     'proveedor_id'          => isset($detalle_reqArray[$i]['proveedor_id'])?$detalle_reqArray[$i]['proveedor_id']:null,
-        //                     'id_cc_am_filas'        => is_numeric($detalle_reqArray[$i]['id_cc_am_filas']) == 1 ? $detalle_reqArray[$i]['id_cc_am_filas']:null,
-        //                     'id_cc_venta_filas'     => is_numeric($detalle_reqArray[$i]['id_cc_venta_filas']) == 1 ? $detalle_reqArray[$i]['id_cc_venta_filas']:null,
-        //                     'tiene_transformacion'  => $detalle_reqArray[$i]['tiene_transformacion']?$detalle_reqArray[$i]['tiene_transformacion']:false,
-        //                     'centro_costo_id'       => isset($detalle_reqArray[$i]['id_centro_costo'])?$detalle_reqArray[$i]['id_centro_costo']:null,
-        //                     'motivo'                => isset($detalle_reqArray[$i]['motivo'])?$detalle_reqArray[$i]['motivo']:null
-
-        //                 ],
-        //                 'id_detalle_requerimiento'
-        //             );
-
-        //             $detalle_req[]=[
-        //                 'id_detalle_requerimiento'=> $alm_det_req,
-        //                 'id_producto'=> is_numeric($detalle_reqArray[$i]['id_producto']) == 1 && $detalle_reqArray[$i]['id_producto']>0 ? $detalle_reqArray[$i]['id_producto']:null,
-        //                 'id_item' => is_numeric($detalle_reqArray[$i]['id_item']) == 1 && $detalle_reqArray[$i]['id_item']>0 ? $detalle_reqArray[$i]['id_item']:null,
-        //                 'cantidad' => $detalle_reqArray[$i]['cantidad']?$detalle_reqArray[$i]['cantidad']:null,
-        //                 'cantidad_a_atender' => $detalle_reqArray[$i]['cantidad']?$detalle_reqArray[$i]['cantidad']:null,
-        //                 'id_almacen_reserva'=> is_numeric($detalle_reqArray[$i]['id_almacen_reserva']) == 1 ? $detalle_reqArray[$i]['id_almacen_reserva']:null,
-        //                 'estado' => ($request->requerimiento['tipo_requerimiento'] ==2?19:1)
-        //             ];
-        //     }
+        // if($request->requerimiento['tipo_requerimiento'] == 1){ //compra
+            $this->componer_email_requerimiento($id_requerimiento, 'NUEVO', $request->requerimiento['tipo_requerimiento']);
+            // $this->crear_notificacion_nuevo_requerimiento($id_requerimiento);
         // }
-
-        // $data_doc_aprob = DB::table('administracion.adm_documentos_aprob')->insertGetId(
-        //     [
-        //         'id_tp_documento' => 1,
-        //         'codigo_doc'      => $codigo,
-        //         'id_doc'          => $id_requerimiento
-
-        //     ],
-        //     'id_doc_aprob'
-        // );
-
-
-        // $texto_justificacion='';
-        // if(isset($request->requerimiento['justificacion_generar_requerimiento'])?$request->requerimiento['justificacion_generar_requerimiento']:null){
-        //     $texto_justificacion= 'Con CC Pendiente Aprobación. '.$request->requerimiento['justificacion_generar_requerimiento'];
-        // }
-        // // trazabilidad requerimiento elaboraod
-
-        // if($request->requerimiento['tipo_requerimiento']==1){ // tipo mgcp
-        //     DB::table('almacen.alm_req_obs')
-        //     ->insert([  'id_requerimiento'=>$id_requerimiento,
-        //                 'accion'=>'VINCULADO',
-        //                 'descripcion'=>'Fecha de creación de Cuadro Costos: '.$request->requerimiento['fecha_creacion_cc'],
-        //                 'id_usuario'=>Auth::user()->id_usuario,
-        //                 'fecha_registro'=>$request->requerimiento['fecha_creacion_cc']
-        //     ]);
-        // }
-
-        // DB::table('almacen.alm_req_obs')
-        // ->insert([  'id_requerimiento'=>$id_requerimiento,
-        //             'accion'=>'ELABORADO',
-        //             'descripcion'=>'Requerimiento elaborado.'.$texto_justificacion,
-        //             'id_usuario'=>Auth::user()->id_usuario,
-        //             'fecha_registro'=>date('Y-m-d H:i:s')
-        // ]);
-
-        // // if($request->requerimiento['tipo_requerimiento'] == 2 || $request->requerimiento['tipo_requerimiento'] == 3){ //venta diracta o pedido almacen
-        // //     $this->generarTransferenciaRequerimiento($id_requerimiento, $request->requerimiento['id_sede'], $detalle_req);
-        // // }
-
-        // // if($request->requerimiento['tipo_requerimiento'] == 1){ //compra
-        //     $this->componer_email_requerimiento($id_requerimiento, 'NUEVO', $request->requerimiento['tipo_requerimiento']);
-        //     // $this->crear_notificacion_nuevo_requerimiento($id_requerimiento);
-        // // }
         
-        // }
-        //     DB::commit();
-        // return response()->json(['id_requerimiento'=>$id_requerimiento,'codigo'=>$codigo]);
+        }
+            DB::commit();
+        return response()->json(['id_requerimiento'=>$id_requerimiento,'codigo'=>$codigo]);
 
-        // } catch (\PDOException $e) {
-        //     DB::rollBack();
-        // }
+        } catch (\PDOException $e) {
+            DB::rollBack();
+        }
     }
 
     public function crear_notificacion_nuevo_requerimiento($id_requerimiento){
@@ -3575,205 +3565,7 @@ class LogisticaController extends Controller
         $array = array('id'=>$id_area_rol, 'msg'=>$msg);
         return $array;
     }
-    public function listar_requerimientos_elaborados($id_empresa,$id_sede,$id_grupo,$id_prioridad){
-
-
-        $estado_anulado= $this->get_estado_doc('Anulado');
-        $hasWhere=[
-            ['alm_req.estado', '!=', $estado_anulado],
-            ['adm_grupo.estado', '=', 1],
-            ['sis_sede.estado', '=', 1]
-        ];
-
-        if($id_empresa >0){
-            $hasWhere[]=['alm_req.id_empresa', '=', $id_empresa];
-        }
-        if($id_sede >0){
-            $hasWhere[]=['alm_req.id_sede', '=', $id_sede];
-        }
-        if($id_grupo >0){
-            $hasWhere[]=['adm_grupo.id_grupo', '=', $id_grupo];
-        }
-        if($id_prioridad >0){
-            $hasWhere[]=['alm_req.id_prioridad', '=', $id_prioridad];
-        }
-
-        $req     = array();
-        $det_req = array();
-
-        $sql_req = DB::table('almacen.alm_req')
-        ->leftJoin('administracion.adm_documentos_aprob', 'alm_req.id_requerimiento', '=', 'adm_documentos_aprob.id_doc')
-        ->leftJoin('administracion.adm_estado_doc', 'alm_req.estado', '=', 'adm_estado_doc.id_estado_doc')
-        ->leftJoin('almacen.alm_tp_req', 'alm_req.id_tipo_requerimiento', '=', 'alm_tp_req.id_tipo_requerimiento')
-        ->leftJoin('administracion.adm_prioridad', 'alm_req.id_prioridad', '=', 'adm_prioridad.id_prioridad')
-        ->leftJoin('administracion.adm_grupo', 'alm_req.id_grupo', '=', 'adm_grupo.id_grupo')
-        ->leftJoin('administracion.sis_sede', 'sis_sede.id_sede', '=', 'adm_grupo.id_sede')
-        ->leftJoin('administracion.adm_area', 'alm_req.id_area', '=', 'adm_area.id_area')
-        ->leftJoin('configuracion.sis_moneda', 'alm_req.id_moneda', '=', 'sis_moneda.id_moneda')
-        ->leftJoin('administracion.adm_periodo', 'adm_periodo.id_periodo', '=', 'alm_req.id_periodo')
-        ->leftJoin('administracion.adm_empresa', 'alm_req.id_empresa', '=', 'adm_empresa.id_empresa')
-        ->leftJoin('contabilidad.adm_contri', 'adm_empresa.id_contribuyente', '=', 'adm_contri.id_contribuyente')
-        ->leftJoin('contabilidad.sis_identi', 'sis_identi.id_doc_identidad', '=', 'adm_contri.id_doc_identidad')
-        ->leftJoin('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'alm_req.id_usuario')
-        ->leftJoin('rrhh.rrhh_trab as trab', 'trab.id_trabajador', '=', 'sis_usua.id_trabajador')
-        ->leftJoin('rrhh.rrhh_postu as post', 'post.id_postulante', '=', 'trab.id_postulante')
-        ->leftJoin('rrhh.rrhh_perso as pers', 'pers.id_persona', '=', 'post.id_persona')
-
-        ->select(
-            'alm_req.id_requerimiento',
-            'adm_documentos_aprob.id_doc_aprob',
-            'alm_req.codigo',
-            'alm_req.id_tipo_requerimiento',
-            'alm_req.id_usuario',
-            'alm_req.id_rol',
-            'alm_req.fecha_requerimiento',
-            'alm_req.id_periodo',
-            'adm_periodo.descripcion as descripcion_periodo',
-            'alm_req.concepto',
-            'alm_req.id_grupo',
-            'alm_req.id_empresa',
-            'adm_contri.razon_social',
-            'adm_contri.nro_documento',
-            'adm_contri.id_doc_identidad',
-            'sis_identi.descripcion as tipo_documento_identidad',
-            // 'proy_op_com.codigo as codigo_op_com',
-            // 'proy_op_com.descripcion as descripcion_op_com',
-            'alm_req.concepto AS alm_req_concepto',
-            'alm_req.estado',
-            'alm_req.fecha_registro',
-            'alm_req.id_area',
-            'alm_req.id_prioridad',
-            'alm_req.id_presupuesto',
-            'alm_req.id_moneda',
-            'adm_estado_doc.estado_doc',
-            'alm_tp_req.descripcion AS tipo_requerimiento',
-            'adm_prioridad.descripcion AS priori',
-            'adm_grupo.descripcion AS grupo',
-            'adm_area.descripcion AS area',
-            'sis_moneda.simbolo AS simbolo_moneda',
-            DB::raw("(pers.nombres) || ' ' || (pers.apellido_paterno) || ' ' || (pers.apellido_materno) as nombre_usuario")
-
-        )
-        ->where($hasWhere)
-        ->orderBy('alm_req.id_requerimiento', 'DESC')
-        ->get();
-
-        $simbolo_moneda='';
-        foreach($sql_req as $data){
-            $req[]=[
-                'id_requerimiento' => $data->id_requerimiento,
-                'id_doc_aprob' => $data->id_doc_aprob,
-                'codigo' => $data->codigo,
-                'id_tipo_requerimiento' => $data->id_tipo_requerimiento,
-                'id_usuario' => $data->id_usuario,
-                'id_rol' => $data->id_rol,
-                'fecha_requerimiento' => $data->fecha_requerimiento,
-                'id_periodo' => $data->id_periodo,
-                'descripcion_periodo' => $data->descripcion_periodo,
-                'concepto' => $data->concepto,
-                'id_empresa' => $data->id_empresa,
-                'razon_social' => $data->razon_social,
-                'nro_documento' => $data->nro_documento,
-                'tipo_documento_identidad' => $data->tipo_documento_identidad,
-                'id_grupo' => $data->id_grupo,
-                'estado' => $data->estado,
-                'fecha_registro' => $data->fecha_registro,
-                'id_area' => $data->id_area,
-                'id_prioridad' => $data->id_prioridad,
-                'id_presupuesto' => $data->id_presupuesto,
-                'id_moneda' => $data->id_moneda,
-                'simbolo_moneda' => $data->simbolo_moneda,
-                'estado_doc' => $data->estado_doc,
-                'tipo_requerimiento' => $data->tipo_requerimiento,
-                'priori' => $data->priori,
-                'grupo' => $data->grupo,
-                'area' => $data->area,
-                'usuario' => $data->nombre_usuario,
-
-                
-            ];
-
-            $simbolo_moneda = $data->simbolo_moneda;
-
-        }
-
-        $size_req= count($req);
-
-        $sql_det_req = DB::table('almacen.alm_det_req')
-        ->select(
-            'alm_det_req.id_detalle_requerimiento',
-            'alm_det_req.id_requerimiento',
-            'alm_det_req.id_item',
-            'alm_det_req.precio_unitario',
-            'alm_det_req.subtotal',
-            'alm_det_req.cantidad',
-            'alm_det_req.descripcion_adicional',
-            'alm_det_req.partida',
-            'alm_det_req.unidad_medida',
-            'alm_det_req.estado',
-            'alm_det_req.fecha_registro',
-            'alm_det_req.lugar_entrega',
-            'alm_det_req.id_unidad_medida',
-            'alm_det_req.id_tipo_item'
-        )
-        ->where('alm_det_req.estado', '!=', $estado_anulado)
-        ->orderBy('alm_det_req.id_requerimiento', 'DESC')
-        ->get();
-
-
-        $aux_sum=0; // aux monto referencual head req
-
-        if(isset($sql_det_req) && sizeof($sql_det_req) > 0){
-            foreach($sql_det_req as $data){
-                
-                $det_req[]=[
-                    'id_detalle_requerimiento'=> $data->id_detalle_requerimiento,
-                    'id_requerimiento'=> $data->id_requerimiento,
-                    'id_item'=> $data->id_item,
-                    'precio_unitario'=> $data->precio_unitario,
-                    'subtotal'=> $data->subtotal,
-                    'cantidad'=> $data->cantidad,
-                    'descripcion_adicional'=> $data->descripcion_adicional,
-                    'partida'=> $data->partida,
-                    'unidad_medida'=> $data->unidad_medida,
-                    'estado'=> $data->estado,
-                    'fecha_registro'=> $data->fecha_registro,
-                    'lugar_entrega'=> $data->lugar_entrega,
-                    'id_unidad_medida'=> $data->id_unidad_medida,
-                    'id_tipo_item'=> $data->id_tipo_item
-                ];
-
-                // $total = intval($data->cantidad) * floatval($data->precio_unitario);
-                // $aux_sum = $aux_sum + floatval($total);
-                // $req[0]['monto_total_referencial']= $simbolo_moneda.(number_format($aux_sum,2,'.', ''));
-
-            }
-    
-            $size_det_req= count($det_req);
-            
-            for($i = 0; $i < $size_req; $i++ ){
-                for($j = 0; $j < $size_det_req; $j++ ){
-                    $req[$i]['detalle'] = [];
-    
-                }
-            }
-    
-            for($i = 0; $i < $size_req; $i++ ){
-                for($j = 0; $j < $size_det_req; $j++ ){
-                    if($det_req[$j]['id_requerimiento'] == $req[$i]['id_requerimiento']){
-                        $req[$i]['detalle'][] = $det_req[$j];
-                    }
-                }
-            }
-        }else{ // si no existe datos en detalle_requerimiento
-            for($i = 0; $i < $size_req; $i++ ){
-                $req[$i]['detalle'] = [];
-            }
-        }
-
-        return datatables($req)->toJson();
-
-    }
+ 
 
     public function listar_requerimiento_v2($id_empresa,$id_sede,$id_grupo){
 

@@ -17,6 +17,9 @@
         @if(Auth::user()->tieneAplicacion(103))
             <li><a href="{{route('logistica.gestion-logistica.requerimiento.listado.index')}}"><i class="far fa-circle fa-xs"></i> Listado</a></li>
         @endif
+        @if(Auth::user()->tieneAplicacion(103))
+            <li><a href="{{route('logistica.gestion-logistica.requerimiento.aprobar.index')}}"><i class="far fa-circle fa-xs"></i> Aprobar</a></li>
+        @endif
         </ul>
     </li>
     @endif

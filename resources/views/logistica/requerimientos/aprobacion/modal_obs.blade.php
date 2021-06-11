@@ -14,7 +14,7 @@
                             <div class="input-group-okc">
                                 <select class="form-control input-sm activation" name="rol_usuario">
                                 @foreach ($roles as $rol)
-                                    <option value="{{$rol->id_rol}}" data-id-area="">{{$rol->rol_concepto}}</option>
+                                    <option value="{{$rol->id_rol}}" data-id-area="">{{$rol->descripcion}}</option>
                                 @endforeach
                                 </select>
                             </div>

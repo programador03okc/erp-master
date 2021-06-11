@@ -208,12 +208,12 @@ class RequerimientoView {
             <td></td>
             <td><p class="descripcion-partida">(NO SELECCIONADO)</p><button type="button" class="btn btn-xs btn-info" name="partida" onclick="requerimientoView.cargarModalPartidas(this)">Seleccionar</button> 
                 <div class="form-group">
-                    <input type="text" class="partida" name="id-partida[]" hidden>
+                    <input type="text" class="partida" name="idPartida[]" hidden>
                 </div>
             </td>
             <td><p class="descripcion-centro-costo">(NO SELECCIONADO)</p><button type="button" class="btn btn-xs btn-primary" name="centroCostos" onclick="requerimientoView.cargarModalCentroCostos(this)">Seleccionar</button> 
                 <div class="form-group">
-                    <input type="text" class="centroCosto" name="id-centro-costo[]" hidden>
+                    <input type="text" class="centroCosto" name="idCentroCosto[]" hidden>
                 </div>
             </td>
             <td><input class="form-control input-sm" type="text" name="partNumber[]" placeholder="Part number"></td>
@@ -844,14 +844,14 @@ class RequerimientoView {
 
             if(tempArchivoAdjuntoRequerimientoList.length >0){
                 tempArchivoAdjuntoRequerimientoList.forEach(element => {
-                    formData.append(`archivoAdjuntoRequerimiento${element.id}[]`, element.file, element.nameFile);
+                    formData.append(`archivoAdjuntoRequerimiento${element.category}[]`, element.file, element.nameFile);
                 });
 
             }
     
             $.ajax({
                 type: 'POST',
-                url: 'guardar',
+                url: 'guardar-requerimiento',
                 data: formData,
                 processData: false,
                 contentType: false,
@@ -878,20 +878,25 @@ class RequerimientoView {
                     });
                 },
                 success: function (response) {
-                    if(response.status ==200){
+                    if(response.id_requerimiento >0){
+                        alert(`Requerimiento guardado con código: ${response.codigo}. La página se recargará para que pueda volver a crear un requerimiento.`);
+                        location.reload();
+                    }else{
+                        $('#wrapper-okc').LoadingOverlay("hide", true);
+                        alert(response.mensaje);
                     }
                 },
-                complete: function (data) {
+                fail: function (jqXHR, textStatus, errorThrown) {
                     $('#wrapper-okc').LoadingOverlay("hide", true);
-
+                    alert("Hubo un problema al guardar el requerimiento. Por favor actualice la página e intente de nuevo");
+                    console.log(jqXHR);
+                    console.log(textStatus);
+                    console.log(errorThrown);
                 }
-            }).fail(function (jqXHR, textStatus, errorThrown) {
-                console.log(jqXHR);
-                console.log(textStatus);
-                console.log(errorThrown);
             });
 
         } else {
+            alert("Por favor ingrese los datos faltantes en el formulario");
             console.log("no se va a guardar");
         }
     }
