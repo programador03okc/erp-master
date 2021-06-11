@@ -134,9 +134,7 @@ Listado de requerimientos
     <script src="{{ asset('datatables/pdfmake/vfs_fonts.js') }}"></script>
     <script src="{{ asset('datatables/JSZip/jszip.min.js') }}"></script> -->
 
-<script src="{{ asset('js/logistica/requerimiento/listaRequerimientoView.js') }}"></script>
-<script src="{{ asset('js/logistica/requerimiento/listaRequerimientoController.js') }}"></script>
-<script src="{{ asset('js/logistica/requerimiento/listaRequerimientoView.js') }}"></script>
+<script src="{{ asset('js/logistica/listar_requerimiento.js') }}"></script>
 
 
 <script>
