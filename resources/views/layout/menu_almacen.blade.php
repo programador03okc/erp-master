@@ -76,6 +76,7 @@
             @if(Auth::user()->tieneAplicacion(83))
             <li><a href="{{route('almacen.movimientos.pendientes-salida.index')}}"> Pendientes de Salida </a></li>
             @endif
+            <li><a href="{{route('almacen.movimientos.prorrateo.index')}}"> Prorrateo de Costos </a></li>
             <!-- @if(Auth::user()->tieneAplicacion(84))
             <li><a href="{{route('almacen.movimientos.guias-compra.index')}}"> Compras - Ingresos </a></li>
             @endif

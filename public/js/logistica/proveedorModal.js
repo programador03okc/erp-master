@@ -90,20 +90,21 @@ function selectProveedor(){
         }
 
     }
-    else if (page == "guia_compra"){
-        var tab = $("#modal-proveedores .modal-dialog").attr('type');
+    else if (page == "prorrateo"){
+        // var tab = $("#modal-proveedores .modal-dialog").attr('type');
         // console.log('form:'+tab);
         
-        if (tab == "form-general"){
-            $('[name=id_proveedor]').val(myId);
-            $('[name=id_contrib]').val(idCo);
-            $('[name=prov_razon_social]').val(ruc+' - '+des);
-        } 
-        else if (tab == "form-prorrateo"){
+        // if (tab == "form-general"){
+        //     $('[name=id_proveedor]').val(myId);
+        //     $('[name=id_contrib]').val(idCo);
+        //     $('[name=prov_razon_social]').val(ruc+' - '+des);
+        // } 
+        // else 
+        // if (tab == "form-prorrateo"){
             $('[name=doc_id_proveedor]').val(myId);
             $('[name=doc_id_contrib]').val(idCo);
             $('[name=doc_razon_social]').val(des);
-        }
+        // }
     }
     else if (page == "doc_compra"){
         $('[name=id_proveedor]').val(myId);
