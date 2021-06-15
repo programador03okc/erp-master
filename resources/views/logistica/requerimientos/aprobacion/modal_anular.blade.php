@@ -26,13 +26,13 @@
                         <div class="col-md-12 text-left">
                             <input type="hidden" name="id_doc_aprob">
                             <h5>Motivo/Justificación</h5>
-                            <textarea class="form-control input-sm" name="motivo_req" id="motivo_req" rows="5"></textarea>
+                            <textarea class="form-control input-sm" name="motivo_req" rows="5"></textarea>
                         </div>
                     </div>
                     <br>
                     <div class="row">
                         <div class="col-md-12">
-                        <button type="button" class="btn btn-sm btn-success" onClick="GrabarAnular();">Grabar</button>
+                        <button type="button" class="btn btn-sm btn-success" onClick="aprobarRequerimiento.grabarAnular();">Grabar</button>
                         </div>
                     </div>
                 </div>

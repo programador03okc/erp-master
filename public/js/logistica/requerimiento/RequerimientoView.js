@@ -12,9 +12,9 @@ class RequerimientoView {
         // $('[name=periodo]').val(today.getFullYear());
 
     }
-    limpiarTabla(idElement){
+    limpiarTabla(idElement) {
         let table = document.getElementById(idElement);
-        for(let i = table.rows.length - 1; i > 0; i--) {
+        for (let i = table.rows.length - 1; i > 0; i--) {
             table.deleteRow(i);
         }
         return null;
@@ -25,7 +25,7 @@ class RequerimientoView {
 
         document.querySelector("form[id='form-requerimiento'] span[name='simboloMoneda']").textContent = moneda;
         document.querySelector("div[id='montoMoneda']").textContent = moneda;
-        if(document.querySelector("form[id='form-requerimiento'] table span[class='moneda']")){
+        if (document.querySelector("form[id='form-requerimiento'] table span[class='moneda']")) {
             document.querySelectorAll("form[id='form-requerimiento'] table span[class='moneda']").forEach(element => {
                 element.textContent = moneda;
             });
@@ -61,7 +61,7 @@ class RequerimientoView {
                 selectElement.remove(i);
             }
         }
-  
+
 
         array.forEach(element => {
             let option = document.createElement("option");
@@ -76,7 +76,7 @@ class RequerimientoView {
             selectElement.add(option);
         });
 
-        if(array.length >0 ){
+        if (array.length > 0) {
             this.updateSede(selectElement);
         }
 
@@ -235,6 +235,7 @@ class RequerimientoView {
             <td><textarea class="form-control input-sm" name="motivo[]" placeholder="Motivo de requerimiento de item (opcional)"></textarea></td>
             <td>
                 <div class="btn-group" role="group">
+                    <input type="hidden" class="tipoItem" name="tipoItem[]" value="1">
                     <input type="hidden" class="idRegister" name="idRegister[]" value="${this.makeId()}">
                     <button type="button" class="btn btn-warning btn-xs" name="btnAdjuntarArchivoItem[]" title="Adjuntos" onclick="requerimientoView.adjuntarArchivoItem(this)" >
                         <i class="fas fa-paperclip"></i>
@@ -259,12 +260,12 @@ class RequerimientoView {
             <td></td>
             <td><p class="descripcion-partida">(NO SELECCIONADO)</p><button type="button" class="btn btn-xs btn-info" name="centroCostos" onclick="requerimientoView.cargarModalPartidas(this)">Seleccionar</button> 
                 <div class="form-group">
-                    <input type="text" class="partida" name="id-partida[]" hidden>
+                    <input type="text" class="partida" name="idPartida[]" hidden>
                 </div>
                 </td>
             <td><p class="descripcion-centro-costo">(NO SELECCIONADO)</p><button type="button" class="btn btn-xs btn-primary" name="partida" onclick="requerimientoView.cargarModalCentroCostos(this)">Seleccionar</button> 
                 <div class="form-group">
-                    <input type="text" class="centroCosto" name="id-centro-costo[]" hidden>
+                    <input type="text" class="centroCosto" name="idCentroCosto[]" hidden>
                 </div>
             </td>
             <td>(Servicio)<input type="hidden" name="partNumber[]"></td>
@@ -288,6 +289,7 @@ class RequerimientoView {
             <td><textarea class="form-control input-sm" name="motivo[]" placeholder="Motivo de requerimiento de item (opcional)"></textarea></td>
             <td>
                 <div class="btn-group" role="group">
+                    <input type="hidden" class="tipoItem" name="tipoItem[]" value="2">
                     <input type="hidden" class="idRegister" name="idRegister[]" value="${this.makeId()}">
                     <button type="button" class="btn btn-warning btn-xs" name="btnAdjuntarArchivoItem[]" title="Adjuntos" onclick="requerimientoView.adjuntarArchivoItem(this)" >
                         <i class="fas fa-paperclip"></i>
@@ -417,7 +419,7 @@ class RequerimientoView {
     }
 
     listarPartidas(idGrupo, idProyecto) {
-        requerimientoCtrl.obtenerListaPartidas(idGrupo, idProyecto).then( (res) => {
+        requerimientoCtrl.obtenerListaPartidas(idGrupo, idProyecto).then((res) => {
             this.construirListaPartidas(res);
         }).catch(function (err) {
             console.log(err)
@@ -452,7 +454,7 @@ class RequerimientoView {
                         html += `<tr id="par-${partida.id_partida}">
                             <td style="width:15%; text-align:left;" name="codigo">${partida.codigo}</td>
                             <td style="width:75%; text-align:left;" name="descripcion">${partida.des_pardet}</td>
-                            <td style="width:15%; text-align:right;" name="importe_total" class="right ${isVisible}">S/${Util.formatoNumero(partida.importe_total,2)}</td>
+                            <td style="width:15%; text-align:right;" name="importe_total" class="right ${isVisible}">S/${Util.formatoNumero(partida.importe_total, 2)}</td>
                             <td style="width:5%; text-align:center;"><button class="btn btn-success btn-xs" onclick="requerimientoView.selectPartida(${partida.id_partida});">Seleccionar</button></td>
                         </tr>`;
                     }
@@ -647,12 +649,12 @@ class RequerimientoView {
 
     //adjunto cabecera requerimiento 
 
-    adjuntarArchivoRequerimiento(){
+    adjuntarArchivoRequerimiento() {
         $('#modal-adjuntar-archivos-requerimiento').modal({
             show: true
         });
         document.querySelector("div[id='modal-adjuntar-archivos-requerimiento'] div[class='bootstrap-filestyle input-group'] input[type='text']").classList.add('oculto');
-        document.querySelector("div[id='modal-adjuntar-archivos-requerimiento'] span[class='buttonText']").textContent ="Agregar archivo";
+        document.querySelector("div[id='modal-adjuntar-archivos-requerimiento'] span[class='buttonText']").textContent = "Agregar archivo";
 
     }
     agregarAdjuntoRequerimiento(event) {
@@ -680,11 +682,11 @@ class RequerimientoView {
 
     }
 
-    listarAdjuntosDeItem(){
-        let html='';
+    listarAdjuntosDeItem() {
+        let html = '';
         tempArchivoAdjuntoItemList.forEach(element => {
-            if(tempIdRegisterActive== element.idRegister){
-                html+=`<tr>
+            if (tempIdRegisterActive == element.idRegister) {
+                html += `<tr>
                 <td style="text-align:left;">${element.nameFile}</td>
                 <td>
                     <div class="btn-group" role="group">
@@ -695,7 +697,7 @@ class RequerimientoView {
                 </tr>`;
             }
         });
-        document.querySelector("tbody[id='body_archivos_item']").insertAdjacentHTML('beforeend',html );
+        document.querySelector("tbody[id='body_archivos_item']").insertAdjacentHTML('beforeend', html);
     }
 
     agregarAdjuntoItem(event) {
@@ -704,8 +706,8 @@ class RequerimientoView {
     }
 
     actionGuardarEditarRequerimiento() {
-        
- 
+
+
         let continuar = true;
         if (document.querySelector("tbody[id='body_detalle_requerimiento']").childElementCount == 0) {
             alert("Ingrese por lo menos un producto/servicio");
@@ -714,7 +716,7 @@ class RequerimientoView {
 
         if (document.querySelector("input[name='concepto']").value == '') {
             continuar = false;
-            if(document.querySelector("input[name='concepto']").closest('div').querySelector("span")==null){
+            if (document.querySelector("input[name='concepto']").closest('div').querySelector("span") == null) {
                 let newSpanInfo = document.createElement("span");
                 newSpanInfo.classList.add('text-danger');
                 newSpanInfo.textContent = '(Ingrese un concepto/motivo)';
@@ -726,7 +728,7 @@ class RequerimientoView {
 
         if (document.querySelector("select[name='empresa']").value == 0) {
             continuar = false;
-            if(document.querySelector("select[name='empresa']").closest('div').querySelector("span")==null){
+            if (document.querySelector("select[name='empresa']").closest('div').querySelector("span") == null) {
                 let newSpanInfo = document.createElement("span");
                 newSpanInfo.classList.add('text-danger');
                 newSpanInfo.textContent = '(Seleccione una empresa)';
@@ -737,7 +739,7 @@ class RequerimientoView {
 
         if (document.querySelector("select[name='sede']").value == 0) {
             continuar = false;
-            if(document.querySelector("select[name='sede']").closest('div').querySelector("span")==null){
+            if (document.querySelector("select[name='sede']").closest('div').querySelector("span") == null) {
                 let newSpanInfo = document.createElement("span");
                 newSpanInfo.classList.add('text-danger');
                 newSpanInfo.textContent = '(Seleccione una sede)';
@@ -749,7 +751,7 @@ class RequerimientoView {
 
         if (document.querySelector("input[name='fecha_entrega']").value == '') {
             continuar = false;
-            if(document.querySelector("input[name='fecha_entrega']").closest('div').querySelector("span")==null){
+            if (document.querySelector("input[name='fecha_entrega']").closest('div').querySelector("span") == null) {
                 let newSpanInfo = document.createElement("span");
                 newSpanInfo.classList.add('text-danger');
                 newSpanInfo.textContent = '(Seleccione una fecha de entrega)';
@@ -764,7 +766,7 @@ class RequerimientoView {
 
             if (tbodyChildren[index].querySelector("input[class~='partida']").value == '') {
                 continuar = false;
-                if(tbodyChildren[index].querySelector("input[class~='partida']").closest('td').querySelector("span")==null){
+                if (tbodyChildren[index].querySelector("input[class~='partida']").closest('td').querySelector("span") == null) {
                     let newSpanInfo = document.createElement("span");
                     newSpanInfo.classList.add('text-danger');
                     newSpanInfo.textContent = 'Ingrese una partida';
@@ -775,7 +777,7 @@ class RequerimientoView {
             }
             if (tbodyChildren[index].querySelector("input[class~='centroCosto']").value == '') {
                 continuar = false;
-                if(tbodyChildren[index].querySelector("input[class~='centroCosto']").closest('td').querySelector("span")==null){
+                if (tbodyChildren[index].querySelector("input[class~='centroCosto']").closest('td').querySelector("span") == null) {
                     let newSpanInfo = document.createElement("span");
                     newSpanInfo.classList.add('text-danger');
                     newSpanInfo.textContent = 'Ingrese un centro de costo';
@@ -787,7 +789,7 @@ class RequerimientoView {
 
             if (tbodyChildren[index].querySelector("input[class~='cantidad']").value == '') {
                 continuar = false;
-                if(tbodyChildren[index].querySelector("input[class~='cantidad']").closest('td').querySelector("span")==null){
+                if (tbodyChildren[index].querySelector("input[class~='cantidad']").closest('td').querySelector("span") == null) {
                     let newSpanInfo = document.createElement("span");
                     newSpanInfo.classList.add('text-danger');
                     newSpanInfo.textContent = 'Ingrese una cantidad';
@@ -799,7 +801,7 @@ class RequerimientoView {
 
             if (tbodyChildren[index].querySelector("input[class~='precio']").value == '') {
                 continuar = false;
-                if(tbodyChildren[index].querySelector("input[class~='precio']").closest('td').querySelector("span")==null){
+                if (tbodyChildren[index].querySelector("input[class~='precio']").closest('td').querySelector("span") == null) {
                     let newSpanInfo = document.createElement("span");
                     newSpanInfo.classList.add('text-danger');
                     newSpanInfo.textContent = 'Ingrese un precio';
@@ -812,7 +814,7 @@ class RequerimientoView {
             if (tbodyChildren[index].querySelector("textarea[class~='descripcion']")) {
                 if (tbodyChildren[index].querySelector("textarea[class~='descripcion']").value == '') {
                     continuar = false;
-                    if(tbodyChildren[index].querySelector("textarea[class~='descripcion']").closest('td').querySelector("span")==null){
+                    if (tbodyChildren[index].querySelector("textarea[class~='descripcion']").closest('td').querySelector("span") == null) {
                         let newSpanInfo = document.createElement("span");
                         newSpanInfo.classList.add('text-danger');
                         newSpanInfo.textContent = 'Ingrese una descripción';
@@ -842,13 +844,13 @@ class RequerimientoView {
 
             }
 
-            if(tempArchivoAdjuntoRequerimientoList.length >0){
+            if (tempArchivoAdjuntoRequerimientoList.length > 0) {
                 tempArchivoAdjuntoRequerimientoList.forEach(element => {
                     formData.append(`archivoAdjuntoRequerimiento${element.category}[]`, element.file, element.nameFile);
                 });
 
             }
-    
+
             $.ajax({
                 type: 'POST',
                 url: 'guardar-requerimiento',
@@ -860,28 +862,28 @@ class RequerimientoView {
 
                     // $('#modal-loader').modal({backdrop: 'static', keyboard: false});
                     var customElement = $("<div>", {
-                        "css"   : {
-                            "font-size"     : "24px",
-                            "text-align"    : "center",
-                            "padding"       : "0px",
-                            "margin-top"    : "-400px"
+                        "css": {
+                            "font-size": "24px",
+                            "text-align": "center",
+                            "padding": "0px",
+                            "margin-top": "-400px"
                         },
-                        "class" : "your-custom-class",
-                        "text"  : "Guardando requerimiento..."
+                        "class": "your-custom-class",
+                        "text": "Guardando requerimiento..."
                     });
 
                     $('#wrapper-okc').LoadingOverlay("show", {
                         imageAutoResize: true,
                         progress: true,
-                        custom:customElement,
+                        custom: customElement,
                         imageColor: "#3c8dbc"
                     });
                 },
                 success: function (response) {
-                    if(response.id_requerimiento >0){
+                    if (response.id_requerimiento > 0) {
                         alert(`Requerimiento guardado con código: ${response.codigo}. La página se recargará para que pueda volver a crear un requerimiento.`);
                         location.reload();
-                    }else{
+                    } else {
                         $('#wrapper-okc').LoadingOverlay("hide", true);
                         alert(response.mensaje);
                     }
@@ -952,28 +954,28 @@ class ArchivoAdjunto {
         }
     }
 
-    addToTablaArchivosRequerimiento(id,nameFile) {
-        
-        requerimientoCtrl.getcategoriaAdjunto().then((res)=> {
-            this.construirRegistroEnTablaAdjuntosRequerimiento(id,nameFile,res);
+    addToTablaArchivosRequerimiento(id, nameFile) {
 
-        }).catch(function(err) {
+        requerimientoCtrl.getcategoriaAdjunto().then((res) => {
+            this.construirRegistroEnTablaAdjuntosRequerimiento(id, nameFile, res);
+
+        }).catch(function (err) {
             console.log(err)
         })
 
     }
 
-    construirRegistroEnTablaAdjuntosRequerimiento(id,nameFile,data){
-        let html='';
-        html=`<tr id="${id}" style="text-align:center">
+    construirRegistroEnTablaAdjuntosRequerimiento(id, nameFile, data) {
+        let html = '';
+        html = `<tr id="${id}" style="text-align:center">
         <td style="text-align:left;">${nameFile}</td>
         <td>
             <select class="form-control" name="categoriaAdjunto" onChange="ArchivoAdjunto.changeCategoriaAdjunto(this)">
         `;
         data.forEach(element => {
-            html+=`<option value="${element.id_categoria_adjunto}">${element.descripcion}</option>`
+            html += `<option value="${element.id_categoria_adjunto}">${element.descripcion}</option>`
         });
-        html+=`</select>
+        html += `</select>
         </td>
         <td>
             <div class="btn-group" role="group">
@@ -983,21 +985,21 @@ class ArchivoAdjunto {
         </td>
         </tr>`;
 
-        document.querySelector("tbody[id='body_archivos_requerimiento']").insertAdjacentHTML('beforeend',html);
+        document.querySelector("tbody[id='body_archivos_requerimiento']").insertAdjacentHTML('beforeend', html);
 
     }
 
     static changeCategoriaAdjunto(obj) {
-        if(tempArchivoAdjuntoRequerimientoList.length >0){
+        if (tempArchivoAdjuntoRequerimientoList.length > 0) {
             let indice = tempArchivoAdjuntoRequerimientoList.findIndex(elemnt => elemnt.id === obj.closest('tr').id);
-            tempArchivoAdjuntoRequerimientoList[indice].category=obj.value;
-        }else{
+            tempArchivoAdjuntoRequerimientoList[indice].category = obj.value;
+        } else {
             alert("Hubo un error inesperado en la lista de adjuntos por requerimiento, la cantidad de adjuntos es cero");
         }
     }
 
 
-    addToTablaArchivosItem(id,nameFile) {
+    addToTablaArchivosItem(id, nameFile) {
 
         document.querySelector("tbody[id='body_archivos_item']").insertAdjacentHTML('beforeend', `<tr id="${id}" style="text-align:center">
         <td  style="text-align:left;">${nameFile}</td>
@@ -1011,44 +1013,44 @@ class ArchivoAdjunto {
         `);
     }
 
-    static eliminarArchivoRequerimiento(obj,id) {
+    static eliminarArchivoRequerimiento(obj, id) {
         // console.log('eliminar archivo ' + idRegister + nameFile);
         obj.closest("tr").remove();
         tempArchivoAdjuntoRequerimientoList = tempArchivoAdjuntoRequerimientoList.filter((element, i) => element.id != id);
         ArchivoAdjunto.updateContadorTotalAdjuntosRequerimiento();
     }
 
-    static eliminarArchivoItem(obj,id) {
+    static eliminarArchivoItem(obj, id) {
         obj.closest("tr").remove();
         tempArchivoAdjuntoItemList = tempArchivoAdjuntoItemList.filter((element, i) => element.id != id);
         ArchivoAdjunto.updateContadorTotalAdjuntosPorItem();
     }
 
-    static updateContadorTotalAdjuntosRequerimiento(){
+    static updateContadorTotalAdjuntosRequerimiento() {
 
-        document.querySelector("span[name='cantidadAdjuntosRequerimiento']").textContent= tempArchivoAdjuntoRequerimientoList.length;
+        document.querySelector("span[name='cantidadAdjuntosRequerimiento']").textContent = tempArchivoAdjuntoRequerimientoList.length;
     }
 
-    static updateContadorTotalAdjuntosPorItem(){
+    static updateContadorTotalAdjuntosPorItem() {
         let tbodyChildren = document.querySelector("tbody[id='body_detalle_requerimiento']").children;
         for (let i = 0; i < tbodyChildren.length; i++) {
-            if(tempArchivoAdjuntoItemList.length>0){
+            if (tempArchivoAdjuntoItemList.length > 0) {
                 for (let j = 0; j < tempArchivoAdjuntoItemList.length; j++) {
                     // if(tbodyChildren[i].querySelector("input[class~='idRegister']").value == tempArchivoAdjuntoItemList.idRegister){
-                        const cantidad =tempArchivoAdjuntoItemList.filter(function(element){ return element.idRegister == tbodyChildren[i].querySelector("input[class~='idRegister']").value; }).length;
-                        tbodyChildren[i].querySelector("span[name='cantidadAdjuntosItem']").textContent= cantidad;
+                    const cantidad = tempArchivoAdjuntoItemList.filter(function (element) { return element.idRegister == tbodyChildren[i].querySelector("input[class~='idRegister']").value; }).length;
+                    tbodyChildren[i].querySelector("span[name='cantidadAdjuntosItem']").textContent = cantidad;
                     // } 
-    
+
                 }
 
-            }else{
-                tbodyChildren[i].querySelector("span[name='cantidadAdjuntosItem']").textContent= 0;
+            } else {
+                tbodyChildren[i].querySelector("span[name='cantidadAdjuntosItem']").textContent = 0;
             }
 
         }
 
     }
- 
+
 
     addFileLevelRequerimiento() {
         if (this.isAllowedFile() == true) {
@@ -1058,7 +1060,7 @@ class ArchivoAdjunto {
             const sizeFile = this.getSize();
             const id = requerimientoView.makeId();
             tempArchivoAdjuntoRequerimientoList.push({
-                id:id , 
+                id: id,
                 category: 1, //default
                 nameFile: nameFile,
                 typeFile: typeFile,
@@ -1067,7 +1069,7 @@ class ArchivoAdjunto {
             });
 
             ArchivoAdjunto.updateContadorTotalAdjuntosRequerimiento();
-            this.addToTablaArchivosRequerimiento(id,nameFile);
+            this.addToTablaArchivosRequerimiento(id, nameFile);
 
         } else {
             alert(`La extensión del archivo .${typeFile} no esta permitido`);
@@ -1084,7 +1086,7 @@ class ArchivoAdjunto {
             const id = requerimientoView.makeId();
 
             tempArchivoAdjuntoItemList.push({
-                id:id , 
+                id: id,
                 idRegister: tempIdRegisterActive,
                 nameFile: nameFile,
                 typeFile: typeFile,
@@ -1106,3 +1108,747 @@ class ArchivoAdjunto {
 
     // }
 }
+
+class Listado extends RequerimientoView {
+    mostrar(idEmpresa,idSede,idGrupo,idPrioridad) {
+        requerimientoCtrl.getListadoElaborados(idEmpresa, idSede, idGrupo, idPrioridad).then(function (res) {
+            listadoRequerimiento.construirTablaListadoRequerimientosElaborados(res['data']);
+        }).catch(function (err) {
+            console.log(err)
+        })
+
+    }
+
+    construirTablaListadoRequerimientosElaborados(data) {
+        var vardataTables = funcDatatables();
+        $('#ListaRequerimientosElaborados').DataTable({
+            'dom': vardataTables[1],
+            'buttons': vardataTables[2],
+            'language': vardataTables[0],
+            'order': [[1, 'desc']],
+            'serverSide': false,
+            'destroy': true,
+            'data': data,
+            'columns': [
+                { 'data': 'priori', 'name': 'adm_prioridad.descripcion', 'className': 'text-center' },
+                { 'data': 'codigo', 'name': 'codigo', 'className': 'text-center' },
+                { 'data': 'concepto', 'name': 'concepto' },
+                { 'data': 'fecha_entrega', 'name': 'fecha_entrega', 'className': 'text-center' },
+                { 'data': 'tipo_requerimiento', 'name': 'alm_tp_req.descripcion', 'className': 'text-center' },
+                { 'data': 'razon_social', 'name': 'adm_contri.razon_social', 'className': 'text-center' },
+                { 'data': 'grupo', 'name': 'adm_grupo.descripcion' },
+                { 'data': 'nombre_usuario', 'name': 'nombre_usuario' },
+                { 'data': 'estado_doc', 'name': 'adm_estado_doc.estado_doc' }
+            ],
+            'columnDefs': [
+                {
+                    'render': function (data, type, row) {
+                        if (row['priori'] == 'Normal') {
+                            return '<center> <i class="fas fa-thermometer-empty green"  data-toggle="tooltip" data-placement="right" title="Normal" ></i></center>';
+                        } else if (row['priori'] == 'Media') {
+                            return '<center> <i class="fas fa-thermometer-half orange"  data-toggle="tooltip" data-placement="right" title="Alta"  ></i></center>';
+                        } else if (row['Alta']) {
+                            return '<center> <i class="fas fa-thermometer-full red"  data-toggle="tooltip" data-placement="right" title="Crítico"  ></i></center>';
+                        } else {
+                            return '';
+                        }
+                    }, targets: 0
+                },
+                {
+                    'render': function (data, type, row) {
+                        let containerOpenBrackets = '<center><div class="btn-group" role="group" style="margin-bottom: 5px;">';
+                        let containerCloseBrackets = '</div></center>';
+                        let btnEditar = '';
+                        if (row.id_usuario == auth_user.id_usuario && row.estado == 3) {
+                            btnEditar = '<button type="button" class="btn btn-xs bg-default" title="Editar" onClick="editarListaReq(' + row['id_requerimiento'] + ');"><i class="fas fa-edit fa-xs"></i></button>';
+                        }
+                        let btnDetalleRapido = '<button type="button" class="btn btn-xs btn-info" title="Ver detalle rápido" onClick="aprobarRequerimiento.viewFlujo(' + row['id_requerimiento'] + ', ' + row['id_doc_aprob'] + ');"><i class="fas fa-eye fa-xs"></i></button>';
+                        let btnTracking = '<button type="button" class="btn btn-xs bg-primary" title="Explorar Requerimiento" onClick="aprobarRequerimiento.tracking_requerimiento(' + row['id_requerimiento'] + ');"><i class="fas fa-globe fa-xs"></i></button>';
+                        return containerOpenBrackets + btnDetalleRapido + btnEditar + btnTracking + containerCloseBrackets;
+                    }, targets: 9
+                },
+            ],
+            "createdRow": function (row, data, dataIndex) {
+                if (data.estado == 2) {
+                    $(row).css('color', '#4fa75b');
+                }
+                if (data.estado == 3) {
+                    $(row).css('color', '#ee9b1f');
+                }
+                if (data.estado == 7) {
+                    $(row).css('color', '#d92b60');
+                }
+            },
+            'initComplete': function () {
+            }
+        });
+
+        $('#ListaReq').DataTable().on("draw", function () {
+            resizeSide();
+        });
+
+        $('#ListaReq tbody').on('click', 'tr', function () {
+            if ($(this).hasClass('eventClick')) {
+                $(this).removeClass('eventClick');
+            } else {
+                $('#ListaReq').dataTable().$('tr.eventClick').removeClass('eventClick');
+                $(this).addClass('eventClick');
+            }
+        });
+    }
+
+    handleChangeFilterEmpresaListReqByEmpresa(event){
+        this.handleChangeFiltroListado();
+        requerimientoCtrl.getSedesPorEmpresa(event.target.value).then(function (res) {
+            listadoRequerimiento.construirSelectSede(res);
+        }).catch(function (err) {
+            console.log(err)
+        })
+    }
+    
+    construirSelectSede(data){
+        let selectSede = document.querySelector('div[type="lista_requerimiento"] select[name="id_sede_select"]');
+        let html = '<option value="0">Todas</option>';
+        data.forEach(element => {
+            html += '<option value="' + element.id_sede + '">' + element.codigo + '</option>'
+        });
+    
+        selectSede.innerHTML = html;
+        document.querySelector('div[type="lista_requerimiento"] select[name="id_sede_select"]').removeAttribute('disabled');
+        
+    }
+
+    handleChangeFiltroListado(){
+        this.mostrar(document.querySelector("select[name='id_empresa_select']").value,document.querySelector("select[name='id_sede_select']").value,document.querySelector("select[name='id_grupo_select']").value,document.querySelector("select[name='id_prioridad_select']").value);
+
+    }
+
+}
+
+const listadoRequerimiento = new Listado();
+
+
+class Aprobar extends RequerimientoView {
+    mostrar(idEmpresa, idSede, idGrupo, idPrioridad) {
+        requerimientoCtrl.getListadoAprobacion(idEmpresa, idSede, idGrupo, idPrioridad).then(function (res) {
+            aprobarRequerimiento.construirTablaListaRequerimientosPendientesAprobacion(res['data']);
+        }).catch(function (err) {
+            console.log(err)
+        })
+
+    }
+
+    limpiarTabla(idElement) {
+        // console.log("limpiando tabla....");
+        var table = document.getElementById(idElement);
+        for (var i = table.rows.length - 1; i > 0; i--) {
+            table.deleteRow(i);
+        }
+        return null;
+    }
+
+    construirTablaListaRequerimientosPendientesAprobacion(data) {
+        let disabledBtn = true;
+        let vardataTables = funcDatatables();
+        $('#ListaReqPendienteAprobacion').DataTable({
+            'dom': vardataTables[1],
+            'buttons': vardataTables[2],
+            'language': vardataTables[0],
+            'destroy': true,
+            "order": [[4, "desc"]],
+            'data': data,
+            'columns': [
+                {
+                    'render': function (data, type, row) {
+                        let prioridad = '';
+                        let thermometerNormal = '<center><i class="fas fa-thermometer-empty green fa-lg"  data-toggle="tooltip" data-placement="right" title="Prioridad Normal" ></i></center>';
+                        let thermometerAlta = '<center> <i class="fas fa-thermometer-half orange fa-lg"  data-toggle="tooltip" data-placement="right" title="Prioridad Alta"  ></i></center>';
+                        let thermometerCritica = '<center> <i class="fas fa-thermometer-full red fa-lg"  data-toggle="tooltip" data-placement="right" title="Prioridad Crítico"  ></i></center>';
+                        if (row.id_prioridad == 1) {
+                            prioridad = thermometerNormal
+                        } else if (row.id_prioridad == 2) {
+                            prioridad = thermometerAlta
+                        } else if (row.id_prioridad == 3) {
+                            prioridad = thermometerCritica
+                        }
+                        return prioridad;
+                    }
+                },
+                { 'data': 'codigo', 'name': 'codigo' },
+                { 'data': 'concepto', 'name': 'concepto' },
+                { 'data': 'fecha_entrega', 'name': 'fecha_entrega' },
+                { 'data': 'tipo_requerimiento', 'name': 'tipo_requerimiento' },
+                { 'data': 'razon_social_empresa', 'name': 'razon_social_empresa' },
+                {
+                    'render': function (data, type, row) {
+                        return row['descripcion_op_com'] ? row['descripcion_op_com'] : row['descripcion_grupo'];
+                    }
+                },
+                { 'data': 'usuario', 'name': 'usuario' },
+                { 'data': 'estado_doc', 'name': 'estado_doc' },
+                { 'data': 'cantidad_aprobados_total_flujo', 'name': 'cantidad_aprobados_total_flujo' },
+                {
+                    'render': function (data, type, row) {
+                        var list_id_rol_aprob = [];
+                        var hasAprobacion = 0;
+                        var cantidadObservaciones = 0;
+                        var hasObservacionSustentadas = 0;
+
+
+
+                        if (row.aprobaciones.length > 0) {
+                            row.aprobaciones.forEach(element => {
+                                list_id_rol_aprob.push(element.id_rol)
+                            });
+
+                            roles.forEach(element => {
+                                if (list_id_rol_aprob.includes(element.id_rol) == true) {
+                                    hasAprobacion += 1;
+                                }
+
+                            });
+                        }
+                        if (row.observaciones.length > 0) {
+                            row.observaciones.forEach(element => {
+                                cantidadObservaciones += 1;
+                                if (element.id_sustentacion > 0) {
+                                    hasObservacionSustentadas += 1;
+                                }
+                            });
+                        }
+
+
+                        if (hasAprobacion == 0) {
+                            disabledBtn = '';
+                        } else if (hasAprobacion > 0) {
+                            disabledBtn = 'disabled';
+                        }
+                        if (hasObservacionSustentadas != cantidadObservaciones) {
+                            disabledBtn = 'disabled';
+                        }
+
+                        if (row.estado == 7) {
+                            disabledBtn = 'disabled';
+                        }
+                        let first_aprob = {};
+                        // console.log(row.pendiente_aprobacion);
+                        if (row.pendiente_aprobacion.length > 0) {
+                            first_aprob = row.pendiente_aprobacion.reduce(function (prev, curr) {
+                                return prev.orden < curr.orden ? prev : curr;
+                            });
+
+                        }
+                        // buscar si la primera aprobación su numero de orden se repite en otro pendiente_aprobacion
+                        let aprobRolList = [];
+                        // console.log(row.pendiente_aprobacion);
+                        let pendAprob = row.pendiente_aprobacion;
+                        pendAprob.forEach(element => {
+                            if (element.orden == first_aprob.orden) {
+                                aprobRolList.push(element.id_rol);
+                            }
+                        });
+
+                        // si el usuario actual su rol le corresponde aprobar
+                        // console.log(row.rol_aprobante_id);
+                        // console.log(aprobRolList);
+
+                        // si existe varios con mismo orden 
+                        if (aprobRolList.length > 1) {
+                            // si existe un rol aprobante ya definido en el requerimiento
+                            if (row.rol_aprobante_id > 0) {
+                                roles.forEach(element => {
+                                    if (row.rol_aprobante_id == element.id_rol) {
+                                        // if(aprobRolList.includes(element.id_rol)){
+                                        disabledBtn = '';
+                                    } else {
+                                        disabledBtn = 'disabled';
+
+                                    }
+
+                                });
+                            } else {
+                                roles.forEach(element => {
+                                    if (aprobRolList.includes(element.id_rol)) {
+                                        disabledBtn = '';
+                                    } else {
+                                        disabledBtn = 'disabled';
+
+                                    }
+
+                                });
+                            }
+
+                        } else {
+
+                            roles.forEach(element => {
+                                if (first_aprob.id_rol == element.id_rol) {
+                                    disabledBtn = '';
+                                } else {
+                                    disabledBtn = 'disabled';
+
+                                }
+
+                            });
+                            
+                        }
+ 
+                        let containerOpenBrackets = '<center><div class="btn-group" role="group" style="margin-bottom: 5px;">';
+                        let containerCloseBrackets = '</div></center>';
+                        let btnDetalleRapido = '<button type="button" class="btn btn-xs btn-info" title="Ver detalle rápido" onClick="aprobarRequerimiento.viewFlujo(' + row['id_requerimiento'] + ', ' + row['id_doc_aprob'] + ');"><i class="fas fa-eye fa-xs"></i></button>';
+                        let btnTracking = '<button type="button" class="btn btn-xs bg-primary" title="Explorar Requerimiento" onClick="aprobarRequerimiento.tracking_requerimiento(' + row['id_requerimiento'] + ');"><i class="fas fa-globe fa-xs"></i></button>';
+                        let btnAprobar = '<button type="button" class="btn btn-xs btn-success" title="Aprobar Requerimiento" onClick="aprobarRequerimiento.aprobarRequerimiento(' + row['id_doc_aprob'] + ');" ' + disabledBtn + '><i class="fas fa-check fa-xs"></i></button>';
+                        let btnObservar = '<button type="button" class="btn btn-xs btn-warning" title="Observar Requerimiento" onClick="aprobarRequerimiento.observarRequerimiento(' + row['id_doc_aprob'] + ');" ' + disabledBtn + '><i class="fas fa-exclamation-triangle fa-xs"></i></button>';
+                        let btnAnular = '<button type="button" class="btn btn-xs bg-maroon" title="Anular Requerimiento" onClick="aprobarRequerimiento.anularRequerimiento(' + row['id_doc_aprob'] + ');" ' + disabledBtn + '><i class="fas fa-ban fa-xs"></i></button>';
+                        return containerOpenBrackets + btnDetalleRapido + btnTracking + btnAprobar + btnObservar + btnAnular + containerCloseBrackets;
+                    }
+                },
+            ],
+            "createdRow": function (row, data, dataIndex) {
+                if (data.estado == 2) {
+                    $(row).css('color', '#4fa75b');
+                }
+                if (data.estado == 3) {
+                    $(row).css('color', '#ee9b1f');
+                }
+                if (data.estado == 7) {
+                    $(row).css('color', '#d92b60');
+                }
+
+            }
+        });
+        let tablelistaitem = document.getElementById(
+            'ListaReqPendienteAprobacion_wrapper'
+        )
+        tablelistaitem.childNodes[0].childNodes[0].hidden = true;
+    }
+
+    handleChangeFilterEmpresaListReqByEmpresa(event){
+        this.handleChangeFiltroListado();
+        requerimientoCtrl.getSedesPorEmpresa(event.target.value).then(function (res) {
+            aprobarRequerimiento.construirSelectSede(res);
+        }).catch(function (err) {
+            console.log(err)
+        })
+    }
+    
+    construirSelectSede(data){
+        let selectSede = document.querySelector('div[type="aprobar_requerimiento"] select[name="id_sede_select"]');
+        let html = '<option value="0">Todas</option>';
+        data.forEach(element => {
+            html += '<option value="' + element.id_sede + '">' + element.codigo + '</option>'
+        });
+    
+        selectSede.innerHTML = html;
+        document.querySelector('div[type="aprobar_requerimiento"] select[name="id_sede_select"]').removeAttribute('disabled');
+        
+    }
+
+    handleChangeFiltroListado(){
+        this.mostrar(document.querySelector("select[name='id_empresa_select']").value,document.querySelector("select[name='id_sede_select']").value,document.querySelector("select[name='id_grupo_select']").value,document.querySelector("select[name='id_prioridad_select']").value);
+
+    }
+    
+    viewFlujo(req, doc) {
+        $.ajax({
+            type: 'GET',
+            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+            url: 'ver-flujos' + '/' + req + '/' + doc,
+            dataType: 'JSON',
+            beforeSend: function () {
+                $(document.body).append('<span class="loading"><div></div></span>');
+            },
+            success: function (response) {
+                // console.log(response.siguiente);
+                $('.loading').remove();
+                if (response.cont > 0) {
+                    $('#flujo-detalle').removeClass('oculto');
+                    $('#flujo-proximo').removeClass('oculto');
+                } else {
+                    $('#flujo-detalle').addClass('oculto');
+                    $('#flujo-proximo').addClass('oculto');
+                }
+    
+                $('#req-detalle').html(response.requerimiento);
+                $('#flujo-detalle').html(response.flujo);
+                $('#flujo-proximo').html(response.siguiente);
+                $('#modal-flujo-aprob').modal({ show: true, backdrop: 'static' });
+            }
+        });
+        return false;
+    }
+
+
+    // tracking requerimiento modal 
+    tracking_requerimiento(id_req) {
+        $('#modal-tracking-requerimiento').modal({
+            show: true,
+            backdrop: 'static'
+        });
+        this.get_data_tracking(id_req);
+    }
+
+    get_data_tracking(id_req) {
+        $.ajax({
+            type: 'GET',
+            url: 'explorar-requerimiento' + '/' + id_req,
+            dataType: 'JSON',
+            success: function (response) {
+                aprobarRequerimiento.llenar_tabla_historial_aprobaciones(response.historial_aprobacion);
+                aprobarRequerimiento.llenar_tabla_flujo_aprobacion(response.flujo_aprobacion);
+                aprobarRequerimiento.llenar_tabla_cotizaciones(response.solicitud_cotizaciones);
+                aprobarRequerimiento.llenar_tabla_cuadro_comparativo(response.cuadros_comparativos);
+                aprobarRequerimiento.llenar_tabla_ordenes(response.ordenes);
+            }
+        }).fail(function (jqXHR, textStatus, errorThrown) {
+            console.log(jqXHR);
+            console.log(textStatus);
+            console.log(errorThrown);
+        });
+    }
+    
+    llenar_tabla_historial_aprobaciones(data) {
+        this.limpiarTabla('listaHistorialAprobacion');
+        let htmls = '<tr></tr>';
+        $('#listaHistorialAprobacion tbody').html(htmls);
+        var table = document.getElementById("listaHistorialAprobacion");
+        if (data.length > 0) {
+            for (var a = 0; a < data.length; a++) {
+                var row = table.insertRow(a + 1);
+                row.insertCell(0).innerHTML = data[a].estado ? data[a].estado.toUpperCase() : '-';
+                row.insertCell(1).innerHTML = data[a].nombre_usuario ? data[a].nombre_usuario : '-';
+                row.insertCell(2).innerHTML = data[a].obs ? data[a].obs : '-';
+                row.insertCell(3).innerHTML = data[a].fecha ? data[a].fecha : '-';
+            }
+        }
+    }
+
+    llenar_tabla_flujo_aprobacion(data) {
+        // console.log(data);
+        this.limpiarTabla('listaFlujoAprobacion');
+        let htmls = '<tr></tr>';
+        $('#listaFlujoAprobacion tbody').html(htmls);
+        var table = document.getElementById("listaFlujoAprobacion");
+        if (data.length > 0) {
+            for (var a = 0; a < data.length; a++) {
+                var row = table.insertRow(a + 1);
+                row.insertCell(0).innerHTML = data[a].orden ? data[a].orden : '-';
+                row.insertCell(1).innerHTML = data[a].nombre_fase ? data[a].nombre_fase : '-';
+                row.insertCell(2).innerHTML = data[a].nombre_responsable ? data[a].nombre_responsable : '-';
+                row.insertCell(3).innerHTML = data[a].criterio_monto.length > 0 ? data[a].criterio_monto.map(item => item.descripcion) : '';
+                row.insertCell(4).innerHTML = data[a].criterio_prioridad.length > 0 ? data[a].criterio_prioridad.map(item => item.descripcion) : '';
+            }
+        }
+    }
+
+    llenar_tabla_cotizaciones(data) {
+        this.limpiarTabla('listaCotizaciones');
+        let htmls = '<tr></tr>';
+        $('#listaCotizaciones tbody').html(htmls);
+        var table = document.getElementById("listaCotizaciones");
+    
+        let cantidad_cotizaciones = data.length;
+        document.getElementById('cantidad_cotizaciones').innerHTML = cantidad_cotizaciones;
+    
+        if (cantidad_cotizaciones > 0) {
+            for (var a = 0; a < data.length; a++) {
+                var row = table.insertRow(a + 1);
+                row.insertCell(0).innerHTML = a + 1;
+                row.insertCell(1).innerHTML = data[a].codigo_cotizacion ? data[a].codigo_cotizacion : '-';
+                row.insertCell(2).innerHTML = data[a].razon_social ? data[a].razon_social : '-' + data[a].nombre_doc_identidad ? data[a].nombre_doc_identidad : '-' + data[a].nro_documento ? data[a].nro_documento : '-';
+                row.insertCell(3).innerHTML = data[a].email_proveedor ? data[a].email_proveedor : '-';
+                row.insertCell(4).innerHTML = data[a].razon_social_empresa ? data[a].razon_social_empresa : '-' + data[a].nombre_doc_idendidad_empresa ? data[a].nombre_doc_idendidad_empresa : '-' + data[a].nro_documento_empresa ? data[a].nro_documento_empresa : '-';
+                row.insertCell(5).innerHTML = data[a].fecha_registro ? data[a].fecha_registro : '-';
+                row.insertCell(6).innerHTML = data[a].estado_envio ? data[a].estado_envio : '-';
+                if (disabledBtn == false) {
+                    row.insertCell(7).innerHTML = '<div class="btn-group btn-group-sm" role="group" aria-label="Second group">' +
+                        '<button type="button"' +
+                        '    class="btn btn-sm btn-log bg-maroon"' +
+                        '    name="btnVerDetalleCotizacion"' +
+                        '    title="Ver detalle"' +
+                        '   onClick="detalleCotizacionModal(' + data[a].id_cotizacion + ');"' +
+                        '   >' +
+                        '    <i class="fas fa-eye fa-xs"></i>' +
+                        '</button>' +
+                        '<button type="button"' +
+                        '    class="btn btn-xs btn-success"' +
+                        '    name="btnDownloadExcelDirectSolicitudCotizacion"' +
+                        '    title="Descargar en Excel"' +
+                        '   onClick="downloadDirectSolicitudCotizacion(' + data[a].id_cotizacion + ');"' +
+                        '   >' +
+                        '    <i class="fas fa-file-excel fa-xs"></i>' +
+                        '</button>' +
+                        '<button type="button"' +
+                        '    class="btn btn-xs btn-default"' +
+                        '    name="btnIrDirectSolicitudCotizacion"' +
+                        '    title="Ir a Gestión de Solicitudes de Cotización"' +
+                        '   onClick="irDirectSolicitudCotizacion(' + data[a].requerimiento[0].id_requerimiento + ');"' +
+                        '   >' +
+                        '    <i class="fas fa-compass fa-xs"></i>' +
+                        '</button>' +
+                        '</div>';
+                } else {
+                    row.insertCell(7).innerHTML = '<div class="btn-group btn-group-sm" role="group" aria-label="Second group">' +
+                        '<button type="button"' +
+                        '    class="btn btn-sm btn-log bg-maroon"' +
+                        '    name="btnVerDetalleCotizacion"' +
+                        '    title="Ver detalle"' +
+                        '   onClick="detalleCotizacionModal(' + data[a].id_cotizacion + ');"' +
+                        '   >' +
+                        '    <i class="fas fa-eye fa-xs"></i>' +
+                        '</button>' +
+                        '<button type="button"' +
+                        '    class="btn btn-xs btn-success"' +
+                        '    name="btnDownloadExcelDirectSolicitudCotizacion"' +
+                        '    title="Descargar en Excel"' +
+                        '   onClick="downloadDirectSolicitudCotizacion(' + data[a].id_cotizacion + ');"' +
+                        '   >' +
+                        '    <i class="fas fa-file-excel fa-xs"></i>' +
+                        '</button>' +
+                        '</div>';
+                }
+            }
+        }
+    }
+
+    llenar_tabla_cuadro_comparativo(data) {
+        // console.log(data);
+    
+        this.limpiarTabla('listaCuadroComparativo');
+        let htmls = '<tr></tr>';
+        $('#listaCuadroComparativo tbody').html(htmls);
+        var table = document.getElementById("listaCuadroComparativo");
+    
+        let cantidad_cuadros = data.length;
+        let cantidad_buena_pro = 0;
+        document.getElementById('cantidad_cuadros_comparativos').innerHTML = cantidad_cuadros;
+        if (cantidad_cuadros > 0) {
+            for (var a = 0; a < data.length; a++) {
+                var row = table.insertRow(a + 1);
+                row.insertCell(0).innerHTML = a + 1;
+                row.insertCell(1).innerHTML = data[a].codigo_grupo ? data[a].codigo_grupo : '-';
+                row.insertCell(2).innerHTML = data[a].cotizaciones.map((item, index) => {
+                    cantidad_buena_pro += item.total_buena_pro;
+                    return item.codigo_cotizacion + ' [ ' + item.razon_social + ' - ' + item.nombre_doc_identidad + ': ' + item.nro_documento + ' ]'
+    
+                });
+                row.insertCell(3).innerHTML = cantidad_buena_pro ? cantidad_buena_pro : '-';
+                row.insertCell(4).innerHTML = data[a].fecha_inicio ? data[a].fecha_inicio : '-';
+                if (disabledBtn == false) {
+                    row.insertCell(5).innerHTML = '<div class="btn-group btn-group-sm" role="group" aria-label="Second group">' +
+                        '<button type="button"' +
+                        '    class="btn btn-xs btn-success"' +
+                        '    name="btnDownloadExcelDirectCuadroComparativo"' +
+                        '    title="Descargar en Excel"' +
+                        '   onClick="downloadDirectCuadroComparativo(' + data[a].id_grupo_cotizacion + ');"' +
+                        '  >' +
+                        '    <i class="fas fa-file-excel"></i>' +
+                        '</button>' +
+                        '<button type="button"' +
+                        '    class="btn btn-xs btn-default"' +
+                        '    name="btnIrDirectSolicitudCotizacion"' +
+                        '    title="Ir a Cuadro Comparativo"' +
+                        '   onClick="irDirectCuadroComparativo(3,' + data[a].id_grupo_cotizacion + ');"' +
+                        '>' +
+                        '    <i class="fas fa-compass fa-xs"></i>' +
+                        '</button>' +
+                        '</div>';
+                } else {
+                    row.insertCell(5).innerHTML = '<div class="btn-group btn-group-sm" role="group" aria-label="Second group">' +
+                        '<button type="button"' +
+                        '    class="btn btn-xs btn-success"' +
+                        '    name="btnDownloadExcelDirectCuadroComparativo"' +
+                        '    title="Descargar en Excel"' +
+                        '   onClick="downloadDirectCuadroComparativo(' + data[a].id_grupo_cotizacion + ');"' +
+                        '  >' +
+                        '    <i class="fas fa-file-excel"></i>' +
+                        '</button>' +
+                        '</div>';
+                }
+            }
+        }
+    }
+
+    llenar_tabla_ordenes(data) {
+        // console.log(data);
+    
+        this.limpiarTabla('listaOrdenes');
+        let htmls = '<tr></tr>';
+        $('#listaOrdenes tbody').html(htmls);
+        var table = document.getElementById("listaOrdenes");
+    
+        let cantidad = data.length;
+        document.getElementById('cantidad_ordenes').innerHTML = cantidad;
+        let cantidad_buena_pro = 0;
+        if (cantidad > 0) {
+            for (var a = 0; a < data.length; a++) {
+                var row = table.insertRow(a + 1);
+                row.insertCell(0).innerHTML = a + 1;
+                row.insertCell(1).innerHTML = data[a].codigo ? data[a].codigo : '-';
+                row.insertCell(2).innerHTML = data[a].razon_social_proveedor ? data[a].razon_social_proveedor : '-' + ' [' + tipo_doc_proveedor ? tipo_doc_proveedor : '-' + ' ' + nro_documento_proveedor ? nro_documento_proveedor : '-' + ' ]';
+                row.insertCell(3).innerHTML = data[a].cotizaciones.map((item, index) => {
+                    cantidad_buena_pro += item.total_buena_pro;
+                    return '[ ' + item.razon_social_empresa + ' - ' + item.tipo_documento_empresa + ': ' + item.nro_documento_empresa + ' ]'
+    
+                });
+                row.insertCell(4).innerHTML = data[a].monto_total ? data[a].monto_total : '-';
+                row.insertCell(5).innerHTML = data[a].fecha ? data[a].fecha : '-';
+                if (disabledBtn == false) {
+                    row.insertCell(6).innerHTML = '<div class="btn-group btn-group-sm" role="group" aria-label="Second group">' +
+                        '</button>' +
+                        '<button type="button"' +
+                        '    class="btn btn-xs btn-danger"' +
+                        '    name="btnDownloadExcelDirectOrden"' +
+                        '    title="Descargar"' +
+                        '   onClick="downloadDirectOrden(' + data[a].id_orden_compra + ');"' +
+                        '>' +
+                        '    <i class="fas fa-file-pdf"></i>' +
+                        '</button>' +
+                        '<button type="button"' +
+                        '    class="btn btn-xs btn-default"' +
+                        '    name="btnIrDirectOrden"' +
+                        '    title="Ir a Orden"' +
+                        '   onClick="irDirectOrden(' + data[a].id_orden_compra + ');"' +
+                        ' >' +
+                        '    <i class="fas fa-compass fa-xs"></i>' +
+                        '</button>' +
+                        '</div>';
+                } else {
+                    row.insertCell(6).innerHTML = '<div class="btn-group btn-group-sm" role="group" aria-label="Second group">' +
+                        '</button>' +
+                        '<button type="button"' +
+                        '    class="btn btn-xs btn-danger"' +
+                        '    name="btnDownloadExcelDirectOrden"' +
+                        '    title="Descargar"' +
+                        '   onClick="downloadDirectOrden(' + data[a].id_orden_compra + ');"' +
+                        '>' +
+                        '    <i class="fas fa-file-pdf"></i>' +
+                        '</button>' +
+                        '</div>';
+                }
+            }
+        }
+    }
+
+
+
+    // aprobar, observar y anular requerimiento
+
+    aprobarRequerimiento(id_doc_aprob){
+        $('#modal-aprobacion-docs').modal({
+            show: true,
+            backdrop: 'static',
+            keyboard: false
+        });
+        document.querySelector("form[id='form-aprobacion'] input[name='id_doc_aprob']").value =id_doc_aprob;
+    }
+
+    grabarAprobacion(){
+        let id_doc_aprob = document.querySelector("form[id='form-aprobacion'] input[name='id_doc_aprob']").value;
+        let id_rol_usuario = document.querySelector("form[id='form-aprobacion'] select[name='rol_usuario']").value;
+        let detalle_observacion = document.querySelector("form[id='form-aprobacion'] textarea[name='detalle_observacion']").value;
+    
+        $.ajax({
+            type: 'POST',
+            url: 'aprobar-documento',
+            data:{'id_doc_aprob':id_doc_aprob,'detalle_observacion':detalle_observacion,'id_rol':id_rol_usuario},
+            dataType: 'JSON',
+            success: function(response){
+                if(response.status ==200){
+                    $('#modal-aprobacion-docs').modal('hide');
+                    aprobarRequerimiento.mostrar();
+                    alert("Requerimiento Aprobado");
+                }else{
+                    alert("Hubo un problema, no se puedo aprobar el requerimiento");
+                    console.log(response);
+                }
+    
+            }
+        }).fail( function( jqXHR, textStatus, errorThrown ){
+            console.log(jqXHR);
+            console.log(textStatus);
+            console.log(errorThrown);
+        });
+        
+    }
+
+
+    observarRequerimiento(id_doc_aprob){
+        $('#modal-obs-req').modal({
+            show: true,
+            backdrop: 'static',
+            keyboard: false
+        });
+        document.querySelector("form[id='form-obs-requerimiento'] input[name='id_doc_aprob']").value =id_doc_aprob;
+    }
+
+    grabarObservacion(){
+        let id_doc_aprob = document.querySelector("form[id='form-obs-requerimiento'] input[name='id_doc_aprob']").value;
+        let id_rol_usuario = document.querySelector("form[id='form-obs-requerimiento'] select[name='rol_usuario']").value;
+        let detalle_observacion = document.querySelector("form[id='form-obs-requerimiento'] textarea[name='motivo_req']").value;
+    
+        // console.log(id_doc_aprob);
+        // console.log(id_rol_usuario);
+        // console.log(detalle_observacion);
+        $.ajax({
+            type: 'POST',
+            url: 'observar-documento',
+            data:{'id_doc_aprob':id_doc_aprob,'detalle_observacion':detalle_observacion,'id_rol':id_rol_usuario},
+            dataType: 'JSON',
+            success: function(response){
+                if(response.status ==200){
+                    $('#modal-obs-req').modal('hide');
+                    aprobarRequerimiento.mostrar();
+                    alert("Requerimiento Observado");
+                }else{
+                    alert("Hubo un problema, no se puedo observar el requerimiento");
+                    console.log(response);
+                }
+    
+            }
+        }).fail( function( jqXHR, textStatus, errorThrown ){
+            console.log(jqXHR);
+            console.log(textStatus);
+            console.log(errorThrown);
+        });
+    }
+
+    anularRequerimiento(id_doc_aprob){
+        $('#modal-anular-req').modal({
+            show: true,
+            backdrop: 'static',
+            keyboard: false
+        });
+        document.querySelector("form[id='form-anular-requerimiento'] input[name='id_doc_aprob']").value =id_doc_aprob;
+    }
+
+    grabarAnular(){
+        let id_doc_aprob = document.querySelector("form[id='form-anular-requerimiento'] input[name='id_doc_aprob']").value;
+        let id_rol_usuario = document.querySelector("form[id='form-anular-requerimiento'] select[name='rol_usuario']").value;
+        let motivo = document.querySelector("form[id='form-anular-requerimiento'] textarea[name='motivo_req']").value;
+        $.ajax({
+            type: 'POST',
+            url: 'anular-documento',
+            data:{'id_doc_aprob':id_doc_aprob,'motivo':motivo,'id_rol':id_rol_usuario},
+            dataType: 'JSON',
+            success: function(response){
+                if(response.status ==200){
+                    $('#modal-anular-req').modal('hide');
+                    aprobarRequerimiento.mostrar();
+                    alert("El requerimiento cambio su estado a denegado");
+                }else{
+                    alert("Hubo un problema, no se puedo denegar el requerimiento");
+                    console.log(response);
+                }
+    
+            }
+        }).fail( function( jqXHR, textStatus, errorThrown ){
+            console.log(jqXHR);
+            console.log(textStatus);
+            console.log(errorThrown);
+        });
+        
+    }
+
+}
+
+const aprobarRequerimiento = new Aprobar(); 

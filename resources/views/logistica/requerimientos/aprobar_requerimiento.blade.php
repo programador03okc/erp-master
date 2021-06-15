@@ -17,7 +17,7 @@ Aprobar requerimiento
 @endsection
 
 @section('content')
-<div class="page-main" type="lista_requerimiento">
+<div class="page-main" type="aprobar_requerimiento">
     <div class="row">
         <div class="col-md-12">
             <fieldset class="group-table">
@@ -27,7 +27,7 @@ Aprobar requerimiento
                         <div class="col-md-3">
                             <h5>Empresa</h5>
                             <div style="display:flex;">
-                                <select class="form-control" id="id_empresa_select" onChange="handleChangeFilterEmpresaListReqByEmpresa(event);">
+                                <select class="form-control" name="id_empresa_select" onChange="aprobarRequerimiento.handleChangeFilterEmpresaListReqByEmpresa(event); aprobarRequerimiento.handleChangeFiltroListado();">
                                     <option value="0">Elija una opción</option>
                                     @foreach ($empresas as $emp)
                                     <option value="{{$emp->id_empresa}}" data-url-logo="{{$emp->logo_empresa}}">{{$emp->razon_social}}</option>
@@ -38,7 +38,7 @@ Aprobar requerimiento
                         <div class="col-md-3">
                             <h5>Sede</h5>
                             <div style="display:flex;">
-                                <select class="form-control" id="id_sede_select" onChange="handleChangeFilterSedeListReqByEmpresa(event);" disabled>
+                                <select class="form-control" name="id_sede_select" onChange="aprobarRequerimiento.handleChangeFiltroListado();" >
                                     <option value="0">Todas</option>
                                 </select>
                             </div>
@@ -46,15 +46,18 @@ Aprobar requerimiento
                         <div class="col-md-3">
                             <h5>Grupo</h5>
                             <div style="display:flex;">
-                                <select class="form-control" id="id_grupo_select" onChange="handleChangeFilterGrupoListReqByEmpresa(event);" disabled>
+                                <select class="form-control" name="id_grupo_select" onChange="aprobarRequerimiento.handleChangeFiltroListado();" >
                                     <option value="0">Todas</option>
+                                    @foreach ($grupos as $grupo)
+                                    <option value="{{$grupo->id_grupo}}" >{{$grupo->descripcion}}</option>
+                                    @endforeach                                
                                 </select>
                             </div>
                         </div>
                         <div class="col-md-3">
                             <h5>Prioridad</h5>
                             <div style="display:flex;">
-                                <select class="form-control" id="id_prioridad_select" onChange="handleChangeFilterPrioridad(event);">
+                                <select class="form-control" name="id_prioridad_select" onChange="aprobarRequerimiento.handleChangeFiltroListado();">
                                     <option value="0">Todas</option>
                                     @foreach ($prioridades as $prioridad)
                                     <option value="{{$prioridad->id_prioridad}}">{{$prioridad->descripcion}}</option>
@@ -71,7 +74,7 @@ Aprobar requerimiento
                             <table class="mytable table table-hover table-condensed table-bordered table-okc-view" id="ListaReqPendienteAprobacion" width="100%">
                                 <thead>
                                     <tr>
-                                        <!-- <th class="text-center">Prio.</th>
+                                        <th class="text-center">Prio.</th>
                                         <th class="text-center">Código</th>
                                         <th class="text-center" style="width:20%">Concepto</th>
                                         <th class="text-center">Fecha entrega</th>
@@ -80,20 +83,8 @@ Aprobar requerimiento
                                         <th class="text-center">Grupo</th>
                                         <th class="text-center">Creado por</th>
                                         <th class="text-center" style="width:8%">Estado</th>
-                                        <th class="text-center" style="width:5%">Acción</th> -->
-                                        <th width="10"></th>
-                                        <th></th>
-                                        <th>CODIGO</th>
-                                        <th width="150">CONCEPTO</th>
-                                        <th>FECHA</th>
-                                        <th>TIPO REQ.</th>
-                                        <th>TIPO CLIENTE</th>
-                                        <th width="120">EMPRESA</th>
-                                        <th>GRUPO / PROYECTO</th>
-                                        <th>CREADO POR</th>
-                                        <th width="70">ESTADO</th>
-                                        <th width="50">Aprob/Total</th>
-                                        <th width="120">ACCIÓN</th>
+                                        <th class="text-center" style="width:8%">Aprob/Total</th>
+                                        <th class="text-center" style="width:5%">Acción</th>
                                     </tr>
                                 </thead>
                             </table>
@@ -151,41 +142,25 @@ Aprobar requerimiento
     <script src="{{ asset('datatables/pdfmake/vfs_fonts.js') }}"></script>
     <script src="{{ asset('datatables/JSZip/jszip.min.js') }}"></script> -->
 
-<script src="{{ asset('js/logistica/listar_requerimiento_pendientes_aprobacion.js') }}"></script>
-<script src="{{ asset('js/logistica/listar_requerimientos_aprobados.js') }}"></script>
+ 
+<script src="{{ asset('js/logistica/requerimiento/RequerimientoView.js')}}"></script>
+<script src="{{ asset('js/logistica/requerimiento/RequerimientoController.js')}}"></script>
+<script src="{{ asset('js/logistica/requerimiento/RequerimientoModel.js')}}"></script>
 
 <script>
 
 var roles = JSON.parse('{!!$roles!!}');
-var grupos = JSON.parse('{!!$grupos!!}');
+var grupos = JSON.parse('{!!$gruposUsuario!!}');
 
-    // grupos.forEach(element => {
-    //     if(element.id_grupo ==2){ // comercial
-    //         document.querySelector("div[type='lista_requerimiento'] ul").children[0].setAttribute("class",'active')
-    //         document.querySelector("div[type='lista_requerimiento'] div[class='tab-content']").children[1].setAttribute('class','tab-pane')
-    //         document.querySelector("div[type='lista_requerimiento'] div[class='tab-content']").children[0].setAttribute("class",'tab-pane active')
-
-    //     }else{
-    //         document.querySelector("div[type='lista_requerimiento'] ul").children[0].children[0].setAttribute("class",'hidden')
-    //         document.querySelector("div[type='lista_requerimiento'] ul").children[1].setAttribute("class",'active')
-    //         document.querySelector("div[type='lista_requerimiento'] div[class='tab-content']").children[0].setAttribute('class','tab-pane')
-    //         document.querySelector("div[type='lista_requerimiento'] div[class='tab-content']").children[1].setAttribute("class",'tab-pane active')
-    //     }
-    // });
-
+ 
     $(document).ready(function() {
         seleccionarMenu(window.location);
  
-        inicializarRutasPendienteAprobacion(
-            "{{route('logistica.gestion-logistica.requerimiento.listado.pendientes-aprobacion')}}",
-            "{{route('logistica.gestion-logistica.requerimiento.listado.aprobar-documento')}}",
-            "{{route('logistica.gestion-logistica.requerimiento.listado.observar-documento')}}",
-            "{{route('logistica.gestion-logistica.requerimiento.listado.anular-documento')}}"
-        );
-
-        listar_requerimientos_pendientes_aprobar();
-
  
+
+        window.onload = function() {
+            aprobarRequerimiento.mostrar();
+        };
     });
 </script>
 @endsection

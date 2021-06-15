@@ -27,7 +27,7 @@ Listado de requerimientos
                         <div class="col-md-3">
                             <h5>Empresa</h5>
                             <div style="display:flex;">
-                                <select class="form-control" id="id_empresa_select" onChange="handleChangeFilterEmpresaListReqByEmpresa(event);">
+                                <select class="form-control" name="id_empresa_select" onChange="listadoRequerimiento.handleChangeFilterEmpresaListReqByEmpresa(event); listadoRequerimiento.handleChangeFiltroListado();">
                                     <option value="0">Elija una opción</option>
                                     @foreach ($empresas as $emp)
                                     <option value="{{$emp->id_empresa}}" data-url-logo="{{$emp->logo_empresa}}">{{$emp->razon_social}}</option>
@@ -38,7 +38,7 @@ Listado de requerimientos
                         <div class="col-md-3">
                             <h5>Sede</h5>
                             <div style="display:flex;">
-                                <select class="form-control" id="id_sede_select" onChange="handleChangeFilterSedeListReqByEmpresa(event);" disabled>
+                                <select class="form-control" name="id_sede_select" onChange="listadoRequerimiento.handleChangeFiltroListado();">
                                     <option value="0">Todas</option>
                                 </select>
                             </div>
@@ -46,15 +46,18 @@ Listado de requerimientos
                         <div class="col-md-3">
                             <h5>Grupo</h5>
                             <div style="display:flex;">
-                                <select class="form-control" id="id_grupo_select" onChange="handleChangeFilterGrupoListReqByEmpresa(event);" disabled>
+                                <select class="form-control" name="id_grupo_select" onChange="listadoRequerimiento.handleChangeFiltroListado();">
                                     <option value="0">Todas</option>
+                                    @foreach ($grupos as $grupo)
+                                    <option value="{{$grupo->id_grupo}}" >{{$grupo->descripcion}}</option>
+                                    @endforeach
                                 </select>
                             </div>
                         </div>
                         <div class="col-md-3">
                             <h5>Prioridad</h5>
                             <div style="display:flex;">
-                                <select class="form-control" id="id_prioridad_select" onChange="handleChangeFilterPrioridad(event);">
+                                <select class="form-control" name="id_prioridad_select" onChange="listadoRequerimiento.handleChangeFiltroListado();">
                                     <option value="0">Todas</option>
                                     @foreach ($prioridades as $prioridad)
                                     <option value="{{$prioridad->id_prioridad}}">{{$prioridad->descripcion}}</option>
@@ -64,7 +67,7 @@ Listado de requerimientos
                             </div>
                         </div>
                     </div>
-                    <table class="mytable table table-hover table-condensed table-bordered table-okc-view" id="ListaReq" width="100%">
+                    <table class="mytable table table-hover table-condensed table-bordered table-okc-view" id="ListaRequerimientosElaborados" width="100%">
                         <thead>
                             <tr>
                                 <th class="text-center">Prio.</th>
@@ -126,67 +129,28 @@ Listado de requerimientos
 @section('scripts')
 <script src="{{ asset('datatables/DataTables/js/jquery.dataTables.min.js') }}"></script>
 <script src="{{ asset('datatables/DataTables/js/dataTables.bootstrap.min.js') }}"></script>
-<!-- <script src="{{ asset('datatables/Buttons/js/dataTables.buttons.min.js') }}"></script>
-    <script src="{{ asset('datatables/Buttons/js/buttons.bootstrap.min.js') }}"></script>
-    <script src="{{ asset('datatables/Buttons/js/buttons.print.min.js') }}"></script>
-    <script src="{{ asset('datatables/Buttons/js/buttons.html5.min.js') }}"></script>
-    <script src="{{ asset('datatables/pdfmake/pdfmake.min.js') }}"></script>
-    <script src="{{ asset('datatables/pdfmake/vfs_fonts.js') }}"></script>
-    <script src="{{ asset('datatables/JSZip/jszip.min.js') }}"></script> -->
+ 
 
-<script src="{{ asset('js/logistica/listar_requerimiento.js') }}"></script>
+<script src="{{ asset('js/logistica/requerimiento/RequerimientoView.js')}}"></script>
+<script src="{{ asset('js/logistica/requerimiento/RequerimientoController.js')}}"></script>
+<script src="{{ asset('js/logistica/requerimiento/RequerimientoModel.js')}}"></script>
 
 
 <script>
 
     var roles = JSON.parse('{!!$roles!!}');
-    var grupos = JSON.parse('{!!$grupos!!}');
+    var grupos = JSON.parse('{!!$gruposUsuario!!}');
 
-    // console.log(roles);
-    // grupos.forEach(element => {
-    //     if(element.id_grupo ==2){ // comercial
-    //         document.querySelector("div[type='lista_requerimiento'] ul").children[0].setAttribute("class",'active')
-    //         document.querySelector("div[type='lista_requerimiento'] div[class='tab-content']").children[1].setAttribute('class','tab-pane')
-    //         document.querySelector("div[type='lista_requerimiento'] div[class='tab-content']").children[0].setAttribute("class",'tab-pane active')
-
-    //     }else{
-    //         document.querySelector("div[type='lista_requerimiento'] ul").children[0].children[0].setAttribute("class",'hidden')
-    //         document.querySelector("div[type='lista_requerimiento'] ul").children[1].setAttribute("class",'active')
-    //         document.querySelector("div[type='lista_requerimiento'] div[class='tab-content']").children[0].setAttribute('class','tab-pane')
-    //         document.querySelector("div[type='lista_requerimiento'] div[class='tab-content']").children[1].setAttribute("class",'tab-pane active')
-    //     }
-    // });
+ 
 
     $(document).ready(function() {
         seleccionarMenu(window.location);
-        inicializarRutasListado(
-            "{{route('logistica.gestion-logistica.requerimiento.listado.elaborados')}}",
-            "{{route('logistica.gestion-logistica.requerimiento.listado.empresa')}}",
-            "{{route('logistica.gestion-logistica.requerimiento.listado.select-sede-by-empresa')}}",
-            "{{route('logistica.gestion-logistica.requerimiento.listado.select-grupo-by-sede')}}",
-            "{{route('logistica.gestion-logistica.requerimiento.listado.ver-flujos')}}",
-            "{{route('logistica.gestion-logistica.requerimiento.listado.explorar-requerimiento')}}"
-        );
-
-        // inicializarRutasPendienteAprobacion(
-        //     "{{route('logistica.gestion-logistica.requerimiento.listado.pendientes-aprobacion')}}",
-        //     "{{route('logistica.gestion-logistica.requerimiento.listado.aprobar-documento')}}",
-        //     "{{route('logistica.gestion-logistica.requerimiento.listado.observar-documento')}}",
-        //     "{{route('logistica.gestion-logistica.requerimiento.listado.anular-documento')}}"
-        //     );
-
-        // listarRequerimientosAprobados();
-
-        $('a[data-toggle="tab"]').on('shown.bs.tab', function(e) {
-            let tab = $(e.target).attr("href") // activated tab
-            if (tab == '#requerimientosElaborados') {
-                $('#ListaReq').DataTable().ajax.reload();
-            } else if (tab == '#requerimientosPendientesAprobacion') {
-                $('#ListaReqPendientesAprobacion').DataTable().ajax.reload();
-            } else if (tab == '#requerimientosAprobados') {
-                $('#ListaRequerimientosAprobados').DataTable().ajax.reload();
-            }
-        });
+ 
     });
+
+    window.onload = function() {
+        listadoRequerimiento.mostrar();
+    };
+
 </script>
 @endsection

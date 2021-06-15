@@ -29,7 +29,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-sm btn-success" onClick="GrabarAprobacion();">Grabar</button>
+                    <button type="button" class="btn btn-sm btn-success" onClick="aprobarRequerimiento.grabarAprobacion();">Grabar</button>
                 </div>
             </form>
         </div>

@@ -30,10 +30,25 @@ class RequerimientoCtrl{
         return requerimientoModel.getcategoriaAdjunto();
 
     }
+
+    // listado 
+    getListadoElaborados(idEmpresa, idSede, idGrupo, idPrioridad){
+        return requerimientoModel.getListadoElaborados(idEmpresa, idSede, idGrupo, idPrioridad);
+
+    }
+    // aprobar
+    getListadoAprobacion(idEmpresa, idSede, idGrupo, idPrioridad){
+        return requerimientoModel.getListadoAprobacion(idEmpresa, idSede, idGrupo, idPrioridad);
+
+    }
+
+
+    // filtros listado
+    getSedesPorEmpresa(idEmpresa){
+        return requerimientoModel.getSedesPorEmpresa(idEmpresa);
+    }
+  
 }
 
 const requerimientoCtrl = new RequerimientoCtrl(requerimientoView);
 
-window.onload = function() {
-    requerimientoView.init();
-};

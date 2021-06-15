@@ -6,7 +6,7 @@ class RequerimientoModel {
         return new Promise(function(resolve, reject) {
             $.ajax({
                 type: 'GET',
-                url:`select-sede-by-empresa/${idEmpresa}`,
+                url:`listar-sedes-por-empresa/${idEmpresa}`,
                 dataType: 'JSON',
                 success(response) {
                     resolve(response);
@@ -78,6 +78,57 @@ class RequerimientoModel {
                 });
             });
     }
+    getListadoElaborados(idEmpresa, idSede, idGrupo, idPrioridad){
+        return new Promise(function(resolve, reject) {
+            $.ajax({
+                type: 'POST',
+                url:`elaborados`,
+                dataType: 'JSON',
+                data:{'idEmpresa':idEmpresa,'idSede':idSede,'idGrupo':idGrupo,'idPrioridad':idPrioridad},
+                success(response) {
+                    resolve(response);
+                },
+                error: function(err) {
+                    reject(err) 
+                }
+                });
+            });
+    }
+
+    getListadoAprobacion(idEmpresa, idSede, idGrupo, idPrioridad){
+        return new Promise(function(resolve, reject) {
+            $.ajax({
+                type: 'POST',
+                url:`listado-aprobacion`,
+                dataType: 'JSON',
+                data:{'idEmpresa':idEmpresa,'idSede':idSede,'idGrupo':idGrupo,'idPrioridad':idPrioridad},
+                success(response) {
+                    resolve(response);
+                },
+                error: function(err) {
+                    reject(err) 
+                }
+                });
+            });
+    }
+
+    // listado 
+    getSedesPorEmpresa(idEmpresa){
+        return new Promise(function(resolve, reject) {
+            $.ajax({
+                type: 'GET',
+                url:`listar-sedes-por-empresa/${idEmpresa}`,
+                dataType: 'JSON',
+                success(response) {
+                    resolve(response);
+                },
+                error: function(err) {
+                    reject(err) 
+                }
+                });
+            });
+    }
+ 
 }
 
 

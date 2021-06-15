@@ -1846,25 +1846,25 @@ class LogisticaController extends Controller
         return response()->json($data);
     }
     
-    function sedesAcceso($id_empresa){
-        $id_usuario = Auth::user()->id_usuario;
-        $sedes = DB::table('configuracion.sis_usua_sede')
-        ->select(
-            'sis_sede.*',
-            DB::raw("(ubi_dis.descripcion) || ' ' || (ubi_prov.descripcion) || ' ' || (ubi_dpto.descripcion)  AS ubigeo_descripcion")
-            )
-        ->join('administracion.sis_sede','sis_sede.id_sede','=','sis_usua_sede.id_sede')
-        ->leftJoin('configuracion.ubi_dis','ubi_dis.id_dis','=','sis_sede.id_ubigeo')
-        ->leftJoin('configuracion.ubi_prov', 'ubi_dis.id_prov', '=', 'ubi_prov.id_prov')
-        ->leftJoin('configuracion.ubi_dpto', 'ubi_prov.id_dpto', '=', 'ubi_dpto.id_dpto')
+    // function sedesAcceso($id_empresa){
+    //     $id_usuario = Auth::user()->id_usuario;
+    //     $sedes = DB::table('configuracion.sis_usua_sede')
+    //     ->select(
+    //         'sis_sede.*',
+    //         DB::raw("(ubi_dis.descripcion) || ' ' || (ubi_prov.descripcion) || ' ' || (ubi_dpto.descripcion)  AS ubigeo_descripcion")
+    //         )
+    //     ->join('administracion.sis_sede','sis_sede.id_sede','=','sis_usua_sede.id_sede')
+    //     ->leftJoin('configuracion.ubi_dis','ubi_dis.id_dis','=','sis_sede.id_ubigeo')
+    //     ->leftJoin('configuracion.ubi_prov', 'ubi_dis.id_prov', '=', 'ubi_prov.id_prov')
+    //     ->leftJoin('configuracion.ubi_dpto', 'ubi_prov.id_dpto', '=', 'ubi_dpto.id_dpto')
 
-        ->where([['sis_usua_sede.id_usuario','=',$id_usuario],
-                ['sis_usua_sede.estado','=', 1],
-                ['sis_sede.estado','=', 1],
-                 ['sis_sede.id_empresa','=',$id_empresa]])
-		->get();
-        return $sedes;
-    }
+    //     ->where([['sis_usua_sede.id_usuario','=',$id_usuario],
+    //             ['sis_usua_sede.estado','=', 1],
+    //             ['sis_sede.estado','=', 1],
+    //              ['sis_sede.id_empresa','=',$id_empresa]])
+	// 	->get();
+    //     return $sedes;
+    // }
 
     public function cantidadRequerimientos($tipoRequerimiento,$grupo){
         $yyyy = date('Y', strtotime("now"));
@@ -3471,100 +3471,15 @@ class LogisticaController extends Controller
         }
     }
 
-    public function get_id_doc($id_doc_aprob,$tp_doc){
-        $sql = DB::table('administracion.adm_documentos_aprob')
-        ->where([['id_tp_documento', '=', $tp_doc], 
-        ['id_doc_aprob', '=', $id_doc_aprob]])
-        ->get();
 
-        if ($sql->count() > 0) {
-            $val = $sql->first()->id_doc;
-        } else {
-            $val = 0;
-        }
-        return $val;
-    }
 
-    public function get_id_rol_req($id_req){
-        $sql = DB::table('almacen.alm_req')
-        ->where([['id_requerimiento', '=', $id_req]])
-        ->get();
-        if ($sql->count() > 0) {
-            $val = $sql->first()->id_rol;
-        } else {
-            $val = 0;
-        }
-        return $val;
-    }
 
-    public function get_id_area_rol($id_rol_req){
-        $sql = DB::table('administracion.rol_aprobacion')
-        ->where([['id_rol_aprobacion', '=', $id_rol_req]])
-        ->get();
-        if ($sql->count() > 0) {
-            $val = $sql->first()->id_area;
-        } else {
-            $val = 0;
-        }
-        return $val;
-    }
 
     public function get_id_req_orden($id_orden){
         
     }
 
-    public function getAreaOfRolAprob($id_doc_aprob, $tp_doc){
 
-        $id_area_rol = 0;
-        $msg = 'OK';
-
-        switch ($tp_doc) {
-            case '1': //requerimiento
-                # code...
-                $id_req = $this->get_id_doc($id_doc_aprob,1);
-                if($id_req == 0){
-                    $msg='error id_req';
-                }else{
-                    $id_rol_req = $this-> get_id_rol_req($id_req);
-                    if($id_rol_req == 0){
-                        $msg='error id_rol_req';
-                    }else{
-                        $id_area_rol = $this->get_id_area_rol($id_rol_req);
-                        if($id_area_rol == 0){
-                            $msg='error id_area_rol';
-                        }
-                    }
-                }
-
-                break;
-            
-            case '2': //orden
-                # code...
-                $id_orden = $this->get_id_doc($id_doc_aprob,2);
-                
-                if($id_orden == 0){
-                    $msg='error id_orden';
-                }else{
-                    $dataReq= $this-> get_data_req_by_id_orden($id_orden);
-                    if(count($dataReq) == 0){
-                        $msg='error dataReq';
-                    }else{
-                        $id_area_rol= array_unique($dataReq['data']['rol']);
-                        if(count($id_area_rol) == 0){
-                            $msg='error id_area_rol';
-                        }        
-                    }
-                }
-                break;
-            
-            default:
-                # code...
-                break;
-        }
-
-        $array = array('id'=>$id_area_rol, 'msg'=>$msg);
-        return $array;
-    }
  
 
     public function listar_requerimiento_v2($id_empresa,$id_sede,$id_grupo){
@@ -3998,311 +3913,11 @@ class LogisticaController extends Controller
     //     return $ObsDetReq;
     // }
 
-    public function mostrar_nombre_grupo($id_grupo){
-        $sql = DB::table('administracion.adm_grupo')
-        ->select('adm_grupo.id_grupo','adm_grupo.descripcion')
-        ->where('adm_grupo.id_grupo', $id_grupo)
-        ->get();
-    
-
-        if ($sql->count() > 0) {
-            $id_grupo = $sql->first()->id_grupo;
-            $descripcion = $sql->first()->descripcion;
-        }else{
-            $id_grupo=0;
-            $descripcion='';
-        }
-        $array = array('id_grupo' => $id_grupo, 'descripcion' => $descripcion);
-        return $array;
-    }
 
 
-    function mostrar_requerimiento_id($id, $type)
-    {
-        $sql = DB::table('almacen.alm_req')
-            ->leftJoin('administracion.adm_periodo', 'adm_periodo.id_periodo', '=', 'alm_req.id_periodo')
-            ->leftJoin('administracion.adm_estado_doc', 'alm_req.estado', '=', 'adm_estado_doc.id_estado_doc')
-            ->leftJoin('almacen.alm_tp_req', 'alm_req.id_tipo_requerimiento', '=', 'alm_tp_req.id_tipo_requerimiento')
-            ->leftJoin('administracion.adm_prioridad', 'alm_req.id_prioridad', '=', 'adm_prioridad.id_prioridad')
-            ->leftJoin('administracion.adm_grupo', 'alm_req.id_grupo', '=', 'adm_grupo.id_grupo')
-            ->leftJoin('administracion.sis_sede', 'adm_grupo.id_sede', '=', 'sis_sede.id_sede')
-            ->leftJoin('administracion.adm_empresa', 'sis_sede.id_empresa', '=', 'adm_empresa.id_empresa')
-            ->leftJoin('contabilidad.adm_contri', 'adm_empresa.id_contribuyente', '=', 'adm_contri.id_contribuyente')
-            ->leftJoin('administracion.adm_area', 'alm_req.id_area', '=', 'adm_area.id_area')
-            ->select(
-                'alm_req.*',
-                'adm_periodo.descripcion as descripcion_periodo',
-                'adm_estado_doc.estado_doc',
-                'alm_tp_req.descripcion AS tipo_requerimiento',
-                'adm_prioridad.descripcion AS priori',
-                'adm_grupo.descripcion AS grupo',
-                'adm_area.descripcion AS area',
-                // 'proy_op_com.codigo as codigo_op_com',
-                // 'proy_op_com.descripcion as descripcion_op_com',
-                'alm_req.concepto AS alm_req_concepto',            
-                'alm_req.estado',
-                'adm_contri.razon_social',
-                'sis_sede.codigo as codigo_sede'
-            )
-            ->where('alm_req.id_requerimiento', '=', $id)
-            ->orderBy('alm_req.fecha_registro','desc')
-            ->get();
-        $html = '';
-        
-        foreach ($sql as $row) {
-            $code = $row->codigo;
-            $motivo = $row->concepto;
-            $empresa_sede = $row->razon_social.' - '.$row->codigo_sede;
-            $id_usu = $row->id_usuario;
-            $grupo = $row->id_grupo;
-            $area_id = $row->id_area;
-            $id_op_com = null;
-            $date = date('d/m/Y', strtotime($row->fecha_requerimiento));
-            $id_periodo = $row->id_periodo;
-            $descripcion_periodo = $row->descripcion_periodo;
-            $moneda = $row->id_moneda;
-            $estado_doc = $row->estado_doc;
 
-            $infoGrupo = $this->mostrar_nombre_grupo($grupo);
 
-            if ($infoGrupo['descripcion'] == 'Proyectos') {
-                if ($id_op_com != null) {
-                    $destino = null;
-                } else {
-                    $destino = $row->area . ' - GASTOS ADMINISTRATIVOS';
-                }
-            } else {
-                if ($area_id != 6) {
-                    $destino = $row->area;
-                } else {
-                    $destino = $row->area . ' - ' . $row->occ;
-                }
-            }
 
-            $responsable = Usuario::find($id_usu)->trabajador->postulante->persona->nombre_completo;
-            $simbolMoneda = $this->consult_moneda($moneda)->simbolo;
-            $descripcionMoneda = $this->consult_moneda($moneda)->descripcion;
-        }
-
-        $html =
-            '<table width="100%">
-            <thead>
-                <tr>
-                    <th width="140">Código:</th>
-                    <td>' . $code . '</td>
-                </tr>
-                <tr>
-                    <th width="140">Motivo:</th>
-                    <td>' . $motivo . '</td>
-                </tr>
-                <tr>
-                    <th width="140">Empresa:</th>
-                    <td>' . $empresa_sede . '</td>
-                </tr>
-                <tr>
-                    <th width="140">Responsable:</th>
-                    <td>' . $responsable . '</td>
-                </tr>
-                <tr>
-                    <th>Area o Servicio:</th>
-                    <td>' . $destino . '</td>
-                </tr>';
-                if($destino == 'COMERCIAL'){
-                    $html.='<tr>
-                                <th>OCC:</th>
-                                <td></td>
-                            </tr>';
-                }
-
-        $html.='<tr>
-                    <th>Fecha:</th>
-                    <td colspan="2">' . $date . '</td>
-                </tr>
-                <tr>';
-        if ($type == 1) {
-            $html .=
-                '<th>Moneda:</th>
-                    <td>' . $descripcionMoneda . '</td>';
-        } elseif ($type == 2) {
-            $html .=
-                '<th>Moneda:</th>
-                    <td>' . $descripcionMoneda . '</td>
-                    <td width="100" align="right"><button class="btn btn-primary" onClick="imprimirReq(' . $id . ');"><i class="fas fa-print"></i> Imprimir formato</button></td>
-                    <td>&nbsp;</td>
-                    <td width="100" align="right"><button class="btn btn-info" onClick="verArchivosAdjuntosRequerimiento(' . $id . ');"><i class="fas fa-folder"></i> Archivos Adjuntos</button></td>';
-        }
-        $html .=
-            '</tr>
-            <tr>
-                <th>Periodo:</th>
-                <td colspan="2">' . $descripcion_periodo . '</td>
-            </tr>
-            <tr>
-                <th>Estado:</th>
-                <td colspan="2">' . $estado_doc . '</td>
-            </tr>
-            </thead>
-        </table>
-        <br>
-        <table class="table table-bordered table-striped table-view-okc" width="100%">';
-        if ($type == 1) {
-            $html .=
-                '<thead style="background-color:#5c5c5c; color:#fff;">
-                    <th>Código</th>
-                    <th>Part.No</th>
-                    <th>Descripción del Bien o Servicio</th>
-                    <th width="150">Partida</th>
-                    <th width="90">Fecha Entrega</th>
-                    <th width="90">Unidad</th>
-                    <th width="100">Cantidad</th>
-                    <th width="100">Precio Unit.</th>
-                    <th width="110">Subtotal</th>
-                </thead>
-                <tbody>';
-        } elseif ($type == 2) {
-            $html .=
-                '<thead style="background-color:#5c5c5c; color:#fff;">
-                    <th>Código</th>
-                    <th>Part.No</th>
-                    <th>Descripción del Bien o Servicio</th>
-                    <th width="150">Partida</th>
-                    <th width="90">Fecha Entrega</th>
-                    <th width="90">Unidad</th>
-                    <th width="100">Cantidad</th>
-                    <th width="100">Precio Unit.</th>
-                    <th width="110">Subtotal</th>
-                </thead>
-                <tbody>';
-        }
-
-        $cont = 1;
-        $total = 0;
-
-        $detail = DB::table('almacen.alm_det_req')
-            ->select('alm_det_req.*','alm_prod.codigo','alm_prod.part_number','alm_prod.descripcion as descripcion_producto', 'alm_und_medida.descripcion as unidad_medida_descripcion')
-            ->leftJoin('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'alm_det_req.id_unidad_medida')
-            ->leftJoin('almacen.alm_prod', 'alm_prod.id_producto', '=', 'alm_det_req.id_producto')
-
-            ->where('id_requerimiento', $id)
-            ->get();
-
-        foreach ($detail as $clave => $det) {
-            $id_det = $det->id_detalle_requerimiento;
-            $codigo_producto = $det->codigo;
-            $part_number = $det->part_number;
-            $id_item = $det->id_item;
-            $id_producto = $det->id_producto;
-            $precio = $det->precio_unitario;
-            $cant = $det->cantidad;
-            $id_part = $det->partida;
-            $tiene_transformacion = $det->tiene_transformacion;
-            $unit = $det->unidad_medida_descripcion;
-            $simbMoneda = $this->consult_moneda($det->id_moneda)->simbolo;
-            $descripcion_adicional = $det->descripcion_adicional;
-            
-            $active = '';
-
-            if (is_numeric($id_part)) {
-                $name_part = DB::table('finanzas.presup_par')->select('codigo')->where('id_partida', $id_part)->first();
-                $partida = $name_part->codigo;
-            } else {
-                $partida = ''/*$id_part*/;
-            }
-
-            $subtotal = $precio * $cant;
-            $total += $subtotal;
-            $unidad='S/N';
-            if ($id_producto == null) {
-                $name = $descripcion_adicional;
-                $unidad = 'Servicio';
-                
-            } else {
-                $name = $det->descripcion_producto;
-            }
-
-            // if ($obs == 't' or $obs == '1' or $obs == 'true') {
-            //     $active = 'checked="checked" disabled';
-            // }
-
-            if ($type == 1) {
-                $html .=
-                    '<tr>
-                    <td> ' .($codigo_producto?$codigo_producto:'') . '</td>
-                    <td> ' .($part_number?$part_number:'') .($tiene_transformacion>0?'<br><span style="display: inline-block; font-size: 8px; background:#ddd; color: #666; border-radius:8px; padding:2px 10px;">Transformado</span>':''). '</td>
-                    <td>' . $name . '</td>
-                    <td>' . $partida . '</td>
-                    <td></td>
-                    <td>' . $unit . '</td>
-                    <td class="text-right">' . number_format($cant, 3) . '</td>
-                    <td class="text-right">' .$simbMoneda. number_format($precio, 2) . '</td>
-                    <td class="text-right">' .$simbMoneda. number_format($subtotal, 2) . '</td>
-                </tr>';
-            } elseif ($type == 2) {
-                $html .=
-                    '<tr>
-                    <td> ' .($codigo_producto?$codigo_producto:'') . '</td>
-                    <td> ' .($part_number?$part_number:'') .($tiene_transformacion>0?'<br><span style="display: inline-block; font-size: 8px; background:#ddd; color: #666; border-radius:8px; padding:2px 10px;">Transformado</span>':''). '</td>
-                    <td>' . $name . '</td>
-                    <td>' . $partida . '</td>
-                    <td></td>
-                    <td>' . ($unit ? $unit : $unidad) . '</td>
-                    <td class="text-right">' . number_format($cant, 3) . '</td>
-                    <td class="text-right">' .$simbMoneda. number_format($precio, 2) . '</td>
-                    <td class="text-right">' .$simbMoneda. number_format($subtotal, 2) . '</td>
-                </tr>';
-            }
-
-            $cont++;
-        }
-
-        $html .=
-            '<tr>
-            <th colspan="7" class="text-right">Total:</th>
-            <td class="text-right">' .$simbolMoneda. number_format($total, 2) . '</td>
-        </tr>
-        </tbody></table>';
-
-        // if ($type == 1){
-        //     return response()->json($html);
-        // }elseif ($type == 2){
-        //     return $html;
-        // }
-        return $html;
-    }
-
-    function get_id_operacion($id_grp,$id_area, $tp_doc){
-        $filterBy=[];
-        if($id_area == 0 && $id_grp >0 ){
-            $filterBy =[['adm_operacion.id_grupo', '=', $id_grp]];
-        }else if($id_area > 0 && $id_grp > 0){
-            $filterBy =[['id_area', '=', $id_area],['id_grupo', '=', $id_grp]];
-        }
-
-        $sql = DB::table('administracion.adm_operacion')
-        ->where([
-            $filterBy[0], 
-            ['id_tp_documento', '=', $tp_doc], 
-            ['estado', '=', 1] 
-            ])
-        ->get();
-        if ($sql->count() > 0) {
-            $operacion = $sql->first()->id_operacion;
-        }else{
-            $operacion=0;
-        }
-        return $operacion;
-    }
-    function get_id_grupo($req){
-        $sql = DB::table('almacen.alm_req')
-        ->where([['id_requerimiento', '=', $req] ])
-        ->get();
-        if ($sql->count() > 0) {
-            $id_grupo = $sql->first()->id_grupo;
-        }else{
-            $id_grupo=0;
-        }
-        return $id_grupo;
-    }
     function get_id_area($req){
         $sql = DB::table('almacen.alm_req')
         ->where([['id_requerimiento', '=', $req] ])
@@ -4350,18 +3965,7 @@ class LogisticaController extends Controller
         return $array;
     }
 
-    function consult_doc_aprob($id_doc,$tp_doc)
-    {
-        $sql = DB::table('administracion.adm_documentos_aprob')->where([['id_tp_documento', '=', $tp_doc], ['id_doc', '=', $id_doc]])->get();
 
-        if ($sql->count() > 0) {
-            $val = $sql->first()->id_doc_aprob;
-        } else {
-            $val = 0;
-        }
-
-        return $val;
-    }
  
 
     function last_obs_log($doc)
@@ -4524,129 +4128,17 @@ class LogisticaController extends Controller
 
     }
 
-    function consult_tamaño_flujo($id_req)
-    {
-        $id_tipo_doc = $this->get_id_tipo_documento('Requerimiento');
 
-        $req = DB::table('almacen.alm_req')
-        ->where([
-            ['id_requerimiento', '=', $id_req]])
-        ->first();
-        // $id_prioridad = $req->id_prioridad;
-        $id_prioridad = 1;
-        $id_grupo = isset($req->id_grupo)?$req->id_grupo:0;
-        $id_area = isset($req->id_area)?$req->id_area:0;
 
-        $sql_operacion = DB::table('administracion.adm_operacion')
-        ->where([
-            ['id_grupo', '=', $id_grupo],
-            ['id_tp_documento', '=', 1],
-            ['estado', '=', 1]])
-            ->get();
-        if ($sql_operacion->count() > 0) {
-            $id_operacion = $sql_operacion->first()->id_operacion;
-        }else{
-            $id_operacion=0;
-        }
-
-        $flujo = DB::table('administracion.adm_flujo')->where([
-            ['id_operacion', '=', $id_operacion], 
-            ['estado', '=', 1]])
-            ->get();
-
-        return $flujo->count();
-
-    }
-    function consult_aprob($doc)
-    {
-        $sql = DB::table('administracion.adm_aprobacion')->where([['id_vobo', '=', 1], ['id_doc_aprob', '=', $doc]])->get();
-        return $sql->count();
-    }
     function consult_obs($id_req)
     {
         $sql = DB::table('almacen.req_obs')->where([['id_requerimiento', '=', $id_req]])->get();
         return $sql->count();
     }
 
-    function consult_estado($req)
-    {
-        $sql = DB::table('almacen.alm_req')->select('estado')->where('id_requerimiento', $req)->first();
-        return $sql->estado;
-    }
-
-    function consult_usuario_elab($req)
-    {
-        $sql = DB::table('almacen.alm_req')->select('id_usuario')->where('id_requerimiento', $req)->first();
-        return $sql->id_usuario;
-    }
-    function consulta_req_primera_aprob($req)
-    {
-        $id_tipo_doc = $this->get_id_tipo_documento('Requerimiento');
-        $message='';
-        $statusOption=['success','fail'];
-        $status='';
-        $output=[];
-
-        $sql1 = DB::table('almacen.alm_req')->select('id_grupo','id_area','rol_aprobante_id')->where('id_requerimiento', $req)->get();
-        if(sizeof($sql1) > 0){
-            $sql11 = DB::table('administracion.adm_operacion')->where([['id_grupo', $sql1->first()->id_grupo],['id_tp_documento', $id_tipo_doc],['estado', 1]])->get();
-            if(sizeof($sql11) > 0){
-                if($sql1->first()->rol_aprobante_id >0){
-                    
-                    $sql2 = DB::table('administracion.adm_flujo')->where([['id_operacion', $sql11->first()->id_operacion],['id_rol', $sql1->first()->rol_aprobante_id],['estado', 1]])
-                    ->orderby('orden', 'asc')
-                    ->get();
-                }else{
-
-                    $sql2 = DB::table('administracion.adm_flujo')->where([['id_operacion', $sql11->first()->id_operacion],['estado', 1]])
-                    ->orderby('orden', 'asc')
-                    ->get();
-                }
-
-                    $nombre = ($sql2->count() > 0) ? $sql2->first()->nombre: '';
-                    $id_rol = ($sql2->count() > 0) ? $sql2->first()->id_rol: '';
-                    $status=$statusOption[0];
-                    $array = array('nombre' => $nombre, 'id_rol' => $id_rol, 'status'=>$status, 'message'=>'Flujo Encontrado');
-                    
-                    return $array;
-
-            }else{
-                $message='No existe id operacion con id_area='.$sql1->first()->id_area.',id_grupo='.$sql1->first()->id_grupo;
-                $status=$statusOption[1];
-                $output=['message'=>$message,'status'=>$status];
-
-                $sql111 = DB::table('administracion.adm_operacion')->where([['id_grupo', $sql1->first()->id_grupo],['id_area',null],['id_tp_documento', 1],['estado', 1]])->get();
-                if(sizeof($sql111) > 0){
-                    $sql2 = DB::table('administracion.adm_flujo')->where([['id_operacion', $sql111->first()->id_operacion],['estado', 1]])
-                    ->orderby('orden', 'asc')
-                    ->get();
-
-                    $nombre = ($sql2->count() > 0) ? $sql2->first()->nombre: '';
-                    $id_rol = ($sql2->count() > 0) ? $sql2->first()->id_rol: '';
-                    $status=$statusOption[0];
-                    $array = array('nombre' => $nombre, 'id_rol' => $id_rol, 'status'=>$status, 'message'=>'Flujo Encontrado');
-                    
-                    return $array;
-                }else{
-                    $message='No existe id operacion con id_area= null, id_grupo='.$sql1->first()->id_grupo;
-                    $status=$statusOption[1];
-                    $output=['message'=>$message,'status'=>$status];
-    
-                }
 
 
-                return $output;
 
-            }
-        }else{
-            $message='No existe id requerimiento';
-            $status=$statusOption[1];
-            $output=['message'=>$message,'status'=>$status];
-            return $output;
-        }
-
-
-    }
 
     // function consult_rol_aprob($rol)
     // {
@@ -4840,40 +4332,9 @@ class LogisticaController extends Controller
 
     
 
-    function consult_sgt_aprob($orden,$operacion)
-    {
-        $sql = DB::table('administracion.adm_flujo')
-                ->select('adm_flujo.id_rol')
-                ->where([['id_operacion', '=', $operacion], ['orden', '=', $orden], ['estado', '=', 1]])
-                ->get();
 
-       
-        if(count($sql)>0){
-            $trab = DB::table('configuracion.sis_usua')
-                ->select('rrhh_perso.nombres', 'rrhh_perso.apellido_paterno', 'rrhh_perso.apellido_materno', 'sis_rol.descripcion AS rol')
-                ->join('rrhh.rrhh_trab', 'rrhh_trab.id_trabajador', '=', 'sis_usua.id_trabajador')
-                ->join('rrhh.rrhh_postu', 'rrhh_postu.id_postulante', '=', 'rrhh_trab.id_postulante')
-                ->join('rrhh.rrhh_perso', 'rrhh_perso.id_persona', '=', 'rrhh_postu.id_persona')
-                ->join('configuracion.sis_acceso', 'sis_acceso.id_usuario', '=', 'sis_usua.id_usuario')
-                ->join('configuracion.sis_rol', 'sis_rol.id_rol', '=', 'sis_acceso.id_rol')
-                ->where('sis_acceso.id_rol', $sql->first()->id_rol)->first();
-            $nombre = $trab->nombres . ' ' . $trab->apellido_paterno . ' - ' . $trab->rol;
 
-        }else{
-            $nombre='';
 
-        }
-        return $nombre;
-    }
-
-    function consult_moneda($id)
-    {
-        $sql = DB::table('configuracion.sis_moneda')
-        ->select('descripcion','simbolo')
-        ->where('id_moneda', '=', $id)->first();
-
-        return $sql;
-    }
 
     // function totalAprobOp($operacion)
     // {
@@ -5403,163 +4864,10 @@ function get_id_usuario_usuario_por_rol($descripcion_rol, $id_sede, $id_empresa)
         // return response()->json($cantidad_aprobados);
     }
 
-    function consulta_nombre_usuario($id_rol){
-        $query = DB::table('administracion.rol_aprobacion')
-        ->select(
-        DB::raw("concat(rrhh_perso.nombres,' ', rrhh_perso.apellido_paterno, ' ',rrhh_perso.apellido_materno)  AS nombre_completo")
-        )
-        
-
-        ->when(($id_rol >0), function($query) use ($id_rol)  {
-            return $query->Where('rol_aprobacion.id_rol_concepto','=',$id_rol);
-        })
-        ->where([
-            ['rol_aprobacion.estado', '=', 1]
-        ])
-        ->join('rrhh.rrhh_trab', 'rrhh_trab.id_trabajador', '=', 'rol_aprobacion.id_trabajador')
-        ->join('rrhh.rrhh_postu', 'rrhh_postu.id_postulante', '=', 'rrhh_trab.id_postulante')
-        ->join('rrhh.rrhh_perso', 'rrhh_perso.id_persona', '=', 'rrhh_postu.id_persona')
-
-        ->orderby('rol_aprobacion.id_rol_aprobacion','desc')
-        ->get();
-        return $query;
-
-    }
 
 
-    function flujo_aprobacion($req, $doc)
-    {
-        
-        $cont = 1;
-        $footer='';
-        
-        $dataFinal = array();
-        $alert = '<ul style="list-style: none; padding: 0;">';
 
-        $dataFinal = $this->get_historial_aprobacion($req, $doc);
-
-        foreach ($dataFinal as $value => $val) {
-            $usu = $val['usuario'];
-            $est = $val['estado'];
-            $day = $val['fecha'];
-            $obs = $val['obs'];
-            $name_user = $val['nombre_usuario'];
-
-            if (strtoupper($est) == 'ELABORADO') {
-                $claseObs = 'alert-okc alert-okc-primary';
-            } elseif (strtoupper($est) == 'OBSERVADO') {
-                $claseObs = 'alert-okc alert-okc-warning';
-            } elseif (strtoupper($est) == 'DENEGADO') {
-                $claseObs = 'alert-okc alert-okc-danger';
-            } elseif (strtoupper($est) == 'SUSTENTO') {
-                $claseObs = 'alert-okc alert-okc-info';
-            } elseif (strtoupper($est) == 'APROBADO') {
-                $claseObs = 'alert-okc alert-okc-success';
-            }
-
-
-            $alert .=
-            '<li class="' . $claseObs . '" style="padding: 5px; margin-bottom: 8px;">
-            <strong>' . strtoupper($est) . ' - ' . $name_user . '</strong>
-            <small>(' . date('d/m/Y H:i:s', strtotime($day)) . ')</small>
-            <br>' . $obs . '
-            </li>';
-
-            $cont++;
-
-            foreach ($val['detalle'] as $key => $value) {
-
-                if(count($val['detalle'][$key]) > 0){
-                    
-                    $usu_sus = $value['usuario'];
-                    $est_sus = $value['estado'];
-                    $day_sus = $value['fecha'];
-                    $obs_sus = $value['obs'];
-                    $name_user_sus = $value['nombre_usuario'];
-
-                    if (strtoupper($est_sus) == 'ELABORADO') {
-                        $claseObs = 'alert-okc alert-okc-primary';
-                    } elseif (strtoupper($est_sus) == 'OBSERVADO') {
-                        $claseObs = 'alert-okc alert-okc-warning';
-                    } elseif (strtoupper($est_sus) == 'DENEGADO') {
-                        $claseObs = 'alert-okc alert-okc-danger';
-                    } elseif (strtoupper($est_sus) == 'SUSTENTO') {
-                        $claseObs = 'alert-okc alert-okc-info';
-                    } elseif (strtoupper($est_sus) == 'APROBADO') {
-                        $claseObs = 'alert-okc alert-okc-success';
-                    }
-
-                    $alert .=
-                    '<li class="' . $claseObs . '" style="padding: 5px; margin-bottom: 8px;">
-                    <strong>' . strtoupper($est_sus) .' - ' . $name_user_sus . '</strong>
-                    <small>(' . date('d/m/Y H:i:s', strtotime($day_sus)) . ')</small>
-                    <br>' . $obs_sus . '
-                </li>';
-
-
-                }
-            }
-
-        }
-        $estado_req = $this->consult_estado($req); // get id_estado_doc
-        // $totalFlujo = $this->totalAprobOp(1);
-        // $totalAprob = $this->consult_aprob($doc); // cantidad aprobaciones
-
-
-        $id_grupo = $this->get_id_grupo($req);
-        $id_area = $this->get_id_area($req);
-
-        $num_doc = $this->consult_doc_aprob($req,1); 
-        $total_aprob = $this->consult_aprob($num_doc);
-        $total_flujo = $this->consult_tamaño_flujo($req);
-        $areaOfRolAprob = $this->getAreaOfRolAprob($num_doc,1); //{num doc},{tp doc} 
-
-        $tp_doc=1; // tipo de documento = requerimiento 
-        $id_operacion= $this->get_id_operacion($id_grupo,$areaOfRolAprob['id'],$tp_doc);
-
-        // $sgt_aprob='-';
-        // $sgt_per='-';
-
-        if ($estado_req == 12 ) {
-            if ($total_aprob > 0) {
-                if ($total_flujo > $total_aprob) {
-                    $sgt_aprob = ($total_aprob + 1);
-                    $sgt_per = $this->consult_sgt_aprob($sgt_aprob,$id_operacion);
-                    $footer .= '<strong>Próximo en aprobar: </strong>' . $sgt_per;
-                }
-
-            }
-        } elseif ($estado_req == 3) {
-            $usuario_crea = $this->consult_usuario_elab($req);
-            $usu_elab = Usuario::find($usuario_crea)->trabajador->postulante->persona->nombre_completo;
-            $footer .= '<strong>Por sustentar </strong>' . $usu_elab;
-        } elseif ($estado_req == 13) {
-            if ($total_flujo > $total_aprob) {
-                $sgt_aprob = ($total_aprob + 1);
-                $sgt_per = $this->consult_sgt_aprob($sgt_aprob,$id_operacion);
-                $footer .= '<strong>Próximo en aprobar: </strong>' . $sgt_per;
-            }
-
-        } elseif($estado_req ==1) {
-            $PrimeraApro = $this->consulta_req_primera_aprob($req);
-            $usuPrimeraApro = $PrimeraApro['nombre'];
-            $rolPrimeraApro = $PrimeraApro['id_rol'];
-            $nameUserPrimeraApro = $this->consulta_nombre_usuario($rolPrimeraApro);
-            $json = json_decode($nameUserPrimeraApro);
-            $allnameUserPrimeraApro = implode(", ", array_map(function($obj) { foreach ($obj as $p => $v) { return $v;} }, $json));
-
-            $footer = '<strong>Pendiente </strong><abbr title="'.$allnameUserPrimeraApro.'">'. $usuPrimeraApro.'</abbr>';
-        }
-
-        // if($sql3->first()->observacion != null){
-        //     $footer .= ' <strong> Por Aceptar Sustento:</strong> Logistica' ;
-        // }
-
-        $reqs = $this->mostrar_requerimiento_id($req, 2);
-
-        $data = ['flujo' => $alert, 'siguiente' => $footer, 'requerimiento' => $reqs, 'cont' => $cont];
-        return response()->json($data);
-    }
+   
     /* Rocio */
     public function listaCotizacionesPorGrupo($id_cotizacion = null)
     {
@@ -11495,315 +10803,11 @@ function get_id_usuario_usuario_por_rol($descripcion_rol, $id_sede, $id_empresa)
 
 
     
-    public function get_historial_aprobacion($req){
-        
-        $doc = $this->consult_doc_aprob($req,1); 
-        
-        $new_data = array();
-        $dataFinal = array();
-        $data1 = array();
-        $data2 = array();
-        $data3 = array();
-        $data4 = array();
-
-        $req_elaborado = DB::table('almacen.alm_req')
-                        ->where('id_requerimiento', '=', $req)
-                        ->get();
-        $cant_req_elaborado = $req_elaborado->count();
-
-        if ($cant_req_elaborado > 0) {
-            foreach ($req_elaborado as $row) {
-                $id_us = $row->id_usuario;
-                $fechae = $row->fecha_registro;
-                $data1[] = array('estado' => 'ELABORADO', 'usuario' => $id_us, 'fecha' => $fechae, 'obs' => '', 
-                'nombre_usuario'=>Usuario::find($row->id_usuario)->trabajador->postulante->persona->nombre_completo,
-                'detalle'=>[]);
-            }
-        }
- 
-        
-
-        $req_aprobado = DB::table('administracion.adm_aprobacion')
-        ->join('administracion.adm_vobo', 'adm_vobo.id_vobo', '=', 'adm_aprobacion.id_vobo')
-        ->select('adm_aprobacion.*', 'adm_vobo.descripcion AS vobo')
-        ->where('adm_aprobacion.id_doc_aprob', '=', $doc)->get();
-
-        $cant_req_aprob = $req_aprobado->count();
-
-        if ($cant_req_aprob > 0) {
-            foreach ($req_aprobado as $key) {
-                $id_usua = $key->id_usuario;
-                $my_vobo = $key->vobo;
-                $fechavb = $key->fecha_vobo;
-                $det_obs = $key->detalle_observacion;
-                $data2[] = array('estado' => $my_vobo, 'usuario' => $id_usua, 'fecha' => $fechavb,
-                'nombre_usuario'=>Usuario::find($key->id_usuario)->trabajador->postulante->persona->nombre_completo,
-                'obs' => $det_obs,'detalle'=>[]);
-            }
-        }
-
-        // $req_obs =DB::table('almacen.req_obs')
-        //             ->select('req_obs.*')
-        //             ->where([['req_obs.id_requerimiento', '=', $req]])
-        //             ->orderBy('req_obs.id_observacion', 'asc')
-        //             ->get();
-        // $cant_req_obs = $req_obs->count();
-
-        // $id_sustentacion_list=[];
-        // if ($cant_req_obs > 0) {
-        //     foreach ($req_obs as $row) {
-        //         $id_sustentacion_list[] = $row->id_sustentacion;
-        //         $id_us = $row->id_usuario;
-        //         $fechae = $row->fecha_registro;
-        //         $obs = $row->descripcion;
-        //         $id_sustentacion = $row->id_sustentacion;
-        //         $data3[] = array('estado' => 'OBSERVADO', 'usuario' => $id_us, 'fecha' => $fechae, 
-        //         'nombre_usuario'=>Usuario::find($row->id_usuario)->trabajador->postulante->persona->nombre_completo,
-        //         'obs' => $obs,
-        //         'id_sustentacion'=>$id_sustentacion, 'detalle'=>[]
-        //         );
-        //     }
-        // }
-        // $req_sust =DB::table('almacen.req_sust')
-        //             ->select('req_sust.*')
-        //             ->whereIn('req_sust.id_sustentacion', $id_sustentacion_list)
-        //             ->orderBy('req_sust.id_sustentacion', 'asc')
-        //             ->get();
-        // $cant_req_sust = $req_sust->count();
-
-        // if ($cant_req_sust > 0) {
-        //     foreach ($req_sust as $row) {
-        //         $id_sustentacion = $row->id_sustentacion;
-        //         $id_us = $row->id_usuario;
-        //         $fechae = $row->fecha_registro;
-        //         $obs = $row->descripcion;
-        //         $data4[] = array('estado' => 'SUSTENTO', 'usuario' => $id_us, 'fecha' => $fechae, 
-        //         'nombre_usuario'=>Usuario::find($row->id_usuario)->trabajador->postulante->persona->nombre_completo,
-        //         'obs' => $obs, 'id_sustentacion' =>$id_sustentacion);
-        //     }
-        // }
-        // $new_data= $data3;
-
-        // for ($i=0; $i< $cant_req_obs; $i++){
-        //     for ($j=0; $j< $cant_req_sust; $j++){
-        //         if($new_data[$i]['id_sustentacion'] == $data4[$j]['id_sustentacion']){
-        //             $new_data[$i]['detalle'][]=$data4[$j];
-        //         }
-        //     }
-
-        // }
-
-        $dataFinal = array_merge($data1,$data2,$new_data);
-        $date = array();
-        foreach ($dataFinal as $row) {
-            $date[] = $row['fecha'];
-        }
-        array_multisort($date, SORT_ASC, $dataFinal);
-
-        return $dataFinal;
-    }
 
 
-    public function get_flujo_aprobacion($id_operacion,$id_area){
-        $adm_flujo_aprobacion = DB::table('administracion.adm_flujo')
-        ->select(
-            'adm_flujo.id_flujo',
-            'adm_flujo.id_operacion',
-            'adm_flujo.id_rol',
-            DB::raw("(rrhh_perso.nombres) || ' ' || (rrhh_perso.apellido_paterno) || ' ' || (rrhh_perso.apellido_materno) AS nombre_responsable"),
-            // 'rol_aprobacion.id_area',
-            'sis_rol.descripcion as descripcion_rol',
-            'adm_flujo.nombre as nombre_fase',
-            'adm_flujo.orden',
-            'adm_flujo.estado'
-            )
-        ->leftJoin('configuracion.sis_rol', 'sis_rol.id_rol', '=', 'adm_flujo.id_rol')
-        ->leftJoin('configuracion.sis_acceso', 'sis_acceso.id_rol', '=', 'sis_rol.id_rol')
-        ->leftJoin('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'sis_acceso.id_usuario')
-        ->leftJoin('rrhh.rrhh_trab', 'rrhh_trab.id_trabajador', '=', 'sis_usua.id_trabajador')
-        ->leftJoin('rrhh.rrhh_postu', 'rrhh_postu.id_postulante', '=', 'rrhh_trab.id_postulante')
-        ->leftJoin('rrhh.rrhh_perso', 'rrhh_perso.id_persona', '=', 'rrhh_postu.id_persona')
-        ->where([
-            ['adm_flujo.estado', '=', 1],
-            // ['rol_aprobacion.estado', '=', 1],
-            // ['rol_aprobacion.id_area', '=', $id_area],
-             ['adm_flujo.id_operacion', '=', $id_operacion]
-        ])
-        ->orderBy('adm_flujo.orden', 'asc')
-        ->get();
-        // return $adm_flujo_aprobacion;
-        $flujo_aprobacion=[];
-        $id_flujo_list=[];
 
-        foreach($adm_flujo_aprobacion as $data){
-            
-            $id_flujo_list[]= $data->id_flujo;
 
-            $flujo_aprobacion[]=[
-                'id_flujo'=>$data->id_flujo,
-                'nombre_fase'=>$data->nombre_fase,
-                'id_operacion'=>$data->id_operacion,
-                'id_rol'=>$data->id_rol,
-                // 'id_area'=>$data->id_area,
-                'nombre_responsable'=>$data->nombre_responsable,
-                'descripcion_rol'=>$data->descripcion_rol,
-                'orden'=>$data->orden,
-                'estado'=>$data->estado,
-                'criterio_monto'=>[],
-                'criterio_prioridad'=>[]
-            ];
-        }
 
-        // $criterios = DB::table('administracion.adm_detalle_grupo_criterios')
-        // ->select(
-        //     'adm_detalle_grupo_criterios.id_flujo',
-        //     'adm_detalle_grupo_criterios.id_criterio_prioridad',
-        //     'adm_prioridad.descripcion as descripcion_prioridad',
-        //     'adm_criterio_monto.*'
-        // )
-        // ->leftJoin('administracion.adm_criterio_monto', 'adm_criterio_monto.id_criterio_monto', '=', 'adm_detalle_grupo_criterios.id_criterio_monto')
-        // ->leftJoin('administracion.adm_prioridad', 'adm_prioridad.id_prioridad', '=', 'adm_detalle_grupo_criterios.id_criterio_prioridad')
-        // ->where([
-        //     ['adm_detalle_grupo_criterios.estado', '=', 1]
-        // ])
-        // ->whereIn('adm_detalle_grupo_criterios.id_flujo', $id_flujo_list)
-        // ->orderBy('adm_detalle_grupo_criterios.id_detalle_grupo_criterios', 'asc')
-        // ->get();
-
-        // $criterio_monto=[];
-        // $criterio_prioridad=[];
-        // foreach($criterios as $data){
-        //     if ($data->id_criterio_monto >0) {
-        //         $criterio_monto[]=[
-        //         'id_flujo'=>$data->id_flujo,
-        //         'id_criterio_monto'=>$data->id_criterio_monto,
-        //         'descripcion'=>$data->descripcion,
-        //         'id_operador1'=>$data->id_operador1,
-        //         'monto1'=>$data->monto1,
-        //         'id_operador2'=>$data->id_operador2,
-        //         'monto2'=>$data->monto2,
-        //         'estado'=>$data->estado
-        //     ];
-        //     }
-
-        //     if($data->id_criterio_prioridad >0){
-        //         $criterio_prioridad[]=[
-        //             'id_flujo'=>$data->id_flujo,
-        //             'id_criterio_prioridad'=>$data->id_criterio_prioridad,
-        //             'descripcion'=>$data->descripcion_prioridad
-        //         ];
-        //     }
-
-        // }
-        // if(count($criterio_monto) > 0){
-        //     foreach($flujo_aprobacion as $c1 => $valor1){
-        //         foreach($criterio_monto as $c2 => $valor2){
-        //             if($valor1['id_flujo'] == $valor2['id_flujo']){
-        //                 $flujo_aprobacion[$c1]['criterio_monto'][]=$valor2;
-        //             } 
-        //         }
-        //     }
-        // }
-
-        // if(count($criterio_prioridad) > 0){
-        //     foreach($flujo_aprobacion as $c1 => $valor1){
-        //         foreach($criterio_prioridad as $c2 => $valor2){
-        //             if($valor1['id_flujo'] == $valor2['id_flujo']){
-        //                 $flujo_aprobacion[$c1]['criterio_prioridad'][]=$valor2;
-        //             } 
-        //         }
-        //     }
-        // }
-
-        return $flujo_aprobacion;
-    }
-
-    public function explorar_requerimiento($id_requerimiento){
-        $requerimiento = DB::table('almacen.alm_req')
-        ->join('almacen.alm_tp_req', 'alm_req.id_tipo_requerimiento', '=', 'alm_tp_req.id_tipo_requerimiento')
-        ->leftJoin('configuracion.sis_usua', 'alm_req.id_usuario', '=', 'sis_usua.id_usuario')
-        ->leftJoin('rrhh.rrhh_trab', 'sis_usua.id_trabajador', '=', 'rrhh_trab.id_trabajador')
-        ->leftJoin('rrhh.rrhh_postu', 'rrhh_postu.id_postulante', '=', 'rrhh_trab.id_postulante')
-        ->leftJoin('rrhh.rrhh_perso', 'rrhh_perso.id_persona', '=', 'rrhh_postu.id_persona')
-        ->leftJoin('administracion.rol_aprobacion', 'alm_req.id_rol', '=', 'rol_aprobacion.id_rol_aprobacion')
-        ->leftJoin('rrhh.rrhh_rol_concepto', 'rrhh_rol_concepto.id_rol_concepto', '=', 'rol_aprobacion.id_rol_concepto')
-        ->leftJoin('administracion.adm_area', 'alm_req.id_area', '=', 'adm_area.id_area')
-        ->leftJoin('administracion.adm_grupo', 'adm_grupo.id_grupo', '=', 'alm_req.id_grupo')
-        ->leftJoin('administracion.adm_estado_doc', 'adm_estado_doc.id_estado_doc', '=', 'alm_req.estado')
-
-        // ->leftJoin('logistica.log_detalle_grupo_cotizacion', 'log_detalle_grupo_cotizacion.id_requerimiento', '=', 'alm_req.id_requerimiento')
-        // ->leftJoin('logistica.log_ord_compra', 'log_ord_compra.id_grupo_cotizacion', '=', 'log_detalle_grupo_cotizacion.id_grupo_cotizacion')
-        // ->leftJoin('almacen.guia_com_oc', 'guia_com_oc.id_oc', '=', 'log_ord_compra.id_orden_compra')
-        ->select(
-            'alm_req.id_requerimiento',
-            'alm_req.codigo',
-            'alm_req.fecha_requerimiento',
-            'alm_req.id_tipo_requerimiento',
-            'alm_tp_req.descripcion AS tipo_req_desc',
-            'sis_usua.usuario',
-            DB::raw("(rrhh_perso.nombres) || ' ' || (rrhh_perso.apellido_paterno) || ' ' || (rrhh_perso.apellido_materno) AS nombre_responsable"),
-
-            'alm_req.id_area',
-            'adm_area.descripcion AS area_desc',
-            'rol_aprobacion.id_rol_aprobacion as id_rol',
-            'rol_aprobacion.id_rol_concepto',
-            'rrhh_rol_concepto.descripcion AS rrhh_rol_concepto',
-            'alm_req.id_grupo',
-            'adm_grupo.descripcion AS adm_grupo_descripcion',
-            // 'proy_op_com.codigo as codigo_op_com',
-            // 'proy_op_com.descripcion as descripcion_op_com',
-            'alm_req.concepto AS alm_req_concepto',
-            'alm_req.fecha_registro',
-            'alm_req.id_prioridad',
-            'alm_req.estado',
-            'adm_estado_doc.estado_doc',
-            'alm_req.estado'
-        )
-        ->where([
-            ['alm_req.id_requerimiento', '=', $id_requerimiento]
-        ])
-        ->orderBy('alm_req.id_requerimiento', 'desc')
-        ->get();
-
-        // $id_prioridad= $requerimiento->first()->id_prioridad;
-        $id_prioridad= 1;
-        $tipo_documento= 1;
-        $id_grupo= $requerimiento->first()->id_grupo;
-        // $id_area= $requerimiento->first()->id_area;
-
-        $num_doc = $this->consult_doc_aprob($id_requerimiento,1); 
-        // $id_operacion=$this->get_id_operacion($id_grupo,$id_area,$tipo_documento);
-        $areaOfRolAprob = $this->getAreaOfRolAprob($num_doc,1); //{num doc},{tp doc} 
-
-        $id_operacion=$this->get_id_operacion($id_grupo,$areaOfRolAprob['id'],$tipo_documento);
-
-        // get flujo aprobación
-        $flujo_aprobacion = $this->get_flujo_aprobacion($id_operacion,$areaOfRolAprob['id']);
-        // $flujo_aprobacion = $id_operacion;
-        // Lista de historial aprobación
-        $historial_aprobacion = $this->get_historial_aprobacion($id_requerimiento);
-        // lista de Solicitud de Cotización
-        // $solicitud_de_cotizaciones = $this->get_cotizacion_by_req($id_requerimiento);
-        $solicitud_de_cotizaciones = [];
-        // Lista de Cuadros Comparativo
-        $cuadros_comparativos = [];
-        // $cuadros_comparativos = $this->get_cuadro_comparativo_by_req($id_requerimiento);
-        //lista de ordenes
-        // $ordenes = $this->get_orden_by_req($id_requerimiento);
-        $ordenes = [];
-
-        // salida
-        $output=[
-            'requerimiento'=>$requerimiento,
-            'flujo_aprobacion'=>$flujo_aprobacion,
-            'historial_aprobacion'=>$historial_aprobacion,
-            'solicitud_cotizaciones'=>$solicitud_de_cotizaciones,
-            'cuadros_comparativos'=>$cuadros_comparativos,
-            'ordenes'=>$ordenes
-        ];
-
-        return response()->json($output);
-    }
 
 // public function mostrar_roles(){
 //     $roles = Auth::user()->trabajador->roles;
@@ -12157,14 +11161,7 @@ function get_id_usuario_usuario_por_rol($descripcion_rol, $id_sede, $id_empresa)
 
         return $output;
     }
-    public function get_id_tipo_documento($descripcion){
-        $adm_tp_docum=DB::table('administracion.adm_tp_docum')
-        ->select('adm_tp_docum.*')
-        ->where('descripcion','like','%'.$descripcion)
-        ->get()->first()->id_tp_documento;
 
-        return $adm_tp_docum;
-    }
 
     public function get_id_rol_concepto($descripcion){
         $id=0;
@@ -15376,30 +14373,6 @@ function historial_precios_excel(Request $request){
         return $data;
     }
 
-    public function select_sede_by_empresa($id_empresa)
-    {
-        $data = DB::table('administracion.sis_sede')
-            ->select(
-                'sis_sede.*', 'ubi_dis.descripcion as ubigeo_descripcion'
-            )
-            ->leftJoin('configuracion.ubi_dis','ubi_dis.id_dis','=','sis_sede.id_ubigeo')
-            ->where('sis_sede.id_empresa','=',$id_empresa)
-            ->orderBy('sis_sede.id_empresa', 'asc')
-            ->get();
-        return $data;
-    }
-
-    public function select_grupo_by_sede($id_sede)
-    {
-        $data = DB::table('administracion.adm_grupo')
-            ->select(
-                'adm_grupo.*'
-            )
-            ->where('adm_grupo.id_sede','=',$id_sede)
-            ->orderBy('adm_grupo.id_grupo', 'asc')
-            ->get();
-        return $data;
-    }
 
 public function get_cuadro_costos_comercial(){
     // prueba de consulta

@@ -32,7 +32,7 @@ class RequerimientoPendienteModel {
             if(id_empresa >0){
                 $.ajax({
                     type: 'GET',
-                    url: `select-sede-by-empresa/` + id_empresa,
+                    url: `listar-sedes-por-empresa/` + id_empresa,
                     dataType: 'JSON',
                     success(response) {
                         resolve(response) // Resolve promise and go to then() 

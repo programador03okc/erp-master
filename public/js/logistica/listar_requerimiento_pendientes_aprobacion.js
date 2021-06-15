@@ -54,7 +54,6 @@ function listar_requerimientos_pendientes_aprobar(){
             {'data':'concepto', 'name':'concepto'},
             {'data':'fecha_requerimiento', 'name':'fecha_requerimiento'},
             {'data':'tipo_requerimiento', 'name':'tipo_requerimiento'},          
-            {'data':'descripcion_tipo_cliente', 'name':'descripcion_tipo_cliente'},          
             {'data':'razon_social_empresa', 'name':'razon_social_empresa'},
             {'render': function (data, type, row){
                 return row['descripcion_op_com']?row['descripcion_op_com']:row['descripcion_grupo']; 

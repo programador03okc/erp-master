@@ -136,7 +136,7 @@ Requerimiento
                                 <select name="empresa" id="empresa" class="form-control activation" onChange="requerimientoView.changeOptEmpresaSelect(event); requerimientoView.updateEmpresa(this);">
                                     <option value="">Elija una opción</option>
                                     @foreach ($empresas as $empresa)
-                                    <option value="{{$empresa->id_empresa}}">{{ $empresa->contribuyente->razon_social}}</option>
+                                    <option value="{{$empresa->id_empresa}}">{{ $empresa->razon_social}}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -632,7 +632,6 @@ Requerimiento
 @include('logistica.requerimientos.modal_email_cliente')
 @include('logistica.requerimientos.modal_telefonos_cliente')
 @include('logistica.requerimientos.modal_cuadro_costos_comercial')
-@include('logistica.requerimientos.modal_copiar_documento')
 @include('logistica.requerimientos.modal_adjuntar_archivos_detalle_requerimiento')
 @include('logistica.requerimientos.modal_historial_requerimiento')
 @include('logistica.requerimientos.modal_catalogo_items')
@@ -752,5 +751,9 @@ Requerimiento
             "{{route('logistica.gestion-logistica.requerimiento.elaboracion.grupo-select-item-para-compra')}}"
         );
     });
+
+    window.onload = function() {
+        requerimientoView.init();
+    };
 </script>
 @endsection
