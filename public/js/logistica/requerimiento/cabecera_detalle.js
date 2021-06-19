@@ -7,7 +7,7 @@ function nuevo_req(){
     $('#form-requerimiento')[0].reset();
     limpiarSelectFuenteDet();
     // autoSelectTipoRequerimientoPorUsuarioEnSesion();
-    autoSelectTipoRequerimientoPorDefecto();
+    autoSelectTipoRequerimientoPorDefecto(); //tipo_formulario.js
     document.querySelector("form[id='form-requerimiento'] div[id='input-group-fuente_det']").setAttribute('hidden',true);
 
     // $('#body_detalle_requerimiento').html('<tr id="default_tr"><td></td><td colspan="12"> No hay datos registrados</td></tr>');
@@ -561,22 +561,6 @@ function llenarListaCuentasCliente(id_persona=null,id_cliente=null){
 }
 
 
-
-function selectedProyecto(event){
-    let codigo = event.target.options[ event.target.selectedIndex].getAttribute('data-codigo');
-    let id_proyecto = event.target.value;
-    document.querySelector("form[id='form-requerimiento'] input[name='codigo_proyecto']").value = codigo;
-
-    if(id_proyecto >0){
-        let btnMostarPartidas = document.querySelectorAll("button[name='btnMostarPartidas']");
-        if(btnMostarPartidas.length >0){
-            btnMostarPartidas.forEach(element => {
-                element.removeAttribute('disabled');
-                element.setAttribute('title','Partidas');
-            });
-        }
-    }
-}
 
 //imprimir requerimiento pdf
 function ImprimirRequerimientoPdf(){

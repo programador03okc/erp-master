@@ -24,6 +24,19 @@ class Documento extends Model
         return $id_doc;
     }
 
+    public static function getIdDocAprob($id_doc,$tp_doc)
+    {
+        $sql = DB::table('administracion.adm_documentos_aprob')->where([['id_tp_documento', '=', $tp_doc], ['id_doc', '=', $id_doc]])->get();
+
+        if ($sql->count() > 0) {
+            $val = $sql->first()->id_doc_aprob;
+        } else {
+            $val = 0;
+        }
+        return $val;
+    }
+
+
     public static function getFlujoByIdDocumento($id_doc){
 
         $id='';

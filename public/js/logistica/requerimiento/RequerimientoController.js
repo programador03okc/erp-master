@@ -30,7 +30,11 @@ class RequerimientoCtrl{
         return requerimientoModel.getcategoriaAdjunto();
 
     }
+    
+    getRequerimiento(idRequerimiento){
+        return requerimientoModel.getRequerimiento(idRequerimiento);
 
+    }
     // listado 
     getListadoElaborados(idEmpresa, idSede, idGrupo, idPrioridad){
         return requerimientoModel.getListadoElaborados(idEmpresa, idSede, idGrupo, idPrioridad);

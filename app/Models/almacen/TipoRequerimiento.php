@@ -17,6 +17,7 @@ class TipoRequerimiento extends Model
                 'alm_tp_req.id_tipo_requerimiento',
                 'alm_tp_req.descripcion'
             )
+            ->where('alm_tp_req.estado',1)
             ->orderBy('alm_tp_req.id_tipo_requerimiento', 'asc')
             ->get();
         return $data;

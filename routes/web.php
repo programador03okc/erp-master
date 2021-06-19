@@ -637,14 +637,14 @@ Route::group(['middleware' => ['auth']], function () {
 
 					Route::get('index', 'Logistica\RequerimientoController@index')->name('index');
 					Route::get('mostrar-partidas/{idGrupo?}/{idProyecto?}', 'Logistica\RequerimientoController@mostrarPartidas')->name('mostrar-partidas');
-					Route::get('mostrar-centro-costos', 'CentroCostoController@mostrarCentroCostos')->name('mostrar-centro-costos');
+					Route::get('mostrar-centro-costos', 'Finanzas\CentroCosto\CentroCostoController@mostrarCentroCostosSegunGrupoUsuario')->name('mostrar-centro-costos');
 					Route::get('mostrar-categoria-adjunto', 'Logistica\RequerimientoController@mostrarCategoriaAdjunto')->name('mostrar-categoria-adjunto');
 					Route::post('guardar-requerimiento', 'Logistica\RequerimientoController@guardarRequerimiento')->name('guardar-requerimiento');
 					Route::get('listar-sedes-por-empresa/{id?}', 'Logistica\RequerimientoController@listarSedesPorEmpresa')->name('listar-sedes-por-empresa');
+					Route::get('mostrar-requerimiento/{id?}/{codigo?}', 'Logistica\RequerimientoController@mostrar_requerimiento')->name('mostrar-requerimiento');
 
 
 					Route::get('lista-modal/{option?}', 'LogisticaController@mostrar_requerimientos')->name('lista-modal');
-					Route::get('mostrar-requerimiento/{id?}/{codigo?}', 'LogisticaController@mostrar_requerimiento')->name('mostrar-requerimiento');
 					Route::post('guardar', 'LogisticaController@guardar_requerimiento')->name('guardar');
 					Route::put('actualizar/{id?}', 'LogisticaController@actualizar_requerimiento')->name('actualizar');
 					Route::put('anular/{id_requerimiento?}', 'LogisticaController@anular_requerimiento')->name('anular');
@@ -687,7 +687,7 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::post('obtener-construir-cliente', 'RequerimientoController@obtenerConstruirCliente')->name('obtener-construir-cliente');
 					Route::get('proyectos-activos', 'ProyectosController@listar_proyectos_activos')->name('proyectos-activos');
 					Route::get('grupo-select-item-para-compra', 'ComprasPendientesController@getGrupoSelectItemParaCompra')->name('grupo-select-item-para-compra');
-					Route::get('mostrar-centro-costos', 'Finanzas\CentroCosto\CentroCostoController@mostrarCentroCostos')->name('mostrar-centro-costos');
+					
 					Route::get('mostrar-fuente', 'LogisticaController@mostrarFuente')->name('mostrar-fuente');
 					Route::post('guardar-fuente', 'LogisticaController@guardarFuente')->name('guardar-fuente');
 					Route::post('anular-fuente', 'LogisticaController@anularFuente')->name('anular-fuente');

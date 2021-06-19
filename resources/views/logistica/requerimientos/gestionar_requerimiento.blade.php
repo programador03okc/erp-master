@@ -32,7 +32,7 @@ Requerimiento
 
 @section('content')
 <div class="page-main" type="requerimiento">
-    <form id="form-requerimiento" type="register"  enctype="multipart/form-data" form="formulario">
+    <form id="form-requerimiento" type="register" enctype="multipart/form-data" form="formulario">
         <input type="hidden" name="id_usuario_session">
         <input type="hidden" name="id_usuario_req">
         <input type="hidden" name="id_estado_doc">
@@ -53,16 +53,16 @@ Requerimiento
                     <div>
                         <span class="label" id="estado_doc">&nbsp;</span>
                         <button type="button" name="btn-imprimir-requerimento-pdf" class="btn btn-info btn-sm" onclick="ImprimirRequerimientoPdf()" disabled><i class="fas fa-print"></i> Imprimir</button>
-                        <button type="button" name="btn-adjuntos-requerimiento" class="btn btn-sm btn-warning" title="Archivos adjuntos" onclick="requerimientoView.adjuntarArchivoRequerimiento();" disabled><i class="fas fa-file-archive"></i> 
-                        <span class="badge" name="cantidadAdjuntosRequerimiento" style="position:absolute; right: 178px; border: solid 0.1px;">0</span>    
-                        Adjuntos
+                        <button type="button" name="btn-adjuntos-requerimiento" class="btn btn-sm btn-warning" title="Archivos adjuntos" onclick="requerimientoView.adjuntarArchivoRequerimiento();" disabled><i class="fas fa-file-archive"></i>
+                            <span class="badge" name="cantidadAdjuntosRequerimiento" style="position:absolute; right: 178px; border: solid 0.1px;">0</span>
+                            Adjuntos
                         </button>
                         <button type="button" name="btn-ver-trazabilidad-requerimiento" class="btn btn-sm btn-primary" title="Ver Trazabilidads" onclick="verTrazabilidadRequerimientoModal();" disabled><i class="fas fa-shoe-prints"></i> Trazabilidad</button>
                     </div>
                 </h4>
                 <fieldset class="group-table">
                     <div class="row">
-                        <div class="col-md-2" id="group-tipo_requerimiento" hidden>
+                        <!-- <div class="col-md-2" id="group-tipo_requerimiento" hidden>
                             <h5>Tipo de requerimiento:</h5>
                             <select class="form-control input-sm activation" name="tipo_requerimiento" onChange="changeOptTipoReqSelect(event);">
                                 <option value="">Elija una opción</option>
@@ -70,7 +70,7 @@ Requerimiento
                                 <option value="{{$tipo->id_tipo_requerimiento}}">{{$tipo->descripcion}}</option>
                                 @endforeach
                             </select>
-                        </div>
+                        </div> -->
 
                         <div class="col-md-2" id="input-group-fecha" hidden>
                             <h5>Fecha Creación</h5>
@@ -80,7 +80,7 @@ Requerimiento
                         <div class="col-md-6">
                             <div class="form-group">
                                 <h5>Concepto/Motivo</h5>
-                                <input type="text" class="form-control activation" name="concepto" onkeyup ="requerimientoView.updateConcepto(this);">
+                                <input type="text" class="form-control activation" name="concepto" onkeyup="requerimientoView.updateConcepto(this);">
                             </div>
                         </div>
 
@@ -134,7 +134,7 @@ Requerimiento
                             <div class="form-group">
                                 <h5>Empresa</h5>
                                 <select name="empresa" id="empresa" class="form-control activation" onChange="requerimientoView.changeOptEmpresaSelect(event); requerimientoView.updateEmpresa(this);">
-                                    <option value="">Elija una opción</option>
+                                    <option value="0">Elija una opción</option>
                                     @foreach ($empresas as $empresa)
                                     <option value="{{$empresa->id_empresa}}">{{ $empresa->razon_social}}</option>
                                     @endforeach
@@ -146,7 +146,7 @@ Requerimiento
                             <div class="form-group">
                                 <h5>Sede</h5>
                                 <select id="sede" name="sede" class="form-control activation" onChange="requerimientoView.changeOptUbigeo(event); requerimientoView.updateSede(this);">
-                                    <option value="">Elija una opción</option>
+                                    <option value="0">Elija una opción</option>
                                 </select>
                             </div>
                         </div>
@@ -163,7 +163,7 @@ Requerimiento
                                 <h5>División</h5>
                                 <select name="rol_aprobante" class="form-control activation">
                                     @if(count($aprobantes)>0)
-                                    <option value="">Elija una opción</option>
+                                    <option value="0">Elija una opción</option>
                                     @foreach ($aprobantes as $aprobante)
                                     <option value="{{$aprobante->id_rol}}">{{$aprobante->nombre}}</option>
                                     @endforeach
@@ -173,23 +173,26 @@ Requerimiento
                                 </select>
                             </div>
                         </div>
-
-                        <div class="col-md-2" id="input-group-para_stock_almacen">
+                        <div class="col-md-2" id="input-group-tipo-requerimiento">
                             <div class="form-group">
-                                <h5>&nbsp;</h5>
-                                <div class="checkbox">
-                                    <label>
-                                        <input type="checkbox" class="activation" name="para_stock_almacen" onclick="requerimientoView.changeStockParaAlmacen(event);"> Stock para Almacén
-                                    </label>
-                                </div>
+                                <h5>Tipo Requerimiento</h5>
+                                <select class="form-control input-sm activation" name="tipo_requerimiento">
+                                    <option value="0">Elija una opción</option>
+                                    @foreach ($tipo_requerimiento as $tipo)
+                                    <option value="{{$tipo->id_tipo_requerimiento}}">{{$tipo->descripcion}}</option>
+                                    <!-- <option value="{{$tipo->id_tipo_requerimiento}}" {{$tipo->id_tipo_requerimiento==4 ? 'selected' : ''}}>{{$tipo->descripcion}}</option>                                 -->
+                                    @endforeach
+                                </select>
                             </div>
                         </div>
+
+
                         <div class="col-md-2" id="input-group-asignar_trabajador">
                             <div class="form-group">
                                 <h5>Solicitado por</h5>
                                 <div style="display:flex;">
-                                    <input class="oculto" name="id_trabajador">
-                                    <input type="text" name="nombre_trabajador" class="form-control group-elemento" placeholder="Trabajador" readonly="">
+                                    <input class="oculto" name="id_trabajador" value="{{$idTrabajador}}">
+                                    <input type="text" name="nombre_trabajador" class="form-control group-elemento" placeholder="Trabajador" value="{{$nombreUsuario}}" readonly="">
                                     <button type="button" class="group-tex btn-primary activation" onclick="listaTrabajadoresModal();">
                                         <i class="fa fa-search"></i>
                                     </button>
@@ -274,10 +277,10 @@ Requerimiento
                                 <input type="hidden" class="form-control" name="descripcion_grupo">
                                 <input type="text" name="codigo_proyecto" class="form-control group-elemento" style="width:130px; text-align:center;" readonly>
                                 <div class="input-group-okc">
-                                    <select class="form-control activation" name="id_proyecto" onChange="selectedProyecto(event);">
+                                    <select class="form-control activation" name="id_proyecto" onChange="requerimientoView.changeProyecto(event);">
                                         <option value="0">Seleccione un Proyecto</option>
                                         @foreach ($proyectos_activos as $proyecto)
-                                        <option value="{{$proyecto->id_proyecto}}" data-codigo="{{$proyecto->codigo}}">{{$proyecto->descripcion}}</option>
+                                        <option value="{{$proyecto->id_proyecto}}" data-id-centro-costo="{{$proyecto->id_centro_costo}}" data-codigo-centro-costo="{{$proyecto->codigo_centro_costo}}" data-descripcion-centro-costo="{{$proyecto->descripcion_centro_costo}}" data-codigo="{{$proyecto->codigo}}">{{$proyecto->descripcion}}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -516,7 +519,7 @@ Requerimiento
                                     <th style="width: 10%">Partida</th>
                                     <th style="width: 10%">C.Costo</th>
                                     <th style="width: 10%">Part number</th>
-                                    <th >Descripción de item</th>
+                                    <th>Descripción de item</th>
                                     <th style="width: 10%">Unidad</th>
                                     <th style="width: 6%">Cantidad</th>
                                     <th style="width: 8%">Precio U. <span name="simboloMoneda">S/</span></th>
@@ -526,20 +529,20 @@ Requerimiento
                                 </tr>
                             </thead>
                             <tbody id="body_detalle_requerimiento">
-                                
+
                             </tbody>
                             <tfoot>
-                            <tr>
-                                            
-                                <td colspan="8" class="text-right"><strong>Total:</strong></td>
-                                <td class="text-right"><span name="simbolo_moneda">S/</span><label name="total"> 0.00</label></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                            </tr>
+                                <tr>
+
+                                    <td colspan="8" class="text-right"><strong>Total:</strong></td>
+                                    <td class="text-right"><span name="simbolo_moneda">S/</span><label name="total"> 0.00</label></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
                             </tfoot>
                         </table>
-            </div>
+                </div>
         </fieldset>
         <br>
         <fieldset class="group-table" id="group-detalle-items-transformados" hidden>
@@ -593,9 +596,36 @@ Requerimiento
                 </div>
             </div>
         </fieldset>
+
+        <fieldset class="group-table col-md-6">
         <div class="row">
-            <div class="col-md-12 text-right">
-                <button type="submit" class="btn-okc" id="btnGuardar"><i class="fas fa-save fa-lg"></i> Guardar</button>
+            <div class="col-md-12">
+                <fieldset class="group-importes">
+                    <legend style="background: #999;">
+                        <h6 name='titulo_tabla_detalle_cc'>Partidas Activas</h6>
+                    </legend>
+                    <table class="table table-striped table-bordered" id="listaPartidasActivas" width="100%">
+                        <thead>
+                            <tr>
+                                <th width="10">Codigo</th>
+                                <th width="70">Descripción</th>
+                                <th width="10">Presupuesto Total</th>
+                                <th width="10">Presupuesto Utilizado</th>
+                                <th width="10">Saldo</th>
+                            </tr>
+                        </thead>
+                        <tbody id="body_partidas_activas">
+                        </tbody>
+                    </table>
+                </fieldset>
+            </div>
+        </div>
+        </fieldset>
+
+        <div class="row">
+            <div class="col-md-12">
+                <button onclick="scrollToTheTopOfDocument()" id="btnVolverArriba" title="Volver Arriba"><i class="fas fa-arrow-circle-up"></i></button>
+                <!-- <button type="submit" class="btn-okc" id="btnGuardar"><i class="fas fa-save fa-lg"></i> Guardar</button> -->
             </div>
         </div>
         <br>
@@ -670,6 +700,7 @@ Requerimiento
 <script src="{{ asset('js/logistica/requerimiento/anular.js') }}"></script>
 <script src="{{ asset('js/logistica/requerimiento/guardar.js') }}"></script>
 <!-- <script src="{{ asset('js/logistica/requerimiento/adjuntos.js') }}"></script> -->
+<script src="{{ asset('js/logistica/requerimiento/scrollToTheTopOfDocument.js') }}"></script>
 <script src="{{ asset('js/logistica/requerimiento/duplicar_requerimiento.js') }}"></script>
 <script src="{{ asset('js/logistica/requerimiento/historial.js') }}"></script>
 <script src="{{ asset('js/logistica/requerimiento/modal_detalle_requerimiento.js') }}"></script>
@@ -699,8 +730,6 @@ Requerimiento
 <script src="{{ asset('js/logistica/requerimiento/RequerimientoView.js')}}"></script>
 <script src="{{ asset('js/logistica/requerimiento/RequerimientoController.js')}}"></script>
 <script src="{{ asset('js/logistica/requerimiento/RequerimientoModel.js')}}"></script>
-
-
 
 <script>
     var grupos = JSON.parse('{!!$grupos!!}');

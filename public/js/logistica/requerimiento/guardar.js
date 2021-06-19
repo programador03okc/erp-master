@@ -44,7 +44,7 @@ function get_data_requerimiento(){
     estado = document.querySelector("form[id='form-requerimiento'] input[name='estado']").value;
     fuente = document.querySelector("form[id='form-requerimiento'] select[name='fuente_id']").value;
     fuente_det = document.querySelector("form[id='form-requerimiento'] select[name='fuente_det_id']").value;
-    para_stock_almacen = document.querySelector("form[id='form-requerimiento'] input[name='para_stock_almacen']").checked;
+    // para_stock_almacen = document.querySelector("form[id='form-requerimiento'] input[name='para_stock_almacen']").checked;
     rol_aprobante = document.querySelector("form[id='form-requerimiento'] select[name='rol_aprobante']").value;
     id_trabajador = document.querySelector("form[id='form-requerimiento'] input[name='id_trabajador']").value;
 
@@ -90,7 +90,7 @@ function get_data_requerimiento(){
         estado,
         fuente,
         fuente_det,
-        para_stock_almacen,
+        // para_stock_almacen,
         rol_aprobante,
         id_trabajador
         

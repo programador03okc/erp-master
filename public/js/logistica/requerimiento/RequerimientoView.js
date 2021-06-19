@@ -3,6 +3,7 @@ var tempObjectBtnPartida;
 var tempObjectBtnCentroCostos;
 var tempObjectBtnInputFile;
 var tempIdRegisterActive;
+var tempCentroCostoSelected;
 var tempArchivoAdjuntoItemList = [];
 var tempArchivoAdjuntoRequerimientoList = [];
 
@@ -26,7 +27,7 @@ class RequerimientoView {
         document.querySelector("form[id='form-requerimiento'] span[name='simboloMoneda']").textContent = moneda;
         document.querySelector("div[id='montoMoneda']").textContent = moneda;
         if (document.querySelector("form[id='form-requerimiento'] table span[class='moneda']")) {
-            document.querySelectorAll("form[id='form-requerimiento'] table span[class='moneda']").forEach(element => {
+            document.querySelectorAll("form[id='form-requerimiento'] span[class='moneda']").forEach(element => {
                 element.textContent = moneda;
             });
         }
@@ -143,6 +144,44 @@ class RequerimientoView {
         }
     }
 
+    changeProyecto(event){
+
+        tempCentroCostoSelected= {
+            'id' : event.target.options[ event.target.selectedIndex].getAttribute('data-id-centro-costo'),
+            'codigo' : event.target.options[ event.target.selectedIndex].getAttribute('data-codigo-centro-costo'),
+            'descripcion' : event.target.options[ event.target.selectedIndex].getAttribute('data-descripcion-centro-costo')
+        };
+        let tbodyChildren = document.querySelector("tbody[id='body_detalle_requerimiento']").children;
+        if(tempCentroCostoSelected.id >0){
+            if(tbodyChildren.length >0){
+                for (let i = 0; i < tbodyChildren.length; i++) {
+                    tbodyChildren[i].querySelector("input[class='centroCosto']").value=tempCentroCostoSelected.id;
+                    tbodyChildren[i].querySelector("p[class='descripcion-centro-costo']").setAttribute('title',tempCentroCostoSelected.codigo);
+                    tbodyChildren[i].querySelector("p[class='descripcion-centro-costo']").textContent= tempCentroCostoSelected.descripcion;
+                    tbodyChildren[i].querySelector("button[name='centroCostos']").setAttribute('disabled',true);
+                    tbodyChildren[i].querySelector("button[name='centroCostos']").setAttribute('title','El centro de costo esta asignado a un proyecto');
+                }
+            }
+
+        }else{
+            alert("El proyecto seleccionado no tiene un centro de costo preasignado, puede seleccionar manualmente")
+            if(tbodyChildren.length >0){
+                for (let i = 0; i < tbodyChildren.length; i++) {
+                    tbodyChildren[i].querySelector("input[class='centroCosto']").value='';
+                    tbodyChildren[i].querySelector("p[class='descripcion-centro-costo']").setAttribute('title','');
+                    tbodyChildren[i].querySelector("p[class='descripcion-centro-costo']").textContent= '';
+                    tbodyChildren[i].querySelector("button[name='centroCostos']").removeAttribute('disabled');
+                    tbodyChildren[i].querySelector("button[name='centroCostos']").setAttribute('title','');
+                }
+            }
+        }
+
+
+        let codigoProyecto = event.target.options[ event.target.selectedIndex].getAttribute('data-codigo');
+        
+        document.querySelector("form[id='form-requerimiento'] input[name='codigo_proyecto']").value = codigoProyecto;
+    }
+
     updateConcepto(obj) {
         if (obj.value.length > 0) {
             obj.closest('div').classList.remove("has-error");
@@ -187,6 +226,7 @@ class RequerimientoView {
 
 
     // detalle requerimiento
+
     makeId() {
         let ID = "";
         let characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
@@ -195,6 +235,7 @@ class RequerimientoView {
         }
         return ID;
     }
+ 
 
     agregarFilaEvent() {
         document.querySelector("button[id='btn-add-producto']").addEventListener('click', (event) => {
@@ -203,7 +244,7 @@ class RequerimientoView {
 
             let tipoRequerimiento = document.querySelector("form[id='form-requerimiento'] select[name='tipo_requerimiento']").value;
             let idGrupo = document.querySelector("form[id='form-requerimiento'] input[name='id_grupo']").value;
-
+ 
             document.querySelector("tbody[id='body_detalle_requerimiento']").insertAdjacentHTML('beforeend', `<tr style="text-align:center">
             <td></td>
             <td><p class="descripcion-partida">(NO SELECCIONADO)</p><button type="button" class="btn btn-xs btn-info" name="partida" onclick="requerimientoView.cargarModalPartidas(this)">Seleccionar</button> 
@@ -211,9 +252,9 @@ class RequerimientoView {
                     <input type="text" class="partida" name="idPartida[]" hidden>
                 </div>
             </td>
-            <td><p class="descripcion-centro-costo">(NO SELECCIONADO)</p><button type="button" class="btn btn-xs btn-primary" name="centroCostos" onclick="requerimientoView.cargarModalCentroCostos(this)">Seleccionar</button> 
+            <td><p class="descripcion-centro-costo" title="${tempCentroCostoSelected !=undefined?tempCentroCostoSelected.codigo:''}">${tempCentroCostoSelected !=undefined?tempCentroCostoSelected.descripcion:'(NO SELECCIONADO)'}</p><button type="button" class="btn btn-xs btn-primary" name="centroCostos" onclick="requerimientoView.cargarModalCentroCostos(this)" ${tempCentroCostoSelected !=undefined?'disabled':''} title="${tempCentroCostoSelected !=undefined?'El centro de costo esta asignado a un proyecto':''}" >Seleccionar</button> 
                 <div class="form-group">
-                    <input type="text" class="centroCosto" name="idCentroCosto[]" hidden>
+                    <input type="text" class="centroCosto" name="idCentroCosto[]" value="${tempCentroCostoSelected !=undefined?tempCentroCostoSelected.id:''}" hidden>
                 </div>
             </td>
             <td><input class="form-control input-sm" type="text" name="partNumber[]" placeholder="Part number"></td>
@@ -224,12 +265,12 @@ class RequerimientoView {
             <td><select name="unidad[]" class="form-control input-sm">${document.querySelector("select[id='selectUnidadMedida']").innerHTML}</select></td>
             <td>
                 <div class="form-group">
-                    <input class="form-control input-sm cantidad text-right" type="number" min="1" name="cantidad[]" onkeyup ="requerimientoView.updateSubtotal(this); requerimientoView.updateCantidadItem(this);" placeholder="Cantidad">
+                    <input class="form-control input-sm cantidad text-right" type="number" min="1" name="cantidad[]" onkeyup ="requerimientoView.updateSubtotal(this); requerimientoView.updateCantidadItem(this); requerimientoView.calcularPresupuestoUtilizadoYSaldoPorPartida();" placeholder="Cantidad">
                 </div>
             </td>
             <td>
                 <div class="form-group">
-                    <input class="form-control input-sm precio text-right" type="number" min="0" name="precioUnitario[]" onkeyup="requerimientoView.updateSubtotal(this); requerimientoView.updatePrecioItem(this);" placeholder="Precio U."></td>
+                    <input class="form-control input-sm precio text-right" type="number" min="0" name="precioUnitario[]" onkeyup="requerimientoView.updateSubtotal(this); requerimientoView.updatePrecioItem(this); requerimientoView.calcularPresupuestoUtilizadoYSaldoPorPartida();" placeholder="Precio U."></td>
                 </div>  
             <td style="text-align:right;"><span class="moneda" name="simboloMoneda[]">S/</span><span class="subtotal" name="subtotal[]">0.00</span></td>
             <td><textarea class="form-control input-sm" name="motivo[]" placeholder="Motivo de requerimiento de item (opcional)"></textarea></td>
@@ -258,14 +299,14 @@ class RequerimientoView {
 
             document.querySelector("tbody[id='body_detalle_requerimiento']").insertAdjacentHTML('beforeend', `<tr style="text-align:center">
             <td></td>
-            <td><p class="descripcion-partida">(NO SELECCIONADO)</p><button type="button" class="btn btn-xs btn-info" name="centroCostos" onclick="requerimientoView.cargarModalPartidas(this)">Seleccionar</button> 
+            <td><p class="descripcion-partida">(NO SELECCIONADO)</p><button type="button" class="btn btn-xs btn-info" name="partida" onclick="requerimientoView.cargarModalPartidas(this)">Seleccionar</button> 
                 <div class="form-group">
                     <input type="text" class="partida" name="idPartida[]" hidden>
                 </div>
                 </td>
-            <td><p class="descripcion-centro-costo">(NO SELECCIONADO)</p><button type="button" class="btn btn-xs btn-primary" name="partida" onclick="requerimientoView.cargarModalCentroCostos(this)">Seleccionar</button> 
+                <td><p class="descripcion-centro-costo" title="${tempCentroCostoSelected !=undefined?tempCentroCostoSelected.codigo:''}">${tempCentroCostoSelected !=undefined?tempCentroCostoSelected.descripcion:'(NO SELECCIONADO)'}</p><button type="button" class="btn btn-xs btn-primary" name="centroCostos" onclick="requerimientoView.cargarModalCentroCostos(this)" ${tempCentroCostoSelected !=undefined?'disabled':''} title="${tempCentroCostoSelected !=undefined?'El centro de costo esta asignado a un proyecto':''}" >Seleccionar</button> 
                 <div class="form-group">
-                    <input type="text" class="centroCosto" name="idCentroCosto[]" hidden>
+                    <input type="text" class="centroCosto" name="idCentroCosto[]" value="${tempCentroCostoSelected !=undefined?tempCentroCostoSelected.id:''}" hidden>
                 </div>
             </td>
             <td>(Servicio)<input type="hidden" name="partNumber[]"></td>
@@ -277,12 +318,12 @@ class RequerimientoView {
             <td><select name="unidad[]" class="form-control input-sm">${document.querySelector("select[id='selectUnidadMedida']").innerHTML}</select></td>
             <td>
                 <div class="form-group">
-                    <input class="form-control input-sm cantidad text-right" type="number" min="1" name="cantidad[]" onkeyup ="requerimientoView.updateSubtotal(this); requerimientoView.updateCantidadItem(this);" placeholder="Cantidad">
+                    <input class="form-control input-sm cantidad text-right" type="number" min="1" name="cantidad[]" onkeyup ="requerimientoView.updateSubtotal(this); requerimientoView.updateCantidadItem(this); requerimientoView.calcularPresupuestoUtilizadoYSaldoPorPartida();" placeholder="Cantidad">
                 </div>
             </td>
             <td>
                 <div class="form-group">
-                    <input class="form-control input-sm precio text-right" type="number" min="0" name="precioUnitario[]" onkeyup="requerimientoView.updateSubtotal(this); requerimientoView.updatePrecioItem(this);" placeholder="Precio U.">
+                    <input class="form-control input-sm precio text-right" type="number" min="0" name="precioUnitario[]" onkeyup="requerimientoView.updateSubtotal(this); requerimientoView.updatePrecioItem(this); requerimientoView.calcularPresupuestoUtilizadoYSaldoPorPartida();" placeholder="Precio U.">
                 </div>
             </td>
             <td style="text-align:right;"><span class="moneda" name="simboloMoneda[]">S/</span><span class="subtotal" name="subtotal[]">0.00</span></td>
@@ -454,7 +495,7 @@ class RequerimientoView {
                         html += `<tr id="par-${partida.id_partida}">
                             <td style="width:15%; text-align:left;" name="codigo">${partida.codigo}</td>
                             <td style="width:75%; text-align:left;" name="descripcion">${partida.des_pardet}</td>
-                            <td style="width:15%; text-align:right;" name="importe_total" class="right ${isVisible}">S/${Util.formatoNumero(partida.importe_total, 2)}</td>
+                            <td style="width:15%; text-align:right;" name="importe_total" class="right ${isVisible}" data-presupuesto-total="${partida.importe_total}" >S/${Util.formatoNumero(partida.importe_total, 2)}</td>
                             <td style="width:5%; text-align:center;"><button class="btn btn-success btn-xs" onclick="requerimientoView.selectPartida(${partida.id_partida});">Seleccionar</button></td>
                         </tr>`;
                     }
@@ -491,17 +532,96 @@ class RequerimientoView {
     selectPartida(idPartida) {
         let codigo = $("#par-" + idPartida + " ").find("td[name=codigo]")[0].innerHTML;
         let descripcion = $("#par-" + idPartida + " ").find("td[name=descripcion]")[0].innerHTML;
-        // let importe_total = $("#par-"+idPartida+" ").find("td[name=importe_total]")[0].innerHTML;
+        let presupuestoTotal = $("#par-"+idPartida+" ").find("td[name=importe_total]")[0].dataset.presupuestoTotal;
+
         tempObjectBtnPartida.nextElementSibling.querySelector("input").value = idPartida;
         tempObjectBtnPartida.textContent = 'Cambiar';
 
         let tr = tempObjectBtnPartida.closest("tr");
+        tr.querySelector("p[class='descripcion-partida']").dataset.idPartida=idPartida;
         tr.querySelector("p[class='descripcion-partida']").textContent = descripcion
+        tr.querySelector("p[class='descripcion-partida']").dataset.presupuestoTotal=presupuestoTotal;
         tr.querySelector("p[class='descripcion-partida']").setAttribute('title', codigo);
 
         this.updatePartidaItem(tempObjectBtnPartida.nextElementSibling.querySelector("input"));
         $('#modal-partidas').modal('hide');
         tempObjectBtnPartida = null;
+
+        this.calcularPresupuestoUtilizadoYSaldoPorPartida();
+    }
+
+    calcularPresupuestoUtilizadoYSaldoPorPartida(){
+        let tempPartidasActivas=[];
+        let partidaAgregadas=[];
+        let subtotalItemList=[];
+        let tbodyChildren = document.querySelector("tbody[id='body_detalle_requerimiento']").children;
+
+        for (let index = 0; index < tbodyChildren.length; index++) {
+            if(tbodyChildren[index].querySelector("p[class='descripcion-partida']").dataset.idPartida >0){
+                if(!partidaAgregadas.includes(tbodyChildren[index].querySelector("p[class='descripcion-partida']").dataset.idPartida)){
+                    partidaAgregadas.push(tbodyChildren[index].querySelector("p[class='descripcion-partida']").dataset.idPartida);          
+                    tempPartidasActivas.push({
+                        'id_partida':tbodyChildren[index].querySelector("p[class='descripcion-partida']").dataset.idPartida,
+                        'codigo':tbodyChildren[index].querySelector("p[class='descripcion-partida']").title,
+                        'descripcion':tbodyChildren[index].querySelector("p[class='descripcion-partida']").textContent,
+                        'presupuesto_total':tbodyChildren[index].querySelector("p[class='descripcion-partida']").dataset.presupuestoTotal,
+                        'presupuesto_utilizado':0,
+                        'saldo':0
+                    });
+                }
+    
+                subtotalItemList.push({
+                    'id_partida':tbodyChildren[index].querySelector("p[class='descripcion-partida']").dataset.idPartida,
+                    'subtotal':(tbodyChildren[index].querySelector("input[class~='cantidad']").value >0?tbodyChildren[index].querySelector("input[class~='cantidad']").value:0) * (tbodyChildren[index].querySelector("input[class~='precio']").value>0?tbodyChildren[index].querySelector("input[class~='precio']").value:0)
+                });
+
+            }
+        }
+
+
+        for (let p = 0; p < tempPartidasActivas.length; p++) {
+            for (let i = 0; i < subtotalItemList.length; i++) {
+                if(tempPartidasActivas[p].id_partida == subtotalItemList[i].id_partida){
+                    tempPartidasActivas[p].presupuesto_utilizado += subtotalItemList[i].subtotal;
+                }
+            }
+        }
+
+        for (let p = 0; p < tempPartidasActivas.length; p++) {
+            tempPartidasActivas[p].saldo = tempPartidasActivas[p].presupuesto_total - (tempPartidasActivas[p].presupuesto_utilizado>0?tempPartidasActivas[p].presupuesto_utilizado:0);
+        }
+
+
+
+        this.validarPresupuestoUtilizadoYSaldoPorPartida(tempPartidasActivas);
+        this.construirTablaPresupuestoUtilizadoYSaldoPorPartida(tempPartidasActivas);
+        // console.log(tempPartidasActivas);
+    }
+    validarPresupuestoUtilizadoYSaldoPorPartida(data){
+        let mensajeAlerta='';
+        data.forEach(partida => {
+            if(partida.saldo <0){
+                mensajeAlerta+=`La partida ${partida.codigo} - ${partida.descripcion} a excedido el presupuesto asignado, tiene un saldo actual de ${Util.formatoNumero(partida.saldo,2)}. \n`
+            }
+        });
+        if(mensajeAlerta.length>0){
+            alert(mensajeAlerta);
+        }
+    }
+
+    construirTablaPresupuestoUtilizadoYSaldoPorPartida(data){
+        this.limpiarTabla('listaPartidasActivas');
+        data.forEach(element => {
+            document.querySelector("tbody[id='body_partidas_activas']").insertAdjacentHTML('beforeend', `<tr style="text-align:center">
+                <td>${element.codigo}</td>
+                <td>${element.descripcion}</td>
+                <td style="text-align:right;"><span>S/</span>${Util.formatoNumero(element.presupuesto_total, 2)}</td>
+                <td style="text-align:right;"><span>S/</span>${Util.formatoNumero(element.presupuesto_utilizado, 2)}</td>
+                <td style="text-align:right; color:${element.saldo>=0?'#333':'#dd4b39'}"><span>S/</span>${Util.formatoNumero(element.saldo, 2)}</td>
+            </tr>`);
+            
+        });
+
     }
 
     //centro de costos
@@ -576,53 +696,6 @@ class RequerimientoView {
         document.querySelector("div[name='centro-costos-panel']").innerHTML = html;
 
     }
-    // construirCentroCostos(data) {
-    //     let html = '';
-    //     data.forEach((padre, index) => {
-    //         if (padre.id_padre == null) {
-    //             html += `
-    //             <div class="panel panel-default">
-    //                 <div class="panel-heading" role="tab" id="heading${index}">
-    //                     <h4 class="panel-title">
-    //                         <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse${index}" aria-expanded="false" aria-controls="collapse${index}" >
-    //                             ${padre.descripcion} 
-    //                             <div class="box-tools pull-right">
-    //                                 <button type="button" class="btn btn-box-tool" style="position:absolute; right:20px; margin-top:-5px;" data-toggle="collapse">
-    //                                     <i class="fa fa-plus"></i>
-    //                                 </button>
-    //                             </div>
-    //                         </a>
-    //                     </h4>
-    //                 </div>
-    //                 <div id="collapse${index}" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading${index}" >   
-    //                     <div class="box-body" style="display: block;">`;
-    //             data.forEach(hijo => {
-    //                 if (padre.id_centro_costo == hijo.id_padre) {
-    //                     if ((hijo.id_padre > 0) && (hijo.estado == 1)) {
-    //                         if (hijo.nivel == 2) {
-    //                             html += `<div class="okc-cc okc-niv-2" onClick="requerimientoView.selectCentroCosto(${hijo.id_centro_costo} , '${hijo.codigo}' ,'${hijo.descripcion}');"> ${hijo.codigo} - ${hijo.descripcion} </div>`;
-    //                         }
-    //                     }
-    //                     data.forEach(hijo3 => {
-    //                         if (hijo.id_centro_costo == hijo3.id_padre) {
-    //                             if ((hijo3.id_padre > 0) && (hijo3.estado == 1)) {
-    //                                 if (hijo3.nivel == 3) {
-    //                                     html += `<div class="okc-cc okc-niv-3" onClick="requerimientoView.selectCentroCosto(${hijo3.id_centro_costo} , '${hijo3.codigo}','${hijo3.descripcion}');"> ${hijo3.codigo} - ${hijo3.descripcion} </div>`;
-    //                                 }
-    //                             }
-    //                         }
-    //                     });
-    //                 }
-
-
-    //             });
-
-    //             html += `</div></div></div>`;
-    //         }
-    //     });
-    //     document.querySelector("div[name='centro-costos-panel']").innerHTML = html;
-
-    // }
 
 
     selectCentroCosto(idCentroCosto, codigo, descripcion) {
@@ -690,8 +763,8 @@ class RequerimientoView {
                 <td style="text-align:left;">${element.nameFile}</td>
                 <td>
                     <div class="btn-group" role="group">
-                        <button type="button" class="btn btn-info btn-xs" name="btnDescargarArchivoItem" title="Descargar" onclick="ArchivoAdjunto.descargarArchivoItem('${element.idRegister}','${element.nameFile}');" ><i class="fas fa-file-archive"></i></button>
-                        <button type="button" class="btn btn-danger btn-xs" name="btnEliminarArchivoItem" title="Eliminar" onclick="ArchivoAdjunto.eliminarArchivoItem(this,'${element.idRegister}','${element.nameFile}');" ><i class="fas fa-trash-alt"></i></button>
+                        <button type="button" class="btn btn-info btn-md" name="btnDescargarArchivoItem" title="Descargar" onclick="ArchivoAdjunto.descargarArchivoItem('${element.idRegister}','${element.nameFile}');" ><i class="fas fa-file-archive"></i></button>
+                        <button type="button" class="btn btn-danger btn-md" name="btnEliminarArchivoItem" title="Eliminar" onclick="ArchivoAdjunto.eliminarArchivoItem(this,'${element.idRegister}','${element.nameFile}');" ><i class="fas fa-trash-alt"></i></button>
                     </div>
                 </td>
                 </tr>`;
@@ -704,6 +777,8 @@ class RequerimientoView {
         let archivoAdjunto = new ArchivoAdjunto(event.target.files);
         archivoAdjunto.addFileLevelItem();
     }
+
+    // guardar requerimiento
 
     actionGuardarEditarRequerimiento() {
 
@@ -977,10 +1052,10 @@ class ArchivoAdjunto {
         });
         html += `</select>
         </td>
-        <td>
+        <td style="text-align:center;">
             <div class="btn-group" role="group">
-                <button type="button" class="btn btn-info btn-xs" name="btnDescargarArchivoRequerimiento" title="Descargar" onclick="ArchivoAdjunto.descargarArchivoRequerimieto('${id}');" ><i class="fas fa-file-archive"></i></button>
-                <button type="button" class="btn btn-danger btn-xs" name="btnEliminarArchivoRequerimiento" title="Eliminar" onclick="ArchivoAdjunto.eliminarArchivoRequerimiento(this,'${id}');" ><i class="fas fa-trash-alt"></i></button>
+                <button type="button" class="btn btn-info btn-md" name="btnDescargarArchivoRequerimiento" title="Descargar" onclick="ArchivoAdjunto.descargarArchivoRequerimieto('${id}');" ><i class="fas fa-file-archive"></i></button>
+                <button type="button" class="btn btn-danger btn-md" name="btnEliminarArchivoRequerimiento" title="Eliminar" onclick="ArchivoAdjunto.eliminarArchivoRequerimiento(this,'${id}');" ><i class="fas fa-trash-alt"></i></button>
             </div>
         </td>
         </tr>`;
@@ -1003,10 +1078,10 @@ class ArchivoAdjunto {
 
         document.querySelector("tbody[id='body_archivos_item']").insertAdjacentHTML('beforeend', `<tr id="${id}" style="text-align:center">
         <td  style="text-align:left;">${nameFile}</td>
-        <td>
+        <td style="text-align:center;">
             <div class="btn-group" role="group">
-                <button type="button" class="btn btn-info btn-xs" name="btRequerimietocargarArchivoItem" title="Descargar" onclick="ArchivoAdjunto.descargarArchivoItem('${id}');" ><i class="fas fa-file-archive"></i></button>
-                <button type="button" class="btn btn-danger btn-xs" name="btnEliminarArchivoItem" title="Eliminar" onclick="ArchivoAdjunto.eliminarArchivoItem(this,'${id}');" ><i class="fas fa-trash-alt"></i></button>
+                <button type="button" class="btn btn-info btn-md" name="btRequerimietocargarArchivoItem" title="Descargar" onclick="ArchivoAdjunto.descargarArchivoItem('${id}');" ><i class="fas fa-file-archive"></i></button>
+                <button type="button" class="btn btn-danger btn-md" name="btnEliminarArchivoItem" title="Eliminar" onclick="ArchivoAdjunto.eliminarArchivoItem(this,'${id}');" ><i class="fas fa-trash-alt"></i></button>
             </div>
         </td>
         </tr>
@@ -1109,6 +1184,70 @@ class ArchivoAdjunto {
     // }
 }
 
+class Historial extends RequerimientoView{
+    mostrarHistorial(){
+        $('#modal-requerimiento').modal({
+            show: true,
+            backdrop: 'true'
+        });
+        document.querySelector("div[id='modal-requerimiento'] input[id='checkViewTodos']").checked = false; //default false
+        listarRequerimiento('ONLY_ACTIVOS');
+    }
+
+    listarRequerimiento(viewAnulados) {
+    
+        let url='mostrar-requerimiento/'+viewAnulados;
+        var vardataTables = funcDatatables();
+        $('#listaRequerimiento').dataTable({
+            bDestroy: true,
+            order: [[7, 'desc']],
+            info:     true,
+            iDisplayLength:10,
+            paging:   true,
+            searching: true,
+            language: vardataTables[0],
+            processing: true,
+            bDestroy: true,
+            ajax:url,
+            columns: [
+                {'data': 'id_requerimiento'},
+                {'data': 'codigo'},
+                {'data': 'tipo_req_desc'},
+                {'data': 'tipo_cliente_desc'},
+                {'data': 'alm_req_concepto'},
+                {'render':
+                    function (data, type, row, meta){
+                        let cliente = '';
+                        if(row.id_cliente != null){
+                            cliente = row.cliente_razon_social;
+                        } else 
+                        if(row.id_persona != null){
+                            cliente = row.nombre_persona;
+                        }else 
+                        if(row.id_almacen != null){
+                            cliente = row.almacen_solicitante;
+                        } 
+                        
+                        return cliente;
+                    }
+                },
+                {'data': 'usuario'},
+                {'data': 'fecha_requerimiento'},
+                {'data': 'estado_doc'}
+            ],
+            'columnDefs': [{ 'aTargets': [0], 'sClass': 'invisible'}]
+        });
+    
+        // let tablelistareq = document.getElementById(
+        //     'listaRequerimiento_wrapper'
+        // );
+        // tablelistareq.childNodes[0].childNodes[0].hidden = true;
+    }
+}
+
+const historialRequerimiento = new Historial(); 
+
+
 class Listado extends RequerimientoView {
     mostrar(idEmpresa,idSede,idGrupo,idPrioridad) {
         requerimientoCtrl.getListadoElaborados(idEmpresa, idSede, idGrupo, idPrioridad).then(function (res) {
@@ -1162,7 +1301,7 @@ class Listado extends RequerimientoView {
                         if (row.id_usuario == auth_user.id_usuario && row.estado == 3) {
                             btnEditar = '<button type="button" class="btn btn-xs bg-default" title="Editar" onClick="editarListaReq(' + row['id_requerimiento'] + ');"><i class="fas fa-edit fa-xs"></i></button>';
                         }
-                        let btnDetalleRapido = '<button type="button" class="btn btn-xs btn-info" title="Ver detalle rápido" onClick="aprobarRequerimiento.viewFlujo(' + row['id_requerimiento'] + ', ' + row['id_doc_aprob'] + ');"><i class="fas fa-eye fa-xs"></i></button>';
+                        let btnDetalleRapido = '<button type="button" class="btn btn-xs btn-info" title="Ver detalle" onClick="aprobarRequerimiento.viewFlujo(' + row['id_requerimiento'] + ', ' + row['id_doc_aprob'] + ');"><i class="fas fa-eye fa-xs"></i></button>';
                         let btnTracking = '<button type="button" class="btn btn-xs bg-primary" title="Explorar Requerimiento" onClick="aprobarRequerimiento.tracking_requerimiento(' + row['id_requerimiento'] + ');"><i class="fas fa-globe fa-xs"></i></button>';
                         return containerOpenBrackets + btnDetalleRapido + btnEditar + btnTracking + containerCloseBrackets;
                     }, targets: 9
@@ -1279,11 +1418,7 @@ class Aprobar extends RequerimientoView {
                 { 'data': 'fecha_entrega', 'name': 'fecha_entrega' },
                 { 'data': 'tipo_requerimiento', 'name': 'tipo_requerimiento' },
                 { 'data': 'razon_social_empresa', 'name': 'razon_social_empresa' },
-                {
-                    'render': function (data, type, row) {
-                        return row['descripcion_op_com'] ? row['descripcion_op_com'] : row['descripcion_grupo'];
-                    }
-                },
+                { 'data': 'division', 'name': 'division' },
                 { 'data': 'usuario', 'name': 'usuario' },
                 { 'data': 'estado_doc', 'name': 'estado_doc' },
                 { 'data': 'cantidad_aprobados_total_flujo', 'name': 'cantidad_aprobados_total_flujo' },
@@ -1394,12 +1529,12 @@ class Aprobar extends RequerimientoView {
  
                         let containerOpenBrackets = '<center><div class="btn-group" role="group" style="margin-bottom: 5px;">';
                         let containerCloseBrackets = '</div></center>';
-                        let btnDetalleRapido = '<button type="button" class="btn btn-xs btn-info" title="Ver detalle rápido" onClick="aprobarRequerimiento.viewFlujo(' + row['id_requerimiento'] + ', ' + row['id_doc_aprob'] + ');"><i class="fas fa-eye fa-xs"></i></button>';
+                        let btnDetalleRapido = '<button type="button" class="btn btn-xs btn-info" title="Ver detalle" onClick="aprobarRequerimiento.viewFlujo(' + row['id_requerimiento'] + ', ' + row['id_doc_aprob'] + ');"><i class="fas fa-eye fa-xs"></i></button>';
                         let btnTracking = '<button type="button" class="btn btn-xs bg-primary" title="Explorar Requerimiento" onClick="aprobarRequerimiento.tracking_requerimiento(' + row['id_requerimiento'] + ');"><i class="fas fa-globe fa-xs"></i></button>';
-                        let btnAprobar = '<button type="button" class="btn btn-xs btn-success" title="Aprobar Requerimiento" onClick="aprobarRequerimiento.aprobarRequerimiento(' + row['id_doc_aprob'] + ');" ' + disabledBtn + '><i class="fas fa-check fa-xs"></i></button>';
-                        let btnObservar = '<button type="button" class="btn btn-xs btn-warning" title="Observar Requerimiento" onClick="aprobarRequerimiento.observarRequerimiento(' + row['id_doc_aprob'] + ');" ' + disabledBtn + '><i class="fas fa-exclamation-triangle fa-xs"></i></button>';
-                        let btnAnular = '<button type="button" class="btn btn-xs bg-maroon" title="Anular Requerimiento" onClick="aprobarRequerimiento.anularRequerimiento(' + row['id_doc_aprob'] + ');" ' + disabledBtn + '><i class="fas fa-ban fa-xs"></i></button>';
-                        return containerOpenBrackets + btnDetalleRapido + btnTracking + btnAprobar + btnObservar + btnAnular + containerCloseBrackets;
+                        // let btnAprobar = '<button type="button" class="btn btn-xs btn-success" title="Aprobar Requerimiento" onClick="aprobarRequerimiento.aprobarRequerimiento(' + row['id_doc_aprob'] + ');" ' + disabledBtn + '><i class="fas fa-check fa-xs"></i></button>';
+                        // let btnObservar = '<button type="button" class="btn btn-xs btn-warning" title="Observar Requerimiento" onClick="aprobarRequerimiento.observarRequerimiento(' + row['id_doc_aprob'] + ');" ' + disabledBtn + '><i class="fas fa-exclamation-triangle fa-xs"></i></button>';
+                        // let btnAnular = '<button type="button" class="btn btn-xs bg-maroon" title="Anular Requerimiento" onClick="aprobarRequerimiento.anularRequerimiento(' + row['id_doc_aprob'] + ');" ' + disabledBtn + '><i class="fas fa-ban fa-xs"></i></button>';
+                        return containerOpenBrackets + btnDetalleRapido + btnTracking + containerCloseBrackets;
                     }
                 },
             ],
@@ -1448,33 +1583,44 @@ class Aprobar extends RequerimientoView {
 
     }
     
-    viewFlujo(req, doc) {
-        $.ajax({
-            type: 'GET',
-            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-            url: 'ver-flujos' + '/' + req + '/' + doc,
-            dataType: 'JSON',
-            beforeSend: function () {
-                $(document.body).append('<span class="loading"><div></div></span>');
-            },
-            success: function (response) {
-                // console.log(response.siguiente);
-                $('.loading').remove();
-                if (response.cont > 0) {
-                    $('#flujo-detalle').removeClass('oculto');
-                    $('#flujo-proximo').removeClass('oculto');
-                } else {
-                    $('#flujo-detalle').addClass('oculto');
-                    $('#flujo-proximo').addClass('oculto');
-                }
-    
-                $('#req-detalle').html(response.requerimiento);
-                $('#flujo-detalle').html(response.flujo);
-                $('#flujo-proximo').html(response.siguiente);
-                $('#modal-flujo-aprob').modal({ show: true, backdrop: 'static' });
-            }
+    viewFlujo(idRequerimiento, idDocumento) {
+         $('#modal-requerimiento').modal({
+            show: true,
+            backdrop: 'true'
         });
-        return false;
+
+        // requerimientoCtrl.getRequerimiento(idRequerimiento).then(function (res) {
+        //     console.log(res);
+        // }).catch(function (err) {
+        //     console.log(err)
+        // })
+        
+        // $.ajax({
+        //     type: 'GET',
+        //     headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+        //     url: 'ver-flujos' + '/' + req + '/' + doc,
+        //     dataType: 'JSON',
+        //     beforeSend: function () {
+        //         $(document.body).append('<span class="loading"><div></div></span>');
+        //     },
+        //     success: function (response) {
+        //         // console.log(response.siguiente);
+        //         $('.loading').remove();
+        //         if (response.cont > 0) {
+        //             $('#flujo-detalle').removeClass('oculto');
+        //             $('#flujo-proximo').removeClass('oculto');
+        //         } else {
+        //             $('#flujo-detalle').addClass('oculto');
+        //             $('#flujo-proximo').addClass('oculto');
+        //         }
+    
+        //         $('#req-detalle').html(response.requerimiento);
+        //         $('#flujo-detalle').html(response.flujo);
+        //         $('#flujo-proximo').html(response.siguiente);
+        //         $('#modal-flujo-aprob').modal({ show: true, backdrop: 'static' });
+        //     }
+        // });
+        // return false;
     }
 
 

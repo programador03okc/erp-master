@@ -3,6 +3,7 @@
 namespace App\Models\Administracion;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class Aprobacion extends Model
 {
@@ -68,8 +69,41 @@ class Aprobacion extends Model
             ->get();
         return $obs;
     }
+    public static function cantidadAprobaciones($doc)
+    {
+        $sql = DB::table('administracion.adm_aprobacion')->where([['id_vobo', '=', 1], ['id_doc_aprob', '=', $doc]])->get();
+        return $sql->count();
+    }
 
+    public static function getHeaderObservacion($id_doc_aprob){
+        
+        $data=[];
+        $obs =  Aprobacion::select('adm_aprobacion.*',
+        DB::raw("contact(rrhh_perso.nombres, ' ' ,rrhh_perso.apellido_paterno,' ' ,rrhh_perso.apellido_materno)  AS nombre_completo")
+        )
+        ->join('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'adm_aprobacion.id_usuario')
+        ->join('rrhh.rrhh_trab', 'rrhh_trab.id_trabajador', '=', 'sis_usua.id_trabajador')
+        ->join('rrhh.rrhh_postu', 'rrhh_postu.id_postulante', '=', 'rrhh_trab.id_postulante')
+        ->join('rrhh.rrhh_perso', 'rrhh_perso.id_persona', '=', 'rrhh_postu.id_persona')
+        ->where([['id_doc_aprob', $id_doc_aprob],['id_vobo', 3]])
+        ->get();
 
+        if(isset($obs) && count($obs)>0){
+            foreach ($obs as $key => $value) {                
+                $data[]=[
+                    'id_aprobacion'=> $value->id_aprobacion, 
+                    'id_vobo'=> $value->id_vobo, 
+                    'id_usuario'=> $value->id_usuario, 
+                    'nombre_completo'=> $value->nombre_completo, 
+                    'descripcion'=>$value->detalle_observacion,
+                    'id_rol'=>$value->id_rol,
+                    'id_sustentacion'=>$value->id_sustentacion
+                ];
+                }
+        }
 
+        return $data;
+
+    }
     
 }

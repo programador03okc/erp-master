@@ -5,14 +5,14 @@
 @endsection
 
 @section('cabecera')
-Aprobar requerimiento
+Revisar y aprobar requerimientos
 @endsection
 
 @section('breadcrumb')
 <ol class="breadcrumb">
     <li><a href="{{route('logistica.index')}}"><i class="fas fa-tachometer-alt"></i> Logística</a></li>
     <li>Requerimientos</li>
-    <li class="active">Aprobar</li>
+    <li class="active">Revisar y aprobar</li>
 </ol>
 @endsection
 
@@ -80,7 +80,7 @@ Aprobar requerimiento
                                         <th class="text-center">Fecha entrega</th>
                                         <th class="text-center">Tipo</th>
                                         <th class="text-center" style="width:10%">Empresa</th>
-                                        <th class="text-center">Grupo</th>
+                                        <th class="text-center">División</th>
                                         <th class="text-center">Creado por</th>
                                         <th class="text-center" style="width:8%">Estado</th>
                                         <th class="text-center" style="width:8%">Aprob/Total</th>
@@ -122,6 +122,8 @@ Aprobar requerimiento
 </div>
 
 <!-- 1re include para evitar error al cargar modal -->
+@include('logistica.requerimientos.modal_requerimiento')
+
 @include('logistica.requerimientos.modal_adjuntar_archivos_detalle_requerimiento')
 <!--  includes -->
 @include('logistica.requerimientos.aprobacion.modal_anular')

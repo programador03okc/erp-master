@@ -1,5 +1,5 @@
 <div class="modal fade" tabindex="-1" role="dialog" id="modal-adjuntar-archivos-requerimiento">
-    <div class="modal-dialog" style="width: 80%;">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="close"><span aria-hidden="true">&times;</span></button>
@@ -24,9 +24,9 @@
                     <tbody id="body_archivos_requerimiento">
                     </tbody>
                 </table>
-
-
-
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" class="close" data-dismiss="modal" >Cerrar</button>
 
             </div>
         </div>

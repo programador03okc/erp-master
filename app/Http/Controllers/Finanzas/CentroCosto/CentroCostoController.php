@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use App\Models\Presupuestos\CentroCosto;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 
 class CentroCostoController extends Controller
 {
@@ -24,6 +25,23 @@ class CentroCostoController extends Controller
     public function mostrarCentroCostos()
     {
         $centro_costos = CentroCosto::orderBy('codigo','asc')->where('estado',1)->get();
+        
+        return response()->json($centro_costos);
+    }
+
+    public function mostrarCentroCostosSegunGrupoUsuario()
+    {
+        $grupos = Auth::user()->getAllGrupo();
+        
+        foreach($grupos as $grupo){
+            $idGrupoList[]=$grupo->id_grupo;
+        }
+
+        $centro_costos = CentroCosto::orderBy('codigo','asc')
+        ->where('estado',1)
+        ->whereIn('id_grupo',$idGrupoList)
+        ->whereRaw('centro_costo.version = (select max("version") from finanzas.centro_costo)')
+        ->get();
         
         return response()->json($centro_costos);
     }

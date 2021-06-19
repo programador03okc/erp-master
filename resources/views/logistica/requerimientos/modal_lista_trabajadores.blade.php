@@ -6,11 +6,9 @@
                 <h3 class="modal-title">Lista de Trabajadores</h3>
             </div>
             <div class="modal-body">
-                <table class="mytable table table-condensed table-bordered table-okc-view" 
-                id="listaTrabajadores">
+                <table class="table table-condensed table-bordered table-okc-view" id="listaTrabajadores" style="width:100%;">
                     <thead>
                         <tr>
-                            <th hidden>Id</th>
                             <th>Nro Documento</th>
                             <th>Nombre</th>
                             <th>Acción</th>

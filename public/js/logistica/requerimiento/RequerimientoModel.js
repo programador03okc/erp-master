@@ -111,6 +111,21 @@ class RequerimientoModel {
                 });
             });
     }
+    getRequerimiento(idRequerimiento){
+        return new Promise(function(resolve, reject) {
+            $.ajax({
+                type: 'GET',
+                url:`mostrar-requerimiento/${idRequerimiento}`,
+                dataType: 'JSON',
+                success(response) {
+                    resolve(response);
+                },
+                error: function(err) {
+                    reject(err) 
+                }
+                });
+            });
+    }
 
     // listado 
     getSedesPorEmpresa(idEmpresa){
