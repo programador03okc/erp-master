@@ -31,6 +31,7 @@ Prorrateo de Costos
 
                 <form id="form-prorrateo" type="register"  form="formulario">
                     
+                    <input class="oculto" name="id_prorrateo"/>
                     <div class="row">
                         <div class="col-md-12">
                             <table class="mytable table table-condensed table-bordered table-okc-view" width="100%"
@@ -47,9 +48,12 @@ Prorrateo de Costos
                                         <th>Importe</th>
                                         <th>Importe Aplicado</th>
                                         <th width="10%">
-                                            <i class="fas fa-plus-square icon-tabla green boton" 
+                                            <!-- <i class="fas fa-plus-square icon-tabla green boton" 
                                                 data-toggle="tooltip" data-placement="bottom" 
-                                                title="Agregar Documento de Prorrateo" onClick="open_doc_prorrateo();"></i>
+                                                title="Agregar Documento de Prorrateo" onClick="open_doc_prorrateo();"></i> -->
+                                            <button type="button" class="btn btn-success btn-xs boton activation" data-toggle="tooltip" 
+                                                data-placement="bottom" title="Agregar Documento de Prorrateo" onClick="open_doc_prorrateo();">
+                                                Nuevo <i class="fas fa-plus"></i></button>
                                         </th>
                                     </tr>
                                 </thead>
@@ -60,7 +64,7 @@ Prorrateo de Costos
                     <div class="row">
                         <div class="col-md-5">
                             <div class="borde-group-verde">
-                                <h4 style="margin:0;">Guía de Remisión</h4>
+                                <h4 style="margin:0;">Valorización de Ingreso</h4>
                                 <table width="100%">
                                     <tr height="20px">
                                         <td></td>
@@ -76,16 +80,16 @@ Prorrateo de Costos
                         </div>
                         <div class="col-md-7">
                             <div class="borde-group-rojo">
-                                <h4 style="margin:0;">Costo Adicional Total</h4>
+                                <h4 style="margin:0;">Documento(s) de Prorrateo</h4>
                                 <table width="100%">
                                     <tr>
                                         <td></td>
-                                        <td>Prorrateo Global</td>
+                                        <td>Sumatoria de Importes Aplicados</td>
                                         <td width="20">:</td>
                                         <td width="130"><input type="number" class="form-control right" name="total_comp" readOnly/></td>
-                                        <td class="right">Prorrateo por Items</td>
+                                        <!-- <td class="right">Prorrateo por Items</td>
                                         <td width="20">:</td>
-                                        <td width="130"><input type="number" class="form-control right" name="total_items" readOnly/></td>
+                                        <td width="130"><input type="number" class="form-control right" name="total_items" readOnly/></td> -->
                                     </tr>
                                 </table>
                             </div>
@@ -94,10 +98,9 @@ Prorrateo de Costos
                     <div class="row">
                         <div class="col-md-12">
                             <table class="mytable table table-condensed table-bordered table-okc-view" width="100%"
-                                id="listaDetalleProrrateo">
+                                id="listaGuiaDetalleProrrateo">
                                 <thead>
                                     <tr>
-                                        <th></th>
                                         <th width='10%'>Guía</th>
                                         <th width='5%'>Código</th>
                                         <th width='5%'>Part Number</th>
@@ -108,18 +111,20 @@ Prorrateo de Costos
                                         <th>Adicional</th>
                                         <th>Importe Prorrateado</th>
                                         <th>
-                                            <i class="fas fa-plus-square icon-tabla green boton " 
+                                            <!-- <i class="fas fa-plus-square icon-tabla green boton " 
                                                 data-toggle="tooltip" data-placement="bottom" 
-                                                title="Agregar Guia Compra" onClick="guia_compraModal();"></i>
+                                                title="Agregar Guia Compra" onClick="guia_compraModal();"></i> -->
+                                            <button type="button" class="btn btn-success btn-xs boton activation" data-toggle="tooltip" 
+                                                data-placement="bottom" title="Agregar Guía Compra" onClick="guia_compraModal();">
+                                                Agregar <i class="fas fa-plus"></i></button>
                                         </th>
                                     </tr>
                                 </thead>
                                 <tbody></tbody>
                                 <tfoot>
                                     <tr>
-                                        <td colSpan="7" class="right">
-                                            <button type="button" class="btn-success" title="Copiar Precio Unitario" onClick="copiar_unitario();">
-                                            <strong>Guardar Unitarios</strong></button>
+                                        <td colSpan="6" class="right">
+                                            Registrado por: <label id="registrado_por"></label>
                                         </td>
                                         <td><input type="text" class="form-control right" readOnly name="total_suma"/></td>
                                         <td><input type="text" class="form-control right" readOnly name="total_adicional"/></td>
@@ -139,6 +144,7 @@ Prorrateo de Costos
 @include('logistica.cotizaciones.proveedorModal')
 @include('logistica.cotizaciones.add_proveedor')
 @include('almacen.guias.guia_compraModal')
+@include('almacen.prorrateo.doc_prorrateoModal')
 
 @endsection
 
@@ -152,5 +158,6 @@ Prorrateo de Costos
     <script src="{{ asset('js/logistica/proveedorModal.js')}}"></script>
     <script src="{{ asset('js/logistica/add_proveedor.js')}}"></script>
     <script src="{{ asset('js/almacen/guia/guia_compraModal.js')}}"></script>
+    <script src="{{ asset('js/almacen/prorrateo/doc_prorrateoModal.js')}}"></script>
 
 @endsection

@@ -5030,290 +5030,291 @@ class AlmacenController extends Controller
         $output['data'] = $data;
         return response()->json($output);
     }
-    public function guardar_prorrateo(Request $request){
-        $id_usuario = Auth::user()->id_usuario;
-        $id_doc_com = DB::table('almacen.doc_com')->insertGetId(
-            [
-                'serie' => $request->pro_serie,
-                'numero' => $request->pro_numero,
-                'id_tp_doc' => $request->id_tp_documento,
-                'id_proveedor' => $request->doc_id_proveedor,
-                'moneda' => $request->id_moneda,
-                'fecha_emision' => $request->doc_fecha_emision,
-                'tipo_cambio' => $request->tipo_cambio,
-                'sub_total' => $request->sub_total,
-                'total_descuento' => 0,
-                'total' => $request->sub_total,
-                'total_igv' => 0,
-                'total_a_pagar' => $request->sub_total,
-                'usuario' => $id_usuario,
-                'registrado_por' => $id_usuario,
-                'estado' => 1,
-                'fecha_registro' => date('Y-m-d H:i:s')
-            ],
-                'id_doc_com'
-            );
+    // public function guardar_prorrateo(Request $request){
+    //     $id_usuario = Auth::user()->id_usuario;
+    //     $id_doc_com = DB::table('almacen.doc_com')->insertGetId(
+    //         [
+    //             'serie' => $request->pro_serie,
+    //             'numero' => $request->pro_numero,
+    //             'id_tp_doc' => $request->id_tp_documento,
+    //             'id_proveedor' => $request->doc_id_proveedor,
+    //             'moneda' => $request->id_moneda,
+    //             'fecha_emision' => $request->doc_fecha_emision,
+    //             'tipo_cambio' => $request->tipo_cambio,
+    //             'sub_total' => $request->sub_total,
+    //             'total_descuento' => 0,
+    //             'total' => $request->sub_total,
+    //             'total_igv' => 0,
+    //             'total_a_pagar' => $request->sub_total,
+    //             'usuario' => $id_usuario,
+    //             'registrado_por' => $id_usuario,
+    //             'estado' => 1,
+    //             'fecha_registro' => date('Y-m-d H:i:s')
+    //         ],
+    //             'id_doc_com'
+    //         );
 
-        $data = DB::table('almacen.guia_com_prorrateo')->insertGetId(
-            [
-                'id_guia_com' => $request->id_guia,
-                'id_tp_prorrateo' => $request->id_tp_prorrateo,
-                'id_doc_com' => $id_doc_com,
-                'tipo' => 1,//calculo global
-                'importe' => $request->importe,
-                'fecha_registro' => date('Y-m-d H:i:s')
-            ],
-                'id_prorrateo'
-            );
+    //     $data = DB::table('almacen.guia_com_prorrateo')->insertGetId(
+    //         [
+    //             'id_guia_com' => $request->id_guia,
+    //             'id_tp_prorrateo' => $request->id_tp_prorrateo,
+    //             'id_doc_com' => $id_doc_com,
+    //             'tipo' => 1,//calculo global
+    //             'importe' => $request->importe,
+    //             'fecha_registro' => date('Y-m-d H:i:s')
+    //         ],
+    //             'id_prorrateo'
+    //         );
             
-        return response()->json($data);
-    }
+    //     return response()->json($data);
+    // }
     
 
-    public function listar_documentos_prorrateo(){
-        $data = DB::table('almacen.guia_com_prorrateo')
-            ->select('guia_com_prorrateo.id_prorrateo','tp_prorrateo.descripcion as des_tp_prorrateo',
-            'doc_com.*','sis_moneda.simbolo','tp_doc_almacen.abreviatura as tp_doc_guia',
-            'guia_com.serie as serie_guia','guia_com.numero as numero_guia',
-            'adm_contri.nro_documento','adm_contri.razon_social','cont_tp_doc.descripcion as tp_doc_descripcion')
-            ->join('almacen.doc_com','doc_com.id_doc_com','=','guia_com_prorrateo.id_doc_com')
-            ->join('logistica.log_prove','log_prove.id_proveedor','=','doc_com.id_proveedor')
-            ->join('contabilidad.adm_contri','adm_contri.id_contribuyente','=','log_prove.id_contribuyente')
-            ->leftJoin('contabilidad.cont_tp_doc','cont_tp_doc.id_tp_doc','=','doc_com.id_tp_doc')
-            ->join('almacen.tp_prorrateo','tp_prorrateo.id_tp_prorrateo','=','guia_com_prorrateo.id_tp_prorrateo')
-            ->join('configuracion.sis_moneda','sis_moneda.id_moneda','=','doc_com.moneda')
-            ->join('almacen.guia_com','guia_com.id_guia','=','guia_com_prorrateo.id_guia_com')
-            ->join('almacen.tp_doc_almacen','tp_doc_almacen.id_tp_doc_almacen','=','guia_com.id_tp_doc_almacen')
-            // ->where('guia_com_prorrateo.id_guia_com',$id)
-            ->get();
-        $output['data'] = $data;
-        return response()->json($output);
-    }
+    // public function listar_documentos_prorrateo(){
+    //     $data = DB::table('almacen.guia_com_prorrateo')
+    //         ->select('guia_com_prorrateo.id_prorrateo','tp_prorrateo.descripcion as des_tp_prorrateo',
+    //         'doc_com.*','sis_moneda.simbolo','tp_doc_almacen.abreviatura as tp_doc_guia',
+    //         'guia_com.serie as serie_guia','guia_com.numero as numero_guia',
+    //         'adm_contri.nro_documento','adm_contri.razon_social','cont_tp_doc.descripcion as tp_doc_descripcion')
+    //         ->join('almacen.doc_com','doc_com.id_doc_com','=','guia_com_prorrateo.id_doc_com')
+    //         ->join('logistica.log_prove','log_prove.id_proveedor','=','doc_com.id_proveedor')
+    //         ->join('contabilidad.adm_contri','adm_contri.id_contribuyente','=','log_prove.id_contribuyente')
+    //         ->leftJoin('contabilidad.cont_tp_doc','cont_tp_doc.id_tp_doc','=','doc_com.id_tp_doc')
+    //         ->join('almacen.tp_prorrateo','tp_prorrateo.id_tp_prorrateo','=','guia_com_prorrateo.id_tp_prorrateo')
+    //         ->join('configuracion.sis_moneda','sis_moneda.id_moneda','=','doc_com.moneda')
+    //         ->join('almacen.guia_com','guia_com.id_guia','=','guia_com_prorrateo.id_guia_com')
+    //         ->join('almacen.tp_doc_almacen','tp_doc_almacen.id_tp_doc_almacen','=','guia_com.id_tp_doc_almacen')
+    //         // ->where('guia_com_prorrateo.id_guia_com',$id)
+    //         ->get();
+    //     $output['data'] = $data;
+    //     return response()->json($output);
+    // }
 
-    public function listar_guia_detalle_prorrateo($id, $total_comp){
-        $data = DB::table('almacen.guia_com_det')
-        ->select('guia_com_det.*','alm_prod.codigo','alm_prod.descripcion',
-        'alm_und_medida.abreviatura','log_ord_compra.codigo AS cod_orden')
-        ->leftjoin('almacen.alm_prod','alm_prod.id_producto','=','guia_com_det.id_producto')
-        ->leftjoin('almacen.alm_ubi_posicion','alm_ubi_posicion.id_posicion','=','guia_com_det.id_posicion')
-        ->leftjoin('almacen.alm_und_medida','alm_und_medida.id_unidad_medida','=','guia_com_det.id_unid_med')
-        ->leftjoin('logistica.log_det_ord_compra','log_det_ord_compra.id_detalle_orden','=','guia_com_det.id_oc_det')
-        ->leftjoin('logistica.log_ord_compra','log_ord_compra.id_orden_compra','=','log_det_ord_compra.id_orden_compra')
-        ->leftjoin('administracion.adm_tp_docum','adm_tp_docum.id_tp_documento','=','log_ord_compra.id_tp_documento')
-        ->where([['guia_com_det.id_guia_com', '=', $id],
-                 ['guia_com_det.estado','=',1]])
-            ->get();
-        $html = '';
-        $suma_total = 0;
-        $suma_adicional = 0;
-        $suma_costo = 0;
+    // public function listar_guia_detalle_prorrateo($id, $total_comp){
+    //     $data = DB::table('almacen.guia_com_det')
+    //     ->select('guia_com_det.*','alm_prod.codigo','alm_prod.descripcion',
+    //     'alm_und_medida.abreviatura','log_ord_compra.codigo AS cod_orden')
+    //     ->leftjoin('almacen.alm_prod','alm_prod.id_producto','=','guia_com_det.id_producto')
+    //     ->leftjoin('almacen.alm_ubi_posicion','alm_ubi_posicion.id_posicion','=','guia_com_det.id_posicion')
+    //     ->leftjoin('almacen.alm_und_medida','alm_und_medida.id_unidad_medida','=','guia_com_det.id_unid_med')
+    //     ->leftjoin('logistica.log_det_ord_compra','log_det_ord_compra.id_detalle_orden','=','guia_com_det.id_oc_det')
+    //     ->leftjoin('logistica.log_ord_compra','log_ord_compra.id_orden_compra','=','log_det_ord_compra.id_orden_compra')
+    //     ->leftjoin('administracion.adm_tp_docum','adm_tp_docum.id_tp_documento','=','log_ord_compra.id_tp_documento')
+    //     ->where([['guia_com_det.id_guia_com', '=', $id],
+    //              ['guia_com_det.estado','=',1]])
+    //         ->get();
+    //     $html = '';
+    //     $suma_total = 0;
+    //     $suma_adicional = 0;
+    //     $suma_costo = 0;
 
-        foreach($data as $det){
-            $suma_total += floatval($det->cantidad * $det->unitario);
-        }
+    //     foreach($data as $det){
+    //         $suma_total += floatval($det->cantidad * $det->unitario);
+    //     }
 
-        $valor = $total_comp / ($suma_total > 0 ? $suma_total : 1);
+    //     $valor = $total_comp / ($suma_total > 0 ? $suma_total : 1);
 
-        foreach($data as $det){
-            $id_guia_com_det = $det->id_guia_com_det;
-            $oc = $det->cod_orden;
-            $codigo = $det->codigo;
-            $descripcion = $det->descripcion;
-            $cantidad = $det->cantidad;
-            $abrev = $det->abreviatura;
-            $id_posicion = $det->id_posicion;
-            $unitario = $det->unitario;
-            $total = floatval($det->cantidad * $det->unitario);
+    //     foreach($data as $det){
+    //         $id_guia_com_det = $det->id_guia_com_det;
+    //         $oc = $det->cod_orden;
+    //         $codigo = $det->codigo;
+    //         $descripcion = $det->descripcion;
+    //         $cantidad = $det->cantidad;
+    //         $abrev = $det->abreviatura;
+    //         $id_posicion = $det->id_posicion;
+    //         $unitario = $det->unitario;
+    //         $total = floatval($det->cantidad * $det->unitario);
 
-            $adic = DB::table('almacen.guia_com_prorrateo_det')
-            ->select(DB::raw('sum(guia_com_prorrateo_det.importe) as importe_adicional'))
-            ->where('id_guia_com_det',$id_guia_com_det)
-            ->first();
+    //         $adic = DB::table('almacen.guia_com_prorrateo_det')
+    //         ->select(DB::raw('sum(guia_com_prorrateo_det.importe) as importe_adicional'))
+    //         ->where('id_guia_com_det',$id_guia_com_det)
+    //         ->first();
 
-            $adicional = round(($valor * $total),4,PHP_ROUND_HALF_UP) + round($adic->importe_adicional,4,PHP_ROUND_HALF_UP);
-            $costo_total = $total + $adicional;
+    //         $adicional = round(($valor * $total),4,PHP_ROUND_HALF_UP) + round($adic->importe_adicional,4,PHP_ROUND_HALF_UP);
+    //         $costo_total = $total + $adicional;
 
-            $suma_adicional += $adicional;
-            $suma_costo += $costo_total;
+    //         $suma_adicional += $adicional;
+    //         $suma_costo += $costo_total;
 
-            $unit = round(($costo_total/$cantidad),4,PHP_ROUND_HALF_UP);
+    //         $unit = round(($costo_total/$cantidad),4,PHP_ROUND_HALF_UP);
 
-            $html .= 
-            '<tr id="det-'.$id_guia_com_det.'">
-                <td>'.$oc.'</td>
-                <td>'.$codigo.'</td>
-                <td>'.$descripcion.'</td>
-                <td style="text-align:right">'.$cantidad.'</td>
-                <td>'.$abrev.'</td>
-                <td style="text-align:right">'.$total.'</td>
-                <td style="text-align:right">'.$adicional.'</td>
-                <td style="text-align:right"><input type="text" class="oculto" name="unit" value="'.$unit.'"/>'.$costo_total.'</td>
-            </tr>';
-        }
-        $sumas[] = [
-            'suma_total'=>round($suma_total,2,PHP_ROUND_HALF_UP),
-            'suma_adicional'=>round($suma_adicional,2,PHP_ROUND_HALF_UP),
-            'suma_costo'=>round($suma_costo,2,PHP_ROUND_HALF_UP),
-        ];
-        return json_encode(['html'=>$html,'sumas'=>$sumas]);
-    }
-    public function update_doc_prorrateo(Request $request){
-        $prorrateo = DB::table('almacen.guia_com_prorrateo')
-        ->where('id_prorrateo',$request->id_prorrateo)
-        ->update(['importe'=>$request->importe]);
+    //         $html .= 
+    //         '<tr id="det-'.$id_guia_com_det.'">
+    //             <td>'.$oc.'</td>
+    //             <td>'.$codigo.'</td>
+    //             <td>'.$descripcion.'</td>
+    //             <td style="text-align:right">'.$cantidad.'</td>
+    //             <td>'.$abrev.'</td>
+    //             <td style="text-align:right">'.$total.'</td>
+    //             <td style="text-align:right">'.$adicional.'</td>
+    //             <td style="text-align:right"><input type="text" class="oculto" name="unit" value="'.$unit.'"/>'.$costo_total.'</td>
+    //         </tr>';
+    //     }
+    //     $sumas[] = [
+    //         'suma_total'=>round($suma_total,2,PHP_ROUND_HALF_UP),
+    //         'suma_adicional'=>round($suma_adicional,2,PHP_ROUND_HALF_UP),
+    //         'suma_costo'=>round($suma_costo,2,PHP_ROUND_HALF_UP),
+    //     ];
+    //     return json_encode(['html'=>$html,'sumas'=>$sumas]);
+    // }
+    // public function update_doc_prorrateo(Request $request){
+    //     $prorrateo = DB::table('almacen.guia_com_prorrateo')
+    //     ->where('id_prorrateo',$request->id_prorrateo)
+    //     ->update(['importe'=>$request->importe]);
 
-        $doc = DB::table('almacen.doc_com')
-        ->where('id_doc_com',$request->id_doc)
-        ->update([ 'tipo_cambio'=>$request->tipo_cambio,
-                   'sub_total'=>$request->sub_total ]);
+    //     $doc = DB::table('almacen.doc_com')
+    //     ->where('id_doc_com',$request->id_doc)
+    //     ->update([ 'tipo_cambio'=>$request->tipo_cambio,
+    //                'sub_total'=>$request->sub_total ]);
 
-        return response()->json($prorrateo);
-    }
-    public function eliminar_doc_prorrateo($id_prorrateo, $id_doc){
-        $data = DB::table('almacen.guia_com_prorrateo')
-        ->where('id_prorrateo',$id_prorrateo)
-        ->delete();
+    //     return response()->json($prorrateo);
+    // }
+    // public function eliminar_doc_prorrateo($id_prorrateo, $id_doc){
+    //     $data = DB::table('almacen.guia_com_prorrateo')
+    //     ->where('id_prorrateo',$id_prorrateo)
+    //     ->delete();
 
-        $detalle = DB::table('almacen.doc_com_det')->where('id_doc',$id_doc)->get();
+    //     $detalle = DB::table('almacen.doc_com_det')->where('id_doc',$id_doc)->get();
         
-        if (isset($detalle)){
-            DB::table('almacen.doc_com')->where('id_doc_com',$id_doc)
-            ->delete();
-            DB::table('almacen.guia_com_prorrateo_det')->where('id_prorrateo',$id_prorrateo)
-            ->delete();
-        }
+    //     if (isset($detalle)){
+    //         DB::table('almacen.doc_com')->where('id_doc_com',$id_doc)
+    //         ->delete();
+    //         DB::table('almacen.guia_com_prorrateo_det')->where('id_prorrateo',$id_prorrateo)
+    //         ->delete();
+    //     }
         
-        return response()->json($data);
-    }
-    public function mostrar_guia_detalle($id,$id_prorrateo){
-        $data = DB::table('almacen.guia_com_det')
-        ->select('guia_com_det.*','alm_prod.codigo','alm_prod.descripcion',
-        'alm_und_medida.abreviatura','alm_prod.series','log_ord_compra.codigo AS cod_orden')
-        ->leftjoin('almacen.alm_prod','alm_prod.id_producto','=','guia_com_det.id_producto')
-        ->leftjoin('almacen.alm_ubi_posicion','alm_ubi_posicion.id_posicion','=','guia_com_det.id_posicion')
-        ->leftjoin('almacen.alm_und_medida','alm_und_medida.id_unidad_medida','=','guia_com_det.id_unid_med')
-        ->leftjoin('logistica.log_det_ord_compra','log_det_ord_compra.id_detalle_orden','=','guia_com_det.id_oc_det')
-        ->leftjoin('logistica.log_ord_compra','log_ord_compra.id_orden_compra','=','log_det_ord_compra.id_orden_compra')
-        ->leftjoin('administracion.adm_tp_docum','adm_tp_docum.id_tp_documento','=','log_ord_compra.id_tp_documento')
-        ->where([['guia_com_det.id_guia_com', '=', $id],
-                 ['guia_com_det.estado','=',1]])
-        ->get();
+    //     return response()->json($data);
+    // }
+    // public function mostrar_guia_detalle($id,$id_prorrateo){
+    //     $data = DB::table('almacen.guia_com_det')
+    //     ->select('guia_com_det.*','alm_prod.codigo','alm_prod.descripcion',
+    //     'alm_und_medida.abreviatura','alm_prod.series','log_ord_compra.codigo AS cod_orden')
+    //     ->leftjoin('almacen.alm_prod','alm_prod.id_producto','=','guia_com_det.id_producto')
+    //     ->leftjoin('almacen.alm_ubi_posicion','alm_ubi_posicion.id_posicion','=','guia_com_det.id_posicion')
+    //     ->leftjoin('almacen.alm_und_medida','alm_und_medida.id_unidad_medida','=','guia_com_det.id_unid_med')
+    //     ->leftjoin('logistica.log_det_ord_compra','log_det_ord_compra.id_detalle_orden','=','guia_com_det.id_oc_det')
+    //     ->leftjoin('logistica.log_ord_compra','log_ord_compra.id_orden_compra','=','log_det_ord_compra.id_orden_compra')
+    //     ->leftjoin('administracion.adm_tp_docum','adm_tp_docum.id_tp_documento','=','log_ord_compra.id_tp_documento')
+    //     ->where([['guia_com_det.id_guia_com', '=', $id],
+    //              ['guia_com_det.estado','=',1]])
+    //     ->get();
 
-        $html = '';
-        foreach($data as $det){
-            $pro = DB::table('almacen.guia_com_prorrateo_det')
-            ->where([['id_guia_com_det','=',$det->id_guia_com_det],
-                     ['id_prorrateo','=',$id_prorrateo]])
-            ->first();
+    //     $html = '';
+    //     foreach($data as $det){
+    //         $pro = DB::table('almacen.guia_com_prorrateo_det')
+    //         ->where([['id_guia_com_det','=',$det->id_guia_com_det],
+    //                  ['id_prorrateo','=',$id_prorrateo]])
+    //         ->first();
             
-            $importe = 0;
-            $chk = '';
+    //         $importe = 0;
+    //         $chk = '';
 
-            if (isset($pro)){
-                $chk = 'checked';
-                $importe = $pro->importe;
-            }
+    //         if (isset($pro)){
+    //             $chk = 'checked';
+    //             $importe = $pro->importe;
+    //         }
             
-            $html.='
-            <tr id="'.$det->id_guia_com_det.'">
-                <td><input type="checkbox" '.$chk.'/></td>
-                <td>'.$det->codigo.'</td>
-                <td>'.$det->descripcion.'</td>
-                <td>'.$det->cantidad.'</td>
-                <td>'.$det->abreviatura.'</td>
-                <td>'.$det->unitario.'</td>
-                <td>'.$det->total.'</td>
-                <td>'.$importe.'</td>
-            </tr>
-            ';
-        }
-        return json_encode($html);
-    }
-    public function guardar_prorrateo_detalle(Request $request){
-        $det = explode(',',$request->id_guia_com_det);
-        $total_det = explode(',',$request->total_det);
-        $count = count($det);
+    //         $html.='
+    //         <tr id="'.$det->id_guia_com_det.'">
+    //             <td><input type="checkbox" '.$chk.'/></td>
+    //             <td>'.$det->codigo.'</td>
+    //             <td>'.$det->descripcion.'</td>
+    //             <td>'.$det->cantidad.'</td>
+    //             <td>'.$det->abreviatura.'</td>
+    //             <td>'.$det->unitario.'</td>
+    //             <td>'.$det->total.'</td>
+    //             <td>'.$importe.'</td>
+    //         </tr>
+    //         ';
+    //     }
+    //     return json_encode($html);
+    // }
+    // public function guardar_prorrateo_detalle(Request $request){
+    //     $det = explode(',',$request->id_guia_com_det);
+    //     $total_det = explode(',',$request->total_det);
+    //     $count = count($det);
 
-        $total_comp = floatval($request->importe_comp);
-        $suma_total = floatval($request->suma_total);
-        $valor = $total_comp / $suma_total;
-        $result = [];
+    //     $total_comp = floatval($request->importe_comp);
+    //     $suma_total = floatval($request->suma_total);
+    //     $valor = $total_comp / $suma_total;
+    //     $result = [];
 
-        for ($i=0; $i<$count; $i++){
-            $id = $det[$i];
-            $total = $total_det[$i];
-            $adicional = round(($valor * $total),4,PHP_ROUND_HALF_UP);
+    //     for ($i=0; $i<$count; $i++){
+    //         $id = $det[$i];
+    //         $total = $total_det[$i];
+    //         $adicional = round(($valor * $total),4,PHP_ROUND_HALF_UP);
 
-            $pro_det = DB::table('almacen.guia_com_prorrateo_det')
-            ->where([['id_guia_com_det','=',$id],['id_prorrateo','=',$request->id_prorrateo]])
-            ->first();
+    //         $pro_det = DB::table('almacen.guia_com_prorrateo_det')
+    //         ->where([['id_guia_com_det','=',$id],['id_prorrateo','=',$request->id_prorrateo]])
+    //         ->first();
 
-            if (isset($pro_det)){//si no existe -> agrega
-                DB::table('almacen.guia_com_prorrateo_det')
-                ->where([['id_guia_com_det','=',$id],['id_prorrateo','=',$request->id_prorrateo]])
-                ->update([  'importe'=>$adicional,
-                            'fecha_registro'=>date('Y-m-d H:i:s')
-                        ]);
-            } else {//si existe -> actualiza
-                DB::table('almacen.guia_com_prorrateo_det')->insertGetId(
-                    [
-                        'id_prorrateo'=>$request->id_prorrateo,
-                        'id_guia_com_det'=>$id,
-                        'importe'=>$adicional,
-                        'fecha_registro'=>date('Y-m-d H:i:s')                       
-                    ],
-                        'id_prorrateo_det'
-                    );
-            }
-        }
-        $data = DB::table('almacen.guia_com_prorrateo')
-        ->where('id_prorrateo',$request->id_prorrateo)
-        ->update([ 'tipo' => 2 ]); //calculo por items
+    //         if (isset($pro_det)){//si no existe -> agrega
+    //             DB::table('almacen.guia_com_prorrateo_det')
+    //             ->where([['id_guia_com_det','=',$id],['id_prorrateo','=',$request->id_prorrateo]])
+    //             ->update([  'importe'=>$adicional,
+    //                         'fecha_registro'=>date('Y-m-d H:i:s')
+    //                     ]);
+    //         } else {//si existe -> actualiza
+    //             DB::table('almacen.guia_com_prorrateo_det')->insertGetId(
+    //                 [
+    //                     'id_prorrateo'=>$request->id_prorrateo,
+    //                     'id_guia_com_det'=>$id,
+    //                     'importe'=>$adicional,
+    //                     'fecha_registro'=>date('Y-m-d H:i:s')                       
+    //                 ],
+    //                     'id_prorrateo_det'
+    //                 );
+    //         }
+    //     }
+    //     $data = DB::table('almacen.guia_com_prorrateo')
+    //     ->where('id_prorrateo',$request->id_prorrateo)
+    //     ->update([ 'tipo' => 2 ]); //calculo por items
 
-        return response()->json($data);
-    }
+    //     return response()->json($data);
+    // }
     /**Update adicional guia detalle */
-    public function update_guia_detalle_adic(Request $request){
-        $id = explode(',',$request->id_guia_com_det);
-        $unitario = explode(',',$request->unitario);
-        $count = count($id);
-        $update = '';
+    // public function update_guia_detalle_adic(Request $request){
+    //     $id = explode(',',$request->id_guia_com_det);
+    //     $unitario = explode(',',$request->unitario);
+    //     $count = count($id);
+    //     $update = '';
 
-        for ($i=0; $i<$count; $i++){
-            $id_guia_com_det = $id[$i];
-            $unit = $unitario[$i];
+    //     for ($i=0; $i<$count; $i++){
+    //         $id_guia_com_det = $id[$i];
+    //         $unit = $unitario[$i];
 
-            //Obtiene guia detalle
-            $det = DB::table('almacen.guia_com_det')
-            ->where('id_guia_com_det',$id_guia_com_det)
-            ->first();
+    //         //Obtiene guia detalle
+    //         $det = DB::table('almacen.guia_com_det')
+    //         ->where('id_guia_com_det',$id_guia_com_det)
+    //         ->first();
 
-            //Calcula el nuevo unitario adicional 
-            $nuevo = $unit - $det->unitario;
-            $nuevo_adic = ($nuevo < 0 ? 0 : $nuevo);
-            $total = ($det->unitario + $nuevo_adic) * $det->cantidad;
+    //         //Calcula el nuevo unitario adicional 
+    //         $nuevo = $unit - $det->unitario;
+    //         $nuevo_adic = ($nuevo < 0 ? 0 : $nuevo);
+    //         $total = ($det->unitario + $nuevo_adic) * $det->cantidad;
 
-            //Actualiza el total OJO:no mueve el unitario
-            $update = DB::table('almacen.guia_com_det')
-            ->where('id_guia_com_det',$id_guia_com_det)
-            ->update(['unitario_adicional'=>$nuevo_adic,
-                      'total'=>$total]);
+    //         //Actualiza el total OJO:no mueve el unitario
+    //         $update = DB::table('almacen.guia_com_det')
+    //         ->where('id_guia_com_det',$id_guia_com_det)
+    //         ->update(['unitario_adicional'=>$nuevo_adic,
+    //                   'total'=>$total]);
 
-            //Obtiene ingreso detalle
-            $ing = DB::table('almacen.mov_alm_det')
-            ->where([['id_guia_com_det','=',$id_guia_com_det],['estado','!=',7]])
-            ->first();
+    //         //Obtiene ingreso detalle
+    //         $ing = DB::table('almacen.mov_alm_det')
+    //         ->where([['id_guia_com_det','=',$id_guia_com_det],['estado','!=',7]])
+    //         ->first();
 
-            //Actualiza valorizacion 
-            if (isset($ing)){
-                $valor = ($det->unitario + $nuevo_adic) * $ing->cantidad;
-                $update = DB::table('almacen.mov_alm_det')
-                ->where('id_guia_com_det',$id_guia_com_det)
-                ->update([ 'valorizacion' => $valor ]);
-            }
-        }
-        return response()->json($update);
-    }
+    //         //Actualiza valorizacion 
+    //         if (isset($ing)){
+    //             $valor = ($det->unitario + $nuevo_adic) * $ing->cantidad;
+    //             $update = DB::table('almacen.mov_alm_det')
+    //             ->where('id_guia_com_det',$id_guia_com_det)
+    //             ->update([ 'valorizacion' => $valor ]);
+    //         }
+    //     }
+    //     return response()->json($update);
+    // }
+    
     // public function tipo_cambio_compra($fecha){
     //     $data = DB::table('contabilidad.cont_tp_cambio')
     //     ->where('cont_tp_cambio.fecha','<=',$fecha)
