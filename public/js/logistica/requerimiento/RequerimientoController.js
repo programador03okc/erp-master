@@ -36,8 +36,12 @@ class RequerimientoCtrl{
 
     }
     // listado 
-    getListadoElaborados(idEmpresa, idSede, idGrupo, idPrioridad){
-        return requerimientoModel.getListadoElaborados(idEmpresa, idSede, idGrupo, idPrioridad);
+    getListadoElaborados(meOrAll,idEmpresa, idSede, idGrupo, division ,idPrioridad){
+        return requerimientoModel.getListadoElaborados(meOrAll,idEmpresa, idSede, idGrupo, division, idPrioridad);
+
+    }
+    getListaDivisionesDeGrupo(idGrupo){
+        return requerimientoModel.getListaDivisionesDeGrupo(idGrupo);
 
     }
     // aprobar

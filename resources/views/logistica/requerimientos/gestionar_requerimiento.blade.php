@@ -51,7 +51,8 @@ Requerimiento
             <div class="col-md-12">
                 <h4 style="display:flex;justify-content: space-between;">General
                     <div>
-                        <span class="label" id="estado_doc">&nbsp;</span>
+                        <span class="label label-default" id="codigo_requerimiento"></span>
+                        <span class="label label-default" id="estado_doc"></span>
                         <button type="button" name="btn-imprimir-requerimento-pdf" class="btn btn-info btn-sm" onclick="ImprimirRequerimientoPdf()" disabled><i class="fas fa-print"></i> Imprimir</button>
                         <button type="button" name="btn-adjuntos-requerimiento" class="btn btn-sm btn-warning" title="Archivos adjuntos" onclick="requerimientoView.adjuntarArchivoRequerimiento();" disabled><i class="fas fa-file-archive"></i>
                             <span class="badge" name="cantidadAdjuntosRequerimiento" style="position:absolute; right: 178px; border: solid 0.1px;">0</span>
@@ -74,7 +75,7 @@ Requerimiento
 
                         <div class="col-md-2" id="input-group-fecha" hidden>
                             <h5>Fecha Creación</h5>
-                            <input type="date" class="form-control" name="fecha_requerimiento" disabled="true" min={{ date('Y-m-d H:i:s') }} value={{ date('Y-m-d H:i:s') }}>
+                            <input type="text" class="form-control" name="fecha_requerimiento" disabled="true" min={{ date('Y-m-d H:i:s') }} value={{ date('Y-m-d H:i:s') }}>
                         </div>
 
                         <div class="col-md-6">
@@ -237,7 +238,7 @@ Requerimiento
 
                                 <h5>Monto total</h5>
                                 <div class="input-group-okc">
-                                    <div class="input-group-addon" id="montoMoneda" style="width: auto;">S/.</div>
+                                    <div class="input-group-addon" name="montoMoneda" style="width: auto;">S/.</div>
                                     <input type="text" class="form-control activation" name="monto" readOnly>
                                 </div>
                             </div>
@@ -368,41 +369,6 @@ Requerimiento
             </div>
         </div>
 
-
-        <div class="row" hidden>
-            <div class="col-md-12">
-                <h4 style="display:flex;justify-content: space-between;">Cuentas bancarias </h4>
-                <fieldset class="group-table">
-                    <div class="row">
-                        <div class="col-md-2" id="input-group-cuenta">
-                            <h5>Cuenta</h5>
-                            <div style="display:flex;">
-                                <input type="text" class="oculto" name="id_cuenta">
-                                <select class="form-control activation" name="banco" readOnly>
-                                    @foreach ($bancos as $banco)
-                                    <option value="{{$banco->id_banco}}">{{$banco->razon_social}}</option>
-                                    @endforeach
-                                </select>
-                                <select class="form-control activation" name="tipo_cuenta" readOnly>
-                                    @foreach ($tipos_cuenta as $tipo)
-                                    <option value="{{$tipo->id_tipo_cuenta}}">{{$tipo->descripcion}}</option>
-                                    @endforeach
-                                </select>
-                                <input type="text" class="form-control activation" name="nro_cuenta" placeholder="Nro Cuenta" readOnly>
-                                <input type="text" class="form-control activation" name="cci" placeholder="CCI" readOnly>
-                                <button type="button" class="btn-primary" title="Buscar Cuenta" name="btnSearchAccount" onClick="cuentaClienteModal();">
-                                    <i class="fas fa-piggy-bank"></i>
-                                </button>
-                                <button type="button" class="btn-success" title="Agregar Cuenta" name="btnAddAccount" onClick="agregarCuentaClienteModal();">
-                                    <i class="fas fa-plus"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </fieldset>
-            </div>
-        </div>
-
         <div class="row" id="seccion-contacto-cliente">
             <div class="col-md-12">
                 <h4 style="display:flex;justify-content: space-between;">Contacto cliente</h4>
@@ -436,46 +402,6 @@ Requerimiento
                             <h5>Dirección entrega</h5>
                             <div style="display:flex;">
                                 <input type="text" class="form-control" name="direccion_contacto" disabled>
-                            </div>
-                        </div>
-                        <div class="col-md-2" id="input-group-horario-contacto">
-                            <h5>Horario atención</h5>
-                            <div style="display:flex;">
-                                <input type="text" class="form-control" name="horario_contacto" disabled>
-                            </div>
-                        </div>
-                    </div>
-                </fieldset>
-            </div>
-        </div>
-
-
-        <div class="row" id="input-group-comercial" hidden>
-            <div class="col-md-12">
-                <h4 style="display:flex;justify-content: space-between;">Comercial</h4>
-                <fieldset class="group-table">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <h5>Comercial</h5>
-                            <select class="form-control activation" name="tpOptCom" disabled="true" onChange="changeOptComercialSelect();">
-                                <option value="1">Orden C. Cliente</option>
-                                <option value="2">Cuadro Costos</option>
-                                <option value="3">Gastos Operativos</option>
-                            </select>
-                        </div>
-                        <div class="col-md-6">
-                            <h5 id="title-option-comercial">Código</h5>
-                            <div style="display:flex;">
-                                <input hidden="true" type="text" name="idOtpCom" class="activation">
-                                <input type="text" name="codigo_occ" class="form-control group-elemento" style="width:130px; text-align:center;" readonly>
-                                <div class="input-group-okc">
-                                    <input type="text" class="form-control" name="occ" placeholder="" aria-describedby="basic-addon4" disabled="true">
-                                    <div class="input-group-append">
-                                        <button type="button" class="input-group-text" onClick="mostrar_cuadro_costos_modal();">
-                                            <i class="fa fa-search"></i>
-                                        </button>
-                                    </div>
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -698,7 +624,7 @@ Requerimiento
 <script src="{{ asset('js/logistica/requerimiento/editar.js') }}"></script>
 <script src="{{ asset('js/logistica/requerimiento/cancelar.js') }}"></script>
 <script src="{{ asset('js/logistica/requerimiento/anular.js') }}"></script>
-<script src="{{ asset('js/logistica/requerimiento/guardar.js') }}"></script>
+<!-- <script src="{{ asset('js/logistica/requerimiento/guardar.js') }}"></script> -->
 <!-- <script src="{{ asset('js/logistica/requerimiento/adjuntos.js') }}"></script> -->
 <script src="{{ asset('js/logistica/requerimiento/scrollToTheTopOfDocument.js') }}"></script>
 <script src="{{ asset('js/logistica/requerimiento/duplicar_requerimiento.js') }}"></script>
@@ -763,7 +689,7 @@ Requerimiento
 
         // controlInput(id_grupo,descripcion_grupo);
         inicializar(
-            "{{route('logistica.gestion-logistica.requerimiento.elaboracion.lista-modal')}}",
+           
             "{{route('logistica.gestion-logistica.requerimiento.elaboracion.mostrar-requerimiento')}}",
             "{{route('logistica.gestion-logistica.requerimiento.elaboracion.guardar')}}",
             "{{route('logistica.gestion-logistica.requerimiento.elaboracion.actualizar')}}",

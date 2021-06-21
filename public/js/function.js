@@ -421,7 +421,9 @@ function eventRegister(type, data, action, frm_active){
         break;
         //Logistica
         case 'requerimiento':
-            save_requerimiento(action);
+            // save_requerimiento(action);
+            requerimientoView.actionGuardarEditarRequerimiento();
+
         break;
         case 'crear-orden-requerimiento':
             save_orden(data, action);

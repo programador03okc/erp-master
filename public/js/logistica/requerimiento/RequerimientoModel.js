@@ -78,13 +78,13 @@ class RequerimientoModel {
                 });
             });
     }
-    getListadoElaborados(idEmpresa, idSede, idGrupo, idPrioridad){
+    getListadoElaborados(meOrAll,idEmpresa, idSede, idGrupo,division, idPrioridad){
         return new Promise(function(resolve, reject) {
             $.ajax({
                 type: 'POST',
                 url:`elaborados`,
                 dataType: 'JSON',
-                data:{'idEmpresa':idEmpresa,'idSede':idSede,'idGrupo':idGrupo,'idPrioridad':idPrioridad},
+                data:{'meOrAll':meOrAll,'idEmpresa':idEmpresa,'idSede':idSede,'idGrupo':idGrupo,'division':division,'idPrioridad':idPrioridad},
                 success(response) {
                     resolve(response);
                 },
@@ -94,6 +94,22 @@ class RequerimientoModel {
                 });
             });
     }
+    getListaDivisionesDeGrupo(idGrupo){
+        return new Promise(function(resolve, reject) {
+            $.ajax({
+                type: 'GET',
+                url:`mostrar-divisiones/${idGrupo}`,
+                dataType: 'JSON',
+                success(response) {
+                    resolve(response);
+                },
+                error: function(err) {
+                    reject(err) 
+                }
+                });
+            });
+    }
+
 
     getListadoAprobacion(idEmpresa, idSede, idGrupo, idPrioridad){
         return new Promise(function(resolve, reject) {
@@ -115,7 +131,7 @@ class RequerimientoModel {
         return new Promise(function(resolve, reject) {
             $.ajax({
                 type: 'GET',
-                url:`mostrar-requerimiento/${idRequerimiento}`,
+                url:`mostrar-requerimiento/${idRequerimiento}/null`,
                 dataType: 'JSON',
                 success(response) {
                     resolve(response);

@@ -119,13 +119,7 @@ class RequerimientoController extends Controller
         return response()->json($detalles);
     }
 
-    public function mostrar_requerimiento($id, $codigo)
-    {
-        $requerimiento = $this->get_requerimiento($id, $codigo);
-        return response()->json($requerimiento);
-    }
-
-    public function get_requerimiento($id, $codigo)
+    public function mostrarRequerimiento($id, $codigo)
     {
         if ($id > 0) {
             $theWhere = ['alm_req.id_requerimiento', '=', $id];
@@ -302,10 +296,26 @@ class RequerimientoController extends Controller
                     'rol_aprobante_id' => $data->rol_aprobante_id,
                     'trabajador_id' => $data->trabajador_id,
                     'division' => $data->division,
-                    'nombre_trabajador'=>$data->nombre_trabajador
+                    'nombre_trabajador'=>$data->nombre_trabajador,
+                    'adjuntos'=>[]
                     
                 ];
             };
+
+            $adjuntosCabecera = DB::table('almacen.alm_req')
+            ->select('alm_req_adjuntos.*')
+            ->join('almacen.alm_req_adjuntos', 'alm_req_adjuntos.id_requerimiento', '=', 'alm_req.id_requerimiento')
+            ->where([
+                ['alm_req.id_requerimiento', '=', $id_requerimiento],
+                ['alm_req_adjuntos.estado', '=', 1]
+            ])
+            ->orderBy('alm_req_adjuntos.id_adjunto', 'asc')
+            ->get();
+
+            foreach ($adjuntosCabecera as $key => $value) {
+                $requerimiento[0]['adjuntos'][]=$value;
+            }
+            
 
             $alm_det_req = DB::table('almacen.alm_det_req')
             ->leftJoin('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'alm_det_req.id_requerimiento')
@@ -317,8 +327,9 @@ class RequerimientoController extends Controller
                 ->leftJoin('almacen.alm_und_medida', 'alm_det_req.id_unidad_medida', '=', 'alm_und_medida.id_unidad_medida')
                 ->leftJoin('almacen.alm_und_medida as und_medida_det_req', 'alm_det_req.id_unidad_medida', '=', 'und_medida_det_req.id_unidad_medida')
                 ->leftJoin('logistica.equipo', 'alm_item.id_equipo', '=', 'equipo.id_equipo')
-                ->leftJoin('almacen.alm_det_req_adjuntos', 'alm_det_req_adjuntos.id_detalle_requerimiento', '=', 'alm_det_req.id_detalle_requerimiento')
+                // ->leftJoin('almacen.alm_det_req_adjuntos', 'alm_det_req_adjuntos.id_detalle_requerimiento', '=', 'alm_det_req.id_detalle_requerimiento')
                 ->leftJoin('finanzas.presup_par', 'presup_par.id_partida', '=', 'alm_det_req.partida')
+                ->leftJoin('finanzas.presup_titu', 'presup_titu.id_presup', '=', 'presup_par.id_presup')
                 ->leftJoin('finanzas.presup_pardet', 'presup_pardet.id_pardet', '=', 'presup_par.id_pardet')
                 ->leftJoin('administracion.adm_estado_doc', 'alm_det_req.estado', '=', 'adm_estado_doc.id_estado_doc')
                 ->leftJoin('configuracion.sis_moneda', 'alm_det_req.id_moneda', '=', 'sis_moneda.id_moneda')
@@ -348,6 +359,7 @@ class RequerimientoController extends Controller
                     'alm_det_req.fecha_registro AS fecha_registro_alm_det_req',
                     'alm_det_req.lugar_entrega',
                     'alm_det_req.descripcion_adicional',
+                    'alm_det_req.descripcion',
                     'alm_det_req.id_tipo_item',
                     'alm_det_req.id_moneda as id_tipo_moneda',
                     'sis_moneda.descripcion as tipo_moneda',
@@ -357,8 +369,10 @@ class RequerimientoController extends Controller
                     'alm_det_req.partida',
                     'presup_par.codigo AS codigo_partida',
                     'presup_pardet.descripcion AS descripcion_partida',
+                    'presup_titu.total AS presupuesto_total_partida',
                     'alm_det_req.centro_costo_id as id_centro_costo',
                     'centro_costo.codigo as codigo_centro_costo',
+                    'centro_costo.descripcion as descripcion_centro_costo',
                     'alm_item.id_item',
                     'alm_det_req.id_producto',
                     'alm_cat_prod.descripcion as categoria',
@@ -368,7 +382,7 @@ class RequerimientoController extends Controller
                     'alm_item.codigo AS codigo_item',
                     'alm_item.fecha_registro AS alm_item_fecha_registro',
                     'alm_prod.codigo AS alm_prod_codigo',
-                    'alm_prod.part_number',
+                    'alm_det_req.part_number',
                     'alm_prod.descripcion AS alm_prod_descripcion',
                     'alm_det_req.tiene_transformacion',
                     'alm_det_req.proveedor_id',
@@ -381,11 +395,6 @@ class RequerimientoController extends Controller
                     'proveedores_venta.razon_social as razon_social_proveedor_seleccionado_venta',
                     'alm_item.id_equipo',
                     'equipo.descripcion as equipo_descripcion',
-                    'alm_det_req_adjuntos.id_adjunto AS adjunto_id_adjunto',
-                    'alm_det_req_adjuntos.archivo AS adjunto_archivo',
-                    'alm_det_req_adjuntos.estado AS adjunto_estado',
-                    'alm_det_req_adjuntos.fecha_registro AS adjunto_fecha_registro',
-                    'alm_det_req_adjuntos.id_detalle_requerimiento AS adjunto_id_detalle_requerimiento',
                     DB::raw("(SELECT SUM(trans_detalle.cantidad) 
                     FROM almacen.trans_detalle 
                     WHERE   trans_detalle.id_requerimiento_detalle = alm_det_req.id_detalle_requerimiento AND
@@ -397,27 +406,14 @@ class RequerimientoController extends Controller
                 ->orderBy('alm_item.id_item', 'asc')
                 ->get();
 
-            // archivos adjuntos de items
-            if (isset($alm_det_req)) {
-                $detalle_requerimiento_adjunto = [];
-                foreach ($alm_det_req as $data) {
-                    $detalle_requerimiento_adjunto[] = [
-                        'id_detalle_requerimiento' => $data->id_detalle_requerimiento,
-                        'id_adjunto' => $data->adjunto_id_adjunto,
-                        'archivo' => $data->adjunto_archivo,
-                        'id_detalle_requerimiento' => $data->adjunto_id_detalle_requerimiento,
-                        'fecha_registro' => $data->adjunto_fecha_registro,
-                        'estado' => $data->adjunto_estado
-                    ];
-                }
-            } else {
-                $detalle_requerimiento_adjunto = [];
-            }
+ 
             if (isset($alm_det_req)) {
                 $lastId = "";
                 $detalle_requerimiento = [];
+                $idDetalleRequerimientoLis = [];
                 foreach ($alm_det_req as $data) {
                     if ($data->id_detalle_requerimiento !== $lastId) {
+                        $idDetalleRequerimientoLis[] = $data->id_detalle_requerimiento;
                         $detalle_requerimiento[] = [
                             'id_detalle_requerimiento'  => $data->id_detalle_requerimiento,
                             'id_requerimiento'          => $data->id_requerimiento,
@@ -451,20 +447,22 @@ class RequerimientoController extends Controller
                             'estado'                    => $data->estado,
                             'estado_doc'                => $data->estado_doc,
                             'bootstrap_color'           => $data->bootstrap_color,
-                            'adjunto'                   => [],
                             'codigo_item'                => $data->codigo_item,
                             'part_number'                => $data->part_number,
                             'id_tipo_item'                => $data->id_tipo_item,
                             'id_producto'               => $data->id_producto,
                             'codigo_producto'            => $data->alm_prod_codigo,
-                            'descripcion'                   => $data->alm_prod_descripcion,
+                            'descripcion'                   => $data->descripcion,
                             'id_partida'                    => $data->partida,
                             'codigo_partida'                => $data->codigo_partida,
+                            'presupuesto_total_partida'     => $data->presupuesto_total_partida,
                             'id_centro_costo'                => $data->id_centro_costo,
                             'codigo_centro_costo'            => $data->codigo_centro_costo,
+                            'descripcion_centro_costo'       => $data->descripcion_centro_costo,
                             'motivo'                        => $data->motivo,
                             'descripcion_partida'           => $data->descripcion_partida,
                             'suma_transferencias'           => $data->suma_transferencias,
+                            'adjuntos'                      => []
 
                         ];
                         $lastId = $data->id_detalle_requerimiento;
@@ -472,13 +470,21 @@ class RequerimientoController extends Controller
                 }
 
                 // insertar adjuntos
-                for ($j = 0; $j < sizeof($detalle_requerimiento); $j++) {
-                    for ($i = 0; $i < sizeof($detalle_requerimiento_adjunto); $i++) {
-                        if ($detalle_requerimiento[$j]['id_detalle_requerimiento'] === $detalle_requerimiento_adjunto[$i]['id_detalle_requerimiento']) {
-                            if ($detalle_requerimiento_adjunto[$i]['estado'] === NUll) {
-                                $detalle_requerimiento_adjunto[$i]['estado'] = 0;
-                            }
-                            $detalle_requerimiento[$j]['adjunto'][] = $detalle_requerimiento_adjunto[$i];
+     
+                $adjuntosDetalle = DB::table('almacen.alm_det_req')
+                ->select('alm_det_req_adjuntos.*')
+                ->join('almacen.alm_det_req_adjuntos', 'alm_det_req_adjuntos.id_detalle_requerimiento', '=', 'alm_det_req.id_detalle_requerimiento')
+                ->whereIn('alm_det_req.id_detalle_requerimiento', $idDetalleRequerimientoLis)
+                ->where([
+                    ['alm_det_req_adjuntos.estado', '=',1]
+                ])
+                ->orderBy('alm_det_req_adjuntos.id_adjunto', 'asc')
+                ->get();
+    
+                foreach ($detalle_requerimiento as $key => $detalleRequerimiento) {
+                    foreach ($adjuntosDetalle as $ad) {
+                        if($detalleRequerimiento['id_detalle_requerimiento'] == $ad->id_detalle_requerimiento){
+                            $detalle_requerimiento[$key]['adjuntos'][]=$ad;
                         }
                     }
                 }
@@ -513,12 +519,12 @@ class RequerimientoController extends Controller
 
 
         $data = [
-            "requerimiento" => $requerimiento,
-            "det_req" => $detalle_requerimiento,
-            "cotizaciones" => $cotizaciones,
-            "grupo_cotizacion" => $grupo_cotizacion,
+            "requerimiento" => $requerimiento?$requerimiento:[],
+            "det_req" => $detalle_requerimiento?$detalle_requerimiento:[],
+            "cotizaciones" => $cotizaciones?$cotizaciones:[],
+            "grupo_cotizacion" => $grupo_cotizacion?$grupo_cotizacion:[],
             "observacion_requerimiento" => $req_observacion ? $req_observacion : [],
-            "aprobaciones" => $cantidad_aprobados
+            "aprobaciones" => $cantidad_aprobados?$cantidad_aprobados:0
         ];
 
         return $data;
@@ -765,11 +771,12 @@ class RequerimientoController extends Controller
 
     public function listarRequerimientosElaborados(Request $request)
     {
+        $mostrar = $request->meOrAll;
         $idEmpresa = $request->idEmpresa;
         $idSede = $request->idSede;
         $idGrupo = $request->idGrupo;
+        $division =$request->division;
         $idPrioridad = $request->idPrioridad;
-
         // $req     = array();
         // $det_req = array();
 
@@ -789,6 +796,7 @@ class RequerimientoController extends Controller
             ->leftJoin('rrhh.rrhh_trab as trab', 'trab.id_trabajador', '=', 'sis_usua.id_trabajador')
             ->leftJoin('rrhh.rrhh_postu as post', 'post.id_postulante', '=', 'trab.id_postulante')
             ->leftJoin('rrhh.rrhh_perso as pers', 'pers.id_persona', '=', 'post.id_persona')
+            ->leftJoin('administracion.adm_flujo', 'adm_flujo.id_rol', '=', 'alm_req.rol_aprobante_id')
 
             ->select(
                 'alm_req.id_requerimiento',
@@ -812,7 +820,6 @@ class RequerimientoController extends Controller
                 // 'proy_op_com.descripcion as descripcion_op_com',
                 'alm_req.concepto AS alm_req_concepto',
                 'alm_req.estado',
-                'alm_req.fecha_registro',
                 'alm_req.id_area',
                 'alm_req.id_prioridad',
                 'alm_req.id_presupuesto',
@@ -823,11 +830,18 @@ class RequerimientoController extends Controller
                 'sis_grupo.descripcion AS grupo',
                 'adm_area.descripcion AS area',
                 'sis_moneda.simbolo AS simbolo_moneda',
+                'alm_req.fecha_registro',
+                'alm_req.rol_aprobante_id',
+                'adm_flujo.nombre as division',
                 DB::raw("CONCAT(pers.nombres,' ',pers.apellido_paterno,' ',pers.apellido_materno) as nombre_usuario")
 
             )
             ->where([['alm_req.estado', '!=', 7],['sis_sede.estado', '=', 1]])
 
+            ->when(($mostrar==='ME'), function($query) {
+                $idUsuario = Auth::user()->id_usuario;
+                return $query->whereRaw('alm_req.id_usuario = '.$idUsuario);
+            })
             ->when((intval($idEmpresa)> 0), function($query)  use ($idEmpresa) {
                 return $query->whereRaw('alm_req.id_empresa = '.$idEmpresa);
             })
@@ -837,6 +851,9 @@ class RequerimientoController extends Controller
             ->when((intval($idGrupo)> 0), function($query)  use ($idGrupo) {
                 return $query->whereRaw('sis_grupo.id_grupo = '.$idGrupo);
             })
+            ->when((($division !="0" && $division !="")), function($query)  use ($division) {
+                return $query->whereRaw('adm_flujo.nombre = '."'".$division."'");
+            })
             ->when((intval($idPrioridad)> 0), function($query)  use ($idPrioridad) {
                 return $query->whereRaw('alm_req.id_prioridad = '.$idPrioridad);
             });
@@ -845,120 +862,6 @@ class RequerimientoController extends Controller
             $keywords = trim(strtoupper($keyword));
             $query->whereRaw("UPPER(CONCAT(pers.nombres,' ',pers.apellido_paterno,' ',pers.apellido_materno)) LIKE ?", ["%{$keywords}%"]);
         })->toJson();
-        // ->orderBy('alm_req.id_requerimiento', 'DESC')
-        // ->get();
-
-        // $simbolo_moneda='';
-        // foreach($sql_req as $data){
-        //     $req[]=[
-        //         'id_requerimiento' => $data->id_requerimiento,
-        //         'id_doc_aprob' => $data->id_doc_aprob,
-        //         'codigo' => $data->codigo,
-        //         'id_tipo_requerimiento' => $data->id_tipo_requerimiento,
-        //         'id_usuario' => $data->id_usuario,
-        //         'id_rol' => $data->id_rol,
-        //         'fecha_requerimiento' => $data->fecha_requerimiento,
-        //         'id_periodo' => $data->id_periodo,
-        //         'descripcion_periodo' => $data->descripcion_periodo,
-        //         'concepto' => $data->concepto,
-        //         'id_empresa' => $data->id_empresa,
-        //         'razon_social' => $data->razon_social,
-        //         'nro_documento' => $data->nro_documento,
-        //         'tipo_documento_identidad' => $data->tipo_documento_identidad,
-        //         'id_grupo' => $data->id_grupo,
-        //         'estado' => $data->estado,
-        //         'fecha_registro' => $data->fecha_registro,
-        //         'id_area' => $data->id_area,
-        //         'id_prioridad' => $data->id_prioridad,
-        //         'id_presupuesto' => $data->id_presupuesto,
-        //         'id_moneda' => $data->id_moneda,
-        //         'simbolo_moneda' => $data->simbolo_moneda,
-        //         'estado_doc' => $data->estado_doc,
-        //         'tipo_requerimiento' => $data->tipo_requerimiento,
-        //         'priori' => $data->priori,
-        //         'grupo' => $data->grupo,
-        //         'area' => $data->area,
-        //         'usuario' => $data->nombre_usuario,
-
-
-        //     ];
-
-        //     $simbolo_moneda = $data->simbolo_moneda;
-
-        // }
-
-        // $size_req= count($req);
-
-        // $sql_det_req = DB::table('almacen.alm_det_req')
-        // ->select(
-        //     'alm_det_req.id_detalle_requerimiento',
-        //     'alm_det_req.id_requerimiento',
-        //     'alm_det_req.id_item',
-        //     'alm_det_req.precio_unitario',
-        //     'alm_det_req.subtotal',
-        //     'alm_det_req.cantidad',
-        //     'alm_det_req.descripcion_adicional',
-        //     'alm_det_req.partida',
-        //     'alm_det_req.unidad_medida',
-        //     'alm_det_req.estado',
-        //     'alm_det_req.fecha_registro',
-        //     'alm_det_req.lugar_entrega',
-        //     'alm_det_req.id_unidad_medida',
-        //     'alm_det_req.id_tipo_item'
-        // )
-        // ->where('alm_det_req.estado', '!=', $estado_anulado)
-        // ->orderBy('alm_det_req.id_requerimiento', 'DESC')
-        // ->get();
-
-
-        // $aux_sum=0; // aux monto referencual head req
-
-        // if(isset($sql_det_req) && sizeof($sql_det_req) > 0){
-        //     foreach($sql_det_req as $data){
-
-        //         $det_req[]=[
-        //             'id_detalle_requerimiento'=> $data->id_detalle_requerimiento,
-        //             'id_requerimiento'=> $data->id_requerimiento,
-        //             'id_item'=> $data->id_item,
-        //             'precio_unitario'=> $data->precio_unitario,
-        //             'subtotal'=> $data->subtotal,
-        //             'cantidad'=> $data->cantidad,
-        //             'descripcion_adicional'=> $data->descripcion_adicional,
-        //             'partida'=> $data->partida,
-        //             'unidad_medida'=> $data->unidad_medida,
-        //             'estado'=> $data->estado,
-        //             'fecha_registro'=> $data->fecha_registro,
-        //             'lugar_entrega'=> $data->lugar_entrega,
-        //             'id_unidad_medida'=> $data->id_unidad_medida,
-        //             'id_tipo_item'=> $data->id_tipo_item
-        //         ];
-
-
-        //     }
-
-        //     $size_det_req= count($det_req);
-
-        //     for($i = 0; $i < $size_req; $i++ ){
-        //         for($j = 0; $j < $size_det_req; $j++ ){
-        //             $req[$i]['detalle'] = [];
-
-        //         }
-        //     }
-
-        //     for($i = 0; $i < $size_req; $i++ ){
-        //         for($j = 0; $j < $size_det_req; $j++ ){
-        //             if($det_req[$j]['id_requerimiento'] == $req[$i]['id_requerimiento']){
-        //                 $req[$i]['detalle'][] = $det_req[$j];
-        //             }
-        //         }
-        //     }
-        // }else{ // si no existe datos en detalle_requerimiento
-        //     for($i = 0; $i < $size_req; $i++ ){
-        //         $req[$i]['detalle'] = [];
-        //     }
-        // }
-
-
 
     }
 
@@ -1056,7 +959,7 @@ class RequerimientoController extends Controller
                 'alm_req.observacion',
                 'alm_tp_req.descripcion AS tipo_requerimiento',
                 'alm_req.id_usuario',
-                DB::raw("(rrhh_perso.nombres) || ' ' || (rrhh_perso.apellido_paterno) || ' ' || (rrhh_perso.apellido_materno)  AS persona"),
+                DB::raw("CONCAT(rrhh_perso.nombres, ' ',rrhh_perso.apellido_paterno, ' ', rrhh_perso.apellido_materno)  AS persona"),
                 'sis_usua.usuario',
                 'alm_req.id_rol',
                 'sis_rol.descripcion as descripcion_rol',
@@ -2218,6 +2121,24 @@ class RequerimientoController extends Controller
         ];
 
         return response()->json($output);
+    }
+
+    public function mostrarDivisionesDeGrupo($idGrupo)
+    {
+        $data = DB::table('administracion.adm_flujo')
+        ->select(
+            'adm_flujo.*',
+            'sis_rol.descripcion as descripcion_rol'
+        )
+        ->join('administracion.adm_operacion', 'adm_operacion.id_operacion', '=', 'adm_flujo.id_operacion')
+        ->leftJoin('configuracion.sis_rol', 'sis_rol.id_rol', '=', 'adm_flujo.id_rol')
+        ->where([
+            ['adm_operacion.id_grupo', '=', $idGrupo]
+        ])
+        ->orderBy('adm_flujo.orden', 'asc')
+        ->get();
+
+        return $data;
     }
 
     public function get_flujo_aprobacion($id_operacion, $id_area)

@@ -641,10 +641,10 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::get('mostrar-categoria-adjunto', 'Logistica\RequerimientoController@mostrarCategoriaAdjunto')->name('mostrar-categoria-adjunto');
 					Route::post('guardar-requerimiento', 'Logistica\RequerimientoController@guardarRequerimiento')->name('guardar-requerimiento');
 					Route::get('listar-sedes-por-empresa/{id?}', 'Logistica\RequerimientoController@listarSedesPorEmpresa')->name('listar-sedes-por-empresa');
-					Route::get('mostrar-requerimiento/{id?}/{codigo?}', 'Logistica\RequerimientoController@mostrar_requerimiento')->name('mostrar-requerimiento');
+					Route::get('mostrar-requerimiento/{id?}/{codigo?}', 'Logistica\RequerimientoController@mostrarRequerimiento')->name('mostrar-requerimiento');
+					Route::post('elaborados', 'Logistica\RequerimientoController@listarRequerimientosElaborados')->name('elaborados');
 
 
-					Route::get('lista-modal/{option?}', 'LogisticaController@mostrar_requerimientos')->name('lista-modal');
 					Route::post('guardar', 'LogisticaController@guardar_requerimiento')->name('guardar');
 					Route::put('actualizar/{id?}', 'LogisticaController@actualizar_requerimiento')->name('actualizar');
 					Route::put('anular/{id_requerimiento?}', 'LogisticaController@anular_requerimiento')->name('anular');
@@ -708,6 +708,7 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::post('elaborados', 'Logistica\RequerimientoController@listarRequerimientosElaborados')->name('elaborados');
 					Route::get('ver-flujos/{req?}/{doc?}', 'Logistica\RequerimientoController@flujoAprobacion')->name('ver-flujos');
 					Route::get('explorar-requerimiento/{id_requerimiento?}', 'Logistica\RequerimientoController@explorar_requerimiento')->name('explorar-requerimiento');
+					Route::get('mostrar-divisiones/{idGrupo?}', 'Logistica\RequerimientoController@mostrarDivisionesDeGrupo')->name('mostrar-divisiones-de-grupo');
 
 					
 					// Route::get('listar/{empresa?}/{sede?}/{grupo?}', 'LogisticaController@listar_requerimiento_v2')->name('listar');

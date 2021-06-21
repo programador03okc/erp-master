@@ -144,9 +144,7 @@ function mostrarTipoForm(tipo){
         case 'MGCP': //Mgcp - comercial
             hiddeElement('ocultar','form-requerimiento',[
                 'input-group-rol-usuario',
-                'input-group-comercial',
                 'input-group-almacen',
-                'input-group-cuenta',
                 'input-group-proyecto',
                 'input-group-fuente',
                 // 'input-group-para_stock_almacen',
@@ -172,7 +170,6 @@ function mostrarTipoForm(tipo){
                 'input-group-email-contacto',
                 'input-group-telefono-contacto',
                 'input-group-direccion-contacto',
-                'input-group-horario-contacto',
                 'seccion-cliente',
                 'seccion-contacto-cliente'
             ]); 
@@ -187,16 +184,13 @@ function mostrarTipoForm(tipo){
                 // 'input-group-proyecto',
                 'seccion-contacto-cliente',
                 'input-group-rol-usuario',
-                'input-group-comercial',
                 'input-group-almacen',
                 'input-group-proyecto',    
-                'input-group-cuenta',
                 'input-group-nombre-contacto',
                 'input-group-cargo-contacto',
                 'input-group-email-contacto',
                 'input-group-telefono-contacto',
                 'input-group-direccion-contacto',
-                'input-group-horario-contacto',
                 // 'input-group-para_stock_almacen',
                 'input-group-aprobante'
                 ]);
@@ -223,21 +217,17 @@ function mostrarTipoForm(tipo){
             hiddeElement('ocultar','form-requerimiento',[
                 'input-group-monto',
                 'input-group-rol-usuario',
-                'input-group-comercial',
                 'input-group-almacen',
                 'input-group-ubigeo-entrega',
-                'input-group-cuenta',
                 'input-group-tipo-cliente',
                 'input-group-telefono-cliente',
                 'input-group-email-cliente',
                 'input-group-direccion-entrega',
-                'input-group-cuenta',
                 'input-group-nombre-contacto',
                 'input-group-cargo-contacto',
                 'input-group-email-contacto',
                 'input-group-telefono-contacto',
                 'input-group-direccion-contacto',
-                'input-group-horario-contacto',
                 'input-group-fuente',
                 'input-group-proyecto',
                 'seccion-cliente',
@@ -260,10 +250,8 @@ function mostrarTipoForm(tipo){
         case 'BIENES_SERVICIOS_PROYECTOS': //bienes y servicios - proyectos
             hiddeElement('ocultar','form-requerimiento',[
                 'input-group-rol-usuario',
-                'input-group-comercial',
                 'input-group-almacen',
                 'input-group-ubigeo-entrega',
-                'input-group-cuenta',
                 'input-group-monto',
                 'seccion-cliente',
                 'seccion-contacto-cliente',
@@ -276,13 +264,11 @@ function mostrarTipoForm(tipo){
                 'input-group-email-contacto',
                 'input-group-telefono-contacto',
                 'input-group-direccion-contacto',
-                'input-group-horario-contacto',
                 'input-group-nombre-contacto',
                 'input-group-cargo-contacto',
                 'input-group-email-contacto',
                 'input-group-telefono-contacto',
                 'input-group-direccion-contacto',
-                'input-group-horario-contacto',
                 'input-group-fuente',
                 'input-group-aprobante'
             ]);

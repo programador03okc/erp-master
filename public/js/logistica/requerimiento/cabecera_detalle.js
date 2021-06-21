@@ -1,4 +1,5 @@
 function nuevo_req(){
+    console.log('nuevo');
     data_item=[];
     data=[];
     adjuntos=[];

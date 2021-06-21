@@ -25,7 +25,7 @@ class RequerimientoView {
         let moneda = e.target.value == 1 ? 'S/' : '$';
 
         document.querySelector("form[id='form-requerimiento'] span[name='simboloMoneda']").textContent = moneda;
-        document.querySelector("div[id='montoMoneda']").textContent = moneda;
+        document.querySelector("div[name='montoMoneda']").textContent = moneda;
         if (document.querySelector("form[id='form-requerimiento'] table span[class='moneda']")) {
             document.querySelectorAll("form[id='form-requerimiento'] span[class='moneda']").forEach(element => {
                 element.textContent = moneda;
@@ -353,6 +353,13 @@ class RequerimientoView {
             childrenTableTbody[index].firstElementChild.textContent = index + 1
         }
     }
+    autoUpdateSubtotal() {
+
+        let tbodyChildren = document.querySelector("tbody[id='body_detalle_requerimiento']").children;
+        for (let i = 0; i < tbodyChildren.length; i++) {
+            requerimientoView.updateSubtotal(tbodyChildren[i]);
+        }
+    }
 
     updateSubtotal(obj) {
         let tr = obj.closest("tr");
@@ -592,7 +599,6 @@ class RequerimientoView {
         }
 
 
-
         this.validarPresupuestoUtilizadoYSaldoPorPartida(tempPartidasActivas);
         this.construirTablaPresupuestoUtilizadoYSaldoPorPartida(tempPartidasActivas);
         // console.log(tempPartidasActivas);
@@ -726,10 +732,56 @@ class RequerimientoView {
         $('#modal-adjuntar-archivos-requerimiento').modal({
             show: true
         });
+        
         document.querySelector("div[id='modal-adjuntar-archivos-requerimiento'] div[class='bootstrap-filestyle input-group'] input[type='text']").classList.add('oculto');
         document.querySelector("div[id='modal-adjuntar-archivos-requerimiento'] span[class='buttonText']").textContent = "Agregar archivo";
+        
+        this.limpiarTabla('listaArchivosRequerimiento');
+
+        this.listarAdjuntosDeCabecera();
 
     }
+
+    listarAdjuntosDeCabecera(){
+
+        requerimientoCtrl.getcategoriaAdjunto().then((categoriaAdjuntoList) => {
+            requerimientoView.construirTablaAdjuntosRequerimiento(tempArchivoAdjuntoRequerimientoList,categoriaAdjuntoList);
+        }).catch(function (err) {
+            console.log(err)
+        })
+    }
+    
+    construirTablaAdjuntosRequerimiento(data,categoriaAdjuntoList){
+        let html = '';
+        data.forEach(element => {
+            html += `<tr id="${element.id}" style="text-align:center">
+        <td style="text-align:left;">${element.nameFile}</td>
+        <td>
+            <select class="form-control" name="categoriaAdjunto" onChange="ArchivoAdjunto.changeCategoriaAdjunto(this)">
+        `;
+        categoriaAdjuntoList.forEach(categoria => {
+            if(element.category ==categoria.id_categoria_adjunto ){
+                html += `<option value="${categoria.id_categoria_adjunto}" selected >${categoria.descripcion}</option>`
+
+            }else{
+                html += `<option value="${categoria.id_categoria_adjunto}">${categoria.descripcion}</option>`
+            }
+        });
+        html += `</select>
+        </td>
+        <td style="text-align:center;">
+            <div class="btn-group" role="group">`;
+            if(Number.isInteger(element.id)){
+                html+= `<button type="button" class="btn btn-info btn-md" name="btnDescargarArchivoRequerimiento" title="Descargar" onclick="ArchivoAdjunto.descargarArchivoRequerimieto('${element.id}');" ><i class="fas fa-file-archive"></i></button>`;
+            }
+            html+=`<button type="button" class="btn btn-danger btn-md" name="btnEliminarArchivoRequerimiento" title="Eliminar" onclick="ArchivoAdjunto.eliminarArchivoRequerimiento(this,'${element.id}');" ><i class="fas fa-trash-alt"></i></button>
+            </div>
+        </td>
+        </tr>`;
+        });
+        document.querySelector("tbody[id='body_archivos_requerimiento']").insertAdjacentHTML('beforeend', html);
+    }
+
     agregarAdjuntoRequerimiento(event) {
         let archivoAdjunto = new ArchivoAdjunto(event.target.files);
         archivoAdjunto.addFileLevelRequerimiento();
@@ -738,19 +790,19 @@ class RequerimientoView {
     // adjuntos detalle requerimiento
 
     adjuntarArchivoItem(obj) {
-        this.limpiarTabla('listaArchivos');
-
+        
         tempIdRegisterActive = obj.closest('td').querySelector("input[class~='idRegister']").value;
         tempObjectBtnInputFile = obj;
-
+        
         document.querySelector("div[id='modal-adjuntar-archivos-detalle-requerimiento'] span[class='buttonText']").textContent = 'Agregar archivo';
         document.querySelector("div[id='modal-adjuntar-archivos-detalle-requerimiento'] div[class='bootstrap-filestyle input-group'] input[type='text']").classList.add('oculto');
-
+        
         $('#modal-adjuntar-archivos-detalle-requerimiento').modal({
             show: true,
             backdrop: 'true'
         });
-
+        
+        this.limpiarTabla('listaArchivos');
         this.listarAdjuntosDeItem();
 
     }
@@ -761,10 +813,12 @@ class RequerimientoView {
             if (tempIdRegisterActive == element.idRegister) {
                 html += `<tr>
                 <td style="text-align:left;">${element.nameFile}</td>
-                <td>
-                    <div class="btn-group" role="group">
-                        <button type="button" class="btn btn-info btn-md" name="btnDescargarArchivoItem" title="Descargar" onclick="ArchivoAdjunto.descargarArchivoItem('${element.idRegister}','${element.nameFile}');" ><i class="fas fa-file-archive"></i></button>
-                        <button type="button" class="btn btn-danger btn-md" name="btnEliminarArchivoItem" title="Eliminar" onclick="ArchivoAdjunto.eliminarArchivoItem(this,'${element.idRegister}','${element.nameFile}');" ><i class="fas fa-trash-alt"></i></button>
+                <td style="text-align:center;">
+                    <div class="btn-group" role="group">`;
+                    if(Number.isInteger(element.id)){
+                        html+=`<button type="button" class="btn btn-info btn-md" name="btnDescargarArchivoItem" title="Descargar" onclick="ArchivoAdjunto.descargarArchivoItem('${element.id}');" ><i class="fas fa-file-archive"></i></button>`;
+                    }
+                        html+=`<button type="button" class="btn btn-danger btn-md" name="btnEliminarArchivoItem" title="Eliminar" onclick="ArchivoAdjunto.eliminarArchivoItem(this,'${element.id}');" ><i class="fas fa-trash-alt"></i></button>
                     </div>
                 </td>
                 </tr>`;
@@ -978,6 +1032,220 @@ class RequerimientoView {
         }
     }
 
+    mostrarRequerimiento(data){
+        console.log(data);
+        
+        if(data.hasOwnProperty('requerimiento')){
+            var btnImprimirRequerimiento = document.getElementsByName("btn-imprimir-requerimento-pdf");
+            disabledControl(btnImprimirRequerimiento,false);
+            var btnAdjuntosRequerimiento = document.getElementsByName("btn-adjuntos-requerimiento");
+            disabledControl(btnAdjuntosRequerimiento,false);
+            var btnTrazabilidadRequerimiento = document.getElementsByName("btn-ver-trazabilidad-requerimiento");
+            disabledControl(btnTrazabilidadRequerimiento,false);
+
+            requerimientoView.mostrarCabeceraRequerimiento(data['requerimiento'][0]);
+            if(data.hasOwnProperty('det_req')){
+                requerimientoView.mostrarDetalleRequerimiento(data['det_req']);
+            } 
+        }else{
+            alert("El requerimiento que intenta cargar no existe");
+        }
+    }
+
+    mostrarCabeceraRequerimiento(data){
+        // console.log(auth_user);
+        // document.querySelector("input[name='id_usuario_session']").value =data.
+        document.querySelector("input[name='id_usuario_req']").value =data.id_usuario;
+        document.querySelector("input[name='id_estado_doc']").value =data.id_estado_doc;
+        document.querySelector("input[name='id_requerimiento']").value =data.id_requerimiento;
+        document.querySelector("span[id='codigo_requerimiento']").value =data.codigo;
+        // document.querySelector("input[name='cantidad_aprobaciones']").value =data.
+        // document.querySelector("input[name='confirmacion_pago']").value =data.
+        // document.querySelector("input[name='fecha_creacion_cc']").value =data.
+        // document.querySelector("input[name='id_cc']").value =data.
+        // document.querySelector("input[name='tipo_cuadro']").value =data.
+        // document.querySelector("input[name='tiene_transformacion']").value =data.
+        // document.querySelector("input[name='justificacion_generar_requerimiento']").value =data.
+        document.querySelector("input[name='id_grupo']").value =data.id_grupo;
+        document.querySelector("input[name='estado']").value =data.id_estado_doc;
+        document.querySelector("span[id='estado_doc']").textContent =data.estado_doc;
+        document.querySelector("input[name='fecha_requerimiento']").value =data.fecha_requerimiento;
+        document.querySelector("input[name='concepto']").value =data.concepto;
+        document.querySelector("select[name='moneda']").value =data.id_moneda;
+        document.querySelector("select[name='periodo']").value =data.id_periodo;
+        document.querySelector("select[name='prioridad']").value =data.id_prioridad;
+        document.querySelector("select[name='rol_usuario']").value =data.id_rol;
+        document.querySelector("select[name='empresa']").value =data.id_empresa;
+        requerimientoView.getDataSelectSede(data.id_empresa);
+        document.querySelector("select[name='sede']").value =data.id_sede;
+        document.querySelector("input[name='fecha_entrega']").value =data.fecha_entrega;
+        document.querySelector("select[name='rol_aprobante']").value =data.rol_aprobante_id;
+        document.querySelector("select[name='tipo_requerimiento']").value =data.id_tipo_requerimiento;
+        document.querySelector("input[name='id_trabajador']").value =data.trabajador_id;
+        document.querySelector("input[name='nombre_trabajador']").value =data.nombre_trabajador;
+        document.querySelector("select[name='fuente_id']").value =data.fuente_id;
+        document.querySelector("select[name='fuente_det_id']").value =data.fuente_det_id;
+        // document.querySelector("input[name='montoMoneda']").textContent =data.
+        document.querySelector("input[name='monto']").value =data.monto;
+        document.querySelector("select[name='id_almacen']").value =data.id_almacen;
+        // document.querySelector("input[name='descripcion_grupo']").value =data.
+        document.querySelector("input[name='codigo_proyecto']").value =data.codigo_proyecto;
+        document.querySelector("select[name='id_proyecto']").value =data.id_proyecto;
+        document.querySelector("select[name='tipo_cliente']").value =data.tipo_cliente;
+        document.querySelector("input[name='id_cliente']").value =data.id_cliente;
+        document.querySelector("input[name='cliente_ruc']").value =data.cliente_ruc;
+        document.querySelector("input[name='cliente_razon_social']").value =data.cliente_razon_social;
+        document.querySelector("input[name='id_persona']").value =data.id_persona;
+        document.querySelector("input[name='dni_persona']").value =data.dni_persona;
+        document.querySelector("input[name='nombre_persona']").value =data.nombre_persona;
+        document.querySelector("input[name='ubigeo']").value =data.id_ubigeo_entrega;
+        document.querySelector("input[name='name_ubigeo']").value =data.name_ubigeo;
+        document.querySelector("input[name='telefono_cliente']").value =data.telefono;
+        document.querySelector("input[name='email_cliente']").value =data.email;
+        document.querySelector("input[name='direccion_entrega']").value =data.direccion_entrega;
+        // document.querySelector("input[name='nombre_contacto']").value =data.
+        // document.querySelector("input[name='cargo_contacto']").value =data.
+        // document.querySelector("input[name='email_contacto']").value =data.
+        // document.querySelector("input[name='telefono_contacto']").value =data.
+        // document.querySelector("input[name='direccion_contacto']").value =data.
+        document.querySelector("textarea[name='observacion']").value =data.observacion;
+
+        
+        if((data.adjuntos).length >0){
+            (data.adjuntos).forEach(element => {
+                tempArchivoAdjuntoRequerimientoList.push({
+                    id: element.id_adjunto,
+                    category: element.categoria_adjunto_id,
+                    nameFile: element.archivo,
+                    typeFile: null,
+                    sizeFile: null,
+                    file: []
+                });
+
+            });
+            ArchivoAdjunto.updateContadorTotalAdjuntosRequerimiento();
+
+        }
+    }
+
+
+
+    mostrarDetalleRequerimiento(data){
+        vista_extendida();
+        for (let i = 0; i < data.length; i++) {
+            if(data[i].id_tipo_item==1){ // producto
+                document.querySelector("tbody[id='body_detalle_requerimiento']").insertAdjacentHTML('beforeend', `<tr style="text-align:center">
+                <td></td>
+                <td><p class="descripcion-partida" data-id-partida="${data[i].id_partida}" data-presupuesto-total="${data[i].presupuesto_total_partida}" title="${data[i].codigo_partida !=null?data[i].codigo_partida:''}" >${data[i].descripcion_partida !=null?data[i].descripcion_partida:'(NO SELECCIONADO)'}</p><button type="button" class="btn btn-xs btn-info" name="partida" onclick="requerimientoView.cargarModalPartidas(this)">Seleccionar</button> 
+                    <div class="form-group">
+                        <input type="text" class="partida" name="idPartida[]" value="${data[i].id_partida}" hidden>
+                    </div>
+                </td>
+                <td><p class="descripcion-centro-costo" title="${data[i].codigo_centro_costo !=null?data[i].codigo_centro_costo:''}">${data[i].descripcion_centro_costo !=null?data[i].descripcion_centro_costo:'(NO SELECCIONADO)'}</p><button type="button" class="btn btn-xs btn-primary" name="centroCostos" onclick="requerimientoView.cargarModalCentroCostos(this)" ${tempCentroCostoSelected !=undefined?'disabled':''} title="${tempCentroCostoSelected !=undefined?'El centro de costo esta asignado a un proyecto':''}" >Seleccionar</button> 
+                    <div class="form-group">
+                        <input type="text" class="centroCosto" name="idCentroCosto[]" value="${data[i].id_centro_costo}" hidden>
+                    </div>
+                </td>
+                <td><input class="form-control input-sm" type="text" name="partNumber[]" placeholder="Part number" value="${data[i].part_number!=null?data[i].part_number:''}"></td>
+                <td>
+                    <div class="form-group">
+                        <textarea class="form-control input-sm descripcion" name="descripcion[]" placeholder="Descripción" value="${data[i].descripcion!=null?data[i].descripcion:''}" onkeyup ="requerimientoView.updateDescripcionItem(this);">${data[i].descripcion!=null?data[i].descripcion:''}"</textarea></td>
+                    </div>
+                <td><select name="unidad[]" class="form-control input-sm" value="${data[i].id_unidad_medida}" >${document.querySelector("select[id='selectUnidadMedida']").innerHTML}</select></td>
+                <td>
+                    <div class="form-group">
+                        <input class="form-control input-sm cantidad text-right" type="number" min="1" name="cantidad[]"  value="${data[i].cantidad}" onkeyup ="requerimientoView.updateSubtotal(this); requerimientoView.updateCantidadItem(this); requerimientoView.calcularPresupuestoUtilizadoYSaldoPorPartida();" placeholder="Cantidad">
+                    </div>
+                </td>
+                <td>
+                    <div class="form-group">
+                        <input class="form-control input-sm precio text-right" type="number" min="0" name="precioUnitario[]" value="${data[i].precio_unitario}" onkeyup="requerimientoView.updateSubtotal(this); requerimientoView.updatePrecioItem(this); requerimientoView.calcularPresupuestoUtilizadoYSaldoPorPartida();" placeholder="Precio U."></td>
+                    </div>  
+                <td style="text-align:right;"><span class="moneda" name="simboloMoneda[]">S/</span><span class="subtotal" name="subtotal[]">0.00</span></td>
+                <td><textarea class="form-control input-sm" name="motivo[]"  value="${data[i].motivo!=null?data[i].motivo:''}" placeholder="Motivo de requerimiento de item (opcional)">${data[i].motivo!=null?data[i].motivo:''}</textarea></td>
+                <td>
+                    <div class="btn-group" role="group">
+                        <input type="hidden" class="tipoItem" name="tipoItem[]" value="1">
+                        <input type="hidden" class="idRegister" name="idRegister[]" value="${data[i].id_detalle_requerimiento}">
+                        <button type="button" class="btn btn-warning btn-xs" name="btnAdjuntarArchivoItem[]" title="Adjuntos" onclick="requerimientoView.adjuntarArchivoItem(this)" >
+                            <i class="fas fa-paperclip"></i>
+                            <span class="badge" name="cantidadAdjuntosItem" style="position:absolute; top:-10px; left:-10px; border: solid 0.1px;">0</span>    
+                        </button> 
+                        <button type="button" class="btn btn-danger btn-xs" name="btnEliminarItem[]" title="Eliminar" onclick="requerimientoView.eliminarItem(this)" ><i class="fas fa-trash-alt"></i></button>
+                    </div>
+                </td>
+                </tr>`);
+            }else{ // servicio
+                document.querySelector("tbody[id='body_detalle_requerimiento']").insertAdjacentHTML('beforeend', `<tr style="text-align:center">
+                <td></td>
+                <td><p class="descripcion-partida" data-id-partida="${data[i].id_partida}" data-presupuesto-total="${data[i].presupuesto_total_partida}" title="${data[i].codigo_partida !=null?data[i].codigo_partida:''}" >${data[i].descripcion_partida !=null?data[i].descripcion_partida:'(NO SELECCIONADO)'}</p><button type="button" class="btn btn-xs btn-info" name="partida" onclick="requerimientoView.cargarModalPartidas(this)">Seleccionar</button> 
+                    <div class="form-group">
+                        <input type="text" class="partida" name="idPartida[]" value="${data[i].id_partida}" hidden>
+                    </div>
+                </td>
+                <td><p class="descripcion-centro-costo" title="${data[i].codigo_centro_costo !=null?data[i].codigo_centro_costo:''}">${data[i].descripcion_centro_costo !=null?data[i].descripcion_centro_costo:'(NO SELECCIONADO)'}</p><button type="button" class="btn btn-xs btn-primary" name="centroCostos" onclick="requerimientoView.cargarModalCentroCostos(this)" ${tempCentroCostoSelected !=undefined?'disabled':''} title="${tempCentroCostoSelected !=undefined?'El centro de costo esta asignado a un proyecto':''}" >Seleccionar</button> 
+                    <div class="form-group">
+                        <input type="text" class="centroCosto" name="idCentroCosto[]" value="${data[i].id_centro_costo}" hidden>
+                    </div>
+                </td>
+                <td>(Servicio)<input type="hidden" name="partNumber[]"></td>
+                <td>
+                    <div class="form-group">
+                    <textarea class="form-control input-sm descripcion" name="descripcion[]" placeholder="Descripción" value="${data[i].descripcion!=null?data[i].descripcion:''}" onkeyup ="requerimientoView.updateDescripcionItem(this);">${data[i].descripcion!=null?data[i].descripcion:''}"</textarea></td>
+                    </div>
+                <td><select name="unidad[]" class="form-control input-sm" value="${data[i].id_unidad_medida}" >${document.querySelector("select[id='selectUnidadMedida']").innerHTML}</select></td>
+                <td>
+                    <div class="form-group">
+                        <input class="form-control input-sm cantidad text-right" type="number" min="1" name="cantidad[]"  value="${data[i].cantidad}" onkeyup ="requerimientoView.updateSubtotal(this); requerimientoView.updateCantidadItem(this); requerimientoView.calcularPresupuestoUtilizadoYSaldoPorPartida();" placeholder="Cantidad">
+                    </div>
+                </td>
+                <td>
+                    <div class="form-group">
+                        <input class="form-control input-sm precio text-right" type="number" min="0" name="precioUnitario[]" value="${data[i].precio_unitario}" onkeyup="requerimientoView.updateSubtotal(this); requerimientoView.updatePrecioItem(this); requerimientoView.calcularPresupuestoUtilizadoYSaldoPorPartida();" placeholder="Precio U."></td>
+                    </div>  
+                <td style="text-align:right;"><span class="moneda" name="simboloMoneda[]">S/</span><span class="subtotal" name="subtotal[]">0.00</span></td>
+                <td><textarea class="form-control input-sm" name="motivo[]"  value="${data[i].motivo!=null?data[i].motivo:''}" placeholder="Motivo de requerimiento de item (opcional)">${data[i].motivo!=null?data[i].motivo:''}</textarea></td>
+                <td>
+                    <div class="btn-group" role="group">
+                        <input type="hidden" class="tipoItem" name="tipoItem[]" value="1">
+                        <input type="hidden" class="idRegister" name="idRegister[]" value="${data[i].id_detalle_requerimiento}">
+                        <button type="button" class="btn btn-warning btn-xs" name="btnAdjuntarArchivoItem[]" title="Adjuntos" onclick="requerimientoView.adjuntarArchivoItem(this)" >
+                            <i class="fas fa-paperclip"></i>
+                            <span class="badge" name="cantidadAdjuntosItem" style="position:absolute; top:-10px; left:-10px; border: solid 0.1px;">0</span>    
+                        </button> 
+                        <button type="button" class="btn btn-danger btn-xs" name="btnEliminarItem[]" title="Eliminar" onclick="requerimientoView.eliminarItem(this)" ><i class="fas fa-trash-alt"></i></button>
+                    </div>
+                </td>
+                </tr>`);
+            } 
+            
+        }
+        this.updateContadorItem();
+        this.autoUpdateSubtotal();
+        this.calcularTotal();
+        this.calcularPresupuestoUtilizadoYSaldoPorPartida();
+ 
+            data.forEach(element => {
+                if(element.adjuntos.length >0){
+                    (element.adjuntos).forEach(adjunto => {
+                        tempArchivoAdjuntoItemList.push({
+                            id: adjunto.id_adjunto,
+                            idRegister: adjunto.id_detalle_requerimiento,
+                            nameFile: adjunto.archivo,
+                            typeFile: null,
+                            sizeFile: null,
+                            file: []
+                        });
+                    });
+
+                }
+
+            });
+
+        ArchivoAdjunto.updateContadorTotalAdjuntosPorItem();
+
+    }
+
 }
 
 const requerimientoView = new RequerimientoView();
@@ -1054,7 +1322,6 @@ class ArchivoAdjunto {
         </td>
         <td style="text-align:center;">
             <div class="btn-group" role="group">
-                <button type="button" class="btn btn-info btn-md" name="btnDescargarArchivoRequerimiento" title="Descargar" onclick="ArchivoAdjunto.descargarArchivoRequerimieto('${id}');" ><i class="fas fa-file-archive"></i></button>
                 <button type="button" class="btn btn-danger btn-md" name="btnEliminarArchivoRequerimiento" title="Eliminar" onclick="ArchivoAdjunto.eliminarArchivoRequerimiento(this,'${id}');" ><i class="fas fa-trash-alt"></i></button>
             </div>
         </td>
@@ -1080,7 +1347,6 @@ class ArchivoAdjunto {
         <td  style="text-align:left;">${nameFile}</td>
         <td style="text-align:center;">
             <div class="btn-group" role="group">
-                <button type="button" class="btn btn-info btn-md" name="btRequerimietocargarArchivoItem" title="Descargar" onclick="ArchivoAdjunto.descargarArchivoItem('${id}');" ><i class="fas fa-file-archive"></i></button>
                 <button type="button" class="btn btn-danger btn-md" name="btnEliminarArchivoItem" title="Eliminar" onclick="ArchivoAdjunto.eliminarArchivoItem(this,'${id}');" ><i class="fas fa-trash-alt"></i></button>
             </div>
         </td>
@@ -1088,6 +1354,15 @@ class ArchivoAdjunto {
         `);
     }
 
+    static descargarArchivoRequerimieto(id) {
+        if(tempArchivoAdjuntoRequerimientoList.length>0){
+            tempArchivoAdjuntoRequerimientoList.forEach(element => {
+                if(element.id == id){
+                    window.open("/files/logistica/requerimiento/"+element.nameFile);
+                }
+            });     
+        }
+    }
     static eliminarArchivoRequerimiento(obj, id) {
         // console.log('eliminar archivo ' + idRegister + nameFile);
         obj.closest("tr").remove();
@@ -1099,6 +1374,16 @@ class ArchivoAdjunto {
         obj.closest("tr").remove();
         tempArchivoAdjuntoItemList = tempArchivoAdjuntoItemList.filter((element, i) => element.id != id);
         ArchivoAdjunto.updateContadorTotalAdjuntosPorItem();
+    }
+
+    static descargarArchivoItem(id){
+        if(tempArchivoAdjuntoItemList.length>0){
+            tempArchivoAdjuntoItemList.forEach(element => {
+                if(element.id == id){
+                    window.open("/files/logistica/detalle_requerimiento/"+element.nameFile);
+                }
+            });     
+        }
     }
 
     static updateContadorTotalAdjuntosRequerimiento() {
@@ -1186,62 +1471,102 @@ class ArchivoAdjunto {
 
 class Historial extends RequerimientoView{
     mostrarHistorial(){
-        $('#modal-requerimiento').modal({
+        $('#modal-historial-requerimiento').modal({
             show: true,
             backdrop: 'true'
         });
-        document.querySelector("div[id='modal-requerimiento'] input[id='checkViewTodos']").checked = false; //default false
-        listarRequerimiento('ONLY_ACTIVOS');
+
+        requerimientoCtrl.getListadoElaborados("ME",null, null, null,null, null).then(function (res) {
+            historialRequerimiento.construirTablaHistorialRequerimientosElaborados(res['data']);
+        }).catch(function (err) {
+            console.log(err)
+        })
     }
 
-    listarRequerimiento(viewAnulados) {
-    
-        let url='mostrar-requerimiento/'+viewAnulados;
+    construirTablaHistorialRequerimientosElaborados(data){
         var vardataTables = funcDatatables();
-        $('#listaRequerimiento').dataTable({
-            bDestroy: true,
-            order: [[7, 'desc']],
-            info:     true,
-            iDisplayLength:10,
-            paging:   true,
-            searching: true,
-            language: vardataTables[0],
-            processing: true,
-            bDestroy: true,
-            ajax:url,
-            columns: [
-                {'data': 'id_requerimiento'},
-                {'data': 'codigo'},
-                {'data': 'tipo_req_desc'},
-                {'data': 'tipo_cliente_desc'},
-                {'data': 'alm_req_concepto'},
-                {'render':
-                    function (data, type, row, meta){
-                        let cliente = '';
-                        if(row.id_cliente != null){
-                            cliente = row.cliente_razon_social;
-                        } else 
-                        if(row.id_persona != null){
-                            cliente = row.nombre_persona;
-                        }else 
-                        if(row.id_almacen != null){
-                            cliente = row.almacen_solicitante;
-                        } 
-                        
-                        return cliente;
-                    }
-                },
-                {'data': 'usuario'},
-                {'data': 'fecha_requerimiento'},
-                {'data': 'estado_doc'}
+        $('#listaRequerimiento').DataTable({
+            'dom': vardataTables[1],
+            'buttons': [],
+            'language': vardataTables[0],
+            'order': [[10, 'desc']],
+            'bLengthChange': false,
+            'serverSide': false,
+            'destroy': true,
+            'data': data,
+            'columns': [
+                { 'data': 'priori', 'name': 'adm_prioridad.descripcion', 'className': 'text-center' },
+                { 'data': 'codigo', 'name': 'codigo', 'className': 'text-center' },
+                { 'data': 'concepto', 'name': 'concepto' },
+                { 'data': 'fecha_entrega', 'name': 'fecha_entrega', 'className': 'text-center' },
+                { 'data': 'tipo_requerimiento', 'name': 'alm_tp_req.descripcion', 'className': 'text-center' },
+                { 'data': 'razon_social', 'name': 'adm_contri.razon_social', 'className': 'text-center' },
+                { 'data': 'grupo', 'name': 'adm_grupo.descripcion' },
+                { 'data': 'division', 'name': 'adm_flujo.nombre' },
+                { 'data': 'estado_doc', 'name': 'adm_estado_doc.estado_doc' },
+                { 'data': 'fecha_registro', 'name': 'alm_req.fecha_registro' }
             ],
-            'columnDefs': [{ 'aTargets': [0], 'sClass': 'invisible'}]
+            'columnDefs': [
+                {
+                    'render': function (data, type, row) {
+                        if (row['priori'] == 'Normal') {
+                            return '<center> <i class="fas fa-thermometer-empty green"  data-toggle="tooltip" data-placement="right" title="Normal" ></i></center>';
+                        } else if (row['priori'] == 'Media') {
+                            return '<center> <i class="fas fa-thermometer-half orange"  data-toggle="tooltip" data-placement="right" title="Alta"  ></i></center>';
+                        } else if (row['Alta']) {
+                            return '<center> <i class="fas fa-thermometer-full red"  data-toggle="tooltip" data-placement="right" title="Crítico"  ></i></center>';
+                        } else {
+                            return '';
+                        }
+                    }, targets: 0
+                },
+                {
+                    'render': function (data, type, row) {
+                        let containerOpenBrackets = '<center><div class="btn-group" role="group" style="margin-bottom: 5px;">';
+                        let containerCloseBrackets = '</div></center>';
+                        let btnSeleccionar = '<button type="button" class="btn btn-xs btn-success" title="Seleccionar" onClick="historialRequerimiento.cargarRequerimiento(' + row['id_requerimiento'] + ');">Seleccionar</button>';
+                        return containerOpenBrackets + btnSeleccionar + containerCloseBrackets;
+                    }, targets: 10
+                },
+            ],
+            "createdRow": function (row, data, dataIndex) {
+                if (data.estado == 2) {
+                    $(row).css('color', '#4fa75b');
+                }
+                if (data.estado == 3) {
+                    $(row).css('color', '#ee9b1f');
+                }
+                if (data.estado == 7) {
+                    $(row).css('color', '#d92b60');
+                }
+            },
+            'initComplete': function () {
+            }
         });
-    
-        // let tablelistareq = document.getElementById(
-        //     'listaRequerimiento_wrapper'
-        // );
-        // tablelistareq.childNodes[0].childNodes[0].hidden = true;
+
+        $('#ListaReq').DataTable().on("draw", function () {
+            resizeSide();
+        });
+
+        $('#ListaReq tbody').on('click', 'tr', function () {
+            if ($(this).hasClass('eventClick')) {
+                $(this).removeClass('eventClick');
+            } else {
+                $('#ListaReq').dataTable().$('tr.eventClick').removeClass('eventClick');
+                $(this).addClass('eventClick');
+            }
+        });
+    }
+
+    cargarRequerimiento(idRequerimiento){
+        $('#modal-historial-requerimiento').modal('hide');
+
+        requerimientoCtrl.getRequerimiento(idRequerimiento).then(function (res) {
+            requerimientoView.mostrarRequerimiento(res);
+            
+        }).catch(function (err) {
+            console.log(err)
+        });
     }
 }
 
@@ -1249,8 +1574,8 @@ const historialRequerimiento = new Historial();
 
 
 class Listado extends RequerimientoView {
-    mostrar(idEmpresa,idSede,idGrupo,idPrioridad) {
-        requerimientoCtrl.getListadoElaborados(idEmpresa, idSede, idGrupo, idPrioridad).then(function (res) {
+    mostrar(meOrAll,idEmpresa,idSede,idGrupo,division,idPrioridad) {
+        requerimientoCtrl.getListadoElaborados(meOrAll,idEmpresa, idSede, idGrupo,division, idPrioridad).then(function (res) {
             listadoRequerimiento.construirTablaListadoRequerimientosElaborados(res['data']);
         }).catch(function (err) {
             console.log(err)
@@ -1264,7 +1589,8 @@ class Listado extends RequerimientoView {
             'dom': vardataTables[1],
             'buttons': vardataTables[2],
             'language': vardataTables[0],
-            'order': [[1, 'desc']],
+            'order': [[10, 'desc']],
+            'bLengthChange': false,
             'serverSide': false,
             'destroy': true,
             'data': data,
@@ -1276,8 +1602,10 @@ class Listado extends RequerimientoView {
                 { 'data': 'tipo_requerimiento', 'name': 'alm_tp_req.descripcion', 'className': 'text-center' },
                 { 'data': 'razon_social', 'name': 'adm_contri.razon_social', 'className': 'text-center' },
                 { 'data': 'grupo', 'name': 'adm_grupo.descripcion' },
+                { 'data': 'division', 'name': 'adm_flujo.nombre' },
                 { 'data': 'nombre_usuario', 'name': 'nombre_usuario' },
-                { 'data': 'estado_doc', 'name': 'adm_estado_doc.estado_doc' }
+                { 'data': 'estado_doc', 'name': 'adm_estado_doc.estado_doc' },
+                { 'data': 'fecha_registro', 'name': 'alm_req.fecha_registro' }
             ],
             'columnDefs': [
                 {
@@ -1304,7 +1632,7 @@ class Listado extends RequerimientoView {
                         let btnDetalleRapido = '<button type="button" class="btn btn-xs btn-info" title="Ver detalle" onClick="aprobarRequerimiento.viewFlujo(' + row['id_requerimiento'] + ', ' + row['id_doc_aprob'] + ');"><i class="fas fa-eye fa-xs"></i></button>';
                         let btnTracking = '<button type="button" class="btn btn-xs bg-primary" title="Explorar Requerimiento" onClick="aprobarRequerimiento.tracking_requerimiento(' + row['id_requerimiento'] + ');"><i class="fas fa-globe fa-xs"></i></button>';
                         return containerOpenBrackets + btnDetalleRapido + btnEditar + btnTracking + containerCloseBrackets;
-                    }, targets: 9
+                    }, targets: 11
                 },
             ],
             "createdRow": function (row, data, dataIndex) {
@@ -1358,8 +1686,27 @@ class Listado extends RequerimientoView {
     }
 
     handleChangeFiltroListado(){
-        this.mostrar(document.querySelector("select[name='id_empresa_select']").value,document.querySelector("select[name='id_sede_select']").value,document.querySelector("select[name='id_grupo_select']").value,document.querySelector("select[name='id_prioridad_select']").value);
+        this.mostrar(document.querySelector("select[name='mostrar_me_all']").value,document.querySelector("select[name='id_empresa_select']").value,document.querySelector("select[name='id_sede_select']").value,document.querySelector("select[name='id_grupo_select']").value,document.querySelector("select[name='division_select']").value,document.querySelector("select[name='id_prioridad_select']").value);
 
+    }
+
+    handleChangeGrupo(event){
+        requerimientoCtrl.getListaDivisionesDeGrupo(event.target.value).then(function (res) {
+            listadoRequerimiento.construirSelectDivision(res);
+        }).catch(function (err) {
+            console.log(err)
+        })
+    }
+    construirSelectDivision(data){
+        let selectSede = document.querySelector('div[type="lista_requerimiento"] select[name="division_select"]');
+        let html = '<option value="0">Todas</option>';
+        data.forEach(element => {
+            html += '<option value="' + element.nombre + '">' + element.nombre + '</option>'
+        });
+    
+        selectSede.innerHTML = html;
+        document.querySelector('div[type="lista_requerimiento"] select[name="division_select"]').removeAttribute('disabled');
+        
     }
 
 }

@@ -24,7 +24,16 @@ Listado de requerimientos
 
                 <form id="form-requerimientosElaborados" type="register">
                     <div class="row">
-                        <div class="col-md-3">
+                        <div class="col-md-2">
+                            <h5>Mostar</h5>
+                            <div style="display:flex;">
+                                <select class="form-control" name="mostrar_me_all" onChange="listadoRequerimiento.handleChangeFiltroListado();">
+                                    <option value="ME">Elaborados por mi</option>
+                                    <option value="ALL">Todos</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
                             <h5>Empresa</h5>
                             <div style="display:flex;">
                                 <select class="form-control" name="id_empresa_select" onChange="listadoRequerimiento.handleChangeFilterEmpresaListReqByEmpresa(event); listadoRequerimiento.handleChangeFiltroListado();">
@@ -35,7 +44,7 @@ Listado de requerimientos
                                 </select>
                             </div>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-2">
                             <h5>Sede</h5>
                             <div style="display:flex;">
                                 <select class="form-control" name="id_sede_select" onChange="listadoRequerimiento.handleChangeFiltroListado();">
@@ -43,10 +52,10 @@ Listado de requerimientos
                                 </select>
                             </div>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-2">
                             <h5>Grupo</h5>
                             <div style="display:flex;">
-                                <select class="form-control" name="id_grupo_select" onChange="listadoRequerimiento.handleChangeFiltroListado();">
+                                <select class="form-control" name="id_grupo_select" onChange="listadoRequerimiento.handleChangeFiltroListado(); listadoRequerimiento.handleChangeGrupo(event);">
                                     <option value="0">Todas</option>
                                     @foreach ($grupos as $grupo)
                                     <option value="{{$grupo->id_grupo}}" >{{$grupo->descripcion}}</option>
@@ -54,7 +63,15 @@ Listado de requerimientos
                                 </select>
                             </div>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-2">
+                            <h5>División</h5>
+                            <div style="display:flex;">
+                                <select class="form-control" name="division_select" onChange="listadoRequerimiento.handleChangeFiltroListado();">
+                                    <option value="0">Todas</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
                             <h5>Prioridad</h5>
                             <div style="display:flex;">
                                 <select class="form-control" name="id_prioridad_select" onChange="listadoRequerimiento.handleChangeFiltroListado();">
@@ -77,8 +94,10 @@ Listado de requerimientos
                                 <th class="text-center">Tipo</th>
                                 <th class="text-center" style="width:10%">Empresa</th>
                                 <th class="text-center">Grupo</th>
+                                <th class="text-center">División</th>
                                 <th class="text-center">Creado por</th>
                                 <th class="text-center" style="width:8%">Estado</th>
+                                <th class="text-center" style="width:8%">Creado</th>
                                 <th class="text-center" style="width:5%">Acción</th>
                             </tr>
                         </thead>
@@ -149,7 +168,7 @@ Listado de requerimientos
     });
 
     window.onload = function() {
-        listadoRequerimiento.mostrar();
+        listadoRequerimiento.mostrar('ME');
     };
 
 </script>
