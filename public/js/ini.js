@@ -125,6 +125,9 @@ $(document).ready(function(){
 				else if (page == 'propuesta'){
 					nuevo_propuesta();
 				}
+				else if (page == 'prorrateo'){
+					nuevo_prorrateo();
+				}
 				
             break;
             case 'btnGuardar':

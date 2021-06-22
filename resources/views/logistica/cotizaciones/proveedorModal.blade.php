@@ -19,13 +19,13 @@
                     <tbody></tbody>
                 </table>
             </div>
-            <div class="modal-footer">
+            <!-- <div class="modal-footer">
                 <label id="id_proveedor" style="display: none;"></label>
                 <label id="id_contribuyente" style="display: none;"></label>
                 <label id="ruc" style="display: none;"></label>
                 <label id="select_razon_social" style="display: none;"></label>
                 <button class="btn btn-sm btn-success" onClick="selectProveedor();">Aceptar</button>
-            </div>
+            </div> -->
         </div>
     </div>
 </div>
