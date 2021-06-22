@@ -680,7 +680,7 @@ class ListaOrdenView {
             'language' : vardataTables[0],
             'dom': 'Bfrtip',
             'scrollX': false,
-            'order': [10, 'desc'],
+            'order': [13, 'desc'],
             'data': data,
             'columns': [
                 { render: function (data, type, row) {     
