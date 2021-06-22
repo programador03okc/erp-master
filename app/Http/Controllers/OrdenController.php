@@ -1028,6 +1028,8 @@ class OrdenController extends Controller
                     'descripcion_sede_empresa'=> $element->descripcion_sede_empresa,
                     'nro_documento'=> $element->nro_documento, 
                     'razon_social'=> $element->razon_social,
+                    'id_moneda'=> $element->id_moneda, 
+                    'tipo_cambio_compra'=> $element->tipo_cambio_compra, 
                     'moneda_simbolo'=> $element->moneda_simbolo, 
                     'incluye_igv'=> $element->incluye_igv,
                     'leadtime'=> $fechaLlegada->toDateString(),
@@ -2587,7 +2589,8 @@ class OrdenController extends Controller
                     'en_almacen' => false,
                     'estado' => 1,
                     'codigo_softlink' => ($request->codigo_orden!==null ? $request->codigo_orden : ''),
-                    'observacion' => isset($request->observacion)?$request->observacion:null
+                    'observacion' => isset($request->observacion)?$request->observacion:null,
+                    'tipo_cambio_compra' =>  isset($request->tipo_cambio_compra)?$request->tipo_cambio_compra:true
                 ],
                 'id_orden_compra'
             );
@@ -3566,7 +3569,6 @@ class OrdenController extends Controller
         // return Orden::reporteListaOrdenes();
         return Excel::download(new ListOrdenesHeadExport, 'lista_ordenes.xlsx');
     }
-
 
 
 }

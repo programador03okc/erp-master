@@ -7,7 +7,10 @@ class OrdenCtrl{
     init() {
         this.ordenView.init();
     }
+    getTipoCambioCompra(fecha){
+        return ordenModel.getTipoCambioCompra(fecha);
 
+    }
     // limpiar tabla
     limpiarTabla(identificador){
         const customTabla = new CustomTabla(identificador); //CustomTabla.js

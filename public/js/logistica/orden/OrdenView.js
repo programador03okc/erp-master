@@ -3,6 +3,7 @@ var vardataTables = funcDatatables();
 var simboloMoneda='';
 class OrdenView {
     init() {
+        this.getTipoCambioCompra();
         // this.renderCrearOrdenModule(null,null);
         var reqTrueList = JSON.parse(sessionStorage.getItem('reqCheckedList'));
         var tipoOrden = sessionStorage.getItem('tipoOrden');
@@ -21,6 +22,18 @@ class OrdenView {
             changeStateButton('historial');
 
         }
+    }
+    getTipoCambioCompra(){
+
+        const now = new Date();
+        now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+        let fechaHoy =now.toISOString().slice(0, 10)
+        
+        ordenCtrl.getTipoCambioCompra(fechaHoy).then(function(tipoCambioCompra) {
+                document.querySelector("input[name='tipo_cambio_compra']").value= tipoCambioCompra;
+        }).catch(function(err) {
+            console.log(err)
+        })
     }
     changeMoneda(event){
         simboloMoneda = event.options[event.selectedIndex].dataset.simboloMoneda;
@@ -394,6 +407,7 @@ class OrdenView {
 
     get_header_orden_requerimiento(){
         let id_orden = document.querySelector("div[type='crear-orden-requerimiento'] input[name='id_orden']").value;
+        let tipo_cambio_compra = document.querySelector("div[type='crear-orden-requerimiento'] input[name='tipo_cambio_compra']").value;
         let id_tp_documento = document.querySelector("div[type='crear-orden-requerimiento'] select[name='id_tp_documento']").value;
     
         let id_moneda = document.querySelector("div[type='crear-orden-requerimiento'] select[name='id_moneda']").value;
@@ -421,6 +435,7 @@ class OrdenView {
     
         let data = {
             'id_orden':id_orden,
+            'tipo_cambio_compra':tipo_cambio_compra,
             'id_tp_documento':id_tp_documento,
             'id_moneda':id_moneda, 
             'codigo_orden':codigo_orden, 

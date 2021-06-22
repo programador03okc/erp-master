@@ -475,7 +475,6 @@ class ListaOrdenView {
                     }
                 },
                 {'data': 'descripcion_sede_empresa'},
-                {'data': 'moneda_simbolo'},
                 {'data': 'condicion'},
                 {'data': 'fecha'},
                 {'render':
@@ -507,7 +506,16 @@ class ListaOrdenView {
                 },
                 {'render':
                     function (data, type, row, meta){
-                        return (parseFloat(row.monto_total_orden)).toFixed(2);
+                        let total=0;
+                        if(row.id_moneda ==2){
+                            if(row.tipo_cambio_compra >0){
+                                total = '<span title="$'+row.monto_total_orden+'">'+"S/"+((row.monto_total_orden *row.tipo_cambio_compra).toFixed(2))+'</span>';
+                            }else{
+                                total =(row.moneda_simbolo+((parseFloat(row.monto_total_orden).toFixed(2))));
+
+                            }
+                        }
+                        return total;
                     }
                 },
                 {'render':
@@ -563,10 +571,10 @@ class ListaOrdenView {
             },
             "createdRow": function (row, data, dataIndex) {
                
+                    $(row.childNodes[14]).css('background-color', '#b4effd');
+                    $(row.childNodes[14]).css('font-weight', 'bold');
                     $(row.childNodes[15]).css('background-color', '#b4effd');
                     $(row.childNodes[15]).css('font-weight', 'bold');
-                    $(row.childNodes[16]).css('background-color', '#b4effd');
-                    $(row.childNodes[16]).css('font-weight', 'bold');
                 
 
             }

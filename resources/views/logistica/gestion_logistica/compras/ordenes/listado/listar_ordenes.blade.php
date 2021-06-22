@@ -52,7 +52,6 @@
                         <th>Fecha Requerimiento</th>
                         <th style="width:20%">Leadtime</th>
                         <th>Empresa / Sede</th>
-                        <th style="width:5%">Moneda</th>
                         <th>Condición</th>
                         <th>Fecha em.</th>
                         <th style="width:5%">Tiem. Atenc. Log.</th>

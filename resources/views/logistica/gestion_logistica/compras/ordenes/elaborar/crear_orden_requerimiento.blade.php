@@ -20,6 +20,7 @@
 <div class="page-main" type="crear-orden-requerimiento">
     <form id="form-crear-orden-requerimiento" type="register" form="formulario">
     <input type="hidden" name="id_orden" primary="ids">
+    <input type="hidden" name="tipo_cambio_compra">
 
         <div class="row">
             <div class="col-md-12">
