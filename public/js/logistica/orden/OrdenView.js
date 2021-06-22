@@ -165,9 +165,9 @@ class OrdenView {
                 {'render':
                     function (data, type, row, meta){
                         if(row.estado ==7){
-                            return '<input type="number" name="precio" data-id="'+(row.id)+'" placeholder="0.00" min="0"  class="form-control" data-row="'+(meta.row+1)+'" data-id_requerimiento="'+(row.id_requerimiento?row.id_requerimiento:0)+'" data-id_detalle_requerimiento="'+(row.id_detalle_requerimiento?row.id_detalle_requerimiento:0)+'" value="'+(row.precio_unitario?row.precio_unitario:"")+'" onChange="ordenCtrl.updateInputPrecio(event);" style="width:70px;" disabled/>';
+                            return '<input type="number" name="precio" data-id="'+(row.id)+'" placeholder="0.00" min="0"  class="form-control" data-row="'+(meta.row+1)+'" data-id_requerimiento="'+(row.id_requerimiento?row.id_requerimiento:0)+'" data-id_detalle_requerimiento="'+(row.id_detalle_requerimiento?row.id_detalle_requerimiento:0)+'" value="'+(row.precio_unitario?row.precio_unitario:"")+'" onChange="ordenCtrl.updateInputPrecio(event);" style="width:90px;" disabled/>';
                         }else{
-                            return '<input type="number" name="precio" data-id="'+(row.id)+'" placeholder="0.00" min="0" class="form-control" data-row="'+(meta.row+1)+'" data-id_requerimiento="'+(row.id_requerimiento?row.id_requerimiento:0)+'" data-id_detalle_requerimiento="'+(row.id_detalle_requerimiento?row.id_detalle_requerimiento:0)+'" value="'+(row.precio_unitario?row.precio_unitario:"")+'" onChange="ordenCtrl.updateInputPrecio(event);" style="width:70px;"/>';
+                            return '<input type="number" name="precio" data-id="'+(row.id)+'" placeholder="0.00" min="0" class="form-control" data-row="'+(meta.row+1)+'" data-id_requerimiento="'+(row.id_requerimiento?row.id_requerimiento:0)+'" data-id_detalle_requerimiento="'+(row.id_detalle_requerimiento?row.id_detalle_requerimiento:0)+'" value="'+(row.precio_unitario?row.precio_unitario:"")+'" onChange="ordenCtrl.updateInputPrecio(event);" style="width:90px;"/>';
                         }
                     } , 'name':'precio'
                 },
@@ -193,7 +193,9 @@ class OrdenView {
                 },
                 {'render':
                     function (data, type, row, meta){
-                        return '<div style="display:flex;"><var name="simboloMoneda"></var> <div name="subtotal" data-id="'+(row.id)+'" data-row="'+(meta.row+1)+'" data-id_requerimiento="'+(row.id_requerimiento?row.id_requerimiento:0)+'" data-id_detalle_requerimiento="'+(row.id_detalle_requerimiento?row.id_detalle_requerimiento:0)+'">'+((Math.round((row.cantidad*row.precio_unitario) * 100) / 100).toFixed(2))+'</div></div>';
+                        // return '<div style="display:flex;"><var name="simboloMoneda"></var> <div name="subtotal" data-id="'+(row.id)+'" data-row="'+(meta.row+1)+'" data-id_requerimiento="'+(row.id_requerimiento?row.id_requerimiento:0)+'" data-id_detalle_requerimiento="'+(row.id_detalle_requerimiento?row.id_detalle_requerimiento:0)+'">'+((Math.round((row.cantidad*row.precio_unitario) * 100) / 100).toFixed(2))+'</div></div>';
+                        return '<input type="number" name="subtotal" data-id="'+(row.id)+'" min="0" class="form-control" data-row="'+(meta.row+1)+'" data-id_requerimiento="'+(row.id_requerimiento?row.id_requerimiento:0)+'" data-id_detalle_requerimiento="'+(row.id_detalle_requerimiento?row.id_detalle_requerimiento:0)+'"   onchange="ordenCtrl.updateInputSubtotal(event);" value="'+((Math.round((row.cantidad*row.precio_unitario) * 100) / 100).toFixed(2))+'" style="width:90px;"/>';
+
                     } , 'name':'subtotal'
                 },
                 {'render':
@@ -229,14 +231,14 @@ class OrdenView {
                 },
                 { width: '10px', targets: 0 },
                 { width: '20px', targets: 1 },
-                { width: '20px', targets: 2 },
-                { width: '40px', targets: 3 },
-                { width: '50px', targets: 4 },
-                { width: '20px', targets: 5 },
-                { width: '20px', targets: 6, sClass: 'invisible'},
-                { width: '15px', targets: 7 },
-                { width: '20px', targets: 8 },
-                { width: '30px', targets: 9, sClass:'text-center' }
+                { width: '50px', targets: 2 },
+                { width: '10px', targets: 3 },
+                { width: '10px', targets: 4 },
+                { width: '10px', targets: 5 },
+                { width: '10px', targets: 6, sClass: 'invisible'},
+                { width: '10px', targets: 7 },
+                { width: '10px', targets: 8 },
+                { width: '5px', targets: 9, sClass:'text-center' }
             ],
             'order': [[1, "asc"]]
     
@@ -562,7 +564,8 @@ function nueva_orden(){
     document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='ubigeo_destino']").value='';
     document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='personal_autorizado_1']").value='';
     document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='personal_autorizado_2']").value='';
-    document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='nombre_persona_autorizado']").value='';
+    document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='nombre_persona_autorizado_1']").value='';
+    document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='nombre_persona_autorizado_2']").value='';
     document.querySelector("form[id='form-crear-orden-requerimiento'] span[name='codigo_orden_interno']").textContent='';
     document.querySelector("form[id='form-crear-orden-requerimiento'] textarea[name='observacion']").value='';
     document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='incluye_igv']").checked=true;

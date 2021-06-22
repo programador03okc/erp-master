@@ -2023,7 +2023,7 @@ class OrdenController extends Controller
         // $total = 0;
         $monto_neto=0;
         foreach ($ordenArray['detalle'] as $key => $data) {
-            $monto_neto += ($data['cantidad'] * $data['precio']) ;
+            $monto_neto += $data['subtotal'] ;
         }
 
         foreach ($ordenArray['detalle'] as $key => $data) {
@@ -2037,7 +2037,7 @@ class OrdenController extends Controller
             }
 
             $monto_total =($monto_neto+$igv);
-
+            // $subtotal = $data['subtotal']>0?$data['subtotal']:number_format($data['cantidad'] * $data['precio'],2,'.','');
 
             $html .= '<tr style="text-align:left">';
             // $html .= '<td>' . ($key + 1) . '</td>';
@@ -2055,7 +2055,7 @@ class OrdenController extends Controller
             $html .= '<td style="text-align:center">' . number_format($data['precio'],2,'.','') . '</td>';
             // $html .= '<td class="right">' . number_format((($data['cantidad'] * $data['precio']) - (($data['cantidad']* $data['precio'])/1.18)),2,'.','') . '</td>';
             $html .= '<td style="text-align:right"> </td>';
-            $html .= '<td style="text-align:right">' . number_format($data['cantidad'] * $data['precio'],2,'.','') . '</td>';
+            $html .= '<td style="text-align:right">' . $data['subtotal']. '</td>';
             $html .= '</tr>';
             // $total = $total + ($data['cantidad'] * $data['precio']);
         }
@@ -2614,7 +2614,6 @@ class OrdenController extends Controller
                             'id_unidad_medida'=> $d['id_unidad_medida'],
                             'precio'=> $d['precio_unitario'],
                             'descripcion_adicional'=> $d['descripcion_adicional'],
-                            // 'subtotal'=> ($d->precio_referencial * $d->cantidad),
                             'subtotal'=> $d['subtotal']?$d['subtotal']:0,
                             'tipo_item_id'=> (isset($d['id_tipo_item'])?$d['id_tipo_item']:null),
                             'estado'=> 1
