@@ -1,6 +1,13 @@
+
+let documentos = [];
+let guias_detalle = [];
+
 function nuevo_prorrateo(){
     $('#listaProrrateos tbody').html('');
     $('#listaGuiaDetalleProrrateo tbody').html('');
+    documentos = [];
+    guias_detalle = [];
+
     $('[name=id_prorrateo]').val('');
     $('[name=total_suma]').val('');
     $('[name=total_comp]').val('');
@@ -32,9 +39,6 @@ function limpiarCampos(){
     $('[name=id_tp_documento]').val('').trigger('change.select2');
     $('[name=id_contrib]').val('');
 }
-
-let documentos = [];
-let guias_detalle = [];
 
 $("#form-doc_prorrateo").on("submit", function(){
     var data = JSON.stringify($(this).serializeArray());
@@ -189,7 +193,7 @@ function mostrar_documentos(){
     let i = 0;
     let total_aplicado = 0;
 
-    let edition = ($("#form-prorrateo").attr('type') == 'edition' ? true : false);
+    // let edition = ($("#form-prorrateo").attr('type') == 'edition' ? true : false);
     
     documentos.forEach(element => {
         i++;
@@ -207,13 +211,14 @@ function mostrar_documentos(){
             <td style="display:flex;">
                 <button type="button" class="editar btn btn-primary btn-xs activation" data-toggle="tooltip" 
                     data-placement="bottom" title="Editar" onClick="editar_documento(${element.id_doc_com});"
-                    ${edition ? '' : 'disabled="true"'}>  <i class="fas fa-pen"></i></button>
+                    >  <i class="fas fa-pen"></i></button>
                 <button type="button" class="anular btn btn-danger btn-xs activation" data-toggle="tooltip" 
                     data-placement="bottom" title="Eliminar" onClick="anular_documento('${element.id_doc_com}');"
-                    ${edition ? '' : 'disabled="true"'}>  <i class="fas fa-trash"></i></button>
+                    >  <i class="fas fa-trash"></i></button>
             </td>
         </tr>`;
     });
+    // ${edition ? '' : 'disabled="true"'}
     // <i class="fas fa-pen-square icon-tabla blue visible boton" data-toggle="tooltip" data-placement="bottom" 
     // title="Editar" onClick="editar_documento('${element.id_doc_com}');"></i>
     // <i class="fas fa-trash icon-tabla red boton" data-toggle="tooltip" data-placement="bottom" 
@@ -286,7 +291,7 @@ function mostrar_guias_detalle(){
     let total_adicional = 0;
     let total_prorrateado = 0;
 
-    let edition = ($("#form-prorrateo").attr('type') == 'edition' ? true : false);
+    // let edition = ($("#form-prorrateo").attr('type') == 'edition' ? true : false);
 
     guias_detalle.forEach(element => {
 
@@ -316,12 +321,14 @@ function mostrar_guias_detalle(){
             <td style="display:flex;">
                 <button type="button" class="anular btn btn-danger btn-xs activation" data-toggle="tooltip" 
                     data-placement="bottom" title="Eliminar" onClick="anular_item('${element.id_guia_com_det}');"
-                    ${edition ? '' : 'disabled="true"'}>  <i class="fas fa-trash"></i></button>
+                    >  <i class="fas fa-trash"></i></button>
             </td>
         </tr>`;
     });
                 // <i class="fas fa-trash icon-tabla red boton" data-toggle="tooltip" data-placement="bottom" 
                 //     title="Anular" onClick="anular_item('${element.id_guia_com_det}');"></i>
+                
+                // ${edition ? '' : 'disabled="true"'}
 
             // <td style="width: 110px;"><input type="number" style="width:100px;" class="right" name="subtotal" 
             // onChange="calcula_importe('${element.id_guia_com_det}');" value="${formatDecimalDigitos(element.valorizacion,3)}" /></td>

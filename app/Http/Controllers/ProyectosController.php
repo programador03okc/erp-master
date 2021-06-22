@@ -573,10 +573,10 @@ class ProyectosController extends Controller
             $id_padre = 71;
             $count = CentroCosto::where('id_padre',$id_padre)->where('estado',1)->count();
             $nro = $count + 1;
-            $codigo = '03.03.'.(($nro<10) ? ('0'.$nro) : $nro);
+            $codigo_cc = '03.03.'.(($nro<10) ? ('0'.$nro) : $nro);
 
             $centro = CentroCosto::create([
-                'codigo' => $codigo,
+                'codigo' => $codigo_cc,
                 'descripcion' => $request->nombre_opcion,
                 'id_padre' => $id_padre,
                 'nivel' => 3,
