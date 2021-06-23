@@ -2508,6 +2508,9 @@ class AlmacenController extends Controller
                 $saldo += $d->cantidad;
                 $saldo_valor += $d->valorizacion;
 
+                $ordenes_array = [];
+                $comprobantes_array = [];
+
                 if ($d->id_guia_com_det !== null){
                     $ocs = DB::table('almacen.guia_com_det')
                     ->select('log_ord_compra.codigo as cod_orden')
@@ -2524,8 +2527,7 @@ class AlmacenController extends Controller
                     ->join('logistica.log_ord_compra','log_ord_compra.id_orden_compra','log_det_ord_compra.id_orden_compra')
                     ->where('mov_alm_det.id_mov_alm',$d->id_mov_alm)
                     ->select(['log_ord_compra.codigo'])->distinct()->get();
-
-                    $ordenes_array = [];
+                    
                     foreach ($ordenes as $oc) {
                         array_push($ordenes_array,$oc->codigo);
                     }
@@ -2548,8 +2550,7 @@ class AlmacenController extends Controller
                     'adm_contri.nro_documento','adm_contri.razon_social','log_cdn_pago.descripcion as des_condicion',
                     'doc_com.credito_dias','doc_com.sub_total','doc_com.total_igv','doc_com.total_a_pagar'])
                     ->distinct()->get();
-
-                    $comprobantes_array = [];
+                    
                     foreach ($comprobantes as $doc) {
                         array_push($comprobantes_array,$doc->serie.'-'.$doc->numero);
                     }
