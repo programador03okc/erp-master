@@ -26,6 +26,7 @@ function listarKardexGeneral(almacenes, fini, ffin){
         'buttons': vardataTables[2],
         'language' : vardataTables[0],
         // "scrollX": true,
+        'pageLength': 50,
         'ajax': {
             url:'kardex_general/'+almacenes+'/'+fini+'/'+ffin,
             dataSrc:''
