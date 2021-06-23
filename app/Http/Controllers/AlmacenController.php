@@ -2510,17 +2510,48 @@ class AlmacenController extends Controller
 
                 if ($d->id_guia_com_det !== null){
                     $ocs = DB::table('almacen.guia_com_det')
-                    ->select('alm_req.codigo as cod_req','log_ord_compra.codigo as cod_orden')
+                    ->select('log_ord_compra.codigo as cod_orden')
                     ->join('logistica.log_det_ord_compra','log_det_ord_compra.id_detalle_orden','=','guia_com_det.id_oc_det')
                     ->join('logistica.log_ord_compra','log_ord_compra.id_orden_compra','=','log_det_ord_compra.id_orden_compra')
                     // ->join('logistica.log_valorizacion_cotizacion','log_valorizacion_cotizacion.id_valorizacion_cotizacion','=','log_det_ord_compra.id_valorizacion_cotizacion')
                     // ->join('almacen.alm_det_req','alm_det_req.id_detalle_requerimiento','=','log_valorizacion_cotizacion.id_detalle_requerimiento')
-                    ->join('almacen.alm_req','alm_req.id_requerimiento','=','log_ord_compra.id_requerimiento')
+                    // ->join('almacen.alm_req','alm_req.id_requerimiento','=','log_ord_compra.id_requerimiento')
                     ->where('guia_com_det.id_guia_com_det',$d->id_guia_com_det)
-                    ->first();
-                    if (isset($ocs)){
-                        $orden = $ocs->cod_orden;
-                        $req = $ocs->cod_req;
+                    ->get();
+
+                    $ordenes=MovimientoDetalle::join('almacen.guia_com_det','guia_com_det.id_guia_com_det','mov_alm_det.id_guia_com_det')
+                    ->join('logistica.log_det_ord_compra','log_det_ord_compra.id_detalle_orden','guia_com_det.id_oc_det')   
+                    ->join('logistica.log_ord_compra','log_ord_compra.id_orden_compra','log_det_ord_compra.id_orden_compra')
+                    ->where('mov_alm_det.id_mov_alm',$d->id_mov_alm)
+                    ->select(['log_ord_compra.codigo'])->distinct()->get();
+
+                    $ordenes_array = [];
+                    foreach ($ordenes as $oc) {
+                        array_push($ordenes_array,$oc->codigo);
+                    }
+                    // if (isset($ocs)){
+                    //     $orden = $ocs->cod_orden;
+                    //     $req = $ocs->cod_req;
+                    // }
+                    $comprobantes = MovimientoDetalle::join('almacen.guia_com_det','guia_com_det.id_guia_com_det','mov_alm_det.id_guia_com_det')
+                    ->join('almacen.doc_com_det','doc_com_det.id_guia_com_det','guia_com_det.id_guia_com_det')   
+                    ->join('almacen.doc_com','doc_com.id_doc_com','doc_com_det.id_doc')
+                    ->join('logistica.log_prove','log_prove.id_proveedor','doc_com.id_proveedor')
+                    ->join('contabilidad.adm_contri','adm_contri.id_contribuyente','log_prove.id_contribuyente')
+                    ->join('configuracion.sis_moneda','sis_moneda.id_moneda','=','doc_com.moneda')
+                    ->join('logistica.log_cdn_pago','log_cdn_pago.id_condicion_pago','=','doc_com.id_condicion')
+                    ->where([['mov_alm_det.id_mov_alm','=',$d->id_mov_alm],
+                            ['mov_alm_det.estado','!=',7],
+                            ['guia_com_det.estado','!=',7],
+                            ['doc_com_det.estado','!=',7]])
+                    ->select(['doc_com.serie','doc_com.numero','doc_com.fecha_emision','sis_moneda.simbolo','doc_com.moneda',
+                    'adm_contri.nro_documento','adm_contri.razon_social','log_cdn_pago.descripcion as des_condicion',
+                    'doc_com.credito_dias','doc_com.sub_total','doc_com.total_igv','doc_com.total_a_pagar'])
+                    ->distinct()->get();
+
+                    $comprobantes_array = [];
+                    foreach ($comprobantes as $doc) {
+                        array_push($comprobantes_array,$doc->serie.'-'.$doc->numero);
                     }
                 }
             }
@@ -2561,8 +2592,8 @@ class AlmacenController extends Controller
                 "guia_ven"=>$d->guia_ven,
                 "cod_transformacion"=>$d->cod_transformacion,
                 "cod_transferencia"=>$d->cod_transferencia,
-                "orden"=>$orden,
-                "req"=>$req,
+                "orden"=>implode(', ',$ordenes_array),
+                "docs"=>implode(', ',$comprobantes_array),
             ];
             array_push($movimientos, $nuevo);
         }

@@ -15,6 +15,8 @@ function actualizarKardex(){
     console.log('fechas'+fini+'-'+ffin);
     console.log(alm);
     listarKardexGeneral(alm,fini,ffin);
+
+    $('#modal-kardex_filtro').modal('hide');
 }
 function listarKardexGeneral(almacenes, fini, ffin){
     var vardataTables = funcDatatables();
@@ -107,7 +109,7 @@ function listarKardexGeneral(almacenes, fini, ffin){
                 }
             },
             {'data': 'orden'},
-            {'data': 'req'},
+            {'data': 'docs'},
             // {'defaultContent':'<input type="checkbox"/>'},
             // {'data': 'codigo'},
             // {'render':
