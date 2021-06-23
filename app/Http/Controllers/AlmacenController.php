@@ -4602,14 +4602,27 @@ class AlmacenController extends Controller
             $doc_fecha_emision_array = [];
             $ruc = '';
             $razon_social = '';
+            $simbolo = '';
+            $moneda = '';
+            $total = '';
+            $total_igv = '';
+            $total_a_pagar = '';
+            $condicion = '';
+            $credito_dias = '';
 
             foreach ($comprobantes as $doc) {
                 array_push($comprobantes_array,$doc->serie.'-'.$doc->numero);
                 array_push($doc_fecha_emision_array,$doc->fecha_emision);
                 $ruc = ($doc->nro_documento!==null?$doc->nro_documento:'');
                 $razon_social = ($doc->razon_social!==null?$doc->razon_social:'');
+                $simbolo = ($doc->simbolo!==null?$doc->simbolo:'');
+                $moneda = ($doc->moneda!==null?$doc->moneda:'');
+                $total = ($doc->sub_total!==null?$doc->sub_total:'');
+                $total_igv = ($doc->total_igv!==null?$doc->total_igv:'');
+                $total_a_pagar = ($doc->total_a_pagar!==null?$doc->total_a_pagar:'');
+                $condicion = ($doc->condicion!==null?$doc->condicion:'');
+                $credito_dias = ($doc->credito_dias!==null?$doc->credito_dias:'');
             }
-            $fecha_doc = implode(', ',$doc_fecha_emision_array);
                 
             $nuevo = [
                 'id_mov_alm'=>$d->id_mov_alm,
@@ -4618,18 +4631,18 @@ class AlmacenController extends Controller
                 'codigo'=>$d->codigo,
                 'fecha_guia'=>$d->fecha_guia,
                 'guia'=>$d->guia,
-                'fecha_doc'=>$fecha_doc,
+                'fecha_doc'=>implode(', ',$doc_fecha_emision_array),
                 'abreviatura'=>$d->abreviatura,
                 'doc'=>$d->doc,
                 'nro_documento'=>$ruc,
                 'razon_social'=>$razon_social,
-                'simbolo'=>($comprobantes!==null ? $comprobantes->first()['simbolo'] : ''),
-                'moneda'=>($comprobantes!==null ? $comprobantes->first()['moneda'] : ''),
-                'total'=>($comprobantes!==null ? $comprobantes->first()['sub_total'] : ''),
-                'total_igv'=>($comprobantes!==null ? $comprobantes->first()['total_igv'] : ''),
-                'total_a_pagar'=>($comprobantes!==null ? $comprobantes->first()['total_a_pagar'] : ''),
-                'des_condicion'=>($comprobantes!==null ? $comprobantes->first()['des_condicion'] : ''),
-                'credito_dias'=>($comprobantes!==null ? $comprobantes->first()['credito_dias'] : ''),
+                'simbolo'=>$simbolo,
+                'moneda'=>$moneda,
+                'total'=>$total,
+                'total_igv'=>$total_igv,
+                'total_a_pagar'=>$total_a_pagar,
+                'des_condicion'=>$condicion,
+                'credito_dias'=>$credito_dias,
                 'des_operacion'=>$d->des_operacion,
                 // 'fecha_vcmto'=>$d->fecha_vcmto,
                 'nombre_trabajador'=>$d->nombre_trabajador,
