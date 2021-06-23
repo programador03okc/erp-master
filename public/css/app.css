@@ -728,10 +728,6 @@ ul.nav-tabs li {
   cursor: pointer;
 }
 
-#ListaDetalleRequerimiento tbody tr {
-  cursor: default !important;
-}
-
 .page-main table {
   font-size: 12px;
 }
@@ -1036,7 +1032,6 @@ span.select2-selection {
 #kardexGeneral tbody td:nth-last-child(12),
 #listaMttoPendientes tbody td:nth-last-child(5),
 #listaMttoPendientes tbody td:last-child,
-#listaDetalleProrrateo tbody td:nth-last-child(1),
 #listaSaldos tbody td:nth-last-child(3),
 #listaTransferenciasPorRecibir tbody td:nth-last-child(3),
 #listaTransferenciasPorRecibir tbody td:nth-last-child(4),
@@ -1058,9 +1053,7 @@ span.select2-selection {
 #listaOpcionesTodo tbody td:nth-last-child(8),
 #listaOpcionesTodo tbody td:nth-last-child(9),
 #despachosPendientes tbody td:nth-last-child(10),
-#despachosPendientes tbody td:nth-last-child(9),
-#listaDocsProrrateo tbody td:nth-last-child(10),
-#listaDocsProrrateo tbody td:nth-last-child(11) {
+#despachosPendientes tbody td:nth-last-child(9) {
   background: #ffffb0;
 }
 
@@ -1079,7 +1072,6 @@ span.select2-selection {
 #kardexGeneral tbody td:nth-last-child(10),
 #kardexGeneral tbody td:nth-last-child(8),
 #kardexGeneral tbody td:nth-last-child(9),
-#listaDetalleProrrateo tbody td:nth-last-child(2),
 #listaTransferenciasPorRecibir tbody td:nth-last-child(5),
 #listaTransferenciasPorRecibir tbody td:nth-last-child(6),
 #listaTransferenciasPorEnviar tbody td:nth-last-child(6),
@@ -6713,36 +6705,6 @@ readers do not read off random characters that represent icons */
   width: auto;
 }
 
-
-
-/** SPINNER CREATION **/
-
-.loader {
-  position: relative;
-  text-align: center;
-  margin: 15px auto 35px auto;
-  z-index: 9999;
-  display: block;
-  width: 80px;
-  height: 80px;
-  border: 10px solid rgba(0, 0, 0, 0.3);
-  border-radius: 50%;
-  border-top-color: #000;
-  animation: spin 1s ease-in-out infinite;
-  -webkit-animation: spin 1s ease-in-out infinite;
-}
-
-@keyframes spin {
-  to {
-    -webkit-transform: rotate(360deg);
-  }
-}
-
-@-webkit-keyframes spin {
-  to {
-    -webkit-transform: rotate(360deg);
-  }
-}
 /*!
  * Font Awesome Free 5.2.0 by @fontawesome - https://fontawesome.com
  * License - https://fontawesome.com/license (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License)
