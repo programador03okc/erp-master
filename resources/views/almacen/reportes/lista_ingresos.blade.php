@@ -70,7 +70,7 @@ Lista de Ingresos
                                     <th>Total</th>
                                     <th>Saldo</th>
                                     <th>Condicion</th>
-                                    <th>Días</th>
+                                    <!-- <th>Días</th> -->
                                     <th>Operación</th>
                                     <!-- <th>Fecha Vcmto</th> -->
                                     <th>Responsable</th>
@@ -112,7 +112,7 @@ Lista de Ingresos
     </div>
 </div>
 
-<div class="modal fade" tabindex="-1" role="dialog" id="modal-filtros">
+<div class="modal fade" tabindex="-1" role="dialog" id="modal-filtros" style="overflow-y: scroll;">
     <div class="modal-dialog">
         <div class="modal-content" style="width:600px;">
             <div class="modal-header">
@@ -121,7 +121,7 @@ Lista de Ingresos
             </div>
             <div class="modal-body">
                 <div class="row">
-                    <div class="col-md-6">
+                    <!-- <div class="col-md-6">
                         <h5>Empresas</h5>
                         <select class="form-control" name="id_empresa" >
                             @foreach ($empresas as $alm)
@@ -132,7 +132,7 @@ Lista de Ingresos
                             <input type="checkbox" name="todas_empresas" style="width:30px;margin-top:10px;"/>
                             <h5>Todas</h5>
                         </div>
-                    </div>
+                    </div> -->
                     <div class="col-md-6">
                         <h5>Almacén</h5>
                         <select class="form-control" name="almacen" multiple>
@@ -142,26 +142,6 @@ Lista de Ingresos
                         </select>
                         <div style="display:flex">
                             <input type="checkbox" name="todos_almacenes" style="width:30px;margin-top:10px;"/>
-                            <h5>Todas</h5>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <h5>Documentos</h5>
-                        <select class="form-control" name="documento" multiple>
-                            {{-- <option value="102">Factura</option>
-                            <option value="104">Boleta de Venta</option>
-                            <option value="108">Nota de Crédito</option>
-                            <option value="109">Nota de Débito</option>
-                            <option value="113">Ticket</option>
-                            <option value="100">Orden de Compra</option> --}}
-                            @foreach ($tp_doc_almacen as $alm)
-                                <option value="{{$alm->id_tp_doc_almacen}}">{{$alm->descripcion}}</option>
-                            @endforeach
-                        </select>
-                        <div style="display:flex">
-                            <input type="checkbox" name="todos_documentos" style="width:30px;margin-top:10px;"/>
                             <h5>Todas</h5>
                         </div>
                     </div>
@@ -178,6 +158,20 @@ Lista de Ingresos
                         </div>
                     </div>
                 </div>
+                <!-- <div class="row">
+                    <div class="col-md-6">
+                        <h5>Documentos</h5>
+                        <select class="form-control" name="documento" multiple>
+                            @foreach ($tp_doc_almacen as $alm)
+                                <option value="{{$alm->id_tp_doc_almacen}}">{{$alm->descripcion}}</option>
+                            @endforeach
+                        </select>
+                        <div style="display:flex">
+                            <input type="checkbox" name="todos_documentos" style="width:30px;margin-top:10px;"/>
+                            <h5>Todas</h5>
+                        </div>
+                    </div>
+                </div> -->
                 <fieldset class="group-importes"><legend><h6>Filtros específicos</h6></legend>
                     <table width="100%">
                         <tbody>
@@ -208,7 +202,7 @@ Lista de Ingresos
                                     </div>
                                 </td>
                             </tr>
-                            <tr>
+                            <!-- <tr>
                                 <td width="40%">Transportista: </td>
                                 <td>
                                     <div style="display:flex;">
@@ -224,8 +218,8 @@ Lista de Ingresos
                                         </button>
                                     </div>
                                 </td>
-                            </tr>
-                            <tr>
+                            </tr> -->
+                            <!-- <tr>
                                 <td>Responsable: </td>
                                 <td>
                                     <div style="display:flex;">
@@ -237,7 +231,7 @@ Lista de Ingresos
                                         </select>
                                     </div>
                                 </td>
-                            </tr>
+                            </tr> -->
                             <tr>
                                 <td>Moneda: </td>
                                 <td>
@@ -253,7 +247,7 @@ Lista de Ingresos
                                     </div>
                                 </td>
                             </tr>
-                            <tr>
+                            <!-- <tr>
                                 <td>Orden de Impresión: </td>
                                 <td>
                                     <div style="display:flex;">
@@ -266,13 +260,7 @@ Lista de Ingresos
                                         </select>
                                     </div>
                                 </td>
-                            </tr>
-                            {{-- <tr>
-                                <td></td>
-                                <td>Mostrar Documentos Referenciados: 
-                                    <input type="checkbox" name="referenciado" style="width:30px;margin-top:10px;"/>
-                                </td>
-                            </tr> --}}
+                            </tr> -->
                         </tbody>
                     </table>
                 </fieldset>

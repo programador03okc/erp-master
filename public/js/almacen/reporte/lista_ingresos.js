@@ -2,7 +2,7 @@ function actualizarLista(){
     $('#modal-filtros').modal('hide');
 
     var almacenes = $('[name=almacen]').val();
-    var documentos = $('[name=documento]').val();
+    // var documentos = $('[name=documento]').val();
     var condiciones = $('[name=condicion]').val();
     var fini = $('[name=fecha_inicio]').val();
     var ffin = $('[name=fecha_fin]').val();
@@ -22,7 +22,7 @@ function actualizarLista(){
         "scrollX": true,
         'pageLength': 50,
         'ajax': {
-            url:'listar_ingresos/'+almacenes+'/'+documentos+'/'+condiciones+'/'+fini+'/'+ffin+'/'+prov+'/'+id_usuario+'/'+moneda+'/'+tra,
+            url:'listar_ingresos/'+almacenes+'/'+/*documentos+'/'+*/condiciones+'/'+fini+'/'+ffin+'/'+prov+'/'+id_usuario+'/'+moneda+'/'+tra,
             dataSrc:''
             // type: 'POST'
         },
@@ -128,7 +128,7 @@ function actualizarLista(){
                 }
             },
             {'data': 'des_condicion'},
-            {'data': 'credito_dias'},
+            // {'data': 'credito_dias'},
             {'data': 'des_operacion'},
             // {'data': 'fecha_vcmto'},
             {'data': 'nombre_trabajador'},

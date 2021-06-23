@@ -4493,9 +4493,9 @@ class AlmacenController extends Controller
         ->get();
         return response()->json($data);
     }
-    public function listar_ingresos_lista($almacenes, $documentos, $condiciones, $fecha_inicio, $fecha_fin, $id_proveedor, $id_usuario, $moneda, /*$referenciado,*/ $transportista){
+    public function listar_ingresos_lista($almacenes, $condiciones, $fecha_inicio, $fecha_fin, $id_proveedor, $id_usuario, $moneda, /*$referenciado,*/ $transportista){
         $alm_array = explode(',',$almacenes);
-        $doc_array = explode(',',$documentos);
+        // $doc_array = explode(',',$documentos);
         $con_array = explode(',',$condiciones);
 
         $hasWhere = [];
@@ -4620,7 +4620,7 @@ class AlmacenController extends Controller
                 $total = ($doc->sub_total!==null?$doc->sub_total:'');
                 $total_igv = ($doc->total_igv!==null?$doc->total_igv:'');
                 $total_a_pagar = ($doc->total_a_pagar!==null?$doc->total_a_pagar:'');
-                $condicion = ($doc->condicion!==null?$doc->condicion:'');
+                $condicion = ($doc->des_condicion!==null?$doc->des_condicion:'');
                 $credito_dias = ($doc->credito_dias!==null?$doc->credito_dias:'');
             }
                 
@@ -4641,7 +4641,7 @@ class AlmacenController extends Controller
                 'total'=>$total,
                 'total_igv'=>$total_igv,
                 'total_a_pagar'=>$total_a_pagar,
-                'des_condicion'=>$condicion,
+                'des_condicion'=>$condicion.($credito_dias!==''? ' '.$credito_dias.' días':''),
                 'credito_dias'=>$credito_dias,
                 'des_operacion'=>$d->des_operacion,
                 // 'fecha_vcmto'=>$d->fecha_vcmto,
