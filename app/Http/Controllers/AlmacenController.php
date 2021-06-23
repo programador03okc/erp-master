@@ -4609,6 +4609,7 @@ class AlmacenController extends Controller
                 $ruc = ($doc->nro_documento!==null?$doc->nro_documento:'');
                 $razon_social = ($doc->razon_social!==null?$doc->razon_social:'');
             }
+            $fecha_doc = implode(', ',$doc_fecha_emision_array);
                 
             $nuevo = [
                 'id_mov_alm'=>$d->id_mov_alm,
@@ -4617,7 +4618,7 @@ class AlmacenController extends Controller
                 'codigo'=>$d->codigo,
                 'fecha_guia'=>$d->fecha_guia,
                 'guia'=>$d->guia,
-                'fecha_doc'=>implode(', ',$doc_fecha_emision_array),
+                'fecha_doc'=>$fecha_doc,
                 'abreviatura'=>$d->abreviatura,
                 'doc'=>$d->doc,
                 'nro_documento'=>$ruc,
