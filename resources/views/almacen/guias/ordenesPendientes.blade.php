@@ -94,6 +94,17 @@ Pendientes de Ingreso
                     </section>
                     <section id="ingresadas" hidden>
                         <form id="form-ingresadas" type="register">
+
+                            <!-- <div class="row">
+                                <div class="col-md-3">
+                                    <div class="input-group">
+                                        <div class="input-group-btn">
+                                            <button type="button" class="btn btn-default" id="btnExportarExcel" title="Exportar a Excel" onclick="listaOrdenView.tipoVistaPorCabecera();"><i class="fas fa-file-excel"></i> Exportar a Excel</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div> -->
+                                
                             <div class="row">
                                 <div class="col-md-12">
                                     <table class="mytable table table-condensed table-bordered table-okc-view" id="listaIngresosAlmacen">
@@ -110,6 +121,7 @@ Pendientes de Ingreso
                                                 <th>Almacén</th>
                                                 <th>Responsable</th>
                                                 <th>Ordenes</th>
+                                                <th>OC SoftLink</th>
                                                 <th>Facturas</th>
                                                 <th width="140px"></th>
                                             </tr>

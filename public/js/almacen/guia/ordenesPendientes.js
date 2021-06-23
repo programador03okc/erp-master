@@ -247,6 +247,7 @@ function listarIngresos(){
         'language' : vardataTables[0],
         'bDestroy' : true,
         'serverSide' : true,
+        'pageLength': 50,
         'ajax': {
             url: 'listarIngresos',
             type: 'POST'
@@ -272,9 +273,9 @@ function listarIngresos(){
         ],
         'drawCallback': function(){
             $('#listaIngresosAlmacen tbody tr td input[type="checkbox"]').iCheck({
-               checkboxClass: 'icheckbox_flat-blue'
+                checkboxClass: 'icheckbox_flat-blue'
             });
-         },
+        },
         'columnDefs': [
             {   'targets': 0,
                 'searchable': false,
@@ -290,17 +291,20 @@ function listarIngresos(){
                     }
                 }
             },
-            {
-                'render': 
+            {   'render': 
                     function (data, type, row) { 
                         return row.ordenes_compra;
                     }, targets: 9
             },
-            {
-                'render': 
+            {   'render': 
+                    function (data, type, row) { 
+                        return row.ordenes_soft_link;
+                    }, targets: 10
+            },
+            {   'render': 
                     function (data, type, row) { 
                         return row.comprobantes;
-                    }, targets: 10
+                    }, targets: 11
             },
             {'render': 
                 function (data, type, row){
@@ -352,7 +356,7 @@ function listarIngresos(){
                             'data-placement="bottom" title="Ver Ingreso" data-id="'+row['id_mov_alm']+'">'+
                             '<i class="fas fa-file-alt"></i></button>'
                     }
-                }, targets: 11
+                }, targets: 12
             }    
         ],
         'select': 'multi',

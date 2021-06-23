@@ -30,75 +30,84 @@ Lista de Ingresos
             </li>
         </ol>
     </legend> -->
-    <div class="row" style="padding-left:0px;padding-right:0px;">
-        <div class="col-md-12">
-            <button type="button" class="btn btn-primary" data-toggle="tooltip" 
-                data-placement="bottom" title="Ingrese los filtros" 
-                onClick="open_filtros();">
-                <i class="fas fa-search"></i>  Filtros</button>
-        </div>
-    </div>
-    <div class="row">
-        <input type="hidden" name="_token" value="{{csrf_token()}}" id="token">
-        <div class="col-md-12">
-            <table class="mytable table table-condensed table-bordered table-okc-view" 
-                id="listaIngresos">
-                <thead>
-                    <tr>
-                        <th hidden></th>
-                        <th hidden></th>
-                        <th></th>
-                        <th>Fecha Emisión</th>
-                        <th>Cod.Ing</th>
-                        <th>Fecha Guía</th>
-                        <th>Guía</th>
-                        <th>Fecha Doc</th>
-                        <th>Tp</th>
-                        <th>Serie-Número</th>
-                        <th>RUC</th>
-                        <th width="100px">Razon Social</th>
-                        <th>Ordenes</th>
-                        <th>Mn</th>
-                        <th>Valor Neto</th>
-                        <th>IGV</th>
-                        <th>Total</th>
-                        <th>Saldo</th>
-                        <th>Condicion</th>
-                        <th>Días</th>
-                        <th>Operación</th>
-                        <th>Fecha Vcmto</th>
-                        <th>Responsable</th>
-                        <th>T.Cambio</th>
-                        <th>Almacén</th>
-                        <th>Fecha Registro</th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
-        </div>
-        <div class="col-md-2">
-            <table>
-                <tbody>
-                    <tr>
-                        <td>
-                            <input type="checkbox" name="no_revisado" onClick="search();" style="width:30px;"/>
-                        </td>
-                        <td><label>No Revisado(s)</label></td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <input type="checkbox" name="revisado" onClick="search();" style="width:30px;"/>
-                        </td>
-                        <td><label>Revisado(s)</label></td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <input type="checkbox" name="observado" onClick="search();" style="width:30px;"/>
-                        </td>
-                        <td><label>Observado(s)</label></td>
-                    </tr>
-                </tbody>
-            </table>
+
+    <div class="box box-solid">
+        <div class="box-body">
+            <div class="col-md-12" style="padding-top:10px;padding-bottom:10px;">
+
+
+                <div class="row" style="padding-left:0px;padding-right:0px;">
+                    <div class="col-md-12">
+                        <button type="button" class="btn btn-primary" data-toggle="tooltip" 
+                            data-placement="bottom" title="Ingrese los filtros" 
+                            onClick="open_filtros();">
+                            <i class="fas fa-search"></i>  Filtros</button>
+                    </div>
+                </div>
+                <div class="row">
+                    <input type="hidden" name="_token" value="{{csrf_token()}}" id="token">
+                    <div class="col-md-12">
+                        <table class="mytable table table-condensed table-bordered table-okc-view" 
+                            id="listaIngresos">
+                            <thead>
+                                <tr>
+                                    <th hidden></th>
+                                    <th hidden></th>
+                                    <th></th>
+                                    <th>Fecha Emisión</th>
+                                    <th>Cod.Ing</th>
+                                    <th>Fecha Guía</th>
+                                    <th>Guía</th>
+                                    <th>Fecha Doc</th>
+                                    <!-- <th>Tp</th> -->
+                                    <th>Serie-Número</th>
+                                    <th>RUC</th>
+                                    <th width="100px">Razon Social</th>
+                                    <th>Ordenes</th>
+                                    <th>Mn</th>
+                                    <th>Valor Neto</th>
+                                    <th>IGV</th>
+                                    <th>Total</th>
+                                    <th>Saldo</th>
+                                    <th>Condicion</th>
+                                    <th>Días</th>
+                                    <th>Operación</th>
+                                    <!-- <th>Fecha Vcmto</th> -->
+                                    <th>Responsable</th>
+                                    <!-- <th>T.Cambio</th> -->
+                                    <th>Almacén</th>
+                                    <th>Fecha Registro</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                    <div class="col-md-2">
+                        <table>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <input type="checkbox" name="no_revisado" onClick="search();" style="width:30px;"/>
+                                    </td>
+                                    <td><label>No Revisado(s)</label></td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <input type="checkbox" name="revisado" onClick="search();" style="width:30px;"/>
+                                    </td>
+                                    <td><label>Revisado(s)</label></td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <input type="checkbox" name="observado" onClick="search();" style="width:30px;"/>
+                                    </td>
+                                    <td><label>Observado(s)</label></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
