@@ -4493,7 +4493,7 @@ class AlmacenController extends Controller
         ->get();
         return response()->json($data);
     }
-    public function listar_ingresos($almacenes, $documentos, $condiciones, $fecha_inicio, $fecha_fin, $id_proveedor, $id_usuario, $moneda, /*$referenciado,*/ $transportista){
+    public function listar_ingresos_lista($almacenes, $documentos, $condiciones, $fecha_inicio, $fecha_fin, $id_proveedor, $id_usuario, $moneda, /*$referenciado,*/ $transportista){
         $alm_array = explode(',',$almacenes);
         $doc_array = explode(',',$documentos);
         $con_array = explode(',',$condiciones);

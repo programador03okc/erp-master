@@ -1424,7 +1424,7 @@ Route::group(['middleware' => ['auth']], function () {
 			Route::group(['as' => 'lista-ingresos.', 'prefix' => 'lista-ingresos'], function(){
 
 				Route::get('index', 'AlmacenController@view_ingresos')->name('index');
-				Route::get('listar_ingresos/{alm}/{docs}/{cond}/{fini}/{ffin}/{prov}/{usu}/{mon}/{tra}', 'AlmacenController@listar_ingresos');
+				Route::get('listar_ingresos/{alm}/{docs}/{cond}/{fini}/{ffin}/{prov}/{usu}/{mon}/{tra}', 'AlmacenController@listar_ingresos_lista');
 				Route::get('update_revisado/{id}/{rev}/{obs}', 'AlmacenController@update_revisado');
 				
 				Route::get('select_almacenes_empresa/{id}', 'AlmacenController@select_almacenes_empresa');
