@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\Almacen\AlmacenDashboardHelper;
+use App\Models\Almacen\Movimiento;
+use App\Models\Almacen\MovimientoDetalle;
 use Illuminate\Http\Request;
 
 use Illuminate\Support\Facades\DB;
@@ -4564,19 +4566,47 @@ class AlmacenController extends Controller
         $nueva_data = [];
 
         foreach($data as $d){
-            $ocs = DB::table('almacen.guia_com_oc')
-            ->select('log_ord_compra.codigo')
-            ->join('logistica.log_ord_compra','log_ord_compra.id_orden_compra','=','guia_com_oc.id_oc')
-            ->where('id_guia_com',$d->id_guia_com)
-            ->get();
-            $ordenes = '';
-            foreach($ocs as $oc){
-                if ($ordenes !== ''){
-                    $ordenes.= ', '.$oc->codigo;
-                } else {
-                    $ordenes = $oc->codigo;
-                }
+            // $ocs = DB::table('almacen.guia_com_oc')
+            // ->select('log_ord_compra.codigo')
+            // ->join('logistica.log_ord_compra','log_ord_compra.id_orden_compra','=','guia_com_oc.id_oc')
+            // ->where('id_guia_com',$d->id_guia_com)
+            // ->get();
+            $ordenes=MovimientoDetalle::join('almacen.guia_com_det','guia_com_det.id_guia_com_det','mov_alm_det.id_guia_com_det')
+            ->join('logistica.log_det_ord_compra','log_det_ord_compra.id_detalle_orden','guia_com_det.id_oc_det')   
+            ->join('logistica.log_ord_compra','log_ord_compra.id_orden_compra','log_det_ord_compra.id_orden_compra')
+            ->where('mov_alm_det.id_mov_alm',$d->id_mov_alm)
+            ->select(['log_ord_compra.codigo'])->distinct()->get();
+    
+            $ordenes_array = [];
+            foreach ($ordenes as $oc) {
+                array_push($ordenes_array,$oc->codigo);
             }
+
+            $comprobantes = MovimientoDetalle::join('almacen.guia_com_det','guia_com_det.id_guia_com_det','mov_alm_det.id_guia_com_det')
+            ->join('almacen.doc_com_det','doc_com_det.id_guia_com_det','guia_com_det.id_guia_com_det')   
+            ->join('almacen.doc_com','doc_com.id_doc_com','doc_com_det.id_doc')
+            ->join('logistica.log_prove','log_prove.id_proveedor','doc_com.id_proveedor')
+            ->join('contabilidad.adm_contri','adm_contri.id_contribuyente','log_prove.id_contribuyente')
+            ->join('configuracion.sis_moneda','sis_moneda.id_moneda','=','doc_com.moneda')
+            ->join('logistica.log_cdn_pago','log_cdn_pago.id_condicion_pago','=','doc_com.id_condicion')
+            ->where([['mov_alm_det.id_mov_alm','=',$d->id_mov_alm],
+                     ['mov_alm_det.estado','!=',7],
+                     ['guia_com_det.estado','!=',7],
+                     ['doc_com_det.estado','!=',7]])
+            ->select(['doc_com.serie','doc_com.numero','doc_com.fecha_emision','sis_moneda.simbolo','doc_com.moneda',
+            'adm_contri.nro_documento','adm_contri.razon_social','log_cdn_pago.descripcion as des_condicion',
+            'doc_com.credito_dias','doc_com.sub_total','doc_com.total_igv','doc_com.total_a_pagar'])
+            ->distinct()->get();
+
+            $comprobantes_array = [];
+            $doc_fecha_emision_array = [];
+
+            foreach ($comprobantes as $doc) {
+                array_push($comprobantes_array,$doc->serie.'-'.$doc->numero);
+                array_push($doc_fecha_emision_array,$doc->fecha_emision);
+                
+            }
+                
             $nuevo = [
                 'id_mov_alm'=>$d->id_mov_alm,
                 'revisado'=>$d->revisado,
@@ -4584,25 +4614,26 @@ class AlmacenController extends Controller
                 'codigo'=>$d->codigo,
                 'fecha_guia'=>$d->fecha_guia,
                 'guia'=>$d->guia,
-                'fecha_doc'=>$d->fecha_doc,
+                'fecha_doc'=>implode(', ',$doc_fecha_emision_array),
                 'abreviatura'=>$d->abreviatura,
                 'doc'=>$d->doc,
-                'nro_documento'=>$d->nro_documento,
-                'razon_social'=>$d->razon_social,
-                'simbolo'=>$d->simbolo,
-                'moneda'=>$d->moneda,
-                'total'=>$d->total,
-                'total_igv'=>$d->total_igv,
-                'total_a_pagar'=>$d->total_a_pagar,
-                'des_condicion'=>$d->des_condicion,
-                'credito_dias'=>$d->credito_dias,
+                'nro_documento'=>$comprobantes->first()['nro_documento'],
+                'razon_social'=>$comprobantes->first()['razon_social'],
+                'simbolo'=>$comprobantes->first()['simbolo'],
+                'moneda'=>$comprobantes->first()['moneda'],
+                'total'=>$comprobantes->first()['sub_total'],
+                'total_igv'=>$comprobantes->first()['total_igv'],
+                'total_a_pagar'=>$comprobantes->first()['total_a_pagar'],
+                'des_condicion'=>$comprobantes->first()['des_condicion'],
+                'credito_dias'=>$comprobantes->first()['credito_dias'],
                 'des_operacion'=>$d->des_operacion,
-                'fecha_vcmto'=>$d->fecha_vcmto,
+                // 'fecha_vcmto'=>$d->fecha_vcmto,
                 'nombre_trabajador'=>$d->nombre_trabajador,
                 'tipo_cambio'=>$d->tipo_cambio,
                 'des_almacen'=>$d->des_almacen,
                 'fecha_registro'=>$d->fecha_registro,
-                'ordenes'=>$ordenes
+                'ordenes'=>implode(', ',$ordenes_array),
+                'documentos'=>implode(', ',$comprobantes_array),
             ];
             array_push($nueva_data,$nuevo);
         }
