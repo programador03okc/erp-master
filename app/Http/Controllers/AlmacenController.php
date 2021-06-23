@@ -4604,7 +4604,6 @@ class AlmacenController extends Controller
             foreach ($comprobantes as $doc) {
                 array_push($comprobantes_array,$doc->serie.'-'.$doc->numero);
                 array_push($doc_fecha_emision_array,$doc->fecha_emision);
-                
             }
                 
             $nuevo = [
