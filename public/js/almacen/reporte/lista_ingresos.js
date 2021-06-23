@@ -19,7 +19,7 @@ function actualizarLista(){
         'dom': vardataTables[1],
         'buttons': vardataTables[2],
         'language' : vardataTables[0],
-        "scrollX": true,
+        // "scrollX": true,
         'pageLength': 50,
         'ajax': {
             url:'listar_ingresos/'+almacenes+'/'+/*documentos+'/'+*/condiciones+'/'+fini+'/'+ffin+'/'+prov+'/'+id_usuario+'/'+moneda+'/'+tra,
@@ -122,11 +122,11 @@ function actualizarLista(){
                     return formatDecimal(row['total_a_pagar']);
                 }
             },
-            {'render': 
-                function(data, type, row){
-                    return 0;
-                }
-            },
+            // {'render': 
+            //     function(data, type, row){
+            //         return 0;
+            //     }
+            // },
             {'data': 'des_condicion'},
             // {'data': 'credito_dias'},
             {'data': 'des_operacion'},

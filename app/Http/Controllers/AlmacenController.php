@@ -4738,7 +4738,7 @@ class AlmacenController extends Controller
             'tp_doc_almacen.abreviatura as tp_doc','guia_com.fecha_emision as fecha_guia',
             DB::raw("(guia_com.serie) || '-' || (guia_com.numero) as guia"),
             'adm_contri.razon_social','adm_contri.nro_documento','alm_almacen.descripcion as alm_descripcion',
-            'alm_prod.codigo_anexo','alm_prod.codigo','alm_prod.descripcion',
+            'alm_prod.part_number','alm_prod.codigo','alm_prod.descripcion',
             'tp_ope.descripcion as ope_descripcion','adm_estado_doc.estado_doc')
             ->join('almacen.mov_alm','mov_alm.id_mov_alm','=','mov_alm_det.id_mov_alm')
             ->join('almacen.alm_almacen','alm_almacen.id_almacen','=','mov_alm.id_almacen')
@@ -4763,7 +4763,7 @@ class AlmacenController extends Controller
             'tp_doc_almacen.abreviatura as tp_doc','guia_com.fecha_emision as fecha_guia',
             DB::raw("(guia_com.serie) || '-' || (guia_com.numero) as guia"),
             'adm_contri.razon_social','adm_contri.nro_documento','alm_almacen.descripcion as alm_descripcion',
-            'alm_prod.codigo_anexo','alm_prod.codigo','alm_prod.descripcion',
+            'alm_prod.part_number','alm_prod.codigo','alm_prod.descripcion',
             'tp_ope.descripcion as ope_descripcion','adm_estado_doc.estado_doc')
             ->join('almacen.mov_alm','mov_alm.id_mov_alm','=','mov_alm_det.id_mov_alm')
             ->join('almacen.alm_almacen','alm_almacen.id_almacen','=','mov_alm.id_almacen')

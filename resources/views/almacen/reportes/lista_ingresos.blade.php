@@ -68,7 +68,7 @@ Lista de Ingresos
                                     <th>Valor Neto</th>
                                     <th>IGV</th>
                                     <th>Total</th>
-                                    <th>Saldo</th>
+                                    <!-- <th>Saldo</th> -->
                                     <th>Condicion</th>
                                     <!-- <th>Días</th> -->
                                     <th>Operación</th>

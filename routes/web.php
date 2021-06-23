@@ -1426,7 +1426,7 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('index', 'AlmacenController@view_ingresos')->name('index');
 				Route::get('listar_ingresos/{alm}/{cond}/{fini}/{ffin}/{prov}/{usu}/{mon}/{tra}', 'AlmacenController@listar_ingresos_lista');
 				Route::get('update_revisado/{id}/{rev}/{obs}', 'AlmacenController@update_revisado');
-				
+
 				Route::get('select_almacenes_empresa/{id}', 'AlmacenController@select_almacenes_empresa');
 				Route::get('mostrar_proveedores', 'LogisticaController@mostrar_proveedores');
 				Route::get('listar_transportistas_com', 'AlmacenController@listar_transportistas_com');
@@ -1453,7 +1453,7 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('index', 'AlmacenController@view_busqueda_ingresos')->name('index');
 				Route::get('listar_busqueda_ingresos/{alm}/{tp}/{des}/{doc}/{fini}/{ffin}', 'AlmacenController@listar_busqueda_ingresos');
 				Route::get('select_almacenes_empresa/{id}', 'AlmacenController@select_almacenes_empresa');
-				Route::get('imprimir_ingreso/{id}', 'AlmacenController@imprimir_ingreso');
+				Route::get('imprimir_ingreso/{id}', 'Almacen\Movimiento\OrdenesPendientesController@imprimir_ingreso');
 				Route::get('imprimir_guia_ingreso/{id}', 'AlmacenController@imprimir_guia_ingreso');
 				
 			});
