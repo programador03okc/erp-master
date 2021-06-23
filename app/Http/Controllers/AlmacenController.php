@@ -4600,10 +4600,14 @@ class AlmacenController extends Controller
 
             $comprobantes_array = [];
             $doc_fecha_emision_array = [];
+            $ruc = '';
+            $razon_social = '';
 
             foreach ($comprobantes as $doc) {
                 array_push($comprobantes_array,$doc->serie.'-'.$doc->numero);
                 array_push($doc_fecha_emision_array,$doc->fecha_emision);
+                $ruc = ($doc->nro_documento!==null?$doc->nro_documento:'');
+                $razon_social = ($doc->razon_social!==null?$doc->razon_social:'');
             }
                 
             $nuevo = [
@@ -4616,8 +4620,8 @@ class AlmacenController extends Controller
                 'fecha_doc'=>implode(', ',$doc_fecha_emision_array),
                 'abreviatura'=>$d->abreviatura,
                 'doc'=>$d->doc,
-                'nro_documento'=>($comprobantes!==null ? $comprobantes->first()['nro_documento'] : ''),
-                'razon_social'=>($comprobantes!==null ? $comprobantes->first()['razon_social'] : ''),
+                'nro_documento'=>$ruc,
+                'razon_social'=>$razon_social,
                 'simbolo'=>($comprobantes!==null ? $comprobantes->first()['simbolo'] : ''),
                 'moneda'=>($comprobantes!==null ? $comprobantes->first()['moneda'] : ''),
                 'total'=>($comprobantes!==null ? $comprobantes->first()['sub_total'] : ''),
