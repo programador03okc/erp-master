@@ -90,21 +90,21 @@ class ProductoController extends Controller
         return response()->json($data);
     }
 
-    public function next_correlativo_prod()
-    {
-        $cantidad = DB::table('almacen.alm_prod')
-            ->where([['estado','!=',7]])
-            ->get()->count();
+    // public function next_correlativo_prod()
+    // {
+    //     $cantidad = DB::table('almacen.alm_prod')
+    //         ->where([['estado','!=',7]])
+    //         ->get()->count();
 
-        $nextId = AlmacenController::leftZero(7, ($cantidad + 1));
-        return $nextId;
-    }
+    //     $nextId = AlmacenController::leftZero(7, ($cantidad + 1));
+    //     return $nextId;
+    // }
     
     public function guardar_producto(Request $request)
     {
         $fecha = date('Y-m-d H:i:s');
         $id_usuario = Auth::user()->id_usuario;
-        $codigo = $this->next_correlativo_prod();
+        // $codigo = $this->next_correlativo_prod();
         $msj = '';
         $des = strtoupper($request->descripcion);
 
@@ -122,7 +122,7 @@ class ProductoController extends Controller
         if ($count == 0){
             $id_producto = DB::table('almacen.alm_prod')->insertGetId(
                 [
-                    'codigo' => $codigo,
+                    // 'codigo' => $codigo,
                     'codigo_anexo' => ($request->codigo_anexo!==null ? $request->codigo_anexo : null),
                     'part_number' => $request->part_number,
                     'id_clasif' => $request->id_clasif,
@@ -142,22 +142,27 @@ class ProductoController extends Controller
                 ],
                     'id_producto'
                 );
-        
-            $id_item = DB::table('almacen.alm_item')->insertGetId(
-                [   'id_producto' => $id_producto,
-                    'codigo' => $codigo,
-                    'fecha_registro' => $fecha
-                ],  'id_item');
+                
+            $codigo = AlmacenController::leftZero(7, $id_producto);
+
+            DB::table('almacen.alm_prod')
+            ->where('id_producto',$id_producto)
+            ->update(['codigo'=>$codigo]);
+
+            // $id_item = DB::table('almacen.alm_item')->insertGetId(
+            //     [   'id_producto' => $id_producto,
+            //         'codigo' => $codigo,
+            //         'fecha_registro' => $fecha
+            //     ],  'id_item');
 
             $producto = DB::table('almacen.alm_prod')
-                    ->select('alm_prod.*','alm_und_medida.abreviatura','alm_cat_prod.descripcion as categoria','alm_subcat.descripcion as subcategoria')
-                    ->join('almacen.alm_und_medida','alm_und_medida.id_unidad_medida','=','alm_prod.id_unidad_medida')
-                    ->join('almacen.alm_cat_prod','alm_cat_prod.id_categoria','=','alm_prod.id_categoria')
-                    ->join('almacen.alm_subcat','alm_subcat.id_subcategoria','=','alm_prod.id_subcategoria')
-        
-                    ->where('id_producto',$id_producto)->first();
+            ->select('alm_prod.*','alm_und_medida.abreviatura','alm_cat_prod.descripcion as categoria','alm_subcat.descripcion as subcategoria')
+            ->join('almacen.alm_und_medida','alm_und_medida.id_unidad_medida','=','alm_prod.id_unidad_medida')
+            ->join('almacen.alm_cat_prod','alm_cat_prod.id_categoria','=','alm_prod.id_categoria')
+            ->join('almacen.alm_subcat','alm_subcat.id_subcategoria','=','alm_prod.id_subcategoria')
+            ->where('id_producto',$id_producto)->first();
             
-            return response()->json(['msj'=>$msj,'id_item'=>$id_item, 'id_producto'=>$id_producto,'producto'=>$producto]);
+            return response()->json(['msj'=>$msj,'id_item'=>0, 'id_producto'=>$id_producto,'producto'=>$producto]);
         } 
         else {
             $msj = 'No es posible guardar. Ya existe un producto con dicha descripción y/o Part Number.';
@@ -209,7 +214,7 @@ class ProductoController extends Controller
         return response()->json(['msj'=>$msj,'id_item'=>$id_item, 'id_producto'=>$id_producto]);
     }
 
-    public function anular_producto(Request $request,$id){
+    public function anular_producto($id){
         $data = DB::table('almacen.alm_prod')
             ->where('id_producto',$id)
             ->update([ 'estado' => 7 ]);
