@@ -7,10 +7,26 @@ $(function(){
             $(this).addClass('eventClick');
         }
         var id = $(this)[0].firstChild.innerHTML;
-        var idPr = $(this)[0].childNodes[5].innerHTML;
+        // var idPr = $(this)[0].childNodes[5].innerHTML;
         console.log('id'+id);
-        $('.modal-footer #mid_guia_com').text(id);
-        $('.modal-footer #mid_guia_prov').text(idPr);
+        // $('.modal-footer #mid_guia_com').text(id);
+        // $('.modal-footer #mid_guia_prov').text(idPr);
+        var page = $('.page-main').attr('type');
+
+        if (page == "prorrateo"){
+            listar_guia_detalle(id);
+        }
+        else if (page == "doc_compra"){
+            if (id !== null && id !== ''){
+                agrega_guia(id);
+            }
+        }
+        else if (page == "transferencias"){
+            if (id !== null && id !== ''){
+                ver_transferencia(id);
+            }
+        } 
+        $('#modal-guia_compra').modal('hide');
     });
 });
 

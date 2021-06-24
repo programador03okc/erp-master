@@ -1177,12 +1177,15 @@ Route::group(['middleware' => ['auth']], function () {
 			Route::group(['as' => 'prorrateo.', 'prefix' => 'prorrateo'], function(){
 				//Pendientes de Salida
 				Route::get('index', 'Almacen\Movimiento\ProrrateoCostosController@view_prorrateo_costos')->name('index');
+				Route::get('mostrar_prorrateos', 'Almacen\Movimiento\ProrrateoCostosController@mostrar_prorrateos');
+				Route::get('mostrar_prorrateo/{id}', 'Almacen\Movimiento\ProrrateoCostosController@mostrar_prorrateo');
 				Route::get('mostrar_proveedores', 'LogisticaController@mostrar_proveedores');
 				Route::get('guardar_tipo_prorrateo/{nombre}', 'Almacen\Movimiento\ProrrateoCostosController@guardar_tipo_prorrateo');
 				Route::get('tipo_cambio_compra/{fecha}', 'Almacen\Movimiento\OrdenesPendientesController@tipo_cambio_compra');
 				Route::get('listar_guias_compra', 'Almacen\Movimiento\ProrrateoCostosController@listar_guias_compra');
 				Route::get('listar_docs_prorrateo/{id}', 'Almacen\Movimiento\ProrrateoCostosController@listar_docs_prorrateo');
 				Route::get('listar_guia_detalle/{id}', 'Almacen\Movimiento\ProrrateoCostosController@listar_guia_detalle');
+				Route::post('guardarProrrateo', 'Almacen\Movimiento\ProrrateoCostosController@guardarProrrateo');
 
 			});
 
@@ -1437,9 +1440,9 @@ Route::group(['middleware' => ['auth']], function () {
 			Route::group(['as' => 'lista-ingresos.', 'prefix' => 'lista-ingresos'], function(){
 
 				Route::get('index', 'AlmacenController@view_ingresos')->name('index');
-				Route::get('listar_ingresos/{alm}/{docs}/{cond}/{fini}/{ffin}/{prov}/{usu}/{mon}/{tra}', 'AlmacenController@listar_ingresos');
+				Route::get('listar_ingresos/{alm}/{cond}/{fini}/{ffin}/{prov}/{usu}/{mon}/{tra}', 'AlmacenController@listar_ingresos_lista');
 				Route::get('update_revisado/{id}/{rev}/{obs}', 'AlmacenController@update_revisado');
-				
+
 				Route::get('select_almacenes_empresa/{id}', 'AlmacenController@select_almacenes_empresa');
 				Route::get('mostrar_proveedores', 'LogisticaController@mostrar_proveedores');
 				Route::get('listar_transportistas_com', 'AlmacenController@listar_transportistas_com');
@@ -1466,7 +1469,7 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('index', 'AlmacenController@view_busqueda_ingresos')->name('index');
 				Route::get('listar_busqueda_ingresos/{alm}/{tp}/{des}/{doc}/{fini}/{ffin}', 'AlmacenController@listar_busqueda_ingresos');
 				Route::get('select_almacenes_empresa/{id}', 'AlmacenController@select_almacenes_empresa');
-				Route::get('imprimir_ingreso/{id}', 'AlmacenController@imprimir_ingreso');
+				Route::get('imprimir_ingreso/{id}', 'Almacen\Movimiento\OrdenesPendientesController@imprimir_ingreso');
 				Route::get('imprimir_guia_ingreso/{id}', 'AlmacenController@imprimir_guia_ingreso');
 				
 			});

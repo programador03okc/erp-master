@@ -11,59 +11,68 @@ Kardex General
 
 @section('breadcrumb')
 <ol class="breadcrumb">
-  <li><a href="{{route('almacen.index')}}"><i class="fas fa-tachometer-alt"></i> Almacenes</a></li>
-  <li>Reportes</li>
-  <li class="active">@yield('cabecera')</li>
+    <li><a href="{{route('almacen.index')}}"><i class="fas fa-tachometer-alt"></i> Almacenes</a></li>
+    <li>Reportes</li>
+    <li class="active">@yield('cabecera')</li>
 </ol>
 @endsection
 
 @section('content')
 <div class="page-main" type="kardex_general">
-    <div class="row" style="padding-left:0px;padding-right:0px;">
-        <div class="col-md-12">
-            <button type="submit" class="btn btn-success" data-toggle="tooltip" 
-                data-placement="bottom" title="Descargar Kardex Sunat" 
-                onClick="downloadKardexSunat();">Kardex Sunat</button>
-            <button type="button" class="btn btn-primary" data-toggle="tooltip" 
-                data-placement="bottom" title="Ingrese los filtros" 
-                onClick="open_filtros();">Filtros</button>
+    
+    <div class="box box-solid">
+        <div class="box-body">
+            <div class="col-md-12" style="padding-top:10px;padding-bottom:10px;">
+
+                <div class="row" style="padding-left:0px;padding-right:0px;">
+                    <div class="col-md-12">
+                        <button type="submit" class="btn btn-success" data-toggle="tooltip" 
+                            data-placement="bottom" title="Descargar Kardex Sunat" 
+                            onClick="downloadKardexSunat();">Kardex Sunat</button>
+                        <button type="button" class="btn btn-primary" data-toggle="tooltip" 
+                            data-placement="bottom" title="Ingrese los filtros" 
+                            onClick="open_filtros();">Filtros</button>
+                    </div>
+                </div>
+                <div class="row">
+                    <input type="hidden" name="_token" value="{{csrf_token()}}" id="token">
+                    <div class="col-md-12">
+                        <table class="mytable table table-condensed table-bordered table-okc-view" 
+                            id="kardexGeneral">
+                            <thead>
+                                <tr>
+                                    <th hidden></th>
+                                    <th>Código</th>
+                                    <th>Part Number</th>
+                                    <th>Categoría</th>
+                                    <th>SubCategoría</th>
+                                    <th>Descripción</th>
+                                    <th>Fecha</th>
+                                    <th>Almacén</th>
+                                    <th>Und</th>
+                                    <th>Ing.</th>
+                                    <th>Sal.</th>
+                                    <th>Saldo</th>
+                                    <th>Ing.</th>
+                                    <th>Sal.</th>
+                                    <th>Valoriz.</th>
+                                    <th>Cod.Mov.</th>
+                                    <th>Op</th>
+                                    <th>Movimiento</th>
+                                    <th>Guía </th>
+                                    <th>Transf.</th>
+                                    <th>O.C.</th>
+                                    <th>Fact.</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-    <div class="row">
-        <input type="hidden" name="_token" value="{{csrf_token()}}" id="token">
-        <div class="col-md-12">
-            <table class="mytable table table-condensed table-bordered table-okc-view" 
-                id="kardexGeneral">
-                <thead>
-                    <tr>
-                        <th hidden></th>
-                        <th>Código</th>
-                        <th>Part Number</th>
-                        <th>Categoría</th>
-                        <th>SubCategoría</th>
-                        <th>Descripción</th>
-                        <th>Fecha</th>
-                        <th>Almacén</th>
-                        <th>Und</th>
-                        <th>Ing.</th>
-                        <th>Sal.</th>
-                        <th>Saldo</th>
-                        <th>Ing.</th>
-                        <th>Sal.</th>
-                        <th>Valoriz.</th>
-                        <th>Cod.Mov.</th>
-                        <th>Op</th>
-                        <th>Movimiento</th>
-                        <th>Guía </th>
-                        <th>Transf.</th>
-                        <th>O.C.</th>
-                        <th>Req.</th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
-        </div>
-    </div>
+
 </div>
 @include('almacen.reportes.kardex_filtro')
 @endsection

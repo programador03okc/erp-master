@@ -1,13 +1,13 @@
 <div class="modal fade" tabindex="-1" role="dialog" id="modal-doc_prorrateo">
     <div class="modal-dialog" style="width:900px;">
         <div class="modal-content">
-            <form id="form-doc_prorrateo">
+            <!-- <form id="form-doc_prorrateo"> -->
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="close"><span aria-hidden="true">&times;</span></button>
                     <h3 class="modal-title">Nuevo Documento de Prorrateo</h3>
                 </div>
                 <div class="modal-body">
-                    <input type="hidden" name="id_guia">
+                    <input class="oculto" name="id_doc_com">
                     <input class="oculto" name="id_prorrateo">
                     <div class="row">
                         <div class="col-md-3">
@@ -46,7 +46,7 @@
                     <div class="row">
                         <div class="col-md-3">
                             <h5>Tipo de Documento</h5>
-                            <select class="form-control activation js-example-basic-single" name="id_tp_documento" required>
+                            <select class="form-control activation" name="id_tp_documento" required>
                                 <option value="0" disabled>Elija una opción</option>
                                 @foreach ($tp_doc as $tp)
                                     <option value="{{$tp->id_tp_doc}}">{{$tp->cod_sunat}} - {{$tp->descripcion}}</option>
@@ -96,10 +96,13 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <input type="submit" class="btn btn-success" data-toggle="tooltip" 
-                        data-placement="bottom" title="Guardar Documento" value="Guardar"/>
+                    <!-- <input type="submit" class="btn btn-success" data-toggle="tooltip" 
+                        data-placement="bottom" title="Guardar Documento" value="Guardar"/> -->
+                    <button type="button" class="btn btn-success btn-xs boton " data-toggle="tooltip" 
+                        data-placement="bottom" title="Guardar Documento" onClick="guardar_doc_prorrateo();">
+                        Guardar </button>
                 </div>
-            </form>
+            <!-- </form> -->
         </div>
     </div>
 </div>

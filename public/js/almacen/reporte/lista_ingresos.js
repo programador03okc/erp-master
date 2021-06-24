@@ -2,7 +2,7 @@ function actualizarLista(){
     $('#modal-filtros').modal('hide');
 
     var almacenes = $('[name=almacen]').val();
-    var documentos = $('[name=documento]').val();
+    // var documentos = $('[name=documento]').val();
     var condiciones = $('[name=condicion]').val();
     var fini = $('[name=fecha_inicio]').val();
     var ffin = $('[name=fecha_fin]').val();
@@ -19,10 +19,12 @@ function actualizarLista(){
         'dom': vardataTables[1],
         'buttons': vardataTables[2],
         'language' : vardataTables[0],
-        "scrollX": true,
+        // "scrollX": true,
+        'pageLength': 50,
         'ajax': {
-            url:'listar_ingresos/'+almacenes+'/'+documentos+'/'+condiciones+'/'+fini+'/'+ffin+'/'+prov+'/'+id_usuario+'/'+moneda+'/'+tra,
+            url:'listar_ingresos/'+almacenes+'/'+/*documentos+'/'+*/condiciones+'/'+fini+'/'+ffin+'/'+prov+'/'+id_usuario+'/'+moneda+'/'+tra,
             dataSrc:''
+            // type: 'POST'
         },
         'columns': [
             {'data': 'id_mov_alm'},
@@ -45,96 +47,105 @@ function actualizarLista(){
             {'data': 'fecha_guia'},
             {'data': 'guia'},
             {'data': 'fecha_doc'},
-            {'data': 'abreviatura'},
-            {'data': 'doc'},
+            // {'data': 'abreviatura'},
+            {'data': 'documentos'},
             {'data': 'nro_documento'},
             {'data': 'razon_social'},
             {'data': 'ordenes'},
             {'render': 
                 function(data, type, row){
-                    if (moneda == 4){
-                        return 'S/';
-                    } else if (moneda == 5){
-                        return 'US$';
-                    } else {
+                    // if (moneda == 4){
+                    //     return 'S/';
+                    // } else if (moneda == 5){
+                    //     return 'US$';
+                    // } else {
                         return row['simbolo'];
-                    }
+                    // }
                 }
             },
             {'render': 
                 function(data, type, row){
                     t = 0;
-                    if (moneda == 4){//Convertir a Soles
-                        if (row['moneda'] == 1){//Soles
-                            t = row['total'];
-                        } else {
-                            t = row['total'] * row['tipo_cambio'];
-                        }
-                    } else if (moneda == 5){//Convertir a Dolares
-                        if (row['moneda'] == 2){//Dolares
-                            t = row['total'];
-                        } else {
-                            t = row['total'] / row['tipo_cambio'];
-                        }
-                    } else {
+                    // if (moneda == 4){//Convertir a Soles
+                    //     if (row['moneda'] == 1){//Soles
+                    //         t = row['total'];
+                    //     } else {
+                    //         t = row['total'] * row['tipo_cambio'];
+                    //     }
+                    // } else if (moneda == 5){//Convertir a Dolares
+                    //     if (row['moneda'] == 2){//Dolares
+                    //         t = row['total'];
+                    //     } else {
+                    //         t = row['total'] / row['tipo_cambio'];
+                    //     }
+                    // } else {
                         t = row['total'];
-                    }
+                    // }
                     return formatDecimal(t);
                 }
             },
             {'render': 
                 function(data, type, row){
-                    t = 0;
-                    if (moneda == 4){//Convertir a Soles
-                        if (row['moneda'] == 1){//Soles
-                            t = row['total_igv'];
-                        } else {
-                            t = row['total_igv'] * row['tipo_cambio'];
-                        }
-                    } else if (moneda == 5){//Convertir a Dolares
-                        if (row['moneda'] == 2){//Dolares
-                            t = row['total_igv'];
-                        } else {
-                            t = row['total_igv'] / row['tipo_cambio'];
-                        }
-                    }
-                    return formatDecimal(t);
+                    // t = 0;
+                    // if (moneda == 4){//Convertir a Soles
+                    //     if (row['moneda'] == 1){//Soles
+                    //         t = row['total_igv'];
+                    //     } else {
+                    //         t = row['total_igv'] * row['tipo_cambio'];
+                    //     }
+                    // } else if (moneda == 5){//Convertir a Dolares
+                    //     if (row['moneda'] == 2){//Dolares
+                    //         t = row['total_igv'];
+                    //     } else {
+                    //         t = row['total_igv'] / row['tipo_cambio'];
+                    //     }
+                    // }
+                    return formatDecimal(row['total_igv']);
                 }
             },
             {'render': 
                 function(data, type, row){
-                    t = 0;
-                    if (moneda == 4){//Convertir a Soles
-                        if (row['moneda'] == 1){//Soles
-                            t = row['total_a_pagar'];
-                        } else {
-                            t = row['total_a_pagar'] * row['tipo_cambio'];
-                        }
-                    } else if (moneda == 5){//Convertir a Dolares
-                        if (row['moneda'] == 2){//Dolares
-                            t = row['total_a_pagar'];
-                        } else {
-                            t = row['total_a_pagar'] / row['tipo_cambio'];
-                        }
-                    }
-                    return formatDecimal(t);
+                    // t = 0;
+                    // if (moneda == 4){//Convertir a Soles
+                    //     if (row['moneda'] == 1){//Soles
+                    //         t = row['total_a_pagar'];
+                    //     } else {
+                    //         t = row['total_a_pagar'] * row['tipo_cambio'];
+                    //     }
+                    // } else if (moneda == 5){//Convertir a Dolares
+                    //     if (row['moneda'] == 2){//Dolares
+                    //         t = row['total_a_pagar'];
+                    //     } else {
+                    //         t = row['total_a_pagar'] / row['tipo_cambio'];
+                    //     }
+                    // }
+                    return formatDecimal(row['total_a_pagar']);
                 }
             },
-            {'render': 
-                function(data, type, row){
-                    return 0;
-                }
-            },
+            // {'render': 
+            //     function(data, type, row){
+            //         return 0;
+            //     }
+            // },
             {'data': 'des_condicion'},
-            {'data': 'credito_dias'},
+            // {'data': 'credito_dias'},
             {'data': 'des_operacion'},
-            {'data': 'fecha_vcmto'},
+            // {'data': 'fecha_vcmto'},
             {'data': 'nombre_trabajador'},
-            {'data': 'tipo_cambio'},
+            // {'data': 'tipo_cambio'},
             {'data': 'des_almacen'},
             {'data': 'fecha_registro'},
         ],
-        'columnDefs': [{ 'aTargets': [0,1], 'sClass': 'invisible'}],
+        'columnDefs': [
+            {   'aTargets': [0,1], 
+                'sClass': 'invisible'
+            },
+            // {   'render': 
+            //         function (data, type, row) {
+            //             return row.comprobantes;
+            //         }, targets: 9
+            // },
+        ],
         "order": [[2, "asc"],[5, "asc"]]
     });
     botones('#listaIngresos tbody',tabla);

@@ -15,6 +15,8 @@ function actualizarKardex(){
     console.log('fechas'+fini+'-'+ffin);
     console.log(alm);
     listarKardexGeneral(alm,fini,ffin);
+
+    $('#modal-kardex_filtro').modal('hide');
 }
 function listarKardexGeneral(almacenes, fini, ffin){
     var vardataTables = funcDatatables();
@@ -24,6 +26,7 @@ function listarKardexGeneral(almacenes, fini, ffin){
         'buttons': vardataTables[2],
         'language' : vardataTables[0],
         // "scrollX": true,
+        'pageLength': 50,
         'ajax': {
             url:'kardex_general/'+almacenes+'/'+fini+'/'+ffin,
             dataSrc:''
@@ -70,7 +73,6 @@ function listarKardexGeneral(almacenes, fini, ffin){
                     return (formatNumber.decimal(row['saldo_valor'],'',-2));
                 }
             },
-            // {'data': 'saldo_valor'},
             {'data': 'codigo'},
             {'render': 
                 function(data, type, row){
@@ -98,41 +100,12 @@ function listarKardexGeneral(almacenes, fini, ffin){
                         return row['cod_transformacion'];
                     else if (row['cod_transferencia'] !== null)
                         return row['cod_transferencia'];
-                    // else if (row['id_doc_com'] !== null)
-                    //     return row['doc_com'];
-                    // else if(row['id_doc_ven'] !== null)
-                    //     return row['doc_ven'];
                     else
                         return '';
                 }
             },
             {'data': 'orden'},
-            {'data': 'req'},
-            // {'defaultContent':'<input type="checkbox"/>'},
-            // {'data': 'codigo'},
-            // {'render':
-            //     function (data, type, row){
-            //         return (formatDate(row['fecha_requerimiento']));
-            //     }
-            // },
-            // {'data': 'responsable'},
-            // {'data': 'des_grupo'},
-            // {'data': 'concepto'},
-            // {'render':
-            //     function (data, type, row){
-            //         return ((row['id_proyecto'] !== null) ? row['proy_descripcion'] : row['area_descripcion']);
-            //     }
-            // },
-            // {'defaultContent': 
-            //     '<button type="button" class="ver btn btn-primary boton" data-toggle="tooltip" '+
-            //         'data-placement="bottom" title="Ver Documento" >'+
-            //         '<i class="fas fa-search-plus"></i></button>'+
-            //     '<button type="button" class="atender btn btn-success boton" data-toggle="tooltip" '+
-            //         'data-placement="bottom" title="Atender" >'+
-            //         '<i class="fas fa-share"></i></button>'+
-            //     '<button type="button" class="anular btn btn-danger boton" data-toggle="tooltip" '+
-            //         'data-placement="bottom" title="Anular" >'+
-            //         '<i class="fas fa-trash"></i></button>'},
+            {'data': 'docs'},
         ],
         'columnDefs': [{ 'aTargets': [0], 'sClass': 'invisible', 'width': '1200px'}],
         "order": [[1, "asc"],[3, "asc"]]
