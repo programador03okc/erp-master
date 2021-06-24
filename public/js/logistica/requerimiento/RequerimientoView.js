@@ -6,7 +6,6 @@ var tempIdRegisterActive;
 var tempCentroCostoSelected;
 var tempArchivoAdjuntoItemList = [];
 var tempArchivoAdjuntoRequerimientoList = [];
-
 class RequerimientoView {
     init() {
         this.agregarFilaEvent();
@@ -144,41 +143,41 @@ class RequerimientoView {
         }
     }
 
-    changeProyecto(event){
+    changeProyecto(event) {
 
-        tempCentroCostoSelected= {
-            'id' : event.target.options[ event.target.selectedIndex].getAttribute('data-id-centro-costo'),
-            'codigo' : event.target.options[ event.target.selectedIndex].getAttribute('data-codigo-centro-costo'),
-            'descripcion' : event.target.options[ event.target.selectedIndex].getAttribute('data-descripcion-centro-costo')
+        tempCentroCostoSelected = {
+            'id': event.target.options[event.target.selectedIndex].getAttribute('data-id-centro-costo'),
+            'codigo': event.target.options[event.target.selectedIndex].getAttribute('data-codigo-centro-costo'),
+            'descripcion': event.target.options[event.target.selectedIndex].getAttribute('data-descripcion-centro-costo')
         };
         let tbodyChildren = document.querySelector("tbody[id='body_detalle_requerimiento']").children;
-        if(tempCentroCostoSelected.id >0){
-            if(tbodyChildren.length >0){
+        if (tempCentroCostoSelected.id > 0) {
+            if (tbodyChildren.length > 0) {
                 for (let i = 0; i < tbodyChildren.length; i++) {
-                    tbodyChildren[i].querySelector("input[class='centroCosto']").value=tempCentroCostoSelected.id;
-                    tbodyChildren[i].querySelector("p[class='descripcion-centro-costo']").setAttribute('title',tempCentroCostoSelected.codigo);
-                    tbodyChildren[i].querySelector("p[class='descripcion-centro-costo']").textContent= tempCentroCostoSelected.descripcion;
-                    tbodyChildren[i].querySelector("button[name='centroCostos']").setAttribute('disabled',true);
-                    tbodyChildren[i].querySelector("button[name='centroCostos']").setAttribute('title','El centro de costo esta asignado a un proyecto');
+                    tbodyChildren[i].querySelector("input[class='centroCosto']").value = tempCentroCostoSelected.id;
+                    tbodyChildren[i].querySelector("p[class='descripcion-centro-costo']").setAttribute('title', tempCentroCostoSelected.codigo);
+                    tbodyChildren[i].querySelector("p[class='descripcion-centro-costo']").textContent = tempCentroCostoSelected.descripcion;
+                    tbodyChildren[i].querySelector("button[name='centroCostos']").setAttribute('disabled', true);
+                    tbodyChildren[i].querySelector("button[name='centroCostos']").setAttribute('title', 'El centro de costo esta asignado a un proyecto');
                 }
             }
 
-        }else{
+        } else {
             alert("El proyecto seleccionado no tiene un centro de costo preasignado, puede seleccionar manualmente")
-            if(tbodyChildren.length >0){
+            if (tbodyChildren.length > 0) {
                 for (let i = 0; i < tbodyChildren.length; i++) {
-                    tbodyChildren[i].querySelector("input[class='centroCosto']").value='';
-                    tbodyChildren[i].querySelector("p[class='descripcion-centro-costo']").setAttribute('title','');
-                    tbodyChildren[i].querySelector("p[class='descripcion-centro-costo']").textContent= '';
+                    tbodyChildren[i].querySelector("input[class='centroCosto']").value = '';
+                    tbodyChildren[i].querySelector("p[class='descripcion-centro-costo']").setAttribute('title', '');
+                    tbodyChildren[i].querySelector("p[class='descripcion-centro-costo']").textContent = '';
                     tbodyChildren[i].querySelector("button[name='centroCostos']").removeAttribute('disabled');
-                    tbodyChildren[i].querySelector("button[name='centroCostos']").setAttribute('title','');
+                    tbodyChildren[i].querySelector("button[name='centroCostos']").setAttribute('title', '');
                 }
             }
         }
 
 
-        let codigoProyecto = event.target.options[ event.target.selectedIndex].getAttribute('data-codigo');
-        
+        let codigoProyecto = event.target.options[event.target.selectedIndex].getAttribute('data-codigo');
+
         document.querySelector("form[id='form-requerimiento'] input[name='codigo_proyecto']").value = codigoProyecto;
     }
 
@@ -235,7 +234,7 @@ class RequerimientoView {
         }
         return ID;
     }
- 
+
 
     agregarFilaEvent() {
         document.querySelector("button[id='btn-add-producto']").addEventListener('click', (event) => {
@@ -244,7 +243,7 @@ class RequerimientoView {
 
             let tipoRequerimiento = document.querySelector("form[id='form-requerimiento'] select[name='tipo_requerimiento']").value;
             let idGrupo = document.querySelector("form[id='form-requerimiento'] input[name='id_grupo']").value;
- 
+
             document.querySelector("tbody[id='body_detalle_requerimiento']").insertAdjacentHTML('beforeend', `<tr style="text-align:center">
             <td></td>
             <td><p class="descripcion-partida">(NO SELECCIONADO)</p><button type="button" class="btn btn-xs btn-info" name="partida" onclick="requerimientoView.cargarModalPartidas(this)">Seleccionar</button> 
@@ -252,9 +251,9 @@ class RequerimientoView {
                     <input type="text" class="partida" name="idPartida[]" hidden>
                 </div>
             </td>
-            <td><p class="descripcion-centro-costo" title="${tempCentroCostoSelected !=undefined?tempCentroCostoSelected.codigo:''}">${tempCentroCostoSelected !=undefined?tempCentroCostoSelected.descripcion:'(NO SELECCIONADO)'}</p><button type="button" class="btn btn-xs btn-primary" name="centroCostos" onclick="requerimientoView.cargarModalCentroCostos(this)" ${tempCentroCostoSelected !=undefined?'disabled':''} title="${tempCentroCostoSelected !=undefined?'El centro de costo esta asignado a un proyecto':''}" >Seleccionar</button> 
+            <td><p class="descripcion-centro-costo" title="${tempCentroCostoSelected != undefined ? tempCentroCostoSelected.codigo : ''}">${tempCentroCostoSelected != undefined ? tempCentroCostoSelected.descripcion : '(NO SELECCIONADO)'}</p><button type="button" class="btn btn-xs btn-primary" name="centroCostos" onclick="requerimientoView.cargarModalCentroCostos(this)" ${tempCentroCostoSelected != undefined ? 'disabled' : ''} title="${tempCentroCostoSelected != undefined ? 'El centro de costo esta asignado a un proyecto' : ''}" >Seleccionar</button> 
                 <div class="form-group">
-                    <input type="text" class="centroCosto" name="idCentroCosto[]" value="${tempCentroCostoSelected !=undefined?tempCentroCostoSelected.id:''}" hidden>
+                    <input type="text" class="centroCosto" name="idCentroCosto[]" value="${tempCentroCostoSelected != undefined ? tempCentroCostoSelected.id : ''}" hidden>
                 </div>
             </td>
             <td><input class="form-control input-sm" type="text" name="partNumber[]" placeholder="Part number"></td>
@@ -304,9 +303,9 @@ class RequerimientoView {
                     <input type="text" class="partida" name="idPartida[]" hidden>
                 </div>
                 </td>
-                <td><p class="descripcion-centro-costo" title="${tempCentroCostoSelected !=undefined?tempCentroCostoSelected.codigo:''}">${tempCentroCostoSelected !=undefined?tempCentroCostoSelected.descripcion:'(NO SELECCIONADO)'}</p><button type="button" class="btn btn-xs btn-primary" name="centroCostos" onclick="requerimientoView.cargarModalCentroCostos(this)" ${tempCentroCostoSelected !=undefined?'disabled':''} title="${tempCentroCostoSelected !=undefined?'El centro de costo esta asignado a un proyecto':''}" >Seleccionar</button> 
+                <td><p class="descripcion-centro-costo" title="${tempCentroCostoSelected != undefined ? tempCentroCostoSelected.codigo : ''}">${tempCentroCostoSelected != undefined ? tempCentroCostoSelected.descripcion : '(NO SELECCIONADO)'}</p><button type="button" class="btn btn-xs btn-primary" name="centroCostos" onclick="requerimientoView.cargarModalCentroCostos(this)" ${tempCentroCostoSelected != undefined ? 'disabled' : ''} title="${tempCentroCostoSelected != undefined ? 'El centro de costo esta asignado a un proyecto' : ''}" >Seleccionar</button> 
                 <div class="form-group">
-                    <input type="text" class="centroCosto" name="idCentroCosto[]" value="${tempCentroCostoSelected !=undefined?tempCentroCostoSelected.id:''}" hidden>
+                    <input type="text" class="centroCosto" name="idCentroCosto[]" value="${tempCentroCostoSelected != undefined ? tempCentroCostoSelected.id : ''}" hidden>
                 </div>
             </td>
             <td>(Servicio)<input type="hidden" name="partNumber[]"></td>
@@ -539,15 +538,15 @@ class RequerimientoView {
     selectPartida(idPartida) {
         let codigo = $("#par-" + idPartida + " ").find("td[name=codigo]")[0].innerHTML;
         let descripcion = $("#par-" + idPartida + " ").find("td[name=descripcion]")[0].innerHTML;
-        let presupuestoTotal = $("#par-"+idPartida+" ").find("td[name=importe_total]")[0].dataset.presupuestoTotal;
+        let presupuestoTotal = $("#par-" + idPartida + " ").find("td[name=importe_total]")[0].dataset.presupuestoTotal;
 
         tempObjectBtnPartida.nextElementSibling.querySelector("input").value = idPartida;
         tempObjectBtnPartida.textContent = 'Cambiar';
 
         let tr = tempObjectBtnPartida.closest("tr");
-        tr.querySelector("p[class='descripcion-partida']").dataset.idPartida=idPartida;
+        tr.querySelector("p[class='descripcion-partida']").dataset.idPartida = idPartida;
         tr.querySelector("p[class='descripcion-partida']").textContent = descripcion
-        tr.querySelector("p[class='descripcion-partida']").dataset.presupuestoTotal=presupuestoTotal;
+        tr.querySelector("p[class='descripcion-partida']").dataset.presupuestoTotal = presupuestoTotal;
         tr.querySelector("p[class='descripcion-partida']").setAttribute('title', codigo);
 
         this.updatePartidaItem(tempObjectBtnPartida.nextElementSibling.querySelector("input"));
@@ -557,29 +556,29 @@ class RequerimientoView {
         this.calcularPresupuestoUtilizadoYSaldoPorPartida();
     }
 
-    calcularPresupuestoUtilizadoYSaldoPorPartida(){
-        let tempPartidasActivas=[];
-        let partidaAgregadas=[];
-        let subtotalItemList=[];
+    calcularPresupuestoUtilizadoYSaldoPorPartida() {
+        let tempPartidasActivas = [];
+        let partidaAgregadas = [];
+        let subtotalItemList = [];
         let tbodyChildren = document.querySelector("tbody[id='body_detalle_requerimiento']").children;
 
         for (let index = 0; index < tbodyChildren.length; index++) {
-            if(tbodyChildren[index].querySelector("p[class='descripcion-partida']").dataset.idPartida >0){
-                if(!partidaAgregadas.includes(tbodyChildren[index].querySelector("p[class='descripcion-partida']").dataset.idPartida)){
-                    partidaAgregadas.push(tbodyChildren[index].querySelector("p[class='descripcion-partida']").dataset.idPartida);          
+            if (tbodyChildren[index].querySelector("p[class='descripcion-partida']").dataset.idPartida > 0) {
+                if (!partidaAgregadas.includes(tbodyChildren[index].querySelector("p[class='descripcion-partida']").dataset.idPartida)) {
+                    partidaAgregadas.push(tbodyChildren[index].querySelector("p[class='descripcion-partida']").dataset.idPartida);
                     tempPartidasActivas.push({
-                        'id_partida':tbodyChildren[index].querySelector("p[class='descripcion-partida']").dataset.idPartida,
-                        'codigo':tbodyChildren[index].querySelector("p[class='descripcion-partida']").title,
-                        'descripcion':tbodyChildren[index].querySelector("p[class='descripcion-partida']").textContent,
-                        'presupuesto_total':tbodyChildren[index].querySelector("p[class='descripcion-partida']").dataset.presupuestoTotal,
-                        'presupuesto_utilizado':0,
-                        'saldo':0
+                        'id_partida': tbodyChildren[index].querySelector("p[class='descripcion-partida']").dataset.idPartida,
+                        'codigo': tbodyChildren[index].querySelector("p[class='descripcion-partida']").title,
+                        'descripcion': tbodyChildren[index].querySelector("p[class='descripcion-partida']").textContent,
+                        'presupuesto_total': tbodyChildren[index].querySelector("p[class='descripcion-partida']").dataset.presupuestoTotal,
+                        'presupuesto_utilizado': 0,
+                        'saldo': 0
                     });
                 }
-    
+
                 subtotalItemList.push({
-                    'id_partida':tbodyChildren[index].querySelector("p[class='descripcion-partida']").dataset.idPartida,
-                    'subtotal':(tbodyChildren[index].querySelector("input[class~='cantidad']").value >0?tbodyChildren[index].querySelector("input[class~='cantidad']").value:0) * (tbodyChildren[index].querySelector("input[class~='precio']").value>0?tbodyChildren[index].querySelector("input[class~='precio']").value:0)
+                    'id_partida': tbodyChildren[index].querySelector("p[class='descripcion-partida']").dataset.idPartida,
+                    'subtotal': (tbodyChildren[index].querySelector("input[class~='cantidad']").value > 0 ? tbodyChildren[index].querySelector("input[class~='cantidad']").value : 0) * (tbodyChildren[index].querySelector("input[class~='precio']").value > 0 ? tbodyChildren[index].querySelector("input[class~='precio']").value : 0)
                 });
 
             }
@@ -588,14 +587,14 @@ class RequerimientoView {
 
         for (let p = 0; p < tempPartidasActivas.length; p++) {
             for (let i = 0; i < subtotalItemList.length; i++) {
-                if(tempPartidasActivas[p].id_partida == subtotalItemList[i].id_partida){
+                if (tempPartidasActivas[p].id_partida == subtotalItemList[i].id_partida) {
                     tempPartidasActivas[p].presupuesto_utilizado += subtotalItemList[i].subtotal;
                 }
             }
         }
 
         for (let p = 0; p < tempPartidasActivas.length; p++) {
-            tempPartidasActivas[p].saldo = tempPartidasActivas[p].presupuesto_total - (tempPartidasActivas[p].presupuesto_utilizado>0?tempPartidasActivas[p].presupuesto_utilizado:0);
+            tempPartidasActivas[p].saldo = tempPartidasActivas[p].presupuesto_total - (tempPartidasActivas[p].presupuesto_utilizado > 0 ? tempPartidasActivas[p].presupuesto_utilizado : 0);
         }
 
 
@@ -603,19 +602,19 @@ class RequerimientoView {
         this.construirTablaPresupuestoUtilizadoYSaldoPorPartida(tempPartidasActivas);
         // console.log(tempPartidasActivas);
     }
-    validarPresupuestoUtilizadoYSaldoPorPartida(data){
-        let mensajeAlerta='';
+    validarPresupuestoUtilizadoYSaldoPorPartida(data) {
+        let mensajeAlerta = '';
         data.forEach(partida => {
-            if(partida.saldo <0){
-                mensajeAlerta+=`La partida ${partida.codigo} - ${partida.descripcion} a excedido el presupuesto asignado, tiene un saldo actual de ${Util.formatoNumero(partida.saldo,2)}. \n`
+            if (partida.saldo < 0) {
+                mensajeAlerta += `La partida ${partida.codigo} - ${partida.descripcion} a excedido el presupuesto asignado, tiene un saldo actual de ${Util.formatoNumero(partida.saldo, 2)}. \n`
             }
         });
-        if(mensajeAlerta.length>0){
+        if (mensajeAlerta.length > 0) {
             alert(mensajeAlerta);
         }
     }
 
-    construirTablaPresupuestoUtilizadoYSaldoPorPartida(data){
+    construirTablaPresupuestoUtilizadoYSaldoPorPartida(data) {
         this.limpiarTabla('listaPartidasActivas');
         data.forEach(element => {
             document.querySelector("tbody[id='body_partidas_activas']").insertAdjacentHTML('beforeend', `<tr style="text-align:center">
@@ -623,9 +622,9 @@ class RequerimientoView {
                 <td>${element.descripcion}</td>
                 <td style="text-align:right;"><span>S/</span>${Util.formatoNumero(element.presupuesto_total, 2)}</td>
                 <td style="text-align:right;"><span>S/</span>${Util.formatoNumero(element.presupuesto_utilizado, 2)}</td>
-                <td style="text-align:right; color:${element.saldo>=0?'#333':'#dd4b39'}"><span>S/</span>${Util.formatoNumero(element.saldo, 2)}</td>
+                <td style="text-align:right; color:${element.saldo >= 0 ? '#333' : '#dd4b39'}"><span>S/</span>${Util.formatoNumero(element.saldo, 2)}</td>
             </tr>`);
-            
+
         });
 
     }
@@ -732,26 +731,27 @@ class RequerimientoView {
         $('#modal-adjuntar-archivos-requerimiento').modal({
             show: true
         });
-        
+
         document.querySelector("div[id='modal-adjuntar-archivos-requerimiento'] div[class='bootstrap-filestyle input-group'] input[type='text']").classList.add('oculto');
         document.querySelector("div[id='modal-adjuntar-archivos-requerimiento'] span[class='buttonText']").textContent = "Agregar archivo";
-        
+        document.querySelector("div[id='modal-adjuntar-archivos-requerimiento'] div[id='group-action-upload-file']").classList.remove('oculto');
+
         this.limpiarTabla('listaArchivosRequerimiento');
 
         this.listarAdjuntosDeCabecera();
 
     }
 
-    listarAdjuntosDeCabecera(){
+    listarAdjuntosDeCabecera() {
 
         requerimientoCtrl.getcategoriaAdjunto().then((categoriaAdjuntoList) => {
-            requerimientoView.construirTablaAdjuntosRequerimiento(tempArchivoAdjuntoRequerimientoList,categoriaAdjuntoList);
+            requerimientoView.construirTablaAdjuntosRequerimiento(tempArchivoAdjuntoRequerimientoList, categoriaAdjuntoList);
         }).catch(function (err) {
             console.log(err)
         })
     }
-    
-    construirTablaAdjuntosRequerimiento(data,categoriaAdjuntoList){
+
+    construirTablaAdjuntosRequerimiento(data, categoriaAdjuntoList) {
         let html = '';
         data.forEach(element => {
             html += `<tr id="${element.id}" style="text-align:center">
@@ -759,22 +759,22 @@ class RequerimientoView {
         <td>
             <select class="form-control" name="categoriaAdjunto" onChange="ArchivoAdjunto.changeCategoriaAdjunto(this)">
         `;
-        categoriaAdjuntoList.forEach(categoria => {
-            if(element.category ==categoria.id_categoria_adjunto ){
-                html += `<option value="${categoria.id_categoria_adjunto}" selected >${categoria.descripcion}</option>`
+            categoriaAdjuntoList.forEach(categoria => {
+                if (element.category == categoria.id_categoria_adjunto) {
+                    html += `<option value="${categoria.id_categoria_adjunto}" selected >${categoria.descripcion}</option>`
 
-            }else{
-                html += `<option value="${categoria.id_categoria_adjunto}">${categoria.descripcion}</option>`
-            }
-        });
-        html += `</select>
+                } else {
+                    html += `<option value="${categoria.id_categoria_adjunto}">${categoria.descripcion}</option>`
+                }
+            });
+            html += `</select>
         </td>
         <td style="text-align:center;">
             <div class="btn-group" role="group">`;
-            if(Number.isInteger(element.id)){
-                html+= `<button type="button" class="btn btn-info btn-md" name="btnDescargarArchivoRequerimiento" title="Descargar" onclick="ArchivoAdjunto.descargarArchivoRequerimieto('${element.id}');" ><i class="fas fa-file-archive"></i></button>`;
+            if (Number.isInteger(element.id)) {
+                html += `<button type="button" class="btn btn-info btn-md" name="btnDescargarArchivoRequerimiento" title="Descargar" onclick="ArchivoAdjunto.descargarArchivoRequerimieto('${element.id}');" ><i class="fas fa-file-archive"></i></button>`;
             }
-            html+=`<button type="button" class="btn btn-danger btn-md" name="btnEliminarArchivoRequerimiento" title="Eliminar" onclick="ArchivoAdjunto.eliminarArchivoRequerimiento(this,'${element.id}');" ><i class="fas fa-trash-alt"></i></button>
+            html += `<button type="button" class="btn btn-danger btn-md" name="btnEliminarArchivoRequerimiento" title="Eliminar" onclick="ArchivoAdjunto.eliminarArchivoRequerimiento(this,'${element.id}');" ><i class="fas fa-trash-alt"></i></button>
             </div>
         </td>
         </tr>`;
@@ -790,18 +790,19 @@ class RequerimientoView {
     // adjuntos detalle requerimiento
 
     adjuntarArchivoItem(obj) {
-        
+
         tempIdRegisterActive = obj.closest('td').querySelector("input[class~='idRegister']").value;
         tempObjectBtnInputFile = obj;
-        
+
         document.querySelector("div[id='modal-adjuntar-archivos-detalle-requerimiento'] span[class='buttonText']").textContent = 'Agregar archivo';
         document.querySelector("div[id='modal-adjuntar-archivos-detalle-requerimiento'] div[class='bootstrap-filestyle input-group'] input[type='text']").classList.add('oculto');
-        
+
         $('#modal-adjuntar-archivos-detalle-requerimiento').modal({
             show: true,
             backdrop: 'true'
         });
-        
+        document.querySelector("div[id='modal-adjuntar-archivos-detalle-requerimiento'] div[id='group-action-upload-file']").classList.remove('oculto');
+
         this.limpiarTabla('listaArchivos');
         this.listarAdjuntosDeItem();
 
@@ -814,12 +815,12 @@ class RequerimientoView {
                 html += `<tr>
                 <td style="text-align:left;">${element.nameFile}</td>
                 <td style="text-align:center;">
-                    <div class="btn-group" role="group">`;
-                    if(Number.isInteger(element.id)){
-                        html+=`<button type="button" class="btn btn-info btn-md" name="btnDescargarArchivoItem" title="Descargar" onclick="ArchivoAdjunto.descargarArchivoItem('${element.id}');" ><i class="fas fa-file-archive"></i></button>`;
-                    }
-                        html+=`<button type="button" class="btn btn-danger btn-md" name="btnEliminarArchivoItem" title="Eliminar" onclick="ArchivoAdjunto.eliminarArchivoItem(this,'${element.id}');" ><i class="fas fa-trash-alt"></i></button>
-                    </div>
+                <div class="btn-group" role="group">`;
+                if (Number.isInteger(element.id)) {
+                    html += `<button type="button" class="btn btn-info btn-md" name="btnDescargarArchivoItem" title="Descargar" onclick="ArchivoAdjunto.descargarArchivoItem('${element.id}');" ><i class="fas fa-file-archive"></i></button>`;
+                }
+                html += `<button type="button" class="btn btn-danger btn-md" name="btnEliminarArchivoItem" title="Eliminar" onclick="ArchivoAdjunto.eliminarArchivoItem(this,'${element.id}');" ><i class="fas fa-trash-alt"></i></button>`;
+                html += `</div>
                 </td>
                 </tr>`;
             }
@@ -1032,33 +1033,33 @@ class RequerimientoView {
         }
     }
 
-    mostrarRequerimiento(data){
+    mostrarRequerimiento(data) {
         console.log(data);
-        
-        if(data.hasOwnProperty('requerimiento')){
+
+        if (data.hasOwnProperty('requerimiento')) {
             var btnImprimirRequerimiento = document.getElementsByName("btn-imprimir-requerimento-pdf");
-            disabledControl(btnImprimirRequerimiento,false);
+            disabledControl(btnImprimirRequerimiento, false);
             var btnAdjuntosRequerimiento = document.getElementsByName("btn-adjuntos-requerimiento");
-            disabledControl(btnAdjuntosRequerimiento,false);
+            disabledControl(btnAdjuntosRequerimiento, false);
             var btnTrazabilidadRequerimiento = document.getElementsByName("btn-ver-trazabilidad-requerimiento");
-            disabledControl(btnTrazabilidadRequerimiento,false);
+            disabledControl(btnTrazabilidadRequerimiento, false);
 
             requerimientoView.mostrarCabeceraRequerimiento(data['requerimiento'][0]);
-            if(data.hasOwnProperty('det_req')){
+            if (data.hasOwnProperty('det_req')) {
                 requerimientoView.mostrarDetalleRequerimiento(data['det_req']);
-            } 
-        }else{
+            }
+        } else {
             alert("El requerimiento que intenta cargar no existe");
         }
     }
 
-    mostrarCabeceraRequerimiento(data){
+    mostrarCabeceraRequerimiento(data) {
         // console.log(auth_user);
         // document.querySelector("input[name='id_usuario_session']").value =data.
-        document.querySelector("input[name='id_usuario_req']").value =data.id_usuario;
-        document.querySelector("input[name='id_estado_doc']").value =data.id_estado_doc;
-        document.querySelector("input[name='id_requerimiento']").value =data.id_requerimiento;
-        document.querySelector("span[id='codigo_requerimiento']").value =data.codigo;
+        document.querySelector("input[name='id_usuario_req']").value = data.id_usuario;
+        document.querySelector("input[name='id_estado_doc']").value = data.id_estado_doc;
+        document.querySelector("input[name='id_requerimiento']").value = data.id_requerimiento;
+        document.querySelector("span[id='codigo_requerimiento']").value = data.codigo;
         // document.querySelector("input[name='cantidad_aprobaciones']").value =data.
         // document.querySelector("input[name='confirmacion_pago']").value =data.
         // document.querySelector("input[name='fecha_creacion_cc']").value =data.
@@ -1066,52 +1067,52 @@ class RequerimientoView {
         // document.querySelector("input[name='tipo_cuadro']").value =data.
         // document.querySelector("input[name='tiene_transformacion']").value =data.
         // document.querySelector("input[name='justificacion_generar_requerimiento']").value =data.
-        document.querySelector("input[name='id_grupo']").value =data.id_grupo;
-        document.querySelector("input[name='estado']").value =data.id_estado_doc;
-        document.querySelector("span[id='estado_doc']").textContent =data.estado_doc;
-        document.querySelector("input[name='fecha_requerimiento']").value =data.fecha_requerimiento;
-        document.querySelector("input[name='concepto']").value =data.concepto;
-        document.querySelector("select[name='moneda']").value =data.id_moneda;
-        document.querySelector("select[name='periodo']").value =data.id_periodo;
-        document.querySelector("select[name='prioridad']").value =data.id_prioridad;
-        document.querySelector("select[name='rol_usuario']").value =data.id_rol;
-        document.querySelector("select[name='empresa']").value =data.id_empresa;
+        document.querySelector("input[name='id_grupo']").value = data.id_grupo;
+        document.querySelector("input[name='estado']").value = data.id_estado_doc;
+        document.querySelector("span[id='estado_doc']").textContent = data.estado_doc;
+        document.querySelector("input[name='fecha_requerimiento']").value = data.fecha_requerimiento;
+        document.querySelector("input[name='concepto']").value = data.concepto;
+        document.querySelector("select[name='moneda']").value = data.id_moneda;
+        document.querySelector("select[name='periodo']").value = data.id_periodo;
+        document.querySelector("select[name='prioridad']").value = data.id_prioridad;
+        document.querySelector("select[name='rol_usuario']").value = data.id_rol;
+        document.querySelector("select[name='empresa']").value = data.id_empresa;
         requerimientoView.getDataSelectSede(data.id_empresa);
-        document.querySelector("select[name='sede']").value =data.id_sede;
-        document.querySelector("input[name='fecha_entrega']").value =data.fecha_entrega;
-        document.querySelector("select[name='rol_aprobante']").value =data.rol_aprobante_id;
-        document.querySelector("select[name='tipo_requerimiento']").value =data.id_tipo_requerimiento;
-        document.querySelector("input[name='id_trabajador']").value =data.trabajador_id;
-        document.querySelector("input[name='nombre_trabajador']").value =data.nombre_trabajador;
-        document.querySelector("select[name='fuente_id']").value =data.fuente_id;
-        document.querySelector("select[name='fuente_det_id']").value =data.fuente_det_id;
+        document.querySelector("select[name='sede']").value = data.id_sede;
+        document.querySelector("input[name='fecha_entrega']").value = data.fecha_entrega;
+        document.querySelector("select[name='rol_aprobante']").value = data.rol_aprobante_id;
+        document.querySelector("select[name='tipo_requerimiento']").value = data.id_tipo_requerimiento;
+        document.querySelector("input[name='id_trabajador']").value = data.trabajador_id;
+        document.querySelector("input[name='nombre_trabajador']").value = data.nombre_trabajador;
+        document.querySelector("select[name='fuente_id']").value = data.fuente_id;
+        document.querySelector("select[name='fuente_det_id']").value = data.fuente_det_id;
         // document.querySelector("input[name='montoMoneda']").textContent =data.
-        document.querySelector("input[name='monto']").value =data.monto;
-        document.querySelector("select[name='id_almacen']").value =data.id_almacen;
+        document.querySelector("input[name='monto']").value = data.monto;
+        document.querySelector("select[name='id_almacen']").value = data.id_almacen;
         // document.querySelector("input[name='descripcion_grupo']").value =data.
-        document.querySelector("input[name='codigo_proyecto']").value =data.codigo_proyecto;
-        document.querySelector("select[name='id_proyecto']").value =data.id_proyecto;
-        document.querySelector("select[name='tipo_cliente']").value =data.tipo_cliente;
-        document.querySelector("input[name='id_cliente']").value =data.id_cliente;
-        document.querySelector("input[name='cliente_ruc']").value =data.cliente_ruc;
-        document.querySelector("input[name='cliente_razon_social']").value =data.cliente_razon_social;
-        document.querySelector("input[name='id_persona']").value =data.id_persona;
-        document.querySelector("input[name='dni_persona']").value =data.dni_persona;
-        document.querySelector("input[name='nombre_persona']").value =data.nombre_persona;
-        document.querySelector("input[name='ubigeo']").value =data.id_ubigeo_entrega;
-        document.querySelector("input[name='name_ubigeo']").value =data.name_ubigeo;
-        document.querySelector("input[name='telefono_cliente']").value =data.telefono;
-        document.querySelector("input[name='email_cliente']").value =data.email;
-        document.querySelector("input[name='direccion_entrega']").value =data.direccion_entrega;
+        document.querySelector("input[name='codigo_proyecto']").value = data.codigo_proyecto;
+        document.querySelector("select[name='id_proyecto']").value = data.id_proyecto;
+        document.querySelector("select[name='tipo_cliente']").value = data.tipo_cliente;
+        document.querySelector("input[name='id_cliente']").value = data.id_cliente;
+        document.querySelector("input[name='cliente_ruc']").value = data.cliente_ruc;
+        document.querySelector("input[name='cliente_razon_social']").value = data.cliente_razon_social;
+        document.querySelector("input[name='id_persona']").value = data.id_persona;
+        document.querySelector("input[name='dni_persona']").value = data.dni_persona;
+        document.querySelector("input[name='nombre_persona']").value = data.nombre_persona;
+        document.querySelector("input[name='ubigeo']").value = data.id_ubigeo_entrega;
+        document.querySelector("input[name='name_ubigeo']").value = data.name_ubigeo;
+        document.querySelector("input[name='telefono_cliente']").value = data.telefono;
+        document.querySelector("input[name='email_cliente']").value = data.email;
+        document.querySelector("input[name='direccion_entrega']").value = data.direccion_entrega;
         // document.querySelector("input[name='nombre_contacto']").value =data.
         // document.querySelector("input[name='cargo_contacto']").value =data.
         // document.querySelector("input[name='email_contacto']").value =data.
         // document.querySelector("input[name='telefono_contacto']").value =data.
         // document.querySelector("input[name='direccion_contacto']").value =data.
-        document.querySelector("textarea[name='observacion']").value =data.observacion;
+        document.querySelector("textarea[name='observacion']").value = data.observacion;
 
-        
-        if((data.adjuntos).length >0){
+
+        if ((data.adjuntos).length > 0) {
             (data.adjuntos).forEach(element => {
                 tempArchivoAdjuntoRequerimientoList.push({
                     id: element.id_adjunto,
@@ -1130,26 +1131,26 @@ class RequerimientoView {
 
 
 
-    mostrarDetalleRequerimiento(data){
+    mostrarDetalleRequerimiento(data) {
         vista_extendida();
         for (let i = 0; i < data.length; i++) {
-            if(data[i].id_tipo_item==1){ // producto
+            if (data[i].id_tipo_item == 1) { // producto
                 document.querySelector("tbody[id='body_detalle_requerimiento']").insertAdjacentHTML('beforeend', `<tr style="text-align:center">
                 <td></td>
-                <td><p class="descripcion-partida" data-id-partida="${data[i].id_partida}" data-presupuesto-total="${data[i].presupuesto_total_partida}" title="${data[i].codigo_partida !=null?data[i].codigo_partida:''}" >${data[i].descripcion_partida !=null?data[i].descripcion_partida:'(NO SELECCIONADO)'}</p><button type="button" class="btn btn-xs btn-info" name="partida" onclick="requerimientoView.cargarModalPartidas(this)">Seleccionar</button> 
+                <td><p class="descripcion-partida" data-id-partida="${data[i].id_partida}" data-presupuesto-total="${data[i].presupuesto_total_partida}" title="${data[i].codigo_partida != null ? data[i].codigo_partida : ''}" >${data[i].descripcion_partida != null ? data[i].descripcion_partida : '(NO SELECCIONADO)'}</p><button type="button" class="btn btn-xs btn-info" name="partida" onclick="requerimientoView.cargarModalPartidas(this)">Seleccionar</button> 
                     <div class="form-group">
                         <input type="text" class="partida" name="idPartida[]" value="${data[i].id_partida}" hidden>
                     </div>
                 </td>
-                <td><p class="descripcion-centro-costo" title="${data[i].codigo_centro_costo !=null?data[i].codigo_centro_costo:''}">${data[i].descripcion_centro_costo !=null?data[i].descripcion_centro_costo:'(NO SELECCIONADO)'}</p><button type="button" class="btn btn-xs btn-primary" name="centroCostos" onclick="requerimientoView.cargarModalCentroCostos(this)" ${tempCentroCostoSelected !=undefined?'disabled':''} title="${tempCentroCostoSelected !=undefined?'El centro de costo esta asignado a un proyecto':''}" >Seleccionar</button> 
+                <td><p class="descripcion-centro-costo" title="${data[i].codigo_centro_costo != null ? data[i].codigo_centro_costo : ''}">${data[i].descripcion_centro_costo != null ? data[i].descripcion_centro_costo : '(NO SELECCIONADO)'}</p><button type="button" class="btn btn-xs btn-primary" name="centroCostos" onclick="requerimientoView.cargarModalCentroCostos(this)" ${tempCentroCostoSelected != undefined ? 'disabled' : ''} title="${tempCentroCostoSelected != undefined ? 'El centro de costo esta asignado a un proyecto' : ''}" >Seleccionar</button> 
                     <div class="form-group">
                         <input type="text" class="centroCosto" name="idCentroCosto[]" value="${data[i].id_centro_costo}" hidden>
                     </div>
                 </td>
-                <td><input class="form-control input-sm" type="text" name="partNumber[]" placeholder="Part number" value="${data[i].part_number!=null?data[i].part_number:''}"></td>
+                <td><input class="form-control input-sm" type="text" name="partNumber[]" placeholder="Part number" value="${data[i].part_number != null ? data[i].part_number : ''}"></td>
                 <td>
                     <div class="form-group">
-                        <textarea class="form-control input-sm descripcion" name="descripcion[]" placeholder="Descripción" value="${data[i].descripcion!=null?data[i].descripcion:''}" onkeyup ="requerimientoView.updateDescripcionItem(this);">${data[i].descripcion!=null?data[i].descripcion:''}"</textarea></td>
+                        <textarea class="form-control input-sm descripcion" name="descripcion[]" placeholder="Descripción" value="${data[i].descripcion != null ? data[i].descripcion : ''}" onkeyup ="requerimientoView.updateDescripcionItem(this);">${data[i].descripcion != null ? data[i].descripcion : ''}"</textarea></td>
                     </div>
                 <td><select name="unidad[]" class="form-control input-sm" value="${data[i].id_unidad_medida}" >${document.querySelector("select[id='selectUnidadMedida']").innerHTML}</select></td>
                 <td>
@@ -1162,7 +1163,7 @@ class RequerimientoView {
                         <input class="form-control input-sm precio text-right" type="number" min="0" name="precioUnitario[]" value="${data[i].precio_unitario}" onkeyup="requerimientoView.updateSubtotal(this); requerimientoView.updatePrecioItem(this); requerimientoView.calcularPresupuestoUtilizadoYSaldoPorPartida();" placeholder="Precio U."></td>
                     </div>  
                 <td style="text-align:right;"><span class="moneda" name="simboloMoneda[]">S/</span><span class="subtotal" name="subtotal[]">0.00</span></td>
-                <td><textarea class="form-control input-sm" name="motivo[]"  value="${data[i].motivo!=null?data[i].motivo:''}" placeholder="Motivo de requerimiento de item (opcional)">${data[i].motivo!=null?data[i].motivo:''}</textarea></td>
+                <td><textarea class="form-control input-sm" name="motivo[]"  value="${data[i].motivo != null ? data[i].motivo : ''}" placeholder="Motivo de requerimiento de item (opcional)">${data[i].motivo != null ? data[i].motivo : ''}</textarea></td>
                 <td>
                     <div class="btn-group" role="group">
                         <input type="hidden" class="tipoItem" name="tipoItem[]" value="1">
@@ -1175,15 +1176,15 @@ class RequerimientoView {
                     </div>
                 </td>
                 </tr>`);
-            }else{ // servicio
+            } else { // servicio
                 document.querySelector("tbody[id='body_detalle_requerimiento']").insertAdjacentHTML('beforeend', `<tr style="text-align:center">
                 <td></td>
-                <td><p class="descripcion-partida" data-id-partida="${data[i].id_partida}" data-presupuesto-total="${data[i].presupuesto_total_partida}" title="${data[i].codigo_partida !=null?data[i].codigo_partida:''}" >${data[i].descripcion_partida !=null?data[i].descripcion_partida:'(NO SELECCIONADO)'}</p><button type="button" class="btn btn-xs btn-info" name="partida" onclick="requerimientoView.cargarModalPartidas(this)">Seleccionar</button> 
+                <td><p class="descripcion-partida" data-id-partida="${data[i].id_partida}" data-presupuesto-total="${data[i].presupuesto_total_partida}" title="${data[i].codigo_partida != null ? data[i].codigo_partida : ''}" >${data[i].descripcion_partida != null ? data[i].descripcion_partida : '(NO SELECCIONADO)'}</p><button type="button" class="btn btn-xs btn-info" name="partida" onclick="requerimientoView.cargarModalPartidas(this)">Seleccionar</button> 
                     <div class="form-group">
                         <input type="text" class="partida" name="idPartida[]" value="${data[i].id_partida}" hidden>
                     </div>
                 </td>
-                <td><p class="descripcion-centro-costo" title="${data[i].codigo_centro_costo !=null?data[i].codigo_centro_costo:''}">${data[i].descripcion_centro_costo !=null?data[i].descripcion_centro_costo:'(NO SELECCIONADO)'}</p><button type="button" class="btn btn-xs btn-primary" name="centroCostos" onclick="requerimientoView.cargarModalCentroCostos(this)" ${tempCentroCostoSelected !=undefined?'disabled':''} title="${tempCentroCostoSelected !=undefined?'El centro de costo esta asignado a un proyecto':''}" >Seleccionar</button> 
+                <td><p class="descripcion-centro-costo" title="${data[i].codigo_centro_costo != null ? data[i].codigo_centro_costo : ''}">${data[i].descripcion_centro_costo != null ? data[i].descripcion_centro_costo : '(NO SELECCIONADO)'}</p><button type="button" class="btn btn-xs btn-primary" name="centroCostos" onclick="requerimientoView.cargarModalCentroCostos(this)" ${tempCentroCostoSelected != undefined ? 'disabled' : ''} title="${tempCentroCostoSelected != undefined ? 'El centro de costo esta asignado a un proyecto' : ''}" >Seleccionar</button> 
                     <div class="form-group">
                         <input type="text" class="centroCosto" name="idCentroCosto[]" value="${data[i].id_centro_costo}" hidden>
                     </div>
@@ -1191,7 +1192,7 @@ class RequerimientoView {
                 <td>(Servicio)<input type="hidden" name="partNumber[]"></td>
                 <td>
                     <div class="form-group">
-                    <textarea class="form-control input-sm descripcion" name="descripcion[]" placeholder="Descripción" value="${data[i].descripcion!=null?data[i].descripcion:''}" onkeyup ="requerimientoView.updateDescripcionItem(this);">${data[i].descripcion!=null?data[i].descripcion:''}"</textarea></td>
+                    <textarea class="form-control input-sm descripcion" name="descripcion[]" placeholder="Descripción" value="${data[i].descripcion != null ? data[i].descripcion : ''}" onkeyup ="requerimientoView.updateDescripcionItem(this);">${data[i].descripcion != null ? data[i].descripcion : ''}"</textarea></td>
                     </div>
                 <td><select name="unidad[]" class="form-control input-sm" value="${data[i].id_unidad_medida}" >${document.querySelector("select[id='selectUnidadMedida']").innerHTML}</select></td>
                 <td>
@@ -1204,7 +1205,7 @@ class RequerimientoView {
                         <input class="form-control input-sm precio text-right" type="number" min="0" name="precioUnitario[]" value="${data[i].precio_unitario}" onkeyup="requerimientoView.updateSubtotal(this); requerimientoView.updatePrecioItem(this); requerimientoView.calcularPresupuestoUtilizadoYSaldoPorPartida();" placeholder="Precio U."></td>
                     </div>  
                 <td style="text-align:right;"><span class="moneda" name="simboloMoneda[]">S/</span><span class="subtotal" name="subtotal[]">0.00</span></td>
-                <td><textarea class="form-control input-sm" name="motivo[]"  value="${data[i].motivo!=null?data[i].motivo:''}" placeholder="Motivo de requerimiento de item (opcional)">${data[i].motivo!=null?data[i].motivo:''}</textarea></td>
+                <td><textarea class="form-control input-sm" name="motivo[]"  value="${data[i].motivo != null ? data[i].motivo : ''}" placeholder="Motivo de requerimiento de item (opcional)">${data[i].motivo != null ? data[i].motivo : ''}</textarea></td>
                 <td>
                     <div class="btn-group" role="group">
                         <input type="hidden" class="tipoItem" name="tipoItem[]" value="1">
@@ -1217,30 +1218,30 @@ class RequerimientoView {
                     </div>
                 </td>
                 </tr>`);
-            } 
-            
+            }
+
         }
         this.updateContadorItem();
         this.autoUpdateSubtotal();
         this.calcularTotal();
         this.calcularPresupuestoUtilizadoYSaldoPorPartida();
- 
-            data.forEach(element => {
-                if(element.adjuntos.length >0){
-                    (element.adjuntos).forEach(adjunto => {
-                        tempArchivoAdjuntoItemList.push({
-                            id: adjunto.id_adjunto,
-                            idRegister: adjunto.id_detalle_requerimiento,
-                            nameFile: adjunto.archivo,
-                            typeFile: null,
-                            sizeFile: null,
-                            file: []
-                        });
+
+        data.forEach(element => {
+            if (element.adjuntos.length > 0) {
+                (element.adjuntos).forEach(adjunto => {
+                    tempArchivoAdjuntoItemList.push({
+                        id: adjunto.id_adjunto,
+                        idRegister: adjunto.id_detalle_requerimiento,
+                        nameFile: adjunto.archivo,
+                        typeFile: null,
+                        sizeFile: null,
+                        file: []
                     });
+                });
 
-                }
+            }
 
-            });
+        });
 
         ArchivoAdjunto.updateContadorTotalAdjuntosPorItem();
 
@@ -1355,12 +1356,12 @@ class ArchivoAdjunto {
     }
 
     static descargarArchivoRequerimieto(id) {
-        if(tempArchivoAdjuntoRequerimientoList.length>0){
+        if (tempArchivoAdjuntoRequerimientoList.length > 0) {
             tempArchivoAdjuntoRequerimientoList.forEach(element => {
-                if(element.id == id){
-                    window.open("/files/logistica/requerimiento/"+element.nameFile);
+                if (element.id == id) {
+                    window.open("/files/logistica/requerimiento/" + element.nameFile);
                 }
-            });     
+            });
         }
     }
     static eliminarArchivoRequerimiento(obj, id) {
@@ -1376,13 +1377,13 @@ class ArchivoAdjunto {
         ArchivoAdjunto.updateContadorTotalAdjuntosPorItem();
     }
 
-    static descargarArchivoItem(id){
-        if(tempArchivoAdjuntoItemList.length>0){
+    static descargarArchivoItem(id) {
+        if (tempArchivoAdjuntoItemList.length > 0) {
             tempArchivoAdjuntoItemList.forEach(element => {
-                if(element.id == id){
-                    window.open("/files/logistica/detalle_requerimiento/"+element.nameFile);
+                if (element.id == id) {
+                    window.open("/files/logistica/detalle_requerimiento/" + element.nameFile);
                 }
-            });     
+            });
         }
     }
 
@@ -1469,21 +1470,21 @@ class ArchivoAdjunto {
     // }
 }
 
-class Historial extends RequerimientoView{
-    mostrarHistorial(){
+class Historial extends RequerimientoView {
+    mostrarHistorial() {
         $('#modal-historial-requerimiento').modal({
             show: true,
             backdrop: 'true'
         });
 
-        requerimientoCtrl.getListadoElaborados("ME",null, null, null,null, null).then(function (res) {
+        requerimientoCtrl.getListadoElaborados("ME", null, null, null, null, null).then(function (res) {
             historialRequerimiento.construirTablaHistorialRequerimientosElaborados(res['data']);
         }).catch(function (err) {
             console.log(err)
         })
     }
 
-    construirTablaHistorialRequerimientosElaborados(data){
+    construirTablaHistorialRequerimientosElaborados(data) {
         var vardataTables = funcDatatables();
         $('#listaRequerimiento').DataTable({
             'dom': vardataTables[1],
@@ -1558,24 +1559,24 @@ class Historial extends RequerimientoView{
         });
     }
 
-    cargarRequerimiento(idRequerimiento){
+    cargarRequerimiento(idRequerimiento) {
         $('#modal-historial-requerimiento').modal('hide');
 
         requerimientoCtrl.getRequerimiento(idRequerimiento).then(function (res) {
             requerimientoView.mostrarRequerimiento(res);
-            
+
         }).catch(function (err) {
             console.log(err)
         });
     }
 }
 
-const historialRequerimiento = new Historial(); 
+const historialRequerimiento = new Historial();
 
 
 class Listado extends RequerimientoView {
-    mostrar(meOrAll,idEmpresa,idSede,idGrupo,division,idPrioridad) {
-        requerimientoCtrl.getListadoElaborados(meOrAll,idEmpresa, idSede, idGrupo,division, idPrioridad).then(function (res) {
+    mostrar(meOrAll, idEmpresa, idSede, idGrupo, division, idPrioridad) {
+        requerimientoCtrl.getListadoElaborados(meOrAll, idEmpresa, idSede, idGrupo, division, idPrioridad).then(function (res) {
             listadoRequerimiento.construirTablaListadoRequerimientosElaborados(res['data']);
         }).catch(function (err) {
             console.log(err)
@@ -1664,7 +1665,7 @@ class Listado extends RequerimientoView {
         });
     }
 
-    handleChangeFilterEmpresaListReqByEmpresa(event){
+    handleChangeFilterEmpresaListReqByEmpresa(event) {
         this.handleChangeFiltroListado();
         requerimientoCtrl.getSedesPorEmpresa(event.target.value).then(function (res) {
             listadoRequerimiento.construirSelectSede(res);
@@ -1672,41 +1673,41 @@ class Listado extends RequerimientoView {
             console.log(err)
         })
     }
-    
-    construirSelectSede(data){
+
+    construirSelectSede(data) {
         let selectSede = document.querySelector('div[type="lista_requerimiento"] select[name="id_sede_select"]');
         let html = '<option value="0">Todas</option>';
         data.forEach(element => {
             html += '<option value="' + element.id_sede + '">' + element.codigo + '</option>'
         });
-    
+
         selectSede.innerHTML = html;
         document.querySelector('div[type="lista_requerimiento"] select[name="id_sede_select"]').removeAttribute('disabled');
-        
-    }
-
-    handleChangeFiltroListado(){
-        this.mostrar(document.querySelector("select[name='mostrar_me_all']").value,document.querySelector("select[name='id_empresa_select']").value,document.querySelector("select[name='id_sede_select']").value,document.querySelector("select[name='id_grupo_select']").value,document.querySelector("select[name='division_select']").value,document.querySelector("select[name='id_prioridad_select']").value);
 
     }
 
-    handleChangeGrupo(event){
+    handleChangeFiltroListado() {
+        this.mostrar(document.querySelector("select[name='mostrar_me_all']").value, document.querySelector("select[name='id_empresa_select']").value, document.querySelector("select[name='id_sede_select']").value, document.querySelector("select[name='id_grupo_select']").value, document.querySelector("select[name='division_select']").value, document.querySelector("select[name='id_prioridad_select']").value);
+
+    }
+
+    handleChangeGrupo(event) {
         requerimientoCtrl.getListaDivisionesDeGrupo(event.target.value).then(function (res) {
             listadoRequerimiento.construirSelectDivision(res);
         }).catch(function (err) {
             console.log(err)
         })
     }
-    construirSelectDivision(data){
+    construirSelectDivision(data) {
         let selectSede = document.querySelector('div[type="lista_requerimiento"] select[name="division_select"]');
         let html = '<option value="0">Todas</option>';
         data.forEach(element => {
             html += '<option value="' + element.nombre + '">' + element.nombre + '</option>'
         });
-    
+
         selectSede.innerHTML = html;
         document.querySelector('div[type="lista_requerimiento"] select[name="division_select"]').removeAttribute('disabled');
-        
+
     }
 
 }
@@ -1762,10 +1763,11 @@ class Aprobar extends RequerimientoView {
                 },
                 { 'data': 'codigo', 'name': 'codigo' },
                 { 'data': 'concepto', 'name': 'concepto' },
-                { 'data': 'fecha_entrega', 'name': 'fecha_entrega' },
                 { 'data': 'tipo_requerimiento', 'name': 'tipo_requerimiento' },
+                { 'data': 'fecha_entrega', 'name': 'fecha_entrega' },
                 { 'data': 'razon_social_empresa', 'name': 'razon_social_empresa' },
                 { 'data': 'division', 'name': 'division' },
+                { 'data': 'observacion', 'name': 'alm_req.observacion' },
                 { 'data': 'usuario', 'name': 'usuario' },
                 { 'data': 'estado_doc', 'name': 'estado_doc' },
                 { 'data': 'cantidad_aprobados_total_flujo', 'name': 'cantidad_aprobados_total_flujo' },
@@ -1871,12 +1873,12 @@ class Aprobar extends RequerimientoView {
                                 }
 
                             });
-                            
+
                         }
- 
+
                         let containerOpenBrackets = '<center><div class="btn-group" role="group" style="margin-bottom: 5px;">';
                         let containerCloseBrackets = '</div></center>';
-                        let btnDetalleRapido = '<button type="button" class="btn btn-xs btn-info" title="Ver detalle" onClick="aprobarRequerimiento.viewFlujo(' + row['id_requerimiento'] + ', ' + row['id_doc_aprob'] + ');"><i class="fas fa-eye fa-xs"></i></button>';
+                        let btnDetalleRapido = '<button type="button" class="btn btn-xs btn-info" title="Ver detalle" onClick="aprobarRequerimiento.verDetalleRequerimiento(' + row['id_requerimiento'] + ', ' + row['id_doc_aprob'] + ');"><i class="fas fa-eye fa-xs"></i></button>';
                         let btnTracking = '<button type="button" class="btn btn-xs bg-primary" title="Explorar Requerimiento" onClick="aprobarRequerimiento.tracking_requerimiento(' + row['id_requerimiento'] + ');"><i class="fas fa-globe fa-xs"></i></button>';
                         // let btnAprobar = '<button type="button" class="btn btn-xs btn-success" title="Aprobar Requerimiento" onClick="aprobarRequerimiento.aprobarRequerimiento(' + row['id_doc_aprob'] + ');" ' + disabledBtn + '><i class="fas fa-check fa-xs"></i></button>';
                         // let btnObservar = '<button type="button" class="btn btn-xs btn-warning" title="Observar Requerimiento" onClick="aprobarRequerimiento.observarRequerimiento(' + row['id_doc_aprob'] + ');" ' + disabledBtn + '><i class="fas fa-exclamation-triangle fa-xs"></i></button>';
@@ -1904,7 +1906,7 @@ class Aprobar extends RequerimientoView {
         tablelistaitem.childNodes[0].childNodes[0].hidden = true;
     }
 
-    handleChangeFilterEmpresaListReqByEmpresa(event){
+    handleChangeFilterEmpresaListReqByEmpresa(event) {
         this.handleChangeFiltroListado();
         requerimientoCtrl.getSedesPorEmpresa(event.target.value).then(function (res) {
             aprobarRequerimiento.construirSelectSede(res);
@@ -1912,65 +1914,187 @@ class Aprobar extends RequerimientoView {
             console.log(err)
         })
     }
-    
-    construirSelectSede(data){
+
+    construirSelectSede(data) {
         let selectSede = document.querySelector('div[type="aprobar_requerimiento"] select[name="id_sede_select"]');
         let html = '<option value="0">Todas</option>';
         data.forEach(element => {
             html += '<option value="' + element.id_sede + '">' + element.codigo + '</option>'
         });
-    
+
         selectSede.innerHTML = html;
         document.querySelector('div[type="aprobar_requerimiento"] select[name="id_sede_select"]').removeAttribute('disabled');
-        
-    }
-
-    handleChangeFiltroListado(){
-        this.mostrar(document.querySelector("select[name='id_empresa_select']").value,document.querySelector("select[name='id_sede_select']").value,document.querySelector("select[name='id_grupo_select']").value,document.querySelector("select[name='id_prioridad_select']").value);
 
     }
-    
-    viewFlujo(idRequerimiento, idDocumento) {
-         $('#modal-requerimiento').modal({
+
+    handleChangeFiltroListado() {
+        this.mostrar(document.querySelector("select[name='id_empresa_select']").value, document.querySelector("select[name='id_sede_select']").value, document.querySelector("select[name='id_grupo_select']").value, document.querySelector("select[name='id_prioridad_select']").value);
+
+    }
+
+    verDetalleRequerimiento(idRequerimiento, idDocumento) {
+        $('#modal-requerimiento').modal({
             show: true,
             backdrop: 'true'
         });
 
-        // requerimientoCtrl.getRequerimiento(idRequerimiento).then(function (res) {
-        //     console.log(res);
-        // }).catch(function (err) {
-        //     console.log(err)
-        // })
-        
-        // $.ajax({
-        //     type: 'GET',
-        //     headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-        //     url: 'ver-flujos' + '/' + req + '/' + doc,
-        //     dataType: 'JSON',
-        //     beforeSend: function () {
-        //         $(document.body).append('<span class="loading"><div></div></span>');
-        //     },
-        //     success: function (response) {
-        //         // console.log(response.siguiente);
-        //         $('.loading').remove();
-        //         if (response.cont > 0) {
-        //             $('#flujo-detalle').removeClass('oculto');
-        //             $('#flujo-proximo').removeClass('oculto');
-        //         } else {
-        //             $('#flujo-detalle').addClass('oculto');
-        //             $('#flujo-proximo').addClass('oculto');
-        //         }
-    
-        //         $('#req-detalle').html(response.requerimiento);
-        //         $('#flujo-detalle').html(response.flujo);
-        //         $('#flujo-proximo').html(response.siguiente);
-        //         $('#modal-flujo-aprob').modal({ show: true, backdrop: 'static' });
-        //     }
-        // });
-        // return false;
+        requerimientoCtrl.getRequerimiento(idRequerimiento).then(function (res) {
+            aprobarRequerimiento.construirSeccionDatosGenerales(res['requerimiento'][0]);
+            aprobarRequerimiento.construirSeccionItemsDeRequerimiento(res['det_req']);
+
+        }).catch(function (err) {
+            console.log(err)
+        })
     }
 
+    construirSeccionDatosGenerales(data) {
+        document.querySelector("div[id='modal-requerimiento'] table[id='tablaDatosGenerales'] td[id='codigo']").textContent = data.codigo;
+        document.querySelector("div[id='modal-requerimiento'] table[id='tablaDatosGenerales'] td[id='concepto']").textContent = data.concepto;
+        document.querySelector("div[id='modal-requerimiento'] table[id='tablaDatosGenerales'] td[id='razon_social_empresa']").textContent = data.razon_social_empresa;
+        document.querySelector("div[id='modal-requerimiento'] table[id='tablaDatosGenerales'] td[id='division']").textContent = data.division;
+        document.querySelector("div[id='modal-requerimiento'] table[id='tablaDatosGenerales'] td[id='prioridad']").textContent = data.prioridad;
+        document.querySelector("div[id='modal-requerimiento'] table[id='tablaDatosGenerales'] td[id='fecha_entrega']").textContent = data.fecha_entrega;
+        document.querySelector("div[id='modal-requerimiento'] table[id='tablaDatosGenerales'] td[id='solicitado_por']").textContent = (data.para_stock_almacen == true ? 'Para stock almacén' : (data.nombre_trabajador ? data.nombre_trabajador : '-'));
+        document.querySelector("div[id='modal-requerimiento'] table[id='tablaDatosGenerales'] td[id='periodo']").textContent = data.periodo;
+        document.querySelector("div[id='modal-requerimiento'] table[id='tablaDatosGenerales'] td[id='creado_por']").textContent = data.persona;
+        document.querySelector("div[id='modal-requerimiento'] table[id='tablaDatosGenerales'] td[id='observacion']").textContent = data.observacion;
 
+        tempArchivoAdjuntoRequerimientoList=[];
+        if(data.adjuntos.length >0){
+            document.querySelector("span[name='cantidadAdjuntosRequerimiento']").textContent = data.adjuntos.length;
+            (data.adjuntos).forEach(element => {
+                tempArchivoAdjuntoRequerimientoList.push({
+                    'id':element.id_adjunto,
+                    'id_requerimiento':element.id_requerimiento,
+                    'archivo':element.archivo,
+                    'categoria_adjunto_id':element.categoria_adjunto_id,
+                    'categoria_adjunto':element.categoria_adjunto,
+                    'fecha_registro':element.fecha_registro,
+                    'estado':element.estado
+                });
+                
+            });
+        }
+    }
+
+    verAdjuntosRequerimiento(){
+        $('#modal-adjuntar-archivos-requerimiento').modal({
+            show: true
+        });
+        
+        this.limpiarTabla('listaArchivosRequerimiento');
+        document.querySelector("div[id='modal-adjuntar-archivos-requerimiento'] div[id='group-action-upload-file']").classList.add('oculto');
+
+        let html = '';
+        if(tempArchivoAdjuntoRequerimientoList.length >0){
+            tempArchivoAdjuntoRequerimientoList.forEach(element => {
+                if(element.estado ==1){
+                    html += `<tr>
+                    <td style="text-align:left;">${element.archivo}</td>
+                    <td style="text-align:left;">${element.categoria_adjunto}</td>
+                    <td style="text-align:center;">
+                        <div class="btn-group" role="group">`;
+                        html += `<button type="button" class="btn btn-info btn-md" name="btnDescargarArchivoItem" title="Descargar" onclick="ArchivoAdjunto.descargarArchivoItem('${element.id}');" ><i class="fas fa-file-archive"></i></button>`;
+                        html += `</div>
+                    </td>
+                    </tr>`;
+
+                }
+            });
+        }
+        document.querySelector("tbody[id='body_archivos_requerimiento']").insertAdjacentHTML('beforeend', html)
+
+    }
+
+    construirSeccionItemsDeRequerimiento(data) {
+        requerimientoView.limpiarTabla('listaDetalleRequerimiento');
+        tempArchivoAdjuntoItemList=[];
+        let html = '';
+        let itemTieneAdjuntos = true;
+        let cantidadAdjuntosItem = 0;
+        if (data.length > 0) {
+            for (let i = 0; i < data.length; i++) {
+                cantidadAdjuntosItem= data[i].adjuntos.length;
+                if(cantidadAdjuntosItem >0){
+                    itemTieneAdjuntos = true;
+                    (data[i].adjuntos).forEach(element => {
+                        if(element.estado ==1){
+                            tempArchivoAdjuntoItemList.push(
+                                {
+                                    id: element.id_adjunto,
+                                    idRegister: element.id_detalle_requerimiento,
+                                    nameFile:element.archivo,
+                                    dateFile:element.fecha_registro,
+                                    estado:element.estado
+                                }
+                            );
+                        }
+                        
+                    });
+                }else{
+                    itemTieneAdjuntos=false;
+                }
+                html = `<tr>
+                            <td>${i+1}</td>
+                            <td>${data[i].descripcion_partida?data[i].descripcion_partida:''}</td>
+                            <td>${data[i].descripcion_centro_costo?data[i].descripcion_centro_costo:''}</td>
+                            <td>${data[i].id_tipo_item ==1?(data[i].part_number?data[i].part_number:''):'(Servicio)'}</td>
+                            <td>${data[i].descripcion?data[i].descripcion:(data[i].descripcion_adicional?data[i].descripcion_adicional:'')} </td>
+                            <td>${data[i].unidad_medida}</td>
+                            <td>${data[i].cantidad}</td>
+                            <td>${data[i].simbolo_moneda?data[i].simbolo_moneda:''} ${Util.formatoNumero(data[i].precio_unitario,2)}</td>
+                            <td>${(data[i].subtotal?Util.formatoNumero(data[i].subtotal,2):'')}</td>
+                            <td>${data[i].motivo?data[i].motivo:''}</td>
+                            <td style="text-align: center;">
+                                <button type="button" class="btn btn-sm btn-warning" title="Ver archivos adjuntos de item" style="position:relative;" onClick="aprobarRequerimiento.verAdjuntosItem(${data[i].id_detalle_requerimiento})"  ${itemTieneAdjuntos==false?'disabled':''}>
+                                <i class="fas fa-file-archive"></i>
+                                <span class="badge" name="cantidadAdjuntosItem" style="position:absolute; right: 65px; top:-10px; border: solid 0.1px;">0</span>
+                                Adjuntos
+                                </button>
+                            </td>
+                        </tr>`;
+            }
+
+
+        }
+        document.querySelector("tbody[id='body_item_requerimiento']").insertAdjacentHTML('beforeend', html)
+        document.querySelector("span[name='cantidadAdjuntosItem']").textContent = cantidadAdjuntosItem;
+
+    }
+
+    verAdjuntosItem(idDetalleRequerimiento){
+        $('#modal-adjuntar-archivos-detalle-requerimiento').modal({
+            show: true,
+            backdrop: 'true'
+        }); 
+        this.limpiarTabla('listaArchivos');
+        document.querySelector("div[id='modal-adjuntar-archivos-detalle-requerimiento'] div[id='group-action-upload-file']").classList.add('oculto');
+        let html = '';
+        tempArchivoAdjuntoItemList.forEach(element => {
+            if(element.idRegister==idDetalleRequerimiento){
+                html += `<tr>
+                <td style="text-align:left;">${element.nameFile}</td>
+                <td style="text-align:center;">
+                    <div class="btn-group" role="group">`;
+                if (Number.isInteger(element.id)) {
+                    html += `<button type="button" class="btn btn-info btn-md" name="btnDescargarArchivoItem" title="Descargar" onclick="ArchivoAdjunto.descargarArchivoItem('${element.id}');" ><i class="fas fa-file-archive"></i></button>`;
+                }
+                    html += `</div>
+                </td>
+                </tr>`;
+            }
+        });
+        document.querySelector("tbody[id='body_archivos_item']").insertAdjacentHTML('beforeend', html);
+
+
+    }
+
+    registrarRespuesta(){
+        let accion = document.querySelector("div[id='modal-requerimiento'] select[id='accion']").value;
+        let comentario = document.querySelector("div[id='modal-requerimiento'] textarea[id='comentario']").value;
+        console.log(accion);
+        console.log(comentario);
+    }
     // tracking requerimiento modal 
     tracking_requerimiento(id_req) {
         $('#modal-tracking-requerimiento').modal({
@@ -1998,7 +2122,7 @@ class Aprobar extends RequerimientoView {
             console.log(errorThrown);
         });
     }
-    
+
     llenar_tabla_historial_aprobaciones(data) {
         this.limpiarTabla('listaHistorialAprobacion');
         let htmls = '<tr></tr>';
@@ -2038,10 +2162,10 @@ class Aprobar extends RequerimientoView {
         let htmls = '<tr></tr>';
         $('#listaCotizaciones tbody').html(htmls);
         var table = document.getElementById("listaCotizaciones");
-    
+
         let cantidad_cotizaciones = data.length;
         document.getElementById('cantidad_cotizaciones').innerHTML = cantidad_cotizaciones;
-    
+
         if (cantidad_cotizaciones > 0) {
             for (var a = 0; a < data.length; a++) {
                 var row = table.insertRow(a + 1);
@@ -2105,12 +2229,12 @@ class Aprobar extends RequerimientoView {
 
     llenar_tabla_cuadro_comparativo(data) {
         // console.log(data);
-    
+
         this.limpiarTabla('listaCuadroComparativo');
         let htmls = '<tr></tr>';
         $('#listaCuadroComparativo tbody').html(htmls);
         var table = document.getElementById("listaCuadroComparativo");
-    
+
         let cantidad_cuadros = data.length;
         let cantidad_buena_pro = 0;
         document.getElementById('cantidad_cuadros_comparativos').innerHTML = cantidad_cuadros;
@@ -2122,7 +2246,7 @@ class Aprobar extends RequerimientoView {
                 row.insertCell(2).innerHTML = data[a].cotizaciones.map((item, index) => {
                     cantidad_buena_pro += item.total_buena_pro;
                     return item.codigo_cotizacion + ' [ ' + item.razon_social + ' - ' + item.nombre_doc_identidad + ': ' + item.nro_documento + ' ]'
-    
+
                 });
                 row.insertCell(3).innerHTML = cantidad_buena_pro ? cantidad_buena_pro : '-';
                 row.insertCell(4).innerHTML = data[a].fecha_inicio ? data[a].fecha_inicio : '-';
@@ -2163,12 +2287,12 @@ class Aprobar extends RequerimientoView {
 
     llenar_tabla_ordenes(data) {
         // console.log(data);
-    
+
         this.limpiarTabla('listaOrdenes');
         let htmls = '<tr></tr>';
         $('#listaOrdenes tbody').html(htmls);
         var table = document.getElementById("listaOrdenes");
-    
+
         let cantidad = data.length;
         document.getElementById('cantidad_ordenes').innerHTML = cantidad;
         let cantidad_buena_pro = 0;
@@ -2181,7 +2305,7 @@ class Aprobar extends RequerimientoView {
                 row.insertCell(3).innerHTML = data[a].cotizaciones.map((item, index) => {
                     cantidad_buena_pro += item.total_buena_pro;
                     return '[ ' + item.razon_social_empresa + ' - ' + item.tipo_documento_empresa + ': ' + item.nro_documento_empresa + ' ]'
-    
+
                 });
                 row.insertCell(4).innerHTML = data[a].monto_total ? data[a].monto_total : '-';
                 row.insertCell(5).innerHTML = data[a].fecha ? data[a].fecha : '-';
@@ -2226,120 +2350,120 @@ class Aprobar extends RequerimientoView {
 
     // aprobar, observar y anular requerimiento
 
-    aprobarRequerimiento(id_doc_aprob){
+    aprobarRequerimiento(id_doc_aprob) {
         $('#modal-aprobacion-docs').modal({
             show: true,
             backdrop: 'static',
             keyboard: false
         });
-        document.querySelector("form[id='form-aprobacion'] input[name='id_doc_aprob']").value =id_doc_aprob;
+        document.querySelector("form[id='form-aprobacion'] input[name='id_doc_aprob']").value = id_doc_aprob;
     }
 
-    grabarAprobacion(){
+    grabarAprobacion() {
         let id_doc_aprob = document.querySelector("form[id='form-aprobacion'] input[name='id_doc_aprob']").value;
         let id_rol_usuario = document.querySelector("form[id='form-aprobacion'] select[name='rol_usuario']").value;
         let detalle_observacion = document.querySelector("form[id='form-aprobacion'] textarea[name='detalle_observacion']").value;
-    
+
         $.ajax({
             type: 'POST',
             url: 'aprobar-documento',
-            data:{'id_doc_aprob':id_doc_aprob,'detalle_observacion':detalle_observacion,'id_rol':id_rol_usuario},
+            data: { 'id_doc_aprob': id_doc_aprob, 'detalle_observacion': detalle_observacion, 'id_rol': id_rol_usuario },
             dataType: 'JSON',
-            success: function(response){
-                if(response.status ==200){
+            success: function (response) {
+                if (response.status == 200) {
                     $('#modal-aprobacion-docs').modal('hide');
                     aprobarRequerimiento.mostrar();
                     alert("Requerimiento Aprobado");
-                }else{
+                } else {
                     alert("Hubo un problema, no se puedo aprobar el requerimiento");
                     console.log(response);
                 }
-    
+
             }
-        }).fail( function( jqXHR, textStatus, errorThrown ){
+        }).fail(function (jqXHR, textStatus, errorThrown) {
             console.log(jqXHR);
             console.log(textStatus);
             console.log(errorThrown);
         });
-        
+
     }
 
 
-    observarRequerimiento(id_doc_aprob){
+    observarRequerimiento(id_doc_aprob) {
         $('#modal-obs-req').modal({
             show: true,
             backdrop: 'static',
             keyboard: false
         });
-        document.querySelector("form[id='form-obs-requerimiento'] input[name='id_doc_aprob']").value =id_doc_aprob;
+        document.querySelector("form[id='form-obs-requerimiento'] input[name='id_doc_aprob']").value = id_doc_aprob;
     }
 
-    grabarObservacion(){
+    grabarObservacion() {
         let id_doc_aprob = document.querySelector("form[id='form-obs-requerimiento'] input[name='id_doc_aprob']").value;
         let id_rol_usuario = document.querySelector("form[id='form-obs-requerimiento'] select[name='rol_usuario']").value;
         let detalle_observacion = document.querySelector("form[id='form-obs-requerimiento'] textarea[name='motivo_req']").value;
-    
+
         // console.log(id_doc_aprob);
         // console.log(id_rol_usuario);
         // console.log(detalle_observacion);
         $.ajax({
             type: 'POST',
             url: 'observar-documento',
-            data:{'id_doc_aprob':id_doc_aprob,'detalle_observacion':detalle_observacion,'id_rol':id_rol_usuario},
+            data: { 'id_doc_aprob': id_doc_aprob, 'detalle_observacion': detalle_observacion, 'id_rol': id_rol_usuario },
             dataType: 'JSON',
-            success: function(response){
-                if(response.status ==200){
+            success: function (response) {
+                if (response.status == 200) {
                     $('#modal-obs-req').modal('hide');
                     aprobarRequerimiento.mostrar();
                     alert("Requerimiento Observado");
-                }else{
+                } else {
                     alert("Hubo un problema, no se puedo observar el requerimiento");
                     console.log(response);
                 }
-    
+
             }
-        }).fail( function( jqXHR, textStatus, errorThrown ){
+        }).fail(function (jqXHR, textStatus, errorThrown) {
             console.log(jqXHR);
             console.log(textStatus);
             console.log(errorThrown);
         });
     }
 
-    anularRequerimiento(id_doc_aprob){
+    anularRequerimiento(id_doc_aprob) {
         $('#modal-anular-req').modal({
             show: true,
             backdrop: 'static',
             keyboard: false
         });
-        document.querySelector("form[id='form-anular-requerimiento'] input[name='id_doc_aprob']").value =id_doc_aprob;
+        document.querySelector("form[id='form-anular-requerimiento'] input[name='id_doc_aprob']").value = id_doc_aprob;
     }
 
-    grabarAnular(){
+    grabarAnular() {
         let id_doc_aprob = document.querySelector("form[id='form-anular-requerimiento'] input[name='id_doc_aprob']").value;
         let id_rol_usuario = document.querySelector("form[id='form-anular-requerimiento'] select[name='rol_usuario']").value;
         let motivo = document.querySelector("form[id='form-anular-requerimiento'] textarea[name='motivo_req']").value;
         $.ajax({
             type: 'POST',
             url: 'anular-documento',
-            data:{'id_doc_aprob':id_doc_aprob,'motivo':motivo,'id_rol':id_rol_usuario},
+            data: { 'id_doc_aprob': id_doc_aprob, 'motivo': motivo, 'id_rol': id_rol_usuario },
             dataType: 'JSON',
-            success: function(response){
-                if(response.status ==200){
+            success: function (response) {
+                if (response.status == 200) {
                     $('#modal-anular-req').modal('hide');
                     aprobarRequerimiento.mostrar();
                     alert("El requerimiento cambio su estado a denegado");
-                }else{
+                } else {
                     alert("Hubo un problema, no se puedo denegar el requerimiento");
                     console.log(response);
                 }
-    
+
             }
-        }).fail( function( jqXHR, textStatus, errorThrown ){
+        }).fail(function (jqXHR, textStatus, errorThrown) {
             console.log(jqXHR);
             console.log(textStatus);
             console.log(errorThrown);
         });
-        
+
     }
 
 }

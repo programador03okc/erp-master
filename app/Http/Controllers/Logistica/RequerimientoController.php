@@ -127,8 +127,7 @@ class RequerimientoController extends Controller
 
             $theWhere = ['alm_req.codigo', '=', $codigo];
         }
-        $alm_req = DB::table('almacen.alm_req')
-            ->join('almacen.alm_tp_req', 'alm_req.id_tipo_requerimiento', '=', 'alm_tp_req.id_tipo_requerimiento')
+        $alm_req = Requerimiento::join('almacen.alm_tp_req', 'alm_req.id_tipo_requerimiento', '=', 'alm_tp_req.id_tipo_requerimiento')
             ->leftJoin('administracion.adm_grupo', 'adm_grupo.id_grupo', '=', 'alm_req.id_grupo')
             ->leftJoin('administracion.sis_sede', 'sis_sede.id_sede', '=', 'alm_req.id_sede')
             ->leftJoin('administracion.adm_empresa', 'adm_empresa.id_empresa', '=', 'sis_sede.id_empresa')
@@ -154,6 +153,8 @@ class RequerimientoController extends Controller
             ->leftJoin('rrhh.rrhh_postu as postu_asignado', 'postu_asignado.id_postulante', '=', 'trab_asignado.id_postulante')
             ->leftJoin('rrhh.rrhh_perso as perso_asignado', 'perso_asignado.id_persona', '=', 'postu_asignado.id_persona')
             ->leftJoin('administracion.adm_flujo', 'adm_flujo.id_rol', '=', 'alm_req.rol_aprobante_id')
+            ->leftJoin('administracion.adm_prioridad', 'adm_prioridad.id_prioridad', '=', 'alm_req.id_prioridad')
+            ->leftJoin('administracion.adm_periodo', 'adm_periodo.id_periodo', '=', 'alm_req.id_periodo')
 
 
             ->select(
@@ -165,7 +166,9 @@ class RequerimientoController extends Controller
                 'proy_proyecto.codigo as codigo_proyecto',
                 'proy_proyecto.descripcion as descripcion_proyecto',
                 'alm_req.id_periodo',
+                'adm_periodo.descripcion as periodo',
                 'alm_req.id_prioridad',
+                'adm_prioridad.descripcion as prioridad',
                 'adm_estado_doc.estado_doc',
                 'adm_estado_doc.bootstrap_color',
                 'sis_sede.id_empresa',
@@ -175,7 +178,6 @@ class RequerimientoController extends Controller
                 'sis_sede.codigo as codigo_sede_empresa',
                 'adm_empresa.logo_empresa',
                 'alm_req.fecha_requerimiento',
-                'alm_req.id_periodo',
                 'alm_req.id_tipo_requerimiento',
                 'alm_req.observacion',
                 'alm_tp_req.descripcion AS tp_req_descripcion',
@@ -244,9 +246,11 @@ class RequerimientoController extends Controller
                     'codigo_proyecto' => $data->codigo_proyecto,
                     'descripcion_proyecto' => $data->descripcion_proyecto,
                     'id_periodo' => $data->id_periodo,
+                    'periodo' => $data->periodo,
                     'estado_doc' => $data->estado_doc,
                     'bootstrap_color' => $data->bootstrap_color,
                     'id_prioridad' => $data->id_prioridad,
+                    'prioridad' => $data->prioridad,
                     'id_empresa' => $data->id_empresa,
                     'id_grupo' => $data->id_grupo,
                     'grupo_descripcion' => $data->grupo_descripcion,
@@ -303,8 +307,9 @@ class RequerimientoController extends Controller
             };
 
             $adjuntosCabecera = DB::table('almacen.alm_req')
-            ->select('alm_req_adjuntos.*')
+            ->select('alm_req_adjuntos.*','categoria_adjunto.descripcion as categoria_adjunto')
             ->join('almacen.alm_req_adjuntos', 'alm_req_adjuntos.id_requerimiento', '=', 'alm_req.id_requerimiento')
+            ->join('almacen.categoria_adjunto', 'categoria_adjunto.id_categoria_adjunto', '=', 'alm_req_adjuntos.categoria_adjunto_id')
             ->where([
                 ['alm_req.id_requerimiento', '=', $id_requerimiento],
                 ['alm_req_adjuntos.estado', '=', 1]
@@ -363,6 +368,7 @@ class RequerimientoController extends Controller
                     'alm_det_req.id_tipo_item',
                     'alm_det_req.id_moneda as id_tipo_moneda',
                     'sis_moneda.descripcion as tipo_moneda',
+                    'sis_moneda.simbolo as simbolo_moneda',
                     'alm_det_req.estado',
                     'adm_estado_doc.estado_doc',
                     'adm_estado_doc.bootstrap_color',
@@ -442,6 +448,7 @@ class RequerimientoController extends Controller
                             'lugar_entrega'             => $data->lugar_entrega,
                             'fecha_registro'            => $data->fecha_registro_alm_det_req,
                             'id_tipo_moneda'            => $data->id_tipo_moneda,
+                            'simbolo_moneda'            => $data->simbolo_moneda,
                             'tipo_moneda'               => $data->tipo_moneda,
                             'observacion'               => $data->observacion,
                             'estado'                    => $data->estado,
@@ -902,11 +909,10 @@ class RequerimientoController extends Controller
         $idPrioridad = $request->idPrioridad;
         $usuarioSoloSiCorrespondeAprobacion = false;
         // $compra =(new LogisticaController)->get_tipo_requerimiento('Compra');
-        $tipo_requerimiento = 3; // Bienes y Servicios
+        // $tipo_requerimiento = 3; // Bienes y Servicios
         $tipo_documento = 1; // Requerimientos
 
-        $requerimientos = DB::table('almacen.alm_req')
-            ->join('almacen.alm_tp_req', 'alm_req.id_tipo_requerimiento', '=', 'alm_tp_req.id_tipo_requerimiento')
+        $requerimientos = Requerimiento::join('almacen.alm_tp_req', 'alm_req.id_tipo_requerimiento', '=', 'alm_tp_req.id_tipo_requerimiento')
             ->leftJoin('almacen.tipo_cliente', 'alm_req.tipo_cliente', '=', 'tipo_cliente.id_tipo_cliente')
             ->leftJoin('almacen.alm_almacen', 'alm_req.id_almacen', '=', 'alm_almacen.id_almacen')
             ->leftJoin('configuracion.sis_grupo', 'sis_grupo.id_grupo', '=', 'alm_req.id_grupo')
@@ -983,11 +989,12 @@ class RequerimientoController extends Controller
                 'adm_flujo.nombre as division'
             )
             ->where([
-                ['alm_req.id_tipo_requerimiento', '=', $tipo_requerimiento],
+                // ['alm_req.id_tipo_requerimiento', '=', $tipo_requerimiento],
                 // ['alm_req.codigo', '=','RC-210007'],
                 // ['alm_req.tipo_cliente','=',$uso_administracion] // uso administracion
                 ['alm_req.estado','!=',7] // elaborado
             ])
+            ->whereNotIn('alm_req.id_tipo_requerimiento',[1,2,3])
             ->when((intval($idEmpresa)> 0), function($query)  use ($idEmpresa) {
                 return $query->whereRaw('alm_req.id_empresa = '.$idEmpresa);
             })
@@ -1011,13 +1018,14 @@ class RequerimientoController extends Controller
         $pendiente_aprobacion = [];
 
         $allGrupo = Auth::user()->getAllGrupo();
+        $idRolAprobanteDeDivisionList =Division::listaIdRolAprobantesDeDivisonDeUsuario();
 
         foreach ($allGrupo as $grupo) {
             $id_grupo_list[] = $grupo->id_grupo; // lista de id_rol del usuario en sesion
         }
         $list_req = [];
         foreach ($requerimientos as $element) {
-            if (in_array($element->id_grupo, $id_grupo_list) == true) {
+            if (in_array($element->id_grupo, $id_grupo_list) == true && in_array($element->rol_aprobante_id, $idRolAprobanteDeDivisionList) == true) {
 
                 $id_doc_aprobacion_req = $element->id_doc_aprob;
                 $id_grupo_req = $element->id_grupo;

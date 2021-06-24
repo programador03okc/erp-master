@@ -77,10 +77,11 @@ Revisar y aprobar requerimientos
                                         <th class="text-center">Prio.</th>
                                         <th class="text-center">Código</th>
                                         <th class="text-center" style="width:20%">Concepto</th>
+                                        <th class="text-center">Tipo req.</th>
                                         <th class="text-center">Fecha entrega</th>
-                                        <th class="text-center">Tipo</th>
                                         <th class="text-center" style="width:10%">Empresa</th>
                                         <th class="text-center">División</th>
+                                        <th class="text-center">Observacion</th>
                                         <th class="text-center">Creado por</th>
                                         <th class="text-center" style="width:8%">Estado</th>
                                         <th class="text-center" style="width:8%">Aprob/Total</th>
@@ -123,7 +124,7 @@ Revisar y aprobar requerimientos
 
 <!-- 1re include para evitar error al cargar modal -->
 @include('logistica.requerimientos.modal_requerimiento')
-
+@include('logistica.requerimientos.modal_adjuntar_archivos_requerimiento')
 @include('logistica.requerimientos.modal_adjuntar_archivos_detalle_requerimiento')
 <!--  includes -->
 @include('logistica.requerimientos.aprobacion.modal_anular')
@@ -134,6 +135,7 @@ Revisar y aprobar requerimientos
 @endsection
 
 @section('scripts')
+<script src="{{ asset('js/util.js')}}"></script>
 <script src="{{ asset('datatables/DataTables/js/jquery.dataTables.min.js') }}"></script>
 <script src="{{ asset('datatables/DataTables/js/dataTables.bootstrap.min.js') }}"></script>
 <!-- <script src="{{ asset('datatables/Buttons/js/dataTables.buttons.min.js') }}"></script>

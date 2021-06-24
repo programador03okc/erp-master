@@ -14,12 +14,12 @@ class Division extends Model
 
     public static function mostrarFlujoAprobacion()
     {
-        $roles = Auth::User()->getAllGrupo();
+        $grupos = Auth::User()->getAllGrupo();
         $mostrarAprobantes=false;
         $numeroDeOrdenSeleccionado=null;
         $operacion = DB::table('administracion.adm_operacion')
         ->select('adm_operacion.*')
-        ->where([['adm_operacion.estado', 1],['adm_operacion.id_grupo',$roles[0]['id_grupo']]]) // el usuario pertenece a un solo grupo
+        ->where([['adm_operacion.estado', 1],['adm_operacion.id_grupo',$grupos[0]['id_grupo']]]) // el usuario pertenece a un solo grupo
         ->first();
 
         $flujos = DB::table('administracion.adm_flujo')
@@ -53,5 +53,44 @@ class Division extends Model
         }
 
         return $flujosAprobante;
+    }
+
+    public static function listaIdRolAprobantesDeDivisonDeUsuario(){
+        $grupos = Auth::User()->getAllGrupo();
+        $roles = Auth::user()->getAllRol();
+        $idGrupoList=[];
+        $idRolList=[];
+        $idOperacionList=[];
+
+        foreach ($grupos as $grupo) {
+            $idGrupoList[] = $grupo->id_grupo;
+        }
+        foreach ($roles as $rol) {
+            $idRolList[] = $rol->id_rol;
+        }
+
+        $operaciones = DB::table('administracion.adm_operacion')
+        ->select('adm_operacion.*')
+        ->where('adm_operacion.estado', 1)
+        ->whereIn('adm_operacion.id_grupo',$idGrupoList)
+        ->get();
+
+        foreach ($operaciones as $operacion) {
+            $idOperacionList[] = $operacion->id_operacion;
+        }
+
+        $flujosActivosDeGrupoYRol = DB::table('administracion.adm_flujo')
+        ->select('adm_flujo.*')
+        ->where('adm_flujo.estado', 1)
+        ->whereIn('adm_flujo.id_operacion',$idOperacionList)
+        ->whereIn('adm_flujo.id_rol',$idRolList)
+        ->get();
+
+        $idRolAprobanteDeDivisionList=[];
+        foreach ($flujosActivosDeGrupoYRol as $value) {
+            $idRolAprobanteDeDivisionList[]=$value->id_rol;
+        }
+
+        return $idRolAprobanteDeDivisionList;
     }
 }

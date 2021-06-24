@@ -12,13 +12,13 @@
         <ul class="treeview-menu">
         @if(Auth::user()->tieneAplicacion(102))
             <!-- <li><a href="{{route('logistica.gestion-logistica.ocam.index')}}"><i class="far fa-circle fa-xs"></i> Listado OCAM</a></li> -->
-            <li><a href="{{route('logistica.gestion-logistica.requerimiento.elaboracion.index')}}"><i class="far fa-circle fa-xs"></i> Requerimiento</a></li>
+            <li><a href="{{route('logistica.gestion-logistica.requerimiento.elaboracion.index')}}"><i class="far fa-circle fa-xs"></i> Crear / editar</a></li>
         @endif
         @if(Auth::user()->tieneAplicacion(103))
             <li><a href="{{route('logistica.gestion-logistica.requerimiento.listado.index')}}"><i class="far fa-circle fa-xs"></i> Listado</a></li>
         @endif
         @if(Auth::user()->tieneAplicacion(103))
-            <li><a href="{{route('logistica.gestion-logistica.requerimiento.aprobar.index')}}"><i class="far fa-circle fa-xs"></i> Revisar y aprobar</a></li>
+            <li><a href="{{route('logistica.gestion-logistica.requerimiento.aprobar.index')}}"><i class="far fa-circle fa-xs"></i> Revisar / aprobar</a></li>
         @endif
         </ul>
     </li>
