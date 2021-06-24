@@ -128,6 +128,10 @@ function openModal(type, active){
         case 'proveedores':
             ModalListaProveedores();
         break;
+        
+        case 'prorrateo':
+            prorrateoModal();
+        break;
     }
 }
 
@@ -359,6 +363,9 @@ function eventRegister(type, data, action, frm_active){
         break;
         case 'serie_numero':
             save_serie_numero(data, action);
+        break;
+        case 'prorrateo':
+            save_prorrateo(data, action);
         break;
         case 'presint':
             save_presint(data, action);

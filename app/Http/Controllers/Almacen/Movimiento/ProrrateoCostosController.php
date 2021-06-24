@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Almacen\Movimiento;
 use App\Http\Controllers\AlmacenController;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class ProrrateoCostosController extends Controller
@@ -86,6 +87,123 @@ class ProrrateoCostosController extends Controller
                 ['guia_com_det.estado','=',1]])
         ->get();
         return response()->json($data);
+    }
+
+    public function guardarProrrateo(Request $request){
+
+        try {
+            DB::beginTransaction();
+
+            $id_usuario = Auth::user()->id_usuario;
+
+            $id_prorrateo = DB::table('almacen.guia_com_prorrateo')->insertGetId(
+                [
+                    'estado' => 1,
+                    'registrado_por' => $id_usuario,
+                    'fecha_registro' => date('Y-m-d H:i:s')
+                ],
+                    'id_prorrateo'
+                );
+
+            $documentos = json_decode($request->documentos);
+
+            foreach ($documentos as $det) {
+                
+                $id_doc = DB::table('almacen.doc_com')->insertGetId(
+                    [
+                        'serie' => $det->serie,
+                        'numero' => $det->numero,
+                        'id_tp_doc' => $det->id_tp_documento,
+                        'id_proveedor' => $det->id_proveedor,
+                        'moneda' => $det->id_moneda,
+                        'fecha_emision' => $det->fecha_emision,
+                        'tipo_cambio' => $det->tipo_cambio,
+                        'sub_total' => $det->total,
+                        'total_descuento' => 0,
+                        'total' => $det->total,
+                        'total_igv' => 0,
+                        'total_a_pagar' => $det->total,
+                        'usuario' => $id_usuario,
+                        'registrado_por' => $id_usuario,
+                        'estado' => 1,
+                        'fecha_registro' => date('Y-m-d H:i:s')
+                    ],
+                        'id_doc_com'
+                    );
+
+                $data = DB::table('almacen.guia_com_prorrateo_doc')->insertGetId(
+                    [
+                        'id_prorrateo' => $id_prorrateo,
+                        'id_tp_prorrateo' => $det->id_tp_prorrateo,
+                        'id_doc_com' => $id_doc,
+                        'importe_aplicado' => $det->importe_aplicado,
+                        'estado' => 1,
+                        'registrado_por' => $id_usuario,
+                        'fecha_registro' => date('Y-m-d H:i:s')
+                    ],
+                        'id_prorrateo_doc'
+                    );
+            }
+
+            $detalles = json_decode($request->guias_detalle);
+
+            foreach ($detalles as $det) {
+                $id_prorrateo_det = DB::table('almacen.guia_com_prorrateo_det')->insertGetId(
+                    [
+                        'id_prorrateo' => $id_prorrateo,
+                        'id_guia_com_det' => $det->id_guia_com_det,
+                        'importe' => $det->adicional,
+                        'fecha_registro' => date('Y-m-d H:i:s')
+                    ],
+                        'id_prorrateo_det'
+                    );
+            }
+            
+            DB::commit();
+            return response()->json($id_prorrateo);
+            
+        } catch (\PDOException $e) {
+            // Woopsy
+            DB::rollBack();
+        }
+
+    }
+
+    public function mostrar_prorrateos(){
+        $prorrateos = DB::table('almacen.guia_com_prorrateo')
+            ->select('guia_com_prorrateo.*','sis_usua.nombre_corto')
+            ->join('configuracion.sis_usua','sis_usua.id_usuario','=','guia_com_prorrateo.registrado_por')
+            ->where('guia_com_prorrateo.estado',1)
+            ->get();
+        $data['data'] = $prorrateos;
+        return response()->json($data);
+    }
+
+    public function mostrar_prorrateo($id_prorrateo){
+        $documentos = DB::table('almacen.guia_com_prorrateo_doc')
+        ->select('guia_com_prorrateo_doc.*','tp_prorrateo.descripcion','doc_com.serie','doc_com.numero',
+        'doc_com.fecha_emision','doc_com.moneda','sis_moneda.simbolo','doc_com.total_a_pagar','doc_com.tipo_cambio',
+        'doc_com.id_proveedor','adm_contri.razon_social','doc_com.id_tp_doc')
+        ->join('almacen.doc_com','doc_com.id_doc_com','=','guia_com_prorrateo_doc.id_doc_com')
+        ->join('logistica.log_prove','log_prove.id_proveedor','=','doc_com.id_proveedor')
+        ->join('contabilidad.adm_contri','adm_contri.id_contribuyente','=','log_prove.id_contribuyente')
+        ->join('configuracion.sis_moneda','sis_moneda.id_moneda','=','doc_com.moneda')
+        ->join('almacen.tp_prorrateo','tp_prorrateo.id_tp_prorrateo','=','guia_com_prorrateo_doc.id_tp_prorrateo')
+        ->where('guia_com_prorrateo_doc.estado',1)
+        ->get();
+
+        $detalles = DB::table('almacen.guia_com_prorrateo_det')
+        ->select('guia_com_prorrateo_det.*','guia_com.serie','guia_com.numero','alm_prod.codigo',
+        'alm_prod.part_number','alm_prod.descripcion','alm_und_medida.abreviatura',
+        'mov_alm_det.valorizacion','guia_com_det.cantidad')
+        ->join('almacen.guia_com_det','guia_com_det.id_guia_com_det','=','guia_com_prorrateo_det.id_guia_com_det')
+        ->join('almacen.guia_com','guia_com.id_guia','=','guia_com_det.id_guia_com')
+        ->join('almacen.alm_prod','alm_prod.id_producto','=','guia_com_det.id_producto')
+        ->join('almacen.alm_und_medida','alm_und_medida.id_unidad_medida','=','alm_prod.id_unidad_medida')
+        ->join('almacen.mov_alm_det','mov_alm_det.id_guia_com_det','=','guia_com_det.id_guia_com_det')
+        ->get();
+
+        return response()->json(['documentos'=>$documentos,'detalles'=>$detalles]);
     }
 
     public function listar_docs_prorrateo($id){

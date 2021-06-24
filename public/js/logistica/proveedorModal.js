@@ -7,15 +7,57 @@ $(function(){
             $('#listaProveedor').dataTable().$('tr.eventClick').removeClass('eventClick');
             $(this).addClass('eventClick');
         }
-        var idTr = $(this)[0].firstChild.innerHTML;
+        var myId = $(this)[0].firstChild.innerHTML;
         var idCo = $(this)[0].childNodes[1].innerHTML;
         var ruc = $(this)[0].childNodes[2].innerHTML;
         var des = $(this)[0].childNodes[3].innerHTML;
 
-        $('.modal-footer #id_proveedor').text(idTr);
-        $('.modal-footer #id_contribuyente').text(idCo);
-        $('.modal-footer #ruc').text(ruc);
-        $('.modal-footer #select_razon_social').text(des);
+        var page = $('.page-main').attr('type');
+
+        if (page == "cotizacion"){
+            change_proveedor(myId);
+            $('[name=id_proveedor]').val(myId);
+            $('[name=id_contrib]').val(idCo);
+            $('[name=razon_social]').val(des); 
+            
+            let classModalEditarCotizacion = document.getElementById('modal-editar-cotizacion').getAttribute('class');
+            if(classModalEditarCotizacion ==  "modal fade in"){
+                onChangeProveedorSave();
+            }
+        }
+        else if (page == "prorrateo"){
+            $('[name=doc_id_proveedor]').val(myId);
+            $('[name=doc_id_contrib]').val(idCo);
+            $('[name=doc_razon_social]').val(des);
+        }
+        else if (page == "doc_compra"){
+            $('[name=id_proveedor]').val(myId);
+            $('[name=id_contrib]').val(idCo);
+            $('[name=prov_razon_social]').val(des);
+        }
+        else if (page == "ordenesDespacho"){
+
+            if (origen_tr == 'grupoDespacho'){
+                $('[name=gd_id_proveedor]').val(myId);
+                $('[name=gd_razon_social]').val(des);
+            } 
+            else if (origen_tr == 'transportista'){
+                $('[name=tr_id_proveedor]').val(myId);
+                $('[name=tr_razon_social]').val(des);
+            }
+        }
+        else {
+            $('[name=id_proveedor]').val(myId);
+            $('[name=id_contrib]').val(idCo);
+            $('[name=razon_social]').val(des);   
+        }
+        
+        $('#modal-proveedores').modal('hide');
+
+        // $('.modal-footer #id_proveedor').text(idTr);
+        // $('.modal-footer #id_contribuyente').text(idCo);
+        // $('.modal-footer #ruc').text(ruc);
+        // $('.modal-footer #select_razon_social').text(des);
     });
 });
 
@@ -91,20 +133,9 @@ function selectProveedor(){
 
     }
     else if (page == "prorrateo"){
-        // var tab = $("#modal-proveedores .modal-dialog").attr('type');
-        // console.log('form:'+tab);
-        
-        // if (tab == "form-general"){
-        //     $('[name=id_proveedor]').val(myId);
-        //     $('[name=id_contrib]').val(idCo);
-        //     $('[name=prov_razon_social]').val(ruc+' - '+des);
-        // } 
-        // else 
-        // if (tab == "form-prorrateo"){
-            $('[name=doc_id_proveedor]').val(myId);
-            $('[name=doc_id_contrib]').val(idCo);
-            $('[name=doc_razon_social]').val(des);
-        // }
+        $('[name=doc_id_proveedor]').val(myId);
+        $('[name=doc_id_contrib]').val(idCo);
+        $('[name=doc_razon_social]').val(des);
     }
     else if (page == "doc_compra"){
         $('[name=id_proveedor]').val(myId);
@@ -123,7 +154,6 @@ function selectProveedor(){
         }
     }
     else {
-        
         $('[name=id_proveedor]').val(myId);
         $('[name=id_contrib]').val(idCo);
         $('[name=razon_social]').val(des);   

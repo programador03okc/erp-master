@@ -19,41 +19,51 @@ Detalle de Ingresos
 
 @section('content')
 <div class="page-main" type="busqueda_ingresos">
-    <div class="row" style="padding-left:0px;padding-right:0px;">
-        <div class="col-md-12">
-        <button type="button" class="btn btn-primary" data-toggle="tooltip" 
-                    data-placement="bottom" title="Ingrese los filtros" 
-                    onClick="open_filtros();">
-                    <i class="fas fa-search"></i>  Filtros</button>
+    <div class="box box-solid">
+        <div class="box-body">
+            <div class="col-md-12" style="padding-top:10px;padding-bottom:10px;">
+
+                <div class="row" style="padding-left:0px;padding-right:0px;">
+                    <div class="col-md-12">
+                    <button type="button" class="btn btn-primary" data-toggle="tooltip" 
+                                data-placement="bottom" title="Ingrese los filtros" 
+                                onClick="open_filtros();">
+                                <i class="fas fa-search"></i>  Filtros</button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <table class="mytable table table-condensed table-bordered table-okc-view" 
+                            id="listaBusquedaIngresos">
+                            <thead>
+                                <tr>
+                                    <th hidden></th>
+                                    <!-- <th>Tp</th> -->
+                                    <th>Guía</th>
+                                    <th>Fecha Emisión</th>
+                                    <th>RUC</th>
+                                    <th width="20%">Razon Social</th>
+                                    <th>Condición</th>
+                                    <th>Código</th>
+                                    <th>PartNumber</th>
+                                    <th width="30%">Descripción</th>
+                                    <th>Cant.</th>
+                                    <th>Valor.</th>
+                                    <th>Estado</th>
+                                    <th width="20%">Almacén</th>
+                                    <th>Fecha Registro</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
         </div>
     </div>
-    <div class="row">
-        <div class="col-md-12">
-            <table class="mytable table table-condensed table-bordered table-okc-view" 
-                id="listaBusquedaIngresos">
-                <thead>
-                    <tr>
-                        <th hidden></th>
-                        <th>Tp</th>
-                        <th>Serie-Número</th>
-                        <th>Fecha Emisión</th>
-                        <th>RUC</th>
-                        <th width="20%">Razon Social</th>
-                        <th>Condición</th>
-                        <th>Código</th>
-                        <th>Cod.Anexo</th>
-                        <th width="30%">Descripción</th>
-                        <th>Cant.</th>
-                        <th>Estado</th>
-                        <th width="20%">Almacén</th>
-                        <th>Fecha Registro</th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
-        </div>
-    </div>
+
 </div>
 
 <div class="modal fade" tabindex="-1" role="dialog" id="modal-busq_filtros">
@@ -64,7 +74,7 @@ Detalle de Ingresos
                 <h3 class="modal-title">Filtros de Búsqueda de Ingresos</h3>
             </div>
             <div class="modal-body">
-                <div class="row">
+                <!-- <div class="row">
                     <div class="col-md-12">
                         <h5>Empresas</h5>
                         <div style="display:flex">
@@ -77,7 +87,7 @@ Detalle de Ingresos
                             </select>
                         </div>
                     </div>
-                </div>
+                </div> -->
                 <div class="row">
                     <div class="col-md-12">
                         <h5>Almacén</h5>

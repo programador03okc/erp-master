@@ -1493,7 +1493,7 @@ class OrdenesPendientesController extends Controller
 
     public function imprimir_ingreso($id_ing){
 
-        $id = $this->decode5t($id_ing);
+        $id = GenericoAlmacenController::decode5t($id_ing);
         $result = $this->get_ingreso($id);
         $ingreso = $result['ingreso'];
         $detalle = $result['detalle'];
