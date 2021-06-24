@@ -36,7 +36,6 @@
                 <h2>Producto</h2>
                 
             </legend> -->
-            <input type="hidden" name="id_producto" primary="ids">
             <div class="col-md-12" id="tab-producto" style="padding-right:0px;padding-left:0px">
                 <ul class="nav nav-tabs" id="myTab">
                     <li class="active"><a type="#general">Datos Generales</a></li>
@@ -47,8 +46,9 @@
                 <div class="content-tabs">
                     <section id="general" hidden>
                         <form id="form-general" type="register">  <!--form="formulario"-->
+                        <input class="hidden" name="id_producto" primary="ids">
                         <input type="hidden" name="_token" value="{{csrf_token()}}" id="token">
-                        <input type="text" class="oculto" name="id_producto">
+                        <!-- <input type="text" class="oculto" name="id_producto"> -->
                         <input type="text" class="oculto" name="codigo">
                             <div class="row">
                                 <div class="col-md-3">
