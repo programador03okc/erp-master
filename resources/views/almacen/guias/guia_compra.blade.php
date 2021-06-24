@@ -472,7 +472,7 @@ Guía de Compra - Ingreso
 <!-- @include('almacen.guias.ocModal') -->
 @include('logistica.cotizaciones.proveedorModal')
 @include('logistica.cotizaciones.add_proveedor')
-@include('logistica.ordenes.ordenesModal')
+<!-- @include('logistica.ordenes.ordenesModal') -->
 @endsection
 
 @section('scripts')
@@ -500,7 +500,7 @@ Guía de Compra - Ingreso
     <!-- <script src="{{ asset('js/almacen/ocModal.js')}}"></script> -->
     <script src="{{ asset('js/logistica/proveedorModal.js')}}"></script>
     <script src="{{ asset('js/logistica/add_proveedor.js')}}"></script>
-    <script src="{{ asset('js/logistica/ordenesModal.js')}}"></script>
+    <!-- <script src="{{ asset('js/logistica/ordenesModal.js')}}"></script> -->
     <script>
     $(document).ready(function(){
         seleccionarMenu(window.location);

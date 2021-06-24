@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use PhpParser\Node\Expr\New_;
+use Debugbar;
 
 class Orden extends Model {
 
@@ -70,6 +71,7 @@ class Orden extends Model {
         ->leftjoin('contabilidad.adm_cta_contri as cta_detra','cta_detra.id_cuenta_contribuyente','=','log_ord_compra.id_cta_detraccion')
         ->leftjoin('logistica.estados_compra','estados_compra.id_estado','=','log_ord_compra.estado')
         ->leftjoin('logistica.log_ord_compra_pago','log_ord_compra_pago.id_orden_compra','=','log_ord_compra.id_orden_compra')
+        ->where('log_ord_compra.estado','!=',7)
         ->orderBy('log_ord_compra.fecha','desc')
         ->get();
 
@@ -183,7 +185,7 @@ class Orden extends Model {
             $fechaRegistroRequerimiento = $d['fecha_registro_requerimiento'];
             $fechaRegistroAlmacen = $d['fecha_ingreso_almacen'];
 
-          
+
             $tiempo_atencion_logistica =$fechaOrden->diffInDays($fechaRegistroRequerimiento);
             $tiempo_atencion_almacen = $fechaOrden->diffInDays($fechaRegistroAlmacen);
             $data[]=[

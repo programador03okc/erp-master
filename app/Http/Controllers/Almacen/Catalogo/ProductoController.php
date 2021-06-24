@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Almacen;
+namespace App\Http\Controllers\Almacen\Catalogo;
 
 use App\Http\Controllers\AlmacenController;
 use Illuminate\Http\Request;

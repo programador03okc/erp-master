@@ -20,6 +20,7 @@
 <div class="page-main" type="crear-orden-requerimiento">
     <form id="form-crear-orden-requerimiento" type="register" form="formulario">
     <input type="hidden" name="id_orden" primary="ids">
+    <input type="hidden" name="tipo_cambio_compra">
 
         <div class="row">
             <div class="col-md-12">
@@ -268,7 +269,7 @@
                     <div class="col-md-12">
                         <table class="mytable table table-striped table-condensed table-bordered dataTable no-footer" 
                             id="listaDetalleOrden" style="margin-bottom: 0px;">
-                            <thead style="background-color: grey;">
+                            <thead style="background-color: grey; width:'100%;">
                                 <tr>
                             
                                     <th>REQ.</th>
@@ -344,6 +345,7 @@
 @endsection
 
 @section('scripts')
+    <script src="{{ asset('js/util.js')}}"></script>
     <script src="{{ asset('datatables/DataTables/js/jquery.dataTables.min.js') }}"></script>
     <script src="{{ asset('datatables/DataTables/js/dataTables.bootstrap.min.js') }}"></script>
     <!-- <script src="{{ asset('datatables/Buttons/js/dataTables.buttons.min.js') }}"></script>

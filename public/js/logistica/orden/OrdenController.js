@@ -7,7 +7,10 @@ class OrdenCtrl{
     init() {
         this.ordenView.init();
     }
+    getTipoCambioCompra(fecha){
+        return ordenModel.getTipoCambioCompra(fecha);
 
+    }
     // limpiar tabla
     limpiarTabla(identificador){
         const customTabla = new CustomTabla(identificador); //CustomTabla.js
@@ -122,35 +125,34 @@ class OrdenCtrl{
 
     calcTotalDetalleRequerimiento(id){
         let simbolo_moneda_selected = document.querySelector("select[name='id_moneda']")[document.querySelector("select[name='id_moneda']").selectedIndex].dataset.simboloMoneda;
-        let sizeInputTotal = document.querySelectorAll("div[name='subtotal']").length;
+        let sizeInputTotal = document.querySelectorAll("input[name='subtotal']").length;
         for (let index = 0; index < sizeInputTotal; index++) {
-            let idElement = document.querySelectorAll("div[name='subtotal']")[index].dataset.id;
+            let idElement = document.querySelectorAll("input[name='subtotal']")[index].dataset.id;
             if(idElement == id){
                 let precio = document.querySelectorAll("input[name='precio']")[index].value?document.querySelectorAll("input[name='precio']")[index].value:0;
                 let cantidad =( document.querySelectorAll("input[name='cantidad_a_comprar']")[index].value)>0?document.querySelectorAll("input[name='cantidad_a_comprar']")[index].value:document.querySelectorAll("input[name='cantidad']")[index].value;
                 let calSubtotal =(parseFloat(precio) * parseFloat(cantidad));
-                console.log(calSubtotal);
                 
                 let subtotal = formatDecimalDigitos(calSubtotal,2);
-                console.log(subtotal);
-                document.querySelectorAll("div[name='subtotal']")[index].textContent=subtotal;
-                document.querySelectorAll("var[name='simboloMoneda']")[index].textContent=simbolo_moneda_selected;
+                // console.log(subtotal);
+                document.querySelectorAll("input[name='subtotal']")[index].value=subtotal;
+                // document.querySelectorAll("var[name='simboloMoneda']")[index].textContent=simbolo_moneda_selected;
                 ordenCtrl.updateInObjSubtotal(id,subtotal);
             }
         }
         let total =0;
         for (let index = 0; index < sizeInputTotal; index++) {
-            let num = document.querySelectorAll("div[name='subtotal']")[index].textContent?document.querySelectorAll("div[name='subtotal']")[index].textContent:0;
+            let num = document.querySelectorAll("input[name='subtotal']")[index].value?document.querySelectorAll("input[name='subtotal']")[index].value:0;
             total += parseFloat(num);
         }
 
-        let montoNeto= (Math.round(total * 100) / 100).toFixed(2);
-        let igv = (Math.round((total*0.18) * 100) / 100).toFixed(2);
-        let montoTotal= (Math.round((parseFloat(montoNeto)+parseFloat(igv)) * 100) / 100).toFixed(2)
+        let montoNeto= total;
+        let igv = (total*0.18);
+        let montoTotal=  parseFloat(montoNeto)+parseFloat(igv);
         document.querySelector("div[id='pie-tabla'] var[name='simboloMoneda']").textContent= simbolo_moneda_selected;
-        document.querySelector("var[name='montoNeto']").textContent=montoNeto;
-        document.querySelector("var[name='igv']").textContent= igv;
-        document.querySelector("var[name='montoTotal']").textContent= montoTotal;
+        document.querySelector("var[name='montoNeto']").textContent=Util.formatoNumero(montoNeto, 2);
+        document.querySelector("var[name='igv']").textContent= Util.formatoNumero(igv, 3);
+        document.querySelector("var[name='montoTotal']").textContent= Util.formatoNumero(montoTotal, 2);
     }
 
     updateInObjSubtotal(id,valor){
@@ -188,6 +190,31 @@ class OrdenCtrl{
                 //     updateInObjCantidadAComprar(rowNumberSelected,idRequerimientoSelected,idDetalleRequerimientoSelected,cantidad);
     
                 // }
+            }
+        }
+    }
+
+    updateInputSubtotal(event){
+        let nuevoValor =event.target.value;
+        let idSelected = event.target.dataset.id;
+        let cantidadAComprar =0;
+        let precio =0;
+        let sizeInputCantidad = document.querySelectorAll("span[name='cantidad']").length;
+        for (let index = 0; index < sizeInputCantidad; index++) {
+            let id = document.querySelectorAll("input[name='cantidad_a_comprar']")[index].dataset.id;
+            if(id == idSelected){
+                cantidadAComprar = document.querySelectorAll("input[name='cantidad_a_comprar']")[index].value;
+                precio = document.querySelectorAll("input[name='precio']")[index].value;
+                if(parseFloat(nuevoValor) >0){                
+                    // actualizar datadetreq cantidad
+                    let nuevoPrecio= (nuevoValor/cantidadAComprar)
+                    this.updateInObjPrecioReferencial(id,nuevoPrecio);
+                    document.querySelectorAll("input[name='precio']")[index].value=nuevoPrecio;
+                    ordenCtrl.calcTotalDetalleRequerimiento(idSelected);
+
+                }
+                
+ 
             }
         }
     }
@@ -329,7 +356,7 @@ class OrdenCtrl{
 
     calcTotalOrdenDetalleList(hasIGV =null){
         
-        let sizeInputTotal = document.querySelectorAll("div[name='subtotal']").length;
+        let sizeInputTotal = document.querySelectorAll("input[name='subtotal']").length;
         let total =0;
         let simbolo_moneda_selected = document.querySelector("select[name='id_moneda']")[document.querySelector("select[name='id_moneda']").selectedIndex].dataset.simboloMoneda;
 
@@ -339,7 +366,7 @@ class OrdenCtrl{
 
         if(hasIGV == true){
             for (let index = 0; index < sizeInputTotal; index++) {
-                let num = document.querySelectorAll("div[name='subtotal']")[index].textContent?document.querySelectorAll("div[name='subtotal']")[index].textContent:0;
+                let num = document.querySelectorAll("input[name='subtotal']")[index].value?document.querySelectorAll("input[name='subtotal']")[index].value:0;
                 total += parseFloat(num);
             }
     
@@ -352,7 +379,7 @@ class OrdenCtrl{
             document.querySelector("var[name='montoTotal']").textContent= montoTotal;
         }else if(hasIGV == false){
             for (let index = 0; index < sizeInputTotal; index++) {
-                let num = document.querySelectorAll("div[name='subtotal']")[index].textContent?document.querySelectorAll("div[name='subtotal']")[index].textContent:0;
+                let num = document.querySelectorAll("input[name='subtotal']")[index].value?document.querySelectorAll("input[name='subtotal']")[index].value:0;
                 total += parseFloat(num);
             }
 

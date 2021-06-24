@@ -1,6 +1,6 @@
 <div class="modal fade" tabindex="-1" role="dialog" id="modal-doc_prorrateo">
-    <div class="modal-dialog">
-        <div class="modal-content" style="width:600px;">
+    <div class="modal-dialog" style="width:900px;">
+        <div class="modal-content">
             <form id="form-doc_prorrateo">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="close"><span aria-hidden="true">&times;</span></button>
@@ -10,7 +10,7 @@
                     <input type="hidden" name="id_guia">
                     <input class="oculto" name="id_prorrateo">
                     <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <h5>Tipo</h5>
                             <div style="display:flex;">
                                 <select class="form-control" name="id_tp_prorrateo" required>
@@ -23,7 +23,7 @@
                                 <strong>+</strong></button>
                             </div>
                         </div>
-                        <div class="col-md-8">
+                        <div class="col-md-6">
                             <h5>Proveedor</h5>
                             <div style="display:flex;">
                                 <input class="oculto" name="doc_id_proveedor" />
@@ -37,9 +37,14 @@
                                     <i class="fas fa-plus"></i></button>
                             </div>
                         </div>
+                        <div class="col-md-3">
+                            <h5>Fecha Emisión</h5>
+                            <input type="date" name="doc_fecha_emision" class="form-control"
+                                onChange="getTipoCambio();" required/>
+                        </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <h5>Tipo de Documento</h5>
                             <select class="form-control activation js-example-basic-single" name="id_tp_documento" required>
                                 <option value="0" disabled>Elija una opción</option>
@@ -48,24 +53,17 @@
                                 @endforeach
                             </select>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <h5>Serie-Número</h5>
                             <div style="display:flex;">
-                                <input type="text" class="form-control" style="width:60px;" name="pro_serie" required
+                                <input type="text" class="form-control" name="pro_serie" required
                                     placeholder="000">
                                 <span class="input-group-addon">-</span>
-                                <input type="text" class="form-control" style="width:90px;" name="pro_numero" required
+                                <input type="text" class="form-control" name="pro_numero" required
                                     placeholder="000000" onChange="ceros_numero('pro_numero');">
                             </div>
                         </div>
-                        <div class="col-md-4">
-                            <h5>Fecha Emisión</h5>
-                            <input type="date" name="doc_fecha_emision" class="form-control"
-                                onChange="getTipoCambio();" required/>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <h5>Moneda</h5>
                             <select class="form-control" name="id_moneda" onChange="calculaImporte();" required>
                                 <option value="0" disabled>Elija una opción</option>
@@ -74,24 +72,26 @@
                                 @endforeach
                             </select>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <h5>TpCambio</h5>
                             <input type="number" name="tipo_cambio" class="form-control right" onChange="calculaImporte();" step="0.001"/>
                         </div>
-                        <div class="col-md-4">
+                    </div>
+                    <div class="row">
+                        <div class="col-md-3">
                             <h5>Sub Total</h5>
                             <div style="display:flex;">
-                                <input type="number" name="sub_total" class="form-control" step="0.01"
+                                <input type="number" name="sub_total" class="form-control" step="0.0001"
                                     onChange="calculaImporte();" required/>
                             </div>
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-4"></div>
-                        <div class="col-md-4"></div>
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <h5>Importe <label id="abreviatura"></label></h5>
-                            <input type="number" name="importe" class="form-control" step="0.01" readOnly required/>
+                            <input type="number" name="importe" class="form-control" step="0.0001" readOnly required/>
+                        </div>
+                        <div class="col-md-3">
+                            <h5>Importe Aplicado al Prorrateo <label id="abreviatura"></label></h5>
+                            <input type="number" name="importe_aplicado" class="form-control activation" step="0.0001" required/>
                         </div>
                     </div>
                 </div>

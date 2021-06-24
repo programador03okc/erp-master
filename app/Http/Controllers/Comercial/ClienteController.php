@@ -8,7 +8,15 @@ use Illuminate\Support\Facades\DB;
 
 class ClienteController extends Controller
 {
-    
+    public static function mostrar_clientes_cbo(){
+        $data = DB::table('comercial.com_cliente')
+            ->select('com_cliente.id_cliente','adm_contri.nro_documento','adm_contri.razon_social')
+            ->join('contabilidad.adm_contri','adm_contri.id_contribuyente','=','com_cliente.id_contribuyente')
+            ->where('com_cliente.estado',1)
+            ->get();
+        return $data;
+    }
+
     public function mostrar_clientes()
     {
         $data = DB::table('comercial.com_cliente')

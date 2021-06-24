@@ -84,7 +84,6 @@
                                                     id="collapseListGroup1"
                                                     aria-labelledby="collapseListGroupHeading1"
                                                     aria-expanded="true"
-                                                    style=""
                                                 >
                                                     <ul class="list-group">
                                                         <li class="list-group-item"><h6><strong>Ruc:</strong> <span name="numero_ruc"></span></h6></li>

@@ -11,6 +11,14 @@ class IuController extends Controller
     function view_iu(){
         return view('proyectos/variables/iu');
     }
+    public static function mostrar_ius_cbo(){
+        $data = DB::table('proyectos.proy_iu')
+            ->select('proy_iu.id_iu','proy_iu.descripcion')
+            ->where('estado', 1)
+            ->orderBy('descripcion')
+            ->get();
+        return $data;
+    }
     //iu
     public function mostrar_ius(){
         $data = DB::table('proyectos.proy_iu')

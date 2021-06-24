@@ -2,18 +2,22 @@
 
 namespace App\Http\Controllers\Proyectos\Catalogos;
 
+use App\Http\Controllers\AlmacenController;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Proyectos\Variables\CategoriaAcuController;
+use App\Http\Controllers\Proyectos\Variables\IuController;
+use App\Http\Controllers\Proyectos\Variables\TipoInsumoController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class AcuController extends Controller
 {
     function view_acu(){
-        $unidades = $this->mostrar_unidades_cbo();
-        $tipos = $this->mostrar_tipos_insumos_cbo();
-        $ius = $this->mostrar_ius_cbo();
-        $categorias = $this->select_categorias_acus();
+        $unidades = AlmacenController::mostrar_unidades_cbo();
+        $tipos = TipoInsumoController::mostrar_tipos_insumos_cbo();
+        $ius = IuController::mostrar_ius_cbo();
+        $categorias = CategoriaAcuController::select_categorias_acus();
         return view('proyectos/acu/acu', compact('unidades','tipos','ius','categorias'));
     }
     public function listar_acus()

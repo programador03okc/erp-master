@@ -925,12 +925,22 @@ class OrdenController extends Controller
             FROM logistica.log_det_ord_compra 
             WHERE   log_det_ord_compra.id_orden_compra = log_ord_compra.id_orden_compra AND
                     log_det_ord_compra.estado != 7) AS monto_total_orden"),
-            DB::raw("(SELECT  coalesce(sum((cc_am_filas.cantidad * cc_am_filas.pvu_oc))*1.18 ,0) AS monto_total_presup
+            DB::raw("(SELECT  coalesce(oportunidades.importe) AS monto_total_presup
             FROM logistica.log_det_ord_compra 
             INNER JOIN almacen.alm_det_req on alm_det_req.id_detalle_requerimiento = log_det_ord_compra.id_detalle_requerimiento
-            INNER JOIN mgcp_cuadro_costos.cc_am_filas on cc_am_filas.id = alm_det_req.id_cc_am_filas
+            INNER JOIN almacen.alm_req on alm_req.id_requerimiento = alm_det_req.id_requerimiento
+            INNER JOIN mgcp_cuadro_costos.cc on cc.id = alm_req.id_cc
+            INNER JOIN mgcp_oportunidades.oportunidades on oportunidades.id = cc.id_oportunidad
 
-            WHERE log_det_ord_compra.id_orden_compra = log_ord_compra.id_orden_compra AND logistica.log_det_ord_compra.estado != 7) AS monto_total_presup")
+            WHERE log_det_ord_compra.id_orden_compra = log_ord_compra.id_orden_compra AND
+             logistica.log_det_ord_compra.estado != 7 LIMIT 1) AS monto_total_presup")
+            // DB::raw("(SELECT  coalesce(sum((cc_am_filas.cantidad * cc_am_filas.pvu_oc))*1.18 ,0) AS monto_total_presup
+            // FROM logistica.log_det_ord_compra 
+            // LEFT JOIN almacen.alm_det_req on alm_det_req.id_detalle_requerimiento = log_det_ord_compra.id_detalle_requerimiento
+            // LEFT JOIN mgcp_cuadro_costos.cc_am_filas on cc_am_filas.id = alm_det_req.id_cc_am_filas
+
+            // WHERE log_det_ord_compra.id_orden_compra = log_ord_compra.id_orden_compra AND
+            //  logistica.log_det_ord_compra.estado != 7) AS monto_total_presup")
             // DB::raw("( 
             
             //     SELECT array_agg(concat(doc_com.serie, '-', doc_com.numero)) AS facturas
@@ -1018,6 +1028,8 @@ class OrdenController extends Controller
                     'descripcion_sede_empresa'=> $element->descripcion_sede_empresa,
                     'nro_documento'=> $element->nro_documento, 
                     'razon_social'=> $element->razon_social,
+                    'id_moneda'=> $element->id_moneda, 
+                    'tipo_cambio_compra'=> $element->tipo_cambio_compra, 
                     'moneda_simbolo'=> $element->moneda_simbolo, 
                     'incluye_igv'=> $element->incluye_igv,
                     'leadtime'=> $fechaLlegada->toDateString(),
@@ -2011,7 +2023,7 @@ class OrdenController extends Controller
         // $total = 0;
         $monto_neto=0;
         foreach ($ordenArray['detalle'] as $key => $data) {
-            $monto_neto += ($data['cantidad'] * $data['precio']) ;
+            $monto_neto += $data['subtotal'] ;
         }
 
         foreach ($ordenArray['detalle'] as $key => $data) {
@@ -2025,7 +2037,7 @@ class OrdenController extends Controller
             }
 
             $monto_total =($monto_neto+$igv);
-
+            // $subtotal = $data['subtotal']>0?$data['subtotal']:number_format($data['cantidad'] * $data['precio'],2,'.','');
 
             $html .= '<tr style="text-align:left">';
             // $html .= '<td>' . ($key + 1) . '</td>';
@@ -2043,7 +2055,7 @@ class OrdenController extends Controller
             $html .= '<td style="text-align:center">' . number_format($data['precio'],2,'.','') . '</td>';
             // $html .= '<td class="right">' . number_format((($data['cantidad'] * $data['precio']) - (($data['cantidad']* $data['precio'])/1.18)),2,'.','') . '</td>';
             $html .= '<td style="text-align:right"> </td>';
-            $html .= '<td style="text-align:right">' . number_format($data['cantidad'] * $data['precio'],2,'.','') . '</td>';
+            $html .= '<td style="text-align:right">' . $data['subtotal']. '</td>';
             $html .= '</tr>';
             // $total = $total + ($data['cantidad'] * $data['precio']);
         }
@@ -2577,7 +2589,8 @@ class OrdenController extends Controller
                     'en_almacen' => false,
                     'estado' => 1,
                     'codigo_softlink' => ($request->codigo_orden!==null ? $request->codigo_orden : ''),
-                    'observacion' => isset($request->observacion)?$request->observacion:null
+                    'observacion' => isset($request->observacion)?$request->observacion:null,
+                    'tipo_cambio_compra' =>  isset($request->tipo_cambio_compra)?$request->tipo_cambio_compra:true
                 ],
                 'id_orden_compra'
             );
@@ -2601,7 +2614,6 @@ class OrdenController extends Controller
                             'id_unidad_medida'=> $d['id_unidad_medida'],
                             'precio'=> $d['precio_unitario'],
                             'descripcion_adicional'=> $d['descripcion_adicional'],
-                            // 'subtotal'=> ($d->precio_referencial * $d->cantidad),
                             'subtotal'=> $d['subtotal']?$d['subtotal']:0,
                             'tipo_item_id'=> (isset($d['id_tipo_item'])?$d['id_tipo_item']:null),
                             'estado'=> 1
@@ -3556,7 +3568,6 @@ class OrdenController extends Controller
         // return Orden::reporteListaOrdenes();
         return Excel::download(new ListOrdenesHeadExport, 'lista_ordenes.xlsx');
     }
-
 
 
 }

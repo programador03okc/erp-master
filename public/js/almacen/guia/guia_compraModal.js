@@ -8,6 +8,7 @@ $(function(){
         }
         var id = $(this)[0].firstChild.innerHTML;
         var idPr = $(this)[0].childNodes[5].innerHTML;
+        console.log('id'+id);
         $('.modal-footer #mid_guia_com').text(id);
         $('.modal-footer #mid_guia_prov').text(idPr);
     });
@@ -16,7 +17,7 @@ $(function(){
 function guia_compraModal(){
     // clearDataTable();
     let formName = document.getElementsByClassName('page-main')[0].getAttribute('type');
-    if (formName =='guia_compra' || formName == 'transferencias'){
+    if (formName =='prorrateo' || formName == 'transferencias'){
         $('#modal-guia_compra').modal({
             show: true
         });
@@ -112,17 +113,15 @@ function listarGuiasProveedor(id_proveedor){
         console.log(textStatus);
         console.log(errorThrown);
     });
- }
+}
 
 function selectGuiaCompra(){
     var myId = $('.modal-footer #mid_guia_com').text();
     var idPr = $('.modal-footer #mid_guia_prov').text();
     var page = $('.page-main').attr('type');
 
-    if (page == "guia_compra"){
-        var activeTab = $("#tab-guia_compra #myTab li.active a").attr('type');
-        var activeForm = "form-"+activeTab.substring(1);
-        actualizar_tab(activeForm, myId, idPr);
+    if (page == "prorrateo"){
+        listar_guia_detalle(myId);
     }
     else if (page == "doc_compra"){
         if (myId !== null && myId !== ''){

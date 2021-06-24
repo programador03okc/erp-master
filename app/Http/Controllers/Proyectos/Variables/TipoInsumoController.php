@@ -10,6 +10,13 @@ class TipoInsumoController extends Controller
     function view_tipo_insumo(){
         return view('proyectos/variables/tipo_insumo');
     }
+    public static function mostrar_tipos_insumos_cbo(){
+        $data = DB::table('proyectos.proy_tp_insumo')
+            ->select('proy_tp_insumo.id_tp_insumo','proy_tp_insumo.descripcion')
+            ->where('estado',1)
+            ->get();
+        return $data;
+    }
     //tipos de insumos
     public function mostrar_tipos_insumos()
     {

@@ -144,10 +144,14 @@ class AlmacenController extends Controller
         $tp_operacion = $this->tp_operacion_cbo_ing();
         $tp_contribuyente = $this->tp_contribuyente_cbo();
         $sis_identidad = AlmacenController::sis_identidad_cbo();
-        $tp_prorrateo = $this->select_tp_prorrateo();
         $usuarios = $this->select_usuarios();
         $motivos_anu = AlmacenController::select_motivo_anu();
-        return view('almacen/guias/guia_compra', compact('proveedores','almacenes','posiciones','clasificaciones','tp_doc','monedas','tp_doc_almacen','tp_operacion','tp_contribuyente','sis_identidad','tp_prorrateo','usuarios','motivos_anu'));
+        $sedes = AlmacenController::mostrar_sedes_cbo();
+        $condiciones = AlmacenController::mostrar_condiciones_cbo();
+
+        return view('almacen/guias/guia_compra', compact('proveedores','almacenes','posiciones',
+        'clasificaciones','tp_doc','monedas','tp_doc_almacen','tp_operacion','tp_contribuyente',
+        'sis_identidad','tp_prorrateo','usuarios','motivos_anu','sedes','condiciones'));
     }
     function view_guia_venta(){
         $almacenes = AlmacenController::mostrar_almacenes_cbo();
@@ -265,33 +269,7 @@ class AlmacenController extends Controller
             ->orderBy('sis_identi.descripcion', 'asc')->get();
         return $data;
     }
-    public function select_tp_prorrateo(){
-        $data = DB::table('almacen.tp_prorrateo')
-            ->select('tp_prorrateo.id_tp_prorrateo', 'tp_prorrateo.descripcion')
-            ->where('tp_prorrateo.estado', '=', 1)
-            ->orderBy('tp_prorrateo.id_tp_prorrateo', 'asc')->get();
-        return $data;
-    }
-    public function guardar_tipo_prorrateo($nombre){
-        $id_tipo = DB::table('almacen.tp_prorrateo')->insertGetId(
-            [   'descripcion'=>$nombre, 
-                'estado'=>1
-            ],
-                'id_tp_prorrateo'
-            );
 
-        $data = DB::table('almacen.tp_prorrateo')->where('estado',1)->get();
-        $html = '';
-
-        foreach($data as $d){
-            if ($id_tipo == $d->id_tp_prorrateo){
-                $html.='<option value="'.$d->id_tp_prorrateo.'" selected>'.$d->descripcion.'</option>';
-            } else {
-                $html.='<option value="'.$d->id_tp_prorrateo.'">'.$d->descripcion.'</option>';
-            }
-        }
-        return json_encode($html);
-    }
     public static function tp_operacion_cbo_ing(){
         $data = DB::table('almacen.tp_ope')
             ->select('tp_ope.id_operacion','tp_ope.cod_sunat','tp_ope.descripcion')
@@ -5090,61 +5068,7 @@ class AlmacenController extends Controller
             
         return response()->json($data);
     }
-    public function listar_docs_prorrateo($id){
-        $data = DB::table('almacen.guia_com_prorrateo')
-            ->select('guia_com_prorrateo.*','doc_com.serie','doc_com.numero',
-            'tp_prorrateo.descripcion as des_tp_prorrateo','sis_moneda.simbolo',
-            'doc_com.sub_total','doc_com.fecha_emision','doc_com.tipo_cambio')
-            ->join('almacen.doc_com','doc_com.id_doc_com','=','guia_com_prorrateo.id_doc_com')
-            ->join('almacen.tp_prorrateo','tp_prorrateo.id_tp_prorrateo','=','guia_com_prorrateo.id_tp_prorrateo')
-            ->join('configuracion.sis_moneda','sis_moneda.id_moneda','=','doc_com.moneda')
-            ->where('guia_com_prorrateo.id_guia_com',$id)
-            ->get();
-        $i = 1;
-        $html = '';
-        $total_comp = 0;
-        $total_items = 0;
-        $color = '';
-
-        foreach($data as $d){
-            if ($d->tipo == 1){
-                $total_comp += floatval($d->importe);
-                $color = 'orange';
-            } else if ($d->tipo == 2){
-                $total_items += floatval($d->importe);
-                $color = 'purple';
-            }
-            $html .= '
-            <tr id="det-'.$d->id_prorrateo.'">
-                <td>'.$i.'</td>
-                <td>'.$d->des_tp_prorrateo.'</td>
-                <td>'.$d->serie.'-'.$d->numero.'</td>
-                <td>'.$d->fecha_emision.'</td>
-                <td>'.$d->simbolo.'</td>
-                <td style="width: 110px;"><input type="number" style="width:100px;" class="right" name="subtotal" onChange="calcula_importe('.$d->id_prorrateo.');" value="'.$d->sub_total.'" disabled="true"/></td>
-                <td style="width: 110px;"><input type="number" style="width:100px;" class="right" name="tipocambio" onChange="calcula_importe('.$d->id_prorrateo.');" value="'.$d->tipo_cambio.'" disabled="true"/></td>
-                <td style="width: 110px;"><input type="number" style="width:100px;" class="right" name="importedet" value="'.$d->importe.'" disabled="true"/></td>
-                <td style="display:flex;">
-                    <i class="fas fa-pen-square icon-tabla blue visible boton" data-toggle="tooltip" data-placement="bottom" title="Editar" onClick="editar_adicional('.$d->id_prorrateo.');"></i>
-                    <i class="fas fa-save icon-tabla green oculto boton" data-toggle="tooltip" data-placement="bottom" title="Guardar" onClick="update_adicional('.$d->id_prorrateo.','.$d->id_doc_com.');"></i>
-                    <i class="fas fa-trash icon-tabla red boton" data-toggle="tooltip" data-placement="bottom" title="Anular" onClick="anular_adicional('.$d->id_prorrateo.','.$d->id_doc_com.');"></i>
-                    <i class="fas fa-list-alt icon-tabla '.$color.' boton" data-toggle="tooltip" data-placement="bottom" title="Aplicar Prorrateo por Items" onClick="prorrateo_items('.$d->id_prorrateo.','.$d->importe.');"></i>
-                </td>
-            </tr>
-            ';
-            $i++;
-        }
-        $moneda = DB::table('almacen.guia_com_oc')
-        ->select('sis_moneda.simbolo','sis_moneda.descripcion')
-        ->join('logistica.log_ord_compra','log_ord_compra.id_orden_compra','=','guia_com_oc.id_oc')
-        ->join('configuracion.sis_moneda','sis_moneda.id_moneda','=','log_ord_compra.id_moneda')
-        ->where('id_guia_com',$id)
-        ->first();
-        return json_encode(['html'=>$html,
-                            'total_comp'=>round($total_comp,3,PHP_ROUND_HALF_UP),
-                            'total_items'=>round($total_items,3,PHP_ROUND_HALF_UP),
-                            'moneda'=>$moneda]);
-    }
+    
 
     public function listar_documentos_prorrateo(){
         $data = DB::table('almacen.guia_com_prorrateo')

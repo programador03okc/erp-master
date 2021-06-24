@@ -1302,8 +1302,9 @@ class OrdenesPendientesController extends Controller
                 DB::table('almacen.doc_com_det')
                 ->insert([
                     'id_doc' => $id_doc,
-                    'id_guia_com_det' => $item->id_guia_com_det,
+                    'id_guia_com_det' => ($item->id_producto==null ? null : $item->id_guia_com_det),
                     'id_item' => $item->id_producto,
+                    'servicio_descripcion' => $item->descripcion,
                     'cantidad' => $item->cantidad,
                     'id_unid_med' => $item->id_unid_med,
                     'precio_unitario' => $item->precio,
@@ -1375,10 +1376,10 @@ class OrdenesPendientesController extends Controller
         $detalles = DB::table('almacen.doc_com_det')
         ->select('doc_com_det.*','alm_prod.codigo','alm_prod.descripcion','alm_prod.part_number',
         'alm_und_medida.abreviatura','guia_com.serie','guia_com.numero')
-        ->join('almacen.guia_com_det','guia_com_det.id_guia_com_det','=','doc_com_det.id_guia_com_det')
-        ->join('almacen.guia_com','guia_com.id_guia','=','guia_com_det.id_guia_com')
-        ->join('almacen.alm_prod','alm_prod.id_producto','=','doc_com_det.id_item')
-        ->join('almacen.alm_und_medida','alm_und_medida.id_unidad_medida','=','doc_com_det.id_unid_med')
+        ->leftjoin('almacen.guia_com_det','guia_com_det.id_guia_com_det','=','doc_com_det.id_guia_com_det')
+        ->leftjoin('almacen.guia_com','guia_com.id_guia','=','guia_com_det.id_guia_com')
+        ->leftjoin('almacen.alm_prod','alm_prod.id_producto','=','doc_com_det.id_item')
+        ->leftjoin('almacen.alm_und_medida','alm_und_medida.id_unidad_medida','=','doc_com_det.id_unid_med')
         ->where('doc_com_det.id_doc',$id_doc)
         ->get();
 
