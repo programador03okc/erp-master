@@ -15,8 +15,11 @@ class ProrrateoCostosController extends Controller
         $tp_doc = $this->mostrar_tp_doc_cbo();
         $monedas = AlmacenController::mostrar_moneda_cbo();
         $sis_identidad = AlmacenController::sis_identidad_cbo();
+        $tipos_prorrateo = DB::table('almacen.tipo_prorrateo')
+                            ->where('estado',1)->get();
 
-        return view('almacen/prorrateo/doc_prorrateo', compact('tp_prorrateo','tp_doc','monedas','sis_identidad'));
+        return view('almacen/prorrateo/doc_prorrateo', 
+        compact('tp_prorrateo','tp_doc','monedas','sis_identidad','tipos_prorrateo'));
     }
 
     public function select_tp_prorrateo(){
@@ -78,9 +81,13 @@ class ProrrateoCostosController extends Controller
     public function listar_guia_detalle($id){
         $data = DB::table('almacen.guia_com_det')
         ->select('guia_com_det.*','alm_prod.codigo','alm_prod.part_number','alm_prod.descripcion',
-        'alm_und_medida.abreviatura','guia_com.serie','guia_com.numero','mov_alm_det.valorizacion')
+        'alm_und_medida.abreviatura','guia_com.serie','guia_com.numero',//'mov_alm_det.valorizacion',
+        'sis_moneda.simbolo','doc_com_det.precio_unitario')
         ->join('almacen.guia_com','guia_com.id_guia','=','guia_com_det.id_guia_com')
-        ->join('almacen.mov_alm_det','mov_alm_det.id_guia_com_det','=','guia_com_det.id_guia_com_det')
+        ->leftjoin('almacen.doc_com_det','doc_com_det.id_guia_com_det','=','guia_com_det.id_guia_com_det')
+        ->leftjoin('almacen.doc_com','doc_com.id_doc_com','=','doc_com_det.id_doc')
+        ->leftjoin('configuracion.sis_moneda','sis_moneda.id_moneda','=','doc_com.moneda')
+        // ->join('almacen.mov_alm_det','mov_alm_det.id_guia_com_det','=','guia_com_det.id_guia_com_det')
         ->leftjoin('almacen.alm_prod','alm_prod.id_producto','=','guia_com_det.id_producto')
         ->leftjoin('almacen.alm_und_medida','alm_und_medida.id_unidad_medida','=','alm_prod.id_unidad_medida')
         ->where([['guia_com_det.id_guia_com', '=', $id],
@@ -89,15 +96,29 @@ class ProrrateoCostosController extends Controller
         return response()->json($data);
     }
 
+    public function nextCorrelativoProrrateo(){
+        $yyyy = date('Y',strtotime(date('Y-m-d')));
+        $anio = date('y',strtotime(date('Y-m-d')));
+
+        $count = DB::table('almacen.guia_com_prorrateo')
+        ->whereYear('fecha_registro','=',$yyyy)
+        ->count();
+
+        $correlativo = AlmacenController::leftZero(3, $count+1);
+        return 'PR-'.$correlativo;
+    }
+
     public function guardarProrrateo(Request $request){
 
         try {
             DB::beginTransaction();
 
+            $codigo = $this->nextCorrelativoProrrateo();
             $id_usuario = Auth::user()->id_usuario;
 
             $id_prorrateo = DB::table('almacen.guia_com_prorrateo')->insertGetId(
                 [
+                    'codigo' => $codigo,
                     'estado' => 1,
                     'registrado_por' => $id_usuario,
                     'fecha_registro' => date('Y-m-d H:i:s')
@@ -134,7 +155,7 @@ class ProrrateoCostosController extends Controller
                 $data = DB::table('almacen.guia_com_prorrateo_doc')->insertGetId(
                     [
                         'id_prorrateo' => $id_prorrateo,
-                        'id_tp_prorrateo' => $det->id_tp_prorrateo,
+                        'id_tp_doc_prorrateo' => $det->id_tp_prorrateo,
                         'id_doc_com' => $id_doc,
                         'importe_aplicado' => $det->importe_aplicado,
                         'estado' => 1,
@@ -180,6 +201,11 @@ class ProrrateoCostosController extends Controller
     }
 
     public function mostrar_prorrateo($id_prorrateo){
+
+        $prorrateo = DB::table('almacen.guia_com_prorrateo')
+        ->where('id_prorrateo',$id_prorrateo)
+        ->first();
+
         $documentos = DB::table('almacen.guia_com_prorrateo_doc')
         ->select('guia_com_prorrateo_doc.*','tp_prorrateo.descripcion','doc_com.serie','doc_com.numero',
         'doc_com.fecha_emision','doc_com.moneda','sis_moneda.simbolo','doc_com.total_a_pagar','doc_com.tipo_cambio',
@@ -188,8 +214,9 @@ class ProrrateoCostosController extends Controller
         ->join('logistica.log_prove','log_prove.id_proveedor','=','doc_com.id_proveedor')
         ->join('contabilidad.adm_contri','adm_contri.id_contribuyente','=','log_prove.id_contribuyente')
         ->join('configuracion.sis_moneda','sis_moneda.id_moneda','=','doc_com.moneda')
-        ->join('almacen.tp_prorrateo','tp_prorrateo.id_tp_prorrateo','=','guia_com_prorrateo_doc.id_tp_prorrateo')
-        ->where('guia_com_prorrateo_doc.estado',1)
+        ->join('almacen.tp_prorrateo','tp_prorrateo.id_tp_prorrateo','=','guia_com_prorrateo_doc.id_tp_doc_prorrateo')
+        ->where([['guia_com_prorrateo_doc.id_prorrateo','=',$id_prorrateo],
+                 ['guia_com_prorrateo_doc.estado','=',1]])
         ->get();
 
         $detalles = DB::table('almacen.guia_com_prorrateo_det')
@@ -201,9 +228,10 @@ class ProrrateoCostosController extends Controller
         ->join('almacen.alm_prod','alm_prod.id_producto','=','guia_com_det.id_producto')
         ->join('almacen.alm_und_medida','alm_und_medida.id_unidad_medida','=','alm_prod.id_unidad_medida')
         ->join('almacen.mov_alm_det','mov_alm_det.id_guia_com_det','=','guia_com_det.id_guia_com_det')
+        ->where([['guia_com_prorrateo_det.id_prorrateo','=',$id_prorrateo]])
         ->get();
 
-        return response()->json(['documentos'=>$documentos,'detalles'=>$detalles]);
+        return response()->json(['prorrateo'=>$prorrateo,'documentos'=>$documentos,'detalles'=>$detalles]);
     }
 
     public function listar_docs_prorrateo($id){
