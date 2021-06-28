@@ -709,12 +709,15 @@ class OrdenesPendientesController extends Controller
 
                     $suma = ($ant !== null ? $ant->suma_cantidad : 0);
 
-                    $dreq = DB::table('almacen.alm_det_req')
-                    ->where('id_detalle_requerimiento',$det->id_detalle_requerimiento)
-                    ->first();
+                    if ($det->id_detalle_requerimiento !== null){
 
-                    if (!in_array($dreq->id_requerimiento, $padres_req)){
-                        array_push($padres_req, $dreq->id_requerimiento);
+                        $dreq = DB::table('almacen.alm_det_req')
+                        ->where('id_detalle_requerimiento',$det->id_detalle_requerimiento)
+                        ->first();
+    
+                        if (!in_array($dreq->id_requerimiento, $padres_req)){
+                            array_push($padres_req, $dreq->id_requerimiento);
+                        }
                     }
 
                     if ($det->cantidad == $suma){
@@ -722,43 +725,48 @@ class OrdenesPendientesController extends Controller
                         ->where('id_detalle_orden',$det->id_detalle_orden)
                         ->update(['estado' => 28]);//en almacen Total
                         
-                        $ant_oc = DB::table('logistica.log_det_ord_compra')
-                        ->select(DB::raw('SUM(cantidad) AS suma_cantidad'))
-                        ->where('id_detalle_requerimiento',$det->id_detalle_requerimiento)
-                        ->where('estado',28)//en almacen Total
-                        ->orWhere('estado',10)//culminado
-                        ->first();
-
-                        // $detalle_req = DB::table('almacen.alm_det_req')
-                        // ->where('id_detalle_requerimiento',$det->id_detalle_requerimiento)
-                        // ->first();
-
-                        // if ($detalle_req->estado !== 22){//Despacho interno
-                            if ($dreq->cantidad == $ant_oc->suma_cantidad){
-                                DB::table('almacen.alm_det_req')
-                                ->where('id_detalle_requerimiento',$det->id_detalle_requerimiento)
-                                ->update([  'estado'=>28,//en almacen total
-                                            'stock_comprometido'=>$cantidad,
-                                            'id_almacen_reserva'=>$request->id_almacen]);
-                            } else {
-                                DB::table('almacen.alm_det_req')
-                                ->where('id_detalle_requerimiento',$det->id_detalle_requerimiento)
-                                ->update([  'estado'=>27,//en almacen parcial
-                                            'stock_comprometido'=>$cantidad,
-                                            'id_almacen_reserva'=>$request->id_almacen]);
-                            }
-                        // }
+                        if ($det->id_detalle_requerimiento !== null){
+                            $ant_oc = DB::table('logistica.log_det_ord_compra')
+                            ->select(DB::raw('SUM(cantidad) AS suma_cantidad'))
+                            ->where('id_detalle_requerimiento',$det->id_detalle_requerimiento)
+                            ->where('estado',28)//en almacen Total
+                            ->orWhere('estado',10)//culminado
+                            ->first();
+    
+                            // $detalle_req = DB::table('almacen.alm_det_req')
+                            // ->where('id_detalle_requerimiento',$det->id_detalle_requerimiento)
+                            // ->first();
+    
+                            // if ($detalle_req->estado !== 22){//Despacho interno
+                                if ($dreq->cantidad == $ant_oc->suma_cantidad){
+                                    DB::table('almacen.alm_det_req')
+                                    ->where('id_detalle_requerimiento',$det->id_detalle_requerimiento)
+                                    ->update([  'estado'=>28,//en almacen total
+                                                'stock_comprometido'=>$cantidad,
+                                                'id_almacen_reserva'=>$request->id_almacen]);
+                                } else {
+                                    DB::table('almacen.alm_det_req')
+                                    ->where('id_detalle_requerimiento',$det->id_detalle_requerimiento)
+                                    ->update([  'estado'=>27,//en almacen parcial
+                                                'stock_comprometido'=>$cantidad,
+                                                'id_almacen_reserva'=>$request->id_almacen]);
+                                }
+                            // }
+                        }
 
                     } else {
                         DB::table('logistica.log_det_ord_compra')
                             ->where('id_detalle_orden',$det->id_detalle_orden)
                             ->update(['estado' => 27]);//en almacen parcial
 
-                        DB::table('almacen.alm_det_req')
-                            ->where('id_detalle_requerimiento',$det->id_detalle_requerimiento)
-                            ->update([  'estado'=>27,//en almacen parcial
-                                        'stock_comprometido'=>$cantidad,
-                                        'id_almacen_reserva'=>$request->id_almacen]);
+                        if ($det->id_detalle_requerimiento !== null){
+
+                            DB::table('almacen.alm_det_req')
+                                ->where('id_detalle_requerimiento',$det->id_detalle_requerimiento)
+                                ->update([  'estado'=>27,//en almacen parcial
+                                            'stock_comprometido'=>$cantidad,
+                                            'id_almacen_reserva'=>$request->id_almacen]);
+                        }
                     }
                 }
 
