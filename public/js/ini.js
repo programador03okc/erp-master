@@ -249,6 +249,7 @@ function resizeSide(){
 }
 
 function changeStateInput(element, state){
+	console.log(element,state);
 	var evalu = $("#"+element).attr('type');
     if(evalu == 'register'){
 		$("#"+element+" .activation").attr('disabled', state);
@@ -256,6 +257,7 @@ function changeStateInput(element, state){
 }
 
 function changeStateButton(type){
+	console.log(type);
 	switch(type){
 		case 'nuevo':
 			$('#btnNuevo').attr('disabled', true);
