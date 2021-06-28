@@ -70,6 +70,9 @@ class OrdenCtrl{
                         }else{
                             ordenView.loadHeadRequerimiento(response.requerimiento[0],idTipoOrden);
                             ordenView.listar_detalle_orden_requerimiento(detalleOrdenList);
+                            changeStateInput('form-crear-orden-requerimiento', false);
+                            changeStateButton('editar');
+                            
                         }
                     }
                 });
