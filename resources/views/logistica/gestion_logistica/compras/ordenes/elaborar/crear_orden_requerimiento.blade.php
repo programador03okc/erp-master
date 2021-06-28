@@ -348,33 +348,20 @@
     <script src="{{ asset('js/util.js')}}"></script>
     <script src="{{ asset('datatables/DataTables/js/jquery.dataTables.min.js') }}"></script>
     <script src="{{ asset('datatables/DataTables/js/dataTables.bootstrap.min.js') }}"></script>
-    <!-- <script src="{{ asset('datatables/Buttons/js/dataTables.buttons.min.js') }}"></script>
-    <script src="{{ asset('datatables/Buttons/js/buttons.bootstrap.min.js') }}"></script>
-    <script src="{{ asset('datatables/Buttons/js/buttons.print.min.js') }}"></script>
-    <script src="{{ asset('datatables/Buttons/js/buttons.html5.min.js') }}"></script>
-    <script src="{{ asset('datatables/pdfmake/pdfmake.min.js') }}"></script>
-    <script src="{{ asset('datatables/pdfmake/vfs_fonts.js') }}"></script>
-    <script src="{{ asset('datatables/JSZip/jszip.min.js') }}"></script> -->
     <script src="{{ asset('template/plugins/select2/select2.min.js') }}"></script>
-    <!-- <script src="{{('/js/logistica/generar_orden.js')}}"></script> -->
+    <script src="{{ asset('template/plugins/moment.min.js') }}"></script>
     <script src="{{('/js/logistica/orden/modal_ordenes_elaboradas.js')}}"></script>
     <script src="{{('/js/logistica/orden/modal_proveedor.js')}}"></script>
     <script src="{{('/js/logistica/add_proveedor.js')}}"></script>
     <script src="{{ asset('js/publico/ubigeoModal.js')}}"></script>
     <script src="{{('/js/logistica/orden/proveedorContactoModal.js')}}"></script>
     <script src="{{('/js/logistica/orden/trabajadorModal.js')}}"></script>
-    <script src="{{('/js/logistica/orden/agregarContacto.js')}}"></script>
-
- 
-    <!-- <script src="{{('/js/logistica/orden/crear_orden_requerimiento.js')}}"></script> -->
+    <script src="{{('/js/logistica/orden/agregarContacto.js')}}"></script> 
     <script src="{{ asset('js/publico/consulta_sunat.js')}}"></script>
     <script src="{{('/js/logistica/orden/OrdenModel.js')}}"></script>
     <script src="{{('/js/logistica/orden/OrdenView.js')}}"></script>
     <script src="{{('/js/logistica/orden/OrdenController.js')}}"></script>
     <script src="{{('/js/logistica/CustomTabla.js')}}"></script>
-
-    <!-- <script src="{{('/js/logistica/orden/anular_orden.js')}}"></script> -->
-    <script src="{{ asset('template/plugins/moment.min.js') }}"></script>
 
     <script>
 

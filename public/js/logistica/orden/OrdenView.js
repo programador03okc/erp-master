@@ -3,15 +3,12 @@ var vardataTables = funcDatatables();
 var simboloMoneda='';
 class OrdenView {
     init() {
-        this.getTipoCambioCompra();
-        // this.renderCrearOrdenModule(null,null);
         var reqTrueList = JSON.parse(sessionStorage.getItem('reqCheckedList'));
         var tipoOrden = sessionStorage.getItem('tipoOrden');
         if (reqTrueList !=null && (reqTrueList.length > 0)) {
+            ordenView.changeStateInput('form-crear-orden-requerimiento', false);
+            ordenView.changeStateButton('editar');
             ordenCtrl.obtenerRequerimiento(reqTrueList,tipoOrden);
-            changeStateButton('editar');
-            // changeStateButton('historial');
-            changeStateInput('form-crear-orden-requerimiento', false);
             let btnVinculoAReq= `<span class="text-info" id="text-info-req-vinculado" > <a onClick="window.location.reload();" style="cursor:pointer;" title="Recargar con Valores Iniciales del Requerimiento">(vinculado a un Requerimiento)</a> <span class="badge label-danger" onClick="ordenView.eliminarVinculoReq();" style="position: absolute;margin-top: -5px;margin-left: 5px; cursor:pointer" title="Eliminar vínculo">×</span></span>`;
             document.querySelector("section[class='content-header']").children[0].innerHTML+=btnVinculoAReq;
     
@@ -19,8 +16,87 @@ class OrdenView {
         var idOrden = sessionStorage.getItem('idOrden');
         if(idOrden >0){
             mostrarOrden(idOrden);
-            changeStateButton('historial');
+            ordenView.changeStateButton('historial');
 
+        }
+        this.getTipoCambioCompra();
+
+    }
+    changeStateInput(element, state){
+        console.log(element,state);
+        var evalu = $("#"+element).attr('type');
+        if(evalu == 'register'){
+            $("#"+element+" .activation").attr('disabled', state);
+        }
+    }
+
+    changeStateButton(type){
+        console.log(type);
+        switch(type){
+            case 'nuevo':
+                $('#btnNuevo').attr('disabled', true);
+                $('#btnGuardar').attr('disabled', false);
+                $('#btnEditar').attr('disabled', true);
+                $('#btnAnular').attr('disabled', true);
+                $('#btnHistorial').attr('disabled', true);
+                $('#btnCancelar').attr('disabled', false);
+            break;
+            case 'guardar':
+                $('#btnNuevo').attr('disabled', false);
+                $('#btnGuardar').attr('disabled', true);
+                $('#btnEditar').attr('disabled', false);
+                $('#btnAnular').attr('disabled', false);
+                $('#btnHistorial').attr('disabled', false);
+                $('#btnCancelar').attr('disabled', true);
+            break;
+            case 'editar':
+                $('#btnNuevo').attr('disabled', true);
+                $('#btnGuardar').attr('disabled', false);
+                $('#btnEditar').attr('disabled', true);
+                $('#btnAnular').attr('disabled', true);
+                $('#btnHistorial').attr('disabled', true);
+                $('#btnCancelar').attr('disabled', false);
+            break;
+            case 'anular':
+                $('#btnNuevo').attr('disabled', false);
+                $('#btnGuardar').attr('disabled', true);
+                $('#btnEditar').attr('disabled', true);
+                $('#btnAnular').attr('disabled', true);
+                $('#btnHistorial').attr('disabled', false);
+                $('#btnCancelar').attr('disabled', true);
+            break;
+            case 'historial':
+                $('#btnNuevo').attr('disabled', false);
+                $('#btnGuardar').attr('disabled', true);
+                $('#btnEditar').attr('disabled', false);
+                $('#btnAnular').attr('disabled', false);
+                $('#btnHistorial').attr('disabled', false);
+                $('#btnCancelar').attr('disabled', true);
+            break;
+            case 'cancelar':
+                $('#btnNuevo').attr('disabled', false);
+                $('#btnGuardar').attr('disabled', true);
+                $('#btnEditar').attr('disabled', true);
+                $('#btnAnular').attr('disabled', true);
+                $('#btnHistorial').attr('disabled', false);
+                $('#btnCancelar').attr('disabled', true);
+            break;
+            case 'inicio':
+                $('#btnNuevo').attr('disabled', false);
+                $('#btnGuardar').attr('disabled', true);
+                $('#btnEditar').attr('disabled', true);
+                $('#btnAnular').attr('disabled', true);
+                $('#btnHistorial').attr('disabled', false);
+                $('#btnCancelar').attr('disabled', true);
+            break;
+            default:
+                $('#btnNuevo').attr('disabled', true);
+                $('#btnGuardar').attr('disabled', true);
+                $('#btnEditar').attr('disabled', true);
+                $('#btnAnular').attr('disabled', true);
+                $('#btnHistorial').attr('disabled', true);
+                $('#btnCancelar').attr('disabled', true);
+            break;
         }
     }
     getTipoCambioCompra(){
