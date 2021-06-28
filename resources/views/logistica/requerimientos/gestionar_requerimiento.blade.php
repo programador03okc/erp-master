@@ -162,15 +162,15 @@ Crear / editar requerimiento
                         <div class="col-md-2" id="input-group-aprobante">
                             <div class="form-group">
                                 <h5>División</h5>
-                                <select name="rol_aprobante" class="form-control activation">
-                                    @if(count($aprobantes)>0)
+                                <select name="division" class="form-control activation">
                                     <option value="0">Elija una opción</option>
-                                    @foreach ($aprobantes as $aprobante)
-                                    <option value="{{$aprobante->id_rol}}">{{$aprobante->nombre}}</option>
+                                    @foreach ($divisiones as $division)
+                                        @if($division->id_division==4)
+                                        <option value="{{$division->id_division}}" selected>{{$division->descripcion}}</option>
+                                        @else
+                                    <option value="{{$division->id_division}}">{{$division->descripcion}}</option>
+                                        @endif
                                     @endforeach
-                                    @else
-                                    <option value="">Ninguno para seleccionar</option>
-                                    @endif
                                 </select>
                             </div>
                         </div>

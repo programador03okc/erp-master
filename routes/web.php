@@ -641,6 +641,7 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::get('mostrar-centro-costos', 'Finanzas\CentroCosto\CentroCostoController@mostrarCentroCostosSegunGrupoUsuario')->name('mostrar-centro-costos');
 					Route::get('mostrar-categoria-adjunto', 'Logistica\RequerimientoController@mostrarCategoriaAdjunto')->name('mostrar-categoria-adjunto');
 					Route::post('guardar-requerimiento', 'Logistica\RequerimientoController@guardarRequerimiento')->name('guardar-requerimiento');
+					Route::post('actualizar-requerimiento', 'Logistica\RequerimientoController@actualizarRequerimiento')->name('actualizar-requerimiento');
 					Route::get('listar-sedes-por-empresa/{id?}', 'Logistica\RequerimientoController@listarSedesPorEmpresa')->name('listar-sedes-por-empresa');
 					Route::get('mostrar-requerimiento/{id?}/{codigo?}', 'Logistica\RequerimientoController@mostrarRequerimiento')->name('mostrar-requerimiento');
 					Route::post('elaborados', 'Logistica\RequerimientoController@listarRequerimientosElaborados')->name('elaborados');

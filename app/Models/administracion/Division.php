@@ -11,7 +11,59 @@ class Division extends Model
     protected $table = 'administracion.adm_flujo';
     protected $primaryKey = 'id_flujo';
     public $timestamps = false;
+    
+    public static function mostrar()
+    {
+        $grupos = Auth::user()->getAllGrupo();
+        $idGrupoList=[];
 
+        foreach ($grupos as $value) {
+            $idGrupoList[]=$value->id_grupo;
+        }
+
+        $divisiones = DB::table('administracion.division')
+        ->select('division.*')
+        ->whereIn('division.grupo_id', $idGrupoList)
+        ->where('division.estado',1)
+        ->get();
+
+        return $divisiones;
+
+
+    }
+
+    public static function mostrarDivisionUsuarioNroOrdenUno(){
+        $roles = Auth::user()->getAllRol();
+        $idRolUsuarioList=[];
+        foreach ($roles as $value) {
+            $idRolUsuarioList[]=$value->id_rol;
+        }
+
+        $flujosUsuario = DB::table('administracion.adm_flujo')
+        ->select('adm_flujo.*')
+        ->whereIn('adm_flujo.id_rol',$idRolUsuarioList)
+        ->where([['adm_flujo.estado', 1],['adm_flujo.orden', 1]]) 
+        ->get();
+        
+        $idOperacionList=[];
+        $divisionUsuarioList=[];
+        if(count($flujosUsuario)>0){
+            foreach ($flujosUsuario as $flujoUsuario) {
+                $idOperacionList[]=$flujoUsuario->id_operacion;
+            }
+
+            $divisionUsuarioList = DB::table('administracion.adm_operacion')
+            ->select('division.id_division', 'division.descripcion as division')
+            ->join('administracion.division','division.id_division', '=', 'adm_operacion.division_id')
+            ->whereIn('adm_operacion.id_operacion',$idOperacionList)
+            ->where([['adm_operacion.estado', 1],['division.estado',1]])
+            ->get();
+        }
+
+        return $divisionUsuarioList;
+
+    }
+    
     public static function mostrarFlujoAprobacion()
     {
         $grupos = Auth::User()->getAllGrupo();

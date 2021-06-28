@@ -13,11 +13,10 @@ class RequerimientoView {
 
     }
     limpiarTabla(idElement) {
-        let table = document.getElementById(idElement);
-        for (let i = table.rows.length - 1; i > 0; i--) {
-            table.deleteRow(i);
+        let nodeTbody=document.querySelector("table[id='"+idElement+"'] tbody");
+        while (nodeTbody.children.length >0) {
+            nodeTbody.removeChild(nodeTbody.lastChild);
         }
-        return null;
     }
     // cabecera requerimiento
     changeMonedaSelect(e) {
@@ -615,7 +614,7 @@ class RequerimientoView {
     }
 
     construirTablaPresupuestoUtilizadoYSaldoPorPartida(data) {
-        this.limpiarTabla('listaPartidasActivas');
+        requerimientoView.limpiarTabla('listaPartidasActivas');
         data.forEach(element => {
             document.querySelector("tbody[id='body_partidas_activas']").insertAdjacentHTML('beforeend', `<tr style="text-align:center">
                 <td>${element.codigo}</td>
@@ -736,7 +735,7 @@ class RequerimientoView {
         document.querySelector("div[id='modal-adjuntar-archivos-requerimiento'] span[class='buttonText']").textContent = "Agregar archivo";
         document.querySelector("div[id='modal-adjuntar-archivos-requerimiento'] div[id='group-action-upload-file']").classList.remove('oculto');
 
-        this.limpiarTabla('listaArchivosRequerimiento');
+        requerimientoView.limpiarTabla('listaArchivosRequerimiento');
 
         this.listarAdjuntosDeCabecera();
 
@@ -803,7 +802,7 @@ class RequerimientoView {
         });
         document.querySelector("div[id='modal-adjuntar-archivos-detalle-requerimiento'] div[id='group-action-upload-file']").classList.remove('oculto');
 
-        this.limpiarTabla('listaArchivos');
+        requerimientoView.limpiarTabla('listaArchivos');
         this.listarAdjuntosDeItem();
 
     }
@@ -836,7 +835,6 @@ class RequerimientoView {
     // guardar requerimiento
 
     actionGuardarEditarRequerimiento() {
-
 
         let continuar = true;
         if (document.querySelector("tbody[id='body_detalle_requerimiento']").childElementCount == 0) {
@@ -887,6 +885,18 @@ class RequerimientoView {
                 newSpanInfo.textContent = '(Seleccione una fecha de entrega)';
                 document.querySelector("input[name='fecha_entrega']").closest('div').querySelector("h5").appendChild(newSpanInfo);
                 document.querySelector("input[name='fecha_entrega']").closest('div').classList.add('has-error');
+            }
+
+        }
+
+        if (document.querySelector("select[name='tipo_requerimiento']").value == 0) {
+            continuar = false;
+            if (document.querySelector("select[name='tipo_requerimiento']").closest('div').querySelector("span") == null) {
+                let newSpanInfo = document.createElement("span");
+                newSpanInfo.classList.add('text-danger');
+                newSpanInfo.textContent = '(Seleccione un tipo)';
+                document.querySelector("select[name='tipo_requerimiento']").closest('div').querySelector("h5").appendChild(newSpanInfo);
+                document.querySelector("select[name='tipo_requerimiento']").closest('div').classList.add('has-error');
             }
 
         }
@@ -959,6 +969,7 @@ class RequerimientoView {
 
         if (continuar) {
             console.log("se va a guardar");
+  
             let formData = new FormData($('#form-requerimiento')[0]);
             let ItemWithIdRegisterList = [];
             if (tempArchivoAdjuntoItemList.length > 0) {
@@ -981,51 +992,105 @@ class RequerimientoView {
 
             }
 
-            $.ajax({
-                type: 'POST',
-                url: 'guardar-requerimiento',
-                data: formData,
-                processData: false,
-                contentType: false,
-                dataType: 'JSON',
-                beforeSend: function (data) { // Are not working with dataType:'jsonp'
+            let typeActionForm =  document.querySelector("form[id='form-requerimiento']").getAttribute("type"); //  register | edition
 
-                    // $('#modal-loader').modal({backdrop: 'static', keyboard: false});
-                    var customElement = $("<div>", {
-                        "css": {
-                            "font-size": "24px",
-                            "text-align": "center",
-                            "padding": "0px",
-                            "margin-top": "-400px"
-                        },
-                        "class": "your-custom-class",
-                        "text": "Guardando requerimiento..."
-                    });
-
-                    $('#wrapper-okc').LoadingOverlay("show", {
-                        imageAutoResize: true,
-                        progress: true,
-                        custom: customElement,
-                        imageColor: "#3c8dbc"
-                    });
-                },
-                success: function (response) {
-                    if (response.id_requerimiento > 0) {
-                        alert(`Requerimiento guardado con código: ${response.codigo}. La página se recargará para que pueda volver a crear un requerimiento.`);
-                        location.reload();
-                    } else {
+            if(typeActionForm == 'register'){
+                $.ajax({
+                    type: 'POST',
+                    url: 'guardar-requerimiento',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    dataType: 'JSON',
+                    beforeSend: function (data) { // Are not working with dataType:'jsonp'
+    
+                        // $('#modal-loader').modal({backdrop: 'static', keyboard: false});
+                        var customElement = $("<div>", {
+                            "css": {
+                                "font-size": "24px",
+                                "text-align": "center",
+                                "padding": "0px",
+                                "margin-top": "-400px"
+                            },
+                            "class": "your-custom-class",
+                            "text": "Guardando requerimiento..."
+                        });
+    
+                        $('#wrapper-okc').LoadingOverlay("show", {
+                            imageAutoResize: true,
+                            progress: true,
+                            custom: customElement,
+                            imageColor: "#3c8dbc"
+                        });
+                    },
+                    success: function (response) {
+                        if (response.id_requerimiento > 0) {
+                            alert(`Requerimiento guardado con código: ${response.codigo}. La página se recargará para que pueda volver a crear un requerimiento.`);
+                            location.reload();
+                        } else {
+                            $('#wrapper-okc').LoadingOverlay("hide", true);
+                            alert(response.mensaje);
+                        }
+                    },
+                    fail: function (jqXHR, textStatus, errorThrown) {
                         $('#wrapper-okc').LoadingOverlay("hide", true);
-                        alert(response.mensaje);
+                        alert("Hubo un problema al guardar el requerimiento. Por favor actualice la página e intente de nuevo");
+                        console.log(jqXHR);
+                        console.log(textStatus);
+                        console.log(errorThrown);
                     }
-                },
-                fail: function (jqXHR, textStatus, errorThrown) {
-                    $('#wrapper-okc').LoadingOverlay("hide", true);
-                    alert("Hubo un problema al guardar el requerimiento. Por favor actualice la página e intente de nuevo");
-                    console.log(jqXHR);
-                    console.log(textStatus);
-                    console.log(errorThrown);
-                }
-            });
+                });
+            }
+            if(typeActionForm == 'edition'){
+                $.ajax({
+                    type: 'POST',
+                    url: 'actualizar-requerimiento',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    dataType: 'JSON',
+                    beforeSend: function (data) {
+                            var customElement = $("<div>", {
+                            "css": {
+                                "font-size": "24px",
+                                "text-align": "center",
+                                "padding": "0px",
+                                "margin-top": "-400px"
+                            },
+                            "class": "your-custom-class",
+                            "text": "Actualizando requerimiento..."
+                        });
+    
+                        $('#wrapper-okc').LoadingOverlay("show", {
+                            imageAutoResize: true,
+                            progress: true,
+                            custom: customElement,
+                            imageColor: "#3c8dbc"
+                        });
+                    },
+                    success: function (response) {
+                        if (response.id_requerimiento > 0) {
+                            alert(`Requerimiento actualizado.`);
+                            $('#wrapper-okc').LoadingOverlay("hide", true);
+                        } else {
+                            $('#wrapper-okc').LoadingOverlay("hide", true);
+                            alert(response.mensaje);
+                            
+                        }
+                        changeStateButton('historial'); //init.js
+                    },
+                    fail: function (jqXHR, textStatus, errorThrown) {
+                        $('#wrapper-okc').LoadingOverlay("hide", true);
+                        alert("Hubo un problema al actualizar el requerimiento. Por favor actualice la página e intente de nuevo");
+                        console.log(jqXHR);
+                        console.log(textStatus);
+                        console.log(errorThrown);
+                    }
+                });
+
+                
+            }
+
 
         } else {
             alert("Por favor ingrese los datos faltantes en el formulario");
@@ -1059,7 +1124,7 @@ class RequerimientoView {
         document.querySelector("input[name='id_usuario_req']").value = data.id_usuario;
         document.querySelector("input[name='id_estado_doc']").value = data.id_estado_doc;
         document.querySelector("input[name='id_requerimiento']").value = data.id_requerimiento;
-        document.querySelector("span[id='codigo_requerimiento']").value = data.codigo;
+        document.querySelector("span[id='codigo_requerimiento']").textContent = data.codigo;
         // document.querySelector("input[name='cantidad_aprobaciones']").value =data.
         // document.querySelector("input[name='confirmacion_pago']").value =data.
         // document.querySelector("input[name='fecha_creacion_cc']").value =data.
@@ -1079,8 +1144,8 @@ class RequerimientoView {
         document.querySelector("select[name='empresa']").value = data.id_empresa;
         requerimientoView.getDataSelectSede(data.id_empresa);
         document.querySelector("select[name='sede']").value = data.id_sede;
-        document.querySelector("input[name='fecha_entrega']").value = data.fecha_entrega;
-        document.querySelector("select[name='rol_aprobante']").value = data.rol_aprobante_id;
+        document.querySelector("input[name='fecha_entrega']").value = moment(data.fecha_entrega,"DD-MM-YYYY").format("YYYY-MM-DD");
+        document.querySelector("select[name='division']").value = data.division_id;
         document.querySelector("select[name='tipo_requerimiento']").value = data.id_tipo_requerimiento;
         document.querySelector("input[name='id_trabajador']").value = data.trabajador_id;
         document.querySelector("input[name='nombre_trabajador']").value = data.nombre_trabajador;
@@ -1132,6 +1197,7 @@ class RequerimientoView {
 
 
     mostrarDetalleRequerimiento(data) {
+        requerimientoView.limpiarTabla('ListaDetalleRequerimiento');
         vista_extendida();
         for (let i = 0; i < data.length; i++) {
             if (data[i].id_tipo_item == 1) { // producto
@@ -1150,7 +1216,7 @@ class RequerimientoView {
                 <td><input class="form-control input-sm" type="text" name="partNumber[]" placeholder="Part number" value="${data[i].part_number != null ? data[i].part_number : ''}"></td>
                 <td>
                     <div class="form-group">
-                        <textarea class="form-control input-sm descripcion" name="descripcion[]" placeholder="Descripción" value="${data[i].descripcion != null ? data[i].descripcion : ''}" onkeyup ="requerimientoView.updateDescripcionItem(this);">${data[i].descripcion != null ? data[i].descripcion : ''}"</textarea></td>
+                        <textarea class="form-control input-sm descripcion" name="descripcion[]" placeholder="Descripción" value="${data[i].descripcion != null ? data[i].descripcion : ''}" onkeyup ="requerimientoView.updateDescripcionItem(this);">${data[i].descripcion != null ? data[i].descripcion : ''}</textarea></td>
                     </div>
                 <td><select name="unidad[]" class="form-control input-sm" value="${data[i].id_unidad_medida}" >${document.querySelector("select[id='selectUnidadMedida']").innerHTML}</select></td>
                 <td>
@@ -1561,7 +1627,6 @@ class Historial extends RequerimientoView {
 
     cargarRequerimiento(idRequerimiento) {
         $('#modal-historial-requerimiento').modal('hide');
-
         requerimientoCtrl.getRequerimiento(idRequerimiento).then(function (res) {
             requerimientoView.mostrarRequerimiento(res);
 
@@ -1725,14 +1790,6 @@ class Aprobar extends RequerimientoView {
 
     }
 
-    limpiarTabla(idElement) {
-        // console.log("limpiando tabla....");
-        var table = document.getElementById(idElement);
-        for (var i = table.rows.length - 1; i > 0; i--) {
-            table.deleteRow(i);
-        }
-        return null;
-    }
 
     construirTablaListaRequerimientosPendientesAprobacion(data) {
         let disabledBtn = true;
@@ -1879,11 +1936,11 @@ class Aprobar extends RequerimientoView {
                         let containerOpenBrackets = '<center><div class="btn-group" role="group" style="margin-bottom: 5px;">';
                         let containerCloseBrackets = '</div></center>';
                         let btnDetalleRapido = '<button type="button" class="btn btn-xs btn-info" title="Ver detalle" onClick="aprobarRequerimiento.verDetalleRequerimiento(' + row['id_requerimiento'] + ', ' + row['id_doc_aprob'] + ');"><i class="fas fa-eye fa-xs"></i></button>';
-                        let btnTracking = '<button type="button" class="btn btn-xs bg-primary" title="Explorar Requerimiento" onClick="aprobarRequerimiento.tracking_requerimiento(' + row['id_requerimiento'] + ');"><i class="fas fa-globe fa-xs"></i></button>';
+                        // let btnTracking = '<button type="button" class="btn btn-xs bg-primary" title="Explorar Requerimiento" onClick="aprobarRequerimiento.tracking_requerimiento(' + row['id_requerimiento'] + ');"><i class="fas fa-globe fa-xs"></i></button>';
                         // let btnAprobar = '<button type="button" class="btn btn-xs btn-success" title="Aprobar Requerimiento" onClick="aprobarRequerimiento.aprobarRequerimiento(' + row['id_doc_aprob'] + ');" ' + disabledBtn + '><i class="fas fa-check fa-xs"></i></button>';
                         // let btnObservar = '<button type="button" class="btn btn-xs btn-warning" title="Observar Requerimiento" onClick="aprobarRequerimiento.observarRequerimiento(' + row['id_doc_aprob'] + ');" ' + disabledBtn + '><i class="fas fa-exclamation-triangle fa-xs"></i></button>';
                         // let btnAnular = '<button type="button" class="btn btn-xs bg-maroon" title="Anular Requerimiento" onClick="aprobarRequerimiento.anularRequerimiento(' + row['id_doc_aprob'] + ');" ' + disabledBtn + '><i class="fas fa-ban fa-xs"></i></button>';
-                        return containerOpenBrackets + btnDetalleRapido + btnTracking + containerCloseBrackets;
+                        return containerOpenBrackets + btnDetalleRapido  + containerCloseBrackets;
                     }
                 },
             ],
@@ -1941,6 +1998,7 @@ class Aprobar extends RequerimientoView {
         requerimientoCtrl.getRequerimiento(idRequerimiento).then(function (res) {
             aprobarRequerimiento.construirSeccionDatosGenerales(res['requerimiento'][0]);
             aprobarRequerimiento.construirSeccionItemsDeRequerimiento(res['det_req']);
+            aprobarRequerimiento.construirSeccionHistorialAprobacion(res['historial_aprobacion']);
 
         }).catch(function (err) {
             console.log(err)
@@ -1982,7 +2040,7 @@ class Aprobar extends RequerimientoView {
             show: true
         });
         
-        this.limpiarTabla('listaArchivosRequerimiento');
+        requerimientoView.limpiarTabla('listaArchivosRequerimiento');
         document.querySelector("div[id='modal-adjuntar-archivos-requerimiento'] div[id='group-action-upload-file']").classList.add('oculto');
 
         let html = '';
@@ -2007,16 +2065,14 @@ class Aprobar extends RequerimientoView {
     }
 
     construirSeccionItemsDeRequerimiento(data) {
-        requerimientoView.limpiarTabla('listaDetalleRequerimiento');
+        requerimientoView.limpiarTabla('listaDetalleRequerimientoModal');
         tempArchivoAdjuntoItemList=[];
         let html = '';
-        let itemTieneAdjuntos = true;
         let cantidadAdjuntosItem = 0;
         if (data.length > 0) {
             for (let i = 0; i < data.length; i++) {
                 cantidadAdjuntosItem= data[i].adjuntos.length;
                 if(cantidadAdjuntosItem >0){
-                    itemTieneAdjuntos = true;
                     (data[i].adjuntos).forEach(element => {
                         if(element.estado ==1){
                             tempArchivoAdjuntoItemList.push(
@@ -2031,8 +2087,6 @@ class Aprobar extends RequerimientoView {
                         }
                         
                     });
-                }else{
-                    itemTieneAdjuntos=false;
                 }
                 html = `<tr>
                             <td>${i+1}</td>
@@ -2045,12 +2099,10 @@ class Aprobar extends RequerimientoView {
                             <td>${data[i].simbolo_moneda?data[i].simbolo_moneda:''} ${Util.formatoNumero(data[i].precio_unitario,2)}</td>
                             <td>${(data[i].subtotal?Util.formatoNumero(data[i].subtotal,2):'')}</td>
                             <td>${data[i].motivo?data[i].motivo:''}</td>
-                            <td style="text-align: center;">
-                                <button type="button" class="btn btn-sm btn-warning" title="Ver archivos adjuntos de item" style="position:relative;" onClick="aprobarRequerimiento.verAdjuntosItem(${data[i].id_detalle_requerimiento})"  ${itemTieneAdjuntos==false?'disabled':''}>
-                                <i class="fas fa-file-archive"></i>
-                                <span class="badge" name="cantidadAdjuntosItem" style="position:absolute; right: 65px; top:-10px; border: solid 0.1px;">0</span>
-                                Adjuntos
-                                </button>
+                            <td style="text-align: center;"> 
+                                <a title="Ver archivos adjuntos de item" style="cursor:pointer;" onClick="aprobarRequerimiento.verAdjuntosItem(${data[i].id_detalle_requerimiento})">
+                                    Ver adjuntos: <span name="cantidadAdjuntosItem">0</span>
+                                </a>
                             </td>
                         </tr>`;
             }
@@ -2062,12 +2114,28 @@ class Aprobar extends RequerimientoView {
 
     }
 
+    construirSeccionHistorialAprobacion(data){
+        let html='';
+        if (data.length > 0) {
+            for (let i = 0; i < data.length; i++) {
+                html = `<tr>
+                    <td>${data[i].nombre_usuario?data[i].nombre_usuario:''}</td>
+                    <td>${data[i].accion?data[i].accion:''}</td>
+                    <td>${data[i].detalle_observacion?data[i].detalle_observacion:''}</td>
+                    <td>${data[i].fecha_vobo?data[i].fecha_vobo:''}</td>
+                </tr>`;
+            }
+        }
+        document.querySelector("tbody[id='body_historial_revision']").insertAdjacentHTML('beforeend', html)
+
+    }
+
     verAdjuntosItem(idDetalleRequerimiento){
         $('#modal-adjuntar-archivos-detalle-requerimiento').modal({
             show: true,
             backdrop: 'true'
         }); 
-        this.limpiarTabla('listaArchivos');
+        requerimientoView.limpiarTabla('listaArchivos');
         document.querySelector("div[id='modal-adjuntar-archivos-detalle-requerimiento'] div[id='group-action-upload-file']").classList.add('oculto');
         let html = '';
         tempArchivoAdjuntoItemList.forEach(element => {
@@ -2124,7 +2192,7 @@ class Aprobar extends RequerimientoView {
     }
 
     llenar_tabla_historial_aprobaciones(data) {
-        this.limpiarTabla('listaHistorialAprobacion');
+        requerimientoView.limpiarTabla('listaHistorialAprobacion');
         let htmls = '<tr></tr>';
         $('#listaHistorialAprobacion tbody').html(htmls);
         var table = document.getElementById("listaHistorialAprobacion");
@@ -2141,7 +2209,7 @@ class Aprobar extends RequerimientoView {
 
     llenar_tabla_flujo_aprobacion(data) {
         // console.log(data);
-        this.limpiarTabla('listaFlujoAprobacion');
+        requerimientoView.limpiarTabla('listaFlujoAprobacion');
         let htmls = '<tr></tr>';
         $('#listaFlujoAprobacion tbody').html(htmls);
         var table = document.getElementById("listaFlujoAprobacion");
@@ -2158,7 +2226,7 @@ class Aprobar extends RequerimientoView {
     }
 
     llenar_tabla_cotizaciones(data) {
-        this.limpiarTabla('listaCotizaciones');
+        requerimientoView.limpiarTabla('listaCotizaciones');
         let htmls = '<tr></tr>';
         $('#listaCotizaciones tbody').html(htmls);
         var table = document.getElementById("listaCotizaciones");
@@ -2230,7 +2298,7 @@ class Aprobar extends RequerimientoView {
     llenar_tabla_cuadro_comparativo(data) {
         // console.log(data);
 
-        this.limpiarTabla('listaCuadroComparativo');
+        requerimientoView.limpiarTabla('listaCuadroComparativo');
         let htmls = '<tr></tr>';
         $('#listaCuadroComparativo tbody').html(htmls);
         var table = document.getElementById("listaCuadroComparativo");
@@ -2288,7 +2356,7 @@ class Aprobar extends RequerimientoView {
     llenar_tabla_ordenes(data) {
         // console.log(data);
 
-        this.limpiarTabla('listaOrdenes');
+        requerimientoView.limpiarTabla('listaOrdenes');
         let htmls = '<tr></tr>';
         $('#listaOrdenes tbody').html(htmls);
         var table = document.getElementById("listaOrdenes");

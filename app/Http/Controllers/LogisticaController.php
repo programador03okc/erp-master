@@ -77,16 +77,16 @@ class LogisticaController extends Controller
 
     function view_lista_proveedores()
     {
-        $estado_ruc = $this->estado_ruc();
-        $condicion_ruc = $this->condicion_ruc();
-        $tipo_contribuyente = $this->tipo_contribuyente();
+        // $estado_ruc = $this->estado_ruc();
+        // $condicion_ruc = $this->condicion_ruc();
+        // $tipo_contribuyente = $this->tipo_contribuyente();
         $paises = $this->paises();
-        $tipo_establecimiento = $this->tipo_establecimiento();
-        $bancos = $this->select_bancos();
-        $tipo_cuenta_banco = $this->select_tipos_cuenta();
+        // $tipo_establecimiento = $this->tipo_establecimiento();
+        // $bancos = $this->select_bancos();
+        // $tipo_cuenta_banco = $this->select_tipos_cuenta();
         // $contactos = $this->contacto_list();
 
-        return view('logistica/proveedores/gestionar_proveedores',compact('estado_ruc','condicion_ruc','tipo_contribuyente','paises','tipo_establecimiento','bancos','tipo_cuenta_banco'));
+        return view('logistica/proveedores/gestionar_proveedores',compact('paises'));
     }
     function view_listar_ordenes()
     {
@@ -131,25 +131,25 @@ class LogisticaController extends Controller
     }
     
 
-    public function estado_ruc()
-    {
-        $data = DB::table('contabilidad.estado_ruc')
-            ->select('estado_ruc.id_estado_ruc', 'estado_ruc.descripcion')
-            ->where('estado_ruc.estado', 1)
-            ->orderBy('estado_ruc.id_estado_ruc')
-            ->get();
-        return $data;
-    }
+    // public function estado_ruc()
+    // {
+    //     $data = DB::table('contabilidad.estado_ruc')
+    //         ->select('estado_ruc.id_estado_ruc', 'estado_ruc.descripcion')
+    //         ->where('estado_ruc.estado', 1)
+    //         ->orderBy('estado_ruc.id_estado_ruc')
+    //         ->get();
+    //     return $data;
+    // }
 
-    public function condicion_ruc()
-    {
-        $data = DB::table('contabilidad.condicion_ruc')
-            ->select('condicion_ruc.id_condicion_ruc', 'condicion_ruc.descripcion')
-            ->where('condicion_ruc.estado', 1)
-            ->orderBy('condicion_ruc.id_condicion_ruc')
-            ->get();
-        return $data;
-    }
+    // public function condicion_ruc()
+    // {
+    //     $data = DB::table('contabilidad.condicion_ruc')
+    //         ->select('condicion_ruc.id_condicion_ruc', 'condicion_ruc.descripcion')
+    //         ->where('condicion_ruc.estado', 1)
+    //         ->orderBy('condicion_ruc.id_condicion_ruc')
+    //         ->get();
+    //     return $data;
+    // }
 
     public function tipo_contribuyente()
     {
@@ -4534,7 +4534,7 @@ function get_id_usuario_usuario_por_rol($descripcion_rol, $id_sede, $id_empresa)
                     'estado' => $data['estado'],
                     'fecha_registro' => $fecha,
                     'id_estado_ruc' => $data['id_estado_ruc'],
-                    'id_condicion_ruc' => $data['id_condicion_ruc']
+                    // 'id_condicion_ruc' => $data['id_condicion_ruc']
                 ],
                 'id_contribuyente'
             );

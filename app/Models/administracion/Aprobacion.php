@@ -19,8 +19,10 @@ class Aprobacion extends Model
                 'adm_aprobacion.id_aprobacion',
                 'adm_aprobacion.id_flujo',
                 'adm_aprobacion.id_vobo',
-                'adm_vobo.descripcion',
+                'adm_aprobacion.fecha_vobo',
+                'adm_vobo.descripcion as accion',
                 'adm_aprobacion.id_usuario',
+                DB::raw("CONCAT(pers.nombres,' ',pers.apellido_paterno,' ',pers.apellido_materno) as nombre_usuario"),
                 'sis_usua.nombre_corto',
                 'adm_aprobacion.detalle_observacion',
                 'adm_flujo.id_operacion',
@@ -33,6 +35,9 @@ class Aprobacion extends Model
                 ->leftJoin('administracion.adm_vobo', 'adm_aprobacion.id_vobo', '=', 'adm_vobo.id_vobo')
                 ->leftJoin('configuracion.sis_usua', 'adm_aprobacion.id_usuario', '=', 'sis_usua.id_usuario')
                 ->leftJoin('configuracion.sis_rol', 'adm_flujo.id_rol', '=', 'sis_rol.id_rol')
+                ->leftJoin('rrhh.rrhh_trab as trab', 'trab.id_trabajador', '=', 'sis_usua.id_trabajador')
+                ->leftJoin('rrhh.rrhh_postu as post', 'post.id_postulante', '=', 'trab.id_postulante')
+                ->leftJoin('rrhh.rrhh_perso as pers', 'pers.id_persona', '=', 'post.id_persona')
                 ->leftJoin('administracion.adm_operacion', 'adm_flujo.id_operacion', '=', 'adm_operacion.id_operacion')
                 ->where([
                     ['id_doc_aprob', '=', $id_doc_aprobacion],
@@ -61,6 +66,29 @@ class Aprobacion extends Model
         $output = ['data' => $aprobacion_list, 'status' => $status, 'message' => $message];
 
         return $output;
+    }
+    public static function getCantidadAprobacionesRealizadas($id_doc_aprobacion)
+    {
+        $cantidadAprobaciones = Aprobacion::select(
+                'adm_aprobacion.*')
+                ->where([
+                    ['id_doc_aprob', '=', $id_doc_aprobacion],
+                    ['id_vobo', '=', 1]
+                ])
+                ->count();
+        return $cantidadAprobaciones;
+    }
+    public static function getUltimoVoBo($id_doc_aprobacion)
+    {
+        $ultimaAprobacion = Aprobacion::select(
+                'adm_aprobacion.*')
+                ->where([
+                    ['id_doc_aprob', '=', $id_doc_aprobacion]
+                ])
+                ->whereRaw('fecha_vobo = (select max("fecha_vobo") from administracion.adm_aprobacion)')
+                ->first();
+    
+        return $ultimaAprobacion;
     }
 
     public static function getObservaciones($id_doc_aprob)
