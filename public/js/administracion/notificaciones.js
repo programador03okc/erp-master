@@ -1,7 +1,7 @@
 
 function inicializar(){
-    listaNotificacionesNoLeidas();
-    listaNotificacionesLeidas();
+    // listaNotificacionesNoLeidas();
+    // listaNotificacionesLeidas();
 }
 function listaNotificacionesNoLeidas(){
     var vardataTables = funcDatatables();
