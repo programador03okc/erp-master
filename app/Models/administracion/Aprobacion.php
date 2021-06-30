@@ -107,7 +107,7 @@ class Aprobacion extends Model
         
         $data=[];
         $obs =  Aprobacion::select('adm_aprobacion.*',
-        DB::raw("contact(rrhh_perso.nombres, ' ' ,rrhh_perso.apellido_paterno,' ' ,rrhh_perso.apellido_materno)  AS nombre_completo")
+        DB::raw("concat(rrhh_perso.nombres, ' ' ,rrhh_perso.apellido_paterno,' ' ,rrhh_perso.apellido_materno)  AS nombre_completo")
         )
         ->join('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'adm_aprobacion.id_usuario')
         ->join('rrhh.rrhh_trab', 'rrhh_trab.id_trabajador', '=', 'sis_usua.id_trabajador')

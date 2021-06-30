@@ -127,6 +127,24 @@ class RequerimientoModel {
                 });
             });
     }
+
+    guardarRespuesta(payload){
+        return new Promise(function(resolve, reject) {
+        $.ajax({
+            type: 'POST',
+            url:`guardar-respuesta`,
+            dataType: 'JSON',
+            data:payload,
+            success(response) {
+                resolve(response);
+            },
+            error: function(err) {
+                reject(err) 
+            }
+            });
+        });
+    }
+
     getRequerimiento(idRequerimiento){
         return new Promise(function(resolve, reject) {
             $.ajax({

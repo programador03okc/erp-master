@@ -99,13 +99,20 @@
                     <legend>Revisar</legend>
                     <br>
                     <div class="form-horizontal">
+                    <input type="hidden" name="idRequerimiento">
+                    <input type="hidden" name="idDocumento">
+                    <input type="hidden" name="idUsuario">
+                    <input type="hidden" name="idRolAprobante">
+                    <input type="hidden" name="idFlujo">
+                    <input type="hidden" name="aprobacionFinalOPendiente">
                         <div class="form-group">
                             <label class="col-sm-5 control-label">Acción a realizar</label>
                             <div class="col-sm-4">
-                                <select class="form-control" id="accion">
-                                    <option value="APROBAR">Aprobar Requerimiento</option>
-                                    <option value="RECHAZAR">Rechazar Requerimiento</option>
-                                    <option value="OBSERVAR">Observar Requerimiento</option>
+                                <select class="form-control" id="accion" onChange="aprobarRequerimiento.updateAccion(this)">
+                                    <option value="0">Seleccione una acción</option>
+                                    <option value="1">Aprobar Requerimiento</option>
+                                    <option value="2">Rechazar Requerimiento</option>
+                                    <option value="3">Observar Requerimiento</option>
                                 </select>
                             </div>
                         </div>

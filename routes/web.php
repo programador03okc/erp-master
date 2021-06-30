@@ -727,7 +727,9 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::get('index', 'Logistica\RequerimientoController@viewAprobar')->name('index');
 					Route::post('listado-aprobacion', 'Logistica\RequerimientoController@listadoAprobacion')->name('listado-aprobacion');
 					Route::get('mostrar-requerimiento/{id?}/{codigo?}', 'Logistica\RequerimientoController@mostrarRequerimiento')->name('mostrar-requerimiento');
+					Route::post('guardar-respuesta', 'Logistica\RequerimientoController@guardarRespuesta')->name('guardar-respuesta');
 					
+
 					Route::get('ver-flujos/{req?}/{doc?}', 'Logistica\RequerimientoController@flujoAprobacion')->name('ver-flujos');
 					Route::get('explorar-requerimiento/{id_requerimiento?}', 'Logistica\RequerimientoController@explorar_requerimiento')->name('explorar-requerimiento');
 					Route::post('aprobar-documento', 'Logistica\RequerimientoController@aprobarDocumento')->name('aprobar-documento');
