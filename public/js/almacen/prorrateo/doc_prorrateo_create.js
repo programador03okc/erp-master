@@ -295,11 +295,13 @@ function listar_guia_detalle(id_guia){
                         'codigo'            :element.codigo,
                         'part_number'       :element.part_number,
                         'descripcion'       :element.descripcion,
+                        'simbolo'           :element.simbolo,
                         'cantidad'          :element.cantidad,
                         'abreviatura'       :element.abreviatura,
                         'valorizacion'      :(parseFloat(element.precio_unitario!==null ? element.precio_unitario : element.unitario) * parseFloat(element.cantidad)),
                         'adicional'         :0,
                         'total'             :(parseFloat(element.precio_unitario!==null ? element.precio_unitario : element.unitario) * parseFloat(element.cantidad)),
+                        'peso'              :0,
                     });
                 }
             });
@@ -317,35 +319,46 @@ function mostrar_guias_detalle(){
     $('#listaDetalleProrrateo tbody').html('');
 
     var html = '';
-    let importe_doc = $('[name=total_valor]').val();
-    console.log('importe_doc'+importe_doc);
+    let importe_valor = $('[name=total_valor]').val();
+    let importe_peso = $('[name=total_peso]').val();
+    console.log('importe_valor'+importe_valor);
+    console.log('importe_peso'+importe_peso);
     // let tipo_cambio = $('[name=tipo_cambio]').val();
     let suma_total = 0;
+    let suma_peso = 0;
 
     guias_detalle.forEach(element => {
         suma_total += parseFloat(element.valorizacion);
+        suma_peso += parseFloat(element.peso);
     });
-    let valor = parseFloat(importe_doc!=='' ? importe_doc : 0) / (suma_total > 0 ? suma_total : 1);
-    let adicional = 0;
+    let factor_valor = parseFloat(importe_valor!=='' ? importe_valor : 0) / (suma_total > 0 ? suma_total : 1);
+    let factor_peso = parseFloat(importe_peso!=='' ? importe_peso : 0) / (suma_peso > 0 ? suma_peso : 1);
+
+    let adicional_valor = 0;
+    let adicional_peso = 0;
     let total = 0;
 
-    let total_valorra = 0;
-    let total_adicional = 0;
+    let total_valor = 0;
+    let total_adicional_valor = 0;
+    let total_adicional_peso = 0;
     let total_prorrateado = 0;
 
     // let edition = ($("#form-prorrateo").attr('type') == 'edition' ? true : false);
-
+    console.log('factor_peso: '+factor_peso);
     guias_detalle.forEach(element => {
 
-        // if (element.adicional == undefined || element.adicional == null){
-        adicional = parseFloat(element.valorizacion) * parseFloat(valor);
-        total = parseFloat(element.valorizacion) + parseFloat(adicional);
+        adicional_valor = parseFloat(element.valorizacion) * parseFloat(factor_valor);
+        adicional_peso = parseFloat(element.peso) * parseFloat(factor_peso);
+        
+        total = parseFloat(element.valorizacion) + parseFloat(adicional_valor) + parseFloat(adicional_peso);
 
-        element.adicional = adicional;
+        element.adicional_valor = adicional_valor;
+        element.adicional_peso = adicional_peso;
         element.total = total;
-        // }
-        total_valorra += parseFloat(element.valorizacion);
-        total_adicional += parseFloat(element.adicional);
+        
+        total_valor += parseFloat(element.valorizacion);
+        total_adicional_valor += parseFloat(element.adicional_valor);
+        total_adicional_peso += parseFloat(element.adicional_peso);
         total_prorrateado += parseFloat(element.total);
         console.log(element);
         
@@ -357,8 +370,12 @@ function mostrar_guias_detalle(){
             <td>${element.descripcion}</td>
             <td>${element.cantidad}</td>
             <td>${element.abreviatura}</td>
+            <td>${element.simbolo!==null?element.simbolo:''}</td>
             <td class="right" style="width: 110px;">${formatDecimalDigitos(element.valorizacion,3)}</td>
+            <td class="right" style="width: 110px;"><input type="number" class="form-control peso" style="width:70px;"
+                data-id="${element.id_guia_com_det}" value="${element.peso}"/></td>
             <td class="right" style="width: 110px;">${formatDecimalDigitos(element.adicional,3)}</td>
+            <td class="right" style="width: 110px;">${formatDecimalDigitos(element.adicional_peso,3)}</td>
             <td class="right" style="width: 110px;">${formatDecimalDigitos(element.total,3)}</td>
             <td style="display:flex;">
                 <button type="button" class="anular btn btn-danger btn-xs activation" data-toggle="tooltip" 
@@ -367,25 +384,42 @@ function mostrar_guias_detalle(){
             </td>
         </tr>`;
     });
-                // <i class="fas fa-trash icon-tabla red boton" data-toggle="tooltip" data-placement="bottom" 
-                //     title="Anular" onClick="anular_item('${element.id_guia_com_det}');"></i>
-                
-                // ${edition ? '' : 'disabled="true"'}
+        // <i class="fas fa-trash icon-tabla red boton" data-toggle="tooltip" data-placement="bottom" 
+        //     title="Anular" onClick="anular_item('${element.id_guia_com_det}');"></i>
+        
+        // ${edition ? '' : 'disabled="true"'}
 
-            // <td style="width: 110px;"><input type="number" style="width:100px;" class="right" name="subtotal" 
-            // onChange="calcula_importe('${element.id_guia_com_det}');" value="${formatDecimalDigitos(element.valorizacion,3)}" /></td>
-            // <td style="width: 110px;"><input type="number" style="width:100px;" class="right" name="adicional" 
-            // onChange="calcula_importe('${element.id_guia_com_det}');" value="${formatDecimalDigitos(element.adicional,3)}" /></td>
-            // <td style="width: 110px;"><input type="number" style="width:100px;" class="right" name="total" 
-            // value="${formatDecimalDigitos(element.total,3)}" /></td>
+    // <td style="width: 110px;"><input type="number" style="width:100px;" class="right" name="subtotal" 
+    // onChange="calcula_importe('${element.id_guia_com_det}');" value="${formatDecimalDigitos(element.valorizacion,3)}" /></td>
+    // <td style="width: 110px;"><input type="number" style="width:100px;" class="right" name="adicional" 
+    // onChange="calcula_importe('${element.id_guia_com_det}');" value="${formatDecimalDigitos(element.adicional,3)}" /></td>
+    // <td style="width: 110px;"><input type="number" style="width:100px;" class="right" name="total" 
+    // value="${formatDecimalDigitos(element.total,3)}" /></td>
     
     $('#listaGuiaDetalleProrrateo tbody').html(html);
 
-    $('[name=total_suma]').val(formatDecimalDigitos(total_valorra,3));
-    $('[name=total_adicional]').val(formatDecimalDigitos(total_adicional,3));
+    $('[name=total_suma]').val(formatDecimalDigitos(total_valor,3));
+    $('[name=total_adicional_valor]').val(formatDecimalDigitos(total_adicional_valor,3));
+    $('[name=total_adicional_peso]').val(formatDecimalDigitos(total_adicional_peso,3));
     $('[name=total_costo]').val(formatDecimalDigitos(total_prorrateado,3));
 
 }
+
+$('#listaGuiaDetalleProrrateo tbody').on("change", ".peso", function(){
+    
+    let id_guia_com_det = $(this).data('id');
+    let peso = parseFloat($(this).val());
+    console.log('peso: '+peso);
+    
+    guias_detalle.forEach(element => {
+        if (element.id_guia_com_det == id_guia_com_det){
+            element.peso = peso;
+            console.log(element);
+        }
+    });
+    console.log(guias_detalle);
+    // mostrar_guias_detalle();
+});
 
 function anular_item(id_guia_com_det){
     let elimina = confirm("¿Esta seguro que desea eliminar éste item?");
