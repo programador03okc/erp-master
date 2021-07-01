@@ -158,6 +158,7 @@ class ProrrateoCostosController extends Controller
                         'id_tp_doc_prorrateo' => $det->id_tp_prorrateo,
                         'id_doc_com' => $id_doc,
                         'importe_aplicado' => $det->importe_aplicado,
+                        'id_tipo_prorrateo' => $det->id_tipo_prorrateo,
                         'estado' => 1,
                         'registrado_por' => $id_usuario,
                         'fecha_registro' => date('Y-m-d H:i:s')
@@ -173,7 +174,9 @@ class ProrrateoCostosController extends Controller
                     [
                         'id_prorrateo' => $id_prorrateo,
                         'id_guia_com_det' => $det->id_guia_com_det,
-                        'adicional_valor' => $det->adicional,
+                        'adicional_valor' => $det->adicional_valor,
+                        'adicional_peso' => $det->adicional_peso,
+                        'peso' => $det->peso,
                         'fecha_registro' => date('Y-m-d H:i:s')
                     ],
                         'id_prorrateo_det'
@@ -209,12 +212,14 @@ class ProrrateoCostosController extends Controller
         $documentos = DB::table('almacen.guia_com_prorrateo_doc')
         ->select('guia_com_prorrateo_doc.*','tp_prorrateo.descripcion','doc_com.serie','doc_com.numero',
         'doc_com.fecha_emision','doc_com.moneda','sis_moneda.simbolo','doc_com.total_a_pagar','doc_com.tipo_cambio',
-        'doc_com.id_proveedor','adm_contri.razon_social','doc_com.id_tp_doc')
+        'doc_com.id_proveedor','adm_contri.razon_social','doc_com.id_tp_doc',
+        'tipo_prorrateo.descripcion as tipo_prorrateo')
         ->join('almacen.doc_com','doc_com.id_doc_com','=','guia_com_prorrateo_doc.id_doc_com')
         ->join('logistica.log_prove','log_prove.id_proveedor','=','doc_com.id_proveedor')
         ->join('contabilidad.adm_contri','adm_contri.id_contribuyente','=','log_prove.id_contribuyente')
         ->join('configuracion.sis_moneda','sis_moneda.id_moneda','=','doc_com.moneda')
         ->join('almacen.tp_prorrateo','tp_prorrateo.id_tp_prorrateo','=','guia_com_prorrateo_doc.id_tp_doc_prorrateo')
+        ->join('almacen.tipo_prorrateo','tipo_prorrateo.id_tipo_prorrateo','=','guia_com_prorrateo_doc.id_tipo_prorrateo')
         ->where([['guia_com_prorrateo_doc.id_prorrateo','=',$id_prorrateo],
                  ['guia_com_prorrateo_doc.estado','=',1]])
         ->get();

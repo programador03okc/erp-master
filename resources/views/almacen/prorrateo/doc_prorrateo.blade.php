@@ -115,7 +115,7 @@ Prorrateo de Costos
                                                         <td style="color: #398439;"><label id="moneda"></label></td>
                                                         <td>Total</td>
                                                         <td width="20">:</td>
-                                                        <td width="130"><input type="number" class="form-control right" name="total_suma" readOnly/></td>
+                                                        <td width="130"><input type="number" class="form-control right" name="total_ingreso" readOnly/></td>
                                                     </tr>
                                                 </table>
                                             </div>
@@ -200,7 +200,9 @@ Prorrateo de Costos
     <script src="{{ asset('template/plugins/select2/select2.min.js') }}"></script>
     <script src="{{ asset('template/plugins/moment.min.js') }}"></script>
 
+    <script src="{{ asset('js/almacen/prorrateo/doc_prorrateo.js')}}"></script>
     <script src="{{ asset('js/almacen/prorrateo/doc_prorrateo_create.js')}}"></script>
+    <script src="{{ asset('js/almacen/prorrateo/doc_prorrateo_detalle.js')}}"></script>
     <script src="{{ asset('js/logistica/proveedorModal.js')}}"></script>
     <script src="{{ asset('js/logistica/add_proveedor.js')}}"></script>
     <script src="{{ asset('js/almacen/guia/guia_compraModal.js')}}"></script>
