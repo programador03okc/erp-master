@@ -173,7 +173,7 @@ class ProrrateoCostosController extends Controller
                     [
                         'id_prorrateo' => $id_prorrateo,
                         'id_guia_com_det' => $det->id_guia_com_det,
-                        'importe' => $det->adicional,
+                        'adicional_valor' => $det->adicional,
                         'fecha_registro' => date('Y-m-d H:i:s')
                     ],
                         'id_prorrateo_det'

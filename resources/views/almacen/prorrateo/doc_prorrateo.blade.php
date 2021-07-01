@@ -93,8 +93,8 @@ Prorrateo de Costos
                                                 <td colSpan="7" class="right">
                                                     Registrado por: <label id="registrado_por"></label>
                                                 </td>
-                                                <td><input type="text" class="form-control right" readOnly name="total_suma"/></td>
-                                                <td></td>
+                                                <td><input type="text" class="form-control right" readOnly name="total_valor"/></td>
+                                                <td><input type="text" class="form-control right" readOnly name="total_peso"/></td>
                                                 <td><input type="text" class="form-control right" readOnly name="total_adicional_valor"/></td>
                                                 <td><input type="text" class="form-control right" readOnly name="total_adicional_peso"/></td>
                                                 <td><input type="text" class="form-control right" readOnly name="total_costo"/></td>
@@ -128,10 +128,10 @@ Prorrateo de Costos
                                                         <td></td>
                                                         <td>Sumatoria x Valor</td>
                                                         <td width="20">:</td>
-                                                        <td width="130"><input type="number" class="form-control right" name="total_valor" readOnly/></td>
+                                                        <td width="130"><input type="number" class="form-control right" name="total_comp_valor" readOnly/></td>
                                                         <td class="right">Sumatoria x Peso Volumen</td>
                                                         <td width="20">:</td>
-                                                        <td width="130"><input type="number" class="form-control right" name="total_peso" readOnly/></td>
+                                                        <td width="130"><input type="number" class="form-control right" name="total_comp_peso" readOnly/></td>
                                                     </tr>
                                                 </table>
                                             </div>
