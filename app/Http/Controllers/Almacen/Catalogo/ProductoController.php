@@ -40,6 +40,16 @@ class ProductoController extends Controller
         return response()->json($output);
     }
 
+    public function mostrar_prods_sugeridos($part_number){
+        $prod = DB::table('almacen.alm_prod')
+            ->select('alm_prod.id_producto', 'alm_prod.codigo', 'alm_prod.descripcion',
+            'alm_prod.part_number')
+            ->where('alm_prod.part_number',$part_number)
+            ->get();
+        $output['data'] = $prod;
+        return response()->json($output);
+    }
+
     public function mostrar_prods_almacen($id_almacen){
         $prod = DB::table('almacen.alm_prod_ubi')
             ->select('alm_prod_ubi.*','alm_prod.codigo','alm_prod.descripcion',

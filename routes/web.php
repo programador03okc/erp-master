@@ -720,6 +720,16 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::get('detalleRequerimiento/{id}', 'AprobacionController@detalleRequerimiento')->name('detalle-requerimiento');
 					
 				});
+
+				Route::group(['as' => 'mapeo.', 'prefix' => 'mapeo'], function(){
+					
+					Route::get('index', 'Logistica\Requerimientos\MapeoProductosController@view_mapeo_productos')->name('index');
+					Route::post('listarRequerimientos', 'Logistica\Requerimientos\MapeoProductosController@listarRequerimientos')->name('listar-requerimiento');
+					Route::get('itemsRequerimiento/{id}', 'Logistica\Requerimientos\MapeoProductosController@itemsRequerimiento')->name('items-requerimiento');
+					Route::get('mostrar_prods', 'Almacen\Catalogo\ProductoController@mostrar_prods');
+					Route::get('mostrar_prods_sugeridos/{part}', 'Almacen\Catalogo\ProductoController@mostrar_prods_sugeridos');
+
+				});
 			});
 			
 			Route::group(['as' => 'compras.', 'prefix' => 'compras'], function(){
@@ -1215,7 +1225,7 @@ Route::group(['middleware' => ['auth']], function () {
 				
 				Route::get('listar_series/{id}', 'AlmacenController@listar_series');
 				Route::post('guardar_series', 'AlmacenController@guardar_series');
-				Route::get('mostrar_prods', 'AlmacenController@mostrar_prods');
+				Route::get('mostrar_prods', 'Almacen\Catalogo\ProductoController@mostrar_prods');
 				Route::get('mostrar_proveedores', 'LogisticaController@mostrar_proveedores');
 
 				Route::get('mostrar_detalle/{id}', 'AlmacenController@mostrar_detalle');
@@ -1258,7 +1268,7 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::post('guardar_transferencia', 'AlmacenController@guardar_transferencia');
 				Route::get('listar_series_almacen/{prod}/{alm}', 'AlmacenController@listar_series_almacen');
 				Route::get('cargar_almacenes_contrib/{id}', 'AlmacenController@cargar_almacenes_contrib');
-				Route::get('mostrar_prods', 'AlmacenController@mostrar_prods');
+				Route::get('mostrar_prods', 'Almacen\Catalogo\ProductoController@mostrar_prods');
 				Route::get('mostrar_prods_almacen/{id}', 'AlmacenController@mostrar_prods_almacen');
 
 				Route::get('mostrar_clientes', 'Comercial\ClienteController@mostrar_clientes');
