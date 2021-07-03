@@ -7,12 +7,13 @@
             </div>
             <div class="modal-body">
                 <input type="text" class="oculto" name="id_od_detalle"/>
+                <input type="text" class="oculto" name="id_trans_detalle"/>
                 <input type="text" class="oculto" name="id_producto"/>
                 <input type="text" class="oculto" name="cant_items"/>
                 <div class="row">
                     <div class="col-md-12">
                         <table class="mytable table table-striped table-condensed table-bordered table-okc-view" 
-                            id="listaSeries" style="margin-bottom: 10px;">
+                            id="listaSeriesVen" style="margin-bottom: 10px;">
                             <thead>
                                 <tr>
                                     <td></td>

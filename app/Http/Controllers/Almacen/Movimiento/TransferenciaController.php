@@ -962,6 +962,8 @@ class TransferenciaController extends Controller
                 ->get();
             }
 
+            $detalle_trans = json_decode($request->detalle);
+
             foreach($detalle as $det){
                 $id_guia_ven_det = DB::table('almacen.guia_ven_det')->insertGetId(
                     [
@@ -975,18 +977,32 @@ class TransferenciaController extends Controller
                     ],
                         'id_guia_ven_det'
                     );
-                //Guardo relacion guia_ven_det en las series
-                if ($det->id_guia_oc_det!==null){
-                    DB::table('almacen.alm_prod_serie')
-                    ->where([['id_guia_com_det','=',$det->id_guia_oc_det],
-                             ['id_prod','=',$det->id_producto],['estado','!=',7]])
-                    ->update(['id_guia_ven_det'=>$id_guia_ven_det]);
-                }
-                else if ($det->id_guia_com_det!==null){
-                    DB::table('almacen.alm_prod_serie')
-                    ->where([['id_guia_com_det','=',$det->id_guia_com_det],
-                             ['id_prod','=',$det->id_producto],['estado','!=',7]])
-                    ->update(['id_guia_ven_det'=>$id_guia_ven_det]);
+
+                foreach ($detalle_trans as $dt) {
+                    
+                    if ($dt->id_trans_detalle == $det->id_trans_detalle){
+
+                        foreach($dt->series as $s){
+                            //Guardo relacion guia_ven_det en las series
+                            if ($s->id_prod_serie !== null && $s->estado == 1){
+                                DB::table('almacen.alm_prod_serie')
+                                ->where([['id_prod_serie','=',$s->id_prod_serie]])
+                                ->update(['id_guia_ven_det'=>$id_guia_ven_det]);
+                            }
+                        }
+                        // if ($det->id_guia_oc_det!==null){
+                        //     DB::table('almacen.alm_prod_serie')
+                        //     ->where([['id_guia_com_det','=',$det->id_guia_oc_det],
+                        //              ['id_prod','=',$det->id_producto],['estado','!=',7]])
+                        //     ->update(['id_guia_ven_det'=>$id_guia_ven_det]);
+                        // }
+                        // else if ($det->id_guia_com_det!==null){
+                        //     DB::table('almacen.alm_prod_serie')
+                        //     ->where([['id_guia_com_det','=',$det->id_guia_com_det],
+                        //              ['id_prod','=',$det->id_producto],['estado','!=',7]])
+                        //     ->update(['id_guia_ven_det'=>$id_guia_ven_det]);
+                        // }
+                    }
                 }
                 //Guardo los items de la salida
                 $id_det = DB::table('almacen.mov_alm_det')->insertGetId(
@@ -1143,6 +1159,8 @@ class TransferenciaController extends Controller
 
             array_push($lista_detalle, [
                 'id_guia_com_det' => $det->id_guia_com_det,
+                'id_trans_detalle' => $det->id_trans_detalle,
+                'id_producto' => $det->id_producto,
                 'codigo_trans' => $det->codigo_trans,
                 'codigo_req' => $det->codigo_req,
                 'concepto' => $det->concepto,
@@ -1208,6 +1226,8 @@ class TransferenciaController extends Controller
 
             array_push($lista_detalle, [
                 'id_guia_com_det' => $det->id_guia_com_det,
+                'id_trans_detalle' => $det->id_trans_detalle,
+                'id_producto' => $det->id_producto,
                 'codigo_trans' => $det->codigo_trans,
                 'codigo_req' => $det->codigo_req,
                 'concepto' => $det->concepto,
