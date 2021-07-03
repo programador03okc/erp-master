@@ -376,7 +376,7 @@ class RequerimientoController extends Controller
                     'alm_det_req.partida',
                     'presup_par.codigo AS codigo_partida',
                     'presup_pardet.descripcion AS descripcion_partida',
-                    'presup_titu.total AS presupuesto_total_partida',
+                    'presup_par.importe_total AS presupuesto_total_partida',
                     'alm_det_req.centro_costo_id as id_centro_costo',
                     'centro_costo.codigo as codigo_centro_costo',
                     'centro_costo.descripcion as descripcion_centro_costo',
@@ -776,6 +776,7 @@ class RequerimientoController extends Controller
     public function actualizarRequerimiento(Request $request)
     {
         $requerimiento = Requerimiento::where("id_requerimiento", $request->id_requerimiento)->first();
+        $idEstadoActual= $requerimiento->estado;
 
         $requerimiento->id_tipo_requerimiento = $request->tipo_requerimiento;
         $requerimiento->id_usuario = Auth::user()->id_usuario;
@@ -813,6 +814,9 @@ class RequerimientoController extends Controller
         // $requerimiento->para_stock_almacen = $request->para_stock_almacen;
         $requerimiento->division_id = $request->division;
         $requerimiento->trabajador_id = $request->id_trabajador;
+        if($idEstadoActual ==3){
+            $requerimiento->estado = 1;
+        }
         $requerimiento->save();
 
         $count = count($request->descripcion);
@@ -833,6 +837,26 @@ class RequerimientoController extends Controller
             $detalle->estado = $requerimiento->id_tipo_requerimiento == 2 ? 19 : 1;
             $detalle->save();
         }
+
+        $nombreCompletoUsuario = Usuario::find(Auth::user()->id_usuario)->trabajador->postulante->persona->nombre_completo;
+
+        if($idEstadoActual ==3){
+            $trazabilidad = new Trazabilidad();
+            $trazabilidad->id_requerimiento =$request->id_requerimiento;
+            $trazabilidad->id_usuario = Auth::user()->id_usuario;
+            $trazabilidad->accion = 'SUSTENTADO';
+            $trazabilidad->descripcion = 'Sustentado por '.$nombreCompletoUsuario?$nombreCompletoUsuario:'';
+            $trazabilidad->fecha_registro = new Carbon();   
+            $trazabilidad->save();
+
+            $idDocumento = Documento::getIdDocAprob($request->id_requerimiento,1);
+            $ultimoVoBo = Aprobacion::getUltimoVoBo($idDocumento);
+            $aprobacion = Aprobacion::where("id_aprobacion", $ultimoVoBo->id_aprobacion)->first();
+            $aprobacion->tiene_sustento = true;
+            $aprobacion->save();
+
+        }
+
 
         return response()->json(['id_requerimiento' => $requerimiento->id_requerimiento, 'codigo' => $requerimiento->codigo]);
     }
@@ -866,6 +890,7 @@ class RequerimientoController extends Controller
             ->leftJoin('rrhh.rrhh_postu as post', 'post.id_postulante', '=', 'trab.id_postulante')
             ->leftJoin('rrhh.rrhh_perso as pers', 'pers.id_persona', '=', 'post.id_persona')
             ->leftJoin('administracion.division', 'division.id_division', '=', 'alm_req.division_id')
+            // ->leftJoin('administracion.adm_aprobacion', 'adm_aprobacion.id_doc_aprob', '=', 'adm_documentos_aprob.id_doc_aprob')
 
             ->select(
                 'alm_req.id_requerimiento',
@@ -902,7 +927,11 @@ class RequerimientoController extends Controller
                 'alm_req.fecha_registro',
                 'alm_req.division_id',
                 'division.descripcion as division',
-                DB::raw("CONCAT(pers.nombres,' ',pers.apellido_paterno,' ',pers.apellido_materno) as nombre_usuario")
+                DB::raw("CONCAT(pers.nombres,' ',pers.apellido_paterno,' ',pers.apellido_materno) as nombre_usuario"),
+                DB::raw("(SELECT COUNT(adm_aprobacion.id_aprobacion) 
+                FROM administracion.adm_aprobacion 
+                WHERE   adm_aprobacion.id_vobo = 3 AND
+                adm_aprobacion.tiene_sustento = true AND adm_aprobacion.id_doc_aprob = adm_documentos_aprob.id_doc_aprob) AS cantidad_sustentos")
 
             )
             // ->where([['alm_req.estado', '!=', 7], ['sis_sede.estado', '=', 1]])
@@ -910,6 +939,11 @@ class RequerimientoController extends Controller
             ->when(($mostrar === 'ME'), function ($query) {
                 $idUsuario = Auth::user()->id_usuario;
                 return $query->whereRaw('alm_req.id_usuario = ' . $idUsuario);
+            })
+            ->when(($mostrar === 'REVISADO_APROBADO'), function ($query) {
+                $idUsuario = Auth::user()->id_usuario;
+                $query->leftJoin('administracion.adm_aprobacion', 'adm_aprobacion.id_doc_aprob', '=', 'adm_documentos_aprob.id_doc_aprob');
+                return $query->whereRaw('adm_aprobacion.id_usuario = ' . $idUsuario.' and adm_aprobacion.id_vobo = 1 ');
             })
             ->when((intval($idEmpresa) > 0), function ($query)  use ($idEmpresa) {
                 return $query->whereRaw('alm_req.id_empresa = ' . $idEmpresa);
@@ -1075,16 +1109,19 @@ class RequerimientoController extends Controller
                 'alm_req.division_id',
                 'division.descripcion as division'
             )
-            ->where([
+            // ->where([
                 // ['alm_req.id_tipo_requerimiento', '=', $tipo_requerimiento],
-                // ['alm_req.id_requerimiento', '=', '251'],
+                // ['alm_req.id_requerimiento', '=', '120']
                 // ['alm_req.tipo_cliente','=',$uso_administracion] // uso administracion
-                ['alm_req.estado', '!=', 7] // elaborado
-            ])
+                // ['alm_req.estado', '!=', 2], 
+                // ['alm_req.estado', '!=', 3], 
+                // ['alm_req.estado', '!=', 7] 
+            // ])
+            ->whereNotIn('alm_req.estado',[3,7])
             ->whereNotIn('alm_req.id_tipo_requerimiento', [1, 2, 3])
-            ->when((count($idDivisionUsuarioList) > 0), function ($query)  use ($idDivisionUsuarioList) {
-                return $query->whereRaw('alm_req.division_id in (' . implode(",", $idDivisionUsuarioList) . ')');
-            })
+            // ->when((count($idDivisionUsuarioList) > 0), function ($query)  use ($idDivisionUsuarioList) {
+            //     return $query->whereRaw('alm_req.division_id in (' . implode(",", $idDivisionUsuarioList) . ')');
+            // })
             ->when((intval($idEmpresa) > 0), function ($query)  use ($idEmpresa) {
                 return $query->whereRaw('alm_req.id_empresa = ' . $idEmpresa);
             })
@@ -1108,12 +1145,9 @@ class RequerimientoController extends Controller
         $pendiente_aprobacion = [];
 
 
-        // Debugbar::info($divisionUsuarioNroOrdenUno);
-
         $list_req = [];
         foreach ($requerimientos as $element) {
             if (in_array($element->id_grupo, $idGrupoList) == true) {
-
                 $idDocumento = $element->id_doc_aprob;
                 $id_grupo_req = $element->id_grupo;
                 $id_tipo_requerimiento_req = $element->id_tipo_requerimiento;
@@ -1122,7 +1156,9 @@ class RequerimientoController extends Controller
                 $division_id = $element->division_id;
 
 
-                $operaciones = Operacion::getOperacion(1, $id_grupo_req, $division_id, $id_prioridad_req);
+                $operaciones = Operacion::getOperacion(1,$id_tipo_requerimiento_req, $id_grupo_req, $division_id, $id_prioridad_req);
+                // Debugbar::info($operaciones[0]->id_operacion);
+
 
                 $flujoTotal = Flujo::getIdFlujo($operaciones[0]->id_operacion)['data'];
 
@@ -1131,15 +1167,17 @@ class RequerimientoController extends Controller
                 $voboList = Aprobacion::getVoBo($idDocumento); // todas las vobo del documento
                 $cantidadAprobacionesRealizadas = Aprobacion::getCantidadAprobacionesRealizadas($idDocumento);
                 $ultimoVoBo = Aprobacion::getUltimoVoBo($idDocumento);
-                // return $ultimoVoBo;
+                // Debugbar::info($cantidadAprobacionesRealizadas);
 
                 $nextFlujo = [];
                 $nextIdRolAprobante = 0;
                 $nextIdFlujo = 0;
                 $nextNroOrden = 0;
                 $aprobacionFinalOPendiente = '';
-                if ($cantidadAprobacionesRealizadas > 0) {  // si existe data => evaluar si tiene aprobacion / Rechazado / observado.
-                    if ($ultimoVoBo->id_vobo == 1) { //aprobado
+                if ($cantidadAprobacionesRealizadas > 0) { 
+
+                    // si existe data => evaluar si tiene aprobacion / Rechazado / observado.
+                    if (in_array($ultimoVoBo->id_vobo,[1,5])) { // revisado o aprobado
                         // next flujo y rol aprobante
                         $ultimoIdFlujo = $ultimoVoBo->id_flujo;
 
@@ -1166,6 +1204,7 @@ class RequerimientoController extends Controller
                             if ($flujo->orden == 1) {
                                 // Debugbar::info($flujo);
                                 $nextFlujo = $flujo;
+                                $nextNroOrden = $flujo->orden;
                                 $nextIdFlujo = $flujo->id_flujo;
                                 $nextIdRolAprobante = $flujo->id_rol;
                                 $aprobacionFinalOPendiente = $flujo->orden == $tamañoFlujo?'APROBACION_FINAL':'PENDIENTE'; // NEXT NRO ORDEN == TAMAÑO FLUJO?
@@ -1181,6 +1220,7 @@ class RequerimientoController extends Controller
                         if ($flujo->orden == 1) {
                             // Debugbar::info($flujo);
                             $nextFlujo = $flujo;
+                            $nextNroOrden = $flujo->orden;
                             $nextIdFlujo = $flujo->id_flujo;
                             $nextIdRolAprobante = $flujo->id_rol;
                             $aprobacionFinalOPendiente = $flujo->orden == $tamañoFlujo?'APROBACION_FINAL':'PENDIENTE'; // NEXT NRO ORDEN == TAMAÑO FLUJO?
@@ -1191,52 +1231,105 @@ class RequerimientoController extends Controller
 
                 // $observacion_list = Aprobacion::getObservaciones($element->id_doc_aprob);
                 if ((in_array($nextIdRolAprobante, $idRolUsuarioList)) == true) {
-                    $payload[] = [
-                        'id_requerimiento' => $element->id_requerimiento,
-                        'id_tipo_requerimiento' => $element->id_tipo_requerimiento,
-                        'tipo_requerimiento' => $element->tipo_requerimiento,
-                        'id_tipo_cliente' => $element->id_tipo_cliente,
-                        'descripcion_tipo_cliente' => $element->descripcion_tipo_cliente,
-                        'id_prioridad' => $element->id_prioridad,
-                        'descripcion_prioridad' => $element->descripcion_prioridad,
-                        'id_periodo' => $element->id_periodo,
-                        'descripcion_periodo' => $element->descripcion_periodo,
-                        'codigo' => $element->codigo,
-                        'concepto' => $element->concepto,
-                        'id_empresa' => $element->id_empresa,
-                        'razon_social_empresa' => $element->razon_social_empresa,
-                        'codigo_sede_empresa' => $element->codigo_sede_empresa,
-                        'logo_empresa' => $element->logo_empresa,
-                        'id_grupo' => $element->id_grupo,
-                        'descripcion_grupo' => $element->descripcion_grupo,
-                        'fecha_requerimiento' => $element->fecha_requerimiento,
-                        'observacion' => $element->observacion,
-                        'name_ubigeo' => $element->name_ubigeo,
-                        'id_moneda' => $element->id_moneda,
-                        'desrcipcion_moneda' => $element->desrcipcion_moneda,
-                        'monto' => $element->monto,
-                        'fecha_entrega' => $element->fecha_entrega,
-                        'id_usuario' => $element->id_usuario,
-                        'id_rol' => $element->id_rol,
-                        'descripcion_rol' => $element->descripcion_rol,
-                        'usuario' => $element->usuario,
-                        'persona' => $element->persona,
-                        'id_almacen' => $element->id_almacen,
-                        'descripcion_almacen' => $element->descripcion_almacen,
-                        'cantidad_aprobados_total_flujo' => ($cantidadAprobacionesRealizadas) . '/' . ($tamañoFlujo),
-                        'aprobaciones' => $voboList,
-                        'pendiente_aprobacion' => $pendiente_aprobacion,
-                        // 'observaciones' => $observacion_list,
-                        'observaciones' => [],
-                        'estado' => $element->estado,
-                        'estado_doc' => $element->estado_doc,
-                        'division' => $element->division,
-                        'id_flujo' => $nextIdFlujo,
-                        'id_usuario_aprobante' => $idUsuarioAprobante,
-                        'id_rol_aprobante' => $nextIdRolAprobante,
-                        'aprobacion_final_o_pendiente' => $aprobacionFinalOPendiente,
-                        'id_doc_aprob' => $idDocumento
-                    ];
+                    if($nextNroOrden ==1){
+                        // fitlar por division
+                        if(in_array($element->division_id,$idDivisionUsuarioList) == true){
+                            $payload[] = [
+                                'id_requerimiento' => $element->id_requerimiento,
+                                'id_tipo_requerimiento' => $element->id_tipo_requerimiento,
+                                'tipo_requerimiento' => $element->tipo_requerimiento,
+                                'id_tipo_cliente' => $element->id_tipo_cliente,
+                                'descripcion_tipo_cliente' => $element->descripcion_tipo_cliente,
+                                'id_prioridad' => $element->id_prioridad,
+                                'descripcion_prioridad' => $element->descripcion_prioridad,
+                                'id_periodo' => $element->id_periodo,
+                                'descripcion_periodo' => $element->descripcion_periodo,
+                                'codigo' => $element->codigo,
+                                'concepto' => $element->concepto,
+                                'id_empresa' => $element->id_empresa,
+                                'razon_social_empresa' => $element->razon_social_empresa,
+                                'codigo_sede_empresa' => $element->codigo_sede_empresa,
+                                'logo_empresa' => $element->logo_empresa,
+                                'id_grupo' => $element->id_grupo,
+                                'descripcion_grupo' => $element->descripcion_grupo,
+                                'fecha_requerimiento' => $element->fecha_requerimiento,
+                                'observacion' => $element->observacion,
+                                'name_ubigeo' => $element->name_ubigeo,
+                                'id_moneda' => $element->id_moneda,
+                                'desrcipcion_moneda' => $element->desrcipcion_moneda,
+                                'monto' => $element->monto,
+                                'fecha_entrega' => $element->fecha_entrega,
+                                'id_usuario' => $element->id_usuario,
+                                'id_rol' => $element->id_rol,
+                                'descripcion_rol' => $element->descripcion_rol,
+                                'usuario' => $element->usuario,
+                                'persona' => $element->persona,
+                                'id_almacen' => $element->id_almacen,
+                                'descripcion_almacen' => $element->descripcion_almacen,
+                                'cantidad_aprobados_total_flujo' => ($cantidadAprobacionesRealizadas) . '/' . ($tamañoFlujo),
+                                'aprobaciones' => $voboList,
+                                'pendiente_aprobacion' => $pendiente_aprobacion,
+                                // 'observaciones' => $observacion_list,
+                                'observaciones' => [],
+                                'estado' => $element->estado,
+                                'estado_doc' => $element->estado_doc,
+                                'division' => $element->division,
+                                'id_flujo' => $nextIdFlujo,
+                                'id_usuario_aprobante' => $idUsuarioAprobante,
+                                'id_rol_aprobante' => $nextIdRolAprobante,
+                                'aprobacion_final_o_pendiente' => $aprobacionFinalOPendiente,
+                                'id_doc_aprob' => $idDocumento
+                            ];
+                        }
+                    }else{
+                        $payload[] = [
+                            'id_requerimiento' => $element->id_requerimiento,
+                            'id_tipo_requerimiento' => $element->id_tipo_requerimiento,
+                            'tipo_requerimiento' => $element->tipo_requerimiento,
+                            'id_tipo_cliente' => $element->id_tipo_cliente,
+                            'descripcion_tipo_cliente' => $element->descripcion_tipo_cliente,
+                            'id_prioridad' => $element->id_prioridad,
+                            'descripcion_prioridad' => $element->descripcion_prioridad,
+                            'id_periodo' => $element->id_periodo,
+                            'descripcion_periodo' => $element->descripcion_periodo,
+                            'codigo' => $element->codigo,
+                            'concepto' => $element->concepto,
+                            'id_empresa' => $element->id_empresa,
+                            'razon_social_empresa' => $element->razon_social_empresa,
+                            'codigo_sede_empresa' => $element->codigo_sede_empresa,
+                            'logo_empresa' => $element->logo_empresa,
+                            'id_grupo' => $element->id_grupo,
+                            'descripcion_grupo' => $element->descripcion_grupo,
+                            'fecha_requerimiento' => $element->fecha_requerimiento,
+                            'observacion' => $element->observacion,
+                            'name_ubigeo' => $element->name_ubigeo,
+                            'id_moneda' => $element->id_moneda,
+                            'desrcipcion_moneda' => $element->desrcipcion_moneda,
+                            'monto' => $element->monto,
+                            'fecha_entrega' => $element->fecha_entrega,
+                            'id_usuario' => $element->id_usuario,
+                            'id_rol' => $element->id_rol,
+                            'descripcion_rol' => $element->descripcion_rol,
+                            'usuario' => $element->usuario,
+                            'persona' => $element->persona,
+                            'id_almacen' => $element->id_almacen,
+                            'descripcion_almacen' => $element->descripcion_almacen,
+                            'cantidad_aprobados_total_flujo' => ($cantidadAprobacionesRealizadas) . '/' . ($tamañoFlujo),
+                            'aprobaciones' => $voboList,
+                            'pendiente_aprobacion' => $pendiente_aprobacion,
+                            // 'observaciones' => $observacion_list,
+                            'observaciones' => [],
+                            'estado' => $element->estado,
+                            'estado_doc' => $element->estado_doc,
+                            'division' => $element->division,
+                            'id_flujo' => $nextIdFlujo,
+                            'id_usuario_aprobante' => $idUsuarioAprobante,
+                            'id_rol_aprobante' => $nextIdRolAprobante,
+                            'aprobacion_final_o_pendiente' => $aprobacionFinalOPendiente,
+                            'id_doc_aprob' => $idDocumento
+                        ];
+                    }
+
                 }
             }
         }
@@ -1263,7 +1356,13 @@ class RequerimientoController extends Controller
 
             $nombreCompletoUsuario = Usuario::find($idUsuario)->trabajador->postulante->persona->nombre_completo;
 
-            // agregar vobo (1= aprobado, 2= rechazado, 3=observado)
+
+            if($aprobacionFinalOPendiente == 'PENDIENTE'){
+                if($accion ==1){
+                    $accion = 5; // Revisado
+                }
+            }
+            // agregar vobo (1= aprobado, 2= rechazado, 3=observado, 5=Revisado)
             $aprobacion = new Aprobacion();
             $aprobacion->id_flujo =$idFlujo;
             $aprobacion->id_doc_aprob =$idDocumento;
@@ -1272,6 +1371,7 @@ class RequerimientoController extends Controller
             $aprobacion->fecha_vobo = new Carbon();
             $aprobacion->detalle_observacion =$comentario;
             $aprobacion->id_rol =$idRolAprobante;
+            $aprobacion->tiene_sustento =false;
             $aprobacion->save();
 
             // actualizar estado de requerimiento
@@ -1282,6 +1382,11 @@ class RequerimientoController extends Controller
                             $requerimiento->estado = 2;
                             $requerimiento->save();
                         }
+                    break;
+                case '5':
+                    $requerimiento = Requerimiento::where("id_requerimiento", $idRequerimiento)->first();
+                    $requerimiento->estado = 12;
+                    $requerimiento->save();
                     break;
                 case '2':
                     $requerimiento = Requerimiento::where("id_requerimiento", $idRequerimiento)->first();
@@ -1311,8 +1416,16 @@ class RequerimientoController extends Controller
             $trazabilidad->id_usuario = $idUsuario;
             switch ($accion) {
                 case '1':
-                    $trazabilidad->accion = 'APROBADO';
-                    $trazabilidad->descripcion = 'Aprobado por '.$nombreCompletoUsuario?$nombreCompletoUsuario:'';
+                    if($aprobacionFinalOPendiente == 'APROBACION_FINAL'){
+                        $trazabilidad->accion = 'APROBADO';
+                        $trazabilidad->descripcion = 'Aprobado por '.$nombreCompletoUsuario?$nombreCompletoUsuario:'';
+                        $trazabilidad->fecha_registro = new Carbon();                    
+
+                    }
+                    break;
+                case '5':
+                    $trazabilidad->accion = 'REVISADO';
+                    $trazabilidad->descripcion = 'Revisado por '.$nombreCompletoUsuario?$nombreCompletoUsuario:'';
                     $trazabilidad->fecha_registro = new Carbon();                    
                     break;
                 case '2':

@@ -27,8 +27,9 @@ Listado de requerimientos
                         <div class="col-md-2">
                             <h5>Mostar</h5>
                             <div style="display:flex;">
-                                <select class="form-control" name="mostrar_me_all" onChange="listadoRequerimiento.handleChangeFiltroListado();">
+                                <select class="form-control" name="mostrar_me_all" onChange="listarRequerimientoView.handleChangeFiltroListado();">
                                     <option value="ME">Elaborados por mi</option>
+                                    <option value="REVISADO_APROBADO">Revisado/aprobados por mi</option>
                                     <option value="ALL">Todos</option>
                                 </select>
                             </div>
@@ -36,7 +37,7 @@ Listado de requerimientos
                         <div class="col-md-2">
                             <h5>Empresa</h5>
                             <div style="display:flex;">
-                                <select class="form-control" name="id_empresa_select" onChange="listadoRequerimiento.handleChangeFilterEmpresaListReqByEmpresa(event); listadoRequerimiento.handleChangeFiltroListado();">
+                                <select class="form-control" name="id_empresa_select" onChange="listarRequerimientoView.handleChangeFilterEmpresaListReqByEmpresa(event); listarRequerimientoView.handleChangeFiltroListado();">
                                     <option value="0">Elija una opción</option>
                                     @foreach ($empresas as $emp)
                                     <option value="{{$emp->id_empresa}}" data-url-logo="{{$emp->logo_empresa}}">{{$emp->razon_social}}</option>
@@ -47,7 +48,7 @@ Listado de requerimientos
                         <div class="col-md-2">
                             <h5>Sede</h5>
                             <div style="display:flex;">
-                                <select class="form-control" name="id_sede_select" onChange="listadoRequerimiento.handleChangeFiltroListado();">
+                                <select class="form-control" name="id_sede_select" onChange="listarRequerimientoView.handleChangeFiltroListado();">
                                     <option value="0">Todas</option>
                                 </select>
                             </div>
@@ -55,7 +56,7 @@ Listado de requerimientos
                         <div class="col-md-2">
                             <h5>Grupo</h5>
                             <div style="display:flex;">
-                                <select class="form-control" name="id_grupo_select" onChange="listadoRequerimiento.handleChangeFiltroListado(); listadoRequerimiento.handleChangeGrupo(event);">
+                                <select class="form-control" name="id_grupo_select" onChange="listarRequerimientoView.handleChangeFiltroListado(); listarRequerimientoView.handleChangeGrupo(event);">
                                     <option value="0">Todas</option>
                                     @foreach ($grupos as $grupo)
                                     <option value="{{$grupo->id_grupo}}" >{{$grupo->descripcion}}</option>
@@ -66,7 +67,7 @@ Listado de requerimientos
                         <div class="col-md-2">
                             <h5>División</h5>
                             <div style="display:flex;">
-                                <select class="form-control" name="division_select" onChange="listadoRequerimiento.handleChangeFiltroListado();">
+                                <select class="form-control" name="division_select" onChange="listarRequerimientoView.handleChangeFiltroListado();">
                                     <option value="0">Todas</option>
                                 </select>
                             </div>
@@ -74,7 +75,7 @@ Listado de requerimientos
                         <div class="col-md-2">
                             <h5>Prioridad</h5>
                             <div style="display:flex;">
-                                <select class="form-control" name="id_prioridad_select" onChange="listadoRequerimiento.handleChangeFiltroListado();">
+                                <select class="form-control" name="id_prioridad_select" onChange="listarRequerimientoView.handleChangeFiltroListado();">
                                     <option value="0">Todas</option>
                                     @foreach ($prioridades as $prioridad)
                                     <option value="{{$prioridad->id_prioridad}}">{{$prioridad->descripcion}}</option>
@@ -102,7 +103,15 @@ Listado de requerimientos
                             </tr>
                         </thead>
                     </table>
-
+                    <div class="row">
+                        <div class="col-md-12">
+                            <span class="">Leyenda de color de estados: </span>
+                            <span class="label label-default">Elaborado</span>
+                            <span class="label label-success">Aprobado</span>
+                            <span class="label label-warning">Observado</span>
+                            <span class="label label-danger">Anulado</span>
+                        </div>
+                    </div>
                 </form>
 
             </fieldset>
@@ -135,21 +144,21 @@ Listado de requerimientos
     </div>
 </div>
 
-<!-- 1re include para evitar error al cargar modal -->
+@include('logistica.requerimientos.modal_requerimiento')
+@include('logistica.requerimientos.modal_adjuntar_archivos_requerimiento')
 @include('logistica.requerimientos.modal_adjuntar_archivos_detalle_requerimiento')
-<!--  includes -->
-@include('logistica.requerimientos.aprobacion.modal_anular')
-@include('logistica.requerimientos.aprobacion.modal_obs')
-@include('logistica.requerimientos.aprobacion.modal_aprobacion')
-@include('logistica.requerimientos.modal_tracking_requerimiento')
+ 
 
 @endsection
 
 @section('scripts')
+<script src="{{ asset('js/util.js')}}"></script>
 <script src="{{ asset('datatables/DataTables/js/jquery.dataTables.min.js') }}"></script>
 <script src="{{ asset('datatables/DataTables/js/dataTables.bootstrap.min.js') }}"></script>
  
 
+<script src="{{ asset('js/logistica/requerimiento/AprobarRequerimientoView.js')}}"></script>
+<script src="{{ asset('js/logistica/requerimiento/ListarRequerimientoView.js')}}"></script>
 <script src="{{ asset('js/logistica/requerimiento/RequerimientoView.js')}}"></script>
 <script src="{{ asset('js/logistica/requerimiento/RequerimientoController.js')}}"></script>
 <script src="{{ asset('js/logistica/requerimiento/RequerimientoModel.js')}}"></script>
@@ -168,7 +177,7 @@ Listado de requerimientos
     });
 
     window.onload = function() {
-        listadoRequerimiento.mostrar('ME');
+        listarRequerimientoView.mostrar('ME');
     };
 
 </script>

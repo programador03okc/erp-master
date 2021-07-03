@@ -35,7 +35,6 @@ Crear / editar requerimiento
     <form id="form-requerimiento" type="register" enctype="multipart/form-data" form="formulario">
         <input type="hidden" name="id_usuario_session">
         <input type="hidden" name="id_usuario_req">
-        <input type="hidden" name="id_estado_doc">
         <input type="hidden" name="id_requerimiento" primary="ids">
         <input type="hidden" name="cantidad_aprobaciones">
         <input type="hidden" name="confirmacion_pago">
@@ -46,6 +45,30 @@ Crear / editar requerimiento
         <input type="hidden" name="justificacion_generar_requerimiento">
         <input type="hidden" name="id_grupo">
         <input type="hidden" name="estado">
+
+
+        
+        <div class="group-table" id="group-historial-revisiones" hidden>
+            <div class="row">
+                <div class="col-sm-12">
+                    <fieldset class="group-importes">
+                        <legend style="background: #b3a705;">
+                            <h6>Historial de revisiones</h6>
+                        </legend>
+                        <table class="table table-bordered" id="listaHistorialRevision">
+                            <thead>
+                                <tr>
+                                <th>Revisado por</th>
+                                <th>Acción</th>
+                                <th>Comentario</th>
+                                <th>Fecha revisión</th>
+                                </tr>
+                            </thead>
+                            <tbody id="body_historial_revision"></tbody>
+                        </table>
+                </div>
+            </div>
+</div>
 
         <div class="row">
             <div class="col-md-12">
@@ -165,11 +188,11 @@ Crear / editar requerimiento
                                 <select name="division" class="form-control activation">
                                     <option value="0">Elija una opción</option>
                                     @foreach ($divisiones as $division)
-                                        @if($division->id_division==4)
-                                        <option value="{{$division->id_division}}" selected>{{$division->descripcion}}</option>
-                                        @else
+                                    @if($division->id_division==4)
+                                    <option value="{{$division->id_division}}" selected>{{$division->descripcion}}</option>
+                                    @else
                                     <option value="{{$division->id_division}}">{{$division->descripcion}}</option>
-                                        @endif
+                                    @endif
                                     @endforeach
                                 </select>
                             </div>
@@ -243,6 +266,16 @@ Crear / editar requerimiento
                                 </div>
                             </div>
                         </div>
+
+                        <div class="col-md-12">
+                            <div class="row">
+                                <div class="col-md-12" id="input-group-observacion">
+                                    <h5>Observación:</h5>
+                                    <textarea class="form-control activation" name="observacion" cols="100" rows="100" style="height:50px;" disabled></textarea>
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
 
                 </fieldset>
@@ -409,20 +442,6 @@ Crear / editar requerimiento
             </div>
         </div>
 
-        <div class="row">
-            <div class="col-md-12">
-                <h4 style="display:flex;justify-content: space-between;">Opcional</h4>
-                <fieldset class="group-table">
-                    <div class="row">
-                        <div class="col-md-12" id="input-group-observacion">
-                            <h5>Observación:</h5>
-                            <textarea class="form-control activation" name="observacion" cols="100" rows="100" style="height:50px;" disabled></textarea>
-                        </div>
-                    </div>
-                </fieldset>
-            </div>
-        </div>
-
 
         <br>
         <fieldset class="group-table">
@@ -522,31 +541,31 @@ Crear / editar requerimiento
                 </div>
             </div>
         </fieldset>
-
-        <fieldset class="group-table col-md-6">
-        <div class="row">
-            <div class="col-md-12">
-                <fieldset class="group-importes">
-                    <legend style="background: #999;">
-                        <h6 name='titulo_tabla_detalle_cc'>Partidas Activas</h6>
-                    </legend>
-                    <table class="table table-striped table-bordered" id="listaPartidasActivas" width="100%">
-                        <thead>
-                            <tr>
-                                <th width="10">Codigo</th>
-                                <th width="70">Descripción</th>
-                                <th width="10">Presupuesto Total</th>
-                                <th width="10">Presupuesto Utilizado</th>
-                                <th width="10">Saldo</th>
-                            </tr>
-                        </thead>
-                        <tbody id="body_partidas_activas">
-                        </tbody>
-                    </table>
-                </fieldset>
+    
+        <div class="group-table col-md-6">
+            <div class="row">
+                <div class="col-md-12">
+                    <fieldset class="group-importes">
+                        <legend style="background: #999;">
+                            <h6 name='titulo_tabla_detalle_cc'>Partidas Activas</h6>
+                        </legend>
+                        <table class="table table-striped table-bordered" id="listaPartidasActivas" width="100%">
+                            <thead>
+                                <tr>
+                                    <th width="10">Codigo</th>
+                                    <th width="70">Descripción</th>
+                                    <th width="10">Presupuesto Total</th>
+                                    <th width="10">Presupuesto Utilizado</th>
+                                    <th width="10">Saldo</th>
+                                </tr>
+                            </thead>
+                            <tbody id="body_partidas_activas">
+                            </tbody>
+                        </table>
+                    </fieldset>
+                </div>
             </div>
         </div>
-        </fieldset>
 
         <div class="row">
             <div class="col-md-12">
@@ -653,6 +672,8 @@ Crear / editar requerimiento
 <script src="{{ asset('js/publico/consulta_sunat.js')}}"></script>
 <script src="{{ asset('template/plugins/moment.min.js') }}"></script>
 
+<script src="{{ asset('js/logistica/requerimiento/ArchivoAdjunto.js')}}"></script>
+<script src="{{ asset('js/logistica/requerimiento/HistorialRequerimientoView.js')}}"></script>
 <script src="{{ asset('js/logistica/requerimiento/RequerimientoView.js')}}"></script>
 <script src="{{ asset('js/logistica/requerimiento/RequerimientoController.js')}}"></script>
 <script src="{{ asset('js/logistica/requerimiento/RequerimientoModel.js')}}"></script>
@@ -689,7 +710,7 @@ Crear / editar requerimiento
 
         // controlInput(id_grupo,descripcion_grupo);
         inicializar(
-           
+
             "{{route('logistica.gestion-logistica.requerimiento.elaboracion.mostrar-requerimiento')}}",
             "{{route('logistica.gestion-logistica.requerimiento.elaboracion.guardar')}}",
             "{{route('logistica.gestion-logistica.requerimiento.elaboracion.actualizar')}}",

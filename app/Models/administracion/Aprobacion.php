@@ -25,6 +25,7 @@ class Aprobacion extends Model
                 DB::raw("CONCAT(pers.nombres,' ',pers.apellido_paterno,' ',pers.apellido_materno) as nombre_usuario"),
                 'sis_usua.nombre_corto',
                 'adm_aprobacion.detalle_observacion',
+                'adm_aprobacion.tiene_sustento',
                 'adm_flujo.id_operacion',
                 'adm_flujo.id_rol',
                 'sis_rol.descripcion as descripcion_rol',
@@ -43,7 +44,7 @@ class Aprobacion extends Model
                     ['id_doc_aprob', '=', $id_doc_aprobacion],
                     ['adm_flujo.estado', '=', 1]
                 ])
-                ->orderBy('adm_flujo.orden', 'asc')
+                ->orderBy('adm_aprobacion.fecha_vobo', 'asc')
                 ->get();
 
             if (isset($adm_aprobacion) && (count($adm_aprobacion) > 0)) {
@@ -69,14 +70,30 @@ class Aprobacion extends Model
     }
     public static function getCantidadAprobacionesRealizadas($id_doc_aprobacion)
     {
-        $cantidadAprobaciones = Aprobacion::select(
+        $ultimaObservacion = Aprobacion::select(
                 'adm_aprobacion.*')
                 ->where([
                     ['id_doc_aprob', '=', $id_doc_aprobacion],
-                    ['id_vobo', '=', 1]
+                    ['id_vobo', '=', 3]
                 ])
+                ->orderBy('adm_aprobacion.fecha_vobo','desc')
+                ->first();
+        
+        $fechaUltimaObservacion='';
+        if($ultimaObservacion){
+            $fechaUltimaObservacion = $ultimaObservacion->fecha_vobo;
+        }
+
+        $cantidadAprobaciones = Aprobacion::select(
+                'adm_aprobacion.*')
+                ->where('id_doc_aprob', '=', $id_doc_aprobacion)
+                ->whereIn('id_vobo',[1,5])
+                ->when((strlen($fechaUltimaObservacion) > 0), function ($query)  use ($fechaUltimaObservacion) {
+                    return $query->whereRaw('adm_aprobacion.fecha_vobo >=  TIMESTAMP \'' . $fechaUltimaObservacion.'\'');
+                })
                 ->count();
         return $cantidadAprobaciones;
+
     }
     public static function getUltimoVoBo($id_doc_aprobacion)
     {
@@ -85,7 +102,7 @@ class Aprobacion extends Model
                 ->where([
                     ['id_doc_aprob', '=', $id_doc_aprobacion]
                 ])
-                ->whereRaw('fecha_vobo = (select max("fecha_vobo") from administracion.adm_aprobacion)')
+                ->orderBy('adm_aprobacion.fecha_vobo','desc')
                 ->first();
     
         return $ultimaAprobacion;

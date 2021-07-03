@@ -82,7 +82,7 @@
                 <fieldset class="group-importes">
                     <legend style="background:#b3a705;">Historial de revisiones</legend>
                     <br>
-                    <table class="table table-bordered">
+                    <table class="table table-bordered" id="listaHistorialRevision">
                         <thead>
                             <tr>
                                 <th>Revisado por</th>
@@ -95,7 +95,7 @@
                     </table>
                 </fieldset>
 
-                <fieldset class="group-importes">
+                <fieldset class="group-importes" id="group-acciones">
                     <legend>Revisar</legend>
                     <br>
                     <div class="form-horizontal">
@@ -108,7 +108,7 @@
                         <div class="form-group">
                             <label class="col-sm-5 control-label">Acción a realizar</label>
                             <div class="col-sm-4">
-                                <select class="form-control" id="accion" onChange="aprobarRequerimiento.updateAccion(this)">
+                                <select class="form-control" id="accion" onChange="aprobarRequerimientoView.updateAccion(this)">
                                     <option value="0">Seleccione una acción</option>
                                     <option value="1">Aprobar Requerimiento</option>
                                     <option value="2">Rechazar Requerimiento</option>
@@ -126,7 +126,7 @@
                 </fieldset>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-success" onClick="aprobarRequerimiento.registrarRespuesta();" >Registrar respuesta</button>
+                <button class="btn btn-success" id="btnRegistrarRespuesta" onClick="aprobarRequerimientoView.registrarRespuesta();" >Registrar respuesta</button>
                 <button class="btn btn-danger" class="close" data-dismiss="modal">Cancelar</button>
             </div>
         </div>
