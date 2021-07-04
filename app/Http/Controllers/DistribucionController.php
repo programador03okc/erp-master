@@ -128,8 +128,12 @@ class DistribucionController extends Controller
             ->where([['alm_req.estado','=',1]])//muestra todos los reservados  ['alm_req.confirmacion_pago','=',false]
             ->orWhere([['alm_req.estado','=',2]])
             // ->orWhere([['alm_req.id_tipo_requerimiento','!=',1], ['alm_req.estado','=',19], ['alm_req.confirmacion_pago','=',false]])
-            ->orderBy('alm_req.fecha_requerimiento','desc');
-        return datatables($data)->toJson();
+            ->orderBy('alm_req.fecha_requerimiento','desc')
+            ->get();
+
+        $output['data'] = $data;
+        return response()->json($output);
+        // return datatables($data)->toJson();
     }
 
     public function listarRequerimientosConfirmados(){
@@ -159,8 +163,11 @@ class DistribucionController extends Controller
                          })
             ->orWhere([['alm_req.estado','=',5]])
             ->orWhere([['alm_req.estado','=',15]])
-            ->orderBy('alm_req.fecha_requerimiento','desc');
-        return datatables($data)->toJson();
+            ->orderBy('alm_req.fecha_requerimiento','desc')
+            ->get();
+        $output['data'] = $data;
+        return response()->json($output);
+        // return datatables($data)->toJson();
     }
 
     public function listarRequerimientosEnProceso(){
@@ -219,15 +226,14 @@ class DistribucionController extends Controller
                             $join->where('orden_despacho.estado','!=', 7);
                          })
             ->where('alm_req.estado',17)
-            // ->orWhere('alm_req.estado',10)
-            // ->orWhere('alm_req.estado',29)
             ->orWhere('alm_req.estado',27)
             ->orWhere('alm_req.estado',28)
             ->orWhere([['alm_req.estado','=',19], ['alm_req.confirmacion_pago','=',true]])
-            // ->orWhere([['alm_req.estado','=',22]])
-            ->orderBy('alm_req.fecha_entrega','desc');
-        return datatables($data)->toJson();
-        // return response()->json($data);
+            ->orderBy('alm_req.fecha_entrega','desc')
+            ->get();
+
+        $output['data'] = $data;
+        return response()->json($output);
     }
 
     public function listarRequerimientosEnTransformacion(){
@@ -292,9 +298,11 @@ class DistribucionController extends Controller
             // ->orWhere('alm_req.estado',28)
             // ->orWhere([['alm_req.estado','=',19], ['alm_req.confirmacion_pago','=',true]])
             ->orWhere([['alm_req.estado','=',22]])
-            ->orderBy('alm_req.fecha_entrega','desc');
-        return datatables($data)->toJson();
-        // return response()->json($data);
+            ->orderBy('alm_req.fecha_entrega','desc')
+            ->get();
+
+        $output['data'] = $data;
+        return response()->json($output);
     }
 
     public function listarOrdenesDespacho()
@@ -326,9 +334,11 @@ class DistribucionController extends Controller
         ->join('almacen.estado_envio','estado_envio.id_estado','=','orden_despacho.estado')
         ->join('configuracion.ubi_dis','ubi_dis.id_dis','=','orden_despacho.ubigeo_destino')
         ->join('configuracion.sis_usua','sis_usua.id_usuario','=','orden_despacho.registrado_por')
-        ->where('orden_despacho.estado',9);
-        // ->get();
-        return datatables($data)->toJson();
+        ->where('orden_despacho.estado',9)
+        ->get();
+        $output['data'] = $data;
+        return response()->json($output);
+        // return datatables($data)->toJson();
     }
 
     public function listarGruposDespachados()
@@ -367,9 +377,11 @@ class DistribucionController extends Controller
         ->leftjoin('mgcp_acuerdo_marco.entidades','entidades.id','=','oportunidades.id_entidad')
         ->join('almacen.estado_envio','estado_envio.id_estado','=','orden_despacho.estado')
         ->join('configuracion.ubi_dis','ubi_dis.id_dis','=','orden_despacho.ubigeo_destino')
-        ->where([['orden_despacho_grupo_det.estado','!=',7],['orden_despacho.estado','=',10]]);
-        //->get();
-        return datatables($data)->toJson();
+        ->where([['orden_despacho_grupo_det.estado','!=',7],['orden_despacho.estado','=',10]])
+        ->get();
+        $output['data'] = $data;
+        return response()->json($output);
+        // return datatables($data)->toJson();
     }
 
     public function listarGruposDespachadosPendientesCargo()
@@ -404,10 +416,10 @@ class DistribucionController extends Controller
         ->leftjoin('mgcp_acuerdo_marco.entidades','entidades.id','=','oportunidades.id_entidad')
         ->join('almacen.estado_envio','estado_envio.id_estado','=','orden_despacho.estado')
         ->where('orden_despacho_grupo_det.estado',1)
-        ->whereIn('orden_despacho.estado',[2,3,4,5,6,7]);
-        // ->whereIn('alm_req.estado',[25,32,33,34,35]);
-        //->get();
-        return datatables($data)->toJson();
+        ->whereIn('orden_despacho.estado',[2,3,4,5,6,7])
+        ->get();
+        $output['data'] = $data;
+        return response()->json($output);
     }
 
     public function verDetalleGrupoDespacho($id_od_grupo){

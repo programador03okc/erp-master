@@ -484,7 +484,7 @@ class TransferenciaController extends Controller
         return response()->json($data);
     }
 
-    public function guardar_ingreso_transferencia(Request $request){ 
+    public function guardar_ingreso_transferencia(Request $request){
 
         try {
             DB::beginTransaction();
@@ -498,7 +498,7 @@ class TransferenciaController extends Controller
             $guia_ven = DB::table('almacen.guia_ven')
             ->select('guia_ven.*','adm_empresa.id_contribuyente as empresa_contribuyente',
             'log_prove.id_proveedor as empresa_proveedor','com_cliente.id_contribuyente as cliente_contribuyente',
-            'prove_cliente.id_proveedor as cliente_proveedor')
+            'prove_cliente.id_proveedor as cliente_proveedor','adm_empresa.id_empresa')
             ->join('administracion.sis_sede','sis_sede.id_sede','=','guia_ven.id_sede')
             ->join('administracion.adm_empresa','adm_empresa.id_empresa','=','sis_sede.id_empresa')
             ->leftJoin('logistica.log_prove','log_prove.id_contribuyente','=','adm_empresa.id_contribuyente')
@@ -539,25 +539,34 @@ class TransferenciaController extends Controller
                 }
             }
 
+            $destino_emp = DB::table('almacen.alm_almacen')
+            ->select('adm_empresa.id_empresa')
+            ->join('administracion.sis_sede','sis_sede.id_sede','=','alm_almacen.id_sede')
+            ->join('administracion.adm_empresa','adm_empresa.id_empresa','=','sis_sede.id_empresa')
+            ->where('id_almacen',$request->id_almacen_destino)
+            ->first();
+
+            $ope = ($destino_emp->id_empresa == $guia_ven->id_empresa ? 21 : 2);
+
             $id_guia_com = DB::table('almacen.guia_com')->insertGetId(
                 [
                     'id_tp_doc_almacen' => 1,//Guia Compra
                     'serie' => $guia_ven->serie,
                     'numero' => $guia_ven->numero,
                     'id_proveedor' => ($id_proveedor !== null ? $id_proveedor : null),
-                    'fecha_emision' => date('Y-m-d'),
+                    'fecha_emision' => $guia_ven->fecha_emision,
                     'fecha_almacen' => $request->fecha_almacen,
                     'id_almacen' => $request->id_almacen_destino,
                     // 'id_motivo' => $guia_ven->id_motivo,
                     'id_guia_clas' => 1,
-                    'id_operacion' => 21,//entrada por transferencia entre almacenes
-                    'punto_partida' => $guia_ven->punto_partida,
-                    'punto_llegada' => $guia_ven->punto_llegada,
-                    'transportista' => $guia_ven->transportista,
-                    'fecha_traslado' => $guia_ven->fecha_traslado,
-                    'tra_serie' => $guia_ven->tra_serie,
-                    'tra_numero' => $guia_ven->tra_numero,
-                    'placa' => $guia_ven->placa,
+                    'id_operacion' => $ope,
+                    // 'punto_partida' => $guia_ven->punto_partida,
+                    // 'punto_llegada' => $guia_ven->punto_llegada,
+                    // 'transportista' => $guia_ven->transportista,
+                    // 'fecha_traslado' => $guia_ven->fecha_traslado,
+                    // 'tra_serie' => $guia_ven->tra_serie,
+                    // 'tra_numero' => $guia_ven->tra_numero,
+                    // 'placa' => $guia_ven->placa,
                     'usuario' => $request->responsable_destino,
                     'registrado_por' => $usuario->id_usuario,
                     'estado' => 9,
@@ -577,7 +586,7 @@ class TransferenciaController extends Controller
                     'codigo' => $codigo,
                     'fecha_emision' => $request->fecha_almacen,
                     'id_guia_com' => $id_guia_com,
-                    'id_operacion' => 21,//entrada por transferencia entre almacenes
+                    'id_operacion' => $ope,//entrada por transferencia entre almacenes
                     // 'id_transferencia' => $request->id_transferencia,
                     'revisado' => 0,
                     'usuario' => $usuario->id_usuario,
@@ -602,10 +611,14 @@ class TransferenciaController extends Controller
         
                 if ($det !== null){
 
+                    $unitario = ((floatval($det->cant_mov) > 0 ? (floatval($det->valorizacion)/floatval($det->cant_mov)) : 0) * floatval($d->cantidad_recibida));
+                    
                     $id_guia_com_det = DB::table('almacen.guia_com_det')->insertGetId([
                         'id_guia_com' => $id_guia_com,
                         'id_producto' => $det->id_producto,
                         'cantidad' => $d->cantidad_recibida,
+                        'unitario' => $unitario,
+                        'total' => ($unitario * $d->cantidad_recibida),
                         'id_unid_med' => $det->id_unid_med,
                         'id_guia_ven_det' => $d->id_guia_ven_det,
                         'id_trans_detalle' => ($det->id_trans_det!==null?$det->id_trans_det:null),
@@ -644,13 +657,12 @@ class TransferenciaController extends Controller
                             'id_obs'
                         );
                     }
-                    $unitario = ($det->cant_mov > 0 ? ($det->valorizacion/$det->cant_mov) : 0);
                     //guarda ingreso detalle
                     DB::table('almacen.mov_alm_det')->insertGetId([
                         'id_mov_alm' => $id_ingreso,
                         'id_producto' => $det->id_producto,
                         'cantidad' => $d->cantidad_recibida,
-                        'valorizacion' => ($unitario * $d->cantidad_recibida),
+                        'valorizacion' => $unitario,
                         'usuario' => $usuario->id_usuario,
                         'id_guia_com_det' => $id_guia_com_det,
                         'estado' => 1,
@@ -813,10 +825,26 @@ class TransferenciaController extends Controller
             DB::beginTransaction();
             // database queries here
             $id_tp_doc_almacen = 2;//guia venta
-            $id_operacion = 11;//salida por transferencia
+            // $id_operacion = 11;//salida por transferencia
             $fecha_registro = date('Y-m-d H:i:s');
             $fecha = date('Y-m-d');
             $usuario = Auth::user()->id_usuario;
+
+            $destino_emp = DB::table('almacen.alm_almacen')
+            ->select('adm_empresa.id_empresa')
+            ->join('administracion.sis_sede','sis_sede.id_sede','=','alm_almacen.id_sede')
+            ->join('administracion.adm_empresa','adm_empresa.id_empresa','=','sis_sede.id_empresa')
+            ->where('id_almacen',$request->id_almacen_destino)
+            ->first();
+
+            $origen_emp = DB::table('almacen.alm_almacen')
+            ->select('adm_empresa.id_empresa')
+            ->join('administracion.sis_sede','sis_sede.id_sede','=','alm_almacen.id_sede')
+            ->join('administracion.adm_empresa','adm_empresa.id_empresa','=','sis_sede.id_empresa')
+            ->where('id_almacen',$request->id_almacen_origen)
+            ->first();
+
+            $ope = ($destino_emp->id_empresa == $origen_emp->id_empresa ? 11 : 1);
 
             $id_guia = DB::table('almacen.guia_ven')->insertGetId(
                 [
@@ -831,7 +859,7 @@ class TransferenciaController extends Controller
                     'fecha_registro' => $fecha_registro,
                     'id_sede' => $request->id_sede,
                     'fecha_traslado' => $fecha,
-                    'id_operacion' => $id_operacion,
+                    'id_operacion' => $ope,
                     // 'id_guia_com' => ($request->id_guia_com !== '' ? $request->id_guia_com : null),
                     'registrado_por' => $usuario,
                 ],
@@ -890,7 +918,7 @@ class TransferenciaController extends Controller
                     'fecha_emision' => $request->fecha_almacen,
                     'id_guia_ven' => $id_guia,
                     'id_transferencia' => ($request->id_transferencia!==null?$request->id_transferencia:null),
-                    'id_operacion' => $id_operacion,
+                    'id_operacion' => $ope,
                     'revisado' => 0,
                     'usuario' => $usuario,
                     'estado' => 1,

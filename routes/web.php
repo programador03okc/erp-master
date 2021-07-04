@@ -853,20 +853,20 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::group(['as' => 'despachos.', 'prefix' => 'control-despachos'], function(){
 					//Ordenes Despacho
 					Route::get('index', 'DistribucionController@view_ordenesDespacho')->name('index');
-					Route::post('listarRequerimientosEnProceso', 'DistribucionController@listarRequerimientosEnProceso');
-					Route::post('listarRequerimientosEnTransformacion', 'DistribucionController@listarRequerimientosEnTransformacion');
+					Route::get('listarRequerimientosEnProceso', 'DistribucionController@listarRequerimientosEnProceso');
+					Route::get('listarRequerimientosEnTransformacion', 'DistribucionController@listarRequerimientosEnTransformacion');
 					Route::get('verDetalleRequerimiento/{id}', 'DistribucionController@verDetalleRequerimiento');
 					Route::get('verDetalleIngreso/{id}', 'DistribucionController@verDetalleIngreso');
 					Route::post('guardar_orden_despacho', 'DistribucionController@guardar_orden_despacho');
-					Route::post('listarOrdenesDespacho', 'DistribucionController@listarOrdenesDespacho');
+					Route::get('listarOrdenesDespacho', 'DistribucionController@listarOrdenesDespacho');
 					Route::get('verDetalleDespacho/{id}', 'DistribucionController@verDetalleDespacho');
 					Route::post('guardar_grupo_despacho', 'DistribucionController@guardar_grupo_despacho');
 					Route::post('despacho_anular_requerimiento', 'DistribucionController@anular_requerimiento');
 					Route::get('anular_orden_despacho/{id}', 'DistribucionController@anular_orden_despacho');
 					Route::get('mostrar_proveedores', 'LogisticaController@mostrar_proveedores');
 					Route::get('mostrar_transportistas', 'DistribucionController@mostrar_transportistas');
-					Route::post('listarGruposDespachados', 'DistribucionController@listarGruposDespachados');
-					Route::post('listarGruposDespachadosPendientesCargo', 'DistribucionController@listarGruposDespachadosPendientesCargo');
+					Route::get('listarGruposDespachados', 'DistribucionController@listarGruposDespachados');
+					Route::get('listarGruposDespachadosPendientesCargo', 'DistribucionController@listarGruposDespachadosPendientesCargo');
 					Route::get('verDetalleGrupoDespacho/{id}', 'DistribucionController@verDetalleGrupoDespacho');
 					Route::post('despacho_transportista', 'DistribucionController@despacho_transportista');
 					Route::post('despacho_revertir_despacho', 'DistribucionController@despacho_revertir_despacho');
@@ -882,8 +882,8 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::get('listarDetalleTransferencias/{id}', 'TransferenciaController@listarDetalleTransferencias');
 					Route::get('listar_ubigeos', 'AlmacenController@listar_ubigeos');
 					Route::post('save_cliente', 'LogisticaController@save_cliente');
-					Route::post('listarRequerimientosElaborados', 'DistribucionController@listarRequerimientosElaborados');
-					Route::post('listarRequerimientosConfirmados', 'DistribucionController@listarRequerimientosConfirmados');
+					Route::get('listarRequerimientosElaborados', 'DistribucionController@listarRequerimientosElaborados');
+					Route::get('listarRequerimientosConfirmados', 'DistribucionController@listarRequerimientosConfirmados');
 					Route::get('actualizaCantidadDespachosTabs', 'DistribucionController@actualizaCantidadDespachosTabs');
 					Route::get('mostrar_prods', 'AlmacenController@mostrar_prods');
 					Route::get('verSeries/{id}', 'DistribucionController@verSeries');
@@ -920,7 +920,7 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::group(['as' => 'lista-ordenes-despacho.', 'prefix' => 'lista-ordenes-despacho'], function(){
 					
 					Route::get('index', 'Logistica\Distribucion\ListaOrdenesDespachoController@view_ordenes_despacho')->name('index');
-					Route::post('listarRequerimientosEnProceso', 'Logistica\Distribucion\ListaOrdenesDespachoController@listarRequerimientosEnProceso');
+					Route::get('listarRequerimientosEnProceso', 'Logistica\Distribucion\ListaOrdenesDespachoController@listarRequerimientosEnProceso');
 					Route::get('listarDetalleTransferencias/{id}', 'TransferenciaController@listarDetalleTransferencias');
 					Route::get('verDetalleRequerimiento/{id}', 'DistribucionController@verDetalleRequerimiento');
 					Route::post('guardar_orden_despacho', 'DistribucionController@guardar_orden_despacho');
@@ -1156,7 +1156,7 @@ Route::group(['middleware' => ['auth']], function () {
 			Route::group(['as' => 'pendientes-salida.', 'prefix' => 'pendientes-salida'], function(){
 				//Pendientes de Salida
 				Route::get('index', 'Almacen\Movimiento\SalidasPendientesController@view_despachosPendientes')->name('index');
-				Route::post('listarOrdenesDespachoPendientes', 'Almacen\Movimiento\SalidasPendientesController@listarOrdenesDespachoPendientes');
+				Route::get('listarOrdenesDespachoPendientes', 'Almacen\Movimiento\SalidasPendientesController@listarOrdenesDespachoPendientes');
 				Route::post('guardar_guia_despacho', 'Almacen\Movimiento\SalidasPendientesController@guardar_guia_despacho');
 				Route::post('listarSalidasDespacho', 'Almacen\Movimiento\SalidasPendientesController@listarSalidasDespacho');
 				Route::post('anular_salida', 'Almacen\Movimiento\SalidasPendientesController@anular_salida');
