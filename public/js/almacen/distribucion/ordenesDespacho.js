@@ -400,7 +400,7 @@ function listarRequerimientosPendientes(permiso){
         'columnDefs': [
             {'aTargets': [0], 'sClass': 'invisible'},
             {'render': function (data, type, row){
-                if (permiso == '1') {
+                // if (permiso == '1') {
                     return '<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" '+
                     'data-placement="bottom" title="Ver Detalle" data-id="'+row['id_requerimiento']+'">'+
                     '<i class="fas fa-chevron-down"></i></button>'+
@@ -430,11 +430,11 @@ function listarRequerimientosPendientes(permiso){
                             `<button type="button" class="adjuntar btn btn-${row['count_despacho_adjuntos']>0 ? 'warning' : 'default' } boton" data-toggle="tooltip" 
                                 data-placement="bottom" data-id="${row['id_od']}" data-cod="${row['codigo_od']}" title="Adjuntar Boleta/Factura" >
                                 <i class="fas fa-paperclip"></i></button>` : '')
-                } else {
-                    return '<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" '+
-                    'data-placement="bottom" title="Ver Detalle" data-id="'+row['id_requerimiento']+'">'+
-                    '<i class="fas fa-chevron-down"></i></button>'
-                }
+                // } else {
+                //     return '<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" '+
+                //     'data-placement="bottom" title="Ver Detalle" data-id="'+row['id_requerimiento']+'">'+
+                //     '<i class="fas fa-chevron-down"></i></button>'
+                // }
                 }, targets: 14
             }
         ],
@@ -1146,9 +1146,9 @@ function listarGruposDespachadosPendientesCargo(permiso){
         'dom': vardataTables[1],
         'buttons': vardataTables[2],
         'language' : vardataTables[0],
-        'bDestroy' : true,
+        'destroy' : true,
         // 'serverSide' : true,
-        "ajax": listarGruposDespachadosPendientesCargo,
+        "ajax": 'listarGruposDespachadosPendientesCargo',
         // 'ajax': {
         //     url: 'listarGruposDespachadosPendientesCargo',
         //     type: 'POST'

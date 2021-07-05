@@ -753,8 +753,9 @@ class DistribucionController extends Controller
 
     public function guardar_orden_despacho(Request $request){
 
-        try {
-            DB::beginTransaction();
+        // try {
+        //     DB::beginTransaction();
+
             $cambios = ($request->aplica_cambios_valor == 'si' ? true : false);
             $codigo = $this->ODnextId(date('Y-m-d'),$request->id_almacen,$cambios);
             $usuario = Auth::user()->id_usuario;
@@ -1005,7 +1006,6 @@ class DistribucionController extends Controller
                 if ($req->id_tipo_requerimiento == 1){
 
                     $asunto_facturacion = $req->orden_am.' | '.$req->nombre.' | '.$req->codigo_oportunidad.' | '.$req->codigo_empresa;
-                    // $asunto_facturacion = 'Generar '.$request->documento.' para el Requerimiento '.$req->codigo.' '.$req->concepto;
                     $contenido_facturacion = '
                     Favor de generar documentación: <br>- '.($request->documento=='Factura'? $request->documento.'<br>- Guía<br>- Certificado de Garantía<br>- CCI<br>':'<br>').' 
                     <br>Requerimiento '.$req->codigo.'
@@ -1045,11 +1045,16 @@ class DistribucionController extends Controller
                     ];
     
                     $smpt_setting=[
-                        'smtp_server'=>'smtp.office365.com',
+                        'smtp_server'=>'smtp.gmail.com',
+                        // 'smtp_server'=>'outlook.office365.com',
                         'port'=>587,
                         'encryption'=>'tls',
-                        'email'=>'administracionventas@okcomputer.com.pe',
-                        'password'=>'Logistica1505'
+                        'email'=>'webmaster@okcomputer.com.pe',
+                        'password'=>'MgcpPeru2020*'
+                        // 'email'=>'programador01@okcomputer.com.pe',
+                        // 'password'=>'Dafne0988eli@'
+                        // 'email'=>'administracionventas@okcomputer.com.pe',
+                        // 'password'=>'Logistica1505'
                     ];
     
                     if (count($email_destinatario) > 0){
@@ -1061,13 +1066,14 @@ class DistribucionController extends Controller
             } else {
                 $msj = 'Se guardó existosamente la Orden de Despacho y Hoja de Transformación';
             }
+            // $msj = 'Ok';
 
-            DB::commit();
+            // DB::commit();
             return response()->json($msj);
             
-        } catch (\PDOException $e) {
-            DB::rollBack();
-        }
+        // } catch (\PDOException $e) {
+        //     DB::rollBack();
+        // }
     }
 
     public function guardar_grupo_despacho(Request $request){
