@@ -1,13 +1,13 @@
 <div class="modal fade" tabindex="-1" role="dialog" id="modal-mapeoAsignarProducto"  style="overflow-y: scroll;">
     <div class="modal-dialog" style="width:800px;">
         <div class="modal-content" >
-            <form id="form-mapeoAsignarProducto">
+            <!-- <form id="form-mapeoAsignarProducto"> -->
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="close"><span aria-hidden="true">&times;</span></button>
                     <h3 class="modal-title">Mapear Producto</h3>
                 </div>
                 <div class="modal-body">
-                    <input type="text" class="oculto" name="id_requerimiento">
+                    <input type="text" class="oculto" name="id_detalle_requerimiento">
                     <div class="row">
                         <div class="col-md-12">
                             <span>Part Number: </span>
@@ -49,8 +49,7 @@
                                                                 <th>PartNumber</th>
                                                                 <th>Marca</th>
                                                                 <th width: "90%">Descripción</th>
-                                                                <!-- <th width="5%">
-                                                                </th> -->
+                                                                <th></th>
                                                             </tr>
                                                         </thead>
                                                         <tbody></tbody>
@@ -68,8 +67,7 @@
                                                                 <th>PartNumber</th>
                                                                 <th>Marca</th>
                                                                 <th width: "90%">Descripción</th>
-                                                                <!-- <th width="5%">
-                                                                </th> -->
+                                                                <th></th>
                                                             </tr>
                                                         </thead>
                                                         <tbody></tbody>
@@ -144,11 +142,18 @@
                                                 <div class="col-md-12">
                                                     <h5>Descripción</h5>
                                                     <textarea name="descripcion" class="form-control activation" id="descripcion" 
-                                                    onkeyup="mayus(this);" cols="50" rows="5" required></textarea>
-                                                    <!-- <input type="text" class="form-control activation" name="descripcion"  required> -->
+                                                        cols="50" rows="5" required></textarea>
                                                 </div>
                                             </div>
-
+                                            <br/>
+                                            <div class="row">
+                                                <div class="col-md-4"></div>
+                                                <div class="col-md-4">
+                                                    <input type="submit" id="submit_crear" class="btn btn-success btn-block" value="Seleccionar y Crear"/>
+                                                    <!-- <button class="btn btn-sm btn-success btn-block" onClick="crearProducto();">Seleccionar y Crear</button> -->
+                                                </div>
+                                                <div class="col-md-4"></div>
+                                            </div>
                                         </div>
                                     </div>
                                 </form>
@@ -158,11 +163,9 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                <input type="submit" id="submit_mapeoAsignarProducto" class="btn btn-success" value="Cerrar"/>
-                    <!-- <label id="mid_doc_com" style="display: none;"></label>
-                    <button class="btn btn-sm btn-success" onClick="guardar_mapeoAsignarProducto();">Guardar</button> -->
+                    <input type="submit" id="submit_mapeoAsignarProducto" class="btn btn-primary" value="Cerrar"/>
                 </div>
-            </form>
+            <!-- </form> -->
         </div>
     </div>
 </div>
