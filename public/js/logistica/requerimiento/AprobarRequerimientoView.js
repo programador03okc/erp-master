@@ -467,13 +467,19 @@ class AprobarRequerimientoView {
 
             requerimientoCtrl.guardarRespuesta(payload).then(function (res) {
                 if (res.id_aprobacion > 0) {
-                    alert(`Respuesta registrada con éxito. La página se recargara para actualizar el listado.`);
+                    if(res.notificacion_por_emial==false){
+                        alert(`Respuesta registrada con éxito.(NOTA: No se cuenta con información de email del usuario que corresponde notificar, ergo no se enviara ningun email). La página se recargara para actualizar el listado.`);
+                    }else{
+                        alert(`Respuesta registrada con éxito. La página se recargara para actualizar el listado.`);
+
+                    }
                     $('#modal-requerimiento').modal('hide');
                     location.reload();
 
 
                 } else {
                     alert(res.mensaje);
+                    $('#modal-requerimiento').LoadingOverlay("hide", true);
                 }
 
             }).catch(function (err) {

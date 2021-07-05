@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Logistica;
 
 use App\Http\Controllers\AlmacenController;
+use App\Http\Controllers\ConfiguracionController;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Logistica\NotificacionesController;
 use App\Http\Controllers\ProyectosController;
 use App\Models\Administracion\Aprobacion;
 use App\Models\Administracion\Area;
@@ -659,6 +661,45 @@ class RequerimientoController extends Controller
                 $this->guardarAdjuntoNivelDetalleItem($adjuntoDetelleRequerimiento);
             }
 
+            // notificar al primer aprobante del requerimiento creado
+            $operaciones = Operacion::getOperacion(1, $request->tipo_requerimiento, $request->id_grupo, $request->division, $request->prioridad);
+            $flujoTotal = Flujo::getIdFlujo($operaciones[0]->id_operacion)['data'];
+            $idRolPrimerAprobante=0;
+            foreach ($flujoTotal as $flujo) {
+                if($flujo->orden==1){
+                    $idRolPrimerAprobante= $flujo->id_rol;
+                }
+            }
+            if($idRolPrimerAprobante >0){
+                $usuariosList= Usuario::getAllIdUsuariosPorRol($idRolPrimerAprobante);
+
+                if(count($usuariosList)>0){
+                    foreach ($usuariosList as $idUsuario) {
+                        $correoUsuario = Usuario::find($idUsuario)->trabajador->postulante->persona->email;
+                    }
+
+                    if(isset($correoUsuario) && $correoUsuario!=null){
+                        $nombreCompletoUsuario = Usuario::find(Auth::user()->id_usuario)->trabajador->postulante->persona->nombre_completo;
+                        $payload=[
+                            'id_empresa'=>$request->empresa,
+                            'email_destinatario'=>$correoUsuario,
+                            'titulo'=>'Se creo un nuevo requerimiento'.$requerimiento->codigo.', pendiente de aprobación',
+                            'mensaje'=>'Estado : Elaborado <br>'.
+                            '<br> Código: <span>'.$requerimiento->codigo.'</span>'.
+                            '<br> Concepto: <span>'.$requerimiento->concepto.'</span>'.
+                            '<br> Emitido por: '.($nombreCompletoUsuario?$nombreCompletoUsuario:'').
+                            '<br><br> Este correo es generado de manera automática, por favor no responder. 
+                            <br> Saludos <br> Módulo de Logística <br> SYSTEM AGILE'
+                        ];   
+
+                        if(strlen($correoUsuario)>0){
+                            $estado_envio = NotificacionesController::enviarEmail($payload);
+                        }	
+                    }
+                }
+            }
+
+
 
             DB::commit();
             // TODO: ENVIAR CORREO AL APROBADOR DE ACUERDO AL MONTO SELECCIONADO DEL REQUERIMIENTO
@@ -681,18 +722,23 @@ class RequerimientoController extends Controller
 
         if ($adjuntoOtrosAdjuntosLength > 0) {
             foreach ($requerimiento->adjuntoOtrosAdjuntos as $archivo) {
-
+                $fechaHoy= new Carbon();
+                $sufijo = $fechaHoy->format('YmdHis');
+                $file = $archivo->getClientOriginalName();
+                $filename = pathinfo($file, PATHINFO_FILENAME);
+                $extension = pathinfo($file, PATHINFO_EXTENSION);
+                $newNameFile= $filename.'_'.$sufijo.'.'.$extension;
                 $otrosAdjuntos = DB::table('almacen.alm_req_adjuntos')->insertGetId(
                     [
                         'id_requerimiento'          => $requerimiento->id_requerimiento,
-                        'archivo'                   => $archivo->getClientOriginalName(),
+                        'archivo'                   => $newNameFile,
                         'estado'                    => 1,
                         'categoria_adjunto_id'      => 1,
-                        'fecha_registro'            => date('Y-m-d H:i:s')
+                        'fecha_registro'            => $fechaHoy
                     ],
                     'id_adjunto'
                 );
-                Storage::disk('archivos')->put("logistica/requerimiento/" . $archivo->getClientOriginalName(), \File::get($archivo));
+                Storage::disk('archivos')->put("logistica/requerimiento/" . $newNameFile, \File::get($archivo));
             }
         }
         $ordenesAdjuntos = 0;
@@ -702,50 +748,65 @@ class RequerimientoController extends Controller
 
         if ($adjuntoOrdenesLength > 0) {
             foreach ($requerimiento->adjuntoOrdenes as $archivo) {
-
+                $fechaHoy= new Carbon();
+                $sufijo = $fechaHoy->format('YmdHis');
+                $file = $archivo->getClientOriginalName();
+                $filename = pathinfo($file, PATHINFO_FILENAME);
+                $extension = pathinfo($file, PATHINFO_EXTENSION);
+                $newNameFile= $filename.'_'.$sufijo.'.'.$extension;
                 $ordenesAdjuntos = DB::table('almacen.alm_req_adjuntos')->insertGetId(
                     [
                         'id_requerimiento'          => $requerimiento->id_requerimiento,
-                        'archivo'                   => $archivo->getClientOriginalName(),
+                        'archivo'                   => $newNameFile,
                         'estado'                    => 1,
                         'categoria_adjunto_id'      => 2,
-                        'fecha_registro'            => date('Y-m-d H:i:s')
+                        'fecha_registro'            => $fechaHoy
                     ],
                     'id_adjunto'
                 );
-                Storage::disk('archivos')->put("logistica/requerimiento/" . $archivo->getClientOriginalName(), \File::get($archivo));
+                Storage::disk('archivos')->put("logistica/requerimiento/" . $newNameFile, \File::get($archivo));
             }
         }
         if ($adjuntoComprobanteContableLength > 0) {
             foreach ($requerimiento->adjuntoComprobanteContable as $archivo) {
-
+                $fechaHoy= new Carbon();
+                $sufijo = $fechaHoy->format('YmdHis');
+                $file = $archivo->getClientOriginalName();
+                $filename = pathinfo($file, PATHINFO_FILENAME);
+                $extension = pathinfo($file, PATHINFO_EXTENSION);
+                $newNameFile= $filename.'_'.$sufijo.'.'.$extension;
                 $comprobanteContableAdjuntos = DB::table('almacen.alm_req_adjuntos')->insertGetId(
                     [
                         'id_requerimiento'          => $requerimiento->id_requerimiento,
-                        'archivo'                   => $archivo->getClientOriginalName(),
+                        'archivo'                   => $newNameFile,
                         'estado'                    => 1,
                         'categoria_adjunto_id'      => 3,
-                        'fecha_registro'            => date('Y-m-d H:i:s')
+                        'fecha_registro'            => $fechaHoy
                     ],
                     'id_adjunto'
                 );
-                Storage::disk('archivos')->put("logistica/requerimiento/" . $archivo->getClientOriginalName(), \File::get($archivo));
+                Storage::disk('archivos')->put("logistica/requerimiento/" . $newNameFile, \File::get($archivo));
             }
         }
         if ($adjuntoComprobanteBancarioLength > 0) {
             foreach ($requerimiento->adjuntoComprobanteBancario as $archivo) {
-
+                $fechaHoy= new Carbon();
+                $sufijo = $fechaHoy->format('YmdHis');
+                $file = $archivo->getClientOriginalName();
+                $filename = pathinfo($file, PATHINFO_FILENAME);
+                $extension = pathinfo($file, PATHINFO_EXTENSION);
+                $newNameFile= $filename.'_'.$sufijo.'.'.$extension;
                 $comprobanteBancarioAdjunto = DB::table('almacen.alm_req_adjuntos')->insertGetId(
                     [
                         'id_requerimiento'          => $requerimiento->id_requerimiento,
-                        'archivo'                   => $archivo->getClientOriginalName(),
+                        'archivo'                   => $newNameFile,
                         'estado'                    => 1,
                         'categoria_adjunto_id'      => 4,
-                        'fecha_registro'            => date('Y-m-d H:i:s')
+                        'fecha_registro'            => $fechaHoy
                     ],
                     'id_adjunto'
                 );
-                Storage::disk('archivos')->put("logistica/requerimiento/" . $archivo->getClientOriginalName(), \File::get($archivo));
+                Storage::disk('archivos')->put("logistica/requerimiento/" . $newNameFile, \File::get($archivo));
             }
         }
 
@@ -758,16 +819,25 @@ class RequerimientoController extends Controller
         $detalleAdjuntos = 0;
         if (count($adjuntoDetelleRequerimiento) > 0) {
             foreach ($adjuntoDetelleRequerimiento as $adjunto) {
+                $fechaHoy= new Carbon();
+                $sufijo = $fechaHoy->format('YmdHis');
+                // $NameFile = $adjunto['nombre_archivo'];
+                
+                $file = $adjunto['archivo']->getClientOriginalName();
+                $filename = pathinfo($file, PATHINFO_FILENAME);
+                $extension = pathinfo($file, PATHINFO_EXTENSION);
+                $newNameFile= $filename.'_'.$sufijo.'.'.$extension;
+
                 $detalleAdjuntos = DB::table('almacen.alm_det_req_adjuntos')->insertGetId(
                     [
                         'id_detalle_requerimiento'  => $adjunto['id_detalle_requerimiento'],
-                        'archivo'                   => $adjunto['nombre_archivo'],
+                        'archivo'                   => $newNameFile,
                         'estado'                    => 1,
-                        'fecha_registro'            => date('Y-m-d H:i:s')
+                        'fecha_registro'            => $fechaHoy
                     ],
                     'id_adjunto'
                 );
-                Storage::disk('archivos')->put("logistica/detalle_requerimiento/" . $adjunto['nombre_archivo'], \File::get($adjunto['archivo']));
+                Storage::disk('archivos')->put("logistica/detalle_requerimiento/" . $newNameFile, \File::get($adjunto['archivo']));
             }
         }
         return response()->json($detalleAdjuntos);
@@ -1442,12 +1512,69 @@ class RequerimientoController extends Controller
     
             $trazabilidad->save();
 
+            // Notificacion por correo 
+            $seNotificaraporEmail=false;
+            switch ($accion) {
+                case '5':
+                    $tituloEstado= 'Revisado';
+                    $siguienteFlujo = Flujo::getSiguienteFlujo($idFlujo);
+
+                    $usuariosList=[];
+                    if(isset($siguienteFlujo)){
+                        $usuariosList= Usuario::getAllIdUsuariosPorRol($siguienteFlujo->id_rol);
+
+                    }
+                    if(count($usuariosList)>0){
+                        foreach ($usuariosList as $idUsuario) {
+                            $correoUsuario = Usuario::find($idUsuario)->trabajador->postulante->persona->email;
+ 
+                        }
+                    }
+                    break;
+                case '3':
+                    $tituloEstado= 'Observado';
+                    $correoUsuario = Usuario::find($idUsuario)->trabajador->postulante->persona->email;
+                    break;
+            }
+
+            if(isset($correoUsuario) && $correoUsuario!=null){
+                $destinatarios[]= $correoUsuario;
+                $seNotificaraporEmail= true;
+
+                $dataRequerimiento=Requerimiento::getRequerimiento($idRequerimiento);
+                $idEmpresa= $dataRequerimiento->first()->id_empresa;
+                $codigoRequerimiento= $dataRequerimiento->first()->codigo;
+                $conceptoRequerimiento= $dataRequerimiento->first()->concepto;
+                $idUsuario= $dataRequerimiento->first()->id_usuario;
+    
+                // $destinatarios[]= 'programador03@okcomputer.com.pe';
+    
+    
+                $payload=[
+                    'id_empresa'=>$idEmpresa,
+                    'email_destinatario'=>$destinatarios,
+                    'titulo'=>'Se cambio el estado del requerimiento: '.$codigoRequerimiento,
+                    'mensaje'=>'Estado : '.$tituloEstado.'<br>'.
+                    '<br> Código: <span>'.$codigoRequerimiento.'</span>'.
+                    '<br> Concepto: <span>'.$conceptoRequerimiento.'</span>'.
+                    '<br> Emitido por: '.($nombreCompletoUsuario?$nombreCompletoUsuario:'').
+                    '<br> '.($comentario?('Responde lo siguiente: <h3 style="color:#1e90ff;">'.$comentario.'</h3>'):'').
+                    '<br><br> Este correo es generado de manera automática, por favor no responder. 
+                    <br> Saludos <br> Módulo de Logística <br> SYSTEM AGILE'
+                ];
+                if(count($destinatarios)>0){
+                    $estado_envio = NotificacionesController::enviarEmail($payload);
+                }	
+
+            }
+
+
 
         DB::commit();
-        return response()->json(['id_aprobacion' => $aprobacion->id_aprobacion]);
+        return response()->json(['id_aprobacion' => $aprobacion->id_aprobacion,'notificacion_por_emial'=>$seNotificaraporEmail]);
         } catch (Exception $e) {
             DB::rollBack();
-            return response()->json(['id_aprobacion' => 0, 'mensaje' => 'Hubo un problema al guardar la respuesta. Por favor intentelo de nuevo. Mensaje de error: ' . $e->getMessage()]);
+            return response()->json(['id_aprobacion' => 0, 'notificacion_por_emial'=>false, 'mensaje' => 'Hubo un problema al guardar la respuesta. Por favor intentelo de nuevo. Mensaje de error: ' . $e->getMessage()]);
         }
 
     }

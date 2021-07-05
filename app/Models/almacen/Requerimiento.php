@@ -17,6 +17,10 @@ class Requerimiento extends Model
     }
 
 
+    public static function getRequerimiento($idRequerimiento){
+        $requerimiento = Requerimiento::where('id_requerimiento',$idRequerimiento)->get();
+        return $requerimiento;
+    }
     public static function obtenerCantidadRegistros($tipoRequerimiento,$grupo){
         $yyyy = date('Y', strtotime("now"));
         $num = Requerimiento::where('id_tipo_requerimiento',$tipoRequerimiento)

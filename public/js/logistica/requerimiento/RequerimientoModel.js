@@ -135,11 +135,34 @@ class RequerimientoModel {
             url:`guardar-respuesta`,
             dataType: 'JSON',
             data:payload,
+            beforeSend: function (data) { 
+            var customElement = $("<div>", {
+                "css": {
+                    "font-size": "24px",
+                    "text-align": "center",
+                    "padding": "0px",
+                    "margin-top": "-400px"
+                },
+                "class": "your-custom-class",
+                "text": "Registrando respuesta..."
+            });
+
+            $('#modal-requerimiento').LoadingOverlay("show", {
+                imageAutoResize: true,
+                progress: true,
+                custom: customElement,
+                imageColor: "#3c8dbc"
+            });
+            },
             success(response) {
                 resolve(response);
             },
-            error: function(err) {
-                reject(err) 
+            fail: function (jqXHR, textStatus, errorThrown) {
+                $('#modal-requerimiento').LoadingOverlay("hide", true);
+                alert("Hubo un problema al registrar la respuesta. Por favor actualice la página e intente de nuevo");
+                console.log(jqXHR);
+                console.log(textStatus);
+                console.log(errorThrown);
             }
             });
         });
