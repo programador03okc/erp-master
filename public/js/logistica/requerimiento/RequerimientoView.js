@@ -20,6 +20,13 @@ class RequerimientoView {
         }
 
     }
+
+    imprimirRequerimientoPdf(){
+        var id = document.getElementsByName("id_requerimiento")[0].value;
+        window.open('imprimir-requerimiento-pdf/'+id+'/0');
+    
+    }
+
     limpiarTabla(idElement) {
         let nodeTbody = document.querySelector("table[id='" + idElement + "'] tbody");
         while (nodeTbody.children.length > 0) {

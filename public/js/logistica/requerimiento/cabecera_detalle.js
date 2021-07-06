@@ -566,24 +566,7 @@ function llenarListaCuentasCliente(id_persona=null,id_cliente=null){
 
 
 //imprimir requerimiento pdf
-function ImprimirRequerimientoPdf(){
-    var id = document.getElementsByName("id_requerimiento")[0].value;
-    window.open('/logistica/imprimir-requerimiento-pdf/'+id+'/0');
-    
-    // baseUrl = '/logistica/imprimir-requerimiento-pdf/'+id+'/0';
-    // $.ajax({
-    //     type: 'GET',
-    //     url: baseUrl,
-    //     // dataType: 'JSON',
-    //     success: function(response){  
-            
-    //     }
-    // }).fail( function( jqXHR, textStatus, errorThrown ){
-    //     console.log(jqXHR);
-    //     console.log(textStatus);
-    //     console.log(errorThrown);
-    // });
-}
+
 
 function migrarRequerimiento(){
     var id = $('[name=id_requerimiento]').val();

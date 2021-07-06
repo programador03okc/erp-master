@@ -645,6 +645,7 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::get('listar-sedes-por-empresa/{id?}', 'Logistica\RequerimientoController@listarSedesPorEmpresa')->name('listar-sedes-por-empresa');
 					Route::get('mostrar-requerimiento/{id?}/{codigo?}', 'Logistica\RequerimientoController@mostrarRequerimiento')->name('mostrar-requerimiento');
 					Route::post('elaborados', 'Logistica\RequerimientoController@listarRequerimientosElaborados')->name('elaborados');
+					Route::get('imprimir-requerimiento-pdf/{id}/{codigo}', 'Logistica\RequerimientoController@generar_requerimiento_pdf');
 
 
 					Route::post('guardar', 'LogisticaController@guardar_requerimiento')->name('guardar');
@@ -2048,7 +2049,6 @@ Route::get('decode5t/{id}', 'EquipoController@decode5t');
 
 	Route::get('logistica/get_historial_aprobacion/{id_req}', 'LogisticaController@get_historial_aprobacion');
 	Route::get('logistica/mostrar-adjuntos/{id_requerimiento}', 'LogisticaController@mostrar_adjuntos');
-	Route::get('logistica/imprimir-requerimiento-pdf/{id}/{codigo}', 'LogisticaController@generar_requerimiento_pdf');
 	Route::get('logistica/requerimiento/lista', 'LogisticaController@view_lista_requerimientos');
 	Route::post('logistica/copiar_requerimiento/{id}', 'LogisticaController@copiar_requerimiento');
 

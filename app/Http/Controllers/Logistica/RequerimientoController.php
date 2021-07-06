@@ -2919,4 +2919,176 @@ class RequerimientoController extends Controller
 
         return response()->json($output);
     }
+
+
+    public function imprimir_requerimiento_pdf($id, $codigo)
+    {
+        $requerimiento = $this->mostrarRequerimiento($id, $codigo);
+        $now = new \DateTime();
+        $html = '
+        <html>
+            <head>
+            <style type="text/css">
+                *{
+                    box-sizing: border-box;
+                }
+                body{
+                        background-color: #fff;
+                        font-family: "DejaVu Sans";
+                        font-size: 11px;
+                        box-sizing: border-box;
+                        padding:20px;
+                }
+                
+                table{
+                width:100%;
+                }
+                .tablePDF thead{
+                    padding:4px;
+                    background-color:#e5e5e5;
+                }
+                .tablePDF,
+                .tablePDF tr td{
+                    border: 0px solid #ddd;
+                }
+                .tablePDF tr td{
+                    padding: 5px;
+                }
+                .subtitle{
+                    font-weight: bold;
+                }
+                .bordebox{
+                    border: 1px solid #000;
+                }
+                .verticalTop{
+                    vertical-align:top;
+                }
+                .texttab { 
+                    
+                    display:block; 
+                    margin-left: 20px; 
+                    margin-bottom:5px;
+                }
+                .right{
+                    text-align:right;
+                }
+                .left{
+                    text-align:left;
+                }
+                .justify{
+                    text-align: justify;
+                }
+                .top{
+                vertical-align:top;
+                }
+            </style>
+            </head>
+            <body>
+            
+                <img src=".'.$requerimiento['requerimiento'][0]['logo_empresa'].'" alt="Logo" height="75px">
+
+                <h1><center>REQUERIMIENTO N°' . $requerimiento['requerimiento'][0]['codigo'] . '</center></h1>
+                <br><br>
+            <table border="0">
+            <tr>
+                <td class="subtitle">REQ. N°</td>
+                <td class="subtitle verticalTop">:</td>
+                <td width="40%" class="verticalTop">' . $requerimiento['requerimiento'][0]['codigo'] . '</td>
+                <td class="subtitle verticalTop">Fecha</td>
+                <td class="subtitle verticalTop">:</td>
+                <td>' . $requerimiento['requerimiento'][0]['fecha_requerimiento'] . '</td>
+            </tr>
+            </tr>  
+                <tr>
+                    <td class="subtitle">Solicitante</td>
+                    <td class="subtitle verticalTop">:</td>
+                    <td class="verticalTop">' . $requerimiento['requerimiento'][0]['persona'] . '</td>
+                </tr>
+                <tr>
+                    <td class="subtitle">Empresa</td>
+                    <td class="subtitle verticalTop">:</td>
+                    <td class="verticalTop">' . $requerimiento['requerimiento'][0]['razon_social_empresa'].' - '.$requerimiento['requerimiento'][0]['codigo_sede_empresa'] . '</td>
+                </tr>
+                <tr>
+                    <td class="subtitle">Gerencia</td>
+                    <td class="subtitle verticalTop">:</td>
+                    <td class="verticalTop">' . $requerimiento['requerimiento'][0]['grupo_descripcion'] . '</td>
+                </tr>
+                <tr>
+                    <td class="subtitle top">Proyecto</td>
+                    <td class="subtitle verticalTop">:</td>
+                    <td class="verticalTop justify" colspan="4" >'.$requerimiento['requerimiento'][0]['codigo_proyecto'].' - '. $requerimiento['requerimiento'][0]['descripcion_proyecto'] . '</td>
+                </tr>    
+                <tr>
+                    <td class="subtitle">Presupuesto</td>
+                    <td class="subtitle verticalTop">:</td>
+                    <td class="verticalTop"></td>
+                </tr>
+                <tr>
+                    <td class="subtitle">Observación</td>
+                    <td class="subtitle verticalTop">:</td>
+                    <td class="verticalTop">'. $requerimiento['requerimiento'][0]['observacion'] .'</td>
+                </tr>
+                </table>
+                <br>';
+                
+                // <br>
+                // <p class="subtitle">1.- DENOMINACIÓN DE LA ADQUISICIÓN</p>
+                // <div class="texttab">' . $requerimiento['requerimiento'][0]['concepto'] . '</div>
+                // <p class="subtitle">3.- DESCRIPCIÓN POR ITEM</p>
+
+        $html .= '</div>
+                <table width="100%" class="tablePDF" border=0 style="font-size:10px">
+                <thead>
+                    <tr class="subtitle">
+                        <td width="10%">Código</td>
+                        <td width="10%">Part.No</td>
+                        <td width="30%">Descripcion</td>
+                        <td width="5%">Und.</td>
+                        <td width="5%">Cant.</td>
+                        <td width="6%">Precio Ref.</td>
+                        <td width="7%">SubTotal</td>
+                    </tr>   
+                </thead>';
+        $total = 0;
+        $simbolMonedaRequerimiento = $this->consult_moneda($requerimiento['requerimiento'][0]['id_moneda'])->simbolo;
+
+        foreach ($requerimiento['det_req'] as $key => $data) {
+            $simbolMoneda = $this->consult_moneda($data['id_tipo_moneda'])->simbolo;
+
+            $html .= '<tr>';
+            // $html .= '<td >' . ($key + 1) . '</td>';
+            $html .= '<td >' . $data['codigo_producto'] . '</td>';
+            $html .= '<td >' . $data['part_number'] .($data['tiene_transformacion']>0?'<br><span style="display: inline-block; font-size: 8px; background:#ddd; color: #666; border-radius:8px; padding:2px 10px;">Transformado</span>':''). '</td>';
+            $html .= '<td >' . ($data['descripcion'] ? $data['descripcion'] : $data['descripcion_adicional']) . '</td>';
+            $html .= '<td >' . $data['unidad_medida'] . '</td>';
+            $html .= '<td class="right">' . $data['cantidad'] . '</td>';
+            $html .= '<td class="right">'.$simbolMoneda. number_format($data['precio_unitario'],2) . '</td>';
+            $html .= '<td class="right">'.$simbolMoneda. number_format($data['cantidad'] * $data['precio_unitario'],2) . '</td>';
+            $html .= '</tr>';
+            $total = $total + ($data['cantidad'] * $data['precio_unitario']);
+        }
+        $html .= '
+            <tr>
+                <td  class="right" style="font-weight:bold;" colspan="6">TOTAL</td>
+                <td class="right">' .$simbolMonedaRequerimiento. number_format($total,2) . '</td>
+            </tr>
+            </table>
+                <br/>
+                <br/>
+            
+                <div class="right">Usuario: ' . $requerimiento['requerimiento'][0]['usuario'] . ' Fecha de Registro:' . $requerimiento['requerimiento'][0]['fecha_registro'] . '</div>
+            </body>
+            </html>';
+        return $html;
+    }
+
+    public function generar_requerimiento_pdf($id, $codigo)
+    {
+        $pdf = \App::make('dompdf.wrapper');
+        $pdf->loadHTML($this->imprimir_requerimiento_pdf($id, $codigo));
+        return $pdf->stream();
+        return $pdf->download('requerimiento.pdf');
+    }
+
 }

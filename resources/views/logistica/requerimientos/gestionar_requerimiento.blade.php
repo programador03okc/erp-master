@@ -76,7 +76,7 @@ Crear / editar requerimiento
                     <div>
                         <span class="label label-default" id="codigo_requerimiento"></span>
                         <span class="label label-default" id="estado_doc"></span>
-                        <button type="button" name="btn-imprimir-requerimento-pdf" class="btn btn-info btn-sm" onclick="ImprimirRequerimientoPdf()" disabled><i class="fas fa-print"></i> Imprimir</button>
+                        <button type="button" name="btn-imprimir-requerimento-pdf" class="btn btn-info btn-sm" onclick="requerimientoView.imprimirRequerimientoPdf();" disabled><i class="fas fa-print"></i> Imprimir</button>
                         <button type="button" name="btn-adjuntos-requerimiento" class="btn btn-sm btn-warning" title="Archivos adjuntos" onclick="requerimientoView.adjuntarArchivoRequerimiento();" disabled><i class="fas fa-file-archive"></i>
                             <span class="badge" name="cantidadAdjuntosRequerimiento" style="position:absolute; right: 178px; border: solid 0.1px;">0</span>
                             Adjuntos
