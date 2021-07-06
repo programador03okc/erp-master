@@ -45,11 +45,11 @@ function mostrar_detalle(){
             <td>${element.abreviatura!==null?element.abreviatura:''}</td>
             <td>
                 <button type="button" style="padding-left:8px;padding-right:7px;" 
-                    class="asignar btn btn-${element.id_producto==null?'success':'info'} boton" data-toggle="tooltip" 
+                    class="asignar btn btn-info boton" data-toggle="tooltip" 
                     data-placement="bottom" data-partnumber="${element.part_number}" 
                     data-desc="${element.descripcion}" data-id="${element.id_detalle_requerimiento}"
                     title="Asignar producto" >
-                    Asignar</button>
+                    <i class="fas fa-angle-double-right"></i></button>
             </td>
         </tr>`;
         i++;

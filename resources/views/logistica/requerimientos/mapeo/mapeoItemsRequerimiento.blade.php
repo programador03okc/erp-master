@@ -4,7 +4,7 @@
             <form id="form-mapeoItemsRequerimiento">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="close"><span aria-hidden="true">&times;</span></button>
-                    <h3 class="modal-title">Items del Requerimiento</h3>
+                    <h3 class="modal-title">Mapear Items del Requerimiento</h3>
                 </div>
                 <div class="modal-body">
                     <input type="text" class="oculto" name="id_requerimiento">
@@ -20,8 +20,7 @@
                                         <th>Descripción</th>
                                         <th>Cantidad</th>
                                         <th>Unid</th>
-                                        <th width="5%">
-                                        </th>
+                                        <th width="5%">Asignar</th>
                                     </tr>
                                 </thead>
                                 <tbody></tbody>

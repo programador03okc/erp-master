@@ -1858,6 +1858,11 @@ form .select2-container .select2-selection--single {
   padding: 10px;
 }
 
+table thead th {
+  text-align: center;
+  vertical-align: middle !important;
+}
+
 /*!
  * Font Awesome Free 5.2.0 by @fontawesome - https://fontawesome.com
  * License - https://fontawesome.com/license (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License)
