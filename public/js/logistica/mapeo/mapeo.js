@@ -43,7 +43,7 @@ class MapeoProductos
                 {'render': function (data, type, row){
                     return `
                     <div>
-                        <button type="button" class="detalle btn btn-success btn-xs boton" data-toggle="tooltip" 
+                        <button type="button" class="detalle btn btn-${row['count_pendientes']>0?'success':'info'} btn-xs boton" data-toggle="tooltip" 
                         data-placement="bottom" data-id="${row['id_requerimiento']}" title="Ver Detalle" >
                         Mapear</button>
                     </div>

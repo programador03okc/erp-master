@@ -19,7 +19,8 @@ class MapeoProductosController extends Controller
         $categorias = AlmacenController::mostrar_categorias_cbo();
         $unidades = AlmacenController::mostrar_unidades_cbo();
 
-        return view('logistica/requerimientos/mapeo/index', compact('tipos','clasificaciones','subcategorias','categorias','unidades'));
+        return view('logistica/requerimientos/mapeo/index', 
+        compact('tipos','clasificaciones','subcategorias','categorias','unidades'));
     }
 
     public function listarRequerimientos()
@@ -28,13 +29,15 @@ class MapeoProductosController extends Controller
             ->select('alm_req.*','sis_usua.nombre_corto as responsable',
             'adm_estado_doc.estado_doc','adm_estado_doc.bootstrap_color',
             'sis_sede.descripcion as sede_descripcion',
-            'sis_moneda.simbolo'
+            'sis_moneda.simbolo',
+            DB::raw("(SELECT COUNT(*) FROM almacen.alm_det_req AS det
+                        WHERE det.id_requerimiento = alm_req.id_requerimiento
+                          AND det.id_producto is null) AS count_pendientes")
             )
             ->join('configuracion.sis_usua','sis_usua.id_usuario','=','alm_req.id_usuario')
             ->join('administracion.adm_estado_doc','adm_estado_doc.id_estado_doc','=','alm_req.estado')
             ->leftJoin('administracion.sis_sede','sis_sede.id_sede','=','alm_req.id_sede')
             ->leftJoin('configuracion.sis_moneda','sis_moneda.id_moneda','=','alm_req.id_moneda')
-            // ->leftJoin('configuracion.sis_usua','sis_usua.id_usuario','=','alm_req.id_usuario')
             ->where([['alm_req.estado','=',2]])
             ->orderBy('alm_req.fecha_requerimiento','desc');
 

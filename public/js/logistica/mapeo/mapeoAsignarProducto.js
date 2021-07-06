@@ -113,3 +113,30 @@ $("#form-crear").on("submit", function(e){
         mostrar_detalle();
     }
 });
+
+
+$("[name=id_tipo_producto]").on('change', function() {
+    var id_tipo = $(this).val();
+    console.log(id_tipo);
+    $.ajax({
+        type: 'GET',
+        url: 'mostrar_categorias_tipo/'+id_tipo,
+        dataType: 'JSON',
+        success: function(response){
+            console.log(response);
+
+            if (response.length > 0){
+                $('[name=id_categoria]').html('');
+                html = '<option value="" >Elija una opción</option>';
+                response.forEach(element => {
+                    html+=`<option value="${element.id_categoria}" >${element.descripcion}</option>`;
+                });
+                $('[name=id_categoria]').html(html);
+            }
+        }
+    }).fail( function( jqXHR, textStatus, errorThrown ){
+        console.log(jqXHR);
+        console.log(textStatus);
+        console.log(errorThrown);
+    });
+});
