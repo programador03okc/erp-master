@@ -15,8 +15,7 @@ class Flujo extends Model
     {
         if ($id_operacion > 0) {
 
-            $adm_flujo = DB::table('administracion.adm_flujo')
-                ->select(
+            $adm_flujo = Flujo::select(
                     'adm_flujo.*',
                     'adm_flujo.nombre as nombre_flujo',
                     'sis_rol.descripcion as descripcion_rol'
@@ -48,5 +47,35 @@ class Flujo extends Model
         $output = ['data' => $flujo_list, 'status' => $status, 'message' => $message];
 
         return $output;
+    }
+
+    public static function getSiguienteFlujo($idFlujoActual)
+    {
+        if($idFlujoActual >0){
+            $flujoActual = Flujo::select(
+                'adm_flujo.*'
+            )
+            ->where([
+                ['adm_flujo.id_flujo', '=', $idFlujoActual],
+                ['adm_flujo.estado', '=', 1]
+            ])
+            ->first();
+
+            if($flujoActual){
+                $flujo = Flujo::select(
+                    'adm_flujo.*'
+                )
+                ->where([
+                    ['adm_flujo.id_operacion', '=', $flujoActual->id_operacion],
+                    ['adm_flujo.orden', '=', (intval($flujoActual->orden) +1)],
+                    ['adm_flujo.estado', '=', 1]
+                ])
+                ->first();
+            }
+
+        }else{
+            $flujo=null;
+        }
+        return $flujo;
     }
 }

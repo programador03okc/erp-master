@@ -51,9 +51,7 @@
                                 <select class="form-control group-elemento activation" name="estado_ruc" 
                                     style="text-align:center;" disabled="true">
                                     <option value="0">Elija una opción</option>
-                                    @foreach ($estado_ruc as $est)
-                                        <option value="{{$est->id_estado_ruc}}">{{$est->descripcion}}</option>
-                                    @endforeach
+ 
                                 </select>
                             </div>
                             <div class="col-md-3">
@@ -61,9 +59,6 @@
                                 <select class="form-control group-elemento activation" name="condicion_ruc" 
                                     style="text-align:center;" disabled="true">
                                     <option value="0">Elija una opción</option>
-                                    @foreach ($condicion_ruc as $cnd)
-                                        <option value="{{$cnd->id_condicion_ruc}}">{{$cnd->descripcion}}</option>
-                                    @endforeach
                                 </select>                            
                             </div>
                         </div>
@@ -73,9 +68,6 @@
                                 <select class="form-control group-elemento activation" name="tipo_empresa" 
                                     style="text-align:center;" disabled="true">
                                     <option value="0">Elija una opción</option>
-                                    @foreach ($tipo_contribuyente as $tpe)
-                                        <option value="{{$tpe->id_tipo_contribuyente}}">{{$tpe->descripcion}}</option>
-                                    @endforeach
                                 </select>
                             </div>
                             <div class="col-md-2">
@@ -94,9 +86,6 @@
                                 <h5>Pais</h5>
                                 <select class="form-control group-elemento activation" id="paises" name="paises" style="text-align:center;" disabled="true">
                                 <option value="0">Elija una opción</option>
-                                    @foreach ($paises as $pa)
-                                        <option value="{{$pa->id_pais}}">{{$pa->descripcion}}</option>
-                                    @endforeach
                                 </select>  
                             </div>
 
@@ -218,21 +207,14 @@
 </div>
 
 
-@include('logistica.proveedores.modal_gestionar_archivo_adjunto_proveedor')
-@include('logistica.proveedores.modal_gestionar_contacto')
-@include('logistica.proveedores.modal_gestionar_cuenta_bancaria')
-@include('logistica.proveedores.modal_gestionar_establecimiento')
-@include('logistica.proveedores.modal_lista_proveedores')
+ 
 
 @endsection
 
 @section('scripts')
     <script src="{{ asset('datatables/DataTables/js/jquery.dataTables.min.js') }}"></script>
     <script src="{{ asset('datatables/DataTables/js/dataTables.bootstrap.min.js') }}"></script>
-    <script src="{{ asset('datatables/Buttons/js/dataTables.buttons.min.js') }}"></script>
-    <script src="{{ asset('datatables/Buttons/js/buttons.bootstrap.min.js') }}"></script>
-    <script src="{{ asset('datatables/Buttons/js/buttons.print.min.js') }}"></script>
-    <script src="{{ asset('datatables/Buttons/js/buttons.html5.min.js') }}"></script>
+ 
     <script src="{{ asset('datatables/pdfmake/pdfmake.min.js') }}"></script>
     <script src="{{ asset('datatables/pdfmake/vfs_fonts.js') }}"></script>
     <script src="{{ asset('datatables/JSZip/jszip.min.js') }}"></script>

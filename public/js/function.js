@@ -108,7 +108,7 @@ function openModal(type, active){
         
         /* logistica */
         case 'requerimiento':
-            historialRequerimiento.mostrarHistorial();
+            historialRequerimientoView.mostrarHistorial();
         break;
         case 'cuadro_comparativo':
             modalCuadroComparativo();

@@ -641,6 +641,7 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::get('mostrar-centro-costos', 'Finanzas\CentroCosto\CentroCostoController@mostrarCentroCostosSegunGrupoUsuario')->name('mostrar-centro-costos');
 					Route::get('mostrar-categoria-adjunto', 'Logistica\RequerimientoController@mostrarCategoriaAdjunto')->name('mostrar-categoria-adjunto');
 					Route::post('guardar-requerimiento', 'Logistica\RequerimientoController@guardarRequerimiento')->name('guardar-requerimiento');
+					Route::post('actualizar-requerimiento', 'Logistica\RequerimientoController@actualizarRequerimiento')->name('actualizar-requerimiento');
 					Route::get('listar-sedes-por-empresa/{id?}', 'Logistica\RequerimientoController@listarSedesPorEmpresa')->name('listar-sedes-por-empresa');
 					Route::get('mostrar-requerimiento/{id?}/{codigo?}', 'Logistica\RequerimientoController@mostrarRequerimiento')->name('mostrar-requerimiento');
 					Route::post('elaborados', 'Logistica\RequerimientoController@listarRequerimientosElaborados')->name('elaborados');
@@ -710,8 +711,9 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::get('ver-flujos/{req?}/{doc?}', 'Logistica\RequerimientoController@flujoAprobacion')->name('ver-flujos');
 					Route::get('mostrar-divisiones/{idGrupo?}', 'Logistica\RequerimientoController@mostrarDivisionesDeGrupo')->name('mostrar-divisiones-de-grupo');
 
+					Route::get('mostrar-requerimiento/{id?}/{codigo?}', 'Logistica\RequerimientoController@mostrarRequerimiento')->name('mostrar-requerimiento');
 
-					Route::get('explorar-requerimiento/{id_requerimiento?}', 'Logistica\RequerimientoController@explorar_requerimiento')->name('explorar-requerimiento');
+					// Route::get('explorar-requerimiento/{id_requerimiento?}', 'Logistica\RequerimientoController@explorar_requerimiento')->name('explorar-requerimiento');
 					
 					// Route::get('listar/{empresa?}/{sede?}/{grupo?}', 'LogisticaController@listar_requerimiento_v2')->name('listar');
 					// Route::get('empresa', 'LogisticaController@getIdEmpresa')->name('empresa');
@@ -726,7 +728,9 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::get('index', 'Logistica\RequerimientoController@viewAprobar')->name('index');
 					Route::post('listado-aprobacion', 'Logistica\RequerimientoController@listadoAprobacion')->name('listado-aprobacion');
 					Route::get('mostrar-requerimiento/{id?}/{codigo?}', 'Logistica\RequerimientoController@mostrarRequerimiento')->name('mostrar-requerimiento');
+					Route::post('guardar-respuesta', 'Logistica\RequerimientoController@guardarRespuesta')->name('guardar-respuesta');
 					
+
 					Route::get('ver-flujos/{req?}/{doc?}', 'Logistica\RequerimientoController@flujoAprobacion')->name('ver-flujos');
 					Route::get('explorar-requerimiento/{id_requerimiento?}', 'Logistica\RequerimientoController@explorar_requerimiento')->name('explorar-requerimiento');
 					Route::post('aprobar-documento', 'Logistica\RequerimientoController@aprobarDocumento')->name('aprobar-documento');

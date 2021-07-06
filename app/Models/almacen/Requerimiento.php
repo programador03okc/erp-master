@@ -16,7 +16,15 @@ class Requerimiento extends Model
         return $fecha->format('d-m-Y');
     }
 
+    public function getFechaRegistroAttribute(){
+        $fecha= new Carbon($this->attributes['fecha_registro']);
+        return $fecha->format('d-m-Y H:i');
+    }
 
+    public static function getRequerimiento($idRequerimiento){
+        $requerimiento = Requerimiento::where('id_requerimiento',$idRequerimiento)->get();
+        return $requerimiento;
+    }
     public static function obtenerCantidadRegistros($tipoRequerimiento,$grupo){
         $yyyy = date('Y', strtotime("now"));
         $num = Requerimiento::where('id_tipo_requerimiento',$tipoRequerimiento)
@@ -41,7 +49,7 @@ class Requerimiento extends Model
                 $num = Requerimiento::obtenerCantidadRegistros(2,null);
                 break;
             
-            case 3: #tipo Bienes y servicios
+            case 3: case 4: case 5: case 6: case 7: #tipo Bienes y servicios
                 if($idGrupo==1){
                     $documento.='A';
                     $num = Requerimiento::obtenerCantidadRegistros(3,1); //tipo: BS, grupo: Administración
@@ -65,6 +73,10 @@ class Requerimiento extends Model
         
         return "{$documento}-{$yy}{$correlativo}";
 
+    }
+
+    public function tipo(){
+        return $this->belongsTo('App\Models\Almacen\TipoRequerimiento','id_tipo_requerimiento','id_tipo_requerimiento');
     }
 
 }

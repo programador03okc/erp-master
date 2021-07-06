@@ -27,7 +27,7 @@ Revisar y aprobar requerimientos
                         <div class="col-md-3">
                             <h5>Empresa</h5>
                             <div style="display:flex;">
-                                <select class="form-control" name="id_empresa_select" onChange="aprobarRequerimiento.handleChangeFilterEmpresaListReqByEmpresa(event); aprobarRequerimiento.handleChangeFiltroListado();">
+                                <select class="form-control" name="id_empresa_select" onChange="aprobarRequerimientoView.handleChangeFilterEmpresaListReqByEmpresa(event); aprobarRequerimientoView.handleChangeFiltroListado();">
                                     <option value="0">Elija una opción</option>
                                     @foreach ($empresas as $emp)
                                     <option value="{{$emp->id_empresa}}" data-url-logo="{{$emp->logo_empresa}}">{{$emp->razon_social}}</option>
@@ -38,7 +38,7 @@ Revisar y aprobar requerimientos
                         <div class="col-md-3">
                             <h5>Sede</h5>
                             <div style="display:flex;">
-                                <select class="form-control" name="id_sede_select" onChange="aprobarRequerimiento.handleChangeFiltroListado();" >
+                                <select class="form-control" name="id_sede_select" onChange="aprobarRequerimientoView.handleChangeFiltroListado();" >
                                     <option value="0">Todas</option>
                                 </select>
                             </div>
@@ -46,7 +46,7 @@ Revisar y aprobar requerimientos
                         <div class="col-md-3">
                             <h5>Grupo</h5>
                             <div style="display:flex;">
-                                <select class="form-control" name="id_grupo_select" onChange="aprobarRequerimiento.handleChangeFiltroListado();" >
+                                <select class="form-control" name="id_grupo_select" onChange="aprobarRequerimientoView.handleChangeFiltroListado();" >
                                     <option value="0">Todas</option>
                                     @foreach ($grupos as $grupo)
                                     <option value="{{$grupo->id_grupo}}" >{{$grupo->descripcion}}</option>
@@ -57,7 +57,7 @@ Revisar y aprobar requerimientos
                         <div class="col-md-3">
                             <h5>Prioridad</h5>
                             <div style="display:flex;">
-                                <select class="form-control" name="id_prioridad_select" onChange="aprobarRequerimiento.handleChangeFiltroListado();">
+                                <select class="form-control" name="id_prioridad_select" onChange="aprobarRequerimientoView.handleChangeFiltroListado();">
                                     <option value="0">Todas</option>
                                     @foreach ($prioridades as $prioridad)
                                     <option value="{{$prioridad->id_prioridad}}">{{$prioridad->descripcion}}</option>
@@ -126,27 +126,18 @@ Revisar y aprobar requerimientos
 @include('logistica.requerimientos.modal_requerimiento')
 @include('logistica.requerimientos.modal_adjuntar_archivos_requerimiento')
 @include('logistica.requerimientos.modal_adjuntar_archivos_detalle_requerimiento')
-<!--  includes -->
-@include('logistica.requerimientos.aprobacion.modal_anular')
-@include('logistica.requerimientos.aprobacion.modal_obs')
-@include('logistica.requerimientos.aprobacion.modal_aprobacion')
-@include('logistica.requerimientos.modal_tracking_requerimiento')
+ 
 
 @endsection
 
 @section('scripts')
+<script src="https://cdn.jsdelivr.net/npm/gasparesganga-jquery-loading-overlay@2.1.7/dist/loadingoverlay.min.js"></script>
 <script src="{{ asset('js/util.js')}}"></script>
 <script src="{{ asset('datatables/DataTables/js/jquery.dataTables.min.js') }}"></script>
 <script src="{{ asset('datatables/DataTables/js/dataTables.bootstrap.min.js') }}"></script>
-<!-- <script src="{{ asset('datatables/Buttons/js/dataTables.buttons.min.js') }}"></script>
-    <script src="{{ asset('datatables/Buttons/js/buttons.bootstrap.min.js') }}"></script>
-    <script src="{{ asset('datatables/Buttons/js/buttons.print.min.js') }}"></script>
-    <script src="{{ asset('datatables/Buttons/js/buttons.html5.min.js') }}"></script>
-    <script src="{{ asset('datatables/pdfmake/pdfmake.min.js') }}"></script>
-    <script src="{{ asset('datatables/pdfmake/vfs_fonts.js') }}"></script>
-    <script src="{{ asset('datatables/JSZip/jszip.min.js') }}"></script> -->
 
  
+<script src="{{ asset('js/logistica/requerimiento/AprobarRequerimientoView.js')}}"></script>
 <script src="{{ asset('js/logistica/requerimiento/RequerimientoView.js')}}"></script>
 <script src="{{ asset('js/logistica/requerimiento/RequerimientoController.js')}}"></script>
 <script src="{{ asset('js/logistica/requerimiento/RequerimientoModel.js')}}"></script>
@@ -163,7 +154,7 @@ var grupos = JSON.parse('{!!$gruposUsuario!!}');
  
 
         window.onload = function() {
-            aprobarRequerimiento.mostrar();
+            aprobarRequerimientoView.mostrar();
         };
     });
 </script>

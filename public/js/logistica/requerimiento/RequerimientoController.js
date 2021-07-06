@@ -44,10 +44,14 @@ class RequerimientoCtrl{
         return requerimientoModel.getListaDivisionesDeGrupo(idGrupo);
 
     }
-    // aprobar
+    // aprobacion y revision
     getListadoAprobacion(idEmpresa, idSede, idGrupo, idPrioridad){
         return requerimientoModel.getListadoAprobacion(idEmpresa, idSede, idGrupo, idPrioridad);
 
+    }
+
+    guardarRespuesta(payload){
+        return requerimientoModel.guardarRespuesta(payload);
     }
 
 

@@ -29,10 +29,6 @@
                     </tbody>
                 </table>
             </div>
-            <div class="modal-footer">
-                <label style="display: none;" id="id_requerimiento"></label>
-                <button class="btn btn-sm btn-success" onClick="selectRequerimiento();">Aceptar</button>
-            </div>
         </div>
     </div>
 </div>

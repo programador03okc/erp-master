@@ -37,11 +37,9 @@
                                 <td id="creado_por" style="width:18%;"></td>
                                 <td style="width:10%; font-weight:bold; text-align:right;">Archivos adjuntos</td>
                                 <td>    
-                                    <button type="button" class="btn btn-sm btn-warning" style="position:relative;" title="Ver archivos adjuntos de requerimiento" onClick="aprobarRequerimiento.verAdjuntosRequerimiento();" >
-                                    <i class="fas fa-file-archive"></i> 
-                                    <span class="badge" name="cantidadAdjuntosRequerimiento" style="position:absolute; right: 65px; top:-10px; border: solid 0.1px;">0</span>
-                                    Adjuntos 
-                                    </button>
+                                    <a title="Ver archivos adjuntos de requerimiento" style="cursor:pointer;" onClick="aprobarRequerimientoView.verAdjuntosRequerimiento();" >
+                                    Ver (<span name="cantidadAdjuntosRequerimiento">0</span>)
+                                    </a>
                                 </td>
                                 <td></td>
                                 <td></td>
@@ -59,7 +57,7 @@
                     <legend>
                         Items de requerimiento
                     </legend>
-                    <table class="table table-striped table-condensed table-bordered" id="listaDetalleRequerimiento">
+                    <table class="table table-striped table-condensed table-bordered" id="listaDetalleRequerimientoModal">
                         <thead>
                             <tr>
                                 <th style="width: 2%">#</th>
@@ -72,7 +70,7 @@
                                 <th style="width: 5%">Precio U. <span name="simboloMoneda">S/</span></th>
                                 <th style="width: 5%">Subtotal</th>
                                 <th style="width: 20%">Motivo</th>
-                                <th style="width: 2%">Acciones</th>
+                                <th style="width: 2%">Adjuntos</th>
                             </tr>
                         </thead>
                         <tbody id="body_item_requerimiento">
@@ -80,11 +78,11 @@
                     </table>
 
                 </fieldset>
-              
+
                 <fieldset class="group-importes">
                     <legend style="background:#b3a705;">Historial de revisiones</legend>
                     <br>
-                    <table class="table table-bordered">
+                    <table class="table table-bordered" id="listaHistorialRevision">
                         <thead>
                             <tr>
                                 <th>Revisado por</th>
@@ -93,28 +91,28 @@
                                 <th>Fecha revisión</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <tr>
-                                <td>Manuel Jesus Rivera Lujan</td>
-                                <td style="color:forestgreen;">Aprobado</td>
-                                <td>motivo justificado</td>
-                                <td>15-06-2021</td>
-                            </tr>
-                        </tbody>
+                        <tbody id="body_historial_revision"></tbody>
                     </table>
                 </fieldset>
 
-                <fieldset class="group-importes">
+                <fieldset class="group-importes" id="group-acciones">
                     <legend>Revisar</legend>
                     <br>
                     <div class="form-horizontal">
+                    <input type="hidden" name="idRequerimiento">
+                    <input type="hidden" name="idDocumento">
+                    <input type="hidden" name="idUsuario">
+                    <input type="hidden" name="idRolAprobante">
+                    <input type="hidden" name="idFlujo">
+                    <input type="hidden" name="aprobacionFinalOPendiente">
                         <div class="form-group">
                             <label class="col-sm-5 control-label">Acción a realizar</label>
                             <div class="col-sm-4">
-                                <select class="form-control" id="accion">
-                                    <option value="APROBAR">Aprobar Requerimiento</option>
-                                    <option value="RECHAZAR">Rechazar Requerimiento</option>
-                                    <option value="OBSERVAR">Observar Requerimiento</option>
+                                <select class="form-control" id="accion" onChange="aprobarRequerimientoView.updateAccion(this)">
+                                    <option value="0">Seleccione una acción</option>
+                                    <option value="1">Aprobar Requerimiento</option>
+                                    <option value="2">Rechazar Requerimiento</option>
+                                    <option value="3">Observar Requerimiento</option>
                                 </select>
                             </div>
                         </div>
@@ -128,7 +126,7 @@
                 </fieldset>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-success" onClick="aprobarRequerimiento.registrarRespuesta();" >Registrar respuesta</button>
+                <button class="btn btn-success" id="btnRegistrarRespuesta" onClick="aprobarRequerimientoView.registrarRespuesta();" >Registrar respuesta</button>
                 <button class="btn btn-danger" class="close" data-dismiss="modal">Cancelar</button>
             </div>
         </div>
