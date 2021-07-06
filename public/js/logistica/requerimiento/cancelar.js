@@ -61,4 +61,15 @@ function limpiarInputsRequerimiento() {
     tempCentroCostoSelected=undefined;
     document.querySelector("span[name='cantidadAdjuntosRequerimiento']").textContent = tempArchivoAdjuntoRequerimientoList.length;
 
+    // quitar info error de validación
+    let divGroupHasError= document.querySelectorAll("div[class='form-group has-error']")
+    if(divGroupHasError.length >0){
+        for (let i = 0; i < divGroupHasError.length; i++) {
+            divGroupHasError[i].querySelector("span[class='text-danger']").remove();
+            divGroupHasError[i].classList.remove('has-error');
+            
+        }
+
+    }
+
 }
