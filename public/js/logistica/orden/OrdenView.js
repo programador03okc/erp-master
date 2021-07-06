@@ -3,15 +3,12 @@ var vardataTables = funcDatatables();
 var simboloMoneda='';
 class OrdenView {
     init() {
-        this.getTipoCambioCompra();
-        // this.renderCrearOrdenModule(null,null);
         var reqTrueList = JSON.parse(sessionStorage.getItem('reqCheckedList'));
         var tipoOrden = sessionStorage.getItem('tipoOrden');
         if (reqTrueList !=null && (reqTrueList.length > 0)) {
+            // ordenView.changeStateInput('form-crear-orden-requerimiento', false);
+            // ordenView.changeStateButton('editar');
             ordenCtrl.obtenerRequerimiento(reqTrueList,tipoOrden);
-            changeStateButton('editar');
-            // changeStateButton('historial');
-            changeStateInput('form-crear-orden-requerimiento', false);
             let btnVinculoAReq= `<span class="text-info" id="text-info-req-vinculado" > <a onClick="window.location.reload();" style="cursor:pointer;" title="Recargar con Valores Iniciales del Requerimiento">(vinculado a un Requerimiento)</a> <span class="badge label-danger" onClick="ordenView.eliminarVinculoReq();" style="position: absolute;margin-top: -5px;margin-left: 5px; cursor:pointer" title="Eliminar vínculo">×</span></span>`;
             document.querySelector("section[class='content-header']").children[0].innerHTML+=btnVinculoAReq;
     
@@ -19,9 +16,11 @@ class OrdenView {
         var idOrden = sessionStorage.getItem('idOrden');
         if(idOrden >0){
             mostrarOrden(idOrden);
-            changeStateButton('historial');
+            ordenView.changeStateButton('historial');
 
         }
+        this.getTipoCambioCompra();
+
     }
     getTipoCambioCompra(){
 
@@ -115,7 +114,8 @@ class OrdenView {
         document.querySelector("input[name='id_cc']").value=data.id_cc?data.id_cc:'';
         document.querySelector("textarea[name='observacion']").value=data.observacion?data.observacion:'';
         
-        this.updateAllSimboloMoneda()
+        this.updateAllSimboloMoneda();
+   
     }
 
 

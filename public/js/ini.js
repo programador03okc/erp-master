@@ -249,7 +249,7 @@ function resizeSide(){
 }
 
 function changeStateInput(element, state){
-	var evalu = $("#"+element).attr('type');
+		var evalu = $("#"+element).attr('type');
     if(evalu == 'register'){
 		$("#"+element+" .activation").attr('disabled', state);
     }

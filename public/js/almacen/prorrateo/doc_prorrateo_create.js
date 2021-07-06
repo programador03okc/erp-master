@@ -10,7 +10,7 @@ function nuevo_prorrateo(){
 
     $('[name=id_prorrateo]').val('');
     $('[name=total_suma]').val('');
-    $('[name=total_comp]').val('');
+    $('[name=total_valor]').val('');
     $('[name=total_items]').val('');
     $('[name=total_adicional]').val('');
     $('[name=total_costo]').val('');
@@ -69,6 +69,8 @@ function guardar_doc_prorrateo(){
             'tipo_cambio':$('[name=tipo_cambio]').val(),
             'importe':$('[name=importe]').val(),
             'importe_aplicado':$('[name=importe_aplicado]').val(),
+            'id_tipo_prorrateo':$('[name=id_tipo_prorrateo]').val(),
+            'tipo_prorrateo':$('select[name="id_tipo_prorrateo"] option:selected').text(),
         }
         documentos.push(nuevo);
         
@@ -86,10 +88,17 @@ function guardar_doc_prorrateo(){
             doc.tipo_cambio = $('[name=tipo_cambio]').val();
             doc.importe = $('[name=importe]').val();
             doc.importe_aplicado = $('[name=importe_aplicado]').val();
+            doc.id_tipo_prorrateo = $('[name=id_tipo_prorrateo]').val();
+            doc.tipo_prorrateo = $('select[name="id_tipo_prorrateo"] option:selected').text();
     }
     mostrar_documentos();
 
     $('#modal-doc_prorrateo').modal('hide');
+}
+
+function changeMoneda(){
+    getTipoCambio();
+    calculaImporte();
 }
 
 function calculaImporte(){
@@ -133,12 +142,22 @@ function editar_documento(id_doc_com){
 }
 
 function mostrar_prorrateo(id_prorrateo){
+    
+    $('#listaProrrateos tbody').html('');
+    $('#listaGuiaDetalleProrrateo tbody').html('');
+    
+    documentos = [];
+    guias_detalle = [];
+
     $.ajax({
         type: 'GET',
         url: 'mostrar_prorrateo/'+id_prorrateo,
         dataType: 'JSON',
         success: function(response){
             console.log(response);
+
+            $('[name=codigo]').text(response['prorrateo'].codigo);
+            $('#estado_doc').text((response['prorrateo'].estado==1 ? "Activo" : "Inactivo"));
 
             response['documentos'].forEach(element => {
                 
@@ -191,13 +210,20 @@ function mostrar_prorrateo(id_prorrateo){
 function mostrar_documentos(){
     let tr = '';
     let i = 0;
-    let total_aplicado = 0;
+    let total_aplicado_valor = 0;
+    let total_aplicado_peso = 0;
 
     // let edition = ($("#form-prorrateo").attr('type') == 'edition' ? true : false);
     
     documentos.forEach(element => {
         i++;
-        total_aplicado += parseFloat(element.importe_aplicado);
+        
+        if (element.id_tipo_prorrateo == 1){
+            total_aplicado_valor += parseFloat(element.importe_aplicado);
+        }
+        else if (element.id_tipo_prorrateo == 2){
+            total_aplicado_peso += parseFloat(element.importe_aplicado);
+        }
         tr += `<tr>
             <td>${i}</td>
             <td>${element.tp_prorrateo}</td>
@@ -208,6 +234,7 @@ function mostrar_documentos(){
             <td class="right">${element.tipo_cambio}</td>
             <td class="right">${element.importe}</td>
             <td class="right">${element.importe_aplicado}</td>
+            <td class="right">${element.tipo_prorrateo}</td>
             <td style="display:flex;">
                 <button type="button" class="editar btn btn-primary btn-xs activation" data-toggle="tooltip" 
                     data-placement="bottom" title="Editar" onClick="editar_documento(${element.id_doc_com});"
@@ -224,9 +251,11 @@ function mostrar_documentos(){
     // <i class="fas fa-trash icon-tabla red boton" data-toggle="tooltip" data-placement="bottom" 
     // title="Anular" onClick="anular_documento('${element.id_doc_com}');"></i>
     
-    $('[name=total_comp]').val(total_aplicado);
+    $('[name=total_valor]').val(total_aplicado_valor);
+    $('[name=total_peso]').val(total_aplicado_peso);
+
     $('#listaProrrateos tbody').html(tr);
-    console.log('doc aplicado'+total_aplicado);
+    
     mostrar_guias_detalle();
 }
 
@@ -258,7 +287,20 @@ function listar_guia_detalle(id_guia){
                 id = guias_detalle.find(guia => guia.id_guia_com_det == element.id_guia_com_det);
                 
                 if (id == undefined || id == null){
-                    guias_detalle.push(element);
+                    // guias_detalle.push(element);
+                    guias_detalle.push({
+                        'id_guia_com_det'   :element.id_guia_com_det,
+                        'serie'             :element.serie,
+                        'numero'            :element.numero,
+                        'codigo'            :element.codigo,
+                        'part_number'       :element.part_number,
+                        'descripcion'       :element.descripcion,
+                        'cantidad'          :element.cantidad,
+                        'abreviatura'       :element.abreviatura,
+                        'valorizacion'      :(parseFloat(element.precio_unitario!==null ? element.precio_unitario : element.unitario) * parseFloat(element.cantidad)),
+                        'adicional'         :0,
+                        'total'             :(parseFloat(element.precio_unitario!==null ? element.precio_unitario : element.unitario) * parseFloat(element.cantidad)),
+                    });
                 }
             });
             mostrar_guias_detalle();
@@ -275,7 +317,7 @@ function mostrar_guias_detalle(){
     $('#listaDetalleProrrateo tbody').html('');
 
     var html = '';
-    let importe_doc = parseFloat($('[name=total_comp]').val());
+    let importe_doc = $('[name=total_valor]').val();
     console.log('importe_doc'+importe_doc);
     // let tipo_cambio = $('[name=tipo_cambio]').val();
     let suma_total = 0;
@@ -283,11 +325,11 @@ function mostrar_guias_detalle(){
     guias_detalle.forEach(element => {
         suma_total += parseFloat(element.valorizacion);
     });
-    let valor = importe_doc / (suma_total > 0 ? suma_total : 1);
+    let valor = parseFloat(importe_doc!=='' ? importe_doc : 0) / (suma_total > 0 ? suma_total : 1);
     let adicional = 0;
     let total = 0;
 
-    let total_compra = 0;
+    let total_valorra = 0;
     let total_adicional = 0;
     let total_prorrateado = 0;
 
@@ -302,7 +344,7 @@ function mostrar_guias_detalle(){
         element.adicional = adicional;
         element.total = total;
         // }
-        total_compra += parseFloat(element.valorizacion);
+        total_valorra += parseFloat(element.valorizacion);
         total_adicional += parseFloat(element.adicional);
         total_prorrateado += parseFloat(element.total);
         console.log(element);
@@ -339,7 +381,7 @@ function mostrar_guias_detalle(){
     
     $('#listaGuiaDetalleProrrateo tbody').html(html);
 
-    $('[name=total_suma]').val(formatDecimalDigitos(total_compra,3));
+    $('[name=total_suma]').val(formatDecimalDigitos(total_valorra,3));
     $('[name=total_adicional]').val(formatDecimalDigitos(total_adicional,3));
     $('[name=total_costo]').val(formatDecimalDigitos(total_prorrateado,3));
 
@@ -366,7 +408,7 @@ function anular_item(id_guia_com_det){
 //         success: function(response){
 //             console.log(response);
 //             $('#listaProrrateos tbody').html(response['html']);
-//             $('[name=total_comp]').val(response['total_comp']);
+//             $('[name=total_valor]').val(response['total_valor']);
 //             $('[name=total_items]').val(response['total_items']);
 
 //             if (response['moneda'] !== null){
@@ -374,8 +416,8 @@ function anular_item(id_guia_com_det){
 //                 console.log(response['moneda'].descripcion+' '+response['moneda'].simbolo);
 //                 $('#moneda').text(response['moneda'].descripcion+' '+response['moneda'].simbolo);
 //             }
-//             console.log('total_comp:'+response['total_comp']);
-//             listar_detalle_prorrateo(id_guia, response['total_comp']);
+//             console.log('total_valor:'+response['total_valor']);
+//             listar_detalle_prorrateo(id_guia, response['total_valor']);
 //         }
 //     }).fail( function( jqXHR, textStatus, errorThrown ){
 //         console.log(jqXHR);
@@ -384,12 +426,12 @@ function anular_item(id_guia_com_det){
 //     });
 // }
 
-// function listar_detalle_prorrateo(guia, total_comp){
+// function listar_detalle_prorrateo(guia, total_valor){
 //     $('#listaDetalleProrrateo tbody').html('');
 //     console.log('id_guia'+guia);
-//     console.log('total_comp'+total_comp);
+//     console.log('total_valor'+total_valor);
 //     console.log();
-//     var baseUrl = 'listar_guia_detalle_prorrateo/'+guia+'/'+total_comp;
+//     var baseUrl = 'listar_guia_detalle_prorrateo/'+guia+'/'+total_valor;
 //     $.ajax({
 //         type: 'GET',
 //         url: baseUrl,

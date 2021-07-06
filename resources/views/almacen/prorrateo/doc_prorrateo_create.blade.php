@@ -9,6 +9,7 @@
                 <div class="modal-body">
                     <input class="oculto" name="id_doc_com">
                     <input class="oculto" name="id_prorrateo">
+                    
                     <div class="row">
                         <div class="col-md-3">
                             <h5>Tipo</h5>
@@ -65,7 +66,7 @@
                         </div>
                         <div class="col-md-3">
                             <h5>Moneda</h5>
-                            <select class="form-control" name="id_moneda" onChange="calculaImporte();" required>
+                            <select class="form-control" name="id_moneda" onChange="changeMoneda();" required>
                                 <option value="0" disabled>Elija una opción</option>
                                 @foreach ($monedas as $tp)
                                     <option value="{{$tp->id_moneda}}">{{$tp->descripcion}}</option>
@@ -92,6 +93,24 @@
                         <div class="col-md-3">
                             <h5>Importe Aplicado al Prorrateo <label id="abreviatura"></label></h5>
                             <input type="number" name="importe_aplicado" class="form-control activation" step="0.0001" required/>
+                        </div>
+                        <div class="col-md-3">
+                            <br/>
+                            <div class="borde-group-rojo">
+                                <h5 style="margin:0;">Tipo de Prorrateo a Aplicar</h5>
+                                <table width="100%">
+                                    <tr>
+                                        <td width="130">
+                                            <select class="form-control" name="id_tipo_prorrateo" required>
+                                                <option value="0" selected disabled>Elija una opción</option>
+                                                @foreach ($tipos_prorrateo as $mn)
+                                                    <option value="{{$mn->id_tipo_prorrateo}}">{{$mn->descripcion}}</option>
+                                                @endforeach
+                                            </select>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>

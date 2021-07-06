@@ -2512,7 +2512,7 @@ class LogisticaController extends Controller
             ->leftJoin('logistica.equipo', 'equipo.id_equipo', '=', 'alm_item.id_equipo')
             ->leftJoin('almacen.alm_cat_prod', 'alm_cat_prod.id_categoria', '=', 'alm_prod.id_categoria')
             ->leftJoin('almacen.alm_subcat','alm_subcat.id_subcategoria','=','alm_prod.id_subcategoria')
-
+            ->where('alm_prod.estado',"=",1)
             ->get();
         return response()->json(["data" => $data]);
     }

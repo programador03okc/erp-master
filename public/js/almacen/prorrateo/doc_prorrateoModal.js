@@ -31,11 +31,12 @@ function listar_prorrateos(){
         'ajax': 'mostrar_prorrateos',
         'columns': [
             {'data': 'id_prorrateo'},
-            {'render':
-                function (data, type, row){
-                    return ('PR-'+row['id_prorrateo']);
-                }
-            },
+            {'data': 'codigo'},
+            // {'render':
+            //     function (data, type, row){
+            //         return ('PR-'+row['id_prorrateo']);
+            //     }
+            // },
             {'data': 'nombre_corto'}
         ],
         'columnDefs': [{ 'aTargets': [0], 'sClass': 'invisible'}],

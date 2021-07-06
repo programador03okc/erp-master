@@ -232,6 +232,7 @@ function save_producto(data, action){
 
 function anular_producto(ids){
     baseUrl = 'anular_producto/'+ids;
+    console.log('anular ids:'+ids);
     $.ajax({
         type: 'GET',
         headers: {'X-CSRF-TOKEN': token},
@@ -241,7 +242,7 @@ function anular_producto(ids){
             console.log(response);
             if (response > 0){
                 alert('Producto anulado con exito');
-                $('#listaProducto').DataTable().ajax.reload();
+                // $('#listaProducto').DataTable().ajax.reload();
                 changeStateButton('anular');
                 clearForm('form-producto');
             }
