@@ -71,8 +71,11 @@ Prorrateo de Costos
                                                 <th width='30%'>Descripción</th>
                                                 <th>Cant.</th>
                                                 <th>Unid.</th>
+                                                <th>Mnd.</th>
                                                 <th>Valor Compra</th>
-                                                <th>Adicional</th>
+                                                <th>Peso</th>
+                                                <th>Adicional Valor</th>
+                                                <th>Adicional Peso</th>
                                                 <th>Importe Prorrateado</th>
                                                 <th>
                                                     <!-- <i class="fas fa-plus-square icon-tabla green boton " 
@@ -87,12 +90,15 @@ Prorrateo de Costos
                                         <tbody></tbody>
                                         <tfoot>
                                             <tr>
-                                                <td colSpan="6" class="right">
+                                                <td colSpan="7" class="right">
                                                     Registrado por: <label id="registrado_por"></label>
                                                 </td>
-                                                <td><input type="text" class="form-control right" readOnly name="total_suma"/></td>
-                                                <td><input type="text" class="form-control right" readOnly name="total_adicional"/></td>
+                                                <td><input type="text" class="form-control right" readOnly name="total_valor"/></td>
+                                                <td><input type="text" class="form-control right" readOnly name="total_peso"/></td>
+                                                <td><input type="text" class="form-control right" readOnly name="total_adicional_valor"/></td>
+                                                <td><input type="text" class="form-control right" readOnly name="total_adicional_peso"/></td>
                                                 <td><input type="text" class="form-control right" readOnly name="total_costo"/></td>
+                                                <td></td>
                                             </tr>
                                         </tfoot>
                                     </table>
@@ -109,7 +115,7 @@ Prorrateo de Costos
                                                         <td style="color: #398439;"><label id="moneda"></label></td>
                                                         <td>Total</td>
                                                         <td width="20">:</td>
-                                                        <td width="130"><input type="number" class="form-control right" name="total_suma" readOnly/></td>
+                                                        <td width="130"><input type="number" class="form-control right" name="total_ingreso" readOnly/></td>
                                                     </tr>
                                                 </table>
                                             </div>
@@ -122,10 +128,10 @@ Prorrateo de Costos
                                                         <td></td>
                                                         <td>Sumatoria x Valor</td>
                                                         <td width="20">:</td>
-                                                        <td width="130"><input type="number" class="form-control right" name="total_valor" readOnly/></td>
+                                                        <td width="130"><input type="number" class="form-control right" name="total_comp_valor" readOnly/></td>
                                                         <td class="right">Sumatoria x Peso Volumen</td>
                                                         <td width="20">:</td>
-                                                        <td width="130"><input type="number" class="form-control right" name="total_peso" readOnly/></td>
+                                                        <td width="130"><input type="number" class="form-control right" name="total_comp_peso" readOnly/></td>
                                                     </tr>
                                                 </table>
                                             </div>
@@ -194,10 +200,16 @@ Prorrateo de Costos
     <script src="{{ asset('template/plugins/select2/select2.min.js') }}"></script>
     <script src="{{ asset('template/plugins/moment.min.js') }}"></script>
 
+    <script src="{{ asset('js/almacen/prorrateo/doc_prorrateo.js')}}"></script>
     <script src="{{ asset('js/almacen/prorrateo/doc_prorrateo_create.js')}}"></script>
+    <script src="{{ asset('js/almacen/prorrateo/doc_prorrateo_detalle.js')}}"></script>
     <script src="{{ asset('js/logistica/proveedorModal.js')}}"></script>
     <script src="{{ asset('js/logistica/add_proveedor.js')}}"></script>
     <script src="{{ asset('js/almacen/guia/guia_compraModal.js')}}"></script>
     <script src="{{ asset('js/almacen/prorrateo/doc_prorrateoModal.js')}}"></script>
+
+    <script>
+        vista_extendida();
+    </script>
 
 @endsection

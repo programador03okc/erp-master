@@ -35,12 +35,14 @@ function listarDespachosPendientes(permiso){
         'buttons': vardataTables[2],
         'language' : vardataTables[0],
         'destroy' : true,
-        'serverSide' : true,
+        'ajax' : 'listarOrdenesDespachoPendientes',
+        // 'serverSide' : true,
         // "scrollX": true,
-        'ajax': {
-            url: 'listarOrdenesDespachoPendientes',
-            type: 'POST'
-        },
+        // 'ajax': {
+        //     url: 'listarOrdenesDespachoPendientes',
+        //     dataSrc:''
+        //     // type: 'POST'
+        // },
         'columns': [
             {'data': 'id_od'},
             {'render': 

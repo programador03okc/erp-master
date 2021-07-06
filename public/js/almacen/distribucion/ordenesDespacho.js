@@ -109,13 +109,14 @@ function listarRequerimientosElaborados(){
         'dom': vardataTables[1],
         'buttons': vardataTables[2],
         'language' : vardataTables[0],
-        'bDestroy' : true,
-        'serverSide' : true,
+        'destroy' : true,
+        'ajax' : 'listarRequerimientosElaborados',
+        // 'serverSide' : true,
         // "scrollX": true,
-        'ajax': {
-            url: 'listarRequerimientosElaborados',
-            type: 'POST'
-        },
+        // 'ajax': {
+        //     url: 'listarRequerimientosElaborados',
+        //     type: 'POST'
+        // },
         'columns': [
             {'data': 'id_requerimiento'},
             {'render': function (data, type, row){
@@ -179,12 +180,13 @@ function listarRequerimientosConfirmados(permiso){
         'buttons': vardataTables[2],
         'language' : vardataTables[0],
         'bDestroy' : true,
-        'serverSide' : true,
+        // 'serverSide' : true,
         // "scrollX": true,
-        'ajax': {
-            url: 'listarRequerimientosConfirmados',
-            type: 'POST'
-        },
+        'ajax' : 'listarRequerimientosConfirmados',
+        // 'ajax': {
+        //     url: 'listarRequerimientosConfirmados',
+        //     type: 'POST'
+        // },
         'columns': [
             {'data': 'id_requerimiento'},
             {'render': function (data, type, row){
@@ -281,12 +283,12 @@ function listarRequerimientosPendientes(permiso){
         'buttons': vardataTables[2],
         'language' : vardataTables[0],
         'bDestroy' : true,
-        'serverSide' : true,
-        // "scrollX": true,
-        'ajax': {
-            url: 'listarRequerimientosEnProceso',
-            type: 'POST'
-        },
+        // 'serverSide' : true,
+        'ajax': 'listarRequerimientosEnProceso',
+        // 'ajax': {
+        //     url: 'listarRequerimientosEnProceso',
+        //     type: 'POST'
+        // },
         'columns': [
             {'data': 'id_requerimiento'},
             {'render': function (data, type, row){
@@ -398,7 +400,7 @@ function listarRequerimientosPendientes(permiso){
         'columnDefs': [
             {'aTargets': [0], 'sClass': 'invisible'},
             {'render': function (data, type, row){
-                if (permiso == '1') {
+                // if (permiso == '1') {
                     return '<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" '+
                     'data-placement="bottom" title="Ver Detalle" data-id="'+row['id_requerimiento']+'">'+
                     '<i class="fas fa-chevron-down"></i></button>'+
@@ -428,11 +430,11 @@ function listarRequerimientosPendientes(permiso){
                             `<button type="button" class="adjuntar btn btn-${row['count_despacho_adjuntos']>0 ? 'warning' : 'default' } boton" data-toggle="tooltip" 
                                 data-placement="bottom" data-id="${row['id_od']}" data-cod="${row['codigo_od']}" title="Adjuntar Boleta/Factura" >
                                 <i class="fas fa-paperclip"></i></button>` : '')
-                } else {
-                    return '<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" '+
-                    'data-placement="bottom" title="Ver Detalle" data-id="'+row['id_requerimiento']+'">'+
-                    '<i class="fas fa-chevron-down"></i></button>'
-                }
+                // } else {
+                //     return '<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" '+
+                //     'data-placement="bottom" title="Ver Detalle" data-id="'+row['id_requerimiento']+'">'+
+                //     '<i class="fas fa-chevron-down"></i></button>'
+                // }
                 }, targets: 14
             }
         ],
@@ -533,12 +535,12 @@ function listarRequerimientosEnTransformacion(permiso){
         'buttons': vardataTables[2],
         'language' : vardataTables[0],
         'bDestroy' : true,
-        'serverSide' : true,
-        // "scrollX": true,
-        'ajax': {
-            url: 'listarRequerimientosEnTransformacion',
-            type: 'POST'
-        },
+        // 'serverSide' : true,
+        "ajax": 'listarRequerimientosEnTransformacion',
+        // 'ajax': {
+        //     url: 'listarRequerimientosEnTransformacion',
+        //     type: 'POST'
+        // },
         'columns': [
             {'data': 'id_requerimiento'},
             {'render': function (data, type, row){
@@ -736,12 +738,12 @@ function listarOrdenesPendientes(){
         'buttons': vardataTables[2],
         'language' : vardataTables[0],
         'bDestroy' : true,
-        'serverSide' : true,
-        // "scrollX": true,
-        'ajax': {
-            url: 'listarOrdenesDespacho',
-            type: 'POST'
-        },
+        // 'serverSide' : true,
+        "ajax": 'listarOrdenesDespacho',
+        // 'ajax': {
+        //     url: 'listarOrdenesDespacho',
+        //     type: 'POST'
+        // },
         'columns': [
             {'data': 'id_od'},
             {'render': function (data, type, row){
@@ -832,24 +834,6 @@ function listarOrdenesPendientes(){
         'order': [[1, 'asc']]
     });
     
-    // <button type="button" class="od_detalle btn btn-primary boton" data-toggle="tooltip" 
-    //     data-placement="bottom" title="Ver Detalle" data-id="${row['id_requerimiento']}" 
-    //     data-codigo="${row['codigo_req']}" data-concepto="${row['concepto']}">
-    //     <i class="fas fa-list-ul"></i></button>
-    
-    // $('#ordenesDespacho tbody').on("click","button.od_detalle", function(){
-    //     var id = $(this).data('id');
-    //     var cod = $(this).data('codigo');
-    //     var con = $(this).data('concepto');
-    //     var data = {
-    //         'id_requerimiento': id,
-    //         'codigo': cod,
-    //         'concepto': con,
-    //     };
-    //     console.log(data);
-    //     open_detalle_requerimiento(data);
-    // });
-
     $('#ordenesDespacho tbody').on("click","button.adjuntar", function(){
         var id = $(this).data('id');
         var cod = $(this).data('cod');
@@ -897,12 +881,12 @@ function listarGruposDespachados(permiso){
         'buttons': vardataTables[2],
         'language' : vardataTables[0],
         'bDestroy' : true,
-        'serverSide' : true,
-        // "scrollX": true,
-        'ajax': {
-            url: 'listarGruposDespachados',
-            type: 'POST'
-        },
+        // 'serverSide' : true,
+        "ajax": 'listarGruposDespachados',
+        // 'ajax': {
+        //     url: 'listarGruposDespachados',
+        //     type: 'POST'
+        // },
         'columns': [
             {'data': 'id_od_grupo_detalle'},
             {'render': function (data, type, row){
@@ -1162,13 +1146,13 @@ function listarGruposDespachadosPendientesCargo(permiso){
         'dom': vardataTables[1],
         'buttons': vardataTables[2],
         'language' : vardataTables[0],
-        'bDestroy' : true,
-        'serverSide' : true,
-        // "scrollX": true,
-        'ajax': {
-            url: 'listarGruposDespachadosPendientesCargo',
-            type: 'POST'
-        },
+        'destroy' : true,
+        // 'serverSide' : true,
+        "ajax": 'listarGruposDespachadosPendientesCargo',
+        // 'ajax': {
+        //     url: 'listarGruposDespachadosPendientesCargo',
+        //     type: 'POST'
+        // },
         'columns': [
             {'data': 'id_od_grupo_detalle'},
             {'render': function (data, type, row){

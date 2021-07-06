@@ -45,11 +45,12 @@ function listarUbigeos(){
 }
 
 function selectUbigeo(obj){
-    let idUbigeo= obj.ubigeo;
+    let idUbigeo= obj.dataset.idUbigeo;
     let ubigeoDescripcion = obj.dataset.ubigeoDescripcion;
 
     let page = document.getElementsByClassName('page-main')[0].getAttribute('type');
-
+    console.log('idUbigeo'+idUbigeo);
+    console.log('ubigeoDescripcion'+ubigeoDescripcion);
 
     if(page =='crear-orden-requerimiento'){
         if(modalPage=='modal-proveedor'){
