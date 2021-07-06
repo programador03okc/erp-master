@@ -49,7 +49,8 @@ function mostrar_detalle(){
                     data-placement="bottom" data-partnumber="${element.part_number}" 
                     data-desc="${element.descripcion}" data-id="${element.id_detalle_requerimiento}"
                     title="Asignar producto" >
-                    <i class="fas fa-angle-double-right"></i></button>
+                    <i class="fas fa-angle-double-right"></i>
+                </button>
             </td>
         </tr>`;
         i++;

@@ -37,7 +37,7 @@ class MapeoProductos
                 {'data': 'id_requerimiento', 'searchable':false},
             ],
             'columnDefs': [
-                {'aTargets': [0, 'desc'], 'sClass': 'invisible'},
+                {'aTargets': [0], 'sClass': 'invisible'},
                 {'render': function (data, type, row){
                     return `
                     <div class="text-center">
@@ -50,6 +50,7 @@ class MapeoProductos
                     }, targets: 8
                 }
             ],
+            'order': [[0, 'desc']]
         });
     }
 
