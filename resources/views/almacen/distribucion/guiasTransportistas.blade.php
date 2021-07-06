@@ -2,14 +2,14 @@
 @include('layout.menu_logistica')
 
 @section('cabecera')
-Reporte de Despachos
+Reporte de Despachos con Guías Transportista
 @endsection
 
 @section('breadcrumb')
 <ol class="breadcrumb">
   <li><a href="{{route('logistica.index')}}"><i class="fas fa-tachometer-alt"></i> Logística</a></li>
   <li>Distribución</li>
-  <li class="active">@yield('cabecera')</li>
+  <li class="active">Reporte de Despachos</li>
 </ol>
 @endsection
 

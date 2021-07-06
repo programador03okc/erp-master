@@ -174,6 +174,8 @@ Gestión de Transferencias
 @include('almacen.transferencias.ver_series')
 @include('almacen.guias.guia_com_obs')
 @include('almacen.guias.guia_ven_obs')
+@include('almacen.guias.guia_ven_series')
+
 @endsection
 
 @section('scripts')
@@ -197,6 +199,9 @@ Gestión de Transferencias
     <script src="{{ asset('js/logistica/requerimiento/historial.js')}}"></script>
     <!-- <script src="{{ asset('js/almacen/guia/guia_compraModal.js')}}"></script> -->
     <script src="{{ asset('js/almacen/transferencias/transferenciaCreate.js')}}"></script>
+    <!-- <script src="{{ asset('js/almacen/guia/guia_com_det_series.js')}}"></script> -->
+    <script src="{{ asset('js/almacen/guia/guia_ven_series.js')}}"></script>
+
     <script>
     $(document).ready(function(){
         seleccionarMenu(window.location);

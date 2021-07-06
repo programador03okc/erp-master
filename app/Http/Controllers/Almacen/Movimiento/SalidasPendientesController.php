@@ -20,7 +20,7 @@ class SalidasPendientesController extends Controller
         return view('almacen/guias/despachosPendientes', compact('tp_operacion','clasificaciones','usuarios','motivos_anu'));
     }
     
-    public function listarOrdenesDespachoPendientes(Request $request){
+    public function listarOrdenesDespachoPendientes(){
         $data = DB::table('almacen.orden_despacho')
         ->select('orden_despacho.*','adm_contri.nro_documento','adm_contri.razon_social',
         'alm_req.codigo as codigo_req','alm_req.concepto',
@@ -34,9 +34,11 @@ class SalidasPendientesController extends Controller
         ->join('almacen.alm_req','alm_req.id_requerimiento','=','orden_despacho.id_requerimiento')
         ->join('configuracion.sis_usua','sis_usua.id_usuario','=','orden_despacho.registrado_por')
         ->join('administracion.adm_estado_doc','adm_estado_doc.id_estado_doc','=','orden_despacho.estado')
-        ->where('orden_despacho.estado',1);
-        // ->get();
-        return datatables($data)->toJson();
+        ->where('orden_despacho.estado',1)
+        ->get();
+        $output['data'] = $data;
+        return response()->json($output);
+        // return datatables($data)->toJson();
     }
     
     public function guardar_guia_despacho(Request $request){

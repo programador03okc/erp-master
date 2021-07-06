@@ -7,6 +7,7 @@ function open_transferencia_detalle(data){
         $('#guia').text(data.guia_ven);
         // $('[name=id_transferencia]').val(data.id_transferencia);
         $('[name=id_guia_ven]').val(data.id_guia_ven);
+        $('[name=fecha_almacen]').val(fecha_actual());
         // $('[name=id_requerimiento]').val((data.id_requerimiento_directo !== null) ? data.id_requerimiento_directo : '');
         // $('[name=guia_ingreso_compra]').val(data.guia_ingreso_compra);
         $('[name=id_almacen_destino]').val(data.id_almacen_destino);
@@ -85,7 +86,7 @@ function recibir(){
         var guia_ingreso_compra = $('[name=guia_ingreso_compra]').val();
         var detalle = [];
             
-        $("input[type=checkbox]:checked").each(function(){
+        $("#listaTransferenciaDetalleRecibir input[type=checkbox]:checked").each(function(){
             // console.log($(this).parent().parent()[0].data('idtra'));
             var nuevo = {
                 id_guia_ven_det: $(this).parent().parent()[0].id,

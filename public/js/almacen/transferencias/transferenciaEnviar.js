@@ -91,40 +91,12 @@ function open_guia_transferencia_create(){
         $('[name=id_transferencia]').val('');
         $("#submit_transferencia").removeAttr("disabled");
         
-        // cargar_almacenes(sede_destino, 'id_almacen_destino');
-        // if (alm_destino !== null){
-        //     $('[name=id_almacen_destino]').val(alm_destino);
-        // }
         var data = 'trans_seleccionadas='+JSON.stringify(id_trans_seleccionadas);
         listarDetalleTransferenciaSeleccionadas(data);
     }
 }
 
-// function cargar_almacenes(sede, campo){
-//     if (sede !== ''){
-//         $.ajax({
-//             type: 'GET',
-//             url: 'cargar_almacenes/'+sede,
-//             dataType: 'JSON',
-//             success: function(response){
-//                 console.log(response);
-//                 var option = '';
-//                 for (var i=0; i<response.length; i++){
-//                     if (response.length == 1){
-//                         option+='<option value="'+response[i].id_almacen+'" selected>'+response[i].codigo+' - '+response[i].descripcion+'</option>';
-//                     } else {
-//                         option+='<option value="'+response[i].id_almacen+'">'+response[i].codigo+' - '+response[i].descripcion+'</option>';
-//                     }
-//                 }
-//                 $('[name='+campo+']').html(option);
-//             }
-//         }).fail( function( jqXHR, textStatus, errorThrown ){
-//             console.log(jqXHR);
-//             console.log(textStatus);
-//             console.log(errorThrown);
-//         });
-//     }
-// }
+let listaDetalle = [];
 
 function listarDetalleTransferencia(id_transferencia){
     if (id_transferencia !== ''){
@@ -134,7 +106,8 @@ function listarDetalleTransferencia(id_transferencia){
             dataType: 'JSON',
             success: function(response){
                 console.log(response);
-                mostrarDetalleTransferencia(response);
+                listaDetalle = response;
+                mostrarDetalleTransferencia();
             }
         }).fail( function( jqXHR, textStatus, errorThrown ){
             console.log(jqXHR);
@@ -151,7 +124,8 @@ function listarDetalleTransferenciaSeleccionadas(data){
         data: data,
         dataType: 'JSON',
         success: function(response){
-            mostrarDetalleTransferencia(response);
+            listaDetalle = response;
+            mostrarDetalleTransferencia();
         }
     }).fail( function( jqXHR, textStatus, errorThrown ){
         console.log(jqXHR);
@@ -160,18 +134,21 @@ function listarDetalleTransferenciaSeleccionadas(data){
     });
 }
 
-function mostrarDetalleTransferencia(listaDetalle){
+function mostrarDetalleTransferencia(){
     var html = '';
     var html_series = '';
     var i = 1;
 
     listaDetalle.forEach(element => {
         html_series = '';
+        
         element.series.forEach(ser => {
-            if (html_series==''){
-                html_series+=ser.serie;
-            } else {
-                html_series+='<br>'+ser.serie;
+            if (ser.estado !== 7){
+                if (html_series==''){
+                    html_series+=ser.serie;
+                } else {
+                    html_series+='<br>'+ser.serie;
+                }
             }
         });
         html+=`<tr>
@@ -184,7 +161,12 @@ function mostrarDetalleTransferencia(listaDetalle){
         <td style="background-color: navajowhite;">${element.descripcion}</td>
         <td>${element.cantidad}</td>
         <td>${element.abreviatura}</td>
-        <td><strong>${html_series}</strong></td></tr>`;
+        <td><strong>${ html_series +
+            `<i class="fas fa-bars icon-tabla boton" data-toggle="tooltip" data-placement="bottom" 
+                title="Agregar Series" onClick="open_series_transferencia(${element.id_trans_detalle},${element.id_producto},${element.cantidad});"></i>`}
+            </strong>
+        </td>
+        </tr>`;
         // onClick="agrega_series('.$det->id_detalle_orden.');"
         i++;
     });
@@ -251,14 +233,23 @@ function next_serie_numero(id_sede,id_tp_doc){
 $("#form-transferenciaGuia").on("submit", function(e){
     console.log('submit_transferencia');
     e.preventDefault();
-    var data = $(this).serialize();
+    let data = $(this).serialize();
     console.log(data);
+    let detalle = [];
+
+    listaDetalle.forEach(element => {
+        detalle.push({
+            'id_trans_detalle': element.id_trans_detalle,
+            'series':           element.series,
+        });
+    });
 
     // if (origen == 'transferencia_por_orden'){
     //     guardar_transferencia(data);
     // } 
     // else if (origen == 'transferencia_por_requerimiento'){
-        data+='&trans_seleccionadas='+JSON.stringify(id_trans_seleccionadas);
+        data += '&trans_seleccionadas='+JSON.stringify(id_trans_seleccionadas)
+                +'&detalle='+JSON.stringify(detalle);
         salida_transferencia(data);
     // }
 });

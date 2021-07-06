@@ -4,12 +4,34 @@ function open_series(id_producto,id_od_detalle,cantidad){
     });
     listarSeries(id_producto);
     $('[name=id_od_detalle]').val(id_od_detalle);
+    $('[name=id_trans_detalle]').val('');
+    $('[name=id_producto]').val(id_producto);
+    $('[name=cant_items]').val(cantidad);
+    $('[name=seleccionar_todos]').prop('checked', false);;
+}
+
+let json_series=[];
+
+function open_series_transferencia(id_trans_detalle,id_producto,cantidad){
+    $('#modal-guia_ven_series').modal({
+        show: true
+    });
+    
+    let item=listaDetalle.find(element => element.id_trans_detalle==id_trans_detalle);
+    if (item!==undefined){
+        json_series=item.series;
+    }
+    listarSeries(id_producto);
+
+    $('[name=id_od_detalle]').val('');
+    $('[name=id_trans_detalle]').val(id_trans_detalle);
     $('[name=id_producto]').val(id_producto);
     $('[name=cant_items]').val(cantidad);
     $('[name=seleccionar_todos]').prop('checked', false);;
 }
 
 function listarSeries(id_producto){
+    console.log('id_producto'+id_producto);
     $.ajax({
         type: 'GET',
         url: 'listar_series_guia_ven/'+id_producto,
@@ -18,17 +40,23 @@ function listarSeries(id_producto){
             console.log(response);
             var tr = '';
             var i = 1;
+            var value = '';
+
             response.forEach(element => {
+                value = json_series.find(item => (item.serie==element.serie && item.estado==1));
+
                 tr+=`<tr>
-                <td><input type="checkbox" name="sel" data-serie="${element.serie}" data-id="${element.id_prod_serie}"/></td>
+                <td>
+                    <input type="checkbox" data-serie="${element.serie}" value="${element.id_prod_serie}" 
+                    ${value!==undefined ? 'checked' : ''}/></td>
                 <td class="numero">${i}</td>
                 <td class="serie">${element.serie}</td>
                 <td>${element.guia_com}</td>
                 </tr>`;
+
                 i++;
             });
-            $('#listaSeries tbody').html(tr);
-            // $('[name=serie_prod]').focus();
+            $('#listaSeriesVen tbody').html(tr);
         }
     }).fail( function( jqXHR, textStatus, errorThrown ){
         console.log(jqXHR);
@@ -39,21 +67,41 @@ function listarSeries(id_producto){
 
 function guardar_series(){
 
-    var serie = null;
-    var id_prod_serie = null;
-    var json_series = [];
+    let serie = null;
+    let id_prod_serie = null;
+    let series_chk = [];
+    
+    let value = null;
+    let obj = '';
+    
+    $("#listaSeriesVen input[type=checkbox]:checked").each(function(){
 
-    $("#listaSeries input[type=checkbox]:checked").each(function(){
+        id_prod_serie = $(this).val();
         serie = $(this).data('serie');
-        id_prod_serie = $(this).data('id');
-        console.log(serie);
-        json_series.push({'serie':serie, 'id_prod_serie':id_prod_serie});
+        obj = {'serie':serie, 'id_prod_serie':id_prod_serie, 'estado':1};
+        
+        series_chk.push(obj);
+        value = json_series.find(item => item.serie==obj.serie);
+        //agrego las series nuevas
+        if (value==undefined){
+            json_series.push(obj);
+        }
+        
+    });
+    
+    let val = '';
+
+    json_series.forEach(element => {
+        
+        val = series_chk.find(item => item.serie==element.serie);
+        //anulo las que se deschekearon
+        (val==undefined ? element.estado = 7 : element.estado = 1);
     });
 
     var id_od_detalle = $('[name=id_od_detalle]').val();
+    var id_trans_detalle = $('[name=id_trans_detalle]').val();
     var cant = $('[name=cant_items]').val();
 
-    console.log('cant'+parseInt(cant)+' length'+json_series.length);
     var rspta = false;
     
     if (json_series.length == 0){
@@ -80,144 +128,27 @@ function guardar_series(){
         console.log(detalle);
         mostrar_detalle();
         $('#modal-guia_ven_series').modal('hide');
+    } 
+    else if (rspta && id_trans_detalle !== ''){
+            
+        var json = listaDetalle.find(element => element.id_trans_detalle == id_trans_detalle);
+        
+        if (json !== null){
+            json.series = json_series;
+        }
+        mostrarDetalleTransferencia();
+        $('#modal-guia_ven_series').modal('hide');
     }
 }
 
 $("[name=seleccionar_todos]").on( 'change', function() {
     if( $(this).is(':checked') ) {
-        $("#listaSeries tbody tr").each(function(){
+        $("#listaSeriesVen tbody tr").each(function(){
             $(this).find("td input[type=checkbox]").prop('checked', true);
         });
     } else {
-        $("#listaSeries tbody tr").each(function(){
+        $("#listaSeriesVen tbody tr").each(function(){
             $(this).find("td input[type=checkbox]").prop('checked', false);
         });
     }
 });
-
-// function handleKeyPress(event){
-//     var exeptuados = ['/','"',"'",'*','+','#','$','%','&','(',')','=','?','¿','¡','!','.','¨','^','´','`','_',',',';','>','<','|','°','¬']
-//     if (event.which == 13) {
-//         buscar_serie();
-//     } else if (exeptuados.includes(event.key)){
-//         event.returnValue = false;
-//         alert('Valor No Permitido: '+event.key);
-//     }
-// }
-
-// function buscar_serie(){
-//     var serie = $('[name=serie_prod]').val();
-//     $.ajax({
-//         type: 'GET',
-//         url: 'buscar_serie/'+serie,
-//         dataType: 'JSON',
-//         success: function(response){
-//             console.log('response'+response);
-//             // if (!jQuery.isEmptyObject(response)){
-//             if (Object.entries(response).length === 0){
-//                 alert('No existe dicha Serie');
-//             } else {
-//                 if (response.id_guia_ven_det == null){
-//                     if (!exist(response.serie)){
-//                         agregar_serie(response.id_prod_serie, response.serie, response.guia_com);
-//                     } else {
-//                         alert('Dicha serie ya fue ingresada!');
-//                     }
-//                 } else {
-//                     alert('La serie ya fue asignada a otra Guía:'+response.guia_ven);
-//                 }
-//             }
-//         }
-//     }).fail( function( jqXHR, textStatus, errorThrown ){
-//         console.log(jqXHR);
-//         console.log(textStatus);
-//         console.log(errorThrown);
-//     });
-// }
-
-// function agregar_serie(id_prod_serie,serie,guia_com){
-//     if (serie !== '') {
-//         var items = $('[name=cant_items]').val();
-//         var cant = $('#listaSeries tbody tr').length + 1;
-//         console.log('cant:'+cant+' items:'+items);
-//         if (cant <= items){
-//             var td = '<tr id="'+id_prod_serie+'"><td class="numero">'+cant+'</td><td class="serie">'+serie+'</td><td>'+guia_com+'</td><td><i class="btn btn-danger fas fa-trash fa-lg" onClick="eliminar_serie('+"'"+id_prod_serie+"'"+');"></i></td></tr>';
-//             $('#listaSeries tbody').append(td);
-//             $('[name=serie_prod]').val('');
-//             $('[name=serie_prod]').focus();
-//         } else {
-//             alert('Ha superado la cantidad del producto!\nYa no puede agregar mas series.');
-//         }
-//     } else {
-//         alert('El campo serie esta vacío!');
-//     }
-// }
-
-// function eliminar_serie(id_prod_serie){
-//     var elimina = confirm("¿Esta seguro que desea eliminar ésta serie?");
-//     if (elimina){
-//         var id = $("#"+id_prod_serie)[0].firstChild.innerHTML;
-//         console.log('id:'+id);
-//         console.log('id_prod_serie'+id_prod_serie);
-
-//         var a = $('[name=anulados]').val();
-//         if (a == ''){
-//             a += id_prod_serie;
-//         } else {
-//             a += ','+id_prod_serie;
-//         }
-//         $('[name=anulados]').val(a);
-    
-//         $("#"+id_prod_serie).remove();
-
-//         var i = 1;
-//         $(".numero").each(function(){
-//             console.log('dentro');
-//             console.log($(this).html());
-//             $(this).html(i);
-//             i++;
-//         });
-//     }
-// }
-
-// function exist(serie){
-//     var exist = false;
-//     $(".serie").each(function(){
-//         exist = (serie == $(this).html());
-//     });
-//     return exist;
-// }
-
-// function guardar_series(){
-//     var ids = [];
-//     $("#listaSeries tbody tr").each(function(){
-//         console.log($(this)[0].id);
-//         ids.push($(this)[0].id);
-//     });
-    
-//     var id_guia_ven_det = $("[name=id_guia_ven_det]").val();
-//     var anulados = $('[name=anulados]').val();
-//     var data =  'id_guia_ven_det='+id_guia_ven_det+
-//                 '&ids='+ids+
-//                 '&anulados='+anulados;
-//     console.log(data);
-//     $.ajax({
-//         type: 'POST',
-//         url: 'update_series',
-//         data: data,
-//         dataType: 'JSON',
-//         success: function(response){
-//             console.log('response:'+response);
-//             if (response > 0){
-//                 alert('Series registradas con éxito');
-//                 $('#modal-guia_ven_series').modal('hide');
-//                 var id_guia_ven = $("[name=id_guia_ven]").val();
-//                 listar_detalle(id_guia_ven);
-//             }
-//         }
-//     }).fail( function( jqXHR, textStatus, errorThrown ){
-//         console.log(jqXHR);
-//         console.log(textStatus);
-//         console.log(errorThrown);
-//     });
-// }
