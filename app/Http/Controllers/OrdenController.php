@@ -14,6 +14,8 @@ use Debugbar;
 use PDO;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\ListOrdenesHeadExport;
+use App\Models\Almacen\UnidadMedida;
+use App\Models\Configuracion\Moneda;
 use App\Models\Logistica\Orden;
 use Carbon\Carbon;
 class OrdenController extends Controller
@@ -39,8 +41,8 @@ class OrdenController extends Controller
         $categorias = (new AlmacenController)->mostrar_categorias_cbo();
         $unidades = (new AlmacenController)->mostrar_unidades_cbo();
 
-        $unidades_medida = (new LogisticaController)->mostrar_unidad_medida();
-        $monedas = (new LogisticaController)->mostrar_moneda();
+        $unidades_medida = UnidadMedida::mostrar();
+        $monedas = Moneda::mostrar();
         // $sedes = Auth::user()->sedesAcceso();
 
         return view('logistica/ordenes/generar_orden_requerimiento', compact('sedes','empresas','sis_identidad','tp_documento', 'tp_moneda','tp_doc','condiciones','clasificaciones','subcategorias','categorias','unidades','unidades_medida','monedas'));
@@ -60,8 +62,8 @@ class OrdenController extends Controller
         $categorias = (new AlmacenController)->mostrar_categorias_cbo();
         $unidades = (new AlmacenController)->mostrar_unidades_cbo();
 
-        $unidades_medida = (new LogisticaController)->mostrar_unidad_medida();
-        $monedas = (new LogisticaController)->mostrar_moneda();
+        $unidades_medida = UnidadMedida::mostrar();
+        $monedas = Moneda::mostrar();
         // $sedes = Auth::user()->sedesAcceso();
 
         return view('logistica/gestion_logistica/compras/ordenes/elaborar/crear_orden_requerimiento', compact('sedes','sis_identidad','tp_documento', 'tp_moneda','tp_doc','condiciones','clasificaciones','subcategorias','categorias','unidades','unidades_medida','monedas'));
