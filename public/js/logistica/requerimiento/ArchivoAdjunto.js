@@ -101,10 +101,14 @@ class ArchivoAdjunto {
         `);
     }
 
-    static descargarArchivoRequerimieto(id) {
+    static descargarArchivoRequerimiento(id) {
+        console.log('descargarArchivoRequerimiento');
+        console.log(id);
+        console.log(tempArchivoAdjuntoRequerimientoList);
         if (tempArchivoAdjuntoRequerimientoList.length > 0) {
             tempArchivoAdjuntoRequerimientoList.forEach(element => {
                 if (element.id == id) {
+                    console.log("/files/logistica/requerimiento/" + element.nameFile);
                     window.open("/files/logistica/requerimiento/" + element.nameFile);
                 }
             });
@@ -124,6 +128,7 @@ class ArchivoAdjunto {
     }
 
     static descargarArchivoItem(id) {
+        console.log('descargarArchivoItem');
         if (tempArchivoAdjuntoItemList.length > 0) {
             tempArchivoAdjuntoItemList.forEach(element => {
                 if (element.id == id) {

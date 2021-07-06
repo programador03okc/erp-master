@@ -37,8 +37,8 @@
                                 <td id="creado_por" style="width:18%;"></td>
                                 <td style="width:10%; font-weight:bold; text-align:right;">Archivos adjuntos</td>
                                 <td>    
-                                    <a title="Ver archivos adjuntos de requerimiento" style="cursor:pointer;" onClick="aprobarRequerimiento.verAdjuntosRequerimiento();" >
-                                    Ver adjuntos: <span name="cantidadAdjuntosRequerimiento">0</span>
+                                    <a title="Ver archivos adjuntos de requerimiento" style="cursor:pointer;" onClick="aprobarRequerimientoView.verAdjuntosRequerimiento();" >
+                                    Ver (<span name="cantidadAdjuntosRequerimiento">0</span>)
                                     </a>
                                 </td>
                                 <td></td>
@@ -70,7 +70,7 @@
                                 <th style="width: 5%">Precio U. <span name="simboloMoneda">S/</span></th>
                                 <th style="width: 5%">Subtotal</th>
                                 <th style="width: 20%">Motivo</th>
-                                <th style="width: 2%">Acciones</th>
+                                <th style="width: 2%">Adjuntos</th>
                             </tr>
                         </thead>
                         <tbody id="body_item_requerimiento">

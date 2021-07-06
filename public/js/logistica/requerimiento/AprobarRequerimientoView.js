@@ -281,6 +281,7 @@ class AprobarRequerimientoView {
                     'id': element.id_adjunto,
                     'id_requerimiento': element.id_requerimiento,
                     'archivo': element.archivo,
+                    'nameFile': element.archivo,
                     'categoria_adjunto_id': element.categoria_adjunto_id,
                     'categoria_adjunto': element.categoria_adjunto,
                     'fecha_registro': element.fecha_registro,
@@ -323,7 +324,7 @@ class AprobarRequerimientoView {
                     <td style="text-align:left;">${element.categoria_adjunto}</td>
                     <td style="text-align:center;">
                         <div class="btn-group" role="group">`;
-                    html += `<button type="button" class="btn btn-info btn-md" name="btnDescargarArchivoItem" title="Descargar" onclick="ArchivoAdjunto.descargarArchivoItem('${element.id}');" ><i class="fas fa-file-archive"></i></button>`;
+                    html += `<button type="button" class="btn btn-info btn-md" name="btnDescargarArchivoItem" title="Descargar" onclick="ArchivoAdjunto.descargarArchivoRequerimiento('${element.id}');" ><i class="fas fa-file-archive"></i></button>`;
                     html += `</div>
                     </td>
                     </tr>`;
@@ -359,7 +360,7 @@ class AprobarRequerimientoView {
 
                     });
                 }
-                html = `<tr>
+                html += `<tr>
                             <td>${i + 1}</td>
                             <td>${data[i].descripcion_partida ? data[i].descripcion_partida : ''}</td>
                             <td>${data[i].descripcion_centro_costo ? data[i].descripcion_centro_costo : ''}</td>
@@ -372,7 +373,7 @@ class AprobarRequerimientoView {
                             <td>${data[i].motivo ? data[i].motivo : ''}</td>
                             <td style="text-align: center;"> 
                                 <a title="Ver archivos adjuntos de item" style="cursor:pointer;" onClick="aprobarRequerimientoView.verAdjuntosItem(${data[i].id_detalle_requerimiento})">
-                                    Ver adjuntos: <span name="cantidadAdjuntosItem">0</span>
+                                    Ver (<span name="cantidadAdjuntosItem">0</span>)
                                 </a>
                             </td>
                         </tr>`;

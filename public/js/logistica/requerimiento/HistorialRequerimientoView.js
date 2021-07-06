@@ -216,15 +216,16 @@ class HistorialRequerimientoView{
 
 
     mostrarDetalleRequerimiento(data,estado) {
-        let hasDisabledInput= '';
-        if(estado ==3 || estado == 7){
-            hasDisabledInput= 'disabled';
-        }
+        let hasDisabledInput= 'disabled';
+        // if(,estado ==3 || estado == 7){
+        //     hasDisabledInput= 'disabled';
+        // }
 
         requerimientoView.limpiarTabla('ListaDetalleRequerimiento');
         vista_extendida();
         for (let i = 0; i < data.length; i++) {
-            if (data[i].id_tipo_item == 1) { // producto
+            if (data[i].estado != 7) { 
+                if (data[i].id_tipo_item == 1) { // producto
                 document.querySelector("tbody[id='body_detalle_requerimiento']").insertAdjacentHTML('beforeend', `<tr style="text-align:center">
                 <td></td>
                 <td><p class="descripcion-partida" data-id-partida="${data[i].id_partida}" data-presupuesto-total="${data[i].presupuesto_total_partida}" title="${data[i].codigo_partida != null ? data[i].codigo_partida : ''}" >${data[i].descripcion_partida != null ? data[i].descripcion_partida : '(NO SELECCIONADO)'}</p><button type="button" class="btn btn-xs btn-info activation" name="partida" onclick="requerimientoView.cargarModalPartidas(this)" ${hasDisabledInput}>Seleccionar</button> 
@@ -263,55 +264,55 @@ class HistorialRequerimientoView{
                             <i class="fas fa-paperclip"></i>
                             <span class="badge" name="cantidadAdjuntosItem" style="position:absolute; top:-10px; left:-10px; border: solid 0.1px;">0</span>    
                         </button> 
-                        <button type="button" class="btn btn-danger btn-xs" name="btnEliminarItem[]" title="Eliminar" onclick="requerimientoView.eliminarItem(this)" ${hasDisabledInput}><i class="fas fa-trash-alt"></i></button>
+                        <button type="button" class="btn btn-danger btn-xs activation" name="btnEliminarItem[]" title="Eliminar" onclick="requerimientoView.eliminarItem(this)" ${hasDisabledInput}><i class="fas fa-trash-alt"></i></button>
                     </div>
                 </td>
                 </tr>`);
-            } else { // servicio
-                document.querySelector("tbody[id='body_detalle_requerimiento']").insertAdjacentHTML('beforeend', `<tr style="text-align:center">
-                <td></td>
-                <td><p class="descripcion-partida" data-id-partida="${data[i].id_partida}" data-presupuesto-total="${data[i].presupuesto_total_partida}" title="${data[i].codigo_partida != null ? data[i].codigo_partida : ''}" >${data[i].descripcion_partida != null ? data[i].descripcion_partida : '(NO SELECCIONADO)'}</p><button type="button" class="btn btn-xs btn-info activation" name="partida" onclick="requerimientoView.cargarModalPartidas(this)" ${hasDisabledInput}>Seleccionar</button> 
-                    <div class="form-group">
-                        <input type="text" class="partida" name="idPartida[]" value="${data[i].id_partida}" hidden>
-                    </div>
-                </td>
-                <td><p class="descripcion-centro-costo" title="${data[i].codigo_centro_costo != null ? data[i].codigo_centro_costo : ''}">${data[i].descripcion_centro_costo != null ? data[i].descripcion_centro_costo : '(NO SELECCIONADO)'}</p><button type="button" class="btn btn-xs btn-primary activation" name="centroCostos" onclick="requerimientoView.cargarModalCentroCostos(this)" ${tempCentroCostoSelected != undefined ? 'disabled' : ''} title="${tempCentroCostoSelected != undefined ? 'El centro de costo esta asignado a un proyecto' : ''}" ${hasDisabledInput} >Seleccionar</button> 
-                    <div class="form-group">
-                        <input type="text" class="centroCosto" name="idCentroCosto[]" value="${data[i].id_centro_costo}" hidden>
-                    </div>
-                </td>
-                <td>(Servicio)<input type="hidden" name="partNumber[]"></td>
-                <td>
-                    <div class="form-group">
-                    <textarea class="form-control activation input-sm descripcion" name="descripcion[]" placeholder="Descripción" value="${data[i].descripcion != null ? data[i].descripcion : ''}" onkeyup ="requerimientoView.updateDescripcionItem(this);" ${hasDisabledInput}>${data[i].descripcion != null ? data[i].descripcion : ''}"</textarea></td>
-                    </div>
-                <td><select name="unidad[]" class="form-control activation input-sm" value="${data[i].id_unidad_medida}" >${document.querySelector("select[id='selectUnidadMedida']").innerHTML}</select></td>
-                <td>
-                    <div class="form-group">
-                        <input class="form-control activation input-sm cantidad text-right" type="number" min="1" name="cantidad[]"  value="${data[i].cantidad}" onkeyup ="requerimientoView.updateSubtotal(this); requerimientoView.updateCantidadItem(this); requerimientoView.calcularPresupuestoUtilizadoYSaldoPorPartida();" placeholder="Cantidad" ${hasDisabledInput}>
-                    </div>
-                </td>
-                <td>
-                    <div class="form-group">
-                        <input class="form-control activation input-sm precio text-right" type="number" min="0" name="precioUnitario[]" value="${data[i].precio_unitario}" onkeyup="requerimientoView.updateSubtotal(this); requerimientoView.updatePrecioItem(this); requerimientoView.calcularPresupuestoUtilizadoYSaldoPorPartida();" placeholder="Precio U." ${hasDisabledInput}>
-                    </div>  
-                </td>
-                <td style="text-align:right;"><span class="moneda" name="simboloMoneda[]">S/</span><span class="subtotal" name="subtotal[]">0.00</span></td>
-                <td><textarea class="form-control input-sm" name="motivo[]"  value="${data[i].motivo != null ? data[i].motivo : ''}" placeholder="Motivo de requerimiento de item (opcional)" ${hasDisabledInput} >${data[i].motivo != null ? data[i].motivo : ''}</textarea></td>
-                <td>
-                    <div class="btn-group" role="group">
-                        <input type="hidden" class="tipoItem" name="tipoItem[]" value="1">
-                        <input type="hidden" class="idRegister" name="idRegister[]" value="${data[i].id_detalle_requerimiento}">
-                        <button type="button" class="btn btn-warning btn-xs" name="btnAdjuntarArchivoItem[]" title="Adjuntos" onclick="requerimientoView.adjuntarArchivoItem(this)">
-                            <i class="fas fa-paperclip"></i>
-                            <span class="badge" name="cantidadAdjuntosItem" style="position:absolute; top:-10px; left:-10px; border: solid 0.1px;">0</span>    
-                        </button> 
-                        <button type="button" class="btn btn-danger btn-xs" name="btnEliminarItem[]" title="Eliminar" onclick="requerimientoView.eliminarItem(this)" ${hasDisabledInput} ><i class="fas fa-trash-alt"></i></button>
-                    </div>
-                </td>
-                </tr>`);
+                } else { // servicio
+                    document.querySelector("tbody[id='body_detalle_requerimiento']").insertAdjacentHTML('beforeend', `<tr style="text-align:center">
+                    <td></td>
+                    <td><p class="descripcion-partida" data-id-partida="${data[i].id_partida}" data-presupuesto-total="${data[i].presupuesto_total_partida}" title="${data[i].codigo_partida != null ? data[i].codigo_partida : ''}" >${data[i].descripcion_partida != null ? data[i].descripcion_partida : '(NO SELECCIONADO)'}</p><button type="button" class="btn btn-xs btn-info activation" name="partida" onclick="requerimientoView.cargarModalPartidas(this)" ${hasDisabledInput}>Seleccionar</button> 
+                        <div class="form-group">
+                            <input type="text" class="partida" name="idPartida[]" value="${data[i].id_partida}" hidden>
+                        </div>
+                    </td>
+                    <td><p class="descripcion-centro-costo" title="${data[i].codigo_centro_costo != null ? data[i].codigo_centro_costo : ''}">${data[i].descripcion_centro_costo != null ? data[i].descripcion_centro_costo : '(NO SELECCIONADO)'}</p><button type="button" class="btn btn-xs btn-primary activation" name="centroCostos" onclick="requerimientoView.cargarModalCentroCostos(this)" ${tempCentroCostoSelected != undefined ? 'disabled' : ''} title="${tempCentroCostoSelected != undefined ? 'El centro de costo esta asignado a un proyecto' : ''}" ${hasDisabledInput} >Seleccionar</button> 
+                        <div class="form-group">
+                            <input type="text" class="centroCosto" name="idCentroCosto[]" value="${data[i].id_centro_costo}" hidden>
+                        </div>
+                    </td>
+                    <td>(Servicio)<input type="hidden" name="partNumber[]"></td>
+                    <td>
+                        <div class="form-group">
+                        <textarea class="form-control activation input-sm descripcion" name="descripcion[]" placeholder="Descripción" value="${data[i].descripcion != null ? data[i].descripcion : ''}" onkeyup ="requerimientoView.updateDescripcionItem(this);" ${hasDisabledInput} >${data[i].descripcion != null ? data[i].descripcion : ''}</textarea></td>
+                        </div>
+                    <td><select name="unidad[]" class="form-control activation input-sm" value="${data[i].id_unidad_medida}"  ${hasDisabledInput}>${document.querySelector("select[id='selectUnidadMedida']").innerHTML}</select></td>
+                    <td>
+                        <div class="form-group">
+                            <input class="form-control activation input-sm cantidad text-right" type="number" min="1" name="cantidad[]"  value="${data[i].cantidad}" onkeyup ="requerimientoView.updateSubtotal(this); requerimientoView.updateCantidadItem(this); requerimientoView.calcularPresupuestoUtilizadoYSaldoPorPartida();" placeholder="Cantidad" ${hasDisabledInput}>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="form-group">
+                            <input class="form-control activation input-sm precio text-right" type="number" min="0" name="precioUnitario[]" value="${data[i].precio_unitario}" onkeyup="requerimientoView.updateSubtotal(this); requerimientoView.updatePrecioItem(this); requerimientoView.calcularPresupuestoUtilizadoYSaldoPorPartida();" placeholder="Precio U." ${hasDisabledInput}>
+                        </div>  
+                    </td>
+                    <td style="text-align:right;"><span class="moneda" name="simboloMoneda[]">S/</span><span class="subtotal" name="subtotal[]">0.00</span></td>
+                    <td><textarea class="form-control activation input-sm" name="motivo[]"  value="${data[i].motivo != null ? data[i].motivo : ''}" placeholder="Motivo de requerimiento de item (opcional)" ${hasDisabledInput} >${data[i].motivo != null ? data[i].motivo : ''}</textarea></td>
+                    <td>
+                        <div class="btn-group" role="group">
+                            <input type="hidden" class="tipoItem" name="tipoItem[]" value="1">
+                            <input type="hidden" class="idRegister" name="idRegister[]" value="${data[i].id_detalle_requerimiento}">
+                            <button type="button" class="btn btn-warning btn-xs" name="btnAdjuntarArchivoItem[]" title="Adjuntos" onclick="requerimientoView.adjuntarArchivoItem(this)">
+                                <i class="fas fa-paperclip"></i>
+                                <span class="badge" name="cantidadAdjuntosItem" style="position:absolute; top:-10px; left:-10px; border: solid 0.1px;">0</span>    
+                            </button> 
+                            <button type="button" class="btn btn-danger btn-xs activation" name="btnEliminarItem[]" title="Eliminar" onclick="requerimientoView.eliminarItem(this)" ${hasDisabledInput} ><i class="fas fa-trash-alt"></i></button>
+                        </div>
+                    </td>
+                    </tr>`);
+                }
             }
-
         }
         requerimientoView.updateContadorItem();
         requerimientoView.autoUpdateSubtotal();
