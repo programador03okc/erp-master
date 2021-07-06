@@ -337,12 +337,13 @@ class AprobarRequerimientoView {
     }
 
     construirSeccionItemsDeRequerimiento(data) {
+        console.log(data);
         requerimientoView.limpiarTabla('listaDetalleRequerimientoModal');
         tempArchivoAdjuntoItemList = [];
         let html = '';
-        let cantidadAdjuntosItem = 0;
         if (data.length > 0) {
             for (let i = 0; i < data.length; i++) {
+                let cantidadAdjuntosItem = 0;
                 cantidadAdjuntosItem = data[i].adjuntos.length;
                 if (cantidadAdjuntosItem > 0) {
                     (data[i].adjuntos).forEach(element => {
@@ -372,9 +373,7 @@ class AprobarRequerimientoView {
                             <td>${(data[i].subtotal ? Util.formatoNumero(data[i].subtotal, 2) : '')}</td>
                             <td>${data[i].motivo ? data[i].motivo : ''}</td>
                             <td style="text-align: center;"> 
-                                <a title="Ver archivos adjuntos de item" style="cursor:pointer;" onClick="aprobarRequerimientoView.verAdjuntosItem(${data[i].id_detalle_requerimiento})">
-                                    Ver (<span name="cantidadAdjuntosItem">0</span>)
-                                </a>
+                                ${cantidadAdjuntosItem>0?'<a title="Ver archivos adjuntos de item" style="cursor:pointer;" onClick="aprobarRequerimientoView.verAdjuntosItem('+data[i].id_detalle_requerimiento+')">Ver (<span name="cantidadAdjuntosItem">'+cantidadAdjuntosItem+'</span>)</a>':'-'}
                             </td>
                         </tr>`;
             }
@@ -382,7 +381,7 @@ class AprobarRequerimientoView {
 
         }
         document.querySelector("tbody[id='body_item_requerimiento']").insertAdjacentHTML('beforeend', html)
-        document.querySelector("span[name='cantidadAdjuntosItem']").textContent = cantidadAdjuntosItem;
+ 
 
     }
 
