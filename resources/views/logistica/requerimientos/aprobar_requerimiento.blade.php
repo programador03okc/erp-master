@@ -137,6 +137,7 @@ Revisar y aprobar requerimientos
 <script src="{{ asset('datatables/DataTables/js/dataTables.bootstrap.min.js') }}"></script>
 
  
+<script src="{{ asset('js/logistica/requerimiento/ArchivoAdjunto.js')}}"></script>
 <script src="{{ asset('js/logistica/requerimiento/AprobarRequerimientoView.js')}}"></script>
 <script src="{{ asset('js/logistica/requerimiento/RequerimientoView.js')}}"></script>
 <script src="{{ asset('js/logistica/requerimiento/RequerimientoController.js')}}"></script>
