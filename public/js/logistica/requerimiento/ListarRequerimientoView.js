@@ -37,15 +37,16 @@ class ListarRequerimientoView{
 
                 {
                     'render': function (data, type, row) {
-                        if (row['id_prioridad'] == '1') {
-                            return '<center> <i class="fas fa-thermometer-empty green"  data-toggle="tooltip" data-placement="right" title="Prioridad '+row['priori']+'" ></i></center>';
-                        } else if (row['id_prioridad'] == '2') {
-                            return '<center> <i class="fas fa-thermometer-half orange"  data-toggle="tooltip" data-placement="right" title="Prioridad '+row['priori']+'"  ></i></center>';
-                        } else if (row['id_prioridad']=='3') {
-                            return '<center> <i class="fas fa-thermometer-full red"  data-toggle="tooltip" data-placement="right" title="Prioridad '+row['priori']+'"  ></i></center>';
-                        } else {
-                            return '';
-                        }
+                        return row['termometro'];
+                        // if (row['id_prioridad'] == '1') {
+                        //     return '<center> <i class="fas fa-thermometer-empty green"  data-toggle="tooltip" data-placement="right" title="Prioridad '+row['priori']+'" ></i></center>';
+                        // } else if (row['id_prioridad'] == '2') {
+                        //     return '<center> <i class="fas fa-thermometer-half orange"  data-toggle="tooltip" data-placement="right" title="Prioridad '+row['priori']+'"  ></i></center>';
+                        // } else if (row['id_prioridad']=='3') {
+                        //     return '<center> <i class="fas fa-thermometer-full red"  data-toggle="tooltip" data-placement="right" title="Prioridad '+row['priori']+'"  ></i></center>';
+                        // } else {
+                        //     return '';
+                        // }
                     }, targets: 0
                 },
                 {

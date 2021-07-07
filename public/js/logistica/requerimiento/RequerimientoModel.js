@@ -50,7 +50,7 @@ class RequerimientoModel {
                         "text": "Cargando partidas..."
                     });
         
-                    $('#modal-partidas').LoadingOverlay("show", {
+                    $('#modal-partidas div.modal-body').LoadingOverlay("show", {
                         imageAutoResize: true,
                         progress: true,
                         custom: customElement,
@@ -61,7 +61,7 @@ class RequerimientoModel {
                     resolve(response);
                 },
                 fail: function (jqXHR, textStatus, errorThrown) {
-                    $('#modal-partidas').LoadingOverlay("hide", true);
+                    $('#modal-partidas div.modal-body').LoadingOverlay("hide", true);
                     alert("Hubo un problema al cargar las partidas. Por favor actualice la página e intente de nuevo");
                     console.log(jqXHR);
                     console.log(textStatus);
@@ -89,7 +89,7 @@ class RequerimientoModel {
                         "text": "Cargando centro de costo..."
                     });
         
-                    $('#modal-centro-costos').LoadingOverlay("show", {
+                    $('#modal-centro-costos div.modal-body').LoadingOverlay("show", {
                         imageAutoResize: true,
                         progress: true,
                         custom: customElement,
@@ -100,7 +100,7 @@ class RequerimientoModel {
                     resolve(response);
                 },
                 fail: function (jqXHR, textStatus, errorThrown) {
-                    $('#modal-centro-costos').LoadingOverlay("hide", true);
+                    $('#modal-centro-costos div.modal-body').LoadingOverlay("hide", true);
                     alert("Hubo un problema al cargar los centro de costo. Por favor actualice la página e intente de nuevo");
                     console.log(jqXHR);
                     console.log(textStatus);
@@ -193,7 +193,7 @@ class RequerimientoModel {
                 "text": "Registrando respuesta..."
             });
 
-            $('#modal-requerimiento').LoadingOverlay("show", {
+            $('#modal-requerimiento div.modal-body').LoadingOverlay("show", {
                 imageAutoResize: true,
                 progress: true,
                 custom: customElement,
@@ -204,7 +204,7 @@ class RequerimientoModel {
                 resolve(response);
             },
             fail: function (jqXHR, textStatus, errorThrown) {
-                $('#modal-requerimiento').LoadingOverlay("hide", true);
+                $('#modal-requerimiento div.modal-body').LoadingOverlay("hide", true);
                 alert("Hubo un problema al registrar la respuesta. Por favor actualice la página e intente de nuevo");
                 console.log(jqXHR);
                 console.log(textStatus);
@@ -232,7 +232,7 @@ class RequerimientoModel {
                         "text": "Cargando detalle de requerimiento..."
                     });
         
-                    $('#modal-requerimiento').LoadingOverlay("show", {
+                    $('#modal-requerimiento div.modal-body').LoadingOverlay("show", {
                         imageAutoResize: true,
                         progress: true,
                         custom: customElement,
@@ -243,7 +243,7 @@ class RequerimientoModel {
                     resolve(response);
                 },
                 fail: function (jqXHR, textStatus, errorThrown) {
-                    $('#modal-requerimiento').LoadingOverlay("hide", true);
+                    $('#modal-requerimiento div.modal-body').LoadingOverlay("hide", true);
                     alert("Hubo un problema al registrar la respuesta. Por favor actualice la página e intente de nuevo");
                     console.log(jqXHR);
                     console.log(textStatus);

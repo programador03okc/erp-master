@@ -9,7 +9,9 @@ class Requerimiento extends Model
 {
     protected $table = 'almacen.alm_req';
     protected $primaryKey = 'id_requerimiento';
+    protected $appends = ['termometro'];
     public $timestamps = false;
+
 
     public function getFechaEntregaAttribute(){
         $fecha= new Carbon($this->attributes['fecha_entrega']);
@@ -21,10 +23,27 @@ class Requerimiento extends Model
         return $fecha->format('d-m-Y H:i');
     }
 
-    public static function getRequerimiento($idRequerimiento){
-        $requerimiento = Requerimiento::where('id_requerimiento',$idRequerimiento)->get();
-        return $requerimiento;
+    public function getTermometroAttribute(){
+
+        switch ($this->attributes['id_prioridad']) {
+            case '1':
+                return '<div class="text-center"> <i class="fas fa-thermometer-empty green"  data-toggle="tooltip" data-placement="right" title="Normal"></i> </div>';
+                break;
+            
+            case '2':
+                return '<div class="text-center"> <i class="fas fa-thermometer-half orange"  data-toggle="tooltip" data-placement="right" title="Alta"></i> </div>';
+                break;
+            
+            case '3':
+                return '<div class="text-center"> <i class="fas fa-thermometer-full red"  data-toggle="tooltip" data-placement="right" title="Crítica"></i> </div>';
+                break;
+
+            default:
+                return '';
+                break;
+        }
     }
+ 
     public static function obtenerCantidadRegistros($tipoRequerimiento,$grupo){
         $yyyy = date('Y', strtotime("now"));
         $num = Requerimiento::where('id_tipo_requerimiento',$tipoRequerimiento)
@@ -78,5 +97,10 @@ class Requerimiento extends Model
     public function tipo(){
         return $this->belongsTo('App\Models\Almacen\TipoRequerimiento','id_tipo_requerimiento','id_tipo_requerimiento');
     }
-
+    public function division(){
+        return $this->belongsTo('App\Models\Administracion\DivisionArea','division_id','id_division');
+    }
+    public function creadoPor(){
+        return $this->belongsTo('App\Models\Configuracion\Usuario','id_usuario','id_usuario');
+    }
 }

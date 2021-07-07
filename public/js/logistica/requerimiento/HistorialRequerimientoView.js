@@ -13,6 +13,7 @@ class HistorialRequerimientoView{
     }
 
     construirTablaHistorialRequerimientosElaborados(data) {
+        console.log(data);
         var vardataTables = funcDatatables();
         $('#listaRequerimiento').DataTable({
             'dom': vardataTables[1],
@@ -38,15 +39,17 @@ class HistorialRequerimientoView{
             'columnDefs': [
                 {
                     'render': function (data, type, row) {
-                        if (row['priori'] == 'Normal') {
-                            return '<center> <i class="fas fa-thermometer-empty green"  data-toggle="tooltip" data-placement="right" title="Normal" ></i></center>';
-                        } else if (row['priori'] == 'Media') {
-                            return '<center> <i class="fas fa-thermometer-half orange"  data-toggle="tooltip" data-placement="right" title="Alta"  ></i></center>';
-                        } else if (row['Alta']) {
-                            return '<center> <i class="fas fa-thermometer-full red"  data-toggle="tooltip" data-placement="right" title="Crítico"  ></i></center>';
-                        } else {
-                            return '';
-                        }
+                        return row['termometro'];
+
+                        // if (row['priori'] == 'Normal') {
+                        //     return '<center> <i class="fas fa-thermometer-empty green"  data-toggle="tooltip" data-placement="right" title="Normal" ></i></center>';
+                        // } else if (row['priori'] == 'Media') {
+                        //     return '<center> <i class="fas fa-thermometer-half orange"  data-toggle="tooltip" data-placement="right" title="Alta"  ></i></center>';
+                        // } else if (row['priori']=='Alta') {
+                        //     return '<center> <i class="fas fa-thermometer-full red"  data-toggle="tooltip" data-placement="right" title="Crítico"  ></i></center>';
+                        // } else {
+                        //     return '';
+                        // }
                     }, targets: 0
                 },
                 {

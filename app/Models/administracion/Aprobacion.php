@@ -2,6 +2,7 @@
 
 namespace App\Models\Administracion;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
@@ -120,6 +121,11 @@ class Aprobacion extends Model
         return $sql->count();
     }
 
+    public function getFechaVoboAttribute(){
+        $fecha= new Carbon($this->attributes['fecha_vobo']);
+        return $fecha->format('d-m-Y H:i');
+    }
+
     public static function getHeaderObservacion($id_doc_aprob){
         
         $data=[];
@@ -133,21 +139,21 @@ class Aprobacion extends Model
         ->where([['id_doc_aprob', $id_doc_aprob],['id_vobo', 3]])
         ->get();
 
-        if(isset($obs) && count($obs)>0){
-            foreach ($obs as $key => $value) {                
-                $data[]=[
-                    'id_aprobacion'=> $value->id_aprobacion, 
-                    'id_vobo'=> $value->id_vobo, 
-                    'id_usuario'=> $value->id_usuario, 
-                    'nombre_completo'=> $value->nombre_completo, 
-                    'descripcion'=>$value->detalle_observacion,
-                    'id_rol'=>$value->id_rol,
-                    'id_sustentacion'=>$value->id_sustentacion
-                ];
-                }
-        }
+        // if(isset($obs) && count($obs)>0){
+        //     foreach ($obs as $key => $value) {                
+        //         $data[]=[
+        //             'id_aprobacion'=> $value->id_aprobacion, 
+        //             'id_vobo'=> $value->id_vobo, 
+        //             'id_usuario'=> $value->id_usuario, 
+        //             'nombre_completo'=> $value->nombre_completo, 
+        //             'descripcion'=>$value->detalle_observacion,
+        //             'id_rol'=>$value->id_rol,
+        //             'id_sustentacion'=>$value->id_sustentacion
+        //         ];
+        //         }
+        // }
 
-        return $data;
+        return $obs;
 
     }
     
