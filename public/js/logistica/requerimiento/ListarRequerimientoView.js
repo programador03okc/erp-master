@@ -15,7 +15,7 @@ class ListarRequerimientoView{
             'dom': vardataTables[1],
             'buttons': vardataTables[2],
             'language': vardataTables[0],
-            'order': [[10, 'desc']],
+            'order': [[11, 'desc']],
             'bLengthChange': false,
             'serverSide': false,
             'destroy': true,

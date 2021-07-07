@@ -1136,7 +1136,8 @@ class RequerimientoController extends Controller
             })
             ->when((intval($idPrioridad) > 0), function ($query)  use ($idPrioridad) {
                 return $query->whereRaw('alm_req.id_prioridad = ' . $idPrioridad);
-            });
+            })
+            ->orderBy("alm_req.fecha_registro","desc");
 
         return datatables($requerimientos)->filterColumn('nombre_usuario', function ($query, $keyword) {
             $keywords = trim(strtoupper($keyword));
