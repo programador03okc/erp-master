@@ -319,61 +319,63 @@ function mostrar_ordenes_seleccionadas(){
 
 $("#form-guia_create").on("submit", function(e){
     console.log('submit');
-    //$filaActual.find('td:eq(1)').html('Nuevo dato');
-    //$('#ordenesPendientes').DataTable().row($filaActual).remove().draw();
-    // $filaActual.remove();
-    // return false;
     e.preventDefault();
-    var data = $(this).serialize();
-    var detalle = [];
-    var validaCampos = '';
-    var ope = $('[name=id_operacion]').val();
 
-    if (ope == 26){
-        series_transformacion.forEach(function(element){
-            detalle.push({ 
-                    'id'            : element.id_detalle,
-                    'tipo'          : element.tipo,
-                    'id_producto'   : element.id_producto,
-                    'cantidad'      : element.cantidad,
-                    'unitario'      : element.valor_unitario,
-                    'series'        : element.series
-                });
-        });
-    } else {
-        $("#detalleOrdenSeleccionadas input[type=checkbox]:checked").each(function(){
-            var id = $(this).val();
-            var tipo = $(this).data('tipo');
-            var json = null;
+    var rspta = confirm("¿Está seguro que desea guardar ésta Guía?");
 
-            if (tipo == 'orden'){
-                json = oc_det_seleccionadas.find(element => element.id_oc_det == id);
-            }
-            else if (tipo == 'producto'){
-                json = oc_det_seleccionadas.find(element => element.id_producto == id);
-            }
-            var series = (json !== null ? json.series : []);
-            var cantidad = $(this).parent().parent().find('td input[id='+(tipo == 'producto' ? 'p' : '')+id+'cantidad]').val();
+    if (rspta){
 
-            if (series.length > 0 && series.length < parseFloat(cantidad)){
-                var part_number = $(this).parent().parent().find('td input[id=series]').data('partnumber');
-                validaCampos += 'El producto '+part_number+' requiere que se complete las Series.\n'; 
-            }
-            detalle.push({ 
-                'id_detalle_orden'  : (tipo == 'orden' ? id : null),
-                'cantidad'          : cantidad,
-                'id_producto'       : (tipo == 'producto' ? id : null),
-                'id_unid_med'       : json.id_unid_med,
-                'series'            : series
+        var data = $(this).serialize();
+        var detalle = [];
+        var validaCampos = '';
+        var ope = $('[name=id_operacion]').val();
+    
+        if (ope == 26){
+            series_transformacion.forEach(function(element){
+                detalle.push({ 
+                        'id'            : element.id_detalle,
+                        'tipo'          : element.tipo,
+                        'id_producto'   : element.id_producto,
+                        'cantidad'      : element.cantidad,
+                        'unitario'      : element.valor_unitario,
+                        'series'        : element.series
+                    });
             });
-        });
-    }    
-    if (validaCampos.length > 0){
-        alert(validaCampos);
-    } else {
-        data+='&detalle='+JSON.stringify(detalle);
-        console.log(data);
-        guardar_guia_create(data);
+        } else {
+            $("#detalleOrdenSeleccionadas input[type=checkbox]:checked").each(function(){
+                var id = $(this).val();
+                var tipo = $(this).data('tipo');
+                var json = null;
+    
+                if (tipo == 'orden'){
+                    json = oc_det_seleccionadas.find(element => element.id_oc_det == id);
+                }
+                else if (tipo == 'producto'){
+                    json = oc_det_seleccionadas.find(element => element.id_producto == id);
+                }
+                var series = (json !== null ? json.series : []);
+                var cantidad = $(this).parent().parent().find('td input[id='+(tipo == 'producto' ? 'p' : '')+id+'cantidad]').val();
+    
+                if (series.length > 0 && series.length < parseFloat(cantidad)){
+                    var part_number = $(this).parent().parent().find('td input[id=series]').data('partnumber');
+                    validaCampos += 'El producto '+part_number+' requiere que se complete las Series.\n'; 
+                }
+                detalle.push({ 
+                    'id_detalle_orden'  : (tipo == 'orden' ? id : null),
+                    'cantidad'          : cantidad,
+                    'id_producto'       : (tipo == 'producto' ? id : null),
+                    'id_unid_med'       : json.id_unid_med,
+                    'series'            : series
+                });
+            });
+        }    
+        if (validaCampos.length > 0){
+            alert(validaCampos);
+        } else {
+            data+='&detalle='+JSON.stringify(detalle);
+            console.log(data);
+            guardar_guia_create(data);
+        }
     }
 });
 

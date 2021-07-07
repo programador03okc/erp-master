@@ -22,36 +22,35 @@ class MapeoProductos
                 type: 'POST'
             },
             'columns': [
-                {'data': 'id_requerimiento'},
-                {'data': 'codigo'},
+                {'data': 'id_requerimiento', 'searchable':false},
+                {'data': 'codigo', 'className':'text-center'},
+                {'data': 'tipo', 'name': 'alm_tp_req.descripcion', 'className':'text-center'},
                 {'data': 'concepto'},
-                {'data': 'fecha_requerimiento'},
-                {'data': 'sede_descripcion', 'name': 'sis_sede.descripcion'},
+                {'data': 'fecha_entrega', 'className':'text-center'},
+                {'data': 'sede_descripcion', 'name': 'sis_sede.descripcion', 'className':'text-center'},
                 {'data': 'responsable', 'name': 'sis_usua.nombre_corto'},
-                {'render': 
-                    function (data, type, row){
-                        return (row['simbolo']+(row['monto']!==null ? row['monto'] : 0));
-                    }
-                },
-                {'render': function (data, type, row){
-                    return '<span class="label label-'+row['bootstrap_color']+'">'+row['estado_doc']+'</span>'
-                    }
-                }
+                {
+                    'render': function (data, type, row) {
+                        return '<span class="label label-'+(row['count_pendientes']>0?'warning':'success')+'">'+(row['count_pendientes']>0?'No mapeado':'Mapeado')+'</span>'
+                    }, 'searchable': false, 'className':'text-center'
+                },  
+                {'data': 'id_requerimiento', 'searchable':false},
             ],
             'columnDefs': [
                 {'aTargets': [0], 'sClass': 'invisible'},
                 {'render': function (data, type, row){
                     return `
-                    <div>
-                        <button type="button" class="detalle btn btn-${row['count_pendientes']>0?'success':'info'} btn-xs boton" data-toggle="tooltip" 
-                        data-placement="bottom" data-id="${row['id_requerimiento']}" title="Ver Detalle" >
-                        Mapear</button>
+                    <div class="text-center">
+                        <button type="button" class="detalle btn btn-primary btn-xs boton" data-toggle="tooltip" 
+                        data-placement="bottom" data-id="${row['id_requerimiento']}" title="Mapear producto" >
+                        <i class="fas fa-sign-out-alt"></i></button>
                     </div>
                     `;
                     
                     }, targets: 8
                 }
             ],
+            'order': [[0, 'desc']]
         });
     }
 

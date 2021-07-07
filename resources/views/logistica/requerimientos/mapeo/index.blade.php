@@ -13,6 +13,17 @@ Mapeo de Productos
 </ol>
 @endsection
 
+@section('estilos')
+<style>
+.text-success{
+    color: #09b336;
+}
+.text-warning{
+    color: #baab07;
+}
+</style>
+@endsection
+
 @section('content')
 <div class="page-main" type="mapeoProductos">
 
@@ -27,14 +38,13 @@ Mapeo de Productos
                             <thead>
                                 <tr>
                                     <th hidden></th>
-                                    <th>Codigo</th>
-                                    <th>Concepto</th>
-                                    <th>Fecha</th>
-                                    <th>Sede</th>
-                                    <th>Responsable</th>
-                                    <th>Monto</th>
-                                    <th>Estado</th>
-                                    <th width="80px">Ver</th>
+                                    <th >Codigo</th>
+                                    <th style="width:10%">Tipo</th>
+                                    <th style="width:30%">Concepto/Motivo</th>
+                                    <th style="width:10%">Fecha entrega</th>
+                                    <th style="width:10%">Sede</th>
+                                    <th style="width:15%">Responsable</th>                                    <th style="width:5%">Estado</th>
+                                    <th style="width:5%">Mapear</th>
                                 </tr>
                             </thead>
                             <tbody></tbody>
