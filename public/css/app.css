@@ -513,6 +513,11 @@ body .login-box {
   background-color: #ebebe4;
 }
 
+#productosSugeridos_wrapper .dataTables_filter label input[type=search],
+#productosCatalogo_wrapper .dataTables_filter label input[type=search] {
+  width: 300px;
+}
+
 .modal #listaProducto_processing {
   top: 70%;
   text-align: center;

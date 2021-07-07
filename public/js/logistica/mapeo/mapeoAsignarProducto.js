@@ -8,8 +8,8 @@ function listarProductosCatalogo(){
         'ajax': 'mostrar_prods',
         'columns': [
             {'data': 'id_producto'},
-            {'data': 'codigo'},
             {'data': 'part_number'},
+            {'data': 'marca'},
             {'data': 'descripcion'},
             {'render':
                 function (data, type, row){
@@ -40,8 +40,8 @@ function listarProductosSugeridos(part_number){
         'ajax': 'mostrar_prods_sugeridos/'+part_number,
         'columns': [
             {'data': 'id_producto'},
-            {'data': 'codigo'},
             {'data': 'part_number'},
+            {'data': 'marca'},
             {'data': 'descripcion'},
             {'render':
                 function (data, type, row){

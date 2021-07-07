@@ -559,9 +559,10 @@
 // #listaSubCategoria_wrapper .dataTables_filter label input[type="search"]{
 //     width: 80%;
 // }
-// #listaProducto_wrapper .dataTables_filter label input[type="search"]{
-//     width: 95%;
-// }
+#productosSugeridos_wrapper .dataTables_filter label input[type="search"],
+#productosCatalogo_wrapper .dataTables_filter label input[type="search"]{
+    width: 300px;
+}
 .modal #listaProducto_processing{
     top: 70%;
     text-align: center;
