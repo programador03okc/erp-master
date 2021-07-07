@@ -31,10 +31,10 @@ class ProductoController extends Controller
     public function mostrar_prods(){
         $prod = DB::table('almacen.alm_prod')
             ->select('alm_prod.id_producto', 'alm_prod.codigo', 'alm_prod.descripcion',
-            'alm_prod.part_number','alm_prod.id_unidad_medida','alm_prod_antiguo.cod_antiguo',
+            'alm_prod.part_number','alm_prod.id_unidad_medida','alm_subcat.descripcion as marca',
             'alm_und_medida.abreviatura')
             ->leftjoin('almacen.alm_und_medida','alm_und_medida.id_unidad_medida','=','alm_prod.id_unidad_medida')
-            ->leftjoin('almacen.alm_prod_antiguo','alm_prod_antiguo.id_producto','=','alm_prod.id_producto')
+            ->leftjoin('almacen.alm_subcat','alm_subcat.id_subcategoria','=','alm_prod.id_subcategoria')
             ->get();
         $output['data'] = $prod;
         return response()->json($output);
@@ -43,7 +43,8 @@ class ProductoController extends Controller
     public function mostrar_prods_sugeridos($part_number){
         $prod = DB::table('almacen.alm_prod')
             ->select('alm_prod.id_producto', 'alm_prod.codigo', 'alm_prod.descripcion',
-            'alm_prod.part_number')
+            'alm_prod.part_number','alm_subcat.descripcion as marca')
+            ->leftjoin('almacen.alm_subcat','alm_subcat.id_subcategoria','=','alm_prod.id_subcategoria')
             ->where('alm_prod.part_number',$part_number)
             ->get();
         $output['data'] = $prod;

@@ -38,7 +38,7 @@
                                     <div class="row">
                                         <div class="col-md-12" style="padding-top:10px;padding-bottom:10px;padding-right: 30px;padding-left: 30px;">
 
-                                            <label>Productos sugeridos</label>
+                                            <div style="text-align:center;font-size:18px"><label>Productos sugeridos</label></div>
                                             <div class="row">
                                                 <div class="col-md-12">
                                                     <table class="mytable table table-condensed table-bordered table-okc-view" width="100%" 
@@ -56,7 +56,8 @@
                                                     </table>
                                                 </div>
                                             </div>
-                                            <label>Catálogo de productos</label>
+
+                                            <div style="text-align:center;font-size:18px"><label>Catálogo de productos</label></div>
                                             <div class="row">
                                                 <div class="col-md-12">
                                                     <table class="mytable table table-condensed table-bordered table-okc-view" width="100%" 

@@ -42,7 +42,8 @@ class MapeoProductos
                     return `
                     <div class="text-center">
                         <button type="button" class="detalle btn btn-primary btn-xs boton" data-toggle="tooltip" 
-                        data-placement="bottom" data-id="${row['id_requerimiento']}" title="Mapear producto" >
+                        data-placement="bottom" data-id="${row['id_requerimiento']}" data-codigo="${row['codigo']}"
+                        title="Mapear producto" >
                         <i class="fas fa-sign-out-alt"></i></button>
                     </div>
                     `;
@@ -58,11 +59,13 @@ class MapeoProductos
 
 $('#listaRequerimientos tbody').on("click","button.detalle", function(){
     var id_requerimiento = $(this).data('id');
+    var codigo = $(this).data('codigo');
     
     $('#modal-mapeoItemsRequerimiento').modal({
         show: true
     });
     $('[name=id_requerimiento]').val(id_requerimiento);
+    $('#cod_requerimiento').text(codigo);
     itemsRequerimiento(id_requerimiento);
     
     $('#submit_mapeoItemsRequerimiento').removeAttr('disabled');
