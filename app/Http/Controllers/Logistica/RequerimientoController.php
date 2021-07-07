@@ -1682,7 +1682,7 @@ class RequerimientoController extends Controller
                         '<p> *Este correo es generado de manera automática, por favor no responder.</p> 
                     <br> Saludos <br> Módulo de Logística <br> SYSTEM AGILE';
 
-                    $correoUsuarioList = Usuario::find($requerimiento->id_usuario)->trabajador->postulante->persona->email;
+                    $correoUsuarioList[] = Usuario::find($requerimiento->id_usuario)->trabajador->postulante->persona->email;
                     break;
             }
 

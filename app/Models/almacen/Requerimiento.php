@@ -46,8 +46,7 @@ class Requerimiento extends Model
  
     public static function obtenerCantidadRegistros($tipoRequerimiento,$grupo){
         $yyyy = date('Y', strtotime("now"));
-        $num = Requerimiento::where('id_tipo_requerimiento',$tipoRequerimiento)
-        ->when(($grupo >0), function($query) use ($grupo)  {
+        $num = Requerimiento::when(($grupo >0), function($query) use ($grupo)  {
             return $query->Where('id_grupo','=',$grupo);
         })
         ->whereYear('fecha_registro', '=', $yyyy)
@@ -60,12 +59,12 @@ class Requerimiento extends Model
         switch ($tipoRequerimiento) {
             case 1: # tipo MGCP
                 $documento.='M';
-                $num = Requerimiento::obtenerCantidadRegistros(1,null);
+                $num = Requerimiento::obtenerCantidadRegistros(1,2);
                 break;
             
             case 2: #tipo Ecommerce
                 $documento.='E';
-                $num = Requerimiento::obtenerCantidadRegistros(2,null);
+                $num = Requerimiento::obtenerCantidadRegistros(2,2);
                 break;
             
             case 3: case 4: case 5: case 6: case 7: #tipo Bienes y servicios
