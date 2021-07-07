@@ -46,8 +46,7 @@ class RequerimientoModel {
                             "padding": "0px",
                             "margin-top": "-400px"
                         },
-                        "class": "your-custom-class",
-                        "text": "Cargando partidas..."
+                        "class": "your-custom-class"
                     });
         
                     $('#modal-partidas div.modal-body').LoadingOverlay("show", {
@@ -85,8 +84,7 @@ class RequerimientoModel {
                             "padding": "0px",
                             "margin-top": "-400px"
                         },
-                        "class": "your-custom-class",
-                        "text": "Cargando centro de costo..."
+                        "class": "your-custom-class"
                     });
         
                     $('#modal-centro-costos div.modal-body').LoadingOverlay("show", {
@@ -228,8 +226,7 @@ class RequerimientoModel {
                             "padding": "0px",
                             "margin-top": "-400px"
                         },
-                        "class": "your-custom-class",
-                        "text": "Cargando detalle de requerimiento..."
+                        "class": "your-custom-class"
                     });
         
                     $('#modal-requerimiento div.modal-body').LoadingOverlay("show", {
