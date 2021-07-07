@@ -13,7 +13,7 @@
                     </div>
                 </div>
                 <br>
-                <table class="mytable table table-striped table-condensed table-bordered" id="listaArchivosRequerimiento" width="100%">
+                <table class="table table-striped table-condensed table-bordered" id="listaArchivosRequerimiento" width="100%">
                     <thead>
                         <tr>
                             <th width="200">Descripción</th>

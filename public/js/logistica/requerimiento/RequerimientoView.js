@@ -29,8 +29,11 @@ class RequerimientoView {
 
     limpiarTabla(idElement) {
         let nodeTbody = document.querySelector("table[id='" + idElement + "'] tbody");
-        while (nodeTbody.children.length > 0) {
-            nodeTbody.removeChild(nodeTbody.lastChild);
+        if(nodeTbody!=null){
+            while (nodeTbody.children.length > 0) {
+                nodeTbody.removeChild(nodeTbody.lastChild);
+            }
+
         }
     }
     // cabecera requerimiento
@@ -480,6 +483,8 @@ class RequerimientoView {
     }
 
     listarPartidas(idGrupo, idProyecto) {
+        requerimientoView.limpiarTabla('listaPartidas');
+
         requerimientoCtrl.obtenerListaPartidas(idGrupo, idProyecto).then((res) => {
             this.construirListaPartidas(res);
         }).catch(function (err) {
@@ -498,7 +503,7 @@ class RequerimientoView {
                     &nbsp; ${resup.descripcion} 
                 </h5>
                 <div id="pres-${resup.id_presup}" class="oculto" style="width:100%;">
-                    <table class="table table-bordered table-condensed partidas" width="100%" style="font-size:0.9em">
+                    <table class="table table-bordered table-condensed partidas" id="listaPartidas" width="100%" style="font-size:0.9em">
                         <tbody> 
             `;
 
@@ -528,6 +533,8 @@ class RequerimientoView {
         </div>`;
         });
         document.querySelector("div[id='listaPartidas']").innerHTML = html;
+        $('#modal-partidas').LoadingOverlay("hide", true);
+
     }
 
     apertura(idPresup) {
@@ -654,6 +661,8 @@ class RequerimientoView {
     }
 
     listarCentroCostos() {
+        requerimientoView.limpiarTabla('listaCentroCosto');
+
         requerimientoCtrl.obtenerCentroCostos().then(function (res) {
             requerimientoView.construirCentroCostos(res);
         }).catch(function (err) {
@@ -672,7 +681,7 @@ class RequerimientoView {
                     &nbsp; ${padre.descripcion} 
                 </h5>
                 <div id="pres-${index}" class="oculto" style="width:100%;">
-                    <table class="table table-bordered table-condensed partidas" width="100%" style="font-size:0.9em">
+                    <table class="table table-bordered table-condensed partidas" id='listaCentroCosto' width="100%" style="font-size:0.9em">
                         <tbody>`;
 
                 data.forEach(hijo => {
@@ -713,6 +722,7 @@ class RequerimientoView {
             }
         });
         document.querySelector("div[name='centro-costos-panel']").innerHTML = html;
+        $('#modal-centro-costos').LoadingOverlay("hide", true);
 
     }
 

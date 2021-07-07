@@ -103,15 +103,6 @@ Listado de requerimientos
                             </tr>
                         </thead>
                     </table>
-                    <div class="row">
-                        <div class="col-md-12">
-                            <span class="">Leyenda de color de estados: </span>
-                            <span class="label label-default">Elaborado</span>
-                            <span class="label label-success">Aprobado</span>
-                            <span class="label label-warning">Observado</span>
-                            <span class="label label-danger">Anulado</span>
-                        </div>
-                    </div>
                 </form>
 
             </fieldset>
@@ -152,6 +143,7 @@ Listado de requerimientos
 @endsection
 
 @section('scripts')
+<script src="https://cdn.jsdelivr.net/npm/gasparesganga-jquery-loading-overlay@2.1.7/dist/loadingoverlay.min.js"></script>
 <script src="{{ asset('js/util.js')}}"></script>
 <script src="{{ asset('datatables/DataTables/js/jquery.dataTables.min.js') }}"></script>
 <script src="{{ asset('datatables/DataTables/js/dataTables.bootstrap.min.js') }}"></script>

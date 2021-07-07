@@ -34,18 +34,37 @@ class ListarRequerimientoView{
                 { 'data': 'fecha_registro', 'name': 'alm_req.fecha_registro' }
             ],
             'columnDefs': [
+
                 {
                     'render': function (data, type, row) {
-                        if (row['priori'] == 'Normal') {
-                            return '<center> <i class="fas fa-thermometer-empty green"  data-toggle="tooltip" data-placement="right" title="Normal" ></i></center>';
-                        } else if (row['priori'] == 'Media') {
-                            return '<center> <i class="fas fa-thermometer-half orange"  data-toggle="tooltip" data-placement="right" title="Alta"  ></i></center>';
-                        } else if (row['Alta']) {
-                            return '<center> <i class="fas fa-thermometer-full red"  data-toggle="tooltip" data-placement="right" title="Crítico"  ></i></center>';
+                        if (row['id_prioridad'] == '1') {
+                            return '<center> <i class="fas fa-thermometer-empty green"  data-toggle="tooltip" data-placement="right" title="Prioridad '+row['priori']+'" ></i></center>';
+                        } else if (row['id_prioridad'] == '2') {
+                            return '<center> <i class="fas fa-thermometer-half orange"  data-toggle="tooltip" data-placement="right" title="Prioridad '+row['priori']+'"  ></i></center>';
+                        } else if (row['id_prioridad']=='3') {
+                            return '<center> <i class="fas fa-thermometer-full red"  data-toggle="tooltip" data-placement="right" title="Prioridad '+row['priori']+'"  ></i></center>';
                         } else {
                             return '';
                         }
                     }, targets: 0
+                },
+                {
+                    'render': function (data, type, row) {
+                        if(row['estado']==1){
+                            return '<span class="label label-default">'+row['estado_doc']+'</span>';
+                        }else if(row['estado']==2){
+                            return '<span class="label label-success">'+row['estado_doc']+'</span>';
+                        }else if(row['estado']==3){
+                            return '<span class="label label-warning">'+row['estado_doc']+'</span>';
+                        }else if(row['estado']==5){
+                            return '<span class="label label-primary">'+row['estado_doc']+'</span>';
+                        }else if(row['estado']==7){
+                            return '<span class="label label-danger">'+row['estado_doc']+'</span>';
+                        }else{
+                            return '<span class="label label-default">'+row['estado_doc']+'</span>';
+
+                        }
+                    }, targets: 9
                 },
                 {
                     'render': function (data, type, row) {

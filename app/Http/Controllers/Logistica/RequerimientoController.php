@@ -158,6 +158,7 @@ class RequerimientoController extends Controller
             ->leftJoin('administracion.adm_prioridad', 'adm_prioridad.id_prioridad', '=', 'alm_req.id_prioridad')
             ->leftJoin('administracion.adm_periodo', 'adm_periodo.id_periodo', '=', 'alm_req.id_periodo')
             ->leftJoin('administracion.division', 'division.id_division', '=', 'alm_req.division_id')
+            ->leftJoin('configuracion.sis_moneda', 'alm_req.id_moneda', '=', 'sis_moneda.id_moneda')
 
 
             ->select(
@@ -165,6 +166,7 @@ class RequerimientoController extends Controller
                 'alm_req.codigo',
                 'alm_req.concepto',
                 'alm_req.id_moneda',
+                'sis_moneda.simbolo as simbolo_moneda',
                 'alm_req.id_proyecto',
                 'proy_proyecto.codigo as codigo_proyecto',
                 'proy_proyecto.descripcion as descripcion_proyecto',
@@ -245,6 +247,7 @@ class RequerimientoController extends Controller
                     'codigo' => $data->codigo,
                     'concepto' => $data->concepto,
                     'id_moneda' => $data->id_moneda,
+                    'simbolo_moneda' => $data->simbolo_moneda,
                     'id_proyecto' => $data->id_proyecto,
                     'codigo_proyecto' => $data->codigo_proyecto,
                     'descripcion_proyecto' => $data->descripcion_proyecto,

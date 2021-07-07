@@ -10,6 +10,7 @@ class AprobarRequerimientoView {
 
 
     construirTablaListaRequerimientosPendientesAprobacion(data) {
+        console.log(data);
         let disabledBtn = true;
         let vardataTables = funcDatatables();
         $('#ListaReqPendienteAprobacion').DataTable({
@@ -23,9 +24,9 @@ class AprobarRequerimientoView {
                 {
                     'render': function (data, type, row) {
                         let prioridad = '';
-                        let thermometerNormal = '<center><i class="fas fa-thermometer-empty green fa-lg"  data-toggle="tooltip" data-placement="right" title="Prioridad Normal" ></i></center>';
-                        let thermometerAlta = '<center> <i class="fas fa-thermometer-half orange fa-lg"  data-toggle="tooltip" data-placement="right" title="Prioridad Alta"  ></i></center>';
-                        let thermometerCritica = '<center> <i class="fas fa-thermometer-full red fa-lg"  data-toggle="tooltip" data-placement="right" title="Prioridad Crítico"  ></i></center>';
+                        let thermometerNormal = '<center><i class="fas fa-thermometer-empty green fa-lg"  data-toggle="tooltip" data-placement="right" title="Prioridad '+row.descripcion_prioridad+'" ></i></center>';
+                        let thermometerAlta = '<center> <i class="fas fa-thermometer-half orange fa-lg"  data-toggle="tooltip" data-placement="right" title="Prioridad '+row.descripcion_prioridad+'"  ></i></center>';
+                        let thermometerCritica = '<center> <i class="fas fa-thermometer-full red fa-lg"  data-toggle="tooltip" data-placement="right" title="Prioridad '+row.descripcion_prioridad+'"  ></i></center>';
                         if (row.id_prioridad == 1) {
                             prioridad = thermometerNormal
                         } else if (row.id_prioridad == 2) {
@@ -44,7 +45,24 @@ class AprobarRequerimientoView {
                 { 'data': 'division', 'name': 'division' },
                 { 'data': 'observacion', 'name': 'alm_req.observacion' },
                 { 'data': 'usuario', 'name': 'usuario' },
-                { 'data': 'estado_doc', 'name': 'estado_doc' },
+                {
+                    'render': function (data, type, row) {
+                        if(row['estado']==1){
+                            return '<span class="label label-default">'+row['estado_doc']+'</span>';
+                        }else if(row['estado']==2){
+                            return '<span class="label label-success">'+row['estado_doc']+'</span>';
+                        }else if(row['estado']==3){
+                            return '<span class="label label-warning">'+row['estado_doc']+'</span>';
+                        }else if(row['estado']==5){
+                            return '<span class="label label-primary">'+row['estado_doc']+'</span>';
+                        }else if(row['estado']==7){
+                            return '<span class="label label-danger">'+row['estado_doc']+'</span>';
+                        }else{
+                            return '<span class="label label-default">'+row['estado_doc']+'</span>';
+
+                        }
+                    }
+                },
                 { 'data': 'cantidad_aprobados_total_flujo', 'name': 'cantidad_aprobados_total_flujo' },
                 {
                     'render': function (data, type, row) {
@@ -227,6 +245,7 @@ class AprobarRequerimientoView {
             aprobarRequerimientoView.construirSeccionDatosGenerales(res['requerimiento'][0]);
             aprobarRequerimientoView.construirSeccionItemsDeRequerimiento(res['det_req']);
             aprobarRequerimientoView.construirSeccionHistorialAprobacion(res['historial_aprobacion']);
+            $('#modal-requerimiento').LoadingOverlay("hide", true);
 
         }).catch(function (err) {
             console.log(err)
@@ -262,20 +281,25 @@ class AprobarRequerimientoView {
     }
 
     construirSeccionDatosGenerales(data) {
+        // console.log(data);
         document.querySelector("div[id='modal-requerimiento'] table[id='tablaDatosGenerales'] td[id='codigo']").textContent = data.codigo;
         document.querySelector("div[id='modal-requerimiento'] table[id='tablaDatosGenerales'] td[id='concepto']").textContent = data.concepto;
         document.querySelector("div[id='modal-requerimiento'] table[id='tablaDatosGenerales'] td[id='razon_social_empresa']").textContent = data.razon_social_empresa;
         document.querySelector("div[id='modal-requerimiento'] table[id='tablaDatosGenerales'] td[id='division']").textContent = data.division;
+        document.querySelector("div[id='modal-requerimiento'] table[id='tablaDatosGenerales'] td[id='tipo_requerimiento']").textContent = data.tipo_requerimiento;
         document.querySelector("div[id='modal-requerimiento'] table[id='tablaDatosGenerales'] td[id='prioridad']").textContent = data.prioridad;
         document.querySelector("div[id='modal-requerimiento'] table[id='tablaDatosGenerales'] td[id='fecha_entrega']").textContent = data.fecha_entrega;
         document.querySelector("div[id='modal-requerimiento'] table[id='tablaDatosGenerales'] td[id='solicitado_por']").textContent = (data.para_stock_almacen == true ? 'Para stock almacén' : (data.nombre_trabajador ? data.nombre_trabajador : '-'));
         document.querySelector("div[id='modal-requerimiento'] table[id='tablaDatosGenerales'] td[id='periodo']").textContent = data.periodo;
         document.querySelector("div[id='modal-requerimiento'] table[id='tablaDatosGenerales'] td[id='creado_por']").textContent = data.persona;
         document.querySelector("div[id='modal-requerimiento'] table[id='tablaDatosGenerales'] td[id='observacion']").textContent = data.observacion;
+        document.querySelector("div[id='modal-requerimiento'] span[name='simboloMoneda']").textContent = data.simbolo_moneda;
 
         tempArchivoAdjuntoRequerimientoList = [];
         if (data.adjuntos.length > 0) {
-            document.querySelector("span[name='cantidadAdjuntosRequerimiento']").textContent = data.adjuntos.length;
+            document.querySelector("td[id='adjuntosRequerimiento']").innerHTML = `<a title="Ver archivos adjuntos de requerimiento" style="cursor:pointer;" onClick="aprobarRequerimientoView.verAdjuntosRequerimiento();" >
+            Ver (<span name="cantidadAdjuntosRequerimiento">${data.adjuntos.length}</span>)
+            </a>`;
             (data.adjuntos).forEach(element => {
                 tempArchivoAdjuntoRequerimientoList.push({
                     'id': element.id_adjunto,
@@ -337,7 +361,7 @@ class AprobarRequerimientoView {
     }
 
     construirSeccionItemsDeRequerimiento(data) {
-        console.log(data);
+
         requerimientoView.limpiarTabla('listaDetalleRequerimientoModal');
         tempArchivoAdjuntoItemList = [];
         let html = '';
@@ -365,12 +389,12 @@ class AprobarRequerimientoView {
                             <td>${i + 1}</td>
                             <td>${data[i].descripcion_partida ? data[i].descripcion_partida : ''}</td>
                             <td>${data[i].descripcion_centro_costo ? data[i].descripcion_centro_costo : ''}</td>
-                            <td>${data[i].id_tipo_item == 1 ? (data[i].part_number ? data[i].part_number : '') : '(Servicio)'}</td>
-                            <td>${data[i].descripcion ? data[i].descripcion : (data[i].descripcion_adicional ? data[i].descripcion_adicional : '')} </td>
+                            <td>${data[i].id_tipo_item == 1 ? (data[i].producto_part_number ? data[i].producto_part_number : data[i].part_number) : '(Servicio)'}</td>
+                            <td>${data[i].producto_descripcion ? data[i].producto_descripcion : (data[i].descripcion ? data[i].descripcion : '')} </td>
                             <td>${data[i].unidad_medida}</td>
                             <td>${data[i].cantidad}</td>
-                            <td>${data[i].simbolo_moneda ? data[i].simbolo_moneda : ''} ${Util.formatoNumero(data[i].precio_unitario, 2)}</td>
-                            <td>${(data[i].subtotal ? Util.formatoNumero(data[i].subtotal, 2) : '')}</td>
+                            <td>${Util.formatoNumero(data[i].precio_unitario, 2)}</td>
+                            <td>${(data[i].subtotal ? Util.formatoNumero(data[i].subtotal, 2) : (Util.formatoNumero((data[i].cantidad*data[i].precio_unitario),2)))}</td>
                             <td>${data[i].motivo ? data[i].motivo : ''}</td>
                             <td style="text-align: center;"> 
                                 ${cantidadAdjuntosItem>0?'<a title="Ver archivos adjuntos de item" style="cursor:pointer;" onClick="aprobarRequerimientoView.verAdjuntosItem('+data[i].id_detalle_requerimiento+')">Ver (<span name="cantidadAdjuntosItem">'+cantidadAdjuntosItem+'</span>)</a>':'-'}
@@ -391,10 +415,10 @@ class AprobarRequerimientoView {
         if (data.length > 0) {
             for (let i = 0; i < data.length; i++) {
                 html += `<tr>
-                    <td>${data[i].nombre_usuario ? data[i].nombre_usuario : ''}</td>
-                    <td>${data[i].accion ? data[i].accion : ''}${data[i].tiene_sustento ==true ? ' (Tiene sustento)': ''}</td>
-                    <td>${data[i].detalle_observacion ? data[i].detalle_observacion : ''}</td>
-                    <td>${data[i].fecha_vobo ? data[i].fecha_vobo : ''}</td>
+                    <td style="text-align:center;">${data[i].nombre_usuario ? data[i].nombre_usuario : ''}</td>
+                    <td style="text-align:center;">${data[i].accion ? data[i].accion : ''}${data[i].tiene_sustento ==true ? ' (Tiene sustento)': ''}</td>
+                    <td style="text-align:left;">${data[i].detalle_observacion ? data[i].detalle_observacion : ''}</td>
+                    <td style="text-align:center;">${data[i].fecha_vobo ? data[i].fecha_vobo : ''}</td>
                 </tr>`;
             }
         }
