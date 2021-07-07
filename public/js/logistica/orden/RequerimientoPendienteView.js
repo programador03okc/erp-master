@@ -54,7 +54,7 @@ class RequerimientoPendienteView {
                 },
 
                 { 'data': 'concepto' },
-                { 'data': 'fecha_requerimiento' },
+                { 'data': 'fecha_registro' },
                 { 'data': 'tipo_req_desc' },
                 {
                     render: function (data, type, row) {

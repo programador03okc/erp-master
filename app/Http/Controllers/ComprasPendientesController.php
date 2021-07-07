@@ -204,6 +204,10 @@ class ComprasPendientesController extends Controller
 
             )
             ->where([['alm_req.confirmacion_pago', true], ['alm_req.id_tipo_requerimiento', 1], ['alm_req.estado', 2], $idEmpresa > 0 ? ['alm_req.id_empresa', $idEmpresa] : [null], $idSede > 0 ? ['alm_req.id_sede', $idSede] : [null]])
+            ->orWhere([['alm_req.confirmacion_pago', true], ['alm_req.id_tipo_requerimiento', 4], ['alm_req.estado', 2], $idEmpresa > 0 ? ['alm_req.id_empresa', $idEmpresa] : [null], $idSede > 0 ? ['alm_req.id_sede', $idSede] : [null]])
+            ->orWhere([['alm_req.confirmacion_pago', true], ['alm_req.id_tipo_requerimiento', 5], ['alm_req.estado', 2], $idEmpresa > 0 ? ['alm_req.id_empresa', $idEmpresa] : [null], $idSede > 0 ? ['alm_req.id_sede', $idSede] : [null]])
+            ->orWhere([['alm_req.confirmacion_pago', true], ['alm_req.id_tipo_requerimiento', 6], ['alm_req.estado', 2], $idEmpresa > 0 ? ['alm_req.id_empresa', $idEmpresa] : [null], $idSede > 0 ? ['alm_req.id_sede', $idSede] : [null]])
+            ->orWhere([['alm_req.confirmacion_pago', true], ['alm_req.id_tipo_requerimiento', 7], ['alm_req.estado', 2], $idEmpresa > 0 ? ['alm_req.id_empresa', $idEmpresa] : [null], $idSede > 0 ? ['alm_req.id_sede', $idSede] : [null]])
             ->orWhere([['alm_req.confirmacion_pago', true], ['alm_req.id_tipo_requerimiento', 3], ['alm_req.estado', 2], $idEmpresa > 0 ? ['alm_req.id_empresa', $idEmpresa] : [null], $idSede > 0 ? ['alm_req.id_sede', $idSede] : [null]])
             ->orWhere([['alm_req.confirmacion_pago', true], ['alm_req.id_tipo_requerimiento', 1], ['alm_req.estado', 15], $idEmpresa > 0 ? ['alm_req.id_empresa', $idEmpresa] : [null], $idSede > 0 ? ['alm_req.id_sede', $idSede] : [null]])
             ->orWhere([['alm_req.confirmacion_pago', true], ['alm_req.id_tipo_requerimiento', 3], ['alm_req.estado', 15], $idEmpresa > 0 ? ['alm_req.id_empresa', $idEmpresa] : [null], $idSede > 0 ? ['alm_req.id_sede', $idSede] : [null]])

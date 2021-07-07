@@ -10,7 +10,7 @@ class AprobarRequerimientoView {
 
 
     construirTablaListaRequerimientosPendientesAprobacion(data) {
-        // console.log(data);
+        console.log(data);
         let disabledBtn = true;
         let vardataTables = funcDatatables();
         $('#ListaReqPendienteAprobacion').DataTable({
