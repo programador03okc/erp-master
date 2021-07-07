@@ -1289,7 +1289,8 @@ class RequerimientoController extends Controller
             )
             // ->where([
             // ['alm_req.id_tipo_requerimiento', '=', $tipo_requerimiento],
-            // ['alm_req.id_requerimiento', '=', '120']
+            // ['alm_req.id_requerimiento', '=', '262']
+            // ['alm_req.codigo', '=', 'RC-210106']
             // ['alm_req.tipo_cliente','=',$uso_administracion] // uso administracion
             // ['alm_req.estado', '!=', 2], 
             // ['alm_req.estado', '!=', 3], 
