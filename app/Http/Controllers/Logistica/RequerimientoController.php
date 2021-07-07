@@ -1412,6 +1412,7 @@ class RequerimientoController extends Controller
                         // fitlar por division
                         if (in_array($element->division_id, $idDivisionUsuarioList) == true) {
                             $payload[] = [
+                                'termometro' => $element->termometro,
                                 'id_requerimiento' => $element->id_requerimiento,
                                 'id_tipo_requerimiento' => $element->id_tipo_requerimiento,
                                 'tipo_requerimiento' => $element->tipo_requerimiento,
@@ -1460,6 +1461,7 @@ class RequerimientoController extends Controller
                         }
                     } else {
                         $payload[] = [
+                            'termometro' => $element->termometro,
                             'id_requerimiento' => $element->id_requerimiento,
                             'id_tipo_requerimiento' => $element->id_tipo_requerimiento,
                             'tipo_requerimiento' => $element->tipo_requerimiento,

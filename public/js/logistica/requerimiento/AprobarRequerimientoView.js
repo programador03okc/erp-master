@@ -10,7 +10,7 @@ class AprobarRequerimientoView {
 
 
     construirTablaListaRequerimientosPendientesAprobacion(data) {
-        console.log(data);
+        // console.log(data);
         let disabledBtn = true;
         let vardataTables = funcDatatables();
         $('#ListaReqPendienteAprobacion').DataTable({
@@ -182,6 +182,7 @@ class AprobarRequerimientoView {
                     }
                 },
             ],
+ 
             "createdRow": function (row, data, dataIndex) {
                 if (data.estado == 2) {
                     $(row.childNodes[9]).css('color', '#4fa75b');
