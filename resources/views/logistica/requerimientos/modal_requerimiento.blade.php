@@ -31,17 +31,14 @@
                                 <!--Elmer Figueroa Arce -->
                             </tr>
                             <tr>
+                                <td style="width:5%; font-weight:bold; text-align:right;">Tipo Req.</td>
+                                <td id="tipo_requerimiento" style="width:5%;"></td>
                                 <td style="width:5%; font-weight:bold; text-align:right;">Periodo</td>
                                 <td id="periodo" style="width:5%;"></td>
                                 <td style="width:10%; font-weight:bold; text-align:right;">Creado por</td>
                                 <td id="creado_por" style="width:18%;"></td>
                                 <td style="width:10%; font-weight:bold; text-align:right;">Archivos adjuntos</td>
-                                <td>    
-                                    <a title="Ver archivos adjuntos de requerimiento" style="cursor:pointer;" onClick="aprobarRequerimientoView.verAdjuntosRequerimiento();" >
-                                    Ver (<span name="cantidadAdjuntosRequerimiento">0</span>)
-                                    </a>
-                                </td>
-                                <td></td>
+                                <td id='adjuntosRequerimiento'>-</td>
                                 <td></td>
                             </tr>
                             <tr>

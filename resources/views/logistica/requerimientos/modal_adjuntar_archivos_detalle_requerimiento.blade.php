@@ -13,11 +13,11 @@
 
                 </div>
                 <br>
-                <table class="mytable table table-striped table-condensed table-bordered" id="listaArchivos">
+                <table class="table table-striped table-condensed table-bordered" id="listaArchivos">
                     <thead>
                         <tr>
-                            <th>DESCRIPCION</th>
-                            <th>ACCIÓN</th>
+                            <th>Descripción</th>
+                            <th>Acción</th>
                         </tr>
                     </thead>
                     <tbody id="body_archivos_item"></tbody>
