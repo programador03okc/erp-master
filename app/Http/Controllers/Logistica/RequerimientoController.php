@@ -1666,7 +1666,7 @@ class RequerimientoController extends Controller
                             
                         }
                     }
-                    Debugbar::info($correoUsuarioList);
+                    // Debugbar::info($correoUsuarioList);
                     break;
                 case '3':
                     $titulo = 'Su requerimiento ' . $requerimiento->codigo . ' fue observado';
@@ -1694,6 +1694,7 @@ class RequerimientoController extends Controller
                 // $destinatarios[]= 'programador03@okcomputer.com.pe';
                 $destinatarios = $correoUsuarioList;
                 $seNotificaraporEmail = true;
+            
 
 
                 $payload = [
@@ -1703,13 +1704,16 @@ class RequerimientoController extends Controller
                     'mensaje' => $mensaje
                 ];
 
-                Debugbar::info($payload);
+                // Debugbar::info($payload);
 
                 if (count($destinatarios) > 0) {
                     NotificacionesController::enviarEmail($payload);
                 }
             }
-
+            if($accion==1){
+                $seNotificaraporEmail = true;
+                // TO-DO NOTIFICAR AL USUARIO QUE SU REQUERIMIENTO FUE APROBADO
+            }
 
 
             DB::commit();
