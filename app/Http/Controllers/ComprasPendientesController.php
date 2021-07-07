@@ -45,7 +45,12 @@ class ComprasPendientesController extends Controller
         $monedas = Moneda::mostrar();
         // $sedes = Auth::user()->sedesAcceso();
 
-        return view('logistica/gestion_logistica/compras/pendientes/vista_pendientes', compact('sedes', 'empresas', 'sis_identidad', 'tp_documento', 'tp_moneda', 'tp_doc', 'condiciones', 'clasificaciones', 'subcategorias', 'categorias', 'unidades', 'unidades_medida', 'monedas'));
+        $tipos = AlmacenController::mostrar_tipos_cbo();
+
+        return view('logistica/gestion_logistica/compras/pendientes/vista_pendientes', 
+        compact('sedes', 'empresas', 'sis_identidad', 'tp_documento', 'tp_moneda', 'tp_doc', 
+        'condiciones', 'clasificaciones', 'subcategorias', 'categorias', 'unidades', 'unidades_medida', 
+        'monedas','tipos'));
     }
 
 

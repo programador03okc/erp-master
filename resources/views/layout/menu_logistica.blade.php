@@ -20,7 +20,6 @@
         @if(Auth::user()->tieneAplicacion(103))
             <li><a href="{{route('logistica.gestion-logistica.requerimiento.aprobar.index')}}"><i class="far fa-circle fa-xs"></i> Revisar / aprobar</a></li>
         @endif
-        <li><a href="{{route('logistica.gestion-logistica.requerimiento.mapeo.index')}}"><i class="far fa-circle fa-xs"></i> Mapeo de productos</a></li>
         </ul>
     </li>
     @endif
@@ -58,6 +57,8 @@
                 </ul>
             </li>
             @endif -->
+            <li><a href="{{route('logistica.gestion-logistica.requerimiento.mapeo.index')}}"><i class="far fa-circle fa-xs"></i> Mapeo de productos</a></li>
+
             @if(Auth::user()->tieneSubModulo(25))
             <li class="treeview">
                 <a href="#"><i class="fas fa-file-invoice"></i> Órdenes

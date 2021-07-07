@@ -18,7 +18,7 @@ function listarProductosCatalogo(){
                             <button type="button" class="btn btn-success btn-sm" name="btnSeleccionarUbigeo" title="Seleccionar Producto" 
                             data-codigo="${row.codigo}" data-id="${row.id_producto}" 
                             data-partnumber="${row.part_number}" data-descripcion="${row.descripcion}" 
-                            onclick="selectProducto(this);">
+                            onclick="selectProductoAsignado(this);">
                             <i class="fas fa-check"></i>
                             </button>
                         </div>
@@ -50,7 +50,7 @@ function listarProductosSugeridos(part_number){
                             <button type="button" class="btn btn-success btn-sm" name="btnSeleccionarUbigeo" title="Seleccionar Producto" 
                             data-codigo="${row.codigo}" data-id="${row.id_producto}" 
                             data-partnumber="${row.part_number}" data-descripcion="${row.descripcion}" 
-                            onclick="selectProducto(this);">
+                            onclick="selectProductoAsignado(this);">
                             <i class="fas fa-check"></i>
                             </button>
                         </div>
@@ -62,25 +62,24 @@ function listarProductosSugeridos(part_number){
     });
 }
 
-function selectProducto(obj){
+function selectProductoAsignado(obj){
     let id = obj.dataset.id;
     let codigo = obj.dataset.codigo;
     let partnumber = obj.dataset.partnumber;
     let descripcion = obj.dataset.descripcion;
     let id_detalle = $('[name=id_detalle_requerimiento]').val();
 
-    let page = document.getElementsByClassName('page-main')[0].getAttribute('type');
+    console.log('selectProductoAsignado');
     
-    if (page == 'mapeoProductos'){
-        let det = detalle.find(element => element.id_detalle_requerimiento==id_detalle);
-        console.log(det);
-        det.id_producto = id;
-        det.codigo = codigo;
-        det.part_number = partnumber;
-        det.descripcion = descripcion;
-        $('#modal-mapeoAsignarProducto').modal('hide');
-        mostrar_detalle();
-    }
+    let det = detalle.find(element => element.id_detalle_requerimiento==id_detalle);
+    
+    det.id_producto = id;
+    det.codigo = codigo;
+    det.part_number = partnumber;
+    det.descripcion = descripcion;
+    $('#modal-mapeoAsignarProducto').modal('hide');
+    mostrar_detalle();
+    
 }
 
 $("#form-crear").on("submit", function(e){
@@ -95,23 +94,20 @@ $("#form-crear").on("submit", function(e){
     let descripcion = $('[name=descripcion]').val();
     let id_detalle = $('[name=id_detalle_requerimiento]').val();
 
-    let page = document.getElementsByClassName('page-main')[0].getAttribute('type');
-    
-    if (page == 'mapeoProductos'){
-        let det = detalle.find(element => element.id_detalle_requerimiento==id_detalle);
-        console.log(det);
-        det.id_producto = null;
-        det.codigo = '';
-        det.part_number = partnumber;
-        det.descripcion = descripcion;
-        det.id_categoria = id_cat;
-        det.id_subcategoria = id_subcat;
-        det.id_clasif = id_clasif;
-        det.id_unidad_medida = id_unid;
+    let det = detalle.find(element => element.id_detalle_requerimiento==id_detalle);
+    console.log(det);
+    det.id_producto = null;
+    det.codigo = '';
+    det.part_number = partnumber;
+    det.descripcion = descripcion;
+    det.id_categoria = id_cat;
+    det.id_subcategoria = id_subcat;
+    det.id_clasif = id_clasif;
+    det.id_unidad_medida = id_unid;
 
-        $('#modal-mapeoAsignarProducto').modal('hide');
-        mostrar_detalle();
-    }
+    $('#modal-mapeoAsignarProducto').modal('hide');
+    mostrar_detalle();
+    
 });
 
 

@@ -91,7 +91,8 @@ class RequerimientoPendienteView {
                         } else {
                             let openDiv = '<div class="btn-group" role="group">';
                             let btnAtenderAlmacen = '<button type="button" class="btn btn-primary btn-xs" name="btnOpenModalAtenderConAlmacen" title="Atender con almacén" data-id-requerimiento="' + row.id_requerimiento + '"  onclick="requerimientoPendienteView.atenderConAlmacen(this);"><i class="fas fa-dolly fa-sm"></i></button>';
-                            let btnAgregarItemBase = '<button type="button" class="btn btn-primary btn-xs" name="btnAgregarItemBase" title="Agregar items del base" data-id-requerimiento="' + row.id_requerimiento + '"  onclick="requerimientoPendienteView.openModalAgregarItemBase(this);"  style="background:#b498d0;"><i class="fas fa-puzzle-piece fa-sm"></i></button>';
+                            // let btnAgregarItemBase = '<button type="button" class="btn btn-success btn-xs" name="btnAgregarItemBase" title="Mapear productos" data-id-requerimiento="' + row.id_requerimiento + '"  onclick="requerimientoPendienteView.openModalAgregarItemBase(this);"  ><i class="fas fa-sign-out-alt"></i></button>';
+                            let btnAgregarItemBase = '<button type="button" class="mapeo btn btn-success btn-xs" title="Mapear productos" data-id-requerimiento="' + row.id_requerimiento + '"  ><i class="fas fa-sign-out-alt"></i></button>';
                             let btnCrearOrdenCompra = '<button type="button" class="btn btn-warning btn-xs" name="btnCrearOrdenCompraPorRequerimiento" title="Crear Orden de Compra" data-id-requerimiento="' + row.id_requerimiento + '"  onclick="requerimientoPendienteView.crearOrdenCompraPorRequerimiento(this);"><i class="fas fa-file-invoice"></i></button>';
                             let btnCrearOrdenServicio = '<button type="button" class="btn btn-danger btn-xs" name="btnCrearOrdenServicioPorRequerimiento" title="Crear Orden de Servicio" data-id-requerimiento="' + row.id_requerimiento + '"  onclick="requerimientoPendienteView.crearOrdenServicioPorRequerimiento(this);"><i class="fas fa-file-invoice fa-sm"></i></button>';
                             let btnVercuadroCostos = '<button type="button" class="btn btn-info btn-xs" name="btnVercuadroCostos" title="Ver Cuadro Costos" data-id-requerimiento="' + row.id_requerimiento + '"  onclick="requerimientoPendienteView.openModalCuadroCostos(this);"><i class="fas fa-eye fa-sm"></i></button>';
@@ -157,7 +158,20 @@ class RequerimientoPendienteView {
 
             }
         });
+        
+        $('#listaRequerimientosPendientes tbody').on("click","button.mapeo", function(){
+            var id_requerimiento = $(this).data('idRequerimiento');
+            
+            $('#modal-mapeoItemsRequerimiento').modal({
+                show: true
+            });
+            $('[name=id_requerimiento]').val(id_requerimiento);
+            itemsRequerimiento(id_requerimiento);
+            
+            $('#submit_mapeoItemsRequerimiento').removeAttr('disabled');
+        });
     }
+
 
     // filtros
 
