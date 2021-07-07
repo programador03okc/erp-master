@@ -274,6 +274,7 @@ class AprobarRequerimientoView {
             aprobarRequerimientoView.construirSeccionDatosGenerales(res['requerimiento'][0]);
             aprobarRequerimientoView.construirSeccionItemsDeRequerimiento(res['det_req']);
             aprobarRequerimientoView.construirSeccionHistorialAprobacion(res['historial_aprobacion']);
+            $('#modal-requerimiento').LoadingOverlay("hide", true);
 
         }).catch(function (err) {
             console.log(err)

@@ -996,6 +996,45 @@ class RequerimientoController extends Controller
             $aprobacion->tiene_sustento = true;
             $aprobacion->save();
 
+            // TODO:  enviaar notificación al usuario aprobante, asuto => se levanto la observación 
+            $idRolPrimerAprobante=0;
+            $operaciones = Operacion::getOperacion(1, $request->tipo_requerimiento, $request->id_grupo, $request->division, $request->prioridad);
+            $flujoTotal = Flujo::getIdFlujo($operaciones[0]->id_operacion)['data'];
+            foreach ($flujoTotal as $flujo) {
+                if($flujo->orden==1){
+                    $idRolPrimerAprobante= $flujo->id_rol;
+                }
+            }
+            if($idRolPrimerAprobante >0){
+                $usuariosList= Usuario::getAllIdUsuariosPorRol($idRolPrimerAprobante);
+                if(count($usuariosList)>0){
+                    foreach ($usuariosList as $idUsuario) {
+                        $correoUsuario = Usuario::find($idUsuario)->trabajador->postulante->persona->email;
+                    }
+
+                    if(isset($correoUsuario) && $correoUsuario!=null){
+                        $nombreCompletoUsuario = Usuario::find(Auth::user()->id_usuario)->trabajador->postulante->persona->nombre_completo;
+                        $payload=[
+                            'id_empresa'=>$request->empresa,
+                            'email_destinatario'=>$correoUsuario,
+                            'titulo'=>'El requerimiento '.$requerimiento->codigo.' fue sustentado por '.($nombreCompletoUsuario?$nombreCompletoUsuario:'el usuario').', se requiere su revisión/aprobación',
+                            'mensaje'=>'El requerimiento '.$requerimiento->codigo.' fue sustentado por '.($nombreCompletoUsuario?$nombreCompletoUsuario:'el usuario').', se requiere su revisión/aprobación. Información adicional del requerimiento:'.
+                            '<ul>'.
+                            '<li> Concepto/Motivo: '.$requerimiento->concepto.'</li>'.
+                            '<li> Tipo de requerimiento: '.$requerimiento->tipo->descripcion.'</li>'.
+                            '<li> Fecha limite de entrega: '.$requerimiento->fecha_entrega.'</li>'.
+                            '<li> Creado por: '.($nombreCompletoUsuario?$nombreCompletoUsuario:'').'</li>'.
+                            '</ul>'.
+                            '<p> *Este correo es generado de manera automática, por favor no responder.</p> 
+                            <br> Saludos <br> Módulo de Logística <br> SYSTEM AGILE'
+                        ];   
+
+                        if(strlen($correoUsuario)>0){
+                            $estado_envio = NotificacionesController::enviarEmail($payload);
+                        }	
+                    }
+                }
+            }
         }
 
 
