@@ -11,9 +11,9 @@
                     <thead>
                         <tr>
                             <th hidden>Id</th>
-                            <th>Nro Documento</th>
-                            <th>Nombre</th>
-                            <th>Acción</th>
+                            <th style="width:5%;">Nro Documento</th>
+                            <th style="width:80%;">Nombre</th>
+                            <th style="width:10%;">Acción</th>
                         </tr>
                     </thead>
                     <tbody></tbody>

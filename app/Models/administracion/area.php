@@ -1,25 +1,27 @@
 <?php
 
-namespace App\Models\administracion;
+namespace App\Models\Administracion;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
-class area extends Model
+class Area extends Model
 {
-         // table name
-         protected $table = 'adm_area';
-         //primary key
-         protected $primaryKey = 'id_area';
-        //  public $incrementing = false;
-         //Timesptamps
-         public $timestamps = false;
-   
-       protected $fillable = [
-           'id_area',
-           'id_empresa',
-           'codigo',
-           'descripcion',     
-           'estado',     
-           'fecha_registro'     
-       ];
+    protected $table = 'administracion.adm_area';
+    protected $primaryKey = 'id_area';
+    public $timestamps = false;
+
+    public static function mostrar()
+    {
+        $data = Area::select(
+                'adm_area.*',
+                DB::raw("(CASE WHEN administracion.adm_area.estado = 1 THEN 'Habilitado' ELSE 'Deshabilitado' END) AS estado_desc")
+            )
+            ->where([
+                ['adm_area.estado', '=', 1]
+            ])
+            ->orderBy('adm_area.id_area', 'asc')
+            ->get();
+        return $data;
+    }
 }

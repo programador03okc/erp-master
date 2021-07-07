@@ -33,32 +33,34 @@ function listarTrabajadores(){
         'buttons': [],
         'language' : vardataTables[0],
         'lengthChange': false,
-
+        'order':[1,'asc'],
         'bDestroy': true,
         'ajax': 'listar_trabajadores',
         'columns': [
-            {'data': 'id_trabajador'},
             {'data': 'nro_documento'},
             {'data': 'nombre_trabajador'},
             {'render':
                 function (data, type, row){
                     let action = `
-                        <div class="btn-group btn-group-sm" role="group">
-                            <button type="button" class="btn btn-success btn-sm" name="btnSeleccionarTrabajador" title="Seleccionar trabajador" 
+                            <button type="button" class="btn btn-success btn-xs" name="btnSeleccionarTrabajador" title="Seleccionar trabajador" 
                             data-id-trabajador="${row.id_trabajador}"
                             data-nombre-trabajador="${row.nombre_trabajador}"
                             data-nro-documento="${row.nro_documento_trabajador}"
                             onclick="selectTrabajador(this);">
-                            <i class="fas fa-check"></i>
+                            Seleccionar
                             </button>
-                        </div>
+                        
                         `;
             
                     return action;
                 }
             }
         ],
-        'columnDefs': [{ 'aTargets': [0], 'sClass': 'invisible'}],
+        'columnDefs': [
+            { 'aTargets': [0], 'className': 'text-center'},
+            { 'aTargets': [1], 'className': 'text-left'},
+            { 'aTargets': [2], 'className': 'text-center'}
+    ]
     });
 }
 

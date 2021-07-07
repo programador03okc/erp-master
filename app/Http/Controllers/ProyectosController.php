@@ -681,7 +681,8 @@ class ProyectosController extends Controller
     public function listar_proyectos_activos()
     {
         $data = DB::table('proyectos.proy_proyecto')
-                ->select('proy_proyecto.*')
+                ->select('proy_proyecto.*','centro_costo.descripcion as descripcion_centro_costo','centro_costo.codigo as codigo_centro_costo')
+                ->leftJoin('finanzas.centro_costo', 'centro_costo.id_centro_costo', '=', 'proy_proyecto.id_centro_costo')
                 ->where('proy_proyecto.estado', 1)
                 ->orderBy('id_proyecto')
                 ->get();
@@ -966,7 +967,7 @@ class ProyectosController extends Controller
     {
         $data = DB::table('rrhh.rrhh_trab')
                 ->select('rrhh_trab.*', 'rrhh_perso.nro_documento', 
-                DB::raw("(rrhh_perso.nombres) || ' ' || (rrhh_perso.apellido_paterno) || ' ' || (rrhh_perso.apellido_materno) AS nombre_trabajador"))
+                DB::raw("concat(rrhh_perso.nombres, ' ' ,rrhh_perso.apellido_paterno, ' ' ,rrhh_perso.apellido_materno) AS nombre_trabajador"))
                 ->join('rrhh.rrhh_postu', 'rrhh_postu.id_postulante', '=', 'rrhh_trab.id_postulante')
                 ->join('rrhh.rrhh_perso', 'rrhh_perso.id_persona', '=', 'rrhh_postu.id_persona')
                 ->where([['rrhh_trab.estado', '=', 1]])

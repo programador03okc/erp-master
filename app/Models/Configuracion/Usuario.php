@@ -2,6 +2,7 @@
 
 namespace App\Models\Configuracion;
 
+use App\Models\Logistica\Empresa;
 use App\Models\Tesoreria\Area;
 use App\Models\Tesoreria\Rol;
 use Illuminate\Contracts\Session\Session;
@@ -145,6 +146,21 @@ class Usuario extends Authenticatable
 		->where('sis_acceso.id_usuario',$id)
 		->get();
 		return $roles;
+	}
+	static public function getAllIdUsuariosPorRol($idRol)
+	{
+		$idUsuarioList=[];
+		$accesos = DB::table('configuracion.sis_acceso')
+		->select('sis_acceso.*')
+		->where('sis_acceso.id_rol',$idRol)
+		->get();
+
+		if(count($accesos)>0){
+			foreach ($accesos as $value) {
+				$idUsuarioList[]=$value->id_usuario;
+			}
+		}
+		return $idUsuarioList;
 	}
 
 

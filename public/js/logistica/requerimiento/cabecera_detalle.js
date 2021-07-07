@@ -1,5 +1,7 @@
-
 function nuevo_req(){
+    console.log('nuevo');
+    document.querySelector("div[id='group-historial-revisiones']").setAttribute('hidden',true);
+
     data_item=[];
     data=[];
     adjuntos=[];
@@ -8,10 +10,10 @@ function nuevo_req(){
     $('#form-requerimiento')[0].reset();
     limpiarSelectFuenteDet();
     // autoSelectTipoRequerimientoPorUsuarioEnSesion();
-    autoSelectTipoRequerimientoPorDefecto();
+    autoSelectTipoRequerimientoPorDefecto(); //tipo_formulario.js
     document.querySelector("form[id='form-requerimiento'] div[id='input-group-fuente_det']").setAttribute('hidden',true);
 
-    $('#body_detalle_requerimiento').html('<tr id="default_tr"><td></td><td colspan="12"> No hay datos registrados</td></tr>');
+    // $('#body_detalle_requerimiento').html('<tr id="default_tr"><td></td><td colspan="12"> No hay datos registrados</td></tr>');
     $('#body_adjuntos_requerimiento').html('<tr id="default_tr"><td></td><td colspan="3"> No hay datos registrados</td></tr>');
     $('#body_lista_trazabilidad_requerimiento').html('<tr id="default_tr"><td></td><td colspan="5"> No hay datos registrados</td></tr>');
     $('#estado_doc').text('');
@@ -22,7 +24,7 @@ function nuevo_req(){
     var btnImprimirRequerimiento = document.getElementsByName("btn-imprimir-requerimento-pdf");
     disabledControl(btnImprimirRequerimiento,true);
     var btnAdjuntosRequerimiento = document.getElementsByName("btn-adjuntos-requerimiento");
-    disabledControl(btnAdjuntosRequerimiento,true);
+    disabledControl(btnAdjuntosRequerimiento,false);
     var btnTrazabilidadRequerimiento = document.getElementsByName("btn-ver-trazabilidad-requerimiento");
     disabledControl(btnTrazabilidadRequerimiento,true);
 
@@ -144,20 +146,7 @@ function mostrar_cuadro_costos_modal(){
 // }
 
 
-function changeMonedaSelect(e){
-    if( e.target.value == 1){
-        document.querySelector("div[id='montoMoneda']").textContent='S/.';
-        document.querySelector("form[id='form-requerimiento'] table span[name='simbolo_moneda']").textContent= 'S/.';
 
-    }else if( e.target.value ==2){
-        document.querySelector("div[id='montoMoneda']").textContent='$';
-        document.querySelector("form[id='form-requerimiento'] table span[name='simbolo_moneda']").textContent= '$';
-    }else{
-        document.querySelector("div[id='montoMoneda']").textContent='';
-        document.querySelector("form[id='form-requerimiento'] table span[name='simbolo_moneda']").textContent= '';
-    }
-
-}
 
 
 
@@ -185,79 +174,16 @@ function limpiarFormRequerimiento(){
 
 }
 
-function getNexCodigoRequerimiento(tipo_requerimiento){
-    $.ajax({
-        type: 'GET',
-        headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-        url: rutaNextCodigoRequerimiento+'/' + tipo_requerimiento,
-        dataType: 'JSON',
-        success: function(response){ 
-            document.querySelector("form[id='form-requerimiento'] span[name='codigo']").textContent = response.data;
-        }
-    });
-}
+ 
 
 
 
 
+ 
 
-function changeOptEmpresaSelect(e){
-    let id_empresa = e.target.value;
-    getDataSelectSede(id_empresa);
-}
+ 
 
-function llenarSelectSede(array){
-
-    let selectElement = document.querySelector("div[id='input-group-sede'] select[name='sede']");
-    
-    if(selectElement.options.length>0){
-        var i, L = selectElement.options.length - 1;
-        for(i = L; i >= 0; i--) {
-            selectElement.remove(i);
-        }
-    }
-
-    array.forEach(element => {
-        let option = document.createElement("option");
-        option.text = element.descripcion;
-        option.value = element.id_sede;
-        if(element.codigo == 'LIMA' || element.codigo == 'Lima'){ // default sede lima
-            option.setAttribute('selected','selected');
-
-        }
-        option.setAttribute('data-ubigeo',element.id_ubigeo);
-        option.setAttribute('data-name-ubigeo',element.ubigeo_descripcion);
-        selectElement.add(option);
-    });
-
-    // console.log(selectElement.value);
-    // let id_empresa = document.querySelector("div[id='requerimiento'] select[id='id_empresa_select_req']");
-    // let id_sede= selectElement.value;
-
-}
-
-function getDataSelectSede(id_empresa = null){
-    if(id_empresa >0){
-        $.ajax({
-            type: 'GET',
-            headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-            url: rutaSedeByEmpresa+'/' + id_empresa,
-            dataType: 'JSON',
-            success: function(response){ 
-                // console.log(response);  
-                if(response.length ==0){
-                    console.error("usuario no registrado en 'configuracion'.'sis_usua_sede' o el estado del registro es diferente de 1");
-                    alert('No se pudo acceder al listado de Sedes, el usuario debe pertenecer a una Sede y la sede debe estar habilitada');
-                }else{
-                    llenarSelectSede(response);
-                    seleccionarAmacen(response)
-                    llenarUbigeo();
-                }
-            }
-        });
-    }
-    return false;
-}
+ 
 function getDataSelectSedeSinUbigeo(id_empresa = null){
     if(id_empresa >0){
         $.ajax({
@@ -280,31 +206,9 @@ function getDataSelectSedeSinUbigeo(id_empresa = null){
     return false;
 }
 
-function seleccionarAmacen(data){
-    // let firstSede = data[0].id_sede;
-    let id_empresa_selected =  document.querySelector("select[id='empresa']").value;
-    let selectAlmacen = document.querySelector("div[id='input-group-almacen'] select[name='id_almacen']");
-    if(selectAlmacen.options.length>0){
-        var i, L = selectAlmacen.options.length - 1;
-        for(i = L; i > 0; i--) {
-            if(selectAlmacen.options[i].dataset.idEmpresa == id_empresa_selected){
-                 if( [4,10,11,12,13,14].includes(parseInt(selectAlmacen.options[i].dataset.idSede)) == true){ ///default almacen lima
-                    selectAlmacen.options[i].setAttribute('selected',true);
-                }
-            }
-        }
-    }
-}
 
-function llenarUbigeo(){
-    var ubigeo =document.querySelector("select[name='sede']").options[document.querySelector("select[name='sede']").selectedIndex].dataset.ubigeo;
-    var name_ubigeo =document.querySelector("select[name='sede']").options[document.querySelector("select[name='sede']").selectedIndex].dataset.nameUbigeo;
-    document.querySelector("input[name='ubigeo']").value=ubigeo;
-    document.querySelector("input[name='name_ubigeo']").value=name_ubigeo;
-    
-    var sede = $('[name=sede]').val();
-    // cargar_almacenes(sede);
-}
+
+ 
 
 
 function changeTipoCliente(e,id =null){
@@ -362,43 +266,7 @@ function openCliente(){
 
 
 
-function changeOptUbigeo(e){
-    var ubigeo =document.querySelector("select[name='sede']").options[document.querySelector("select[name='sede']").selectedIndex].dataset.ubigeo;
-    var name_ubigeo =document.querySelector("select[name='sede']").options[document.querySelector("select[name='sede']").selectedIndex].dataset.nameUbigeo;
-    var sede = $('[name=sede]').val();
-
-    document.querySelector("input[name='ubigeo']").value=ubigeo;
-    document.querySelector("input[name='name_ubigeo']").value=name_ubigeo;
-    cargar_almacenes(sede);
-}
-
-function cargar_almacenes(sede){
-    if (sede !== ''){
-        $.ajax({
-            type: 'GET',
-            url: 'cargar_almacenes/'+sede,
-            dataType: 'JSON',
-            success: function(response){
-                // console.log(response);
-                var option = '';
-                for (var i=0; i<response.length; i++){
-                    if (response.length == 1){
-                        option+='<option data-id-sede="'+response[i].id_sede+'" data-id-empresa="'+response[i].id_empresa+'" value="'+response[i].id_almacen+'" selected>'+response[i].codigo+' - '+response[i].descripcion+'</option>';
-
-                    } else {
-                        option+='<option data-id-sede="'+response[i].id_sede+'" data-id-empresa="'+response[i].id_empresa+'" value="'+response[i].id_almacen+'">'+response[i].codigo+' - '+response[i].descripcion+'</option>';
-
-                    }
-                }
-                $('[name=id_almacen]').html('<option value="0" disabled selected>Elija una opción</option>'+option);
-            }
-        }).fail( function( jqXHR, textStatus, errorThrown ){
-            console.log(jqXHR);
-            console.log(textStatus);
-            console.log(errorThrown);
-        });
-    }
-}
+ 
 
 
 function telefonosClienteModal(){
@@ -697,41 +565,8 @@ function llenarListaCuentasCliente(id_persona=null,id_cliente=null){
 
 
 
-function selectedProyecto(event){
-    let codigo = event.target.options[ event.target.selectedIndex].getAttribute('data-codigo');
-    let id_proyecto = event.target.value;
-    document.querySelector("form[id='form-requerimiento'] input[name='codigo_proyecto']").value = codigo;
-
-    if(id_proyecto >0){
-        let btnMostarPartidas = document.querySelectorAll("button[name='btnMostarPartidas']");
-        if(btnMostarPartidas.length >0){
-            btnMostarPartidas.forEach(element => {
-                element.removeAttribute('disabled');
-                element.setAttribute('title','Partidas');
-            });
-        }
-    }
-}
-
 //imprimir requerimiento pdf
-function ImprimirRequerimientoPdf(){
-    var id = document.getElementsByName("id_requerimiento")[0].value;
-    window.open('/logistica/imprimir-requerimiento-pdf/'+id+'/0');
-    
-    // baseUrl = '/logistica/imprimir-requerimiento-pdf/'+id+'/0';
-    // $.ajax({
-    //     type: 'GET',
-    //     url: baseUrl,
-    //     // dataType: 'JSON',
-    //     success: function(response){  
-            
-    //     }
-    // }).fail( function( jqXHR, textStatus, errorThrown ){
-    //     console.log(jqXHR);
-    //     console.log(textStatus);
-    //     console.log(errorThrown);
-    // });
-}
+
 
 function migrarRequerimiento(){
     var id = $('[name=id_requerimiento]').val();
@@ -902,40 +737,7 @@ function updateMontoTotalRequerimiento(){
 function makeSelectedToSelect(indice, type, data, id, hasDisabled) {
     let html = '';
     switch (type) {
-        // case 'categoria':
-        //     html = `<select class="form-control" name="categoria" ${hasDisabled} data-indice="${indice}">`;
-        //     data.forEach(item => {
-        //         if (item.id_categoria == id) {
-        //             html += `<option value="${item.id_categoria}" selected>${item.descripcion}</option>`;
-        //         } else {
-        //             html += `<option value="${item.id_categoria}">${item.descripcion}</option>`;
-        //         }
-        //     });
-        //     html += '</select>';
-        //     break;
-        // case 'subcategoria':
-        //     html = `<select class="form-control" name="subcategoria" ${hasDisabled} data-indice="${indice}" >`;
-        //     data.forEach(item => {
-        //         if (item.id_subcategoria == id) {
-        //             html += `<option value="${item.id_subcategoria}" selected>${item.descripcion}</option>`;
-        //         } else {
-        //             html += `<option value="${item.id_subcategoria}">${item.descripcion}</option>`;
-        //         }
-        //     });
-        //     html += '</select>';
-        //     break;
-        // case 'clasificacion':
-        //     html = `<select class="form-control" name="clasificacion" ${hasDisabled} data-indice="${indice}"  >`;
-        //     data.forEach(item => {
-        //         if (item.id_clasificacion == id) {
-        //             html += `<option value="${item.id_clasificacion}" selected>${item.descripcion}</option>`;
-        //         } else {
-        //             html += `<option value="${item.id_clasificacion}">${item.descripcion}</option>`;
-
-        //         }
-        //     });
-        //     html += '</select>';
-        //     break;
+        
         case 'unidad_medida':
             html = `<select class="form-control" name="unidad_medida" ${hasDisabled} data-indice="${indice}" onChange="updateInputUnidadMedidaItem(event);">`;
             data.forEach(item => {
@@ -1209,63 +1011,53 @@ function listarCentroCostos(){
     });
 }
 // modal partidas
-function partidasModal(indice){  
-    // console.log(indice);
-    var id_grupo = document.querySelector("form[id='form-requerimiento'] input[name='id_grupo']").value;
-    var id_proyecto = document.querySelector("form[id='form-requerimiento'] select[name='id_proyecto']").value;
-    var usuarioProyectos = false;
-        grupos.forEach(element => {
-            if(element.id_grupo ==3){ // proyectos
-                usuarioProyectos=true
-            }
-        });
-    if (id_grupo > 0){
+// function partidasModal(indice){  
+//     // console.log(indice);
+//     var id_grupo = document.querySelector("form[id='form-requerimiento'] input[name='id_grupo']").value;
+//     var id_proyecto = document.querySelector("form[id='form-requerimiento'] select[name='id_proyecto']").value;
+//     var usuarioProyectos = false;
+//         grupos.forEach(element => {
+//             if(element.id_grupo ==3){ // proyectos
+//                 usuarioProyectos=true
+//             }
+//         });
+//     if (id_grupo > 0){
   
-            $('#modal-partidas').modal({
-                show: true,
-                backdrop: 'true'
-            });
-            document.querySelector("div[id='modal-partidas'] label[id='indice']").textContent =  indice;
-            listarPartidas(id_grupo,id_proyecto>0?id_proyecto:null);
+//             $('#modal-partidas').modal({
+//                 show: true,
+//                 backdrop: 'true'
+//             });
+//             document.querySelector("div[id='modal-partidas'] label[id='indice']").textContent =  indice;
+//             listarPartidas(id_grupo,id_proyecto>0?id_proyecto:null);
 
         
         
-    }else{
-        alert("Ocurrio un problema, no se puedo seleccionar el grupo al que pertence el usuario.");
-    }
+//     }else{
+//         alert("Ocurrio un problema, no se puedo seleccionar el grupo al que pertence el usuario.");
+//     }
     
-}
-function listarPartidas(id_grupo,id_proyecto){
+// }
+// function listarPartidas(id_grupo,id_proyecto){
     
-    if(id_proyecto == 0 || id_proyecto == '' || id_proyecto == null){
-        id_proyecto = '';
-    }
-    // console.log('listar_partidas/'+id_grupo+'/'+id_proyecto);
-    $.ajax({
-        type: 'GET',
-        url: 'listar-partidas/'+id_grupo+'/'+id_proyecto,
-        dataType: 'JSON',
-        success: function(response){
-            // console.log(response);
+//     if(id_proyecto == 0 || id_proyecto == '' || id_proyecto == null){
+//         id_proyecto = '';
+//     }
+//     // console.log('listar_partidas/'+id_grupo+'/'+id_proyecto);
+//     $.ajax({
+//         type: 'GET',
+//         url: 'listar-partidas/'+id_grupo+'/'+id_proyecto,
+//         dataType: 'JSON',
+//         success: function(response){
+//             // console.log(response);
             
-            $('#listaPartidas').html(response);
-        }
-    }).fail( function( jqXHR, textStatus, errorThrown ){
-        console.log(jqXHR);
-        console.log(textStatus);
-        console.log(errorThrown);
-    });
-}
-function apertura(id_presup){
-    if ($("#pres-"+id_presup+" ").attr('class') == 'oculto'){
-        $("#pres-"+id_presup+" ").removeClass('oculto');
-        $("#pres-"+id_presup+" ").addClass('visible');
-    } else {
-        $("#pres-"+id_presup+" ").removeClass('visible');
-        $("#pres-"+id_presup+" ").addClass('oculto');
-    }
-}
-
+//             $('#listaPartidas').html(response);
+//         }
+//     }).fail( function( jqXHR, textStatus, errorThrown ){
+//         console.log(jqXHR);
+//         console.log(textStatus);
+//         console.log(errorThrown);
+//     });
+// }
 
 
 function eliminarItemDeListado(obj,id){
@@ -1347,65 +1139,65 @@ function componerTdItemDetalleRequerimiento(){
     // validarObjItemsParaCompra();
 }
 
-function selectPartida(id_partida){
-    var codigo = $("#par-"+id_partida+" ").find("td[name=codigo]")[0].innerHTML;
-    var descripcion = $("#par-"+id_partida+" ").find("td[name=descripcion]")[0].innerHTML;
-    var importe_total = $("#par-"+id_partida+" ").find("td[name=importe_total]")[0].innerHTML;
+// function selectPartida(id_partida){
+//     var codigo = $("#par-"+id_partida+" ").find("td[name=codigo]")[0].innerHTML;
+//     var descripcion = $("#par-"+id_partida+" ").find("td[name=descripcion]")[0].innerHTML;
+//     var importe_total = $("#par-"+id_partida+" ").find("td[name=importe_total]")[0].innerHTML;
  
 
-    $('#modal-partidas').modal('hide');
-    $('[name=id_partida]').val(id_partida);
-    $('[name=cod_partida]').val(codigo);
-    $('[name=des_partida]').val(descripcion);
+//     $('#modal-partidas').modal('hide');
+//     $('[name=id_partida]').val(id_partida);
+//     $('[name=cod_partida]').val(codigo);
+//     $('[name=des_partida]').val(descripcion);
 
-    idPartidaSelected = id_partida;
-    codigoPartidaSelected = codigo;
-    partidaSelected = {
-        'id_partida': id_partida,
-        'codigo': codigo,
-        'descripcion': descripcion,
-        'importe_total': importe_total
-    };
+//     idPartidaSelected = id_partida;
+//     codigoPartidaSelected = codigo;
+//     partidaSelected = {
+//         'id_partida': id_partida,
+//         'codigo': codigo,
+//         'descripcion': descripcion,
+//         'importe_total': importe_total
+//     };
 
-    let indice_modal_partida = document.querySelector("div[id='modal-partidas'] label[id='indice']").textContent;
-    if(indice_modal_partida >=0){
-        if(data_item.length >0){
-            data_item.forEach((element, index) => {
-                if (index == indice_modal_partida) {
-                    // itemSelected= data_item[index];
-                    data_item[index].id_partida = parseInt(id_partida);
-                    data_item[index].cod_partida = codigoPartidaSelected;
-                    data_item[index].des_partida = descripcion;
+//     let indice_modal_partida = document.querySelector("div[id='modal-partidas'] label[id='indice']").textContent;
+//     if(indice_modal_partida >=0){
+//         if(data_item.length >0){
+//             data_item.forEach((element, index) => {
+//                 if (index == indice_modal_partida) {
+//                     // itemSelected= data_item[index];
+//                     data_item[index].id_partida = parseInt(id_partida);
+//                     data_item[index].cod_partida = codigoPartidaSelected;
+//                     data_item[index].des_partida = descripcion;
         
-                }
-            });
-            calcMontoLimiteDePartida();
-            registrarPartida();
-        }else{
-            alert("hubo un problema, no se puedo encontrar el listado de item para asignarle una partida");
-        }
-    }else{
-        alert("hubo un problema, no se pudo cargar el id_item para vincularlo a una partida");
+//                 }
+//             });
+//             calcMontoLimiteDePartida();
+//             registrarPartida();
+//         }else{
+//             alert("hubo un problema, no se puedo encontrar el listado de item para asignarle una partida");
+//         }
+//     }else{
+//         alert("hubo un problema, no se pudo cargar el id_item para vincularlo a una partida");
 
-    }
+//     }
 
-    componerTdItemDetalleRequerimiento();
+//     componerTdItemDetalleRequerimiento();
 
 
-    // itemSelected = {
-    //     'id_item': document.getElementsByName('id_item')[0].value,
-    //     'codigo_item': document.getElementsByName('codigo_item')[0].value,
-    //     'descripcion':document.getElementsByName('descripcion_item')[0].value,
-    //     'unidad':document.getElementsByName('unidad_medida_item')[0].value,
-    //     'cantidad':document.getElementsByName('cantidad_item')[0].value,
-    //     'precio_unitario':document.getElementsByName('precio_ref_item')[0].value,
-    //     'id_partida':id_partida,
-    //     'codigo_partida':codigoPartidaSelected
-    // }
+//     // itemSelected = {
+//     //     'id_item': document.getElementsByName('id_item')[0].value,
+//     //     'codigo_item': document.getElementsByName('codigo_item')[0].value,
+//     //     'descripcion':document.getElementsByName('descripcion_item')[0].value,
+//     //     'unidad':document.getElementsByName('unidad_medida_item')[0].value,
+//     //     'cantidad':document.getElementsByName('cantidad_item')[0].value,
+//     //     'precio_unitario':document.getElementsByName('precio_ref_item')[0].value,
+//     //     'id_partida':id_partida,
+//     //     'codigo_partida':codigoPartidaSelected
+//     // }
 
-    // document.querySelectorAll('[id^="pres"]')[0].setAttribute('class','oculto' );
+//     // document.querySelectorAll('[id^="pres"]')[0].setAttribute('class','oculto' );
 
-}
+// }
 
 function registrarPartida(){
 
@@ -1466,6 +1258,7 @@ function calcMontoLimiteDePartida(){
 
     return false;
 }
+
 
 
 // fuente 

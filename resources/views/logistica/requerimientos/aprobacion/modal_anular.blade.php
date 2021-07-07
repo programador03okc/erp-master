@@ -14,7 +14,7 @@
                             <div class="input-group-okc">
                                 <select class="form-control input-sm activation" name="rol_usuario">
                                 @foreach ($roles as $rol)
-                                    <option value="{{$rol->id_rol}}" data-id-area="">{{$rol->rol_concepto}}</option>
+                                    <option value="{{$rol->id_rol}}" data-id-area="">{{$rol->descripcion}}</option>
                                 @endforeach
                                 </select>
                             </div>
@@ -26,13 +26,13 @@
                         <div class="col-md-12 text-left">
                             <input type="hidden" name="id_doc_aprob">
                             <h5>Motivo/Justificación</h5>
-                            <textarea class="form-control input-sm" name="motivo_req" id="motivo_req" rows="5"></textarea>
+                            <textarea class="form-control input-sm" name="motivo_req" rows="5"></textarea>
                         </div>
                     </div>
                     <br>
                     <div class="row">
                         <div class="col-md-12">
-                        <button type="button" class="btn btn-sm btn-success" onClick="GrabarAnular();">Grabar</button>
+                        <button type="button" class="btn btn-sm btn-success" onClick="aprobarRequerimiento.grabarAnular();">Grabar</button>
                         </div>
                     </div>
                 </div>

@@ -636,14 +636,23 @@ Route::group(['middleware' => ['auth']], function () {
 
 				Route::group(['as' => 'elaboracion.', 'prefix' => 'elaboracion'], function(){
 
-					Route::get('index', 'LogisticaController@view_gestionar_requerimiento')->name('index');
-					Route::get('lista-modal/{option?}', 'LogisticaController@mostrar_requerimientos')->name('lista-modal');
-					Route::get('mostrar-requerimiento/{id?}/{codigo?}', 'LogisticaController@mostrar_requerimiento')->name('mostrar-requerimiento');
+					Route::get('index', 'Logistica\RequerimientoController@index')->name('index');
+					Route::get('mostrar-partidas/{idGrupo?}/{idProyecto?}', 'Logistica\RequerimientoController@mostrarPartidas')->name('mostrar-partidas');
+					Route::get('mostrar-centro-costos', 'Finanzas\CentroCosto\CentroCostoController@mostrarCentroCostosSegunGrupoUsuario')->name('mostrar-centro-costos');
+					Route::get('mostrar-categoria-adjunto', 'Logistica\RequerimientoController@mostrarCategoriaAdjunto')->name('mostrar-categoria-adjunto');
+					Route::post('guardar-requerimiento', 'Logistica\RequerimientoController@guardarRequerimiento')->name('guardar-requerimiento');
+					Route::post('actualizar-requerimiento', 'Logistica\RequerimientoController@actualizarRequerimiento')->name('actualizar-requerimiento');
+					Route::get('listar-sedes-por-empresa/{id?}', 'Logistica\RequerimientoController@listarSedesPorEmpresa')->name('listar-sedes-por-empresa');
+					Route::get('mostrar-requerimiento/{id?}/{codigo?}', 'Logistica\RequerimientoController@mostrarRequerimiento')->name('mostrar-requerimiento');
+					Route::post('elaborados', 'Logistica\RequerimientoController@listarRequerimientosElaborados')->name('elaborados');
+					Route::get('imprimir-requerimiento-pdf/{id}/{codigo}', 'Logistica\RequerimientoController@generar_requerimiento_pdf');
+
+
 					Route::post('guardar', 'LogisticaController@guardar_requerimiento')->name('guardar');
 					Route::put('actualizar/{id?}', 'LogisticaController@actualizar_requerimiento')->name('actualizar');
 					Route::put('anular/{id_requerimiento?}', 'LogisticaController@anular_requerimiento')->name('anular');
 					// Route::get('select-sede-by-empresa/{id?}', 'LogisticaController@select_sede_by_empresa')->name('select-sede-by-empresa');
-					Route::get('select-sede-by-empresa/{id?}', 'LogisticaController@sedesAcceso')->name('select-sede-by-empresa');
+				// Route::get('select-sede-by-empresa/{id?}', 'LogisticaController@sedesAcceso')->name('select-sede-by-empresa');
 					Route::post('copiar-requerimiento/{id?}', 'LogisticaController@copiar_requerimiento')->name('copiar-requerimiento');
 					Route::get('telefonos-cliente/{id_persona?}/{id_cliente?}', 'LogisticaController@telefonos_cliente')->name('telefonos-cliente');
 					Route::get('direcciones-cliente/{id_persona?}/{id_cliente?}', 'LogisticaController@direcciones_cliente')->name('direcciones-cliente');
@@ -674,16 +683,14 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::get('listar-saldos-por-almacen/{id_producto}', 'AlmacenController@listar_saldos_por_almacen_producto');
 					Route::get('obtener-promociones/{id_producto}/{id_almacen}', 'LogisticaController@obtener_promociones');
 					Route::post('migrar_venta_directa', 'MigrateSoftLinkController@migrar_venta_directa');
-					Route::get('siguiente-codigo-requerimiento/{id_tipo_requerimiento?}', 'RequerimientoController@nextCodigoRequerimiento')->name('siguiente-codigo-requerimiento');
 					Route::post('guardar-producto', 'AlmacenController@guardar_producto')->name('guardar-producto');
 					
 					Route::get('cuadro-costos/{id_cc?}', 'RequerimientoController@cuadro_costos')->name('cuadro-costos');
 					Route::get('detalle-cuadro-costos/{id_cc?}', 'RequerimientoController@detalle_cuadro_costos')->name('detalle-cuadro-costos');
 					Route::post('obtener-construir-cliente', 'RequerimientoController@obtenerConstruirCliente')->name('obtener-construir-cliente');
 					Route::get('proyectos-activos', 'ProyectosController@listar_proyectos_activos')->name('proyectos-activos');
-					Route::get('listar-partidas/{id_grupo?}/{id_proyecto?}', 'ProyectosController@listar_partidas')->name('listar-partidas');
 					Route::get('grupo-select-item-para-compra', 'ComprasPendientesController@getGrupoSelectItemParaCompra')->name('grupo-select-item-para-compra');
-					Route::get('mostrar-centro-costos', 'Finanzas\CentroCosto\CentroCostoController@mostrarCentroCostos')->name('mostrar-centro-costos');
+					
 					Route::get('mostrar-fuente', 'LogisticaController@mostrarFuente')->name('mostrar-fuente');
 					Route::post('guardar-fuente', 'LogisticaController@guardarFuente')->name('guardar-fuente');
 					Route::post('anular-fuente', 'LogisticaController@anularFuente')->name('anular-fuente');
@@ -700,27 +707,38 @@ Route::group(['middleware' => ['auth']], function () {
 				});
 
 				Route::group(['as' => 'listado.', 'prefix' => 'listado'], function(){
-					Route::get('index', 'LogisticaController@view_lista_requerimientos')->name('index');
-					Route::get('listar/{empresa?}/{sede?}/{grupo?}', 'LogisticaController@listar_requerimiento_v2')->name('listar');
-					Route::get('empresa', 'LogisticaController@getIdEmpresa')->name('empresa');
-					Route::get('select-sede-by-empresa/{id?}', 'LogisticaController@select_sede_by_empresa')->name('select-sede-by-empresa');
-					Route::get('select-grupo-by-sede/{id?}', 'LogisticaController@select_grupo_by_sede')->name('select-grupo-by-sede');
-					// Route::get('select-prioridad', 'LogisticaController@select_prioridad')->name('select-prioridad');
-					Route::get('ver-flujos/{req?}/{doc?}', 'LogisticaController@flujo_aprobacion')->name('ver-flujos');
-					Route::get('explorar-requerimiento/{id_requerimiento?}', 'LogisticaController@explorar_requerimiento')->name('explorar-requerimiento');
-					Route::get('elaborados/{empresa?}/{sede?}/{grupo?}/{prioridad?}', 'LogisticaController@listar_requerimientos_elaborados')->name('elaborados');
+					Route::get('index', 'Logistica\RequerimientoController@viewLista')->name('index');
+					Route::post('elaborados', 'Logistica\RequerimientoController@listarRequerimientosElaborados')->name('elaborados');
+					Route::get('ver-flujos/{req?}/{doc?}', 'Logistica\RequerimientoController@flujoAprobacion')->name('ver-flujos');
+					Route::get('mostrar-divisiones/{idGrupo?}', 'Logistica\RequerimientoController@mostrarDivisionesDeGrupo')->name('mostrar-divisiones-de-grupo');
+
+					Route::get('mostrar-requerimiento/{id?}/{codigo?}', 'Logistica\RequerimientoController@mostrarRequerimiento')->name('mostrar-requerimiento');
+
+					// Route::get('explorar-requerimiento/{id_requerimiento?}', 'Logistica\RequerimientoController@explorar_requerimiento')->name('explorar-requerimiento');
 					
-					// Route::get('aprobantes', 'LogisticaController@mostrarAprobantes');
-					Route::get('pendiente-aprobacion', 'RequerimientoController@requerimientos_pendientes_aprobacion')->name('pendientes-aprobacion');
-					Route::post('aprobar-documento', 'AprobacionController@aprobar_documento')->name('aprobar-documento');
-					Route::post('observar-documento', 'AprobacionController@observar_documento')->name('observar-documento');
-					Route::post('anular-documento', 'AprobacionController@anular_documento')->name('anular-documento');
-					Route::post('listarRequerimientosAprobados', 'AprobacionController@listarRequerimientosAprobados')->name('listar-requerimientos-aprobados');
-					Route::get('requerimientoAPago/{id}', 'AprobacionController@requerimientoAPago')->name('requerimiento-a-pago');
-					Route::get('detalleRequerimiento/{id}', 'AprobacionController@detalleRequerimiento')->name('detalle-requerimiento');
+					// Route::get('listar/{empresa?}/{sede?}/{grupo?}', 'LogisticaController@listar_requerimiento_v2')->name('listar');
+					// Route::get('empresa', 'LogisticaController@getIdEmpresa')->name('empresa');
+					Route::get('listar-sedes-por-empresa/{id?}', 'Logistica\RequerimientoController@listarSedesPorEmpresa')->name('listar-sedes-por-empresa');
+					
+					
+					// Route::get('requerimientoAPago/{id}', 'Logistica\RequerimientoController@requerimientoAPago')->name('requerimiento-a-pago');
+					// Route::get('detalleRequerimiento/{id}', 'Logistica\RequerimientoController@detalleRequerimiento')->name('detalle-requerimiento');
 					
 				});
+				Route::group(['as' => 'aprobar.', 'prefix' => 'aprobar'], function(){
+					Route::get('index', 'Logistica\RequerimientoController@viewAprobar')->name('index');
+					Route::post('listado-aprobacion', 'Logistica\RequerimientoController@listadoAprobacion')->name('listado-aprobacion');
+					Route::get('mostrar-requerimiento/{id?}/{codigo?}', 'Logistica\RequerimientoController@mostrarRequerimiento')->name('mostrar-requerimiento');
+					Route::post('guardar-respuesta', 'Logistica\RequerimientoController@guardarRespuesta')->name('guardar-respuesta');
+					
 
+					Route::get('ver-flujos/{req?}/{doc?}', 'Logistica\RequerimientoController@flujoAprobacion')->name('ver-flujos');
+					Route::get('explorar-requerimiento/{id_requerimiento?}', 'Logistica\RequerimientoController@explorar_requerimiento')->name('explorar-requerimiento');
+					Route::post('aprobar-documento', 'Logistica\RequerimientoController@aprobarDocumento')->name('aprobar-documento');
+					Route::post('observar-documento', 'Logistica\RequerimientoController@observarDocumento')->name('observar-documento');
+					Route::post('anular-documento', 'Logistica\RequerimientoController@anularDocumento')->name('anular-documento');
+					Route::get('listar-sedes-por-empresa/{id?}', 'Logistica\RequerimientoController@listarSedesPorEmpresa')->name('listar-sedes-por-empresa');
+				});
 				Route::group(['as' => 'mapeo.', 'prefix' => 'mapeo'], function(){
 					
 					Route::get('index', 'Logistica\Requerimientos\MapeoProductosController@view_mapeo_productos')->name('index');
@@ -746,7 +764,8 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::post('buscar-item-catalogo', 'ComprasPendientesController@buscarItemCatalogo')->name('buscar-item-catalogo');
 					Route::post('guardar-items-detalle-requerimiento', 'ComprasPendientesController@guardarItemsEnDetalleRequerimiento')->name('guardar-items-detalle-requerimiento'); 
 					Route::get('listar-almacenes', 'Almacen\Ubicacion\AlmacenController@mostrar_almacenes')->name('listar-almacenes');
-					Route::get('select-sede-by-empresa/{id?}', 'LogisticaController@sedesAcceso')->name('select-sede-by-empresa');
+					Route::get('listar-sedes-por-empresa/{id?}', 'Logistica\RequerimientoController@listarSedesPorEmpresa')->name('listar-sedes-por-empresa');
+
 					Route::post('guardar-producto', 'AlmacenController@guardar_producto')->name('guardar-producto');
 
 
@@ -768,7 +787,8 @@ Route::group(['middleware' => ['auth']], function () {
 						Route::get('generar-orden-pdf/{id?}', 'OrdenController@generar_orden_por_requerimiento_pdf')->name('generar-orden-por-requerimiento-pdf'); // PDF
 						Route::get('listar_trabajadores', 'ProyectosController@listar_trabajadores');
 						Route::post('guardar_contacto', 'OrdenController@guardar_contacto');
-						Route::get('select-sede-by-empresa/{id?}', 'LogisticaController@select_sede_by_empresa')->name('select-sede-by-empresa');
+						Route::get('listar-sedes-por-empresa/{id?}', 'Logistica\RequerimientoController@listarSedesPorEmpresa')->name('listar-sedes-por-empresa');
+
 						Route::get('listar-historial-ordenes-elaboradas', 'OrdenController@listaHistorialOrdenes');
 						Route::get('mostrar-orden/{id_orden?}', 'OrdenController@mostrarOrden');
 						Route::put('anular/{id_orden?}', 'OrdenController@anularOrden')->name('anular');
@@ -777,9 +797,8 @@ Route::group(['middleware' => ['auth']], function () {
 					});
 					Route::group(['as' => 'listado.', 'prefix' => 'listado'], function(){
 						Route::get('index', 'OrdenController@view_listar_ordenes')->name('index');
-						Route::get('select-sede-by-empresa/{id?}', 'LogisticaController@sedesAcceso')->name('select-sede-by-empresa');
+						Route::get('listar-sedes-por-empresa/{id?}', 'Logistica\RequerimientoController@listarSedesPorEmpresa')->name('listar-sedes-por-empresa');
 						Route::get('generar-orden-pdf/{id?}', 'OrdenController@generar_orden_por_requerimiento_pdf')->name('generar-orden-por-requerimiento-pdf'); // PDF
-
 						Route::get('facturas/{id_orden}', 'OrdenController@obtenerFacturas');
 						//nivel cabecera 
 						Route::get('listar-ordenes/{tipoOrden?}/{vinculadoPor?}/{empresa?}/{sede?}/{tipoProveedor?}/{enAlmacen?}/{signoOrden?}/{montoOrden?}/{estado?}', 'OrdenController@listarOrdenes');
@@ -1643,7 +1662,7 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::post('listarRequerimientosPagos', 'Tesoreria\RequerimientoPagoController@listarRequerimientosPagos')->name('listar-requerimiento-pagos');
 				Route::post('listarComprobantesPagos', 'Tesoreria\RequerimientoPagoController@listarComprobantesPagos')->name('listar-comprobante-pagos');
 				Route::post('procesarPago', 'Tesoreria\RequerimientoPagoController@procesarPago')->name('procesar-pagos');
-				Route::get('detalleRequerimiento/{id}', 'AprobacionController@detalleRequerimiento')->name('detalle-requerimiento');
+				Route::get('detalleRequerimiento/{id}', 'Logistica\RequerimientoController@detalleRequerimiento')->name('detalle-requerimiento');
 				Route::get('detalleComprobante/{id}', 'Tesoreria\RequerimientoPagoController@detalleComprobante')->name('detalle-comprobante');
 
 			});
@@ -2030,7 +2049,6 @@ Route::get('decode5t/{id}', 'EquipoController@decode5t');
 
 	Route::get('logistica/get_historial_aprobacion/{id_req}', 'LogisticaController@get_historial_aprobacion');
 	Route::get('logistica/mostrar-adjuntos/{id_requerimiento}', 'LogisticaController@mostrar_adjuntos');
-	Route::get('logistica/imprimir-requerimiento-pdf/{id}/{codigo}', 'LogisticaController@generar_requerimiento_pdf');
 	Route::get('logistica/requerimiento/lista', 'LogisticaController@view_lista_requerimientos');
 	Route::post('logistica/copiar_requerimiento/{id}', 'LogisticaController@copiar_requerimiento');
 

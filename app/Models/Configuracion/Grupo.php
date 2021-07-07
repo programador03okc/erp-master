@@ -9,4 +9,15 @@ class Grupo extends Model {
     protected $table = 'configuracion.sis_grupo';
     protected $primaryKey = 'id_grupo';
     public $timestamps = false;
+
+
+    public static function mostrar()
+    {
+        $data = Grupo::select(
+                'sis_grupo.*'
+            )
+            ->orderBy('sis_grupo.descripcion', 'asc')
+            ->get();
+        return $data;
+    }
 }

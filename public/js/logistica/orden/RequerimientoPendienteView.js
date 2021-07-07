@@ -288,11 +288,20 @@ class RequerimientoPendienteView {
             "scrollX": true,
             'data': data_detalle_requerimiento,
             'columns': [
-                { 'data': 'codigo_item' },
-                { 'data': 'part_number' },
+         
                 {
                     render: function (data, type, row) {
-                        return (row.descripcion?row.descripcion:row.descripcion_adicional);
+                        return (row.codigo_producto?row.codigo_producto:'');
+                    }
+                },
+                {
+                    render: function (data, type, row) {
+                        return (row.part_number?row.part_number:row.producto_part_number);
+                    }
+                },
+                {
+                    render: function (data, type, row) {
+                        return (row.descripcion?row.descripcion:row.producto_descripcion);
                     }
                 },
                 { 'data': 'unidad_medida' },

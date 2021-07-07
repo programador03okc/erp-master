@@ -48,7 +48,7 @@
                                 <h5>Unidad de Medida</h5>
                                 <select name="unidad_medida_item" class="form-control input-sm activation" >
                                         <option value="">Elija una opción</option>
-                                    @foreach ($unidades_medida as $unidad_medida)
+                                    @foreach ($unidadesMedida as $unidad_medida)
                                         <option value="{{$unidad_medida->id_unidad_medida}}">{{ $unidad_medida->descripcion}}</option>
                                     @endforeach
 

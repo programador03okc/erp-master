@@ -207,7 +207,7 @@ Gestión de Transferencias
         seleccionarMenu(window.location);
         iniciar('{{Auth::user()->tieneAccion(91)}}','{{Auth::user()->id_usuario}}');
         inicializar(
-            "{{route('logistica.gestion-logistica.requerimiento.elaboracion.lista-modal')}}"
+            "{{route('logistica.gestion-logistica.requerimiento.elaboracion.listar-historial-requerimiento')}}"
         );
     });
     </script>

@@ -1725,7 +1725,7 @@ function lista_cotizaciones() {
                     }
                     htmlAction = '<center>' +
                     '<div class="btn-group" role="group" style="margin-bottom: 5px; width:200px;">' +
-                    '<button type="button" class="btn btn-sm btn-default" title="Ver detalle rápido" onclick="verSolicitudCotizacion('+row.id_cotizacion+');"><i class="fas fa-eye fa-xs"></i></button> ' +
+                    '<button type="button" class="btn btn-sm btn-default" title="Ver detalle" onclick="verSolicitudCotizacion('+row.id_cotizacion+');"><i class="fas fa-eye fa-xs"></i></button> ' +
                     '<button type="button" class="btn btn-sm btn-log bg-primary" title="Editar" onclick="editarCotizacion('+row.id_cotizacion+');" '+statusBtn+'><i class="fas fa-edit fa-xs"></i></button>' +
                     '<button type="button" class="btn btn-warning btn-sm" title="Duplicar Cotización" onclick="modalDuplicarSolicitudCotizacion('+row.id_cotizacion+');"><i class="fas fa-clone fa-xs"></i></button> ' +
                     '<button type="button" class="btn btn-success btn-sm" title="Formato de Solicitud de Cotizacion" onclick="downloadSolicitudCotizacion(' + row.id_cotizacion +');"><i class="fas fa-file-excel"></i></button>' +
