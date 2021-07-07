@@ -328,8 +328,7 @@ class RequerimientoController extends Controller
             }
 
 
-            $alm_det_req = DB::table('almacen.alm_det_req')
-                ->leftJoin('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'alm_det_req.id_requerimiento')
+            $alm_det_req = DetalleRequerimiento::leftJoin('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'alm_det_req.id_requerimiento')
                 ->leftJoin('almacen.alm_prod', 'alm_det_req.id_producto', '=', 'alm_prod.id_producto')
                 ->leftJoin('almacen.alm_item', 'alm_item.id_producto', '=', 'alm_prod.id_producto')
                 ->leftJoin('almacen.alm_cat_prod', 'alm_cat_prod.id_categoria', '=', 'alm_prod.id_categoria')
@@ -671,40 +670,41 @@ class RequerimientoController extends Controller
             // notificar al primer aprobante del requerimiento creado
             $operaciones = Operacion::getOperacion(1, $request->tipo_requerimiento, $request->id_grupo, $request->division, $request->prioridad);
             $flujoTotal = Flujo::getIdFlujo($operaciones[0]->id_operacion)['data'];
-            $idRolPrimerAprobante=0;
+            $idRolPrimerAprobante = 0;
             foreach ($flujoTotal as $flujo) {
-                if($flujo->orden==1){
-                    $idRolPrimerAprobante= $flujo->id_rol;
+                if ($flujo->orden == 1) {
+                    $idRolPrimerAprobante = $flujo->id_rol;
                 }
             }
-            if($idRolPrimerAprobante >0){
-                $usuariosList= Usuario::getAllIdUsuariosPorRol($idRolPrimerAprobante);
+            if ($idRolPrimerAprobante > 0) {
+                $usuariosList = Usuario::getAllIdUsuariosPorRol($idRolPrimerAprobante);
 
-                if(count($usuariosList)>0){
+                if (count($usuariosList) > 0) {
                     foreach ($usuariosList as $idUsuario) {
                         $correoUsuario = Usuario::find($idUsuario)->trabajador->postulante->persona->email;
                     }
 
-                    if(isset($correoUsuario) && $correoUsuario!=null){
+                    if (isset($correoUsuario) && $correoUsuario != null) {
                         $nombreCompletoUsuario = Usuario::find(Auth::user()->id_usuario)->trabajador->postulante->persona->nombre_completo;
-                        $payload=[
-                            'id_empresa'=>$request->empresa,
-                            'email_destinatario'=>$correoUsuario,
-                            'titulo'=>'El requerimiento '.$requerimiento->codigo.' requiere su revisión/aprobación',
-                            'mensaje'=>'El requerimiento '.$requerimiento->codigo.' requiere su revisión/aprobación. Información adicional del requerimiento:'.
-                            '<ul>'.
-                            '<li> Concepto/Motivo: '.$requerimiento->concepto.'</li>'.
-                            '<li> Tipo de requerimiento: '.$requerimiento->tipo->descripcion.'</li>'.
-                            '<li> Fecha limite de entrega: '.$requerimiento->fecha_entrega.'</li>'.
-                            '<li> Creado por: '.($nombreCompletoUsuario?$nombreCompletoUsuario:'').'</li>'.
-                            '</ul>'.
-                            '<p> *Este correo es generado de manera automática, por favor no responder.</p> 
+                        $payload = [
+                            'id_empresa' => $request->empresa,
+                            'email_destinatario' => $correoUsuario,
+                            'titulo' => 'El requerimiento ' . $requerimiento->codigo . ' requiere su revisión/aprobación',
+                            'mensaje' => 'El requerimiento ' . $requerimiento->codigo . ' requiere su revisión/aprobación. Información adicional del requerimiento:' .
+                                '<ul>' .
+                                '<li> Concepto/Motivo: ' . $requerimiento->concepto . '</li>' .
+                                '<li> Tipo de requerimiento: ' . $requerimiento->tipo->descripcion . '</li>' .
+                                '<li> División: ' . $requerimiento->division->descripcion . '</li>' .
+                                '<li> Fecha limite de entrega: ' . $requerimiento->fecha_entrega . '</li>' .
+                                '<li> Creado por: ' . ($nombreCompletoUsuario ? $nombreCompletoUsuario : '') . '</li>' .
+                                '</ul>' .
+                                '<p> *Este correo es generado de manera automática, por favor no responder.</p> 
                             <br> Saludos <br> Módulo de Logística <br> SYSTEM AGILE'
-                        ];   
+                        ];
 
-                        if(strlen($correoUsuario)>0){
+                        if (strlen($correoUsuario) > 0) {
                             $estado_envio = NotificacionesController::enviarEmail($payload);
-                        }	
+                        }
                     }
                 }
             }
@@ -732,12 +732,12 @@ class RequerimientoController extends Controller
 
         if ($adjuntoOtrosAdjuntosLength > 0) {
             foreach ($requerimiento->adjuntoOtrosAdjuntos as $archivo) {
-                $fechaHoy= new Carbon();
+                $fechaHoy = new Carbon();
                 $sufijo = $fechaHoy->format('YmdHis');
                 $file = $archivo->getClientOriginalName();
                 $filename = pathinfo($file, PATHINFO_FILENAME);
                 $extension = pathinfo($file, PATHINFO_EXTENSION);
-                $newNameFile= $filename.'_'.$sufijo.'.'.$extension;
+                $newNameFile = $filename . '_' . $sufijo . '.' . $extension;
                 $otrosAdjuntos = DB::table('almacen.alm_req_adjuntos')->insertGetId(
                     [
                         'id_requerimiento'          => $requerimiento->id_requerimiento,
@@ -758,12 +758,12 @@ class RequerimientoController extends Controller
 
         if ($adjuntoOrdenesLength > 0) {
             foreach ($requerimiento->adjuntoOrdenes as $archivo) {
-                $fechaHoy= new Carbon();
+                $fechaHoy = new Carbon();
                 $sufijo = $fechaHoy->format('YmdHis');
                 $file = $archivo->getClientOriginalName();
                 $filename = pathinfo($file, PATHINFO_FILENAME);
                 $extension = pathinfo($file, PATHINFO_EXTENSION);
-                $newNameFile= $filename.'_'.$sufijo.'.'.$extension;
+                $newNameFile = $filename . '_' . $sufijo . '.' . $extension;
                 $ordenesAdjuntos = DB::table('almacen.alm_req_adjuntos')->insertGetId(
                     [
                         'id_requerimiento'          => $requerimiento->id_requerimiento,
@@ -779,12 +779,12 @@ class RequerimientoController extends Controller
         }
         if ($adjuntoComprobanteContableLength > 0) {
             foreach ($requerimiento->adjuntoComprobanteContable as $archivo) {
-                $fechaHoy= new Carbon();
+                $fechaHoy = new Carbon();
                 $sufijo = $fechaHoy->format('YmdHis');
                 $file = $archivo->getClientOriginalName();
                 $filename = pathinfo($file, PATHINFO_FILENAME);
                 $extension = pathinfo($file, PATHINFO_EXTENSION);
-                $newNameFile= $filename.'_'.$sufijo.'.'.$extension;
+                $newNameFile = $filename . '_' . $sufijo . '.' . $extension;
                 $comprobanteContableAdjuntos = DB::table('almacen.alm_req_adjuntos')->insertGetId(
                     [
                         'id_requerimiento'          => $requerimiento->id_requerimiento,
@@ -800,12 +800,12 @@ class RequerimientoController extends Controller
         }
         if ($adjuntoComprobanteBancarioLength > 0) {
             foreach ($requerimiento->adjuntoComprobanteBancario as $archivo) {
-                $fechaHoy= new Carbon();
+                $fechaHoy = new Carbon();
                 $sufijo = $fechaHoy->format('YmdHis');
                 $file = $archivo->getClientOriginalName();
                 $filename = pathinfo($file, PATHINFO_FILENAME);
                 $extension = pathinfo($file, PATHINFO_EXTENSION);
-                $newNameFile= $filename.'_'.$sufijo.'.'.$extension;
+                $newNameFile = $filename . '_' . $sufijo . '.' . $extension;
                 $comprobanteBancarioAdjunto = DB::table('almacen.alm_req_adjuntos')->insertGetId(
                     [
                         'id_requerimiento'          => $requerimiento->id_requerimiento,
@@ -829,14 +829,14 @@ class RequerimientoController extends Controller
         $detalleAdjuntos = 0;
         if (count($adjuntoDetelleRequerimiento) > 0) {
             foreach ($adjuntoDetelleRequerimiento as $adjunto) {
-                $fechaHoy= new Carbon();
+                $fechaHoy = new Carbon();
                 $sufijo = $fechaHoy->format('YmdHis');
                 // $NameFile = $adjunto['nombre_archivo'];
-                
+
                 $file = $adjunto['archivo']->getClientOriginalName();
                 $filename = pathinfo($file, PATHINFO_FILENAME);
                 $extension = pathinfo($file, PATHINFO_EXTENSION);
-                $newNameFile= $filename.'_'.$sufijo.'.'.$extension;
+                $newNameFile = $filename . '_' . $sufijo . '.' . $extension;
 
                 $detalleAdjuntos = DB::table('almacen.alm_det_req_adjuntos')->insertGetId(
                     [
@@ -856,7 +856,7 @@ class RequerimientoController extends Controller
     public function actualizarRequerimiento(Request $request)
     {
         $requerimiento = Requerimiento::where("id_requerimiento", $request->id_requerimiento)->first();
-        $idEstadoActual= $requerimiento->estado;
+        $idEstadoActual = $requerimiento->estado;
 
         $requerimiento->id_tipo_requerimiento = $request->tipo_requerimiento;
         $requerimiento->id_usuario = Auth::user()->id_usuario;
@@ -894,13 +894,13 @@ class RequerimientoController extends Controller
         // $requerimiento->para_stock_almacen = $request->para_stock_almacen;
         $requerimiento->division_id = $request->division;
         $requerimiento->trabajador_id = $request->id_trabajador;
-        if($idEstadoActual ==3){
+        if ($idEstadoActual == 3) {
             $requerimiento->estado = 1;
         }
         $requerimiento->save();
 
-        $todoDetalleRequerimiento= DetalleRequerimiento::where("id_requerimiento",$requerimiento->id_requerimiento)->get();
-        $idDetalleRequerimientoProcesado=[];
+        $todoDetalleRequerimiento = DetalleRequerimiento::where("id_requerimiento", $requerimiento->id_requerimiento)->get();
+        $idDetalleRequerimientoProcesado = [];
         $count = count($request->descripcion);
 
         for ($i = 0; $i < $count; $i++) {
@@ -924,9 +924,8 @@ class RequerimientoController extends Controller
                 $detalle->save();
                 $detalle->idRegister = $request->idRegister[$i];
                 $detalleArray[] = $detalle;
-                
-            }else{ // es un id solo de numerico => actualiza
-                $detalle = DetalleRequerimiento::where("id_detalle_requerimiento",$id )->first();
+            } else { // es un id solo de numerico => actualiza
+                $detalle = DetalleRequerimiento::where("id_detalle_requerimiento", $id)->first();
                 $detalle->id_tipo_item = $request->tipoItem[$i];
                 $detalle->partida = $request->idPartida[$i];
                 $detalle->centro_costo_id = $request->idCentroCosto[$i];
@@ -941,24 +940,22 @@ class RequerimientoController extends Controller
                 $detalle->estado = $requerimiento->id_tipo_requerimiento == 2 ? 19 : 1;
                 $detalle->save();
 
-                $idDetalleRequerimientoProcesado[]=$detalle->id_detalle_requerimiento;
+                $idDetalleRequerimientoProcesado[] = $detalle->id_detalle_requerimiento;
             }
-
         }
 
         // detalle requerimientos para anular
-        foreach ($todoDetalleRequerimiento as $detalleRequerimiento){
-            if(!in_array($detalleRequerimiento->id_detalle_requerimiento,$idDetalleRequerimientoProcesado)){
-                $detalleConAnulidad = DetalleRequerimiento::where("id_detalle_requerimiento",$detalleRequerimiento->id_detalle_requerimiento )->first();
+        foreach ($todoDetalleRequerimiento as $detalleRequerimiento) {
+            if (!in_array($detalleRequerimiento->id_detalle_requerimiento, $idDetalleRequerimientoProcesado)) {
+                $detalleConAnulidad = DetalleRequerimiento::where("id_detalle_requerimiento", $detalleRequerimiento->id_detalle_requerimiento)->first();
                 $detalleConAnulidad->estado = 7;
                 $detalleConAnulidad->save();
-        
             }
         }
 
 
         //si existe nuevos adjuntos de nuevos item
-        if(isset($detalleArray) && count($detalleArray)>0){
+        if (isset($detalleArray) && count($detalleArray) > 0) {
             $adjuntoDetelleRequerimiento = [];
             for ($i = 0; $i < count($detalleArray); $i++) {
                 $archivos = $request->{"archivoAdjuntoItem" . $detalleArray[$i]['idRegister']};
@@ -981,57 +978,57 @@ class RequerimientoController extends Controller
 
         $nombreCompletoUsuario = Usuario::find(Auth::user()->id_usuario)->trabajador->postulante->persona->nombre_completo;
 
-        if($idEstadoActual ==3){
+        if ($idEstadoActual == 3) {
             $trazabilidad = new Trazabilidad();
-            $trazabilidad->id_requerimiento =$request->id_requerimiento;
+            $trazabilidad->id_requerimiento = $request->id_requerimiento;
             $trazabilidad->id_usuario = Auth::user()->id_usuario;
             $trazabilidad->accion = 'SUSTENTADO';
-            $trazabilidad->descripcion = 'Sustentado por '.$nombreCompletoUsuario?$nombreCompletoUsuario:'';
-            $trazabilidad->fecha_registro = new Carbon();   
+            $trazabilidad->descripcion = 'Sustentado por ' . $nombreCompletoUsuario ? $nombreCompletoUsuario : '';
+            $trazabilidad->fecha_registro = new Carbon();
             $trazabilidad->save();
 
-            $idDocumento = Documento::getIdDocAprob($request->id_requerimiento,1);
+            $idDocumento = Documento::getIdDocAprob($request->id_requerimiento, 1);
             $ultimoVoBo = Aprobacion::getUltimoVoBo($idDocumento);
             $aprobacion = Aprobacion::where("id_aprobacion", $ultimoVoBo->id_aprobacion)->first();
             $aprobacion->tiene_sustento = true;
             $aprobacion->save();
 
             // TODO:  enviaar notificación al usuario aprobante, asuto => se levanto la observación 
-            $idRolPrimerAprobante=0;
+            $idRolPrimerAprobante = 0;
             $operaciones = Operacion::getOperacion(1, $request->tipo_requerimiento, $request->id_grupo, $request->division, $request->prioridad);
             $flujoTotal = Flujo::getIdFlujo($operaciones[0]->id_operacion)['data'];
             foreach ($flujoTotal as $flujo) {
-                if($flujo->orden==1){
-                    $idRolPrimerAprobante= $flujo->id_rol;
+                if ($flujo->orden == 1) {
+                    $idRolPrimerAprobante = $flujo->id_rol;
                 }
             }
-            if($idRolPrimerAprobante >0){
-                $usuariosList= Usuario::getAllIdUsuariosPorRol($idRolPrimerAprobante);
-                if(count($usuariosList)>0){
+            if ($idRolPrimerAprobante > 0) {
+                $usuariosList = Usuario::getAllIdUsuariosPorRol($idRolPrimerAprobante);
+                if (count($usuariosList) > 0) {
                     foreach ($usuariosList as $idUsuario) {
                         $correoUsuario = Usuario::find($idUsuario)->trabajador->postulante->persona->email;
                     }
 
-                    if(isset($correoUsuario) && $correoUsuario!=null){
+                    if (isset($correoUsuario) && $correoUsuario != null) {
                         $nombreCompletoUsuario = Usuario::find(Auth::user()->id_usuario)->trabajador->postulante->persona->nombre_completo;
-                        $payload=[
-                            'id_empresa'=>$request->empresa,
-                            'email_destinatario'=>$correoUsuario,
-                            'titulo'=>'El requerimiento '.$requerimiento->codigo.' fue sustentado por '.($nombreCompletoUsuario?$nombreCompletoUsuario:'el usuario').', se requiere su revisión/aprobación',
-                            'mensaje'=>'El requerimiento '.$requerimiento->codigo.' fue sustentado por '.($nombreCompletoUsuario?$nombreCompletoUsuario:'el usuario').', se requiere su revisión/aprobación. Información adicional del requerimiento:'.
-                            '<ul>'.
-                            '<li> Concepto/Motivo: '.$requerimiento->concepto.'</li>'.
-                            '<li> Tipo de requerimiento: '.$requerimiento->tipo->descripcion.'</li>'.
-                            '<li> Fecha limite de entrega: '.$requerimiento->fecha_entrega.'</li>'.
-                            '<li> Creado por: '.($nombreCompletoUsuario?$nombreCompletoUsuario:'').'</li>'.
-                            '</ul>'.
-                            '<p> *Este correo es generado de manera automática, por favor no responder.</p> 
+                        $payload = [
+                            'id_empresa' => $request->empresa,
+                            'email_destinatario' => $correoUsuario,
+                            'titulo' => 'El requerimiento ' . $requerimiento->codigo . ' fue sustentado por ' . ($nombreCompletoUsuario ? $nombreCompletoUsuario : 'el usuario') . ', se requiere su revisión/aprobación',
+                            'mensaje' => 'El requerimiento ' . $requerimiento->codigo . ' fue sustentado por ' . ($nombreCompletoUsuario ? $nombreCompletoUsuario : 'el usuario') . ', se requiere su revisión/aprobación. Información adicional del requerimiento:' .
+                                '<ul>' .
+                                '<li> Concepto/Motivo: ' . $requerimiento->concepto . '</li>' .
+                                '<li> Tipo de requerimiento: ' . $requerimiento->tipo->descripcion . '</li>' .
+                                '<li> Fecha limite de entrega: ' . $requerimiento->fecha_entrega . '</li>' .
+                                '<li> Creado por: ' . ($nombreCompletoUsuario ? $nombreCompletoUsuario : '') . '</li>' .
+                                '</ul>' .
+                                '<p> *Este correo es generado de manera automática, por favor no responder.</p> 
                             <br> Saludos <br> Módulo de Logística <br> SYSTEM AGILE'
-                        ];   
+                        ];
 
-                        if(strlen($correoUsuario)>0){
+                        if (strlen($correoUsuario) > 0) {
                             $estado_envio = NotificacionesController::enviarEmail($payload);
-                        }	
+                        }
                     }
                 }
             }
@@ -1123,7 +1120,7 @@ class RequerimientoController extends Controller
             ->when(($mostrar === 'REVISADO_APROBADO'), function ($query) {
                 $idUsuario = Auth::user()->id_usuario;
                 $query->leftJoin('administracion.adm_aprobacion', 'adm_aprobacion.id_doc_aprob', '=', 'adm_documentos_aprob.id_doc_aprob');
-                return $query->whereRaw('adm_aprobacion.id_usuario = ' . $idUsuario.' and adm_aprobacion.id_vobo = 1 ');
+                return $query->whereRaw('adm_aprobacion.id_usuario = ' . $idUsuario . ' and adm_aprobacion.id_vobo = 1 ');
             })
             ->when((intval($idEmpresa) > 0), function ($query)  use ($idEmpresa) {
                 return $query->whereRaw('alm_req.id_empresa = ' . $idEmpresa);
@@ -1144,7 +1141,7 @@ class RequerimientoController extends Controller
         return datatables($requerimientos)->filterColumn('nombre_usuario', function ($query, $keyword) {
             $keywords = trim(strtoupper($keyword));
             $query->whereRaw("UPPER(CONCAT(pers.nombres,' ',pers.apellido_paterno,' ',pers.apellido_materno)) LIKE ?", ["%{$keywords}%"]);
-        })->toJson();
+        })->rawColumns(['termometro'])->toJson();
     }
 
     function viewLista()
@@ -1290,14 +1287,14 @@ class RequerimientoController extends Controller
                 'division.descripcion as division'
             )
             // ->where([
-                // ['alm_req.id_tipo_requerimiento', '=', $tipo_requerimiento],
-                // ['alm_req.id_requerimiento', '=', '120']
-                // ['alm_req.tipo_cliente','=',$uso_administracion] // uso administracion
-                // ['alm_req.estado', '!=', 2], 
-                // ['alm_req.estado', '!=', 3], 
-                // ['alm_req.estado', '!=', 7] 
+            // ['alm_req.id_tipo_requerimiento', '=', $tipo_requerimiento],
+            // ['alm_req.id_requerimiento', '=', '120']
+            // ['alm_req.tipo_cliente','=',$uso_administracion] // uso administracion
+            // ['alm_req.estado', '!=', 2], 
+            // ['alm_req.estado', '!=', 3], 
+            // ['alm_req.estado', '!=', 7] 
             // ])
-            ->whereNotIn('alm_req.estado',[3,7])
+            ->whereNotIn('alm_req.estado', [3, 7])
             ->whereNotIn('alm_req.id_tipo_requerimiento', [1, 2, 3])
             // ->when((count($idDivisionUsuarioList) > 0), function ($query)  use ($idDivisionUsuarioList) {
             //     return $query->whereRaw('alm_req.division_id in (' . implode(",", $idDivisionUsuarioList) . ')');
@@ -1336,7 +1333,7 @@ class RequerimientoController extends Controller
                 $division_id = $element->division_id;
 
 
-                $operaciones = Operacion::getOperacion(1,$id_tipo_requerimiento_req, $id_grupo_req, $division_id, $id_prioridad_req);
+                $operaciones = Operacion::getOperacion(1, $id_tipo_requerimiento_req, $id_grupo_req, $division_id, $id_prioridad_req);
                 // Debugbar::info($operaciones[0]->id_operacion);
 
 
@@ -1354,24 +1351,24 @@ class RequerimientoController extends Controller
                 $nextIdFlujo = 0;
                 $nextNroOrden = 0;
                 $aprobacionFinalOPendiente = '';
-                if ($cantidadAprobacionesRealizadas > 0) { 
+                if ($cantidadAprobacionesRealizadas > 0) {
 
                     // si existe data => evaluar si tiene aprobacion / Rechazado / observado.
-                    if (in_array($ultimoVoBo->id_vobo,[1,5])) { // revisado o aprobado
+                    if (in_array($ultimoVoBo->id_vobo, [1, 5])) { // revisado o aprobado
                         // next flujo y rol aprobante
                         $ultimoIdFlujo = $ultimoVoBo->id_flujo;
 
                         foreach ($flujoTotal as $key => $flujo) {
                             if ($flujo->id_flujo == $ultimoIdFlujo) {
                                 $nroOrdenUltimoFlujo = $flujo->orden;
-                                if ($nroOrdenUltimoFlujo != $tamañoFlujo)  { // get next id_flujo
+                                if ($nroOrdenUltimoFlujo != $tamañoFlujo) { // get next id_flujo
                                     foreach ($flujoTotal as $key => $flujo) {
                                         if ($flujo->estado == 1) {
                                             if ($flujo->orden == $nroOrdenUltimoFlujo + 1) {
                                                 $nextFlujo = $flujo;
                                                 $nextIdFlujo = $flujo->id_flujo;
                                                 $nextIdRolAprobante = $flujo->id_rol;
-                                                $aprobacionFinalOPendiente = $flujo->orden == $tamañoFlujo?'APROBACION_FINAL':'PENDIENTE'; // NEXT NRO ORDEN == TAMAÑO FLUJO?
+                                                $aprobacionFinalOPendiente = $flujo->orden == $tamañoFlujo ? 'APROBACION_FINAL' : 'PENDIENTE'; // NEXT NRO ORDEN == TAMAÑO FLUJO?
                                             }
                                         }
                                     }
@@ -1379,7 +1376,7 @@ class RequerimientoController extends Controller
                             }
                         }
                     }
-                    if ($ultimoVoBo->id_vobo == 3 && $ultimoVoBo->id_sustentacion !=null) { //observado con sustentacion
+                    if ($ultimoVoBo->id_vobo == 3 && $ultimoVoBo->id_sustentacion != null) { //observado con sustentacion
                         foreach ($flujoTotal as $flujo) {
                             if ($flujo->orden == 1) {
                                 // Debugbar::info($flujo);
@@ -1387,10 +1384,10 @@ class RequerimientoController extends Controller
                                 $nextNroOrden = $flujo->orden;
                                 $nextIdFlujo = $flujo->id_flujo;
                                 $nextIdRolAprobante = $flujo->id_rol;
-                                $aprobacionFinalOPendiente = $flujo->orden == $tamañoFlujo?'APROBACION_FINAL':'PENDIENTE'; // NEXT NRO ORDEN == TAMAÑO FLUJO?
-    
+                                $aprobacionFinalOPendiente = $flujo->orden == $tamañoFlujo ? 'APROBACION_FINAL' : 'PENDIENTE'; // NEXT NRO ORDEN == TAMAÑO FLUJO?
+
                             }
-                        } 
+                        }
                     }
                 } else { //  no tiene aprobaciones, entonces es la PRIMERA APROBACIÓN de este req.
                     // tiene observación?
@@ -1403,7 +1400,7 @@ class RequerimientoController extends Controller
                             $nextNroOrden = $flujo->orden;
                             $nextIdFlujo = $flujo->id_flujo;
                             $nextIdRolAprobante = $flujo->id_rol;
-                            $aprobacionFinalOPendiente = $flujo->orden == $tamañoFlujo?'APROBACION_FINAL':'PENDIENTE'; // NEXT NRO ORDEN == TAMAÑO FLUJO?
+                            $aprobacionFinalOPendiente = $flujo->orden == $tamañoFlujo ? 'APROBACION_FINAL' : 'PENDIENTE'; // NEXT NRO ORDEN == TAMAÑO FLUJO?
 
                         }
                     }
@@ -1411,9 +1408,9 @@ class RequerimientoController extends Controller
 
                 // $observacion_list = Aprobacion::getObservaciones($element->id_doc_aprob);
                 if ((in_array($nextIdRolAprobante, $idRolUsuarioList)) == true) {
-                    if($nextNroOrden ==1){
+                    if ($nextNroOrden == 1) {
                         // fitlar por division
-                        if(in_array($element->division_id,$idDivisionUsuarioList) == true){
+                        if (in_array($element->division_id, $idDivisionUsuarioList) == true) {
                             $payload[] = [
                                 'id_requerimiento' => $element->id_requerimiento,
                                 'id_tipo_requerimiento' => $element->id_tipo_requerimiento,
@@ -1461,7 +1458,7 @@ class RequerimientoController extends Controller
                                 'id_doc_aprob' => $idDocumento
                             ];
                         }
-                    }else{
+                    } else {
                         $payload[] = [
                             'id_requerimiento' => $element->id_requerimiento,
                             'id_tipo_requerimiento' => $element->id_tipo_requerimiento,
@@ -1509,7 +1506,6 @@ class RequerimientoController extends Controller
                             'id_doc_aprob' => $idDocumento
                         ];
                     }
-
                 }
             }
         }
@@ -1520,199 +1516,204 @@ class RequerimientoController extends Controller
     }
 
 
-    public function guardarRespuesta(Request $request){
+    public function guardarRespuesta(Request $request)
+    {
 
         DB::beginTransaction();
         try {
 
             $accion = $request->accion;
-            $comentario = $request->comentario;
-            $idRequerimiento = $request->idRequerimiento;
-            $idDocumento = $request->idDocumento;
-            $idUsuario = $request->idUsuario;
-            $idRolAprobante = $request->idRolAprobante;
-            $idFlujo = $request->idFlujo;
-            $aprobacionFinalOPendiente = $request->aprobacionFinalOPendiente;
+            // $comentario = $request->comentario;
+            // $idRequerimiento = $request->idRequerimiento;
+            // $idDocumento = $request->idDocumento;
+            // $idUsuario = $request->idUsuario;
+            // $idRolAprobante = $request->idRolAprobante;
+            // $idFlujo = $request->idFlujo;
+            // $aprobacionFinalOPendiente = $request->aprobacionFinalOPendiente;
 
-            $nombreCompletoUsuarioRevisaAprueba = Usuario::find($idUsuario)->trabajador->postulante->persona->nombre_completo;
+            $nombreCompletoUsuarioRevisaAprueba = Usuario::find($request->idUsuario)->trabajador->postulante->persona->nombre_completo;
 
 
-            if($aprobacionFinalOPendiente == 'PENDIENTE'){
-                if($accion ==1){
+            if ($request->aprobacionFinalOPendiente == 'PENDIENTE') {
+                if ($accion == 1) {
                     $accion = 5; // Revisado
                 }
             }
             // agregar vobo (1= aprobado, 2= rechazado, 3=observado, 5=Revisado)
             $aprobacion = new Aprobacion();
-            $aprobacion->id_flujo =$idFlujo;
-            $aprobacion->id_doc_aprob =$idDocumento;
-            $aprobacion->id_usuario =$idUsuario;
-            $aprobacion->id_vobo =$accion;
+            $aprobacion->id_flujo = $request->idFlujo;
+            $aprobacion->id_doc_aprob = $request->idDocumento;
+            $aprobacion->id_usuario = $request->idUsuario;
+            $aprobacion->id_vobo = $accion;
             $aprobacion->fecha_vobo = new Carbon();
-            $aprobacion->detalle_observacion =$comentario;
-            $aprobacion->id_rol =$idRolAprobante;
-            $aprobacion->tiene_sustento =false;
+            $aprobacion->detalle_observacion = $request->comentario;
+            $aprobacion->id_rol = $request->idRolAprobante;
+            $aprobacion->tiene_sustento = false;
             $aprobacion->save();
-            
-            $requerimiento = Requerimiento::where("id_requerimiento", $idRequerimiento)->first();
-            $nombreCompletoUsuarioCreador = Usuario::find($requerimiento->id_usuario)->trabajador->postulante->persona->nombre_completo;
 
-            switch ($accion) { 
+            // $requerimiento = Requerimiento::where("id_requerimiento", $idRequerimiento)->first();
+            $requerimiento = Requerimiento::find($request->idRequerimiento);
+
+            // $nombreCompletoUsuarioCreador = Usuario::find($requerimiento->id_usuario)->trabajador->postulante->persona->nombre_completo;
+            $nombreCompletoUsuarioCreador = $requerimiento->creadoPor->trabajador->postulante->persona->nombre_completo;
+
+
+            switch ($accion) {
                 case '1':
-                        if($aprobacionFinalOPendiente == 'APROBACION_FINAL'){
-                            $requerimiento->estado = 2;
-                            $requerimiento->save();
-                        }
+                    if ($request->aprobacionFinalOPendiente == 'APROBACION_FINAL') {
+                        $requerimiento->estado = 2;
+                        $requerimiento->save();
+                    }
                     break;
-                case '5':
-                    $requerimiento->estado = 12;
-                    $requerimiento->save();
-                    break;
+
                 case '2':
                     $requerimiento->estado = 7;
                     $requerimiento->save();
 
-                    $detalleRequerimiento = DetalleRequerimiento::where("id_requerimiento", $idRequerimiento)->get();
+                    $detalleRequerimiento = DetalleRequerimiento::where("id_requerimiento", $request->idRequerimiento)->get();
                     // $detalleRequerimiento->estado = 7;
                     // $detalleRequerimiento->save();
-                    foreach ($detalleRequerimiento as $detalle)
-                    {
+                    foreach ($detalleRequerimiento as $detalle) {
                         $detalle->estado = 7;
                         $detalle->save();
                     }
 
                     break;
                 case '3':
-                    $requerimiento = Requerimiento::where("id_requerimiento", $idRequerimiento)->first();
                     $requerimiento->estado = 3;
                     $requerimiento->save();
                     break;
+                case '5':
+                    $requerimiento->estado = 12;
+                    $requerimiento->save();
+                    break;
             }
-            
+
             // agregar a trazabilidad 
             $trazabilidad = new Trazabilidad();
-            $trazabilidad->id_requerimiento =$idRequerimiento;
-            $trazabilidad->id_usuario = $idUsuario;
+            $trazabilidad->id_requerimiento = $request->idRequerimiento;
+            $trazabilidad->id_usuario = $request->idUsuario;
             switch ($accion) {
                 case '1':
-                    if($aprobacionFinalOPendiente == 'APROBACION_FINAL'){
+                    if ($request->aprobacionFinalOPendiente == 'APROBACION_FINAL') {
                         $trazabilidad->accion = 'APROBADO';
-                        $trazabilidad->descripcion = 'Aprobado por '.$nombreCompletoUsuarioRevisaAprueba?$nombreCompletoUsuarioRevisaAprueba:'';
-                        $trazabilidad->fecha_registro = new Carbon();                    
-
+                        $trazabilidad->descripcion = 'Aprobado por ' . $nombreCompletoUsuarioRevisaAprueba ? $nombreCompletoUsuarioRevisaAprueba : '';
+                        $trazabilidad->fecha_registro = new Carbon();
                     }
-                    break;
-                case '5':
-                    $trazabilidad->accion = 'REVISADO';
-                    $trazabilidad->descripcion = 'Revisado por '.$nombreCompletoUsuarioRevisaAprueba?$nombreCompletoUsuarioRevisaAprueba:'';
-                    $trazabilidad->fecha_registro = new Carbon();                    
                     break;
                 case '2':
                     $trazabilidad->accion = 'RECHAZADO';
-                    $trazabilidad->descripcion = 'Rechazado por '.$nombreCompletoUsuarioRevisaAprueba?$nombreCompletoUsuarioRevisaAprueba:'';
-                    $trazabilidad->fecha_registro = new Carbon();                    
+                    $trazabilidad->descripcion = 'Rechazado por ' . $nombreCompletoUsuarioRevisaAprueba ? $nombreCompletoUsuarioRevisaAprueba : '';
+                    $trazabilidad->fecha_registro = new Carbon();
                     break;
                 case '3':
                     $trazabilidad->accion = 'OBSERVADO';
-                    $trazabilidad->descripcion = 'Observado por '.$nombreCompletoUsuarioRevisaAprueba?$nombreCompletoUsuarioRevisaAprueba:'';
-                    $trazabilidad->fecha_registro = new Carbon();                    
+                    $trazabilidad->descripcion = 'Observado por ' . $nombreCompletoUsuarioRevisaAprueba ? $nombreCompletoUsuarioRevisaAprueba : '';
+                    $trazabilidad->fecha_registro = new Carbon();
+                    break;
+                case '5':
+                    $trazabilidad->accion = 'REVISADO';
+                    $trazabilidad->descripcion = 'Revisado por ' . $nombreCompletoUsuarioRevisaAprueba ? $nombreCompletoUsuarioRevisaAprueba : '';
+                    $trazabilidad->fecha_registro = new Carbon();
                     break;
             }
-    
+
             $trazabilidad->save();
 
             // Notificacion por correo 
-            $dataRequerimiento=Requerimiento::getRequerimiento($idRequerimiento);
-            $idEmpresa= $dataRequerimiento->first()->id_empresa;
-            $codigoRequerimiento= $dataRequerimiento->first()->codigo;
-            $conceptoRequerimiento= $dataRequerimiento->first()->concepto;
-            $fechaEntregaRequerimiento= $dataRequerimiento->first()->fecha_entrega;
-            $tipoRequerimiento= $dataRequerimiento->first()->tipo->descripcion;
-            $idUsuario= $dataRequerimiento->first()->id_usuario;
+            // $dataRequerimiento = Requerimiento::find($idRequerimiento);
+            // $idEmpresa = $dataRequerimiento->first()->id_empresa;
+            // $codigoRequerimiento = $dataRequerimiento->first()->codigo;
+            // $conceptoRequerimiento = $dataRequerimiento->first()->concepto;
+            // $fechaEntregaRequerimiento = $dataRequerimiento->first()->fecha_entrega;
+            // $tipoRequerimiento = $dataRequerimiento->first()->tipo->descripcion;
+            // $divisionRequerimiento = $dataRequerimiento->first()->division->descripcion;
+            // $idUsuario = $dataRequerimiento->first()->id_usuario;
 
-            $seNotificaraporEmail=false;
+            $seNotificaraporEmail = false;
+            $correoUsuarioList=[];
             switch ($accion) {
                 case '5':
-                    $estadoRespuesta= 'Revisado';
-                    $titulo = 'El requerimiento '.$codigoRequerimiento.' requiere su aprobación';
-                    $mensaje = 'El requerimiento '.$codigoRequerimiento.' requiere su aprobación. Información adicional del requerimiento:'.
-                    '<ul>'.
-                    '<li> Concepto/Motivo: '.$conceptoRequerimiento.'</li>'.
-                    '<li> Tipo de requerimiento: '.$tipoRequerimiento.'</li>'.
-                    '<li> Fecha limite de entrega: '.$fechaEntregaRequerimiento.'</li>'.
-                    '<li> Creado por: '.($nombreCompletoUsuarioCreador?$nombreCompletoUsuarioCreador:'').'</li>'.
-                    '<li> Revisado por: '.($nombreCompletoUsuarioRevisaAprueba?$nombreCompletoUsuarioRevisaAprueba:'').'</li>'.
-                    ($comentario?('<li> Comentario: '.$comentario.'</li>'):'').
-                    '</ul>'.
-                    '<p> *Este correo es generado de manera automática, por favor no responder.</p> 
+                    $titulo = 'El requerimiento ' . $requerimiento->codigo . ' requiere su aprobación';
+                    $mensaje = 'El requerimiento ' . $requerimiento->codigo . ' requiere su aprobación. Información adicional del requerimiento:' .
+                        '<ul>' .
+                        '<li> Concepto/Motivo: ' . $requerimiento->concepto . '</li>' .
+                        '<li> Tipo de requerimiento: ' . $requerimiento->tipo->descripcion . '</li>' .
+                        '<li> División: ' . $requerimiento->division->descripcion . '</li>' .
+                        '<li> Fecha limite de entrega: ' . $requerimiento->fecha_entrega . '</li>' .
+                        '<li> Creado por: ' . ($nombreCompletoUsuarioCreador ? $nombreCompletoUsuarioCreador : '') . '</li>' .
+                        '<li> Revisado por: ' . ($nombreCompletoUsuarioRevisaAprueba ? $nombreCompletoUsuarioRevisaAprueba : '') . '</li>' .
+                        (!empty($request->comentario) ? ('<li> Comentario: ' . $request->comentario . '</li>') : '') .
+                        '</ul>' .
+                        '<p> *Este correo es generado de manera automática, por favor no responder.</p> 
                     <br> Saludos <br> Módulo de Logística <br> SYSTEM AGILE';
 
-                    $siguienteFlujo = Flujo::getSiguienteFlujo($idFlujo);
+                    $siguienteFlujo = Flujo::getSiguienteFlujo($request->idFlujo);
 
-                    $usuariosList=[];
-                    if(isset($siguienteFlujo)){
-                        $usuariosList= Usuario::getAllIdUsuariosPorRol($siguienteFlujo->id_rol);
-
+                    $usuariosList = [];
+                    if (isset($siguienteFlujo)) {
+                        $usuariosList = Usuario::getAllIdUsuariosPorRol($siguienteFlujo->id_rol);
                     }
-                    if(count($usuariosList)>0){
+                    if (count($usuariosList) > 0) {
                         foreach ($usuariosList as $idUsuario) {
-                            $correoUsuario = Usuario::find($idUsuario)->trabajador->postulante->persona->email;
- 
+                            debugbar::info($idUsuario);
+
+                            $correoUsuarioList[] = Usuario::find($idUsuario)->trabajador->postulante->persona->email;
+                            
                         }
                     }
+                    Debugbar::info($correoUsuarioList);
                     break;
                 case '3':
-                    $estadoRespuesta= 'Observado';
-                    $titulo = 'Su requerimiento '.$codigoRequerimiento.' fue observado';
-                    $mensaje ='Su requerimiento '.$codigoRequerimiento.' fue observado. Información adicional del requerimiento:'.
-                    '<ul>'.
-                    '<li> Concepto/Motivo: '.$conceptoRequerimiento.'</li>'.
-                    '<li> Tipo de requerimiento: '.$tipoRequerimiento.'</li>'.
-                    '<li> Fecha limite de entrega: '.$fechaEntregaRequerimiento.'</li>'.
-                    '<li> Creado por: '.($nombreCompletoUsuarioCreador?$nombreCompletoUsuarioCreador:'').'</li>'.
-                    '<li> Observado por: '.($nombreCompletoUsuarioRevisaAprueba?$nombreCompletoUsuarioRevisaAprueba:'').'</li>'.
-                    ($comentario?('<li> Comentario: '.$comentario.'</li>'):'').
-                    '</ul>'.
-                    '<p> *Este correo es generado de manera automática, por favor no responder.</p> 
+                    $titulo = 'Su requerimiento ' . $requerimiento->codigo . ' fue observado';
+                    $mensaje = 'Su requerimiento ' . $requerimiento->codigo . ' fue observado. Información adicional del requerimiento:' .
+                        '<ul>' .
+                        '<li> Concepto/Motivo: ' . $requerimiento->concepto . '</li>' .
+                        '<li> Tipo de requerimiento: ' . $requerimiento->tipo->descripcion . '</li>' .
+                        '<li> División: ' . $requerimiento->division->descripcion . '</li>' .
+                        '<li> Fecha limite de entrega: ' . $requerimiento->fecha_entrega . '</li>' .
+                        '<li> Creado por: ' . ($nombreCompletoUsuarioCreador ? $nombreCompletoUsuarioCreador : '') . '</li>' .
+                        '<li> Observado por: ' . ($nombreCompletoUsuarioRevisaAprueba ? $nombreCompletoUsuarioRevisaAprueba : '') . '</li>' .
+                        (!empty($request->comentario) ? ('<li> Comentario: ' . $request->comentario . '</li>') : '') .
+                        '</ul>' .
+                        '<p> *Este correo es generado de manera automática, por favor no responder.</p> 
                     <br> Saludos <br> Módulo de Logística <br> SYSTEM AGILE';
 
-                    $correoUsuario = Usuario::find($idUsuario)->trabajador->postulante->persona->email;
+                    $correoUsuarioList = Usuario::find($requerimiento->id_usuario)->trabajador->postulante->persona->email;
                     break;
             }
 
 
 
-            
-            if(isset($correoUsuario) && $correoUsuario!=null){
-                $destinatarios[]= $correoUsuario;
-                $seNotificaraporEmail= true;
 
-
-    
+            if (count($correoUsuarioList)>0) {
                 // $destinatarios[]= 'programador03@okcomputer.com.pe';
-    
-    
-                $payload=[
-                    'id_empresa'=>$idEmpresa,
-                    'email_destinatario'=>$destinatarios,
-                    'titulo'=>$titulo,
-                    'mensaje'=>$mensaje
-                ];
-                if(count($destinatarios)>0){
-                    $estado_envio = NotificacionesController::enviarEmail($payload);
-                }	
+                $destinatarios = $correoUsuarioList;
+                $seNotificaraporEmail = true;
 
+
+                $payload = [
+                    'id_empresa' => $requerimiento->id_empresa,
+                    'email_destinatario' => $destinatarios,
+                    'titulo' => $titulo,
+                    'mensaje' => $mensaje
+                ];
+
+                Debugbar::info($payload);
+
+                if (count($destinatarios) > 0) {
+                    NotificacionesController::enviarEmail($payload);
+                }
             }
 
 
 
-        DB::commit();
-        return response()->json(['id_aprobacion' => $aprobacion->id_aprobacion,'notificacion_por_emial'=>$seNotificaraporEmail]);
+            DB::commit();
+            return response()->json(['id_aprobacion' => $aprobacion->id_aprobacion, 'notificacion_por_emial' => $seNotificaraporEmail]);
         } catch (Exception $e) {
             DB::rollBack();
-            return response()->json(['id_aprobacion' => 0, 'notificacion_por_emial'=>false, 'mensaje' => 'Hubo un problema al guardar la respuesta. Por favor intentelo de nuevo. Mensaje de error: ' . $e->getMessage()]);
+            return response()->json(['id_aprobacion' => 0, 'notificacion_por_emial' => false, 'mensaje' => 'Hubo un problema al guardar la respuesta. Por favor intentelo de nuevo. Mensaje de error: ' . $e->getMessage()]);
         }
-
     }
 
 
@@ -3027,7 +3028,7 @@ class RequerimientoController extends Controller
             </head>
             <body>
             
-                <img src=".'.$requerimiento['requerimiento'][0]['logo_empresa'].'" alt="Logo" height="75px">
+                <img src=".' . $requerimiento['requerimiento'][0]['logo_empresa'] . '" alt="Logo" height="75px">
 
                 <h1><center>REQUERIMIENTO N°' . $requerimiento['requerimiento'][0]['codigo'] . '</center></h1>
                 <br><br>
@@ -3049,7 +3050,7 @@ class RequerimientoController extends Controller
                 <tr>
                     <td class="subtitle">Empresa</td>
                     <td class="subtitle verticalTop">:</td>
-                    <td class="verticalTop">' . $requerimiento['requerimiento'][0]['razon_social_empresa'].' - '.$requerimiento['requerimiento'][0]['codigo_sede_empresa'] . '</td>
+                    <td class="verticalTop">' . $requerimiento['requerimiento'][0]['razon_social_empresa'] . ' - ' . $requerimiento['requerimiento'][0]['codigo_sede_empresa'] . '</td>
                 </tr>
                 <tr>
                     <td class="subtitle">Gerencia</td>
@@ -3059,7 +3060,7 @@ class RequerimientoController extends Controller
                 <tr>
                     <td class="subtitle top">Proyecto</td>
                     <td class="subtitle verticalTop">:</td>
-                    <td class="verticalTop justify" colspan="4" >'.$requerimiento['requerimiento'][0]['codigo_proyecto'].' - '. $requerimiento['requerimiento'][0]['descripcion_proyecto'] . '</td>
+                    <td class="verticalTop justify" colspan="4" >' . $requerimiento['requerimiento'][0]['codigo_proyecto'] . ' - ' . $requerimiento['requerimiento'][0]['descripcion_proyecto'] . '</td>
                 </tr>    
                 <tr>
                     <td class="subtitle">Presupuesto</td>
@@ -3069,15 +3070,15 @@ class RequerimientoController extends Controller
                 <tr>
                     <td class="subtitle">Observación</td>
                     <td class="subtitle verticalTop">:</td>
-                    <td class="verticalTop">'. $requerimiento['requerimiento'][0]['observacion'] .'</td>
+                    <td class="verticalTop">' . $requerimiento['requerimiento'][0]['observacion'] . '</td>
                 </tr>
                 </table>
                 <br>';
-                
-                // <br>
-                // <p class="subtitle">1.- DENOMINACIÓN DE LA ADQUISICIÓN</p>
-                // <div class="texttab">' . $requerimiento['requerimiento'][0]['concepto'] . '</div>
-                // <p class="subtitle">3.- DESCRIPCIÓN POR ITEM</p>
+
+        // <br>
+        // <p class="subtitle">1.- DENOMINACIÓN DE LA ADQUISICIÓN</p>
+        // <div class="texttab">' . $requerimiento['requerimiento'][0]['concepto'] . '</div>
+        // <p class="subtitle">3.- DESCRIPCIÓN POR ITEM</p>
 
         $html .= '</div>
                 <table width="100%" class="tablePDF" border=0 style="font-size:10px">
@@ -3101,19 +3102,19 @@ class RequerimientoController extends Controller
             $html .= '<tr>';
             // $html .= '<td >' . ($key + 1) . '</td>';
             $html .= '<td >' . $data['codigo_producto'] . '</td>';
-            $html .= '<td >' . $data['part_number'] .($data['tiene_transformacion']>0?'<br><span style="display: inline-block; font-size: 8px; background:#ddd; color: #666; border-radius:8px; padding:2px 10px;">Transformado</span>':''). '</td>';
+            $html .= '<td >' . $data['part_number'] . ($data['tiene_transformacion'] > 0 ? '<br><span style="display: inline-block; font-size: 8px; background:#ddd; color: #666; border-radius:8px; padding:2px 10px;">Transformado</span>' : '') . '</td>';
             $html .= '<td >' . ($data['descripcion'] ? $data['descripcion'] : $data['descripcion_adicional']) . '</td>';
             $html .= '<td >' . $data['unidad_medida'] . '</td>';
             $html .= '<td class="right">' . $data['cantidad'] . '</td>';
-            $html .= '<td class="right">'.$simbolMoneda. number_format($data['precio_unitario'],2) . '</td>';
-            $html .= '<td class="right">'.$simbolMoneda. number_format($data['cantidad'] * $data['precio_unitario'],2) . '</td>';
+            $html .= '<td class="right">' . $simbolMoneda . number_format($data['precio_unitario'], 2) . '</td>';
+            $html .= '<td class="right">' . $simbolMoneda . number_format($data['cantidad'] * $data['precio_unitario'], 2) . '</td>';
             $html .= '</tr>';
             $total = $total + ($data['cantidad'] * $data['precio_unitario']);
         }
         $html .= '
             <tr>
                 <td  class="right" style="font-weight:bold;" colspan="6">TOTAL</td>
-                <td class="right">' .$simbolMonedaRequerimiento. number_format($total,2) . '</td>
+                <td class="right">' . $simbolMonedaRequerimiento . number_format($total, 2) . '</td>
             </tr>
             </table>
                 <br/>
@@ -3132,5 +3133,4 @@ class RequerimientoController extends Controller
         return $pdf->stream();
         return $pdf->download('requerimiento.pdf');
     }
-
 }

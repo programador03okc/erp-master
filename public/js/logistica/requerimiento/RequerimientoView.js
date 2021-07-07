@@ -533,7 +533,7 @@ class RequerimientoView {
         </div>`;
         });
         document.querySelector("div[id='listaPartidas']").innerHTML = html;
-        $('#modal-partidas').LoadingOverlay("hide", true);
+        $('#modal-partidas div.modal-body').LoadingOverlay("hide", true);
 
     }
 
@@ -722,7 +722,7 @@ class RequerimientoView {
             }
         });
         document.querySelector("div[name='centro-costos-panel']").innerHTML = html;
-        $('#modal-centro-costos').LoadingOverlay("hide", true);
+        $('#modal-centro-costos div.modal-body').LoadingOverlay("hide", true);
 
     }
 

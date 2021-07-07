@@ -23,18 +23,20 @@ class AprobarRequerimientoView {
             'columns': [
                 {
                     'render': function (data, type, row) {
-                        let prioridad = '';
-                        let thermometerNormal = '<center><i class="fas fa-thermometer-empty green fa-lg"  data-toggle="tooltip" data-placement="right" title="Prioridad '+row.descripcion_prioridad+'" ></i></center>';
-                        let thermometerAlta = '<center> <i class="fas fa-thermometer-half orange fa-lg"  data-toggle="tooltip" data-placement="right" title="Prioridad '+row.descripcion_prioridad+'"  ></i></center>';
-                        let thermometerCritica = '<center> <i class="fas fa-thermometer-full red fa-lg"  data-toggle="tooltip" data-placement="right" title="Prioridad '+row.descripcion_prioridad+'"  ></i></center>';
-                        if (row.id_prioridad == 1) {
-                            prioridad = thermometerNormal
-                        } else if (row.id_prioridad == 2) {
-                            prioridad = thermometerAlta
-                        } else if (row.id_prioridad == 3) {
-                            prioridad = thermometerCritica
-                        }
-                        return prioridad;
+                        return row['termometro'];
+
+                        // let prioridad = '';
+                        // let thermometerNormal = '<center><i class="fas fa-thermometer-empty green fa-lg"  data-toggle="tooltip" data-placement="right" title="Prioridad '+row.descripcion_prioridad+'" ></i></center>';
+                        // let thermometerAlta = '<center> <i class="fas fa-thermometer-half orange fa-lg"  data-toggle="tooltip" data-placement="right" title="Prioridad '+row.descripcion_prioridad+'"  ></i></center>';
+                        // let thermometerCritica = '<center> <i class="fas fa-thermometer-full red fa-lg"  data-toggle="tooltip" data-placement="right" title="Prioridad '+row.descripcion_prioridad+'"  ></i></center>';
+                        // if (row.id_prioridad == 1) {
+                        //     prioridad = thermometerNormal
+                        // } else if (row.id_prioridad == 2) {
+                        //     prioridad = thermometerAlta
+                        // } else if (row.id_prioridad == 3) {
+                        //     prioridad = thermometerCritica
+                        // }
+                        // return prioridad;
                     }
                 },
                 { 'data': 'codigo', 'name': 'codigo' },
@@ -245,7 +247,7 @@ class AprobarRequerimientoView {
             aprobarRequerimientoView.construirSeccionDatosGenerales(res['requerimiento'][0]);
             aprobarRequerimientoView.construirSeccionItemsDeRequerimiento(res['det_req']);
             aprobarRequerimientoView.construirSeccionHistorialAprobacion(res['historial_aprobacion']);
-            $('#modal-requerimiento').LoadingOverlay("hide", true);
+            $('#modal-requerimiento div.modal-body').LoadingOverlay("hide", true);
 
         }).catch(function (err) {
             console.log(err)
@@ -274,7 +276,7 @@ class AprobarRequerimientoView {
             aprobarRequerimientoView.construirSeccionDatosGenerales(res['requerimiento'][0]);
             aprobarRequerimientoView.construirSeccionItemsDeRequerimiento(res['det_req']);
             aprobarRequerimientoView.construirSeccionHistorialAprobacion(res['historial_aprobacion']);
-            $('#modal-requerimiento').LoadingOverlay("hide", true);
+            $('#modal-requerimiento div.modal-body').LoadingOverlay("hide", true);
 
         }).catch(function (err) {
             console.log(err)
@@ -393,9 +395,9 @@ class AprobarRequerimientoView {
                             <td>${data[i].id_tipo_item == 1 ? (data[i].producto_part_number ? data[i].producto_part_number : data[i].part_number) : '(Servicio)'}</td>
                             <td>${data[i].producto_descripcion ? data[i].producto_descripcion : (data[i].descripcion ? data[i].descripcion : '')} </td>
                             <td>${data[i].unidad_medida}</td>
-                            <td>${data[i].cantidad}</td>
-                            <td>${Util.formatoNumero(data[i].precio_unitario, 2)}</td>
-                            <td>${(data[i].subtotal ? Util.formatoNumero(data[i].subtotal, 2) : (Util.formatoNumero((data[i].cantidad*data[i].precio_unitario),2)))}</td>
+                            <td style="text-align:center;">${data[i].cantidad}</td>
+                            <td style="text-align:right;">${Util.formatoNumero(data[i].precio_unitario, 2)}</td>
+                            <td style="text-align:right;">${(data[i].subtotal ? Util.formatoNumero(data[i].subtotal, 2) : (Util.formatoNumero((data[i].cantidad*data[i].precio_unitario),2)))}</td>
                             <td>${data[i].motivo ? data[i].motivo : ''}</td>
                             <td style="text-align: center;"> 
                                 ${cantidadAdjuntosItem>0?'<a title="Ver archivos adjuntos de item" style="cursor:pointer;" onClick="aprobarRequerimientoView.verAdjuntosItem('+data[i].id_detalle_requerimiento+')">Ver (<span name="cantidadAdjuntosItem">'+cantidadAdjuntosItem+'</span>)</a>':'-'}
@@ -498,13 +500,13 @@ class AprobarRequerimientoView {
                         alert(`Respuesta registrada con éxito. La página se recargara para actualizar el listado.`);
 
                     }
-                    $('#modal-requerimiento').modal('hide');
+                    $('#modal-requerimiento div.modal-body').modal('hide');
                     location.reload();
 
 
                 } else {
                     alert(res.mensaje);
-                    $('#modal-requerimiento').LoadingOverlay("hide", true);
+                    $('#modal-requerimiento div.modal-body').LoadingOverlay("hide", true);
                 }
 
             }).catch(function (err) {

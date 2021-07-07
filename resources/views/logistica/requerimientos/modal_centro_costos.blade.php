@@ -14,6 +14,9 @@
                     </div>
 				</div>
 			</div>
+			<div class="modal-footer">
+			<button class="btn btn-primary" class="close" data-dismiss="modal" >Cancelar</button>
+			</div>
 		</div>
 	</div>
     <label id="indice_item" style="display: none;"></label>
