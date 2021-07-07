@@ -80,12 +80,13 @@ Compras pendientes
     </div>
 </div>
 
+@include('logistica.requerimientos.mapeo.mapeoItemsRequerimiento')
+@include('logistica.requerimientos.mapeo.mapeoAsignarProducto')
+
 @include('logistica.gestion_logistica.compras.pendientes.modal_filtro_requerimientos_pendientes')
 @include('logistica.gestion_logistica.compras.pendientes.modal_ver_cuadro_costos')
 @include('logistica.gestion_logistica.compras.pendientes.modal_agregar_items_requerimiento')
 @include('logistica.gestion_logistica.compras.pendientes.modal_atender_con_almacen')
-@include('logistica.requerimientos.modal_catalogo_items')
-@include('logistica.requerimientos.modal_crear_nuevo_producto')
 @include('logistica.gestion_logistica.compras.pendientes.modal_agregar_items_para_compra')
 @include('logistica.gestion_logistica.compras.pendientes.modal_orden_requerimiento')
 @include('logistica.cotizaciones.proveedorModal')
@@ -107,9 +108,22 @@ Compras pendientes
  
 <script src="{{ asset('template/plugins/moment.min.js') }}"></script>
 
+<script src="{{ asset('js/logistica/mapeo/mapeoItemsRequerimiento.js')}}"></script>
+<script src="{{ asset('js/logistica/mapeo/mapeoAsignarProducto.js')}}"></script>
+
 <script>
     $(document).ready(function() {
         seleccionarMenu(window.location);
+
+        $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+            let tab = $(e.target).attr("href") // activated tab
+            console.log('tab: '+tab);
+
+            if (tab=='#seleccionar'){
+                $('#productosSugeridos').DataTable().ajax.reload();
+                $('#productosCatalogo').DataTable().ajax.reload();
+            }
+         });
 
     });
 </script>

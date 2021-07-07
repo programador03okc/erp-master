@@ -768,6 +768,12 @@ Route::group(['middleware' => ['auth']], function () {
 
 					Route::post('guardar-producto', 'AlmacenController@guardar_producto')->name('guardar-producto');
 
+					Route::get('itemsRequerimiento/{id}', 'Logistica\Requerimientos\MapeoProductosController@itemsRequerimiento')->name('items-requerimiento');
+					Route::get('mostrar_prods', 'Almacen\Catalogo\ProductoController@mostrar_prods');
+					Route::get('mostrar_prods_sugeridos/{part}', 'Almacen\Catalogo\ProductoController@mostrar_prods_sugeridos');
+					Route::post('guardar_mapeo_productos', 'Logistica\Requerimientos\MapeoProductosController@guardar_mapeo_productos')->name('guardar-mapeo-productos');
+					Route::get('mostrar_categorias_tipo/{id}', 'Almacen\Catalogo\ProductoController@mostrar_categorias_tipo');
+
 
 				});
 				
