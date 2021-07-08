@@ -320,12 +320,12 @@ function mostrar_ordenes_seleccionadas(){
 $("#form-guia_create").on("submit", function(e){
     console.log('submit');
     e.preventDefault();
-
+    var data = $(this).serialize();
+    
     var rspta = confirm("¿Está seguro que desea guardar ésta Guía?");
 
     if (rspta==true){
 
-        var data = $(this).serialize();
         var detalle = [];
         var validaCampos = '';
         var ope = $('[name=id_operacion]').val();
