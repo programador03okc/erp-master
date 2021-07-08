@@ -715,8 +715,11 @@ class OrdenesPendientesController extends Controller
                         ->where('id_detalle_requerimiento',$det->id_detalle_requerimiento)
                         ->first();
     
-                        if (!in_array($dreq->id_requerimiento, $padres_req)){
-                            array_push($padres_req, $dreq->id_requerimiento);
+                        if ($dreq !== null){
+
+                            if (!in_array($dreq->id_requerimiento, $padres_req)){
+                                array_push($padres_req, $dreq->id_requerimiento);
+                            }
                         }
                     }
 
