@@ -740,7 +740,7 @@ class OrdenesPendientesController extends Controller
                             // ->where('id_detalle_requerimiento',$det->id_detalle_requerimiento)
                             // ->first();
     
-                            // if ($detalle_req->estado !== 22){//Despacho interno
+                            if ($dreq !== null){
                                 if ($dreq->cantidad == $ant_oc->suma_cantidad){
                                     DB::table('almacen.alm_det_req')
                                     ->where('id_detalle_requerimiento',$det->id_detalle_requerimiento)
@@ -754,7 +754,7 @@ class OrdenesPendientesController extends Controller
                                                 'stock_comprometido'=>$cantidad,
                                                 'id_almacen_reserva'=>$request->id_almacen]);
                                 }
-                            // }
+                            }
                         }
 
                     } else {
