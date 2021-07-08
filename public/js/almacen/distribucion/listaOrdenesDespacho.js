@@ -7,7 +7,7 @@ function listarRequerimientosPendientes(){
         'buttons': vardataTables[2],
         'language' : vardataTables[0],
         'bDestroy' : true,
-        'serverSide' : true,
+        // 'serverSide' : true,
         'ajax': 'listarRequerimientosEnProceso',
         // 'ajax': {
         //     url: 'listarRequerimientosEnProceso',
