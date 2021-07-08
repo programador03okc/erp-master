@@ -323,7 +323,7 @@ $("#form-guia_create").on("submit", function(e){
 
     var rspta = confirm("¿Está seguro que desea guardar ésta Guía?");
 
-    if (rspta){
+    if (rspta==true){
 
         var data = $(this).serialize();
         var detalle = [];
