@@ -8,11 +8,11 @@ function listarRequerimientosPendientes(){
         'language' : vardataTables[0],
         'bDestroy' : true,
         'serverSide' : true,
-        // "scrollX": true,
-        'ajax': {
-            url: 'listarRequerimientosEnProceso',
-            type: 'POST'
-        },
+        'ajax': 'listarRequerimientosEnProceso',
+        // 'ajax': {
+        //     url: 'listarRequerimientosEnProceso',
+        //     type: 'POST'
+        // },
         'columns': [
             {'data': 'id_requerimiento'},
             {'render': function (data, type, row){
