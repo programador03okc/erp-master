@@ -79,7 +79,7 @@ $('#detalleItemsRequerimiento tbody').on("click","button.asignar", function(){
     $('[name=id_unidad_medida]').val(1);
 
     listarProductosCatalogo();
-    listarProductosSugeridos(partnumber);
+    listarProductosSugeridos(partnumber, desc);
     
     $('#submit_mapeoAsignarProducto').removeAttr('disabled');
 });

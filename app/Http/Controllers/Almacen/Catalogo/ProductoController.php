@@ -40,13 +40,68 @@ class ProductoController extends Controller
         return response()->json($output);
     }
 
-    public function mostrar_prods_sugeridos($part_number){
-        $prod = DB::table('almacen.alm_prod')
+    ////sugeridos
+    public function actualizarSugeridos(Request $request)
+    {
+        if ($request->part_number != null) {
+            $request->session()->put('productFilter_partnumber', $request->part_number);
+        } else {
+            $request->session()->forget('productFilter_partnumber');
+        }
+
+        if ($request->descripcion != null) {
+            $request->session()->put('productFilter_descripcion', $request->descripcion);
+        } else {
+            $request->session()->forget('productFilter_descripcion');
+        }
+
+        return response()->json(array('response' => 'ok'), 200);
+    }
+
+    public function listarProductosSugeridos(Request $request)
+    {
+        // $filter_p = session()->get('productFilter_partnumber');
+        // dd($filter_p);
+        // exit();
+        
+        if (session()->has('productFilter_partnumber')) {
+            $data = DB::table('almacen.alm_prod')
             ->select('alm_prod.id_producto', 'alm_prod.codigo', 'alm_prod.descripcion',
             'alm_prod.part_number','alm_subcat.descripcion as marca')
             ->leftjoin('almacen.alm_subcat','alm_subcat.id_subcategoria','=','alm_prod.id_subcategoria')
-            ->where('alm_prod.part_number',$part_number)
+            ->where('alm_prod.part_number', session()->get('productFilter_partnumber'))
             ->get();
+        } 
+        else if (session()->has('productFilter_descripcion')) {
+            $data = DB::table('almacen.alm_prod')
+            ->select('alm_prod.id_producto', 'alm_prod.codigo', 'alm_prod.descripcion',
+            'alm_prod.part_number','alm_subcat.descripcion as marca')
+            ->leftjoin('almacen.alm_subcat','alm_subcat.id_subcategoria','=','alm_prod.id_subcategoria')
+            ->where('alm_prod.descripcion', session()->get('productFilter_descripcion'))
+            ->get();
+        }
+        $output['data'] = $data;
+        return response()->json($output);
+        
+    }
+
+    public function mostrar_prods_sugeridos($part_number,$descripcion){
+        if ($part_number !== ''){
+            $prod = DB::table('almacen.alm_prod')
+                ->select('alm_prod.id_producto', 'alm_prod.codigo', 'alm_prod.descripcion',
+                'alm_prod.part_number','alm_subcat.descripcion as marca')
+                ->leftjoin('almacen.alm_subcat','alm_subcat.id_subcategoria','=','alm_prod.id_subcategoria')
+                ->where('alm_prod.part_number',$part_number)
+                ->get();
+        } 
+        else if ($descripcion !== ''){
+            $prod = DB::table('almacen.alm_prod')
+                ->select('alm_prod.id_producto', 'alm_prod.codigo', 'alm_prod.descripcion',
+                'alm_prod.part_number','alm_subcat.descripcion as marca')
+                ->leftjoin('almacen.alm_subcat','alm_subcat.id_subcategoria','=','alm_prod.id_subcategoria')
+                ->where('alm_prod.descripcion',$descripcion)
+                ->get();
+        }
         $output['data'] = $prod;
         return response()->json($output);
     }
