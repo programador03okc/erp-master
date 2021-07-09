@@ -32,7 +32,8 @@ class MapeoProductosController extends Controller
             'sis_moneda.simbolo','alm_tp_req.descripcion as tipo',
             DB::raw("(SELECT COUNT(*) FROM almacen.alm_det_req AS det
                         WHERE det.id_requerimiento = alm_req.id_requerimiento
-                          AND det.id_producto is null) AS count_pendientes")
+                          AND det.id_producto is null
+                          AND det.id_tipo_item = 1) AS count_pendientes")
             )
             ->join('configuracion.sis_usua','sis_usua.id_usuario','=','alm_req.id_usuario')
             ->join('administracion.adm_estado_doc','adm_estado_doc.id_estado_doc','=','alm_req.estado')
