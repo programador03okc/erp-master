@@ -30,14 +30,35 @@ function listarProductosCatalogo(){
     });
 }
 
-function listarProductosSugeridos(part_number){
+function listarProductosSugeridos(part_number, descripcion){
+    part_number = (part_number==''?null:part_number);
+    console.log(part_number);
+    console.log(descripcion);
+
+    $.ajax({
+        type: 'POST',
+        url: 'actualizarSugeridos',
+        data: {
+            part_number: part_number,
+            descripcion: descripcion
+        },
+        success: function(response){
+            console.log(response);
+            if (response.response == 'ok') {
+                listarSugeridos();
+            }
+        }
+    });    
+
+}
+
+function listarSugeridos() {
     var vardataTables = funcDatatables();
     $('#productosSugeridos').dataTable({
-        // 'dom': vardataTables[1],
         'language' : vardataTables[0],
-        // 'processing': true,
         'bDestroy' : true,
-        'ajax': 'mostrar_prods_sugeridos/'+part_number,
+        // 'ajax': 'mostrar_prods_sugeridos/'+part_number+'/'+encodeURIComponent(descripcion),
+        'ajax': 'listarProductosSugeridos',
         'columns': [
             {'data': 'id_producto'},
             {'data': 'part_number'},

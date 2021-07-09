@@ -745,7 +745,7 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::post('listarRequerimientos', 'Logistica\Requerimientos\MapeoProductosController@listarRequerimientos')->name('listar-requerimiento');
 					Route::get('itemsRequerimiento/{id}', 'Logistica\Requerimientos\MapeoProductosController@itemsRequerimiento')->name('items-requerimiento');
 					Route::get('mostrar_prods', 'Almacen\Catalogo\ProductoController@mostrar_prods');
-					Route::get('mostrar_prods_sugeridos/{part}', 'Almacen\Catalogo\ProductoController@mostrar_prods_sugeridos');
+					Route::get('mostrar_prods_sugeridos/{part}/{desc}', 'Almacen\Catalogo\ProductoController@mostrar_prods_sugeridos');
 					Route::post('guardar_mapeo_productos', 'Logistica\Requerimientos\MapeoProductosController@guardar_mapeo_productos')->name('guardar-mapeo-productos');
 					Route::get('mostrar_categorias_tipo/{id}', 'Almacen\Catalogo\ProductoController@mostrar_categorias_tipo');
 
@@ -770,7 +770,9 @@ Route::group(['middleware' => ['auth']], function () {
 
 					Route::get('itemsRequerimiento/{id}', 'Logistica\Requerimientos\MapeoProductosController@itemsRequerimiento')->name('items-requerimiento');
 					Route::get('mostrar_prods', 'Almacen\Catalogo\ProductoController@mostrar_prods');
-					Route::get('mostrar_prods_sugeridos/{part}', 'Almacen\Catalogo\ProductoController@mostrar_prods_sugeridos');
+					Route::post('actualizarSugeridos', 'Almacen\Catalogo\ProductoController@actualizarSugeridos');
+					Route::get('listarProductosSugeridos', 'Almacen\Catalogo\ProductoController@listarProductosSugeridos');
+					Route::get('mostrar_prods_sugeridos/{part}/{desc}', 'Almacen\Catalogo\ProductoController@mostrar_prods_sugeridos');
 					Route::post('guardar_mapeo_productos', 'Logistica\Requerimientos\MapeoProductosController@guardar_mapeo_productos')->name('guardar-mapeo-productos');
 					Route::get('mostrar_categorias_tipo/{id}', 'Almacen\Catalogo\ProductoController@mostrar_categorias_tipo');
 
