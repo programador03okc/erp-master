@@ -45,7 +45,7 @@ function listarProductosSugeridos(part_number, descripcion, type){
         ds = descripcion;
     } 
     else {
-        if (part_number!==''){
+        if (part_number!=='' && part_number!==null){
             pn = part_number;
             ds = null;
         } else {
