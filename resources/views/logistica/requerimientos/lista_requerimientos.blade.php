@@ -88,6 +88,7 @@ Listado de requerimientos
                     <table class="mytable table table-hover table-condensed table-bordered table-okc-view" id="ListaRequerimientosElaborados" width="100%">
                         <thead>
                             <tr>
+                                <th class="text-center"></th>
                                 <th class="text-center" style="width:2%">Prio.</th>
                                 <th class="text-center" style="width:8%">Código</th>
                                 <th class="text-center" style="width:20%">Concepto</th>

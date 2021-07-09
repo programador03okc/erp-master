@@ -16,12 +16,13 @@ class ListarRequerimientoView{
             'dom': vardataTables[1],
             'buttons': vardataTables[2],
             'language': vardataTables[0],
-            'order': [[11, 'desc']],
+            'order': [[0, 'desc']],
             'bLengthChange': false,
             'serverSide': false,
             'destroy': true,
             'data': data,
             'columns': [
+                { 'data': 'id_requerimiento', 'name': 'alm_req.id_requerimiento', 'visible': false },
                 { 'data': 'priori', 'name': 'adm_prioridad.descripcion', 'className': 'text-center' },
                 { 'data': 'codigo', 'name': 'codigo', 'className': 'text-center' },
                 { 'data': 'concepto', 'name': 'concepto' },
@@ -40,7 +41,7 @@ class ListarRequerimientoView{
                 {
                     'render': function (data, type, row) {
                         return row['termometro'];
-                    }, targets: 0
+                    }, targets: 1
                 },
                 {
                     'render': function (data, type, row) {
@@ -78,7 +79,7 @@ class ListarRequerimientoView{
                             btnAnular = '<button type="button" class="btn btn-xs btn-danger" title="Anular" onClick="listarRequerimientoView.anularRequerimiento(' + row['id_requerimiento'] + ');"><i class="fas fa-trash fa-xs"></i></button>';
                         }
                         return containerOpenBrackets + btnDetalleRapido + btnEditar + btnAnular + containerCloseBrackets;
-                    }, targets: 12
+                    }, targets: 13
                 },
             ],
             "createdRow": function (row, data, dataIndex) {
