@@ -1,7 +1,6 @@
 let detalle = [];
 
 function itemsRequerimiento(id_requerimiento){
-    console.log('id_requerimiento'+id_requerimiento);
     detalle = [];
     $.ajax({
         type: 'GET',
@@ -9,17 +8,18 @@ function itemsRequerimiento(id_requerimiento){
         dataType: 'JSON',
         success: function(response){
             console.log(response);
-            
             response.forEach(element => {
-                detalle.push({
-                    'id_detalle_requerimiento'  :element.id_detalle_requerimiento,
-                    'id_producto'        :element.id_producto,
-                    'codigo'             :element.codigo,
-                    'part_number'        :(element.id_producto!==null ? element.part_number_prod : element.part_number),
-                    'descripcion'        :(element.id_producto!==null ? element.descripcion_prod : element.descripcion),
-                    'cantidad'           :element.cantidad,
-                    'abreviatura'        :(element.abreviatura!==null?element.abreviatura:''),
-                });
+                if(element.id_tipo_item ==1){
+                    detalle.push({
+                        'id_detalle_requerimiento'  :element.id_detalle_requerimiento,
+                        'id_producto'        :element.id_producto,
+                        'codigo'             :element.codigo,
+                        'part_number'        :(element.id_producto!==null ? element.part_number_prod : element.part_number),
+                        'descripcion'        :(element.id_producto!==null ? element.descripcion_prod : element.descripcion),
+                        'cantidad'           :element.cantidad,
+                        'abreviatura'        :(element.abreviatura!==null?element.abreviatura:''),
+                    });
+                }
             
             });
             mostrar_detalle();

@@ -431,16 +431,24 @@ class OrdenCtrl{
             msj+='\n Es necesario que ingrese un plazo de entrega';
         }
         let cantidadInconsistenteInputPrecio=0;
+        let cantidadInconsistenteMapeoProducto=0;
         // let inputPrecio= document.querySelectorAll("table[id='listaDetalleOrden'] input[name='precio']");
         detalleOrdenList.forEach((element)=>{
             if(!parseFloat(element.precio_unitario) >0  && element.estado !=7){
                 cantidadInconsistenteInputPrecio++;
             }
+            if((element.id_tipo_item==1) && (element.id_producto =='' || element.id_producto ==null)){
+                cantidadInconsistenteMapeoProducto++;
+            }
+
         })
         if(cantidadInconsistenteInputPrecio>0){
             msj+='\n Es necesario que ingrese un precio / precio mayor a cero';
-    
         }
+        if(cantidadInconsistenteMapeoProducto>0){
+            msj+='\n Tiene productos sin mapear';
+        }
+
         let cantidadInconsistenteInputCantidadAComprar=0;
         let inputCantidadAComprar= document.querySelectorAll("table[id='listaDetalleOrden'] input[name='cantidad_a_comprar']");
         inputCantidadAComprar.forEach((element)=>{
