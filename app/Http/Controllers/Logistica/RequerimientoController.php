@@ -613,8 +613,8 @@ class RequerimientoController extends Controller
                 $detalle->descripcion = $request->descripcion[$i];
                 $detalle->id_unidad_medida = $request->unidad[$i];
                 $detalle->cantidad = $request->cantidad[$i];
-                $detalle->precio_unitario = $request->precioUnitario[$i];
-                $detalle->subtotal = number_format($request->cantidad[$i] * $request->precioUnitario[$i], 2);
+                $detalle->precio_unitario = floatval($request->precioUnitario[$i]);
+                $detalle->subtotal = floatval($request->cantidad[$i] * $request->precioUnitario[$i]);
                 $detalle->motivo = $request->motivo[$i];
                 $detalle->tiene_transformacion = ($request->tiene_transformacion ? $request->tiene_transformacion : false);
                 $detalle->fecha_registro = new Carbon();
@@ -927,8 +927,8 @@ class RequerimientoController extends Controller
                 $detalle->descripcion = $request->descripcion[$i];
                 $detalle->id_unidad_medida = $request->unidad[$i];
                 $detalle->cantidad = $request->cantidad[$i];
-                $detalle->precio_unitario = $request->precioUnitario[$i];
-                $detalle->subtotal = number_format($request->cantidad[$i] * $request->precioUnitario[$i], 2);
+                $detalle->precio_unitario = floatval($request->precioUnitario[$i]);
+                $detalle->subtotal = floatval($request->cantidad[$i] * $request->precioUnitario[$i]);
                 $detalle->motivo = $request->motivo[$i];
                 $detalle->tiene_transformacion = ($request->tiene_transformacion ? $request->tiene_transformacion : false);
                 $detalle->fecha_registro = new Carbon();
@@ -945,8 +945,8 @@ class RequerimientoController extends Controller
                 $detalle->descripcion = $request->descripcion[$i];
                 $detalle->id_unidad_medida = $request->unidad[$i];
                 $detalle->cantidad = $request->cantidad[$i];
-                $detalle->precio_unitario = $request->precioUnitario[$i];
-                $detalle->subtotal = number_format($request->cantidad[$i] * $request->precioUnitario[$i], 2);
+                $detalle->precio_unitario = floatval($request->precioUnitario[$i]);
+                $detalle->subtotal = floatval($request->cantidad[$i] * $request->precioUnitario[$i]);
                 $detalle->motivo = $request->motivo[$i];
                 $detalle->tiene_transformacion = ($request->tiene_transformacion ? $request->tiene_transformacion : false);
                 // $detalle->fecha_registro = new Carbon();
