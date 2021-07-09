@@ -47,10 +47,25 @@ class ComprasPendientesController extends Controller
 
         $tipos = AlmacenController::mostrar_tipos_cbo();
 
-        return view('logistica/gestion_logistica/compras/pendientes/vista_pendientes', 
-        compact('sedes', 'empresas', 'sis_identidad', 'tp_documento', 'tp_moneda', 'tp_doc', 
-        'condiciones', 'clasificaciones', 'subcategorias', 'categorias', 'unidades', 'unidades_medida', 
-        'monedas','tipos'));
+        return view(
+            'logistica/gestion_logistica/compras/pendientes/vista_pendientes',
+            compact(
+                'sedes',
+                'empresas',
+                'sis_identidad',
+                'tp_documento',
+                'tp_moneda',
+                'tp_doc',
+                'condiciones',
+                'clasificaciones',
+                'subcategorias',
+                'categorias',
+                'unidades',
+                'unidades_medida',
+                'monedas',
+                'tipos'
+            )
+        );
     }
 
 
@@ -195,7 +210,11 @@ class ComprasPendientesController extends Controller
                 'adm_estado_doc.bootstrap_color',
                 DB::raw("(CASE WHEN alm_req.estado = 1 THEN 'Habilitado' ELSE 'Deshabilitado' END) AS estado_desc"),
                 DB::raw("(SELECT  COUNT(alm_det_req.id_detalle_requerimiento) FROM almacen.alm_det_req
-            WHERE alm_det_req.id_requerimiento = alm_req.id_requerimiento and alm_det_req.tiene_transformacion=false)::integer as cantidad_items_base")
+            WHERE alm_det_req.id_requerimiento = alm_req.id_requerimiento and alm_det_req.tiene_transformacion=false)::integer as cantidad_items_base"),
+                DB::raw("(SELECT COUNT(*) FROM almacen.alm_det_req AS det
+            WHERE det.id_requerimiento = alm_req.id_requerimiento AND det.id_tipo_item =1
+              AND det.id_producto is null) AS count_pendientes")
+
                 //         DB::raw("(SELECT  COUNT(log_ord_compra.id_orden_compra) FROM logistica.log_ord_compra
                 // WHERE log_ord_compra.id_grupo_cotizacion = log_detalle_grupo_cotizacion.id_grupo_cotizacion)::integer as cantidad_orden"),
                 //         DB::raw("(SELECT  COUNT(mov_alm.id_mov_alm) FROM almacen.mov_alm
@@ -251,8 +270,8 @@ class ComprasPendientesController extends Controller
                 'estado' => $data->estado,
                 'estado_doc' => $data->estado_doc,
                 'bootstrap_color' => $data->bootstrap_color,
-                'detalle' => []
-
+                'detalle' => [],
+                'count_pendientes' => $data->count_pendientes,
             ];
         }
 
@@ -368,34 +387,34 @@ class ComprasPendientesController extends Controller
 
                 foreach ($temp_data as $arr) {
                     foreach ($arr as $value) {
-                        
+
                         foreach ($alm_det_req as $det_req) {
                             if (($value->id == $det_req->id_cc_am_filas)) {
 
-                            if (in_array($value->id, $idAgregadosList, true) == false) {
+                                if (in_array($value->id, $idAgregadosList, true) == false) {
 
-                                $data[] = [
-                                    'id' => $value->id,
-                                    'id_cc_am' => $value->id_cc_am,
-                                    'id_cc_am_filas' => $value->id_cc_am_filas,
-                                    'cantidad' => ($value->cantidad - ($det_req->stock_comprometido > 0 ? $det_req->stock_comprometido : 0)),
-                                    'comentario_producto_transformado' => $value->comentario_producto_transformado,
-                                    'descripcion' => $value->descripcion,
-                                    'descripcion_producto_transformado' => $value->descripcion_producto_transformado,
-                                    'fecha_creacion' => $value->fecha_creacion,
-                                    'flete_oc' => $value->flete_oc,
-                                    'garantia' => $value->garantia,
-                                    'id_autor' => $value->id_autor,
-                                    'nombre_autor' => $value->nombre_autor,
-                                    'part_no' => $value->part_no,
-                                    'part_no_producto_transformado' => $value->part_no_producto_transformado,
-                                    'proveedor_seleccionado' => $value->proveedor_seleccionado,
-                                    'pvu_oc' => $value->pvu_oc,
-                                    'razon_social_proveedor' => $value->razon_social_proveedor,
-                                    'ruc_proveedor' => $value->ruc_proveedor
-                                ];
+                                    $data[] = [
+                                        'id' => $value->id,
+                                        'id_cc_am' => $value->id_cc_am,
+                                        'id_cc_am_filas' => $value->id_cc_am_filas,
+                                        'cantidad' => ($value->cantidad - ($det_req->stock_comprometido > 0 ? $det_req->stock_comprometido : 0)),
+                                        'comentario_producto_transformado' => $value->comentario_producto_transformado,
+                                        'descripcion' => $value->descripcion,
+                                        'descripcion_producto_transformado' => $value->descripcion_producto_transformado,
+                                        'fecha_creacion' => $value->fecha_creacion,
+                                        'flete_oc' => $value->flete_oc,
+                                        'garantia' => $value->garantia,
+                                        'id_autor' => $value->id_autor,
+                                        'nombre_autor' => $value->nombre_autor,
+                                        'part_no' => $value->part_no,
+                                        'part_no_producto_transformado' => $value->part_no_producto_transformado,
+                                        'proveedor_seleccionado' => $value->proveedor_seleccionado,
+                                        'pvu_oc' => $value->pvu_oc,
+                                        'razon_social_proveedor' => $value->razon_social_proveedor,
+                                        'ruc_proveedor' => $value->ruc_proveedor
+                                    ];
+                                }
                             }
-                        }
                         }
                     }
                 }
