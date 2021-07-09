@@ -60,10 +60,7 @@ class ProductoController extends Controller
 
     public function listarProductosSugeridos(Request $request)
     {
-        // $filter_p = session()->get('productFilter_partnumber');
-        // dd($filter_p);
-        // exit();
-        
+        $data = [];
         if (session()->has('productFilter_partnumber')) {
             $data = DB::table('almacen.alm_prod')
             ->select('alm_prod.id_producto', 'alm_prod.codigo', 'alm_prod.descripcion',
