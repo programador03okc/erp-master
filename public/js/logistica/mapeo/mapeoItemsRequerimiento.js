@@ -36,18 +36,37 @@ function mostrar_detalle(){
     var i = 1;
 
     detalle.forEach(element => {
+        var pn = element.part_number;
+        var dsc = encodeURIComponent(element.descripcion);
+        var link_pn = '';
+        var link_des = '';
+
+        if (pn !== null) {
+            link_pn = `
+            <a href="javascript: void(0);" 
+                onclick="openAsignarProducto('`+ pn +`', '`+ dsc +`', `+ element.id_detalle_requerimiento +`, 1);">
+            `+ pn +`
+            </a>`;
+        }
+        if (dsc !== null) {
+            link_des = `
+            <a href="javascript: void(0);" 
+                onclick="openAsignarProducto('`+ pn +`', '`+ dsc +`', `+ element.id_detalle_requerimiento +`, 2);">
+            `+ decodeURIComponent(dsc) +`
+            </a>`;
+        }
         html+=`<tr>
             <td>${i}</td>
             <td>${element.codigo!==null?element.codigo:''}</td>
-            <td>${element.part_number!==null?element.part_number:''}</td>
-            <td>${element.descripcion!==null?element.descripcion:''}</td>
+            <td>`+ link_pn +`</td>
+            <td>`+ link_des +`</td>
             <td>${element.cantidad!==null?element.cantidad:''}</td>
             <td>${element.abreviatura!==null?element.abreviatura:''}</td>
             <td>
                 <button type="button" style="padding-left:8px;padding-right:7px;" 
                     class="asignar btn btn-info boton" data-toggle="tooltip" 
                     data-placement="bottom" data-partnumber="${element.part_number}" 
-                    data-desc="${element.descripcion}" data-id="${element.id_detalle_requerimiento}"
+                    data-desc="${encodeURIComponent(element.descripcion)}" data-id="${element.id_detalle_requerimiento}"
                     title="Asignar producto" >
                     <i class="fas fa-angle-double-right"></i>
                 </button>
@@ -63,26 +82,28 @@ $('#detalleItemsRequerimiento tbody').on("click","button.asignar", function(){
     var partnumber = $(this).data('partnumber');
     var desc = $(this).data('desc');
     var id = $(this).data('id');
+    openAsignarProducto(partnumber,desc,id, 0);
+});
+
+function openAsignarProducto(partnumber,desc,id, type){
     
-    $('#modal-mapeoAsignarProducto').modal({
-        show: true
-    });
     $('#part_number').text(partnumber);
-    $('#descripcion').text(desc);
+    $('#descripcion').text(decodeURIComponent(desc));
     $('[name=id_detalle_requerimiento]').val(id);
     $('[name=part_number]').val(partnumber);
-    $('[name=descripcion]').val(desc);
+    $('[name=descripcion]').val(decodeURIComponent(desc));
     $('[name=id_tipo_producto]').val('');
     $('[name=id_categoria]').val('');
     $('[name=id_subcategoria]').val('');
     $('[name=id_clasif]').val(5);
     $('[name=id_unidad_medida]').val(1);
-
-    listarProductosCatalogo();
-    listarProductosSugeridos(partnumber, desc);
     
+    listarProductosCatalogo();
+    listarProductosSugeridos(partnumber, decodeURIComponent(desc), type);
+    
+    $('#modal-mapeoAsignarProducto').modal('show');
     $('#submit_mapeoAsignarProducto').removeAttr('disabled');
-});
+}
 
 $("#form-mapeoItemsRequerimiento").on("submit", function(e){
     e.preventDefault();

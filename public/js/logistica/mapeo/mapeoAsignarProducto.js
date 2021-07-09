@@ -17,7 +17,7 @@ function listarProductosCatalogo(){
                         <div class="btn-group btn-group-sm" role="group">
                             <button type="button" class="btn btn-success btn-sm" name="btnSeleccionarUbigeo" title="Seleccionar Producto" 
                             data-codigo="${row.codigo}" data-id="${row.id_producto}" 
-                            data-partnumber="${row.part_number}" data-descripcion="${row.descripcion}" 
+                            data-partnumber="${row.part_number}" data-descripcion="${encodeURIComponent(row.descripcion)}" 
                             onclick="selectProductoAsignado(this);">
                             <i class="fas fa-check"></i>
                             </button>
@@ -30,25 +30,48 @@ function listarProductosCatalogo(){
     });
 }
 
-function listarProductosSugeridos(part_number, descripcion){
-    part_number = (part_number==''?null:part_number);
-    console.log(part_number);
-    console.log(descripcion);
+let sDesc = '';
+let sPart = '';
 
-    $.ajax({
-        type: 'POST',
-        url: 'actualizarSugeridos',
-        data: {
-            part_number: part_number,
-            descripcion: descripcion
-        },
-        success: function(response){
-            console.log(response);
-            if (response.response == 'ok') {
-                listarSugeridos();
-            }
+function listarProductosSugeridos(part_number, descripcion, type){
+    var pn = '', ds = '';
+    
+    if (type == 1) {
+        pn = part_number;
+        ds = null;
+    } 
+    else if (type == 2) {
+        pn = null;
+        ds = descripcion;
+    } 
+    else {
+        if (part_number!==''){
+            pn = part_number;
+            ds = null;
+        } else {
+            pn = null;
+            ds = descripcion;
         }
-    });    
+    }
+    if (part_number !== sPart || descripcion !== sDesc) {
+        $.ajax({
+            type: 'POST',
+            url: 'actualizarSugeridos',
+            data: {
+                part_number: pn,
+                descripcion: ds
+            },
+            success: function(response){
+                console.log(response);
+                if (response.response == 'ok') {
+                    listarSugeridos();
+                    sPart = part_number;
+                    sDesc = descripcion;
+                }
+            }
+        });    
+    }
+
 
 }
 
@@ -70,7 +93,7 @@ function listarSugeridos() {
                         <div class="btn-group btn-group-sm" role="group">
                             <button type="button" class="btn btn-success btn-sm" name="btnSeleccionarUbigeo" title="Seleccionar Producto" 
                             data-codigo="${row.codigo}" data-id="${row.id_producto}" 
-                            data-partnumber="${row.part_number}" data-descripcion="${row.descripcion}" 
+                            data-partnumber="${row.part_number}" data-descripcion="${encodeURIComponent(row.descripcion)}" 
                             onclick="selectProductoAsignado(this);">
                             <i class="fas fa-check"></i>
                             </button>
@@ -97,7 +120,7 @@ function selectProductoAsignado(obj){
     det.id_producto = id;
     det.codigo = codigo;
     det.part_number = partnumber;
-    det.descripcion = descripcion;
+    det.descripcion = decodeURIComponent(descripcion);
     $('#modal-mapeoAsignarProducto').modal('hide');
     mostrar_detalle();
     
