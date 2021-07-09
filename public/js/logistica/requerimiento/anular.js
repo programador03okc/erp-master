@@ -1,6 +1,6 @@
 function anular_requerimiento(id_req){
     if(id_req > 0){
-        baseUrl = 'anular/'+id_req;
+        baseUrl = 'anular-requerimiento/'+id_req;
         $.ajax({
             type: 'PUT',
             url: baseUrl,

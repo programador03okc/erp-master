@@ -93,6 +93,9 @@ class Requerimiento extends Model
 
     }
 
+    public function detalle(){
+        return $this->hasMany('App\Models\Almacen\DetalleRequerimiento','id_requerimiento','id_requerimiento');
+    }
     public function tipo(){
         return $this->belongsTo('App\Models\Almacen\TipoRequerimiento','id_tipo_requerimiento','id_tipo_requerimiento');
     }
@@ -101,5 +104,8 @@ class Requerimiento extends Model
     }
     public function creadoPor(){
         return $this->belongsTo('App\Models\Configuracion\Usuario','id_usuario','id_usuario');
+    }
+    public function moneda(){
+        return $this->belongsTo('App\Models\Configuracion\Moneda','id_moneda','id_moneda');
     }
 }

@@ -152,7 +152,7 @@ class Usuario extends Authenticatable
 		$idUsuarioList=[];
 		$accesos = DB::table('configuracion.sis_acceso')
 		->select('sis_acceso.*')
-		->where('sis_acceso.id_rol',$idRol)
+		->where([['sis_acceso.id_rol',$idRol],['estado',1]])
 		->get();
 
 		if(count($accesos)>0){

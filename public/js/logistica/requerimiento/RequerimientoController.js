@@ -6,6 +6,11 @@ class RequerimientoCtrl{
         this.requerimientoView.init();
     }
 
+    getTipoCambioCompra(fecha){
+        return requerimientoModel.getTipoCambioCompra(fecha);
+
+    }
+
     obtenerSede(idEmpresa){
         return requerimientoModel.obtenerSede(idEmpresa);
 
@@ -43,6 +48,10 @@ class RequerimientoCtrl{
     getListaDivisionesDeGrupo(idGrupo){
         return requerimientoModel.getListaDivisionesDeGrupo(idGrupo);
 
+    }
+
+    anularRequerimiento(idRequerimiento){
+        return requerimientoModel.anularRequerimiento(idRequerimiento);
     }
     // aprobacion y revision
     getListadoAprobacion(idEmpresa, idSede, idGrupo, idPrioridad){

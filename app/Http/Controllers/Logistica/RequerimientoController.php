@@ -31,6 +31,7 @@ use App\Models\Contabilidad\Identidad;
 use App\Models\Contabilidad\TipoCuenta;
 use App\Models\Administracion\Empresa;
 use App\Models\administracion\Sede;
+use App\Models\Almacen\Transferencia;
 use App\Models\Configuracion\Grupo;
 use App\Models\Presupuestos\Presupuesto;
 use Carbon\Carbon;
@@ -225,7 +226,11 @@ class RequerimientoController extends Controller
                 'division.descripcion as division',
                 'alm_req.trabajador_id',
                 DB::raw("concat(perso_asignado.nombres, ' ' ,perso_asignado.apellido_paterno, ' ' ,perso_asignado.apellido_materno)  AS nombre_trabajador"),
-                DB::raw("(CASE WHEN alm_req.estado = 1 THEN 'Habilitado' ELSE 'Deshabilitado' END) AS estado_desc")
+                DB::raw("(CASE WHEN alm_req.estado = 1 THEN 'Habilitado' ELSE 'Deshabilitado' END) AS estado_desc"),
+                DB::raw("(SELECT SUM(alm_det_req.cantidad * alm_det_req.precio_unitario) 
+                FROM almacen.alm_det_req 
+                WHERE   alm_det_req.id_requerimiento = alm_req.id_requerimiento AND
+                alm_det_req.estado != 7) AS monto_total")
             )
             ->where([
                 $theWhere
@@ -299,6 +304,7 @@ class RequerimientoController extends Controller
                     'email' => $data->email,
                     'id_almacen' => $data->id_almacen,
                     'monto' => $data->monto,
+                    'monto_total' => number_format($data->monto_total, 2),
                     'fuente_id' => $data->fuente_id,
                     'fuente_det_id' => $data->fuente_det_id,
                     'tiene_transformacion' => $data->tiene_transformacion,
@@ -596,7 +602,7 @@ class RequerimientoController extends Controller
             $requerimiento->adjuntoComprobanteContable = $request->archivoAdjuntoRequerimiento4;
 
             $count = count($request->descripcion);
-
+            $montoTotal = 0;
             for ($i = 0; $i < $count; $i++) {
                 $detalle = new DetalleRequerimiento();
                 $detalle->id_requerimiento = $requerimiento->id_requerimiento;
@@ -608,6 +614,7 @@ class RequerimientoController extends Controller
                 $detalle->id_unidad_medida = $request->unidad[$i];
                 $detalle->cantidad = $request->cantidad[$i];
                 $detalle->precio_unitario = $request->precioUnitario[$i];
+                $detalle->subtotal = number_format($request->cantidad[$i] * $request->precioUnitario[$i], 2);
                 $detalle->motivo = $request->motivo[$i];
                 $detalle->tiene_transformacion = ($request->tiene_transformacion ? $request->tiene_transformacion : false);
                 $detalle->fecha_registro = new Carbon();
@@ -615,6 +622,7 @@ class RequerimientoController extends Controller
                 $detalle->save();
                 $detalle->idRegister = $request->idRegister[$i];
                 $detalleArray[] = $detalle;
+                $montoTotal += $detalle->cantidad * $detalle->precio_unitario;
             }
 
 
@@ -668,6 +676,8 @@ class RequerimientoController extends Controller
             }
 
             // notificar al primer aprobante del requerimiento creado
+
+
             $operaciones = Operacion::getOperacion(1, $request->tipo_requerimiento, $request->id_grupo, $request->division, $request->prioridad);
             $flujoTotal = Flujo::getIdFlujo($operaciones[0]->id_operacion)['data'];
             $idRolPrimerAprobante = 0;
@@ -696,6 +706,7 @@ class RequerimientoController extends Controller
                                 '<li> Tipo de requerimiento: ' . $requerimiento->tipo->descripcion . '</li>' .
                                 '<li> División: ' . $requerimiento->division->descripcion . '</li>' .
                                 '<li> Fecha limite de entrega: ' . $requerimiento->fecha_entrega . '</li>' .
+                                '<li> Monto Total: ' . $requerimiento->moneda->simbolo . number_format($montoTotal, 2) . '</li>' .
                                 '<li> Creado por: ' . ($nombreCompletoUsuario ? $nombreCompletoUsuario : '') . '</li>' .
                                 '</ul>' .
                                 '<p> *Este correo es generado de manera automática, por favor no responder.</p> 
@@ -917,6 +928,7 @@ class RequerimientoController extends Controller
                 $detalle->id_unidad_medida = $request->unidad[$i];
                 $detalle->cantidad = $request->cantidad[$i];
                 $detalle->precio_unitario = $request->precioUnitario[$i];
+                $detalle->subtotal = number_format($request->cantidad[$i] * $request->precioUnitario[$i], 2);
                 $detalle->motivo = $request->motivo[$i];
                 $detalle->tiene_transformacion = ($request->tiene_transformacion ? $request->tiene_transformacion : false);
                 $detalle->fecha_registro = new Carbon();
@@ -934,6 +946,7 @@ class RequerimientoController extends Controller
                 $detalle->id_unidad_medida = $request->unidad[$i];
                 $detalle->cantidad = $request->cantidad[$i];
                 $detalle->precio_unitario = $request->precioUnitario[$i];
+                $detalle->subtotal = number_format($request->cantidad[$i] * $request->precioUnitario[$i], 2);
                 $detalle->motivo = $request->motivo[$i];
                 $detalle->tiene_transformacion = ($request->tiene_transformacion ? $request->tiene_transformacion : false);
                 // $detalle->fecha_registro = new Carbon();
@@ -1038,6 +1051,54 @@ class RequerimientoController extends Controller
         return response()->json(['id_requerimiento' => $requerimiento->id_requerimiento, 'codigo' => $requerimiento->codigo]);
     }
 
+    public function anularRequerimiento($idRequerimiento)
+    {
+        DB::beginTransaction();
+        try {
+            $requerimiento = Requerimiento::find($idRequerimiento);
+            $todoDetalleRequerimiento = DetalleRequerimiento::where("id_requerimiento", $requerimiento->id_requerimiento)->get();
+
+            $transferencia = Transferencia::where("id_requerimiento", $idRequerimiento)->first();
+
+            if (isset($transferencia)) {
+                if ($transferencia->estado == 1) { // habilitado para ser anulada la transferencia y el requerimiento
+                    // anular trasferencia
+                    $transferencia->estado = 7;
+                    $transferencia->save();
+                    // anular requerimiento
+                    $requerimiento->estado = 7;
+                    $requerimiento->save();
+                    // anular detalle requerimiento
+                    foreach ($todoDetalleRequerimiento as $detalleRequerimiento) {
+                        $detalle = DetalleRequerimiento::where("id_detalle_requerimiento", $detalleRequerimiento->id_detalle_requerimiento)->first();
+                        $detalle->estado = 7;
+                        $detalle->save();
+                    }
+
+                    $mensaje = 'Se anulo el requerimiento con código ' . $requerimiento->codigo . ' y su transferencia fue anulada';
+                } else { // no se puede anular un requerimiento con transferencia procesada
+                    $mensaje = 'No es posible anulr el requerimiento con código ' . $requerimiento->codigo . ' tiene una transferencia procesada';
+                }
+            } else {
+                // anular requerimiento
+                $requerimiento->estado = 7;
+                $requerimiento->save();
+                // anular detalle requerimiento
+                foreach ($todoDetalleRequerimiento as $detalleRequerimiento) {
+                    $detalle = DetalleRequerimiento::where("id_detalle_requerimiento", $detalleRequerimiento->id_detalle_requerimiento)->first();
+                    $detalle->estado = 7;
+                    $detalle->save();
+                }
+                $mensaje = 'Se anulo el requerimiento con código ' . $requerimiento->codigo;
+            }
+
+            DB::commit();
+            return response()->json(['estado' => $requerimiento->estado, 'mensaje' => $mensaje]);
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json(['estado' => 0, 'mensaje' => 'Hubo un problema al anular el requerimiento. Por favor intentelo de nuevo. Mensaje de error: ' . $e->getMessage()]);
+        }
+    }
 
     public function listarRequerimientosElaborados(Request $request)
     {
@@ -1108,7 +1169,11 @@ class RequerimientoController extends Controller
                 DB::raw("(SELECT COUNT(adm_aprobacion.id_aprobacion) 
                 FROM administracion.adm_aprobacion 
                 WHERE   adm_aprobacion.id_vobo = 3 AND
-                adm_aprobacion.tiene_sustento = true AND adm_aprobacion.id_doc_aprob = adm_documentos_aprob.id_doc_aprob) AS cantidad_sustentos")
+                adm_aprobacion.tiene_sustento = true AND adm_aprobacion.id_doc_aprob = adm_documentos_aprob.id_doc_aprob) AS cantidad_sustentos"),
+                DB::raw("(SELECT SUM(alm_det_req.cantidad * alm_det_req.precio_unitario) 
+                FROM almacen.alm_det_req 
+                WHERE   alm_det_req.id_requerimiento = alm_req.id_requerimiento AND
+                alm_det_req.estado != 7) AS monto_total")
 
             )
             // ->where([['alm_req.estado', '!=', 7], ['sis_sede.estado', '=', 1]])
@@ -1137,12 +1202,21 @@ class RequerimientoController extends Controller
             ->when((intval($idPrioridad) > 0), function ($query)  use ($idPrioridad) {
                 return $query->whereRaw('alm_req.id_prioridad = ' . $idPrioridad);
             })
-            ->orderBy("alm_req.fecha_registro","desc");
+            ->orderBy("alm_req.fecha_registro", "desc");
 
-        return datatables($requerimientos)->filterColumn('nombre_usuario', function ($query, $keyword) {
-            $keywords = trim(strtoupper($keyword));
-            $query->whereRaw("UPPER(CONCAT(pers.nombres,' ',pers.apellido_paterno,' ',pers.apellido_materno)) LIKE ?", ["%{$keywords}%"]);
-        })->rawColumns(['termometro'])->toJson();
+        return datatables($requerimientos)
+            ->filterColumn('nombre_usuario', function ($query, $keyword) {
+                $keywords = trim(strtoupper($keyword));
+                $query->whereRaw("UPPER(CONCAT(pers.nombres,' ',pers.apellido_paterno,' ',pers.apellido_materno)) LIKE ?", ["%{$keywords}%"]);
+            })
+            ->filterColumn('monto_total', function ($query, $keyword) {
+                $keywords = trim($keyword);
+                $query->whereRaw("(SELECT SUM(alm_det_req.cantidad * alm_det_req.precio_unitario) 
+            FROM almacen.alm_det_req 
+            WHERE   alm_det_req.id_requerimiento = alm_req.id_requerimiento AND
+            alm_det_req.estado != 7) LIKE ?", ["%{$keywords}%"]);
+            })
+            ->rawColumns(['termometro'])->toJson();
     }
 
     function viewLista()
@@ -1246,6 +1320,7 @@ class RequerimientoController extends Controller
                 'alm_req.concepto',
                 'alm_req.id_moneda',
                 'sis_moneda.descripcion as desrcipcion_moneda',
+                'sis_moneda.simbolo AS simbolo_moneda',
                 'alm_req.id_periodo',
                 'adm_periodo.descripcion as descripcion_periodo',
                 'alm_req.id_prioridad',
@@ -1285,7 +1360,11 @@ class RequerimientoController extends Controller
                 'alm_req.monto',
                 'alm_req.fecha_entrega',
                 'alm_req.division_id',
-                'division.descripcion as division'
+                'division.descripcion as division',
+                DB::raw("(SELECT SUM(alm_det_req.cantidad * alm_det_req.precio_unitario) 
+                FROM almacen.alm_det_req 
+                WHERE   alm_det_req.id_requerimiento = alm_req.id_requerimiento AND
+                alm_det_req.estado != 7) AS monto_total")
             )
             // ->where([
             // ['alm_req.id_tipo_requerimiento', '=', $tipo_requerimiento],
@@ -1436,6 +1515,7 @@ class RequerimientoController extends Controller
                                 'observacion' => $element->observacion,
                                 'name_ubigeo' => $element->name_ubigeo,
                                 'id_moneda' => $element->id_moneda,
+                                'simbolo_moneda' => $element->simbolo_moneda,
                                 'desrcipcion_moneda' => $element->desrcipcion_moneda,
                                 'monto' => $element->monto,
                                 'fecha_entrega' => $element->fecha_entrega,
@@ -1458,7 +1538,8 @@ class RequerimientoController extends Controller
                                 'id_usuario_aprobante' => $idUsuarioAprobante,
                                 'id_rol_aprobante' => $nextIdRolAprobante,
                                 'aprobacion_final_o_pendiente' => $aprobacionFinalOPendiente,
-                                'id_doc_aprob' => $idDocumento
+                                'id_doc_aprob' => $idDocumento,
+                                'monto_total' => $element->monto_total
                             ];
                         }
                     } else {
@@ -1485,6 +1566,7 @@ class RequerimientoController extends Controller
                             'observacion' => $element->observacion,
                             'name_ubigeo' => $element->name_ubigeo,
                             'id_moneda' => $element->id_moneda,
+                            'simbolo_moneda' => $element->simbolo_moneda,
                             'desrcipcion_moneda' => $element->desrcipcion_moneda,
                             'monto' => $element->monto,
                             'fecha_entrega' => $element->fecha_entrega,
@@ -1507,7 +1589,9 @@ class RequerimientoController extends Controller
                             'id_usuario_aprobante' => $idUsuarioAprobante,
                             'id_rol_aprobante' => $nextIdRolAprobante,
                             'aprobacion_final_o_pendiente' => $aprobacionFinalOPendiente,
-                            'id_doc_aprob' => $idDocumento
+                            'id_doc_aprob' => $idDocumento,
+                            'monto_total' => $element->monto_total
+
                         ];
                     }
                 }
@@ -1557,7 +1641,11 @@ class RequerimientoController extends Controller
 
             // $requerimiento = Requerimiento::where("id_requerimiento", $idRequerimiento)->first();
             $requerimiento = Requerimiento::find($request->idRequerimiento);
-
+            $detalleRequerimiento = $requerimiento->detalle;
+            $montoTotal = 0;
+            foreach ($detalleRequerimiento as $item) {
+                $montoTotal += $item->cantidad * $item->precio_unitario;
+            }
             // $nombreCompletoUsuarioCreador = Usuario::find($requerimiento->id_usuario)->trabajador->postulante->persona->nombre_completo;
             $nombreCompletoUsuarioCreador = $requerimiento->creadoPor->trabajador->postulante->persona->nombre_completo;
 
@@ -1635,8 +1723,56 @@ class RequerimientoController extends Controller
             // $idUsuario = $dataRequerimiento->first()->id_usuario;
 
             $seNotificaraporEmail = false;
-            $correoUsuarioList=[];
+            $correoUsuarioList = [];
+            // Debugbar::info($accion);
+
             switch ($accion) {
+                case '1':
+                    $titulo = 'El requerimiento ' . $requerimiento->codigo . ' fue aprobado';
+                    $mensaje = 'El requerimiento ' . $requerimiento->codigo . ' fue aprobado. Información adicional del requerimiento:' .
+                        '<ul>' .
+                        '<li> Concepto/Motivo: ' . $requerimiento->concepto . '</li>' .
+                        '<li> Tipo de requerimiento: ' . $requerimiento->tipo->descripcion . '</li>' .
+                        '<li> División: ' . $requerimiento->division->descripcion . '</li>' .
+                        '<li> Fecha limite de entrega: ' . $requerimiento->fecha_entrega . '</li>' .
+                        '<li> Monto Total: ' . $requerimiento->moneda->simbolo . number_format($montoTotal, 2) . '</li>' .
+                        '<li> Creado por: ' . ($nombreCompletoUsuarioCreador ? $nombreCompletoUsuarioCreador : '') . '</li>' .
+                        '<li> Observado por: ' . ($nombreCompletoUsuarioRevisaAprueba ? $nombreCompletoUsuarioRevisaAprueba : '') . '</li>' .
+                        (!empty($request->comentario) ? ('<li> Comentario: ' . $request->comentario . '</li>') : '') .
+                        '</ul>' .
+                        '<p> *Este correo es generado de manera automática, por favor no responder.</p> 
+                    <br> Saludos <br> Módulo de Logística <br> SYSTEM AGILE';
+
+                    $correoUsuarioList[] = Usuario::find($requerimiento->id_usuario)->trabajador->postulante->persona->email; // notificar a usuario
+                    $usuariosList = Usuario::getAllIdUsuariosPorRol(4); // notificar al usuario  con rol = 'logistico compras'
+                    
+                    // Debugbar::info($usuariosList);
+                    if (count($usuariosList) > 0) {
+                        foreach ($usuariosList as $idUsuario) {
+                            $correoUsuarioList[] = Usuario::find($idUsuario)->trabajador->postulante->persona->email;
+                        }
+                    }
+                    // Debugbar::info($correoUsuarioList);
+
+                    break;
+                case '3':
+                    $titulo = 'Su requerimiento ' . $requerimiento->codigo . ' fue observado';
+                    $mensaje = 'Su requerimiento ' . $requerimiento->codigo . ' fue observado. Información adicional del requerimiento:' .
+                        '<ul>' .
+                        '<li> Concepto/Motivo: ' . $requerimiento->concepto . '</li>' .
+                        '<li> Tipo de requerimiento: ' . $requerimiento->tipo->descripcion . '</li>' .
+                        '<li> División: ' . $requerimiento->division->descripcion . '</li>' .
+                        '<li> Fecha limite de entrega: ' . $requerimiento->fecha_entrega . '</li>' .
+                        '<li> Monto Total: ' . $requerimiento->moneda->simbolo . number_format($montoTotal, 2) . '</li>' .
+                        '<li> Creado por: ' . ($nombreCompletoUsuarioCreador ? $nombreCompletoUsuarioCreador : '') . '</li>' .
+                        '<li> Observado por: ' . ($nombreCompletoUsuarioRevisaAprueba ? $nombreCompletoUsuarioRevisaAprueba : '') . '</li>' .
+                        (!empty($request->comentario) ? ('<li> Comentario: ' . $request->comentario . '</li>') : '') .
+                        '</ul>' .
+                        '<p> *Este correo es generado de manera automática, por favor no responder.</p> 
+                        <br> Saludos <br> Módulo de Logística <br> SYSTEM AGILE';
+
+                    $correoUsuarioList[] = Usuario::find($requerimiento->id_usuario)->trabajador->postulante->persona->email;
+                    break;
                 case '5':
                     $titulo = 'El requerimiento ' . $requerimiento->codigo . ' requiere su aprobación';
                     $mensaje = 'El requerimiento ' . $requerimiento->codigo . ' requiere su aprobación. Información adicional del requerimiento:' .
@@ -1645,6 +1781,7 @@ class RequerimientoController extends Controller
                         '<li> Tipo de requerimiento: ' . $requerimiento->tipo->descripcion . '</li>' .
                         '<li> División: ' . $requerimiento->division->descripcion . '</li>' .
                         '<li> Fecha limite de entrega: ' . $requerimiento->fecha_entrega . '</li>' .
+                        '<li> Monto Total: ' . $requerimiento->moneda->simbolo . number_format($montoTotal, 2) . '</li>' .
                         '<li> Creado por: ' . ($nombreCompletoUsuarioCreador ? $nombreCompletoUsuarioCreador : '') . '</li>' .
                         '<li> Revisado por: ' . ($nombreCompletoUsuarioRevisaAprueba ? $nombreCompletoUsuarioRevisaAprueba : '') . '</li>' .
                         (!empty($request->comentario) ? ('<li> Comentario: ' . $request->comentario . '</li>') : '') .
@@ -1660,41 +1797,22 @@ class RequerimientoController extends Controller
                     }
                     if (count($usuariosList) > 0) {
                         foreach ($usuariosList as $idUsuario) {
-                            debugbar::info($idUsuario);
-
                             $correoUsuarioList[] = Usuario::find($idUsuario)->trabajador->postulante->persona->email;
-                            
                         }
                     }
                     // Debugbar::info($correoUsuarioList);
                     break;
-                case '3':
-                    $titulo = 'Su requerimiento ' . $requerimiento->codigo . ' fue observado';
-                    $mensaje = 'Su requerimiento ' . $requerimiento->codigo . ' fue observado. Información adicional del requerimiento:' .
-                        '<ul>' .
-                        '<li> Concepto/Motivo: ' . $requerimiento->concepto . '</li>' .
-                        '<li> Tipo de requerimiento: ' . $requerimiento->tipo->descripcion . '</li>' .
-                        '<li> División: ' . $requerimiento->division->descripcion . '</li>' .
-                        '<li> Fecha limite de entrega: ' . $requerimiento->fecha_entrega . '</li>' .
-                        '<li> Creado por: ' . ($nombreCompletoUsuarioCreador ? $nombreCompletoUsuarioCreador : '') . '</li>' .
-                        '<li> Observado por: ' . ($nombreCompletoUsuarioRevisaAprueba ? $nombreCompletoUsuarioRevisaAprueba : '') . '</li>' .
-                        (!empty($request->comentario) ? ('<li> Comentario: ' . $request->comentario . '</li>') : '') .
-                        '</ul>' .
-                        '<p> *Este correo es generado de manera automática, por favor no responder.</p> 
-                    <br> Saludos <br> Módulo de Logística <br> SYSTEM AGILE';
-
-                    $correoUsuarioList[] = Usuario::find($requerimiento->id_usuario)->trabajador->postulante->persona->email;
-                    break;
             }
 
 
+                    // Debugbar::info($correoUsuarioList);
 
 
-            if (count($correoUsuarioList)>0) {
+            if (count($correoUsuarioList) > 0) {
                 // $destinatarios[]= 'programador03@okcomputer.com.pe';
                 $destinatarios = $correoUsuarioList;
                 $seNotificaraporEmail = true;
-            
+
 
 
                 $payload = [
@@ -1710,7 +1828,7 @@ class RequerimientoController extends Controller
                     NotificacionesController::enviarEmail($payload);
                 }
             }
-            if($accion==1){
+            if ($accion == 1) {
                 $seNotificaraporEmail = true;
                 // TO-DO NOTIFICAR AL USUARIO QUE SU REQUERIMIENTO FUE APROBADO
             }
@@ -3083,11 +3201,6 @@ class RequerimientoController extends Controller
                 </table>
                 <br>';
 
-        // <br>
-        // <p class="subtitle">1.- DENOMINACIÓN DE LA ADQUISICIÓN</p>
-        // <div class="texttab">' . $requerimiento['requerimiento'][0]['concepto'] . '</div>
-        // <p class="subtitle">3.- DESCRIPCIÓN POR ITEM</p>
-
         $html .= '</div>
                 <table width="100%" class="tablePDF" border=0 style="font-size:10px">
                 <thead>
@@ -3105,17 +3218,15 @@ class RequerimientoController extends Controller
         $simbolMonedaRequerimiento = $this->consult_moneda($requerimiento['requerimiento'][0]['id_moneda'])->simbolo;
 
         foreach ($requerimiento['det_req'] as $key => $data) {
-            $simbolMoneda = $this->consult_moneda($data['id_tipo_moneda'])->simbolo;
 
             $html .= '<tr>';
-            // $html .= '<td >' . ($key + 1) . '</td>';
             $html .= '<td >' . $data['codigo_producto'] . '</td>';
-            $html .= '<td >' . $data['part_number'] . ($data['tiene_transformacion'] > 0 ? '<br><span style="display: inline-block; font-size: 8px; background:#ddd; color: #666; border-radius:8px; padding:2px 10px;">Transformado</span>' : '') . '</td>';
-            $html .= '<td >' . ($data['descripcion'] ? $data['descripcion'] : $data['descripcion_adicional']) . '</td>';
+            $html .= '<td >' . ($data['id_tipo_item'] == 1 ? ($data['producto_part_number'] ? $data['producto_part_number'] : $data['part_number']) : '(Servicio)') . ($data['tiene_transformacion'] > 0 ? '<br><span style="display: inline-block; font-size: 8px; background:#ddd; color: #666; border-radius:8px; padding:2px 10px;">Transformado</span>' : '') . '</td>';
+            $html .= '<td >' . ($data['producto_descripcion'] ? $data['producto_descripcion'] : ($data['descripcion'] ? $data['descripcion'] : '')) . '</td>';
             $html .= '<td >' . $data['unidad_medida'] . '</td>';
             $html .= '<td class="right">' . $data['cantidad'] . '</td>';
-            $html .= '<td class="right">' . $simbolMoneda . number_format($data['precio_unitario'], 2) . '</td>';
-            $html .= '<td class="right">' . $simbolMoneda . number_format($data['cantidad'] * $data['precio_unitario'], 2) . '</td>';
+            $html .= '<td class="right">' . $simbolMonedaRequerimiento . number_format($data['precio_unitario'], 2) . '</td>';
+            $html .= '<td class="right">' . $simbolMonedaRequerimiento . number_format($data['cantidad'] * $data['precio_unitario'], 2) . '</td>';
             $html .= '</tr>';
             $total = $total + ($data['cantidad'] * $data['precio_unitario']);
         }

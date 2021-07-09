@@ -75,6 +75,7 @@ Crear / editar requerimiento
                 <h4 style="display:flex;justify-content: space-between;">General
                     <div>
                         <span class="label label-default" id="codigo_requerimiento"></span>
+                        <small>Tipo cambio($): <span id="tipo_cambio_compra">0.00</span></small> 
                         <span class="label label-default" id="estado_doc"></span>
                         <button type="button" name="btn-imprimir-requerimento-pdf" class="btn btn-info btn-sm" onclick="requerimientoView.imprimirRequerimientoPdf();" disabled><i class="fas fa-print"></i> Imprimir</button>
                         <button type="button" name="btn-adjuntos-requerimiento" class="btn btn-sm btn-warning" title="Archivos adjuntos" onclick="requerimientoView.adjuntarArchivoRequerimiento();" disabled><i class="fas fa-file-archive"></i>
@@ -113,7 +114,7 @@ Crear / editar requerimiento
                                 <h5>Moneda</h5>
                                 <select class="form-control activation" name="moneda" onChange="requerimientoView.changeMonedaSelect(event)" disabled="true">
                                     @foreach ($monedas as $moneda)
-                                    <option value="{{$moneda->id_moneda}}">{{$moneda->descripcion}}</option>
+                                    <option data-simbolo="{{$moneda->simbolo}}" value="{{$moneda->id_moneda}}">{{$moneda->descripcion}}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -478,7 +479,6 @@ Crear / editar requerimiento
                             </tbody>
                             <tfoot>
                                 <tr>
-
                                     <td colspan="8" class="text-right"><strong>Total:</strong></td>
                                     <td class="text-right"><span name="simbolo_moneda">S/</span><label name="total"> 0.00</label></td>
                                     <td></td>
@@ -714,7 +714,7 @@ Crear / editar requerimiento
             "{{route('logistica.gestion-logistica.requerimiento.elaboracion.mostrar-requerimiento')}}",
             "{{route('logistica.gestion-logistica.requerimiento.elaboracion.guardar')}}",
             "{{route('logistica.gestion-logistica.requerimiento.elaboracion.actualizar')}}",
-            "{{route('logistica.gestion-logistica.requerimiento.elaboracion.anular')}}",
+            "{{route('logistica.gestion-logistica.requerimiento.elaboracion.anular-requerimiento')}}",
             "{{route('logistica.gestion-logistica.requerimiento.elaboracion.copiar-requerimiento')}}",
             "{{route('logistica.gestion-logistica.requerimiento.elaboracion.telefonos-cliente')}}",
             "{{route('logistica.gestion-logistica.requerimiento.elaboracion.direcciones-cliente')}}",

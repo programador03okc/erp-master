@@ -81,6 +81,7 @@ Revisar y aprobar requerimientos
                                         <th class="text-center">Fecha entrega</th>
                                         <th class="text-center" style="width:10%">Empresa</th>
                                         <th class="text-center">División</th>
+                                        <th class="text-center">Monto Total</th>
                                         <th class="text-center">Observacion</th>
                                         <th class="text-center">Creado por</th>
                                         <th class="text-center" style="width:8%">Estado</th>

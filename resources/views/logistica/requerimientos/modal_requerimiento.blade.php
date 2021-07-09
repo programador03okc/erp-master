@@ -6,6 +6,8 @@
                 <h3 class="modal-title">Detalle del requerimiento</h3>
             </div>
             <div class="modal-body">
+                <button type="button" name="btn-imprimir-requerimento-pdf" class="btn btn-info btn-sm" onclick="requerimientoView.imprimirRequerimientoPdf();" ><i class="fas fa-print"></i> Imprimir</button>
+                <input type="hidden" name="id_requerimiento">
                 <fieldset class="group-importes">
                     <legend>Datos generales</legend>
                     <table class="table" border="0" id="tablaDatosGenerales">
@@ -64,14 +66,23 @@
                                 <th style="width: 30%">Descripción de item</th>
                                 <th style="width: 5%">Unidad</th>
                                 <th style="width: 5%">Cantidad</th>
-                                <th style="width: 5%">Precio U. <span name="simboloMoneda">S/</span></th>
-                                <th style="width: 5%">Subtotal</th>
+                                <th style="width: 8%">Precio U. <span name="simboloMoneda">S/</span></th>
+                                <th style="width: 8%">Subtotal</th>
                                 <th style="width: 20%">Motivo</th>
                                 <th style="width: 2%">Adjuntos</th>
                             </tr>
                         </thead>
                         <tbody id="body_item_requerimiento">
                         </tbody>
+                        <tfoot>
+                                <tr>
+                                    <td colspan="8" class="text-right"><strong>Total:</strong></td>
+                                    <td class="text-right"><span name="simbolo_moneda">S/</span><label name="total"> 0.00</label></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                            </tfoot>
                     </table>
 
                 </fieldset>

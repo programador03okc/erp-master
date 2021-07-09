@@ -78,9 +78,6 @@ class RequerimientoPendienteView {
                         let cantidadItemBase = row.cantidad_items_base;
                         if (tieneTransformacion == true && cantidadItemBase == 0) {
                             return ('<div class="btn-group" role="group">' +
-                                '<button type="button" class="btn btn-primary btn-xs" name="btnAgregarItemBase" title="Agregar items del base" data-id-requerimiento="' + row.id_requerimiento + '"  onclick="requerimientoPendienteView.openModalAgregarItemBase(this);"  style="background:#b498d0;">' +
-                                '<i class="fas fa-puzzle-piece fa-sm"></i>' +
-                                '</button>' +
                                 '</div>' +
                                 '<div class="btn-group" role="group">' +
                                 '<button type="button" class="btn btn-info btn-xs" name="btnVercuadroCostos" title="Ver Cuadro Costos" data-id-requerimiento="' + row.id_requerimiento + '"  onclick="requerimientoPendienteView.openModalCuadroCostos(this);">' +
@@ -92,7 +89,7 @@ class RequerimientoPendienteView {
                             let openDiv = '<div class="btn-group" role="group">';
                             let btnAtenderAlmacen = '<button type="button" class="btn btn-primary btn-xs" name="btnOpenModalAtenderConAlmacen" title="Atender con almacén" data-id-requerimiento="' + row.id_requerimiento + '"  onclick="requerimientoPendienteView.atenderConAlmacen(this);"><i class="fas fa-dolly fa-sm"></i></button>';
                             // let btnAgregarItemBase = '<button type="button" class="btn btn-success btn-xs" name="btnAgregarItemBase" title="Mapear productos" data-id-requerimiento="' + row.id_requerimiento + '"  onclick="requerimientoPendienteView.openModalAgregarItemBase(this);"  ><i class="fas fa-sign-out-alt"></i></button>';
-                            let btnAgregarItemBase = '<button type="button" class="mapeo btn btn-success btn-xs" title="Mapear productos" data-id-requerimiento="' + row.id_requerimiento + '" data-codigo="' + row.codigo + '"  ><i class="fas fa-sign-out-alt"></i></button>';
+                            let btnMapearProductos = '<button type="button" class="mapeo btn btn-success btn-xs" title="Mapear productos" data-id-requerimiento="' + row.id_requerimiento + '" data-codigo="' + row.codigo + '"  ><i class="fas fa-sign-out-alt"></i></button>';
                             let btnCrearOrdenCompra = '<button type="button" class="btn btn-warning btn-xs" name="btnCrearOrdenCompraPorRequerimiento" title="Crear Orden de Compra" data-id-requerimiento="' + row.id_requerimiento + '"  onclick="requerimientoPendienteView.crearOrdenCompraPorRequerimiento(this);"><i class="fas fa-file-invoice"></i></button>';
                             let btnCrearOrdenServicio = '<button type="button" class="btn btn-danger btn-xs" name="btnCrearOrdenServicioPorRequerimiento" title="Crear Orden de Servicio" data-id-requerimiento="' + row.id_requerimiento + '"  onclick="requerimientoPendienteView.crearOrdenServicioPorRequerimiento(this);"><i class="fas fa-file-invoice fa-sm"></i></button>';
                             let btnVercuadroCostos = '<button type="button" class="btn btn-info btn-xs" name="btnVercuadroCostos" title="Ver Cuadro Costos" data-id-requerimiento="' + row.id_requerimiento + '"  onclick="requerimientoPendienteView.openModalCuadroCostos(this);"><i class="fas fa-eye fa-sm"></i></button>';
@@ -105,9 +102,9 @@ class RequerimientoPendienteView {
                                 }
                             });
                             if (cantidadItemTipoServicio >= 1) {
-                                return (openDiv + btnAtenderAlmacen + btnAgregarItemBase + btnCrearOrdenCompra + btnCrearOrdenServicio + btnVercuadroCostos + closeDiv);
+                                return (openDiv + btnAtenderAlmacen + btnMapearProductos + btnCrearOrdenCompra + btnCrearOrdenServicio + btnVercuadroCostos + closeDiv);
                             } else {
-                                return (openDiv + btnAtenderAlmacen + btnAgregarItemBase + btnCrearOrdenCompra + btnVercuadroCostos + closeDiv);
+                                return (openDiv + btnAtenderAlmacen + btnMapearProductos + btnCrearOrdenCompra + btnVercuadroCostos + closeDiv);
                             }
                         }
                     },
@@ -425,14 +422,14 @@ class RequerimientoPendienteView {
     }
 
     // Agregar item base
-    openModalAgregarItemBase(obj) {
-        requerimientoPendienteCtrl.openModalAgregarItemBase();
-        requerimientoPendienteCtrl.tieneItemsParaCompra(obj);
-        requerimientoPendienteCtrl.getDataListaItemsCuadroCostosPorIdRequerimiento();
-        requerimientoPendienteCtrl.getDataListaItemsCuadroCostosPorIdRequerimientoPendienteCompra();
-        requerimientoPendienteCtrl.validarObjItemsParaCompra();
+    // openModalAgregarItemBase(obj) {
+    //     requerimientoPendienteCtrl.openModalAgregarItemBase();
+    //     requerimientoPendienteCtrl.tieneItemsParaCompra(obj);
+    //     requerimientoPendienteCtrl.getDataListaItemsCuadroCostosPorIdRequerimiento();
+    //     requerimientoPendienteCtrl.getDataListaItemsCuadroCostosPorIdRequerimientoPendienteCompra();
+    //     requerimientoPendienteCtrl.validarObjItemsParaCompra();
 
-    }
+    // }
 
 
 

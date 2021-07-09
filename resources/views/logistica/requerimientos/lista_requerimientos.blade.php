@@ -88,18 +88,19 @@ Listado de requerimientos
                     <table class="mytable table table-hover table-condensed table-bordered table-okc-view" id="ListaRequerimientosElaborados" width="100%">
                         <thead>
                             <tr>
-                                <th class="text-center">Prio.</th>
-                                <th class="text-center">Código</th>
+                                <th class="text-center" style="width:2%">Prio.</th>
+                                <th class="text-center" style="width:8%">Código</th>
                                 <th class="text-center" style="width:20%">Concepto</th>
                                 <th class="text-center">Fecha entrega</th>
                                 <th class="text-center">Tipo</th>
                                 <th class="text-center" style="width:10%">Empresa</th>
                                 <th class="text-center">Grupo</th>
                                 <th class="text-center">División</th>
+                                <th class="text-center">Monto Total</th>
                                 <th class="text-center">Creado por</th>
-                                <th class="text-center" style="width:8%">Estado</th>
+                                <th class="text-center" style="width:5%;">Estado</th>
                                 <th class="text-center" style="width:8%">Creado</th>
-                                <th class="text-center" style="width:5%">Acción</th>
+                                <th class="text-center" style="width:8%">Acción</th>
                             </tr>
                         </thead>
                     </table>

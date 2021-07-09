@@ -2,6 +2,22 @@ class RequerimientoModel {
     constructor () {
     }
 
+    getTipoCambioCompra(fecha){
+        return new Promise(function(resolve, reject) {
+            $.ajax({
+                type: 'GET',
+                url:`tipo-cambio-compra/${fecha}`,
+                dataType: 'JSON',
+                success(response) {
+                    resolve(response);
+                },
+                error: function(err) {
+                reject(err) // Reject the promise and go to catch()
+                }
+                });
+            }); 
+    }
+
     obtenerSede(idEmpresa){
         return new Promise(function(resolve, reject) {
             $.ajax({
@@ -262,6 +278,46 @@ class RequerimientoModel {
                 },
                 error: function(err) {
                     reject(err) 
+                }
+                });
+            });
+    }
+
+    anularRequerimiento(idRequerimiento){
+        return new Promise(function(resolve, reject) {
+            $.ajax({
+                type: 'PUT',
+                url:`anular-requerimiento/${idRequerimiento}`,
+                dataType: 'JSON',
+                beforeSend: function (data) { 
+                    var customElement = $("<div>", {
+                        "css": {
+                            "font-size": "24px",
+                            "text-align": "center",
+                            "padding": "0px",
+                            "margin-top": "-400px"
+                        },
+                        "class": "your-custom-class",
+                        "text": "Anulando requerimiento..."
+
+                    });
+        
+                    $('#wrapper-okc').LoadingOverlay("show", {
+                        imageAutoResize: true,
+                        progress: true,
+                        custom: customElement,
+                        imageColor: "#3c8dbc"
+                    });
+                    },
+                success(response) {
+                    resolve(response);
+                },
+                fail: function (jqXHR, textStatus, errorThrown) {
+                    $('#wrapper-okc').LoadingOverlay("hide", true);
+                    alert("Hubo un problema al anular el requerimiento. Por favor actualice la página e intente de nuevo");
+                    console.log(jqXHR);
+                    console.log(textStatus);
+                    console.log(errorThrown);
                 }
                 });
             });

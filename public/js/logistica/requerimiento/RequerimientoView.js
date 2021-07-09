@@ -10,7 +10,7 @@ class RequerimientoView {
     init() {
         this.agregarFilaEvent();
         // $('[name=periodo]').val(today.getFullYear());
-
+        this.getTipoCambioCompra();
         var idRequerimiento = localStorage.getItem("idRequerimiento");
         if (idRequerimiento !== null){
             historialRequerimientoView.cargarRequerimiento(idRequerimiento)
@@ -19,6 +19,18 @@ class RequerimientoView {
 
         }
 
+    }
+
+    getTipoCambioCompra(){
+        const now = new Date();
+        now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+        let fechaHoy =now.toISOString().slice(0, 10)
+        
+        requerimientoCtrl.getTipoCambioCompra(fechaHoy).then(function(tipoCambioCompra) {
+                document.querySelector("span[id='tipo_cambio_compra']").textContent= tipoCambioCompra;
+        }).catch(function(err) {
+            console.log(err)
+        })
     }
 
     imprimirRequerimientoPdf(){
@@ -49,6 +61,8 @@ class RequerimientoView {
         }
         // document.querySelector("form[id='form-requerimiento'] table span[class='moneda']") ? document.querySelector("form[id='form-requerimiento'] table span[class='moneda']").textContent = moneda : null;
         document.querySelector("form[id='form-requerimiento'] table span[name='simbolo_moneda']").textContent = moneda;
+        this.calcularPresupuestoUtilizadoYSaldoPorPartida();
+
     }
 
     changeOptEmpresaSelect(e) {
@@ -288,7 +302,7 @@ class RequerimientoView {
                 <div class="form-group">
                     <input class="form-control input-sm precio text-right" type="number" min="0" name="precioUnitario[]" onkeyup="requerimientoView.updateSubtotal(this); requerimientoView.updatePrecioItem(this); requerimientoView.calcularPresupuestoUtilizadoYSaldoPorPartida();" placeholder="Precio U."></td>
                 </div>  
-            <td style="text-align:right;"><span class="moneda" name="simboloMoneda[]">S/</span><span class="subtotal" name="subtotal[]">0.00</span></td>
+            <td style="text-align:right;"><span class="moneda" name="simboloMoneda[]">${document.querySelector("select[name='moneda']").options[document.querySelector("select[name='moneda']").selectedIndex].dataset.simbolo}</span><span class="subtotal" name="subtotal[]">0.00</span></td>
             <td><textarea class="form-control input-sm" name="motivo[]" placeholder="Motivo de requerimiento de item (opcional)"></textarea></td>
             <td>
                 <div class="btn-group" role="group">
@@ -342,7 +356,7 @@ class RequerimientoView {
                     <input class="form-control input-sm precio text-right" type="number" min="0" name="precioUnitario[]" onkeyup="requerimientoView.updateSubtotal(this); requerimientoView.updatePrecioItem(this); requerimientoView.calcularPresupuestoUtilizadoYSaldoPorPartida();" placeholder="Precio U.">
                 </div>
             </td>
-            <td style="text-align:right;"><span class="moneda" name="simboloMoneda[]">S/</span><span class="subtotal" name="subtotal[]">0.00</span></td>
+            <td style="text-align:right;"><span class="moneda" name="simboloMoneda[]">${document.querySelector("select[name='moneda']").options[document.querySelector("select[name='moneda']").selectedIndex].dataset.simbolo}</span><span class="subtotal" name="subtotal[]">0.00</span></td>
             <td><textarea class="form-control input-sm" name="motivo[]" placeholder="Motivo de requerimiento de item (opcional)"></textarea></td>
             <td>
                 <div class="btn-group" role="group">
@@ -583,6 +597,12 @@ class RequerimientoView {
         let subtotalItemList = [];
         let tbodyChildren = document.querySelector("tbody[id='body_detalle_requerimiento']").children;
 
+        let idMonedaPresupuestoUtilizado= document.querySelector("select[name='moneda']").value;
+        let simboloMonedaPresupuestoUtilizado= document.querySelector("select[name='moneda']").options[document.querySelector("select[name='moneda']").selectedIndex].dataset.simbolo;
+        let actualTipoCambioCompra=document.querySelector("span[id='tipo_cambio_compra']").textContent;
+
+
+        
         for (let index = 0; index < tbodyChildren.length; index++) {
             if (tbodyChildren[index].querySelector("p[class='descripcion-partida']").dataset.idPartida > 0) {
                 if (!partidaAgregadas.includes(tbodyChildren[index].querySelector("p[class='descripcion-partida']").dataset.idPartida)) {
@@ -592,6 +612,9 @@ class RequerimientoView {
                         'codigo': tbodyChildren[index].querySelector("p[class='descripcion-partida']").title,
                         'descripcion': tbodyChildren[index].querySelector("p[class='descripcion-partida']").textContent,
                         'presupuesto_total': tbodyChildren[index].querySelector("p[class='descripcion-partida']").dataset.presupuestoTotal,
+                        'id_moneda_presupuesto_utilizado': idMonedaPresupuestoUtilizado,
+                        'simbolo_moneda_presupuesto_utilizado': simboloMonedaPresupuestoUtilizado,
+                        'presupuesto_utilizado_al_cambio': 0,
                         'presupuesto_utilizado': 0,
                         'saldo': 0
                     });
@@ -615,7 +638,18 @@ class RequerimientoView {
         }
 
         for (let p = 0; p < tempPartidasActivas.length; p++) {
-            tempPartidasActivas[p].saldo = tempPartidasActivas[p].presupuesto_total - (tempPartidasActivas[p].presupuesto_utilizado > 0 ? tempPartidasActivas[p].presupuesto_utilizado : 0);
+            if(tempPartidasActivas[p].id_moneda_presupuesto_utilizado==2){ // moneda dolares
+                let alCambio=tempPartidasActivas[p].presupuesto_utilizado * actualTipoCambioCompra;
+                tempPartidasActivas[p].presupuesto_utilizado_al_cambio= alCambio;
+                tempPartidasActivas[p].saldo = tempPartidasActivas[p].presupuesto_total - (alCambio > 0 ? alCambio : 0);
+            }else{
+                tempPartidasActivas[p].saldo = tempPartidasActivas[p].presupuesto_total - (tempPartidasActivas[p].presupuesto_utilizado > 0 ? tempPartidasActivas[p].presupuesto_utilizado : 0);
+
+            }
+        }
+
+        for (let p = 0; p < tempPartidasActivas.length; p++) {
+
         }
 
 
@@ -637,12 +671,13 @@ class RequerimientoView {
 
     construirTablaPresupuestoUtilizadoYSaldoPorPartida(data) {
         requerimientoView.limpiarTabla('listaPartidasActivas');
-        data.forEach(element => {
+        data.forEach(element => { 
+
             document.querySelector("tbody[id='body_partidas_activas']").insertAdjacentHTML('beforeend', `<tr style="text-align:center">
                 <td>${element.codigo}</td>
                 <td>${element.descripcion}</td>
                 <td style="text-align:right;"><span>S/</span>${Util.formatoNumero(element.presupuesto_total, 2)}</td>
-                <td style="text-align:right;"><span>S/</span>${Util.formatoNumero(element.presupuesto_utilizado, 2)}</td>
+                <td style="text-align:right;"><span class="moneda">${element.simbolo_moneda_presupuesto_utilizado}</span>${element.presupuesto_utilizado_al_cambio>0?(Util.formatoNumero(element.presupuesto_utilizado, 2)+' (S/'+Util.formatoNumero(element.presupuesto_utilizado_al_cambio, 2)+')'):(Util.formatoNumero(element.presupuesto_utilizado, 2))}</td>
                 <td style="text-align:right; color:${element.saldo >= 0 ? '#333' : '#dd4b39'}"><span>S/</span>${Util.formatoNumero(element.saldo, 2)}</td>
             </tr>`);
 
@@ -681,7 +716,14 @@ class RequerimientoView {
                     &nbsp; ${padre.descripcion} 
                 </h5>
                 <div id="pres-${index}" class="oculto" style="width:100%;">
-                    <table class="table table-bordered table-condensed partidas" id='listaCentroCosto' width="100%" style="font-size:0.9em">
+                    <table class="table table-bordered table-condensed partidas" id='listaCentroCosto' width="" style="font-size:0.9em">
+                        <thead>
+                            <tr>
+                            <td style="width:5%"></td>
+                            <td style="width:90%"></td>
+                            <td style="width:5%"></td>
+                            </tr>
+                        </thead>
                         <tbody>`;
 
                 data.forEach(hijo => {
@@ -699,6 +741,7 @@ class RequerimientoView {
                         data.forEach(hijo3 => {
                             if (hijo.id_centro_costo == hijo3.id_padre) {
                                 if ((hijo3.id_padre > 0) && (hijo3.estado == 1)) {
+                                    // console.log(hijo3);
                                     if (hijo3.nivel == 3) {
                                         html += `
                                         <tr id="com-${hijo3.id_centro_costo}">
@@ -708,7 +751,23 @@ class RequerimientoView {
                                         </tr> `;
                                     }
                                 }
+                                data.forEach(hijo4 => {
+                                    if (hijo3.id_centro_costo == hijo4.id_padre) {
+                                        console.log(hijo4);
+                                        if ((hijo4.id_padre > 0) && (hijo4.estado == 1)) {
+                                            if (hijo4.nivel == 4) {
+                                                html += `
+                                                <tr id="com-${hijo4.id_centro_costo}">
+                                                    <td>${hijo4.codigo}</td>
+                                                    <td>${hijo4.descripcion}</td>
+                                                    <td style="width:5%; text-align:center;"><button class="btn btn-success btn-xs" onclick="requerimientoView.selectCentroCosto(${hijo4.id_centro_costo},'${hijo4.codigo}','${hijo4.descripcion}');">Seleccionar</button></td>
+                                                </tr> `;
+                                            }
+                                        }
+                                    }
+                                });
                             }
+
                         });
                     }
 

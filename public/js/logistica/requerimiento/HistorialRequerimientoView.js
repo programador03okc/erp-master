@@ -115,7 +115,9 @@ class HistorialRequerimientoView{
             if (data.hasOwnProperty('det_req')) {
                 if(data['requerimiento'][0].estado == 7){
                     changeStateButton('cancelar'); //init.js
-                }else if(data['requerimiento'][0].estado ==3  && data['requerimiento'][0].id_usuario == auth_user.id_usuario){
+                }else if(data['requerimiento'][0].estado ==1  && data['requerimiento'][0].id_usuario == auth_user.id_usuario){
+                    changeStateButton('historial'); //init.js
+                }else if((data['requerimiento'][0].estado ==1 || data['requerimiento'][0].estado ==3)  && data['requerimiento'][0].id_usuario == auth_user.id_usuario){
                     document.querySelector("div[id='group-historial-revisiones']").removeAttribute('hidden');
                     historialRequerimientoView.mostrarHistorialRevisionAprobacion(data['historial_aprobacion']);
                     changeStateButton('historial'); //init.js

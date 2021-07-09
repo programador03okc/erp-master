@@ -10,6 +10,7 @@ class ListarRequerimientoView{
     }
 
     construirTablaListadoRequerimientosElaborados(data) {
+        vista_extendida();
         var vardataTables = funcDatatables();
         $('#ListaRequerimientosElaborados').DataTable({
             'dom': vardataTables[1],
@@ -27,8 +28,9 @@ class ListarRequerimientoView{
                 { 'data': 'fecha_entrega', 'name': 'fecha_entrega', 'className': 'text-center' },
                 { 'data': 'tipo_requerimiento', 'name': 'alm_tp_req.descripcion', 'className': 'text-center' },
                 { 'data': 'razon_social', 'name': 'adm_contri.razon_social', 'className': 'text-center' },
-                { 'data': 'grupo', 'name': 'adm_grupo.descripcion' },
+                { 'data': 'grupo', 'name': 'adm_grupo.descripcion', 'className':'text-center' },
                 { 'data': 'division', 'name': 'adm_flujo.nombre' },
+                { 'data': 'monto_total', 'name': 'monto_total' },
                 { 'data': 'nombre_usuario', 'name': 'nombre_usuario' },
                 { 'data': 'estado_doc', 'name': 'adm_estado_doc.estado_doc' },
                 { 'data': 'fecha_registro', 'name': 'alm_req.fecha_registro' }
@@ -38,16 +40,12 @@ class ListarRequerimientoView{
                 {
                     'render': function (data, type, row) {
                         return row['termometro'];
-                        // if (row['id_prioridad'] == '1') {
-                        //     return '<center> <i class="fas fa-thermometer-empty green"  data-toggle="tooltip" data-placement="right" title="Prioridad '+row['priori']+'" ></i></center>';
-                        // } else if (row['id_prioridad'] == '2') {
-                        //     return '<center> <i class="fas fa-thermometer-half orange"  data-toggle="tooltip" data-placement="right" title="Prioridad '+row['priori']+'"  ></i></center>';
-                        // } else if (row['id_prioridad']=='3') {
-                        //     return '<center> <i class="fas fa-thermometer-full red"  data-toggle="tooltip" data-placement="right" title="Prioridad '+row['priori']+'"  ></i></center>';
-                        // } else {
-                        //     return '';
-                        // }
                     }, targets: 0
+                },
+                {
+                    'render': function (data, type, row) {
+                        return (row['simbolo_moneda'])+(Util.formatoNumero(row['monto_total'],2));
+                    }, targets: 8
                 },
                 {
                     'render': function (data, type, row) {
@@ -65,19 +63,22 @@ class ListarRequerimientoView{
                             return '<span class="label label-default">'+row['estado_doc']+'</span>';
 
                         }
-                    }, targets: 9
+                    }, targets: 9, className:'text-center'
                 },
                 {
                     'render': function (data, type, row) {
                         let containerOpenBrackets = '<center><div class="btn-group" role="group" style="margin-bottom: 5px;">';
                         let containerCloseBrackets = '</div></center>';
                         let btnEditar = '';
-                        if (row.id_usuario == auth_user.id_usuario && row.estado == 3) {
-                            btnEditar = '<button type="button" class="btn btn-xs btn-warning" title="Editar" onClick="aprobarRequerimientoView.editarRequerimiento(' + row['id_requerimiento'] + ');"><i class="fas fa-edit fa-xs"></i></button>';
-                        }
+                        let btnAnular = '';
                         let btnDetalleRapido = '<button type="button" class="btn btn-xs btn-info" title="Ver detalle" onClick="aprobarRequerimientoView.verDetalleRequerimientoSoloLectura(' + row['id_requerimiento'] + ');"><i class="fas fa-eye fa-xs"></i></button>';
-                        return containerOpenBrackets + btnDetalleRapido + btnEditar + containerCloseBrackets;
-                    }, targets: 11
+                        // let btnTrazabilidad = '<button type="button" class="btn btn-xs btn-primary" title="Trazabilidad" onClick="listarRequerimientoView.trazabilidadRequerimiento(' + row['id_requerimiento'] + ');"><i class="fas fa-route fa-xs"></i></button>';
+                        if (row.id_usuario == auth_user.id_usuario && (row.estado == 1 || row.estado == 3)) {
+                            btnEditar = '<button type="button" class="btn btn-xs btn-warning" title="Editar" onClick="listarRequerimientoView.editarRequerimiento(' + row['id_requerimiento'] + ');"><i class="fas fa-edit fa-xs"></i></button>';
+                            btnAnular = '<button type="button" class="btn btn-xs btn-danger" title="Anular" onClick="listarRequerimientoView.anularRequerimiento(' + row['id_requerimiento'] + ');"><i class="fas fa-trash fa-xs"></i></button>';
+                        }
+                        return containerOpenBrackets + btnDetalleRapido + btnEditar + btnAnular + containerCloseBrackets;
+                    }, targets: 12
                 },
             ],
             "createdRow": function (row, data, dataIndex) {
@@ -111,6 +112,30 @@ class ListarRequerimientoView{
             }
         });
     }
+
+    editarRequerimiento(idRequerimiento) {
+        localStorage.setItem('idRequerimiento', idRequerimiento);
+        let url = "/logistica/gestion-logistica/requerimiento/elaboracion/index";
+        var win = window.open(url, "_self");
+        win.focus();
+    }
+    
+    anularRequerimiento(idRequerimiento){
+        requerimientoCtrl.anularRequerimiento(idRequerimiento).then(function (res) {
+            if(res.estado==7){
+                alert(`${res.mensaje}`);
+                location.reload();
+                $('#wrapper-okc').LoadingOverlay("hide", true);
+            }else{
+                $('#wrapper-okc').LoadingOverlay("hide", true);
+                alert(`${res.mensaje}`);
+            }
+        }).catch(function (err) {
+            console.log(err)
+        })
+    }
+
+    
 
     handleChangeFilterEmpresaListReqByEmpresa(event) {
         this.handleChangeFiltroListado();

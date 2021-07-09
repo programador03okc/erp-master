@@ -45,6 +45,11 @@ class AprobarRequerimientoView {
                 { 'data': 'fecha_entrega', 'name': 'fecha_entrega' },
                 { 'data': 'razon_social_empresa', 'name': 'razon_social_empresa' },
                 { 'data': 'division', 'name': 'division' },
+                {
+                    'render': function (data, type, row) {
+                        return (row['simbolo_moneda'])+(Util.formatoNumero(row['monto_total'],2));
+                    }
+                },
                 { 'data': 'observacion', 'name': 'alm_req.observacion' },
                 { 'data': 'usuario', 'name': 'usuario' },
                 {
@@ -228,12 +233,7 @@ class AprobarRequerimientoView {
 
     }
 
-    editarRequerimiento(idRequerimiento) {
-        localStorage.setItem('idRequerimiento', idRequerimiento);
-        let url = "/logistica/gestion-logistica/requerimiento/elaboracion/index";
-        var win = window.open(url, "_self");
-        win.focus();
-    }
+
 
     verDetalleRequerimientoSoloLectura(idRequerimiento) {
         $('#modal-requerimiento').modal({
@@ -246,7 +246,7 @@ class AprobarRequerimientoView {
 
         requerimientoCtrl.getRequerimiento(idRequerimiento).then(function (res) {
             aprobarRequerimientoView.construirSeccionDatosGenerales(res['requerimiento'][0]);
-            aprobarRequerimientoView.construirSeccionItemsDeRequerimiento(res['det_req']);
+            aprobarRequerimientoView.construirSeccionItemsDeRequerimiento(res['det_req'],res['requerimiento'][0]['simbolo_moneda']);
             aprobarRequerimientoView.construirSeccionHistorialAprobacion(res['historial_aprobacion']);
             $('#modal-requerimiento div.modal-body').LoadingOverlay("hide", true);
 
@@ -275,7 +275,7 @@ class AprobarRequerimientoView {
 
         requerimientoCtrl.getRequerimiento(idRequerimiento).then(function (res) {
             aprobarRequerimientoView.construirSeccionDatosGenerales(res['requerimiento'][0]);
-            aprobarRequerimientoView.construirSeccionItemsDeRequerimiento(res['det_req']);
+            aprobarRequerimientoView.construirSeccionItemsDeRequerimiento(res['det_req'],res['requerimiento'][0]['simbolo_moneda']);
             aprobarRequerimientoView.construirSeccionHistorialAprobacion(res['historial_aprobacion']);
             $('#modal-requerimiento div.modal-body').LoadingOverlay("hide", true);
 
@@ -286,6 +286,7 @@ class AprobarRequerimientoView {
 
     construirSeccionDatosGenerales(data) {
         // console.log(data);
+        document.querySelector("div[id='modal-requerimiento'] input[name='id_requerimiento']").value = data.id_requerimiento;
         document.querySelector("div[id='modal-requerimiento'] table[id='tablaDatosGenerales'] td[id='codigo']").textContent = data.codigo;
         document.querySelector("div[id='modal-requerimiento'] table[id='tablaDatosGenerales'] td[id='concepto']").textContent = data.concepto;
         document.querySelector("div[id='modal-requerimiento'] table[id='tablaDatosGenerales'] td[id='razon_social_empresa']").textContent = data.razon_social_empresa;
@@ -298,6 +299,8 @@ class AprobarRequerimientoView {
         document.querySelector("div[id='modal-requerimiento'] table[id='tablaDatosGenerales'] td[id='creado_por']").textContent = data.persona;
         document.querySelector("div[id='modal-requerimiento'] table[id='tablaDatosGenerales'] td[id='observacion']").textContent = data.observacion;
         document.querySelector("div[id='modal-requerimiento'] span[name='simboloMoneda']").textContent = data.simbolo_moneda;
+        document.querySelector("div[id='modal-requerimiento'] table[id='listaDetalleRequerimientoModal'] span[name='simbolo_moneda']").textContent = data.simbolo_moneda;
+        document.querySelector("div[id='modal-requerimiento'] table[id='listaDetalleRequerimientoModal'] label[name='total']").textContent = data.monto_total;
 
         tempArchivoAdjuntoRequerimientoList = [];
         if (data.adjuntos.length > 0) {
@@ -364,7 +367,7 @@ class AprobarRequerimientoView {
 
     }
 
-    construirSeccionItemsDeRequerimiento(data) {
+    construirSeccionItemsDeRequerimiento(data, simboloMoneda) {
 
         requerimientoView.limpiarTabla('listaDetalleRequerimientoModal');
         tempArchivoAdjuntoItemList = [];
@@ -397,8 +400,8 @@ class AprobarRequerimientoView {
                             <td>${data[i].producto_descripcion ? data[i].producto_descripcion : (data[i].descripcion ? data[i].descripcion : '')} </td>
                             <td>${data[i].unidad_medida}</td>
                             <td style="text-align:center;">${data[i].cantidad}</td>
-                            <td style="text-align:right;">${Util.formatoNumero(data[i].precio_unitario, 2)}</td>
-                            <td style="text-align:right;">${(data[i].subtotal ? Util.formatoNumero(data[i].subtotal, 2) : (Util.formatoNumero((data[i].cantidad*data[i].precio_unitario),2)))}</td>
+                            <td style="text-align:right;">${simboloMoneda} ${Util.formatoNumero(data[i].precio_unitario, 2)}</td>
+                            <td style="text-align:right;">${simboloMoneda} ${(data[i].subtotal ? Util.formatoNumero(data[i].subtotal, 2) : (Util.formatoNumero((data[i].cantidad*data[i].precio_unitario),2)))}</td>
                             <td>${data[i].motivo ? data[i].motivo : ''}</td>
                             <td style="text-align: center;"> 
                                 ${cantidadAdjuntosItem>0?'<a title="Ver archivos adjuntos de item" style="cursor:pointer;" onClick="aprobarRequerimientoView.verAdjuntosItem('+data[i].id_detalle_requerimiento+')">Ver (<span name="cantidadAdjuntosItem">'+cantidadAdjuntosItem+'</span>)</a>':'-'}
