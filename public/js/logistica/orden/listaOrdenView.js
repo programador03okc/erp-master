@@ -508,12 +508,16 @@ class ListaOrdenView {
                     function (data, type, row, meta){
                         let total=0;
                         if(row.id_moneda ==2){
-                            if(row.tipo_cambio_compra >0){
+                            console.log(row.tipo_cambio_compra);
+                            if(parseFloat(row.tipo_cambio_compra) >0){
                                 total = '<span title="$'+row.monto_total_orden+'">'+"S/"+((row.monto_total_orden *row.tipo_cambio_compra).toFixed(2))+'</span>';
                             }else{
                                 total =(row.moneda_simbolo+((parseFloat(row.monto_total_orden).toFixed(2))));
 
                             }
+                        }else{
+                            total =(row.moneda_simbolo+((parseFloat(row.monto_total_orden).toFixed(2))));
+
                         }
                         return total;
                     }

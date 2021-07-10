@@ -30,17 +30,19 @@ class ListOrdenesHeadExport implements FromCollection, WithHeadings
             "Fecha llegada",
             "Estado aprobación CC",
             "Fecha aprobación CC",
-            "Fecha Requerimiento",
+            "Fecha requerimiento",
             "Leadtime",
             "Empresa / Sede",
             "Moneda",
             "Condición",
             "Fecha em.",
-            "Tiem. Atenc. Log.",
-            "Tiem. Atenc. Prov.",
+            "Tiem. atenc. log.",
+            "Tiem. atenc. prov.",
             "Facturas",
+            "Monto presup. CC",
+            "Monto orden",
             "Detalle pago",
-            "Archivo adjunto"
+            "Tipo cambio compra"
         ];
     }
 }

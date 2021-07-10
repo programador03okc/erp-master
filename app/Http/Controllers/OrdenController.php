@@ -970,6 +970,7 @@ class OrdenController extends Controller
 
 
         ->where([
+            // ['log_ord_compra.codigo', '=', 'OC-21050010'],
             ['log_ord_compra.estado', '!=', 7],
             ['log_ord_compra.id_grupo_cotizacion', '=', null],
             $tipoOrden >0 ? ['log_ord_compra.id_tp_documento',$tipoOrden]:[null],

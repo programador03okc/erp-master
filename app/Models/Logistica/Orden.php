@@ -43,10 +43,21 @@ class Orden extends Model {
             'log_ord_compra_pago.id_pago',
             'log_ord_compra_pago.detalle_pago',
             'log_ord_compra_pago.archivo_adjunto',
-            DB::raw("(SELECT  coalesce(sum((log_det_ord_compra.cantidad * log_det_ord_compra.precio))*1.18 ,0) AS suma_subtotal
+ 
+
+            DB::raw("(SELECT  coalesce(sum((log_det_ord_compra.cantidad * log_det_ord_compra.precio))*1.18 ,0) AS monto_total_orden
             FROM logistica.log_det_ord_compra 
             WHERE   log_det_ord_compra.id_orden_compra = log_ord_compra.id_orden_compra AND
-                    log_det_ord_compra.estado != 7) AS suma_subtotal")
+                    log_det_ord_compra.estado != 7) AS monto_total_orden"),
+
+            DB::raw("(SELECT  coalesce(oportunidades.importe) AS monto_total_presup
+            FROM logistica.log_det_ord_compra 
+            INNER JOIN almacen.alm_det_req on alm_det_req.id_detalle_requerimiento = log_det_ord_compra.id_detalle_requerimiento
+            INNER JOIN almacen.alm_req on alm_req.id_requerimiento = alm_det_req.id_requerimiento
+            INNER JOIN mgcp_cuadro_costos.cc on cc.id = alm_req.id_cc
+            INNER JOIN mgcp_oportunidades.oportunidades on oportunidades.id = cc.id_oportunidad
+            WHERE log_det_ord_compra.id_orden_compra = log_ord_compra.id_orden_compra AND
+            logistica.log_det_ord_compra.estado != 7 LIMIT 1) AS monto_total_presup")
             // DB::raw("( 
             
             //     SELECT array_agg(concat(doc_com.serie, '-', doc_com.numero)) AS facturas
@@ -90,6 +101,7 @@ class Orden extends Model {
                     'descripcion_sede_empresa'=> $element->descripcion_sede_empresa,
                     'nro_documento'=> $element->nro_documento, 
                     'razon_social'=> $element->razon_social,
+                    'id_moneda'=> $element->id_moneda, 
                     'moneda_simbolo'=> $element->moneda_simbolo, 
                     'incluye_igv'=> $element->incluye_igv,
                     'monto_igv'=> $element->monto_igv, 
@@ -104,7 +116,9 @@ class Orden extends Model {
                     'estado_doc'=>$element->estado_doc,
                     'detalle_pago'=> $element->detalle_pago, 
                     'archivo_adjunto'=> $element->archivo_adjunto,
-                    'suma_subtotal'=> $element->suma_subtotal,
+                    'monto_total_orden'=> $element->monto_total_orden,
+                    'monto_total_presup'=> $element->monto_total_presup,
+                    'tipo_cambio_compra'=> $element->tipo_cambio_compra,
                     'facturas'=> implode(',',Orden::obtenerFacturas($element->id_orden_compra)),
                     'codigo_requerimiento'=> []
                     
@@ -207,7 +221,10 @@ class Orden extends Model {
                 'tiempo_atencion_logistica'=>isset($tiempo_atencion_logistica)?$tiempo_atencion_logistica:'',
                 'tiempo_atencion_almacen'=>isset($tiempo_atencion_almacen)?$tiempo_atencion_almacen:'',
                 'facturas'=>$fechaOrden,
-                'detalle_pago'=>$d['detalle_pago']
+                'monto_total_presup'=>$d['monto_total_presup'] >0 ? number_format($d['monto_total_presup'],2):'(No aplica)',
+                'monto_total_orden'=>($d['id_moneda'] ==2 && $d['tipo_cambio_compra'] >0) ? ('S/'.number_format(($d['monto_total_orden'] * $d['tipo_cambio_compra']),2)):($d['moneda_simbolo'].number_format($d['monto_total_orden'],2)),
+                'detalle_pago'=>$d['detalle_pago'],
+                'tipo_cambio_compra'=>$d['tipo_cambio_compra']
             ];
         }
 
