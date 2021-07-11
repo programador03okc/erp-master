@@ -2,6 +2,7 @@ let detalle = [];
 
 function itemsRequerimiento(id_requerimiento){
     detalle = [];
+    
     $.ajax({
         type: 'GET',
         url: 'itemsRequerimiento/'+id_requerimiento,
@@ -12,12 +13,13 @@ function itemsRequerimiento(id_requerimiento){
                 if(element.id_tipo_item ==1){
                     detalle.push({
                         'id_detalle_requerimiento'  :element.id_detalle_requerimiento,
-                        'id_producto'        :element.id_producto,
-                        'codigo'             :element.codigo,
-                        'part_number'        :(element.id_producto!==null ? element.part_number_prod : element.part_number),
-                        'descripcion'        :(element.id_producto!==null ? element.descripcion_prod : element.descripcion),
-                        'cantidad'           :element.cantidad,
-                        'abreviatura'        :(element.abreviatura!==null?element.abreviatura:''),
+                        'id_producto'           :element.id_producto,
+                        'codigo'                :element.codigo,
+                        'part_number'           :(element.id_producto!==null ? element.part_number_prod : element.part_number),
+                        'descripcion'           :(element.id_producto!==null ? element.descripcion_prod : element.descripcion),
+                        'cantidad'              :element.cantidad,
+                        'tiene_transformacion'  :element.tiene_transformacion,
+                        'abreviatura'           :(element.abreviatura!==null?element.abreviatura:''),
                     });
                 }
             
@@ -29,6 +31,7 @@ function itemsRequerimiento(id_requerimiento){
         console.log(textStatus);
         console.log(errorThrown);
     });
+
 }
 
 function mostrar_detalle(){
@@ -58,7 +61,7 @@ function mostrar_detalle(){
         html+=`<tr>
             <td>${i}</td>
             <td>${element.codigo!==null?element.codigo:''}</td>
-            <td>`+ link_pn +`</td>
+            <td>`+ link_pn +(element.tiene_transformacion ? ' <span class="badge badge-secondary">Transformado</span> ' : '')+`</td>
             <td>`+ link_des +`</td>
             <td>${element.cantidad!==null?element.cantidad:''}</td>
             <td>${element.abreviatura!==null?element.abreviatura:''}</td>
@@ -102,6 +105,7 @@ function openAsignarProducto(partnumber,desc,id, type){
     listarProductosSugeridos(partnumber, decodeURIComponent(desc), type);
     
     $('#modal-mapeoAsignarProducto').modal('show');
+    $('[href="#seleccionar"]').tab('show');
     $('#submit_mapeoAsignarProducto').removeAttr('disabled');
 }
 
@@ -140,8 +144,9 @@ $("#form-mapeoItemsRequerimiento").on("submit", function(e){
             success: function(response){
                 console.log(response);
                 alert('Productos mapeados con éxito.');
-                
                 $('#modal-mapeoItemsRequerimiento').modal('hide');
+                // requerimientoPendienteView.renderRequerimientoPendienteListModule(null, null);
+                location.reload();
             }
         }).fail( function( jqXHR, textStatus, errorThrown ){
             console.log(jqXHR);

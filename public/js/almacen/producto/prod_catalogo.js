@@ -13,6 +13,7 @@ $(function(){
             {'data': 'subcat_descripcion'},
             {'data': 'clasif_descripcion'},
             {'data': 'codigo'},
+            {'data': 'part_number'},
             {'data': 'descripcion'},
         ],
         'columnDefs': [{ 'aTargets': [0], 'sClass': 'invisible'}],

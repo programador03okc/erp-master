@@ -482,7 +482,7 @@ class ProductoController extends Controller
     //Catalogo Producto
     public function mostrar_productos(){
         $data = DB::table('almacen.alm_prod')
-            ->select('alm_prod.id_producto','alm_prod.codigo','alm_prod.descripcion',
+            ->select('alm_prod.id_producto','alm_prod.part_number','alm_prod.codigo','alm_prod.descripcion',
             'alm_subcat.codigo as cod_sub_cat','alm_subcat.descripcion as subcat_descripcion',
             'alm_cat_prod.codigo as cod_cat','alm_cat_prod.descripcion as cat_descripcion',
             'alm_tp_prod.id_tipo_producto','alm_tp_prod.descripcion as tipo_descripcion',
