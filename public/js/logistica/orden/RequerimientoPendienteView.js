@@ -25,11 +25,12 @@ class RequerimientoPendienteView {
     }
 
     construirTablaListaRequerimientosPendientes(data) {
-    
+        // requerimientoPendienteCtrl.limpiarTabla('listaRequerimientosPendientes');
+
         vista_extendida();
         $('#listaRequerimientosPendientes').DataTable({
             'dom': vardataTables[1],
-            'buttons': vardataTables[2],
+            'buttons': [],
             'language': vardataTables[0],
             'order': [[10, 'desc']],
             'destroy': true,
@@ -150,7 +151,19 @@ class RequerimientoPendienteView {
                 listaRequerimientosPendientes_filter.appendChild(buttonFiler);
 
             },
-            'columnDefs': [{ 'aTargets': [0], 'sClass': 'invisible' }],
+            'columnDefs': [
+                { 'aTargets': [0], 'sClass': 'invisible','sWidth': '0%' },
+                { 'aTargets': [1], 'sWidth': '3%' },
+                { 'aTargets': [2], 'sWidth': '5%' },
+                { 'aTargets': [3], 'sWidth': '20%' },
+                { 'aTargets': [4], 'sWidth': '5%' },
+                { 'aTargets': [5], 'sWidth': '5%' },
+                { 'aTargets': [6], 'sWidth': '10%' },
+                { 'aTargets': [7], 'sWidth': '6%' },
+                { 'aTargets': [8], 'sWidth': '5%' },
+                { 'aTargets': [9], 'sWidth': '5%' },
+                { 'aTargets': [10], 'sWidth': '8%' }
+            ],
             "createdRow": function (row, data, dataIndex) {
                 if (data.tiene_transformacion == true) {
                     $(row.childNodes[2]).css('background-color', '#d8c74ab8');

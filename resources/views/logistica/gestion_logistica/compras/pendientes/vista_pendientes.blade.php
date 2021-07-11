@@ -46,9 +46,8 @@ Compras pendientes
                                                         <th>Proveedor/Entidad</th>
                                                         <th>Empresa - Sede</th>
                                                         <th>Autor</th>
-
                                                         <th>Estado</th>
-                                                        <th width="130px">Acción</th>
+                                                        <th>Acción</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody></tbody>
