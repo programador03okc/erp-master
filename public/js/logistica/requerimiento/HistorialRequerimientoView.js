@@ -13,7 +13,7 @@ class HistorialRequerimientoView{
     }
 
     construirTablaHistorialRequerimientosElaborados(data) {
-        console.log(data);
+        // console.log(data);
         var vardataTables = funcDatatables();
         $('#listaRequerimiento').DataTable({
             'dom': vardataTables[1],
@@ -113,14 +113,21 @@ class HistorialRequerimientoView{
 
             historialRequerimientoView.mostrarCabeceraRequerimiento(data['requerimiento'][0]);
             if (data.hasOwnProperty('det_req')) {
-                if(data['requerimiento'][0].estado == 7){
+                if(data['requerimiento'][0].estado == 7 || data['requerimiento'][0].estado == 2){
                     changeStateButton('cancelar'); //init.js
                 }else if(data['requerimiento'][0].estado ==1  && data['requerimiento'][0].id_usuario == auth_user.id_usuario){
-                    changeStateButton('historial'); //init.js
+                    
+                    changeStateButton('editar'); //init.js
+                    changeStateInput('form-requerimiento', false);
+                    document.querySelector("form[id='form-requerimiento']").setAttribute('type','edition');
+
                 }else if((data['requerimiento'][0].estado ==1 || data['requerimiento'][0].estado ==3)  && data['requerimiento'][0].id_usuario == auth_user.id_usuario){
                     document.querySelector("div[id='group-historial-revisiones']").removeAttribute('hidden');
                     historialRequerimientoView.mostrarHistorialRevisionAprobacion(data['historial_aprobacion']);
-                    changeStateButton('historial'); //init.js
+                    changeStateButton('editar'); //init.js
+                    changeStateInput('form-requerimiento', false);
+                    document.querySelector("form[id='form-requerimiento']").setAttribute('type','edition');
+
                 }else{
                     document.querySelector("div[id='group-historial-revisiones']").setAttribute('hidden',true);
 
@@ -182,8 +189,7 @@ class HistorialRequerimientoView{
         // document.querySelector("input[name='telefono_contacto']").value =data.
         // document.querySelector("input[name='direccion_contacto']").value =data.
         document.querySelector("textarea[name='observacion']").value = data.observacion;
-
-
+        tempArchivoAdjuntoRequerimientoList=[];
         if ((data.adjuntos).length > 0) {
             (data.adjuntos).forEach(element => {
                 tempArchivoAdjuntoRequerimientoList.push({
@@ -222,9 +228,9 @@ class HistorialRequerimientoView{
 
     mostrarDetalleRequerimiento(data,estado) {
         let hasDisabledInput= 'disabled';
-        // if(,estado ==3 || estado == 7){
-        //     hasDisabledInput= 'disabled';
-        // }
+        if(estado ==1 || estado == 3){
+            hasDisabledInput= '';
+        }
 
         requerimientoView.limpiarTabla('ListaDetalleRequerimiento');
         vista_extendida();
@@ -323,7 +329,7 @@ class HistorialRequerimientoView{
         requerimientoView.autoUpdateSubtotal();
         requerimientoView.calcularTotal();
         requerimientoView.calcularPresupuestoUtilizadoYSaldoPorPartida();
-
+        tempArchivoAdjuntoItemList=[];
         data.forEach(element => {
             if (element.adjuntos.length > 0) {
                 (element.adjuntos).forEach(adjunto => {

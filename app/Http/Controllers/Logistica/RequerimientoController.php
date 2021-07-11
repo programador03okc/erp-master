@@ -31,6 +31,8 @@ use App\Models\Contabilidad\Identidad;
 use App\Models\Contabilidad\TipoCuenta;
 use App\Models\Administracion\Empresa;
 use App\Models\administracion\Sede;
+use App\Models\Almacen\AdjuntoDetalleRequerimiento;
+use App\Models\Almacen\AdjuntoRequerimiento;
 use App\Models\Almacen\Transferencia;
 use App\Models\Configuracion\Grupo;
 use App\Models\Presupuestos\Presupuesto;
@@ -743,23 +745,25 @@ class RequerimientoController extends Controller
 
         if ($adjuntoOtrosAdjuntosLength > 0) {
             foreach ($requerimiento->adjuntoOtrosAdjuntos as $archivo) {
-                $fechaHoy = new Carbon();
-                $sufijo = $fechaHoy->format('YmdHis');
-                $file = $archivo->getClientOriginalName();
-                $filename = pathinfo($file, PATHINFO_FILENAME);
-                $extension = pathinfo($file, PATHINFO_EXTENSION);
-                $newNameFile = $filename . '_' . $sufijo . '.' . $extension;
-                $otrosAdjuntos = DB::table('almacen.alm_req_adjuntos')->insertGetId(
-                    [
-                        'id_requerimiento'          => $requerimiento->id_requerimiento,
-                        'archivo'                   => $newNameFile,
-                        'estado'                    => 1,
-                        'categoria_adjunto_id'      => 1,
-                        'fecha_registro'            => $fechaHoy
-                    ],
-                    'id_adjunto'
-                );
-                Storage::disk('archivos')->put("logistica/requerimiento/" . $newNameFile, \File::get($archivo));
+                if ($archivo != null) {
+                    $fechaHoy = new Carbon();
+                    $sufijo = $fechaHoy->format('YmdHis');
+                    $file = $archivo->getClientOriginalName();
+                    $filename = pathinfo($file, PATHINFO_FILENAME);
+                    $extension = pathinfo($file, PATHINFO_EXTENSION);
+                    $newNameFile = $filename . '_' . $sufijo . '.' . $extension;
+                    $otrosAdjuntos = DB::table('almacen.alm_req_adjuntos')->insertGetId(
+                        [
+                            'id_requerimiento'          => $requerimiento->id_requerimiento,
+                            'archivo'                   => $newNameFile,
+                            'estado'                    => 1,
+                            'categoria_adjunto_id'      => 1,
+                            'fecha_registro'            => $fechaHoy
+                        ],
+                        'id_adjunto'
+                    );
+                    Storage::disk('archivos')->put("logistica/requerimiento/" . $newNameFile, \File::get($archivo));
+                }
             }
         }
         $ordenesAdjuntos = 0;
@@ -769,65 +773,72 @@ class RequerimientoController extends Controller
 
         if ($adjuntoOrdenesLength > 0) {
             foreach ($requerimiento->adjuntoOrdenes as $archivo) {
-                $fechaHoy = new Carbon();
-                $sufijo = $fechaHoy->format('YmdHis');
-                $file = $archivo->getClientOriginalName();
-                $filename = pathinfo($file, PATHINFO_FILENAME);
-                $extension = pathinfo($file, PATHINFO_EXTENSION);
-                $newNameFile = $filename . '_' . $sufijo . '.' . $extension;
-                $ordenesAdjuntos = DB::table('almacen.alm_req_adjuntos')->insertGetId(
-                    [
-                        'id_requerimiento'          => $requerimiento->id_requerimiento,
-                        'archivo'                   => $newNameFile,
-                        'estado'                    => 1,
-                        'categoria_adjunto_id'      => 2,
-                        'fecha_registro'            => $fechaHoy
-                    ],
-                    'id_adjunto'
-                );
-                Storage::disk('archivos')->put("logistica/requerimiento/" . $newNameFile, \File::get($archivo));
+                if ($archivo != null) {
+
+                    $fechaHoy = new Carbon();
+                    $sufijo = $fechaHoy->format('YmdHis');
+                    $file = $archivo->getClientOriginalName();
+                    $filename = pathinfo($file, PATHINFO_FILENAME);
+                    $extension = pathinfo($file, PATHINFO_EXTENSION);
+                    $newNameFile = $filename . '_' . $sufijo . '.' . $extension;
+                    $ordenesAdjuntos = DB::table('almacen.alm_req_adjuntos')->insertGetId(
+                        [
+                            'id_requerimiento'          => $requerimiento->id_requerimiento,
+                            'archivo'                   => $newNameFile,
+                            'estado'                    => 1,
+                            'categoria_adjunto_id'      => 2,
+                            'fecha_registro'            => $fechaHoy
+                        ],
+                        'id_adjunto'
+                    );
+                    Storage::disk('archivos')->put("logistica/requerimiento/" . $newNameFile, \File::get($archivo));
+                }
             }
         }
         if ($adjuntoComprobanteContableLength > 0) {
             foreach ($requerimiento->adjuntoComprobanteContable as $archivo) {
-                $fechaHoy = new Carbon();
-                $sufijo = $fechaHoy->format('YmdHis');
-                $file = $archivo->getClientOriginalName();
-                $filename = pathinfo($file, PATHINFO_FILENAME);
-                $extension = pathinfo($file, PATHINFO_EXTENSION);
-                $newNameFile = $filename . '_' . $sufijo . '.' . $extension;
-                $comprobanteContableAdjuntos = DB::table('almacen.alm_req_adjuntos')->insertGetId(
-                    [
-                        'id_requerimiento'          => $requerimiento->id_requerimiento,
-                        'archivo'                   => $newNameFile,
-                        'estado'                    => 1,
-                        'categoria_adjunto_id'      => 3,
-                        'fecha_registro'            => $fechaHoy
-                    ],
-                    'id_adjunto'
-                );
-                Storage::disk('archivos')->put("logistica/requerimiento/" . $newNameFile, \File::get($archivo));
+                if ($archivo != null) {
+                    $fechaHoy = new Carbon();
+                    $sufijo = $fechaHoy->format('YmdHis');
+                    $file = $archivo->getClientOriginalName();
+                    $filename = pathinfo($file, PATHINFO_FILENAME);
+                    $extension = pathinfo($file, PATHINFO_EXTENSION);
+                    $newNameFile = $filename . '_' . $sufijo . '.' . $extension;
+                    $comprobanteContableAdjuntos = DB::table('almacen.alm_req_adjuntos')->insertGetId(
+                        [
+                            'id_requerimiento'          => $requerimiento->id_requerimiento,
+                            'archivo'                   => $newNameFile,
+                            'estado'                    => 1,
+                            'categoria_adjunto_id'      => 3,
+                            'fecha_registro'            => $fechaHoy
+                        ],
+                        'id_adjunto'
+                    );
+                    Storage::disk('archivos')->put("logistica/requerimiento/" . $newNameFile, \File::get($archivo));
+                }
             }
         }
         if ($adjuntoComprobanteBancarioLength > 0) {
             foreach ($requerimiento->adjuntoComprobanteBancario as $archivo) {
-                $fechaHoy = new Carbon();
-                $sufijo = $fechaHoy->format('YmdHis');
-                $file = $archivo->getClientOriginalName();
-                $filename = pathinfo($file, PATHINFO_FILENAME);
-                $extension = pathinfo($file, PATHINFO_EXTENSION);
-                $newNameFile = $filename . '_' . $sufijo . '.' . $extension;
-                $comprobanteBancarioAdjunto = DB::table('almacen.alm_req_adjuntos')->insertGetId(
-                    [
-                        'id_requerimiento'          => $requerimiento->id_requerimiento,
-                        'archivo'                   => $newNameFile,
-                        'estado'                    => 1,
-                        'categoria_adjunto_id'      => 4,
-                        'fecha_registro'            => $fechaHoy
-                    ],
-                    'id_adjunto'
-                );
-                Storage::disk('archivos')->put("logistica/requerimiento/" . $newNameFile, \File::get($archivo));
+                if ($archivo != null) {
+                    $fechaHoy = new Carbon();
+                    $sufijo = $fechaHoy->format('YmdHis');
+                    $file = $archivo->getClientOriginalName();
+                    $filename = pathinfo($file, PATHINFO_FILENAME);
+                    $extension = pathinfo($file, PATHINFO_EXTENSION);
+                    $newNameFile = $filename . '_' . $sufijo . '.' . $extension;
+                    $comprobanteBancarioAdjunto = DB::table('almacen.alm_req_adjuntos')->insertGetId(
+                        [
+                            'id_requerimiento'          => $requerimiento->id_requerimiento,
+                            'archivo'                   => $newNameFile,
+                            'estado'                    => 1,
+                            'categoria_adjunto_id'      => 4,
+                            'fecha_registro'            => $fechaHoy
+                        ],
+                        'id_adjunto'
+                    );
+                    Storage::disk('archivos')->put("logistica/requerimiento/" . $newNameFile, \File::get($archivo));
+                }
             }
         }
 
@@ -866,6 +877,8 @@ class RequerimientoController extends Controller
 
     public function actualizarRequerimiento(Request $request)
     {
+        // dd($request->all());
+        // exit();  
         $requerimiento = Requerimiento::where("id_requerimiento", $request->id_requerimiento)->first();
         $idEstadoActual = $requerimiento->estado;
 
@@ -909,6 +922,13 @@ class RequerimientoController extends Controller
             $requerimiento->estado = 1;
         }
         $requerimiento->save();
+        $requerimiento->adjuntoOtrosAdjuntos = $request->archivoAdjuntoRequerimiento1;
+        $requerimiento->adjuntoOrdenes = $request->archivoAdjuntoRequerimiento2;
+        $requerimiento->adjuntoComprobanteBancario = $request->archivoAdjuntoRequerimiento3;
+        $requerimiento->adjuntoComprobanteContable = $request->archivoAdjuntoRequerimiento4;
+
+        $adjuntosRequerimiento = $this->guardarAdjuntoNivelRequerimiento($requerimiento);
+
 
         $todoDetalleRequerimiento = DetalleRequerimiento::where("id_requerimiento", $requerimiento->id_requerimiento)->get();
         $idDetalleRequerimientoProcesado = [];
@@ -939,8 +959,8 @@ class RequerimientoController extends Controller
             } else { // es un id solo de numerico => actualiza
                 $detalle = DetalleRequerimiento::where("id_detalle_requerimiento", $id)->first();
                 $detalle->id_tipo_item = $request->tipoItem[$i];
-                $detalle->partida = $request->idPartida[$i];
-                $detalle->centro_costo_id = $request->idCentroCosto[$i];
+                $detalle->partida = $request->idPartida[$i] > 0 ? $request->idPartida[$i] : null;
+                $detalle->centro_costo_id = $request->idCentroCosto[$i] > 0 ? $request->idCentroCosto[$i] : null;
                 $detalle->part_number = $request->partNumber[$i];
                 $detalle->descripcion = $request->descripcion[$i];
                 $detalle->id_unidad_medida = $request->unidad[$i];
@@ -952,6 +972,8 @@ class RequerimientoController extends Controller
                 // $detalle->fecha_registro = new Carbon();
                 $detalle->estado = $requerimiento->id_tipo_requerimiento == 2 ? 19 : 1;
                 $detalle->save();
+                $detalle->idRegister = $request->idRegister[$i];
+                $detalleArray[] = $detalle;
 
                 $idDetalleRequerimientoProcesado[] = $detalle->id_detalle_requerimiento;
             }
@@ -963,27 +985,53 @@ class RequerimientoController extends Controller
                 $detalleConAnulidad = DetalleRequerimiento::where("id_detalle_requerimiento", $detalleRequerimiento->id_detalle_requerimiento)->first();
                 $detalleConAnulidad->estado = 7;
                 $detalleConAnulidad->save();
+                // anular adjunto detalle requerimiento
+                AdjuntoDetalleRequerimiento::where('id_detalle_requerimiento', '=', $detalleRequerimiento->id_detalle_requerimiento)
+                    ->update(['estado' => 7]);
             }
+
+            // anular adjuntos de detalle requerimiento
         }
 
 
         //si existe nuevos adjuntos de nuevos item
+
         if (isset($detalleArray) && count($detalleArray) > 0) {
             $adjuntoDetelleRequerimiento = [];
             for ($i = 0; $i < count($detalleArray); $i++) {
                 $archivos = $request->{"archivoAdjuntoItem" . $detalleArray[$i]['idRegister']};
                 if (isset($archivos)) {
                     foreach ($archivos as $archivo) {
-                        $adjuntoDetelleRequerimiento[] = [
-                            'id_detalle_requerimiento' => $detalleArray[$i]['id_detalle_requerimiento'],
-                            'nombre_archivo' => $archivo->getClientOriginalName(),
-                            'archivo' => $archivo
-                        ];
+                        if($archivo !=null){
+                            $adjuntoDetelleRequerimiento[] = [
+                                'id_detalle_requerimiento' => $detalleArray[$i]['id_detalle_requerimiento'],
+                                'nombre_archivo' => $archivo->getClientOriginalName(),
+                                'archivo' => $archivo
+                            ];
+                        }
                     }
                 }
             }
             if (count($adjuntoDetelleRequerimiento) > 0) {
                 $this->guardarAdjuntoNivelDetalleItem($adjuntoDetelleRequerimiento);
+            }
+        }
+
+        // si existen adjuntos por eliminar
+        if (count($request->archivoAdjuntoRequerimientoToDelete) > 0) {
+            foreach ($request->archivoAdjuntoRequerimientoToDelete as $id) {
+                if (preg_match('/^[0-9]+$/', $id)) {
+                    AdjuntoRequerimiento::where('id_adjunto', '=', $id)
+                        ->update(['estado' => 7]);
+                }
+            }
+        }
+        if (count($request->archivoAdjuntoItemToDelete) > 0) {
+            foreach ($request->archivoAdjuntoItemToDelete as $id) {
+                if (preg_match('/^[0-9]+$/', $id)) {
+                    AdjuntoDetalleRequerimiento::where('id_adjunto', '=', $id)
+                        ->update(['estado' => 7]);
+                }
             }
         }
 
@@ -1745,7 +1793,7 @@ class RequerimientoController extends Controller
 
                     $correoUsuarioList[] = Usuario::find($requerimiento->id_usuario)->trabajador->postulante->persona->email; // notificar a usuario
                     $usuariosList = Usuario::getAllIdUsuariosPorRol(4); // notificar al usuario  con rol = 'logistico compras'
-                    
+
                     // Debugbar::info($usuariosList);
                     if (count($usuariosList) > 0) {
                         foreach ($usuariosList as $idUsuario) {
@@ -1805,7 +1853,7 @@ class RequerimientoController extends Controller
             }
 
 
-                    // Debugbar::info($correoUsuarioList);
+            // Debugbar::info($correoUsuarioList);
 
 
             if (count($correoUsuarioList) > 0) {

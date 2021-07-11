@@ -5,7 +5,9 @@ var tempObjectBtnInputFile;
 var tempIdRegisterActive;
 var tempCentroCostoSelected;
 var tempArchivoAdjuntoItemList = [];
+var tempArchivoAdjuntoItemToDeleteList = [];
 var tempArchivoAdjuntoRequerimientoList = [];
+var tempArchivoAdjuntoRequerimientoToDeleteList = [];
 class RequerimientoView {
     init() {
         this.agregarFilaEvent();
@@ -1062,19 +1064,26 @@ class RequerimientoView {
                     ItemWithIdRegisterList.push(element.value);
                 });
                 tempArchivoAdjuntoItemList.forEach(element => {
-                    if (ItemWithIdRegisterList.includes(element.idRegister) == true) {
-                        formData.append(`archivoAdjuntoItem${element.idRegister}[]`, element.file, element.nameFile);
+                    if(ItemWithIdRegisterList.includes((element.idRegister).toString()) == true) {
+                        // formData.append(`archivoAdjuntoItem${element.idRegister}[]`, element.file, element.nameFile);
+                        formData.append(`archivoAdjuntoItem${element.idRegister}[]`, element.file);
                     }
                 });
 
             }
 
+            formData.append(`archivoAdjuntoItemToDelete[]`, tempArchivoAdjuntoItemToDeleteList);
+
+
             if (tempArchivoAdjuntoRequerimientoList.length > 0) {
                 tempArchivoAdjuntoRequerimientoList.forEach(element => {
-                    formData.append(`archivoAdjuntoRequerimiento${element.category}[]`, element.file, element.nameFile);
+                    formData.append(`archivoAdjuntoRequerimiento${element.category}[]`, element.file);
                 });
 
             }
+
+            formData.append(`archivoAdjuntoRequerimientoToDelete[]`, tempArchivoAdjuntoRequerimientoToDeleteList);
+
 
             let typeActionForm = document.querySelector("form[id='form-requerimiento']").getAttribute("type"); //  register | edition
 

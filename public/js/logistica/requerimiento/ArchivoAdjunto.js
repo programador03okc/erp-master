@@ -113,12 +113,14 @@ class ArchivoAdjunto {
     static eliminarArchivoRequerimiento(obj, id) {
         // console.log('eliminar archivo ' + idRegister + nameFile);
         obj.closest("tr").remove();
+        tempArchivoAdjuntoRequerimientoToDeleteList.push(id);
         tempArchivoAdjuntoRequerimientoList = tempArchivoAdjuntoRequerimientoList.filter((element, i) => element.id != id);
         ArchivoAdjunto.updateContadorTotalAdjuntosRequerimiento();
     }
 
     static eliminarArchivoItem(obj, id) {
         obj.closest("tr").remove();
+        tempArchivoAdjuntoItemToDeleteList.push(id);
         tempArchivoAdjuntoItemList = tempArchivoAdjuntoItemList.filter((element, i) => element.id != id);
         ArchivoAdjunto.updateContadorTotalAdjuntosPorItem();
     }
