@@ -5,14 +5,14 @@
 @endsection
 
 @section('cabecera')
-Compras pendientes
+Requerimientos pendientes
 @endsection
 
 @section('breadcrumb')
 <ol class="breadcrumb">
     <li><a href="{{route('logistica.index')}}"><i class="fas fa-tachometer-alt"></i> Logística</a></li>
     <li>Compras</li>
-    <li class="active">Pendientes</li>
+    <li class="active">Requerimientos pendientes</li>
 </ol>
 @endsection
 

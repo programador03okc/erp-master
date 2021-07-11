@@ -162,7 +162,7 @@ class RequerimientoPendienteView {
                 { 'aTargets': [7], 'sWidth': '6%' },
                 { 'aTargets': [8], 'sWidth': '5%' },
                 { 'aTargets': [9], 'sWidth': '5%' },
-                { 'aTargets': [10], 'sWidth': '8%' }
+                { 'aTargets': [10], 'sWidth': '6%' }
             ],
             "createdRow": function (row, data, dataIndex) {
                 if (data.tiene_transformacion == true) {
