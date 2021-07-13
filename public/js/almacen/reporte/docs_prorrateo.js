@@ -47,18 +47,3 @@ function vista_extendida(){
     let body=document.getElementsByTagName('body')[0];
     body.classList.add("sidebar-collapse"); 
 }
-// function tipo_cambio(fecha){
-//     $.ajax({
-//         type: 'GET',
-//         url: 'tipo_cambio_compra/'+fecha,
-//         dataType: 'JSON',
-//         success: function(response){
-//             console.log(response);
-//             $('[name=tipo_cambio]').val(response);
-//         }
-//     }).fail( function( jqXHR, textStatus, errorThrown ){
-//         console.log(jqXHR);
-//         console.log(textStatus);
-//         console.log(errorThrown);
-//     });
-// }

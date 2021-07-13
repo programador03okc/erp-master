@@ -40,8 +40,7 @@
                         </div>
                         <div class="col-md-3">
                             <h5>Fecha Emisión</h5>
-                            <input type="date" name="doc_fecha_emision" class="form-control"
-                                onChange="getTipoCambio();" required/>
+                            <input type="date" name="doc_fecha_emision" class="form-control" required/>
                         </div>
                     </div>
                     <div class="row">
@@ -66,7 +65,7 @@
                         </div>
                         <div class="col-md-3">
                             <h5>Moneda</h5>
-                            <select class="form-control" name="id_moneda" onChange="changeMoneda();" required>
+                            <select class="form-control" name="doc_id_moneda" required>
                                 <option value="0" disabled>Elija una opción</option>
                                 @foreach ($monedas as $tp)
                                     <option value="{{$tp->id_moneda}}">{{$tp->descripcion}}</option>
@@ -75,7 +74,7 @@
                         </div>
                         <div class="col-md-3">
                             <h5>TpCambio</h5>
-                            <input type="number" name="tipo_cambio" class="form-control right" onChange="calculaImporte();" step="0.001"/>
+                            <input type="number" name="tipo_cambio" class="form-control right" step="0.001"/>
                         </div>
                     </div>
                     <div class="row">
@@ -83,11 +82,11 @@
                             <h5>Sub Total</h5>
                             <div style="display:flex;">
                                 <input type="number" name="sub_total" class="form-control" step="0.0001"
-                                    onChange="calculaImporte();" required/>
+                                    required/>
                             </div>
                         </div>
                         <div class="col-md-3">
-                            <h5>Importe <label id="abreviatura"></label></h5>
+                            <h5>Importe en Soles<label id="abreviatura"></label></h5>
                             <input type="number" name="importe" class="form-control" step="0.0001" readOnly required/>
                         </div>
                         <div class="col-md-3">

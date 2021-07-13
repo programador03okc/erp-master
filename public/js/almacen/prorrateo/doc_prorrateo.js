@@ -51,7 +51,8 @@ function mostrar_prorrateo(id_prorrateo){
                     'id_moneda'         :element.moneda,
                     'total'             :element.total_a_pagar,
                     'tipo_cambio'       :element.tipo_cambio,
-                    'importe'           :(element.total_a_pagar * element.tipo_cambio),
+                    // 'importe'           :(element.total_a_pagar * element.tipo_cambio),
+                    'importe'           :element.importe_soles,
                     'importe_aplicado'  :element.importe_aplicado,
                 });
             });
@@ -59,7 +60,10 @@ function mostrar_prorrateo(id_prorrateo){
             mostrar_documentos();
 
             response['detalles'].forEach(element => {
-                
+                var unitario = parseFloat(element.precio_unitario!==null 
+                    ? element.precio_unitario 
+                    : element.unitario);
+
                 guias_detalle.push({
                     'id_guia_com_det'   :element.id_guia_com_det,
                     'serie'             :element.serie,
@@ -69,11 +73,16 @@ function mostrar_prorrateo(id_prorrateo){
                     'descripcion'       :element.descripcion,
                     'cantidad'          :element.cantidad,
                     'abreviatura'       :element.abreviatura,
-                    'valorizacion'      :element.valorizacion,
+                    'fecha_emision'     :element.fecha_emision,
+                    'tipo_cambio'       :element.tipo_cambio,
+                    'valor_compra'      :(unitario * parseFloat(element.cantidad)),
+                    'valor_compra_soles':( element.moneda !== 1 
+                                        ? (unitario * parseFloat(element.cantidad) * parseFloat(element.tipo_cambio))
+                                        : (unitario * parseFloat(element.cantidad)) ),
                     'adicional_valor'   :element.adicional_valor,
                     'adicional_peso'    :element.adicional_peso,
                     'peso'              :element.peso,
-                    'total'             :(parseFloat(element.valorizacion) + parseFloat(element.importe)),
+                    'total'             :(parseFloat(element.valor_compra_soles) + parseFloat(element.adicional_valor) + parseFloat(element.adicional_peso)),
                 });
             });
 
@@ -99,6 +108,7 @@ function save_prorrateo(data, action){
     
     data =  'documentos='+JSON.stringify(documentos)+
             '&guias_detalle='+JSON.stringify(guias_detalle);
+
     $.ajax({
         type: 'POST',
         url: 'guardarProrrateo',

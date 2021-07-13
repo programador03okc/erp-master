@@ -79,6 +79,7 @@ function mostrar_detalle(){
     });
 
     $('#detalleItemsRequerimiento tbody').html(html);
+    
 }
 
 $('#detalleItemsRequerimiento tbody').on("click","button.asignar", function(){

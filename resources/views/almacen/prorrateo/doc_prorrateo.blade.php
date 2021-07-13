@@ -38,7 +38,7 @@ Prorrateo de Costos
                             <!-- <div class="panel panel-default">
                                 <div class="panel-heading">Ingreso(s) por Compra</div> -->
 
-                                    <div class="row">
+                                    <!-- <div class="row">
                                         <div class="col-md-2"><h5>Seleccione la Moneda </h5></div>
                                         <div class="col-md-2">
                                             <div style="display:flex;">
@@ -50,7 +50,7 @@ Prorrateo de Costos
                                                 </select>
                                             </div>
                                         </div>
-                                    </div>
+                                    </div> -->
                                         
 
                                     <h4 style="display:flex;justify-content: space-between;">Ingreso(s) por Compra 
@@ -66,6 +66,7 @@ Prorrateo de Costos
                                         <thead>
                                             <tr>
                                                 <th width='10%'>Guía</th>
+                                                <th width='5%'>Fecha Emisión</th>
                                                 <th width='5%'>Código</th>
                                                 <th width='5%'>Part Number</th>
                                                 <th width='30%'>Descripción</th>
@@ -73,6 +74,8 @@ Prorrateo de Costos
                                                 <th>Unid.</th>
                                                 <th>Mnd.</th>
                                                 <th>Valor Compra</th>
+                                                <th>Tipo Cambio</th>
+                                                <th>Valor Soles S/</th>
                                                 <th>Peso</th>
                                                 <th>Adicional Valor</th>
                                                 <th>Adicional Peso</th>
@@ -83,21 +86,21 @@ Prorrateo de Costos
                                                         title="Agregar Guia Compra" onClick="guia_compraModal();"></i> -->
                                                     <button type="button" class="btn btn-success btn-xs boton activation" data-toggle="tooltip" 
                                                         data-placement="bottom" title="Agregar Guía Compra" onClick="guia_compraModal();">
-                                                        Agregar <i class="fas fa-plus"></i></button>
+                                                        <i class="fas fa-plus"></i></button>
                                                 </th>
                                             </tr>
                                         </thead>
                                         <tbody></tbody>
                                         <tfoot>
                                             <tr>
-                                                <td colSpan="7" class="right">
+                                                <td colSpan="10" class="right">
                                                     Registrado por: <label id="registrado_por"></label>
                                                 </td>
-                                                <td><input type="text" class="form-control right" readOnly name="total_valor"/></td>
-                                                <td><input type="text" class="form-control right" readOnly name="total_peso"/></td>
-                                                <td><input type="text" class="form-control right" readOnly name="total_adicional_valor"/></td>
-                                                <td><input type="text" class="form-control right" readOnly name="total_adicional_peso"/></td>
-                                                <td><input type="text" class="form-control right" readOnly name="total_costo"/></td>
+                                                <td><label class="left" id="total_valor"></label></td>
+                                                <td><label class="left" id="total_peso"></label></td>
+                                                <td><label class="left" id="total_adicional_valor"></label></td>
+                                                <td><label class="left" id="total_adicional_peso"></label></td>
+                                                <td><label class="left" id="total_costo"></label></td>
                                                 <td></td>
                                             </tr>
                                         </tfoot>
@@ -112,7 +115,7 @@ Prorrateo de Costos
                                                         <td></td>
                                                         <td>Moneda</td>
                                                         <td width="20">:</td>
-                                                        <td style="color: #398439;"><label id="moneda"></label></td>
+                                                        <td style="color: #398439;">Soles</td>
                                                         <td>Total</td>
                                                         <td width="20">:</td>
                                                         <td width="130"><input type="number" class="form-control right" name="total_ingreso" readOnly/></td>
@@ -161,7 +164,7 @@ Prorrateo de Costos
                                                 <th>Mnd</th>
                                                 <th>Total</th>
                                                 <th>Tipo Cambio</th>
-                                                <th>Importe</th>
+                                                <th>Importe S/</th>
                                                 <th>Importe Aplicado</th>
                                                 <th>Tipo Prorrateo</th>
                                                 <th width="10%">
@@ -170,7 +173,7 @@ Prorrateo de Costos
                                                         title="Agregar Documento de Prorrateo" onClick="open_doc_prorrateo();"></i> -->
                                                     <button type="button" class="btn btn-success btn-xs boton activation" data-toggle="tooltip" 
                                                         data-placement="bottom" title="Agregar Documento de Prorrateo" onClick="open_doc_prorrateo();">
-                                                        Nuevo <i class="fas fa-plus"></i></button>
+                                                        <i class="fas fa-plus"></i></button>
                                                 </th>
                                             </tr>
                                         </thead>

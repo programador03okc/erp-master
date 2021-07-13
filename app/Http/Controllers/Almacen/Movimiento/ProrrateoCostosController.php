@@ -82,7 +82,13 @@ class ProrrateoCostosController extends Controller
         $data = DB::table('almacen.guia_com_det')
         ->select('guia_com_det.*','alm_prod.codigo','alm_prod.part_number','alm_prod.descripcion',
         'alm_und_medida.abreviatura','guia_com.serie','guia_com.numero',//'mov_alm_det.valorizacion',
-        'sis_moneda.simbolo','doc_com_det.precio_unitario')
+        'sis_moneda.simbolo','doc_com.fecha_emision',
+        'doc_com.moneda','doc_com_det.precio_unitario',
+        DB::raw("(SELECT tc.promedio FROM contabilidad.cont_tp_cambio AS tc
+                        WHERE tc.fecha <= doc_com.fecha_emision
+                          AND tc.moneda = doc_com.moneda
+                          LIMIT 1) AS tipo_cambio")
+        )
         ->join('almacen.guia_com','guia_com.id_guia','=','guia_com_det.id_guia_com')
         ->leftjoin('almacen.doc_com_det','doc_com_det.id_guia_com_det','=','guia_com_det.id_guia_com_det')
         ->leftjoin('almacen.doc_com','doc_com.id_doc_com','=','doc_com_det.id_doc')
@@ -157,6 +163,7 @@ class ProrrateoCostosController extends Controller
                         'id_prorrateo' => $id_prorrateo,
                         'id_tp_doc_prorrateo' => $det->id_tp_prorrateo,
                         'id_doc_com' => $id_doc,
+                        'importe_soles' => $det->importe,
                         'importe_aplicado' => $det->importe_aplicado,
                         'id_tipo_prorrateo' => $det->id_tipo_prorrateo,
                         'estado' => 1,
@@ -174,6 +181,7 @@ class ProrrateoCostosController extends Controller
                     [
                         'id_prorrateo' => $id_prorrateo,
                         'id_guia_com_det' => $det->id_guia_com_det,
+                        'valor_compra_soles' => $det->valor_compra_soles,
                         'adicional_valor' => $det->adicional_valor,
                         'adicional_peso' => $det->adicional_peso,
                         'peso' => $det->peso,
@@ -227,9 +235,21 @@ class ProrrateoCostosController extends Controller
         $detalles = DB::table('almacen.guia_com_prorrateo_det')
         ->select('guia_com_prorrateo_det.*','guia_com.serie','guia_com.numero','alm_prod.codigo',
         'alm_prod.part_number','alm_prod.descripcion','alm_und_medida.abreviatura',
-        'mov_alm_det.valorizacion','guia_com_det.cantidad')
+        'mov_alm_det.valorizacion','guia_com_det.cantidad',
+        'sis_moneda.simbolo','doc_com.fecha_emision',
+        'doc_com.moneda','doc_com_det.precio_unitario',
+        DB::raw("(SELECT tc.promedio FROM contabilidad.cont_tp_cambio AS tc
+                        WHERE tc.fecha <= doc_com.fecha_emision
+                          AND tc.moneda = doc_com.moneda
+                          LIMIT 1) AS tipo_cambio")
+        )
         ->join('almacen.guia_com_det','guia_com_det.id_guia_com_det','=','guia_com_prorrateo_det.id_guia_com_det')
         ->join('almacen.guia_com','guia_com.id_guia','=','guia_com_det.id_guia_com')
+        
+        ->leftjoin('almacen.doc_com_det','doc_com_det.id_guia_com_det','=','guia_com_det.id_guia_com_det')
+        ->leftjoin('almacen.doc_com','doc_com.id_doc_com','=','doc_com_det.id_doc')
+        ->leftjoin('configuracion.sis_moneda','sis_moneda.id_moneda','=','doc_com.moneda')
+        
         ->join('almacen.alm_prod','alm_prod.id_producto','=','guia_com_det.id_producto')
         ->join('almacen.alm_und_medida','alm_und_medida.id_unidad_medida','=','alm_prod.id_unidad_medida')
         ->join('almacen.mov_alm_det','mov_alm_det.id_guia_com_det','=','guia_com_det.id_guia_com_det')

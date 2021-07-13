@@ -12,7 +12,7 @@ function limpiarCampos(){
     $('[name=pro_numero]').val('');
     $('[name=doc_fecha_emision]').val(fecha_actual());
     $('[name=tipo_cambio]').val(0);
-    $('[name=id_moneda]').val(0);
+    $('[name=doc_id_moneda]').val(0);
     $('[name=sub_total]').val(0);
     $('[name=importe]').val(0);
     $('[name=importe_aplicado]').val(0);
@@ -46,7 +46,7 @@ function guardar_doc_prorrateo(){
             'id_tp_documento':$('[name=id_tp_documento]').val(),
             'serie':$('[name=pro_serie]').val(),
             'numero':$('[name=pro_numero]').val(),
-            'id_moneda':$('[name=id_moneda]').val(),
+            'id_moneda':$('[name=doc_id_moneda]').val(),
             'total':$('[name=sub_total]').val(),
             'tipo_cambio':$('[name=tipo_cambio]').val(),
             'importe':$('[name=importe]').val(),
@@ -65,7 +65,7 @@ function guardar_doc_prorrateo(){
             doc.id_tp_documento = $('[name=id_tp_documento]').val();
             doc.serie = $('[name=pro_serie]').val();
             doc.numero = $('[name=pro_numero]').val();
-            doc.id_moneda = $('[name=id_moneda]').val();
+            doc.id_moneda = $('[name=doc_id_moneda]').val();
             doc.total = $('[name=sub_total]').val();
             doc.tipo_cambio = $('[name=tipo_cambio]').val();
             doc.importe = $('[name=importe]').val();
@@ -78,21 +78,32 @@ function guardar_doc_prorrateo(){
     $('#modal-doc_prorrateo').modal('hide');
 }
 
-function changeMoneda(){
+$('[name=doc_id_moneda]').on("change", function(){
+    console.log('changeMoneda');
     getTipoCambio();
+});
+
+$('[name=sub_total]').on("change", function(){
+    console.log('changeSubTotal');
     calculaImporte();
-}
+});
+
+$('[name=tipo_cambio]').on("change", function(){
+    console.log('changeTipoCambio');
+    calculaImporte();
+});
+
+$('[name=doc_fecha_emision]').on("change", function(){
+    console.log('changeFechaEmision');
+    getTipoCambio();
+});
 
 function calculaImporte(){
-    var moneda = $('[name=id_moneda]').val();
+    var tcambio = $('[name=tipo_cambio]').val();
     var sub_total = $('[name=sub_total]').val();
-    if (moneda == 2){
-        var tcambio = $('[name=tipo_cambio]').val();
-        if (tcambio == null || tcambio == '' || tcambio == '0'){
-            getTipoCambio();
-            tcambio = $('[name=tipo_cambio]').val();
-        }
-        var imp = formatDecimal(sub_total * tcambio);
+
+    if (tcambio !== '' && tcambio !== '0' && tcambio !== 1){
+        var imp = formatDecimal(parseFloat(sub_total) * tcambio);
         $('[name=importe]').val(imp);
         $('[name=importe_aplicado]').val(imp);
     } else {
@@ -113,7 +124,7 @@ function editar_documento(id_doc_com){
     $('[name=pro_numero]').val(doc.numero);
     $('[name=doc_fecha_emision]').val(doc.fecha_emision);
     $('[name=tipo_cambio]').val(doc.tipo_cambio);
-    $('[name=id_moneda]').val(doc.id_moneda);
+    $('[name=doc_id_moneda]').val(doc.id_moneda);
     $('[name=sub_total]').val(doc.total);
     $('[name=importe]').val(doc.importe);
     $('[name=importe_aplicado]').val(doc.importe_aplicado);
@@ -191,21 +202,40 @@ function anular_documento(id_doc_com){
 
 function getTipoCambio(){
     var fecha = $('[name=doc_fecha_emision]').val();
-    if (fecha !== null && fecha !== ''){
+    var mnd = $('[name=doc_id_moneda]').val();
+    var sub_total = $('[name=sub_total]').val();
+    console.log(fecha);
+    console.log(mnd);
+    console.log(sub_total);
+
+    if (fecha !== null && fecha !== '' && 
+        mnd !== null && mnd !== '' && mnd !== '1'){
+        console.log('ajax');
         $.ajax({
             type: 'GET',
             headers: {'X-CSRF-TOKEN': token},
-            url: 'tipo_cambio_compra/'+fecha,
+            url: 'tipo_cambio_promedio/'+fecha+'/'+mnd,
             dataType: 'JSON',
             success: function(response){
                 console.log(response);
                 $('[name=tipo_cambio]').val(response);
+
+                var tcambio = parseFloat(response);
+                var imp = formatDecimal(parseFloat(sub_total) * tcambio);
+
+                $('[name=importe]').val(imp);
+                $('[name=importe_aplicado]').val(imp);
             }
+
         }).fail( function( jqXHR, textStatus, errorThrown ){
             console.log(jqXHR);
             console.log(textStatus);
             console.log(errorThrown);
         });
+    } else {
+        $('[name=tipo_cambio]').val(0);
+        $('[name=importe]').val(sub_total);
+        $('[name=importe_aplicado]').val(sub_total);
     }
 }
 

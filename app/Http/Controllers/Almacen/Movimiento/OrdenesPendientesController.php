@@ -1267,6 +1267,15 @@ class OrdenesPendientesController extends Controller
         return $data->compra;
     }
 
+    public static function tipo_cambio_promedio($fecha,$moneda){
+        $data = DB::table('contabilidad.cont_tp_cambio')
+        ->where([['cont_tp_cambio.fecha','<=',$fecha],
+                 ['cont_tp_cambio.moneda','=',$moneda]])
+        ->orderBy('fecha','desc')
+        ->first();
+        return ($data!==null ? $data->promedio : 0);
+    }
+
     public function guardar_doc_compra(Request $request)
     {
         try {
