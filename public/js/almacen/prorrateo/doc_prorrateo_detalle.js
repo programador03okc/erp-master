@@ -18,7 +18,9 @@ function listar_guia_detalle(id_guia){
                         : element.unitario);
                     
                     guias_detalle.push({
+                        'id_prorrateo_det'  :0,
                         'id_guia_com_det'   :element.id_guia_com_det,
+                        'id_mov_alm_det'    :element.id_mov_alm_det,
                         'serie'             :element.serie,
                         'numero'            :element.numero,
                         'codigo'            :element.codigo,

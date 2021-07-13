@@ -68,6 +68,7 @@ function mostrar_prorrateo(id_prorrateo){
                 guias_detalle.push({
                     'id_prorrateo_det'  :element.id_prorrateo_det,
                     'id_guia_com_det'   :element.id_guia_com_det,
+                    'id_mov_alm_det'    :element.id_mov_alm_det,
                     'serie'             :element.serie,
                     'numero'            :element.numero,
                     'codigo'            :element.codigo,

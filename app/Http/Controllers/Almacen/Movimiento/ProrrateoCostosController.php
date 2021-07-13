@@ -81,7 +81,7 @@ class ProrrateoCostosController extends Controller
     public function listar_guia_detalle($id){
         $data = DB::table('almacen.guia_com_det')
         ->select('guia_com_det.*','alm_prod.codigo','alm_prod.part_number','alm_prod.descripcion',
-        'alm_und_medida.abreviatura','guia_com.serie','guia_com.numero',//'mov_alm_det.valorizacion',
+        'alm_und_medida.abreviatura','guia_com.serie','guia_com.numero','mov_alm_det.id_mov_alm_det',
         'sis_moneda.simbolo','doc_com.fecha_emision',
         'doc_com.moneda','doc_com_det.precio_unitario',
         DB::raw("(SELECT tc.promedio FROM contabilidad.cont_tp_cambio AS tc
@@ -90,6 +90,7 @@ class ProrrateoCostosController extends Controller
                           LIMIT 1) AS tipo_cambio")
         )
         ->join('almacen.guia_com','guia_com.id_guia','=','guia_com_det.id_guia_com')
+        ->join('almacen.mov_alm_det','mov_alm_det.id_guia_com_det','=','guia_com_det.id_guia_com_det')
         ->leftjoin('almacen.doc_com_det','doc_com_det.id_guia_com_det','=','guia_com_det.id_guia_com_det')
         ->leftjoin('almacen.doc_com','doc_com.id_doc_com','=','doc_com_det.id_doc')
         ->leftjoin('configuracion.sis_moneda','sis_moneda.id_moneda','=','doc_com.moneda')
@@ -189,6 +190,10 @@ class ProrrateoCostosController extends Controller
                     ],
                         'id_prorrateo_det'
                     );
+
+                DB::table('almacen.mov_alm_det')
+                ->where('id_mov_alm_det',$det->id_mov_alm_det)
+                ->update(['valorizacion'=>(floatval($det->valor_compra_soles)+floatval($det->adicional_valor)+floatval($det->adicional_peso))]);
             }
             
             DB::commit();
