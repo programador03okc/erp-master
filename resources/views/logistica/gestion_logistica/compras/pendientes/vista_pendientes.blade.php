@@ -103,7 +103,6 @@ Requerimientos pendientes
 <script src="{{('/js/logistica/orden/RequerimientoPendienteModel.js')}}"></script>
 <script src="{{('/js/logistica/orden/RequerimientoPendienteView.js')}}"></script>
 <script src="{{('/js/logistica/orden/RequerimientoPendienteController.js')}}"></script>
-<script src="{{('/js/logistica/CustomTabla.js')}}"></script>
  
 <script src="{{ asset('template/plugins/moment.min.js') }}"></script>
 

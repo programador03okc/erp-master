@@ -167,6 +167,7 @@ class ComprasPendientesController extends Controller
             ->leftJoin('comercial.com_cliente', 'alm_req.id_cliente', '=', 'com_cliente.id_cliente')
             ->leftJoin('contabilidad.adm_contri as contri_cliente', 'com_cliente.id_contribuyente', '=', 'contri_cliente.id_contribuyente')
             ->leftJoin('rrhh.rrhh_perso as perso_natural', 'alm_req.id_persona', '=', 'perso_natural.id_persona')
+            ->leftJoin('configuracion.sis_moneda', 'alm_req.id_moneda', '=', 'sis_moneda.id_moneda')
 
             // ->leftJoin('logistica.log_detalle_grupo_cotizacion', 'log_detalle_grupo_cotizacion.id_requerimiento', '=', 'alm_req.id_requerimiento')
             // ->leftJoin('logistica.log_ord_compra', 'log_ord_compra.id_grupo_cotizacion', '=', 'log_detalle_grupo_cotizacion.id_grupo_cotizacion')
@@ -175,6 +176,9 @@ class ComprasPendientesController extends Controller
                 'alm_req.id_requerimiento',
                 'alm_req.codigo',
                 'alm_req.concepto',
+                'alm_req.id_moneda',
+                'sis_moneda.simbolo as simbolo_moneda',
+                'sis_moneda.descripcion as moneda',
                 'alm_req.fecha_requerimiento',
                 'alm_req.id_tipo_requerimiento',
                 'alm_tp_req.descripcion AS tipo_req_desc',
@@ -240,6 +244,9 @@ class ComprasPendientesController extends Controller
                 'id_requerimiento' => $data->id_requerimiento,
                 'codigo' => $data->codigo,
                 'concepto' => $data->concepto,
+                'id_moneda' => $data->id_moneda,
+                'moneda' => $data->moneda,
+                'simbolo_moneda' => $data->simbolo_moneda,
                 'fecha_requerimiento' => $data->fecha_requerimiento,
                 'id_tipo_requerimiento' => $data->id_tipo_requerimiento,
                 'tipo_req_desc' => $data->tipo_req_desc,

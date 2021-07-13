@@ -445,7 +445,7 @@ Crear / editar requerimiento
 
 
         <br>
-        <fieldset class="group-table">
+        <div class="group-table">
             <div class="row">
                 <div class="col-sm-12">
                     <fieldset class="group-importes">
@@ -487,8 +487,9 @@ Crear / editar requerimiento
                                 </tr>
                             </tfoot>
                         </table>
+                    </fieldset>
                 </div>
-        </fieldset>
+            </div>
         <br>
         <fieldset class="group-table" id="group-detalle-items-transformados" hidden>
             <div class="row">

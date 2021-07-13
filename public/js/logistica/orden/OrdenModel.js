@@ -32,6 +32,41 @@ class OrdenModel {
                 });
             });
     }
+
+    getRequerimientosPendientes(id_empresa=null,id_sede=null) {
+        return new Promise(function(resolve, reject) {
+            $.ajax({
+                type: 'GET',
+                url:`requerimientos-pendientes/${id_empresa}/${id_sede}`,
+                dataType: 'JSON',
+                success(response) {
+                    resolve(response.data) // Resolve promise and go to then() 
+                },
+                error: function(err) {
+                reject(err) // Reject the promise and go to catch()
+                }
+                });
+            });
+    }
+
+    obtenerDetalleRequerimientos(id){
+        return new Promise(function(resolve, reject) {
+            $.ajax({
+                type: 'GET',
+                url:`detalle-requerimiento/${id}`,
+                dataType: 'JSON',
+                success(response) {
+                    resolve(response);
+                },
+                error: function(err) {
+                reject(err)
+                }
+                });
+            });
+    }
+
+
+
 }
 
 

@@ -13,21 +13,21 @@
 
                 </div>
             </div>
-                <table class="mytable table table-condensed table-bordered table-okc-view" id="listaItems">
+                <table class="table table-condensed table-bordered table-okc-view" id="listaItems" width="100%">
                     <thead>
                         <tr>
-                            <th></th>
-                            <th></th>
-                            <th></th>
-                            <th></th>
-                            <th>CODIGO</th>
-                            <th>PART NUMBER</th>
-                            <th>CATEGORÍA</th>
-                            <th>SUBCATEGORÍA</th>
-                            <th>DESCRIPCION</th>
-                            <th width="120">UNIDAD</th>
-                            <th>id_unidad_medida</th>
-                            <th>Acción</th>
+                            <th style="width: 0%"></th>
+                            <th style="width: 0%"></th>
+                            <th style="width: 0%"></th>
+                            <th style="width: 0%"></th>
+                            <th style="width: 3%">Código</th>
+                            <th style="width: 3%">Part number</th>
+                            <th style="width: 5%">Categoría</th>
+                            <th style="width: 5%">Subcategoría</th>
+                            <th style="width: 30%">Descripción</th>
+                            <th style="width: 5%">Unidad</th>
+                            <th style="width: 0%">id_unidad_medida</th>
+                            <th style="width: 3%"> Acción</th>
                         </tr>
                     </thead>
                     <tbody></tbody>
@@ -45,7 +45,7 @@
                 <label style="display: none;" id="unidad_medida"></label>
                 <label style="display: none;" id="categoria"></label>
                 <label style="display: none;" id="subcategoria"></label>
-                <button class="btn btn-sm btn-success" onClick="ordenView.selectItem();">Aceptar</button>
+                <button class="btn btn-sm btn-primary" data-dismiss="modal-catalogo-items" onClick="$('#modal-catalogo-items').modal('hide');">Cerrar</button>
             </div>
         </div>
     </div>

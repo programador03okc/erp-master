@@ -1,4 +1,8 @@
+
 var detalleOrdenList=[];
+var tablaListaRequerimientosParaVincular;
+var iTableCounter = 1;
+var oInnerTable;
 
 class OrdenCtrl{
     constructor(OrdenView) {
@@ -13,8 +17,19 @@ class OrdenCtrl{
     }
     // limpiar tabla
     limpiarTabla(identificador){
-        const customTabla = new CustomTabla(identificador); //CustomTabla.js
-        customTabla.limpiarTabla;
+         // let nodeTbody = document.querySelector("table[id='" + identificador + "'] tbody");
+        // if(nodeTbody!=null){
+        //     while (nodeTbody.children.length > 0) {
+        //         nodeTbody.removeChild(nodeTbody.lastChild);
+        //     }
+    
+        // }
+        let nodeTbody = document.querySelector("table[id='" + identificador + "'] tbody");
+
+        for(var i = nodeTbody.rows.length - 1; i > 0; i--)
+        {
+            nodeTbody.deleteRow(i);
+        }
     }
 
     obtenerRequerimiento(reqTrueList,tipoOrden){
@@ -139,7 +154,6 @@ class OrdenCtrl{
                 let subtotal = formatDecimalDigitos(calSubtotal,2);
                 // console.log(subtotal);
                 document.querySelectorAll("input[name='subtotal']")[index].value=subtotal;
-                // document.querySelectorAll("var[name='simboloMoneda']")[index].textContent=simbolo_moneda_selected;
                 ordenCtrl.updateInObjSubtotal(id,subtotal);
             }
         }
@@ -152,10 +166,10 @@ class OrdenCtrl{
         let montoNeto= total;
         let igv = (total*0.18);
         let montoTotal=  parseFloat(montoNeto)+parseFloat(igv);
-        document.querySelector("div[id='pie-tabla'] var[name='simboloMoneda']").textContent= simbolo_moneda_selected;
-        document.querySelector("var[name='montoNeto']").textContent=Util.formatoNumero(montoNeto, 2);
-        document.querySelector("var[name='igv']").textContent= Util.formatoNumero(igv, 3);
-        document.querySelector("var[name='montoTotal']").textContent= Util.formatoNumero(montoTotal, 2);
+        document.querySelector("tfoot span[name='simboloMoneda']").textContent= simbolo_moneda_selected;
+        document.querySelector("label[name='montoNeto']").textContent=Util.formatoNumero(montoNeto, 2);
+        document.querySelector("label[name='igv']").textContent= Util.formatoNumero(igv, 3);
+        document.querySelector("label[name='montoTotal']").textContent= Util.formatoNumero(montoTotal, 2);
     }
 
     updateInObjSubtotal(id,valor){
@@ -308,7 +322,6 @@ class OrdenCtrl{
             'subtotal': 0,
             'tiene_transformacion': false,
             'unidad_medida': document.querySelector("div[id='modal-catalogo-items'] div[class='modal-footer'] label[id='unidad_medida']").textContent
-         
             };
             this.agregarProductoADetalleOrdenList(data);
         
@@ -376,10 +389,10 @@ class OrdenCtrl{
             let montoNeto= (Math.round(total * 100) / 100).toFixed(2);
             let igv = (Math.round((total*0.18) * 100) / 100).toFixed(2);
             let montoTotal= (Math.round((parseFloat(montoNeto)+parseFloat(igv)) * 100) / 100).toFixed(2)
-            document.querySelector("div[id='pie-tabla'] var[name='simboloMoneda']").textContent= simbolo_moneda_selected;
-            document.querySelector("var[name='montoNeto']").textContent=montoNeto;
-            document.querySelector("var[name='igv']").textContent= igv;
-            document.querySelector("var[name='montoTotal']").textContent= montoTotal;
+            document.querySelector("tfoot span[name='simboloMoneda']").textContent= simbolo_moneda_selected;
+            document.querySelector("label[name='montoNeto']").textContent=montoNeto;
+            document.querySelector("label[name='igv']").textContent= igv;
+            document.querySelector("label[name='montoTotal']").textContent= montoTotal;
         }else if(hasIGV == false){
             for (let index = 0; index < sizeInputTotal; index++) {
                 let num = document.querySelectorAll("input[name='subtotal']")[index].value?document.querySelectorAll("input[name='subtotal']")[index].value:0;
@@ -388,10 +401,10 @@ class OrdenCtrl{
 
             let montoNeto= (Math.round(total * 100) / 100).toFixed(2);
             let montoTotal= (Math.round((parseFloat(montoNeto)) * 100) / 100).toFixed(2)
-            document.querySelector("div[id='pie-tabla'] var[name='simboloMoneda']").textContent= simbolo_moneda_selected;
-            document.querySelector("var[name='montoNeto']").textContent=montoNeto;
-            document.querySelector("var[name='igv']").textContent= '0.00';
-            document.querySelector("var[name='montoTotal']").textContent= montoTotal;
+            document.querySelector("tfoot span[name='simboloMoneda']").textContent= simbolo_moneda_selected;
+            document.querySelector("label[name='montoNeto']").textContent=montoNeto;
+            document.querySelector("label[name='igv']").textContent= '0.00';
+            document.querySelector("label[name='montoTotal']").textContent= montoTotal;
         }
 
 
@@ -522,6 +535,105 @@ class OrdenCtrl{
         }else{
             alert("Hubo un error en la acción de la botonera, el action no esta definido");
         }
+    }
+
+
+    getRequerimientosPendientes(id_empresa=null,id_sede=null) {
+        return ordenModel.getRequerimientosPendientes(id_empresa,id_sede);
+        // return ordenesData;
+    }
+
+
+    verDetalleRequerimiento(obj) {
+        let tr = obj.closest('tr');
+        var row = tablaListaRequerimientosParaVincular.row(tr);
+        var id = obj.dataset.idRequerimiento;
+        if (row.child.isShown()) {
+            //  This row is already open - close it
+            row.child.hide();
+            tr.classList.remove('shown');
+        }
+        else {
+            // Open this row
+            //    row.child( format(iTableCounter, id) ).show();
+            ordenCtrl.buildFormat(iTableCounter, id, row);
+            tr.classList.add('shown');
+            // try datatable stuff
+            oInnerTable = $('#listaRequerimientosParaVincular_' + iTableCounter).dataTable({
+                //    data: sections, 
+                autoWidth: true,
+                deferRender: true,
+                info: false,
+                lengthChange: false,
+                ordering: false,
+                paging: false,
+                scrollX: false,
+                scrollY: false,
+                searching: false,
+                columns: [
+                ]
+            });
+            iTableCounter = iTableCounter + 1;
+        }
+    }
+
+    buildFormat(table_id, id, row) {
+        ordenModel.obtenerDetalleRequerimientos(id).then(function(res) {
+            ordenView.construirDetalleRequerimiento(table_id,row,res);
+        }).catch(function(err) {
+            console.log(err)
+        })
+    }
+
+
+    vincularRequerimiento(idRequerimiento){
+        let i=0;
+        ordenModel.obtenerDetalleRequerimientos(idRequerimiento).then(function(res) {
+            res.forEach((element) => {
+                i++;
+                ordenCtrl.agregarProductoADetalleOrdenList({
+                    'id': ordenCtrl.makeId(),
+                    'cantidad': 1,
+                    'cantidad_a_comprar': 1,
+                    'codigo_item': null,
+                    'codigo_producto': element.producto_codigo,
+                    'codigo_requerimiento': "",
+                    'descripcion_adicional': null,
+                    'descripcion_producto': element.producto_descripcion !=null? element.producto_descripcion: element.descripcion,
+                    'estado': 0,
+                    'garantia': null,
+                    'id_detalle_orden': null,
+                    'id_detalle_requerimiento': element.id_detalle_requerimiento,
+                    'id_item':null,
+                    'id_tipo_item':1,
+                    'id_producto': element.id_producto,
+                    'id_requerimiento': element.id_requerimiento,
+                    'id_unidad_medida': element.id_unidad_medida,
+                    'lugar_despacho': null,
+                    'part_number': element.part_number,
+                    'precio_unitario': 0,
+                    'id_moneda': 1,
+                    'stock_comprometido': null,
+                    'subtotal': 0,
+                    'tiene_transformacion': false,
+                    'unidad_medida': element.abreviatura
+                    });
+        });
+
+        if(i>0){
+            ordenView.estadoVinculoRequerimiento({'mensaje':`Se agregó ${i} Item(s) a la orden`,'estado':'200'})
+            
+        }else{
+            ordenView.estadoVinculoRequerimiento({'mensaje':`No se puedo agregar Item(s) a la orden`,'estado':'204'})
+
+        }
+
+
+
+        }).catch(function(err) {
+            console.log(err)
+        })
+
     }
 
 }

@@ -806,6 +806,8 @@ Route::group(['middleware' => ['auth']], function () {
 						Route::get('mostrar-orden/{id_orden?}', 'OrdenController@mostrarOrden');
 						Route::put('anular/{id_orden?}', 'OrdenController@anularOrden')->name('anular');
 						Route::get('tipo-cambio-compra/{fecha}', 'Almacen\Reporte\SaldosController@tipo_cambio_compra');
+						Route::get('requerimientos-pendientes/{id_empresa?}/{id_sede?}', 'ComprasPendientesController@listarRequerimientosPendientes')->name('requerimientos-pendientes'); 
+						Route::get('detalle-requerimiento/{idRequerimiento?}', 'Logistica\RequerimientoController@detalleRequerimiento')->name('detalle-requerimientos'); 
 
 					});
 					Route::group(['as' => 'listado.', 'prefix' => 'listado'], function(){

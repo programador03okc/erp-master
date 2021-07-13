@@ -25,8 +25,12 @@ class RequerimientoPendienteCtrl{
 
     // limpiar tabla
     limpiarTabla(identificador){
-        const customTabla = new CustomTabla(identificador); //CustomTabla.js
-        customTabla.limpiarTabla;
+        let nodeTbody = document.querySelector("table[id='" + identificador + "'] tbody");
+
+        for(var i = nodeTbody.rows.length - 1; i > 0; i--)
+        {
+            nodeTbody.deleteRow(i);
+        }   
     }
 
     //clean character
