@@ -37,8 +37,11 @@ function guardar_doc_prorrateo(){
 
     if (doc == undefined || doc == null){
         let nuevo = {
+            'id_prorrateo_doc':0,
             'id_doc_com':id,
             'id_tp_prorrateo':$('[name=id_tp_prorrateo]').val(),
+            'id_tipo_prorrateo':$('[name=id_tipo_prorrateo]').val(),
+            'tipo_prorrateo':$('select[name="id_tipo_prorrateo"] option:selected').text(),
             'tp_prorrateo':$('select[name="id_tp_prorrateo"] option:selected').text(),
             'id_proveedor':$('[name=doc_id_proveedor]').val(),
             'razon_social':$('[name=doc_razon_social]').val(),
@@ -51,14 +54,15 @@ function guardar_doc_prorrateo(){
             'tipo_cambio':$('[name=tipo_cambio]').val(),
             'importe':$('[name=importe]').val(),
             'importe_aplicado':$('[name=importe_aplicado]').val(),
-            'id_tipo_prorrateo':$('[name=id_tipo_prorrateo]').val(),
-            'tipo_prorrateo':$('select[name="id_tipo_prorrateo"] option:selected').text(),
+            'estado':1,
         }
         documentos.push(nuevo);
         
     } else {
             doc.id_tp_prorrateo = $('[name=id_tp_prorrateo]').val();
             doc.tp_prorrateo = $('select[name="id_tp_prorrateo"] option:selected').text();
+            doc.id_tipo_prorrateo = $('[name=id_tipo_prorrateo]').val();
+            doc.tipo_prorrateo = $('select[name="id_tipo_prorrateo"] option:selected').text();
             doc.id_proveedor = $('[name=doc_id_proveedor]').val();
             doc.razon_social = $('[name=doc_razon_social]').val();
             doc.fecha_emision = $('[name=doc_fecha_emision]').val();
@@ -70,8 +74,6 @@ function guardar_doc_prorrateo(){
             doc.tipo_cambio = $('[name=tipo_cambio]').val();
             doc.importe = $('[name=importe]').val();
             doc.importe_aplicado = $('[name=importe_aplicado]').val();
-            doc.id_tipo_prorrateo = $('[name=id_tipo_prorrateo]').val();
-            doc.tipo_prorrateo = $('select[name="id_tipo_prorrateo"] option:selected').text();
     }
     mostrar_documentos();
 
@@ -144,35 +146,38 @@ function mostrar_documentos(){
     // let edition = ($("#form-prorrateo").attr('type') == 'edition' ? true : false);
     
     documentos.forEach(element => {
-        i++;
         
-        if (element.id_tipo_prorrateo == 1){
-            total_aplicado_valor += parseFloat(element.importe_aplicado);
+        if (element.estado !== 7){
+            i++;
+
+            if (element.id_tipo_prorrateo == 1){
+                total_aplicado_valor += parseFloat(element.importe_aplicado);
+            }
+            else if (element.id_tipo_prorrateo == 2){
+                total_aplicado_peso += parseFloat(element.importe_aplicado);
+            }
+            tr += `<tr>
+                <td>${i}</td>
+                <td>${element.tp_prorrateo}</td>
+                <td>${element.serie+'-'+element.numero}</td>
+                <td>${element.razon_social}</td>
+                <td>${element.fecha_emision}</td>
+                <td class="right">${element.id_moneda==1 ? 'S/' : '$'}</td>
+                <td class="right">${element.total}</td>
+                <td class="right">${element.tipo_cambio}</td>
+                <td class="right">${element.importe}</td>
+                <td class="right">${element.importe_aplicado}</td>
+                <td class="right">${element.tipo_prorrateo}</td>
+                <td style="display:flex;">
+                    <button type="button" class="editar btn btn-primary btn-xs activation" data-toggle="tooltip" 
+                        data-placement="bottom" title="Editar" onClick="editar_documento(${element.id_doc_com});"
+                        >  <i class="fas fa-pen"></i></button>
+                    <button type="button" class="anular btn btn-danger btn-xs activation" data-toggle="tooltip" 
+                        data-placement="bottom" title="Eliminar" onClick="anular_documento('${element.id_doc_com}');"
+                        >  <i class="fas fa-trash"></i></button>
+                </td>
+            </tr>`;
         }
-        else if (element.id_tipo_prorrateo == 2){
-            total_aplicado_peso += parseFloat(element.importe_aplicado);
-        }
-        tr += `<tr>
-            <td>${i}</td>
-            <td>${element.tp_prorrateo}</td>
-            <td>${element.serie+'-'+element.numero}</td>
-            <td>${element.razon_social}</td>
-            <td>${element.fecha_emision}</td>
-            <td class="right">${element.id_moneda==1 ? 'S/' : '$'}</td>
-            <td class="right">${element.total}</td>
-            <td class="right">${element.tipo_cambio}</td>
-            <td class="right">${element.importe}</td>
-            <td class="right">${element.importe_aplicado}</td>
-            <td class="right">${element.tipo_prorrateo}</td>
-            <td style="display:flex;">
-                <button type="button" class="editar btn btn-primary btn-xs activation" data-toggle="tooltip" 
-                    data-placement="bottom" title="Editar" onClick="editar_documento(${element.id_doc_com});"
-                    >  <i class="fas fa-pen"></i></button>
-                <button type="button" class="anular btn btn-danger btn-xs activation" data-toggle="tooltip" 
-                    data-placement="bottom" title="Eliminar" onClick="anular_documento('${element.id_doc_com}');"
-                    >  <i class="fas fa-trash"></i></button>
-            </td>
-        </tr>`;
     });
     // ${edition ? '' : 'disabled="true"'}
     // <i class="fas fa-pen-square icon-tabla blue visible boton" data-toggle="tooltip" data-placement="bottom" 
@@ -192,10 +197,12 @@ function anular_documento(id_doc_com){
     let elimina = confirm("¿Esta seguro que desea eliminar éste documento?");
     
     if (elimina){
-        var index = documentos.findIndex(function(item, i){
-            return item.id_doc_com == id_doc_com;
-        });
-        documentos.splice(index,1);
+        // var index = documentos.findIndex(function(item, i){
+        //     return item.id_doc_com == id_doc_com;
+        // });
+        // documentos.splice(index,1);
+        let doc = documentos.find(doc => doc.id_doc_com == id_doc_com);
+        doc.estado = 7;
         console.log(documentos);
         mostrar_documentos();
     }

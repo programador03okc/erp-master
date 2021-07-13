@@ -1214,6 +1214,7 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('listar_docs_prorrateo/{id}', 'Almacen\Movimiento\ProrrateoCostosController@listar_docs_prorrateo');
 				Route::get('listar_guia_detalle/{id}', 'Almacen\Movimiento\ProrrateoCostosController@listar_guia_detalle');
 				Route::post('guardarProrrateo', 'Almacen\Movimiento\ProrrateoCostosController@guardarProrrateo');
+				Route::post('updateProrrateo', 'Almacen\Movimiento\ProrrateoCostosController@updateProrrateo');
 
 			});
 

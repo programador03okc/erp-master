@@ -55,6 +55,7 @@ function mostrar_prorrateo(id_prorrateo){
                     // 'importe'           :(element.total_a_pagar * element.tipo_cambio),
                     'importe'           :element.importe_soles,
                     'importe_aplicado'  :element.importe_aplicado,
+                    'estado'            :element.estado,
                 });
             });
 
@@ -100,26 +101,34 @@ function mostrar_prorrateo(id_prorrateo){
 }
 
 function save_prorrateo(data, action){
-    console.log(data);
-    console.log(action);
+
+    let baseUrl = '';
 
     if (action == 'register'){
         baseUrl = 'guardarProrrateo';
     } 
     else if (action == 'edition'){
-        baseUrl = 'actualizarProrrateo';
+        baseUrl = 'updateProrrateo';
     }
-    
-    data =  'documentos='+JSON.stringify(documentos)+
+    var id = $('[name=id_prorrateo]').val();
+    console.log(baseUrl);
+
+    data =  'id_prorrateo='+id+
+            '&documentos='+JSON.stringify(documentos)+
             '&guias_detalle='+JSON.stringify(guias_detalle);
     console.log(data);
     $.ajax({
         type: 'POST',
-        url: 'guardarProrrateo',
+        url: baseUrl,
         data: data,
         dataType: 'JSON',
         success: function(response){
             console.log(response);
+            if (baseUrl == 'guardarProrrateo'){
+                alert('Se guardó correctamente el prorrateo');
+            } else {
+                alert('Se actualizó correctamente el prorrateo');
+            }
         }
     }).fail( function( jqXHR, textStatus, errorThrown ){
         console.log(jqXHR);
