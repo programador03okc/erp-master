@@ -108,7 +108,7 @@ function save_prorrateo(data, action){
     
     data =  'documentos='+JSON.stringify(documentos)+
             '&guias_detalle='+JSON.stringify(guias_detalle);
-
+    console.log(data);
     $.ajax({
         type: 'POST',
         url: 'guardarProrrateo',

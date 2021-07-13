@@ -65,8 +65,8 @@ Prorrateo de Costos
                                         id="listaGuiaDetalleProrrateo">
                                         <thead>
                                             <tr>
-                                                <th width='10%'>Guía</th>
-                                                <th width='5%'>Fecha Emisión</th>
+                                                <th>Guía</th>
+                                                <th>Fecha Emisión</th>
                                                 <th width='5%'>Código</th>
                                                 <th width='5%'>Part Number</th>
                                                 <th width='30%'>Descripción</th>
@@ -158,8 +158,9 @@ Prorrateo de Costos
                                         <thead>
                                             <tr>
                                                 <th>#</th>
-                                                <th>Tipo de Prorrateo</th>
+                                                <th>Tipo de Doc</th>
                                                 <th>Serie-Número</th>
+                                                <th>Razon Social</th>
                                                 <th>Fecha Emisión</th>
                                                 <th>Mnd</th>
                                                 <th>Total</th>
@@ -167,7 +168,7 @@ Prorrateo de Costos
                                                 <th>Importe S/</th>
                                                 <th>Importe Aplicado</th>
                                                 <th>Tipo Prorrateo</th>
-                                                <th width="10%">
+                                                <th>
                                                     <!-- <i class="fas fa-plus-square icon-tabla green boton" 
                                                         data-toggle="tooltip" data-placement="bottom" 
                                                         title="Agregar Documento de Prorrateo" onClick="open_doc_prorrateo();"></i> -->

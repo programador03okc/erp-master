@@ -155,6 +155,7 @@ function mostrar_documentos(){
             <td>${i}</td>
             <td>${element.tp_prorrateo}</td>
             <td>${element.serie+'-'+element.numero}</td>
+            <td>${element.razon_social}</td>
             <td>${element.fecha_emision}</td>
             <td class="right">${element.id_moneda==1 ? 'S/' : '$'}</td>
             <td class="right">${element.total}</td>
