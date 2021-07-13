@@ -37,8 +37,9 @@ function mostrar_prorrateo(id_prorrateo){
             response['documentos'].forEach(element => {
                 
                 documentos.push({
+                    'id_prorrateo_doc'  :element.id_prorrateo_doc,
                     'id_doc_com'        :element.id_doc_com,
-                    'id_tp_prorrateo'   :element.id_tp_prorrateo,
+                    'id_tp_prorrateo'   :element.id_tp_doc_prorrateo,
                     'id_tipo_prorrateo' :element.id_tipo_prorrateo,
                     'tipo_prorrateo'    :element.tipo_prorrateo,
                     'tp_prorrateo'      :element.descripcion,
@@ -65,12 +66,14 @@ function mostrar_prorrateo(id_prorrateo){
                     : element.unitario);
 
                 guias_detalle.push({
+                    'id_prorrateo_det'  :element.id_prorrateo_det,
                     'id_guia_com_det'   :element.id_guia_com_det,
                     'serie'             :element.serie,
                     'numero'            :element.numero,
                     'codigo'            :element.codigo,
                     'part_number'       :element.part_number,
                     'descripcion'       :element.descripcion,
+                    'simbolo'           :element.simbolo,
                     'cantidad'          :element.cantidad,
                     'abreviatura'       :element.abreviatura,
                     'fecha_emision'     :element.fecha_emision,

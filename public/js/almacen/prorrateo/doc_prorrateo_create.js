@@ -120,6 +120,7 @@ function editar_documento(id_doc_com){
 
     $('[name=id_doc_com]').val(doc.id_doc_com);
     $('[name=id_tp_prorrateo]').val(doc.id_tp_prorrateo);
+    $('[name=id_tipo_prorrateo]').val(doc.id_tipo_prorrateo);
     $('[name=pro_serie]').val(doc.serie);
     $('[name=pro_numero]').val(doc.numero);
     $('[name=doc_fecha_emision]').val(doc.fecha_emision);

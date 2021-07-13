@@ -93,9 +93,10 @@ Prorrateo de Costos
                                         <tbody></tbody>
                                         <tfoot>
                                             <tr>
-                                                <td colSpan="10" class="right">
+                                                <td colSpan="9" class="right">
                                                     Registrado por: <label id="registrado_por"></label>
                                                 </td>
+                                                <td></td>
                                                 <td><label class="left" id="total_valor"></label></td>
                                                 <td><label class="left" id="total_peso"></label></td>
                                                 <td><label class="left" id="total_adicional_valor"></label></td>
