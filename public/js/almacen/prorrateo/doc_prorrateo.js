@@ -9,11 +9,16 @@ function nuevo_prorrateo(){
     guias_detalle = [];
 
     $('[name=id_prorrateo]').val('');
-    $('[name=total_suma]').val('');
-    $('[name=total_valor]').val('');
-    $('[name=total_items]').val('');
-    $('[name=total_adicional]').val('');
-    $('[name=total_costo]').val('');
+    $('#codigo').text('');
+    $('#estado_doc').text('');
+
+    $('[name=total_ingreso]').val('');
+    $('#total_valor').text('');
+    $('#total_peso').text('');
+    $('#total_adicional_valor').text('');
+    $('#total_adicional_peso').text('');
+    $('#total_costo').text('');
+
 }
 
 function mostrar_prorrateo(id_prorrateo){
@@ -31,7 +36,7 @@ function mostrar_prorrateo(id_prorrateo){
         success: function(response){
             console.log(response);
 
-            $('[name=codigo]').text(response['prorrateo'].codigo);
+            $('#codigo').text(response['prorrateo'].codigo);
             $('#estado_doc').text((response['prorrateo'].estado==1 ? "Activo" : "Inactivo"));
 
             response['documentos'].forEach(element => {
@@ -88,6 +93,7 @@ function mostrar_prorrateo(id_prorrateo){
                     'adicional_peso'    :element.adicional_peso,
                     'peso'              :element.peso,
                     'total'             :(parseFloat(element.valor_compra_soles) + parseFloat(element.adicional_valor) + parseFloat(element.adicional_peso)),
+                    'estado'            :element.estado,
                 });
             });
 

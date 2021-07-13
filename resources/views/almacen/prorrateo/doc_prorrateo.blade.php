@@ -56,7 +56,7 @@ Prorrateo de Costos
                                     <h4 style="display:flex;justify-content: space-between;">Ingreso(s) por Compra 
                                         <div>
                                             <span class="label" id="estado_doc">&nbsp;</span>
-                                            <span style="color:blue;" name="codigo"></span>
+                                            <span style="color:blue;" id="codigo"></span>
                                             <!-- <button type="button" name="btn-imprimir-requerimento-pdf" class="btn btn-info btn-sm" onclick="ImprimirRequerimientoPdf()" disabled><i class="fas fa-print"></i> Imprimir</button> -->
                                         </div>
                                     </h4>

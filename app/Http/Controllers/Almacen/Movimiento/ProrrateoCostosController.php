@@ -159,7 +159,7 @@ class ProrrateoCostosController extends Controller
                         'id_doc_com'
                     );
 
-                $data = DB::table('almacen.guia_com_prorrateo_doc')->insertGetId(
+                DB::table('almacen.guia_com_prorrateo_doc')->insert(
                     [
                         'id_prorrateo' => $id_prorrateo,
                         'id_tp_doc_prorrateo' => $det->id_tp_prorrateo,
@@ -170,15 +170,13 @@ class ProrrateoCostosController extends Controller
                         'estado' => 1,
                         'registrado_por' => $id_usuario,
                         'fecha_registro' => date('Y-m-d H:i:s')
-                    ],
-                        'id_prorrateo_doc'
-                    );
+                    ]);
             }
 
             $detalles = json_decode($request->guias_detalle);
 
             foreach ($detalles as $det) {
-                $id_prorrateo_det = DB::table('almacen.guia_com_prorrateo_det')->insertGetId(
+                DB::table('almacen.guia_com_prorrateo_det')->insert(
                     [
                         'id_prorrateo' => $id_prorrateo,
                         'id_guia_com_det' => $det->id_guia_com_det,
@@ -186,10 +184,9 @@ class ProrrateoCostosController extends Controller
                         'adicional_valor' => $det->adicional_valor,
                         'adicional_peso' => $det->adicional_peso,
                         'peso' => $det->peso,
+                        'estado' => 1,
                         'fecha_registro' => date('Y-m-d H:i:s')
-                    ],
-                        'id_prorrateo_det'
-                    );
+                    ]);
 
                 DB::table('almacen.mov_alm_det')
                 ->where('id_mov_alm_det',$det->id_mov_alm_det)
@@ -295,8 +292,13 @@ class ProrrateoCostosController extends Controller
                             'adicional_valor' => $det->adicional_valor,
                             'adicional_peso' => $det->adicional_peso,
                             'peso' => $det->peso,
+                            'estado' => 1,
                             'fecha_registro' => date('Y-m-d H:i:s')
                         ]);
+                        
+                    DB::table('almacen.mov_alm_det')
+                    ->where('id_mov_alm_det',$det->id_mov_alm_det)
+                    ->update(['valorizacion'=>(floatval($det->valor_compra_soles)+floatval($det->adicional_valor)+floatval($det->adicional_peso))]);        
                 }
                 else {
                     DB::table('almacen.guia_com_prorrateo_det')
@@ -307,12 +309,20 @@ class ProrrateoCostosController extends Controller
                             'adicional_valor' => $det->adicional_valor,
                             'adicional_peso' => $det->adicional_peso,
                             'peso' => $det->peso,
+                            'estado' => $det->estado,
                         ]);
-                }
 
-                DB::table('almacen.mov_alm_det')
-                ->where('id_mov_alm_det',$det->id_mov_alm_det)
-                ->update(['valorizacion'=>(floatval($det->valor_compra_soles)+floatval($det->adicional_valor)+floatval($det->adicional_peso))]);
+                    if ($det->estado == 7){
+                        DB::table('almacen.mov_alm_det')
+                        ->where('id_mov_alm_det',$det->id_mov_alm_det)
+                        ->update(['valorizacion'=>(floatval($det->valor_compra_soles))]);        
+                    } 
+                    else {
+                        DB::table('almacen.mov_alm_det')
+                        ->where('id_mov_alm_det',$det->id_mov_alm_det)
+                        ->update(['valorizacion'=>(floatval($det->valor_compra_soles)+floatval($det->adicional_valor)+floatval($det->adicional_peso))]);        
+                    }
+                }
             }
             
             DB::commit();

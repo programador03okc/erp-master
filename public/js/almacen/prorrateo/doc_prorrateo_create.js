@@ -197,12 +197,17 @@ function anular_documento(id_doc_com){
     let elimina = confirm("¿Esta seguro que desea eliminar éste documento?");
     
     if (elimina){
-        // var index = documentos.findIndex(function(item, i){
-        //     return item.id_doc_com == id_doc_com;
-        // });
-        // documentos.splice(index,1);
         let doc = documentos.find(doc => doc.id_doc_com == id_doc_com);
-        doc.estado = 7;
+        
+        if (doc.id_prorrateo_doc == 0){
+            var index = documentos.findIndex(function(item, i){
+                return item.id_doc_com == id_doc_com;
+            });
+            documentos.splice(index,1);
+        }
+        else {
+            doc.estado = 7; 
+        }
         console.log(documentos);
         mostrar_documentos();
     }
