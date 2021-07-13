@@ -30,7 +30,7 @@ class ListarRequerimientoView{
                 { 'data': 'tipo_requerimiento', 'name': 'alm_tp_req.descripcion', 'className': 'text-center' },
                 { 'data': 'razon_social', 'name': 'adm_contri.razon_social', 'className': 'text-center' },
                 { 'data': 'grupo', 'name': 'adm_grupo.descripcion', 'className':'text-center' },
-                { 'data': 'division', 'name': 'adm_flujo.nombre' },
+                { 'data': 'division', 'name': 'division.descripcion' },
                 { 'data': 'monto_total', 'name': 'monto_total' },
                 { 'data': 'nombre_usuario', 'name': 'nombre_usuario' },
                 { 'data': 'estado_doc', 'name': 'adm_estado_doc.estado_doc' },
@@ -46,7 +46,7 @@ class ListarRequerimientoView{
                 {
                     'render': function (data, type, row) {
                         return (row['simbolo_moneda'])+(Util.formatoNumero(row['monto_total'],2));
-                    }, targets: 8
+                    }, targets: 9
                 },
                 {
                     'render': function (data, type, row) {
@@ -64,7 +64,7 @@ class ListarRequerimientoView{
                             return '<span class="label label-default">'+row['estado_doc']+'</span>';
 
                         }
-                    }, targets: 9, className:'text-center'
+                    }, targets: 11, className:'text-center'
                 },
                 {
                     'render': function (data, type, row) {
