@@ -421,7 +421,7 @@ class OrdenView {
                     'render':
                         function (data, type, row) {
                             let containerOpenBrackets = `<div class="btn-group" role="group" style="display: flex;flex-direction: row;flex-wrap: nowrap;">`;
-                            let btnVerDetalle = `<button type="button" class="ver-detalle btn btn-primary boton" data-id-requerimiento="${row.id_requerimiento}" onclick="ordenView.verDetalleRequerimiento(this)" data-toggle="tooltip" data-placement="bottom" title="Ver Detalle" data-id="${row.id_orden_compra}"> Ver detalle </button>`;
+                            let btnVerDetalle = `<button type="button" class="ver-detalle btn btn-default boton" data-id-requerimiento="${row.id_requerimiento}" onclick="ordenView.verDetalleRequerimientoModalVincularRequerimiento(this)" data-toggle="tooltip" data-placement="bottom" title="Ver detalle requerimiento" data-id="${row.id_orden_compra}"> <i class="fas fa-chevron-down fa-sm"></i> </button>`;
                             let btnSeleccionar = `<button type="button" class="ver-detalle btn btn-success boton" onclick="ordenView.vincularRequerimiento(${row.id_requerimiento})" data-toggle="tooltip" data-placement="bottom" title="Seleccionar" data-id="${row.id_orden_compra}"> Seleccionar </button>`;
                             let containerCloseBrackets = `</div>`;
                             return (containerOpenBrackets + btnVerDetalle + btnSeleccionar + containerCloseBrackets);
@@ -447,17 +447,17 @@ class OrdenView {
     }
 
 
-    verDetalleRequerimiento(obj){
-        ordenCtrl.verDetalleRequerimiento(obj);
+    verDetalleRequerimientoModalVincularRequerimiento(obj){
+        ordenCtrl.verDetalleRequerimientoModalVincularRequerimiento(obj);
     }
 
-    construirDetalleRequerimiento(table_id,row,response){
+    construirDetalleRequerimientoModalVincularRequerimiento(table_id,row,response){
         var html = '';
         if (response.length > 0) {
             response.forEach(function (element) {
                 html += `<tr>
                     <td style="border: none; text-align:center;">${(element.part_number != null ? element.part_number :'')}</td>
-                    <td style="border: none; text-align:center;">${element.producto_descripcion != null ? element.producto_descripcion : (element.descripcion?element.descripcion:'')}</td>
+                    <td style="border: none; text-align:left;">${element.producto_descripcion != null ? element.producto_descripcion : (element.descripcion?element.descripcion:'')}</td>
                     <td style="border: none; text-align:center;">${element.abreviatura != null ? element.abreviatura : ''}</td>
                     <td style="border: none; text-align:center;">${element.cantidad >0 ? element.cantidad : ''}</td>
                     <td style="border: none; text-align:center;">${element.precio_unitario >0 ? element.precio_unitario : ''}</td>

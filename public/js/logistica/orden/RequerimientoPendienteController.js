@@ -4,6 +4,9 @@ var listCheckReq=[]
 var infoStateInput = [];
 var tempDetalleItemsParaCompraCC = [];
 
+var tablaListaRequerimientosPendientes;
+var iTableCounter = 1;
+var oInnerTable;
 //================ Controller ==================
 class RequerimientoPendienteCtrl{
     constructor(RequerimientoPendienteView) {
@@ -680,6 +683,50 @@ class RequerimientoPendienteCtrl{
         let url ="/logistica/gestion-logistica/compras/ordenes/elaborar/index";
         var win = window.location.replace(url);
     }
+
+
+
+    verDetalleRequerimientoListaRequerimientosPendientes(obj) {
+        let tr = obj.closest('tr');
+        var row = tablaListaRequerimientosPendientes.row(tr);
+        var id = obj.dataset.idRequerimiento;
+        if (row.child.isShown()) {
+            //  This row is already open - close it
+            row.child.hide();
+            tr.classList.remove('shown');
+        }
+        else {
+            // Open this row
+            //    row.child( format(iTableCounter, id) ).show();
+            requerimientoPendienteCtrl.buildFormatListaRequerimientosPendientes(iTableCounter, id, row);
+            tr.classList.add('shown');
+            // try datatable stuff
+            oInnerTable = $('#listaRequerimientosPendientes_' + iTableCounter).dataTable({
+                //    data: sections, 
+                autoWidth: true,
+                deferRender: true,
+                info: false,
+                lengthChange: false,
+                ordering: false,
+                paging: false,
+                scrollX: false,
+                scrollY: false,
+                searching: false,
+                columns: [
+                ]
+            });
+            iTableCounter = iTableCounter + 1;
+        }
+    }
+
+    buildFormatListaRequerimientosPendientes(table_id, id, row) {
+        requerimientoPendienteModel.obtenerDetalleRequerimientos(id).then(function(res) {
+            requerimientoPendienteView.construirDetalleRequerimientoListaRequerimientosPendientes(table_id,row,res);
+        }).catch(function(err) {
+            console.log(err)
+        })
+    }
+
 
 }
 

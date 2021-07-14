@@ -243,7 +243,21 @@ class RequerimientoPendienteModel {
 
     // Crear orden por requerimiento
 
-
+    obtenerDetalleRequerimientos(id){
+        return new Promise(function(resolve, reject) {
+            $.ajax({
+                type: 'GET',
+                url:`detalle-requerimiento/${id}`,
+                dataType: 'JSON',
+                success(response) {
+                    resolve(response);
+                },
+                error: function(err) {
+                reject(err)
+                }
+                });
+            });
+    }
 
 }
 

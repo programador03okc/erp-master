@@ -28,7 +28,7 @@ class RequerimientoPendienteView {
         // requerimientoPendienteCtrl.limpiarTabla('listaRequerimientosPendientes');
 
         vista_extendida();
-        $('#listaRequerimientosPendientes').DataTable({
+        tablaListaRequerimientosPendientes= $('#listaRequerimientosPendientes').DataTable({
             'dom': vardataTables[1],
             'buttons': [],
             'language': vardataTables[0],
@@ -89,6 +89,8 @@ class RequerimientoPendienteView {
                                 '</div>');
                         } else {
                             let openDiv = '<div class="btn-group" role="group">';
+                            let btnVerDetalleRequerimiento= '<button type="button" class="btn btn-default btn-xs" name="btnVerDetalleRequerimiento" title="Ver detalle requerimiento" data-id-requerimiento="' + row.id_requerimiento + '"  onclick="requerimientoPendienteView.verDetalleRequerimiento(this);"><i class="fas fa-chevron-down fa-sm"></i></button>';
+
                             let btnAtenderAlmacen = '<button type="button" class="btn btn-primary btn-xs" name="btnOpenModalAtenderConAlmacen" title="Atender con almacén" data-id-requerimiento="' + row.id_requerimiento + '"  onclick="requerimientoPendienteView.atenderConAlmacen(this);"><i class="fas fa-dolly fa-sm"></i></button>';
                             // let btnAgregarItemBase = '<button type="button" class="btn btn-success btn-xs" name="btnAgregarItemBase" title="Mapear productos" data-id-requerimiento="' + row.id_requerimiento + '"  onclick="requerimientoPendienteView.openModalAgregarItemBase(this);"  ><i class="fas fa-sign-out-alt"></i></button>';
                             let btnMapearProductos = '<button type="button" class="mapeo btn btn-success btn-xs" title="Mapear productos" data-id-requerimiento="' + row.id_requerimiento + '" data-codigo="' + row.codigo + '"  ><i class="fas fa-sign-out-alt"></i></button>';
@@ -111,9 +113,9 @@ class RequerimientoPendienteView {
                                 }
                             });
                             if (cantidadItemTipoServicio >= 1) {
-                                return (openDiv + btnAtenderAlmacen + btnMapearProductos + btnCrearOrdenCompra + btnCrearOrdenServicio + btnVercuadroCostos + closeDiv);
+                                return (openDiv + btnVerDetalleRequerimiento + btnAtenderAlmacen + btnMapearProductos + btnCrearOrdenCompra + btnCrearOrdenServicio + btnVercuadroCostos + closeDiv);
                             } else {
-                                return (openDiv + btnAtenderAlmacen + btnMapearProductos + btnCrearOrdenCompra + btnVercuadroCostos + closeDiv);
+                                return (openDiv + btnVerDetalleRequerimiento + btnAtenderAlmacen + btnMapearProductos + btnCrearOrdenCompra + btnVercuadroCostos + closeDiv);
                             }
                         }
                     },
@@ -162,7 +164,7 @@ class RequerimientoPendienteView {
                 { 'aTargets': [7], 'sWidth': '6%' },
                 { 'aTargets': [8], 'sWidth': '5%' },
                 { 'aTargets': [9], 'sWidth': '5%' },
-                { 'aTargets': [10], 'sWidth': '6%' }
+                { 'aTargets': [10], 'sWidth': '8%' }
             ],
             "createdRow": function (row, data, dataIndex) {
                 if (data.tiene_transformacion == true) {
@@ -192,6 +194,54 @@ class RequerimientoPendienteView {
         });
     }
 
+    verDetalleRequerimiento(obj){
+        requerimientoPendienteCtrl.verDetalleRequerimientoListaRequerimientosPendientes(obj);
+
+    }
+
+    construirDetalleRequerimientoListaRequerimientosPendientes(table_id,row,response){
+        var html = '';
+        if (response.length > 0) {
+            response.forEach(function (element) {
+                html += `<tr>
+                    <td style="border: none; text-align:center;">${(element.part_number != null ? element.part_number :'')}</td>
+                    <td style="border: none; text-align:left;">${element.producto_descripcion != null ? element.producto_descripcion : (element.descripcion?element.descripcion:'')}</td>
+                    <td style="border: none; text-align:center;">${element.abreviatura != null ? element.abreviatura : ''}</td>
+                    <td style="border: none; text-align:center;">${element.cantidad >0 ? element.cantidad : ''}</td>
+                    <td style="border: none; text-align:center;">${element.precio_unitario >0 ? element.precio_unitario : ''}</td>
+                    <td style="border: none; text-align:center;">${parseFloat(element.subtotal) > 0 ?Util.formatoNumero(element.subtotal,2) :Util.formatoNumero((element.cantidad * element.precio_unitario),2)}</td>
+                    <td style="border: none; text-align:center;">${element.motivo != null ? element.motivo : ''}</td>
+                    <td style="border: none; text-align:center;">${element.observacion != null ? element.observacion : ''}</td>
+                    <td style="border: none; text-align:center;">${element.estado_doc != null ? element.estado_doc : ''}</td>
+                    </tr>`;
+                });
+                var tabla = `<table class="table table-condensed table-bordered" 
+                id="detalle_${table_id}">
+                <thead style="color: black;background-color: #c7cacc;">
+                    <tr>
+                        <th style="border: none; text-align:center;">Part number</th>
+                        <th style="border: none; text-align:center;">Descripcion</th>
+                        <th style="border: none; text-align:center;">Unidad medida</th>
+                        <th style="border: none; text-align:center;">cantidad</th>
+                        <th style="border: none; text-align:center;">precio_unitario</th>
+                        <th style="border: none; text-align:center;">subtotal</th>
+                        <th style="border: none; text-align:center;">motivo</th>
+                        <th style="border: none; text-align:center;">observacion</th>
+                        <th style="border: none; text-align:center;">Estado</th>
+                    </tr>
+                </thead>
+                <tbody style="background: #e7e8ea;">${html}</tbody>
+                </table>`;
+        }else{
+            var tabla = `<table class="table table-sm" style="border: none;" 
+                id="detalle_${table_id}">
+                <tbody>
+                    <tr><td>No hay registros para mostrar</td></tr>
+                </tbody>
+                </table>`;
+            }
+            row.child(tabla).show();
+    }
 
     // filtros
 

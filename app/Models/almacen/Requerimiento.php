@@ -67,7 +67,7 @@ class Requerimiento extends Model
                 $num = Requerimiento::obtenerCantidadRegistros(2,2);
                 break;
             
-            case 3: case 4: case 5: case 6: case 7: #tipo Bienes y servicios
+            case 3: case 4: case 5: case 6: case 7: #tipo:Bienes y Servicios, Compra para stock,Compra para activos,Compra para garantías,Otros
                 if($idGrupo==1){
                     $documento.='A';
                     $num = Requerimiento::obtenerCantidadRegistros(3,1); //tipo: BS, grupo: Administración

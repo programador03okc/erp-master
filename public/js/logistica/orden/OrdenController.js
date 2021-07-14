@@ -315,7 +315,7 @@ class OrdenCtrl{
             'id_requerimiento': null,
             'id_unidad_medida': document.querySelector("div[id='modal-catalogo-items'] div[class='modal-footer'] label[id='id_unidad_medida']").textContent,
             'lugar_despacho': null,
-            'part_number': document.querySelector("div[id='modal-catalogo-items'] div[class='modal-footer'] label[id='part_number']").textContent,
+            'part_number': document.querySelector("div[id='modal-catalogo-items'] div[class='modal-footer'] label[id='part_number']").textContent +  parseInt(document.querySelector("div[id='modal-catalogo-items'] div[class='modal-footer'] label[id='id_producto']").textContent)>0? parseInt(document.querySelector("div[id='modal-catalogo-items'] div[class='modal-footer'] label[id='id_producto']").textContent):' (Sin mapear)',
             'precio_unitario': 0,
             'id_moneda': 1,
             'stock_comprometido': null,
@@ -544,7 +544,7 @@ class OrdenCtrl{
     }
 
 
-    verDetalleRequerimiento(obj) {
+    verDetalleRequerimientoModalVincularRequerimiento(obj) {
         let tr = obj.closest('tr');
         var row = tablaListaRequerimientosParaVincular.row(tr);
         var id = obj.dataset.idRequerimiento;
@@ -556,7 +556,7 @@ class OrdenCtrl{
         else {
             // Open this row
             //    row.child( format(iTableCounter, id) ).show();
-            ordenCtrl.buildFormat(iTableCounter, id, row);
+            ordenCtrl.buildFormatModalVincularRequerimiento(iTableCounter, id, row);
             tr.classList.add('shown');
             // try datatable stuff
             oInnerTable = $('#listaRequerimientosParaVincular_' + iTableCounter).dataTable({
@@ -577,9 +577,9 @@ class OrdenCtrl{
         }
     }
 
-    buildFormat(table_id, id, row) {
+    buildFormatModalVincularRequerimiento(table_id, id, row) {
         ordenModel.obtenerDetalleRequerimientos(id).then(function(res) {
-            ordenView.construirDetalleRequerimiento(table_id,row,res);
+            ordenView.construirDetalleRequerimientoModalVincularRequerimiento(table_id,row,res);
         }).catch(function(err) {
             console.log(err)
         })
@@ -597,7 +597,7 @@ class OrdenCtrl{
                     'cantidad_a_comprar': 1,
                     'codigo_item': null,
                     'codigo_producto': element.producto_codigo,
-                    'codigo_requerimiento': "",
+                    'codigo_requerimiento': element.codigo_requerimiento,
                     'descripcion_adicional': null,
                     'descripcion_producto': element.producto_descripcion !=null? element.producto_descripcion: element.descripcion,
                     'estado': 0,
@@ -610,7 +610,7 @@ class OrdenCtrl{
                     'id_requerimiento': element.id_requerimiento,
                     'id_unidad_medida': element.id_unidad_medida,
                     'lugar_despacho': null,
-                    'part_number': element.part_number,
+                    'part_number':(element.part_number!=null? element.part_number:'')+(!element.id_producto>0 ?'(Sin mapear)':''),
                     'precio_unitario': 0,
                     'id_moneda': 1,
                     'stock_comprometido': null,

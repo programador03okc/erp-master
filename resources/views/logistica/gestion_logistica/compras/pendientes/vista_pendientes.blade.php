@@ -96,6 +96,7 @@ Requerimientos pendientes
 @endsection
 
 @section('scripts')
+<script src="{{ asset('js/util.js')}}"></script>
 <script src="{{ asset('datatables/DataTables/js/jquery.dataTables.min.js') }}"></script>
 <script src="{{ asset('datatables/DataTables/js/dataTables.bootstrap.min.js') }}"></script>
  
