@@ -84,16 +84,6 @@ function listarProductos(){
     var vardataTables = funcDatatables();
     $('#listaProducto').dataTable({
         'dom': vardataTables[1],
-        // 'buttons': [],
-        // 'buttons': [
-        //     {
-        //         text: "Crear Producto",
-        //         className: 'btn btn-primary',
-        //         action: function(){
-        //             abrirProducto();
-        //         }
-        //     }
-        // ],
         'language' : vardataTables[0],
         // 'processing': true,
         'bDestroy' : true,

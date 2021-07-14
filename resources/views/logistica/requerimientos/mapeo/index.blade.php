@@ -43,7 +43,8 @@ Mapeo de Productos
                                     <th style="width:30%">Concepto/Motivo</th>
                                     <th style="width:10%">Fecha entrega</th>
                                     <th style="width:10%">Sede</th>
-                                    <th style="width:15%">Responsable</th>                                    <th style="width:5%">Estado</th>
+                                    <th style="width:15%">Responsable</th>
+                                    <th style="width:5%">Estado</th>
                                     <th style="width:5%">Mapear</th>
                                 </tr>
                             </thead>

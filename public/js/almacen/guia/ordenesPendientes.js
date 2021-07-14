@@ -255,7 +255,8 @@ function listarIngresos(){
         'columns': [
             {'data': 'id_mov_alm'},
             {'data': 'fecha_emision'},
-            {'render': function (data, type, row){
+            {'data': 'numero','name':'guia_com.numero',
+            'render': function (data, type, row){
                     return row['serie']+'-'+row['numero'];
                 }
             },
@@ -269,7 +270,11 @@ function listarIngresos(){
             },
             {'data': 'operacion_descripcion', 'name': 'tp_ope.descripcion'},
             {'data': 'almacen_descripcion', 'name': 'alm_almacen.descripcion'},
-            {'data': 'nombre_corto', 'name': 'sis_usua.nombre_corto'}
+            {'data': 'nombre_corto', 'name': 'sis_usua.nombre_corto'},
+            {'data': 'id_mov_alm', 'searchable':false },
+            {'data': 'id_mov_alm', 'searchable':false },
+            {'data': 'id_mov_alm', 'searchable':false },
+            {'data': 'id_mov_alm', 'searchable':false },
         ],
         'drawCallback': function(){
             $('#listaIngresosAlmacen tbody tr td input[type="checkbox"]').iCheck({

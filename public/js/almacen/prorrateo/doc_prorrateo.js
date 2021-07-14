@@ -9,11 +9,16 @@ function nuevo_prorrateo(){
     guias_detalle = [];
 
     $('[name=id_prorrateo]').val('');
-    $('[name=total_suma]').val('');
-    $('[name=total_valor]').val('');
-    $('[name=total_items]').val('');
-    $('[name=total_adicional]').val('');
-    $('[name=total_costo]').val('');
+    $('#codigo').text('');
+    $('#estado_doc').text('');
+
+    $('[name=total_ingreso]').val('');
+    $('#total_valor').text('');
+    $('#total_peso').text('');
+    $('#total_adicional_valor').text('');
+    $('#total_adicional_peso').text('');
+    $('#total_costo').text('');
+
 }
 
 function mostrar_prorrateo(id_prorrateo){
@@ -31,14 +36,15 @@ function mostrar_prorrateo(id_prorrateo){
         success: function(response){
             console.log(response);
 
-            $('[name=codigo]').text(response['prorrateo'].codigo);
+            $('#codigo').text(response['prorrateo'].codigo);
             $('#estado_doc').text((response['prorrateo'].estado==1 ? "Activo" : "Inactivo"));
 
             response['documentos'].forEach(element => {
                 
                 documentos.push({
+                    'id_prorrateo_doc'  :element.id_prorrateo_doc,
                     'id_doc_com'        :element.id_doc_com,
-                    'id_tp_prorrateo'   :element.id_tp_prorrateo,
+                    'id_tp_prorrateo'   :element.id_tp_doc_prorrateo,
                     'id_tipo_prorrateo' :element.id_tipo_prorrateo,
                     'tipo_prorrateo'    :element.tipo_prorrateo,
                     'tp_prorrateo'      :element.descripcion,
@@ -51,29 +57,43 @@ function mostrar_prorrateo(id_prorrateo){
                     'id_moneda'         :element.moneda,
                     'total'             :element.total_a_pagar,
                     'tipo_cambio'       :element.tipo_cambio,
-                    'importe'           :(element.total_a_pagar * element.tipo_cambio),
+                    // 'importe'           :(element.total_a_pagar * element.tipo_cambio),
+                    'importe'           :element.importe_soles,
                     'importe_aplicado'  :element.importe_aplicado,
+                    'estado'            :element.estado,
                 });
             });
 
             mostrar_documentos();
 
             response['detalles'].forEach(element => {
-                
+                var unitario = parseFloat(element.precio_unitario!==null 
+                    ? element.precio_unitario 
+                    : element.unitario);
+
                 guias_detalle.push({
+                    'id_prorrateo_det'  :element.id_prorrateo_det,
                     'id_guia_com_det'   :element.id_guia_com_det,
+                    'id_mov_alm_det'    :element.id_mov_alm_det,
                     'serie'             :element.serie,
                     'numero'            :element.numero,
                     'codigo'            :element.codigo,
                     'part_number'       :element.part_number,
                     'descripcion'       :element.descripcion,
+                    'simbolo'           :element.simbolo,
                     'cantidad'          :element.cantidad,
                     'abreviatura'       :element.abreviatura,
-                    'valorizacion'      :element.valorizacion,
+                    'fecha_emision'     :element.fecha_emision,
+                    'tipo_cambio'       :element.tipo_cambio,
+                    'valor_compra'      :(unitario * parseFloat(element.cantidad)),
+                    'valor_compra_soles':( element.moneda !== 1 
+                                        ? (unitario * parseFloat(element.cantidad) * parseFloat(element.tipo_cambio))
+                                        : (unitario * parseFloat(element.cantidad)) ),
                     'adicional_valor'   :element.adicional_valor,
                     'adicional_peso'    :element.adicional_peso,
                     'peso'              :element.peso,
-                    'total'             :(parseFloat(element.valorizacion) + parseFloat(element.importe)),
+                    'total'             :(parseFloat(element.valor_compra_soles) + parseFloat(element.adicional_valor) + parseFloat(element.adicional_peso)),
+                    'estado'            :element.estado,
                 });
             });
 
@@ -87,25 +107,34 @@ function mostrar_prorrateo(id_prorrateo){
 }
 
 function save_prorrateo(data, action){
-    console.log(data);
-    console.log(action);
+
+    let baseUrl = '';
 
     if (action == 'register'){
         baseUrl = 'guardarProrrateo';
     } 
     else if (action == 'edition'){
-        baseUrl = 'actualizarProrrateo';
+        baseUrl = 'updateProrrateo';
     }
-    
-    data =  'documentos='+JSON.stringify(documentos)+
+    var id = $('[name=id_prorrateo]').val();
+    console.log(baseUrl);
+
+    data =  'id_prorrateo='+id+
+            '&documentos='+JSON.stringify(documentos)+
             '&guias_detalle='+JSON.stringify(guias_detalle);
+    console.log(data);
     $.ajax({
         type: 'POST',
-        url: 'guardarProrrateo',
+        url: baseUrl,
         data: data,
         dataType: 'JSON',
         success: function(response){
             console.log(response);
+            if (baseUrl == 'guardarProrrateo'){
+                alert('Se guardó correctamente el prorrateo');
+            } else {
+                alert('Se actualizó correctamente el prorrateo');
+            }
         }
     }).fail( function( jqXHR, textStatus, errorThrown ){
         console.log(jqXHR);
