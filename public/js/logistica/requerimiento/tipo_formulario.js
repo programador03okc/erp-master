@@ -270,7 +270,6 @@ function mostrarTipoForm(tipo){
                 'input-group-telefono-contacto',
                 'input-group-direccion-contacto',
                 'input-group-fuente',
-                'input-group-aprobante'
             ]);
             hiddeElement('mostrar','form-requerimiento',[
                 'input-group-moneda',
@@ -278,6 +277,8 @@ function mostrarTipoForm(tipo){
                 'input-group-sede',
                 'input-group-fecha_entrega',
                 'input-group-proyecto',
+                'input-group-aprobante'
+
                 // 'input-group-para_stock_almacen'    
             ]); 
             cambiarVisibilidadBtn("btn-add-servicio","mostrar");
