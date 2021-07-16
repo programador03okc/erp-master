@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\DB;
 
 use App\Http\Controllers\Controller;
 use App\Models\Almacen\Movimiento;
+use App\Models\Almacen\MovimientoDetalle;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
 date_default_timezone_set('America/Lima');
@@ -63,7 +64,7 @@ class OrdenesPendientesController extends Controller
     }
     
     public function listarIngresos(){
-    
+        // Movimiento::select
         $data = Movimiento::select('mov_alm.*','guia_com.id_proveedor',
             'adm_contri.nro_documento','adm_contri.razon_social',
             'sis_usua.nombre_corto','sede_guia.descripcion as sede_guia_descripcion',
@@ -169,8 +170,9 @@ class OrdenesPendientesController extends Controller
             ->where([['mov_alm.estado','!=',7],['mov_alm.id_tp_mov','=',1]])
             ->orderBy('mov_alm.fecha_emision','desc');
             // ->get();
+
         return datatables($data)->toJson();
-        // return response()->json($data);
+        // return response()->json($output);
     }
 
     public function detalleOrden($id_orden){

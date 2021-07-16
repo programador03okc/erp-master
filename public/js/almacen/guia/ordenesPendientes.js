@@ -43,7 +43,7 @@ function listarOrdenesPendientes(){
     var vardataTables = funcDatatables();
     table = $('#ordenesPendientes').DataTable({
         'dom': vardataTables[1],
-        //'buttons': vardataTables[2],
+        'buttons': vardataTables[2],
         'language' : vardataTables[0],
         'bDestroy' : true,
         'serverSide' : true,
@@ -181,7 +181,7 @@ function listarTransformaciones(){
     var vardataTables = funcDatatables();
     $('#listaTransformaciones').DataTable({
         'dom': vardataTables[1],
-        // 'buttons': vardataTables[2],
+        'buttons': vardataTables[2],
         'language' : vardataTables[0],
         'bDestroy' : true,
         'serverSide' : true,
@@ -242,12 +242,16 @@ let ingresos_seleccionados = [];
 function listarIngresos(){
     var vardataTables = funcDatatables();
     $('#listaIngresosAlmacen').DataTable({
-        'dom': vardataTables[1],
-        // 'buttons': vardataTables[2],
-        'language' : vardataTables[0],
         'bDestroy' : true,
+        'dom': vardataTables[1],
+        'buttons': vardataTables[2],
+        'language' : vardataTables[0],
         'serverSide' : true,
         'pageLength': 50,
+        // 'ajax': {
+        //     url:'listarIngresos',
+        //     dataSrc:''
+        // },
         'ajax': {
             url: 'listarIngresos',
             type: 'POST'
