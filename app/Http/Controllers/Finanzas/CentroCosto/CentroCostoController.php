@@ -24,7 +24,11 @@ class CentroCostoController extends Controller
 
     public function mostrarCentroCostos()
     {
-        $centro_costos = CentroCosto::orderBy('codigo','asc')->where('estado',1)->get();
+        $anio = date('Y',strtotime(date('Y-m-d')));
+        $centro_costos = CentroCosto::orderBy('codigo','asc')
+        ->where('estado',1)
+        ->where('periodo',$anio)
+        ->get();
         
         return response()->json($centro_costos);
     }
