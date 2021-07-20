@@ -388,7 +388,10 @@ function guardar_guia_create(data){
         dataType: 'JSON',
         success: function(response){
             console.log(response);
-            if (response['id_ingreso'] > 0){
+            if (response['id_ingreso'] == null){
+                alert("Ya existe ésta Guía!");
+                $("#submit_guia").removeAttr("disabled");
+            } else {
                 alert('Ingreso Almacén generado con éxito. ');
                 
                 var tra = $('[name=id_transformacion]').val();
@@ -405,6 +408,7 @@ function guardar_guia_create(data){
                 $('#modal-guia_create').modal('hide');
                 // var id = encode5t(id_ingreso);
                 // window.open('imprimir_ingreso/'+id);
+                
             }
         }
     }).fail( function( jqXHR, textStatus, errorThrown ){

@@ -17,6 +17,8 @@ use App\Models\Almacen\Movimiento;
 use App\Models\Almacen\MovimientoDetalle;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
+use Yajra\DataTables\Facades\DataTables;
+
 date_default_timezone_set('America/Lima');
 
 class OrdenesPendientesController extends Controller
@@ -167,12 +169,34 @@ class OrdenesPendientesController extends Controller
             ->leftJoin('contabilidad.adm_contri','adm_contri.id_contribuyente','=','log_prove.id_contribuyente')
             ->join('configuracion.sis_usua','sis_usua.id_usuario','=','mov_alm.usuario')
             ->join('almacen.tp_ope','tp_ope.id_operacion','=','mov_alm.id_operacion')
-            ->where([['mov_alm.estado','!=',7],['mov_alm.id_tp_mov','=',1]])
-            ->orderBy('mov_alm.fecha_emision','desc');
+            ->where([['mov_alm.estado','!=',7],['mov_alm.id_tp_mov','=',1]]);
+            // ->orderBy('mov_alm.fecha_emision','desc');
             // ->get();
 
-        return datatables($data)->toJson();
-        // return response()->json($output);
+        return DataTables::eloquent($data)->filterColumn('id_mov_alm', function($query, $keyword) {
+            $sql_oc = "id_mov_alm IN (
+                SELECT mov_alm_det.id_mov_alm FROM almacen.mov_alm_det 
+                INNER JOIN almacen.guia_com_det ON 
+                guia_com_det.id_guia_com_det=mov_alm_det.id_guia_com_det 
+                INNER JOIN logistica.log_det_ord_compra ON 
+                log_det_ord_compra.id_detalle_orden=guia_com_det.id_oc_det
+                INNER JOIN logistica.log_ord_compra ON 
+                log_ord_compra.id_orden_compra=log_det_ord_compra.id_orden_compra
+                WHERE   CONCAT(UPPER(log_ord_compra.codigo), UPPER(log_ord_compra.codigo_softlink)) LIKE ? )
+                ";
+            $query->whereRaw($sql_oc, ['%'.strtoupper($keyword).'%']);
+
+        })->filterColumn('id_guia_com', function($query, $keyword) {
+            $sql_dc = "id_guia_com IN (
+                SELECT guia_com_det.id_guia_com FROM almacen.guia_com_det 
+                INNER JOIN almacen.doc_com_det ON 
+                doc_com_det.id_guia_com_det=guia_com_det.id_guia_com_det
+                INNER JOIN almacen.doc_com ON 
+                doc_com.id_doc_com=doc_com_det.id_doc
+                WHERE   CONCAT(UPPER(doc_com.serie), UPPER(doc_com.numero)) LIKE ? )
+                ";
+            $query->whereRaw($sql_dc, ['%'.strtoupper($keyword).'%']);
+        })->toJson();
     }
 
     public function detalleOrden($id_orden){
@@ -374,12 +398,22 @@ class OrdenesPendientesController extends Controller
             DB::beginTransaction();
             // database queries here
             $id_ingreso = null;
+            $id_guia = null;
             $msj_trans = '';
             
             $id_tp_doc_almacen = 1;
             $id_usuario = Auth::user()->id_usuario;
             $fecha_registro = date('Y-m-d H:i:s');
             
+            //verifica si existe un ingreso ya generado
+        $valida = DB::table('almacen.guia_com')
+        ->where([['serie','=',$request->serie],
+                ['numero','=',$request->numero],
+                ['id_proveedor','=',$request->id_proveedor],
+                ['estado','=',1]])
+        ->first();
+
+        if (!isset($valida)){
             //Genero la Guia
             $id_guia = DB::table('almacen.guia_com')->insertGetId(
                 [
@@ -825,6 +859,7 @@ class OrdenesPendientesController extends Controller
                     }
                 }
             }
+        }
             DB::commit();
             return response()->json(['id_ingreso'=>$id_ingreso,'id_guia'=>$id_guia]);
             

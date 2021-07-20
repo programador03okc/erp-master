@@ -2,6 +2,7 @@
 
 namespace App\Models\Almacen;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 class Movimiento extends Model
@@ -10,6 +11,12 @@ class Movimiento extends Model
     protected $primaryKey='id_mov_alm';
     public $timestamps=false;
     protected $appends=['ordenes_compra','comprobantes','ordenes_soft_link'];
+
+    public function getFechaEmisionAttribute()
+    {
+        $fecha = new Carbon($this->attributes['fecha_emision']);
+        return $fecha->format('d-m-Y');
+    }
 
     public function getOrdenesCompraAttribute()
     {

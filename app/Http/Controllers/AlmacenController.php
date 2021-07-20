@@ -1075,16 +1075,15 @@ class AlmacenController extends Controller
         $anio = date('y',strtotime($fecha));
         $tp = '';
         switch($tipo){
-            case 0: $tp = 'Ini';break;
-            case 1: $tp = 'Ing';break;
-            case 2: $tp = 'Sal';break;
+            case 0: $tp = 'INI';break;
+            case 1: $tp = 'ING';break;
+            case 2: $tp = 'SAL';break;
             default:break;
         }
 
         $data = DB::table('almacen.mov_alm')
         ->where([['id_tp_mov','=',$tipo],
-                ['id_almacen','=',$id_alm],
-                ['estado','=',1]])
+                ['id_almacen','=',$id_alm]])
         ->whereYear('fecha_emision','=',$yyyy)
         // ->whereMonth('fecha_emision','=',$mes)
         ->count();
