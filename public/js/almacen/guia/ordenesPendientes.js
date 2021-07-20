@@ -1,5 +1,7 @@
 let oc_seleccionadas = [];
 let oc_det_seleccionadas = [];
+let ingresos_seleccionados = [];
+
 let acceso = null;
 
 function iniciar(permiso){
@@ -43,7 +45,7 @@ function listarOrdenesPendientes(){
     var vardataTables = funcDatatables();
     table = $('#ordenesPendientes').DataTable({
         'dom': vardataTables[1],
-        //'buttons': vardataTables[2],
+        'buttons': vardataTables[2],
         'language' : vardataTables[0],
         'bDestroy' : true,
         'serverSide' : true,
@@ -181,7 +183,7 @@ function listarTransformaciones(){
     var vardataTables = funcDatatables();
     $('#listaTransformaciones').DataTable({
         'dom': vardataTables[1],
-        // 'buttons': vardataTables[2],
+        'buttons': vardataTables[2],
         'language' : vardataTables[0],
         'bDestroy' : true,
         'serverSide' : true,
@@ -237,17 +239,19 @@ $('#listaTransformaciones tbody').on("click","button.guia", function(){
     open_transformacion_guia_create(data);
 });
 
-let ingresos_seleccionados = [];
-
 function listarIngresos(){
     var vardataTables = funcDatatables();
     $('#listaIngresosAlmacen').DataTable({
-        'dom': vardataTables[1],
-        // 'buttons': vardataTables[2],
-        'language' : vardataTables[0],
         'bDestroy' : true,
+        'dom': vardataTables[1],
+        'buttons': vardataTables[2],
+        'language' : vardataTables[0],
         'serverSide' : true,
         'pageLength': 50,
+        // 'ajax': {
+        //     url:'listarIngresos',
+        //     dataSrc:''
+        // },
         'ajax': {
             url: 'listarIngresos',
             type: 'POST'
@@ -256,24 +260,25 @@ function listarIngresos(){
             {'data': 'id_mov_alm'},
             {'data': 'fecha_emision'},
             {'data': 'numero','name':'guia_com.numero',
-            'render': function (data, type, row){
+                'render': function (data, type, row){
                     return row['serie']+'-'+row['numero'];
                 }
             },
             {'data': 'nro_documento', 'name': 'adm_contri.nro_documento'},
             {'data': 'razon_social', 'name': 'adm_contri.razon_social'},
-            {'render': function (data, type, row){
-                    return (row['codigo'] !== null ? 
-                    ('<label class="lbl-codigo" title="Abrir Ingreso" onClick="abrir_ingreso('+row['id_mov_alm']+')">'+row['codigo']+'</label>')
-                    : '');
+            {'data': 'codigo',
+                'render': function (data, type, row){
+                        return (row['codigo'] !== null ? 
+                        ('<label class="lbl-codigo" title="Abrir Ingreso" onClick="abrir_ingreso('+row['id_mov_alm']+')">'+row['codigo']+'</label>')
+                        : '');
                 }
             },
             {'data': 'operacion_descripcion', 'name': 'tp_ope.descripcion'},
             {'data': 'almacen_descripcion', 'name': 'alm_almacen.descripcion'},
             {'data': 'nombre_corto', 'name': 'sis_usua.nombre_corto'},
-            {'data': 'id_mov_alm', 'searchable':false },
-            {'data': 'id_mov_alm', 'searchable':false },
-            {'data': 'id_mov_alm', 'searchable':false },
+            {'data': 'id_mov_alm'},
+            {'data': 'id_mov_alm'},
+            {'data': 'id_guia_com'},
             {'data': 'id_mov_alm', 'searchable':false },
         ],
         'drawCallback': function(){

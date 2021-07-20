@@ -18,6 +18,7 @@ function actualizarKardex(){
 
     $('#modal-kardex_filtro').modal('hide');
 }
+
 function listarKardexGeneral(almacenes, fini, ffin){
     var vardataTables = funcDatatables();
     var tabla = $('#kardexGeneral').DataTable({
