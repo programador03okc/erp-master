@@ -45,6 +45,11 @@ class ListarRequerimientoView{
                 },
                 {
                     'render': function (data, type, row) {
+                        return `<label class="lbl-codigo" title="Abrir Requerimiento" onClick="listarRequerimientoView.abrirRequerimiento(${row.id_requerimiento})">${row.codigo}</label>`;
+                    }, targets: 2
+                },
+                {
+                    'render': function (data, type, row) {
                         return (row['simbolo_moneda'])+(Util.formatoNumero(row['monto_total'],2));
                     }, targets: 9
                 },
@@ -75,7 +80,7 @@ class ListarRequerimientoView{
                         let btnDetalleRapido = '<button type="button" class="btn btn-xs btn-info" title="Ver detalle" onClick="aprobarRequerimientoView.verDetalleRequerimientoSoloLectura(' + row['id_requerimiento'] + ');"><i class="fas fa-eye fa-xs"></i></button>';
                         // let btnTrazabilidad = '<button type="button" class="btn btn-xs btn-primary" title="Trazabilidad" onClick="listarRequerimientoView.trazabilidadRequerimiento(' + row['id_requerimiento'] + ');"><i class="fas fa-route fa-xs"></i></button>';
                         if (row.id_usuario == auth_user.id_usuario && (row.estado == 1 || row.estado == 3)) {
-                            btnEditar = '<button type="button" class="btn btn-xs btn-warning" title="Editar" onClick="listarRequerimientoView.editarRequerimiento(' + row['id_requerimiento'] + ');"><i class="fas fa-edit fa-xs"></i></button>';
+                            btnEditar = '<button type="button" class="btn btn-xs btn-warning" title="Editar" onClick="listarRequerimientoView.abrirRequerimiento(' + row['id_requerimiento'] + ');"><i class="fas fa-edit fa-xs"></i></button>';
                             btnAnular = '<button type="button" class="btn btn-xs btn-danger" title="Anular" onClick="listarRequerimientoView.anularRequerimiento(' + row['id_requerimiento'] + ');"><i class="fas fa-trash fa-xs"></i></button>';
                         }
                         return containerOpenBrackets + btnDetalleRapido + btnEditar + btnAnular + containerCloseBrackets;
@@ -114,12 +119,13 @@ class ListarRequerimientoView{
         });
     }
 
-    editarRequerimiento(idRequerimiento) {
+    abrirRequerimiento(idRequerimiento){
         localStorage.setItem('idRequerimiento', idRequerimiento);
         let url = "/logistica/gestion-logistica/requerimiento/elaboracion/index";
         var win = window.open(url, "_self");
-        win.focus();
+        win.focus(); 
     }
+
     
     anularRequerimiento(idRequerimiento){
         requerimientoCtrl.anularRequerimiento(idRequerimiento).then(function (res) {

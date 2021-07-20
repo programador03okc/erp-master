@@ -24,11 +24,11 @@ function listar_proveedores(){
                             <button type="button" class="btn btn-success btn-sm" name="btnSeleccionarProveedor" title="Seleccionar proveedor" 
                             data-id-proveedor="${row.id_proveedor}"
                             data-id-contribuyente="${row.id_contribuyente}"
-                            data-razon-social="${row.razon_social}"
-                            data-ruc="${row.nro_documento}"
-                            data-direccion-fiscal="${row.direccion_fiscal}"
-                            data-telefono="${row.telefono}"
-                            data-ubigeo-descripcion="${row.ubigeo_descripcion}"
+                            data-razon-social="${row.razon_social?row.razon_social:''}"
+                            data-ruc="${row.nro_documento?row.nro_documento:''}"
+                            data-direccion-fiscal="${row.direccion_fiscal?row.direccion_fiscal:''}"
+                            data-telefono="${row.telefono?row.telefono:''}"
+                            data-ubigeo-descripcion="${row.ubigeo_descripcion?row.ubigeo_descripcion:''}"
                             data-ubigeo="${row.ubigeo}"
                             onclick="selectProveedor(this);">
                             <i class="fas fa-check"></i>
@@ -80,13 +80,14 @@ function selectProveedor(obj){
 
     let idProveedor= obj.dataset.idProveedor;
     let idContribuyente= obj.dataset.idContribuyente;
-    let razonSocial= obj.dataset.razonSocial;
+    let razonSocial= obj.dataset.razonSocial? obj.dataset.razonSocial:"";
     // let ruc= obj.dataset.ruc;
-    let direccionFiscal= obj.dataset.direccionFiscal;
-    let telefono= obj.dataset.telefono;
-    let ubigeoDescripcion= obj.dataset.ubigeoDescripcion;
-    let ubigeo= obj.dataset.ubigeo;
+    let direccionFiscal= obj.dataset.direccionFiscal?obj.dataset.direccionFiscal:"";
+    let telefono= obj.dataset.telefono?obj.dataset.telefono:"";
+    let ubigeoDescripcion= obj.dataset.ubigeoDescripcion?obj.dataset.ubigeoDescripcion:"";
+    let ubigeo= obj.dataset.ubigeo?obj.dataset.ubigeo:"";
 
+    console.log(direccionFiscal);
     document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='id_proveedor']").value =idProveedor;
     document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='id_contrib']").value =idContribuyente;
     document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='razon_social']").value =razonSocial;

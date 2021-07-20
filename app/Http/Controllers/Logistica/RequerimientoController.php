@@ -1454,7 +1454,9 @@ class RequerimientoController extends Controller
 
         $list_req = [];
         foreach ($requerimientos as $element) {
+            
             if (in_array($element->id_grupo, $idGrupoList) == true) {
+                // Debugbar::info($element->id_grupo);
                 $idDocumento = $element->id_doc_aprob;
                 $id_grupo_req = $element->id_grupo;
                 $id_tipo_requerimiento_req = $element->id_tipo_requerimiento;

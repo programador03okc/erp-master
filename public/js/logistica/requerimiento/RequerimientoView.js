@@ -292,17 +292,17 @@ class RequerimientoView {
             <td><input class="form-control input-sm" type="text" name="partNumber[]" placeholder="Part number"></td>
             <td>
                 <div class="form-group">
-                    <textarea class="form-control input-sm descripcion" name="descripcion[]" placeholder="Descripción" onkeyup ="requerimientoView.updateDescripcionItem(this);"></textarea></td>
+                    <textarea class="form-control input-sm descripcion" name="descripcion[]" placeholder="Descripción" onblur ="requerimientoView.updateDescripcionItem(this);"></textarea></td>
                 </div>
             <td><select name="unidad[]" class="form-control input-sm">${document.querySelector("select[id='selectUnidadMedida']").innerHTML}</select></td>
             <td>
                 <div class="form-group">
-                    <input class="form-control input-sm cantidad text-right" type="number" min="1" name="cantidad[]" onkeyup ="requerimientoView.updateSubtotal(this); requerimientoView.updateCantidadItem(this); requerimientoView.calcularPresupuestoUtilizadoYSaldoPorPartida();" placeholder="Cantidad">
+                    <input class="form-control input-sm cantidad text-right" type="number" min="1" name="cantidad[]" onblur ="requerimientoView.updateSubtotal(this); requerimientoView.updateCantidadItem(this); requerimientoView.calcularPresupuestoUtilizadoYSaldoPorPartida();" placeholder="Cantidad">
                 </div>
             </td>
             <td>
                 <div class="form-group">
-                    <input class="form-control input-sm precio text-right" type="number" min="0" name="precioUnitario[]" onkeyup="requerimientoView.updateSubtotal(this); requerimientoView.updatePrecioItem(this); requerimientoView.calcularPresupuestoUtilizadoYSaldoPorPartida();" placeholder="Precio U."></td>
+                    <input class="form-control input-sm precio text-right" type="number" min="0" name="precioUnitario[]" onblur="requerimientoView.updateSubtotal(this); requerimientoView.updatePrecioItem(this); requerimientoView.calcularPresupuestoUtilizadoYSaldoPorPartida();" placeholder="Precio U."></td>
                 </div>  
             <td style="text-align:right;"><span class="moneda" name="simboloMoneda[]">${document.querySelector("select[name='moneda']").options[document.querySelector("select[name='moneda']").selectedIndex].dataset.simbolo}</span><span class="subtotal" name="subtotal[]">0.00</span></td>
             <td><textarea class="form-control input-sm" name="motivo[]" placeholder="Motivo de requerimiento de item (opcional)"></textarea></td>
@@ -344,18 +344,18 @@ class RequerimientoView {
             <td>(Servicio)<input type="hidden" name="partNumber[]"></td>
             <td>
                 <div class="form-group">
-                    <textarea class="form-control input-sm descripcion" name="descripcion[]" placeholder="Descripción" onkeyup ="requerimientoView.updateDescripcionItem(this);"></textarea>
+                    <textarea class="form-control input-sm descripcion" name="descripcion[]" placeholder="Descripción" onblur ="requerimientoView.updateDescripcionItem(this);"></textarea>
                 </div>
             </td>
             <td><select name="unidad[]" class="form-control input-sm">${document.querySelector("select[id='selectUnidadMedida']").innerHTML}</select></td>
             <td>
                 <div class="form-group">
-                    <input class="form-control input-sm cantidad text-right" type="number" min="1" name="cantidad[]" onkeyup ="requerimientoView.updateSubtotal(this); requerimientoView.updateCantidadItem(this); requerimientoView.calcularPresupuestoUtilizadoYSaldoPorPartida();" placeholder="Cantidad">
+                    <input class="form-control input-sm cantidad text-right" type="number" min="1" name="cantidad[]" onblur ="requerimientoView.updateSubtotal(this); requerimientoView.updateCantidadItem(this); requerimientoView.calcularPresupuestoUtilizadoYSaldoPorPartida();" placeholder="Cantidad">
                 </div>
             </td>
             <td>
                 <div class="form-group">
-                    <input class="form-control input-sm precio text-right" type="number" min="0" name="precioUnitario[]" onkeyup="requerimientoView.updateSubtotal(this); requerimientoView.updatePrecioItem(this); requerimientoView.calcularPresupuestoUtilizadoYSaldoPorPartida();" placeholder="Precio U.">
+                    <input class="form-control input-sm precio text-right" type="number" min="0" name="precioUnitario[]" onblur="requerimientoView.updateSubtotal(this); requerimientoView.updatePrecioItem(this); requerimientoView.calcularPresupuestoUtilizadoYSaldoPorPartida();" placeholder="Precio U.">
                 </div>
             </td>
             <td style="text-align:right;"><span class="moneda" name="simboloMoneda[]">${document.querySelector("select[name='moneda']").options[document.querySelector("select[name='moneda']").selectedIndex].dataset.simbolo}</span><span class="subtotal" name="subtotal[]">0.00</span></td>
@@ -661,13 +661,18 @@ class RequerimientoView {
     }
     validarPresupuestoUtilizadoYSaldoPorPartida(data) {
         let mensajeAlerta = '';
+
+        var toast = new Toasty(optionsToasty);
+ 
         data.forEach(partida => {
             if (partida.saldo < 0) {
                 mensajeAlerta += `La partida ${partida.codigo} - ${partida.descripcion} a excedido el presupuesto asignado, tiene un saldo actual de ${Util.formatoNumero(partida.saldo, 2)}. \n`
             }
         });
         if (mensajeAlerta.length > 0) {
-            alert(mensajeAlerta);
+            // alert(mensajeAlerta);
+            toast.info(mensajeAlerta);
+
         }
     }
 

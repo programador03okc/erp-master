@@ -17,7 +17,7 @@ class RequerimientoPendienteView {
 
     abrirRequerimiento(idRequerimiento){
         // Abrir nuevo tab
-        localStorage.setItem("id_requerimiento",idRequerimiento);
+        localStorage.setItem('idRequerimiento', idRequerimiento);
         let url ="/logistica/gestion-logistica/requerimiento/elaboracion/index";
         var win = window.open(url, '_blank');
         // Cambiar el foco al nuevo tab (punto opcional)
