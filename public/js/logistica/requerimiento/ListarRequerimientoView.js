@@ -77,17 +77,17 @@ class ListarRequerimientoView{
                         let containerCloseBrackets = '</div></center>';
                         let btnEditar = '';
                         let btnAnular = '';
-                        let btnMandarAPago = '';
+                        // let btnMandarAPago = '';
                         let btnDetalleRapido = '<button type="button" class="btn btn-xs btn-info" title="Ver detalle" onClick="aprobarRequerimientoView.verDetalleRequerimientoSoloLectura(' + row['id_requerimiento'] + ');"><i class="fas fa-eye fa-xs"></i></button>';
                         let btnTrazabilidad = '<button type="button" class="btn btn-xs btn-primary" title="Trazabilidad" onClick="trazabilidadRequerimientoView.verTrazabilidadRequerimientoModal(' + row['id_requerimiento'] + ');"><i class="fas fa-route fa-xs"></i></button>';
-                            if(row.estado ==2){
-                                btnMandarAPago = '<button type="button" class="btn btn-xs btn-success" title="Mandar a pago" onClick="listarRequerimientoView.requerimientoAPago(' + row['id_requerimiento'] + ');"><i class="fas fa-hand-holding-usd fa-xs"></i></button>';
-                            }
+                        // if(row.estado ==2){
+                        //         btnMandarAPago = '<button type="button" class="btn btn-xs btn-success" title="Mandar a pago" onClick="listarRequerimientoView.requerimientoAPago(' + row['id_requerimiento'] + ');"><i class="fas fa-hand-holding-usd fa-xs"></i></button>';
+                        //     }
                         if (row.id_usuario == auth_user.id_usuario && (row.estado == 1 || row.estado == 3)) {
                             btnEditar = '<button type="button" class="btn btn-xs btn-warning" title="Editar" onClick="listarRequerimientoView.abrirRequerimiento(' + row['id_requerimiento'] + ');"><i class="fas fa-edit fa-xs"></i></button>';
                             btnAnular = '<button type="button" class="btn btn-xs btn-danger" title="Anular" onClick="listarRequerimientoView.anularRequerimiento(' + row['id_requerimiento'] + ');"><i class="fas fa-trash fa-xs"></i></button>';
                         }
-                        return containerOpenBrackets + btnDetalleRapido + btnTrazabilidad + btnEditar +btnMandarAPago+ btnAnular + containerCloseBrackets;
+                        return containerOpenBrackets + btnDetalleRapido + btnTrazabilidad + btnEditar + btnAnular + containerCloseBrackets;
                     }, targets: 13
                 },
             ],
@@ -123,17 +123,17 @@ class ListarRequerimientoView{
         });
     }
 
-    requerimientoAPago(idRequerimiento){
-        requerimientoCtrl.enviarRequerimientoAPago(idRequerimiento).then(function (res) {
-            if(res >0){
-                alert('Se envió correctamente a Pago');
-                listarRequerimientoView.mostrar('ALL');
+    // requerimientoAPago(idRequerimiento){
+    //     requerimientoCtrl.enviarRequerimientoAPago(idRequerimiento).then(function (res) {
+    //         if(res >0){
+    //             alert('Se envió correctamente a Pago');
+    //             listarRequerimientoView.mostrar('ALL');
 
-            }
-        }).catch(function (err) {
-            console.log(err)
-        })
-    }
+    //         }
+    //     }).catch(function (err) {
+    //         console.log(err)
+    //     })
+    // }
 
     abrirRequerimiento(idRequerimiento){
         localStorage.setItem('idRequerimiento', idRequerimiento);

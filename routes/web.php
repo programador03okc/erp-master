@@ -719,7 +719,7 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::get('historial-aprobacion/{idRequerimiento?}', 'Logistica\RequerimientoController@mostrarHistorialAprobacion')->name('mostrar-historial-aprobacion');
 					Route::get('trazabilidad-detalle-requerimiento/{id}', 'Logistica\RequerimientoController@mostrarTrazabilidadDetalleRequerimiento');
 					
-					Route::get('requerimientoAPago/{id}', 'Logistica\RequerimientoController@requerimientoAPago')->name('requerimiento-a-pago');
+					// Route::get('requerimientoAPago/{id}', 'Logistica\RequerimientoController@requerimientoAPago')->name('requerimiento-a-pago');
 
 					Route::get('mostrar-requerimiento/{id?}/{codigo?}', 'Logistica\RequerimientoController@mostrarRequerimiento')->name('mostrar-requerimiento');
 					Route::put('anular-requerimiento/{id_requerimiento?}', 'Logistica\RequerimientoController@anularRequerimiento')->name('anular-requerimiento');
