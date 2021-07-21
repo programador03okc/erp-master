@@ -753,8 +753,8 @@ class DistribucionController extends Controller
 
     public function guardar_orden_despacho(Request $request){
 
-        // try {
-        //     DB::beginTransaction();
+        try {
+            DB::beginTransaction();
 
             $cambios = ($request->aplica_cambios_valor == 'si' ? true : false);
             $codigo = $this->ODnextId(date('Y-m-d'),$request->id_almacen,$cambios);
@@ -1068,12 +1068,12 @@ class DistribucionController extends Controller
             }
             // $msj = 'Ok';
 
-            // DB::commit();
+            DB::commit();
             return response()->json($msj);
             
-        // } catch (\PDOException $e) {
-        //     DB::rollBack();
-        // }
+        } catch (\PDOException $e) {
+            DB::rollBack();
+        }
     }
 
     public function guardar_grupo_despacho(Request $request){
