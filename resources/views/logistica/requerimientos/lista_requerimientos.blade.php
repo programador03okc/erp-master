@@ -28,9 +28,9 @@ Listado de requerimientos
                             <h5>Mostar</h5>
                             <div style="display:flex;">
                                 <select class="form-control" name="mostrar_me_all" onChange="listarRequerimientoView.handleChangeFiltroListado();">
+                                    <option value="ALL">Todos</option>
                                     <option value="ME">Elaborados por mi</option>
                                     <option value="REVISADO_APROBADO">Revisado/aprobados por mi</option>
-                                    <option value="ALL">Todos</option>
                                 </select>
                             </div>
                         </div>
@@ -174,7 +174,7 @@ Listado de requerimientos
     });
 
     window.onload = function() {
-        listarRequerimientoView.mostrar('ME');
+        listarRequerimientoView.mostrar('ALL');
     };
 
 </script>
