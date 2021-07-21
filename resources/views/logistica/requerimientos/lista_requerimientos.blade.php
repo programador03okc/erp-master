@@ -137,6 +137,7 @@ Listado de requerimientos
     </div>
 </div>
 
+@include('logistica.requerimientos.modal_trazabilidad_requerimiento')
 @include('logistica.requerimientos.modal_requerimiento')
 @include('logistica.requerimientos.modal_adjuntar_archivos_requerimiento')
 @include('logistica.requerimientos.modal_adjuntar_archivos_detalle_requerimiento')
@@ -152,6 +153,7 @@ Listado de requerimientos
  
 
 <script src="{{ asset('js/logistica/requerimiento/ArchivoAdjunto.js')}}"></script>
+<script src="{{ asset('js/logistica/requerimiento/TrazabilidadRequerimientoView.js')}}"></script>
 <script src="{{ asset('js/logistica/requerimiento/AprobarRequerimientoView.js')}}"></script>
 <script src="{{ asset('js/logistica/requerimiento/ListarRequerimientoView.js')}}"></script>
 <script src="{{ asset('js/logistica/requerimiento/RequerimientoView.js')}}"></script>

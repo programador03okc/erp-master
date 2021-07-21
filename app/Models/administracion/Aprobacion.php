@@ -156,5 +156,44 @@ class Aprobacion extends Model
         return $obs;
 
     }
+
+    public static function getHistorialAprobacion($idRequerimiento){
+     
+        $idDocumento = Documento::getIdDocAprob($idRequerimiento,1);
+
+        $aprobaciones= Aprobacion::select(
+            'adm_aprobacion.id_aprobacion',
+            'adm_aprobacion.id_flujo',
+            'adm_aprobacion.id_vobo',
+            'adm_aprobacion.fecha_vobo',
+            'adm_vobo.descripcion as accion',
+            'adm_aprobacion.id_usuario',
+            DB::raw("CONCAT(pers.nombres,' ',pers.apellido_paterno,' ',pers.apellido_materno) as nombre_usuario"),
+            'sis_usua.nombre_corto',
+            'adm_aprobacion.detalle_observacion',
+            'adm_aprobacion.tiene_sustento',
+            'adm_flujo.id_operacion',
+            'adm_flujo.id_rol',
+            'sis_rol.descripcion as descripcion_rol',
+            'adm_flujo.nombre as nombre_flujo',
+            'adm_flujo.orden'
+        )
+            ->leftJoin('administracion.adm_flujo', 'adm_aprobacion.id_flujo', '=', 'adm_flujo.id_flujo')
+            ->leftJoin('administracion.adm_vobo', 'adm_aprobacion.id_vobo', '=', 'adm_vobo.id_vobo')
+            ->leftJoin('configuracion.sis_usua', 'adm_aprobacion.id_usuario', '=', 'sis_usua.id_usuario')
+            ->leftJoin('configuracion.sis_rol', 'adm_flujo.id_rol', '=', 'sis_rol.id_rol')
+            ->leftJoin('rrhh.rrhh_trab as trab', 'trab.id_trabajador', '=', 'sis_usua.id_trabajador')
+            ->leftJoin('rrhh.rrhh_postu as post', 'post.id_postulante', '=', 'trab.id_postulante')
+            ->leftJoin('rrhh.rrhh_perso as pers', 'pers.id_persona', '=', 'post.id_persona')
+            ->leftJoin('administracion.adm_operacion', 'adm_flujo.id_operacion', '=', 'adm_operacion.id_operacion')
+            ->where([
+                ['id_doc_aprob', '=', $idDocumento]
+            ])
+            ->orderBy('adm_aprobacion.fecha_vobo', 'asc')
+            ->get();
+
+            return $aprobaciones;
+        
+    }
     
 }

@@ -322,6 +322,53 @@ class RequerimientoModel {
                 });
             });
     }
+
+    getCabeceraRequerimiento(idRequerimiento){
+        return new Promise(function(resolve, reject) {
+            $.ajax({
+                type: 'GET',
+                url:`requerimiento/${idRequerimiento}`,
+                dataType: 'JSON',
+                success(response) {
+                    resolve(response);
+                },
+                error: function(err) {
+                    reject(err) 
+                }
+                });
+            });
+    }
+
+    getHistorialAprobacion(idRequerimiento){
+        return new Promise(function(resolve, reject) {
+            $.ajax({
+                type: 'GET',
+                url:`historial-aprobacion/${idRequerimiento}`,
+                dataType: 'JSON',
+                success(response) {
+                    resolve(response);
+                },
+                error: function(err) {
+                    reject(err) 
+                }
+                });
+            });
+    }
+    getTrazabilidadDetalleRequerimiento(idRequerimiento){
+        return new Promise(function(resolve, reject) {
+            $.ajax({
+                type: 'GET',
+                url:`trazabilidad-detalle-requerimiento/${idRequerimiento}`,
+                dataType: 'JSON',
+                success(response) {
+                    resolve(response.data);
+                },
+                error: function(err) {
+                    reject(err) 
+                }
+                });
+            });
+    }
  
 }
 

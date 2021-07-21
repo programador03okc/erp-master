@@ -3303,4 +3303,28 @@ class RequerimientoController extends Controller
         return $pdf->stream();
         return $pdf->download('requerimiento.pdf');
     }
+
+
+    public function mostrarCabeceraRequerimiento($idRequerimiento){
+        $requerimiento = Requerimiento::find($idRequerimiento);
+        return $requerimiento;
+    }
+
+    public function mostrarHistorialAprobacion($idRequerimiento){
+        $historialAprobacion = Aprobacion::getHistorialAprobacion($idRequerimiento);
+        return $historialAprobacion;
+    }
+    public function mostrarTrazabilidadDetalleRequerimiento($idRequerimiento){
+
+        $detalleRequerimiento = DetalleRequerimiento::where("id_requerimiento", $idRequerimiento)
+        ->select('alm_det_req.*','alm_prod.codigo as codigo_producto','alm_prod.part_number as part_number_producto','alm_prod.descripcion as descripcion_producto')
+        ->leftJoin('almacen.alm_prod', 'alm_prod.id_producto', '=', 'alm_det_req.id_producto')
+        ->leftJoin('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'alm_det_req.id_unidad_medida')
+        ->get();
+        return datatables($detalleRequerimiento)->toJson();
+    }
+
+
+    
+
 }
