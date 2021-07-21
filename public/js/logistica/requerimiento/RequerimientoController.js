@@ -53,6 +53,20 @@ class RequerimientoCtrl{
     anularRequerimiento(idRequerimiento){
         return requerimientoModel.anularRequerimiento(idRequerimiento);
     }
+
+    getCabeceraRequerimiento(idRequerimiento){
+        return requerimientoModel.getCabeceraRequerimiento(idRequerimiento);
+
+    }
+    getHistorialAprobacion(idRequerimiento){
+        return requerimientoModel.getHistorialAprobacion(idRequerimiento);
+
+    }
+
+    getTrazabilidadDetalleRequerimiento(idRequerimiento){
+        return requerimientoModel.getTrazabilidadDetalleRequerimiento(idRequerimiento);
+
+    }
     // aprobacion y revision
     getListadoAprobacion(idEmpresa, idSede, idGrupo, idPrioridad){
         return requerimientoModel.getListadoAprobacion(idEmpresa, idSede, idGrupo, idPrioridad);

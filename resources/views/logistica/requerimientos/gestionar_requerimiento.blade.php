@@ -82,7 +82,7 @@ Crear / editar requerimiento
                             <span class="badge" name="cantidadAdjuntosRequerimiento" style="position:absolute; right: 178px; border: solid 0.1px;">0</span>
                             Adjuntos
                         </button>
-                        <button type="button" name="btn-ver-trazabilidad-requerimiento" class="btn btn-sm btn-primary" title="Ver Trazabilidads" onclick="verTrazabilidadRequerimientoModal();" disabled><i class="fas fa-shoe-prints"></i> Trazabilidad</button>
+                        <button type="button" name="btn-ver-trazabilidad-requerimiento" class="btn btn-sm btn-primary" title="Ver Trazabilidads" onclick="trazabilidadRequerimientoView.verTrazabilidadRequerimientoModal();" disabled><i class="fas fa-shoe-prints"></i> Trazabilidad</button>
                     </div>
                 </h4>
                 <fieldset class="group-table">
@@ -656,7 +656,6 @@ Crear / editar requerimiento
 <script src="{{ asset('js/logistica/requerimiento/inicializar.js') }}"></script>
 <script src="{{ asset('js/logistica/requerimiento/modal_almacen_reserva.js')}}"></script>
 <script src="{{ asset('js/logistica/requerimiento/modal_motivo_detalle_requerimiento.js')}}"></script>
-<script src="{{ asset('js/logistica/requerimiento/modal_trazabilidad_requerimiento.js')}}"></script>
 <script src="{{ asset('js/logistica/requerimiento/modal_seleccionar_crear_proveedor.js')}}"></script>
 <script src="{{ asset('js/logistica/requerimiento/public.js') }}"></script>
 <script src="{{ asset('js/logistica/adjuntar_archivos_req.js') }}"></script>
@@ -674,6 +673,7 @@ Crear / editar requerimiento
 <script src="{{ asset('template/plugins/moment.min.js') }}"></script>
 
 <script src="{{ asset('js/logistica/requerimiento/ArchivoAdjunto.js')}}"></script>
+<script src="{{ asset('js/logistica/requerimiento/TrazabilidadRequerimientoView.js')}}"></script>
 <script src="{{ asset('js/logistica/requerimiento/HistorialRequerimientoView.js')}}"></script>
 <script src="{{ asset('js/logistica/requerimiento/RequerimientoView.js')}}"></script>
 <script src="{{ asset('js/logistica/requerimiento/RequerimientoController.js')}}"></script>
