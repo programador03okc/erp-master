@@ -369,6 +369,23 @@ class RequerimientoModel {
                 });
             });
     }
+
+    enviarRequerimientoAPago(idRequerimiento){
+        return new Promise(function(resolve, reject) {
+            $.ajax({
+                type: 'GET',
+                url:`requerimientoAPago/${idRequerimiento}`,
+                dataType: 'JSON',
+                success(response) {
+                    resolve(response);
+                },
+                error: function(err) {
+                    reject(err) 
+                }
+                });
+            });
+    }
+    
  
 }
 

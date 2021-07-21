@@ -718,6 +718,8 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::get('requerimiento/{idRequerimiento?}', 'Logistica\RequerimientoController@mostrarCabeceraRequerimiento')->name('mostrar-cabecera-requerimiento');
 					Route::get('historial-aprobacion/{idRequerimiento?}', 'Logistica\RequerimientoController@mostrarHistorialAprobacion')->name('mostrar-historial-aprobacion');
 					Route::get('trazabilidad-detalle-requerimiento/{id}', 'Logistica\RequerimientoController@mostrarTrazabilidadDetalleRequerimiento');
+					
+					Route::get('requerimientoAPago/{id}', 'Logistica\RequerimientoController@requerimientoAPago')->name('requerimiento-a-pago');
 
 					Route::get('mostrar-requerimiento/{id?}/{codigo?}', 'Logistica\RequerimientoController@mostrarRequerimiento')->name('mostrar-requerimiento');
 					Route::put('anular-requerimiento/{id_requerimiento?}', 'Logistica\RequerimientoController@anularRequerimiento')->name('anular-requerimiento');
@@ -730,7 +732,6 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::get('listar-sedes-por-empresa/{id?}', 'Logistica\RequerimientoController@listarSedesPorEmpresa')->name('listar-sedes-por-empresa');
 					
 					
-					// Route::get('requerimientoAPago/{id}', 'Logistica\RequerimientoController@requerimientoAPago')->name('requerimiento-a-pago');
 					// Route::get('detalleRequerimiento/{id}', 'Logistica\RequerimientoController@detalleRequerimiento')->name('detalle-requerimiento');
 					
 				});

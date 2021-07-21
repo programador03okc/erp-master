@@ -99,6 +99,7 @@ class RequerimientoController extends Controller
 
         return response()->json($req);
     }
+    
     public function detalleRequerimiento($id_requerimiento)
     {
         $detalles = DB::table('almacen.alm_det_req')

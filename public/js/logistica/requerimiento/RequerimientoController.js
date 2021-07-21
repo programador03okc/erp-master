@@ -67,6 +67,11 @@ class RequerimientoCtrl{
         return requerimientoModel.getTrazabilidadDetalleRequerimiento(idRequerimiento);
 
     }
+
+    enviarRequerimientoAPago(idRequerimiento){
+        return requerimientoModel.enviarRequerimientoAPago(idRequerimiento);
+
+    }
     // aprobacion y revision
     getListadoAprobacion(idEmpresa, idSede, idGrupo, idPrioridad){
         return requerimientoModel.getListadoAprobacion(idEmpresa, idSede, idGrupo, idPrioridad);
