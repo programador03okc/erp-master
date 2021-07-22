@@ -19,7 +19,7 @@ function itemsRequerimiento(id_requerimiento){
                         'descripcion'           :(element.id_producto!==null ? element.descripcion_prod : element.descripcion),
                         'cantidad'              :element.cantidad,
                         'tiene_transformacion'  :element.tiene_transformacion,
-                        'abreviatura'           :(element.abreviatura!==null?element.abreviatura:''),
+                        'abreviatura'           :(element.abreviatura!==null ? element.abreviatura:''),
                     });
                 }
             

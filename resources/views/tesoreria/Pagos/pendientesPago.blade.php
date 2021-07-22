@@ -44,7 +44,7 @@ Procesar Pagos
                                                 <th>Fecha Emisión</th>
                                                 <th>Condición</th>
                                                 <th>Fecha Vencimiento</th>
-                                                <th>Moneda</th>
+                                                <th>Mnd</th>
                                                 <th>Total a Pagar</th>
                                                 <th>Fecha Pago</th>
                                                 <th>Motivo</th>
