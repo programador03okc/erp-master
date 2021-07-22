@@ -66,8 +66,8 @@
     <script src="{{ asset('datatables/JSZip/jszip.min.js') }}"></script> -->
     <script src="{{ asset('template/plugins/moment.min.js') }}"></script>
 
-    <script src="{{('/js/logistica/comprobantes/listado_doc_compra.js')}}"></script>
-    <script src="{{('/js/logistica/comprobantes/doc_compra.js')}}"></script>
+    <script src="{{('/js/logistica/comprobantes/lista_comprobantes_compra.js')}}"></script>
+    <!-- <script src="{{('/js/logistica/comprobantes/doc_compra.js')}}"></script> -->
     <script src="{{ asset('js/almacen/documentos/doc_com_ver.js')}}"></script>
 
 

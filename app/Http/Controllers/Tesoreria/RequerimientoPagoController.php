@@ -26,8 +26,8 @@ class RequerimientoPagoController extends Controller
         return view('tesoreria/main', compact('pagos_pendientes','confirmaciones_pendientes'));
     }
     
-    function view_requerimiento_pagos(){
-        return view('tesoreria/Pagos/requerimientoPagos');
+    function view_pendientes_pago(){
+        return view('tesoreria/pagos/pendientesPago');
     }
 
     function listarRequerimientosPagos(){
@@ -52,7 +52,33 @@ class RequerimientoPagoController extends Controller
         return datatables($data)->toJson();
     }
 
-    
+    public function listarOrdenesCompra(){
+        $data = DB::table('logistica.log_ord_compra')
+        ->select(
+            'log_ord_compra.*','adm_contri.razon_social',
+            'estados_compra.descripcion as estado_doc',
+            'sis_moneda.simbolo','log_cdn_pago.descripcion AS condicion_pago',
+            'sis_sede.descripcion as sede_descripcion',
+            // 'cont_tp_doc.descripcion as tipo_documento',
+            'req_pagos.fecha_pago','req_pagos.observacion',
+            'registrado_por.nombre_corto as usuario_pago',
+            DB::raw("(SELECT sum(subtotal) FROM logistica.log_det_ord_compra
+                      WHERE log_det_ord_compra.id_orden_compra = log_ord_compra.id_orden_compra
+                        and log_det_ord_compra.estado != 7) AS suma_total")
+            )
+        ->join('logistica.log_prove','log_prove.id_proveedor','=','log_ord_compra.id_proveedor')
+        ->join('contabilidad.adm_contri','adm_contri.id_contribuyente','=','log_prove.id_contribuyente')
+        ->join('logistica.estados_compra','estados_compra.id_estado','=','log_ord_compra.estado')
+        ->leftJoin('configuracion.sis_moneda','sis_moneda.id_moneda','=','log_ord_compra.id_moneda')
+        ->leftJoin('logistica.log_cdn_pago', 'log_cdn_pago.id_condicion_pago', '=', 'log_ord_compra.id_condicion')
+        ->join('administracion.sis_sede', 'sis_sede.id_sede', '=', 'log_ord_compra.id_sede')
+        ->leftJoin('tesoreria.req_pagos','req_pagos.id_oc','=','log_ord_compra.id_orden_compra')
+        ->leftJoin('configuracion.sis_usua as registrado_por','registrado_por.id_usuario','=','req_pagos.registrado_por')
+        ->where([['log_ord_compra.id_condicion','=',1],['log_ord_compra.estado','!=',7]]);
+
+        return datatables($data)->toJson();
+    }
+
     public function listarComprobantesPagos(){
         $data = DB::table('almacen.doc_com')
         ->select(
@@ -71,7 +97,7 @@ class RequerimientoPagoController extends Controller
         ->leftJoin('contabilidad.cont_tp_doc', 'cont_tp_doc.id_tp_doc', '=', 'doc_com.id_tp_doc')
         ->leftJoin('tesoreria.req_pagos','req_pagos.id_doc_com','=','doc_com.id_doc_com')
         ->leftJoin('configuracion.sis_usua as registrado_por','registrado_por.id_usuario','=','req_pagos.registrado_por')
-        ->where('doc_com.estado','=',8)
+        ->where([['doc_com.id_condicion','=',2],['doc_com.estado','=',1]])
         ->orWhere('doc_com.estado','=',9);
 
         return datatables($data)->toJson();
@@ -116,8 +142,8 @@ class RequerimientoPagoController extends Controller
                 $extension = pathinfo($file->getClientOriginalName(), PATHINFO_EXTENSION);
                 $nombre = $id_pago.'.'.$request->codigo.'.'.$extension;
                 //indicamos que queremos guardar un nuevo archivo en el disco local
-                \File::delete(public_path('tesoreria/pagos/'.$nombre));
-                \Storage::disk('archivos')->put('tesoreria/pagos/'.$nombre,\File::get($file));
+                File::delete(public_path('tesoreria/pagos/'.$nombre));
+                Storage::disk('archivos')->put('tesoreria/pagos/'.$nombre,File::get($file));
                 
                 DB::table('tesoreria.req_pagos')
                 ->where('id_pago',$id_pago)

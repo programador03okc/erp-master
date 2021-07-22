@@ -3,8 +3,8 @@ class RequerimientoPago
     constructor(permisoConfirmarDenegarPago)
     {
         this.permisoConfirmarDenegarPago = permisoConfirmarDenegarPago;
-        this.listarRequerimientos();
         this.listarComprobantes();
+        this.listarOrdenes();
     }
 
     listarRequerimientos() {
@@ -94,7 +94,58 @@ class RequerimientoPago
                 {'render':
                     function (data, type, row){
                     return `<div class="btn-group" role="group">
-                    ${row['estado'] == 8 ?
+                    ${row['estado'] == 1 ?
+                            `<button type="button" style="padding-left:8px;padding-right:7px;" class="adjunto btn btn-danger boton" data-toggle="tooltip" 
+                                data-placement="bottom" data-id="${row['id_doc_com']}" data-cod="${row['serie']+'-'+row['numero']}" title="Procesar Pago" >
+                                <i class="far fa-credit-card"></i></button>`:''}
+                            <button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" 
+                                data-placement="bottom" data-id="${row['id_doc_com']}" title="Ver Detalle" >
+                                <i class="fas fa-chevron-down"></i></button>
+                        </div>`;
+                    }
+                },
+            ],
+            
+            'columnDefs': [{ 'aTargets': [0], 'sClass': 'invisible'}],
+        });
+    
+    }
+
+    listarOrdenes(){
+        var vardataTables = funcDatatables();
+        tableOrdenes = $('#listaOrdenes').DataTable({
+            'dom': vardataTables[1],
+            'buttons': vardataTables[2],
+            'language' : vardataTables[0],
+            'destroy': true,
+            'serverSide' : true,
+            'ajax': {
+                url: 'listarOrdenesCompra',
+                type: 'POST'
+            },
+            'columns': [
+                {'data': 'id_orden_compra'},
+                // {'data': 'tipo_documento', 'name': 'cont_tp_doc.descripcion'},
+                {'data': 'sede_descripcion', 'name': 'sis_sede.descripcion'},
+                {'data': 'codigo'},
+                {'data': 'codigo_softlink'},
+                {'data': 'razon_social', 'name': 'adm_contri.razon_social'},
+                {'data': 'fecha'},
+                {'data': 'condicion_pago', 'name': 'log_cdn_pago.descripcion'},
+                {'data': 'simbolo', 'name': 'sis_moneda.simbolo'},
+                {'data': 'suma_total'},
+                {'data': 'fecha_pago'},
+                {'data': 'observacion'},
+                {'data': 'usuario_pago', 'name':'registrado_por.nombre_corto'},
+                // {'data': 'estado_doc'},
+                {'render': function (data, type, row){
+                    return '<span class="label label-default">'+row['estado_doc']+'</span>'
+                    }
+                },
+                {'render':
+                    function (data, type, row){
+                    return `<div class="btn-group" role="group">
+                    ${row['estado'] !== 9 ?
                             `<button type="button" style="padding-left:8px;padding-right:7px;" class="adjunto btn btn-danger boton" data-toggle="tooltip" 
                                 data-placement="bottom" data-id="${row['id_doc_com']}" data-cod="${row['serie']+'-'+row['numero']}" title="Procesar Pago" >
                                 <i class="far fa-credit-card"></i></button>`:''}
