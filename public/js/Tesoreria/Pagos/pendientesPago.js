@@ -113,7 +113,7 @@ class RequerimientoPago
 
     listarOrdenes(){
         var vardataTables = funcDatatables();
-        tableOrdenes = $('#listaOrdenes').DataTable({
+        $('#listaOrdenes').DataTable({
             'dom': vardataTables[1],
             'buttons': vardataTables[2],
             'language' : vardataTables[0],

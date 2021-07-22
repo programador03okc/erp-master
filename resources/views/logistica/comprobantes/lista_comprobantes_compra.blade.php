@@ -1,5 +1,5 @@
 @extends('layout.main')
-@include('layout.menu_almacen')
+@include('layout.menu_tesoreria')
 @section('option')
     @include('layout.option')
 @endsection
@@ -9,7 +9,7 @@
 @endsection
 @section('breadcrumb')
 <ol class="breadcrumb">
-    <li><a href="{{route('almacen.index')}}"><i class="fas fa-tachometer-alt"></i> Almacenes</a></li>
+    <li><a href="{{route('tesoreria.index')}}"><i class="fas fa-tachometer-alt"></i> Tesorería</a></li>
     <li>Comprobantes</li>
     <li class="active">@yield('cabecera')</li>
 </ol>
@@ -36,7 +36,7 @@
                                     <th>Fecha Emisión</th>
                                     <th>Condición</th>
                                     <th>Fecha Vencimiento</th>
-                                    <th>Moneda</th>
+                                    <th>Mnd</th>
                                     <th>Total a Pagar</th>
                                     <th>Estado</th>
                                     <th>Acción</th>
