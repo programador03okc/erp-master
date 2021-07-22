@@ -2,14 +2,17 @@
 
 namespace App\Models\Almacen;
 
+use App\Models\Administracion\Estado;
+use App\Models\Configuracion\Usuario;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class Requerimiento extends Model
 {
     protected $table = 'almacen.alm_req';
     protected $primaryKey = 'id_requerimiento';
-    protected $appends = ['termometro'];
+    protected $appends = ['termometro','nombre_estado','nombre_completo_usuario'];
     public $timestamps = false;
 
 
@@ -43,7 +46,26 @@ class Requerimiento extends Model
                 break;
         }
     }
+
+    public function getNombreEstadoAttribute(){
+        $estado=Estado::join('almacen.alm_req', 'adm_estado_doc.id_estado_doc', '=', 'alm_req.estado')
+        ->where('alm_req.id_requerimiento',$this->attributes['id_requerimiento'])
+        ->first()->estado_doc;
+        return $estado;
+    }
  
+    public function getNombreCompletoUsuarioAttribute(){
+        $nombreUsuario= Usuario::leftJoin('almacen.alm_req', 'alm_req.id_usuario', '=', 'sis_usua.id_usuario')
+        ->leftJoin('rrhh.rrhh_trab', 'sis_usua.id_trabajador', '=', 'rrhh_trab.id_trabajador')
+        ->leftJoin('rrhh.rrhh_postu', 'rrhh_postu.id_postulante', '=', 'rrhh_trab.id_postulante')
+        ->leftJoin('rrhh.rrhh_perso', 'rrhh_perso.id_persona', '=', 'rrhh_postu.id_persona')
+        ->where('alm_req.id_requerimiento',$this->attributes['id_requerimiento'])
+        ->select(DB::raw("concat(rrhh_perso.nombres, ' ', rrhh_perso.apellido_paterno, ' ', rrhh_perso.apellido_materno)  AS nombre_completo_usuario"))
+        ->first()->nombre_completo_usuario;
+        return $nombreUsuario;
+    }
+ 
+
     public static function obtenerCantidadRegistros($tipoRequerimiento,$grupo){
         $yyyy = date('Y', strtotime("now"));
         $num = Requerimiento::when(($grupo >0), function($query) use ($grupo)  {
