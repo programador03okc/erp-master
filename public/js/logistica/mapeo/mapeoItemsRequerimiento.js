@@ -1,6 +1,6 @@
 let detalle = [];
 
-function itemsRequerimiento(id_requerimiento){
+function listarItemsRequerimientoMapeo(id_requerimiento){
     detalle = [];
     
     $.ajax({
@@ -20,6 +20,9 @@ function itemsRequerimiento(id_requerimiento){
                         'cantidad'              :element.cantidad,
                         'tiene_transformacion'  :element.tiene_transformacion,
                         'abreviatura'           :(element.abreviatura!==null ? element.abreviatura:''),
+                        'id_categoria'          :null,
+                        'id_clasif'             :null,
+                        'id_subcategoria'       :null,        
                     });
                 }
             
@@ -60,7 +63,8 @@ function mostrar_detalle(){
         }
         html+=`<tr>
             <td>${i}</td>
-            <td>${element.codigo!==null?element.codigo:''}</td>
+            <td>${(element.codigo!==null && element.codigo!=='')?element.codigo:
+            ((element.id_categoria!==null && element.id_producto==null)?'(Por crear)':'')}</td>
             <td>`+ link_pn +(element.tiene_transformacion ? ' <span class="badge badge-secondary">Transformado</span> ' : '')+`</td>
             <td>`+ link_des +`</td>
             <td>${element.cantidad!==null?element.cantidad:''}</td>

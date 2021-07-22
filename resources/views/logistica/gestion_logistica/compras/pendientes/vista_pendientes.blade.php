@@ -99,13 +99,12 @@ Requerimientos pendientes
 <script src="{{ asset('js/util.js')}}"></script>
 <script src="{{ asset('datatables/DataTables/js/jquery.dataTables.min.js') }}"></script>
 <script src="{{ asset('datatables/DataTables/js/dataTables.bootstrap.min.js') }}"></script>
- 
 <script src="{{ asset('template/plugins/select2/select2.min.js') }}"></script>
+<script src="{{ asset('template/plugins/moment.min.js') }}"></script>
+ 
 <script src="{{('/js/logistica/orden/RequerimientoPendienteModel.js')}}"></script>
 <script src="{{('/js/logistica/orden/RequerimientoPendienteView.js')}}"></script>
 <script src="{{('/js/logistica/orden/RequerimientoPendienteController.js')}}"></script>
- 
-<script src="{{ asset('template/plugins/moment.min.js') }}"></script>
 
 <script src="{{ asset('js/logistica/mapeo/mapeoItemsRequerimiento.js')}}"></script>
 <script src="{{ asset('js/logistica/mapeo/mapeoAsignarProducto.js')}}"></script>

@@ -66,7 +66,7 @@ $('#listaRequerimientos tbody').on("click","button.detalle", function(){
     });
     $('[name=id_requerimiento]').val(id_requerimiento);
     $('#cod_requerimiento').text(codigo);
-    itemsRequerimiento(id_requerimiento);
+    listarItemsRequerimientoMapeo(id_requerimiento);
     
     $('#submit_mapeoItemsRequerimiento').removeAttr('disabled');
 });
