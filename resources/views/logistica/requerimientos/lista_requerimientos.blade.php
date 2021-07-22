@@ -101,6 +101,7 @@ Listado de requerimientos
                                 <th class="text-center">Creado por</th>
                                 <th class="text-center" style="width:5%;">Estado</th>
                                 <th class="text-center" style="width:8%">Creado</th>
+                                <th class="text-center" style="width:8%">Ordenes</th>
                                 <th class="text-center" style="width:8%">Acción</th>
                             </tr>
                         </thead>

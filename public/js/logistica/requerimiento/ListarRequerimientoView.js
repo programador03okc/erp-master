@@ -34,7 +34,8 @@ class ListarRequerimientoView{
                 { 'data': 'monto_total', 'name': 'monto_total' },
                 { 'data': 'nombre_usuario', 'name': 'nombre_usuario' },
                 { 'data': 'estado_doc', 'name': 'adm_estado_doc.estado_doc' },
-                { 'data': 'fecha_registro', 'name': 'alm_req.fecha_registro' }
+                { 'data': 'fecha_registro', 'name': 'alm_req.fecha_registro' },
+                { 'data': 'id_requerimiento' }
             ],
             'columnDefs': [
 
@@ -73,6 +74,15 @@ class ListarRequerimientoView{
                 },
                 {
                     'render': function (data, type, row) {
+                        let labelOrdenes='';
+                        (row['ordenes_compra']).forEach(element => {
+                            labelOrdenes += `<label class="lbl-codigo" title="Abrir orden" onclick="trazabilidadRequerimientoView.abrirOrden(${element.id_orden_compra})">${element.codigo}</label>`;
+                        });
+                        return labelOrdenes;
+                    }, targets: 13, className:'text-center'
+                },
+                {
+                    'render': function (data, type, row) {
                         let containerOpenBrackets = '<center><div class="btn-group" role="group" style="margin-bottom: 5px;">';
                         let containerCloseBrackets = '</div></center>';
                         let btnEditar = '';
@@ -88,8 +98,9 @@ class ListarRequerimientoView{
                             btnAnular = '<button type="button" class="btn btn-xs btn-danger" title="Anular" onClick="listarRequerimientoView.anularRequerimiento(' + row['id_requerimiento'] + ');"><i class="fas fa-trash fa-xs"></i></button>';
                         }
                         return containerOpenBrackets + btnDetalleRapido + btnTrazabilidad + btnEditar + btnAnular + containerCloseBrackets;
-                    }, targets: 13
+                    }, targets: 14
                 },
+
             ],
             "createdRow": function (row, data, dataIndex) {
                 if (data.estado == 2) {

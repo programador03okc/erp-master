@@ -4,6 +4,7 @@ namespace App\Models\Almacen;
 
 use App\Models\Administracion\Estado;
 use App\Models\Configuracion\Usuario;
+use App\Models\Logistica\OrdenCompraDetalle;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
@@ -12,7 +13,7 @@ class Requerimiento extends Model
 {
     protected $table = 'almacen.alm_req';
     protected $primaryKey = 'id_requerimiento';
-    protected $appends = ['termometro','nombre_estado','nombre_completo_usuario'];
+    protected $appends = ['termometro','nombre_estado','nombre_completo_usuario','ordenes_compra'];
     public $timestamps = false;
 
 
@@ -63,6 +64,16 @@ class Requerimiento extends Model
         ->select(DB::raw("concat(rrhh_perso.nombres, ' ', rrhh_perso.apellido_paterno, ' ', rrhh_perso.apellido_materno)  AS nombre_completo_usuario"))
         ->first()->nombre_completo_usuario;
         return $nombreUsuario;
+    }
+
+    public function getOrdenesCompraAttribute(){
+
+        $ordenes=OrdenCompraDetalle::join('almacen.alm_det_req','log_det_ord_compra.id_detalle_requerimiento','alm_det_req.id_detalle_requerimiento')
+        ->join('logistica.log_ord_compra','log_ord_compra.id_orden_compra','log_det_ord_compra.id_orden_compra')
+        ->where('alm_det_req.id_requerimiento',$this->attributes['id_requerimiento'])
+        ->select(['log_ord_compra.id_orden_compra','log_ord_compra.codigo'])->distinct()->get(); 
+
+        return $ordenes;
     }
  
 

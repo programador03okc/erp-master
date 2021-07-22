@@ -43,7 +43,7 @@
                         <th>Cuadro costos</th>
                         <th>Proveedor</th>
                         <th>Nro.orden</th>
-                        <th >Req./Cuadro comp.</th>
+                        <th >Req.</th>
                         <th style="width:5%">Estado</th>
                         <th>Fecha vencimiento</th>
                         <th>Fecha llegada</th>
@@ -73,7 +73,7 @@
                 <thead>
                     <tr>
                     <th >OC</th>
-                    <th >Req./Cuadro Comp.</th>
+                    <th >Req.</th>
                     <th >OC Softlink</th>
                     <th >OCAM</th>
                     <th >Cliente</th>

@@ -1127,7 +1127,7 @@ class OrdenController extends Controller
     public function detalleOrden($idOrden){
         $detalle = DB::table('logistica.log_det_ord_compra')
         ->select(
-            'log_det_ord_compra.*','alm_item.id_producto','alm_prod.codigo',
+            'log_det_ord_compra.*','alm_prod.codigo',
             'alm_prod.part_number','alm_cat_prod.descripcion as categoria',
             'alm_subcat.descripcion as subcategoria','alm_req.id_requerimiento',
             'alm_prod.descripcion','alm_und_medida.abreviatura','alm_req.codigo as codigo_req',
@@ -1136,8 +1136,7 @@ class OrdenController extends Controller
             'entidades.nombre','oc_propias.id as id_oc_propia','oc_propias.url_oc_fisica',
             'users.name as user_name'
         )
-        ->leftjoin('almacen.alm_item', 'alm_item.id_item', '=', 'log_det_ord_compra.id_item')
-        ->leftjoin('almacen.alm_prod', 'alm_prod.id_producto', '=', 'alm_item.id_producto')
+        ->leftjoin('almacen.alm_prod', 'alm_prod.id_producto', '=', 'log_det_ord_compra.id_producto')
         ->leftjoin('almacen.alm_cat_prod', 'alm_cat_prod.id_categoria', '=', 'alm_prod.id_categoria')
         ->leftjoin('almacen.alm_subcat', 'alm_subcat.id_subcategoria', '=', 'alm_prod.id_subcategoria')
         ->leftjoin('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'log_det_ord_compra.id_unidad_medida')
@@ -3197,8 +3196,7 @@ class OrdenController extends Controller
 
 
         $log_det_ord_compra = DB::table('logistica.log_det_ord_compra')
-        ->leftJoin('almacen.alm_item', 'log_det_ord_compra.id_item', '=', 'alm_item.id_item')
-        ->leftJoin('almacen.alm_prod', 'alm_prod.id_producto', '=', 'alm_item.id_producto')
+        ->leftJoin('almacen.alm_prod', 'log_det_ord_compra.id_producto', '=', 'alm_prod.id_producto')
         ->leftJoin('almacen.alm_cat_prod', 'alm_cat_prod.id_categoria', '=', 'alm_prod.id_categoria')
         ->leftJoin('almacen.alm_subcat','alm_subcat.id_subcategoria','=','alm_prod.id_subcategoria')
         ->leftJoin('almacen.alm_det_req', 'log_det_ord_compra.id_detalle_requerimiento', '=', 'alm_det_req.id_detalle_requerimiento')
@@ -3225,7 +3223,6 @@ class OrdenController extends Controller
             'alm_req.id_requerimiento',
             'alm_req.codigo AS codigo_requerimiento',
             'alm_det_req.id_requerimiento',
-            'alm_det_req.id_item AS id_item_alm_det_req',
             'alm_det_req.precio_unitario',
             // 'alm_det_req.cantidad',
             // 'alm_det_req.id_unidad_medida',
@@ -3234,12 +3231,9 @@ class OrdenController extends Controller
             'alm_det_req.lugar_entrega',
             'alm_det_req.descripcion_adicional',
             'alm_det_req.id_tipo_item',
-            'alm_item.id_item',
             'alm_det_req.id_producto',
             'alm_cat_prod.descripcion as categoria',
             'alm_subcat.descripcion as subcategoria',
-            'alm_item.codigo AS codigo_item',
-            'alm_item.fecha_registro AS alm_item_fecha_registro',
             'alm_prod.codigo AS alm_prod_codigo',
             'alm_prod.part_number',
             'alm_prod.descripcion AS alm_prod_descripcion',
@@ -3269,7 +3263,6 @@ class OrdenController extends Controller
                         'id_detalle_requerimiento'  => $data->id_detalle_requerimiento,
                         'id_requerimiento'          => $data->id_requerimiento,
                         'codigo_requerimiento'      => $data->codigo_requerimiento,
-                        'id_item'                   => $data->id_item,
                         'cantidad'                  => $data->cantidad,
                         'id_unidad_medida'             => $data->id_unidad_medida,
                         'unidad_medida'             => $data->unidad_medida,
@@ -3278,13 +3271,13 @@ class OrdenController extends Controller
                         'lugar_entrega'             => $data->lugar_entrega,
                         'fecha_registro'            => $data->fecha_registro_alm_det_req,
                         'estado'                    => $data->estado,
-                        'codigo_item'               => $data->codigo_item,
                         'id_tipo_item'              => $data->id_tipo_item,
+                        'codigo_producto'           => $data->alm_prod_codigo,
                         'id_producto'               => $data->id_producto,
                         'categoria'                 => $data->categoria,
                         'subcategoria'              => $data->subcategoria,
                         'part_number'               => $data->part_number,
-                        'descripcion'               => $data->descripcion_adicional,
+                        'descripcion'               => $data->alm_prod_descripcion,
                         'id_almacen'                => $data->id_almacen_reserva,
                         'almacen_reserva'           => $data->almacen_reserva,
                         'subtotal'                  =>  $subtotal,

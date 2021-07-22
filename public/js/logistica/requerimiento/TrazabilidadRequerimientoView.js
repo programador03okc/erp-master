@@ -101,13 +101,21 @@ class TrazabilidadRequerimiento{
                 {
                     'render': function (data, type, row) {
                         return  row.descripcion_producto?row.descripcion_producto:(row.descripcion?row.descripcion:'');
-                    },'className': 'text-left'
+                    },'className': 'text-left',
                 },
+                { 'data': 'cantidad', 'className': 'text-center'},
+                { 'data': 'unidad_medida','className': 'text-center' },
                 { 'data': 'id_detalle_requerimiento' },
                 { 'data': 'id_detalle_requerimiento' },
-                { 'data': 'id_detalle_requerimiento' }
+                { 'data': 'id_detalle_requerimiento' },
+                { 'data': 'nombre_estado' }
             ],
             'columnDefs': [
+                { width: '5px', targets: 0, sWidth: '3%' },
+                { width: '10px', targets: 1, sWidth: '8%' },
+                { width: '100px', targets: 2, sWidth: '40%' },
+                { width: '10px', targets: 3, sWidth: '8%' },
+                { width: '10px', targets: 4, sWidth: '8%' },
                 {
                     'render': function (data, type, row) {
                         let labelOrdenes='';
@@ -116,7 +124,7 @@ class TrazabilidadRequerimiento{
                         });
                         return labelOrdenes;
                         
-                    }, targets: 3
+                    }, targets: 5, width: '10px',sWidth: '5%'
                 },
                 {
                     'render': function (data, type, row) {
@@ -126,7 +134,7 @@ class TrazabilidadRequerimiento{
                         });
                         return labelGuiaIngreso;
                         
-                    }, targets: 4
+                    }, targets: 6, width: '10px',sWidth: '5%'
                 },
                 {
                     'render': function (data, type, row) {
@@ -136,8 +144,10 @@ class TrazabilidadRequerimiento{
                         });
                         return labelFacturas;
                         
-                    }, targets: 5
+                    }, targets: 7, width: '10px',sWidth: '5%'
                 },
+                { width: '10px', targets: 8, sWidth: '8%' },
+
   
     
             ]

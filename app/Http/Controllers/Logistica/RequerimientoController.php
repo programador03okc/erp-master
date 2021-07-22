@@ -3318,9 +3318,10 @@ class RequerimientoController extends Controller
     public function mostrarTrazabilidadDetalleRequerimiento($idRequerimiento){
 
         $detalleRequerimiento = DetalleRequerimiento::where("id_requerimiento", $idRequerimiento)
-        ->select('alm_det_req.*','alm_prod.codigo as codigo_producto','alm_prod.part_number as part_number_producto','alm_prod.descripcion as descripcion_producto')
+        ->select('alm_det_req.*','alm_prod.codigo as codigo_producto','alm_prod.part_number as part_number_producto','alm_prod.descripcion as descripcion_producto','alm_und_medida.descripcion as unidad_medida','adm_estado_doc.estado_doc as nombre_estado')
         ->leftJoin('almacen.alm_prod', 'alm_prod.id_producto', '=', 'alm_det_req.id_producto')
         ->leftJoin('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'alm_det_req.id_unidad_medida')
+        ->leftJoin('administracion.adm_estado_doc', 'adm_estado_doc.id_estado_doc', '=', 'alm_det_req.estado')
         ->get();
         return datatables($detalleRequerimiento)->toJson();
     }

@@ -508,7 +508,6 @@ class ListaOrdenView {
                     function (data, type, row, meta){
                         let total=0;
                         if(row.id_moneda ==2){
-                            console.log(row.tipo_cambio_compra);
                             if(parseFloat(row.tipo_cambio_compra) >0){
                                 total = '<span title="$'+row.monto_total_orden+'">'+"S/"+((row.monto_total_orden *row.tipo_cambio_compra).toFixed(2))+'</span>';
                             }else{
@@ -588,6 +587,7 @@ class ListaOrdenView {
     }
 
     construirDetalleOrdenElaboradas(table_id,row,response){
+        console.log(response);
         var html = '';
         if (response.length > 0) {
             response.forEach(function (element) {
@@ -859,7 +859,7 @@ class ListaOrdenView {
                     }
                 },
      
-                { data: 'codigo_item' },
+                { data: 'codigo_producto' },
                 { data: 'part_number' },
                 { data: 'categoria' },
                 { data: 'subcategoria' },
