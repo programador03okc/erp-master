@@ -1338,26 +1338,26 @@ Route::group(['middleware' => ['auth']], function () {
 			// Route::get('listar_guias_prov/{id?}', 'ComprobanteCompraController@listar_guias_prov');
 			Route::post('listar_docs_compra', 'ComprobanteCompraController@listar_docs_compra');
 
-			Route::get('generar_comprobante', 'ComprobanteCompraController@view_genera_comprobante_compra')->name('generar_comprobante');
-			Route::get('listar_doc_guias/{id?}', 'ComprobanteCompraController@listar_doc_guias');
-			Route::get('listar_doc_items/{id?}', 'ComprobanteCompraController@listar_doc_items');
-			Route::post('actualizar_doc_compra', 'ComprobanteCompraController@update_doc_compra');
-			Route::post('update_doc_detalle', 'ComprobanteCompraController@update_doc_detalle');
-			Route::get('anular_doc_detalle/{id?}', 'ComprobanteCompraController@anular_doc_detalle');
-			Route::get('anular_doc_compra/{id?}', 'ComprobanteCompraController@anular_doc_compra');
-			Route::get('mostrar_doc_com/{id?}', 'ComprobanteCompraController@mostrar_doc_com');
-			Route::get('guardar_doc_items_guia/{id?}/{id_doc?}', 'ComprobanteCompraController@guardar_doc_items_guia');
-			Route::get('mostrar_doc_detalle/{id?}', 'ComprobanteCompraController@mostrar_doc_detalle');
-			Route::get('actualiza_totales_doc/{por?}/{id?}/{fec?}', 'ComprobanteCompraController@actualiza_totales_doc'); 
-			Route::get('listar_ordenes_sin_comprobante/{id_proveedor?}', 'ComprobanteCompraController@listar_ordenes_sin_comprobante'); 
-			Route::post('guardar_doc_com_det_orden/{id_doc?}', 'ComprobanteCompraController@guardar_doc_com_det_orden');
-			Route::get('listar_doc_com_orden/{id_doc?}', 'ComprobanteCompraController@listar_doc_com_orden');
-			Route::get('getOrdenByDetOrden/{id_det_orden?}', 'ComprobanteCompraController@getOrdenByDetOrden');
-			Route::get('anular_orden_doc_com/{id_doc_com?}/{id_orden_compra?}', 'ComprobanteCompraController@anular_orden_doc_com');
+			// Route::get('generar_comprobante', 'ComprobanteCompraController@view_genera_comprobante_compra')->name('generar_comprobante');
+			// Route::get('listar_doc_guias/{id?}', 'ComprobanteCompraController@listar_doc_guias');
+			// Route::get('listar_doc_items/{id?}', 'ComprobanteCompraController@listar_doc_items');
+			// Route::post('actualizar_doc_compra', 'ComprobanteCompraController@update_doc_compra');
+			// Route::post('update_doc_detalle', 'ComprobanteCompraController@update_doc_detalle');
+			// Route::get('anular_doc_detalle/{id?}', 'ComprobanteCompraController@anular_doc_detalle');
+			// Route::get('anular_doc_compra/{id?}', 'ComprobanteCompraController@anular_doc_compra');
+			// Route::get('mostrar_doc_com/{id?}', 'ComprobanteCompraController@mostrar_doc_com');
+			// Route::get('guardar_doc_items_guia/{id?}/{id_doc?}', 'ComprobanteCompraController@guardar_doc_items_guia');
+			// Route::get('mostrar_doc_detalle/{id?}', 'ComprobanteCompraController@mostrar_doc_detalle');
+			// Route::get('actualiza_totales_doc/{por?}/{id?}/{fec?}', 'ComprobanteCompraController@actualiza_totales_doc'); 
+			// Route::get('listar_ordenes_sin_comprobante/{id_proveedor?}', 'ComprobanteCompraController@listar_ordenes_sin_comprobante'); 
+			// Route::post('guardar_doc_com_det_orden/{id_doc?}', 'ComprobanteCompraController@guardar_doc_com_det_orden');
+			// Route::get('listar_doc_com_orden/{id_doc?}', 'ComprobanteCompraController@listar_doc_com_orden');
+			// Route::get('getOrdenByDetOrden/{id_det_orden?}', 'ComprobanteCompraController@getOrdenByDetOrden');
+			// Route::get('anular_orden_doc_com/{id_doc_com?}/{id_orden_compra?}', 'ComprobanteCompraController@anular_orden_doc_com');
 			
 			Route::get('lista_comprobante_compra', 'ComprobanteCompraController@view_lista_comprobantes_compra')->name('lista_comprobante_compra');
 			Route::get('documentoAPago/{id}', 'ComprobanteCompraController@documentoAPago');
-			Route::get('documentos_ver/{id}', 'OrdenesPendientesController@documentos_ver');
+			Route::get('documentos_ver/{id}', 'Almacen\Movimiento\OrdenesPendientesController@documentos_ver');
 
 		});
 		
@@ -1680,13 +1680,14 @@ Route::group(['middleware' => ['auth']], function () {
 	
 			});
 
-			Route::group(['as' => 'requerimiento-pagos.', 'prefix' => 'requerimiento-pagos'], function(){
+			Route::group(['as' => 'procesar-pago.', 'prefix' => 'procesar-pago'], function(){
 
-				Route::get('index', 'Tesoreria\RequerimientoPagoController@view_requerimiento_pagos')->name('index');
-				Route::post('listarRequerimientosPagos', 'Tesoreria\RequerimientoPagoController@listarRequerimientosPagos')->name('listar-requerimiento-pagos');
+				Route::get('index', 'Tesoreria\RequerimientoPagoController@view_pendientes_pago')->name('index');
 				Route::post('listarComprobantesPagos', 'Tesoreria\RequerimientoPagoController@listarComprobantesPagos')->name('listar-comprobante-pagos');
+				Route::post('listarOrdenesCompra', 'Tesoreria\RequerimientoPagoController@listarOrdenesCompra')->name('listar-ordenes-compra');
 				Route::post('procesarPago', 'Tesoreria\RequerimientoPagoController@procesarPago')->name('procesar-pagos');
-				Route::get('detalleRequerimiento/{id}', 'Logistica\RequerimientoController@detalleRequerimiento')->name('detalle-requerimiento');
+				// Route::post('listarRequerimientosPagos', 'Tesoreria\RequerimientoPagoController@listarRequerimientosPagos')->name('listar-requerimiento-pagos');
+				// Route::get('detalleRequerimiento/{id}', 'Logistica\RequerimientoController@detalleRequerimiento')->name('detalle-requerimiento');
 				Route::get('detalleComprobante/{id}', 'Tesoreria\RequerimientoPagoController@detalleComprobante')->name('detalle-comprobante');
 
 			});

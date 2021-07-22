@@ -44,7 +44,7 @@
                     <p style="font-size:15px;display:flex;width:20px;">Pagos pendientes</p>
                 </div>
                 <!-- @if(Auth::user()->tieneAplicacion(102)) -->
-                <a href="{{route('tesoreria.pagos.requerimiento-pagos.index')}}" class="small-box-footer">Ir <i class="fa fa-arrow-circle-right"></i></a>
+                <a href="{{route('tesoreria.pagos.procesar-pago.index')}}" class="small-box-footer">Ir <i class="fa fa-arrow-circle-right"></i></a>
                 <!-- @else
                 <a href="#" class="small-box-footer">Ir <i class="fa fa-arrow-circle-right"></i></a>
                 @endif -->
