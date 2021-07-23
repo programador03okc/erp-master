@@ -12,6 +12,8 @@ class Orden extends Model {
 
     protected $table = 'logistica.log_ord_compra';
     protected $primaryKey = 'id_orden_compra';
+    protected $appends = ['requerimientos'];
+
     public $timestamps = false;
 
 
@@ -23,6 +25,14 @@ class Orden extends Model {
 		return $data;
     }
 
+    public function getRequerimientosAttribute(){
+
+        $requerimientos=OrdenCompraDetalle::join('almacen.alm_det_req','log_det_ord_compra.id_detalle_requerimiento','alm_det_req.id_detalle_requerimiento')
+        ->join('almacen.alm_req','alm_req.id_requerimiento','alm_det_req.id_requerimiento')
+        ->where('log_det_ord_compra.id_orden_compra',$this->attributes['id_orden_compra'])
+        ->select(['alm_req.id_requerimiento','alm_req.codigo'])->distinct()->get(); 
+        return $requerimientos;
+    }
 
     public static function reporteListaOrdenes(){
         $ord_compra = Orden::select(

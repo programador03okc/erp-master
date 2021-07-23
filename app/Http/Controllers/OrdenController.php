@@ -899,8 +899,7 @@ class OrdenController extends Controller
 
      
 
-        $ord_compra = DB::table('logistica.log_ord_compra')
-        ->select(
+        $ord_compra =Orden::select(
             'log_ord_compra.*',
             'sis_sede.descripcion as descripcion_sede_empresa',
 
@@ -1058,10 +1057,10 @@ class OrdenController extends Controller
             }
         }
 
-        $detalle_orden = DB::table('logistica.log_ord_compra')
-        ->select(
+        $detalle_orden = Orden::select(
             'log_ord_compra.id_orden_compra',
             'log_det_ord_compra.id_detalle_orden',
+            'alm_req.id_requerimiento',
             'alm_req.codigo as codigo_requerimiento',
             'alm_req.fecha_registro as fecha_registro_requerimiento',
             'oportunidades.codigo_oportunidad',
@@ -1090,6 +1089,7 @@ class OrdenController extends Controller
                 $data_detalle_orden[]=[
                     'id_orden_compra'=> $element->id_orden_compra,
                     'id_detalle_orden'=> $element->id_detalle_orden,
+                    'id_requerimiento'=> $element->id_requerimiento,
                     'codigo_requerimiento'=> $element->codigo_requerimiento,
                     'codigo_oportunidad'=> $element->codigo_oportunidad,
                     'fecha_entrega'=> $element->fecha_entrega,
@@ -1107,7 +1107,7 @@ class OrdenController extends Controller
             foreach ($data_detalle_orden as $detalleOrdnKey => $detalleOrdenValue) {
                 if($ordenValue['id_orden_compra'] == $detalleOrdenValue['id_orden_compra']){
                     if(in_array($detalleOrdenValue['codigo_requerimiento'],$data_orden[$ordenKey]['codigo_requerimiento'])==false){
-                        $data_orden[$ordenKey]['codigo_requerimiento'][]=$detalleOrdenValue['codigo_requerimiento'];
+                        $data_orden[$ordenKey]['requerimientos'][]=['id_requerimiento'=>$detalleOrdenValue['id_requerimiento'], 'codigo'=> $detalleOrdenValue['codigo_requerimiento']];
                         $data_orden[$ordenKey]['codigo_oportunidad']=$detalleOrdenValue['codigo_oportunidad'];
                         $data_orden[$ordenKey]['fecha_vencimiento_ocam']=$detalleOrdenValue['fecha_entrega'];
                         $data_orden[$ordenKey]['fecha_ingreso_almacen']=$detalleOrdenValue['fecha_ingreso_almacen'];

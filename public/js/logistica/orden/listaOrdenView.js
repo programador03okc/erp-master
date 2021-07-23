@@ -419,11 +419,17 @@ class ListaOrdenView {
                     return '<label class="lbl-codigo" title="Abrir Orden" onClick="listaOrdenView.abrirOrden('+row.id_orden_compra+')">'+row.codigo+'</label>';
                     }
                 },
-                {'render':
-                function (data, type, row, meta){
-                    return (row.codigo_requerimiento)
+                {
+                    'render': function (data, type, row) {
+                        let labelRequerimiento='';
+                        (row['requerimientos']).forEach(element => {
+                            labelRequerimiento += `<label class="lbl-codigo" title="Abrir orden" onclick="listaOrdenView.abrirRequerimiento(${element.id_requerimiento})">${element.codigo}</label>`;
+                        });
+                        return labelRequerimiento;
+                        
                     }
                 },
+
                 {'render':
                     function (data, type, row, meta){
                     return '<center><span class="label label-default">'+row.estado_doc+'</span></center>';
@@ -643,15 +649,23 @@ class ListaOrdenView {
     }
 
     abrirRequerimiento(idRequerimiento){
-        listaOrdenCtrl.abrirRequerimiento(idRequerimiento);
-
+        // localStorage.setItem('idRequerimiento', idRequerimiento);
+        // let url = "/logistica/gestion-logistica/requerimiento/elaboracion/index";
+        // var win = window.open(url, "_self");
+        // win.focus(); 
+        let url =`/logistica/gestion-logistica/requerimiento/elaboracion/imprimir-requerimiento-pdf/${idRequerimiento}/0`;
+        var win = window.open(url, "_blank");
+        win.focus(); 
     }
 
     abrirOrden(idOrden){
-        sessionStorage.setItem("idOrden",idOrden);
-        let url ="/logistica/gestion-logistica/compras/ordenes/elaborar/index";
-        var win = window.open(url, '_blank');
-        win.focus();
+        // sessionStorage.setItem("idOrden",idOrden);
+        // let url ="/logistica/gestion-logistica/compras/ordenes/elaborar/index";
+        // var win = window.open(url, '_blank');
+        // win.focus();
+        let url =`/logistica/gestion-logistica/compras/ordenes/listado/generar-orden-pdf/${idOrden}`;
+        var win = window.open(url, "_blank");
+        win.focus(); 
     }
 
     imprimir_orden(event){
