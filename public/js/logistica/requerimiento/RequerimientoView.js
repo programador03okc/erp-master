@@ -660,18 +660,28 @@ class RequerimientoView {
         // console.log(tempPartidasActivas);
     }
     validarPresupuestoUtilizadoYSaldoPorPartida(data) {
-        let mensajeAlerta = '';
 
-        var toast = new Toasty(optionsToasty);
+
+        let mensajeAlerta = '';
  
         data.forEach(partida => {
             if (partida.saldo < 0) {
+                
                 mensajeAlerta += `La partida ${partida.codigo} - ${partida.descripcion} a excedido el presupuesto asignado, tiene un saldo actual de ${Util.formatoNumero(partida.saldo, 2)}. \n`
             }
         });
         if (mensajeAlerta.length > 0) {
-            // alert(mensajeAlerta);
-            toast.info(mensajeAlerta);
+
+            Lobibox.notify('info', {
+                title:false,
+                size: 'normal',
+                width: 500,  
+                rounded: true,
+                sound: false,
+                delayIndicator: false,
+                msg: mensajeAlerta
+            });
+
 
         }
     }

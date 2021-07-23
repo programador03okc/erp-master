@@ -640,7 +640,6 @@ Crear / editar requerimiento
 <script src="{{ asset('js/logistica/requerimiento/modal_lista_trabajadores.js') }}"></script>
 <script src="{{ asset('js/logistica/requerimiento/cuadro_costos.js') }}"></script>
 <script src="{{ asset('js/logistica/requerimiento/historial.js') }}"></script>
-<script src="{{ asset('js/logistica/requerimiento/trazabilidad.js') }}"></script>
 <script src="{{ asset('js/logistica/requerimiento/editar.js') }}"></script>
 <script src="{{ asset('js/logistica/requerimiento/cancelar.js') }}"></script>
 <script src="{{ asset('js/logistica/requerimiento/anular.js') }}"></script>

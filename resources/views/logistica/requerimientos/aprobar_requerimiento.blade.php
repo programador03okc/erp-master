@@ -152,12 +152,8 @@ var grupos = JSON.parse('{!!$gruposUsuario!!}');
  
     $(document).ready(function() {
         seleccionarMenu(window.location);
- 
- 
+        aprobarRequerimientoView.mostrar();
 
-        window.onload = function() {
-            aprobarRequerimientoView.mostrar();
-        };
     });
 </script>
 @endsection
