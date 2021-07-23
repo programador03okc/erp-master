@@ -7,60 +7,6 @@ class RequerimientoPago
         this.listarOrdenes();
     }
 
-    listarRequerimientos() {
-        const permisoConfirmarDenegarPago=this.permisoConfirmarDenegarPago;
-        var vardataTables = funcDatatables();
-        tablePagos = $('#listaRequerimientos').DataTable({
-            'dom': vardataTables[1],
-            'buttons': vardataTables[2],
-            'language' : vardataTables[0],
-            'destroy' : true,
-            'serverSide' : true,
-            'ajax': {
-                url: 'listarRequerimientosPagos',
-                type: 'POST'
-            },
-            'columns': [
-                {'data': 'id_requerimiento'},
-                {'data': 'codigo'},
-                {'data': 'concepto'},
-                {'data': 'fecha_requerimiento'},
-                {'data': 'sede_descripcion', 'name': 'sis_sede.descripcion'},
-                {'data': 'responsable', 'name': 'sis_usua.nombre_corto'},
-                {'render': 
-                    function (data, type, row){
-                        return (row['simbolo']+(row['monto']!==null ? row['monto'] : 0));
-                    }
-                },
-                {'data': 'fecha_pago', 'name': 'alm_req_pago.fecha_pago'},
-                {'data': 'observacion', 'name': 'alm_req_pago.observacion'},
-                {'data': 'usuario_pago', 'name': 'registrado_por.nombre_corto'},
-                {'render': function (data, type, row){
-                    return '<span class="label label-'+row['bootstrap_color']+'">'+row['estado_doc']+'</span>'
-                    }
-                }
-            ],
-            'columnDefs': [
-                {'aTargets': [0], 'sClass': 'invisible'},
-                {'render': function (data, type, row){
-                    return `
-                    <div>
-                        ${row['estado'] == 8 ?
-                        `<button type="button" style="padding-left:8px;padding-right:7px;" class="adjunto btn btn-danger boton" data-toggle="tooltip" 
-                            data-placement="bottom" data-id="${row['id_requerimiento']}" data-cod="${row['codigo']}" title="Procesar Pago" >
-                            <i class="far fa-credit-card"></i></button>`:''}
-                        <button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" 
-                            data-placement="bottom" data-id="${row['id_requerimiento']}" title="Ver Detalle" >
-                            <i class="fas fa-chevron-down"></i></button>
-                    </div>
-                    `;
-                    
-                    }, targets: 11
-                }
-            ],
-        });
-    }
-
     listarComprobantes(){
         var vardataTables = funcDatatables();
         tableComprobantes = $('#listaComprobantes').DataTable({
@@ -79,25 +25,51 @@ class RequerimientoPago
                 {'data': 'serie'},
                 {'data': 'numero'},
                 {'data': 'razon_social', 'name': 'adm_contri.razon_social'},
-                {'data': 'fecha_emision'},
+                // {'data': 'fecha_emision'},
+                {'render': function (data, type, row){
+                    return (row['fecha_emision']!==null ? formatDate(row['fecha_emision']) : '');
+                    }, 'className': 'text-center'
+                },
                 {'data': 'condicion_pago', 'name': 'log_cdn_pago.descripcion'},
-                {'data': 'fecha_vcmto'},
+                // {'data': 'fecha_vcmto'},
+                {'render': function (data, type, row){
+                    return (row['fecha_vcmto']!==null ? formatDate(row['fecha_vcmto']) : '');
+                    }, 'className': 'text-center'
+                },
                 {'data': 'simbolo', 'name': 'sis_moneda.simbolo'},
-                {'data': 'total_a_pagar'},
-                {'data': 'fecha_pago'},
+                {'render': function (data, type, row){
+                    return (row['total_a_pagar']!==null ? formatDecimal(row['total_a_pagar']) : '');
+                    }, 'className': 'text-right'
+                },
+                {'render': function (data, type, row){
+                    return (row['fecha_pago']!==null ? formatDate(row['fecha_pago']) : '');
+                    }, 'className': 'text-center'
+                },
                 {'data': 'observacion'},
                 {'data': 'usuario_pago', 'name':'registrado_por.nombre_corto'},
+                {'data': 'total_pago'},
                 {'render': function (data, type, row){
-                    return '<span class="label label-'+row['bootstrap_color']+'">'+row['estado_doc']+'</span>'
+                        if (row['adjunto']!==null){
+                            return '<a href="/files/tesoreria/pagos/'+row['adjunto']+'" target="_blank">'+row['adjunto']+'</a>';
+                        } else {
+                            return '';
+                        }
+                    }
+                },
+                {'render': function (data, type, row){
+                    return '<span class="label label-'+row['bootstrap_color']+'">'+(row['estado']==9?'Pagada':row['estado_doc'])+'</span>'
                     }
                 },
                 {'render':
                     function (data, type, row){
                     return `<div class="btn-group" role="group">
                     ${row['estado'] == 1 ?
-                            `<button type="button" style="padding-left:8px;padding-right:7px;" class="adjunto btn btn-danger boton" data-toggle="tooltip" 
-                                data-placement="bottom" data-id="${row['id_doc_com']}" data-cod="${row['serie']+'-'+row['numero']}" title="Procesar Pago" >
+                            `<button type="button" style="padding-left:8px;padding-right:7px;" class="pago btn btn-danger boton" data-toggle="tooltip" 
+                                data-placement="bottom" data-id="${row['id_doc_com']}" data-cod="${row['serie']+'-'+row['numero']}" 
+                                data-total="${row['total_a_pagar']}" data-pago="${row['suma_pagado']}" 
+                                title="Procesar Pago" >
                                 <i class="far fa-credit-card"></i></button>`:''}
+
                             <button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" 
                                 data-placement="bottom" data-id="${row['id_doc_com']}" title="Ver Detalle" >
                                 <i class="fas fa-chevron-down"></i></button>
@@ -130,60 +102,100 @@ class RequerimientoPago
                 {'data': 'codigo'},
                 {'data': 'codigo_softlink'},
                 {'data': 'razon_social', 'name': 'adm_contri.razon_social'},
-                {'data': 'fecha'},
+                // {'data': 'fecha'},
+                {'render': function (data, type, row){
+                    return (row['fecha']!==null ? formatDate(row['fecha']) : '');
+                    }, 'className': 'text-center'
+                },
                 {'data': 'condicion_pago', 'name': 'log_cdn_pago.descripcion'},
                 {'data': 'simbolo', 'name': 'sis_moneda.simbolo'},
-                {'data': 'suma_total'},
-                {'data': 'fecha_pago'},
+                {'render': function (data, type, row){
+                    return (row['suma_total']!==null ? formatDecimal(row['suma_total']) : '');
+                    }, 'className': 'text-right'
+                },
+                {'render': function (data, type, row){
+                    return (row['fecha_pago']!==null ? formatDate(row['fecha_pago']) : '');
+                    }, 'className': 'text-center'
+                },
                 {'data': 'observacion'},
                 {'data': 'usuario_pago', 'name':'registrado_por.nombre_corto'},
-                // {'data': 'estado_doc'},
+                {'data': 'total_pago'},
                 {'render': function (data, type, row){
-                    return '<span class="label label-default">'+row['estado_doc']+'</span>'
+                        if (row['adjunto']!==null){
+                            return '<a href="/files/tesoreria/pagos/'+row['adjunto']+'" target="_blank">'+row['adjunto']+'</a>';
+                        } else {
+                            return '';
+                        }
+                    }
+                },
+                {'render': function (data, type, row){
+                    return '<span class="label label-'+(row['estado']==9?'primary':'default')+'">'+row['estado_doc']+'</span>'
                     }
                 },
                 {'render':
                     function (data, type, row){
                     return `<div class="btn-group" role="group">
                     ${row['estado'] !== 9 ?
-                            `<button type="button" style="padding-left:8px;padding-right:7px;" class="adjunto btn btn-danger boton" data-toggle="tooltip" 
-                                data-placement="bottom" data-id="${row['id_doc_com']}" data-cod="${row['serie']+'-'+row['numero']}" title="Procesar Pago" >
+                            `<button type="button" style="padding-left:8px;padding-right:7px;" class="pago btn btn-danger boton" data-toggle="tooltip" 
+                                data-placement="bottom" data-id="${row['id_orden_compra']}" data-cod="${row['codigo']}" 
+                                data-total="${row['suma_total']}" data-pago="${row['suma_pagado']}" 
+                                title="Procesar Pago" >
                                 <i class="far fa-credit-card"></i></button>`:''}
+
                             <button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" 
-                                data-placement="bottom" data-id="${row['id_doc_com']}" title="Ver Detalle" >
+                                data-placement="bottom" data-id="${row['id_orden_compra']}" title="Ver Detalle" >
                                 <i class="fas fa-chevron-down"></i></button>
                         </div>`;
                     }
                 },
             ],
-            
             'columnDefs': [{ 'aTargets': [0], 'sClass': 'invisible'}],
         });
     
     }
 }
 
-$('#listaRequerimientos tbody').on("click","button.adjunto", function(){
-    var id_requerimiento = $(this).data('id');
+$('#listaOrdenes tbody').on("click","button.pago", function(){
+    var id_oc = $(this).data('id');
     var codigo = $(this).data('cod');
+    var total = $(this).data('total');
+    var pago = $(this).data('pago');
+    console.log(pago);
+    var total_pago = parseFloat(total) - (pago!==null ? parseFloat(pago) : 0);
+
     $('#modal-procesarPago').modal({
         show: true
     });
-    $('[name=id_requerimiento]').val(id_requerimiento);
+
+    $('[name=id_oc]').val(id_oc);
     $('[name=id_doc_com]').val('');
     $('[name=codigo]').val(codigo);
+    $('[name=total_pago]').val(total_pago);
+    $('[name=total]').val(total_pago);
+    $('[name=observacion]').val('');
+
     $('#submit_procesarPago').removeAttr('disabled');
 });
 
-$('#listaComprobantes tbody').on("click","button.adjunto", function(){
+$('#listaComprobantes tbody').on("click","button.pago", function(){
     var id_doc_com = $(this).data('id');
     var codigo = $(this).data('cod');
+    var total = $(this).data('total');
+    var pago = $(this).data('pago');
+    console.log(pago);
+    var total_pago = parseFloat(total) - (pago!==null ? parseFloat(pago) : 0);
+
     $('#modal-procesarPago').modal({
         show: true
     });
+    
     $('[name=id_doc_com]').val(id_doc_com);
-    $('[name=id_requerimiento]').val('');
+    $('[name=id_oc]').val('');
     $('[name=codigo]').val(codigo);
+    $('[name=total_pago]').val(total_pago);
+    $('[name=total]').val(total_pago);
+    $('[name=observacion]').val('');
+
     $('#submit_procesarPago').removeAttr('disabled');
 });
 
@@ -195,8 +207,10 @@ $("#form-procesarPago").on("submit", function(e){
 
 function procesarPago(){
     var formData = new FormData($('#form-procesarPago')[0]);
-    var id_requerimiento = $('[name=id_requerimiento]').val();
+    var id_oc = $('[name=id_oc]').val();
     var id_doc_com = $('[name=id_doc_com]').val();
+    console.log(formData);
+
     $.ajax({
         type: 'POST',
         url: 'procesarPago',
@@ -209,9 +223,10 @@ function procesarPago(){
             console.log(response);
             $('#modal-procesarPago').modal('hide');
             
-            if (id_requerimiento!==''){
-                $('#listaRequerimientos').DataTable().ajax.reload();
-            } else if (id_doc_com!==''){
+            if (id_oc!==''){
+                $('#listaOrdenes').DataTable().ajax.reload();
+            } 
+            else if (id_doc_com!==''){
                 $('#listaComprobantes').DataTable().ajax.reload();
             }
         }

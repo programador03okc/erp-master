@@ -927,6 +927,9 @@ span.select2-selection {
   font-size: 12px;
 }
 
+.right {
+  text-align: right;
+}
 
 .icon-tabla {
   font-size: 20px;
@@ -1862,6 +1865,11 @@ form .select2-container .select2-selection--single {
 
 .timeline-heading {
   padding: 10px;
+}
+
+.celestito {
+  background-color: #d0f6ff;
+  color: #000;
 }
 
 table thead th {
