@@ -59,12 +59,15 @@ class RequerimientoPagoController extends Controller
             'estados_compra.descripcion as estado_doc',
             'sis_moneda.simbolo','log_cdn_pago.descripcion AS condicion_pago',
             'sis_sede.descripcion as sede_descripcion',
-            // 'cont_tp_doc.descripcion as tipo_documento',
+            'req_pagos.total_pago','req_pagos.adjunto',
             'req_pagos.fecha_pago','req_pagos.observacion',
             'registrado_por.nombre_corto as usuario_pago',
             DB::raw("(SELECT sum(subtotal) FROM logistica.log_det_ord_compra
-                      WHERE log_det_ord_compra.id_orden_compra = log_ord_compra.id_orden_compra
-                        and log_det_ord_compra.estado != 7) AS suma_total")
+                        WHERE log_det_ord_compra.id_orden_compra = log_ord_compra.id_orden_compra
+                        and log_det_ord_compra.estado != 7) AS suma_total"),
+            DB::raw("(SELECT sum(total_pago) FROM tesoreria.req_pagos
+                        WHERE req_pagos.id_oc = log_ord_compra.id_orden_compra
+                        and req_pagos.estado != 7) AS suma_pagado")
             )
         ->join('logistica.log_prove','log_prove.id_proveedor','=','log_ord_compra.id_proveedor')
         ->join('contabilidad.adm_contri','adm_contri.id_contribuyente','=','log_prove.id_contribuyente')
@@ -87,7 +90,11 @@ class RequerimientoPagoController extends Controller
             'sis_moneda.simbolo','log_cdn_pago.descripcion AS condicion_pago',
             'cont_tp_doc.descripcion as tipo_documento',
             'req_pagos.fecha_pago','req_pagos.observacion',
-            'registrado_por.nombre_corto as usuario_pago'
+            'registrado_por.nombre_corto as usuario_pago',
+            'req_pagos.total_pago','req_pagos.adjunto',
+            DB::raw("(SELECT sum(total_pago) FROM tesoreria.req_pagos
+                      WHERE req_pagos.id_doc_com = doc_com.id_doc_com
+                        and req_pagos.estado != 7) AS suma_pagado")
             )
         ->join('logistica.log_prove','log_prove.id_proveedor','=','doc_com.id_proveedor')
         ->join('contabilidad.adm_contri','adm_contri.id_contribuyente','=','log_prove.id_contribuyente')
@@ -128,10 +135,11 @@ class RequerimientoPagoController extends Controller
             $file = $request->file('adjunto');
 
             $id_pago = DB::table('tesoreria.req_pagos')
-            ->insertGetId([ 'id_requerimiento'=> $request->id_requerimiento,
+            ->insertGetId([ 'id_oc'=> $request->id_oc,
                             'id_doc_com'=>$request->id_doc_com,
                             'fecha_pago'=>$request->fecha_pago,
                             'observacion'=>$request->observacion,
+                            'total_pago'=>$request->total_pago,
                             'registrado_por'=>$id_usuario,
                             'estado'=>1,
                             'fecha_registro'=>date('Y-m-d H:i:s')
@@ -140,7 +148,7 @@ class RequerimientoPagoController extends Controller
             if (isset($file)){
                 //obtenemos el nombre del archivo
                 $extension = pathinfo($file->getClientOriginalName(), PATHINFO_EXTENSION);
-                $nombre = $id_pago.'.'.$request->codigo.'.'.$extension;
+                $nombre = $request->codigo.'.'.$id_pago.'.'.$extension;
                 //indicamos que queremos guardar un nuevo archivo en el disco local
                 File::delete(public_path('tesoreria/pagos/'.$nombre));
                 Storage::disk('archivos')->put('tesoreria/pagos/'.$nombre,File::get($file));
@@ -150,15 +158,18 @@ class RequerimientoPagoController extends Controller
                 ->update([ 'adjunto'=>$nombre ]);
             }
             
-            if ($request->id_requerimiento!==null){
-                DB::table('almacen.alm_req')
-                ->where('id_requerimiento',$request->id_requerimiento)
-                ->update(['estado'=>9]);//procesado
-            }
-            else if ($request->id_doc_com!==null){
-                DB::table('almacen.doc_com')
-                ->where('id_doc_com',$request->id_doc_com)
-                ->update(['estado'=>9]);//procesado
+            if (floatval($request->total_pago) >= floatval($request->total)){
+
+                if ($request->id_oc!==null){
+                    DB::table('logistica.log_ord_compra')
+                    ->where('id_orden_compra',$request->id_oc)
+                    ->update(['estado'=>9]);//pagada
+                }
+                else if ($request->id_doc_com!==null){
+                    DB::table('almacen.doc_com')
+                    ->where('id_doc_com',$request->id_doc_com)
+                    ->update(['estado'=>9]);//procesado
+                }
             }
 
             DB::commit();

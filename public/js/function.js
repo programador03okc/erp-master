@@ -867,7 +867,7 @@ function suma_fecha(d, fecha){
 
 /* Formato para las fechas dd/mm/YY */
 function formatDate(myfecha){
-    var nuevo = moment(myfecha).format("DD/MM/YYYY");
+    var nuevo = moment(myfecha).format("DD-MM-YYYY");
     /*var fecha = new Date(myfecha);
     var dd = fecha.getDate();
     var mm = fecha.getMonth() + 1;
