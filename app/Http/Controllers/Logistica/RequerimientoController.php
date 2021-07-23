@@ -11,6 +11,7 @@ use App\Http\Controllers\ProyectosController;
 use App\Models\Administracion\Aprobacion;
 use App\Models\Administracion\Area;
 use App\Models\Administracion\Division;
+use App\Models\Administracion\DivisionArea;
 use App\Models\Administracion\Documento;
 use App\Models\Administracion\Flujo;
 use App\Models\Administracion\Operacion;
@@ -1247,7 +1248,7 @@ class RequerimientoController extends Controller
                 return $query->whereRaw('sis_grupo.id_grupo = ' . $idGrupo);
             })
             ->when((($division != "0" && $division != "")), function ($query)  use ($division) {
-                return $query->whereRaw('alm_req.division_id = ' . "'" . $division . "'");
+                return $query->whereRaw('alm_req.division_id = ' . $division);
             })
             ->when((intval($idPrioridad) > 0), function ($query)  use ($idPrioridad) {
                 return $query->whereRaw('alm_req.id_prioridad = ' . $idPrioridad);
@@ -2786,20 +2787,9 @@ class RequerimientoController extends Controller
 
     public function mostrarDivisionesDeGrupo($idGrupo)
     {
-        $data = DB::table('administracion.adm_flujo')
-            ->select(
-                'adm_flujo.*',
-                'sis_rol.descripcion as descripcion_rol'
-            )
-            ->join('administracion.adm_operacion', 'adm_operacion.id_operacion', '=', 'adm_flujo.id_operacion')
-            ->leftJoin('configuracion.sis_rol', 'sis_rol.id_rol', '=', 'adm_flujo.id_rol')
-            ->where([
-                ['adm_operacion.id_grupo', '=', $idGrupo]
-            ])
-            ->orderBy('adm_flujo.orden', 'asc')
-            ->get();
-
-        return $data;
+        $divisiones = DivisionArea::where("grupo_id", $idGrupo)->get();
+    
+        return $divisiones;
     }
 
     public function get_flujo_aprobacion($id_operacion, $id_area)
