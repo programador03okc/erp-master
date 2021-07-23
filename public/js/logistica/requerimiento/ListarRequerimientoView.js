@@ -208,7 +208,7 @@ class ListarRequerimientoView{
         let selectSede = document.querySelector('div[type="lista_requerimiento"] select[name="division_select"]');
         let html = '<option value="0">Todas</option>';
         data.forEach(element => {
-            html += '<option value="' + element.nombre + '">' + element.nombre + '</option>'
+            html += '<option value="' + element.id_division + '">' + element.descripcion + '</option>'
         });
 
         selectSede.innerHTML = html;
