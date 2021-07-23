@@ -45,10 +45,12 @@ Procesar Pagos
                                                 <th>Condición</th>
                                                 <th>Fecha Vencimiento</th>
                                                 <th>Mnd</th>
-                                                <th>Total a Pagar</th>
+                                                <th>Total</th>
                                                 <th>Fecha Pago</th>
                                                 <th>Motivo</th>
                                                 <th>Procesado por</th>
+                                                <th>Total pago</th>
+                                                <th>Adjunto</th>
                                                 <th>Estado</th>
                                                 <th style="width:90px;">Acción</th>
                                             </tr>
@@ -82,6 +84,8 @@ Procesar Pagos
                                                 <th>Fecha Pago</th>
                                                 <th>Motivo</th>
                                                 <th>Procesado por</th>
+                                                <th>Total pago</th>
+                                                <th>Adjunto</th>
                                                 <th>Estado</th>
                                                 <th style="width:120px;">Acción</th>
                                             </tr>
@@ -115,12 +119,14 @@ Procesar Pagos
     <script src="{{ asset('datatables/pdfmake/pdfmake.min.js') }}"></script>
     <script src="{{ asset('datatables/pdfmake/vfs_fonts.js') }}"></script>
     <script src="{{ asset('datatables/JSZip/jszip.min.js') }}"></script> -->
+    <script src="{{ asset('template/plugins/moment.min.js') }}"></script>
 
     <script src="{{ asset('js/tesoreria/pagos/pendientesPago.js')}}"></script>
     <!-- <script src="{{ asset('js/almacen/distribucion/requerimientoDetalle.js')}}"></script> -->
     <script>
     $(document).ready(function(){
         seleccionarMenu(window.location);
+        vista_extendida();
 
         let requerimientoPago=new RequerimientoPago('{{Auth::user()->tieneAccion(78)}}');
 

@@ -11,9 +11,10 @@
             <form id="form-procesarPago" enctype="multipart/form-data" method="post">
                 <div class="modal-body">
                     <div class="row">
-                        <input type="text" class="oculto" name="id_requerimiento"/>
+                        <input type="text" class="oculto" name="id_oc"/>
                         <input type="text" class="oculto" name="id_doc_com"/>
                         <input type="text" class="oculto" name="codigo"/>
+                        <input type="text" class="oculto" name="total"/>
                         <div class="col-md-6">
                             <h5>Fecha del Pago</h5>
                             <input type="date" class="form-control" name="fecha_pago" value="<?=date('Y-m-d');?>" required/>
@@ -23,6 +24,12 @@
                         <div class="col-md-12">
                             <h5>Motivo</h5>
                             <textarea name="observacion" id="observacion" cols="70" rows="5"></textarea>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <h5>Total a pagar</h5>
+                            <input type="number" class="form-control right" name="total_pago" step="0.01" required/>
                         </div>
                     </div>
                     <div class="row">

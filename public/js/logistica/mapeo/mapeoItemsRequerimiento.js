@@ -10,7 +10,7 @@ function listarItemsRequerimientoMapeo(id_requerimiento){
         success: function(response){
             console.log(response);
             response.forEach(element => {
-                if(element.id_tipo_item ==1){
+                if(element.id_tipo_item == 1){
                     detalle.push({
                         'id_detalle_requerimiento'  :element.id_detalle_requerimiento,
                         'id_producto'           :element.id_producto,
@@ -124,34 +124,41 @@ $("#form-mapeoItemsRequerimiento").on("submit", function(e){
         let lista = [];
 
         detalle.forEach(element => {
-            lista.push({
-                'id_detalle_requerimiento'  : element.id_detalle_requerimiento,
-                'id_producto'               : element.id_producto,
-                'part_number'               : (element.id_producto!==null?'':element.part_number),
-                'descripcion'               : (element.id_producto!==null?'':element.descripcion),
-                'codigo'                    : element.codigo,
-                'cantidad'                  : element.cantidad,
-                'abreviatura'               : element.abreviatura,
-                'id_categoria'              : element.id_categoria,
-                'id_clasif'                 : element.id_clasif,
-                'id_subcategoria'           : element.id_subcategoria,
-                'id_unidad_medida'          : element.id_unidad_medida,
-            });
+            
+            // if (element.id_categoria!==null){
+                lista.push({
+                    'id_detalle_requerimiento'  : element.id_detalle_requerimiento,
+                    'id_producto'               : element.id_producto,
+                    'part_number'               : (element.id_producto!==null?'':element.part_number),
+                    'descripcion'               : (element.id_producto!==null?'':element.descripcion),
+                    'codigo'                    : element.codigo,
+                    'cantidad'                  : element.cantidad,
+                    'abreviatura'               : element.abreviatura,
+                    'id_categoria'              : element.id_categoria,
+                    'id_clasif'                 : element.id_clasif,
+                    'id_subcategoria'           : element.id_subcategoria,
+                    'id_unidad_medida'          : element.id_unidad_medida,
+                });
+            // }
         });
 
-        let data = 'detalle='+JSON.stringify(lista);
-        console.log(data);
+        // let data = 'detalle='+JSON.stringify(lista);
+        // console.log(data);
         $.ajax({
             type: 'POST',
             url: 'guardar_mapeo_productos',
-            data: data,
+            data: {
+                detalle: lista
+            },
             dataType: 'JSON',
             success: function(response){
-                console.log(response);
-                alert('Productos mapeados con éxito.');
-                $('#modal-mapeoItemsRequerimiento').modal('hide');
-                // requerimientoPendienteView.renderRequerimientoPendienteListModule(null, null);
-                location.reload();
+                if (response.response=='ok') {                    
+                    console.log(response);
+                    alert('Productos mapeados con éxito.');
+                    $('#modal-mapeoItemsRequerimiento').modal('hide');
+                    location.reload();
+                    // requerimientoPendienteView.renderRequerimientoPendienteListModule(null, null);
+                }
             }
         }).fail( function( jqXHR, textStatus, errorThrown ){
             console.log(jqXHR);

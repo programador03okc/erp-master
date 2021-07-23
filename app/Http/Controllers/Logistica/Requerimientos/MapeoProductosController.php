@@ -61,48 +61,59 @@ class MapeoProductosController extends Controller
 
     public function guardar_mapeo_productos(Request $request)
     {
-        $id_usuario = Auth::user()->id_usuario;
-        $detalles = json_decode($request->detalle);
+        DB::beginTransaction();
+        try {
+            $id_usuario = Auth::user()->id_usuario;
+            // $datax = [];
+            // foreach($request->detalle as $det){
+            //     $id_prod = $det['id_producto'];
+            //     $datax[] = [$id_prod];
+            // }
+            // dd($datax);
+            // exit();
+            foreach($request->detalle as $det){
+    
+                if ($det['id_producto'] !== null){
+                    DB::table('almacen.alm_det_req')
+                    ->where('id_detalle_requerimiento',$det['id_detalle_requerimiento'])
+                    ->update(['id_producto'=>$det['id_producto']]);
+                } 
+                else if ($det['id_categoria'] !== null && $det['id_subcategoria'] !== null
+                        && $det['id_clasif'] !== null && $det['id_producto'] == null){
+                        
+                    $id_producto = DB::table('almacen.alm_prod')->insertGetId(
+                        [
+                            'part_number' => $det['part_number'],
+                            'id_categoria' => $det['id_categoria'],
+                            'id_subcategoria' => $det['id_subcategoria'],
+                            'id_clasif' => $det['id_clasif'],
+                            'descripcion' => strtoupper($det['descripcion']),
+                            'id_unidad_medida' => $det['id_unidad_medida'],
+                            'id_usuario' => $id_usuario,
+                            'estado' => 1,
+                            'fecha_registro' => date('Y-m-d H:i:s')
+                        ],
+                            'id_producto'
+                        );
+    
+                    $codigo = AlmacenController::leftZero(7, $id_producto);
+    
+                    DB::table('almacen.alm_prod')
+                    ->where('id_producto',$id_producto)
+                    ->update(['codigo'=>$codigo]);
 
-        foreach($detalles as $det){
-            
-            if ($det->id_producto !== null){
-                DB::table('almacen.alm_det_req')
-                ->where('id_detalle_requerimiento',$det->id_detalle_requerimiento)
-                ->update(['id_producto'=>$det->id_producto]);
-            } 
-            else if ($det->id_categoria !== null && $det->id_subcategoria !== null
-                    && $det->id_clasif !== null && $det->id_producto == null){
-                    
-                $id_producto = DB::table('almacen.alm_prod')->insertGetId(
-                    [
-                        'part_number' => $det->part_number,
-                        'id_categoria' => $det->id_categoria,
-                        'id_subcategoria' => $det->id_subcategoria,
-                        'id_clasif' => $det->id_clasif,
-                        'descripcion' => strtoupper($det->descripcion),
-                        'id_unidad_medida' => $det->id_unidad_medida,
-                        // 'series' => true,
-                        // 'afecto_igv' => false,
-                        'id_usuario' => $id_usuario,
-                        'estado' => 1,
-                        'fecha_registro' => date('Y-m-d H:i:s')
-                    ],
-                        'id_producto'
-                    );
-
-                $codigo = AlmacenController::leftZero(7, $id_producto);
-
-                DB::table('almacen.alm_prod')
-                ->where('id_producto',$id_producto)
-                ->update(['codigo'=>$codigo]);
-
-                DB::table('almacen.alm_det_req')
-                ->where('id_detalle_requerimiento',$det->id_detalle_requerimiento)
-                ->update(['id_producto'=>$id_producto]);
+                    DB::table('almacen.alm_det_req')
+                    ->where('id_detalle_requerimiento',$det['id_detalle_requerimiento'])
+                    ->update(['id_producto'=>$id_producto]);
+                }
             }
+            DB::commit();
+            $rpta = 'ok';
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            $rpta = 'null';
         }
-        return response()->json(0);
+        return response()->json(array('response' => $rpta), 200);
     }
 
 }
