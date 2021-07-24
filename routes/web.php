@@ -1696,6 +1696,11 @@ Route::group(['middleware' => ['auth']], function () {
 			
 		});
 		
+		Route::group(['as' => 'facturacion.', 'prefix' => 'facturacion'], function(){
+
+			Route::get('index', 'Tesoreria\Facturacion\PendientesFacturacionController@view_pendientes_facturacion')->name('index');
+			
+		});
 
 	});
 	
