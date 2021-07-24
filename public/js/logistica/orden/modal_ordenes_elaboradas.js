@@ -105,6 +105,8 @@ function loadHeadOrden(data){
     document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='id_contacto_proveedor']").value=data.id_contacto?data.id_contacto:'';
     document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='contacto_proveedor_nombre']").value=data.nombre_contacto?data.nombre_contacto:'';
     document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='contacto_proveedor_telefono']").value=data.telefono_contacto?data.telefono_contacto:'';
+    document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='id_cuenta_principal_proveedor']").value=data.id_cta_principal?data.id_cta_principal:'';
+    document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='nro_cuenta_principal_proveedor']").value=data.nro_cuenta?data.nro_cuenta:'';
     
     document.querySelector("form[id='form-crear-orden-requerimiento'] select[name='id_condicion']").value=data.id_condicion?data.id_condicion:'';
     document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='plazo_dias']").value=data.plazo_dias?data.plazo_dias:'';

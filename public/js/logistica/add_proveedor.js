@@ -31,12 +31,17 @@ function agregar_proveedor(){
     $('[name=id_doc_identidad]').val('2');
     $('[name=direccion_fiscal]').val('');
     $('[name=direccion_proveedor]').val('');
+    $('[name=telefono]').val('');
     $('[name=ubigeo_proveedor]').val('');
     $('[name=ubigeo_proveedor_descripcion]').val('');
     $('[name=id_contacto_proveedor]').val('');
     $('[name=contacto_proveedor_nombre]').val('');
     $('[name=contacto_proveedor_telefono]').val('');
     $('[name=razon_social]').val('');
+
+    $('[name=nro_cuenta]').val('');
+    $('[name=nro_cuenta_interbancaria]').val('');
+    $('[name=swift]').val('');
 
     $("#submitProveedor").removeAttr("disabled");
 }
@@ -70,7 +75,15 @@ function guardar_proveedor(){
                 // console.log(response);
                 
                 if (response['id_proveedor'] > 0){
-                    alert('Proveedor registrado con éxito');
+                    $('#modal-agregar-cuenta-bancaria-proveedor').modal('hide');
+                    Lobibox.notify('success', {
+                        title:false,
+                        size: 'normal',
+                        rounded: true,
+                        sound: false,
+                        delayIndicator: false,
+                        msg: 'Proveedor registrado. Se autocompletará los campos del proveedor registrado.'
+                    });
                     $('#modal-proveedor').modal('hide');
         
                     var page = $('.page-main').attr('type');
@@ -86,9 +99,11 @@ function guardar_proveedor(){
                             $('[name=tr_razon_social]').val(response['razon_social']);
                         }
                     }
-                    if( page == "orden-requerimiento"){
+                    if( page == "crear-orden-requerimiento"){
                         $('[name=id_proveedor]').val(response['id_proveedor']);
                         $('[name=razon_social]').val(response['razon_social']);
+                        $('[name=id_cuenta_principal_proveedor]').val(response['id_cuenta_contribuyente']);
+                        $('[name=nro_cuenta_principal_proveedor]').val(response['nro_cuenta']);
                     }
                 } else {
                     alert('Ya se encuentra registrado un Proveedor con dicho Nro de Documento!');

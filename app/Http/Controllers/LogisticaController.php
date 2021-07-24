@@ -27,6 +27,7 @@ use App\Models\Tesoreria\Usuario;
 use App\Models\Tesoreria\Grupo;
 use DataTables;
 use Debugbar;
+use Carbon\Carbon;
 
 date_default_timezone_set('America/Lima');
 
@@ -4229,6 +4230,7 @@ function get_id_usuario_usuario_por_rol($descripcion_rol, $id_sede, $id_empresa)
             ->first();
 
             $id_proveedor = 0;
+            $idCuentaContribuyente = 0;
 
             if ($exist == null){
                 $id_contribuyente = DB::table('contabilidad.adm_contri')->insertGetId(
@@ -4255,10 +4257,31 @@ function get_id_usuario_usuario_por_rol($descripcion_rol, $id_sede, $id_empresa)
                     ],
                         'id_proveedor'
                     );
+
+                $idCuentaContribuyente = DB::table('contabilidad.adm_cta_contri')->insertGetId(
+                    [
+                        'id_contribuyente' => $id_contribuyente,
+                        'id_banco' => $request->banco,
+                        'id_tipo_cuenta' => $request->tipo_cuenta_banco,
+                        'nro_cuenta' => $request->nro_cuenta,
+                        'nro_cuenta_interbancaria' => $request->nro_cuenta_interbancaria,
+                        'estado' => 1,
+                        'fecha_registro' => Carbon::now(),
+                        'id_moneda' => $request->moneda,
+                        'swift' => $request->swift
+                    ],
+                    'id_cuenta_contribuyente'
+                );
             }
             
             // DB::commit();
-            return response()->json(['id_proveedor'=>$id_proveedor,'razon_social'=>strtoupper($request->razon_social),'ruc'=>$request->nro_documento_prov,'exist'=>$exist ]);
+            return response()->json([
+                'id_proveedor'=>$id_proveedor,
+                'razon_social'=>strtoupper($request->razon_social),
+                'ruc'=>$request->nro_documento_prov,
+                'id_cuenta_contribuyente'=>$idCuentaContribuyente,
+                'nro_cuenta'=>$request->nro_cuenta,
+                'exist'=>$exist ]);
             
         // } catch (\PDOException $e) {
         //     DB::rollBack();

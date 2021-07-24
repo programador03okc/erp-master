@@ -3,7 +3,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="close"><span aria-hidden="true">&times;</span></button>
-                <h3 class="modal-title">Lista de contactos de Proveedor</h3>
+                <h3 class="modal-title">Lista de contactos de proveedor</h3>
             </div>
             <div class="modal-body">
                 <table class="mytable table table-condensed table-bordered table-okc-view" 

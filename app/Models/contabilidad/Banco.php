@@ -20,4 +20,8 @@ class Banco extends Model
             ->get();
         return $data;
     }
+
+    public function contribuyente(){
+        return $this->hasOne('App\Models\Contabilidad\Contribuyente','id_contribuyente','id_contribuyente');
+    }
 }

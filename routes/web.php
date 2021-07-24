@@ -809,13 +809,15 @@ Route::group(['middleware' => ['auth']], function () {
 						Route::get('listar_trabajadores', 'ProyectosController@listar_trabajadores');
 						Route::post('guardar_contacto', 'OrdenController@guardar_contacto');
 						Route::get('listar-sedes-por-empresa/{id?}', 'Logistica\RequerimientoController@listarSedesPorEmpresa')->name('listar-sedes-por-empresa');
-
+						
 						Route::get('listar-historial-ordenes-elaboradas', 'OrdenController@listaHistorialOrdenes');
 						Route::get('mostrar-orden/{id_orden?}', 'OrdenController@mostrarOrden');
 						Route::put('anular/{id_orden?}', 'OrdenController@anularOrden')->name('anular');
 						Route::get('tipo-cambio-compra/{fecha}', 'Almacen\Reporte\SaldosController@tipo_cambio_compra');
 						Route::get('requerimientos-pendientes/{id_empresa?}/{id_sede?}', 'ComprasPendientesController@listarRequerimientosPendientes')->name('requerimientos-pendientes'); 
 						Route::get('detalle-requerimiento/{idRequerimiento?}', 'Logistica\RequerimientoController@detalleRequerimiento')->name('detalle-requerimientos'); 
+						Route::get('listar-cuentas-bancarias-contribuyente/{idContribuyente?}', 'OrdenController@listarCuentasBancariasContribuyente')->name('listar-cuentas-bancarias-contribuyente'); 
+						Route::post('guardar-cuenta-bancaria-proveedor', 'OrdenController@guardarCuentaBancariaProveedor');
 
 					});
 					Route::group(['as' => 'listado.', 'prefix' => 'listado'], function(){
