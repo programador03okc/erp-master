@@ -5,8 +5,6 @@ namespace App\Http\Controllers\Almacen\Movimiento;
 use App\Http\Controllers\AlmacenController;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Models\Contabilidad\Banco;
-use App\Models\Contabilidad\TipoCuenta;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
@@ -20,11 +18,8 @@ class ProrrateoCostosController extends Controller
         $tipos_prorrateo = DB::table('almacen.tipo_prorrateo')
                             ->where('estado',1)->get();
 
-         $bancos = Banco::mostrar();
-         $tipo_cuenta = TipoCuenta::mostrar();
-
         return view('almacen/prorrateo/doc_prorrateo', 
-        compact('bancos','tipo_cuenta','tp_prorrateo','tp_doc','monedas','sis_identidad','tipos_prorrateo'));
+        compact('tp_prorrateo','tp_doc','monedas','sis_identidad','tipos_prorrateo'));
     }
 
     public function select_tp_prorrateo(){
