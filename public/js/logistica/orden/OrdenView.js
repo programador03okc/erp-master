@@ -544,6 +544,7 @@ class OrdenView {
         let id_proveedor = document.querySelector("div[type='crear-orden-requerimiento'] input[name='id_proveedor']").value;
         let id_contrib = document.querySelector("div[type='crear-orden-requerimiento'] input[name='id_contrib']").value;
         let id_contacto_proveedor = document.querySelector("div[type='crear-orden-requerimiento'] input[name='id_contacto_proveedor']").value;
+        let id_cuenta_principal_proveedor = document.querySelector("div[type='crear-orden-requerimiento'] input[name='id_cuenta_principal_proveedor']").value;
 
         let id_condicion = document.querySelector("div[type='crear-orden-requerimiento'] select[name='id_condicion']").value;
         let plazo_dias = document.querySelector("div[type='crear-orden-requerimiento'] input[name='plazo_dias']").value;
@@ -571,6 +572,7 @@ class OrdenView {
             'id_proveedor': id_proveedor,
             'id_contrib': id_contrib,
             'id_contacto_proveedor': id_contacto_proveedor,
+            'id_cuenta_principal_proveedor': id_cuenta_principal_proveedor,
 
             'id_condicion': id_condicion,
             'plazo_dias': plazo_dias,

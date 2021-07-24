@@ -1,36 +1,15 @@
 <?php
 
-namespace App\Models\contabilidad;
+namespace App\Models\Contabilidad;
 
 use Illuminate\Database\Eloquent\Model;
 
-class contribuyente extends Model
+class Contribuyente extends Model
 {
-         // table name
-         protected $table = 'adm_contri';
-         //primary key
-         protected $primaryKey = 'id_contribuyente';
-        //  public $incrementing = false;
-         //Timesptamps
-         public $timestamps = false;
-   
-       protected $fillable = [
-           'id_contribuyente',
-            'id_tipo_contribuyente',     
-           'id_doc_identidad', 
-           'nro_documento',   
-           'razon_social',    
-           'telefono',    
-           'celular',    
-           'direccion_fiscal',    
-           'ubigeo',    
-           'id_pais',    
-           'estado',    
-           'fecha_registro'    
-   
-       ];
+        protected $table = 'contabilidad.adm_contri';
+        protected $primaryKey = 'id_contribuyente';
+        public $timestamps = false;
 
- 
     //    public function tipocontribuyente()
     //    {
     //        return $this->hasOne('App\Models\administracion\tipo_contribuyente','id_tipo_contribuyente','id_tipo_contribuyente');

@@ -16,6 +16,9 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\ListOrdenesHeadExport;
 use App\Models\Almacen\UnidadMedida;
 use App\Models\Configuracion\Moneda;
+use App\Models\Contabilidad\Banco;
+use App\Models\Contabilidad\CuentaContribuyente;
+use App\Models\Contabilidad\TipoCuenta;
 use App\Models\Logistica\Orden;
 use Carbon\Carbon;
 class OrdenController extends Controller
@@ -65,8 +68,9 @@ class OrdenController extends Controller
         $unidades_medida = UnidadMedida::mostrar();
         $monedas = Moneda::mostrar();
         // $sedes = Auth::user()->sedesAcceso();
-
-        return view('logistica/gestion_logistica/compras/ordenes/elaborar/crear_orden_requerimiento', compact('sedes','sis_identidad','tp_documento', 'tp_moneda','tp_doc','condiciones','clasificaciones','subcategorias','categorias','unidades','unidades_medida','monedas'));
+        $bancos = Banco::mostrar();
+        $tipo_cuenta = TipoCuenta::mostrar();
+        return view('logistica/gestion_logistica/compras/ordenes/elaborar/crear_orden_requerimiento', compact('bancos','tipo_cuenta','sedes','sis_identidad','tp_documento', 'tp_moneda','tp_doc','condiciones','clasificaciones','subcategorias','categorias','unidades','unidades_medida','monedas'));
     }
 
     function lista_contactos_proveedor($id_proveedor){
@@ -1220,6 +1224,8 @@ class OrdenController extends Controller
             'adm_contri.nro_documento',
             'adm_contri.direccion_fiscal',
             'adm_contri.ubigeo',
+            'log_ord_compra.id_cta_principal',
+            'adm_cta_contri.nro_cuenta',
             DB::raw("(dis_proveedor.descripcion) || ' - ' || (prov_proveedor.descripcion) || ' - ' || (dpto_proveedor.descripcion)  AS ubigeo_proveedor"),
             'log_ord_compra.id_contacto',
             'adm_ctb_contac.nombre as nombre_contacto',
@@ -1259,6 +1265,7 @@ class OrdenController extends Controller
         ->leftJoin('configuracion.ubi_prov as prov_proveedor', 'dis_proveedor.id_prov', '=', 'prov_proveedor.id_prov')
         ->leftJoin('configuracion.ubi_dpto as dpto_proveedor', 'prov_proveedor.id_dpto', '=', 'dpto_proveedor.id_dpto')
         ->leftJoin('contabilidad.adm_ctb_contac', 'adm_ctb_contac.id_datos_contacto', '=', 'log_ord_compra.id_contacto')
+        ->leftJoin('contabilidad.adm_cta_contri', 'adm_cta_contri.id_cuenta_contribuyente', '=', 'log_ord_compra.id_cta_principal')
 
         ->leftJoin('configuracion.sis_moneda', 'sis_moneda.id_moneda', '=', 'log_ord_compra.id_moneda')
         ->leftjoin('logistica.log_cdn_pago','log_cdn_pago.id_condicion_pago','=','log_ord_compra.id_condicion')
@@ -1302,10 +1309,11 @@ class OrdenController extends Controller
                     'id_contribuyente' => $data->id_contribuyente,
                     'razon_social' => $data->razon_social,
                     'nro_documento' => $data->nro_documento,
-                    'nro_documento' => $data->nro_documento,
                     'direccion_fiscal' => $data->direccion_fiscal,
                     'ubigeo' => $data->ubigeo,
                     'ubigeo_proveedor' => $data->ubigeo_proveedor,
+                    'id_cta_principal' => $data->id_cta_principal,
+                    'nro_cuenta' => $data->nro_cuenta,
                     'id_contacto' => $data->id_contacto,
                     'nombre_contacto' => $data->nombre_contacto,
                     'telefono_contacto' => $data->telefono_contacto,
@@ -2575,6 +2583,7 @@ class OrdenController extends Controller
                     'id_moneda' => ($request->id_moneda?$request->id_moneda:null),
                     'incluye_igv' =>  isset($request->incluye_igv)?$request->incluye_igv:true,
                     'id_proveedor' => $request->id_proveedor,
+                    'id_cta_principal' => $request->id_cuenta_principal_proveedor,
                     'id_contacto' => $request->id_contacto_proveedor?$request->id_contacto_proveedor:null,
                     'codigo' => $codigo?$codigo:null,
                     'plazo_entrega' => $request->plazo_entrega?$request->plazo_entrega:null,
@@ -3565,5 +3574,36 @@ class OrdenController extends Controller
         return Excel::download(new ListOrdenesHeadExport, 'lista_ordenes.xlsx');
     }
 
+
+    public function listarCuentasBancariasContribuyente($idContribuyente){
+        $cuentas = CuentaContribuyente::mostrarCuentasContribuyente($idContribuyente)->get();
+        return $cuentas;
+    }
+
+    public function guardarCuentaBancariaProveedor(Request $request){
+        $status=0;
+
+        $idCuentaContribuyente = DB::table('contabilidad.adm_cta_contri')->insertGetId(
+            [
+                'id_contribuyente' => $request->id_contribuyente,
+                'id_banco' => $request->id_banco,
+                'id_tipo_cuenta' => $request->id_tipo_cuenta,
+                'nro_cuenta' => $request->nro_cuenta,
+                'nro_cuenta_interbancaria' => $request->nro_cuenta_interbancaria,
+                'estado' => 1,
+                'fecha_registro' => Carbon::now(),
+                'id_moneda' => $request->id_moneda,
+                'swift' => $request->swift
+            ],
+            'id_cuenta_contribuyente'
+        );
+        if($idCuentaContribuyente >0){
+            $status=200;
+        }
+
+        $output = ['status'=>$status,'id_cuenta_contribuyente'=>$idCuentaContribuyente];
+ 
+        return json_encode($output);
+    }
 
 }

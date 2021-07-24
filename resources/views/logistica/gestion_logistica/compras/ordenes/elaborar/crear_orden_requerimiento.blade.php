@@ -122,6 +122,18 @@ Elaborar orden
                             </div>
                         </div>
 
+                        <div class="col-md-3" id="group-cuenta_bancaria_proveedor">
+                            <h5>Cuenta bancaria</h5>
+                            <div style="display:flex;">
+                                <input class="oculto" name="id_cuenta_principal_proveedor">
+                                <input type="text" class="form-control" name="nro_cuenta_principal_proveedor" readOnly>
+                                <button type="button" class="group-text" id="basic-addon1" onClick="cuentasBancariasModal();">
+                                    <i class="fa fa-search"></i>
+                                </button>
+                                <button type="button" class="btn-primary" title="Agregar cuenta bancaria" onClick="agregar_cuenta_proveedor();"><i class="fas fa-plus"></i></button>
+                            </div>
+                        </div>
+
                         <div class="col-md-3" id="group-contacto_proveedor_nombre">
                             <h5>Nombre de contacto</h5>
                             <div style="display:flex;">
@@ -333,6 +345,8 @@ Elaborar orden
 @include('logistica.gestion_logistica.compras.ordenes.elaborar.modal_vincular_requerimiento_orden')
 @include('logistica.gestion_logistica.compras.ordenes.elaborar.modal_catalogo_items')
 @include('logistica.gestion_logistica.compras.ordenes.elaborar.modal_ordenes_elaboradas')
+@include('logistica.gestion_logistica.compras.ordenes.elaborar.modal_cuentas_bancarias_proveedor')
+@include('logistica.gestion_logistica.compras.ordenes.elaborar.modal_agregar_cuenta_bancaria_proveedor')
 @include('logistica.gestion_logistica.compras.ordenes.elaborar.modal_proveedor')
 @include('logistica.cotizaciones.add_proveedor')
 @include('publico.ubigeoModal')
@@ -357,6 +371,7 @@ Elaborar orden
 <script src="{{('/js/logistica/orden/proveedorContactoModal.js')}}"></script>
 <script src="{{('/js/logistica/orden/trabajadorModal.js')}}"></script>
 <script src="{{('/js/logistica/orden/agregarContacto.js')}}"></script>
+<script src="{{('/js/logistica/orden/cuentasBancariasProveedor.js')}}"></script>
 <script src="{{ asset('js/publico/consulta_sunat.js')}}"></script>
 <script src="{{('/js/logistica/orden/OrdenModel.js')}}"></script>
 <script src="{{('/js/logistica/orden/OrdenView.js')}}"></script>
