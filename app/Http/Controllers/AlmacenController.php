@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Helpers\Almacen\AlmacenDashboardHelper;
 use App\Models\Almacen\Movimiento;
 use App\Models\Almacen\MovimientoDetalle;
+use App\Models\Contabilidad\Banco;
+use App\Models\Contabilidad\TipoCuenta;
 use Illuminate\Http\Request;
 
 use Illuminate\Support\Facades\DB;
@@ -150,8 +152,9 @@ class AlmacenController extends Controller
         $motivos_anu = AlmacenController::select_motivo_anu();
         $sedes = AlmacenController::mostrar_sedes_cbo();
         $condiciones = AlmacenController::mostrar_condiciones_cbo();
-
-        return view('almacen/guias/guia_compra', compact('proveedores','almacenes','posiciones',
+        $bancos = Banco::mostrar();
+        $tipo_cuenta = TipoCuenta::mostrar();
+        return view('almacen/guias/guia_compra', compact('bancos','tipo_cuenta','proveedores','almacenes','posiciones',
         'clasificaciones','tp_doc','monedas','tp_doc_almacen','tp_operacion','tp_contribuyente',
         'sis_identidad','tp_prorrateo','usuarios','motivos_anu','sedes','condiciones'));
     }

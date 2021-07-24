@@ -6,6 +6,8 @@ use App\Models\Administracion\Aprobacion;
 use App\Models\Administracion\Documento;
 use App\Models\Administracion\Periodo;
 use App\Models\Administracion\Prioridad;
+use App\Models\Contabilidad\Banco;
+use App\Models\Contabilidad\TipoCuenta;
 use Illuminate\Support\Facades\DB;
 
 // use Mail;
@@ -40,7 +42,9 @@ class LogisticaController extends Controller
         $tp_contribuyente = $this->select_tp_contribuyente();
         $sis_identidad = $this->select_sis_identidad();
         $empresas = $this->select_mostrar_empresas();
-        return view('logistica/cotizaciones/gestionar_cotizaciones', compact('empresas', 'tp_contribuyente', 'sis_identidad'));
+        $bancos = Banco::mostrar();
+        $tipo_cuenta = TipoCuenta::mostrar();
+        return view('logistica/cotizaciones/gestionar_cotizaciones', compact('bancos','tipo_cuenta','empresas', 'tp_contribuyente', 'sis_identidad'));
     }
 
     // function view_valoriacion()
