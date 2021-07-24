@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Almacen\UnidadMedida;
 use App\Models\Configuracion\Moneda;
+use App\Models\Contabilidad\Banco;
+use App\Models\Contabilidad\TipoCuenta;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
@@ -43,13 +45,17 @@ class ComprasPendientesController extends Controller
 
         $unidades_medida = UnidadMedida::mostrar();
         $monedas = Moneda::mostrar();
-        // $sedes = Auth::user()->sedesAcceso();
+        $bancos = Banco::mostrar();
+        $tipo_cuenta = TipoCuenta::mostrar();
+    // $sedes = Auth::user()->sedesAcceso();
 
         $tipos = AlmacenController::mostrar_tipos_cbo();
 
         return view(
             'logistica/gestion_logistica/compras/pendientes/vista_pendientes',
             compact(
+                'bancos',
+                'tipo_cuenta',
                 'sedes',
                 'empresas',
                 'sis_identidad',

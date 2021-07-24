@@ -1,6 +1,9 @@
 <?php
 
 namespace App\Http\Controllers;
+
+use App\Models\Contabilidad\Banco;
+use App\Models\Contabilidad\TipoCuenta;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 
@@ -40,7 +43,9 @@ class EquipoController extends Controller
         $unid_program = $this->select_unidades_prog();
         $tp_contribuyente = $this->tp_contribuyente_cbo();
         $sis_identidad = $this->sis_identidad_cbo();
-        return view('equipo/equi_catalogo', compact('categorias','propietarios','tp_combustible','tp_seguro','proveedores','unid_program','tp_contribuyente','sis_identidad'));
+        $bancos = Banco::mostrar();
+        $tipo_cuenta = TipoCuenta::mostrar();
+        return view('equipo/equi_catalogo', compact('bancos','tipo_cuenta','categorias','propietarios','tp_combustible','tp_seguro','proveedores','unid_program','tp_contribuyente','sis_identidad'));
     }
     function view_tp_combustible(){
         return view('equipo/tp_combustible');
@@ -57,7 +62,9 @@ class EquipoController extends Controller
         $empresa = $this->select_empresa();
         $tp_contribuyente = $this->tp_contribuyente_cbo();
         $sis_identidad = $this->sis_identidad_cbo();
-        return view('equipo/mtto', compact('proveedores','equipos','empresa','tp_contribuyente','sis_identidad'));
+        $bancos = Banco::mostrar();
+        $tipo_cuenta = TipoCuenta::mostrar();
+        return view('equipo/mtto', compact('bancos','tipo_cuenta','proveedores','equipos','empresa','tp_contribuyente','sis_identidad'));
     }
     function view_equi_sol(){
         $trabajadores = $this->mostrar_trabajadores_cbo();

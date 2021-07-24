@@ -1,6 +1,9 @@
 <?php
 
 namespace App\Http\Controllers;
+
+use App\Models\Contabilidad\Banco;
+use App\Models\Contabilidad\TipoCuenta;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 
@@ -27,7 +30,9 @@ class DistribucionController extends Controller
         $subcategorias = AlmacenController::mostrar_subcategorias_cbo();
         $categorias = AlmacenController::mostrar_categorias_cbo();
         $unidades = AlmacenController::mostrar_unidades_cbo();
-        return view('almacen/distribucion/ordenesDespacho', compact('usuarios','sis_identidad','clasificaciones','subcategorias','categorias','unidades'));
+        $bancos = Banco::mostrar();
+        $tipo_cuenta = TipoCuenta::mostrar();
+        return view('almacen/distribucion/ordenesDespacho', compact('bancos','tipo_cuenta','usuarios','sis_identidad','clasificaciones','subcategorias','categorias','unidades'));
     }
 
     function view_confirmacionPago(){

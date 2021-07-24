@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Contabilidad\Banco;
+use App\Models\Contabilidad\TipoCuenta;
 use Illuminate\Support\Facades\DB;
 
 // use Mail;
@@ -143,7 +145,9 @@ class ComprobanteCompraController extends Controller
         $tp_contribuyente = $this->tp_contribuyente_cbo();
         $sis_identidad = $this->sis_identidad_cbo();
         $igv = $this->get_igv();
-        return view('logistica/comprobantes/generar_comprobante_compra', compact('igv','proveedores','clasificaciones','condiciones','tp_doc','moneda','detracciones','impuestos','usuarios','tp_contribuyente','sis_identidad'));
+        $bancos = Banco::mostrar();
+        $tipo_cuenta = TipoCuenta::mostrar();
+        return view('logistica/comprobantes/generar_comprobante_compra', compact('bancos','tipo_cuenta','igv','proveedores','clasificaciones','condiciones','tp_doc','moneda','detracciones','impuestos','usuarios','tp_contribuyente','sis_identidad'));
     }
 
     // public function getListaComprobantesCompra(){
