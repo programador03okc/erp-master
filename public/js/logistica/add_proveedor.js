@@ -39,10 +39,6 @@ function agregar_proveedor(){
     $('[name=contacto_proveedor_telefono]').val('');
     $('[name=razon_social]').val('');
 
-    $('[name=nro_cuenta]').val('');
-    $('[name=nro_cuenta_interbancaria]').val('');
-    $('[name=swift]').val('');
-
     $("#submitProveedor").removeAttr("disabled");
 }
 function ubigeoModalProveedor(){
@@ -102,8 +98,6 @@ function guardar_proveedor(){
                     if( page == "crear-orden-requerimiento"){
                         $('[name=id_proveedor]').val(response['id_proveedor']);
                         $('[name=razon_social]').val(response['razon_social']);
-                        $('[name=id_cuenta_principal_proveedor]').val(response['id_cuenta_contribuyente']);
-                        $('[name=nro_cuenta_principal_proveedor]').val(response['nro_cuenta']);
                     }
                 } else {
                     alert('Ya se encuentra registrado un Proveedor con dicho Nro de Documento!');

@@ -150,7 +150,6 @@ class AlmacenController extends Controller
         $motivos_anu = AlmacenController::select_motivo_anu();
         $sedes = AlmacenController::mostrar_sedes_cbo();
         $condiciones = AlmacenController::mostrar_condiciones_cbo();
-
         return view('almacen/guias/guia_compra', compact('proveedores','almacenes','posiciones',
         'clasificaciones','tp_doc','monedas','tp_doc_almacen','tp_operacion','tp_contribuyente',
         'sis_identidad','tp_prorrateo','usuarios','motivos_anu','sedes','condiciones'));

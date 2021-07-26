@@ -1,6 +1,8 @@
 <?php
 
 namespace App\Http\Controllers;
+
+
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 
@@ -40,6 +42,7 @@ class EquipoController extends Controller
         $unid_program = $this->select_unidades_prog();
         $tp_contribuyente = $this->tp_contribuyente_cbo();
         $sis_identidad = $this->sis_identidad_cbo();
+
         return view('equipo/equi_catalogo', compact('categorias','propietarios','tp_combustible','tp_seguro','proveedores','unid_program','tp_contribuyente','sis_identidad'));
     }
     function view_tp_combustible(){

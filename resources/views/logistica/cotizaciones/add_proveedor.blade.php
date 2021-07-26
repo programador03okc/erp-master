@@ -13,102 +13,54 @@
                     <div class="modal-body">
                         <div class="row">
                             <div class="col-md-12">
-                                <h4 style="display:flex;justify-content: space-between;">General</h4>
-                                <fieldset class="group-table">
-                                    <input type="hidden" name="_token" value="{{csrf_token()}}" id="token">
-                                    <input class="oculto" name="id_proveedor">
-                                    <div class="row">
-                                        <div class="col-md-4">
-                                            <h5>Tipo de Documento</h5>
-                                            <select class="form-control" name="id_doc_identidad" onchange="evaluarDocumentoSeleccionado(event);" required>
-                                                <option value="0" disabled>Elija una opción</option>
-                                                @foreach ($sis_identidad as $tp)
-                                                @if($tp->id_doc_identidad === 2)
-                                                <option value="{{$tp->id_doc_identidad}}" selected>{{$tp->descripcion}}</option>
-                                                @else
-                                                <option value="{{$tp->id_doc_identidad}}">{{$tp->descripcion}}</option>
-                                                @endif
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                        <div class="col-lg-8">
-                                            <h5>Nro. de Documento</h5>
-                                            <input type="text" style="display:none;" name="transportista">
-                                            <input type="number" class="form-control" name="nro_documento_prov" required>
-                                        </div>
+                                <input type="hidden" name="_token" value="{{csrf_token()}}" id="token">
+                                <input class="oculto" name="id_proveedor">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <h5>Tipo de Documento</h5>
+                                        <select class="form-control" name="id_doc_identidad" onchange="evaluarDocumentoSeleccionado(event);" required>
+                                            <option value="0" disabled>Elija una opción</option>
+                                            @foreach ($sis_identidad as $tp)
+                                            @if($tp->id_doc_identidad === 2)
+                                            <option value="{{$tp->id_doc_identidad}}" selected>{{$tp->descripcion}}</option>
+                                            @else
+                                            <option value="{{$tp->id_doc_identidad}}">{{$tp->descripcion}}</option>
+                                            @endif
+                                            @endforeach
+                                        </select>
                                     </div>
-                                    <div class="row">
-                                        <div class="col-md-8">
-                                            <h5>Razon Social</h5>
-                                            <input type="text" name="razon_social" class="form-control" required />
-                                        </div>
-                                        <div class="col-md-4">
-                                            <h5>Teléfono</h5>
-                                            <input type="text" name="telefono" class="form-control" />
-                                        </div>
+                                    <div class="col-lg-8">
+                                        <h5>Nro. de Documento</h5>
+                                        <input type="text" style="display:none;" name="transportista">
+                                        <input type="number" class="form-control" name="nro_documento_prov" required>
                                     </div>
-                                    <div class="row">
-                                        <div class="col-md-8">
-                                            <h5>Dirección Fiscal</h5>
-                                            <input type="text" name="direccion_fiscal" class="form-control" required />
-                                        </div>
-                                        <div class="col-md-4">
-                                            <h5>Ubigeo</h5>
-                                            <div style="display:flex;">
-                                                <input type="text" class="oculto" name="ubigeo">
-                                                <input type="text" class="form-control" name="name_ubigeo" readonly="">
-                                                <button type="button" title="Seleccionar Ubigeo" class="btn-primary" onclick="ubigeoModalProveedor();"><i class="far fa-compass"></i></button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </fieldset>
-                            </div>
-
-                            <div class="col-md-12">
-                                <h4 style="display:flex;justify-content: space-between;">Cuenta Bancaria</h4>
-                                <fieldset class="group-table">
+                                </div>
+                                <div class="row">
                                     <div class="col-md-8">
-                                        <input class="oculto" name="id_contribuyente">
-                                        <h5>Banco</h5>
-                                        <select class="form-control group-elemento" name="banco" style="text-align:center;">
-                                            <option value="0" disabled>Elija una opción</option>
-                                            @foreach ($bancos as $banco)
-                                            <option value="{{$banco->id_banco}}">{{$banco->razon_social}}</option>
-                                            @endforeach
-                                        </select>
+                                        <h5>Razon Social</h5>
+                                        <input type="text" name="razon_social" class="form-control" required />
                                     </div>
                                     <div class="col-md-4">
-                                        <h5>Tipo de Cuenta</h5>
-                                        <select class="form-control group-elemento" name="tipo_cuenta_banco" style="text-align:center;">
-                                            <option value="0" disabled>Elija una opción</option>
-                                            @foreach ($tipo_cuenta as $tipo)
-                                            <option value="{{$tipo->id_tipo_cuenta}}">{{$tipo->descripcion}}</option>
-                                            @endforeach
-                                        </select>
+                                        <h5>Teléfono</h5>
+                                        <input type="text" name="telefono" class="form-control" />
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        <h5>Dirección Fiscal</h5>
+                                        <input type="text" name="direccion_fiscal" class="form-control" required />
                                     </div>
                                     <div class="col-md-4">
-                                        <h5>Moneda</h5>
-                                        <select class="form-control group-elemento" name="moneda" style="text-align:center;">
-                                            @foreach ($monedas as $moneda)
-                                            <option value="{{$moneda->id_moneda}}">{{$moneda->descripcion}}</option>
-                                            @endforeach
-                                        </select>
+                                        <h5>Ubigeo</h5>
+                                        <div style="display:flex;">
+                                            <input type="text" class="oculto" name="ubigeo">
+                                            <input type="text" class="form-control" name="name_ubigeo" readonly="">
+                                            <button type="button" title="Seleccionar Ubigeo" class="btn-primary" onclick="ubigeoModalProveedor();"><i class="far fa-compass"></i></button>
+                                        </div>
                                     </div>
-                                    <div class="col-md-4">
-                                        <h5>N° Cuenta</h5>
-                                        <input type="number" class="form-control icd-okc" name="nro_cuenta" />
-                                    </div>
-                                    <div class="col-md-4">
-                                        <h5>N° Cuenta Interbancaria</h5>
-                                        <input type="number" class="form-control icd-okc" name="nro_cuenta_interbancaria" />
-                                    </div>
-                                    <div class="col-md-4">
-                                        <h5>SWIFT</h5>
-                                        <input type="number" class="form-control icd-okc" name="swift" />
-                                    </div>
-
-                                </fieldset>
+                                </div>
                             </div>
+
                             <br />
                             <div class="row">
                                 <div class="col-md-12">

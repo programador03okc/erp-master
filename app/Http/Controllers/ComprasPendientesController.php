@@ -43,7 +43,7 @@ class ComprasPendientesController extends Controller
 
         $unidades_medida = UnidadMedida::mostrar();
         $monedas = Moneda::mostrar();
-        // $sedes = Auth::user()->sedesAcceso();
+    // $sedes = Auth::user()->sedesAcceso();
 
         $tipos = AlmacenController::mostrar_tipos_cbo();
 

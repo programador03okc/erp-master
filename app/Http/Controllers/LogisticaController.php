@@ -6,6 +6,8 @@ use App\Models\Administracion\Aprobacion;
 use App\Models\Administracion\Documento;
 use App\Models\Administracion\Periodo;
 use App\Models\Administracion\Prioridad;
+use App\Models\Contabilidad\Banco;
+use App\Models\Contabilidad\TipoCuenta;
 use Illuminate\Support\Facades\DB;
 
 // use Mail;
@@ -40,7 +42,9 @@ class LogisticaController extends Controller
         $tp_contribuyente = $this->select_tp_contribuyente();
         $sis_identidad = $this->select_sis_identidad();
         $empresas = $this->select_mostrar_empresas();
-        return view('logistica/cotizaciones/gestionar_cotizaciones', compact('empresas', 'tp_contribuyente', 'sis_identidad'));
+        $bancos = Banco::mostrar();
+        $tipo_cuenta = TipoCuenta::mostrar();
+        return view('logistica/cotizaciones/gestionar_cotizaciones', compact('bancos','tipo_cuenta','empresas', 'tp_contribuyente', 'sis_identidad'));
     }
 
     // function view_valoriacion()
@@ -4258,20 +4262,6 @@ function get_id_usuario_usuario_por_rol($descripcion_rol, $id_sede, $id_empresa)
                         'id_proveedor'
                     );
 
-                $idCuentaContribuyente = DB::table('contabilidad.adm_cta_contri')->insertGetId(
-                    [
-                        'id_contribuyente' => $id_contribuyente,
-                        'id_banco' => $request->banco,
-                        'id_tipo_cuenta' => $request->tipo_cuenta_banco,
-                        'nro_cuenta' => $request->nro_cuenta,
-                        'nro_cuenta_interbancaria' => $request->nro_cuenta_interbancaria,
-                        'estado' => 1,
-                        'fecha_registro' => Carbon::now(),
-                        'id_moneda' => $request->moneda,
-                        'swift' => $request->swift
-                    ],
-                    'id_cuenta_contribuyente'
-                );
             }
             
             // DB::commit();
@@ -4279,8 +4269,6 @@ function get_id_usuario_usuario_por_rol($descripcion_rol, $id_sede, $id_empresa)
                 'id_proveedor'=>$id_proveedor,
                 'razon_social'=>strtoupper($request->razon_social),
                 'ruc'=>$request->nro_documento_prov,
-                'id_cuenta_contribuyente'=>$idCuentaContribuyente,
-                'nro_cuenta'=>$request->nro_cuenta,
                 'exist'=>$exist ]);
             
         // } catch (\PDOException $e) {
