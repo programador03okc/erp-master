@@ -62,6 +62,7 @@ class RequerimientoPagoController extends Controller
             'req_pagos.total_pago','req_pagos.adjunto',
             'req_pagos.fecha_pago','req_pagos.observacion',
             'registrado_por.nombre_corto as usuario_pago',
+            'adm_cta_contri.nro_cuenta',
             DB::raw("(SELECT sum(subtotal) FROM logistica.log_det_ord_compra
                         WHERE log_det_ord_compra.id_orden_compra = log_ord_compra.id_orden_compra
                         and log_det_ord_compra.estado != 7) AS suma_total"),
@@ -77,6 +78,7 @@ class RequerimientoPagoController extends Controller
         ->join('administracion.sis_sede', 'sis_sede.id_sede', '=', 'log_ord_compra.id_sede')
         ->leftJoin('tesoreria.req_pagos','req_pagos.id_oc','=','log_ord_compra.id_orden_compra')
         ->leftJoin('configuracion.sis_usua as registrado_por','registrado_por.id_usuario','=','req_pagos.registrado_por')
+        ->leftJoin('contabilidad.adm_cta_contri','adm_cta_contri.id_cuenta_contribuyente','=','log_ord_compra.id_cta_principal')
         ->where([['log_ord_compra.id_condicion','=',1],['log_ord_compra.estado','!=',7]]);
 
         return datatables($data)->toJson();

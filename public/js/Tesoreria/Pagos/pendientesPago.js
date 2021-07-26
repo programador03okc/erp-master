@@ -30,8 +30,12 @@ class RequerimientoPago
                     return (row['fecha_emision']!==null ? formatDate(row['fecha_emision']) : '');
                     }, 'className': 'text-center'
                 },
-                {'data': 'condicion_pago', 'name': 'log_cdn_pago.descripcion'},
-                // {'data': 'fecha_vcmto'},
+                // {'data': 'condicion_pago', 'name': 'log_cdn_pago.descripcion'},
+                {'data': 'condicion_pago', 'name': 'log_cdn_pago.descripcion',
+                'render': function (data, type, row){
+                    return (row['condicion_pago']!==null ? (row['condicion_pago']+' '+row['credito_dias']+' días') : '');
+                    }, 'className': 'text-center'
+                },
                 {'render': function (data, type, row){
                     return (row['fecha_vcmto']!==null ? formatDate(row['fecha_vcmto']) : '');
                     }, 'className': 'text-center'
@@ -102,17 +106,17 @@ class RequerimientoPago
                 {'data': 'codigo'},
                 {'data': 'codigo_softlink'},
                 {'data': 'razon_social', 'name': 'adm_contri.razon_social'},
-                // {'data': 'fecha'},
                 {'render': function (data, type, row){
-                    return (row['fecha']!==null ? formatDate(row['fecha']) : '');
+                        return (row['fecha']!==null ? formatDate(row['fecha']) : '');
                     }, 'className': 'text-center'
                 },
                 {'data': 'condicion_pago', 'name': 'log_cdn_pago.descripcion'},
                 {'data': 'simbolo', 'name': 'sis_moneda.simbolo'},
                 {'render': function (data, type, row){
-                    return (row['suma_total']!==null ? formatDecimal(row['suma_total']) : '');
+                        return (row['suma_total']!==null ? formatDecimal(row['suma_total']) : '');
                     }, 'className': 'text-right'
                 },
+                {'data': 'nro_cuenta', 'name': 'adm_cta_contri.nro_cuenta'},
                 {'render': function (data, type, row){
                     return (row['fecha_pago']!==null ? formatDate(row['fecha_pago']) : '');
                     }, 'className': 'text-center'

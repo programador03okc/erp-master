@@ -81,6 +81,7 @@ Procesar Pagos
                                                 <th>Condición Pago</th>
                                                 <th>Mnd</th>
                                                 <th>Total</th>
+                                                <th>Cta. Bancaria</th>
                                                 <th>Fecha Pago</th>
                                                 <th>Motivo</th>
                                                 <th>Procesado por</th>
