@@ -101,14 +101,13 @@ class RequerimientoPago
             },
             'columns': [
                 {'data': 'id_orden_compra'},
-                // {'data': 'tipo_documento', 'name': 'cont_tp_doc.descripcion'},
                 {'data': 'sede_descripcion', 'name': 'sis_sede.descripcion'},
                 {'data': 'codigo'},
                 {'data': 'codigo_softlink'},
                 {'data': 'razon_social', 'name': 'adm_contri.razon_social'},
                 {'render': function (data, type, row){
                         return (row['fecha']!==null ? formatDate(row['fecha']) : '');
-                    }, 'className': 'text-center'
+                    }, 'className': 'text-center', 'searchable': false
                 },
                 {'data': 'condicion_pago', 'name': 'log_cdn_pago.descripcion'},
                 {'data': 'simbolo', 'name': 'sis_moneda.simbolo'},
@@ -121,9 +120,9 @@ class RequerimientoPago
                     return (row['fecha_pago']!==null ? formatDate(row['fecha_pago']) : '');
                     }, 'className': 'text-center'
                 },
-                {'data': 'observacion'},
-                {'data': 'usuario_pago', 'name':'registrado_por.nombre_corto'},
-                {'data': 'total_pago'},
+                {'data': 'observacion', 'name': 'req_pagos.observacion', 'searchable': false},
+                {'data': 'usuario_pago', 'name':'registrado_por.nombre_corto', 'searchable': false},
+                {'data': 'total_pago', 'name': 'req_pagos.total_pago', 'searchable': false},
                 {'render': function (data, type, row){
                         if (row['adjunto']!==null){
                             return '<a href="/files/tesoreria/pagos/'+row['adjunto']+'" target="_blank">'+row['adjunto']+'</a>';
@@ -145,12 +144,11 @@ class RequerimientoPago
                                 data-total="${row['suma_total']}" data-pago="${row['suma_pagado']}" 
                                 title="Procesar Pago" >
                                 <i class="far fa-credit-card"></i></button>`:''}
-
-                            <button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" 
-                                data-placement="bottom" data-id="${row['id_orden_compra']}" title="Ver Detalle" >
-                                <i class="fas fa-chevron-down"></i></button>
                         </div>`;
-                    }
+                        // <button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" 
+                        // data-placement="bottom" data-id="${row['id_orden_compra']}" title="Ver Detalle" >
+                        // <i class="fas fa-chevron-down"></i></button>
+                    }, 'searchable': false
                 },
             ],
             'columnDefs': [{ 'aTargets': [0], 'sClass': 'invisible'}],

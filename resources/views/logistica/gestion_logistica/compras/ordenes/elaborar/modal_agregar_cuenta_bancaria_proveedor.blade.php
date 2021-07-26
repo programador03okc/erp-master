@@ -44,15 +44,15 @@
                         </div>
                         <div class="col-md-12">
                             <h5>N° Cuenta</h5>
-                            <input type="number" class="form-control icd-okc" name="nro_cuenta" />
+                            <input type="text" class="form-control icd-okc" name="nro_cuenta" />
                         </div>
                         <div class="col-md-12">
                             <h5>N° Cuenta Interbancaria</h5>
-                            <input type="number" class="form-control icd-okc" name="nro_cuenta_interbancaria" />
+                            <input type="text" class="form-control icd-okc" name="nro_cuenta_interbancaria" />
                         </div>
                         <div class="col-md-12">
                             <h5>SWIFT</h5>
-                            <input type="number" class="form-control icd-okc" name="swift" />
+                            <input type="text" class="form-control icd-okc" name="swift" />
                         </div>
                     </div>
 
