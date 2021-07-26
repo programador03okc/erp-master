@@ -280,8 +280,8 @@ class AprobarRequerimientoView {
 
             const $modalRequerimiento=$('#modal-requerimiento');
                 $modalRequerimiento.find("input[name='idRequerimiento']").val(event.currentTarget.dataset.idRequerimiento);
-                $modalRequerimiento.find("input[name='idDocumento']").val(event.currentTarget.dataset.idDocumento);
-                $modalRequerimiento.find("input[name='idUsuario']").val(event.currentTarget.dataset.idUsuario);
+                $modalRequerimiento.find("input[name='idDocumento']").val(event.currentTarget.dataset.idDocAprob);
+                $modalRequerimiento.find("input[name='idUsuario']").val(event.currentTarget.dataset.idUsuarioAprobante);
                 $modalRequerimiento.find("input[name='idRolAprobante']").val(event.currentTarget.dataset.idRolAprobante);
                 $modalRequerimiento.find("input[name='idFlujo']").val(event.currentTarget.dataset.idFlujo);
                 $modalRequerimiento.find("input[name='aprobacionFinalOPendiente']").val(event.currentTarget.dataset.aprobacionFinalOPendiente);

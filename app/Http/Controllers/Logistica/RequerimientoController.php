@@ -1671,8 +1671,10 @@ class RequerimientoController extends Controller
             // $idRolAprobante = $request->idRolAprobante;
             // $idFlujo = $request->idFlujo;
             // $aprobacionFinalOPendiente = $request->aprobacionFinalOPendiente;
-
+ 
             $nombreCompletoUsuarioRevisaAprueba = Usuario::find($request->idUsuario)->trabajador->postulante->persona->nombre_completo;
+
+            // Debugbar::info($nombreCompletoUsuarioRevisaAprueba);
 
 
             if ($request->aprobacionFinalOPendiente == 'PENDIENTE') {

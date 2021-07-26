@@ -91,11 +91,12 @@ class RequerimientoPendienteView {
                             let openDiv = '<div class="btn-group" role="group">';
                             let btnVerDetalleRequerimiento= '<button type="button" class="btn btn-default btn-xs" name="btnVerDetalleRequerimiento" title="Ver detalle requerimiento" data-id-requerimiento="' + row.id_requerimiento + '"  onclick="requerimientoPendienteView.verDetalleRequerimiento(this);"><i class="fas fa-chevron-down fa-sm"></i></button>';
 
-                            let btnAtenderAlmacen = '<button type="button" class="btn btn-primary btn-xs" name="btnOpenModalAtenderConAlmacen" title="Atender con almacén" data-id-requerimiento="' + row.id_requerimiento + '"  onclick="requerimientoPendienteView.atenderConAlmacen(this);"><i class="fas fa-dolly fa-sm"></i></button>';
                             // let btnAgregarItemBase = '<button type="button" class="btn btn-success btn-xs" name="btnAgregarItemBase" title="Mapear productos" data-id-requerimiento="' + row.id_requerimiento + '"  onclick="requerimientoPendienteView.openModalAgregarItemBase(this);"  ><i class="fas fa-sign-out-alt"></i></button>';
                             let btnMapearProductos = '<button type="button" class="mapeo btn btn-success btn-xs" title="Mapear productos" data-id-requerimiento="' + row.id_requerimiento + '" data-codigo="' + row.codigo + '"  ><i class="fas fa-sign-out-alt"></i></button>';
+                            let btnAtenderAlmacen='';
                             let btnCrearOrdenCompra = '';
                                 if(row.count_pendientes ==0){
+                                    btnAtenderAlmacen = '<button type="button" class="btn btn-primary btn-xs" name="btnOpenModalAtenderConAlmacen" title="Atender con almacén" data-id-requerimiento="' + row.id_requerimiento + '"  onclick="requerimientoPendienteView.atenderConAlmacen(this);"><i class="fas fa-dolly fa-sm"></i></button>';
                                     btnCrearOrdenCompra = '<button type="button" class="btn btn-warning btn-xs" name="btnCrearOrdenCompraPorRequerimiento" title="Crear Orden de Compra" data-id-requerimiento="' + row.id_requerimiento + '"  onclick="requerimientoPendienteView.crearOrdenCompraPorRequerimiento(this);"><i class="fas fa-file-invoice"></i></button>';
                                 }
                             let btnCrearOrdenServicio = '<button type="button" class="btn btn-danger btn-xs" name="btnCrearOrdenServicioPorRequerimiento" title="Crear Orden de Servicio" data-id-requerimiento="' + row.id_requerimiento + '"  onclick="requerimientoPendienteView.crearOrdenServicioPorRequerimiento(this);"><i class="fas fa-file-invoice fa-sm"></i></button>';
