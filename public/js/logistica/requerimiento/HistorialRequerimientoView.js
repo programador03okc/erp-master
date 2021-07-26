@@ -79,15 +79,6 @@ class HistorialRequerimientoView{
         $('#ListaReq').DataTable().on("draw", function () {
             resizeSide();
         });
-
-        $('#ListaReq tbody').on('click', 'tr', function () {
-            if ($(this).hasClass('eventClick')) {
-                $(this).removeClass('eventClick');
-            } else {
-                $('#ListaReq').dataTable().$('tr.eventClick').removeClass('eventClick');
-                $(this).addClass('eventClick');
-            }
-        });
     }
 
     cargarRequerimiento(idRequerimiento) {

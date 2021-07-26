@@ -1609,7 +1609,7 @@ class OrdenController extends Controller
                 DB::raw("(dis_contac.descripcion) || ' ' || (prov_contac.descripcion) || ' ' || (dpto_contac.descripcion)  AS ubigeo_contacto")
 
             )
-            ->Join('administracion.adm_tp_docum', 'adm_tp_docum.id_tp_documento', '=', 'log_ord_compra.id_tp_documento')
+            ->leftJoin('administracion.adm_tp_docum', 'adm_tp_docum.id_tp_documento', '=', 'log_ord_compra.id_tp_documento')
             ->leftJoin('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'log_ord_compra.id_usuario')
             ->leftJoin('rrhh.rrhh_trab as trab', 'trab.id_trabajador', '=', 'sis_usua.id_trabajador')
             ->leftJoin('rrhh.rrhh_postu as post', 'post.id_postulante', '=', 'trab.id_postulante')
@@ -1617,7 +1617,7 @@ class OrdenController extends Controller
             ->leftJoin('configuracion.sis_moneda', 'sis_moneda.id_moneda', '=', 'log_ord_compra.id_moneda')
             ->leftJoin('logistica.log_cdn_pago', 'log_cdn_pago.id_condicion_pago', '=', 'log_ord_compra.id_condicion')
             // ->leftJoin('contabilidad.adm_ctb_contac', 'adm_ctb_contac.id_datos_contacto', '=', 'log_ord_compra.personal_responsable')
-            ->join('logistica.log_prove', 'log_prove.id_proveedor', '=', 'log_ord_compra.id_proveedor')
+            ->leftJoin('logistica.log_prove', 'log_prove.id_proveedor', '=', 'log_ord_compra.id_proveedor')
             ->leftJoin('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'log_prove.id_contribuyente')
             ->leftJoin('contabilidad.sis_identi', 'sis_identi.id_doc_identidad', '=', 'adm_contri.id_doc_identidad')
             // ->leftJoin('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'log_ord_compra.id_requerimiento')
@@ -1656,7 +1656,6 @@ class OrdenController extends Controller
                 ['log_ord_compra.estado', '!=', 7]
             ])
             ->get();
-
             // return $head_orden_compra;
 
         $detalle_orden_compra = DB::table('logistica.log_det_ord_compra')
@@ -1863,7 +1862,8 @@ class OrdenController extends Controller
         $result['head']['codigo_requerimiento']=$codigoReqText;
         $result['head']['codigo_cc']= isset($codigo_oportunidad)?$codigo_oportunidad:'';
         $result['head']['nombre_responsable_cc']=isset($nombre_responsable)?$nombre_responsable:'';
-        
+      
+
         return $result;
     }
     public function imprimir_orden_por_requerimiento_pdf($id_orden_compra)
@@ -1965,7 +1965,7 @@ class OrdenController extends Controller
             </head>
             <body>';
             
-                if($ordenArray['head']['logo_empresa'] != null){
+                if(isset($ordenArray['head']['logo_empresa']) && ($ordenArray['head']['logo_empresa'] != null)){
                     $html.='<img src=".'.$ordenArray['head']['logo_empresa'].'" alt="Logo" height="75px">';
                 }
 
@@ -2035,7 +2035,8 @@ class OrdenController extends Controller
         foreach ($ordenArray['detalle'] as $key => $data) {
             $monto_neto += $data['subtotal'] ;
         }
-
+        $igv =0;
+        $monto_total=0;
         foreach ($ordenArray['detalle'] as $key => $data) {
           
             if($ordenArray['head']['incluye_igv'] == true){

@@ -30,11 +30,11 @@ class ListarRequerimientoView{
                 { 'data': 'tipo_requerimiento', 'name': 'alm_tp_req.descripcion', 'className': 'text-center' },
                 { 'data': 'razon_social', 'name': 'adm_contri.razon_social', 'className': 'text-center' },
                 { 'data': 'grupo', 'name': 'adm_grupo.descripcion', 'className':'text-center' },
-                { 'data': 'division', 'name': 'division.descripcion' },
-                { 'data': 'monto_total', 'name': 'monto_total' },
+                { 'data': 'division', 'name': 'division.descripcion','className': 'text-center' },
+                { 'data': 'monto_total', 'name': 'monto_total','className': 'text-right' },
                 { 'data': 'nombre_usuario', 'name': 'nombre_usuario' },
                 { 'data': 'estado_doc', 'name': 'adm_estado_doc.estado_doc' },
-                { 'data': 'fecha_registro', 'name': 'alm_req.fecha_registro' },
+                { 'data': 'fecha_registro', 'name': 'alm_req.fecha_registro','className': 'text-center' },
                 { 'data': 'id_requerimiento' }
             ],
             'columnDefs': [
@@ -56,18 +56,25 @@ class ListarRequerimientoView{
                 },
                 {
                     'render': function (data, type, row) {
-                        if(row['estado']==1){
-                            return '<span class="label label-default">'+row['estado_doc']+'</span>';
-                        }else if(row['estado']==2){
-                            return '<span class="label label-success">'+row['estado_doc']+'</span>';
-                        }else if(row['estado']==3){
-                            return '<span class="label label-warning">'+row['estado_doc']+'</span>';
-                        }else if(row['estado']==5){
-                            return '<span class="label label-primary">'+row['estado_doc']+'</span>';
-                        }else if(row['estado']==7){
-                            return '<span class="label label-danger">'+row['estado_doc']+'</span>';
-                        }else{
-                            return '<span class="label label-default">'+row['estado_doc']+'</span>';
+                        switch (row['estado']) {
+                            case 1:
+                                return '<span class="label label-default">'+row['estado_doc']+'</span>';
+                                break;
+                            case 2:
+                                return '<span class="label label-success">'+row['estado_doc']+'</span>';
+                                break;
+                            case 3:
+                                return '<span class="label label-warning">'+row['estado_doc']+'</span>';
+                                break;
+                            case 5:
+                                return '<span class="label label-primary">'+row['estado_doc']+'</span>';
+                                break;
+                            case 7:
+                                return '<span class="label label-danger">'+row['estado_doc']+'</span>';
+                                break;
+                            default:
+                                return '<span class="label label-default">'+row['estado_doc']+'</span>';
+                            break;
 
                         }
                     }, targets: 11, className:'text-center'
@@ -103,18 +110,7 @@ class ListarRequerimientoView{
 
             ],
             "createdRow": function (row, data, dataIndex) {
-                if (data.estado == 2) {
-                    $(row.childNodes[9]).css('color', '#4fa75b');
-                }
-                if (data.estado == 3) {
-                    $(row.childNodes[9]).css('color', '#ee9b1f');
-                }
-                if (data.estado == 7) {
-                    $(row.childNodes[9]).css('color', '#d92b60');
-                }
-                // if (data.cantidad_sustentos > 0) {
-                //     $(row.childNodes[9]).css('color', '#337ab7');
-                // }
+ 
             },
             'initComplete': function () {
             }
@@ -122,15 +118,6 @@ class ListarRequerimientoView{
 
         $('#ListaReq').DataTable().on("draw", function () {
             resizeSide();
-        });
-
-        $('#ListaReq tbody').on('click', 'tr', function () {
-            if ($(this).hasClass('eventClick')) {
-                $(this).removeClass('eventClick');
-            } else {
-                $('#ListaReq').dataTable().$('tr.eventClick').removeClass('eventClick');
-                $(this).addClass('eventClick');
-            }
         });
     }
 

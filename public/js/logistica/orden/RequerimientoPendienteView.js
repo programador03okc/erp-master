@@ -70,7 +70,7 @@ class RequerimientoPendienteView {
                     }
                 },
                 { 'data': 'empresa_sede' },
-                { 'data': 'usuario' },
+                { 'data': 'nombre_usuario' },
                 { 'data': 'estado_doc' },
                 {
                     render: function (data, type, row) {
@@ -159,13 +159,13 @@ class RequerimientoPendienteView {
                 { 'aTargets': [1], 'sWidth': '3%' },
                 { 'aTargets': [2], 'sWidth': '5%' },
                 { 'aTargets': [3], 'sWidth': '20%' },
-                { 'aTargets': [4], 'sWidth': '5%' },
-                { 'aTargets': [5], 'sWidth': '5%' },
+                { 'aTargets': [4], 'sWidth': '5%', 'className': 'text-center'},
+                { 'aTargets': [5], 'sWidth': '5%', 'className': 'text-center' },
                 { 'aTargets': [6], 'sWidth': '10%' },
-                { 'aTargets': [7], 'sWidth': '6%' },
+                { 'aTargets': [7], 'sWidth': '6%', 'className': 'text-center' },
                 { 'aTargets': [8], 'sWidth': '5%' },
-                { 'aTargets': [9], 'sWidth': '5%' },
-                { 'aTargets': [10], 'sWidth': '8%' }
+                { 'aTargets': [9], 'sWidth': '5%', 'className': 'text-center' },
+                { 'aTargets': [10], 'sWidth': '8%', 'className': 'text-left' }
             ],
             "createdRow": function (row, data, dataIndex) {
                 if (data.tiene_transformacion == true) {

@@ -45,7 +45,7 @@ Requerimientos pendientes
                                                         <th>Tipo Req.</th>
                                                         <th>Proveedor/Entidad</th>
                                                         <th>Empresa - Sede</th>
-                                                        <th>Autor</th>
+                                                        <th>Creado por</th>
                                                         <th>Estado</th>
                                                         <th>Acción</th>
                                                     </tr>

@@ -729,10 +729,6 @@ ul.nav-tabs li {
   border: 1px solid #ddd;
 }
 
-.group-table table tr {
-  cursor: pointer;
-}
-
 .page-main table {
   font-size: 12px;
 }
