@@ -2565,8 +2565,8 @@ class OrdenController extends Controller
     }
 
     public function guardar_orden_por_requerimiento(Request $request){
-        try {
-            DB::beginTransaction();
+        // try {
+        //     DB::beginTransaction();
 
             $usuario = Auth::user()->id_usuario;
             $tp_doc = ($request->id_tp_documento !== null ? $request->id_tp_documento : 2);
@@ -2583,8 +2583,8 @@ class OrdenController extends Controller
                     'id_moneda' => ($request->id_moneda?$request->id_moneda:null),
                     'incluye_igv' =>  isset($request->incluye_igv)?$request->incluye_igv:true,
                     'id_proveedor' => $request->id_proveedor,
-                    'id_cta_principal' => $request->id_cuenta_principal_proveedor,
-                    'id_contacto' => $request->id_contacto_proveedor?$request->id_contacto_proveedor:null,
+                    'id_cta_principal' => isset($request->id_cuenta_principal_proveedor)?$request->id_cuenta_principal_proveedor:null,
+                    'id_contacto' => isset($request->id_contacto_proveedor)?$request->id_contacto_proveedor:null,
                     'codigo' => $codigo?$codigo:null,
                     'plazo_entrega' => $request->plazo_entrega?$request->plazo_entrega:null,
                     'id_condicion' => $request->id_condicion?$request->id_condicion:null,
@@ -2642,12 +2642,12 @@ class OrdenController extends Controller
             }
             
 
-        DB::commit();
+        // DB::commit();
             return response()->json($id_orden);
 
-        } catch (\PDOException $e) {
-            DB::rollBack();
-        }
+        // } catch (\PDOException $e) {
+        //     DB::rollBack();
+        // }
 
     }
 

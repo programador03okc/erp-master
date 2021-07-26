@@ -55,7 +55,7 @@ function guardarCuentaBancariaProveedor(){
                         delayIndicator: false,
                         msg: 'Cuenta bancaria registrado con éxito'
                     });
-                    document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='id_cuenta_principal_proveedor']").value = response.id_cuentra_contribuyente;
+                    document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='id_cuenta_principal_proveedor']").value = response.id_cuenta_contribuyente;
                     document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='nro_cuenta_principal_proveedor']").value = nroCuenta;
 
 
@@ -193,7 +193,7 @@ function ConstruirTablalistaCuentasBancariasProveedor(data){
             }, 
             { render: function (data, type, row) {                     
                     return `
-                        <button type="button" class="btn btn-primary btn-xs" name="btnSeleccionarCuenta" title="Seleccionar cuenta"  data-id-cuenta="${row.id_cuentra_contribuyente}" data-nro-cuenta="${row.nro_cuenta}" onclick="seleccionarCuentaContribuyente(this);">Seleccionar</button>`;
+                        <button type="button" class="btn btn-primary btn-xs" name="btnSeleccionarCuenta" title="Seleccionar cuenta"  data-id-cuenta="${row.id_cuenta_contribuyente}" data-nro-cuenta="${row.nro_cuenta}" onclick="seleccionarCuentaContribuyente(this);">Seleccionar</button>`;
                 }   
             }   
         ],
