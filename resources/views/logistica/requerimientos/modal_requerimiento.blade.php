@@ -116,7 +116,7 @@
                         <div class="form-group">
                             <label class="col-sm-5 control-label">Acción a realizar</label>
                             <div class="col-sm-4">
-                                <select class="form-control" id="accion" onChange="aprobarRequerimientoView.updateAccion(this)">
+                                <select class="form-control handleChangeUpdateAccion" id="accion">
                                     <option value="0">Seleccione una acción</option>
                                     <option value="1">Aprobar Requerimiento</option>
                                     <option value="2">Rechazar Requerimiento</option>
@@ -134,7 +134,7 @@
                 </fieldset>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-success" id="btnRegistrarRespuesta" onClick="aprobarRequerimientoView.registrarRespuesta();" >Registrar respuesta</button>
+                <button class="btn btn-success handleClickRegistrarRespuesta" id="btnRegistrarRespuesta" >Registrar respuesta</button>
                 <button class="btn btn-danger" class="close" data-dismiss="modal">Cancelar</button>
             </div>
         </div>

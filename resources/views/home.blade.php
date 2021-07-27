@@ -18,7 +18,7 @@ Módulos
     </div>
     <script>
 		document.addEventListener('DOMContentLoaded', function(){ 
-            console.log('call');
+            // console.log('call');
 			get_notificaciones_sin_leer_interval();
 		}, false);
 

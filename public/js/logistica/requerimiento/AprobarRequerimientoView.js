@@ -1,12 +1,36 @@
+
+var tempArchivoAdjuntoRequerimientoList = [];
+var tempArchivoAdjuntoRequerimientoToDeleteList = [];
+var tempArchivoAdjuntoItemList=[];
 class AprobarRequerimientoView {
 
-    constructor(){
- 
+    constructor(requerimientoCtrl){
+        this.requerimientoCtrl = requerimientoCtrl;
+        this.$fila=null;
         this.verDetallesEvent();
+        this.addEventToFilterButtons();
+    }
+
+    limpiarTabla(idElement) {
+        let nodeTbody = document.querySelector("table[id='" + idElement + "'] tbody");
+        if(nodeTbody!=null){
+            while (nodeTbody.children.length > 0) {
+                nodeTbody.removeChild(nodeTbody.lastChild);
+            }
+        }
+    }
+
+    addEventToFilterButtons(){
+        document.querySelector("select[class~='handleChangeFilterEmpresaListReqByEmpresa']").addEventListener("change", this.handleChangeFilterEmpresaListReqByEmpresa.bind(this), false);
+        document.querySelector("select[class~='handleChangeFiltroListadoByEmpresa']").addEventListener("change", this.handleChangeFiltroListado.bind(this), false);
+        document.querySelector("select[class~='handleChangeFiltroListadoBySede']").addEventListener("change", this.handleChangeFiltroListado.bind(this), false);
+        document.querySelector("select[class~='handleChangeFiltroListadoByGrupo']").addEventListener("change", this.handleChangeFiltroListado.bind(this), false);
+        document.querySelector("select[class~='handleChangeFiltroListadoByPrioridad']").addEventListener("change", this.handleChangeFiltroListado.bind(this), false);
+ 
     }
 
     mostrar(idEmpresa, idSede, idGrupo, idPrioridad) {
-        requerimientoCtrl.getListadoAprobacion(idEmpresa, idSede, idGrupo, idPrioridad).then((res) =>{
+        this.requerimientoCtrl.getListadoAprobacion(idEmpresa, idSede, idGrupo, idPrioridad).then((res) =>{
             this.construirTablaListaRequerimientosPendientesAprobacion(res['data']);
         }).catch(function (err) {
             console.log(err)
@@ -16,7 +40,7 @@ class AprobarRequerimientoView {
 
 
     construirTablaListaRequerimientosPendientesAprobacion(data) {
-        console.log(data);
+        // console.log(data);
         let disabledBtn = true;
         let vardataTables = funcDatatables();
         $('#ListaReqPendienteAprobacion').DataTable({
@@ -45,19 +69,19 @@ class AprobarRequerimientoView {
                         // return prioridad;
                     }
                 },
-                { 'data': 'codigo', 'name': 'codigo' },
+                { 'data': 'codigo', 'name': 'codigo','className': 'text-center' },
                 { 'data': 'concepto', 'name': 'concepto' },
-                { 'data': 'tipo_requerimiento', 'name': 'tipo_requerimiento' },
-                { 'data': 'fecha_entrega', 'name': 'fecha_entrega' },
-                { 'data': 'razon_social_empresa', 'name': 'razon_social_empresa' },
-                { 'data': 'division', 'name': 'division' },
+                { 'data': 'tipo_requerimiento', 'name': 'tipo_requerimiento' ,'className': 'text-center'},
+                { 'data': 'fecha_entrega', 'name': 'fecha_entrega' ,'className': 'text-center'},
+                { 'data': 'razon_social_empresa', 'name': 'razon_social_empresa' ,'className': 'text-center'},
+                { 'data': 'division', 'name': 'division','className': 'text-center' },
                 {
                     'render': function (data, type, row) {
                         return (row['simbolo_moneda'])+(Util.formatoNumero(row['monto_total'],2));
-                    }
+                    },'className': 'text-right'
                 },
                 { 'data': 'observacion', 'name': 'alm_req.observacion' },
-                { 'data': 'usuario', 'name': 'usuario' },
+                { 'data': 'nombre_usuario', 'name': 'usuario','className': 'text-left' },
                 {
                     'render': function (data, type, row) {
 
@@ -77,9 +101,9 @@ class AprobarRequerimientoView {
                             return '<span class="label label-default">'+row['estado_doc']+'</span>';
 
                         }
-                    }
+                    },'className': 'text-center'
                 },
-                { 'data': 'cantidad_aprobados_total_flujo', 'name': 'cantidad_aprobados_total_flujo' },
+                { 'data': 'cantidad_aprobados_total_flujo', 'name': 'cantidad_aprobados_total_flujo','className': 'text-center' },
                 {
                     'render': function (data, type, row) {
                         var list_id_rol_aprob = [];
@@ -225,8 +249,8 @@ class AprobarRequerimientoView {
 
     handleChangeFilterEmpresaListReqByEmpresa(event) {
         this.handleChangeFiltroListado();
-        requerimientoCtrl.getSedesPorEmpresa(event.target.value).then(function (res) {
-            aprobarRequerimientoView.construirSelectSede(res);
+        this.requerimientoCtrl.getSedesPorEmpresa(event.target.value).then((res)=> {
+            this.construirSelectSede(res);
         }).catch(function (err) {
             console.log(err)
         })
@@ -260,10 +284,10 @@ class AprobarRequerimientoView {
         document.querySelector("div[id='modal-requerimiento'] fieldset[id='group-acciones']").classList.add("oculto");
         document.querySelector("div[id='modal-requerimiento'] button[id='btnRegistrarRespuesta']").classList.add("oculto");
 
-        requerimientoCtrl.getRequerimiento(idRequerimiento).then(function (res) {
-            aprobarRequerimientoView.construirSeccionDatosGenerales(res['requerimiento'][0]);
-            aprobarRequerimientoView.construirSeccionItemsDeRequerimiento(res['det_req'],res['requerimiento'][0]['simbolo_moneda']);
-            aprobarRequerimientoView.construirSeccionHistorialAprobacion(res['historial_aprobacion']);
+        this.requerimientoCtrl.getRequerimiento(idRequerimiento).then((res)=> {
+            this.construirSeccionDatosGenerales(res['requerimiento'][0]);
+            this.construirSeccionItemsDeRequerimiento(res['det_req'],res['requerimiento'][0]['simbolo_moneda']);
+            this.construirSeccionHistorialAprobacion(res['historial_aprobacion']);
             $('#modal-requerimiento div.modal-body').LoadingOverlay("hide", true);
 
         }).catch(function (err) {
@@ -272,11 +296,10 @@ class AprobarRequerimientoView {
     }
 
     verDetallesEvent(){
+        
+
         $('#ListaReqPendienteAprobacion').on('click','.ver-detalles',(event)=>{
-            $('#modal-requerimiento').modal({
-                show: true,
-                backdrop: 'true'
-            });
+            this.$fila=$(event.currentTarget).closest("tr");
 
             const $modalRequerimiento=$('#modal-requerimiento');
                 $modalRequerimiento.find("input[name='idRequerimiento']").val(event.currentTarget.dataset.idRequerimiento);
@@ -286,54 +309,53 @@ class AprobarRequerimientoView {
                 $modalRequerimiento.find("input[name='idFlujo']").val(event.currentTarget.dataset.idFlujo);
                 $modalRequerimiento.find("input[name='aprobacionFinalOPendiente']").val(event.currentTarget.dataset.aprobacionFinalOPendiente);
 
-                requerimientoCtrl.getRequerimiento(event.currentTarget.dataset.idRequerimiento).then( (res)=> {
+
+                var customElement = $("<div>", {
+                    "css": {
+                        "font-size": "24px",
+                        "text-align": "center",
+                        "padding": "0px",
+                        "margin-top": "-400px"
+                    },
+                    "class": "your-custom-class"
+                });
+    
+                $('#modal-requerimiento div.modal-body').LoadingOverlay("show", {
+                    imageAutoResize: true,
+                    progress: true,
+                    custom: customElement,
+                    imageColor: "#3c8dbc"
+                });
+
+
+                this.requerimientoCtrl.getRequerimiento(event.currentTarget.dataset.idRequerimiento).done( (res)=> {
                     this.construirSeccionDatosGenerales(res['requerimiento'][0]);
                     this.construirSeccionItemsDeRequerimiento(res['det_req'],res['requerimiento'][0]['simbolo_moneda']);
                     this.construirSeccionHistorialAprobacion(res['historial_aprobacion']);
+
+                    document.querySelector("select[class~='handleChangeUpdateAccion']").addEventListener("change", this.updateAccion, false);
+                    document.querySelector("button[class~='handleClickRegistrarRespuesta']").addEventListener("click", this.registrarRespuesta.bind(this), false);
+
                     $('#modal-requerimiento div.modal-body').LoadingOverlay("hide", true);
         
                 }).catch(function (err) {
                     //mostrar notificacion de eeror
                     console.log(err)
-                })
+
+                }).always(()=>{
+                    $('#modal-requerimiento div.modal-body').LoadingOverlay("hide", true);
+
+                    $('#modal-requerimiento').modal({
+                        show: true,
+                        backdrop: 'true'
+                    });    
+                });
 
         });
  
 
     }
 
-    // verDetalleRequerimiento(idRequerimiento, idDocumento, idUsuario, idRolAprobante, idFlujo, aprobacionFinalOPendiente) {
-    //     $('#modal-requerimiento').modal({
-    //         show: true,
-    //         backdrop: 'true'
-    //     });
-
-    //     document.querySelector("div[id='modal-requerimiento'] fieldset[id='group-acciones']").classList.remove("oculto");
-    //     document.querySelector("div[id='modal-requerimiento'] button[id='btnRegistrarRespuesta']").classList.remove("oculto");
-
-    //     document.querySelector("div[id='modal-requerimiento'] textarea[id='comentario']").value = '';
-    //     //const $modalRequerimiento=$('#modal-requerimiento');
-    //     //$modalRequerimiento.find("input[name='idRequerimiento']").val(idRequerimiento)
-
-
-    //     document.querySelector("div[id='modal-requerimiento'] input[name='idRequerimiento']").value = idRequerimiento;
-    //     document.querySelector("div[id='modal-requerimiento'] input[name='idDocumento']").value = idDocumento;
-    //     document.querySelector("div[id='modal-requerimiento'] input[name='idUsuario']").value = idUsuario;
-    //     document.querySelector("div[id='modal-requerimiento'] input[name='idRolAprobante']").value = idRolAprobante;
-    //     document.querySelector("div[id='modal-requerimiento'] input[name='idFlujo']").value = idFlujo;
-    //     document.querySelector("div[id='modal-requerimiento'] input[name='aprobacionFinalOPendiente']").value = aprobacionFinalOPendiente;
-
-    //     requerimientoCtrl.getRequerimiento(idRequerimiento).then(function (res) {
-    //         aprobarRequerimientoView.construirSeccionDatosGenerales(res['requerimiento'][0]);
-    //         aprobarRequerimientoView.construirSeccionItemsDeRequerimiento(res['det_req'],res['requerimiento'][0]['simbolo_moneda']);
-    //         aprobarRequerimientoView.construirSeccionHistorialAprobacion(res['historial_aprobacion']);
-    //         $('#modal-requerimiento div.modal-body').LoadingOverlay("hide", true);
-
-    //     }).catch(function (err) {
-    //         //mostrar notificacion de eeror
-    //         console.log(err)
-    //     })
-    // }
 
     construirSeccionDatosGenerales(data) {
         // console.log(data);
@@ -355,7 +377,7 @@ class AprobarRequerimientoView {
 
         tempArchivoAdjuntoRequerimientoList = [];
         if (data.adjuntos.length > 0) {
-            document.querySelector("td[id='adjuntosRequerimiento']").innerHTML = `<a title="Ver archivos adjuntos de requerimiento" style="cursor:pointer;" onClick="aprobarRequerimientoView.verAdjuntosRequerimiento();" >
+            document.querySelector("td[id='adjuntosRequerimiento']").innerHTML = `<a title="Ver archivos adjuntos de requerimiento" style="cursor:pointer;"  class="handleClickVerAdjuntosRequerimiento" >
             Ver (<span name="cantidadAdjuntosRequerimiento">${data.adjuntos.length}</span>)
             </a>`;
             (data.adjuntos).forEach(element => {
@@ -371,6 +393,9 @@ class AprobarRequerimientoView {
                 });
 
             });
+
+            document.querySelector("a[class~='handleClickVerAdjuntosRequerimiento']").addEventListener("click", this.verAdjuntosRequerimiento.bind(this), false);
+
         }
 
         let tamañoSelectAccion = document.querySelector("div[id='modal-requerimiento'] select[id='accion']").length;
@@ -389,12 +414,14 @@ class AprobarRequerimientoView {
         }
     }
 
+  
     verAdjuntosRequerimiento() {
+
+        this.limpiarTabla('listaArchivosRequerimiento');
         $('#modal-adjuntar-archivos-requerimiento').modal({
             show: true
         });
 
-        requerimientoView.limpiarTabla('listaArchivosRequerimiento');
         document.querySelector("div[id='modal-adjuntar-archivos-requerimiento'] div[id='group-action-upload-file']").classList.add('oculto');
 
         let html = '';
@@ -420,7 +447,7 @@ class AprobarRequerimientoView {
 
     construirSeccionItemsDeRequerimiento(data, simboloMoneda) {
 
-        requerimientoView.limpiarTabla('listaDetalleRequerimientoModal');
+        this.limpiarTabla('listaDetalleRequerimientoModal');
         tempArchivoAdjuntoItemList = [];
         let html = '';
         if (data.length > 0) {
@@ -443,32 +470,34 @@ class AprobarRequerimientoView {
 
                     });
                 }
-                html += `<tr>
-                            <td>${i + 1}</td>
-                            <td>${data[i].descripcion_partida ? data[i].descripcion_partida : ''}</td>
-                            <td>${data[i].descripcion_centro_costo ? data[i].descripcion_centro_costo : ''}</td>
-                            <td>${data[i].id_tipo_item == 1 ? (data[i].producto_part_number ? data[i].producto_part_number : data[i].part_number) : '(Servicio)'}</td>
-                            <td>${data[i].producto_descripcion ? data[i].producto_descripcion : (data[i].descripcion ? data[i].descripcion : '')} </td>
-                            <td>${data[i].unidad_medida}</td>
-                            <td style="text-align:center;">${data[i].cantidad}</td>
-                            <td style="text-align:right;">${simboloMoneda} ${Util.formatoNumero(data[i].precio_unitario, 2)}</td>
-                            <td style="text-align:right;">${simboloMoneda} ${(data[i].subtotal ? Util.formatoNumero(data[i].subtotal, 2) : (Util.formatoNumero((data[i].cantidad*data[i].precio_unitario),2)))}</td>
-                            <td>${data[i].motivo ? data[i].motivo : ''}</td>
-                            <td style="text-align: center;"> 
-                                ${cantidadAdjuntosItem>0?'<a title="Ver archivos adjuntos de item" style="cursor:pointer;" onClick="aprobarRequerimientoView.verAdjuntosItem('+data[i].id_detalle_requerimiento+')">Ver (<span name="cantidadAdjuntosItem">'+cantidadAdjuntosItem+'</span>)</a>':'-'}
-                            </td>
-                        </tr>`;
+            document.querySelector("tbody[id='body_item_requerimiento']").insertAdjacentHTML('beforeend', `<tr>
+                <td>${i + 1}</td>
+                <td>${data[i].descripcion_partida ? data[i].descripcion_partida : ''}</td>
+                <td>${data[i].descripcion_centro_costo ? data[i].descripcion_centro_costo : ''}</td>
+                <td>${data[i].id_tipo_item == 1 ? (data[i].producto_part_number ? data[i].producto_part_number : data[i].part_number) : '(Servicio)'}</td>
+                <td>${data[i].producto_descripcion ? data[i].producto_descripcion : (data[i].descripcion ? data[i].descripcion : '')} </td>
+                <td>${data[i].unidad_medida}</td>
+                <td style="text-align:center;">${data[i].cantidad}</td>
+                <td style="text-align:right;">${simboloMoneda} ${Util.formatoNumero(data[i].precio_unitario, 2)}</td>
+                <td style="text-align:right;">${simboloMoneda} ${(data[i].subtotal ? Util.formatoNumero(data[i].subtotal, 2) : (Util.formatoNumero((data[i].cantidad*data[i].precio_unitario),2)))}</td>
+                <td>${data[i].motivo ? data[i].motivo : ''}</td>
+                <td style="text-align: center;"> 
+                    ${cantidadAdjuntosItem>0?'<a title="Ver archivos adjuntos de item" style="cursor:pointer;" class="handleClickVerAdjuntosItem'+i+'" >Ver (<span name="cantidadAdjuntosItem">'+cantidadAdjuntosItem+'</span>)</a>':'-'}
+                </td>
+            </tr>`);
+                
+
+                document.querySelector("a[class='handleClickVerAdjuntosItem"+i+"']").addEventListener("click", this.verAdjuntosItem.bind(this,data[i].id_detalle_requerimiento), false);
+
             }
 
 
         }
-        document.querySelector("tbody[id='body_item_requerimiento']").insertAdjacentHTML('beforeend', html)
  
 
     }
 
     construirSeccionHistorialAprobacion(data) {
-        requerimientoView.limpiarTabla('listaHistorialRevision');
         let html = '';
         if (data.length > 0) {
             for (let i = 0; i < data.length; i++) {
@@ -489,7 +518,7 @@ class AprobarRequerimientoView {
             show: true,
             backdrop: 'true'
         });
-        requerimientoView.limpiarTabla('listaArchivos');
+        this.limpiarTabla('listaArchivos');
         document.querySelector("div[id='modal-adjuntar-archivos-detalle-requerimiento'] div[id='group-action-upload-file']").classList.add('oculto');
         let html = '';
         tempArchivoAdjuntoItemList.forEach(element => {
@@ -511,26 +540,28 @@ class AprobarRequerimientoView {
 
     }
 
-    updateAccion(obj) {
-        if (obj.value > 0) {
+    updateAccion() {
+        
+        if (this.value > 0) {
             document.querySelector("div[id='modal-requerimiento'] select[id='accion']").closest('div[class~="form-group"]').classList.remove("has-error")
-            if (obj.closest('div[class~="form-group"]').querySelector("span")) {
-                obj.closest('div[class~="form-group"]').querySelector("span").remove();
+            if (this.closest('div[class~="form-group"]').querySelector("span")) {
+                this.closest('div[class~="form-group"]').querySelector("span").remove();
             }
         } else {
-            obj.closest('div[class~="form-group"]').classList.add("has-error")
-            if (obj.closest('div[class~="form-group"]').querySelector("span") == null) {
+            this.closest('div[class~="form-group"]').classList.add("has-error")
+            if (this.closest('div[class~="form-group"]').querySelector("span") == null) {
                 let newSpanInfo = document.createElement("span");
                 newSpanInfo.classList.add('text-danger');
                 newSpanInfo.textContent = '(Seleccione una acción)';
-                obj.closest('div[class~="form-group"]').appendChild(newSpanInfo);
+                this.closest('div[class~="form-group"]').appendChild(newSpanInfo);
             }
         }
     }
 
     registrarRespuesta() {
-
+        
         if (document.querySelector("div[id='modal-requerimiento'] select[id='accion']").value > 0) {
+            document.getElementById('btnRegistrarRespuesta').setAttribute('disabled',true);
             document.querySelector("div[id='modal-requerimiento'] select[id='accion']").closest('div[class~="form-group"]').classList.remove("has-error")
             if (document.querySelector("div[id='modal-requerimiento'] select[id='accion']").closest('div[class~="form-group"]').querySelector("span")) {
                 document.querySelector("div[id='modal-requerimiento'] select[id='accion']").closest('div[class~="form-group"]').querySelector("span").remove();
@@ -547,25 +578,65 @@ class AprobarRequerimientoView {
                 'aprobacionFinalOPendiente': document.querySelector("div[id='modal-requerimiento'] input[name='aprobacionFinalOPendiente']").value
             };
 
-            requerimientoCtrl.guardarRespuesta(payload).then(function (res) {
+            // loading
+            var customElement = $("<div>", {
+                "css": {
+                    "font-size": "24px",
+                    "text-align": "center",
+                    "padding": "0px",
+                    "margin-top": "-400px"
+                },
+                "class": "your-custom-class",
+                "text": "Registrando respuesta..."
+            });
+
+            $('#modal-requerimiento div.modal-body').LoadingOverlay("show", {
+                imageAutoResize: true,
+                progress: true,
+                custom: customElement,
+                imageColor: "#3c8dbc"
+            });
+            // end loading 
+
+            //  enviar request
+            this.requerimientoCtrl.guardarRespuesta(payload).done((res) =>{
+                console.log(res);
                 if (res.id_aprobacion > 0) {
-                    if(res.notificacion_por_emial==false){
-                        alert(`Respuesta registrada con éxito.(NOTA: No se cuenta con información de email del usuario que corresponde notificar, ergo no se enviara ningun email). La página se recargara para actualizar el listado.`);
-                    }else{
-                        alert(`Respuesta registrada con éxito. La página se recargara para actualizar el listado.`);
+                    Lobibox.notify('success', {
+                        title:false,
+                        size: 'mini',
+                        rounded: true,
+                        sound: false,
+                        delayIndicator: false,
+                        msg: 'Se ha registrado su respuesta.'
+                    });
 
-                    }
-                    $('#modal-requerimiento div.modal-body').modal('hide');
-                    location.reload();
-
+                    $('#modal-requerimiento').modal('hide');
+                    this.$fila.fadeOut(300,function(){
+                        this.remove();
+                    })
 
                 } else {
-                    alert(res.mensaje);
+                    Swal.fire(
+                        'Lo sentimos hubo un error en el servidor al intentar guardar la respuesta, por favor vuelva a intentarlo',
+                        res.mensaje,
+                        'error'
+                    );
                     $('#modal-requerimiento div.modal-body').LoadingOverlay("hide", true);
                 }
 
-            }).catch(function (err) {
+            }).fail(function (err) {
                 console.log(err)
+                Swal.fire(
+                    'Error en el servidor',
+                    err,
+                    'error'
+                );
+            }).always(()=>{
+
+                $('#modal-requerimiento div.modal-body').LoadingOverlay("hide", true);
+                document.getElementById('btnRegistrarRespuesta').removeAttribute('disabled');
+
             });
 
         } else {
@@ -579,7 +650,8 @@ class AprobarRequerimientoView {
 
         }
     }
+
+
 }
 
-const aprobarRequerimientoView = new AprobarRequerimientoView(); 
 

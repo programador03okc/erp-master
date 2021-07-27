@@ -1252,21 +1252,19 @@ class RequerimientoController extends Controller
             })
             ->when((intval($idPrioridad) > 0), function ($query)  use ($idPrioridad) {
                 return $query->whereRaw('alm_req.id_prioridad = ' . $idPrioridad);
-            })
-            ->orderBy("alm_req.fecha_registro", "desc");
-
+            });
+ 
         return datatables($requerimientos)
             ->filterColumn('nombre_usuario', function ($query, $keyword) {
                 $keywords = trim(strtoupper($keyword));
                 $query->whereRaw("UPPER(CONCAT(pers.nombres,' ',pers.apellido_paterno,' ',pers.apellido_materno)) LIKE ?", ["%{$keywords}%"]);
             })
-            ->filterColumn('monto_total', function ($query, $keyword) {
-                $keywords = trim($keyword);
-                $query->whereRaw("(SELECT SUM(alm_det_req.cantidad * alm_det_req.precio_unitario) 
-            FROM almacen.alm_det_req 
-            WHERE   alm_det_req.id_requerimiento = alm_req.id_requerimiento AND
-            alm_det_req.estado != 7) LIKE ?", ["%{$keywords}%"]);
-            })
+            // ->filterColumn('monto_total', function ($query, $keyword) {
+            //     $query->whereRaw("(SELECT SUM(alm_det_req.cantidad * alm_det_req.precio_unitario) 
+            // FROM almacen.alm_det_req 
+            // WHERE   alm_det_req.id_requerimiento = alm_req.id_requerimiento AND
+            // alm_det_req.estado != 7)");
+            // })
             ->rawColumns(['termometro'])->toJson();
     }
 
@@ -1390,7 +1388,7 @@ class RequerimientoController extends Controller
                 'alm_req.observacion',
                 'alm_tp_req.descripcion AS tipo_requerimiento',
                 'alm_req.id_usuario',
-                DB::raw("CONCAT(rrhh_perso.nombres, ' ',rrhh_perso.apellido_paterno, ' ', rrhh_perso.apellido_materno)  AS persona"),
+                DB::raw("CONCAT(rrhh_perso.nombres, ' ',rrhh_perso.apellido_paterno, ' ', rrhh_perso.apellido_materno)  AS nombre_usuario"),
                 'sis_usua.usuario',
                 'alm_req.id_rol',
                 'sis_rol.descripcion as descripcion_rol',
@@ -1576,7 +1574,7 @@ class RequerimientoController extends Controller
                                 'id_rol' => $element->id_rol,
                                 'descripcion_rol' => $element->descripcion_rol,
                                 'usuario' => $element->usuario,
-                                'persona' => $element->persona,
+                                'nombre_usuario' => $element->nombre_usuario,
                                 'id_almacen' => $element->id_almacen,
                                 'descripcion_almacen' => $element->descripcion_almacen,
                                 'cantidad_aprobados_total_flujo' => ($cantidadAprobacionesRealizadas) . '/' . ($tamañoFlujo),
@@ -1627,7 +1625,7 @@ class RequerimientoController extends Controller
                             'id_rol' => $element->id_rol,
                             'descripcion_rol' => $element->descripcion_rol,
                             'usuario' => $element->usuario,
-                            'persona' => $element->persona,
+                            'nombre_usuario' => $element->nombre_usuario,
                             'id_almacen' => $element->id_almacen,
                             'descripcion_almacen' => $element->descripcion_almacen,
                             'cantidad_aprobados_total_flujo' => ($cantidadAprobacionesRealizadas) . '/' . ($tamañoFlujo),
@@ -1880,7 +1878,7 @@ class RequerimientoController extends Controller
                 // Debugbar::info($payload);
 
                 if (count($destinatarios) > 0) {
-                    NotificacionesController::enviarEmail($payload);
+                    // NotificacionesController::enviarEmail($payload);
                 }
             }
             if ($accion == 1) {
@@ -1888,8 +1886,9 @@ class RequerimientoController extends Controller
                 // TO-DO NOTIFICAR AL USUARIO QUE SU REQUERIMIENTO FUE APROBADO
             }
 
-
-            DB::commit();
+            $aprobacion->id_aprobacion=123;
+            $seNotificaraporEmail= true;
+            // DB::commit();
             return response()->json(['id_aprobacion' => $aprobacion->id_aprobacion, 'notificacion_por_emial' => $seNotificaraporEmail]);
         } catch (Exception $e) {
             DB::rollBack();

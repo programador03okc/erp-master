@@ -27,7 +27,7 @@ Revisar y aprobar requerimientos
                         <div class="col-md-3">
                             <h5>Empresa</h5>
                             <div style="display:flex;">
-                                <select class="form-control" name="id_empresa_select" onChange="aprobarRequerimientoView.handleChangeFilterEmpresaListReqByEmpresa(event); aprobarRequerimientoView.handleChangeFiltroListado();">
+                                <select class="form-control handleChangeFilterEmpresaListReqByEmpresa handleChangeFiltroListadoByEmpresa" name="id_empresa_select" >
                                     <option value="0">Elija una opción</option>
                                     @foreach ($empresas as $emp)
                                     <option value="{{$emp->id_empresa}}" data-url-logo="{{$emp->logo_empresa}}">{{$emp->razon_social}}</option>
@@ -38,7 +38,7 @@ Revisar y aprobar requerimientos
                         <div class="col-md-3">
                             <h5>Sede</h5>
                             <div style="display:flex;">
-                                <select class="form-control" name="id_sede_select" onChange="aprobarRequerimientoView.handleChangeFiltroListado();" >
+                                <select class="form-control handleChangeFiltroListadoBySede" name="id_sede_select" >
                                     <option value="0">Todas</option>
                                 </select>
                             </div>
@@ -46,7 +46,7 @@ Revisar y aprobar requerimientos
                         <div class="col-md-3">
                             <h5>Grupo</h5>
                             <div style="display:flex;">
-                                <select class="form-control" name="id_grupo_select" onChange="aprobarRequerimientoView.handleChangeFiltroListado();" >
+                                <select class="form-control handleChangeFiltroListadoByGrupo" name="id_grupo_select" >
                                     <option value="0">Todas</option>
                                     @foreach ($grupos as $grupo)
                                     <option value="{{$grupo->id_grupo}}" >{{$grupo->descripcion}}</option>
@@ -57,7 +57,7 @@ Revisar y aprobar requerimientos
                         <div class="col-md-3">
                             <h5>Prioridad</h5>
                             <div style="display:flex;">
-                                <select class="form-control" name="id_prioridad_select" onChange="aprobarRequerimientoView.handleChangeFiltroListado();">
+                                <select class="form-control handleChangeFiltroListadoByPrioridad" name="id_prioridad_select">
                                     <option value="0">Todas</option>
                                     @foreach ($prioridades as $prioridad)
                                     <option value="{{$prioridad->id_prioridad}}">{{$prioridad->descripcion}}</option>
@@ -75,8 +75,8 @@ Revisar y aprobar requerimientos
                                 <thead>
                                     <tr>
                                         <th class="text-center">Prio.</th>
-                                        <th class="text-center">Código</th>
-                                        <th class="text-center" style="width:20%">Concepto</th>
+                                        <th class="text-center" style="width:8%">Código</th>
+                                        <th class="text-center" style="width:25%">Concepto</th>
                                         <th class="text-center">Tipo req.</th>
                                         <th class="text-center">Fecha entrega</th>
                                         <th class="text-center" style="width:10%">Empresa</th>
@@ -85,7 +85,7 @@ Revisar y aprobar requerimientos
                                         <th class="text-center">Observacion</th>
                                         <th class="text-center">Creado por</th>
                                         <th class="text-center" style="width:8%">Estado</th>
-                                        <th class="text-center" style="width:8%">Aprob/Total</th>
+                                        <th class="text-center" style="width:3%">Aprob /<br/>Total</th>
                                         <th class="text-center" style="width:5%">Acción</th>
                                     </tr>
                                 </thead>
@@ -140,7 +140,7 @@ Revisar y aprobar requerimientos
  
 <script src="{{ asset('js/logistica/requerimiento/ArchivoAdjunto.js')}}"></script>
 <script src="{{ asset('js/logistica/requerimiento/AprobarRequerimientoView.js')}}"></script>
-<script src="{{ asset('js/logistica/requerimiento/RequerimientoView.js')}}"></script>
+<!-- <script src="{{ asset('js/logistica/requerimiento/RequerimientoView.js')}}"></script> -->
 <script src="{{ asset('js/logistica/requerimiento/RequerimientoController.js')}}"></script>
 <script src="{{ asset('js/logistica/requerimiento/RequerimientoModel.js')}}"></script>
 
@@ -149,10 +149,17 @@ Revisar y aprobar requerimientos
 var roles = JSON.parse('{!!$roles!!}');
 var grupos = JSON.parse('{!!$gruposUsuario!!}');
 
- 
+
     $(document).ready(function() {
         seleccionarMenu(window.location);
+
+        const requerimientoModel = new RequerimientoModel();
+        const requerimientoController = new RequerimientoCtrl(requerimientoModel);
+        const aprobarRequerimientoView= new AprobarRequerimientoView(requerimientoController);
+
         aprobarRequerimientoView.mostrar();
+
+
 
     });
 </script>

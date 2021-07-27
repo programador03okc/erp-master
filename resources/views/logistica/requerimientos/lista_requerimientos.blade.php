@@ -171,12 +171,20 @@ Listado de requerimientos
 
     $(document).ready(function() {
         seleccionarMenu(window.location);
+        const requerimientoModel = new RequerimientoModel();
+        const requerimientoController = new RequerimientoCtrl(requerimientoModel);
+        const listarRequerimientoView = new ListarRequerimientoView(requerimientoController);
+
+        listarRequerimientoView.mostrar('ALL');
+
+
  
     });
 
-    window.onload = function() {
-        listarRequerimientoView.mostrar('ALL');
-    };
+
+    // window.onload = function() {
+    //     listarRequerimientoView.mostrar('ALL');
+    // };
 
 </script>
 @endsection

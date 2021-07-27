@@ -1,15 +1,21 @@
-class ListarRequerimientoView{
+class ListarRequerimientoView {
 
-    mostrar(meOrAll, idEmpresa, idSede, idGrupo, division, idPrioridad) {
-        requerimientoCtrl.getListadoElaborados(meOrAll, idEmpresa, idSede, idGrupo, division, idPrioridad).then(function (res) {
-            listarRequerimientoView.construirTablaListadoRequerimientosElaborados(res['data']);
-        }).catch(function (err) {
-            console.log(err)
-        })
-
+    constructor(requerimientoCtrl) {
+        this.requerimientoCtrl = requerimientoCtrl;
     }
 
-    construirTablaListadoRequerimientosElaborados(data) {
+    // mostrar(meOrAll, idEmpresa=null, idSede=null, idGrupo=null, division=null, idPrioridad=null) {
+    //     this.requerimientoCtrl.getListadoElaborados(meOrAll, idEmpresa, idSede, idGrupo, division, idPrioridad).then( (res) =>{
+    //         this.construirTablaListadoRequerimientosElaborados(res['data']);
+    //     }).catch(function (err) {
+    //         console.log(err)
+    //         // SWEETALERT 
+    //     })
+
+    // }
+    
+
+    mostrar() {
         vista_extendida();
         var vardataTables = funcDatatables();
         $('#ListaRequerimientosElaborados').DataTable({
@@ -18,9 +24,16 @@ class ListarRequerimientoView{
             'language': vardataTables[0],
             'order': [[0, 'desc']],
             'bLengthChange': false,
-            'serverSide': false,
+            'serverSide': true,
             'destroy': true,
-            'data': data,
+            'ajax': {
+                'url': 'elaborados',
+                'type': 'POST',
+                data: function (params) {
+                    return Object.assign(params, Util.objectifyForm($('#form-requerimientosElaborados').serializeArray()))
+                }
+
+            },
             'columns': [
                 { 'data': 'id_requerimiento', 'name': 'alm_req.id_requerimiento', 'visible': false },
                 { 'data': 'priori', 'name': 'adm_prioridad.descripcion', 'className': 'text-center' },
@@ -29,12 +42,12 @@ class ListarRequerimientoView{
                 { 'data': 'fecha_entrega', 'name': 'fecha_entrega', 'className': 'text-center' },
                 { 'data': 'tipo_requerimiento', 'name': 'alm_tp_req.descripcion', 'className': 'text-center' },
                 { 'data': 'razon_social', 'name': 'adm_contri.razon_social', 'className': 'text-center' },
-                { 'data': 'grupo', 'name': 'adm_grupo.descripcion', 'className':'text-center' },
-                { 'data': 'division', 'name': 'division.descripcion','className': 'text-center' },
-                { 'data': 'monto_total', 'name': 'monto_total','className': 'text-right' },
+                { 'data': 'grupo', 'name': 'sis_grupo.descripcion', 'className': 'text-center' },
+                { 'data': 'division', 'name': 'division.descripcion', 'className': 'text-center' },
+                { 'data': 'monto_total', 'name': 'monto_total', 'className': 'text-right', 'searchable': false },
                 { 'data': 'nombre_usuario', 'name': 'nombre_usuario' },
                 { 'data': 'estado_doc', 'name': 'adm_estado_doc.estado_doc' },
-                { 'data': 'fecha_registro', 'name': 'alm_req.fecha_registro','className': 'text-center' },
+                { 'data': 'fecha_registro', 'name': 'alm_req.fecha_registro', 'className': 'text-center' },
                 { 'data': 'id_requerimiento' }
             ],
             'columnDefs': [
@@ -51,42 +64,42 @@ class ListarRequerimientoView{
                 },
                 {
                     'render': function (data, type, row) {
-                        return (row['simbolo_moneda'])+(Util.formatoNumero(row['monto_total'],2));
+                        return (row['simbolo_moneda']) + (Util.formatoNumero(row['monto_total'], 2));
                     }, targets: 9
                 },
                 {
                     'render': function (data, type, row) {
                         switch (row['estado']) {
                             case 1:
-                                return '<span class="label label-default">'+row['estado_doc']+'</span>';
+                                return '<span class="label label-default">' + row['estado_doc'] + '</span>';
                                 break;
                             case 2:
-                                return '<span class="label label-success">'+row['estado_doc']+'</span>';
+                                return '<span class="label label-success">' + row['estado_doc'] + '</span>';
                                 break;
                             case 3:
-                                return '<span class="label label-warning">'+row['estado_doc']+'</span>';
+                                return '<span class="label label-warning">' + row['estado_doc'] + '</span>';
                                 break;
                             case 5:
-                                return '<span class="label label-primary">'+row['estado_doc']+'</span>';
+                                return '<span class="label label-primary">' + row['estado_doc'] + '</span>';
                                 break;
                             case 7:
-                                return '<span class="label label-danger">'+row['estado_doc']+'</span>';
+                                return '<span class="label label-danger">' + row['estado_doc'] + '</span>';
                                 break;
                             default:
-                                return '<span class="label label-default">'+row['estado_doc']+'</span>';
-                            break;
+                                return '<span class="label label-default">' + row['estado_doc'] + '</span>';
+                                break;
 
                         }
-                    }, targets: 11, className:'text-center'
+                    }, targets: 11, className: 'text-center'
                 },
                 {
                     'render': function (data, type, row) {
-                        let labelOrdenes='';
+                        let labelOrdenes = '';
                         (row['ordenes_compra']).forEach(element => {
                             labelOrdenes += `<label class="lbl-codigo" title="Abrir orden" onclick="trazabilidadRequerimientoView.abrirOrden(${element.id_orden_compra})">${element.codigo}</label>`;
                         });
                         return labelOrdenes;
-                    }, targets: 13, className:'text-center'
+                    }, targets: 13, className: 'text-center'
                 },
                 {
                     'render': function (data, type, row) {
@@ -110,7 +123,7 @@ class ListarRequerimientoView{
 
             ],
             "createdRow": function (row, data, dataIndex) {
- 
+
             },
             'initComplete': function () {
             }
@@ -133,21 +146,21 @@ class ListarRequerimientoView{
     //     })
     // }
 
-    abrirRequerimiento(idRequerimiento){
+    abrirRequerimiento(idRequerimiento) {
         localStorage.setItem('idRequerimiento', idRequerimiento);
         let url = "/logistica/gestion-logistica/requerimiento/elaboracion/index";
         var win = window.open(url, "_self");
-        win.focus(); 
+        win.focus();
     }
 
-    
-    anularRequerimiento(idRequerimiento){
-        requerimientoCtrl.anularRequerimiento(idRequerimiento).then(function (res) {
-            if(res.estado==7){
+
+    anularRequerimiento(idRequerimiento) {
+        this.requerimientoCtrl.anularRequerimiento(idRequerimiento).then(function (res) {
+            if (res.estado == 7) {
                 alert(`${res.mensaje}`);
                 location.reload();
                 $('#wrapper-okc').LoadingOverlay("hide", true);
-            }else{
+            } else {
                 $('#wrapper-okc').LoadingOverlay("hide", true);
                 alert(`${res.mensaje}`);
             }
@@ -156,11 +169,11 @@ class ListarRequerimientoView{
         })
     }
 
-    
+
 
     handleChangeFilterEmpresaListReqByEmpresa(event) {
         this.handleChangeFiltroListado();
-        requerimientoCtrl.getSedesPorEmpresa(event.target.value).then(function (res) {
+        this.requerimientoCtrl.getSedesPorEmpresa(event.target.value).then(function (res) {
             listarRequerimientoView.construirSelectSede(res);
         }).catch(function (err) {
             console.log(err)
@@ -185,7 +198,7 @@ class ListarRequerimientoView{
     }
 
     handleChangeGrupo(event) {
-        requerimientoCtrl.getListaDivisionesDeGrupo(event.target.value).then(function (res) {
+        this.requerimientoCtrl.getListaDivisionesDeGrupo(event.target.value).then(function (res) {
             listarRequerimientoView.construirSelectDivision(res);
         }).catch(function (err) {
             console.log(err)
@@ -204,4 +217,4 @@ class ListarRequerimientoView{
     }
 }
 
-const listarRequerimientoView = new ListarRequerimientoView();
+// const listarRequerimientoView = new ListarRequerimientoView();
