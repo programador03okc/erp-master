@@ -1685,7 +1685,7 @@ Route::group(['middleware' => ['auth']], function () {
 			Route::group(['as' => 'procesar-pago.', 'prefix' => 'procesar-pago'], function(){
 
 				Route::get('index', 'Tesoreria\RequerimientoPagoController@view_pendientes_pago')->name('index');
-				Route::get('listarComprobantesPagos', 'Tesoreria\RequerimientoPagoController@listarComprobantesPagos')->name('listar-comprobante-pagos');
+				Route::post('listarComprobantesPagos', 'Tesoreria\RequerimientoPagoController@listarComprobantesPagos')->name('listar-comprobante-pagos');
 				Route::post('listarOrdenesCompra', 'Tesoreria\RequerimientoPagoController@listarOrdenesCompra')->name('listar-ordenes-compra');
 				Route::post('procesarPago', 'Tesoreria\RequerimientoPagoController@procesarPago')->name('procesar-pagos');
 				// Route::post('listarRequerimientosPagos', 'Tesoreria\RequerimientoPagoController@listarRequerimientosPagos')->name('listar-requerimiento-pagos');

@@ -46,6 +46,7 @@
                         <div class="col-md-3">
                             <h5>Proveedor</h5>
                             <input type="text" style="display:none;" name="id_proveedor">
+                            <input type="text" style="display:none;" name="id_cta_principal">
                             <input type="text" class="form-control" name="proveedor_razon_social" readOnly>
                         </div>
                         <div class="col-md-3">

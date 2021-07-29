@@ -89,14 +89,13 @@ class RequerimientoPagoController extends Controller
     public function listarComprobantesPagos(){
         $data = DB::table('almacen.doc_com')
         ->select(
-            'doc_com.*','adm_contri.razon_social',
+            'doc_com.id_doc_com','doc_com.serie','doc_com.numero','adm_contri.razon_social',
+            'doc_com.fecha_emision','doc_com.fecha_vcmto','doc_com.serie',
+            'doc_com.total_a_pagar','doc_com.estado','doc_com.credito_dias',
             'adm_estado_doc.estado_doc','adm_estado_doc.bootstrap_color',
             'sis_moneda.simbolo','log_cdn_pago.descripcion AS condicion_pago',
             'cont_tp_doc.descripcion as tipo_documento',
             'adm_cta_contri.nro_cuenta',
-            // 'req_pagos.fecha_pago','req_pagos.observacion',
-            // 'registrado_por.nombre_corto as usuario_pago',
-            // 'req_pagos.total_pago','req_pagos.adjunto',
             DB::raw("(SELECT sum(total_pago) FROM tesoreria.req_pagos
                       WHERE req_pagos.id_doc_com = doc_com.id_doc_com
                         and req_pagos.estado != 7) AS suma_pagado")
@@ -108,11 +107,10 @@ class RequerimientoPagoController extends Controller
         ->leftJoin('logistica.log_cdn_pago', 'log_cdn_pago.id_condicion_pago', '=', 'doc_com.id_condicion')
         ->leftJoin('contabilidad.cont_tp_doc', 'cont_tp_doc.id_tp_doc', '=', 'doc_com.id_tp_doc')
         ->leftJoin('contabilidad.adm_cta_contri','adm_cta_contri.id_cuenta_contribuyente','=','doc_com.id_cta_bancaria')
-        // ->leftJoin('tesoreria.req_pagos','req_pagos.id_doc_com','=','doc_com.id_doc_com')
-        // ->leftJoin('configuracion.sis_usua as registrado_por','registrado_por.id_usuario','=','req_pagos.registrado_por')
-        ->where([['doc_com.id_condicion','=',2],['doc_com.estado','=',1]])
-        ->orWhere('doc_com.estado','=',9);
+        ->where('doc_com.id_condicion',2)
+        ->whereIn('doc_com.estado',[1,9]);
 
+        // return datatables($data)->toJson();
         return DataTables::of($data)
         ->editColumn('fecha_emision', function ($data) { 
             return ($data->fecha_emision!==null ? date('d-m-Y', strtotime($data->fecha_emision)) : ''); 
@@ -131,6 +129,7 @@ class RequerimientoPagoController extends Controller
             return '<span class="label label-'.$data->bootstrap_color.'">'.$estado.'</span>'; 
         })
         ->rawColumns(['span_estado','total_a_pagar_format'])
+
         ->make(true);
     }
 
@@ -191,7 +190,7 @@ class RequerimientoPagoController extends Controller
                             'id_doc_com'=>$request->id_doc_com,
                             'fecha_pago'=>$request->fecha_pago,
                             'observacion'=>$request->observacion,
-                            'total_pago'=>$request->total_pago,
+                            'total_pago'=>round($request->total_pago, 2),
                             'registrado_por'=>$id_usuario,
                             'estado'=>1,
                             'fecha_registro'=>date('Y-m-d H:i:s')
@@ -210,7 +209,7 @@ class RequerimientoPagoController extends Controller
                 ->update([ 'adjunto'=>$nombre ]);
             }
             
-            if (floatval($request->total_pago) >= floatval($request->total)){
+            if (floatval($request->total_pago) >= floatval(round($request->total, 2))){
 
                 if ($request->id_oc!==null){
                     DB::table('logistica.log_ord_compra')

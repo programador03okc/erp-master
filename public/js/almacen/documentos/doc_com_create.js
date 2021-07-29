@@ -45,6 +45,7 @@ function obtenerGuía(id){
                 $('[name=id_sede]').val(listaItems[0].id_sede);
                 $('[name=moneda]').val(listaItems[0].id_moneda);
                 $('[name=simbolo]').val(listaItems[0].simbolo);
+                $('[name=id_cta_principal]').val(listaItems[0].id_cta_principal);
     
                 totales = {'porcentaje_igv' : parseFloat(response['igv'])};
                 
@@ -137,6 +138,7 @@ function obtenerGuíaSeleccionadas(id_ingresos_seleccionadas, prov, id_prov){
                 $('[name=moneda]').val(listaItems[0].id_moneda);
                 $('[name=simbolo]').val(listaItems[0].simbolo);
                 $('[name=id_almacen_doc]').val(listaItems[0].id_almacen);
+                $('[name=id_cta_principal]').val(listaItems[0].id_cta_principal);
     
                 totales.simbolo = listaItems[0].simbolo;
 
@@ -201,15 +203,15 @@ function mostrarListaItems(){
     totales.simbolo = $('select[name="moneda"] option:selected').data('sim');
 
     var html_foot=`<tr>
-        <th colSpan="11" class="right">Sub Total <label name="sim">${totales.simbolo}</label></th>
+        <th colSpan="11" class="text-right">Sub Total <label name="sim">${totales.simbolo}</label></th>
         <th class="right">${formatNumber.decimal(totales.sub_total,'',-2)}</th>
     </tr>
     <tr>
-        <th colSpan="11" class="right">IGV ${totales.porcentaje_igv}% <label name="sim">${totales.simbolo}</label></th>
+        <th colSpan="11" class="text-right">IGV ${totales.porcentaje_igv}% <label name="sim">${totales.simbolo}</label></th>
         <th class="right">${formatNumber.decimal(totales.igv,'',-2)}</th>
     </tr>
     <tr>
-        <th colSpan="11" class="right"> Total <label name="sim">${totales.simbolo}</label></th>
+        <th colSpan="11" class="text-right"> Total <label name="sim">${totales.simbolo}</label></th>
         <th class="right">${formatNumber.decimal(totales.total,'',-2)}</th>
     </tr>
     `;
