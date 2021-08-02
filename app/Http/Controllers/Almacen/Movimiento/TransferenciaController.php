@@ -1611,7 +1611,10 @@ class TransferenciaController extends Controller
                     'sis_sede.id_sede as id_sede_reserva',
                     'almacen_guia.id_almacen as id_almacen_guia',
                     'sede_guia.id_sede as id_sede_guia',
-                    'guia_com_det.id_guia_com_det'
+                    'guia_com_det.id_guia_com_det',
+                    DB::raw("(SELECT sum(cantidad) FROM almacen.trans_detalle
+                        WHERE trans_detalle.id_requerimiento_detalle = alm_det_req.id_detalle_requerimiento
+                        and trans_detalle.estado != 7) AS cantidad_transferida")
                 )
                 ->join('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'alm_det_req.id_requerimiento')
                 ->leftjoin('almacen.alm_almacen', 'alm_almacen.id_almacen', '=', 'alm_det_req.id_almacen_reserva')
@@ -1646,48 +1649,69 @@ class TransferenciaController extends Controller
             $array_items = [];
             $array_almacen = [];
 
-            foreach ($detalle_req as $det) {
+            $transformacion = false;
+            $transformaciones = 0;
+            $todas_transformaciones = 0;
 
-                // $sede = ($det->id_sede_guia !== null ? $det->id_sede_guia : ($det->id_sede_reserva!==null ? $det->id_sede_reserva : null));
-                $almacen = ($det->id_almacen_guia !== null ? $det->id_almacen_guia
-                    : ($det->id_almacen_reserva !== null ? $det->id_almacen_reserva : null));
-
-                if ($almacen !== null && $id_almacen_destino !== $almacen) {
-
+            if ($req->tiene_transformacion) {
+                foreach ($detalle_req as $det) {
                     if ($det->tiene_transformacion) {
-                        $exist = false;
-                        foreach ($items_transf as $item) {
-                            if ($item->id_detalle_requerimiento == $det->id_detalle_requerimiento) {
-                                $exist = true;
-                            }
-                        }
-                        if (!$exist) {
-                            array_push($items_transf, $det);
-                        }
-                        if (!in_array($almacen, $almacen_transf)) {
-                            array_push($almacen_transf, $almacen);
-                        }
-                    } else {
-                        $exist = false;
-                        foreach ($items_base as $item) {
-                            if ($item->id_detalle_requerimiento == $det->id_detalle_requerimiento) {
-                                $exist = true;
-                            }
-                        }
-                        if (!$exist) {
-                            array_push($items_base, $det);
-                        }
-                        if (!in_array($almacen, $almacen_base)) {
-                            array_push($almacen_base, $almacen);
+                        $todas_transformaciones++;
+                        if ($det->stock_comprometido !== null && $det->stock_comprometido > 0) {
+                            $transformaciones++;
                         }
                     }
                 }
             }
 
-            if (count($items_transf) > 0) {
+            if ($todas_transformaciones == $transformaciones) {
+                $transformacion = true;
+            }
+
+            foreach ($detalle_req as $det) {
+
+                if ($det->cantidad_transferida < $det->cantidad) {
+                    // $sede = ($det->id_sede_guia !== null ? $det->id_sede_guia : ($det->id_sede_reserva!==null ? $det->id_sede_reserva : null));
+                    $almacen = ($det->id_almacen_guia !== null ? $det->id_almacen_guia
+                        : ($det->id_almacen_reserva !== null ? $det->id_almacen_reserva : null));
+
+                    if ($almacen !== null && $id_almacen_destino !== $almacen) {
+
+                        if ($det->tiene_transformacion) {
+                            $exist = false;
+                            foreach ($items_transf as $item) {
+                                if ($item->id_detalle_requerimiento == $det->id_detalle_requerimiento) {
+                                    $exist = true;
+                                }
+                            }
+                            if (!$exist) {
+                                array_push($items_transf, $det);
+                            }
+                            if (!in_array($almacen, $almacen_transf)) {
+                                array_push($almacen_transf, $almacen);
+                            }
+                        } else {
+                            $exist = false;
+                            foreach ($items_base as $item) {
+                                if ($item->id_detalle_requerimiento == $det->id_detalle_requerimiento) {
+                                    $exist = true;
+                                }
+                            }
+                            if (!$exist) {
+                                array_push($items_base, $det);
+                            }
+                            if (!in_array($almacen, $almacen_base)) {
+                                array_push($almacen_base, $almacen);
+                            }
+                        }
+                    }
+                }
+            }
+
+            if ($transformacion) {
                 $array_items = $items_transf;
                 $array_almacen = $almacen_transf;
-            } else if (count($items_base) > 0) {
+            } else {
                 $array_items = $items_base;
                 $array_almacen = $almacen_base;
             }
@@ -1775,7 +1799,10 @@ class TransferenciaController extends Controller
                 'alm_prod.part_number',
                 'alm_prod.descripcion',
                 'alm_und_medida.abreviatura',
-                'guia_com_det.id_guia_com_det'
+                'guia_com_det.id_guia_com_det',
+                DB::raw("(SELECT sum(cantidad) FROM almacen.trans_detalle
+                        WHERE trans_detalle.id_requerimiento_detalle = alm_det_req.id_detalle_requerimiento
+                        and trans_detalle.estado != 7) AS cantidad_transferida")
             )
             ->leftjoin('almacen.alm_almacen', 'alm_almacen.id_almacen', '=', 'alm_det_req.id_almacen_reserva')
             ->leftjoin('administracion.sis_sede', 'sis_sede.id_sede', '=', 'alm_almacen.id_sede')
@@ -1799,59 +1826,81 @@ class TransferenciaController extends Controller
         $items_base = [];
         $items_transf = [];
 
-        foreach ($req_detalle as $det) {
+        $transformacion = false;
+        $transformaciones = 0;
+        $todas_transformaciones = 0;
 
-            if ($det->id_guia_com_det !== null) {
-                $series = DB::table('almacen.alm_prod_serie')
-                    ->where('id_guia_com_det', $det->id_guia_com_det)
-                    ->get();
-            } else {
-                $series = [];
-            }
-
-            if (($det->id_sede_guia !== null && $req->id_sede !== $det->id_sede_guia) ||
-                ($det->id_sede_reserva !== null && $req->id_sede !== $det->id_sede_reserva)
-            ) {
-
-                $item_det = [
-                    'id_detalle_requerimiento' => $det->id_detalle_requerimiento,
-                    'codigo_orden' => ($det->codigo_orden !== null ? $det->codigo_orden : null),
-                    'sede' => ($det->id_sede_guia !== null ? $det->sede_guia_descripcion : ($det->id_sede_reserva !== null ? $det->sede_reserva_descripcion : '')),
-                    'codigo' => $det->codigo,
-                    'part_number' => $det->part_number,
-                    'descripcion' => $det->descripcion,
-                    'abreviatura' => $det->abreviatura,
-                    'cantidad' => $det->cantidad,
-                    'series' => $series
-                ];
-
+        if ($req->tiene_transformacion) {
+            foreach ($req_detalle as $det) {
                 if ($det->tiene_transformacion) {
-                    $exist = false;
-                    foreach ($items_transf as $item) {
-                        if ($item['id_detalle_requerimiento'] == $det->id_detalle_requerimiento) {
-                            $exist = true;
-                        }
+                    $todas_transformaciones++;
+                    if ($det->stock_comprometido !== null && $det->stock_comprometido > 0) {
+                        $transformaciones++;
                     }
-                    if (!$exist) {
-                        array_push($items_transf, $item_det);
-                    }
-                    // array_push($items_transf, $det);
-                } else {
-                    $exist = false;
-                    foreach ($items_base as $item) {
-                        if ($item['id_detalle_requerimiento'] == $det->id_detalle_requerimiento) {
-                            $exist = true;
-                        }
-                    }
-                    if (!$exist) {
-                        array_push($items_base, $item_det);
-                    }
-                    // array_push($items_base, $det);
                 }
             }
         }
 
-        return response()->json(['requerimiento' => $req, 'detalle' => (count($items_transf) > 0 ? $items_transf : $items_base)]);
+        if ($todas_transformaciones == $transformaciones) {
+            $transformacion = true;
+        }
+
+        foreach ($req_detalle as $det) {
+
+            if ($det->cantidad_transferida < $det->cantidad) {
+
+                if ($det->id_guia_com_det !== null) {
+                    $series = DB::table('almacen.alm_prod_serie')
+                        ->where('id_guia_com_det', $det->id_guia_com_det)
+                        ->get();
+                } else {
+                    $series = [];
+                }
+
+                if (($det->id_sede_guia !== null && $req->id_sede !== $det->id_sede_guia) ||
+                    ($det->id_sede_reserva !== null && $req->id_sede !== $det->id_sede_reserva)
+                ) {
+
+                    $item_det = [
+                        'id_detalle_requerimiento' => $det->id_detalle_requerimiento,
+                        'codigo_orden' => ($det->codigo_orden !== null ? $det->codigo_orden : null),
+                        'sede' => ($det->id_sede_guia !== null ? $det->sede_guia_descripcion : ($det->id_sede_reserva !== null ? $det->sede_reserva_descripcion : '')),
+                        'codigo' => $det->codigo,
+                        'part_number' => $det->part_number,
+                        'descripcion' => $det->descripcion,
+                        'abreviatura' => $det->abreviatura,
+                        'cantidad' => (floatval($det->cantidad) - floatval($det->cantidad_transferida)),
+                        'series' => $series
+                    ];
+
+                    if ($det->tiene_transformacion) {
+                        $exist = false;
+                        foreach ($items_transf as $item) {
+                            if ($item['id_detalle_requerimiento'] == $det->id_detalle_requerimiento) {
+                                $exist = true;
+                            }
+                        }
+                        if (!$exist) {
+                            array_push($items_transf, $item_det);
+                        }
+                        // array_push($items_transf, $det);
+                    } else {
+                        $exist = false;
+                        foreach ($items_base as $item) {
+                            if ($item['id_detalle_requerimiento'] == $det->id_detalle_requerimiento) {
+                                $exist = true;
+                            }
+                        }
+                        if (!$exist) {
+                            array_push($items_base, $item_det);
+                        }
+                        // array_push($items_base, $det);
+                    }
+                }
+            }
+        }
+
+        return response()->json(['requerimiento' => $req, 'detalle' => ($transformacion ? $items_transf : $items_base)]);
     }
 
 
@@ -2038,5 +2087,16 @@ class TransferenciaController extends Controller
             DB::rollBack();
             // return response()->json($e);
         }
+    }
+
+    function listarRequerimientos()
+    {
+        $data = DB::table('almacen.alm_req')
+            ->select('alm_req.*', 'adm_estado_doc.estado_doc')
+            ->join('administracion.adm_estado_doc', 'adm_estado_doc.id_estado_doc', '=', 'alm_req.estado')
+            ->where([['alm_req.estado', '!=', 7]])
+            ->get();
+        $output['data'] = $data;
+        return response()->json($output);
     }
 }

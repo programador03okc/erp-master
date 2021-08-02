@@ -13,9 +13,9 @@ Gestión de Transferencias
 
 @section('breadcrumb')
 <ol class="breadcrumb">
-  <li><a href="{{route('almacen.index')}}"><i class="fas fa-tachometer-alt"></i> Almacenes</a></li>
-  <li>Transferencias</li>
-  <li class="active">@yield('cabecera')</li>
+    <li><a href="{{route('almacen.index')}}"><i class="fas fa-tachometer-alt"></i> Almacenes</a></li>
+    <li>Transferencias</li>
+    <li class="active">@yield('cabecera')</li>
 </ol>
 @endsection
 
@@ -23,14 +23,14 @@ Gestión de Transferencias
 <div class="box box-solid">
     <div class="box-body">
         <div class="page-main" type="transferencias">
-            <div class="col-md-12" id="tab-transferencias"  style="padding-left:0px;padding-right:0px;">
+            <div class="col-md-12" id="tab-transferencias" style="padding-left:0px;padding-right:0px;">
                 <ul class="nav nav-tabs" id="myTab">
                     <li class="active"><a type="#porEnviar">Transferencias Pendientes de Enviar</a></li>
                     <li class=""><a type="#pendientes">Transferencias Pendientes de Recibir</a></li>
                     <li class=""><a type="#recibidas">Transferencias Recibidas</a></li>
                 </ul>
                 <div class="content-tabs">
-                    <section id="porEnviar" >
+                    <section id="porEnviar">
                         <form id="form-porEnviar" type="register">
                             <div class="row">
                                 <div class="col-md-2"><label>Almacén Origen:</label></div>
@@ -39,7 +39,7 @@ Gestión de Transferencias
                                     <select class="form-control" name="id_almacen_origen_lista" onChange="listarTransferenciasPorEnviar();">
                                         <option value="0" selected>Mostrar Todos</option>
                                         @foreach ($almacenes as $alm)
-                                            <option value="{{$alm->id_almacen}}">{{$alm->descripcion}}</option>
+                                        <option value="{{$alm->id_almacen}}">{{$alm->descripcion}}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -47,15 +47,12 @@ Gestión de Transferencias
                                     <!-- <button type="button" class="btn btn-info" data-toggle="tooltip" 
                                         data-placement="bottom" title="Nueva Transferencia" 
                                         onClick="guia_compraModal();">Nueva Transferencia con Guía</button> -->
-                                    <button type="button" class="btn btn-success" data-toggle="tooltip" 
-                                        data-placement="bottom" title="Nueva Transferencia" 
-                                        onClick="modalRequerimiento();">Nueva Transferencia con Req.</button>
+                                    <button type="button" class="btn btn-success" data-toggle="tooltip" data-placement="bottom" title="Nueva Transferencia" onClick="openRequerimientoModal();">Nueva Transferencia con Req.</button>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-md-12">
-                                    <table class="mytable table table-condensed table-bordered table-okc-view" 
-                                        id="listaTransferenciasPorEnviar">
+                                    <table class="mytable table table-condensed table-bordered table-okc-view" id="listaTransferenciasPorEnviar">
                                         <thead>
                                             <tr>
                                                 <th hidden></th>
@@ -74,8 +71,7 @@ Gestión de Transferencias
                                         <tbody></tbody>
                                     </table>
                                     @if(Auth::user()->tieneAccion(91))
-                                    <button type="button" class="btn btn-success" data-toggle="tooltip" data-placement="bottom" 
-                                    title="Crear Guía / Salida" onClick="open_guia_transferencia_create();">Generar Guía</button>
+                                    <button type="button" class="btn btn-success" data-toggle="tooltip" data-placement="bottom" title="Crear Guía / Salida" onClick="open_guia_transferencia_create();">Generar Guía</button>
                                     @endif
                                 </div>
                             </div>
@@ -90,15 +86,14 @@ Gestión de Transferencias
                                     <select class="form-control" name="id_almacen_destino_lista" onChange="listarTransferenciasPendientes();">
                                         <option value="0" selected>Elija una opción</option>
                                         @foreach ($almacenes as $alm)
-                                            <option value="{{$alm->id_almacen}}" >{{$alm->descripcion}}</option>
+                                        <option value="{{$alm->id_almacen}}">{{$alm->descripcion}}</option>
                                         @endforeach
                                     </select>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-md-12">
-                                    <table class="mytable table table-condensed table-bordered table-okc-view" 
-                                        id="listaTransferenciasPorRecibir">
+                                    <table class="mytable table table-condensed table-bordered table-okc-view" id="listaTransferenciasPorRecibir">
                                         <thead>
                                             <tr>
                                                 <th hidden></th>
@@ -127,15 +122,14 @@ Gestión de Transferencias
                                     <select class="form-control" name="id_almacen_dest_recibida" onChange="listarTransferenciasRecibidas();">
                                         <option value="0" selected>Elija una opción</option>
                                         @foreach ($almacenes as $alm)
-                                            <option value="{{$alm->id_almacen}}" >{{$alm->descripcion}}</option>
+                                        <option value="{{$alm->id_almacen}}">{{$alm->descripcion}}</option>
                                         @endforeach
                                     </select>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-md-12">
-                                    <table class="mytable table table-condensed table-bordered table-okc-view" 
-                                        id="listaTransferenciasRecibidas">
+                                    <table class="mytable table table-condensed table-bordered table-okc-view" id="listaTransferenciasRecibidas">
                                         <thead>
                                             <tr>
                                                 <th hidden></th>
@@ -164,7 +158,6 @@ Gestión de Transferencias
         </div>
     </div>
 </div>
-@include('logistica.requerimientos.modal_historial_requerimiento')
 <!-- @include('almacen.guias.guia_compraModal') -->
 @include('almacen.guias.guia_com_ver')
 @include('almacen.transferencias.ver_requerimiento')
@@ -172,6 +165,7 @@ Gestión de Transferencias
 @include('almacen.transferencias.transferenciaEnviar')
 @include('almacen.transferencias.transferenciaDetalle')
 @include('almacen.transferencias.ver_series')
+@include('almacen.transferencias.requerimientoModal')
 @include('almacen.guias.guia_com_obs')
 @include('almacen.guias.guia_ven_obs')
 @include('almacen.guias.guia_ven_series')
@@ -179,36 +173,37 @@ Gestión de Transferencias
 @endsection
 
 @section('scripts')
-    <script src="{{ asset('datatables/DataTables/js/jquery.dataTables.min.js') }}"></script>
-    <script src="{{ asset('datatables/DataTables/js/dataTables.bootstrap.min.js') }}"></script>
-    <!-- <script src="{{ asset('datatables/Buttons/js/dataTables.buttons.min.js') }}"></script>
+<script src="{{ asset('datatables/DataTables/js/jquery.dataTables.min.js') }}"></script>
+<script src="{{ asset('datatables/DataTables/js/dataTables.bootstrap.min.js') }}"></script>
+<!-- <script src="{{ asset('datatables/Buttons/js/dataTables.buttons.min.js') }}"></script>
     <script src="{{ asset('datatables/Buttons/js/buttons.bootstrap.min.js') }}"></script>
     <script src="{{ asset('datatables/Buttons/js/buttons.print.min.js') }}"></script>
     <script src="{{ asset('datatables/Buttons/js/buttons.html5.min.js') }}"></script>
     <script src="{{ asset('datatables/pdfmake/pdfmake.min.js') }}"></script>
     <script src="{{ asset('datatables/pdfmake/vfs_fonts.js') }}"></script>
     <script src="{{ asset('datatables/JSZip/jszip.min.js') }}"></script> -->
-    <script src="{{ asset('template/plugins/moment.min.js') }}"></script>
-    <script src="{{ asset('template/plugins/iCheck/icheck.min.js') }}"></script>
-    <script src="{{ asset('template/plugins/select2/select2.min.js') }}"></script>
-    <script src="{{ asset('template/plugins/jquery-datatables-checkboxes/js/dataTables.checkboxes.min.js') }}"></script>
+<script src="{{ asset('template/plugins/moment.min.js') }}"></script>
+<script src="{{ asset('template/plugins/iCheck/icheck.min.js') }}"></script>
+<script src="{{ asset('template/plugins/select2/select2.min.js') }}"></script>
+<script src="{{ asset('template/plugins/jquery-datatables-checkboxes/js/dataTables.checkboxes.min.js') }}"></script>
 
-    <script src="{{ asset('js/almacen/transferencias/listar_transferencias.js')}}"></script>
-    <script src="{{ asset('js/almacen/transferencias/transferenciaRecibir.js')}}"></script>
-    <script src="{{ asset('js/almacen/transferencias/transferenciaEnviar.js')}}"></script>
-    <script src="{{ asset('js/logistica/requerimiento/historial.js')}}"></script>
-    <!-- <script src="{{ asset('js/almacen/guia/guia_compraModal.js')}}"></script> -->
-    <script src="{{ asset('js/almacen/transferencias/transferenciaCreate.js')}}"></script>
-    <!-- <script src="{{ asset('js/almacen/guia/guia_com_det_series.js')}}"></script> -->
-    <script src="{{ asset('js/almacen/guia/guia_ven_series.js')}}"></script>
+<script src="{{ asset('js/almacen/transferencias/listar_transferencias.js')}}"></script>
+<script src="{{ asset('js/almacen/transferencias/transferenciaRecibir.js')}}"></script>
+<script src="{{ asset('js/almacen/transferencias/transferenciaEnviar.js')}}"></script>
+<script src="{{ asset('js/almacen/transferencias/requerimientoModal.js')}}"></script>
+<!-- <script src="{{ asset('js/logistica/requerimiento/historial.js')}}"></script> -->
+<!-- <script src="{{ asset('js/almacen/guia/guia_compraModal.js')}}"></script> -->
+<script src="{{ asset('js/almacen/transferencias/transferenciaCreate.js')}}"></script>
+<!-- <script src="{{ asset('js/almacen/guia/guia_com_det_series.js')}}"></script> -->
+<script src="{{ asset('js/almacen/guia/guia_ven_series.js')}}"></script>
 
-    <script>
-    $(document).ready(function(){
+<script>
+    $(document).ready(function() {
         seleccionarMenu(window.location);
-        iniciar('{{Auth::user()->tieneAccion(91)}}','{{Auth::user()->id_usuario}}');
+        iniciar('{{Auth::user()->tieneAccion(91)}}', '{{Auth::user()->id_usuario}}');
         inicializar(
             "{{route('logistica.gestion-logistica.requerimiento.elaboracion.elaborados')}}"
         );
     });
-    </script>
+</script>
 @endsection

@@ -1,4 +1,4 @@
-<div class="modal fade" tabindex="-1" role="dialog" id="modal-transferenciaGuia">
+<div class="modal fade" tabindex="-1" role="dialog" id="modal-transferenciaGuia" style="overflow-y: scroll;">
     <div class="modal-dialog" style="width:1100px;">
         <div class="modal-content">
             <form id="form-transferenciaGuia">
@@ -18,12 +18,10 @@
                             <h5>Serie-Número</h5>
                             <input type="text" class="oculto" name="id_serie_numero">
                             <div class="input-group">
-                                <input type="text" class="form-control activation" name="trans_serie"
-                                    placeholder="0000" onBlur="ceros_numero_trans('serie');" >
+                                <input type="text" class="form-control activation" name="trans_serie" placeholder="0000" onBlur="ceros_numero_trans('serie');">
                                 <span class="input-group-addon">-</span>
-                                <input type="text" class="form-control activation" name="trans_numero"
-                                    placeholder="0000000" onBlur="ceros_numero_trans('numero');" > 
-                                    <!-- onBlur="ceros_numero('numero');"> -->
+                                <input type="text" class="form-control activation" name="trans_numero" placeholder="0000000" onBlur="ceros_numero_trans('numero');">
+                                <!-- onBlur="ceros_numero('numero');"> -->
                             </div>
                         </div>
                         <div class="col-md-4">
@@ -41,7 +39,7 @@
                             <select class="form-control js-example-basic-single " name="responsable_destino_trans">
                                 <option value="0">Elija una opción</option>
                                 @foreach ($usuarios as $usu)
-                                    <option value="{{$usu->id_usuario}}">{{$usu->nombre_corto}}</option>
+                                <option value="{{$usu->id_usuario}}">{{$usu->nombre_corto}}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -64,8 +62,7 @@
                     </div>
                     <div class="row">
                         <div class="col-md-12">
-                            <table class="mytable table table-condensed table-bordered table-okc-view" width="100%" 
-                                id="detalleTransferencia"  style="margin-top:10px;">
+                            <table class="mytable table table-condensed table-bordered table-okc-view" width="100%" id="detalleTransferencia" style="margin-top:10px;">
                                 <thead>
                                     <tr>
                                         <th>#</th>
@@ -86,7 +83,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <input type="submit" id="submit_transferencia" class="btn btn-success" value="Guardar"/>
+                    <input type="submit" id="submit_transferencia" class="btn btn-success" value="Guardar" />
                 </div>
             </form>
         </div>

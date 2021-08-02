@@ -880,7 +880,7 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::post('guardar_proveedor', 'LogisticaController@guardar_proveedor');
 				Route::get('mostrar_clientes', 'Comercial\ClienteController@mostrar_clientes');
 				Route::get('listar_personas', 'RecursosHumanosController@mostrar_persona_table');
-				Route::get('listarDetalleTransferencias/{id}', 'TransferenciaController@listarDetalleTransferencias');
+				Route::get('listarDetalleTransferencias/{id}', 'Almacen\Movimiento\TransferenciaController@listarDetalleTransferencias');
 				Route::get('listar_ubigeos', 'AlmacenController@listar_ubigeos');
 				Route::post('save_cliente', 'LogisticaController@save_cliente');
 				Route::get('listarRequerimientosElaborados', 'DistribucionController@listarRequerimientosElaborados');
@@ -1299,7 +1299,7 @@ Route::group(['middleware' => ['auth']], function () {
 			Route::group(['as' => 'gestion-transferencias.', 'prefix' => 'gestion-transferencias'], function () {
 				//Transferencias
 				Route::get('index', 'Almacen\Movimiento\TransferenciaController@view_listar_transferencias')->name('index');
-				// Route::get('listar_transferencias_pendientes/{ori}', 'Almacen\Movimiento\TransferenciaController@listar_transferencias_pendientes');
+				Route::get('listarRequerimientos', 'Almacen\Movimiento\TransferenciaController@listarRequerimientos');
 				Route::get('listar_transferencias_recibidas/{ori}', 'Almacen\Movimiento\TransferenciaController@listar_transferencias_recibidas');
 				Route::get('listar_transferencia_detalle/{id}', 'Almacen\Movimiento\TransferenciaController@listar_transferencia_detalle');
 				Route::post('guardar_ingreso_transferencia', 'Almacen\Movimiento\TransferenciaController@guardar_ingreso_transferencia');
