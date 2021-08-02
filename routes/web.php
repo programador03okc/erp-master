@@ -1610,6 +1610,7 @@ Route::group(['middleware' => ['auth']], function () {
 			Route::get('obtenerGuiaVenta/{id}', 'Tesoreria\Facturacion\PendientesFacturacionController@obtenerGuiaVenta')->name('obtener-guia-venta');
 			Route::post('guardar_doc_venta', 'Tesoreria\Facturacion\PendientesFacturacionController@guardar_doc_venta')->name('guardar-guia-venta');
 			Route::get('documentos_ver/{id}', 'Tesoreria\Facturacion\PendientesFacturacionController@documentos_ver')->name('ver-doc-venta');
+			Route::get('anular_doc_ven/{id}', 'Tesoreria\Facturacion\PendientesFacturacionController@anular_doc_ven')->name('ver-doc-venta');
 		});
 	});
 

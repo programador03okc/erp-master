@@ -28,7 +28,7 @@ function documentosVer(id) {
                         element.serie +
                         "-" +
                         element.numero}</td>
-                    <th >Tipo de Cambio: S/ ${element.tipo_cambio}</td>
+                    <th></td>
                     <th colSpan="2">Empresa-Sede: </th>
                     <td colSpan="3">${element.sede_descripcion}</td>
                 </tr>
@@ -133,20 +133,26 @@ function documentosVer(id) {
 }
 
 function anularDocVenta(id) {
-    $.ajax({
-        type: "GET",
-        url: "anular_doc_ven/" + id,
-        dataType: "JSON",
-        success: function(response) {
-            console.log(response);
-            alert("Se anuló correctamente el documento.");
-            let facturacion = new Facturacion();
-            facturacion.listarGuias();
-            $("#modal-doc_ven_ver").modal("hide");
-        }
-    }).fail(function(jqXHR, textStatus, errorThrown) {
-        console.log(jqXHR);
-        console.log(textStatus);
-        console.log(errorThrown);
-    });
+    let rspta = confirm(
+        "¿Está seguro que desea anular éste documento de venta?"
+    );
+
+    if (rspta) {
+        $.ajax({
+            type: "GET",
+            url: "anular_doc_ven/" + id,
+            dataType: "JSON",
+            success: function(response) {
+                console.log(response);
+                alert("Se anuló correctamente el documento.");
+                let facturacion = new Facturacion();
+                facturacion.listarGuias();
+                $("#modal-doc_ven_ver").modal("hide");
+            }
+        }).fail(function(jqXHR, textStatus, errorThrown) {
+            console.log(jqXHR);
+            console.log(textStatus);
+            console.log(errorThrown);
+        });
+    }
 }

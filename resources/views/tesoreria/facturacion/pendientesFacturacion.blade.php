@@ -36,18 +36,18 @@ Facturación
                                         <thead>
                                             <tr>
                                                 <th hidden>#</th>
-                                                <th>Orden Elec.</th>
-                                                <th>C.P.</th>
-                                                <th>Monto de O/C</th>
-                                                <th>Entidad/Cliente</th>
-                                                <th>Responsable de O/C</th>
-                                                <th>Cod.Req.</th>
                                                 <th>Serie</th>
                                                 <th>Número</th>
-                                                <!-- <th>RUC Guía</th>
-                                                <th>Razon Social Guía</th> -->
                                                 <th>Fecha Emisión</th>
+                                                <!-- <th>Tipo Operación</th> -->
                                                 <th>Sede Guía</th>
+                                                <th>RUC</th>
+                                                <th>Entidad/Cliente</th>
+                                                <th>Responsable</th>
+                                                <th>Cod.Req.</th>
+                                                <th>OCAM</th>
+                                                <th>C.P.</th>
+                                                <th>Monto de O/C</th>
                                                 <th style="width:5%;">Acción</th>
                                             </tr>
                                         </thead>

@@ -54,6 +54,15 @@
                             <input type="text" class="form-control" name="cliente_razon_social" readOnly>
                         </div>
                         <div class="col-md-3">
+                            <h5>Serie-Número (Guía)</h5>
+                            <div class="input-group">
+                                <input type="text" style="display:none;" name="id_guia">
+                                <input type="text" class="form-control" name="serie_guia" readOnly>
+                                <span class="input-group-addon">-</span>
+                                <input type="text" class="form-control" name="numero_guia" readOnly>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
                             <h5>Importe Total segun OCAM</h5>
                             <div style="display:flex;">
                                 <input type="text" name="simbolo" class="form-control group-elemento" style="width:40px;text-align:center;" readOnly />
@@ -64,15 +73,6 @@
                                     <option value="{{$mon->id_moneda}}" data-sim="{{$mon->simbolo}}">{{$mon->descripcion}}</option>
                                     @endforeach
                                 </select>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <h5>Serie-Número (Guía)</h5>
-                            <div class="input-group">
-                                <input type="text" style="display:none;" name="id_guia">
-                                <input type="text" class="form-control" name="serie_guia" readOnly>
-                                <span class="input-group-addon">-</span>
-                                <input type="text" class="form-control" name="numero_guia" readOnly>
                             </div>
                         </div>
                         <!-- <div class="col-md-3">

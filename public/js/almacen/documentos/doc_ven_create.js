@@ -40,13 +40,13 @@ function obtenerGuía(id) {
                 $("[name=id_guia]").val(response["guia"].id_guia_ven);
                 $("[name=serie_guia]").val(response["guia"].serie);
                 $("[name=numero_guia]").val(response["guia"].numero);
+                $("[name=id_sede]").val(response["guia"].id_sede);
             }
 
             if (response["detalle"].length > 0) {
                 listaItems = response["detalle"];
                 simbolo = listaItems[0].moneda_oc == "s" ? "S/" : "$";
 
-                $("[name=id_sede]").val(listaItems[0].id_sede);
                 $("[name=moneda]").val(listaItems[0].moneda_oc == "s" ? 1 : 2);
                 $("[name=simbolo]").val(simbolo);
                 $("[name=importe_oc]").val(listaItems[0].monto_total);

@@ -32,6 +32,7 @@ class PendientesFacturacionController extends Controller
                 'adm_contri.nro_documento',
                 'adm_contri.razon_social',
                 'sis_usua.nombre_corto',
+                'usu_trans.nombre_corto as nombre_corto_trans',
                 'adm_estado_doc.estado_doc',
                 'adm_estado_doc.bootstrap_color',
                 // DB::raw("(rrhh_perso.nombres) || ' ' || (rrhh_perso.apellido_paterno) || ' ' || (rrhh_perso.apellido_materno) AS nombre_persona"),
@@ -50,6 +51,8 @@ class PendientesFacturacionController extends Controller
                 'alm_req.id_requerimiento',
                 'alm_req.tiene_transformacion',
                 'sede_req.descripcion as sede_descripcion_req',
+                'trans.codigo as codigo_trans',
+                // 'tp_ope.descripcion as operacion',
                 DB::raw("(SELECT count(distinct id_doc_ven) FROM almacen.doc_ven AS d
                     INNER JOIN almacen.guia_ven_det AS guia
                         on(guia.id_guia_ven = guia_ven.id_guia_ven)
@@ -66,20 +69,23 @@ class PendientesFacturacionController extends Controller
                     WHERE d.id_doc_ven = doc.id_doc
                     limit 1) AS id_doc_ven")
             )
-            ->leftjoin('comercial.com_cliente', 'com_cliente.id_cliente', '=', 'guia_ven.id_cliente')
-            ->leftjoin('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'com_cliente.id_contribuyente')
-            // ->leftjoin('rrhh.rrhh_perso','rrhh_perso.id_persona','=','guia_ven.id_persona')
-            ->leftjoin('almacen.alm_almacen', 'alm_almacen.id_almacen', '=', 'guia_ven.id_almacen')
-            ->leftjoin('almacen.orden_despacho', 'orden_despacho.id_od', '=', 'guia_ven.id_od')
-            ->leftjoin('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'orden_despacho.id_requerimiento')
+            ->leftJoin('comercial.com_cliente', 'com_cliente.id_cliente', '=', 'guia_ven.id_cliente')
+            ->leftJoin('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'com_cliente.id_contribuyente')
+            ->leftJoin('almacen.alm_almacen', 'alm_almacen.id_almacen', '=', 'guia_ven.id_almacen')
+            ->leftJoin('almacen.orden_despacho', 'orden_despacho.id_od', '=', 'guia_ven.id_od')
+            ->leftJoin('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'orden_despacho.id_requerimiento')
             ->leftJoin('administracion.sis_sede as sede_req', 'sede_req.id_sede', '=', 'alm_req.id_sede')
-            // ->join('administracion.sis_sede','sis_sede.id_sede','=','guia_ven.id_sede')
-            ->leftjoin('mgcp_cuadro_costos.cc', 'cc.id', '=', 'alm_req.id_cc')
-            ->leftjoin('mgcp_ordenes_compra.oc_propias_view', 'oc_propias_view.id_oportunidad', '=', 'cc.id_oportunidad')
+            // ->leftjoin('rrhh.rrhh_perso','rrhh_perso.id_persona','=','guia_ven.id_persona')
+            ->leftJoin('almacen.trans', 'trans.id_transferencia', '=', 'guia_ven.id_transferencia')
+            ->leftjoin('configuracion.sis_usua as usu_trans', 'usu_trans.id_usuario', '=', 'trans.responsable_origen')
+            ->leftJoin('mgcp_cuadro_costos.cc', 'cc.id', '=', 'alm_req.id_cc')
+            ->leftJoin('mgcp_ordenes_compra.oc_propias_view', 'oc_propias_view.id_oportunidad', '=', 'cc.id_oportunidad')
             ->join('administracion.sis_sede', 'sis_sede.id_sede', '=', 'guia_ven.id_sede')
-            ->join('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'guia_ven.registrado_por')
+            ->leftjoin('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'alm_req.id_usuario')
             ->join('administracion.adm_estado_doc', 'adm_estado_doc.id_estado_doc', '=', 'guia_ven.estado')
-            ->where('guia_ven.estado', 1);
+            // ->join('almacen.tp_ope', 'tp_ope.id_operacion', '=', 'guia_ven.id_operacion')
+            ->where('guia_ven.estado', 1)
+            ->where('guia_ven.id_operacion', 1);
 
         return datatables($data)->toJson();
     }
@@ -93,7 +99,8 @@ class PendientesFacturacionController extends Controller
                 'adm_contri.razon_social',
                 'adm_contri.nro_documento',
                 'guia_ven.serie',
-                'guia_ven.numero'
+                'guia_ven.numero',
+                'guia_ven.id_sede'
             )
             ->join('comercial.com_cliente', 'com_cliente.id_cliente', '=', 'guia_ven.id_cliente')
             ->join('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'com_cliente.id_contribuyente')
@@ -111,8 +118,8 @@ class PendientesFacturacionController extends Controller
                 'alm_und_medida.abreviatura',
                 'oc_propias_view.monto_total',
                 'oc_propias_view.moneda_oc',
-                'oc_propias_view.nombre_largo_responsable',
-                'alm_req.id_sede'
+                'oc_propias_view.nombre_largo_responsable'
+                // 'alm_req.id_sede'
             )
             ->leftjoin('almacen.guia_ven', 'guia_ven.id_guia_ven', '=', 'guia_ven_det.id_guia_ven')
             ->leftjoin('almacen.orden_despacho_det', 'orden_despacho_det.id_od_detalle', '=', 'guia_ven_det.id_od_det')
@@ -238,5 +245,18 @@ class PendientesFacturacionController extends Controller
             ->get();
 
         return response()->json(['docs' => $docs, 'detalles' => $detalles]);
+    }
+
+    public function anular_doc_ven($id_doc)
+    {
+        $update = DB::table('almacen.doc_ven')
+            ->where('doc_ven.id_doc_ven', $id_doc)
+            ->update(['estado' => 7]);
+
+        $update = DB::table('almacen.doc_ven_det')
+            ->where('doc_ven_det.id_doc', $id_doc)
+            ->update(['estado' => 7]);
+
+        return response()->json($update);
     }
 }
