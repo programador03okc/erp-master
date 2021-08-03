@@ -44,13 +44,15 @@ Procesar Pagos
                                                 <th>Fecha Emisión</th>
                                                 <th>Condición</th>
                                                 <th>Fecha Vencimiento</th>
+                                                <th>Cta. Bancaria</th>
                                                 <th>Mnd</th>
                                                 <th>Total</th>
-                                                <th>Fecha Pago</th>
+                                                <th>Saldo</th>
+                                                <!-- <th>Fecha Pago</th>
                                                 <th>Motivo</th>
                                                 <th>Procesado por</th>
                                                 <th>Total pago</th>
-                                                <th>Adjunto</th>
+                                                <th>Adjunto</th> -->
                                                 <th>Estado</th>
                                                 <th style="width:90px;">Acción</th>
                                             </tr>
@@ -79,14 +81,15 @@ Procesar Pagos
                                                 <th>Proveedor</th>
                                                 <th>Fecha</th>
                                                 <th>Condición Pago</th>
+                                                <th>Cta. Bancaria</th>
                                                 <th>Mnd</th>
                                                 <th>Total</th>
-                                                <th>Cta. Bancaria</th>
-                                                <th>Fecha Pago</th>
+                                                <th>Saldo</th>
+                                                <!-- <th>Fecha Pago</th>
                                                 <th>Motivo</th>
                                                 <th>Procesado por</th>
                                                 <th>Total pago</th>
-                                                <th>Adjunto</th>
+                                                <th>Adjunto</th> -->
                                                 <th>Estado</th>
                                                 <th style="width:120px;">Acción</th>
                                             </tr>

@@ -1255,7 +1255,7 @@ class OrdenesPendientesController extends Controller
         ->select('guia_com_det.*','log_ord_compra.codigo as cod_orden','alm_prod.codigo','alm_prod.descripcion',
         'alm_prod.part_number','alm_und_medida.abreviatura','log_det_ord_compra.precio','log_ord_compra.id_condicion',
         'log_ord_compra.plazo_dias','log_ord_compra.id_sede','log_ord_compra.id_moneda',
-        'sis_moneda.simbolo')
+        'sis_moneda.simbolo','log_ord_compra.id_cta_principal')
         ->leftjoin('logistica.log_det_ord_compra','log_det_ord_compra.id_detalle_orden','=','guia_com_det.id_oc_det')
         ->leftjoin('logistica.log_ord_compra','log_ord_compra.id_orden_compra','=','log_det_ord_compra.id_orden_compra')
         ->leftjoin('configuracion.sis_moneda','sis_moneda.id_moneda','=','log_ord_compra.id_moneda')
@@ -1279,7 +1279,7 @@ class OrdenesPendientesController extends Controller
         ->select('guia_com_det.*','log_ord_compra.codigo as cod_orden','alm_prod.codigo','alm_prod.descripcion',
         'alm_prod.part_number','alm_und_medida.abreviatura','log_det_ord_compra.precio','log_ord_compra.id_condicion',
         'log_ord_compra.plazo_dias','log_ord_compra.id_sede','guia_com.serie','guia_com.numero','guia_com.id_almacen',
-        'log_ord_compra.id_moneda','sis_moneda.simbolo')
+        'log_ord_compra.id_moneda','sis_moneda.simbolo','log_ord_compra.id_cta_principal')
         ->leftjoin('logistica.log_det_ord_compra','log_det_ord_compra.id_detalle_orden','=','guia_com_det.id_oc_det')
         ->leftjoin('logistica.log_ord_compra','log_ord_compra.id_orden_compra','=','log_det_ord_compra.id_orden_compra')
         ->leftjoin('configuracion.sis_moneda','sis_moneda.id_moneda','=','log_ord_compra.id_moneda')
@@ -1324,7 +1324,7 @@ class OrdenesPendientesController extends Controller
 
             $id_doc = DB::table('almacen.doc_com')->insertGetId(
                 [
-                    'serie' => $request->serie_doc,
+                    'serie' => strtoupper($request->serie_doc),
                     'numero' => $request->numero_doc,
                     'id_tp_doc' => $request->id_tp_doc,
                     'id_proveedor' => $request->id_proveedor,
@@ -1344,9 +1344,10 @@ class OrdenesPendientesController extends Controller
                     'porcen_igv' => $request->porcentaje_igv,
                     // 'porcen_anticipo' => $request->porcen_anticipo,
                     // 'total_otros' => $request->total_otros,
-                    'total_a_pagar' => $request->total,
+                    'total_a_pagar' => round($request->total, 2),
                     'usuario' => $id_usuario,
                     'registrado_por' => $id_usuario,
+                    'id_cta_bancaria' => $request->id_cta_principal,
                     'estado' => 1,
                     'fecha_registro' => $fecha,
                 ],

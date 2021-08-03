@@ -126,7 +126,7 @@ class SalidasPendientesController extends Controller
                         $id_guia_ven_det = DB::table('almacen.guia_ven_det')->insertGetId([
                             'id_guia_ven' => $id_guia_ven,
                             'id_producto' => $det->id_producto,
-                            // 'id_posicion' => $request->id_posicion,
+                            'id_od_det' => $det->id_od_detalle,
                             'cantidad' => $det->cantidad,
                             'id_unid_med' => $det->id_unidad_medida,
                             'estado' => 1,

@@ -9,6 +9,7 @@ class RequerimientoPago
 
     listarComprobantes(){
         var vardataTables = funcDatatables();
+        // console.time();
         tableComprobantes = $('#listaComprobantes').DataTable({
             'dom': vardataTables[1],
             'buttons': vardataTables[2],
@@ -17,71 +18,47 @@ class RequerimientoPago
             'serverSide' : true,
             'ajax': {
                 url: 'listarComprobantesPagos',
-                type: 'POST'
+                type: 'POST',
+                // complete: function(){
+                //     console.timeEnd();
+                // }
             },
             'columns': [
-                {'data': 'id_doc_com'},
-                {'data': 'tipo_documento', 'name': 'cont_tp_doc.descripcion'},
-                {'data': 'serie'},
-                {'data': 'numero'},
+                {'data': 'id_doc_com', 'name': 'doc_com.id_doc_com'},
+                {'data': 'tipo_documento', 'name': 'cont_tp_doc.descripcion', 'className': 'text-center'},
+                {'data': 'serie', 'name': 'doc_com.serie', 'className': 'text-center'},
+                {'data': 'numero', 'name': 'doc_com.numero', 'className': 'text-center'},
                 {'data': 'razon_social', 'name': 'adm_contri.razon_social'},
-                // {'data': 'fecha_emision'},
+                {'data': 'fecha_emision', 'name': 'doc_com.fecha_emision', 'className': 'text-center'},
+                {'data': 'condicion_pago', 'name':'log_cdn_pago.descripcion', 'className': 'text-center'},
+                {'data': 'fecha_vcmto', 'name': 'doc_com.fecha_vcmto', 'className': 'text-center'},
+                {'data': 'nro_cuenta', 'name': 'adm_cta_contri.nro_cuenta'},
+                {'data': 'simbolo', 'name':'sis_moneda.simbolo', 'className': 'text-center'},
+                {'data': 'total_a_pagar_format', 'className': 'text-right'},
                 {'render': function (data, type, row){
-                    return (row['fecha_emision']!==null ? formatDate(row['fecha_emision']) : '');
-                    }, 'className': 'text-center'
-                },
-                // {'data': 'condicion_pago', 'name': 'log_cdn_pago.descripcion'},
-                {'data': 'condicion_pago', 'name': 'log_cdn_pago.descripcion',
-                'render': function (data, type, row){
-                    return (row['condicion_pago']!==null ? (row['condicion_pago']+' '+row['credito_dias']+' días') : '');
-                    }, 'className': 'text-center'
-                },
-                {'render': function (data, type, row){
-                    return (row['fecha_vcmto']!==null ? formatDate(row['fecha_vcmto']) : '');
-                    }, 'className': 'text-center'
-                },
-                {'data': 'simbolo', 'name': 'sis_moneda.simbolo'},
-                {'render': function (data, type, row){
-                    return (row['total_a_pagar']!==null ? formatDecimal(row['total_a_pagar']) : '');
+                        return (row['suma_pagado']!==null ? formatDecimal(formatDecimal(row['total_a_pagar']) - formatDecimal(row['suma_pagado'])) : '0.00');
                     }, 'className': 'text-right'
                 },
-                {'render': function (data, type, row){
-                    return (row['fecha_pago']!==null ? formatDate(row['fecha_pago']) : '');
-                    }, 'className': 'text-center'
-                },
-                {'data': 'observacion'},
-                {'data': 'usuario_pago', 'name':'registrado_por.nombre_corto'},
-                {'data': 'total_pago'},
-                {'render': function (data, type, row){
-                        if (row['adjunto']!==null){
-                            return '<a href="/files/tesoreria/pagos/'+row['adjunto']+'" target="_blank">'+row['adjunto']+'</a>';
-                        } else {
-                            return '';
-                        }
-                    }
-                },
-                {'render': function (data, type, row){
-                    return '<span class="label label-'+row['bootstrap_color']+'">'+(row['estado']==9?'Pagada':row['estado_doc'])+'</span>'
-                    }
-                },
+                {'data': 'span_estado', 'searchable': false, 'className': 'text-center'},
                 {'render':
                     function (data, type, row){
-                    return `<div class="btn-group" role="group">
-                    ${row['estado'] == 1 ?
-                            `<button type="button" style="padding-left:8px;padding-right:7px;" class="pago btn btn-danger boton" data-toggle="tooltip" 
-                                data-placement="bottom" data-id="${row['id_doc_com']}" data-cod="${row['serie']+'-'+row['numero']}" 
-                                data-total="${row['total_a_pagar']}" data-pago="${row['suma_pagado']}" 
-                                title="Procesar Pago" >
-                                <i class="far fa-credit-card"></i></button>`:''}
-
-                            <button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" 
-                                data-placement="bottom" data-id="${row['id_doc_com']}" title="Ver Detalle" >
-                                <i class="fas fa-chevron-down"></i></button>
-                        </div>`;
+                        return `<div class="btn-group" role="group">
+                            ${row['estado'] == 1 ?
+                                `<button type="button" style="padding-left:8px;padding-right:7px;" class="pago btn btn-danger boton" data-toggle="tooltip" 
+                                    data-placement="bottom" data-id="${row['id_doc_com']}" data-cod="${row['serie']+'-'+row['numero']}" 
+                                    data-total="${row['total_a_pagar']}" data-pago="${row['suma_pagado']}" 
+                                    data-moneda="${row['simbolo']}" data-prov="${encodeURIComponent(row['razon_social'])}" 
+                                    data-cta="${row['nro_cuenta']}" title="Procesar Pago"> 
+                                    <i class="far fa-credit-card"></i> </button>`:''}
+                            ${row['suma_pagado'] > 0 ?
+                                `<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" 
+                                    data-placement="bottom" data-id="${row['id_doc_com']}" title="Ver Detalle" >
+                                    <i class="fas fa-chevron-down"></i></button>`:''}
+                            </div>`;
+                        
                     }
                 },
             ],
-            
             'columnDefs': [{ 'aTargets': [0], 'sClass': 'invisible'}],
         });
     
@@ -89,7 +66,7 @@ class RequerimientoPago
 
     listarOrdenes(){
         var vardataTables = funcDatatables();
-        $('#listaOrdenes').DataTable({
+        tableOrdenes = $('#listaOrdenes').DataTable({
             'dom': vardataTables[1],
             'buttons': vardataTables[2],
             'language' : vardataTables[0],
@@ -110,27 +87,31 @@ class RequerimientoPago
                     }, 'className': 'text-center', 'searchable': false
                 },
                 {'data': 'condicion_pago', 'name': 'log_cdn_pago.descripcion'},
+                {'data': 'nro_cuenta', 'name': 'adm_cta_contri.nro_cuenta'},
                 {'data': 'simbolo', 'name': 'sis_moneda.simbolo'},
                 {'render': function (data, type, row){
                         return (row['suma_total']!==null ? formatDecimal(row['suma_total']) : '');
                     }, 'className': 'text-right'
                 },
-                {'data': 'nro_cuenta', 'name': 'adm_cta_contri.nro_cuenta'},
                 {'render': function (data, type, row){
-                    return (row['fecha_pago']!==null ? formatDate(row['fecha_pago']) : '');
-                    }, 'className': 'text-center'
+                        return (row['suma_pagado']!==null ? formatDecimal(row['suma_total'] - row['suma_pagado']) : '0.00');
+                    }, 'className': 'text-right'
                 },
-                {'data': 'observacion', 'name': 'req_pagos.observacion', 'searchable': false},
-                {'data': 'usuario_pago', 'name':'registrado_por.nombre_corto', 'searchable': false},
-                {'data': 'total_pago', 'name': 'req_pagos.total_pago', 'searchable': false},
-                {'render': function (data, type, row){
-                        if (row['adjunto']!==null){
-                            return '<a href="/files/tesoreria/pagos/'+row['adjunto']+'" target="_blank">'+row['adjunto']+'</a>';
-                        } else {
-                            return '';
-                        }
-                    }
-                },
+                // {'render': function (data, type, row){
+                //     return (row['fecha_pago']!==null ? formatDate(row['fecha_pago']) : '');
+                //     }, 'className': 'text-center'
+                // },
+                // {'data': 'observacion', 'name': 'req_pagos.observacion', 'searchable': false},
+                // {'data': 'usuario_pago', 'name':'registrado_por.nombre_corto', 'searchable': false},
+                // {'data': 'total_pago', 'name': 'req_pagos.total_pago', 'searchable': false},
+                // {'render': function (data, type, row){
+                //         if (row['adjunto']!==null){
+                //             return '<a href="/files/tesoreria/pagos/'+row['adjunto']+'" target="_blank">'+row['adjunto']+'</a>';
+                //         } else {
+                //             return '';
+                //         }
+                //     }
+                // },
                 {'render': function (data, type, row){
                     return '<span class="label label-'+(row['estado']==9?'primary':'default')+'">'+row['estado_doc']+'</span>'
                     }
@@ -139,31 +120,69 @@ class RequerimientoPago
                     function (data, type, row){
                     return `<div class="btn-group" role="group">
                     ${row['estado'] !== 9 ?
-                            `<button type="button" style="padding-left:8px;padding-right:7px;" class="pago btn btn-danger boton" data-toggle="tooltip" 
+                        `<button type="button" style="padding-left:8px;padding-right:7px;" class="pago btn btn-danger boton" data-toggle="tooltip" 
                                 data-placement="bottom" data-id="${row['id_orden_compra']}" data-cod="${row['codigo']}" 
                                 data-total="${row['suma_total']}" data-pago="${row['suma_pagado']}" 
-                                title="Procesar Pago" >
+                                data-moneda="${row['simbolo']}" data-prov="${encodeURIComponent(row['razon_social'])}" 
+                                data-cta="${row['nro_cuenta']}" title="Procesar Pago" >
                                 <i class="far fa-credit-card"></i></button>`:''}
+                    ${row['suma_pagado'] > 0 ?
+                        `<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" 
+                                data-placement="bottom" data-id="${row['id_orden_compra']}" title="Ver Detalle" >
+                                <i class="fas fa-chevron-down"></i></button>`:''}
                         </div>`;
-                        // <button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" 
-                        // data-placement="bottom" data-id="${row['id_orden_compra']}" title="Ver Detalle" >
-                        // <i class="fas fa-chevron-down"></i></button>
                     }, 'searchable': false
                 },
             ],
-            'columnDefs': [{ 'aTargets': [0], 'sClass': 'invisible'}],
+            'columnDefs': [
+                { 'aTargets': [0], 'sClass': 'invisible'}
+            ],
         });
     
     }
 }
+
+$('#listaComprobantes tbody').on("click","button.pago", function(){
+    var id_doc_com = $(this).data('id');
+    var codigo = $(this).data('cod');
+    var total = $(this).data('total');
+    var pago = $(this).data('pago');
+    var moneda = $(this).data('moneda');
+    var prov = $(this).data('prov');
+    var cta = $(this).data('cta');
+    
+    var total_pago = formatDecimal(parseFloat(total) - (pago!==null ? parseFloat(pago) : 0));
+    console.log(total_pago);
+
+    $('#modal-procesarPago').modal({
+        show: true
+    });
+    console.log(codigo);
+    $('[name=id_doc_com]').val(id_doc_com);
+    $('[name=id_oc]').val('');
+    $('[name=codigo]').val(codigo);
+    $('[name=cod_serie_numero]').text(codigo);
+    $('[name=total_pago]').val(total_pago);
+    $('[name=total]').val(total_pago);
+    $('[name=observacion]').val('');
+    $('[name=simbolo]').val(moneda);
+    $('[name=razon_social]').text(decodeURIComponent(prov));
+    $('[name=cta_bancaria]').text(cta);
+
+    $('#submit_procesarPago').removeAttr('disabled');
+});
 
 $('#listaOrdenes tbody').on("click","button.pago", function(){
     var id_oc = $(this).data('id');
     var codigo = $(this).data('cod');
     var total = $(this).data('total');
     var pago = $(this).data('pago');
-    console.log(pago);
-    var total_pago = parseFloat(total) - (pago!==null ? parseFloat(pago) : 0);
+    var moneda = $(this).data('moneda');
+    var prov = $(this).data('prov');
+    var cta = $(this).data('cta');
+    
+    var total_pago = formatDecimal(parseFloat(total) - (pago!==null ? parseFloat(pago) : 0));
+    console.log(total_pago);
 
     $('#modal-procesarPago').modal({
         show: true
@@ -175,28 +194,9 @@ $('#listaOrdenes tbody').on("click","button.pago", function(){
     $('[name=total_pago]').val(total_pago);
     $('[name=total]').val(total_pago);
     $('[name=observacion]').val('');
-
-    $('#submit_procesarPago').removeAttr('disabled');
-});
-
-$('#listaComprobantes tbody').on("click","button.pago", function(){
-    var id_doc_com = $(this).data('id');
-    var codigo = $(this).data('cod');
-    var total = $(this).data('total');
-    var pago = $(this).data('pago');
-    console.log(pago);
-    var total_pago = parseFloat(total) - (pago!==null ? parseFloat(pago) : 0);
-
-    $('#modal-procesarPago').modal({
-        show: true
-    });
-    
-    $('[name=id_doc_com]').val(id_doc_com);
-    $('[name=id_oc]').val('');
-    $('[name=codigo]').val(codigo);
-    $('[name=total_pago]').val(total_pago);
-    $('[name=total]').val(total_pago);
-    $('[name=observacion]').val('');
+    $('[name=simbolo]').val(moneda);
+    $('[name=razon_social]').text(decodeURIComponent(prov));
+    $('[name=cta_bancaria]').text(cta);
 
     $('#submit_procesarPago').removeAttr('disabled');
 });
@@ -241,11 +241,11 @@ function procesarPago(){
 
 var iTableCounter=1;
 var oInnerTable;
-var tablePagos;
+var tableOrdenes;
 
-$('#listaRequerimientos tbody').on('click', 'td button.detalle', function () {
+$('#listaOrdenes tbody').on('click', 'td button.detalle', function () {
     var tr = $(this).closest('tr');
-    var row = tablePagos.row( tr );
+    var row = tableOrdenes.row( tr );
     var id = $(this).data('id');
     
     if ( row.child.isShown() ) {
@@ -253,9 +253,9 @@ $('#listaRequerimientos tbody').on('click', 'td button.detalle', function () {
         tr.removeClass('shown');
     }
     else {
-        formatDetalleRequerimiento(iTableCounter, id, row);
+        formatPagosOrdenes(iTableCounter, id, row);
         tr.addClass('shown');
-        oInnerTable = $('#listaRequerimientos_' + iTableCounter).dataTable({
+        oInnerTable = $('#listaOrdenes_' + iTableCounter).dataTable({
             //    data: sections, 
             autoWidth: true, 
             deferRender: true, 
@@ -286,7 +286,7 @@ $('#listaComprobantes tbody').on('click', 'td button.detalle', function () {
         tr.removeClass('shown');
     }
     else {
-        formatDetalleComprobante(iTableCounterComp, id, row);
+        formatPagosComprobante(iTableCounterComp, id, row);
         tr.addClass('shown');
         oInnerTableComp = $('#listaComprobantes_' + iTableCounterComp).dataTable({
             //    data: sections, 
@@ -305,11 +305,11 @@ $('#listaComprobantes tbody').on('click', 'td button.detalle', function () {
     }
 });
 
-function formatDetalleRequerimiento(table_id, id, row)
+function formatPagosOrdenes(table_id, id, row)
 {
     $.ajax({
         type: 'GET',
-        url: 'detalleRequerimiento/'+id,
+        url: 'pagosOrdenes/'+id,
         dataType: 'JSON',
         success: function(response){
             console.log(response);
@@ -318,15 +318,15 @@ function formatDetalleRequerimiento(table_id, id, row)
             
             if (response.length > 0){
                 response.forEach(element => {
-                    html+='<tr '+(element.tiene_transformacion ? ' style="background-color: gainsboro;" ' : '')+' id="'+element.id_detalle_requerimiento+'">'+
+                    html+='<tr id="'+element.id_pago+'">'+
                     '<td style="border: none;">'+i+'</td>'+
-                    '<td style="border: none;">'+(element.producto_codigo !== null ? element.producto_codigo : '')+(element.tiene_transformacion ? ' <span class="badge badge-secondary">Transformado</span> ' : '')+'</td>'+
-                    '<td style="border: none;">'+(element.part_number !== null ? element.part_number : '')+'</td>'+
-                    '<td style="border: none;">'+(element.producto_descripcion !== null ? element.producto_descripcion : element.descripcion_adicional)+'</td>'+
-                    '<td style="border: none;">'+element.cantidad+'</td>'+
-                    '<td style="border: none;">'+(element.abreviatura !== null ? element.abreviatura : '')+'</td>'+
-                    '<td style="border: none;">'+(element.precio_referencial!==null?element.precio_referencial:'0')+'</td>'+
-                    '<td style="border: none;"><span class="label label-'+element.bootstrap_color+'">'+element.estado_doc+'</span></td>'+
+                    '<td style="border: none; text-align: center">'+(element.fecha_pago !== null ? formatDate(element.fecha_pago) : '')+'</td>'+
+                    '<td style="border: none; text-align: center">'+element.observacion+'</td>'+
+                    '<td style="border: none; text-align: right">'+element.simbolo+'</td>'+
+                    '<td style="border: none; text-align: right">'+formatDecimal(element.total_pago)+'</td>'+
+                    '<td style="border: none; text-align: center"><a href="/files/tesoreria/pagos/'+element.adjunto+'" target="_blank">'+(element.adjunto!==null?element.adjunto:'')+'</a></td>'+
+                    '<td style="border: none; text-align: center">'+element.nombre_corto+'</td>'+
+                    '<td style="border: none; text-align: center">'+element.fecha_registro+'</td>'+
                     '</tr>';
                     i++;
                 });
@@ -335,13 +335,13 @@ function formatDetalleRequerimiento(table_id, id, row)
                 <thead style="color: black;background-color: #c7cacc;">
                     <tr>
                         <th style="border: none;">#</th>
-                        <th style="border: none;">Código</th>
-                        <th style="border: none;">PartNumber</th>
-                        <th style="border: none;">Descripción</th>
-                        <th style="border: none;">Cantidad</th>
-                        <th style="border: none;">Unid.</th>
-                        <th style="border: none;">Precio</th>
-                        <th style="border: none;">Estado</th>
+                        <th style="border: none;">Fecha Pago</th>
+                        <th style="border: none;">Motivo</th>
+                        <th style="border: none;">Moneda</th>
+                        <th style="border: none;">Total Pago</th>
+                        <th style="border: none;">Adjunto</th>
+                        <th style="border: none;">Registrado por</th>
+                        <th style="border: none;">Fecha Registro</th>
                     </tr>
                 </thead>
                 <tbody>${html}</tbody>
@@ -365,11 +365,11 @@ function formatDetalleRequerimiento(table_id, id, row)
 
 }
 
-function formatDetalleComprobante(table_id, id, row)
+function formatPagosComprobante(table_id, id, row)
 {
     $.ajax({
         type: 'GET',
-        url: 'detalleComprobante/'+id,
+        url: 'pagosComprobante/'+id,
         dataType: 'JSON',
         success: function(response){
             console.log(response);
@@ -378,18 +378,15 @@ function formatDetalleComprobante(table_id, id, row)
             
             if (response.length > 0){
                 response.forEach(element => {
-                    html+='<tr id="'+element.id_doc_det+'">'+
+                    html+='<tr id="'+element.id_pago+'">'+
                     '<td style="border: none;">'+i+'</td>'+
-                    '<td style="border: none;">'+(element.producto_codigo !== null ? element.producto_codigo : '')+'</td>'+
-                    '<td style="border: none;">'+(element.part_number !== null ? element.part_number : '')+'</td>'+
-                    '<td style="border: none;">'+(element.producto_descripcion !== null ? element.producto_descripcion : element.descripcion_adicional)+'</td>'+
-                    '<td style="border: none;">'+element.cantidad+'</td>'+
-                    '<td style="border: none;">'+(element.abreviatura !== null ? element.abreviatura : '')+'</td>'+
-                    '<td style="border: none;">'+(element.precio_unitario!==null?element.precio_unitario:'0')+'</td>'+
-                    '<td style="border: none;">'+(element.sub_total!==null?element.sub_total:'0')+'</td>'+
-                    '<td style="border: none;">'+(element.total_dscto!==null?element.total_dscto:'0')+'</td>'+
-                    '<td style="border: none;">'+(element.precio_total!==null?element.precio_total:'0')+'</td>'+
-                    '<td style="border: none;"><span class="label label-'+element.bootstrap_color+'">'+element.estado_doc+'</span></td>'+
+                    '<td style="border: none; text-align: center">'+(element.fecha_pago !== null ? formatDate(element.fecha_pago) : '')+'</td>'+
+                    '<td style="border: none; text-align: center">'+element.observacion+'</td>'+
+                    '<td style="border: none; text-align: right">'+element.simbolo+'</td>'+
+                    '<td style="border: none; text-align: right">'+formatDecimal(element.total_pago)+'</td>'+
+                    '<td style="border: none; text-align: center"><a href="/files/tesoreria/pagos/'+element.adjunto+'" target="_blank">'+(element.adjunto!==null?element.adjunto:'')+'</a></td>'+
+                    '<td style="border: none; text-align: center">'+element.nombre_corto+'</td>'+
+                    '<td style="border: none; text-align: center">'+element.fecha_registro+'</td>'+
                     '</tr>';
                     i++;
                 });
@@ -398,16 +395,13 @@ function formatDetalleComprobante(table_id, id, row)
                 <thead style="color: black;background-color: #c7cacc;">
                     <tr>
                         <th style="border: none;">#</th>
-                        <th style="border: none;">Código</th>
-                        <th style="border: none;">PartNumber</th>
-                        <th style="border: none;">Descripción</th>
-                        <th style="border: none;">Cantidad</th>
-                        <th style="border: none;">Unid.</th>
-                        <th style="border: none;">Unitario</th>
-                        <th style="border: none;">SubTotal</th>
-                        <th style="border: none;">Dscto</th>
-                        <th style="border: none;">Total</th>
-                        <th style="border: none;">Estado</th>
+                        <th style="border: none;">Fecha Pago</th>
+                        <th style="border: none;">Motivo</th>
+                        <th style="border: none;">Moneda</th>
+                        <th style="border: none;">Total Pago</th>
+                        <th style="border: none;">Adjunto</th>
+                        <th style="border: none;">Registrado por</th>
+                        <th style="border: none;">Fecha Registro</th>
                     </tr>
                 </thead>
                 <tbody>${html}</tbody>

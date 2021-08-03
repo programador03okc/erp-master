@@ -1,5 +1,5 @@
 function documentosVer(id) {
-    $("#modal-doc_ver").modal({
+    $("#modal-doc_ven_ver").modal({
         show: true
     });
     $.ajax({
@@ -9,14 +9,14 @@ function documentosVer(id) {
         success: function(response) {
             console.log(response);
             let html = "";
-            $("[name=id_doc_com]").val();
+            $("[name=id_doc_ven]").val();
             response["docs"].forEach(element => {
                 html += `
                 <tr>
                     <td colSpan="14">
                         <button type="button" class="btn btn-danger btn-xs " data-toggle="tooltip" 
-                        data-placement="bottom" title="Anular Documento" onClick="anularDocCompra(${
-                            element.id_doc_com
+                        data-placement="bottom" title="Anular Documento" onClick="anularDocVenta(${
+                            element.id_doc_ven
                         });">
                         <i class="fas fa-trash"></i> Anular Documento</button>
                     </td>
@@ -28,7 +28,7 @@ function documentosVer(id) {
                         element.serie +
                         "-" +
                         element.numero}</td>
-                    <th >Tipo de Cambio: S/ ${element.tipo_cambio}</td>
+                    <th></td>
                     <th colSpan="2">Empresa-Sede: </th>
                     <td colSpan="3">${element.sede_descripcion}</td>
                 </tr>
@@ -43,11 +43,7 @@ function documentosVer(id) {
                         element.simbolo,
                         -2
                     )}</td>
-                    <th colSpan="2">Condición: </th>
-                    <td colSpan="3">${element.condicion_descripcion +
-                        (element.credito_dias !== null
-                            ? element.credito_dias + " días"
-                            : "")}</td>
+                    
                 </tr>
                 <tr><td colSpan="12"></td></tr>
                 <tr style="background-color: Gainsboro;">
@@ -67,7 +63,7 @@ function documentosVer(id) {
 
                 var i = 1;
                 let detalles = response["detalles"].filter(
-                    detalle => detalle.id_doc == element.id_doc_com
+                    detalle => detalle.id_doc == element.id_doc_ven
                 );
 
                 detalles.forEach(item => {
@@ -87,13 +83,13 @@ function documentosVer(id) {
                                 ? item.descripcion
                                 : item.servicio_descripcion
                         }</td>
-                        <td class="right">${item.cantidad}</td>
+                        <td class="text-right">${item.cantidad}</td>
                         <td>${item.abreviatura}</td>
-                        <td class="right">${item.precio_unitario}</td>
-                        <td class="right">${item.sub_total}</td>
-                        <td class="right">${item.porcen_dscto}</td>
-                        <td class="right">${item.total_dscto}</td>
-                        <td class="right">${formatNumber.decimal(
+                        <td class="text-right">${item.precio_unitario}</td>
+                        <td class="text-right">${item.sub_total}</td>
+                        <td class="text-right">${item.porcen_dscto}</td>
+                        <td class="text-right">${item.total_dscto}</td>
+                        <td class="text-right">${formatNumber.decimal(
                             item.precio_total,
                             "",
                             -2
@@ -102,24 +98,24 @@ function documentosVer(id) {
                     i++;
                 });
                 html += `<tr>
-                    <td colSpan="11" class="right">SubTotal</td>
-                    <th class="right">${formatNumber.decimal(
+                    <td colSpan="11" class="text-right">SubTotal</td>
+                    <th class="text-right">${formatNumber.decimal(
                         element.sub_total,
                         element.simbolo,
                         -2
                     )}</th>
                 </tr>
                 <tr>
-                    <td colSpan="11" class="right">IGV</td>
-                    <th class="right">${formatNumber.decimal(
+                    <td colSpan="11" class="text-right">IGV</td>
+                    <th class="text-right">${formatNumber.decimal(
                         element.total_igv,
                         element.simbolo,
                         -2
                     )}</th>
                 </tr>
                 <tr>
-                    <td colSpan="11" class="right">Total</td>
-                    <th class="right">${formatNumber.decimal(
+                    <td colSpan="11" class="text-right">Total</td>
+                    <th class="text-right">${formatNumber.decimal(
                         element.total_a_pagar,
                         element.simbolo,
                         -2
@@ -136,21 +132,22 @@ function documentosVer(id) {
     });
 }
 
-function anularDocCompra(id) {
+function anularDocVenta(id) {
     let rspta = confirm(
-        "¿Está seguro que desea anular éste documento de compra?"
+        "¿Está seguro que desea anular éste documento de venta?"
     );
 
     if (rspta) {
         $.ajax({
             type: "GET",
-            url: "anular_doc_com/" + id,
+            url: "anular_doc_ven/" + id,
             dataType: "JSON",
             success: function(response) {
                 console.log(response);
-                alert("Se annulo correctamente el documento.");
-                listarIngresos();
-                $("#modal-doc_ver").modal("hide");
+                alert("Se anuló correctamente el documento.");
+                let facturacion = new Facturacion();
+                facturacion.listarGuias();
+                $("#modal-doc_ven_ver").modal("hide");
             }
         }).fail(function(jqXHR, textStatus, errorThrown) {
             console.log(jqXHR);
